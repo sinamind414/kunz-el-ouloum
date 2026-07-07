@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 650" width="700" height="650">
+  <defs>
+    <style>
+      text { font-family: 'Noto Kufi Arabic', sans-serif; }
+      .title { font-size: 22px; font-weight: bold; fill: #1A2A3A; }
+      .label-ar { font-size: 15px; font-weight: bold; fill: #1A2A3A; }
+      .label-fr { font-size: 12px; fill: #7F8C8D; }
+      .label-small { font-size: 12px; fill: #7F8C8D; }
+      .label-white { font-size: 12px; font-weight: bold; fill: #FFFFFF; }
+      .base-a { fill: #E74C3C; }
+      .base-u { fill: #2980B9; }
+      .base-g { fill: #F39C12; }
+      .base-c { fill: #27AE60; }
+    </style>
+    <filter id="shadow">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-opacity="0.1"/>
+    </filter>
+  </defs>
+
+  <rect width="700" height="650" fill="#FFFFFF"/>
+
+  <text x="350" y="40" text-anchor="middle" class="title">بنية ARNt — Structure de l'ARNt</text>
+  <text x="350" y="62" text-anchor="middle" class="label-fr">شكل ورقة البرسيم (Feuille de Trèfle)</text>
+
+  <g transform="translate(350, 340)" filter="url(#shadow)">
+    <!-- 
+      Structure en feuille de trèfle (cloverleaf) de l'ARNt
+      On dessine les 4 boucles/stems caractéristiques
+    -->
+
+    <!-- Brin principal continu (fil de l'ARN) -->
+    <!-- 
+      Structure simplifiée :
+          Acide aminé (3' end)
+                |
+             Tige d'acceptation
+                |
+          TΨC-loop → D-loop
+                |
+           Anticodon-loop
+                |
+              Anticodon
+    -->
+
+    <!-- Tige d'acceptation / Aminoacyl stem (verticale, en haut) -->
+    <path d="M 0,-180 L 0,-120" fill="none" stroke="#2ECC71" stroke-width="4" stroke-linecap="round"/>
+    <path d="M -15,-180 L -15,-120" fill="none" stroke="#3498DB" stroke-width="4" stroke-linecap="round"/>
+    
+    <!-- Paires de bases de la tige d'acceptation -->
+    <line x1="-14" y1="-170" x2="0" y2="-170" stroke="#999" stroke-width="1.5" stroke-dasharray="2,2"/>
+    <line x1="-14" y1="-160" x2="0" y2="-160" stroke="#999" stroke-width="1.5" stroke-dasharray="2,2"/>
+    <line x1="-14" y1="-150" x2="0" y2="-150" stroke="#999" stroke-width="1.5" stroke-dasharray="2,2"/>
+    <line x1="-14" y1="-140" x2="0" y2="-140" stroke="#999" stroke-width="1.5" stroke-dasharray="2,2"/>
+    <line x1="-14" y1="-130" x2="0" y2="-130" stroke="#999" stroke-width="1.5" stroke-dasharray="2,2"/>
+
+    <!-- Site d'attachement de l'acide aminé (3' CCA) -->
+    <path d="M -15,-180 L -25,-195 L -15,-210" fill="none" stroke="#E74C3C" stroke-width="3" stroke-linecap="round"/>
+    <path d="M 0,-180 L 10,-195 L 5,-210" fill="none" stroke="#E74C3C" stroke-width="3" stroke-linecap="round"/>
+    
+    <!-- CCA label -->
+    <text x="-20" y="-220" text-anchor="middle" class="label-ar" font-size="13" fill="#E74C3C">3'</text>
+    <text x="-8" y="-204" text-anchor="middle" class="label-white" font-size="10">C</text>
+    <text x="-18" y="-195" text-anchor="middle" class="label-white" font-size="10">C</text>
+    <text x="-25" y="-215" text-anchor="middle" class="label-white" font-size="10">A</text>
+
+    <!-- Acide aminé (attaché en 3') -->
+    <ellipse cx="-15" cy="-230" rx="22" ry="14" fill="#E74C3C" opacity="0.2" stroke="#E74C3C" stroke-width="2"/>
+    <text x="-15" y="-226" text-anchor="middle" class="label-ar" font-size="10" fill="#C0392B">حمض</text>
+    <text x="-15" y="-216" text-anchor="middle" class="label-ar" font-size="10" fill="#C0392B">أميني</text>
+
+    <!-- D-loop (boucle D) - gauche -->
+    <path d="M -15,-120 
+             C -60,-110 -90,-80 -80,-50 
+             C -70,-20 -40,-10 -20,-20" 
+          fill="none" stroke="#8E44AD" stroke-width="4" stroke-linecap="round"/>
+    <ellipse cx="-65" cy="-65" rx="25" ry="20" fill="none" stroke="#8E44AD" stroke-width="1.5" stroke-dasharray="3,2"/>
+    <text x="-65" y="-61" text-anchor="middle" class="label-small" fill="#8E44AD">D-loop</text>
+
+    <!-- TΨC-loop (boucle T) - droite -->
+    <path d="M 0,-120 
+             C 50,-110 80,-80 75,-50 
+             C 70,-20 40,-10 20,-20" 
+          fill="none" stroke="#E67E22" stroke-width="4" stroke-linecap="round"/>
+    <ellipse cx="58" cy="-65" rx="25" ry="20" fill="none" stroke="#E67E22" stroke-width="1.5" stroke-dasharray="3,2"/>
+    <text x="58" y="-61" text-anchor="middle" class="label-small" fill="#E67E22">TΨC-loop</text>
+
+    <!-- Tige descendante vers anticodon -->
+    <path d="M -20,-20 L -15,20" fill="none" stroke="#2ECC71" stroke-width="4" stroke-linecap="round"/>
+    <path d="M 20,-20 L 15,20" fill="none" stroke="#3498DB" stroke-width="4" stroke-linecap="round"/>
+    
+    <!-- Paires de bases de la tige -->
+    <line x1="-19" y1="-10" x2="19" y2="-10" stroke="#999" stroke-width="1.5" stroke-dasharray="2,2"/>
+    <line x1="-18" y1="0" x2="18" y2="0" stroke="#999" stroke-width="1.5" stroke-dasharray="2,2"/>
+    <line x1="-17" y1="10" x2="17" y2="10" stroke="#999" stroke-width="1.5" stroke-dasharray="2,2"/>
+
+    <!-- Boucle de l'anticodon -->
+    <path d="M -15,20 
+             C -40,40 -40,70 -15,85 
+             C 10,100 40,100 40,70 
+             C 40,40 15,20 15,20" 
+          fill="none" stroke="#E74C3C" stroke-width="4" stroke-linecap="round"/>
+
+    <!-- Anticodon (3 bases) -->
+    <g transform="translate(0, 75)">
+      <rect x="-25" y="-10" width="16" height="20" rx="4" class="base-u"/>
+      <text x="-17" y="4" text-anchor="middle" class="label-white" font-size="11">U</text>
+      <rect x="-6" y="-10" width="16" height="20" rx="4" class="base-a"/>
+      <text x="2" y="4" text-anchor="middle" class="label-white" font-size="11">A</text>
+      <rect x="13" y="-10" width="16" height="20" rx="4" class="base-c"/>
+      <text x="21" y="4" text-anchor="middle" class="label-white" font-size="11">C</text>
+    </g>
+
+    <!-- Base supplémentaire (variable loop) -->
+    <path d="M 20,-20 C 30,-25 35,-30 35,-35" fill="none" stroke="#7F8C8D" stroke-width="3" stroke-linecap="round"/>
+
+    <!-- Direction 5' → 3' -->
+    <text x="30" y="-185" class="label-small" fill="#3498DB">5'</text>
+    <text x="-10" y="-200" class="label-small" fill="#2ECC71">3'</text>
+  </g>
+
+  <!-- Légende -->
+  <g transform="translate(40, 550)">
+    <text x="0" y="0" class="label-ar">مكونات ARNt:</text>
+    <line x1="0" y1="15" x2="40" y2="15" stroke="#E74C3C" stroke-width="3"/>
+    <text x="50" y="20" class="label-small">Anticodon (يرتبط بالرامزة)</text>
+    <line x1="0" y1="35" x2="40" y2="35" stroke="#8E44AD" stroke-width="3"/>
+    <text x="50" y="40" class="label-small">D-loop (استقرار البنية)</text>
+    <line x1="0" y1="55" x2="40" y2="55" stroke="#E67E22" stroke-width="3"/>
+    <text x="50" y="60" class="label-small">TψC-loop (ارتباط بالريبوزوم)</text>
+    <line x1="0" y1="75" x2="40" y2="75" stroke="#E74C3C" stroke-width="3"/>
+    <text x="50" y="80" class="label-small">موقع ارتباط الحمض الأميني (3'-CCA)</text>
+  </g>
+
+  <!-- Information clé -->
+  <g transform="translate(380, 555)">
+    <text x="0" y="0" class="label-ar">مثال: Anticodon = UAC ←→ Codon = AUG (ميتيونين)</text>
+    <text x="0" y="25" class="label-small">كل ARNt يحمل حمضاً أمينياً واحداً محدداً</text>
+    <text x="0" y="45" class="label-small">يوجد 20 نوعاً من ARNt (واحد لكل حمض أميني)</text>
+  </g>
+
+  <text x="350" y="640" text-anchor="middle" class="label-small">كنز العلوم — SVT بكالوريا 3AS</text>
+</svg>

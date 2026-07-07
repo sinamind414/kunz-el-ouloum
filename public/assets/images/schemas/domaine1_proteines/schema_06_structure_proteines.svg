@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 700" width="800" height="700">
+  <defs>
+    <style>text{font-family:'Noto Kufi Arabic',sans-serif;}.t{font-size:20px;font-weight:bold;fill:#1A2A3A;}.la{font-size:13px;font-weight:bold;fill:#1A2A3A;}.ls{font-size:11px;fill:#7F8C8D;}.lw{font-size:11px;font-weight:bold;fill:#FFF;}</style>
+    <filter id="sh"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-opacity="0.1"/></filter>
+  </defs>
+  <rect width="800" height="700" fill="#FFF"/>
+  <text x="400" y="30" text-anchor="middle" class="t">مستويات البنية الفراغية للبروتين — 4 niveaux de structure</text>
+
+  <!-- LEVEL 1: Primary -->
+  <g transform="translate(10, 55)" filter="url(#sh)">
+    <rect x="0" y="0" width="780" height="140" rx="12" fill="#FFF" stroke="#2ECC71" stroke-width="1.5"/>
+    <text x="390" y="22" text-anchor="middle" class="la" fill="#2ECC71">① البنية الأولية (Structure primaire)</text>
+    <text x="390" y="40" text-anchor="middle" class="ls">تسلسل خطي للأحماض الأمينية — روابط ببتيدية</text>
+    <!-- AA chain -->
+    <g transform="translate(60, 70)">
+      <rect x="0" y="0" width="24" height="24" rx="4" fill="#E74C3C"/><text x="12" y="16" text-anchor="middle" class="lw" font-size="9">Met</text>
+      <rect x="28" y="0" width="24" height="24" rx="4" fill="#3498DB"/><text x="40" y="16" text-anchor="middle" class="lw" font-size="9">Pro</text>
+      <rect x="56" y="0" width="24" height="24" rx="4" fill="#F39C12"/><text x="68" y="16" text-anchor="middle" class="lw" font-size="9">Gly</text>
+      <rect x="84" y="0" width="24" height="24" rx="4" fill="#2ECC71"/><text x="96" y="16" text-anchor="middle" class="lw" font-size="9">Ala</text>
+      <rect x="112" y="0" width="24" height="24" rx="4" fill="#9C27B0"/><text x="124" y="16" text-anchor="middle" class="lw" font-size="9">Val</text>
+      <rect x="140" y="0" width="24" height="24" rx="4" fill="#E67E22"/><text x="152" y="16" text-anchor="middle" class="lw" font-size="9">Ser</text>
+      <rect x="168" y="0" width="24" height="24" rx="4" fill="#1ABC9C"/><text x="180" y="16" text-anchor="middle" class="lw" font-size="9">Lys</text>
+      <rect x="196" y="0" width="24" height="24" rx="4" fill="#E74C3C"/><text x="208" y="16" text-anchor="middle" class="lw" font-size="9">Phe</text>
+      <!-- Connecting lines -->
+      <line x1="24" y1="12" x2="28" y2="12" stroke="#999" stroke-width="1.5"/>
+      <line x1="52" y1="12" x2="56" y2="12" stroke="#999" stroke-width="1.5"/>
+      <line x1="80" y1="12" x2="84" y2="12" stroke="#999" stroke-width="1.5"/>
+      <line x1="108" y1="12" x2="112" y2="12" stroke="#999" stroke-width="1.5"/>
+      <line x1="136" y1="12" x2="140" y2="12" stroke="#999" stroke-width="1.5"/>
+      <line x1="164" y1="12" x2="168" y2="12" stroke="#999" stroke-width="1.5"/>
+      <line x1="192" y1="12" x2="196" y2="12" stroke="#999" stroke-width="1.5"/>
+      <text x="390" y="15" text-anchor="middle" class="ls" fill="#999">— N-terminal — Gly — Phe — Leu — Val — Gln — Ser — C-terminal —</text>
+    </g>
+    <text x="15" y="125" class="ls">الروابط: رابطة ببتيدية (CO-NH)</text>
+    <text x="390" y="125" text-anchor="middle" class="ls">تحدد بقية المستويات</text>
+  </g>
+
+  <!-- LEVEL 2: Secondary -->
+  <g transform="translate(10, 205)" filter="url(#sh)">
+    <rect x="0" y="0" width="380" height="150" rx="12" fill="#FFF" stroke="#3498DB" stroke-width="1.5"/>
+    <text x="190" y="22" text-anchor="middle" class="la" fill="#3498DB">② البنية الثانوية</text>
+    <!-- Alpha helix -->
+    <path d="M 30,130 C 30,110 50,110 50,90 C 50,70 70,70 70,50 C 70,30 90,30 90,50 C 90,70 110,70 110,90 C 110,110 130,110 130,130" fill="none" stroke="#3498DB" stroke-width="4"/>
+    <path d="M 35,130 C 35,110 55,110 55,90 C 55,70 75,70 75,50 C 75,30 95,30 95,50 C 95,70 115,70 115,90 C 115,110 135,110 135,130" fill="none" stroke="#5C6BC0" stroke-width="3"/>
+    <text x="80" y="140" text-anchor="middle" class="ls">لولب ألفا (Hélice α)</text>
+    <text x="80" y="145" text-anchor="middle" class="ls" font-size="9">كيراتين، مرن</text>
+
+    <!-- Beta sheet -->
+    <rect x="190" y="30" width="180" height="90" rx="8" fill="#E3F2FD"/>
+    <path d="M 200,40 L 360,50 M 200,55 L 360,65 M 200,70 L 360,80 M 200,85 L 360,95 M 200,100 L 360,110" fill="none" stroke="#3498DB" stroke-width="3"/>
+    <text x="275" y="130" text-anchor="middle" class="ls">صفيحة بيتا (Feuillet β)</text>
+    <text x="275" y="140" text-anchor="middle" class="ls" font-size="9">حرير، صلب</text>
+  </g>
+
+  <!-- LEVEL 2 (right): Secondary continued -->
+  <g transform="translate(400, 205)" filter="url(#sh)">
+    <rect x="0" y="0" width="390" height="150" rx="12" fill="#FFF" stroke="#3498DB" stroke-width="1.5"/>
+    <text x="195" y="22" text-anchor="middle" class="la" fill="#3498DB">الروابط: هيدروجينية بين CO و NH</text>
+    <g transform="translate(20, 40)">
+      <line x1="0" y1="10" x2="160" y2="10" stroke="#3498DB" stroke-width="2"/>
+      <line x1="0" y1="30" x2="160" y2="30" stroke="#E74C3C" stroke-width="2" stroke-dasharray="5,3"/>
+      <line x1="0" y1="50" x2="160" y2="50" stroke="#3498DB" stroke-width="2"/>
+      <line x1="0" y1="70" x2="160" y2="70" stroke="#E74C3C" stroke-width="2" stroke-dasharray="5,3"/>
+      <text x="200" y="20" text-anchor="middle" class="ls">سلسلة بيبتيدية</text>
+      <text x="200" y="60" text-anchor="middle" class="ls" fill="#E74C3C">⚠️ رابطة هيدروجينية</text>
+    </g>
+  </g>
+
+  <!-- LEVEL 3: Tertiary -->
+  <g transform="translate(10, 365)" filter="url(#sh)">
+    <rect x="0" y="0" width="380" height="150" rx="12" fill="#FFF" stroke="#E67E22" stroke-width="1.5"/>
+    <text x="190" y="22" text-anchor="middle" class="la" fill="#E67E22">③ البنية الثالثية (Structure tertiaire)</text>
+    <!-- Globular 3D shape -->
+    <path d="M 60,90 C 20,80 30,40 60,35 C 80,32 100,40 110,55 C 130,45 160,50 160,70 C 160,90 140,105 120,105 C 100,105 90,95 80,100 C 70,105 50,110 40,100 Z" fill="#E67E22" opacity="0.15" stroke="#E67E22" stroke-width="2"/>
+    <path d="M 50,60 C 60,50 80,55 90,70" fill="none" stroke="#E67E22" stroke-width="2"/>
+    <path d="M 100,50 C 120,45 140,50 140,65" fill="none" stroke="#E67E22" stroke-width="2"/>
+    <path d="M 70,90 C 80,80 100,85 110,95" fill="none" stroke="#E67E22" stroke-width="2"/>
+    <!-- S-S bond -->
+    <line x1="120" y1="45" x2="145" y2="60" stroke="#FFD700" stroke-width="3"/>
+    <text x="132" y="43" class="ls" fill="#FFD700" font-size="9">S-S</text>
+    <text x="190" y="140" text-anchor="middle" class="ls">شكل كروي (Globulaire) — موقع فعال</text>
+  </g>
+
+  <!-- LEVEL 4: Quaternary -->
+  <g transform="translate(400, 365)" filter="url(#sh)">
+    <rect x="0" y="0" width="390" height="150" rx="12" fill="#FFF" stroke="#9C27B0" stroke-width="1.5"/>
+    <text x="195" y="22" text-anchor="middle" class="la" fill="#9C27B0">④ البنية الرباعية (Structure quaternaire)</text>
+    <!-- 4 subunits -->
+    <circle cx="70" cy="55" r="22" fill="#E74C3C" opacity="0.3" stroke="#E74C3C" stroke-width="2"/>
+    <text x="70" y="59" text-anchor="middle" class="ls" font-size="9">α₁</text>
+    <circle cx="160" cy="55" r="22" fill="#3498DB" opacity="0.3" stroke="#3498DB" stroke-width="2"/>
+    <text x="160" y="59" text-anchor="middle" class="ls" font-size="9">β₁</text>
+    <circle cx="70" cy="115" r="22" fill="#3498DB" opacity="0.3" stroke="#3498DB" stroke-width="2"/>
+    <text x="70" y="119" text-anchor="middle" class="ls" font-size="9">β₂</text>
+    <circle cx="160" cy="115" r="22" fill="#E74C3C" opacity="0.3" stroke="#E74C3C" stroke-width="2"/>
+    <text x="160" y="119" text-anchor="middle" class="ls" font-size="9">α₂</text>
+    <text x="115" y="85" text-anchor="middle" class="ls" font-size="9">الهيموغلوبين</text>
+    <text x="195" y="140" text-anchor="middle" class="ls">4 تحت وحدات (2α + 2β) + 4 هيم</text>
+  </g>
+
+  <!-- Summary -->
+  <g transform="translate(10, 525)">
+    <text x="0" y="0" class="la">مستويات البنية:</text>
+    <rect x="0" y="10" width="160" height="20" rx="5" fill="#2ECC71" opacity="0.2"/><text x="80" y="24" text-anchor="middle" class="ls">أولية ← ببتيدية</text>
+    <rect x="170" y="10" width="160" height="20" rx="5" fill="#3498DB" opacity="0.2"/><text x="250" y="24" text-anchor="middle" class="ls">ثانوية ← هيدروجينية</text>
+    <rect x="340" y="10" width="160" height="20" rx="5" fill="#E67E22" opacity="0.2"/><text x="420" y="24" text-anchor="middle" class="ls">ثالثية ← S-S + H + كارهة</text>
+    <rect x="510" y="10" width="180" height="20" rx="5" fill="#9C27B0" opacity="0.2"/><text x="600" y="24" text-anchor="middle" class="ls">رباعية ← تجمع عدة سلاسل</text>
+  </g>
+
+  <text x="400" y="685" text-anchor="middle" class="ls">كنز العلوم — SVT Bac Algérie 3AS</text>
+</svg>

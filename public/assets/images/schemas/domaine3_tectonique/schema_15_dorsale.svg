@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" width="800" height="500">
+<defs><style>text{font-family:'Noto Kufi Arabic',sans-serif;}.t{font-size:18px;font-weight:bold;fill:#1A2A3A;}.la{font-size:12px;font-weight:bold;fill:#1A2A3A;}.ls{font-size:10px;fill:#7F8C8D;}.lw{font-size:10px;font-weight:bold;fill:#FFF;}</style>
+<linearGradient id="water"><stop offset="0%" stop-color="#BBDEFB"/><stop offset="100%" stop-color="#1565C0"/></linearGradient>
+<linearGradient id="magma"><stop offset="0%" stop-color="#FF6D00"/><stop offset="100%" stop-color="#D50000"/></linearGradient></defs>
+<rect width="800" height="500" fill="#FFF"/>
+<text x="400" y="25" text-anchor="middle" class="t">الظهرة وسط المحيطية — Dorsale Médio-Océanique</text>
+
+<g transform="translate(400, 320)">
+  <!-- Water -->
+  <rect x="-350" y="-180" width="700" height="100" fill="url(#water)" opacity="0.3"/>
+  <text x="0" y="-120" text-anchor="middle" class="la" fill="#1565C0">محيط (Océan)</text>
+
+  <!-- Ridge structure -->
+  <path d="M -350,-80 L -200,-80 L -100,-120 L -40,-130 L 0,-140 L 40,-130 L 100,-120 L 200,-80 L 350,-80" fill="none" stroke="#5D3A1A" stroke-width="4"/>
+  <path d="M -350,-75 L -200,-75 L -100,-115 L -40,-125 L 0,-135 L 40,-125 L 100,-115 L 200,-75 L 350,-75" fill="none" stroke="#5D3A1A" stroke-width="2"/>
+
+  <!-- Magma rising -->
+  <path d="M 0,-80 L 0,-140" fill="none" stroke="url(#magma)" stroke-width="8" opacity="0.7"/>
+  <path d="M -60,-80 L -40,-130" fill="none" stroke="url(#magma)" stroke-width="5" opacity="0.5"/>
+  <path d="M 60,-80 L 40,-130" fill="none" stroke="url(#magma)" stroke-width="5" opacity="0.5"/>
+
+  <!-- Mantle -->
+  <path d="M -350,-80 C -200,-60 -100,-70 0,-100 C 100,-70 200,-60 350,-80 L 350,100 L -350,100 Z" fill="#E65100" opacity="0.15"/>
+  <text x="0" y="30" text-anchor="middle" class="la" fill="#E65100">البرنس (Manteau)</text>
+
+  <!-- Divergent arrows -->
+  <path d="M -100,-90 L -200,-85" fill="none" stroke="#F57F17" stroke-width="3" marker-end="url(#arrow)"/>
+  <path d="M 100,-90 L 200,-85" fill="none" stroke="#F57F17" stroke-width="3" marker-end="url(#arrow)"/>
+  <text x="-150" y="-95" text-anchor="middle" class="la" font-size="10" fill="#F57F17">← تباعد ←</text>
+  <text x="150" y="-95" text-anchor="middle" class="la" font-size="10" fill="#F57F17">→ تباعد →</text>
+
+  <!-- Labels -->
+  <text x="0" y="-150" text-anchor="middle" class="la" fill="#C62828">شق مركزي (Rift)</text>
+  <text x="0" y="-160" text-anchor="middle" class="ls" font-size="9" fill="#C62828">صهارة (Magma)</text>
+</g>
+
+<!-- Oceanic crust structure -->
+<g transform="translate(560, 80)">
+  <text x="60" y="0" text-anchor="middle" class="la" font-size="10">بنية اللوح المحيطي</text>
+  <rect x="10" y="10" width="100" height="14" rx="2" fill="#D7CCC8"/><text x="60" y="21" text-anchor="middle" class="ls" font-size="8">رواسب</text>
+  <rect x="10" y="24" width="100" height="16" rx="2" fill="#607D8B"/><text x="60" y="36" text-anchor="middle" class="lw" font-size="7">بازلت وسائدي</text>
+  <rect x="10" y="40" width="100" height="16" rx="2" fill="#78909C"/><text x="60" y="52" text-anchor="middle" class="lw" font-size="7">دولريت (Dykes)</text>
+  <rect x="10" y="56" width="100" height="18" rx="2" fill="#455A64"/><text x="60" y="69" text-anchor="middle" class="lw" font-size="7">غابرو (Gabbro)</text>
+  <rect x="10" y="74" width="100" height="16" rx="2" fill="#33691E"/><text x="60" y="86" text-anchor="middle" class="lw" font-size="7">بيريدوتيت</text>
+</g>
+
+<!-- Magnetic stripes -->
+<g transform="translate(30, 420)">
+  <text x="0" y="0" class="la" font-size="10">أشرطة مغناطيسية متماثلة</text>
+  <rect x="0" y="8" width="20" height="12" fill="#333"/><rect x="20" y="8" width="15" height="12" fill="#FFF" stroke="#333" stroke-width="0.5"/>
+  <rect x="35" y="8" width="12" height="12" fill="#333"/><rect x="47" y="8" width="10" height="12" fill="#FFF" stroke="#333" stroke-width="0.5"/>
+  <text x="0" y="40" class="la" font-size="10" fill="#2ECC71">↙ عادي</text>
+  <text x="60" y="40" class="la" font-size="10" fill="#E74C3C">↗ معكوس</text>
+  <path d="M 5,28 L 0,35" fill="none" stroke="#2ECC71" stroke-width="1.5"/>
+  <path d="M 30,28 L 35,35" fill="none" stroke="#E74C3C" stroke-width="1.5"/>
+</g>
+
+<text x="400" y="490" text-anchor="middle" class="ls">كنز العلوم — SVT Bac Algérie 3AS</text>
+</svg>

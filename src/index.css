@@ -1,0 +1,210 @@
+@import "tailwindcss";
+
+:root {
+  --primary-color: #006d37;
+  --primary-hover-color: #00562b;
+  --primary-container-color: #2ecc71;
+  --on-primary-container-color: #005027;
+  --secondary-color: #506072;
+  --tertiary-color: #944a00;
+  --background-color: #f8f9fa;
+  --surface-color: #f8f9fa;
+  --surface-dim-color: #d9dadb;
+  --surface-container-color: #edeeef;
+  --surface-container-low-color: #f3f4f5;
+  --surface-container-lowest-color: #ffffff;
+  --surface-container-high-color: #e7e8e9;
+  --surface-container-highest-color: #e1e3e4;
+  --on-surface-color: #191c1d;
+  --on-surface-variant-color: #3d4a3e;
+  --outline-color: #6c7b6d;
+  --outline-variant-color: #bbcbbb;
+  --error-color: #ba1a1a;
+  --error-container-color: #ffdad6;
+
+  /* Custom overrides for hardcoded layout colors */
+  --bg-white: #ffffff;
+  --bg-offwhite: #f8f9fa;
+  --bg-cream: #fff9ed;
+  --border-beige: #e2dabf;
+  --text-dark: #1f1c0b;
+  --text-brown: #504441;
+  --text-slate: #506072;
+}
+
+.dark {
+  --primary-color: #2ecc71;
+  --primary-hover-color: #27ae60;
+  --primary-container-color: #006d37;
+  --on-primary-container-color: #ffffff;
+  --secondary-color: #a4b0a2;
+  --tertiary-color: #fed65b;
+  --background-color: #121413;
+  --surface-color: #121413;
+  --surface-dim-color: #282b29;
+  --surface-container-color: #1a1d1b;
+  --surface-container-low-color: #161817;
+  --surface-container-lowest-color: #1e2220;
+  --surface-container-high-color: #222623;
+  --surface-container-highest-color: #2c312d;
+  --on-surface-color: #e2e3e1;
+  --on-surface-variant-color: #bbcbbb;
+  --outline-color: #8c9b8d;
+  --outline-variant-color: #404a41;
+  --error-color: #ffb4ab;
+  --error-container-color: #93000a;
+
+  /* Overrides for dark mode */
+  --bg-white: #1e2220;
+  --bg-offwhite: #121413;
+  --bg-cream: #1e2621;
+  --border-beige: #404a41;
+  --text-dark: #e2e3e1;
+  --text-brown: #cfd1cd;
+  --text-slate: #a4b0a2;
+}
+
+@theme {
+  --font-sans: "Noto Kufi Arabic", "Segoe UI", Tahoma, "Geeza Pro", "Arabic Typesetting", system-ui, sans-serif;
+  --font-display: "Noto Kufi Arabic", "Segoe UI", Tahoma, "Geeza Pro", "Arabic Typesetting", system-ui, sans-serif;
+  
+  --color-primary: var(--primary-color);
+  --color-primary-hover: var(--primary-hover-color);
+  --color-primary-container: var(--primary-container-color);
+  --color-on-primary-container: var(--on-primary-container-color);
+  --color-secondary: var(--secondary-color);
+  --color-tertiary: var(--tertiary-color);
+  --color-background: var(--background-color);
+  --color-surface: var(--surface-color);
+  --color-surface-dim: var(--surface-dim-color);
+  --color-surface-container: var(--surface-container-color);
+  --color-surface-container-low: var(--surface-container-low-color);
+  --color-surface-container-lowest: var(--surface-container-lowest-color);
+  --color-surface-container-high: var(--surface-container-high-color);
+  --color-surface-container-highest: var(--surface-container-highest-color);
+  --color-on-surface: var(--on-surface-color);
+  --color-on-surface-variant: var(--on-surface-variant-color);
+  --color-outline: var(--outline-color);
+  --color-outline-variant: var(--outline-variant-color);
+  --color-error: var(--error-color);
+  --color-error-container: var(--error-container-color);
+}
+
+body {
+  font-family: 'Noto Kufi Arabic', 'Segoe UI', Tahoma, 'Geeza Pro', 'Arabic Typesetting', system-ui, sans-serif;
+  background-color: var(--background-color);
+  color: var(--on-surface-color);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Redefining hardcoded Tailwind classes so they match variables */
+.bg-\[\#ffffff\] {
+  background-color: var(--bg-white) !important;
+}
+.bg-\[\#f8f9fa\] {
+  background-color: var(--bg-offwhite) !important;
+}
+.bg-\[\#fff9ed\] {
+  background-color: var(--bg-cream) !important;
+}
+.bg-\[\#fcf3d8\]\/10 {
+  background-color: rgba(46, 204, 113, 0.05) !important;
+}
+.bg-\[\#fff9ed\]\/40 {
+  background-color: rgba(46, 204, 113, 0.08) !important;
+}
+.border-\[\#e2dabf\] {
+  border-color: var(--border-beige) !important;
+}
+.border-\[\#e2dabf\]\/30 {
+  border-color: rgba(140, 155, 141, 0.2) !important;
+}
+.border-\[\#e2dabf\]\/40 {
+  border-color: rgba(140, 155, 141, 0.25) !important;
+}
+.border-\[\#e2dabf\]\/50 {
+  border-color: rgba(140, 155, 141, 0.3) !important;
+}
+.border-\[\#e2dabf\]\/60 {
+  border-color: rgba(140, 155, 141, 0.4) !important;
+}
+.border-\[\#e2dabf\]\/80 {
+  border-color: rgba(140, 155, 141, 0.5) !important;
+}
+.text-\[\#1f1c0b\] {
+  color: var(--text-dark) !important;
+}
+.text-\[\#504441\] {
+  color: var(--text-brown) !important;
+}
+.text-\[\#506072\] {
+  color: var(--text-slate) !important;
+}
+.text-\[\#191c1d\] {
+  color: var(--on-surface-color) !important;
+}
+.text-\[\#006d37\] {
+  color: var(--primary-color) !important;
+}
+.text-\[\#944a00\] {
+  color: var(--tertiary-color) !important;
+}
+.bg-\[\#006d37\] {
+  background-color: var(--primary-color) !important;
+}
+.hover\:bg-\[\#00562b\]:hover {
+  background-color: var(--primary-hover-color) !important;
+}
+.bg-\[\#f3f4f5\] {
+  background-color: var(--surface-container-low-color) !important;
+}
+.bg-\[\#fcfcfc\] {
+  background-color: var(--surface-container-lowest-color) !important;
+}
+.bg-\[\#2ecc71\]\/10 {
+  background-color: rgba(46, 204, 113, 0.1) !important;
+}
+.bg-\[\#2ecc71\]\/15 {
+  background-color: rgba(46, 204, 113, 0.15) !important;
+}
+.bg-\[\#2ecc71\]\/25 {
+  background-color: rgba(46, 204, 113, 0.25) !important;
+}
+.text-\[\#005027\] {
+  color: var(--on-primary-container-color) !important;
+}
+
+header, aside, nav, section, button {
+  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+/* Custom transitions and scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background-color: #bbcbbb;
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background-color: #6c7b6d;
+}
+
+/* Flashcard Flip Animation */
+.perspective-1000 {
+  perspective: 1000px;
+}
+.backface-hidden {
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+.rotate-y-180 {
+  transform: rotateY(180deg);
+}
+.transform-style-3d {
+  transform-style: preserve-3d;
+}

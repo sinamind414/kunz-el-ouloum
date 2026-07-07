@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 650" width="800" height="650">
+<defs><style>text{font-family:'Noto Kufi Arabic',sans-serif;}.t{font-size:17px;font-weight:bold;fill:#1A2A3A;}.la{font-size:11px;font-weight:bold;fill:#1A2A3A;}.ls{font-size:9px;fill:#7F8C8D;}.lw{font-size:8px;font-weight:bold;fill:#FFF;}</style></defs>
+<rect width="800" height="650" fill="#FFF"/>
+<text x="400" y="22" text-anchor="middle" class="t">دورة ويلسون — Cycle de Wilson (6 مراحل)</text>
+<text x="400" y="40" text-anchor="middle" class="ls">فتح وإغلاق محيط ← بناء سلسلة جبلية</text>
+
+<!-- STAGE 1: Rifting -->
+<g transform="translate(35, 60)">
+  <rect x="0" y="0" width="230" height="140" rx="10" fill="#FFF3E0" stroke="#E65100" stroke-width="1.5"/>
+  <text x="115" y="18" text-anchor="middle" class="la" fill="#E65100">① تشقق قاري</text>
+  <path d="M 30,40 L 200,40" fill="none" stroke="#8D6E63" stroke-width="4"/>
+  <path d="M 100,40 L 100,30 L 105,25 L 110,30 L 110,40" fill="none" stroke="#C62828" stroke-width="2"/>
+  <path d="M 90,60 L 115,55 L 140,60" fill="none" stroke="#FF6D00" stroke-width="3" opacity="0.6"/>
+  <text x="115" y="100" text-anchor="middle" class="la" fill="#E65100">Rift</text>
+  <text x="115" y="115" text-anchor="middle" class="ls">وادي الصدع</text>
+  <text x="115" y="130" text-anchor="middle" class="ls">الأفريقي</text>
+</g>
+
+<!-- STAGE 2: Embryonic -->
+<g transform="translate(285, 60)">
+  <rect x="0" y="0" width="230" height="140" rx="10" fill="#E3F2FD" stroke="#1565C0" stroke-width="1.5"/>
+  <text x="115" y="18" text-anchor="middle" class="la" fill="#1565C0">② محيط جنيني</text>
+  <path d="M 30,40 L 80,40" fill="none" stroke="#8D6E63" stroke-width="4"/>
+  <path d="M 80,40 L 160,40" fill="none" stroke="#1565C0" stroke-width="5"/>
+  <path d="M 160,40 L 200,40" fill="none" stroke="#8D6E63" stroke-width="4"/>
+  <path d="M 105,40 L 115,30 L 125,40 L 135,30 L 145,40" fill="none" stroke="#E65100" stroke-width="2"/>
+  <text x="115" y="80" text-anchor="middle" class="la" fill="#1565C0" font-size="10">بحر ضيق</text>
+  <text x="115" y="100" text-anchor="middle" class="ls">البحر الأحمر</text>
+  <text x="115" y="130" text-anchor="middle" class="ls">(بين أفريقيا</text>
+  <text x="115" y="140" text-anchor="middle" class="ls">والجزيرة العربية)</text>
+</g>
+
+<!-- STAGE 3: Mature -->
+<g transform="translate(535, 60)">
+  <rect x="0" y="0" width="230" height="140" rx="10" fill="#E3F2FD" stroke="#1565C0" stroke-width="1.5"/>
+  <text x="115" y="18" text-anchor="middle" class="la" fill="#1565C0">③ محيط ناضج</text>
+  <path d="M 20,40 L 60,40" fill="none" stroke="#8D6E63" stroke-width="4"/>
+  <path d="M 60,40 L 170,40" fill="none" stroke="#1565C0" stroke-width="5"/>
+  <path d="M 170,40 L 210,40" fill="none" stroke="#8D6E63" stroke-width="4"/>
+  <path d="M 100,40 L 110,30 L 120,40 L 130,30 L 140,40" fill="none" stroke="#E65100" stroke-width="2"/>
+  <text x="115" y="80" text-anchor="middle" class="la" fill="#1565C0" font-size="10">محيط واسع</text>
+  <text x="115" y="100" text-anchor="middle" class="ls">المحيط الأطلسي</text>
+  <path d="M 30,100 L 60,85" fill="none" stroke="#888" stroke-width="1.5"/>
+  <path d="M 210,100 L 180,85" fill="none" stroke="#888" stroke-width="1.5"/>
+  <text x="115" y="130" text-anchor="middle" class="ls">ظهرة وسط المحيط</text>
+</g>
+
+<!-- STAGE 4: Subduction -->
+<g transform="translate(35, 220)">
+  <rect x="0" y="0" width="230" height="140" rx="10" fill="#FFF3E0" stroke="#E65100" stroke-width="1.5"/>
+  <text x="115" y="18" text-anchor="middle" class="la" fill="#E65100">④ بداية غوص</text>
+  <path d="M 20,40 L 100,40 L 150,80 L 180,120" fill="none" stroke="#5D3A1A" stroke-width="4"/>
+  <path d="M 160,40 L 210,40" fill="none" stroke="#8D6E63" stroke-width="4"/>
+  <circle cx="130" cy="60" r="3" fill="#E65100"/>
+  <circle cx="150" cy="80" r="3" fill="#E65100"/>
+  <circle cx="170" cy="108" r="3" fill="#E65100"/>
+  <path d="M 170,40 L 180,30 L 195,40 Z" fill="#E65100" opacity="0.7"/>
+  <text x="115" y="95" text-anchor="middle" class="la" fill="#E65100" font-size="9">غوص</text>
+  <text x="60" y="130" text-anchor="middle" class="ls">المحيط الهادئ</text>
+  <text x="60" y="140" text-anchor="middle" class="ls">(حلقة النار)</text>
+</g>
+
+<!-- STAGE 5: Closing -->
+<g transform="translate(285, 220)">
+  <rect x="0" y="0" width="230" height="140" rx="10" fill="#FFF3E0" stroke="#E65100" stroke-width="1.5"/>
+  <text x="115" y="18" text-anchor="middle" class="la" fill="#E65100">⑤ إغلاق المحيط</text>
+  <path d="M 20,40 L 80,40 L 130,80 L 160,120" fill="none" stroke="#5D3A1A" stroke-width="4"/>
+  <path d="M 130,40 L 210,40" fill="none" stroke="#8D6E63" stroke-width="4"/>
+  <path d="M 140,40 L 150,30 L 165,40 Z" fill="#E65100" opacity="0.7"/>
+  <path d="M 70,40 L 120,40" fill="none" stroke="#1565C0" stroke-width="4"/>
+  <text x="95" y="75" text-anchor="middle" class="la" fill="#1565C0" font-size="9">بحر ضيق</text>
+  <text x="95" y="95" text-anchor="middle" class="ls">البحر المتوسط</text>
+  <text x="95" y="110" text-anchor="middle" class="ls">(بقايا محيط</text>
+  <text x="95" y="122" text-anchor="middle" class="ls">تيثس)</text>
+</g>
+
+<!-- STAGE 6: Collision -->
+<g transform="translate(535, 220)">
+  <rect x="0" y="0" width="230" height="140" rx="10" fill="#FCE4EC" stroke="#C62828" stroke-width="1.5"/>
+  <text x="115" y="18" text-anchor="middle" class="la" fill="#C62828">⑥ تصادم قاري</text>
+  <path d="M 20,40 L 95,40 L 115,20 L 135,40 L 210,40" fill="none" stroke="#8D6E63" stroke-width="4"/>
+  <path d="M 95,40 L 115,30 L 135,40" fill="none" stroke="#5D3A1A" stroke-width="4"/>
+  <text x="80" y="75" text-anchor="middle" class="la" fill="#C62828" font-size="9">◄► تصادم</text>
+  <text x="115" y="95" text-anchor="middle" class="ls">الهيمالايا</text>
+  <text x="115" y="110" text-anchor="middle" class="ls">جبال الألب</text>
+  <text x="115" y="130" text-anchor="middle" class="ls">(محيط تيثس</text>
+  <text x="115" y="140" text-anchor="middle" class="ls">اختفى)</text>
+</g>
+
+<!-- Cycle arrow -->
+<g transform="translate(400, 490)">
+  <path d="M 0,-60 C 200,-60 280,-20 200,30 C 120,80 -120,80 -200,30 C -280,-20 -200,-60 0,-60" fill="none" stroke="#1A2A3A" stroke-width="2" stroke-dasharray="8,4"/>
+  <text x="0" y="-70" text-anchor="middle" class="la" fill="#1A2A3A" font-size="12">دورة ويلسون الكاملة (~250 مليون سنة)</text>
+  <path d="M 180,50 L 200,40" fill="none" stroke="#1A2A3A" stroke-width="2" marker-end="url(#arrow)"/>
+</g>
+
+<!-- Examples -->
+<g transform="translate(30, 530)">
+  <text x="0" y="0" class="la" font-size="11">أمثلة حقيقية:</text>
+  <text x="0" y="18" class="ls">الأطلسي ← لا يزال في مرحلة الانفتاح (مرحلة 3)</text>
+  <text x="0" y="34" class="ls">المتوسط ← في مرحلة الإغلاق (مرحلة 5) — بقايا تيثس</text>
+  <text x="0" y="50" class="ls">الهيمالايا ← تصادم كامل (مرحلة 6) — الهند × آسيا</text>
+</g>
+
+<g transform="translate(450, 530)">
+  <text x="0" y="0" class="la" font-size="11">مدة كل مرحلة:</text>
+  <text x="0" y="18" class="ls">💰 10-50 مليون سنة لكل مرحلة</text>
+  <text x="0" y="34" class="ls">🔄 الدورة كاملة ~200-300 مليون سنة</text>
+  <text x="0" y="50" class="ls">🌍 بانجيا ← اليوم ← أميسيا (مستقبلاً)</text>
+</g>
+
+<text x="400" y="640" text-anchor="middle" class="ls">كنز العلوم — SVT Bac Algérie 3AS</text>
+</svg>

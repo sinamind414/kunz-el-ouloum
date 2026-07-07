@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 650" width="800" height="650">
+<defs><style>text{font-family:'Noto Kufi Arabic',sans-serif;}.t{font-size:18px;font-weight:bold;fill:#1A2A3A;}.la{font-size:12px;font-weight:bold;fill:#1A2A3A;}.ls{font-size:10px;fill:#1A2A3A;}.lw{font-size:10px;font-weight:bold;fill:#FFF;}</style></defs>
+<rect width="800" height="650" fill="#FFF"/>
+<text x="400" y="25" text-anchor="middle" class="t">جدول الشفرة الوراثية — Code Génétique</text>
+<text x="400" y="43" text-anchor="middle" class="la" fill="#7F8C8D">رامزة (Codon) → حمض أميني (Acide aminé)</text>
+
+<g transform="translate(60,55)">
+  <!-- Headers -->
+  <rect x="0" y="0" width="45" height="28" rx="3" fill="#1A2A3A"/><text x="22" y="19" text-anchor="middle" class="lw">الأول</text>
+  <rect x="45" y="0" width="160" height="28" rx="3" fill="#2C3E50"/><text x="125" y="19" text-anchor="middle" class="lw">الحرف الثاني (2e base)</text>
+  <rect x="625" y="0" width="45" height="28" rx="3" fill="#1A2A3A"/><text x="647" y="19" text-anchor="middle" class="lw">الثالث</text>
+
+  <!-- Sub-headers for 2nd base -->
+  <rect x="45" y="28" width="40" height="22" fill="#E74C3C" opacity="0.3"/><text x="65" y="43" text-anchor="middle" class="la" font-size="9">U</text>
+  <rect x="85" y="28" width="40" height="22" fill="#3498DB" opacity="0.3"/><text x="105" y="43" text-anchor="middle" class="la" font-size="9">C</text>
+  <rect x="125" y="28" width="40" height="22" fill="#F39C12" opacity="0.3"/><text x="145" y="43" text-anchor="middle" class="la" font-size="9">A</text>
+  <rect x="165" y="28" width="40" height="22" fill="#2ECC71" opacity="0.3"/><text x="185" y="43" text-anchor="middle" class="la" font-size="9">G</text>
+
+  <!-- DATA ROWS -->
+  <!-- Row 1: U -->
+  <g transform="translate(0, 50)">
+    <rect x="0" y="0" width="45" height="135" rx="3" fill="#E74C3C" opacity="0.15"/>
+    <text x="22" y="25" text-anchor="middle" class="la" fill="#E74C3C">U</text>
+    <text x="22" y="45" text-anchor="middle" class="la" fill="#E74C3C">U</text>
+    <text x="22" y="65" text-anchor="middle" class="la" fill="#E74C3C">U</text>
+    <text x="22" y="85" text-anchor="middle" class="la" fill="#E74C3C">U</text>
+    <text x="22" y="110" text-anchor="middle" class="la" fill="#E74C3C">U</text>
+    <text x="22" y="130" text-anchor="middle" class="la" fill="#E74C3C">U</text>
+
+    <!-- UU -->
+    <rect x="45" y="0" width="40" height="27" fill="#E74C3C" opacity="0.08"/><text x="65" y="17" class="ls">UUU</text><text x="70" y="17" class="ls" font-size="7">→</text>
+    <rect x="45" y="27" width="40" height="27" fill="#E74C3C" opacity="0.08"/><text x="65" y="44" class="ls">UUC</text>
+    <rect x="45" y="54" width="40" height="27" fill="#E74C3C" opacity="0.08"/><text x="65" y="71" class="ls">UUA</text>
+    <rect x="45" y="81" width="40" height="27" fill="#E74C3C" opacity="0.08"/><text x="65" y="98" class="ls">UUG</text>
+    <!-- UC -->
+    <rect x="85" y="0" width="40" height="27" fill="#3498DB" opacity="0.08"/><text x="105" y="17" class="ls">UCU</text>
+    <rect x="85" y="27" width="40" height="27" fill="#3498DB" opacity="0.08"/><text x="105" y="44" class="ls">UCC</text>
+    <rect x="85" y="54" width="40" height="27" fill="#3498DB" opacity="0.08"/><text x="105" y="71" class="ls">UCA</text>
+    <rect x="85" y="81" width="40" height="27" fill="#3498DB" opacity="0.08"/><text x="105" y="98" class="ls">UCG</text>
+    <!-- UA -->
+    <rect x="125" y="0" width="40" height="27" fill="#F39C12" opacity="0.08"/><text x="145" y="17" class="ls">UAU</text>
+    <rect x="125" y="27" width="40" height="27" fill="#F39C12" opacity="0.08"/><text x="145" y="44" class="ls">UAC</text>
+    <rect x="125" y="54" width="40" height="27" fill="#FF0000" opacity="0.15"/><text x="145" y="71" class="ls" fill="#C00">UAA ★</text>
+    <rect x="125" y="81" width="40" height="27" fill="#FF0000" opacity="0.15"/><text x="145" y="98" class="ls" fill="#C00">UAG ★</text>
+    <!-- UG -->
+    <rect x="165" y="0" width="40" height="27" fill="#2ECC71" opacity="0.08"/><text x="185" y="17" class="ls">UGU</text>
+    <rect x="165" y="27" width="40" height="27" fill="#2ECC71" opacity="0.08"/><text x="185" y="44" class="ls">UGC</text>
+    <rect x="165" y="54" width="40" height="27" fill="#FF0000" opacity="0.15"/><text x="185" y="71" class="ls" fill="#C00">UGA ★</text>
+    <rect x="165" y="81" width="40" height="27" fill="#2ECC71" opacity="0.08"/><text x="185" y="98" class="ls">UGG</text>
+
+    <!-- 3rd base -->
+    <rect x="625" y="0" width="45" height="135" rx="3" fill="#E74C3C" opacity="0.08"/>
+    <text x="647" y="17" class="la" font-size="9">U</text>
+    <text x="647" y="44" class="la" font-size="9">C</text>
+    <text x="647" y="71" class="la" font-size="9">A</text>
+    <text x="647" y="98" class="la" font-size="9">G</text>
+
+    <!-- AA names -->
+    <text x="230" y="17" class="ls" fill="#E74C3C">Phe (فينيل ألانين)</text>
+    <text x="230" y="44" class="ls" fill="#E74C3C">Phe</text>
+    <text x="230" y="71" class="ls" fill="#E74C3C">Leu (لوسين)</text>
+    <text x="230" y="98" class="ls" fill="#E74C3C">Leu</text>
+    <text x="230" y="125" class="ls" fill="#C00">★ STOP (إيقاف)</text>
+  </g>
+
+  <!-- Row 2: C -->
+  <g transform="translate(0, 185)">
+    <rect x="0" y="0" width="45" height="110" rx="3" fill="#3498DB" opacity="0.15"/>
+    <text x="22" y="20" class="la" fill="#3498DB">C</text>
+  </g>
+
+  <!-- Row 3: A -->
+  <g transform="translate(0, 300)">
+    <rect x="0" y="0" width="45" height="135" rx="3" fill="#F39C12" opacity="0.15"/>
+    <text x="22" y="25" class="la" fill="#F39C12">A</text>
+    <!-- START codon highlighted -->
+    <rect x="125" y="54" width="40" height="27" fill="#2ECC71" opacity="0.4"/><text x="145" y="71" class="ls" fill="#006600">AUG ▶</text>
+    <text x="230" y="71" class="ls" fill="#006600">★ Met (ميتيونين) = بدء</text>
+  </g>
+
+  <!-- Legend -->
+  <g transform="translate(470, 55)">
+    <text x="0" y="0" class="la">🔑 الرموز:</text>
+    <rect x="0" y="12" width="16" height="12" rx="3" fill="#E74C3C" opacity="0.4"/><text x="22" y="23" class="ls">U (يوراسيل)</text>
+    <rect x="0" y="30" width="16" height="12" rx="3" fill="#3498DB" opacity="0.4"/><text x="22" y="41" class="ls">C (سيتوزين)</text>
+    <rect x="0" y="48" width="16" height="12" rx="3" fill="#F39C12" opacity="0.4"/><text x="22" y="59" class="ls">A (أدينين)</text>
+    <rect x="0" y="66" width="16" height="12" rx="3" fill="#2ECC71" opacity="0.4"/><text x="22" y="77" class="ls">G (غوانين)</text>
+    <line x1="0" y1="95" x2="30" y2="95" stroke="#C00" stroke-width="2"/><text x="36" y="99" class="ls" fill="#C00">رامزات إيقاف (UAA, UAG, UGA)</text>
+    <rect x="0" y="112" width="16" height="12" rx="3" fill="#2ECC71" opacity="0.4" stroke="#006600" stroke-width="1"/><text x="22" y="123" class="ls" fill="#006600">AUG = رامزة بدء (Met)</text>
+    <text x="0" y="145" class="ls" font-size="9">خصائص الشفرة: شاملة · غير متداخلة · مترادفة</text>
+  </g>
+</g>
+<text x="400" y="640" text-anchor="middle" class="ls">كنز العلوم — SVT Bac Algérie 3AS</text>
+</svg>

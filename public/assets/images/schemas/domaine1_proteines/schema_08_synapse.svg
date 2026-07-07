@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 750 700" width="750" height="700">
+  <defs>
+    <style>
+      text { font-family: 'Noto Kufi Arabic', sans-serif; }
+      .title { font-size: 20px; font-weight: bold; fill: #1A2A3A; }
+      .label-ar { font-size: 14px; font-weight: bold; fill: #1A2A3A; }
+      .label-fr { font-size: 11px; fill: #7F8C8D; }
+      .label-small { font-size: 11px; fill: #7F8C8D; }
+      .label-white { font-size: 12px; font-weight: bold; fill: #FFFFFF; }
+    </style>
+    <linearGradient id="pre" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#2196F3"/>
+      <stop offset="100%" stop-color="#1565C0"/>
+    </linearGradient>
+    <linearGradient id="post" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#E74C3C"/>
+      <stop offset="100%" stop-color="#C62828"/>
+    </linearGradient>
+    <linearGradient id="vesicle" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#FF9800"/>
+      <stop offset="100%" stop-color="#E65100"/>
+    </linearGradient>
+    <filter id="shadow"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-opacity="0.1"/></filter>
+  </defs>
+  <rect width="750" height="700" fill="#FFFFFF"/>
+  
+  <text x="375" y="35" text-anchor="middle" class="title">المشبك العصبي — Synapse Neuromusculaire</text>
+  <text x="375" y="55" text-anchor="middle" class="label-fr">النقل المشبكي (Transmission Synaptique)</text>
+
+  <g transform="translate(375, 380)" filter="url(#shadow)">
+    <!-- ============ NEURONE PRÉ-SYNAPTIQUE ============ -->
+    <!-- Terminaison axonique -->
+    <path d="M -200,-120 C -150,-150 -80,-160 0,-140 C 50,-130 100,-110 120,-80" fill="none" stroke="#1565C0" stroke-width="10" stroke-linecap="round"/>
+    <ellipse cx="100" cy="-60" rx="90" ry="60" fill="url(#pre)" stroke="#0D47A1" stroke-width="2"/>
+    <text x="50" y="-80" text-anchor="middle" class="label-white" font-size="12">عصبون قبل مشبكي</text>
+    <text x="50" y="-66" text-anchor="middle" class="label-small" fill="#BBDEFB">(Pré-synaptique)</text>
+
+    <!-- Potentiel d'action arrivant -->
+    <path d="M -200,-120 L -250,-120" fill="none" stroke="#FFD700" stroke-width="3" stroke-dasharray="8,4"/>
+    <text x="-280" y="-116" class="label-small" fill="#FFD700">PA →</text>
+
+    <!-- Ca²⁺ entrant -->
+    <g transform="translate(140, -90)">
+      <circle cx="0" cy="0" r="8" fill="#4CAF50" stroke="#2E7D32" stroke-width="1.5"/>
+      <text x="0" y="3" text-anchor="middle" class="label-white" font-size="9">Ca</text>
+      <text x="0" y="14" class="label-small" fill="#4CAF50">++</text>
+      <!-- Flèche entrante -->
+      <path d="M 20,-10 L 12,-5" fill="none" stroke="#4CAF50" stroke-width="2"/>
+    </g>
+    <text x="170" y="-70" class="label-small" fill="#4CAF50">Ca²⁺</text>
+
+    <!-- Vésicules synaptiques -->
+    <circle cx="60" cy="-50" r="12" fill="url(#vesicle)" stroke="#BF360C" stroke-width="1.5"/>
+    <circle cx="90" cy="-45" r="10" fill="url(#vesicle)" stroke="#BF360C" stroke-width="1.5"/>
+    <circle cx="120" cy="-55" r="11" fill="url(#vesicle)" stroke="#BF360C" stroke-width="1.5"/>
+    <circle cx="75" cy="-35" r="9" fill="url(#vesicle)" stroke="#BF360C" stroke-width="1.5"/>
+    <circle cx="110" cy="-40" r="10" fill="url(#vesicle)" stroke="#BF360C" stroke-width="1.5"/>
+
+    <!-- Vésicule fusionnant avec la membrane -->
+    <circle cx="130" cy="-25" r="10" fill="url(#vesicle)" stroke="#BF360C" stroke-width="1.5" opacity="0.6"/>
+    <path d="M 120,-25 L 140,-25" fill="none" stroke="#FF9800" stroke-width="1.5"/>
+
+    <!-- ============ FENTE SYNAPTIQUE ============ -->
+    <rect x="-60" y="5" width="220" height="18" rx="3" fill="#ECEFF1" stroke="#90A4AE" stroke-width="1"/>
+    <text x="50" y="18" text-anchor="middle" class="label-small" fill="#546E7A">الشق المشبكي (Fente synaptique ~20nm)</text>
+
+    <!-- Molécules de neurotransmetteur (ACh) -->
+    <g>
+      <circle cx="-20" cy="14" r="4" fill="#E74C3C"/>
+      <circle cx="10" cy="12" r="4" fill="#E74C3C"/>
+      <circle cx="40" cy="16" r="4" fill="#E74C3C"/>
+      <circle cx="70" cy="10" r="4" fill="#E74C3C"/>
+      <circle cx="100" cy="15" r="4" fill="#E74C3C"/>
+      <circle cx="130" cy="12" r="4" fill="#E74C3C"/>
+      <circle cx="0" cy="18" r="3" fill="#E74C3C"/>
+      <circle cx="55" cy="20" r="3" fill="#E74C3C"/>
+      <circle cx="115" cy="18" r="3" fill="#E74C3C"/>
+    </g>
+
+    <!-- ============ MEMBRANE POST-SYNAPTIQUE ============ -->
+    <!-- Membrane musculaire -->
+    <path d="M -80,30 L 180,30" fill="none" stroke="#C62828" stroke-width="4"/>
+    <rect x="-60" y="30" width="220" height="120" fill="url(#post)" opacity="0.8" rx="5"/>
+    <text x="50" y="60" text-anchor="middle" class="label-white" font-size="12">عصبون بعد مشبكي</text>
+    <text x="50" y="76" text-anchor="middle" class="label-small" fill="#FFCDD2">(خلية عضلية / مستقبل)</text>
+
+    <!-- Récepteurs nicotiniques -->
+    <g transform="translate(20, 90)">
+      <rect x="0" y="0" width="12" height="30" rx="3" fill="#9C27B0" opacity="0.8"/>
+      <rect x="12" y="0" width="12" height="30" rx="3" fill="#9C27B0" opacity="0.8"/>
+      <line x1="6" y1="15" x2="18" y2="15" stroke="#FFF" stroke-width="1.5"/>
+      <text x="6" y="42" text-anchor="middle" class="label-small" fill="#9C27B0" font-size="9">مستقبل</text>
+    </g>
+
+    <!-- Na⁺ entrant -->
+    <g transform="translate(120, 95)">
+      <circle cx="0" cy="0" r="8" fill="#2196F3" stroke="#1565C0" stroke-width="1.5"/>
+      <text x="0" y="3" text-anchor="middle" class="label-white" font-size="9">Na</text>
+      <text x="0" y="15" class="label-small" fill="#2196F3">+</text>
+      <path d="M -15,5 L -5,2" fill="none" stroke="#2196F3" stroke-width="2"/>
+    </g>
+    <text x="145" y="100" class="label-small" fill="#2196F3">Na⁺</text>
+
+    <!-- Acétylcholinestérase -->
+    <g transform="translate(-30, 118)">
+      <ellipse cx="0" cy="0" rx="18" ry="10" fill="#4CAF50" opacity="0.3" stroke="#4CAF50" stroke-width="1.5"/>
+      <text x="0" y="3" text-anchor="middle" class="label-small" fill="#2E7D32" font-size="9">AChE</text>
+    </g>
+    <text x="-50" y="140" class="label-small" fill="#2E7D32">إنزيم تحليل ACh</text>
+  </g>
+
+  <!-- Légende -->
+  <g transform="translate(40, 590)">
+    <text x="0" y="0" class="label-ar">مراحل النقل المشبكي:</text>
+    <text x="0" y="22" class="label-small">① وصول كمون العمل → فتح قنوات Ca²⁺</text>
+    <text x="0" y="40" class="label-small">② دخول Ca²⁺ → اندماج الحويصلات مع الغشاء</text>
+    <text x="0" y="58" class="label-small">③ إفراز ACh في الشق المشبكي</text>
+    <text x="0" y="76" class="label-small">④ ارتباط ACh بمستقبلات الغشاء بعد المشبكي</text>
+    <text x="0" y="94" class="label-small">⑤ فتح قنوات Na⁺ → PPSE → كمون عمل عضلي</text>
+  </g>
+
+  <text x="375" y="685" text-anchor="middle" class="label-small">كنز العلوم — SVT بكالوريا 3AS</text>
+</svg>

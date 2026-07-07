@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" width="800" height="500">
+  <defs>
+    <style>text{font-family:'Noto Kufi Arabic',sans-serif;}.t{font-size:20px;font-weight:bold;fill:#1A2A3A;}.la{font-size:13px;font-weight:bold;fill:#1A2A3A;}.ls{font-size:10px;fill:#7F8C8D;}.lw{font-size:10px;font-weight:bold;fill:#FFF;}</style>
+  </defs>
+  <rect width="800" height="500" fill="#FFF"/>
+  <text x="400" y="25" text-anchor="middle" class="t">فيروس VIH ومرض SIDA — VIH / SIDA</text>
+
+  <!-- HIV structure -->
+  <g transform="translate(50, 60)">
+    <rect x="0" y="0" width="220" height="180" rx="10" fill="#FCE4EC" stroke="#C62828" stroke-width="1.5"/>
+    <text x="110" y="20" text-anchor="middle" class="la" fill="#C62828">بنية VIH</text>
+    <!-- Virus particle -->
+    <circle cx="110" cy="95" r="40" fill="#FFCDD2" stroke="#E53935" stroke-width="2"/>
+    <circle cx="110" cy="95" r="18" fill="#C62828" opacity="0.4"/>
+    <text x="110" y="90" text-anchor="middle" class="lw" font-size="8">ARN</text>
+    <text x="110" y="100" text-anchor="middle" class="lw" font-size="7">反写酶</text>
+    <!-- Envelope spikes -->
+    <path d="M 110,55 L 110,50" stroke="#E53935" stroke-width="2"/>
+    <circle cx="110" cy="48" r="4" fill="#E65100"/>
+    <path d="M 85,65 L 78,60" stroke="#E53935" stroke-width="2"/>
+    <circle cx="76" cy="58" r="4" fill="#E65100"/>
+    <path d="M 135,65 L 142,60" stroke="#E53935" stroke-width="2"/>
+    <circle cx="144" cy="58" r="4" fill="#E65100"/>
+    <!-- Labels -->
+    <text x="110" y="155" text-anchor="middle" class="ls" font-size="9">gp120 (بريز)</text>
+    <text x="110" y="168" text-anchor="middle" class="ls" font-size="9">ARN + إنزيم النسخ العكسي</text>
+  </g>
+
+  <!-- Cycle de réplication -->
+  <g transform="translate(300, 60)">
+    <rect x="0" y="0" width="230" height="180" rx="10" fill="#FFF3E0" stroke="#E65100" stroke-width="1.5"/>
+    <text x="115" y="20" text-anchor="middle" class="la" fill="#E65100">دورة تضاعف VIH</text>
+    
+    <text x="15" y="40" class="ls" font-size="9">① ارتباط gp120 بـ CD4</text>
+    <path d="M 15,45 L 105,45" fill="none" stroke="#E65100" stroke-width="1.5" marker-end="url(#arrow)"/>
+    <text x="15" y="60" class="ls" font-size="9">② دخول + إزالة الغلاف</text>
+    <path d="M 15,65 L 105,65" fill="none" stroke="#E65100" stroke-width="1.5"/>
+    <text x="15" y="80" class="ls" font-size="9">③ نسخ عكسي ARN → ADN</text>
+    <path d="M 15,85 L 105,85" fill="none" stroke="#E65100" stroke-width="1.5"/>
+    <text x="15" y="100" class="ls" font-size="9">④ إدماج ADN الفيروسي</text>
+    <path d="M 15,105 L 105,105" fill="none" stroke="#E65100" stroke-width="1.5"/>
+    <text x="15" y="120" class="ls" font-size="9">⑤ تضاعف + تخليق بروتينات</text>
+    <path d="M 15,125 L 105,125" fill="none" stroke="#E65100" stroke-width="1.5"/>
+    <text x="15" y="140" class="ls" font-size="9">⑥ تجميع + خروج من الخلية</text>
+    <path d="M 15,145 L 105,145" fill="none" stroke="#E65100" stroke-width="1.5"/>
+    
+    <text x="115" y="165" text-anchor="middle" class="ls" fill="#C62828" font-size="9">⑥ يدمر الخلية LT4 المضيفة</text>
+  </g>
+
+  <!-- Évolution de l'infection -->
+  <g transform="translate(50, 270)">
+    <text x="0" y="15" class="la">مراحل عدوى VIH :</text>
+    
+    <rect x="0" y="25" width="700" height="60" rx="8" fill="#E3F2FD" stroke="#1976D2" stroke-width="1"/>
+    <text x="15" y="45" class="la" fill="#1565C0" font-size="12">① المرحلة الحادة (أسابيع)</text>
+    <text x="15" y="65" class="ls">تكاثر الفيروس + أعراض شبيهة بالإنفلونزا + استجابة مناعية أولية</text>
+    <text x="15" y="78" class="ls">انخفاض مؤقت في LT4 ثم تعود للارتفاع جزئياً</text>
+    
+    <rect x="0" y="90" width="700" height="60" rx="8" fill="#FFF3E0" stroke="#E65100" stroke-width="1"/>
+    <text x="15" y="110" class="la" fill="#E65100" font-size="12">② المرحلة المزمنة (سنوات)</text>
+    <text x="15" y="130" class="ls">تكاثر بطيء للفيروس + انخفاض تدريجي في LT4</text>
+    <text x="15" y="143" class="ls">قد تبقى بدون أعراض لمدة 5-10 سنوات</text>
+    
+    <rect x="0" y="155" width="700" height="50" rx="8" fill="#FCE4EC" stroke="#C62828" stroke-width="1.5"/>
+    <text x="15" y="175" class="la" fill="#C62828" font-size="12">③ مرحلة SIDA (الإيدز)</text>
+    <text x="15" y="193" class="ls">LT4 < 200/ملم³ + أمراض انتهازية (عدوى، سرطانات) + عوز مناعي شديد</text>
+
+    <text x="0" y="230" class="la" font-size="11">الوقاية :</text>
+    <text x="0" y="250" class="ls">✅ تجنب العلاقات غير المحمية</text>
+    <text x="0" y="265" class="ls">✅ العلاج المضاد للفيروسات (ARV) يحد من التضاعف</text>
+    <text x="0" y="280" class="ls">✅ العلاج لا يلغي الفيروس نهائياً (خزانات فيروسية)</text>
+  </g>
+
+  <text x="400" y="490" text-anchor="middle" class="ls">كنز العلوم — SVT Bac Algérie 3AS</text>
+</svg>

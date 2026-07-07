@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 550" width="800" height="550">
+  <defs>
+    <style>text{font-family:'Noto Kufi Arabic',sans-serif;}.t{font-size:20px;font-weight:bold;fill:#1A2A3A;}.la{font-size:13px;font-weight:bold;fill:#1A2A3A;}.ls{font-size:10px;fill:#7F8C8D;}.lw{font-size:10px;font-weight:bold;fill:#FFF;}</style>
+  </defs>
+  <rect width="800" height="550" fill="#FFF"/>
+  <text x="400" y="25" text-anchor="middle" class="t">معقد CMH — Complexe Majeur d'Histocompatibilité</text>
+  
+  <!-- CMH-I -->
+  <g transform="translate(100, 80)">
+    <rect x="0" y="0" width="280" height="200" rx="12" fill="#FFF" stroke="#3498DB" stroke-width="2"/>
+    <text x="140" y="22" text-anchor="middle" class="la" fill="#3498DB">CMH-I</text>
+    <!-- Cell with CMH-I -->
+    <circle cx="80" cy="100" r="50" fill="#E3F2FD" stroke="#1976D2" stroke-width="2"/>
+    <text x="80" y="95" text-anchor="middle" class="la" fill="#1976D2" font-size="11">خلية</text>
+    <text x="80" y="110" text-anchor="middle" class="ls" fill="#1976D2">منواة</text>
+    <!-- CMH-I molecule -->
+    <path d="M 100,65 L 110,55 L 120,65 L 115,70 L 105,70 Z" fill="#1565C0"/>
+    <rect x="106" y="50" width="8" height="8" rx="1" fill="#E74C3C"/>
+    <text x="135" y="65" class="ls" fill="#E74C3C">ببتيد</text>
+    <text x="135" y="78" class="ls" fill="#E74C3C">فيروسي</text>
+    <text x="80" y="170" text-anchor="middle" class="la" fill="#3498DB" font-size="11">عرض مستضد لـ LTc</text>
+    <text x="70" y="185" text-anchor="middle" class="ls">على جميع الخلايا المنواة</text>
+  </g>
+
+  <!-- CMH-II -->
+  <g transform="translate(420, 80)">
+    <rect x="0" y="0" width="280" height="200" rx="12" fill="#FFF" stroke="#E67E22" stroke-width="2"/>
+    <text x="140" y="22" text-anchor="middle" class="la" fill="#E67E22">CMH-II</text>
+    <!-- Antigen-presenting cell -->
+    <circle cx="80" cy="100" r="50" fill="#FFF3E0" stroke="#E65100" stroke-width="2"/>
+    <text x="80" y="90" text-anchor="middle" class="la" fill="#E65100" font-size="10">خلية</text>
+    <text x="80" y="105" text-anchor="middle" class="la" fill="#E65100" font-size="10">تقديم</text>
+    <text x="80" y="120" text-anchor="middle" class="ls" fill="#E65100" font-size="9">(CPA)</text>
+    <!-- CMH-II molecule -->
+    <path d="M 100,65 L 110,58 L 120,65 L 115,72 L 105,72 Z" fill="#E65100"/>
+    <rect x="106" y="50" width="8" height="8" rx="1" fill="#C62828"/>
+    <text x="135" y="65" class="ls" fill="#C62828">ببتيد</text>
+    <text x="135" y="78" class="ls" fill="#C62828">مستضدي</text>
+    <text x="80" y="170" text-anchor="middle" class="la" fill="#E67E22" font-size="11">عرض مستضد لـ LTh</text>
+    <text x="60" y="185" text-anchor="middle" class="ls">فقط على خلايا CPA</text>
+  </g>
+
+  <!-- Comparison table -->
+  <g transform="translate(50, 310)">
+    <text x="0" y="15" class="la">مقارنة CMH-I و CMH-II :</text>
+    <rect x="0" y="25" width="200" height="22" fill="#1A2A3A"/><text x="100" y="41" text-anchor="middle" class="lw">المعيار</text>
+    <rect x="200" y="25" width="200" height="22" fill="#3498DB" opacity="0.2"/><text x="300" y="41" text-anchor="middle" class="la" font-size="10" fill="#1976D2">CMH-I</text>
+    <rect x="400" y="25" width="200" height="22" fill="#E67E22" opacity="0.2"/><text x="500" y="41" text-anchor="middle" class="la" font-size="10" fill="#E65100">CMH-II</text>
+    <rect x="0" y="47" width="200" height="22" fill="#F5F5F5"/><text x="100" y="62" class="ls" font-size="9">التوزيع</text><text x="300" y="62" class="ls" font-size="9">جميع الخلايا المنواة</text><text x="500" y="62" class="ls" font-size="9">خلايا CPA فقط</text>
+    <rect x="0" y="69" width="200" height="22" fill="#F5F5F5"/><text x="100" y="84" class="ls" font-size="9">ينشط</text><text x="300" y="84" class="ls" font-size="9">LTc (CD8+)</text><text x="500" y="84" class="ls" font-size="9">LTh (CD4+)</text>
+    <rect x="0" y="91" width="200" height="22" fill="#F5F5F5"/><text x="100" y="106" class="ls" font-size="9">المناعة</text><text x="300" y="106" class="ls" font-size="9">خلوية</text><text x="500" y="106" class="ls" font-size="9">خلطية + خلوية</text>
+  </g>
+  <text x="400" y="540" text-anchor="middle" class="ls">كنز العلوم — SVT Bac Algérie 3AS</text>
+</svg>

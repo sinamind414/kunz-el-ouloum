@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 550" width="800" height="550">
+<defs><style>text{font-family:'Noto Kufi Arabic',sans-serif;}.t{font-size:18px;font-weight:bold;fill:#1A2A3A;}.la{font-size:12px;font-weight:bold;fill:#1A2A3A;}.ls{font-size:10px;fill:#7F8C8D;}.lw{font-size:10px;font-weight:bold;fill:#FFF;}</style></defs>
+<rect width="800" height="550" fill="#FFF"/>
+<text x="400" y="25" text-anchor="middle" class="t">منطقة الغوص (Subduction) — حدود متقاربة</text>
+
+<g transform="translate(400, 330)">
+  <!-- Subducting plate -->
+  <path d="M -350,-120 L -150,-120 L -50,-80 L 50,20 L 100,80 L 150,150" fill="none" stroke="#5D3A1A" stroke-width="6"/>
+  <path d="M -350,-110 L -150,-110 L -40,-70 L 60,30 L 110,90 L 160,160" fill="none" stroke="#5D3A1A" stroke-width="3"/>
+  <text x="-250" y="-130" text-anchor="middle" class="la" fill="#5D3A1A">صفيحة محيطية</text>
+  <text x="-250" y="-142" text-anchor="middle" class="ls" font-size="9">(كثيفة)</text>
+
+  <!-- Overriding plate -->
+  <path d="M 50,-150 L 100,-150 L 180,-100 L 250,-80 L 350,-60" fill="none" stroke="#8D6E63" stroke-width="8"/>
+  <text x="250" y="-100" text-anchor="middle" class="la" fill="#8D6E63">صفيحة قارية</text>
+
+  <!-- Trench -->
+  <path d="M -160,-115 L -140,-105 L -130,-118 L -120,-105" fill="none" stroke="#1565C0" stroke-width="3"/>
+  <text x="-130" y="-135" text-anchor="middle" class="la" fill="#1565C0" font-size="11">خندق</text>
+  <text x="-130" y="-148" text-anchor="middle" class="la" fill="#1565C0" font-size="9">(Fosse)</text>
+
+  <!-- Earthquakes -->
+  <circle cx="-50" cy="-70" r="5" fill="#E65100"/><circle cx="0" cy="-30" r="4" fill="#E65100"/>
+  <circle cx="30" cy="0" r="5" fill="#E65100"/><circle cx="60" cy="30" r="4" fill="#E65100"/>
+  <circle cx="85" cy="60" r="5" fill="#E65100"/><circle cx="110" cy="90" r="4" fill="#E65100"/>
+  <circle cx="130" cy="120" r="5" fill="#E65100"/>
+  <text x="60" y="-20" text-anchor="middle" class="ls" fill="#E65100" font-size="8">زلازل</text>
+
+  <!-- Magma generation -->
+  <ellipse cx="70" cy="50" rx="25" ry="15" fill="url(#magma)" opacity="0.5"/>
+  <path d="M 70,35 L 90,-10 L 120,-40 L 160,-60" fill="none" stroke="#FF6D00" stroke-width="4" opacity="0.6"/>
+  <text x="70" y="75" text-anchor="middle" class="ls" fill="#C62828" font-size="9">انصهار</text>
+
+  <!-- Volcanoes -->
+  <path d="M 160,-60 L 170,-100 L 180,-60 Z" fill="#E65100" opacity="0.7"/>
+  <path d="M 170,-100 L 173,-115 L 177,-100" fill="none" stroke="#FF6D00" stroke-width="2"/>
+  <text x="170" y="-130" text-anchor="middle" class="la" fill="#E65100" font-size="10">براكين</text>
+  <text x="170" y="-142" text-anchor="middle" class="ls" font-size="9">أنديزيتية</text>
+
+  <!-- HP/BT metamorphism -->
+  <rect x="-100" y="-60" width="50" height="20" rx="4" fill="#1565C0" opacity="0.3" stroke="#1565C0" stroke-width="1"/>
+  <text x="-75" y="-46" text-anchor="middle" class="lw" fill="#1565C0" font-size="8">شيست أزرق</text>
+  <text x="-75" y="-65" text-anchor="middle" class="ls" font-size="8">HP/BT</text>
+</g>
+
+<g transform="translate(30, 480)">
+  <text x="0" y="0" class="la">البنيات المصاحبة للغوص:</text>
+  <text x="0" y="18" class="ls">1. خندق عميق (Fosse) — أعمق نقطة في المحيط</text>
+  <text x="0" y="34" class="ls">2. زلازل متدرجة العمق (منطقة Wadati-Benioff)</text>
+  <text x="0" y="50" class="ls">3. تحول HP/BT → شيست أزرق (Schiste bleu)</text>
+  <text x="0" y="66" class="ls">4. براكين أنديزيتية انفجارية</text>
+</g>
+
+<text x="400" y="540" text-anchor="middle" class="ls">كنز العلوم — SVT Bac Algérie 3AS</text>
+</svg>

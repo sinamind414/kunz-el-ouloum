@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 700" width="800" height="700">
+  <defs>
+    <style>
+      text { font-family: 'Noto Kufi Arabic', sans-serif; }
+      .title { font-size: 22px; font-weight: bold; fill: #1A2A3A; }
+      .label-ar { font-size: 15px; font-weight: bold; fill: #1A2A3A; }
+      .label-fr { font-size: 12px; fill: #7F8C8D; }
+      .label-small { font-size: 12px; fill: #7F8C8D; }
+      .label-white { font-size: 13px; font-weight: bold; fill: #FFFFFF; }
+    </style>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#1A1A2E"/>
+      <stop offset="100%" stop-color="#16213E"/>
+    </linearGradient>
+    <radialGradient id="noyauInterne" cx="0.4" cy="0.4" r="0.6">
+      <stop offset="0%" stop-color="#FFF3CD"/>
+      <stop offset="100%" stop-color="#E6B800"/>
+    </radialGradient>
+    <radialGradient id="noyauExterne" cx="0.4" cy="0.4" r="0.6">
+      <stop offset="0%" stop-color="#FF8C00"/>
+      <stop offset="100%" stop-color="#CC6600"/>
+    </radialGradient>
+    <radialGradient id="manteau" cx="0.4" cy="0.4" r="0.6">
+      <stop offset="0%" stop-color="#E74C3C"/>
+      <stop offset="100%" stop-color="#A93226"/>
+    </radialGradient>
+    <radialGradient id="croute" cx="0.4" cy="0.4" r="0.6">
+      <stop offset="0%" stop-color="#8B4513"/>
+      <stop offset="100%" stop-color="#5D3A1A"/>
+    </radialGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <!-- Fond sombre (espace) -->
+  <rect width="800" height="700" fill="url(#bg)"/>
+
+  <!-- Étoiles de fond -->
+  <circle cx="50" cy="40" r="1.5" fill="#FFF" opacity="0.6"/>
+  <circle cx="150" cy="80" r="1" fill="#FFF" opacity="0.4"/>
+  <circle cx="680" cy="50" r="1.5" fill="#FFF" opacity="0.7"/>
+  <circle cx="730" cy="120" r="1" fill="#FFF" opacity="0.4"/>
+  <circle cx="100" cy="650" r="1.5" fill="#FFF" opacity="0.5"/>
+  <circle cx="700" cy="600" r="1" fill="#FFF" opacity="0.6"/>
+  <circle cx="650" cy="650" r="1.5" fill="#FFF" opacity="0.4"/>
+
+  <!-- Titre -->
+  <text x="400" y="40" text-anchor="middle" class="title" fill="#FFF">بنية الكرة الأرضية — Structure de la Terre</text>
+
+  <!-- Coupe transversale de la Terre (demi-cercle) -->
+  <g transform="translate(280, 400)" filter="url(#glow)">
+    <!-- CROÛTE (épaisseur exagérée pour visibilité) -->
+    <!-- Cercle extérieur complet (croute) -->
+    <circle cx="0" cy="0" r="225" fill="url(#croute)" stroke="#D4A574" stroke-width="2"/>
+    
+    <!-- MANTEAU -->
+    <circle cx="0" cy="0" r="200" fill="url(#manteau)" stroke="#C0392B" stroke-width="1"/>
+
+    <!-- NOYAU EXTERNE (liquide) -->
+    <circle cx="0" cy="0" r="120" fill="url(#noyauExterne)" stroke="#FF8C00" stroke-width="1.5"/>
+
+    <!-- NOYAU INTERNE (solide) -->
+    <circle cx="0" cy="0" r="65" fill="url(#noyauInterne)" stroke="#E6B800" stroke-width="2"/>
+
+    <!-- Lignes de discontinuité (pointillées) -->
+    <circle cx="0" cy="0" r="200" fill="none" stroke="#FFF" stroke-width="1.5" stroke-dasharray="6,4" opacity="0.5"/>
+    <circle cx="0" cy="0" r="120" fill="none" stroke="#FFF" stroke-width="1.5" stroke-dasharray="6,4" opacity="0.5"/>
+    <circle cx="0" cy="0" r="65" fill="none" stroke="#FFF" stroke-width="1.5" stroke-dasharray="6,4" opacity="0.5"/>
+
+    <!-- Légende de profondeur (axe vertical) -->
+    <line x1="0" y1="-225" x2="0" y2="225" stroke="#FFF" stroke-width="1.5" stroke-dasharray="3,5" opacity="0.3"/>
+  </g>
+
+  <!-- Labels des couches -->
+  <g transform="translate(530, 200)">
+    <text x="0" y="0" class="label-white" font-size="13">القشرة (Croûte)</text>
+    <text x="0" y="18" class="label-small" fill="#DDD">0-70 كم · غرانيت/بازلت</text>
+    <text x="0" y="34" class="label-small" fill="#DDD">صلب · SIAL / SIMA</text>
+
+    <text x="0" y="65" class="label-white" font-size="13">البرنس (Manteau)</text>
+    <text x="0" y="83" class="label-small" fill="#DDD">30-2900 كم · صلب</text>
+    <text x="0" y="99" class="label-small" fill="#DDD">بيريدوتيت (أوليفين + بيروكسين)</text>
+
+    <text x="0" y="135" class="label-white" font-size="13">اللب الخارجي</text>
+    <text x="0" y="153" class="label-small" fill="#DDD">2900-5100 كم · سائل</text>
+    <text x="0" y="169" class="label-small" fill="#DDD">Fe + Ni · يولّد الحقل المغناطيسي</text>
+
+    <text x="0" y="205" class="label-white" font-size="13">اللب الداخلي</text>
+    <text x="0" y="223" class="label-small" fill="#DDD">5100-6370 كم · صلب</text>
+    <text x="0" y="239" class="label-small" fill="#DDD">Fe + Ni · ~5500°C · ضغط هائل</text>
+  </g>
+
+  <!-- Légende des discontinuités -->
+  <g transform="translate(530, 490)">
+    <text x="0" y="0" class="label-white" font-size="14">السطوح الفاصلة (Discontinuités)</text>
+    <line x1="0" y1="20" x2="40" y2="20" stroke="#FFF" stroke-width="2" stroke-dasharray="6,4"/>
+    <text x="50" y="24" class="label-small" fill="#DDD">موهو (Moho) — 30-70 كم</text>
+    <line x1="0" y1="45" x2="40" y2="45" stroke="#FFF" stroke-width="2" stroke-dasharray="6,4"/>
+    <text x="50" y="49" class="label-small" fill="#DDD">غوتنبرغ (Gutenberg) — 2900 كم</text>
+    <line x1="0" y1="70" x2="40" y2="70" stroke="#FFF" stroke-width="2" stroke-dasharray="6,4"/>
+    <text x="50" y="74" class="label-small" fill="#DDD">ليمان (Lehmann) — 5100 كم</text>
+  </g>
+
+  <!-- Info clé -->
+  <g transform="translate(40, 555)">
+    <text x="0" y="0" class="label-white" font-size="14">🔑 المفتاح: الموجات S لا تنتشر في السوائل</text>
+    <text x="0" y="22" class="label-small" fill="#DDD">→ اختفاء S عند 2900 كم يثبت أن اللب الخارجي سائل</text>
+    <text x="0" y="44" class="label-small" fill="#DDD">→ عودة P عند 5100 كم تثبت أن اللب الداخلي صلب</text>
+  </g>
+
+  <text x="400" y="685" text-anchor="middle" class="label-small" fill="#888">كنز العلوم — SVT بكالوريا 3AS</text>
+</svg>

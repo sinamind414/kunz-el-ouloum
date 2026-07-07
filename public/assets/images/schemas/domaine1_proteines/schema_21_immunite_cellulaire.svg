@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 550" width="800" height="550">
+  <defs>
+    <style>text{font-family:'Noto Kufi Arabic',sans-serif;}.t{font-size:20px;font-weight:bold;fill:#1A2A3A;}.la{font-size:13px;font-weight:bold;fill:#1A2A3A;}.ls{font-size:10px;fill:#7F8C8D;}.lw{font-size:10px;font-weight:bold;fill:#FFF;}</style>
+  </defs>
+  <rect width="800" height="550" fill="#FFF"/>
+  <text x="400" y="25" text-anchor="middle" class="t">المناعة الخلوية — Réponse Immunitaire Cellulaire (RIMC)</text>
+
+  <!-- LTc killing infected cell -->
+  <g transform="translate(100, 70)">
+    <rect x="0" y="0" width="280" height="200" rx="12" fill="#FCE4EC" stroke="#C62828" stroke-width="2"/>
+    <text x="140" y="22" text-anchor="middle" class="la" fill="#C62828">LTc (CD8+) — القاتل</text>
+    
+    <!-- Infected cell -->
+    <circle cx="80" cy="100" r="40" fill="#FFCDD2" stroke="#E53935" stroke-width="2" stroke-dasharray="4,2"/>
+    <text x="80" y="90" text-anchor="middle" class="la" fill="#C62828" font-size="10">خلية مصابة</text>
+    <text x="80" y="105" text-anchor="middle" class="la" fill="#E53935" font-size="9">بفيروس</text>
+    <!-- CMH-I + peptide -->
+    <rect x="105" y="70" width="10" height="14" rx="2" fill="#1565C0"/>
+    <rect x="108" y="67" width="5" height="5" rx="1" fill="#E74C3C"/>
+    
+    <!-- LTc -->
+    <circle cx="200" cy="100" r="30" fill="#C62828" opacity="0.15" stroke="#C62828" stroke-width="2"/>
+    <text x="200" y="95" text-anchor="middle" class="la" fill="#C62828" font-size="11">LTc</text>
+    <text x="200" y="108" text-anchor="middle" class="la" fill="#C62828" font-size="9">CD8+</text>
+    <!-- Arrow killing -->
+    <path d="M 120,80 L 170,95" fill="none" stroke="#C62828" stroke-width="2" stroke-dasharray="5,2"/>
+    <text x="145" y="78" class="ls" fill="#C62828" font-size="8" text-anchor="middle">تعرف على</text>
+    <text x="145" y="88" class="ls" fill="#C62828" font-size="8" text-anchor="middle">CMH-I + ببتيد</text>
+    
+    <text x="140" y="150" text-anchor="middle" class="la" fill="#C62828" font-size="10">آلية القتل :</text>
+    <text x="140" y="168" text-anchor="middle" class="ls" font-size="9">• بيرفورين (Perforine) → ثقوب</text>
+    <text x="140" y="183" text-anchor="middle" class="ls" font-size="9">• غرانزيم (Granzyme) → موت مبرمج</text>
+  </g>
+
+  <!-- Collaboration CPA - LTh - LTc -->
+  <g transform="translate(420, 70)">
+    <rect x="0" y="0" width="280" height="200" rx="12" fill="#E8F5E9" stroke="#2E7D32" stroke-width="2"/>
+    <text x="140" y="22" text-anchor="middle" class="la" fill="#2E7D32">التعاون الخلوي</text>
+
+    <!-- CPA -->
+    <circle cx="60" cy="90" r="25" fill="#C8E6C9" stroke="#388E3C" stroke-width="1.5"/>
+    <text x="60" y="85" text-anchor="middle" class="la" fill="#2E7D32" font-size="9">CPA</text>
+    <text x="60" y="98" text-anchor="middle" class="ls" font-size="8">(بالعة)</text>
+    
+    <!-- LTh -->
+    <circle cx="140" cy="60" r="22" fill="#FFF3E0" stroke="#E65100" stroke-width="1.5"/>
+    <text x="140" y="58" text-anchor="middle" class="la" fill="#E65100" font-size="9">LTh</text>
+    <text x="140" y="70" text-anchor="middle" class="ls" font-size="7">CD4+</text>
+    
+    <!-- LTc -->
+    <circle cx="220" cy="130" r="22" fill="#FCE4EC" stroke="#C62828" stroke-width="1.5"/>
+    <text x="220" y="128" text-anchor="middle" class="la" fill="#C62828" font-size="9">LTc</text>
+    <text x="220" y="140" text-anchor="middle" class="ls" font-size="7">CD8+</text>
+    
+    <!-- Arrows -->
+    <path d="M 85,90 C 100,80 115,70 120,65" fill="none" stroke="#2E7D32" stroke-width="1.5"/>
+    <path d="M 155,75 C 175,95 195,115 200,125" fill="none" stroke="#2E7D32" stroke-width="1.5"/>
+    
+    <!-- IL-2 labels -->
+    <text x="100" y="60" class="ls" fill="#E65100" font-size="8">Ag + CMH-II</text>
+    <text x="175" y="105" class="ls" fill="#E65100" font-size="8">IL-2</text>
+
+    <!-- LB -->
+    <circle cx="80" cy="150" r="18" fill="#E3F2FD" stroke="#1976D2" stroke-width="1.5"/>
+    <text x="80" y="148" text-anchor="middle" class="la" fill="#1976D2" font-size="8">LB</text>
+    <text x="80" y="158" text-anchor="middle" class="ls" font-size="7">CD20+</text>
+    <path d="M 140,80 L 80,140" fill="none" stroke="#1976D2" stroke-width="1" stroke-dasharray="3,2"/>
+    
+    <text x="140" y="190" text-anchor="middle" class="la" fill="#2E7D32" font-size="10">LTh → تنشيط LB + LTc + CPA</text>
+  </g>
+
+  <!-- Steps summary -->
+  <g transform="translate(50, 310)">
+    <text x="0" y="15" class="la">مراحل الاستجابة الخلوية (RIMC) :</text>
+    <text x="0" y="35" class="ls">① CPA تبتلع الممرض وتعالج المستضد</text>
+    <text x="0" y="52" class="ls">② CPA تعرض المستضد عبر CMH-II → تنشيط LTh</text>
+    <text x="0" y="69" class="ls">③ LTh تنشط LTc عبر IL-2 والتعاون الخلوي</text>
+    <text x="0" y="86" class="ls">④ LTc تتعرف على الخلايا المصابة عبر CMH-I</text>
+    <text x="0" y="103" class="ls">⑤ LTc تقتل الخلايا المصابة (Perforine + Granzyme)</text>
+  </g>
+  
+  <!-- Memory cells -->
+  <g transform="translate(420, 310)">
+    <text x="0" y="15" class="la">خلايا الذاكرة :</text>
+    <text x="0" y="35" class="ls">✅ خلايا ذاكرة B → استجابة خلطية سريعة</text>
+    <text x="0" y="52" class="ls">✅ خلايا ذاكرة T → استجابة خلوية سريعة</text>
+    <text x="0" y="69" class="ls">✅ استجابة ثانوية أقوى وأسرع</text>
+    <text x="0" y="86" class="ls">✅ مبدأ عمل اللقاحات (Vaccins)</text>
+  </g>
+
+  <text x="400" y="540" text-anchor="middle" class="ls">كنز العلوم — SVT Bac Algérie 3AS</text>
+</svg>

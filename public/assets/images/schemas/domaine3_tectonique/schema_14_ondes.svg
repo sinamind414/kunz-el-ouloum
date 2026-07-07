@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" width="800" height="600">
+<defs><style>text{font-family:'Noto Kufi Arabic',sans-serif;}.t{font-size:18px;font-weight:bold;fill:#1A2A3A;}.la{font-size:13px;font-weight:bold;fill:#1A2A3A;}.ls{font-size:10px;fill:#7F8C8D;}.lw{font-size:10px;font-weight:bold;fill:#FFF;}</style></defs>
+<rect width="800" height="600" fill="#FFF"/>
+<text x="400" y="25" text-anchor="middle" class="t">الموجات الزلزالية — Ondes Sismiques (P, S, L)</text>
+
+<!-- P Waves -->
+<g transform="translate(15, 50)">
+  <rect x="0" y="0" width="770" height="120" rx="12" fill="#E3F2FD" stroke="#1565C0" stroke-width="1.5"/>
+  <circle cx="20" cy="20" r="10" fill="#1565C0"/><text x="20" y="24" text-anchor="middle" class="lw">P</text>
+  <text x="40" y="24" class="la" fill="#1565C0" font-size="12">موجات أولية — طولية (Primaires / Longitudinales)</text>
+  <text x="40" y="40" class="ls" fill="#1565C0">السرعة: 6-13 كم/ث — تنتشر في الصلب والسائل والغاز</text>
+  <!-- Wave animation -->
+  <g transform="translate(20, 70)">
+    <path d="M 0,20 L 20,20 L 30,10 L 50,10 L 60,20 L 80,20 L 90,10 L 110,10 L 120,20 L 140,20 L 150,10 L 170,10 L 180,20 L 200,20 L 210,10 L 230,10 L 240,20 L 260,20 L 270,10 L 290,10 L 300,20 L 320,20 L 330,10 L 350,10 L 360,20 L 380,20 L 390,10 L 410,10 L 420,20 L 440,20 L 450,10 L 470,10 L 480,20 L 500,20 L 510,10 L 530,10 L 540,20 L 560,20 L 570,10 L 590,10 L 600,20 L 620,20 L 630,10 L 650,10 L 660,20 L 680,20 L 690,10 L 710,10 L 720,20" fill="none" stroke="#1565C0" stroke-width="4"/>
+    <text x="370" y="45" text-anchor="middle" class="ls">← اتجاه الانتشار →</text>
+    <text x="-10" y="15" class="ls" font-size="9">انضغاط</text>
+    <text x="-10" y="35" class="ls" font-size="9">تخلخل</text>
+  </g>
+</g>
+
+<!-- S Waves -->
+<g transform="translate(15, 180)">
+  <rect x="0" y="0" width="770" height="120" rx="12" fill="#FFF3E0" stroke="#E65100" stroke-width="1.5"/>
+  <circle cx="20" cy="20" r="10" fill="#E65100"/><text x="20" y="24" text-anchor="middle" class="lw">S</text>
+  <text x="40" y="24" class="la" fill="#E65100" font-size="12">موجات ثانوية — عرضية (Secondaires / Transversales)</text>
+  <text x="40" y="40" class="ls" fill="#E65100">السرعة: 3.5-7 كم/ث — ⚠️ لا تنتشر في السوائل !</text>
+  <g transform="translate(40, 65)">
+    <path d="M 0,20 Q 30,0 60,20 Q 90,40 120,20 Q 150,0 180,20 Q 210,40 240,20 Q 270,0 300,20 Q 330,40 360,20 Q 390,0 420,20 Q 450,40 480,20 Q 510,0 540,20 Q 570,40 600,20 Q 630,0 660,20 Q 690,40 720,20" fill="none" stroke="#E65100" stroke-width="4"/>
+    <text x="360" y="48" text-anchor="middle" class="ls">↑↓ حركة الجزيئات عمودية على اتجاه الانتشار →</text>
+  </g>
+</g>
+
+<!-- L Waves -->
+<g transform="translate(15, 310)">
+  <rect x="0" y="0" width="770" height="120" rx="12" fill="#FCE4EC" stroke="#C62828" stroke-width="1.5"/>
+  <circle cx="20" cy="20" r="10" fill="#C62828"/><text x="20" y="24" text-anchor="middle" class="lw">L</text>
+  <text x="40" y="24" class="la" fill="#C62828" font-size="12">موجات سطحية — طويلة (Surface / Longues)</text>
+  <text x="40" y="40" class="ls" fill="#C62828">السرعة: 2-4 كم/ث — الأكبر سعةً — الأكثر تدميراً!</text>
+  <g transform="translate(40, 65)">
+    <path d="M 0,20 C 20,10 40,10 60,20 C 80,30 100,30 120,20 C 140,10 160,10 180,20 C 200,30 220,30 240,20 C 260,10 280,10 300,20 C 320,30 340,30 360,20" fill="none" stroke="#C62828" stroke-width="4"/>
+    <path d="M 380,20 C 400,10 420,10 440,20 C 460,30 480,30 500,20 C 520,10 540,10 560,20 C 580,30 600,30 620,20 C 640,10 660,10 680,20 C 700,30 720,30 740,20" fill="none" stroke="#C62828" stroke-width="4"/>
+    <text x="370" y="48" text-anchor="middle" class="ls">حركة دائرية — على سطح الأرض فقط</text>
+  </g>
+</g>
+
+<!-- Seismogram -->
+<g transform="translate(15, 445)">
+  <rect x="0" y="0" width="770" height="65" rx="12" fill="#F5F5F5" stroke="#7F8C8D" stroke-width="1.5"/>
+  <text x="385" y="18" text-anchor="middle" class="la" font-size="11">السيزموغرام — Sismogramme</text>
+  <path d="M 30,45 L 50,44 L 70,46 L 90,44 L 110,46 L 130,43 L 150,47 L 170,44 L 190,46 L 210,42 L 230,48 L 250,43 L 270,47 L 290,44 L 310,46 L 320,42 L 330,30 L 340,55 L 350,20 L 360,60 L 370,25 L 380,55 L 390,30 L 400,50 L 410,35 L 420,48 L 430,42 L 440,40 L 460,42 L 480,44 L 500,41 L 520,46 L 540,43 L 560,47 L 580,44 L 600,45 L 620,20 L 640,68 L 660,10 L 680,70 L 700,15 L 720,65 L 740,30 L 760,45" fill="none" stroke="#1A2A3A" stroke-width="1.5"/>
+  <text x="130" y="60" text-anchor="middle" class="ls" fill="#1565C0" font-size="8">P</text>
+  <text x="380" y="60" text-anchor="middle" class="ls" fill="#E65100" font-size="8">S</text>
+  <text x="700" y="60" text-anchor="middle" class="ls" fill="#C62828" font-size="8">L</text>
+</g>
+
+<text x="400" y="590" text-anchor="middle" class="ls">كنز العلوم — SVT Bac Algérie 3AS</text>
+</svg>

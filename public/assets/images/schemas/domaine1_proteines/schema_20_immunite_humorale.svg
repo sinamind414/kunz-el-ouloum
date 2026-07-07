@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" width="800" height="600">
+  <defs>
+    <style>text{font-family:'Noto Kufi Arabic',sans-serif;}.t{font-size:20px;font-weight:bold;fill:#1A2A3A;}.la{font-size:13px;font-weight:bold;fill:#1A2A3A;}.ls{font-size:10px;fill:#7F8C8D;}.lw{font-size:10px;font-weight:bold;fill:#FFF;}</style>
+  </defs>
+  <rect width="800" height="600" fill="#FFF"/>
+  <text x="400" y="25" text-anchor="middle" class="t">المناعة الخلطية — Réponse Immunitaire Humorale (RIMH)</text>
+  
+  <!-- Step 1 -->
+  <g transform="translate(40, 60)">
+    <rect x="0" y="0" width="340" height="120" rx="10" fill="#E3F2FD" stroke="#1976D2" stroke-width="1.5"/>
+    <circle cx="40" cy="40" r="20" fill="#FF9800" opacity="0.8"/>
+    <text x="40" y="44" text-anchor="middle" class="lw" font-size="9">Ag</text>
+    <circle cx="100" cy="40" r="22" fill="#2196F3" opacity="0.8"/>
+    <text x="100" y="36" text-anchor="middle" class="lw" font-size="8">LB</text>
+    <text x="100" y="47" text-anchor="middle" class="lw" font-size="7">مستقبل</text>
+    <path d="M 60,40 L 78,40" fill="none" stroke="#C62828" stroke-width="2"/>
+    <text x="170" y="35" class="la" fill="#1565C0" font-size="11">1. التعرف</text>
+    <text x="170" y="50" class="ls" font-size="9">LB يتعرف على المستضد</text>
+    <text x="170" y="65" class="ls" font-size="9">عبر مستقبلاته الغشائية</text>
+    <!-- Arrows -->
+    <path d="M 60,80 L 100,90" fill="none" stroke="#999" stroke-width="1.5"/>
+    <text x="80" y="105" class="ls" font-size="9">التقاط + معالجة</text>
+  </g>
+
+  <!-- Step 2 -->
+  <g transform="translate(420, 60)">
+    <rect x="0" y="0" width="340" height="120" rx="10" fill="#FFF3E0" stroke="#E65100" stroke-width="1.5"/>
+    <circle cx="40" cy="40" r="20" fill="#2196F3" opacity="0.6"/>
+    <text x="40" y="44" text-anchor="middle" class="lw" font-size="8">LB</text>
+    <circle cx="90" cy="40" r="20" fill="#9C27B0" opacity="0.8"/>
+    <text x="90" y="38" text-anchor="middle" class="lw" font-size="8">LTh</text>
+    <text x="90" y="48" text-anchor="middle" class="lw" font-size="7">CD4+</text>
+    <path d="M 60,40 L 70,40" fill="none" stroke="#C62828" stroke-width="2"/>
+    <!-- IL-2 -->
+    <path d="M 90,20 C 80,10 60,10 50,20" fill="none" stroke="#E65100" stroke-width="2" stroke-dasharray="4,2"/>
+    <text x="60" y="12" class="ls" font-size="8" fill="#E65100">IL-2</text>
+    <text x="170" y="35" class="la" fill="#E65100" font-size="11">2. التنشيط</text>
+    <text x="170" y="50" class="ls" font-size="9">LTh تنشط LB بواسطة</text>
+    <text x="170" y="65" class="ls" font-size="9">السيتوكينات (IL-2)</text>
+  </g>
+
+  <!-- Step 3 -->
+  <g transform="translate(40, 210)">
+    <rect x="0" y="0" width="340" height="120" rx="10" fill="#E8F5E9" stroke="#2E7D32" stroke-width="1.5"/>
+    <circle cx="40" cy="40" r="20" fill="#2196F3" opacity="0.6"/>
+    <text x="40" y="44" text-anchor="middle" class="lw" font-size="8">LB</text>
+    <path d="M 60,30 L 100,20 L 140,35 L 100,50 Z" fill="#2ECC71" opacity="0.8"/>
+    <text x="80" y="28" text-anchor="middle" class="lw" font-size="7">خلايا</text>
+    <text x="120" y="32" text-anchor="middle" class="lw" font-size="7">ذاكرة</text>
+    <circle cx="90" cy="70" r="18" fill="#E74C3C" opacity="0.8"/>
+    <text x="90" y="68" text-anchor="middle" class="lw" font-size="8">بلازمية</text>
+    <text x="170" y="35" class="la" fill="#2E7D32" font-size="11">3. التمايز</text>
+    <text x="170" y="50" class="ls" font-size="9">LB → خلايا بلازمية</text>
+    <text x="170" y="65" class="ls" font-size="9">+ خلايا ذاكرة B</text>
+  </g>
+
+  <!-- Step 4 -->
+  <g transform="translate(420, 210)">
+    <rect x="0" y="0" width="340" height="120" rx="10" fill="#FCE4EC" stroke="#C62828" stroke-width="1.5"/>
+    <g transform="translate(20, 25)">
+      <path d="M 0,0 L 15,-10 L 30,0 L 15,10 Z" fill="#E74C3C" opacity="0.8"/>
+      <text x="15" y="3" text-anchor="middle" class="lw" font-size="8">Ac</text>
+      <circle cx="15" cy="25" r="8" fill="#FF9800" opacity="0.6"/>
+      <text x="15" y="28" text-anchor="middle" class="lw" font-size="7">Ag</text>
+      <line x1="15" y1="10" x2="15" y2="17" stroke="#C62828" stroke-width="1.5"/>
+    </g>
+    <text x="100" y="30" class="la" fill="#C62828" font-size="11">4. إفراز الأجسام المضادة</text>
+    <text x="100" y="48" class="ls" font-size="9">الخلايا البلازمية تفرز</text>
+    <text x="100" y="63" class="ls" font-size="9">أجساماً مضادة في الدم</text>
+    <text x="100" y="80" class="ls" font-size="9">→ ارتباط Ag-Ac ← تحييد</text>
+    <circle cx="100" cy="100" r="10" fill="#E74C3C" opacity="0.5"/>
+    <circle cx="130" cy="98" r="8" fill="#E74C3C" opacity="0.4"/>
+    <circle cx="115" cy="105" r="9" fill="#E74C3C" opacity="0.4"/>
+  </g>
+
+  <!-- Anticorps structure -->
+  <g transform="translate(40, 380)">
+    <text x="0" y="15" class="la">بنية الجسم المضاد (Anticorps / Immunoglobuline) :</text>
+    <rect x="150" y="30" width="180" height="90" rx="8" fill="#FCE4EC" stroke="#C62828" stroke-width="1.5"/>
+    <!-- Y shape -->
+    <path d="M 210,50 L 210,80 L 230,100 L 260,100 L 240,80" fill="none" stroke="#C62828" stroke-width="3"/>
+    <path d="M 270,50 L 270,80 L 250,100 L 220,100 L 240,80" fill="none" stroke="#C62828" stroke-width="3"/>
+    <path d="M 210,80 L 270,80" fill="none" stroke="#C62828" stroke-width="2"/>
+    <!-- Binding site -->
+    <circle cx="205" cy="48" r="5" fill="#FF9800" opacity="0.6"/>
+    <circle cx="275" cy="48" r="5" fill="#FF9800" opacity="0.6"/>
+    <text x="240" y="125" text-anchor="middle" class="ls" font-size="9">شكل Y — 4 سلاسل (2H + 2L)</text>
+    <text x="240" y="140" text-anchor="middle" class="ls" font-size="9">موقع ارتباط المستضد (Paratope)</text>
+  </g>
+
+  <!-- Key roles -->
+  <g transform="translate(420, 380)">
+    <text x="0" y="15" class="la">أدوار الأجسام المضادة :</text>
+    <text x="0" y="35" class="ls">✅ تحييد (Neutralisation): منع ارتباط الممرض</text>
+    <text x="0" y="52" class="ls">✅ التراص (Agglutination): تجميع الممرضات</text>
+    <text x="0" y="69" class="ls">✅ الترسيب (Précipitation): إزالة السموم</text>
+    <text x="0" y="86" class="ls">✅ تنشيط المتممة (Complément)</text>
+  </g>
+
+  <text x="400" y="590" text-anchor="middle" class="ls">كنز العلوم — SVT Bac Algérie 3AS</text>
+</svg>

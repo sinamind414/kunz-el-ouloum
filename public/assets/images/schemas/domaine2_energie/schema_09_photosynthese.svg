@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 650" width="800" height="650">
+<defs><style>text{font-family:'Noto Kufi Arabic',sans-serif;}.t{font-size:20px;font-weight:bold;fill:#1A2A3A;}.la{font-size:13px;font-weight:bold;fill:#1A2A3A;}.ls{font-size:11px;fill:#7F8C8D;}.lw{font-size:10px;font-weight:bold;fill:#FFF;}</style>
+<linearGradient id="chloro"><stop offset="0%" stop-color="#E8F5E9"/><stop offset="100%" stop-color="#C8E6C9"/></linearGradient>
+<linearGradient id="thylak"><stop offset="0%" stop-color="#2ECC71"/><stop offset="100%" stop-color="#1B5E20"/></linearGradient>
+</defs>
+<rect width="800" height="650" fill="#FFF"/>
+<text x="400" y="30" text-anchor="middle" class="t">التركيب الضوئي — Photosynthèse</text>
+<text x="400" y="50" text-anchor="middle" class="ls">آليات تحويل الطاقة الضوئية إلى طاقة كيميائية</text>
+
+<!-- Chloroplast structure -->
+<g transform="translate(400, 310)">
+  <!-- Outer membrane -->
+  <ellipse cx="0" cy="0" rx="230" ry="180" fill="url(#chloro)" stroke="#2E7D32" stroke-width="3"/>
+  <text x="0" y="-185" text-anchor="middle" class="la" fill="#2E7D32">الصانعة الخضراء (Chloroplaste)</text>
+
+  <!-- Thylakoid stacks (grana) -->
+  <ellipse cx="-80" cy="-60" rx="30" ry="50" fill="url(#thylak)" opacity="0.7"/>
+  <ellipse cx="60" cy="-80" rx="25" ry="40" fill="url(#thylak)" opacity="0.7"/>
+  <ellipse cx="100" cy="-20" rx="20" ry="35" fill="url(#thylak)" opacity="0.7"/>
+  <ellipse cx="-40" cy="40" rx="35" ry="45" fill="url(#thylak)" opacity="0.7"/>
+  <ellipse cx="80" cy="60" rx="20" ry="30" fill="url(#thylak)" opacity="0.7"/>
+
+  <!-- Stroma label -->
+  <text x="140" y="-110" class="la" fill="#2E7D32" font-size="11">ستروم</text>
+  <text x="140" y="-98" class="la" fill="#2E7D32" font-size="11">(Stroma)</text>
+  <text x="140" y="-82" class="ls" font-size="9">دورة كالفن</text>
+
+  <!-- Thylakoid label -->
+  <text x="-130" y="-110" class="la" fill="#1B5E20" font-size="11">ثايلاكويد</text>
+  <text x="-130" y="-98" class="la" fill="#1B5E20" font-size="11">(Thylakoïde)</text>
+  <text x="-130" y="-82" class="ls" font-size="9">تفاعلات ضوئية</text>
+</g>
+
+<!-- Inputs/Outputs -->
+<g transform="translate(30, 60)">
+  <text x="0" y="0" class="la" fill="#2ECC71">المدخلات (Inputs):</text>
+  <text x="0" y="20" class="ls">☀️ طاقة ضوئية (Lumière)</text>
+  <text x="0" y="38" class="ls">💧 H₂O (ماء)</text>
+  <text x="0" y="56" class="ls">🌬️ CO₂ (ثاني أكسيد الكربون)</text>
+</g>
+
+<g transform="translate(580, 60)">
+  <text x="0" y="0" class="la" fill="#E74C3C">النواتج (Outputs):</text>
+  <text x="0" y="20" class="ls">🍬 C₆H₁₂O₆ (جلوكوز)</text>
+  <text x="0" y="38" class="ls">🌬️ O₂ (أكسجين — من H₂O)</text>
+  <text x="0" y="56" class="ls">⚡ ATP + NADPH (للاستخدام الداخلي)</text>
+</g>
+
+<!-- Equation -->
+<g transform="translate(400, 570)">
+  <rect x="-300" y="-30" width="600" height="60" rx="10" fill="#E8F5E9" stroke="#2ECC71" stroke-width="1.5"/>
+  <text x="0" y="-5" text-anchor="middle" style="font-size:16px;font-weight:bold;fill:#1A2A3A;font-family:'Noto Kufi Arabic'">6 CO₂ + 6 H₂O + Lumière → C₆H₁₂O₆ + 6 O₂</text>
+  <text x="0" y="18" text-anchor="middle" class="ls">تفاعل اختزالي — يخزن الطاقة في روابط الجلوكوز</text>
+</g>
+
+<g transform="translate(30, 510)">
+  <text x="0" y="0" class="la" font-size="11">مراحل التركيب الضوئي:</text>
+  <text x="0" y="18" class="ls" font-size="9">1. التفاعل الضوئي: في غشاء الثايلاكويد ← ATP + NADPH + O₂</text>
+  <text x="0" y="34" class="ls" font-size="9">2. دورة كالفن: في الستروما ← تثبيت CO₂ ← جلوكوز</text>
+</g>
+
+<text x="400" y="640" text-anchor="middle" class="ls">كنز العلوم — SVT Bac Algérie 3AS</text>
+</svg>
