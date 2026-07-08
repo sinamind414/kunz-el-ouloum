@@ -1,3 +1,5 @@
+import { normalizeArabic } from './utils/arabicNormalize';
+
 export interface MethodologyQA {
   id: string;
   question: string;
@@ -150,3 +152,27 @@ export const METHODOLOGY_QA: MethodologyQA[] = [
     sourceBook: 'LIVRE MANHADJIYA.md',
   },
 ];
+
+export interface MethodologyMatch {
+  qa: MethodologyQA;
+  score: number;
+}
+
+export function findBestMethodologyQA(query: string): MethodologyMatch[] {
+  const normRaw = normalizeArabic(query);
+  if (!normRaw) return [];
+  const norm = normRaw.replace(/[؟?.!،,]/g, ' ').replace(/\s+/g, ' ').trim();
+  return METHODOLOGY_QA.map((qa) => {
+    let score = 0;
+    const qn = normalizeArabic(qa.question).replace(/[؟?.!،,]/g, ' ').replace(/\s+/g, ' ').trim();
+    if (norm === qn) score += 60;
+    else if (norm.includes(qn) || qn.includes(norm)) score += 40;
+    for (const kw of qa.keywords) {
+      const nk = normalizeArabic(kw);
+      if (nk.length >= 3 && norm.includes(nk)) score += 10;
+    }
+    return { qa, score };
+  })
+    .filter((x) => x.score >= 12)
+    .sort((a, b) => b.score - a.score);
+}

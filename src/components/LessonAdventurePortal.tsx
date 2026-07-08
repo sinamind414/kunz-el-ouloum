@@ -81,7 +81,7 @@ const blockStyleMap: Record<string, string> = {
   text: 'border-[#e2dabf] bg-white text-[#1f1c0b] dark:border-[#2ecc71]/10 dark:bg-[#141916] dark:text-gray-100',
 };
 
-function BlockCard({ block }: { block: LessonBlock }) {
+function BlockCard({ block }: { key?: string; block: LessonBlock }) {
   const className = blockStyleMap[block.type] || blockStyleMap.text;
   const keywords = useMemo(() => extractKeywords((block.texts || []).join(' ') + ' ' + (block.title || '')), [block]);
 

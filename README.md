@@ -24,11 +24,12 @@ Cas corrigés :
 - كرة القدم → hors programme
 
 Priorité du moteur :
-1. Knowledge Cards exactes / aliases
-2. Méthodologie Manhadjiya si question méthodologique
-3. Q/R livres scientifiques
-4. leçons, QCM, OPUS
-5. clarification / hors programme
+1. Hors programme (كرة القدم, films, etc.) → refus
+2. Méthodologie Manhadjiya (`findBestMethodologyQA`, score ≥ 18)
+3. Q/R livres scientifiques (`findBestBookQA`, score ≥ 18)
+4. Knowledge Cards exactes / aliases
+5. leçons, QCM, OPUS (recherche générique)
+6. clarification / suggestions méthodologiques
 
 ## Fusion UX ajoutée (offline)
 

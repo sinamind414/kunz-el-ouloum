@@ -9,6 +9,7 @@ export interface QuizCardData {
 }
 
 interface SmartBotQuizCardProps {
+  key?: string;
   quiz: QuizCardData;
   onAnswer: (letter: string) => void;
 }

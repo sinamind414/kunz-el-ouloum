@@ -17,6 +17,7 @@ import {
 } from 'recharts';
 import { Trophy, Flame, Calendar, BookOpen, Clock, Activity, Sparkles, Award, Lock, CheckCircle2, TrendingUp, Printer, Download, X, FileText, Check } from 'lucide-react';
 import { UserProgress, Unit } from '../types';
+import DomainReadinessRadar from './DomainReadinessRadar';
 
 interface StatsViewProps {
   progress: UserProgress;
@@ -271,6 +272,9 @@ export default function StatsView({ progress, units }: StatsViewProps) {
           })}
         </div>
       </section>
+
+      {/* Domain Readiness Radar */}
+      <DomainReadinessRadar units={units} />
 
       {/* Evolution Over Time LineChart */}
       <section className="bg-[#ffffff] border border-[#e2dabf]/60 rounded-3xl p-5 shadow-sm space-y-4">

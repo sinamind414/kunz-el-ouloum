@@ -9,6 +9,7 @@ import {
   startBossFightSession,
   startBossStep,
   finishBossFight,
+  completeDailyMission,
   type BotSession,
 } from './sessionManager';
 import {
@@ -23,18 +24,18 @@ import {
   type KnowledgeCard,
   type QuizQuestion,
 } from '../data/smartBotData';
-import { METHODOLOGY_CARDS, findMethodologyCard } from '../data/methodologyKnowledge';
 import { TUTOR_KNOWLEDGE, type TutorKnowledgeChunk } from '../tutorKnowledge';
-import { BOOK_TUTOR_QA, type BookTutorQA } from '../bookTutorQA';
+import { BOOK_TUTOR_QA, findBestBookQA, type BookTutorQA } from '../bookTutorQA';
+import { METHODOLOGY_QA, findBestMethodologyQA, type MethodologyQA } from '../methodologyKnowledge';
 import {
   KNOWLEDGE_CARDS as LEGACY_KNOWLEDGE_CARDS,
   type KnowledgeCard as LegacyKnowledgeCard,
 } from '../knowledgeCards';
-import { normalizeArabic, calculateKeywordScore } from './arabicNormalize';
+import { normalizeArabic, calculateKeywordScore, tokenizeArabic } from './arabicNormalize';
 
-export { normalizeArabic, calculateKeywordScore } from './arabicNormalize';
+export { normalizeArabic, calculateKeywordScore, tokenizeArabic } from './arabicNormalize';
 
-export type SourceType = 'card' | 'book' | 'opus' | 'methodology' | 'domain' | 'quiz' | 'out';
+export type SourceType = 'internal_card' | 'legacy_card' | 'book' | 'opus' | 'methodology' | 'domain' | 'quiz' | 'out_of_scope';
 
 export interface SourceRef {
   type: SourceType;
@@ -51,6 +52,7 @@ export interface QuizPrompt {
 
 export interface TutorAction {
   text: string;
+  confidence?: number;
   quickActions?: string[];
   quiz?: QuizPrompt;
   sources?: SourceRef[];
@@ -63,17 +65,7 @@ export interface EngineResult {
 }
 
 const OUT_OF_PROGRAM = [
-  'كرة القدم',
-  'فريق',
-  'لاعب',
-  'مباراه',
-  'فيلم',
-  'موسيقى',
-  'سياره',
-  'سفر',
-  'طقس',
-  'اكل',
-  'طعام',
+  'كرة القدم', 'فريق', 'لاعب', 'مباراه', 'فيلم', 'موسيقى', 'سياره', 'سفر', 'طقس', 'اكل', 'طعام',
 ];
 
 function toQuizPrompt(q: QuizQuestion): QuizPrompt {
@@ -108,7 +100,7 @@ interface SearchChunk {
 
 const LEGACY_CHUNKS: SearchChunk[] = LEGACY_KNOWLEDGE_CARDS.map((c: LegacyKnowledgeCard) => ({
   id: c.id,
-  type: 'card',
+  type: 'card' as const,
   title: c.title,
   unitId: c.unitId,
   unitTitle: c.title,
@@ -121,7 +113,7 @@ const LEGACY_CHUNKS: SearchChunk[] = LEGACY_KNOWLEDGE_CARDS.map((c: LegacyKnowle
 
 const BOOK_CHUNKS: SearchChunk[] = BOOK_TUTOR_QA.map((q: BookTutorQA) => ({
   id: q.id,
-  type: 'book',
+  type: 'book' as const,
   title: q.question,
   unitId: q.unitId,
   unitTitle: q.topic,
@@ -135,7 +127,7 @@ const BOOK_CHUNKS: SearchChunk[] = BOOK_TUTOR_QA.map((q: BookTutorQA) => ({
 
 const OPUS_CHUNKS: SearchChunk[] = TUTOR_KNOWLEDGE.map((c: TutorKnowledgeChunk) => ({
   id: c.id,
-  type: 'opus',
+  type: 'opus' as const,
   title: c.title,
   unitId: c.unitId,
   unitTitle: c.unitTitle,
@@ -171,56 +163,67 @@ export function searchAllBases(norm: string, activeDomainId: number | null): Sea
     .map((x) => x.ch);
 }
 
-function buildAnswer(norm: string, activeDomainId: number | null): TutorAction | null {
-  const scienceCard = findBestKnowledgeCard(norm, activeDomainId);
-  const hits = searchAllBases(norm, activeDomainId);
+function filterQuickActions(actions: string[], currentInputNorm: string): string[] {
+  const seen = new Set<string>();
+  return actions
+    .filter((action) => {
+      const na = normalizeArabic(action);
+      if (na === currentInputNorm || (na.length > 3 && currentInputNorm.includes(na)) || (currentInputNorm.length > 3 && na.includes(currentInputNorm))) {
+        return false;
+      }
+      if (seen.has(na)) return false;
+      seen.add(na);
+      return true;
+    })
+    .slice(0, 3);
+}
 
-  if (!scienceCard && hits.length === 0) return null;
-
-  const sources: SourceRef[] = [];
-  const parts: string[] = [];
-  const quickActions: string[] = [];
-
-  if (scienceCard) {
-    parts.push(
-      `🧩 **${scienceCard.title}**\n\n${scienceCard.shortAnswer}\n\n🔑 كلمات مفتاحية: ${scienceCard.keywords.join(' • ')}`
-    );
-    sources.push({ type: 'card', title: scienceCard.title });
-    quickActions.push(...scienceCard.relatedQuestions);
-  }
-
-  const used = new Set(scienceCard ? [scienceCard.title] : []);
-  let bookAdded = false;
-
-  for (const h of hits) {
-    if (used.has(h.title) || h.type === 'opus') continue;
-    const label = h.type === 'book' ? '📖 من الكتاب المدرسي' : '📝 بطاقة معرفية';
-    const snippet = h.text.length > 300 ? `${h.text.slice(0, 297)}…` : h.text;
-    parts.push(`${label}:\n${snippet}${h.sourceLabel ? `\n\n🔗 المصدر: ${h.sourceLabel}` : ''}`);
-    sources.push({ type: h.type, title: h.title });
-    used.add(h.title);
-    if (h.followUp) quickActions.push(h.followUp);
-    if (h.type === 'book') bookAdded = true;
-    if (sources.length >= 3) break;
-  }
-
-  if (!bookAdded) {
-    const opus = hits.find((h) => h.type === 'opus' && !used.has(h.title));
-    if (opus) {
-      const snippet = opus.text.length > 240 ? `${opus.text.slice(0, 237)}…` : opus.text;
-      if (snippet.trim().length > 40) {
-        parts.push(`📚 من الدرس (${opus.unitTitle}):\n${snippet}`);
-        sources.push({ type: 'opus', title: opus.title });
+function findMicroAnswer(card: KnowledgeCard, norm: string): string | null {
+  if (!card.microAnswers) return null;
+  for (const micro of card.microAnswers) {
+    for (const trigger of micro.triggers) {
+      const nTrigger = normalizeArabic(trigger);
+      if (nTrigger && norm.includes(nTrigger)) {
+        return micro.answer;
       }
     }
   }
+  return null;
+}
 
-  const text = parts.join('\n\n');
-  const qa = Array.from(
-    new Set([...quickActions, 'راجع أخطائي السابقة', 'العودة للقائمة الرئيسية'])
-  );
+function buildAnswer(norm: string, activeDomainId: number | null): TutorAction | null {
+  const scienceCard = findBestKnowledgeCard(norm, activeDomainId);
 
-  return { text, sources, quickActions: qa };
+  if (scienceCard) {
+    const microHit = findMicroAnswer(scienceCard, norm);
+    if (microHit) {
+      return {
+        text: `🎯 **${scienceCard.title}**\n\n${microHit}`,
+        quickActions: filterQuickActions(scienceCard.relatedQuestions, norm),
+        sources: [{ type: 'internal_card' as SourceType, title: scienceCard.title }],
+      };
+    }
+    return {
+      text: `🧩 **${scienceCard.title}**\n\n${scienceCard.shortAnswer}\n\n🔑 كلمات مفتاحية: ${scienceCard.keywords.join(' • ')}`,
+      quickActions: filterQuickActions(scienceCard.relatedQuestions, norm),
+      sources: [{ type: 'internal_card' as SourceType, title: scienceCard.title }],
+    };
+  }
+
+  const hits = searchAllBases(norm, activeDomainId);
+  if (hits.length === 0) return null;
+
+  const best = hits[0];
+  const snippet = best.text.length > 400 ? `${best.text.slice(0, 397)}…` : best.text;
+  let sourceType: SourceType = 'opus';
+  if (best.type === 'book') sourceType = 'book';
+  else if (best.type === 'card') sourceType = 'legacy_card';
+
+  return {
+    text: `📚 **${best.title}**\n\n${snippet}`,
+    quickActions: best.followUp ? filterQuickActions([best.followUp], norm) : [],
+    sources: [{ type: sourceType, title: best.title }],
+  };
 }
 
 function parseAnswer(raw: string): number | null {
@@ -236,189 +239,123 @@ function parseAnswer(raw: string): number | null {
 export function handleDomainClick(session: BotSession, domainId: number): EngineResult {
   const domain = DOMAINS.find((d) => d.id === domainId);
   if (!domain) {
-    return {
-      session: resetSession(),
-      action: { text: 'مجال غير معروف. اختر مجالاً من القائمة.', quickActions: DOMAINS.map((d) => d.title) },
-    };
+    return { session: resetSession(), action: { text: 'مجال غير معروف. اختر مجالاً من القائمة.', quickActions: DOMAINS.map((d) => d.title) } };
   }
-
   const newSession = startDomainSession(domainId, session.mistakes);
   const cards = KNOWLEDGE_CARDS.filter((c) => c.domainId === domainId);
-
-  const text =
-    `📚 اخترت مجال: **${domain.title}**\n${domain.subtitle}\n\n` +
+  const text = `📚 اخترت مجال: **${domain.title}**\n${domain.subtitle}\n\n` +
     `المواضيع المتاحة للمراجعة:\n` +
     cards.map((c, i) => `${i + 1}. ${c.title}`).join('\n') +
     `\n\nابدأ باختبار تشخيصي، أو راجع موضوعاً مباشرةً من القائمة أدناه.`;
-
-  const quickActions = [
-    'اختبار تشخيصي',
-    'تحدي BAC',
-    ...cards.map((c) => `راجع ${c.title}`),
-    'راجع أخطائي السابقة',
-    'العودة للقائمة الرئيسية',
-  ];
-
+  const quickActions = ['اختبار تشخيصي', 'تحدي BAC', ...cards.map((c) => `راجع ${c.title}`), 'راجع أخطائي السابقة', 'العودة للقائمة الرئيسية'];
   return { session: newSession, action: { text, quickActions } };
 }
 
 export function findBestKnowledgeCard(input: string, activeDomainId: number | null): KnowledgeCard | null {
   const norm = normalizeArabic(input);
-  if (!norm) return null;
-
+  if (!norm || norm.length < 2) return null;
+  const inputTokens = tokenizeArabic(norm);
   let best: KnowledgeCard | null = null;
-  let bestScore = 0;
+  let bestRankingScore = 0;
+  let bestContentScore = 0;
 
   for (const card of KNOWLEDGE_CARDS) {
-    let score = 0;
+    let contentScore = 0;
 
-    let bestAliasLen = 0;
     for (const alias of card.aliases) {
       const na = normalizeArabic(alias);
-      if (na && norm.includes(na)) {
-        score += 100 + na.length;
-        if (na.length > bestAliasLen) bestAliasLen = na.length;
+      if (na && na.length >= 2 && norm.includes(na)) {
+        contentScore += 100 + na.length;
       }
     }
 
     const nt = normalizeArabic(card.title);
-    if (nt && norm.includes(nt)) score += 50;
+    if (nt && nt.length >= 2 && norm.includes(nt)) contentScore += 50;
 
-    score += calculateKeywordScore(norm, card.keywords) * 6;
+    let keywordHits = 0;
+    for (const kw of card.keywords) {
+      const nk = normalizeArabic(kw);
+      if (nk.length < 2) continue;
+      if (inputTokens.includes(nk) || norm.includes(nk)) {
+        keywordHits += 1;
+      }
+    }
+    contentScore += keywordHits * 8;
 
-    if (activeDomainId != null && card.domainId === activeDomainId) score += 20;
+    const domainBonus = (activeDomainId != null && card.domainId === activeDomainId) ? 5 : 0;
+    const rankingScore = contentScore + domainBonus;
 
-    if (score > bestScore) {
-      bestScore = score;
+    if (rankingScore > bestRankingScore) {
+      bestRankingScore = rankingScore;
+      bestContentScore = contentScore;
       best = card;
     }
   }
 
-  if (best && bestScore >= 20) return best;
+  if (best && bestContentScore >= 8) return best;
   return null;
 }
 
 export function startDiagnostic(session: BotSession): EngineResult {
   const domainId = session.activeDomainId;
   const domain = DOMAINS.find((d) => d.id === domainId);
-
   if (domainId == null || !domain) {
-    return {
-      session,
-      action: { text: 'اختر مجالاً أولاً لبدء التشخيص.', quickActions: DOMAINS.map((d) => d.title) },
-    };
+    return { session, action: { text: 'اختر مجالاً أولاً لبدء التشخيص.', quickActions: DOMAINS.map((d) => d.title) } };
   }
-
   const questions = getQuestionsForDomain(domainId);
   if (questions.length === 0) {
     return { session, action: { text: 'لا توجد أسئلة لهذا المجال بعد.', quickActions: ['العودة للقائمة الرئيسية'] } };
   }
-
   const first = questions[0];
   const newSession = startQuiz(session, questions.length, first.id, 'diagnostic');
-
-  const text =
-    `🩺 بدأ التشخيص في مجال **${domain.title}**.\n` +
-    `أجب عن ${questions.length} سؤالاً واحداً تلو الآخر. اختر A أو B أو C أو D.`;
-
+  const text = `🩺 بدأ التشخيص في مجال **${domain.title}**.\n` + `أجب عن ${questions.length} سؤالاً واحداً تلو الآخر. اختر A أو B أو C أو D.`;
   return { session: newSession, action: { text, quiz: toQuizPrompt(first), quickActions: [] } };
 }
 
 export function reviewMistakes(session: BotSession): EngineResult {
   if (session.mistakes.length === 0) {
-    return {
-      session,
-      action: {
-        text: '✅ لا توجد أخطاء مسجلة لديك بعد. واصل التدريب لتسجيل نقاط ضعفك ومعالجتها!',
-        quickActions: ['العودة للقائمة الرئيسية'],
-      },
-    };
+    return { session, action: { text: '✅ لا توجد أخطاء مسجلة لديك بعد. واصل التدريب لتسجيل نقاط ضعفك ومعالجتها!', quickActions: ['العودة للقائمة الرئيسية'] } };
   }
-
-  const cards = session.mistakes
-    .map((id) => getCardById(id))
-    .filter((c): c is KnowledgeCard => Boolean(c));
-
-  const text =
-    '📌 هذه المواضيع التي سجلت أخطاءً فيها:\n' +
-    cards.map((c, i) => `${i + 1}. ${c.title} (${c.aliases[0]})`).join('\n') +
-    '\n\nراجع كل موضوع لترسيخه قبل إعادة الاختبار.';
-
-  const quickActions = [
-    ...cards.map((c) => `راجع ${c.title}`),
-    'إعادة الاختبار التشخيصي',
-    'العودة للقائمة الرئيسية',
-  ];
-
+  const cards = session.mistakes.map((id) => getCardById(id)).filter((c): c is KnowledgeCard => Boolean(c));
+  const text = '📌 هذه المواضيع التي سجلت أخطاءً فيها:\n' + cards.map((c, i) => `${i + 1}. ${c.title} (${c.aliases[0]})`).join('\n') + '\n\nراجع كل موضوع لترسيخه قبل إعادة الاختبار.';
+  const quickActions = [...cards.map((c) => `راجع ${c.title}`), 'إعادة الاختبار التشخيصي', 'العودة للقائمة الرئيسية'];
   return { session, action: { text, quickActions } };
 }
 
 export function gradeQuizAnswer(session: BotSession, rawAnswer: string): EngineResult {
   const current = session.currentQuiz;
-  if (!current) {
-    return { session, action: { text: 'لا يوجد اختبار جارٍ حالياً.', quickActions: ['العودة للقائمة الرئيسية'] } };
-  }
-
+  if (!current) return { session, action: { text: 'لا يوجد اختبار جارٍ حالياً.', quickActions: ['العودة للقائمة الرئيسية'] } };
   const question = getQuestionById(current.questionId);
-  if (!question) {
-    return { session, action: { text: 'تعذر العثور على السؤال.', quickActions: ['العودة للقائمة الرئيسية'] } };
-  }
-
+  if (!question) return { session, action: { text: 'تعذر العثور على السؤال.', quickActions: ['العودة للقائمة الرئيسية'] } };
   const selected = parseAnswer(rawAnswer);
-  if (selected === null) {
-    return {
-      session,
-      action: {
-        text: '⚠️ الرجاء اختيار إجابة بكتابة A أو B أو C أو D (أو 1، 2، 3، 4).',
-        quiz: toQuizPrompt(question),
-        quickActions: [],
-      },
-    };
-  }
-
+  if (selected === null) return { session, action: { text: '⚠️ الرجاء اختيار إجابة بكتابة A أو B أو C أو D (أو 1، 2، 3، 4).', quiz: toQuizPrompt(question), quickActions: [] } };
   const isCorrect = selected === question.correctIndex;
   const mistake = getMistakeById(question.commonMistakeId);
-
   let text: string;
   if (isCorrect) {
     text = `✅ إجابة صحيحة!\n\n${question.explanation}`;
   } else {
-    text =
-      `❌ إجابة خاطئة.\nالإجابة الصحيحة هي: ${question.options[question.correctIndex]}\n\n` +
-      `${question.explanation}`;
-    if (mistake) {
-      text += `\n\n⚠️ خطأ شائع: ${mistake.mistake}\n✅ التصحيح: ${mistake.correction}`;
-    }
+    text = `❌ إجابة خاطئة.\nالإجابة الصحيحة هي: ${question.options[question.correctIndex]}\n\n${question.explanation}`;
+    if (mistake) text += `\n\n⚠️ خطأ شائع: ${mistake.mistake}\n✅ التصحيح: ${mistake.correction}`;
   }
-
   const questions = getQuestionsForDomain(question.domainId);
   const idx = questions.findIndex((q) => q.id === question.id);
   const nextQ = idx >= 0 ? questions[idx + 1] : undefined;
   const nextId = nextQ ? nextQ.id : null;
-
   const correctCount = current.correctAnswers + (isCorrect ? 1 : 0);
   const total = current.totalQuestions;
-
   const newSession = recordQuizAnswer(session, isCorrect, question.topicId, nextId);
-
   let quiz: QuizPrompt | undefined;
   if (newSession.currentQuiz && nextQ) {
     quiz = toQuizPrompt(nextQ);
   } else {
     const pct = total > 0 ? Math.round((correctCount / total) * 100) : 0;
     const appreciation = pct === 100 ? 'ممتاز 🏆' : pct >= 50 ? 'جيد 👍' : 'يحتاج مراجعة 📖';
-    text +=
-      `\n\n📊 نتيجتك النهائية: ${correctCount}/${total} (${pct}%).\nالتقدير: ${appreciation}.`;
+    text += `\n\n📊 نتيجتك النهائية: ${correctCount}/${total} (${pct}%).\nالتقدير: ${appreciation}.`;
     quiz = undefined;
   }
-
-  const quickActions =
-    quiz === undefined
-      ? ['راجع أخطائي السابقة', 'اعاده الاختبار التشخيصي', 'العودة للقائمة الرئيسية']
-      : [];
-
+  const quickActions = quiz === undefined ? ['راجع أخطائي السابقة', 'اعاده الاختبار التشخيصي', 'العودة للقائمة الرئيسية'] : [];
   const reward = quiz === undefined ? { xpGained: correctCount * 10 } : undefined;
-
   return { session: newSession, action: { text, quiz, quickActions, reward } };
 }
 
@@ -426,155 +363,125 @@ export function startBossFight(session: BotSession): EngineResult {
   const domainId = session.activeDomainId;
   const scenarios = getBossScenariosForDomain(domainId);
   const domain = DOMAINS.find((d) => d.id === domainId);
-
-  if (domainId == null || !domain) {
-    return {
-      session,
-      action: { text: 'اختر مجالاً أولاً لبدء تحدي BAC.', quickActions: DOMAINS.map((d) => d.title) },
-    };
-  }
-
-  if (scenarios.length === 0) {
-    return { session, action: { text: 'لا يوجد تحدي BAC لهذا المجال بعد.', quickActions: ['العودة للقائمة الرئيسية'] } };
-  }
-
+  if (domainId == null || !domain) return { session, action: { text: 'اختر مجالاً أولاً لبدء تحدي BAC.', quickActions: DOMAINS.map((d) => d.title) } };
+  if (scenarios.length === 0) return { session, action: { text: 'لا يوجد تحدي BAC لهذا المجال بعد.', quickActions: ['العودة للقائمة الرئيسية'] } };
   const first = scenarios[0];
   const newSession = startBossFightSession(session, first.id, scenarios.length);
-
-  const text =
-    `⚔️ **تحدي BAC** — مجال ${domain.title}\n` +
-    `ستُطرح عليك ${scenarios.length} وضعيات مشكلة. أجب ثم قيّم إجابتك بنفسك.\n\n` +
-    `${first.situation}\n\n` +
-    `📝 اكتب إجابتك الكاملة، أو اختر «لا أعرف» لعرض التصحيح النموذجي.`;
-
-  return {
-    session: newSession,
-    action: { text, quickActions: ['لا أعرف'], sources: [{ type: 'domain', title: 'تحدي BAC' }] },
-  };
+  const text = `⚔️ **تحدي BAC** — مجال ${domain.title}\n` + `ستُطرح عليك ${scenarios.length} وضعيات مشكلة. أجب ثم قيّم إجابتك بنفسك.\n\n${first.situation}\n\n📝 اكتب إجابتك الكاملة، أو اختر «لا أعرف» لعرض التصحيح النموذجي.`;
+  return { session: newSession, action: { text, quickActions: ['لا أعرف'], sources: [{ type: 'domain' as SourceType, title: 'تحدي BAC' }] } };
 }
 
 function handleBossInput(session: BotSession, rawInput: string): EngineResult {
   const boss = session.boss;
-  if (!boss) {
-    return { session, action: { text: 'لا يوجد تحدي BAC جارٍ.', quickActions: ['العودة للقائمة الرئيسية'] } };
-  }
-
+  if (!boss) return { session, action: { text: 'لا يوجد تحدي BAC جارٍ.', quickActions: ['العودة للقائمة الرئيسية'] } };
   const scenario = getBossScenarioById(boss.scenarioId);
   if (!scenario) {
     const finished = finishBossFight(session);
     return { session: finished, action: { text: 'انتهى التحدي.', quickActions: ['العودة للقائمة الرئيسية'] } };
   }
-
   if (boss.phase === 'answer') {
-    const text =
-      `✅ **التصحيح النموذجي**\n\n${scenario.correction}\n\n` +
-      `🔑 **النقاط الأساسية:**\n${scenario.keyPoints.map((p) => `- ${p}`).join('\n')}\n\n` +
-      `قيّم إجابتك لمنح نقاطك:`;
-
+    const text = `✅ **التصحيح النموذجي**\n\n${scenario.correction}\n\n🔑 **النقاط الأساسية:**\n${scenario.keyPoints.map((p) => `- ${p}`).join('\n')}\n\nقيّم إجابتك لمنح نقاطك:`;
     const newSession: BotSession = { ...session, boss: { ...boss, phase: 'eval' } };
     saveSession(newSession);
-
-    return {
-      session: newSession,
-      action: {
-        text,
-        quickActions: ['إجابة كاملة (+10)', 'إجابة ناقصة (+5)', 'لم أجب (0)'],
-        sources: [{ type: 'domain', title: 'تحدي BAC' }],
-      },
-    };
+    return { session: newSession, action: { text, quickActions: ['إجابة كاملة (+10)', 'إجابة ناقصة (+5)', 'لم أجب (0)'], sources: [{ type: 'domain' as SourceType, title: 'تحدي BAC' }] } };
   }
-
-  // phase 'eval' → enregistrer la note et avancer
   const n = normalizeArabic(rawInput);
   let points = 0;
   if (n.includes(normalizeArabic('كاملة'))) points = 10;
   else if (n.includes(normalizeArabic('ناقصة'))) points = 5;
   else points = 0;
-
   const scenarios = getBossScenariosForDomain(session.activeDomainId);
   const idx = scenarios.findIndex((s) => s.id === boss.scenarioId);
   const next = idx >= 0 ? scenarios[idx + 1] : undefined;
-
   if (next) {
     const newSession = startBossStep(session, points, next.id, boss.questionIndex + 1);
-    const text =
-      `➡️ **السؤال التالي (${boss.questionIndex + 2}/${boss.totalQuestions})**\n\n${next.situation}\n\n` +
-      `📝 اكتب إجابتك أو اختر «لا أعرف».`;
-    return {
-      session: newSession,
-      action: { text, quickActions: ['لا أعرف'], sources: [{ type: 'domain', title: 'تحدي BAC' }] },
-    };
+    const text = `➡️ **السؤال التالي (${boss.questionIndex + 2}/${boss.totalQuestions})**\n\n${next.situation}\n\n📝 اكتب إجابتك أو اختر «لا أعرف».`;
+    return { session: newSession, action: { text, quickActions: ['لا أعرف'], sources: [{ type: 'domain' as SourceType, title: 'تحدي BAC' }] } };
   }
-
   const total = boss.score + points;
   const max = boss.totalQuestions * 10;
   const pct = max > 0 ? Math.round((total / max) * 100) : 0;
   const appreciation = pct >= 80 ? 'ممتاز 🏆' : pct >= 50 ? 'جيد 👍' : 'يحتاج مراجعة 📖';
-
   const newSession = finishBossFight(session);
-  const text =
-    `🏁 **انتهى تحدي BAC!**\n` +
-    `نتيجتك: ${total}/${max} نقطة (${pct}%).\n` +
-    `التقدير: ${appreciation}.`;
-
-  return {
-    session: newSession,
-    action: {
-      text,
-      quickActions: ['راجع أخطائي السابقة', 'العودة للقائمة الرئيسية'],
-      reward: { xpGained: total },
-      sources: [{ type: 'domain', title: 'تحدي BAC' }],
-    },
-  };
+  const text = `🏁 **انتهى تحدي BAC!**\nنتيجتك: ${total}/${max} نقطة (${pct}%).\nالتقدير: ${appreciation}.`;
+  return { session: newSession, action: { text, quickActions: ['راجع أخطائي السابقة', 'العودة للقائمة الرئيسية'], reward: { xpGained: total }, sources: [{ type: 'domain' as SourceType, title: 'تحدي BAC' }] } };
 }
 
 export function processStudentInput(session: BotSession, rawInput: string): EngineResult {
   const input = (rawInput || '').trim();
   const norm = normalizeArabic(input);
-
   const n = (s: string) => normalizeArabic(s);
 
   if (norm.includes(n('القائمة الرئيسية')) || norm.includes(n('العودة للقائمة')) || norm.includes(n('رجوع للقائمة'))) {
     const back: BotSession = { ...getDefaultSession(), mistakes: [...session.mistakes] };
     saveSession(back);
-    return {
-      session: back,
-      action: { text: '↩️ رجعنا إلى القائمة الرئيسية. اختر مجالاً لبدء جلسة مراجعة:', quickActions: DOMAINS.map((d) => d.title) },
-    };
+    return { session: back, action: { text: '↩️ رجعنا إلى القائمة الرئيسية. اختر مجالاً لبدء جلسة مراجعة:', quickActions: DOMAINS.map((d) => d.title) } };
   }
 
-  if (norm.includes(n('راجع أخطائي'))) {
-    return reviewMistakes(session);
-  }
+  if (norm.includes(n('راجع أخطائي'))) return reviewMistakes(session);
 
   if (OUT_OF_PROGRAM.some((k) => norm.includes(n(k)))) {
     return {
       session,
       action: {
+        confidence: 0,
         text: '❓ هذا السؤال خارج قاعدة علوم الطبيعة والحياة للبكالوريا. ركّز مراجعتك على المجالات الثلاثة: البروتينات والمناعة، التحولات الطاقوية، والتكتونية العامة.',
         quickActions: session.activeDomainId
           ? DOMAINS.find((d) => d.id === session.activeDomainId)?.quickActions || ['العودة للقائمة الرئيسية']
           : DOMAINS.map((d) => d.title),
-        sources: [{ type: 'out', title: 'خارج البرنامج' }],
+        sources: [{ type: 'out_of_scope' as SourceType, title: rawInput || input }],
       },
     };
   }
 
-  if (norm.includes(n('اختبار'))) {
-    return startDiagnostic(session);
+  // المنهجية (LIVRE MANHADJIYA) أولاً
+  const methodologyMatches = findBestMethodologyQA(input);
+  if (methodologyMatches.length > 0 && methodologyMatches[0].score >= 18) {
+    const qa = methodologyMatches[0].qa;
+    const text =
+      `🧭 **إجابة منهجية من كتاب المنهجية المحلي.**\n\n` +
+      `📌 **السؤال:** ${qa.question}\n\n` +
+      `✅ **الطريقة الصحيحة:**\n${qa.answer}\n\n` +
+      `🧩 **قالب جاهز:**\n${qa.template || '—'}\n\n` +
+      `🔑 **كلمات مفتاحية:** ${qa.keywords.join(' • ')}\n` +
+      `📖 **المصدر:** ${qa.sourceBook} (LIVRE MANHADJIYA.md)`;
+    return {
+      session,
+      action: {
+        confidence: methodologyMatches[0].score >= 50 ? 95 : 80,
+        text,
+        quickActions: ['كيف أحلل وثيقة؟', 'ما الفرق بين استخرج واستنتج؟', 'العودة للقائمة الرئيسية'],
+        sources: [{ type: 'methodology' as SourceType, title: qa.question }],
+      },
+    };
   }
 
-  if (norm.includes(n('تحدي bac')) || norm.includes(n('تحدي البكالوريا')) || norm.includes(n('تحدي الباك')) || norm.includes(n('boss'))) {
-    return startBossFight(session);
+  // بنك الأسئلة المستخرج من الكتب
+  const bookMatches = findBestBookQA(input);
+  if (bookMatches.length > 0 && bookMatches[0].score >= 18) {
+    const qa = bookMatches[0].qa;
+    const text =
+      `📚 **إجابة من بنك الأسئلة المستخرج من الكتب المرفقة.**\n\n` +
+      `🎯 **المحور:** ${qa.topic}\n\n` +
+      `📌 **السؤال:** ${qa.question}\n\n` +
+      `✅ **الجواب الدقيق:**\n${qa.answer}\n\n` +
+      `🔑 **كلمات مفتاحية:** ${qa.keywords.join(' • ')}\n` +
+      `📖 **المصدر:** ${qa.sourceBook}`;
+    return {
+      session,
+      action: {
+        confidence: bookMatches[0].score >= 50 ? 98 : 85,
+        text,
+        quickActions: qa.followUp ? [qa.followUp, 'العودة للقائمة الرئيسية'] : ['العودة للقائمة الرئيسية'],
+        sources: [{ type: 'book' as SourceType, title: qa.question }],
+      },
+    };
   }
 
-  if (session.mode === 'bac_challenge' && session.boss) {
-    return handleBossInput(session, input);
-  }
-
-  if (session.currentQuiz && (session.mode === 'quiz' || session.mode === 'diagnostic')) {
-    return gradeQuizAnswer(session, input);
-  }
+  if (norm.includes(n('اختبار'))) return startDiagnostic(session);
+  if (norm.includes(n('تحدي bac')) || norm.includes(n('تحدي البكالوريا')) || norm.includes(n('تحدي الباك')) || norm.includes(n('boss'))) return startBossFight(session);
+  if (session.mode === 'bac_challenge' && session.boss) return handleBossInput(session, input);
+  if (session.currentQuiz && (session.mode === 'quiz' || session.mode === 'diagnostic')) return gradeQuizAnswer(session, input);
 
   if (session.activeDomainId == null) {
     const domain = DOMAINS.find((d) => {
@@ -584,41 +491,90 @@ export function processStudentInput(session: BotSession, rawInput: string): Engi
     if (domain) return handleDomainClick(session, domain.id);
   }
 
-  const methodCard = findMethodologyCard(norm);
   const scienceCard = findBestKnowledgeCard(norm, session.activeDomainId);
 
-  if (methodCard && !scienceCard) {
-    const text = `🧭 ${methodCard.title}\n\n${methodCard.steps.join('\n')}`;
+  if (scienceCard) {
+    const microHit = findMicroAnswer(scienceCard, norm);
+    if (microHit) {
+      return {
+        session,
+        action: {
+          text: `🎯 **${scienceCard.title}**\n\n${microHit}`,
+          quickActions: filterQuickActions(scienceCard.relatedQuestions, norm),
+          sources: [{ type: 'internal_card' as SourceType, title: scienceCard.title }],
+        },
+      };
+    }
     return {
       session,
       action: {
-        text,
-        sources: [{ type: 'methodology', title: methodCard.title }],
-        quickActions: ['راجع أخطائي السابقة', 'العودة للقائمة الرئيسية'],
+        text: `🧩 **${scienceCard.title}**\n\n${scienceCard.shortAnswer}\n\n🔑 كلمات مفتاحية: ${scienceCard.keywords.join(' • ')}`,
+        quickActions: filterQuickActions(scienceCard.relatedQuestions, norm),
+        sources: [{ type: 'internal_card' as SourceType, title: scienceCard.title }],
       },
     };
   }
 
   const built = buildAnswer(norm, session.activeDomainId);
-  if (built) {
-    return { session, action: built };
-  }
+  if (built) return { session, action: built };
 
   const fallbackActions = session.activeDomainId
     ? DOMAINS.find((d) => d.id === session.activeDomainId)?.quickActions || ['العودة للقائمة الرئيسية']
     : DOMAINS.map((d) => d.title);
 
-  return {
-    session,
-    action: {
-      text: 'لم أجد إجابة دقيقة في قاعدتي المحلية. جرّب اختيار مجال، أو اطرح سؤالاً حول: البروتينات والمناعة، التحولات الطاقوية، أو التكتونية العامة.',
-      quickActions: fallbackActions,
-    },
-  };
+  return { session, action: { text: 'لم أجد إجابة دقيقة في قاعدتي المحلية. جرّب اختيار مجال، أو اطرح سؤالاً حول: البروتينات والمناعة، التحولات الطاقوية، أو التكتونية العامة.\n\n💡 أسئلة منهجية مقترحة:\n' + METHODOLOGY_SUGGESTIONS.map((s) => `• ${s}`).join('\n'), quickActions: fallbackActions } };
 }
 
 export function answerTutorQuestion(rawInput: string): TutorAction {
   return processStudentInput(getDefaultSession(), rawInput || '').action;
 }
 
-export { METHODOLOGY_CARDS };
+function pickRandomQuizForTopic(domainId: number, topicId: string): QuizQuestion | undefined {
+  const questions = getQuestionsForDomain(domainId);
+  const candidates = questions.filter((q) => q.topicId === topicId);
+  if (candidates.length === 0) return undefined;
+  return candidates[Math.floor(Math.random() * candidates.length)];
+}
+
+export function getDailyMission(session: BotSession): EngineResult {
+  const today = new Date().toISOString().split('T')[0];
+  if (session.lastMissionDate === today) {
+    return { session, action: { text: '✅ لقد أنجزت مهمة اليوم بنجاح! عُد غداً لمهمة جديدة، أو تابع مراجعتك بحرية.', quickActions: ['اختبار تشخيصي', 'العودة للقائمة الرئيسية'] } };
+  }
+
+  let targetTopicId: string | null = null;
+  let targetDomainId: number | null = session.activeDomainId;
+
+  if (session.mistakes.length > 0) {
+    targetTopicId = session.mistakes[0];
+  } else if (session.activeDomainId) {
+    const cards = KNOWLEDGE_CARDS.filter((c) => c.domainId === session.activeDomainId);
+    if (cards.length > 0) targetTopicId = cards[0].id;
+  } else {
+    if (KNOWLEDGE_CARDS.length > 0) {
+      targetTopicId = KNOWLEDGE_CARDS[0].id;
+      targetDomainId = KNOWLEDGE_CARDS[0].domainId;
+    }
+  }
+
+  if (!targetTopicId) {
+    return { session, action: { text: '🎯 مهمة اليوم: اختر مجالاً أولاً، ثم ابدأ اختباراً تشخيصياً سريعاً لتفعيل المهمة!', quickActions: DOMAINS.map((d) => d.title) } };
+  }
+
+  const card = getCardById(targetTopicId);
+  if (!card) return { session, action: { text: 'خطأ في تحميل المهمة.', quickActions: ['العودة للقائمة الرئيسية'] } };
+
+  const domain = DOMAINS.find((d) => d.id === (targetDomainId ?? card.domainId));
+  const quiz = pickRandomQuizForTopic(card.domainId, card.id);
+  const text = `🎯 **مهمة اليوم (3 دقائق):**\nالمجال: **${domain?.title || ''}**\n\nركّز على: **${card.title}**\n\n1. اقرأ بطاقة المعرفة أدناه.\n2. اجب على سؤال التثبيت.\n\nالمكافأة: +15 XP وتعبئة الرادار! ⚡\n\n---\n🧩 **${card.title}**\n\n${card.shortAnswer}\n\n🔑 ${card.keywords.join(' • ')}`;
+
+  return { session, action: { text, quiz: quiz ? toQuizPrompt(quiz) : undefined, quickActions: quiz ? [] : ['العودة للقائمة الرئيسية'], sources: [{ type: 'internal_card' as SourceType, title: card.title }] } };
+}
+
+export const METHODOLOGY_SUGGESTIONS: string[] = [
+  'كيف أحلل وثيقة؟',
+  'اعطني قالب فرضية',
+  'ما الفرق بين استخرج واستنتج؟',
+  'كيف أعلل أو أبرر؟',
+  'كيف أكتب نصا علميا؟',
+];

@@ -524,6 +524,7 @@ export default function App() {
                 <AITutorView
                   onBackToDashboard={() => setCurrentTab('home')}
                   onAwardXP={handleAwardTutorXP}
+                  globalProgress={progress}
                 />
               )}
 

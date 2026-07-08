@@ -1,3 +1,5 @@
+import { normalizeArabic } from './utils/arabicNormalize';
+
 export interface BookTutorQA {
   id: string;
   unitId: number;
@@ -143,3 +145,27 @@ export const BOOK_TUTOR_QA: BookTutorQA[] = [
     followUp: 'ما هي مستويات البنية الفراغية للبروتين؟',
   },
 ];
+
+export interface BookMatch {
+  qa: BookTutorQA;
+  score: number;
+}
+
+export function findBestBookQA(query: string): BookMatch[] {
+  const normRaw = normalizeArabic(query);
+  if (!normRaw) return [];
+  const norm = normRaw.replace(/[؟?.!،,]/g, ' ').replace(/\s+/g, ' ').trim();
+  return BOOK_TUTOR_QA.map((qa) => {
+    let score = 0;
+    const qn = normalizeArabic(qa.question).replace(/[؟?.!،,]/g, ' ').replace(/\s+/g, ' ').trim();
+    if (norm === qn) score += 60;
+    else if (norm.includes(qn) || qn.includes(norm)) score += 40;
+    for (const kw of qa.keywords) {
+      const nk = normalizeArabic(kw);
+      if (nk.length >= 3 && norm.includes(nk)) score += 6;
+    }
+    return { qa, score };
+  })
+    .filter((x) => x.score >= 12)
+    .sort((a, b) => b.score - a.score);
+}

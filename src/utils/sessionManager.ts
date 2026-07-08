@@ -23,6 +23,10 @@ export interface BotSession {
   currentQuiz: QuizState | null;
   boss: BossState | null;
   mistakes: string[];
+  completedBac: string[];
+  lastMissionDate: string | null;
+  lastMissionTopic: string | null;
+  lastCardId: string | null;
   lastInteraction: number;
 }
 
@@ -36,6 +40,10 @@ const defaultSession: BotSession = {
   currentQuiz: null,
   boss: null,
   mistakes: [],
+  completedBac: [],
+  lastMissionDate: null,
+  lastMissionTopic: null,
+  lastCardId: null,
   lastInteraction: Date.now(),
 };
 
@@ -195,6 +203,17 @@ export function finishBossFight(session: BotSession): BotSession {
     boss: null,
   };
 
+  saveSession(newSession);
+  return newSession;
+}
+
+export function completeDailyMission(session: BotSession, topicId: string): BotSession {
+  const today = new Date().toISOString().split('T')[0];
+  const newSession: BotSession = {
+    ...session,
+    lastMissionDate: today,
+    lastMissionTopic: topicId,
+  };
   saveSession(newSession);
   return newSession;
 }
