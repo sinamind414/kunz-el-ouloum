@@ -219,6 +219,21 @@ export default function App() {
     setCurrentTab('review');
   };
 
+  // Award XP earned inside the Smart Tutor (diagnostic QCM / Boss Fight BAC)
+  const handleAwardTutorXP = (xpGained: number) => {
+    const addedMinutes = Math.floor(Math.random() * 3) + 2;
+    setProgress((prev) => {
+      const updatedProgress: UserProgress = {
+        ...prev,
+        xp: prev.xp + xpGained,
+        studyMinutes: prev.studyMinutes + addedMinutes,
+      };
+      saveToLocalStorage(units, flashcards, updatedProgress);
+      return updatedProgress;
+    });
+    updateLastStudyTime();
+  };
+
   const handleQuizComplete = (score: number, total: number) => {
     const activeUnit = units.find(u => u.id === activeQuizUnitId);
     if (!activeUnit) return;
@@ -506,8 +521,9 @@ export default function App() {
               )}
 
               {currentTab === 'chat' && (
-                <AITutorView 
+                <AITutorView
                   onBackToDashboard={() => setCurrentTab('home')}
+                  onAwardXP={handleAwardTutorXP}
                 />
               )}
 

@@ -1,572 +1,624 @@
-import { TUTOR_KNOWLEDGE } from '../tutorKnowledge';
-import { SVT_QUIZ_QUESTIONS, INITIAL_UNITS, SVT_FLASHCARDS } from '../data';
-import { LESSON_LIBRARY } from '../lessonData';
-import { BOOK_TUTOR_QA, BookTutorQA } from '../bookTutorQA';
-import { METHODOLOGY_QA, MethodologyQA } from '../methodologyKnowledge';
-import { KNOWLEDGE_CARDS, KnowledgeCard } from '../knowledgeCards';
+import {
+  loadSession,
+  resetSession,
+  saveSession,
+  getDefaultSession,
+  startDomainSession,
+  startQuiz,
+  recordQuizAnswer,
+  startBossFightSession,
+  startBossStep,
+  finishBossFight,
+  type BotSession,
+} from './sessionManager';
+import {
+  DOMAINS,
+  KNOWLEDGE_CARDS,
+  getQuestionsForDomain,
+  getQuestionById,
+  getMistakeById,
+  getCardById,
+  getBossScenariosForDomain,
+  getBossScenarioById,
+  type KnowledgeCard,
+  type QuizQuestion,
+} from '../data/smartBotData';
+import { METHODOLOGY_CARDS, findMethodologyCard } from '../data/methodologyKnowledge';
+import { TUTOR_KNOWLEDGE, type TutorKnowledgeChunk } from '../tutorKnowledge';
+import { BOOK_TUTOR_QA, type BookTutorQA } from '../bookTutorQA';
+import {
+  KNOWLEDGE_CARDS as LEGACY_KNOWLEDGE_CARDS,
+  type KnowledgeCard as LegacyKnowledgeCard,
+} from '../knowledgeCards';
+import { normalizeArabic, calculateKeywordScore } from './arabicNormalize';
 
-export interface TutorSource {
-  id: string;
+export { normalizeArabic, calculateKeywordScore } from './arabicNormalize';
+
+export type SourceType = 'card' | 'book' | 'opus' | 'methodology' | 'domain' | 'quiz' | 'out';
+
+export interface SourceRef {
+  type: SourceType;
   title: string;
-  unitTitle: string;
-  type: 'opus' | 'lesson' | 'qcm' | 'book' | 'methodology' | 'card';
-  score: number;
 }
+
+export interface QuizPrompt {
+  id: string;
+  question: string;
+  options: string[];
+  correctIndex: number;
+  explanation: string;
+}
+
+export interface TutorAction {
+  text: string;
+  quickActions?: string[];
+  quiz?: QuizPrompt;
+  sources?: SourceRef[];
+  reward?: { xpGained: number };
+}
+
+export interface EngineResult {
+  session: BotSession;
+  action: TutorAction;
+}
+
+const OUT_OF_PROGRAM = [
+  'كرة القدم',
+  'فريق',
+  'لاعب',
+  'مباراه',
+  'فيلم',
+  'موسيقى',
+  'سياره',
+  'سفر',
+  'طقس',
+  'اكل',
+  'طعام',
+];
+
+function toQuizPrompt(q: QuizQuestion): QuizPrompt {
+  return {
+    id: q.id,
+    question: q.question,
+    options: q.options,
+    correctIndex: q.correctIndex,
+    explanation: q.explanation,
+  };
+}
+
+const DOMAIN_UNITS: Record<number, [number, number]> = {
+  1: [1, 5],
+  2: [6, 8],
+  3: [9, 11],
+};
 
 interface SearchChunk {
   id: string;
+  type: 'card' | 'book' | 'opus';
+  title: string;
   unitId: number;
   unitTitle: string;
-  title: string;
-  content: string;
-  keywords: string[];
-  type: 'opus' | 'lesson' | 'qcm' | 'book' | 'methodology' | 'card';
-  normalizedTitle?: string;
-  normalizedContent?: string;
+  text: string;
+  sourceLabel?: string;
+  followUp?: string;
+  normTitle: string;
+  normAliases: string[];
+  normKeywords: string[];
 }
 
-const UNIT_TITLES: Record<number, string> = {};
-for (const c of TUTOR_KNOWLEDGE) {
-  if (!UNIT_TITLES[c.unitId]) UNIT_TITLES[c.unitId] = c.unitTitle;
-}
-function unitTitle(unitId: number): string {
-  return UNIT_TITLES[unitId] || `وحدة ${unitId}`;
-}
-
-const methodologyChunks: SearchChunk[] = METHODOLOGY_QA.map((qa) => ({
-  id: qa.id,
-  unitId: 0,
-  unitTitle: 'منهجية البكالوريا',
-  title: qa.question,
-  content: `${qa.answer}\n${qa.template || ''}\nSource: ${qa.sourceBook}`,
-  keywords: qa.keywords,
-  normalizedTitle: normalizeArabic(`${qa.question} ${qa.category}`),
-  normalizedContent: normalizeArabic(`${qa.question} ${qa.answer} ${qa.template || ''} ${qa.keywords.join(' ')}`),
-  type: 'methodology' as const,
-}));
-
-const bookChunks: SearchChunk[] = BOOK_TUTOR_QA.map((qa) => ({
-  id: qa.id,
-  unitId: qa.unitId,
-  unitTitle: unitTitle(qa.unitId),
-  title: qa.question,
-  content: `${qa.answer}\nSource: ${qa.sourceBook}`,
-  keywords: qa.keywords,
-  normalizedTitle: normalizeArabic(`${qa.question} ${qa.topic}`),
-  normalizedContent: normalizeArabic(`${qa.question} ${qa.answer} ${qa.topic} ${qa.keywords.join(' ')}`),
-  type: 'book' as const,
-}));
-
-const opusChunks: SearchChunk[] = TUTOR_KNOWLEDGE.map((c) => ({
+const LEGACY_CHUNKS: SearchChunk[] = LEGACY_KNOWLEDGE_CARDS.map((c: LegacyKnowledgeCard) => ({
   id: c.id,
+  type: 'card',
+  title: c.title,
+  unitId: c.unitId,
+  unitTitle: c.title,
+  text: c.shortAnswer,
+  sourceLabel: c.source,
+  normTitle: normalizeArabic(c.title),
+  normAliases: c.aliases.map((a) => normalizeArabic(a)),
+  normKeywords: c.keywords.map((k) => normalizeArabic(k)),
+}));
+
+const BOOK_CHUNKS: SearchChunk[] = BOOK_TUTOR_QA.map((q: BookTutorQA) => ({
+  id: q.id,
+  type: 'book',
+  title: q.question,
+  unitId: q.unitId,
+  unitTitle: q.topic,
+  text: q.answer,
+  sourceLabel: q.sourceBook,
+  followUp: q.followUp,
+  normTitle: normalizeArabic(q.question),
+  normAliases: [normalizeArabic(q.topic)],
+  normKeywords: q.keywords.map((k) => normalizeArabic(k)),
+}));
+
+const OPUS_CHUNKS: SearchChunk[] = TUTOR_KNOWLEDGE.map((c: TutorKnowledgeChunk) => ({
+  id: c.id,
+  type: 'opus',
+  title: c.title,
   unitId: c.unitId,
   unitTitle: c.unitTitle,
-  title: c.title,
-  content: c.content,
-  keywords: c.keywords,
-  normalizedTitle: normalizeArabic(c.title),
-  normalizedContent: normalizeArabic(`${c.title} ${c.content} ${c.keywords.join(' ')}`),
-  type: String(c.id).includes('lesson') ? 'lesson' as const : 'opus' as const,
+  text: c.content,
+  normTitle: normalizeArabic(c.title),
+  normAliases: [],
+  normKeywords: c.keywords.map((k) => normalizeArabic(k)),
 }));
 
-const cardChunks: SearchChunk[] = KNOWLEDGE_CARDS.map((card) => ({
-  id: card.id,
-  unitId: card.unitId,
-  unitTitle: card.unitId === 0 ? 'منهجية البكالوريا' : unitTitle(card.unitId),
-  title: card.title,
-  content: `${card.shortAnswer}\n${card.relatedQuestions.join('\n')}\nSource: ${card.source}`,
-  keywords: [...card.keywords, ...card.aliases],
-  normalizedTitle: normalizeArabic(`${card.title} ${card.aliases.join(' ')}`),
-  normalizedContent: normalizeArabic(`${card.title} ${card.aliases.join(' ')} ${card.shortAnswer} ${card.keywords.join(' ')}`),
-  type: 'card' as const,
-}));
+const ALL_CHUNKS: SearchChunk[] = [...LEGACY_CHUNKS, ...BOOK_CHUNKS, ...OPUS_CHUNKS];
 
-const ALL_CHUNKS: SearchChunk[] = [
-  ...cardChunks,
-  ...methodologyChunks,
-  ...bookChunks,
-  ...opusChunks,
-];
-
-function scoreSearchChunk(query: string, chunk: SearchChunk): number {
-  const nq = normalizeArabic(query);
-  const nTitle = chunk.normalizedTitle || normalizeArabic(chunk.title);
-  const nContent = chunk.normalizedContent || normalizeArabic(chunk.content);
-  const nKeywords = chunk.keywords.map(normalizeArabic);
-
-  const qTokens = tokenize(nq);
-  const titleTokens = tokenize(nTitle);
-  const contentTokens = tokenize(nContent);
-
+function scoreChunk(norm: string, ch: SearchChunk, activeDomainId: number | null): number {
   let score = 0;
-
-  if (nTitle.includes(nq) || nContent.includes(nq)) {
-    score += 30;
+  if (ch.normTitle && norm.includes(ch.normTitle)) score += 80;
+  for (const alias of ch.normAliases) {
+    if (alias && norm.includes(alias)) score += 60;
   }
-
-  const titleOverlap = qTokens.filter((t) => titleTokens.includes(t)).length;
-  if (titleOverlap > 0) score += titleOverlap * 10;
-
-  const keywordOverlap = qTokens.filter((t) => nKeywords.includes(t)).length;
-  if (keywordOverlap > 0) score += keywordOverlap * 7;
-
-  const contentOverlap = qTokens.filter((t) => contentTokens.includes(t)).length;
-  if (contentOverlap > 0) score += contentOverlap * 2;
-
+  for (const kw of ch.normKeywords) {
+    if (kw && kw.length >= 3 && norm.includes(kw)) score += 6;
+  }
+  if (activeDomainId != null) {
+    const range = DOMAIN_UNITS[activeDomainId];
+    if (range && ch.unitId >= range[0] && ch.unitId <= range[1]) score += 10;
+  }
+  if (ch.type === 'opus') score *= 0.7;
   return score;
 }
 
-function findBestKnowledgeCards(query: string): Array<KnowledgeCard & { score: number; exact: boolean }> {
-  const tokens = tokenize(query);
-  const queryNorm = normalizeArabic(query);
-  if (tokens.length === 0) return [];
-
-  return KNOWLEDGE_CARDS.map((card) => {
-    const aliasesNorm = card.aliases.map(normalizeArabic);
-    const titleNorm = normalizeArabic(card.title);
-    const contentNorm = normalizeArabic(`${card.title} ${card.aliases.join(' ')} ${card.shortAnswer} ${card.keywords.join(' ')}`);
-
-    const exact =
-      aliasesNorm.some((alias) => queryNorm.includes(alias) || alias.includes(queryNorm)) ||
-      queryNorm.includes(titleNorm);
-
-    let score = exact ? 100 : 0;
-
-    for (const token of tokens) {
-      if (titleNorm.includes(token)) score += 14;
-      if (aliasesNorm.some((alias) => alias.includes(token) || token.includes(alias))) score += 12;
-      if (card.keywords.some((keyword) => normalizeArabic(keyword).includes(token) || token.includes(normalizeArabic(keyword)))) score += 10;
-      if (contentNorm.includes(token)) score += 2;
-    }
-
-    return { ...card, score, exact };
-  })
-    .filter((card) => card.score > 0)
-    .sort((a, b) => b.score - a.score);
+export function searchAllBases(norm: string, activeDomainId: number | null): SearchChunk[] {
+  return ALL_CHUNKS.map((ch) => ({ ch, score: scoreChunk(norm, ch, activeDomainId) }))
+    .filter((x) => x.score >= 12)
+    .sort((a, b) => b.score - a.score)
+    .map((x) => x.ch);
 }
 
-function hasScientificContentIntent(query: string): boolean {
-  const normalized = normalizeArabic(query);
-  return /الكره الارضيه|بنيه الارض|بنيه الكره|طبقات الارض|الاغلفه الداخليه|الموجات الزلزاليه|موهو|غوتنبرغ|ليمان|الغوص|التكتونيه|الصفائح|الاستنساخ|الترجمه|الريبوزوم|البروتين|الانزيم|المناعه|التركيب الضوئي|التنفس|التخمر/.test(normalized);
-}
+function buildAnswer(norm: string, activeDomainId: number | null): TutorAction | null {
+  const scienceCard = findBestKnowledgeCard(norm, activeDomainId);
+  const hits = searchAllBases(norm, activeDomainId);
 
-function hasMethodologyIntent(query: string): boolean {
-  const normalized = normalizeArabic(query);
-  return /منهجي|منهجيه|تعليمه|مهمه|قالب|كيف احلل|كيف افسر|كيف اقترح|كيف اكتب|كيف اعلق|كيف اقارن|كيف اعلل|كيف ابرر|استخرج|استنتج|فرضيه|نصا علميا|نص علميا|كلمات مفتاحيه|استدلال علمي|مسعي علمي|مشكل علمي/.test(normalized);
-}
+  if (!scienceCard && hits.length === 0) return null;
 
-function findRelatedQuiz(query: string, unitId?: number): TutorQuizPrompt | undefined {
-  const res = findBestQuiz(query);
-  if (!res) return undefined;
-  return toQuizPrompt(res.question);
-}
+  const sources: SourceRef[] = [];
+  const parts: string[] = [];
+  const quickActions: string[] = [];
 
-function toQuizPrompt(question: typeof SVT_QUIZ_QUESTIONS[number]): TutorQuizPrompt {
-  return {
-    id: question.id,
-    questionText: question.questionText,
-    options: question.options,
-    correctAnswerIndex: question.correctAnswerIndex,
-    explanation: question.explanation,
-    unitId: question.unitId,
-  };
-}
-
-function findBestMethodologyQA(query: string): { qa: MethodologyQA; score: number } | null {
-  let best: { qa: MethodologyQA; score: number } | null = null;
-  for (const qa of METHODOLOGY_QA) {
-    const score = scoreSearchChunk(query, {
-      id: qa.id,
-      unitId: 0,
-      unitTitle: 'منهجية البكالوريا',
-      title: qa.question,
-      content: `${qa.answer} ${qa.template || ''} ${qa.keywords.join(' ')}`,
-      keywords: qa.keywords,
-      normalizedTitle: normalizeArabic(qa.question),
-      normalizedContent: normalizeArabic(`${qa.question} ${qa.answer} ${qa.template || ''} ${qa.keywords.join(' ')}`),
-      type: 'methodology',
-    });
-    if (!best || score > best.score) best = { qa, score };
+  if (scienceCard) {
+    parts.push(
+      `🧩 **${scienceCard.title}**\n\n${scienceCard.shortAnswer}\n\n🔑 كلمات مفتاحية: ${scienceCard.keywords.join(' • ')}`
+    );
+    sources.push({ type: 'card', title: scienceCard.title });
+    quickActions.push(...scienceCard.relatedQuestions);
   }
-  return best;
-}
 
-function findBestBookQA(query: string): { qa: BookTutorQA; score: number } | null {
-  let best: { qa: BookTutorQA; score: number } | null = null;
-  for (const qa of BOOK_TUTOR_QA) {
-    const score = scoreSearchChunk(query, {
-      id: qa.id,
-      unitId: qa.unitId,
-      unitTitle: unitTitle(qa.unitId),
-      title: qa.question,
-      content: `${qa.answer} ${qa.topic} ${qa.keywords.join(' ')}`,
-      keywords: qa.keywords,
-      normalizedTitle: normalizeArabic(qa.question),
-      normalizedContent: normalizeArabic(`${qa.question} ${qa.answer} ${qa.topic} ${qa.keywords.join(' ')}`),
-      type: 'book',
-    });
-    if (!best || score > best.score) best = { qa, score };
+  const used = new Set(scienceCard ? [scienceCard.title] : []);
+  let bookAdded = false;
+
+  for (const h of hits) {
+    if (used.has(h.title) || h.type === 'opus') continue;
+    const label = h.type === 'book' ? '📖 من الكتاب المدرسي' : '📝 بطاقة معرفية';
+    const snippet = h.text.length > 300 ? `${h.text.slice(0, 297)}…` : h.text;
+    parts.push(`${label}:\n${snippet}${h.sourceLabel ? `\n\n🔗 المصدر: ${h.sourceLabel}` : ''}`);
+    sources.push({ type: h.type, title: h.title });
+    used.add(h.title);
+    if (h.followUp) quickActions.push(h.followUp);
+    if (h.type === 'book') bookAdded = true;
+    if (sources.length >= 3) break;
   }
-  return best;
-}
 
-export interface TutorQuizPrompt {
-  id: number;
-  questionText: string;
-  options: string[];
-  correctAnswerIndex: number;
-  explanation: string;
-  unitId: number;
-}
-
-export interface SmartTutorReply {
-  text: string;
-  confidence: number;
-  sources: TutorSource[];
-  quickActions: string[];
-  quiz?: TutorQuizPrompt;
-}
-
-export function normalizeArabic(input: string): string {
-  return input
-    .toLowerCase()
-    .replace(/[\u064B-\u065F\u0670\u0640]/g, '')
-    .replace(/[إأآا]/g, 'ا')
-    .replace(/ى/g, 'ي')
-    .replace(/ة/g, 'ه')
-    .replace(/ؤ/g, 'و')
-    .replace(/ئ/g, 'ي')
-    .replace(/[^\u0600-\u06ffA-Za-z0-9+\s]/g, ' ')
-    .replace(/\s+/g, ' ')
-    .trim();
-}
-
-function tokenize(text: string): string[] {
-  return text.split(/[\s\-،.؛:!?؟]+/).filter(w => w.length > 1);
-}
-
-function findBestQuiz(query: string): { question: typeof SVT_QUIZ_QUESTIONS[0]; score: number } | null {
-  const nq = normalizeArabic(query);
-  let best: { question: typeof SVT_QUIZ_QUESTIONS[0]; score: number } | null = null;
-
-  for (const q of SVT_QUIZ_QUESTIONS) {
-    const nqText = normalizeArabic(q.questionText);
-    const nExp = normalizeArabic(q.explanation);
-    let score = 0;
-
-    if (nqText.includes(nq)) score += 20;
-    if (nExp.includes(nq)) score += 15;
-
-    const qTokens = tokenize(nq);
-    const qtTokens = tokenize(nqText);
-    const qeTokens = tokenize(nExp);
-    score += qTokens.filter(t => qtTokens.includes(t)).length * 5;
-    score += qTokens.filter(t => qeTokens.includes(t)).length * 3;
-
-    if (score >= 15 && (!best || score > best.score)) {
-      best = { question: q, score };
+  if (!bookAdded) {
+    const opus = hits.find((h) => h.type === 'opus' && !used.has(h.title));
+    if (opus) {
+      const snippet = opus.text.length > 240 ? `${opus.text.slice(0, 237)}…` : opus.text;
+      if (snippet.trim().length > 40) {
+        parts.push(`📚 من الدرس (${opus.unitTitle}):\n${snippet}`);
+        sources.push({ type: 'opus', title: opus.title });
+      }
     }
   }
 
-  return best;
+  const text = parts.join('\n\n');
+  const qa = Array.from(
+    new Set([...quickActions, 'راجع أخطائي السابقة', 'العودة للقائمة الرئيسية'])
+  );
+
+  return { text, sources, quickActions: qa };
 }
 
-function buildReply(
-  query: string,
-  chunks: { chunk: SearchChunk; score: number }[],
-  quizResult: { question: typeof SVT_QUIZ_QUESTIONS[0]; score: number } | null,
-  fallbackText?: string
-): SmartTutorReply {
-  const sources: TutorSource[] = [];
-  const seen = new Set<string>();
+function parseAnswer(raw: string): number | null {
+  const t = (raw || '').trim().toLowerCase();
+  const letterMap: Record<string, number> = { a: 0, b: 1, c: 2, d: 3 };
+  if (t in letterMap) return letterMap[t];
+  if (/^[1-4]$/.test(t)) return Number(t) - 1;
+  const arabicMap: Record<string, number> = { ا: 0, ب: 1, ج: 2, د: 3 };
+  if (t in arabicMap) return arabicMap[t];
+  return null;
+}
 
-  chunks.forEach(({ chunk }) => {
-    if (!seen.has(chunk.id)) {
-      seen.add(chunk.id);
-      sources.push({
-        id: chunk.id,
-        title: chunk.title,
-        unitTitle: chunk.unitTitle,
-        type: chunk.type,
-        score: chunk.type === 'methodology' ? 5 : chunk.type === 'book' ? 4 : 3,
-      });
-    }
-  });
-
-  if (quizResult) {
-    const unit = INITIAL_UNITS.find(u => u.id === quizResult.question.unitId);
-    sources.unshift({
-      id: `qcm_${quizResult.question.id}`,
-      title: `سؤال QCM: ${quizResult.question.questionText.substring(0, 50)}...`,
-      unitTitle: unit?.title || `وحدة ${quizResult.question.unitId}`,
-      type: 'qcm',
-      score: quizResult.score,
-    });
+export function handleDomainClick(session: BotSession, domainId: number): EngineResult {
+  const domain = DOMAINS.find((d) => d.id === domainId);
+  if (!domain) {
+    return {
+      session: resetSession(),
+      action: { text: 'مجال غير معروف. اختر مجالاً من القائمة.', quickActions: DOMAINS.map((d) => d.title) },
+    };
   }
 
-  let text = '';
-  let confidence = 0;
+  const newSession = startDomainSession(domainId, session.mistakes);
+  const cards = KNOWLEDGE_CARDS.filter((c) => c.domainId === domainId);
 
-  if (chunks.length > 0) {
-    const best = chunks[0];
-    confidence = Math.min(100, Math.round((best.score / 50) * 100));
-    text = best.chunk.content;
-
-    if (text.length > 800) {
-      text = text.substring(0, 800) + '...';
-    }
-  } else if (quizResult) {
-    confidence = 70;
-    text = quizResult.question.explanation;
-  } else if (fallbackText) {
-    confidence = 30;
-    text = fallbackText;
-  } else {
-    confidence = 0;
-    text = 'هذا السؤال خارج قاعدة علوم الطبيعة والحياة للبكالوريا. ركز مراجعتك على وحدات البرنامج: تركيب البروتين، التحولات الطاقوية، والتكتونية العامة.';
-  }
+  const text =
+    `📚 اخترت مجال: **${domain.title}**\n${domain.subtitle}\n\n` +
+    `المواضيع المتاحة للمراجعة:\n` +
+    cards.map((c, i) => `${i + 1}. ${c.title}`).join('\n') +
+    `\n\nابدأ باختبار تشخيصي، أو راجع موضوعاً مباشرةً من القائمة أدناه.`;
 
   const quickActions = [
-    'اشرح آليات الاستنساخ',
-    'اختبرني في الترجمة والريبوزوم',
-    'فسر تأثير pH على النشاط الإنزيمي',
-    'اشرح الاستجابة المناعية الخلطية',
-    'ما دور LT4 في المناعة؟',
-    'اشرح المرحلة الكيميوضوئية',
-    'قارن بين التنفس والتخمر',
-    'اشرح الغوص والتكتونية',
-    'كيف أحلل وثيقة؟',
-    'اعطني قالب فرضية',
-    'ما الفرق بين استخرج واستنتج؟',
-    'كيف أعلل أو أبرر؟',
-    'كيف أكتب نصا علميا؟',
+    'اختبار تشخيصي',
+    'تحدي BAC',
+    ...cards.map((c) => `راجع ${c.title}`),
+    'راجع أخطائي السابقة',
+    'العودة للقائمة الرئيسية',
   ];
 
-  return {
-    text,
-    confidence,
-    sources: sources.slice(0, 5),
-    quickActions,
-    quiz: quizResult ? {
-      id: quizResult.question.id,
-      questionText: quizResult.question.questionText,
-      options: quizResult.question.options,
-      correctAnswerIndex: quizResult.question.correctAnswerIndex,
-      explanation: quizResult.question.explanation,
-      unitId: quizResult.question.unitId,
-    } : undefined,
-  };
+  return { session: newSession, action: { text, quickActions } };
 }
 
-function isOutOfProgram(query: string): boolean {
-  const outKeywords = ['كرة القدم', 'فريق', 'لاعب', 'مباراة', 'فيلم', 'موسيقى', 'سيارة', 'سفر', 'طقس', 'أكل', 'طعام'];
-  const nq = normalizeArabic(query);
-  return outKeywords.some(k => nq.includes(normalizeArabic(k)));
-}
+export function findBestKnowledgeCard(input: string, activeDomainId: number | null): KnowledgeCard | null {
+  const norm = normalizeArabic(input);
+  if (!norm) return null;
 
-export function answerTutorQuestion(query: string): SmartTutorReply {
-  const trimmed = query.trim();
-  if (!trimmed) {
-    return {
-      text: 'يرجى كتابة سؤال واضح حول مقرر العلوم الطبيعية للحياة.',
-      confidence: 0,
-      sources: [],
-      quickActions: getTutorQuickSuggestions(),
-    };
-  }
+  let best: KnowledgeCard | null = null;
+  let bestScore = 0;
 
-  if (isOutOfProgram(trimmed)) {
-    return {
-      text: 'هذا السؤال خارج قاعدة علوم الطبيعة والحياة للبكالوريا. ركز مراجعتك على وحدات البرنامج: تركيب البروتين، التحولات الطاقوية، والتكتونية العامة.',
-      confidence: 0,
-      sources: [],
-      quickActions: getTutorQuickSuggestions(),
-    };
-  }
+  for (const card of KNOWLEDGE_CARDS) {
+    let score = 0;
 
-  const cardMatches = findBestKnowledgeCards(trimmed);
+    let bestAliasLen = 0;
+    for (const alias of card.aliases) {
+      const na = normalizeArabic(alias);
+      if (na && norm.includes(na)) {
+        score += 100 + na.length;
+        if (na.length > bestAliasLen) bestAliasLen = na.length;
+      }
+    }
 
-  if (cardMatches.length > 0 && (cardMatches[0].exact || cardMatches[0].score >= 26)) {
-    const main = cardMatches[0];
-    const quiz = findRelatedQuiz(`${main.title} ${main.shortAnswer}`, main.unitId || undefined);
+    const nt = normalizeArabic(card.title);
+    if (nt && norm.includes(nt)) score += 50;
 
-    const text = [
-      '🧩 **بطاقة معرفة دقيقة من قاعدة كنز العلوم.**',
-      '',
-      `🎯 **المحور:** ${main.unitId === 0 ? 'منهجية البكالوريا' : unitTitle(main.unitId)}`,
-      `📌 **الموضوع:** ${main.title}`,
-      '',
-      '✅ **الجواب المختصر الموثوق:**',
-      main.shortAnswer,
-      '',
-      `🔑 **كلمات مفتاحية:** ${main.keywords.slice(0, 10).join(' • ')}`,
-      `📖 **المصدر:** ${main.source}`,
-      main.relatedQuestions.length ? `\nتابع بهذا: ${main.relatedQuestions.join(' | ')}` : '',
-      '',
-      '🎮 إذا أردت التثبيت، جرّب سؤال التدريب بالأسفل أو اختر سؤالاً مرتبطاً.'
-    ].filter(Boolean).join('\n');
+    score += calculateKeywordScore(norm, card.keywords) * 6;
 
-    return {
-      text,
-      confidence: Math.min(100, Math.max(85, Math.round(main.score))),
-      sources: [
-        {
-          id: main.id,
-          title: main.title,
-          unitTitle: main.unitId === 0 ? 'منهجية البكالوريا' : unitTitle(main.unitId),
-          type: 'card',
-          score: main.score
-        }
-      ],
-      quickActions: main.relatedQuestions.slice(0, 4),
-      quiz,
-    };
-  }
+    if (activeDomainId != null && card.domainId === activeDomainId) score += 20;
 
-  const methodologyMatch = findBestMethodologyQA(trimmed);
-  const bookMatch = findBestBookQA(trimmed);
-
-  const methodologyMatches =
-    hasMethodologyIntent(trimmed) && !hasScientificContentIntent(trimmed)
-      ? methodologyMatch
-      : null;
-
-  const methodStrong = !!methodologyMatches && methodologyMatches.score >= 25;
-  const methodWeak = !!methodologyMatches && methodologyMatches.score >= 18;
-  const bookOk = !!bookMatch && bookMatch.score >= 18;
-
-  if (methodStrong || (methodWeak && !bookOk)) {
-    const qa = methodologyMatches!.qa;
-    const text =
-      `🧭 **إجابة منهجية من كتاب المنهجية المحلي.**\n\n` +
-      `📌 **السؤال:** ${qa.question}\n` +
-      `✅ **الطريقة الصحيحة:**\n${qa.answer}\n` +
-      (qa.template ? `\n🧩 **قالب جاهز:**\n${qa.template}\n` : '') +
-      `\n🔑 **كلمات مفتاحية:** ${qa.keywords.join('، ')}\n` +
-      `📖 **المصدر:** LIVRE MANHADJIYA.md (${qa.sourceBook})`;
-    return {
-      text,
-      confidence: Math.min(100, 60 + methodologyMatch!.score),
-      sources: [{
-        id: qa.id,
-        title: qa.question,
-        unitTitle: 'منهجية البكالوريا',
-        type: 'methodology',
-        score: methodologyMatch!.score,
-      }],
-      quickActions: getTutorQuickSuggestions(),
-    };
-  }
-
-  if (bookOk) {
-    const qa = bookMatch!.qa;
-    const text =
-      `📚 **إجابة من بنك الأسئلة المستخرج من الكتب المرفقة.**\n\n` +
-      `🎯 **المحور:** ${qa.topic}\n` +
-      `📌 **السؤال:** ${qa.question}\n` +
-      `✅ **الجواب الدقيق:**\n${qa.answer}\n` +
-      `\n🔑 **كلمات مفتاحية:** ${qa.keywords.join('، ')}\n` +
-      `📖 **المصدر:** ${qa.sourceBook}`;
-    return {
-      text,
-      confidence: Math.min(100, 60 + bookMatch!.score),
-      sources: [{
-        id: qa.id,
-        title: qa.question,
-        unitTitle: qa.topic,
-        type: 'book',
-        score: bookMatch!.score,
-      }],
-      quickActions: getTutorQuickSuggestions(),
-    };
-  }
-
-  const scoredChunks: { chunk: SearchChunk; score: number }[] = [];
-
-  for (const chunk of ALL_CHUNKS) {
-    const score = scoreSearchChunk(trimmed, chunk);
-    if (score > 0) {
-      scoredChunks.push({ chunk, score });
+    if (score > bestScore) {
+      bestScore = score;
+      best = card;
     }
   }
 
-  scoredChunks.sort((a, b) => b.score - a.score);
-  const topChunks = scoredChunks.slice(0, 3);
-
-  const quizResult = findBestQuiz(trimmed);
-
-  let fallbackText: string | undefined;
-  if (topChunks.length === 0 && !quizResult) {
-    fallbackText = 'أهلاً بك يا بحار المعرفة! المرشد الذكي يعمل الآن في وضع المراجعة المحلي. يمكنني مساعدتك في تثبيت المفاهيم الأساسية في علوم الطبيعة والحياة: تركيب البروتين، البنية والوظيفة، الإنزيمات، المناعة، الاتصال العصبي، التحولات الطاقوية، والتكتونية.';
-  }
-
-  return buildReply(trimmed, topChunks, quizResult, fallbackText);
+  if (best && bestScore >= 20) return best;
+  return null;
 }
 
-export function gradeTutorQuizAnswer(quiz: TutorQuizPrompt, selectedIndex: number): SmartTutorReply {
-  const isCorrect = selectedIndex === quiz.correctAnswerIndex;
+export function startDiagnostic(session: BotSession): EngineResult {
+  const domainId = session.activeDomainId;
+  const domain = DOMAINS.find((d) => d.id === domainId);
 
-  let text = '';
-  if (isCorrect) {
-    text = `✅ إجابة صحيحة!\n\n${quiz.explanation}`;
-  } else {
-    const correctOption = quiz.options[quiz.correctAnswerIndex];
-    text = `❌ إجابة خاطئة.\n\nالإجابة الصحيحة هي:\n${correctOption}\n\nالشرح:\n${quiz.explanation}`;
+  if (domainId == null || !domain) {
+    return {
+      session,
+      action: { text: 'اختر مجالاً أولاً لبدء التشخيص.', quickActions: DOMAINS.map((d) => d.title) },
+    };
   }
 
-  const unit = INITIAL_UNITS.find(u => u.id === quiz.unitId);
+  const questions = getQuestionsForDomain(domainId);
+  if (questions.length === 0) {
+    return { session, action: { text: 'لا توجد أسئلة لهذا المجال بعد.', quickActions: ['العودة للقائمة الرئيسية'] } };
+  }
+
+  const first = questions[0];
+  const newSession = startQuiz(session, questions.length, first.id, 'diagnostic');
+
+  const text =
+    `🩺 بدأ التشخيص في مجال **${domain.title}**.\n` +
+    `أجب عن ${questions.length} سؤالاً واحداً تلو الآخر. اختر A أو B أو C أو D.`;
+
+  return { session: newSession, action: { text, quiz: toQuizPrompt(first), quickActions: [] } };
+}
+
+export function reviewMistakes(session: BotSession): EngineResult {
+  if (session.mistakes.length === 0) {
+    return {
+      session,
+      action: {
+        text: '✅ لا توجد أخطاء مسجلة لديك بعد. واصل التدريب لتسجيل نقاط ضعفك ومعالجتها!',
+        quickActions: ['العودة للقائمة الرئيسية'],
+      },
+    };
+  }
+
+  const cards = session.mistakes
+    .map((id) => getCardById(id))
+    .filter((c): c is KnowledgeCard => Boolean(c));
+
+  const text =
+    '📌 هذه المواضيع التي سجلت أخطاءً فيها:\n' +
+    cards.map((c, i) => `${i + 1}. ${c.title} (${c.aliases[0]})`).join('\n') +
+    '\n\nراجع كل موضوع لترسيخه قبل إعادة الاختبار.';
+
+  const quickActions = [
+    ...cards.map((c) => `راجع ${c.title}`),
+    'إعادة الاختبار التشخيصي',
+    'العودة للقائمة الرئيسية',
+  ];
+
+  return { session, action: { text, quickActions } };
+}
+
+export function gradeQuizAnswer(session: BotSession, rawAnswer: string): EngineResult {
+  const current = session.currentQuiz;
+  if (!current) {
+    return { session, action: { text: 'لا يوجد اختبار جارٍ حالياً.', quickActions: ['العودة للقائمة الرئيسية'] } };
+  }
+
+  const question = getQuestionById(current.questionId);
+  if (!question) {
+    return { session, action: { text: 'تعذر العثور على السؤال.', quickActions: ['العودة للقائمة الرئيسية'] } };
+  }
+
+  const selected = parseAnswer(rawAnswer);
+  if (selected === null) {
+    return {
+      session,
+      action: {
+        text: '⚠️ الرجاء اختيار إجابة بكتابة A أو B أو C أو D (أو 1، 2، 3، 4).',
+        quiz: toQuizPrompt(question),
+        quickActions: [],
+      },
+    };
+  }
+
+  const isCorrect = selected === question.correctIndex;
+  const mistake = getMistakeById(question.commonMistakeId);
+
+  let text: string;
+  if (isCorrect) {
+    text = `✅ إجابة صحيحة!\n\n${question.explanation}`;
+  } else {
+    text =
+      `❌ إجابة خاطئة.\nالإجابة الصحيحة هي: ${question.options[question.correctIndex]}\n\n` +
+      `${question.explanation}`;
+    if (mistake) {
+      text += `\n\n⚠️ خطأ شائع: ${mistake.mistake}\n✅ التصحيح: ${mistake.correction}`;
+    }
+  }
+
+  const questions = getQuestionsForDomain(question.domainId);
+  const idx = questions.findIndex((q) => q.id === question.id);
+  const nextQ = idx >= 0 ? questions[idx + 1] : undefined;
+  const nextId = nextQ ? nextQ.id : null;
+
+  const correctCount = current.correctAnswers + (isCorrect ? 1 : 0);
+  const total = current.totalQuestions;
+
+  const newSession = recordQuizAnswer(session, isCorrect, question.topicId, nextId);
+
+  let quiz: QuizPrompt | undefined;
+  if (newSession.currentQuiz && nextQ) {
+    quiz = toQuizPrompt(nextQ);
+  } else {
+    const pct = total > 0 ? Math.round((correctCount / total) * 100) : 0;
+    const appreciation = pct === 100 ? 'ممتاز 🏆' : pct >= 50 ? 'جيد 👍' : 'يحتاج مراجعة 📖';
+    text +=
+      `\n\n📊 نتيجتك النهائية: ${correctCount}/${total} (${pct}%).\nالتقدير: ${appreciation}.`;
+    quiz = undefined;
+  }
+
+  const quickActions =
+    quiz === undefined
+      ? ['راجع أخطائي السابقة', 'اعاده الاختبار التشخيصي', 'العودة للقائمة الرئيسية']
+      : [];
+
+  const reward = quiz === undefined ? { xpGained: correctCount * 10 } : undefined;
+
+  return { session: newSession, action: { text, quiz, quickActions, reward } };
+}
+
+export function startBossFight(session: BotSession): EngineResult {
+  const domainId = session.activeDomainId;
+  const scenarios = getBossScenariosForDomain(domainId);
+  const domain = DOMAINS.find((d) => d.id === domainId);
+
+  if (domainId == null || !domain) {
+    return {
+      session,
+      action: { text: 'اختر مجالاً أولاً لبدء تحدي BAC.', quickActions: DOMAINS.map((d) => d.title) },
+    };
+  }
+
+  if (scenarios.length === 0) {
+    return { session, action: { text: 'لا يوجد تحدي BAC لهذا المجال بعد.', quickActions: ['العودة للقائمة الرئيسية'] } };
+  }
+
+  const first = scenarios[0];
+  const newSession = startBossFightSession(session, first.id, scenarios.length);
+
+  const text =
+    `⚔️ **تحدي BAC** — مجال ${domain.title}\n` +
+    `ستُطرح عليك ${scenarios.length} وضعيات مشكلة. أجب ثم قيّم إجابتك بنفسك.\n\n` +
+    `${first.situation}\n\n` +
+    `📝 اكتب إجابتك الكاملة، أو اختر «لا أعرف» لعرض التصحيح النموذجي.`;
 
   return {
-    text,
-    confidence: 100,
-    sources: [{
-      id: `qcm_${quiz.id}`,
-      title: `QCM وحدة ${quiz.unitId}`,
-      unitTitle: unit?.title || `وحدة ${quiz.unitId}`,
-      type: 'qcm',
-      score: 100,
-    }],
-    quickActions: getTutorQuickSuggestions(),
+    session: newSession,
+    action: { text, quickActions: ['لا أعرف'], sources: [{ type: 'domain', title: 'تحدي BAC' }] },
   };
 }
 
-export function getTutorDomainCards(): { id: string; title: string; color: string; description: string }[] {
-  return [
-    {
-      id: 'domaine1',
-      title: 'البروتينات والمناعة',
-      color: '#006d37',
-      description: 'تركيب البروتين، البنية والوظيفة، النشاط الإنزيمي، المناعة، الاتصال العصبي',
+function handleBossInput(session: BotSession, rawInput: string): EngineResult {
+  const boss = session.boss;
+  if (!boss) {
+    return { session, action: { text: 'لا يوجد تحدي BAC جارٍ.', quickActions: ['العودة للقائمة الرئيسية'] } };
+  }
+
+  const scenario = getBossScenarioById(boss.scenarioId);
+  if (!scenario) {
+    const finished = finishBossFight(session);
+    return { session: finished, action: { text: 'انتهى التحدي.', quickActions: ['العودة للقائمة الرئيسية'] } };
+  }
+
+  if (boss.phase === 'answer') {
+    const text =
+      `✅ **التصحيح النموذجي**\n\n${scenario.correction}\n\n` +
+      `🔑 **النقاط الأساسية:**\n${scenario.keyPoints.map((p) => `- ${p}`).join('\n')}\n\n` +
+      `قيّم إجابتك لمنح نقاطك:`;
+
+    const newSession: BotSession = { ...session, boss: { ...boss, phase: 'eval' } };
+    saveSession(newSession);
+
+    return {
+      session: newSession,
+      action: {
+        text,
+        quickActions: ['إجابة كاملة (+10)', 'إجابة ناقصة (+5)', 'لم أجب (0)'],
+        sources: [{ type: 'domain', title: 'تحدي BAC' }],
+      },
+    };
+  }
+
+  // phase 'eval' → enregistrer la note et avancer
+  const n = normalizeArabic(rawInput);
+  let points = 0;
+  if (n.includes(normalizeArabic('كاملة'))) points = 10;
+  else if (n.includes(normalizeArabic('ناقصة'))) points = 5;
+  else points = 0;
+
+  const scenarios = getBossScenariosForDomain(session.activeDomainId);
+  const idx = scenarios.findIndex((s) => s.id === boss.scenarioId);
+  const next = idx >= 0 ? scenarios[idx + 1] : undefined;
+
+  if (next) {
+    const newSession = startBossStep(session, points, next.id, boss.questionIndex + 1);
+    const text =
+      `➡️ **السؤال التالي (${boss.questionIndex + 2}/${boss.totalQuestions})**\n\n${next.situation}\n\n` +
+      `📝 اكتب إجابتك أو اختر «لا أعرف».`;
+    return {
+      session: newSession,
+      action: { text, quickActions: ['لا أعرف'], sources: [{ type: 'domain', title: 'تحدي BAC' }] },
+    };
+  }
+
+  const total = boss.score + points;
+  const max = boss.totalQuestions * 10;
+  const pct = max > 0 ? Math.round((total / max) * 100) : 0;
+  const appreciation = pct >= 80 ? 'ممتاز 🏆' : pct >= 50 ? 'جيد 👍' : 'يحتاج مراجعة 📖';
+
+  const newSession = finishBossFight(session);
+  const text =
+    `🏁 **انتهى تحدي BAC!**\n` +
+    `نتيجتك: ${total}/${max} نقطة (${pct}%).\n` +
+    `التقدير: ${appreciation}.`;
+
+  return {
+    session: newSession,
+    action: {
+      text,
+      quickActions: ['راجع أخطائي السابقة', 'العودة للقائمة الرئيسية'],
+      reward: { xpGained: total },
+      sources: [{ type: 'domain', title: 'تحدي BAC' }],
     },
-    {
-      id: 'domaine2',
-      title: 'التحولات الطاقوية',
-      color: '#944a00',
-      description: 'التركيب الضوئي، التنفس الخلوي، التخمر، الحصيلة الطاقوية',
-    },
-    {
-      id: 'domaine3',
-      title: 'التكتونية العامة',
-      color: '#0891b2',
-      description: 'النشاط التكتوني، بنية الكرة الأرضية، البنيات الجيولوجية',
-    },
-  ];
+  };
 }
 
-export function getTutorQuickSuggestions(): string[] {
-  return [
-    'اشرح آليات الاستنساخ',
-    'اختبرني في الترجمة والريبوزوم',
-    'فسر تأثير pH على النشاط الإنزيمي',
-    'اشرح الاستجابة المناعية الخلطية',
-    'ما دور LT4 في المناعة؟',
-    'اشرح المرحلة الكيميوضوئية',
-    'قارن بين التنفس والتخمر',
-    'اشرح الغوص والتكتونية',
-    'كيف أحلل وثيقة؟',
-    'اعطني قالب فرضية',
-    'ما الفرق بين استخرج واستنتج؟',
-    'كيف أعلل أو أبرر؟',
-    'كيف أكتب نصا علميا؟',
-  ];
+export function processStudentInput(session: BotSession, rawInput: string): EngineResult {
+  const input = (rawInput || '').trim();
+  const norm = normalizeArabic(input);
+
+  const n = (s: string) => normalizeArabic(s);
+
+  if (norm.includes(n('القائمة الرئيسية')) || norm.includes(n('العودة للقائمة')) || norm.includes(n('رجوع للقائمة'))) {
+    const back: BotSession = { ...getDefaultSession(), mistakes: [...session.mistakes] };
+    saveSession(back);
+    return {
+      session: back,
+      action: { text: '↩️ رجعنا إلى القائمة الرئيسية. اختر مجالاً لبدء جلسة مراجعة:', quickActions: DOMAINS.map((d) => d.title) },
+    };
+  }
+
+  if (norm.includes(n('راجع أخطائي'))) {
+    return reviewMistakes(session);
+  }
+
+  if (OUT_OF_PROGRAM.some((k) => norm.includes(n(k)))) {
+    return {
+      session,
+      action: {
+        text: '❓ هذا السؤال خارج قاعدة علوم الطبيعة والحياة للبكالوريا. ركّز مراجعتك على المجالات الثلاثة: البروتينات والمناعة، التحولات الطاقوية، والتكتونية العامة.',
+        quickActions: session.activeDomainId
+          ? DOMAINS.find((d) => d.id === session.activeDomainId)?.quickActions || ['العودة للقائمة الرئيسية']
+          : DOMAINS.map((d) => d.title),
+        sources: [{ type: 'out', title: 'خارج البرنامج' }],
+      },
+    };
+  }
+
+  if (norm.includes(n('اختبار'))) {
+    return startDiagnostic(session);
+  }
+
+  if (norm.includes(n('تحدي bac')) || norm.includes(n('تحدي البكالوريا')) || norm.includes(n('تحدي الباك')) || norm.includes(n('boss'))) {
+    return startBossFight(session);
+  }
+
+  if (session.mode === 'bac_challenge' && session.boss) {
+    return handleBossInput(session, input);
+  }
+
+  if (session.currentQuiz && (session.mode === 'quiz' || session.mode === 'diagnostic')) {
+    return gradeQuizAnswer(session, input);
+  }
+
+  if (session.activeDomainId == null) {
+    const domain = DOMAINS.find((d) => {
+      const dn = normalizeArabic(d.title);
+      return dn === norm || norm.includes(dn) || dn.includes(norm);
+    });
+    if (domain) return handleDomainClick(session, domain.id);
+  }
+
+  const methodCard = findMethodologyCard(norm);
+  const scienceCard = findBestKnowledgeCard(norm, session.activeDomainId);
+
+  if (methodCard && !scienceCard) {
+    const text = `🧭 ${methodCard.title}\n\n${methodCard.steps.join('\n')}`;
+    return {
+      session,
+      action: {
+        text,
+        sources: [{ type: 'methodology', title: methodCard.title }],
+        quickActions: ['راجع أخطائي السابقة', 'العودة للقائمة الرئيسية'],
+      },
+    };
+  }
+
+  const built = buildAnswer(norm, session.activeDomainId);
+  if (built) {
+    return { session, action: built };
+  }
+
+  const fallbackActions = session.activeDomainId
+    ? DOMAINS.find((d) => d.id === session.activeDomainId)?.quickActions || ['العودة للقائمة الرئيسية']
+    : DOMAINS.map((d) => d.title);
+
+  return {
+    session,
+    action: {
+      text: 'لم أجد إجابة دقيقة في قاعدتي المحلية. جرّب اختيار مجال، أو اطرح سؤالاً حول: البروتينات والمناعة، التحولات الطاقوية، أو التكتونية العامة.',
+      quickActions: fallbackActions,
+    },
+  };
 }
+
+export function answerTutorQuestion(rawInput: string): TutorAction {
+  return processStudentInput(getDefaultSession(), rawInput || '').action;
+}
+
+export { METHODOLOGY_CARDS };
