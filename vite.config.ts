@@ -1,22 +1,34 @@
-import tailwindcss from '@tailwindcss/vite';
-import react from '@vitejs/plugin-react';
-import path from 'path';
-import {defineConfig} from 'vite';
+import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react'
+import tailwindcss from '@tailwindcss/vite'
 
-export default defineConfig(() => {
-  return {
-    plugins: [react(), tailwindcss()],
-    resolve: {
-      alias: {
-        '@': path.resolve(__dirname, '.'),
-      },
-    },
-    server: {
-      // HMR is disabled in AI Studio via DISABLE_HMR env var.
-      // Do not modifyâfile watching is disabled to prevent flickering during agent edits.
-      hmr: process.env.DISABLE_HMR !== 'true',
-      // Disable file watching when DISABLE_HMR is true to save CPU during agent edits.
-      watch: process.env.DISABLE_HMR === 'true' ? null : {},
-    },
-  };
-});
+export default defineConfig({
+  plugins: [react(), tailwindcss()],
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          // 1. Séparer les grosses librairies externes
+          // (react / motion / misc regroupés pour éviter les chunks circulaires)
+          if (id.includes('node_modules')) {
+            if (id.includes('recharts')) {
+              return 'vendor-charts'
+            }
+            if (id.includes('lucide-react')) {
+              return 'vendor-icons'
+            }
+            return 'vendor-react'
+          }
+
+          // 2. Séparer les données massives OPUS par domaine
+          if (id.includes('knowledge/domain1.ts')) return 'opus-d1'
+          if (id.includes('knowledge/domain2.ts')) return 'opus-d2'
+          if (id.includes('knowledge/domain3.ts')) return 'opus-d3'
+          
+          // 3. Séparer les données BAC
+          if (id.includes('bacRealSubjects.ts')) return 'bac-data'
+        }
+      }
+    }
+  }
+})

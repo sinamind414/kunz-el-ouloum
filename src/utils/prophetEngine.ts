@@ -1,58 +1,56 @@
-import type { BotSession } from './sessionManager';
-import type { UserProgress } from '../types';
-import { KNOWLEDGE_CARDS } from '../data/smartBotData';
+// src/utils/prophetEngine.ts
 
-export interface PredictionResult {
-  minExpected: number;
-  maxExpected: number;
-  confidence: string;
-  criticalMistakes: string[];
-  battlePlan: string[];
-  inspirationalMessage: string;
+export interface StudentGrades {
+  svt: number
+  math: number
+  physics: number
 }
 
-export function generateBacPrediction(session: BotSession, globalProgress: UserProgress): PredictionResult {
-  const mistakes = session.mistakes || [];
-  const totalPossiblePoints = 20;
-  let severitySum = 0;
-  const topicErrorCount: Record<string, number> = {};
-  const criticalTopics: string[] = [];
+const MEDIC_THRESHOLD = 16.65
 
-  mistakes.forEach((topicId) => {
-    const card = KNOWLEDGE_CARDS.find((c) => c.id === topicId);
-    if (!card) return;
-    if (!topicErrorCount[topicId]) {
-      topicErrorCount[topicId] = 0;
-      severitySum += 3;
-      criticalTopics.push(card.title);
-    } else {
-      topicErrorCount[topicId]++;
-      severitySum += 0.5;
-    }
-  });
+function average(g: StudentGrades): number {
+  return (g.svt + g.math + g.physics) / 3
+}
 
-  const lostPoints = Math.min(8, severitySum);
-  const estimatedScore = totalPossiblePoints - lostPoints + (Math.random() * 2);
-  const minEstimate = Math.max(7, estimatedScore - 1.5);
-  const maxEstimate = Math.min(17, estimatedScore + 1.5);
-  const battlePlan = criticalTopics.slice(0, 3);
+export function generateBacPrediction(grades: StudentGrades): string {
+  const avg = average(grades)
+  const min = Math.max(7, avg - 1.5)
+  const max = Math.min(19, avg + 1.5)
+  const confidence = avg >= 14 ? 'عالية' : avg >= 10 ? 'متوسطة' : 'منخفضة'
 
-  if (battlePlan.length < 3) {
-    const allDomains = KNOWLEDGE_CARDS.filter((c) => !mistakes.includes(c.id));
-    battlePlan.push(...allDomains.slice(0, 3 - battlePlan.length).map((c) => c.title));
+  let message = ''
+  if (min >= 16) message = 'أنت في موقف ممتاز! استمر على هذا المنوال لتحقيق 18 فما فوق.'
+  else if (min >= 12) message = 'مستوى جيد، لكن انتبه للتفاصيل. طبق خطة مراجعة منظمة للارتفاع فوق 14.'
+  else message = '⚠️ تنبيه: مستواك الحالي يعرضك للخطر. ركّز على المواضيع الثلاثة الضعيفة لإنقاذ معدلك.'
+
+  return (
+    `🔮 **مكتب تنبؤات البكالوريا**\n\n` +
+    `📊 توقعاتنا لنتيجتك القادمة:\n` +
+    `من **${min.toFixed(2)}/20** إلى **${max.toFixed(2)}/20**\n` +
+    `(درجة الثقة: ${confidence})\n\n` +
+    `${message}\n\n` +
+    `📈 معدلك الحالي: علوم الحياة ${grades.svt} • رياضيات ${grades.math} • فيزياء ${grades.physics}`
+  )
+}
+
+export function calculateMedicSuccess(grades: StudentGrades): string {
+  const avg = average(grades)
+  const passed = avg >= MEDIC_THRESHOLD
+  const gap = (MEDIC_THRESHOLD - avg).toFixed(2)
+
+  if (passed) {
+    return (
+      `🩺 **نسبة القبول في الطب**\n\n` +
+      `معدلك المقدر: **${avg.toFixed(2)}/20** 🎉\n` +
+      `أنت فوق عتبة الطب (**${MEDIC_THRESHOLD}**)! فرصتك قوية للالتحاق بكلية الطب.\n` +
+      `حافظ على وتيرة المراجعة وركّز على المواضيع ذات المعامل العالي.`
+    )
   }
 
-  let msg = '';
-  if (minEstimate >= 16) msg = 'أنت في موقف ممتاز! استمر على هذا المنوال لتحقيق 18 فما فوق.';
-  else if (minEstimate >= 12) msg = 'مستوى جيد، لكن انتبه للتفاصيل. طبق الخطة أدناه للارتفاع فوق 14.';
-  else msg = '⚠️ تنبيه: مستواك الحالي يعرضك للخطر. يجب عليك مراجعة هذه الدروس الثلاثة لإنقاذ معدلك.';
-
-  return {
-    minExpected: parseFloat(minEstimate.toFixed(2)),
-    maxExpected: parseFloat(maxEstimate.toFixed(2)),
-    confidence: minEstimate > 14 ? 'عالية' : minEstimate > 10 ? 'متوسطة' : 'منخفضة',
-    criticalMistakes: criticalTopics,
-    battlePlan,
-    inspirationalMessage: msg,
-  };
+  return (
+    `🩺 **نسبة القبول في الطب**\n\n` +
+    `معدلك المقدر: **${avg.toFixed(2)}/20**\n` +
+    `أنت تحت عتبة الطب (**${MEDIC_THRESHOLD}**) بفارق **${gap}** نقطة.\n` +
+    `💡 لتجاوز العتبة، ارفع معدلك بـ +${gap} نقطة عبر مراجعة المجالات الثلاثة و الأسئلة الاستنتاجية.`
+  )
 }

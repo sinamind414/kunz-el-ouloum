@@ -521,11 +521,7 @@ export default function App() {
               )}
 
               {currentTab === 'chat' && (
-                <AITutorView
-                  onBackToDashboard={() => setCurrentTab('home')}
-                  onAwardXP={handleAwardTutorXP}
-                  globalProgress={progress}
-                />
+                <AITutorView />
               )}
 
               {currentTab === 'methodology' && (
