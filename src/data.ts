@@ -215,7 +215,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
   {
     "id": 8,
     "unitId": 1,
-    "questionText": "في سؤال بكالوريا قصير حول 1.2 — أنواع ARN: ARNm وARNt وARNr، بماذا نربط «ARNm»؟",
+    "questionText": "في سؤال بكالوريا قصير حول 1.2 — أنواع ARN: ARNm و ARNt و ARNr، بماذا نربط «ARNm»؟",
     "options": [
       "ينقل نسخة الرسالة الوراثية من النواة نحو الريبوزوم",
       "قطعة من ADN تحمل معلومة تركيب سلسلة ببتيدية أو بروتين معين",
@@ -229,7 +229,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
   {
     "id": 9,
     "unitId": 1,
-    "questionText": "في محور 1.2 — أنواع ARN: ARNm وARNt وARNr، أي عبارة تساعد على تمييز «ARNt» عن المفاهيم القريبة؟",
+    "questionText": "في محور 1.2 — أنواع ARN: ARNm و ARNt و ARNr، أي عبارة تساعد على تمييز «ARNt» عن المفاهيم القريبة؟",
     "options": [
       "رامزة بدء الترجمة وتشفر غالباً للميتيونين",
       "تركيب ARNm انطلاقاً من سلسلة ADN قالبية داخل النواة",
@@ -243,7 +243,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
   {
     "id": 10,
     "unitId": 1,
-    "questionText": "إذا طُلب تفسير «ARNr» ضمن 1.2 — أنواع ARN: ARNm وARNt وARNr، فأي جواب هو الأدق؟",
+    "questionText": "إذا طُلب تفسير «ARNr» ضمن 1.2 — أنواع ARN: ARNm و ARNt و ARNr، فأي جواب هو الأدق؟",
     "options": [
       "يحمل السلسلة الببتيدية المتنامية",
       "رامزة بدء الترجمة وتشفر غالباً للميتيونين",
@@ -257,7 +257,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
   {
     "id": 11,
     "unitId": 1,
-    "questionText": "في محور 1.2 — أنواع ARN: ARNm وARNt وARNr، أي وصف دقيق لـ«اليوراسيل U»؟",
+    "questionText": "في محور 1.2 — أنواع ARN: ARNm و ARNt و ARNr، أي وصف دقيق لـ«اليوراسيل U»؟",
     "options": [
       "يعوض الثيمين T في جزيئات ARN",
       "رامزات توقف لا يوافقها ARNt حامل لحمض أميني",
@@ -271,7 +271,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
   {
     "id": 12,
     "unitId": 1,
-    "questionText": "في موضوع 1.2 — أنواع ARN: ARNm وARNt وARNr، أي عبارة صحيحة حول«ARN»؟",
+    "questionText": "في موضوع 1.2 — أنواع ARN: ARNm و ARNt و ARNr، أي عبارة صحيحة حول «ARN»؟",
     "options": [
       "إزالة الإنترونات وربط الإكسونات لإنتاج ARNm ناضج",
       "منطقة ADN يرتبط بها ARN بوليميراز لبدء الاستنساخ",
@@ -285,7 +285,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
   {
     "id": 13,
     "unitId": 1,
-    "questionText": "اختر العبارة العلمية الصحيحة بخصوص «مضاد الرامزة» ضمن 1.2 — أنواع ARN: ARNm وARNt وARNr.",
+    "questionText": "اختر العبارة العلمية الصحيحة بخصوص «مضاد الرامزة» ضمن 1.2 — أنواع ARN: ARNm و ARNt و ARNr.",
     "options": [
       "تركيب ARNm انطلاقاً من سلسلة ADN قالبية داخل النواة",
       "يعوض الثيمين T في جزيئات ARN",
@@ -299,7 +299,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
   {
     "id": 14,
     "unitId": 1,
-    "questionText": "في محور 1.2 — أنواع ARN: ARNm وARNt وARNr، أي إكمال صحيح: «ARNm الناضج» ← ________؟",
+    "questionText": "في محور 1.2 — أنواع ARN: ARNm و ARNt و ARNr، أي إكمال صحيح: «ARNm الناضج» ← ________؟",
     "options": [
       "رامزات توقف لا يوافقها ARNt حامل لحمض أميني",
       "ناتج إزالة الإنترونات وربط الإكسونات عند حقيقيات النوى",
@@ -831,7 +831,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
   {
     "id": 52,
     "unitId": 2,
-    "questionText": "في موضوع 2.2 — البنيات: أولية، ثانوية، ثالثية، رباعية، أي عبارة صحيحة حول«الصفيحة بيتا»؟",
+    "questionText": "في موضوع 2.2 — البنيات: أولية، ثانوية، ثالثية، رباعية، أي عبارة صحيحة حول «الصفيحة بيتا»؟",
     "options": [
       "بنية ثانوية ممتدة تثبتها روابط هيدروجينية بين أجزاء السلسلة",
       "بروتين ليفي ثلاثي السلاسل يعطي مقاومة للأنسجة",
@@ -5171,7 +5171,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
   {
     "id": 362,
     "unitId": 9,
-    "questionText": "في موضوع 9.2 — حدود الصفائح: تباعد، تقارب، انزلاق، أي عبارة صحيحة حول«الغوص»؟",
+    "questionText": "في موضوع 9.2 — حدود الصفائح: تباعد، تقارب، انزلاق، أي عبارة صحيحة حول «الغوص»؟",
     "options": [
       "مثال حد انزلاقي",
       "تكشف اتجاه حركة الصفيحة فوق مصدر ثابت نسبياً",
@@ -6011,7 +6011,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
   {
     "id": 422,
     "unitId": 10,
-    "questionText": "في موضوع 10.3 — السطوح الفاصلة: موهو، غوتنبرغ، ليمان، أي عبارة صحيحة حول«ليمان»؟",
+    "questionText": "في موضوع 10.3 — السطوح الفاصلة: موهو، غوتنبرغ، ليمان، أي عبارة صحيحة حول «ليمان»؟",
     "options": [
       "تكشف الطبقات التي لا يمكن أخذ عينات منها مباشرة",
       "يفصل البرنس عن اللب الخارجي عند نحو 2900 كم",

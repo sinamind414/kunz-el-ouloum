@@ -5,28 +5,33 @@ import tailwindcss from '@tailwindcss/vite'
 export default defineConfig({
   plugins: [react(), tailwindcss()],
   build: {
+    chunkSizeWarningLimit: 600,
     rollupOptions: {
       output: {
         manualChunks(id) {
-          // 1. Séparer les grosses librairies externes
-          // (react / motion / misc regroupés pour éviter les chunks circulaires)
+          // 1. Vendors lourds
           if (id.includes('node_modules')) {
-            if (id.includes('recharts')) {
-              return 'vendor-charts'
-            }
-            if (id.includes('lucide-react')) {
-              return 'vendor-icons'
-            }
+            if (id.includes('recharts')) return 'vendor-charts'
+            if (id.includes('lucide-react')) return 'vendor-icons'
+            if (id.includes('motion')) return 'vendor-motion'
             return 'vendor-react'
           }
-
-          // 2. Séparer les données massives OPUS par domaine
-          if (id.includes('knowledge/domain1.ts')) return 'opus-d1'
-          if (id.includes('knowledge/domain2.ts')) return 'opus-d2'
-          if (id.includes('knowledge/domain3.ts')) return 'opus-d3'
-          
-          // 3. Séparer les données BAC
-          if (id.includes('bacRealSubjects.ts')) return 'bac-data'
+          // 2. Données + moteurs (éviter circular chunk: data <-> engines)
+          // OPUS 3624 lignes + 500 QCM + smartBot 90kB + engines offline
+          if (
+            id.includes('src/data') ||
+            id.includes('src/tutorKnowledge') ||
+            id.includes('src/knowledgeCards') ||
+            id.includes('src/bookTutorQA') ||
+            id.includes('src/methodologyKnowledge') ||
+            id.includes('src/lessonData') ||
+            id.includes('src/knowledge/') ||
+            id.includes('src/utils/') ||
+            id.includes('src/smartTutorEngine') ||
+            id.includes('bacRealSubjects')
+          ) {
+            return 'kunz-core'
+          }
         }
       }
     }

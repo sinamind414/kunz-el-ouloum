@@ -1,6 +1,19 @@
 {
   "name": "Kunz El Ouloum",
   "description": "منصة كنز العلوم التفاعلية لمراجعة وتدريب مادة العلوم الطبيعية والحياة لشهادة البكالوريا بالجزائر، مع مرشد ذكي محلي يعمل بدون إنترنت وبدون API.",
+  "version": "0.1.0-fable5",
+  "dataVersion": "github-500qcm-v1-fable5",
+  "buildDate": "2026-07-09",
+  "audit": "Fable 5",
+  "offline": true,
+  "tutorMode": "offline",
+  "chunks": {
+    "kunz-data": "500 QCM + OPUS + smartBot + methodology",
+    "kunz-engines": "smartTutorEngine + sessionManager + arabicNormalize",
+    "vendor-react": "react + motion",
+    "vendor-charts": "recharts",
+    "vendor-icons": "lucide-react"
+  },
   "requestFramePermissions": [],
   "majorCapabilities": []
 }

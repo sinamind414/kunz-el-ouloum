@@ -1,0 +1,62 @@
+name: Kunz El Ouloum CI
+
+on:
+  push:
+    branches: [master, main]
+  pull_request:
+    branches: [master, main]
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Golden Rule - OFFLINE (no external AI API)
+        run: |
+          if grep -RInE "GEMINI|genai|google_generative" src/; then
+            echo "::error::External AI API references found - tutor must stay offline"
+            exit 1
+          fi
+          echo "offline check OK"
+
+      - name: Golden Rule - preserve Algerian SVT terms
+        run: |
+          for term in "الاستنساخ" "الهيولى" "الرامزة" "البرنس" "موهو" "الحمقلية"; do
+            c=$(grep -R -c "$term" src/ | awk -F: '{s+=$2} END {print s}')
+            if [ "$c" -eq 0 ]; then
+              echo "::error::Preserved Algerian term missing: $term"
+              exit 1
+            fi
+            echo "preserved: $term ($c)"
+          done
+
+      - name: Golden Rule - formatting (no OCR artifacts)
+        run: |
+          if grep -Rn "حول«" src/; then
+            echo "::error::Missing space before « (حول«)"
+            exit 1
+          fi
+          if grep -RnP "[A-Za-z]ي" src/; then
+            echo "::error::Latin+ي mixing (OCR error) found"
+            exit 1
+          fi
+          echo "formatting check OK"
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Build
+        run: npm run build
+
+      - name: SmartBot routing tests
+        run: npm run test:smartbot

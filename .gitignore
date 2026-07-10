@@ -6,3 +6,14 @@ coverage/
 *.log
 .env*
 !.env.example
+
+# Fable 5 audit - bannir artefacts offline lourds (21MB zip)
+*.zip
+kunz-el-ouloum-offline-*.zip
+kunz-el-ouloum-offline-*.tar.gz
+*.tar.gz
+public/assets/offline/
+.env.local
+android/app/build/
+android/.gradle/
+android/app/release/
