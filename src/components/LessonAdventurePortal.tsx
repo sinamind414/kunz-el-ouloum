@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import { motion } from 'motion/react';
-import { BookOpen, Compass, Flag, MessageCircleQuestion, Sparkles, X, ZoomIn } from 'lucide-react';
+import { BookOpen, CheckCircle2, Compass, Flag, MessageCircleQuestion, Sparkles, X, ZoomIn } from 'lucide-react';
 import { LessonBlock, LessonLibraryItem } from '../lessonData';
 import { MASCOT_URL } from '../data';
 
@@ -39,33 +39,42 @@ interface AdventurePage {
 function buildPages(lesson: LessonLibraryItem): AdventurePage[] {
   const allBlocks = lesson.phases.flatMap((p) => p.blocks);
 
-  const situation = allBlocks.filter((b) => b.type === 'problem');
-  const guided = allBlocks.filter(
-    (b) => b.type === 'document' || b.type === 'simulation' || b.type === 'text' || b.type === 'bac_tip'
+  // Single Path (Fable 5): Mot → Exemple → Micro-test → Méthodo incarnée
+  const mots = allBlocks.filter((b) => b.type === 'problem');
+  const exemples = allBlocks.filter((b) => b.type === 'document' || b.type === 'simulation');
+  const microTests = allBlocks.filter((b) => b.type === 'quiz');
+  const methodos = allBlocks.filter(
+    (b) => b.type === 'scientific_text' || b.type === 'bac_tip' || b.type === 'text'
   );
-  const conclusion = allBlocks.filter((b) => b.type === 'scientific_text' || b.type === 'quiz');
 
   const pages: AdventurePage[] = [];
 
   pages.push({
-    id: 'situation',
-    title: 'الوضعية الانطلاقية',
-    badge: 'الإشكالية',
-    blocks: situation.length > 0 ? situation : allBlocks.slice(0, 1),
+    id: 'mot',
+    title: 'الموت - الكلمة المفتاحية',
+    badge: 'كلمة',
+    blocks: mots.length > 0 ? mots : allBlocks.slice(0, 1),
   });
 
   pages.push({
-    id: 'guided',
-    title: 'النشاط الموجه',
-    badge: 'المعالجة',
-    blocks: guided.length > 0 ? guided : allBlocks.slice(1, 3),
+    id: 'exemple',
+    title: 'المثال - الوثيقة',
+    badge: 'مثال',
+    blocks: exemples.length > 0 ? exemples : allBlocks.slice(1, 3),
   });
 
   pages.push({
-    id: 'conclusion',
-    title: 'الخلاصة والتثبيت',
-    badge: 'التثبيت',
-    blocks: conclusion.length > 0 ? conclusion : allBlocks.slice(-2),
+    id: 'microtest',
+    title: 'الاختبار المصغر - إنتاج',
+    badge: 'إنتاج',
+    blocks: microTests.length > 0 ? microTests : allBlocks.slice(-2, -1),
+  });
+
+  pages.push({
+    id: 'methodo',
+    title: 'المنهجية المجسدة',
+    badge: 'منهجية',
+    blocks: methodos.length > 0 ? methodos : allBlocks.slice(-2),
   });
 
   return pages;
@@ -190,7 +199,7 @@ export default function LessonAdventurePortal({ lesson, onClose, onAskTutor }: L
                   : 'bg-[#fff9ed] dark:bg-[#1c241f] text-[#006d37] dark:text-[#2ecc71] hover:bg-[#fed65b]/20'
               }`}
             >
-              {i === 0 ? <Flag className="w-4 h-4" /> : i === 1 ? <BookOpen className="w-4 h-4" /> : <Sparkles className="w-4 h-4" />}
+              {i === 0 ? <Flag className="w-4 h-4" /> : i === 1 ? <BookOpen className="w-4 h-4" /> : i === 2 ? <CheckCircle2 className="w-4 h-4" /> : <Sparkles className="w-4 h-4" />}
               {p.title}
             </button>
           ))}

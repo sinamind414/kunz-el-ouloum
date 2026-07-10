@@ -211,23 +211,23 @@ export default function LessonsView({ units }: LessonsViewProps) {
                 </button>
               </header>
 
-              {selectedLesson.phases.map((phase, phaseIndex) => (
-                <section key={`${selectedLesson.key}-${phaseIndex}`} className="space-y-3">
-                  <div className="flex items-center gap-2">
-                    <span className="w-8 h-8 rounded-full bg-[#006d37] text-white flex items-center justify-center text-sm font-black">
-                      {phase.step || phaseIndex + 1}
-                    </span>
-                    <h3 className="font-black text-[#1f1c0b] dark:text-gray-100">مرحلة التعلم</h3>
-                  </div>
-                  <div className="grid gap-3">
-                    {phase.blocks.map((block, blockIndex) => (
-                      <div key={`${selectedLesson.key}-${phaseIndex}-${blockIndex}`}>
-                        <LessonBlockCard block={block} />
-                      </div>
-                    ))}
-                  </div>
-                </section>
-              ))}
+              {/* FABLE 5 FIX: suppression scrolling HTML - remplacé par parcours interactif 4 étapes */}
+              <section className="bg-gradient-to-br from-[#fff9ed] to-[#fed65b]/10 border border-[#e2dabf]/60 dark:border-[#2ecc71]/10 rounded-2xl p-5 space-y-3">
+                <div className="flex items-center gap-2 text-[#944a00] dark:text-[#fed65b] font-black text-sm">
+                  <Compass className="w-5 h-5" />
+                  <span>تم تحويل هذا الدرس إلى مسار تفاعلي بدون تمرير</span>
+                </div>
+                <p className="text-sm leading-7 text-[#504441] dark:text-gray-300">
+                  بدل قراءة طويلة، ستتعلم عبر 4 خطوات: <strong>كلمة مفتاحية → مثال موثق → اختبار مصغر إنتاجي → منهجية مجسدة</strong>.
+                  كل خطوة صفحة واحدة، مع تقدم واضح، بدون scroll infini.
+                </p>
+                <div className="grid grid-cols-4 gap-2 text-[11px] font-bold">
+                  <div className="bg-white dark:bg-[#1c241f] rounded-xl p-2 border text-center"><span className="block text-[#006d37] dark:text-[#2ecc71]">كلمة</span><span className="text-[10px] text-[#506072]">Mot</span></div>
+                  <div className="bg-white dark:bg-[#1c241f] rounded-xl p-2 border text-center"><span className="block text-[#006d37] dark:text-[#2ecc71]">مثال</span><span className="text-[10px] text-[#506072]">Exemple</span></div>
+                  <div className="bg-white dark:bg-[#1c241f] rounded-xl p-2 border text-center"><span className="block text-[#006d37] dark:text-[#2ecc71]">إنتاج</span><span className="text-[10px] text-[#506072]">Micro-test</span></div>
+                  <div className="bg-white dark:bg-[#1c241f] rounded-xl p-2 border text-center"><span className="block text-[#006d37] dark:text-[#2ecc71]">منهجية</span><span className="text-[10px] text-[#506072]">Méthodo</span></div>
+                </div>
+              </section>
             </motion.article>
           )}
         </main>
