@@ -1,19 +1,6 @@
 import { useState, useEffect, lazy, Suspense } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { 
-  Home, 
-  BookOpen, 
-  BrainCircuit, 
-  TrendingUp, 
-  User, 
-  Flame, 
-  Trophy, 
-  Layers,
-  Sun,
-  Moon,
-  Target,
-  Swords
-} from 'lucide-react';
+import { Home, BookOpen, Layers, Target, Compass, Sun, Moon, User, Flame, Trophy } from 'lucide-react';
 
 import { Unit, UserProgress, Flashcard } from './types';
 import { INITIAL_UNITS, SVT_QUIZ_QUESTIONS, SVT_FLASHCARDS } from './data';
@@ -26,13 +13,12 @@ import { startPirateMusic, stopPirateMusic } from './utils/audio';
 
 // Fable 5 audit: lazy load heavy views to reduce initial bundle (recharts, engines, etc)
 const RevisionView = lazy(() => import('./components/RevisionView'));
-const StatsView = lazy(() => import('./components/StatsView'));
-const AITutorView = lazy(() => import('./components/AITutorView'));
 const MethodologyView = lazy(() => import('./components/MethodologyView'));
 const LessonsView = lazy(() => import('./components/LessonsView'));
-const BacCombatView = lazy(() => import('./components/BacCombatView'));
+const CoachView = lazy(() => import('./components/CoachView'));
+const InteractiveLessonView = lazy(() => import('./components/InteractiveLessonView'));
 
-const DATA_VERSION = 'github-500qcm-v1-fable5';
+const DATA_VERSION = 'github-500qcm-v1-fable5-5tabs';
 
 const DEFAULT_PROGRESS: UserProgress = {
   xp: 0,
@@ -65,6 +51,16 @@ function LoadingFallback() {
   );
 }
 
+type TabId = 'home' | 'lessons' | 'review' | 'methodology' | 'coach';
+
+const TABS: { id: TabId; label: string; icon: React.ElementType }[] = [
+  { id: 'home', label: 'الرئيسية', icon: Home },
+  { id: 'lessons', label: 'الدروس', icon: BookOpen },
+  { id: 'review', label: 'المراجعة', icon: Layers },
+  { id: 'methodology', label: 'المنهجية', icon: Target },
+  { id: 'coach', label: 'المرشد', icon: Compass }
+];
+
 export default function App() {
   const [isDarkMode, setIsDarkMode] = useState<boolean>(() => {
     try {
@@ -75,7 +71,7 @@ export default function App() {
     }
   });
 
-  const [currentTab, setCurrentTab] = useState<'splash' | 'home' | 'lessons' | 'review' | 'stats' | 'chat' | 'methodology' | 'combat'>('splash');
+  const [currentTab, setCurrentTab] = useState<TabId | 'splash'>('splash');
   
   useEffect(() => {
     if (currentTab !== 'splash') {
@@ -85,6 +81,7 @@ export default function App() {
   
   const [activeQuizUnitId, setActiveQuizUnitId] = useState<number | null>(null);
   const [activeRevisionUnitId, setActiveRevisionUnitId] = useState<number | null>(null);
+  const [activeLessonId, setActiveLessonId] = useState<string | null>(null);
   const [isFocusMode, setIsFocusMode] = useState<boolean>(false);
 
   useEffect(() => {
@@ -195,6 +192,11 @@ export default function App() {
     setActiveQuizUnitId(unitId);
   };
 
+  const handleStartLesson = (lessonId: string) => {
+    setActiveLessonId(lessonId);
+    setCurrentTab('lessons');
+  };
+
   const handleLaunchRevision = (unitId: number) => {
     setActiveRevisionUnitId(unitId);
     setCurrentTab('review');
@@ -246,6 +248,14 @@ export default function App() {
     );
   }
 
+  if (activeLessonId) {
+    return (
+      <Suspense fallback={<LoadingFallback />}>
+        <InteractiveLessonView lessonId={activeLessonId} onClose={() => setActiveLessonId(null)} />
+      </Suspense>
+    );
+  }
+
   if (currentTab === 'splash') {
     return <SplashView onStart={() => setCurrentTab('home')} />;
   }
@@ -269,7 +279,7 @@ export default function App() {
       {!isFocusMode && (
         <header className="bg-[#ffffff] dark:bg-[#141916] shadow-[0_2px_12px_rgba(0,109,55,0.06)] border-b border-[#e2dabf]/40 dark:border-[#2ecc71]/10 flex flex-row-reverse justify-between items-center px-4 md:px-8 h-16 md:h-20 w-full fixed top-0 z-40 select-none">
         <div className="flex items-center gap-3">
-          <div className="relative cursor-pointer" onClick={() => setCurrentTab('stats')}>
+          <div className="relative cursor-pointer" onClick={() => setCurrentTab('coach')}>
             <div className="absolute inset-0 bg-[#2ecc71]/20 rounded-full blur-sm" />
             <div className="relative w-10 h-10 md:w-12 md:h-12 rounded-full bg-[#006d37] text-white flex items-center justify-center border-2 border-[#ffffff] shadow-sm">
               <User className="w-5 h-5 md:w-6 md:h-6" />
@@ -281,7 +291,7 @@ export default function App() {
           </div>
         </div>
         <div className="font-extrabold text-xl md:text-2xl text-[#006d37] font-display select-none">
-          {currentTab === 'home' ? 'كنز العلوم' : currentTab === 'review' ? 'المراجعة الذكية' : currentTab === 'stats' ? 'لوحة الإحصائيات' : 'المرشد الذكي'}
+          {currentTab === 'home' ? 'كنز العلوم' : currentTab === 'lessons' ? 'الدروس' : currentTab === 'review' ? 'المراجعة الذكية' : currentTab === 'methodology' ? 'المنهجية' : 'المرشد الموجه'}
         </div>
         <div className="flex items-center gap-2 md:gap-3">
           <button
@@ -307,14 +317,26 @@ export default function App() {
         
         {!isFocusMode && (
           <aside className="hidden md:flex shrink-0 w-64 bg-[#ffffff] dark:bg-[#141916] border-l border-[#e2dabf]/50 dark:border-[#2ecc71]/10 flex-col py-6 px-4 gap-2 select-none h-[calc(100vh-80px)] sticky top-20 right-0">
-          <div className="text-[10px] font-black tracking-widest text-[#506072] uppercase px-4 mb-4">القائمة الرئيسية</div>
-          <button onClick={() => setCurrentTab('home')} className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-2xl text-sm font-bold transition-all cursor-pointer ${currentTab === 'home' ? 'bg-[#2ecc71]/15 text-[#006d37]' : 'text-[#504441] hover:bg-[#fff9ed] hover:text-[#006d37]'}`}><Home className="w-5 h-5" /><span>الرئيسية والوحدات</span></button>
-          <button onClick={() => setCurrentTab('lessons')} className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-2xl text-sm font-bold transition-all cursor-pointer ${currentTab === 'lessons' ? 'bg-[#2ecc71]/15 text-[#006d37]' : 'text-[#504441] hover:bg-[#fff9ed] hover:text-[#006d37]'}`}><Layers className="w-5 h-5" /><span>الدروس</span></button>
-          <button onClick={() => setCurrentTab('review')} className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-2xl text-sm font-bold transition-all cursor-pointer ${currentTab === 'review' ? 'bg-[#2ecc71]/15 text-[#006d37]' : 'text-[#504441] hover:bg-[#fff9ed] hover:text-[#006d37]'}`}><BookOpen className="w-5 h-5" /><span>المراجعة الذكية</span></button>
-          <button onClick={() => setCurrentTab('chat')} className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-2xl text-sm font-bold transition-all cursor-pointer ${currentTab === 'chat' ? 'bg-[#2ecc71]/15 text-[#006d37]' : 'text-[#504441] hover:bg-[#fff9ed] hover:text-[#006d37]'}`}><BrainCircuit className="w-5 h-5" /><span>المرشد الذكي</span></button>
-          <button onClick={() => setCurrentTab('stats')} className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-2xl text-sm font-bold transition-all cursor-pointer ${currentTab === 'stats' ? 'bg-[#2ecc71]/15 text-[#006d37]' : 'text-[#504441] hover:bg-[#fff9ed] hover:text-[#006d37]'}`}><TrendingUp className="w-5 h-5" /><span>الإحصائيات والأداء</span></button>
-          <button onClick={() => setCurrentTab('methodology')} className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-2xl text-sm font-bold transition-all cursor-pointer ${currentTab === 'methodology' ? 'bg-[#2ecc71]/15 text-[#006d37]' : 'text-[#504441] hover:bg-[#fff9ed] hover:text-[#006d37]'}`}><Target className="w-5 h-5" /><span>تدريب المنهجية</span></button>
-          <button onClick={() => setCurrentTab('combat')} className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-2xl text-sm font-bold transition-all cursor-pointer ${currentTab === 'combat' ? 'bg-[#2ecc71]/15 text-[#006d37]' : 'text-[#504441] hover:bg-[#fff9ed] hover:text-[#006d37]'}`}><Swords className="w-5 h-5" /><span>تحدي البكالوريا</span></button>
+          <div className="text-[10px] font-black tracking-widest text-[#506072] uppercase px-4 mb-4">5 Rubriques Essentielles - 100% Offline</div>
+          {TABS.map(tab => {
+            const Icon = tab.icon;
+            const isActive = currentTab === tab.id;
+            return (
+              <button key={tab.id} onClick={() => setCurrentTab(tab.id)} className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-2xl text-sm font-bold transition-all cursor-pointer ${isActive ? 'bg-[#2ecc71]/15 text-[#006d37]' : 'text-[#504441] hover:bg-[#fff9ed] hover:text-[#006d37]'}`}>
+                <Icon className="w-5 h-5" />
+                <span>{tab.label}</span>
+                {tab.id === 'coach' && <span className="mr-auto text-[9px] bg-indigo-500 text-white px-1.5 py-0.5 rounded-full">Coach</span>}
+              </button>
+            );
+          })}
+          <div className="mt-4 p-3 bg-[#fff9ed] border border-[#e2dabf]/60 rounded-xl text-[11px] leading-6 text-[#504441]">
+            <strong>Architecture finale:</strong><br/>
+            • الرئيسية → 3 domaines<br/>
+            • الدروس → Mot→Exemple→Micro-test→Méthodo (4 étapes, sans scroll)<br/>
+            • المراجعة → SM-2 flashcards<br/>
+            • المنهجية → 4 verbes BAC<br/>
+            • المرشد → Coach orientation offline (pas LLM)
+          </div>
         </aside>
         )}
 
@@ -333,7 +355,7 @@ export default function App() {
                   progress={progress}
                   onLaunchQuiz={handleLaunchQuiz}
                   onLaunchRevision={handleLaunchRevision}
-                  onNavigateToTab={setCurrentTab}
+                  onNavigateToTab={setCurrentTab as any}
                 />
               )}
               <Suspense fallback={<LoadingFallback />}>
@@ -350,10 +372,8 @@ export default function App() {
                     setIsFocusMode={setIsFocusMode}
                   />
                 )}
-                {currentTab === 'stats' && <StatsView progress={progress} units={units} />}
-                {currentTab === 'chat' && <AITutorView />}
                 {currentTab === 'methodology' && <MethodologyView />}
-                {currentTab === 'combat' && <BacCombatView />}
+                {currentTab === 'coach' && <CoachView progress={progress} units={units} onStartLesson={handleStartLesson} />}
               </Suspense>
             </motion.div>
           </AnimatePresence>
@@ -361,15 +381,19 @@ export default function App() {
       </div>
 
       {!isFocusMode && (
-        <nav className="md:hidden bg-[#ffffff] border-t border-[#bbcbbb]/30 shadow-[0_-4px_16px_rgba(0,109,55,0.06)] fixed bottom-0 left-0 right-0 h-16 z-40 flex items-center justify-around px-1 rounded-t-2xl select-none overflow-x-auto">
-        <button onClick={() => setCurrentTab('home')} className={`flex flex-col items-center justify-center p-2 rounded-xl transition-all w-14 cursor-pointer ${currentTab === 'home' ? 'bg-[#2ecc71]/10 text-[#006d37]' : 'text-[#506072] hover:text-[#006d37]'}`}><Home className="w-5 h-5" /><span className="text-[10px] font-bold mt-1">الرئيسية</span></button>
-        <button onClick={() => setCurrentTab('lessons')} className={`flex flex-col items-center justify-center p-2 rounded-xl transition-all w-14 cursor-pointer ${currentTab === 'lessons' ? 'bg-[#2ecc71]/10 text-[#006d37]' : 'text-[#506072] hover:text-[#006d37]'}`}><Layers className="w-5 h-5" /><span className="text-[10px] font-bold mt-1">الدروس</span></button>
-        <button onClick={() => setCurrentTab('stats')} className={`flex flex-col items-center justify-center p-2 rounded-xl transition-all w-14 cursor-pointer ${currentTab === 'stats' ? 'bg-[#2ecc71]/10 text-[#006d37]' : 'text-[#506072] hover:text-[#006d37]'}`}><TrendingUp className="w-5 h-5" /><span className="text-[10px] font-bold mt-1">الإحصائيات</span></button>
-        <button onClick={() => setCurrentTab('methodology')} className={`flex flex-col items-center justify-center p-2 rounded-xl transition-all w-14 cursor-pointer ${currentTab === 'methodology' ? 'bg-[#2ecc71]/10 text-[#006d37]' : 'text-[#506072] hover:text-[#006d37]'}`}><Target className="w-5 h-5" /><span className="text-[10px] font-bold mt-1">المنهجية</span></button>
-        <button onClick={() => setCurrentTab('review')} className={`flex flex-col items-center justify-center p-2.5 rounded-full transition-all w-16 cursor-pointer ${currentTab === 'review' ? 'bg-[#2ecc71] text-[#ffffff] shadow-md scale-110 -translate-y-2' : 'bg-[#2ecc71]/10 text-[#006d37]'}`}><BookOpen className="w-5 h-5" /><span className="text-[10px] font-bold mt-0.5">المراجعة</span></button>
-        <button onClick={() => setCurrentTab('chat')} className={`flex flex-col items-center justify-center p-2 rounded-xl transition-all w-14 cursor-pointer ${currentTab === 'chat' ? 'bg-[#2ecc71]/10 text-[#006d37]' : 'text-[#506072] hover:text-[#006d37]'}`}><BrainCircuit className="w-5 h-5" /><span className="text-[10px] font-bold mt-1">المرشد</span></button>
-        <button onClick={() => setCurrentTab('combat')} className={`flex flex-col items-center justify-center p-2 rounded-xl transition-all w-14 shrink-0 cursor-pointer ${currentTab === 'combat' ? 'bg-[#2ecc71]/10 text-[#006d37]' : 'text-[#506072] hover:text-[#006d37]'}`}><Swords className="w-5 h-5" /><span className="text-[10px] font-bold mt-1">التحدي</span></button>
-      </nav>
+        <nav className="md:hidden bg-white border-t border-[#bbcbbb]/30 shadow-[0_-4px_16px_rgba(0,109,55,0.06)] fixed bottom-0 left-0 right-0 h-16 z-40 flex items-center justify-around px-1 rounded-t-2xl">
+          {TABS.map(tab => {
+            const Icon = tab.icon;
+            const isActive = currentTab === tab.id;
+            return (
+              <button key={tab.id} onClick={() => setCurrentTab(tab.id)} className={`flex flex-col items-center justify-center p-2 rounded-xl transition-all w-14 cursor-pointer ${isActive ? 'bg-[#2ecc71]/10 text-[#006d37]' : 'text-[#506072] hover:text-[#006d37]'}`}>
+                <Icon className="w-5 h-5" />
+                <span className="text-[9px] font-bold mt-1">{tab.label}</span>
+                {isActive && <div className="w-1 h-1 bg-[#006d37] rounded-full mt-1" />}
+              </button>
+            );
+          })}
+        </nav>
       )}
     </div>
   );
