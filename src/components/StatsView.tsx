@@ -1,14 +1,14 @@
 import { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { 
-  ResponsiveContainer, 
-  BarChart, 
-  Bar, 
-  XAxis, 
-  YAxis, 
-  Tooltip, 
-  PieChart, 
-  Pie, 
+import {
+  ResponsiveContainer,
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  Tooltip,
+  PieChart,
+  Pie,
   Cell,
   Legend,
   LineChart,
@@ -17,7 +17,6 @@ import {
 } from 'recharts';
 import { Trophy, Flame, Calendar, BookOpen, Clock, Activity, Sparkles, Award, Lock, CheckCircle2, TrendingUp, Printer, Download, X, FileText, Check } from 'lucide-react';
 import { UserProgress, Unit } from '../types';
-import DomainReadinessRadar from './DomainReadinessRadar';
 
 interface StatsViewProps {
   progress: UserProgress;
@@ -37,7 +36,14 @@ export default function StatsView({ progress, units }: StatsViewProps) {
     { name: 'سهل', value: progress.flashcardStats.easy, color: '#2ecc71' }
   ].filter(item => item.value > 0);
 
+  // Fallback if no cards have been rated yet
   const hasCardData = cardData.length > 0;
+  const mockCardData = [
+    { name: 'إعادة', value: 3, color: '#ba1a1a' },
+    { name: 'صعب', value: 5, color: '#506072' },
+    { name: 'جيد', value: 12, color: '#006d37' },
+    { name: 'سهل', value: 8, color: '#2ecc71' }
+  ];
 
   // 2. Format quiz history data
   const quizHistory = progress.quizScoreHistory.map((item, idx) => ({
@@ -47,6 +53,11 @@ export default function StatsView({ progress, units }: StatsViewProps) {
   }));
 
   const hasQuizHistory = quizHistory.length > 0;
+  const mockQuizHistory = [
+    { name: 'تركيب البروتين', 'النتيجة %': 75, scoreText: '3 / 4' },
+    { name: 'بنية البروتين', 'النتيجة %': 90, scoreText: '5 / 6' },
+    { name: 'دور البروتينات', 'النتيجة %': 60, scoreText: '3 / 5' }
+  ];
 
   // 3. Format quiz timeline progress (scores over time)
   const quizTimeline = progress.quizScoreHistory.map((item) => ({
@@ -57,6 +68,12 @@ export default function StatsView({ progress, units }: StatsViewProps) {
   }));
 
   const hasQuizTimeline = quizTimeline.length > 0;
+  const mockQuizTimeline = [
+    { date: '05/07', 'الدرجة %': 65, title: 'آليات تركيب البروتين', scoreText: '3/5' },
+    { date: '05/07', 'الدرجة %': 80, title: 'العلاقة بين البنية والوظيفة', scoreText: '4/5' },
+    { date: '06/07', 'الدرجة %': 75, title: 'الذات واللاذات', scoreText: '3/4' },
+    { date: '06/07', 'الدرجة %': 90, title: 'الاستجابة المناعية الخلطية', scoreText: '9/10' }
+  ];
 
   // Total lessons completed
   const completedUnitsCount = progress.completedUnits.length;
@@ -68,68 +85,16 @@ export default function StatsView({ progress, units }: StatsViewProps) {
     (progress.flashcardStats?.good || 0) + 
     (progress.flashcardStats?.easy || 0);
 
-  const achievementsList = [
-    {
-      id: 'streak_10',
-      title: "بطل الاستمرارية",
-      description: "حافظ على حماسك بالدراسة لـ 10 أيام متتالية",
-      unlocked: progress.streak >= 10,
-      current: progress.streak,
-      target: 10,
-      badgeColor: "bg-[#ff9a4a]/10 text-[#ff5d40] border-[#ff9a4a]/20",
-      icon: <Flame className="w-5 h-5 fill-current" />
-    },
-    {
-      id: 'units_5',
-      title: "سيد الوحدات",
-      description: "أنهِ دراسة وتدريب 5 وحدات دراسية بالكامل",
-      unlocked: completedUnitsCount >= 5,
-      current: completedUnitsCount,
-      target: 5,
-      badgeColor: "bg-[#2ecc71]/10 text-[#006d37] border-[#2ecc71]/20",
-      icon: <BookOpen className="w-5 h-5" />
-    },
-    {
-      id: 'xp_1000',
-      title: "جامع الكنوز",
-      description: "اكتسب 1,000 نقطة خبرة (XP) من التدريبات",
-      unlocked: progress.xp >= 1000,
-      current: progress.xp,
-      target: 1000,
-      badgeColor: "bg-[#fed65b]/20 text-[#944a00] border-[#fed65b]/30",
-      icon: <Trophy className="w-5 h-5 fill-current text-white" />
-    },
-    {
-      id: 'study_100',
-      title: "المستكشف المثابر",
-      description: "اقضِ 100 دقيقة أو أكثر من المذاكرة والتحصيل العلمي",
-      unlocked: progress.studyMinutes >= 100,
-      current: progress.studyMinutes,
-      target: 100,
-      badgeColor: "bg-[#006d37]/10 text-[#006d37] border-[#006d37]/20",
-      icon: <Clock className="w-5 h-5" />
-    },
-    {
-      id: 'questions_50',
-      title: "العلامة الكاملة",
-      description: "أجب عن 50 سؤال تدريبي في مختلف الاختبارات",
-      unlocked: progress.completedQuestionsCount >= 50,
-      current: progress.completedQuestionsCount,
-      target: 50,
-      badgeColor: "bg-[#2ecc71]/15 text-[#005027] border-[#2ecc71]/20",
-      icon: <Award className="w-5 h-5" />
-    },
-    {
-      id: 'cards_20',
-      title: "خبير التكرار",
-      description: "قم بتقييم وتكرار 20 بطاقة من المراجعة الذكية",
-      unlocked: totalCardsRated >= 20,
-      current: totalCardsRated,
-      target: 20,
-      badgeColor: "bg-[#fed65b]/20 text-[#006d37] border-[#fed65b]/30",
-      icon: <Sparkles className="w-5 h-5 fill-current text-white" />
-    }
+  // 4. Mock Monthly Unit Progress Data for Recharts
+  const monthlyUnitProgress = [
+    { name: 'الأسبوع 1', 'تركيب البروتين': 20, 'بنية البروتين': 0, 'الأنزيمات': 0, 'المناعة': 0 },
+    { name: 'الأسبوع 2', 'تركيب البروتين': 50, 'بنية البروتين': 30, 'الأنزيمات': 0, 'المناعة': 0 },
+    { name: 'الأسبوع 3', 'تركيب البروتين': 80, 'بنية البروتين': 60, 'الأنزيمات': 20, 'المناعة': 0 },
+    { name: 'الأسبوع 4', 'تركيب البروتين': 100, 'بنية البروتين': 85, 'الأنزيمات': 50, 'المناعة': 10 }
   ];
+
+  const colors = ['#006d37', '#2ecc71', '#ff9a4a', '#ba1a1a', '#fed65b'];
+
 
   return (
     <div className="space-y-6 pb-24 font-sans">
@@ -197,84 +162,40 @@ export default function StatsView({ progress, units }: StatsViewProps) {
         </div>
       </section>
 
-      {/* Achievements System Section */}
+      {/* Monthly Unit Progress LineChart */}
       <section className="bg-[#ffffff] border border-[#e2dabf]/60 rounded-3xl p-5 shadow-sm space-y-4">
-        <div className="flex flex-row-reverse justify-between items-center">
-          <div className="flex items-center gap-2">
-            <Award className="w-5 h-5 text-[#006d37]" />
-            <h3 className="font-extrabold text-base text-[#1f1c0b]">أوسمة وإنجازات بحار المعرفة</h3>
-          </div>
-          <span className="text-xs font-bold text-[#006d37] bg-[#2ecc71]/15 px-2.5 py-1 rounded-xl">
-            {achievementsList.filter(a => a.unlocked).length} / {achievementsList.length} مكتملة
-          </span>
+        <div className="flex items-center gap-2">
+          <Activity className="w-5 h-5 text-[#006d37]" />
+          <h3 className="font-extrabold text-base text-[#1f1c0b]">تطور مستوى الوحدات على مدار الشهر</h3>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {achievementsList.map((ach) => {
-            const percentage = Math.min(100, Math.round((ach.current / ach.target) * 100));
-            return (
-              <div 
-                key={ach.id}
-                className={`p-4 rounded-2xl border transition-all relative overflow-hidden flex flex-col justify-between ${
-                  ach.unlocked 
-                    ? 'bg-[#fff9ed]/50 border-[#fed65b]/40 shadow-sm' 
-                    : 'bg-[#fcfcfc] border-[#e2dabf]/30 opacity-75'
-                }`}
-              >
-                {/* Visual Glow or Lock indicators */}
-                <div className="flex flex-row-reverse gap-3 text-right">
-                  {/* Badge Icon */}
-                  <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 border ${
-                    ach.unlocked ? ach.badgeColor : 'bg-[#f3f4f5] text-[#506072]/50 border-transparent'
-                  }`}>
-                    {ach.icon}
-                  </div>
-
-                  {/* Text details */}
-                  <div className="space-y-1 flex-1">
-                    <h4 className="font-extrabold text-sm text-[#1f1c0b] flex flex-row-reverse items-center justify-end gap-1.5 flex-wrap">
-                      <span>{ach.title}</span>
-                      {ach.unlocked ? (
-                        <CheckCircle2 className="w-4 h-4 text-[#2ecc71] fill-[#2ecc71]/10 shrink-0" />
-                      ) : (
-                        <Lock className="w-3.5 h-3.5 text-[#506072]/60 shrink-0" />
-                      )}
-                    </h4>
-                    <p className="text-[11px] text-[#506072] leading-relaxed">
-                      {ach.description}
-                    </p>
-                  </div>
-                </div>
-
-                {/* Progress Bar & percentage */}
-                <div className="mt-4 pt-3 border-t border-[#e2dabf]/10 space-y-1.5">
-                  <div className="flex flex-row-reverse justify-between text-[10px] font-bold">
-                    <span className={ach.unlocked ? 'text-[#006d37]' : 'text-[#506072]/80'}>
-                      {percentage}%
-                    </span>
-                    <span className="text-[#506072]/70 font-mono">
-                      {ach.current.toLocaleString()} / {ach.target.toLocaleString()}
-                    </span>
-                  </div>
-                  
-                  {/* Outer Bar */}
-                  <div className="w-full h-1.5 bg-[#f3f4f5] rounded-full overflow-hidden">
-                    <div 
-                      className={`h-full rounded-full transition-all duration-500 ${
-                        ach.unlocked ? 'bg-[#006d37]' : 'bg-[#506072]/40'
-                      }`}
-                      style={{ width: `${percentage}%` }}
-                    />
-                  </div>
-                </div>
-              </div>
-            );
-          })}
+        <div className="h-72 w-full">
+          <ResponsiveContainer width="100%" height="100%">
+            <LineChart data={monthlyUnitProgress} margin={{ top: 15, right: 15, left: -20, bottom: 0 }}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#e2dabf" strokeOpacity={0.3} />
+              <XAxis dataKey="name" stroke="#506072" fontSize={10} tickLine={false} />
+              <YAxis stroke="#506072" fontSize={10} tickLine={false} domain={[0, 100]} />
+              <Tooltip 
+                formatter={(value: any, name: any) => [`${value}%`, name]}
+                contentStyle={{ direction: 'rtl', fontFamily: 'Noto Kufi Arabic', fontSize: 11, borderRadius: '12px', border: '1px solid #e2dabf' }}
+              />
+              <Legend verticalAlign="top" height={36} wrapperStyle={{ fontSize: '11px', fontFamily: 'Noto Kufi Arabic', direction: 'rtl' }}/>
+              {Object.keys(monthlyUnitProgress[0])
+                .filter(key => key !== 'name')
+                .map((key, index) => (
+                  <Line 
+                    key={key}
+                    type="monotone" 
+                    dataKey={key} 
+                    stroke={colors[index % colors.length]} 
+                    strokeWidth={3}
+                    activeDot={{ r: 6 }} 
+                  />
+                ))}
+            </LineChart>
+          </ResponsiveContainer>
         </div>
       </section>
-
-      {/* Domain Readiness Radar */}
-      <DomainReadinessRadar units={units} />
 
       {/* Evolution Over Time LineChart */}
       <section className="bg-[#ffffff] border border-[#e2dabf]/60 rounded-3xl p-5 shadow-sm space-y-4">
@@ -283,35 +204,32 @@ export default function StatsView({ progress, units }: StatsViewProps) {
           <h3 className="font-extrabold text-base text-[#1f1c0b]">منحنى تطور المستوى العلمي عبر الزمن</h3>
         </div>
 
-        {hasQuizTimeline ? (
-          <div className="h-64 w-full">
-            <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={quizTimeline} margin={{ top: 15, right: 15, left: -20, bottom: 0 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#e2dabf" strokeOpacity={0.3} />
-                <XAxis dataKey="date" stroke="#506072" fontSize={10} tickLine={false} />
-                <YAxis stroke="#506072" fontSize={10} tickLine={false} domain={[0, 100]} />
-                <Tooltip 
-                  formatter={(value: any, name: any, props: any) => [`${value}% (${props.payload.scoreText})`, 'النتيجة']}
-                  labelFormatter={(label) => `التاريخ: ${label}`}
-                  contentStyle={{ direction: 'rtl', fontFamily: 'Noto Kufi Arabic', fontSize: 11, borderRadius: '12px', border: '1px solid #e2dabf' }}
-                />
-                <Line 
-                  type="monotone" 
-                  dataKey="الدرجة %" 
-                  stroke="#006d37" 
-                  strokeWidth={3}
-                  activeDot={{ r: 8 }} 
-                  dot={{ stroke: '#fed65b', strokeWidth: 2, r: 4, fill: '#006d37' }}
-                />
-              </LineChart>
-            </ResponsiveContainer>
-          </div>
-        ) : (
-          <div className="h-64 flex items-center justify-center text-center bg-[#fff9ed]/50 rounded-2xl border border-dashed border-[#e2dabf]">
-            <p className="text-sm text-[#506072] font-semibold max-w-sm leading-7">
-              لا توجد نتائج اختبارات بعد. سيظهر منحنى التقدم الحقيقي بعد حل أول اختبار.
-            </p>
-          </div>
+        <div className="h-64 w-full">
+          <ResponsiveContainer width="100%" height="100%">
+            <LineChart data={hasQuizTimeline ? quizTimeline : mockQuizTimeline} margin={{ top: 15, right: 15, left: -20, bottom: 0 }}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#e2dabf" strokeOpacity={0.3} />
+              <XAxis dataKey="date" stroke="#506072" fontSize={10} tickLine={false} />
+              <YAxis stroke="#506072" fontSize={10} tickLine={false} domain={[0, 100]} />
+              <Tooltip 
+                formatter={(value: any, name: any, props: any) => [`${value}% (${props.payload.scoreText})`, 'النتيجة']}
+                labelFormatter={(label) => `التاريخ: ${label}`}
+                contentStyle={{ direction: 'rtl', fontFamily: 'Noto Kufi Arabic', fontSize: 11, borderRadius: '12px', border: '1px solid #e2dabf' }}
+              />
+              <Line 
+                type="monotone" 
+                dataKey="الدرجة %" 
+                stroke="#006d37" 
+                strokeWidth={3}
+                activeDot={{ r: 8 }} 
+                dot={{ stroke: '#fed65b', strokeWidth: 2, r: 4, fill: '#006d37' }}
+              />
+            </LineChart>
+          </ResponsiveContainer>
+        </div>
+        {!hasQuizTimeline && (
+          <p className="text-[11px] text-[#506072] text-center bg-[#fff9ed] p-2 rounded-xl border border-[#fed65b]/30">
+            💡 يظهر المخطط البياني التجريبي أعلاه. قم بحل الاختبارات المتعددة لبناء منحنى تقدمك الحقيقي!
+          </p>
         )}
       </section>
 
@@ -324,26 +242,23 @@ export default function StatsView({ progress, units }: StatsViewProps) {
             <h3 className="font-extrabold text-base text-[#1f1c0b]">نتائج التدريبات والاختبارات</h3>
           </div>
           
-          {hasQuizHistory ? (
-            <div className="h-64 w-full">
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={quizHistory} margin={{ top: 10, right: 0, left: -20, bottom: 0 }}>
-                  <XAxis dataKey="name" stroke="#506072" fontSize={10} tickLine={false} />
-                  <YAxis stroke="#506072" fontSize={10} tickLine={false} domain={[0, 100]} />
-                  <Tooltip 
-                    formatter={(value: any, name: any, props: any) => [`${value}% (${props.payload.scoreText})`, 'الدرجة']}
-                    contentStyle={{ direction: 'rtl', fontFamily: 'Noto Kufi Arabic', fontSize: 11, borderRadius: '12px', border: '1px solid #e2dabf' }}
-                  />
-                  <Bar dataKey="النتيجة %" fill="#006d37" radius={[6, 6, 0, 0]} />
-                </BarChart>
-              </ResponsiveContainer>
-            </div>
-          ) : (
-            <div className="h-64 flex items-center justify-center text-center bg-[#fff9ed]/50 rounded-2xl border border-dashed border-[#e2dabf]">
-              <p className="text-sm text-[#506072] font-semibold max-w-sm leading-7">
-                لا توجد نتائج مسجلة بعد. ابدأ بحل اختبار لتسجيل أول نتيجة حقيقية.
-              </p>
-            </div>
+          <div className="h-64 w-full">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={hasQuizHistory ? quizHistory : mockQuizHistory} margin={{ top: 10, right: 0, left: -20, bottom: 0 }}>
+                <XAxis dataKey="name" stroke="#506072" fontSize={10} tickLine={false} />
+                <YAxis stroke="#506072" fontSize={10} tickLine={false} domain={[0, 100]} />
+                <Tooltip 
+                  formatter={(value: any, name: any, props: any) => [`${value}% (${props.payload.scoreText || 'نموذجية'})`, 'الدرجة']}
+                  contentStyle={{ direction: 'rtl', fontFamily: 'Noto Kufi Arabic', fontSize: 11, borderRadius: '12px', border: '1px solid #e2dabf' }}
+                />
+                <Bar dataKey="النتيجة %" fill="#006d37" radius={[6, 6, 0, 0]} />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+          {!hasQuizHistory && (
+            <p className="text-[11px] text-[#506072] text-center bg-[#fff9ed] p-2 rounded-xl border border-[#fed65b]/30">
+              💡 يظهر أعلاه تمثيل تجريبي. ابدأ بحل أول اختبار لتسجيل نتيجتك الحقيقية!
+            </p>
           )}
         </div>
 
@@ -354,49 +269,47 @@ export default function StatsView({ progress, units }: StatsViewProps) {
             <h3 className="font-extrabold text-base text-[#1f1c0b]">مستويات تذكر بطاقات المراجعة</h3>
           </div>
 
-          {hasCardData ? (
-            <div className="flex flex-col sm:flex-row items-center gap-4 h-64">
-              <div className="h-full flex-1 w-full max-w-[200px]">
-                <ResponsiveContainer width="100%" height="100%">
-                  <PieChart>
-                    <Pie
-                      data={cardData}
-                      cx="50%"
-                      cy="50%"
-                      innerRadius={60}
-                      outerRadius={80}
-                      paddingAngle={3}
-                      dataKey="value"
-                    >
-                      {cardData.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={entry.color} />
-                      ))}
-                    </Pie>
-                    <Tooltip 
-                      contentStyle={{ direction: 'rtl', fontFamily: 'Noto Kufi Arabic', fontSize: 11, borderRadius: '12px', border: '1px solid #e2dabf' }}
-                    />
-                  </PieChart>
-                </ResponsiveContainer>
-              </div>
+          <div className="flex flex-col sm:flex-row items-center gap-4 h-64">
+            <div className="h-full flex-1 w-full max-w-[200px]">
+              <ResponsiveContainer width="100%" height="100%">
+                <PieChart>
+                  <Pie
+                    data={hasCardData ? cardData : mockCardData}
+                    cx="50%"
+                    cy="50%"
+                    innerRadius={60}
+                    outerRadius={80}
+                    paddingAngle={3}
+                    dataKey="value"
+                  >
+                    {(hasCardData ? cardData : mockCardData).map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={entry.color} />
+                    ))}
+                  </Pie>
+                  <Tooltip 
+                    contentStyle={{ direction: 'rtl', fontFamily: 'Noto Kufi Arabic', fontSize: 11, borderRadius: '12px', border: '1px solid #e2dabf' }}
+                  />
+                </PieChart>
+              </ResponsiveContainer>
+            </div>
 
-              <div className="space-y-2 shrink-0 text-xs text-right w-full sm:w-auto">
-                {cardData.map((item, idx) => (
-                  <div key={idx} className="flex items-center justify-between gap-4">
-                    <div className="flex items-center gap-2">
-                      <span className="w-3 h-3 rounded-full" style={{ backgroundColor: item.color }} />
-                      <span className="font-bold text-[#1f1c0b]">{item.name}</span>
-                    </div>
-                    <span className="text-[#506072] font-semibold">{item.value} بطاقة</span>
+            {/* Legend info lists */}
+            <div className="space-y-2 shrink-0 text-xs text-right w-full sm:w-auto">
+              {(hasCardData ? cardData : mockCardData).map((item, idx) => (
+                <div key={idx} className="flex items-center justify-between gap-4">
+                  <div className="flex items-center gap-2">
+                    <span className="w-3 h-3 rounded-full" style={{ backgroundColor: item.color }} />
+                    <span className="font-bold text-[#1f1c0b]">{item.name}</span>
                   </div>
-                ))}
-              </div>
+                  <span className="text-[#506072] font-semibold">{item.value} بطاقة</span>
+                </div>
+              ))}
             </div>
-          ) : (
-            <div className="h-64 flex items-center justify-center text-center bg-[#fff9ed]/50 rounded-2xl border border-dashed border-[#e2dabf]">
-              <p className="text-sm text-[#506072] font-semibold max-w-sm leading-7">
-                لا توجد تقييمات بطاقات بعد. ستظهر مستويات التذكر بعد استعمال المراجعة الذكية.
-              </p>
-            </div>
+          </div>
+          {!hasCardData && (
+            <p className="text-[11px] text-[#506072] text-center bg-[#fff9ed] p-2 rounded-xl border border-[#fed65b]/30">
+              💡 تظهر مستويات التذكر بالتكرار المتباعد بعد تقييمك للبطاقات الذكية.
+            </p>
           )}
         </div>
 
@@ -418,31 +331,10 @@ export default function StatsView({ progress, units }: StatsViewProps) {
       {/* Dynamic Printing Style Tag */}
       <style>{`
         @media print {
-          /* Hide everything in the body by default */
-          body * {
-            visibility: hidden !important;
-          }
-          /* Show only the printable card and its descendants */
-          #print-report-card, #print-report-card * {
-            visibility: visible !important;
-          }
-          #print-report-card {
-            position: absolute !important;
-            left: 0 !important;
-            top: 0 !important;
-            width: 100% !important;
-            height: 100% !important;
-            background: #faf6ee !important;
-            color: #1f1c0b !important;
-            box-shadow: none !important;
-            border: 4px double #006d37 !important;
-            margin: 0 !important;
-            padding: 2cm !important;
-            border-radius: 0 !important;
-          }
-          .no-print {
-            display: none !important;
-          }
+          body * { visibility: hidden !important; }
+          #print-report-card, #print-report-card * { visibility: visible !important; }
+          #print-report-card { position: absolute !important; left: 0 !important; top: 0 !important; width: 100% !important; height: 100% !important; background: #faf6ee !important; color: #1f1c0b !important; box-shadow: none !important; border: 4px double #006d37 !important; margin: 0 !important; padding: 2cm !important; border-radius: 0 !important; }
+          .no-print { display: none !important; }
         }
       `}</style>
 
@@ -502,18 +394,15 @@ export default function StatsView({ progress, units }: StatsViewProps) {
 
                       <button
                         onClick={() => {
-                          // Canvas drawing helper function
                           const canvas = document.createElement('canvas');
                           canvas.width = 800;
                           canvas.height = 1100;
                           const ctx = canvas.getContext('2d');
                           if (!ctx) return;
 
-                          // Fill background (parchment/cream color)
                           ctx.fillStyle = '#fffcf5';
                           ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-                          // Outer double border
                           ctx.strokeStyle = '#006d37';
                           ctx.lineWidth = 6;
                           ctx.strokeRect(20, 20, canvas.width - 40, canvas.height - 40);
@@ -522,7 +411,6 @@ export default function StatsView({ progress, units }: StatsViewProps) {
                           ctx.lineWidth = 2;
                           ctx.strokeRect(30, 30, canvas.width - 60, canvas.height - 60);
 
-                          // Title text
                           ctx.fillStyle = '#006d37';
                           ctx.font = 'bold 22px Arial, sans-serif';
                           ctx.textAlign = 'center';
@@ -533,7 +421,6 @@ export default function StatsView({ progress, units }: StatsViewProps) {
                           ctx.fillText('وزارة التربية الوطنية • الديوان الوطني للامتحانات والمسابقات', canvas.width / 2, 110);
                           ctx.fillText('فضاء كنز العلوم لتسهيل مادة علوم الطبيعة والحياة للبكالوريا', canvas.width / 2, 130);
 
-                          // Divider
                           ctx.strokeStyle = '#e2dabf';
                           ctx.lineWidth = 1;
                           ctx.beginPath();
@@ -541,7 +428,6 @@ export default function StatsView({ progress, units }: StatsViewProps) {
                           ctx.lineTo(canvas.width - 100, 155);
                           ctx.stroke();
 
-                          // Document title
                           ctx.fillStyle = '#944a00';
                           ctx.font = 'bold 24px Arial, sans-serif';
                           ctx.fillText('كشف النقاط الإنجازي وشهادة التفوق للبكالوريا', canvas.width / 2, 200);
@@ -550,7 +436,6 @@ export default function StatsView({ progress, units }: StatsViewProps) {
                           ctx.font = '15px Arial, sans-serif';
                           ctx.fillText('يشهد فضاء كنز العلوم التفاعلي بأن الطالب(ة):', canvas.width / 2, 245);
 
-                          // Student Name
                           ctx.fillStyle = '#006d37';
                           ctx.font = 'bold 28px Arial, sans-serif';
                           ctx.fillText(studentName || 'طالب متميز', canvas.width / 2, 290);
@@ -559,7 +444,6 @@ export default function StatsView({ progress, units }: StatsViewProps) {
                           ctx.font = '13px Arial, sans-serif';
                           ctx.fillText('قد أنجز مسار المراجعة الذكية والتدريبات المنهجية وحقق المؤشرات التحصيلية التالية:', canvas.width / 2, 330);
 
-                          // Metrics boxes helper function
                           const drawRoundRect = (x: number, y: number, w: number, h: number, r: number) => {
                             ctx.beginPath();
                             ctx.moveTo(x + r, y);
@@ -596,14 +480,12 @@ export default function StatsView({ progress, units }: StatsViewProps) {
                             ctx.fillText(m.val, x + 290, y + 50);
                           });
 
-                          // Units progress divider
                           ctx.strokeStyle = '#e2dabf';
                           ctx.beginPath();
                           ctx.moveTo(70, 565);
                           ctx.lineTo(canvas.width - 70, 565);
                           ctx.stroke();
 
-                          // Units title
                           ctx.fillStyle = '#006d37';
                           ctx.font = 'bold 15px Arial, sans-serif';
                           ctx.textAlign = 'right';
@@ -622,7 +504,6 @@ export default function StatsView({ progress, units }: StatsViewProps) {
                             ctx.textAlign = 'left';
                             ctx.fillText(`${unit.progress}%`, 70, y);
                             
-                            // Draw progress bar
                             ctx.fillStyle = '#e2ecf5';
                             ctx.fillRect(70, y + 8, 660, 6);
                             ctx.fillStyle = '#2ecc71';
@@ -631,22 +512,16 @@ export default function StatsView({ progress, units }: StatsViewProps) {
                             ctx.textAlign = 'right';
                           });
 
-                          // Quiz performance section
                           ctx.fillStyle = '#006d37';
                           ctx.font = 'bold 15px Arial, sans-serif';
                           ctx.textAlign = 'right';
                           ctx.fillText('التحليل البياني لأداء الاختبارات المنهجية:', canvas.width - 70, 775);
 
-                          const quizDataList = progress.quizScoreHistory.slice(0, 3);
-
-                          if (quizDataList.length === 0) {
-                            ctx.fillStyle = '#506072';
-                            ctx.font = 'bold 13px Arial, sans-serif';
-                            ctx.textAlign = 'right';
-                            ctx.fillText('لا توجد نتائج اختبارات مسجلة بعد.', canvas.width - 70, 820);
-                            ctx.font = '11px Arial, sans-serif';
-                            ctx.fillText('سيتم تحديث هذا القسم تلقائياً بعد حل أول اختبار.', canvas.width - 70, 845);
-                          }
+                          const quizDataList = progress.quizScoreHistory.length > 0 ? progress.quizScoreHistory.slice(0, 3) : [
+                            { unitTitle: 'آليات تركيب البروتين (نموذجي)', score: 4, total: 5 },
+                            { unitTitle: 'العلاقة بين بنية البروتين ووظيفته (نموذجي)', score: 9, total: 10 },
+                            { unitTitle: 'الذات واللاذات (نموذجي)', score: 3, total: 4 }
+                          ];
 
                           quizDataList.forEach((quiz, qIdx) => {
                             const y = 805 + qIdx * 50;
@@ -662,7 +537,6 @@ export default function StatsView({ progress, units }: StatsViewProps) {
                             ctx.textAlign = 'left';
                             ctx.fillText(`${quiz.score}/${quiz.total} (${scorePct}%)`, 70, y);
 
-                            // Quiz bar chart
                             ctx.fillStyle = '#f3f4f5';
                             ctx.fillRect(70, y + 8, 660, 8);
                             ctx.fillStyle = scorePct >= 75 ? '#006d37' : scorePct >= 50 ? '#ff9a4a' : '#ba1a1a';
@@ -671,10 +545,8 @@ export default function StatsView({ progress, units }: StatsViewProps) {
                             ctx.textAlign = 'right';
                           });
 
-                          // Stamp & signature
                           const footerY = 990;
                           
-                          // Draw circle seal
                           ctx.strokeStyle = 'rgba(0,109,55,0.4)';
                           ctx.lineWidth = 3;
                           ctx.beginPath();
@@ -688,7 +560,6 @@ export default function StatsView({ progress, units }: StatsViewProps) {
                           ctx.fillText('منصة كنز العلوم', 150, footerY + 3);
                           ctx.fillText('SVT BAC DZ', 150, footerY + 16);
 
-                          // AI signature
                           ctx.fillStyle = '#506072';
                           ctx.font = 'italic bold 12px Arial, sans-serif';
                           ctx.fillText('المرشد الذكي للبكالوريا', canvas.width - 150, footerY - 10);
@@ -696,7 +567,6 @@ export default function StatsView({ progress, units }: StatsViewProps) {
                           ctx.font = '10px Arial, sans-serif';
                           ctx.fillText(`تاريخ الإصدار: ${new Date().toLocaleDateString('ar-DZ')}`, canvas.width - 150, footerY + 15);
 
-                          // Trigger image download
                           const dataUrl = canvas.toDataURL('image/png');
                           const link = document.createElement('a');
                           link.download = `SVT_Bac_Report_Card_${studentName || 'Student'}.png`;
@@ -715,18 +585,16 @@ export default function StatsView({ progress, units }: StatsViewProps) {
                   </p>
                 </div>
 
-                {/* Printable Area - Formatted as an official document */}
+                {/* Printable Area */}
                 <div 
                   id="print-report-card"
                   ref={reportRef}
                   className="bg-[#faf6ee] border-4 border-double border-[#006d37] rounded-3xl p-6 md:p-8 space-y-6 shadow-md relative overflow-hidden"
                 >
-                  {/* Decorative Watermark */}
                   <div className="absolute inset-0 opacity-[0.015] pointer-events-none flex items-center justify-center">
                     <Trophy className="w-96 h-96" />
                   </div>
 
-                  {/* Document Header */}
                   <div className="text-center space-y-1.5 border-b-2 border-dashed border-[#006d37]/20 pb-4">
                     <span className="text-xs font-bold text-[#506072] block tracking-wide">الجمهورية الجزائرية الديمقراطية الشعبية</span>
                     <span className="text-[11px] font-bold text-gray-500 block">وزارة التربية الوطنية • الديوان الوطني للامتحانات والمسابقات</span>
@@ -735,24 +603,21 @@ export default function StatsView({ progress, units }: StatsViewProps) {
                     </span>
                   </div>
 
-                  {/* Certificate Title */}
                   <div className="text-center space-y-2 py-2">
-                    <h2 className="text-2xl font-black text-[#944a00] font-display">كشف الإنجاز والتقدم الدراسي الحقيقي</h2>
+                    <h2 className="text-2xl font-black text-[#944a00] font-display">كشف الإنجاز والتقدم الدراسي النموذجي</h2>
                     <p className="text-xs text-gray-500 font-semibold">شهادة إثبات الكفاءة وتحصيل المنهجية العلمية لمادة علوم الطبيعة والحياة</p>
                   </div>
 
-                  {/* Student Bio Statement */}
                   <div className="bg-white/50 border border-[#e2dabf]/30 p-4 rounded-2xl text-center space-y-2">
                     <p className="text-xs text-gray-500">يشهد الديوان الإلكتروني لمنصة كنز العلوم التفاعلية بأن الطالب(ة):</p>
                     <div className="text-xl font-black text-[#006d37] py-1 border-b border-dashed border-[#006d37]/20 inline-block px-8">
                       {studentName || 'طالب متميز'}
                     </div>
                     <p className="text-xs text-gray-600 leading-relaxed max-w-xl mx-auto">
-                      يعرض هذا الكشف الإحصائيات الحقيقية المسجلة داخل التطبيق أثناء المراجعة والتدريب لبكالوريا 2026:
+                      قد واصل تدريبات المراجعة الذكية بالتكرار المتباعد، وأظهر تحكماً ممتازاً في المنهجية العلمية (الاستدلال والمسعى العلمي) للتحضير لبكالوريا 2026 محرزاً الإحصائيات التالية:
                     </p>
                   </div>
 
-                  {/* Grid of Key Performance Indicators */}
                   <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
                     <div className="bg-white border border-[#e2dabf]/50 p-3 rounded-xl text-center shadow-sm">
                       <span className="text-[10px] text-gray-400 block font-bold">النقاط التراكمية</span>
@@ -772,7 +637,6 @@ export default function StatsView({ progress, units }: StatsViewProps) {
                     </div>
                   </div>
 
-                  {/* Units and Lessons Progress Table */}
                   <div className="space-y-3">
                     <h4 className="text-xs font-bold text-[#006d37] border-b border-[#006d37]/20 pb-1.5 flex items-center gap-1.5 text-right">
                       <BookOpen className="w-4 h-4" />
@@ -796,19 +660,17 @@ export default function StatsView({ progress, units }: StatsViewProps) {
                     </div>
                   </div>
 
-                  {/* Quiz performance graph */}
                   <div className="space-y-3">
                     <h4 className="text-xs font-bold text-[#006d37] border-b border-[#006d37]/20 pb-1.5 flex items-center gap-1.5 text-right">
                       <Activity className="w-4 h-4" />
                       <span>التحليل البياني لأداء الاختبارات المنهجية:</span>
                     </h4>
                     <div className="space-y-2.5 bg-white p-4 rounded-2xl border border-gray-100">
-                      {progress.quizScoreHistory.length === 0 && (
-                        <p className="text-xs text-gray-500 font-bold text-center py-4">
-                          لا توجد نتائج اختبارات مسجلة بعد. سيظهر هذا القسم بعد حل أول اختبار.
-                        </p>
-                      )}
-                      {progress.quizScoreHistory.slice(0, 3).map((quiz, qidx) => {
+                      {(progress.quizScoreHistory.length > 0 ? progress.quizScoreHistory.slice(0, 3) : [
+                        { unitTitle: 'آليات تركيب البروتين (نموذجي)', score: 4, total: 5 },
+                        { unitTitle: 'العلاقة بين بنية البروتين ووظيفته (نموذجي)', score: 9, total: 10 },
+                        { unitTitle: 'الذات واللاذات (نموذجي)', score: 3, total: 4 }
+                      ]).map((quiz, qidx) => {
                         const pct = Math.round((quiz.score / quiz.total) * 100);
                         let barColor = 'bg-[#006d37]';
                         if (pct < 50) barColor = 'bg-[#ba1a1a]';
@@ -829,16 +691,13 @@ export default function StatsView({ progress, units }: StatsViewProps) {
                     </div>
                   </div>
 
-                  {/* Validation Seal and Signature row */}
                   <div className="flex flex-row-reverse justify-between items-center pt-4 border-t border-dashed border-[#006d37]/20">
-                    {/* Stamp */}
                     <div className="relative w-20 h-20 flex items-center justify-center border-2 border-dashed border-[#006d37]/30 rounded-full bg-white text-[9px] text-[#006d37]/80 text-center flex-col font-bold leading-tight p-2 shadow-inner">
                       <CheckCircle2 className="w-4 h-4 mb-0.5 text-[#2ecc71] fill-[#2ecc71]/10" />
                       <span>منصة كنز العلوم</span>
                       <span className="text-[7px] text-gray-400">SVT BAC DZ</span>
                     </div>
                     
-                    {/* Signature */}
                     <div className="text-right space-y-1">
                       <span className="text-[10px] text-gray-400 block font-bold">توقيع ومصادقة:</span>
                       <span className="text-xs font-extrabold text-[#506072] block">المرشد الذكي للبكالوريا</span>

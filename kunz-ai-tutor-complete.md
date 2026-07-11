@@ -22,7 +22,6 @@ src
 │   ├── AITutorView.tsx          (chat principal du tuteur)
 │   ├── SmartBotMessage.tsx      (rendu d'un message + quick actions + sources)
 │   ├── SmartBotQuizCard.tsx     (carte QCM interactive A/B/C/D)
-│   ├── BacCombatView.tsx
 │   ├── DashboardView.tsx
 │   ├── LessonAdventurePortal.tsx
 │   ├── LessonsView.tsx

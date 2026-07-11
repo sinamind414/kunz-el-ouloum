@@ -65,8 +65,8 @@
 }
 
 @theme {
-  --font-sans: "Noto Kufi Arabic", "Segoe UI", Tahoma, "Geeza Pro", "Arabic Typesetting", system-ui, sans-serif;
-  --font-display: "Noto Kufi Arabic", "Segoe UI", Tahoma, "Geeza Pro", "Arabic Typesetting", system-ui, sans-serif;
+  --font-sans: "Noto Kufi Arabic", "Work Sans", "Inter", sans-serif;
+  --font-display: "Noto Kufi Arabic", "Work Sans", "Inter", sans-serif;
   
   --color-primary: var(--primary-color);
   --color-primary-hover: var(--primary-hover-color);
@@ -91,7 +91,7 @@
 }
 
 body {
-  font-family: 'Noto Kufi Arabic', 'Segoe UI', Tahoma, 'Geeza Pro', 'Arabic Typesetting', system-ui, sans-serif;
+  font-family: 'Noto Kufi Arabic', 'Work Sans', 'Inter', sans-serif;
   background-color: var(--background-color);
   color: var(--on-surface-color);
   transition: background-color 0.3s ease, color 0.3s ease;
@@ -207,4 +207,9 @@ header, aside, nav, section, button {
 }
 .transform-style-3d {
   transform-style: preserve-3d;
+}
+
+@keyframes slide {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-40px); }
 }

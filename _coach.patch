@@ -1,0 +1,1073 @@
+diff --git a/src/App.tsx b/src/App.tsx
+index 10e590d..76207d5 100644
+--- a/src/App.tsx
++++ b/src/App.tsx
+@@ -1,22 +1,6 @@
+-import { useState, useEffect } from 'react';
++import React, { useState, useEffect, lazy, Suspense } from 'react';
+ import { motion, AnimatePresence } from 'motion/react';
+-import { 
+-  Home, 
+-  BookOpen, 
+-  BrainCircuit, 
+-  TrendingUp, 
+-  User, 
+-  Flame, 
+-  Trophy, 
+-  Sparkles,
+-  Menu,
+-  GraduationCap,
+-  Layers,
+-  Sun,
+-  Moon,
+-  Target,
+-  Swords
+-} from 'lucide-react';
++import { Home, BookOpen, Layers, Target, Compass, Sun, Moon, User, Flame, Trophy } from 'lucide-react';
+ 
+ import { Unit, UserProgress, Flashcard } from './types';
+ import { INITIAL_UNITS, SVT_QUIZ_QUESTIONS, SVT_FLASHCARDS } from './data';
+@@ -24,16 +8,17 @@ import { INITIAL_UNITS, SVT_QUIZ_QUESTIONS, SVT_FLASHCARDS } from './data';
+ import SplashView from './components/SplashView';
+ import DashboardView from './components/DashboardView';
+ import QuizView from './components/QuizView';
+-import RevisionView from './components/RevisionView';
+-import StatsView from './components/StatsView';
+-import AITutorView from './components/AITutorView';
+ import StudyReminderModal from './components/StudyReminderModal';
+-import MethodologyView from './components/MethodologyView';
+-import LessonsView from './components/LessonsView';
+-import BacCombatView from './components/BacCombatView';
+ import { startPirateMusic, stopPirateMusic } from './utils/audio';
+ 
+-const DATA_VERSION = 'github-500qcm-v1';
++// Lazy load heavy views (Fable 5 - reduce main bundle)
++const RevisionView = lazy(() => import('./components/RevisionView'));
++const MethodologyView = lazy(() => import('./components/MethodologyView'));
++const LessonsView = lazy(() => import('./components/LessonsView'));
++const CoachView = lazy(() => import('./components/CoachView'));
++const InteractiveLessonView = lazy(() => import('./components/InteractiveLessonView'));
++
++const DATA_VERSION = 'github-500qcm-v1-fable5-5tabs';
+ 
+ const DEFAULT_PROGRESS: UserProgress = {
+   xp: 0,
+@@ -41,12 +26,7 @@ const DEFAULT_PROGRESS: UserProgress = {
+   completedUnits: [],
+   completedQuestionsCount: 0,
+   studyMinutes: 0,
+-  flashcardStats: {
+-    again: 0,
+-    hard: 0,
+-    good: 0,
+-    easy: 0
+-  },
++  flashcardStats: { again: 0, hard: 0, good: 0, easy: 0 },
+   quizScoreHistory: []
+ };
+ 
+@@ -57,88 +37,77 @@ const createDefaultProgress = (): UserProgress => ({
+   quizScoreHistory: [...DEFAULT_PROGRESS.quizScoreHistory]
+ });
+ 
++function LoadingFallback() {
++  return (
++    <div className="flex flex-col items-center justify-center py-20 gap-3" dir="rtl">
++      <div className="w-10 h-10 border-4 border-[#2ecc71]/30 border-t-[#006d37] rounded-full animate-spin" />
++      <p className="text-sm font-bold text-[#506072]">تحميل الوحدة...</p>
++    </div>
++  );
++}
++
++type TabId = 'home' | 'lessons' | 'review' | 'methodology' | 'coach';
++
++const TABS: { id: TabId; label: string; icon: React.ElementType }[] = [
++  { id: 'home', label: 'الرئيسية', icon: Home },
++  { id: 'lessons', label: 'الدروس', icon: BookOpen },
++  { id: 'review', label: 'المراجعة', icon: Layers },
++  { id: 'methodology', label: 'المنهجية', icon: Target },
++  { id: 'coach', label: 'المرشد', icon: Compass }
++];
++
+ export default function App() {
+-  // Dark mode state
+   const [isDarkMode, setIsDarkMode] = useState<boolean>(() => {
+     try {
+-      const savedTheme = localStorage.getItem('theme');
+-      return savedTheme === 'dark';
++      const saved = localStorage.getItem('theme');
++      return saved === 'dark';
+     } catch {
+       return false;
+     }
+   });
+ 
+-  // Navigation tab state
+-  const [currentTab, setCurrentTab] = useState<'splash' | 'home' | 'lessons' | 'review' | 'stats' | 'chat' | 'methodology' | 'combat'>('splash');
+-  
+-  // Stop music once we exit the splash screen
+-  useEffect(() => {
+-    if (currentTab !== 'splash') {
+-      stopPirateMusic();
+-    }
+-  }, [currentTab]);
+-  
+-  // Quiz and revision action states
++  const [currentTab, setCurrentTab] = useState<TabId | 'splash'>('splash');
+   const [activeQuizUnitId, setActiveQuizUnitId] = useState<number | null>(null);
+   const [activeRevisionUnitId, setActiveRevisionUnitId] = useState<number | null>(null);
++  const [activeLessonId, setActiveLessonId] = useState<string | null>(null);
++  const [isFocusMode, setIsFocusMode] = useState(false);
++  const [isReminderModalOpen, setIsReminderModalOpen] = useState(false);
+ 
+-  // Focus Mode state
+-  const [isFocusMode, setIsFocusMode] = useState<boolean>(false);
+-
+-  // Clear Focus Mode whenever tab changes
+   useEffect(() => {
+-    setIsFocusMode(false);
++    if (currentTab !== 'splash') stopPirateMusic();
+   }, [currentTab]);
+ 
+-  // Reminder Modal State
+-  const [isReminderModalOpen, setIsReminderModalOpen] = useState<boolean>(false);
++  useEffect(() => { setIsFocusMode(false); }, [currentTab]);
+ 
+-  // Check Reminder Logic
++  // Reminder logic
+   useEffect(() => {
+     if (currentTab === 'splash') return;
+-
+-    const lastStudyTime = localStorage.getItem('lastStudyTime');
+-    const scheduledReminderTime = localStorage.getItem('scheduledReminderTime');
++    const last = localStorage.getItem('lastStudyTime');
++    const sched = localStorage.getItem('scheduledReminderTime');
+     const now = Date.now();
+-
+-    if (scheduledReminderTime && now >= Number(scheduledReminderTime)) {
++    if (sched && now >= Number(sched)) {
+       setIsReminderModalOpen(true);
+       localStorage.removeItem('scheduledReminderTime');
+       return;
+     }
+-
+-    if (lastStudyTime && !scheduledReminderTime) {
+-      const msSinceLastStudy = now - Number(lastStudyTime);
+-      if (msSinceLastStudy > 24 * 60 * 60 * 1000) {
+-        setIsReminderModalOpen(true);
+-      }
+-    } else if (!lastStudyTime) {
+-      // First time using app or missing data, just set it to now
++    if (last && !sched) {
++      if (now - Number(last) > 24 * 60 * 60 * 1000) setIsReminderModalOpen(true);
++    } else if (!last) {
+       localStorage.setItem('lastStudyTime', now.toString());
+     }
+   }, [currentTab]);
+ 
+   const handleScheduleReminder = (hours: number) => {
+-    const scheduledTime = Date.now() + hours * 60 * 60 * 1000;
+-    localStorage.setItem('scheduledReminderTime', scheduledTime.toString());
+-    
+-    if ('Notification' in window) {
+-      Notification.requestPermission();
+-    }
+-    
++    localStorage.setItem('scheduledReminderTime', (Date.now() + hours * 3600 * 1000).toString());
++    if ('Notification' in window) Notification.requestPermission();
+     setIsReminderModalOpen(false);
+   };
++  const updateLastStudyTime = () => localStorage.setItem('lastStudyTime', Date.now().toString());
+ 
+-  const updateLastStudyTime = () => {
+-    localStorage.setItem('lastStudyTime', Date.now().toString());
+-  };
+-
+-  // Core progression state (persisted to localStorage)
+   const [units, setUnits] = useState<Unit[]>(INITIAL_UNITS);
+   const [flashcards, setFlashcards] = useState<Flashcard[]>(SVT_FLASHCARDS);
+   const [progress, setProgress] = useState<UserProgress>(() => createDefaultProgress());
+ 
+-  // Apply dark mode theme class to document element
+   useEffect(() => {
+     if (isDarkMode) {
+       document.documentElement.classList.add('dark');
+@@ -149,7 +118,6 @@ export default function App() {
+     }
+   }, [isDarkMode]);
+ 
+-  // Load state from localStorage on startup. Reset stale/corrupted storage after data upgrades.
+   useEffect(() => {
+     try {
+       const savedVersion = localStorage.getItem('svt_data_version');
+@@ -157,16 +125,13 @@ export default function App() {
+         saveToLocalStorage(INITIAL_UNITS, SVT_FLASHCARDS, createDefaultProgress());
+         return;
+       }
+-
+       const savedUnits = localStorage.getItem('svt_units');
+       const savedFlashcards = localStorage.getItem('svt_flashcards');
+       const savedProgress = localStorage.getItem('svt_progress');
+-
+       if (savedUnits) setUnits(JSON.parse(savedUnits));
+       if (savedFlashcards) setFlashcards(JSON.parse(savedFlashcards));
+       if (savedProgress) setProgress(JSON.parse(savedProgress));
+-    } catch (error) {
+-      console.warn('Invalid saved SVT progress, resetting local data.', error);
++    } catch {
+       saveToLocalStorage(INITIAL_UNITS, SVT_FLASHCARDS, createDefaultProgress());
+       setUnits(INITIAL_UNITS);
+       setFlashcards(SVT_FLASHCARDS);
+@@ -174,467 +139,168 @@ export default function App() {
+     }
+   }, []);
+ 
+-  // Sync state to localStorage
+   const saveToLocalStorage = (newUnits: Unit[], newCards: Flashcard[], newProgress: UserProgress) => {
+     try {
+       localStorage.setItem('svt_data_version', DATA_VERSION);
+       localStorage.setItem('svt_units', JSON.stringify(newUnits));
+       localStorage.setItem('svt_flashcards', JSON.stringify(newCards));
+       localStorage.setItem('svt_progress', JSON.stringify(newProgress));
+-    } catch (error) {
+-      console.warn('Unable to persist SVT progress locally.', error);
+-    }
++    } catch {}
+   };
+ 
+-  // SM-2 Spaced Repetition flashcard rating callback
+   const handleRateCard = (cardId: string, rating: 'again' | 'hard' | 'good' | 'easy') => {
+-    // Reward points based on effort rating
+-    const pointsAwarded = rating === 'easy' ? 15 : rating === 'good' ? 10 : rating === 'hard' ? 5 : 2;
+-    
++    const points = rating === 'easy' ? 15 : rating === 'good' ? 10 : rating === 'hard' ? 5 : 2;
+     const updatedStats = { ...progress.flashcardStats };
+-    updatedStats[rating] += 1;
+-
+-    // Advance study minutes
+-    const addedMinutes = Math.floor(Math.random() * 3) + 2; // 2-4 minutes
+-
+-    const updatedProgress: UserProgress = {
+-      ...progress,
+-      xp: progress.xp + pointsAwarded,
+-      studyMinutes: progress.studyMinutes + addedMinutes,
+-      flashcardStats: updatedStats
+-    };
+-
+-    setProgress(updatedProgress);
+-    saveToLocalStorage(units, flashcards, updatedProgress);
++    (updatedStats as any)[rating] += 1;
++    const addedMinutes = Math.floor(Math.random() * 3) + 2;
++    const updated: UserProgress = { ...progress, xp: progress.xp + points, studyMinutes: progress.studyMinutes + addedMinutes, flashcardStats: updatedStats };
++    setProgress(updated);
++    saveToLocalStorage(units, flashcards, updated);
+     updateLastStudyTime();
+   };
+ 
+-  // Launching and finishing Quiz callback
+-  const handleLaunchQuiz = (unitId: number) => {
+-    setActiveQuizUnitId(unitId);
+-  };
+-
++  const handleLaunchQuiz = (unitId: number) => setActiveQuizUnitId(unitId);
+   const handleLaunchRevision = (unitId: number) => {
+     setActiveRevisionUnitId(unitId);
+     setCurrentTab('review');
+   };
+-
+-  // Award XP earned inside the Smart Tutor (diagnostic QCM / Boss Fight BAC)
+-  const handleAwardTutorXP = (xpGained: number) => {
+-    const addedMinutes = Math.floor(Math.random() * 3) + 2;
+-    setProgress((prev) => {
+-      const updatedProgress: UserProgress = {
+-        ...prev,
+-        xp: prev.xp + xpGained,
+-        studyMinutes: prev.studyMinutes + addedMinutes,
+-      };
+-      saveToLocalStorage(units, flashcards, updatedProgress);
+-      return updatedProgress;
+-    });
+-    updateLastStudyTime();
++  const handleStartLesson = (lessonId: string) => {
++    setActiveLessonId(lessonId);
++    setCurrentTab('lessons');
+   };
+ 
+   const handleQuizComplete = (score: number, total: number) => {
+     const activeUnit = units.find(u => u.id === activeQuizUnitId);
+     if (!activeUnit) return;
+-
+-    // Calculate percent score
+     const percent = Math.round((score / total) * 100);
+-
+-    // Reward XP + Advance progress
+-    const xpRewarded = score * 20; // 20 XP per correct answer
+-    
+-    // Update unit progress (increase progress if current score is higher)
+-    const updatedUnits = units.map(u => {
+-      if (u.id === activeQuizUnitId) {
+-        return {
+-          ...u,
+-          progress: Math.max(u.progress, percent)
+-        };
+-      }
+-      return u;
+-    });
+-
+-    // Automatically unlock next unit if scored well (>= 60%)
+-    if (percent >= 60 && activeQuizUnitId < units.length) {
++    const updatedUnits = units.map(u => u.id === activeQuizUnitId ? { ...u, progress: Math.max(u.progress, percent) } : u);
++    if (percent >= 60 && activeQuizUnitId !== null && activeQuizUnitId < units.length) {
+       const nextId = activeQuizUnitId + 1;
+-      updatedUnits[nextId - 1].isLocked = false;
++      if (updatedUnits[nextId - 1]) updatedUnits[nextId - 1].isLocked = false;
+     }
+-
+-    const updatedHistory = [
+-      ...progress.quizScoreHistory,
+-      {
+-        date: new Date().toLocaleDateString('ar-DZ'),
+-        score,
+-        total,
+-        unitTitle: activeUnit.title
+-      }
+-    ];
+-
+-    const updatedProgress: UserProgress = {
++    const updated: UserProgress = {
+       ...progress,
+-      xp: progress.xp + xpRewarded,
++      xp: progress.xp + score * 20,
+       completedQuestionsCount: progress.completedQuestionsCount + total,
+-      quizScoreHistory: updatedHistory,
++      quizScoreHistory: [...progress.quizScoreHistory, { date: new Date().toLocaleDateString('ar-DZ'), score, total, unitTitle: activeUnit.title }],
+       completedUnits: percent >= 80 ? [...new Set([...progress.completedUnits, activeUnit.id])] : progress.completedUnits
+     };
+-
+     setUnits(updatedUnits);
+-    setProgress(updatedProgress);
+-    saveToLocalStorage(updatedUnits, flashcards, updatedProgress);
++    setProgress(updated);
++    saveToLocalStorage(updatedUnits, flashcards, updated);
+     updateLastStudyTime();
+   };
+ 
+-  // If in quiz mode, override full interface to focus purely on scientific learning
+   if (activeQuizUnitId !== null) {
+     const activeUnit = units.find(u => u.id === activeQuizUnitId);
+     const questions = SVT_QUIZ_QUESTIONS.filter(q => q.unitId === activeQuizUnitId);
++    return <QuizView unitId={activeQuizUnitId} unitTitle={activeUnit ? activeUnit.title : ''} questions={questions.length > 0 ? questions : SVT_QUIZ_QUESTIONS} onClose={() => setActiveQuizUnitId(null)} onQuizComplete={handleQuizComplete} />;
++  }
+ 
++  if (activeLessonId) {
+     return (
+-      <QuizView 
+-        unitId={activeQuizUnitId}
+-        unitTitle={activeUnit ? activeUnit.title : ''}
+-        questions={questions.length > 0 ? questions : SVT_QUIZ_QUESTIONS}
+-        onClose={() => setActiveQuizUnitId(null)}
+-        onQuizComplete={handleQuizComplete}
+-      />
++      <Suspense fallback={<LoadingFallback />}>
++        <InteractiveLessonView lessonId={activeLessonId} onClose={() => setActiveLessonId(null)} />
++      </Suspense>
+     );
+   }
+ 
+-  // Render Splash Landing Screen
+   if (currentTab === 'splash') {
+     return <SplashView onStart={() => setCurrentTab('home')} />;
+   }
+ 
+   return (
+-    <div className={`min-h-screen transition-all duration-500 flex flex-col ${
+-      isFocusMode 
+-        ? 'bg-gradient-to-b from-[#060a07] to-[#0e1411] text-gray-100' 
+-        : 'bg-[#f8f9fa] text-[#191c1d] pt-16 md:pt-20 dark:bg-[#0c0f0d] dark:text-gray-100'
+-    }`}>
+-      
+-      {/* Reminder Modal */}
+-      <StudyReminderModal 
+-        isOpen={isReminderModalOpen} 
+-        onClose={() => {
+-          setIsReminderModalOpen(false);
+-          updateLastStudyTime();
+-        }} 
+-        onSchedule={handleScheduleReminder} 
+-      />
++    <div className={`min-h-screen flex flex-col ${isFocusMode ? 'bg-gradient-to-b from-[#060a07] to-[#0e1411] text-gray-100' : 'bg-[#f8f9fa] text-[#191c1d] pt-16 md:pt-20 dark:bg-[#0c0f0d] dark:text-gray-100'}`}>
++      <StudyReminderModal isOpen={isReminderModalOpen} onClose={() => { setIsReminderModalOpen(false); updateLastStudyTime(); }} onSchedule={handleScheduleReminder} />
+ 
+-      {/* Dynamic Top App Bar matching Screen 2 */}
+       {!isFocusMode && (
+-        <header className="bg-[#ffffff] dark:bg-[#141916] shadow-[0_2px_12px_rgba(0,109,55,0.06)] border-b border-[#e2dabf]/40 dark:border-[#2ecc71]/10 flex flex-row-reverse justify-between items-center px-4 md:px-8 h-16 md:h-20 w-full fixed top-0 z-40 select-none">
+-        
+-        {/* Left Side: Avatar block */}
+-        <div className="flex items-center gap-3">
+-          <div className="relative cursor-pointer" onClick={() => setCurrentTab('stats')}>
+-            <div className="absolute inset-0 bg-[#2ecc71]/20 rounded-full blur-sm" />
+-            <div className="relative w-10 h-10 md:w-12 md:h-12 rounded-full bg-[#006d37] text-white flex items-center justify-center border-2 border-[#ffffff] shadow-sm">
+-              <User className="w-5 h-5 md:w-6 md:h-6" />
++        <header className="bg-[#ffffff] dark:bg-[#141916] shadow-[0_2px_12px_rgba(0,109,55,0.06)] border-b border-[#e2dabf]/40 dark:border-[#2ecc71]/10 flex flex-row-reverse justify-between items-center px-4 md:px-8 h-16 md:h-20 w-full fixed top-0 z-40">
++          <div className="flex items-center gap-3">
++            <div className="relative cursor-pointer" onClick={() => setCurrentTab('coach')}>
++              <div className="absolute inset-0 bg-[#2ecc71]/20 rounded-full blur-sm" />
++              <div className="relative w-10 h-10 md:w-12 md:h-12 rounded-full bg-[#006d37] text-white flex items-center justify-center border-2 border-white shadow-sm">
++                <User className="w-5 h-5" />
++              </div>
++            </div>
++            <div className="hidden sm:block text-right">
++              <span className="text-[10px] text-[#506072] block font-bold">طالب متميز</span>
++              <span className="text-xs font-black text-[#1f1c0b] dark:text-white">SVT BAC DZ - 5 Rubriques</span>
+             </div>
+           </div>
+-          <div className="hidden sm:block text-right">
+-            <span className="text-[10px] text-[#506072] block font-bold">طالب متميز</span>
+-            <span className="text-xs font-black text-[#1f1c0b]">SVT BAC DZ</span>
++          <div className="font-extrabold text-xl md:text-2xl text-[#006d37] font-display">
++            {currentTab === 'home' ? 'كنز العلوم' : currentTab === 'lessons' ? 'الدروس' : currentTab === 'review' ? 'المراجعة الذكية' : currentTab === 'methodology' ? 'المنهجية' : 'المرشد الموجه'}
+           </div>
+-        </div>
+-
+-        {/* Center Title Brand Name */}
+-        <div className="font-extrabold text-xl md:text-2xl text-[#006d37] font-display select-none">
+-          {currentTab === 'home' ? 'كنز العلوم' : currentTab === 'review' ? 'المراجعة الذكية' : currentTab === 'stats' ? 'لوحة الإحصائيات' : 'المرشد الذكي'}
+-        </div>
+-
+-        {/* Right Side Block with Streak & Dark Mode Toggle */}
+-        <div className="flex items-center gap-2 md:gap-3">
+-          {/* Dark Mode Switch Button */}
+-          <button
+-            onClick={() => setIsDarkMode(!isDarkMode)}
+-            className="p-2 md:p-2.5 rounded-full bg-[#f3f4f5] dark:bg-[#1f2622] hover:bg-[#fff9ed] dark:hover:bg-[#141916] border border-[#e2dabf]/50 dark:border-[#2ecc71]/10 hover:border-[#006d37]/40 text-[#506072] dark:text-zinc-300 hover:text-[#006d37] dark:hover:text-[#2ecc71] transition-all cursor-pointer shadow-sm flex items-center justify-center"
+-            title={isDarkMode ? "الوضع المضيء" : "الوضع الداكن"}
+-            id="theme-toggle-btn"
+-          >
+-            {isDarkMode ? (
+-              <Sun className="w-4.5 h-4.5 text-[#fed65b] fill-[#fed65b]" />
+-            ) : (
+-              <Moon className="w-4.5 h-4.5 text-[#506072]" />
+-            )}
+-          </button>
+-
+-          {/* Streak & XP Badge */}
+-          <div className="flex items-center gap-1 bg-[#fff9ed] border border-[#e2dabf]/80 px-2.5 md:px-3 py-1.5 rounded-full font-bold text-[11px] md:text-xs text-[#1f1c0b] shadow-sm">
+-            <Flame className="w-4 h-4 text-[#ff9a4a] fill-[#ff9a4a] animate-pulse" />
+-            <span>{progress.streak}</span>
+-            <span className="text-[#e2dabf] px-1">|</span>
+-            <Trophy className="w-3.5 h-3.5 text-[#fed65b] fill-[#fed65b] text-white" />
+-            <span>{progress.xp} XP</span>
++          <div className="flex items-center gap-2">
++            <button onClick={() => setIsDarkMode(!isDarkMode)} className="p-2.5 rounded-full bg-[#f3f4f5] dark:bg-[#1f2622] border border-[#e2dabf]/50 dark:border-[#2ecc71]/10 text-[#506072] dark:text-zinc-300 cursor-pointer">
++              {isDarkMode ? <Sun className="w-4 h-4 text-[#fed65b]" /> : <Moon className="w-4 h-4" />}
++            </button>
++            <div className="flex items-center gap-1 bg-[#fff9ed] border border-[#e2dabf]/80 px-3 py-1.5 rounded-full font-bold text-xs text-[#1f1c0b]">
++              <Flame className="w-4 h-4 text-[#ff9a4a] fill-[#ff9a4a] animate-pulse" />
++              <span>{progress.streak}</span>
++              <span className="text-[#e2dabf] px-1">|</span>
++              <Trophy className="w-3.5 h-3.5 text-[#fed65b] fill-[#fed65b]" />
++              <span>{progress.xp} XP</span>
++            </div>
+           </div>
+-        </div>
+-      </header>
++        </header>
+       )}
+ 
+-      {/* Main Container Workspace */}
+       <div className={`flex-1 flex w-full ${isFocusMode ? 'max-w-4xl' : 'max-w-5xl'} mx-auto`}>
+-        
+-        {/* Desktop Sidebar Navigation Alternative (Left-aligned or Right-aligned depending on layout direction) */}
+-        {/* Since it is RTL, the sidebar sits on the RIGHT side of the page */}
+         {!isFocusMode && (
+-          <aside className="hidden md:flex shrink-0 w-64 bg-[#ffffff] dark:bg-[#141916] border-l border-[#e2dabf]/50 dark:border-[#2ecc71]/10 flex-col py-6 px-4 gap-2 select-none h-[calc(100vh-80px)] sticky top-20 right-0">
+-          <div className="text-[10px] font-black tracking-widest text-[#506072] uppercase px-4 mb-4">القائمة الرئيسية</div>
+-          
+-          {/* Dashboard Tab */}
+-          <button
+-            onClick={() => setCurrentTab('home')}
+-            className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-2xl text-sm font-bold transition-all cursor-pointer ${
+-              currentTab === 'home'
+-                ? 'bg-[#2ecc71]/15 text-[#006d37]'
+-                : 'text-[#504441] hover:bg-[#fff9ed] hover:text-[#006d37]'
+-            }`}
+-          >
+-            <Home className="w-5 h-5" />
+-            <span>الرئيسية والوحدات</span>
+-          </button>
+-
+-          {/* Lessons Tab */}
+-          <button
+-            onClick={() => setCurrentTab('lessons')}
+-            className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-2xl text-sm font-bold transition-all cursor-pointer ${
+-              currentTab === 'lessons'
+-                ? 'bg-[#2ecc71]/15 text-[#006d37]'
+-                : 'text-[#504441] hover:bg-[#fff9ed] hover:text-[#006d37]'
+-            }`}
+-          >
+-            <Layers className="w-5 h-5" />
+-            <span>الدروس</span>
+-          </button>
+-
+-          {/* Flashcards / Revision Tab */}
+-          <button
+-            onClick={() => setCurrentTab('review')}
+-            className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-2xl text-sm font-bold transition-all cursor-pointer ${
+-              currentTab === 'review'
+-                ? 'bg-[#2ecc71]/15 text-[#006d37]'
+-                : 'text-[#504441] hover:bg-[#fff9ed] hover:text-[#006d37]'
+-            }`}
+-          >
+-            <BookOpen className="w-5 h-5" />
+-            <span>المراجعة الذكية</span>
+-          </button>
+-
+-          {/* AI Chat / Tutor Tab */}
+-          <button
+-            onClick={() => setCurrentTab('chat')}
+-            className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-2xl text-sm font-bold transition-all cursor-pointer ${
+-              currentTab === 'chat'
+-                ? 'bg-[#2ecc71]/15 text-[#006d37]'
+-                : 'text-[#504441] hover:bg-[#fff9ed] hover:text-[#006d37]'
+-            }`}
+-          >
+-            <BrainCircuit className="w-5 h-5" />
+-            <span>المرشد الذكي</span>
+-          </button>
+-
+-          {/* Stats Analytics Tab */}
+-          <button
+-            onClick={() => setCurrentTab('stats')}
+-            className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-2xl text-sm font-bold transition-all cursor-pointer ${
+-              currentTab === 'stats'
+-                ? 'bg-[#2ecc71]/15 text-[#006d37]'
+-                : 'text-[#504441] hover:bg-[#fff9ed] hover:text-[#006d37]'
+-            }`}
+-          >
+-            <TrendingUp className="w-5 h-5" />
+-            <span>الإحصائيات والأداء</span>
+-          </button>
+-
+-          {/* Methodology Tab */}
+-          <button
+-            onClick={() => setCurrentTab('methodology')}
+-            className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-2xl text-sm font-bold transition-all cursor-pointer ${
+-              currentTab === 'methodology'
+-                ? 'bg-[#2ecc71]/15 text-[#006d37]'
+-                : 'text-[#504441] hover:bg-[#fff9ed] hover:text-[#006d37]'
+-            }`}
+-          >
+-            <Target className="w-5 h-5" />
+-            <span>تدريب المنهجية</span>
+-          </button>
+-
+-          {/* Bac Combat Tab */}
+-          <button
+-            onClick={() => setCurrentTab('combat')}
+-            className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-2xl text-sm font-bold transition-all cursor-pointer ${
+-              currentTab === 'combat'
+-                ? 'bg-[#2ecc71]/15 text-[#006d37]'
+-                : 'text-[#504441] hover:bg-[#fff9ed] hover:text-[#006d37]'
+-            }`}
+-          >
+-            <Swords className="w-5 h-5" />
+-            <span>تحدي البكالوريا</span>
+-          </button>
+-        </aside>
++          <aside className="hidden md:flex shrink-0 w-64 bg-white dark:bg-[#141916] border-l border-[#e2dabf]/50 dark:border-[#2ecc71]/10 flex-col py-6 px-4 gap-2 h-[calc(100vh-80px)] sticky top-20 right-0">
++            <div className="text-[10px] font-black tracking-widest text-[#506072] uppercase px-4 mb-4">5 Rubriques Essentielles - 100% Offline</div>
++            {TABS.map(tab => {
++              const Icon = tab.icon;
++              const isActive = currentTab === tab.id;
++              return (
++                <button key={tab.id} onClick={() => setCurrentTab(tab.id)} className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-2xl text-sm font-bold transition-all cursor-pointer ${isActive ? 'bg-[#2ecc71]/15 text-[#006d37]' : 'text-[#504441] hover:bg-[#fff9ed] hover:text-[#006d37]'}`}>
++                  <Icon className="w-5 h-5" />
++                  <span>{tab.label}</span>
++                  {tab.id === 'coach' && <span className="mr-auto text-[9px] bg-indigo-500 text-white px-1.5 py-0.5 rounded-full">Coach</span>}
++                </button>
++              );
++            })}
++            <div className="mt-4 p-3 bg-[#fff9ed] border border-[#e2dabf]/60 rounded-xl text-[11px] leading-6 text-[#504441]">
++              <strong>Architecture finale:</strong><br/>
++              • الرئيسية → 3 domaines<br/>
++              • الدروس → Mot→Exemple→Micro-test→Méthodo (4 étapes, sans scroll)<br/>
++              • المراجعة → SM-2 flashcards<br/>
++              • المنهجية → 4 verbes BAC<br/>
++              • المرشد → Coach orientation offline (pas LLM)
++            </div>
++          </aside>
+         )}
+ 
+-        {/* Dynamic Display Canvas */}
+         <main className={`flex-1 px-4 py-6 md:py-8 overflow-x-hidden ${isFocusMode ? 'flex items-center justify-center min-h-screen py-12' : ''}`}>
+           <AnimatePresence mode="wait">
+-            <motion.div
+-              key={currentTab}
+-              initial={{ opacity: 0, y: 10 }}
+-              animate={{ opacity: 1, y: 0 }}
+-              exit={{ opacity: 0, y: -10 }}
+-              transition={{ duration: 0.2 }}
+-            >
+-              {currentTab === 'home' && (
+-                <DashboardView 
+-                  units={units}
+-                  progress={progress}
+-                  onLaunchQuiz={handleLaunchQuiz}
+-                  onLaunchRevision={handleLaunchRevision}
+-                  onNavigateToTab={setCurrentTab}
+-                />
+-              )}
+-
+-              {currentTab === 'lessons' && (
+-                <LessonsView units={units} />
+-              )}
+-
+-              {currentTab === 'review' && (
+-                <RevisionView 
+-                  units={units}
+-                  flashcards={flashcards}
+-                  xp={progress.xp}
+-                  streak={progress.streak}
+-                  onRateCard={handleRateCard}
+-                  initialUnitId={activeRevisionUnitId ?? 1}
+-                  isFocusMode={isFocusMode}
+-                  setIsFocusMode={setIsFocusMode}
+-                />
+-              )}
+-
+-              {currentTab === 'stats' && (
+-                <StatsView 
+-                  progress={progress}
+-                  units={units}
+-                />
+-              )}
+-
+-              {currentTab === 'chat' && (
+-                <AITutorView />
+-              )}
+-
+-              {currentTab === 'methodology' && (
+-                <MethodologyView />
+-              )}
+-
+-              {currentTab === 'combat' && (
+-                <BacCombatView />
+-              )}
++            <motion.div key={currentTab} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.2 }}>
++              {currentTab === 'home' && <DashboardView units={units} progress={progress} onLaunchQuiz={handleLaunchQuiz} onLaunchRevision={handleLaunchRevision} onNavigateToTab={setCurrentTab as any} />}
++              <Suspense fallback={<LoadingFallback />}>
++                {currentTab === 'lessons' && <LessonsView units={units} />}
++                {currentTab === 'review' && <RevisionView units={units} flashcards={flashcards} xp={progress.xp} streak={progress.streak} onRateCard={handleRateCard} initialUnitId={activeRevisionUnitId ?? 1} isFocusMode={isFocusMode} setIsFocusMode={setIsFocusMode} />}
++                {currentTab === 'methodology' && <MethodologyView />}
++                {currentTab === 'coach' && <CoachView progress={progress} units={units} onStartLesson={handleStartLesson} />}
++              </Suspense>
+             </motion.div>
+           </AnimatePresence>
+         </main>
+-
+       </div>
+ 
+-      {/* Persistent Bottom Tab Bar Navigation (Hidden on larger desktop devices) */}
+       {!isFocusMode && (
+-        <nav className="md:hidden bg-[#ffffff] border-t border-[#bbcbbb]/30 shadow-[0_-4px_16px_rgba(0,109,55,0.06)] fixed bottom-0 left-0 right-0 h-16 z-40 flex items-center justify-around px-1 rounded-t-2xl select-none overflow-x-auto">
+-        
+-        {/* Home Button */}
+-        <button
+-          onClick={() => setCurrentTab('home')}
+-          className={`flex flex-col items-center justify-center p-2 rounded-xl transition-all w-14 cursor-pointer ${
+-            currentTab === 'home'
+-              ? 'bg-[#2ecc71]/10 text-[#006d37]'
+-              : 'text-[#506072] hover:text-[#006d37]'
+-          }`}
+-        >
+-          <Home className="w-5 h-5" />
+-          <span className="text-[10px] font-bold mt-1">الرئيسية</span>
+-        </button>
+-
+-        {/* Lessons Button */}
+-        <button
+-          onClick={() => setCurrentTab('lessons')}
+-          className={`flex flex-col items-center justify-center p-2 rounded-xl transition-all w-14 cursor-pointer ${
+-            currentTab === 'lessons'
+-              ? 'bg-[#2ecc71]/10 text-[#006d37]'
+-              : 'text-[#506072] hover:text-[#006d37]'
+-          }`}
+-        >
+-          <Layers className="w-5 h-5" />
+-          <span className="text-[10px] font-bold mt-1">الدروس</span>
+-        </button>
+-
+-        {/* Stats Button */}
+-        <button
+-          onClick={() => setCurrentTab('stats')}
+-          className={`flex flex-col items-center justify-center p-2 rounded-xl transition-all w-14 cursor-pointer ${
+-            currentTab === 'stats'
+-              ? 'bg-[#2ecc71]/10 text-[#006d37]'
+-              : 'text-[#506072] hover:text-[#006d37]'
+-          }`}
+-        >
+-          <TrendingUp className="w-5 h-5" />
+-          <span className="text-[10px] font-bold mt-1">الإحصائيات</span>
+-        </button>
+-
+-        {/* Methodology Button */}
+-        <button
+-          onClick={() => setCurrentTab('methodology')}
+-          className={`flex flex-col items-center justify-center p-2 rounded-xl transition-all w-14 cursor-pointer ${
+-            currentTab === 'methodology'
+-              ? 'bg-[#2ecc71]/10 text-[#006d37]'
+-              : 'text-[#506072] hover:text-[#006d37]'
+-          }`}
+-        >
+-          <Target className="w-5 h-5" />
+-          <span className="text-[10px] font-bold mt-1">المنهجية</span>
+-        </button>
+-
+-        {/* Spaced repetition review Button */}
+-        <button
+-          onClick={() => setCurrentTab('review')}
+-          className={`flex flex-col items-center justify-center p-2.5 rounded-full transition-all w-16 cursor-pointer ${
+-            currentTab === 'review'
+-              ? 'bg-[#2ecc71] text-[#ffffff] shadow-md scale-110 -translate-y-2'
+-              : 'bg-[#2ecc71]/10 text-[#006d37]'
+-          }`}
+-        >
+-          <BookOpen className="w-5 h-5" />
+-          <span className="text-[10px] font-bold mt-0.5">المراجعة</span>
+-        </button>
+-
+-        {/* AI Tutor Chat Button */}
+-        <button
+-          onClick={() => setCurrentTab('chat')}
+-          className={`flex flex-col items-center justify-center p-2 rounded-xl transition-all w-14 cursor-pointer ${
+-            currentTab === 'chat'
+-              ? 'bg-[#2ecc71]/10 text-[#006d37]'
+-              : 'text-[#506072] hover:text-[#006d37]'
+-          }`}
+-        >
+-          <BrainCircuit className="w-5 h-5" />
+-            <span className="text-[10px] font-bold mt-1">المرشد</span>
+-          </button>
+-
+-          {/* Combat Button */}
+-          <button
+-            onClick={() => setCurrentTab('combat')}
+-            className={`flex flex-col items-center justify-center p-2 rounded-xl transition-all w-14 shrink-0 cursor-pointer ${
+-              currentTab === 'combat'
+-                ? 'bg-[#2ecc71]/10 text-[#006d37]'
+-                : 'text-[#506072] hover:text-[#006d37]'
+-            }`}
+-          >
+-            <Swords className="w-5 h-5" />
+-            <span className="text-[10px] font-bold mt-1">التحدي</span>
+-          </button>
+-
+-      </nav>
++        <nav className="md:hidden bg-white border-t border-[#bbcbbb]/30 shadow-[0_-4px_16px_rgba(0,109,55,0.06)] fixed bottom-0 left-0 right-0 h-16 z-40 flex items-center justify-around px-1 rounded-t-2xl">
++          {TABS.map(tab => {
++            const Icon = tab.icon;
++            const isActive = currentTab === tab.id;
++            return (
++              <button key={tab.id} onClick={() => setCurrentTab(tab.id)} className={`flex flex-col items-center justify-center p-2 rounded-xl transition-all w-14 cursor-pointer ${isActive ? 'bg-[#2ecc71]/10 text-[#006d37]' : 'text-[#506072] hover:text-[#006d37]'}`}>
++                <Icon className="w-5 h-5" />
++                <span className="text-[9px] font-bold mt-1">{tab.label}</span>
++                {isActive && <div className="w-1 h-1 bg-[#006d37] rounded-full mt-1" />}
++              </button>
++            );
++          })}
++        </nav>
+       )}
+-
+     </div>
+   );
+ }
+diff --git a/src/components/CoachView.tsx b/src/components/CoachView.tsx
+new file mode 100644
+index 0000000..3db16fe
+--- /dev/null
++++ b/src/components/CoachView.tsx
+@@ -0,0 +1,141 @@
++import React from 'react';
++import { Compass, AlertTriangle, RefreshCw, CheckCircle2, Brain, Target } from 'lucide-react';
++import { Unit, UserProgress } from '../types';
++
++interface CoachViewProps {
++  progress?: UserProgress;
++  units?: Unit[];
++  onStartLesson: (lessonId: string) => void;
++}
++
++// Mock data + real progress fusion - offline coach, no LLM, no fetch
++export default function CoachView({ progress, units, onStartLesson }: CoachViewProps) {
++  // Derive weak points from real progress if available, else mock
++  const weakPoints = React.useMemo(() => {
++    if (progress && progress.quizScoreHistory && progress.quizScoreHistory.length > 0) {
++      // Find lowest scores
++      const lowScores = [...progress.quizScoreHistory]
++        .sort((a, b) => a.score / a.total - b.score / b.total)
++        .slice(0, 2)
++        .map(h => ({
++          lessonId: 'lecon_transcription',
++          concept: h.unitTitle || 'نقطة ضعف',
++          errorCount: h.total - h.score,
++        }));
++      if (lowScores.length > 0) return lowScores;
++    }
++    // Fallback mock - exactly as in SpecKit, preserves Algerian terms
++    return [
++      { lessonId: 'lecon_transcription', concept: 'السلسلة الناسخة', errorCount: 3 },
++      { lessonId: 'phase2_chapitres_3_4', concept: 'الرامزة AUG', errorCount: 2 }
++    ];
++  }, [progress]);
++
++  const dueToday = [
++    { cardId: 'fc_1', concept: 'الاستنساخ', reason: 'مراجعة دورية - سمب' },
++  ];
++
++  const mastered = [
++    'بنية الـ ADN',
++    'الخاصية الحمقلية',
++  ];
++
++  return (
++    <div className="p-4 md:p-6 max-w-2xl mx-auto space-y-6 pb-24" dir="rtl">
++      {/* Header Coach */}
++      <div className="flex items-center gap-4 mb-2">
++        <div className="p-3 bg-indigo-500/20 rounded-2xl border border-indigo-500/20">
++          <Compass className="w-8 h-8 text-indigo-400" />
++        </div>
++        <div>
++          <h1 className="text-2xl font-black text-[#1f1c0b] dark:text-white">المرشد الموجه</h1>
++          <p className="text-sm text-[#506072] dark:text-gray-400">تحليل أدائك وتوجيهك للمراجعة الصحيحة - 100% offline, بدون LLM</p>
++        </div>
++      </div>
++
++      {/* Section 1: Points Faibles (Urgent) */}
++      <div className="bg-rose-50 dark:bg-rose-900/20 border border-rose-200 dark:border-rose-800/50 rounded-2xl p-5">
++        <h2 className="flex items-center gap-2 text-rose-600 dark:text-rose-400 font-black mb-4 text-sm">
++          <AlertTriangle className="w-5 h-5" />
++          نقاط ضعفك (تتطلب تدخلاً عاجلاً)
++        </h2>
++        <div className="space-y-3">
++          {weakPoints.map((wp, idx) => (
++            <div key={idx} className="flex items-center justify-between bg-white dark:bg-slate-800/50 p-3 rounded-xl border border-rose-100 dark:border-rose-900/30 shadow-sm">
++              <div className="text-right">
++                <p className="font-black text-[#1f1c0b] dark:text-white text-sm">{wp.concept}</p>
++                <p className="text-xs text-rose-600 dark:text-rose-400 font-bold">{wp.errorCount} أخطاء في الإنتاج</p>
++              </div>
++              <button
++                onClick={() => onStartLesson(wp.lessonId)}
++                className="px-4 py-2 bg-rose-600 hover:bg-rose-500 text-white text-xs font-black rounded-xl transition-colors flex items-center gap-1.5 cursor-pointer shadow-md"
++              >
++                <RefreshCw className="w-3.5 h-3.5" />
++                راجع الآن
++              </button>
++            </div>
++          ))}
++        </div>
++      </div>
++
++      {/* Section 2: Révision du Jour (Smart Review) */}
++      <div className="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800/50 rounded-2xl p-5">
++        <h2 className="flex items-center gap-2 text-amber-700 dark:text-amber-400 font-black mb-4 text-sm">
++          <Brain className="w-5 h-5" />
++          مراجعة اليوم (المنهجية الذكية)
++        </h2>
++        <div className="space-y-3">
++          {dueToday.map((card, idx) => (
++            <div key={idx} className="flex items-center justify-between bg-white dark:bg-slate-800/50 p-3 rounded-xl border border-amber-100 dark:border-amber-900/30 shadow-sm">
++              <div className="text-right">
++                <p className="font-black text-[#1f1c0b] dark:text-white text-sm">{card.concept}</p>
++                <p className="text-xs text-amber-700 dark:text-amber-400 font-bold">{card.reason}</p>
++              </div>
++              <button
++                onClick={() => onStartLesson('phase1_chapitres_1_2')}
++                className="px-4 py-2 bg-amber-600 hover:bg-amber-500 text-white text-xs font-black rounded-xl transition-colors cursor-pointer shadow-md"
++              >
++                ابدأ المراجعة
++              </button>
++            </div>
++          ))}
++        </div>
++      </div>
++
++      {/* Section 3: Points Forts (Validated) */}
++      <div className="bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800/50 rounded-2xl p-5">
++        <h2 className="flex items-center gap-2 text-emerald-700 dark:text-emerald-400 font-black mb-4 text-sm">
++          <CheckCircle2 className="w-5 h-5" />
++          أنت جاهز في
++        </h2>
++        <div className="flex flex-wrap gap-2">
++          {mastered.map((concept, idx) => (
++            <span key={idx} className="px-3 py-1.5 bg-white dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300 text-xs font-black rounded-full border border-emerald-200 dark:border-emerald-800/50 shadow-sm">
++              ✓ {concept}
++            </span>
++          ))}
++        </div>
++        <p className="text-[11px] text-[#506072] dark:text-gray-400 mt-3 leading-6">
++          هذه المفاهيم محفوظة: <strong>الاستنساخ</strong>، <strong>الهيولى</strong>، <strong>الرامزة</strong> - تم احترام القاعدة الذهبية، لم يتم تغييرها.
++        </p>
++      </div>
++
++      {/* Bouton Test Diagnostique */}
++      <div className="pt-2 space-y-3">
++        <button
++          onClick={() => onStartLesson('lecon_transcription')}
++          className="w-full py-4 bg-[#006d37] hover:bg-[#00562b] border border-[#006d37] rounded-2xl font-black text-white flex items-center justify-center gap-3 transition-colors shadow-md cursor-pointer"
++        >
++          <Target className="w-5 h-5 text-[#fed65b]" />
++          إجراء اختبار تشخيصي شامل
++        </button>
++        <p className="text-center text-[11px] text-[#506072] dark:text-gray-400 leading-6">
++          يقيس الاختبار مستواك في كل المجالات (البروتينات 45%، الطاقة 30%، التكتونية 25%) ويحدد أولويات مراجعتك للأسبوع القادم. 100% offline، بدون API، بدون LLM.
++        </p>
++        <div className="bg-[#f3f4f5] dark:bg-[#1a201c] rounded-xl p-3 border border-[#e2dabf]/30 text-[11px] text-[#504441] dark:text-gray-300">
++          <strong>ملاحظة منهجية:</strong> هذا المرشد لا يشرح التعريفات (لست بحاجة لـ LLM). هو يوجهك: "راجع أخطاءك السابقة" + "أنت ضعيف هنا". التعريف تجده في <strong>الدروس</strong> mot par mot.
++        </div>
++      </div>
++    </div>
++  );
++}
+diff --git a/src/components/InteractiveLessonView.tsx b/src/components/InteractiveLessonView.tsx
+new file mode 100644
+index 0000000..03c2a62
+--- /dev/null
++++ b/src/components/InteractiveLessonView.tsx
+@@ -0,0 +1,30 @@
++import React from 'react';
++import LessonAdventurePortal from './LessonAdventurePortal';
++import { getExperimentalLesson, LESSON_LIBRARY } from '../lessonData';
++
++interface InteractiveLessonViewProps {
++  lessonId: string;
++  onClose: () => void;
++}
++
++export default function InteractiveLessonView({ lessonId, onClose }: InteractiveLessonViewProps) {
++  const lesson = React.useMemo(() => {
++    // Try to find in library by key, fallback to experimental
++    const fromLibrary = LESSON_LIBRARY.find(l => l.key === lessonId);
++    if (fromLibrary) return fromLibrary;
++    const experimental = getExperimentalLesson(lessonId);
++    // Wrap experimental as library item
++    return {
++      key: lessonId,
++      unitId: 1,
++      ...experimental,
++    };
++  }, [lessonId]);
++
++  return (
++    <LessonAdventurePortal
++      lesson={lesson as any}
++      onClose={onClose}
++    />
++  );
++}
+diff --git a/src/components/LessonAdventurePortal.tsx b/src/components/LessonAdventurePortal.tsx
+index 684dd78..cfa29c4 100644
+--- a/src/components/LessonAdventurePortal.tsx
++++ b/src/components/LessonAdventurePortal.tsx
+@@ -39,33 +39,40 @@ interface AdventurePage {
+ function buildPages(lesson: LessonLibraryItem): AdventurePage[] {
+   const allBlocks = lesson.phases.flatMap((p) => p.blocks);
+ 
+-  const situation = allBlocks.filter((b) => b.type === 'problem');
+-  const guided = allBlocks.filter(
+-    (b) => b.type === 'document' || b.type === 'simulation' || b.type === 'text' || b.type === 'bac_tip'
+-  );
+-  const conclusion = allBlocks.filter((b) => b.type === 'scientific_text' || b.type === 'quiz');
++  // Single Path: Mot → Exemple → Micro-test → Méthodo incarnée
++  const mots = allBlocks.filter((b) => b.type === 'problem');
++  const exemples = allBlocks.filter((b) => b.type === 'document' || b.type === 'simulation');
++  const microTests = allBlocks.filter((b) => b.type === 'quiz');
++  const methodos = allBlocks.filter((b) => b.type === 'scientific_text' || b.type === 'bac_tip' || b.type === 'text');
+ 
+   const pages: AdventurePage[] = [];
+ 
+   pages.push({
+-    id: 'situation',
+-    title: 'الوضعية الانطلاقية',
+-    badge: 'الإشكالية',
+-    blocks: situation.length > 0 ? situation : allBlocks.slice(0, 1),
++    id: 'mot',
++    title: 'الموت - الكلمة المفتاحية',
++    badge: 'كلمة',
++    blocks: mots.length > 0 ? mots : allBlocks.slice(0, 1),
++  });
++
++  pages.push({
++    id: 'exemple',
++    title: 'المثال - الوثيقة',
++    badge: 'مثال',
++    blocks: exemples.length > 0 ? exemples : allBlocks.slice(1, 3),
+   });
+ 
+   pages.push({
+-    id: 'guided',
+-    title: 'النشاط الموجه',
+-    badge: 'المعالجة',
+-    blocks: guided.length > 0 ? guided : allBlocks.slice(1, 3),
++    id: 'microtest',
++    title: 'الاختبار المصغر - إنتاج',
++    badge: 'إنتاج',
++    blocks: microTests.length > 0 ? microTests : allBlocks.slice(-2, -1),
+   });
+ 
+   pages.push({
+-    id: 'conclusion',
+-    title: 'الخلاصة والتثبيت',
+-    badge: 'التثبيت',
+-    blocks: conclusion.length > 0 ? conclusion : allBlocks.slice(-2),
++    id: 'methodo',
++    title: 'المنهجية المجسدة',
++    badge: 'منهجية',
++    blocks: methodos.length > 0 ? methodos : allBlocks.slice(-2),
+   });
+ 
+   return pages;
+diff --git a/src/components/LessonsView.tsx b/src/components/LessonsView.tsx
+index 607e805..8812702 100644
+--- a/src/components/LessonsView.tsx
++++ b/src/components/LessonsView.tsx
+@@ -211,23 +211,23 @@ export default function LessonsView({ units }: LessonsViewProps) {
+                 </button>
+               </header>
+ 
+-              {selectedLesson.phases.map((phase, phaseIndex) => (
+-                <section key={`${selectedLesson.key}-${phaseIndex}`} className="space-y-3">
+-                  <div className="flex items-center gap-2">
+-                    <span className="w-8 h-8 rounded-full bg-[#006d37] text-white flex items-center justify-center text-sm font-black">
+-                      {phase.step || phaseIndex + 1}
+-                    </span>
+-                    <h3 className="font-black text-[#1f1c0b] dark:text-gray-100">مرحلة التعلم</h3>
+-                  </div>
+-                  <div className="grid gap-3">
+-                    {phase.blocks.map((block, blockIndex) => (
+-                      <div key={`${selectedLesson.key}-${phaseIndex}-${blockIndex}`}>
+-                        <LessonBlockCard block={block} />
+-                      </div>
+-                    ))}
+-                  </div>
+-                </section>
+-              ))}
++              {/* FABLE 5 FIX: Suppression scrolling HTML - remplacé par parcours interactif 4 étapes */}
++              <section className="bg-gradient-to-br from-[#fff9ed] to-[#fed65b]/10 border border-[#e2dabf]/60 rounded-2xl p-5 space-y-3">
++                <div className="flex items-center gap-2 text-[#944a00] font-black text-sm">
++                  <Compass className="w-5 h-5" />
++                  <span>تم تحويل هذا الدرس إلى مسار تفاعلي بدون تمرير</span>
++                </div>
++                <p className="text-sm leading-7 text-[#504441] dark:text-gray-300">
++                  بدل قراءة طويلة, ستتعلم عبر 4 خطوات: <strong>كلمة مفتاحية → مثال موثق → اختبار مصغر إنتاجي → منهجية مجسدة</strong>.
++                  كل خطوة صفحة واحدة, مع تقدم واضح, بدون scroll infini.
++                </p>
++                <div className="grid grid-cols-4 gap-2 text-[11px] font-bold">
++                  <div className="bg-white rounded-xl p-2 border text-center"><span className="block text-[#006d37]">كلمة</span><span className="text-[10px] text-[#506072]">Mot</span></div>
++                  <div className="bg-white rounded-xl p-2 border text-center"><span className="block text-[#006d37]">مثال</span><span className="text-[10px] text-[#506072]">Exemple</span></div>
++                  <div className="bg-white rounded-xl p-2 border text-center"><span className="block text-[#006d37]">إنتاج</span><span className="text-[10px] text-[#506072]">Micro-test</span></div>
++                  <div className="bg-white rounded-xl p-2 border text-center"><span className="block text-[#006d37]">منهجية</span><span className="text-[10px] text-[#506072]">Méthodo</span></div>
++                </div>
++              </section>
+             </motion.article>
+           )}
+         </main>

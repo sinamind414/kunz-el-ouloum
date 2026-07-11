@@ -27,8 +27,7 @@ export default defineConfig({
             id.includes('src/lessonData') ||
             id.includes('src/knowledge/') ||
             id.includes('src/utils/') ||
-            id.includes('src/smartTutorEngine') ||
-            id.includes('bacRealSubjects')
+            id.includes('src/smartTutorEngine')
           ) {
             return 'kunz-core'
           }

@@ -198,7 +198,47 @@ function inferGlobalUnitIdFromBreadcrumb(breadcrumb: string): number {
   return unitNumber;
 }
 
-export const LESSON_LIBRARY: LessonLibraryItem[] = Object.entries(EXPERIMENTAL_LESSONS).map(([key, lesson]) => ({
+// Split each bundled EXPERIMENTAL_LESSONS entry into individual lessons.
+// A new lesson begins whenever a phase contains a `problem` block.
+// The first sub-lesson keeps the original key (so existing launchers keep working);
+// subsequent sub-lessons get `${key}_2`, `${key}_3`, ... suffixes.
+function splitIntoLessons(key: string, lesson: ExperimentalLesson): { key: string; lesson: ExperimentalLesson }[] {
+  const groups: LessonPhase[][] = [];
+  let current: LessonPhase[] = [];
+  for (const phase of lesson.phases) {
+    const startsNew = phase.blocks.some((b) => b.type === 'problem');
+    if (startsNew && current.length > 0) {
+      groups.push(current);
+      current = [];
+    }
+    current.push(phase);
+  }
+  if (current.length > 0) groups.push(current);
+
+  return groups.map((phases, i) => {
+    const firstProblem = phases.flatMap((p) => p.blocks).find((b) => b.type === 'problem');
+    const useOriginalTitle = groups.length === 1 || i === 0;
+    const derivedTitle = useOriginalTitle
+      ? lesson.titleAr
+      : firstProblem?.title
+        ? firstProblem.title.replace(/^⚠️\s*/, '').trim()
+        : lesson.titleAr;
+    return {
+      key: groups.length === 1 ? key : i === 0 ? key : `${key}_${i + 1}`,
+      lesson: {
+        ...lesson,
+        titleAr: derivedTitle,
+        phases,
+      },
+    };
+  });
+}
+
+const SPLIT_LESSON_ENTRIES = Object.entries(EXPERIMENTAL_LESSONS).flatMap(([key, lesson]) =>
+  splitIntoLessons(key, lesson)
+);
+
+export const LESSON_LIBRARY: LessonLibraryItem[] = SPLIT_LESSON_ENTRIES.map(({ key, lesson }) => ({
   key,
   unitId: inferGlobalUnitIdFromBreadcrumb(lesson.breadcrumb),
   ...lesson

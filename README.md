@@ -5,9 +5,8 @@
 ## ما الجديد
 
 النسخة الحالية تعمل **بدون إنترنت** و**بدون API** ولا تحتاج أي مفتاح ذكاء اصطناعي:
-- المرشد الذكي (`AITutorView`) يعمل محلياً داخل المتصفح
-- يبحث في قاعدة المعرفة المدمجة (QCM + شروحات + دروس + منهجية)
-- يولد أسئلة اختبار صغيرة مصغرة داخل المحادثة
+- المرشد الموجه (`CoachView`) يوجّه التلميذ من تقدمه الحقيقي (نقاط ضعف / مراجعة اليوم / نقاط قوة)
+- قاعدة المعرفة المدمجة تبقى متاحة محلياً (TUTOR_KNOWLEDGE + بنك الكتب + المنهجية + البطاقات)
 - يعرض المصادر والثقة في الإجابة
 - يقترح مواضيع مراجعة سريعة عبر domain cards
 
@@ -36,8 +35,6 @@ Priorité du moteur :
 Les améliorations d'expérience issues de la révision sont fusionnées **sans casser le mode hors-ligne** :
 
 - **Portail aventure de leçon** (`src/components/LessonAdventurePortal.tsx`) : chaque leçon s'ouvre en 3 pages (الوضعية الانطلاقية / النشاط الموجه / الخلاصة والتثبيت), avec badges de mots-clés, zoom du mascotte, et CTA collant « اسأل المرشد الذكي ».
-- **تحدي البكالوريا** (`src/components/BacCombatView.tsx`) : onglet « combat » avec modes coach (correction immédiate) et sprint (chronométré), correction locale des blocs الملاحظة/التفسير/الاستنتاج par correspondance de mots-clés, schémas SVG locaux.
-- **Navigation** : bouton « تحدي البكالوريا » ajouté à la sidebar desktop et à la barre mobile (défilable).
 - **Polices** : aucune dépendance Google Fonts ; repli sur les polices système Arabic (Segoe UI / Tahoma / Geeza Pro).
 
 Aucune donnée externe, aucun `fetch`, aucune clé API. Les schémas SVG ne contiennent plus d'import Google Fonts.
@@ -57,7 +54,6 @@ Aucune donnée externe, aucun `fetch`, aucune clé API. Les schémas SVG ne cont
 - Backend : Express (serves SPA + API `/api/health`)
 - Offline Tutor Engine : `src/utils/smartTutorEngine.ts`
 - Base de connaissance : `src/tutorKnowledge.ts`
-- Tutor UI : `src/components/AITutorView.tsx`
 - Banque Q/R scientifique (livres) : `src/bookTutorQA.ts`
 - Banque méthodologique Manhadjiya : `src/methodologyKnowledge.ts`
 

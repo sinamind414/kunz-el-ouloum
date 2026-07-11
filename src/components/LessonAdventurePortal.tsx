@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import { motion } from 'motion/react';
-import { BookOpen, CheckCircle2, Compass, Flag, MessageCircleQuestion, Sparkles, X, ZoomIn } from 'lucide-react';
+import { BookOpen, CheckCircle2, AlertTriangle, Compass, Flag, MessageCircleQuestion, Sparkles, Target, X, ZoomIn } from 'lucide-react';
 import { LessonBlock, LessonLibraryItem } from '../lessonData';
 import { MASCOT_URL } from '../data';
 
@@ -39,13 +39,11 @@ interface AdventurePage {
 function buildPages(lesson: LessonLibraryItem): AdventurePage[] {
   const allBlocks = lesson.phases.flatMap((p) => p.blocks);
 
-  // Single Path (Fable 5): Mot → Exemple → Micro-test → Méthodo incarnée
+  // Single Path: Mot → Exemple → Micro-test → Méthodo incarnée
   const mots = allBlocks.filter((b) => b.type === 'problem');
   const exemples = allBlocks.filter((b) => b.type === 'document' || b.type === 'simulation');
   const microTests = allBlocks.filter((b) => b.type === 'quiz');
-  const methodos = allBlocks.filter(
-    (b) => b.type === 'scientific_text' || b.type === 'bac_tip' || b.type === 'text'
-  );
+  const methodos = allBlocks.filter((b) => b.type === 'scientific_text' || b.type === 'bac_tip' || b.type === 'text');
 
   const pages: AdventurePage[] = [];
 
@@ -93,6 +91,9 @@ const blockStyleMap: Record<string, string> = {
 function BlockCard({ block }: { key?: string; block: LessonBlock }) {
   const className = blockStyleMap[block.type] || blockStyleMap.text;
   const keywords = useMemo(() => extractKeywords((block.texts || []).join(' ') + ' ' + (block.title || '')), [block]);
+  const [picked, setPicked] = useState<number | null>(null);
+  const revealed = picked !== null;
+  const isCorrectIndex = (i: number) => i === block.correct;
 
   return (
     <div className={`rounded-2xl border p-4 md:p-5 shadow-sm ${className}`}>
@@ -131,18 +132,38 @@ function BlockCard({ block }: { key?: string; block: LessonBlock }) {
           <p className="font-extrabold leading-7">{block.question}</p>
           {block.options && (
             <div className="grid gap-2">
-              {block.options.map((option, index) => (
-                <div
-                  key={`${option}-${index}`}
-                  className={`rounded-xl px-3 py-2 text-sm border ${
-                    index === block.correct
-                      ? 'bg-[#2ecc71]/20 border-[#006d37]/30 font-bold'
-                      : 'bg-white/60 dark:bg-black/20 border-current/10'
-                  }`}
-                >
-                  {option}
-                </div>
-              ))}
+              {block.options.map((option, index) => {
+                const isPicked = picked === index;
+                const showCorrect = revealed && isCorrectIndex(index);
+                const showWrong = revealed && isPicked && !isCorrectIndex(index);
+                const stateCls = !revealed
+                  ? 'bg-white/60 dark:bg-black/20 border-current/10 hover:border-[#006d37]/40'
+                  : showCorrect
+                    ? 'bg-[#2ecc71]/20 border-[#006d37]/40 font-bold'
+                    : showWrong
+                      ? 'bg-rose-100 dark:bg-rose-950/30 border-rose-400 font-bold'
+                      : 'bg-white/40 dark:bg-black/10 border-current/10 opacity-60';
+                return (
+                  <button
+                    key={`${option}-${index}`}
+                    type="button"
+                    onClick={() => !revealed && setPicked(index)}
+                    disabled={revealed}
+                    className={`text-right rounded-xl px-3 py-2 text-sm border transition-all cursor-pointer flex items-center justify-between gap-2 ${stateCls}`}
+                  >
+                    <span>{option}</span>
+                    {showCorrect && <CheckCircle2 className="w-5 h-5 text-[#006d37] shrink-0" />}
+                    {showWrong && <AlertTriangle className="w-5 h-5 text-rose-500 shrink-0" />}
+                  </button>
+                );
+              })}
+            </div>
+          )}
+          {revealed && (
+            <div className={`p-3 rounded-xl text-xs font-bold leading-6 ${picked === block.correct ? 'bg-[#2ecc71]/10 text-[#006d37] border border-[#2ecc71]/20' : 'bg-rose-50 dark:bg-rose-950/20 text-rose-700 border border-rose-200'}`}>
+              {picked === block.correct
+                ? '✅ إجابة صحيحة!'
+                : `❌ إجابة خاطئة — الصحيحة : ${block.options?.[block.correct ?? 0]}`}
             </div>
           )}
         </div>
@@ -161,6 +182,14 @@ export default function LessonAdventurePortal({ lesson, onClose, onAskTutor }: L
     () => `اشرح لي "${lesson.titleAr.replace(/^الدرس\s+\d+\s*:?\s*/, '')}" بأسلوب مبسط`,
     [lesson.titleAr]
   );
+
+  const lessonKeywords = useMemo(() => {
+    const allText = lesson.phases
+      .flatMap((p) => p.blocks)
+      .flatMap((b) => [...(b.texts || []), b.title || '', b.question || ''])
+      .join(' ');
+    return extractKeywords(allText);
+  }, [lesson]);
 
   return (
     <div className="fixed inset-0 z-50 bg-black/40 flex items-stretch justify-center" dir="rtl">
@@ -206,6 +235,23 @@ export default function LessonAdventurePortal({ lesson, onClose, onAskTutor }: L
         </nav>
 
         <main className="px-4 py-5 space-y-4 pb-28">
+          {activePage === 0 && lesson.objectives && lesson.objectives.length > 0 && (
+            <div className="bg-[#fff9ed] dark:bg-[#1c241f] border border-[#e2dabf]/70 rounded-2xl p-4 space-y-2">
+              <h3 className="text-sm font-black text-[#944a00] flex items-center gap-2">
+                <Target className="w-4 h-4" />
+                أهداف الدرس — ما تحتوي هذه leçon
+              </h3>
+              <ul className="space-y-1.5">
+                {lesson.objectives.map((obj, i) => (
+                  <li key={i} className="text-xs leading-6 text-[#504441] dark:text-gray-300 flex gap-2">
+                    <span className="text-[#006d37] mt-1 shrink-0">•</span>
+                    <span>{obj}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+
           <div className="flex items-center gap-2 text-[#944a00] bg-[#fff9ed] dark:bg-[#1c241f] border border-[#e2dabf]/70 rounded-full px-3 py-1.5 w-fit text-xs font-extrabold">
             <span className="w-2 h-2 rounded-full bg-[#fed65b]" />
             {page.badge}
@@ -214,6 +260,25 @@ export default function LessonAdventurePortal({ lesson, onClose, onAskTutor }: L
           {page.blocks.map((block, i) => (
             <BlockCard key={`${page.id}-${i}`} block={block} />
           ))}
+
+          {activePage === pages.length - 1 && lessonKeywords.length > 0 && (
+            <div className="bg-[#006d37]/5 dark:bg-[#006d37]/10 border border-[#006d37]/20 rounded-2xl p-4 space-y-2">
+              <h3 className="text-sm font-black text-[#006d37] dark:text-[#2ecc71] flex items-center gap-2">
+                <BookOpen className="w-4 h-4" />
+                مots clés à retenir (الكلمات المفتاحية)
+              </h3>
+              <div className="flex flex-wrap gap-2">
+                {lessonKeywords.map((kw) => (
+                  <span
+                    key={kw}
+                    className="text-[11px] font-bold px-2.5 py-1 rounded-full bg-white dark:bg-black/20 border border-[#006d37]/20 text-[#006d37] dark:text-[#2ecc71]"
+                  >
+                    #{kw}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
 
           <button
             onClick={() => setShowMascot(true)}

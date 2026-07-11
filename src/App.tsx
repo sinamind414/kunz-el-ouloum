@@ -1,6 +1,6 @@
-import { useState, useEffect, lazy, Suspense } from 'react';
+import React, { useState, useEffect, lazy, Suspense } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Home, BookOpen, Layers, Target, Compass, Sun, Moon, User, Flame, Trophy } from 'lucide-react';
+import { Home, BookOpen, Layers, Target, Compass, Sun, Moon, User, Flame, Trophy, BarChart3, Award } from 'lucide-react';
 
 import { Unit, UserProgress, Flashcard } from './types';
 import { INITIAL_UNITS, SVT_QUIZ_QUESTIONS, SVT_FLASHCARDS } from './data';
@@ -11,14 +11,16 @@ import QuizView from './components/QuizView';
 import StudyReminderModal from './components/StudyReminderModal';
 import { startPirateMusic, stopPirateMusic } from './utils/audio';
 
-// Fable 5 audit: lazy load heavy views to reduce initial bundle (recharts, engines, etc)
+// Lazy load heavy views (Fable 5 - reduce main bundle)
 const RevisionView = lazy(() => import('./components/RevisionView'));
 const MethodologyView = lazy(() => import('./components/MethodologyView'));
 const LessonsView = lazy(() => import('./components/LessonsView'));
 const CoachView = lazy(() => import('./components/CoachView'));
 const InteractiveLessonView = lazy(() => import('./components/InteractiveLessonView'));
+const StatsView = lazy(() => import('./components/StatsView'));
+const BadgesView = lazy(() => import('./components/BadgesView'));
 
-const DATA_VERSION = 'github-500qcm-v1-fable5-5tabs';
+const DATA_VERSION = 'github-500qcm-v1-fable5-8tabs';
 
 const DEFAULT_PROGRESS: UserProgress = {
   xp: 0,
@@ -26,12 +28,7 @@ const DEFAULT_PROGRESS: UserProgress = {
   completedUnits: [],
   completedQuestionsCount: 0,
   studyMinutes: 0,
-  flashcardStats: {
-    again: 0,
-    hard: 0,
-    good: 0,
-    easy: 0
-  },
+  flashcardStats: { again: 0, hard: 0, good: 0, easy: 0 },
   quizScoreHistory: []
 };
 
@@ -51,79 +48,65 @@ function LoadingFallback() {
   );
 }
 
-type TabId = 'home' | 'lessons' | 'review' | 'methodology' | 'coach';
+type TabId = 'home' | 'lessons' | 'review' | 'methodology' | 'coach' | 'stats' | 'badges';
 
 const TABS: { id: TabId; label: string; icon: React.ElementType }[] = [
   { id: 'home', label: 'الرئيسية', icon: Home },
   { id: 'lessons', label: 'الدروس', icon: BookOpen },
   { id: 'review', label: 'المراجعة', icon: Layers },
   { id: 'methodology', label: 'المنهجية', icon: Target },
-  { id: 'coach', label: 'المرشد', icon: Compass }
+  { id: 'coach', label: 'المرشد', icon: Compass },
+  { id: 'stats', label: 'الإحصائيات', icon: BarChart3 },
+  { id: 'badges', label: 'الأوسمة', icon: Award },
 ];
 
 export default function App() {
   const [isDarkMode, setIsDarkMode] = useState<boolean>(() => {
     try {
-      const savedTheme = localStorage.getItem('theme');
-      return savedTheme === 'dark';
+      const saved = localStorage.getItem('theme');
+      return saved === 'dark';
     } catch {
       return false;
     }
   });
 
   const [currentTab, setCurrentTab] = useState<TabId | 'splash'>('splash');
-  
-  useEffect(() => {
-    if (currentTab !== 'splash') {
-      stopPirateMusic();
-    }
-  }, [currentTab]);
-  
   const [activeQuizUnitId, setActiveQuizUnitId] = useState<number | null>(null);
   const [activeRevisionUnitId, setActiveRevisionUnitId] = useState<number | null>(null);
   const [activeLessonId, setActiveLessonId] = useState<string | null>(null);
-  const [isFocusMode, setIsFocusMode] = useState<boolean>(false);
+  const [isFocusMode, setIsFocusMode] = useState(false);
+  const [isReminderModalOpen, setIsReminderModalOpen] = useState(false);
 
   useEffect(() => {
-    setIsFocusMode(false);
+    if (currentTab !== 'splash') stopPirateMusic();
   }, [currentTab]);
 
-  const [isReminderModalOpen, setIsReminderModalOpen] = useState<boolean>(false);
+  useEffect(() => { setIsFocusMode(false); }, [currentTab]);
 
+  // Reminder logic
   useEffect(() => {
     if (currentTab === 'splash') return;
-    const lastStudyTime = localStorage.getItem('lastStudyTime');
-    const scheduledReminderTime = localStorage.getItem('scheduledReminderTime');
+    const last = localStorage.getItem('lastStudyTime');
+    const sched = localStorage.getItem('scheduledReminderTime');
     const now = Date.now();
-
-    if (scheduledReminderTime && now >= Number(scheduledReminderTime)) {
+    if (sched && now >= Number(sched)) {
       setIsReminderModalOpen(true);
       localStorage.removeItem('scheduledReminderTime');
       return;
     }
-
-    if (lastStudyTime && !scheduledReminderTime) {
-      const msSinceLastStudy = now - Number(lastStudyTime);
-      if (msSinceLastStudy > 24 * 60 * 60 * 1000) {
-        setIsReminderModalOpen(true);
-      }
-    } else if (!lastStudyTime) {
+    if (last && !sched) {
+      if (now - Number(last) > 24 * 60 * 60 * 1000) setIsReminderModalOpen(true);
+    } else if (!last) {
       localStorage.setItem('lastStudyTime', now.toString());
     }
   }, [currentTab]);
 
   const handleScheduleReminder = (hours: number) => {
-    const scheduledTime = Date.now() + hours * 60 * 60 * 1000;
-    localStorage.setItem('scheduledReminderTime', scheduledTime.toString());
-    if ('Notification' in window) {
-      Notification.requestPermission();
-    }
+    localStorage.setItem('scheduledReminderTime', (Date.now() + hours * 3600 * 1000).toString());
+    if ('Notification' in window) Notification.requestPermission();
     setIsReminderModalOpen(false);
   };
-
-  const updateLastStudyTime = () => {
-    localStorage.setItem('lastStudyTime', Date.now().toString());
-  };
+  const updateLastStudyTime = () => localStorage.setItem('lastStudyTime', Date.now().toString());
 
   const [units, setUnits] = useState<Unit[]>(INITIAL_UNITS);
   const [flashcards, setFlashcards] = useState<Flashcard[]>(SVT_FLASHCARDS);
@@ -150,10 +133,12 @@ export default function App() {
       const savedFlashcards = localStorage.getItem('svt_flashcards');
       const savedProgress = localStorage.getItem('svt_progress');
       if (savedUnits) setUnits(JSON.parse(savedUnits));
-      if (savedFlashcards) setFlashcards(JSON.parse(savedFlashcards));
+      if (savedFlashcards) {
+        const parsedCards = JSON.parse(savedFlashcards);
+        setFlashcards(parsedCards.length && parsedCards[0].options ? parsedCards : SVT_FLASHCARDS);
+      }
       if (savedProgress) setProgress(JSON.parse(savedProgress));
-    } catch (error) {
-      console.warn('Invalid saved SVT progress, resetting local data.', error);
+    } catch {
       saveToLocalStorage(INITIAL_UNITS, SVT_FLASHCARDS, createDefaultProgress());
       setUnits(INITIAL_UNITS);
       setFlashcards(SVT_FLASHCARDS);
@@ -167,85 +152,56 @@ export default function App() {
       localStorage.setItem('svt_units', JSON.stringify(newUnits));
       localStorage.setItem('svt_flashcards', JSON.stringify(newCards));
       localStorage.setItem('svt_progress', JSON.stringify(newProgress));
-    } catch (error) {
-      console.warn('Unable to persist SVT progress locally.', error);
-    }
+    } catch {}
   };
 
   const handleRateCard = (cardId: string, rating: 'again' | 'hard' | 'good' | 'easy') => {
-    const pointsAwarded = rating === 'easy' ? 15 : rating === 'good' ? 10 : rating === 'hard' ? 5 : 2;
+    const points = rating === 'easy' ? 15 : rating === 'good' ? 10 : rating === 'hard' ? 5 : 2;
     const updatedStats = { ...progress.flashcardStats };
-    updatedStats[rating] += 1;
+    (updatedStats as any)[rating] += 1;
     const addedMinutes = Math.floor(Math.random() * 3) + 2;
-    const updatedProgress: UserProgress = {
-      ...progress,
-      xp: progress.xp + pointsAwarded,
-      studyMinutes: progress.studyMinutes + addedMinutes,
-      flashcardStats: updatedStats
-    };
-    setProgress(updatedProgress);
-    saveToLocalStorage(units, flashcards, updatedProgress);
+    const updated: UserProgress = { ...progress, xp: progress.xp + points, studyMinutes: progress.studyMinutes + addedMinutes, flashcardStats: updatedStats };
+    setProgress(updated);
+    saveToLocalStorage(units, flashcards, updated);
     updateLastStudyTime();
   };
 
-  const handleLaunchQuiz = (unitId: number) => {
-    setActiveQuizUnitId(unitId);
-  };
-
-  const handleStartLesson = (lessonId: string) => {
-    setActiveLessonId(lessonId);
-    setCurrentTab('lessons');
-  };
-
+  const handleLaunchQuiz = (unitId: number) => setActiveQuizUnitId(unitId);
   const handleLaunchRevision = (unitId: number) => {
     setActiveRevisionUnitId(unitId);
     setCurrentTab('review');
+  };
+  const handleStartLesson = (lessonId: string) => {
+    setActiveLessonId(lessonId);
+    setCurrentTab('lessons');
   };
 
   const handleQuizComplete = (score: number, total: number) => {
     const activeUnit = units.find(u => u.id === activeQuizUnitId);
     if (!activeUnit) return;
     const percent = Math.round((score / total) * 100);
-    const xpRewarded = score * 20;
-    const updatedUnits = units.map(u => {
-      if (u.id === activeQuizUnitId) {
-        return { ...u, progress: Math.max(u.progress, percent) };
-      }
-      return u;
-    });
+    const updatedUnits = units.map(u => u.id === activeQuizUnitId ? { ...u, progress: Math.max(u.progress, percent) } : u);
     if (percent >= 60 && activeQuizUnitId !== null && activeQuizUnitId < units.length) {
       const nextId = activeQuizUnitId + 1;
-      updatedUnits[nextId - 1].isLocked = false;
+      if (updatedUnits[nextId - 1]) updatedUnits[nextId - 1].isLocked = false;
     }
-    const updatedHistory = [
-      ...progress.quizScoreHistory,
-      { date: new Date().toLocaleDateString('ar-DZ'), score, total, unitTitle: activeUnit.title }
-    ];
-    const updatedProgress: UserProgress = {
+    const updated: UserProgress = {
       ...progress,
-      xp: progress.xp + xpRewarded,
+      xp: progress.xp + score * 20,
       completedQuestionsCount: progress.completedQuestionsCount + total,
-      quizScoreHistory: updatedHistory,
+      quizScoreHistory: [...progress.quizScoreHistory, { date: new Date().toLocaleDateString('ar-DZ'), score, total, unitTitle: activeUnit.title }],
       completedUnits: percent >= 80 ? [...new Set([...progress.completedUnits, activeUnit.id])] : progress.completedUnits
     };
     setUnits(updatedUnits);
-    setProgress(updatedProgress);
-    saveToLocalStorage(updatedUnits, flashcards, updatedProgress);
+    setProgress(updated);
+    saveToLocalStorage(updatedUnits, flashcards, updated);
     updateLastStudyTime();
   };
 
   if (activeQuizUnitId !== null) {
     const activeUnit = units.find(u => u.id === activeQuizUnitId);
     const questions = SVT_QUIZ_QUESTIONS.filter(q => q.unitId === activeQuizUnitId);
-    return (
-      <QuizView 
-        unitId={activeQuizUnitId}
-        unitTitle={activeUnit ? activeUnit.title : ''}
-        questions={questions.length > 0 ? questions : SVT_QUIZ_QUESTIONS}
-        onClose={() => setActiveQuizUnitId(null)}
-        onQuizComplete={handleQuizComplete}
-      />
-    );
+    return <QuizView unitId={activeQuizUnitId} unitTitle={activeUnit ? activeUnit.title : ''} questions={questions.length > 0 ? questions : SVT_QUIZ_QUESTIONS} onClose={() => setActiveQuizUnitId(null)} onQuizComplete={handleQuizComplete} />;
   }
 
   if (activeLessonId) {
@@ -261,119 +217,78 @@ export default function App() {
   }
 
   return (
-    <div className={`min-h-screen transition-all duration-500 flex flex-col ${
-      isFocusMode 
-        ? 'bg-gradient-to-b from-[#060a07] to-[#0e1411] text-gray-100' 
-        : 'bg-[#f8f9fa] text-[#191c1d] pt-16 md:pt-20 dark:bg-[#0c0f0d] dark:text-gray-100'
-    }`}>
-      
-      <StudyReminderModal 
-        isOpen={isReminderModalOpen} 
-        onClose={() => {
-          setIsReminderModalOpen(false);
-          updateLastStudyTime();
-        }} 
-        onSchedule={handleScheduleReminder} 
-      />
+    <div className={`min-h-screen flex flex-col ${isFocusMode ? 'bg-gradient-to-b from-[#060a07] to-[#0e1411] text-gray-100' : 'bg-[#f8f9fa] text-[#191c1d] pt-16 md:pt-20 dark:bg-[#0c0f0d] dark:text-gray-100'}`}>
+      <StudyReminderModal isOpen={isReminderModalOpen} onClose={() => { setIsReminderModalOpen(false); updateLastStudyTime(); }} onSchedule={handleScheduleReminder} />
 
       {!isFocusMode && (
-        <header className="bg-[#ffffff] dark:bg-[#141916] shadow-[0_2px_12px_rgba(0,109,55,0.06)] border-b border-[#e2dabf]/40 dark:border-[#2ecc71]/10 flex flex-row-reverse justify-between items-center px-4 md:px-8 h-16 md:h-20 w-full fixed top-0 z-40 select-none">
-        <div className="flex items-center gap-3">
-          <div className="relative cursor-pointer" onClick={() => setCurrentTab('coach')}>
-            <div className="absolute inset-0 bg-[#2ecc71]/20 rounded-full blur-sm" />
-            <div className="relative w-10 h-10 md:w-12 md:h-12 rounded-full bg-[#006d37] text-white flex items-center justify-center border-2 border-[#ffffff] shadow-sm">
-              <User className="w-5 h-5 md:w-6 md:h-6" />
+        <header className="bg-[#ffffff] dark:bg-[#141916] shadow-[0_2px_12px_rgba(0,109,55,0.06)] border-b border-[#e2dabf]/40 dark:border-[#2ecc71]/10 flex flex-row-reverse justify-between items-center px-4 md:px-8 h-16 md:h-20 w-full fixed top-0 z-40">
+          <div className="flex items-center gap-3">
+            <div className="relative cursor-pointer" onClick={() => setCurrentTab('coach')}>
+              <div className="absolute inset-0 bg-[#2ecc71]/20 rounded-full blur-sm" />
+              <div className="relative w-10 h-10 md:w-12 md:h-12 rounded-full bg-[#006d37] text-white flex items-center justify-center border-2 border-white shadow-sm">
+                <User className="w-5 h-5" />
+              </div>
+            </div>
+            <div className="hidden sm:block text-right">
+              <span className="text-[10px] text-[#506072] block font-bold">طالب متميز</span>
+              <span className="text-xs font-black text-[#1f1c0b] dark:text-white">SVT BAC DZ - 5 Rubriques</span>
             </div>
           </div>
-          <div className="hidden sm:block text-right">
-            <span className="text-[10px] text-[#506072] block font-bold">طالب متميز</span>
-            <span className="text-xs font-black text-[#1f1c0b]">SVT BAC DZ</span>
+          <div className="font-extrabold text-xl md:text-2xl text-[#006d37] font-display">
+            {currentTab === 'home' ? 'كنز العلوم' : currentTab === 'lessons' ? 'الدروس' : currentTab === 'review' ? 'المراجعة الذكية' : currentTab === 'methodology' ? 'المنهجية' : currentTab === 'stats' ? 'لوحة الإحصائيات' : currentTab === 'badges' ? 'لوحة الأوسمة' : 'المرشد الموجه'}
           </div>
-        </div>
-        <div className="font-extrabold text-xl md:text-2xl text-[#006d37] font-display select-none">
-          {currentTab === 'home' ? 'كنز العلوم' : currentTab === 'lessons' ? 'الدروس' : currentTab === 'review' ? 'المراجعة الذكية' : currentTab === 'methodology' ? 'المنهجية' : 'المرشد الموجه'}
-        </div>
-        <div className="flex items-center gap-2 md:gap-3">
-          <button
-            onClick={() => setIsDarkMode(!isDarkMode)}
-            className="p-2 md:p-2.5 rounded-full bg-[#f3f4f5] dark:bg-[#1f2622] hover:bg-[#fff9ed] dark:hover:bg-[#141916] border border-[#e2dabf]/50 dark:border-[#2ecc71]/10 hover:border-[#006d37]/40 text-[#506072] dark:text-zinc-300 hover:text-[#006d37] dark:hover:text-[#2ecc71] transition-all cursor-pointer shadow-sm flex items-center justify-center"
-            title={isDarkMode ? "الوضع المضيء" : "الوضع الداكن"}
-            id="theme-toggle-btn"
-          >
-            {isDarkMode ? <Sun className="w-4.5 h-4.5 text-[#fed65b] fill-[#fed65b]" /> : <Moon className="w-4.5 h-4.5 text-[#506072]" />}
-          </button>
-          <div className="flex items-center gap-1 bg-[#fff9ed] border border-[#e2dabf]/80 px-2.5 md:px-3 py-1.5 rounded-full font-bold text-[11px] md:text-xs text-[#1f1c0b] shadow-sm">
-            <Flame className="w-4 h-4 text-[#ff9a4a] fill-[#ff9a4a] animate-pulse" />
-            <span>{progress.streak}</span>
-            <span className="text-[#e2dabf] px-1">|</span>
-            <Trophy className="w-3.5 h-3.5 text-[#fed65b] fill-[#fed65b] text-white" />
-            <span>{progress.xp} XP</span>
+          <div className="flex items-center gap-2">
+            <button onClick={() => setIsDarkMode(!isDarkMode)} className="p-2.5 rounded-full bg-[#f3f4f5] dark:bg-[#1f2622] border border-[#e2dabf]/50 dark:border-[#2ecc71]/10 text-[#506072] dark:text-zinc-300 cursor-pointer">
+              {isDarkMode ? <Sun className="w-4 h-4 text-[#fed65b]" /> : <Moon className="w-4 h-4" />}
+            </button>
+            <div className="flex items-center gap-1 bg-[#fff9ed] border border-[#e2dabf]/80 px-3 py-1.5 rounded-full font-bold text-xs text-[#1f1c0b]">
+              <Flame className="w-4 h-4 text-[#ff9a4a] fill-[#ff9a4a] animate-pulse" />
+              <span>{progress.streak}</span>
+              <span className="text-[#e2dabf] px-1">|</span>
+              <Trophy className="w-3.5 h-3.5 text-[#fed65b] fill-[#fed65b]" />
+              <span>{progress.xp} XP</span>
+            </div>
           </div>
-        </div>
-      </header>
+        </header>
       )}
 
       <div className={`flex-1 flex w-full ${isFocusMode ? 'max-w-4xl' : 'max-w-5xl'} mx-auto`}>
-        
         {!isFocusMode && (
-          <aside className="hidden md:flex shrink-0 w-64 bg-[#ffffff] dark:bg-[#141916] border-l border-[#e2dabf]/50 dark:border-[#2ecc71]/10 flex-col py-6 px-4 gap-2 select-none h-[calc(100vh-80px)] sticky top-20 right-0">
-          <div className="text-[10px] font-black tracking-widest text-[#506072] uppercase px-4 mb-4">5 Rubriques Essentielles - 100% Offline</div>
-          {TABS.map(tab => {
-            const Icon = tab.icon;
-            const isActive = currentTab === tab.id;
-            return (
-              <button key={tab.id} onClick={() => setCurrentTab(tab.id)} className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-2xl text-sm font-bold transition-all cursor-pointer ${isActive ? 'bg-[#2ecc71]/15 text-[#006d37]' : 'text-[#504441] hover:bg-[#fff9ed] hover:text-[#006d37]'}`}>
-                <Icon className="w-5 h-5" />
-                <span>{tab.label}</span>
-                {tab.id === 'coach' && <span className="mr-auto text-[9px] bg-indigo-500 text-white px-1.5 py-0.5 rounded-full">Coach</span>}
-              </button>
-            );
-          })}
-          <div className="mt-4 p-3 bg-[#fff9ed] border border-[#e2dabf]/60 rounded-xl text-[11px] leading-6 text-[#504441]">
-            <strong>Architecture finale:</strong><br/>
-            • الرئيسية → 3 domaines<br/>
-            • الدروس → Mot→Exemple→Micro-test→Méthodo (4 étapes, sans scroll)<br/>
-            • المراجعة → SM-2 flashcards<br/>
-            • المنهجية → 4 verbes BAC<br/>
-            • المرشد → Coach orientation offline (pas LLM)
-          </div>
-        </aside>
+          <aside className="hidden md:flex shrink-0 w-64 bg-white dark:bg-[#141916] border-l border-[#e2dabf]/50 dark:border-[#2ecc71]/10 flex-col py-6 px-4 gap-2 h-[calc(100vh-80px)] sticky top-20 right-0">
+            <div className="text-[10px] font-black tracking-widest text-[#506072] uppercase px-4 mb-4">5 Rubriques Essentielles - 100% Offline</div>
+            {TABS.map(tab => {
+              const Icon = tab.icon;
+              const isActive = currentTab === tab.id;
+              return (
+                <button key={tab.id} onClick={() => setCurrentTab(tab.id)} className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-2xl text-sm font-bold transition-all cursor-pointer ${isActive ? 'bg-[#2ecc71]/15 text-[#006d37]' : 'text-[#504441] hover:bg-[#fff9ed] hover:text-[#006d37]'}`}>
+                  <Icon className="w-5 h-5" />
+                  <span>{tab.label}</span>
+                  {tab.id === 'coach' && <span className="mr-auto text-[9px] bg-indigo-500 text-white px-1.5 py-0.5 rounded-full">Coach</span>}
+                </button>
+              );
+            })}
+            <div className="mt-4 p-3 bg-[#fff9ed] border border-[#e2dabf]/60 rounded-xl text-[11px] leading-6 text-[#504441]">
+              <strong>Architecture finale:</strong><br/>
+              • الرئيسية → 3 domaines<br/>
+              • الدروس → Mot→Exemple→Micro-test→Méthodo (4 étapes, sans scroll)<br/>
+              • المراجعة → SM-2 flashcards<br/>
+              • المنهجية → 4 verbes BAC<br/>
+              • المرشد → Coach orientation offline (pas LLM)
+            </div>
+          </aside>
         )}
 
         <main className={`flex-1 px-4 py-6 md:py-8 overflow-x-hidden ${isFocusMode ? 'flex items-center justify-center min-h-screen py-12' : ''}`}>
           <AnimatePresence mode="wait">
-            <motion.div
-              key={currentTab}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              transition={{ duration: 0.2 }}
-            >
-              {currentTab === 'home' && (
-                <DashboardView 
-                  units={units}
-                  progress={progress}
-                  onLaunchQuiz={handleLaunchQuiz}
-                  onLaunchRevision={handleLaunchRevision}
-                  onNavigateToTab={setCurrentTab as any}
-                />
-              )}
+            <motion.div key={currentTab} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.2 }}>
+              {currentTab === 'home' && <DashboardView units={units} progress={progress} onLaunchQuiz={handleLaunchQuiz} onLaunchRevision={handleLaunchRevision} onNavigateToTab={setCurrentTab as any} />}
               <Suspense fallback={<LoadingFallback />}>
                 {currentTab === 'lessons' && <LessonsView units={units} />}
-                {currentTab === 'review' && (
-                  <RevisionView 
-                    units={units}
-                    flashcards={flashcards}
-                    xp={progress.xp}
-                    streak={progress.streak}
-                    onRateCard={handleRateCard}
-                    initialUnitId={activeRevisionUnitId ?? 1}
-                    isFocusMode={isFocusMode}
-                    setIsFocusMode={setIsFocusMode}
-                  />
-                )}
+                {currentTab === 'review' && <RevisionView units={units} flashcards={flashcards} xp={progress.xp} streak={progress.streak} onRateCard={handleRateCard} initialUnitId={activeRevisionUnitId ?? 1} isFocusMode={isFocusMode} setIsFocusMode={setIsFocusMode} />}
                 {currentTab === 'methodology' && <MethodologyView />}
                 {currentTab === 'coach' && <CoachView progress={progress} units={units} onStartLesson={handleStartLesson} />}
+                {currentTab === 'stats' && <StatsView progress={progress} units={units} />}
+                {currentTab === 'badges' && <BadgesView progress={progress} />}
               </Suspense>
             </motion.div>
           </AnimatePresence>

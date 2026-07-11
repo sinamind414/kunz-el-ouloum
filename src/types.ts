@@ -25,6 +25,8 @@ export interface Flashcard {
   answerBullets: string[];
   diagramUrl?: string;
   difficultyState?: 'again' | 'hard' | 'good' | 'easy';
+  options?: string[];
+  correctOptionIndex?: number;
 }
 
 export interface UserProgress {

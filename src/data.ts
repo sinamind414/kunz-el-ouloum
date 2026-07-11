@@ -7120,6 +7120,8 @@ export const SVT_FLASHCARDS: Flashcard[] = SVT_QUIZ_QUESTIONS.map((question) => 
   id: `fc_q_${question.id}`,
   unitId: question.unitId,
   question: question.questionText,
+  options: question.options,
+  correctOptionIndex: question.correctAnswerIndex,
   answerBullets: [
     `**الإجابة الصحيحة:** ${question.options[question.correctAnswerIndex]}`,
     question.explanation
