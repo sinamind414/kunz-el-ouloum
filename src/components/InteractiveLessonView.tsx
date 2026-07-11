@@ -1,10 +1,13 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { X, CheckCircle2, AlertTriangle, Mic, Lightbulb, Target, BookOpen, Brain, FileText } from 'lucide-react';
+import { X, CheckCircle2, AlertTriangle, Mic, Lightbulb, Target, BookOpen, Brain, FileText, MousePointerClick, Lock } from 'lucide-react';
 import LessonAdventurePortal from './LessonAdventurePortal';
 import { getExperimentalLesson, LESSON_LIBRARY } from '../lessonData';
 import { SINGLE_PATH_LESSONS, SinglePathLesson, SinglePathStep } from '../data/singlePathLessons';
 import SpeechToTextInput from './SpeechToTextInput';
+import { ACTIVE_LESSONS, ActiveLesson, Block } from '../data/activeLessons';
+import { checkProduction, checkMethodologyStep, checkAnalysisPurity, isInsideHotspot } from '../utils/methodologyChecker';
+import { logEvent } from '../utils/telemetryService';
 
 interface InteractiveLessonViewProps {
   lessonId: string;
@@ -239,6 +242,13 @@ function SinglePathPlayer({ lesson, onClose }: { lesson: SinglePathLesson; onClo
 }
 
 export default function InteractiveLessonView({ lessonId, onClose }: InteractiveLessonViewProps) {
+  const activeLesson = ACTIVE_LESSONS[lessonId];
+
+  // Pilier 1 : tunnel actif "Mot par Mot" (si une leçon active est définie).
+  if (activeLesson) {
+    return <ActiveLessonTunnel lesson={activeLesson} onClose={onClose} />;
+  }
+
   const singlePathLesson = (SINGLE_PATH_LESSONS as any)[lessonId];
 
   if (singlePathLesson) {
@@ -264,3 +274,340 @@ export default function InteractiveLessonView({ lessonId, onClose }: Interactive
     />
   );
 }
+
+// ============================================================================
+// PILIER 1 : Leçon Active "Mot par Mot" — tunnel à étapes verrouillées.
+// ============================================================================
+
+function renderContentWithBlanks(content: string) {
+  const parts = content.split('[____]');
+  return parts.map((part, i) => (
+    <React.Fragment key={i}>
+      {part}
+      {i < parts.length - 1 && (
+        <span className="inline-block bg-[#fed65b]/30 border-b-2 border-dashed border-[#006d37] px-2 mx-1 min-w-[70px] text-center">
+          ........
+        </span>
+      )}
+    </React.Fragment>
+  ));
+}
+
+function ActiveLessonTunnel({ lesson, onClose }: { lesson: ActiveLesson; onClose: () => void }) {
+  const [currentBlockIndex, setCurrentBlockIndex] = useState(0);
+  const [validated, setValidated] = useState<boolean[]>(() => lesson.blocks.map(() => false));
+  const [blockData, setBlockData] = useState<Record<number, any>>({});
+
+  const setBlockState = (i: number, patch: any) =>
+    setBlockData((prev) => ({ ...prev, [i]: { ...prev[i], ...patch } }));
+
+  const validateBlock = (i: number) => {
+    const next = [...validated];
+    next[i] = true;
+    setValidated(next);
+    if (i < lesson.blocks.length - 1) {
+      setTimeout(() => setCurrentBlockIndex(i + 1), 500);
+    }
+  };
+
+  const handleHotspotClick = (e: React.MouseEvent<HTMLImageElement>, i: number, block: any) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = ((e.clientX - rect.left) / rect.width) * 100;
+    const y = ((e.clientY - rect.top) / rect.height) * 100;
+    const ok = isInsideHotspot(x, y, block.hotspot.correctZone);
+    setBlockState(i, { hotspotOk: ok });
+    if (ok) {
+      if (typeof navigator !== 'undefined' && navigator.vibrate) navigator.vibrate(60);
+      setTimeout(() => validateBlock(i), 600);
+    }
+  };
+
+  return (
+    <div className="fixed inset-0 z-50 bg-[#f8f9fa] dark:bg-[#0c0f0d] flex flex-col font-sans" dir="rtl">
+      {/* Header */}
+      <header className="p-4 flex justify-between items-center bg-white dark:bg-[#141916] border-b border-[#e2dabf]/50 shadow-sm">
+        <button onClick={onClose} className="p-2 rounded-full hover:bg-[#f3f4f5] text-[#506072] cursor-pointer">
+          <X className="w-6 h-6" />
+        </button>
+        <div className="text-center flex-1 px-4">
+          <h1 className="font-black text-[#006d37] dark:text-[#2ecc71] text-sm md:text-base line-clamp-1">{lesson.title}</h1>
+          <p className="text-[10px] text-[#506072] dark:text-gray-400">تعلّم نشط — كلمة بكلمة</p>
+        </div>
+        <div className="w-10 text-[10px] font-bold text-[#506072]">{currentBlockIndex + 1}/{lesson.blocks.length}</div>
+      </header>
+
+      {/* Progress verrouillé */}
+      <div className="px-4 py-3 bg-white dark:bg-[#141916] border-b border-[#e2dabf]/30">
+        <div className="flex gap-2 max-w-2xl mx-auto">
+          {lesson.blocks.map((_, i) => (
+            <div key={i} className="flex-1 flex flex-col items-center gap-1">
+              <div className={`w-full h-2 rounded-full transition-all ${validated[i] ? 'bg-[#2ecc71]' : i === currentBlockIndex ? 'bg-[#006d37] animate-pulse' : 'bg-[#e2dabf]/30'}`} />
+              <span className={`text-[9px] font-bold ${i === currentBlockIndex ? 'text-[#006d37] dark:text-[#2ecc71]' : 'text-[#bbcbbb]'}`}>{i + 1}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <main className="flex-1 overflow-y-auto p-4 pb-32">
+        <div className="max-w-2xl mx-auto space-y-6">
+          {lesson.blocks.map((block: Block, i: number) => {
+            const isCurrent = i === currentBlockIndex;
+            const isDone = validated[i];
+            if (!isCurrent && !isDone) {
+              // Bloc verrouillé (flouté)
+              return (
+                <div key={i} className="p-4 bg-white/60 dark:bg-white/5 border border-[#e2dabf]/40 rounded-2xl text-center text-[#506072] blur-[3px] select-none">
+                  <Lock className="w-6 h-6 mx-auto mb-1" />
+                  <span className="text-xs font-bold">مرحلة مقفلة — أتمم المرحلة السابقة</span>
+                </div>
+              );
+            }
+            return (
+              <AnimatePresence mode="wait" key={i}>
+                <motion.div
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: 20 }}
+                  className="space-y-4"
+                >
+                  {block.type === 'TEXT_AND_PRODUCE' ? (
+                    <TextAndProduceBlockView
+                      block={block}
+                      lessonId={lesson.id}
+                      blockIndex={i}
+                      state={blockData[i] || {}}
+                      setState={(patch: any) => setBlockState(i, patch)}
+                      onValidated={() => validateBlock(i)}
+                    />
+                  ) : (
+                    <HotspotAndMethodologyBlockView
+                      block={block}
+                      lessonId={lesson.id}
+                      blockIndex={i}
+                      state={blockData[i] || {}}
+                      setState={(patch: any) => setBlockState(i, patch)}
+                      onHotspotClick={(e: React.MouseEvent<HTMLImageElement>) => handleHotspotClick(e, i, block)}
+                      onValidated={() => validateBlock(i)}
+                    />
+                  )}
+                </motion.div>
+              </AnimatePresence>
+            );
+          })}
+        </div>
+      </main>
+    </div>
+  );
+}
+
+function TextAndProduceBlockView({
+  block,
+  lessonId,
+  blockIndex,
+  state,
+  setState,
+  onValidated,
+}: {
+  block: any;
+  lessonId: string;
+  blockIndex: number;
+  state: any;
+  setState: (patch: any) => void;
+  onValidated: () => void;
+}) {
+  const [text, setText] = useState('');
+  const [checked, setChecked] = useState(false);
+  const ok = checked && checkProduction(text, block.microTest.acceptedAnswers);
+
+  const verify = () => {
+    const valid = checkProduction(text, block.microTest.acceptedAnswers);
+    setChecked(true);
+    if (valid) {
+      onValidated();
+    } else {
+      // Module 3 — Tracking des lacunes : échec du micro-test (mots-clés manquants).
+      logEvent('METHOD_FAIL', {
+        lessonId,
+        blockIndex,
+        missingKeywords: block.microTest.acceptedAnswers,
+      });
+    }
+  };
+
+  return (
+    <div className="p-4 bg-white dark:bg-[#141916] border border-[#e2dabf]/60 rounded-2xl shadow-sm space-y-3">
+      <div className="flex items-center gap-2">
+        <BookOpen className="w-5 h-5 text-[#fed65b]" />
+        <span className="text-xs font-black bg-[#006d37] text-white px-2.5 py-1 rounded-full">الهدف</span>
+        <span className="text-xs text-[#506072] dark:text-gray-400">{block.objective}</span>
+      </div>
+
+      <p className="text-sm md:text-base leading-9 text-[#1f1c0b] dark:text-gray-100">{renderContentWithBlanks(block.content)}</p>
+
+      {Object.keys(block.popups || {}).length > 0 && (
+        <div className="flex flex-wrap gap-1.5">
+          {Object.entries(block.popups).map(([term, def]: any) => (
+            <button
+              key={term}
+              onClick={() => setState({ openPopup: state.openPopup === term ? null : term })}
+              className="text-[10px] bg-[#006d37]/10 border border-[#006d37]/20 hover:bg-[#006d37]/20 text-[#006d37] dark:text-[#2ecc71] px-2 py-1 rounded-full cursor-pointer"
+            >
+              {term}
+            </button>
+          ))}
+        </div>
+      )}
+      {state.openPopup && block.popups[state.openPopup] && (
+        <div className="p-3 bg-[#fff9ed] dark:bg-[#1c241f] border border-[#e2dabf]/60 rounded-xl text-xs leading-6">
+          <strong className="text-[#944a00]">{state.openPopup}:</strong> {block.popups[state.openPopup]}
+        </div>
+      )}
+
+      {/* Micro-test */}
+      <div className="mt-2 p-3 bg-[#f3f8f4] dark:bg-[#10231a] border border-[#2ecc71]/30 rounded-xl space-y-2">
+        <p className="text-sm font-bold text-[#1f1c0b] dark:text-gray-100">{block.microTest.prompt}</p>
+        <input
+          value={text}
+          onChange={(e) => { setText(e.target.value); setChecked(false); }}
+          placeholder="اكتب الكلمة السرية هنا..."
+          className="w-full p-2.5 rounded-xl border border-[#e2dabf]/60 bg-white dark:bg-[#0c0f0d] text-sm text-right focus:outline-none focus:ring-2 focus:ring-[#006d37]"
+          dir="rtl"
+        />
+        {!ok && (
+          <button onClick={verify} className="w-full py-2 rounded-xl bg-[#006d37] hover:bg-[#00562b] text-white font-black text-sm cursor-pointer">
+            تحقق
+          </button>
+        )}
+        {checked && ok && (
+          <div className="flex items-center gap-2 text-[#006d37] dark:text-[#2ecc71] font-bold text-sm">
+            <CheckCircle2 className="w-5 h-5" /> ممتاز! الكلمة صحيحة — انتقل للمرحلة التالية.
+          </div>
+        )}
+        {checked && !ok && (
+          <p className="text-rose-400 font-bold text-xs">{block.microTest.errorHint}</p>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function HotspotAndMethodologyBlockView({
+  block,
+  lessonId,
+  blockIndex,
+  state,
+  setState,
+  onHotspotClick,
+  onValidated,
+}: {
+  block: any;
+  lessonId: string;
+  blockIndex: number;
+  state: any;
+  setState: (patch: any) => void;
+  onHotspotClick: (e: React.MouseEvent<HTMLImageElement>) => void;
+  onValidated: () => void;
+}) {
+  const [stepResults, setStepResults] = useState<Record<number, any>>({});
+  // Dédupe : on logge l'échec d'une étape au plus une fois jusqu'à ce qu'elle devienne valide.
+  const loggedFails = useRef<Record<number, boolean>>({});
+  const allStepsValid =
+    block.methodology.steps.length > 0 &&
+    block.methodology.steps.every((_: any, idx: number) => stepResults[idx]?.valid);
+
+  const checkStep = (idx: number, value: string) => {
+    const step = block.methodology.steps[idx];
+    const kw = checkMethodologyStep(value, step.requiredKeywords);
+    const isAnalysis = step.label.includes('تحليل');
+    const pure = isAnalysis ? checkAnalysisPurity(value) : true;
+    setStepResults((prev) => ({
+      ...prev,
+      [idx]: { valid: kw.valid && pure, kwMessage: kw.message, pure },
+    }));
+
+    // Module 3 — Tracking des lacunes pédagogiques (TEST 6).
+    const hasContent = value.trim().length > 0;
+    if (hasContent && (!kw.valid || !pure)) {
+      if (!loggedFails.current[idx]) {
+        loggedFails.current[idx] = true;
+        const missing = step.requiredKeywords.filter((k: string) => !value.includes(k));
+        logEvent('METHOD_FAIL', { lessonId, blockIndex, missingKeywords: missing });
+      }
+    } else if (kw.valid && pure) {
+      loggedFails.current[idx] = false;
+      logEvent('METHOD_SUCCESS', { lessonId, blockIndex });
+    }
+  };
+
+  return (
+    <div className="space-y-4">
+      <div className="p-4 bg-white dark:bg-[#141916] border border-[#e2dabf]/60 rounded-2xl shadow-sm space-y-3">
+        <div className="flex items-center gap-2">
+          <Target className="w-5 h-5 text-[#fed65b]" />
+          <span className="text-xs font-black bg-[#006d37] text-white px-2.5 py-1 rounded-full">الهدف</span>
+          <span className="text-xs text-[#506072] dark:text-gray-400">{block.objective}</span>
+        </div>
+        <p className="text-sm leading-8 text-[#1f1c0b] dark:text-gray-100">{block.introText}</p>
+
+        {/* Hotspot image */}
+        <div className="relative rounded-xl overflow-hidden border bg-[#f3f4f5]">
+          <img
+            src={block.schemaSrc}
+            alt={block.hotspot.prompt}
+            className="w-full h-56 object-contain cursor-crosshair select-none"
+            onClick={onHotspotClick}
+            draggable={false}
+          />
+          {state.hotspotOk && (
+            <div className="absolute inset-0 flex items-center justify-center bg-[#006d37]/20">
+              <span className="px-3 py-2 bg-[#006d37] text-white text-xs font-bold rounded-xl flex items-center gap-1">
+                <CheckCircle2 className="w-4 h-4" /> {block.hotspot.successFeedback}
+              </span>
+            </div>
+          )}
+        </div>
+        <p className="text-xs font-bold text-[#1f1c0b] dark:text-gray-100 flex items-center gap-1">
+          <MousePointerClick className="w-4 h-4 text-[#006d37]" /> {block.hotspot.prompt}
+        </p>
+        {state.hotspotOk === false && (
+          <p className="text-rose-400 font-bold text-xs">❌ غير صحيح — انقر على المقر الصحيح داخل المخطط.</p>
+        )}
+      </div>
+
+      {/* Methodology */}
+      <div className="p-4 bg-[#fff9ed] dark:bg-[#1c241f] border border-[#e2dabf]/60 rounded-2xl space-y-3">
+        <p className="text-sm font-bold text-[#1f1c0b] dark:text-gray-100">{block.methodology.prompt}</p>
+        {block.methodology.steps.map((step: any, idx: number) => (
+          <div key={idx} className="space-y-2">
+            <label className="text-xs font-black text-[#944a00] block">{step.label}</label>
+            <textarea
+              placeholder={step.placeholder}
+              onChange={(e) => checkStep(idx, e.target.value)}
+              className="w-full p-2.5 rounded-xl border border-[#e2dabf]/60 bg-white dark:bg-[#0c0f0d] text-sm text-right focus:outline-none focus:ring-2 focus:ring-[#006d37]"
+              rows={2}
+              dir="rtl"
+            />
+            {stepResults[idx] && !stepResults[idx].valid && (
+              <p className="text-rose-400 font-bold text-xs">
+                {!stepResults[idx].pure
+                  ? '⚠️ خطأ منهجي: التحليل ملاحظة محضة. احذف التفسير (لأن/راجع إلى).'
+                  : stepResults[idx].kwMessage}
+              </p>
+            )}
+            {stepResults[idx]?.valid && (
+              <p className="text-[#006d37] dark:text-[#2ecc71] font-bold text-xs flex items-center gap-1">
+                <CheckCircle2 className="w-4 h-4" /> {stepResults[idx].kwMessage}
+              </p>
+            )}
+          </div>
+        ))}
+        {allStepsValid && (
+          <button onClick={onValidated} className="w-full py-2 rounded-xl bg-[#006d37] hover:bg-[#00562b] text-white font-black text-sm cursor-pointer">
+            إنهاء التحليل ←
+          </button>
+        )}
+      </div>
+    </div>
+  );
+}
+

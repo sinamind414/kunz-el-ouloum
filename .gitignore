@@ -17,3 +17,12 @@ public/assets/offline/
 android/app/build/
 android/.gradle/
 android/app/release/
+
+# OCR pipeline (Mistral) - artefacts volumineux / état
+scripts/ocr/output/
+scripts/ocr/processed_files.csv
+scripts/ocr/input/*.pdf
+scripts/ocr/input_markdown/*.md
+!scripts/ocr/input_markdown/exemple_lecon.md
+__pycache__/
+scripts/ocr/__pycache__/

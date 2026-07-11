@@ -1,0 +1,5 @@
+# Adapted from https://github.com/Pythonation/Mistral-Arabic-OCR-test
+# Pipeline "Kunz El Ouloum" : OCR de manuels SVT arabes scannés -> Markdown -> leçons de l'app
+
+mistralai>=1.0.0
+python-dotenv>=1.0.0

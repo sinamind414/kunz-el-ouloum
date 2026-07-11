@@ -1,6 +1,6 @@
 import React, { useState, useEffect, lazy, Suspense } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Home, BookOpen, Layers, Target, Compass, Sun, Moon, User, Flame, Trophy, BarChart3, Award } from 'lucide-react';
+import { Home, BookOpen, Layers, Target, Compass, Sun, Moon, User, Flame, Trophy } from 'lucide-react';
 
 import { Unit, UserProgress, Flashcard } from './types';
 import { INITIAL_UNITS, SVT_QUIZ_QUESTIONS, SVT_FLASHCARDS } from './data';
@@ -10,6 +10,9 @@ import DashboardView from './components/DashboardView';
 import QuizView from './components/QuizView';
 import StudyReminderModal from './components/StudyReminderModal';
 import { startPirateMusic, stopPirateMusic } from './utils/audio';
+import { AuthProvider, useAuth } from './context/AuthContext';
+import { logEvent } from './utils/telemetryService';
+import LoginScreen from './components/LoginScreen';
 
 // Lazy load heavy views (Fable 5 - reduce main bundle)
 const RevisionView = lazy(() => import('./components/RevisionView'));
@@ -50,17 +53,16 @@ function LoadingFallback() {
 
 type TabId = 'home' | 'lessons' | 'review' | 'methodology' | 'coach' | 'stats' | 'badges';
 
+// Seulement 5 onglets visibles dans la nav (stats/badges accessibles via l'avatar)
 const TABS: { id: TabId; label: string; icon: React.ElementType }[] = [
   { id: 'home', label: 'الرئيسية', icon: Home },
   { id: 'lessons', label: 'الدروس', icon: BookOpen },
   { id: 'review', label: 'المراجعة', icon: Layers },
   { id: 'methodology', label: 'المنهجية', icon: Target },
   { id: 'coach', label: 'المرشد', icon: Compass },
-  { id: 'stats', label: 'الإحصائيات', icon: BarChart3 },
-  { id: 'badges', label: 'الأوسمة', icon: Award },
 ];
 
-export default function App() {
+function AppShell() {
   const [isDarkMode, setIsDarkMode] = useState<boolean>(() => {
     try {
       const saved = localStorage.getItem('theme');
@@ -111,6 +113,14 @@ export default function App() {
   const [units, setUnits] = useState<Unit[]>(INITIAL_UNITS);
   const [flashcards, setFlashcards] = useState<Flashcard[]>(SVT_FLASHCARDS);
   const [progress, setProgress] = useState<UserProgress>(() => createDefaultProgress());
+
+  // Module 1 — Auth Offline-First : lit le profil caché (localStorage) pour ne jamais bloquer l'offline.
+  const { user, signIn, signOut } = useAuth();
+
+  // Module 2 — Télémétrie : trace l'ouverture de l'app (online/offline) une fois l'utilisateur connu.
+  useEffect(() => {
+    if (user) logEvent('APP_OPENED', { online: navigator.onLine });
+  }, [user]);
 
   useEffect(() => {
     if (isDarkMode) {
@@ -198,6 +208,11 @@ export default function App() {
     updateLastStudyTime();
   };
 
+  // Gatekeeper Offline-First : si aucun profil caché, on affiche LoginScreen (jamais l'app).
+  if (!user) {
+    return <LoginScreen onLogin={signIn} />;
+  }
+
   if (activeQuizUnitId !== null) {
     const activeUnit = units.find(u => u.id === activeQuizUnitId);
     const questions = SVT_QUIZ_QUESTIONS.filter(q => q.unitId === activeQuizUnitId);
@@ -223,7 +238,7 @@ export default function App() {
       {!isFocusMode && (
         <header className="bg-[#ffffff] dark:bg-[#141916] shadow-[0_2px_12px_rgba(0,109,55,0.06)] border-b border-[#e2dabf]/40 dark:border-[#2ecc71]/10 flex flex-row-reverse justify-between items-center px-4 md:px-8 h-16 md:h-20 w-full fixed top-0 z-40">
           <div className="flex items-center gap-3">
-            <div className="relative cursor-pointer" onClick={() => setCurrentTab('coach')}>
+            <div className="relative cursor-pointer" onClick={() => setCurrentTab('stats')}>
               <div className="absolute inset-0 bg-[#2ecc71]/20 rounded-full blur-sm" />
               <div className="relative w-10 h-10 md:w-12 md:h-12 rounded-full bg-[#006d37] text-white flex items-center justify-center border-2 border-white shadow-sm">
                 <User className="w-5 h-5" />
@@ -283,11 +298,11 @@ export default function App() {
             <motion.div key={currentTab} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.2 }}>
               {currentTab === 'home' && <DashboardView units={units} progress={progress} onLaunchQuiz={handleLaunchQuiz} onLaunchRevision={handleLaunchRevision} onNavigateToTab={setCurrentTab as any} />}
               <Suspense fallback={<LoadingFallback />}>
-                {currentTab === 'lessons' && <LessonsView units={units} />}
+                {currentTab === 'lessons' && <LessonsView units={units} onStartLesson={handleStartLesson} />}
                 {currentTab === 'review' && <RevisionView units={units} flashcards={flashcards} xp={progress.xp} streak={progress.streak} onRateCard={handleRateCard} initialUnitId={activeRevisionUnitId ?? 1} isFocusMode={isFocusMode} setIsFocusMode={setIsFocusMode} />}
                 {currentTab === 'methodology' && <MethodologyView />}
-                {currentTab === 'coach' && <CoachView progress={progress} units={units} onStartLesson={handleStartLesson} />}
-                {currentTab === 'stats' && <StatsView progress={progress} units={units} />}
+                {currentTab === 'coach' && <CoachView progress={progress} units={units} onStartLesson={handleStartLesson} onSignOut={signOut} />}
+                {currentTab === 'stats' && <StatsView progress={progress} units={units} onNavigateToTab={setCurrentTab as any} />}
                 {currentTab === 'badges' && <BadgesView progress={progress} />}
               </Suspense>
             </motion.div>
@@ -311,5 +326,14 @@ export default function App() {
         </nav>
       )}
     </div>
+  );
+}
+
+// Module 1 — Point d'entrée : AuthProvider encapsule l'app. Le gate est géré dans AppShell.
+export default function App() {
+  return (
+    <AuthProvider>
+      <AppShell />
+    </AuthProvider>
   );
 }

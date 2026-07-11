@@ -1,9 +1,10 @@
 import React, { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Target, Search, Lightbulb, SplitSquareVertical, AlertCircle, ChevronDown, CheckCircle2, GitCompareArrows, BadgeCheck, BookOpen, Layers, FileText, GraduationCap, X, ArrowRight, ChevronRight } from 'lucide-react';
+import { Target, Search, Lightbulb, SplitSquareVertical, AlertCircle, ChevronDown, CheckCircle2, GitCompareArrows, BadgeCheck, BookOpen, Layers, FileText, GraduationCap, X, ArrowRight, ChevronRight, Sparkles } from 'lucide-react';
 import { METHODOLOGY_CARDS } from '../data/methodologyKnowledge';
 import { METHODOLOGY_QA } from '../methodologyKnowledge';
 import { KNOWLEDGE_CARDS } from '../knowledgeCards';
+import MethodologyTrainer from './MethodologyTrainer';
 import { BOOK_TUTOR_QA } from '../bookTutorQA';
 import { INITIAL_UNITS } from '../data';
 import { DOMAIN_INFO } from './LessonsView';
@@ -223,7 +224,7 @@ function Chip({ children }: { children: React.ReactNode }) {
   );
 }
 
-type CategoryId = 'verbs' | 'templates' | 'manhadjiya' | 'svt';
+type CategoryId = 'trainer' | 'verbs' | 'templates' | 'manhadjiya' | 'svt';
 
 export default function MethodologyView() {
   const [query, setQuery] = useState('');
@@ -284,6 +285,7 @@ export default function MethodologyView() {
   const activeVerb = METHODOLOGY_VERBS.find((v) => v.id === activeVerbId) || METHODOLOGY_VERBS[0];
 
   const CATEGORIES: { id: CategoryId; title: string; fr: string; icon: React.ReactNode; color: string; desc: string; count: number }[] = [
+    { id: 'trainer', title: 'تدريب تفاعلي مجاني', fr: 'Entraîneur Fable 5', icon: <Sparkles className="w-7 h-7" />, color: '#7c3aed', desc: 'اكتب إجابتك وحللها محلياً: كلمات مفتاحية + روابط منطقية + بنية', count: 6 },
     { id: 'verbs', title: 'الأفعال الستة الأساسية', fr: 'Les 6 verbes BAC', icon: <BadgeCheck className="w-7 h-7" />, color: '#006d37', desc: 'حلل، فسر، استنتج، قارن، علل، اقترح فرضية', count: METHODOLOGY_VERBS.length },
     { id: 'templates', title: 'القوالب المنهجية', fr: 'Modèles de réponse', icon: <GraduationCap className="w-7 h-7" />, color: '#4f46e5', desc: 'قوالب جاهزة لكل نوع من الإجابات', count: METHODOLOGY_CARDS.length },
     { id: 'manhadjiya', title: 'أسئلة المنهجية', fr: 'Q/R LIVRE MANHADJIYA', icon: <FileText className="w-7 h-7" />, color: '#d97706', desc: 'أسئلة وأجوبة من كتاب المنهجية', count: METHODOLOGY_QA.length },
@@ -386,6 +388,17 @@ export default function MethodologyView() {
               </div>
             </div>
           </div>
+
+          {/* === TRAINER === */}
+          {activeCategory === 'trainer' && (
+            <div className="space-y-4">
+              <div className="bg-[#f5f3ff] dark:bg-purple-950/20 border border-purple-200 dark:border-purple-900/40 rounded-2xl p-3 text-[12px] leading-6 text-[#4c1d95] dark:text-purple-200 font-bold">
+                Kunz El Ouloum — مجاني 100% لفهم الآليات ومنطق الإجابة.
+                التصحيح الكامل + مواضيع BAC + متابعة أسبوعية → <span className="underline">Kunz Pro</span> (نسخة مدفوعة).
+              </div>
+              <MethodologyTrainer initialVerb="analyse" />
+            </div>
+          )}
 
           {/* === VERBS === */}
           {activeCategory === 'verbs' && (

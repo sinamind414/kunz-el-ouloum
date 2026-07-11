@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState, lazy, Suspense } from 'react';
 import { motion } from 'motion/react';
-import { BookOpen, Layers, Target, Dna, Zap, Globe2, ChevronRight, ArrowRight } from 'lucide-react';
+import { BookOpen, Layers, Target, Dna, Zap, Globe2, ChevronRight, ArrowRight, Sparkles, ChevronLeft } from 'lucide-react';
 import { Unit } from '../types';
 import { LESSON_LIBRARY, LessonLibraryItem } from '../lessonData';
 import { SINGLE_PATH_LESSONS } from '../data/singlePathLessons';
@@ -10,6 +10,7 @@ const HtmlLessonViewer = lazy(() => import('./HtmlLessonViewer'));
 
 interface LessonsViewProps {
   units: Unit[];
+  onStartLesson: (lessonId: string) => void;
 }
 
 // Display metadata per domain (icon, palette, French subtitle).
@@ -44,7 +45,7 @@ function cleanLessonTitle(title: string): string {
   return title.replace(/^\s*الدرس\s+\d+\s*:\s*/, '').trim();
 }
 
-export default function LessonsView({ units }: LessonsViewProps) {
+export default function LessonsView({ units, onStartLesson }: LessonsViewProps) {
   // Only keep units that actually contain lessons.
   const unitsWithLessons = useMemo(
     () => units.filter((unit) => LESSON_LIBRARY.some((lesson) => lesson.unitId === unit.id)),
@@ -150,6 +151,40 @@ export default function LessonsView({ units }: LessonsViewProps) {
           </div>
         </div>
       </section>
+
+      {/* Édition Spéciale — Leçons actives "Mot par Mot" (câblées depuis kunzDatabase.ts) */}
+      <div className="mb-8 p-5 bg-gradient-to-br from-emerald-900/40 to-slate-800 border border-emerald-700/50 rounded-2xl">
+        <div className="flex items-center gap-2 mb-4">
+          <Sparkles className="w-5 h-5 text-emerald-400" />
+          <h3 className="font-black text-emerald-400 text-lg">دروس تفاعلية جديدة (Mot par Mot)</h3>
+        </div>
+        <p className="text-sm text-slate-300 mb-4">
+          تعلم الآليات خطوة بخطوة مع التصحيح المنهجي الفوري. مخصص لفهم الدروس المعقدة.
+        </p>
+        <div className="grid grid-cols-1 gap-3">
+          <button
+            onClick={() => onStartLesson('d1-u1-l2-transcription')}
+            className="flex items-center justify-between p-4 bg-slate-900/60 rounded-xl hover:bg-slate-900 transition-colors text-right group"
+          >
+            <div>
+              <span className="block font-bold text-white">الاستنساخ وتدخل الإنزيم</span>
+              <span className="text-xs text-slate-400">المجال 1 - الوحدة 1</span>
+            </div>
+            <ChevronLeft className="w-5 h-5 text-slate-500 group-hover:text-emerald-400 transition-colors" />
+          </button>
+
+          <button
+            onClick={() => onStartLesson('d1-u1-l3-traduction')}
+            className="flex items-center justify-between p-4 bg-slate-900/60 rounded-xl hover:bg-slate-900 transition-colors text-right group"
+          >
+            <div>
+              <span className="block font-bold text-white">الترجمة والشفرة الوراثية</span>
+              <span className="text-xs text-slate-400">المجال 1 - الوحدة 1</span>
+            </div>
+            <ChevronLeft className="w-5 h-5 text-slate-500 group-hover:text-emerald-400 transition-colors" />
+          </button>
+        </div>
+      </div>
 
       {/* Breadcrumb navigation */}
       <nav className="flex items-center gap-2 flex-wrap text-sm">

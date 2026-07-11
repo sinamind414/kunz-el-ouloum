@@ -21,9 +21,10 @@ import { UserProgress, Unit } from '../types';
 interface StatsViewProps {
   progress: UserProgress;
   units: Unit[];
+  onNavigateToTab?: (tab: 'badges') => void;
 }
 
-export default function StatsView({ progress, units }: StatsViewProps) {
+export default function StatsView({ progress, units, onNavigateToTab }: StatsViewProps) {
   const [showReportModal, setShowReportModal] = useState<boolean>(false);
   const [studentName, setStudentName] = useState<string>('');
   const reportRef = useRef<HTMLDivElement>(null);
@@ -723,6 +724,16 @@ export default function StatsView({ progress, units }: StatsViewProps) {
           </div>
         )}
       </AnimatePresence>
+
+      <div className="mt-6 flex justify-center no-print">
+        <button
+          onClick={() => onNavigateToTab?.('badges')}
+          className="flex items-center gap-2 bg-[#006d37] hover:bg-[#005a2e] text-white font-extrabold text-sm px-5 py-3 rounded-2xl cursor-pointer transition-colors"
+        >
+          <Award className="w-4 h-4" />
+          عرض الأوسمة والإنجازات
+        </button>
+      </div>
 
     </div>
   );
