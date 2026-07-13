@@ -3,56 +3,34 @@ import { X, ChevronRight, ChevronLeft } from 'lucide-react';
 import { LESSON_LIBRARY } from '../lessonData';
 import { INITIAL_UNITS } from '../data';
 
-// Statically bundled lesson HTML (imported at build time via Vite `?raw`)
-// so the app stays 100% offline (no network requests at runtime).
-import lecon_transcription from '../../public/lessons/lecon_transcription.html?raw';
-import phase1_chapitres_1_2 from '../../public/lessons/phase1_chapitres_1_2.html?raw';
-import phase2_chapitres_3_4 from '../../public/lessons/phase2_chapitres_3_4.html?raw';
-import phase3_chapitres_5_6 from '../../public/lessons/phase3_chapitres_5_6.html?raw';
-import phase4_chapitres_7_8 from '../../public/lessons/phase4_chapitres_7_8.html?raw';
-import phase5_chapitres_9_10 from '../../public/lessons/phase5_chapitres_9_10.html?raw';
-import phase6_chapitres_11_12 from '../../public/lessons/phase6_chapitres_11_12.html?raw';
-import phase7_chapitres_13_14 from '../../public/lessons/phase7_chapitres_13_14.html?raw';
-import phase8_chapitres_15_16 from '../../public/lessons/phase8_chapitres_15_16.html?raw';
-import phase9_chapitres_17_18 from '../../public/lessons/phase9_chapitres_17_18.html?raw';
-import phase10_chapitres_19_20 from '../../public/lessons/phase10_chapitres_19_20.html?raw';
-import phase11_chapitres_21_22 from '../../public/lessons/phase11_chapitres_21_22.html?raw';
-import phase12_chapitres_23_24 from '../../public/lessons/phase12_chapitres_23_24.html?raw';
-import phase13_chapitres_25_26 from '../../public/lessons/phase13_chapitres_25_26.html?raw';
-import phase14_chapitres_27_28 from '../../public/lessons/phase14_chapitres_27_28.html?raw';
-import phase15_chapitres_29_30 from '../../public/lessons/phase15_chapitres_29_30.html?raw';
-import phase16_chapitres_31_32 from '../../public/lessons/phase16_chapitres_31_32.html?raw';
-import phase17_chapitres_33_34 from '../../public/lessons/phase17_chapitres_33_34.html?raw';
-import phase18_chapitres_35_36 from '../../public/lessons/phase18_chapitres_35_36.html?raw';
-import phase19_chapitres_37_38 from '../../public/lessons/phase19_chapitres_37_38.html?raw';
-import phase20_chapitres_39_40 from '../../public/lessons/phase20_chapitres_39_40.html?raw';
-import phase21_chapitres_41_42 from '../../public/lessons/phase21_chapitres_41_42.html?raw';
-import phase22_chapitres_43_44 from '../../public/lessons/phase22_chapitres_43_44.html?raw';
-
-const LESSON_HTML: Record<string, string> = {
-  lecon_transcription,
-  phase1_chapitres_1_2,
-  phase2_chapitres_3_4,
-  phase3_chapitres_5_6,
-  phase4_chapitres_7_8,
-  phase5_chapitres_9_10,
-  phase6_chapitres_11_12,
-  phase7_chapitres_13_14,
-  phase8_chapitres_15_16,
-  phase9_chapitres_17_18,
-  phase10_chapitres_19_20,
-  phase11_chapitres_21_22,
-  phase12_chapitres_23_24,
-  phase13_chapitres_25_26,
-  phase14_chapitres_27_28,
-  phase15_chapitres_29_30,
-  phase16_chapitres_31_32,
-  phase17_chapitres_33_34,
-  phase18_chapitres_35_36,
-  phase19_chapitres_37_38,
-  phase20_chapitres_39_40,
-  phase21_chapitres_41_42,
-  phase22_chapitres_43_44,
+// Lazy dynamic importers for the lesson HTML (Vite `?raw`).
+// Each getter is only fetched (and therefore bundled into its own chunk)
+// the first time a student actually opens that lesson — so the initial
+// app bundle stays tiny and stays 100% offline (no network at runtime).
+const LESSON_HTML_GETTERS: Record<string, () => Promise<{ default: string }>> = {
+  lecon_transcription: () => import('../../public/lessons/lecon_transcription.html?raw'),
+  phase1_chapitres_1_2: () => import('../../public/lessons/phase1_chapitres_1_2.html?raw'),
+  phase2_chapitres_3_4: () => import('../../public/lessons/phase2_chapitres_3_4.html?raw'),
+  phase3_chapitres_5_6: () => import('../../public/lessons/phase3_chapitres_5_6.html?raw'),
+  phase4_chapitres_7_8: () => import('../../public/lessons/phase4_chapitres_7_8.html?raw'),
+  phase5_chapitres_9_10: () => import('../../public/lessons/phase5_chapitres_9_10.html?raw'),
+  phase6_chapitres_11_12: () => import('../../public/lessons/phase6_chapitres_11_12.html?raw'),
+  phase7_chapitres_13_14: () => import('../../public/lessons/phase7_chapitres_13_14.html?raw'),
+  phase8_chapitres_15_16: () => import('../../public/lessons/phase8_chapitres_15_16.html?raw'),
+  phase9_chapitres_17_18: () => import('../../public/lessons/phase9_chapitres_17_18.html?raw'),
+  phase10_chapitres_19_20: () => import('../../public/lessons/phase10_chapitres_19_20.html?raw'),
+  phase11_chapitres_21_22: () => import('../../public/lessons/phase11_chapitres_21_22.html?raw'),
+  phase12_chapitres_23_24: () => import('../../public/lessons/phase12_chapitres_23_24.html?raw'),
+  phase13_chapitres_25_26: () => import('../../public/lessons/phase13_chapitres_25_26.html?raw'),
+  phase14_chapitres_27_28: () => import('../../public/lessons/phase14_chapitres_27_28.html?raw'),
+  phase15_chapitres_29_30: () => import('../../public/lessons/phase15_chapitres_29_30.html?raw'),
+  phase16_chapitres_31_32: () => import('../../public/lessons/phase16_chapitres_31_32.html?raw'),
+  phase17_chapitres_33_34: () => import('../../public/lessons/phase17_chapitres_33_34.html?raw'),
+  phase18_chapitres_35_36: () => import('../../public/lessons/phase18_chapitres_35_36.html?raw'),
+  phase19_chapitres_37_38: () => import('../../public/lessons/phase19_chapitres_37_38.html?raw'),
+  phase20_chapitres_39_40: () => import('../../public/lessons/phase20_chapitres_39_40.html?raw'),
+  phase21_chapitres_41_42: () => import('../../public/lessons/phase21_chapitres_41_42.html?raw'),
+  phase22_chapitres_43_44: () => import('../../public/lessons/phase22_chapitres_43_44.html?raw'),
 };
 
 interface HtmlLessonViewerProps {
@@ -62,8 +40,8 @@ interface HtmlLessonViewerProps {
 
 // Map a (possibly split) lesson key to its bundled HTML source.
 function htmlBaseKeyFor(lessonKey: string): string {
-  if (LESSON_HTML[lessonKey]) return lessonKey;
-  const base = Object.keys(LESSON_HTML).find((k) => lessonKey.startsWith(k + '_'));
+  if (LESSON_HTML_GETTERS[lessonKey]) return lessonKey;
+  const base = Object.keys(LESSON_HTML_GETTERS).find((k) => lessonKey.startsWith(k + '_'));
   return base ?? lessonKey;
 }
 
@@ -184,52 +162,65 @@ export default function HtmlLessonViewer({ lessonKey, onClose }: HtmlLessonViewe
   };
   useEffect(() => {
     let cancelled = false;
+    let timeoutId: number | undefined;
     setPhases([]);
     setPhaseIndex(0);
     setError(false);
 
-    const html = LESSON_HTML[baseKey];
-    if (html) {
-      // Defer to keep the loading state visible and avoid blocking paint.
-      const id = window.setTimeout(() => {
-        if (cancelled) return;
-        const doc = new DOMParser().parseFromString(html, 'text/html');
-        const styleText = Array.from(doc.querySelectorAll('style'))
-          .map((s) => s.textContent)
-          .join('\n');
-        const scriptText = Array.from(doc.querySelectorAll('script'))
-          .map((s) => s.textContent)
-          .join('\n');
-        // Group the document into chapters. Each `.lesson-header` starts a new
-        // chapter, but it is only a coloured cover page (title + lesson number +
-        // objectives) — we intentionally drop it as a slide so every lesson is
-        // shown as exactly its 4 content steps (the `section.card` blocks).
-        const chapterEls = Array.from(
-          doc.querySelectorAll('.lesson-header, section.card')
-        ) as HTMLElement[];
-        const chapters: HTMLElement[][] = [];
-        let current: HTMLElement[] | null = null;
-        for (const el of chapterEls) {
-          if (el.classList.contains('lesson-header')) {
-            current = [];
-            chapters.push(current);
-          } else if (current) {
-            current.push(el);
-          }
-        }
-        const chapterIndex = chapterIndexFor(lessonKey, baseKey);
-        const selectedChapter = chapters[chapterIndex] ?? chapters[0] ?? [];
-        const built = selectedChapter.map((el) => el.outerHTML);
-        setPhases(built);
-        setAssets({ styleText, scriptText });
-      }, 0);
+    const loader = LESSON_HTML_GETTERS[baseKey];
+    if (!loader) {
+      setError(true);
       return () => {
         cancelled = true;
-        window.clearTimeout(id);
       };
     }
 
-    setError(true);
+    loader()
+      .then((mod) => {
+        if (cancelled) return;
+        const html = mod.default;
+        // Defer to keep the loading state visible and avoid blocking paint.
+        timeoutId = window.setTimeout(() => {
+          if (cancelled) return;
+          const doc = new DOMParser().parseFromString(html, 'text/html');
+          const styleText = Array.from(doc.querySelectorAll('style'))
+            .map((s) => s.textContent)
+            .join('\n');
+          const scriptText = Array.from(doc.querySelectorAll('script'))
+            .map((s) => s.textContent)
+            .join('\n');
+          // Group the document into chapters. Each `.lesson-header` starts a new
+          // chapter, but it is only a coloured cover page (title + lesson number +
+          // objectives) — we intentionally drop it as a slide so every lesson is
+          // shown as exactly its 4 content steps (the `section.card` blocks).
+          const chapterEls = Array.from(
+            doc.querySelectorAll('.lesson-header, section.card')
+          ) as HTMLElement[];
+          const chapters: HTMLElement[][] = [];
+          let current: HTMLElement[] | null = null;
+          for (const el of chapterEls) {
+            if (el.classList.contains('lesson-header')) {
+              current = [];
+              chapters.push(current);
+            } else if (current) {
+              current.push(el);
+            }
+          }
+          const chapterIndex = chapterIndexFor(lessonKey, baseKey);
+          const selectedChapter = chapters[chapterIndex] ?? chapters[0] ?? [];
+          const built = selectedChapter.map((el) => el.outerHTML);
+          setPhases(built);
+          setAssets({ styleText, scriptText });
+        }, 0);
+      })
+      .catch(() => {
+        if (!cancelled) setError(true);
+      });
+
+    return () => {
+      cancelled = true;
+      if (timeoutId) window.clearTimeout(timeoutId);
+    };
   }, [baseKey, lessonKey]);
 
   const docFor = useMemo(() => {

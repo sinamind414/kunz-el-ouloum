@@ -2,7 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { SVT_QUIZ_QUESTIONS, INITIAL_UNITS } from '../src/data';
 
-const root = 'C:\\Users\\zakaria\\Documents\\projet application kunz el ouloum\\kunz-el-ouloum-completed';
+const root = process.cwd();
 const outPath = path.join(root, 'src', 'data', 'fillBlanks.ts');
 
 const questions: any[] = SVT_QUIZ_QUESTIONS;

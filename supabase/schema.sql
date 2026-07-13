@@ -24,6 +24,14 @@ create table if not exists public.telemetry_events (
 
 create index if not exists telemetry_events_event_name_idx on public.telemetry_events(event_name);
 create index if not exists telemetry_events_user_id_idx    on public.telemetry_events(user_id);
+create index if not exists telemetry_events_created_at_idx on public.telemetry_events(created_at);
+
+-- NOTE (audit Phase 2.1) : la politique "telemetry insert anon" (with check (true))
+-- est VOLONTAIREMENT conservée. telemetryService.ts insère avec un userId local
+-- (guest / 'unknown') via le client anon — pas auth.uid(). Restreindre l'insert
+-- à "authenticated" avec "auth.uid() = user_id" casserait la télémétrie offline-first
+-- des utilisateurs non connectés. Si un durcissement est souhaité plus tard, il faudra
+-- basculer telemetryService.ts pour utiliser auth.uid() de bout en bout.
 
 -- 3) Row Level Security
 alter table public.profiles         enable row level security;

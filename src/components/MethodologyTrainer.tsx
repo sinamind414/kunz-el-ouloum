@@ -1,5 +1,5 @@
-import React, { useState, useMemo } from 'react';
-import { Target, CheckCircle2, XCircle, Sparkles, BookOpen } from 'lucide-react';
+import { useState, useMemo } from 'react';
+import { Target, CheckCircle2, Sparkles, BookOpen } from 'lucide-react';
 import { METHODOLOGY_QA, MethodologyQA } from '../methodologyKnowledge';
 import { normalizeArabic } from '../utils/arabicNormalize';
 import SpeechToTextInput from './SpeechToTextInput';

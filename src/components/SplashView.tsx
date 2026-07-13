@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Rocket, ChevronLeft, ShieldCheck, Trophy, Sparkles, Volume2, VolumeX, Key, Music, Anchor } from 'lucide-react';
+import { Rocket, ChevronLeft, ShieldCheck, Trophy, Sparkles, Volume2, VolumeX, Key, Anchor } from 'lucide-react';
 import { MASCOT_URL } from '../data';
 import { startPirateMusic, stopPirateMusic } from '../utils/audio';
 

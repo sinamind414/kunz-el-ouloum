@@ -1,33 +1,28 @@
 // LoginScreen.tsx
-// Module 1 — UI du Gatekeeper. Bouton Google (mock), loader, blocage si offline
-// sur première ouverture (promesse "100% Offline" préservée pour les comptes en cache).
+// Module 1 — UI du Gatekeeper. Bouton Google (OAuth), loader, et mode invité
+// offline (promesse "100% Offline" préservée, y compris à la première ouverture).
 
-import React, { useState } from 'react';
-import { Mail, Loader2, WifiOff } from 'lucide-react';
+import { useState } from 'react';
+import { useAuth } from '../context/AuthContext';
+import { WifiOff, LogIn } from 'lucide-react';
 
-interface LoginScreenProps {
-  onLogin: () => Promise<void>;
-}
+export default function LoginScreen() {
+  const { signIn, signInAsGuest } = useAuth();
+  const [isAuthenticating, setIsAuthenticating] = useState(false);
+  const [error, setError] = useState('');
+  const isOnline = typeof navigator !== 'undefined' ? navigator.onLine : true;
 
-export default function LoginScreen({ onLogin }: LoginScreenProps) {
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-
-  const isOffline = typeof navigator !== 'undefined' && !navigator.onLine;
-
-  const handleLogin = async () => {
-    if (isOffline) {
-      setError('Connexion internet requise pour la première ouverture.');
+  const handleGoogleLogin = async () => {
+    if (!isOnline) {
+      setError('Connexion internet requise pour la première ouverture avec Google.');
       return;
     }
-    setLoading(true);
-    setError(null);
+    setIsAuthenticating(true);
     try {
-      await onLogin();
+      await signIn();
     } catch (e) {
-      setError('Échec de la connexion. Réessaie.');
-    } finally {
-      setLoading(false);
+      setError('Échec de la connexion. Réessayez.');
+      setIsAuthenticating(false);
     }
   };
 
@@ -35,42 +30,43 @@ export default function LoginScreen({ onLogin }: LoginScreenProps) {
     <div className="min-h-screen flex flex-col items-center justify-center bg-[#0c0f0d] text-white p-6" dir="rtl">
       <div className="w-full max-w-sm bg-[#141916] border border-[#2ecc71]/10 rounded-3xl p-8 shadow-lg space-y-6 text-center">
         <div className="mx-auto w-16 h-16 rounded-2xl bg-[#006d37] flex items-center justify-center">
-          <Mail className="w-8 h-8 text-[#fed65b]" />
+          <span className="text-3xl font-black text-[#fed65b]">ك</span>
         </div>
         <div>
-          <h1 className="text-2xl font-black">Kunz El Ouloum</h1>
+          <h1 className="text-2xl font-black">كنز العلوم</h1>
           <p className="text-sm text-gray-400 mt-1">BAC SVT — Algérie · 100% Offline</p>
         </div>
 
-        {isOffline && (
+        {error && (
           <div className="flex items-center gap-2 justify-center text-rose-400 text-xs font-bold bg-rose-500/10 border border-rose-500/30 rounded-xl py-2 px-3">
-            <WifiOff className="w-4 h-4" />
-            Connexion internet requise pour la première ouverture.
+            <WifiOff className="w-4 h-4 shrink-0" />
+            <span>{error}</span>
           </div>
         )}
 
         <button
-          onClick={handleLogin}
-          disabled={loading || isOffline}
+          onClick={handleGoogleLogin}
+          disabled={isAuthenticating}
           className="w-full py-3.5 rounded-2xl bg-white text-[#0c0f0d] font-black text-sm flex items-center justify-center gap-2 disabled:opacity-50 cursor-pointer transition-opacity hover:opacity-90"
         >
-          {loading ? (
-            <>
-              <Loader2 className="w-5 h-5 animate-spin" />
-              Connexion...
-            </>
+          {isAuthenticating ? (
+            <span className="w-5 h-5 border-2 border-[#0c0f0d]/30 border-t-[#0c0f0d] rounded-full animate-spin" />
           ) : (
-            <>
-              <Mail className="w-5 h-5" />
-              Se connecter avec Google
-            </>
+            <LogIn className="w-5 h-5" />
           )}
+          التسجيل عبر Google
         </button>
 
-        {error && !isOffline && <p className="text-rose-400 text-xs font-bold">{error}</p>}
+        {/* Mode invité / hors-ligne — toujours disponible (promesse 100% Offline). */}
+        <button
+          onClick={signInAsGuest}
+          className="w-full py-2.5 rounded-2xl bg-transparent text-gray-400 font-bold text-xs border border-gray-600 hover:border-[#2ecc71]/40 hover:text-[#2ecc71] transition-colors cursor-pointer"
+        >
+          {isOnline ? 'Continuer hors-ligne sans compte' : 'المتابعة كزائر (بدون إنترنت)'}
+        </button>
 
         <p className="text-[10px] text-gray-500 leading-5">
-          Ton profil est sauvegardé localement. L'app s'ouvrira instantanément, même en mode avion.
+          يمكنك متابعة المراجعة بدون إنترنت. سيتم حفظ تقدمك محلياً وربطه بحسابك عند عودة الاتصال.
         </p>
       </div>
     </div>

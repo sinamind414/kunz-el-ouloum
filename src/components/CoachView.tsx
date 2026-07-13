@@ -13,7 +13,7 @@ interface CoachViewProps {
 
 // Pilier 3 — Coach Offline (100% offline, 0 réseau, 0 LLM).
 // Lit un état local (simulé ici à 75 pour démontrer le Teaser Pro, cf. TEST 6 du Spec Kit).
-export default function CoachView({ progress, units, onStartLesson, onSignOut }: CoachViewProps) {
+export default function CoachView({ progress, onStartLesson, onSignOut }: CoachViewProps) {
   // Score méthodologique local — dépasse 70 → déclenche le Teaser Pro (TEST 6).
   const methodologyScore = 75;
 

@@ -1,14 +1,11 @@
 import React, { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Target, Search, Lightbulb, SplitSquareVertical, AlertCircle, ChevronDown, CheckCircle2, GitCompareArrows, BadgeCheck, BookOpen, Layers, FileText, GraduationCap, X, ArrowRight, ChevronRight, Sparkles } from 'lucide-react';
+import { Target, Search, Lightbulb, SplitSquareVertical, AlertCircle, ChevronDown, CheckCircle2, GitCompareArrows, BadgeCheck, FileText, GraduationCap, X, ArrowRight, ChevronRight, Sparkles, Route } from 'lucide-react';
 import { METHODOLOGY_CARDS } from '../data/methodologyKnowledge';
 import { METHODOLOGY_QA } from '../methodologyKnowledge';
-import { KNOWLEDGE_CARDS } from '../knowledgeCards';
 import MethodologyTrainer from './MethodologyTrainer';
-import { BOOK_TUTOR_QA } from '../bookTutorQA';
-import { INITIAL_UNITS } from '../data';
-import { DOMAIN_INFO } from './LessonsView';
 import { normalizeArabic } from '../utils/arabicNormalize';
+import { STUDY_GUIDE_CARDS } from '../studyGuide';
 
 interface VerbData {
   id: string;
@@ -157,21 +154,14 @@ function matches(query: string, ...fields: (string | string[] | undefined)[]): b
   return false;
 }
 
-function AccordionCard({
-  id,
-  headerNode,
-  badge,
-  icon,
-  accent,
-  children,
-}: {
+const AccordionCard: React.FC<{
   id: string;
   headerNode: React.ReactNode;
   badge?: string;
   icon: React.ReactNode;
   accent: string;
   children: React.ReactNode;
-}) {
+}> = ({ headerNode, badge, icon, accent, children }) => {
   const [open, setOpen] = useState(false);
   return (
     <motion.div
@@ -214,35 +204,22 @@ function AccordionCard({
       </AnimatePresence>
     </motion.div>
   );
-}
+};
 
-function Chip({ children }: { children: React.ReactNode }) {
+const Chip: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   return (
     <span className="inline-block text-[11px] font-bold bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 px-2 py-0.5 rounded-md border border-emerald-100 dark:border-emerald-800">
       {children}
     </span>
   );
-}
+};
 
-type CategoryId = 'trainer' | 'verbs' | 'templates' | 'manhadjiya' | 'svt';
+type CategoryId = 'trainer' | 'guide' | 'verbs' | 'templates' | 'manhadjiya';
 
 export default function MethodologyView() {
   const [query, setQuery] = useState('');
   const [activeVerbId, setActiveVerbId] = useState<string>(METHODOLOGY_VERBS[0].id);
-  const [selectedDomain, setSelectedDomain] = useState<string | null>(null);
   const [activeCategory, setActiveCategory] = useState<CategoryId | null>(null);
-
-  const domainOf = useMemo(() => {
-    const map: Record<number, string> = {};
-    for (const u of INITIAL_UNITS) map[u.id] = u.domain;
-    return map;
-  }, []);
-
-  const unitTitle = useMemo(() => {
-    const map: Record<number, string> = {};
-    for (const u of INITIAL_UNITS) map[u.id] = u.title;
-    return map;
-  }, []);
 
   const filteredMeth = useMemo(
     () => METHODOLOGY_QA.filter((q) => matches(query, q.question, q.answer, q.keywords, q.category, q.template)),
@@ -254,47 +231,38 @@ export default function MethodologyView() {
     [query]
   );
 
+  const filteredStudyGuide = useMemo(
+    () =>
+      STUDY_GUIDE_CARDS.filter((card) =>
+        matches(
+          query,
+          card.title,
+          card.subtitle,
+          card.triggers,
+          card.keywords,
+          card.sections.flatMap((section) => [section.heading, ...section.bullets])
+        )
+      ),
+    [query]
+  );
+
   const filteredVerbs = useMemo(
     () => METHODOLOGY_VERBS.filter((v) => matches(query, v.verb, v.french, v.definition, v.steps)),
     [query]
   );
 
-  const svtByDomain = useMemo(() => {
-    type Item = any;
-    const items: Item[] = [
-      ...KNOWLEDGE_CARDS.map((c) => ({ ...c, _t: 'card' })),
-      ...BOOK_TUTOR_QA.map((b) => ({ ...b, _t: 'book', unitId: b.unitId })),
-    ];
-    const byDomain = new Map<string, Map<number, Item[]>>();
-    for (const it of items) {
-      const d = domainOf[it.unitId];
-      if (!d) continue;
-      if (!byDomain.has(d)) byDomain.set(d, new Map());
-      const dm = byDomain.get(d)!;
-      if (!dm.has(it.unitId)) dm.set(it.unitId, []);
-      dm.get(it.unitId)!.push(it);
-    }
-    return Array.from(byDomain.entries()).map(([domain, unitsMap]) => ({
-      domain,
-      units: Array.from(unitsMap.entries())
-        .sort((a, b) => a[0] - b[0])
-        .map(([uid, its]) => ({ unitId: uid, items: its })),
-    }));
-  }, [domainOf]);
-
   const activeVerb = METHODOLOGY_VERBS.find((v) => v.id === activeVerbId) || METHODOLOGY_VERBS[0];
 
   const CATEGORIES: { id: CategoryId; title: string; fr: string; icon: React.ReactNode; color: string; desc: string; count: number }[] = [
     { id: 'trainer', title: 'تدريب تفاعلي مجاني', fr: 'Entraîneur Fable 5', icon: <Sparkles className="w-7 h-7" />, color: '#7c3aed', desc: 'اكتب إجابتك وحللها محلياً: كلمات مفتاحية + روابط منطقية + بنية', count: 6 },
+    { id: 'guide', title: 'دليل دراسة module sciences', fr: 'Parcours de révision', icon: <Route className="w-7 h-7" />, color: '#0f766e', desc: 'خطة دخول الدروس، ترتيب الوحدات، التجارب، وقواعد البكالوريا', count: STUDY_GUIDE_CARDS.length },
     { id: 'verbs', title: 'الأفعال الستة الأساسية', fr: 'Les 6 verbes BAC', icon: <BadgeCheck className="w-7 h-7" />, color: '#006d37', desc: 'حلل، فسر، استنتج، قارن، علل، اقترح فرضية', count: METHODOLOGY_VERBS.length },
     { id: 'templates', title: 'القوالب المنهجية', fr: 'Modèles de réponse', icon: <GraduationCap className="w-7 h-7" />, color: '#4f46e5', desc: 'قوالب جاهزة لكل نوع من الإجابات', count: METHODOLOGY_CARDS.length },
-    { id: 'manhadjiya', title: 'أسئلة المنهجية', fr: 'Q/R LIVRE MANHADJIYA', icon: <FileText className="w-7 h-7" />, color: '#d97706', desc: 'أسئلة وأجوبة من كتاب المنهجية', count: METHODOLOGY_QA.length },
-    { id: 'svt', title: 'مكتبة المصطلحات SVT', fr: 'Concepts SVT', icon: <BookOpen className="w-7 h-7" />, color: '#0284c7', desc: 'مصطلحات ومفاهيم من الكتب المدرسية', count: KNOWLEDGE_CARDS.length + BOOK_TUTOR_QA.length },
+    { id: 'manhadjiya', title: 'أسئلة المنهجية', fr: 'Q/R Méthodologie', icon: <FileText className="w-7 h-7" />, color: '#d97706', desc: 'أسئلة وأجوبة منهجية', count: METHODOLOGY_QA.length },
   ];
 
   const goBack = () => {
     setActiveCategory(null);
-    setSelectedDomain(null);
     setQuery('');
   };
 
@@ -397,6 +365,47 @@ export default function MethodologyView() {
                 التصحيح الكامل + مواضيع BAC + متابعة أسبوعية → <span className="underline">Kunz Pro</span> (نسخة مدفوعة).
               </div>
               <MethodologyTrainer initialVerb="analyse" />
+            </div>
+          )}
+
+          {/* === STUDY GUIDE === */}
+          {activeCategory === 'guide' && (
+            <div className="grid grid-cols-1 gap-4">
+              {filteredStudyGuide.length === 0 ? (
+                <p className="text-sm text-gray-400 font-medium">لا توجد نتائج مطابقة للبحث.</p>
+              ) : (
+                filteredStudyGuide.map((card) => (
+                  <AccordionCard
+                    key={card.id}
+                    id={card.id}
+                    icon={<Route className="w-5 h-5" />}
+                    accent="from-[#0f766e] to-[#115e59]"
+                    badge={card.subtitle}
+                    headerNode={card.title}
+                  >
+                    <div className="space-y-4">
+                      {card.sections.map((section, sectionIdx) => (
+                        <div key={sectionIdx} className="bg-white/70 dark:bg-black/20 border border-gray-100 dark:border-gray-800 rounded-xl p-3">
+                          <h4 className="text-sm font-black text-teal-700 dark:text-teal-300 mb-2">{section.heading}</h4>
+                          <ul className="space-y-2">
+                            {section.bullets.map((bullet, bulletIdx) => (
+                              <li key={bulletIdx} className="flex items-start gap-2 text-gray-800 dark:text-gray-200 font-medium leading-7 text-sm md:text-base">
+                                <CheckCircle2 className="w-4 h-4 mt-1 text-teal-600 dark:text-teal-300 shrink-0" />
+                                <span>{bullet}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      ))}
+                      <div className="flex flex-wrap gap-1.5">
+                        {card.keywords.map((k, ki) => (
+                          <Chip key={ki}>{k}</Chip>
+                        ))}
+                      </div>
+                    </div>
+                  </AccordionCard>
+                ))
+              )}
             </div>
           )}
 
@@ -533,7 +542,6 @@ export default function MethodologyView() {
                     id={qa.id}
                     icon={<FileText className="w-5 h-5" />}
                     accent="from-[#f59e0b] to-[#d97706]"
-                    badge={qa.sourceBook}
                     headerNode={qa.question}
                   >
                     <div className="space-y-3">
@@ -556,137 +564,6 @@ export default function MethodologyView() {
             </div>
           )}
 
-          {/* === SVT LIBRARY (by domain) === */}
-          {activeCategory === 'svt' && (
-            <div>
-              <div className="flex flex-wrap gap-2 mb-4">
-                <button
-                  onClick={() => setSelectedDomain(null)}
-                  className={`px-4 py-2 rounded-xl font-bold text-xs transition-all cursor-pointer border ${
-                    selectedDomain === null
-                      ? 'bg-[#006d37] text-white border-[#006d37] shadow-sm'
-                      : 'bg-white dark:bg-[#141916] border-gray-200 dark:border-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5'
-                  }`}
-                >
-                  كل المجالات
-                </button>
-                {svtByDomain.map(({ domain }) => {
-                  const info = DOMAIN_INFO[domain];
-                  const isSel = selectedDomain === domain;
-                  return (
-                    <button
-                      key={domain}
-                      onClick={() => setSelectedDomain(domain)}
-                      className="px-4 py-2 rounded-xl font-bold text-xs transition-all cursor-pointer border"
-                      style={{
-                        backgroundColor: isSel ? info?.color : '#ffffff',
-                        borderColor: info?.color,
-                        color: isSel ? '#ffffff' : info?.color,
-                      }}
-                    >
-                      {domain}
-                    </button>
-                  );
-                })}
-              </div>
-
-              {svtByDomain
-                .filter(({ domain }) => !selectedDomain || domain === selectedDomain)
-                .map(({ domain, units }) => {
-                  const info = DOMAIN_INFO[domain];
-                  return (
-                    <div key={domain} className="mb-6">
-                      <div className="flex items-center gap-2 mb-3">
-                        <span className="w-3 h-3 rounded-full" style={{ background: info?.color }} />
-                        <h3 className="text-base font-black text-gray-800 dark:text-gray-100">{domain}</h3>
-                        <span className="text-[11px] font-bold text-gray-400">{info?.fr}</span>
-                      </div>
-                      <div className="space-y-5 pr-4 border-r-2 pl-2" style={{ borderColor: info?.color }}>
-                        {units.map(({ unitId, items }) => {
-                          const filteredItems = items.filter((it: any) =>
-                            it._t === 'book'
-                              ? matches(query, it.question, it.answer, it.topic, it.keywords, it.sourceBook)
-                              : matches(query, it.title, it.shortAnswer, it.aliases, it.keywords, it.source)
-                          );
-                          if (filteredItems.length === 0) return null;
-                          return (
-                            <div key={unitId}>
-                              <div className="flex items-center gap-2 mb-2">
-                                <span className="text-xs font-black text-white px-2.5 py-1 rounded-lg" style={{ background: info?.color }}>
-                                  الوحدة {unitId}
-                                </span>
-                                <span className="text-xs font-bold text-gray-500 dark:text-gray-400">
-                                  {unitTitle[unitId] ?? ''}
-                                </span>
-                              </div>
-                              <div className="grid grid-cols-1 gap-3">
-                                {filteredItems.map((it: any) => {
-                                  if (it._t === 'book') {
-                                    return (
-                                      <AccordionCard
-                                        key={it.id}
-                                        id={it.id}
-                                        icon={<BookOpen className="w-5 h-5" />}
-                                        accent="from-[#0ea5e9] to-[#0284c7]"
-                                        badge={`📚 ${it.sourceBook} — ${it.topic}`}
-                                        headerNode={it.question}
-                                      >
-                                        <div className="space-y-3">
-                                          <p className="text-gray-800 dark:text-gray-200 font-medium leading-8 whitespace-pre-line">{it.answer}</p>
-                                          {it.followUp && (
-                                            <p className="text-xs font-bold text-sky-700 dark:text-sky-300">↪ سؤال متابعة: {it.followUp}</p>
-                                          )}
-                                          <div className="flex flex-wrap gap-1.5">
-                                            {it.keywords.map((k: string, ki: number) => (
-                                              <Chip key={ki}>{k}</Chip>
-                                            ))}
-                                          </div>
-                                        </div>
-                                      </AccordionCard>
-                                    );
-                                  }
-                                  return (
-                                    <AccordionCard
-                                      key={it.id}
-                                      id={it.id}
-                                      icon={<Layers className="w-5 h-5" />}
-                                      accent="from-[#006d37] to-[#00562b]"
-                                      badge={it.source}
-                                      headerNode={it.title}
-                                    >
-                                      <div className="space-y-3">
-                                        <p className="text-gray-800 dark:text-gray-200 font-medium leading-8 whitespace-pre-line">{it.shortAnswer}</p>
-                                        <div className="flex flex-wrap gap-1.5">
-                                          {it.keywords.map((k: string, ki: number) => (
-                                            <Chip key={ki}>{k}</Chip>
-                                          ))}
-                                        </div>
-                                        {it.relatedQuestions?.length > 0 && (
-                                          <div className="pt-1">
-                                            <span className="text-xs font-bold text-gray-500 dark:text-gray-400">أسئلة ذات صلة:</span>
-                                            <div className="flex flex-wrap gap-1.5 mt-1">
-                                              {it.relatedQuestions.map((rq: string, ri: number) => (
-                                                <span key={ri} className="text-[11px] font-bold bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 px-2 py-0.5 rounded-md">
-                                                  {rq}
-                                                </span>
-                                              ))}
-                                            </div>
-                                          </div>
-                                        )}
-                                      </div>
-                                    </AccordionCard>
-                                  );
-                                })}
-                              </div>
-                            </div>
-                          );
-                        })}
-                      </div>
-                    </div>
-                  );
-                })}
-            </div>
-          )}
         </div>
       )}
     </div>

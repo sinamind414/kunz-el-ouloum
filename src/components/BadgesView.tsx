@@ -1,4 +1,3 @@
-import React from 'react';
 import { motion } from 'motion/react';
 import { Award, Flame, BookOpen, Trophy, Target, Star, Brain, CheckCircle, Zap } from 'lucide-react';
 

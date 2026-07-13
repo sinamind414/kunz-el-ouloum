@@ -1,5 +1,4 @@
 import {
-  loadSession,
   resetSession,
   saveSession,
   getDefaultSession,
@@ -9,7 +8,6 @@ import {
   startBossFightSession,
   startBossStep,
   finishBossFight,
-  completeDailyMission,
   type BotSession,
 } from './sessionManager';
 import {
@@ -26,16 +24,17 @@ import {
 } from '../data/smartBotData';
 import { TUTOR_KNOWLEDGE, type TutorKnowledgeChunk } from '../tutorKnowledge';
 import { BOOK_TUTOR_QA, findBestBookQA, type BookTutorQA } from '../bookTutorQA';
-import { METHODOLOGY_QA, findBestMethodologyQA, type MethodologyQA } from '../methodologyKnowledge';
+import { findBestMethodologyQA } from '../methodologyKnowledge';
 import {
   KNOWLEDGE_CARDS as LEGACY_KNOWLEDGE_CARDS,
   type KnowledgeCard as LegacyKnowledgeCard,
 } from '../knowledgeCards';
-import { normalizeArabic, calculateKeywordScore, tokenizeArabic } from './arabicNormalize';
+import { STUDY_GUIDE_CARDS, type StudyGuideCard } from '../studyGuide';
+import { normalizeArabic, tokenizeArabic } from './arabicNormalize';
 
 export { normalizeArabic, calculateKeywordScore, tokenizeArabic } from './arabicNormalize';
 
-export type SourceType = 'internal_card' | 'legacy_card' | 'book' | 'opus' | 'methodology' | 'domain' | 'quiz' | 'out_of_scope';
+export type SourceType = 'internal_card' | 'legacy_card' | 'book' | 'opus' | 'methodology' | 'guide' | 'domain' | 'quiz' | 'out_of_scope';
 
 export interface SourceRef {
   type: SourceType;
@@ -86,7 +85,7 @@ const DOMAIN_UNITS: Record<number, [number, number]> = {
 
 interface SearchChunk {
   id: string;
-  type: 'card' | 'book' | 'opus';
+  type: 'card' | 'book' | 'opus' | 'guide';
   title: string;
   unitId: number;
   unitTitle: string;
@@ -137,7 +136,24 @@ const OPUS_CHUNKS: SearchChunk[] = TUTOR_KNOWLEDGE.map((c: TutorKnowledgeChunk) 
   normKeywords: c.keywords.map((k) => normalizeArabic(k)),
 }));
 
-const ALL_CHUNKS: SearchChunk[] = [...LEGACY_CHUNKS, ...BOOK_CHUNKS, ...OPUS_CHUNKS];
+const GUIDE_CHUNKS: SearchChunk[] = STUDY_GUIDE_CARDS.map((card: StudyGuideCard) => ({
+  id: card.id,
+  type: 'guide' as const,
+  title: card.title,
+  unitId: 0,
+  unitTitle: 'دليل الدراسة',
+  text: `${card.subtitle}\n${card.sections.map((section) => `${section.heading}: ${section.bullets.join(' ')}`).join('\n')}`,
+  sourceLabel: 'دليل دراسة module sciences',
+  followUp: 'كيف أحلل وثيقة؟',
+  normTitle: normalizeArabic(card.title),
+  normAliases: card.triggers.map((trigger) => normalizeArabic(trigger)),
+  normKeywords: [
+    ...card.keywords,
+    ...card.sections.flatMap((section) => [section.heading, ...section.bullets]),
+  ].map((k) => normalizeArabic(k)),
+}));
+
+const ALL_CHUNKS: SearchChunk[] = [...GUIDE_CHUNKS, ...LEGACY_CHUNKS, ...BOOK_CHUNKS, ...OPUS_CHUNKS];
 
 function scoreChunk(norm: string, ch: SearchChunk, activeDomainId: number | null): number {
   let score = 0;
@@ -153,7 +169,50 @@ function scoreChunk(norm: string, ch: SearchChunk, activeDomainId: number | null
     if (range && ch.unitId >= range[0] && ch.unitId <= range[1]) score += 10;
   }
   if (ch.type === 'opus') score *= 0.7;
+  if (ch.type === 'guide') score *= 1.15;
   return score;
+}
+
+function findBestStudyGuide(query: string): { card: StudyGuideCard; score: number }[] {
+  const normRaw = normalizeArabic(query);
+  if (!normRaw) return [];
+  const norm = normRaw.replace(/[؟?.!،,]/g, ' ').replace(/\s+/g, ' ').trim();
+
+  return STUDY_GUIDE_CARDS.map((card) => {
+    let score = 0;
+    const title = normalizeArabic(card.title);
+    const subtitle = normalizeArabic(card.subtitle);
+    if (title && (norm.includes(title) || title.includes(norm))) score += 70;
+    if (subtitle && (norm.includes(subtitle) || subtitle.includes(norm))) score += 30;
+    for (const trigger of card.triggers) {
+      const nt = normalizeArabic(trigger);
+      if (nt && (norm.includes(nt) || nt.includes(norm))) score += 55;
+    }
+    for (const keyword of card.keywords) {
+      const nk = normalizeArabic(keyword);
+      if (nk.length >= 3 && norm.includes(nk)) score += 8;
+    }
+    for (const section of card.sections) {
+      const ns = normalizeArabic(section.heading);
+      if (ns && norm.includes(ns)) score += 12;
+      for (const bullet of section.bullets) {
+        for (const token of tokenizeArabic(normalizeArabic(bullet))) {
+          if (token.length >= 4 && norm.includes(token)) score += 1;
+        }
+      }
+    }
+    return { card, score };
+  })
+    .filter((x) => x.score >= 14)
+    .sort((a, b) => b.score - a.score);
+}
+
+function formatStudyGuideAnswer(card: StudyGuideCard): string {
+  const sections = card.sections
+    .map((section) => `📌 **${section.heading}**\n${section.bullets.map((bullet) => `• ${bullet}`).join('\n')}`)
+    .join('\n\n');
+
+  return `🧭 **${card.title}**\n${card.subtitle}\n\n${sections}\n\n🔑 **كلمات مفتاحية:** ${card.keywords.join(' • ')}`;
 }
 
 export function searchAllBases(norm: string, activeDomainId: number | null): SearchChunk[] {
@@ -218,6 +277,7 @@ function buildAnswer(norm: string, activeDomainId: number | null): TutorAction |
   let sourceType: SourceType = 'opus';
   if (best.type === 'book') sourceType = 'book';
   else if (best.type === 'card') sourceType = 'legacy_card';
+  else if (best.type === 'guide') sourceType = 'guide';
 
   return {
     text: `📚 **${best.title}**\n\n${snippet}`,
@@ -434,17 +494,30 @@ export function processStudentInput(session: BotSession, rawInput: string): Engi
     };
   }
 
-  // المنهجية (LIVRE MANHADJIYA) أولاً
+  const studyGuideMatches = findBestStudyGuide(input);
+  if (studyGuideMatches.length > 0 && studyGuideMatches[0].score >= 18) {
+    const card = studyGuideMatches[0].card;
+    return {
+      session,
+      action: {
+        confidence: studyGuideMatches[0].score >= 50 ? 95 : 82,
+        text: formatStudyGuideAnswer(card),
+        quickActions: ['بروتوكول دراسة أي وحدة في 5 خطوات', 'التجارب الأساسية التي يجب ربطها بالدروس', 'دليل الإجابة في البكالوريا'],
+        sources: [{ type: 'guide' as SourceType, title: card.title }],
+      },
+    };
+  }
+
+  // المنهجية أولاً
   const methodologyMatches = findBestMethodologyQA(input);
   if (methodologyMatches.length > 0 && methodologyMatches[0].score >= 18) {
     const qa = methodologyMatches[0].qa;
     const text =
-      `🧭 **إجابة منهجية من كتاب المنهجية المحلي.**\n\n` +
+      `🧭 **إجابة منهجية من بنك المنهجية المحلي.**\n\n` +
       `📌 **السؤال:** ${qa.question}\n\n` +
       `✅ **الطريقة الصحيحة:**\n${qa.answer}\n\n` +
       `🧩 **قالب جاهز:**\n${qa.template || '—'}\n\n` +
-      `🔑 **كلمات مفتاحية:** ${qa.keywords.join(' • ')}\n` +
-      `📖 **المصدر:** ${qa.sourceBook} (LIVRE MANHADJIYA.md)`;
+      `🔑 **كلمات مفتاحية:** ${qa.keywords.join(' • ')}`;
     return {
       session,
       action: {
@@ -456,17 +529,16 @@ export function processStudentInput(session: BotSession, rawInput: string): Engi
     };
   }
 
-  // بنك الأسئلة المستخرج من الكتب
+  // بنك الأسئلة العلمي
   const bookMatches = findBestBookQA(input);
   if (bookMatches.length > 0 && bookMatches[0].score >= 18) {
     const qa = bookMatches[0].qa;
     const text =
-      `📚 **إجابة من بنك الأسئلة المستخرج من الكتب المرفقة.**\n\n` +
+      `📚 **إجابة من بنك الأسئلة العلمي المحلي.**\n\n` +
       `🎯 **المحور:** ${qa.topic}\n\n` +
       `📌 **السؤال:** ${qa.question}\n\n` +
       `✅ **الجواب الدقيق:**\n${qa.answer}\n\n` +
-      `🔑 **كلمات مفتاحية:** ${qa.keywords.join(' • ')}\n` +
-      `📖 **المصدر:** ${qa.sourceBook}`;
+      `🔑 **كلمات مفتاحية:** ${qa.keywords.join(' • ')}`;
     return {
       session,
       action: {

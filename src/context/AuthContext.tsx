@@ -4,8 +4,9 @@
 // - En ligne : la session Supabase est restaurée (getSession) et surveillée (onAuthStateChange).
 // - Première connexion : redirection Google (signInWithOAuth).
 
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { supabase } from '../lib/supabase';
+import { logEvent } from '../utils/telemetryService';
 
 export interface UserProfile {
   id: string;
@@ -17,6 +18,8 @@ export interface UserProfile {
 interface AuthContextValue {
   user: UserProfile | null;
   signIn: () => Promise<void>;
+  continueOffline: () => void;
+  signInAsGuest: () => void;
   signOut: () => void;
 }
 
@@ -100,8 +103,34 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setUser(null);
   };
 
+  // Mode offline : profil local sans Google, conforme à la promesse « 100% Offline ».
+  const continueOffline = () => {
+    if (supabase) supabase.auth.signOut().catch(() => {});
+    const guest: UserProfile = {
+      id: 'offline-guest',
+      email: '',
+      name: 'Élève Kunz',
+    };
+    writeCache(guest);
+    setUser(guest);
+  };
+
+  // Mode invité offline : profil invité dédié, tenu de la promesse « 100% Offline »
+  // même à la première ouverture sans réseau (cybercafé en mode avion).
+  const signInAsGuest = () => {
+    if (supabase) supabase.auth.signOut().catch(() => {});
+    const guestProfile: UserProfile = {
+      id: 'guest_' + Date.now(),
+      email: 'guest@kunz.local',
+      name: 'طالب زائر',
+    };
+    writeCache(guestProfile);
+    setUser(guestProfile);
+    logEvent('GUEST_LOGIN_OFFLINE', { isOnline: navigator.onLine });
+  };
+
   return (
-    <AuthContext.Provider value={{ user, signIn, signOut }}>
+    <AuthContext.Provider value={{ user, signIn, continueOffline, signInAsGuest, signOut }}>
       {children}
     </AuthContext.Provider>
   );

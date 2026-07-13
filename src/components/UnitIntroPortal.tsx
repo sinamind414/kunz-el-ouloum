@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { CheckCircle2, XCircle, Info, BookOpen, AlertCircle, ArrowLeft, ArrowRight, PlayCircle, Star, Mic, MicOff } from 'lucide-react';
+import { CheckCircle2, Info, BookOpen, AlertCircle, Star, Mic, MicOff } from 'lucide-react';
 
 export default function LessonTwoView() {
   // Progress tracking

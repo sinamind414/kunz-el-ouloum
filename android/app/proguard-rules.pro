@@ -19,3 +19,11 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+
+# Keep Capacitor native bridges from being obfuscated/stripped
+# (prevents the WebView <-> native bridge from breaking under minification).
+-keep class com.getcapacitor.** { *; }
+-keep class **.R$* { <fields>; }
+-keepclassmembers class * {
+    @android.webkit.JavascriptInterface <methods>;
+}

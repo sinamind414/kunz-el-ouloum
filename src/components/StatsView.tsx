@@ -15,7 +15,7 @@ import {
   Line,
   CartesianGrid
 } from 'recharts';
-import { Trophy, Flame, Calendar, BookOpen, Clock, Activity, Sparkles, Award, Lock, CheckCircle2, TrendingUp, Printer, Download, X, FileText, Check } from 'lucide-react';
+import { Trophy, Flame, Calendar, BookOpen, Clock, Activity, Sparkles, Award, CheckCircle2, TrendingUp, Printer, Download, X, FileText } from 'lucide-react';
 import { UserProgress, Unit } from '../types';
 
 interface StatsViewProps {
@@ -47,7 +47,7 @@ export default function StatsView({ progress, units, onNavigateToTab }: StatsVie
   ];
 
   // 2. Format quiz history data
-  const quizHistory = progress.quizScoreHistory.map((item, idx) => ({
+  const quizHistory = progress.quizScoreHistory.map((item) => ({
     name: item.unitTitle.substring(0, 15) + '...',
     'النتيجة %': Math.round((item.score / item.total) * 100),
     scoreText: `${item.score} / ${item.total}`
@@ -78,13 +78,6 @@ export default function StatsView({ progress, units, onNavigateToTab }: StatsVie
 
   // Total lessons completed
   const completedUnitsCount = progress.completedUnits.length;
-
-  // Spaced repetition stats total
-  const totalCardsRated = 
-    (progress.flashcardStats?.again || 0) + 
-    (progress.flashcardStats?.hard || 0) + 
-    (progress.flashcardStats?.good || 0) + 
-    (progress.flashcardStats?.easy || 0);
 
   // 4. Mock Monthly Unit Progress Data for Recharts
   const monthlyUnitProgress = [
@@ -212,7 +205,7 @@ export default function StatsView({ progress, units, onNavigateToTab }: StatsVie
               <XAxis dataKey="date" stroke="#506072" fontSize={10} tickLine={false} />
               <YAxis stroke="#506072" fontSize={10} tickLine={false} domain={[0, 100]} />
               <Tooltip 
-                formatter={(value: any, name: any, props: any) => [`${value}% (${props.payload.scoreText})`, 'النتيجة']}
+                formatter={(value: any, _name: any, props: any) => [`${value}% (${props.payload.scoreText})`, 'النتيجة']}
                 labelFormatter={(label) => `التاريخ: ${label}`}
                 contentStyle={{ direction: 'rtl', fontFamily: 'Noto Kufi Arabic', fontSize: 11, borderRadius: '12px', border: '1px solid #e2dabf' }}
               />
@@ -249,7 +242,7 @@ export default function StatsView({ progress, units, onNavigateToTab }: StatsVie
                 <XAxis dataKey="name" stroke="#506072" fontSize={10} tickLine={false} />
                 <YAxis stroke="#506072" fontSize={10} tickLine={false} domain={[0, 100]} />
                 <Tooltip 
-                  formatter={(value: any, name: any, props: any) => [`${value}% (${props.payload.scoreText || 'نموذجية'})`, 'الدرجة']}
+                  formatter={(value: any, _name: any, props: any) => [`${value}% (${props.payload.scoreText || 'نموذجية'})`, 'الدرجة']}
                   contentStyle={{ direction: 'rtl', fontFamily: 'Noto Kufi Arabic', fontSize: 11, borderRadius: '12px', border: '1px solid #e2dabf' }}
                 />
                 <Bar dataKey="النتيجة %" fill="#006d37" radius={[6, 6, 0, 0]} />

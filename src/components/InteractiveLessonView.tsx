@@ -1,9 +1,9 @@
-import React, { useState, useMemo, useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { X, CheckCircle2, AlertTriangle, Mic, Lightbulb, Target, BookOpen, Brain, FileText, MousePointerClick, Lock } from 'lucide-react';
+import { X, CheckCircle2, AlertTriangle, Lightbulb, Target, BookOpen, Brain, FileText, MousePointerClick, Lock } from 'lucide-react';
 import LessonAdventurePortal from './LessonAdventurePortal';
 import { getExperimentalLesson, LESSON_LIBRARY } from '../lessonData';
-import { SINGLE_PATH_LESSONS, SinglePathLesson, SinglePathStep } from '../data/singlePathLessons';
+import { SINGLE_PATH_LESSONS, SinglePathLesson } from '../data/singlePathLessons';
 import SpeechToTextInput from './SpeechToTextInput';
 import { ACTIVE_LESSONS, ActiveLesson, Block } from '../data/activeLessons';
 import { checkProduction, checkMethodologyStep, checkAnalysisPurity, isInsideHotspot } from '../utils/methodologyChecker';
@@ -446,7 +446,7 @@ function TextAndProduceBlockView({
 
       {Object.keys(block.popups || {}).length > 0 && (
         <div className="flex flex-wrap gap-1.5">
-          {Object.entries(block.popups).map(([term, def]: any) => (
+          {Object.entries(block.popups).map(([term]: any) => (
             <button
               key={term}
               onClick={() => setState({ openPopup: state.openPopup === term ? null : term })}
@@ -496,7 +496,6 @@ function HotspotAndMethodologyBlockView({
   lessonId,
   blockIndex,
   state,
-  setState,
   onHotspotClick,
   onValidated,
 }: {

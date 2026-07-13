@@ -9,7 +9,7 @@ import SplashView from './components/SplashView';
 import DashboardView from './components/DashboardView';
 import QuizView from './components/QuizView';
 import StudyReminderModal from './components/StudyReminderModal';
-import { startPirateMusic, stopPirateMusic } from './utils/audio';
+import { stopPirateMusic } from './utils/audio';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { logEvent } from './utils/telemetryService';
 import LoginScreen from './components/LoginScreen';
@@ -115,7 +115,7 @@ function AppShell() {
   const [progress, setProgress] = useState<UserProgress>(() => createDefaultProgress());
 
   // Module 1 — Auth Offline-First : lit le profil caché (localStorage) pour ne jamais bloquer l'offline.
-  const { user, signIn, signOut } = useAuth();
+  const { user, signOut } = useAuth();
 
   // Module 2 — Télémétrie : trace l'ouverture de l'app (online/offline) une fois l'utilisateur connu.
   useEffect(() => {
@@ -165,7 +165,7 @@ function AppShell() {
     } catch {}
   };
 
-  const handleRateCard = (cardId: string, rating: 'again' | 'hard' | 'good' | 'easy') => {
+  const handleRateCard = (_cardId: string, rating: 'again' | 'hard' | 'good' | 'easy') => {
     const points = rating === 'easy' ? 15 : rating === 'good' ? 10 : rating === 'hard' ? 5 : 2;
     const updatedStats = { ...progress.flashcardStats };
     (updatedStats as any)[rating] += 1;
@@ -210,7 +210,7 @@ function AppShell() {
 
   // Gatekeeper Offline-First : si aucun profil caché, on affiche LoginScreen (jamais l'app).
   if (!user) {
-    return <LoginScreen onLogin={signIn} />;
+    return <LoginScreen />;
   }
 
   if (activeQuizUnitId !== null) {

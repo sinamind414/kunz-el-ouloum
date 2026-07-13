@@ -1,6 +1,6 @@
-import { useEffect, useState, useMemo } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { motion } from 'motion/react';
-import { Volume2, Key, Star, Award, ChevronLeft, ArrowRight, HelpCircle, Layers, BookOpen, VolumeX, Sparkles, Eye, EyeOff, Dna, Zap, Globe2, Check, AlertCircle, ArrowLeft } from 'lucide-react';
+import { Volume2, Key, HelpCircle, Layers, BookOpen, VolumeX, Sparkles, Eye, EyeOff, Check, AlertCircle, ArrowLeft } from 'lucide-react';
 import { Flashcard, Unit } from '../types';
 import { playFlipSound, playSuccessSound, playFailureSound } from '../utils/audio';
 import { DOMAIN_INFO } from './LessonsView';
@@ -18,7 +18,7 @@ interface RevisionViewProps {
 
 const DEFAULT_DOMAIN = { fr: '', icon: Layers, color: '#006d37', light: '#eafaf1', dark: '#00562b' };
 
-export default function RevisionView({ units, flashcards, xp, streak, onRateCard, initialUnitId, isFocusMode, setIsFocusMode }: RevisionViewProps) {
+export default function RevisionView({ units, flashcards, onRateCard, initialUnitId, isFocusMode, setIsFocusMode }: RevisionViewProps) {
   const [selectedUnitId, setSelectedUnitId] = useState<number>(initialUnitId);
   const [selectedDomain, setSelectedDomain] = useState<string>(() => {
     const initialUnit = units.find((u) => u.id === initialUnitId);

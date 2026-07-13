@@ -4,6 +4,7 @@ import { BookOpen, Layers, Target, Dna, Zap, Globe2, ChevronRight, ArrowRight, S
 import { Unit } from '../types';
 import { LESSON_LIBRARY, LessonLibraryItem } from '../lessonData';
 import { SINGLE_PATH_LESSONS } from '../data/singlePathLessons';
+import SvtConceptsView from './SvtConceptsView';
 
 const InteractiveLessonView = lazy(() => import('./InteractiveLessonView'));
 const HtmlLessonViewer = lazy(() => import('./HtmlLessonViewer'));
@@ -70,6 +71,7 @@ export default function LessonsView({ units, onStartLesson }: LessonsViewProps) 
   const [selectedUnitId, setSelectedUnitId] = useState<number | null>(null);
   const [selectedLessonKey, setSelectedLessonKey] = useState<string>('');
   const [openLessonKey, setOpenLessonKey] = useState<string | null>(null);
+  const [showSvt, setShowSvt] = useState(false);
 
   const domainUnits = useMemo(
     () => (selectedDomain ? unitsWithLessons.filter((u) => u.domain === selectedDomain) : []),
@@ -221,8 +223,8 @@ export default function LessonsView({ units, onStartLesson }: LessonsViewProps) 
         )}
       </nav>
 
-      {/* LEVEL 1 — Domains */}
-      {!selectedDomain && (
+      {/* LEVEL 1 — Domains + Concepts SVT (4e position) */}
+      {!selectedDomain && !showSvt && (
         <section className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {domains.map((domain, idx) => {
             const info = DOMAIN_INFO[domain.name] ?? DEFAULT_DOMAIN_INFO;
@@ -277,6 +279,54 @@ export default function LessonsView({ units, onStartLesson }: LessonsViewProps) 
               </motion.button>
             );
           })}
+
+          {/* 4e position — Concepts SVT */}
+          <motion.button
+            key="svt-concepts"
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: domains.length * 0.06 }}
+            onClick={() => setShowSvt(true)}
+            className="group text-right rounded-3xl p-5 shadow-sm border border-[#e2dabf]/60 dark:border-[#0284c7]/20 bg-white dark:bg-[#141916] hover:shadow-md transition-all cursor-pointer flex flex-col gap-4"
+            style={{ borderTop: `4px solid #0284c7` }}
+          >
+            <div className="flex items-center justify-between">
+              <div
+                className="w-16 h-16 rounded-2xl flex items-center justify-center shrink-0"
+                style={{ background: '#e0f2fe' }}
+              >
+                <BookOpen className="w-9 h-9" style={{ color: '#0284c7' }} />
+              </div>
+              <span
+                className="text-[11px] font-black px-3 py-1 rounded-full"
+                style={{ background: '#0284c7', color: '#fff' }}
+              >
+                المجال 4
+              </span>
+            </div>
+            <div>
+              <h3 className="text-lg font-black text-[#1f1c0b] dark:text-gray-100 leading-snug">مكتبة المصطلحات SVT</h3>
+              <p className="text-xs text-[#506072] dark:text-gray-400 mt-1">Concepts SVT — مصطلحات ومفاهيم علمية</p>
+            </div>
+            <div className="flex items-center gap-1 text-xs font-extrabold mt-auto" style={{ color: '#0284c7' }}>
+              <span>استكشف المفاهيم</span>
+              <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+            </div>
+          </motion.button>
+        </section>
+      )}
+
+      {/* LEVEL 1b — Concepts SVT library */}
+      {!selectedDomain && showSvt && (
+        <section>
+          <button
+            onClick={() => setShowSvt(false)}
+            className="flex items-center gap-2 px-3 py-1.5 mb-4 rounded-xl font-bold text-[#0284c7] hover:bg-[#0284c7]/10 transition-all cursor-pointer"
+          >
+            <ArrowRight className="w-4 h-4 rotate-180" />
+            <span>عودة إلى المجالات</span>
+          </button>
+          <SvtConceptsView />
         </section>
       )}
 

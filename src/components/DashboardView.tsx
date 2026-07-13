@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Trophy, Flame, Play, Lock, ChevronRight, BookOpen, GraduationCap, CheckCircle, Brain, Sparkles, User, Target, ChevronDown, ChevronUp } from 'lucide-react';
+import { Flame, Play, Lock, CheckCircle, Brain, Sparkles, Target } from 'lucide-react';
 import { Unit, UserProgress } from '../types';
 
 interface DashboardViewProps {
@@ -11,7 +11,7 @@ interface DashboardViewProps {
   onNavigateToTab?: (tab: 'home' | 'review' | 'stats' | 'chat') => void;
 }
 
-export default function DashboardView({ units, progress, onLaunchQuiz, onLaunchRevision, onNavigateToTab }: DashboardViewProps) {
+export default function DashboardView({ units, progress, onLaunchQuiz, onLaunchRevision }: DashboardViewProps) {
   
   const [selectedUnitId, setSelectedUnitId] = useState<number | null>(null);
   const [dailyGoalXP, setDailyGoalXP] = useState<number>(50);

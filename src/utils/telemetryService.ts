@@ -6,7 +6,7 @@
 import { supabase } from '../lib/supabase';
 
 export interface TelemetryEvent {
-  eventName: 'APP_OPENED' | 'METHOD_FAIL' | 'METHOD_SUCCESS' | 'PRO_TEASER_CLICKED';
+  eventName: 'APP_OPENED' | 'METHOD_FAIL' | 'METHOD_SUCCESS' | 'PRO_TEASER_CLICKED' | 'GUEST_LOGIN_OFFLINE';
   payload: Record<string, any>;
   userId: string;
   timestamp: number;
