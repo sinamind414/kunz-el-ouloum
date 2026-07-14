@@ -12,6 +12,7 @@ import { stopPirateMusic } from './utils/audio';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { logEvent } from './utils/telemetryService';
 import LoginScreen from './components/LoginScreen';
+import { MANHADJIYA_DONE_KEY } from './data/manhadjiyaModules';
 
 // Lazy load heavy views (Fable 5 - reduce main bundle)
 const LessonsView = lazy(() => import('./components/LessonsView'));
@@ -20,6 +21,7 @@ const InteractiveLessonView = lazy(() => import('./components/InteractiveLessonV
 const MyPathView = lazy(() => import('./components/MyPathView'));
 const TrainingView = lazy(() => import('./components/TrainingView'));
 const ProgressView = lazy(() => import('./components/ProgressView'));
+const DayZeroRouter = lazy(() => import('./components/ManhadjiyaExpress/DayZeroRouter'));
 
 const DATA_VERSION = 'github-500qcm-v1-fable5-4tabs';
 
@@ -73,6 +75,15 @@ function AppShell() {
   const [isFocusMode, setIsFocusMode] = useState(false);
   const [isReminderModalOpen, setIsReminderModalOpen] = useState(false);
   const [isCoachOpen, setIsCoachOpen] = useState(false);
+
+  // Jour 0 — Formation Manhadjiya Express : verrou tant que non terminée (offline-first).
+  const [manhadjiyaDone, setManhadjiyaDone] = useState<boolean>(() => {
+    try {
+      return localStorage.getItem(MANHADJIYA_DONE_KEY) === 'true';
+    } catch {
+      return false;
+    }
+  });
 
   useEffect(() => {
     if (currentTab !== 'splash') stopPirateMusic();
@@ -225,6 +236,16 @@ function AppShell() {
 
   if (currentTab === 'splash') {
     return <SplashView onStart={() => setCurrentTab('path')} />;
+  }
+
+  // Jour 0 verrouillé : après le splash, si la formation méthodologique n'est pas terminée,
+  // on affiche la Formation Manhadjiya Express plein écran (débloque ensuite toute l'app).
+  if (!manhadjiyaDone) {
+    return (
+      <Suspense fallback={<LoadingFallback />}>
+        <DayZeroRouter onComplete={() => setManhadjiyaDone(true)} />
+      </Suspense>
+    );
   }
 
   return (
