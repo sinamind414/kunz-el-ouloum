@@ -26,6 +26,25 @@ interface AuthContextValue {
 const AuthContext = createContext<AuthContextValue | undefined>(undefined);
 
 const STORAGE_KEY = 'kunz_user';
+const OFFLINE_ID_KEY = 'kunz_offline_id';
+
+// Identifiant offline stable (évite la collision 'offline-guest' partagé par tous).
+const genId = (): string =>
+  (typeof crypto !== 'undefined' && 'randomUUID' in crypto)
+    ? crypto.randomUUID()
+    : 'id_' + Date.now() + '_' + Math.random().toString(36).slice(2, 9);
+
+const getOrCreateOfflineId = (): string => {
+  try {
+    const existing = localStorage.getItem(OFFLINE_ID_KEY);
+    if (existing) return existing;
+  } catch {}
+  const id = 'offline_' + genId();
+  try {
+    localStorage.setItem(OFFLINE_ID_KEY, id);
+  } catch {}
+  return id;
+};
 
 const readCache = (): UserProfile | null => {
   try {
@@ -104,10 +123,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   // Mode offline : profil local sans Google, conforme à la promesse « 100% Offline ».
+  // Identifiant persistant unique (évite la collision 'offline-guest').
   const continueOffline = () => {
     if (supabase) supabase.auth.signOut().catch(() => {});
     const guest: UserProfile = {
-      id: 'offline-guest',
+      id: getOrCreateOfflineId(),
       email: '',
       name: 'Élève Kunz',
     };
@@ -120,7 +140,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const signInAsGuest = () => {
     if (supabase) supabase.auth.signOut().catch(() => {});
     const guestProfile: UserProfile = {
-      id: 'guest_' + Date.now(),
+      id: 'guest_' + genId(),
       email: 'guest@kunz.local',
       name: 'طالب زائر',
     };

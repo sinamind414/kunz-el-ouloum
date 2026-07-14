@@ -7,7 +7,7 @@ let audioCtx: AudioContext | null = null;
 
 function getAudioContext(): AudioContext {
   if (!audioCtx) {
-    audioCtx = new (window.AudioContext || (window as any).webkitAudioContext)();
+    audioCtx = new (window.AudioContext || window.webkitAudioContext!)();
   }
   if (audioCtx.state === 'suspended') {
     audioCtx.resume();
@@ -88,7 +88,7 @@ export function playFailureSound() {
   }
 }
 
-let pirateLoopId: any = null;
+let pirateLoopId: ReturnType<typeof setTimeout> | null = null;
 let pirateGainNode: GainNode | null = null;
 
 const SHANTY_NOTES = [

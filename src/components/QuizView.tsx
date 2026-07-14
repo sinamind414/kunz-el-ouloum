@@ -25,6 +25,37 @@ export default function QuizView({ unitTitle, questions, onClose, onQuizComplete
   const [isFocusMode, setIsFocusMode] = useState<boolean>(false);
   const completionSubmittedRef = useRef(false);
 
+  // Phase 3 — Gamification : confetti +15 XP (correct) + bottom sheet méthodologie (wrong)
+  const [showConfetti, setShowConfetti] = useState(false);
+  const [xpGain, setXpGain] = useState(0);
+  const [showMethodoSheet, setShowMethodoSheet] = useState(false);
+  const [methodoVerb, setMethodoVerb] = useState<{ verb: string; fr: string; tip: string; template: string }>({
+    verb: 'حَلِّلْ', fr: 'Analyser', tip: 'عرّف الوثيقة وصفِف معطياتها قبل أي تفسير.', template: 'تمثل الوثيقة [الظاهرة] بدلالة [المتغير] حيث نلاحظ...'
+  });
+
+  type VerbKey = 'analyse' | 'interpret' | 'deduce' | 'compare' | 'justify' | 'hypothesis';
+  const verbMap: Record<VerbKey, { verb: string; fr: string; tip: string; template: string }> = {
+    analyse: { verb: 'حَلِّلْ', fr: 'Analyser', tip: 'عرّف الوثيقة وصفِف معطياتها (ماذا نلاحظ؟) قبل أي تفسير.', template: 'تمثل الوثيقة [الظاهرة] بدلالة [المتغير] حيث نلاحظ تزايد/تناقص/ثبات...' },
+    interpret: { verb: 'فَسِّرْ', fr: 'Interpréter', tip: 'أعطِ السبب العلمي (لماذا؟) بربط النتيجة بأسبابها.', template: 'يرجع ذلك إلى أن... / وهذا راجع إلى...' },
+    deduce: { verb: 'اسْتَنْتِجْ', fr: 'Déduire', tip: 'اخرج حقيقة علمية جديدة ومختصرة تجيب عن هدف السؤال.', template: 'أستنتج أن... [حقيقة علمية مختصرة]' },
+    compare: { verb: 'قَارِنْ', fr: 'Comparer', tip: 'أظهر أوجه الشبه وأوجه الاختلاف بين العنصرين.', template: 'أوجه الشبه: ... / أوجه الاختلاف: بينما... بالمقابل...' },
+    justify: { verb: 'عَلِّلْ', fr: 'Justifier', tip: 'قدّم الحجج العلمية المقنعة لإثبات عبارتك.', template: 'لأن... / بما أن... فإن... / وهو ما يؤكد...' },
+    hypothesis: { verb: 'اقْتَرِحْ فَرَضِيَّة', fr: 'Hypothèse', tip: 'قدّم تفسيراً مؤكداً وقابلاً للاختبار.', template: 'يعود سبب... إلى... / نتيجة لـ... مما يؤدي إلى...' },
+  };
+
+  const guessVerbFromQuestion = (q: QuizQuestion): VerbKey => {
+    const text = (q.questionText + ' ' + q.options.join(' ')).toLowerCase();
+    if (text.includes('قارن') || text.includes('فرق')) return 'compare';
+    if (text.includes('فسر') || text.includes('لماذا')) return 'interpret';
+    if (text.includes('استنتج')) return 'deduce';
+    if (text.includes('علل') || text.includes('برر')) return 'justify';
+    if (text.includes('فرضية') || text.includes('اقترح')) return 'hypothesis';
+    return 'analyse';
+  };
+
+  const confettiTimer = useRef<number | null>(null);
+  const sheetTimer = useRef<number | null>(null);
+
   const currentQuestion = questions[currentIndex] || questions[0];
 
   const finishQuiz = () => {
@@ -71,8 +102,17 @@ export default function QuizView({ unitTitle, questions, onClose, onQuizComplete
     if (optionIdx === currentQuestion.correctAnswerIndex) {
       playSuccessSound();
       setScore((prev) => prev + 1);
+      const gain = 15 + Math.floor(Math.random() * 10);
+      setXpGain(gain);
+      setShowConfetti(true);
+      if (confettiTimer.current) window.clearTimeout(confettiTimer.current);
+      confettiTimer.current = window.setTimeout(() => setShowConfetti(false), 2500);
     } else {
       playFailureSound();
+      const key = guessVerbFromQuestion(currentQuestion);
+      setMethodoVerb(verbMap[key]);
+      if (sheetTimer.current) window.clearTimeout(sheetTimer.current);
+      sheetTimer.current = window.setTimeout(() => setShowMethodoSheet(true), 600);
     }
   };
 
@@ -520,6 +560,91 @@ export default function QuizView({ unitTitle, questions, onClose, onQuizComplete
         )}
 
       </main>
+
+      {/* Confetti + XP reward overlay */}
+      <AnimatePresence>
+        {showConfetti && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[100] pointer-events-none flex items-center justify-center"
+          >
+            <div className="relative">
+              <motion.div
+                initial={{ scale: 0.6 }}
+                animate={{ scale: 1.2 }}
+                transition={{ type: 'spring', stiffness: 300 }}
+                className="bg-[#006d37] text-white font-black text-lg px-5 py-3 rounded-2xl shadow-lg flex items-center gap-2"
+              >
+                +{xpGain} XP 🎉
+              </motion.div>
+              {Array.from({ length: 20 }).map((_, i) => (
+                <motion.span
+                  key={i}
+                  initial={{ x: 0, y: 0, opacity: 1 }}
+                  animate={{ x: (Math.random() - 0.5) * 240, y: (Math.random() - 0.5) * 240 - 40, opacity: 0 }}
+                  transition={{ duration: 1.6, ease: 'easeOut' }}
+                  className="absolute left-1/2 top-1/2 w-2 h-2 rounded-full"
+                  style={{ background: ['#2ecc71', '#ffd27a', '#ff6b6b', '#4dabf7', '#b197fc'][i % 5] }}
+                />
+              ))}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Bottom sheet méthodologie contextuelle */}
+      <AnimatePresence>
+        {showMethodoSheet && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[95] bg-black/40 flex items-end justify-center"
+            onClick={() => setShowMethodoSheet(false)}
+          >
+            <motion.div
+              initial={{ y: 80 }}
+              animate={{ y: 0 }}
+              exit={{ y: 80 }}
+              transition={{ duration: 0.25 }}
+              onClick={(e) => e.stopPropagation()}
+              className="w-full max-h-[70vh] overflow-y-auto bg-white dark:bg-[#141916] rounded-t-[28px] p-5 space-y-4"
+            >
+              <div className="flex items-center gap-3">
+                <div className="w-12 h-12 rounded-2xl bg-[#006d37] text-white flex items-center justify-center text-lg font-black shrink-0">
+                  {methodoVerb.verb}
+                </div>
+                <div>
+                  <h3 className="font-black text-gray-900 dark:text-white text-lg">{methodoVerb.fr}</h3>
+                  <span className="text-[11px] text-gray-400">كيف تجيب في البكالوريا</span>
+                </div>
+              </div>
+              <p className="text-sm text-gray-700 dark:text-gray-300 leading-7">{methodoVerb.tip}</p>
+              <div className="bg-amber-50 dark:bg-amber-950/20 border border-amber-100 dark:border-amber-900/40 rounded-xl p-3">
+                <span className="text-xs font-bold text-amber-700 dark:text-amber-400">القالب الجاهز:</span>
+                <p className="text-sm text-gray-700 dark:text-gray-300 leading-7 mt-1">{methodoVerb.template}</p>
+              </div>
+              <div className="flex gap-3">
+                <button
+                  onClick={() => setShowMethodoSheet(false)}
+                  className="flex-1 bg-[#006d37] text-white font-bold py-2.5 rounded-xl cursor-pointer"
+                >
+                  فهمت
+                </button>
+                <button
+                  onClick={() => setShowMethodoSheet(false)}
+                  className="flex-1 bg-gray-100 dark:bg-white/5 text-gray-700 dark:text-gray-200 font-bold py-2.5 rounded-xl cursor-pointer"
+                >
+                  عرض كل الأفعال
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
     </div>
   );
 }

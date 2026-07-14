@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState, lazy, Suspense } from 'react';
 import { motion } from 'motion/react';
-import { BookOpen, Layers, Target, Dna, Zap, Globe2, ChevronRight, ArrowRight, Sparkles, ChevronLeft } from 'lucide-react';
+import { BookOpen, Layers, Dna, Zap, Globe2, ChevronRight, Sparkles, ChevronLeft } from 'lucide-react';
 import { Unit } from '../types';
 import { LESSON_LIBRARY, LessonLibraryItem } from '../lessonData';
 import { SINGLE_PATH_LESSONS } from '../data/singlePathLessons';
@@ -138,194 +138,143 @@ export default function LessonsView({ units, onStartLesson }: LessonsViewProps) 
   };
 
   return (
-    <div className="space-y-6 pb-24 font-sans" dir="rtl">
-      <section className="bg-gradient-to-br from-[#006d37] to-[#00562b] text-white rounded-3xl p-6 shadow-md relative overflow-hidden">
-        <div className="absolute left-0 top-0 w-40 h-40 bg-[#2ecc71]/20 rounded-full blur-3xl" />
-        <div className="relative z-10 flex items-start gap-3">
-          <div className="p-3 rounded-2xl bg-white/10 border border-white/15">
-            <Layers className="w-7 h-7 text-[#fed65b]" />
-          </div>
-          <div>
-            <h2 className="text-2xl md:text-3xl font-black">الدروس التفاعلية - بدون تمرير</h2>
-            <p className="text-sm text-white/80 mt-2 leading-7 max-w-2xl">
-              كل درس = 4 خطوات فقط: <strong>كلمة مفتاحية → مثال موثق → اختبار إنتاجي (كتابي + صوتي 🎤) → منهجية مجسدة</strong>. صفحة واحدة بلا scroll infini.
-            </p>
-          </div>
-        </div>
-      </section>
+    <div className="w-full max-w-4xl mx-auto p-4 md:p-6 pb-24 font-sans" dir="rtl">
+      <h1 className="text-2xl font-black text-gray-900 dark:text-white mb-1">الدروس</h1>
+      <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
+        درس تفاعلي بدون تمرير: كلمة مفتاحية → مثال → اختبار → منهجية
+      </p>
 
-      {/* Édition Spéciale — Leçons actives "Mot par Mot" (câblées depuis kunzDatabase.ts) */}
-      <div className="mb-8 p-5 bg-gradient-to-br from-emerald-900/40 to-slate-800 border border-emerald-700/50 rounded-2xl">
-        <div className="flex items-center gap-2 mb-4">
-          <Sparkles className="w-5 h-5 text-emerald-400" />
-          <h3 className="font-black text-emerald-400 text-lg">دروس تفاعلية جديدة (Mot par Mot)</h3>
-        </div>
-        <p className="text-sm text-slate-300 mb-4">
-          تعلم الآليات خطوة بخطوة مع التصحيح المنهجي الفوري. مخصص لفهم الدروس المعقدة.
-        </p>
-        <div className="grid grid-cols-1 gap-3">
+      {/* Breadcrumb navigation (visible uniquement à l'intérieur d'un domaine) */}
+      {(selectedDomain || showSvt) && (
+        <nav className="flex items-center gap-2 flex-wrap text-sm mb-4">
           <button
-            onClick={() => onStartLesson('d1-u1-l2-transcription')}
-            className="flex items-center justify-between p-4 bg-slate-900/60 rounded-xl hover:bg-slate-900 transition-colors text-right group"
+            onClick={() => { backToDomains(); setShowSvt(false); }}
+            className="flex items-center gap-1 px-3 py-1.5 rounded-xl font-bold transition-all cursor-pointer text-[#006d37] dark:text-[#2ecc71] hover:bg-[#fed65b]/15"
           >
-            <div>
-              <span className="block font-bold text-white">الاستنساخ وتدخل الإنزيم</span>
-              <span className="text-xs text-slate-400">المجال 1 - الوحدة 1</span>
-            </div>
-            <ChevronLeft className="w-5 h-5 text-slate-500 group-hover:text-emerald-400 transition-colors" />
+            <ChevronRight className="w-4 h-4" />
+            <span>المجالات</span>
           </button>
+          {selectedDomain && (
+            <>
+              <ChevronRight className="w-4 h-4 opacity-40" />
+              <button
+                onClick={backToUnits}
+                disabled={!selectedUnitId}
+                className={`px-3 py-1.5 rounded-xl font-bold transition-all cursor-pointer ${
+                  selectedUnitId
+                    ? 'text-[#006d37] dark:text-[#2ecc71] hover:bg-[#fed65b]/15'
+                    : 'text-[#1f1c0b] dark:text-gray-100 opacity-70'
+                }`}
+              >
+                {selectedDomain}
+              </button>
+            </>
+          )}
+          {selectedUnit && (
+            <>
+              <ChevronRight className="w-4 h-4 opacity-40" />
+              <span className="px-3 py-1.5 rounded-xl font-bold text-[#1f1c0b] dark:text-gray-100 opacity-90">{selectedUnit.title}</span>
+            </>
+          )}
+        </nav>
+      )}
 
-          <button
-            onClick={() => onStartLesson('d1-u1-l3-traduction')}
-            className="flex items-center justify-between p-4 bg-slate-900/60 rounded-xl hover:bg-slate-900 transition-colors text-right group"
-          >
-            <div>
-              <span className="block font-bold text-white">الترجمة والشفرة الوراثية</span>
-              <span className="text-xs text-slate-400">المجال 1 - الوحدة 1</span>
-            </div>
-            <ChevronLeft className="w-5 h-5 text-slate-500 group-hover:text-emerald-400 transition-colors" />
-          </button>
-        </div>
-      </div>
-
-      {/* Breadcrumb navigation */}
-      <nav className="flex items-center gap-2 flex-wrap text-sm">
-        <button
-          onClick={backToDomains}
-          className={`flex items-center gap-1 px-3 py-1.5 rounded-xl font-bold transition-all cursor-pointer ${
-            selectedDomain ? 'text-[#006d37] dark:text-[#2ecc71] hover:bg-[#fed65b]/15' : 'text-[#006d37] dark:text-[#2ecc71] opacity-70'
-          }`}
-        >
-          <Layers className="w-4 h-4" />
-          <span>المجالات</span>
-        </button>
-        {selectedDomain && (
-          <>
-            <ChevronRight className="w-4 h-4 opacity-40" />
-            <button
-              onClick={backToUnits}
-              disabled={!selectedUnitId}
-              className={`px-3 py-1.5 rounded-xl font-bold transition-all cursor-pointer ${
-                selectedUnitId
-                  ? 'text-[#006d37] dark:text-[#2ecc71] hover:bg-[#fed65b]/15'
-                  : 'text-[#1f1c0b] dark:text-gray-100 opacity-70'
-              }`}
-            >
-              {selectedDomain}
-            </button>
-          </>
-        )}
-        {selectedUnit && (
-          <>
-            <ChevronRight className="w-4 h-4 opacity-40" />
-            <span className="px-3 py-1.5 rounded-xl font-bold text-[#1f1c0b] dark:text-gray-100 opacity-90">{selectedUnit.title}</span>
-          </>
-        )}
-      </nav>
-
-      {/* LEVEL 1 — Domains + Concepts SVT (4e position) */}
+      {/* LEVEL 1 — Grille d'icônes rondes : 3 domaines + Concepts SVT */}
       {!selectedDomain && !showSvt && (
-        <section className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {domains.map((domain, idx) => {
-            const info = DOMAIN_INFO[domain.name] ?? DEFAULT_DOMAIN_INFO;
-            const Icon = info.icon;
-            const unitCount = domain.units.length;
-            const chapterCount = domain.units.reduce(
-              (acc, u) => acc + LESSON_LIBRARY.filter((l) => l.unitId === u.id).length,
-              0
-            );
-            return (
-              <motion.button
-                key={domain.name}
-                initial={{ opacity: 0, y: 12 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: idx * 0.06 }}
-                onClick={() => goToDomain(domain.name)}
-                className="group text-right rounded-3xl p-5 shadow-sm border border-[#e2dabf]/60 dark:border-[#2ecc71]/10 bg-white dark:bg-[#141916] hover:shadow-md transition-all cursor-pointer flex flex-col gap-4"
-                style={{ borderTop: `4px solid ${info.color}` }}
-              >
-                <div className="flex items-center justify-between">
-                  <div
-                    className="w-16 h-16 rounded-2xl flex items-center justify-center shrink-0"
-                    style={{ background: info.light }}
-                  >
-                    <Icon className="w-9 h-9" style={{ color: info.color }} />
-                  </div>
+        <>
+          <section className="grid grid-cols-2 gap-3">
+            {domains.map((domain, idx) => {
+              const info = DOMAIN_INFO[domain.name] ?? DEFAULT_DOMAIN_INFO;
+              const Icon = info.icon;
+              const unitCount = domain.units.length;
+              const chapterCount = domain.units.reduce(
+                (acc, u) => acc + LESSON_LIBRARY.filter((l) => l.unitId === u.id).length,
+                0
+              );
+              return (
+                <motion.button
+                  key={domain.name}
+                  initial={{ opacity: 0, y: 12 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: idx * 0.06 }}
+                  onClick={() => goToDomain(domain.name)}
+                  className="flex flex-col items-center text-center gap-3 rounded-3xl p-6 shadow-sm border border-gray-200 dark:border-gray-800 bg-white dark:bg-[#141916] hover:shadow-md hover:-translate-y-0.5 active:scale-[0.98] transition-all cursor-pointer"
+                >
                   <span
-                    className="text-[11px] font-black px-3 py-1 rounded-full"
-                    style={{ background: info.color, color: '#fff' }}
+                    className="w-20 h-20 rounded-full flex items-center justify-center text-white shadow-md"
+                    style={{ background: `linear-gradient(135deg, ${info.color}, ${info.color}cc)` }}
                   >
-                    المجال {idx + 1}
+                    <Icon className="w-9 h-9" />
                   </span>
-                </div>
-                <div>
-                  <h3 className="text-lg font-black text-[#1f1c0b] dark:text-gray-100 leading-snug">{domain.name}</h3>
-                  <p className="text-xs text-[#506072] dark:text-gray-400 mt-1">{info.fr}</p>
-                </div>
-                <div className="flex items-center gap-3 text-[11px] font-bold text-[#504441] dark:text-gray-300">
-                  <span className="flex items-center gap-1">
-                    <Target className="w-3.5 h-3.5" style={{ color: info.color }} />
-                    {unitCount} وحدة
+                  <div>
+                    <h3 className="text-base font-black text-[#1f1c0b] dark:text-gray-100 leading-snug">{domain.name}</h3>
+                    <p className="text-[11px] text-[#506072] dark:text-gray-400 mt-1">{info.fr}</p>
+                  </div>
+                  <span className="text-[11px] font-bold text-gray-400">
+                    {unitCount} وحدة · {chapterCount} درس
                   </span>
-                  <span className="flex items-center gap-1">
-                    <BookOpen className="w-3.5 h-3.5" style={{ color: info.color }} />
-                    {chapterCount} درس
-                  </span>
-                </div>
-                <div className="flex items-center gap-1 text-xs font-extrabold mt-auto" style={{ color: info.color }}>
-                  <span>استكشف الوحدات</span>
-                  <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                </div>
-              </motion.button>
-            );
-          })}
+                </motion.button>
+              );
+            })}
 
-          {/* 4e position — Concepts SVT */}
-          <motion.button
-            key="svt-concepts"
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: domains.length * 0.06 }}
-            onClick={() => setShowSvt(true)}
-            className="group text-right rounded-3xl p-5 shadow-sm border border-[#e2dabf]/60 dark:border-[#0284c7]/20 bg-white dark:bg-[#141916] hover:shadow-md transition-all cursor-pointer flex flex-col gap-4"
-            style={{ borderTop: `4px solid #0284c7` }}
-          >
-            <div className="flex items-center justify-between">
-              <div
-                className="w-16 h-16 rounded-2xl flex items-center justify-center shrink-0"
-                style={{ background: '#e0f2fe' }}
-              >
-                <BookOpen className="w-9 h-9" style={{ color: '#0284c7' }} />
-              </div>
+            {/* 4e icône — Concepts SVT */}
+            <motion.button
+              key="svt-concepts"
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: domains.length * 0.06 }}
+              onClick={() => setShowSvt(true)}
+              className="flex flex-col items-center text-center gap-3 rounded-3xl p-6 shadow-sm border border-gray-200 dark:border-gray-800 bg-white dark:bg-[#141916] hover:shadow-md hover:-translate-y-0.5 active:scale-[0.98] transition-all cursor-pointer"
+            >
               <span
-                className="text-[11px] font-black px-3 py-1 rounded-full"
-                style={{ background: '#0284c7', color: '#fff' }}
+                className="w-20 h-20 rounded-full flex items-center justify-center text-white shadow-md"
+                style={{ background: 'linear-gradient(135deg, #0284c7, #0284c7cc)' }}
               >
-                المجال 4
+                <BookOpen className="w-9 h-9" />
               </span>
+              <div>
+                <h3 className="text-base font-black text-[#1f1c0b] dark:text-gray-100 leading-snug">مكتبة المصطلحات</h3>
+                <p className="text-[11px] text-[#506072] dark:text-gray-400 mt-1">Concepts SVT — مفاهيم علمية</p>
+              </div>
+              <span className="text-[11px] font-bold text-gray-400">استكشف المفاهيم</span>
+            </motion.button>
+          </section>
+
+          {/* Raccourci — Leçons actives "Mot par Mot" */}
+          <div className="mt-5 p-5 bg-gradient-to-br from-emerald-900/40 to-slate-800 border border-emerald-700/50 rounded-2xl">
+            <div className="flex items-center gap-2 mb-3">
+              <Sparkles className="w-5 h-5 text-emerald-400" />
+              <h3 className="font-black text-emerald-400 text-base">دروس تفاعلية جديدة (Mot par Mot)</h3>
             </div>
-            <div>
-              <h3 className="text-lg font-black text-[#1f1c0b] dark:text-gray-100 leading-snug">مكتبة المصطلحات SVT</h3>
-              <p className="text-xs text-[#506072] dark:text-gray-400 mt-1">Concepts SVT — مصطلحات ومفاهيم علمية</p>
+            <div className="grid grid-cols-1 gap-3">
+              <button
+                onClick={() => onStartLesson('d1-u1-l2-transcription')}
+                className="flex items-center justify-between p-4 bg-slate-900/60 rounded-xl hover:bg-slate-900 transition-colors text-right group"
+              >
+                <div>
+                  <span className="block font-bold text-white">الاستنساخ وتدخل الإنزيم</span>
+                  <span className="text-xs text-slate-400">المجال 1 - الوحدة 1</span>
+                </div>
+                <ChevronLeft className="w-5 h-5 text-slate-500 group-hover:text-emerald-400 transition-colors" />
+              </button>
+              <button
+                onClick={() => onStartLesson('d1-u1-l3-traduction')}
+                className="flex items-center justify-between p-4 bg-slate-900/60 rounded-xl hover:bg-slate-900 transition-colors text-right group"
+              >
+                <div>
+                  <span className="block font-bold text-white">الترجمة والشفرة الوراثية</span>
+                  <span className="text-xs text-slate-400">المجال 1 - الوحدة 1</span>
+                </div>
+                <ChevronLeft className="w-5 h-5 text-slate-500 group-hover:text-emerald-400 transition-colors" />
+              </button>
             </div>
-            <div className="flex items-center gap-1 text-xs font-extrabold mt-auto" style={{ color: '#0284c7' }}>
-              <span>استكشف المفاهيم</span>
-              <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-            </div>
-          </motion.button>
-        </section>
+          </div>
+        </>
       )}
 
       {/* LEVEL 1b — Concepts SVT library */}
       {!selectedDomain && showSvt && (
         <section>
-          <button
-            onClick={() => setShowSvt(false)}
-            className="flex items-center gap-2 px-3 py-1.5 mb-4 rounded-xl font-bold text-[#0284c7] hover:bg-[#0284c7]/10 transition-all cursor-pointer"
-          >
-            <ArrowRight className="w-4 h-4 rotate-180" />
-            <span>عودة إلى المجالات</span>
-          </button>
           <SvtConceptsView />
         </section>
       )}

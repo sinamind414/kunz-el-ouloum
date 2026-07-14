@@ -1,14 +1,27 @@
 import { motion } from 'motion/react';
 import { Award, Flame, BookOpen, Trophy, Target, Star, Brain, CheckCircle, Zap } from 'lucide-react';
+import { UserProgress } from '../types';
 
 interface BadgesViewProps {
-  progress: any;
+  progress?: UserProgress;
 }
 
 export default function BadgesView({ progress }: BadgesViewProps) {
   const completedUnitsCount = progress?.completedUnits?.length || 0;
   const streak = progress?.streak || 0;
   const xp = progress?.xp || 0;
+  const quizScoreHistory = progress?.quizScoreHistory ?? [];
+
+  // Un vrai "score parfait" : au moins un quiz réussi à 100% (score === total).
+  const hasPerfectQuiz = quizScoreHistory.some((q) => q.total > 0 && q.score === q.total);
+
+  // "Apprentissage rapide" mesurable : plusieurs tests réussis dans la même journée.
+  const quizzesPerDay = new Map<string, number>();
+  for (const q of quizScoreHistory) {
+    quizzesPerDay.set(q.date, (quizzesPerDay.get(q.date) || 0) + 1);
+  }
+  const maxQuizzesInADay = quizzesPerDay.size > 0 ? Math.max(...quizzesPerDay.values()) : 0;
+  const FAST_LEARNER_TARGET = 3;
 
   const achievementsList = [
     {
@@ -84,9 +97,9 @@ export default function BadgesView({ progress }: BadgesViewProps) {
     {
       id: 'perfect_score',
       title: "العلامة الكاملة",
-      description: "احصل على علامة كاملة في التدريب",
-      unlocked: completedUnitsCount >= 1,
-      current: completedUnitsCount >= 1 ? 1 : 0,
+      description: "احصل على علامة كاملة (100%) في تدريب",
+      unlocked: hasPerfectQuiz,
+      current: hasPerfectQuiz ? 1 : 0,
       target: 1,
       badgeColor: "bg-[#006d37]/10 text-[#006d37] border-[#006d37]/20",
       icon: <CheckCircle className="w-8 h-8" />
@@ -94,10 +107,10 @@ export default function BadgesView({ progress }: BadgesViewProps) {
     {
       id: 'fast_learner',
       title: "سريع التعلم",
-      description: "أنهِ وحدة دراسية في أقل من 3 أيام",
-      unlocked: xp >= 500,
-      current: xp >= 500 ? 1 : 0,
-      target: 1,
+      description: "أنجز 3 تدريبات في يوم واحد",
+      unlocked: maxQuizzesInADay >= FAST_LEARNER_TARGET,
+      current: Math.min(maxQuizzesInADay, FAST_LEARNER_TARGET),
+      target: FAST_LEARNER_TARGET,
       badgeColor: "bg-amber-500/10 text-amber-600 border-amber-500/20",
       icon: <Zap className="w-8 h-8" />
     }

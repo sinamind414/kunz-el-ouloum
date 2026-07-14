@@ -11,25 +11,32 @@ export default defineConfig({
         manualChunks(id) {
           // 1. Vendors lourds
           if (id.includes('node_modules')) {
+            if (id.includes('@supabase')) return 'vendor-supabase'
             if (id.includes('recharts')) return 'vendor-charts'
             if (id.includes('lucide-react')) return 'vendor-icons'
             if (id.includes('motion')) return 'vendor-motion'
             return 'vendor-react'
           }
-          // 2. Données + moteurs (éviter circular chunk: data <-> engines)
-          // OPUS 3624 lignes + 500 QCM + smartBot 90kB + engines offline
+          // 2. Données lourdes (500 QCM + OPUS + cartes + connaissances)
           if (
             id.includes('src/data') ||
-            id.includes('src/tutorKnowledge') ||
             id.includes('src/knowledgeCards') ||
             id.includes('src/bookTutorQA') ||
             id.includes('src/methodologyKnowledge') ||
             id.includes('src/lessonData') ||
             id.includes('src/knowledge/') ||
-            id.includes('src/utils/') ||
+            id.includes('src/tutorKnowledge') ||
+            id.includes('src/studyGuide') ||
             id.includes('src/smartTutorEngine')
           ) {
-            return 'kunz-core'
+            return 'kunz-data'
+          }
+          // 3. Moteurs + contextes (utils, engines, auth)
+          if (
+            id.includes('src/utils') ||
+            id.includes('src/context')
+          ) {
+            return 'kunz-engines'
           }
         }
       }

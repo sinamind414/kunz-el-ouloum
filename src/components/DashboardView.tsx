@@ -1,14 +1,14 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Flame, Play, Lock, CheckCircle, Brain, Sparkles, Target } from 'lucide-react';
-import { Unit, UserProgress } from '../types';
+import { Unit, UserProgress, TabId } from '../types';
 
 interface DashboardViewProps {
   units: Unit[];
   progress: UserProgress;
   onLaunchQuiz: (unitId: number) => void;
   onLaunchRevision: (unitId: number) => void;
-  onNavigateToTab?: (tab: 'home' | 'review' | 'stats' | 'chat') => void;
+  onNavigateToTab?: (tab: TabId) => void;
 }
 
 export default function DashboardView({ units, progress, onLaunchQuiz, onLaunchRevision }: DashboardViewProps) {

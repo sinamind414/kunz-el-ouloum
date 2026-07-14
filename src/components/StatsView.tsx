@@ -16,12 +16,12 @@ import {
   CartesianGrid
 } from 'recharts';
 import { Trophy, Flame, Calendar, BookOpen, Clock, Activity, Sparkles, Award, CheckCircle2, TrendingUp, Printer, Download, X, FileText } from 'lucide-react';
-import { UserProgress, Unit } from '../types';
+import { UserProgress, Unit, TabId } from '../types';
 
 interface StatsViewProps {
   progress: UserProgress;
   units: Unit[];
-  onNavigateToTab?: (tab: 'badges') => void;
+  onNavigateToTab?: (tab: TabId) => void;
 }
 
 export default function StatsView({ progress, units, onNavigateToTab }: StatsViewProps) {
@@ -720,7 +720,7 @@ export default function StatsView({ progress, units, onNavigateToTab }: StatsVie
 
       <div className="mt-6 flex justify-center no-print">
         <button
-          onClick={() => onNavigateToTab?.('badges')}
+          onClick={() => onNavigateToTab?.('progress')}
           className="flex items-center gap-2 bg-[#006d37] hover:bg-[#005a2e] text-white font-extrabold text-sm px-5 py-3 rounded-2xl cursor-pointer transition-colors"
         >
           <Award className="w-4 h-4" />

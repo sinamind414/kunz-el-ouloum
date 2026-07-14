@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react';
-import { Target, CheckCircle2, Sparkles, BookOpen } from 'lucide-react';
+import { Target, CheckCircle2, Sparkles, BookOpen, ArrowLeft } from 'lucide-react';
 import { METHODOLOGY_QA, MethodologyQA } from '../methodologyKnowledge';
 import { normalizeArabic } from '../utils/arabicNormalize';
 import SpeechToTextInput from './SpeechToTextInput';
@@ -227,12 +227,5 @@ export default function MethodologyTrainer({ onClose, initialVerb = 'analyse' }:
         </div>
       )}
     </div>
-  );
-}
-
-// tiny inline to avoid extra import circular
-function ArrowLeft(props: any) {
-  return (
-    <svg {...props} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
   );
 }

@@ -1,142 +1,20 @@
 import React, { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Target, Search, Lightbulb, SplitSquareVertical, AlertCircle, ChevronDown, CheckCircle2, GitCompareArrows, BadgeCheck, FileText, GraduationCap, X, ArrowRight, ChevronRight, Sparkles, Route } from 'lucide-react';
+import {
+  Target, Search, Lightbulb, AlertCircle, ChevronDown, CheckCircle2,
+  BadgeCheck, FileText, GraduationCap, X, ArrowRight, ChevronRight,
+  Sparkles, Route, Rocket, XCircle, BookOpen, Zap,
+} from 'lucide-react';
 import { METHODOLOGY_CARDS } from '../data/methodologyKnowledge';
 import { METHODOLOGY_QA } from '../methodologyKnowledge';
+import { METHODOLOGY_VERBS } from '../data/methodologyVerbs.tsx';
 import MethodologyTrainer from './MethodologyTrainer';
 import { normalizeArabic } from '../utils/arabicNormalize';
 import { STUDY_GUIDE_CARDS } from '../studyGuide';
+import { KnowledgeCards } from '../data/kunzDatabase';
+import { MethodologyRules } from '../data/kunzDatabase';
 
-interface VerbData {
-  id: string;
-  verb: string;
-  french: string;
-  icon: React.ReactNode;
-  color: string;
-  definition: string;
-  steps: string[];
-  example: {
-    context: string;
-    question: string;
-    answer: string;
-  };
-}
-
-// Source: GitHub Flutter file lib/features/methodology/screens/methodology_screen.dart
-// Six core BAC methodology verbs converted to the React view.
-const METHODOLOGY_VERBS: VerbData[] = [
-  {
-    id: 'analyse',
-    verb: 'حَلِّلْ',
-    french: 'Analyser',
-    icon: <Search className="w-6 h-6" />,
-    color: 'from-[#3b82f6] to-[#2563eb]',
-    definition: 'قراءة متأنية للوثيقة (منحنى، جدول، صورة...) وتفكيك معطياتها لإيجاد علاقة بين المتغيرات دون إعطاء الأسباب (إلا في التحليل المقارن).',
-    steps: [
-      'تعريف الوثيقة: "تمثل الوثيقة [الظاهرة المدروسة] بدلالة [المتغير] حيث نلاحظ..."',
-      'تفكيك وتقسيم المعطيات: تقسيم المنحنى إلى مجالات أو الجدول إلى خانات وذكر التغيرات (تزايد، تناقص، ثبات).',
-      'إيجاد العلاقة: ربط المتغيرات (كلما زاد... زاد/نقص...).',
-      'الاستنتاج: استخراج حقيقة علمية أو نتيجة جزئية كخلاصة للتحليل.',
-    ],
-    example: {
-      context: 'منحنى يمثل تغيرات سرعة التفاعل الإنزيمي بدلالة تركيز مادة التفاعل (الركيزة).',
-      question: 'حلل المنحنى البياني.',
-      answer: 'تمثل الوثيقة منحنى لتغيرات سرعة التفاعل بدلالة تركيز مادة التفاعل، حيث نلاحظ:\n- في التراكيز المنخفضة: تزايد سريع لسرعة التفاعل كلما زاد تركيز الركيزة (علاقة طردية).\n- في التراكيز العالية: ثبات سرعة التفاعل عند سرعة أعظمية (Vmax) رغم زيادة التركيز.\nالاستنتاج: سرعة التفاعل الإنزيمي تتأثر بتركيز الركيزة وتصل إلى حد التشبع بفضل تشكل المعقدات إنزيم-ركيزة.',
-    },
-  },
-  {
-    id: 'interpret',
-    verb: 'فَسِّرْ',
-    french: 'Interpréter',
-    icon: <Lightbulb className="w-6 h-6" />,
-    color: 'from-[#f59e0b] to-[#d97706]',
-    definition: 'إعطاء معنى للنتائج الملاحظة بربطها بأسبابها العلمية الخفية. الإجابة عن سؤال "لماذا؟" و"كيف يحدث ذلك؟".',
-    steps: [
-      'ذكر الملاحظة أو النتيجة التجريبية (ماذا حدث في التجربة؟).',
-      'ربط النتيجة بالسبب باستخدام عبارات الربط المنهجية (وهذا راجع إلى، يعود ذلك إلى، يفسر هذا بـ...).',
-      'تقديم التبرير العلمي الدقيق والمفصل توظف فيه مكتسباتك المعرفية للوحدة.',
-    ],
-    example: {
-      context: 'تجربة قياس نشاط إنزيم في درجات حرارة مختلفة (وسط به حرارة 60°م).',
-      question: 'فسر تناقص وانعدام نشاط الإنزيم عند درجة حرارة 60°م.',
-      answer: 'الملاحظة: انعدام نشاط الإنزيم عند 60°م.\nالتفسير: يرجع ذلك إلى أن الحرارة المرتفعة تؤدي إلى تخريب البنية الفراغية للإنزيم (كسر الروابط الضعيفة المثبتة للبنية مثل الروابط الهيدروجينية)، مما يؤدي إلى فقدان الموقع الفعال لشكله المميز، وبالتالي عدم تكامل الركيزة معه وعدم تشكل المعقد (إنزيم-مادة التفاعل ES).',
-    },
-  },
-  {
-    id: 'deduce',
-    verb: 'اسْتَنْتِجْ',
-    french: 'Déduire',
-    icon: <SplitSquareVertical className="w-6 h-6" />,
-    color: 'from-[#10b981] to-[#059669]',
-    definition: 'الخروج بمعلومة جديدة أو حقيقة علمية أساسية كعصارة أو نتيجة نهائية بناءً على معطيات (تحليل أو تجربة) سابقة.',
-    steps: [
-      'التفطن للهدف الرئيسي من التجربة أو الوثيقة المدروسة.',
-      'صياغة جملة إخبارية دقيقة ومختصرة تعبر عن الحقيقة العلمية المستخلصة.',
-      'تجنب إعادة ذكر الملاحظات أو الأرقام أو التفاصيل التجريبية في الاستنتاج.',
-    ],
-    example: {
-      context: 'إضافة أحماض أمينية مشعة للخلايا وتتبع مسارها المجهري، فتمركز الإشعاع كثيفاً في الشبكة الهيولية الفعالة (المحببة).',
-      question: 'ماذا تستنتج من هذه النتيجة؟',
-      answer: 'أستنتج أن مقر تركيب البروتين في الخلية حقيقية النواة هو الشبكة الهيولية المحببة (الفعالة).',
-    },
-  },
-  {
-    id: 'compare',
-    verb: 'قَارِنْ',
-    french: 'Comparer',
-    icon: <GitCompareArrows className="w-6 h-6" />,
-    color: 'from-[#06b6d4] to-[#0e7490]',
-    definition: 'نشاط عقلي يتم من خلاله إظهار أوجه التشابه وأوجه الاختلاف بين عنصرين أو بين نتائج تجريبية في أوساط مختلفة.',
-    steps: [
-      'تقديم عناصر المقارنة: "المقارنة بين [أ] و [ب] حيث نلاحظ..."',
-      'استخراج أوجه التشابه: ذكر العناصر أو النقاط المشتركة بينهما.',
-      'استخراج أوجه الاختلاف: استخدام أدوات الربط المقارنة (بينما، بالمقابل، يقابله، في حين أن...).',
-      'الاستنتاج: الخروج بخلاصة علمية تربط بين الطرفين المقارنين.',
-    ],
-    example: {
-      context: 'مقارنة المردود الطاقوي في وسط هوائي (التنفس) ووسط لاهوائي (التخمر).',
-      question: 'قارن بين ظاهرتي التنفس الخلوي والتخمر الكحولي.',
-      answer: 'أوجه التشابه: كلاهما ظاهرة حيوية لإنتاج الطاقة (ATP) يتم فيهما هدم مادة الأيض (الغلوكوز).\nأوجه الاختلاف: التنفس يتم في وجود O2 ويحدث فيه هدم كلي للغلوكوز مع إنتاج طاقة كبيرة (38 أو 36 ATP). بينما التخمر يتم في غياب O2 ويحدث فيه هدم جزئي مع إنتاج طاقة ضئيلة (2 ATP) وبقايا عضوية (إيثانول).\nالاستنتاج: التنفس والتخمر آليتان تضمنان تحويل الطاقة الكيميائية الكامنة إلى طاقة قابلة للاستعمال في الخلية.',
-    },
-  },
-  {
-    id: 'justify',
-    verb: 'عَلِّلْ / بَرِّرْ',
-    french: 'Justifier',
-    icon: <BadgeCheck className="w-6 h-6" />,
-    color: 'from-[#f43f5e] to-[#e11d48]',
-    definition: 'تقديم الحجج والبراهين العلمية المقنعة لإثبات صحة عبارة، نتيجة، أو اختيار معين بناءً على معطيات السند والمكتسبات.',
-    steps: [
-      'التبني الواضح للعبارة أو الاختيار المطلوب تبريره.',
-      'استخراج الأدلة والشواهد من الوثيقة المدروسة (أرقام، ملاحظات مجهرية، نتائج).',
-      'ربط الشاهد بالقاعدة العلمية مستخدماً أدوات التعليل (لأن، بما أن... فإن...، وهو ما يؤكد...).',
-    ],
-    example: {
-      context: 'إصابة شخص بفيروس VIH وتناقص شديد في الخلايا اللمفاوية LT4.',
-      question: 'علل تسمية فيروس VIH بفيروس فقدان المناعة المكتسبة.',
-      answer: 'التعليل: يسمى كذلك لأن فيروس VIH يستهدف ويدمر الخلايا اللمفاوية LT4 المحورية (المساعدة)، وبما أن خلايا LT4 هي المسؤولة عن إفراز الإنترلوكين 2 (IL-2) الضروري لتنشيط وتكاثر اللمفاويات البائية (LB) والتائية (LT8)، فإن غيابها يؤدي إلى تعطيل الاستجابتين المناعيتين الخلطية والخلوية معاً، وبالتالي انهيار المنظومة المناعية المكتسبة للجسم.',
-    },
-  },
-  {
-    id: 'hypothesis',
-    verb: 'اقْتَرِحْ فَرَضِيَّة',
-    french: 'Hypothèse',
-    icon: <AlertCircle className="w-6 h-6" />,
-    color: 'from-[#8b5cf6] to-[#7c3aed]',
-    definition: 'تقديم تفسير أو حل مؤقت منطقي لمشكل علمي مطروح بناءً على الملاحظات والمكتسبات، يقبل الصحة أو الخطأ ويتم التحقق منه تجريبياً لاحقاً.',
-    steps: [
-      'تحديد المشكل العلمي المطروح في السياق بدقة.',
-      'صياغة جملة إخبارية واضحة تتضمن حلاً منطقياً وغير متناقض مع المعطيات.',
-      'استخدام عبارات تفيد الاحتمال العلمي (ربما، يعود سبب ذلك إلى أن، قد يكون...).',
-      'التأكد من أن الفرضية وجيهة (قابلة للاختبار والتحقق في الجزء الثاني من التمرين).',
-    ],
-    example: {
-      context: 'إضافة مادة ألفا أمانيتين للخلايا وتوقف تركيب البروتين وتناقص كمية ARNm في النواة والهيولى.',
-      question: 'اقترح فرضية تفسر آلية تأثير مادة ألفا أمانيتين على تركيب البروتين.',
-      answer: 'الفرضية المقترحة: يعود سبب توقف تركيب البروتين إلى أن مادة ألفا أمانيتين تثبط عمل إنزيم ARN بوليميراز في النواة، مما يمنع عملية الاستنساخ وبالتالي عدم تشكل جزيئة الـ ARNm الضرورية للترجمة.',
-    },
-  },
-];
+// ─── Helpers ───────────────────────────────────────────────────────────────────
 
 function matches(query: string, ...fields: (string | string[] | undefined)[]): boolean {
   if (!query) return true;
@@ -153,6 +31,8 @@ function matches(query: string, ...fields: (string | string[] | undefined)[]): b
   }
   return false;
 }
+
+// ─── Inline sub-components ────────────────────────────────────────────────────
 
 const AccordionCard: React.FC<{
   id: string;
@@ -206,59 +86,177 @@ const AccordionCard: React.FC<{
   );
 };
 
-const Chip: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+const Chip: React.FC<{ children: React.ReactNode; variant?: 'emerald' | 'amber' | 'rose' | 'indigo' }> = ({ children, variant = 'emerald' }) => {
+  const styles: Record<string, string> = {
+    emerald: 'bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 border-emerald-100 dark:border-emerald-800',
+    amber: 'bg-amber-50 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 border-amber-100 dark:border-amber-800',
+    rose: 'bg-rose-50 dark:bg-rose-900/30 text-rose-700 dark:text-rose-300 border-rose-100 dark:border-rose-800',
+    indigo: 'bg-indigo-50 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 border-indigo-100 dark:border-indigo-800',
+  };
   return (
-    <span className="inline-block text-[11px] font-bold bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 px-2 py-0.5 rounded-md border border-emerald-100 dark:border-emerald-800">
+    <span className={`inline-block text-[11px] font-bold px-2 py-0.5 rounded-md border ${styles[variant] || styles.emerald}`}>
       {children}
     </span>
   );
 };
 
-type CategoryId = 'trainer' | 'guide' | 'verbs' | 'templates' | 'manhadjiya';
+// ─── Quick-start items ───────────────────────────────────────────────────────
+
+const QUICK_START_ITEMS = [
+  {
+    id: 'qs_1',
+    title: 'فهم الأفعال الأدائية',
+    desc: 'ابدأ بفهم الفرق بين حلل وفسر واستنتج — هذا أساس كل إجابة في البكالوريا.',
+    targetCategory: 'verbs' as const,
+    icon: <BadgeCheck className="w-6 h-6" />,
+    color: '#006d37',
+    gradient: 'from-[#006d37] to-[#059669]',
+  },
+  {
+    id: 'qs_2',
+    title: 'تدرب على إجابة منهجية',
+    desc: 'اختر فعل أدائي وحل وضعية مع تصحيح محلي فوري: كلمات مفتاحية + روابط + بنية.',
+    targetCategory: 'trainer' as const,
+    icon: <Sparkles className="w-6 h-6" />,
+    color: '#7c3aed',
+    gradient: 'from-[#7c3aed] to-[#a78bfa]',
+  },
+  {
+    id: 'qs_3',
+    title: 'احفظ القوالب الجاهزة',
+    desc: 'القوالب المنهجية لكل نوع سؤال: تحليل وثيقة، مقارنة، تفسير، فرضية، تعليل.',
+    targetCategory: 'templates' as const,
+    icon: <GraduationCap className="w-6 h-6" />,
+    color: '#4f46e5',
+    gradient: 'from-[#4f46e5] to-[#6366f1]',
+  },
+  {
+    id: 'qs_4',
+    title: 'تعرّف على الأخطاء الشائعة',
+    desc: 'الأخطاء التي يرتكبها أغلب الطلاب وكيف تتجنبها في كل إجابة.',
+    targetCategory: 'errors' as const,
+    icon: <AlertCircle className="w-6 h-6" />,
+    color: '#e11d48',
+    gradient: 'from-[#e11d48] to-[#f43f5e]',
+  },
+];
+
+// ─── Common errors data ──────────────────────────────────────────────────────
+
+const COMMON_ERRORS = [
+  {
+    id: 'err_analysis_interp',
+    title: 'خلط التحليل بالتفسير',
+    desc: 'التحليل = وصف المعطيات (ماذا نلاحظ؟). التفسير = إعطاء السبب العلمي (لماذا؟). لا تخلط بينهما أبداً في البكالوريا.',
+    forbidden: MethodologyRules.analysisForbiddenWords,
+    correct: 'استعمل: نلاحظ، تزايد، تناقص، ثبات، قيمة أعظمية، قيمة دنيا.',
+    bad: 'نلاحظ تزايد السرعة لأن الإنزيم نشط.',
+    good: 'نلاحظ تزايد سرعة التفاعل بدلالة تركيز الركيزة حتى الوصول إلى قيمة أعظمية.',
+    color: '#e11d48',
+  },
+  {
+    id: 'err_hypothesis_maybe',
+    title: 'استعمال "ربما" في الفرضية',
+    desc: 'الفرضية العلمية يجب أن تكون مؤكدة ومحددة وقابلة للاختبار. تجنب اللغة الغامضة.',
+    forbidden: MethodologyRules.hypothesisForbiddenWords,
+    correct: 'استعمل: يعود سبب... إلى... نتيجة لـ... مما يؤدي إلى...',
+    bad: 'ربما السبب هو الإنزيم.',
+    good: 'يعود سبب توقف التفاعل إلى أن مادة ألفا أمانيتين تثبط إنزيم ARN بوليميراز.',
+    color: '#7c3aed',
+  },
+  {
+    id: 'err_problem_format',
+    title: 'المشكل العلمي بدون تنسيق صحيح',
+    desc: 'المشكل العلمي سؤال وليس عبارة. يجب أن يبدأ بأداة استفهام وينتهي بعلامة استفهام.',
+    forbidden: [] as string[],
+    correct: 'ابدأ بـ: كيف، لماذا، ما هو، ما هي. وانتهِ بـ ؟',
+    bad: 'نريد معرفة مقر تركيب البروتين في الخلية.',
+    good: 'ما هو مقر تركيب البروتين في الخلية حقيقية النواة؟',
+    color: '#d97706',
+  },
+  {
+    id: 'err_passive_voice',
+    title: 'استعمال صيغة مفعلولة في التحليل',
+    desc: 'التحليل يتطلب لغة علمية فعالة ودقيقة وليست سلبية. المصحح يبحث عن الأفعال الحركية.',
+    forbidden: MethodologyRules.analysisPassiveVocabularyBanned,
+    correct: 'استعمل: تزايد، تناقص، انعدام، ثبات، ظهور، اختفاء.',
+    bad: 'المنحنى يرتفع في البداية ثم ينخفض.',
+    good: 'نلاحظ تزايد قيمة المتغير في المجال الأول ثم تناقصها في المجال الثاني.',
+    color: '#0e7490',
+  },
+  {
+    id: 'err_conclusion_repeat',
+    title: 'الاستنتاج هو تكرار الملاحظة',
+    desc: 'الاستنتاج يجب أن يكون حقيقة علمية جديدة ومختصرة تجيب عن هدف السؤال، وليس وصفاً للأرقام.',
+    forbidden: [] as string[],
+    correct: 'صغ حقيقة علمية في سطر واحد تجيب عن "ماذا نستنتج؟".',
+    bad: 'نستنتج أن المنحنى وصل إلى 50 ثم استقر.',
+    good: 'نستنتج أن سرعة التفاعل الإنزيمي تصل إلى حد التشبع عند تركيز معين للركيزة.',
+    color: '#059669',
+  },
+  {
+    id: 'err_long_conclusion',
+    title: 'الخاتمة في النص العلمي طويلة جداً',
+    desc: 'الخاتمة يجب أن تكون موجزة (أقل من 150 حرف) ومباشرة وتجيب عن الإشكالية المطروحة في المقدمة.',
+    forbidden: [] as string[],
+    correct: 'اجعل الخاتمة سطرين أو ثلاثة فقط: جواب مباشر عن المطلوب.',
+    bad: 'وفي الختام نلاحظ أن كل ما سبق يثبت أن البروتين يتركب في الريبوزومات وأن الشفرة الوراثية ثلاثية وأن ARNm ينقل المعلومة وأن...',
+    good: 'وعليه، يتم تركيب البروتين على مستوى الريبوزومات في الهيولى انطلاقاً من ARNm المنتج في النواة.',
+    color: '#b45309',
+  },
+];
+
+// ─── Category type ────────────────────────────────────────────────────────────
+
+type CategoryId = 'quickstart' | 'verbs' | 'templates' | 'qa' | 'errors' | 'terms' | 'guide' | 'trainer';
+
+// ─── Main Component ──────────────────────────────────────────────────────────
 
 export default function MethodologyView() {
   const [query, setQuery] = useState('');
   const [activeVerbId, setActiveVerbId] = useState<string>(METHODOLOGY_VERBS[0].id);
   const [activeCategory, setActiveCategory] = useState<CategoryId | null>(null);
 
+  // ── Filtered data ──
   const filteredMeth = useMemo(
     () => METHODOLOGY_QA.filter((q) => matches(query, q.question, q.answer, q.keywords, q.category, q.template)),
     [query]
   );
-
   const filteredTemplates = useMemo(
     () => METHODOLOGY_CARDS.filter((c) => matches(query, c.title, c.steps, c.triggers)),
     [query]
   );
-
   const filteredStudyGuide = useMemo(
-    () =>
-      STUDY_GUIDE_CARDS.filter((card) =>
-        matches(
-          query,
-          card.title,
-          card.subtitle,
-          card.triggers,
-          card.keywords,
-          card.sections.flatMap((section) => [section.heading, ...section.bullets])
-        )
-      ),
+    () => STUDY_GUIDE_CARDS.filter((card) =>
+      matches(query, card.title, card.subtitle, card.triggers, card.keywords, card.sections.flatMap((s) => [s.heading, ...s.bullets]))
+    ),
     [query]
   );
-
   const filteredVerbs = useMemo(
     () => METHODOLOGY_VERBS.filter((v) => matches(query, v.verb, v.french, v.definition, v.steps)),
+    [query]
+  );
+  const filteredErrors = useMemo(
+    () => COMMON_ERRORS.filter((e) => matches(query, e.title, e.desc, e.correct, e.bad, e.good, e.forbidden)),
+    [query]
+  );
+  const filteredTerms = useMemo(
+    () => KnowledgeCards.filter((kc) => matches(query, kc.term, kc.definition)),
     [query]
   );
 
   const activeVerb = METHODOLOGY_VERBS.find((v) => v.id === activeVerbId) || METHODOLOGY_VERBS[0];
 
-  const CATEGORIES: { id: CategoryId; title: string; fr: string; icon: React.ReactNode; color: string; desc: string; count: number }[] = [
-    { id: 'trainer', title: 'تدريب تفاعلي مجاني', fr: 'Entraîneur Fable 5', icon: <Sparkles className="w-7 h-7" />, color: '#7c3aed', desc: 'اكتب إجابتك وحللها محلياً: كلمات مفتاحية + روابط منطقية + بنية', count: 6 },
-    { id: 'guide', title: 'دليل دراسة module sciences', fr: 'Parcours de révision', icon: <Route className="w-7 h-7" />, color: '#0f766e', desc: 'خطة دخول الدروس، ترتيب الوحدات، التجارب، وقواعد البكالوريا', count: STUDY_GUIDE_CARDS.length },
-    { id: 'verbs', title: 'الأفعال الستة الأساسية', fr: 'Les 6 verbes BAC', icon: <BadgeCheck className="w-7 h-7" />, color: '#006d37', desc: 'حلل، فسر، استنتج، قارن، علل، اقترح فرضية', count: METHODOLOGY_VERBS.length },
-    { id: 'templates', title: 'القوالب المنهجية', fr: 'Modèles de réponse', icon: <GraduationCap className="w-7 h-7" />, color: '#4f46e5', desc: 'قوالب جاهزة لكل نوع من الإجابات', count: METHODOLOGY_CARDS.length },
-    { id: 'manhadjiya', title: 'أسئلة المنهجية', fr: 'Q/R Méthodologie', icon: <FileText className="w-7 h-7" />, color: '#d97706', desc: 'أسئلة وأجوبة منهجية', count: METHODOLOGY_QA.length },
+  // ── 8 Categories (was 5) ──
+  const CATEGORIES: { id: CategoryId; title: string; fr: string; icon: React.ReactNode; color: string; gradient: string; desc: string; count: number }[] = [
+    { id: 'quickstart', title: 'البداية السريعة', fr: 'Démarrage rapide', icon: <Rocket className="w-7 h-7" />, color: '#f97316', gradient: 'from-[#f97316] to-[#ea580c]', desc: 'أين تبدأ؟ 4 مسارات مقترحة حسب مستواك.', count: QUICK_START_ITEMS.length },
+    { id: 'verbs', title: 'الأفعال الأدائية الستة', fr: 'Les 6 verbes BAC', icon: <BadgeCheck className="w-7 h-7" />, color: '#006d37', gradient: 'from-[#006d37] to-[#059669]', desc: 'حلل، فسر، استنتج، قارن، علل، اقترح فرضية — مع تعريف وخطوات ومثال لكل فعل.', count: METHODOLOGY_VERBS.length },
+    { id: 'templates', title: 'القوالب المنهجية', fr: 'Modèles de réponse', icon: <GraduationCap className="w-7 h-7" />, color: '#4f46e5', gradient: 'from-[#4f46e5] to-[#6366f1]', desc: 'قوالب جاهزة لكل نوع إجابة: تحليل وثيقة، مسعى علمي، مقارنة، فرضية، تعليل.', count: METHODOLOGY_CARDS.length },
+    { id: 'qa', title: 'أسئلة وأجوبة منهجية', fr: 'Q/R Méthodologie', icon: <FileText className="w-7 h-7" />, color: '#d97706', gradient: 'from-[#d97706] to-[#f59e0b]', desc: 'أسئلة متكررة حول المنهجية مع إجابات تفصيلية من كتاب المنهجية.', count: METHODOLOGY_QA.length },
+    { id: 'errors', title: 'الأخطاء الشائعة', fr: 'Erreurs fréquentes', icon: <XCircle className="w-7 h-7" />, color: '#e11d48', gradient: 'from-[#e11d48] to-[#f43f5e]', desc: '6 أخطاء منهجية يرتكبها أغلب الطلاب مع الأمثلة الصحيحة والخاطئة.', count: COMMON_ERRORS.length },
+    { id: 'terms', title: 'المصطلحات المفتاحية', fr: 'Termes clés', icon: <BookOpen className="w-7 h-7" />, color: '#0f766e', gradient: 'from-[#0f766e] to-[#14b8a6]', desc: '"المواد المقدسة" — المصطلحات العلمية الرسمية من البرنامج DZ.', count: KnowledgeCards.length },
+    { id: 'guide', title: 'دليل المراجعة', fr: 'Parcours de révision', icon: <Route className="w-7 h-7" />, color: '#0e7490', gradient: 'from-[#0e7490] to-[#06b6d4]', desc: 'خطة دراسة المجالات الثلاثة، بروتوكول المراجعة، والتجارب الأساسية.', count: STUDY_GUIDE_CARDS.length },
+    { id: 'trainer', title: 'التدريب التفاعلي', fr: 'Entraîneur', icon: <Zap className="w-7 h-7" />, color: '#7c3aed', gradient: 'from-[#7c3aed] to-[#a78bfa]', desc: 'اكتب إجابتك وحللها محلياً: كلمات مفتاحية + روابط منطقية + بنية.', count: 6 },
   ];
 
   const goBack = () => {
@@ -266,27 +264,29 @@ export default function MethodologyView() {
     setQuery('');
   };
 
+  const navigateToCategory = (catId: CategoryId) => {
+    setActiveCategory(catId);
+    setQuery('');
+  };
+
   return (
     <div className="w-full max-w-4xl mx-auto p-4 md:p-6 pb-24" dir="rtl">
-      <motion.div
-        initial={{ opacity: 0, y: -10 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="mb-6"
-      >
+      {/* ── Hero ── */}
+      <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="mb-6">
         <div className="flex items-center gap-3 mb-2">
           <div className="p-3 bg-emerald-100 dark:bg-emerald-900/40 text-emerald-600 dark:text-emerald-400 rounded-2xl shadow-sm border border-emerald-200 dark:border-emerald-800">
             <Target className="w-8 h-8" />
           </div>
           <div>
-            <h1 className="text-2xl md:text-3xl font-black text-gray-900 dark:text-white">تدريب المسعى العلمي والمنهجية</h1>
+            <h1 className="text-2xl md:text-3xl font-black text-gray-900 dark:text-white">المنهجية والمسعى العلمي</h1>
             <p className="text-gray-600 dark:text-gray-400 text-sm md:text-base font-medium mt-1">
-              اختر rubrique pour الدخول إليها — كل عنصر بأيقونته الخاصة.
+              8 أقسام منظمة — اختر القسم الذي يناسبك.
             </p>
           </div>
         </div>
       </motion.div>
 
-      {/* LEVEL 1 — Category grid (each item has a single icon) */}
+      {/* ═══════ LEVEL 1 — Category grid ═══════ */}
       {!activeCategory && (
         <section className="grid sm:grid-cols-2 gap-4">
           {CATEGORIES.map((cat, idx) => (
@@ -294,7 +294,7 @@ export default function MethodologyView() {
               key={cat.id}
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: idx * 0.06 }}
+              transition={{ delay: idx * 0.05 }}
               onClick={() => setActiveCategory(cat.id)}
               className="group text-right rounded-3xl p-5 shadow-sm border border-gray-200 dark:border-gray-800 bg-white dark:bg-[#141916] hover:shadow-md transition-all cursor-pointer flex flex-col gap-3"
               style={{ borderTop: `4px solid ${cat.color}` }}
@@ -319,7 +319,7 @@ export default function MethodologyView() {
               </div>
               <p className="text-sm text-gray-600 dark:text-gray-300 font-medium leading-6">{cat.desc}</p>
               <div className="flex items-center gap-1 text-xs font-extrabold mt-auto" style={{ color: cat.color }}>
-                <span>ادخل الـ rubrique</span>
+                <span>ادخل</span>
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </div>
             </motion.button>
@@ -327,17 +327,17 @@ export default function MethodologyView() {
         </section>
       )}
 
-      {/* LEVEL 2 — Focused view of the selected category (only its items) */}
+      {/* ═══════ LEVEL 2 — Category detail ═══════ */}
       {activeCategory && (
         <div className="space-y-5">
-          {/* Back + search */}
+          {/* Back + search bar */}
           <div className="flex items-center gap-3 flex-wrap">
             <button
               onClick={goBack}
               className="flex items-center gap-1 px-3 py-2 rounded-xl font-bold text-sm bg-white dark:bg-[#141916] border border-gray-200 dark:border-gray-800 text-[#006d37] dark:text-[#2ecc71] hover:bg-gray-50 dark:hover:bg-white/5 transition-all cursor-pointer"
             >
               <ChevronRight className="w-4 h-4" />
-              <span>الرجوع للمجالات</span>
+              <span>الرجوع</span>
             </button>
             <div className="flex-1 min-w-[200px]">
               <div className="flex items-center gap-2 bg-white dark:bg-[#141916] border border-gray-200 dark:border-gray-800 rounded-2xl px-4 py-2.5 shadow-sm">
@@ -345,7 +345,7 @@ export default function MethodologyView() {
                 <input
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
-                  placeholder="ابحث داخل هذه الـ rubrique..."
+                  placeholder="ابحث هنا..."
                   className="flex-1 bg-transparent outline-none text-sm text-gray-800 dark:text-gray-200 placeholder:text-gray-400 font-medium"
                 />
                 {query && (
@@ -357,87 +357,83 @@ export default function MethodologyView() {
             </div>
           </div>
 
-          {/* === TRAINER === */}
-          {activeCategory === 'trainer' && (
+          {/* ══ QUICK START ══ */}
+          {activeCategory === 'quickstart' && (
             <div className="space-y-4">
-              <div className="bg-[#f5f3ff] dark:bg-purple-950/20 border border-purple-200 dark:border-purple-900/40 rounded-2xl p-3 text-[12px] leading-6 text-[#4c1d95] dark:text-purple-200 font-bold">
-                Kunz El Ouloum — مجاني 100% لفهم الآليات ومنطق الإجابة.
-                التصحيح الكامل + مواضيع BAC + متابعة أسبوعية → <span className="underline">Kunz Pro</span> (نسخة مدفوعة).
+              <div className="bg-gradient-to-br from-orange-50 to-amber-50 dark:from-orange-950/20 dark:to-amber-950/10 border border-orange-200 dark:border-orange-900/40 rounded-2xl p-4">
+                <h3 className="text-base font-black text-orange-800 dark:text-orange-300 mb-2 flex items-center gap-2">
+                  <Rocket className="w-5 h-5" />
+                  من أين أبدأ؟
+                </h3>
+                <p className="text-sm text-orange-700 dark:text-orange-200 leading-7 font-medium">
+                  إذا كنت مبتدئاً، اتبع الترتيب أدناه. إذا كنت متوسطاً أو متقدماً، اختر النقطة التي تحتاجها.
+                  كل بطولة تنقلك مباشرة إلى القسم المناسب.
+                </p>
               </div>
-              <MethodologyTrainer initialVerb="analyse" />
-            </div>
-          )}
-
-          {/* === STUDY GUIDE === */}
-          {activeCategory === 'guide' && (
-            <div className="grid grid-cols-1 gap-4">
-              {filteredStudyGuide.length === 0 ? (
-                <p className="text-sm text-gray-400 font-medium">لا توجد نتائج مطابقة للبحث.</p>
-              ) : (
-                filteredStudyGuide.map((card) => (
-                  <AccordionCard
-                    key={card.id}
-                    id={card.id}
-                    icon={<Route className="w-5 h-5" />}
-                    accent="from-[#0f766e] to-[#115e59]"
-                    badge={card.subtitle}
-                    headerNode={card.title}
+              <div className="grid sm:grid-cols-2 gap-4">
+                {QUICK_START_ITEMS.map((item, idx) => (
+                  <motion.button
+                    key={item.id}
+                    initial={{ opacity: 0, y: 12 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: idx * 0.08 }}
+                    onClick={() => navigateToCategory(item.targetCategory)}
+                    className="group text-right bg-white dark:bg-[#1a201c] rounded-2xl border border-gray-200 dark:border-gray-800 p-5 shadow-sm hover:shadow-md transition-all cursor-pointer"
+                    style={{ borderRight: `4px solid ${item.color}` }}
                   >
-                    <div className="space-y-4">
-                      {card.sections.map((section, sectionIdx) => (
-                        <div key={sectionIdx} className="bg-white/70 dark:bg-black/20 border border-gray-100 dark:border-gray-800 rounded-xl p-3">
-                          <h4 className="text-sm font-black text-teal-700 dark:text-teal-300 mb-2">{section.heading}</h4>
-                          <ul className="space-y-2">
-                            {section.bullets.map((bullet, bulletIdx) => (
-                              <li key={bulletIdx} className="flex items-start gap-2 text-gray-800 dark:text-gray-200 font-medium leading-7 text-sm md:text-base">
-                                <CheckCircle2 className="w-4 h-4 mt-1 text-teal-600 dark:text-teal-300 shrink-0" />
-                                <span>{bullet}</span>
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
-                      ))}
-                      <div className="flex flex-wrap gap-1.5">
-                        {card.keywords.map((k, ki) => (
-                          <Chip key={ki}>{k}</Chip>
-                        ))}
+                    <div className="flex items-center gap-3 mb-3">
+                      <div className={`w-11 h-11 rounded-xl bg-gradient-to-br ${item.gradient} text-white flex items-center justify-center shrink-0`}>
+                        {item.icon}
+                      </div>
+                      <div>
+                        <h4 className="font-black text-gray-900 dark:text-white text-sm">{item.title}</h4>
+                        <span className="text-[10px] font-bold text-gray-400">الخطوة {idx + 1}</span>
                       </div>
                     </div>
-                  </AccordionCard>
-                ))
-              )}
+                    <p className="text-xs text-gray-600 dark:text-gray-300 leading-6 font-medium">{item.desc}</p>
+                    <div className="flex items-center gap-1 mt-3 text-xs font-extrabold" style={{ color: item.color }}>
+                      <span>انتقل</span>
+                      <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+                    </div>
+                  </motion.button>
+                ))}
+              </div>
             </div>
           )}
 
-          {/* === VERBS === */}
+          {/* ══ VERBS ══ */}
           {activeCategory === 'verbs' && (
             <div className="grid lg:grid-cols-[260px_1fr] gap-5 items-start">
               <aside className="bg-white dark:bg-[#141916] border border-gray-200 dark:border-gray-800 rounded-3xl p-3 shadow-sm flex lg:flex-col gap-2 overflow-x-auto lg:overflow-visible snap-x snap-mandatory">
-                {filteredVerbs.map((v) => {
-                  const isActive = v.id === activeVerbId;
-                  return (
-                    <button
-                      key={v.id}
-                      onClick={() => setActiveVerbId(v.id)}
-                      className={`snap-start shrink-0 lg:w-full text-right rounded-2xl px-3 py-3 flex items-center justify-between gap-3 border transition-all cursor-pointer ${
-                        isActive
-                          ? 'bg-[#006d37]/10 border-[#006d37] text-[#006d37] dark:text-[#2ecc71] font-extrabold'
-                          : 'bg-gray-50 dark:bg-white/5 border-gray-200 dark:border-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/10'
-                      }`}
-                    >
-                      <span className="flex items-center gap-2">
-                        <span className={`w-9 h-9 rounded-xl bg-gradient-to-br ${v.color} text-white flex items-center justify-center shrink-0`}>
-                          {v.icon}
+                {filteredVerbs.length === 0 ? (
+                  <p className="text-sm text-gray-400 font-medium p-3">لا توجد نتائج مطابقة.</p>
+                ) : (
+                  filteredVerbs.map((v) => {
+                    const isActive = v.id === activeVerbId;
+                    return (
+                      <button
+                        key={v.id}
+                        onClick={() => setActiveVerbId(v.id)}
+                        className={`snap-start shrink-0 lg:w-full text-right rounded-2xl px-3 py-3 flex items-center justify-between gap-3 border transition-all cursor-pointer ${
+                          isActive
+                            ? 'bg-[#006d37]/10 border-[#006d37] text-[#006d37] dark:text-[#2ecc71] font-extrabold'
+                            : 'bg-gray-50 dark:bg-white/5 border-gray-200 dark:border-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/10'
+                        }`}
+                      >
+                        <span className="flex items-center gap-2">
+                          <span className={`w-9 h-9 rounded-xl bg-gradient-to-br ${v.color} text-white flex items-center justify-center shrink-0`}>
+                            {v.icon}
+                          </span>
+                          <span className="leading-tight">
+                            <span className="block text-base font-black whitespace-nowrap">{v.verb}</span>
+                            <span className="block text-[10px] opacity-70 whitespace-nowrap">{v.french}</span>
+                          </span>
                         </span>
-                        <span className="leading-tight">
-                          <span className="block text-base font-black whitespace-nowrap">{v.verb}</span>
-                          <span className="block text-[10px] opacity-70 whitespace-nowrap">{v.french}</span>
-                        </span>
-                      </span>
-                      <ArrowRight className={`w-4 h-4 shrink-0 hidden lg:block ${isActive ? 'text-[#006d37] dark:text-[#2ecc71]' : 'text-gray-300'}`} />
-                    </button>
-                  );
-                })}
+                        <ArrowRight className={`w-4 h-4 shrink-0 hidden lg:block ${isActive ? 'text-[#006d37] dark:text-[#2ecc71]' : 'text-gray-300'}`} />
+                      </button>
+                    );
+                  })
+                )}
               </aside>
 
               <main className="bg-white dark:bg-[#1a201c] rounded-3xl border border-gray-200 dark:border-gray-800 shadow-sm p-5 md:p-6">
@@ -456,14 +452,14 @@ export default function MethodologyView() {
                 </div>
 
                 <div className="mb-5">
-                  <h4 className="text-sm font-bold text-gray-500 dark:text-gray-400 mb-2">📌 المنطق الجوهري والتعريف</h4>
+                  <h4 className="text-sm font-bold text-gray-500 dark:text-gray-400 mb-2">التعريف الجوهري</h4>
                   <p className="text-gray-800 dark:text-gray-200 font-medium leading-relaxed bg-gray-50 dark:bg-black/20 p-4 rounded-xl border border-gray-100 dark:border-gray-800">
                     {activeVerb.definition}
                   </p>
                 </div>
 
                 <div className="mb-5">
-                  <h4 className="text-sm font-bold text-gray-500 dark:text-gray-400 mb-2">👣 خطوات الإجابة المنهجية</h4>
+                  <h4 className="text-sm font-bold text-gray-500 dark:text-gray-400 mb-2">خطوات الإجابة المنهجية</h4>
                   <div className="space-y-2">
                     {activeVerb.steps.map((step, stepIdx) => (
                       <div key={stepIdx} className="flex items-start gap-3">
@@ -500,7 +496,7 @@ export default function MethodologyView() {
             </div>
           )}
 
-          {/* === TEMPLATES === */}
+          {/* ══ TEMPLATES ══ */}
           {activeCategory === 'templates' && (
             <div className="grid grid-cols-1 gap-4">
               {filteredTemplates.length === 0 ? (
@@ -530,8 +526,8 @@ export default function MethodologyView() {
             </div>
           )}
 
-          {/* === MANHADJIYA Q/A === */}
-          {activeCategory === 'manhadjiya' && (
+          {/* ══ Q/A MANHADIJIYA ══ */}
+          {activeCategory === 'qa' && (
             <div className="grid grid-cols-1 gap-4">
               {filteredMeth.length === 0 ? (
                 <p className="text-sm text-gray-400 font-medium">لا توجد نتائج مطابقة للبحث.</p>
@@ -543,12 +539,13 @@ export default function MethodologyView() {
                     icon={<FileText className="w-5 h-5" />}
                     accent="from-[#f59e0b] to-[#d97706]"
                     headerNode={qa.question}
+                    badge={qa.category}
                   >
                     <div className="space-y-3">
                       <p className="text-gray-800 dark:text-gray-200 font-medium leading-8 whitespace-pre-line">{qa.answer}</p>
                       {qa.template && (
                         <div className="bg-amber-50 dark:bg-amber-950/20 border border-amber-100 dark:border-amber-900/50 rounded-xl p-3">
-                          <span className="text-xs font-bold text-amber-700 dark:text-amber-400">📐 القالب الجاهز:</span>
+                          <span className="text-xs font-bold text-amber-700 dark:text-amber-400">القالب الجاهز:</span>
                           <p className="text-gray-700 dark:text-gray-300 font-medium text-sm leading-7 mt-1">{qa.template}</p>
                         </div>
                       )}
@@ -564,6 +561,161 @@ export default function MethodologyView() {
             </div>
           )}
 
+          {/* ══ COMMON ERRORS (NEW) ══ */}
+          {activeCategory === 'errors' && (
+            <div className="space-y-4">
+              <div className="bg-rose-50 dark:bg-rose-950/20 border border-rose-200 dark:border-rose-900/40 rounded-2xl p-4 text-sm leading-7 text-rose-800 dark:text-rose-200 font-bold">
+                هذه الأخطاء الستة هي الأكثر تكراراً في أوراق البكالوريا. كل خطأ يعرض: الوصف، الكلمات الممنوعة،
+                والصياغة الصحيحة مقارنة بالخاطئة. تدرّب على تجنبها في كل إجابة تكتبها.
+              </div>
+              {filteredErrors.length === 0 ? (
+                <p className="text-sm text-gray-400 font-medium">لا توجد نتائج مطابقة للبحث.</p>
+              ) : (
+                filteredErrors.map((err, idx) => (
+                  <motion.div
+                    key={err.id}
+                    initial={{ opacity: 0, y: 12 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: idx * 0.06 }}
+                    className="bg-white dark:bg-[#1a201c] rounded-2xl border border-gray-200 dark:border-gray-800 shadow-sm overflow-hidden"
+                  >
+                    {/* Error header */}
+                    <div className="p-4 md:p-5 flex items-center gap-3" style={{ borderRight: `4px solid ${err.color}` }}>
+                      <div className="w-10 h-10 rounded-xl flex items-center justify-center text-white shrink-0" style={{ background: err.color }}>
+                        <XCircle className="w-5 h-5" />
+                      </div>
+                      <div className="min-w-0">
+                        <h4 className="font-black text-gray-900 dark:text-white text-base">{err.title}</h4>
+                        <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5 leading-5">{err.desc}</p>
+                      </div>
+                    </div>
+
+                    {/* Error details */}
+                    <div className="px-4 md:px-5 pb-4 md:pb-5 pt-2 space-y-3">
+                      {/* Forbidden words */}
+                      {err.forbidden.length > 0 && (
+                        <div className="flex items-start gap-2">
+                          <span className="text-xs font-black text-rose-600 dark:text-rose-400 shrink-0 mt-0.5">ممنوع:</span>
+                          <div className="flex flex-wrap gap-1">
+                            {err.forbidden.map((w, wi) => (
+                              <Chip key={wi} variant="rose">{w}</Chip>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Correct words */}
+                      <div className="flex items-start gap-2">
+                        <span className="text-xs font-black text-emerald-600 dark:text-emerald-400 shrink-0 mt-0.5">الصحيح:</span>
+                        <p className="text-sm text-gray-700 dark:text-gray-300 font-medium leading-6">{err.correct}</p>
+                      </div>
+
+                      {/* Bad vs Good example */}
+                      <div className="grid md:grid-cols-2 gap-3">
+                        <div className="bg-rose-50 dark:bg-rose-950/15 border border-rose-200 dark:border-rose-900/30 rounded-xl p-3">
+                          <div className="text-[10px] font-black text-rose-600 dark:text-rose-400 mb-1 flex items-center gap-1">
+                            <XCircle className="w-3 h-3" /> خاطئ
+                          </div>
+                          <p className="text-xs text-rose-800 dark:text-rose-200 font-medium leading-6">{err.bad}</p>
+                        </div>
+                        <div className="bg-emerald-50 dark:bg-emerald-950/15 border border-emerald-200 dark:border-emerald-900/30 rounded-xl p-3">
+                          <div className="text-[10px] font-black text-emerald-600 dark:text-emerald-400 mb-1 flex items-center gap-1">
+                            <CheckCircle2 className="w-3 h-3" /> صحيح
+                          </div>
+                          <p className="text-xs text-emerald-800 dark:text-emerald-200 font-medium leading-6">{err.good}</p>
+                        </div>
+                      </div>
+                    </div>
+                  </motion.div>
+                ))
+              )}
+            </div>
+          )}
+
+          {/* ══ KEY TERMS (NEW) ══ */}
+          {activeCategory === 'terms' && (
+            <div className="space-y-4">
+              <div className="bg-teal-50 dark:bg-teal-950/20 border border-teal-200 dark:border-teal-900/40 rounded-2xl p-4 text-sm leading-7 text-teal-800 dark:text-teal-200 font-bold">
+                هذه المصطلحات هي "المواد المقدسة" المستخرجة من البرنامج الرسمي DZ.
+                استعملها بدقة في إجاباتك — المصحح يبحث عنها ويمنح النقاط على أساس وجودها.
+              </div>
+              {filteredTerms.length === 0 ? (
+                <p className="text-sm text-gray-400 font-medium">لا توجد نتائج مطابقة للبحث.</p>
+              ) : (
+                <div className="grid sm:grid-cols-2 gap-3">
+                  {filteredTerms.map((kc, idx) => (
+                    <motion.div
+                      key={kc.id}
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: idx * 0.04 }}
+                      className="bg-white dark:bg-[#1a201c] rounded-2xl border border-gray-200 dark:border-gray-800 p-4 shadow-sm hover:shadow-sm transition-shadow"
+                    >
+                      <div className="flex items-start gap-2 mb-2">
+                        <span className="w-6 h-6 rounded-lg bg-teal-100 dark:bg-teal-900/40 text-teal-700 dark:text-teal-300 flex items-center justify-center text-[10px] font-black shrink-0 mt-0.5">
+                          {kc.unitId}
+                        </span>
+                        <h4 className="font-black text-gray-900 dark:text-white text-sm">{kc.term}</h4>
+                      </div>
+                      <p className="text-xs text-gray-600 dark:text-gray-300 leading-6 font-medium">{kc.definition}</p>
+                    </motion.div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* ══ STUDY GUIDE ══ */}
+          {activeCategory === 'guide' && (
+            <div className="grid grid-cols-1 gap-4">
+              {filteredStudyGuide.length === 0 ? (
+                <p className="text-sm text-gray-400 font-medium">لا توجد نتائج مطابقة للبحث.</p>
+              ) : (
+                filteredStudyGuide.map((card) => (
+                  <AccordionCard
+                    key={card.id}
+                    id={card.id}
+                    icon={<Route className="w-5 h-5" />}
+                    accent="from-[#0e7490] to-[#06b6d4]"
+                    badge={card.subtitle}
+                    headerNode={card.title}
+                  >
+                    <div className="space-y-4">
+                      {card.sections.map((section, sectionIdx) => (
+                        <div key={sectionIdx} className="bg-white/70 dark:bg-black/20 border border-gray-100 dark:border-gray-800 rounded-xl p-3">
+                          <h4 className="text-sm font-black text-cyan-700 dark:text-cyan-300 mb-2">{section.heading}</h4>
+                          <ul className="space-y-2">
+                            {section.bullets.map((bullet, bulletIdx) => (
+                              <li key={bulletIdx} className="flex items-start gap-2 text-gray-800 dark:text-gray-200 font-medium leading-7 text-sm md:text-base">
+                                <CheckCircle2 className="w-4 h-4 mt-1 text-cyan-600 dark:text-cyan-300 shrink-0" />
+                                <span>{bullet}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      ))}
+                      <div className="flex flex-wrap gap-1.5">
+                        {card.keywords.map((k, ki) => (
+                          <Chip key={ki} variant="indigo">{k}</Chip>
+                        ))}
+                      </div>
+                    </div>
+                  </AccordionCard>
+                ))
+              )}
+            </div>
+          )}
+
+          {/* ══ TRAINER ══ */}
+          {activeCategory === 'trainer' && (
+            <div className="space-y-4">
+              <div className="bg-[#f5f3ff] dark:bg-purple-950/20 border border-purple-200 dark:border-purple-900/40 rounded-2xl p-3 text-[12px] leading-6 text-[#4c1d95] dark:text-purple-200 font-bold">
+                Kunz El Ouloum — مجاني 100% لفهم الآليات ومنطق الإجابة.
+                التصحيح الكامل + مواضيع BAC + متابعة أسبوعية ← <span className="underline">Kunz Pro</span> (نسخة مدفوعة).
+              </div>
+              <MethodologyTrainer initialVerb="analyse" />
+            </div>
+          )}
         </div>
       )}
     </div>

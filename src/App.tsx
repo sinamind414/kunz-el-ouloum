@@ -1,12 +1,11 @@
 import React, { useState, useEffect, lazy, Suspense } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Home, BookOpen, Layers, Target, Compass, Sun, Moon, User, Flame, Trophy } from 'lucide-react';
+import { BookOpen, Layers, Compass, Sun, Moon, User, Flame, Trophy, MessageCircle } from 'lucide-react';
 
-import { Unit, UserProgress, Flashcard } from './types';
+import { Unit, UserProgress, Flashcard, TabId } from './types';
 import { INITIAL_UNITS, SVT_QUIZ_QUESTIONS, SVT_FLASHCARDS } from './data';
 
 import SplashView from './components/SplashView';
-import DashboardView from './components/DashboardView';
 import QuizView from './components/QuizView';
 import StudyReminderModal from './components/StudyReminderModal';
 import { stopPirateMusic } from './utils/audio';
@@ -15,15 +14,14 @@ import { logEvent } from './utils/telemetryService';
 import LoginScreen from './components/LoginScreen';
 
 // Lazy load heavy views (Fable 5 - reduce main bundle)
-const RevisionView = lazy(() => import('./components/RevisionView'));
-const MethodologyView = lazy(() => import('./components/MethodologyView'));
 const LessonsView = lazy(() => import('./components/LessonsView'));
 const CoachView = lazy(() => import('./components/CoachView'));
 const InteractiveLessonView = lazy(() => import('./components/InteractiveLessonView'));
-const StatsView = lazy(() => import('./components/StatsView'));
-const BadgesView = lazy(() => import('./components/BadgesView'));
+const MyPathView = lazy(() => import('./components/MyPathView'));
+const TrainingView = lazy(() => import('./components/TrainingView'));
+const ProgressView = lazy(() => import('./components/ProgressView'));
 
-const DATA_VERSION = 'github-500qcm-v1-fable5-8tabs';
+const DATA_VERSION = 'github-500qcm-v1-fable5-4tabs';
 
 const DEFAULT_PROGRESS: UserProgress = {
   xp: 0,
@@ -51,15 +49,12 @@ function LoadingFallback() {
   );
 }
 
-type TabId = 'home' | 'lessons' | 'review' | 'methodology' | 'coach' | 'stats' | 'badges';
-
-// Seulement 5 onglets visibles dans la nav (stats/badges accessibles via l'avatar)
+// Organisation progressive (Phase 3) : 4 onglets + FAB Coach flottant.
 const TABS: { id: TabId; label: string; icon: React.ElementType }[] = [
-  { id: 'home', label: 'الرئيسية', icon: Home },
+  { id: 'path', label: 'مساري', icon: Compass },
   { id: 'lessons', label: 'الدروس', icon: BookOpen },
-  { id: 'review', label: 'المراجعة', icon: Layers },
-  { id: 'methodology', label: 'المنهجية', icon: Target },
-  { id: 'coach', label: 'المرشد', icon: Compass },
+  { id: 'training', label: 'أتدرب', icon: Layers },
+  { id: 'progress', label: 'تقدمي', icon: Trophy },
 ];
 
 function AppShell() {
@@ -74,10 +69,10 @@ function AppShell() {
 
   const [currentTab, setCurrentTab] = useState<TabId | 'splash'>('splash');
   const [activeQuizUnitId, setActiveQuizUnitId] = useState<number | null>(null);
-  const [activeRevisionUnitId, setActiveRevisionUnitId] = useState<number | null>(null);
   const [activeLessonId, setActiveLessonId] = useState<string | null>(null);
   const [isFocusMode, setIsFocusMode] = useState(false);
   const [isReminderModalOpen, setIsReminderModalOpen] = useState(false);
+  const [isCoachOpen, setIsCoachOpen] = useState(false);
 
   useEffect(() => {
     if (currentTab !== 'splash') stopPirateMusic();
@@ -168,7 +163,7 @@ function AppShell() {
   const handleRateCard = (_cardId: string, rating: 'again' | 'hard' | 'good' | 'easy') => {
     const points = rating === 'easy' ? 15 : rating === 'good' ? 10 : rating === 'hard' ? 5 : 2;
     const updatedStats = { ...progress.flashcardStats };
-    (updatedStats as any)[rating] += 1;
+    updatedStats[rating] += 1;
     const addedMinutes = Math.floor(Math.random() * 3) + 2;
     const updated: UserProgress = { ...progress, xp: progress.xp + points, studyMinutes: progress.studyMinutes + addedMinutes, flashcardStats: updatedStats };
     setProgress(updated);
@@ -176,10 +171,11 @@ function AppShell() {
     updateLastStudyTime();
   };
 
+  const navigateToTab = (tab: TabId) => setCurrentTab(tab);
+
   const handleLaunchQuiz = (unitId: number) => setActiveQuizUnitId(unitId);
-  const handleLaunchRevision = (unitId: number) => {
-    setActiveRevisionUnitId(unitId);
-    setCurrentTab('review');
+  const handleLaunchRevision = (_unitId: number) => {
+    setCurrentTab('training');
   };
   const handleStartLesson = (lessonId: string) => {
     setActiveLessonId(lessonId);
@@ -228,7 +224,7 @@ function AppShell() {
   }
 
   if (currentTab === 'splash') {
-    return <SplashView onStart={() => setCurrentTab('home')} />;
+    return <SplashView onStart={() => setCurrentTab('path')} />;
   }
 
   return (
@@ -238,8 +234,8 @@ function AppShell() {
       {!isFocusMode && (
         <header className="bg-[#ffffff] dark:bg-[#141916] shadow-[0_2px_12px_rgba(0,109,55,0.06)] border-b border-[#e2dabf]/40 dark:border-[#2ecc71]/10 flex flex-row-reverse justify-between items-center px-4 md:px-8 h-16 md:h-20 w-full fixed top-0 z-40">
           <div className="flex items-center gap-3">
-            <div className="relative cursor-pointer" onClick={() => setCurrentTab('stats')}>
-              <div className="absolute inset-0 bg-[#2ecc71]/20 rounded-full blur-sm" />
+          <div className="relative cursor-pointer" onClick={() => setCurrentTab('progress')}>
+            <div className="absolute inset-0 bg-[#2ecc71]/20 rounded-full blur-sm" />
               <div className="relative w-10 h-10 md:w-12 md:h-12 rounded-full bg-[#006d37] text-white flex items-center justify-center border-2 border-white shadow-sm">
                 <User className="w-5 h-5" />
               </div>
@@ -250,7 +246,7 @@ function AppShell() {
             </div>
           </div>
           <div className="font-extrabold text-xl md:text-2xl text-[#006d37] font-display">
-            {currentTab === 'home' ? 'كنز العلوم' : currentTab === 'lessons' ? 'الدروس' : currentTab === 'review' ? 'المراجعة الذكية' : currentTab === 'methodology' ? 'المنهجية' : currentTab === 'stats' ? 'لوحة الإحصائيات' : currentTab === 'badges' ? 'لوحة الأوسمة' : 'المرشد الموجه'}
+            {currentTab === 'path' ? 'مساري' : currentTab === 'lessons' ? 'الدروس' : currentTab === 'training' ? 'أتدرب' : 'تقدمي'}
           </div>
           <div className="flex items-center gap-2">
             <button onClick={() => setIsDarkMode(!isDarkMode)} className="p-2.5 rounded-full bg-[#f3f4f5] dark:bg-[#1f2622] border border-[#e2dabf]/50 dark:border-[#2ecc71]/10 text-[#506072] dark:text-zinc-300 cursor-pointer">
@@ -270,7 +266,7 @@ function AppShell() {
       <div className={`flex-1 flex w-full ${isFocusMode ? 'max-w-4xl' : 'max-w-5xl'} mx-auto`}>
         {!isFocusMode && (
           <aside className="hidden md:flex shrink-0 w-64 bg-white dark:bg-[#141916] border-l border-[#e2dabf]/50 dark:border-[#2ecc71]/10 flex-col py-6 px-4 gap-2 h-[calc(100vh-80px)] sticky top-20 right-0">
-            <div className="text-[10px] font-black tracking-widest text-[#506072] uppercase px-4 mb-4">5 Rubriques Essentielles - 100% Offline</div>
+            <div className="text-[10px] font-black tracking-widest text-[#506072] uppercase px-4 mb-4">مسار BAC SVT - 100% Offline</div>
             {TABS.map(tab => {
               const Icon = tab.icon;
               const isActive = currentTab === tab.id;
@@ -278,17 +274,16 @@ function AppShell() {
                 <button key={tab.id} onClick={() => setCurrentTab(tab.id)} className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-2xl text-sm font-bold transition-all cursor-pointer ${isActive ? 'bg-[#2ecc71]/15 text-[#006d37]' : 'text-[#504441] hover:bg-[#fff9ed] hover:text-[#006d37]'}`}>
                   <Icon className="w-5 h-5" />
                   <span>{tab.label}</span>
-                  {tab.id === 'coach' && <span className="mr-auto text-[9px] bg-indigo-500 text-white px-1.5 py-0.5 rounded-full">Coach</span>}
                 </button>
               );
             })}
             <div className="mt-4 p-3 bg-[#fff9ed] border border-[#e2dabf]/60 rounded-xl text-[11px] leading-6 text-[#504441]">
-              <strong>Architecture finale:</strong><br/>
-              • الرئيسية → 3 domaines<br/>
-              • الدروس → Mot→Exemple→Micro-test→Méthodo (4 étapes, sans scroll)<br/>
-              • المراجعة → SM-2 flashcards<br/>
-              • المنهجية → 4 verbes BAC<br/>
-              • المرشد → Coach orientation offline (pas LLM)
+              <strong>هيكل التطبيق:</strong><br/>
+              • مساري → مهمة 3 دقائق + رادار + نقاط ضعف<br/>
+              • الدروس → Mot→Exemple→Micro-test→Méthodo<br/>
+              • أتدرب → QCM + بطاقات + تحدي BAC + منهجية<br/>
+              • تقدمي → XP + رادار + أوسمة<br/>
+              • المرشد → زر عائم أيمن سفلي
             </div>
           </aside>
         )}
@@ -296,14 +291,11 @@ function AppShell() {
         <main className={`flex-1 px-4 py-6 md:py-8 overflow-x-hidden ${isFocusMode ? 'flex items-center justify-center min-h-screen py-12' : ''}`}>
           <AnimatePresence mode="wait">
             <motion.div key={currentTab} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.2 }}>
-              {currentTab === 'home' && <DashboardView units={units} progress={progress} onLaunchQuiz={handleLaunchQuiz} onLaunchRevision={handleLaunchRevision} onNavigateToTab={setCurrentTab as any} />}
+              {currentTab === 'path' && <MyPathView units={units} progress={progress} onLaunchQuiz={handleLaunchQuiz} onLaunchRevision={handleLaunchRevision} onNavigateToTab={navigateToTab} />}
               <Suspense fallback={<LoadingFallback />}>
                 {currentTab === 'lessons' && <LessonsView units={units} onStartLesson={handleStartLesson} />}
-                {currentTab === 'review' && <RevisionView units={units} flashcards={flashcards} xp={progress.xp} streak={progress.streak} onRateCard={handleRateCard} initialUnitId={activeRevisionUnitId ?? 1} isFocusMode={isFocusMode} setIsFocusMode={setIsFocusMode} />}
-                {currentTab === 'methodology' && <MethodologyView />}
-                {currentTab === 'coach' && <CoachView progress={progress} units={units} onStartLesson={handleStartLesson} onSignOut={signOut} />}
-                {currentTab === 'stats' && <StatsView progress={progress} units={units} onNavigateToTab={setCurrentTab as any} />}
-                {currentTab === 'badges' && <BadgesView progress={progress} />}
+                {currentTab === 'training' && <TrainingView units={units} flashcards={flashcards} progress={progress} onLaunchQuiz={handleLaunchQuiz} onLaunchRevision={handleLaunchRevision} onStartLesson={handleStartLesson} onRateCard={handleRateCard} isFocusMode={isFocusMode} setIsFocusMode={setIsFocusMode} onNavigateToTab={navigateToTab} />}
+                {currentTab === 'progress' && <ProgressView progress={progress} units={units} onNavigateToTab={navigateToTab} />}
               </Suspense>
             </motion.div>
           </AnimatePresence>
@@ -325,6 +317,51 @@ function AppShell() {
           })}
         </nav>
       )}
+
+      {/* FAB Coach flottant (bas-droite) */}
+      {!isFocusMode && (
+        <button
+          onClick={() => setIsCoachOpen(true)}
+          className="fixed bottom-20 md:bottom-6 right-4 z-50 w-14 h-14 rounded-full bg-[#006d37] text-white shadow-lg shadow-[#006d37]/30 flex items-center justify-center hover:scale-105 active:scale-95 transition-transform cursor-pointer"
+          aria-label="Ouvrir le Coach"
+        >
+          <MessageCircle className="w-6 h-6" />
+          <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-[#ff9a4a] border-2 border-white text-[9px] font-black flex items-center justify-center">1</span>
+        </button>
+      )}
+
+      {/* Modal Coach */}
+      <AnimatePresence>
+        {isCoachOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[60] bg-black/50 flex justify-center items-end md:items-center px-0 md:px-4"
+            onClick={() => setIsCoachOpen(false)}
+          >
+            <motion.div
+              initial={{ y: 60, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              exit={{ y: 60, opacity: 0 }}
+              transition={{ duration: 0.25 }}
+              onClick={(e) => e.stopPropagation()}
+              className="w-full md:max-w-2xl max-h-[90vh] md:max-h-[80vh] overflow-y-auto bg-white dark:bg-[#141916] rounded-t-[28px] md:rounded-3xl shadow-2xl"
+            >
+              <Suspense fallback={<LoadingFallback />}>
+                <CoachView
+                  progress={progress}
+                  units={units}
+                  onStartLesson={handleStartLesson}
+                  onSignOut={signOut}
+                  onClose={() => setIsCoachOpen(false)}
+                />
+              </Suspense>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
     </div>
   );
 }

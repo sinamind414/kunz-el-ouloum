@@ -9,11 +9,12 @@ interface CoachViewProps {
   units?: Unit[];
   onStartLesson: (lessonId: string) => void;
   onSignOut: () => void;
+  onClose?: () => void;
 }
 
 // Pilier 3 — Coach Offline (100% offline, 0 réseau, 0 LLM).
 // Lit un état local (simulé ici à 75 pour démontrer le Teaser Pro, cf. TEST 6 du Spec Kit).
-export default function CoachView({ progress, onStartLesson, onSignOut }: CoachViewProps) {
+export default function CoachView({ progress, onStartLesson, onSignOut, onClose }: CoachViewProps) {
   // Score méthodologique local — dépasse 70 → déclenche le Teaser Pro (TEST 6).
   const methodologyScore = 75;
 
@@ -52,6 +53,15 @@ export default function CoachView({ progress, onStartLesson, onSignOut }: CoachV
           <h1 className="text-2xl font-black text-[#1f1c0b] dark:text-white">المرشد الموجه</h1>
           <p className="text-sm text-[#506072] dark:text-gray-400">تحليل أدائك وتوجيهك للمراجعة الصحيحة - 100% offline, بدون LLM</p>
         </div>
+        {onClose && (
+          <button
+            onClick={onClose}
+            className="mr-auto w-9 h-9 rounded-full bg-gray-100 dark:bg-white/5 flex items-center justify-center text-[#506072] dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-white/10 transition-colors cursor-pointer"
+            aria-label="Fermer"
+          >
+            <LogOut className="w-4 h-4" />
+          </button>
+        )}
       </div>
 
       {/* Section 1: Points Faibles (Urgent) */}
@@ -139,11 +149,11 @@ export default function CoachView({ progress, onStartLesson, onSignOut }: CoachV
         </div>
       )}
 
-      {/* Section 4: Leçons officielles (Programme 2017) — entrée de navigation vers les leçons câblées */}
+      {/* Section 4: Leçons officielles — entrée de navigation vers les leçons câblées */}
       <div className="bg-[#f3f8f4] dark:bg-[#10231a] border border-[#2ecc71]/30 rounded-2xl p-5">
         <h2 className="flex items-center gap-2 text-[#006d37] dark:text-[#2ecc71] font-black mb-4 text-sm">
           <BookOpen className="w-5 h-5" />
-          الدروس الرسمية (برنامج 2017)
+          الدروس الرسمية
         </h2>
         <div className="grid gap-2">
           <button

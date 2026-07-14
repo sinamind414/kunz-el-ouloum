@@ -3,7 +3,7 @@
 // Les leçons sont indexées par le même `lessonId` que celui utilisé dans l'app
 // (ex: "lecon_transcription"), pour que le tunnel se déclenche sur une leçon réelle.
 
-// Source de vérité officielle (Programme 2017, lexique DZ strict) — voir kunzDatabase.ts.
+// Source de vérité officielle (lexique DZ strict) — voir kunzDatabase.ts.
 import { ActiveLesson_D1_U1_L2_Transcription, ActiveLesson_D1_U1_L3_Traduction } from './kunzDatabase';
 export interface MicroTest {
   prompt: string;

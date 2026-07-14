@@ -23,12 +23,15 @@ Cas corrigés :
 - كرة القدم → hors programme
 
 Priorité du moteur :
+0. Session active prioritaire : si un quiz/تحدي BAC est en cours, la réponse (A/B/C/D) est traitée **avant** toute recherche sémantique
 1. Hors programme (كرة القدم, films, etc.) → refus
 2. Méthodologie Manhadjiya (`findBestMethodologyQA`, score ≥ 18)
 3. Q/R livres scientifiques (`findBestBookQA`, score ≥ 18)
 4. Knowledge Cards exactes / aliases
 5. leçons, QCM, OPUS (recherche générique)
 6. clarification / suggestions méthodologiques
+
+> Fable 5 : garde-fous de longueur (`norm.length ≥ 3`) ajoutés partout pour éviter qu'une lettre isolée (« A ») ne matche un guide/une carte par accident.
 
 ## Fusion UX ajoutée (offline)
 
@@ -37,7 +40,9 @@ Les améliorations d'expérience issues de la révision sont fusionnées **sans 
 - **Portail aventure de leçon** (`src/components/LessonAdventurePortal.tsx`) : chaque leçon s'ouvre en 3 pages (الوضعية الانطلاقية / النشاط الموجه / الخلاصة والتثبيت), avec badges de mots-clés, zoom du mascotte, et CTA collant « اسأل المرشد الذكي ».
 - **Polices** : aucune dépendance Google Fonts ; repli sur les polices système Arabic (Segoe UI / Tahoma / Geeza Pro).
 
-Aucune donnée externe, aucun `fetch`, aucune clé API. Les schémas SVG ne contiennent plus d'import Google Fonts.
+Le **cœur tuteur** (moteur, contenu, QCM, cartes) est **100% offline** : aucun `fetch`, aucune clé API, aucun appel LLM. Les schémas SVG ne contiennent plus d'import Google Fonts.
+
+> Nuance offline-first : l'**auth + la télémétrie Supabase sont optionnelles**. Elles ne s'activent que si `VITE_SUPABASE_URL` et `VITE_SUPABASE_ANON_KEY` sont fournies. La télémétrie est bufferisée dans `localStorage` puis envoyée au retour du réseau — **jamais bloquante**, et absente si Supabase n'est pas configuré (`src/lib/supabase.ts` renvoie un client `null`).
 
 ## المحتوى المتكامل
 
@@ -103,9 +108,13 @@ PORT=8080 npm run start
 
 ```bash
 PORT=3000
+
+# Optionnel — auth + télémétrie Supabase (l'app fonctionne sans) :
+VITE_SUPABASE_URL=https://xxxxxxxxxxxx.supabase.co
+VITE_SUPABASE_ANON_KEY=eyJhbGciOi...placeholder
 ```
 
-Aucune clé API requise. Le Smart Tutor est 100% offline.
+Aucune clé API n'est requise pour le tuteur : le Smart Tutor est 100% offline. Les variables Supabase ci-dessus n'activent que l'auth et la télémétrie optionnelles.
 
 ## Scripts
 

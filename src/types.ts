@@ -49,6 +49,8 @@ export interface UserProgress {
   }[];
 }
 
+export type TabId = 'path' | 'lessons' | 'training' | 'progress';
+
 export interface ChatMessage {
   id: string;
   sender: 'user' | 'ai';

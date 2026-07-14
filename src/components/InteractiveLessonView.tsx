@@ -15,12 +15,29 @@ interface InteractiveLessonViewProps {
 }
 
 // Simple DragDrop component for Mot → Exemple
-function DragDropBlock({ question, options, onCorrect, definition }: any) {
+interface DragDropOption {
+  id: string;
+  text: string;
+  correct: boolean;
+  correctFeedback?: string;
+  wrongFeedback?: string;
+}
+interface DragDropDefinition {
+  term: string;
+  def: string;
+}
+interface DragDropBlockProps {
+  question: string;
+  options: DragDropOption[];
+  onCorrect?: () => void;
+  definition?: DragDropDefinition;
+}
+function DragDropBlock({ question, options, onCorrect, definition }: DragDropBlockProps) {
   const [selected, setSelected] = useState<string | null>(null);
   const [validated, setValidated] = useState(false);
   const [isCorrect, setIsCorrect] = useState(false);
 
-  const handleSelect = (opt: any) => {
+  const handleSelect = (opt: DragDropOption) => {
     setSelected(opt.id);
     const correct = opt.correct;
     setIsCorrect(correct);
@@ -39,7 +56,7 @@ function DragDropBlock({ question, options, onCorrect, definition }: any) {
       <p className="text-sm font-bold text-[#1f1c0b] dark:text-gray-100">{question}</p>
       
       <div className="grid gap-2">
-        {options.map((opt: any) => {
+        {options.map((opt: DragDropOption) => {
           const sel = selected === opt.id;
           return (
             <button
@@ -63,7 +80,7 @@ function DragDropBlock({ question, options, onCorrect, definition }: any) {
 
       {validated && (
         <div className={`p-3 rounded-xl text-xs font-bold leading-6 ${isCorrect ? 'bg-[#2ecc71]/10 text-[#006d37] border border-[#2ecc71]/20' : 'bg-rose-50 text-rose-700 border border-rose-200'}`}>
-          {isCorrect ? options.find((o: any) => o.id === selected)?.correctFeedback || 'ممتاز!' : options.find((o: any) => o.id === selected)?.wrongFeedback || 'حاول مرة أخرى'}
+          {isCorrect ? options.find((o: DragDropOption) => o.id === selected)?.correctFeedback || 'ممتاز!' : options.find((o: DragDropOption) => o.id === selected)?.wrongFeedback || 'حاول مرة أخرى'}
           {definition && isCorrect && (
             <div className="mt-2 p-2 bg-white dark:bg-black/20 rounded-lg border text-[11px]">
               <strong>{definition.term}:</strong> {definition.def}

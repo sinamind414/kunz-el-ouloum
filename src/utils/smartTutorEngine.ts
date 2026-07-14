@@ -64,7 +64,7 @@ export interface EngineResult {
 }
 
 const OUT_OF_PROGRAM = [
-  'كرة القدم', 'فريق', 'لاعب', 'مباراه', 'فيلم', 'موسيقى', 'سياره', 'سفر', 'طقس', 'اكل', 'طعام',
+  'كرة القدم', 'كره القدم', 'كرة قدم', 'مباراة', 'فيلم سينما', 'موسيقى', 'سيارة', 'سياره', 'اغنية',
 ];
 
 function toQuizPrompt(q: QuizQuestion): QuizPrompt {
@@ -156,10 +156,11 @@ const GUIDE_CHUNKS: SearchChunk[] = STUDY_GUIDE_CARDS.map((card: StudyGuideCard)
 const ALL_CHUNKS: SearchChunk[] = [...GUIDE_CHUNKS, ...LEGACY_CHUNKS, ...BOOK_CHUNKS, ...OPUS_CHUNKS];
 
 function scoreChunk(norm: string, ch: SearchChunk, activeDomainId: number | null): number {
+  if (norm.length < 3) return 0;
   let score = 0;
-  if (ch.normTitle && norm.includes(ch.normTitle)) score += 80;
+  if (ch.normTitle && ch.normTitle.length >= 3 && norm.includes(ch.normTitle)) score += 80;
   for (const alias of ch.normAliases) {
-    if (alias && norm.includes(alias)) score += 60;
+    if (alias && alias.length >= 3 && norm.includes(alias)) score += 60;
   }
   for (const kw of ch.normKeywords) {
     if (kw && kw.length >= 3 && norm.includes(kw)) score += 6;
@@ -177,16 +178,17 @@ function findBestStudyGuide(query: string): { card: StudyGuideCard; score: numbe
   const normRaw = normalizeArabic(query);
   if (!normRaw) return [];
   const norm = normRaw.replace(/[؟?.!،,]/g, ' ').replace(/\s+/g, ' ').trim();
+  if (norm.length < 3) return [];
 
   return STUDY_GUIDE_CARDS.map((card) => {
     let score = 0;
     const title = normalizeArabic(card.title);
     const subtitle = normalizeArabic(card.subtitle);
-    if (title && (norm.includes(title) || title.includes(norm))) score += 70;
-    if (subtitle && (norm.includes(subtitle) || subtitle.includes(norm))) score += 30;
+    if (title && title.length >= 3 && (norm.includes(title) || title.includes(norm))) score += 70;
+    if (subtitle && subtitle.length >= 3 && (norm.includes(subtitle) || subtitle.includes(norm))) score += 30;
     for (const trigger of card.triggers) {
       const nt = normalizeArabic(trigger);
-      if (nt && (norm.includes(nt) || nt.includes(norm))) score += 55;
+      if (nt && nt.length >= 3 && (norm.includes(nt) || nt.includes(norm))) score += 55;
     }
     for (const keyword of card.keywords) {
       const nk = normalizeArabic(keyword);
@@ -216,6 +218,7 @@ function formatStudyGuideAnswer(card: StudyGuideCard): string {
 }
 
 export function searchAllBases(norm: string, activeDomainId: number | null): SearchChunk[] {
+  if (!norm || norm.length < 3) return [];
   return ALL_CHUNKS.map((ch) => ({ ch, score: scoreChunk(norm, ch, activeDomainId) }))
     .filter((x) => x.score >= 12)
     .sort((a, b) => b.score - a.score)
@@ -251,6 +254,7 @@ function findMicroAnswer(card: KnowledgeCard, norm: string): string | null {
 }
 
 function buildAnswer(norm: string, activeDomainId: number | null): TutorAction | null {
+  if (!norm || norm.length < 3) return null;
   const scienceCard = findBestKnowledgeCard(norm, activeDomainId);
 
   if (scienceCard) {
@@ -480,7 +484,15 @@ export function processStudentInput(session: BotSession, rawInput: string): Engi
 
   if (norm.includes(n('راجع أخطائي'))) return reviewMistakes(session);
 
-  if (OUT_OF_PROGRAM.some((k) => norm.includes(n(k)))) {
+  // Priorité absolue : une session active (quiz/boss) doit traiter l'entrée AVANT
+  // toute recherche sémantique, sinon une réponse comme "A" est interceptée par un guide.
+  if (session.mode === 'bac_challenge' && session.boss) return handleBossInput(session, input);
+  if (session.currentQuiz && (session.mode === 'quiz' || session.mode === 'diagnostic')) return gradeQuizAnswer(session, input);
+
+  if (norm.length >= 3 && OUT_OF_PROGRAM.some((k) => {
+    const nk = n(k);
+    return nk.length >= 3 && norm.includes(nk);
+  })) {
     return {
       session,
       action: {
@@ -552,8 +564,6 @@ export function processStudentInput(session: BotSession, rawInput: string): Engi
 
   if (norm.includes(n('اختبار'))) return startDiagnostic(session);
   if (norm.includes(n('تحدي bac')) || norm.includes(n('تحدي البكالوريا')) || norm.includes(n('تحدي الباك')) || norm.includes(n('boss'))) return startBossFight(session);
-  if (session.mode === 'bac_challenge' && session.boss) return handleBossInput(session, input);
-  if (session.currentQuiz && (session.mode === 'quiz' || session.mode === 'diagnostic')) return gradeQuizAnswer(session, input);
 
   if (session.activeDomainId == null) {
     const domain = DOMAINS.find((d) => {
