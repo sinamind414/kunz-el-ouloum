@@ -1,14 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" width="800" height="600">
   <defs>
-    <style>
-      text { font-family: 'Noto Kufi Arabic', sans-serif; }
-      .title { font-size: 22px; font-weight: bold; fill: #1A2A3A; }
-      .label-ar { font-size: 16px; font-weight: bold; fill: #1A2A3A; }
-      .label-fr { font-size: 13px; fill: #7F8C8D; }
-      .label-small { font-size: 12px; fill: #7F8C8D; }
-      .label-white { font-size: 14px; font-weight: bold; fill: #FFFFFF; }
-    </style>
+    <style>text{font-family:'Noto Kufi Arabic','Segoe UI',system-ui,sans-serif;}
+.title,.t{font-size:21px;font-weight:800;fill:#0F2A1D;}
+.subtitle{font-size:13px;fill:#6B7280;}
+.label-ar,.la{font-size:14px;font-weight:700;fill:#1A2A3A;}
+.label-fr{font-size:12px;fill:#6B7280;}
+.label-small,.ls{font-size:11px;fill:#6B7280;}
+.label-white,.lw{font-size:12px;font-weight:700;fill:#FFFFFF;}</style>
     <!-- Dégradés -->
     <linearGradient id="strand1" x1="0" y1="0" x2="0" y2="1">
       <stop offset="0%" stop-color="#2ECC71"/>
@@ -37,10 +36,18 @@
     <filter id="shadow">
       <feDropShadow dx="0" dy="2" stdDeviation="3" flood-opacity="0.1"/>
     </filter>
+  <linearGradient id="kunzBg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#F7FAF8"/>
+      <stop offset="100%" stop-color="#EFF4F1"/>
+    </linearGradient>
+    <filter id="kunzShadow" x="-5%" y="-5%" width="110%" height="110%">
+      <feDropShadow dx="0" dy="3" stdDeviation="6" flood-color="#006d37" flood-opacity="0.06"/>
+    </filter>
   </defs>
 
   <!-- Fond -->
-  <rect width="800" height="600" fill="#FFFFFF"/>
+  <rect width="800" height="600" fill="url(#kunzBg)"/>
+  <rect x="8" y="8" width="784" height="584" rx="20" fill="none" stroke="#E3EAE6" stroke-width="2" filter="url(#kunzShadow)"/>
 
   <!-- Titre -->
   <text x="400" y="40" text-anchor="middle" class="title">جزيء ADN — Structure de l'ADN</text>

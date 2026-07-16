@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { Rocket, ChevronLeft, ShieldCheck, Trophy, Sparkles, Volume2, VolumeX, Key, Anchor } from 'lucide-react';
 import { MASCOT_URL } from '../data';
 import { startPirateMusic, stopPirateMusic } from '../utils/audio';
+import ZoomableImage from './ZoomableImage';
 
 interface SplashViewProps {
   onStart: () => void;
@@ -185,9 +186,9 @@ export default function SplashView({ onStart }: SplashViewProps) {
                   }}
                   className="relative p-2"
                 >
-                  <img 
-                    src={MASCOT_URL} 
-                    alt="Pirate Mascot" 
+                  <ZoomableImage
+                    src={MASCOT_URL}
+                    alt="Pirate Mascot"
                     className="w-56 h-56 md:w-72 md:h-72 object-contain filter drop-shadow-[0_12px_24px_rgba(254,214,91,0.35)]"
                     referrerPolicy="no-referrer"
                   />

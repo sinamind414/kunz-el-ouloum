@@ -4,6 +4,7 @@ import { Volume2, Key, HelpCircle, Layers, BookOpen, VolumeX, Sparkles, Eye, Eye
 import { Flashcard, Unit } from '../types';
 import { playFlipSound, playSuccessSound, playFailureSound } from '../utils/audio';
 import { DOMAIN_INFO } from './LessonsView';
+import ZoomableImage from './ZoomableImage';
 
 interface RevisionViewProps {
   units: Unit[];
@@ -350,7 +351,7 @@ export default function RevisionView({ units, flashcards, onRateCard, initialUni
               <div className={`mb-4 w-full rounded-2xl p-4 flex items-center justify-center border max-h-48 overflow-hidden ${
                 isFocusMode ? 'bg-black/40 border-[var(--dc)]/20' : 'bg-[#f3f4f5] dark:bg-black/20 border-[#bbcbbb]/30 dark:border-[var(--dc)]/10'
               }`}>
-                <img className={`object-contain max-h-40 w-full ${isFocusMode ? '' : 'mix-blend-multiply'}`} src={currentCard.diagramUrl} alt="Schéma" referrerPolicy="no-referrer" />
+                <ZoomableImage className={`object-contain max-h-40 w-full ${isFocusMode ? '' : 'mix-blend-multiply'}`} src={currentCard.diagramUrl} alt="Schéma" referrerPolicy="no-referrer" />
               </div>
             )}
 
@@ -526,10 +527,10 @@ export default function RevisionView({ units, flashcards, onRateCard, initialUni
                   <div className={`my-4 w-full rounded-2xl p-4 flex items-center justify-center border max-h-48 md:max-h-56 overflow-hidden ${
                     isFocusMode ? 'bg-black/40 border-[var(--dc)]/20' : 'bg-[#f3f4f5] dark:bg-black/20 border-[#bbcbbb]/30 dark:border-[var(--dc)]/10'
                   }`}>
-                    <img 
-                      className={`object-contain max-h-40 md:max-h-48 w-full ${isFocusMode ? '' : 'mix-blend-multiply'}`} 
-                      src={currentCard.diagramUrl} 
-                      alt="Scientific Illustration" 
+                    <ZoomableImage
+                      className={`object-contain max-h-40 md:max-h-48 w-full ${isFocusMode ? '' : 'mix-blend-multiply'}`}
+                      src={currentCard.diagramUrl}
+                      alt="Scientific Illustration"
                       referrerPolicy="no-referrer"
                     />
                   </div>

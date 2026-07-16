@@ -8,6 +8,7 @@ import SpeechToTextInput from './SpeechToTextInput';
 import { ACTIVE_LESSONS, ActiveLesson, Block } from '../data/activeLessons';
 import { checkProduction, checkMethodologyStep, checkAnalysisPurity, isInsideHotspot } from '../utils/methodologyChecker';
 import { logEvent } from '../utils/telemetryService';
+import { ZoomImageButton } from './ZoomableImage';
 
 interface InteractiveLessonViewProps {
   lessonId: string;
@@ -567,6 +568,7 @@ function HotspotAndMethodologyBlockView({
 
         {/* Hotspot image */}
         <div className="relative rounded-xl overflow-hidden border bg-[#f3f4f5]">
+          <ZoomImageButton src={block.schemaSrc} alt={block.hotspot.prompt} referrerPolicy="no-referrer" className="absolute top-2 right-2" />
           <img
             src={block.schemaSrc}
             alt={block.hotspot.prompt}

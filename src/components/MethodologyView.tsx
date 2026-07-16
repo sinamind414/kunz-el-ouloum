@@ -215,6 +215,7 @@ type CategoryId = 'quickstart' | 'verbs' | 'templates' | 'qa' | 'errors' | 'term
 export default function MethodologyView() {
   const [query, setQuery] = useState('');
   const [activeVerbId, setActiveVerbId] = useState<string>(METHODOLOGY_VERBS[0].id);
+  const [verbViewOpen, setVerbViewOpen] = useState(false);
   const [activeCategory, setActiveCategory] = useState<CategoryId | null>(null);
 
   // ── Filtered data ──
@@ -261,11 +262,13 @@ export default function MethodologyView() {
 
   const goBack = () => {
     setActiveCategory(null);
+    setVerbViewOpen(false);
     setQuery('');
   };
 
   const navigateToCategory = (catId: CategoryId) => {
     setActiveCategory(catId);
+    setVerbViewOpen(false);
     setQuery('');
   };
 
@@ -286,9 +289,9 @@ export default function MethodologyView() {
         </div>
       </motion.div>
 
-      {/* ═══════ LEVEL 1 — Category grid ═══════ */}
+      {/* ═══════ LEVEL 1 — Category grid (icônes + noms pour choisir le thème) ═══════ */}
       {!activeCategory && (
-        <section className="grid sm:grid-cols-2 gap-4">
+        <section className="grid grid-cols-2 sm:grid-cols-3 gap-3">
           {CATEGORIES.map((cat, idx) => (
             <motion.button
               key={cat.id}
@@ -296,32 +299,17 @@ export default function MethodologyView() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: idx * 0.05 }}
               onClick={() => setActiveCategory(cat.id)}
-              className="group text-right rounded-3xl p-5 shadow-sm border border-gray-200 dark:border-gray-800 bg-white dark:bg-[#141916] hover:shadow-md transition-all cursor-pointer flex flex-col gap-3"
+              className="flex flex-col items-center text-center gap-2 rounded-3xl bg-white dark:bg-[#141916] border border-gray-200 dark:border-gray-800 p-4 shadow-sm hover:shadow-md hover:-translate-y-0.5 active:scale-[0.98] transition-all cursor-pointer"
               style={{ borderTop: `4px solid ${cat.color}` }}
             >
-              <div className="flex items-center justify-between">
-                <div
-                  className="w-14 h-14 rounded-2xl flex items-center justify-center shrink-0 text-white"
-                  style={{ background: cat.color }}
-                >
-                  {cat.icon}
-                </div>
-                <span
-                  className="text-[11px] font-black px-3 py-1 rounded-full text-white"
-                  style={{ background: cat.color }}
-                >
-                  {cat.count} عنصر
-                </span>
+              <div
+                className="w-14 h-14 rounded-2xl flex items-center justify-center text-white shadow-sm"
+                style={{ background: `linear-gradient(135deg, ${cat.color}, ${cat.color}cc)` }}
+              >
+                {cat.icon}
               </div>
-              <div>
-                <h3 className="text-lg font-black text-gray-900 dark:text-white leading-snug">{cat.title}</h3>
-                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">{cat.fr}</p>
-              </div>
-              <p className="text-sm text-gray-600 dark:text-gray-300 font-medium leading-6">{cat.desc}</p>
-              <div className="flex items-center gap-1 text-xs font-extrabold mt-auto" style={{ color: cat.color }}>
-                <span>ادخل</span>
-                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-              </div>
+              <span className="font-black text-sm text-gray-900 dark:text-white leading-tight">{cat.title}</span>
+              <span className="text-[10px] text-gray-400">{cat.fr}</span>
             </motion.button>
           ))}
         </section>
@@ -403,96 +391,96 @@ export default function MethodologyView() {
 
           {/* ══ VERBS ══ */}
           {activeCategory === 'verbs' && (
-            <div className="grid lg:grid-cols-[260px_1fr] gap-5 items-start">
-              <aside className="bg-white dark:bg-[#141916] border border-gray-200 dark:border-gray-800 rounded-3xl p-3 shadow-sm flex lg:flex-col gap-2 overflow-x-auto lg:overflow-visible snap-x snap-mandatory">
-                {filteredVerbs.length === 0 ? (
-                  <p className="text-sm text-gray-400 font-medium p-3">لا توجد نتائج مطابقة.</p>
-                ) : (
-                  filteredVerbs.map((v) => {
-                    const isActive = v.id === activeVerbId;
-                    return (
-                      <button
-                        key={v.id}
-                        onClick={() => setActiveVerbId(v.id)}
-                        className={`snap-start shrink-0 lg:w-full text-right rounded-2xl px-3 py-3 flex items-center justify-between gap-3 border transition-all cursor-pointer ${
-                          isActive
-                            ? 'bg-[#006d37]/10 border-[#006d37] text-[#006d37] dark:text-[#2ecc71] font-extrabold'
-                            : 'bg-gray-50 dark:bg-white/5 border-gray-200 dark:border-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/10'
-                        }`}
-                      >
-                        <span className="flex items-center gap-2">
-                          <span className={`w-9 h-9 rounded-xl bg-gradient-to-br ${v.color} text-white flex items-center justify-center shrink-0`}>
-                            {v.icon}
-                          </span>
-                          <span className="leading-tight">
-                            <span className="block text-base font-black whitespace-nowrap">{v.verb}</span>
-                            <span className="block text-[10px] opacity-70 whitespace-nowrap">{v.french}</span>
-                          </span>
-                        </span>
-                        <ArrowRight className={`w-4 h-4 shrink-0 hidden lg:block ${isActive ? 'text-[#006d37] dark:text-[#2ecc71]' : 'text-gray-300'}`} />
-                      </button>
-                    );
-                  })
-                )}
-              </aside>
-
-              <main className="bg-white dark:bg-[#1a201c] rounded-3xl border border-gray-200 dark:border-gray-800 shadow-sm p-5 md:p-6">
-                <div className="flex items-center gap-3 mb-4">
-                  <div className={`p-3 rounded-2xl bg-gradient-to-br ${activeVerb.color} text-white shadow-sm`}>
-                    {activeVerb.icon}
-                  </div>
-                  <div>
-                    <h3 className="text-xl md:text-2xl font-black text-gray-900 dark:text-white flex items-center gap-2 flex-wrap">
-                      {activeVerb.verb}
-                      <span className="text-sm font-bold text-gray-400 bg-gray-100 dark:bg-gray-800 px-2 py-0.5 rounded-md">
-                        {activeVerb.french}
-                      </span>
-                    </h3>
-                  </div>
-                </div>
-
-                <div className="mb-5">
-                  <h4 className="text-sm font-bold text-gray-500 dark:text-gray-400 mb-2">التعريف الجوهري</h4>
-                  <p className="text-gray-800 dark:text-gray-200 font-medium leading-relaxed bg-gray-50 dark:bg-black/20 p-4 rounded-xl border border-gray-100 dark:border-gray-800">
-                    {activeVerb.definition}
-                  </p>
-                </div>
-
-                <div className="mb-5">
-                  <h4 className="text-sm font-bold text-gray-500 dark:text-gray-400 mb-2">خطوات الإجابة المنهجية</h4>
-                  <div className="space-y-2">
-                    {activeVerb.steps.map((step, stepIdx) => (
-                      <div key={stepIdx} className="flex items-start gap-3">
-                        <CheckCircle2 className="w-5 h-5 flex-shrink-0 mt-0.5 text-[#006d37] fill-[#2ecc71]/10" />
-                        <p className="text-gray-700 dark:text-gray-300 font-medium text-sm md:text-base leading-7">{step}</p>
+            <div className="space-y-5">
+              {verbViewOpen ? (
+                <div className="space-y-4">
+                  <button
+                    onClick={() => setVerbViewOpen(false)}
+                    className="flex items-center gap-1 px-3 py-2 rounded-xl font-bold text-sm bg-white dark:bg-[#141916] border border-gray-200 dark:border-gray-800 text-[#006d37] dark:text-[#2ecc71] hover:bg-gray-50 dark:hover:bg-white/5 transition-all cursor-pointer"
+                  >
+                    <ChevronRight className="w-4 h-4" />
+                    <span>الرجوع إلى الأفعال</span>
+                  </button>
+                  <main className="bg-white dark:bg-[#1a201c] rounded-3xl border border-gray-200 dark:border-gray-800 shadow-sm p-5 md:p-6">
+                    <div className="flex items-center gap-3 mb-4">
+                      <div className={`p-3 rounded-2xl bg-gradient-to-br ${activeVerb.color} text-white shadow-sm`}>
+                        {activeVerb.icon}
                       </div>
-                    ))}
-                  </div>
-                </div>
+                      <div>
+                        <h3 className="text-xl md:text-2xl font-black text-gray-900 dark:text-white flex items-center gap-2 flex-wrap">
+                          {activeVerb.verb}
+                          <span className="text-sm font-bold text-gray-400 bg-gray-100 dark:bg-gray-800 px-2 py-0.5 rounded-md">
+                            {activeVerb.french}
+                          </span>
+                        </h3>
+                      </div>
+                    </div>
 
-                <div className="bg-emerald-50 dark:bg-emerald-950/20 border border-emerald-100 dark:border-emerald-900/50 rounded-xl p-4 md:p-5">
-                  <h4 className="text-sm font-bold text-emerald-800 dark:text-emerald-400 mb-3 flex items-center gap-2">
-                    <Lightbulb className="w-4 h-4" />
-                    مثال تطبيقي من البكالوريا
-                  </h4>
-                  <div className="space-y-3 text-sm md:text-base">
-                    <div className="flex flex-col md:flex-row gap-1 md:gap-2">
-                      <span className="font-bold text-gray-700 dark:text-gray-300 shrink-0">السياق:</span>
-                      <span className="text-gray-600 dark:text-gray-400 font-medium leading-7">{activeVerb.example.context}</span>
-                    </div>
-                    <div className="flex flex-col md:flex-row gap-1 md:gap-2">
-                      <span className="font-bold text-gray-700 dark:text-gray-300 shrink-0">السؤال:</span>
-                      <span className="text-emerald-700 dark:text-emerald-300 font-bold bg-emerald-100/50 dark:bg-emerald-900/30 px-2 rounded">{activeVerb.example.question}</span>
-                    </div>
-                    <div className="mt-3 pt-3 border-t border-emerald-200/50 dark:border-emerald-800/50">
-                      <span className="font-bold text-gray-700 dark:text-gray-300 block mb-1">الإجابة المنهجية:</span>
-                      <p className="text-gray-800 dark:text-gray-200 font-medium leading-8 whitespace-pre-line">
-                        {activeVerb.example.answer}
+                    <div className="mb-5">
+                      <h4 className="text-sm font-bold text-gray-500 dark:text-gray-400 mb-2">التعريف الجوهري</h4>
+                      <p className="text-gray-800 dark:text-gray-200 font-medium leading-relaxed bg-gray-50 dark:bg-black/20 p-4 rounded-xl border border-gray-100 dark:border-gray-800">
+                        {activeVerb.definition}
                       </p>
                     </div>
-                  </div>
+
+                    <div className="mb-5">
+                      <h4 className="text-sm font-bold text-gray-500 dark:text-gray-400 mb-2">خطوات الإجابة المنهجية</h4>
+                      <div className="space-y-2">
+                        {activeVerb.steps.map((step, stepIdx) => (
+                          <div key={stepIdx} className="flex items-start gap-3">
+                            <CheckCircle2 className="w-5 h-5 flex-shrink-0 mt-0.5 text-[#006d37] fill-[#2ecc71]/10" />
+                            <p className="text-gray-700 dark:text-gray-300 font-medium text-sm md:text-base leading-7">{step}</p>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div className="bg-emerald-50 dark:bg-emerald-950/20 border border-emerald-100 dark:border-emerald-900/50 rounded-xl p-4 md:p-5">
+                      <h4 className="text-sm font-bold text-emerald-800 dark:text-emerald-400 mb-3 flex items-center gap-2">
+                        <Lightbulb className="w-4 h-4" />
+                        مثال تطبيقي من البكالوريا
+                      </h4>
+                      <div className="space-y-3 text-sm md:text-base">
+                        <div className="flex flex-col md:flex-row gap-1 md:gap-2">
+                          <span className="font-bold text-gray-700 dark:text-gray-300 shrink-0">السياق:</span>
+                          <span className="text-gray-600 dark:text-gray-400 font-medium leading-7">{activeVerb.example.context}</span>
+                        </div>
+                        <div className="flex flex-col md:flex-row gap-1 md:gap-2">
+                          <span className="font-bold text-gray-700 dark:text-gray-300 shrink-0">السؤال:</span>
+                          <span className="text-emerald-700 dark:text-emerald-300 font-bold bg-emerald-100/50 dark:bg-emerald-900/30 px-2 rounded">{activeVerb.example.question}</span>
+                        </div>
+                        <div className="mt-3 pt-3 border-t border-emerald-200/50 dark:border-emerald-800/50">
+                          <span className="font-bold text-gray-700 dark:text-gray-300 block mb-1">الإجابة المنهجية:</span>
+                          <p className="text-gray-800 dark:text-gray-200 font-medium leading-8 whitespace-pre-line">
+                            {activeVerb.example.answer}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </main>
                 </div>
-              </main>
+              ) : (
+                /* Grille d'icônes des 6 verbes (style écran principal — noms sur les icônes) */
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                  {filteredVerbs.length === 0 ? (
+                    <p className="text-sm text-gray-400 font-medium p-3 col-span-full">لا توجد نتائج مطابقة.</p>
+                  ) : (
+                    filteredVerbs.map((v) => (
+                      <button
+                        key={v.id}
+                        onClick={() => { setActiveVerbId(v.id); setVerbViewOpen(true); }}
+                        className="flex flex-col items-center text-center gap-2 rounded-3xl bg-white dark:bg-[#141916] border border-gray-200 dark:border-gray-800 p-4 shadow-sm hover:shadow-md hover:-translate-y-0.5 active:scale-[0.98] transition-all cursor-pointer"
+                      >
+                        <span className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${v.color} text-white flex items-center justify-center shadow-sm`}>
+                          {v.icon}
+                        </span>
+                        <span className="font-black text-base text-gray-900 dark:text-white leading-tight">{v.verb}</span>
+                        <span className="text-[10px] text-gray-400">{v.french}</span>
+                      </button>
+                    ))
+                  )}
+                </div>
+              )}
             </div>
           )}
 

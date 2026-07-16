@@ -5,41 +5,18 @@ import tailwindcss from '@tailwindcss/vite'
 export default defineConfig({
   plugins: [react(), tailwindcss()],
   build: {
-    chunkSizeWarningLimit: 600,
+    chunkSizeWarningLimit: 700,
     rollupOptions: {
       output: {
         manualChunks(id) {
-          // 1. Vendors lourds
-          if (id.includes('node_modules')) {
-            if (id.includes('@supabase')) return 'vendor-supabase'
-            if (id.includes('recharts')) return 'vendor-charts'
-            if (id.includes('lucide-react')) return 'vendor-icons'
-            if (id.includes('motion')) return 'vendor-motion'
-            return 'vendor-react'
-          }
-          // 2. Données lourdes (500 QCM + OPUS + cartes + connaissances)
-          if (
-            id.includes('src/data') ||
-            id.includes('src/knowledgeCards') ||
-            id.includes('src/bookTutorQA') ||
-            id.includes('src/methodologyKnowledge') ||
-            id.includes('src/lessonData') ||
-            id.includes('src/knowledge/') ||
-            id.includes('src/tutorKnowledge') ||
-            id.includes('src/studyGuide') ||
-            id.includes('src/smartTutorEngine')
-          ) {
-            return 'kunz-data'
-          }
-          // 3. Moteurs + contextes (utils, engines, auth)
-          if (
-            id.includes('src/utils') ||
-            id.includes('src/context')
-          ) {
-            return 'kunz-engines'
-          }
-        }
-      }
-    }
-  }
+          if (id.includes('MethodologyView')) return 'methodology';
+          if (id.includes('MyPathView')) return 'mypath';
+          if (id.includes('TrainingView') || id.includes('Training')) return 'training';
+          if (id.includes('ProgressView')) return 'progress';
+          if (id.includes('ValidationEngine') || id.includes('/validation/')) return 'validation';
+          if (id.includes('node_modules')) return 'vendor';
+        },
+      },
+    },
+  },
 })

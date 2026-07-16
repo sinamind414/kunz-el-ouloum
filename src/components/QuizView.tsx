@@ -5,6 +5,7 @@ import { QuizQuestion } from '../types';
 import { playSuccessSound, playFailureSound } from '../utils/audio';
 import { MASCOT_URL } from '../data';
 import { getHintForIncorrectOption, getGeneralHint } from '../utils/hints';
+import ZoomableImage from './ZoomableImage';
 
 interface QuizViewProps {
   unitId: number;
@@ -249,9 +250,9 @@ export default function QuizView({ unitTitle, questions, onClose, onQuizComplete
                       <GraduationCap className="w-3.5 h-3.5 text-[#006d37] dark:text-[#2ecc71]" />
                       <span>رسم تخطيطي توضيحي</span>
                     </div>
-                    <img 
-                      className={`object-contain max-h-[220px] w-full select-none ${isFocusMode ? '' : 'mix-blend-multiply'}`} 
-                      src={currentQuestion.diagramUrl} 
+                    <ZoomableImage
+                      className={`object-contain max-h-[220px] w-full select-none ${isFocusMode ? '' : 'mix-blend-multiply'}`}
+                      src={currentQuestion.diagramUrl}
                       alt="Biology Diagram"
                       referrerPolicy="no-referrer"
                     />
@@ -413,9 +414,9 @@ export default function QuizView({ unitTitle, questions, onClose, onQuizComplete
                           <div className="flex flex-row-reverse items-start gap-3">
                             {/* Mascot Avatar */}
                             <div className="w-12 h-12 rounded-full border border-[#006d37]/20 overflow-hidden shrink-0 bg-white/80 flex items-center justify-center p-0.5 shadow-sm">
-                              <img 
-                                src={MASCOT_URL} 
-                                alt="Mascot Avatar" 
+                              <ZoomableImage
+                                src={MASCOT_URL}
+                                alt="Mascot Avatar"
                                 className="w-full h-full object-contain"
                                 referrerPolicy="no-referrer"
                               />

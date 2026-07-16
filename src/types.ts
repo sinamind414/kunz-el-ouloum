@@ -6,6 +6,8 @@ export interface QuizQuestion {
   explanation: string;
   diagramUrl?: string;
   unitId: number;
+  /** Corpus dual (Speckit §8) : 'elite' compte pour BAC readiness, 'drill' = vocabulaire. */
+  corpus?: 'elite' | 'drill';
 }
 
 export interface Unit {

@@ -1,7 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" width="800" height="600">
-<defs><style>text{font-family:'Noto Kufi Arabic',sans-serif;}.t{font-size:18px;font-weight:bold;fill:#1A2A3A;}.la{font-size:12px;font-weight:bold;fill:#1A2A3A;}.ls{font-size:10px;fill:#7F8C8D;}.lw{font-size:10px;font-weight:bold;fill:#FFF;}</style></defs>
-<rect width="800" height="600" fill="#FFF"/>
+<defs><style>text{font-family:'Noto Kufi Arabic','Segoe UI',system-ui,sans-serif;}
+.title,.t{font-size:21px;font-weight:800;fill:#0F2A1D;}
+.subtitle{font-size:13px;fill:#6B7280;}
+.label-ar,.la{font-size:14px;font-weight:700;fill:#1A2A3A;}
+.label-fr{font-size:12px;fill:#6B7280;}
+.label-small,.ls{font-size:11px;fill:#6B7280;}
+.label-white,.lw{font-size:12px;font-weight:700;fill:#FFFFFF;}</style><linearGradient id="kunzBg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#F7FAF8"/>
+      <stop offset="100%" stop-color="#EFF4F1"/>
+    </linearGradient>
+    <filter id="kunzShadow" x="-5%" y="-5%" width="110%" height="110%">
+      <feDropShadow dx="0" dy="3" stdDeviation="6" flood-color="#006d37" flood-opacity="0.06"/>
+    </filter>
+  </defs>
+<rect width="800" height="600" fill="url(#kunzBg)"/>
+  <rect x="8" y="8" width="784" height="584" rx="20" fill="none" stroke="#E3EAE6" stroke-width="2" filter="url(#kunzShadow)"/>
 <text x="400" y="30" text-anchor="middle" class="t">نموذجا ارتباط الإنزيم بالركيزة — Modèles Enzyme-Substrat</text>
 
 <!-- LEFT: Lock and Key -->
@@ -80,5 +94,5 @@
   <text x="45" y="102" class="ls" font-size="9">العالم</text><text x="205" y="102" class="ls" font-size="9">Fischer (1894)</text><text x="435" y="102" class="ls" font-size="9">Koshland (1958)</text>
 </g>
 
-<text x="400" y="590" text-anchor="middle" class="ls">كنز العلوم — SVT Bac Algérie 3AS</text>
+<text x="400" y="590" text-anchor="middle" class="ls">كنز العلوم — SVT بكالوريا 3AS</text>
 </svg>
