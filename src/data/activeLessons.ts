@@ -4,7 +4,7 @@
 // (ex: "lecon_transcription"), pour que le tunnel se déclenche sur une leçon réelle.
 
 // Source de vérité officielle (lexique DZ strict) — voir kunzDatabase.ts.
-import { ActiveLesson_D1_U1_L2_Transcription, ActiveLesson_D1_U1_L3_Traduction } from './kunzDatabase';
+import { ActiveLesson_D1_U1_L2_Transcription, ActiveLesson_D1_U1_L3_Traduction, ActiveLesson_D1_U3_L1_Enzyme } from './kunzDatabase';
 export interface MicroTest {
   prompt: string;
   acceptedAnswers: string[];
@@ -146,4 +146,5 @@ export const ACTIVE_LESSONS: Record<string, ActiveLesson> = {
   // Leçons officielles câblées depuis la Source de Vérité (kunzDatabase.ts).
   'd1-u1-l2-transcription': ActiveLesson_D1_U1_L2_Transcription as ActiveLesson,
   'd1-u1-l3-traduction': ActiveLesson_D1_U1_L3_Traduction as ActiveLesson,
+  'd1-u3-l1-enzyme': ActiveLesson_D1_U3_L1_Enzyme as ActiveLesson,
 };

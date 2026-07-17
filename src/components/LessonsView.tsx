@@ -267,6 +267,16 @@ export default function LessonsView({ units, onStartLesson }: LessonsViewProps) 
                 </div>
                 <ChevronLeft className="w-5 h-5 text-slate-500 group-hover:text-emerald-400 transition-colors" />
               </button>
+              <button
+                onClick={() => onStartLesson('d1-u3-l1-enzyme')}
+                className="flex items-center justify-between p-4 bg-slate-900/60 rounded-xl hover:bg-slate-900 transition-colors text-right group"
+              >
+                <div>
+                  <span className="block font-bold text-white">الإنزيمات والحفز (Enzymes et catalyse)</span>
+                  <span className="text-xs text-slate-400">المجال 1 - الوحدة 3</span>
+                </div>
+                <ChevronLeft className="w-5 h-5 text-slate-500 group-hover:text-emerald-400 transition-colors" />
+              </button>
             </div>
           </div>
         </>
