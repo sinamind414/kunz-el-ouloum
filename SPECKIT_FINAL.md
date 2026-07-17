@@ -22,8 +22,12 @@ Preuves : `npm test` (typecheck + smartbot 12/12), `npx vitest run` 29/29, `npm 
 - Carnet d'erreurs initial basé sur `learningInsights`.
 - **P0.0 livré (2026-07-17)** :
   - `src/data/reflexes.ts` — **source unique canonique** des six réflexes + 7 compétences complémentaires.
-  - `src/data/store.ts` — contrats de stockage offline versionné (v1) + `migrateStore` défensif (survit JSON invalide / localStorage indisponible, borne 100/100/90j).
+  - `src/data/store.ts` — contrats de stockage offline versionné (v1) + `migrateStore` défensif (survit JSON invalide / localStorage indisponible, borne 100/100/90j) ; étendu le 2026-07-17 avec `MasteryEvidence`, `ConceptRoute`, `ReviewMetadata`, champs `reviewStartedAt`/`reviewStage`, cadence `REVIEW_INTERVALS_DAYS` et helpers `applyEvidenceToError`/`completeMissionWithEvidence`.
   - `src/data/store.test.ts` + `src/data/reflexes.test.ts` — tests Vitest de migration et de réflexes.
+- **P1.1-B livré (2026-07-17)** — boucle de mission fermée :
+  - `src/services/missionEngine.ts` — `selectMission` (priorité méthode répétée → contenu récent → rappel échu → méthode isolée → onboarding), mission 3 étapes / 8-9 min, action primaire unique.
+  - `closeMissionLoop` : une mission n'est `completedAt` **que via `MasteryEvidence` valide** ; sinon reste ouverte (jamais par clic). L'erreur liée est mise à jour via `applyEvidenceToError` (réussite ≥70 avance `reviewStage`, échec redémarre J+1, J+14 consolide).
+  - `src/services/missionEngine.test.ts` — 12 tests (priorité, complétion refusée sans preuve, preuve réelle, reprise, cadence J+1/3/7/14 avec `vi.setSystemTime`).
 - Build, audit de production et tests actuellement réussis.
 - Bundle vendor encore lourd (~291 kB gzip) — cible connue à traiter après P0/P1 sans casser le lazy loading.
 
@@ -31,16 +35,18 @@ Preuves : `npm test` (typecheck + smartbot 12/12), `npx vitest run` 29/29, `npm 
 
 ## B. À concevoir ou implémenter (jamais écrit comme « terminé » tant qu'absent et testé)
 
+> P0.0 et **P1.1-B** sont livrés (voir §A). Reste :
+
 - Store versionné complet `v0 → v1 → v2 → v3` **non destructif** (mon P0.0 couvre v0→v1).
-- Référentiel canonique **réellement utilisé par toutes les vues** (aujourd'hui partiellement câblé).
-- `MasteryEvidence` structurée et preuves de maîtrise multidimensionnelle (P2.2).
-- `ConceptRoute` (registre destination pédagogique leçon/quiz/document d'une erreur) — requis pour rendre les missions routables.
+- Référentiel canonique **réellement utilisé par toutes les vues** (aujourd'hui partiellement câblé dans `missionEngine`/`activeLessons`).
+- `MasteryEvidence` **déjà typée** (§A) mais pas encore injectée par `ValidationEngine`/quiz/leçon (P2.2 à brancher).
+- `ConceptRoute` **déjà typée** mais pas encore peuplée depuis le vrai catalogue de leçons (P1.1 routage UI à faire).
 - Suppression complète des données fictives de `StatsView.tsx` (P0.1).
-- Mission Engine **persisté et routable** (P1.1).
+- Mission Engine **persisté côté UI** (le moteur existe et est testé ; il faut le câbler dans `MyPathView`/`ErrorNotebook` pour persistance réelle, P1.1).
 - Cartes de survie validées + rappel actif réel (P1.2).
 - Sortie BAC dans `InteractiveLessonView` (P1.3).
 - Documents vivants contextualisés (P1.4).
-- Rappels 1/3/7/14 ancrés à la date d'origine (`reviewStartedAt` / `reviewStage`) (P2.3).
+- Rappels 1/3/7/14 ancrés à la date d'origine : **logique livrée** (§A) mais non encore déclenchée par le carnet UI (P2.3 à câbler).
 - Défi BAC en couches réel (P2).
 - Contenu validé par enseignant avec `ReviewMetadata` (P3).
 - Playwright / E2E (P3).

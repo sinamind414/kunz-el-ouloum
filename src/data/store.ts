@@ -44,6 +44,8 @@ export interface LearningError {
   count: number;
   createdAt: number;
   lastSeenAt: number;
+  reviewStartedAt: number;
+  reviewStage: number;
   nextReviewAt: number;
   resolvedAt?: number;
 }
@@ -83,6 +85,37 @@ export interface Mission {
   completedAt?: number;
   relatedErrorIds: string[];
 }
+
+// Preuve réelle de maîtrise (P2.2 / P1.1-B) — jamais un simple compteur.
+export interface MasteryEvidence {
+  id: string;
+  conceptId: string;
+  dimension: 'knowledge' | 'document' | 'methodology';
+  reflexId?: CoreReflexId;
+  source: 'quiz' | 'document_analysis' | 'lesson_transfer' | 'word_by_word';
+  score: number;
+  createdAt: number;
+}
+
+// Registre de destination pédagogique : relie une erreur à la leçon/quiz/doc à ouvrir.
+export interface ConceptRoute {
+  conceptId: string;
+  unitId?: number;
+  lessonId?: string;
+  documentExerciseId?: string;
+  survivalCardId?: string;
+}
+
+export interface ReviewMetadata {
+  reviewed: boolean;
+  reviewedAt?: string;
+  reviewedBy?: string;
+  sourceProgram?: string;
+}
+
+// Cadence de rappels espacés (P2.3) : offsets depuis reviewStartedAt.
+export const REVIEW_INTERVALS_DAYS = [1, 3, 7, 14] as const;
+export const DAY_MS = 24 * 60 * 60 * 1000;
 
 export interface StorageMeta {
   version: number;
@@ -195,11 +228,28 @@ export function migrateStore(raw: unknown, fromVersion: number, toVersion: numbe
   const loose = raw as Record<string, any>;
 
   // Préserve les erreurs actives lors d'une migration valide (§2.4 test).
-  const preservedErrors: LearningError[] = Array.isArray(loose.learningErrors)
+  // Comble les champs de cadence absents dans les stores anciens (non destructif).
+  const rawErrors: any[] = Array.isArray(loose.learningErrors)
     ? loose.learningErrors
     : Array.isArray(loose.errors)
       ? loose.errors
       : [];
+  const preservedErrors: LearningError[] = rawErrors.map((e) => ({
+    id: String(e.id),
+    kind: e.kind ?? 'methodology',
+    conceptId: e.conceptId,
+    unitId: e.unitId,
+    reflexId: e.reflexId,
+    ruleIds: Array.isArray(e.ruleIds) ? e.ruleIds : [],
+    labelAr: String(e.labelAr ?? ''),
+    count: typeof e.count === 'number' ? e.count : 1,
+    createdAt: e.createdAt ?? now,
+    lastSeenAt: e.lastSeenAt ?? now,
+    reviewStartedAt: e.reviewStartedAt ?? 0,
+    reviewStage: typeof e.reviewStage === 'number' ? e.reviewStage : 0,
+    nextReviewAt: e.nextReviewAt ?? 0,
+    resolvedAt: e.resolvedAt,
+  }));
 
   const store: KunzStore = {
     meta: {
@@ -239,4 +289,92 @@ export function loadStore(): KunzStore {
     writeRaw(STORAGE_KEYS.mastery, store.mastery);
   }
   return store;
+}
+
+// ---------------------------------------------------------------------------
+// Boucle de mission (P1.1-B) : complétion UNIQUEMENT via preuve réelle.
+// ---------------------------------------------------------------------------
+
+// Calcule le prochain offset de rappel à partir de reviewStartedAt + reviewStage.
+export function nextReviewOffsetDays(reviewStage: number): number {
+  const idx = Math.max(0, Math.min(reviewStage, REVIEW_INTERVALS_DAYS.length - 1));
+  return REVIEW_INTERVALS_DAYS[idx];
+}
+
+export function computeNextReviewAt(reviewStartedAt: number, reviewStage: number, _now: number = Date.now()): number {
+  // Stage 0 -> J+1, stage 1 -> J+3, etc. (ancré à reviewStartedAt, jamais à Date.now() seul).
+  const stageForCompute = reviewStartedAt > 0 ? reviewStage : 0;
+  return reviewStartedAt + nextReviewOffsetDays(stageForCompute) * DAY_MS;
+}
+
+// Résout ou fait avancer la revue d'une erreur liée selon une preuve réelle.
+// Retourne une NOUVELLE erreur (immutabilité) ; ne mut pas l'original.
+export function applyEvidenceToError(
+  error: LearningError,
+  evidence: MasteryEvidence,
+  options: { passed: boolean; now?: number } = { passed: true }
+): LearningError {
+  const now = options.now ?? Date.now();
+  const passed = options.passed && evidence.score >= 70;
+
+  if (!passed) {
+    // Échec/insuffisant : redémarre la cadence à J+1.
+    return {
+      ...error,
+      count: error.count + 1,
+      lastSeenAt: now,
+      resolvedAt: undefined,
+      reviewStartedAt: now,
+      reviewStage: 0,
+      nextReviewAt: computeNextReviewAt(now, 0, now),
+    };
+  }
+
+  // Réussite réelle : si une revue était due, avance d'un stage ; sinon conserve la date.
+  const stageBefore = error.reviewStartedAt > 0 ? error.reviewStage : 0;
+  const dueNow = error.nextReviewAt != null && now >= error.nextReviewAt;
+  const newStage = dueNow ? Math.min(stageBefore + 1, REVIEW_INTERVALS_DAYS.length - 1) : stageBefore;
+  const startAt = error.reviewStartedAt > 0 ? error.reviewStartedAt : now;
+  const finished = newStage >= REVIEW_INTERVALS_DAYS.length - 1 && dueNow;
+
+  return {
+    ...error,
+    reviewStartedAt: startAt,
+    reviewStage: newStage,
+    nextReviewAt: computeNextReviewAt(startAt, newStage, now),
+    resolvedAt: finished ? now : undefined,
+    lastSeenAt: now,
+  };
+}
+
+// Relie une preuve à la mission + erreurs associées, et marque la mission terminée.
+// `evidence` doit être fourni : une mission n'est jamais terminée par un simple clic.
+export function completeMissionWithEvidence(
+  mission: Mission,
+  evidence: MasteryEvidence | null,
+  now: number = Date.now()
+): { mission: Mission; errors: LearningError[] } {
+  if (!evidence) {
+    // Pas de preuve -> la mission reste ouverte (jamais terminée).
+    return { mission, errors: [] };
+  }
+  const completed: Mission = { ...mission, completedAt: now };
+  const errors: LearningError[] = [];
+  for (const errId of mission.relatedErrorIds) {
+    errors.push({
+      id: errId,
+      kind: evidence.dimension === 'document' ? 'document' : evidence.dimension === 'methodology' ? 'methodology' : 'knowledge',
+      conceptId: evidence.conceptId,
+      reflexId: evidence.reflexId,
+      ruleIds: [],
+      labelAr: '',
+      count: 1,
+      createdAt: now,
+      lastSeenAt: now,
+      reviewStartedAt: now,
+      reviewStage: 0,
+      nextReviewAt: computeNextReviewAt(now, 0, now),
+    });
+  }
+  return { mission: completed, errors };
 }

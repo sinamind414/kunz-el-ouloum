@@ -49,6 +49,8 @@ function makeError(id: string, resolved = false): LearningError {
     count: 2,
     createdAt: now,
     lastSeenAt: now,
+    reviewStartedAt: now,
+    reviewStage: 0,
     nextReviewAt: now,
     resolvedAt: resolved ? now : undefined,
   };
