@@ -212,7 +212,12 @@ type CategoryId = 'quickstart' | 'verbs' | 'templates' | 'qa' | 'errors' | 'term
 
 // ─── Main Component ──────────────────────────────────────────────────────────
 
-export default function MethodologyView() {
+export default function MethodologyView(props: {
+  missionReflexId?: import('../data/reflexes').CoreReflexId;
+  missionMeta?: { missionId: string; conceptId: string; relatedErrorIds?: string[] };
+  onMissionComplete?: (reflexId: import('../data/reflexes').CoreReflexId) => void;
+}) {
+  const { missionReflexId, missionMeta, onMissionComplete } = props;
   const [query, setQuery] = useState('');
   const [activeVerbId, setActiveVerbId] = useState<string>(METHODOLOGY_VERBS[0].id);
   const [verbViewOpen, setVerbViewOpen] = useState(false);
@@ -701,7 +706,12 @@ export default function MethodologyView() {
                 Kunz El Ouloum — مجاني 100% لفهم الآليات ومنطق الإجابة.
                 التصحيح الكامل + مواضيع BAC + متابعة أسبوعية ← <span className="underline">Kunz Pro</span> (نسخة مدفوعة).
               </div>
-              <MethodologyTrainer initialVerb="analyse" />
+              <MethodologyTrainer
+                initialVerb="analyse"
+                missionReflexId={missionReflexId}
+                missionMeta={missionMeta}
+                onMissionComplete={onMissionComplete}
+              />
             </div>
           )}
         </div>

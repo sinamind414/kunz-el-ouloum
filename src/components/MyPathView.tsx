@@ -12,6 +12,7 @@ import {
   isManhadjiyaDone,
   type Mission,
 } from '../utils/missionManager';
+import type { CoreReflexId } from '../data/reflexes';
 
 interface MyPathViewProps {
   units: Unit[];
@@ -19,7 +20,16 @@ interface MyPathViewProps {
   onLaunchQuiz: (unitId: number) => void;
   onLaunchRevision: (unitId: number) => void;
   onNavigateToTab: (tab: TabId) => void;
+  onLaunchReflexMission?: (reflexId: CoreReflexId, meta: { missionId: string; conceptId: string; relatedErrorIds?: string[] }) => void;
 }
+
+// Mappe une mission Manhadjiya (M0–M5) vers le réflexe méthodologique ciblé (P1.1-B).
+const MISSION_REFLEX: Record<string, CoreReflexId | undefined> = {
+  M2: 'analyse',
+  M3: 'interpret',
+  M4: 'hypothesize',
+  M5: 'validate',
+};
 
 // Une icône motivante = pourquoi j'ai envie d'étudier (jamais une navigation dupliquée de la bottom nav).
 interface MotivationIcon {
@@ -35,7 +45,7 @@ interface MotivationIcon {
 }
 
 export default function MyPathView(props: MyPathViewProps) {
-  const { units, progress, onLaunchQuiz, onLaunchRevision, onNavigateToTab } = props;
+  const { units, progress, onLaunchQuiz, onLaunchRevision, onNavigateToTab, onLaunchReflexMission } = props;
 
   // Formation Jour 0 (onboarding « 6 lois ») : accessible via un bouton dédié,
   // mais NE BLOQUE PLUS l'accès au tableau de bord (les 6 icônes s'affichent tout de suite).
@@ -60,6 +70,7 @@ export default function MyPathView(props: MyPathViewProps) {
           progress={progress}
           onMissionsChange={(m) => { setMissions(m); if (m.every((x) => x.status === 'done')) setShowOnboarding(false); }}
           onNavigateToTab={onNavigateToTab}
+          onLaunchReflexMission={onLaunchReflexMission}
         />
       </div>
     );
@@ -95,11 +106,13 @@ function JourZeroView({
   progress,
   onMissionsChange,
   onNavigateToTab,
+  onLaunchReflexMission,
 }: {
   missions: Mission[];
   progress: UserProgress;
   onMissionsChange: (m: Mission[]) => void;
   onNavigateToTab: (tab: TabId) => void;
+  onLaunchReflexMission?: (reflexId: CoreReflexId, meta: { missionId: string; conceptId: string; relatedErrorIds?: string[] }) => void;
 }) {
   const current = getCurrentMission(missions);
   const { done: doneCount, total } = getMissionsProgress(missions);
@@ -108,12 +121,23 @@ function JourZeroView({
 
   const handleStart = () => {
     if (!current) return;
+    const reflex = MISSION_REFLEX[current.id];
+    if (reflex && onLaunchReflexMission) {
+      // P1.1-B : ouvre l'entraînement sur le bon réflexe, sans choix intermédiaire.
+      onLaunchReflexMission(reflex, { missionId: current.id, conceptId: current.id });
+      return;
+    }
     const updated = completeMission(current.id, false);
     if (updated) onMissionsChange(updated);
   };
 
   const handleExtra = () => {
     if (!current) return;
+    const reflex = MISSION_REFLEX[current.id];
+    if (reflex && onLaunchReflexMission) {
+      onLaunchReflexMission(reflex, { missionId: current.id, conceptId: current.id });
+      return;
+    }
     const updated = completeMission(current.id, true);
     if (updated) onMissionsChange(updated);
   };

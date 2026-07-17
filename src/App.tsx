@@ -18,6 +18,7 @@ const LessonsView = lazy(() => import('./components/LessonsView'));
 const CoachView = lazy(() => import('./components/CoachView'));
 const InteractiveLessonView = lazy(() => import('./components/InteractiveLessonView'));
 const MyPathView = lazy(() => import('./components/MyPathView'));
+const MethodologyView = lazy(() => import('./components/MethodologyView'));
 const TrainingView = lazy(() => import('./components/TrainingView'));
 const ProgressView = lazy(() => import('./components/ProgressView'));
 
@@ -73,6 +74,21 @@ function AppShell() {
   const [isFocusMode, setIsFocusMode] = useState(false);
   const [isReminderModalOpen, setIsReminderModalOpen] = useState(false);
   const [isCoachOpen, setIsCoachOpen] = useState(false);
+
+  // P1.1-B — une mission de réflexe ouvre l'entraînement méthodologique sur le
+  // bon réflexe (sans choix intermédiaire), puis revient au parcours.
+  const [activeMissionReflex, setActiveMissionReflex] = useState<{
+    reflexId: import('./data/reflexes').CoreReflexId;
+    missionId: string;
+    conceptId: string;
+    relatedErrorIds?: string[];
+  } | null>(null);
+
+  const handleLaunchReflexMission = (
+    reflexId: import('./data/reflexes').CoreReflexId,
+    meta: { missionId: string; conceptId: string; relatedErrorIds?: string[] }
+  ) => setActiveMissionReflex({ reflexId, ...meta });
+
 
   useEffect(() => {
     if (currentTab !== 'splash') stopPirateMusic();
@@ -291,7 +307,7 @@ function AppShell() {
         <main className={`flex-1 px-4 py-6 md:py-8 overflow-x-hidden ${isFocusMode ? 'flex items-center justify-center min-h-screen py-12' : ''}`}>
           <AnimatePresence mode="wait">
             <motion.div key={currentTab} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.2 }}>
-              {currentTab === 'path' && <MyPathView units={units} progress={progress} onLaunchQuiz={handleLaunchQuiz} onLaunchRevision={handleLaunchRevision} onNavigateToTab={navigateToTab} />}
+              {currentTab === 'path' && <MyPathView units={units} progress={progress} onLaunchQuiz={handleLaunchQuiz} onLaunchRevision={handleLaunchRevision} onNavigateToTab={navigateToTab} onLaunchReflexMission={handleLaunchReflexMission} />}
               <Suspense fallback={<LoadingFallback />}>
                 {currentTab === 'lessons' && <LessonsView units={units} onStartLesson={handleStartLesson} />}
                 {currentTab === 'training' && <TrainingView units={units} flashcards={flashcards} progress={progress} onLaunchQuiz={handleLaunchQuiz} onLaunchRevision={handleLaunchRevision} onStartLesson={handleStartLesson} onRateCard={handleRateCard} isFocusMode={isFocusMode} setIsFocusMode={setIsFocusMode} onNavigateToTab={navigateToTab} />}
@@ -361,6 +377,21 @@ function AppShell() {
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* P1.1-B — overlay mission réflexe : entraînement méthodologique ciblé. */}
+      {activeMissionReflex && (
+        <div className="fixed inset-0 z-[55] bg-black/50 flex justify-center items-end md:items-center px-0 md:px-4 overflow-y-auto py-6">
+          <div className="w-full md:max-w-3xl bg-white dark:bg-[#141916] rounded-t-[28px] md:rounded-3xl shadow-2xl">
+            <Suspense fallback={<LoadingFallback />}>
+              <MethodologyView
+                missionReflexId={activeMissionReflex.reflexId}
+                missionMeta={{ missionId: activeMissionReflex.missionId, conceptId: activeMissionReflex.conceptId, relatedErrorIds: activeMissionReflex.relatedErrorIds }}
+                onMissionComplete={() => setActiveMissionReflex(null)}
+              />
+            </Suspense>
+          </div>
+        </div>
+      )}
 
     </div>
   );

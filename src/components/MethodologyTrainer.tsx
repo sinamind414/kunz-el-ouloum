@@ -3,11 +3,37 @@ import { Target, CheckCircle2, Sparkles, BookOpen, ArrowLeft } from 'lucide-reac
 import { METHODOLOGY_QA, MethodologyQA } from '../methodologyKnowledge';
 import { normalizeArabic } from '../utils/arabicNormalize';
 import SpeechToTextInput from './SpeechToTextInput';
+import { CoreReflexId } from '../data/reflexes';
+import { MasteryEvidence, recordEvidence } from '../data/store';
+
+type VerbKey = 'analyse' | 'interpret' | 'deduce' | 'compare' | 'justify' | 'hypothesis';
+
+interface MissionMeta {
+  missionId: string;
+  conceptId: string;
+  relatedErrorIds?: string[];
+}
 
 interface Props {
   onClose?: () => void;
-  initialVerb?: 'analyse' | 'interpret' | 'deduce' | 'compare' | 'justify' | 'hypothesis';
+  initialVerb?: VerbKey;
+  // P1.1-B — une mission de réflexe ouvre l'entraînement sur le bon réflexe,
+  // sans choix intermédiaire, et enregistre la preuve sur ce réflexe.
+  missionReflexId?: CoreReflexId;
+  missionMeta?: MissionMeta;
+  onMissionComplete?: (reflexId: CoreReflexId) => void;
 }
+
+// Mappe l'identifiant canonique du réflexe (reflexes.ts) vers la clé de verbe
+// utilisée par le trainer (vocabulaire différent, voir VERB_MAP).
+const REFLEX_TO_VERB: Record<CoreReflexId, VerbKey> = {
+  analyse: 'analyse',
+  interpret: 'interpret',
+  compare: 'compare',
+  hypothesize: 'hypothesis',
+  explain: 'deduce',
+  validate: 'justify',
+};
 
 const VERB_MAP: Record<string, { verb: string; keywords: string[]; connectors: string[]; color: string }> = {
   analyse: { verb: 'حلل', keywords: ['تمثل الوثيقة', 'نلاحظ', 'بدلالة', 'تزايد', 'تناقص', 'استنتاج'], connectors: ['حيث', 'كلما', 'نستنتج'], color: '#2563eb' },
@@ -49,11 +75,14 @@ function scoreAnswer(text: string, qa: MethodologyQA, verbKey?: string) {
   return { score, kwFound, connFound, hasStructure, lengthOk, kwPct, connPct, structPct };
 }
 
-export default function MethodologyTrainer({ onClose, initialVerb = 'analyse' }: Props) {
-  const [verb, setVerb] = useState(initialVerb);
+export default function MethodologyTrainer({ onClose, initialVerb = 'analyse', missionReflexId, missionMeta, onMissionComplete }: Props) {
+  const lockedReflex = missionReflexId != null;
+  const resolvedVerb: VerbKey = lockedReflex ? REFLEX_TO_VERB[missionReflexId] : initialVerb;
+  const [verb, setVerb] = useState<VerbKey>(resolvedVerb);
   const [qaIndex, setQaIndex] = useState(0);
   const [answer, setAnswer] = useState('');
   const [validated, setValidated] = useState(false);
+  const [missionDone, setMissionDone] = useState(false);
 
   const pool = useMemo(() => {
     // pick QAs that match verb intent, fallback first 6
@@ -77,6 +106,22 @@ export default function MethodologyTrainer({ onClose, initialVerb = 'analyse' }:
   const handleValidate = (txt?: string) => {
     if (txt !== undefined) setAnswer(txt);
     setValidated(true);
+    const r = scoreAnswer(txt ?? answer, qa, verb);
+    if (lockedReflex && missionMeta && r.score >= 70) {
+      const evidence: MasteryEvidence = {
+        id: `ev_${missionMeta.missionId}_${missionReflexId}_${Date.now()}`,
+        conceptId: missionMeta.conceptId,
+        dimension: 'methodology',
+        reflexId: missionReflexId,
+        source: 'word_by_word',
+        score: r.score,
+        createdAt: Date.now(),
+        relatedErrorIds: missionMeta.relatedErrorIds ?? [],
+      };
+      recordEvidence(evidence);
+      setMissionDone(true);
+      onMissionComplete?.(missionReflexId);
+    }
   };
 
   const next = () => {
@@ -94,7 +139,11 @@ export default function MethodologyTrainer({ onClose, initialVerb = 'analyse' }:
           </div>
           <div>
             <h3 className="font-black text-lg text-gray-900 dark:text-white">تدريب منهجي — {vMeta.verb}</h3>
-            <p className="text-[11px] text-[#506072] dark:text-gray-400">Kunz El Ouloum — gratuit • 100% offline • version Pro = تصحيح مفصّل + مواضيع BAC</p>
+            <p className="text-[11px] text-[#506072] dark:text-gray-400">
+              {lockedReflex
+                ? `مهمة مرتبطة — روفلكس ${missionReflexId} (بلا اختيار يدوي)`
+                : 'Kunz El Ouloum — gratuit • 100% offline • version Pro = تصحيح مفصّل + مواضيع BAC'}
+            </p>
           </div>
         </div>
         {onClose && (
@@ -102,18 +151,23 @@ export default function MethodologyTrainer({ onClose, initialVerb = 'analyse' }:
         )}
       </div>
 
-      {/* Verb picker */}
+      {/* Verb picker — verrouillé quand une mission de réflexe est active (P1.1-B). */}
       <div className="flex flex-wrap gap-1.5">
-        {Object.entries(VERB_MAP).map(([k, m]) => (
-          <button
-            key={k}
-            onClick={() => { setVerb(k as any); setValidated(false); setAnswer(''); setQaIndex(0); }}
-            className={`px-3 py-1.5 rounded-full text-[11px] font-black border transition-all cursor-pointer ${verb === k ? 'text-white' : 'bg-white dark:bg-[#1a201c] text-[#506072] dark:text-gray-300 hover:brightness-95'}`}
-            style={verb === k ? { background: m.color, borderColor: m.color } : { borderColor: '#e2dabf88' }}
-          >
-            {m.verb}
-          </button>
-        ))}
+        {Object.entries(VERB_MAP).map(([k, m]) => {
+          const isActive = verb === k;
+          const disabled = lockedReflex;
+          return (
+            <button
+              key={k}
+              disabled={disabled}
+              onClick={() => { setVerb(k as VerbKey); setValidated(false); setAnswer(''); setQaIndex(0); }}
+              className={`px-3 py-1.5 rounded-full text-[11px] font-black border transition-all ${disabled ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'} ${isActive ? 'text-white' : 'bg-white dark:bg-[#1a201c] text-[#506072] dark:text-gray-300 hover:brightness-95'}`}
+              style={isActive ? { background: m.color, borderColor: m.color } : { borderColor: '#e2dabf88' }}
+            >
+              {m.verb}
+            </button>
+          );
+        })}
       </div>
 
       {/* Document / consigne */}
@@ -226,6 +280,22 @@ export default function MethodologyTrainer({ onClose, initialVerb = 'analyse' }:
           </div>
         </div>
       )}
+
+        {/* P1.1-B — bannière de fin de mission : preuve réelle enregistrée. */}
+        {lockedReflex && missionDone && (
+          <div className="rounded-2xl p-4 bg-[#2ecc71]/10 border border-[#2ecc71]/20 text-center space-y-2">
+            <div className="font-black text-[#006d37] flex items-center justify-center gap-2">
+              <CheckCircle2 className="w-5 h-5" /> تمّت المهمة — أُثبِت الروفلكس {missionReflexId} فعلياً
+            </div>
+            <p className="text-[11px] text-[#506072] dark:text-gray-400">العودة إلى مسارك بعد التأكيد.</p>
+            <button
+              onClick={onClose}
+              className="mx-auto px-5 py-2.5 bg-[#006d37] hover:bg-[#00562b] text-white rounded-xl font-black text-sm shadow-sm cursor-pointer flex items-center gap-2"
+            >
+              رجوع إلى مساري <ArrowLeft className="w-4 h-4" />
+            </button>
+          </div>
+        )}
     </div>
   );
 }

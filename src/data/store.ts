@@ -95,6 +95,7 @@ export interface MasteryEvidence {
   source: 'quiz' | 'document_analysis' | 'lesson_transfer' | 'word_by_word';
   score: number;
   createdAt: number;
+  relatedErrorIds?: string[];
 }
 
 // Registre de destination pédagogique : relie une erreur à la leçon/quiz/doc à ouvrir.
@@ -377,4 +378,58 @@ export function completeMissionWithEvidence(
     });
   }
   return { mission: completed, errors };
+}
+
+// Enregistre une preuve réelle de maîtrise (P1.1-B) sur le bon réflexe, sans
+// jamais valider par un simple compteur. Renvoie le store mis à jour (immutable).
+export function recordEvidence(evidence: MasteryEvidence): KunzStore {
+  const store = loadStore();
+
+  // Maîtrise : attache la preuve au réflexe concerné (dimension methodology).
+  const conceptId = evidence.conceptId;
+  const prev: MasteryRecord = store.mastery[conceptId] ?? {
+    conceptId,
+    knowledge: emptyCell(),
+    document: emptyCell(),
+    methodology: {},
+  };
+  const reflexId = evidence.reflexId;
+  const prevMethod = prev.methodology ?? {};
+  const cell = prevMethod[reflexId ?? 'analyse'] ?? emptyCell();
+
+  const updatedRecord: MasteryRecord = {
+    ...prev,
+    methodology: {
+      ...prevMethod,
+      ...(reflexId
+        ? {
+            [reflexId]: {
+              level: cell.level,
+              evidenceCount: cell.evidenceCount + 1,
+              lastEvidenceAt: evidence.createdAt,
+              lastScore: evidence.score,
+            },
+          }
+        : {}),
+    },
+  };
+
+  // Erreurs liées : fait avancer/résoudre l'erreur d'origine si preuve réelle.
+  const related = new Set(evidence.relatedErrorIds ?? []);
+  const errors = store.learningErrors.map((e) =>
+    related.has(e.id) ? applyEvidenceToError(e, evidence, { passed: evidence.score >= 70 }) : e
+  );
+
+  const next: KunzStore = {
+    ...store,
+    mastery: { ...store.mastery, [conceptId]: updatedRecord },
+    learningErrors: errors,
+  };
+  writeRaw(STORAGE_KEYS.mastery, next.mastery);
+  writeRaw(STORAGE_KEYS.learningErrors, next.learningErrors);
+  return next;
+}
+
+function emptyCell(): MasteryCell {
+  return { level: 'unknown', evidenceCount: 0 };
 }
