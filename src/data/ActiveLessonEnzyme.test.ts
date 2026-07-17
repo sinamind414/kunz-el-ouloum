@@ -41,4 +41,16 @@ describe('Leçon active "Enzymes et catalyse" (d1-u3-l1-enzyme)', () => {
     expect(isInsideHotspot(50, 50, { x: 50, y: 50, radius: 10 })).toBe(true);
     expect(isInsideHotspot(0, 0, { x: 50, y: 50, radius: 10 })).toBe(false);
   });
+
+  it('exerce le parcours : chaque réponse acceptée de chaque micro-test passe via le moteur réel', () => {
+    for (const block of lesson.blocks) {
+      if (block.type !== 'TEXT_AND_PRODUCE') continue;
+      for (const answer of block.microTest.acceptedAnswers) {
+        expect(
+          checkProduction(answer, block.microTest.acceptedAnswers),
+          `micro-test "${block.microTest.prompt}" — réponse "${answer}" rejetée`
+        ).toBe(true);
+      }
+    }
+  });
 });
