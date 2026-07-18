@@ -153,4 +153,68 @@ describe('Store — migration (V2 §2.4)', () => {
     const reloaded = loadStore();
     expect(reloaded.evidences.some((e) => e.id === 'ev_test_1')).toBe(true);
   });
+
+  it('G: recordEvidence met à jour la dimension knowledge', () => {
+    const evidence = {
+      id: 'ev_k_1',
+      conceptId: 'photosynthese',
+      dimension: 'knowledge' as const,
+      reflexId: 'analyse' as const,
+      source: 'quiz' as const,
+      score: 85,
+      createdAt: Date.now(),
+    };
+    const next = recordEvidence(evidence);
+    const cell = next.mastery['photosynthese'].knowledge;
+    expect(cell.evidenceCount).toBe(1);
+    expect(cell.lastScore).toBe(85);
+  });
+
+  it('G: recordEvidence met à jour la dimension document', () => {
+    const evidence = {
+      id: 'ev_d_1',
+      conceptId: 'enzymes',
+      dimension: 'document' as const,
+      reflexId: 'interpret' as const,
+      source: 'document_analysis' as const,
+      score: 82,
+      createdAt: Date.now(),
+    };
+    const next = recordEvidence(evidence);
+    const cell = next.mastery['enzymes'].document;
+    expect(cell.evidenceCount).toBe(1);
+    expect(cell.level).toBe('developing');
+  });
+
+  it('G: 3 preuves dont production >=80 → mastered', () => {
+    const base = {
+      id: 'ev_m',
+      conceptId: 'synapse',
+      dimension: 'methodology' as const,
+      reflexId: 'validate' as const,
+      createdAt: Date.now(),
+    };
+    let store = recordEvidence({ ...base, id: 'ev_m_1', source: 'lesson_transfer' as const, score: 85 });
+    store = recordEvidence({ ...base, id: 'ev_m_2', source: 'word_by_word' as const, score: 90 });
+    store = recordEvidence({ ...base, id: 'ev_m_3', source: 'lesson_transfer' as const, score: 88 });
+    const cell = store.mastery['synapse'].methodology['validate']!;
+    expect(cell.evidenceCount).toBe(3);
+    expect(cell.level).toBe('mastered');
+  });
+
+  it('G: dernier score seul != mastered', () => {
+    const evidence = {
+      id: 'ev_single',
+      conceptId: 'subduction',
+      dimension: 'methodology' as const,
+      reflexId: 'explain' as const,
+      source: 'quiz' as const,
+      score: 100,
+      createdAt: Date.now(),
+    };
+    const store = recordEvidence(evidence);
+    const cell = store.mastery['subduction'].methodology['explain']!;
+    expect(cell.evidenceCount).toBe(1);
+    expect(cell.level).not.toBe('mastered');
+  });
 });

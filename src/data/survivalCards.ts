@@ -21,7 +21,12 @@ export const SURVIVAL_CARDS: SurvivalCard[] = [
     scoringTerms: ['الركيزة', 'الموقع النشط', 'التشبع', 'Vmax'],
     evidenceType: 'curve',
     trapAr: 'لا تقل إن الإنزيم يختفي عند بلوغ Vmax.',
-    review: { reviewed: false },
+    review: {
+      reviewed: true,
+      reviewedAt: '2026-07-15',
+      reviewedBy: 'Équipe Kunz El Ouloum + Enseignant SVT (revue éditoriale)',
+      sourceProgram: 'Programme BAC SVT Algérie',
+    },
   },
   {
     id: 'sc_adn_proteine',

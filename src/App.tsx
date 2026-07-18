@@ -239,7 +239,13 @@ function AppShell() {
   if (activeLessonId) {
     return (
       <Suspense fallback={<LoadingFallback />}>
-        <InteractiveLessonView lessonId={activeLessonId} onClose={() => setActiveLessonId(null)} />
+        <InteractiveLessonView
+          lessonId={activeLessonId}
+          onClose={() => setActiveLessonId(null)}
+          onStartLesson={handleStartLesson}
+          onNavigateToTab={navigateToTab}
+          onLaunchReflexMission={handleLaunchReflexMission}
+        />
       </Suspense>
     );
   }

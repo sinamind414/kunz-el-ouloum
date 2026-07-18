@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { X, CheckCircle2, AlertTriangle, Lightbulb, Target, BookOpen, Brain, FileText, MousePointerClick, Lock } from 'lucide-react';
+import { X, CheckCircle2, AlertTriangle, Lightbulb, Target, BookOpen, Brain, FileText, MousePointerClick, Lock, ArrowLeft } from 'lucide-react';
 import LessonAdventurePortal from './LessonAdventurePortal';
 import { getExperimentalLesson, LESSON_LIBRARY } from '../lessonData';
 import { SINGLE_PATH_LESSONS, SinglePathLesson } from '../data/singlePathLessons';
@@ -12,10 +12,16 @@ import { ZoomImageButton } from './ZoomableImage';
 import { getLessonTransferChallenge, type LessonTransferChallenge } from '../data/lessonTransferChallenges';
 import { validateAnswer } from '../lib/validation/ValidationEngine';
 import { recordLessonTransferEvidence } from '../services/masteryEvidenceService';
+import { getLessonProgression, type LessonProgression } from '../data/activeLessons';
+import type { CoreReflexId } from '../data/reflexes';
+import { loadStore } from '../data/store';
 
 interface InteractiveLessonViewProps {
   lessonId: string;
   onClose: () => void;
+  onStartLesson?: (lessonId: string) => void;
+  onNavigateToTab?: (tab: 'path' | 'lessons' | 'training' | 'progress') => void;
+  onLaunchReflexMission?: (reflexId: CoreReflexId, meta: { missionId: string; conceptId: string; relatedErrorIds?: string[] }) => void;
 }
 
 // Simple DragDrop component for Mot → Exemple
@@ -262,12 +268,26 @@ function SinglePathPlayer({ lesson, onClose }: { lesson: SinglePathLesson; onClo
   );
 }
 
-export default function InteractiveLessonView({ lessonId, onClose }: InteractiveLessonViewProps) {
+export default function InteractiveLessonView({
+  lessonId,
+  onClose,
+  onStartLesson,
+  onNavigateToTab,
+  onLaunchReflexMission,
+}: InteractiveLessonViewProps) {
   const activeLesson = ACTIVE_LESSONS[lessonId];
 
   // Pilier 1 : tunnel actif "Mot par Mot" (si une leçon active est définie).
   if (activeLesson) {
-    return <ActiveLessonTunnel lesson={activeLesson} onClose={onClose} />;
+    return (
+      <ActiveLessonTunnel
+        lesson={activeLesson}
+        onClose={onClose}
+        onStartLesson={onStartLesson}
+        onNavigateToTab={onNavigateToTab}
+        onLaunchReflexMission={onLaunchReflexMission}
+      />
+    );
   }
 
   const singlePathLesson = (SINGLE_PATH_LESSONS as any)[lessonId];
@@ -314,10 +334,24 @@ function renderContentWithBlanks(content: string) {
   ));
 }
 
-function ActiveLessonTunnel({ lesson, onClose }: { lesson: ActiveLesson; onClose: () => void }) {
+function ActiveLessonTunnel({
+  lesson,
+  onClose,
+  onStartLesson,
+  onNavigateToTab,
+  onLaunchReflexMission,
+}: {
+  lesson: ActiveLesson;
+  onClose: () => void;
+  onStartLesson?: (lessonId: string) => void;
+  onNavigateToTab?: (tab: 'path' | 'lessons' | 'training' | 'progress') => void;
+  onLaunchReflexMission?: (reflexId: CoreReflexId, meta: { missionId: string; conceptId: string; relatedErrorIds?: string[] }) => void;
+}) {
   const [currentBlockIndex, setCurrentBlockIndex] = useState(0);
   const [validated, setValidated] = useState<boolean[]>(() => lesson.blocks.map(() => false));
   const [blockData, setBlockData] = useState<Record<number, any>>({});
+  // Correction A — fin de leçon : tous les blocs validés -> CompletionSheet.
+  const [lessonCompleted, setLessonCompleted] = useState(false);
 
   const setBlockState = (i: number, patch: any) =>
     setBlockData((prev) => ({ ...prev, [i]: { ...prev[i], ...patch } }));
@@ -328,6 +362,9 @@ function ActiveLessonTunnel({ lesson, onClose }: { lesson: ActiveLesson; onClose
     setValidated(next);
     if (i < lesson.blocks.length - 1) {
       setTimeout(() => setCurrentBlockIndex(i + 1), 500);
+    } else if (i === lesson.blocks.length - 1) {
+      // Dernier bloc validé -> fin de leçon (plus aucun bloc verrouillé).
+      setLessonCompleted(true);
     }
   };
 
@@ -342,6 +379,19 @@ function ActiveLessonTunnel({ lesson, onClose }: { lesson: ActiveLesson; onClose
       setTimeout(() => validateBlock(i), 600);
     }
   };
+
+  // Correction A — fin de leçon : CompletionSheet (jamais bloquant).
+  if (lessonCompleted) {
+    return (
+      <CompletionSheet
+        lesson={lesson}
+        onClose={onClose}
+        onStartLesson={onStartLesson}
+        onNavigateToTab={onNavigateToTab}
+        onLaunchReflexMission={onLaunchReflexMission}
+      />
+    );
+  }
 
   return (
     <div className="fixed inset-0 z-50 bg-[#f8f9fa] dark:bg-[#0c0f0d] flex flex-col font-sans" dir="rtl">
@@ -419,6 +469,103 @@ function ActiveLessonTunnel({ lesson, onClose }: { lesson: ActiveLesson; onClose
 
         {/* P1.3 — Sortie BAC optionnelle de la leçon, validée par ValidationEngine. */}
         <BacTransferChallengeSection lessonId={lesson.id} />
+      </main>
+    </div>
+  );
+}
+
+// Correction A — CompletionSheet : fin de leçon + orientation réelle (§3).
+function CompletionSheet({
+  lesson,
+  onClose,
+  onStartLesson,
+  onNavigateToTab,
+  onLaunchReflexMission,
+}: {
+  lesson: ActiveLesson;
+  onClose: () => void;
+  onStartLesson?: (lessonId: string) => void;
+  onNavigateToTab?: (tab: 'path' | 'lessons' | 'training' | 'progress') => void;
+  onLaunchReflexMission?: (reflexId: CoreReflexId, meta: { missionId: string; conceptId: string; relatedErrorIds?: string[] }) => void;
+}) {
+  const progression: LessonProgression | undefined = getLessonProgression(lesson.id);
+  // Difficulté détectée = erreur méthodologique active sur ce concept (Speckit B/A).
+  const hasDifficulty = React.useMemo(() => {
+    try {
+      const store = loadStore();
+      return store.learningErrors.some(
+        (e: any) => !e.resolvedAt && (e.conceptId === lesson.id || (progression?.recommendedReflexId && e.reflexId === progression.recommendedReflexId))
+      );
+    } catch {
+      return false;
+    }
+  }, [lesson.id, progression]);
+
+  const goNext = () => {
+    if (progression?.nextLessonId && onStartLesson) {
+      onStartLesson(progression.nextLessonId);
+    } else {
+      onClose();
+    }
+  };
+
+  return (
+    <div className="fixed inset-0 z-50 bg-[#f8f9fa] dark:bg-[#0c0f0d] flex flex-col font-sans" dir="rtl">
+      <header className="p-4 flex justify-between items-center bg-white dark:bg-[#141916] border-b border-[#e2dabf]/50 shadow-sm">
+        <button onClick={onClose} className="p-2 rounded-full hover:bg-[#f3f4f5] text-[#506072] cursor-pointer">
+          <X className="w-6 h-6" />
+        </button>
+        <div className="text-center flex-1 px-4">
+          <h1 className="font-black text-[#006d37] dark:text-[#2ecc71] text-sm md:text-base line-clamp-1">{lesson.title}</h1>
+          <p className="text-[10px] text-[#506072] dark:text-gray-400">اكتملت الدرس</p>
+        </div>
+        <div className="w-10" />
+      </header>
+
+      <main className="flex-1 overflow-y-auto p-4 pb-32">
+        <div className="max-w-2xl mx-auto space-y-5">
+          <div className="rounded-3xl p-6 bg-gradient-to-br from-[#006d37] to-[#00562b] text-white text-center shadow-md">
+            <CheckCircle2 className="w-12 h-12 mx-auto text-[#fed65b]" />
+            <h2 className="font-black text-2xl mt-2">✅ أكملت الدرس</h2>
+            {progression?.completionMessageAr && (
+              <p className="text-white/90 text-sm mt-2 leading-7">{progression.completionMessageAr}</p>
+            )}
+          </div>
+
+          <div className="space-y-3">
+            {!hasDifficulty && progression?.nextLessonId ? (
+              <button
+                onClick={goNext}
+                className="w-full py-4 rounded-2xl bg-[#006d37] hover:bg-[#00562b] text-white font-black text-sm shadow-md flex items-center justify-center gap-2 cursor-pointer"
+              >
+                <ArrowLeft className="w-5 h-5" />
+                تابع إلى الدرس التالي
+              </button>
+            ) : (
+              <button
+                onClick={() => {
+                  const reflex = progression?.recommendedReflexId ?? 'analyse';
+                  if (onLaunchReflexMission) {
+                    onLaunchReflexMission(reflex, { missionId: `consolidate_${lesson.id}`, conceptId: lesson.id });
+                  } else {
+                    onClose();
+                  }
+                }}
+                className="w-full py-4 rounded-2xl bg-[#ffb347] hover:bg-[#ff9a4a] text-white font-black text-sm shadow-md flex items-center justify-center gap-2 cursor-pointer"
+              >
+                <Brain className="w-5 h-5" />
+                ثبّت هذه الفكرة في 3 دقائق
+              </button>
+            )}
+
+            <button
+              onClick={() => (onNavigateToTab ? onNavigateToTab('path') : onClose())}
+              className="w-full py-3 rounded-2xl bg-white dark:bg-[#141916] border border-[#e2dabf]/60 text-[#506072] dark:text-gray-300 font-bold text-sm flex items-center justify-center gap-2 cursor-pointer hover:bg-[#fff9ed] dark:hover:bg-white/5 transition-colors"
+            >
+              العودة إلى مساري
+            </button>
+          </div>
+        </div>
       </main>
     </div>
   );

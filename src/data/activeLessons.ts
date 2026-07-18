@@ -4,6 +4,7 @@
 // (ex: "lecon_transcription"), pour que le tunnel se déclenche sur une leçon réelle.
 
 // Source de vérité officielle (lexique DZ strict) — voir kunzDatabase.ts.
+import { CoreReflexId } from '../data/reflexes';
 import { ActiveLesson_D1_U1_L2_Transcription, ActiveLesson_D1_U1_L3_Traduction, ActiveLesson_D1_U3_L1_Enzyme } from './kunzDatabase';
 export interface MicroTest {
   prompt: string;
@@ -41,6 +42,54 @@ export interface ActiveLesson {
   id: string;
   title: string;
   blocks: Block[];
+}
+
+// Correction A — orientation de fin de leçon (Speckit FINAL §3).
+export interface LessonProgression {
+  nextLessonId?: string;
+  recommendedReflexId?: CoreReflexId;
+  completionMessageAr: string;
+}
+
+export const LESSON_PROGRESSION: Record<string, LessonProgression> = {
+  'lecon_transcription': {
+    nextLessonId: 'lecon_traduction',
+    recommendedReflexId: 'explain',
+    completionMessageAr: 'أكملت الاستنساخ. الخطوة الطبيعية الآن هي فهم الترجمة.',
+  },
+  'lecon_traduction': {
+    nextLessonId: 'lecon_enzyme',
+    recommendedReflexId: 'interpret',
+    completionMessageAr: 'أكملت الترجمة. الآن حان دور فهم المنحنى الإنزيمي.',
+  },
+  'lecon_enzyme': {
+    nextLessonId: undefined,
+    recommendedReflexId: 'hypothesize',
+    completionMessageAr: 'أحسنت! أكملت سلسلة الإنزيمات. можете الآن خوض تحدي BAC.',
+  },
+  'phase11_chapitres_21_22': {
+    nextLessonId: undefined,
+    recommendedReflexId: 'interpret',
+    completionMessageAr: 'أكملت التفاعلات الضوئية. جرّب تحدي BAC للصورانعة الخضراء.',
+  },
+  'd1-u1-l2-transcription': {
+    nextLessonId: 'd1-u1-l3-traduction',
+    recommendedReflexId: 'explain',
+    completionMessageAr: 'أكملت الاستنساخ. الخطوة الطبيعية الآن هي فهم الترجمة.',
+  },
+  'd1-u1-l3-traduction': {
+    nextLessonId: 'd1-u3-l1-enzyme',
+    recommendedReflexId: 'interpret',
+    completionMessageAr: 'أكملت الترجمة. الآن حان دور فهم المنحنى الإنزيمي.',
+  },
+  'd1-u3-l1-enzyme': {
+    recommendedReflexId: 'hypothesize',
+    completionMessageAr: 'أحسنت! أكملت سلسلة الإنزيمات.',
+  },
+};
+
+export function getLessonProgression(lessonId: string): LessonProgression | undefined {
+  return LESSON_PROGRESSION[lessonId];
 }
 
 export const ACTIVE_LESSONS: Record<string, ActiveLesson> = {

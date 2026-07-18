@@ -294,8 +294,11 @@ export function loadStore(): KunzStore {
   const store = migrateFromRaw(base);
   // Fusionne les preuves persistées sous leur propre clé (survivent au rechargement).
   const persistedEvidences = readRaw(STORAGE_KEYS.evidences);
+  // Fusionne aussi la maîtrise persistée (survit au rechargement, Speckit G).
+  const persistedMastery = readRaw(STORAGE_KEYS.mastery);
   const merged: KunzStore = {
     ...store,
+    mastery: (persistedMastery && typeof persistedMastery === 'object' ? (persistedMastery as Record<string, MasteryRecord>) : store.mastery),
     evidences: Array.isArray(persistedEvidences) ? (persistedEvidences as MasteryEvidence[]) : store.evidences,
   };
   writeRaw(STORAGE_KEYS.storageMeta, merged.meta);
@@ -398,12 +401,12 @@ export function completeMissionWithEvidence(
   return { mission: completed, errors };
 }
 
-// Enregistre une preuve réelle de maîtrise (P1.1-B) sur le bon réflexe, sans
-// jamais valider par un simple compteur. Renvoie le store mis à jour (immutable).
+// Enregistre une preuve réelle de maîtrise (P1.1-B) sur la bonne dimension
+// (knowledge / document / methodology), sans jamais valider par un simple compteur.
+// Renvoie le store mis à jour (immutable).
 export function recordEvidence(evidence: MasteryEvidence): KunzStore {
   const store = loadStore();
 
-  // Maîtrise : attache la preuve au réflexe concerné (dimension methodology).
   const conceptId = evidence.conceptId;
   const prev: MasteryRecord = store.mastery[conceptId] ?? {
     conceptId,
@@ -412,25 +415,39 @@ export function recordEvidence(evidence: MasteryEvidence): KunzStore {
     methodology: {},
   };
   const reflexId = evidence.reflexId;
-  const prevMethod = prev.methodology ?? {};
-  const cell = prevMethod[reflexId ?? 'analyse'] ?? emptyCell();
 
-  const updatedRecord: MasteryRecord = {
-    ...prev,
-    methodology: {
+  // Incrémente la cellule de la dimension concernée par la preuve (Correction G — 3D).
+  // Le niveau est dérivé des preuves (jamais hérité tel quel).
+  const isStrongProduction =
+    (evidence.source === 'document_analysis' ||
+      evidence.source === 'word_by_word' ||
+      evidence.source === 'lesson_transfer') &&
+    evidence.score >= 80;
+  const bump = (c: MasteryCell): MasteryCell => {
+    const nextCell: MasteryCell = {
+      level: c.level,
+      evidenceCount: c.evidenceCount + 1,
+      lastEvidenceAt: evidence.createdAt,
+      lastScore: evidence.score,
+    };
+    return { ...nextCell, level: recomputeLevel(nextCell, isStrongProduction) };
+  };
+
+  const nextRecord: MasteryRecord = { ...prev };
+  if (evidence.dimension === 'knowledge') {
+    nextRecord.knowledge = bump(prev.knowledge);
+  } else if (evidence.dimension === 'document') {
+    nextRecord.document = bump(prev.document);
+  } else {
+    const prevMethod = prev.methodology ?? {};
+    const cell = prevMethod[reflexId ?? 'analyse'] ?? emptyCell();
+    nextRecord.methodology = {
       ...prevMethod,
       ...(reflexId
-        ? {
-            [reflexId]: {
-              level: cell.level,
-              evidenceCount: cell.evidenceCount + 1,
-              lastEvidenceAt: evidence.createdAt,
-              lastScore: evidence.score,
-            },
-          }
+        ? { [reflexId]: bump(cell) }
         : {}),
-    },
-  };
+    };
+  }
 
   // Erreurs liées : fait avancer/résoudre l'erreur d'origine si preuve réelle.
   const related = new Set(evidence.relatedErrorIds ?? []);
@@ -442,7 +459,7 @@ export function recordEvidence(evidence: MasteryEvidence): KunzStore {
 
   const next: KunzStore = {
     ...store,
-    mastery: { ...store.mastery, [conceptId]: updatedRecord },
+    mastery: { ...store.mastery, [conceptId]: nextRecord },
     learningErrors: errors,
     evidences,
   };
@@ -450,6 +467,17 @@ export function recordEvidence(evidence: MasteryEvidence): KunzStore {
   writeRaw(STORAGE_KEYS.learningErrors, next.learningErrors);
   writeRaw(STORAGE_KEYS.evidences, next.evidences);
   return next;
+}
+
+// Correction G — niveau de maîtrise dérivé des preuves réelles (3D).
+// Interdictions : 3 QCM ≠ mastered, dernier score seul ≠ mastered,
+// couleur sans evidenceCount > 0 interdite.
+function recomputeLevel(cell: MasteryCell, hasStrongProduction: boolean): MasteryLevel {
+  if (cell.evidenceCount === 0) return 'unknown';
+  if (cell.lastScore != null && cell.lastScore < 50) return 'needs_work';
+  if (cell.evidenceCount >= 3 && hasStrongProduction) return 'mastered';
+  if (cell.evidenceCount >= 1) return 'developing';
+  return 'unknown';
 }
 
 function emptyCell(): MasteryCell {
