@@ -1,8 +1,10 @@
 import { useState, useMemo } from 'react';
 import { motion } from 'motion/react';
-import { BookOpen, ChevronRight, ArrowRight, CheckCircle2, XCircle, Lightbulb, Target } from 'lucide-react';
+import { BookOpen, ChevronRight, ArrowRight, CheckCircle2, XCircle, Lightbulb, Target, Search } from 'lucide-react';
 import { DOCUMENT_ANALYSIS_EXERCISES, type DocAnalysisExercise } from '../data/documentAnalysisExercises';
+import { getDocumentPracticeContext } from '../data/documentPracticeContexts';
 import { useSmartValidation } from '../hooks/useSmartValidation';
+import { recordDocumentTrace } from '../services/documentEvidenceService';
 
 interface DocumentAnalysisViewProps {
   onBack: () => void;
@@ -21,6 +23,8 @@ const VERB_COLOR: Record<string, string> = {
   'أنجز رسما': '#4f46e5',
   'اكتب نصا علميا': '#059669',
 };
+
+const MAX_HINTS = 2;
 
 export default function DocumentAnalysisView({ onBack }: DocumentAnalysisViewProps) {
   const [selectedId, setSelectedId] = useState<string | null>(null);
@@ -89,9 +93,21 @@ function ExerciseScreen({
   const q = exercise.questions[qIndex];
   const { result, submit, reset } = useSmartValidation({ ctx: q.ctx });
   const [answer, setAnswer] = useState('');
+  const [hintsShown, setHintsShown] = useState(0);
+  const [recorded, setRecorded] = useState<boolean | null>(null);
+
+  // Contexte de pratique documentaire (objectif, vocabulaire, preuve attendue).
+  const practice = useMemo(
+    () => getDocumentPracticeContext(exercise.id, q.id),
+    [exercise.id, q.id]
+  );
 
   const handleValidate = () => {
-    submit(answer);
+    if (answer.trim().length < 2) return;
+    const r = submit(answer);
+    // Validation de la trace documentaire réelle (preuve + vocabulaire).
+    const outcome = recordDocumentTrace({ context: practice!, answer, validationResult: r });
+    setRecorded(outcome.evidence != null);
   };
 
   const handleNext = () => {
@@ -99,12 +115,18 @@ function ExerciseScreen({
       setQIndex(qIndex + 1);
       setAnswer('');
       reset();
+      setHintsShown(0);
+      setRecorded(null);
     } else {
       onBackToList();
       setAnswer('');
       reset();
+      setHintsShown(0);
+      setRecorded(null);
     }
   };
+
+  const showHint = () => setHintsShown((h) => Math.min(MAX_HINTS, h + 1));
 
   return (
     <div className="space-y-4">
@@ -117,12 +139,11 @@ function ExerciseScreen({
           <span className="text-[10px] font-bold text-gray-400">{exercise.doc.type}</span>
         </div>
         <p className="text-gray-800 dark:text-gray-200 font-medium leading-7">{exercise.doc.descriptionAr}</p>
-        <p className="text-xs text-gray-400 mt-2">{exercise.correctionAr}</p>
       </div>
 
-      {/* Question */}
-      <div className="rounded-3xl bg-gradient-to-br from-[#006d37]/5 to-[#059669]/5 border border-[#006d37]/20 p-5 shadow-sm">
-        <div className="flex items-center gap-2 mb-3">
+      {/* Question + contexte de pratique */}
+      <div className="rounded-3xl bg-gradient-to-br from-[#006d37]/5 to-[#059669]/5 border border-[#006d37]/20 p-5 shadow-sm space-y-3">
+        <div className="flex items-center gap-2">
           <span
             className="text-[11px] font-black px-2.5 py-1 rounded-lg text-white"
             style={{ background: VERB_COLOR[q.verb] || '#006d37' }}
@@ -132,21 +153,67 @@ function ExerciseScreen({
           <span className="text-[10px] font-bold text-gray-400">القانون رقم {q.loiFocus}</span>
         </div>
         <p className="text-gray-900 dark:text-white font-bold leading-8">{q.promptAr}</p>
-        <p className="text-[11px] text-[#006d37] dark:text-[#2ecc71] mt-2 flex items-center gap-1">
+
+        {/* Objectif + preuve attendue visibles AVANT la production (Speckit §4). */}
+        {practice && (
+          <div className="bg-[#fff9ed] dark:bg-[#1c241f] border border-[#e2dabf]/60 dark:border-amber-900/30 rounded-2xl p-3 space-y-2">
+            <div className="text-[11px] font-black text-[#944a00] dark:text-amber-300 flex items-center gap-1">
+              <Target className="w-3.5 h-3.5" /> هدف الوثيقة
+            </div>
+            <p className="text-[12px] font-bold text-[#1f1c0b] dark:text-white leading-6">{practice.goalAr}</p>
+            <div className="text-[11px] font-black text-[#006d37] dark:text-[#2ecc71] flex items-center gap-1">
+              <Search className="w-3.5 h-3.5" /> ابحث عن
+            </div>
+            <div className="flex flex-wrap gap-1">
+              {practice.expectedEvidence.map((e, i) => (
+                <span key={i} className="text-[10px] font-bold bg-[#2ecc71]/15 text-[#006d37] px-2 py-0.5 rounded-full">
+                  {e}
+                </span>
+              ))}
+            </div>
+          </div>
+        )}
+
+        <p className="text-[11px] text-[#006d37] dark:text-[#2ecc71] flex items-center gap-1">
           <Lightbulb className="w-3.5 h-3.5" /> {q.templateHint}
         </p>
 
+        {/* Indices progressifs (max 2) */}
+        {hintsShown > 0 && practice && (
+          <div className="space-y-1">
+            {hintsShown >= 1 && (
+              <p className="text-[11px] bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-900/40 rounded-lg px-3 py-2 text-amber-800 dark:text-amber-200 font-medium">
+                💡 تلميح 1 — مفردات مفتاحية: {practice.vocabulary.slice(0, 3).join(' · ')}
+              </p>
+            )}
+            {hintsShown >= 2 && (
+              <p className="text-[11px] bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-900/40 rounded-lg px-3 py-2 text-amber-800 dark:text-amber-200 font-medium">
+                💡 تلميح 2 — {practice.trapAr ?? 'ركّز على العلاقة بين المتغيرات.'}
+              </p>
+            )}
+          </div>
+        )}
+        {hintsShown < MAX_HINTS && !result && (
+          <button
+            onClick={showHint}
+            className="text-[11px] font-bold text-[#944a00] dark:text-amber-300 hover:underline cursor-pointer"
+          >
+            عرض تلميح ({hintsShown}/{MAX_HINTS})
+          </button>
+        )}
+
         <textarea
           value={answer}
-          onChange={(e) => setAnswer(e.target.value)}
+          onChange={(e) => { setAnswer(e.target.value); setRecorded(null); }}
           placeholder="اكتب إجابتك العلمية هنا…"
-          className="w-full mt-3 rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-[#0c0f0d] p-3 text-sm text-gray-800 dark:text-gray-100 leading-7 min-h-[120px] resize-y outline-none focus:border-[#006d37]"
+          className="w-full mt-1 rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-[#0c0f0d] p-3 text-sm text-gray-800 dark:text-gray-100 leading-7 min-h-[120px] resize-y outline-none focus:border-[#006d37]"
         />
 
         <div className="flex items-center gap-2 mt-3">
           <button
             onClick={handleValidate}
-            className="flex-1 bg-[#006d37] text-white font-black py-2.5 rounded-xl text-sm hover:bg-[#005a2e] transition-colors cursor-pointer"
+            disabled={answer.trim().length < 2}
+            className="flex-1 bg-[#006d37] text-white font-black py-2.5 rounded-xl text-sm hover:bg-[#005a2e] transition-colors disabled:opacity-40 cursor-pointer"
           >
             صحّح إجابتي
           </button>
@@ -161,24 +228,32 @@ function ExerciseScreen({
         </div>
       </div>
 
-      {/* Résultat */}
+      {/* Résultat — correction modèle masquée jusqu'à la tentative */}
       {result && (
-        <ResultSheet result={result} />
+        <ResultSheet result={result} correctionAr={exercise.correctionAr} recorded={recorded} />
       )}
     </div>
   );
 }
 
-function ResultSheet({ result }: { result: ReturnType<typeof useSmartValidation>['result'] }) {
+function ResultSheet({
+  result,
+  correctionAr,
+  recorded,
+}: {
+  result: ReturnType<typeof useSmartValidation>['result'];
+  correctionAr: string;
+  recorded: boolean | null;
+}) {
   if (!result) return null;
   const passed = result.passed;
   return (
     <motion.div
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
-      className="rounded-3xl border p-5 shadow-sm bg-white dark:bg-[#141916] border-gray-200 dark:border-gray-800"
+      className="rounded-3xl border p-5 shadow-sm bg-white dark:bg-[#141916] border-gray-200 dark:border-gray-800 space-y-3"
     >
-      <div className="flex items-center justify-between mb-3">
+      <div className="flex items-center justify-between mb-2">
         <div className="flex items-center gap-2">
           {passed ? (
             <CheckCircle2 className="w-6 h-6 text-[#006d37]" />
@@ -192,9 +267,15 @@ function ResultSheet({ result }: { result: ReturnType<typeof useSmartValidation>
         <span className="text-xs font-bold text-[#b45309] dark:text-[#ffd27a]">+{result.xp} XP</span>
       </div>
 
-      {/* Lois cassées */}
+      {/* Preuve documentaire réellement enregistrée (jamais par clic). */}
+      {recorded != null && (
+        <div className={`text-[11px] font-bold p-2 rounded-lg ${recorded ? 'bg-[#2ecc71]/10 text-[#006d37]' : 'bg-rose-50 text-rose-700 dark:bg-rose-950/20 dark:text-rose-300'}`}>
+          {recorded ? '✅ تم تسجيل دليل وثيقة حقيقي لتقدّمك.' : '⚠️ تم تسجيل نقطة تحتاج إلى مراجعة (وثيقة).'}
+        </div>
+      )}
+
       {result.brokenLois.length > 0 && (
-        <div className="mb-3 bg-rose-50 dark:bg-rose-950/20 border border-rose-100 dark:border-rose-900/40 rounded-2xl p-3">
+        <div className="bg-rose-50 dark:bg-rose-950/20 border border-rose-100 dark:border-rose-900/40 rounded-2xl p-3">
           <div className="flex items-center gap-2 mb-1">
             <Target className="w-4 h-4 text-rose-600" />
             <span className="text-xs font-black text-rose-700 dark:text-rose-300">القوانين التي تحتاج مراجعة</span>
@@ -209,9 +290,8 @@ function ResultSheet({ result }: { result: ReturnType<typeof useSmartValidation>
         </div>
       )}
 
-      {/* Messages d'erreur / suggestions */}
       {result.errors.filter((e) => e.severity !== 'hint').length > 0 && (
-        <ul className="space-y-1.5 mb-3">
+        <ul className="space-y-1.5">
           {result.errors
             .filter((e) => e.severity !== 'hint')
             .map((e, i) => (
@@ -223,17 +303,11 @@ function ResultSheet({ result }: { result: ReturnType<typeof useSmartValidation>
         </ul>
       )}
 
-      {result.suggestions.length > 0 && (
-        <div className="mb-2 flex flex-wrap gap-1">
-          {result.suggestions.map((s, i) => (
-            <span key={i} className="text-[11px] font-bold px-2 py-0.5 rounded-md bg-amber-50 dark:bg-amber-950/30 text-amber-700 dark:text-amber-300 border border-amber-100 dark:border-amber-900/40">
-              {s}
-            </span>
-          ))}
-        </div>
-      )}
+      {/* Correction modèle — visible UNIQUEMENT après tentative. */}
+      <div className="bg-white dark:bg-black/20 border border-emerald-200/50 dark:border-emerald-900/30 rounded-xl px-3 py-2 text-[12px] font-bold text-emerald-800 dark:text-emerald-300">
+        <span className="font-black">التصحيح:</span> {correctionAr}
+      </div>
 
-      {/* Barème Kunz (obligatoire) */}
       <p className="text-[10px] text-gray-400 leading-5 border-t border-gray-100 dark:border-gray-800 pt-2 mt-1">
         {result.label}
       </p>
