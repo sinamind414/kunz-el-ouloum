@@ -12,6 +12,7 @@ import { stopPirateMusic } from './utils/audio';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { logEvent } from './utils/telemetryService';
 import LoginScreen from './components/LoginScreen';
+import { getSurvivalCardById } from './data/survivalCards';
 
 // Lazy load heavy views (Fable 5 - reduce main bundle)
 const LessonsView = lazy(() => import('./components/LessonsView'));
@@ -19,6 +20,7 @@ const CoachView = lazy(() => import('./components/CoachView'));
 const InteractiveLessonView = lazy(() => import('./components/InteractiveLessonView'));
 const MyPathView = lazy(() => import('./components/MyPathView'));
 const MethodologyView = lazy(() => import('./components/MethodologyView'));
+const SurvivalCardView = lazy(() => import('./components/SurvivalCardView'));
 const TrainingView = lazy(() => import('./components/TrainingView'));
 const ProgressView = lazy(() => import('./components/ProgressView'));
 
@@ -89,6 +91,9 @@ function AppShell() {
     meta: { missionId: string; conceptId: string; relatedErrorIds?: string[] }
   ) => setActiveMissionReflex({ reflexId, ...meta });
 
+  // P1.2-B — une carte de survie validée ouvre le rappel actif avant quiz/document.
+  const [activeSurvivalCardId, setActiveSurvivalCardId] = useState<string | null>(null);
+  const handleLaunchSurvivalCard = (cardId: string) => setActiveSurvivalCardId(cardId);
 
   useEffect(() => {
     if (currentTab !== 'splash') stopPirateMusic();
@@ -307,7 +312,7 @@ function AppShell() {
         <main className={`flex-1 px-4 py-6 md:py-8 overflow-x-hidden ${isFocusMode ? 'flex items-center justify-center min-h-screen py-12' : ''}`}>
           <AnimatePresence mode="wait">
             <motion.div key={currentTab} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.2 }}>
-              {currentTab === 'path' && <MyPathView units={units} progress={progress} onLaunchQuiz={handleLaunchQuiz} onLaunchRevision={handleLaunchRevision} onNavigateToTab={navigateToTab} onLaunchReflexMission={handleLaunchReflexMission} />}
+              {currentTab === 'path' && <MyPathView units={units} progress={progress} onLaunchQuiz={handleLaunchQuiz} onLaunchRevision={handleLaunchRevision} onNavigateToTab={navigateToTab} onLaunchReflexMission={handleLaunchReflexMission} onLaunchSurvivalCard={handleLaunchSurvivalCard} />}
               <Suspense fallback={<LoadingFallback />}>
                 {currentTab === 'lessons' && <LessonsView units={units} onStartLesson={handleStartLesson} />}
                 {currentTab === 'training' && <TrainingView units={units} flashcards={flashcards} progress={progress} onLaunchQuiz={handleLaunchQuiz} onLaunchRevision={handleLaunchRevision} onStartLesson={handleStartLesson} onRateCard={handleRateCard} isFocusMode={isFocusMode} setIsFocusMode={setIsFocusMode} onNavigateToTab={navigateToTab} />}
@@ -392,6 +397,22 @@ function AppShell() {
           </div>
         </div>
       )}
+
+      {/* P1.2-B — overlay carte de survie validée (rappel actif). */}
+      {activeSurvivalCardId && (() => {
+        const card = getSurvivalCardById(activeSurvivalCardId);
+        if (!card) {
+          setActiveSurvivalCardId(null);
+          return null;
+        }
+        return (
+          <div className="fixed inset-0 z-[55] bg-black/50 flex justify-center items-end md:items-center px-0 md:px-4 overflow-y-auto py-6">
+            <Suspense fallback={<LoadingFallback />}>
+              <SurvivalCardView card={card} onClose={() => setActiveSurvivalCardId(null)} />
+            </Suspense>
+          </div>
+        );
+      })()}
 
     </div>
   );

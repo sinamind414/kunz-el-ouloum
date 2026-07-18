@@ -62,7 +62,7 @@ export interface LearningInsight {
 }
 
 export type MissionSource = 'error' | 'weak_unit' | 'spaced_review' | 'onboarding';
-export type MissionAction = 'knowledge_recall' | 'document_analysis' | 'word_by_word' | 'quiz' | 'review';
+export type MissionAction = 'knowledge_recall' | 'document_analysis' | 'word_by_word' | 'quiz' | 'review' | 'survival_card';
 
 export interface MissionStep {
   id: string;
@@ -71,6 +71,7 @@ export interface MissionStep {
   expectedMinutes: number;
   conceptId?: string;
   reflexId?: CoreReflexId;
+  survivalCardId?: string;
 }
 
 export interface Mission {

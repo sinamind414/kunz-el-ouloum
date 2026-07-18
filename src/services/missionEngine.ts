@@ -42,7 +42,18 @@ function priorityOf(error: LearningError, now: number): MissionPriority | null {
 function buildMissionFromError(error: LearningError, route: ConceptRoute | undefined, now: number): Mission {
   const conceptId = error.conceptId ?? error.id;
   const reflexId = error.reflexId;
+  const cardId = route?.survivalCardId;
   const steps: MissionStep[] = [
+    ...(cardId
+      ? [{
+          id: 'survival_card',
+          action: 'survival_card' as const,
+          titleAr: 'بطاقة نجاة',
+          expectedMinutes: 2,
+          conceptId,
+          survivalCardId: cardId,
+        }]
+      : []),
     {
       id: 'recall',
       action: 'knowledge_recall',

@@ -21,6 +21,7 @@ interface MyPathViewProps {
   onLaunchRevision: (unitId: number) => void;
   onNavigateToTab: (tab: TabId) => void;
   onLaunchReflexMission?: (reflexId: CoreReflexId, meta: { missionId: string; conceptId: string; relatedErrorIds?: string[] }) => void;
+  onLaunchSurvivalCard?: (cardId: string) => void;
 }
 
 // Mappe une mission Manhadjiya (M0–M5) vers le réflexe méthodologique ciblé (P1.1-B).
@@ -29,6 +30,14 @@ const MISSION_REFLEX: Record<string, CoreReflexId | undefined> = {
   M3: 'interpret',
   M4: 'hypothesize',
   M5: 'validate',
+};
+
+// Mappe une mission Manhadjiya vers la carte de survie validée de son concept (P1.2-B).
+const MISSION_SURVIVAL_CARD: Record<string, string | undefined> = {
+  M2: 'sc_enzymes',
+  M3: 'sc_photosynthese',
+  M4: 'sc_synapse',
+  M5: 'sc_subduction',
 };
 
 // Une icône motivante = pourquoi j'ai envie d'étudier (jamais une navigation dupliquée de la bottom nav).
@@ -45,7 +54,7 @@ interface MotivationIcon {
 }
 
 export default function MyPathView(props: MyPathViewProps) {
-  const { units, progress, onLaunchQuiz, onLaunchRevision, onNavigateToTab, onLaunchReflexMission } = props;
+  const { units, progress, onLaunchQuiz, onLaunchRevision, onNavigateToTab, onLaunchReflexMission, onLaunchSurvivalCard } = props;
 
   // Formation Jour 0 (onboarding « 6 lois ») : accessible via un bouton dédié,
   // mais NE BLOQUE PLUS l'accès au tableau de bord (les 6 icônes s'affichent tout de suite).
@@ -71,6 +80,7 @@ export default function MyPathView(props: MyPathViewProps) {
           onMissionsChange={(m) => { setMissions(m); if (m.every((x) => x.status === 'done')) setShowOnboarding(false); }}
           onNavigateToTab={onNavigateToTab}
           onLaunchReflexMission={onLaunchReflexMission}
+          onLaunchSurvivalCard={onLaunchSurvivalCard}
         />
       </div>
     );
@@ -107,12 +117,14 @@ function JourZeroView({
   onMissionsChange,
   onNavigateToTab,
   onLaunchReflexMission,
+  onLaunchSurvivalCard,
 }: {
   missions: Mission[];
   progress: UserProgress;
   onMissionsChange: (m: Mission[]) => void;
   onNavigateToTab: (tab: TabId) => void;
   onLaunchReflexMission?: (reflexId: CoreReflexId, meta: { missionId: string; conceptId: string; relatedErrorIds?: string[] }) => void;
+  onLaunchSurvivalCard?: (cardId: string) => void;
 }) {
   const current = getCurrentMission(missions);
   const { done: doneCount, total } = getMissionsProgress(missions);
@@ -121,6 +133,12 @@ function JourZeroView({
 
   const handleStart = () => {
     if (!current) return;
+    // P1.2-B — la mission démarre par la carte de survie validée si elle existe.
+    const cardId = MISSION_SURVIVAL_CARD[current.id];
+    if (cardId && onLaunchSurvivalCard) {
+      onLaunchSurvivalCard(cardId);
+      return;
+    }
     const reflex = MISSION_REFLEX[current.id];
     if (reflex && onLaunchReflexMission) {
       // P1.1-B : ouvre l'entraînement sur le bon réflexe, sans choix intermédiaire.
@@ -133,6 +151,11 @@ function JourZeroView({
 
   const handleExtra = () => {
     if (!current) return;
+    const cardId = MISSION_SURVIVAL_CARD[current.id];
+    if (cardId && onLaunchSurvivalCard) {
+      onLaunchSurvivalCard(cardId);
+      return;
+    }
     const reflex = MISSION_REFLEX[current.id];
     if (reflex && onLaunchReflexMission) {
       onLaunchReflexMission(reflex, { missionId: current.id, conceptId: current.id });
