@@ -12,8 +12,14 @@ import {
   isManhadjiyaDone,
   type Mission,
 } from '../utils/missionManager';
-import type { CoreReflexId } from '../data/reflexes';
+import {
+  selectMissionSelection,
+  type MissionSelection,
+} from '../services/missionEngine';
+import { loadStore } from '../data/store';
 import { getPublishableSurvivalCardById } from '../data/survivalCards';
+import type { ConceptRoute } from '../data/store';
+import type { CoreReflexId } from '../data/reflexes';
 
 interface MyPathViewProps {
   units: Unit[];
@@ -310,6 +316,22 @@ function JourZeroView({
 function MotivationView({ units, progress, onLaunchQuiz, onLaunchRevision, onNavigateToTab }: MyPathViewProps) {
   const { user } = useAuth();
 
+  // Sélection moteur (SpecKit §2/§6) : mission prioritaire OU état idle explicite.
+  const selection: MissionSelection = useMemo(() => {
+    const store = loadStore();
+    const errors = store.learningErrors;
+    const routes: Record<string, ConceptRoute> = {};
+    for (const e of errors) {
+      const cid = e.conceptId ?? e.id;
+      if (!routes[cid]) {
+        const cardId = getPublishableSurvivalCardById(cid)?.id;
+        routes[cid] = { conceptId: cid, unitId: 0, ...(cardId ? { survivalCardId: cardId } : {}) };
+      }
+    }
+    const completedMissions = store.missions.filter((m) => m.completedAt != null).length;
+    return selectMissionSelection(errors, routes, { completedMissions });
+  }, []);
+
   // Unité cible du jour : la plus faible non terminée (quick win + comblage de lacune).
   const dailyTargetUnit = useMemo(() => {
     const incomplete = units.filter((u) => !u.isLocked && u.progress < 100).sort((a, b) => a.progress - b.progress);
@@ -420,6 +442,42 @@ function MotivationView({ units, progress, onLaunchQuiz, onLaunchRevision, onNav
           <span className="block text-[10px] text-[#006d37] dark:text-[#2ecc71]">أكملت المنهجية — أنت غير صفر</span>
         </div>
       </div>
+
+      {/* Sélection moteur (SpecKit §6) : idle OU mission prioritaire. */}
+      {selection.kind === 'idle' ? (
+        <div className="rounded-3xl p-6 bg-white dark:bg-[#141916] border border-gray-200 dark:border-gray-800 text-center shadow-sm mb-5 whitespace-pre-line leading-relaxed">
+          <div className="text-2xl mb-2">🌿</div>
+          <p className="text-sm font-bold text-gray-900 dark:text-white">{selection.messageAr}</p>
+          <button
+            onClick={() => dailyTargetUnit && onLaunchQuiz(dailyTargetUnit.id)}
+            className="mt-4 w-full rounded-2xl border border-dashed border-[#006d37]/40 text-[#006d37] dark:text-[#2ecc71] font-black py-3 text-sm hover:bg-[#fff9ed] dark:hover:bg-[#1a221d] transition-all cursor-pointer"
+          >
+            تحدٍ إضافي اختياري
+          </button>
+        </div>
+      ) : (
+        <div className="w-full text-right rounded-3xl p-5 bg-gradient-to-br from-[#ffb347] to-[#ff9a4a] text-white shadow-md mb-5">
+          <div className="flex items-center gap-3">
+            <div className="w-14 h-14 rounded-2xl bg-white/20 flex items-center justify-center shrink-0">
+              <Target className="w-7 h-7" />
+            </div>
+            <div className="flex-1">
+              <h2 className="font-black text-lg leading-tight">
+                {selection.mission.titleAr}
+              </h2>
+              <p className="text-white/90 text-sm mt-0.5 truncate">
+                {selection.mission.reasonAr} · {selection.mission.expectedMinutes} دقيقة · {selection.mission.steps.length} خطوات
+              </p>
+            </div>
+            <button
+              onClick={() => dailyTargetUnit && onLaunchQuiz(dailyTargetUnit.id)}
+              className="bg-white text-[#b45309] font-black text-sm px-4 py-2 rounded-xl shrink-0 cursor-pointer hover:brightness-105 transition-all"
+            >
+              {selection.mission.primaryActionLabelAr}
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* Hero unique orange : 1 seule action principale */}
       <button
