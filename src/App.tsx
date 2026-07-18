@@ -12,7 +12,7 @@ import { stopPirateMusic } from './utils/audio';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { logEvent } from './utils/telemetryService';
 import LoginScreen from './components/LoginScreen';
-import { getSurvivalCardById } from './data/survivalCards';
+import { getPublishableSurvivalCardById } from './data/survivalCards';
 
 // Lazy load heavy views (Fable 5 - reduce main bundle)
 const LessonsView = lazy(() => import('./components/LessonsView'));
@@ -400,7 +400,7 @@ function AppShell() {
 
       {/* P1.2-B — overlay carte de survie validée (rappel actif). */}
       {activeSurvivalCardId && (() => {
-        const card = getSurvivalCardById(activeSurvivalCardId);
+        const card = getPublishableSurvivalCardById(activeSurvivalCardId);
         if (!card) {
           setActiveSurvivalCardId(null);
           return null;

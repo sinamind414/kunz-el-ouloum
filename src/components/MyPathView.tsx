@@ -13,6 +13,7 @@ import {
   type Mission,
 } from '../utils/missionManager';
 import type { CoreReflexId } from '../data/reflexes';
+import { getPublishableSurvivalCardById } from '../data/survivalCards';
 
 interface MyPathViewProps {
   units: Unit[];
@@ -133,9 +134,9 @@ function JourZeroView({
 
   const handleStart = () => {
     if (!current) return;
-    // P1.2-B — la mission démarre par la carte de survie validée si elle existe.
+    // P1.2-B — la mission démarre par la carte de survie UNIQUEMENT si publiable (revue).
     const cardId = MISSION_SURVIVAL_CARD[current.id];
-    if (cardId && onLaunchSurvivalCard) {
+    if (cardId && onLaunchSurvivalCard && getPublishableSurvivalCardById(cardId)) {
       onLaunchSurvivalCard(cardId);
       return;
     }
@@ -152,7 +153,7 @@ function JourZeroView({
   const handleExtra = () => {
     if (!current) return;
     const cardId = MISSION_SURVIVAL_CARD[current.id];
-    if (cardId && onLaunchSurvivalCard) {
+    if (cardId && onLaunchSurvivalCard && getPublishableSurvivalCardById(cardId)) {
       onLaunchSurvivalCard(cardId);
       return;
     }

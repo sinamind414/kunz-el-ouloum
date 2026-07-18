@@ -1,117 +1,112 @@
 // src/data/survivalCards.ts
-// P1.2 — Cartes de survie des 5 chapitres prioritaires (SpecKit V2 §5 P1.2).
-// Chaque carte est REVUE par un enseignant SVT avant publication (P1.2-B).
-// reviewed=false => brouillon, jamais affiché à l'élève.
+// P1.2 — Cartes de survie des 5 chapitres prioritaires (Speckit V2 §5 P1.2).
+// Contenu issu de la REVUE ÉDITORIALE (CONTENT_REVIEW_SURVIVAL_CARDS.md).
+// Statut : BROUILLON (reviewed:false) — approbation propriétaire + enseignant SVT
+// requise avant publication (le code ne les affiche PAS tant que reviewed != true).
 
 import type { SurvivalCard } from '../types/survivalCard';
-
-// Métadonnées de revue (enseignant SVT identifié + source programme officiel).
-const REVIEW = {
-  reviewed: true,
-  reviewedAt: '2026-06-15',
-  reviewedBy: 'Prof. SVT — Programme BAC DZ',
-  sourceProgram: 'Programme officiel BAC SVT Algérie',
-} as const;
 
 export const SURVIVAL_CARDS: SurvivalCard[] = [
   {
     id: 'sc_enzymes',
     conceptId: 'enzymes',
     unitId: 3,
-    coreIdeaAr: 'الإنزيم يخفّض طاقة التنشيط ويزداد معدل التفاعل حتى التشبّع.',
+    coreIdeaAr: 'تزداد سرعة التفاعل الإنزيمي مع تركيز الركيزة ثم تستقر عند تشبع المواقع النشطة.',
     causalChainAr: [
-      'يرتبط الركيزة بالموقع النشط',
-      'يخفّض الإنزيم طاقة التنشيط',
-      'تزداد السرعة مع التركيز',
-      'عند التشبّع تمتلئ المواقع',
-      'ثبات الوسط ضروري للنشاط',
+      'زيادة تركيز الركيزة',
+      'زيادة تشكّل المعقد إنزيم-ركيزة',
+      'تشبّع المواقع النشطة',
+      'بلوغ السرعة القصوى Vmax',
     ],
-    scoringTerms: ['طاقة التنشيط', 'موقع نشط', 'تشبّع', 'سرعة', 'وسط ملائم'],
+    scoringTerms: ['الركيزة', 'الموقع النشط', 'التشبع', 'Vmax'],
     evidenceType: 'curve',
-    trapAr: 'الإنزيم لا يُستهلك ولا يغيّر اتجاه التفاعل.',
-    summaryAr: 'السرعة تتبع Michaelis-Menten: تزداد ثم تستقر عند Vmax لأن المواقع النشطة تشبعت.',
-    review: { ...REVIEW },
+    trapAr: 'لا تقل إن الإنزيم يختفي عند بلوغ Vmax.',
+    review: { reviewed: false },
   },
   {
     id: 'sc_adn_proteine',
     conceptId: 'adn_proteine',
-    unitId: 3,
-    coreIdeaAr: 'المعلومة تنتقل من ADN إلى ARN ثم إلى البروتين بالنسخ والترجمة.',
+    unitId: 1,
+    coreIdeaAr: 'تحدد مورثة ADN تتابع الأحماض الأمينية للبروتين عبر الاستنساخ ثم الترجمة.',
     causalChainAr: [
-      'يفتح الحلزون المزدوج',
-      'يُنسخ ADN إلى ARN رسول',
-      'ينتقل ARN إلى الرايبوسوم',
-      'تَقرأ الكودونات ثلاثيات',
-      'تتسلسل الأحماض الأمينية',
-      'ينطوي البروتين ليشتغل',
+      'مورثة ADN',
+      'استنساخ ARNm',
+      'ترجمة على الريبوزوم',
+      'سلسلة ببتيدية',
+      'بروتين وظيفي',
     ],
-    scoringTerms: ['نسخ', 'ترجمة', 'كودون', 'ريبوسوم', 'بروتين', 'ARN'],
+    scoringTerms: ['ADN', 'ARNm', 'الاستنساخ', 'الترجمة', 'الريبوزوم'],
     evidenceType: 'table',
-    trapAr: 'الجين لا يصنع البروتين مباشرة دون الرنا والترجمة.',
-    summaryAr: 'التدفق: ADN ← ARN ← بروتين؛ المعلومة مقروءة بثلاثيات القواعد (كودونات).',
-    review: { ...REVIEW },
+    trapAr: 'لا تقل إن ADN يخرج من النواة ليصنع البروتين مباشرة.',
+    review: { reviewed: false },
   },
   {
     id: 'sc_photosynthese',
     conceptId: 'photosynthese',
-    unitId: 4,
-    coreIdeaAr: 'الضوء يقود انشطار الماء ويثبّت CO2 في سكر عبر المرحلتين الضوئية والمظلمة.',
+    unitId: 6,
+    coreIdeaAr: 'تحوّل الصانعة الخضراء الطاقة الضوئية إلى طاقة كيميائية كامنة في المادة العضوية.',
     causalChainAr: [
-      'يمتص الكلوروفيل الضوء',
-      'تنشطر الماء محرراً O2',
-      'تنتج ATP والمؤكسج',
-      'يثبّت CO2 في الدورة',
-      'يُصنّع السكر',
+      'امتصاص الضوء',
+      'إنتاج ATP وNADPH',
+      'تثبيت CO₂',
+      'تركيب مادة عضوية',
+      'تحرير O₂',
     ],
-    scoringTerms: ['كلوروفيل', 'انشطار الماء', 'ATP', 'تثبيت CO2', 'سكر'],
+    scoringTerms: ['الصانعة الخضراء', 'الضوء', 'CO₂', 'ATP', 'المادة العضوية'],
     evidenceType: 'curve',
-    trapAr: 'لا تثبيت لـ CO2 دون الطاقة الناتجة عن المرحلة الضوئية.',
-    summaryAr: 'المرحلة الضوئية تنتج الطاقة، والمظلمة تثبّت الكربون؛ معاً تُصنع المادة العضوية.',
-    review: { ...REVIEW },
+    trapAr: 'لا تقل إن المرحلة الكيميوحيوية لا تحتاج نواتج المرحلة الكيميوضوئية.',
+    review: { reviewed: false },
   },
   {
     id: 'sc_synapse',
     conceptId: 'synapse',
     unitId: 5,
-    coreIdeaAr: 'الرسالة تعبر المشط بالناقل الكيميائي ثم تعود للاستقطاب بالتخليص.',
+    coreIdeaAr: 'يتحوّل التنبيه الكهربائي عند المشبك إلى رسالة كيميائية ثم إلى استجابة كهربائية بعد مشبكية.',
     causalChainAr: [
-      'يصل التدفق إلى الطرف',
-      'تنطلق الحويصلات بالناقل',
-      'يعبر الناقل الشقّ',
-      'يستثير المستقبلات',
-      'يُعاد التخليص والاستقطاب',
+      'وصول كمون العمل',
+      'دخول Ca²⁺',
+      'تحرير الوسيط الكيميائي',
+      'تثبّت على مستقبل نوعي',
+      'كمون بعد مشبكي',
     ],
-    scoringTerms: ['حويصلة', 'ناقل عصبي', 'شقّ مشتري', 'مستقبل', 'استقطاب'],
+    scoringTerms: ['كمون العمل', 'Ca²⁺', 'وسيط كيميائي', 'مستقبل نوعي', 'كمون بعد مشبكي'],
     evidenceType: 'experiment',
-    trapAr: 'العبور كيميائي وليس كهربائياً مباشراً بين العصبونين.',
-    summaryAr: 'الانتقال كيميائي: إفراز، عبور، ارتباط، ثم تخليص لإنهاء الإشارة.',
-    review: { ...REVIEW },
+    trapAr: 'لا تخلط بين القناة الفولطية للكالسيوم والقناة الكيميائية بعد المشبكية.',
+    review: { reviewed: false },
   },
   {
     id: 'sc_subduction',
     conceptId: 'subduction',
-    unitId: 6,
-    coreIdeaAr: 'الصفيحة المحيطية تغوص تحت القارية فتذوب وتولّد براكين وزلازل.',
+    unitId: 9,
+    coreIdeaAr: 'تغوص الصفيحة المحيطية الأكثر كثافة تحت صفيحة أخرى فتسبب زلازل وبركنة وتضاريس مميّزة.',
     causalChainAr: [
-      'تصطدم صفيحتان',
-      'تغوص المحيطية الكثيفة',
-      'ترتفع الحرارة والضغط',
-      'تذوب المادة وتطلق سوائل',
-      'يذوب الوشاح فينتج magma',
-      'يصعد magma فيلد البراكين',
+      'تقارب الصفائح',
+      'غوص الصفيحة المحيطية',
+      'مستوى بنيوف وزلازل',
+      'انصهار جزئي وصعود ماغما',
+      'بركنة وسلسلة جبلية',
     ],
-    scoringTerms: ['غوص', 'ذوبان', 'صهارة', 'زلزال', 'قوس بركانية'],
+    scoringTerms: ['الغوص', 'الكثافة', 'مستوى بنيوف', 'الماغما', 'البركنة'],
     evidenceType: 'schema',
-    trapAr: 'الغوص ناتج عن الكثافة لا عن "جذب" القارة للصفيحة.',
-    summaryAr: 'الغوص يولّد الانصهار الوشاحي: زلازل عميقة وقوس جزر بركانية فوق منطقة الانصهار.',
-    review: { ...REVIEW },
+    trapAr: 'لا تفسر الغوص بمجرد وجود ضغط؛ اذكر كثافة الصفيحة المحيطية وطبيعة الأستينوسفير.',
+    review: { reviewed: false },
   },
 ];
 
 // Cartes réellement publiables (revue humaine valide) — seules celles-ci sont
-// affichées à l'élève (P1.2-B).
+// affichées à l'élève (P1.2-B). Tant que reviewed=false, la liste est vide.
 export function getPublishableSurvivalCards(): SurvivalCard[] {
-  return SURVIVAL_CARDS.filter((c) => c.review.reviewed && !!c.review.reviewedBy && !!c.review.reviewedAt && !!c.review.sourceProgram);
+  return SURVIVAL_CARDS.filter(
+    (c) => c.review.reviewed && !!c.review.reviewedBy && !!c.review.reviewedAt && !!c.review.sourceProgram
+  );
+}
+
+// Renvoie la carte UNIQUEMENT si elle est publiable (jamais un brouillon).
+export function getPublishableSurvivalCardById(id: string): SurvivalCard | undefined {
+  const card = SURVIVAL_CARDS.find((c) => c.id === id);
+  if (!card) return undefined;
+  const ok = card.review.reviewed && !!card.review.reviewedBy && !!card.review.reviewedAt && !!card.review.sourceProgram;
+  return ok ? card : undefined;
 }
 
 export function getSurvivalCardById(id: string): SurvivalCard | undefined {
