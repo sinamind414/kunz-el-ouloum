@@ -134,6 +134,7 @@ export const STORAGE_KEYS = {
   learningErrors: 'kunz_learning_errors_v1',
   missions: 'kunz_missions_v3',
   mastery: 'kunz_mastery_v1',
+  evidences: 'kunz_mastery_evidences_v1',
   storageMeta: 'kunz_storage_meta_v1',
 } as const;
 
@@ -142,6 +143,7 @@ export const STORAGE_VERSION = 1;
 export const MAX_SERIALIZED_BYTES_PER_KEY = 1_048_576; // 1 Mo
 export const MAX_ACTIVE_ERRORS = 100;
 export const MAX_RESOLVED_ERRORS = 100;
+export const MAX_EVIDENCES = 500;
 export const MAX_MISSION_HISTORY_DAYS = 90;
 export const MISSION_HISTORY_MS = MAX_MISSION_HISTORY_DAYS * 24 * 60 * 60 * 1000;
 
@@ -152,6 +154,7 @@ export interface KunzStore {
   learningErrors: LearningError[];
   missions: Mission[];
   mastery: Record<string, MasteryRecord>;
+  evidences: MasteryEvidence[];
 }
 
 // ---------------------------------------------------------------------------
@@ -200,6 +203,7 @@ function emptyStore(version: number, migratedFrom?: number): KunzStore {
     learningErrors: [],
     missions: [],
     mastery: {},
+    evidences: [],
   };
 }
 
@@ -215,7 +219,10 @@ function enforceLimits(store: KunzStore, now: number): KunzStore {
     .filter((m) => m.completedAt == null || now - m.completedAt < MISSION_HISTORY_MS)
     .slice(-MAX_ACTIVE_ERRORS);
 
-  return { ...store, learningErrors: [...trimmedActive, ...trimmedResolved], missions };
+  // Conserve les 500 preuves les plus récentes ; purge l'historique avant échec de quota.
+  const evidences = (store.evidences ?? []).slice(-MAX_EVIDENCES);
+
+  return { ...store, learningErrors: [...trimmedActive, ...trimmedResolved], missions, evidences };
 }
 
 export function migrateStore(raw: unknown, fromVersion: number, toVersion: number): KunzStore {
@@ -263,6 +270,7 @@ export function migrateStore(raw: unknown, fromVersion: number, toVersion: numbe
     learningErrors: preservedErrors,
     missions: Array.isArray(loose.missions) ? loose.missions : [],
     mastery: loose.mastery && typeof loose.mastery === 'object' ? loose.mastery : {},
+    evidences: Array.isArray(loose.evidences) ? loose.evidences : [],
   };
 
   return enforceLimits(store, now);
@@ -284,13 +292,22 @@ export function loadStore(): KunzStore {
   // On migre à partir du meta si présent, sinon à partir d'un store brut plausible.
   const base = raw ?? readRaw(STORAGE_KEYS.userProgress);
   const store = migrateFromRaw(base);
-  writeRaw(STORAGE_KEYS.storageMeta, store.meta);
-  writeRaw(STORAGE_KEYS.learningErrors, store.learningErrors);
-  writeRaw(STORAGE_KEYS.missions, store.missions);
-  if (store.mastery && Object.keys(store.mastery).length) {
-    writeRaw(STORAGE_KEYS.mastery, store.mastery);
+  // Fusionne les preuves persistées sous leur propre clé (survivent au rechargement).
+  const persistedEvidences = readRaw(STORAGE_KEYS.evidences);
+  const merged: KunzStore = {
+    ...store,
+    evidences: Array.isArray(persistedEvidences) ? (persistedEvidences as MasteryEvidence[]) : store.evidences,
+  };
+  writeRaw(STORAGE_KEYS.storageMeta, merged.meta);
+  writeRaw(STORAGE_KEYS.learningErrors, merged.learningErrors);
+  writeRaw(STORAGE_KEYS.missions, merged.missions);
+  if (merged.mastery && Object.keys(merged.mastery).length) {
+    writeRaw(STORAGE_KEYS.mastery, merged.mastery);
   }
-  return store;
+  if (merged.evidences && merged.evidences.length) {
+    writeRaw(STORAGE_KEYS.evidences, merged.evidences);
+  }
+  return merged;
 }
 
 // ---------------------------------------------------------------------------
@@ -421,13 +438,17 @@ export function recordEvidence(evidence: MasteryEvidence): KunzStore {
     related.has(e.id) ? applyEvidenceToError(e, evidence, { passed: evidence.score >= 70 }) : e
   );
 
+  const evidences = [...(store.evidences ?? []), evidence].slice(-MAX_EVIDENCES);
+
   const next: KunzStore = {
     ...store,
     mastery: { ...store.mastery, [conceptId]: updatedRecord },
     learningErrors: errors,
+    evidences,
   };
   writeRaw(STORAGE_KEYS.mastery, next.mastery);
   writeRaw(STORAGE_KEYS.learningErrors, next.learningErrors);
+  writeRaw(STORAGE_KEYS.evidences, next.evidences);
   return next;
 }
 

@@ -9,6 +9,9 @@ import { ACTIVE_LESSONS, ActiveLesson, Block } from '../data/activeLessons';
 import { checkProduction, checkMethodologyStep, checkAnalysisPurity, isInsideHotspot } from '../utils/methodologyChecker';
 import { logEvent } from '../utils/telemetryService';
 import { ZoomImageButton } from './ZoomableImage';
+import { getLessonTransferChallenge, type LessonTransferChallenge } from '../data/lessonTransferChallenges';
+import { validateAnswer } from '../lib/validation/ValidationEngine';
+import { recordLessonTransferEvidence } from '../services/masteryEvidenceService';
 
 interface InteractiveLessonViewProps {
   lessonId: string;
@@ -413,7 +416,91 @@ function ActiveLessonTunnel({ lesson, onClose }: { lesson: ActiveLesson; onClose
             );
           })}
         </div>
+
+        {/* P1.3 — Sortie BAC optionnelle de la leçon, validée par ValidationEngine. */}
+        <BacTransferChallengeSection lessonId={lesson.id} />
       </main>
+    </div>
+  );
+}
+
+function BacTransferChallengeSection({ lessonId }: { lessonId: string }) {
+  const challenge = getLessonTransferChallenge(lessonId);
+  if (!challenge) return null;
+  return <BacTransferChallenge challenge={challenge} />;
+}
+
+// Défi BAC de sortie : la réussite est calculée par ValidationEngine (réelle),
+// jamais déclarée par l'élève. Correction masquée avant tentative.
+function BacTransferChallenge({ challenge }: { challenge: LessonTransferChallenge }) {
+  const [answer, setAnswer] = useState('');
+  const [attempted, setAttempted] = useState(false);
+  const [score, setScore] = useState<number | null>(null);
+  const [passed, setPassed] = useState(false);
+
+  const handleValidate = () => {
+    if (answer.trim().length < 5) return;
+    const result = validateAnswer(answer, { ...challenge.validation, isNeuromuscular: challenge.validation.isNeuromuscular ?? false });
+    const s = Math.round((result.score / result.maxScore) * 100);
+    setAttempted(true);
+    setScore(s);
+    setPassed(result.passed && s >= 70);
+
+    recordLessonTransferEvidence({
+      lessonId: challenge.lessonId,
+      conceptId: challenge.conceptId,
+      reflexId: challenge.reflexId,
+      score: s,
+      ruleIds: result.errors.map((e) => e.code),
+    });
+  };
+
+  return (
+    <div className="p-4 bg-[#fff9ed] dark:bg-[#1c241f] border border-[#e2dabf]/60 rounded-2xl shadow-sm space-y-3">
+      <div className="flex items-center gap-2">
+        <Target className="w-5 h-5 text-[#006d37]" />
+        <span className="text-xs font-black bg-[#006d37] text-white px-2.5 py-1 rounded-full">تحدي BAC</span>
+        <span className="text-xs font-bold text-[#944a00] dark:text-amber-300">{challenge.titleAr}</span>
+      </div>
+      <p className="text-sm leading-8 text-[#1f1c0b] dark:text-gray-100">{challenge.contextAr}</p>
+      <p className="text-sm font-bold text-[#1f1c0b] dark:text-white">{challenge.questionAr}</p>
+
+      <textarea
+        value={answer}
+        onChange={(e) => { setAnswer(e.target.value); setAttempted(false); setScore(null); }}
+        rows={4}
+        placeholder="اكتب إجابتك التحليلية هنا…"
+        className="w-full p-3 rounded-2xl border border-[#e2dabf]/60 bg-white dark:bg-[#0c0f0d] text-sm leading-8 text-right focus:outline-none focus:ring-2 focus:ring-[#006d37]/20"
+        dir="rtl"
+      />
+
+      {!attempted && (
+        <button
+          onClick={handleValidate}
+          disabled={answer.trim().length < 5}
+          className="w-full py-2.5 rounded-xl bg-[#006d37] hover:bg-[#00562b] disabled:opacity-40 text-white font-black text-sm shadow-sm cursor-pointer"
+        >
+          صحّح بالمصحح الحقيقي
+        </button>
+      )}
+
+      {attempted && (
+        <div className="space-y-3 animate-in fade-in">
+          <div className={`p-3 rounded-xl text-[12px] leading-7 font-bold border ${
+            passed ? 'bg-[#2ecc71]/10 text-[#006d37] border-[#2ecc71]/20' : 'bg-amber-50 text-amber-800 border-amber-200 dark:bg-amber-950/20 dark:text-amber-200 dark:border-amber-900/40'
+          }`}>
+            {passed
+              ? '✅ أحسنت، طبّقت المنهجية بنجاح. تم تسجيل دليل حقيقي لتقدّمك.'
+              : '⚠️ راجع العناصر الناقصة ثم أعد المحاولة. تم تسجيل نقطة تحتاج إلى مراجعة.'}
+            {score != null && <span className="block mt-1 font-black">{score} / 100</span>}
+          </div>
+
+          {/* Correction visible UNIQUEMENT après tentative. */}
+          <div className="bg-white dark:bg-black/20 border border-amber-200/50 dark:border-amber-900/30 rounded-xl px-3 py-2 text-[12px] font-bold text-amber-800 dark:text-amber-300">
+            <span className="font-black">التصحيح:</span> {challenge.correctionAr}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

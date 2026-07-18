@@ -6,6 +6,8 @@ import {
   migrateFromRaw,
   readRaw,
   writeRaw,
+  recordEvidence,
+  loadStore,
   STORAGE_KEYS,
   STORAGE_VERSION,
   LearningError,
@@ -117,5 +119,38 @@ describe('Store — migration (V2 §2.4)', () => {
     const store = migrateFromRaw(base, STORAGE_VERSION);
     const active = store.learningErrors.filter((e) => !e.resolvedAt);
     expect(active.length).toBeLessThanOrEqual(100);
+  });
+
+  it('evidences est [] dans un store vierge', () => {
+    const store = migrateStore(undefined, 0, STORAGE_VERSION);
+    expect(store.evidences).toEqual([]);
+  });
+
+  it('un ancien store migre avec evidences: [] sans supprimer les erreurs', () => {
+    const base = {
+      meta: { version: 1 },
+      learningErrors: [makeError('a')],
+      missions: [],
+      mastery: {},
+    };
+    const store = migrateFromRaw(base, STORAGE_VERSION);
+    expect(store.evidences).toEqual([]);
+    expect(store.learningErrors.find((e) => e.id === 'a')).toBeDefined();
+  });
+
+  it('recordEvidence persiste et survit à save/load', () => {
+    const evidence = {
+      id: 'ev_test_1',
+      conceptId: 'unit:3',
+      dimension: 'methodology' as const,
+      reflexId: 'analyse' as const,
+      source: 'lesson_transfer' as const,
+      score: 80,
+      createdAt: Date.now(),
+    };
+    const next = recordEvidence(evidence);
+    expect(next.evidences.some((e) => e.id === 'ev_test_1')).toBe(true);
+    const reloaded = loadStore();
+    expect(reloaded.evidences.some((e) => e.id === 'ev_test_1')).toBe(true);
   });
 });
