@@ -1,0 +1,67 @@
+// src/data/microRemediations.ts
+// V3 §3.3 — Micro-reprises ciblées (une seule erreur à la fois).
+// Déclenchées par les codes d'erreur du ValidationEngine / des leçons actives.
+
+export interface MicroRemediation {
+  id: string;
+  conceptId: string;
+  triggerCodes: string[];
+  titleAr: string;
+  estimatedMinutes: number; // 2 à 4
+  explanationAr: string;
+  activeQuestionAr: string;
+  acceptedEvidence: string[];
+  nextAction: 'retry_document' | 'open_reflex' | 'schedule_recall';
+}
+
+export const MICRO_REMEDIATIONS: Record<string, MicroRemediation> = {
+  'arnm_vs_adn': {
+    id: 'mr_arnm_vs_adn',
+    conceptId: 'transcription',
+    triggerCodes: ['MISSING_ARNM', 'CONFUSION_ADN_ARNM', 'NO_NUCLEUS_LINK'],
+    titleAr: 'ADN يبقى في النواة — ARNm يحمل النسخة',
+    estimatedMinutes: 3,
+    explanationAr:
+      'ADN يبقى في النواة. ARNm هو النسخة التي تحمل المعلومة إلى الهيولى. اليوراسيل (U) موجود في ARNm لا في ADN.',
+    activeQuestionAr: 'أي جزيء يحتوي اليوراسيل ويمكنه نقل نسخة المعلومة من النواة إلى الهيولى؟',
+    acceptedEvidence: ['ARNm', 'اليوراسيل', 'النواة', 'الهيولى'],
+    nextAction: 'retry_document',
+  },
+  'sens_transcription': {
+    id: 'mr_sens_transcription',
+    conceptId: 'transcription',
+    triggerCodes: ['WRONG_SENSE', 'SENSE_3_5'],
+    titleAr: 'الاتجاه: القالب 3′→5′، ARNm 5′→3′',
+    estimatedMinutes: 2,
+    explanationAr: 'يُقرأ القالب من 3′ نحو 5′، ويُركّب ARNm في اتجاه 5′ نحو 3′.',
+    activeQuestionAr: 'في أي اتجاه يُركّب ARNm؟',
+    acceptedEvidence: ['5', '3', 'القالب', 'ARPm'],
+    nextAction: 'schedule_recall',
+  },
+  'codon_vs_anticodon': {
+    id: 'mr_codon_vs_anticodon',
+    conceptId: 'traduction',
+    triggerCodes: ['CONFUSION_CODON_ANTICODON'],
+    titleAr: 'الكودون على ARNm — مضاد الكودون على ARNt',
+    estimatedMinutes: 2,
+    explanationAr: 'الكودون موجود على ARNm؛ مضاد الكودون موجود على ARNt ويرتبط به بال complémentarité.',
+    activeQuestionAr: 'أين يوجد الكودون وأين مضاد الكودون؟',
+    acceptedEvidence: ['ARNm', 'ARNt', 'الكودون', 'مضاد الكودون'],
+    nextAction: 'retry_document',
+  },
+  'enzyme_saturation': {
+    id: 'mr_enzyme_saturation',
+    conceptId: 'enzymes',
+    triggerCodes: ['ENZYME_DISAPPEARS', 'NO_SATURATION'],
+    titleAr: 'التشبّع: المواقع لا الإنزيم',
+    estimatedMinutes: 3,
+    explanationAr: 'عند Vmax يبقى الإنزيم موجوداً؛ جميع المواقع النشطة مشغولة فلا تزيد السرعة.',
+    activeQuestionAr: 'لماذا تستقر السرعة عند Vmax؟',
+    acceptedEvidence: ['المواقع النشطة', 'التشبّع', 'Vmax'],
+    nextAction: 'retry_document',
+  },
+};
+
+export function getMicroRemediationByCode(code: string): MicroRemediation | undefined {
+  return Object.values(MICRO_REMEDIATIONS).find((r) => r.triggerCodes.includes(code));
+}

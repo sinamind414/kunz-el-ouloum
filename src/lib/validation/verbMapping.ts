@@ -5,7 +5,7 @@
 import { normalizeAr } from './normalizeAr';
 
 export type ActionVerb =
-  | 'identify' | 'describe' | 'analyse' | 'interpret'
+  | 'identify' | 'describe' | 'analyse' | 'interpret' | 'explain'
   | 'compare' | 'hypothesize' | 'validate' | 'synthesize'
   | 'schematize' | 'justify' | 'critique';
 
@@ -46,6 +46,7 @@ const MAP: Record<string, VerbMapping> = {
   'أنجز مخططا': { actionVerb: 'schematize', loiFocus: 5, checks: ['SCHEMA_TITLE'] },
   'أنجز رسما': { actionVerb: 'schematize', loiFocus: 5, checks: ['SCHEMA_TITLE'] },
   نقد: { actionVerb: 'critique', loiFocus: 5, checks: ['BLOCKS'] },
+  'بيّن': { actionVerb: 'explain', loiFocus: 3, checks: ['CAUSAL', 'LEVELS', 'PPM', 'ACH'] },
 };
 
 /** Devine l'actionVerb à partir d'un verbe/prompt AR. */

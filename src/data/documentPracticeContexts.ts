@@ -1,6 +1,7 @@
 // src/data/documentPracticeContexts.ts
-// P1.4 — Contextes de pratique documentaire (Speckit DOCUMENTS_VIVANTS §2-§3).
+// P1.4 / V3 §3.2 — Contextes de pratique documentaire.
 // Chaque document expose objectif, verbe, vocabulaire, preuve attendue, alt text.
+// Ordre immuable (V3 §4.4) : type → objectif → verbe → donnée → observation → production.
 
 import type { CoreReflexId } from './reflexes';
 
@@ -19,6 +20,18 @@ export interface DocumentPracticeContext {
   trapAr?: string;
   assetSrc?: string;
   altAr: string;
+  // V3 §3.2 — étendu pour document vivant complet.
+  sourceStatus?: 'manuel_officiel_verifie' | 'adaptation_pedagogique' | 'exercice_kunz' | 'a_valider_enseignant';
+  documentTypeAr?: string;
+  promptObserveAr?: string; // demande d'observer, pas de conclure
+  promptProduceAr?: string; // production BAC
+  hintsAr?: [string, string]; // [où regarder, quel lien]
+  correctionAr?: string; // masquée avant tentative
+  criteria?: {
+    evidence: string[];
+    mechanism?: string[];
+    conclusion?: string[];
+  };
 }
 
 export const DOCUMENT_PRACTICE_CONTEXTS: DocumentPracticeContext[] = [
@@ -106,6 +119,39 @@ export const DOCUMENT_PRACTICE_CONTEXTS: DocumentPracticeContext[] = [
     trapAr: 'الريفاميسين يمنع الاستنساخ ولا يمنع الترجمة مباشرة.',
     altAr: 'جدول يوضح غياب حلقات H1 وH2 (ARNm) عند إضافة الريفاميسين.',
   },
+  // V3 US-V3-02 — Document vivant uracile marqué (pilote transcription).
+  {
+    exerciseId: 'uracile_marque',
+    questionId: 'uracile_marque_q1',
+    conceptId: 'transcription',
+    unitId: 1,
+    documentType: 'experiment',
+    reflexId: 'interpret',
+    sourceStatus: 'adaptation_pedagogique',
+    documentTypeAr: 'تجربة تتبّع اليوراسيل المشع',
+    goalAr: 'تفسير مسار ظهور اليوراسيل المشع من النواة إلى الهيولى.',
+    vocabulary: ['اليوراسيل', 'النواة', 'الهيولى', 'ARNm', 'الاستنساخ'],
+    expectedEvidence: [
+      'ظهور الوسم أولاً في النواة',
+      'ظهور الوسم لاحقاً في الهيولى',
+      'انتقال المعلومة عبر ARNm',
+    ],
+    trapAr: 'لا تقل إن ADN يخرج من النواة.',
+    altAr: 'تجربة: خلية بنواة مشعة، وسّم يظهر في النواة ثم في الهيولى بعد مدة أطول.',
+    promptObserveAr: 'أين يظهر الوسم أولاً؟ ثم أين يظهر لاحقاً؟',
+    promptProduceAr: 'فسّر ماذا يدل انتقال الوسم من النواة إلى الهيولى.',
+    hintsAr: [
+      'ركّز على كلمتي: أولاً / لاحقاً.',
+      'ما الجزيء الذي يحتوي اليوراسيل ولا يحتوي التايمين؟',
+    ],
+    correctionAr:
+      'يظهر الوسم أولاً في النواة حيث يُركّب ARNm (يحتوي اليوراسيل). ثم يظهر في الهيولى لأن ARNm يحمل نسخة المعلومة. هذا يدل على نسخ المعلومة في النواة ثم نقلها.',
+    criteria: {
+      evidence: ['النواة', 'الهيولى', 'اليوراسيل', 'ARNm'],
+      mechanism: ['الاستنساخ في النواة', 'نقل ARNm إلى الهيولى'],
+      conclusion: ['المعلومة تُنسخ ثم تُنقل'],
+    },
+  },
 ];
 
 export function getDocumentPracticeContext(
@@ -115,4 +161,9 @@ export function getDocumentPracticeContext(
   return DOCUMENT_PRACTICE_CONTEXTS.find(
     (c) => c.exerciseId === exerciseId && c.questionId === questionId
   );
+}
+
+// V3 US-V3-02 — récupère un contexte documentaire par exerciseId (pilote transcription).
+export function getDocumentPracticeContextByExercise(exerciseId: string): DocumentPracticeContext | undefined {
+  return DOCUMENT_PRACTICE_CONTEXTS.find((c) => c.exerciseId === exerciseId);
 }

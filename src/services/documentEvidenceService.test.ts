@@ -35,9 +35,9 @@ const failResult = (): ValidationResult => ({
 });
 
 describe('DocumentPracticeContext', () => {
-  it('les 5 contextes prioritaires existent', () => {
+  it('les 6 contextes prioritaires existent (dont uracile_marque V3)', () => {
     const ids = DOCUMENT_PRACTICE_CONTEXTS.map((c) => c.exerciseId);
-    expect(ids).toEqual(['michaelis_courbe', 'curare_table', 'nmj_ppm_courbe', 'sarin_gb_double', 'rifamycine_h1h2']);
+    expect(ids).toEqual(['michaelis_courbe', 'curare_table', 'nmj_ppm_courbe', 'sarin_gb_double', 'rifamycine_h1h2', 'uracile_marque']);
   });
 
   it('chaque contexte a goalAr, 3-6 vocabulaire, expectedEvidence non vide, altAr', () => {

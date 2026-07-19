@@ -13,8 +13,13 @@ import { getLessonTransferChallenge, type LessonTransferChallenge } from '../dat
 import { validateAnswer } from '../lib/validation/ValidationEngine';
 import { recordLessonTransferEvidence } from '../services/masteryEvidenceService';
 import { getLessonProgression, type LessonProgression } from '../data/activeLessons';
+import { getLessonGoldSummary } from '../data/lessonGoldSummaries';
+import { getMicroRemediationByCode } from '../data/microRemediations';
 import type { CoreReflexId } from '../data/reflexes';
 import { loadStore } from '../data/store';
+import LiveDocumentUracile from './LiveDocumentUracile';
+import MissionBanner from './MissionBanner';
+import { MICRO_REMEDIATIONS } from '../data/microRemediations';
 
 interface InteractiveLessonViewProps {
   lessonId: string;
@@ -276,6 +281,9 @@ export default function InteractiveLessonView({
   onLaunchReflexMission,
 }: InteractiveLessonViewProps) {
   const activeLesson = ACTIVE_LESSONS[lessonId];
+  // V3 — micro-reprise ciblée (affichée quand l'élève clique sur "ثبّت هذه الفكرة").
+  const [microRemediationId, setMicroRemediationId] = React.useState<string | null>(null);
+  const remediation = microRemediationId ? getMicroRemediationByCode(microRemediationId) ?? (microRemediationId.startsWith('mr_') ? Object.values(MICRO_REMEDIATIONS).find((r) => r.id === microRemediationId) : undefined) : undefined;
 
   // Pilier 1 : tunnel actif "Mot par Mot" (si une leçon active est définie).
   if (activeLesson) {
@@ -286,7 +294,29 @@ export default function InteractiveLessonView({
         onStartLesson={onStartLesson}
         onNavigateToTab={onNavigateToTab}
         onLaunchReflexMission={onLaunchReflexMission}
+        onOpenMicroRemediation={setMicroRemediationId}
       />
+    );
+  }
+
+  // V3 — Carte de micro-reprise ciblée (affichée au-dessus du tunnel, en overlay).
+  if (remediation) {
+    return (
+      <div className="fixed inset-0 z-[60] bg-black/30 flex items-center justify-center p-4" dir="rtl">
+        <div className="bg-white dark:bg-[#141916] rounded-3xl p-5 max-w-lg w-full shadow-xl space-y-3">
+          <div className="text-sm font-black text-[#944a00] dark:text-amber-300">🎯 {remediation.titleAr}</div>
+          <p className="text-xs text-[#1f1c0b] dark:text-gray-200 leading-6">{remediation.explanationAr}</p>
+          <p className="text-sm font-bold text-[#1f1c0b] dark:text-white">❓ {remediation.activeQuestionAr}</p>
+          <div className="flex gap-2">
+            <button
+              onClick={() => setMicroRemediationId(null)}
+              className="flex-1 py-2.5 rounded-xl bg-[#006d37] hover:bg-[#00562b] text-white font-black text-sm cursor-pointer"
+            >
+              فهمت — عدّ للتحدّي
+            </button>
+          </div>
+        </div>
+      </div>
     );
   }
 
@@ -340,12 +370,14 @@ function ActiveLessonTunnel({
   onStartLesson,
   onNavigateToTab,
   onLaunchReflexMission,
+  onOpenMicroRemediation,
 }: {
   lesson: ActiveLesson;
   onClose: () => void;
   onStartLesson?: (lessonId: string) => void;
   onNavigateToTab?: (tab: 'path' | 'lessons' | 'training' | 'progress') => void;
   onLaunchReflexMission?: (reflexId: CoreReflexId, meta: { missionId: string; conceptId: string; relatedErrorIds?: string[] }) => void;
+  onOpenMicroRemediation?: (remediationId: string) => void;
 }) {
   const [currentBlockIndex, setCurrentBlockIndex] = useState(0);
   const [validated, setValidated] = useState<boolean[]>(() => lesson.blocks.map(() => false));
@@ -407,6 +439,14 @@ function ActiveLessonTunnel({
         <div className="w-10 text-[10px] font-bold text-[#506072]">{currentBlockIndex + 1}/{lesson.blocks.length}</div>
       </header>
 
+      {/* US-V3-01 — Écran mission (Résumé d'Or) repliable, durée calculée honnête. */}
+      {(() => {
+        const gs = getLessonGoldSummary(lesson.id);
+        if (!gs) return null;
+        const estimated = lesson.blocks.length * 2 + 3; // blocs + document/défi
+        return <MissionBanner summary={gs} estimatedMinutes={estimated} />;
+      })()}
+
       {/* Progress verrouillé */}
       <div className="px-4 py-3 bg-white dark:bg-[#141916] border-b border-[#e2dabf]/30">
         <div className="flex gap-2 max-w-2xl mx-auto">
@@ -467,8 +507,11 @@ function ActiveLessonTunnel({
           })}
         </div>
 
-        {/* P1.3 — Sortie BAC optionnelle de la leçon, validée par ValidationEngine. */}
-        <BacTransferChallengeSection lessonId={lesson.id} />
+        {/* Sortie de leçon : document vivant (si applicable) + défi BAC validé. */}
+        <LessonExitSection
+          lessonId={lesson.id}
+          onOpenMicroRemediation={onOpenMicroRemediation}
+        />
       </main>
     </div>
   );
@@ -575,6 +618,27 @@ function BacTransferChallengeSection({ lessonId }: { lessonId: string }) {
   const challenge = getLessonTransferChallenge(lessonId);
   if (!challenge) return null;
   return <BacTransferChallenge challenge={challenge} />;
+}
+
+// V3 US-V3-02 — Sortie de leçon : document vivant uracile (transcription) puis défi BAC.
+function LessonExitSection({
+  lessonId,
+  onOpenMicroRemediation,
+}: {
+  lessonId: string;
+  onOpenMicroRemediation?: (remediationId: string) => void;
+}) {
+  const showLiveDoc = lessonId === 'd1-u1-l2-transcription' || lessonId === 'lecon_transcription';
+  return (
+    <div className="space-y-4">
+      {showLiveDoc && (
+        <LiveDocumentUracile
+          onOpenMicroRemediation={onOpenMicroRemediation}
+        />
+      )}
+      <BacTransferChallengeSection lessonId={lessonId} />
+    </div>
+  );
 }
 
 // Défi BAC de sortie : la réussite est calculée par ValidationEngine (réelle),

@@ -13,7 +13,7 @@ export type LoiId = `loi_${0 | 1 | 2 | 3 | 4 | 5}`;
 export type DocType = 'quantitative' | 'qualitative' | 'mixed';
 
 export type ActionVerb =
-  | 'identify' | 'describe' | 'analyse' | 'interpret'
+  | 'identify' | 'describe' | 'analyse' | 'interpret' | 'explain'
   | 'compare' | 'hypothesize' | 'validate' | 'synthesize'
   | 'schematize' | 'justify' | 'critique';
 
