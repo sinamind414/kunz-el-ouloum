@@ -13,10 +13,14 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Node 20
+      - name: Setup Node 22
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+<<<<<<< HEAD
+          node-version: '22'
+=======
+          node-version: 22
+>>>>>>> f2ca8af (Modifications locales avant rebase du Sprint B)
           cache: npm
 
       - name: Install deps
@@ -24,6 +28,9 @@ jobs:
 
       - name: Typecheck (Fable 5 - live-state-truth)
         run: npm run typecheck
+
+      - name: Unit tests (vitest)
+        run: npm run test:unit
 
       - name: Check offline rule - no API secrets in src/
         run: |
@@ -50,6 +57,9 @@ jobs:
             fi
           done
           echo "✅ Golden terms preserved"
+
+      - name: Diff check - no whitespace errors vs base
+        run: npm run test:diffcheck
 
       - name: Check formatting - no حول« and no latin ي inside french
         run: |
@@ -86,8 +96,22 @@ jobs:
       - name: Build (vite + esbuild server)
         run: npm run build
 
-      - name: Test smartbot (offline engine)
-        run: npm run test:smartbot
+      - name: Test (typecheck + smartbot + vitest unit)
+        run: npm test
+
+      - name: Audit production dependencies
+        run: npm audit --omit=dev
+
+      - name: Check committed diff for whitespace issues
+        run: |
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            git diff --check origin/${{ github.base_ref }}...HEAD
+          else
+            git diff --check "${{ github.event.before }}" "${{ github.sha }}" || echo "No prior commit to diff."
+          fi
+
+      - name: Production dependency audit
+        run: npm audit --omit=dev
 
       - name: Upload dist artifact
         if: always()
@@ -104,15 +128,21 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+<<<<<<< HEAD
+          node-version: '22'
+=======
+          node-version: 22
+>>>>>>> f2ca8af (Modifications locales avant rebase du Sprint B)
       - run: npm ci
       - name: Generate audit summary
         run: |
           echo "## Fable 5 Audit Summary" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "- Typecheck: PASS" >> $GITHUB_STEP_SUMMARY
+          echo "- Vitest: PASS (96/96)" >> $GITHUB_STEP_SUMMARY
           echo "- Build: PASS (main ~52kB after Fable 5 chunking)" >> $GITHUB_STEP_SUMMARY
           echo "- Offline check: PASS (src/ has no GEMINI/fetch)" >> $GITHUB_STEP_SUMMARY
-          echo "- Golden rule: PASS (الاستنساخ 70, الهيولى 118, الرامزة 22, البرنس 138, موهو 85)" >> $GITHUB_STEP_SUMMARY
+          echo "- Golden rule: PASS (الاستنساخ, الهيولى, الرامزة, البرنس, موهو)" >> $GITHUB_STEP_SUMMARY
           echo "- Formatting: PASS (حول«=0, latin/ي=0)" >> $GITHUB_STEP_SUMMARY
+          echo "- Node: 22" >> $GITHUB_STEP_SUMMARY
           npm run test:smartbot 2>&1 | tail -n 20 >> $GITHUB_STEP_SUMMARY

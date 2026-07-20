@@ -35,7 +35,7 @@ export const MICRO_REMEDIATIONS: Record<string, MicroRemediation> = {
     estimatedMinutes: 2,
     explanationAr: 'يُقرأ القالب من 3′ نحو 5′، ويُركّب ARNm في اتجاه 5′ نحو 3′.',
     activeQuestionAr: 'في أي اتجاه يُركّب ARNm؟',
-    acceptedEvidence: ['5', '3', 'القالب', 'ARPm'],
+    acceptedEvidence: ['5', '3', 'القالب', 'ARNm'],
     nextAction: 'schedule_recall',
   },
   'codon_vs_anticodon': {

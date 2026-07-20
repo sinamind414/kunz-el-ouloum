@@ -1,9 +1,20 @@
-import { lazy, Suspense, useMemo } from 'react';
+<<<<<<< HEAD
+import { lazy, Suspense, useState } from 'react';
 import { Trophy, TrendingUp, Sparkles, Clock, BookOpen } from 'lucide-react';
 import { Unit, UserProgress, TabId } from '../types';
 import DomainReadinessRadar from './DomainReadinessRadar';
 import BacCountdown from './BacCountdown';
+import { loadStore, MasteryLevel, MasteryRecord } from '../data/store';
+import SpacedRecallCard from './SpacedRecallCard';
+=======
+import { lazy, Suspense, useMemo, useState } from 'react';
+import { Trophy, TrendingUp, Sparkles, Clock, BookOpen, CheckCircle2, XCircle } from 'lucide-react';
+import { Unit, UserProgress, TabId } from '../types';
+import DomainReadinessRadar from './DomainReadinessRadar';
+import BacCountdown from './BacCountdown';
 import { loadStore, MasteryLevel, MasteryRecord, DAY_MS } from '../data/store';
+import { getDueRecalls, completeRecall, RECALL_INTERVALS } from '../services/spacedRecallService';
+>>>>>>> f2ca8af (Modifications locales avant rebase du Sprint B)
 
 // V3 §4.7 / §4.8 — Maîtrise 3D + rappels espacés visibles (données réelles).
 const LEVEL_META: Record<MasteryLevel, { color: string; labelAr: string; dot: string }> = {
@@ -14,13 +25,13 @@ const LEVEL_META: Record<MasteryLevel, { color: string; labelAr: string; dot: st
 };
 
 function Mastery3DSection() {
-  const store = useMemo(() => {
+  const [store, setStore] = useState(() => {
     try {
       return loadStore();
     } catch {
       return null;
     }
-  }, []);
+  });
   if (!store) return null;
 
   const records = Object.values(store.mastery) as MasteryRecord[];
@@ -30,11 +41,11 @@ function Mastery3DSection() {
   });
 
   const now = Date.now();
-  const due = store.learningErrors.filter(
-    (e) => e.resolvedAt == null && e.nextReviewAt > 0 && now >= e.nextReviewAt
+  const dueRecalls = store.recalls.filter(
+    (item) => item.completedAt === undefined && item.nextReviewAt > 0 && now >= item.nextReviewAt
   );
 
-  if (visible.length === 0 && due.length === 0) return null;
+  if (visible.length === 0 && dueRecalls.length === 0) return null;
 
   return (
     <div className="rounded-3xl bg-white dark:bg-[#141916] border border-gray-200 dark:border-gray-800 p-4 shadow-sm mb-4">
@@ -79,16 +90,80 @@ function Mastery3DSection() {
           <div className="flex items-center gap-2 text-xs font-black text-amber-700 dark:text-amber-400">
             <Clock className="w-4 h-4" /> مراجعات مستحقة اليوم
           </div>
-          {due.map((e) => (
-            <div key={e.id} className="flex items-center justify-between rounded-xl bg-amber-50 dark:bg-amber-900/20 px-3 py-2 text-xs font-bold">
-              <span className="text-gray-900 dark:text-white">{e.conceptId ?? e.id}</span>
-              <span className="text-amber-700 dark:text-amber-400">
-                {Math.max(0, Math.round((now - e.nextReviewAt) / DAY_MS))} يوم مضت
-              </span>
-            </div>
+          {due.map((recall) => (
+            <SpacedRecallCard
+              key={`${recall.id}_${recall.stage}_${recall.nextReviewAt}`}
+              recall={recall}
+              onUpdated={() => setStore(loadStore())}
+            />
           ))}
         </div>
       )}
+
+      {/* Rappels actifs espacés (preuve → rappel dû → réponse → stage suivant) */}
+      <SpacedRecallSection />
+    </div>
+  );
+}
+
+// V3 §4.8 / P1-1 — Rappels espacés actifs : l'élève répond, le stade avance (J+1→J+3→J+7→J+14)
+// ou redémarre à J+1 en cas d'échec. Jamais de doublon actif (géré par le service).
+function SpacedRecallSection() {
+  const [version, setVersion] = useState(0);
+  const now = Date.now();
+  const dueRecalls = getDueRecalls(now);
+  const [answered, setAnswered] = useState<Record<string, boolean>>({});
+
+  if (dueRecalls.length === 0) return null;
+
+  const handleAnswer = (id: string, passed: boolean) => {
+    completeRecall(id, passed, Date.now());
+    setAnswered((prev) => ({ ...prev, [id]: passed }));
+    setVersion((v) => v + 1);
+  };
+
+  return (
+    <div className="mt-3 space-y-2" key={version}>
+      <div className="flex items-center gap-2 text-xs font-black text-[#006d37] dark:text-[#2ecc71]">
+        <BookOpen className="w-4 h-4" /> مراجعاتي اليوم (رappel espacé)
+      </div>
+      {dueRecalls.map((r) => {
+        const stageLabel = `J+${RECALL_INTERVALS[r.stage]}`;
+        const result = answered[r.id];
+        return (
+          <div key={r.id} className="rounded-xl bg-emerald-50 dark:bg-emerald-950/20 border border-emerald-200 dark:border-emerald-900/40 px-3 py-2 space-y-2">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-black text-gray-900 dark:text-white">{r.conceptId}</span>
+              <span className="text-[10px] font-bold text-[#006d37] dark:text-[#2ecc71] bg-[#006d37]/10 px-2 py-0.5 rounded-full">
+                {stageLabel}
+              </span>
+            </div>
+            <p className="text-xs font-bold text-gray-800 dark:text-gray-100 leading-6">{r.questionAr}</p>
+            {result === undefined ? (
+              <div className="flex gap-2">
+                <button
+                  onClick={() => handleAnswer(r.id, true)}
+                  className="flex-1 py-2 rounded-xl bg-[#2ecc71] hover:bg-[#27b765] text-white font-black text-xs cursor-pointer flex items-center justify-center gap-1"
+                >
+                  <CheckCircle2 className="w-4 h-4" /> أتذكّر
+                </button>
+                <button
+                  onClick={() => handleAnswer(r.id, false)}
+                  className="flex-1 py-2 rounded-xl bg-rose-500 hover:bg-rose-600 text-white font-black text-xs cursor-pointer flex items-center justify-center gap-1"
+                >
+                  <XCircle className="w-4 h-4" /> لا أتذكّر
+                </button>
+              </div>
+            ) : (
+              <p className={`text-[11px] font-bold ${result ? 'text-[#006d37] dark:text-[#2ecc71]' : 'text-rose-600'}`}>
+                {result
+                  ? `✅ أحسنت — rappel planifié ${r.stage >= 3 ? 'terminé' : `au prochain stade (J+${RECALL_INTERVALS[Math.min(r.stage + 1, 3)]})`}.`
+                  : '🔁 rappel replanifié à J+1. Révise puis réponds à nouveau.'}
+              </p>
+            )}
+          </div>
+        );
+      })}
     </div>
   );
 }

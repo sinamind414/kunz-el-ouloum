@@ -12,6 +12,7 @@ export interface DocumentPracticeContext {
   questionId: string;
   conceptId: string;
   unitId: number;
+  lessonId?: string;
   documentType: DocumentAssetType;
   reflexId?: CoreReflexId;
   goalAr: string;
@@ -147,9 +148,9 @@ export const DOCUMENT_PRACTICE_CONTEXTS: DocumentPracticeContext[] = [
     correctionAr:
       'يظهر الوسم أولاً في النواة حيث يُركّب ARNm (يحتوي اليوراسيل). ثم يظهر في الهيولى لأن ARNm يحمل نسخة المعلومة. هذا يدل على نسخ المعلومة في النواة ثم نقلها.',
     criteria: {
-      evidence: ['النواة', 'الهيولى', 'اليوراسيل', 'ARNm'],
-      mechanism: ['الاستنساخ في النواة', 'نقل ARNm إلى الهيولى'],
-      conclusion: ['المعلومة تُنسخ ثم تُنقل'],
+      evidence: ['أولاً في النواة', 'اولا في النواة', 'لاحقاً في الهيولى', 'لاحقا في الهيولى'],
+      mechanism: ['يُركّب ARNm', 'يركب ARNm', 'استنساخ ARNm', 'ينتقل ARNm', 'انتقال ARNm'],
+      conclusion: ['المعلومة تُنسخ ثم تُنقل', 'المعلومة تنسخ ثم تنقل', 'يحمل نسخة المعلومة', 'ينقل نسخة المعلومة'],
     },
   },
 ];

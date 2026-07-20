@@ -27,6 +27,7 @@ interface InteractiveLessonViewProps {
   onStartLesson?: (lessonId: string) => void;
   onNavigateToTab?: (tab: 'path' | 'lessons' | 'training' | 'progress') => void;
   onLaunchReflexMission?: (reflexId: CoreReflexId, meta: { missionId: string; conceptId: string; relatedErrorIds?: string[] }) => void;
+  onDocumentEvidence?: (outcome: { passed: boolean; evidenceId?: string; errorCreated: boolean }) => void;
 }
 
 // Simple DragDrop component for Mot → Exemple
@@ -279,25 +280,12 @@ export default function InteractiveLessonView({
   onStartLesson,
   onNavigateToTab,
   onLaunchReflexMission,
+  onDocumentEvidence,
 }: InteractiveLessonViewProps) {
   const activeLesson = ACTIVE_LESSONS[lessonId];
   // V3 — micro-reprise ciblée (affichée quand l'élève clique sur "ثبّت هذه الفكرة").
   const [microRemediationId, setMicroRemediationId] = React.useState<string | null>(null);
   const remediation = microRemediationId ? getMicroRemediationByCode(microRemediationId) ?? (microRemediationId.startsWith('mr_') ? Object.values(MICRO_REMEDIATIONS).find((r) => r.id === microRemediationId) : undefined) : undefined;
-
-  // Pilier 1 : tunnel actif "Mot par Mot" (si une leçon active est définie).
-  if (activeLesson) {
-    return (
-      <ActiveLessonTunnel
-        lesson={activeLesson}
-        onClose={onClose}
-        onStartLesson={onStartLesson}
-        onNavigateToTab={onNavigateToTab}
-        onLaunchReflexMission={onLaunchReflexMission}
-        onOpenMicroRemediation={setMicroRemediationId}
-      />
-    );
-  }
 
   // V3 — Carte de micro-reprise ciblée (affichée au-dessus du tunnel, en overlay).
   if (remediation) {
@@ -317,6 +305,21 @@ export default function InteractiveLessonView({
           </div>
         </div>
       </div>
+    );
+  }
+
+  // Pilier 1 : tunnel actif "Mot par Mot" (si une leçon active est définie).
+  if (activeLesson) {
+    return (
+      <ActiveLessonTunnel
+        lesson={activeLesson}
+        onClose={onClose}
+        onStartLesson={onStartLesson}
+        onNavigateToTab={onNavigateToTab}
+        onLaunchReflexMission={onLaunchReflexMission}
+        onOpenMicroRemediation={setMicroRemediationId}
+        onDocumentEvidence={onDocumentEvidence}
+      />
     );
   }
 
@@ -371,6 +374,7 @@ function ActiveLessonTunnel({
   onNavigateToTab,
   onLaunchReflexMission,
   onOpenMicroRemediation,
+  onDocumentEvidence,
 }: {
   lesson: ActiveLesson;
   onClose: () => void;
@@ -378,6 +382,7 @@ function ActiveLessonTunnel({
   onNavigateToTab?: (tab: 'path' | 'lessons' | 'training' | 'progress') => void;
   onLaunchReflexMission?: (reflexId: CoreReflexId, meta: { missionId: string; conceptId: string; relatedErrorIds?: string[] }) => void;
   onOpenMicroRemediation?: (remediationId: string) => void;
+  onDocumentEvidence?: (outcome: { passed: boolean; evidenceId?: string; errorCreated: boolean }) => void;
 }) {
   const [currentBlockIndex, setCurrentBlockIndex] = useState(0);
   const [validated, setValidated] = useState<boolean[]>(() => lesson.blocks.map(() => false));
@@ -511,6 +516,7 @@ function ActiveLessonTunnel({
         <LessonExitSection
           lessonId={lesson.id}
           onOpenMicroRemediation={onOpenMicroRemediation}
+          onDocumentEvidence={onDocumentEvidence}
         />
       </main>
     </div>
@@ -624,9 +630,11 @@ function BacTransferChallengeSection({ lessonId }: { lessonId: string }) {
 function LessonExitSection({
   lessonId,
   onOpenMicroRemediation,
+  onDocumentEvidence,
 }: {
   lessonId: string;
   onOpenMicroRemediation?: (remediationId: string) => void;
+  onDocumentEvidence?: (outcome: { passed: boolean; evidenceId?: string; errorCreated: boolean }) => void;
 }) {
   const showLiveDoc = lessonId === 'd1-u1-l2-transcription' || lessonId === 'lecon_transcription';
   return (
@@ -634,6 +642,7 @@ function LessonExitSection({
       {showLiveDoc && (
         <LiveDocumentUracile
           onOpenMicroRemediation={onOpenMicroRemediation}
+          onEvidence={onDocumentEvidence}
         />
       )}
       <BacTransferChallengeSection lessonId={lessonId} />

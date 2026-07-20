@@ -31,13 +31,14 @@ describe('ConceptRoute (§6)', () => {
 });
 
 describe('Routage réel — priorité (§6)', () => {
-  it('carte publiable est la cible 1 (Enzymes)', () => {
-    // sc_enzymes est publiée (reviewed:true).
+  it('sans carte Enzymes publiable, la leçon est ciblée (P1-7 statut honnête)', () => {
+    // sc_enzymes n'est PAS publiée tant que la revue enseignant n'est pas traçable.
     const published = getPublishableSurvivalCards().some((c) => c.id === 'sc_enzymes');
-    expect(published).toBe(true);
+    expect(published).toBe(false);
+    // Le routage retombe donc sur la leçon active, jamais sur un brouillon.
     const target = routeErrorToTarget('enzymes', { quizUnitId: 3 });
-    expect(target.kind).toBe('survival_card');
-    if (target.kind === 'survival_card') expect(target.cardId).toBe('sc_enzymes');
+    expect(target.kind).toBe('lesson');
+    if (target.kind === 'lesson') expect(target.lessonId).toBe('d1-u3-l1-enzyme');
   });
 
   it('sans carte publiable, la leçon est ciblée', () => {

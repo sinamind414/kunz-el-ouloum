@@ -15,6 +15,7 @@ import {
 import type { ValidationResult } from '../lib/validation/ValidationEngine';
 import type { DocumentPracticeContext } from '../data/documentPracticeContexts';
 import { normalizeArabic } from '../utils/arabicNormalize';
+import { scheduleSpacedRecall } from './spacedRecallService';
 
 const PASS_THRESHOLD = 70;
 
@@ -26,13 +27,34 @@ export interface DocumentTraceInput {
 
 export interface DocumentTraceResult {
   valid: boolean;
+  percentage: number;
   foundEvidence: string[];
   missingEvidence: string[];
   vocabularyFound: string[];
+  structuredCriteria: {
+    observation: boolean;
+    mechanism: boolean;
+    conclusion: boolean;
+  };
 }
 
 function normalizeList(items: string[]): string[] {
   return items.map((i) => normalizeArabic(i));
+}
+
+function containsAnyNormalized(answer: string, terms: string[]): boolean {
+  return terms.some((term) => answer.includes(normalizeArabic(term)));
+}
+
+function validateStructuredCriteria(context: DocumentPracticeContext, normAnswer: string) {
+  if (!context.criteria) {
+    return { observation: true, mechanism: true, conclusion: true };
+  }
+
+  const observation = containsAnyNormalized(normAnswer, context.criteria.evidence);
+  const mechanism = containsAnyNormalized(normAnswer, context.criteria.mechanism ?? []);
+  const conclusion = containsAnyNormalized(normAnswer, context.criteria.conclusion ?? []);
+  return { observation, mechanism, conclusion };
 }
 
 export function validateDocumentTrace(input: DocumentTraceInput): DocumentTraceResult {
@@ -45,12 +67,20 @@ export function validateDocumentTrace(input: DocumentTraceInput): DocumentTraceR
 
   const vocabNorm = normalizeList(context.vocabulary);
   const vocabularyFound = context.vocabulary.filter((_, i) => normAnswer.includes(vocabNorm[i]));
+  const structuredCriteria = validateStructuredCriteria(context, normAnswer);
 
-  const passed = validationResult.passed && validationResult.score >= PASS_THRESHOLD;
+  // Convertir le score du moteur (/maxScore) en pourcentage pour le seuil 70.
+  const percentage = Math.round((validationResult.score / validationResult.maxScore) * 100);
+  const passed = validationResult.passed && percentage >= PASS_THRESHOLD;
   const valid =
-    passed && foundEvidence.length >= 1 && vocabularyFound.length >= 1;
+    passed &&
+    foundEvidence.length >= 1 &&
+    vocabularyFound.length >= 1 &&
+    structuredCriteria.observation &&
+    structuredCriteria.mechanism &&
+    structuredCriteria.conclusion;
 
-  return { valid, foundEvidence, missingEvidence, vocabularyFound };
+  return { valid, percentage, foundEvidence, missingEvidence, vocabularyFound, structuredCriteria };
 }
 
 // Échec : LearningError document/methodology (cadence J+1, rappel correctif).
@@ -102,14 +132,16 @@ export interface DocumentEvidenceOutcome {
   evidence: MasteryEvidence | null;
   errorCreated: boolean;
   store: ReturnType<typeof loadStore>;
+  trace: DocumentTraceResult;
 }
 
 // Enregistre la preuve documentaire réelle OU l'erreur liée.
+// Si une erreur existe pour ce concept+reflex, lie la preuve via relatedErrorIds
 export function recordDocumentTrace(input: DocumentTraceInput): DocumentEvidenceOutcome {
   const { context, validationResult } = input;
   const trace = validateDocumentTrace(input);
   const now = Date.now();
-  const score = Math.round((validationResult.score / validationResult.maxScore) * 100);
+  const percentage = trace.percentage ?? Math.round((validationResult.score / validationResult.maxScore) * 100);
 
   // Pas de preuve si trace invalide (règle minimale non respectée).
   if (!trace.valid) {
@@ -121,8 +153,17 @@ export function recordDocumentTrace(input: DocumentTraceInput): DocumentEvidence
     const errors = upsertDocumentError(store.learningErrors, context, ruleIds, now);
     const next = { ...store, learningErrors: errors };
     writeRaw(STORAGE_KEYS.learningErrors, next.learningErrors);
-    return { evidence: null, errorCreated: true, store: next };
+    return { evidence: null, errorCreated: true, store: next, trace };
   }
+
+  // Chercher une erreur existante pour ce concept+reflex afin de la lier
+  const store = loadStore();
+  const existingError = store.learningErrors.find(
+    (e) => e.kind === (context.reflexId ? 'methodology' : 'document') &&
+          e.conceptId === context.conceptId &&
+          e.reflexId === context.reflexId &&
+          e.resolvedAt == null
+  );
 
   const evidence: MasteryEvidence = {
     id: `evidence_doc_${context.exerciseId}_${context.questionId}_${now}`,
@@ -130,9 +171,18 @@ export function recordDocumentTrace(input: DocumentTraceInput): DocumentEvidence
     dimension: 'document',
     reflexId: context.reflexId,
     source: 'document_analysis',
-    score,
+    score: percentage,
     createdAt: now,
+    relatedErrorIds: existingError ? [existingError.id] : undefined,
   };
-  const store = recordEvidence(evidence);
-  return { evidence, errorCreated: false, store };
+
+  const nextStore = recordEvidence(evidence);
+  const scheduled = scheduleSpacedRecall({
+    conceptId: context.conceptId,
+    reflexId: context.reflexId ?? 'analyse',
+    sourceEvidenceId: evidence.id,
+    relatedErrorId: existingError?.id,
+    now,
+  });
+  return { evidence, errorCreated: false, store: scheduled.store, trace };
 }

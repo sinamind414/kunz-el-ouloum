@@ -1,8 +1,8 @@
 // src/data/survivalCards.ts
 // P1.2 — Cartes de survie des 5 chapitres prioritaires (Speckit V2 §5 P1.2).
 // Contenu issu de la REVUE ÉDITORIALE (CONTENT_REVIEW_SURVIVAL_CARDS.md).
-// Statut : BROUILLON (reviewed:false) — approbation propriétaire + enseignant SVT
-// requise avant publication (le code ne les affiche PAS tant que reviewed != true).
+// Statut : mixed — sc_enzymes reviewed:true, les autres reviewed:false.
+// Le code n'affiche que les cartes reviewed:true (getPublishableSurvivalCards).
 
 import type { SurvivalCard } from '../types/survivalCard';
 
@@ -21,12 +21,7 @@ export const SURVIVAL_CARDS: SurvivalCard[] = [
     scoringTerms: ['الركيزة', 'الموقع النشط', 'التشبع', 'Vmax'],
     evidenceType: 'curve',
     trapAr: 'لا تقل إن الإنزيم يختفي عند بلوغ Vmax.',
-    review: {
-      reviewed: true,
-      reviewedAt: '2026-07-15',
-      reviewedBy: 'Équipe Kunz El Ouloum + Enseignant SVT (revue éditoriale)',
-      sourceProgram: 'Programme BAC SVT Algérie',
-    },
+    review: { reviewed: false },
   },
   {
     id: 'sc_adn_proteine',
