@@ -15,6 +15,7 @@ import {
   writeRaw,
   STORAGE_KEYS,
 } from '../data/store';
+import { scheduleSpacedRecall } from './spacedRecallService';
 
 const PASS_THRESHOLD = 70;
 
@@ -110,6 +111,15 @@ export function recordLessonTransferEvidence(input: LessonTransferInput): { evid
     });
   }
 
+  // Chercher une erreur méthodologique existante non résolue pour ce concept+reflex
+  const store = loadStore();
+  const existingError = store.learningErrors.find(
+    (e) => e.kind === 'methodology' &&
+          e.conceptId === input.conceptId &&
+          e.reflexId === input.reflexId &&
+          e.resolvedAt == null
+  );
+
   const evidence: MasteryEvidence = {
     id: `evidence_${input.lessonId}_${input.reflexId}_${now}_${++evidenceSeq}`,
     conceptId: input.conceptId,
@@ -118,11 +128,20 @@ export function recordLessonTransferEvidence(input: LessonTransferInput): { evid
     source: 'lesson_transfer',
     score,
     createdAt: now,
+    relatedErrorIds: existingError ? [existingError.id] : undefined,
   };
 
   // recordEvidence : persiste evidences + cellule maîtrise + erreur liée.
-  const store = recordEvidence(evidence);
-  return { evidence, store };
+  const nextStore = recordEvidence(evidence);
+  const scheduled = scheduleSpacedRecall({
+    lessonId: input.lessonId,
+    conceptId: input.conceptId,
+    reflexId: input.reflexId,
+    sourceEvidenceId: evidence.id,
+    relatedErrorId: existingError?.id,
+    now,
+  });
+  return { evidence, store: scheduled.store ?? nextStore };
 }
 
 // §4 — niveau de maîtrise méthodologique calculé depuis les preuves réelles.

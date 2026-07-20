@@ -1,9 +1,10 @@
-import { lazy, Suspense, useMemo } from 'react';
+import { lazy, Suspense, useState } from 'react';
 import { Trophy, TrendingUp, Sparkles, Clock, BookOpen } from 'lucide-react';
 import { Unit, UserProgress, TabId } from '../types';
 import DomainReadinessRadar from './DomainReadinessRadar';
 import BacCountdown from './BacCountdown';
-import { loadStore, MasteryLevel, MasteryRecord, DAY_MS } from '../data/store';
+import { loadStore, MasteryLevel, MasteryRecord } from '../data/store';
+import SpacedRecallCard from './SpacedRecallCard';
 
 // V3 §4.7 / §4.8 — Maîtrise 3D + rappels espacés visibles (données réelles).
 const LEVEL_META: Record<MasteryLevel, { color: string; labelAr: string; dot: string }> = {
@@ -14,13 +15,13 @@ const LEVEL_META: Record<MasteryLevel, { color: string; labelAr: string; dot: st
 };
 
 function Mastery3DSection() {
-  const store = useMemo(() => {
+  const [store, setStore] = useState(() => {
     try {
       return loadStore();
     } catch {
       return null;
     }
-  }, []);
+  });
   if (!store) return null;
 
   const records = Object.values(store.mastery) as MasteryRecord[];
@@ -30,8 +31,8 @@ function Mastery3DSection() {
   });
 
   const now = Date.now();
-  const due = store.learningErrors.filter(
-    (e) => e.resolvedAt == null && e.nextReviewAt > 0 && now >= e.nextReviewAt
+  const due = store.recalls.filter(
+    (item) => item.completedAt == null && item.nextReviewAt > 0 && now >= item.nextReviewAt
   );
 
   if (visible.length === 0 && due.length === 0) return null;
@@ -79,13 +80,12 @@ function Mastery3DSection() {
           <div className="flex items-center gap-2 text-xs font-black text-amber-700 dark:text-amber-400">
             <Clock className="w-4 h-4" /> مراجعات مستحقة اليوم
           </div>
-          {due.map((e) => (
-            <div key={e.id} className="flex items-center justify-between rounded-xl bg-amber-50 dark:bg-amber-900/20 px-3 py-2 text-xs font-bold">
-              <span className="text-gray-900 dark:text-white">{e.conceptId ?? e.id}</span>
-              <span className="text-amber-700 dark:text-amber-400">
-                {Math.max(0, Math.round((now - e.nextReviewAt) / DAY_MS))} يوم مضت
-              </span>
-            </div>
+          {due.map((recall) => (
+            <SpacedRecallCard
+              key={`${recall.id}_${recall.stage}_${recall.nextReviewAt}`}
+              recall={recall}
+              onUpdated={() => setStore(loadStore())}
+            />
           ))}
         </div>
       )}

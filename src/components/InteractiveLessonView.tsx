@@ -285,20 +285,6 @@ export default function InteractiveLessonView({
   const [microRemediationId, setMicroRemediationId] = React.useState<string | null>(null);
   const remediation = microRemediationId ? getMicroRemediationByCode(microRemediationId) ?? (microRemediationId.startsWith('mr_') ? Object.values(MICRO_REMEDIATIONS).find((r) => r.id === microRemediationId) : undefined) : undefined;
 
-  // Pilier 1 : tunnel actif "Mot par Mot" (si une leçon active est définie).
-  if (activeLesson) {
-    return (
-      <ActiveLessonTunnel
-        lesson={activeLesson}
-        onClose={onClose}
-        onStartLesson={onStartLesson}
-        onNavigateToTab={onNavigateToTab}
-        onLaunchReflexMission={onLaunchReflexMission}
-        onOpenMicroRemediation={setMicroRemediationId}
-      />
-    );
-  }
-
   // V3 — Carte de micro-reprise ciblée (affichée au-dessus du tunnel, en overlay).
   if (remediation) {
     return (
@@ -317,6 +303,20 @@ export default function InteractiveLessonView({
           </div>
         </div>
       </div>
+    );
+  }
+
+  // Pilier 1 : tunnel actif "Mot par Mot" (si une leçon active est définie).
+  if (activeLesson) {
+    return (
+      <ActiveLessonTunnel
+        lesson={activeLesson}
+        onClose={onClose}
+        onStartLesson={onStartLesson}
+        onNavigateToTab={onNavigateToTab}
+        onLaunchReflexMission={onLaunchReflexMission}
+        onOpenMicroRemediation={setMicroRemediationId}
+      />
     );
   }
 

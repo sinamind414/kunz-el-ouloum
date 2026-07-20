@@ -6,6 +6,8 @@
 import { useState } from 'react';
 import { Lightbulb, Eye, Pencil, HelpCircle } from 'lucide-react';
 import { getDocumentPracticeContextByExercise } from '../data/documentPracticeContexts';
+import { validateAnswer } from '../lib/validation/ValidationEngine';
+import { recordDocumentTrace, type DocumentEvidenceOutcome } from '../services/documentEvidenceService';
 
 interface LiveDocumentUracileProps {
   onEvidence?: (passed: boolean) => void;
@@ -18,18 +20,27 @@ export default function LiveDocumentUracile({ onEvidence, onOpenMicroRemediation
   const [attempted, setAttempted] = useState(false);
   const [hintIndex, setHintIndex] = useState(0);
   const [passed, setPassed] = useState(false);
+  const [outcome, setOutcome] = useState<DocumentEvidenceOutcome | null>(null);
 
   if (!ctx) return null;
 
   const handleValidate = () => {
     if (answer.trim().length < 8) return;
-    // Validation simple et honnête : présence des preuves attendues clés.
-    const hasNucleus = answer.includes('النواة');
-    const hasHyalo = answer.includes('الهيولى');
-    const hasArnm = answer.includes('ARNm') || answer.includes('اليوراسيل');
-    const ok = hasNucleus && hasHyalo && hasArnm;
+    const validationResult = validateAnswer(answer, {
+      docType: 'qualitative',
+      actionVerb: 'interpret',
+      isNeuromuscular: false,
+      domain: 'genetique',
+    });
+    const nextOutcome = recordDocumentTrace({
+      context: ctx,
+      answer,
+      validationResult,
+    });
+    const ok = nextOutcome.evidence != null;
     setAttempted(true);
     setPassed(ok);
+    setOutcome(nextOutcome);
     onEvidence?.(ok);
   };
 
@@ -55,7 +66,7 @@ export default function LiveDocumentUracile({ onEvidence, onOpenMicroRemediation
 
       <textarea
         value={answer}
-        onChange={(e) => { setAnswer(e.target.value); setAttempted(false); setPassed(false); }}
+        onChange={(e) => { setAnswer(e.target.value); setAttempted(false); setPassed(false); setOutcome(null); }}
         rows={4}
         placeholder="فسّر مسار ظهور الوسم (نواة → هيولى) وما يدل عليه..."
         className="w-full p-3 rounded-2xl border border-[#e2dabf]/60 bg-white dark:bg-[#0c0f0d] text-sm leading-8 text-right focus:outline-none focus:ring-2 focus:ring-[#006d37]/20"
@@ -94,8 +105,17 @@ export default function LiveDocumentUracile({ onEvidence, onOpenMicroRemediation
           <div className={`p-3 rounded-xl text-[12px] leading-7 font-bold border ${passed ? 'bg-[#2ecc71]/10 text-[#006d37] border-[#2ecc71]/20' : 'bg-amber-50 text-amber-800 border-amber-200 dark:bg-amber-950/20 dark:text-amber-200 dark:border-amber-900/40'}`}>
             {passed
               ? '✅ أحسنت، ربطت الملاحظة بآلية علمية. تم تسجيل دليل حقيقي.'
-              : '⚠️ أضف الملاحظة من الوثيقة واربطها بآلية علمية (نواة → هيولى عبر ARNm).'}
+              : '⚠️ أضف الملاحظة، ثم آلية ARNm، ثم استنتاج انتقال المعلومة. تم تسجيل نقطة تحتاج إلى مراجعة.'}
+            {outcome && <span className="block mt-1 font-black">{outcome.trace.percentage} / 100</span>}
           </div>
+
+          {!passed && outcome && (
+            <ul className="text-[11px] leading-6 text-amber-800 dark:text-amber-200 list-disc list-inside">
+              {!outcome.trace.structuredCriteria.observation && <li>اذكر ترتيب ظهور الوسم: أولاً في النواة ثم لاحقاً في الهيولى.</li>}
+              {!outcome.trace.structuredCriteria.mechanism && <li>اشرح تركيب أو انتقال ARNm.</li>}
+              {!outcome.trace.structuredCriteria.conclusion && <li>استنتج أن ARNm يحمل نسخة المعلومة.</li>}
+            </ul>
+          )}
 
           {/* Correction visible UNIQUEMENT après tentative. */}
           {ctx.correctionAr && (

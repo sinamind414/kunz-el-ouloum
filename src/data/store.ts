@@ -99,6 +99,19 @@ export interface MasteryEvidence {
   relatedErrorIds?: string[];
 }
 
+export interface RecallItem {
+  id: string;
+  lessonId?: string;
+  conceptId: string;
+  reflexId: CoreReflexId;
+  stage: 0 | 1 | 2 | 3;
+  nextReviewAt: number;
+  sourceEvidenceId?: string;
+  relatedErrorId?: string;
+  createdAt: number;
+  completedAt?: number;
+}
+
 // Registre de destination pédagogique : relie une erreur à la leçon/quiz/doc à ouvrir.
 export interface ConceptRoute {
   conceptId: string;
@@ -135,6 +148,7 @@ export const STORAGE_KEYS = {
   missions: 'kunz_missions_v3',
   mastery: 'kunz_mastery_v1',
   evidences: 'kunz_mastery_evidences_v1',
+  recalls: 'kunz_spaced_recalls_v1',
   storageMeta: 'kunz_storage_meta_v1',
 } as const;
 
@@ -155,6 +169,7 @@ export interface KunzStore {
   missions: Mission[];
   mastery: Record<string, MasteryRecord>;
   evidences: MasteryEvidence[];
+  recalls: RecallItem[];
 }
 
 // ---------------------------------------------------------------------------
@@ -204,6 +219,7 @@ function emptyStore(version: number, migratedFrom?: number): KunzStore {
     missions: [],
     mastery: {},
     evidences: [],
+    recalls: [],
   };
 }
 
@@ -271,6 +287,7 @@ export function migrateStore(raw: unknown, fromVersion: number, toVersion: numbe
     missions: Array.isArray(loose.missions) ? loose.missions : [],
     mastery: loose.mastery && typeof loose.mastery === 'object' ? loose.mastery : {},
     evidences: Array.isArray(loose.evidences) ? loose.evidences : [],
+    recalls: Array.isArray(loose.recalls) ? loose.recalls : [],
   };
 
   return enforceLimits(store, now);
@@ -285,32 +302,45 @@ export function migrateFromRaw(raw: unknown, toVersion: number = STORAGE_VERSION
 }
 
 // Lit + migre un store depuis localStorage, avec fallback sûr.
+// Hydrate depuis TOUTES les clés pour éviter d'écraser les données persistées.
 export function loadStore(): KunzStore {
-  const raw = readRaw(STORAGE_KEYS.learningErrors)
-    ? readRaw(STORAGE_KEYS.storageMeta)
-    : undefined;
-  // On migre à partir du meta si présent, sinon à partir d'un store brut plausible.
-  const base = raw ?? readRaw(STORAGE_KEYS.userProgress);
+  const metaRaw = readRaw(STORAGE_KEYS.storageMeta);
+  const errorsRaw = readRaw(STORAGE_KEYS.learningErrors);
+  const missionsRaw = readRaw(STORAGE_KEYS.missions);
+  const masteryRaw = readRaw(STORAGE_KEYS.mastery);
+  const evidencesRaw = readRaw(STORAGE_KEYS.evidences);
+  const recallsRaw = readRaw(STORAGE_KEYS.recalls);
+  const userProgressRaw = readRaw(STORAGE_KEYS.userProgress);
+
+  // Si meta existe, on a un store versionné : on migre depuis meta.
+  if (metaRaw && typeof metaRaw === 'object' && (metaRaw as any).version != null) {
+    const base = {
+      meta: metaRaw,
+      learningErrors: errorsRaw,
+      missions: missionsRaw,
+      mastery: masteryRaw,
+      evidences: evidencesRaw,
+      recalls: recallsRaw,
+      userProgress: userProgressRaw,
+    };
+    const store = migrateFromRaw(base);
+    // On réécrit uniquement meta pour mettre à jour updatedAt, pas les données.
+    writeRaw(STORAGE_KEYS.storageMeta, store.meta);
+    return store;
+  }
+
+  // Sinon, on tente de reconstruire un objet brut depuis les clés disponibles.
+  const base: any = {};
+  if (userProgressRaw) base.userProgress = userProgressRaw;
+  if (Array.isArray(errorsRaw)) base.learningErrors = errorsRaw;
+  if (Array.isArray(missionsRaw)) base.missions = missionsRaw;
+  if (masteryRaw && typeof masteryRaw === 'object') base.mastery = masteryRaw;
+  if (Array.isArray(evidencesRaw)) base.evidences = evidencesRaw;
+  if (Array.isArray(recallsRaw)) base.recalls = recallsRaw;
+
   const store = migrateFromRaw(base);
-  // Fusionne les preuves persistées sous leur propre clé (survivent au rechargement).
-  const persistedEvidences = readRaw(STORAGE_KEYS.evidences);
-  // Fusionne aussi la maîtrise persistée (survit au rechargement, Speckit G).
-  const persistedMastery = readRaw(STORAGE_KEYS.mastery);
-  const merged: KunzStore = {
-    ...store,
-    mastery: (persistedMastery && typeof persistedMastery === 'object' ? (persistedMastery as Record<string, MasteryRecord>) : store.mastery),
-    evidences: Array.isArray(persistedEvidences) ? (persistedEvidences as MasteryEvidence[]) : store.evidences,
-  };
-  writeRaw(STORAGE_KEYS.storageMeta, merged.meta);
-  writeRaw(STORAGE_KEYS.learningErrors, merged.learningErrors);
-  writeRaw(STORAGE_KEYS.missions, merged.missions);
-  if (merged.mastery && Object.keys(merged.mastery).length) {
-    writeRaw(STORAGE_KEYS.mastery, merged.mastery);
-  }
-  if (merged.evidences && merged.evidences.length) {
-    writeRaw(STORAGE_KEYS.evidences, merged.evidences);
-  }
-  return merged;
+  writeRaw(STORAGE_KEYS.storageMeta, store.meta);
+  return store;
 }
 
 // ---------------------------------------------------------------------------
@@ -452,7 +482,9 @@ export function recordEvidence(evidence: MasteryEvidence): KunzStore {
   // Erreurs liées : fait avancer/résoudre l'erreur d'origine si preuve réelle.
   const related = new Set(evidence.relatedErrorIds ?? []);
   const errors = store.learningErrors.map((e) =>
-    related.has(e.id) ? applyEvidenceToError(e, evidence, { passed: evidence.score >= 70 }) : e
+    related.has(e.id)
+      ? applyEvidenceToError(e, evidence, { passed: evidence.score >= 70, now: evidence.createdAt })
+      : e
   );
 
   const evidences = [...(store.evidences ?? []), evidence].slice(-MAX_EVIDENCES);
