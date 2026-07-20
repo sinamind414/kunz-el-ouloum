@@ -12,11 +12,9 @@
     "lint": "tsc --noEmit",
     "test:unit": "vitest run",
     "test:smartbot": "tsx smartbot_test.ts",
-<<<<<<< HEAD
     "test:audit": "npm audit --omit=dev",
     "test:diffcheck": "git diff --check --ignore-all-space HEAD",
     "test": "npm run typecheck && npm run test:unit && npm run test:smartbot",
->>>>>>> f2ca8af (Modifications locales avant rebase du Sprint B)
     "build:analyze": "vite build --mode analyze",
     "android:sync": "npm run build && npx cap sync android",
     "android:open": "npx cap open android",
