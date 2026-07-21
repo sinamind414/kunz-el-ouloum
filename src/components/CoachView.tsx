@@ -4,6 +4,8 @@ import { Unit, UserProgress, TabId } from '../types';
 import { CoachConfig } from '../data/kunzDatabase';
 import { logEvent } from '../utils/telemetryService';
 import { loadStore } from '../data/store';
+import { routeErrorToTarget, getConceptRoute } from '../data/conceptRoutes';
+import { type RecallItem } from '../data/store';
 
 interface CoachViewProps {
   progress?: UserProgress;
@@ -20,7 +22,6 @@ interface CoachViewProps {
 
 interface RealWeakPoint {
   conceptId: string;
-  lessonId: string;
   conceptAr: string;
   errorCount: number;
   kind: 'methodology' | 'knowledge' | 'document';
@@ -31,6 +32,14 @@ interface CoachState {
   dueToday: { conceptId: string; conceptAr: string; reasonAr: string }[];
   mastered: string[];
   methodologyScore: number;
+}
+
+function resolveLessonId(conceptId: string): string {
+  const target = routeErrorToTarget(conceptId);
+  if (target.kind === 'lesson') return target.lessonId;
+  const route = getConceptRoute(conceptId);
+  if (route?.lessonId) return route.lessonId;
+  return conceptId;
 }
 
 function buildConceptLabel(conceptId: string): string {
@@ -73,7 +82,6 @@ function buildCoachState(): CoachState {
     } else {
       byConcept.set(cid, {
         conceptId: cid,
-        lessonId: e.conceptId ?? e.id,
         conceptAr: buildConceptLabel(cid),
         errorCount: 1,
         kind: e.kind,
@@ -82,13 +90,13 @@ function buildCoachState(): CoachState {
   }
   const weakPoints = [...byConcept.values()].sort((a, b) => b.errorCount - a.errorCount).slice(0, 3);
 
-  // Révision du jour = rappels espacés ÉCHUS (nextReviewAt <= now).
+  // Révision du jour = rappels espacés ÉCHUS (nextReviewAt <= now) — source unique : store.recalls.
   const now = Date.now();
-  const dueToday = errors
-    .filter((e) => e.resolvedAt == null && e.nextReviewAt > 0 && now >= e.nextReviewAt)
-    .map((e) => ({
-      conceptId: e.conceptId ?? e.id,
-      conceptAr: buildConceptLabel(e.conceptId ?? e.id),
+  const dueToday: CoachState['dueToday'] = store.recalls
+    .filter((item: RecallItem) => item.completedAt === undefined && item.nextReviewAt > 0 && now >= item.nextReviewAt)
+    .map((item: RecallItem) => ({
+      conceptId: item.conceptId,
+      conceptAr: buildConceptLabel(item.conceptId),
       reasonAr: 'مراجعة مستحقة — تذكير متباعد',
     }));
 
@@ -166,7 +174,7 @@ export default function CoachView({ onStartLesson, onSignOut, onNavigateToTab, o
                   <p className="font-black text-[#1f1c0b] dark:text-white text-sm">{CoachConfig.coachMessages.weakPointDetected.replace('{concept}', wp.conceptAr).replace('{count}', String(wp.errorCount))}</p>
                 </div>
                 <button
-                  onClick={() => onStartLesson(wp.lessonId)}
+                  onClick={() => onStartLesson(resolveLessonId(wp.conceptId))}
                   className="px-4 py-2 bg-rose-600 hover:bg-rose-500 text-white text-xs font-black rounded-xl transition-colors flex items-center gap-1.5 cursor-pointer shadow-md shrink-0"
                 >
                   <RefreshCw className="w-3.5 h-3.5" />
@@ -193,7 +201,7 @@ export default function CoachView({ onStartLesson, onSignOut, onNavigateToTab, o
                   <p className="text-xs text-amber-700 dark:text-amber-400 font-bold">{card.reasonAr}</p>
                 </div>
                 <button
-                  onClick={() => onStartLesson(card.conceptId)}
+                  onClick={() => onStartLesson(resolveLessonId(card.conceptId))}
                   className="px-4 py-2 bg-amber-600 hover:bg-amber-500 text-white text-xs font-black rounded-xl transition-colors cursor-pointer shadow-md shrink-0"
                 >
                   ابدأ المراجعة

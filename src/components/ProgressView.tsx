@@ -35,7 +35,18 @@ function Mastery3DSection() {
     (item) => item.completedAt === undefined && item.nextReviewAt > 0 && now >= item.nextReviewAt
   );
 
-  if (visible.length === 0 && dueRecalls.length === 0) return null;
+  if (visible.length === 0 && dueRecalls.length === 0) {
+    return (
+      <div className="rounded-3xl bg-white dark:bg-[#141916] border border-gray-200 dark:border-gray-800 p-5 shadow-sm mb-4 text-center">
+        <p className="text-sm font-bold text-gray-500 dark:text-gray-400 leading-7">
+          لا توجد مراجعات مستحقة اليوم.
+        </p>
+        <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">
+          أكمل وثيقة أو تحدياً لتظهر أدلة تقدمك ومراجعاتك القادمة.
+        </p>
+      </div>
+    );
+  }
 
   return (
     <div className="rounded-3xl bg-white dark:bg-[#141916] border border-gray-200 dark:border-gray-800 p-4 shadow-sm mb-4">

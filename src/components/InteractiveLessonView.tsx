@@ -599,7 +599,7 @@ function CompletionSheet({
           </div>
 
           <div className="space-y-3">
-            {!needsConsolidation && progression?.nextLessonId ? (
+            {progression?.nextLessonId && (
               <button
                 onClick={goNext}
                 className="w-full py-4 rounded-2xl bg-[#006d37] hover:bg-[#00562b] text-white font-black text-sm shadow-md flex items-center justify-center gap-2 cursor-pointer"
@@ -607,7 +607,9 @@ function CompletionSheet({
                 <ArrowLeft className="w-5 h-5" />
                 تابع إلى الدرس التالي
               </button>
-            ) : (
+            )}
+
+            {needsConsolidation && (
               <button
                 onClick={() => {
                   const reflex = progression?.recommendedReflexId ?? 'analyse';
