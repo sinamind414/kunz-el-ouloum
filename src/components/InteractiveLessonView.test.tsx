@@ -27,6 +27,23 @@ vi.mock('../data/activeLessons', async (importOriginal) => {
           },
         ],
       },
+      'phase11_chapitres_21_22': {
+        id: 'phase11_chapitres_21_22',
+        title: 'درس اختبار التركيب الضوئي',
+        blocks: [
+          {
+            type: 'TEXT_AND_PRODUCE',
+            objective: 'إكمال آخر كتلة',
+            content: 'آخر كتلة [____]',
+            popups: {},
+            microTest: {
+              prompt: 'اكتب كلمة العبور',
+              acceptedAnswers: ['صحيح'],
+              errorHint: 'حاول مجدداً',
+            },
+          },
+        ],
+      },
     },
     getLessonProgression: () => undefined,
   };
@@ -122,5 +139,14 @@ describe('InteractiveLessonView exit practice', () => {
 
     expect(screen.getByText('أنهيت الممارسة مع فكرة تحتاج إلى تثبيت.')).toBeDefined();
     expect(recordLessonTransferEvidence).not.toHaveBeenCalled();
+  });
+
+  it('affiche le document vivant photosynthese apres la derniere bloc', async () => {
+    render(<InteractiveLessonView lessonId="phase11_chapitres_21_22" onClose={vi.fn()} />);
+    await completeLastBlock();
+
+    expect(screen.getByLabelText('document vivant')).toBeDefined();
+    expect(screen.getByRole('button', { name: 'إنهاء الممارسة والانتقال' })).toBeDefined();
+    expect(screen.queryByText('أكملت الجلسة')).toBeNull();
   });
 });

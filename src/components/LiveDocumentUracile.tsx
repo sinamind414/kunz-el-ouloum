@@ -16,12 +16,13 @@ import {
 import { getDocumentPracticeContextByExercise } from '../data/documentPracticeContexts';
 
 interface LiveDocumentUracileProps {
+  exerciseId?: string;
   onEvidence?: (outcome: { passed: boolean; evidenceId?: string; errorCreated: boolean }) => void;
   onOpenMicroRemediation?: (remediationId: string) => void;
 }
 
-export default function LiveDocumentUracile({ onEvidence, onOpenMicroRemediation }: LiveDocumentUracileProps) {
-  const ctx = getDocumentPracticeContextByExercise('uracile_marque');
+export default function LiveDocumentUracile({ exerciseId = 'uracile_marque', onEvidence, onOpenMicroRemediation }: LiveDocumentUracileProps) {
+  const ctx = getDocumentPracticeContextByExercise(exerciseId);
   const [answer, setAnswer] = useState('');
   const [attempted, setAttempted] = useState(false);
   const [hintIndex, setHintIndex] = useState(0);
@@ -177,7 +178,13 @@ export default function LiveDocumentUracile({ onEvidence, onOpenMicroRemediation
 
           {!passed && (
             <button
-              onClick={() => onOpenMicroRemediation?.('mr_arnm_vs_adn')}
+              onClick={() => {
+                if (exerciseId === 'photosynthese_cycle') {
+                  onOpenMicroRemediation?.('mr_thylakoide_vs_stroma');
+                } else {
+                  onOpenMicroRemediation?.('mr_arnm_vs_adn');
+                }
+              }}
               className="w-full py-2.5 rounded-xl bg-[#ffb347] hover:bg-[#ff9a4a] text-white font-black text-sm shadow-sm cursor-pointer flex items-center justify-center gap-2"
             >
               <Pencil className="w-4 h-4" /> ثبّت هذه الفكرة (ميكرو-تصحيح)

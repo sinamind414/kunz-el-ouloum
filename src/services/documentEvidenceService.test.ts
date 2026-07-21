@@ -35,16 +35,16 @@ const failResult = (): ValidationResult => ({
 });
 
 describe('DocumentPracticeContext', () => {
-  it('les 6 contextes prioritaires existent (dont uracile_marque V3)', () => {
+  it('les 7 contextes prioritaires existent (dont uracile_marque V3 + photosynthese_cycle)', () => {
     const ids = DOCUMENT_PRACTICE_CONTEXTS.map((c) => c.exerciseId);
-    expect(ids).toEqual(['michaelis_courbe', 'curare_table', 'nmj_ppm_courbe', 'sarin_gb_double', 'rifamycine_h1h2', 'uracile_marque']);
+    expect(ids).toEqual(['michaelis_courbe', 'curare_table', 'nmj_ppm_courbe', 'sarin_gb_double', 'rifamycine_h1h2', 'uracile_marque', 'photosynthese_cycle']);
   });
 
-  it('chaque contexte a goalAr, 3-6 vocabulaire, expectedEvidence non vide, altAr', () => {
+  it('chaque contexte a goalAr, 3-8 vocabulaire, expectedEvidence non vide, altAr', () => {
     for (const c of DOCUMENT_PRACTICE_CONTEXTS) {
       expect(c.goalAr.length).toBeGreaterThan(0);
       expect(c.vocabulary.length).toBeGreaterThanOrEqual(3);
-      expect(c.vocabulary.length).toBeLessThanOrEqual(6);
+      expect(c.vocabulary.length).toBeLessThanOrEqual(8);
       expect(c.expectedEvidence.length).toBeGreaterThan(0);
       expect(c.altAr.length).toBeGreaterThan(0);
     }

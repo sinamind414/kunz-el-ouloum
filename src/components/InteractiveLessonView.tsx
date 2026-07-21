@@ -518,6 +518,7 @@ function ActiveLessonTunnel({
         {blocksCompleted && exitPracticeOpened && (
           <LessonExitSection
             lessonId={lesson.id}
+            exerciseId={LESSON_DOCUMENT_EXERCISE_ID[lesson.id]}
             onOpenMicroRemediation={onOpenMicroRemediation}
             onDocumentEvidence={onDocumentEvidence}
             onCompletePractice={setSessionOutcome}
@@ -651,19 +652,27 @@ function BacTransferChallengeSection({
   return <BacTransferChallenge challenge={challenge} onAttempt={onAttempt} />;
 }
 
-// V3 US-V3-02 — Sortie de leçon : document vivant uracile (transcription) puis défi BAC.
+// V3 US-V3-02 — Sortie de leçon : document vivant par leçon.
+const LESSON_DOCUMENT_EXERCISE_ID: Record<string, string> = {
+  'd1-u1-l2-transcription': 'uracile_marque',
+  'lecon_transcription': 'uracile_marque',
+  'phase11_chapitres_21_22': 'photosynthese_cycle',
+};
+
 function LessonExitSection({
   lessonId,
+  exerciseId,
   onOpenMicroRemediation,
   onDocumentEvidence,
   onCompletePractice,
 }: {
   lessonId: string;
+  exerciseId?: string;
   onOpenMicroRemediation?: (remediationId: string) => void;
   onDocumentEvidence?: (outcome: { passed: boolean; evidenceId?: string; errorCreated: boolean }) => void;
   onCompletePractice: (outcome: LessonSessionOutcome) => void;
 }) {
-  const showLiveDoc = lessonId === 'd1-u1-l2-transcription' || lessonId === 'lecon_transcription';
+  const showLiveDoc = !!exerciseId;
   const [documentAttempted, setDocumentAttempted] = useState(false);
   const [documentPassed, setDocumentPassed] = useState(false);
   const [bacAttempted, setBacAttempted] = useState(false);
@@ -694,8 +703,9 @@ function LessonExitSection({
 
   return (
     <div className="space-y-4">
-      {showLiveDoc && (
+      {showLiveDoc && exerciseId && (
         <LiveDocumentUracile
+          exerciseId={exerciseId}
           onOpenMicroRemediation={onOpenMicroRemediation}
           onEvidence={handleDocumentEvidence}
         />

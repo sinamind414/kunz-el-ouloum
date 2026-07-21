@@ -92,4 +92,20 @@ describe('LiveDocumentUracile', () => {
     await user.click(microBtn);
     expect(onMicro).toHaveBeenCalledWith('mr_arnm_vs_adn');
   });
+
+  it('document photosynthese → micro-reprise thylakoïde/stroma', async () => {
+    const user = userEvent.setup();
+    const onMicro = vi.fn();
+    render(<LiveDocumentUracile exerciseId="photosynthese_cycle" onOpenMicroRemediation={onMicro} />);
+
+    const textarea = screen.getByRole('textbox');
+    await user.type(textarea, 'التثبيت يحدث في التيلاكويد');
+    await user.click(screen.getAllByRole('button', { name: /صحّح بالمصحح الحقيقي/ })[0]);
+
+    expect(await screen.findByText(/تم تسجيل نقطة تحتاج إلى مراجعة/)).toBeDefined();
+    const microBtn = screen.getByRole('button', { name: /ميكرو-تصحيح/ });
+    expect(microBtn).toBeDefined();
+    await user.click(microBtn);
+    expect(onMicro).toHaveBeenCalledWith('mr_thylakoide_vs_stroma');
+  });
 });
