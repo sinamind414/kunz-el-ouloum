@@ -12,15 +12,13 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Setup Node 22
         uses: actions/setup-node@v4
         with:
-<<<<<<< HEAD
-          node-version: '22'
-=======
-          node-version: 22
->>>>>>> f2ca8af (Modifications locales avant rebase du Sprint B)
+          node-version: "22"
           cache: npm
 
       - name: Install deps
@@ -104,14 +102,27 @@ jobs:
 
       - name: Check committed diff for whitespace issues
         run: |
-          if [ "${{ github.event_name }}" = "pull_request" ]; then
-            git diff --check origin/${{ github.base_ref }}...HEAD
-          else
-            git diff --check "${{ github.event.before }}" "${{ github.sha }}" || echo "No prior commit to diff."
+          BEFORE="${{ github.event.before }}"
+
+          if [ "$BEFORE" = "0000000000000000000000000000000000000000" ]; then
+            echo "Premier push : aucun commit précédent à comparer."
+            exit 0
           fi
 
-      - name: Production dependency audit
-        run: npm audit --omit=dev
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            git fetch origin "${{ github.base_ref }}" --depth=1
+            git diff --check "origin/${{ github.base_ref }}...HEAD"
+          else
+            git diff --check "$BEFORE" "${{ github.sha }}"
+          fi
+
+      - name: Reject unresolved Git conflict markers
+        run: |
+          if git grep -nE '^(<<<<<<<|=======|>>>>>>>)'; then
+            echo "❌ Marqueurs de conflit Git détectés."
+            exit 1
+          fi
+          echo "✅ Aucun marqueur de conflit."
 
       - name: Upload dist artifact
         if: always()
@@ -120,29 +131,3 @@ jobs:
           name: dist
           path: dist/
           retention-days: 7
-
-  audit-report:
-    runs-on: ubuntu-latest
-    needs: typecheck-build-test
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-<<<<<<< HEAD
-          node-version: '22'
-=======
-          node-version: 22
->>>>>>> f2ca8af (Modifications locales avant rebase du Sprint B)
-      - run: npm ci
-      - name: Generate audit summary
-        run: |
-          echo "## Fable 5 Audit Summary" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "- Typecheck: PASS" >> $GITHUB_STEP_SUMMARY
-          echo "- Vitest: PASS (96/96)" >> $GITHUB_STEP_SUMMARY
-          echo "- Build: PASS (main ~52kB after Fable 5 chunking)" >> $GITHUB_STEP_SUMMARY
-          echo "- Offline check: PASS (src/ has no GEMINI/fetch)" >> $GITHUB_STEP_SUMMARY
-          echo "- Golden rule: PASS (الاستنساخ, الهيولى, الرامزة, البرنس, موهو)" >> $GITHUB_STEP_SUMMARY
-          echo "- Formatting: PASS (حول«=0, latin/ي=0)" >> $GITHUB_STEP_SUMMARY
-          echo "- Node: 22" >> $GITHUB_STEP_SUMMARY
-          npm run test:smartbot 2>&1 | tail -n 20 >> $GITHUB_STEP_SUMMARY

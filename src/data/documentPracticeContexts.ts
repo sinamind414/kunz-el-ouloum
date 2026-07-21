@@ -4,6 +4,7 @@
 // Ordre immuable (V3 §4.4) : type → objectif → verbe → donnée → observation → production.
 
 import type { CoreReflexId } from './reflexes';
+import type { ValidationContext } from '../lib/validation/ValidationEngine';
 
 export type DocumentAssetType = 'curve' | 'table' | 'experiment' | 'schema' | 'mixed';
 
@@ -28,6 +29,7 @@ export interface DocumentPracticeContext {
   promptProduceAr?: string; // production BAC
   hintsAr?: [string, string]; // [où regarder, quel lien]
   correctionAr?: string; // masquée avant tentative
+  domain?: ValidationContext['domain'];
   criteria?: {
     evidence: string[];
     mechanism?: string[];
@@ -128,6 +130,7 @@ export const DOCUMENT_PRACTICE_CONTEXTS: DocumentPracticeContext[] = [
     unitId: 1,
     documentType: 'experiment',
     reflexId: 'interpret',
+    domain: 'genetique',
     sourceStatus: 'adaptation_pedagogique',
     documentTypeAr: 'تجربة تتبّع اليوراسيل المشع',
     goalAr: 'تفسير مسار ظهور اليوراسيل المشع من النواة إلى الهيولى.',

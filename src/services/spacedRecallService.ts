@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import {
   DAY_MS,
   loadStore,
@@ -105,7 +104,6 @@ export function scheduleSpacedRecall(input: {
       ...existing,
       relatedErrorId: input.relatedErrorId ?? existing.relatedErrorId,
       sourceEvidenceId: input.sourceEvidenceId ?? existing.sourceEvidenceId,
-      lessonId: input.lessonId ?? existing.lessonId,
     };
     const recalls = store.recalls.map((item) => item.id === recall.id ? recall : item);
     const next = { ...store, recalls };
@@ -120,7 +118,6 @@ export function scheduleSpacedRecall(input: {
     reflexId: input.reflexId,
     stage: 0,
     nextReviewAt: now + REVIEW_INTERVALS_DAYS[0] * DAY_MS,
-    questionAr: promptForStage(input.conceptId, 0),
     sourceEvidenceId: input.sourceEvidenceId,
     relatedErrorId: input.relatedErrorId,
     createdAt: now,
@@ -130,70 +127,3 @@ export function scheduleSpacedRecall(input: {
   writeRaw(STORAGE_KEYS.recalls, recalls);
   return { recall, store: next };
 }
-
-// Crée un rappel J+1 après une preuve réelle (évite les doublons actifs).
-export function scheduleRecallFromEvidence(
-  conceptId: string,
-  lessonId: string,
-  reflexId: CoreReflexId,
-  now: number = Date.now()
-): RecallItem {
-  const store = loadStore();
-  // Dédupe : pas de rappel en cours pour ce concept/leçon/reflex.
-  const existing = store.recalls.find(
-    (r) => r.conceptId === conceptId && r.lessonId === lessonId && r.reflexId === reflexId && r.completedAt == null
-  );
-  if (existing) return existing;
-
-  const item: RecallItem = {
-    id: `recall_${conceptId}_${reflexId}_${now}`,
-    conceptId,
-    lessonId,
-    reflexId,
-    stage: 0,
-    nextReviewAt: now + REVIEW_INTERVALS_DAYS[0] * DAY_MS,
-    questionAr: promptForStage(conceptId, 0),
-    createdAt: now,
-  };
-  const next = { ...store, recalls: [...store.recalls, item] };
-  writeRaw(STORAGE_KEYS.recalls, next.recalls);
-  return item;
-}
-
-// Avance le rappel après réponse élève.
-export function completeRecall(recallId: string, passed: boolean, now: number = Date.now()): RecallItem | null {
-  const store = loadStore();
-  const recall = store.recalls.find((r) => r.id === recallId);
-  if (!recall || recall.completedAt !== undefined) return null;
-
-  const isFinalSuccess = passed && recall.stage === 3;
-  const nextStage: RecallItem['stage'] = passed
-    ? (Math.min(recall.stage + 1, 3) as RecallItem['stage'])
-    : 0;
-
-  const updated: RecallItem = {
-    ...recall,
-    stage: nextStage,
-    nextReviewAt: isFinalSuccess ? 0 : now + REVIEW_INTERVALS_DAYS[nextStage] * DAY_MS,
-    questionAr: promptForStage(recall.conceptId, nextStage),
-    completedAt: isFinalSuccess ? now : undefined,
-  };
-
-  const next = {
-    ...store,
-    recalls: store.recalls.map((item) => (item.id === recallId ? updated : item)),
-  };
-  writeRaw(STORAGE_KEYS.recalls, next.recalls);
-  return updated;
-}
-
-// Rappels dus aujourd'hui (non complétés, nextReviewAt <= now).
-export function getDueRecalls(now: number = Date.now()): RecallItem[] {
-  const store = loadStore();
-  return store.recalls.filter(
-    (r) => r.completedAt === undefined && r.nextReviewAt > 0 && now >= r.nextReviewAt
-  );
-}
-
-// Exporte les intervals pour référence UI.
-export const RECALL_INTERVALS = REVIEW_INTERVALS_DAYS;

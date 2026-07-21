@@ -131,6 +131,7 @@ export function recordLessonTransferEvidence(input: LessonTransferInput): { evid
     relatedErrorIds: existingError ? [existingError.id] : undefined,
   };
 
+  // recordEvidence : persiste evidences + cellule maîtrise + erreur liée.
   const nextStore = recordEvidence(evidence);
   const scheduled = scheduleSpacedRecall({
     lessonId: input.lessonId,

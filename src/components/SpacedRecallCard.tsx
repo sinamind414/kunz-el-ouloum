@@ -1,15 +1,15 @@
 import { useState } from 'react';
 import { CheckCircle2, Clock, RotateCcw } from 'lucide-react';
 import { getSpacedRecallPrompt } from '../data/spacedRecallPrompts';
-import { DAY_MS, type RecallItem } from '../data/store';
+import { DAY_MS, type RecallItem, type RecallUpdatedEvent } from '../data/store';
 import { recordSpacedRecallAttempt, type SpacedRecallOutcome } from '../services/spacedRecallService';
 
 interface SpacedRecallCardProps {
   recall: RecallItem;
-  onUpdated: () => void;
+  onComplete: (event: RecallUpdatedEvent) => void;
 }
 
-export default function SpacedRecallCard({ recall, onUpdated }: SpacedRecallCardProps) {
+export default function SpacedRecallCard({ recall, onComplete }: SpacedRecallCardProps) {
   const prompt = getSpacedRecallPrompt(recall.conceptId, recall.stage);
   const [answer, setAnswer] = useState('');
   const [outcome, setOutcome] = useState<SpacedRecallOutcome | null>(null);
@@ -20,7 +20,11 @@ export default function SpacedRecallCard({ recall, onUpdated }: SpacedRecallCard
     if (answer.trim().length < 8) return;
     const result = recordSpacedRecallAttempt({ recall, prompt, answer });
     setOutcome(result);
-    onUpdated();
+    onComplete({
+      recallId: recall.id,
+      passed: result.passed,
+      completed: result.recall.completedAt !== undefined,
+    });
   };
 
   const nextDays = outcome && !outcome.recall.completedAt

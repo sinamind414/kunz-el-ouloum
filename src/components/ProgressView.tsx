@@ -1,22 +1,11 @@
-<<<<<<< HEAD
-import { lazy, Suspense, useState } from 'react';
+import { lazy, Suspense, useMemo, useState } from 'react';
 import { Trophy, TrendingUp, Sparkles, Clock, BookOpen } from 'lucide-react';
 import { Unit, UserProgress, TabId } from '../types';
 import DomainReadinessRadar from './DomainReadinessRadar';
 import BacCountdown from './BacCountdown';
 import { loadStore, MasteryLevel, MasteryRecord } from '../data/store';
 import SpacedRecallCard from './SpacedRecallCard';
-=======
-import { lazy, Suspense, useMemo, useState } from 'react';
-import { Trophy, TrendingUp, Sparkles, Clock, BookOpen, CheckCircle2, XCircle } from 'lucide-react';
-import { Unit, UserProgress, TabId } from '../types';
-import DomainReadinessRadar from './DomainReadinessRadar';
-import BacCountdown from './BacCountdown';
-import { loadStore, MasteryLevel, MasteryRecord, DAY_MS } from '../data/store';
-import { getDueRecalls, completeRecall, RECALL_INTERVALS } from '../services/spacedRecallService';
->>>>>>> f2ca8af (Modifications locales avant rebase du Sprint B)
 
-// V3 §4.7 / §4.8 — Maîtrise 3D + rappels espacés visibles (données réelles).
 const LEVEL_META: Record<MasteryLevel, { color: string; labelAr: string; dot: string }> = {
   unknown: { color: '#9ca3af', labelAr: 'غير معروف', dot: '⚪' },
   needs_work: { color: '#ef4444', labelAr: 'يحتاج عملاً', dot: '🔴' },
@@ -25,13 +14,14 @@ const LEVEL_META: Record<MasteryLevel, { color: string; labelAr: string; dot: st
 };
 
 function Mastery3DSection() {
-  const [store, setStore] = useState(() => {
+  const [storeRevision, setStoreRevision] = useState(0);
+  const store = useMemo(() => {
     try {
       return loadStore();
     } catch {
       return null;
     }
-  });
+  }, [storeRevision]);
   if (!store) return null;
 
   const records = Object.values(store.mastery) as MasteryRecord[];
@@ -53,7 +43,6 @@ function Mastery3DSection() {
         <BookOpen className="w-5 h-5 text-[#006d37]" /> الإتقان ثلاثي الأبعاد + المراجعات
       </h3>
 
-      {/* Maîtrise 3D : Connaissance / Document / Méthode */}
       <div className="space-y-2">
         {visible.map((r) => (
           <div key={r.conceptId} className="rounded-2xl border border-gray-100 dark:border-gray-800 p-3">
@@ -84,91 +73,24 @@ function Mastery3DSection() {
         ))}
       </div>
 
-      {/* Rappels espacés échus (J+1 → J+14) */}
-      {due.length > 0 && (
+      {dueRecalls.length > 0 && (
         <div className="mt-3 space-y-1.5">
           <div className="flex items-center gap-2 text-xs font-black text-amber-700 dark:text-amber-400">
             <Clock className="w-4 h-4" /> مراجعات مستحقة اليوم
           </div>
-          {due.map((recall) => (
-            <SpacedRecallCard
-              key={`${recall.id}_${recall.stage}_${recall.nextReviewAt}`}
-              recall={recall}
-              onUpdated={() => setStore(loadStore())}
-            />
+          {dueRecalls.map((recall) => (
+               <SpacedRecallCard
+                 key={`${recall.id}_${recall.stage}_${recall.nextReviewAt}`}
+                 recall={recall}
+                 onComplete={() => setStoreRevision((revision) => revision + 1)}
+               />
           ))}
         </div>
       )}
-
-      {/* Rappels actifs espacés (preuve → rappel dû → réponse → stage suivant) */}
-      <SpacedRecallSection />
     </div>
   );
 }
 
-// V3 §4.8 / P1-1 — Rappels espacés actifs : l'élève répond, le stade avance (J+1→J+3→J+7→J+14)
-// ou redémarre à J+1 en cas d'échec. Jamais de doublon actif (géré par le service).
-function SpacedRecallSection() {
-  const [version, setVersion] = useState(0);
-  const now = Date.now();
-  const dueRecalls = getDueRecalls(now);
-  const [answered, setAnswered] = useState<Record<string, boolean>>({});
-
-  if (dueRecalls.length === 0) return null;
-
-  const handleAnswer = (id: string, passed: boolean) => {
-    completeRecall(id, passed, Date.now());
-    setAnswered((prev) => ({ ...prev, [id]: passed }));
-    setVersion((v) => v + 1);
-  };
-
-  return (
-    <div className="mt-3 space-y-2" key={version}>
-      <div className="flex items-center gap-2 text-xs font-black text-[#006d37] dark:text-[#2ecc71]">
-        <BookOpen className="w-4 h-4" /> مراجعاتي اليوم (رappel espacé)
-      </div>
-      {dueRecalls.map((r) => {
-        const stageLabel = `J+${RECALL_INTERVALS[r.stage]}`;
-        const result = answered[r.id];
-        return (
-          <div key={r.id} className="rounded-xl bg-emerald-50 dark:bg-emerald-950/20 border border-emerald-200 dark:border-emerald-900/40 px-3 py-2 space-y-2">
-            <div className="flex items-center justify-between">
-              <span className="text-xs font-black text-gray-900 dark:text-white">{r.conceptId}</span>
-              <span className="text-[10px] font-bold text-[#006d37] dark:text-[#2ecc71] bg-[#006d37]/10 px-2 py-0.5 rounded-full">
-                {stageLabel}
-              </span>
-            </div>
-            <p className="text-xs font-bold text-gray-800 dark:text-gray-100 leading-6">{r.questionAr}</p>
-            {result === undefined ? (
-              <div className="flex gap-2">
-                <button
-                  onClick={() => handleAnswer(r.id, true)}
-                  className="flex-1 py-2 rounded-xl bg-[#2ecc71] hover:bg-[#27b765] text-white font-black text-xs cursor-pointer flex items-center justify-center gap-1"
-                >
-                  <CheckCircle2 className="w-4 h-4" /> أتذكّر
-                </button>
-                <button
-                  onClick={() => handleAnswer(r.id, false)}
-                  className="flex-1 py-2 rounded-xl bg-rose-500 hover:bg-rose-600 text-white font-black text-xs cursor-pointer flex items-center justify-center gap-1"
-                >
-                  <XCircle className="w-4 h-4" /> لا أتذكّر
-                </button>
-              </div>
-            ) : (
-              <p className={`text-[11px] font-bold ${result ? 'text-[#006d37] dark:text-[#2ecc71]' : 'text-rose-600'}`}>
-                {result
-                  ? `✅ أحسنت — rappel planifié ${r.stage >= 3 ? 'terminé' : `au prochain stade (J+${RECALL_INTERVALS[Math.min(r.stage + 1, 3)]})`}.`
-                  : '🔁 rappel replanifié à J+1. Révise puis réponds à nouveau.'}
-              </p>
-            )}
-          </div>
-        );
-      })}
-    </div>
-  );
-}
-
-// Lazy-load heavy fusion views (FR8.4 — keep ProgressView chunk small)
 const StatsView = lazy(() => import('./StatsView'));
 const BadgesView = lazy(() => import('./BadgesView'));
 
@@ -194,7 +116,6 @@ export default function ProgressView({ progress, units, onNavigateToTab }: Progr
 
   return (
     <div className="w-full max-w-4xl mx-auto p-4 md:p-6 pb-28" dir="rtl">
-      {/* Header dark */}
       <div className="rounded-3xl p-5 bg-gradient-to-br from-[#0f172a] to-[#1e293b] text-white shadow-lg mb-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
@@ -221,7 +142,6 @@ export default function ProgressView({ progress, units, onNavigateToTab }: Progr
         </div>
       </div>
 
-      {/* Radar + countdown */}
       <div className="rounded-3xl bg-white dark:bg-[#141916] border border-gray-200 dark:border-gray-800 p-4 shadow-sm mb-4">
         <h3 className="font-black text-gray-900 dark:text-white mb-2 flex items-center gap-2">
           <TrendingUp className="w-5 h-5 text-[#006d37]" /> جاهزية المجالات
@@ -232,10 +152,8 @@ export default function ProgressView({ progress, units, onNavigateToTab }: Progr
         <BacCountdown />
       </div>
 
-      {/* Maîtrise 3D + rappels visibles */}
       <Mastery3DSection />
 
-      {/* Comment sentir l'amélioration */}
       <div className="rounded-3xl bg-emerald-50 dark:bg-emerald-950/20 border border-emerald-100 dark:border-emerald-900/40 p-4 mb-4">
         <h3 className="font-black text-emerald-700 dark:text-emerald-300 mb-1 flex items-center gap-2 text-sm">
           <Sparkles className="w-4 h-4" /> كيف تشعر بالتحسن؟
@@ -247,7 +165,6 @@ export default function ProgressView({ progress, units, onNavigateToTab }: Progr
         </ul>
       </div>
 
-      {/* Stats + Badges fusion */}
       <Suspense fallback={<SubFallback />}>
         <StatsView progress={progress} units={units} onNavigateToTab={onNavigateToTab} />
       </Suspense>

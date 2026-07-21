@@ -31,33 +31,33 @@ const makeRecall = (overrides?: Partial<RecallItem>): RecallItem => ({
 
 describe('SpacedRecallCard', () => {
   it('affiche le concept et la question du prompt', () => {
-    render(<SpacedRecallCard recall={makeRecall()} onUpdated={vi.fn()} />);
+    render(<SpacedRecallCard recall={makeRecall()} onComplete={vi.fn()} />);
     expect(screen.getByText('transcription')).toBeDefined();
     expect(screen.getByText(/في أي اتجاه يُركّب ARNm/)).toBeDefined();
   });
 
   it('bouton desactive si reponse <8 caracteres', () => {
-    render(<SpacedRecallCard recall={makeRecall()} onUpdated={vi.fn()} />);
+    render(<SpacedRecallCard recall={makeRecall()} onComplete={vi.fn()} />);
     const btn = screen.getByRole('button', { name: /تحقّق من التذكّر/ });
     expect(btn.hasAttribute('disabled')).toBe(true);
   });
 
   it('reponse insuffisante → echec + elements attendus affiches', async () => {
     const user = userEvent.setup();
-    const onUpdated = vi.fn();
-    render(<SpacedRecallCard recall={makeRecall()} onUpdated={onUpdated} />);
+    const onComplete = vi.fn();
+    render(<SpacedRecallCard recall={makeRecall()} onComplete={onComplete} />);
 
     const textarea = screen.getByRole('textbox');
     await user.type(textarea, 'لا أتذكر الإجابة');
     await user.click(screen.getByRole('button', { name: /تحقّق من التذكّر/ }));
 
     expect(await screen.findByText(/الإجابة غير كافية/)).toBeDefined();
-    expect(onUpdated).toHaveBeenCalled();
+    expect(onComplete).toHaveBeenCalled();
   });
 
   it('reponse correcte → message de reussite', async () => {
     const user = userEvent.setup();
-    render(<SpacedRecallCard recall={makeRecall()} onUpdated={vi.fn()} />);
+    render(<SpacedRecallCard recall={makeRecall()} onComplete={vi.fn()} />);
 
     const textarea = screen.getByRole('textbox');
     await user.type(textarea, 'يُركّب ARNm في الاتجاه 5 إلى 3 على قالب ADN');

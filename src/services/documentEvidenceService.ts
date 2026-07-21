@@ -175,8 +175,7 @@ export function recordDocumentTrace(input: DocumentTraceInput): DocumentEvidence
     createdAt: now,
     relatedErrorIds: existingError ? [existingError.id] : undefined,
   };
-
-  const nextStore = recordEvidence(evidence);
+  recordEvidence(evidence);
   const scheduled = scheduleSpacedRecall({
     conceptId: context.conceptId,
     reflexId: context.reflexId ?? 'analyse',

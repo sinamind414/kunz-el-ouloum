@@ -47,17 +47,13 @@ export default function LiveDocumentUracile({ onEvidence, onOpenMicroRemediation
     }
   };
 
-  const getDomainForDocument = (context: any) => {
-    return 'genetique';
-  };
-
   const handleValidate = () => {
     if (answer.trim().length < 8) return;
 
     const result = validateAnswer(answer, {
       docType: getDocumentTypeForValidation(ctx),
       actionVerb: getActionVerbForValidation(ctx),
-      domain: getDomainForDocument(ctx),
+      domain: ctx.domain ?? 'autre',
       isNeuromuscular: false,
       expectedTargets: ctx.expectedEvidence,
     });
@@ -79,9 +75,6 @@ export default function LiveDocumentUracile({ onEvidence, onOpenMicroRemediation
       errorCreated: outcome.errorCreated,
     });
   };
-  };
-
-  const passed = recordOutcome?.evidence != null;
 
   return (
     <div className="p-4 bg-[#fff9ed] dark:bg-[#1c241f] border border-[#e2dabf]/60 rounded-2xl shadow-sm space-y-3">
@@ -148,32 +141,30 @@ export default function LiveDocumentUracile({ onEvidence, onOpenMicroRemediation
 
       {attempted && (
         <div className="space-y-3 animate-in fade-in">
-           <div className={`p-3 rounded-xl text-[12px] leading-7 font-bold border ${passed ? 'bg-[#2ecc71]/10 text-[#006d37] border-[#2ecc71]/20' : 'bg-amber-50 text-amber-800 border-amber-200 dark:bg-amber-950/20 dark:text-amber-200 dark:border-amber-900/40'}`}>
-             {passed
-               ? '✅ أحسنت، ربطت الملاحظة بآلية علمية. تم تسجيل دليل حقيقي.'
-               : '⚠️ أضف الملاحظة ثم الآلية ثم الخلاصة العلمية.'}
-             
-             {validationResult && (
-               <span className="block mt-1 font-black">
-                 مستوى التحقق في Kunz :
-                 {Math.round((validationResult.score / validationResult.maxScore) * 100)} / 100
-               </span>
-             )}
-             
-             {trace && (
-               <span className="block mt-0.5">
-                 {trace.foundEvidence.length}/{ctx.expectedEvidence.length} أدلة،
-                 {trace.vocabularyFound.length} مصطلحات علمية
-               </span>
-             )}
-           </div>
+          <div className={`p-3 rounded-xl text-[12px] leading-7 font-bold border ${passed ? 'bg-[#2ecc71]/10 text-[#006d37] border-[#2ecc71]/20' : 'bg-amber-50 text-amber-800 border-amber-200 dark:bg-amber-950/20 dark:text-amber-200 dark:border-amber-900/40'}`}>
+            {passed
+              ? '✅ أحسنت، ربطت الملاحظة بآلية علمية. تم تسجيل دليل حقيقي.'
+              : '⚠️ أضف الملاحظة، ثم آلية ARNm، ثم استنتاج انتقال المعلومة. تم تسجيل نقطة تحتاج إلى مراجعة.'}
+
+            {validationResult && (
+              <span className="block mt-1 font-black">
+                niveau de vérification Kunz : {Math.round((validationResult.score / validationResult.maxScore) * 100)} / 100
+              </span>
+            )}
+
+            {trace && (
+              <span className="block mt-0.5">
+                {trace.foundEvidence.length}/{ctx.expectedEvidence.length} preuves,
+                {trace.vocabularyFound.length} termes scientifiques
+              </span>
+            )}
           </div>
 
-          {!passed && outcome && (
+          {!passed && recordOutcome && (
             <ul className="text-[11px] leading-6 text-amber-800 dark:text-amber-200 list-disc list-inside">
-              {!outcome.trace.structuredCriteria.observation && <li>اذكر ترتيب ظهور الوسم: أولاً في النواة ثم لاحقاً في الهيولى.</li>}
-              {!outcome.trace.structuredCriteria.mechanism && <li>اشرح تركيب أو انتقال ARNm.</li>}
-              {!outcome.trace.structuredCriteria.conclusion && <li>استنتج أن ARNm يحمل نسخة المعلومة.</li>}
+              {!recordOutcome.trace.structuredCriteria.observation && <li>اذكر ترتيب ظهور الوسم: أولاً في النواة ثم لاحقاً في الهيولى.</li>}
+              {!recordOutcome.trace.structuredCriteria.mechanism && <li>اشرح تركيب أو انتقال ARNm.</li>}
+              {!recordOutcome.trace.structuredCriteria.conclusion && <li>استنتج أن ARNm يحمل نسخة المعلومة.</li>}
             </ul>
           )}
 

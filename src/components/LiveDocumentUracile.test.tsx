@@ -38,6 +38,42 @@ describe('LiveDocumentUracile', () => {
     expect(screen.getByText(/ركّز على كلمتي/)).toBeDefined();
   });
 
+  it('reussite document → onEvidence appelle avec passed:true + evidenceId', async () => {
+    const user = userEvent.setup();
+    const onEvidence = vi.fn();
+    render(<LiveDocumentUracile onEvidence={onEvidence} />);
+
+    const textarea = screen.getByRole('textbox');
+    await user.type(textarea, 'ظهور الوسم أولاً في النواة ظهور الوسم لاحقاً في الهيولى انتقال المعلومة عبر ARNm انتقال ARNm المعلومة تنسخ ثم تنقل');
+    await user.click(screen.getAllByRole('button', { name: /صحّح بالمصحح الحقيقي/ })[0]);
+
+    expect(await screen.findByText(/أحسنت/)).toBeDefined();
+    expect(onEvidence).toHaveBeenCalledTimes(1);
+    expect(onEvidence).toHaveBeenCalledWith({
+      passed: true,
+      evidenceId: expect.any(String),
+      errorCreated: false,
+    });
+  });
+
+  it('echec document → onEvidence appelle avec passed:false + errorCreated:true', async () => {
+    const user = userEvent.setup();
+    const onEvidence = vi.fn();
+    render(<LiveDocumentUracile onEvidence={onEvidence} />);
+
+    const textarea = screen.getByRole('textbox');
+    await user.type(textarea, 'اليوراسيل يدخل النواة');
+    await user.click(screen.getAllByRole('button', { name: /صحّح بالمصحح الحقيقي/ })[0]);
+
+    expect(await screen.findByText(/نقطة تحتاج إلى مراجعة/)).toBeDefined();
+    expect(onEvidence).toHaveBeenCalledTimes(1);
+    expect(onEvidence).toHaveBeenCalledWith({
+      passed: false,
+      evidenceId: undefined,
+      errorCreated: true,
+    });
+  });
+
   it('reponse incorrecte → echec + elements manquants + micro-remediation', async () => {
     const user = userEvent.setup();
     const onMicro = vi.fn();

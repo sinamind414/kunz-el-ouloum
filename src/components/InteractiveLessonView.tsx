@@ -30,6 +30,8 @@ interface InteractiveLessonViewProps {
   onDocumentEvidence?: (outcome: { passed: boolean; evidenceId?: string; errorCreated: boolean }) => void;
 }
 
+type LessonSessionOutcome = 'passed' | 'doc_only' | 'failed' | 'aborted';
+
 // Simple DragDrop component for Mot → Exemple
 interface DragDropOption {
   id: string;
@@ -387,8 +389,9 @@ function ActiveLessonTunnel({
   const [currentBlockIndex, setCurrentBlockIndex] = useState(0);
   const [validated, setValidated] = useState<boolean[]>(() => lesson.blocks.map(() => false));
   const [blockData, setBlockData] = useState<Record<number, any>>({});
-  // Correction A — fin de leçon : tous les blocs validés -> CompletionSheet.
-  const [lessonCompleted, setLessonCompleted] = useState(false);
+  const [blocksCompleted, setBlocksCompleted] = useState(false);
+  const [exitPracticeOpened, setExitPracticeOpened] = useState(false);
+  const [sessionOutcome, setSessionOutcome] = useState<LessonSessionOutcome | null>(null);
 
   const setBlockState = (i: number, patch: any) =>
     setBlockData((prev) => ({ ...prev, [i]: { ...prev[i], ...patch } }));
@@ -400,8 +403,8 @@ function ActiveLessonTunnel({
     if (i < lesson.blocks.length - 1) {
       setTimeout(() => setCurrentBlockIndex(i + 1), 500);
     } else if (i === lesson.blocks.length - 1) {
-      // Dernier bloc validé -> fin de leçon (plus aucun bloc verrouillé).
-      setLessonCompleted(true);
+      setBlocksCompleted(true);
+      setExitPracticeOpened(true);
     }
   };
 
@@ -417,11 +420,11 @@ function ActiveLessonTunnel({
     }
   };
 
-  // Correction A — fin de leçon : CompletionSheet (jamais bloquant).
-  if (lessonCompleted) {
+  if (blocksCompleted && exitPracticeOpened && sessionOutcome !== null) {
     return (
       <CompletionSheet
         lesson={lesson}
+        outcome={sessionOutcome}
         onClose={onClose}
         onStartLesson={onStartLesson}
         onNavigateToTab={onNavigateToTab}
@@ -512,12 +515,14 @@ function ActiveLessonTunnel({
           })}
         </div>
 
-        {/* Sortie de leçon : document vivant (si applicable) + défi BAC validé. */}
-        <LessonExitSection
-          lessonId={lesson.id}
-          onOpenMicroRemediation={onOpenMicroRemediation}
-          onDocumentEvidence={onDocumentEvidence}
-        />
+        {blocksCompleted && exitPracticeOpened && (
+          <LessonExitSection
+            lessonId={lesson.id}
+            onOpenMicroRemediation={onOpenMicroRemediation}
+            onDocumentEvidence={onDocumentEvidence}
+            onCompletePractice={setSessionOutcome}
+          />
+        )}
       </main>
     </div>
   );
@@ -526,12 +531,14 @@ function ActiveLessonTunnel({
 // Correction A — CompletionSheet : fin de leçon + orientation réelle (§3).
 function CompletionSheet({
   lesson,
+  outcome,
   onClose,
   onStartLesson,
   onNavigateToTab,
   onLaunchReflexMission,
 }: {
   lesson: ActiveLesson;
+  outcome: LessonSessionOutcome;
   onClose: () => void;
   onStartLesson?: (lessonId: string) => void;
   onNavigateToTab?: (tab: 'path' | 'lessons' | 'training' | 'progress') => void;
@@ -539,7 +546,7 @@ function CompletionSheet({
 }) {
   const progression: LessonProgression | undefined = getLessonProgression(lesson.id);
   // Difficulté détectée = erreur méthodologique active sur ce concept (Speckit B/A).
-  const hasDifficulty = React.useMemo(() => {
+  const hasActiveError = React.useMemo(() => {
     try {
       const store = loadStore();
       return store.learningErrors.some(
@@ -549,6 +556,15 @@ function CompletionSheet({
       return false;
     }
   }, [lesson.id, progression]);
+  const needsConsolidation = outcome === 'failed' || outcome === 'aborted' || hasActiveError;
+
+  const outcomeMessage = outcome === 'passed'
+    ? 'أكملت الوثيقة وتحدي BAC بنجاح.'
+    : outcome === 'doc_only'
+      ? 'سجّلت دليلاً وثائقياً دون إتمام تحدي BAC.'
+      : outcome === 'failed'
+        ? 'أنهيت الممارسة مع فكرة تحتاج إلى تثبيت.'
+        : 'أنهيت الجلسة دون تسجيل دليل جديد.';
 
   const goNext = () => {
     if (progression?.nextLessonId && onStartLesson) {
@@ -575,14 +591,15 @@ function CompletionSheet({
         <div className="max-w-2xl mx-auto space-y-5">
           <div className="rounded-3xl p-6 bg-gradient-to-br from-[#006d37] to-[#00562b] text-white text-center shadow-md">
             <CheckCircle2 className="w-12 h-12 mx-auto text-[#fed65b]" />
-            <h2 className="font-black text-2xl mt-2">✅ أكملت الدرس</h2>
-            {progression?.completionMessageAr && (
+            <h2 className="font-black text-2xl mt-2">أكملت الجلسة</h2>
+            <p className="text-white/90 text-sm mt-2 leading-7">{outcomeMessage}</p>
+            {progression?.completionMessageAr && outcome === 'passed' && (
               <p className="text-white/90 text-sm mt-2 leading-7">{progression.completionMessageAr}</p>
             )}
           </div>
 
           <div className="space-y-3">
-            {!hasDifficulty && progression?.nextLessonId ? (
+            {!needsConsolidation && progression?.nextLessonId ? (
               <button
                 onClick={goNext}
                 className="w-full py-4 rounded-2xl bg-[#006d37] hover:bg-[#00562b] text-white font-black text-sm shadow-md flex items-center justify-center gap-2 cursor-pointer"
@@ -620,10 +637,16 @@ function CompletionSheet({
   );
 }
 
-function BacTransferChallengeSection({ lessonId }: { lessonId: string }) {
+function BacTransferChallengeSection({
+  lessonId,
+  onAttempt,
+}: {
+  lessonId: string;
+  onAttempt: (passed: boolean) => void;
+}) {
   const challenge = getLessonTransferChallenge(lessonId);
   if (!challenge) return null;
-  return <BacTransferChallenge challenge={challenge} />;
+  return <BacTransferChallenge challenge={challenge} onAttempt={onAttempt} />;
 }
 
 // V3 US-V3-02 — Sortie de leçon : document vivant uracile (transcription) puis défi BAC.
@@ -631,28 +654,70 @@ function LessonExitSection({
   lessonId,
   onOpenMicroRemediation,
   onDocumentEvidence,
+  onCompletePractice,
 }: {
   lessonId: string;
   onOpenMicroRemediation?: (remediationId: string) => void;
   onDocumentEvidence?: (outcome: { passed: boolean; evidenceId?: string; errorCreated: boolean }) => void;
+  onCompletePractice: (outcome: LessonSessionOutcome) => void;
 }) {
   const showLiveDoc = lessonId === 'd1-u1-l2-transcription' || lessonId === 'lecon_transcription';
+  const [documentAttempted, setDocumentAttempted] = useState(false);
+  const [documentPassed, setDocumentPassed] = useState(false);
+  const [bacAttempted, setBacAttempted] = useState(false);
+  const [bacPassed, setBacPassed] = useState(false);
+
+  const handleDocumentEvidence = (outcome: { passed: boolean; evidenceId?: string; errorCreated: boolean }) => {
+    setDocumentAttempted(true);
+    setDocumentPassed(outcome.passed);
+    onDocumentEvidence?.(outcome);
+  };
+
+  const handleBacAttempt = (passed: boolean) => {
+    setBacAttempted(true);
+    setBacPassed(passed);
+  };
+
+  const finishPractice = () => {
+    if (documentPassed && bacPassed) {
+      onCompletePractice('passed');
+    } else if (documentPassed && !bacAttempted) {
+      onCompletePractice('doc_only');
+    } else if (documentAttempted || bacAttempted) {
+      onCompletePractice('failed');
+    } else {
+      onCompletePractice('aborted');
+    }
+  };
+
   return (
     <div className="space-y-4">
       {showLiveDoc && (
         <LiveDocumentUracile
           onOpenMicroRemediation={onOpenMicroRemediation}
-          onEvidence={onDocumentEvidence}
+          onEvidence={handleDocumentEvidence}
         />
       )}
-      <BacTransferChallengeSection lessonId={lessonId} />
+      <BacTransferChallengeSection lessonId={lessonId} onAttempt={handleBacAttempt} />
+      <button
+        onClick={finishPractice}
+        className="w-full py-3 rounded-2xl bg-[#006d37] hover:bg-[#00562b] text-white font-black text-sm shadow-md cursor-pointer"
+      >
+        إنهاء الممارسة والانتقال
+      </button>
     </div>
   );
 }
 
 // Défi BAC de sortie : la réussite est calculée par ValidationEngine (réelle),
 // jamais déclarée par l'élève. Correction masquée avant tentative.
-function BacTransferChallenge({ challenge }: { challenge: LessonTransferChallenge }) {
+function BacTransferChallenge({
+  challenge,
+  onAttempt,
+}: {
+  challenge: LessonTransferChallenge;
+  onAttempt: (passed: boolean) => void;
+}) {
   const [answer, setAnswer] = useState('');
   const [attempted, setAttempted] = useState(false);
   const [score, setScore] = useState<number | null>(null);
@@ -664,7 +729,8 @@ function BacTransferChallenge({ challenge }: { challenge: LessonTransferChalleng
     const s = Math.round((result.score / result.maxScore) * 100);
     setAttempted(true);
     setScore(s);
-    setPassed(result.passed && s >= 70);
+    const attemptPassed = result.passed && s >= 70;
+    setPassed(attemptPassed);
 
     recordLessonTransferEvidence({
       lessonId: challenge.lessonId,
@@ -673,6 +739,7 @@ function BacTransferChallenge({ challenge }: { challenge: LessonTransferChalleng
       score: s,
       ruleIds: result.errors.map((e) => e.code),
     });
+    onAttempt(attemptPassed);
   };
 
   return (

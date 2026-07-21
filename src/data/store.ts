@@ -99,15 +99,22 @@ export interface MasteryEvidence {
   relatedErrorIds?: string[];
 }
 
+export type RecallUpdatedEvent = {
+  recallId: string;
+  passed: boolean;
+  completed: boolean;
+};
+
 export interface RecallItem {
   id: string;
   lessonId?: string;
   conceptId: string;
-  reflexId: CoreReflexId;
+  reflexId?: CoreReflexId;
   stage: 0 | 1 | 2 | 3;
   nextReviewAt: number;
   sourceEvidenceId?: string;
   relatedErrorId?: string;
+  questionAr?: string;
   createdAt: number;
   completedAt?: number;
 }
@@ -149,12 +156,11 @@ export const STORAGE_KEYS = {
   mastery: 'kunz_mastery_v1',
   evidences: 'kunz_mastery_evidences_v1',
   recalls: 'kunz_spaced_recalls_v1',
+  storageMeta: 'kunz_storage_meta_v1',
 } as const;
 
 // Clé legacy pour migration uniquement
 const LEGACY_RECALL_STORAGE_KEY = 'kunz_recall_items_v1';
-  storageMeta: 'kunz_storage_meta_v1',
-} as const;
 
 export const STORAGE_VERSION = 1;
 
@@ -173,23 +179,7 @@ export interface KunzStore {
   missions: Mission[];
   mastery: Record<string, MasteryRecord>;
   evidences: MasteryEvidence[];
-<<<<<<< HEAD
-    recalls: RecallItem[];
-}
-
-export interface RecallItem {
-  id: string;
-  lessonId?: string;
-  conceptId: string;
-  reflexId?: CoreReflexId;
-  stage: 0 | 1 | 2 | 3;
-  nextReviewAt: number;
-  sourceEvidenceId?: string;
-  relatedErrorId?: string;
-  questionAr?: string;
-  createdAt: number;
-  completedAt?: number;
-}
+  recalls: RecallItem[];
 }
 
 // ---------------------------------------------------------------------------
@@ -239,11 +229,7 @@ function emptyStore(version: number, migratedFrom?: number): KunzStore {
     missions: [],
     mastery: {},
     evidences: [],
-<<<<<<< HEAD
     recalls: [],
-=======
-    recallItems: [],
->>>>>>> f2ca8af (Modifications locales avant rebase du Sprint B)
   };
 }
 
@@ -311,13 +297,11 @@ export function migrateStore(raw: unknown, fromVersion: number, toVersion: numbe
     missions: Array.isArray(loose.missions) ? loose.missions : [],
     mastery: loose.mastery && typeof loose.mastery === 'object' ? loose.mastery : {},
     evidences: Array.isArray(loose.evidences) ? loose.evidences : [],
-<<<<<<< HEAD
     recalls: Array.isArray(loose.recalls)
       ? loose.recalls
       : Array.isArray(loose.recallItems)
         ? loose.recallItems
         : [],
->>>>>>> f2ca8af (Modifications locales avant rebase du Sprint B)
   };
 
   return enforceLimits(store, now);
@@ -343,7 +327,13 @@ export function loadStore(): KunzStore {
   const legacyRecallsRaw = readRaw(LEGACY_RECALL_STORAGE_KEY);
   const userProgressRaw = readRaw(STORAGE_KEYS.userProgress);
 
-  // Si meta existe, on a un store versionné : on migre depuis meta.
+  // Sélection des rappels : clé canonique prioritaire, puis legacy
+  const selectedRecalls = Array.isArray(recallsRaw)
+    ? recallsRaw
+    : Array.isArray(legacyRecallsRaw)
+      ? legacyRecallsRaw
+      : undefined;
+
   if (metaRaw && typeof metaRaw === 'object' && (metaRaw as any).version != null) {
     const base = {
       meta: metaRaw,
@@ -351,39 +341,31 @@ export function loadStore(): KunzStore {
       missions: missionsRaw,
       mastery: masteryRaw,
       evidences: evidencesRaw,
-      recalls: recallsRaw,
+      recalls: selectedRecalls,
       userProgress: userProgressRaw,
     };
     const store = migrateFromRaw(base);
-    // On réécrit uniquement meta pour mettre à jour updatedAt, pas les données.
-    writeRaw(STORAGE_KEYS.storageMeta, store.meta);
-    return store;
+    const migratedLegacy = !Array.isArray(recallsRaw) && Array.isArray(legacyRecallsRaw);
+  if (migratedLegacy) {
+    writeRaw(STORAGE_KEYS.recalls, store.recalls);
+  }
+  // Mise à jour de meta uniquement (updatedAt)
+  writeRaw(STORAGE_KEYS.storageMeta, store.meta);
+  return store;
   }
 
-  // Sinon, on tente de reconstruire un objet brut depuis les clés disponibles.
-  const base: any = {};
+  const base: Partial<KunzStore> = {};
   if (userProgressRaw) base.userProgress = userProgressRaw;
   if (Array.isArray(errorsRaw)) base.learningErrors = errorsRaw;
   if (Array.isArray(missionsRaw)) base.missions = missionsRaw;
-  if (masteryRaw && typeof masteryRaw === 'object') base.mastery = masteryRaw;
+  if (masteryRaw && typeof masteryRaw === 'object') base.mastery = masteryRaw as Record<string, MasteryRecord>;
   if (Array.isArray(evidencesRaw)) base.evidences = evidencesRaw;
-  if (Array.isArray(recallsRaw)) {
-    base.recalls = recallsRaw;
-  } else if (Array.isArray(legacyRecallsRaw)) {
-    base.recalls = legacyRecallsRaw;
-  }
+  if (selectedRecalls) base.recalls = selectedRecalls;
 
   const store = migrateFromRaw(base);
-  const merged: KunzStore = {
-    ...store,
-    recalls: Array.isArray(recallsRaw)
-      ? recallsRaw
-      : Array.isArray(legacyRecallsRaw)
-        ? legacyRecallsRaw
-        : store.recalls,
-  };
-  writeRaw(STORAGE_KEYS.storageMeta, merged.meta);
-  return merged;
+  // Mise à jour de meta uniquement (updatedAt)
+  writeRaw(STORAGE_KEYS.storageMeta, store.meta);
+  return store;
 }
 
 // ---------------------------------------------------------------------------
