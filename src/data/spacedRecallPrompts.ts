@@ -51,6 +51,12 @@ export const SPACED_RECALL_PROMPTS: Record<string, SpacedRecallPrompt[]> = {
     { stage: 2, conceptId: 'subduction', questionAr: 'لماذا يحدث الانصهار الجزئي فوق اللوح الغائص؟', reflexId: 'interpret', acceptedEvidence: ['ماء', 'انصهار جزئي', 'وشاح', 'صهارة'], minEvidence: 3 },
     { stage: 3, conceptId: 'subduction', questionAr: 'فسّر العلاقة بين الاندساس والمغماطية والبركانية.', reflexId: 'validate', acceptedEvidence: ['اندساس', 'ماء', 'انصهار', 'صهارة', 'بركانية', 'قوس'], minEvidence: 3 },
   ],
+  protein_structure_function: [
+    { stage: 0, conceptId: 'protein_structure_function', questionAr: 'ما الذي يحدد البنية الأولية للبروتين؟', reflexId: 'explain', acceptedEvidence: ['تتابع الأحماض الأمينية', 'البنية الأولية', 'الجين', 'الطفرات'], minEvidence: 3 },
+    { stage: 1, conceptId: 'protein_structure_function', questionAr: 'كيف يؤثر تغير حمض أميني على البنية الفراغية؟', reflexId: 'explain', acceptedEvidence: ['بنية ثالثية', 'طية', 'موقع نشط', 'شكل'], minEvidence: 3 },
+    { stage: 2, conceptId: 'protein_structure_function', questionAr: 'ما العلاقة بين البنية والوظيفة البروتينية؟', reflexId: 'interpret', acceptedEvidence: ['بنية', 'وظيفة', 'موقع نشط', 'تفاعل'], minEvidence: 3 },
+    { stage: 3, conceptId: 'protein_structure_function', questionAr: 'اكتب جواب BAC قصير: كيف تؤدي الطفرة إلى تغير وظيفي؟', reflexId: 'validate', acceptedEvidence: ['طفرة', 'حمض أميني', 'بنية', 'وظيفة', 'مرض'], minEvidence: 3 },
+  ],
 };
 
 export function getSpacedRecallPrompts(conceptId: string): SpacedRecallPrompt[] {

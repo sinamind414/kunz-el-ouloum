@@ -255,6 +255,40 @@ export const DOCUMENT_PRACTICE_CONTEXTS: DocumentPracticeContext[] = [
       conclusion: ['بركانية القوس', 'تولد صهارة بسبب الماء'],
     },
   },
+  {
+    exerciseId: 'mutation_protein_function',
+    questionId: 'mutation_protein_function_q1',
+    conceptId: 'protein_structure_function',
+    unitId: 2,
+    documentType: 'experiment',
+    reflexId: 'interpret',
+    domain: 'genetique',
+    sourceStatus: 'adaptation_pedagogique',
+    documentTypeAr: 'تجربة طفرة الهيموغلوبين — بنية → fonction',
+    goalAr: 'تفسير كيف يؤدي تغير حمض أميني واحد إلى تغير وظيفة البروتين.',
+    vocabulary: ['تتابع الأحماض الأمينية', 'البنية الأولية', 'البنية الثالثية', 'الموقع النشط', 'الطفرات', 'الوظيفة'],
+    expectedEvidence: [
+      'تغير حمض أميني واحد',
+      'البنية الثالثية',
+      'الموقع النشط',
+      'الوظيفة أو المرض',
+    ],
+    trapAr: 'لا تعتقد أن كل طفرة تغير الوظيفة؛ بعض الطفرات محايدة.',
+    altAr: 'مخطط يظهر سلسلة الأحماض الأمينية، الطفرة النقطية، وتأثيرها على الموقع النشط.',
+    promptObserveAr: 'ما الذي يتغير عندما يتغير حمض أميني واحد في سلسلة البروتين؟',
+    promptProduceAr: 'فسّر كيف يؤدي تغير حمض أميني واحد إلى تغير وظيفة البروتين.',
+    hintsAr: [
+      'انظر إلى الحمض الأميني المستبدل وتأثيره على الطية الثالثية.',
+      'ما هو دور الموقع النشط في الوظيفة البيولوجية؟',
+    ],
+    correctionAr:
+      'تغير حمض أميني واحد في السلسلة الأولية يمكن أن يغير الطية الثالثية للبروتين، وبالتالي يغير شكل الموقع النشط، مما يعدل الوظيفة البيولوجية أو يسبب مرضاً مثل فقر الدم المنجلي.',
+    criteria: {
+      evidence: ['تغير حمض أميني واحد', 'البنية الثالثية', 'الموقع النشط'],
+      mechanism: ['طية البروتين', 'شكل الموقع النشط', 'تفاعل مع الركيزة'],
+      conclusion: ['الوظيفة أو المرض'],
+    },
+  },
 ];
 
 export function getDocumentPracticeContext(

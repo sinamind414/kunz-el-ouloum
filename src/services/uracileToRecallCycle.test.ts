@@ -31,6 +31,7 @@ beforeEach(() => {
 const uracileCtx = getDocumentPracticeContext('uracile_marque', 'uracile_marque_q1')!;
 const synapseCtx = getDocumentPracticeContext('synapse_integration', 'synapse_integration_q1')!;
 const subductionCtx = getDocumentPracticeContext('subduction_water_melting', 'subduction_water_melting_q1')!;
+const proteinCtx = getDocumentPracticeContext('mutation_protein_function', 'mutation_protein_function_q1')!;
 
 const okResult = (score = 80): ValidationResult => ({
   score, maxScore: 20, passed: true, threshold: 70, errors: [], matchedLois: [], brokenLois: [],
@@ -245,6 +246,26 @@ describe('Uracile → proof → recall cycle', () => {
     expect(errorCreated).toBe(false);
 
     const recall = store.recalls.find((r) => r.conceptId === 'subduction' && r.completedAt == null);
+    expect(recall).toBeDefined();
+    expect(recall!.stage).toBe(0);
+    expect(recall!.sourceEvidenceId).toBe(evidence!.id);
+  });
+
+  it('10. protein preuve document → RecallItem stage 0 planifié', () => {
+    const answer = 'تغير حمض أميني واحد يغير البنية الأولية ثم البنية الثالثية، فيتغير شكل الموقع النشط، مما يعدل الوظيفة أو المرض مثل فقر الدم المنجلي.';
+    const { evidence, errorCreated, store, trace } = recordDocumentTrace({
+      context: proteinCtx,
+      answer,
+      validationResult: okResult(80),
+    });
+
+    expect(trace.valid).toBe(true);
+    expect(evidence).not.toBeNull();
+    expect(evidence!.conceptId).toBe('protein_structure_function');
+    expect(evidence!.dimension).toBe('document');
+    expect(errorCreated).toBe(false);
+
+    const recall = store.recalls.find((r) => r.conceptId === 'protein_structure_function' && r.completedAt == null);
     expect(recall).toBeDefined();
     expect(recall!.stage).toBe(0);
     expect(recall!.sourceEvidenceId).toBe(evidence!.id);

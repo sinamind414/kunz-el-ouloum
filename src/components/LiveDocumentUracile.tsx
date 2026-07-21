@@ -185,6 +185,8 @@ export default function LiveDocumentUracile({ exerciseId = 'uracile_marque', onE
                   onOpenMicroRemediation?.('mr_ppse_ppsi_threshold');
                 } else if (exerciseId === 'subduction_water_melting') {
                   onOpenMicroRemediation?.('mr_subduction_water');
+                } else if (exerciseId === 'mutation_protein_function') {
+                  onOpenMicroRemediation?.('mr_primary_structure_function');
                 } else {
                   onOpenMicroRemediation?.('mr_arnm_vs_adn');
                 }

@@ -35,9 +35,9 @@ const failResult = (): ValidationResult => ({
 });
 
 describe('DocumentPracticeContext', () => {
-  it('les 9 contextes prioritaires existent (dont uracile_marque V3 + photosynthese_cycle + synapse_integration + subduction_water_melting)', () => {
+  it('les 10 contextes prioritaires existent (dont uracile_marque V3 + photosynthese_cycle + synapse_integration + subduction_water_melting + mutation_protein_function)', () => {
     const ids = DOCUMENT_PRACTICE_CONTEXTS.map((c) => c.exerciseId);
-    expect(ids).toEqual(['michaelis_courbe', 'curare_table', 'nmj_ppm_courbe', 'sarin_gb_double', 'rifamycine_h1h2', 'uracile_marque', 'photosynthese_cycle', 'synapse_integration', 'subduction_water_melting']);
+    expect(ids).toEqual(['michaelis_courbe', 'curare_table', 'nmj_ppm_courbe', 'sarin_gb_double', 'rifamycine_h1h2', 'uracile_marque', 'photosynthese_cycle', 'synapse_integration', 'subduction_water_melting', 'mutation_protein_function']);
   });
 
   it('chaque contexte a goalAr, 3-8 vocabulaire, expectedEvidence non vide, altAr', () => {

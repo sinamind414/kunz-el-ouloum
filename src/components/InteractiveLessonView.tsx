@@ -659,6 +659,7 @@ const LESSON_DOCUMENT_EXERCISE_ID: Record<string, string> = {
   'phase11_chapitres_21_22': 'photosynthese_cycle',
   'synapse': 'synapse_integration',
   'subduction': 'subduction_water_melting',
+  'protein_structure_function': 'mutation_protein_function',
 };
 
 function LessonExitSection({

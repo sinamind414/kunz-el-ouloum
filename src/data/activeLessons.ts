@@ -82,6 +82,11 @@ export const LESSON_PROGRESSION: Record<string, LessonProgression> = {
     recommendedReflexId: 'interpret',
     completionMessageAr: 'أحسنت! فهمت كيف يؤدي الغوص إلى انصهار الوشاح ونشاط بركاني.',
   },
+  'protein_structure_function': {
+    nextLessonId: undefined,
+    recommendedReflexId: 'interpret',
+    completionMessageAr: 'أحسنت! فهمت كيف يحدد تتابع الأحماض الأمينية بنية البروتين ووظيفته.',
+  },
   'd1-u1-l2-transcription': {
     nextLessonId: 'd1-u1-l3-traduction',
     recommendedReflexId: 'explain',
@@ -271,6 +276,44 @@ export const ACTIVE_LESSONS: Record<string, ActiveLesson> = {
               label: 'الاستنتاج',
               placeholder: 'استنتج كيف تتولد الصهارة والبركانية...',
               requiredKeywords: ['صهارة', 'بركانية', 'قوس', 'أنديزيت'],
+            },
+          ],
+        },
+      },
+    ],
+  },
+  protein_structure_function: {
+    id: 'protein_structure_function',
+    title: 'الدرس 8 : بنية ووظيفة البروتين (Protein structure–function)',
+    blocks: [
+      {
+        type: 'HOTSPOT_AND_METHODOLOGY',
+        objective: 'localiser structure 3D du protéine puis analyser relation structure–fonction.',
+        introText:
+          'لاحظ مخطط البروتين. حدد الموقع النشط ثم حلل كيف يحدد تتابع الأحماض الأمينية البنية الثالثية والوظيفة.',
+        schemaSrc: '/assets/images/schemas/domaine1_proteines/schema_06_structure_proteines.svg',
+        hotspot: {
+          prompt: 'انقر على الموقع النشط (منطقة الارتباط بالركيزة).',
+          correctZone: { x: 50, y: 50, radius: 20 },
+          successFeedback: 'صحيح! الموقع النشط يتشكّل من البنية الثالثية للبروتين.',
+        },
+        methodology: {
+          prompt: 'حلل كيف يحدد تتابع الأحماض الأمينية بنية البروتين ووظيفته (تحليل محض).',
+          steps: [
+            {
+              label: 'الملاحظة',
+              placeholder: 'صف ما يحدد البنية الأولية للبروتين...',
+              requiredKeywords: ['تتابع الأحماض الأمينية', 'البنية الأولية', 'الجين'],
+            },
+            {
+              label: 'الآلية',
+              placeholder: 'اشرح كيف تنطوي البنية الأولية إلى بنية ثالثية...',
+              requiredKeywords: ['بنية ثالثية', 'طية', 'موقع نشط'],
+            },
+            {
+              label: 'الاستنتاج',
+              placeholder: 'استنتج كيف يحدد الموقع النشط الوظيفة البيولوجية...',
+              requiredKeywords: ['وظيفة', 'تفاعل', 'ركيزة', 'مرض'],
             },
           ],
         },

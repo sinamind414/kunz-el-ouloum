@@ -140,4 +140,20 @@ describe('LiveDocumentUracile', () => {
     await user.click(microBtn);
     expect(onMicro).toHaveBeenCalledWith('mr_subduction_water');
   });
+
+  it('document protein → micro-reprise structure–fonction', async () => {
+    const user = userEvent.setup();
+    const onMicro = vi.fn();
+    render(<LiveDocumentUracile exerciseId="mutation_protein_function" onOpenMicroRemediation={onMicro} />);
+
+    const textarea = screen.getByRole('textbox');
+    await user.type(textarea, 'كل طفرة تغير وظيفة البروتين دائماً');
+    await user.click(screen.getAllByRole('button', { name: /صحّح بالمصحح الحقيقي/ })[0]);
+
+    expect(await screen.findByText(/تم تسجيل نقطة تحتاج إلى مراجعة/)).toBeDefined();
+    const microBtn = screen.getByRole('button', { name: /ميكرو-تصحيح/ });
+    expect(microBtn).toBeDefined();
+    await user.click(microBtn);
+    expect(onMicro).toHaveBeenCalledWith('mr_primary_structure_function');
+  });
 });

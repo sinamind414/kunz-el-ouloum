@@ -93,6 +93,17 @@ export const MICRO_REMEDIATIONS: Record<string, MicroRemediation> = {
     acceptedEvidence: ['ماء', 'انصهار جزئي', 'وشاح', 'صهارة'],
     nextAction: 'schedule_recall',
   },
+  'primary_structure_function': {
+    id: 'mr_primary_structure_function',
+    conceptId: 'protein_structure_function',
+    triggerCodes: ['MISSING_PRIMARY_STRUCTURE', 'WRONG_STRUCTURE_FUNCTION'],
+    titleAr: 'البنية الأولية → بنية ثالثية → موقع نشط → وظيفة',
+    estimatedMinutes: 3,
+    explanationAr: 'تتابع الأحماض الأمينية يحدد البنية الأولية، التي تنطوي إلى بنية ثالثية، فتشكّل الموقع النشط وتحدد الوظيفة.',
+    activeQuestionAr: 'كيف يؤدي تغير حمض أميني واحد إلى تغير وظيفة البروتين؟',
+    acceptedEvidence: ['تتابع الأحماض الأمينية', 'بنية ثالثية', 'موقع نشط', 'وظيفة'],
+    nextAction: 'schedule_recall',
+  },
 };
 
 export function getMicroRemediationByCode(code: string): MicroRemediation | undefined {

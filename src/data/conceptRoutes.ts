@@ -54,6 +54,13 @@ export const CONCEPT_ROUTES: Record<string, ConceptRoute> = {
     documentExerciseId: 'subduction_water_melting',
     survivalCardId: 'sc_subduction',
   },
+  protein_structure_function: {
+    conceptId: 'protein_structure_function',
+    unitId: 2,
+    lessonId: 'protein_structure_function',
+    documentExerciseId: 'mutation_protein_function',
+    survivalCardId: 'sc_adn_proteine',
+  },
 };
 
 export function getConceptRoute(conceptId: string): ConceptRoute | undefined {
