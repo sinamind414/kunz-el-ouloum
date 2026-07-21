@@ -60,6 +60,17 @@ export const MICRO_REMEDIATIONS: Record<string, MicroRemediation> = {
     acceptedEvidence: ['المواقع النشطة', 'التشبّع', 'Vmax'],
     nextAction: 'retry_document',
   },
+  'thylakoide_vs_stroma': {
+    id: 'mr_thylakoide_vs_stroma',
+    conceptId: 'photosynthese',
+    triggerCodes: ['THYLAKOID_STROMA_CONFUSION', 'MISSING_THYLAKOID', 'WRONG_PHOTOSYNTHESIS_LOCATION'],
+    titleAr: 'التايلاكويد يمتص الضوء — الحشوة تثبّت CO₂',
+    estimatedMinutes: 3,
+    explanationAr: 'التفاعلات الضوئية تتم على أغشية التيلاكويد (ضوء → ATP/NADPH). أما تثبيت CO2 فيتم في الحشوة/السدى.',
+    activeQuestionAr: 'أين تتم التفاعلات الضوئية، وأين يتم تثبيت CO2؟',
+    acceptedEvidence: ['التيلاكويد', 'الحشوة', 'ضوء', 'CO2'],
+    nextAction: 'schedule_recall',
+  },
 };
 
 export function getMicroRemediationByCode(code: string): MicroRemediation | undefined {

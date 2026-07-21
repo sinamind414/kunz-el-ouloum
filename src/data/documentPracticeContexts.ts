@@ -156,6 +156,39 @@ export const DOCUMENT_PRACTICE_CONTEXTS: DocumentPracticeContext[] = [
       conclusion: ['المعلومة تُنسخ ثم تُنقل', 'المعلومة تنسخ ثم تنقل', 'يحمل نسخة المعلومة', 'ينقل نسخة المعلومة'],
     },
   },
+  {
+    exerciseId: 'photosynthese_cycle',
+    questionId: 'photosynthese_cycle_q1',
+    conceptId: 'photosynthese',
+    unitId: 6,
+    documentType: 'schema',
+    reflexId: 'analyse',
+    domain: 'metabo',
+    sourceStatus: 'adaptation_pedagogique',
+    documentTypeAr: 'مخطط الصانعة الخضراء ودور التيلاكويد',
+    goalAr: 'تحديد موقع التفاعلات الضوئية وربطها بإنتاج ATP و NADPH.',
+    vocabulary: ['التيلاكويد', 'الحشوة', 'الضوء', 'CO2', 'ATP', 'NADPH', 'الغلوكوز'],
+    expectedEvidence: [
+      'التفاعلات الضوئية على التيلاكويد',
+      'إنتاج ATP و NADPH',
+      'تثبيت CO2 في الحشوة',
+    ],
+    trapAr: 'لا تخلط بين التيلاكويد (ضوء) والحشوة (تثبيت CO2).',
+    altAr: 'مخطط يظهر التيلاكويد (أغشية مكدّسة) والحشوة (فضاء داخلي) داخل الصانعة الخضراء.',
+    promptObserveAr: 'أين يحدث التقاط الفوتونات وتحليل الماء؟',
+    promptProduceAr: 'حلّل دور التيلاكويد في تحويل الطاقة الضوئية.',
+    hintsAr: [
+      'انظر إلى الأغشية المكدّسة داخل الصانعة الخضراء.',
+      'ما هو المنتج الأولي للطاقة الضوئية؟',
+    ],
+    correctionAr:
+      'التفاعلات الضوئية تتم على أغشية التيلاكويد حيث يُنتج ATP و NADPH ويُنشر O2. أما تثبيت CO2 فيتم في الحشوة/السدى لإنتاج الغلوكوز.',
+    criteria: {
+      evidence: ['التيلاكويد', 'أغشية التيلاكويد', 'الضوء', 'الفوتونات'],
+      mechanism: ['ATP', 'NADPH', 'تحليل الماء', 'ينتج O2'],
+      conclusion: ['طاقة ضوئية → طاقة كيميائية', 'تثبيت CO2 في الحشوة'],
+    },
+  },
 ];
 
 export function getDocumentPracticeContext(

@@ -33,6 +33,12 @@ export const SPACED_RECALL_PROMPTS: Record<string, SpacedRecallPrompt[]> = {
     { stage: 2, conceptId: 'enzymes', questionAr: 'فسّر استقرار المنحنى عند Vmax.', reflexId: 'interpret', acceptedEvidence: ['Vmax', 'المواقع النشطة', 'مشغولة', 'التشبع'], minEvidence: 3 },
     { stage: 3, conceptId: 'enzymes', questionAr: 'اكتب إجابة BAC قصيرة: علل استقرار السرعة.', reflexId: 'validate', acceptedEvidence: ['السرعة', 'Vmax', 'المواقع النشطة', 'التشبع', 'الركيزة'], minEvidence: 3 },
   ],
+  photosynthese: [
+    { stage: 0, conceptId: 'photosynthese', questionAr: 'ما مقر التفاعلات الضوئية؟', reflexId: 'explain', acceptedEvidence: ['التيلاكويد', 'أغشية', 'الصانعة الخضراء'], minEvidence: 2 },
+    { stage: 1, conceptId: 'photosynthese', questionAr: 'ما الفرق بين التيلاكويد والحشوة؟', reflexId: 'explain', acceptedEvidence: ['التيلاكويد', 'الحشوة', 'ضوء', 'CO2'], minEvidence: 3 },
+    { stage: 2, conceptId: 'photosynthese', questionAr: 'فسّر دور الضوء في أغشية التيلاكويد.', reflexId: 'interpret', acceptedEvidence: ['الضوء', 'التيلاكويد', 'ATP', 'NADPH', 'طاقة'], minEvidence: 3 },
+    { stage: 3, conceptId: 'photosynthese', questionAr: 'اكتب إجابة BAC قصيرة: علل مقر وآلية التفاعلات الضوئية.', reflexId: 'validate', acceptedEvidence: ['التيلاكويد', 'الضوء', 'ATP', 'NADPH', 'الحشوة', 'CO2'], minEvidence: 3 },
+  ],
 };
 
 export function getSpacedRecallPrompts(conceptId: string): SpacedRecallPrompt[] {

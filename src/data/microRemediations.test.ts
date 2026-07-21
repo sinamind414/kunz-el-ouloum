@@ -23,4 +23,13 @@ describe('Micro-reprises (§3.3)', () => {
       expect(['retry_document', 'open_reflex', 'schedule_recall']).toContain(r.nextAction);
     }
   });
+
+  it('reprise thylakoïde/stroma existe pour photosynthèse', () => {
+    const r = MICRO_REMEDIATIONS['thylakoide_vs_stroma'];
+    expect(r).toBeDefined();
+    expect(r.conceptId).toBe('photosynthese');
+    expect(r.triggerCodes).toContain('THYLAKOID_STROMA_CONFUSION');
+    expect(r.acceptedEvidence).toEqual(expect.arrayContaining(['التيلاكويد', 'الحشوة']));
+    expect(r.nextAction).toBe('schedule_recall');
+  });
 });

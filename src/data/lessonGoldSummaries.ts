@@ -89,6 +89,25 @@ export const LESSON_GOLD_SUMMARIES: Record<string, LessonGoldSummary> = {
     recallQuestionAr: 'لماذا تستقر السرعة عند Vmax؟',
     review: { reviewed: false },
   },
+  'phase11_chapitres_21_22': {
+    lessonId: 'phase11_chapitres_21_22',
+    status: 'adaptation_pedagogique',
+    source: { sourceLabel: 'Résumé Kunz — programme BAC SVT Algérie' },
+    missionAr: 'كيف يحوّل الصانعة الخضراء الطاقة الضوئية إلى طاقة كيميائية؟',
+    mechanismAr: [
+      'يمتص الثايلاكويد الفوتونات',
+      'ينشطر الماء وينطلق O2',
+      'يتشكّل ATP و NADPH',
+      'يُثبّت CO2 في الحشوة/السدى',
+      'ينتج الغلوكوز والمادة العضوية',
+    ],
+    evidenceAr: 'التفاعلات الضوئية تحدث على أغشية التيلاكويد.',
+    vocabulary: ['الصانعة الخضراء', 'التيلاكويد', 'الحشوة', 'الضوء', 'CO2', 'ATP', 'NADPH', 'الغلوكوز'],
+    bacSentenceFrameAr: 'تتم التفاعلات الضوئية في ______ بينما يتم تثبيت CO2 في ______.',
+    commonErrorAr: 'الخلط بين التيلاكويد (ضوء) والحشوة/السدى (تثبيت CO2).',
+    recallQuestionAr: 'أين تتم التفاعلات الضوئية؟',
+    review: { reviewed: false },
+  },
 };
 
 export function getLessonGoldSummary(lessonId: string): LessonGoldSummary | undefined {
