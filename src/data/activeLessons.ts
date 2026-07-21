@@ -72,6 +72,11 @@ export const LESSON_PROGRESSION: Record<string, LessonProgression> = {
     recommendedReflexId: 'interpret',
     completionMessageAr: 'أكملت التفاعلات الضوئية. جرّب تحدي BAC للصورانعة الخضراء.',
   },
+  'synapse': {
+    nextLessonId: undefined,
+    recommendedReflexId: 'interpret',
+    completionMessageAr: 'أحسنت! فهمت تحوّل التنبيه الكهربائي إلى رسالة كيميائية ثم كهربائية.',
+  },
   'd1-u1-l2-transcription': {
     nextLessonId: 'd1-u1-l3-traduction',
     recommendedReflexId: 'explain',
@@ -185,6 +190,44 @@ export const ACTIVE_LESSONS: Record<string, ActiveLesson> = {
               label: 'الاستنتاج',
               placeholder: 'استنتج مصدر الأكسجين المنطلق...',
               requiredKeywords: ['الماء', 'الأكسجين'],
+            },
+          ],
+        },
+      },
+    ],
+  },
+  synapse: {
+    id: 'synapse',
+    title: 'الدرس 5 : المشبك العصبي (Synapse)',
+    blocks: [
+      {
+        type: 'HOTSPOT_AND_METHODOLOGY',
+        objective: 'localiser نهاية المشبك قبل المشبكي ثم تحليل تحوّل التنبيه.',
+        introText:
+          'لاحظ مخطط المشبك الكيميائي. حدد النهاية قبل المشبكية ثم حلل تحوّل التنبيه الكهربائي إلى رسالة كيميائية ثم كهربائية.',
+        schemaSrc: '/assets/images/schemas/domaine1_proteines/schema_08_synapse.svg',
+        hotspot: {
+          prompt: 'انقر على النهاية قبل المشبكية (مقر تحرير الناقل العصبي).',
+          correctZone: { x: 50, y: 30, radius: 25 },
+          successFeedback: 'صحيح! عند الوصول الكمون العمل تنفتح قنوات Ca²⁺ وتتحرر الحويصلات المشبكية.',
+        },
+        methodology: {
+          prompt: 'حلل تحوّل التنبيه الكهربائي إلى رسالة كيميائية ثم كهربائية (تحليل محض).',
+          steps: [
+            {
+              label: 'الملاحظة',
+              placeholder: 'صف ما يحدث عند وصول كمون العمل إلى النهاية قبل المشبكية...',
+              requiredKeywords: ['كمون العمل', 'Ca²⁺', 'حويصلات'],
+            },
+            {
+              label: 'الآلية',
+              placeholder: 'اشرح كيف يتحوّل التنبيه الكهربائي إلى رسالة كيميائية...',
+              requiredKeywords: ['ناقل عصبي', 'شق مشبكي', 'مستقبل'],
+            },
+            {
+              label: 'الاستنتاج',
+              placeholder: 'استنتج كيف تعود الإشارة إلى شكل كهربائي بعد المشبكي...',
+              requiredKeywords: ['PPSE', 'PPSI', 'كمون بعد مشبكي'],
             },
           ],
         },

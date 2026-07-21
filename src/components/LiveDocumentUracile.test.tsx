@@ -84,13 +84,29 @@ describe('LiveDocumentUracile', () => {
     await user.click(screen.getAllByRole('button', { name: /صحّح بالمصحح الحقيقي/ })[0]);
 
     expect(await screen.findByText(/تم تسجيل نقطة تحتاج إلى مراجعة/)).toBeDefined();
-    expect(screen.getByText(/اذكر ترتيب ظهور الوسم/)).toBeDefined();
-    expect(screen.getByText(/اشرح تركيب أو انتقال ARNm/)).toBeDefined();
+    expect(screen.getByText(/اذكر الملاحظة الأساسية من الوثيقة/)).toBeDefined();
+    expect(screen.getByText(/اشرح الآلية العلمية/)).toBeDefined();
 
     const microBtn = screen.getByRole('button', { name: /ميكرو-تصحيح/ });
     expect(microBtn).toBeDefined();
     await user.click(microBtn);
     expect(onMicro).toHaveBeenCalledWith('mr_arnm_vs_adn');
+  });
+
+  it('document synapse → micro-reprise PPSE/seuil', async () => {
+    const user = userEvent.setup();
+    const onMicro = vi.fn();
+    render(<LiveDocumentUracile exerciseId="synapse_integration" onOpenMicroRemediation={onMicro} />);
+
+    const textarea = screen.getByRole('textbox');
+    await user.type(textarea, 'PPSE واحد يولد دائماً كمون عمل');
+    await user.click(screen.getAllByRole('button', { name: /صحّح بالمصحح الحقيقي/ })[0]);
+
+    expect(await screen.findByText(/تم تسجيل نقطة تحتاج إلى مراجعة/)).toBeDefined();
+    const microBtn = screen.getByRole('button', { name: /ميكرو-تصحيح/ });
+    expect(microBtn).toBeDefined();
+    await user.click(microBtn);
+    expect(onMicro).toHaveBeenCalledWith('mr_ppse_ppsi_threshold');
   });
 
   it('document photosynthese → micro-reprise thylakoïde/stroma', async () => {

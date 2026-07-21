@@ -43,7 +43,7 @@ export const CONCEPT_ROUTES: Record<string, ConceptRoute> = {
   synapse: {
     conceptId: 'synapse',
     unitId: 5,
-    lessonId: undefined,
+    lessonId: 'synapse',
     documentExerciseId: 'synapse_experiment',
     survivalCardId: 'sc_synapse',
   },

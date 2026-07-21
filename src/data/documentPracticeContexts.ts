@@ -189,6 +189,38 @@ export const DOCUMENT_PRACTICE_CONTEXTS: DocumentPracticeContext[] = [
       conclusion: ['طاقة ضوئية → طاقة كيميائية', 'تثبيت CO2 في الحشوة'],
     },
   },
+  {
+    exerciseId: 'synapse_integration',
+    questionId: 'synapse_integration_q1',
+    conceptId: 'synapse',
+    unitId: 5,
+    documentType: 'experiment',
+    reflexId: 'interpret',
+    sourceStatus: 'adaptation_pedagogique',
+    documentTypeAr: 'تسجيلات لكمونات بعد مشبكية',
+    goalAr: 'تفسير كيف يسمح الإدماج الزماني أو المكاني ببلوغ العتبة وتوليد كمون عمل.',
+    vocabulary: ['PPSE', 'PPSI', 'العتبة', 'القطعة الابتدائية', 'إدماج زماني', 'إدماج مكاني'],
+    expectedEvidence: [
+      'PPSE واحد دون العتبة',
+      'تجمع الكمونات بعد المشبكية',
+      'بلوغ العتبة وتولد كمون عمل'
+    ],
+    trapAr: 'لا تقل إن PPSE واحد يولد دائماً كمون عمل.',
+    altAr: 'مخطط يظهر محصلة الكمونات بعد مشبكية متعددة عند القطعة الابتدائية.',
+    promptObserveAr: 'قارن بين تنبيه واحد وتنبيهات متقاربة: متى تبلغ المحصلة العتبة؟',
+    promptProduceAr: 'فسّر لماذا لا يولد PPSE واحد كمون عمل دائماً، وكيف يؤدي الإدماج إلى بلوغ العتبة.',
+    hintsAr: [
+      'ابدأ بمقارنة محصلة الكمونات مع قيمة العتبة.',
+      'اربط تزامن أو تقارب التنبيهات بتجمع PPSE عند القطعة الابتدائية.'
+    ],
+    correctionAr:
+      'لا يولد PPSE واحد كمون عمل إذا بقي دون العتبة. عند تزامن أو تقارب عدة PPSE يحدث إدماج زماني أو مكاني، فتبلغ المحصلة العتبة على مستوى القطعة الابتدائية ويتولد كمون عمل.',
+    criteria: {
+      evidence: ['PPSE واحد دون العتبة', 'تجمع الكمونات', 'بلوغ العتبة'],
+      mechanism: ['إدماج زماني', 'إدماج مكاني', 'القطعة الابتدائية'],
+      conclusion: ['يتولد كمون عمل', 'بلوغ العتبة'],
+    },
+  },
 ];
 
 export function getDocumentPracticeContext(

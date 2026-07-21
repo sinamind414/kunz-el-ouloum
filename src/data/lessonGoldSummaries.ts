@@ -108,6 +108,25 @@ export const LESSON_GOLD_SUMMARIES: Record<string, LessonGoldSummary> = {
     recallQuestionAr: 'أين تتم التفاعلات الضوئية؟',
     review: { reviewed: false },
   },
+  'synapse': {
+    lessonId: 'synapse',
+    status: 'adaptation_pedagogique',
+    source: { sourceLabel: 'Résumé Kunz — programme BAC SVT Algérie' },
+    missionAr: 'كيف يتحوّل التنبيه الكهربائي عند المشبك إلى رسالة كيميائية ثم كهربائية بعد مشبكية؟',
+    mechanismAr: [
+      'يصل كمون العمل إلى النهاية قبل المشبكية',
+      'تنفتح قنوات Ca²⁺ الفولطية ويدخل الكالسيوم',
+      'تندمج الحويصلات المشبكية ويُفرز الناقل العصبي',
+      'يرتبط الناقل بمستقبلات نوعية على الغشاء بعد المشبكي',
+      'يُفتح قنوات أيونية محدثة PPSE أو PPSI',
+    ],
+    evidenceAr: 'دخول Ca²⁺ إلى النهاية قبل المشبكية يسبب إفراز الناقل العصبي في الشق المشبكي.',
+    vocabulary: ['كمون العمل', 'Ca²⁺', 'حويصلات مشبكية', 'ناقل عصبي', 'شق مشبكي', 'PPSE', 'PPSI'],
+    bacSentenceFrameAr: 'عند وصول كمون العمل إلى النهاية قبل المشبكية، يدخل ______ مما يسبب إفراز ______ في ______.',
+    commonErrorAr: 'الخلط بين PPSE (تنبيهي) و PPSI (تثبيطي)، أو اعتبار أن الإشارة تبقى كهربائية.',
+    recallQuestionAr: 'ما هو دور Ca²⁺ في النقل المشبكي؟',
+    review: { reviewed: false },
+  },
 };
 
 export function getLessonGoldSummary(lessonId: string): LessonGoldSummary | undefined {

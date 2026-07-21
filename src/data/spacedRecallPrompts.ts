@@ -39,6 +39,12 @@ export const SPACED_RECALL_PROMPTS: Record<string, SpacedRecallPrompt[]> = {
     { stage: 2, conceptId: 'photosynthese', questionAr: 'فسّر دور الضوء في أغشية التيلاكويد.', reflexId: 'interpret', acceptedEvidence: ['الضوء', 'التيلاكويد', 'ATP', 'NADPH', 'طاقة'], minEvidence: 3 },
     { stage: 3, conceptId: 'photosynthese', questionAr: 'اكتب إجابة BAC قصيرة: علل مقر وآلية التفاعلات الضوئية.', reflexId: 'validate', acceptedEvidence: ['التيلاكويد', 'الضوء', 'ATP', 'NADPH', 'الحشوة', 'CO2'], minEvidence: 3 },
   ],
+  synapse: [
+    { stage: 0, conceptId: 'synapse', questionAr: 'ما الفرق بين PPSE و PPSI؟', reflexId: 'explain', acceptedEvidence: ['PPSE', 'PPSI', 'تنبيهي', 'تثبيطي', 'عتبة'], minEvidence: 3 },
+    { stage: 1, conceptId: 'synapse', questionAr: 'أين يحدث الإدماج العصبي؟', reflexId: 'explain', acceptedEvidence: ['إدماج عصبي', 'تكامل', 'قطعة ابتدائية', 'كمون عمل'], minEvidence: 3 },
+    { stage: 2, conceptId: 'synapse', questionAr: 'لماذا لا يولد PPSE واحد دائماً كمون عمل؟', reflexId: 'interpret', acceptedEvidence: ['PPSE', 'عتبة', 'تكامل', 'كمون عمل'], minEvidence: 3 },
+    { stage: 3, conceptId: 'synapse', questionAr: 'فسّر كيف يؤدي الإدماج الزماني أو المكاني إلى بلوغ العتبة.', reflexId: 'validate', acceptedEvidence: ['إدماج زماني', 'إدماج مكاني', 'عتبة', 'PPSE', 'كمون عمل'], minEvidence: 3 },
+  ],
 };
 
 export function getSpacedRecallPrompts(conceptId: string): SpacedRecallPrompt[] {

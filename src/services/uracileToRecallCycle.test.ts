@@ -29,6 +29,7 @@ beforeEach(() => {
 });
 
 const uracileCtx = getDocumentPracticeContext('uracile_marque', 'uracile_marque_q1')!;
+const synapseCtx = getDocumentPracticeContext('synapse_integration', 'synapse_integration_q1')!;
 
 const okResult = (score = 80): ValidationResult => ({
   score, maxScore: 20, passed: true, threshold: 70, errors: [], matchedLois: [], brokenLois: [],
@@ -206,5 +207,25 @@ describe('Uracile → proof → recall cycle', () => {
     expect(trace.structuredCriteria.observation).toBe(true);
     expect(trace.structuredCriteria.mechanism).toBe(false);
     expect(trace.structuredCriteria.conclusion).toBe(false);
+  });
+
+  it('8. synapse preuve document → RecallItem stage 0 planifié', () => {
+    const answer = 'PPSE واحد دون العتبة لا يولد كمون عمل. أما تجمع الكمونات بعد المشبكية فيسمح ببلوغ العتبة وتولد كمون عمل في القطعة الابتدائية';
+    const { evidence, errorCreated, store, trace } = recordDocumentTrace({
+      context: synapseCtx,
+      answer,
+      validationResult: okResult(80),
+    });
+
+    expect(trace.valid).toBe(true);
+    expect(evidence).not.toBeNull();
+    expect(evidence!.conceptId).toBe('synapse');
+    expect(evidence!.dimension).toBe('document');
+    expect(errorCreated).toBe(false);
+
+    const recall = store.recalls.find((r) => r.conceptId === 'synapse' && r.completedAt == null);
+    expect(recall).toBeDefined();
+    expect(recall!.stage).toBe(0);
+    expect(recall!.sourceEvidenceId).toBe(evidence!.id);
   });
 });

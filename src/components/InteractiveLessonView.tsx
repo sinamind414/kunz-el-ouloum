@@ -657,6 +657,7 @@ const LESSON_DOCUMENT_EXERCISE_ID: Record<string, string> = {
   'd1-u1-l2-transcription': 'uracile_marque',
   'lecon_transcription': 'uracile_marque',
   'phase11_chapitres_21_22': 'photosynthese_cycle',
+  'synapse': 'synapse_integration',
 };
 
 function LessonExitSection({

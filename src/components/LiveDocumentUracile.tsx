@@ -163,9 +163,9 @@ export default function LiveDocumentUracile({ exerciseId = 'uracile_marque', onE
 
           {!passed && recordOutcome && (
             <ul className="text-[11px] leading-6 text-amber-800 dark:text-amber-200 list-disc list-inside">
-              {!recordOutcome.trace.structuredCriteria.observation && <li>اذكر ترتيب ظهور الوسم: أولاً في النواة ثم لاحقاً في الهيولى.</li>}
-              {!recordOutcome.trace.structuredCriteria.mechanism && <li>اشرح تركيب أو انتقال ARNm.</li>}
-              {!recordOutcome.trace.structuredCriteria.conclusion && <li>استنتج أن ARNm يحمل نسخة المعلومة.</li>}
+              {!recordOutcome.trace.structuredCriteria.observation && <li>اذكر الملاحظة الأساسية من الوثيقة.</li>}
+              {!recordOutcome.trace.structuredCriteria.mechanism && <li>اشرح الآلية العلمية.</li>}
+              {!recordOutcome.trace.structuredCriteria.conclusion && <li>استنتج النتيجة أو التفسير.</li>}
             </ul>
           )}
 
@@ -181,6 +181,8 @@ export default function LiveDocumentUracile({ exerciseId = 'uracile_marque', onE
               onClick={() => {
                 if (exerciseId === 'photosynthese_cycle') {
                   onOpenMicroRemediation?.('mr_thylakoide_vs_stroma');
+                } else if (exerciseId === 'synapse_integration') {
+                  onOpenMicroRemediation?.('mr_ppse_ppsi_threshold');
                 } else {
                   onOpenMicroRemediation?.('mr_arnm_vs_adn');
                 }
