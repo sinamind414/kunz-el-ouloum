@@ -50,8 +50,8 @@ export const CONCEPT_ROUTES: Record<string, ConceptRoute> = {
   subduction: {
     conceptId: 'subduction',
     unitId: 9,
-    lessonId: undefined,
-    documentExerciseId: 'subduction_schema',
+    lessonId: 'subduction',
+    documentExerciseId: 'subduction_water_melting',
     survivalCardId: 'sc_subduction',
   },
 };

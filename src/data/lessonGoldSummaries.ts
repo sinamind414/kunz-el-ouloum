@@ -127,6 +127,26 @@ export const LESSON_GOLD_SUMMARIES: Record<string, LessonGoldSummary> = {
     recallQuestionAr: 'ما هو دور Ca²⁺ في النقل المشبكي؟',
     review: { reviewed: false },
   },
+  'subduction': {
+    lessonId: 'subduction',
+    status: 'adaptation_pedagogique',
+    source: { sourceLabel: 'Résumé Kunz — programme BAC SVT Algérie' },
+    missionAr: 'كيف يؤدي غوص صفيحة محيطية إلى تشكل صهارة ونشاط بركاني فوق الصفيحة الطافية؟',
+    mechanismAr: [
+      'صفيحة محيطية باردة وكثيفة تنغرز',
+      'معادن مميهة تتحول في العمق',
+      'يتحرر الماء من اللوح الغائص',
+      'يخفض الماء درجة انصهار الوشاح فوق اللوح الغائص',
+      'يتولد صهارة أنديزيتية وتصعد',
+      'تغذي البركانية على الصفيحة الطافية',
+    ],
+    evidenceAr: 'الماء المحرر من اللوح الغائص يخفض درجة انصهار الوشاح ويولد صهارة أنديزيتية.',
+    vocabulary: ['اندساس', 'ماء', 'انصهار جزئي', 'وشاح', 'صهارة', 'بركانية'],
+    bacSentenceFrameAr: 'عند اندساس ______ يتحرر ______ مما يخفض درجة انصهار ______ ويتولد ______.',
+    commonErrorAr: 'الاعتقاد أن الصفيحة المحيطية تنصهر بالكامل لتولد الصهارة.',
+    recallQuestionAr: 'كيف يساهم الماء المحرر من اللوح الغائص في تولد الصهارة؟',
+    review: { reviewed: false },
+  },
 };
 
 export function getLessonGoldSummary(lessonId: string): LessonGoldSummary | undefined {

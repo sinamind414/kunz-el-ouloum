@@ -82,6 +82,17 @@ export const MICRO_REMEDIATIONS: Record<string, MicroRemediation> = {
     acceptedEvidence: ['PPSE', 'PPSI', 'عتبة', 'كمون عمل', 'تكامل'],
     nextAction: 'schedule_recall',
   },
+  'subduction_water': {
+    id: 'mr_subduction_water',
+    conceptId: 'subduction',
+    triggerCodes: ['MISSING_WATER', 'WRONG_SUBDUCTION_MELTING'],
+    titleAr: 'الماء يخفض درجة انصهار الوشاح فوق اللوح الغائص',
+    estimatedMinutes: 3,
+    explanationAr: 'الماء المحرر من اللوح المحيطي الغائص يخفض درجة انصهار الوشاح ويسبب انصهاراً جزئياً يولد صهارة أنديزيتية.',
+    activeQuestionAr: 'كيف يساهم الماء المحرر من اللوح الغائص في تولد الصهارة؟',
+    acceptedEvidence: ['ماء', 'انصهار جزئي', 'وشاح', 'صهارة'],
+    nextAction: 'schedule_recall',
+  },
 };
 
 export function getMicroRemediationByCode(code: string): MicroRemediation | undefined {

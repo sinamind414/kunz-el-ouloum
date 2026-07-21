@@ -30,6 +30,7 @@ beforeEach(() => {
 
 const uracileCtx = getDocumentPracticeContext('uracile_marque', 'uracile_marque_q1')!;
 const synapseCtx = getDocumentPracticeContext('synapse_integration', 'synapse_integration_q1')!;
+const subductionCtx = getDocumentPracticeContext('subduction_water_melting', 'subduction_water_melting_q1')!;
 
 const okResult = (score = 80): ValidationResult => ({
   score, maxScore: 20, passed: true, threshold: 70, errors: [], matchedLois: [], brokenLois: [],
@@ -224,6 +225,26 @@ describe('Uracile → proof → recall cycle', () => {
     expect(errorCreated).toBe(false);
 
     const recall = store.recalls.find((r) => r.conceptId === 'synapse' && r.completedAt == null);
+    expect(recall).toBeDefined();
+    expect(recall!.stage).toBe(0);
+    expect(recall!.sourceEvidenceId).toBe(evidence!.id);
+  });
+
+  it('9. subduction preuve document → RecallItem stage 0 planifié', () => {
+    const answer = 'عند اندساس الصفيحة المحيطية الباردة الكثيفة تتحرر معادن ماء من الصخور الغائصة. هذا الماء يخفض درجة انصهار الوشاح فوق اللوح الغائص فيحدث انصهار جزئي يولد صهارة أنديزيتية تصعد وتغذي بركانية القوس.';
+    const { evidence, errorCreated, store, trace } = recordDocumentTrace({
+      context: subductionCtx,
+      answer,
+      validationResult: okResult(80),
+    });
+
+    expect(trace.valid).toBe(true);
+    expect(evidence).not.toBeNull();
+    expect(evidence!.conceptId).toBe('subduction');
+    expect(evidence!.dimension).toBe('document');
+    expect(errorCreated).toBe(false);
+
+    const recall = store.recalls.find((r) => r.conceptId === 'subduction' && r.completedAt == null);
     expect(recall).toBeDefined();
     expect(recall!.stage).toBe(0);
     expect(recall!.sourceEvidenceId).toBe(evidence!.id);

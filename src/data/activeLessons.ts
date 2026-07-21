@@ -77,6 +77,11 @@ export const LESSON_PROGRESSION: Record<string, LessonProgression> = {
     recommendedReflexId: 'interpret',
     completionMessageAr: 'أحسنت! فهمت تحوّل التنبيه الكهربائي إلى رسالة كيميائية ثم كهربائية.',
   },
+  'subduction': {
+    nextLessonId: undefined,
+    recommendedReflexId: 'interpret',
+    completionMessageAr: 'أحسنت! فهمت كيف يؤدي الغوص إلى انصهار الوشاح ونشاط بركاني.',
+  },
   'd1-u1-l2-transcription': {
     nextLessonId: 'd1-u1-l3-traduction',
     recommendedReflexId: 'explain',
@@ -228,6 +233,44 @@ export const ACTIVE_LESSONS: Record<string, ActiveLesson> = {
               label: 'الاستنتاج',
               placeholder: 'استنتج كيف تعود الإشارة إلى شكل كهربائي بعد المشبكي...',
               requiredKeywords: ['PPSE', 'PPSI', 'كمون بعد مشبكي'],
+            },
+          ],
+        },
+      },
+    ],
+  },
+  subduction: {
+    id: 'subduction',
+    title: 'الدرس 11 : الغوص (Subduction)',
+    blocks: [
+      {
+        type: 'HOTSPOT_AND_METHODOLOGY',
+        objective: 'localiser zone de subduction puis analyser rôle de l\'eau libérée.',
+        introText:
+          'لاحظ مخطط الغوص. حدد اللوح الغائص ومصدر الماء ثم حلل كيف يخفض الماء درجة انصهار الوشاح.',
+        schemaSrc: '/assets/images/schemas/domaine3_tectonique/schema_16_subduction.svg',
+        hotspot: {
+          prompt: 'انقر على اللوح الغائص (الصفيحة المحيطية الكثيفة).',
+          correctZone: { x: 35, y: 60, radius: 25 },
+          successFeedback: 'صحيح! الصفيحة المحيطية الباردة الكثيفة تنغمس تحت الصفيحة الطافية.',
+        },
+        methodology: {
+          prompt: 'حلل كيف يخفض الماء المحرر درجة انصهار الوشاح فوق اللوح الغائص (تحليل محض).',
+          steps: [
+            {
+              label: 'الملاحظة',
+              placeholder: 'صف ما يحدث للصفيحة المحيطية عند الغوص...',
+              requiredKeywords: ['اندساس', 'صفيحة محيطية', 'كثيفة', 'باردة'],
+            },
+            {
+              label: 'الآلية',
+              placeholder: 'اشرح كيف يتحرر الماء من اللوح الغائص...',
+              requiredKeywords: ['ماء', 'معادن', 'الوشاح', 'انصهار جزئي'],
+            },
+            {
+              label: 'الاستنتاج',
+              placeholder: 'استنتج كيف تتولد الصهارة والبركانية...',
+              requiredKeywords: ['صهارة', 'بركانية', 'قوس', 'أنديزيت'],
             },
           ],
         },

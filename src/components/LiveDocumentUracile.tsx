@@ -183,6 +183,8 @@ export default function LiveDocumentUracile({ exerciseId = 'uracile_marque', onE
                   onOpenMicroRemediation?.('mr_thylakoide_vs_stroma');
                 } else if (exerciseId === 'synapse_integration') {
                   onOpenMicroRemediation?.('mr_ppse_ppsi_threshold');
+                } else if (exerciseId === 'subduction_water_melting') {
+                  onOpenMicroRemediation?.('mr_subduction_water');
                 } else {
                   onOpenMicroRemediation?.('mr_arnm_vs_adn');
                 }

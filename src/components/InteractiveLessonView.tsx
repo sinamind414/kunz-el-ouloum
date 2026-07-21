@@ -658,6 +658,7 @@ const LESSON_DOCUMENT_EXERCISE_ID: Record<string, string> = {
   'lecon_transcription': 'uracile_marque',
   'phase11_chapitres_21_22': 'photosynthese_cycle',
   'synapse': 'synapse_integration',
+  'subduction': 'subduction_water_melting',
 };
 
 function LessonExitSection({

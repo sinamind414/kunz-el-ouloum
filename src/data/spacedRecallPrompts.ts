@@ -45,6 +45,12 @@ export const SPACED_RECALL_PROMPTS: Record<string, SpacedRecallPrompt[]> = {
     { stage: 2, conceptId: 'synapse', questionAr: 'لماذا لا يولد PPSE واحد دائماً كمون عمل؟', reflexId: 'interpret', acceptedEvidence: ['PPSE', 'عتبة', 'تكامل', 'كمون عمل'], minEvidence: 3 },
     { stage: 3, conceptId: 'synapse', questionAr: 'فسّر كيف يؤدي الإدماج الزماني أو المكاني إلى بلوغ العتبة.', reflexId: 'validate', acceptedEvidence: ['إدماج زماني', 'إدماج مكاني', 'عتبة', 'PPSE', 'كمون عمل'], minEvidence: 3 },
   ],
+  subduction: [
+    { stage: 0, conceptId: 'subduction', questionAr: 'ما معنى الاندساس؟', reflexId: 'explain', acceptedEvidence: ['اندساس', 'صفيحة محيطية', 'أكثف', 'باردة'], minEvidence: 3 },
+    { stage: 1, conceptId: 'subduction', questionAr: 'ما دور الماء المحرر من اللوح الغائص؟', reflexId: 'explain', acceptedEvidence: ['ماء', 'انصهار', 'وشاح', 'درجة انصهار'], minEvidence: 3 },
+    { stage: 2, conceptId: 'subduction', questionAr: 'لماذا يحدث الانصهار الجزئي فوق اللوح الغائص؟', reflexId: 'interpret', acceptedEvidence: ['ماء', 'انصهار جزئي', 'وشاح', 'صهارة'], minEvidence: 3 },
+    { stage: 3, conceptId: 'subduction', questionAr: 'فسّر العلاقة بين الاندساس والمغماطية والبركانية.', reflexId: 'validate', acceptedEvidence: ['اندساس', 'ماء', 'انصهار', 'صهارة', 'بركانية', 'قوس'], minEvidence: 3 },
+  ],
 };
 
 export function getSpacedRecallPrompts(conceptId: string): SpacedRecallPrompt[] {
