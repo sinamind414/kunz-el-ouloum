@@ -28,6 +28,13 @@ describe('ConceptRoute (§6)', () => {
       expect(r.conceptId).toBe(id);
     }
   });
+
+  it('les nouveaux concepts n utilisent pas de carte de survie étrangère', () => {
+    for (const id of ['immunity_self_nonself', 'immunity_humoral_response', 'immunity_cellular_response', 'seismic_waves']) {
+      expect(getConceptRoute(id)?.survivalCardId).toBeUndefined();
+      expect(routeErrorToTarget(id).kind).toBe('lesson');
+    }
+  });
 });
 
 describe('Routage réel — priorité (§6)', () => {

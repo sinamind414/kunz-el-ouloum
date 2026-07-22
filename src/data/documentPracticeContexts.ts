@@ -25,6 +25,7 @@ export interface DocumentPracticeContext {
   // V3 §3.2 — étendu pour document vivant complet.
   sourceStatus?: 'manuel_officiel_verifie' | 'adaptation_pedagogique' | 'exercice_kunz' | 'a_valider_enseignant';
   documentTypeAr?: string;
+  observationAr: string; // donnée scientifique visible avant production
   promptObserveAr?: string; // demande d'observer, pas de conclure
   promptProduceAr?: string; // production BAC
   hintsAr?: [string, string]; // [où regarder, quel lien]
@@ -54,6 +55,7 @@ export const DOCUMENT_PRACTICE_CONTEXTS: DocumentPracticeContext[] = [
     ],
     trapAr: 'لا تقل إن الإنزيم يختفي عند بلوغ Vmax.',
     altAr: 'منحنى يصعد مع تركيز الركيزة ثم يستوي أفقياً عند سرعة قصوى.',
+    observationAr: 'تزداد سرعة التفاعل مع تركيز الركيزة ثم تستقر عند بلوغ السرعة القصوى Vmax.',
   },
   {
     exerciseId: 'curare_table',
@@ -71,6 +73,7 @@ export const DOCUMENT_PRACTICE_CONTEXTS: DocumentPracticeContext[] = [
     ],
     trapAr: 'الكورار يمنع الارتباط ولا يدمر الناقل.',
     altAr: 'جدول يوضح انخفاض قوة الانقباض كلما زاد تركيز الكورار.',
+    observationAr: 'تنخفض قوة الانقباض كلما ارتفع تركيز الكورار في الوسط.',
   },
   {
     exerciseId: 'nmj_ppm_courbe',
@@ -87,6 +90,7 @@ export const DOCUMENT_PRACTICE_CONTEXTS: DocumentPracticeContext[] = [
     ],
     trapAr: 'لا تخلط PPM مع PPSE أو PPSI.',
     altAr: 'منحنى يربط تركيز الناقل بزمن كمون اللوحة المحركة.',
+    observationAr: 'يتغير زمن كمون اللوحة المحركة حسب تركيز الناقل العصبي.',
   },
   {
     exerciseId: 'sarin_gb_double',
@@ -104,6 +108,7 @@ export const DOCUMENT_PRACTICE_CONTEXTS: DocumentPracticeContext[] = [
     ],
     trapAr: 'السارين يثبّط AChE ولا يدمر الناقل مباشرة.',
     altAr: 'وثيقة تجريبية تظهر استمرار الأستيل كولين في الشق المشبكي عند التسمم بالسارين.',
+    observationAr: 'يبقى الأستيل كولين في الشق المشبكي وتغيب نواتج تفكيكه عند وجود السارين.',
   },
   {
     exerciseId: 'rifamycine_h1h2',
@@ -121,6 +126,7 @@ export const DOCUMENT_PRACTICE_CONTEXTS: DocumentPracticeContext[] = [
     ],
     trapAr: 'الريفاميسين يمنع الاستنساخ ولا يمنع الترجمة مباشرة.',
     altAr: 'جدول يوضح غياب حلقات H1 وH2 (ARNm) عند إضافة الريفاميسين.',
+    observationAr: 'تغيب جزيئات ARNm عند إضافة الريفاميسين رغم وجود ADN.',
   },
   // V3 US-V3-02 — Document vivant uracile marqué (pilote transcription).
   {
@@ -142,6 +148,7 @@ export const DOCUMENT_PRACTICE_CONTEXTS: DocumentPracticeContext[] = [
     ],
     trapAr: 'لا تقل إن ADN يخرج من النواة.',
     altAr: 'تجربة: خلية بنواة مشعة، وسّم يظهر في النواة ثم في الهيولى بعد مدة أطول.',
+    observationAr: 'بعد مدة قصيرة يظهر الوسم في النواة. بعد مدة أطول يظهر في الهيولى.',
     promptObserveAr: 'أين يظهر الوسم أولاً؟ ثم أين يظهر لاحقاً؟',
     promptProduceAr: 'فسّر ماذا يدل انتقال الوسم من النواة إلى الهيولى.',
     hintsAr: [
@@ -175,6 +182,7 @@ export const DOCUMENT_PRACTICE_CONTEXTS: DocumentPracticeContext[] = [
     ],
     trapAr: 'لا تخلط بين التيلاكويد (ضوء) والحشوة (تثبيت CO2).',
     altAr: 'مخطط يظهر التيلاكويد (أغشية مكدّسة) والحشوة (فضاء داخلي) داخل الصانعة الخضراء.',
+    observationAr: 'تلتقط أغشية التيلاكويد الضوء وتنتج ATP وNADPH، بينما يثبت CO2 في الحشوة.',
     promptObserveAr: 'أين يحدث التقاط الفوتونات وتحليل الماء؟',
     promptProduceAr: 'حلّل دور التيلاكويد في تحويل الطاقة الضوئية.',
     hintsAr: [
@@ -207,6 +215,7 @@ export const DOCUMENT_PRACTICE_CONTEXTS: DocumentPracticeContext[] = [
     ],
     trapAr: 'لا تقل إن PPSE واحد يولد دائماً كمون عمل.',
     altAr: 'مخطط يظهر محصلة الكمونات بعد مشبكية متعددة عند القطعة الابتدائية.',
+    observationAr: 'يبقى PPSE واحد دون العتبة، بينما قد يبلغ مجموع كمونات متقاربة العتبة.',
     promptObserveAr: 'قارن بين تنبيه واحد وتنبيهات متقاربة: متى تبلغ المحصلة العتبة؟',
     promptProduceAr: 'فسّر لماذا لا يولد PPSE واحد كمون عمل دائماً، وكيف يؤدي الإدماج إلى بلوغ العتبة.',
     hintsAr: [
@@ -241,6 +250,7 @@ export const DOCUMENT_PRACTICE_CONTEXTS: DocumentPracticeContext[] = [
     ],
     trapAr: 'لا تنصهر الصفيحة المحيطية الغائصة بالكامل مباشرة لتولد الصهارة.',
     altAr: 'مخطط يظهر اللوح المحيطي الغائص، الماء المتحرر، وانصهار الوشاح فوقه.',
+    observationAr: 'يحرر اللوح الغائص الماء، ويظهر الانصهار الجزئي في الوشاح فوقه.',
     promptObserveAr: 'ما الذي يتحرر من اللوح الغائص عند الغوص العميق؟',
     promptProduceAr: 'فسّر كيف يساهم الماء المحرر من اللوح الغائص في تولد الصهارة والبركانية فوق الصفيحة الطافية.',
     hintsAr: [
@@ -275,6 +285,7 @@ export const DOCUMENT_PRACTICE_CONTEXTS: DocumentPracticeContext[] = [
     ],
     trapAr: 'لا تعتقد أن كل طفرة تغير الوظيفة؛ بعض الطفرات محايدة.',
     altAr: 'مخطط يظهر سلسلة الأحماض الأمينية، الطفرة النقطية، وتأثيرها على الموقع النشط.',
+    observationAr: 'يتغير حمض أميني في السلسلة، فتتغير طية البروتين وشكل موقعه الوظيفي.',
     promptObserveAr: 'ما الذي يتغير عندما يتغير حمض أميني واحد في سلسلة البروتين؟',
     promptProduceAr: 'فسّر كيف يؤدي تغير حمض أميني واحد إلى تغير وظيفة البروتين.',
     hintsAr: [
@@ -287,6 +298,149 @@ export const DOCUMENT_PRACTICE_CONTEXTS: DocumentPracticeContext[] = [
       evidence: ['تغير حمض أميني واحد', 'البنية الثالثية', 'الموقع النشط'],
       mechanism: ['طية البروتين', 'شكل الموقع النشط', 'تفاعل مع الركيزة'],
       conclusion: ['الوظيفة أو المرض'],
+    },
+  },
+  {
+    exerciseId: 'cmh_transplant_compatibility',
+    questionId: 'cmh_transplant_compatibility_q1',
+    conceptId: 'immunity_self_nonself',
+    unitId: 4,
+    documentType: 'schema',
+    reflexId: 'interpret',
+    domain: 'immuno',
+    sourceStatus: 'adaptation_pedagogique',
+    documentTypeAr: 'مخطط CMH ورفض الطعم',
+    goalAr: 'ربط اختلاف جزيئات التوافق النسيجي بتعرف الجهاز المناعي على خلايا الطعم كلاذات.',
+    vocabulary: ['الذات', 'اللاذات', 'CMH', 'مستضد', 'طعم', 'رفض'],
+    expectedEvidence: [
+      'اختلاف CMH بين المعطي والمستقبل',
+      'تعرف الجهاز المناعي على الخلايا الغريبة',
+      'رفض الطعم غير المتوافق',
+    ],
+    trapAr: 'لا تعتقد أن رفض الطعم يعتمد فقط على فصيلة الدم.',
+    altAr: 'مخطط يظهر خلايا طعم تحمل CMH مختلف عن المستقبل.',
+    observationAr: 'يحمل الطعم غير المتوافق جزيئات CMH تختلف عن جزيئات المستقبل ويحدث رفض للطعم.',
+    promptObserveAr: 'قارن بين حالة طعم متوافق وحالة طعم غير متوافق: ما الذي يختلف؟',
+    promptProduceAr: 'فسّر لماذا يؤدي اختلاف جزيئات CMH بين المعطي والمستقبل إلى رفض الطعم.',
+    hintsAr: [
+      'انظر إلى جزيئات CMH على سطح الخلايا.',
+      'كيف تتعرف اللمفاويات T على الخلايا الذاتية؟',
+    ],
+    correctionAr:
+      'جزيئات CMH تحمل علامة التعرف على الخلايا الذاتية. عند اختلافها بين المعطي والمستقبل، تتعرف الجهاز المناعي على خلايا الطعم كلاذات وترفضها.',
+    criteria: {
+      evidence: ['اختلاف CMH', 'رفض الطعم'],
+      mechanism: ['تعرف الجهاز المناعي', 'خلايا الطعم كلاذات'],
+      conclusion: ['استجابة مناعية ضد الطعم', 'رفض الطعم غير المتوافق'],
+    },
+  },
+  {
+    exerciseId: 'lb_antibody_response',
+    questionId: 'lb_antibody_response_q1',
+    conceptId: 'immunity_humoral_response',
+    unitId: 4,
+    documentType: 'schema',
+    reflexId: 'explain',
+    domain: 'immuno',
+    sourceStatus: 'adaptation_pedagogique',
+    documentTypeAr: 'مخطط الاستجابة الخلطية — LB → بلازمية → أجسام مضادة',
+    goalAr: 'تفسير كيف تؤدي اللمفاويات B إلى إنتاج أجسام مضادة نوعية.',
+    vocabulary: ['لمفاوية B', 'انتقاء نسيلي', 'تكاثر نسيلي', 'خلية بلازمية', 'جسم مضاد', 'معقد مناعي'],
+    expectedEvidence: [
+      'تعرف اللمفاوية B على المستضد',
+      'تكاثر وتمايز',
+      'إفراز أجسام مضادة نوعية',
+    ],
+    trapAr: 'لا تعتقد أن الأجسام المضادة تفرزها الخلايا اللمفاوية B مباشرة.',
+    altAr: 'مخطط يظهر تمايز اللمفاوية B إلى خلايا بلازمية مفرزة للأجسام المضادة.',
+    observationAr: 'تتعرف اللمفاوية B على المستضد ثم تتكاثر وتتمايز إلى خلايا بلازمية تفرز أجساماً مضادة.',
+    promptObserveAr: 'رتب مراحل الاستجابة الخلطية من تعرف اللمفاوية B إلى ظهور الأجسام المضادة.',
+    promptProduceAr: 'اشرح كيف يؤدي التعرف النوعي للمستضد إلى إنتاج أجسام مضادة نوعية.',
+    hintsAr: [
+      'ما هو دور الانتقاء النسيلي في الاستجابة المناعية؟',
+      'ما هي الخلية التي تفرز الأجسام المضادة؟',
+    ],
+    correctionAr:
+      'تتعرف اللمفاوية B على المستضد، تتكاثر تكاثراً نسيلياً، تتمايز إلى خلايا بلازمية تفرز أجساماً مضادة نوعية.',
+    criteria: {
+      evidence: ['لمفاوية B نوعية', 'خلايا بلازمية', 'أجسام مضادة'],
+      mechanism: ['انتقاء نسيلي', 'تكاثر', 'تمايز'],
+      conclusion: ['إفراز أجسام مضادة نوعية', 'استجابة مناعية خلطية'],
+    },
+  },
+  {
+    exerciseId: 'lt_target_cell_response',
+    questionId: 'lt_target_cell_response_q1',
+    conceptId: 'immunity_cellular_response',
+    unitId: 4,
+    documentType: 'schema',
+    reflexId: 'explain',
+    domain: 'immuno',
+    sourceStatus: 'adaptation_pedagogique',
+    documentTypeAr: 'مخطط الاستجابة الخلوية — LT → إقصاء خلوي',
+    goalAr: 'تفسير كيف تقصي اللمفاويات T الخلايا المصابة أو غير الذاتية.',
+    vocabulary: ['لمفاوية T', 'خلية هدف', 'CMH', 'محدد مستضدي', 'تعرف نوعي', 'إقصاء خلوي'],
+    expectedEvidence: [
+      'لمفاويات T نوعية',
+      'تعرف على المحدد المستضدي',
+      'إقصاء الخلية الهدف',
+    ],
+    trapAr: 'لا تعتقد أن الاستجابة الخلوية تعتمد على الأجسام المضادة.',
+    altAr: 'مخطط يظهر اللمفاوية T تتعرف على خلية هدف وتقضي عليها.',
+    observationAr: 'تنخفض الخلايا الهدف الحية عند وجود لمفاويات T نوعية تتعرف على محددها المستضدي.',
+    promptObserveAr: 'قارن عدد الخلايا الهدف الحية بوجود اللمفاويات T النوعية وغيابها.',
+    promptProduceAr: 'اشرح كيف يؤدي التعرف النوعي لللمفاويات T إلى إقصاء الخلايا المصابة.',
+    hintsAr: [
+      'ما هو دور المستقبلات على سطح اللمفاوية T؟',
+      'كيف تتعرف اللمفاوية T على الخلية المستهدفة؟',
+    ],
+    correctionAr:
+      'تتعرف اللمفاوية T على المحدد المستضدي المعروض على CMH، تنشط وتفرز مواد سامة تقتل الخلية الهدف.',
+    criteria: {
+      evidence: ['لمفاويات T نوعية', 'انخفاض الخلايا الهدف'],
+      mechanism: ['تعرف نوعي على المحدد المستضدي'],
+      conclusion: ['إقصاء الخلية الهدف', 'استجابة مناعية خلوية'],
+    },
+  },
+  {
+    exerciseId: 'seismic_p_s_core',
+    questionId: 'seismic_p_s_core_q1',
+    conceptId: 'seismic_waves',
+    unitId: 9,
+    documentType: 'schema',
+    reflexId: 'interpret',
+    domain: 'tectonique',
+    sourceStatus: 'adaptation_pedagogique',
+    documentTypeAr: 'مخطط الأمواج P و S عبر طبقات الأرض',
+    goalAr: 'ربط تغير سلوك الأمواج الزلزالية بانقطاعات باطن الأرض.',
+    vocabulary: [
+      'موجات P',
+      'موجات S',
+      'انقطاع غوتنبرغ',
+      'نواة خارجية',
+      'وسط سائل',
+      'سرعة الانتشار',
+    ],
+    expectedEvidence: [
+      'اختفاء موجات S',
+      'تغير سرعة موجات P',
+      'النواة الخارجية سائلة',
+    ],
+    trapAr: 'لا تعتقد أن الموجات S تنتشر في جميع الوسائط.',
+    altAr: 'مخطط يظهر انتشار الأمواج الزلزالية واختفاء S عند النواة الخارجية.',
+    observationAr: 'تختفي موجات S عند النواة الخارجية وتتغير سرعة موجات P عند الانقطاعات.',
+    promptObserveAr: 'ما الذي يحدث لسرعة الموجات P و S عند الانقطاعات المختلفة؟',
+    promptProduceAr: 'فسّر لماذا يدل اختفاء الموجات S على سيولة النواة الخارجية.',
+    hintsAr: [
+      'انظر إلى سلوك الموجات S عند النواة الخارجية.',
+      'ما هي الخاصية الفيزيائية للنواة الخارجية التي تمنع انتشار الموجات S؟',
+    ],
+    correctionAr:
+      'الموجات S لا تنتشر في السوائل؛ لذلك يختفي جزء S عند النواة الخارجية السائلة، بينما تنكسر الموجات P.',
+    criteria: {
+      evidence: ['اختفاء موجات S', 'تغير سرعة P'],
+      mechanism: ['موجات S لا تنتشر في السوائل', 'قوى القص'],
+      conclusion: ['النواة الخارجية سائلة'],
     },
   },
 ];

@@ -94,8 +94,12 @@ export default function LiveDocumentUracile({ exerciseId = 'uracile_marque', onE
 
       {/* Observation demandée avant conclusion */}
       <div className="rounded-xl bg-white dark:bg-black/20 border border-amber-200/50 dark:border-amber-900/30 p-3 text-sm leading-7">
-        <span className="font-black">لاحظ :</span> بعد مدة قصيرة يظهر الوسم في النواة. بعد مدة أطول يظهر في الهيولى.
+        <span className="font-black">لاحظ :</span> {ctx.observationAr}
       </div>
+
+      {ctx.trapAr && (
+        <p className="text-xs leading-6 text-amber-800 dark:text-amber-300">{ctx.trapAr}</p>
+      )}
 
       <textarea
         value={answer}
@@ -108,7 +112,7 @@ export default function LiveDocumentUracile({ exerciseId = 'uracile_marque', onE
           setHintIndex(0);
         }}
         rows={4}
-        placeholder="فسّر مسار ظهور الوسم (نواة → هيولى) وما يدل عليه..."
+        placeholder={ctx.promptProduceAr}
         className="w-full p-3 rounded-2xl border border-[#e2dabf]/60 bg-white dark:bg-[#0c0f0d] text-sm leading-8 text-right focus:outline-none focus:ring-2 focus:ring-[#006d37]/20"
         dir="rtl"
       />
@@ -145,7 +149,7 @@ export default function LiveDocumentUracile({ exerciseId = 'uracile_marque', onE
           <div className={`p-3 rounded-xl text-[12px] leading-7 font-bold border ${passed ? 'bg-[#2ecc71]/10 text-[#006d37] border-[#2ecc71]/20' : 'bg-amber-50 text-amber-800 border-amber-200 dark:bg-amber-950/20 dark:text-amber-200 dark:border-amber-900/40'}`}>
             {passed
               ? '✅ أحسنت، ربطت الملاحظة بآلية علمية. تم تسجيل دليل حقيقي.'
-              : '⚠️ أضف الملاحظة، ثم آلية ARNm، ثم استنتاج انتقال المعلومة. تم تسجيل نقطة تحتاج إلى مراجعة.'}
+              : '⚠️ أضف الملاحظة ثم الآلية ثم الخلاصة العلمية. تم تسجيل نقطة تحتاج إلى مراجعة.'}
 
             {validationResult && (
               <span className="block mt-1 font-black">
@@ -163,9 +167,9 @@ export default function LiveDocumentUracile({ exerciseId = 'uracile_marque', onE
 
           {!passed && recordOutcome && (
             <ul className="text-[11px] leading-6 text-amber-800 dark:text-amber-200 list-disc list-inside">
-              {!recordOutcome.trace.structuredCriteria.observation && <li>اذكر الملاحظة الأساسية من الوثيقة.</li>}
-              {!recordOutcome.trace.structuredCriteria.mechanism && <li>اشرح الآلية العلمية.</li>}
-              {!recordOutcome.trace.structuredCriteria.conclusion && <li>استنتج النتيجة أو التفسير.</li>}
+              {!recordOutcome.trace.structuredCriteria.observation && <li>أضف دليلاً من الوثيقة.</li>}
+              {!recordOutcome.trace.structuredCriteria.mechanism && <li>اربط الدليل بآلية علمية.</li>}
+              {!recordOutcome.trace.structuredCriteria.conclusion && <li>اكتب خلاصة تجيب عن السؤال.</li>}
             </ul>
           )}
 
@@ -187,6 +191,14 @@ export default function LiveDocumentUracile({ exerciseId = 'uracile_marque', onE
                   onOpenMicroRemediation?.('mr_subduction_water');
                 } else if (exerciseId === 'mutation_protein_function') {
                   onOpenMicroRemediation?.('mr_primary_structure_function');
+                } else if (exerciseId === 'cmh_transplant_compatibility') {
+                  onOpenMicroRemediation?.('mr_cmh_self_nonself');
+                } else if (exerciseId === 'lb_antibody_response') {
+                  onOpenMicroRemediation?.('mr_lb_plasmocyte_antibody');
+                } else if (exerciseId === 'lt_target_cell_response') {
+                  onOpenMicroRemediation?.('mr_lt_target_cell');
+                } else if (exerciseId === 'seismic_p_s_core') {
+                  onOpenMicroRemediation?.('mr_p_s_liquid_core');
                 } else {
                   onOpenMicroRemediation?.('mr_arnm_vs_adn');
                 }

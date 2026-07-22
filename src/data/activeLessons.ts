@@ -87,6 +87,21 @@ export const LESSON_PROGRESSION: Record<string, LessonProgression> = {
     recommendedReflexId: 'interpret',
     completionMessageAr: 'أحسنت! فهمت كيف يحدد تتابع الأحماض الأمينية بنية البروتين ووظيفته.',
   },
+  'immunity_self_nonself': {
+    nextLessonId: 'immunity_humoral_response',
+    recommendedReflexId: 'interpret',
+    completionMessageAr: 'أكملت التمييز بين الذات واللاذات. الآن انتقل إلى الاستجابة الخلطية.',
+  },
+  'immunity_humoral_response': {
+    nextLessonId: 'immunity_cellular_response',
+    recommendedReflexId: 'explain',
+    completionMessageAr: 'أكملت الاستجابة الخلطية. الآن انتقل إلى الاستجابة الخلوية.',
+  },
+  'immunity_cellular_response': {
+    nextLessonId: undefined,
+    recommendedReflexId: 'explain',
+    completionMessageAr: 'أكملت مسار الاستجابات المناعية.',
+  },
   'd1-u1-l2-transcription': {
     nextLessonId: 'd1-u1-l3-traduction',
     recommendedReflexId: 'explain',
@@ -314,6 +329,158 @@ export const ACTIVE_LESSONS: Record<string, ActiveLesson> = {
               label: 'الاستنتاج',
               placeholder: 'استنتج كيف يحدد الموقع النشط الوظيفة البيولوجية...',
               requiredKeywords: ['وظيفة', 'تفاعل', 'ركيزة', 'مرض'],
+            },
+          ],
+        },
+      },
+    ],
+  },
+  immunity_self_nonself: {
+    id: 'immunity_self_nonself',
+    title: 'الدرس 12 : الذات واللاذات (Immunité 1)',
+    blocks: [
+      {
+        type: 'HOTSPOT_AND_METHODOLOGY',
+        objective: 'comprendre comment le système immunitaire distingue le soi du non-soi via le CMH.',
+        introText:
+          'لاحظ مخطط CMH. حدد marker de reconnaissance puis explique pourquoi un greffe peut être rejeté.',
+        schemaSrc: '/assets/images/schemas/domaine1_proteines/schema_19_immunite_cmh.svg',
+        hotspot: {
+          prompt: 'انقر على molécules de CMH (marqueurs du soi).',
+          correctZone: { x: 50, y: 50, radius: 20 },
+          successFeedback: 'صحيح! Le CMH porte l\'identité immunitaire de chaque cellule.',
+        },
+        methodology: {
+          prompt: 'حلل كيف ي Distingue le système immunitaire le soi du non-soi (analyse pure).',
+          steps: [
+            {
+              label: 'الملاحظة',
+              placeholder: 'صف ما تحمله خلايا الجسم على سطحها...',
+              requiredKeywords: ['CMH', 'ذات', 'خلايا'],
+            },
+            {
+              label: 'الآلية',
+              placeholder: 'اشرح كيف تتعرف اللمفاويات T على الخلايا الذاتية...',
+              requiredKeywords: ['تعرف مناعي', 'CMH', 'لاذات'],
+            },
+            {
+              label: 'الاستنتاج',
+              placeholder: 'استنتج لماذا يرفض الطعم غير المتوافق...',
+              requiredKeywords: ['رفض', 'طعم', 'CMH', 'تعرف'],
+            },
+          ],
+        },
+      },
+    ],
+  },
+  immunity_humoral_response: {
+    id: 'immunity_humoral_response',
+    title: 'الدرس 13 : الاستجابة الخلطية (Immunité 2)',
+    blocks: [
+      {
+        type: 'HOTSPOT_AND_METHODOLOGY',
+        objective: 'expliquer comment les lymphocytes B produisent des anticorps spécifiques.',
+        introText:
+          'لاحظ مخطط الاستجابة الخلطية. حدد LB puis suit son activation jusqu\'à la cellule plasmatique.',
+        schemaSrc: '/assets/images/schemas/domaine1_proteines/schema_20_immunite_humorale.svg',
+        hotspot: {
+          prompt: 'انقر sur lymphocyte B (cellule qui reconnaît l\'antigène).',
+          correctZone: { x: 50, y: 50, radius: 20 },
+          successFeedback: 'صحيح! Le lymphocyte B reconnaît l\'antigène spécifiquement.',
+        },
+        methodology: {
+          prompt: 'حلل كيف تؤدي اللمفاوية B إلى إنتاج أجسام مضادة نوعية (تحليل محض).',
+          steps: [
+            {
+              label: 'الملاحظة',
+              placeholder: 'صف ما يحدث عند تعرف اللمفاوية B على المستضد...',
+              requiredKeywords: ['لمفاوية B', 'مستضد', 'تعرف'],
+            },
+            {
+              label: 'الآلية',
+              placeholder: 'اشرح كيف تتكاثر وتتمايز اللمفاوية B...',
+              requiredKeywords: ['تكاثر نسيلي', 'تمايز', 'خلية بلازمية'],
+            },
+            {
+              label: 'الاستنتاج',
+              placeholder: 'استنتج كيف تفرز الخلايا البلازمية أجساماً مضادة...',
+              requiredKeywords: ['جسم مضاد', 'إفراز', 'بلازمية'],
+            },
+          ],
+        },
+      },
+    ],
+  },
+   immunity_cellular_response: {
+    id: 'immunity_cellular_response',
+    title: 'الدرس 14 : الاستجابة الخلوية (Immunité 3)',
+    blocks: [
+      {
+        type: 'HOTSPOT_AND_METHODOLOGY',
+        objective: 'expliquer comment les lymphocytes T éliminent les cellules infectées.',
+        introText:
+          'لاحظ مخطط الاستجابة الخلوية. حدد LT puis explique comment elle reconnaît la cellule cible.',
+        schemaSrc: '/assets/images/schemas/domaine1_proteines/schema_21_immunite_cellulaire.svg',
+        hotspot: {
+          prompt: 'انقر sur lymphocyte T (cellule qui tue la cible).',
+          correctZone: { x: 50, y: 50, radius: 20 },
+          successFeedback: 'صحيح! Le lymphocyte T tue la cellule cible par contact.',
+        },
+        methodology: {
+          prompt: 'حلل كيف تقصي اللمفاويات T الخلايا المصابة (تحليل محض).',
+          steps: [
+            {
+              label: 'الملاحظة',
+              placeholder: 'صف ما تفعله اللمفاوية T تجاه الخلية الهدف...',
+              requiredKeywords: ['لمفاوية T', 'خلية هدف', 'تعرف'],
+            },
+            {
+              label: 'الآلية',
+              placeholder: 'اشرح كيف تتعرف اللمفاوية T على الخلية المصابة...',
+              requiredKeywords: ['محدد مستضدي', 'CMH', 'تعرف نوعي'],
+            },
+            {
+              label: 'الاستنتاج',
+              placeholder: 'استنتج كيف يتم إقصاء الخلية الهدف...',
+              requiredKeywords: ['إقصاء خلوي', 'استجابة خلوية', 'قتل'],
+            },
+          ],
+        },
+      },
+    ],
+  },
+  seismic_waves: {
+    id: 'seismic_waves',
+    title: 'الدرس 20 : الأمواج الزلزالية (Séismes & structure terrestre)',
+    blocks: [
+      {
+        type: 'HOTSPOT_AND_METHODOLOGY',
+        objective: 'expliquer comment les ondes P et S révèlent la structure de la Terre.',
+        introText:
+          'لاحظ مخطط انتشار الأمواج الزلزالية. حدد onde P puis onde S puis explique comportement à la discontinuité de Gutenberg.',
+        schemaSrc: '/assets/images/schemas/domaine3_tectonique/schema_14_ondes.svg',
+        hotspot: {
+          prompt: 'انقر sur onde P (onde de compression).',
+          correctZone: { x: 50, y: 50, radius: 20 },
+          successFeedback: 'صحيح! Les ondes P sont des ondes de compression qui se propagent dans tous les milieux.',
+        },
+        methodology: {
+          prompt: 'حلل كيف تكشف الأمواج الزلزالية عن بنية باطن الأرض (تحليل محض).',
+          steps: [
+            {
+              label: 'الملاحظة',
+              placeholder: 'صف سلوك الموجات P و S في القشرة والوشاح...',
+              requiredKeywords: ['موجات P', 'موجات S', 'سرعة', 'وسط'],
+            },
+            {
+              label: 'الآلية',
+              placeholder: 'اشرح ماذا يحدث عند انقطاع غوتنبرغ...',
+              requiredKeywords: ['اختفاء S', 'نواة خارجية', 'سائلة', 'موجات P'],
+            },
+            {
+              label: 'الاستنتاج',
+              placeholder: 'استنتج لماذا تدل هذه الظواهر على سيولة النواة الخارجية...',
+              requiredKeywords: ['سائلة', 'قوى قص', 'نواة خارجية', 'استنتاج'],
             },
           ],
         },

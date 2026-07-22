@@ -35,9 +35,9 @@ const failResult = (): ValidationResult => ({
 });
 
 describe('DocumentPracticeContext', () => {
-  it('les 10 contextes prioritaires existent (dont uracile_marque V3 + photosynthese_cycle + synapse_integration + subduction_water_melting + mutation_protein_function)', () => {
+  it('les 14 contextes prioritaires existent (dont uracile_marque V3 + photosynthese_cycle + synapse_integration + subduction_water_melting + mutation_protein_function + cmh_transplant_compatibility + lb_antibody_response + lt_target_cell_response + seismic_p_s_core)', () => {
     const ids = DOCUMENT_PRACTICE_CONTEXTS.map((c) => c.exerciseId);
-    expect(ids).toEqual(['michaelis_courbe', 'curare_table', 'nmj_ppm_courbe', 'sarin_gb_double', 'rifamycine_h1h2', 'uracile_marque', 'photosynthese_cycle', 'synapse_integration', 'subduction_water_melting', 'mutation_protein_function']);
+    expect(ids).toEqual(['michaelis_courbe', 'curare_table', 'nmj_ppm_courbe', 'sarin_gb_double', 'rifamycine_h1h2', 'uracile_marque', 'photosynthese_cycle', 'synapse_integration', 'subduction_water_melting', 'mutation_protein_function', 'cmh_transplant_compatibility', 'lb_antibody_response', 'lt_target_cell_response', 'seismic_p_s_core']);
   });
 
   it('chaque contexte a goalAr, 3-8 vocabulaire, expectedEvidence non vide, altAr', () => {
@@ -74,6 +74,25 @@ describe('validateDocumentTrace', () => {
   it('score >=70 mais preuve attendue absente → invalide', () => {
     const r = validateDocumentTrace({ context: ctx, answer: 'هذا الإنزيم مهم جداً في الخلية', validationResult: okResult() });
     expect(r.valid).toBe(false);
+  });
+
+  it('LT exige le déterminant antigénique dans le mécanisme', () => {
+    const ltCtx = getDocumentPracticeContext('lt_target_cell_response', 'lt_target_cell_response_q1')!;
+    const incomplete = validateDocumentTrace({
+      context: ltCtx,
+      answer: 'لمفاويات T نوعية تعرف نوعي إقصاء الخلية الهدف',
+      validationResult: okResult(),
+    });
+    const complete = validateDocumentTrace({
+      context: ltCtx,
+      answer: 'لمفاويات T نوعية تعرف نوعي على المحدد المستضدي إقصاء الخلية الهدف',
+      validationResult: okResult(),
+    });
+
+    expect(incomplete.structuredCriteria.mechanism).toBe(false);
+    expect(incomplete.valid).toBe(false);
+    expect(complete.structuredCriteria.mechanism).toBe(true);
+    expect(complete.valid).toBe(true);
   });
 });
 

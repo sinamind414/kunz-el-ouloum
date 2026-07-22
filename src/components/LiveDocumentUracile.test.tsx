@@ -84,8 +84,8 @@ describe('LiveDocumentUracile', () => {
     await user.click(screen.getAllByRole('button', { name: /صحّح بالمصحح الحقيقي/ })[0]);
 
     expect(await screen.findByText(/تم تسجيل نقطة تحتاج إلى مراجعة/)).toBeDefined();
-    expect(screen.getByText(/اذكر الملاحظة الأساسية من الوثيقة/)).toBeDefined();
-    expect(screen.getByText(/اشرح الآلية العلمية/)).toBeDefined();
+    expect(screen.getByText(/أضف دليلاً من الوثيقة/)).toBeDefined();
+    expect(screen.getByText(/اربط الدليل بآلية علمية/)).toBeDefined();
 
     const microBtn = screen.getByRole('button', { name: /ميكرو-تصحيح/ });
     expect(microBtn).toBeDefined();
@@ -155,5 +155,100 @@ describe('LiveDocumentUracile', () => {
     expect(microBtn).toBeDefined();
     await user.click(microBtn);
     expect(onMicro).toHaveBeenCalledWith('mr_primary_structure_function');
+  });
+
+  it('document cmh → micro-reprise immunité', async () => {
+    const user = userEvent.setup();
+    const onMicro = vi.fn();
+    render(<LiveDocumentUracile exerciseId="cmh_transplant_compatibility" onOpenMicroRemediation={onMicro} />);
+
+    const textarea = screen.getByRole('textbox');
+    await user.type(textarea, 'رفض الطعم يعتمد فقط على فصيلة الدم');
+    await user.click(screen.getAllByRole('button', { name: /صحّح بالمصحح الحقيقي/ })[0]);
+
+    expect(await screen.findByText(/تم تسجيل نقطة تحتاج إلى مراجعة/)).toBeDefined();
+    const microBtn = screen.getByRole('button', { name: /ميكرو-تصحيح/ });
+    expect(microBtn).toBeDefined();
+    await user.click(microBtn);
+    expect(onMicro).toHaveBeenCalledWith('mr_cmh_self_nonself');
+  });
+
+  it('document LB → micro-reprise réponse humorale', async () => {
+    const user = userEvent.setup();
+    const onMicro = vi.fn();
+    render(<LiveDocumentUracile exerciseId="lb_antibody_response" onOpenMicroRemediation={onMicro} />);
+
+    const textarea = screen.getByRole('textbox');
+    await user.type(textarea, 'الخلايا اللمفاوية B تفرز الأجسام المضادة مباشرة');
+    await user.click(screen.getAllByRole('button', { name: /صحّح بالمصحح الحقيقي/ })[0]);
+
+    expect(await screen.findByText(/تم تسجيل نقطة تحتاج إلى مراجعة/)).toBeDefined();
+    const microBtn = screen.getByRole('button', { name: /ميكرو-تصحيح/ });
+    expect(microBtn).toBeDefined();
+    await user.click(microBtn);
+    expect(onMicro).toHaveBeenCalledWith('mr_lb_plasmocyte_antibody');
+  });
+
+  it('document LT → micro-reprise réponse cellulaire', async () => {
+    const user = userEvent.setup();
+    const onMicro = vi.fn();
+    render(<LiveDocumentUracile exerciseId="lt_target_cell_response" onOpenMicroRemediation={onMicro} />);
+
+    const textarea = screen.getByRole('textbox');
+    await user.type(textarea, 'الاستجابة الخلوية تعتمد على الأجسام المضادة');
+    await user.click(screen.getAllByRole('button', { name: /صحّح بالمصحح الحقيقي/ })[0]);
+
+    expect(await screen.findByText(/تم تسجيل نقطة تحتاج إلى مراجعة/)).toBeDefined();
+    const microBtn = screen.getByRole('button', { name: /ميكرو-تصحيح/ });
+    expect(microBtn).toBeDefined();
+    await user.click(microBtn);
+    expect(onMicro).toHaveBeenCalledWith('mr_lt_target_cell');
+  });
+
+  it('document seismic → micro-reprise ondes sismiques', async () => {
+    const user = userEvent.setup();
+    const onMicro = vi.fn();
+    render(<LiveDocumentUracile exerciseId="seismic_p_s_core" onOpenMicroRemediation={onMicro} />);
+
+    const textarea = screen.getByRole('textbox');
+    await user.type(textarea, 'الموجات S تنتشر في جميع الوسائط بما فيها السوائل');
+    await user.click(screen.getAllByRole('button', { name: /صحّح بالمصحح الحقيقي/ })[0]);
+
+    expect(await screen.findByText(/تم تسجيل نقطة تحتاج إلى مراجعة/)).toBeDefined();
+    const microBtn = screen.getByRole('button', { name: /ميكرو-تصحيح/ });
+    expect(microBtn).toBeDefined();
+    await user.click(microBtn);
+    expect(onMicro).toHaveBeenCalledWith('mr_p_s_liquid_core');
+  });
+
+  it.each([
+    {
+      exerciseId: 'cmh_transplant_compatibility',
+      observation: /يحمل الطعم غير المتوافق جزيئات CMH/,
+      prompt: 'فسّر لماذا يؤدي اختلاف جزيئات CMH بين المعطي والمستقبل إلى رفض الطعم.',
+    },
+    {
+      exerciseId: 'lb_antibody_response',
+      observation: /تتمايز إلى خلايا بلازمية تفرز أجساماً مضادة/,
+      prompt: 'اشرح كيف يؤدي التعرف النوعي للمستضد إلى إنتاج أجسام مضادة نوعية.',
+    },
+    {
+      exerciseId: 'lt_target_cell_response',
+      observation: /لمفاويات T نوعية تتعرف على محددها المستضدي/,
+      prompt: 'اشرح كيف يؤدي التعرف النوعي لللمفاويات T إلى إقصاء الخلايا المصابة.',
+    },
+    {
+      exerciseId: 'seismic_p_s_core',
+      observation: /تختفي موجات S عند النواة الخارجية/,
+      prompt: 'فسّر لماذا يدل اختفاء الموجات S على سيولة النواة الخارجية.',
+    },
+  ])('affiche le contenu réel du contexte $exerciseId sans contenu uracile', ({ exerciseId, observation, prompt }) => {
+    render(<LiveDocumentUracile exerciseId={exerciseId} />);
+
+    expect(screen.getByText(observation)).toBeDefined();
+    expect(screen.getByPlaceholderText(prompt)).toBeDefined();
+    expect(screen.queryByText(/ARNm/)).toBeNull();
+    expect(screen.queryByText(/اليوراسيل/)).toBeNull();
+    expect(screen.queryByText(/الهيولى/)).toBeNull();
   });
 });

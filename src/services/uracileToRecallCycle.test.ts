@@ -32,6 +32,10 @@ const uracileCtx = getDocumentPracticeContext('uracile_marque', 'uracile_marque_
 const synapseCtx = getDocumentPracticeContext('synapse_integration', 'synapse_integration_q1')!;
 const subductionCtx = getDocumentPracticeContext('subduction_water_melting', 'subduction_water_melting_q1')!;
 const proteinCtx = getDocumentPracticeContext('mutation_protein_function', 'mutation_protein_function_q1')!;
+const cmhCtx = getDocumentPracticeContext('cmh_transplant_compatibility', 'cmh_transplant_compatibility_q1')!;
+const lbCtx = getDocumentPracticeContext('lb_antibody_response', 'lb_antibody_response_q1')!;
+const ltCtx = getDocumentPracticeContext('lt_target_cell_response', 'lt_target_cell_response_q1')!;
+const seismicCtx = getDocumentPracticeContext('seismic_p_s_core', 'seismic_p_s_core_q1')!;
 
 const okResult = (score = 80): ValidationResult => ({
   score, maxScore: 20, passed: true, threshold: 70, errors: [], matchedLois: [], brokenLois: [],
@@ -266,6 +270,91 @@ describe('Uracile → proof → recall cycle', () => {
     expect(errorCreated).toBe(false);
 
     const recall = store.recalls.find((r) => r.conceptId === 'protein_structure_function' && r.completedAt == null);
+    expect(recall).toBeDefined();
+    expect(recall!.stage).toBe(0);
+    expect(recall!.sourceEvidenceId).toBe(evidence!.id);
+  });
+
+  it('11. cmh preuve document → RecallItem stage 0 planifié', () => {
+    const answer = 'اختلاف CMH بين المعطي والمستقبل. تعرف الجهاز المناعي على الخلايا الغريبة. رفض الطعم غير المتوافق.';
+    const { evidence, errorCreated, store, trace } = recordDocumentTrace({
+      context: cmhCtx,
+      answer,
+      validationResult: okResult(80),
+    });
+
+    expect(trace.valid).toBe(true);
+    expect(evidence).not.toBeNull();
+    expect(evidence!.conceptId).toBe('immunity_self_nonself');
+    expect(evidence!.dimension).toBe('document');
+    expect(errorCreated).toBe(false);
+
+    const recall = store.recalls.find((r) => r.conceptId === 'immunity_self_nonself' && r.completedAt == null);
+    expect(recall).toBeDefined();
+    expect(recall!.stage).toBe(0);
+    expect(recall!.sourceEvidenceId).toBe(evidence!.id);
+  });
+
+  it('12. LB preuve document → RecallItem stage 0 planifié', () => {
+    const answer = 'تعرف اللمفاوية B على المستضد. تكاثر وتمايز إلى خلايا بلازمية. إفراز أجسام مضادة نوعية.';
+    const { evidence, errorCreated, store } = recordDocumentTrace({
+      context: lbCtx,
+      answer,
+      validationResult: okResult(80),
+    });
+
+    expect(validateDocumentTrace({ context: lbCtx, answer, validationResult: okResult(80) }).valid).toBe(true);
+    expect(evidence).not.toBeNull();
+    expect(evidence!.conceptId).toBe('immunity_humoral_response');
+    expect(evidence!.dimension).toBe('document');
+    expect(errorCreated).toBe(false);
+
+    const recall = store.recalls.find((r) => r.conceptId === 'immunity_humoral_response' && r.completedAt == null);
+    expect(recall).toBeDefined();
+    expect(recall!.stage).toBe(0);
+    expect(recall!.sourceEvidenceId).toBe(evidence!.id);
+  });
+
+  it('13. LT preuve document → RecallItem stage 0 planifié', () => {
+    const answer = 'لمفاويات T نوعية. تعرف نوعي على المحدد المستضدي. إقصاء الخلية الهدف.';
+    const { evidence, errorCreated, store, trace } = recordDocumentTrace({
+      context: ltCtx,
+      answer,
+      validationResult: okResult(80),
+    });
+
+    expect(trace.valid).toBe(true);
+    expect(evidence).not.toBeNull();
+    expect(evidence!.conceptId).toBe('immunity_cellular_response');
+    expect(evidence!.dimension).toBe('document');
+    expect(errorCreated).toBe(false);
+
+    const recall = store.recalls.find((r) => r.conceptId === 'immunity_cellular_response' && r.completedAt == null);
+    expect(recall).toBeDefined();
+    expect(recall!.stage).toBe(0);
+    expect(recall!.sourceEvidenceId).toBe(evidence!.id);
+  });
+
+  it('14. seismic preuve document → RecallItem stage 0 planifié', () => {
+    const answer = 'اختفاء موجات S عند النواة الخارجية لأنها سائلة. الموجات S لا تنتشر في السوائل. تغير سرعة موجات P يدل على تغير الوسط. النواة الخارجية سائلة.';
+    const trace = validateDocumentTrace({
+      context: seismicCtx,
+      answer,
+      validationResult: okResult(80),
+    });
+    const { evidence, errorCreated, store } = recordDocumentTrace({
+      context: seismicCtx,
+      answer,
+      validationResult: okResult(80),
+    });
+
+    expect(trace.valid).toBe(true);
+    expect(evidence).not.toBeNull();
+    expect(evidence!.conceptId).toBe('seismic_waves');
+    expect(evidence!.dimension).toBe('document');
+    expect(errorCreated).toBe(false);
+
+    const recall = store.recalls.find((r) => r.conceptId === 'seismic_waves' && r.completedAt == null);
     expect(recall).toBeDefined();
     expect(recall!.stage).toBe(0);
     expect(recall!.sourceEvidenceId).toBe(evidence!.id);

@@ -61,6 +61,30 @@ export const CONCEPT_ROUTES: Record<string, ConceptRoute> = {
     documentExerciseId: 'mutation_protein_function',
     survivalCardId: 'sc_adn_proteine',
   },
+  immunity_self_nonself: {
+    conceptId: 'immunity_self_nonself',
+    unitId: 4,
+    lessonId: 'immunity_self_nonself',
+    documentExerciseId: 'cmh_transplant_compatibility',
+  },
+  immunity_humoral_response: {
+    conceptId: 'immunity_humoral_response',
+    unitId: 4,
+    lessonId: 'immunity_humoral_response',
+    documentExerciseId: 'lb_antibody_response',
+  },
+   immunity_cellular_response: {
+    conceptId: 'immunity_cellular_response',
+    unitId: 4,
+    lessonId: 'immunity_cellular_response',
+    documentExerciseId: 'lt_target_cell_response',
+  },
+  seismic_waves: {
+    conceptId: 'seismic_waves',
+    unitId: 9,
+    lessonId: 'seismic_waves',
+    documentExerciseId: 'seismic_p_s_core',
+  },
 };
 
 export function getConceptRoute(conceptId: string): ConceptRoute | undefined {
