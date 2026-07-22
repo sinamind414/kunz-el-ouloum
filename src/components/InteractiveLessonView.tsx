@@ -660,6 +660,10 @@ const LESSON_DOCUMENT_EXERCISE_ID: Record<string, string> = {
   'synapse': 'synapse_integration',
   'subduction': 'subduction_water_melting',
   'protein_structure_function': 'mutation_protein_function',
+  'immunity_self_nonself': 'cmh_transplant_compatibility',
+  'immunity_humoral_response': 'lb_antibody_response',
+  'immunity_cellular_response': 'lt_target_cell_response',
+  'seismic_waves': 'seismic_p_s_core',
 };
 
 function LessonExitSection({

@@ -33,6 +33,74 @@ vi.mock('../data/activeLessons', async (importOriginal) => {
         blocks: [
           {
             type: 'TEXT_AND_PRODUCE',
+            objective: 'إكمال آخر كتبة',
+            content: 'آخر كتلة [____]',
+            popups: {},
+            microTest: {
+              prompt: 'اكتب كلمة العبور',
+              acceptedAnswers: ['صحيح'],
+              errorHint: 'حاول مجدداً',
+            },
+          },
+        ],
+      },
+      'immunity_self_nonself': {
+        id: 'immunity_self_nonself',
+        title: 'درس اختبار الذات واللاذات',
+        blocks: [
+          {
+            type: 'TEXT_AND_PRODUCE',
+            objective: 'إكمال آخر كتلة',
+            content: 'آخر كتلة [____]',
+            popups: {},
+            microTest: {
+              prompt: 'اكتب كلمة العبور',
+              acceptedAnswers: ['صحيح'],
+              errorHint: 'حاول مجدداً',
+            },
+          },
+        ],
+      },
+      'immunity_humoral_response': {
+        id: 'immunity_humoral_response',
+        title: 'درس اختبار الاستجابة الخلطية',
+        blocks: [
+          {
+            type: 'TEXT_AND_PRODUCE',
+            objective: 'إكمال آخر كتلة',
+            content: 'آخر كتلة [____]',
+            popups: {},
+            microTest: {
+              prompt: 'اكتب كلمة العبور',
+              acceptedAnswers: ['صحيح'],
+              errorHint: 'حاول مجدداً',
+            },
+          },
+        ],
+      },
+      'immunity_cellular_response': {
+        id: 'immunity_cellular_response',
+        title: 'درس اختبار الاستجابة الخلوية',
+        blocks: [
+          {
+            type: 'TEXT_AND_PRODUCE',
+            objective: 'إكمال آخر كتلة',
+            content: 'آخر كتلة [____]',
+            popups: {},
+            microTest: {
+              prompt: 'اكتب كلمة العبور',
+              acceptedAnswers: ['صحيح'],
+              errorHint: 'حاول مجدداً',
+            },
+          },
+        ],
+      },
+      'seismic_waves': {
+        id: 'seismic_waves',
+        title: 'درس اختبار الأمواج الزلزالية',
+        blocks: [
+          {
+            type: 'TEXT_AND_PRODUCE',
             objective: 'إكمال آخر كتلة',
             content: 'آخر كتلة [____]',
             popups: {},
@@ -143,6 +211,42 @@ describe('InteractiveLessonView exit practice', () => {
 
   it('affiche le document vivant photosynthese apres la derniere bloc', async () => {
     render(<InteractiveLessonView lessonId="phase11_chapitres_21_22" onClose={vi.fn()} />);
+    await completeLastBlock();
+
+    expect(screen.getByLabelText('document vivant')).toBeDefined();
+    expect(screen.getByRole('button', { name: 'إنهاء الممارسة والانتقال' })).toBeDefined();
+    expect(screen.queryByText('أكملت الجلسة')).toBeNull();
+  });
+
+  it('affiche le document vivant cmh apres la derniere bloc', async () => {
+    render(<InteractiveLessonView lessonId="immunity_self_nonself" onClose={vi.fn()} />);
+    await completeLastBlock();
+
+    expect(screen.getByLabelText('document vivant')).toBeDefined();
+    expect(screen.getByRole('button', { name: 'إنهاء الممارسة والانتقال' })).toBeDefined();
+    expect(screen.queryByText('أكملت الجلسة')).toBeNull();
+  });
+
+  it('affiche le document vivant reponse humorale apres la derniere bloc', async () => {
+    render(<InteractiveLessonView lessonId="immunity_humoral_response" onClose={vi.fn()} />);
+    await completeLastBlock();
+
+    expect(screen.getByLabelText('document vivant')).toBeDefined();
+    expect(screen.getByRole('button', { name: 'إنهاء الممارسة والانتقال' })).toBeDefined();
+    expect(screen.queryByText('أكملت الجلسة')).toBeNull();
+  });
+
+  it('affiche le document vivant reponse cellulaire apres la derniere bloc', async () => {
+    render(<InteractiveLessonView lessonId="immunity_cellular_response" onClose={vi.fn()} />);
+    await completeLastBlock();
+
+    expect(screen.getByLabelText('document vivant')).toBeDefined();
+    expect(screen.getByRole('button', { name: 'إنهاء الممارسة والانتقال' })).toBeDefined();
+    expect(screen.queryByText('أكملت الجلسة')).toBeNull();
+  });
+
+  it('affiche le document vivant seismic apres la derniere bloc', async () => {
+    render(<InteractiveLessonView lessonId="seismic_waves" onClose={vi.fn()} />);
     await completeLastBlock();
 
     expect(screen.getByLabelText('document vivant')).toBeDefined();

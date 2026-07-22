@@ -11,6 +11,10 @@ describe('Résumés dOr (§3.1)', () => {
     }
   });
 
+  it('la leçon sismique a un résumé pédagogique', () => {
+    expect(getLessonGoldSummary('seismic_waves')).toBeDefined();
+  });
+
   it('chaque résumé a mission, 4-6 mécanismes, preuve, 4-8 mots, erreur, rappel', () => {
     for (const s of Object.values(LESSON_GOLD_SUMMARIES)) {
       expect(s.missionAr.length).toBeGreaterThan(0);

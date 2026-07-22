@@ -1,7 +1,7 @@
 // activeLessons.test.ts
 // Correction A — fin de leçon + orientation réelle (Speckit FINAL §3).
 import { describe, it, expect } from 'vitest';
-import { getLessonProgression, LESSON_PROGRESSION } from '../data/activeLessons';
+import { ACTIVE_LESSONS, getLessonProgression, LESSON_PROGRESSION } from '../data/activeLessons';
 
 describe('LessonProgression (§3)', () => {
   it('lecon_transcription → leçon suivante + réflexe', () => {
@@ -27,5 +27,26 @@ describe('LessonProgression (§3)', () => {
     for (const p of Object.values(LESSON_PROGRESSION)) {
       expect(p.completionMessageAr.length).toBeGreaterThan(0);
     }
+  });
+
+  it('enchaîne les trois leçons d immunité avec leur réflexe', () => {
+    expect(getLessonProgression('immunity_self_nonself')).toMatchObject({
+      nextLessonId: 'immunity_humoral_response',
+      recommendedReflexId: 'interpret',
+    });
+    expect(getLessonProgression('immunity_humoral_response')).toMatchObject({
+      nextLessonId: 'immunity_cellular_response',
+      recommendedReflexId: 'explain',
+    });
+    expect(getLessonProgression('immunity_cellular_response')).toMatchObject({
+      recommendedReflexId: 'explain',
+    });
+  });
+
+  it('utilise le schéma sismique réellement disponible', () => {
+    const lesson = ACTIVE_LESSONS.seismic_waves;
+    expect(lesson.blocks[0]).toMatchObject({
+      schemaSrc: '/assets/images/schemas/domaine3_tectonique/schema_14_ondes.svg',
+    });
   });
 });
