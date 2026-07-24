@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { X, CheckCircle2, AlertTriangle, Lightbulb, Target, BookOpen, Brain, FileText, MousePointerClick, Lock, ArrowLeft } from 'lucide-react';
 import LessonAdventurePortal from './LessonAdventurePortal';
@@ -20,6 +20,8 @@ import { loadStore } from '../data/store';
 import LiveDocumentUracile from './LiveDocumentUracile';
 import MissionBanner from './MissionBanner';
 import { MICRO_REMEDIATIONS } from '../data/microRemediations';
+import { saveLessonSnapshot, loadLessonSnapshot, clearLessonSnapshot } from '../lib/lesson/sessionSnapshotService';
+import type { LessonSessionSnapshot } from '../lib/lesson/sessionSnapshotService';
 
 interface InteractiveLessonViewProps {
   lessonId: string;
@@ -392,14 +394,50 @@ function ActiveLessonTunnel({
   const [blocksCompleted, setBlocksCompleted] = useState(false);
   const [exitPracticeOpened, setExitPracticeOpened] = useState(false);
   const [sessionOutcome, setSessionOutcome] = useState<LessonSessionOutcome | null>(null);
+  const [resumeSnapshot, setResumeSnapshot] = useState<LessonSessionSnapshot | null>(null);
+  const [showResumePrompt, setShowResumePrompt] = useState(false);
+
+  useEffect(() => {
+    const snap = loadLessonSnapshot(lesson.id);
+    if (snap && snap.state === 'SESSION_SUSPENDED') {
+      setResumeSnapshot(snap);
+      setShowResumePrompt(true);
+    }
+  }, [lesson.id]);
+
+  const handleClose = () => {
+    const allDone = validated.every(Boolean);
+    if (!allDone || sessionOutcome === null) {
+      saveLessonSnapshot(lesson.id, {
+        lessonId: lesson.id,
+        state: 'SESSION_SUSPENDED',
+        currentBlockIndex,
+        validatedBlocks: validated,
+        outcome: sessionOutcome,
+        feedbackViewed: false,
+        suspendedAt: Date.now(),
+      });
+    }
+    onClose();
+  };
 
   const setBlockState = (i: number, patch: any) =>
     setBlockData((prev) => ({ ...prev, [i]: { ...prev[i], ...patch } }));
 
-  const validateBlock = (i: number) => {
+const validateBlock = (i: number) => {
     const next = [...validated];
     next[i] = true;
     setValidated(next);
+    const nextIndex = i < lesson.blocks.length - 1 ? i + 1 : i;
+    saveLessonSnapshot(lesson.id, {
+      lessonId: lesson.id,
+      state: i === lesson.blocks.length - 1 ? 'EXIT_PRACTICE' : 'BLOCKS_IN_PROGRESS',
+      currentBlockIndex: nextIndex,
+      validatedBlocks: next,
+      outcome: sessionOutcome,
+      feedbackViewed: false,
+      suspendedAt: Date.now(),
+    });
     if (i < lesson.blocks.length - 1) {
       setTimeout(() => setCurrentBlockIndex(i + 1), 500);
     } else if (i === lesson.blocks.length - 1) {
@@ -420,7 +458,8 @@ function ActiveLessonTunnel({
     }
   };
 
-  if (blocksCompleted && exitPracticeOpened && sessionOutcome !== null) {
+if (blocksCompleted && exitPracticeOpened && sessionOutcome !== null) {
+    clearLessonSnapshot(lesson.id);
     return (
       <CompletionSheet
         lesson={lesson}
@@ -433,11 +472,34 @@ function ActiveLessonTunnel({
     );
   }
 
+  if (showResumePrompt && resumeSnapshot) {
+    return (
+      <ResumeOverlay
+        lesson={lesson}
+        onResume={() => {
+          setCurrentBlockIndex(resumeSnapshot.currentBlockIndex);
+          setValidated(resumeSnapshot.validatedBlocks);
+          const allDone = resumeSnapshot.validatedBlocks.every(Boolean);
+          if (allDone) {
+            setBlocksCompleted(true);
+            setExitPracticeOpened(true);
+          }
+          setShowResumePrompt(false);
+        }}
+        onNew={() => {
+          clearLessonSnapshot(lesson.id);
+          setShowResumePrompt(false);
+        }}
+        onClose={onClose}
+      />
+    );
+  }
+
   return (
     <div className="fixed inset-0 z-50 bg-[#f8f9fa] dark:bg-[#0c0f0d] flex flex-col font-sans" dir="rtl">
       {/* Header */}
       <header className="p-4 flex justify-between items-center bg-white dark:bg-[#141916] border-b border-[#e2dabf]/50 shadow-sm">
-        <button onClick={onClose} className="p-2 rounded-full hover:bg-[#f3f4f5] text-[#506072] cursor-pointer">
+        <button onClick={handleClose} className="p-2 rounded-full hover:bg-[#f3f4f5] text-[#506072] cursor-pointer">
           <X className="w-6 h-6" />
         </button>
         <div className="text-center flex-1 px-4">
@@ -618,7 +680,9 @@ function CompletionSheet({
                     onLaunchReflexMission(reflex, { missionId: `consolidate_${lesson.id}`, conceptId: lesson.id });
                   } else {
                     onClose();
-                  }
+}
+
+
                 }}
                 className="w-full py-4 rounded-2xl bg-[#ffb347] hover:bg-[#ff9a4a] text-white font-black text-sm shadow-md flex items-center justify-center gap-2 cursor-pointer"
               >
@@ -636,6 +700,55 @@ function CompletionSheet({
           </div>
         </div>
       </main>
+    </div>
+  );
+}
+
+function ResumeOverlay({
+  lesson,
+  onResume,
+  onNew,
+  onClose,
+}: {
+  lesson: ActiveLesson;
+  onResume: () => void;
+  onNew: () => void;
+  onClose: () => void;
+}) {
+  return (
+    <div className="fixed inset-0 z-[60] bg-black/40 flex items-center justify-center p-4" dir="rtl">
+      <div className="bg-white dark:bg-[#141916] rounded-3xl p-6 max-w-md w-full shadow-xl space-y-5">
+        <div className="text-center">
+          <div className="w-16 h-16 rounded-full bg-[#006d37]/10 flex items-center justify-center mx-auto mb-3">
+            <BookOpen className="w-8 h-8 text-[#006d37]" />
+          </div>
+          <h2 className="font-black text-lg text-[#1f1c0b] dark:text-white">{lesson.title}</h2>
+          <p className="text-sm text-[#506072] dark:text-gray-400 mt-2 leading-7">
+            توجد جلسة سابقة لم تكتمل. هل تريد متابعة من حيث توقفت؟
+          </p>
+        </div>
+        <div className="space-y-3">
+          <button
+            onClick={onResume}
+            className="w-full py-3.5 rounded-2xl bg-[#006d37] hover:bg-[#00562b] text-white font-black text-sm shadow-md cursor-pointer flex items-center justify-center gap-2"
+          >
+            <ArrowLeft className="w-5 h-5" />
+            تابع من حيث توقفت
+          </button>
+          <button
+            onClick={onNew}
+            className="w-full py-3.5 rounded-2xl bg-white dark:bg-[#141916] border border-[#e2dabf]/60 text-[#506072] dark:text-gray-300 font-bold text-sm cursor-pointer hover:bg-[#fff9ed] dark:hover:bg-white/5 transition-colors"
+          >
+            ابدأ من جديد
+          </button>
+          <button
+            onClick={onClose}
+            className="w-full py-2 text-xs text-[#506072] dark:text-gray-500 font-bold cursor-pointer hover:text-rose-500 transition-colors"
+          >
+            إلغاء
+          </button>
+        </div>
+      </div>
     </div>
   );
 }

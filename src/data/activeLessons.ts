@@ -68,9 +68,9 @@ export const LESSON_PROGRESSION: Record<string, LessonProgression> = {
     completionMessageAr: 'أحسنت! أكملت سلسلة الإنزيمات. можете الآن خوض تحدي BAC.',
   },
   'phase11_chapitres_21_22': {
-    nextLessonId: undefined,
+    nextLessonId: 'synapse',
     recommendedReflexId: 'interpret',
-    completionMessageAr: 'أكملت التفاعلات الضوئية. جرّب تحدي BAC للصورانعة الخضراء.',
+    completionMessageAr: 'أكملت التفاعلات الضوئية. الآن انتقل إلى الاتصال العصبي.',
   },
   'synapse': {
     nextLessonId: undefined,
@@ -78,14 +78,19 @@ export const LESSON_PROGRESSION: Record<string, LessonProgression> = {
     completionMessageAr: 'أحسنت! فهمت تحوّل التنبيه الكهربائي إلى رسالة كيميائية ثم كهربائية.',
   },
   'subduction': {
-    nextLessonId: undefined,
+    nextLessonId: 'seismic_waves',
     recommendedReflexId: 'interpret',
     completionMessageAr: 'أحسنت! فهمت كيف يؤدي الغوص إلى انصهار الوشاح ونشاط بركاني.',
   },
   'protein_structure_function': {
-    nextLessonId: undefined,
+    nextLessonId: 'd1-u3-l1-enzyme',
     recommendedReflexId: 'interpret',
     completionMessageAr: 'أحسنت! فهمت كيف يحدد تتابع الأحماض الأمينية بنية البروتين ووظيفته.',
+  },
+  'seismic_waves': {
+    nextLessonId: undefined,
+    recommendedReflexId: 'interpret',
+    completionMessageAr: 'أحسنت! فهمت كيف تكشف الأمواج P و S عن بنية باطن الأرض.',
   },
   'immunity_self_nonself': {
     nextLessonId: 'immunity_humoral_response',

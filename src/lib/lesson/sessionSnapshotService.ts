@@ -30,7 +30,7 @@ function safeRead<T>(raw: string | null): T | null {
   }
 }
 
-export function saveSessionSnapshot(lessonId: string, snapshot: LessonSessionSnapshot): boolean {
+export function saveLessonSnapshot(lessonId: string, snapshot: LessonSessionSnapshot): boolean {
   try {
     if (typeof localStorage === 'undefined') return false;
     localStorage.setItem(snapshotKey(lessonId), JSON.stringify(snapshot));
@@ -40,7 +40,7 @@ export function saveSessionSnapshot(lessonId: string, snapshot: LessonSessionSna
   }
 }
 
-export function loadSessionSnapshot(lessonId: string): LessonSessionSnapshot | null {
+export function loadLessonSnapshot(lessonId: string): LessonSessionSnapshot | null {
   try {
     if (typeof localStorage === 'undefined') return null;
     const raw = localStorage.getItem(snapshotKey(lessonId));
@@ -50,7 +50,7 @@ export function loadSessionSnapshot(lessonId: string): LessonSessionSnapshot | n
   }
 }
 
-export function clearSessionSnapshot(lessonId: string): boolean {
+export function clearLessonSnapshot(lessonId: string): boolean {
   try {
     if (typeof localStorage === 'undefined') return false;
     localStorage.removeItem(snapshotKey(lessonId));

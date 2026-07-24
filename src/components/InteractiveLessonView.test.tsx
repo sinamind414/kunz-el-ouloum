@@ -5,6 +5,16 @@ import InteractiveLessonView from './InteractiveLessonView';
 
 const recordLessonTransferEvidence = vi.fn();
 
+const mockSaveLessonSnapshot = vi.fn().mockReturnValue(true);
+const mockLoadLessonSnapshot = vi.fn().mockReturnValue(null);
+const mockClearLessonSnapshot = vi.fn().mockReturnValue(true);
+
+vi.mock('../lib/lesson/sessionSnapshotService', () => ({
+  saveLessonSnapshot: (...args: unknown[]) => mockSaveLessonSnapshot(...args),
+  loadLessonSnapshot: (...args: unknown[]) => mockLoadLessonSnapshot(...args),
+  clearLessonSnapshot: (...args: unknown[]) => mockClearLessonSnapshot(...args),
+}));
+
 vi.mock('../data/activeLessons', async (importOriginal) => {
   const actual = await importOriginal<typeof import('../data/activeLessons')>();
   return {
@@ -95,24 +105,52 @@ vi.mock('../data/activeLessons', async (importOriginal) => {
           },
         ],
       },
-      'seismic_waves': {
-        id: 'seismic_waves',
-        title: 'درس اختبار الأمواج الزلزالية',
-        blocks: [
-          {
-            type: 'TEXT_AND_PRODUCE',
-            objective: 'إكمال آخر كتلة',
-            content: 'آخر كتلة [____]',
-            popups: {},
-            microTest: {
-              prompt: 'اكتب كلمة العبور',
-              acceptedAnswers: ['صحيح'],
-              errorHint: 'حاول مجدداً',
+        'seismic_waves': {
+          id: 'seismic_waves',
+          title: 'درس اختبار الأمواج الزلزالية',
+          blocks: [
+            {
+              type: 'TEXT_AND_PRODUCE',
+              objective: 'إكمال آخر كتلة',
+              content: 'آخر كتلة [____]',
+              popups: {},
+              microTest: {
+                prompt: 'اكتب كلمة العبور',
+                acceptedAnswers: ['صحيح'],
+                errorHint: 'حاول مجدداً',
+              },
             },
-          },
-        ],
+          ],
+        },
+        'resume_test_lesson': {
+          id: 'resume_test_lesson',
+          title: 'درس اختبار الاسترجاع',
+          blocks: [
+            {
+              type: 'TEXT_AND_PRODUCE',
+              objective: 'الكتلة الأولى',
+              content: 'الكتلة الأولى [____]',
+              popups: {},
+              microTest: {
+                prompt: 'اكتب كلمة العبور',
+                acceptedAnswers: ['صحيح'],
+                errorHint: 'حاول مجدداً',
+              },
+            },
+            {
+              type: 'TEXT_AND_PRODUCE',
+              objective: 'الكتلة الثانية',
+              content: 'الكتبة الثانية [____]',
+              popups: {},
+              microTest: {
+                prompt: 'اكتب كلمة العبور',
+                acceptedAnswers: ['صحيح'],
+                errorHint: 'حاول مجدداً',
+              },
+            },
+          ],
+        },
       },
-    },
     getLessonProgression: () => undefined,
   };
 });
@@ -161,6 +199,10 @@ afterEach(cleanup);
 
 beforeEach(() => {
   recordLessonTransferEvidence.mockClear();
+  mockSaveLessonSnapshot.mockClear();
+  mockLoadLessonSnapshot.mockClear();
+  mockClearLessonSnapshot.mockClear();
+  mockLoadLessonSnapshot.mockReturnValue(null);
 });
 
 async function completeLastBlock() {
@@ -252,5 +294,103 @@ describe('InteractiveLessonView exit practice', () => {
     expect(screen.getByLabelText('document vivant')).toBeDefined();
     expect(screen.getByRole('button', { name: 'إنهاء الممارسة والانتقال' })).toBeDefined();
     expect(screen.queryByText('أكملت الجلسة')).toBeNull();
+  });
+});
+
+describe('InteractiveLessonView session resume', () => {
+  it('ouverture avec snapshot suspendu -> proposition de reprise', async () => {
+    mockLoadLessonSnapshot.mockReturnValue({
+      lessonId: 'resume_test_lesson',
+      state: 'SESSION_SUSPENDED',
+      currentBlockIndex: 0,
+      validatedBlocks: [true, false],
+      outcome: null,
+      feedbackViewed: false,
+      suspendedAt: Date.now(),
+    });
+
+    render(<InteractiveLessonView lessonId="resume_test_lesson" onClose={vi.fn()} />);
+
+    expect(screen.getByText('توجد جلسة سابقة لم تكتمل. هل تريد متابعة من حيث توقفت؟')).toBeDefined();
+    expect(screen.getByRole('button', { name: 'تابع من حيث توقفت' })).toBeDefined();
+    expect(screen.getByRole('button', { name: 'ابدأ من جديد' })).toBeDefined();
+  });
+
+  it('continuer -> bloc exact restaure', async () => {
+    mockLoadLessonSnapshot.mockReturnValue({
+      lessonId: 'resume_test_lesson',
+      state: 'SESSION_SUSPENDED',
+      currentBlockIndex: 1,
+      validatedBlocks: [true, false],
+      outcome: null,
+      feedbackViewed: false,
+      suspendedAt: Date.now(),
+    });
+
+    render(<InteractiveLessonView lessonId="resume_test_lesson" onClose={vi.fn()} />);
+
+    fireEvent.click(screen.getByRole('button', { name: 'تابع من حيث توقفت' }));
+
+    expect(screen.getByText('الكتبة الثانية')).toBeDefined();
+  });
+
+  it('commencer nouveau -> snapshot ignore/supprime', async () => {
+    mockLoadLessonSnapshot.mockReturnValue({
+      lessonId: 'resume_test_lesson',
+      state: 'SESSION_SUSPENDED',
+      currentBlockIndex: 1,
+      validatedBlocks: [true, false],
+      outcome: null,
+      feedbackViewed: false,
+      suspendedAt: Date.now(),
+    });
+
+    render(<InteractiveLessonView lessonId="resume_test_lesson" onClose={vi.fn()} />);
+
+    fireEvent.click(screen.getByRole('button', { name: 'ابدأ من جديد' }));
+
+    expect(mockClearLessonSnapshot).toHaveBeenCalledWith('resume_test_lesson');
+    expect(screen.getByText('1/2')).toBeDefined();
+  });
+
+  it('validation bloc -> snapshot actualise', async () => {
+    const user = userEvent.setup();
+    render(<InteractiveLessonView lessonId="d1-u1-l2-transcription" onClose={vi.fn()} />);
+
+    await user.type(screen.getByPlaceholderText('اكتب الكلمة السرية هنا...'), 'صحيح');
+    await user.click(screen.getByRole('button', { name: 'تحقق' }));
+
+    expect(mockSaveLessonSnapshot).toHaveBeenCalledWith(
+      'd1-u1-l2-transcription',
+      expect.objectContaining({
+        lessonId: 'd1-u1-l2-transcription',
+        validatedBlocks: [true],
+      })
+    );
+  });
+
+  it('CompletionSheet -> snapshot supprime', async () => {
+    const user = userEvent.setup();
+    render(<InteractiveLessonView lessonId="d1-u1-l2-transcription" onClose={vi.fn()} />);
+
+    await user.type(screen.getByPlaceholderText('اكتب الكلمة السرية هنا...'), 'صحيح');
+    await user.click(screen.getByRole('button', { name: 'تحقق' }));
+    await user.click(screen.getByRole('button', { name: 'document réussi' }));
+    await user.type(screen.getByPlaceholderText('اكتب إجابتك التحليلية هنا…'), 'إجابة BAC صحيحة');
+    await user.click(screen.getByRole('button', { name: 'صحّح بالمصحح الحقيقي' }));
+    await user.click(screen.getByRole('button', { name: 'إنهاء الممارسة والانتقال' }));
+
+    expect(mockClearLessonSnapshot).toHaveBeenCalledWith('d1-u1-l2-transcription');
+  });
+
+  it('aucune evidence/error/recall creee par snapshot', async () => {
+    const user = userEvent.setup();
+    render(<InteractiveLessonView lessonId="d1-u1-l2-transcription" onClose={vi.fn()} />);
+
+    await user.type(screen.getByPlaceholderText('اكتب الكلمة السرية هنا...'), 'صحيح');
+    await user.click(screen.getByRole('button', { name: 'تحقق' }));
+
+    expect(mockSaveLessonSnapshot).toHaveBeenCalled();
+    expect(recordLessonTransferEvidence).not.toHaveBeenCalled();
   });
 });

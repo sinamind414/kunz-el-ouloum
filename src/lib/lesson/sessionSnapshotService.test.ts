@@ -1,9 +1,9 @@
 // src/lib/lesson/sessionSnapshotService.test.ts
 import { describe, it, expect, beforeEach } from 'vitest';
 import {
-  saveSessionSnapshot,
-  loadSessionSnapshot,
-  clearSessionSnapshot,
+  saveLessonSnapshot,
+  loadLessonSnapshot,
+  clearLessonSnapshot,
   clearAllSnapshots,
   type LessonSessionSnapshot,
 } from './sessionSnapshotService';
@@ -41,10 +41,10 @@ describe('sessionSnapshotService', () => {
       currentBlockIndex: 2,
       validatedBlocks: [true, true, false],
     });
-    const saved = saveSessionSnapshot('lecon_subduction', snap);
+    const saved = saveLessonSnapshot('lecon_subduction', snap);
     expect(saved).toBe(true);
 
-    const loaded = loadSessionSnapshot('lecon_subduction');
+    const loaded = loadLessonSnapshot('lecon_subduction');
     expect(loaded).not.toBeNull();
     expect(loaded!.lessonId).toBe('lecon_subduction');
     expect(loaded!.currentBlockIndex).toBe(2);
@@ -52,14 +52,14 @@ describe('sessionSnapshotService', () => {
   });
 
   it('S2 : snapshot leçon A ne charge pas pour leçon B', () => {
-    saveSessionSnapshot('lecon_a', makeSnapshot('lecon_a'));
-    saveSessionSnapshot('lecon_b', makeSnapshot('lecon_b'));
+    saveLessonSnapshot('lecon_a', makeSnapshot('lecon_a'));
+    saveLessonSnapshot('lecon_b', makeSnapshot('lecon_b'));
 
-    const loadedA = loadSessionSnapshot('lecon_a');
+    const loadedA = loadLessonSnapshot('lecon_a');
     expect(loadedA).not.toBeNull();
     expect(loadedA!.lessonId).toBe('lecon_a');
 
-    const loadedB = loadSessionSnapshot('lecon_b');
+    const loadedB = loadLessonSnapshot('lecon_b');
     expect(loadedB).not.toBeNull();
     expect(loadedB!.lessonId).toBe('lecon_b');
 
@@ -68,15 +68,15 @@ describe('sessionSnapshotService', () => {
   });
 
   it('S3 : clear leçon A ne supprime pas snapshot leçon B', () => {
-    saveSessionSnapshot('lecon_a', makeSnapshot('lecon_a'));
-    saveSessionSnapshot('lecon_b', makeSnapshot('lecon_b'));
+    saveLessonSnapshot('lecon_a', makeSnapshot('lecon_a'));
+    saveLessonSnapshot('lecon_b', makeSnapshot('lecon_b'));
 
-    clearSessionSnapshot('lecon_a');
+    clearLessonSnapshot('lecon_a');
 
-    const loadedA = loadSessionSnapshot('lecon_a');
+    const loadedA = loadLessonSnapshot('lecon_a');
     expect(loadedA).toBeNull();
 
-    const loadedB = loadSessionSnapshot('lecon_b');
+    const loadedB = loadLessonSnapshot('lecon_b');
     expect(loadedB).not.toBeNull();
     expect(loadedB!.lessonId).toBe('lecon_b');
   });
@@ -84,25 +84,25 @@ describe('sessionSnapshotService', () => {
   it('S4 : JSON localStorage invalide → retourne null sans crash', () => {
     // Écrire directement du JSON invalide dans localStorage
     localStorage.setItem('kunz_lesson_session_v1:corrupted', '{broken json');
-    const loaded = loadSessionSnapshot('corrupted');
+    const loaded = loadLessonSnapshot('corrupted');
     expect(loaded).toBeNull();
   });
 
   it('clearAllSnapshots supprime tous les snapshots', () => {
-    saveSessionSnapshot('lecon_a', makeSnapshot('lecon_a'));
-    saveSessionSnapshot('lecon_b', makeSnapshot('lecon_b'));
+    saveLessonSnapshot('lecon_a', makeSnapshot('lecon_a'));
+    saveLessonSnapshot('lecon_b', makeSnapshot('lecon_b'));
     // Sauvegarder aussi une clé non-snapshot pour vérifier qu'elle survit
     localStorage.setItem('kunz_other_key', 'should survive');
 
     clearAllSnapshots();
 
-    expect(loadSessionSnapshot('lecon_a')).toBeNull();
-    expect(loadSessionSnapshot('lecon_b')).toBeNull();
+    expect(loadLessonSnapshot('lecon_a')).toBeNull();
+    expect(loadLessonSnapshot('lecon_b')).toBeNull();
     expect(localStorage.getItem('kunz_other_key')).toBe('should survive');
   });
 
   it('snapshot absent → retourne null', () => {
-    const loaded = loadSessionSnapshot('inexistante');
+    const loaded = loadLessonSnapshot('inexistante');
     expect(loaded).toBeNull();
   });
 
@@ -113,9 +113,9 @@ describe('sessionSnapshotService', () => {
       feedbackViewed: true,
       validatedBlocks: [true, true, true],
     });
-    saveSessionSnapshot('lecon_test', snap);
+    saveLessonSnapshot('lecon_test', snap);
 
-    const loaded = loadSessionSnapshot('lecon_test');
+    const loaded = loadLessonSnapshot('lecon_test');
     expect(loaded).not.toBeNull();
     expect(loaded!.state).toBe('COMPLETION_VISIBLE');
     expect(loaded!.outcome).toBe('passed');
