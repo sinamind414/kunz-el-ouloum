@@ -35,9 +35,9 @@ const failResult = (): ValidationResult => ({
 });
 
 describe('DocumentPracticeContext', () => {
-  it('les 14 contextes prioritaires existent (dont uracile_marque V3 + photosynthese_cycle + synapse_integration + subduction_water_melting + mutation_protein_function + cmh_transplant_compatibility + lb_antibody_response + lt_target_cell_response + seismic_p_s_core)', () => {
+  it('les 15 contextes prioritaires existent (dont uracile_marque V3 + photosynthese_cycle + synapse_integration + subduction_water_melting + mutation_protein_function + cmh_transplant_compatibility + lb_antibody_response + lt_target_cell_response + primary_secondary_response + seismic_p_s_core)', () => {
     const ids = DOCUMENT_PRACTICE_CONTEXTS.map((c) => c.exerciseId);
-    expect(ids).toEqual(['michaelis_courbe', 'curare_table', 'nmj_ppm_courbe', 'sarin_gb_double', 'rifamycine_h1h2', 'uracile_marque', 'photosynthese_cycle', 'synapse_integration', 'subduction_water_melting', 'mutation_protein_function', 'cmh_transplant_compatibility', 'lb_antibody_response', 'lt_target_cell_response', 'seismic_p_s_core']);
+    expect(ids).toEqual(['michaelis_courbe', 'curare_table', 'nmj_ppm_courbe', 'sarin_gb_double', 'rifamycine_h1h2', 'uracile_marque', 'photosynthese_cycle', 'synapse_integration', 'subduction_water_melting', 'mutation_protein_function', 'cmh_transplant_compatibility', 'lb_antibody_response', 'lt_target_cell_response', 'primary_secondary_response', 'seismic_p_s_core']);
   });
 
   it('chaque contexte a goalAr, 3-8 vocabulaire, expectedEvidence non vide, altAr', () => {

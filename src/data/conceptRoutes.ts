@@ -79,6 +79,12 @@ export const CONCEPT_ROUTES: Record<string, ConceptRoute> = {
     lessonId: 'immunity_cellular_response',
     documentExerciseId: 'lt_target_cell_response',
   },
+  immunity_memory: {
+    conceptId: 'immunity_memory',
+    unitId: 4,
+    lessonId: 'immunity_memory_response',
+    documentExerciseId: 'primary_secondary_response',
+  },
   seismic_waves: {
     conceptId: 'seismic_waves',
     unitId: 9,

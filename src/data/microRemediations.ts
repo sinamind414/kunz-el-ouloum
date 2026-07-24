@@ -137,6 +137,17 @@ export const MICRO_REMEDIATIONS: Record<string, MicroRemediation> = {
     acceptedEvidence: ['لمفاوية T', 'خلية هدف', 'إقصاء خلوي', 'استجابة خلوية'],
     nextAction: 'schedule_recall',
   },
+  'memory_primary_secondary': {
+    id: 'mr_memory_primary_secondary',
+    conceptId: 'immunity_memory',
+    triggerCodes: ['MISSING_MEMORY', 'WRONG_PRIMARY_SECONDARY', 'NO_MEMORY_CELLS'],
+    titleAr: 'خلايا الذاكرة تجعل الاستجابة الثانية أسرع وأقوى',
+    estimatedMinutes: 3,
+    explanationAr: 'عند التعرض الأول للمستضد تتكون خلايا ذاكرة تبقى طويلاً. عند التعرض الثاني تتعرف عليها بسرعة وتكاثر وتتمايز إلى خلايا منتجة للأجسام المضادة.',
+    activeQuestionAr: 'لماذا الاستجابة الثانية أسرع وأقوى من الأولى؟',
+    acceptedEvidence: ['خلايا ذاكرة', 'استجابة ثانوية', 'أسرع', 'أقوى', 'ذاكرة مناعية'],
+    nextAction: 'schedule_recall',
+  },
   'p_s_liquid_core': {
     id: 'mr_p_s_liquid_core',
     conceptId: 'seismic_waves',

@@ -75,6 +75,12 @@ export const SPACED_RECALL_PROMPTS: Record<string, SpacedRecallPrompt[]> = {
     { stage: 2, conceptId: 'immunity_cellular_response', questionAr: 'ما الفرق بين الاستجابة الخلطية والاستجابة الخلوية؟', reflexId: 'interpret', acceptedEvidence: ['خلطية', 'خلوية', 'أجسام مضادة', 'إقصاء خلوي'], minEvidence: 3 },
     { stage: 3, conceptId: 'immunity_cellular_response', questionAr: 'فسّر كيف يؤدي التعرف النوعي إلى إقصاء الخلايا الهدف.', reflexId: 'validate', acceptedEvidence: ['تعرف نوعي', 'إقصاء خلوي', 'خلية هدف', 'لمفاوية T', 'استجابة خلوية'], minEvidence: 3 },
   ],
+  immunity_memory: [
+    { stage: 0, conceptId: 'immunity_memory', questionAr: 'ما الفرق بين الاستجابة الأولية والثانوية؟', reflexId: 'explain', acceptedEvidence: ['استجابة أولية', 'استجابة ثانوية', 'زمن كمون', 'أجسام مضادة'], minEvidence: 3 },
+    { stage: 1, conceptId: 'immunity_memory', questionAr: 'ما دور خلايا الذاكرة؟', reflexId: 'explain', acceptedEvidence: ['خلايا ذاكرة', 'ذاكرة مناعية', 'تعرض ثاني'], minEvidence: 3 },
+    { stage: 2, conceptId: 'immunity_memory', questionAr: 'لماذا تكون الاستجابة الثانوية أسرع؟', reflexId: 'interpret', acceptedEvidence: ['أسرع', 'خلايا ذاكرة', 'تكاثر', 'تمايز', 'ذاكرة'], minEvidence: 3 },
+    { stage: 3, conceptId: 'immunity_memory', questionAr: 'فسّر منحنى الاستجابة المناعية الأولية والثانوية.', reflexId: 'validate', acceptedEvidence: ['منحنى', 'أولية', 'ثانوية', 'ذاكرة', 'أجسام مضادة', 'زمن كمون'], minEvidence: 3 },
+  ],
   seismic_waves: [
     { stage: 0, conceptId: 'seismic_waves', questionAr: 'ما الفرق بين الموجات P و S؟', reflexId: 'explain', acceptedEvidence: ['موجة P', 'موجة S', 'ضغط', 'قص'], minEvidence: 2 },
     { stage: 1, conceptId: 'seismic_waves', questionAr: 'لماذا تختفي الموجات S عند النواة الخارجية؟', reflexId: 'explain', acceptedEvidence: ['موجات S', 'نواة خارجية', 'سائلة', 'قص'], minEvidence: 3 },

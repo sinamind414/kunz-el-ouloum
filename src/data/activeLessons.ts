@@ -98,9 +98,14 @@ export const LESSON_PROGRESSION: Record<string, LessonProgression> = {
     completionMessageAr: 'أكملت الاستجابة الخلطية. الآن انتقل إلى الاستجابة الخلوية.',
   },
   'immunity_cellular_response': {
-    nextLessonId: undefined,
+    nextLessonId: 'immunity_memory_response',
     recommendedReflexId: 'explain',
-    completionMessageAr: 'أكملت مسار الاستجابات المناعية.',
+    completionMessageAr: 'أكملت الاستجابة الخلوية. الآن انتقل إلى الذاكرة المناعية.',
+  },
+  'immunity_memory_response': {
+    nextLessonId: undefined,
+    recommendedReflexId: 'interpret',
+    completionMessageAr: 'أحسنت! أكملت سلسلة المناعة: الذات واللاذات → خلطية → خلوية → ذاكرة.',
   },
   'd1-u1-l2-transcription': {
     nextLessonId: 'd1-u1-l3-traduction',
@@ -443,6 +448,44 @@ export const ACTIVE_LESSONS: Record<string, ActiveLesson> = {
               label: 'الاستنتاج',
               placeholder: 'استنتج كيف يتم إقصاء الخلية الهدف...',
               requiredKeywords: ['إقصاء خلوي', 'استجابة خلوية', 'قتل'],
+            },
+          ],
+        },
+      },
+    ],
+  },
+  immunity_memory_response: {
+    id: 'immunity_memory_response',
+    title: 'الدرس 15 : الذاكرة المناعية (Immunité 4)',
+    blocks: [
+      {
+        type: 'HOTSPOT_AND_METHODOLOGY',
+        objective: 'expliquer pourquoi la réponse secondaire est plus rapide et plus forte que la réponse primaire.',
+        introText:
+          'لاحظ منحنى كمية الأجسام المضادة بدلالة الزمن بعد تعرض أول وثانٍ للمستضد. حدد الاستجابة الأولية والثانوية ثم فسّر الفرق بينهما.',
+        schemaSrc: '/assets/images/schemas/domaine1_proteines/schema_22_immunite_memoire.svg',
+        hotspot: {
+          prompt: 'انقر على الاستجابة الثانية (الاستجابة الثانوية الأقوى).',
+          correctZone: { x: 70, y: 40, radius: 20 },
+          successFeedback: 'صحيح! الاستجابة الثانية أسرع وأقوى بسبب خلايا الذاكرة.',
+        },
+        methodology: {
+          prompt: 'حلل الفرق بين الاستجابة الأولية والثانوية من حيث زمن الكمون وكمية الأجسام المضادة (تحليل محض).',
+          steps: [
+            {
+              label: 'الملاحظة',
+              placeholder: 'صف ما تلاحظه في منحنى الاستجابة الأولية...',
+              requiredKeywords: ['استجابة أولية', 'زمن كمون', 'أجسام مضادة'],
+            },
+            {
+              label: 'الآلية',
+              placeholder: 'اشرح كيف تعمل خلايا الذاكرة...',
+              requiredKeywords: ['خلايا ذاكرة', 'تكاثر نسيلي', 'تمايز'],
+            },
+            {
+              label: 'الاستنتاج',
+              placeholder: 'استنتج لماذا الاستجابة الثانية أسرع وأقوى...',
+              requiredKeywords: ['استجابة ثانوية', 'أسرع', 'أقوى', 'ذاكرة'],
             },
           ],
         },
