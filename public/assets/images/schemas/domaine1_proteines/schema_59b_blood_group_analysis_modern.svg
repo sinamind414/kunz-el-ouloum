@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1300 820">
+  <rect width="1300" height="820" rx="28" fill="#f8fbff"/>
+  <text x="650" y="68" text-anchor="middle" font-size="40" font-weight="800" fill="#0f172a">تحليل نتائج التراص : اختلاف الواسمات السطحية هو الذي يفسر التوافق أو عدمه</text>
+
+  <rect x="90" y="130" width="1120" height="560" rx="26" fill="#ffffff" stroke="#d8e1e8" stroke-width="4"/>
+  <g font-size="26" font-weight="700" fill="#0f5132" text-anchor="middle">
+    <text x="220" y="190">العينة</text>
+    <text x="470" y="190">مضاد A</text>
+    <text x="690" y="190">مضاد B</text>
+    <text x="1020" y="190">القراءة المناعية</text>
+  </g>
+
+  <g font-size="24" fill="#334155" text-anchor="middle">
+    <text x="220" y="290">1</text>
+    <text x="220" y="410">2</text>
+    <text x="220" y="530">3</text>
+    <text x="220" y="650">4</text>
+  </g>
+
+  <g>
+    <circle cx="470" cy="270" r="42" fill="#fde68a" stroke="#f59e0b" stroke-width="4"/>
+    <circle cx="457" cy="257" r="10" fill="#dc2626"/><circle cx="483" cy="257" r="10" fill="#dc2626"/><circle cx="470" cy="283" r="10" fill="#dc2626"/>
+    <circle cx="690" cy="270" r="42" fill="#e2e8f0" stroke="#94a3b8" stroke-width="4"/>
+    <circle cx="678" cy="270" r="8" fill="#dc2626"/><circle cx="702" cy="259" r="8" fill="#dc2626"/><circle cx="692" cy="284" r="8" fill="#dc2626"/>
+    <text x="1020" y="280" font-size="24" fill="#1d4ed8" text-anchor="middle">زمرة A ⟶ واسم A حاضر</text>
+
+    <circle cx="470" cy="390" r="42" fill="#e2e8f0" stroke="#94a3b8" stroke-width="4"/>
+    <circle cx="458" cy="390" r="8" fill="#dc2626"/><circle cx="482" cy="379" r="8" fill="#dc2626"/><circle cx="472" cy="404" r="8" fill="#dc2626"/>
+    <circle cx="690" cy="390" r="42" fill="#fde68a" stroke="#f59e0b" stroke-width="4"/>
+    <circle cx="677" cy="377" r="10" fill="#dc2626"/><circle cx="703" cy="377" r="10" fill="#dc2626"/><circle cx="690" cy="403" r="10" fill="#dc2626"/>
+    <text x="1020" y="400" font-size="24" fill="#16a34a" text-anchor="middle">زمرة B ⟶ واسم B حاضر</text>
+
+    <circle cx="470" cy="510" r="42" fill="#fde68a" stroke="#f59e0b" stroke-width="4"/>
+    <circle cx="457" cy="497" r="10" fill="#dc2626"/><circle cx="483" cy="497" r="10" fill="#dc2626"/><circle cx="470" cy="523" r="10" fill="#dc2626"/>
+    <circle cx="690" cy="510" r="42" fill="#fde68a" stroke="#f59e0b" stroke-width="4"/>
+    <circle cx="677" cy="497" r="10" fill="#dc2626"/><circle cx="703" cy="497" r="10" fill="#dc2626"/><circle cx="690" cy="523" r="10" fill="#dc2626"/>
+    <text x="1020" y="520" font-size="24" fill="#7c3aed" text-anchor="middle">زمرة AB ⟶ الواسمان A و B حاضران</text>
+
+    <circle cx="470" cy="630" r="42" fill="#e2e8f0" stroke="#94a3b8" stroke-width="4"/>
+    <circle cx="458" cy="630" r="8" fill="#dc2626"/><circle cx="482" cy="619" r="8" fill="#dc2626"/><circle cx="472" cy="644" r="8" fill="#dc2626"/>
+    <circle cx="690" cy="630" r="42" fill="#e2e8f0" stroke="#94a3b8" stroke-width="4"/>
+    <circle cx="678" cy="630" r="8" fill="#dc2626"/><circle cx="702" cy="619" r="8" fill="#dc2626"/><circle cx="692" cy="644" r="8" fill="#dc2626"/>
+    <text x="1020" y="640" font-size="24" fill="#475569" text-anchor="middle">زمرة O ⟶ لا واسم A ولا واسم B</text>
+  </g>
+
+  <rect x="200" y="730" width="900" height="46" rx="20" fill="#0f172a" opacity="0.92"/>
+  <text x="650" y="760" text-anchor="middle" font-size="24" fill="#ffffff">منطق التراص يثبت أن الخلايا تحمل بطاقات سطحية حقيقية، وهذا يهيئ مباشرة لفهم CMH ورفض الطعم</text>
+</svg>

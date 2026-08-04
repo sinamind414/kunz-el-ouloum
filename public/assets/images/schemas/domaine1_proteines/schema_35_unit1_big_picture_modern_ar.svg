@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="900" viewBox="0 0 1400 900">
+<rect width="1400" height="900" fill="#f7fbff"/>
+<rect x="70" y="120" width="1260" height="700" rx="28" fill="white" stroke="#d5dee8" stroke-width="4"/>
+<text x="700" y="76" text-anchor="middle" font-family="Arial, sans-serif" font-size="50" font-weight="700" fill="#17233b">الصورة الجامعة للوحدة 1</text>
+<text x="700" y="170" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="700" fill="#51627a">من المورثة إلى البروتين الوظيفي</text>
+<rect x="70" y="340" width="220" height="250" rx="26" fill="#dbeafe" stroke="#2f6fed" stroke-width="4"/>
+<text x="180.0" y="398" text-anchor="middle" font-family="Arial, sans-serif" font-size="32" font-weight="700" fill="#2f6fed">المورثة / ADN</text>
+<text x="180.0" y="445" text-anchor="middle" font-family="Arial, sans-serif" font-size="22" fill="#17233b">في النواة</text>
+<rect x="360" y="340" width="250" height="250" rx="26" fill="#dbeafe" stroke="#2f6fed" stroke-width="4"/>
+<text x="485.0" y="398" text-anchor="middle" font-family="Arial, sans-serif" font-size="32" font-weight="700" fill="#2f6fed">الاستنساخ</text>
+<text x="485.0" y="445" text-anchor="middle" font-family="Arial, sans-serif" font-size="22" fill="#17233b">ARNm</text>
+<rect x="650" y="340" width="250" height="250" rx="26" fill="#dbeafe" stroke="#2f6fed" stroke-width="4"/>
+<text x="775.0" y="398" text-anchor="middle" font-family="Arial, sans-serif" font-size="32" font-weight="700" fill="#2f6fed">الترجمة</text>
+<text x="775.0" y="445" text-anchor="middle" font-family="Arial, sans-serif" font-size="22" fill="#17233b">سلسلة ببتيدية</text>
+<rect x="940" y="340" width="250" height="250" rx="26" fill="#dbeafe" stroke="#2f6fed" stroke-width="4"/>
+<text x="1065.0" y="398" text-anchor="middle" font-family="Arial, sans-serif" font-size="32" font-weight="700" fill="#2f6fed">التوجيه الوظيفي</text>
+<text x="1065.0" y="445" text-anchor="middle" font-family="Arial, sans-serif" font-size="22" fill="#17233b">بروتين وظيفي</text>
+<line x1="290" y1="465" x2="360" y2="465" stroke="#f59e0b" stroke-width="10"/>
+<polygon points="360,465 325,445 325,485" fill="#f59e0b"/>
+<line x1="610" y1="465" x2="650" y2="465" stroke="#f59e0b" stroke-width="10"/>
+<polygon points="650,465 615,445 615,485" fill="#f59e0b"/>
+<line x1="900" y1="465" x2="940" y2="465" stroke="#f59e0b" stroke-width="10"/>
+<polygon points="940,465 905,445 905,485" fill="#f59e0b"/>
+<text x="700" y="785" text-anchor="middle" font-family="Arial, sans-serif" font-size="24" fill="#51627a">خلاصة التركيب البروتيني: تُنسخ المعلومة، ثم تُترجم، ثم يُوجَّه البروتين إلى شكله أو مكان عمله.</text>
+</svg>

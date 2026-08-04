@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 760">
+  <rect width="1200" height="760" rx="28" fill="#f8fbff"/>
+  <text x="600" y="70" text-anchor="middle" font-size="38" font-weight="800" fill="#0f172a">تحديد الزمرة الدموية يمر عبر محددات سطحية نوعية</text>
+
+  <rect x="70" y="120" width="470" height="540" rx="26" fill="#ffffff" stroke="#d8e1e8" stroke-width="4"/>
+  <text x="305" y="168" text-anchor="middle" font-size="30" font-weight="700" fill="#0f5132">محددات سطح الكرية الحمراء</text>
+  <g>
+    <circle cx="180" cy="320" r="85" fill="#fecaca" stroke="#dc2626" stroke-width="6"/>
+    <circle cx="180" cy="250" r="14" fill="#1d4ed8"/>
+    <circle cx="135" cy="295" r="14" fill="#1d4ed8"/>
+    <circle cx="225" cy="295" r="14" fill="#1d4ed8"/>
+    <text x="180" y="430" text-anchor="middle" font-size="24" fill="#334155">زمرة A</text>
+  </g>
+  <g>
+    <circle cx="305" cy="320" r="85" fill="#fecaca" stroke="#dc2626" stroke-width="6"/>
+    <rect x="292" y="238" width="26" height="26" rx="8" fill="#16a34a"/>
+    <rect x="248" y="282" width="26" height="26" rx="8" fill="#16a34a"/>
+    <rect x="336" y="282" width="26" height="26" rx="8" fill="#16a34a"/>
+    <text x="305" y="430" text-anchor="middle" font-size="24" fill="#334155">زمرة B</text>
+  </g>
+  <g>
+    <circle cx="430" cy="320" r="85" fill="#fecaca" stroke="#dc2626" stroke-width="6"/>
+    <circle cx="405" cy="248" r="13" fill="#1d4ed8"/>
+    <rect x="445" y="238" width="26" height="26" rx="8" fill="#16a34a"/>
+    <circle cx="382" cy="296" r="13" fill="#1d4ed8"/>
+    <rect x="455" y="282" width="26" height="26" rx="8" fill="#16a34a"/>
+    <text x="430" y="430" text-anchor="middle" font-size="24" fill="#334155">زمرة AB</text>
+  </g>
+  <text x="305" y="520" text-anchor="middle" font-size="24" fill="#475569">المحددات السطحية هي التي تسمح بالتمييز بين الزمر</text>
+
+  <rect x="620" y="120" width="510" height="540" rx="26" fill="#ffffff" stroke="#d8e1e8" stroke-width="4"/>
+  <text x="875" y="168" text-anchor="middle" font-size="30" font-weight="700" fill="#7c2d12">اختبار التراص بالمصول المضادة</text>
+  <g>
+    <rect x="690" y="235" width="140" height="58" rx="14" fill="#dbeafe"/>
+    <text x="760" y="272" text-anchor="middle" font-size="24" fill="#1d4ed8">مصل مضاد A</text>
+    <rect x="920" y="235" width="140" height="58" rx="14" fill="#dcfce7"/>
+    <text x="990" y="272" text-anchor="middle" font-size="24" fill="#15803d">مصل مضاد B</text>
+  </g>
+  <g>
+    <circle cx="760" cy="385" r="75" fill="#fde68a" stroke="#f59e0b" stroke-width="5"/>
+    <circle cx="740" cy="365" r="14" fill="#dc2626"/>
+    <circle cx="780" cy="365" r="14" fill="#dc2626"/>
+    <circle cx="760" cy="405" r="14" fill="#dc2626"/>
+    <text x="760" y="495" text-anchor="middle" font-size="22" fill="#7c2d12">وجود تراص = توافق بين المحدد والمصل</text>
+  </g>
+  <g>
+    <circle cx="990" cy="385" r="75" fill="#e2e8f0" stroke="#94a3b8" stroke-width="5"/>
+    <circle cx="968" cy="385" r="11" fill="#dc2626"/>
+    <circle cx="990" cy="364" r="11" fill="#dc2626"/>
+    <circle cx="1013" cy="388" r="11" fill="#dc2626"/>
+    <circle cx="988" cy="410" r="11" fill="#dc2626"/>
+    <text x="990" y="495" text-anchor="middle" font-size="22" fill="#334155">غياب التراص = غياب المحدد الموافق</text>
+  </g>
+  <text x="875" y="590" text-anchor="middle" font-size="24" fill="#475569">تحديد الزمرة مثال واضح على أن الخلية تحمل محددات سطحية تُقرأ مناعياً</text>
+</svg>

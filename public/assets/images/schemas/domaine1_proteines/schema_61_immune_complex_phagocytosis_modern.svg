@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 760">
+  <rect width="1200" height="760" rx="28" fill="#f8fbff"/>
+  <text x="600" y="68" text-anchor="middle" font-size="38" font-weight="800" fill="#0f172a">المعقدات المناعية تسهّل التعرف ثم البلعمة</text>
+
+  <rect x="85" y="130" width="1030" height="520" rx="26" fill="#ffffff" stroke="#d8e1e8" stroke-width="4"/>
+  <g>
+    <circle cx="250" cy="390" r="105" fill="#fecaca" stroke="#dc2626" stroke-width="6"/>
+    <g stroke="#7c3aed" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" fill="none">
+      <path d="M195 320 l16 -32 l16 32"/>
+      <path d="M250 285 l16 -32 l16 32"/>
+      <path d="M305 320 l16 -32 l16 32"/>
+    </g>
+    <g fill="#ef4444"><circle cx="212" cy="283" r="11"/><circle cx="267" cy="248" r="11"/><circle cx="321" cy="283" r="11"/></g>
+    <text x="250" y="535" text-anchor="middle" font-size="24" fill="#334155">هدف مغطى بالأجسام المضادة</text>
+  </g>
+
+  <path d="M370 390 H540" stroke="#16a34a" stroke-width="8" stroke-linecap="round"/>
+  <text x="455" y="360" text-anchor="middle" font-size="24" fill="#15803d">تتعرف البالعة على الجزء الثابت Fc</text>
+
+  <g>
+    <path d="M730 270 C850 220 980 290 1010 410 C1035 520 955 610 850 620 C750 630 650 560 640 455 C632 376 670 305 730 270z" fill="#dbeafe" stroke="#2563eb" stroke-width="6"/>
+    <circle cx="840" cy="425" r="52" fill="#93c5fd" stroke="#1d4ed8" stroke-width="4"/>
+    <path d="M690 390 C755 320 810 310 870 330 C920 350 960 390 980 440" fill="none" stroke="#0f766e" stroke-width="8" stroke-linecap="round"/>
+    <text x="840" y="560" text-anchor="middle" font-size="24" fill="#334155">بلعمة تقترب من المعقد المناعي ثم تبتلعه</text>
+  </g>
+
+  <path d="M1025 390 h20" stroke="#f59e0b" stroke-width="8" stroke-linecap="round"/>
+  <text x="1060" y="360" text-anchor="middle" font-size="22" fill="#92400e">إقصاء</text>
+
+  <rect x="195" y="686" width="810" height="42" rx="20" fill="#0f172a" opacity="0.92"/>
+  <text x="600" y="714" text-anchor="middle" font-size="24" fill="#ffffff">بتغطية الهدف بالأجسام المضادة يصبح أكثر وضوحاً للخلايا البلعمية، فتتسهل عملية الإقصاء</text>
+</svg>

@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 760">
+  <rect width="1200" height="760" fill="#f8fafc" rx="28"/>
+  <text x="600" y="68" text-anchor="middle" font-size="38" font-weight="800" fill="#0f172a">الوثيقة 7 — بنية الجين وعملية التضفير</text>
+  <rect x="60" y="110" width="610" height="560" rx="24" fill="#0f172a" opacity="0.92"/>
+  <path d="M120 220 C240 120 350 300 470 200 C560 125 610 210 620 230" fill="none" stroke="#a7f3d0" stroke-width="8"/>
+  <path d="M120 250 C240 150 350 330 470 230 C560 155 610 240 620 260" fill="none" stroke="#60a5fa" stroke-width="8"/>
+  <path d="M420 260 C460 330 520 360 580 410" fill="none" stroke="#ef4444" stroke-width="8"/>
+  <path d="M500 250 C560 380 610 420 650 470" fill="none" stroke="#ef4444" stroke-width="8"/>
+  <text x="505" y="520" font-size="30" fill="#93c5fd">ARNm ناضج</text>
+  <rect x="730" y="110" width="410" height="250" rx="24" fill="#ffffff" stroke="#d8e1e8" stroke-width="4"/>
+  <rect x="760" y="145" width="350" height="175" rx="12" fill="#d1d5db"/>
+  <path d="M760 210 C840 170 930 250 1110 190" fill="none" stroke="#111827" stroke-width="4" opacity="0.7"/>
+  <path d="M760 245 C840 205 930 285 1110 225" fill="none" stroke="#111827" stroke-width="4" opacity="0.7"/>
+  <text x="935" y="345" text-anchor="middle" font-size="24" fill="#334155">صورة بالمجهر الإلكتروني</text>
+  <rect x="730" y="390" width="410" height="280" rx="24" fill="#ffffff" stroke="#d8e1e8" stroke-width="4"/>
+  <rect x="780" y="455" width="300" height="42" rx="12" fill="#16a34a"/>
+  <rect x="840" y="455" width="22" height="42" fill="#ef4444"/><rect x="905" y="455" width="22" height="42" fill="#ef4444"/><rect x="975" y="455" width="22" height="42" fill="#ef4444"/>
+  <text x="930" y="435" text-anchor="middle" font-size="26" fill="#334155">ADN (إكسونات + إنترونات)</text>
+  <rect x="820" y="565" width="220" height="32" rx="10" fill="#60a5fa"/>
+  <text x="930" y="615" text-anchor="middle" font-size="26" fill="#334155">ARNm ناضج أقصر</text>
+  <text x="930" y="652" text-anchor="middle" font-size="22" fill="#475467">الإنترونات تُحذف والإكسونات تبقى</text>
+</svg>

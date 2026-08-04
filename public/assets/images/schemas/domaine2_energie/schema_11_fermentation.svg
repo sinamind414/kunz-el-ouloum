@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" width="800" height="500">
+<defs><style>text{font-family:'Noto Kufi Arabic','Segoe UI',system-ui,sans-serif;}
+.title,.t{font-size:21px;font-weight:800;fill:#0F2A1D;}
+.subtitle{font-size:13px;fill:#6B7280;}
+.label-ar,.la{font-size:14px;font-weight:700;fill:#1A2A3A;}
+.label-fr{font-size:12px;fill:#6B7280;}
+.label-small,.ls{font-size:11px;fill:#6B7280;}
+.label-white,.lw{font-size:12px;font-weight:700;fill:#FFFFFF;}</style><linearGradient id="kunzBg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#F7FAF8"/>
+      <stop offset="100%" stop-color="#EFF4F1"/>
+    </linearGradient>
+    <filter id="kunzShadow" x="-5%" y="-5%" width="110%" height="110%">
+      <feDropShadow dx="0" dy="3" stdDeviation="6" flood-color="#006d37" flood-opacity="0.06"/>
+    </filter>
+  </defs>
+<rect width="800" height="500" fill="url(#kunzBg)"/>
+  <rect x="8" y="8" width="784" height="484" rx="20" fill="none" stroke="#E3EAE6" stroke-width="2" filter="url(#kunzShadow)"/>
+<text x="400" y="25" text-anchor="middle" class="t">مقارنة: التنفس والتخمر — Respiration vs Fermentation</text>
+
+<!-- LEFT: Respiration -->
+<g transform="translate(15, 50)">
+  <rect x="0" y="0" width="370" height="200" rx="12" fill="#E8F5E9" stroke="#2ECC71" stroke-width="2"/>
+  <text x="185" y="22" text-anchor="middle" class="la" fill="#2ECC71">✅ التنفس الهوائي (Aérobie)</text>
+  <text x="185" y="42" text-anchor="middle" class="ls">مع O₂ — أكسدة كاملة — 36-38 ATP</text>
+  <path d="M 60,60 L 310,60" fill="none" stroke="#2ECC71" stroke-width="2"/>
+  <text x="185" y="80" text-anchor="middle" class="la" font-size="11">Glucose (6C)</text>
+  <path d="M 90,90 L 90,110" fill="none" stroke="#2ECC71" stroke-width="1.5"/>
+  <path d="M 280,90 L 280,110" fill="none" stroke="#2ECC71" stroke-width="1.5"/>
+  <text x="185" y="115" text-anchor="middle" class="la" font-size="11">2 Pyruvate (3C)</text>
+  <path d="M 185,125 L 185,145" fill="none" stroke="#2ECC71" stroke-width="1.5"/>
+  <text x="185" y="155" text-anchor="middle" class="la" font-size="11">→ Krebs → ETC → 36-38 ATP</text>
+  <text x="185" y="175" text-anchor="middle" class="ls" fill="#2ECC71">CO₂ + H₂O + Énergie</text>
+</g>
+
+<!-- RIGHT: Fermentation -->
+<g transform="translate(410, 50)">
+  <rect x="0" y="0" width="375" height="200" rx="12" fill="#FFF3E0" stroke="#E65100" stroke-width="2"/>
+  <text x="187" y="22" text-anchor="middle" class="la" fill="#E65100">❌ التخمر (Fermentation)</text>
+  <text x="187" y="42" text-anchor="middle" class="ls">بدون O₂ — أكسدة جزئية — 2 ATP فقط</text>
+  <path d="M 60,60 L 310,60" fill="none" stroke="#E65100" stroke-width="2"/>
+  <text x="185" y="80" text-anchor="middle" class="la" font-size="11">Glucose (6C)</text>
+  <path d="M 90,90 L 90,110" fill="none" stroke="#E65100" stroke-width="1.5"/>
+  <path d="M 280,90 L 280,110" fill="none" stroke="#E65100" stroke-width="1.5"/>
+  <text x="185" y="115" text-anchor="middle" class="la" font-size="11">2 Pyruvate (3C)</text>
+  <text x="95" y="140" text-anchor="middle" class="la" font-size="10" fill="#C62828">تخمر لبني</text>
+  <text x="95" y="158" text-anchor="middle" class="ls">→ 2 Lactate + 2 ATP</text>
+  <text x="95" y="175" text-anchor="middle" class="ls">(العضلات)</text>
+  <text x="280" y="140" text-anchor="middle" class="la" font-size="10" fill="#C62828">تخمر كحولي</text>
+  <text x="280" y="158" text-anchor="middle" class="ls">→ 2 Éthanol + 2 CO₂ + 2 ATP</text>
+  <text x="280" y="175" text-anchor="middle" class="ls">(الخميرة)</text>
+</g>
+
+<!-- Comparison table -->
+<g transform="translate(15, 270)">
+  <text x="0" y="15" class="la">جدول مقارنة:</text>
+  <rect x="0" y="25" width="160" height="22" fill="#1A2A3A"/><text x="80" y="41" text-anchor="middle" class="lw">المعيار</text>
+  <rect x="160" y="25" width="200" height="22" fill="#2ECC71" opacity="0.2"/><text x="260" y="41" text-anchor="middle" class="la" font-size="9" fill="#2ECC71">التنفس الهوائي</text>
+  <rect x="360" y="25" width="200" height="22" fill="#E65100" opacity="0.2"/><text x="460" y="41" text-anchor="middle" class="la" font-size="9" fill="#E65100">التخمر</text>
+  <rect x="0" y="47" width="160" height="22" fill="#F5F5F5"/><text x="80" y="62" class="ls">O₂</text><text x="260" y="62" class="ls">✅ يحتاجه</text><text x="460" y="62" class="ls">❌ لا يحتاجه</text>
+  <rect x="0" y="69" width="160" height="22" fill="#F5F5F5"/><text x="80" y="84" class="ls">ATP الناتج</text><text x="260" y="84" class="ls">36-38</text><text x="460" y="84" class="ls">2 فقط</text>
+  <rect x="0" y="91" width="160" height="22" fill="#F5F5F5"/><text x="80" y="106" class="ls">النواتج</text><text x="260" y="106" class="ls">CO₂ + H₂O</text><text x="460" y="106" class="ls">Lactate / Éthanol</text>
+  <rect x="0" y="113" width="160" height="22" fill="#F5F5F5"/><text x="80" y="128" class="ls">الأكسدة</text><text x="260" y="128" class="ls">كاملة</text><text x="460" y="128" class="ls">جزئية</text>
+</g>
+
+<text x="400" y="490" text-anchor="middle" class="ls">كنز العلوم — SVT بكالوريا 3AS</text>
+</svg>

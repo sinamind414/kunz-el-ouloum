@@ -1,0 +1,19 @@
+{
+  "name": "Kunz El Ouloum",
+  "description": "منصة كنز العلوم التفاعلية لمراجعة وتدريب مادة العلوم الطبيعية والحياة لشهادة البكالوريا بالجزائر، مع مرشد ذكي محلي يعمل بدون إنترنت وبدون API.",
+  "version": "0.1.0-fable5-final-v3-interactive-vraiment-visuals-hotfix1",
+  "dataVersion": "github-500qcm-v1-fable5-4tabs",
+  "buildDate": "2026-07-31",
+  "audit": "Fable 5 FINAL V3: 5 rubriques + Coach offline + no scrolling + direct InteractiveLessonView (apprend dès 1er clic) + SpeechToText L2-L3 + Gemini 100% + OCR golden rule - main 49kB",
+  "offline": true,
+  "tutorMode": "offline",
+  "chunks": {
+    "kunz-core": "492kB - 500 QCM + OPUS + engines (was 1051kB)",
+    "vendor-react": "193kB (was 320kB) - BacCombat + AITutor LLM removed",
+    "index": "49kB main (-92% vs 695kB)",
+    "coach": "5.88kB - Coach orientation offline",
+    "interactive": "11.71kB - InteractiveLessonView + SpeechToText"
+  },
+  "requestFramePermissions": [],
+  "majorCapabilities": []
+}

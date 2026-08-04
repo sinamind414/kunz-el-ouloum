@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 760">
+  <rect width="1200" height="760" rx="28" fill="#f8fbff"/>
+  <text x="600" y="68" text-anchor="middle" font-size="38" font-weight="800" fill="#0f172a">الحمض الأميني الواحد يمكن تمثيله بعدة صيغ لكن دوره واحد في بناء البروتين</text>
+
+  <rect x="80" y="140" width="300" height="500" rx="24" fill="#ffffff" stroke="#d8e1e8" stroke-width="4"/>
+  <text x="230" y="188" text-anchor="middle" font-size="30" font-weight="700" fill="#1d4ed8">الصيغة العامة</text>
+  <text x="230" y="330" text-anchor="middle" font-size="52" font-weight="700" fill="#0f172a">H₂N—CH—COOH</text>
+  <text x="230" y="390" text-anchor="middle" font-size="30" fill="#dc2626">│</text>
+  <text x="230" y="440" text-anchor="middle" font-size="42" font-weight="700" fill="#16a34a">R</text>
+  <text x="230" y="560" text-anchor="middle" font-size="24" fill="#334155">تتغير المجموعة الجانبية R فيتغير نوع الحمض الأميني</text>
+
+  <rect x="450" y="140" width="300" height="500" rx="24" fill="#ffffff" stroke="#d8e1e8" stroke-width="4"/>
+  <text x="600" y="188" text-anchor="middle" font-size="30" font-weight="700" fill="#7c3aed">مثال: الألانين</text>
+  <text x="600" y="330" text-anchor="middle" font-size="50" font-weight="700" fill="#0f172a">H₂N—CH—COOH</text>
+  <text x="600" y="390" text-anchor="middle" font-size="30" fill="#dc2626">│</text>
+  <text x="600" y="440" text-anchor="middle" font-size="42" font-weight="700" fill="#f97316">CH₃</text>
+  <text x="600" y="560" text-anchor="middle" font-size="24" fill="#334155">في الألانين تكون R = CH₃، لذلك يختلف سلوكه عن أحماض أمينية أخرى</text>
+
+  <rect x="820" y="140" width="300" height="500" rx="24" fill="#ffffff" stroke="#d8e1e8" stroke-width="4"/>
+  <text x="970" y="188" text-anchor="middle" font-size="30" font-weight="700" fill="#0f766e">تمثيل مبسط داخل السلسلة</text>
+  <g>
+    <circle cx="900" cy="360" r="28" fill="#93c5fd"/>
+    <circle cx="970" cy="360" r="28" fill="#fca5a5"/>
+    <circle cx="1040" cy="360" r="28" fill="#86efac"/>
+    <line x1="928" y1="360" x2="942" y2="360" stroke="#475569" stroke-width="8"/>
+    <line x1="998" y1="360" x2="1012" y2="360" stroke="#475569" stroke-width="8"/>
+  </g>
+  <text x="970" y="445" text-anchor="middle" font-size="24" fill="#334155">كل كرة تمثل حمضاً أمينياً في البنية الأولية للبروتين</text>
+  <text x="970" y="560" text-anchor="middle" font-size="24" fill="#475569">تبديل كرة واحدة قد يغير الطي والوظيفة لاحقاً</text>
+
+  <rect x="150" y="684" width="900" height="42" rx="20" fill="#0f172a" opacity="0.92"/>
+  <text x="600" y="712" text-anchor="middle" font-size="24" fill="#ffffff">فهم الحمض الأميني كوحدة بناء يسهّل فهم لماذا قد يؤدي تغير حمض واحد فقط إلى تغير في بنية البروتين ووظيفته</text>
+</svg>

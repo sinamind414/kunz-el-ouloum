@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="900" viewBox="0 0 1400 900">
+<rect width="1400" height="900" fill="#f7fbff"/>
+<rect x="70" y="120" width="1260" height="700" rx="28" fill="white" stroke="#d5dee8" stroke-width="4"/>
+<text x="700" y="76" text-anchor="middle" font-family="Arial, sans-serif" font-size="54" font-weight="700" fill="#17233b">التعدد الاستنساخي</text>
+<text x="700" y="170" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="700" fill="#51627a">يمكن لمورثة واحدة أن تُنسخ عدة مرات في الوقت نفسه</text>
+<line x1="210" y1="400" x2="1180" y2="400" stroke="#334155" stroke-width="8"/>
+<line x1="210" y1="430" x2="1180" y2="430" stroke="#64748b" stroke-width="5"/>
+<text x="190" y="390" font-family="Arial, sans-serif" font-size="26" font-weight="700" fill="#17233b">ADN</text>
+<ellipse cx="360" cy="385" rx="34" ry="24" fill="#fecdd3" stroke="#e11d48" stroke-width="3"/>
+<line x1="360" y1="405" x2="360" y2="570" stroke="#159e9a" stroke-width="6"/>
+<ellipse cx="530" cy="385" rx="34" ry="24" fill="#fecdd3" stroke="#e11d48" stroke-width="3"/>
+<line x1="530" y1="405" x2="530" y2="545" stroke="#159e9a" stroke-width="6"/>
+<ellipse cx="700" cy="385" rx="34" ry="24" fill="#fecdd3" stroke="#e11d48" stroke-width="3"/>
+<line x1="700" y1="405" x2="700" y2="520" stroke="#159e9a" stroke-width="6"/>
+<ellipse cx="870" cy="385" rx="34" ry="24" fill="#fecdd3" stroke="#e11d48" stroke-width="3"/>
+<line x1="870" y1="405" x2="870" y2="490" stroke="#159e9a" stroke-width="6"/>
+<text x="380" y="588" font-family="Arial, sans-serif" font-size="20" font-weight="700" fill="#159e9a">ARNm</text>
+<text x="550" y="563" font-family="Arial, sans-serif" font-size="20" font-weight="700" fill="#159e9a">ARNm</text>
+<text x="720" y="538" font-family="Arial, sans-serif" font-size="20" font-weight="700" fill="#159e9a">ARNm</text>
+<text x="890" y="508" font-family="Arial, sans-serif" font-size="20" font-weight="700" fill="#159e9a">ARNm</text>
+<text x="700" y="680" text-anchor="middle" font-family="Arial, sans-serif" font-size="30" font-weight="700" fill="#51627a">كلما زاد عدد إنزيمات بوليميراز ARN على نفس المورثة زادت كمية ARNm الرسول المنتجة.</text>
+<text x="700" y="785" text-anchor="middle" font-family="Arial, sans-serif" font-size="24" fill="#51627a">وثيقة حدسية: خيوط ARNm الأقصر تمثل بداية النسخ، والأطول تمثل تقدمه على المورثة.</text>
+</svg>

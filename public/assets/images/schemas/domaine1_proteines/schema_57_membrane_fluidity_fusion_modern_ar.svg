@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="900" viewBox="0 0 1400 900">
+<rect width="1400" height="900" fill="#f7fbff"/>
+<rect x="70" y="120" width="1260" height="700" rx="28" fill="white" stroke="#d5dee8" stroke-width="4"/>
+<text x="700" y="76" text-anchor="middle" font-family="Arial, sans-serif" font-size="50" font-weight="700" fill="#17233b">سيولة الغشاء وحركة البروتينات</text>
+<text x="700" y="170" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="700" fill="#51627a">قبل الحركة ثم بعد التجمع</text>
+<rect x="200" y="285" width="460" height="320" rx="26" fill="#dbeafe" stroke="#60a5fa" stroke-width="4"/>
+<text x="430.0" y="343" text-anchor="middle" font-family="Arial, sans-serif" font-size="30" font-weight="700" fill="#60a5fa">قبل الحركة</text>
+<text x="430.0" y="390" text-anchor="middle" font-family="Arial, sans-serif" font-size="22" fill="#17233b">بروتينات متباعدة</text>
+<rect x="740" y="285" width="460" height="320" rx="26" fill="#dbeafe" stroke="#60a5fa" stroke-width="4"/>
+<text x="970.0" y="343" text-anchor="middle" font-family="Arial, sans-serif" font-size="30" font-weight="700" fill="#60a5fa">بعد الحركة / التجمع</text>
+<text x="970.0" y="390" text-anchor="middle" font-family="Arial, sans-serif" font-size="22" fill="#17233b">تقارب البروتينات</text>
+<rect x="250" y="380" width="360" height="36" fill="#cbd5e1" stroke="#94a3b8" stroke-width="3"/>
+<rect x="250" y="500" width="360" height="36" fill="#cbd5e1" stroke="#94a3b8" stroke-width="3"/>
+<rect x="790" y="380" width="360" height="36" fill="#cbd5e1" stroke="#94a3b8" stroke-width="3"/>
+<rect x="790" y="500" width="360" height="36" fill="#cbd5e1" stroke="#94a3b8" stroke-width="3"/>
+<rect x="310" y="330" width="54" height="260" rx="20" fill="#fbbf24" stroke="#b45309" stroke-width="4"/>
+<rect x="400" y="330" width="54" height="260" rx="20" fill="#fbbf24" stroke="#b45309" stroke-width="4"/>
+<rect x="500" y="330" width="54" height="260" rx="20" fill="#fbbf24" stroke="#b45309" stroke-width="4"/>
+<rect x="980" y="330" width="54" height="260" rx="20" fill="#fbbf24" stroke="#b45309" stroke-width="4"/>
+<rect x="1010" y="330" width="54" height="260" rx="20" fill="#fbbf24" stroke="#b45309" stroke-width="4"/>
+<rect x="1040" y="330" width="54" height="260" rx="20" fill="#fbbf24" stroke="#b45309" stroke-width="4"/>
+<line x1="640" y1="445" x2="740" y2="445" stroke="#f59e0b" stroke-width="10"/>
+<polygon points="740,445 705,425 705,465" fill="#f59e0b"/>
+<text x="700" y="785" text-anchor="middle" font-family="Arial, sans-serif" font-size="24" fill="#51627a">البروتينات الغشائية يمكن أن تتحرك وتتجمع داخل غشاء مائع، وهذا مفيد لفهم تكتل الواسمات المناعية.</text>
+</svg>

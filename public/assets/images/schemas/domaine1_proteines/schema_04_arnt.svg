@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 760">
+  <rect width="1200" height="760" rx="28" fill="#f8fbff"/>
+  <text x="600" y="68" text-anchor="middle" font-size="38" font-weight="800" fill="#0f172a">ARNt : الناقل الذي يربط الرامزة بالحمض الأميني الموافق</text>
+
+  <rect x="90" y="130" width="1020" height="540" rx="26" fill="#ffffff" stroke="#d8e1e8" stroke-width="4"/>
+  <path d="M600 220 C520 210 470 270 500 340 C430 360 400 450 455 510 C505 565 590 540 600 470 C610 540 695 565 745 510 C800 450 770 360 700 340 C730 270 680 210 600 220z" fill="none" stroke="#7c3aed" stroke-width="18" stroke-linecap="round" stroke-linejoin="round"/>
+  <rect x="560" y="150" width="80" height="48" rx="16" fill="#fde68a" stroke="#f59e0b" stroke-width="4"/>
+  <text x="600" y="182" text-anchor="middle" font-size="22" font-weight="700" fill="#92400e">حمض أميني</text>
+  <rect x="520" y="560" width="160" height="58" rx="20" fill="#dbeafe" stroke="#2563eb" stroke-width="4"/>
+  <text x="600" y="598" text-anchor="middle" font-size="26" font-weight="700" fill="#1d4ed8">رامزة مضادة</text>
+  <text x="600" y="660" text-anchor="middle" font-size="24" fill="#334155">كل ARNt يحمل حمضاً أمينياً محدداً ويتعرف على رامزة مكملة لها على ARNm</text>
+  <text x="280" y="340" text-anchor="middle" font-size="24" fill="#475569">ذراع جانبي</text>
+  <text x="920" y="340" text-anchor="middle" font-size="24" fill="#475569">ذراع جانبي</text>
+</svg>

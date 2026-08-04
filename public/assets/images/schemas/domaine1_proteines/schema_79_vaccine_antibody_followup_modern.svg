@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1300 820">
+  <rect width="1300" height="820" rx="28" fill="#f8fbff"/>
+  <text x="650" y="68" text-anchor="middle" font-size="40" font-weight="800" fill="#0f172a">متابعة مصلية بعد التلقيح : الجرعة التذكيرية لا تبدأ من الصفر</text>
+
+  <rect x="90" y="120" width="1120" height="560" rx="26" fill="#ffffff" stroke="#d8e1e8" stroke-width="4"/>
+  <g stroke="#94a3b8" stroke-width="3">
+    <line x1="180" y1="600" x2="1120" y2="600"/>
+    <line x1="180" y1="180" x2="180" y2="600"/>
+  </g>
+  <text x="160" y="170" text-anchor="end" font-size="22" fill="#475569">كمية الأجسام المضادة في المصل</text>
+  <text x="1120" y="635" text-anchor="end" font-size="22" fill="#475569">الأسابيع بعد التلقيح</text>
+
+  <path d="M210 590 C320 585 370 535 425 470 C470 420 520 410 565 445 C610 480 660 540 710 590" fill="none" stroke="#3b82f6" stroke-width="8"/>
+  <path d="M720 590 C780 578 825 485 875 335 C925 195 995 165 1060 210 C1110 245 1140 385 1120 590" fill="none" stroke="#dc2626" stroke-width="8"/>
+  <line x1="180" y1="320" x2="1120" y2="320" stroke="#16a34a" stroke-width="4" stroke-dasharray="10 8"/>
+  <text x="1115" y="310" text-anchor="end" font-size="20" fill="#15803d">عتبة حماية تقريبية</text>
+
+  <g>
+    <rect x="250" y="135" width="260" height="54" rx="14" fill="#dbeafe"/>
+    <text x="380" y="169" text-anchor="middle" font-size="22" fill="#1d4ed8">بعد الجرعة الأولى</text>
+    <rect x="760" y="135" width="280" height="54" rx="14" fill="#fee2e2"/>
+    <text x="900" y="169" text-anchor="middle" font-size="22" fill="#b91c1c">بعد الجرعة التذكيرية</text>
+  </g>
+
+  <g>
+    <line x1="250" y1="600" x2="250" y2="530" stroke="#1d4ed8" stroke-width="4" stroke-dasharray="8 8"/>
+    <line x1="760" y1="600" x2="760" y2="510" stroke="#b91c1c" stroke-width="4" stroke-dasharray="8 8"/>
+    <text x="250" y="632" text-anchor="middle" font-size="20" fill="#1d4ed8">جرعة 1</text>
+    <text x="760" y="632" text-anchor="middle" font-size="20" fill="#b91c1c">جرعة 2</text>
+  </g>
+
+  <text x="495" y="520" text-anchor="middle" font-size="22" fill="#334155">استجابة أولية أبطأ وذروتها أدنى</text>
+  <text x="950" y="255" text-anchor="middle" font-size="22" fill="#334155">استجابة ثانية أسرع وذروتها أعلى</text>
+
+  <rect x="170" y="730" width="960" height="46" rx="20" fill="#0f172a" opacity="0.92"/>
+  <text x="650" y="760" text-anchor="middle" font-size="24" fill="#ffffff">بقاء خلايا الذاكرة بعد الجرعة الأولى هو ما يفسر أن الجرعة التذكيرية ترفع الحماية بسرعة إلى مستوى أعلى</text>
+</svg>

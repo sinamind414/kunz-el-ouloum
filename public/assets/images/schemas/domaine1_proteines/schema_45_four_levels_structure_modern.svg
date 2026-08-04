@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1300 860">
+  <rect width="1300" height="860" fill="#fbfcff" rx="28"/>
+  <text x="650" y="72" text-anchor="middle" font-size="40" font-weight="800" fill="#0f172a">المستويات الأربعة لبنية البروتين وكيفية بنائها</text>
+  <rect x="60" y="130" width="400" height="250" rx="24" fill="#ffffff" stroke="#d8e1e8" stroke-width="4"/>
+  <text x="260" y="180" text-anchor="middle" font-size="30" font-weight="700" fill="#0f5132">البنية الأولية</text>
+  <g fill="#93c5fd">
+    <circle cx="130" cy="280" r="24"/><circle cx="190" cy="280" r="24"/><circle cx="250" cy="280" r="24"/><circle cx="310" cy="280" r="24"/><circle cx="370" cy="280" r="24"/>
+  </g>
+  <text x="260" y="340" text-anchor="middle" font-size="24" fill="#334155">تتابع خطي للأحماض الأمينية مرتبط بروابط ببتيدية</text>
+
+  <rect x="500" y="130" width="340" height="250" rx="24" fill="#ffffff" stroke="#d8e1e8" stroke-width="4"/>
+  <text x="670" y="180" text-anchor="middle" font-size="30" font-weight="700" fill="#7c3aed">البنية الثانوية</text>
+  <path d="M610 250 C560 285 560 335 610 365 C660 395 660 445 610 475" fill="none" stroke="#a855f7" stroke-width="18"/>
+  <path d="M720 250 h80 l-25 40 h-80z" fill="#fde68a" stroke="#f59e0b" stroke-width="4"/>
+  <text x="670" y="340" text-anchor="middle" font-size="22" fill="#334155">حلزون α أو صفائح β</text>
+
+  <rect x="880" y="130" width="360" height="250" rx="24" fill="#ffffff" stroke="#d8e1e8" stroke-width="4"/>
+  <text x="1060" y="180" text-anchor="middle" font-size="30" font-weight="700" fill="#1d4ed8">البنية الثالثية</text>
+  <path d="M960 315 C910 240 1030 220 1080 280 C1125 335 1100 420 1020 430 C960 438 920 385 960 315z" fill="none" stroke="#60a5fa" stroke-width="18"/>
+  <text x="1060" y="340" text-anchor="middle" font-size="22" fill="#334155">طي شامل للسلسلة في شكل ثلاثي الأبعاد</text>
+
+  <rect x="240" y="450" width="820" height="300" rx="24" fill="#ffffff" stroke="#d8e1e8" stroke-width="4"/>
+  <text x="650" y="505" text-anchor="middle" font-size="32" font-weight="700" fill="#0f172a">البنية الرباعية</text>
+  <g>
+    <circle cx="520" cy="610" r="90" fill="#c4b5fd" opacity="0.9"/>
+    <circle cx="680" cy="610" r="90" fill="#fdba74" opacity="0.9"/>
+    <circle cx="600" cy="690" r="90" fill="#99f6e4" opacity="0.9"/>
+    <circle cx="600" cy="560" r="90" fill="#a7f3d0" opacity="0.9"/>
+  </g>
+  <text x="650" y="730" text-anchor="middle" font-size="24" fill="#334155">تجميع عدة سلاسل/وحدات في معقد بروتيني واحد</text>
+</svg>

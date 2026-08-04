@@ -1,0 +1,26 @@
+{
+  "name": "Kunz El Ouloum - كنز العلوم",
+  "short_name": "كنز العلوم",
+  "description": "منصة كنز العلوم التفاعلية لمراجعة علوم الطبيعة والحياة BAC DZ - مرشد ذكي offline 100%",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f8f9fa",
+  "theme_color": "#006d37",
+  "orientation": "any",
+  "dir": "rtl",
+  "lang": "ar",
+  "icons": [
+    {
+      "src": "/assets/images/mascot.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/assets/images/mascot.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

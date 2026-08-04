@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 700">
+  <rect width="1200" height="700" fill="#fbfcff" rx="30"/>
+  <text x="600" y="70" text-anchor="middle" font-size="40" font-weight="800" fill="#0f172a">تأثير ألفا-أمانيتين على اصطناع ARNm</text>
+  <rect x="70" y="120" width="420" height="500" rx="26" fill="#ffffff" stroke="#d9e2e8" stroke-width="4"/>
+  <ellipse cx="280" cy="330" rx="110" ry="150" fill="#d9c9a4"/>
+  <ellipse cx="280" cy="215" rx="125" ry="55" fill="#b7ab7f" stroke="#6b5b3e" stroke-width="4"/>
+  <rect x="245" y="255" width="70" height="180" rx="32" fill="#f8f4ef" stroke="#a8a29e" stroke-width="4"/>
+  <ellipse cx="280" cy="445" rx="85" ry="32" fill="#f4efe8" stroke="#a8a29e" stroke-width="4"/>
+  <text x="280" y="545" text-anchor="middle" font-size="24" fill="#334155">Amanita phalloides</text>
+  <text x="280" y="580" text-anchor="middle" font-size="22" fill="#475467">مصدر α-أمانيتين المثبط لاصطناع ARNm</text>
+  <rect x="560" y="120" width="570" height="500" rx="26" fill="#ffffff" stroke="#d9e2e8" stroke-width="4"/>
+  <g stroke="#98a2b3" stroke-width="3">
+    <line x1="640" y1="540" x2="1080" y2="540"/>
+    <line x1="680" y1="510" x2="680" y2="180"/>
+  </g>
+  <path d="M690 190 C760 190 820 190 860 250 C900 310 870 430 760 500 C735 515 710 525 690 535" fill="none" stroke="#22c55e" stroke-width="10"/>
+  <rect x="820" y="210" width="110" height="220" fill="#22c55e" opacity="0.12"/>
+  <text x="880" y="460" text-anchor="middle" font-size="24" fill="#166534">انخفاض حاد</text>
+  <text x="880" y="490" text-anchor="middle" font-size="20" fill="#166534">في تشكل ARNm</text>
+  <text x="860" y="585" text-anchor="middle" font-size="24" fill="#334155">تركيز α-أمانيتين</text>
+  <text x="640" y="170" text-anchor="start" font-size="24" fill="#334155">نسبة تشكل ARNm</text>
+  <text x="845" y="635" text-anchor="middle" font-size="26" fill="#0f172a">كلما ارتفع تركيز المثبط انخفض تشكل ARNm</text>
+</svg>

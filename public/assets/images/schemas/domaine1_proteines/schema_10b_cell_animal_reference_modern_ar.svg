@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="900" viewBox="0 0 1400 900">
+<rect width="1400" height="900" fill="#f7fbff"/>
+<rect x="70" y="120" width="1260" height="700" rx="28" fill="white" stroke="#d5dee8" stroke-width="4"/>
+<text x="700" y="76" text-anchor="middle" font-family="Arial, sans-serif" font-size="54" font-weight="700" fill="#17233b">مرجع خلية حيوانية</text>
+<text x="700" y="170" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="700" fill="#51627a">من النواة إلى الهيولى</text>
+<ellipse cx="690" cy="470" rx="480" ry="250" fill="#edf7ef" stroke="#8db59e" stroke-width="5"/>
+<circle cx="585" cy="445" r="175" fill="#dbeafe" stroke="#67a3f5" stroke-width="5"/>
+<circle cx="585" cy="445" r="72" fill="#fca5a5" stroke="#dc3545" stroke-width="5"/>
+<text x="585" y="455" text-anchor="middle" font-family="Arial, sans-serif" font-size="34" font-weight="700" fill="#17233b">ADN</text>
+<text x="585" y="300" text-anchor="middle" font-family="Arial, sans-serif" font-size="34" font-weight="700" fill="#2f6fed">النواة</text>
+<text x="1015" y="320" text-anchor="middle" font-family="Arial, sans-serif" font-size="32" font-weight="700" fill="#159e9a">الريبوزومات</text>
+<text x="1110" y="760" text-anchor="middle" font-family="Arial, sans-serif" font-size="36" font-weight="700" fill="#51627a">الهيولى</text>
+<line x1="675" y1="615" x2="1010" y2="615" stroke="#159e9a" stroke-width="8"/>
+<polygon points="1010,615 978,600 978,630" fill="#159e9a"/>
+<text x="845" y="665" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="700" fill="#159e9a">خروج ARNm الرسول نحو الهيولى</text>
+<ellipse cx="290" cy="430" rx="24" ry="17" fill="#fda4af" stroke="#be185d" stroke-width="3"/>
+<ellipse cx="955" cy="340" rx="24" ry="17" fill="#fda4af" stroke="#be185d" stroke-width="3"/>
+<ellipse cx="1070" cy="410" rx="24" ry="17" fill="#fda4af" stroke="#be185d" stroke-width="3"/>
+<ellipse cx="1120" cy="505" rx="24" ry="17" fill="#fda4af" stroke="#be185d" stroke-width="3"/>
+<ellipse cx="930" cy="585" rx="24" ry="17" fill="#fda4af" stroke="#be185d" stroke-width="3"/>
+<ellipse cx="345" cy="560" rx="24" ry="17" fill="#fda4af" stroke="#be185d" stroke-width="3"/>
+<ellipse cx="785" cy="620" rx="24" ry="17" fill="#fda4af" stroke="#be185d" stroke-width="3"/>
+<text x="700" y="785" text-anchor="middle" font-family="Arial, sans-serif" font-size="24" fill="#51627a">صورة تذكيرية: المعلومة الوراثية تبقى في النواة، بينما يُستعمل ARNm لتركيب البروتين في الهيولى.</text>
+</svg>

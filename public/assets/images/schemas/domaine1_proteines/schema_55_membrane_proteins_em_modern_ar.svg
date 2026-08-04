@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="900" viewBox="0 0 1400 900">
+<rect width="1400" height="900" fill="#f7fbff"/>
+<rect x="70" y="120" width="1260" height="700" rx="28" fill="white" stroke="#d5dee8" stroke-width="4"/>
+<text x="700" y="76" text-anchor="middle" font-family="Arial, sans-serif" font-size="50" font-weight="700" fill="#17233b">بروتينات الغشاء البلازمي</text>
+<text x="700" y="170" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="700" fill="#51627a">رؤية تفسيرية مبسطة للعلامات السطحية</text>
+<rect x="170" y="360" width="1060" height="46" fill="#cbd5e1" stroke="#94a3b8" stroke-width="3"/>
+<rect x="170" y="500" width="1060" height="46" fill="#cbd5e1" stroke="#94a3b8" stroke-width="3"/>
+<circle cx="205" cy="345" r="16" fill="#7dd3fc" stroke="#0284c7" stroke-width="2"/>
+<circle cx="205" cy="565" r="16" fill="#7dd3fc" stroke="#0284c7" stroke-width="2"/>
+<circle cx="265" cy="345" r="16" fill="#7dd3fc" stroke="#0284c7" stroke-width="2"/>
+<circle cx="265" cy="565" r="16" fill="#7dd3fc" stroke="#0284c7" stroke-width="2"/>
+<circle cx="325" cy="345" r="16" fill="#7dd3fc" stroke="#0284c7" stroke-width="2"/>
+<circle cx="325" cy="565" r="16" fill="#7dd3fc" stroke="#0284c7" stroke-width="2"/>
+<circle cx="385" cy="345" r="16" fill="#7dd3fc" stroke="#0284c7" stroke-width="2"/>
+<circle cx="385" cy="565" r="16" fill="#7dd3fc" stroke="#0284c7" stroke-width="2"/>
+<circle cx="445" cy="345" r="16" fill="#7dd3fc" stroke="#0284c7" stroke-width="2"/>
+<circle cx="445" cy="565" r="16" fill="#7dd3fc" stroke="#0284c7" stroke-width="2"/>
+<circle cx="505" cy="345" r="16" fill="#7dd3fc" stroke="#0284c7" stroke-width="2"/>
+<circle cx="505" cy="565" r="16" fill="#7dd3fc" stroke="#0284c7" stroke-width="2"/>
+<circle cx="565" cy="345" r="16" fill="#7dd3fc" stroke="#0284c7" stroke-width="2"/>
+<circle cx="565" cy="565" r="16" fill="#7dd3fc" stroke="#0284c7" stroke-width="2"/>
+<circle cx="625" cy="345" r="16" fill="#7dd3fc" stroke="#0284c7" stroke-width="2"/>
+<circle cx="625" cy="565" r="16" fill="#7dd3fc" stroke="#0284c7" stroke-width="2"/>
+<circle cx="685" cy="345" r="16" fill="#7dd3fc" stroke="#0284c7" stroke-width="2"/>
+<circle cx="685" cy="565" r="16" fill="#7dd3fc" stroke="#0284c7" stroke-width="2"/>
+<circle cx="745" cy="345" r="16" fill="#7dd3fc" stroke="#0284c7" stroke-width="2"/>
+<circle cx="745" cy="565" r="16" fill="#7dd3fc" stroke="#0284c7" stroke-width="2"/>
+<circle cx="805" cy="345" r="16" fill="#7dd3fc" stroke="#0284c7" stroke-width="2"/>
+<circle cx="805" cy="565" r="16" fill="#7dd3fc" stroke="#0284c7" stroke-width="2"/>
+<circle cx="865" cy="345" r="16" fill="#7dd3fc" stroke="#0284c7" stroke-width="2"/>
+<circle cx="865" cy="565" r="16" fill="#7dd3fc" stroke="#0284c7" stroke-width="2"/>
+<circle cx="925" cy="345" r="16" fill="#7dd3fc" stroke="#0284c7" stroke-width="2"/>
+<circle cx="925" cy="565" r="16" fill="#7dd3fc" stroke="#0284c7" stroke-width="2"/>
+<circle cx="985" cy="345" r="16" fill="#7dd3fc" stroke="#0284c7" stroke-width="2"/>
+<circle cx="985" cy="565" r="16" fill="#7dd3fc" stroke="#0284c7" stroke-width="2"/>
+<circle cx="1045" cy="345" r="16" fill="#7dd3fc" stroke="#0284c7" stroke-width="2"/>
+<circle cx="1045" cy="565" r="16" fill="#7dd3fc" stroke="#0284c7" stroke-width="2"/>
+<circle cx="1105" cy="345" r="16" fill="#7dd3fc" stroke="#0284c7" stroke-width="2"/>
+<circle cx="1105" cy="565" r="16" fill="#7dd3fc" stroke="#0284c7" stroke-width="2"/>
+<circle cx="1165" cy="345" r="16" fill="#7dd3fc" stroke="#0284c7" stroke-width="2"/>
+<circle cx="1165" cy="565" r="16" fill="#7dd3fc" stroke="#0284c7" stroke-width="2"/>
+<rect x="320" y="280" width="70" height="350" rx="24" fill="#f9a8d4" stroke="#db2777" stroke-width="5"/>
+<rect x="560" y="280" width="90" height="350" rx="24" fill="#93c5fd" stroke="#2563eb" stroke-width="5"/>
+<rect x="860" y="280" width="65" height="350" rx="24" fill="#86efac" stroke="#16a34a" stroke-width="5"/>
+<rect x="1060" y="280" width="85" height="350" rx="24" fill="#fcd34d" stroke="#d97706" stroke-width="5"/>
+<text x="700" y="710" text-anchor="middle" font-family="Arial, sans-serif" font-size="30" font-weight="700" fill="#51627a">بعض البروتينات مدمجة وتعبر الغشاء، وهي الأساس البنيوي للعلامات السطحية.</text>
+<text x="700" y="785" text-anchor="middle" font-family="Arial, sans-serif" font-size="24" fill="#51627a">رؤية بنيوية: العلامات المناعية ليست فكرة مجردة، بل بروتينات غشائية حقيقية.</text>
+</svg>

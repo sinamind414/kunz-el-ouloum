@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 700">
+  <rect width="1200" height="700" fill="#f8fafc" rx="32"/>
+  <g>
+    <rect x="70" y="90" width="300" height="500" rx="26" fill="#ffffff" stroke="#d8eadf" stroke-width="4"/>
+    <text x="220" y="145" text-anchor="middle" font-size="30" font-weight="700" fill="#0f5132">المجموعة 1</text>
+    <text x="220" y="190" text-anchor="middle" font-size="24" fill="#475467">كرات دم الأرنب</text>
+    <rect x="140" y="240" width="160" height="230" rx="20" fill="#fee2e2" stroke="#ef4444" stroke-width="6"/>
+    <text x="220" y="360" text-anchor="middle" font-size="30" font-weight="700" fill="#b42318">هيموغلوبين</text>
+    <path d="M120 520 h200" stroke="#ef4444" stroke-width="8"/>
+    <path d="M220 520 v-180" stroke="#ef4444" stroke-width="8"/>
+  </g>
+  <g>
+    <rect x="450" y="90" width="300" height="500" rx="26" fill="#ffffff" stroke="#d8eadf" stroke-width="4"/>
+    <text x="600" y="145" text-anchor="middle" font-size="30" font-weight="700" fill="#0f5132">المجموعة 2</text>
+    <text x="600" y="190" text-anchor="middle" font-size="24" fill="#475467">خلايا بيضة الضفدع</text>
+    <g fill="#7c3aed" opacity="0.25" stroke="#7c3aed" stroke-width="8">
+      <circle cx="560" cy="305" r="44"/><circle cx="640" cy="350" r="38"/><circle cx="585" cy="410" r="34"/>
+    </g>
+    <text x="600" y="520" text-anchor="middle" font-size="28" fill="#334155">بروتينات خاصة بالبيضة</text>
+  </g>
+  <g>
+    <rect x="830" y="90" width="300" height="500" rx="26" fill="#ffffff" stroke="#d8eadf" stroke-width="4"/>
+    <text x="980" y="145" text-anchor="middle" font-size="30" font-weight="700" fill="#0f5132">المجموعة 3</text>
+    <text x="980" y="190" text-anchor="middle" font-size="24" fill="#475467">خلايا الضفدع + ARN الأرنب</text>
+    <path d="M900 260 h160" stroke="#ef4444" stroke-width="8"/>
+    <path d="M980 260 v170" stroke="#ef4444" stroke-width="8"/>
+    <rect x="915" y="300" width="130" height="140" rx="18" fill="#fee2e2" stroke="#ef4444" stroke-width="6"/>
+    <text x="980" y="470" text-anchor="middle" font-size="28" fill="#334155">ظهور هيموغلوبين الأرنب</text>
+  </g>
+  <text x="600" y="650" text-anchor="middle" font-size="30" font-weight="700" fill="#0f5132">حقن ARN غيّر نوع البروتين المركب</text>
+</svg>

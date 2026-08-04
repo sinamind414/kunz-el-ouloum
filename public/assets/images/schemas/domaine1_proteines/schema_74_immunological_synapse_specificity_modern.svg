@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 760">
+  <rect width="1200" height="760" rx="28" fill="#f8fbff"/>
+  <text x="600" y="68" text-anchor="middle" font-size="38" font-weight="800" fill="#0f172a">التماس وحده لا يكفي: لا بد من تطابق نوعي بين الخلية التائية والخلية الهدف</text>
+
+  <rect x="90" y="140" width="470" height="500" rx="26" fill="#ffffff" stroke="#d8e1e8" stroke-width="4"/>
+  <text x="325" y="186" text-anchor="middle" font-size="30" font-weight="700" fill="#0f766e">تماس نوعي ⟶ إقصاء</text>
+  <circle cx="240" cy="385" r="110" fill="#dbeafe" stroke="#60a5fa" stroke-width="6"/>
+  <circle cx="395" cy="385" r="110" fill="#fee2e2" stroke="#ef4444" stroke-width="6"/>
+  <g stroke="#16a34a" stroke-width="7" fill="none">
+    <path d="M325 345 q35 40 70 0"/>
+    <path d="M325 425 q35 -40 70 0"/>
+  </g>
+  <text x="325" y="575" text-anchor="middle" font-size="24" fill="#334155">تطابق مستقبل الخلية التائية مع المحدد على CMH-I</text>
+
+  <rect x="640" y="140" width="470" height="500" rx="26" fill="#ffffff" stroke="#d8e1e8" stroke-width="4"/>
+  <text x="875" y="186" text-anchor="middle" font-size="30" font-weight="700" fill="#7c2d12">تماس غير نوعي ⟶ لا قتل</text>
+  <circle cx="790" cy="385" r="110" fill="#dbeafe" stroke="#60a5fa" stroke-width="6"/>
+  <circle cx="945" cy="385" r="110" fill="#fee2e2" stroke="#ef4444" stroke-width="6"/>
+  <g stroke="#94a3b8" stroke-width="7" fill="none" stroke-dasharray="10 10">
+    <path d="M875 345 q35 40 70 0"/>
+    <path d="M875 425 q35 -40 70 0"/>
+  </g>
+  <text x="875" y="575" text-anchor="middle" font-size="24" fill="#334155">غياب التطابق ⟶ لا تتفعل آلية الإقصاء</text>
+
+  <rect x="140" y="684" width="920" height="42" rx="20" fill="#0f172a" opacity="0.92"/>
+  <text x="600" y="712" text-anchor="middle" font-size="24" fill="#ffffff">النوعية شرط أساسي في الاستجابة الخلوية: الخلية التائية لا تقصي إلا الهدف الذي يعرض المحدد الموافق</text>
+</svg>

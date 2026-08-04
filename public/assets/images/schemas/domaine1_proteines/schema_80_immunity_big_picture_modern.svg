@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 820">
+  <rect width="1400" height="820" rx="32" fill="#f8fbff"/>
+  <text x="700" y="70" text-anchor="middle" font-size="40" font-weight="800" fill="#0f172a">الخريطة الكبرى للمناعة: التعرف → الاستجابة → الذاكرة</text>
+
+  <rect x="90" y="140" width="250" height="520" rx="26" fill="#ffffff" stroke="#d8e1e8" stroke-width="4"/>
+  <text x="215" y="190" text-anchor="middle" font-size="30" font-weight="700" fill="#1d4ed8">1) الذات واللاذات</text>
+  <circle cx="215" cy="340" r="90" fill="#dbeafe" stroke="#60a5fa" stroke-width="6"/>
+  <g fill="#1d4ed8"><rect x="175" y="280" width="16" height="52" rx="8"/><rect x="215" y="265" width="16" height="65" rx="8"/><rect x="255" y="286" width="16" height="48" rx="8"/></g>
+  <text x="215" y="470" text-anchor="middle" font-size="24" fill="#334155">تمييز الخلايا عبر HLA / CMH</text>
+  <text x="215" y="525" text-anchor="middle" font-size="22" fill="#475569">اختلال التوافق ⟶ تنبيه مناعي</text>
+
+  <rect x="420" y="140" width="250" height="520" rx="26" fill="#ffffff" stroke="#d8e1e8" stroke-width="4"/>
+  <text x="545" y="190" text-anchor="middle" font-size="30" font-weight="700" fill="#0f766e">2) الاستجابة الخلطية</text>
+  <circle cx="545" cy="320" r="82" fill="#dcfce7" stroke="#22c55e" stroke-width="6"/>
+  <g stroke="#7c3aed" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" fill="none">
+    <path d="M500 305 l15 -30 l15 30"/>
+    <path d="M545 270 l15 -30 l15 30"/>
+    <path d="M590 305 l15 -30 l15 30"/>
+  </g>
+  <text x="545" y="445" text-anchor="middle" font-size="24" fill="#334155">خلايا B ⟶ خلايا بلازمية ⟶ أجسام مضادة</text>
+  <text x="545" y="525" text-anchor="middle" font-size="22" fill="#475569">تراص • معقدات مناعية • متممة</text>
+
+  <rect x="750" y="140" width="250" height="520" rx="26" fill="#ffffff" stroke="#d8e1e8" stroke-width="4"/>
+  <text x="875" y="190" text-anchor="middle" font-size="30" font-weight="700" fill="#dc2626">3) الاستجابة الخلوية</text>
+  <circle cx="835" cy="325" r="74" fill="#dbeafe" stroke="#60a5fa" stroke-width="5"/>
+  <circle cx="920" cy="325" r="74" fill="#fee2e2" stroke="#ef4444" stroke-width="5"/>
+  <g stroke="#16a34a" stroke-width="6" fill="none">
+    <path d="M875 300 q22 25 45 0"/>
+    <path d="M875 350 q22 -25 45 0"/>
+  </g>
+  <text x="875" y="445" text-anchor="middle" font-size="24" fill="#334155">خلايا T نوعية ⟶ تعرف ثم إقصاء خلوي</text>
+  <text x="875" y="525" text-anchor="middle" font-size="22" fill="#475569">CMH-I • برفورينات • غرانزيمات</text>
+
+  <rect x="1080" y="140" width="230" height="520" rx="26" fill="#ffffff" stroke="#d8e1e8" stroke-width="4"/>
+  <text x="1195" y="190" text-anchor="middle" font-size="30" font-weight="700" fill="#7c3aed">4) الذاكرة</text>
+  <path d="M1120 470 C1170 430 1225 430 1270 470" fill="none" stroke="#dc2626" stroke-width="7"/>
+  <path d="M1120 520 C1170 455 1225 455 1270 520" fill="none" stroke="#3b82f6" stroke-width="7"/>
+  <circle cx="1195" cy="315" r="68" fill="#f3e8ff" stroke="#a855f7" stroke-width="5"/>
+  <text x="1195" y="445" text-anchor="middle" font-size="24" fill="#334155">خلايا ذاكرة + تلقيح + تذكير</text>
+  <text x="1195" y="525" text-anchor="middle" font-size="22" fill="#475569">استجابة ثانية أسرع وأقوى</text>
+
+  <g stroke="#f59e0b" stroke-width="8" stroke-linecap="round">
+    <line x1="340" y1="400" x2="420" y2="400"/>
+    <line x1="670" y1="400" x2="750" y2="400"/>
+    <line x1="1000" y1="400" x2="1080" y2="400"/>
+  </g>
+  <g fill="#f59e0b">
+    <polygon points="420,400 394,386 394,414"/>
+    <polygon points="750,400 724,386 724,414"/>
+    <polygon points="1080,400 1054,386 1054,414"/>
+  </g>
+
+  <rect x="230" y="710" width="940" height="46" rx="22" fill="#0f172a" opacity="0.92"/>
+  <text x="700" y="740" text-anchor="middle" font-size="25" fill="#ffffff">كل درس من دروس المناعة يبني الذي يليه: التعرف الصحيح يوجّه نوع الاستجابة، ثم تحفظ الذاكرة ما تعلّمته المناعة لمواجهة لاحقة</text>
+</svg>

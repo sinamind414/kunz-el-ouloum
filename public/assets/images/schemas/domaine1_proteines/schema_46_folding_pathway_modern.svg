@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1300 760">
+  <rect width="1300" height="760" rx="28" fill="#f8fbff"/>
+  <text x="650" y="68" text-anchor="middle" font-size="38" font-weight="800" fill="#0f172a">من السلسلة الخطية إلى الطي الوظيفي: مسار تشكل البنية البروتينية</text>
+
+  <rect x="80" y="150" width="240" height="440" rx="24" fill="#ffffff" stroke="#d8e1e8" stroke-width="4"/>
+  <text x="200" y="198" text-anchor="middle" font-size="28" font-weight="700" fill="#1d4ed8">1) سلسلة خطية</text>
+  <g fill="#93c5fd">
+    <circle cx="120" cy="360" r="22"/><circle cx="165" cy="360" r="22"/><circle cx="210" cy="360" r="22"/><circle cx="255" cy="360" r="22"/>
+  </g>
+  <text x="200" y="520" text-anchor="middle" font-size="24" fill="#334155">تتابع الأحماض الأمينية = البنية الأولية</text>
+
+  <path d="M340 370 H500" stroke="#16a34a" stroke-width="8" stroke-linecap="round"/>
+  <text x="420" y="340" text-anchor="middle" font-size="24" fill="#15803d">تآثرات داخلية</text>
+
+  <rect x="520" y="150" width="260" height="440" rx="24" fill="#ffffff" stroke="#d8e1e8" stroke-width="4"/>
+  <text x="650" y="198" text-anchor="middle" font-size="28" font-weight="700" fill="#7c3aed">2) أشكال محلية</text>
+  <path d="M620 300 C580 325 580 365 620 390 C660 415 660 455 620 480" fill="none" stroke="#a855f7" stroke-width="18"/>
+  <path d="M690 305 h56 l-18 32 h-56z" fill="#fde68a" stroke="#f59e0b" stroke-width="4"/>
+  <text x="650" y="520" text-anchor="middle" font-size="24" fill="#334155">حلزون α وصفائح β تظهر أولاً</text>
+
+  <path d="M800 370 H960" stroke="#f59e0b" stroke-width="8" stroke-linecap="round"/>
+  <text x="880" y="340" text-anchor="middle" font-size="24" fill="#92400e">مزيد من الطي</text>
+
+  <rect x="980" y="150" width="240" height="440" rx="24" fill="#ffffff" stroke="#d8e1e8" stroke-width="4"/>
+  <text x="1100" y="198" text-anchor="middle" font-size="28" font-weight="700" fill="#dc2626">3) شكل وظيفي</text>
+  <path d="M1060 380 C1015 295 1110 250 1160 300 C1210 350 1180 455 1100 470 C1045 480 1020 425 1060 380z" fill="none" stroke="#ef4444" stroke-width="18" stroke-linecap="round"/>
+  <circle cx="1140" cy="360" r="18" fill="#22c55e"/>
+  <text x="1100" y="520" text-anchor="middle" font-size="24" fill="#334155">الطي النهائي يكوّن موقعاً وظيفياً أو موقعاً نشطاً</text>
+
+  <rect x="210" y="654" width="880" height="42" rx="20" fill="#0f172a" opacity="0.92"/>
+  <text x="650" y="682" text-anchor="middle" font-size="24" fill="#ffffff">إذا تغيرت حلقة من هذا المسار، خاصة بسبب استبدال حمض أميني مهم، فقد يتغير الطي النهائي ثم تتغير الوظيفة</text>
+</svg>

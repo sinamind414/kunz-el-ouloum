@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="900" viewBox="0 0 1400 900">
+<rect width="1400" height="900" fill="#f7fbff"/>
+<rect x="70" y="120" width="1260" height="700" rx="28" fill="white" stroke="#d5dee8" stroke-width="4"/>
+<text x="700" y="76" text-anchor="middle" font-family="Arial, sans-serif" font-size="54" font-weight="700" fill="#17233b">تجربة الترشيح وإثبات نوعية الرامزة</text>
+<text x="700" y="170" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="700" fill="#51627a">يبقى فقط الزوج الصحيح بين الكودون و ARNt الموافق</text>
+<rect x="130" y="245" width="260" height="320" rx="26" fill="#fef9c3" stroke="#f59e0b" stroke-width="4"/>
+<text x="260.0" y="307" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="700" fill="#f59e0b">رامزة موافقة</text>
+<text x="260.0" y="350" text-anchor="middle" font-family="Arial, sans-serif" font-size="22" fill="#17233b">ARNt صحيح</text>
+<rect x="570" y="245" width="260" height="320" rx="26" fill="#fee2e2" stroke="#dc3545" stroke-width="4"/>
+<text x="700.0" y="307" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="700" fill="#dc3545">رامزة غير موافقة</text>
+<text x="700.0" y="350" text-anchor="middle" font-family="Arial, sans-serif" font-size="22" fill="#17233b">ARNt غير مطابق</text>
+<rect x="1010" y="245" width="260" height="320" rx="26" fill="#fef9c3" stroke="#f59e0b" stroke-width="4"/>
+<text x="1140.0" y="307" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="700" fill="#f59e0b">رامزة موافقة</text>
+<text x="1140.0" y="350" text-anchor="middle" font-family="Arial, sans-serif" font-size="22" fill="#17233b">ARNt صحيح</text>
+<circle cx="260" cy="430" r="40" fill="#dbeafe" stroke="#2f6fed" stroke-width="4"/>
+<text x="260" y="440" text-anchor="middle" font-family="Arial, sans-serif" font-size="24" font-weight="700" fill="#2f6fed">ARNt</text>
+<circle cx="700" cy="430" r="40" fill="#dbeafe" stroke="#2f6fed" stroke-width="4"/>
+<text x="700" y="440" text-anchor="middle" font-family="Arial, sans-serif" font-size="24" font-weight="700" fill="#2f6fed">ARNt</text>
+<circle cx="1140" cy="430" r="40" fill="#dbeafe" stroke="#2f6fed" stroke-width="4"/>
+<text x="1140" y="440" text-anchor="middle" font-family="Arial, sans-serif" font-size="24" font-weight="700" fill="#2f6fed">ARNt</text>
+<rect x="180" y="510" width="160" height="28" rx="0" fill="#4ade80" stroke="#15803d" stroke-width="4"/>
+<rect x="620" y="510" width="160" height="28" rx="0" fill="#cbd5e1" stroke="#64748b" stroke-width="4"/>
+<rect x="1060" y="510" width="160" height="28" rx="0" fill="#4ade80" stroke="#15803d" stroke-width="4"/>
+<text x="260" y="620" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="700" fill="#198754">يُحتفظ به</text>
+<text x="700" y="620" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="700" fill="#64748b">يمر عبر المرشح</text>
+<text x="1140" y="620" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="700" fill="#198754">يُحتفظ به</text>
+<text x="700" y="785" text-anchor="middle" font-family="Arial, sans-serif" font-size="24" fill="#51627a">الزوج الصحيح كودون / مضاد كودون هو الذي يبقى مرتبطاً، وهذا يثبت نوعية الترجمة.</text>
+</svg>

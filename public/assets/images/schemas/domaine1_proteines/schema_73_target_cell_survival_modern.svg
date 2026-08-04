@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 760">
+  <rect width="1200" height="760" rx="28" fill="#f8fbff"/>
+  <text x="600" y="68" text-anchor="middle" font-size="38" font-weight="800" fill="#0f172a">عدد الخلايا الهدف ينخفض فقط بوجود خلايا تائية نوعية</text>
+
+  <rect x="90" y="130" width="1020" height="520" rx="26" fill="#ffffff" stroke="#d8e1e8" stroke-width="4"/>
+  <g stroke="#94a3b8" stroke-width="3">
+    <line x1="180" y1="560" x2="1040" y2="560"/>
+    <line x1="180" y1="210" x2="180" y2="560"/>
+  </g>
+  <text x="165" y="200" text-anchor="end" font-size="22" fill="#475569">عدد الخلايا الهدف الحية</text>
+  <text x="1040" y="595" text-anchor="end" font-size="22" fill="#475569">الزمن أو شدة التماس الخلوي</text>
+
+  <path d="M200 260 C340 255 480 265 620 270 C770 275 900 285 1030 295" fill="none" stroke="#94a3b8" stroke-width="8"/>
+  <path d="M200 250 C320 285 430 340 560 410 C690 475 850 530 1030 548" fill="none" stroke="#dc2626" stroke-width="8"/>
+
+  <g>
+    <rect x="220" y="155" width="210" height="52" rx="14" fill="#e2e8f0"/>
+    <text x="325" y="188" text-anchor="middle" font-size="22" fill="#475569">بدون خلايا تائية نوعية</text>
+    <rect x="470" y="155" width="250" height="52" rx="14" fill="#fee2e2"/>
+    <text x="595" y="188" text-anchor="middle" font-size="22" fill="#b91c1c">بوجود خلايا تائية نوعية</text>
+  </g>
+
+  <g fill="#334155" font-size="22" text-anchor="middle">
+    <text x="330" y="520">بقاء مرتفع</text>
+    <text x="915" y="535">انخفاض واضح</text>
+  </g>
+
+  <rect x="160" y="684" width="880" height="42" rx="20" fill="#0f172a" opacity="0.92"/>
+  <text x="600" y="712" text-anchor="middle" font-size="24" fill="#ffffff">إذا انخفض عدد الخلايا الهدف فقط مع الخلايا التائية النوعية فهذا دليل على تعرف نوعي يليه إقصاء خلوي مباشر</text>
+</svg>

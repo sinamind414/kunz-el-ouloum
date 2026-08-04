@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 760">
+  <rect width="1200" height="760" rx="28" fill="#f8fbff"/>
+  <text x="600" y="70" text-anchor="middle" font-size="38" font-weight="800" fill="#0f172a">عامل Rh مثال إضافي على اختلاف العلامات السطحية بين الأفراد</text>
+
+  <rect x="90" y="120" width="470" height="540" rx="26" fill="#ffffff" stroke="#d8e1e8" stroke-width="4"/>
+  <text x="325" y="168" text-anchor="middle" font-size="30" font-weight="700" fill="#dc2626">Rh+</text>
+  <circle cx="325" cy="360" r="145" fill="#fecaca" stroke="#dc2626" stroke-width="6"/>
+  <g fill="#f59e0b">
+    <rect x="250" y="250" width="24" height="24" rx="8"/>
+    <rect x="365" y="260" width="24" height="24" rx="8"/>
+    <rect x="268" y="420" width="24" height="24" rx="8"/>
+    <rect x="380" y="400" width="24" height="24" rx="8"/>
+  </g>
+  <text x="325" y="548" text-anchor="middle" font-size="24" fill="#334155">وجود مولد الضد D على السطح</text>
+  <g fill="#1d4ed8" font-size="24" text-anchor="middle">
+    <text x="260" y="610">DD</text>
+    <text x="325" y="610">Dd</text>
+    <text x="390" y="610">⟶ النمط الظاهري Rh+</text>
+  </g>
+
+  <rect x="640" y="120" width="470" height="540" rx="26" fill="#ffffff" stroke="#d8e1e8" stroke-width="4"/>
+  <text x="875" y="168" text-anchor="middle" font-size="30" font-weight="700" fill="#475569">Rh−</text>
+  <circle cx="875" cy="360" r="145" fill="#e2e8f0" stroke="#94a3b8" stroke-width="6"/>
+  <text x="875" y="548" text-anchor="middle" font-size="24" fill="#334155">غياب مولد الضد D على السطح</text>
+  <g fill="#7c3aed" font-size="24" text-anchor="middle">
+    <text x="875" y="610">dd ⟶ النمط الظاهري Rh−</text>
+  </g>
+
+  <rect x="170" y="682" width="860" height="42" rx="20" fill="#0f172a" opacity="0.92"/>
+  <text x="600" y="710" text-anchor="middle" font-size="24" fill="#ffffff">مثلما تختلف الزمر الدموية، يضيف عامل Rh علامة سطحية أخرى تُؤخذ بعين الاعتبار عند التوافق الحيوي</text>
+</svg>

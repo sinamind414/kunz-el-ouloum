@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Architecture — Kunz El Ouloum (SVT Bac Algérien)</title>
+<style>
+  :root{
+    --bg:#0f172a; --panel:#1e293b; --ink:#e2e8f0; --muted:#94a3b8;
+    --be:#38bdf8; --fe:#a78bfa; --data:#34d399; --ai:#fbbf24;
+    --ocr:#f472b6; --build:#fb7185; --line:#334155;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font-family:"Segoe UI",Tahoma,system-ui,sans-serif;line-height:1.5}
+  header{padding:28px 32px;background:linear-gradient(90deg,#0ea5e9,#7c3aed);
+    color:#fff}
+  header h1{margin:0;font-size:24px}
+  header p{margin:6px 0 0;opacity:.9}
+  .wrap{padding:24px 32px;max-width:1200px;margin:0 auto}
+  .legend{display:flex;flex-wrap:wrap;gap:10px;margin:0 0 24px}
+  .legend span{display:inline-flex;align-items:center;gap:6px;font-size:13px;
+    background:var(--panel);padding:6px 12px;border-radius:20px}
+  .dot{width:12px;height:12px;border-radius:50%}
+  .layer{background:var(--panel);border:1px solid var(--line);border-radius:14px;
+    padding:18px 20px;margin-bottom:18px}
+  .layer h2{margin:0 0 12px;font-size:18px;display:flex;align-items:center;gap:10px}
+  .tag{font-size:11px;padding:2px 9px;border-radius:6px;color:#0f172a;font-weight:700}
+  .t-be{background:var(--be)} .t-fe{background:var(--fe)} .t-data{background:var(--data)}
+  .t-ai{background:var(--ai)} .t-ocr{background:var(--ocr)} .t-build{background:var(--build)}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px}
+  .card{background:#0b1220;border:1px solid var(--line);border-radius:10px;padding:12px 14px}
+  .card b{display:block;font-size:14px;margin-bottom:4px}
+  .card code{color:#7dd3fc;font-size:12px}
+  .card small{color:var(--muted);font-size:12px;display:block;margin-top:4px}
+  .flow{display:flex;flex-wrap:wrap;align-items:center;gap:8px;font-size:13px}
+  .node{background:#0b1220;border:1px solid var(--line);border-radius:8px;padding:6px 12px}
+  .arrow{color:var(--muted)}
+  .note{background:#172554;border-left:4px solid var(--be);padding:12px 16px;
+    border-radius:0 10px 10px 0;margin-top:18px;font-size:13px;color:#bfdbfe}
+  .warn{background:#3f2d0e;border-left:4px solid var(--ai);color:#fde68a}
+  table{width:100%;border-collapse:collapse;margin-top:10px;font-size:13px}
+  th,td{border:1px solid var(--line);padding:8px 10px;text-align:left}
+  th{background:#0b1220;color:var(--muted)}
+</style>
+</head>
+<body>
+<header>
+  <h1>🧬 Kunz El Ouloum — Architecture applicative (SVT Bac Algérien)</h1>
+  <p>Vue complète pour revue : backend, contenu pédagogique, frontend, pipeline OCR &amp; build mobile</p>
+</header>
+
+<div class="wrap">
+
+  <div class="legend">
+    <span><i class="dot" style="background:var(--be)"></i>Backend / Serveur</span>
+    <span><i class="dot" style="background:var(--fe)"></i>Frontend React</span>
+    <span><i class="dot" style="background:var(--data)"></i>Contenu / Données</span>
+    <span><i class="dot" style="background:var(--ai)"></i>Moteur Tuteur (offline)</span>
+    <span><i class="dot" style="background:var(--ocr)"></i>Pipeline OCR (Python)</span>
+    <span><i class="dot" style="background:var(--build)"></i>Build / Déploiement</span>
+  </div>
+
+  <!-- FLUX GLOBAL -->
+  <div class="layer">
+    <h2>🌐 Flux global de la requête</h2>
+    <div class="flow">
+      <span class="node" style="border-color:var(--fe)">Navigateur / App Android</span>
+      <span class="arrow">➜</span>
+      <span class="node" style="border-color:var(--be)">server.ts (Express)</span>
+      <span class="arrow">➜</span>
+      <span class="node" style="border-color:var(--be)">Vite middleware (dev) / dist/ (prod)</span>
+      <span class="arrow">➜</span>
+      <span class="node" style="border-color:var(--fe)">React App</span>
+      <span class="arrow">➜</span>
+      <span class="node" style="border-color:var(--data)">Modules contenu (TS embarqué)</span>
+      <span class="arrow">➜</span>
+      <span class="node" style="border-color:var(--ai)">Tuteur SVT (recherche + réponse)</span>
+    </div>
+    <div class="note">Aucune base de données externe, aucun appel API IA : tout le contenu est <b>intégré (bundlé)</b> dans le code TypeScript. Le mode « tutor » est <b>offline</b>.</div>
+  </div>
+
+  <!-- BACKEND -->
+  <div class="layer">
+    <h2><span class="tag t-be">Backend</span> server.ts — serveur unique</h2>
+    <div class="grid">
+      <div class="card"><b>Express + Vite</b><code>server.ts</code>
+        <small>Démarre sur PORT (défaut 3000), écoute 0.0.0.0</small></div>
+      <div class="card"><b>En-têtes sécurité</b>
+        <small>X-Frame-Options, nosniff, XSS-Protection, Permissions-Policy (faits main, pas helmet)</small></div>
+      <div class="card"><b>Route santé</b><code>GET /api/health</code>
+        <small>Renvoie {status, mode, tutor:"offline", dataVersion}</small></div>
+      <div class="card"><b>Mode dev</b>
+        <small>middlewareMode Vite (SPA)</small></div>
+      <div class="card"><b>Mode prod</b>
+        <small>Sert dist/ (cache 1 an, index.html no-cache) + catch-all *</small></div>
+    </div>
+    <div class="note warn">⚠️ Pas d'API métier réelle : /api/health seulement. Le catch-all <code>app.get("*")</code> bloque toute extension future par API. Pas de gestionnaire d'erreurs.</div>
+  </div>
+
+  <!-- CONTENU -->
+  <div class="layer">
+    <h2><span class="tag t-data">Contenu</span> Sources de connaissances (embarquées)</h2>
+    <table>
+      <tr><th>Fichier</th><th>Rôle</th><th>Volume</th><th>Remarque</th></tr>
+      <tr><td><code>src/data.ts</code></td><td>500 QCM par unité (1→11)</td><td>~Grand</td><td>Importés depuis Flutter GitHub ; 120 questions (fillBlank) ignorées</td></tr>
+      <tr><td><code>src/knowledgeCards.ts</code></td><td>18 cartes mémo rapides (aliases + shortAnswer)</td><td>193 lignes</td><td>Propre, termes algériens respectés</td></tr>
+      <tr><td><code>src/bookTutorQA.ts</code></td><td>12 dialogues « prof du livre » (Q/R + followUp)</td><td>171 lignes</td><td>Scientifiquement sain ; boucle followUp peu logique</td></tr>
+      <tr><td><code>src/tutorKnowledge.ts</code></td><td>Connaissance massive OPUS (leçons)</td><td>3624 lignes</td><td>Nettoyé : émojis + fragments UI retirés</td></tr>
+      <tr><td><code>src/knowledge/domain1·2·3.ts</code></td><td>Filtrent TUTOR_KNOWLEDGE par unitId</td><td>7 lignes ch.</td><td>Domaines 1=(0-5), 2=(6-8), 3=(9-11)</td></tr>
+      <tr><td><code>src/knowledge/loader.ts</code></td><td>loadDomainKnowledge(domain) async</td><td>20 lignes</td><td>Import dynamique des domaines</td></tr>
+      <tr><td><code>src/lessonData.ts</code></td><td>Données leçons UI</td><td>—</td><td></td></tr>
+      <tr><td><code>src/methodologyKnowledge.ts</code></td><td>Méthodologie bac (demarche)</td><td>—</td><td></td></tr>
+    </table>
+  </div>
+
+  <!-- MOTEUR TUTEUR -->
+  <div class="layer">
+    <h2><span class="tag t-ai">Moteur Tuteur</span> Recherche &amp; réponse (offline)</h2>
+    <div class="grid">
+      <div class="card"><b>findBestBookQA()</b><code>bookTutorQA.ts</code>
+        <small>Scoring sur mots-clés normalisés (normalizeArabic)</small></div>
+      <div class="card"><b>normalizeArabic</b><code>utils/arabicNormalize.ts</code>
+        <small>Unifie alef/hamza/taa marbouta pour la recherche</small></div>
+      <div class="card"><b>Cartes</b><code>knowledgeCards.ts</code>
+        <small>Correspondance par aliases pour réponse rapide</small></div>
+      <div class="card"><b>Connaissances</b><code>tutorKnowledge.ts</code>
+        <small>Chunk filtré par domaine → injecté au tuteur</small></div>
+    </div>
+    <div class="note">Le « tuteur » est une recherche textuelle locale (score &gt;= 12). Aucun LLM : réponses puisées dans le contenu embarqué.</div>
+  </div>
+
+  <!-- FRONTEND -->
+  <div class="layer">
+    <h2><span class="tag t-fe">Frontend</span> React 19 + Tailwind v4 + Vite</h2>
+    <div class="grid">
+      <div class="card"><b>App.tsx</b><small>Composition principale, navigation unités/QCM</small></div>
+      <div class="card"><b>components/</b><small>UI : QCM, cartes, tuteur, graphiques (recharts), motion</small></div>
+      <div class="card"><b>main.tsx</b><small>Point d'entrée React</small></div>
+      <div class="card"><b>index.css</b><small>Styles globaux + polices (Noto Kufi Arabic)</small></div>
+      <div class="card"><b>types.ts</b><small>QuizQuestion, Unit, Flashcard, BookTutorQA…</small></div>
+      <div class="card"><b>assets/schemas</b><small>SVG par domaine (référencés dans data.ts : diagramUrl)</small></div>
+    </div>
+  </div>
+
+  <!-- OCR PIPELINE -->
+  <div class="layer">
+    <h2><span class="tag t-ocr">OCR</span> Pipeline d'extraction (scripts/ocr — Python)</h2>
+    <div class="grid">
+      <div class="card"><b>ocr_pdf.py</b><small>Extraction PDF → markdown (OCR)</small></div>
+      <div class="card"><b>md_to_lessons.py</b><small>Markdown → leçons structurées</small></div>
+      <div class="card"><b>input/ input_markdown/</b><small>Corpus livres (OPUS, FINALBAC, Bouzar)</small></div>
+      <div class="card"><b>requirements.txt</b><small>Dépendances Python</small></div>
+    </div>
+    <div class="note">C'est ici que naissent les erreurs d'extraction (OCR) nettoyées ensuite dans les fichiers TS. Source des termes « algérisés » (ex. الستوبلازم, الكرية المذذبة).</div>
+  </div>
+
+  <!-- BUILD -->
+  <div class="layer">
+    <h2><span class="tag t-build">Build</span> Compilation &amp; mobile</h2>
+    <div class="grid">
+      <div class="card"><b>npm run build</b><code>vite build</code> + esbuild server.cjs<small></small></div>
+      <div class="card"><b>Capacitor Android</b><code>@capacitor/android</code><small>android:sync / open / debug</small></div>
+      <div class="card"><b>typecheck / lint</b><code>tsc --noEmit</code><small>✅ passe après nettoyage</small></div>
+    </div>
+  </div>
+
+  <!-- POINTS DE REVUE -->
+  <div class="layer">
+    <h2>🔎 Points à valider pour l'avis</h2>
+    <table>
+      <tr><th>#</th><th>Point</th><th>Statut</th></tr>
+      <tr><td>1</td><td>Backend = simple serveur statique, pas d'API métier</td><td>⚠️ à confirmer si voulu</td></tr>
+      <tr><td>2</td><td>Contenu 100% embarqué (pas de DB) → rebuild pour toute MAJ</td><td>⚠️ limitation</td></tr>
+      <tr><td>3</td><td>Termes algérisés (الستوبلازم, النوادي, الكرية المذذبة…)</td><td>✅ conservés / à valider prof</td></tr>
+      <tr><td>4</td><td>data.ts : explanation = copie de la réponse (faible pédagogie)</td><td>⚠️ à améliorer</td></tr>
+      <tr><td>5</td><td>data.ts : distracteurs hors contexte (placeholders)</td><td>⚠️ à revoir</td></tr>
+      <tr><td>6</td><td>120 questions ignorées (fillBlank/string)</td><td>⚠️ trou de contenu</td></tr>
+      <tr><td>7</td><td>tutorKnowledge.ts : 27 chunks vides après nettoyage UI</td><td>🗑️ à supprimer</td></tr>
+      <tr><td>8</td><td>keywords : fragments splités (La, Transcription, problem…)</td><td>⚠️ affaiblit recherche</td></tr>
+    </table>
+  </div>
+
+</div>
+</body>
+</html>

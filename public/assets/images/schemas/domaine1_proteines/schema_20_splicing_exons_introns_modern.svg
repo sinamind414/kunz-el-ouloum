@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 600">
+  <rect width="1200" height="600" fill="#f8fbff" rx="28"/>
+  <text x="600" y="70" text-anchor="middle" font-size="38" font-weight="800" fill="#0f172a">من ADN إلى ARNm أولي ثم ARNm ناضج</text>
+  <text x="250" y="150" font-size="28" font-weight="700" fill="#334155">ADN (السلسلة المستنسخة)</text>
+  <rect x="150" y="180" width="900" height="42" rx="12" fill="#16a34a"/>
+  <rect x="280" y="180" width="22" height="42" fill="#ef4444"/><rect x="350" y="180" width="22" height="42" fill="#ef4444"/><rect x="520" y="180" width="22" height="42" fill="#ef4444"/><rect x="660" y="180" width="22" height="42" fill="#ef4444"/><rect x="820" y="180" width="22" height="42" fill="#ef4444"/>
+  <text x="600" y="260" text-anchor="middle" font-size="30" fill="#0f5132">الاستنساخ</text>
+  <path d="M600 275 v55" stroke="#0f5132" stroke-width="8" marker-end="url(#arrow)"/>
+  <text x="250" y="370" font-size="28" font-weight="700" fill="#334155">ARNm أولي</text>
+  <rect x="150" y="400" width="900" height="30" rx="10" fill="#cbd5e1"/>
+  <rect x="280" y="400" width="22" height="30" fill="#93c5fd"/><rect x="350" y="400" width="22" height="30" fill="#93c5fd"/><rect x="520" y="400" width="22" height="30" fill="#93c5fd"/><rect x="660" y="400" width="22" height="30" fill="#93c5fd"/><rect x="820" y="400" width="22" height="30" fill="#93c5fd"/>
+  <text x="930" y="372" font-size="24" fill="#475467">إكسونات أولية + إنترونات</text>
+  <path d="M600 445 v45" stroke="#334155" stroke-width="8" marker-end="url(#arrow)"/>
+  <text x="600" y="490" text-anchor="middle" font-size="28" fill="#334155">التضفير (القص واللصق)</text>
+  <rect x="320" y="525" width="560" height="28" rx="10" fill="#60a5fa"/>
+  <text x="600" y="585" text-anchor="middle" font-size="28" fill="#0f172a">ARNm ناضج: الإكسونات فقط تبقى صالحة للترجمة</text>
+  <defs><marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto"><path d="M0,0 L12,6 L0,12 z" fill="#334155"/></marker></defs>
+</svg>

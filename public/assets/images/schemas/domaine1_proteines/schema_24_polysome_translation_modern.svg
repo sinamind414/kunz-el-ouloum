@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 760">
+  <rect width="1200" height="760" rx="28" fill="#f8fbff"/>
+  <text x="600" y="70" text-anchor="middle" font-size="38" font-weight="800" fill="#0f172a">متعدد الريبوزوم : عدة آلات تقرأ نفس الرسالة لرفع مردود تركيب البروتين</text>
+
+  <rect x="90" y="130" width="470" height="500" rx="24" fill="#ffffff" stroke="#d8e1e8" stroke-width="4"/>
+  <circle cx="325" cy="380" r="175" fill="#e8f5ee" stroke="#87b69b" stroke-width="6"/>
+  <text x="325" y="235" text-anchor="middle" font-size="28" font-weight="700" fill="#0f5132">هيولى الخلية</text>
+  <path d="M165 380 H485" stroke="#f59e0b" stroke-width="8" stroke-linecap="round"/>
+  <g>
+    <ellipse cx="225" cy="380" rx="38" ry="30" fill="#fca5a5"/>
+    <ellipse cx="305" cy="380" rx="38" ry="30" fill="#fca5a5"/>
+    <ellipse cx="385" cy="380" rx="38" ry="30" fill="#fca5a5"/>
+    <ellipse cx="465" cy="380" rx="38" ry="30" fill="#fca5a5"/>
+  </g>
+  <g stroke="#22c55e" stroke-width="6" stroke-linecap="round">
+    <path d="M225 412 q20 48 0 92"/>
+    <path d="M305 412 q18 42 0 82"/>
+    <path d="M385 412 q18 44 0 84"/>
+    <path d="M465 412 q20 42 0 78"/>
+  </g>
+  <text x="325" y="585" text-anchor="middle" font-size="24" fill="#334155">عدة ريبوزومات تترجم نفس ARNm في الوقت نفسه</text>
+
+  <rect x="640" y="130" width="470" height="500" rx="24" fill="#ffffff" stroke="#d8e1e8" stroke-width="4"/>
+  <text x="875" y="190" text-anchor="middle" font-size="28" font-weight="700" fill="#0f5132">قراءة تجريبية</text>
+  <rect x="725" y="245" width="300" height="58" rx="16" fill="#fde68a"/>
+  <text x="875" y="282" text-anchor="middle" font-size="24" fill="#78350f">وجود متعدد الريبوزوم ⟵ إنتاج بروتيني مرتفع</text>
+  <rect x="725" y="350" width="300" height="58" rx="16" fill="#fecaca"/>
+  <text x="875" y="387" text-anchor="middle" font-size="24" fill="#7f1d1d">إضافة إنزيم RNase ⟵ اختفاء متعدد الريبوزوم</text>
+  <rect x="725" y="455" width="300" height="58" rx="16" fill="#dbeafe"/>
+  <text x="875" y="492" text-anchor="middle" font-size="24" fill="#1d4ed8">اختفاء متعدد الريبوزوم ⟵ توقف الترجمة</text>
+  <text x="600" y="700" text-anchor="middle" font-size="28" font-weight="700" fill="#0f172a">متعدد الريبوزوم يفسّر كيف تصنع الخلية كمية كبيرة من نفس البروتين بسرعة</text>
+</svg>

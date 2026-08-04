@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 820" role="img" aria-labelledby="title desc">
+  <title id="title">صورة افتتاحية: خيط العنكبوت</title>
+  <desc id="desc">لوحة أكثر كثافة تربط بين خيط العنكبوت كمنتج بروتيني والسؤال حول دقة التركيب داخل الخلية.</desc>
+  <rect width="1400" height="820" fill="#f7fbf7" rx="36"/>
+  <g stroke="#9ec5aa" stroke-width="4" opacity="0.9">
+    <line x1="170" y1="100" x2="700" y2="395"/>
+    <line x1="1230" y1="100" x2="700" y2="395"/>
+    <line x1="100" y1="390" x2="700" y2="395"/>
+    <line x1="210" y1="700" x2="700" y2="395"/>
+    <line x1="1190" y1="700" x2="700" y2="395"/>
+    <line x1="1310" y1="395" x2="700" y2="395"/>
+  </g>
+  <g fill="none" stroke="#2d6a4f" stroke-width="4">
+    <path d="M220 185 q480 210 965 0"/>
+    <path d="M165 300 q535 175 1070 0"/>
+    <path d="M120 395 q580 110 1160 0"/>
+    <path d="M165 500 q535 0 1070 0"/>
+    <path d="M225 610 q480 -145 960 0"/>
+  </g>
+  <g transform="translate(700 395)">
+    <ellipse cx="0" cy="0" rx="88" ry="72" fill="#f4f0ea" stroke="#7a5c45" stroke-width="8"/>
+    <circle cx="0" cy="-92" r="46" fill="#f4f0ea" stroke="#7a5c45" stroke-width="8"/>
+    <g stroke="#7a5c45" stroke-width="8" stroke-linecap="round">
+      <path d="M-48 -35 l-100 -60"/>
+      <path d="M-58 0 l-125 -10"/>
+      <path d="M-52 28 l-118 45"/>
+      <path d="M-40 55 l-90 88"/>
+      <path d="M48 -35 l100 -60"/>
+      <path d="M58 0 l125 -10"/>
+      <path d="M52 28 l118 45"/>
+      <path d="M40 55 l90 88"/>
+    </g>
+  </g>
+  <rect x="120" y="90" width="450" height="175" rx="24" fill="#ffffff" stroke="#d9eadf" stroke-width="4"/>
+  <text x="345" y="150" text-anchor="middle" font-size="36" font-weight="700" fill="#0f5132">مدخل قريب من الواقع</text>
+  <text x="345" y="205" text-anchor="middle" font-size="28" fill="#334155">خيط العنكبوت منتج بروتيني شديد الدقة</text>
+  <text x="345" y="240" text-anchor="middle" font-size="24" fill="#64748b">هذا يدفع إلى سؤال الخلية: كيف تضبط تركيب بروتين بهذه الجودة؟</text>
+
+  <rect x="870" y="515" width="370" height="170" rx="24" fill="#0f5132"/>
+  <text x="1055" y="575" text-anchor="middle" font-size="36" font-weight="800" fill="#ffffff">سؤال الوحدة</text>
+  <text x="1055" y="635" text-anchor="middle" font-size="30" fill="#d7f4df">كيف يتم تركيب البروتين؟</text>
+</svg>

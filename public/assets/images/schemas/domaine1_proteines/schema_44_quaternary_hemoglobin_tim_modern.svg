@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 760">
+  <rect width="1200" height="760" rx="28" fill="#f8fbff"/>
+  <text x="600" y="68" text-anchor="middle" font-size="38" font-weight="800" fill="#0f172a">البنية الرباعية: عندما تتعاون عدة سلاسل بروتينية في وظيفة واحدة</text>
+
+  <rect x="80" y="140" width="500" height="500" rx="24" fill="#ffffff" stroke="#d8e1e8" stroke-width="4"/>
+  <text x="330" y="188" text-anchor="middle" font-size="30" font-weight="700" fill="#dc2626">الهيموغلوبين</text>
+  <g>
+    <circle cx="260" cy="320" r="72" fill="#fca5a5" opacity="0.92"/>
+    <circle cx="400" cy="320" r="72" fill="#fdba74" opacity="0.92"/>
+    <circle cx="260" cy="460" r="72" fill="#93c5fd" opacity="0.92"/>
+    <circle cx="400" cy="460" r="72" fill="#86efac" opacity="0.92"/>
+  </g>
+  <text x="330" y="575" text-anchor="middle" font-size="24" fill="#334155">أربع سلاسل فرعية تتجمع لتكوين بروتين ناقل للأكسجين</text>
+
+  <rect x="640" y="140" width="480" height="500" rx="24" fill="#ffffff" stroke="#d8e1e8" stroke-width="4"/>
+  <text x="880" y="188" text-anchor="middle" font-size="30" font-weight="700" fill="#1d4ed8">مثال آخر على التجميع البروتيني</text>
+  <g>
+    <path d="M790 330 C760 255 855 215 915 250 C980 290 975 385 905 415 C845 442 810 392 790 330z" fill="none" stroke="#60a5fa" stroke-width="18" stroke-linecap="round"/>
+    <path d="M865 300 C835 250 900 220 940 255 C985 295 975 360 930 385 C892 405 865 360 865 300z" fill="none" stroke="#22c55e" stroke-width="18" stroke-linecap="round"/>
+  </g>
+  <text x="880" y="470" text-anchor="middle" font-size="24" fill="#334155">قد تتجمع سلاسل أو وحدات فرعية متعددة لتثبيت البنية وتحقيق وظيفة مشتركة</text>
+  <text x="880" y="540" text-anchor="middle" font-size="24" fill="#475569">أي خلل في وحدة واحدة قد يؤثر على المعقد كله</text>
+
+  <rect x="180" y="684" width="840" height="42" rx="20" fill="#0f172a" opacity="0.92"/>
+  <text x="600" y="712" text-anchor="middle" font-size="24" fill="#ffffff">البنية الرباعية لا تعني مجرد شكل أكبر، بل تعني تعاون وحدات متعددة داخل بروتين واحد وظيفياً</text>
+</svg>

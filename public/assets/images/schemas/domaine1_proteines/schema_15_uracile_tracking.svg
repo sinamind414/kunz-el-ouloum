@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 650">
+  <rect width="1100" height="650" fill="#f7fbff" rx="32"/>
+  <rect x="80" y="100" width="420" height="420" rx="28" fill="#ffffff" stroke="#d8eadf" stroke-width="4"/>
+  <text x="290" y="145" text-anchor="middle" font-size="30" font-weight="700" fill="#0f5132">بعد مدة قصيرة</text>
+  <ellipse cx="290" cy="315" rx="150" ry="120" fill="#e8f5ee" stroke="#87b69b" stroke-width="6"/>
+  <circle cx="290" cy="315" r="70" fill="#ffffff" stroke="#87b69b" stroke-width="6"/>
+  <g fill="#e11d48">
+    <circle cx="260" cy="295" r="8"/><circle cx="300" cy="280" r="8"/><circle cx="320" cy="325" r="8"/><circle cx="275" cy="340" r="8"/><circle cx="315" cy="350" r="8"/>
+  </g>
+  <text x="290" y="470" text-anchor="middle" font-size="26" fill="#334155">الوسم يتركز في النواة</text>
+
+  <rect x="600" y="100" width="420" height="420" rx="28" fill="#ffffff" stroke="#d8eadf" stroke-width="4"/>
+  <text x="810" y="145" text-anchor="middle" font-size="30" font-weight="700" fill="#0f5132">بعد مدة أطول</text>
+  <ellipse cx="810" cy="315" rx="150" ry="120" fill="#e8f5ee" stroke="#87b69b" stroke-width="6"/>
+  <circle cx="810" cy="315" r="70" fill="#ffffff" stroke="#87b69b" stroke-width="6"/>
+  <g fill="#e11d48">
+    <circle cx="750" cy="230" r="8"/><circle cx="700" cy="290" r="8"/><circle cx="920" cy="280" r="8"/><circle cx="950" cy="350" r="8"/><circle cx="730" cy="380" r="8"/>
+    <circle cx="810" cy="315" r="6" opacity="0.35"/>
+  </g>
+  <text x="810" y="470" text-anchor="middle" font-size="26" fill="#334155">الوسم ينتشر في الهيولى بعد تصنيعه</text>
+
+  <path d="M500 315 h80" stroke="#98a2b3" stroke-width="8" stroke-linecap="round" marker-end="url(#arrow)"/>
+  <defs>
+    <marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+      <path d="M0,0 L12,6 L0,12 z" fill="#98a2b3"/>
+    </marker>
+  </defs>
+  <text x="550" y="285" text-anchor="middle" font-size="24" fill="#475467">انتقال</text>
+  <text x="550" y="585" text-anchor="middle" font-size="30" font-weight="700" fill="#0f5132">اليوراسيل المشع يكشف مسار ARNm من النواة إلى الهيولى</text>
+</svg>

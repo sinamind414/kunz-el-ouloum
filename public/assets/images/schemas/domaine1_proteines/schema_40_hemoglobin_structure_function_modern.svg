@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 760">
+  <rect width="1200" height="760" fill="#f8fbff" rx="28"/>
+  <text x="600" y="72" text-anchor="middle" font-size="38" font-weight="800" fill="#0f172a">من تتابع الأحماض الأمينية إلى شكل ووظيفة الهيموغلوبين</text>
+  <rect x="70" y="120" width="310" height="220" rx="24" fill="#ffffff" stroke="#d8e1e8" stroke-width="4"/>
+  <ellipse cx="225" cy="230" rx="90" ry="65" fill="#fda4af" stroke="#be123c" stroke-width="5"/>
+  <text x="225" y="315" text-anchor="middle" font-size="24" fill="#334155">شكل طبيعي لكرة الدم الحمراء</text>
+  <rect x="70" y="390" width="310" height="220" rx="24" fill="#ffffff" stroke="#d8e1e8" stroke-width="4"/>
+  <path d="M130 500 C220 420 290 445 320 500 C290 555 220 580 130 500z" fill="#fda4af" stroke="#be123c" stroke-width="5"/>
+  <text x="225" y="585" text-anchor="middle" font-size="24" fill="#334155">شكل منجلي عند اضطراب البنية</text>
+
+  <rect x="440" y="150" width="690" height="460" rx="26" fill="#ffffff" stroke="#d8e1e8" stroke-width="4"/>
+  <text x="785" y="205" text-anchor="middle" font-size="30" font-weight="700" fill="#0f5132">تبدّل حمض أميني واحد يغيّر البنية ثم الشكل الخلوي</text>
+  <g>
+    <rect x="520" y="260" width="420" height="50" rx="12" fill="#dbeafe"/>
+    <text x="730" y="293" text-anchor="middle" font-size="24" fill="#1d4ed8">Val - His - Leu - Thr - Pro - Glu - Glu</text>
+    <rect x="520" y="350" width="420" height="50" rx="12" fill="#f3e8ff"/>
+    <text x="730" y="383" text-anchor="middle" font-size="24" fill="#7c3aed">Val - His - Leu - Thr - Pro - Val - Glu</text>
+  </g>
+  <g>
+    <path d="M1010 280 c40 10 50 50 15 90 c-25 30-75 35-110 0 c-30-30-25-80 15-95 c30-10 50 0 80 5z" fill="#bfdbfe" stroke="#1d4ed8" stroke-width="5"/>
+    <circle cx="1040" cy="315" r="10" fill="#ef4444"/>
+    <path d="M1010 440 c40 10 50 50 15 90 c-25 30-75 35-110 0 c-30-30-25-80 15-95 c30-10 50 0 80 5z" fill="#ddd6fe" stroke="#7c3aed" stroke-width="5"/>
+    <circle cx="1000" cy="470" r="10" fill="#ef4444"/>
+  </g>
+  <text x="600" y="685" text-anchor="middle" font-size="28" fill="#334155">تغير التتابع الأولي قد يغيّر البنية الفراغية ووظيفة البروتين، ثم ينعكس على شكل الخلية ووظيفتها</text>
+</svg>

@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="900" viewBox="0 0 1400 900">
+<rect width="1400" height="900" fill="#f7fbff"/>
+<rect x="70" y="120" width="1260" height="700" rx="28" fill="white" stroke="#d5dee8" stroke-width="4"/>
+<text x="700" y="76" text-anchor="middle" font-family="Arial, sans-serif" font-size="50" font-weight="700" fill="#17233b">النموذج الفسيفسائي المائع للغشاء</text>
+<text x="700" y="170" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="700" fill="#51627a">الطبقة الدهنية الثنائية مع البروتينات المتحركة</text>
+<rect x="170" y="430" width="1060" height="60" fill="#fde68a" stroke="#d97706" stroke-width="3"/>
+<rect x="170" y="490" width="1060" height="34" fill="#fde68a" stroke="#d97706" stroke-width="3"/>
+<line x1="180" y1="340" x2="180" y2="430" stroke="#0f766e" stroke-width="4"/>
+<circle cx="180" cy="340" r="11" fill="#7dd3fc" stroke="#0284c7" stroke-width="2"/>
+<line x1="180" y1="524" x2="180" y2="614" stroke="#0f766e" stroke-width="4"/>
+<circle cx="180" cy="614" r="11" fill="#7dd3fc" stroke="#0284c7" stroke-width="2"/>
+<line x1="218" y1="340" x2="218" y2="430" stroke="#0f766e" stroke-width="4"/>
+<circle cx="218" cy="340" r="11" fill="#7dd3fc" stroke="#0284c7" stroke-width="2"/>
+<line x1="218" y1="524" x2="218" y2="614" stroke="#0f766e" stroke-width="4"/>
+<circle cx="218" cy="614" r="11" fill="#7dd3fc" stroke="#0284c7" stroke-width="2"/>
+<line x1="256" y1="340" x2="256" y2="430" stroke="#0f766e" stroke-width="4"/>
+<circle cx="256" cy="340" r="11" fill="#7dd3fc" stroke="#0284c7" stroke-width="2"/>
+<line x1="256" y1="524" x2="256" y2="614" stroke="#0f766e" stroke-width="4"/>
+<circle cx="256" cy="614" r="11" fill="#7dd3fc" stroke="#0284c7" stroke-width="2"/>
+<line x1="294" y1="340" x2="294" y2="430" stroke="#0f766e" stroke-width="4"/>
+<circle cx="294" cy="340" r="11" fill="#7dd3fc" stroke="#0284c7" stroke-width="2"/>
+<line x1="294" y1="524" x2="294" y2="614" stroke="#0f766e" stroke-width="4"/>
+<circle cx="294" cy="614" r="11" fill="#7dd3fc" stroke="#0284c7" stroke-width="2"/>
+<line x1="332" y1="340" x2="332" y2="430" stroke="#0f766e" stroke-width="4"/>
+<circle cx="332" cy="340" r="11" fill="#7dd3fc" stroke="#0284c7" stroke-width="2"/>
+<line x1="332" y1="524" x2="332" y2="614" stroke="#0f766e" stroke-width="4"/>
+<circle cx="332" cy="614" r="11" fill="#7dd3fc" stroke="#0284c7" stroke-width="2"/>
+<line x1="370" y1="340" x2="370" y2="430" stroke="#0f766e" stroke-width="4"/>
+<circle cx="370" cy="340" r="11" fill="#7dd3fc" stroke="#0284c7" stroke-width="2"/>
+<line x1="370" y1="524" x2="370" y2="614" stroke="#0f766e" stroke-width="4"/>
+<circle cx="370" cy="614" r="11" fill="#7dd3fc" stroke="#0284c7" stroke-width="2"/>
+<line x1="408" y1="340" x2="408" y2="430" stroke="#0f766e" stroke-width="4"/>
+<circle cx="408" cy="340" r="11" fill="#7dd3fc" stroke="#0284c7" stroke-width="2"/>
+<line x1="408" y1="524" x2="408" y2="614" stroke="#0f766e" stroke-width="4"/>
+<circle cx="408" cy="614" r="11" fill="#7dd3fc" stroke="#0284c7" stroke-width="2"/>
+<line x1="446" y1="340" x2="446" y2="430" stroke="#0f766e" stroke-width="4"/>
+<circle cx="446" cy="340" r="11" fill="#7dd3fc" stroke="#0284c7" stroke-width="2"/>
+<line x1="446" y1="524" x2="446" y2="614" stroke="#0f766e" stroke-width="4"/>
+<circle cx="446" cy="614" r="11" fill="#7dd3fc" stroke="#0284c7" stroke-width="2"/>
+<line x1="484" y1="340" x2="484" y2="430" stroke="#0f766e" stroke-width="4"/>
+<circle cx="484" cy="340" r="11" fill="#7dd3fc" stroke="#0284c7" stroke-width="2"/>
+<line x1="484" y1="524" x2="484" y2="614" stroke="#0f766e" stroke-width="4"/>
+<circle cx="484" cy="614" r="11" fill="#7dd3fc" stroke="#0284c7" stroke-width="2"/>
+<line x1="522" y1="340" x2="522" y2="430" stroke="#0f766e" stroke-width="4"/>
+<circle cx="522" cy="340" r="11" fill="#7dd3fc" stroke="#0284c7" stroke-width="2"/>
+<line x1="522" y1="524" x2="522" y2="614" stroke="#0f766e" stroke-width="4"/>
+<circle cx="522" cy="614" r="11" fill="#7dd3fc" stroke="#0284c7" stroke-width="2"/>
+<line x1="560" y1="340" x2="560" y2="430" stroke="#0f766e" stroke-width="4"/>
+<circle cx="560" cy="340" r="11" fill="#7dd3fc" stroke="#0284c7" stroke-width="2"/>
+<line x1="560" y1="524" x2="560" y2="614" stroke="#0f766e" stroke-width="4"/>
+<circle cx="560" cy="614" r="11" fill="#7dd3fc" stroke="#0284c7" stroke-width="2"/>
+<line x1="598" y1="340" x2="598" y2="430" stroke="#0f766e" stroke-width="4"/>
+<circle cx="598" cy="340" r="11" fill="#7dd3fc" stroke="#0284c7" stroke-width="2"/>
+<line x1="598" y1="524" x2="598" y2="614" stroke="#0f766e" stroke-width="4"/>
+<circle cx="598" cy="614" r="11" fill="#7dd3fc" stroke="#0284c7" stroke-width="2"/>
+<line x1="636" y1="340" x2="636" y2="430" stroke="#0f766e" stroke-width="4"/>
+<circle cx="636" cy="340" r="11" fill="#7dd3fc" stroke="#0284c7" stroke-width="2"/>
+<line x1="636" y1="524" x2="636" y2="614" stroke="#0f766e" stroke-width="4"/>
+<circle cx="636" cy="614" r="11" fill="#7dd3fc" stroke="#0284c7" stroke-width="2"/>
+<line x1="674" y1="340" x2="674" y2="430" stroke="#0f766e" stroke-width="4"/>
+<circle cx="674" cy="340" r="11" fill="#7dd3fc" stroke="#0284c7" stroke-width="2"/>
+<line x1="674" y1="524" x2="674" y2="614" stroke="#0f766e" stroke-width="4"/>
+<circle cx="674" cy="614" r="11" fill="#7dd3fc" stroke="#0284c7" stroke-width="2"/>
+<line x1="712" y1="340" x2="712" y2="430" stroke="#0f766e" stroke-width="4"/>
+<circle cx="712" cy="340" r="11" fill="#7dd3fc" stroke="#0284c7" stroke-width="2"/>
+<line x1="712" y1="524" x2="712" y2="614" stroke="#0f766e" stroke-width="4"/>
+<circle cx="712" cy="614" r="11" fill="#7dd3fc" stroke="#0284c7" stroke-width="2"/>
+<line x1="750" y1="340" x2="750" y2="430" stroke="#0f766e" stroke-width="4"/>
+<circle cx="750" cy="340" r="11" fill="#7dd3fc" stroke="#0284c7" stroke-width="2"/>
+<line x1="750" y1="524" x2="750" y2="614" stroke="#0f766e" stroke-width="4"/>
+<circle cx="750" cy="614" r="11" fill="#7dd3fc" stroke="#0284c7" stroke-width="2"/>
+<line x1="788" y1="340" x2="788" y2="430" stroke="#0f766e" stroke-width="4"/>
+<circle cx="788" cy="340" r="11" fill="#7dd3fc" stroke="#0284c7" stroke-width="2"/>
+<line x1="788" y1="524" x2="788" y2="614" stroke="#0f766e" stroke-width="4"/>
+<circle cx="788" cy="614" r="11" fill="#7dd3fc" stroke="#0284c7" stroke-width="2"/>
+<line x1="826" y1="340" x2="826" y2="430" stroke="#0f766e" stroke-width="4"/>
+<circle cx="826" cy="340" r="11" fill="#7dd3fc" stroke="#0284c7" stroke-width="2"/>
+<line x1="826" y1="524" x2="826" y2="614" stroke="#0f766e" stroke-width="4"/>
+<circle cx="826" cy="614" r="11" fill="#7dd3fc" stroke="#0284c7" stroke-width="2"/>
+<line x1="864" y1="340" x2="864" y2="430" stroke="#0f766e" stroke-width="4"/>
+<circle cx="864" cy="340" r="11" fill="#7dd3fc" stroke="#0284c7" stroke-width="2"/>
+<line x1="864" y1="524" x2="864" y2="614" stroke="#0f766e" stroke-width="4"/>
+<circle cx="864" cy="614" r="11" fill="#7dd3fc" stroke="#0284c7" stroke-width="2"/>
+<line x1="902" y1="340" x2="902" y2="430" stroke="#0f766e" stroke-width="4"/>
+<circle cx="902" cy="340" r="11" fill="#7dd3fc" stroke="#0284c7" stroke-width="2"/>
+<line x1="902" y1="524" x2="902" y2="614" stroke="#0f766e" stroke-width="4"/>
+<circle cx="902" cy="614" r="11" fill="#7dd3fc" stroke="#0284c7" stroke-width="2"/>
+<line x1="940" y1="340" x2="940" y2="430" stroke="#0f766e" stroke-width="4"/>
+<circle cx="940" cy="340" r="11" fill="#7dd3fc" stroke="#0284c7" stroke-width="2"/>
+<line x1="940" y1="524" x2="940" y2="614" stroke="#0f766e" stroke-width="4"/>
+<circle cx="940" cy="614" r="11" fill="#7dd3fc" stroke="#0284c7" stroke-width="2"/>
+<line x1="978" y1="340" x2="978" y2="430" stroke="#0f766e" stroke-width="4"/>
+<circle cx="978" cy="340" r="11" fill="#7dd3fc" stroke="#0284c7" stroke-width="2"/>
+<line x1="978" y1="524" x2="978" y2="614" stroke="#0f766e" stroke-width="4"/>
+<circle cx="978" cy="614" r="11" fill="#7dd3fc" stroke="#0284c7" stroke-width="2"/>
+<line x1="1016" y1="340" x2="1016" y2="430" stroke="#0f766e" stroke-width="4"/>
+<circle cx="1016" cy="340" r="11" fill="#7dd3fc" stroke="#0284c7" stroke-width="2"/>
+<line x1="1016" y1="524" x2="1016" y2="614" stroke="#0f766e" stroke-width="4"/>
+<circle cx="1016" cy="614" r="11" fill="#7dd3fc" stroke="#0284c7" stroke-width="2"/>
+<line x1="1054" y1="340" x2="1054" y2="430" stroke="#0f766e" stroke-width="4"/>
+<circle cx="1054" cy="340" r="11" fill="#7dd3fc" stroke="#0284c7" stroke-width="2"/>
+<line x1="1054" y1="524" x2="1054" y2="614" stroke="#0f766e" stroke-width="4"/>
+<circle cx="1054" cy="614" r="11" fill="#7dd3fc" stroke="#0284c7" stroke-width="2"/>
+<line x1="1092" y1="340" x2="1092" y2="430" stroke="#0f766e" stroke-width="4"/>
+<circle cx="1092" cy="340" r="11" fill="#7dd3fc" stroke="#0284c7" stroke-width="2"/>
+<line x1="1092" y1="524" x2="1092" y2="614" stroke="#0f766e" stroke-width="4"/>
+<circle cx="1092" cy="614" r="11" fill="#7dd3fc" stroke="#0284c7" stroke-width="2"/>
+<line x1="1130" y1="340" x2="1130" y2="430" stroke="#0f766e" stroke-width="4"/>
+<circle cx="1130" cy="340" r="11" fill="#7dd3fc" stroke="#0284c7" stroke-width="2"/>
+<line x1="1130" y1="524" x2="1130" y2="614" stroke="#0f766e" stroke-width="4"/>
+<circle cx="1130" cy="614" r="11" fill="#7dd3fc" stroke="#0284c7" stroke-width="2"/>
+<line x1="1168" y1="340" x2="1168" y2="430" stroke="#0f766e" stroke-width="4"/>
+<circle cx="1168" cy="340" r="11" fill="#7dd3fc" stroke="#0284c7" stroke-width="2"/>
+<line x1="1168" y1="524" x2="1168" y2="614" stroke="#0f766e" stroke-width="4"/>
+<circle cx="1168" cy="614" r="11" fill="#7dd3fc" stroke="#0284c7" stroke-width="2"/>
+<line x1="1206" y1="340" x2="1206" y2="430" stroke="#0f766e" stroke-width="4"/>
+<circle cx="1206" cy="340" r="11" fill="#7dd3fc" stroke="#0284c7" stroke-width="2"/>
+<line x1="1206" y1="524" x2="1206" y2="614" stroke="#0f766e" stroke-width="4"/>
+<circle cx="1206" cy="614" r="11" fill="#7dd3fc" stroke="#0284c7" stroke-width="2"/>
+<rect x="300" y="300" width="76" height="330" rx="24" fill="#f0abfc" stroke="#db2777" stroke-width="5"/>
+<rect x="530" y="300" width="76" height="330" rx="24" fill="#93c5fd" stroke="#2563eb" stroke-width="5"/>
+<rect x="790" y="300" width="74" height="330" rx="24" fill="#86efac" stroke="#16a34a" stroke-width="5"/>
+<rect x="1030" y="300" width="76" height="330" rx="24" fill="#f0abfc" stroke="#a855f7" stroke-width="5"/>
+<text x="700" y="785" text-anchor="middle" font-family="Arial, sans-serif" font-size="24" fill="#51627a">الغشاء بنية مائعة: تتحرك ضمنها البروتينات، وهذا يفسر تموضع العلامات السطحية وتغير تجمعها.</text>
+</svg>

@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 600">
+  <rect width="1100" height="600" fill="#f7fbff" rx="32"/>
+  <ellipse cx="550" cy="240" rx="300" ry="180" fill="#e8f5ee" stroke="#87b69b" stroke-width="6"/>
+  <circle cx="550" cy="230" r="120" fill="#ffffff" stroke="#87b69b" stroke-width="6"/>
+  <text x="550" y="130" text-anchor="middle" font-size="30" font-weight="700" fill="#0f5132">نواة</text>
+  <path d="M455 225 h190" stroke="#8b5cf6" stroke-width="14" stroke-linecap="round"/>
+  <path d="M485 205 v40 M550 205 v40 M615 205 v40" stroke="#ef4444" stroke-width="8" stroke-linecap="round"/>
+  <text x="485" y="188" font-size="24" fill="#334155">مورثة 1</text>
+  <text x="550" y="188" font-size="24" fill="#334155">مورثة 2</text>
+  <text x="615" y="188" font-size="24" fill="#334155">مورثة 3</text>
+  <text x="550" y="275" text-anchor="middle" font-size="28" fill="#334155">ADN</text>
+  <g>
+    <path d="M330 450 c-40 -50 10 -100 55 -65 c25 20 15 70 -15 85 c-15 7 -30 0 -40 -20z" fill="#7b2cbf" opacity="0.25" stroke="#7b2cbf" stroke-width="8"/>
+    <text x="280" y="520" font-size="28" fill="#334155">بروتين 1</text>
+    <path d="M525 450 c-20 -70 60 -105 100 -45 c30 45 5 95 -40 100 c-35 4 -50 -20 -60 -55z" fill="#ef4444" opacity="0.22" stroke="#ef4444" stroke-width="8"/>
+    <text x="500" y="520" font-size="28" fill="#334155">بروتين 2</text>
+    <path d="M780 455 c-55 -40 -10 -105 45 -95 c40 7 65 45 40 90 c-20 35 -55 35 -85 5z" fill="#2563eb" opacity="0.22" stroke="#2563eb" stroke-width="8"/>
+    <text x="750" y="520" font-size="28" fill="#334155">بروتين 3</text>
+  </g>
+  <text x="550" y="565" text-anchor="middle" font-size="30" font-weight="700" fill="#0f5132">مورثات مختلفة ↔ بروتينات مختلفة</text>
+</svg>

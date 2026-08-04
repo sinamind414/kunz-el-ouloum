@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="900" viewBox="0 0 1400 900">
+<rect width="1400" height="900" fill="#f7fbff"/>
+<rect x="70" y="120" width="1260" height="700" rx="28" fill="white" stroke="#d5dee8" stroke-width="4"/>
+<text x="700" y="76" text-anchor="middle" font-family="Arial, sans-serif" font-size="54" font-weight="700" fill="#17233b">مكوّنات ARN ووظيفته</text>
+<text x="700" y="170" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="700" fill="#51627a">لوحة سريعة لتثبيت الفروق الأساسية</text>
+<rect x="130" y="250" width="250" height="220" rx="26" fill="#dcfce7" stroke="#198754" stroke-width="4"/>
+<text x="255.0" y="312" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="700" fill="#198754">السكر</text>
+<text x="255.0" y="355" text-anchor="middle" font-family="Arial, sans-serif" font-size="22" fill="#17233b">ريبوز</text>
+<rect x="425" y="250" width="250" height="220" rx="26" fill="#fef3c7" stroke="#a16207" stroke-width="4"/>
+<text x="550.0" y="312" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="700" fill="#a16207">القواعد</text>
+<text x="550.0" y="355" text-anchor="middle" font-family="Arial, sans-serif" font-size="22" fill="#17233b">A ، U ، G ، C</text>
+<rect x="720" y="250" width="250" height="220" rx="26" fill="#dbeafe" stroke="#2f6fed" stroke-width="4"/>
+<text x="845.0" y="312" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="700" fill="#2f6fed">عدد السلاسل</text>
+<text x="845.0" y="355" text-anchor="middle" font-family="Arial, sans-serif" font-size="22" fill="#17233b">سلسلة واحدة</text>
+<rect x="1015" y="250" width="250" height="220" rx="26" fill="#ede9fe" stroke="#7c3aed" stroke-width="4"/>
+<text x="1140.0" y="312" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="700" fill="#7c3aed">الوظيفة</text>
+<text x="1140.0" y="355" text-anchor="middle" font-family="Arial, sans-serif" font-size="22" fill="#17233b">نقل المعلومة</text>
+<text x="1140.0" y="385" text-anchor="middle" font-family="Arial, sans-serif" font-size="22" fill="#17233b">واستعمالها</text>
+<text x="700" y="785" text-anchor="middle" font-family="Arial, sans-serif" font-size="24" fill="#51627a">تذكّر: ARN لا يخزن المعلومة الوراثية الأصلية، بل يحمل نسخة قابلة للاستعمال.</text>
+</svg>

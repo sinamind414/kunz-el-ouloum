@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 760">
+  <rect width="1200" height="760" rx="28" fill="#f8fbff"/>
+  <text x="600" y="70" text-anchor="middle" font-size="38" font-weight="800" fill="#0f172a">البنية الجزيئية للجسم المضاد تفسر نوعية الارتباط</text>
+
+  <rect x="110" y="130" width="980" height="520" rx="26" fill="#ffffff" stroke="#d8e1e8" stroke-width="4"/>
+  <g stroke="#7c3aed" stroke-width="20" stroke-linecap="round" fill="none">
+    <path d="M600 515 V370"/>
+    <path d="M600 370 L490 215"/>
+    <path d="M600 370 L710 215"/>
+  </g>
+  <g stroke="#38bdf8" stroke-width="12" stroke-linecap="round" fill="none">
+    <path d="M490 215 L435 165"/>
+    <path d="M490 215 L545 165"/>
+    <path d="M710 215 L655 165"/>
+    <path d="M710 215 L765 165"/>
+    <path d="M600 515 L560 595"/>
+    <path d="M600 515 L640 595"/>
+  </g>
+  <g fill="#ef4444">
+    <circle cx="435" cy="165" r="16"/><circle cx="545" cy="165" r="16"/>
+    <circle cx="655" cy="165" r="16"/><circle cx="765" cy="165" r="16"/>
+  </g>
+  <g font-size="24" fill="#334155" text-anchor="middle">
+    <text x="485" y="135">موقعا الارتباط بالمستضد</text>
+    <text x="705" y="135">الذراع المتغير Fab</text>
+    <text x="600" y="650">الجزء الثابت Fc</text>
+  </g>
+  <g>
+    <rect x="170" y="500" width="230" height="80" rx="18" fill="#dbeafe"/>
+    <text x="285" y="548" text-anchor="middle" font-size="24" fill="#1d4ed8">سلاسل خفيفة (L)</text>
+    <rect x="800" y="500" width="230" height="80" rx="18" fill="#ede9fe"/>
+    <text x="915" y="548" text-anchor="middle" font-size="24" fill="#7c3aed">سلاسل ثقيلة (H)</text>
+  </g>
+  <rect x="230" y="684" width="740" height="42" rx="20" fill="#0f172a" opacity="0.92"/>
+  <text x="600" y="712" text-anchor="middle" font-size="24" fill="#ffffff">شكل Y وموقعي الارتباط يفسران لماذا يكون الجسم المضاد نوعياً تجاه محدد مستضدي معين</text>
+</svg>

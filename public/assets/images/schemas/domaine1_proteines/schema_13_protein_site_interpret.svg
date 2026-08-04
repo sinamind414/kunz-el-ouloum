@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 700">
+  <rect width="1000" height="700" fill="#f7fbff" rx="32"/>
+  <polygon points="260,120 760,120 860,560 160,560" fill="#ffffff" stroke="#87b69b" stroke-width="6"/>
+  <circle cx="500" cy="360" r="120" fill="#e8f5ee" stroke="#87b69b" stroke-width="6"/>
+  <text x="500" y="370" text-anchor="middle" font-size="28" fill="#0f5132">نواة</text>
+  <g stroke="#8b5cf6" stroke-width="8" stroke-linecap="round">
+    <path d="M250 240 h160"/><path d="M250 280 h175"/><path d="M250 320 h150"/>
+    <path d="M600 250 h170"/><path d="M590 290 h180"/><path d="M610 330 h150"/>
+  </g>
+  <g fill="#111827">
+    <circle cx="295" cy="240" r="10"/><circle cx="340" cy="280" r="10"/><circle cx="380" cy="320" r="10"/>
+    <circle cx="640" cy="250" r="10"/><circle cx="690" cy="290" r="10"/><circle cx="735" cy="330" r="10"/>
+  </g>
+  <text x="190" y="215" font-size="24" fill="#334155">ريبوزومات / شبكة محببة</text>
+  <text x="620" y="215" font-size="24" fill="#334155">مواقع ظهور البروتينات الموسومة</text>
+  <text x="500" y="635" text-anchor="middle" font-size="28" fill="#334155">الرسم التفسيري يوجه النظر نحو مقر تركيب البروتين</text>
+</svg>

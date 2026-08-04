@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 820">
+  <rect width="1200" height="820" rx="30" fill="#f8fbff"/>
+  <text x="600" y="70" text-anchor="middle" font-size="40" font-weight="800" fill="#0f172a">فقاعة الاستنساخ: كيف يقرأ إنزيم بوليميراز ARN الـ ADN ويُركب ARNm الرسول؟</text>
+
+  <rect x="80" y="130" width="1040" height="560" rx="28" fill="#ffffff" stroke="#d8e1e8" stroke-width="4"/>
+  <text x="600" y="195" text-anchor="middle" font-size="30" font-weight="700" fill="#0f5132">داخل النواة: تُقرأ السلسلة القالبية 3′→5′ ويُركب ARNm الرسول 5′→3′</text>
+
+  <path d="M190 300 C320 240 470 240 600 300 C730 360 880 360 1010 300" fill="none" stroke="#60a5fa" stroke-width="18" stroke-linecap="round"/>
+  <path d="M190 420 C320 360 470 360 600 420 C730 480 880 480 1010 420" fill="none" stroke="#f472b6" stroke-width="18" stroke-linecap="round"/>
+
+  <ellipse cx="610" cy="360" rx="110" ry="72" fill="#dbeafe" stroke="#2563eb" stroke-width="6"/>
+  <text x="610" y="350" text-anchor="middle" font-size="26" font-weight="700" fill="#1d4ed8">إنزيم</text>
+  <text x="610" y="387" text-anchor="middle" font-size="26" font-weight="700" fill="#1d4ed8">بوليميراز ARN</text>
+
+  <path d="M470 335 C525 355 590 392 670 440 C735 480 815 500 920 490" fill="none" stroke="#ef4444" stroke-width="12" stroke-linecap="round"/>
+  <text x="930" y="475" text-anchor="middle" font-size="26" font-weight="700" fill="#b91c1c">ARNm الرسول قيد التشكل</text>
+
+  <g font-size="24" font-weight="700" text-anchor="middle">
+    <text x="210" y="275" fill="#1d4ed8">3′</text>
+    <text x="995" y="275" fill="#1d4ed8">5′</text>
+    <text x="210" y="455" fill="#be185d">5′</text>
+    <text x="995" y="455" fill="#be185d">3′</text>
+  </g>
+
+  <g fill="#fde68a" stroke="#d97706" stroke-width="3">
+    <rect x="295" y="520" width="46" height="34" rx="10"/><rect x="360" y="505" width="46" height="34" rx="10"/>
+    <rect x="425" y="525" width="46" height="34" rx="10"/><rect x="490" y="508" width="46" height="34" rx="10"/>
+  </g>
+  <text x="420" y="590" text-anchor="middle" font-size="24" fill="#92400e">نيكليوتيدات ريبية حرة تُضاف حسب التكامل</text>
+
+  <rect x="155" y="620" width="890" height="42" rx="20" fill="#0f172a" opacity="0.92"/>
+  <text x="600" y="648" text-anchor="middle" font-size="24" fill="#ffffff">كلما تقدّم الإنزيم على السلسلة القالبية تشكل ARNm رسول جديد يحمل نسخة من المعلومة الوراثية</text>
+</svg>

@@ -1,0 +1,717 @@
+diff --git a/src/components/InteractiveLessonView.tsx b/src/components/InteractiveLessonView.tsx
+new file mode 100644
+index 0000000..f9a8aa2
+--- /dev/null
++++ b/src/components/InteractiveLessonView.tsx
+@@ -0,0 +1,266 @@
++import React, { useState, useMemo } from 'react';
++import { motion, AnimatePresence } from 'motion/react';
++import { X, CheckCircle2, AlertTriangle, Mic, Lightbulb, Target, BookOpen, Brain, FileText } from 'lucide-react';
++import LessonAdventurePortal from './LessonAdventurePortal';
++import { getExperimentalLesson, LESSON_LIBRARY } from '../lessonData';
++import { SINGLE_PATH_LESSONS, SinglePathLesson, SinglePathStep } from '../data/singlePathLessons';
++import SpeechToTextInput from './SpeechToTextInput';
++
++interface InteractiveLessonViewProps {
++  lessonId: string;
++  onClose: () => void;
++}
++
++// Simple DragDrop component for Mot → Exemple
++function DragDropBlock({ question, options, onCorrect, definition }: any) {
++  const [selected, setSelected] = useState<string | null>(null);
++  const [validated, setValidated] = useState(false);
++  const [isCorrect, setIsCorrect] = useState(false);
++
++  const handleSelect = (opt: any) => {
++    setSelected(opt.id);
++    const correct = opt.correct;
++    setIsCorrect(correct);
++    setValidated(true);
++    if (correct) {
++      setTimeout(() => onCorrect && onCorrect(), 800);
++    }
++  };
++
++  return (
++    <div className="space-y-4 p-4 bg-[#fff9ed] dark:bg-[#1c241f] border border-[#e2dabf]/60 rounded-2xl">
++      <p className="font-bold text-[#1f1c0b] dark:text-gray-100 leading-8 text-sm md:text-base">
++        يتم التعبير عن المعلومة الوراثية على مرحلتين: الاستنساخ في النواة يتم انطلاقا من إحدى سلسلتي الـ ADN وتسمى
++        <span className="inline-block bg-[#fed65b]/30 border-b-2 border-[#006d37] border-dashed px-2 mx-1 min-w-[100px] text-center">............</span>
++      </p>
++      <p className="text-sm font-bold text-[#1f1c0b] dark:text-gray-100">{question}</p>
++      
++      <div className="grid gap-2">
++        {options.map((opt: any) => {
++          const sel = selected === opt.id;
++          return (
++            <button
++              key={opt.id}
++              onClick={() => !validated && handleSelect(opt)}
++              disabled={validated}
++              className={`p-3 rounded-xl border text-sm font-bold text-right transition-all cursor-pointer flex justify-between items-center ${
++                !validated ? 'bg-white dark:bg-[#141916] hover:bg-[#2ecc71]/10 border-[#e2dabf]/60 hover:border-[#006d37]/30' :
++                sel && opt.correct ? 'bg-[#2ecc71]/15 border-[#006d37] text-[#006d37]' :
++                sel && !opt.correct ? 'bg-rose-50 border-rose-300 text-rose-700' :
++                'bg-white/50 opacity-50'
++              }`}
++            >
++              <span>{opt.text}</span>
++              {validated && sel && opt.correct && <CheckCircle2 className="w-5 h-5 text-[#006d37]" />}
++              {validated && sel && !opt.correct && <AlertTriangle className="w-5 h-5 text-rose-500" />}
++            </button>
++          );
++        })}
++      </div>
++
++      {validated && (
++        <div className={`p-3 rounded-xl text-xs font-bold leading-6 ${isCorrect ? 'bg-[#2ecc71]/10 text-[#006d37] border border-[#2ecc71]/20' : 'bg-rose-50 text-rose-700 border border-rose-200'}`}>
++          {isCorrect ? options.find((o: any) => o.id === selected)?.correctFeedback || 'ممتاز!' : options.find((o: any) => o.id === selected)?.wrongFeedback || 'حاول مرة أخرى'}
++          {definition && isCorrect && (
++            <div className="mt-2 p-2 bg-white dark:bg-black/20 rounded-lg border text-[11px]">
++              <strong>{definition.term}:</strong> {definition.def}
++            </div>
++          )}
++        </div>
++      )}
++    </div>
++  );
++}
++
++function SinglePathPlayer({ lesson, onClose }: { lesson: SinglePathLesson; onClose: () => void }) {
++  const [activeStepIndex, setActiveStepIndex] = useState(0);
++  const [completedSteps, setCompletedSteps] = useState<Set<number>>(new Set());
++  const activeStep = lesson.steps[activeStepIndex];
++
++  const handleStepComplete = () => {
++    setCompletedSteps(prev => new Set([...prev, activeStepIndex]));
++    if (activeStepIndex < lesson.steps.length - 1) {
++      setTimeout(() => setActiveStepIndex(activeStepIndex + 1), 600);
++    }
++  };
++
++  const handleSpeechValidate = (text: string, expectedKeywords: string[]) => {
++    // Simple keyword check
++    const lower = text.toLowerCase();
++    const found = expectedKeywords.filter(k => lower.includes(k.toLowerCase())).length;
++    if (found >= Math.ceil(expectedKeywords.length / 2) || text.length > 5) {
++      handleStepComplete();
++    }
++  };
++
++  return (
++    <div className="fixed inset-0 z-50 bg-[#f8f9fa] dark:bg-[#0c0f0d] flex flex-col font-sans" dir="rtl">
++      {/* Header */}
++      <header className="p-4 flex justify-between items-center bg-white dark:bg-[#141916] border-b border-[#e2dabf]/50 shadow-sm">
++        <button onClick={onClose} className="p-2 rounded-full hover:bg-[#f3f4f5] text-[#506072] cursor-pointer">
++          <X className="w-6 h-6" />
++        </button>
++        <div className="text-center flex-1 px-4">
++          <h1 className="font-black text-[#006d37] dark:text-[#2ecc71] text-sm md:text-base line-clamp-1">{lesson.titleAr}</h1>
++          <p className="text-[10px] text-[#506072] dark:text-gray-400">{lesson.breadcrumb}</p>
++        </div>
++        <div className="w-10 text-[10px] font-bold text-[#506072]">{activeStepIndex + 1}/{lesson.steps.length}</div>
++      </header>
++
++      {/* Progress */}
++      <div className="px-4 py-3 bg-white dark:bg-[#141916] border-b border-[#e2dabf]/30">
++        <div className="flex gap-2 max-w-2xl mx-auto">
++          {lesson.steps.map((step, i) => (
++            <div key={step.id} className="flex-1 flex flex-col items-center gap-1">
++              <div className={`w-full h-2 rounded-full transition-all ${i < activeStepIndex || completedSteps.has(i) ? 'bg-[#2ecc71]' : i === activeStepIndex ? 'bg-[#006d37] animate-pulse' : 'bg-[#e2dabf]/30'}`} />
++              <span className={`text-[9px] font-bold ${i === activeStepIndex ? 'text-[#006d37] dark:text-[#2ecc71]' : 'text-[#bbcbbb]'}`}>{step.badge}</span>
++            </div>
++          ))}
++        </div>
++      </div>
++
++      {/* Content */}
++      <main className="flex-1 overflow-y-auto p-4 pb-32">
++        <div className="max-w-2xl mx-auto space-y-6">
++          <div className="bg-gradient-to-br from-[#006d37] to-[#00562b] text-white rounded-2xl p-5 shadow-md">
++            <div className="flex items-center gap-2 mb-2">
++              {activeStep.id === 'mot' && <BookOpen className="w-5 h-5 text-[#fed65b]" />}
++              {activeStep.id === 'exemple' && <Target className="w-5 h-5 text-[#fed65b]" />}
++              {activeStep.id === 'microtest' && <Brain className="w-5 h-5 text-[#fed65b]" />}
++              {activeStep.id === 'methodo' && <FileText className="w-5 h-5 text-[#fed65b]" />}
++              <span className="text-xs font-black bg-white/15 px-2.5 py-1 rounded-full">{activeStep.badge}</span>
++            </div>
++            <h2 className="text-xl font-black">{activeStep.title}</h2>
++            <p className="text-sm text-white/80 mt-1 leading-7">{activeStep.instruction}</p>
++            <div className="mt-3 flex flex-wrap gap-1.5">
++              {lesson.motsSacre.map((mot, i) => (
++                <span key={i} className="text-[10px] bg-white/10 border border-white/15 px-2 py-1 rounded-full">#{mot}</span>
++              ))}
++            </div>
++          </div>
++
++          <AnimatePresence mode="wait">
++            <motion.div
++              key={activeStep.id + activeStepIndex}
++              initial={{ opacity: 0, x: -20 }}
++              animate={{ opacity: 1, x: 0 }}
++              exit={{ opacity: 0, x: 20 }}
++              className="space-y-4"
++            >
++              {activeStep.content.map((block: any, idx: number) => {
++                if (block.type === 'drag_drop') {
++                  return <DragDropBlock key={idx} question={block.data.question} options={block.data.options} definition={block.data.definition} onCorrect={handleStepComplete} />;
++                }
++                if (block.type === 'speech_input') {
++                  return (
++                    <div key={idx} className="space-y-3 p-4 bg-white dark:bg-[#141916] border border-[#e2dabf]/60 rounded-2xl shadow-sm">
++                      <p className="font-bold text-sm text-[#1f1c0b] dark:text-gray-100 flex items-start gap-2">
++                        <span className="bg-[#006d37] text-white text-[10px] px-2 py-0.5 rounded-full shrink-0 mt-0.5">سؤال إنتاج</span>
++                        <span>{block.data.question}</span>
++                      </p>
++                      <SpeechToTextInput
++                        placeholder={block.data.placeholder}
++                        expectedKeywords={block.data.expectedKeywords}
++                        onValidate={(txt) => handleSpeechValidate(txt, block.data.expectedKeywords || [])}
++                      />
++                      <p className="text-[11px] text-[#506072] dark:text-gray-400 flex items-center gap-1">
++                        <Lightbulb className="w-3.5 h-3.5 text-[#fed65b]" />
++                        تلميح: {block.data.hint}
++                      </p>
++                    </div>
++                  );
++                }
++                if (block.type === 'text') {
++                  return (
++                    <div key={idx} className="p-4 bg-white dark:bg-[#141916] border border-[#e2dabf]/50 rounded-2xl text-sm leading-8 whitespace-pre-line">
++                      {block.data.text}
++                    </div>
++                  );
++                }
++                if (block.type === 'image_hotspot') {
++                  return (
++                    <div key={idx} className="p-4 bg-white dark:bg-[#141916] border rounded-2xl space-y-3">
++                      <p className="text-sm font-bold">{block.data.question}</p>
++                      <div className="relative rounded-xl overflow-hidden border bg-[#f3f4f5] h-48 flex items-center justify-center">
++                        <span className="text-xs text-[#506072]">🖼️ {block.data.image} - {block.data.hotspots?.length} نقاط تفاعلية</span>
++                      </div>
++                      <div className="grid gap-2">
++                        {block.data.hotspots?.map((hs: any) => (
++                          <button key={hs.id} onClick={() => hs.correct && handleStepComplete()} className={`p-2 rounded-xl border text-xs font-bold text-right cursor-pointer ${hs.correct ? 'bg-[#2ecc71]/10 border-[#006d37]/20 hover:bg-[#2ecc71]/20' : 'bg-white border-[#e2dabf]/50 hover:bg-rose-50'}`}>
++                            {hs.label} {hs.correct ? '✓' : ''}
++                          </button>
++                        ))}
++                      </div>
++                    </div>
++                  );
++                }
++                if (block.type === 'methodo_boxes') {
++                  return (
++                    <div key={idx} className="space-y-3">
++                      {block.data.boxes.map((box: any, bIdx: number) => (
++                        <div key={bIdx} className="p-4 bg-[#fff9ed] dark:bg-[#1c241f] border border-[#e2dabf]/60 rounded-2xl space-y-2">
++                          <label className="text-xs font-black text-[#944a00] block">{box.label}</label>
++                          <p className="text-[11px] text-[#506072]">مثال: {box.example}</p>
++                          <SpeechToTextInput
++                            placeholder={box.placeholder}
++                            expectedKeywords={box.keywords}
++                            onValidate={(txt) => handleSpeechValidate(txt, box.keywords)}
++                          />
++                        </div>
++                      ))}
++                    </div>
++                  );
++                }
++                return null;
++              })}
++            </motion.div>
++          </AnimatePresence>
++
++          <div className="flex justify-between pt-6 gap-3">
++            <button
++              onClick={() => setActiveStepIndex(Math.max(0, activeStepIndex - 1))}
++              disabled={activeStepIndex === 0}
++              className="px-4 py-2.5 rounded-xl bg-white dark:bg-[#141916] border border-[#e2dabf]/60 text-sm font-bold text-[#506072] disabled:opacity-40 cursor-pointer"
++            >
++              السابق
++            </button>
++            <button
++              onClick={handleStepComplete}
++              disabled={activeStepIndex === lesson.steps.length - 1 && !completedSteps.has(activeStepIndex)}
++              className="flex-1 px-6 py-2.5 rounded-xl bg-[#006d37] hover:bg-[#00562b] text-white font-black text-sm shadow-md disabled:opacity-40 cursor-pointer flex items-center justify-center gap-2"
++            >
++              {activeStepIndex === lesson.steps.length - 1 ? 'إنهاء الدرس ✓' : 'التالي ←'}
++            </button>
++          </div>
++        </div>
++      </main>
++    </div>
++  );
++}
++
++export default function InteractiveLessonView({ lessonId, onClose }: InteractiveLessonViewProps) {
++  const singlePathLesson = (SINGLE_PATH_LESSONS as any)[lessonId];
++
++  if (singlePathLesson) {
++    return <SinglePathPlayer lesson={singlePathLesson} onClose={onClose} />;
++  }
++
++  // Fallback to old system for other lessons
++  const lesson = React.useMemo(() => {
++    const fromLibrary = LESSON_LIBRARY.find(l => l.key === lessonId);
++    if (fromLibrary) return fromLibrary;
++    const experimental = getExperimentalLesson(lessonId);
++    return {
++      key: lessonId,
++      unitId: 1,
++      ...experimental,
++    };
++  }, [lessonId]);
++
++  return (
++    <LessonAdventurePortal
++      lesson={lesson as any}
++      onClose={onClose}
++    />
++  );
++}
+diff --git a/src/components/SpeechToTextInput.tsx b/src/components/SpeechToTextInput.tsx
+new file mode 100644
+index 0000000..bfc8542
+--- /dev/null
++++ b/src/components/SpeechToTextInput.tsx
+@@ -0,0 +1,125 @@
++import React, { useState, useRef, useEffect } from 'react';
++import { Mic, MicOff, Send } from 'lucide-react';
++
++interface SpeechToTextInputProps {
++  placeholder?: string;
++  onValidate: (text: string) => void;
++  expectedKeywords?: string[];
++  lang?: string;
++}
++
++export default function SpeechToTextInput({ placeholder = "اكتب إجابتك هنا أو استخدم الميكروفون", onValidate, expectedKeywords = [], lang = 'ar-DZ' }: SpeechToTextInputProps) {
++  const [text, setText] = useState('');
++  const [isListening, setIsListening] = useState(false);
++  const [isSupported, setIsSupported] = useState(false);
++  const recognitionRef = useRef<any>(null);
++
++  useEffect(() => {
++    const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
++    if (SpeechRecognition) {
++      setIsSupported(true);
++      const recognition = new SpeechRecognition();
++      recognition.continuous = false;
++      recognition.interimResults = false;
++      recognition.lang = lang;
++      recognition.onstart = () => setIsListening(true);
++      recognition.onend = () => setIsListening(false);
++      recognition.onresult = (event: any) => {
++        const transcript = event.results[0][0].transcript;
++        setText(prev => prev ? prev + ' ' + transcript : transcript);
++      };
++      recognition.onerror = () => setIsListening(false);
++      recognitionRef.current = recognition;
++    }
++  }, [lang]);
++
++  const toggleListening = () => {
++    if (!recognitionRef.current) return;
++    if (isListening) {
++      recognitionRef.current.stop();
++    } else {
++      recognitionRef.current.start();
++    }
++  };
++
++  const handleValidate = () => {
++    if (text.trim()) {
++      onValidate(text.trim());
++    }
++  };
++
++  const handleKeyDown = (e: React.KeyboardEvent) => {
++    if (e.key === 'Enter' && !e.shiftKey) {
++      e.preventDefault();
++      handleValidate();
++    }
++  };
++
++  return (
++    <div className="space-y-3 w-full" dir="rtl">
++      <div className="relative flex items-center gap-2 bg-white dark:bg-[#1a201c] border border-[#e2dabf]/60 dark:border-[#2ecc71]/10 rounded-2xl p-2 shadow-sm focus-within:ring-2 focus-within:ring-[#006d37]/20 focus-within:border-[#006d37]/30 transition-all">
++        <div className="flex-1 relative">
++          <input
++            type="text"
++            value={text}
++            onChange={(e) => setText(e.target.value)}
++            onKeyDown={handleKeyDown}
++            placeholder={placeholder}
++            className="w-full bg-transparent outline-none text-sm font-bold text-[#1f1c0b] dark:text-gray-100 placeholder:text-[#bbcbbb] dark:placeholder:text-gray-500 pr-2 py-2"
++          />
++        </div>
++        
++        {isSupported && (
++          <button
++            onClick={toggleListening}
++            className={`p-2.5 rounded-xl transition-all cursor-pointer flex items-center justify-center ${
++              isListening 
++                ? 'bg-rose-500 text-white animate-pulse shadow-md' 
++                : 'bg-[#f3f4f5] dark:bg-[#1f2622] text-[#506072] dark:text-gray-400 hover:bg-[#006d37]/10 hover:text-[#006d37]'
++            }`}
++            title={isListening ? "إيقاف التسجيل" : "تشغيل الميكروفون (عربية)"}
++          >
++            {isListening ? <MicOff className="w-4 h-4" /> : <Mic className="w-4 h-4" />}
++          </button>
++        )}
++      </div>
++      
++      {isListening && (
++        <div className="flex items-center gap-2 text-[11px] text-rose-600 dark:text-rose-400 font-bold animate-pulse px-1">
++          <div className="w-2 h-2 bg-rose-500 rounded-full animate-ping" />
++          <span>جاري الاستماع... تحدث الآن بالعربية</span>
++        </div>
++      )}
++
++      {expectedKeywords.length > 0 && text && (
++        <div className="flex flex-wrap gap-1.5 px-1">
++          {expectedKeywords.map((kw, i) => {
++            const found = text.toLowerCase().includes(kw.toLowerCase());
++            return (
++              <span key={i} className={`text-[10px] px-2 py-1 rounded-full font-bold border ${found ? 'bg-[#2ecc71]/15 text-[#006d37] border-[#2ecc71]/20' : 'bg-[#f3f4f5] text-[#bbcbbb] border-[#e2dabf]/30'}`}>
++                {found ? '✓ ' : ''}{kw}
++              </span>
++            );
++          })}
++        </div>
++      )}
++
++      <div className="flex justify-end">
++        <button
++          onClick={handleValidate}
++          disabled={!text.trim()}
++          className="px-6 py-2.5 bg-[#006d37] hover:bg-[#00562b] disabled:opacity-40 disabled:cursor-not-allowed text-white rounded-xl font-black text-sm flex items-center gap-2 transition-all shadow-md cursor-pointer"
++        >
++          <Send className="w-4 h-4" />
++          تحقق
++        </button>
++      </div>
++
++      {!isSupported && (
++        <p className="text-[10px] text-[#bbcbbb] dark:text-gray-500 px-1">
++          ⚠️ متصفحك لا يدعم التعرف الصوتي، استخدم الكتابة. Chrome Android يدعم العربية.
++        </p>
++      )}
++    </div>
++  );
++}
+diff --git a/src/data/singlePathLessons.ts b/src/data/singlePathLessons.ts
+new file mode 100644
+index 0000000..222c6aa
+--- /dev/null
++++ b/src/data/singlePathLessons.ts
+@@ -0,0 +1,308 @@
++/**
++ * Single Path Lessons - Mot → Exemple → Micro-test (avec Speech-to-Text) → Méthodo incarnée
++ * Leçons 2 et 3 - Design papier validé par owner
++ * Prêt pour InteractiveLessonView + SpeechToTextInput
++ * Respect Règle d'Or DZ: الاستنساخ, الهيولى, الرامزة, البرنس... préservés
++ */
++
++export interface DragDropOption {
++  id: string;
++  text: string;
++  correct: boolean;
++}
++
++export interface SinglePathStep {
++  id: 'mot' | 'exemple' | 'microtest' | 'methodo';
++  title: string;
++  badge: string;
++  instruction: string;
++  content: {
++    type: 'text' | 'image_hotspot' | 'drag_drop' | 'table_bases' | 'speech_input' | 'quiz' | 'methodo_boxes';
++    data: any;
++  }[];
++}
++
++export interface SinglePathLesson {
++  key: string;
++  unitId: number;
++  titleAr: string;
++  breadcrumb: string;
++  objective: string;
++  motsSacre: string[]; // 5 mots sacrés DZ
++  steps: SinglePathStep[];
++}
++
++export const SINGLE_PATH_LESSONS: Record<string, SinglePathLesson> = {
++  lecon2_transcription: {
++    key: 'lecon2_transcription',
++    unitId: 1,
++    titleAr: 'الدرس 2: استنساخ المعلومة الوراثية (Transcription)',
++    breadcrumb: 'المجال الأول: التخصص الوظيفي للبروتينات • الوحدة 1: تركيب البروتين',
++    objective: 'تحديد مقر وآلية التصنيع الحيوي لجزيئة ARNm انطلاقا من ADN - 5 mots sacrés mot par mot',
++    motsSacre: ['السلسلة الناسخة', 'ARN بوليميراز', 'مبدأ التكامل', 'اتجاه الاستنساخ 3\'→5\'', 'ARNm'],
++    steps: [
++      {
++        id: 'mot',
++        title: 'الكلمة المفتاحية - السلسلة الناسخة',
++        badge: 'كلمة 1/5',
++        instruction: 'يتم التعبير عن المعلومة الوراثية على مرحلتين: الاستنساخ في النواة يتم انطلاقا من إحدى سلسلتي الـ ADN وتسمى ............',
++        content: [
++          {
++            type: 'drag_drop',
++            data: {
++              question: 'يتم التعبير عن المعلومة الوراثية على مرحلتين: الاستنساخ في النواة يتم انطلاقا من إحدى سلسلتي الـ ADN وتسمى ............',
++              options: [
++                { id: 'opt1', text: 'السلسلة غير الناسخة', correct: false },
++                { id: 'opt2', text: 'السلسلة المحمولة', correct: false },
++                { id: 'opt3', text: 'السلسلة الناسخة', correct: true }
++              ],
++              correctFeedback: 'ممتاز! السلسلة الناسخة (Brin transcrit 3\'→5\') هي التي يقرأها ARN بوليميراز لصنع ARNm بالتكامل.',
++              wrongFeedback: 'راجع الوثيقة 1 ص16: السلسلة الناسخة هي التي يُصنع منها ARNm بالتكامل.',
++              definition: {
++                term: 'السلسلة الناسخة',
++                def: 'Brin transcrit 3\'→5\': سلسلة ADN التي يقرأها ARN بوليميراز لصنع ARNm بالتكامل. تسمى أيضا السلسلة القالبية.'
++              }
++            }
++          },
++          {
++            type: 'speech_input',
++            data: {
++              question: 'سؤال الإنتاج: لماذا نسميها "ناسخة"؟ (أجب في سطر واحد)',
++              placeholder: 'اكتب إجابتك هنا أو استخدم الميكروفون',
++              expectedKeywords: ['تُنسخ', 'ARNm', 'قالب', 'تكامل'],
++              correctFeedback: 'أحسنت! لأنها تُنسخ إلى ARNm.',
++              hint: 'لأنها تُنسخ / لأنها قالب يُصنع منه ARNm'
++            }
++          }
++        ]
++      },
++      {
++        id: 'exemple',
++        title: 'المثال - تجربة مثبط ARN بوليميراز',
++        badge: 'مثال',
++        instruction: 'الوثيقة 3 ص17: منحنى يمثل نسبة تشكل ARNm بدلالة تركيز مركب سام (ألفا أمانيتين)',
++        content: [
++          {
++            type: 'image_hotspot',
++            data: {
++              image: '/assets/images/schemas/domaine1_proteines/schema_02_transcription.svg',
++              hotspots: [
++                { id: 'pol', top: '50%', left: '50%', label: 'ARN بوليميراز', correct: true },
++                { id: 'adn_pol', top: '20%', left: '30%', label: 'ADN بوليميراز', correct: false },
++                { id: 'helic', top: '70%', left: '70%', label: 'الهيليكاز', correct: false }
++              ],
++              question: 'انقر على الإنزيم المسؤول عن الاستنساخ في هذا المنحنى',
++              correctFeedback: 'ممتاز! ARN بوليميراز هو المسؤول. الدراسة تظهر أن مثبطه يوقف العملية.',
++              wrongFeedback: 'الوثيقة 3 ص17: هذا الإنزيم هو المسؤول عن الاستنساخ.'
++            }
++          },
++          {
++            type: 'text',
++            data: {
++              text: 'كلما زاد تركيز المركب السام (ألفا أمانيتين)، تناقصت نسبة تشكل ARNm إلى 0%. هذا يثبت أن ARN بوليميراز هو الإنزيم المسؤول.'
++            }
++          }
++        ]
++      },
++      {
++        id: 'microtest',
++        title: 'الاختبار المصغر - مبدأ التكامل',
++        badge: 'إنتاج',
++        instruction: 'جدول التكامل: أكمل ARNm انطلاقا من ADN الناسخة',
++        content: [
++          {
++            type: 'table_bases',
++            data: {
++              headers: ['ADN ناسخة 3\'→5\'', 'ARNm 5\'→3\''],
++              rows: [
++                { adn: 'T A C', arnm: '' },
++                { adn: 'G C T', arnm: '' },
++                { adn: 'A A G', arnm: '' }
++              ],
++              expected: [
++                { adn: 'T A C', arnm: 'A U G' },
++                { adn: 'G C T', arnm: 'C G A' },
++                { adn: 'A A G', arnm: 'U U C' }
++              ],
++              hint: 'A→U, T→A, C→G, G→C - تذكر U مكان T في ARN'
++            }
++          },
++          {
++            type: 'speech_input',
++            data: {
++              question: 'إذا كانت السلسلة الناسخة TAC, ماذا تكون رامزة ARNm؟',
++              placeholder: 'قل أو اكتب AUG',
++              expectedKeywords: ['AUG'],
++              correctFeedback: 'ممتاز! TAC (ADN) → AUG (ARNm) وهي رامزة البداية.',
++              hint: 'AUG - بداية الترجمة'
++            }
++          }
++        ]
++      },
++      {
++        id: 'methodo',
++        title: 'المنهجية المجسدة',
++        badge: 'منهجية',
++        instruction: 'بناء نص علمي من 3 كتل: مقدمة - عرض - خاتمة باستخدام الكلمات المفتاحية',
++        content: [
++          {
++            type: 'methodo_boxes',
++            data: {
++              boxes: [
++                {
++                  label: 'المقدمة (طرح المشكل)',
++                  placeholder: 'تتميز الخلايا حقيقية النواة بوجود ADN في النواة بينما تركيب البروتين في الهيولى، فكيف...؟',
++                  keywords: ['النواة', 'الهيولى'],
++                  example: 'تتواجد المعلومات الوراثية ADN داخل النواة بينما تركيب البروتين في الهيولى، كيف تنتقل نسخة من المعلومات؟'
++                },
++                {
++                  label: 'العرض (الآلية)',
++                  placeholder: 'يتم الاستنساخ في النواة بواسطة ARN بوليميراز الذي يقرأ السلسلة الناسخة 3\'→5\' ويركب ARNm 5\'→3\' حسب مبدأ التكامل...',
++                  keywords: ['ARN بوليميراز', 'السلسلة الناسخة', 'تكامل', '3\'', '5\''],
++                  example: 'يتم الاستنساخ في النواة بواسطة ARN بوليميراز الذي يقرأ السلسلة الناسخة 3\'→5\' ويركب ARNm 5\'→3\' حسب مبدأ التكامل A-U, C-G.'
++                },
++                {
++                  label: 'الخاتمة',
++                  placeholder: 'وعليه، الاستنساخ هو نسخ المعلومة من ADN إلى ARNm الذي سينتقل للهيولى...',
++                  keywords: ['ARNm', 'الهيولى', 'تركيب البروتين'],
++                  example: 'وعليه، الاستنساخ هو نسخ المعلومة الوراثية من ADN (السلسلة الناسخة) إلى ARNm الذي يغادر النواة نحو الهيولى ليكون قالبا للترجمة.'
++                }
++              ]
++            }
++          }
++        ]
++      }
++    ]
++  },
++
++  lecon3_traduction: {
++    key: 'lecon3_traduction',
++    unitId: 1,
++    titleAr: 'الدرس 3: الترجمة - الشفرة الوراثية',
++    breadcrumb: 'المجال الأول: التخصص الوظيفي للبروتينات • الوحدة 1: تركيب البروتين',
++    objective: 'فهم وحدة الشفرة: الرامزة = 3 قواعد، AUG بداية، UAA/UAG/UGA توقف، المورثة',
++    motsSacre: ['الرامزة', 'الشفرة الوراثية', 'AUG - بداية', 'UAA/UAG/UGA - توقف', 'المورثة'],
++    steps: [
++      {
++        id: 'mot',
++        title: 'الكلمة المفتاحية - الرامزة',
++        badge: 'كلمة 1/5',
++        instruction: 'وحدة الشفرة الوراثية هي ثلاثية من القواعد تدعى ............',
++        content: [
++          {
++            type: 'drag_drop',
++            data: {
++              question: 'وحدة الشفرة الوراثية هي ثلاثية من القواعد تدعى ............',
++              options: [
++                { id: '1', text: 'النيوكليوتيدة', correct: false },
++                { id: '2', text: 'الرامزة', correct: true },
++                { id: '3', text: 'الحمض الأميني', correct: false }
++              ],
++              correctFeedback: 'ممتاز! الرامزة = 3 قواعد = 1 حمض أميني.',
++              definition: { term: 'الرامزة', def: 'Codon: ثلاثية من القواعد الآزوتية على ARNm تحدد حمضا أمينيا. Ex: AUG = Méthionine' }
++            }
++          },
++          {
++            type: 'speech_input',
++            data: {
++              question: 'ما هي وحدة الشفرة؟ (شرح في سطر)',
++              placeholder: 'الرامزة هي 3 قواعد...',
++              expectedKeywords: ['3 قواعد', 'الرامزة', 'حمض أميني'],
++              hint: '3 قواعد = رامزة = 1 حمض أميني'
++            }
++          }
++        ]
++      },
++      {
++        id: 'exemple',
++        title: 'المثال - لماذا 3 قواعد؟',
++        badge: 'مثال',
++        instruction: 'اللغة النووية 4 أحرف (A,U,C,G)، اللغة البروتينية 20 حمض أميني. لماذا 1 أو 2 غير كافية؟',
++        content: [
++          {
++            type: 'text',
++            data: {
++              text: 'الفرضية 1: 1 نيوكليوتيد = 1 حمض → 4^1 = 4 < 20 (غير كافي)\nالفرضية 2: 2 نيوكليوتيدات = 16 < 20 (غير كافي)\nالفرضية 3: 3 نيوكليوتيدات = 4^3 = 64 > 20 (كافي، هذه هي الشفرة الحقيقية)'
++            }
++          },
++          {
++            type: 'image_hotspot',
++            data: {
++              image: '/assets/images/schemas/domaine1_proteines/schema_05_code_genetique.svg',
++              hotspots: [
++                { id: 'aug', top: '30%', left: '50%', label: 'AUG - Méthionine - بداية', correct: true },
++                { id: 'uaa', top: '60%', left: '30%', label: 'UAA - توقف', correct: true },
++                { id: 'random', top: '70%', left: '70%', label: 'CCC - Proline', correct: false }
++              ],
++              question: 'انقر على رامزة البداية ورامزة التوقف في جدول الشفرة',
++              correctFeedback: 'ممتاز! AUG = بداية, UAA/UAG/UGA = توقف'
++            }
++          }
++        ]
++      },
++      {
++        id: 'microtest',
++        title: 'الاختبار المصغر - AUG و UAA',
++        badge: 'إنتاج',
++        instruction: 'اختبر معلوماتك',
++        content: [
++          {
++            type: 'speech_input',
++            data: {
++              question: 'إذا كان ARNm = AUG UGG UAA, كم حمض أميني؟ وما هما؟',
++              placeholder: '2 حمض: ميثونين و تربتوفان',
++              expectedKeywords: ['2', 'ميثونين', 'تربتوفان', 'Met', 'Trp', 'AUG', 'UGG'],
++              correctFeedback: 'ممتاز! 2 حمض أميني: Met (AUG بداية) + Trp (UGG). UAA = توقف لا تشفر.',
++              hint: '2 حمض، UAA لا تشفر'
++            }
++          },
++          {
++            type: 'drag_drop',
++            data: {
++              question: 'ماذا تشفر UAA/UAG/UGA؟',
++              options: [
++                { id: '1', text: 'لا تشفر أي حمض أميني، توقف', correct: true },
++                { id: '2', text: 'تشفر ميثونين', correct: false },
++                { id: '3', text: 'تشفر 20 حمض', correct: false }
++              ],
++              correctFeedback: 'صحيح! رامزات توقف: تجلب عامل تحرير، ليس ARNt.'
++            }
++          }
++        ]
++      },
++      {
++        id: 'methodo',
++        title: 'المنهجية المجسدة',
++        badge: 'منهجية',
++        instruction: 'بناء نص علمي حول الشفرة الوراثية',
++        content: [
++          {
++            type: 'methodo_boxes',
++            data: {
++              boxes: [
++                {
++                  label: 'المقدمة',
++                  placeholder: 'اللغة النووية 4 أحرف واللغة البروتينية 20 حمض، كيف يمكن الترميز؟',
++                  keywords: ['4 أحرف', '20 حمض'],
++                  example: 'تتكون اللغة النووية من 4 قواعد بينما اللغة البروتينية من 20 حمض، فكيف يتم التشفير؟'
++                },
++                {
++                  label: 'العرض',
++                  placeholder: 'وحدة الشفرة هي الرامزة = 3 قواعد تشفر حمضا، AUG بداية، UAA/UAG/UGA توقف...',
++                  keywords: ['الرامزة', '3 قواعد', 'AUG', 'UAA', 'توقف'],
++                  example: 'وحدة الشفرة هي الرامزة = 3 قواعد، 4^3=64 رامزة تشفر 20 حمض. AUG=بداية (Met)، UAA/UAG/UGA=توقف لا تشفر.'
++                },
++                {
++                  label: 'الخاتمة',
++                  placeholder: 'وعليه، الشفرة الوراثية ثلاثية، مترادفة، غير متداخلة...',
++                  keywords: ['ثلاثية', 'توقف'],
++                  example: 'وعليه، الشفرة ثلاثية، AUG بداية، UAA/UAG/UGA نهاية.'
++                }
++              ]
++            }
++          }
++        ]
++      }
++    ]
++  }
++};

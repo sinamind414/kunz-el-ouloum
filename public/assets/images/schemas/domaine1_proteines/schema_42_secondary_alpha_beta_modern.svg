@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 700">
+  <rect width="1200" height="700" fill="#fbfcff" rx="28"/>
+  <text x="600" y="72" text-anchor="middle" font-size="38" font-weight="800" fill="#0f172a">المستويات الثانوية للبروتينات</text>
+  <rect x="80" y="130" width="500" height="470" rx="24" fill="#ffffff" stroke="#d8e1e8" stroke-width="4"/>
+  <text x="330" y="185" text-anchor="middle" font-size="32" font-weight="700" fill="#7c3aed">بنية حلزونية α</text>
+  <path d="M330 250 C260 280 260 340 330 370 C400 400 400 460 330 490" fill="none" stroke="#a855f7" stroke-width="28" stroke-linecap="round"/>
+  <path d="M390 250 C320 280 320 340 390 370 C460 400 460 460 390 490" fill="none" stroke="#c084fc" stroke-width="28" stroke-linecap="round" opacity="0.7"/>
+  <g stroke="#94a3b8" stroke-width="4">
+    <line x1="300" y1="285" x2="420" y2="300"/><line x1="300" y1="350" x2="420" y2="365"/><line x1="300" y1="415" x2="420" y2="430"/>
+  </g>
+  <text x="330" y="560" text-anchor="middle" font-size="24" fill="#334155">الروابط الهيدروجينية تثبّت اللف الحلزوني</text>
+
+  <rect x="620" y="130" width="500" height="470" rx="24" fill="#ffffff" stroke="#d8e1e8" stroke-width="4"/>
+  <text x="870" y="185" text-anchor="middle" font-size="32" font-weight="700" fill="#0f766e">بنية صفائحية β</text>
+  <g fill="#fde68a" stroke="#f59e0b" stroke-width="5">
+    <path d="M720 270 h180 l-35 55 h-180z"/>
+    <path d="M760 355 h180 l-35 55 h-180z"/>
+    <path d="M800 440 h180 l-35 55 h-180z"/>
+  </g>
+  <g stroke="#94a3b8" stroke-width="4">
+    <line x1="760" y1="300" x2="920" y2="380"/><line x1="800" y1="385" x2="960" y2="465"/>
+  </g>
+  <text x="870" y="560" text-anchor="middle" font-size="24" fill="#334155">صفائح β تتكون من سلاسل متقابلة تثبتها روابط H</text>
+</svg>

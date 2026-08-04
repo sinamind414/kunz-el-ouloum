@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="900" viewBox="0 0 1400 900">
+<rect width="1400" height="900" fill="#f7fbff"/>
+<rect x="70" y="120" width="1260" height="700" rx="28" fill="white" stroke="#d5dee8" stroke-width="4"/>
+<text x="700" y="76" text-anchor="middle" font-family="Arial, sans-serif" font-size="54" font-weight="700" fill="#17233b">مراحل الترجمة</text>
+<text x="700" y="170" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="700" fill="#51627a">خلاصة مدمجة: بداية — استطالة — نهاية</text>
+<rect x="90" y="240" width="300" height="280" rx="26" fill="#dbeafe" stroke="#2f6fed" stroke-width="4"/>
+<text x="240.0" y="302" text-anchor="middle" font-family="Arial, sans-serif" font-size="34" font-weight="700" fill="#2f6fed">البداية</text>
+<text x="240.0" y="345" text-anchor="middle" font-family="Arial, sans-serif" font-size="22" fill="#17233b">AUG + ARNt البداية</text>
+<text x="240.0" y="375" text-anchor="middle" font-family="Arial, sans-serif" font-size="22" fill="#17233b">+ تثبت الريبوزوم</text>
+<rect x="550" y="240" width="300" height="280" rx="26" fill="#dbeafe" stroke="#2f6fed" stroke-width="4"/>
+<text x="700.0" y="302" text-anchor="middle" font-family="Arial, sans-serif" font-size="34" font-weight="700" fill="#2f6fed">الاستطالة</text>
+<text x="700.0" y="345" text-anchor="middle" font-family="Arial, sans-serif" font-size="22" fill="#17233b">قراءة الكودونات</text>
+<text x="700.0" y="375" text-anchor="middle" font-family="Arial, sans-serif" font-size="22" fill="#17233b">+ تشكل رابطة ببتيدية</text>
+<rect x="1010" y="240" width="300" height="280" rx="26" fill="#dbeafe" stroke="#2f6fed" stroke-width="4"/>
+<text x="1160.0" y="302" text-anchor="middle" font-family="Arial, sans-serif" font-size="34" font-weight="700" fill="#2f6fed">النهاية</text>
+<text x="1160.0" y="345" text-anchor="middle" font-family="Arial, sans-serif" font-size="22" fill="#17233b">الوصول إلى رامزة</text>
+<text x="1160.0" y="375" text-anchor="middle" font-family="Arial, sans-serif" font-size="22" fill="#17233b">التوقف وتحرر السلسلة</text>
+<circle cx="240" cy="470" r="38" fill="#fda4af" stroke="#be185d" stroke-width="4"/>
+<circle cx="700" cy="470" r="38" fill="#fda4af" stroke="#be185d" stroke-width="4"/>
+<circle cx="1160" cy="470" r="38" fill="#fda4af" stroke="#be185d" stroke-width="4"/>
+<line x1="390" y1="390" x2="550" y2="390" stroke="#f59e0b" stroke-width="10"/>
+<polygon points="550,390 515,370 515,410" fill="#f59e0b"/>
+<line x1="850" y1="390" x2="1010" y2="390" stroke="#f59e0b" stroke-width="10"/>
+<polygon points="1010,390 975,370 975,410" fill="#f59e0b"/>
+<text x="700" y="785" text-anchor="middle" font-family="Arial, sans-serif" font-size="24" fill="#51627a">شكل واحد لمراجعة: الانطلاق عند AUG، ثم الاستطالة، ثم النهاية عند رامزة التوقف.</text>
+</svg>

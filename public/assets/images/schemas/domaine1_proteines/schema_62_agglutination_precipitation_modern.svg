@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 760">
+  <rect width="1200" height="760" rx="28" fill="#f8fbff"/>
+  <text x="600" y="68" text-anchor="middle" font-size="38" font-weight="800" fill="#0f172a">الأجسام المضادة قد تسبب تراصاً أو ترسباً للمستضدات</text>
+
+  <rect x="90" y="130" width="470" height="520" rx="26" fill="#ffffff" stroke="#d8e1e8" stroke-width="4"/>
+  <text x="325" y="178" text-anchor="middle" font-size="30" font-weight="700" fill="#1d4ed8">التراص</text>
+  <g>
+    <circle cx="240" cy="340" r="55" fill="#fecaca" stroke="#dc2626" stroke-width="5"/>
+    <circle cx="330" cy="340" r="55" fill="#fecaca" stroke="#dc2626" stroke-width="5"/>
+    <circle cx="285" cy="425" r="55" fill="#fecaca" stroke="#dc2626" stroke-width="5"/>
+  </g>
+  <g stroke="#7c3aed" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" fill="none">
+    <path d="M262 307 l16 -30 l16 30"/>
+    <path d="M317 307 l16 -30 l16 30"/>
+    <path d="M285 392 l16 -30 l16 30"/>
+    <path d="M292 332 l24 24"/>
+    <path d="M265 374 l20 -22"/>
+  </g>
+  <text x="325" y="560" text-anchor="middle" font-size="24" fill="#334155">جسم مضاد واحد يربط أكثر من هدف فيكوّن شبكة مرئية</text>
+
+  <rect x="640" y="130" width="470" height="520" rx="26" fill="#ffffff" stroke="#d8e1e8" stroke-width="4"/>
+  <text x="875" y="178" text-anchor="middle" font-size="30" font-weight="700" fill="#0f766e">الترسب</text>
+  <g fill="#ef4444">
+    <circle cx="790" cy="290" r="12"/><circle cx="860" cy="250" r="12"/><circle cx="940" cy="300" r="12"/><circle cx="830" cy="370" r="12"/><circle cx="920" cy="390" r="12"/>
+  </g>
+  <g stroke="#7c3aed" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" fill="none">
+    <path d="M775 340 l16 -30 l16 30"/>
+    <path d="M845 300 l16 -30 l16 30"/>
+    <path d="M925 350 l16 -30 l16 30"/>
+    <path d="M812 420 l16 -30 l16 30"/>
+  </g>
+  <path d="M760 470 C820 430 930 430 990 480 C950 545 805 545 760 470z" fill="#cbd5e1" stroke="#64748b" stroke-width="5"/>
+  <text x="875" y="560" text-anchor="middle" font-size="24" fill="#334155">المعقدات الكبيرة تصبح غير ذائبة فتترسب</text>
+
+  <rect x="170" y="686" width="860" height="42" rx="20" fill="#0f172a" opacity="0.92"/>
+  <text x="600" y="714" text-anchor="middle" font-size="24" fill="#ffffff">هذه الظواهر دليل مباشر على أن الارتباط بين المستضد والجسم المضاد نوعي ويمكن أن يسهّل إقصاء الهدف</text>
+</svg>

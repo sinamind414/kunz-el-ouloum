@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 760">
+  <rect width="1200" height="760" rx="28" fill="#f8fbff"/>
+  <text x="600" y="68" text-anchor="middle" font-size="38" font-weight="800" fill="#0f172a">التلقيح والجرعة التذكيرية يستغلان مبدأ الذاكرة المناعية</text>
+
+  <rect x="90" y="120" width="1020" height="540" rx="26" fill="#ffffff" stroke="#d8e1e8" stroke-width="4"/>
+  <g stroke="#94a3b8" stroke-width="3">
+    <line x1="170" y1="580" x2="1040" y2="580"/>
+    <line x1="170" y1="190" x2="170" y2="580"/>
+  </g>
+  <text x="155" y="180" text-anchor="end" font-size="22" fill="#475569">كمية الأجسام المضادة</text>
+  <text x="1040" y="615" text-anchor="end" font-size="22" fill="#475569">الأسابيع</text>
+
+  <path d="M190 575 C290 570 330 520 380 450 C420 395 470 380 510 420 C550 462 600 525 640 575" fill="none" stroke="#3b82f6" stroke-width="8"/>
+  <path d="M650 575 C710 565 750 470 790 330 C835 170 900 145 960 205 C1010 255 1030 380 1040 575" fill="none" stroke="#dc2626" stroke-width="8"/>
+
+  <g>
+    <line x1="250" y1="580" x2="250" y2="515" stroke="#1d4ed8" stroke-width="4" stroke-dasharray="8 8"/>
+    <line x1="720" y1="580" x2="720" y2="500" stroke="#b91c1c" stroke-width="4" stroke-dasharray="8 8"/>
+    <text x="250" y="610" text-anchor="middle" font-size="20" fill="#1d4ed8">لقاح أول</text>
+    <text x="720" y="610" text-anchor="middle" font-size="20" fill="#b91c1c">جرعة تذكيرية</text>
+  </g>
+
+  <g>
+    <circle cx="250" cy="250" r="28" fill="#dbeafe" stroke="#3b82f6" stroke-width="5"/>
+    <path d="M250 225 v50 M225 250 h50" stroke="#1d4ed8" stroke-width="5"/>
+    <circle cx="720" cy="250" r="28" fill="#fee2e2" stroke="#ef4444" stroke-width="5"/>
+    <path d="M720 225 v50 M695 250 h50" stroke="#b91c1c" stroke-width="5"/>
+  </g>
+
+  <text x="455" y="500" text-anchor="middle" font-size="22" fill="#334155">استجابة أولية تبني الذاكرة</text>
+  <text x="885" y="235" text-anchor="middle" font-size="22" fill="#334155">استجابة أقوى بفضل خلايا الذاكرة</text>
+
+  <rect x="160" y="686" width="880" height="42" rx="20" fill="#0f172a" opacity="0.92"/>
+  <text x="600" y="714" text-anchor="middle" font-size="24" fill="#ffffff">فكرة الجرعة التذكيرية هي إعادة تنشيط خلايا الذاكرة للحصول على حماية أسرع وأعلى من التعرض الأول</text>
+</svg>

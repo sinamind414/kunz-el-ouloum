@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 760">
+  <rect width="1200" height="760" fill="#f8fafc" rx="28"/>
+  <text x="600" y="72" text-anchor="middle" font-size="38" font-weight="800" fill="#0f172a">كيف تستقر البنية الفراغية للبروتين؟</text>
+  <rect x="70" y="120" width="500" height="560" rx="24" fill="#ffffff" stroke="#d8e1e8" stroke-width="4"/>
+  <path d="M180 530 C140 410 220 260 330 240 C440 220 520 320 470 460 C435 560 270 600 180 530z" fill="none" stroke="#8b5cf6" stroke-width="16" stroke-linecap="round"/>
+  <circle cx="315" cy="395" r="62" fill="#d8b4fe" opacity="0.5"/>
+  <g stroke="#94a3b8" stroke-width="5">
+    <line x1="250" y1="315" x2="365" y2="350"/>
+    <line x1="240" y1="470" x2="360" y2="430"/>
+  </g>
+  <text x="320" y="635" text-anchor="middle" font-size="24" fill="#334155">البنية النهائية ليست عشوائية، بل تستقر بفعل تآثرات متعددة</text>
+
+  <rect x="630" y="120" width="500" height="560" rx="24" fill="#ffffff" stroke="#d8e1e8" stroke-width="4"/>
+  <g font-size="26" fill="#0f172a">
+    <text x="720" y="220">روابط هيدروجينية</text>
+    <text x="720" y="320">روابط شاردية</text>
+    <text x="720" y="420">تجاذب كاره للماء</text>
+    <text x="720" y="520">جسر ثنائي الكبريت</text>
+  </g>
+  <g>
+    <line x1="930" y1="210" x2="1040" y2="210" stroke="#60a5fa" stroke-width="6" stroke-dasharray="10 8"/>
+    <circle cx="930" cy="300" r="18" fill="#f97316"/><circle cx="1040" cy="300" r="18" fill="#3b82f6"/>
+    <line x1="948" y1="300" x2="1022" y2="300" stroke="#94a3b8" stroke-width="6"/>
+    <circle cx="930" cy="395" r="20" fill="#111827"/><circle cx="1040" cy="395" r="20" fill="#111827"/>
+    <line x1="950" y1="395" x2="1020" y2="395" stroke="#111827" stroke-width="10"/>
+    <circle cx="930" cy="495" r="18" fill="#fde68a"/><circle cx="1040" cy="495" r="18" fill="#fde68a"/>
+    <line x1="948" y1="495" x2="1022" y2="495" stroke="#f59e0b" stroke-width="6"/>
+  </g>
+</svg>
