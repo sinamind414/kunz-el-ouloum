@@ -1,5 +1,5 @@
 import React, { useMemo, useState, lazy, Suspense } from 'react';
-import { Zap, Layers, Target, BookOpen, Rocket, Lightbulb, ChevronRight, Trophy, Flame, Lock } from 'lucide-react';
+import { Zap, Layers, Target, BookOpen, Rocket, Lightbulb, ChevronRight, Trophy, Flame, Lock, ShieldCheck } from 'lucide-react';
 import { Unit, UserProgress, Flashcard, TabId } from '../types';
 import { DOMAINS_INFO, getUnitDomainId } from '../utils/domainMapper';
 
@@ -29,6 +29,12 @@ interface TrainingViewProps {
   isFocusMode: boolean;
   setIsFocusMode: (v: boolean) => void;
   onNavigateToTab: (tab: TabId) => void;
+  /** V3 — lancement de l'examen de validation (Le Gardien). */
+  onLaunchExam?: (unitId: number) => void;
+  /** V3 — clic sur une unité verrouillée → Coach (Gating). */
+  onLockedUnitClick?: (unit: Unit) => void;
+  /** V3 — mode professeur : force l'accès à toutes les unités. */
+  teacherOverride?: boolean;
 }
 
 type SubTab = 'quick' | 'cards' | 'bac' | 'methodo' | 'docs' | 'challenge';
@@ -44,6 +50,9 @@ export default function TrainingView({
   onRateCard,
   isFocusMode,
   setIsFocusMode,
+  onLaunchExam,
+  onLockedUnitClick,
+  teacherOverride,
 }: TrainingViewProps) {
   // Accueil أتدرب : sub = null => grille des rubriques (icônes), sinon on est dans une rubrique.
   const [sub, setSub] = useState<SubTab | null>(null);
@@ -139,6 +148,37 @@ export default function TrainingView({
 
   return (
     <div className="w-full max-w-2xl mx-auto p-4 md:p-6 pb-28" dir="rtl">
+      {/* V2/V3 — Point d'entrée débutant : la méthodologie avant tout défi. */}
+      {sub === null && (
+        <section
+          className="mb-4 rounded-3xl border border-[#006d37]/30 bg-gradient-to-br from-[#eafaf1] to-white dark:from-[#0d2417] dark:to-[#141916] p-4 md:p-5 shadow-sm"
+          data-testid="training-beginner-launchpad"
+        >
+          <div className="flex items-start justify-between gap-3">
+            <div className="min-w-0">
+              <div className="inline-flex items-center rounded-full bg-[#d9f5e3] dark:bg-[#0d3520] px-2.5 py-1 text-[10px] font-black text-[#006d37] dark:text-[#2ecc71] mb-2">
+                نقطة الانطلاق الآمنة
+              </div>
+              <h2 className="text-base md:text-lg font-black text-[#1f1c0b] dark:text-white">
+                إذا كنت ضعيفاً: ابدأ بـ «كيف أجيب؟»
+              </h2>
+              <p className="text-[11px] text-[#506072] dark:text-gray-300 leading-6 mt-1">
+                تعلّم أفعال الأداء (حلل، فسر، استنتج) قبل أي QCM — فهي 70% من نقطة البكالوريا.
+              </p>
+            </div>
+            <div className="w-11 h-11 rounded-2xl bg-[#006d37] text-[#fed65b] flex items-center justify-center shrink-0 shadow-sm">
+              <Target className="w-5 h-5" />
+            </div>
+          </div>
+          <button
+            onClick={() => setSub('methodo')}
+            className="mt-3 w-full rounded-2xl bg-[#006d37] hover:bg-[#00562b] text-white font-black py-3 text-sm shadow-sm cursor-pointer"
+          >
+            افتح «كيف أجيب؟» الآن
+          </button>
+        </section>
+      )}
+
       <section className="mb-4 rounded-3xl border border-[#0891b2]/40 bg-gradient-to-br from-[#f0f9ff] to-white dark:from-[#083344] dark:to-[#141916] p-4 md:p-5 shadow-sm">
         <div className="flex items-start justify-between gap-3">
           <div className="min-w-0">
@@ -219,6 +259,38 @@ export default function TrainingView({
           </span>
         </div>
       </button>
+
+      {/* V3 — Le Gardien : examen de validation de l'unité active.
+          C'est LA porte vers l'unité suivante (10 QCM, seuil 80 %). */}
+      {onLaunchExam && dailyTargetUnit && sub === null && (
+        <section
+          className="mb-5 rounded-3xl border-2 border-[#006d37]/25 bg-gradient-to-br from-[#eafaf1] to-white dark:from-[#0d2417] dark:to-[#141916] p-4 md:p-5 shadow-sm"
+          data-testid="training-exam-card"
+        >
+          <div className="flex items-start gap-3">
+            <div className="w-12 h-12 rounded-2xl bg-[#006d37] text-[#fed65b] flex items-center justify-center shrink-0 shadow-sm">
+              <ShieldCheck className="w-6 h-6" />
+            </div>
+            <div className="min-w-0 flex-1">
+              <h3 className="font-black text-[#1f1c0b] dark:text-white text-sm md:text-base">
+                امتحان الوحدة: « {dailyTargetUnit.title} »
+              </h3>
+              <p className="text-[11px] text-[#506072] dark:text-gray-300 leading-6 mt-0.5">
+                10 أسئلة من الوحدة فقط — احصل على 80% لكسر قفل الوحدة الموالية. عند الخطأ،
+                ستحصل على خطة معالجة دقيقة وليس مجرد «أعد المحاولة».
+              </p>
+            </div>
+          </div>
+          <button
+            onClick={() => onLaunchExam(dailyTargetUnit.id)}
+            className="mt-3 w-full rounded-2xl bg-[#006d37] hover:bg-[#00562b] text-white font-black py-3 text-sm shadow-sm cursor-pointer flex items-center justify-center gap-2"
+            data-testid="training-exam-start-btn"
+          >
+            <ShieldCheck className="w-4 h-4" />
+            ابدأ امتحان التحقق الآن
+          </button>
+        </section>
+      )}
 
       {/* Grille 2x3 = icônes rondes avec anneau de progression (style écran principal) */}
       {sub === null && (
@@ -345,23 +417,40 @@ export default function TrainingView({
           {activeDomain.weak.length === 0 ? (
             <p className="text-sm text-gray-500 dark:text-gray-400">أحسنت! كل وحدات هذا المجال مكتملة (≥ 100%).</p>
           ) : (
-            activeDomain.weak.map((u) => (
-              <div
-                key={u.id}
-                className="flex items-center justify-between bg-white dark:bg-[#141916] border border-gray-200 dark:border-gray-800 rounded-2xl p-4 shadow-sm"
-              >
-                <div className="min-w-0">
-                  <h3 className="font-black text-gray-900 dark:text-white truncate">{u.title}</h3>
-                  <span className="text-[11px] text-gray-400">إتقان {u.progress}%</span>
-                </div>
-                <button
-                  onClick={() => onLaunchQuiz(u.id)}
-                  className="flex items-center gap-1 bg-[#006d37] text-white text-sm font-bold px-3 py-2 rounded-xl hover:bg-[#005a2e] transition-colors cursor-pointer shrink-0"
+            activeDomain.weak.map((u) => {
+              // V3 — Gating : pas de QCM libre sur une unité encore verrouillée.
+              const gated = u.isLocked && !teacherOverride;
+              return (
+                <div
+                  key={u.id}
+                  className={`flex items-center justify-between bg-white dark:bg-[#141916] border border-gray-200 dark:border-gray-800 rounded-2xl p-4 shadow-sm ${gated ? 'opacity-70' : ''}`}
                 >
-                  <Zap className="w-4 h-4" /> ابدأ QCM
-                </button>
-              </div>
-            ))
+                  <div className="min-w-0">
+                    <h3 className="font-black text-gray-900 dark:text-white truncate">
+                      {gated && '🔒 '}{u.title}
+                    </h3>
+                    <span className="text-[11px] text-gray-400">إتقان {u.progress}%</span>
+                  </div>
+                  <button
+                    onClick={() => {
+                      if (gated) {
+                        if (onLockedUnitClick) onLockedUnitClick(u);
+                        return;
+                      }
+                      onLaunchQuiz(u.id);
+                    }}
+                    className={`flex items-center gap-1 text-sm font-bold px-3 py-2 rounded-xl transition-colors cursor-pointer shrink-0 ${
+                      gated
+                        ? 'bg-gray-100 dark:bg-gray-800 text-gray-400'
+                        : 'bg-[#006d37] text-white hover:bg-[#005a2e]'
+                    }`}
+                  >
+                    {gated ? <Lock className="w-4 h-4" /> : <Zap className="w-4 h-4" />}
+                    {gated ? 'مقفلة' : 'ابدأ QCM'}
+                  </button>
+                </div>
+              );
+            })
           )}
         </div>
       )}
@@ -429,17 +518,26 @@ export default function TrainingView({
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                 {activeCardsDomain.all.map((u) => {
                   const count = flashcards.filter((c) => c.unitId === u.id).length;
+                  const gated = u.isLocked && !teacherOverride;
                   return (
                     <button
                       key={u.id}
-                      onClick={() => setCardsUnitId(u.id)}
-                      className="flex flex-col items-center text-center gap-2 rounded-3xl bg-white dark:bg-[#141916] border border-gray-200 dark:border-gray-800 p-4 shadow-sm hover:shadow-md hover:-translate-y-0.5 active:scale-[0.98] transition-all cursor-pointer"
+                      onClick={() => {
+                        if (gated) {
+                          if (onLockedUnitClick) onLockedUnitClick(u);
+                          return;
+                        }
+                        setCardsUnitId(u.id);
+                      }}
+                      className={`flex flex-col items-center text-center gap-2 rounded-3xl bg-white dark:bg-[#141916] border border-gray-200 dark:border-gray-800 p-4 shadow-sm transition-all ${
+                        gated ? 'opacity-60 cursor-pointer' : 'hover:shadow-md hover:-translate-y-0.5 active:scale-[0.98] cursor-pointer'
+                      }`}
                     >
                       <span
                         className="w-14 h-14 rounded-2xl flex items-center justify-center text-white shadow-sm"
                         style={{ background: `linear-gradient(135deg, ${activeCardsDomain.domain.color}, ${activeCardsDomain.domain.color}cc)` }}
                       >
-                        <BookOpen className="w-6 h-6" />
+                        {gated ? <Lock className="w-6 h-6" /> : <BookOpen className="w-6 h-6" />}
                       </span>
                       <span className="font-black text-sm text-gray-900 dark:text-white leading-tight line-clamp-2">{u.title}</span>
                       <span className="text-[10px] text-gray-400">إتقان {u.progress}% · {count} بطاقة</span>
@@ -478,27 +576,38 @@ export default function TrainingView({
       {sub === 'bac' && (
         <div className="space-y-3">
           <h2 className="font-black text-gray-800 dark:text-gray-100">تحدي BAC — 3 بطولات</h2>
-          {bosses.map((b, i) => (
-            <div
-              key={b.id}
-              className="flex items-center gap-3 bg-gradient-to-br from-[#1f2937] to-[#111827] text-white rounded-2xl p-4 shadow-sm"
-            >
-              <div className="w-11 h-11 rounded-xl bg-rose-500/20 text-rose-300 flex items-center justify-center shrink-0">
-                <Rocket className="w-6 h-6" />
-              </div>
-              <div className="flex-1">
-                <span className="text-[10px] font-bold text-rose-300">BOSS {i + 1}</span>
-                <h3 className="font-black">{b.title}</h3>
-                <span className="text-[11px] text-gray-300">{b.domain}</span>
-              </div>
-              <button
-                onClick={() => onLaunchQuiz(b.id)}
-                className="bg-rose-500 text-white text-sm font-bold px-3 py-2 rounded-xl hover:bg-rose-600 transition-colors cursor-pointer"
+          {bosses.map((b, i) => {
+            const gated = b.isLocked && !teacherOverride;
+            return (
+              <div
+                key={b.id}
+                className={`flex items-center gap-3 bg-gradient-to-br from-[#1f2937] to-[#111827] text-white rounded-2xl p-4 shadow-sm ${gated ? 'opacity-70' : ''}`}
               >
-                تحدّى
-              </button>
-            </div>
-          ))}
+                <div className="w-11 h-11 rounded-xl bg-rose-500/20 text-rose-300 flex items-center justify-center shrink-0">
+                  <Rocket className="w-6 h-6" />
+                </div>
+                <div className="flex-1">
+                  <span className="text-[10px] font-bold text-rose-300">BOSS {i + 1}</span>
+                  <h3 className="font-black">{gated && '🔒 '}{b.title}</h3>
+                  <span className="text-[11px] text-gray-300">{b.domain}</span>
+                </div>
+                <button
+                  onClick={() => {
+                    if (gated) {
+                      if (onLockedUnitClick) onLockedUnitClick(b);
+                      return;
+                    }
+                    onLaunchQuiz(b.id);
+                  }}
+                  className={`text-sm font-bold px-3 py-2 rounded-xl transition-colors cursor-pointer ${
+                    gated ? 'bg-gray-600 text-gray-300' : 'bg-rose-500 text-white hover:bg-rose-600'
+                  }`}
+                >
+                  {gated ? 'مقفلة' : 'تحدّى'}
+                </button>
+              </div>
+            );
+          })}
         </div>
       )}
 

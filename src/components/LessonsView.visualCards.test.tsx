@@ -1,79 +1,83 @@
-import { cleanup, render, screen, waitFor } from '@testing-library/react';
+import { cleanup, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import LessonsView from './LessonsView';
 import { INITIAL_UNITS } from '../unitCatalog';
 
+// Contrat remplacé (V3) : l'ancienne UI « cartes visuelles zoomables » a été
+// remplacée par la grille d'icônes guidée + le verrouillage progressif
+// (Gating Engine). Ces tests couvrent donc le catalogue tel qu'il est
+// réellement rendu aujourd'hui.
+
 afterEach(cleanup);
 
-describe('LessonsView visual cards', () => {
-  it('affiche des visuels modernes sur la page lessons et lance le zoom', async () => {
-    const user = userEvent.setup();
+describe('LessonsView — catalogue guidé et gating V3', () => {
+  it('affiche les 3 domaines du programme + la bibliothèque SVT', () => {
     render(<LessonsView units={INITIAL_UNITS} onStartLesson={vi.fn()} />);
-
-    expect(screen.getByText('للمبتدئ: ابدأ بالصورة ثم افتح الدرس')).toBeTruthy();
-    const image = screen.getAllByAltText(/خيط العنكبوت/)[0];
-    expect(image).toBeTruthy();
-
-    await user.click(image);
-    expect(screen.getByRole('button', { name: 'Fermer' })).toBeTruthy();
+    expect(screen.getByText('الدروس')).toBeTruthy();
+    expect(screen.getAllByRole('button', { name: 'افتح المجال ←' })).toHaveLength(3);
+    expect(screen.getByText('مكتبة المصطلحات SVT')).toBeTruthy();
   });
 
-  it('affiche aussi des miniatures avec zoom sur les cartes de domaines et unités', async () => {
+  it('verrouille les unités futures et appelle le Coach au clic (Gating)', async () => {
     const user = userEvent.setup();
-    render(<LessonsView units={INITIAL_UNITS} onStartLesson={vi.fn()} />);
+    const onStartLesson = vi.fn();
+    const onLockedUnitClick = vi.fn();
 
-    const domainImage = screen.getByAltText(/صورة حديثة تمثل مدخل تركيب البروتين/);
-    expect(domainImage).toBeTruthy();
+    render(
+      <LessonsView
+        units={INITIAL_UNITS}
+        onStartLesson={onStartLesson}
+        onLockedUnitClick={onLockedUnitClick}
+      />,
+    );
 
     await user.click(screen.getAllByRole('button', { name: 'افتح المجال ←' })[0]);
 
-    const unitImage = screen.getByAltText(/خريطة بصرية حديثة تلخص الانتقال من المورثة إلى البروتين الوظيفي/);
-    expect(unitImage).toBeTruthy();
+    // Unité 1 déverrouillée → accessible ; unités 2..5 verrouillées.
+    expect(screen.getAllByRole('button', { name: 'افتح الوحدة ←' })).toHaveLength(1);
+    const lockedButtons = screen.getAllByRole('button', { name: '🔒 افتح بعد إتقان الوحدة السابقة' });
+    expect(lockedButtons.length).toBe(4);
 
-    await user.click(unitImage);
-    expect(screen.getByRole('button', { name: 'Fermer' })).toBeTruthy();
+    await user.click(lockedButtons[0]);
+    expect(onLockedUnitClick).toHaveBeenCalledTimes(1);
+    expect(onLockedUnitClick).toHaveBeenCalledWith(expect.objectContaining({ id: 2, isLocked: true }));
   });
 
-  it('ouvre le lesson actif depuis une carte visuelle', async () => {
+  it('déverrouille une unité validée et laisse passer le clic', async () => {
     const user = userEvent.setup();
-    const onStartLesson = vi.fn();
-    render(<LessonsView units={INITIAL_UNITS} onStartLesson={onStartLesson} />);
+    const onLockedUnitClick = vi.fn();
+    const units = INITIAL_UNITS.map((u) => (u.id === 2 ? { ...u, isLocked: false } : u));
 
-    await user.click(screen.getAllByRole('button', { name: 'افتح الدرس ←' })[0]);
-    expect(onStartLesson).toHaveBeenCalled();
-    expect(onStartLesson).toHaveBeenCalledWith('d1-u1-l1-expression-genique');
+    render(
+      <LessonsView
+        units={units}
+        onStartLesson={vi.fn()}
+        onLockedUnitClick={onLockedUnitClick}
+        validatedUnits={[1]}
+      />,
+    );
+
+    await user.click(screen.getAllByRole('button', { name: 'افتح المجال ←' })[0]);
+    // Unités 1 et 2 ouvertes maintenant.
+    expect(screen.getAllByRole('button', { name: 'افتح الوحدة ←' })).toHaveLength(2);
+    expect(screen.getByText('✅ متقنة')).toBeTruthy();
   });
 
-  it('affiche des cartes visuelles dans la liste des leçons d’une unité avec zoom et ouverture', async () => {
+  it('lance une leçon active depuis la liste des leçons de l’unité', async () => {
     const user = userEvent.setup();
     const onStartLesson = vi.fn();
+
     render(<LessonsView units={INITIAL_UNITS} onStartLesson={onStartLesson} />);
 
     await user.click(screen.getAllByRole('button', { name: 'افتح المجال ←' })[0]);
-    await user.click(screen.getAllByRole('button', { name: 'افتح الوحدة ←' })[0]);
+    await user.click(screen.getByRole('button', { name: 'افتح الوحدة ←' }));
 
-    expect(screen.getByText('قائمة مضغوطة للهاتف: كبّر الصورة بسرعة ثم افتح الدرس من نفس البطاقة.')).toBeTruthy();
-    expect(screen.getAllByText('تركيب البروتين').length).toBeGreaterThan(0);
+    // Séquence officielle unité 1 : [phase1 (legacy), d1-u1-l1 (active), d1-u1-l2 (active), phase2 (legacy), d1-u1-l3 (active)].
+    const lessonButtons = screen.getAllByRole('button', { name: 'افتح هذا الدرس ←' });
+    expect(lessonButtons.length).toBe(5);
 
-    const activeLessonImage = screen.getByAltText(/صورة افتتاحية حديثة تربط خيط العنكبوت/);
-    expect(activeLessonImage).toBeTruthy();
-
-    await user.click(activeLessonImage);
-    expect(screen.getByRole('button', { name: 'Fermer' })).toBeTruthy();
-    await user.click(screen.getByRole('button', { name: 'Fermer' }));
-
-    const legacyLessonImage = screen.getAllByAltText(/صورة حديثة تمهيدية تربط سؤال تركيب البروتين بخيط العنكبوت/)[0];
-    expect(legacyLessonImage).toBeTruthy();
-
-    await user.click(screen.getAllByRole('button', { name: 'افتح الدرس التفاعلي ←' })[0]);
+    await user.click(lessonButtons[1]);
     expect(onStartLesson).toHaveBeenCalledWith('d1-u1-l1-expression-genique');
-
-    expect(screen.getByText('اختر درسا من القائمة')).toBeTruthy();
-    await user.click(screen.getAllByRole('button', { name: 'افتح هذا الدرس ←' })[0]);
-
-    await waitFor(() => {
-      expect(screen.queryByText('اختر درسا من القائمة')).toBeNull();
-    });
   });
 });

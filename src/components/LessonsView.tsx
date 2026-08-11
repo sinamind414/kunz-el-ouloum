@@ -5,6 +5,8 @@ import { Unit } from '../types';
 import { LESSON_LIBRARY, LessonLibraryItem } from '../lessonData';
 import { SINGLE_PATH_LESSONS } from '../data/singlePathLessons';
 import { ACTIVE_LESSONS } from '../data/activeLessons';
+import { OFFICIAL_PROGRAM_SEQUENCE } from '../data/unitLessonSequences';
+import { getLockedUnitHintAr } from '../services/gatingEngine';
 import SvtConceptsView from './SvtConceptsView';
 
 const InteractiveLessonView = lazy(() => import('./InteractiveLessonView'));
@@ -14,6 +16,12 @@ interface LessonsViewProps {
   units: Unit[];
   progress?: { xp: number };
   onStartLesson: (lessonId: string) => void;
+  /** V3 — unités validées par l'examen (badge « متقنة »). */
+  validatedUnits?: number[];
+  /** V3 — clic sur une unité verrouillée → Coach (Gating). */
+  onLockedUnitClick?: (unit: Unit) => void;
+  /** V3 — mode professeur : force l'accès à toutes les unités. */
+  teacherOverride?: boolean;
 }
 
 // Display metadata per domain (icon, palette, French subtitle).
@@ -342,20 +350,7 @@ function cleanLessonTitle(title: string): string {
   return title.trim();
 }
 
-const OFFICIAL_PROGRAM_SEQUENCE: Record<number, string[]> = {
-  1: ['phase1_chapitres_1_2', 'd1-u1-l1-expression-genique', 'd1-u1-l2-transcription', 'phase2_chapitres_3_4', 'd1-u1-l3-traduction'],
-  2: ['phase3_chapitres_5_6', 'protein_structure_function'],
-  3: ['d1-u3-l1-enzyme', 'phase4_chapitres_7_8'],
-  4: ['phase5_chapitres_9_10', 'immunity_self_nonself', 'phase6_chapitres_11_12', 'immunity_humoral_response', 'phase7_chapitres_13_14', 'immunity_cellular_response', 'immunity_memory_response'],
-  5: ['phase8_chapitres_15_16', 'phase9_chapitres_17_18', 'synapse', 'phase10_chapitres_19_20'],
-  6: ['phase11_chapitres_21_22', 'phase12_chapitres_23_24'],
-  7: ['phase13_chapitres_25_26', 'phase14_chapitres_27_28', 'phase15_chapitres_29_30'],
-  9: ['phase16_chapitres_31_32', 'subduction', 'phase17_chapitres_33_34'],
-  10: ['phase18_chapitres_35_36', 'seismic_waves', 'phase19_chapitres_37_38'],
-  11: ['phase20_chapitres_39_40', 'phase21_chapitres_41_42', 'phase22_chapitres_43_44']
-};
-
-export default function LessonsView({ units, progress, onStartLesson }: LessonsViewProps) {
+export default function LessonsView({ units, progress, onStartLesson, validatedUnits, onLockedUnitClick, teacherOverride }: LessonsViewProps) {
   const isFirstSessions = progress && progress.xp <= 150;
 
   // Only keep units that actually contain lessons.
@@ -657,14 +652,27 @@ export default function LessonsView({ units, progress, onStartLesson }: LessonsV
             const info = DOMAIN_INFO[selectedDomain] ?? DEFAULT_DOMAIN_INFO;
             const visual = UNIT_PAGE_VISUALS[unit.id];
             const chapterCount = LESSON_LIBRARY.filter((l) => l.unitId === unit.id).length;
+            // V3 — Gating : unité verrouillée = grisée + cadenas + Coach au clic
+            // (sauf en mode professeur). Les unités déjà débloquées restent ouvertes.
+            const gated = unit.isLocked && !teacherOverride;
+            const validated = validatedUnits?.includes(unit.id) ?? false;
+            const handleUnitOpen = () => {
+              if (gated) {
+                if (onLockedUnitClick) onLockedUnitClick(unit);
+                return;
+              }
+              goToUnit(unit.id);
+            };
             return (
               <motion.article
                 key={unit.id}
                 initial={{ opacity: 0, y: 12 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: idx * 0.05 }}
-                className="group text-right rounded-3xl shadow-sm border border-[#e2dabf]/60 dark:border-[#2ecc71]/10 bg-white dark:bg-[#141916] hover:shadow-md transition-all overflow-hidden flex flex-col"
+                className={`group text-right rounded-3xl shadow-sm border border-[#e2dabf]/60 dark:border-[#2ecc71]/10 bg-white dark:bg-[#141916] transition-all overflow-hidden flex flex-col ${gated ? 'opacity-70 grayscale-[0.5]' : 'hover:shadow-md'}`}
                 style={{ borderTop: `4px solid ${info.color}` }}
+                data-testid={`lessons-unit-card-${unit.id}`}
+                data-gated={gated ? 'true' : 'false'}
               >
                 
                 <div className="p-5 flex flex-col gap-3">
@@ -675,7 +683,8 @@ export default function LessonsView({ units, progress, onStartLesson }: LessonsV
                     >
                       الوحدة {idx + 1}
                     </span>
-                    {unit.isLocked && <span className="text-[10px] font-bold text-amber-600">🔒 مغلقة</span>}
+                    {validated && <span className="text-[10px] font-bold text-[#006d37] dark:text-[#2ecc71]">✅ متقنة</span>}
+                    {!validated && gated && <span className="text-[10px] font-bold text-amber-600">🔒 مغلقة</span>}
                   </div>
                   <div>
                     <div className="text-[11px] font-black" style={{ color: info.color }}>{visual?.metaAr ?? unit.description}</div>
@@ -694,11 +703,20 @@ export default function LessonsView({ units, progress, onStartLesson }: LessonsV
                   <div className="w-full h-1.5 rounded-full bg-[#e2dabf]/50 dark:bg-white/10 overflow-hidden">
                     <div className="h-full rounded-full" style={{ width: `${unit.progress}%`, background: info.color }} />
                   </div>
+                  {gated && (
+                    <p className="text-[10px] font-bold text-amber-700 dark:text-amber-400 leading-5">
+                      {getLockedUnitHintAr(units, unit)}
+                    </p>
+                  )}
                   <button
-                    onClick={() => goToUnit(unit.id)}
-                    className="w-full py-3 rounded-2xl bg-[#006d37] hover:bg-[#00562b] text-white font-black text-sm shadow-sm cursor-pointer"
+                    onClick={handleUnitOpen}
+                    className={`w-full py-3 rounded-2xl font-black text-sm shadow-sm cursor-pointer ${
+                      gated
+                        ? 'bg-gray-200 dark:bg-gray-800 text-gray-500 dark:text-gray-400'
+                        : 'bg-[#006d37] hover:bg-[#00562b] text-white'
+                    }`}
                   >
-                    افتح الوحدة ←
+                    {gated ? '🔒 افتح بعد إتقان الوحدة السابقة' : 'افتح الوحدة ←'}
                   </button>
                 </div>
               </motion.article>

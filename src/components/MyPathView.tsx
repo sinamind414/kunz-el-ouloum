@@ -1,15 +1,16 @@
 import { useState, useMemo } from 'react';
-import { Flame, Trophy, Target, AlertTriangle, Hourglass, Dices, HelpCircle, Check, Lock, PlayCircle, Sparkles, Compass, ArrowLeft } from 'lucide-react';
+import { Flame, Trophy, Target, AlertTriangle, Hourglass, Dices, HelpCircle, Check, Lock, PlayCircle, Sparkles, Compass, ArrowLeft, ShieldCheck, BookOpen } from 'lucide-react';
 import { Unit, UserProgress, TabId } from '../types';
 import { useAuth } from '../context/AuthContext';
 import { calculateCountdown } from '../utils/countdownEngine';
+import { getNextAction, getMissionTitleAr, type FocusAction } from '../services/focusEngine';
+import { EXAM_PASS_THRESHOLD, createEmptyMasteryState, type MasteryState } from '../services/masteryEngine';
 import {
   loadMissions,
   getCurrentMission,
   canDoMissionToday,
   completeMission,
   getMissionsProgress,
-  isManhadjiyaDone,
   type Mission,
 } from '../utils/missionManager';
 import {
@@ -24,11 +25,17 @@ import type { CoreReflexId } from '../data/reflexes';
 interface MyPathViewProps {
   units: Unit[];
   progress: UserProgress;
+  /** V3 — état de maîtrise (unités validées, dernier échec…). Optionnel (rétrocompat). */
+  mastery?: MasteryState;
   onLaunchQuiz: (unitId: number) => void;
   onLaunchRevision: (unitId: number) => void;
   onNavigateToTab: (tab: TabId) => void;
   onLaunchReflexMission?: (reflexId: CoreReflexId, meta: { missionId: string; conceptId: string; relatedErrorIds?: string[] }) => void;
   onLaunchSurvivalCard?: (cardId: string) => void;
+  /** V3 — téléportation vers la prochaine action du Focus Engine (« أكمل من حيث توقفت »). */
+  onResumeMission?: (action: FocusAction) => void;
+  /** V3 — lancement de l'examen de validation d'unité (Le Gardien). */
+  onLaunchExam?: (unitId: number) => void;
 }
 
 // Mappe une mission Manhadjiya (M0–M5) vers le réflexe méthodologique ciblé (P1.1-B).
@@ -63,12 +70,12 @@ interface MotivationIcon {
 const BEGINNER_ASSIMILATION_STEPS = ['شاهد', 'افهم', 'أجب', 'صحّح', 'ثبّت'] as const;
 
 export default function MyPathView(props: MyPathViewProps) {
-  const { units, progress, onLaunchQuiz, onLaunchRevision, onNavigateToTab, onLaunchReflexMission, onLaunchSurvivalCard } = props;
+  const { units, progress, mastery, onLaunchQuiz, onLaunchRevision, onNavigateToTab, onLaunchReflexMission, onLaunchSurvivalCard, onResumeMission, onLaunchExam } = props;
 
   // Formation Jour 0 (onboarding « 6 lois ») : accessible via un bouton dédié,
   // mais NE BLOQUE PLUS l'accès au tableau de bord (les 6 icônes s'affichent tout de suite).
   const [missions, setMissions] = useState<Mission[]>(() => loadMissions());
-  const [showOnboarding, setShowOnboarding] = useState<boolean>(() => !isManhadjiyaDone());
+  const [showOnboarding, setShowOnboarding] = useState<boolean>(false);
 
   if (showOnboarding) {
     return (
@@ -138,9 +145,12 @@ export default function MyPathView(props: MyPathViewProps) {
       <MotivationView
         units={units}
         progress={progress}
+        mastery={mastery}
         onLaunchQuiz={onLaunchQuiz}
         onLaunchRevision={onLaunchRevision}
         onNavigateToTab={onNavigateToTab}
+        onResumeMission={onResumeMission}
+        onLaunchExam={onLaunchExam}
         memoizedMissions={missions}
       />
     </div>
@@ -357,8 +367,15 @@ interface MotivationViewProps extends MyPathViewProps {
   memoizedMissions: Mission[];
 }
 
-function MotivationView({ units, progress, onLaunchQuiz, onLaunchRevision, onNavigateToTab, memoizedMissions }: MotivationViewProps) {
+function MotivationView({ units, progress, mastery, onLaunchQuiz, onLaunchRevision, onNavigateToTab, onResumeMission, onLaunchExam, memoizedMissions }: MotivationViewProps) {
   const { user } = useAuth();
+
+  // V3 — Focus Engine : l'unité active + LA prochaine action unique.
+  const focus: FocusAction = useMemo(
+    () => getNextAction(units, mastery ?? createEmptyMasteryState()),
+    [units, mastery],
+  );
+  const focusUnit = units.find((u) => u.id === focus.unitId) ?? null;
 
   // Sélection moteur (SpecKit §2/§6) : mission prioritaire OU état idle explicite.
   const selection: MissionSelection = useMemo(() => {
@@ -487,6 +504,92 @@ function MotivationView({ units, progress, onLaunchQuiz, onLaunchRevision, onNav
         </div>
       </div>
 
+      {/* ═══════════ V3 — LA BOUSSOLE : objectif unique + prochaine action ═══════════ */}
+      {focus.kind === 'all_done' ? (
+        <div className="rounded-3xl p-6 bg-gradient-to-br from-[#2ecc71] to-[#006d37] text-white text-center shadow-md mb-5" data-testid="mypath-focus-card">
+          <Trophy className="w-10 h-10 mx-auto text-[#fed65b] mb-2" />
+          <h2 className="font-black text-xl">مبروك! أتقنت كل الوحدات</h2>
+          <p className="text-white/90 text-sm mt-1 leading-7">لم يبقَ أي قفل — ثبّت معارفك بالبطاقات وتحدى نفسك في وضع BAC.</p>
+          <button
+            onClick={() => onNavigateToTab('training')}
+            className="mt-4 w-full rounded-2xl bg-white text-[#006d37] font-black py-3 text-sm hover:brightness-105 transition-all cursor-pointer"
+          >
+            افتح «أتدرب»
+          </button>
+        </div>
+      ) : (
+        <section
+          className="rounded-3xl p-5 md:p-6 bg-gradient-to-br from-[#006d37] to-[#003d1e] text-white shadow-md mb-5"
+          data-testid="mypath-focus-card"
+        >
+          <div className="flex items-center gap-2 mb-3">
+            <Compass className="w-5 h-5 text-[#fed65b]" />
+            <span className="text-[11px] font-black tracking-wide text-[#fed65b]">هدفك الحالي — البوصلة</span>
+          </div>
+          <h2 className="text-xl md:text-2xl font-black leading-snug">{getMissionTitleAr(focusUnit)}</h2>
+          {focusUnit && (
+            <p className="mt-1 text-[11px] text-white/70">{focusUnit.domain} · {focusUnit.lessonsCount} دروس</p>
+          )}
+
+          <div className="mt-3 flex items-center gap-3">
+            <div className="flex-1 h-2.5 rounded-full bg-white/15 overflow-hidden">
+              <div className="h-full rounded-full bg-[#fed65b] transition-all" style={{ width: `${Math.min(100, focusUnit?.progress ?? 0)}%` }} />
+            </div>
+            <span className="text-sm font-black text-[#fed65b]">{focusUnit?.progress ?? 0}%</span>
+          </div>
+
+          <div className="mt-3 rounded-2xl bg-white/10 px-4 py-3">
+            <p className="text-[11px] font-black text-white/70 mb-0.5">الخطوة التالية</p>
+            <p className="text-sm font-black">{focus.labelAr}</p>
+            <p className="text-[11px] text-white/75 leading-6 mt-0.5">{focus.detailAr}</p>
+            {focus.weakTopicsAr && focus.weakTopicsAr.length > 0 && (
+              <div className="mt-2 flex flex-wrap gap-1.5">
+                {focus.weakTopicsAr.map((topic) => (
+                  <span key={topic} className="rounded-full bg-[#ff9a4a]/25 text-[#ffd27a] px-2.5 py-0.5 text-[10px] font-black">
+                    {topic}
+                  </span>
+                ))}
+              </div>
+            )}
+          </div>
+
+          <button
+            onClick={() => (onResumeMission ? onResumeMission(focus) : onLaunchQuiz(focus.unitId))}
+            className="mt-4 w-full rounded-2xl bg-gradient-to-br from-[#ffb347] to-[#ff9a4a] text-white font-black py-4 text-base shadow-lg hover:brightness-105 active:scale-[0.99] transition-all cursor-pointer flex items-center justify-center gap-2"
+            data-testid="mypath-resume-btn"
+          >
+            <PlayCircle className="w-5 h-5" />
+            أكمل من حيث توقفت
+          </button>
+
+          {focus.kind === 'exam' && onLaunchExam && (
+            <div className="mt-2 flex items-center justify-between gap-2">
+              <button
+                onClick={() => onLaunchExam(focus.unitId)}
+                className="flex-1 rounded-2xl bg-[#fed65b] text-[#052e16] font-black py-3 text-sm hover:brightness-105 transition-all cursor-pointer flex items-center justify-center gap-2"
+                data-testid="mypath-exam-btn"
+              >
+                <ShieldCheck className="w-4 h-4" />
+                اجتاز امتحان الوحدة الآن
+              </button>
+              <button
+                onClick={() => onLaunchQuiz(focus.unitId)}
+                className="rounded-2xl border border-white/25 text-white/85 font-bold py-3 px-3 text-xs hover:bg-white/10 transition-colors cursor-pointer"
+              >
+                تدرب أولاً
+              </button>
+            </div>
+          )}
+
+          {focus.kind !== 'exam' && (
+            <p className="mt-2.5 text-[10px] text-white/60 leading-5 flex items-center gap-1.5">
+              <BookOpen className="w-3.5 h-3.5 shrink-0" />
+              تفتح الوحدة الموالية بعد اجتياز امتحان هذه الوحدة بنسبة {EXAM_PASS_THRESHOLD}%.
+            </p>
+          )}
+        </section>
+      )}
+
       {/* Sélection moteur (SpecKit §6) : idle OU mission prioritaire. */}
       {selection.kind === 'idle' ? (
         <div className="rounded-3xl p-6 bg-white dark:bg-[#141916] border border-gray-200 dark:border-gray-800 text-center shadow-sm mb-5 whitespace-pre-line leading-relaxed">
@@ -523,24 +626,8 @@ function MotivationView({ units, progress, onLaunchQuiz, onLaunchRevision, onNav
         </div>
       )}
 
-      {/* Hero unique orange : 1 seule action principale */}
-      <button
-        onClick={() => dailyTargetUnit && onLaunchQuiz(dailyTargetUnit.id)}
-        className="w-full text-right rounded-3xl p-5 bg-gradient-to-br from-[#ffb347] to-[#ff9a4a] text-white shadow-md mb-5 hover:brightness-105 active:scale-[0.99] transition-all cursor-pointer"
-      >
-        <div className="flex items-center gap-3">
-          <div className="w-14 h-14 rounded-2xl bg-white/20 flex items-center justify-center shrink-0">
-            <Target className="w-7 h-7" />
-          </div>
-          <div className="flex-1">
-            <h2 className="font-black text-lg leading-tight">مهمة 3 دقائق <span className="text-[#fff3d6]">+15 XP</span></h2>
-            <p className="text-white/90 text-sm mt-0.5 truncate">« {dailyTargetUnit?.title} »</p>
-          </div>
-          <span className="bg-white text-[#b45309] font-black text-sm px-4 py-2 rounded-xl shrink-0">
-            ابدأ الآن!
-          </span>
-        </div>
-      </button>
+      {/* V3 : l'ancien hero « مهمة 3 دقائق » a été remplacé par la Boussole
+          (objectif unique + « أكمل من حيث توقفت ») ci-dessus. */}
 
       {/* Grille 2x3 = 6 icônes rondes motivantes (aucune duplication bottom nav) */}
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">

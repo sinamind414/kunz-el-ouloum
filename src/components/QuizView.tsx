@@ -12,10 +12,12 @@ interface QuizViewProps {
   unitTitle: string;
   questions: QuizQuestion[];
   onClose: () => void;
-  onQuizComplete: (score: number, total: number) => void;
+  onQuizComplete: (score: number, total: number, wrongQuestionIds?: number[]) => void;
+  /** V3 — mode examen : validation (Gardien), diagnostic ou drill correctif. */
+  examMode?: 'validation' | 'diagnostic' | 'drill';
 }
 
-export default function QuizView({ unitTitle, questions, onClose, onQuizComplete }: QuizViewProps) {
+export default function QuizView({ unitTitle, questions, onClose, onQuizComplete, examMode }: QuizViewProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [selectedAnswers, setSelectedAnswers] = useState<{ [key: number]: number }>({});
   const [isAnswered, setIsAnswered] = useState<{ [key: number]: boolean }>({});
@@ -63,7 +65,12 @@ export default function QuizView({ unitTitle, questions, onClose, onQuizComplete
     if (completionSubmittedRef.current) return;
     completionSubmittedRef.current = true;
     setQuizFinished(true);
-    onQuizComplete(score, questions.length);
+    // V3 — on remonte aussi les questions ratées : elles alimentent le
+    // diagnostic de lacunes et les exercices correctifs (Mastery Engine).
+    const wrongQuestionIds = questions
+      .filter((q, idx) => selectedAnswers[idx] !== q.correctAnswerIndex)
+      .map((q) => q.id);
+    onQuizComplete(score, questions.length, wrongQuestionIds);
   };
 
   // Timer Effect: when time is over, submit the quiz once and lock answers.
@@ -159,7 +166,13 @@ export default function QuizView({ unitTitle, questions, onClose, onQuizComplete
           </button>
           
           <div className="font-bold text-lg md:text-xl text-[#006d37] dark:text-[#2ecc71] text-center flex-1 pr-4">
-            علوم الطبيعة والحياة • {unitTitle}
+            {examMode === 'validation'
+              ? `امتحان الوحدة • ${unitTitle}`
+              : examMode === 'diagnostic'
+              ? `اختبار تشخيصي • ${unitTitle}`
+              : examMode === 'drill'
+              ? `تدريب تصحيحي • ${unitTitle}`
+              : `علوم الطبيعة والحياة • ${unitTitle}`}
           </div>
 
           <div className="flex items-center gap-2">
@@ -204,6 +217,24 @@ export default function QuizView({ unitTitle, questions, onClose, onQuizComplete
         
         {!quizFinished ? (
           <>
+            {/* V3 — Bandeau examen (Le Gardien / diagnostique / drill) */}
+            {examMode && (
+              <section
+                className={`rounded-2xl px-4 py-3 text-xs md:text-sm font-black leading-6 border ${
+                  examMode === 'validation'
+                    ? 'bg-[#006d37] text-white border-[#006d37]'
+                    : examMode === 'diagnostic'
+                    ? 'bg-[#1d4ed8]/10 text-[#1d4ed8] dark:text-[#93c5fd] border-[#1d4ed8]/30'
+                    : 'bg-[#fff9ed] text-[#944a00] dark:text-[#ffd27a] border-[#ffb347]/40'
+                }`}
+                data-testid="quiz-exam-banner"
+              >
+                {examMode === 'validation' && '🛡️ امتحان التحقق من الوحدة — 10 أسئلة، عتبة النجاح 80% لفتح الوحدة الموالية.'}
+                {examMode === 'diagnostic' && '🧭 اختبار تشخيصي — احصل على 80% لفتح هذه الوحدة مباشرة دون إعادة دروسها.'}
+                {examMode === 'drill' && '🎯 تدريب تصحيحي — أسئلة مأخوذة من أخطائك السابقة، اقرأ الشرح جيداً.'}
+              </section>
+            )}
+
             {/* Progress and Timer Section */}
             <section className="flex flex-col gap-3">
               <div className="flex justify-between items-center">

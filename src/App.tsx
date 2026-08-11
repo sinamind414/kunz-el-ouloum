@@ -1,8 +1,35 @@
-import React, { useState, useEffect, useMemo, lazy, Suspense } from 'react';
+import React, { useState, useEffect, useMemo, useRef, lazy, Suspense } from 'react';
 import { BookOpen, Layers, Compass, Sun, Moon, User, Flame, Trophy, MessageCircle } from 'lucide-react';
 
 import { Unit, UserProgress, Flashcard, QuizQuestion, TabId } from './types';
 import { INITIAL_UNITS } from './unitCatalog';
+
+// V3 — Architecture « La Boussole » : Focus Engine / Mastery Engine / Gating Engine.
+import {
+  loadMasteryState,
+  saveMasteryState,
+  recordExamAttempt,
+  hasPassedExam,
+  examPercent,
+  pickExamQuestions,
+  pickDrillQuestions,
+  diagnoseWeakTopics,
+  EXAM_QUESTION_COUNT,
+  type MasteryState,
+  type ExamMode,
+} from './services/masteryEngine';
+import { getNextAction, getActiveUnit, getMissionTitleAr, type FocusAction } from './services/focusEngine';
+import {
+  isTeacherOverrideEnabled,
+  setTeacherOverrideEnabled,
+  isUnitAccessible,
+  getLockedUnitMessageAr,
+  unlockNextUnit,
+  unlockUnit,
+} from './services/gatingEngine';
+import { COACH_ACTION, type CoachEventData } from './services/coachEvents';
+import { getFirstLessonId } from './data/unitLessonSequences';
+import CoachEventModal from './components/CoachEventModal';
 
 import SplashView from './components/SplashView';
 import { stopPirateMusic } from './utils/audio';
@@ -83,6 +110,23 @@ function AppShell() {
   const [isReminderModalOpen, setIsReminderModalOpen] = useState(false);
   const [isCoachOpen, setIsCoachOpen] = useState(false);
 
+  // ─── V3 « La Boussole » : état du Mastery Engine + examens + Coach proactif ───
+  const [mastery, setMastery] = useState<MasteryState>(() => loadMasteryState());
+  const [examRequest, setExamRequest] = useState<{ unitId: number; mode: ExamMode; questions: QuizQuestion[] } | null>(null);
+  const [coachEvent, setCoachEvent] = useState<CoachEventData | null>(null);
+  const [teacherOverride, setTeacherOverride] = useState<boolean>(() => isTeacherOverrideEnabled());
+  const absenceCheckedRef = useRef(false);
+
+  const setMasteryAndSave = (next: MasteryState) => {
+    setMastery(next);
+    saveMasteryState(next);
+  };
+
+  const handleTeacherOverrideChange = (enabled: boolean) => {
+    setTeacherOverrideEnabled(enabled);
+    setTeacherOverride(enabled);
+  };
+
   // P1.1-B — une mission de réflexe ouvre l'entraînement méthodologique sur le
   // bon réflexe (sans choix intermédiaire), puis revient au parcours.
   const [activeMissionReflex, setActiveMissionReflex] = useState<{
@@ -135,6 +179,47 @@ function AppShell() {
     setIsReminderModalOpen(false);
   };
   const updateLastStudyTime = () => localStorage.setItem('lastStudyTime', Date.now().toString());
+
+  // V3 — Coach proactif : retour après ≥ 3 jours d'absence → message
+  // bienveillant + reprise guidée (une seule fois par session).
+  // On lit les données PERSISTÉES (pas l'état React pré-hydratation) après un
+  // court délai, pour que l'accueil soit prêt quand l'événement surgit.
+  useEffect(() => {
+    if (absenceCheckedRef.current) return;
+    if (currentTab === 'splash') return;
+    absenceCheckedRef.current = true;
+    const timer = window.setTimeout(() => {
+      try {
+        if (isReminderModalOpen) return; // le rappel planifié prime, pas de double modal
+        const last = localStorage.getItem('lastStudyTime');
+        if (!last) return;
+        const daysAway = Math.floor((Date.now() - Number(last)) / (24 * 3600 * 1000));
+        if (daysAway < 3) return;
+        const savedUnits = JSON.parse(localStorage.getItem('svt_units') || 'null') as Unit[] | null;
+        const savedProgress = JSON.parse(localStorage.getItem('svt_progress') || 'null') as UserProgress | null;
+        const unitsForCheck = Array.isArray(savedUnits) && savedUnits.length > 0 ? savedUnits : units;
+        const hasStarted =
+          unitsForCheck.some((u) => u.progress > 0) || (savedProgress?.completedQuestionsCount ?? progress.completedQuestionsCount) > 0;
+        if (!hasStarted) return;
+        const activeUnit = getActiveUnit(unitsForCheck, loadMasteryState());
+        setCoachEvent({
+          kind: 'return_after_absence',
+          tone: 'info',
+          unitId: activeUnit?.id ?? 1,
+          titleAr: `مرحباً بعودتك بعد ${daysAway} أيام!`,
+          messageAr: `غبت ${daysAway} يوماً — لا مشكلة، فالمواظبة أهم من الكمية. بوصلة اليوم جاهزة: ${getMissionTitleAr(activeUnit)}.`,
+          actions: [
+            { id: COACH_ACTION.RESUME, labelAr: 'أكمل من حيث توقفت' },
+            { id: COACH_ACTION.CLOSE, labelAr: 'لاحقاً', variant: 'ghost' },
+          ],
+        });
+      } catch {
+        /* offline-first : silencieux */
+      }
+    }, 600);
+    return () => window.clearTimeout(timer);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentTab]);
 
   const [units, setUnits] = useState<Unit[]>(INITIAL_UNITS);
   const [flashcards, setFlashcards] = useState<Flashcard[]>([]);
@@ -258,15 +343,182 @@ function AppShell() {
     setCurrentTab('lessons');
   };
 
-  const handleQuizComplete = (score: number, total: number) => {
+  // ─── V3 : lancement des examens (validation / diagnostic / drill) ───
+  const launchExam = (unitId: number, mode: ExamMode) => {
+    setCoachEvent(null);
+    void loadQuizCorpus().then(({ SVT_QUIZ_QUESTIONS }) => {
+      const pool = SVT_QUIZ_QUESTIONS.filter((q) => q.unitId === unitId);
+      if (pool.length === 0) return;
+      let questions: QuizQuestion[];
+      if (mode === 'drill') {
+        const wrongIds = mastery.lastFailure?.unitId === unitId ? mastery.lastFailure.wrongQuestionIds : [];
+        questions = pickDrillQuestions(pool, wrongIds);
+      } else {
+        const lastAttempt = [...mastery.attempts].reverse().find((a) => a.unitId === unitId && a.mode === mode);
+        questions = pickExamQuestions(pool, lastAttempt?.questionIds ?? [], EXAM_QUESTION_COUNT);
+      }
+      setExamRequest({ unitId, mode, questions });
+      setActiveQuizUnitId(unitId);
+    });
+  };
+
+  const handleLaunchExam = (unitId: number) => launchExam(unitId, 'validation');
+
+  // V3 : clic sur une unité verrouillée → le Coach surgit (jamais de mur silencieux).
+  const handleLockedUnitClick = (unit: Unit) => {
+    if (isUnitAccessible(unit, teacherOverride)) return;
+    setCoachEvent({
+      kind: 'locked_unit',
+      tone: 'warn',
+      unitId: unit.id,
+      titleAr: `الوحدة ${unit.id} ما زالت مقفلة`,
+      messageAr: getLockedUnitMessageAr(units, unit),
+      actions: [
+        { id: COACH_ACTION.RESUME, labelAr: 'العودة إلى وحدتك الحالية' },
+        { id: COACH_ACTION.DIAGNOSTIC, labelAr: 'اجتز اختباراً تشخيصياً لفتحها الآن', variant: 'ghost' },
+        { id: COACH_ACTION.CLOSE, labelAr: 'حسناً', variant: 'ghost' },
+      ],
+    });
+  };
+
+  // V3 : téléportation vers la prochaine action du Focus Engine (« أكمل من حيث توقفت »).
+  const handleResumeMission = (action: FocusAction) => {
+    switch (action.kind) {
+      case 'lesson':
+        if (action.lessonId) handleStartLesson(action.lessonId);
+        break;
+      case 'quiz':
+        handleLaunchQuiz(action.unitId);
+        break;
+      case 'exam':
+        launchExam(action.unitId, 'validation');
+        break;
+      case 'remediation':
+        launchExam(action.unitId, 'drill');
+        break;
+      case 'all_done':
+        navigateToTab('training');
+        break;
+    }
+  };
+
+  // V3 : traitement du résultat d'un examen (Le Gardien / diagnostique / drill).
+  const handleExamComplete = (request: { unitId: number; mode: ExamMode; questions: QuizQuestion[] }, score: number, total: number, wrongIds: number[]) => {
+    setExamRequest(null);
+    setActiveQuizUnitId(null);
+    const { unitId, mode, questions } = request;
+    const activeUnit = units.find((u) => u.id === unitId);
+    const unitTitle = activeUnit?.title ?? '';
+    const percent = examPercent(score, total);
+    const passed = hasPassedExam(score, total);
+
+    let nextMastery = recordExamAttempt(mastery, {
+      unitId,
+      mode,
+      score,
+      total,
+      questionIds: questions.map((q) => q.id),
+      wrongQuestionIds: wrongIds,
+    });
+
+    // Drill : boucle corrective douce — jamais de lastFailure ni de blocage.
+    if (mode === 'drill') {
+      setMasteryAndSave(nextMastery);
+      updateLastStudyTime();
+      setCoachEvent({
+        kind: 'drill_done',
+        tone: passed ? 'success' : 'info',
+        unitId,
+        examMode: 'validation',
+        titleAr: passed ? 'أحسنت! أنهيت التدريب التصحيحي' : 'خطوة في الطريق الصحيح',
+        messageAr: passed
+          ? `حصلت على ${percent}%. أصبحت جاهزاً لمحاولة جديدة في امتحان الوحدة (عتبة 80%).`
+          : `حصلت على ${percent}%. راجع شرح كل سؤال أخطأت فيه ثم أعد التدريب أو الامتحان.`,
+        actions: [
+          { id: COACH_ACTION.RETRY_EXAM, labelAr: 'اجتاز امتحان الوحدة الآن' },
+          { id: COACH_ACTION.REVIEW_LESSON, labelAr: 'راجع درس الوحدة', variant: 'ghost' },
+          { id: COACH_ACTION.CLOSE, labelAr: 'لاحقاً', variant: 'ghost' },
+        ],
+      });
+      return;
+    }
+
+    if (!passed) {
+      // Échec → diagnostic des lacunes + boucle de remédiation ciblée.
+      const wrongQuestions = questions.filter((q) => wrongIds.includes(q.id));
+      const weakTopics = diagnoseWeakTopics(unitId, wrongQuestions);
+      if (nextMastery.lastFailure && nextMastery.lastFailure.unitId === unitId) {
+        nextMastery = { ...nextMastery, lastFailure: { ...nextMastery.lastFailure, weakTopicsAr: weakTopics } };
+      }
+      setMasteryAndSave(nextMastery);
+      updateLastStudyTime();
+      setCoachEvent({
+        kind: 'exam_failed',
+        tone: 'warn',
+        unitId,
+        examMode: mode,
+        percent,
+        weakTopicsAr: weakTopics,
+        titleAr: `لم تنجح بعد — ${unitTitle}`,
+        messageAr:
+          mode === 'validation'
+            ? `العتبة المطلوبة هي 80% وحصلت على ${percent}%. لا تقلق: هذه خطة دقيقة لسد الثغرات، ثم محاولة جديدة بأسئلة مختلفة.`
+            : `حصلت على ${percent}%. كشف الاختبار التشخيصي نقاط ضعفك — ابدأ بالمراجعة المستهدفة قبل الإعادة.`,
+        actions: [
+          { id: COACH_ACTION.REVIEW_LESSON, labelAr: '1. راجع درس الوحدة أولاً' },
+          { id: COACH_ACTION.DRILL, labelAr: '2. تدريب تصحيحي على أسئلة أخطائك', variant: 'ghost' },
+          { id: COACH_ACTION.RETRY_EXAM, labelAr: '3. أعد الامتحان بأسئلة جديدة', variant: 'ghost' },
+          { id: COACH_ACTION.CLOSE, labelAr: 'لاحقاً', variant: 'ghost' },
+        ],
+      });
+      return;
+    }
+
+    // Réussite → validation, déverrouillage, célébration.
+    const updatedUnits = mode === 'validation' ? unlockNextUnit(units, unitId) : unlockUnit(units, unitId);
+    const nextUnit = units.find((u) => u.id === unitId + 1);
+    const updated: UserProgress = {
+      ...progress,
+      xp: progress.xp + 100 + score * 10,
+      completedQuestionsCount: progress.completedQuestionsCount + total,
+      quizScoreHistory: [...progress.quizScoreHistory, { date: new Date().toLocaleDateString('ar-DZ'), score, total, unitTitle }],
+      completedUnits: [...new Set([...progress.completedUnits, unitId])],
+    };
+    setUnits(updatedUnits);
+    setProgress(updated);
+    saveToLocalStorage(updatedUnits, flashcards, updated);
+    setMasteryAndSave(nextMastery);
+    updateLastStudyTime();
+    setCoachEvent({
+      kind: mode === 'validation' ? 'exam_passed' : 'diagnostic_passed',
+      tone: 'success',
+      unitId,
+      titleAr: `مبروك! أتقنت « ${unitTitle} » 🎉`,
+      messageAr:
+        mode === 'validation'
+          ? `حصلت على ${percent}%. انكسر قفل ${nextUnit ? `الوحدة ${nextUnit.id} « ${nextUnit.title} »` : 'الوحدة الموالية'} — واصل التقدم!`
+          : `حصلت على ${percent}%. فتحت هذه الوحدة مباشرة بفضل مستواك المتقدم — بدون إعادة دروسها.`,
+      actions: [
+        nextUnit
+          ? { id: COACH_ACTION.NEXT_UNIT, labelAr: `ابدأ الوحدة الموالية: ${nextUnit.title}` }
+          : { id: COACH_ACTION.RESUME, labelAr: 'واصل مسار البوصلة' },
+        { id: COACH_ACTION.CLOSE, labelAr: 'العودة إلى مساري', variant: 'ghost' },
+      ],
+    });
+  };
+
+  const handleQuizComplete = (score: number, total: number, wrongIds: number[] = []) => {
+    // V3 : si un examen est en cours, on passe au traitement dédié (Le Gardien).
+    if (examRequest) {
+      handleExamComplete(examRequest, score, total, wrongIds);
+      return;
+    }
     const activeUnit = units.find(u => u.id === activeQuizUnitId);
     if (!activeUnit) return;
     const percent = Math.round((score / total) * 100);
+    // V3 : le QCM libre fait progresser, mais SEUL l'examen de validation
+    // (80%) — ou le test diagnostique — déverrouille l'unité suivante.
     const updatedUnits = units.map(u => u.id === activeQuizUnitId ? { ...u, progress: Math.max(u.progress, percent) } : u);
-    if (percent >= 60 && activeQuizUnitId !== null && activeQuizUnitId < units.length) {
-      const nextId = activeQuizUnitId + 1;
-      if (updatedUnits[nextId - 1]) updatedUnits[nextId - 1].isLocked = false;
-    }
     const updated: UserProgress = {
       ...progress,
       xp: progress.xp + score * 20,
@@ -278,6 +530,44 @@ function AppShell() {
     setProgress(updated);
     saveToLocalStorage(updatedUnits, flashcards, updated);
     updateLastStudyTime();
+  };
+
+  // V3 : actions du modal Coach proactif (routage centralisé).
+  const handleCoachAction = (actionId: string) => {
+    const event = coachEvent;
+    setCoachEvent(null);
+    if (!event) return;
+    const unitId = event.unitId ?? 1;
+    switch (actionId) {
+      case COACH_ACTION.RESUME: {
+        handleResumeMission(getNextAction(units, mastery));
+        break;
+      }
+      case COACH_ACTION.DIAGNOSTIC:
+        launchExam(unitId, 'diagnostic');
+        break;
+      case COACH_ACTION.REVIEW_LESSON: {
+        const lessonId = getFirstLessonId(unitId);
+        if (lessonId) handleStartLesson(lessonId);
+        else navigateToTab('lessons');
+        break;
+      }
+      case COACH_ACTION.DRILL:
+        launchExam(unitId, 'drill');
+        break;
+      case COACH_ACTION.RETRY_EXAM:
+        launchExam(unitId, event.examMode === 'diagnostic' ? 'diagnostic' : 'validation');
+        break;
+      case COACH_ACTION.NEXT_UNIT: {
+        const lessonId = getFirstLessonId(unitId + 1);
+        if (lessonId) handleStartLesson(lessonId);
+        else navigateToTab('lessons');
+        break;
+      }
+      case COACH_ACTION.CLOSE:
+      default:
+        break;
+    }
   };
 
   const updateBanner = isUpdateReady ? (
@@ -312,9 +602,12 @@ function AppShell() {
   }
 
   if (activeQuizUnitId !== null) {
-    if (!quizQuestions) return <>{updateBanner}<LoadingFallback /></>;
+    // V3 : en mode examen, les questions viennent de la requête d'examen
+    // (10 QCM de l'unité, drill correctif…), pas du tirage libre.
+    if (!examRequest && !quizQuestions) return <>{updateBanner}<LoadingFallback /></>;
     const activeUnit = units.find(u => u.id === activeQuizUnitId);
-    const questions = quizQuestions.filter(q => q.unitId === activeQuizUnitId);
+    const freeQuestions = quizQuestions ? quizQuestions.filter(q => q.unitId === activeQuizUnitId) : [];
+    const questions = examRequest ? examRequest.questions : (freeQuestions.length > 0 ? freeQuestions : quizQuestions ?? []);
     return (
       <>
         {updateBanner}
@@ -322,8 +615,9 @@ function AppShell() {
           <QuizView
             unitId={activeQuizUnitId}
             unitTitle={activeUnit ? activeUnit.title : ''}
-            questions={questions.length > 0 ? questions : quizQuestions}
-            onClose={() => setActiveQuizUnitId(null)}
+            questions={questions}
+            examMode={examRequest?.mode}
+            onClose={() => { setActiveQuizUnitId(null); setExamRequest(null); }}
             onQuizComplete={handleQuizComplete}
           />
         </Suspense>
@@ -420,14 +714,14 @@ function AppShell() {
           <ErrorBoundary>
             <div key={currentTab}>
               <Suspense fallback={<LoadingFallback />}>
-                {currentTab === 'path' && <MyPathView units={units} progress={progress} onLaunchQuiz={handleLaunchQuiz} onLaunchRevision={handleLaunchRevision} onNavigateToTab={navigateToTab} onLaunchReflexMission={handleLaunchReflexMission} onLaunchSurvivalCard={handleLaunchSurvivalCard} />}
-                {currentTab === 'lessons' && <LessonsView units={units} progress={progress} onStartLesson={handleStartLesson} />}
+                {currentTab === 'path' && <MyPathView units={units} progress={progress} mastery={mastery} onLaunchQuiz={handleLaunchQuiz} onLaunchRevision={handleLaunchRevision} onNavigateToTab={navigateToTab} onLaunchReflexMission={handleLaunchReflexMission} onLaunchSurvivalCard={handleLaunchSurvivalCard} onResumeMission={handleResumeMission} onLaunchExam={handleLaunchExam} />}
+                {currentTab === 'lessons' && <LessonsView units={units} progress={progress} onStartLesson={handleStartLesson} validatedUnits={mastery.validatedUnits} onLockedUnitClick={handleLockedUnitClick} teacherOverride={teacherOverride} />}
                 {currentTab === 'training' && (
                   quizQuestions && flashcards.length > 0
-                    ? <TrainingView units={units} flashcards={flashcards} progress={progress} onLaunchQuiz={handleLaunchQuiz} onLaunchRevision={handleLaunchRevision} onStartLesson={handleStartLesson} onLaunchSurvivalCard={handleLaunchSurvivalCard} onRateCard={handleRateCard} isFocusMode={isFocusMode} setIsFocusMode={setIsFocusMode} onNavigateToTab={navigateToTab} />
+                    ? <TrainingView units={units} flashcards={flashcards} progress={progress} onLaunchQuiz={handleLaunchQuiz} onLaunchRevision={handleLaunchRevision} onStartLesson={handleStartLesson} onLaunchSurvivalCard={handleLaunchSurvivalCard} onRateCard={handleRateCard} isFocusMode={isFocusMode} setIsFocusMode={setIsFocusMode} onNavigateToTab={navigateToTab} onLaunchExam={handleLaunchExam} onLockedUnitClick={handleLockedUnitClick} teacherOverride={teacherOverride} />
                     : <LoadingFallback />
                 )}
-                {currentTab === 'progress' && <ProgressView progress={progress} units={units} onNavigateToTab={navigateToTab} />}
+                {currentTab === 'progress' && <ProgressView progress={progress} units={units} onNavigateToTab={navigateToTab} teacherOverride={teacherOverride} onTeacherOverrideChange={handleTeacherOverrideChange} />}
               </Suspense>
             </div>
           </ErrorBoundary>
@@ -484,6 +778,9 @@ function AppShell() {
           </div>
         </div>
       )}
+
+      {/* V3 — Coach proactif : modal événementiel (unité verrouillée, examen, absence…). */}
+      {coachEvent && <CoachEventModal event={coachEvent} onAction={handleCoachAction} />}
 
       {/* P1.1-B — overlay mission réflexe : entraînement méthodologique ciblé. */}
       {activeMissionReflex && (

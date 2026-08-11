@@ -7,10 +7,14 @@ async function startServer() {
   const app = express();
   const PORT = Number(process.env.PORT) || 3000;
 
-  // Fable 5 audit - security headers (sans dépendance helmet pour rester offline-light)
+  const isProd = process.env.NODE_ENV === "production";
+
+  // Fable 5 audit - security headers (sans dépendance helmet pour rester offline-light).
+  // En développement, l'app doit pouvoir être embarquée (preview Arena) :
+  // X-Frame-Options / frame-ancestors restent actifs uniquement en production.
   app.use((_, res, next) => {
     res.setHeader('X-Content-Type-Options', 'nosniff');
-    res.setHeader('X-Frame-Options', 'DENY');
+    if (isProd) res.setHeader('X-Frame-Options', 'DENY');
     res.setHeader('X-XSS-Protection', '1; mode=block');
     res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
     res.setHeader('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
@@ -24,10 +28,10 @@ async function startServer() {
         "style-src 'self' 'unsafe-inline' data:",
         "img-src 'self' data: blob:",
         "font-src 'self' data:",
-        "connect-src 'self' https://*.supabase.co",
+        "connect-src 'self' ws: wss: https://*.supabase.co",
         "object-src 'none'",
         "base-uri 'self'",
-        "frame-ancestors 'none'",
+        ...(isProd ? ["frame-ancestors 'none'"] : []),
       ].join('; ')
     );
     next();
@@ -45,7 +49,8 @@ async function startServer() {
 
   if (process.env.NODE_ENV !== "production") {
     const vite = await createViteServer({
-      server: { middlewareMode: true },
+      // allowedHosts: true → nécessaire pour la preview Arena (hôte proxyfié).
+      server: { middlewareMode: true, allowedHosts: true },
       appType: "spa",
     });
     app.use(vite.middlewares);

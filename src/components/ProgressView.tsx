@@ -120,9 +120,12 @@ interface ProgressViewProps {
   progress: UserProgress;
   units: Unit[];
   onNavigateToTab: (tab: TabId) => void;
+  /** V3 — mode professeur : force le déverrouillage de toutes les unités. */
+  teacherOverride?: boolean;
+  onTeacherOverrideChange?: (enabled: boolean) => void;
 }
 
-export default function ProgressView({ progress, units, onNavigateToTab }: ProgressViewProps) {
+export default function ProgressView({ progress, units, onNavigateToTab, teacherOverride, onTeacherOverrideChange }: ProgressViewProps) {
   const [editorMode, setEditorMode] = useState(false);
   const mastery = units.length
     ? Math.round(units.reduce((s, u) => s + u.progress, 0) / units.length)
@@ -262,6 +265,35 @@ export default function ProgressView({ progress, units, onNavigateToTab }: Progr
           </label>
         </div>
       </div>
+
+      {/* V3 — Garde-fou : un professeur peut forcer le déverrouillage (usage en classe). */}
+      {onTeacherOverrideChange && (
+        <div className="mt-4 rounded-3xl bg-white dark:bg-[#141916] border border-gray-200 dark:border-gray-800 p-4 shadow-sm" data-testid="teacher-override-card">
+          <label className="flex items-start justify-between gap-3 cursor-pointer">
+            <span className="min-w-0">
+              <span className="flex items-center gap-2 font-black text-sm text-gray-900 dark:text-white">
+                <ShieldCheck className="w-4 h-4 text-[#006d37] dark:text-[#2ecc71]" />
+                وضع الأستاذ — فتح كل الوحدات
+              </span>
+              <span className="block text-[11px] text-gray-500 dark:text-gray-400 leading-6 mt-1">
+                للاستعمال داخل القسم فقط: يلغي القفل التقدمي ويسمح بفتح أي وحدة دون امتحان.
+                التلميذ وحده يستفيد من البوصلة عندما يكون هذا الوضع مغلقاً.
+              </span>
+            </span>
+            <button
+              type="button"
+              role="switch"
+              aria-checked={Boolean(teacherOverride)}
+              onClick={(e) => { e.preventDefault(); onTeacherOverrideChange(!teacherOverride); }}
+              className={`shrink-0 w-12 h-7 rounded-full transition-colors relative ${teacherOverride ? 'bg-[#006d37]' : 'bg-gray-200 dark:bg-gray-700'}`}
+            >
+              <span
+                className={`absolute top-1 w-5 h-5 rounded-full bg-white shadow transition-all ${teacherOverride ? 'right-1' : 'right-6'}`}
+              />
+            </button>
+          </label>
+        </div>
+      )}
 
       <button type="button" onClick={() => setEditorMode(!editorMode)} className="w-full mt-4 min-h-10 rounded-2xl border border-amber-300 dark:border-amber-700 text-amber-800 dark:text-amber-300 font-black text-xs flex items-center justify-center gap-2 cursor-pointer">
         <ShieldCheck className="w-4 h-4" /> {editorMode ? 'إغلاق وضع الأستاذ' : 'وضع الأستاذ — التحكيم التحريري'}
