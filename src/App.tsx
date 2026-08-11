@@ -359,6 +359,7 @@ function AppShell() {
       }
       setExamRequest({ unitId, mode, questions });
       setActiveQuizUnitId(unitId);
+      logEvent('V3_EXAM_STARTED', { unitId, mode, questionCount: questions.length });
     });
   };
 
@@ -367,6 +368,7 @@ function AppShell() {
   // V3 : clic sur une unité verrouillée → le Coach surgit (jamais de mur silencieux).
   const handleLockedUnitClick = (unit: Unit) => {
     if (isUnitAccessible(unit, teacherOverride)) return;
+    logEvent('V3_LOCKED_UNIT_CLICKED', { unitId: unit.id });
     setCoachEvent({
       kind: 'locked_unit',
       tone: 'warn',
@@ -383,6 +385,7 @@ function AppShell() {
 
   // V3 : téléportation vers la prochaine action du Focus Engine (« أكمل من حيث توقفت »).
   const handleResumeMission = (action: FocusAction) => {
+    logEvent('V3_RESUME_CLICKED', { kind: action.kind, unitId: action.unitId });
     switch (action.kind) {
       case 'lesson':
         if (action.lessonId) handleStartLesson(action.lessonId);
@@ -452,6 +455,7 @@ function AppShell() {
       }
       setMasteryAndSave(nextMastery);
       updateLastStudyTime();
+      logEvent('V3_EXAM_FAILED', { unitId, mode, percent, weakTopics: nextMastery.lastFailure?.weakTopicsAr ?? [] });
       setCoachEvent({
         kind: 'exam_failed',
         tone: 'warn',
@@ -489,6 +493,7 @@ function AppShell() {
     saveToLocalStorage(updatedUnits, flashcards, updated);
     setMasteryAndSave(nextMastery);
     updateLastStudyTime();
+    logEvent(mode === 'diagnostic' ? 'V3_DIAGNOSTIC_PASSED' : 'V3_EXAM_PASSED', { unitId, percent });
     setCoachEvent({
       kind: mode === 'validation' ? 'exam_passed' : 'diagnostic_passed',
       tone: 'success',

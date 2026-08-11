@@ -14,7 +14,14 @@ export interface TelemetryEvent {
     | 'GUEST_LOGIN_OFFLINE'
     | 'QUIZ_COMPLETED'
     | 'BOSS_COMPLETED'
-    | 'DOMAIN_SELECTED';
+    | 'DOMAIN_SELECTED'
+    // V3 — La Boussole : cycle de vie du parcours dirigé.
+    | 'V3_EXAM_STARTED'
+    | 'V3_EXAM_PASSED'
+    | 'V3_EXAM_FAILED'
+    | 'V3_DIAGNOSTIC_PASSED'
+    | 'V3_LOCKED_UNIT_CLICKED'
+    | 'V3_RESUME_CLICKED';
   payload: Record<string, any>;
   userId: string;
   timestamp: number;
