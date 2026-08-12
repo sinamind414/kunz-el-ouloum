@@ -156,6 +156,27 @@ export default function TrainingView({
           </div>
         </div>
         
+        {/*
+          Rampe débutant : tant que l'élève est en début de parcours, «كيف أجيب؟»
+          doit être une action unique et évidente, et non un bouton parmi d'autres.
+        */}
+        {sub === null && isFirstSessions && (
+          <div
+            className="mt-4 rounded-2xl border border-[#0891b2]/30 bg-white/80 dark:bg-black/10 p-3"
+            data-testid="training-beginner-launchpad"
+          >
+            <p className="text-xs font-black text-[#0891b2] dark:text-[#22d3ee] mb-2">
+              إذا كنت ضعيفاً: ابدأ بـ «كيف أجيب؟»
+            </p>
+            <button
+              onClick={() => setSub('methodo')}
+              className="w-full rounded-2xl bg-[#0891b2] hover:bg-[#0e7490] text-white font-black py-3 text-xs shadow-sm cursor-pointer transition-colors"
+            >
+              افتح «كيف أجيب؟» الآن
+            </button>
+          </div>
+        )}
+
         {sub === null && (
           <div className="grid grid-cols-2 gap-3 mt-4">
             <button

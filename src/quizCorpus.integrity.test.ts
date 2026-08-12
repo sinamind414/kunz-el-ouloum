@@ -59,8 +59,23 @@ describe('corpus QCM — cohérence des schémas (constat #3)', () => {
     expect(mismatched).toEqual([]);
   });
 
+  // NE PAS neutraliser l'absence de diagramUrl avec un .filter(Boolean) :
+  // un schéma manquant est précisément le symptôme de corpus que ce garde-fou doit détecter.
+  it('associe un schéma à chaque QCM', () => {
+    const sansSchema = SVT_QUIZ_QUESTIONS.filter((q) => !q.diagramUrl);
+    expect(sansSchema.map((q) => q.id)).toEqual([]);
+  });
+
   it('ne référence que des fichiers réellement présents', () => {
-    const urls = [...new Set(SVT_QUIZ_QUESTIONS.map((q) => q.diagramUrl))];
+    const urls = [
+      ...new Set(
+        SVT_QUIZ_QUESTIONS.map((q) => q.diagramUrl).filter(
+          (url): url is string => typeof url === 'string',
+        ),
+      ),
+    ];
+    expect(urls.length).toBe(new Set(SVT_QUIZ_QUESTIONS.map((q) => q.diagramUrl)).size);
+
     const missing = urls.filter(
       (url) => !fs.existsSync(path.join(process.cwd(), 'public', url)),
     );

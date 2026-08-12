@@ -6,6 +6,7 @@ import { LESSON_LIBRARY, LessonLibraryItem } from '../lessonData';
 import { SINGLE_PATH_LESSONS } from '../data/singlePathLessons';
 import { ACTIVE_LESSONS } from '../data/activeLessons';
 import SvtConceptsView from './SvtConceptsView';
+import ZoomableImage from './ZoomableImage';
 
 const InteractiveLessonView = lazy(() => import('./InteractiveLessonView'));
 const HtmlLessonViewer = lazy(() => import('./HtmlLessonViewer'));
@@ -444,6 +445,26 @@ export default function LessonsView({ units, progress, onStartLesson }: LessonsV
       .filter((card): card is { lessonId: string; title: string; imageSrc: string; altAr: string; metaAr: string } => Boolean(card));
   }, [selectedUnitId]);
 
+  /**
+   * Accès direct « une image → un cours » depuis la page d'accueil des leçons.
+   * On ne propose que les unités réellement ouvertes, pour ne pas envoyer
+   * l'élève vers un contenu verrouillé.
+   */
+  const featuredActiveLessons = useMemo(() => {
+    return unitsWithLessons
+      .filter((unit) => !unit.isLocked)
+      .sort((a, b) => a.id - b.id)
+      .flatMap((unit) =>
+        (ACTIVE_UNIT_LESSONS_BY_UNIT[unit.id] ?? []).flatMap((lessonId) => {
+          const lesson = ACTIVE_LESSONS[lessonId];
+          const visual = LESSON_PAGE_VISUAL_OVERRIDES[lessonId] ?? UNIT_PAGE_VISUALS[unit.id];
+          if (!lesson || !visual) return [];
+          return [{ lessonId, unitTitle: unit.title, title: cleanLessonTitle(lesson.title), ...visual }];
+        })
+      )
+      .slice(0, 6);
+  }, [unitsWithLessons]);
+
   const selectedUnit = unitsWithLessons.find((u) => u.id === selectedUnitId) || null;
   const domainInfo = selectedDomain ? DOMAIN_INFO[selectedDomain] ?? DEFAULT_DOMAIN_INFO : DEFAULT_DOMAIN_INFO;
 
@@ -566,6 +587,9 @@ export default function LessonsView({ units, progress, onStartLesson }: LessonsV
       {/* LEVEL 1 — Grille d'icônes rondes : 3 domaines + Concepts SVT */}
       {!selectedDomain && !showSvt && (
         <>
+          <p className="mb-3 inline-flex items-center rounded-full bg-[#fff3d6] dark:bg-[#3a2c14] px-3 py-1.5 text-[11px] font-black text-[#b45309] dark:text-[#ffd27a]">
+            للمبتدئ: ابدأ بالصورة ثم افتح الدرس
+          </p>
           <section className="grid grid-cols-2 gap-3">
             {domains.map((domain, idx) => {
               const info = DOMAIN_INFO[domain.name] ?? DEFAULT_DOMAIN_INFO;
@@ -592,6 +616,15 @@ export default function LessonsView({ units, progress, onStartLesson }: LessonsV
                     </div>
                   )}
                   
+                  {visual && (
+                    <ZoomableImage
+                      src={visual.imageSrc}
+                      alt={visual.altAr}
+                      loading="lazy"
+                      className="w-full h-28 object-cover bg-[#f7f4ea] dark:bg-[#101613]"
+                    />
+                  )}
+
                   <div className="flex flex-col items-center text-center gap-3 p-6">
                     <span
                       className="w-20 h-20 rounded-full flex items-center justify-center text-white shadow-md"
@@ -640,6 +673,39 @@ export default function LessonsView({ units, progress, onStartLesson }: LessonsV
               <span className="text-[11px] font-bold text-gray-400">استكشف المفاهيم</span>
             </motion.button>
           </section>
+
+          {/* Accès direct : la carte visuelle ouvre immédiatement le cours interactif. */}
+          {featuredActiveLessons.length > 0 && (
+            <section className="mt-5">
+              <h2 className="text-sm font-black text-[#1f1c0b] dark:text-gray-100 mb-3">دروس جاهزة الآن</h2>
+              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                {featuredActiveLessons.map((card) => (
+                  <article
+                    key={card.lessonId}
+                    className="rounded-3xl border border-[#e2dabf]/60 dark:border-[#2ecc71]/10 bg-white dark:bg-[#141916] shadow-sm overflow-hidden flex flex-col"
+                  >
+                    <ZoomableImage
+                      src={card.imageSrc}
+                      alt={card.altAr}
+                      loading="lazy"
+                      className="w-full h-28 object-cover bg-[#f7f4ea] dark:bg-[#101613]"
+                    />
+                    <div className="p-4 flex flex-col gap-2 flex-1">
+                      <div className="text-[10px] font-black text-[#006d37] dark:text-[#2ecc71]">{card.metaAr}</div>
+                      <h3 className="text-xs font-black text-[#1f1c0b] dark:text-gray-100 leading-6">{card.title}</h3>
+                      <p className="text-[10px] text-[#506072] dark:text-gray-400 mt-auto">{card.unitTitle}</p>
+                      <button
+                        onClick={() => onStartLesson(card.lessonId)}
+                        className="w-full py-2.5 rounded-2xl bg-[#006d37] hover:bg-[#00562b] text-white font-black text-xs shadow-sm cursor-pointer"
+                      >
+                        افتح الدرس ←
+                      </button>
+                    </div>
+                  </article>
+                ))}
+              </div>
+            </section>
+          )}
         </>
       )}
 
@@ -666,7 +732,15 @@ export default function LessonsView({ units, progress, onStartLesson }: LessonsV
                 className="group text-right rounded-3xl shadow-sm border border-[#e2dabf]/60 dark:border-[#2ecc71]/10 bg-white dark:bg-[#141916] hover:shadow-md transition-all overflow-hidden flex flex-col"
                 style={{ borderTop: `4px solid ${info.color}` }}
               >
-                
+                {visual && (
+                  <ZoomableImage
+                    src={visual.imageSrc}
+                    alt={visual.altAr}
+                    loading="lazy"
+                    className="w-full h-32 object-cover bg-[#f7f4ea] dark:bg-[#101613]"
+                  />
+                )}
+
                 <div className="p-5 flex flex-col gap-3">
                   <div className="flex items-center justify-between">
                     <span
@@ -721,6 +795,9 @@ export default function LessonsView({ units, progress, onStartLesson }: LessonsV
                   <p className="text-[10px] sm:text-[11px] text-[#506072] dark:text-gray-400 leading-5 sm:leading-6">
                     حسب التدرج الرسمي لوزارة التربية الوطنية.
                   </p>
+                  <p className="text-[10px] sm:text-[11px] font-bold text-[#b45309] dark:text-[#ffd27a] leading-5 sm:leading-6 mt-1">
+                    قائمة مضغوطة للهاتف: كبّر الصورة بسرعة ثم افتح الدرس من نفس البطاقة.
+                  </p>
                 </div>
                 <span className="shrink-0 inline-flex items-center rounded-full px-2.5 py-1 text-[10px] font-black text-white" style={{ background: domainInfo.color }}>
                   {unifiedLessons.length} دروس
@@ -741,7 +818,15 @@ export default function LessonsView({ units, progress, onStartLesson }: LessonsV
                     }`}
                   >
                     <div className="flex items-start gap-2.5 sm:gap-3">
-                      
+                      {lesson.imageSrc && (
+                        <ZoomableImage
+                          src={lesson.imageSrc}
+                          alt={lesson.altAr}
+                          loading="lazy"
+                          className="w-16 h-16 sm:w-20 sm:h-20 shrink-0 rounded-xl sm:rounded-2xl object-cover bg-[#f7f4ea] dark:bg-[#101613]"
+                        />
+                      )}
+
                       <div className="min-w-0 flex-1 flex flex-col gap-2">
                         <div>
                           <div className="flex flex-wrap items-center gap-1.5 mb-1">
@@ -773,7 +858,7 @@ export default function LessonsView({ units, progress, onStartLesson }: LessonsV
                               : 'bg-white dark:bg-[#101613] border border-[#e2dabf]/60 dark:border-white/10 text-[#1f1c0b] dark:text-gray-100 hover:bg-[var(--dl)]'
                           }`}
                         >
-                          افتح هذا الدرس ←
+                          {lesson.type === 'active' ? 'افتح الدرس التفاعلي ←' : 'افتح هذا الدرس ←'}
                         </button>
                       </div>
                     </div>

@@ -48,6 +48,10 @@ export default defineConfig(({ mode }) => ({
       }
     }) : undefined
   ].filter(Boolean),
+  server: {
+    // Autorise les hôtes de prévisualisation distants (sandbox/tunnels) en développement.
+    allowedHosts: true,
+  },
   test: {
     environment: 'jsdom',
     globals: true,

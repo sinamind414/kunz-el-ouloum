@@ -62,6 +62,52 @@ interface MotivationIcon {
 
 const BEGINNER_ASSIMILATION_STEPS = ['شاهد', 'افهم', 'أجب', 'صحّح', 'ثبّت'] as const;
 
+/**
+ * Rampe de lancement débutant « ابدأ من هنا ».
+ * Rendue AUSSI pendant la formation Jour 0 : l'élève qui découvre l'application
+ * est précisément celui qui a besoin de ce point d'entrée, or l'onboarding
+ * s'affiche par défaut tant que la Manhadjiya n'est pas terminée.
+ */
+function BeginnerLaunchpad({ onNavigateToTab }: { onNavigateToTab: (tab: TabId) => void }) {
+  return (
+    <section
+      className="mb-4 rounded-3xl border border-[#ffb347]/40 bg-gradient-to-br from-[#fff7e8] to-white dark:from-[#2a2118] dark:to-[#141916] p-4 md:p-5 shadow-sm"
+      data-testid="mypath-beginner-launchpad"
+    >
+      <div className="flex items-start justify-between gap-3">
+        <div className="min-w-0">
+          <div className="inline-flex items-center rounded-full bg-[#ffedd5] dark:bg-[#4b2f12] px-2.5 py-1 text-[10px] font-black text-[#b45309] mb-2">
+            للمبتدئ أو إذا كنت لا تعرف من أين تبدأ
+          </div>
+          <h2 className="text-lg md:text-xl font-black text-[#1f1c0b] dark:text-white">ابدأ من هنا</h2>
+          <p className="text-sm text-[#6a5b43] dark:text-gray-300 leading-7 mt-1">
+            مسار بسيط يساعدك على الفهم قبل الحفظ: افتح التدريب، ثم ابدأ بباب «كيف أجيب؟» قبل أي تحدٍ أو QCM.
+          </p>
+        </div>
+        <div className="w-12 h-12 rounded-2xl bg-[#ff9a4a] text-white flex items-center justify-center shrink-0 shadow-sm">
+          <Compass className="w-6 h-6" />
+        </div>
+      </div>
+      <div className="mt-3 flex flex-wrap gap-2">
+        {BEGINNER_ASSIMILATION_STEPS.map((step, index) => (
+          <span
+            key={step}
+            className="inline-flex items-center rounded-full border border-[#ffd7a8] dark:border-[#6c4a1f] bg-white/90 dark:bg-black/10 px-2.5 py-1 text-[10px] font-black text-[#944a00] dark:text-[#ffd27a]"
+          >
+            {index + 1}. {step}
+          </span>
+        ))}
+      </div>
+      <button
+        onClick={() => onNavigateToTab('training')}
+        className="mt-4 w-full rounded-2xl bg-[#ff9a4a] hover:brightness-105 text-white font-black py-3 text-sm shadow-sm cursor-pointer"
+      >
+        ابدأ الآن من «أتدرب» ثم افتح «كيف أجيب؟»
+      </button>
+    </section>
+  );
+}
+
 export default function MyPathView(props: MyPathViewProps) {
   const { units, progress, onLaunchQuiz, onLaunchRevision, onNavigateToTab, onLaunchReflexMission, onLaunchSurvivalCard } = props;
 
@@ -73,6 +119,7 @@ export default function MyPathView(props: MyPathViewProps) {
   if (showOnboarding) {
     return (
       <div className="w-full max-w-2xl mx-auto p-4 md:p-6 pb-28" dir="rtl">
+        <BeginnerLaunchpad onNavigateToTab={onNavigateToTab} />
         <button
           onClick={() => setShowOnboarding(false)}
           className="mb-3 flex items-center gap-2 text-sm font-bold text-[#006d37] dark:text-[#2ecc71] cursor-pointer"
@@ -94,38 +141,7 @@ export default function MyPathView(props: MyPathViewProps) {
 
   return (
     <div className="w-full max-w-2xl mx-auto p-4 md:p-6 pb-28" dir="rtl">
-      <section className="mb-4 rounded-3xl border border-[#ffb347]/40 bg-gradient-to-br from-[#fff7e8] to-white dark:from-[#2a2118] dark:to-[#141916] p-4 md:p-5 shadow-sm" data-testid="mypath-beginner-launchpad">
-        <div className="flex items-start justify-between gap-3">
-          <div className="min-w-0">
-            <div className="inline-flex items-center rounded-full bg-[#ffedd5] dark:bg-[#4b2f12] px-2.5 py-1 text-[10px] font-black text-[#b45309] mb-2">
-              للمبتدئ أو إذا كنت لا تعرف من أين تبدأ
-            </div>
-            <h2 className="text-lg md:text-xl font-black text-[#1f1c0b] dark:text-white">ابدأ من هنا</h2>
-            <p className="text-sm text-[#6a5b43] dark:text-gray-300 leading-7 mt-1">
-              مسار بسيط يساعدك على الفهم قبل الحفظ: افتح التدريب، ثم ابدأ بباب «كيف أجيب؟» قبل أي تحدٍ أو QCM.
-            </p>
-          </div>
-          <div className="w-12 h-12 rounded-2xl bg-[#ff9a4a] text-white flex items-center justify-center shrink-0 shadow-sm">
-            <Compass className="w-6 h-6" />
-          </div>
-        </div>
-        <div className="mt-3 flex flex-wrap gap-2">
-          {BEGINNER_ASSIMILATION_STEPS.map((step, index) => (
-            <span
-              key={step}
-              className="inline-flex items-center rounded-full border border-[#ffd7a8] dark:border-[#6c4a1f] bg-white/90 dark:bg-black/10 px-2.5 py-1 text-[10px] font-black text-[#944a00] dark:text-[#ffd27a]"
-            >
-              {index + 1}. {step}
-            </span>
-          ))}
-        </div>
-        <button
-          onClick={() => onNavigateToTab('training')}
-          className="mt-4 w-full rounded-2xl bg-[#ff9a4a] hover:brightness-105 text-white font-black py-3 text-sm shadow-sm cursor-pointer"
-        >
-          ابدأ الآن من «أتدرب» ثم افتح «كيف أجيب؟»
-        </button>
-      </section>
+      <BeginnerLaunchpad onNavigateToTab={onNavigateToTab} />
 
       {/* Accès direct à la formation Jour 0 (ne bloque plus le dashboard). */}
       <button

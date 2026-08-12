@@ -1348,7 +1348,7 @@ export const ACTIVE_LESSONS: Record<string, ActiveLesson> = {
         promptAr: 'رتب مسار البروتين بعد تركيبه عندما يكون موجهاً للإفراز.',
         assetSrc: '/assets/images/schemas/domaine1_proteines/schema_27_secretory_pathway_destination_modern.svg',
         altAr: 'رسم يوضح مرور البروتين عبر الشبكة الهيولية الخشنة ثم جهاز غولجي ثم الحويصلات.',
-        secondaryAssetSrc: '/assets/images/schemas/domaine1_proteines/schema_24_secretory_pathway_pancreas_modern.jpg',
+        secondaryAssetSrc: '/assets/images/schemas/domaine1_proteines/schema_24_secretory_pathway_pancreas_modern_ar.svg',
         secondaryAltAr: 'وثيقة حديثة شبيهة بخلايا بنكرياسية مفرزة تربط الشبكة الهيولية الخشنة وجهاز غولجي بالإفراز.',
         secondaryCaptionAr: 'مثال نسيجي: الخلايا المفرزة مثل خلايا البنكرياس تُظهر بوضوح مسار البروتين الإفرازي.',
         supportGallery: [
