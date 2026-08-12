@@ -3148,7 +3148,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "هو بنية ثابتة لا تتأثر بالشروط الفيزيائية أبداً."
     ],
     "correctAnswerIndex": 2,
-    "explanation": "الصانعة الخضراء يرتبط هنا بـ: عضية يتم فيها التركيب الضوئي في الخلايا اليخضورية.",
+    "explanation": "الصانعة الخضراء عضية محاطة بغشائين وتحتوي غرانا وستروما، وفيها تتحول الطاقة الضوئية إلى طاقة كيميائية مخزنة في المادة العضوية. لا تخلط بينها وبين الميتوكوندري التي تحرر هذه الطاقة. في البكالوريا: بنيتها المضاعفة هي التي تفسر فصل المرحلتين.",
     "diagramUrl": "/assets/images/schemas/domaine2_energie/schema_09_photosynthese.svg"
   },
   {
@@ -3162,7 +3162,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "ينتج مباشرة أجساماً مضادة في كل الحالات."
     ],
     "correctAnswerIndex": 2,
-    "explanation": "الثيلاكويدات يرتبط هنا بـ: أكياس غشائية تحمل أصباغاً ومكونات المرحلة الضوئية.",
+    "explanation": "الثيلاكويدات أكياس غشائية مسطحة تحمل الأصباغ والأنظمة الضوئية وسلاسل نقل الإلكترونات، فهي مقر المرحلة الكيموضوئية. لا تجعلها مقر حلقة كالفن التي تتم في الستروما. في البكالوريا: غشاء = مرحلة ضوئية، سائل = مرحلة قاتمة.",
     "diagramUrl": "/assets/images/schemas/domaine2_energie/schema_09_photosynthese.svg"
   },
   {
@@ -3176,7 +3176,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "مصدر O2 المطروح في التركيب الضوئي هو CO2 مباشرة."
     ],
     "correctAnswerIndex": 0,
-    "explanation": "الغرانا يرتبط هنا بـ: تراص عدة ثيلاكويدات داخل الصانعة.",
+    "explanation": "الغرانا هي تراص عدة ثيلاكويدات فوق بعضها داخل الصانعة، وهذا التراص يضاعف السطح الغشائي المتاح لالتقاط الضوء. لا تخلط الغرانا وهي التجمع بالثيلاكويد وهو الوحدة. في البكالوريا: الغرانا = رزمة من الثيلاكويدات.",
     "diagramUrl": "/assets/images/schemas/domaine2_energie/schema_09_photosynthese.svg"
   },
   {
@@ -3190,7 +3190,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يمثل تباعد قارتين بعد اكتمال التصادم مباشرة."
     ],
     "correctAnswerIndex": 0,
-    "explanation": "الستروما يرتبط هنا بـ: سائل داخلي تتم فيه حلقة كالفن.",
+    "explanation": "الستروما سائل يملأ الصانعة خارج الثيلاكويدات، وتتم فيه حلقة كالفن لأنه يحوي إنزيماتها ومنها RuBisCO. لا تنسب إليه إنتاج ATP الضوئي الذي يتم على الغشاء. في البكالوريا: الستروما = مقر تثبيت CO2.",
     "diagramUrl": "/assets/images/schemas/domaine2_energie/schema_09_photosynthese.svg"
   },
   {
@@ -3204,7 +3204,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يصف ظاهرة مناعية نوعية فقط ولا علاقة له بهذا المحور."
     ],
     "correctAnswerIndex": 0,
-    "explanation": "اليخضور a يرتبط هنا بـ: صبغة أساسية تمتص الضوء وتطلق إلكترونات مثارة.",
+    "explanation": "اليخضور a هو الصبغة الأساسية في مركز التفاعل: يمتص الضوء فتُثار إلكتروناته وتُطرح نحو سلسلة النقل، وهو وحده القادر على ذلك. الأصباغ الأخرى مساعدة فقط. في البكالوريا: اليخضور a = مركز التفاعل.",
     "diagramUrl": "/assets/images/schemas/domaine2_energie/schema_09_photosynthese.svg"
   },
   {
@@ -3218,7 +3218,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "صبغة مساعدة توسع مجال امتصاص الضوء"
     ],
     "correctAnswerIndex": 3,
-    "explanation": "اليخضور b يرتبط هنا بـ: صبغة مساعدة توسع مجال امتصاص الضوء.",
+    "explanation": "اليخضور b صبغة مساعدة تمتص أطوالاً موجية لا يمتصها اليخضور a وتحول الطاقة إليه، فتوسع بذلك مجال الامتصاص. لا تجعله مركز تفاعل. في البكالوريا: الأصباغ المساعدة تجمع الطاقة، واليخضور a يستعملها.",
     "diagramUrl": "/assets/images/schemas/domaine2_energie/schema_09_photosynthese.svg"
   },
   {
@@ -3232,7 +3232,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يدل على زيادة غير محدودة في السرعة دون إشباع."
     ],
     "correctAnswerIndex": 0,
-    "explanation": "الكاروتينات يرتبط هنا بـ: أصباغ مساعدة وتحمي من فائض الضوء.",
+    "explanation": "الكاروتينات أصباغ مساعدة برتقالية صفراء توسع مجال الامتصاص وتحمي الجهاز الضوئي من الأكسدة عند فائض الإضاءة. لا تحصر دورها في اللون فقط. في البكالوريا: الكاروتينات = التقاط إضافي + حماية ضوئية.",
     "diagramUrl": "/assets/images/schemas/domaine2_energie/schema_09_photosynthese.svg"
   },
   {
@@ -3246,7 +3246,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يمثل مرحلة جيولوجية عميقة لا علاقة لها بالخلايا."
     ],
     "correctAnswerIndex": 0,
-    "explanation": "طيف الامتصاص يرتبط هنا بـ: يبين الأطوال الموجية التي تمتصها الصبغة.",
+    "explanation": "طيف الامتصاص منحنى يبين الأطوال الموجية التي تمتصها الصبغة، ويُحصل عليه بقياس امتصاص محلول صبغي. لا تخلطه بطيف العمل الذي يقيس نشاط التركيب الضوئي. في البكالوريا: امتصاص = خاصية الصبغة، عمل = مردود العملية.",
     "diagramUrl": "/assets/images/schemas/domaine2_energie/schema_09_photosynthese.svg"
   },
   {
@@ -3260,7 +3260,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يمثل مرحلة جيولوجية عميقة لا علاقة لها بالخلايا."
     ],
     "correctAnswerIndex": 0,
-    "explanation": "طيف العمل يرتبط هنا بـ: يبين فعالية الأطوال الموجية في التركيب الضوئي.",
+    "explanation": "طيف العمل منحنى يبين فعالية كل طول موجي في إنجاز التركيب الضوئي، ويُقاس بكمية O2 المطروح. تراكب الطيفين هو الدليل على أن اليخضور هو الملتقط للضوء. في البكالوريا: التراكب = برهان تجريبي مطلوب.",
     "diagramUrl": "/assets/images/schemas/domaine2_energie/schema_09_photosynthese.svg"
   },
   {
@@ -3274,7 +3274,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يمثل تباعد قارتين بعد اكتمال التصادم مباشرة."
     ],
     "correctAnswerIndex": 2,
-    "explanation": "الضوء الأحمر والأزرق يرتبط هنا بـ: يمتصهما اليخضور بفعالية عالية.",
+    "explanation": "الضوء الأحمر والأزرق يمتصهما اليخضور بفعالية عالية، لذلك يوافقان قمتي منحنى الامتصاص وأعلى نشاط في طيف العمل. لا تظن أن كل الأطوال الموجية متكافئة. في البكالوريا: أحمر وأزرق = ذروتا الامتصاص.",
     "diagramUrl": "/assets/images/schemas/domaine2_energie/schema_09_photosynthese.svg"
   },
   {
@@ -3288,7 +3288,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "حلقة كالفن تتم داخل جوف الثيلاكويد لا في الستروما."
     ],
     "correctAnswerIndex": 1,
-    "explanation": "الضوء الأخضر يرتبط هنا بـ: ينعكس جزئياً لذلك تبدو الأوراق خضراء.",
+    "explanation": "الضوء الأخضر ينعكس وينفذ في معظمه لأن اليخضور يمتصه بضعف، ولهذا تبدو الأوراق خضراء. اللون الظاهر هو الضوء غير الممتص لا الممتص. في البكالوريا: تحت الضوء الأخضر ينخفض التركيب الضوئي بشدة.",
     "diagramUrl": "/assets/images/schemas/domaine2_energie/schema_09_photosynthese.svg"
   },
   {
@@ -3302,7 +3302,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يمثل تباعد قارتين بعد اكتمال التصادم مباشرة."
     ],
     "correctAnswerIndex": 1,
-    "explanation": "الغشاء الداخلي للثيلاكويد يرتبط هنا بـ: مقر سلاسل نقل الإلكترونات الضوئية.",
+    "explanation": "الغشاء الداخلي للثيلاكويد يحمل الأنظمة الضوئية وسلاسل نقل الإلكترونات وATP synthase، وهذا التنظيم الغشائي شرط لتوليد تدرج البروتونات. لا تنسب النقل الإلكتروني للستروما. في البكالوريا: كل نقل إلكتروني ضوئي يجري على غشاء.",
     "diagramUrl": "/assets/images/schemas/domaine2_energie/schema_09_photosynthese.svg"
   },
   {
@@ -3316,7 +3316,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "هو بنية ثابتة لا تتأثر بالشروط الفيزيائية أبداً."
     ],
     "correctAnswerIndex": 2,
-    "explanation": "المرحلة الكيموضوئية يرتبط هنا بـ: تتم في الثيلاكويدات وتنتج ATP وNADPH وO2.",
+    "explanation": "المرحلة الكيموضوئية تتم في الثيلاكويدات وتحول الطاقة الضوئية إلى ATP وNADPH مع طرح O2 الناتج عن تفكك الماء. لا تنتج فيها مادة عضوية. في البكالوريا: المرحلة الضوئية تنتج طاقة وقوة مرجعة، لا سكريات.",
     "diagramUrl": "/assets/images/schemas/domaine2_energie/schema_09_photosynthese.svg"
   },
   {
@@ -3330,7 +3330,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يحدث دائماً داخل النواة ولا يرتبط بباقي العضيات."
     ],
     "correctAnswerIndex": 1,
-    "explanation": "التحلل الضوئي للماء يرتبط هنا بـ: يعطي O2 وإلكترونات وبروتونات.",
+    "explanation": "التحلل الضوئي للماء يفكك الماء بفعل الطاقة الضوئية فيعطي إلكترونات تعوض نقص النظام الضوئي II وبروتونات تغذي التدرج وO2 يُطرح. لا تنسب O2 إلى CO2. في البكالوريا: الماء = مانح الإلكترونات الأول.",
     "diagramUrl": "/assets/images/schemas/domaine2_energie/schema_09_photosynthese.svg"
   },
   {
@@ -3344,7 +3344,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "اليخضور لا يمتص أي طول موجي من الضوء."
     ],
     "correctAnswerIndex": 1,
-    "explanation": "النظام الضوئي II يرتبط هنا بـ: يعوض إلكتروناته من تفكك الماء.",
+    "explanation": "النظام الضوئي II يفقد إلكترونات مثارة نحو السلسلة ويعوضها من تفكك الماء، ولذلك يرتبط طرح O2 به مباشرة. لا تخلطه بالنظام I الذي يعوض من السلسلة. في البكالوريا: النظام II = بداية المسار وأصل O2.",
     "diagramUrl": "/assets/images/schemas/domaine2_energie/schema_09_photosynthese.svg"
   },
   {
@@ -3358,7 +3358,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يساهم في اختزال +NADP إلى NADPH"
     ],
     "correctAnswerIndex": 3,
-    "explanation": "النظام الضوئي I يرتبط هنا بـ: يساهم في اختزال +NADP إلى NADPH.",
+    "explanation": "النظام الضوئي I يستقبل الإلكترونات القادمة من السلسلة ويرفع طاقتها بالضوء ثم يمررها لاختزال NADP+ إلى NADPH. لا تنسب إليه تفكك الماء. في البكالوريا: النظام I = إنتاج القوة المرجعة NADPH.",
     "diagramUrl": "/assets/images/schemas/domaine2_energie/schema_09_photosynthese.svg"
   },
   {
@@ -3372,7 +3372,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يمثل تباعد قارتين بعد اكتمال التصادم مباشرة."
     ],
     "correctAnswerIndex": 0,
-    "explanation": "سلسلة الإلكترونات يرتبط هنا بـ: تنقل الإلكترونات وتساهم في ضخ البروتونات.",
+    "explanation": "سلسلة نقل الإلكترونات تمرر الإلكترونات بين نواقل متدرجة الطاقة، والطاقة المحررة تُستعمل لضخ البروتونات نحو تجويف الثيلاكويد. لا تنتج السلسلة ATP بنفسها. في البكالوريا: النقل يبني التدرج، والتدرج يبني ATP.",
     "diagramUrl": "/assets/images/schemas/domaine2_energie/schema_09_photosynthese.svg"
   },
   {
@@ -3386,7 +3386,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يحدث في كل البروتينات بالطريقة نفسها دون نوعية."
     ],
     "correctAnswerIndex": 1,
-    "explanation": "تدرج البروتونات يرتبط هنا بـ: يستعمله ATP synthase لتركيب ATP.",
+    "explanation": "تدرج البروتونات بين تجويف الثيلاكويد والستروما يمثل طاقة مخزنة، وعودة البروتونات عبر ATP synthase هي التي تركب ATP. لا تفصل التدرج عن الإنزيم. في البكالوريا: التدرج + ATP synthase = فسفرة ضوئية.",
     "diagramUrl": "/assets/images/schemas/domaine2_energie/schema_09_photosynthese.svg"
   },
   {
@@ -3400,7 +3400,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "اليخضور لا يمتص أي طول موجي من الضوء."
     ],
     "correctAnswerIndex": 0,
-    "explanation": "الفسفرة الضوئية يرتبط هنا بـ: تركيب ATP اعتماداً على الطاقة الضوئية.",
+    "explanation": "الفسفرة الضوئية هي تركيب ATP انطلاقاً من ADP وفوسفات باستعمال طاقة أصلها ضوئي منقولة عبر تدرج البروتونات. لا تخلطها بالفسفرة التأكسدية التنفسية. في البكالوريا: نفس الآلية، ومصدر الطاقة هو الفارق.",
     "diagramUrl": "/assets/images/schemas/domaine2_energie/schema_09_photosynthese.svg"
   },
   {
@@ -3414,7 +3414,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "حلقة كالفن تتم داخل جوف الثيلاكويد لا في الستروما."
     ],
     "correctAnswerIndex": 1,
-    "explanation": "NADPH يرتبط هنا بـ: ناقل إلكترونات مختزل يستعمل في حلقة كالفن.",
+    "explanation": "NADPH ناقل إلكترونات مختزل يُنتج في المرحلة الضوئية ويُستهلك في حلقة كالفن لاختزال APG. لا تخلطه بـNADH التنفسي. في البكالوريا: NADPH = قوة مرجعة للبناء، NADH = قوة مرجعة للهدم.",
     "diagramUrl": "/assets/images/schemas/domaine2_energie/schema_09_photosynthese.svg"
   },
   {
@@ -3428,7 +3428,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يحدث دائماً داخل النواة ولا يرتبط بباقي العضيات."
     ],
     "correctAnswerIndex": 1,
-    "explanation": "O2 المطروح يرتبط هنا بـ: مصدره الماء لا CO2.",
+    "explanation": "O2 المطروح مصدره الماء لا CO2، وقد أُثبت ذلك بتجربة الماء الموسوم بالأكسجين 18. هذا خطأ شائع يُعاقب عليه. في البكالوريا: استعمل التوسيم كحجة تجريبية لا كمجرد معلومة محفوظة.",
     "diagramUrl": "/assets/images/schemas/domaine2_energie/schema_09_photosynthese.svg"
   },
   {
@@ -3442,7 +3442,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "ضروري لإثارة إلكترونات الأصباغ"
     ],
     "correctAnswerIndex": 3,
-    "explanation": "الضوء يرتبط هنا بـ: ضروري لإثارة إلكترونات الأصباغ.",
+    "explanation": "الضوء ضروري لإثارة إلكترونات الأصباغ ورفع طاقتها، وبدونه تتوقف المرحلة الكيموضوئية ثم تتوقف حلقة كالفن لنفاد ATP وNADPH. في البكالوريا: انقطاع الضوء يوقف المرحلتين معاً ولو بشكل غير مباشر.",
     "diagramUrl": "/assets/images/schemas/domaine2_energie/schema_09_photosynthese.svg"
   },
   {
@@ -3456,7 +3456,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "مقر إنتاج الطاقة الكيميائية المؤقتة"
     ],
     "correctAnswerIndex": 3,
-    "explanation": "الثيلاكويد يرتبط هنا بـ: مقر إنتاج الطاقة الكيميائية المؤقتة.",
+    "explanation": "الثيلاكويد مقر إنتاج الطاقة الكيميائية المؤقتة ATP وNADPH التي تُستهلك فوراً في الستروما. سمي مؤقتاً لأنه لا يُخزن كمادة عضوية. في البكالوريا: الطاقة المؤقتة تُحول إلى طاقة دائمة في السكريات.",
     "diagramUrl": "/assets/images/schemas/domaine2_energie/schema_09_photosynthese.svg"
   },
   {
@@ -3470,7 +3470,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يدل على وسط صلب دائماً مهما كانت المعطيات الزلزالية."
     ],
     "correctAnswerIndex": 2,
-    "explanation": "حلقة كالفن يرتبط هنا بـ: تثبت CO2 في الستروما باستعمال ATP وNADPH.",
+    "explanation": "حلقة كالفن تثبت CO2 في الستروما وتختزله باستعمال ATP وNADPH القادمين من المرحلة الضوئية لإنتاج مركبات ثلاثية الكربون. لا تسمها مرحلة مظلمة مطلقة. في البكالوريا: قاتمة لا تعني مستقلة عن الضوء.",
     "diagramUrl": "/assets/images/schemas/domaine2_energie/schema_09_photosynthese.svg"
   },
   {
@@ -3484,7 +3484,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "مصدر O2 المطروح في التركيب الضوئي هو CO2 مباشرة."
     ],
     "correctAnswerIndex": 2,
-    "explanation": "RuBisCO يرتبط هنا بـ: إنزيم يثبت CO2 على RuBP.",
+    "explanation": "RuBisCO إنزيم الستروما الذي يثبت CO2 على RuBP، وهو الخطوة المحدِّدة لسرعة الحلقة وأكثر البروتينات وفرة في الأرض. لا تجعله ناقلاً للإلكترونات. في البكالوريا: RuBisCO = تثبيت CO2 لا غير.",
     "diagramUrl": "/assets/images/schemas/domaine2_energie/schema_09_photosynthese.svg"
   },
   {
@@ -3498,7 +3498,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "اليخضور لا يمتص أي طول موجي من الضوء."
     ],
     "correctAnswerIndex": 2,
-    "explanation": "RuBP يرتبط هنا بـ: مركب خماسي الكربون يستقبل CO2.",
+    "explanation": "RuBP مركب خماسي الكربون يستقبل CO2 فيعطي مركباً سداسياً غير ثابت ينشطر فوراً إلى جزيئتي APG. لا تعتبره ناتجاً نهائياً. في البكالوريا: RuBP مستقبل يُستهلك ثم يُجدَّد باستمرار.",
     "diagramUrl": "/assets/images/schemas/domaine2_energie/schema_09_photosynthese.svg"
   },
   {
@@ -3512,7 +3512,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يدل على وسط صلب دائماً مهما كانت المعطيات الزلزالية."
     ],
     "correctAnswerIndex": 0,
-    "explanation": "APG يرتبط هنا بـ: أول مركب ثلاثي الكربون بعد تثبيت CO2.",
+    "explanation": "APG أول مركب ثابت ثلاثي الكربون يظهر بعد تثبيت CO2، وقد كشفه كالفن بالتوسيم الإشعاعي بالكربون 14. لا تخلطه بـG3P المختزل. في البكالوريا: APG قبل الاختزال، G3P بعده.",
     "diagramUrl": "/assets/images/schemas/domaine2_energie/schema_09_photosynthese.svg"
   },
   {
@@ -3526,7 +3526,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "ناتج مختزل يمكن أن يساهم في تركيب السكريات"
     ],
     "correctAnswerIndex": 3,
-    "explanation": "G3P يرتبط هنا بـ: ناتج مختزل يمكن أن يساهم في تركيب السكريات.",
+    "explanation": "G3P ناتج اختزال APG بواسطة NADPH وATP، وجزء منه يخرج لتركيب السكريات وجزء يبقى لتجديد RuBP. لا تعتبر كل G3P مربحاً. في البكالوريا: خمسة من ستة تعود لتجديد المستقبل.",
     "diagramUrl": "/assets/images/schemas/domaine2_energie/schema_09_photosynthese.svg"
   },
   {
@@ -3540,7 +3540,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يحدث دائماً داخل النواة ولا يرتبط بباقي العضيات."
     ],
     "correctAnswerIndex": 1,
-    "explanation": "تجديد RuBP يرتبط هنا بـ: مرحلة تستهلك ATP لاستمرار الحلقة.",
+    "explanation": "تجديد RuBP مرحلة تستهلك ATP لإعادة بناء المستقبل الخماسي، وبدونها تتوقف الحلقة رغم توفر CO2. لا تهمل هذه المرحلة في الحصيلة. في البكالوريا: حلقة مغلقة تعني وجوب تجديد المستقبل.",
     "diagramUrl": "/assets/images/schemas/domaine2_energie/schema_09_photosynthese.svg"
   },
   {
@@ -3554,7 +3554,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "لا تحتاج الضوء مباشرة لكنها تعتمد على نواتج المرحلة الضوئية"
     ],
     "correctAnswerIndex": 3,
-    "explanation": "المرحلة اللاضوئية يرتبط هنا بـ: لا تحتاج الضوء مباشرة لكنها تعتمد على نواتج المرحلة الضوئية.",
+    "explanation": "المرحلة اللاضوئية لا تحتاج الضوء مباشرة لكنها تتوقف بسرعة في الظلام لأنها تستهلك ATP وNADPH المنتجين ضوئياً. لا تسمها مستقلة عن الضوء. في البكالوريا: تبعية غير مباشرة لكنها كاملة.",
     "diagramUrl": "/assets/images/schemas/domaine2_energie/schema_09_photosynthese.svg"
   },
   {
@@ -3568,7 +3568,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يحدث في كل البروتينات بالطريقة نفسها دون نوعية."
     ],
     "correctAnswerIndex": 0,
-    "explanation": "CO2 يرتبط هنا بـ: مصدر الكربون في المادة العضوية المصنعة.",
+    "explanation": "CO2 هو مصدر الكربون الوحيد في المادة العضوية المصنعة، ويدخل عبر الثغور ليُثبت على RuBP. لا تنسب إليه طرح O2. في البكالوريا: CO2 يعطي الكربون، والماء يعطي الأكسجين المطروح.",
     "diagramUrl": "/assets/images/schemas/domaine2_energie/schema_09_photosynthese.svg"
   },
   {
@@ -3582,7 +3582,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يمثل تباعد قارتين بعد اكتمال التصادم مباشرة."
     ],
     "correctAnswerIndex": 2,
-    "explanation": "ATP وNADPH يرتبط هنا بـ: يستعملان للاختزال والبناء في حلقة كالفن.",
+    "explanation": "ATP وNADPH هما حلقة الوصل بين المرحلتين: الأول يوفر الطاقة والثاني يوفر القوة المرجعة لاختزال APG في الستروما. لا تفصل بين المرحلتين. في البكالوريا: اربطهما دائماً بجملة تحويل صريحة.",
     "diagramUrl": "/assets/images/schemas/domaine2_energie/schema_09_photosynthese.svg"
   },
   {
@@ -3596,7 +3596,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "المقر السائل لحلقة كالفن"
     ],
     "correctAnswerIndex": 3,
-    "explanation": "الستروما يرتبط هنا بـ: المقر السائل لحلقة كالفن.",
+    "explanation": "الستروما هي المقر السائل لحلقة كالفن لأنها تحتوي إنزيمات التثبيت والاختزال، وتستقبل ATP وNADPH من الغشاء المجاور. لا تجعلها مقر الأنظمة الضوئية. في البكالوريا: حدد المقر قبل وصف أي تفاعل.",
     "diagramUrl": "/assets/images/schemas/domaine2_energie/schema_09_photosynthese.svg"
   },
   {
@@ -3610,7 +3610,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يدل على وسط صلب دائماً مهما كانت المعطيات الزلزالية."
     ],
     "correctAnswerIndex": 1,
-    "explanation": "نقص CO2 يرتبط هنا بـ: يحد من سرعة تركيب المادة العضوية.",
+    "explanation": "نقص CO2 يحد من سرعة تثبيت الكربون فتتراكم ATP وNADPH دون استعمال وينخفض إنتاج المادة العضوية. لا تفسره بنقص الضوء. في البكالوريا: عند قراءة المنحنى حدد أي عامل بلغ حده الأدنى.",
     "diagramUrl": "/assets/images/schemas/domaine2_energie/schema_09_photosynthese.svg"
   },
   {
@@ -3624,7 +3624,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "6CO2 و6H2O يعطيان مادة عضوية وO2 بوجود الضوء"
     ],
     "correctAnswerIndex": 3,
-    "explanation": "المعادلة الإجمالية يرتبط هنا بـ: 6CO2 و6H2O يعطيان مادة عضوية وO2 بوجود الضوء.",
+    "explanation": "المعادلة الإجمالية تبين أن ستة CO2 وستة H2O بوجود الضوء واليخضور تعطي سكراً سداسياً وستة O2. لا تنس شرطي الضوء واليخضور. في البكالوريا: معادلة بدون شروط تُنقص العلامة.",
     "diagramUrl": "/assets/images/schemas/domaine2_energie/schema_09_photosynthese.svg"
   },
   {
@@ -3638,7 +3638,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "اليخضور لا يمتص أي طول موجي من الضوء."
     ],
     "correctAnswerIndex": 0,
-    "explanation": "الحصيلة الطاقوية يرتبط هنا بـ: تحويل طاقة ضوئية إلى طاقة كيميائية في المادة العضوية.",
+    "explanation": "الحصيلة الطاقوية للتركيب الضوئي هي تحويل طاقة ضوئية إلى طاقة كيميائية كامنة في روابط المادة العضوية. لا تخلطها بحصيلة التنفس التي تحرر هذه الطاقة. في البكالوريا: بناء يخزن، وهدم يحرر.",
     "diagramUrl": "/assets/images/schemas/domaine2_energie/schema_09_photosynthese.svg"
   },
   {
@@ -3652,7 +3652,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يدل على زيادة غير محدودة في السرعة دون إشباع."
     ],
     "correctAnswerIndex": 2,
-    "explanation": "شدة الإضاءة يرتبط هنا بـ: ترفع التركيب الضوئي حتى حد الإشباع الضوئي.",
+    "explanation": "شدة الإضاءة ترفع سرعة التركيب الضوئي حتى بلوغ الإشباع الضوئي، ثم يستقر المنحنى لأن عاملاً آخر يصبح محدداً. لا تتوقع ارتفاعاً لا نهائياً. في البكالوريا: الاستقرار يعني تدخل عامل محدد جديد.",
     "diagramUrl": "/assets/images/schemas/domaine2_energie/schema_09_photosynthese.svg"
   },
   {
@@ -3666,7 +3666,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "عامل محدد إذا كان منخفضاً"
     ],
     "correctAnswerIndex": 3,
-    "explanation": "تركيز CO2 يرتبط هنا بـ: عامل محدد إذا كان منخفضاً.",
+    "explanation": "تركيز CO2 يصبح عاملاً محدداً عندما ينخفض، فيثبت المنحنى رغم زيادة الإضاءة. لا تفسر كل استقرار بنقص الضوء. في البكالوريا: قارن المنحنيات عند تراكيز CO2 مختلفة لتحديد العامل المحدد.",
     "diagramUrl": "/assets/images/schemas/domaine2_energie/schema_09_photosynthese.svg"
   },
   {
@@ -3680,7 +3680,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "اليخضور لا يمتص أي طول موجي من الضوء."
     ],
     "correctAnswerIndex": 1,
-    "explanation": "درجة الحرارة يرتبط هنا بـ: تؤثر خاصة في التفاعلات الإنزيمية لحلقة كالفن.",
+    "explanation": "درجة الحرارة تؤثر خاصة في تفاعلات حلقة كالفن لأنها إنزيمية، بينما المرحلة الضوئية فيزيائية وأقل حساسية. لا تعمم التأثير على المرحلتين. في البكالوريا: حرارة مرتفعة جداً تمسخ RuBisCO فينهار الإنتاج.",
     "diagramUrl": "/assets/images/schemas/domaine2_energie/schema_09_photosynthese.svg"
   },
   {
@@ -3694,7 +3694,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "شدة إضاءة يتساوى عندها التركيب الضوئي والتنفس"
     ],
     "correctAnswerIndex": 3,
-    "explanation": "نقطة التعويض الضوئي يرتبط هنا بـ: شدة إضاءة يتساوى عندها التركيب الضوئي والتنفس.",
+    "explanation": "نقطة التعويض الضوئي هي شدة الإضاءة التي يتساوى عندها التركيب الضوئي والتنفس، فتكون الحصيلة الظاهرية لتبادل الغازات معدومة. لا تعني توقف العمليتين. في البكالوريا: تبادل صفري لا يعني نشاطاً صفرياً.",
     "diagramUrl": "/assets/images/schemas/domaine2_energie/schema_09_photosynthese.svg"
   },
   {
@@ -3708,7 +3708,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يتم فقط في غياب الماء والأيونات."
     ],
     "correctAnswerIndex": 0,
-    "explanation": "العامل المحدد يرتبط هنا بـ: العامل الأقل ملاءمة الذي يضبط سرعة العملية.",
+    "explanation": "العامل المحدد هو العامل الأقل ملاءمة الذي يضبط وحده سرعة العملية، فتحسين غيره لا يرفع المردود. لا تقترح زيادة كل العوامل معاً. في البكالوريا: حدد العامل المحدد من ثبات المنحنى.",
     "diagramUrl": "/assets/images/schemas/domaine2_energie/schema_09_photosynthese.svg"
   },
   {
@@ -3722,7 +3722,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "اليخضور لا يمتص أي طول موجي من الضوء."
     ],
     "correctAnswerIndex": 2,
-    "explanation": "إغلاق الثغور يرتبط هنا بـ: يقلل دخول CO2 ويخفض التركيب الضوئي.",
+    "explanation": "إغلاق الثغور في الحر الشديد يقلل الضياع المائي لكنه يمنع دخول CO2 فينخفض التركيب الضوئي. لا تفسر الانخفاض بنقص الضوء. في البكالوريا: اربط الثغور دائماً بتوازن الماء وCO2.",
     "diagramUrl": "/assets/images/schemas/domaine2_energie/schema_09_photosynthese.svg"
   },
   {
@@ -3736,7 +3736,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يدل على وسط صلب دائماً مهما كانت المعطيات الزلزالية."
     ],
     "correctAnswerIndex": 2,
-    "explanation": "الماء يرتبط هنا بـ: مصدر إلكترونات وبروتونات في المرحلة الضوئية.",
+    "explanation": "الماء مانح الإلكترونات والبروتونات في المرحلة الضوئية ومصدر O2 المطروح، إضافة لدوره كوسط للتفاعلات. لا تحصر دوره في النقل الخام. في البكالوريا: نقص الماء يغلق الثغور ويوقف التحلل الضوئي معاً.",
     "diagramUrl": "/assets/images/schemas/domaine2_energie/schema_09_photosynthese.svg"
   },
   {
@@ -3750,7 +3750,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "نقصه يخفض قدرة امتصاص الضوء"
     ],
     "correctAnswerIndex": 3,
-    "explanation": "اليخضور يرتبط هنا بـ: نقصه يخفض قدرة امتصاص الضوء.",
+    "explanation": "نقص اليخضور يخفض كمية الضوء الممتص فينخفض إنتاج ATP وNADPH ثم يتراجع تثبيت CO2. لا تفسر الاصفرار بنقص CO2. في البكالوريا: اربط النقص المعدني بالاصفرار ثم بانخفاض المردود.",
     "diagramUrl": "/assets/images/schemas/domaine2_energie/schema_09_photosynthese.svg"
   },
   {
@@ -3764,7 +3764,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يصف ظاهرة مناعية نوعية فقط ولا علاقة له بهذا المحور."
     ],
     "correctAnswerIndex": 0,
-    "explanation": "التنفس الليلي يرتبط هنا بـ: يستمر في النبات في غياب الضوء.",
+    "explanation": "التنفس الليلي يستمر في النبات في غياب الضوء لأن الخلايا تحتاج ATP باستمرار، ولذلك يطرح النبات ليلاً CO2 ويمتص O2. لا تظنه توقفاً تاماً. في البكالوريا: النبات يتنفس نهاراً وليلاً معاً.",
     "diagramUrl": "/assets/images/schemas/domaine2_energie/schema_09_photosynthese.svg"
   },
   {
@@ -3778,7 +3778,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يحدث في كل البروتينات بالطريقة نفسها دون نوعية."
     ],
     "correctAnswerIndex": 1,
-    "explanation": "الميتوكندري يرتبط هنا بـ: عضية التنفس الخلوي الهوائي وإنتاج ATP.",
+    "explanation": "الميتوكندري عضية ذات غشائين ومصفوفة، وفيها تُستكمل أكسدة المادة العضوية وينتج معظم ATP الخلوي. لا تخلطها بالصانعة التي تخزن الطاقة بدل تحريرها. في البكالوريا: بنيتها المضاعفة تفسر توزع مراحل التنفس.",
     "diagramUrl": "/assets/images/schemas/domaine2_energie/schema_10_respiration.svg"
   },
   {
@@ -3792,7 +3792,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يحمل السلسلة التنفسية وATP synthase"
     ],
     "correctAnswerIndex": 3,
-    "explanation": "الغشاء الداخلي يرتبط هنا بـ: يحمل السلسلة التنفسية وATP synthase.",
+    "explanation": "الغشاء الداخلي يحمل نواقل السلسلة التنفسية وATP synthase، وهو غير نفوذ للبروتونات، وهذا الشرطان معاً يسمحان ببناء التدرج واستثماره. لا تنسب له حلقة كريبس. في البكالوريا: غشاء = سلسلة وفسفرة.",
     "diagramUrl": "/assets/images/schemas/domaine2_energie/schema_10_respiration.svg"
   },
   {
@@ -3806,7 +3806,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "طيات تزيد مساحة الغشاء الداخلي"
     ],
     "correctAnswerIndex": 3,
-    "explanation": "الأعراف يرتبط هنا بـ: طيات تزيد مساحة الغشاء الداخلي.",
+    "explanation": "الأعراف طيات في الغشاء الداخلي تضاعف مساحته، فترتفع كمية النواقل وATP synthase وبالتالي مردود الخلية من ATP. لا تعتبرها مجرد شكل. في البكالوريا: كثرة الأعراف تدل على نشاط طاقوي مرتفع.",
     "diagramUrl": "/assets/images/schemas/domaine2_energie/schema_10_respiration.svg"
   },
   {
@@ -3820,7 +3820,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "مقر أكسدة البيروفات وحلقة كريبس"
     ],
     "correctAnswerIndex": 3,
-    "explanation": "المصفوفة يرتبط هنا بـ: مقر أكسدة البيروفات وحلقة كريبس.",
+    "explanation": "المصفوفة هي الوسط الداخلي للميتوكندري وتحتوي إنزيمات أكسدة البيروفات وحلقة كريبس. لا تخلطها بالغشاء الداخلي مقر السلسلة التنفسية. في البكالوريا: كريبس في السائل، والسلسلة على الغشاء.",
     "diagramUrl": "/assets/images/schemas/domaine2_energie/schema_10_respiration.svg"
   },
   {
@@ -3834,7 +3834,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يمثل مرحلة جيولوجية عميقة لا علاقة لها بالخلايا."
     ],
     "correctAnswerIndex": 0,
-    "explanation": "الغشاء الخارجي يرتبط هنا بـ: يفصل الميتوكندري عن الهيولى.",
+    "explanation": "الغشاء الخارجي يفصل الميتوكندري عن الهيولى وهو نفوذ نسبياً لصغار الجزيئات، فلا يشارك في بناء تدرج البروتونات. لا تخلطه بالداخلي. في البكالوريا: الغشاء الخارجي حاجز، والداخلي هو المقر الوظيفي.",
     "diagramUrl": "/assets/images/schemas/domaine2_energie/schema_10_respiration.svg"
   },
   {
@@ -3848,7 +3848,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يصف ظاهرة مناعية نوعية فقط ولا علاقة له بهذا المحور."
     ],
     "correctAnswerIndex": 0,
-    "explanation": "الحشوة الميتوكندرية يرتبط هنا بـ: تحتوي إنزيمات ودنا ميتوكندري.",
+    "explanation": "الحشوة الميتوكندرية تحتوي إنزيمات كريبس ودنا ميتوكندري خاص وريبوزومات، ما يمنح العضية استقلالية جزئية في التركيب. لا تنس هذا الدنا. في البكالوريا: الدنا الميتوكندري حجة على أصل العضية الداخلي التكافلي.",
     "diagramUrl": "/assets/images/schemas/domaine2_energie/schema_10_respiration.svg"
   },
   {
@@ -3862,7 +3862,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يسمح باستمرار السلسلة التنفسية"
     ],
     "correctAnswerIndex": 3,
-    "explanation": "وجود O2 يرتبط هنا بـ: يسمح باستمرار السلسلة التنفسية.",
+    "explanation": "وجود O2 يسمح باستمرار السلسلة التنفسية لأنه المستقبل النهائي للإلكترونات، وبدونه تتشبع النواقل وتتوقف. لا تربطه مباشرة بالتحلل السكري. في البكالوريا: O2 يتدخل في آخر المسار لا في أوله.",
     "diagramUrl": "/assets/images/schemas/domaine2_energie/schema_10_respiration.svg"
   },
   {
@@ -3876,7 +3876,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يحدث دائماً داخل النواة ولا يرتبط بباقي العضيات."
     ],
     "correctAnswerIndex": 2,
-    "explanation": "ATP الميتوكندري يرتبط هنا بـ: ينتج بكثرة في الفسفرة التأكسدية.",
+    "explanation": "ATP الميتوكندري ينتج بكثرة عبر الفسفرة التأكسدية المرتبطة بتدرج البروتونات، بخلاف الكمية الضئيلة المنتجة بالفسفرة على مستوى الركيزة. لا تسو بينهما. في البكالوريا: أغلب ATP يأتي من ATP synthase.",
     "diagramUrl": "/assets/images/schemas/domaine2_energie/schema_10_respiration.svg"
   },
   {
@@ -3890,7 +3890,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يدل على وسط صلب دائماً مهما كانت المعطيات الزلزالية."
     ],
     "correctAnswerIndex": 1,
-    "explanation": "تدرج H+ يرتبط هنا بـ: يتشكل عبر الغشاء الداخلي.",
+    "explanation": "تدرج H+ يتشكل عبر الغشاء الداخلي بفعل ضخ البروتونات من المصفوفة نحو الفراغ بين الغشائين أثناء نقل الإلكترونات. لا تجعله سبب النقل. في البكالوريا: النقل ينشئ التدرج، والتدرج يركب ATP.",
     "diagramUrl": "/assets/images/schemas/domaine2_energie/schema_10_respiration.svg"
   },
   {
@@ -3904,7 +3904,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "التحلل السكري يتم داخل المصفوفة الميتوكندرية فقط."
     ],
     "correctAnswerIndex": 2,
-    "explanation": "التحلل السكري يرتبط هنا بـ: تفكيك الغلوكوز إلى بيروفات في الهيولى.",
+    "explanation": "التحلل السكري تفكيك الغلوكوز إلى جزيئتي بيروفات في الهيولى دون تدخل O2، مع إنتاج ATP وNADH. لا تنسبه للميتوكندري. في البكالوريا: أول مرحلة دائماً هيولية ولاهوائية.",
     "diagramUrl": "/assets/images/schemas/domaine2_energie/schema_10_respiration.svg"
   },
   {
@@ -3918,7 +3918,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "ينتج مباشرة أجساماً مضادة في كل الحالات."
     ],
     "correctAnswerIndex": 1,
-    "explanation": "المقر يرتبط هنا بـ: الهيولى وليس الميتوكندري.",
+    "explanation": "مقر التحلل السكري هو الهيولى وليس الميتوكندري، وهذا ما يفسر حدوثه حتى في الخلايا عديمة الميتوكندري. لا تخلط المقرات. في البكالوريا: حدد المقر قبل وصف أي تفاعل استقلابي.",
     "diagramUrl": "/assets/images/schemas/domaine2_energie/schema_10_respiration.svg"
   },
   {
@@ -3932,7 +3932,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "لا يستهلك مباشرة في التحلل السكري"
     ],
     "correctAnswerIndex": 3,
-    "explanation": "الأكسجين يرتبط هنا بـ: لا يستهلك مباشرة في التحلل السكري.",
+    "explanation": "الأكسجين لا يُستهلك مباشرة في التحلل السكري لأنه مسار لاهوائي، لكنه يحدد مصير البيروفات لاحقاً. لا تعتبر غيابه موقفاً للتحلل السكري. في البكالوريا: التحلل السكري يجري في الحالتين.",
     "diagramUrl": "/assets/images/schemas/domaine2_energie/schema_10_respiration.svg"
   },
   {
@@ -3946,7 +3946,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يحدث دائماً داخل النواة ولا يرتبط بباقي العضيات."
     ],
     "correctAnswerIndex": 1,
-    "explanation": "الحصيلة الصافية يرتبط هنا بـ: 2 ATP و2 NADH لكل غلوكوز تقريباً.",
+    "explanation": "الحصيلة الصافية للتحلل السكري جزيئتا ATP وجزيئتا NADH لكل غلوكوز، بعد طرح ATP المستهلك في المرحلة الاستثمارية. لا تنس الطرح. في البكالوريا: أربعة منتجة ناقص اثنتين مستهلكتين.",
     "diagramUrl": "/assets/images/schemas/domaine2_energie/schema_10_respiration.svg"
   },
   {
@@ -3960,7 +3960,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "O2 هو ناتج نهائي للتخمر الكحولي."
     ],
     "correctAnswerIndex": 2,
-    "explanation": "البيروفات يرتبط هنا بـ: الناتج النهائي للتحلل السكري.",
+    "explanation": "البيروفات الناتج النهائي للتحلل السكري، ومصيره يتوقف على توفر O2: أكسدة كاملة في الميتوكندري أو تخمر في الهيولى. لا تجعله ناتجاً نهائياً مطلقاً. في البكالوريا: البيروفات مفترق الطرق الاستقلابي.",
     "diagramUrl": "/assets/images/schemas/domaine2_energie/schema_10_respiration.svg"
   },
   {
@@ -3974,7 +3974,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يدل على وسط صلب دائماً مهما كانت المعطيات الزلزالية."
     ],
     "correctAnswerIndex": 0,
-    "explanation": "NAD+ يرتبط هنا بـ: يختزل إلى NADH أثناء التحلل السكري.",
+    "explanation": "NAD+ يُختزل إلى NADH أثناء التحلل السكري بالتقاط إلكترونات وبروتونات، ويجب تجديده لاستمرار المسار. لا تخلطه بـNADP+ الخاص بالبناء الضوئي. في البكالوريا: نفاد NAD+ يوقف التحلل السكري فوراً.",
     "diagramUrl": "/assets/images/schemas/domaine2_energie/schema_10_respiration.svg"
   },
   {
@@ -3988,7 +3988,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يحدث في كل البروتينات بالطريقة نفسها دون نوعية."
     ],
     "correctAnswerIndex": 2,
-    "explanation": "المرحلة الاستثمارية يرتبط هنا بـ: تستهلك ATP في بداية المسار.",
+    "explanation": "المرحلة الاستثمارية تستهلك جزيئتي ATP لفسفرة الغلوكوز وزعزعة استقراره قبل شطره. لا تعتبرها خسارة بل تنشيطاً. في البكالوريا: الاستثمار أولاً ثم المردود، وهذا يفسر الحصيلة الصافية.",
     "diagramUrl": "/assets/images/schemas/domaine2_energie/schema_10_respiration.svg"
   },
   {
@@ -4002,7 +4002,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "تنتج ATP وNADH"
     ],
     "correctAnswerIndex": 3,
-    "explanation": "المرحلة المردودية يرتبط هنا بـ: تنتج ATP وNADH.",
+    "explanation": "المرحلة المردودية تنتج أربع جزيئات ATP وجزيئتي NADH انطلاقاً من المركبات الثلاثية الكربون. لا تخلطها بالمرحلة الاستثمارية. في البكالوريا: اربط كل مرحلة بعدد الجزيئات المنتجة أو المستهلكة.",
     "diagramUrl": "/assets/images/schemas/domaine2_energie/schema_10_respiration.svg"
   },
   {
@@ -4016,7 +4016,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يمثل مرحلة جيولوجية عميقة لا علاقة لها بالخلايا."
     ],
     "correctAnswerIndex": 0,
-    "explanation": "غياب O2 يرتبط هنا بـ: يوجه البيروفات نحو التخمر لتجديد NAD+.",
+    "explanation": "غياب O2 يوجه البيروفات نحو التخمر، لا لإنتاج طاقة إضافية بل لتجديد NAD+ الضروري لاستمرار التحلل السكري. لا تعتبر التخمر منتجاً للطاقة مباشرة. في البكالوريا: هدف التخمر هو تجديد المرافق.",
     "diagramUrl": "/assets/images/schemas/domaine2_energie/schema_10_respiration.svg"
   },
   {
@@ -4030,7 +4030,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "التحلل السكري يتم داخل المصفوفة الميتوكندرية فقط."
     ],
     "correctAnswerIndex": 2,
-    "explanation": "حلقة كريبس يرتبط هنا بـ: أكسدة Acétyl-CoA في المصفوفة مع تحرير CO2.",
+    "explanation": "حلقة كريبس تؤكسد Acétyl-CoA في المصفوفة فتحرر CO2 وتشحن النواقل NADH وFADH2 مع القليل من ATP. لا تنتظر منها ATP كثيراً. في البكالوريا: كريبس يشحن النواقل، والسلسلة تصرفها.",
     "diagramUrl": "/assets/images/schemas/domaine2_energie/schema_10_respiration.svg"
   },
   {
@@ -4044,7 +4044,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يعني توقف كل التحولات الطاقوية في الخلية."
     ],
     "correctAnswerIndex": 1,
-    "explanation": "Acétyl-CoA يرتبط هنا بـ: مدخل حلقة كريبس بعد أكسدة البيروفات.",
+    "explanation": "Acétyl-CoA مركب ثنائي الكربون ينتج عن أكسدة نازعة للكربوكسيل من البيروفات، وهو المدخل الفعلي لحلقة كريبس. لا تخلطه بالبيروفات. في البكالوريا: بين البيروفات وكريبس مرحلة انتقالية إجبارية.",
     "diagramUrl": "/assets/images/schemas/domaine2_energie/schema_10_respiration.svg"
   },
   {
@@ -4058,7 +4058,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "O2 هو ناتج نهائي للتخمر الكحولي."
     ],
     "correctAnswerIndex": 1,
-    "explanation": "CO2 يرتبط هنا بـ: ينتج خلال أكسدة المركبات الكربونية في كريبس.",
+    "explanation": "CO2 ينتج عن نزع الكربوكسيل خلال أكسدة البيروفات وحلقة كريبس، وهو دليل على الأكسدة الكاملة للمادة العضوية. لا تنسبه للسلسلة التنفسية. في البكالوريا: كل CO2 تنفسي مصدره المصفوفة.",
     "diagramUrl": "/assets/images/schemas/domaine2_energie/schema_10_respiration.svg"
   },
   {
@@ -4072,7 +4072,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يمثل تباعد قارتين بعد اكتمال التصادم مباشرة."
     ],
     "correctAnswerIndex": 0,
-    "explanation": "NADH وFADH2 يرتبط هنا بـ: نواقل مختزلة تحمل إلكترونات للسلسلة التنفسية.",
+    "explanation": "NADH وFADH2 نواقل مختزلة تحمل الإلكترونات من كريبس إلى السلسلة التنفسية، فهي شكل مؤقت لنقل الطاقة. لا تعتبرها مخزناً نهائياً. في البكالوريا: النواقل تنقل الطاقة، وATP يصرفها.",
     "diagramUrl": "/assets/images/schemas/domaine2_energie/schema_10_respiration.svg"
   },
   {
@@ -4086,7 +4086,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يحدث في كل البروتينات بالطريقة نفسها دون نوعية."
     ],
     "correctAnswerIndex": 0,
-    "explanation": "المصفوفة يرتبط هنا بـ: مقر حلقة كريبس.",
+    "explanation": "المصفوفة مقر حلقة كريبس لأنها تحوي إنزيماتها الذوابة، وتجاورها المباشر للغشاء الداخلي يسهل تسليم النواقل المختزلة. لا تنسب لها الفسفرة. في البكالوريا: القرب المكاني يفسر كفاءة الترابط بين المرحلتين.",
     "diagramUrl": "/assets/images/schemas/domaine2_energie/schema_10_respiration.svg"
   },
   {
@@ -4100,7 +4100,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يحدث دائماً داخل النواة ولا يرتبط بباقي العضيات."
     ],
     "correctAnswerIndex": 2,
-    "explanation": "الأوكسالوأسيتات يرتبط هنا بـ: يتحد مع Acétyl-CoA في بداية الحلقة.",
+    "explanation": "الأوكسالوأسيتات مركب رباعي الكربون يتحد مع Acétyl-CoA في بداية الحلقة ويُجدَّد في نهايتها، ولهذا سميت حلقة. لا تعتبره ناتجاً مستهلكاً. في البكالوريا: تجدد المستقبل شرط استمرار أي حلقة استقلابية.",
     "diagramUrl": "/assets/images/schemas/domaine2_energie/schema_10_respiration.svg"
   },
   {
@@ -4114,7 +4114,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يمثل مرحلة جيولوجية عميقة لا علاقة لها بالخلايا."
     ],
     "correctAnswerIndex": 1,
-    "explanation": "ATP/GTP يرتبط هنا بـ: ينتج مقدار قليل مباشرة في الحلقة.",
+    "explanation": "ATP أو GTP ينتج بكمية قليلة مباشرة داخل الحلقة بالفسفرة على مستوى الركيزة، وهو جزء ضئيل من الحصيلة الكلية. لا تبالغ في قيمته. في البكالوريا: الفارق الكبير يصنعه تدرج البروتونات.",
     "diagramUrl": "/assets/images/schemas/domaine2_energie/schema_10_respiration.svg"
   },
   {
@@ -4128,7 +4128,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "تتجدد في نهايتها ولا تستهلك نهائياً"
     ],
     "correctAnswerIndex": 3,
-    "explanation": "الحلقة يرتبط هنا بـ: تتجدد في نهايتها ولا تستهلك نهائياً.",
+    "explanation": "الحلقة تتجدد في نهايتها باسترجاع الأوكسالوأسيتات فلا تُستهلك نهائياً، ما يسمح بدورات متتالية ما دام Acétyl-CoA متوفراً. في البكالوريا: صف الحلقة بمدخلها ومخرجها وتجدد مستقبلها.",
     "diagramUrl": "/assets/images/schemas/domaine2_energie/schema_10_respiration.svg"
   },
   {
@@ -4142,7 +4142,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "تربط التحلل السكري بحلقة كريبس"
     ],
     "correctAnswerIndex": 3,
-    "explanation": "أكسدة البيروفات يرتبط هنا بـ: تربط التحلل السكري بحلقة كريبس.",
+    "explanation": "أكسدة البيروفات مرحلة انتقالية في المصفوفة تربط التحلل السكري الهيولي بحلقة كريبس، وتحرر CO2 وتنتج NADH. لا تهملها في المخطط الحصيلي. في البكالوريا: ثلاث مراحل قبل السلسلة لا مرحلتان.",
     "diagramUrl": "/assets/images/schemas/domaine2_energie/schema_10_respiration.svg"
   },
   {
@@ -4156,7 +4156,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "نواقل إلكترونات في الغشاء الداخلي للميتوكندري"
     ],
     "correctAnswerIndex": 3,
-    "explanation": "السلسلة التنفسية يرتبط هنا بـ: نواقل إلكترونات في الغشاء الداخلي للميتوكندري.",
+    "explanation": "السلسلة التنفسية مجموعة نواقل مرتبة حسب تدرج الطاقة في الغشاء الداخلي، تمرر الإلكترونات وتضخ البروتونات. لا تخلطها بحلقة كريبس. في البكالوريا: السلسلة لا تنتج ATP بل تنشئ شروط إنتاجه.",
     "diagramUrl": "/assets/images/schemas/domaine2_energie/schema_10_respiration.svg"
   },
   {
@@ -4170,7 +4170,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "O2 هو ناتج نهائي للتخمر الكحولي."
     ],
     "correctAnswerIndex": 0,
-    "explanation": "O2 يرتبط هنا بـ: المستقبل النهائي للإلكترونات ويتحول إلى ماء.",
+    "explanation": "O2 المستقبل النهائي للإلكترونات في السلسلة، ويتحد مع البروتونات ليعطي ماء، وهذا ما يمنع تشبع النواقل. لا تنسب إليه إنتاج CO2. في البكالوريا: O2 يعطي الماء، والكربون يعطي CO2.",
     "diagramUrl": "/assets/images/schemas/domaine2_energie/schema_10_respiration.svg"
   },
   {
@@ -4184,7 +4184,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يدل على زيادة غير محدودة في السرعة دون إشباع."
     ],
     "correctAnswerIndex": 1,
-    "explanation": "NADH يرتبط هنا بـ: يعطي إلكترونات للسلسلة التنفسية.",
+    "explanation": "NADH يعطي إلكتروناته في بداية السلسلة التنفسية، فيمر عبر ثلاثة مواقع ضخ ويعطي مردوداً أعلى. لا تسو بينه وبين FADH2. في البكالوريا: NADH أغنى طاقياً لأنه يدخل من الأعلى.",
     "diagramUrl": "/assets/images/schemas/domaine2_energie/schema_10_respiration.svg"
   },
   {
@@ -4198,7 +4198,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يدل على وسط صلب دائماً مهما كانت المعطيات الزلزالية."
     ],
     "correctAnswerIndex": 1,
-    "explanation": "FADH2 يرتبط هنا بـ: يدخل إلكتروناته في مستوى لاحق من السلسلة.",
+    "explanation": "FADH2 يدخل إلكتروناته في مستوى لاحق من السلسلة، فيتجاوز موقع ضخ فينخفض مردوده مقارنة بـNADH. لا تعتبرهما متكافئين. في البكالوريا: موقع الدخول هو ما يحدد عدد ATP المنتجة.",
     "diagramUrl": "/assets/images/schemas/domaine2_energie/schema_10_respiration.svg"
   },
   {
@@ -4212,7 +4212,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "التحلل السكري يتم داخل المصفوفة الميتوكندرية فقط."
     ],
     "correctAnswerIndex": 0,
-    "explanation": "ضخ البروتونات يرتبط هنا بـ: ينشئ تدرج H+ عبر الغشاء الداخلي.",
+    "explanation": "ضخ البروتونات من المصفوفة نحو الفراغ بين الغشائين ينشئ تدرجاً كيميائياً وكهربائياً يمثل طاقة مخزنة. لا تعتبره فقداناً. في البكالوريا: الطاقة تُخزن في التدرج قبل أن تُحول إلى ATP.",
     "diagramUrl": "/assets/images/schemas/domaine2_energie/schema_10_respiration.svg"
   },
   {
@@ -4226,7 +4226,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "O2 هو ناتج نهائي للتخمر الكحولي."
     ],
     "correctAnswerIndex": 2,
-    "explanation": "ATP Synthase يرتبط هنا بـ: يستعمل عودة H+ لتركيب ATP.",
+    "explanation": "ATP Synthase إنزيم قناة يستعمل عودة البروتونات نحو المصفوفة لتركيب ATP، فهو الرابط بين التدرج والطاقة القابلة للاستعمال. لا تفصله عن السلسلة. في البكالوريا: سلسلة + تدرج + إنزيم = فسفرة تأكسدية.",
     "diagramUrl": "/assets/images/schemas/domaine2_energie/schema_10_respiration.svg"
   },
   {
@@ -4240,7 +4240,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يمثل تباعد قارتين بعد اكتمال التصادم مباشرة."
     ],
     "correctAnswerIndex": 2,
-    "explanation": "الفسفرة التأكسدية يرتبط هنا بـ: إنتاج ATP مرتبط بأكسدة النواقل المختزلة.",
+    "explanation": "الفسفرة التأكسدية هي إنتاج ATP المرتبط بأكسدة النواقل المختزلة عبر السلسلة والتدرج. لا تخلطها بالفسفرة على مستوى الركيزة المباشرة. في البكالوريا: تأكسدية تعني مقترنة بنقل الإلكترونات.",
     "diagramUrl": "/assets/images/schemas/domaine2_energie/schema_10_respiration.svg"
   },
   {
@@ -4254,7 +4254,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يوقف السلسلة ويمنع تجديد NAD+ بكفاءة"
     ],
     "correctAnswerIndex": 3,
-    "explanation": "غياب O2 يرتبط هنا بـ: يوقف السلسلة ويمنع تجديد NAD+ بكفاءة.",
+    "explanation": "غياب O2 يوقف السلسلة التنفسية فتبقى النواقل مختزلة ويتوقف تجديد NAD+ بكفاءة، ما يشل كريبس ويفرض اللجوء للتخمر. في البكالوريا: انسداد آخر السلسلة يشل كل المراحل السابقة عليها.",
     "diagramUrl": "/assets/images/schemas/domaine2_energie/schema_10_respiration.svg"
   },
   {
@@ -4268,7 +4268,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "آلية استعمال تدرج البروتونات لإنتاج ATP"
     ],
     "correctAnswerIndex": 3,
-    "explanation": "الكيميواسموز يرتبط هنا بـ: آلية استعمال تدرج البروتونات لإنتاج ATP.",
+    "explanation": "الكيميواسموز هي الآلية التي يُستعمل فيها تدرج البروتونات عبر غشاء غير نفوذ لتركيب ATP، وهي مشتركة بين الميتوكندري والصانعة. في البكالوريا: نفس المبدأ في التنفس والتركيب الضوئي.",
     "diagramUrl": "/assets/images/schemas/domaine2_energie/schema_10_respiration.svg"
   },
   {
@@ -4282,7 +4282,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "التحلل السكري يتم داخل المصفوفة الميتوكندرية فقط."
     ],
     "correctAnswerIndex": 0,
-    "explanation": "التخمر يرتبط هنا بـ: مسار لاهوائي يجدد NAD+ ليستمر التحلل السكري.",
+    "explanation": "التخمر من حيث آليته مسار لاهوائي هيولي يختزل البيروفات لتجديد NAD+ فيستمر التحلل السكري. لا تعتبره مسار إنتاج طاقة إضافي. في البكالوريا: التخمر لا يضيف ATP بل ينقذ استمرار التحلل السكري.",
     "diagramUrl": "/assets/images/schemas/domaine2_energie/schema_11_fermentation.svg"
   },
   {
@@ -4296,7 +4296,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يدل على زيادة غير محدودة في السرعة دون إشباع."
     ],
     "correctAnswerIndex": 2,
-    "explanation": "التخمر اللبني يرتبط هنا بـ: يحول البيروفات إلى حمض لبني.",
+    "explanation": "التخمر اللبني يحول البيروفات إلى حمض لبني ثلاثي الكربون دون تحرير CO2، مع أكسدة NADH. لا تخلطه بالكحولي. في البكالوريا: لبني بلا CO2، كحولي مع CO2.",
     "diagramUrl": "/assets/images/schemas/domaine2_energie/schema_11_fermentation.svg"
   },
   {
@@ -4310,7 +4310,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يتم فقط في غياب الماء والأيونات."
     ],
     "correctAnswerIndex": 2,
-    "explanation": "التخمر الكحولي يرتبط هنا بـ: ينتج إيثانول وCO2 من البيروفات.",
+    "explanation": "التخمر الكحولي يحول البيروفات إلى إيثانول وCO2 عبر نزع الكربوكسيل ثم الاختزال. لا تنسب طرح CO2 هنا لحلقة كريبس. في البكالوريا: وجود CO2 يميز الكحولي عن اللبني.",
     "diagramUrl": "/assets/images/schemas/domaine2_energie/schema_11_fermentation.svg"
   },
   {
@@ -4324,7 +4324,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يحدث في كل البروتينات بالطريقة نفسها دون نوعية."
     ],
     "correctAnswerIndex": 2,
-    "explanation": "الخميرة يرتبط هنا بـ: تنجز تخمراً كحولياً في غياب O2.",
+    "explanation": "الخميرة كائن وحيد الخلية ينجز تخمراً كحولياً في غياب O2 وتنفساً هوائياً عند توفره، فهي نموذج تجريبي مفضل. في البكالوريا: تجارب الخميرة تُستعمل لمقارنة المردودين الهوائي واللاهوائي.",
     "diagramUrl": "/assets/images/schemas/domaine2_energie/schema_11_fermentation.svg"
   },
   {
@@ -4338,7 +4338,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يصف ظاهرة مناعية نوعية فقط ولا علاقة له بهذا المحور."
     ],
     "correctAnswerIndex": 0,
-    "explanation": "العضلة المجهدة يرتبط هنا بـ: قد تنتج حمضاً لبنياً عند نقص O2.",
+    "explanation": "العضلة المجهدة قد تنتج حمضاً لبنياً عندما يعجز التزود بـO2 عن مجاراة الحاجة، فتلجأ للتخمر مؤقتاً. لا تعتبر ذلك انعداماً للتنفس. في البكالوريا: نقص نسبي في O2 يكفي لتفعيل المسار اللاهوائي.",
     "diagramUrl": "/assets/images/schemas/domaine2_energie/schema_11_fermentation.svg"
   },
   {
@@ -4352,7 +4352,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "ATP Synthase يثبت CO2 في حلقة كالفن."
     ],
     "correctAnswerIndex": 1,
-    "explanation": "الحصيلة الطاقوية يرتبط هنا بـ: التخمر يعطي 2 ATP فقط لكل غلوكوز.",
+    "explanation": "التخمر يعطي جزيئتي ATP فقط لكل غلوكوز مقابل نحو ست وثلاثين في التنفس الهوائي، لأن الأكسدة تبقى جزئية. لا تنس سبب الفارق. في البكالوريا: بقاء طاقة في الإيثانول أو اللبن يفسر ضعف المردود.",
     "diagramUrl": "/assets/images/schemas/domaine2_energie/schema_11_fermentation.svg"
   },
   {
@@ -4366,7 +4366,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "O2 هو ناتج نهائي للتخمر الكحولي."
     ],
     "correctAnswerIndex": 1,
-    "explanation": "CO2 في التخمر الكحولي يرتبط هنا بـ: يفسر انتفاخ العجين.",
+    "explanation": "CO2 الناتج عن التخمر الكحولي هو الذي يحاصر في العجين فيسبب انتفاخه، وهو تطبيق صناعي مباشر. لا تنسبه للتنفس الهوائي. في البكالوريا: اربط المعطى الصناعي بالمعادلة الاستقلابية.",
     "diagramUrl": "/assets/images/schemas/domaine2_energie/schema_11_fermentation.svg"
   },
   {
@@ -4380,7 +4380,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يتجدد خلال اختزال البيروفات أو مشتقاته"
     ],
     "correctAnswerIndex": 3,
-    "explanation": "NAD+ يرتبط هنا بـ: يتجدد خلال اختزال البيروفات أو مشتقاته.",
+    "explanation": "NAD+ يتجدد خلال اختزال البيروفات أو مشتقاته في التخمر، وهذا التجديد هو الغاية الحقيقية من المسار. لا تخلطه بتجديده الميتوكوندري عبر السلسلة. في البكالوريا: طريقان لتجديد المرافق حسب توفر O2.",
     "diagramUrl": "/assets/images/schemas/domaine2_energie/schema_11_fermentation.svg"
   },
   {
@@ -4394,7 +4394,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يحدث في كل البروتينات بالطريقة نفسها دون نوعية."
     ],
     "correctAnswerIndex": 1,
-    "explanation": "غياب الميتوكندري الفعال يرتبط هنا بـ: يجعل الخلية تعتمد أكثر على التخمر.",
+    "explanation": "غياب ميتوكندري فعال يمنع كريبس والسلسلة، فتعتمد الخلية على التحلل السكري والتخمر وحدهما ويهبط مردودها الطاقوي. مثال ذلك الكريات الحمراء. في البكالوريا: اربط غياب العضية بانهيار الحصيلة.",
     "diagramUrl": "/assets/images/schemas/domaine2_energie/schema_11_fermentation.svg"
   },
   {
@@ -4408,7 +4408,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يحدث دائماً داخل النواة ولا يرتبط بباقي العضيات."
     ],
     "correctAnswerIndex": 0,
-    "explanation": "ATP يرتبط هنا بـ: جزيء طاقوي مباشر الاستعمال في الخلية.",
+    "explanation": "ATP جزيء طاقوي مباشر الاستعمال لأن روابطه الفوسفاتية غنية بالطاقة وحلمهته سريعة، فهو العملة الطاقوية الوحيدة المقبولة في التفاعلات الخلوية. لا تعتبره مخزن طاقة. في البكالوريا: ATP وسيط لا احتياطي.",
     "diagramUrl": "/assets/images/schemas/domaine2_energie/schema_12_bilan_energetique.svg"
   },
   {
@@ -4422,7 +4422,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يحدث في كل البروتينات بالطريقة نفسها دون نوعية."
     ],
     "correctAnswerIndex": 0,
-    "explanation": "ADP + Pi يرتبط هنا بـ: ينتجان عن حلمهة ATP.",
+    "explanation": "ADP وفوسفات معدني ينتجان عن حلمهة ATP بتفكيك الرابطة الطرفية، ويعاد تركيبهما فوراً في الميتوكندري أو الصانعة. لا تعتبرهما فضلات. في البكالوريا: ADP + Pi هما مادة إعادة الشحن.",
     "diagramUrl": "/assets/images/schemas/domaine2_energie/schema_12_bilan_energetique.svg"
   },
   {
@@ -4436,7 +4436,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يستعمل CO2 كمستقبل نهائي للإلكترونات في التنفس."
     ],
     "correctAnswerIndex": 2,
-    "explanation": "الحلمهة يرتبط هنا بـ: تحرر طاقة قابلة للاستعمال الخلوي.",
+    "explanation": "حلمهة ATP تفكك الرابطة الفوسفاتية الطرفية بالماء فتحرر طاقة قابلة للاستعمال الخلوي مباشرة. لا تخلطها بالفسفرة التي هي العملية العكسية. في البكالوريا: حلمهة = تحرير، فسفرة = تخزين.",
     "diagramUrl": "/assets/images/schemas/domaine2_energie/schema_12_bilan_energetique.svg"
   },
   {
@@ -4450,7 +4450,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "ATP يخزن الطاقة لسنوات ولا يتجدد بسرعة."
     ],
     "correctAnswerIndex": 2,
-    "explanation": "الاقتران الطاقوي يرتبط هنا بـ: ربط تفاعل محرر للطاقة بتفاعل مستهلك لها.",
+    "explanation": "الاقتران الطاقوي ربط تفاعل محرر للطاقة بتفاعل مستهلك لها، وهو ما يسمح للخلية بإنجاز أعمال غير تلقائية. لا تنظر لأي تفاعل بمعزل. في البكالوريا: كل استهلاك لـATP يعني اقتراناً طاقوياً.",
     "diagramUrl": "/assets/images/schemas/domaine2_energie/schema_12_bilan_energetique.svg"
   },
   {
@@ -4464,7 +4464,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "نقل فوسفات من ATP لتفعيل تفاعل"
     ],
     "correctAnswerIndex": 3,
-    "explanation": "فسفرة الجزيئات يرتبط هنا بـ: نقل فوسفات من ATP لتفعيل تفاعل.",
+    "explanation": "فسفرة الجزيئات نقل مجموعة فوسفات من ATP إلى جزيء آخر فيصبح نشيطاً وأكثر تفاعلية. لا تخلطها بفسفرة ADP التي تنتج ATP. في البكالوريا: حدد دائماً من يعطي الفوسفات ومن يستقبله.",
     "diagramUrl": "/assets/images/schemas/domaine2_energie/schema_12_bilan_energetique.svg"
   },
   {
@@ -4478,7 +4478,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يتم فقط في غياب الماء والأيونات."
     ],
     "correctAnswerIndex": 0,
-    "explanation": "دورة ATP/ADP يرتبط هنا بـ: تضمن تداول الطاقة داخل الخلية.",
+    "explanation": "دورة ATP/ADP تضمن تداولاً مستمراً للطاقة: تركيب في مواقع الأكسدة وحلمهة في مواقع الاستهلاك، بمعدل تجديد سريع جداً. في البكالوريا: كمية ATP في الخلية ضئيلة لكن دورانها مرتفع للغاية.",
     "diagramUrl": "/assets/images/schemas/domaine2_energie/schema_12_bilan_energetique.svg"
   },
   {
@@ -4492,7 +4492,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يدل على وسط صلب دائماً مهما كانت المعطيات الزلزالية."
     ],
     "correctAnswerIndex": 0,
-    "explanation": "ATP ليس مخزناً بعيد المدى يرتبط هنا بـ: بل وسيط سريع التجدد.",
+    "explanation": "ATP ليس مخزناً بعيد المدى بل وسيط سريع التجدد، والتخزين الحقيقي في الغليكوجين والدسم. لا تخلط بين العملة والاحتياطي. في البكالوريا: تُستهلك جزيئة ATP خلال ثوان من تركيبها.",
     "diagramUrl": "/assets/images/schemas/domaine2_energie/schema_12_bilan_energetique.svg"
   },
   {
@@ -4506,7 +4506,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يحدث في كل البروتينات بالطريقة نفسها دون نوعية."
     ],
     "correctAnswerIndex": 0,
-    "explanation": "التفاعلات البنائية يرتبط هنا بـ: غالباً تستهلك ATP.",
+    "explanation": "التفاعلات البنائية غالباً تستهلك ATP لأنها ترفع مستوى التنظيم والطاقة في الجزيئات المصنعة. لا تخلطها بالتفاعلات الهدمية المحررة. في البكالوريا: بناء = استهلاك، هدم = تحرير.",
     "diagramUrl": "/assets/images/schemas/domaine2_energie/schema_12_bilan_energetique.svg"
   },
   {
@@ -4520,7 +4520,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يصف ظاهرة مناعية نوعية فقط ولا علاقة له بهذا المحور."
     ],
     "correctAnswerIndex": 1,
-    "explanation": "النقل الفعال يرتبط هنا بـ: مثال لعملية تستهلك ATP.",
+    "explanation": "النقل الفعال مثال نموذجي لعملية تستهلك ATP لأنه ينقل المواد عكس تدرج التركيز. لا تخلطه بالنقل المنفعل المجاني. في البكالوريا: عكس التدرج يعني حتماً استهلاك طاقة.",
     "diagramUrl": "/assets/images/schemas/domaine2_energie/schema_12_bilan_energetique.svg"
   },
   {
@@ -4534,7 +4534,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يدل على زيادة غير محدودة في السرعة دون إشباع."
     ],
     "correctAnswerIndex": 0,
-    "explanation": "العمل العضلي يرتبط هنا بـ: يعتمد مباشرة على حلمهة ATP.",
+    "explanation": "العمل العضلي يعتمد مباشرة على حلمهة ATP في رؤوس الميوزين لتأمين انزلاق الخييطات. لا تفترض استعمال الغلوكوز مباشرة. في البكالوريا: العضلة لا تستهلك سكراً بل ATP الناتج عن أكسدته.",
     "diagramUrl": "/assets/images/schemas/domaine2_energie/schema_12_bilan_energetique.svg"
   },
   {
@@ -4548,7 +4548,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "تدفق الطاقة يزداد عند كل مستوى غذائي."
     ],
     "correctAnswerIndex": 1,
-    "explanation": "التركيب الضوئي يرتبط هنا بـ: ينتج مادة عضوية وO2.",
+    "explanation": "التركيب الضوئي ينتج مادة عضوية وO2 انطلاقاً من CO2 والماء بفضل الطاقة الضوئية، فهو المدخل الوحيد للطاقة في المحيط الحيوي. في البكالوريا: كل طاقة السلاسل الغذائية أصلها ضوئي.",
     "diagramUrl": "/assets/images/schemas/domaine2_energie/schema_12_bilan_energetique.svg"
   },
   {
@@ -4562,7 +4562,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يستهلك المادة العضوية وO2 لإنتاج ATP"
     ],
     "correctAnswerIndex": 3,
-    "explanation": "التنفس الخلوي يرتبط هنا بـ: يستهلك المادة العضوية وO2 لإنتاج ATP.",
+    "explanation": "التنفس الخلوي يستهلك المادة العضوية وO2 لتحرير الطاقة على شكل ATP مع طرح CO2 وماء، فهو معاكس للتركيب الضوئي في الحصيلة. في البكالوريا: قارن المعادلتين لتبرز التكامل بينهما.",
     "diagramUrl": "/assets/images/schemas/domaine2_energie/schema_12_bilan_energetique.svg"
   },
   {
@@ -4576,7 +4576,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "ناتجان عن التنفس ومواد أولية للتركيب الضوئي"
     ],
     "correctAnswerIndex": 3,
-    "explanation": "CO2 والماء يرتبط هنا بـ: ناتجان عن التنفس ومواد أولية للتركيب الضوئي.",
+    "explanation": "CO2 والماء ناتجان عن التنفس ومادتان أوليتان للتركيب الضوئي، وهذا ما يغلق دورة المادة في المحيط الحيوي. لا تعتبرهما فضلات نهائية. في البكالوريا: نواتج عملية هي مواد أولية للأخرى.",
     "diagramUrl": "/assets/images/schemas/domaine2_energie/schema_12_bilan_energetique.svg"
   },
   {
@@ -4590,7 +4590,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "تدفق الطاقة يزداد عند كل مستوى غذائي."
     ],
     "correctAnswerIndex": 2,
-    "explanation": "التكامل الحيوي يرتبط هنا بـ: يربط المنتجين والمستهلكين في المحيط الحيوي.",
+    "explanation": "التكامل الحيوي يربط المنتجين الذين يدخلون الطاقة بالمستهلكين والمحللين الذين يصرفونها ويعيدون تدوير المادة. في البكالوريا: صف الحلقة كاملة من الضوء إلى المحللات وليس جزءاً منها.",
     "diagramUrl": "/assets/images/schemas/domaine2_energie/schema_12_bilan_energetique.svg"
   },
   {
@@ -4604,7 +4604,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يمثل مرحلة جيولوجية عميقة لا علاقة لها بالخلايا."
     ],
     "correctAnswerIndex": 0,
-    "explanation": "النبات نهاراً يرتبط هنا بـ: ينجز التركيب الضوئي والتنفس معاً.",
+    "explanation": "النبات نهاراً ينجز التركيب الضوئي والتنفس معاً، لكن حصيلة التبادلات الظاهرة تكون لصالح امتصاص CO2 لأن التركيب الضوئي أشد. لا تظن أن التنفس يتوقف. في البكالوريا: ميز بين الحصيلة الظاهرية والحقيقية.",
     "diagramUrl": "/assets/images/schemas/domaine2_energie/schema_12_bilan_energetique.svg"
   },
   {
@@ -4618,7 +4618,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يستعمل CO2 كمستقبل نهائي للإلكترونات في التنفس."
     ],
     "correctAnswerIndex": 2,
-    "explanation": "النبات ليلاً يرتبط هنا بـ: ينجز التنفس فقط غالباً.",
+    "explanation": "النبات ليلاً ينجز التنفس فقط لغياب الضوء، فيمتص O2 ويطرح CO2. لا تقل إنه يتوقف عن التنفس. في البكالوريا: التنفس مستمر في كل الكائنات الحية ليلاً ونهاراً.",
     "diagramUrl": "/assets/images/schemas/domaine2_energie/schema_12_bilan_energetique.svg"
   },
   {
@@ -4632,7 +4632,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "مخزن طاقة كيميائية ينتقل عبر السلاسل الغذائية"
     ],
     "correctAnswerIndex": 3,
-    "explanation": "المادة العضوية يرتبط هنا بـ: مخزن طاقة كيميائية ينتقل عبر السلاسل الغذائية.",
+    "explanation": "المادة العضوية مخزن للطاقة الكيميائية ينتقل عبر السلاسل الغذائية من مستوى لآخر بعد فقد جزء كبير كحرارة. في البكالوريا: تتبع الطاقة عبر المادة لا بمعزل عنها.",
     "diagramUrl": "/assets/images/schemas/domaine2_energie/schema_12_bilan_energetique.svg"
   },
   {
@@ -4646,7 +4646,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يدل على وسط صلب دائماً مهما كانت المعطيات الزلزالية."
     ],
     "correctAnswerIndex": 0,
-    "explanation": "O2 الجوي يرتبط هنا بـ: يتجدد أساساً بفضل التركيب الضوئي.",
+    "explanation": "O2 الجوي يتجدد أساساً بفضل التركيب الضوئي النباتي والطحلبي، وهو ناتج عن تحلل الماء لا CO2. في البكالوريا: اربط استقرار نسبة O2 الجوي بالتوازن بين التركيب الضوئي والتنفس.",
     "diagramUrl": "/assets/images/schemas/domaine2_energie/schema_12_bilan_energetique.svg"
   },
   {
@@ -4660,7 +4660,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يدل على وسط صلب دائماً مهما كانت المعطيات الزلزالية."
     ],
     "correctAnswerIndex": 1,
-    "explanation": "التنفس يرتبط هنا بـ: يحرر الطاقة المخزنة في الروابط الكيميائية.",
+    "explanation": "التنفس يحرر الطاقة المخزنة في الروابط الكيميائية للمادة العضوية ويحولها إلى ATP وحرارة. لا تقل إنه ينتج الطاقة من العدم. في البكالوريا: تحويل شكل الطاقة لا خلقها.",
     "diagramUrl": "/assets/images/schemas/domaine2_energie/schema_12_bilan_energetique.svg"
   },
   {
@@ -4674,7 +4674,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يستعمل CO2 كمستقبل نهائي للإلكترونات في التنفس."
     ],
     "correctAnswerIndex": 1,
-    "explanation": "3 | العلاقة بين يرتبط هنا بـ: التركيب الضوئي والتنفس الخلوي.",
+    "explanation": "التركيب الضوئي والتنفس عمليتان متكاملتان لا متعارضتان: نواتج إحداهما مواد أولية للأخرى، وتجريان معاً في الخلية النباتية المضيئة. في البكالوريا: التكامل يخص المادة والطاقة معاً.",
     "diagramUrl": "/assets/images/schemas/domaine2_energie/schema_12_bilan_energetique.svg"
   },
   {
@@ -4688,7 +4688,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "أكثر مردودية من التخمر من حيث ATP"
     ],
     "correctAnswerIndex": 3,
-    "explanation": "التنفس الهوائي يرتبط هنا بـ: أكثر مردودية من التخمر من حيث ATP.",
+    "explanation": "التنفس الهوائي أكثر مردودية من التخمر لأنه يؤكسد الغلوكوز أكسدة كاملة إلى CO2 وماء عبر كريبس والسلسلة. لا تكتف بذكر الأرقام. في البكالوريا: علل الفارق بدرجة الأكسدة لا بالحفظ.",
     "diagramUrl": "/assets/images/schemas/domaine2_energie/schema_12_bilan_energetique.svg"
   },
   {
@@ -4702,7 +4702,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يعني توقف كل التحولات الطاقوية في الخلية."
     ],
     "correctAnswerIndex": 2,
-    "explanation": "التخمر يرتبط هنا بـ: مردوديته 2 ATP لكل غلوكوز تقريباً.",
+    "explanation": "التخمر من حيث مردوده الطاقوي لا يعطي سوى جزيئتي ATP لكل غلوكوز، لأن الأكسدة تبقى جزئية وتحتفظ النواتج بطاقة معتبرة. في البكالوريا: قارن دائماً بستة وثلاثين في المسار الهوائي.",
     "diagramUrl": "/assets/images/schemas/domaine2_energie/schema_12_bilan_energetique.svg"
   },
   {
@@ -4716,7 +4716,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يستعمل CO2 كمستقبل نهائي للإلكترونات في التنفس."
     ],
     "correctAnswerIndex": 0,
-    "explanation": "التحلل السكري يرتبط هنا بـ: يعطي صافي 2 ATP.",
+    "explanation": "التحلل السكري يعطي صافي جزيئتي ATP فقط، وهو القاسم المشترك بين المسارين الهوائي واللاهوائي. لا تنسب له كامل حصيلة التنفس. في البكالوريا: الفارق بين المسارين يبدأ بعد البيروفات.",
     "diagramUrl": "/assets/images/schemas/domaine2_energie/schema_12_bilan_energetique.svg"
   },
   {
@@ -4730,7 +4730,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يمثل مرحلة جيولوجية عميقة لا علاقة لها بالخلايا."
     ],
     "correctAnswerIndex": 0,
-    "explanation": "كريبس والسلسلة يرتبط هنا بـ: يرفعان مردودية الأكسدة الهوائية.",
+    "explanation": "حلقة كريبس والسلسلة التنفسية يرفعان مردودية الأكسدة الهوائية: الأولى تشحن النواقل المختزلة، والثانية تستثمرها في بناء تدرج البروتونات المنتج لـATP. لا تفصل بينهما. في البكالوريا: كريبس يشحن والسلسلة تصرف.",
     "diagramUrl": "/assets/images/schemas/domaine2_energie/schema_12_bilan_energetique.svg"
   },
   {
@@ -4744,7 +4744,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يدل على زيادة غير محدودة في السرعة دون إشباع."
     ],
     "correctAnswerIndex": 0,
-    "explanation": "الأكسدة الكاملة يرتبط هنا بـ: تحول الغلوكوز إلى CO2 وH2O.",
+    "explanation": "الأكسدة الكاملة تحول الغلوكوز إلى CO2 وH2O ولا تترك طاقة قابلة للاستخلاص في النواتج، ولهذا كان مردودها أقصى ما يمكن. في البكالوريا: نواتج معدنية تعني استخلاصاً كاملاً للطاقة.",
     "diagramUrl": "/assets/images/schemas/domaine2_energie/schema_12_bilan_energetique.svg"
   },
   {
@@ -4758,7 +4758,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "تحدث في التخمر وتبقي طاقة في النواتج"
     ],
     "correctAnswerIndex": 3,
-    "explanation": "الأكسدة الجزئية يرتبط هنا بـ: تحدث في التخمر وتبقي طاقة في النواتج.",
+    "explanation": "الأكسدة الجزئية تحدث في التخمر وتبقي طاقة معتبرة في الإيثانول أو الحمض اللبني، ولهذا كان مردودها ضعيفاً. في البكالوريا: قابلية النواتج للاحتراق دليل على بقاء طاقة فيها.",
     "diagramUrl": "/assets/images/schemas/domaine2_energie/schema_12_bilan_energetique.svg"
   },
   {
@@ -4772,7 +4772,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يصف ظاهرة مناعية نوعية فقط ولا علاقة له بهذا المحور."
     ],
     "correctAnswerIndex": 1,
-    "explanation": "O2 يرتبط هنا بـ: وجوده يسمح بإعادة أكسدة NADH عبر السلسلة.",
+    "explanation": "وجود O2 يسمح بإعادة أكسدة NADH عبر السلسلة التنفسية، فيتجدد NAD+ باستمرار ويستمر المسار الهوائي بكامل مردوده. في البكالوريا: تجديد المرافق هو مفتاح مقارنة المسارين.",
     "diagramUrl": "/assets/images/schemas/domaine2_energie/schema_12_bilan_energetique.svg"
   },
   {
@@ -4786,7 +4786,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "تذكر في بعض البرامج كمردودية قصوى تقريبية"
     ],
     "correctAnswerIndex": 3,
-    "explanation": "الحصيلة القديمة 36-38 يرتبط هنا بـ: تذكر في بعض البرامج كمردودية قصوى تقريبية.",
+    "explanation": "الحصيلة القديمة ستة وثلاثون إلى ثمانية وثلاثين ATP تُذكر كمردودية قصوى تقريبية، والقيم الحديثة أقل قليلاً بسبب تكلفة نقل النواقل. في البكالوريا: اعتمد الرقم الوارد في برنامجك وبرره.",
     "diagramUrl": "/assets/images/schemas/domaine2_energie/schema_09_photosynthese.svg"
   },
   {
@@ -4800,7 +4800,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يصف ظاهرة مناعية نوعية فقط ولا علاقة له بهذا المحور."
     ],
     "correctAnswerIndex": 0,
-    "explanation": "الحصيلة العملية يرتبط هنا بـ: قد تختلف حسب نوع الخلية والمسار.",
+    "explanation": "الحصيلة العملية قد تختلف حسب نوع الخلية والمسار المكوكي المستعمل لنقل NADH الهيولي نحو الميتوكندري. لا تعتبر الرقم ثابتاً مطلقاً. في البكالوريا: علل أي اختلاف بتكلفة النقل.",
     "diagramUrl": "/assets/images/schemas/domaine2_energie/schema_12_bilan_energetique.svg"
   },
   {
@@ -4814,7 +4814,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يستعمل CO2 كمستقبل نهائي للإلكترونات في التنفس."
     ],
     "correctAnswerIndex": 0,
-    "explanation": "4 | الحصيلة الطاقوية يرتبط هنا بـ: المقارنة الشاملة.",
+    "explanation": "مقارنة الحصيلة الطاقوية تعني مواجهة عدد ATP ودرجة أكسدة الركيزة ومقر كل مرحلة في المسارين الهوائي واللاهوائي. في البكالوريا: جدول مقارنة بثلاثة معايير أفضل من سرد الأرقام.",
     "diagramUrl": "/assets/images/schemas/domaine2_energie/schema_12_bilan_energetique.svg"
   },
   {
@@ -4828,7 +4828,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يدل على زيادة غير محدودة في السرعة دون إشباع."
     ],
     "correctAnswerIndex": 2,
-    "explanation": "تدفق الطاقة يرتبط هنا بـ: انتقال الطاقة من مستوى غذائي إلى آخر.",
+    "explanation": "تدفق الطاقة انتقالها من مستوى غذائي إلى آخر في اتجاه واحد فقط مع ضياع كبير كحرارة. لا تخلطه بدورة المادة. في البكالوريا: الطاقة تتدفق ولا تدور، والمادة تدور ولا تتدفق.",
     "diagramUrl": "/assets/images/schemas/domaine2_energie/schema_12_bilan_energetique.svg"
   },
   {
@@ -4842,7 +4842,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "ينتج مباشرة أجساماً مضادة في كل الحالات."
     ],
     "correctAnswerIndex": 2,
-    "explanation": "المنتجون يرتبط هنا بـ: يدخلون الطاقة إلى النظام عبر التركيب الضوئي.",
+    "explanation": "المنتجون يدخلون الطاقة إلى النظام البيئي عبر التركيب الضوئي، فهم القاعدة التي تعتمد عليها كل المستويات العليا. في البكالوريا: غياب المنتجين يعني انهيار السلسلة كاملة.",
     "diagramUrl": "/assets/images/schemas/domaine2_energie/schema_12_bilan_energetique.svg"
   },
   {
@@ -4856,7 +4856,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يحصلون على الطاقة بأكل المادة العضوية"
     ],
     "correctAnswerIndex": 3,
-    "explanation": "المستهلكون يرتبط هنا بـ: يحصلون على الطاقة بأكل المادة العضوية.",
+    "explanation": "المستهلكون يحصلون على الطاقة بأكل المادة العضوية الجاهزة لعجزهم عن تركيبها، فهم كائنات تغتذي بطريقة غير ذاتية. في البكالوريا: ميز بين التغذية الذاتية وغير الذاتية قبل التصنيف.",
     "diagramUrl": "/assets/images/schemas/domaine2_energie/schema_12_bilan_energetique.svg"
   },
   {
@@ -4870,7 +4870,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "ATP يخزن الطاقة لسنوات ولا يتجدد بسرعة."
     ],
     "correctAnswerIndex": 0,
-    "explanation": "المحللات يرتبط هنا بـ: تعيد تدوير المادة وتستعمل الطاقة المتبقية.",
+    "explanation": "المحللات تفكك بقايا الكائنات فتعيد العناصر المعدنية للوسط وتستعمل الطاقة المتبقية لحاجتها. لا تهملها في المخطط. في البكالوريا: بدون محللات تتوقف دورة المادة وتتراكم البقايا.",
     "diagramUrl": "/assets/images/schemas/domaine2_energie/schema_12_bilan_energetique.svg"
   },
   {
@@ -4884,7 +4884,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يجعل الطاقة المتاحة تنقص بين المستويات"
     ],
     "correctAnswerIndex": 3,
-    "explanation": "ضياع الحرارة يرتبط هنا بـ: يجعل الطاقة المتاحة تنقص بين المستويات.",
+    "explanation": "ضياع الحرارة عند كل انتقال يجعل الطاقة المتاحة تنقص بشدة بين المستويات، وهو ما يفسر قصر السلاسل الغذائية. في البكالوريا: اربط عدد المستويات بالمردودية المنخفضة.",
     "diagramUrl": "/assets/images/schemas/domaine2_energie/schema_12_bilan_energetique.svg"
   },
   {
@@ -4898,7 +4898,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "غالباً منخفضة بين مستوى وآخر"
     ],
     "correctAnswerIndex": 3,
-    "explanation": "المردودية البيئية يرتبط هنا بـ: غالباً منخفضة بين مستوى وآخر.",
+    "explanation": "المردودية البيئية بين مستوى وآخر منخفضة عموماً ولا تتجاوز عشرة بالمائة تقريباً بسبب التنفس والفضلات والأجزاء غير المستهلكة. في البكالوريا: علل الضياع بثلاثة أسباب لا بسبب واحد.",
     "diagramUrl": "/assets/images/schemas/domaine2_energie/schema_12_bilan_energetique.svg"
   },
   {
@@ -4912,7 +4912,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يضيق نحو المستويات العليا"
     ],
     "correctAnswerIndex": 3,
-    "explanation": "هرم الطاقة يرتبط هنا بـ: يضيق نحو المستويات العليا.",
+    "explanation": "هرم الطاقة يضيق نحو المستويات العليا لأن كل مستوى لا يستثمر إلا جزءاً صغيراً من طاقة سابقه. لا تقلب اتجاه الهرم. في البكالوريا: شكل الهرم نتيجة مباشرة لضعف المردودية.",
     "diagramUrl": "/assets/images/schemas/domaine2_energie/schema_12_bilan_energetique.svg"
   },
   {
@@ -4926,7 +4926,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يمثل تباعد قارتين بعد اكتمال التصادم مباشرة."
     ],
     "correctAnswerIndex": 2,
-    "explanation": "المادة يرتبط هنا بـ: تدور بين الكائنات والوسط خلاف الطاقة التي تتدفق.",
+    "explanation": "المادة تدور بين الكائنات والوسط في دورات مغلقة، خلافاً للطاقة التي تتدفق في اتجاه واحد وتُفقد كحرارة. في البكالوريا: هذا التمييز سؤال متكرر فاحفظه بصيغته الدقيقة.",
     "diagramUrl": "/assets/images/schemas/domaine2_energie/schema_12_bilan_energetique.svg"
   },
   {
@@ -4940,7 +4940,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "تمثل انتقال المادة والطاقة بين كائنات"
     ],
     "correctAnswerIndex": 3,
-    "explanation": "السلسلة الغذائية يرتبط هنا بـ: تمثل انتقال المادة والطاقة بين كائنات.",
+    "explanation": "السلسلة الغذائية تمثل انتقال المادة والطاقة بين كائنات مترابطة بعلاقة التغذية، بدءاً من منتج. لا تخلطها بالشبكة الغذائية الأوسع. في البكالوريا: السلسلة خط واحد، والشبكة تقاطع سلاسل.",
     "diagramUrl": "/assets/images/schemas/domaine2_energie/schema_12_bilan_energetique.svg"
   },
   {
@@ -4954,7 +4954,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "ATP يخزن الطاقة لسنوات ولا يتجدد بسرعة."
     ],
     "correctAnswerIndex": 0,
-    "explanation": "الكتلة الحيوية يرتبط هنا بـ: ترتبط بكمية المادة العضوية في مستوى غذائي.",
+    "explanation": "الكتلة الحيوية كمية المادة العضوية الموجودة في مستوى غذائي معين، وتعبر بشكل غير مباشر عن الطاقة المخزنة فيه. في البكالوريا: هرم الكتلة قد ينقلب أحياناً بخلاف هرم الطاقة.",
     "diagramUrl": "/assets/images/schemas/domaine2_energie/schema_12_bilan_energetique.svg"
   },
   {

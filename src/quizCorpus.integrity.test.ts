@@ -111,8 +111,13 @@ describe('corpus QCM — qualité des explications (constat #1)', () => {
   // intégralement réécrit. Plafonds ramenés de 336 → 223 et de 344 → 223.
   // La dette résiduelle correspond exactement aux unités 6 à 10 (domaines 2
   // et 3), soit 223 QCM.
-  const MAX_CIRCULAR = 223;
-  const MAX_TOO_SHORT = 223;
+  //
+  // Lot 4 (unités 6 — La photosynthèse, 7 — La respiration cellulaire et la
+  // fermentation, 8 — Le bilan énergétique : 130 QCM, ids 217-346) : le
+  // domaine 2 est à son tour intégralement réécrit. Plafonds ramenés de
+  // 223 → 93. La dette résiduelle correspond exactement aux unités 9 et 10.
+  const MAX_CIRCULAR = 93;
+  const MAX_TOO_SHORT = 93;
 
   it('ne régresse pas sur le nombre d’explications circulaires', () => {
     const circular = SVT_QUIZ_QUESTIONS.filter(isCircular);
@@ -157,7 +162,7 @@ describe('corpus QCM — qualité des explications (constat #1)', () => {
 
   // Lots déjà traités : verrouillés à zéro défaut pour interdire tout retour
   // en arrière sur le travail de réécriture déjà validé.
-  const REWRITTEN_UNITS = [1, 2, 3, 4, 5, 11];
+  const REWRITTEN_UNITS = [1, 2, 3, 4, 5, 6, 7, 8, 11];
 
   it.each(REWRITTEN_UNITS)(
     'garde l’unité %i totalement exempte d’explications circulaires ou trop courtes',
