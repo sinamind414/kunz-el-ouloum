@@ -6327,7 +6327,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     "correctAnswerIndex": 3,
     "explanation": "الغابرو يرتبط هنا بـ: صخر ماغماتي عميق بطيء التبلور في القشرة المحيطية.",
-    "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_01_adn.svg"
+    "diagramUrl": "/assets/images/schemas/domaine3_tectonique/schema_15_dorsale.svg"
   },
   {
     "id": 445,
@@ -6341,7 +6341,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     "correctAnswerIndex": 2,
     "explanation": "البيريدوتيت يرتبط هنا بـ: صخر البرنس أسفل موهو المحيطي.",
-    "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_01_adn.svg"
+    "diagramUrl": "/assets/images/schemas/domaine3_tectonique/schema_15_dorsale.svg"
   },
   {
     "id": 446,
@@ -6355,7 +6355,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     "correctAnswerIndex": 1,
     "explanation": "الرواسب البحرية يرتبط هنا بـ: تزداد سماكتها بالابتعاد عن الظهرة.",
-    "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_01_adn.svg"
+    "diagramUrl": "/assets/images/schemas/domaine3_tectonique/schema_15_dorsale.svg"
   },
   {
     "id": 447,
@@ -6369,7 +6369,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     "correctAnswerIndex": 2,
     "explanation": "العمر المحيطي يرتبط هنا بـ: صغير عند الظهرة ويزداد بعيداً عنها.",
-    "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_01_adn.svg"
+    "diagramUrl": "/assets/images/schemas/domaine3_tectonique/schema_15_dorsale.svg"
   },
   {
     "id": 448,
@@ -6383,7 +6383,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     "correctAnswerIndex": 2,
     "explanation": "التدفق الحراري يرتبط هنا بـ: مرتفع قرب محور الظهرة.",
-    "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_01_adn.svg"
+    "diagramUrl": "/assets/images/schemas/domaine3_tectonique/schema_15_dorsale.svg"
   },
   {
     "id": 449,
@@ -6397,7 +6397,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     "correctAnswerIndex": 2,
     "explanation": "الثقوب الحرارية يرتبط هنا بـ: مياه ساخنة غنية بالمعادن قرب الظهرات.",
-    "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_01_adn.svg"
+    "diagramUrl": "/assets/images/schemas/domaine3_tectonique/schema_15_dorsale.svg"
   },
   {
     "id": 450,
@@ -6411,7 +6411,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     "correctAnswerIndex": 0,
     "explanation": "البناء المحيطي يرتبط هنا بـ: يعوض هدم الليثوسفير عند الغوص.",
-    "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_01_adn.svg"
+    "diagramUrl": "/assets/images/schemas/domaine3_tectonique/schema_15_dorsale.svg"
   },
   {
     "id": 451,
@@ -6425,7 +6425,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     "correctAnswerIndex": 0,
     "explanation": "الفالق التحويلي يرتبط هنا بـ: يقطع الظهرات ويزيح قطاعاتها.",
-    "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_01_adn.svg"
+    "diagramUrl": "/assets/images/schemas/domaine3_tectonique/schema_15_dorsale.svg"
   },
   {
     "id": 452,
@@ -6439,7 +6439,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     "correctAnswerIndex": 0,
     "explanation": "الانتشار المحيطي يرتبط هنا بـ: حركة جانبية لقاع المحيط من محور الظهرة.",
-    "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_01_adn.svg"
+    "diagramUrl": "/assets/images/schemas/domaine3_tectonique/schema_15_dorsale.svg"
   },
   {
     "id": 453,
@@ -6453,7 +6453,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     "correctAnswerIndex": 0,
     "explanation": "الغوص يرتبط هنا بـ: انغراز ليثوسفير محيطية كثيفة تحت صفيحة أخرى.",
-    "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_04_arnt.svg"
+    "diagramUrl": "/assets/images/schemas/domaine3_tectonique/schema_16_subduction.svg"
   },
   {
     "id": 454,
@@ -6467,7 +6467,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     "correctAnswerIndex": 0,
     "explanation": "الخندق المحيطي يرتبط هنا بـ: انخفاض عميق عند بداية الغوص.",
-    "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_04_arnt.svg"
+    "diagramUrl": "/assets/images/schemas/domaine3_tectonique/schema_16_subduction.svg"
   },
   {
     "id": 455,
@@ -6481,7 +6481,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     "correctAnswerIndex": 0,
     "explanation": "مستوى واداتي-بينيوف يرتبط هنا بـ: اصطفاف بؤر زلزالية يحدد مستوى الصفيحة الغائصة.",
-    "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_04_arnt.svg"
+    "diagramUrl": "/assets/images/schemas/domaine3_tectonique/schema_16_subduction.svg"
   },
   {
     "id": 456,
@@ -6495,7 +6495,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     "correctAnswerIndex": 2,
     "explanation": "قوس بركاني يرتبط هنا بـ: يتشكل فوق منطقة الغوص بسبب صعود الصهير.",
-    "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_04_arnt.svg"
+    "diagramUrl": "/assets/images/schemas/domaine3_tectonique/schema_16_subduction.svg"
   },
   {
     "id": 457,
@@ -6509,7 +6509,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     "correctAnswerIndex": 0,
     "explanation": "الماء في اللوح الغائص يرتبط هنا بـ: يخفض درجة انصهار البرنس فوقه.",
-    "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_04_arnt.svg"
+    "diagramUrl": "/assets/images/schemas/domaine3_tectonique/schema_16_subduction.svg"
   },
   {
     "id": 458,
@@ -6523,7 +6523,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     "correctAnswerIndex": 3,
     "explanation": "الصهير الأنديزيتي يرتبط هنا بـ: غني نسبياً بالماء والسيليكا وقد يكون انفجارياً.",
-    "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_04_arnt.svg"
+    "diagramUrl": "/assets/images/schemas/domaine3_tectonique/schema_16_subduction.svg"
   },
   {
     "id": 459,
@@ -6537,7 +6537,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     "correctAnswerIndex": 0,
     "explanation": "الزلازل العميقة يرتبط هنا بـ: تدل على استمرار اللوح الغائص في العمق.",
-    "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_04_arnt.svg"
+    "diagramUrl": "/assets/images/schemas/domaine3_tectonique/schema_16_subduction.svg"
   },
   {
     "id": 460,
@@ -6551,7 +6551,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     "correctAnswerIndex": 1,
     "explanation": "الشيست الأزرق يرتبط هنا بـ: دليل تحول ضغط عال وحرارة منخفضة في الغوص.",
-    "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_04_arnt.svg"
+    "diagramUrl": "/assets/images/schemas/domaine3_tectonique/schema_16_subduction.svg"
   },
   {
     "id": 461,
@@ -6565,7 +6565,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     "correctAnswerIndex": 0,
     "explanation": "الإكلوجيت يرتبط هنا بـ: صخر تحول أعمق في مسار الغوص.",
-    "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_04_arnt.svg"
+    "diagramUrl": "/assets/images/schemas/domaine3_tectonique/schema_16_subduction.svg"
   },
   {
     "id": 462,
@@ -6579,7 +6579,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     "correctAnswerIndex": 2,
     "explanation": "الغوص المحيطي القاري يرتبط هنا بـ: تغوص الصفيحة المحيطية تحت القارية.",
-    "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_04_arnt.svg"
+    "diagramUrl": "/assets/images/schemas/domaine3_tectonique/schema_16_subduction.svg"
   },
   {
     "id": 463,
@@ -6593,7 +6593,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     "correctAnswerIndex": 1,
     "explanation": "اللوح القديم يرتبط هنا بـ: أبرد وأكثف وأكثر قابلية للغوص.",
-    "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_04_arnt.svg"
+    "diagramUrl": "/assets/images/schemas/domaine3_tectonique/schema_16_subduction.svg"
   },
   {
     "id": 464,
@@ -6607,7 +6607,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     "correctAnswerIndex": 1,
     "explanation": "بركانية الغوص يرتبط هنا بـ: أعنف عادة من بركانية الظهرة.",
-    "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_04_arnt.svg"
+    "diagramUrl": "/assets/images/schemas/domaine3_tectonique/schema_16_subduction.svg"
   },
   {
     "id": 465,
@@ -6621,7 +6621,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     "correctAnswerIndex": 1,
     "explanation": "التصادم القاري يرتبط هنا بـ: تصادم قارتين بعد غلق محيط كان بينهما.",
-    "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_02_transcription.svg"
+    "diagramUrl": "/assets/images/schemas/domaine3_tectonique/schema_17_collision.svg"
   },
   {
     "id": 466,
@@ -6635,7 +6635,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     "correctAnswerIndex": 1,
     "explanation": "الطيّات يرتبط هنا بـ: تشوهات تدل على ضغط أفقي وتقلص.",
-    "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_02_transcription.svg"
+    "diagramUrl": "/assets/images/schemas/domaine3_tectonique/schema_17_collision.svg"
   },
   {
     "id": 467,
@@ -6649,7 +6649,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     "correctAnswerIndex": 2,
     "explanation": "الفالق العكسي يرتبط هنا بـ: فالق انضغاطي تركب فيه كتلة فوق أخرى.",
-    "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_02_transcription.svg"
+    "diagramUrl": "/assets/images/schemas/domaine3_tectonique/schema_17_collision.svg"
   },
   {
     "id": 468,
@@ -6663,7 +6663,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     "correctAnswerIndex": 1,
     "explanation": "الدسر يرتبط هنا بـ: ركوب واسع لكتل صخرية فوق أخرى.",
-    "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_02_transcription.svg"
+    "diagramUrl": "/assets/images/schemas/domaine3_tectonique/schema_17_collision.svg"
   },
   {
     "id": 469,
@@ -6677,7 +6677,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     "correctAnswerIndex": 2,
     "explanation": "تثخن القشرة يرتبط هنا بـ: يزيد ارتفاع السلاسل الجبلية في التصادم.",
-    "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_02_transcription.svg"
+    "diagramUrl": "/assets/images/schemas/domaine3_tectonique/schema_17_collision.svg"
   },
   {
     "id": 470,
@@ -6691,7 +6691,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     "correctAnswerIndex": 2,
     "explanation": "الجذر القاري يرتبط هنا بـ: امتداد عميق لقشرة سميكة تحت الجبال.",
-    "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_02_transcription.svg"
+    "diagramUrl": "/assets/images/schemas/domaine3_tectonique/schema_17_collision.svg"
   },
   {
     "id": 471,
@@ -6705,7 +6705,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     "correctAnswerIndex": 3,
     "explanation": "الميكاشيست يرتبط هنا بـ: صخر تحول إقليمي في السلاسل التصادمية.",
-    "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_02_transcription.svg"
+    "diagramUrl": "/assets/images/schemas/domaine3_tectonique/schema_17_collision.svg"
   },
   {
     "id": 472,
@@ -6719,7 +6719,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     "correctAnswerIndex": 1,
     "explanation": "الغرانيت التصادمي يرتبط هنا بـ: ينتج من انصهار جزئي للقشرة أثناء التصادم.",
-    "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_02_transcription.svg"
+    "diagramUrl": "/assets/images/schemas/domaine3_tectonique/schema_17_collision.svg"
   },
   {
     "id": 473,
@@ -6733,7 +6733,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     "correctAnswerIndex": 1,
     "explanation": "الهيمالايا يرتبط هنا بـ: مثال تصادم الهند وآسيا.",
-    "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_02_transcription.svg"
+    "diagramUrl": "/assets/images/schemas/domaine3_tectonique/schema_17_collision.svg"
   },
   {
     "id": 474,
@@ -6747,7 +6747,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     "correctAnswerIndex": 3,
     "explanation": "الألب يرتبط هنا بـ: سلسلة مرتبطة بغلق محيط تيتس.",
-    "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_02_transcription.svg"
+    "diagramUrl": "/assets/images/schemas/domaine3_tectonique/schema_17_collision.svg"
   },
   {
     "id": 475,
@@ -6761,7 +6761,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     "correctAnswerIndex": 3,
     "explanation": "انعدام الغوص القاري العميق يرتبط هنا بـ: يرجع إلى انخفاض كثافة القشرة القارية.",
-    "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_02_transcription.svg"
+    "diagramUrl": "/assets/images/schemas/domaine3_tectonique/schema_17_collision.svg"
   },
   {
     "id": 476,
@@ -6775,7 +6775,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     "correctAnswerIndex": 2,
     "explanation": "الرفع والتعرية يرتبط هنا بـ: يكشفان صخوراً عميقة بعد بناء الجبال.",
-    "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_02_transcription.svg"
+    "diagramUrl": "/assets/images/schemas/domaine3_tectonique/schema_17_collision.svg"
   },
   {
     "id": 477,
@@ -6789,7 +6789,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     "correctAnswerIndex": 1,
     "explanation": "الأوفيوليت يرتبط هنا بـ: قطعة من ليثوسفير محيطية قديمة فوق قارة.",
-    "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_03_traduction.svg"
+    "diagramUrl": "/assets/images/schemas/domaine3_tectonique/schema_17_collision.svg"
   },
   {
     "id": 478,
@@ -6803,7 +6803,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     "correctAnswerIndex": 2,
     "explanation": "تسلسل الأوفيوليت يرتبط هنا بـ: رواسب ثم بازلت وسائدي ثم دوليريت ثم غابرو ثم بيريدوتيت.",
-    "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_03_traduction.svg"
+    "diagramUrl": "/assets/images/schemas/domaine3_tectonique/schema_17_collision.svg"
   },
   {
     "id": 479,
@@ -6817,7 +6817,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     "correctAnswerIndex": 1,
     "explanation": "البازلت الوسائدي يرتبط هنا بـ: دليل على بركانية تحت مائية.",
-    "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_03_traduction.svg"
+    "diagramUrl": "/assets/images/schemas/domaine3_tectonique/schema_17_collision.svg"
   },
   {
     "id": 480,
@@ -6831,7 +6831,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     "correctAnswerIndex": 1,
     "explanation": "الغابرو في الأوفيوليت يرتبط هنا بـ: يمثل الجزء العميق من القشرة المحيطية.",
-    "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_03_traduction.svg"
+    "diagramUrl": "/assets/images/schemas/domaine3_tectonique/schema_17_collision.svg"
   },
   {
     "id": 481,
@@ -6845,7 +6845,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     "correctAnswerIndex": 2,
     "explanation": "البيريدوتيت يرتبط هنا بـ: يمثل البرنس العلوي في التسلسل الأوفيوليتي.",
-    "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_03_traduction.svg"
+    "diagramUrl": "/assets/images/schemas/domaine3_tectonique/schema_17_collision.svg"
   },
   {
     "id": 482,
@@ -6859,7 +6859,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     "correctAnswerIndex": 0,
     "explanation": "الاندفاع Obduction يرتبط هنا بـ: انتقال جزء محيطي فوق هامش قاري.",
-    "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_03_traduction.svg"
+    "diagramUrl": "/assets/images/schemas/domaine3_tectonique/schema_17_collision.svg"
   },
   {
     "id": 483,
@@ -6873,7 +6873,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     "correctAnswerIndex": 1,
     "explanation": "الأوفيوليت في الجبال يرتبط هنا بـ: شاهد على محيط قديم أغلق.",
-    "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_03_traduction.svg"
+    "diagramUrl": "/assets/images/schemas/domaine3_tectonique/schema_17_collision.svg"
   },
   {
     "id": 484,
@@ -6887,7 +6887,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     "correctAnswerIndex": 1,
     "explanation": "أوفيوليت عمان يرتبط هنا بـ: مثال مشهور لتسلسل محيطي محفوظ.",
-    "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_03_traduction.svg"
+    "diagramUrl": "/assets/images/schemas/domaine3_tectonique/schema_17_collision.svg"
   },
   {
     "id": 485,
@@ -6901,7 +6901,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     "correctAnswerIndex": 2,
     "explanation": "الرواسب العميقة يرتبط هنا بـ: تدل على بيئة محيطية قبل التصادم.",
-    "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_03_traduction.svg"
+    "diagramUrl": "/assets/images/schemas/domaine3_tectonique/schema_17_collision.svg"
   },
   {
     "id": 486,
@@ -6915,7 +6915,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     "correctAnswerIndex": 2,
     "explanation": "وجوده بين قارتين يرتبط هنا بـ: يدعم سيناريو غلق محيط وتصادم.",
-    "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_03_traduction.svg"
+    "diagramUrl": "/assets/images/schemas/domaine3_tectonique/schema_17_collision.svg"
   },
   {
     "id": 487,
@@ -6929,7 +6929,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     "correctAnswerIndex": 0,
     "explanation": "السربنتينيت يرتبط هنا بـ: بيريدوتيت متحول بالماء شائع في الأوفيوليت.",
-    "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_03_traduction.svg"
+    "diagramUrl": "/assets/images/schemas/domaine3_tectonique/schema_17_collision.svg"
   },
   {
     "id": 488,
@@ -6943,7 +6943,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     "correctAnswerIndex": 2,
     "explanation": "الأوفيوليت ليس لباً أرضياً يرتبط هنا بـ: بل ليثوسفير محيطية وبرنس علوي.",
-    "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_03_traduction.svg"
+    "diagramUrl": "/assets/images/schemas/domaine3_tectonique/schema_17_collision.svg"
   },
   {
     "id": 489,
@@ -6957,7 +6957,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     "correctAnswerIndex": 2,
     "explanation": "دورة ويلسون يرتبط هنا بـ: فتح محيط ثم توسعه ثم غوصه ثم غلقه وتصادم القارات.",
-    "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_06_structure_proteines.svg"
+    "diagramUrl": "/assets/images/schemas/domaine3_tectonique/schema_18_wilson.svg"
   },
   {
     "id": 490,
@@ -6971,7 +6971,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     "correctAnswerIndex": 3,
     "explanation": "التشقق القاري يرتبط هنا بـ: بداية تفكك قارة بفعل تباعد.",
-    "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_06_structure_proteines.svg"
+    "diagramUrl": "/assets/images/schemas/domaine3_tectonique/schema_18_wilson.svg"
   },
   {
     "id": 491,
@@ -6985,7 +6985,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     "correctAnswerIndex": 1,
     "explanation": "البحر الأحمر يرتبط هنا بـ: مثال محيط جنيني في طور الانفتاح.",
-    "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_06_structure_proteines.svg"
+    "diagramUrl": "/assets/images/schemas/domaine3_tectonique/schema_18_wilson.svg"
   },
   {
     "id": 492,
@@ -6999,7 +6999,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     "correctAnswerIndex": 3,
     "explanation": "الأطلسي يرتبط هنا بـ: مثال محيط ناضج يتسع.",
-    "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_06_structure_proteines.svg"
+    "diagramUrl": "/assets/images/schemas/domaine3_tectonique/schema_18_wilson.svg"
   },
   {
     "id": 493,
@@ -7013,7 +7013,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     "correctAnswerIndex": 1,
     "explanation": "الهادئ يرتبط هنا بـ: مثال محيط تتغلب عليه مناطق الغوص.",
-    "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_06_structure_proteines.svg"
+    "diagramUrl": "/assets/images/schemas/domaine3_tectonique/schema_18_wilson.svg"
   },
   {
     "id": 494,
@@ -7027,7 +7027,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     "correctAnswerIndex": 1,
     "explanation": "المتوسط يرتبط هنا بـ: بقايا محيط تيتس في طور الانغلاق.",
-    "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_06_structure_proteines.svg"
+    "diagramUrl": "/assets/images/schemas/domaine3_tectonique/schema_18_wilson.svg"
   },
   {
     "id": 495,
@@ -7041,7 +7041,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     "correctAnswerIndex": 1,
     "explanation": "تيتس يرتبط هنا بـ: محيط قديم أغلقت بقاياه لتكوين سلاسل ألبية.",
-    "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_06_structure_proteines.svg"
+    "diagramUrl": "/assets/images/schemas/domaine3_tectonique/schema_18_wilson.svg"
   },
   {
     "id": 496,
@@ -7055,7 +7055,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     "correctAnswerIndex": 3,
     "explanation": "التصادم النهائي يرتبط هنا بـ: ينتج سلسلة جبلية بعد غلق المحيط.",
-    "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_06_structure_proteines.svg"
+    "diagramUrl": "/assets/images/schemas/domaine3_tectonique/schema_18_wilson.svg"
   },
   {
     "id": 497,
@@ -7069,7 +7069,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     "correctAnswerIndex": 1,
     "explanation": "الأوفيوليت يرتبط هنا بـ: شاهد صخري على مرحلة محيطية سابقة.",
-    "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_06_structure_proteines.svg"
+    "diagramUrl": "/assets/images/schemas/domaine3_tectonique/schema_18_wilson.svg"
   },
   {
     "id": 498,
@@ -7083,7 +7083,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     "correctAnswerIndex": 3,
     "explanation": "الشيست الأزرق يرتبط هنا بـ: شاهد على مرحلة الغوص في دورة ويلسون.",
-    "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_06_structure_proteines.svg"
+    "diagramUrl": "/assets/images/schemas/domaine3_tectonique/schema_18_wilson.svg"
   },
   {
     "id": 499,
@@ -7097,7 +7097,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     "correctAnswerIndex": 3,
     "explanation": "بانجيا يرتبط هنا بـ: قارة عظمى تفككت ضمن دورات قديمة.",
-    "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_06_structure_proteines.svg"
+    "diagramUrl": "/assets/images/schemas/domaine3_tectonique/schema_18_wilson.svg"
   },
   {
     "id": 500,
@@ -7111,7 +7111,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     "correctAnswerIndex": 2,
     "explanation": "زمن الدورة يرتبط هنا بـ: يقاس بعشرات إلى مئات ملايين السنين.",
-    "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_06_structure_proteines.svg"
+    "diagramUrl": "/assets/images/schemas/domaine3_tectonique/schema_18_wilson.svg"
   }
 ];
 
