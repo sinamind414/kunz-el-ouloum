@@ -25,7 +25,7 @@
   - [A8. Score du volet A](#a8-score-du-volet-a)
 - **VOLET B — Diff livre ↔ application**
   - [B1. Couverture structurelle : 11 unités vs 44 leçons](#b1-couverture-structurelle--11-unités-vs-44-leçons)
-  - [B2. CRITIQUE — 98 % d'explications circulaires](#b2-critique--98--dexplications-circulaires)
+  - [B2. CRITIQUE — 98 % d'explications circulaires *(chantier ouvert, lot 1 livré)*](#b2-critique--98--dexplications-circulaires)
   - [B3. MAJEUR — 30 % de QCM méta-scolaires](#b3-majeur--30--de-qcm-méta-scolaires)
   - [B4. MAJEUR — Barème BAC non conforme](#b4-majeur--barème-bac-non-conforme)
   - [B5. MAJEUR — 57 schémas hors-sujet](#b5-majeur--57-schémas-hors-sujet)
@@ -449,6 +449,8 @@ Ce défaut serait secondaire dans une application connectée à un modèle de la
 
 Le défaut ne reste pas confiné aux QCM. En fin de `src/quizCorpus.ts`, `SVT_FLASHCARDS` est dérivée par `.map()` : le champ `answerBullets` est construit à partir de la réponse correcte **et du champ `explanation`**. **Les 500 flashcards héritent donc mécaniquement des 500 explications circulaires.** Le défaut contamine le module de révision espacée — c'est-à-dire le dispositif censé assurer la rétention à long terme.
 
+**Avancement au 12/08/2026.** Le lot 1 de la réécriture est exécuté : les **61 QCM de l'unité 11** (D3-III, tectonique) portent désormais une explication de 29 à 43 mots construite sur le canevas *mécanisme → réfutation → mot-clé BAC*. Le corpus passe de **500 à 439 explications circulaires** et de 508 à 447 explications sous les 25 mots ; les 61 flashcards correspondantes sont réparées par dérivation automatique. Le score B2 reste néanmoins à **1,5/10** : 86 % du corpus est encore concerné, et un score de qualité de feedback ne se relève pas sur 12 % du volume. Il sera réévalué lot par lot. Voir le journal d'exécution en [§4, Sprint 1](#sprint-1--feedback--le-sprint-qui-compte--lot-1-exécuté).
+
 Il faut aussi relier ce constat à celui de [B3](#b3-majeur--30--de-qcm-méta-scolaires) : énoncés méta-scolaires et explications circulaires sont **produits par la même chaîne de génération automatique**. Ce n'est pas deux défauts, c'est un seul — un corpus généré sans relecture experte.
 
 ### Gravité, impacts, recommandation
@@ -649,7 +651,7 @@ C'est **exactement** la difficulté n°1 des candidats algériens : confondre an
 
 | # | Constat | Volet | Gravité | Effort | Priorité |
 |---|---|---|---|---|---|
-| 1 | **98 % d'explications circulaires** (500/508), propagées aux 500 flashcards | B2 | 🔴 **Critique** | Élevé | **P0 — seul P0 restant** |
+| 1 | **Explications circulaires** — 500/508 à l'audit, **439/508 après le lot 1** (unité 11 traitée) ; propagation aux flashcards | B2 | 🔴 **Critique** | Élevé | **P0 — seul P0 restant, en cours** |
 | 2 | Barème BAC 28/20/34 au lieu de 20 ; sujets mono-domaine | B4 | 🟠 Majeur | Faible-moyen | **P3** *(requalifié : code mort)* |
 | 3 | 57 schémas hors-sujet (U11 : 93 %) | B5 | 🟠 Majeur | **Faible** | ✅ **Résolu** — commit `e130475` |
 | 4 | 10 unités sur 11 verrouillées | B1 | 🟠 Majeur | **Très faible** | ❌ **Invalidé** *(voir §3.1)* |
@@ -712,16 +714,43 @@ Résultat vérifié : **0 schéma hors-domaine, 0 asset manquant, 26 → 28 sch�
 
 **Garde-fou.** `src/quizCorpus.integrity.test.ts` (9 tests) verrouille désormais la structure du corpus, la cohérence unité↔domaine des schémas et l'existence réelle des fichiers sur disque. Il porte aussi deux plafonds de dette conçus pour ne jamais remonter. Sa première exécution a d'ailleurs corrigé une mesure de cet audit : le seuil « explications trop courtes » fixé à 321 items s'est révélé faux — **les 508 explications font moins de 25 mots**, la plus longue en comptant 22. Le constat #1 est donc plus étendu que ce que la §2 laissait entendre.
 
-### Sprint 1 — « Feedback » (10-12 jours) — **le sprint qui compte**
+### Sprint 1 — « Feedback » — **le sprint qui compte** — *lot 1 exécuté*
 
-| Action | Effort | Constat traité |
-|---|---|---|
-| **Test de non-régression bloquant sur les explications** (rejet si recopie du terme de l'énoncé ou < 25 mots) | 2 h | #1 |
-| Réécriture experte des explications des 3 unités les plus exposées (D1-IV, D1-V, D3-III ≈ 150 QCM), canevas *mécanisme → réfutation des distracteurs → mot-clé BAC* | 8-10 j | #1 |
-| Régénération des flashcards après correction | 0,5 j | #1 |
-| Correction des 7 tests rouges (parcours débutant, arabisation) | 1 j | #12 |
+| Action | Effort | Constat traité | Statut |
+|---|---|---|---|
+| **Test de non-régression bloquant sur les explications** (rejet si recopie du terme de l'énoncé ou < 25 mots) | 2 h | #1 | ✅ **fait** (Sprint 0) |
+| **Lot 1 — unité 11 (D3-III, 61 QCM)** réécrite au canevas en trois temps | — | #1 | ✅ **fait** |
+| Lot 2 — unités D1-IV et D1-V (≈ 100 QCM) | 6-8 j | #1 | ⬜ à faire |
+| Lots 3-n — les 8 unités restantes (≈ 347 QCM) | 20-25 j | #1 | ⬜ à faire |
+| Régénération des flashcards après correction | 0 j | #1 | ✅ **sans objet** — dérivation automatique vérifiée |
+| Correction des 7 tests rouges (parcours débutant, arabisation) | 1 j | #12 | ⬜ à faire |
 
-Le test de non-régression doit être écrit **avant** la réécriture : il transforme un chantier ponctuel en garantie permanente.
+Le test de non-régression a bien été écrit **avant** la réécriture : il transforme un chantier ponctuel en garantie permanente.
+
+#### Journal d'exécution — lot 1 (unité 11, ids 440-500)
+
+**Cible.** L'unité 11 a été choisie comme pilote pour trois raisons : c'est la plus grosse unité du corpus (61 QCM, 12 %), elle figure parmi les trois unités prioritaires de la feuille de route (D3-III), et elle venait d'être remaniée au Sprint 0 — corriger l'explication après le schéma achève le même item.
+
+**Lecture préalable intégrale.** Les 61 QCM ont été lus avant toute écriture. Conclusion qui a défini le périmètre : **les bonnes réponses sont scientifiquement justes et les énoncés exploitables**. Le défaut est strictement l'explication. La réécriture n'a donc touché ni `questionText`, ni `options`, ni `correctAnswerIndex` — vérifié par `git diff --numstat` : **61 lignes modifiées, 61 lignes ajoutées, aucune autre ligne du fichier**.
+
+**Canevas appliqué à chaque item.**
+1. *Mécanisme* — la cause physique ou biologique, pas la définition du terme ;
+2. *Réfutation* — pourquoi le distracteur plausible est faux (« ne confonds pas X et Y ») ;
+3. *Mot-clé BAC* — la formulation attendue par le correcteur.
+
+**Exemple, QCM 440 (الظهرة).**
+
+> *Avant* : « الظهرة يرتبط هنا بـ: حد تباعدي محيطي تتشكل عنده قشرة جديدة. » — recopie de l'option correcte, 9 mots.
+>
+> *Après* : « الظهرة حدّ بنّاء: تباعد الصفيحتين يخفّض الضغط على البرنس العلوي فيحدث انصهار جزئي يعطي صهيراً بازلتياً يتبلور مكوّناً قشرة محيطية جديدة. لا تخلط بينها وبين التصادم: الظهرة تُنشئ الليثوسفير ولا تُفنيها. في البكالوريا: اذكر «انصهار جزئي بانخفاض الضغط». » — 38 mots, mécanisme + réfutation + mot-clé.
+
+**Résultat mesuré.** Unité 11 : **0 explication circulaire, 0 sous les 25 mots** (29 mots minimum, 36 en médiane, 43 au maximum). Corpus entier : circulaires **500 → 439**, trop courtes **508 → 447**. Les plafonds du garde-fou ont été abaissés d'autant, et un test supplémentaire verrouille l'unité 11 à **zéro défaut** pour interdire toute régression sur le travail validé — 10 tests verts. Suite complète : **349 passés / 7 échoués**, exactement les 7 échecs préexistants, aucune régression.
+
+**Propagation vérifiée.** La flashcard `fc_q_440` a été inspectée après coup : son `answerBullets[1]` porte la nouvelle explication. La dérivation par `.map()` fait que **les 61 flashcards de l'unité 11 sont réparées sans action supplémentaire** — la ligne « régénération des flashcards » de ce sprint est donc sans objet.
+
+**Défaut annexe relevé pendant la lecture (hors périmètre P0).** Chaque QCM de l'unité 11 contient **un distracteur hors-domaine évident** — de l'immunologie ou de la respiration cellulaire glissée dans un item de tectonique. Un élève élimine cette option sans réfléchir : le choix réel se fait entre 3 options, et la difficulté mesurée est surévaluée. Le symptôme confirme la génération automatique diagnostiquée en [B3](#b3-majeur--30--de-qcm-méta-scolaires). À traiter au Sprint 2 avec la refonte des énoncés, en réécrivant les distracteurs comme **erreurs classiques du même domaine** (confondre dorsale et zone de subduction, schiste bleu et micaschiste) plutôt que comme remplissage.
+
+**Extrapolation d'effort.** Le lot 1 confirme que la réécriture n'est pas mécanisable : chaque explication exige de vérifier le mécanisme et d'identifier le distracteur à réfuter. Sur cette base, les 447 explications restantes représentent **26 à 33 jours-expert**, à répartir en lots par unité, chacun clôturé par l'abaissement des plafonds.
 
 ### Sprint 2 — « Conformité au format d'épreuve » (12-15 jours)
 
@@ -841,4 +870,4 @@ Ces pistes ont été explorées puis invalidées. Elles sont consignées pour é
 
 ---
 
-*Fin du rapport. Volet A : 6,4/10 — Volet B : 5,4/10 après Sprint 0. Priorité absolue et désormais unique P0 : le constat #1 — 98 % d'explications circulaires, et 508/508 sous les 25 mots. Il conditionne à lui seul la valeur pédagogique du produit.*
+*Fin du rapport. Volet A : 6,4/10 — Volet B : 5,4/10 après Sprint 0. Priorité absolue et désormais unique P0 : le constat #1 — explications circulaires. Chantier ouvert et lot 1 livré (unité 11, 61 QCM) : le corpus passe de 500 à 439 explications circulaires, sous garde-fou automatisé. Les 439 restantes conditionnent encore la valeur pédagogique du produit.*

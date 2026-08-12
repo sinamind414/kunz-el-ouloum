@@ -92,11 +92,17 @@ describe('corpus QCM — qualité des explications (constat #1)', () => {
   // Dette héritée : le corpus est corrigé par lots (voir la feuille de route du
   // rapport d'audit). Ces plafonds ne doivent que DIMINUER — jamais augmenter.
   //
-  // État mesuré au 12/08/2026 : 500/508 explications circulaires, et surtout
-  // 508/508 sous les 25 mots — l'explication la plus longue du corpus en fait
-  // 22. Aucune n'atteint donc le seuil minimal d'une justification utile.
-  const MAX_CIRCULAR = 500;
-  const MAX_TOO_SHORT = 508;
+  // État initial mesuré au 12/08/2026 : 500/508 explications circulaires, et
+  // surtout 508/508 sous les 25 mots — l'explication la plus longue du corpus
+  // en faisait 22. Aucune n'atteignait le seuil minimal d'une justification
+  // utile.
+  //
+  // Lot 1 (unité 11 — Tectonique des plaques, 61 QCM, ids 440-500) : les 61
+  // explications ont été réécrites selon le canevas en trois temps
+  // « mécanisme → réfutation du distracteur plausible → mot-clé BAC ».
+  // Plafonds ramenés de 500 → 439 et de 508 → 447.
+  const MAX_CIRCULAR = 439;
+  const MAX_TOO_SHORT = 447;
 
   it('ne régresse pas sur le nombre d’explications circulaires', () => {
     const circular = SVT_QUIZ_QUESTIONS.filter(isCircular);
@@ -109,6 +115,24 @@ describe('corpus QCM — qualité des explications (constat #1)', () => {
     );
     expect(tooShort.length).toBeLessThanOrEqual(MAX_TOO_SHORT);
   });
+
+  // Lots déjà traités : verrouillés à zéro défaut pour interdire tout retour
+  // en arrière sur le travail de réécriture déjà validé.
+  const REWRITTEN_UNITS = [11];
+
+  it.each(REWRITTEN_UNITS)(
+    'garde l’unité %i totalement exempte d’explications circulaires ou trop courtes',
+    (unitId) => {
+      const items = SVT_QUIZ_QUESTIONS.filter((q) => q.unitId === unitId);
+      expect(items.length).toBeGreaterThan(0);
+      expect(items.filter(isCircular).map((q) => q.id)).toEqual([]);
+      expect(
+        items
+          .filter((q) => wordCount(q.explanation ?? '') < MIN_WORDS)
+          .map((q) => q.id),
+      ).toEqual([]);
+    },
+  );
 
   it('fournit une explication non vide pour chaque question', () => {
     const empty = SVT_QUIZ_QUESTIONS.filter((q) => !q.explanation?.trim());
