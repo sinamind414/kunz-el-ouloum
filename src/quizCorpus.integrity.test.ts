@@ -105,8 +105,14 @@ describe('corpus QCM — qualité des explications (constat #1)', () => {
   // Lot 2 (unité 4 — L'immunité, 48 QCM, ids 114-161 ; unité 5 — La
   // communication nerveuse, 55 QCM, ids 162-216) : 103 explications réécrites
   // selon le même canevas. Plafonds ramenés de 439 → 336 et de 447 → 344.
-  const MAX_CIRCULAR = 336;
-  const MAX_TOO_SHORT = 344;
+  //
+  // Lot 3 (unités 1, 2 et 3 — synthèse des protéines, structure spatiale,
+  // enzymologie : 121 QCM, ids 1-113 + 501-508) : le domaine 1 est désormais
+  // intégralement réécrit. Plafonds ramenés de 336 → 223 et de 344 → 223.
+  // La dette résiduelle correspond exactement aux unités 6 à 10 (domaines 2
+  // et 3), soit 223 QCM.
+  const MAX_CIRCULAR = 223;
+  const MAX_TOO_SHORT = 223;
 
   it('ne régresse pas sur le nombre d’explications circulaires', () => {
     const circular = SVT_QUIZ_QUESTIONS.filter(isCircular);
@@ -151,7 +157,7 @@ describe('corpus QCM — qualité des explications (constat #1)', () => {
 
   // Lots déjà traités : verrouillés à zéro défaut pour interdire tout retour
   // en arrière sur le travail de réécriture déjà validé.
-  const REWRITTEN_UNITS = [4, 5, 11];
+  const REWRITTEN_UNITS = [1, 2, 3, 4, 5, 11];
 
   it.each(REWRITTEN_UNITS)(
     'garde l’unité %i totalement exempte d’explications circulaires ou trop courtes',

@@ -12,7 +12,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "تفكيك ARNm بعد انتهاء عملية الترجمة."
     ],
     "correctAnswerIndex": 1,
-    "explanation": "إنزيم ARN بوليميراز يفك الالتفاف، يكسر الروابط الهيدروجينية، ويقرأ السلسلة المستنسخة (3'→5') لربط النيكليوتيدات الريبية بالتكامل لتشكيل ARNm (5'→3').",
+    "explanation": "ARN بوليميراز يفك التفاف ADN ويكسر الروابط الهيدروجينية بين السلسلتين، ثم يقرأ السلسلة القالبية 3 نحو 5 ويربط الريبونوكليوتيدات الحرة بالتكامل لبناء ARNm في الاتجاه 5 نحو 3. لا يحتاج بادئة خلافاً لـADN بوليميراز. في البكالوريا: اذكر الفك والتكامل معاً.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_17_transcription_bubble_modern.svg"
   },
   {
@@ -26,7 +26,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "تدمير البروتينات التالفة داخل الهيولى."
     ],
     "correctAnswerIndex": 2,
-    "explanation": "البوليزوم (متعدد الريبوزوم) هو ارتباط عدة ريبوزومات بخيط ARNm واحد، مما يسمح بإنتاج نسخ كثيرة من نفس السلسلة الببتيدية في وقت قياسي.",
+    "explanation": "البوليزوم ارتباط عدة ريبوزومات بخيط ARNm واحد في آن واحد، فتُنتَج نسخ كثيرة من البروتين نفسه في وقت قصير. لا ينتج بروتينات مختلفة بل النسخة نفسها مكررة. في البكالوريا: اربطه بمردود التركيب.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_24_polysome_translation_modern.svg"
   },
   {
@@ -40,7 +40,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "حمض أميني فقط، فالعملية تلقائية."
     ],
     "correctAnswerIndex": 1,
-    "explanation": "التنشيط هو ربط الحمض الأميني بالـ ARNt الخاص به. ويتطلب: حمض أميني، ARNt، طاقة (ATP)، وإنزيم ربط نوعي.",
+    "explanation": "تنشيط الحمض الأميني ربطه بـARNt الخاص به بفعل إنزيم نوعي هو أمينو أسيل ARNt سينتيتاز، مع استهلاك طاقة ATP. نوعية الإنزيم تضمن عدم الخطأ في التقابل. في البكالوريا: اذكر العناصر الأربعة كاملة.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_26_aa_activation_modern.svg"
   },
   {
@@ -54,7 +54,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "من اليمين إلى اليسار دائماً."
     ],
     "correctAnswerIndex": 1,
-    "explanation": "إنزيم ARN بوليميراز يقرأ السلسلة المستنسخة في الاتجاه 3' → 5'، ليقوم ببناء الـ ARNm في الاتجاه 5' → 3'.",
+    "explanation": "يقرأ ARN بوليميراز السلسلة المستنسخة في الاتجاه 3 نحو 5، وهو ما يفرض بناء ARNm في الاتجاه المعاكس 5 نحو 3. الاتجاهان متعاكسان دائماً لتضاد السلسلتين. في البكالوريا: خطأ في الاتجاه يعني تسلسلاً خاطئاً كلياً.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_17_transcription_bubble_modern.svg"
   },
   {
@@ -68,7 +68,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "تجمع سلسلتين ببتيديتين أو أكثر."
     ],
     "correctAnswerIndex": 2,
-    "explanation": "البنية الثالثية تنتج عن انطواء البنية الثانوية في الفراغ، وتحافظ على استقرارها 4 أنواع من الروابط تنشأ بين جذور الأحماض الأمينية (R).",
+    "explanation": "البنية الثالثية تنتج عن انطواء البنية الثانوية في الفراغ، ويثبتها أربعة أنواع من الروابط بين الجذور R: جسور ثنائية الكبريت وروابط شاردية وهيدروجينية وتفاعلات كارهة للماء. لا تخلطها بالثانوية المحصورة في السلسلة الرئيسية. في البكالوريا: اذكر الأنواع الأربعة.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_45_four_levels_structure_modern.svg"
   },
   {
@@ -82,7 +82,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "الجسر ثنائي الكبريت (Pont disulfure)."
     ],
     "correctAnswerIndex": 3,
-    "explanation": "الجسر ثنائي الكبريت ينشأ بين جذرين لحمض السيستين (Cys)، وهو الرابطة التكافؤية (القوية) الوحيدة المساهمة في طي البروتين، بينما باقي الروابط ضعيفة.",
+    "explanation": "الجسر ثنائي الكبريت ينشأ بين جذري سيستئين، وهو الرابطة التساهمية القوية الوحيدة المساهمة في تثبيت البنيتين الثالثية والرابعية، بينما تبقى باقي الروابط ضعيفة. لهذا يقاوم التمسخ الحراري أكثر منها. في البكالوريا: سمّ الحمض الأميني المعني.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_43_secondary_stabilization_modern.svg"
   },
   {
@@ -96,7 +96,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "عندما يكتسب وظيفة إنزيمية."
     ],
     "correctAnswerIndex": 1,
-    "explanation": "البنية الرابعية (مثل الهيموغلوبين) هي اتحاد تحت وحدتين (سلسلتين) أو أكثر، كل واحدة منهما تمتلك بنية ثالثية مستقلة.",
+    "explanation": "البنية الرابعية اتحاد تحت وحدتين أو أكثر، لكل منها بنية ثالثية مستقلة، في مجموع وظيفي واحد كالهيموغلوبين. لا يمتلكها بروتين أحادي السلسلة مهما كبر حجمه. في البكالوريا: المعيار هو عدد السلاسل لا الحجم.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_44_quaternary_hemoglobin_tim_modern.svg"
   },
   {
@@ -110,7 +110,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "تكسر الجسور الكبريتية بسبب الحرارة."
     ],
     "correctAnswerIndex": 0,
-    "explanation": "استبدال حمض أميني محب للماء (Glu) بآخر كاره للماء (Val) يغير البنية الفراغية، فتتبلور جزيئات الهيموغلوبين وتشوه الكرية الحمراء (تصبح منجلية).",
+    "explanation": "استبدال حمض أميني محب للماء (Glu) بآخر كاره للماء (Val) يغير سطح الجزيء فتتبلمر جزيئات الهيموغلوبين وتتشوه الكرية الحمراء فتصبح منجلية. السبب بنيوي فراغي لا نقص في كمية Hb. في البكالوريا: علّل بتغير الطي لا بالكمية.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_28_anagene_mutation_compare_modern.jpg"
   },
   {
@@ -124,7 +124,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "ينتج مباشرة أجساماً مضادة في كل الحالات."
     ],
     "correctAnswerIndex": 0,
-    "explanation": "الجين يرتبط هنا بـ: قطعة من ADN تحمل معلومة تركيب سلسلة ببتيدية أو بروتين معين.",
+    "explanation": "المورثة قطعة محددة من ADN تحمل المعلومة اللازمة لتركيب سلسلة ببتيدية أو بروتين معين، وتُعبَّر عنها بالاستنساخ ثم الترجمة. لا تخلط بينها وبين الصبغي الذي يحمل آلاف المورثات. في البكالوريا: مورثة = وحدة معلومة وظيفية.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_01_adn.svg"
   },
   {
@@ -138,7 +138,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يحدث دائماً داخل النواة ولا يرتبط بباقي العضيات."
     ],
     "correctAnswerIndex": 2,
-    "explanation": "النيوكليوتيد يرتبط هنا بـ: الوحدة البنائية لـADN ويتكوّن من سكر وفوسفات وقاعدة آزوتية.",
+    "explanation": "النيوكليوتيد الوحدة البنائية للحمض النووي، ويتكون من سكر خماسي ومجموعة فوسفات وقاعدة آزوتية. ميّزه عن الحمض الأميني الذي يبني البروتين لا ADN. في البكالوريا: اذكر المكونات الثلاثة، والسكر يميز ADN عن ARN.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_01_adn.svg"
   },
   {
@@ -152,7 +152,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يدل على زيادة غير محدودة في السرعة دون إشباع."
     ],
     "correctAnswerIndex": 2,
-    "explanation": "قاعدة التكامل يرتبط هنا بـ: A تقابل T وG تقابل C في ADN.",
+    "explanation": "قاعدة التكامل تفرض ارتباط A مع T وG مع C في ADN بروابط هيدروجينية، وهي أساس التضاعف والاستنساخ. في ARN يعوَّض T باليوراسيل U. في البكالوريا: انتبه إلى A-U عند كتابة ARNm.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_01_adn.svg"
   },
   {
@@ -166,7 +166,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "كل رامزة من ثلاث قواعد في ARNm تحدد حمضاً أمينياً"
     ],
     "correctAnswerIndex": 3,
-    "explanation": "الشفرة الوراثية يرتبط هنا بـ: كل رامزة من ثلاث قواعد في ARNm تحدد حمضاً أمينياً.",
+    "explanation": "الشفرة الوراثية نظام التقابل بين الرامزات والأحماض الأمينية: كل ثلاث قواعد متتالية في ARNm تحدد حمضاً أمينياً واحداً. الرامزة على ARNm لا على البروتين. في البكالوريا: الشفرة ثلاثية، شاملة ومترادفة وغير متراكبة.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_01_adn.svg"
   },
   {
@@ -180,7 +180,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يمثل تباعد قارتين بعد اكتمال التصادم مباشرة."
     ],
     "correctAnswerIndex": 2,
-    "explanation": "AUG يرتبط هنا بـ: رامزة بدء الترجمة وتشفر غالباً للميتيونين.",
+    "explanation": "AUG رامزة بدء الترجمة، تحدد موضع بداية القراءة وتشفر غالباً للميثيونين. لا تخلط بينها وبين المحرّض الذي يبدأ الاستنساخ على ADN. في البكالوريا: AUG تُقرأ على ARNm وتحدد إطار القراءة كله.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_01_adn.svg"
   },
   {
@@ -194,7 +194,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يصف ظاهرة مناعية نوعية فقط ولا علاقة له بهذا المحور."
     ],
     "correctAnswerIndex": 1,
-    "explanation": "UAA/UAG/UGA يرتبط هنا بـ: رامزات توقف لا يوافقها ARNt حامل لحمض أميني.",
+    "explanation": "الرامزات UAA وUAG وUGA رامزات توقف: لا يوافقها أي ARNt حامل لحمض أميني، فتوقف الترجمة بجلب عامل التحرير. ليست رامزات لحمض أميني نادر. في البكالوريا: احفظ الثلاث وميّزها عن AUG.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_01_adn.svg"
   },
   {
@@ -208,7 +208,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "تُقرأ الرامزات دائماً من 3 نحو 5 أثناء الترجمة."
     ],
     "correctAnswerIndex": 1,
-    "explanation": "الشفرة المترادفة يرتبط هنا بـ: الحمض الأميني الواحد قد توافقه عدة رامزات.",
+    "explanation": "ترادف الشفرة يعني أن الحمض الأميني الواحد قد توافقه عدة رامزات مختلفة، لأن 64 رامزة تشفر 20 حمضاً أمينياً. لا يعني العكس: رامزة واحدة لا تشفر حمضين. في البكالوريا: مترادفة لا ملتبسة.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_01_adn.svg"
   },
   {
@@ -222,7 +222,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يحدث دائماً داخل النواة ولا يرتبط بباقي العضيات."
     ],
     "correctAnswerIndex": 0,
-    "explanation": "ARNm يرتبط هنا بـ: ينقل نسخة الرسالة الوراثية من النواة نحو الريبوزوم.",
+    "explanation": "ARNm نسخة مؤقتة من المورثة، ينقل الرسالة الوراثية من النواة إلى الريبوزوم في الهيولى حيث تُترجم. لا تخلط بينه وبين ARNt الناقل للحمض الأميني. في البكالوريا: ARNm = وسيط النواة/الهيولى.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_04_arnt.svg"
   },
   {
@@ -236,7 +236,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يحمل حمضاً أمينياً ومضاد رامزة مكمل لرامزة ARNm"
     ],
     "correctAnswerIndex": 3,
-    "explanation": "ARNt يرتبط هنا بـ: يحمل حمضاً أمينياً ومضاد رامزة مكمل لرامزة ARNm.",
+    "explanation": "ARNt جزيء ناقل يحمل حمضاً أمينياً في طرف ومضاد رامزة في طرف آخر، فيضمن وضع الحمض الصحيح مقابل الرامزة الموافقة. هو المترجم الفعلي للشفرة. في البكالوريا: ARNt يربط اللغة النووية باللغة البروتينية.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_04_arnt.svg"
   },
   {
@@ -250,7 +250,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "هو بنية ثابتة لا تتأثر بالشروط الفيزيائية أبداً."
     ],
     "correctAnswerIndex": 2,
-    "explanation": "ARNr يرتبط هنا بـ: يدخل في تركيب الريبوزوم ويساهم في نشاطه.",
+    "explanation": "ARNr يدخل في تركيب الوحدتين الريبوزوميتين ويساهم في النشاط التحفيزي لتشكيل الرابطة الببتيدية. ليس ناقلاً للرسالة ولا للحمض الأميني. في البكالوريا: ميّز الأنواع الثلاثة بوظائفها لا بأسمائها.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_04_arnt.svg"
   },
   {
@@ -264,7 +264,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يستعمل CO2 كمستقبل نهائي للإلكترونات في التنفس."
     ],
     "correctAnswerIndex": 0,
-    "explanation": "اليوراسيل U يرتبط هنا بـ: يعوض الثيمين T في جزيئات ARN.",
+    "explanation": "اليوراسيل قاعدة آزوتية خاصة بجزيئات ARN، يعوض الثيمين ويتكامل مع الأدنين. لا يوجد U في ADN ولا T في ARN. في البكالوريا: خطأ شائع هو كتابة T في ARNm عند الاستنساخ.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_04_arnt.svg"
   },
   {
@@ -278,7 +278,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "غالباً أحادي السلسلة وأقل استقراراً من ADN"
     ],
     "correctAnswerIndex": 3,
-    "explanation": "ARN يرتبط هنا بـ: غالباً أحادي السلسلة وأقل استقراراً من ADN.",
+    "explanation": "ARN غالباً أحادي السلسلة، سكره الريبوز، وهو أقل استقراراً من ADN، ما يناسب دوره كنسخة عمل مؤقتة. لا تخلط: ADN ثنائي ومستقر لأنه مخزن المعلومة. في البكالوريا: قارنهما بالسكر والقاعدة والبنية.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_04_arnt.svg"
   },
   {
@@ -292,7 +292,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "ثلاث قواعد في ARNt تتكامل مع رامزة ARNm"
     ],
     "correctAnswerIndex": 3,
-    "explanation": "مضاد الرامزة يرتبط هنا بـ: ثلاث قواعد في ARNt تتكامل مع رامزة ARNm.",
+    "explanation": "مضاد الرامزة ثلاث قواعد على ARNt تتكامل مع رامزة ARNm، وهذا التكامل هو ما يضمن نوعية وضع الحمض الأميني. لا تخلط بينه وبين الرامزة نفسها. في البكالوريا: اكتب مضاد الرامزة بالتكامل A-U وG-C.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_04_arnt.svg"
   },
   {
@@ -306,7 +306,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يعني توقف كل التحولات الطاقوية في الخلية."
     ],
     "correctAnswerIndex": 1,
-    "explanation": "ARNm الناضج يرتبط هنا بـ: ناتج إزالة الإنترونات وربط الإكسونات عند حقيقيات النوى.",
+    "explanation": "ARNm الناضج ناتج عن اقتطاع الإنترونات ولحم الإكسونات في نواة حقيقيات النوى، وهو وحده الذي يغادر النواة ليُترجم. غير موجود عند بدائيات النوى. في البكالوريا: النضج خطوة وسيطة بين الاستنساخ والترجمة.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_04_arnt.svg"
   },
   {
@@ -320,7 +320,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "ينتج مباشرة أجساماً مضادة في كل الحالات."
     ],
     "correctAnswerIndex": 2,
-    "explanation": "الاستنساخ يرتبط هنا بـ: تركيب ARNm انطلاقاً من سلسلة ADN قالبية داخل النواة.",
+    "explanation": "الاستنساخ تركيب ARNm انطلاقاً من سلسلة ADN قالبية داخل النواة بفضل ARN بوليميراز. لا تخلط بينه وبين التضاعف الذي ينتج ADN، ولا مع الترجمة التي تنتج بروتيناً. في البكالوريا: استنساخ = ADN نحو ARN.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_02_transcription.svg"
   },
   {
@@ -334,7 +334,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يمثل تباعد قارتين بعد اكتمال التصادم مباشرة."
     ],
     "correctAnswerIndex": 1,
-    "explanation": "ARN بوليميراز يرتبط هنا بـ: يركب ARN في اتجاه 5 نحو 3 ويقرأ القالب 3 نحو 5.",
+    "explanation": "ARN بوليميراز يقرأ السلسلة القالبية في الاتجاه 3 نحو 5 ويركب ARNm في الاتجاه 5 نحو 3، وهو لا يحتاج بادئة خلافاً لـADN بوليميراز. في البكالوريا: احترم الاتجاهين المتعاكسين في أي رسم.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_02_transcription.svg"
   },
   {
@@ -348,7 +348,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "السلسلة التي تُستعمل مرجعاً لتكامل قواعد ARNm"
     ],
     "correctAnswerIndex": 3,
-    "explanation": "السلسلة القالبية يرتبط هنا بـ: السلسلة التي تُستعمل مرجعاً لتكامل قواعد ARNm.",
+    "explanation": "السلسلة القالبية هي السلسلة المستنسخة التي يقرأها الإنزيم لبناء ARNm بالتكامل؛ السلسلة الأخرى غير مستنسخة ولها تسلسل ARNm نفسه مع T مكان U. في البكالوريا: حدد القالبية قبل كتابة أي ARNm.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_02_transcription.svg"
   },
   {
@@ -362,7 +362,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يُترجم مباشرة داخل النواة دون المرور بـARNm."
     ],
     "correctAnswerIndex": 1,
-    "explanation": "المحرّض يرتبط هنا بـ: منطقة ADN يرتبط بها ARN بوليميراز لبدء الاستنساخ.",
+    "explanation": "المحرّض تسلسل خاص من ADN قبل المورثة، يرتبط به ARN بوليميراز ليبدأ الاستنساخ ويحدد اتجاهه. لا يُستنسخ ولا يُترجم. في البكالوريا: ميّزه عن AUG التي تبدأ الترجمة على ARNm.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_02_transcription.svg"
   },
   {
@@ -376,7 +376,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "ينتج مباشرة أجساماً مضادة في كل الحالات."
     ],
     "correctAnswerIndex": 2,
-    "explanation": "الاستطالة يرتبط هنا بـ: مرحلة إضافة ريبونوكليوتيدات مكملة للقالب.",
+    "explanation": "الاستطالة مرحلة يضيف فيها الإنزيم الريبونوكليوتيدات مكملةً للقالب فيطول خيط ARNm تدريجياً. تسبقها البداية وتليها النهاية. في البكالوريا: اذكر المراحل الثلاث مرتبة عند وصف الاستنساخ.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_02_transcription.svg"
   },
   {
@@ -390,7 +390,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "انفصال ARNm عند بلوغ تسلسل نهاية الاستنساخ"
     ],
     "correctAnswerIndex": 3,
-    "explanation": "الإنهاء يرتبط هنا بـ: انفصال ARNm عند بلوغ تسلسل نهاية الاستنساخ.",
+    "explanation": "الإنهاء مرحلة يبلغ فيها الإنزيم تسلسل نهاية الاستنساخ فينفصل ARNm عن القالب ويتحرر الإنزيم. لا تخلط بين إنهاء الاستنساخ ورامزة توقف الترجمة. في البكالوريا: لكل ظاهرة إشارة نهاية خاصة بها.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_02_transcription.svg"
   },
   {
@@ -404,7 +404,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يمثل مرحلة جيولوجية عميقة لا علاقة لها بالخلايا."
     ],
     "correctAnswerIndex": 1,
-    "explanation": "TAC قالبية يرتبط هنا بـ: تعطي في ARNm الرامزة AUG إذا قرئت 3 نحو 5.",
+    "explanation": "الثلاثية TAC على السلسلة القالبية تعطي بالتكامل الرامزة AUG على ARNm، وهي بذلك تقابل بداية الترجمة. احترم اتجاه القراءة 3 نحو 5 على القالب. في البكالوريا: تمرين كلاسيكي على تحويل ADN إلى ARNm.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_02_transcription.svg"
   },
   {
@@ -418,7 +418,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يصف ظاهرة مناعية نوعية فقط ولا علاقة له بهذا المحور."
     ],
     "correctAnswerIndex": 1,
-    "explanation": "الترجمة يرتبط هنا بـ: قراءة رامزات ARNm لتركيب سلسلة ببتيدية على الريبوزوم.",
+    "explanation": "الترجمة قراءة رامزات ARNm على مستوى الريبوزوم لتركيب سلسلة ببتيدية بترتيب دقيق للأحماض الأمينية. تحدث في الهيولى لا في النواة. في البكالوريا: ترجمة = ARN نحو بروتين.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_03_traduction.svg"
   },
   {
@@ -432,7 +432,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يحدث دائماً داخل النواة ولا يرتبط بباقي العضيات."
     ],
     "correctAnswerIndex": 2,
-    "explanation": "اتجاه القراءة يرتبط هنا بـ: يقرأ الريبوزوم ARNm من 5 نحو 3.",
+    "explanation": "يقرأ الريبوزوم ARNm في اتجاه واحد من 5 نحو 3، رامزة بعد رامزة دون تراكب ولا قفز. عكس هذا الاتجاه يعطي بروتيناً خاطئاً. في البكالوريا: حدد الاتجاه قبل استخراج تسلسل الأحماض الأمينية.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_03_traduction.svg"
   },
   {
@@ -446,7 +446,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "تتعرف الوحدة الريبوزومية على AUG ويرتبط ARNt-Met"
     ],
     "correctAnswerIndex": 3,
-    "explanation": "مرحلة البدء يرتبط هنا بـ: تتعرف الوحدة الريبوزومية على AUG ويرتبط ARNt-Met.",
+    "explanation": "في مرحلة البدء تتعرف الوحدة الريبوزومية الصغيرة على الرامزة AUG ويرتبط بها ARNt الحامل للميثيونين، ثم تلتحم الوحدة الكبيرة. هذه المرحلة تحدد إطار القراءة كله. في البكالوريا: خطأ في البدء يغير البروتين بأكمله.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_03_traduction.svg"
   },
   {
@@ -460,7 +460,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يتم فقط في غياب الماء والأيونات."
     ],
     "correctAnswerIndex": 0,
-    "explanation": "الرابطة الببتيدية يرتبط هنا بـ: تتشكل بين حمضين أمينيين خلال الاستطالة.",
+    "explanation": "الرابطة الببتيدية تتشكل خلال الاستطالة بين الحمض الأميني الجديد في الموقع A والسلسلة المتنامية في الموقع P، مع طرح جزيئة ماء. لا تنشأ في مرحلة البدء. في البكالوريا: اربطها بالموقعين A وP.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_03_traduction.svg"
   },
   {
@@ -474,7 +474,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يحدث دائماً داخل النواة ولا يرتبط بباقي العضيات."
     ],
     "correctAnswerIndex": 2,
-    "explanation": "الموقع A يرتبط هنا بـ: يستقبل ARNt الحامل للحمض الأميني الجديد.",
+    "explanation": "الموقع A على الريبوزوم يستقبل ARNt الحامل للحمض الأميني الجديد الموافق للرامزة المعروضة. ميّزه عن الموقع P الذي يحمل السلسلة المتنامية. في البكالوريا: A للوارد، P للببتيد.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_03_traduction.svg"
   },
   {
@@ -488,7 +488,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "ينتج مباشرة أجساماً مضادة في كل الحالات."
     ],
     "correctAnswerIndex": 1,
-    "explanation": "الموقع P يرتبط هنا بـ: يحمل السلسلة الببتيدية المتنامية.",
+    "explanation": "الموقع P يحمل ARNt المرتبط بالسلسلة الببتيدية المتنامية، وإليه تنتقل السلسلة بعد كل رابطة ببتيدية. لا يستقبل الحمض الأميني الجديد. في البكالوريا: انزلاق الريبوزوم ينقل ARNt من A إلى P.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_03_traduction.svg"
   },
   {
@@ -502,7 +502,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يحدث في كل البروتينات بالطريقة نفسها دون نوعية."
     ],
     "correctAnswerIndex": 0,
-    "explanation": "رامزة التوقف يرتبط هنا بـ: تجلب عامل تحرير ولا تجلب ARNt عادياً.",
+    "explanation": "رامزة التوقف لا يوافقها ARNt، بل يرتبط بها عامل تحرير يفصل السلسلة الببتيدية عن الريبوزوم وينهي الترجمة. لا تشفر حمضاً أمينياً. في البكالوريا: علّل توقف الترجمة بغياب مضاد الرامزة الموافق.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_03_traduction.svg"
   },
   {
@@ -516,7 +516,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "هو بنية ثابتة لا تتأثر بالشروط الفيزيائية أبداً."
     ],
     "correctAnswerIndex": 1,
-    "explanation": "البولي ريبوزوم يرتبط هنا بـ: عدة ريبوزومات تترجم ARNm واحداً في الوقت نفسه.",
+    "explanation": "البولي ريبوزوم عدة ريبوزومات تترجم في الوقت نفسه خيط ARNm واحداً، ما يضاعف إنتاج البروتين نفسه بسرعة. ليست ترجمة لعدة ARNm مختلفة. في البكالوريا: اربطه بمردود التركيب لا بتنوعه.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_06_structure_proteines.svg"
   },
   {
@@ -530,7 +530,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "تُقرأ الرامزات دائماً من 3 نحو 5 أثناء الترجمة."
     ],
     "correctAnswerIndex": 2,
-    "explanation": "نضج ARNm يرتبط هنا بـ: إزالة الإنترونات وربط الإكسونات لإنتاج ARNm ناضج.",
+    "explanation": "نضج ARNm اقتطاع الإنترونات ولحم الإكسونات داخل النواة، فينتج ARNm ناضج أقصر قابل للترجمة. خاص بحقيقيات النوى. في البكالوريا: يفسر اختلاف طول المورثة عن طول ARNm الناضج.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_06_structure_proteines.svg"
   },
   {
@@ -544,7 +544,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يحدث دائماً داخل النواة ولا يرتبط بباقي العضيات."
     ],
     "correctAnswerIndex": 0,
-    "explanation": "الإكسون يرتبط هنا بـ: جزء مشفر يبقى في ARNm الناضج.",
+    "explanation": "الإكسون جزء مشفر من المورثة يبقى في ARNm الناضج ويُترجم فعلاً إلى أحماض أمينية. عكسه الإنترون المقتطع. في البكالوريا: عدد الإكسونات يحدد طول السلسلة الببتيدية النهائية.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_06_structure_proteines.svg"
   },
   {
@@ -558,7 +558,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يدل على وسط صلب دائماً مهما كانت المعطيات الزلزالية."
     ],
     "correctAnswerIndex": 0,
-    "explanation": "الإنترون يرتبط هنا بـ: جزء غير مشفر يزال أثناء النضج.",
+    "explanation": "الإنترون جزء غير مشفر يُستنسخ ثم يُقتطع أثناء النضج فلا يظهر في ARNm الناضج. وجوده في ADN لا يعني ترجمته. في البكالوريا: ميّز مورثة حقيقيات النوى بوجود الإنترونات.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_06_structure_proteines.svg"
   },
   {
@@ -572,7 +572,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "مرحلة ضرورية ليكتسب البروتين بنيته الوظيفية"
     ],
     "correctAnswerIndex": 3,
-    "explanation": "الطي الفراغي يرتبط هنا بـ: مرحلة ضرورية ليكتسب البروتين بنيته الوظيفية.",
+    "explanation": "الطي الفراغي مرحلة لاحقة للترجمة يكتسب فيها البروتين بنيته الثلاثية الوظيفية؛ سلسلة غير مطوية سلسلة غير فعالة. لا تخلط الطي بالترجمة. في البكالوريا: البنية الفراغية شرط الوظيفة.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_06_structure_proteines.svg"
   },
   {
@@ -586,7 +586,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يحدث في كل البروتينات بالطريقة نفسها دون نوعية."
     ],
     "correctAnswerIndex": 0,
-    "explanation": "جهاز غولجي يرتبط هنا بـ: يعدل بعض البروتينات ويوجهها نحو وجهتها.",
+    "explanation": "جهاز غولجي يستقبل البروتينات من الشبكة، يعدّلها كيميائياً ثم يفرزها في حويصلات نحو وجهتها. لا يركّب البروتين بل يعالجه ويوجهه. في البكالوريا: اذكره في مسار الإفراز بعد الشبكة الخشنة.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_06_structure_proteines.svg"
   },
   {
@@ -600,7 +600,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يمثل تباعد قارتين بعد اكتمال التصادم مباشرة."
     ],
     "correctAnswerIndex": 0,
-    "explanation": "الشبكة الإندوبلازمية الخشنة يرتبط هنا بـ: ترتبط بها ريبوزومات تصنع بروتينات موجهة للإفراز أو الغشاء.",
+    "explanation": "الشبكة الإندوبلازمية الخشنة تحمل ريبوزومات على سطحها، وتُركَّب عليها البروتينات الموجهة للإفراز أو للأغشية. البروتينات الهيولية تُركَّب على ريبوزومات حرة. في البكالوريا: مصير البروتين يحدد مكان تركيبه.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_06_structure_proteines.svg"
   },
   {
@@ -614,7 +614,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "هو بنية ثابتة لا تتأثر بالشروط الفيزيائية أبداً."
     ],
     "correctAnswerIndex": 1,
-    "explanation": "الحمض الأميني يرتبط هنا بـ: وحدة بناء البروتينات وله NH2 وCOOH وجذر R.",
+    "explanation": "الحمض الأميني وحدة بناء البروتين، ويتكون من كربون مركزي يحمل مجموعة أمينية NH2 ومجموعة كربوكسيلية COOH وذرة هيدروجين وجذراً R متغيراً. عشرون نوعاً فقط تبني كل البروتينات. في البكالوريا: ارسم الصيغة العامة بمكوناتها الأربعة.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_06_structure_proteines.svg"
   },
   {
@@ -628,7 +628,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يحدث دائماً داخل النواة ولا يرتبط بباقي العضيات."
     ],
     "correctAnswerIndex": 2,
-    "explanation": "الجذر R يرتبط هنا بـ: اختلافه يحدد خصائص الحمض الأميني.",
+    "explanation": "الجذر R هو الجزء المتغير الوحيد بين الأحماض الأمينية العشرين، واختلافه يحدد خصائص الحمض: قطبي أو غير قطبي، حمضي أو قاعدي. باقي المجموعات مشتركة بينها كلها. في البكالوريا: R يفسر تنوع البروتينات.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_06_structure_proteines.svg"
   },
   {
@@ -642,7 +642,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "رابطة تساهمية بين COOH لحمض وNH2 لآخر مع طرح ماء"
     ],
     "correctAnswerIndex": 3,
-    "explanation": "الرابطة الببتيدية يرتبط هنا بـ: رابطة تساهمية بين COOH لحمض وNH2 لآخر مع طرح ماء.",
+    "explanation": "الرابطة الببتيدية رابطة تساهمية قوية تنشأ بين COOH لحمض أميني وNH2 للحمض الموالي مع طرح جزيئة ماء. ليست رابطة هيدروجينية ضعيفة. في البكالوريا: اربطها بتفاعل التكاثف وبالبنية الأولية.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_06_structure_proteines.svg"
   },
   {
@@ -656,7 +656,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يمثل مرحلة جيولوجية عميقة لا علاقة لها بالخلايا."
     ],
     "correctAnswerIndex": 1,
-    "explanation": "عديد الببتيد يرتبط هنا بـ: سلسلة طويلة من أحماض أمينية مترابطة بروابط ببتيدية.",
+    "explanation": "عديد الببتيد سلسلة طويلة من أحماض أمينية مترابطة بروابط ببتيدية، وهو الشكل الخطي السابق للطي. لا يكون بروتيناً وظيفياً إلا بعد اكتسابه بنيته الفراغية. في البكالوريا: ميّز السلسلة الببتيدية عن البروتين الوظيفي.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_06_structure_proteines.svg"
   },
   {
@@ -670,7 +670,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "نهاية السلسلة الحاملة للمجموعة الأمينية الحرة"
     ],
     "correctAnswerIndex": 3,
-    "explanation": "الطرف N يرتبط هنا بـ: نهاية السلسلة الحاملة للمجموعة الأمينية الحرة.",
+    "explanation": "الطرف N هو نهاية السلسلة الحاملة للمجموعة الأمينية الحرة، وهو الطرف الذي تبدأ منه الترجمة وتُكتب منه البنية الأولية. مقابله الطرف C. في البكالوريا: اكتب التسلسل دائماً من N نحو C.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_06_structure_proteines.svg"
   },
   {
@@ -684,7 +684,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "الرابطة الببتيدية هي رابطة هيدروجينية ضعيفة."
     ],
     "correctAnswerIndex": 2,
-    "explanation": "الطرف C يرتبط هنا بـ: نهاية السلسلة الحاملة للمجموعة الكربوكسيلية الحرة.",
+    "explanation": "الطرف C هو نهاية السلسلة الحاملة للمجموعة الكربوكسيلية الحرة، ويقابل آخر حمض أميني مضاف أثناء الترجمة. لا تخلط بينه وبين الطرف N. في البكالوريا: الترجمة تتقدم من N نحو C.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_06_structure_proteines.svg"
   },
   {
@@ -698,7 +698,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "لا يستطيع الجسم تركيبها بكمية كافية"
     ],
     "correctAnswerIndex": 3,
-    "explanation": "الأحماض الأمينية الأساسية يرتبط هنا بـ: لا يستطيع الجسم تركيبها بكمية كافية.",
+    "explanation": "الأحماض الأمينية الأساسية هي التي لا يستطيع الجسم تركيبها بكمية كافية، فيجب توفيرها بالغذاء. الصفة تخص القدرة على التركيب لا الأهمية البيولوجية. في البكالوريا: علّل الحاجة الغذائية بغياب سبيل التركيب.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_06_structure_proteines.svg"
   },
   {
@@ -712,7 +712,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يدل على زيادة غير محدودة في السرعة دون إشباع."
     ],
     "correctAnswerIndex": 2,
-    "explanation": "تفاعل التكاثف يرتبط هنا بـ: ينتج الرابطة الببتيدية مع تحرير H2O.",
+    "explanation": "تفاعل التكاثف هو اتحاد حمضين أمينيين بتشكيل رابطة ببتيدية مع تحرير جزيئة ماء. عكسه التحلل المائي. في البكالوريا: عدد جزيئات الماء المحررة يساوي عدد الروابط أي عدد الأحماض ناقص واحد.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_06_structure_proteines.svg"
   },
   {
@@ -726,7 +726,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يصف ظاهرة مناعية نوعية فقط ولا علاقة له بهذا المحور."
     ],
     "correctAnswerIndex": 1,
-    "explanation": "التحلل المائي يرتبط هنا بـ: يكسر الرابطة الببتيدية بإضافة الماء.",
+    "explanation": "التحلل المائي تفاعل يكسر الرابطة الببتيدية بإضافة جزيئة ماء، فيفكك البروتين إلى أحماضه الأمينية، وهو أساس الهضم. عكس التكاثف تماماً. في البكالوريا: اربطه بالإنزيمات الحالة للبروتين.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_06_structure_proteines.svg"
   },
   {
@@ -740,7 +740,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يدل على زيادة غير محدودة في السرعة دون إشباع."
     ],
     "correctAnswerIndex": 1,
-    "explanation": "البنية الأولية يرتبط هنا بـ: تسلسل خطي للأحماض الأمينية في السلسلة.",
+    "explanation": "البنية الأولية هي التسلسل الخطي للأحماض الأمينية في السلسلة، وهي التي تحدد كل المستويات اللاحقة من البنية. ليست شكلاً فراغياً بل ترتيباً. في البكالوريا: البنية الأولية تُملى مباشرة من المورثة.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_06_structure_proteines.svg"
   },
   {
@@ -754,7 +754,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يحدث دائماً داخل النواة ولا يرتبط بباقي العضيات."
     ],
     "correctAnswerIndex": 1,
-    "explanation": "البنية الثانوية يرتبط هنا بـ: لولب ألفا أو صفيحة بيتا تثبتهما روابط هيدروجينية.",
+    "explanation": "البنية الثانوية انتظام موضعي للسلسلة في شكل لولب ألفا أو صفيحة بيتا، تثبته روابط هيدروجينية بين مجموعات السلسلة الرئيسية. ليست بين الجذور R. في البكالوريا: اذكر الشكلين مع نوع الرابطة.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_06_structure_proteines.svg"
   },
   {
@@ -768,7 +768,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "كل البروتينات لها بنية رباعية مهما كان عدد السلاسل."
     ],
     "correctAnswerIndex": 0,
-    "explanation": "البنية الثالثية يرتبط هنا بـ: الشكل الفراغي العام لسلسلة ببتيدية واحدة.",
+    "explanation": "البنية الثالثية هي الشكل الفراغي العام لسلسلة ببتيدية واحدة بعد انطوائها، وتستقر بروابط بين الجذور R. تخص سلسلة واحدة فقط. في البكالوريا: ميّزها عن الرابعية التي تحتاج عدة سلاسل.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_06_structure_proteines.svg"
   },
   {
@@ -782,7 +782,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "تجمع عدة سلاسل ببتيدية في بروتين وظيفي"
     ],
     "correctAnswerIndex": 3,
-    "explanation": "البنية الرباعية يرتبط هنا بـ: تجمع عدة سلاسل ببتيدية في بروتين وظيفي.",
+    "explanation": "البنية الرابعية تجمع عدة سلاسل ببتيدية، كل واحدة ذات بنية ثالثية، في بروتين وظيفي واحد كالهيموغلوبين. لا تملكها البروتينات أحادية السلسلة. في البكالوريا: وجودها شرطه تعدد تحت الوحدات.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_06_structure_proteines.svg"
   },
   {
@@ -796,7 +796,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "روابط تساهمية بين بقايا السيستئين تثبت البنية الثالثية"
     ],
     "correctAnswerIndex": 3,
-    "explanation": "جسور S-S يرتبط هنا بـ: روابط تساهمية بين بقايا السيستئين تثبت البنية الثالثية.",
+    "explanation": "جسور S-S روابط تساهمية قوية تنشأ بين جذري سيستئين متقاربين فراغياً، وتثبت البنية الثالثية والرابعية. الوحيدة القوية بين روابط الطي. في البكالوريا: سمّها جسر ثنائي الكبريت واذكر السيستئين.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_06_structure_proteines.svg"
   },
   {
@@ -810,7 +810,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يحدث دائماً داخل النواة ولا يرتبط بباقي العضيات."
     ],
     "correctAnswerIndex": 1,
-    "explanation": "التفاعلات الكارهة للماء يرتبط هنا بـ: تدفع جذوراً غير قطبية نحو داخل البروتين.",
+    "explanation": "التفاعلات الكارهة للماء تدفع الجذور غير القطبية نحو داخل البروتين بعيداً عن الوسط المائي، فتساهم في انطوائه واستقراره. ليست روابط تساهمية. في البكالوريا: اربطها بتوضّع الجذور داخل الكرية.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_06_structure_proteines.svg"
   },
   {
@@ -824,7 +824,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "لا يملك بنية رباعية حقيقية"
     ],
     "correctAnswerIndex": 3,
-    "explanation": "بروتين سلسلة واحدة يرتبط هنا بـ: لا يملك بنية رباعية حقيقية.",
+    "explanation": "بروتين مكون من سلسلة ببتيدية واحدة يتوقف عند البنية الثالثية ولا يملك بنية رابعية حقيقية. الرابعية تقتضي اتحاد سلسلتين على الأقل. في البكالوريا: عدد السلاسل هو المعيار الفاصل.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_06_structure_proteines.svg"
   },
   {
@@ -838,7 +838,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يدل على وسط صلب دائماً مهما كانت المعطيات الزلزالية."
     ],
     "correctAnswerIndex": 0,
-    "explanation": "الصفيحة بيتا يرتبط هنا بـ: بنية ثانوية ممتدة تثبتها روابط هيدروجينية بين أجزاء السلسلة.",
+    "explanation": "الصفيحة بيتا بنية ثانوية ممتدة تتجاور فيها أجزاء من السلسلة وتثبتها روابط هيدروجينية بينها. تختلف عن لولب ألفا الملتف حول نفسه. في البكالوريا: كلاهما بنية ثانوية بروابط هيدروجينية.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_06_structure_proteines.svg"
   },
   {
@@ -852,7 +852,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يحدث في كل البروتينات بالطريقة نفسها دون نوعية."
     ],
     "correctAnswerIndex": 0,
-    "explanation": "المبدأ بنية/وظيفة يرتبط هنا بـ: وظيفة البروتين مرتبطة بشكله الفراغي.",
+    "explanation": "مبدأ بنية/وظيفة يعني أن وظيفة البروتين ناتجة مباشرة عن شكله الفراغي: أي تغير في الشكل يغير الوظيفة أو يلغيها. هذا المبدأ يوحد كل الوحدة. في البكالوريا: استشهد بالتمسخ وبفقر الدم المنجلي.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_06_structure_proteines.svg"
   },
   {
@@ -866,7 +866,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يتم فقط في غياب الماء والأيونات."
     ],
     "correctAnswerIndex": 0,
-    "explanation": "الطفرة يرتبط هنا بـ: قد تغير البنية الأولية فتغير الشكل والوظيفة.",
+    "explanation": "الطفرة تغير في تسلسل ADN قد يبدل حمضاً أمينياً في البنية الأولية، فيتغير الطي الفراغي ومن ثم الوظيفة. أثرها يمر عبر البنية لا مباشرة على الوظيفة. في البكالوريا: اربط السلسلة مورثة/بنية/وظيفة.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_06_structure_proteines.svg"
   },
   {
@@ -880,7 +880,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "فقدان البنية الفراغية مع بقاء البنية الأولية غالباً"
     ],
     "correctAnswerIndex": 3,
-    "explanation": "التمسخ يرتبط هنا بـ: فقدان البنية الفراغية مع بقاء البنية الأولية غالباً.",
+    "explanation": "التمسخ فقدان البنية الفراغية للبروتين بفعل الحرارة أو تغير pH، مع بقاء البنية الأولية سليمة لأن الروابط الببتيدية لا تنكسر. ليس تفكيكاً للسلسلة. في البكالوريا: تمسخ = فقدان الشكل لا التسلسل.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_06_structure_proteines.svg"
   },
   {
@@ -894,7 +894,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "هو بنية ثابتة لا تتأثر بالشروط الفيزيائية أبداً."
     ],
     "correctAnswerIndex": 1,
-    "explanation": "الموقع الفعال يرتبط هنا بـ: يتكون من أحماض أمينية متقاربة فراغياً لا خطياً بالضرورة.",
+    "explanation": "الموقع الفعال يتكون من أحماض أمينية قد تكون متباعدة في البنية الأولية لكن الطي يقرّبها فراغياً. لهذا يلغي التمسخ النشاط دون تغيير التسلسل. في البكالوريا: تقارب فراغي لا خطي.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_06_structure_proteines.svg"
   },
   {
@@ -908,7 +908,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يعني توقف كل التحولات الطاقوية في الخلية."
     ],
     "correctAnswerIndex": 2,
-    "explanation": "الطي الصحيح يرتبط هنا بـ: شرط لظهور النشاط البيولوجي للبروتين.",
+    "explanation": "الطي الصحيح شرط لظهور النشاط البيولوجي: بروتين بالتسلسل نفسه لكن مطوي خطأ يبقى غير فعال. النشاط صفة الشكل لا صفة التسلسل وحده. في البكالوريا: علّل انعدام النشاط بفساد الطي.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_06_structure_proteines.svg"
   },
   {
@@ -922,7 +922,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يعني توقف كل التحولات الطاقوية في الخلية."
     ],
     "correctAnswerIndex": 1,
-    "explanation": "البروتين الليفي يرتبط هنا بـ: غالباً يؤدي وظيفة بنيوية مثل الكولاجين.",
+    "explanation": "البروتين الليفي ممتد الشكل، غير ذواب غالباً، ويؤدي وظيفة بنيوية أو دعامية مثل الكولاجين والكيراتين. يقابله البروتين الكروي. في البكالوريا: اربط الشكل الممتد بالوظيفة الميكانيكية.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_06_structure_proteines.svg"
   },
   {
@@ -936,7 +936,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يعني توقف كل التحولات الطاقوية في الخلية."
     ],
     "correctAnswerIndex": 0,
-    "explanation": "البروتين الكروي يرتبط هنا بـ: غالباً يؤدي وظيفة نقل أو تحفيز أو مناعة.",
+    "explanation": "البروتين الكروي منطوٍ على شكل كرية وغالباً ذواب، ويؤدي وظائف نقل أو تحفيز أو مناعة كالهيموغلوبين والإنزيمات والأجسام المضادة. عكسه الليفي البنيوي. في البكالوريا: اربط الشكل بالوظيفة في كلا الصنفين.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_06_structure_proteines.svg"
   },
   {
@@ -950,7 +950,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "قد يغير الروابط المثبتة للبنية الفراغية"
     ],
     "correctAnswerIndex": 3,
-    "explanation": "تغيير pH أو الحرارة يرتبط هنا بـ: قد يغير الروابط المثبتة للبنية الفراغية.",
+    "explanation": "تغيير درجة الحرارة أو pH يكسر الروابط الضعيفة المثبتة للبنية الفراغية (هيدروجينية وشاردية)، فيتشوه البروتين ويفقد نشاطه. الروابط الببتيدية تصمد. في البكالوريا: ميّز الروابط الضعيفة عن التساهمية.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_06_structure_proteines.svg"
   },
   {
@@ -964,7 +964,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "بروتين رباعي ينقل O2 بفضل مجموعات الهيم"
     ],
     "correctAnswerIndex": 3,
-    "explanation": "الهيموغلوبين يرتبط هنا بـ: بروتين رباعي ينقل O2 بفضل مجموعات الهيم.",
+    "explanation": "الهيموغلوبين بروتين ذو بنية رابعية يتكون من أربع سلاسل، كل واحدة مرتبطة بمجموعة هيم تثبّت جزيئة أكسجين. مثال نموذجي على البنية الرابعية. في البكالوريا: أربع سلاسل وأربع مجموعات هيم.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_06_structure_proteines.svg"
   },
   {
@@ -978,7 +978,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "كل البروتينات لها بنية رباعية مهما كان عدد السلاسل."
     ],
     "correctAnswerIndex": 2,
-    "explanation": "مجموعة الهيم يرتبط هنا بـ: تحتوي Fe2+ الذي يرتبط بالأكسجين.",
+    "explanation": "مجموعة الهيم مجموعة غير بروتينية تحتوي حديداً Fe2+ هو الذي يثبّت جزيئة الأكسجين. البروتين وحده لا ينقل O2 دون هذه المجموعة. في البكالوريا: اذكر Fe2+ صراحة عند تفسير النقل.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_06_structure_proteines.svg"
   },
   {
@@ -992,7 +992,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يدل على زيادة غير محدودة في السرعة دون إشباع."
     ],
     "correctAnswerIndex": 0,
-    "explanation": "HbS يرتبط هنا بـ: ينتج عن استبدال Glu بـVal في سلسلة بيتا.",
+    "explanation": "HbS ناتج عن طفرة استبدال تعوّض حمض الغلوتاميك المحب للماء بالفالين الكاره للماء في السلسلة بيتا. تغير جذر واحد يكفي لتغيير سلوك الجزيء. في البكالوريا: حدد الحمضين والسلسلة المعنية.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_06_structure_proteines.svg"
   },
   {
@@ -1006,7 +1006,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يحدث دائماً داخل النواة ولا يرتبط بباقي العضيات."
     ],
     "correctAnswerIndex": 0,
-    "explanation": "فقر الدم المنجلي يرتبط هنا بـ: مثال على أثر طفرة واحدة في البنية والوظيفة.",
+    "explanation": "فقر الدم المنجلي مثال مرجعي على أثر طفرة نقطية واحدة: تغير حمض أميني واحد يشوّه البنية الفراغية فتتبلمر جزيئات Hb وتتشوه الكرية الحمراء. أثر جسيم من تغير ضئيل. في البكالوريا: اربط المورثة بالعرض السريري.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_06_structure_proteines.svg"
   },
   {
@@ -1020,7 +1020,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يعني توقف كل التحولات الطاقوية في الخلية."
     ],
     "correctAnswerIndex": 0,
-    "explanation": "الكولاجين يرتبط هنا بـ: بروتين ليفي ثلاثي السلاسل يعطي مقاومة للأنسجة.",
+    "explanation": "الكولاجين بروتين ليفي مكون من ثلاث سلاسل ببتيدية ملتفة حلزونياً، وهو يمنح الأنسجة الضامة والجلد والأوتار مقاومتها للشد. ليس بروتيناً كروياً ولا ناقلاً ولا محفزاً. في البكالوريا: مثال البروتين البنيوي بامتياز.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_06_structure_proteines.svg"
   },
   {
@@ -1034,7 +1034,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "ينتج مباشرة أجساماً مضادة في كل الحالات."
     ],
     "correctAnswerIndex": 2,
-    "explanation": "الجسم المضاد يرتبط هنا بـ: بروتين نوعي يرتبط بالمستضد عبر الباراتوب.",
+    "explanation": "الجسم المضاد بروتين ذو بنية رابعية على شكل Y، يرتبط بالمستضد عبر باراتوباته المتغيرة. مثال على بروتين وظيفته دفاعية ترتبط بشكله. في البكالوريا: اربط شكل Y بموقعي الارتباط.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_06_structure_proteines.svg"
   },
   {
@@ -1048,7 +1048,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يمثل مرحلة جيولوجية عميقة لا علاقة لها بالخلايا."
     ],
     "correctAnswerIndex": 2,
-    "explanation": "الباراتوب يرتبط هنا بـ: جزء من الجسم المضاد يتكامل مع الحاتمة.",
+    "explanation": "الباراتوب الموقع المتغير من الجسم المضاد الذي يتكامل بنيوياً مع الحاتمة، وهو مصدر نوعية الارتباط. يوجد على الجسم المضاد لا على المستضد. في البكالوريا: باراتوب/حاتمة كالمفتاح والقفل.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_06_structure_proteines.svg"
   },
   {
@@ -1062,7 +1062,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "جزء من المستضد يتعرف عليه الجسم المضاد"
     ],
     "correctAnswerIndex": 3,
-    "explanation": "الحاتمة يرتبط هنا بـ: جزء من المستضد يتعرف عليه الجسم المضاد.",
+    "explanation": "الحاتمة الجزء المحدد من المستضد الذي يتعرف عليه الجسم المضاد ويرتبط به. المستضد الواحد قد يحمل عدة حاتمات مختلفة. في البكالوريا: ميّزها عن الباراتوب المحمول على الجسم المضاد.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_06_structure_proteines.svg"
   },
   {
@@ -1076,7 +1076,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يحدث في كل البروتينات بالطريقة نفسها دون نوعية."
     ],
     "correctAnswerIndex": 2,
-    "explanation": "الإنزيم يرتبط هنا بـ: محفز حيوي غالباً بروتيني يسرع التفاعل دون أن يستهلك.",
+    "explanation": "الإنزيم محفز حيوي بروتيني غالباً، يسرّع التفاعل الكيميائي دون أن يُستهلك فيه ودون أن يغير حصيلته. ميّزه عن الركيزة التي تتحول فعلاً. في البكالوريا: يُسترجع الإنزيم سليماً في نهاية كل دورة.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_07_enzyme.svg"
   },
   {
@@ -1090,7 +1090,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يدل على وسط صلب دائماً مهما كانت المعطيات الزلزالية."
     ],
     "correctAnswerIndex": 1,
-    "explanation": "الركيزة يرتبط هنا بـ: الجزيء الذي يعمل عليه الإنزيم.",
+    "explanation": "الركيزة هي الجزيء الذي يعمل عليه الإنزيم ويرتبط بموقعه الفعال ليتحول إلى ناتج. لا تخلط بينها وبين الناتج الذي يظهر بعد التفاعل. في البكالوريا: حدد الركيزة والناتج قبل تفسير أي منحنى.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_07_enzyme.svg"
   },
   {
@@ -1104,7 +1104,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "الجزيء المتحصل عليه بعد التحول الإنزيمي"
     ],
     "correctAnswerIndex": 3,
-    "explanation": "الناتج يرتبط هنا بـ: الجزيء المتحصل عليه بعد التحول الإنزيمي.",
+    "explanation": "الناتج هو الجزيء المتحصل عليه بعد التحول الإنزيمي للركيزة، وينفصل عن الموقع الفعال محرراً الإنزيم لدورة جديدة. تراكمه يقيس سرعة التفاعل. في البكالوريا: تُقاس السرعة بظهور الناتج أو اختفاء الركيزة.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_07_enzyme.svg"
   },
   {
@@ -1118,7 +1118,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "النشاط الإنزيمي لا يتأثر بـpH أو الحرارة."
     ],
     "correctAnswerIndex": 1,
-    "explanation": "الموقع الفعال يرتبط هنا بـ: منطقة تثبيت الركيزة والتحفيز في الإنزيم.",
+    "explanation": "الموقع الفعال منطقة صغيرة من الإنزيم تثبَّت فيها الركيزة ويتم فيها التحفيز، ويتكون من أحماض أمينية قربها الطي الفراغي. ليس كل سطح الإنزيم. في البكالوريا: صغر الموقع يفسر النوعية.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_07_enzyme.svg"
   },
   {
@@ -1132,7 +1132,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "النشاط الإنزيمي لا يتأثر بـpH أو الحرارة."
     ],
     "correctAnswerIndex": 0,
-    "explanation": "النوعية الإنزيمية يرتبط هنا بـ: مرتبطة بتكامل شكل وشحنات الموقع الفعال مع الركيزة.",
+    "explanation": "النوعية الإنزيمية ناتجة عن التكامل الفراغي والكيميائي بين شكل الموقع الفعال وشحناته وبين الركيزة. ليست ناتجة عن تركيز الإنزيم أو الركيزة. في البكالوريا: علّل النوعية بالتكامل البنيوي.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_07_enzyme.svg"
   },
   {
@@ -1146,7 +1146,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يدل على زيادة غير محدودة في السرعة دون إشباع."
     ],
     "correctAnswerIndex": 0,
-    "explanation": "المحفز يرتبط هنا بـ: يخفض طاقة التنشيط ولا يغير حصيلة التفاعل.",
+    "explanation": "المحفز يخفض طاقة التنشيط اللازمة لانطلاق التفاعل، فيسرّعه، لكنه لا يغير حصيلته ولا اتجاهه ولا يجعل تفاعلاً مستحيلاً ممكناً. يسرّع فقط. في البكالوريا: طاقة التنشيط هي المفتاح.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_07_enzyme.svg"
   },
   {
@@ -1160,7 +1160,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يمثل مرحلة جيولوجية عميقة لا علاقة لها بالخلايا."
     ],
     "correctAnswerIndex": 0,
-    "explanation": "E+S يرتبط هنا بـ: يتحول مؤقتاً إلى معقد ES قبل تحرير الناتج.",
+    "explanation": "التقاء الإنزيم بالركيزة يعطي معقداً مؤقتاً ES قبل تحرير الناتج وعودة الإنزيم حراً. المرحلة الوسيطة ضرورية ولا يمكن القفز عليها. في البكالوريا: اكتب E+S ثم ES ثم E+P.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_07_enzyme.svg"
   },
   {
@@ -1174,7 +1174,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يبقى قابلاً لإعادة الاستعمال"
     ],
     "correctAnswerIndex": 3,
-    "explanation": "الإنزيم بعد التفاعل يرتبط هنا بـ: يبقى قابلاً لإعادة الاستعمال.",
+    "explanation": "يبقى الإنزيم بعد التفاعل سليماً وقابلاً لإعادة الاستعمال في دورة جديدة، لأنه لم يدخل في تركيب الناتج. لهذا تكفي كميات ضئيلة منه. في البكالوريا: عدم الاستهلاك خاصية أساسية للمحفز.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_07_enzyme.svg"
   },
   {
@@ -1188,7 +1188,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "تحدد نشاطه لأنها تحدد شكل الموقع الفعال"
     ],
     "correctAnswerIndex": 3,
-    "explanation": "بنية الإنزيم يرتبط هنا بـ: تحدد نشاطه لأنها تحدد شكل الموقع الفعال.",
+    "explanation": "بنية الإنزيم الفراغية هي التي تحدد شكل موقعه الفعال، ومن ثم نشاطه ونوعيته؛ أي تشويه للبنية يلغي النشاط. هذا تطبيق مباشر لمبدأ بنية/وظيفة. في البكالوريا: اربط التمسخ بفقدان النشاط.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_07_enzyme.svg"
   },
   {
@@ -1202,7 +1202,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يدل على وسط صلب دائماً مهما كانت المعطيات الزلزالية."
     ],
     "correctAnswerIndex": 1,
-    "explanation": "النوعية المطلقة يرتبط هنا بـ: إنزيم لا يقبل إلا ركيزة محددة جداً.",
+    "explanation": "النوعية المطلقة صفة إنزيم لا يقبل إلا ركيزة واحدة محددة جداً، خلافاً لإنزيمات ذات نوعية واسعة تقبل ركائز متشابهة. تخص الركيزة لا نمط التفاعل. في البكالوريا: ميّز نوعية الركيزة عن نوعية التفاعل.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_07_enzyme.svg"
   },
   {
@@ -1216,7 +1216,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يستعمل CO2 كمستقبل نهائي للإلكترونات في التنفس."
     ],
     "correctAnswerIndex": 2,
-    "explanation": "نوعية التفاعل يرتبط هنا بـ: إنزيم يحفز نمط تفاعل معيناً.",
+    "explanation": "نوعية التفاعل تعني أن الإنزيم يحفز نمطاً واحداً من التحول (أكسدة، حلمهة، نقل...) مهما تعددت ركائزه. ميّزها عن نوعية الركيزة التي تخص الجزيء المعالَج. في البكالوريا: نوعيتان مختلفتان يجب التمييز بينهما.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_07_enzyme.svg"
   },
   {
@@ -1230,7 +1230,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "زيادة الركيزة تلغي دائماً أثر كل المثبطات."
     ],
     "correctAnswerIndex": 2,
-    "explanation": "تسمية -ase يرتبط هنا بـ: كثير من الإنزيمات تنتهي بهذه اللاحقة.",
+    "explanation": "اللاحقة -ase تُلحق باسم الركيزة أو نمط التفاعل لتسمية كثير من الإنزيمات، كالأميلاز والليباز. هي اصطلاح تسمية لا معيار وظيفي مطلق. في البكالوريا: استعملها للاستدلال على الركيزة المحتملة.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_07_enzyme.svg"
   },
   {
@@ -1244,7 +1244,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "زيادة الركيزة تلغي دائماً أثر كل المثبطات."
     ],
     "correctAnswerIndex": 2,
-    "explanation": "معقد ES يرتبط هنا بـ: ارتباط مؤقت بين الإنزيم والركيزة.",
+    "explanation": "معقد ES ارتباط مؤقت وقابل للانعكاس بين الإنزيم والركيزة داخل الموقع الفعال، وهو المرحلة التي يتم فيها إضعاف الروابط قبل التحول. ليس ارتباطاً دائماً. في البكالوريا: مؤقت وضروري في آن.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_07_enzyme.svg"
   },
   {
@@ -1258,7 +1258,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يعني توقف كل التحولات الطاقوية في الخلية."
     ],
     "correctAnswerIndex": 2,
-    "explanation": "نموذج القفل والمفتاح يرتبط هنا بـ: يفترض موقعاً فعالاً ثابتاً مكملاً للركيزة.",
+    "explanation": "نموذج القفل والمفتاح يفترض موقعاً فعالاً جامداً مكملاً مسبقاً لشكل الركيزة. تجاوزه نموذج التلاؤم المحفز الذي يجعل الموقع مرناً. في البكالوريا: اذكره كنموذج تاريخي أول لفيشر.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_07_enzyme.svg"
   },
   {
@@ -1272,7 +1272,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يتغير فيه شكل الموقع الفعال عند اقتراب الركيزة"
     ],
     "correctAnswerIndex": 3,
-    "explanation": "التلاؤم المحفز يرتبط هنا بـ: يتغير فيه شكل الموقع الفعال عند اقتراب الركيزة.",
+    "explanation": "التلاؤم المحفز يفترض أن الموقع الفعال مرن يتغير شكله عند اقتراب الركيزة ليحتضنها بدقة. هذا يصحح جمود نموذج القفل والمفتاح. في البكالوريا: انسبه إلى كوشلاند واذكر المرونة.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_07_enzyme.svg"
   },
   {
@@ -1286,7 +1286,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يستعمل CO2 كمستقبل نهائي للإلكترونات في التنفس."
     ],
     "correctAnswerIndex": 1,
-    "explanation": "مرحلة التحرير يرتبط هنا بـ: ينفصل الناتج ويبقى الإنزيم دون استهلاك.",
+    "explanation": "مرحلة التحرير هي انفصال الناتج عن الموقع الفعال وعودة الإنزيم إلى حالته الأصلية دون استهلاك، جاهزاً لدورة جديدة. آخر مراحل الدورة الإنزيمية. في البكالوريا: اربطها بإمكانية تكرار الدورة.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_07_enzyme.svg"
   },
   {
@@ -1300,7 +1300,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يمثل مرحلة جيولوجية عميقة لا علاقة لها بالخلايا."
     ],
     "correctAnswerIndex": 0,
-    "explanation": "موقع الارتباط يرتبط هنا بـ: جزء من الموقع الفعال يثبت الركيزة.",
+    "explanation": "موقع الارتباط جزء من الموقع الفعال مهمته تثبيت الركيزة في الوضعية الصحيحة، بينما يتكفل موقع التحفيز بالتحول الكيميائي. الجزءان متكاملان لا مترادفان. في البكالوريا: ميّز التثبيت عن التحفيز.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_07_enzyme.svg"
   },
   {
@@ -1314,7 +1314,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يتم فقط في غياب الماء والأيونات."
     ],
     "correctAnswerIndex": 2,
-    "explanation": "موقع التحفيز يرتبط هنا بـ: جزء ينجز التحول الكيميائي للركيزة.",
+    "explanation": "موقع التحفيز جزء من الموقع الفعال ينجز التحول الكيميائي للركيزة بعد تثبيتها. لا يكفي وحده: التثبيت الصحيح شرط سابق. في البكالوريا: اذكر الجزأين معاً عند وصف الموقع الفعال.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_07_enzyme.svg"
   },
   {
@@ -1328,7 +1328,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يدل على وسط صلب دائماً مهما كانت المعطيات الزلزالية."
     ],
     "correctAnswerIndex": 1,
-    "explanation": "Koshland يرتبط هنا بـ: يرتبط اسمه بنموذج التلاؤم المحفز.",
+    "explanation": "كوشلاند صاحب نموذج التلاؤم المحفز الذي يفسر مرونة الموقع الفعال وتكيّفه مع الركيزة. لا تنسب إليه نموذج القفل والمفتاح. في البكالوريا: كوشلاند = مرونة، فيشر = جمود.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_07_enzyme.svg"
   },
   {
@@ -1342,7 +1342,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يرتبط اسمه بنموذج القفل والمفتاح"
     ],
     "correctAnswerIndex": 3,
-    "explanation": "Fischer يرتبط هنا بـ: يرتبط اسمه بنموذج القفل والمفتاح.",
+    "explanation": "فيشر صاحب نموذج القفل والمفتاح، وهو أول تفسير مقترح للنوعية الإنزيمية، ويقوم على تكامل شكلي جامد بين الموقع الفعال والركيزة. لا تنسب إليه التلاؤم المحفز. في البكالوريا: فيشر = جمود، كوشلاند = مرونة.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_07_enzyme.svg"
   },
   {
@@ -1356,7 +1356,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يتم فقط في غياب الماء والأيونات."
     ],
     "correctAnswerIndex": 0,
-    "explanation": "مرونة الإنزيم يرتبط هنا بـ: تفسر قبول ركائز متشابهة في بعض الحالات.",
+    "explanation": "مرونة الإنزيم تفسر قبول بعض الإنزيمات لركائز متشابهة البنية، وهي حجة لصالح نموذج التلاؤم المحفز. لا تعني غياب النوعية بل تدرّجها. في البكالوريا: مرونة نسبية لا انعدام نوعية.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_07_enzyme.svg"
   },
   {
@@ -1370,7 +1370,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "حالة انتقالية قبل تحرير الناتج"
     ],
     "correctAnswerIndex": 3,
-    "explanation": "المعقد EP يرتبط هنا بـ: حالة انتقالية قبل تحرير الناتج.",
+    "explanation": "معقد EP حالة انتقالية يكون فيها الناتج مشكّلاً لكنه ما يزال مرتبطاً بالإنزيم قبل تحريره. مرحلة تلي التحفيز وتسبق التحرير. في البكالوريا: أدرجه في التسلسل E+S، ES، EP، E+P.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_07_enzyme.svg"
   },
   {
@@ -1384,7 +1384,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يدل على وسط صلب دائماً مهما كانت المعطيات الزلزالية."
     ],
     "correctAnswerIndex": 1,
-    "explanation": "تكرار الدورة يرتبط هنا بـ: يفسر قدرة كمية قليلة من الإنزيم على تحويل ركائز كثيرة.",
+    "explanation": "تكرار الدورة يفسر قدرة كمية ضئيلة من الإنزيم على تحويل كمية كبيرة من الركيزة، لأنه يُسترجع سليماً بعد كل تحويل. لا علاقة بمضاعفة الإنزيم. في البكالوريا: اربطه بعدم استهلاك المحفز.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_07_enzyme.svg"
   },
   {
@@ -1398,7 +1398,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يُستهلك الإنزيم كلياً في نهاية التفاعل."
     ],
     "correctAnswerIndex": 1,
-    "explanation": "pH الأمثل يرتبط هنا بـ: قيمة يكون عندها النشاط الإنزيمي أعظمياً.",
+    "explanation": "pH الأمثل هو القيمة التي يبلغ عندها النشاط الإنزيمي أعظم قيمة، وتختلف من إنزيم لآخر حسب وسط عمله. ليست القيمة نفسها لكل الإنزيمات. في البكالوريا: اربط pH الأمثل بالوسط الفيزيولوجي.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_07_enzyme.svg"
   },
   {
@@ -1412,7 +1412,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "إنزيم معدي يعمل جيداً في وسط حمضي قوي"
     ],
     "correctAnswerIndex": 3,
-    "explanation": "البيبسين يرتبط هنا بـ: إنزيم معدي يعمل جيداً في وسط حمضي قوي.",
+    "explanation": "البيبسين إنزيم معدي يعمل بأمثل نشاط في وسط حمضي قوي قرب pH يساوي 2، لأنه متكيف مع العصارة المعدية. مثال معاكس للأميلاز اللعابي. في البكالوريا: اربط الإنزيم بوسطه الطبيعي.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_07_enzyme.svg"
   },
   {
@@ -1426,7 +1426,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يستعمل CO2 كمستقبل نهائي للإلكترونات في التنفس."
     ],
     "correctAnswerIndex": 2,
-    "explanation": "الأميلاز اللعابي يرتبط هنا بـ: ينشط قرب pH متعادل.",
+    "explanation": "الأميلاز اللعابي ينشط قرب pH متعادل موافق للعاب، ويتوقف نشاطه في الوسط المعدي الحمضي. قارنه بالبيبسين لفهم أثر pH. في البكالوريا: مثال نموذجي على اختلاف pH الأمثل.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_07_enzyme.svg"
   },
   {
@@ -1440,7 +1440,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "درجة تحقق أكبر نشاط قبل بداية التمسخ"
     ],
     "correctAnswerIndex": 3,
-    "explanation": "الحرارة المثلى يرتبط هنا بـ: درجة تحقق أكبر نشاط قبل بداية التمسخ.",
+    "explanation": "الحرارة المثلى هي الدرجة التي يحقق عندها الإنزيم أكبر نشاط، وتقع قبل عتبة بدء التمسخ مباشرة. تجاوزها يخفض النشاط بسرعة. في البكالوريا: المنحنى يصعد ثم ينهار فجأة.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_07_enzyme.svg"
   },
   {
@@ -1454,7 +1454,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "ينتج مباشرة أجساماً مضادة في كل الحالات."
     ],
     "correctAnswerIndex": 0,
-    "explanation": "الحرارة المرتفعة يرتبط هنا بـ: تكسر روابط البنية الفراغية فتسبب تمسخاً.",
+    "explanation": "الحرارة المرتفعة تكسر الروابط الضعيفة المثبتة للبنية الفراغية فتسبب تمسخ الإنزيم وتشويه موقعه الفعال. لا تسرّع التفاعل إلى ما لا نهاية. في البكالوريا: علّل انهيار المنحنى بالتمسخ.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_07_enzyme.svg"
   },
   {
@@ -1468,7 +1468,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "ينتج مباشرة أجساماً مضادة في كل الحالات."
     ],
     "correctAnswerIndex": 2,
-    "explanation": "البرودة يرتبط هنا بـ: تبطئ النشاط غالباً دون تمسخ دائم.",
+    "explanation": "البرودة تبطئ النشاط الإنزيمي بخفض الحركية الجزيئية، لكنها لا تسبب تمسخاً دائماً غالباً: يستعيد الإنزيم نشاطه عند عودة الحرارة. أثر عكوسي. في البكالوريا: ميّز الإبطاء العكوسي عن التمسخ.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_07_enzyme.svg"
   },
   {
@@ -1482,7 +1482,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يصف ظاهرة مناعية نوعية فقط ولا علاقة له بهذا المحور."
     ],
     "correctAnswerIndex": 1,
-    "explanation": "تغير pH يرتبط هنا بـ: يغير شحنات الأحماض الأمينية في الموقع الفعال.",
+    "explanation": "تغير pH يغير حالة شحن الأحماض الأمينية في الموقع الفعال، فيختل تكامله مع الركيزة وينخفض النشاط. الأثر كيميائي على الشحنات لا حراري. في البكالوريا: اربط pH بشحنات الجذور R.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_07_enzyme.svg"
   },
   {
@@ -1496,7 +1496,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يصف ظاهرة مناعية نوعية فقط ولا علاقة له بهذا المحور."
     ],
     "correctAnswerIndex": 1,
-    "explanation": "منحنى pH يرتبط هنا بـ: غالباً جرسي لأن لكل إنزيم pH أمثل.",
+    "explanation": "منحنى النشاط بدلالة pH جرسي الشكل: يرتفع نحو قمة عند pH الأمثل ثم ينخفض على الجانبين. لكل إنزيم قمته الخاصة. في البكالوريا: صف الشكل الجرسي وحدد القمة.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_07_enzyme.svg"
   },
   {
@@ -1510,7 +1510,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "غالباً تعمل قرب 37°C باستثناءات حسب النسيج"
     ],
     "correctAnswerIndex": 3,
-    "explanation": "إنزيمات الإنسان يرتبط هنا بـ: غالباً تعمل قرب 37°C باستثناءات حسب النسيج.",
+    "explanation": "إنزيمات الإنسان تعمل غالباً بأمثل نشاط قرب 37 درجة، وهي حرارة الجسم، مع استثناءات حسب النسيج والموقع. ليست القيمة نفسها لكل الكائنات. في البكالوريا: اربط الحرارة المثلى بالحرارة الفيزيولوجية.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_07_enzyme.svg"
   },
   {
@@ -1524,7 +1524,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يمثل مرحلة جيولوجية عميقة لا علاقة لها بالخلايا."
     ],
     "correctAnswerIndex": 1,
-    "explanation": "تمسخ حراري يرتبط هنا بـ: غالباً غير عكوسي عند درجات مرتفعة جداً.",
+    "explanation": "التمسخ الحراري عند درجات مرتفعة جداً غير عكوسي غالباً: لا يستعيد الإنزيم بنيته ولا نشاطه بالتبريد. عكس أثر البرودة العكوسي. في البكالوريا: ميّز الأثر النهائي عن الأثر المؤقت.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_07_enzyme.svg"
   },
   {
@@ -1538,7 +1538,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "قد يخفض النشاط دون فقدان نهائي"
     ],
     "correctAnswerIndex": 3,
-    "explanation": "ابتعاد متوسط عن pH الأمثل يرتبط هنا بـ: قد يخفض النشاط دون فقدان نهائي.",
+    "explanation": "الابتعاد المتوسط عن pH الأمثل يخفض النشاط دون أن يلغيه نهائياً، ويكون الأثر عكوسياً عادةً بالعودة إلى pH الأمثل. الابتعاد الشديد وحده يمسخ الإنزيم. في البكالوريا: ميّز درجة الانحراف.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_07_enzyme.svg"
   },
   {
@@ -1552,7 +1552,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يدل على زيادة غير محدودة في السرعة دون إشباع."
     ],
     "correctAnswerIndex": 0,
-    "explanation": "زيادة تركيز الركيزة يرتبط هنا بـ: ترفع السرعة حتى إشباع المواقع الفعالة.",
+    "explanation": "زيادة تركيز الركيزة ترفع السرعة الابتدائية ما دامت مواقع فعالة شاغرة، ثم تستقر السرعة عند الإشباع. الزيادة ليست خطية إلى ما لا نهاية. في البكالوريا: صف المنحنى المتزايد ثم الأفقي.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_07_enzyme.svg"
   },
   {
@@ -1566,7 +1566,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يتم فقط في غياب الماء والأيونات."
     ],
     "correctAnswerIndex": 0,
-    "explanation": "Vmax يرتبط هنا بـ: سرعة قصوى عندما تكون كل المواقع الفعالة مشغولة تقريباً.",
+    "explanation": "Vmax السرعة القصوى التي يبلغها التفاعل عندما تكون كل المواقع الفعالة مشغولة تقريباً بالركيزة. لا تُتجاوز إلا بزيادة كمية الإنزيم. في البكالوريا: اربط ثبات Vmax بالإشباع.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_07_enzyme.svg"
   },
   {
@@ -1580,7 +1580,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يحدث في كل البروتينات بالطريقة نفسها دون نوعية."
     ],
     "correctAnswerIndex": 1,
-    "explanation": "Km يرتبط هنا بـ: تركيز الركيزة عند نصف Vmax ويدل على الألفة.",
+    "explanation": "Km هو تركيز الركيزة الموافق لنصف Vmax، وهو مؤشر على ألفة الإنزيم للركيزة. لا تخلطه بـVmax التي تقيس السرعة. في البكالوريا: Km منخفض يعني ألفة عالية.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_07_enzyme.svg"
   },
   {
@@ -1594,7 +1594,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يستعمل CO2 كمستقبل نهائي للإلكترونات في التنفس."
     ],
     "correctAnswerIndex": 2,
-    "explanation": "الإشباع الإنزيمي يرتبط هنا بـ: حالة انشغال معظم المواقع الفعالة بالركيزة.",
+    "explanation": "الإشباع الإنزيمي حالة تكون فيها معظم المواقع الفعالة مشغولة، فلا ترفع زيادة الركيزة السرعة أكثر. المحدِّد حينها هو عدد جزيئات الإنزيم. في البكالوريا: علّل الجزء الأفقي من المنحنى.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_07_enzyme.svg"
   },
   {
@@ -1608,7 +1608,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يمثل تباعد قارتين بعد اكتمال التصادم مباشرة."
     ],
     "correctAnswerIndex": 0,
-    "explanation": "المثبط التنافسي يرتبط هنا بـ: ينافس الركيزة على الموقع الفعال.",
+    "explanation": "المثبط التنافسي جزيء يشبه الركيزة بنيوياً فينافسها على الموقع الفعال نفسه، ويقلل السرعة دون أن يفسد الإنزيم. لا يثبت خارج الموقع. في البكالوريا: تشابه بنيوي مع الركيزة.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_07_enzyme.svg"
   },
   {
@@ -1622,7 +1622,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يمثل تباعد قارتين بعد اكتمال التصادم مباشرة."
     ],
     "correctAnswerIndex": 1,
-    "explanation": "زيادة الركيزة يرتبط هنا بـ: تقلل أثر المثبط التنافسي نسبياً.",
+    "explanation": "زيادة تركيز الركيزة تقلل نسبياً أثر المثبط التنافسي، لأن احتمال احتلال الركيزة للموقع الفعال يرتفع. هذا الاختبار يميز التثبيط التنافسي من غيره. في البكالوريا: التنافسي يُرفَع بالركيزة، غير التنافسي لا.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_07_enzyme.svg"
   },
   {
@@ -1636,7 +1636,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "هو بنية ثابتة لا تتأثر بالشروط الفيزيائية أبداً."
     ],
     "correctAnswerIndex": 2,
-    "explanation": "المثبط غير التنافسي يرتبط هنا بـ: يثبت غالباً خارج الموقع الفعال ويغير النشاط.",
+    "explanation": "المثبط غير التنافسي يثبت غالباً خارج الموقع الفعال فيغير البنية الفراغية للإنزيم ويخفض نشاطه. لا ترفع زيادة الركيزة أثره لأنه لا ينافسها. في البكالوريا: التمييز يقوم على أثر زيادة الركيزة.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_07_enzyme.svg"
   },
   {
@@ -1650,7 +1650,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "ترفع السرعة إذا كانت الركيزة متوفرة"
     ],
     "correctAnswerIndex": 3,
-    "explanation": "زيادة الإنزيم يرتبط هنا بـ: ترفع السرعة إذا كانت الركيزة متوفرة.",
+    "explanation": "زيادة كمية الإنزيم ترفع سرعة التفاعل شرط توفر الركيزة بكمية كافية؛ فإن نفدت الركيزة لم تنفع الزيادة. عامل محدِّد يجب دائماً تحديده. في البكالوريا: حدد العامل المحدِّد قبل التفسير.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_07_enzyme.svg"
   },
   {
@@ -1664,7 +1664,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "ترتبط عادة بقيمة Km منخفضة"
     ],
     "correctAnswerIndex": 3,
-    "explanation": "الألفة العالية يرتبط هنا بـ: ترتبط عادة بقيمة Km منخفضة.",
+    "explanation": "الألفة العالية للإنزيم تجاه ركيزته تعني بلوغ نصف السرعة القصوى عند تركيز ضعيف، أي قيمة Km منخفضة. العلاقة عكسية بين Km والألفة. في البكالوريا: Km صغير = ألفة كبيرة.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_07_enzyme.svg"
   },
   {
@@ -1678,7 +1678,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "هو بنية ثابتة لا تتأثر بالشروط الفيزيائية أبداً."
     ],
     "correctAnswerIndex": 0,
-    "explanation": "السيانيد يرتبط هنا بـ: مثال لمثبط يؤثر في السلسلة التنفسية.",
+    "explanation": "السيانيد مثال على مثبط يعطل السلسلة التنفسية بتثبيته على إنزيم نقل الإلكترونات، فيوقف إنتاج ATP. أثره سام وسريع. في البكالوريا: مثال مرجعي على التثبيط الإنزيمي في الاستقلاب.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_07_enzyme.svg"
   },
   {
@@ -1692,7 +1692,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يمثل مرحلة جيولوجية عميقة لا علاقة لها بالخلايا."
     ],
     "correctAnswerIndex": 2,
-    "explanation": "التثبيط العكوسي يرتبط هنا بـ: يزول غالباً بزوال المثبط.",
+    "explanation": "التثبيط العكوسي يزول بزوال المثبط أو بغسله، فيستعيد الإنزيم نشاطه كاملاً لأن ارتباطه كان ضعيفاً. يقابله التثبيط غير العكوسي بارتباط تساهمي. في البكالوريا: طبيعة الرابطة تحدد العكوسية.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_07_enzyme.svg"
   },
   {
