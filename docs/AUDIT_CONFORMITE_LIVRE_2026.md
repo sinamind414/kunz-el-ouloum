@@ -50,11 +50,11 @@ L'arrivée du corpus documentaire change la nature de l'audit. Jusqu'ici, la con
 
 **Le défaut le plus grave se trouve toutefois dans l'application, et il est structurel.** Sur 508 QCM, **500 — soit 98 % — délivrent une explication au gabarit automatique « X يرتبط هنا بـ : Y », et dans les 500 cas l'explication recopie littéralement le terme mis entre guillemets dans l'énoncé.** L'explication ne justifie rien : elle reformule la question. Longueur médiane 11 mots ; 321 QCM sur 508 tiennent en moins de 12 mots. Or l'application est un tuteur **hors-ligne, sans LLM ni API** : l'explication statique est le seul feedback qu'un élève puisse recevoir après une erreur. Le circuit pédagogique est donc ouvert — l'élève apprend qu'il s'est trompé, jamais pourquoi. Le défaut se propage mécaniquement aux 500 flashcards, dérivées du même champ par un simple `.map()`. **Gravité : Critique.** C'est le point qui doit être traité avant tout autre.
 
-**Trois autres écarts majeurs se confirment.** Le générateur d'épreuves BAC produit des examens à 28, 20 et 34 points selon le domaine, alors que l'épreuve algérienne est notée sur 20 (15 + 5) ; il génère de surcroît des sujets mono-domaine quand l'épreuve réelle croise obligatoirement deux domaines différents. 30 % des QCM sont méta-scolaires — ils interrogent la définition d'une notion plutôt que son exploitation dans un document expérimental, à rebours de la nature même du BAC algérien. Enfin 57 QCM des unités 6 à 11 affichent un schéma appartenant à un autre domaine, l'unité 11 étant touchée à 93 %.
+**Trois autres écarts majeurs se confirment.** Le générateur d'épreuves BAC produit des examens à 28, 20 et 34 points selon le domaine, alors que l'épreuve algérienne est notée sur 20 (15 + 5), et des sujets mono-domaine quand l'épreuve réelle croise obligatoirement deux domaines — mais **ce générateur n'est appelé nulle part** : c'est du code mort, requalifié en P3 (§3.1). 30 % des QCM sont méta-scolaires — ils interrogent la définition d'une notion plutôt que son exploitation dans un document expérimental, à rebours de la nature même du BAC algérien. Enfin 57 QCM affichaient un schéma d'un autre domaine — tous concentrés sur l'unité 11, touchée à 93 % ; **ce dernier point a été corrigé au cours de l'audit** (commit `e130475`).
 
 **Un point positif inattendu mérite d'être souligné, car il inverse un reproche courant :** le corpus de leçons HTML de l'application est **plus complet que le livre de référence**. Le mapping des 44 leçons sur les 11 unités officielles est intégralement cohérent, sans trou ni doublon, et l'application traite des notions que le livre omet — le système ABO et le facteur Rhésus, absents du livre (0 occurrence), font l'objet d'une leçon dédiée. Sur le plan de la couverture, l'application ne dérive pas du programme : elle le dépasse.
 
-**Verdict global — Volet A : 6,4/10. Volet B : 5,1/10.** L'application repose sur des fondations pédagogiques sérieuses (méthodologie des 6 verbes BAC, zéro doublon dans le corpus QCM, couverture complète du programme) mais sa couche d'évaluation — QCM, explications, flashcards, générateur d'épreuves — a été produite par génération automatique sans relecture experte, et c'est là que tout se joue. Les trois correctifs P0 identifiés représentent un effort estimé de **12 à 18 jours-homme** et transformeraient l'outil d'un quiz de reconnaissance en un véritable tuteur d'entraînement.
+**Verdict global — Volet A : 6,4/10. Volet B : 5,4/10** *(5,1 à l'ouverture de l'audit ; +0,3 acquis par le Sprint 0).* L'application repose sur des fondations pédagogiques sérieuses (méthodologie des 6 verbes BAC, zéro doublon dans le corpus QCM, couverture complète du programme) mais sa couche d'évaluation — QCM, explications, flashcards, générateur d'épreuves — a été produite par génération automatique sans relecture experte, et c'est là que tout se joue. Après vérification par exécution, **un seul P0 subsiste** : la qualité des explications (constat #1). Deux des quatre P0 annoncés initialement ont été requalifiés — l'un invalidé, l'autre neutralisé par du code mort (§3.1) — et un troisième est corrigé depuis (commit `e130475`). Cette réduction est à la fois une bonne et une mauvaise nouvelle : le chantier est plus étroit qu'il n'y paraissait, mais il se concentre entièrement sur le point le plus coûteux à réparer, **la réécriture experte des 508 explications**, estimée à 10-12 jours-homme. C'est ce seul chantier qui sépare un quiz de reconnaissance d'un véritable tuteur d'entraînement.
 
 ---
 
@@ -413,12 +413,12 @@ L'application expose **23 fichiers HTML** dans `public/lessons/` : 22 fichiers �
 
 | | |
 |---|---|
-| **Gravité** | **Majeur** (3 leçons interactives / 11 unités · 10 unités verrouillées) |
-| **Preuve** | `ACTIVE_LESSONS` toutes `d1-u1` ; `grep -c "isLocked: true"` → 10 |
-| **Impact apprenant** | L'expérience promise n'existe que sur 1/11 du programme ; verrouillage bloquant en période de révision |
-| **Recommandation** | 1) **Déverrouiller les 11 unités** (P0, effort quasi nul) ou rendre le déverrouillage explicite et contournable. 2) Étendre le format interactif à au moins 1 leçon par unité, en priorité D1-IV, D1-V, D3-III. |
-| **Effort** | Faible (déverrouillage) / Élevé (interactivité : 20-30 j) |
-| **Priorité** | **P0** (déverrouillage) / **P2** (interactivité) |
+| **Gravité** | **Majeur** (3 leçons interactives / 11 unités) · *le grief « 10 unités verrouillées » est invalidé, voir §3.1* |
+| **Preuve** | `ACTIVE_LESSONS` toutes `d1-u1`. Le `grep -c "isLocked: true"` → 10 mesure l'**état initial** de `unitCatalog.ts` : `App.tsx:268` déverrouille l'unité `n+1` dès 60 % de réussite. |
+| **Impact apprenant** | L'expérience promise n'existe que sur 1/11 du programme. La progression séquentielle peut gêner une révision ciblée en fin d'année, mais elle ne bloque pas. |
+| **Recommandation** | 1) Étendre le format interactif à au moins 1 leçon par unité, en priorité D1-IV, D1-V, D3-III. 2) Offrir un mode « révision libre » ouvrant toutes les unités en fin d'année (confort, non bloquant). |
+| **Effort** | Élevé (interactivité : 20-30 j) / Faible (mode révision libre) |
+| **Priorité** | **P2** (interactivité) / **P3** (mode révision libre) |
 
 ---
 
@@ -442,6 +442,8 @@ Parsing par objets complets sur `src/quizCorpus.ts` (508 QCM ; le README en anno
 Le gabarit fonctionne ainsi : la question demande « quelle description correspond à **«الغابرو»** ? », et l'explication répond « **الغابرو** يرتبط هنا بـ : [libellé de la bonne réponse] ». **L'explication reformule la question en y insérant la réponse.** Elle n'apporte aucun élément de raisonnement, aucune cause, aucun mécanisme, aucun contre-exemple, aucune levée de confusion avec les notions voisines.
 
 Ce défaut serait secondaire dans une application connectée à un modèle de langage, capable de générer une explication à la volée. **Il est critique ici.** Le README pose l'architecture : *tuteur local, 100 % hors-ligne, sans LLM ni API*. L'explication statique n'est pas une aide parmi d'autres — **c'est le seul feedback que l'élève puisse jamais recevoir après une erreur.** Le circuit pédagogique fondamental (erreur → diagnostic → correction → consolidation) est ouvert au deuxième maillon, pour 98 % du corpus.
+
+**Mesure affinée pendant le Sprint 0.** L'écriture du test de non-régression a permis de préciser l'ampleur du défaut, et elle est pire qu'estimé en première lecture : au-delà des 500 explications circulaires, **les 508 explications du corpus font moins de 25 mots — sans exception**. La plus longue en compte 22, la médiane 11. Aucune explication du produit n'atteint donc le volume minimal d'une justification exploitable. Ce n'est pas un problème de qualité inégale à corriger par retouches : c'est **l'absence structurelle de contenu explicatif**, qui impose une réécriture et non une révision.
 
 ### Propagation
 
@@ -499,7 +501,7 @@ Nuance à porter au crédit du produit : le QCM reste un excellent outil de *con
 
 ---
 
-## B4. MAJEUR — Barème BAC non conforme
+## B4. MAJEUR — Barème BAC non conforme ⚠️ *(requalifié P3 : code mort)*
 
 ### Mesure — par exécution du générateur
 
@@ -517,19 +519,23 @@ Les examens générés sont **mono-domaine**. L'épreuve officielle croise oblig
 
 Les durées sont également incohérentes entre elles (50 / 80 / 110 min pour une épreuve de durée fixe).
 
+**Requalification décisive — ce générateur n'est jamais exécuté.** La recherche de `bacGenerator|generateBacExam|BacExam` sur l'intégralité du dépôt ne renvoie **aucune référence** : `src/utils/bacGenerator.ts` (69 lignes) est du **code mort**. Le bouton « تحدي BAC » appelle en réalité `onLaunchQuiz(unit.id)` (`TrainingView.tsx:91-101,478-503`) et lance un simple quiz d'unité. Aucun élève n'a jamais vu ce barème à 28 points.
+
+Le constat descend donc de P0 à **P3**. Il conserve une valeur diagnostique : la cause racine n'est pas une erreur de pondération mais l'**indigence du corpus** — le générateur retient *toutes* les `KNOWLEDGE_CARDS` du domaine et *tous* les `BOSS_FIGHT_SCENARIOS` (10 cartes et 7 scénarios en tout) faute de matière suffisante pour échantillonner. Corriger le barème sans enrichir ce corpus produirait un sujet juste sur 20 points mais toujours indigent. À arbitrer : supprimer le fichier, ou le câbler après avoir étoffé le corpus.
+
 | | |
 |---|---|
-| **Gravité** | **Majeur** |
-| **Preuve** | Exécution du générateur ; barème 4/6 sans plafond dans `bacGenerator.ts` |
-| **Impact apprenant** | Aucun repère de notation fiable. Un « 24/28 » n'a pas d'équivalent sur 20. Gestion du temps faussée. |
-| **Impact business** | Défaut vérifiable en 30 secondes par un enseignant — décrédibilise la fonctionnalité la plus vendeuse |
-| **Recommandation** | 1) Normaliser à 20 points : partie 1 = 15 (2 exercices), partie 2 = 5 (intégration). 2) **Forcer le tirage sur 2 domaines distincts.** 3) Durée fixe conforme à l'épreuve. 4) Test unitaire : « tout sujet généré totalise exactement 20 points et couvre 2 domaines ». |
-| **Effort** | **Faible à moyen** (2-3 j) — pondération et contrainte de tirage |
-| **Priorité** | 🔴 **P0** |
+| **Gravité** | **Majeur** sur le papier / **Nul en pratique** (jamais exécuté) |
+| **Preuve** | Exécution du générateur : 28/20/34 pts. Mais `grep -rn "bacGenerator\|generateBacExam\|BacExam"` → **0 référence** dans le dépôt. |
+| **Impact apprenant** | **Aucun aujourd'hui** : le code n'est pas atteignable. Le risque n'existerait que si le générateur était câblé en l'état. |
+| **Impact business** | Faible. En revanche, la fonctionnalité « épreuve BAC blanche » — la plus vendeuse — n'existe tout simplement pas : c'est **ce manque-là**, et non le barème, qui est à traiter. |
+| **Recommandation** | 1) **Trancher d'abord :** supprimer le code mort ou décider de livrer la fonctionnalité. 2) Si livrée : enrichir le corpus (cartes et scénarios), normaliser à 20 pts (15 + 5), forcer le tirage bi-domaine, fixer la durée, et verrouiller par un test « tout sujet généré totalise 20 points et couvre 2 domaines ». |
+| **Effort** | **Très faible** (suppression) / **Élevé** (livrer la fonctionnalité : enrichir le corpus domine le coût) |
+| **Priorité** | **P3** *(requalifié — voir §3.1)* |
 
 ---
 
-## B5. MAJEUR — 57 schémas hors-sujet
+## B5. MAJEUR — 57 schémas hors-sujet ✅ *(corrigé pendant l'audit)*
 
 ### Mesure
 
@@ -540,6 +546,7 @@ Les durées sont également incohérentes entre elles (50 / 80 / 110 min pour un
 | Schémas uniques sur 508 QCM | **26** |
 | U3 / U5 / U6 | **1 schéma unique** chacun (pour 45 / 55 / 45 QCM) |
 | Assets manquants | **0** |
+| **Après correctif** (commit `e130475`) | **0 schéma hors-domaine · 28 schémas uniques** |
 
 **Preuve type :** QCM `id:444` porte sur الغابرو (gabbro, contexte de dorsale océanique) et affiche `schema_01_adn.svg` — un schéma d'ADN.
 
@@ -547,18 +554,20 @@ Les durées sont également incohérentes entre elles (50 / 80 / 110 min pour un
 
 Un schéma d'ADN sur une question de pétrologie n'est pas un détail cosmétique : en SVT, le schéma **fait partie de l'énoncé**. L'élève cherche l'information dans le document ; ici le document contredit la question. Effet direct sur la charge cognitive et sur la confiance dans l'outil.
 
-**Bonne nouvelle : 0 asset manquant.** Les fichiers existent tous ; c'est le champ `diagramUrl` qui pointe au mauvais endroit. **Il s'agit d'un remapping de données, pas d'une production graphique.** Effort faible pour un gain de perception immédiat.
+**Bonne nouvelle : 0 asset manquant.** Les fichiers existent tous ; c'est le champ `diagramUrl` qui pointait au mauvais endroit. **Il s'agissait d'un remapping de données, pas d'une production graphique.**
+
+**Correctif appliqué pendant l'audit** (commit `e130475`, détail en §4). Mieux : deux schémas parfaitement adaptés, `schema_17_collision.svg` et `schema_18_wilson.svg`, dormaient dans le dépôt **sans être référencés par un seul QCM**. Le travail graphique avait été fait ; seul le câblage manquait. Vérification post-correctif : **0 schéma hors-domaine, 0 asset manquant, 26 → 28 schémas distincts**, verrouillé par `src/quizCorpus.integrity.test.ts`.
 
 Constat connexe : **26 schémas uniques pour 508 QCM** signifie qu'un même visuel sert en moyenne 20 questions. Les unités 3, 5 et 6 tournent sur **un seul schéma** pour 45 à 55 QCM. Au-delà de l'erreur de mapping, le corpus visuel est massivement sous-dimensionné hors unité 1 — cohérent avec les 101 assets concentrés sur `domaine1_proteines/`.
 
 | | |
 |---|---|
-| **Gravité** | **Majeur** (perception) / **Faible** (technique) |
-| **Preuve** | 57 QCM U6-U11 ; U11 = 57/61 ; `id:444` → `schema_01_adn.svg` ; 0 asset manquant |
+| **Gravité** | **Majeur** (perception) / **Faible** (technique) — **résolu**|
+| **Preuve** | *Avant :* 57 QCM, tous d'unité 11 ; `id:444` (الغابرو) → `schema_01_adn.svg`. *Après :* 0 mismatch, 28 schémas distincts. |
 | **Impact apprenant** | Confusion sur la question, perte de confiance dans l'outil |
-| **Recommandation** | 1) Script de remapping `diagramUrl` par domaine + revue manuelle des 57 cas. 2) **Test de cohérence bloquant : le domaine de l'asset doit correspondre au `unitId` du QCM.** 3) À moyen terme, enrichir le corpus visuel des unités 3, 5, 6. |
-| **Effort** | **Faible** (2-3 j) — meilleur rapport effort/impact du volet B |
-| **Priorité** | 🔴 **P0** |
+| **Recommandation** | 1) ✅ Remapping par marqueur d'axe `11.N` + 2) ✅ test de cohérence bloquant domaine↔`unitId`. 3) **Reste à faire :** enrichir le corpus visuel des unités 3, 5, 6 (1 seul schéma chacune) — constat #16, P2. |
+| **Effort** | **Faible** — réalisé en une session ; meilleur rapport effort/impact du volet B |
+| **Priorité** | ✅ **Traité** — reliquat #16 en **P2** |
 
 ---
 
@@ -619,20 +628,20 @@ C'est **exactement** la difficulté n°1 des candidats algériens : confondre an
 
 | Sous-dimension | Score | Justification |
 |---|---|---|
-| B1 — Couverture structurelle | **7,0** | Mapping 44 leçons/11 unités intégralement cohérent ; mais 3 leçons interactives et 10 unités verrouillées |
+| B1 — Couverture structurelle | **7,5** | Mapping 44 leçons/11 unités intégralement cohérent ; déverrouillage progressif fonctionnel ; mais 3 leçons interactives seulement |
 | B2 — Qualité du feedback | **1,5** | 98 % d'explications circulaires dans un tuteur sans LLM ; propagation aux 500 flashcards |
 | B3 — Alignement au format d'épreuve | **4,0** | 30 % de QCM méta-scolaires ; pas de QCM au BAC réel |
 | B4 — Générateur BAC | **3,5** | 28/20/34 points au lieu de 20 ; mono-domaine au lieu de bi-domaine |
-| B5 — Cohérence visuelle | **4,0** | 57 schémas hors-sujet, U11 à 93 % ; mais 0 asset manquant |
+| B5 — Cohérence visuelle | **6,5** | 57 schémas hors-sujet **corrigés** (commit `e130475`, 0 mismatch) ; reste la pauvreté du répertoire : 28 schémas pour 508 QCM |
 | B6 — Fidélité au programme | **7,5** | Aucune divergence scientifique ; app parfois plus conforme que le livre |
 | B7 — Méthodologie | **9,0** | Les 6 verbes BAC : meilleur actif du produit |
 | B8 — Qualité du corpus (doublons) | **8,5** | 0 doublon, 0 amorce sur-répétée |
-| B9 — Santé technique | **6,0** | 339/346 tests passés, **7 rouges** sur parcours débutant + arabisation des assets |
-| **VOLET B — moyenne pondérée** | **5,1/10** | Fondations sérieuses, couche d'évaluation défaillante |
+| B9 — Santé technique | **6,5** | 348/355 tests passés (dont 9 nouveaux garde-fous) ; **7 rouges** inchangés sur parcours débutant + arabisation |
+| **VOLET B — moyenne pondérée** | **5,4/10** *(5,1 avant Sprint 0)* | Fondations sérieuses, couche d'évaluation encore défaillante : B2 plafonne tout |
 
 *Pondération : B2 compte triple (feedback = cœur de la promesse « tuteur »), B4 et B7 comptent double.*
 
-**Rappel des tests rouges** (confirmés sur 2 exécutions, chiffres stables) : 7 échecs / 346, dans 4 fichiers — `LessonsView.visualCards.test.tsx` (4), `MyPathView.beginnerPath.test.tsx`, `TrainingView.beginnerMode.test.tsx` (`training-beginner-launchpad` introuvable), `activeLessons.test.ts` (asset `_ar.svg` attendu, `.jpg` reçu). Thème commun : **parcours débutant et arabisation des assets** — cohérent avec les 18 fichiers `_ar` sur 101 (18 % d'arabisation).
+**Rappel des tests rouges** (confirmés sur 3 exécutions, chiffres stables) : 7 échecs / 355, dans 4 fichiers — `LessonsView.visualCards.test.tsx` (4), `MyPathView.beginnerPath.test.tsx`, `TrainingView.beginnerMode.test.tsx` (`training-beginner-launchpad` introuvable), `activeLessons.test.ts` (asset `_ar.svg` attendu, `.jpg` reçu). Thème commun : **parcours débutant et arabisation des assets** — cohérent avec les 18 fichiers `_ar` sur 101 (18 % d'arabisation).
 
 ---
 
@@ -640,44 +649,68 @@ C'est **exactement** la difficulté n°1 des candidats algériens : confondre an
 
 | # | Constat | Volet | Gravité | Effort | Priorité |
 |---|---|---|---|---|---|
-| 1 | **98 % d'explications circulaires** (500/508), propagées aux 500 flashcards | B2 | 🔴 **Critique** | Élevé | **P0** |
-| 2 | Barème BAC 28/20/34 au lieu de 20 ; sujets mono-domaine | B4 | 🟠 Majeur | Faible-moyen | **P0** |
-| 3 | 57 schémas hors-sujet (U11 : 93 %) | B5 | 🟠 Majeur | **Faible** | **P0** |
-| 4 | 10 unités sur 11 verrouillées | B1 | 🟠 Majeur | **Très faible** | **P0** |
+| 1 | **98 % d'explications circulaires** (500/508), propagées aux 500 flashcards | B2 | 🔴 **Critique** | Élevé | **P0 — seul P0 restant** |
+| 2 | Barème BAC 28/20/34 au lieu de 20 ; sujets mono-domaine | B4 | 🟠 Majeur | Faible-moyen | **P3** *(requalifié : code mort)* |
+| 3 | 57 schémas hors-sujet (U11 : 93 %) | B5 | 🟠 Majeur | **Faible** | ✅ **Résolu** — commit `e130475` |
+| 4 | 10 unités sur 11 verrouillées | B1 | 🟠 Majeur | **Très faible** | ❌ **Invalidé** *(voir §3.1)* |
 | 5 | 0 figure dans le livre (discipline documentaire) | A6 | 🔴 Critique* | Moyen-élevé | **P1** |
 | 6 | Densité 40-50 mots/page sur D1-IV, D1-V, D3-III | A4 | 🟠 Majeur | Élevé | **P2** |
 | 7 | 30 % de QCM méta-scolaires | B3 | 🟠 Majeur | Moyen-élevé | **P1** |
 | 8 | ABO/Rh absents du livre ; دليل التصحيح promis non livré | A5 | 🟠 Majeur | Moyen | **P1** |
-| 9 | Unité D2-U2 invisible dans OPUS (hiérarchie cassée) | A7 | 🟠 Majeur | **Très faible** | **P1** |
+| 9 | Unité D2-U2 invisible dans OPUS (hiérarchie cassée) | A7 | 🟠 Majeur | **Très faible** | ✅ **Résolu** — commit `e130475` |
 | 10 | Statut « officiel » affiché ≠ statut réel (correction DeepSeek) | A1 | 🟠 Majeur | Faible | **P1** |
-| 11 | 5 fautes rédactionnelles dont « التسحيب الأكسدي » et « مُظبوطة » | A3 | 🟡 Modéré | **Très faible** | **P1** |
+| 11 | 5 fautes rédactionnelles dont « التسحيب الأكسدي » et « مُظبوطة » | A3 | 🟡 Modéré | **Très faible** | ✅ **Résolu** — commit `e130475` |
 | 12 | 7 tests rouges (parcours débutant, arabisation) | B9 | 🟡 Modéré | Faible | **P1** |
 | 13 | Arabisation des assets à 18 % (18/101) | B9 | 🟡 Modéré | Moyen | **P2** |
 | 14 | 3 leçons interactives sur 11 unités | B1 | 🟠 Majeur | Élevé | **P2** |
 | 15 | Pas de marqueur « exigible 2025-2026 » (ophiolites, collision) | B6 | 🟡 Modéré | Faible | **P2** |
 | 16 | 26 schémas uniques / 508 QCM (U3, U5, U6 : 1 seul) | B5 | 🟡 Modéré | Moyen | **P2** |
-| 17 | Interleukines : graphie « الأترولينات » fautive | A5 | 🟡 Modéré | Très faible | **P1** |
+| 17 | Interleukines : graphie « الأترولينات » fautive | A5 | 🟡 Modéré | Très faible | ✅ **Résolu** — commit `e130475` |
 | 18 | Leçon 44 hors table officielle *(requalifié)* | B1 | 🔵 Mineur | Très faible | **P3** |
 | 19 | `lecon_transcription.html` hors nomenclature *(requalifié)* | B1 | 🔵 Mineur | Très faible | **P4** |
 | 20 | Racine polluée (~25 scripts `patch*.py`, `fix_*.py`) | — | 🔵 Mineur | Très faible | **P3** |
 
 \* *Critique pour l'usage « préparation BAC » du livre pris isolément ; atténué dans l'app qui dispose de 101 assets.*
 
+### 3.1 Constats corrigés par la vérification (auto-critique)
+
+La mise en œuvre du Sprint 0 a exigé de relire le code d'exécution, et non plus seulement les données. Deux constats classés P0 n'ont pas résisté.
+
+**#4 — « 10 unités sur 11 verrouillées » : invalidé.** `unitCatalog.ts` décrit l'**état initial**, pas l'état permanent. Un déverrouillage séquentiel existe : `App.tsx:268` ouvre l'unité `n+1` dès 60 % de réussite, `progressionTransferService.ts` persiste la progression, et `DashboardView.tsx:23,207` neutralise même le verrou à l'affichage. Lire un fichier de données et en déduire un comportement applicatif était une erreur de méthode ; le grief tombe. Reste un point de conception défendable — la découverte du programme est contrainte — mais il relève du choix pédagogique, pas du défaut, et ne justifie pas une priorité P0.
+
+**#2 — « Barème BAC non conforme » : réel mais sans impact.** Les mesures tiennent (28/20/34 points au lieu de 20, sujets mono-domaine alors que l'épreuve croise deux domaines). Mais `src/utils/bacGenerator.ts` **n'est importé nulle part** : `grep` sur `bacGenerator|generateBacExam|BacExam` ne renvoie aucune référence dans tout le dépôt. Le bouton « تحدي BAC » appelle en réalité `onLaunchQuiz(unit.id)` (`TrainingView.tsx:91-101,478-503`), un simple quiz d'unité. Aucun élève ne voit ce barème. Le constat passe donc en **P3** : c'est de la dette morte à supprimer ou à câbler, pas une urgence. La cause racine mérite d'être notée — le générateur prend *tout* le corpus disponible (10 cartes de connaissance, 7 scénarios) faute de matière pour échantillonner ; le corriger sans enrichir le corpus ne produirait qu'un barème juste sur un contenu indigent.
+
+Ces deux requalifications font du constat **#1 le seul P0 subsistant** — et renforcent sa position : la qualité du feedback est le seul point où l'application échoue vraiment devant un élève.
+
 ---
 
 ## 4. Feuille de route priorisée
 
-### Sprint 0 — « Crédibilité » (5 jours, effort faible, impact maximal)
+### Sprint 0 — « Crédibilité » — ✅ **EXÉCUTÉ** (commit `e130475`)
 
-Quatre correctifs à coût quasi nul qui suppriment les défauts immédiatement vérifiables par un enseignant ou un parent.
+Correctifs à coût quasi nul qui suppriment les défauts immédiatement vérifiables par un enseignant ou un parent. Le périmètre a été réduit en cours de route : deux des cinq actions prévues se sont révélées inutiles après vérification par exécution (voir §3.1).
 
-| Action | Effort | Constat traité |
+| Action | Statut | Constat |
 |---|---|---|
-| Déverrouiller les 11 unités (`isLocked: false`) | 1 h | #4 |
-| Normaliser le générateur BAC à 20 pts (15+5) + tirage bi-domaine + test unitaire | 2 j | #2 |
-| Remapper les 57 `diagramUrl` + test de cohérence domaine↔asset | 2 j | #3 |
-| Corriger les 5 fautes du livre + la graphie « الإنترلوكينات » | 1 h | #11, #17 |
-| Promouvoir l'en-tête D2-U2 en titre `#` dans OPUS + dédupliquer | 2 h | #9 |
+| Remapper les 57 `diagramUrl` de l'unité 11 + test de cohérence domaine↔asset | ✅ Fait | #3 |
+| Corriger les fautes du livre (10 remplacements) | ✅ Fait | #11, #17 |
+| Promouvoir l'en-tête D2-U2 en titre `#` dans OPUS | ✅ Fait | #9 |
+| ~~Déverrouiller les 11 unités~~ | ❌ Sans objet | #4 invalidé |
+| ~~Normaliser le générateur BAC à 20 pts~~ | ⏸️ Reporté P3 | #2 : code mort |
+
+**Détail du remapping (#3).** La clé de correspondance n'est pas lexicale — les mots-clés échouent, « التصادم » apparaissant dans les distracteurs de tous les axes — mais structurelle : chaque énoncé de l'unité 11 porte un marqueur d'axe `11.1` à `11.5`.
+
+| Axe | Schéma cible | QCM |
+|---|---|---|
+| 11.1 الظهرات | `schema_15_dorsale.svg` | 9 |
+| 11.2 الغوص | `schema_16_subduction.svg` | 12 |
+| 11.3 التصادم القاري | `schema_17_collision.svg` | 12 |
+| 11.4 الأوفيوليت | `schema_17_collision.svg` | 12 |
+| 11.5 دورة ويلسون | `schema_18_wilson.svg` | 12 |
+
+Résultat vérifié : **0 schéma hors-domaine, 0 asset manquant, 26 → 28 schémas distincts**. Deux assets corrects, `schema_17_collision.svg` et `schema_18_wilson.svg`, étaient livrés dans le dépôt mais **n'étaient référencés par aucun QCM** : le défaut tenait au câblage, pas à la production graphique.
+
+**Garde-fou.** `src/quizCorpus.integrity.test.ts` (9 tests) verrouille désormais la structure du corpus, la cohérence unité↔domaine des schémas et l'existence réelle des fichiers sur disque. Il porte aussi deux plafonds de dette conçus pour ne jamais remonter. Sa première exécution a d'ailleurs corrigé une mesure de cet audit : le seuil « explications trop courtes » fixé à 321 items s'est révélé faux — **les 508 explications font moins de 25 mots**, la plus longue en comptant 22. Le constat #1 est donc plus étendu que ce que la §2 laissait entendre.
 
 ### Sprint 1 — « Feedback » (10-12 jours) — **le sprint qui compte**
 
@@ -808,4 +841,4 @@ Ces pistes ont été explorées puis invalidées. Elles sont consignées pour é
 
 ---
 
-*Fin du rapport. Volet A : 6,4/10 — Volet B : 5,1/10. Priorité absolue : le constat #1 (98 % d'explications circulaires), qui conditionne la valeur pédagogique de l'ensemble du produit.*
+*Fin du rapport. Volet A : 6,4/10 — Volet B : 5,4/10 après Sprint 0. Priorité absolue et désormais unique P0 : le constat #1 — 98 % d'explications circulaires, et 508/508 sous les 25 mots. Il conditionne à lui seul la valeur pédagogique du produit.*
