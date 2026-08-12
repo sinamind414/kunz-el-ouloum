@@ -1706,7 +1706,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "جزيئات يتعرف عليها الجهاز المناعي كمنتمية للجسم"
     ],
     "correctAnswerIndex": 3,
-    "explanation": "الذات يرتبط هنا بـ: جزيئات يتعرف عليها الجهاز المناعي كمنتمية للجسم.",
+    "explanation": "الذات هي مجموع الجزيئات التي يحملها الجسم ويتعرف عليها جهازه المناعي كمنتمية إليه، وأهمها واسمات CMH. لا تخلط بينها وبين اللاذات: الذات تُتحمَّل ولا تثير استجابة، واللاذات تثيرها. في البكالوريا: اربط الذات دائماً بواسمات CMH.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_19_immunite_cmh.svg"
   },
   {
@@ -1720,7 +1720,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "ينتج مباشرة أجساماً مضادة في كل الحالات."
     ],
     "correctAnswerIndex": 0,
-    "explanation": "اللاذات يرتبط هنا بـ: عناصر غريبة قادرة على إثارة رد مناعي.",
+    "explanation": "اللاذات كل عنصر غريب يحمل حاتمات يتعرف عليها الجهاز المناعي فيثير استجابة نوعية ضده. لا تحصرها في المناعة الخلطية وحدها: اللاذات تثير الخلطية والخلوية حسب موقعها، حرة أم داخل خلية. في البكالوريا: عرّف اللاذات بقدرتها على إثارة الرد لا بنوع الرد.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_19_immunite_cmh.svg"
   },
   {
@@ -1734,7 +1734,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "واسمات غشائية تساعد على تمييز الذات"
     ],
     "correctAnswerIndex": 3,
-    "explanation": "CMH يرتبط هنا بـ: واسمات غشائية تساعد على تمييز الذات.",
+    "explanation": "معقد التوافق النسيجي الكبير مجموعة بروتينات غشائية تعمل كبطاقة هوية بيولوجية تميز خلايا الفرد عن غيرها، وهي أساس تحمل الذات ورفض الطعم. ليست أجساماً مضادة ولا بروتينات بلازمية كالمتممة: CMH غشائي دائماً. في البكالوريا: CMH = واسم الذات.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_19_immunite_cmh.svg"
   },
   {
@@ -1748,7 +1748,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يحدث دائماً داخل النواة ولا يرتبط بباقي العضيات."
     ],
     "correctAnswerIndex": 0,
-    "explanation": "CMH I يرتبط هنا بـ: يوجد على معظم الخلايا المنواة ويعرض ببتيدات داخلية.",
+    "explanation": "يوجد CMH I على كل الخلايا ذات النواة، ويعرض ببتيدات من أصل داخلي (خلوي أو فيروسي) لتراقبها LT8. لا تخلط: CMH I يخاطب LT8، وCMH II يخاطب LT4. في البكالوريا: CMH I = ببتيد داخلي + LT8.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_19_immunite_cmh.svg"
   },
   {
@@ -1762,7 +1762,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يحدث في كل البروتينات بالطريقة نفسها دون نوعية."
     ],
     "correctAnswerIndex": 0,
-    "explanation": "CMH II يرتبط هنا بـ: يوجد على خلايا تقديم المستضد وينشط LT4.",
+    "explanation": "يقتصر CMH II على خلايا تقديم المستضد (بالعات، خلايا شجرية، LB) ويعرض ببتيدات من أصل خارجي بعد بلعمتها، فينشّط LT4. الفرق مع CMH I هو أصل الببتيد والخلية اللمفاوية المخاطَبة. في البكالوريا: CMH II = ببتيد خارجي + LT4.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_19_immunite_cmh.svg"
   },
   {
@@ -1776,7 +1776,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "المناعة النوعية لا تحتاج أي مستقبلات أو واسمات."
     ],
     "correctAnswerIndex": 0,
-    "explanation": "المستضد يرتبط هنا بـ: عنصر غريب يملك حاتمات نوعية.",
+    "explanation": "المستضد جزيئة غريبة تحمل حاتمات نوعية وتثير استجابة مناعية نوعية موجهة ضدها. ميّزه عن الحاتمة: المستضد هو الجزيئة كاملة، والحاتمة جزء صغير منها فقط. في البكالوريا: مستضد واحد يحمل عدة حاتمات مختلفة.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_19_immunite_cmh.svg"
   },
   {
@@ -1790,7 +1790,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "جزء محدد من المستضد يتعرف عليه مستقبل أو جسم مضاد"
     ],
     "correctAnswerIndex": 3,
-    "explanation": "الحاتمة يرتبط هنا بـ: جزء محدد من المستضد يتعرف عليه مستقبل أو جسم مضاد.",
+    "explanation": "الحاتمة هي المنطقة الصغيرة المحددة من المستضد التي يرتبط بها الباراتوب أو مستقبل اللمفاوية، وهي أساس نوعية التعرف. لا تخلط: الحاتمة على المستضد، والباراتوب على الجسم المضاد. في البكالوريا: التكامل البنيوي حاتمة/باراتوب يفسر النوعية.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_19_immunite_cmh.svg"
   },
   {
@@ -1804,7 +1804,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يدل على زيادة غير محدودة في السرعة دون إشباع."
     ],
     "correctAnswerIndex": 2,
-    "explanation": "CPA يرتبط هنا بـ: خلية تقدم المستضد مثل البالعة الكبيرة.",
+    "explanation": "خلية عارضة للمستضد تبلع العنصر الغريب ثم تعرض شظاياه الببتيدية على CMH II لتنشيط LT4، فهي حلقة الوصل بين المناعة الفطرية والنوعية. البالعة الكبيرة أشهر مثال عنها. في البكالوريا: CPA تربط الفطري بالمكتسب.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_19_immunite_cmh.svg"
   },
   {
@@ -1818,7 +1818,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "ينتج عن اختلاف واسمات CMH بين المعطي والمتلقي"
     ],
     "correctAnswerIndex": 3,
-    "explanation": "رفض الطعم يرتبط هنا بـ: ينتج عن اختلاف واسمات CMH بين المعطي والمتلقي.",
+    "explanation": "اختلاف واسمات CMH بين المعطي والمتلقي يجعل الطعم لاذاتاً بالنسبة للمتلقي، فتهاجمه اللمفاويات LT8 ويُرفَض. لهذا يُبحث عن التوافق النسيجي قبل الزرع. في البكالوريا: رفض الطعم دليل مباشر على دور CMH في تمييز الذات.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_19_immunite_cmh.svg"
   },
   {
@@ -1832,7 +1832,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "هو بنية ثابتة لا تتأثر بالشروط الفيزيائية أبداً."
     ],
     "correctAnswerIndex": 2,
-    "explanation": "الباراتوب يرتبط هنا بـ: موقع ارتباط على الجسم المضاد أو مستقبل LB.",
+    "explanation": "الباراتوب هو موقع الارتباط المتغير على الجسم المضاد أو على مستقبل LB، وهو الذي يتكامل بنيوياً مع الحاتمة. لا تخلط بينه وبين الحاتمة: الباراتوب على الجسم المضاد، الحاتمة على المستضد. في البكالوريا: التكامل باراتوب/حاتمة يفسر نوعية الارتباط.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_19_immunite_cmh.svg"
   },
   {
@@ -1846,7 +1846,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "استجابة فطرية سريعة لا تستهدف مستضداً محدداً"
     ],
     "correctAnswerIndex": 3,
-    "explanation": "المناعة غير النوعية يرتبط هنا بـ: استجابة فطرية سريعة لا تستهدف مستضداً محدداً.",
+    "explanation": "المناعة غير النوعية استجابة فطرية موجودة منذ الولادة، سريعة، تعمل بالطريقة نفسها ضد كل الممرضات دون تعرف نوعي ودون ذاكرة. تقابلها المناعة النوعية البطيئة الأولى لكن ذات ذاكرة. في البكالوريا: قارنهما بالسرعة والنوعية والذاكرة.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_20_immunite_humorale.svg"
   },
   {
@@ -1860,7 +1860,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "حواجز أولى تمنع دخول العوامل الممرضة"
     ],
     "correctAnswerIndex": 3,
-    "explanation": "الجلد والمخاطيات يرتبط هنا بـ: حواجز أولى تمنع دخول العوامل الممرضة.",
+    "explanation": "الجلد والمخاطيات هما خط الدفاع الأول: حاجز ميكانيكي وكيميائي يمنع دخول الممرضات قبل أي استجابة خلوية. لا تخلط: هذه وقاية سابقة للاستجابة، لا استجابة نوعية. في البكالوريا: صنّفهما ضمن المناعة غير النوعية.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_20_immunite_humorale.svg"
   },
   {
@@ -1874,7 +1874,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يستعمل CO2 كمستقبل نهائي للإلكترونات في التنفس."
     ],
     "correctAnswerIndex": 2,
-    "explanation": "الالتهاب يرتبط هنا بـ: استجابة محلية تتميز باحمرار وحرارة وألم وانتفاخ.",
+    "explanation": "الالتهاب استجابة موضعية فطرية تتجلى بأربع علامات: احمرار وحرارة وألم وانتفاخ، ناتجة عن توسع الأوعية وزيادة نفاذيتها لجلب البالعات. لا تخلط بينه وبين الاستجابة النوعية عبر LTc. في البكالوريا: احفظ العلامات الأربع مرتبة.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_20_immunite_humorale.svg"
   },
   {
@@ -1888,7 +1888,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يساهم في توسع الأوعية وزيادة نفاذيتها"
     ],
     "correctAnswerIndex": 3,
-    "explanation": "الهيستامين يرتبط هنا بـ: يساهم في توسع الأوعية وزيادة نفاذيتها.",
+    "explanation": "الهيستامين وسيط كيميائي تحرره الخلايا البدينة فيوسّع الأوعية ويزيد نفاذيتها، ما يسمح بخروج البلازما والبالعات نحو موضع الإصابة. هو سبب علامات الالتهاب لا نتيجتها. في البكالوريا: اربط الهيستامين بالاحمرار والانتفاخ.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_20_immunite_humorale.svg"
   },
   {
@@ -1902,7 +1902,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "ابتلاع وهضم عنصر غريب بواسطة خلية بالعة"
     ],
     "correctAnswerIndex": 3,
-    "explanation": "البلعمة يرتبط هنا بـ: ابتلاع وهضم عنصر غريب بواسطة خلية بالعة.",
+    "explanation": "البلعمة آلية فطرية تبتلع فيها الخلية البالعة العنصر الغريب ثم تهضمه بإنزيمات الجسيمات الحالة، وقد تنتهي بعرض شظاياه على CMH II. ليست نوعية، لكنها قد تمهّد للاستجابة النوعية. في البكالوريا: احفظ مراحلها الأربع.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_20_immunite_humorale.svg"
   },
   {
@@ -1916,7 +1916,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يدل على وسط صلب دائماً مهما كانت المعطيات الزلزالية."
     ],
     "correctAnswerIndex": 2,
-    "explanation": "العدلات يرتبط هنا بـ: بالعات سريعة الوصول إلى موضع الالتهاب.",
+    "explanation": "العدلات كريات بيضاء متعددة النوى تصل أولاً إلى موضع الالتهاب بفضل انجذابها الكيميائي، وتبلع الممرضات بسرعة. ميّزها عن اللمفاويات: العدلات فطرية غير نوعية، واللمفاويات نوعية. في البكالوريا: العدلات أول الواصلين.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_20_immunite_humorale.svg"
   },
   {
@@ -1930,7 +1930,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "ترفع حرارة الجسم وتحد من تكاثر بعض الممرضات"
     ],
     "correctAnswerIndex": 3,
-    "explanation": "الحمى يرتبط هنا بـ: ترفع حرارة الجسم وتحد من تكاثر بعض الممرضات.",
+    "explanation": "الحمى ارتفاع منظَّم لدرجة حرارة الجسم يعيق تكاثر كثير من الممرضات ويسرّع التفاعلات المناعية، وهي استجابة عامة غير نوعية. ليست خللاً بل آلية دفاعية. في البكالوريا: صنّفها ضمن الاستجابة الالتهابية العامة.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_20_immunite_humorale.svg"
   },
   {
@@ -1944,7 +1944,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يحدث دائماً داخل النواة ولا يرتبط بباقي العضيات."
     ],
     "correctAnswerIndex": 0,
-    "explanation": "المتممة يرتبط هنا بـ: بروتينات بلازمية تساعد على تحطيم الممرضات.",
+    "explanation": "المتممة مجموعة بروتينات بلازمية تُنشَّط تسلسلياً فتُحدث ثقوباً في غشاء الممرض وتسهّل بلعمته. ليست أجساماً مضادة رغم عملها معها: المتممة غير نوعية. في البكالوريا: اذكرها ضمن الوسائل الخلطية غير النوعية.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_20_immunite_humorale.svg"
   },
   {
@@ -1958,7 +1958,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يستعمل CO2 كمستقبل نهائي للإلكترونات في التنفس."
     ],
     "correctAnswerIndex": 1,
-    "explanation": "الاستجابة السريعة يرتبط هنا بـ: خاصية أساسية للمناعة الفطرية.",
+    "explanation": "السرعة خاصية أساسية للمناعة الفطرية: تتدخل خلال ساعات لأنها لا تنتظر انتقاء ولا تكاثر اللمفاويات، خلافاً للاستجابة النوعية التي تحتاج أياماً. في البكالوريا: قارن زمن التدخل بين النمطين.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_20_immunite_humorale.svg"
   },
   {
@@ -1972,7 +1972,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يمثل مرحلة جيولوجية عميقة لا علاقة لها بالخلايا."
     ],
     "correctAnswerIndex": 2,
-    "explanation": "عدم الذاكرة النوعية يرتبط هنا بـ: يميز المناعة غير النوعية عن المناعة المكتسبة.",
+    "explanation": "غياب الذاكرة يميز المناعة غير النوعية: تستجيب بالقوة نفسها في كل مرة، بينما تحتفظ المناعة المكتسبة بخلايا ذاكرة تجعل الاستجابة الثانية أسرع وأقوى. في البكالوريا: الذاكرة هي الفارق الحاسم بين النمطين.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_20_immunite_humorale.svg"
   },
   {
@@ -1986,7 +1986,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "المناعة النوعية لا تحتاج أي مستقبلات أو واسمات."
     ],
     "correctAnswerIndex": 1,
-    "explanation": "المناعة الخلطية يرتبط هنا بـ: استجابة نوعية تعتمد على LB والبلازميات والأجسام المضادة.",
+    "explanation": "المناعة الخلطية استجابة نوعية تقوم على LB التي تتمايز إلى بلازميات تفرز أجساماً مضادة تعمل في السوائل ضد المستضدات الحرة. تقابلها الخلوية التي تستهدف الخلايا المصابة عبر LTc. في البكالوريا: خلطية = مستضد حر، خلوية = خلية مصابة.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_20_immunite_humorale.svg"
   },
   {
@@ -2000,7 +2000,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "لمفاوية تتمايز إلى بلازمية منتجة للأجسام المضادة"
     ],
     "correctAnswerIndex": 3,
-    "explanation": "LB يرتبط هنا بـ: لمفاوية تتمايز إلى بلازمية منتجة للأجسام المضادة.",
+    "explanation": "اللمفاوية البائية تحمل مستقبلات غشائية نوعية، وبعد تنشيطها بالمستضد والإنترلوكينات تتكاثر وتتمايز إلى بلازميات وخلايا ذاكرة. لا تفرز الأجسام المضادة بكثرة إلا بعد تمايزها إلى بلازمية. في البكالوريا: LB سابقة للبلازمية.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_20_immunite_humorale.svg"
   },
   {
@@ -2014,7 +2014,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "ينتج مباشرة أجساماً مضادة في كل الحالات."
     ],
     "correctAnswerIndex": 1,
-    "explanation": "البلازمية يرتبط هنا بـ: خلية تفرز كمية كبيرة من الأجسام المضادة.",
+    "explanation": "البلازمية الشكل النهائي المتمايز من LB، غنية بالشبكة الهيولية الفعالة، متخصصة في إفراز كميات كبيرة من الأجسام المضادة. لا تحمل مستقبلات غشائية فاعلة ولا تنقسم. في البكالوريا: اربط بنيتها الغنية بالشبكة بوظيفتها الإفرازية.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_20_immunite_humorale.svg"
   },
   {
@@ -2028,7 +2028,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "بروتين نوعي يرتبط بحاتمة المستضد"
     ],
     "correctAnswerIndex": 3,
-    "explanation": "الجسم المضاد يرتبط هنا بـ: بروتين نوعي يرتبط بحاتمة المستضد.",
+    "explanation": "الجسم المضاد بروتين من نوع الغلوبيولين المناعي تفرزه البلازميات، يرتبط بحاتمة نوعية بفضل موقعه المتغير. لا تخلط بينه وبين المتممة: الجسم المضاد نوعي، المتممة ليست كذلك. في البكالوريا: بنية Y بموقعين للارتباط.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_20_immunite_humorale.svg"
   },
   {
@@ -2042,7 +2042,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يدل على زيادة غير محدودة في السرعة دون إشباع."
     ],
     "correctAnswerIndex": 0,
-    "explanation": "المعقد المناعي يرتبط هنا بـ: اتحاد نوعي بين جسم مضاد ومستضد.",
+    "explanation": "المعقد المناعي اتحاد نوعي بين الجسم المضاد ومستضده عبر التكامل باراتوب/حاتمة، وهو يمهّد لتحييد المستضد ثم بلعمة المعقد. الارتباط نوعي وقابل للانعكاس، وليس تحطيماً مباشراً. في البكالوريا: المعقد مرحلة سابقة للبلعمة.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_20_immunite_humorale.svg"
   },
   {
@@ -2056,7 +2056,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "هو بنية ثابتة لا تتأثر بالشروط الفيزيائية أبداً."
     ],
     "correctAnswerIndex": 1,
-    "explanation": "الانتقاء النسيلي يرتبط هنا بـ: تكاثر اللمفاوية التي تحمل المستقبل الموافق للمستضد.",
+    "explanation": "الانتقاء النسيلي هو اصطفاء المستضد للّمفاوية التي تحمل مصادفةً المستقبل المتكامل معه، فتتكاثر هذه وحدها معطية نسيلة من خلايا متماثلة. المستضد ينتقي ولا يخلق النوعية. في البكالوريا: النوعية سابقة للقاء المستضد.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_20_immunite_humorale.svg"
   },
   {
@@ -2070,7 +2070,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يعني توقف كل التحولات الطاقوية في الخلية."
     ],
     "correctAnswerIndex": 0,
-    "explanation": "الذاكرة المناعية يرتبط هنا بـ: تفسر سرعة وقوة الاستجابة الثانية.",
+    "explanation": "الذاكرة المناعية وجود خلايا ذاكرة طويلة العمر ناتجة عن الاستجابة الأولى، فتكون الاستجابة الثانية أسرع وأقوى وأطول. هي أساس التلقيح. لا تخلط بينها وبين الانتقاء النسيلي الذي يسبقها. في البكالوريا: اربطها بمنحنى الاستجابة الثانوية.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_20_immunite_humorale.svg"
   },
   {
@@ -2084,7 +2084,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يتم فقط في غياب الماء والأيونات."
     ],
     "correctAnswerIndex": 2,
-    "explanation": "IgG يرتبط هنا بـ: أجسام مضادة مهمة في الدم والاستجابة الثانوية.",
+    "explanation": "الغلوبيولين المناعي G أكثر الأجسام المضادة انتشاراً في الدم، ويسود في الاستجابة الثانوية بفضل خلايا الذاكرة، وهو الوحيد الذي يعبر المشيمة. في البكالوريا: IgM في الاستجابة الأولى، IgG في الثانية.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_20_immunite_humorale.svg"
   },
   {
@@ -2098,7 +2098,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "ينتج مباشرة أجساماً مضادة في كل الحالات."
     ],
     "correctAnswerIndex": 2,
-    "explanation": "المستضد الحر يرتبط هنا بـ: هدف رئيسي للمناعة الخلطية.",
+    "explanation": "المستضد الحر هو الموجود في السوائل خارج الخلايا، ولذلك تتكفل به المناعة الخلطية عبر الأجسام المضادة. أما المستضد داخل الخلية فتتكفل به المناعة الخلوية. في البكالوريا: موقع المستضد يحدد نمط الاستجابة.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_20_immunite_humorale.svg"
   },
   {
@@ -2112,7 +2112,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يمثل مرحلة جيولوجية عميقة لا علاقة لها بالخلايا."
     ],
     "correctAnswerIndex": 0,
-    "explanation": "التحييد يرتبط هنا بـ: من آثار ارتباط الأجسام المضادة بالسموم أو الفيروسات.",
+    "explanation": "التحييد نتيجة ارتباط الجسم المضاد بالسم أو بالفيروس، فيمنعه من التثبت على خلاياه الهدف ويبطل مفعوله قبل بلعمة المعقد. لا يحطم الجسم المضاد المستضد بنفسه بل يعطله. في البكالوريا: التحييد إبطال لا تحطيم.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_20_immunite_humorale.svg"
   },
   {
@@ -2126,7 +2126,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "استجابة تستهدف الخلايا المصابة عبر LTc"
     ],
     "correctAnswerIndex": 3,
-    "explanation": "المناعة الخلوية يرتبط هنا بـ: استجابة تستهدف الخلايا المصابة عبر LTc.",
+    "explanation": "المناعة الخلوية استجابة نوعية تستهدف الخلايا المصابة أو السرطانية أو الطعوم عبر LTc التي تقتلها بالتماس المباشر. تقابلها الخلطية التي تعمل عن بعد بالأجسام المضادة. في البكالوريا: الخلوية بالتماس، الخلطية بالإفراز.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_21_immunite_cellulaire.svg"
   },
   {
@@ -2140,7 +2140,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يعني توقف كل التحولات الطاقوية في الخلية."
     ],
     "correctAnswerIndex": 2,
-    "explanation": "LT4 يرتبط هنا بـ: لمفاوية مساعدة تفرز إنترلوكينات لتنشيط LB وLT8.",
+    "explanation": "اللمفاوية LT4 مساعدة محورية: بعد تعرفها على الببتيد المعروض على CMH II تفرز الإنترلوكينات التي تنشّط LB وLT8 معاً. لا تقتل الخلايا بنفسها، بل تنسّق. في البكالوريا: LT4 هي محور التعاون الخلوي.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_21_immunite_cellulaire.svg"
   },
   {
@@ -2154,7 +2154,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يستعمل CO2 كمستقبل نهائي للإلكترونات في التنفس."
     ],
     "correctAnswerIndex": 1,
-    "explanation": "LT8 يرتبط هنا بـ: يتمايز إلى LTc قاتلة بعد التنشيط.",
+    "explanation": "اللمفاوية LT8 تتعرف على الببتيد المعروض على CMH I، وبتنشيطها بالإنترلوكينات تتكاثر وتتمايز إلى LTc قاتلة. LT8 سابقة غير فعالة، وLTc هي الفعالة. في البكالوريا: ميّز اللمفاوية السابقة عن الخلية الفعالة.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_21_immunite_cellulaire.svg"
   },
   {
@@ -2168,7 +2168,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يتم فقط في غياب الماء والأيونات."
     ],
     "correctAnswerIndex": 0,
-    "explanation": "LTc يرتبط هنا بـ: يدمر الخلايا المصابة بإحداث ثقوب أو تحريض موتها.",
+    "explanation": "اللمفاوية السامة تقتل الخلية المصابة بالتماس المباشر بإفراز البرفورين الذي يُحدث ثقوباً، والغرانزيم الذي يحرض الموت الخلوي المبرمج. لا تفرز أجساماً مضادة. في البكالوريا: اذكر البرفورين آلية القتل.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_21_immunite_cellulaire.svg"
   },
   {
@@ -2182,7 +2182,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يعني توقف كل التحولات الطاقوية في الخلية."
     ],
     "correctAnswerIndex": 1,
-    "explanation": "الإنترلوكينات يرتبط هنا بـ: وسائط بروتينية تنسق التعاون الخلوي.",
+    "explanation": "الإنترلوكينات وسائط بروتينية تفرزها أساساً LT4 لتنسّق التعاون بين خلايا الجهاز المناعي، فتحرض تكاثر وتمايز LB وLT8. ليست أجساماً مضادة ولا تستهدف المستضد. في البكالوريا: الإنترلوكين رسول بين الخلايا.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_21_immunite_cellulaire.svg"
   },
   {
@@ -2196,7 +2196,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "هو بنية ثابتة لا تتأثر بالشروط الفيزيائية أبداً."
     ],
     "correctAnswerIndex": 1,
-    "explanation": "التعاون الخلوي يرتبط هنا بـ: تفاعل CPA وLT4 وLB أو LT8 لإنجاز استجابة فعالة.",
+    "explanation": "التعاون الخلوي تفاعل متسلسل بين CPA وLT4 ثم LB أو LT8، تنتقل فيه المعلومة بالتماس الغشائي وبالإنترلوكينات لإنجاز استجابة فعالة. لا تعمل أي خلية بمعزل. في البكالوريا: ارسم السلسلة CPA ثم LT4 ثم الخلية الفعالة.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_21_immunite_cellulaire.svg"
   },
   {
@@ -2210,7 +2210,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يحدث دائماً داخل النواة ولا يرتبط بباقي العضيات."
     ],
     "correctAnswerIndex": 1,
-    "explanation": "عرض المستضد يرتبط هنا بـ: تقديم ببتيد مستضدي مرتبط بـCMH.",
+    "explanation": "عرض المستضد هو تقديم ببتيد مستضدي مرتبط بجزيئة CMH على سطح الخلية، وهو شرط ضروري لتعرف اللمفاوية التائية. لا تتعرف LT على المستضد حراً أبداً. في البكالوريا: التعرف المزدوج ببتيد + CMH.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_21_immunite_cellulaire.svg"
   },
   {
@@ -2224,7 +2224,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يعني توقف كل التحولات الطاقوية في الخلية."
     ],
     "correctAnswerIndex": 2,
-    "explanation": "خلية مصابة بفيروس يرتبط هنا بـ: تعرض ببتيدات فيروسية على CMH I.",
+    "explanation": "الخلية المصابة بفيروس تعرض ببتيدات فيروسية على CMH I الموجود على كل خلية منواة، فتصبح هدفاً لـLTc. هذا ما يبرر أن المناعة ضد الفيروسات خلوية أساساً. في البكالوريا: CMH I يفضح الإصابة الداخلية.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_21_immunite_cellulaire.svg"
   },
   {
@@ -2238,7 +2238,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يدل على زيادة غير محدودة في السرعة دون إشباع."
     ],
     "correctAnswerIndex": 1,
-    "explanation": "الذاكرة T يرتبط هنا بـ: تساهم في سرعة الاستجابة اللاحقة.",
+    "explanation": "خلايا الذاكرة التائية تبقى سنوات بعد الاستجابة الأولى، فتضمن استجابة خلوية أسرع وأقوى عند لقاء ثانٍ بالمستضد نفسه. مقابلها في الخلطية خلايا الذاكرة البائية. في البكالوريا: الذاكرة موجودة في النمطين.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_21_immunite_cellulaire.svg"
   },
   {
@@ -2252,7 +2252,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يتم فقط في غياب الماء والأيونات."
     ],
     "correctAnswerIndex": 2,
-    "explanation": "VIH يرتبط هنا بـ: فيروس يستهدف خاصة LT4 ويضعف المناعة المكتسبة.",
+    "explanation": "فيروس العوز المناعي البشري فيروس قهقري يستهدف الخلايا الحاملة للمستقبل CD4، وخاصة LT4، فيدمر محور التعاون الخلوي ويضعف المناعة المكتسبة كلها. تدمير LT4 يشلّ الخلطية والخلوية معاً. في البكالوريا: VIH يضرب المنسّق لا المنفّذ.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_22_immunite_vih.svg"
   },
   {
@@ -2266,7 +2266,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "هو بنية ثابتة لا تتأثر بالشروط الفيزيائية أبداً."
     ],
     "correctAnswerIndex": 2,
-    "explanation": "SIDA يرتبط هنا بـ: مرحلة متقدمة من عدوى VIH مع عوز مناعي وأمراض انتهازية.",
+    "explanation": "متلازمة العوز المناعي المكتسب هي المرحلة الأخيرة من عدوى VIH، حين ينهار عدد LT4 فتظهر الأمراض الانتهازية والسرطانات. لا تخلط: VIH هو الفيروس، والسيدا هي المرحلة المرضية المتقدمة. في البكالوريا: ميّز الحامل عن المريض.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_22_immunite_vih.svg"
   },
   {
@@ -2280,7 +2280,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يحدث في كل البروتينات بالطريقة نفسها دون نوعية."
     ],
     "correctAnswerIndex": 1,
-    "explanation": "النسخ العكسي يرتبط هنا بـ: تحويل ARN الفيروسي إلى ADN داخل الخلية.",
+    "explanation": "النسخ العكسي تحويل ARN الفيروسي إلى ADN بفضل إنزيم المنتسخة العكسية، وهو ما يميز الفيروسات القهقرية ويسمح بإدماج المورثات الفيروسية في مورثات الخلية. اتجاه معاكس للاستنساخ العادي. في البكالوريا: ARN نحو ADN علامة الفيروس القهقري.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_22_immunite_vih.svg"
   },
   {
@@ -2294,7 +2294,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يصف ظاهرة مناعية نوعية فقط ولا علاقة له بهذا المحور."
     ],
     "correctAnswerIndex": 0,
-    "explanation": "المستقبل CD4 يرتبط هنا بـ: يساعد VIH على دخول LT4.",
+    "explanation": "المستقبل CD4 بروتين غشائي على اللمفاوية المساعدة يستعمله VIH بوابةً للدخول بعد تثبته عليه. وجود CD4 هو ما يجعل LT4 الهدف المفضل للفيروس. في البكالوريا: اربط نوعية الإصابة بنوعية المستقبل.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_22_immunite_vih.svg"
   },
   {
@@ -2308,7 +2308,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يستعمل CO2 كمستقبل نهائي للإلكترونات في التنفس."
     ],
     "correctAnswerIndex": 1,
-    "explanation": "انخفاض LT4 يرتبط هنا بـ: يفسر تراجع المناعتين الخلطية والخلوية.",
+    "explanation": "انخفاض LT4 يحرم LB وLT8 من الإنترلوكينات المنشِّطة، فتتراجع المناعتان الخلطية والخلوية معاً رغم سلامة خلاياهما. هذا يفسر شمولية العوز المناعي في السيدا. في البكالوريا: علّل الانهيار بغياب المنسّق.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_22_immunite_vih.svg"
   },
   {
@@ -2322,7 +2322,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "هو بنية ثابتة لا تتأثر بالشروط الفيزيائية أبداً."
     ],
     "correctAnswerIndex": 0,
-    "explanation": "الأمراض الانتهازية يرتبط هنا بـ: تظهر عندما يضعف الدفاع المناعي بشدة.",
+    "explanation": "الأمراض الانتهازية عدوى بجراثيم لا تصيب عادة الشخص السليم، لكنها تتمكن منه حين ينهار دفاعه المناعي، وهي علامة دخول مرحلة السيدا. ليست سبب الضعف بل نتيجته. في البكالوريا: اذكرها مؤشراً على تقدم المرض.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_22_immunite_vih.svg"
   },
   {
@@ -2336,7 +2336,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "تحد من تضاعف VIH ولا تلغي كل الخزانات"
     ],
     "correctAnswerIndex": 3,
-    "explanation": "المعالجة المضادة للفيروسات يرتبط هنا بـ: تحد من تضاعف VIH ولا تلغي كل الخزانات.",
+    "explanation": "المعالجة المضادة للفيروسات القهقرية تثبط إنزيمات الفيروس فتخفض حمولته الفيروسية وترفع LT4، لكنها لا تستأصل الخزانات الفيروسية المندمجة في المورثات. تحكّم في المرض لا شفاء منه. في البكالوريا: قل تحكّم ولا تقل شفاء.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_22_immunite_vih.svg"
   },
   {
@@ -2350,7 +2350,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يستعمل CO2 كمستقبل نهائي للإلكترونات في التنفس."
     ],
     "correctAnswerIndex": 1,
-    "explanation": "الاندماج الفيروسي يرتبط هنا بـ: إدماج ADN الفيروسي في ADN الخلية.",
+    "explanation": "الاندماج إدخال ADN الفيروسي ضمن ADN الخلية بفضل إنزيم الإدماج، فيصبح الفيروس جزءاً من المورثة ويُنسَخ معها. هذا سبب استحالة الاستئصال النهائي للفيروس. في البكالوريا: الاندماج يفسر الخزان الفيروسي.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_22_immunite_vih.svg"
   },
   {
@@ -2364,7 +2364,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يحدث دائماً داخل النواة ولا يرتبط بباقي العضيات."
     ],
     "correctAnswerIndex": 2,
-    "explanation": "الوقاية يرتبط هنا بـ: تعتمد على تجنب انتقال الدم أو العلاقات غير المحمية.",
+    "explanation": "الوقاية من VIH تقوم على قطع طرق الانتقال الثلاث: الدم، والعلاقات غير المحمية، والانتقال من الأم إلى الجنين. تبقى الوسيلة الأنجع لغياب لقاح فعال. في البكالوريا: اذكر طرق الانتقال قبل وسائل الوقاية.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_22_immunite_vih.svg"
   },
   {
@@ -2378,7 +2378,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "هو بنية ثابتة لا تتأثر بالشروط الفيزيائية أبداً."
     ],
     "correctAnswerIndex": 1,
-    "explanation": "العصبون يرتبط هنا بـ: خلية متخصصة في استقبال ودمج ونقل الرسالة العصبية.",
+    "explanation": "العصبون وحدة بنيوية ووظيفية متخصصة في استقبال الرسالة العصبية عبر تغصناته، وإدماجها في جسمه الخلوي، ونقلها على طول محوره. لا تختزله في النقل وحده: الإدماج وظيفة أساسية فيه. في البكالوريا: اذكر الوظائف الثلاث مرتبة.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_08_synapse.svg"
   },
   {
@@ -2392,7 +2392,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يصف ظاهرة مناعية نوعية فقط ولا علاقة له بهذا المحور."
     ],
     "correctAnswerIndex": 1,
-    "explanation": "التغصنات يرتبط هنا بـ: تستقبل رسائل من عصبونات أخرى.",
+    "explanation": "التغصنات امتدادات قصيرة متفرعة من الجسم الخلوي، تشكل السطح المستقبِل للرسائل الواردة من عصبونات أخرى عبر المشابك. لا تخلط بينها وبين المحور: التغصنات تستقبل، والمحور ينقل نحو الخارج. في البكالوريا: التغصنات = مدخل، المحور = مخرج.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_08_synapse.svg"
   },
   {
@@ -2406,7 +2406,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يدل على وسط صلب دائماً مهما كانت المعطيات الزلزالية."
     ],
     "correctAnswerIndex": 2,
-    "explanation": "المحور يرتبط هنا بـ: ينقل كمون العمل بعيداً عن الجسم الخلوي.",
+    "explanation": "المحور امتداد طويل وحيد ينقل كمون العمل بعيداً عن الجسم الخلوي نحو النهايات المشبكية، وقد يكون مغمداً بالميالين. جهة النقل فيه أحادية دائماً. لا تعكس الاتجاه. في البكالوريا: النقل من الجسم الخلوي نحو النهاية.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_08_synapse.svg"
   },
   {
@@ -2420,7 +2420,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "هو بنية ثابتة لا تتأثر بالشروط الفيزيائية أبداً."
     ],
     "correctAnswerIndex": 0,
-    "explanation": "الغشاء العصبي يرتبط هنا بـ: يحافظ على فروق تراكيز أيونية بين الداخل والخارج.",
+    "explanation": "الغشاء العصبي غشاء نشط يحافظ على فروق تراكيز أيونية بين الوسطين الداخلي والخارجي بفضل نفاذيته الانتقائية ومضخاته. ليس حاجزاً سلبياً بسيطاً: هو مقر توليد الكمونات. في البكالوريا: اربط خصائص الغشاء بكمون الراحة.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_08_synapse.svg"
   },
   {
@@ -2434,7 +2434,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "PPSI يقرب الغشاء دائماً من العتبة."
     ],
     "correctAnswerIndex": 2,
-    "explanation": "القنوات الأيونية يرتبط هنا بـ: بروتينات تسمح بمرور نوعي للأيونات.",
+    "explanation": "القنوات الأيونية بروتينات غشائية تشكل ممرات نوعية يمر عبرها أيون معين حسب تدرجه، دون استهلاك للطاقة. ميّزها عن المضخة: القناة نقل منفعل، والمضخة نقل فعال بـATP. في البكالوريا: قناة = انتشار، مضخة = ATP.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_08_synapse.svg"
   },
   {
@@ -2448,7 +2448,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يستعمل CO2 كمستقبل نهائي للإلكترونات في التنفس."
     ],
     "correctAnswerIndex": 1,
-    "explanation": "قنوات فولطية يرتبط هنا بـ: تنفتح أو تنغلق حسب فرق الكمون.",
+    "explanation": "القنوات الفولطية قنوات تنفتح أو تنغلق استجابةً لتغير فرق الكمون الغشائي، وهي أساس توليد كمون العمل. تختلف عن قنوات التسرب المفتوحة دوماً وعن القنوات المرتبطة بناقل كيميائي. في البكالوريا: فولطية = حساسة للكمون.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_08_synapse.svg"
   },
   {
@@ -2462,7 +2462,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يزيد سرعة انتشار السيالة في الألياف المغمدة"
     ],
     "correctAnswerIndex": 3,
-    "explanation": "الغمد النخاعيني يرتبط هنا بـ: يزيد سرعة انتشار السيالة في الألياف المغمدة.",
+    "explanation": "الغمد النخاعيني غلاف عازل يلف المحور ويجبر التيار على القفز بين عقد رانفييه، فترتفع سرعة انتشار السيالة كثيراً. لا يولّد الغمد الكمون بل يسرّع انتشاره. في البكالوريا: ميالين = انتشار قفزي سريع.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_08_synapse.svg"
   },
   {
@@ -2476,7 +2476,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يحدث دائماً داخل النواة ولا يرتبط بباقي العضيات."
     ],
     "correctAnswerIndex": 2,
-    "explanation": "عقد رانفييه يرتبط هنا بـ: مناطق غير مغمدة يتم بينها الانتشار القفزي.",
+    "explanation": "عقد رانفييه اختناقات غير مغمدة على طول المحور، غنية بالقنوات الفولطية، يتجدد عندها كمون العمل فينتقل قفزاً من عقدة إلى أخرى. لا يوجد ميالين عندها بل بينها. في البكالوريا: العقد مواقع تجديد الكمون.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_08_synapse.svg"
   },
   {
@@ -2490,7 +2490,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "بروتين غشائي يستعمل ATP للحفاظ على التدرجات"
     ],
     "correctAnswerIndex": 3,
-    "explanation": "المضخة Na+/K+ يرتبط هنا بـ: بروتين غشائي يستعمل ATP للحفاظ على التدرجات.",
+    "explanation": "المضخة Na+/K+ بروتين غشائي فعال يستعمل طاقة ATP لطرد الصوديوم وإدخال البوتاسيوم عكس تدرجيهما، فيحافظ على التدرجات الأيونية الضرورية. نقل فعال لا انتشار. في البكالوريا: بلا ATP لا تدرج ولا كمون راحة.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_08_synapse.svg"
   },
   {
@@ -2504,7 +2504,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "المشبك الكيميائي يعمل بلا ناقل عصبي ولا مستقبلات."
     ],
     "correctAnswerIndex": 0,
-    "explanation": "الرسالة العصبية يرتبط هنا بـ: تشفّر غالباً بتواتر كمونات العمل.",
+    "explanation": "الرسالة العصبية على مستوى الليف مشفّرة بتواتر كمونات العمل لا بسعتها، لأن السعة ثابتة وفق قانون الكل أو لا شيء. لا تقل إن شدة التنبيه ترفع سعة الكمون. في البكالوريا: التشفير بالتواتر.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_08_synapse.svg"
   },
   {
@@ -2518,7 +2518,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "تتعرف على النواقل العصبية في المشبك"
     ],
     "correctAnswerIndex": 3,
-    "explanation": "المستقبلات الغشائية يرتبط هنا بـ: تتعرف على النواقل العصبية في المشبك.",
+    "explanation": "المستقبلات الغشائية بروتينات نوعية على الغشاء بعد المشبكي تتعرف على الناقل العصبي وترتبط به فتفتح قنوات أيونية. لا تخلط بينها وبين القنوات الفولطية الحساسة للكمون. في البكالوريا: مستقبل = تعرف كيميائي نوعي.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_08_synapse.svg"
   },
   {
@@ -2532,7 +2532,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يدل على زيادة غير محدودة في السرعة دون إشباع."
     ],
     "correctAnswerIndex": 2,
-    "explanation": "كمون الراحة يرتبط هنا بـ: فرق كمون يقارب -70mV داخل الليف غير المنبه.",
+    "explanation": "كمون الراحة فرق كمون ثابت يقارب -70 ميلي فولط بين وجهي غشاء ليف غير منبه، ناتج عن التوزيع غير المتساوي للأيونات. قيمة سالبة قارّة لا انعدام للكمون. في البكالوريا: احفظ القيمة والإشارة معاً.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_08_synapse.svg"
   },
   {
@@ -2546,7 +2546,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يدل على زيادة غير محدودة في السرعة دون إشباع."
     ],
     "correctAnswerIndex": 2,
-    "explanation": "داخل العصبون يرتبط هنا بـ: سالب نسبياً مقارنة بالخارج في الراحة.",
+    "explanation": "داخل العصبون في حالة الراحة سالب نسبياً مقارنة بالخارج، بسبب تسرب البوتاسيوم نحو الخارج ووجود شوارد سالبة كبيرة محبوسة داخلاً. الشحنة نسبية لا مطلقة. في البكالوريا: قل سالب بالنسبة للخارج.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_08_synapse.svg"
   },
   {
@@ -2560,7 +2560,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يستعمل CO2 كمستقبل نهائي للإلكترونات في التنفس."
     ],
     "correctAnswerIndex": 1,
-    "explanation": "تدرج Na+ يرتبط هنا بـ: تركيز الصوديوم أعلى خارج الخلية.",
+    "explanation": "تدرج الصوديوم معاكس: تركيزه أعلى خارج الخلية منه داخلها، وهذا ما يجعل دخوله المفاجئ يزيل الاستقطاب. لا تخلط بينه وبين تدرج البوتاسيوم المعاكس له. في البكالوريا: Na+ خارجاً، K+ داخلاً.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_08_synapse.svg"
   },
   {
@@ -2574,7 +2574,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "تركيز البوتاسيوم أعلى داخل الخلية"
     ],
     "correctAnswerIndex": 3,
-    "explanation": "تدرج K+ يرتبط هنا بـ: تركيز البوتاسيوم أعلى داخل الخلية.",
+    "explanation": "تركيز البوتاسيوم أعلى داخل الخلية منه خارجها، وتسربه نحو الخارج هو المسؤول الأول عن سلبية الوسط الداخلي في الراحة. اتجاهه معاكس لتدرج الصوديوم. في البكالوريا: اربط تدرج K+ بكمون الراحة.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_08_synapse.svg"
   },
   {
@@ -2588,7 +2588,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "هو بنية ثابتة لا تتأثر بالشروط الفيزيائية أبداً."
     ],
     "correctAnswerIndex": 2,
-    "explanation": "قنوات التسرب K+ يرتبط هنا بـ: تساهم في سلبية داخل الغشاء.",
+    "explanation": "قنوات تسرب البوتاسيوم مفتوحة باستمرار فتسمح بخروج بطيء لـK+، وهذا الخروج يترك شحنات سالبة داخلاً ويساهم في سلبية الغشاء. ليست فولطية ولا تولّد كمون عمل. في البكالوريا: التسرب سبب كمون الراحة.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_08_synapse.svg"
   },
   {
@@ -2602,7 +2602,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يدل على زيادة غير محدودة في السرعة دون إشباع."
     ],
     "correctAnswerIndex": 1,
-    "explanation": "مضخة Na+/K+ يرتبط هنا بـ: تخرج 3 Na+ وتدخل 2 K+ مستهلكة ATP.",
+    "explanation": "المضخة Na+/K+ تطرد ثلاثة أيونات صوديوم مقابل إدخال أيونين من البوتاسيوم في كل دورة مستهلكة جزيئة ATP، فهي غير متكافئة كهربائياً. احفظ النسبة 3/2 لا 2/3. في البكالوريا: 3 Na+ خارجاً و2 K+ داخلاً.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_08_synapse.svg"
   },
   {
@@ -2616,7 +2616,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يمثل مرحلة جيولوجية عميقة لا علاقة لها بالخلايا."
     ],
     "correctAnswerIndex": 2,
-    "explanation": "الاستقطاب يرتبط هنا بـ: حالة اختلاف الشحنات بين وجهي الغشاء.",
+    "explanation": "الاستقطاب حالة اختلاف الشحنات بين وجهي الغشاء: موجب خارجاً وسالب داخلاً في الراحة. ميّزه عن زوال الاستقطاب الذي هو زوال مؤقت لهذا الاختلاف. في البكالوريا: استقطاب = حالة، زوال الاستقطاب = تغير.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_08_synapse.svg"
   },
   {
@@ -2630,7 +2630,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "المشبك الكيميائي يعمل بلا ناقل عصبي ولا مستقبلات."
     ],
     "correctAnswerIndex": 0,
-    "explanation": "تثبيط المضخة يرتبط هنا بـ: يؤدي تدريجياً إلى انهيار التدرجات الأيونية.",
+    "explanation": "تثبيط المضخة، بنقص ATP أو بسم نوعي، يوقف تصحيح حركات الأيونات فتنهار التدرجات تدريجياً ويزول كمون الراحة. النتيجة بطيئة تراكمية لا فورية. في البكالوريا: هذه تجربة كلاسيكية لإثبات دور المضخة.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_08_synapse.svg"
   },
   {
@@ -2644,7 +2644,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "قيمة يجب بلوغها لتوليد كمون عمل"
     ],
     "correctAnswerIndex": 3,
-    "explanation": "عتبة التنبيه يرتبط هنا بـ: قيمة يجب بلوغها لتوليد كمون عمل.",
+    "explanation": "عتبة التنبيه هي الشدة الدنيا التي يجب بلوغها لفتح القنوات الفولطية وتوليد كمون عمل؛ دونها لا يظهر إلا استجابة موضعية. لا تخلط العتبة بسعة الكمون. في البكالوريا: تحت العتبة لا كمون عمل.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_08_synapse.svg"
   },
   {
@@ -2658,7 +2658,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يحدث دائماً داخل النواة ولا يرتبط بباقي العضيات."
     ],
     "correctAnswerIndex": 2,
-    "explanation": "الليف غير المنبه يرتبط هنا بـ: يحافظ على كمون راحة ثابت تقريباً.",
+    "explanation": "الليف غير المنبه يحافظ على كمون راحة ثابت تقريباً بفضل التوازن بين التسرب الأيوني وعمل المضخة. سكون كهربائي ظاهري لكنه نشاط استقلابي مستمر. في البكالوريا: الراحة حالة نشطة تستهلك ATP.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_08_synapse.svg"
   },
   {
@@ -2672,7 +2672,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يحدث في كل البروتينات بالطريقة نفسها دون نوعية."
     ],
     "correctAnswerIndex": 0,
-    "explanation": "النفاذية الانتقائية يرتبط هنا بـ: سبب أساسي في نشأة كمون الراحة.",
+    "explanation": "النفاذية الانتقائية للغشاء، وخاصة نفاذيته الكبيرة للبوتاسيوم مقارنة بالصوديوم في الراحة، سبب أساسي في نشأة كمون الراحة. ليست وحدها: تضاف إليها المضخة. في البكالوريا: اذكر النفاذية والمضخة معاً.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_08_synapse.svg"
   },
   {
@@ -2686,7 +2686,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يمثل تباعد قارتين بعد اكتمال التصادم مباشرة."
     ],
     "correctAnswerIndex": 2,
-    "explanation": "كمون العمل يرتبط هنا بـ: انعكاس عابر لكمون الغشاء بعد بلوغ العتبة.",
+    "explanation": "كمون العمل انعكاس عابر وسريع لكمون الغشاء يظهر فقط بعد بلوغ العتبة، ويتكون من زوال استقطاب ثم إعادة استقطاب. عابر ونمطي لا متدرج. في البكالوريا: صف مراحله على المنحنى.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_08_synapse.svg"
   },
   {
@@ -2700,7 +2700,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يستعمل CO2 كمستقبل نهائي للإلكترونات في التنفس."
     ],
     "correctAnswerIndex": 1,
-    "explanation": "الكل أو لا شيء يرتبط هنا بـ: كمون العمل لا يتدرج بسعة التنبيه بعد العتبة.",
+    "explanation": "قانون الكل أو لا شيء يعني أن كمون العمل، بمجرد بلوغ العتبة، يظهر بسعة ثابتة مهما زادت شدة التنبيه. الزيادة تُترجم بالتواتر لا بالسعة. في البكالوريا: لا يتدرج الكمون بل يتدرج التواتر.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_08_synapse.svg"
   },
   {
@@ -2714,7 +2714,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يحدث دائماً داخل النواة ولا يرتبط بباقي العضيات."
     ],
     "correctAnswerIndex": 0,
-    "explanation": "زوال الاستقطاب يرتبط هنا بـ: ينتج أساساً عن دخول Na+ عبر قنواته.",
+    "explanation": "زوال الاستقطاب ينتج أساساً عن الدخول المكثف لأيونات الصوديوم عبر قنواتها الفولطية المنفتحة، فينقلب الكمون نحو القيم الموجبة. ليس خروج K+ سببه. في البكالوريا: صعود المنحنى = دخول Na+.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_08_synapse.svg"
   },
   {
@@ -2728,7 +2728,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يدل على وسط صلب دائماً مهما كانت المعطيات الزلزالية."
     ],
     "correctAnswerIndex": 0,
-    "explanation": "إعادة الاستقطاب يرتبط هنا بـ: تنتج أساساً عن خروج K+.",
+    "explanation": "إعادة الاستقطاب تنتج أساساً عن انغلاق قنوات الصوديوم وخروج البوتاسيوم عبر قنواته الفولطية، فيعود الكمون نحو قيمة الراحة. لا تنسبها للمضخة التي تتدخل لاحقاً. في البكالوريا: نزول المنحنى = خروج K+.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_08_synapse.svg"
   },
   {
@@ -2742,7 +2742,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "هو بنية ثابتة لا تتأثر بالشروط الفيزيائية أبداً."
     ],
     "correctAnswerIndex": 1,
-    "explanation": "فرط الاستقطاب يرتبط هنا بـ: قد يحدث بسبب استمرار خروج K+ قليلاً.",
+    "explanation": "فرط الاستقطاب انخفاض الكمون تحت قيمة الراحة، وقد يحدث لاستمرار خروج البوتاسيوم لحظة قصيرة قبل انغلاق قنواته. حالة عابرة تعقب كمون العمل. في البكالوريا: اربطه بتأخر انغلاق قنوات K+.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_08_synapse.svg"
   },
   {
@@ -2756,7 +2756,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يحدث في كل البروتينات بالطريقة نفسها دون نوعية."
     ],
     "correctAnswerIndex": 2,
-    "explanation": "فترة الجموح يرتبط هنا بـ: تمنع رجوع السيالة للخلف مباشرة.",
+    "explanation": "فترة الجموح مدة قصيرة يكون فيها الليف غير قابل للاستجابة لتنبيه جديد، لأن قنوات الصوديوم معطلة، وهي التي تمنع رجوع السيالة للخلف وتحدد التواتر الأقصى. في البكالوريا: الجموح يفسر أحادية الاتجاه.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_08_synapse.svg"
   },
   {
@@ -2770,7 +2770,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يحدث في الألياف غير المغمدة"
     ],
     "correctAnswerIndex": 3,
-    "explanation": "الانتشار المتواصل يرتبط هنا بـ: يحدث في الألياف غير المغمدة.",
+    "explanation": "الانتشار المتواصل نمط انتقال يحدث في الألياف غير المغمدة، حيث يتجدد كمون العمل في كل نقطة من الغشاء تباعاً، فيكون بطيئاً نسبياً. عكسه القفزي في الألياف المغمدة. في البكالوريا: بلا ميالين = متواصل بطيء.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_08_synapse.svg"
   },
   {
@@ -2784,7 +2784,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يمثل تباعد قارتين بعد اكتمال التصادم مباشرة."
     ],
     "correctAnswerIndex": 0,
-    "explanation": "الانتشار القفزي يرتبط هنا بـ: ينتقل من عقدة رانفييه إلى أخرى.",
+    "explanation": "الانتشار القفزي انتقال كمون العمل من عقدة رانفييه إلى العقدة التالية في الألياف المغمدة، فيربح الوقت والطاقة معاً. لا يتجدد الكمون تحت الميالين. في البكالوريا: قفزي = سريع واقتصادي.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_08_synapse.svg"
   },
   {
@@ -2798,7 +2798,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يمثل مرحلة جيولوجية عميقة لا علاقة لها بالخلايا."
     ],
     "correctAnswerIndex": 1,
-    "explanation": "زيادة التواتر يرتبط هنا بـ: تشفّر غالباً شدة التنبيه.",
+    "explanation": "زيادة تواتر كمونات العمل هي الترجمة العصبية لزيادة شدة التنبيه، ما دامت السعة ثابتة. لا تقل إن الشدة تزيد سعة الكمون أو سرعته. في البكالوريا: شدة أكبر = تواتر أعلى.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_08_synapse.svg"
   },
   {
@@ -2812,7 +2812,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "تنفتح بسرعة عند بلوغ العتبة"
     ],
     "correctAnswerIndex": 3,
-    "explanation": "القنوات Na+ الفولطية يرتبط هنا بـ: تنفتح بسرعة عند بلوغ العتبة.",
+    "explanation": "قنوات الصوديوم الفولطية تنفتح بسرعة كبيرة بمجرد بلوغ العتبة فتُحدث زوال الاستقطاب، ثم تتعطل سريعاً. سرعة انفتاحها تفوق سرعة قنوات البوتاسيوم. في البكالوريا: اربط تسلسل القنوات بشكل المنحنى.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_08_synapse.svg"
   },
   {
@@ -2826,7 +2826,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يحدث في كل البروتينات بالطريقة نفسها دون نوعية."
     ],
     "correctAnswerIndex": 2,
-    "explanation": "سرعة السيالة يرتبط هنا بـ: تزداد بوجود الغمد النخاعيني وكبر قطر الليف.",
+    "explanation": "سرعة السيالة تزداد بوجود الغمد النخاعيني وبكبر قطر الليف، لأن الأول يفرض الانتشار القفزي والثاني يخفض المقاومة الداخلية. لا علاقة للسرعة بشدة التنبيه. في البكالوريا: عاملان اثنان لا أكثر.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_08_synapse.svg"
   },
   {
@@ -2840,7 +2840,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يتم فقط في غياب الماء والأيونات."
     ],
     "correctAnswerIndex": 1,
-    "explanation": "المشبك الكيميائي يرتبط هنا بـ: اتصال يستعمل ناقلاً عصبياً بين خليتين.",
+    "explanation": "المشبك الكيميائي منطقة اتصال وظيفي بين خليتين تُنقل فيها الرسالة بواسطة ناقل عصبي يعبر الشق المشبكي. لا يوجد تلامس سيتوبلازمي ولا مرور مباشر للتيار. في البكالوريا: الشق يفرض النقل الكيميائي.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_08_synapse.svg"
   },
   {
@@ -2854,7 +2854,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يدل على وسط صلب دائماً مهما كانت المعطيات الزلزالية."
     ],
     "correctAnswerIndex": 2,
-    "explanation": "الحويصلات المشبكية يرتبط هنا بـ: تخزن الناقل العصبي قبل التحرير.",
+    "explanation": "الحويصلات المشبكية أكياس صغيرة في النهاية قبل المشبكية تخزن الناقل العصبي وتحميه قبل تحريره بالإخراج الخلوي. لا تصنع الناقل بل تخزنه. في البكالوريا: حويصلة = مخزن الناقل.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_08_synapse.svg"
   },
   {
@@ -2868,7 +2868,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يدل على زيادة غير محدودة في السرعة دون إشباع."
     ],
     "correctAnswerIndex": 0,
-    "explanation": "دخول Ca2+ يرتبط هنا بـ: يحرض اندماج الحويصلات بالغشاء قبل المشبكي.",
+    "explanation": "دخول الكالسيوم إلى النهاية قبل المشبكية، عقب وصول كمون العمل، هو الإشارة التي تحرّض اندماج الحويصلات مع الغشاء وتحرير الناقل. بلا Ca2+ لا تحرير. في البكالوريا: Ca2+ حلقة الوصل كهربائي/كيميائي.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_08_synapse.svg"
   },
   {
@@ -2882,7 +2882,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يصف ظاهرة مناعية نوعية فقط ولا علاقة له بهذا المحور."
     ],
     "correctAnswerIndex": 2,
-    "explanation": "الشق المشبكي يرتبط هنا بـ: فراغ ينتشر فيه الناقل العصبي.",
+    "explanation": "الشق المشبكي فراغ ضيق بين الغشاءين ينتشر فيه الناقل العصبي من الجهة قبل المشبكية نحو المستقبلات المقابلة. وجوده سبب زمن التأخر وأحادية الاتجاه. في البكالوريا: اربط الشق بالتأخر المشبكي.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_08_synapse.svg"
   },
   {
@@ -2896,7 +2896,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يصف ظاهرة مناعية نوعية فقط ولا علاقة له بهذا المحور."
     ],
     "correctAnswerIndex": 1,
-    "explanation": "المستقبل بعد المشبكي يرتبط هنا بـ: يرتبط بالناقل ويفتح قنوات أيونية.",
+    "explanation": "المستقبل بعد المشبكي بروتين نوعي يرتبط بالناقل العصبي فيفتح قنوات أيونية تولّد كموناً منشطاً أو مثبطاً. نوع المستقبل لا نوع الناقل وحده يحدد الأثر. في البكالوريا: المستقبل يترجم الرسالة الكيميائية.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_08_synapse.svg"
   },
   {
@@ -2910,7 +2910,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "هو بنية ثابتة لا تتأثر بالشروط الفيزيائية أبداً."
     ],
     "correctAnswerIndex": 0,
-    "explanation": "PPSE يرتبط هنا بـ: كمون منشط يقرب الغشاء من العتبة.",
+    "explanation": "الكمون بعد المشبكي المنشط تغير موضعي متدرج يقرّب الغشاء من العتبة، بدخول أيونات موجبة كالصوديوم. ليس كمون عمل: متدرج وقابل للجمع. في البكالوريا: PPSE يقرّب من العتبة.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_08_synapse.svg"
   },
   {
@@ -2924,7 +2924,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "كمون مثبط يبعد الغشاء عن العتبة"
     ],
     "correctAnswerIndex": 3,
-    "explanation": "PPSI يرتبط هنا بـ: كمون مثبط يبعد الغشاء عن العتبة.",
+    "explanation": "الكمون بعد المشبكي المثبط تغير موضعي يبعد الغشاء عن العتبة بفرط استقطابه، عبر دخول Cl- أو خروج K+. عكس PPSE تماماً. في البكالوريا: PPSI يبعد عن العتبة ويعيق التوليد.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_08_synapse.svg"
   },
   {
@@ -2938,7 +2938,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يفكك الأستيل كولين في بعض المشابك"
     ],
     "correctAnswerIndex": 3,
-    "explanation": "الأستيل كولين إستيراز يرتبط هنا بـ: يفكك الأستيل كولين في بعض المشابك.",
+    "explanation": "الأستيل كولين إستيراز إنزيم في الشق المشبكي يفكك الأستيل كولين بعد أدائه دوره، فيوقف التنبيه ويسمح باستقبال رسالة جديدة. لا يفرز الناقل بل يحطمه. في البكالوريا: التفكيك شرط تجدد النقل.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_08_synapse.svg"
   },
   {
@@ -2952,7 +2952,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "آلية تحرير الناقل العصبي من الحويصلات"
     ],
     "correctAnswerIndex": 3,
-    "explanation": "الإخراج الخلوي يرتبط هنا بـ: آلية تحرير الناقل العصبي من الحويصلات.",
+    "explanation": "الإخراج الخلوي آلية اندماج الحويصلات مع الغشاء قبل المشبكي لتحرير محتواها من الناقل في الشق، وهي مستهلكة للطاقة ومرتبطة بدخول الكالسيوم. ليست انتشاراً بسيطاً. في البكالوريا: اربطه بـCa2+.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_08_synapse.svg"
   },
   {
@@ -2966,7 +2966,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "كمون العمل يتدرج في السعة حسب شدة المنبه."
     ],
     "correctAnswerIndex": 0,
-    "explanation": "اتجاه المشبك يرتبط هنا بـ: غالباً من قبل مشبكي إلى بعد مشبكي.",
+    "explanation": "النقل المشبكي أحادي الاتجاه: من العنصر قبل المشبكي الذي يملك الحويصلات نحو العنصر بعد المشبكي الذي يملك المستقبلات. توزيع البنى هو سبب هذه الأحادية. في البكالوريا: علّل الأحادية ببنية المشبك.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_08_synapse.svg"
   },
   {
@@ -2980,7 +2980,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يعني توقف كل التحولات الطاقوية في الخلية."
     ],
     "correctAnswerIndex": 1,
-    "explanation": "زمن التأخر المشبكي يرتبط هنا بـ: ناتج عن خطوات كيميائية متعددة.",
+    "explanation": "زمن التأخر المشبكي فترة قصيرة تفصل وصول الكمون قبل المشبكي عن ظهور الاستجابة، وسببها تعاقب خطوات كيميائية: تحرير، انتشار، ارتباط. ليس بطء انتشار الكمون. في البكالوريا: التأخر دليل على الطبيعة الكيميائية.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_08_synapse.svg"
   },
   {
@@ -2994,7 +2994,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يصف ظاهرة مناعية نوعية فقط ولا علاقة له بهذا المحور."
     ],
     "correctAnswerIndex": 0,
-    "explanation": "الإدماج العصبي يرتبط هنا بـ: جمع PPSE وPPSI لاتخاذ قرار توليد كمون عمل.",
+    "explanation": "الإدماج العصبي هو الجمع الجبري للكمونات المنشطة والمثبطة الواردة على العصبون لحسم توليد كمون عمل من عدمه. ليس نقلاً بل قراراً. في البكالوريا: الإدماج = جمع PPSE و PPSI.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_08_synapse.svg"
   },
   {
@@ -3008,7 +3008,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يتم فقط في غياب الماء والأيونات."
     ],
     "correctAnswerIndex": 1,
-    "explanation": "الجمع الزمني يرتبط هنا بـ: تراكم كمونات متتالية من نفس المشبك.",
+    "explanation": "الجمع الزمني تراكم كمونات متتالية قادمة من المشبك نفسه بفواصل قصيرة، فتتجمع آثارها قبل زوالها. ميّزه عن الجمع المكاني الذي يعني مشابك مختلفة. في البكالوريا: زمني = مشبك واحد ووقت متقارب.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_08_synapse.svg"
   },
   {
@@ -3022,7 +3022,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "المشبك الكيميائي يعمل بلا ناقل عصبي ولا مستقبلات."
     ],
     "correctAnswerIndex": 1,
-    "explanation": "الجمع المكاني يرتبط هنا بـ: تراكم كمونات واردة من مشابك مختلفة.",
+    "explanation": "الجمع المكاني تراكم كمونات واردة في الوقت نفسه من مشابك مختلفة على العصبون ذاته. الفرق مع الزمني هو تعدد المصادر لا تقارب الأزمنة. في البكالوريا: مكاني = عدة مشابك آنياً.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_08_synapse.svg"
   },
   {
@@ -3036,7 +3036,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "المشبك الكيميائي يعمل بلا ناقل عصبي ولا مستقبلات."
     ],
     "correctAnswerIndex": 2,
-    "explanation": "المنطقة المولدة يرتبط هنا بـ: مكان حسم بلوغ العتبة غالباً عند بداية المحور.",
+    "explanation": "المنطقة المولدة، عند بداية المحور، هي الأغنى بالقنوات الفولطية، ولذلك يُحسم فيها بلوغ العتبة وينشأ فيها كمون العمل. لا ينشأ الكمون في التغصنات. في البكالوريا: مقر نشوء الكمون بداية المحور.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_08_synapse.svg"
   },
   {
@@ -3050,7 +3050,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يمثل تباعد قارتين بعد اكتمال التصادم مباشرة."
     ],
     "correctAnswerIndex": 2,
-    "explanation": "PPSI قوي يرتبط هنا بـ: يمكنه منع توليد كمون عمل رغم وجود PPSE.",
+    "explanation": "كمون مثبط قوي يمكنه أن يمنع توليد كمون العمل رغم وجود كمونات منشطة، لأن المحصلة الجبرية تبقى دون العتبة. التثبيط فعل نشط لا مجرد غياب تنبيه. في البكالوريا: المحصلة هي الفاصلة.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_08_synapse.svg"
   },
   {
@@ -3064,7 +3064,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يحدث في كل البروتينات بالطريقة نفسها دون نوعية."
     ],
     "correctAnswerIndex": 1,
-    "explanation": "المخدرات يرتبط هنا بـ: تغير النقل المشبكي بزيادة أو خفض تأثير النواقل.",
+    "explanation": "المخدرات مواد تغيّر النقل المشبكي بزيادة أو خفض تأثير النواقل العصبية، إما بتقليد الناقل أو بمنع إعادة التقاطه أو بإعاقة مستقبلاته. لا تخلق رسائل جديدة. في البكالوريا: أثرها يمر عبر المشبك.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_08_synapse.svg"
   },
   {
@@ -3078,7 +3078,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يستعمل CO2 كمستقبل نهائي للإلكترونات في التنفس."
     ],
     "correctAnswerIndex": 1,
-    "explanation": "الكوكايين يرتبط هنا بـ: يزيد بقاء بعض النواقل في الشق بمنع إعادة التقاطها.",
+    "explanation": "الكوكايين يمنع إعادة التقاط الدوبامين من الشق المشبكي، فيطيل بقاءه ويضخّم أثره المنشط. لا يقلّد الناقل بل يعطّل إزالته. في البكالوريا: كوكايين = تثبيط إعادة الالتقاط.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_08_synapse.svg"
   },
   {
@@ -3092,7 +3092,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يرتبط بمستقبلات أفيونية ويغير الإحساس بالألم"
     ],
     "correctAnswerIndex": 3,
-    "explanation": "المورفين يرتبط هنا بـ: يرتبط بمستقبلات أفيونية ويغير الإحساس بالألم.",
+    "explanation": "المورفين يرتبط بالمستقبلات الأفيونية في الجهاز العصبي فيغيّر الإحساس بالألم ويحدث شعوراً بالراحة، مع خطر التعود والإدمان. آليته تقليد للمواد الأفيونية الداخلية. في البكالوريا: مورفين = مستقبلات أفيونية.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_08_synapse.svg"
   },
   {
@@ -3106,7 +3106,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "كمون العمل يتدرج في السعة حسب شدة المنبه."
     ],
     "correctAnswerIndex": 0,
-    "explanation": "التعود يرتبط هنا بـ: نقص تأثير نفس الجرعة مع الزمن.",
+    "explanation": "التعود نقص تأثير الجرعة نفسها مع تكرار التناول، بسبب تكيّف المستقبلات، ما يدفع إلى رفع الجرعة. ميّزه عن الإدمان الذي هو حاجة قهرية. في البكالوريا: التعود يسبق الإدمان غالباً.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_08_synapse.svg"
   },
   {
@@ -3120,7 +3120,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يعني توقف كل التحولات الطاقوية في الخلية."
     ],
     "correctAnswerIndex": 0,
-    "explanation": "الإدمان يرتبط هنا بـ: حاجة قهرية للمادة رغم آثارها الضارة.",
+    "explanation": "الإدمان حاجة قهرية جسدية ونفسية للمادة رغم علم المتعاطي بأضرارها، ويصاحبه عرض انسحاب عند التوقف. لا تخلط بينه وبين التعود الذي يخص فعالية الجرعة. في البكالوريا: إدمان = تبعية، تعود = فعالية.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_08_synapse.svg"
   },
   {
@@ -3134,7 +3134,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يحدث دائماً داخل النواة ولا يرتبط بباقي العضيات."
     ],
     "correctAnswerIndex": 2,
-    "explanation": "الجرعة الزائدة يرتبط هنا بـ: قد تعطل مراكز حيوية مثل التنفس.",
+    "explanation": "الجرعة الزائدة تناول كمية تفوق تحمل الجسم فتعطل مراكز حيوية في جذع الدماغ كمركز التنفس، وقد تسبب الوفاة. خطر حاد فوري لا مزمن. في البكالوريا: اربطها بتثبيط المراكز التنفسية.",
     "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_08_synapse.svg"
   },
   {

@@ -101,8 +101,12 @@ describe('corpus QCM — qualité des explications (constat #1)', () => {
   // explications ont été réécrites selon le canevas en trois temps
   // « mécanisme → réfutation du distracteur plausible → mot-clé BAC ».
   // Plafonds ramenés de 500 → 439 et de 508 → 447.
-  const MAX_CIRCULAR = 439;
-  const MAX_TOO_SHORT = 447;
+  //
+  // Lot 2 (unité 4 — L'immunité, 48 QCM, ids 114-161 ; unité 5 — La
+  // communication nerveuse, 55 QCM, ids 162-216) : 103 explications réécrites
+  // selon le même canevas. Plafonds ramenés de 439 → 336 et de 447 → 344.
+  const MAX_CIRCULAR = 336;
+  const MAX_TOO_SHORT = 344;
 
   it('ne régresse pas sur le nombre d’explications circulaires', () => {
     const circular = SVT_QUIZ_QUESTIONS.filter(isCircular);
@@ -147,7 +151,7 @@ describe('corpus QCM — qualité des explications (constat #1)', () => {
 
   // Lots déjà traités : verrouillés à zéro défaut pour interdire tout retour
   // en arrière sur le travail de réécriture déjà validé.
-  const REWRITTEN_UNITS = [11];
+  const REWRITTEN_UNITS = [4, 5, 11];
 
   it.each(REWRITTEN_UNITS)(
     'garde l’unité %i totalement exempte d’explications circulaires ou trop courtes',
