@@ -26,7 +26,7 @@
 - **VOLET B — Diff livre ↔ application**
   - [B1. Couverture structurelle : 11 unités vs 44 leçons](#b1-couverture-structurelle--11-unités-vs-44-leçons)
   - [B2. CRITIQUE — 98 % d'explications circulaires *(chantier **CLOS** — 508/508 réécrites, lots 1 à 5)*](#b2-critique--98--dexplications-circulaires)
-  - [B3. MAJEUR — 30 % de QCM méta-scolaires](#b3-majeur--30--de-qcm-méta-scolaires)
+  - [B3. MAJEUR — un corpus généré : énoncés standardisés et distracteurs de remplissage](#b3-majeur--un-corpus-généré--énoncés-standardisés-et-distracteurs-de-remplissage)
   - [B4. MAJEUR — Barème BAC non conforme](#b4-majeur--barème-bac-non-conforme)
   - [B5. MAJEUR — 57 schémas hors-sujet](#b5-majeur--57-schémas-hors-sujet)
   - [B6. Divergences de contenu livre ↔ app](#b6-divergences-de-contenu-livre--app)
@@ -50,13 +50,13 @@ L'arrivée du corpus documentaire change la nature de l'audit. Jusqu'ici, la con
 
 **Le défaut le plus grave se trouve toutefois dans l'application, et il est structurel.** Sur 508 QCM, **500 — soit 98 % — délivrent une explication au gabarit automatique « X يرتبط هنا بـ : Y », et dans les 500 cas l'explication recopie littéralement le terme mis entre guillemets dans l'énoncé.** L'explication ne justifie rien : elle reformule la question. Longueur médiane 11 mots ; 321 QCM sur 508 tiennent en moins de 12 mots. Or l'application est un tuteur **hors-ligne, sans LLM ni API** : l'explication statique est le seul feedback qu'un élève puisse recevoir après une erreur. Le circuit pédagogique est donc ouvert — l'élève apprend qu'il s'est trompé, jamais pourquoi. Le défaut se propage mécaniquement aux 500 flashcards, dérivées du même champ par un simple `.map()`. **Gravité : Critique.** C'est le point qui devait être traité avant tout autre — et **il l'a été au cours de cet audit** : les 508 explications ont été réécrites en cinq lots, unité par unité, sous garde-fou automatisé. Le corpus ne compte plus **aucune** explication circulaire ni aucune explication de moins de 25 mots. Ce qui reste de ce chantier n'est plus un défaut de contenu mais un besoin de **validation par un enseignant en exercice** (constat #21).
 
-**Trois autres écarts majeurs se confirment.** Le générateur d'épreuves BAC produit des examens à 28, 20 et 34 points selon le domaine, alors que l'épreuve algérienne est notée sur 20 (15 + 5), et des sujets mono-domaine quand l'épreuve réelle croise obligatoirement deux domaines — mais **ce générateur n'est appelé nulle part** : c'est du code mort, requalifié en P3 (§3.1). 30 % des QCM sont méta-scolaires — ils interrogent la définition d'une notion plutôt que son exploitation dans un document expérimental, à rebours de la nature même du BAC algérien. Enfin 57 QCM affichaient un schéma d'un autre domaine — tous concentrés sur l'unité 11, touchée à 93 % ; **ce dernier point a été corrigé au cours de l'audit** (commit `e130475`).
+**Trois autres écarts majeurs se confirment.** Le générateur d'épreuves BAC produit des examens à 28, 20 et 34 points selon le domaine, alors que l'épreuve algérienne est notée sur 20 (15 + 5), et des sujets mono-domaine quand l'épreuve réelle croise obligatoirement deux domaines — mais **ce générateur n'est appelé nulle part** : c'est du code mort, requalifié en P3 (§3.1). Le corpus de QCM est engendré par gabarits : 10 squelettes d'énoncé couvrent 97,2 % des 508 items, et **12 phrases de remplissage occupaient un choix sur 79 % d'entre eux**, empruntées à un autre domaine et donc éliminables sans connaître le cours — défaut corrigé au cours de l'audit (§B3). Enfin 57 QCM affichaient un schéma d'un autre domaine — tous concentrés sur l'unité 11, touchée à 93 % ; **ce dernier point a été corrigé au cours de l'audit** (commit `e130475`).
 
 **Un point positif inattendu mérite d'être souligné, car il inverse un reproche courant :** le corpus de leçons HTML de l'application est **plus complet que le livre de référence**. Le mapping des 44 leçons sur les 11 unités officielles est intégralement cohérent, sans trou ni doublon, et l'application traite des notions que le livre omet — le système ABO et le facteur Rhésus, absents du livre (0 occurrence), font l'objet d'une leçon dédiée. Sur le plan de la couverture, l'application ne dérive pas du programme : elle le dépasse.
 
 **Verdict global — Volet A : 6,4/10. Volet B : 7,0/10** *(5,1 à l'ouverture de l'audit ; 5,4 après le Sprint 0 ; 5,9 après le lot 3 ; 6,9 après la clôture du chantier des explications ; 7,0 après la remise au vert de la suite de tests).* L'application repose sur des fondations pédagogiques sérieuses (méthodologie des 6 verbes BAC, zéro doublon dans le corpus QCM, couverture complète du programme) mais sa couche d'évaluation — QCM, explications, flashcards, générateur d'épreuves — avait été produite par génération automatique sans relecture experte, et c'est là que tout se jouait. Après vérification par exécution, un seul P0 subsistait : la qualité des explications (constat #1). Deux des quatre P0 annoncés initialement ont été requalifiés — l'un invalidé, l'autre neutralisé par du code mort (§3.1) — un troisième a été corrigé (commit `e130475`), et **le dernier est désormais soldé** : 508 explications réécrites, 500 flashcards réparées par dérivation, 0 régression sur la suite de tests.
 
-**Ce que cela change, et ce que cela ne change pas.** Le produit n'est plus un quiz de reconnaissance : après chaque erreur, l'élève reçoit un mécanisme causal, la réfutation de la confusion la plus probable et une consigne d'examen. C'est la différence entre mesurer une lacune et la traiter. Mais **le plafond du produit n'est plus fixé par la qualité du feedback ; il l'est par la forme de l'évaluation.** Le BAC algérien n'utilise aucun QCM : il évalue l'exploitation de documents expérimentaux (15 points) et une situation d'intégration (5 points) portant sur deux domaines différents. Une application qui entraîne excellemment à des QCM entraîne excellemment à un exercice qui n'existe pas à l'examen. **Le prochain chantier structurant est le Sprint 2 — conversion des 153 QCM méta-scolaires en questions documentées — et non un perfectionnement supplémentaire des explications.**
+**Ce que cela change, et ce que cela ne change pas.** Le produit n'est plus un quiz de reconnaissance : après chaque erreur, l'élève reçoit un mécanisme causal, la réfutation de la confusion la plus probable et une consigne d'examen. C'est la différence entre mesurer une lacune et la traiter. Mais **le plafond du produit n'est plus fixé par la qualité du feedback ; il l'est par la forme de l'évaluation.** Le BAC algérien n'utilise aucun QCM : il évalue l'exploitation de documents expérimentaux (15 points) et une situation d'intégration (5 points) portant sur deux domaines différents. Une application qui entraîne excellemment à des QCM entraîne excellemment à un exercice qui n'existe pas à l'examen. **Le prochain chantier structurant est la conversion d'une part des QCM en questions documentées — et non un perfectionnement supplémentaire des explications.**
 
 ---
 
@@ -465,11 +465,11 @@ Le défaut ne reste pas confiné aux QCM. En fin de `src/quizCorpus.ts`, `SVT_FL
 
 Chaque explication réécrite fait 25 à 43 mots et suit le canevas *mécanisme → réfutation du distracteur → mot-clé BAC* ; les flashcards correspondantes sont réparées par dérivation automatique, sans action supplémentaire. **Les trois domaines du programme sont assainis** : plus une seule explication du produit ne se contente de recopier l'énoncé, et plus une seule ne descend sous les 25 mots.
 
-Le score B2 passe de **1,5 à 8,0/10**. Il n'atteint pas 10 pour quatre raisons explicites, qui constituent la dette résiduelle du chantier : (1) les explications ont été rédigées **dans le cadre de l'audit et non validées par un enseignant en exercice** — la relecture experte reste à faire (constat **#21** du [registre](#3-registre-consolidé-des-constats)) ; (2) le feedback demeure **statique** : le même texte est servi quelle que soit l'erreur commise, alors qu'un distracteur choisi renseigne sur la nature de la confusion ; (3) les **énoncés méta-scolaires de [B3](#b3-majeur--30--de-qcm-méta-scolaires) n'ont pas été touchés** — une bonne explication sur une mauvaise question reste une mauvaise question ; (4) deux items conservent une formulation dégradée (voir ci-dessous). Voir les journaux d'exécution en [§4, Sprint 1](#sprint-1--feedback--le-sprint-qui-compte--chantier-clos-lots-1-à-5).
+Le score B2 passe de **1,5 à 8,0/10**. Il n'atteint pas 10 pour trois raisons explicites, qui constituent la dette résiduelle du chantier : (1) les explications ont été rédigées **dans le cadre de l'audit et non validées par un enseignant en exercice** — la relecture experte reste à faire (constat **#21** du [registre](#3-registre-consolidé-des-constats)) ; (2) le feedback demeure **statique** : le même texte est servi quelle que soit l'erreur commise, alors qu'un distracteur choisi renseigne sur la nature de la confusion ; (3) les **énoncés restent standardisés à 97,2 % ([B3](#b3-majeur--un-corpus-généré--énoncés-standardisés-et-distracteurs-de-remplissage))** — une bonne explication sur une question de gabarit reste une question de gabarit. Voir les journaux d'exécution en [§4, Sprint 1](#sprint-1--feedback--le-sprint-qui-compte--chantier-clos-lots-1-à-5).
 
 **Anomalie résiduelle documentée — items 326 et 336 (unité 8).** Ces deux items ont conservé dans leur énoncé un fragment de l'échafaudage de génération à l'intérieur même du terme interrogé : `«3 | العلاقة بين»` et `«4 | الحصيلة الطاقوية»`. Ce sont **les deux seuls items du corpus** dont le terme entre guillemets contient une barre verticale — vérifié par balayage complet. Pour l'item 336, la bonne réponse elle-même (`المقارنة الشاملة`, « la comparaison globale ») n'est pas informative. La réécriture s'est délibérément limitée au champ `explanation`, périmètre annoncé et contrôlé ligne à ligne : **les énoncés et les options n'ont pas été modifiés**, et les explications de ces deux items portent le fond scientifique attendu (bilan comparé photosynthèse/respiration). Ces deux items restent à reformuler dans le cadre du Sprint 2, qui traite les énoncés.
 
-Il faut aussi relier ce constat à celui de [B3](#b3-majeur--30--de-qcm-méta-scolaires) : énoncés méta-scolaires et explications circulaires sont **produits par la même chaîne de génération automatique**. Ce n'est pas deux défauts, c'est un seul — un corpus généré sans relecture experte.
+Il faut aussi relier ce constat à celui de [B3](#b3-majeur--un-corpus-généré--énoncés-standardisés-et-distracteurs-de-remplissage) : énoncés de gabarit, distracteurs de remplissage et explications circulaires sont **produits par la même chaîne de génération automatique**. Ce n'est pas deux défauts, c'est un seul — un corpus généré sans relecture experte.
 
 ### Gravité, impacts, recommandation
 
@@ -485,37 +485,60 @@ Il faut aussi relier ce constat à celui de [B3](#b3-majeur--30--de-qcm-méta-sc
 
 ---
 
-## B3. MAJEUR — 30 % de QCM méta-scolaires
+## B3. MAJEUR — un corpus généré : énoncés standardisés et distracteurs de remplissage
+
+### Rectificatif méthodologique
+
+**Une version antérieure de ce rapport avançait « 153 QCM méta-scolaires (30 %) ». Ce chiffre était faux et est retiré.** Il provenait d'un comptage à vue sur un échantillon, extrapolé sans vérification. Recompté par exécution sur les 508 items, le motif annoncé ressort à **0/508**. Le défaut réel est différent, et plus profond — il est établi ci-dessous par mesure reproductible. Principe appliqué depuis : *aucun chiffre n'entre dans ce rapport sans avoir été recompté par un script sur le corpus complet, y compris mes propres estimations.*
 
 ### Mesure
 
-**153 QCM sur 508 (30 %)** relèvent de trois gabarits qui interrogent la forme scolaire de la notion plutôt que la notion elle-même :
+Le corpus n'est pas rédigé item par item : il est **engendré par gabarits**. Trois mesures, toutes obtenues par exécution.
 
-| Gabarit | Nature |
-|---|---|
-| `أي وصف دقيق لـ«X»؟` — « quelle description exacte de X ? » | Reconnaissance de définition |
-| `أي عبارة تساعد على تمييز «X» عن المفاهيم القريبة؟` — « quelle formule aide à distinguer X des notions voisines ? » | **Méta-cognitif : porte sur la formule, pas sur la notion** |
-| `أي إكمال صحيح: «X» ← ________؟` | Texte à trous — **50 QCM (10 %)** |
+**(1) Les énoncés sont standardisés.** 10 squelettes de phrase couvrent **494 des 508 items (97,2 %)**, à raison de 46 à 50 occurrences chacun, et les 11 unités reçoivent les 10 mêmes. 505 items sur 508 sont bâtis sur un terme placé entre guillemets, réinjecté mécaniquement dans le gabarit.
 
-### Analyse
+**(2) Les distracteurs étaient du remplissage.** **12 phrases passe-partout** occupaient un choix sur **402 des 508 items (79 %)** — exactement une par item, **jamais en position de bonne réponse**, et empruntées à un domaine étranger à la question. Extrait, avant correction :
 
-Le second gabarit est le plus problématique : il ne demande pas de distinguer deux notions, mais d'identifier *quelle phrase aide à les distinguer*. L'élève apprend à reconnaître un énoncé de cours, pas à mobiliser un concept.
+| Phrase recyclée | Occurrences | Unités où elle apparaît |
+|---|---|---|
+| `هو بنية ثابتة لا تتأثر بالشروط الفيزيائية أبداً.` | 38 | 1-7, 9-11 |
+| `يحدث دائماً داخل النواة ولا يرتبط بباقي العضيات.` | 37 | 1-10 |
+| `يمثل مرحلة جيولوجية عميقة لا علاقة لها بالخلايا.` | 35 | 1-11 |
+| `يستعمل CO2 كمستقبل نهائي للإلكترونات في التنفس.` | 32 | 1-5, 9-11 |
 
-Cette orientation est **structurellement désalignée avec l'épreuve algérienne**. Les sources externes consultées sont sans ambiguïté :
+Une question sur la traduction des protéines proposait ainsi « utilise le CO2 comme accepteur final d'électrons dans la respiration » : hors sujet, donc éliminable **sans rien connaître au cours**.
+
+**(3) L'effet était mesurable sur la difficulté réelle.** Un élève ignorant tout du programme et appliquant la seule règle « j'écarte toute option déjà rencontrée ailleurs » obtenait **35,4 %** contre 25 % au hasard. Le corpus était partiellement soluble sans savoir.
+
+### Correction apportée pendant l'audit
+
+Les **402 distracteurs** ont été réécrits en **erreurs classiques portant sur le concept visé** : confusion ARNm/ARNt, appariement `A-U` attribué à l'ADN, Gutenberg confondu avec Lehmann, inhibiteur compétitif présenté comme non compétitif. Le distracteur devient ainsi un diagnostic — le choix de l'élève révèle *quelle* confusion il entretient, ce qui est la condition d'un feedback différencié (constat #23).
+
+Les items **326** et **336** ont été reconstruits : leur énoncé reprenait un titre de section du livre (`«3 | العلاقة بين»`, « 3 | La relation entre ») en guise de terme interrogé, produisant une question littéralement insensée (constat **#22**, désormais soldé).
+
+| Indicateur (mesuré par exécution) | Avant | Après |
+|---|---|---|
+| Items portant un distracteur hors-domaine | 28,1 % | **4,5 %** |
+| Stratégie « ignorer toute option déjà vue » | 35,4 % | **17,5 %** |
+| Heuristique « choisir l'option la plus longue » | 14,2 % | **24,0 %** |
+
+Les deux stratégies sans connaissance sont désormais **au niveau du hasard ou en dessous** : le corpus ne se laisse plus résoudre par sa forme. Trois assertions d'intégrité ont été ajoutées pour empêcher la régression — bannissement nominatif des phrases de remplissage, plafond de recyclage d'un même distracteur, interdiction des marqueurs de génération dans les énoncés et les réponses (**26 assertions vertes**).
+
+### Ce qui reste, et pourquoi la gravité demeure Majeure
+
+La réparation traite les distracteurs, **pas la forme de l'évaluation**. Les énoncés restent standardisés à 97,2 %, et surtout le QCM lui-même est désaligné de l'épreuve algérienne :
 
 - **Structure officielle** : deux parties indépendantes portant sur des **domaines différents**. Partie 1 = **15 points**, 2 exercices, ≤2 documents chacun. Partie 2 = **5 points**, situation d'intégration, ≤3 documents, ≤2 questions.
 - **Sujet BAC 2021** : « التمرين الثاني : 07 نقاط », thèmes ribonucléase, interleukines/LT4, code génétique chez *Tetrahymena* — **évaluation par analyse expérimentale documentée**.
 
-**Aucun QCM au BAC SVT algérien.** L'épreuve évalue l'exploitation de documents, la formulation d'hypothèses, la comparaison argumentée. Un corpus dont 30 % entraîne la reconnaissance de définitions optimise une compétence qui ne sera pas notée.
-
-Nuance à porter au crédit du produit : le QCM reste un excellent outil de *consolidation mémorielle* et il alimente la révision espacée. Le problème n'est pas son existence, c'est qu'il soit **le mode d'évaluation dominant** sans passerelle vers l'analyse documentaire.
+**Aucun QCM au BAC SVT algérien.** Le QCM reste un excellent outil de *consolidation mémorielle* et alimente utilement la révision espacée ; le problème n'est pas son existence mais qu'il soit **le mode d'évaluation dominant** sans passerelle vers l'analyse documentaire.
 
 | | |
 |---|---|
-| **Gravité** | **Majeur** |
-| **Preuve** | 153/508 sur 3 gabarits ; 50 QCM texte à trous ; structure officielle 15+5 sur 2 domaines |
+| **Gravité** | **Majeur** (inchangée : la forme d'évaluation reste désalignée) |
+| **Preuve** | 10 gabarits couvrant 494/508 énoncés ; 402/508 distracteurs de remplissage corrigés ; structure officielle 15+5 sur 2 domaines |
 | **Impact apprenant** | Illusion de maîtrise : scores élevés en QCM, effondrement sur épreuve documentaire |
-| **Recommandation** | 1) Requalifier les QCM en « échauffement / mémorisation », pas en « entraînement BAC ». 2) Convertir les 153 méta-scolaires en questions appuyées sur un document (`documentAnalysisExercises.ts` existe déjà). 3) Faire de l'analyse documentaire le mode par défaut du module d'entraînement. |
+| **Recommandation** | 1) Requalifier les QCM en « échauffement / mémorisation », pas en « entraînement BAC ». 2) Diversifier les 10 gabarits d'énoncé et adosser une part des items à un document (`documentAnalysisExercises.ts` existe déjà). 3) Faire de l'analyse documentaire le mode par défaut du module d'entraînement. |
 | **Effort** | Moyen à élevé (10-15 j) |
 | **Priorité** | **P1** |
 
@@ -650,7 +673,7 @@ C'est **exactement** la difficulté n°1 des candidats algériens : confondre an
 |---|---|---|
 | B1 — Couverture structurelle | **7,5** | Mapping 44 leçons/11 unités intégralement cohérent ; déverrouillage progressif fonctionnel ; mais 3 leçons interactives seulement |
 | B2 — Qualité du feedback | **8,0** *(1,5 à l'ouverture)* | **0 explication circulaire, 0 sous 25 mots** sur 508 ; reste : feedback statique, non validé par un enseignant |
-| B3 — Alignement au format d'épreuve | **4,0** | 30 % de QCM méta-scolaires ; pas de QCM au BAC réel |
+| B3 — Alignement au format d'épreuve | **4,0** | Corpus engendré par 10 gabarits (97,2 %) ; pas de QCM au BAC réel |
 | B4 — Générateur BAC | **3,5** | 28/20/34 points au lieu de 20 ; mono-domaine au lieu de bi-domaine |
 | B5 — Cohérence visuelle | **6,5** | 57 schémas hors-sujet **corrigés** (commit `e130475`, 0 mismatch) ; reste la pauvreté du répertoire : 28 schémas pour 508 QCM |
 | B6 — Fidélité au programme | **7,5** | Aucune divergence scientifique ; app parfois plus conforme que le livre |
@@ -675,7 +698,7 @@ C'est **exactement** la difficulté n°1 des candidats algériens : confondre an
 | 4 | 10 unités sur 11 verrouillées | B1 | 🟠 Majeur | **Très faible** | ❌ **Invalidé** *(voir §3.1)* |
 | 5 | 0 figure dans le livre (discipline documentaire) | A6 | 🔴 Critique* | Moyen-élevé | **P1** |
 | 6 | Densité 40-50 mots/page sur D1-IV, D1-V, D3-III | A4 | 🟠 Majeur | Élevé | **P2** |
-| 7 | 30 % de QCM méta-scolaires | B3 | 🟠 Majeur | Moyen-élevé | **P1** |
+| 7 | Corpus engendré par gabarits ; QCM désaligné du format BAC | B3 | 🟠 Majeur | Moyen-élevé | **P1** |
 | 8 | ABO/Rh absents du livre ; دليل التصحيح promis non livré | A5 | 🟠 Majeur | Moyen | **P1** |
 | 9 | Unité D2-U2 invisible dans OPUS (hiérarchie cassée) | A7 | 🟠 Majeur | **Très faible** | ✅ **Résolu** — commit `e130475` |
 | 10 | Statut « officiel » affiché ≠ statut réel (correction DeepSeek) | A1 | 🟠 Majeur | Faible | **P1** |
@@ -773,7 +796,7 @@ Le test de non-régression a bien été écrit **avant** la réécriture : il tr
 
 **Propagation vérifiée.** La flashcard `fc_q_440` a été inspectée après coup : son `answerBullets[1]` porte la nouvelle explication. La dérivation par `.map()` fait que **les 61 flashcards de l'unité 11 sont réparées sans action supplémentaire** — la ligne « régénération des flashcards » de ce sprint est donc sans objet.
 
-**Défaut annexe relevé pendant la lecture (hors périmètre P0).** Chaque QCM de l'unité 11 contient **un distracteur hors-domaine évident** — de l'immunologie ou de la respiration cellulaire glissée dans un item de tectonique. Un élève élimine cette option sans réfléchir : le choix réel se fait entre 3 options, et la difficulté mesurée est surévaluée. Le symptôme confirme la génération automatique diagnostiquée en [B3](#b3-majeur--30--de-qcm-méta-scolaires). À traiter au Sprint 2 avec la refonte des énoncés, en réécrivant les distracteurs comme **erreurs classiques du même domaine** (confondre dorsale et zone de subduction, schiste bleu et micaschiste) plutôt que comme remplissage.
+**Défaut annexe relevé pendant la lecture (hors périmètre P0).** Chaque QCM de l'unité 11 contient **un distracteur hors-domaine évident** — de l'immunologie ou de la respiration cellulaire glissée dans un item de tectonique. Un élève élimine cette option sans réfléchir : le choix réel se fait entre 3 options, et la difficulté mesurée est surévaluée. Le symptôme confirme la génération automatique diagnostiquée en [B3](#b3-majeur--un-corpus-généré--énoncés-standardisés-et-distracteurs-de-remplissage). **Ce point a été traité** : les 402 distracteurs de remplissage du corpus ont été réécrits en **erreurs classiques du même domaine** (confondre dorsale et zone de subduction, schiste bleu et micaschiste).
 
 **Extrapolation d'effort.** Le lot 1 confirme que la réécriture n'est pas mécanisable : chaque explication exige de vérifier le mécanisme et d'identifier le distracteur à réfuter. Sur cette base, les 447 explications restantes représentaient **26 à 33 jours-expert**, à répartir en lots par unité, chacun clôturé par l'abaissement des plafonds.
 
@@ -899,7 +922,7 @@ u6 45 circ 0 short 0
 
 | Action | Effort | Constat traité |
 |---|---|---|
-| Conversion des 153 QCM méta-scolaires en questions documentées | 10 j | #7 |
+| Conversion d'une part des QCM en questions documentées | 10 j | #7 |
 | Marqueur « exigible 2025-2026 » sur leçons et QCM | 2 j | #15 |
 | Rédaction de la section ABO/Rh du livre (réutiliser `phase5_chapitres_9_10.html`) | 2 j | #8 |
 | Production du دليل التصحيح, ou retrait de la promesse l.26 | 3 j | #8 |
@@ -1033,4 +1056,4 @@ Ces pistes ont été explorées puis invalidées. Elles sont consignées pour é
 
 ---
 
-*Fin du rapport. Volet A : 6,4/10 — Volet B : 7,0/10 après le Sprint 0, les cinq lots du Sprint 1 et le premier lot du Sprint 2. **Le seul P0 de l'audit — constat #1, les explications circulaires — est soldé** : les 508 explications des 11 unités ont été réécrites au canevas « mécanisme → réfutation du distracteur → mot-clé BAC », l'échafaudage de génération a été retiré des 500 énoncés, les 500 flashcards sont réparées par dérivation automatique, et le corpus passe de 500 explications circulaires à **zéro**, sous un garde-fou de 23 assertions désormais à **tolérance nulle**. Le premier lot du Sprint 2 a par ailleurs soldé le constat #12 : les 7 tests rouges décrivaient des fonctionnalités spécifiées mais non câblées — rampe débutant rendue derrière son propre garde d'onboarding, 300 lignes de métadonnées visuelles n'atteignant jamais le DOM — et sont désormais verts sans qu'aucune assertion ait été assouplie (**369 tests verts, 0 rouge**, `tsc` propre, build OK). Trois constats nés de ce chantier restent ouverts : la validation par un enseignant en exercice (#21, P1), les items 326/336 (#22, P2) et l'absence de feedback différencié par distracteur (#23, P2). La priorité suivante n'est plus le contenu du feedback mais **la forme de l'évaluation** : le Sprint 2, qui aligne les 153 QCM méta-scolaires sur l'exercice documenté réellement pratiqué au BAC algérien.*
+*Fin du rapport. Volet A : 6,4/10 — Volet B : 7,0/10 après le Sprint 0, les cinq lots du Sprint 1 et le premier lot du Sprint 2. **Le seul P0 de l'audit — constat #1, les explications circulaires — est soldé** : les 508 explications des 11 unités ont été réécrites au canevas « mécanisme → réfutation du distracteur → mot-clé BAC », l'échafaudage de génération a été retiré des 500 énoncés, les 500 flashcards sont réparées par dérivation automatique, et le corpus passe de 500 explications circulaires à **zéro**, sous un garde-fou de 23 assertions désormais à **tolérance nulle**. Le premier lot du Sprint 2 a par ailleurs soldé le constat #12 : les 7 tests rouges décrivaient des fonctionnalités spécifiées mais non câblées — rampe débutant rendue derrière son propre garde d'onboarding, 300 lignes de métadonnées visuelles n'atteignant jamais le DOM — et sont désormais verts sans qu'aucune assertion ait été assouplie (**369 tests verts, 0 rouge**, `tsc` propre, build OK). Trois constats nés de ce chantier restent ouverts : la validation par un enseignant en exercice (#21, P1), les items 326/336 (#22, P2) et l'absence de feedback différencié par distracteur (#23, P2). Le Sprint 2 a par ailleurs assaini le corpus de QCM : **402 distracteurs de remplissage sur 508 items (79 %)** — des phrases hors-domaine éliminables sans connaître le cours — ont été réécrits en erreurs classiques portant sur le concept visé, les items 326/336 ont été reconstruits (constat #22 soldé), et les stratégies de réussite sans connaissance sont retombées au niveau du hasard (35,4 % → 17,5 %). **372 tests verts**, `tsc` propre, build OK. La priorité suivante n'est plus le contenu du feedback mais **la forme de l'évaluation** : aligner l'entraînement sur l'exercice documenté réellement pratiqué au BAC algérien.*
