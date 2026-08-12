@@ -116,6 +116,35 @@ describe('corpus QCM — qualité des explications (constat #1)', () => {
     expect(tooShort.length).toBeLessThanOrEqual(MAX_TOO_SHORT);
   });
 
+  // Échafaudage de génération retiré des énoncés le 12/08/2026 : les 500 QCM
+  // concernés préfixaient la question par le repère de plan interne
+  // (« في محور 11.5 — دورة ويلسون، … » et ses 5 variantes de formulation).
+  // Ce repère n'a pas de sens pour l'élève et ne doit pas revenir.
+  const SCAFFOLDING = [
+    /\d+\.\d+\s*—/,
+    /في محور/,
+    /عند مراجعة/,
+    /في موضوع/,
+    /في سؤال بكالوريا قصير حول/,
+  ];
+
+  it('ne réintroduit aucun repère de plan interne dans les énoncés', () => {
+    const withScaffolding = SVT_QUIZ_QUESTIONS.filter((q) =>
+      SCAFFOLDING.some((re) => re.test(q.questionText)),
+    );
+    expect(withScaffolding.map((q) => q.id)).toEqual([]);
+  });
+
+  it('ne comporte aucun énoncé dupliqué', () => {
+    const seen = new Map<string, number[]>();
+    SVT_QUIZ_QUESTIONS.forEach((q) => {
+      const key = q.questionText.trim();
+      seen.set(key, [...(seen.get(key) ?? []), q.id]);
+    });
+    const duplicates = [...seen.values()].filter((ids) => ids.length > 1);
+    expect(duplicates).toEqual([]);
+  });
+
   // Lots déjà traités : verrouillés à zéro défaut pour interdire tout retour
   // en arrière sur le travail de réécriture déjà validé.
   const REWRITTEN_UNITS = [11];
