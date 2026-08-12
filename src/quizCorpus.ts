@@ -4968,7 +4968,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يدل على وسط صلب دائماً مهما كانت المعطيات الزلزالية."
     ],
     "correctAnswerIndex": 2,
-    "explanation": "الغلاف الصخري يرتبط هنا بـ: غلاف صلب من القشرة والبرنس العلوي ومجزأ إلى صفائح.",
+    "explanation": "الغلاف الصخري غلاف صلب يضم القشرة والجزء العلوي الصلب من البرنس، وهو المجزأ إلى صفائح تتحرك فوق الأستينوسفير. لا تختزله في القشرة وحدها. في البكالوريا: ليثوسفير = قشرة + برنس علوي صلب.",
     "diagramUrl": "/assets/images/schemas/domaine3_tectonique/schema_15_dorsale.svg"
   },
   {
@@ -4982,7 +4982,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يدل على وسط صلب دائماً مهما كانت المعطيات الزلزالية."
     ],
     "correctAnswerIndex": 0,
-    "explanation": "الأستينوسفير يرتبط هنا بـ: جزء لدن من البرنس العلوي يسمح بحركة الصفائح.",
+    "explanation": "الأستينوسفير في تكتونية الصفائح جزء لدن من البرنس العلوي، ولدونته هي التي تسمح بانزلاق الصفائح فوقه. لا تعتبره سائلاً منصهراً. في البكالوريا: لدن يعني قابلاً للتشوه البطيء لا مائعاً.",
     "diagramUrl": "/assets/images/schemas/domaine3_tectonique/schema_15_dorsale.svg"
   },
   {
@@ -4996,7 +4996,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يصف ظاهرة مناعية نوعية فقط ولا علاقة له بهذا المحور."
     ],
     "correctAnswerIndex": 0,
-    "explanation": "الصفيحة التكتونية يرتبط هنا بـ: قطعة صلبة من الغلاف الصخري تتحرك ببطء.",
+    "explanation": "الصفيحة التكتونية قطعة صلبة من الغلاف الصخري تتحرك ككتلة واحدة ببضعة سنتيمترات سنوياً، وتتشوه أساساً عند حوافها. لا تخلطها بالقارة. في البكالوريا: الصفيحة قد تحمل قشرة قارية ومحيطية معاً.",
     "diagramUrl": "/assets/images/schemas/domaine3_tectonique/schema_15_dorsale.svg"
   },
   {
@@ -5010,7 +5010,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يدل على زيادة غير محدودة في السرعة دون إشباع."
     ],
     "correctAnswerIndex": 1,
-    "explanation": "القشرة المحيطية يرتبط هنا بـ: أكثف وأرق من القشرة القارية.",
+    "explanation": "القشرة المحيطية أكثف وأرق من القارية لأنها بازلتية غنية بالحديد والمغنيزيوم، وهذه الكثافة هي سبب غوصها. لا تعكس الخاصيتين. في البكالوريا: الكثافة تفسر من يغوص تحت من.",
     "diagramUrl": "/assets/images/schemas/domaine3_tectonique/schema_15_dorsale.svg"
   },
   {
@@ -5024,7 +5024,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "أقل كثافة وأكثر سماكة غالباً"
     ],
     "correctAnswerIndex": 3,
-    "explanation": "القشرة القارية يرتبط هنا بـ: أقل كثافة وأكثر سماكة غالباً.",
+    "explanation": "القشرة القارية أقل كثافة وأكثر سماكة لأنها غرانيتية، ولهذا تطفو ولا تغوص ويمكن أن تحفظ صخوراً قديمة جداً. في البكالوريا: عدم غوص القارات يفسر بقاء صخور تتجاوز ثلاثة مليارات سنة.",
     "diagramUrl": "/assets/images/schemas/domaine3_tectonique/schema_15_dorsale.svg"
   },
   {
@@ -5038,7 +5038,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يحدث دائماً داخل النواة ولا يرتبط بباقي العضيات."
     ],
     "correctAnswerIndex": 0,
-    "explanation": "حدود الصفائح يرتبط هنا بـ: تتركز عندها الزلازل والبراكين والتشوهات.",
+    "explanation": "حدود الصفائح تتركز عندها الزلازل والبراكين والتشوهات لأنها مناطق الاحتكاك والتصادم والتباعد. لا تتوقع نشاطاً معتبراً داخل الصفيحة. في البكالوريا: توزع الظواهر يرسم الحدود ولا يملأ المساحات.",
     "diagramUrl": "/assets/images/schemas/domaine3_tectonique/schema_15_dorsale.svg"
   },
   {
@@ -5052,7 +5052,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يمثل مرحلة جيولوجية عميقة لا علاقة لها بالخلايا."
     ],
     "correctAnswerIndex": 1,
-    "explanation": "الحركة السنوية يرتبط هنا بـ: تقاس غالباً بالسنتيمترات في السنة.",
+    "explanation": "الحركة السنوية للصفائح تقاس بالسنتيمترات في السنة، وهي بطيئة لكنها تكفي لفتح محيط عبر ملايين السنين. لا تستهن بالزمن الجيولوجي. في البكالوريا: اضرب السرعة في الزمن لتقدير الاتساع.",
     "diagramUrl": "/assets/images/schemas/domaine3_tectonique/schema_15_dorsale.svg"
   },
   {
@@ -5066,7 +5066,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يزداد سمكاً وكثافة بابتعاده عن الظهرة"
     ],
     "correctAnswerIndex": 3,
-    "explanation": "الغلاف الصخري المحيطي يرتبط هنا بـ: يزداد سمكاً وكثافة بابتعاده عن الظهرة.",
+    "explanation": "الغلاف الصخري المحيطي يزداد سمكاً وكثافة كلما ابتعد عن الظهرة لأنه يبرد تدريجياً، وهذا ما يهيئه للغوص في النهاية. في البكالوريا: التبرد يفسر الغوص وليس العمر وحده.",
     "diagramUrl": "/assets/images/schemas/domaine3_tectonique/schema_15_dorsale.svg"
   },
   {
@@ -5080,7 +5080,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يتم فقط في غياب الماء والأيونات."
     ],
     "correctAnswerIndex": 2,
-    "explanation": "البرنس العلوي يرتبط هنا بـ: يشمل جزءاً صلباً وآخر لدناً.",
+    "explanation": "البرنس العلوي غير متجانس ميكانيكياً: جزؤه الأعلى صلب ويدخل في تركيب الليثوسفير، وجزؤه الأسفل لدن وهو الأستينوسفير. لا تعتبره كتلة واحدة. في البكالوريا: الحد بين الغلافين ميكانيكي لا كيميائي.",
     "diagramUrl": "/assets/images/schemas/domaine3_tectonique/schema_15_dorsale.svg"
   },
   {
@@ -5094,7 +5094,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يمثل تباعد قارتين بعد اكتمال التصادم مباشرة."
     ],
     "correctAnswerIndex": 2,
-    "explanation": "الصفائح الكبرى يرتبط هنا بـ: مثل الإفريقية والأوراسية والهادئة.",
+    "explanation": "الصفائح الكبرى مثل الإفريقية والأوراسية والهادئة تغطي مساحات هائلة وتحمل قشرة قارية ومحيطية معاً. لا تحصر الصفيحة في قارة واحدة. في البكالوريا: احفظ أمثلة محددة لتوظيفها في التعليل.",
     "diagramUrl": "/assets/images/schemas/domaine3_tectonique/schema_15_dorsale.svg"
   },
   {
@@ -5108,7 +5108,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يمثل تباعد قارتين بعد اكتمال التصادم مباشرة."
     ],
     "correctAnswerIndex": 0,
-    "explanation": "خريطة الزلازل يرتبط هنا بـ: تكشف حدود الصفائح.",
+    "explanation": "خريطة الزلازل تكشف حدود الصفائح لأن البؤر تتوزع في أشرطة ضيقة تحدها بدقة. لا تقرأها كتوزع عشوائي. في البكالوريا: الخريطة حجة أولى على وجود الصفائح وترسيم حدودها.",
     "diagramUrl": "/assets/images/schemas/domaine3_tectonique/schema_15_dorsale.svg"
   },
   {
@@ -5122,7 +5122,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "هو بنية ثابتة لا تتأثر بالشروط الفيزيائية أبداً."
     ],
     "correctAnswerIndex": 0,
-    "explanation": "حد التباعد يرتبط هنا بـ: تبتعد فيه صفيحتان وتتكون ليثوسفير جديدة.",
+    "explanation": "حد التباعد تبتعد فيه صفيحتان فيصعد الصهير ويتبرد مكوناً ليثوسفير محيطية جديدة. لا تخلطه بحد التقارب. في البكالوريا: تباعد = بناء قشرة، تقارب = هدمها.",
     "diagramUrl": "/assets/images/schemas/domaine3_tectonique/schema_16_subduction.svg"
   },
   {
@@ -5136,7 +5136,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "مثال حد تباعدي محيطي"
     ],
     "correctAnswerIndex": 3,
-    "explanation": "الظهرة يرتبط هنا بـ: مثال حد تباعدي محيطي.",
+    "explanation": "الظهرة مثال نموذجي لحد تباعدي محيطي، تتميز بنشاط بركاني وزلازل ضحلة وتدفق حراري مرتفع. لا تخلطها بالخندق. في البكالوريا: اذكر ثلاث خصائص للظهرة لا واحدة.",
     "diagramUrl": "/assets/images/schemas/domaine3_tectonique/schema_16_subduction.svg"
   },
   {
@@ -5150,7 +5150,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يدل على زيادة غير محدودة في السرعة دون إشباع."
     ],
     "correctAnswerIndex": 0,
-    "explanation": "الصدع القاري يرتبط هنا بـ: بداية تباعد داخل قارة.",
+    "explanation": "الصدع القاري بداية تباعد داخل قارة قد يتطور إلى محيط جديد كما في البحر الأحمر. لا تعتبره ظاهرة منفصلة عن الظهرة. في البكالوريا: صدع قاري ثم بحر ضيق ثم محيط.",
     "diagramUrl": "/assets/images/schemas/domaine3_tectonique/schema_16_subduction.svg"
   },
   {
@@ -5164,7 +5164,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "GPS لا يقيس حركة الصفائح الحالية."
     ],
     "correctAnswerIndex": 1,
-    "explanation": "حد التقارب يرتبط هنا بـ: تتقارب فيه صفائح وقد يحدث غوص أو تصادم.",
+    "explanation": "حد التقارب تتقارب فيه صفيحتان فيحدث غوص إذا كانت إحداهما محيطية أو تصادم إذا كانتا قاريتين. لا توحد بين الحالتين. في البكالوريا: طبيعة القشرة هي التي تحدد نمط التقارب.",
     "diagramUrl": "/assets/images/schemas/domaine3_tectonique/schema_16_subduction.svg"
   },
   {
@@ -5178,7 +5178,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "انغراز صفيحة محيطية كثيفة تحت أخرى"
     ],
     "correctAnswerIndex": 3,
-    "explanation": "الغوص يرتبط هنا بـ: انغراز صفيحة محيطية كثيفة تحت أخرى.",
+    "explanation": "الغوص انغراز صفيحة محيطية كثيفة تحت أخرى، ويصاحبه خندق وزلازل عميقة متدرجة وبراكين انفجارية. لا تنسب الغوص لقشرة قارية. في البكالوريا: مستوى بنيوف دليل مباشر على الغوص.",
     "diagramUrl": "/assets/images/schemas/domaine3_tectonique/schema_16_subduction.svg"
   },
   {
@@ -5192,7 +5192,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يعني توقف كل التحولات الطاقوية في الخلية."
     ],
     "correctAnswerIndex": 0,
-    "explanation": "التصادم يرتبط هنا بـ: تقارب قارتين بعد غلق محيط.",
+    "explanation": "التصادم تقارب قارتين بعد غلق المحيط الذي كان يفصلهما، فينتج عنه سلسلة جبلية دون غوص لتقارب الكثافتين. في البكالوريا: التصادم مرحلة أخيرة في دورة ويلسون لا بدايتها.",
     "diagramUrl": "/assets/images/schemas/domaine3_tectonique/schema_16_subduction.svg"
   },
   {
@@ -5206,7 +5206,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "تنزلق فيه صفيحتان أفقياً دون بناء أو هدم كبير"
     ],
     "correctAnswerIndex": 3,
-    "explanation": "حد الانزلاق يرتبط هنا بـ: تنزلق فيه صفيحتان أفقياً دون بناء أو هدم كبير.",
+    "explanation": "حد الانزلاق تنزلق فيه صفيحتان أفقياً دون بناء ولا هدم للقشرة، لكنه ينتج زلازل ضحلة قوية. لا تتوقع فيه براكين. في البكالوريا: انزلاق = زلازل بلا نشاط بركاني.",
     "diagramUrl": "/assets/images/schemas/domaine3_tectonique/schema_16_subduction.svg"
   },
   {
@@ -5220,7 +5220,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "مثال حد انزلاقي"
     ],
     "correctAnswerIndex": 3,
-    "explanation": "فالق سان أندرياس يرتبط هنا بـ: مثال حد انزلاقي.",
+    "explanation": "فالق سان أندرياس مثال نموذجي لحد انزلاقي، وهو يفسر الزلازل الضحلة القوية في كاليفورنيا. لا تعتبره منطقة غوص. في البكالوريا: اربط كل نمط حدود بمثال جغرافي محدد.",
     "diagramUrl": "/assets/images/schemas/domaine3_tectonique/schema_16_subduction.svg"
   },
   {
@@ -5234,7 +5234,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يدل على وسط صلب دائماً مهما كانت المعطيات الزلزالية."
     ],
     "correctAnswerIndex": 1,
-    "explanation": "البراكين الانفجارية يرتبط هنا بـ: مرتبطة غالباً بالغوص.",
+    "explanation": "البراكين الانفجارية مرتبطة غالباً بمناطق الغوص لأن الصهير المتشكل هناك لزج وغني بالماء والسيليس، فتنحبس الغازات وتنفجر. لا تخلطها ببراكين الظهرات السيالة. في البكالوريا: لزوجة الصهير تفسر نمط الثوران.",
     "diagramUrl": "/assets/images/schemas/domaine3_tectonique/schema_16_subduction.svg"
   },
   {
@@ -5248,7 +5248,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "توجد عند كل أنواع الحدود"
     ],
     "correctAnswerIndex": 3,
-    "explanation": "الزلازل الضحلة يرتبط هنا بـ: توجد عند كل أنواع الحدود.",
+    "explanation": "الزلازل الضحلة توجد عند كل أنواع الحدود، بينما العميقة تخص مناطق الغوص وحدها. لا تجعل العمق معياراً للتمييز إلا في الاتجاه الصحيح. في البكالوريا: عمق البؤر يميز الغوص لا العكس.",
     "diagramUrl": "/assets/images/schemas/domaine3_tectonique/schema_16_subduction.svg"
   },
   {
@@ -5262,7 +5262,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "مرتبطة بمناطق الغوص"
     ],
     "correctAnswerIndex": 3,
-    "explanation": "الخنادق يرتبط هنا بـ: مرتبطة بمناطق الغوص.",
+    "explanation": "الخنادق منخفضات بحرية شديدة العمق ترافق مناطق الغوص، وهي تمثل الخط الذي تنغرز عنده الصفيحة المحيطية تحت جارتها. لا تخلطها بالظهرات المرتفعة. في البكالوريا: خندق = غوص، ظهرة = تباعد.",
     "diagramUrl": "/assets/images/schemas/domaine3_tectonique/schema_16_subduction.svg"
   },
   {
@@ -5276,7 +5276,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يصف ظاهرة مناعية نوعية فقط ولا علاقة له بهذا المحور."
     ],
     "correctAnswerIndex": 2,
-    "explanation": "الأشرطة المغناطيسية يرتبط هنا بـ: دليل على توسع قاع المحيط حول الظهرات.",
+    "explanation": "الأشرطة المغناطيسية المتناظرة على جانبي الظهرة دليل على توسع قاع المحيط، لأنها تسجل انقلابات الحقل أثناء تشكل القشرة. في البكالوريا: التناظر هو الحجة لا مجرد وجود الأشرطة.",
     "diagramUrl": "/assets/images/schemas/domaine3_tectonique/schema_15_dorsale.svg"
   },
   {
@@ -5290,7 +5290,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يحدث في كل البروتينات بالطريقة نفسها دون نوعية."
     ],
     "correctAnswerIndex": 1,
-    "explanation": "عمر الصخور المحيطية يرتبط هنا بـ: يزداد بالابتعاد عن محور الظهرة.",
+    "explanation": "عمر الصخور المحيطية يزداد كلما ابتعدنا عن محور الظهرة، ما يثبت أن القشرة تتشكل في المحور وتنزاح جانبياً. في البكالوريا: توزع الأعمار حجة كمية على التوسع.",
     "diagramUrl": "/assets/images/schemas/domaine3_tectonique/schema_15_dorsale.svg"
   },
   {
@@ -5304,7 +5304,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "هو بنية ثابتة لا تتأثر بالشروط الفيزيائية أبداً."
     ],
     "correctAnswerIndex": 0,
-    "explanation": "GPS يرتبط هنا بـ: يقيس الحركة الحالية للصفائح مباشرة.",
+    "explanation": "GPS يقيس الحركة الحالية للصفائح مباشرة بدقة ملّيمترية، فيؤكد ما استُنتج سابقاً من الأدلة الجيولوجية. لا تعتبره دليلاً قديماً. في البكالوريا: ميز بين الأدلة القديمة والقياسات الحالية.",
     "diagramUrl": "/assets/images/schemas/domaine3_tectonique/schema_15_dorsale.svg"
   },
   {
@@ -5318,7 +5318,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "حدود الانزلاق تبني دائماً ليثوسفير محيطية جديدة."
     ],
     "correctAnswerIndex": 1,
-    "explanation": "توزيع الزلازل يرتبط هنا بـ: يرسم حدود الصفائح النشطة.",
+    "explanation": "توزيع الزلازل يرسم حدود الصفائح النشطة في أشرطة ضيقة، ويسمح بتحديد نمط الحد حسب عمق البؤر. في البكالوريا: اقرأ الخريطة الزلزالية بمعيارين هما الموقع والعمق.",
     "diagramUrl": "/assets/images/schemas/domaine3_tectonique/schema_15_dorsale.svg"
   },
   {
@@ -5332,7 +5332,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "مرتفع عند الظهرات ومنخفض نسبياً عند الخنادق"
     ],
     "correctAnswerIndex": 3,
-    "explanation": "تدفق الحرارة يرتبط هنا بـ: مرتفع عند الظهرات ومنخفض نسبياً عند الخنادق.",
+    "explanation": "تدفق الحرارة مرتفع عند الظهرات لصعود المادة الساخنة، ومنخفض نسبياً عند الخنادق لغوص مادة باردة. لا تعمم قيمة واحدة. في البكالوريا: التدفق الحراري مؤشر على نمط الحد.",
     "diagramUrl": "/assets/images/schemas/domaine3_tectonique/schema_15_dorsale.svg"
   },
   {
@@ -5346,7 +5346,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "من أدلة الانجراف القاري القديمة"
     ],
     "correctAnswerIndex": 3,
-    "explanation": "تشابه السواحل يرتبط هنا بـ: من أدلة الانجراف القاري القديمة.",
+    "explanation": "تشابه سواحل إفريقيا وأمريكا الجنوبية من أدلة الانجراف القاري القديمة التي قدمها فيغنر، لكنه دليل غير كاف وحده. في البكالوريا: أدلة فيغنر أربعة، والشكل أضعفها.",
     "diagramUrl": "/assets/images/schemas/domaine3_tectonique/schema_15_dorsale.svg"
   },
   {
@@ -5360,7 +5360,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "تدعم اتصال قارات في الماضي"
     ],
     "correctAnswerIndex": 3,
-    "explanation": "الأحافير المتشابهة يرتبط هنا بـ: تدعم اتصال قارات في الماضي.",
+    "explanation": "الأحافير المتشابهة على قارات متباعدة اليوم تدعم اتصالها في الماضي، لأن الكائنات المعنية لم تكن قادرة على عبور المحيط. في البكالوريا: اذكر ميزوصور كمثال محدد.",
     "diagramUrl": "/assets/images/schemas/domaine3_tectonique/schema_15_dorsale.svg"
   },
   {
@@ -5374,7 +5374,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يحدث دائماً داخل النواة ولا يرتبط بباقي العضيات."
     ],
     "correctAnswerIndex": 1,
-    "explanation": "مسارات النقاط الساخنة يرتبط هنا بـ: تكشف اتجاه حركة الصفيحة فوق مصدر ثابت نسبياً.",
+    "explanation": "مسارات النقاط الساخنة تكشف اتجاه وسرعة حركة الصفيحة فوق مصدر صهير ثابت نسبياً، كما في أرخبيل هاواي. في البكالوريا: تدرج أعمار الجزر يعطي سرعة الصفيحة.",
     "diagramUrl": "/assets/images/schemas/domaine3_tectonique/schema_15_dorsale.svg"
   },
   {
@@ -5388,7 +5388,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يعني توقف كل التحولات الطاقوية في الخلية."
     ],
     "correctAnswerIndex": 0,
-    "explanation": "تماثل الأشرطة يرتبط هنا بـ: على جانبي الظهرة يدل على إنتاج قشرة جديدة.",
+    "explanation": "تماثل الأشرطة المغناطيسية على جانبي الظهرة يدل على إنتاج قشرة جديدة في المحور وانزياحها المتناظر. لا تفسره بحركة الحقل. في البكالوريا: التناظر ينتج عن التوسع لا عن المغناطيسية.",
     "diagramUrl": "/assets/images/schemas/domaine3_tectonique/schema_15_dorsale.svg"
   },
   {
@@ -5402,7 +5402,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "هو بنية ثابتة لا تتأثر بالشروط الفيزيائية أبداً."
     ],
     "correctAnswerIndex": 1,
-    "explanation": "المغناطيسية القديمة يرتبط هنا بـ: تسجل اتجاه الحقل المغناطيسي وقت تبرد الصخور.",
+    "explanation": "المغناطيسية القديمة تسجل اتجاه الحقل المغناطيسي الأرضي لحظة تبرد الصخور تحت درجة كوري، فتحتفظ الصخرة بذاكرة دائمة لموقعها وزمنها. في البكالوريا: هذه الذاكرة أساس قراءة الأشرطة المحيطية.",
     "diagramUrl": "/assets/images/schemas/domaine3_tectonique/schema_15_dorsale.svg"
   },
   {
@@ -5416,7 +5416,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "ينتج مباشرة أجساماً مضادة في كل الحالات."
     ],
     "correctAnswerIndex": 2,
-    "explanation": "القياسات الفضائية يرتبط هنا بـ: أكدت سرعات واتجاهات الصفائح الحالية.",
+    "explanation": "القياسات الفضائية أكدت سرعات واتجاهات الصفائح الحالية بدقة عالية، فحولت النظرية من استنتاج إلى واقع مقيس. في البكالوريا: ميز بين ما يُستنتج جيولوجياً وما يُقاس مباشرة.",
     "diagramUrl": "/assets/images/schemas/domaine3_tectonique/schema_15_dorsale.svg"
   },
   {
@@ -5430,7 +5430,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "مصدرها حرارة بدئية ونشاط إشعاعي داخلي"
     ],
     "correctAnswerIndex": 3,
-    "explanation": "الطاقة الداخلية يرتبط هنا بـ: مصدرها حرارة بدئية ونشاط إشعاعي داخلي.",
+    "explanation": "الطاقة الداخلية للأرض مصدرها الحرارة البدئية المتبقية من التشكل والنشاط الإشعاعي للعناصر المشعة. لا تنسبها للشمس. في البكالوريا: المصدر داخلي وهذا ما يفسر استمرار النشاط التكتوني.",
     "diagramUrl": "/assets/images/schemas/domaine3_tectonique/schema_13_terre.svg"
   },
   {
@@ -5444,7 +5444,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "حركات بطيئة في البرنس بسبب فروق الحرارة والكثافة"
     ],
     "correctAnswerIndex": 3,
-    "explanation": "التيارات الحملية يرتبط هنا بـ: حركات بطيئة في البرنس بسبب فروق الحرارة والكثافة.",
+    "explanation": "التيارات الحملية حركات دورانية بطيئة في البرنس تنشأ عن فروق الحرارة والكثافة، وتساهم في تحريك الصفائح. لا تعتبرها المحرك الوحيد. في البكالوريا: اذكرها ضمن قوى متعددة.",
     "diagramUrl": "/assets/images/schemas/domaine3_tectonique/schema_13_terre.svg"
   },
   {
@@ -5458,7 +5458,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يمثل مرحلة جيولوجية عميقة لا علاقة لها بالخلايا."
     ],
     "correctAnswerIndex": 0,
-    "explanation": "المادة الساخنة يرتبط هنا بـ: تصعد لأنها أقل كثافة نسبياً.",
+    "explanation": "المادة الساخنة تصعد لأنها أقل كثافة نسبياً بفعل التمدد الحراري، وهذا هو مبدأ الحمل. لا تخلط السبب بالنتيجة. في البكالوريا: فرق الكثافة هو المحرك الفيزيائي للحمل.",
     "diagramUrl": "/assets/images/schemas/domaine3_tectonique/schema_13_terre.svg"
   },
   {
@@ -5472,7 +5472,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "تهبط لأنها أكثر كثافة نسبياً"
     ],
     "correctAnswerIndex": 3,
-    "explanation": "المادة الباردة يرتبط هنا بـ: تهبط لأنها أكثر كثافة نسبياً.",
+    "explanation": "المادة الباردة تهبط لأنها أكثر كثافة نسبياً بعد فقدانها للحرارة، فتكمل بذلك خلية الحمل التي بدأها الصعود. لا تعزل الصعود عن الهبوط. في البكالوريا: خلية الحمل دورة مغلقة.",
     "diagramUrl": "/assets/images/schemas/domaine3_tectonique/schema_13_terre.svg"
   },
   {
@@ -5486,7 +5486,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "GPS لا يقيس حركة الصفائح الحالية."
     ],
     "correctAnswerIndex": 0,
-    "explanation": "سحب اللوح الغائص يرتبط هنا بـ: قوة مهمة تجر الصفيحة عند الغوص.",
+    "explanation": "سحب اللوح الغائص قوة مهمة تجر الصفيحة نحو منطقة الغوص بفعل ثقل الجزء الغاطس البارد الكثيف. في البكالوريا: تعتبر اليوم أهم من دفع الظهرة في تحريك الصفائح.",
     "diagramUrl": "/assets/images/schemas/domaine3_tectonique/schema_13_terre.svg"
   },
   {
@@ -5500,7 +5500,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يتم فقط في غياب الماء والأيونات."
     ],
     "correctAnswerIndex": 1,
-    "explanation": "دفع الظهرة يرتبط هنا بـ: قوة ناتجة عن ارتفاع محور الظهرة وانزلاق الصفائح.",
+    "explanation": "دفع الظهرة قوة ناتجة عن ارتفاع محور الظهرة وانزلاق الصفيحة على منحدر الأستينوسفير. لا تعتبرها دفعاً مباشراً للصهير. في البكالوريا: الجاذبية على المنحدر هي أصل هذه القوة.",
     "diagramUrl": "/assets/images/schemas/domaine3_tectonique/schema_13_terre.svg"
   },
   {
@@ -5514,7 +5514,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يستعمل CO2 كمستقبل نهائي للإلكترونات في التنفس."
     ],
     "correctAnswerIndex": 0,
-    "explanation": "التدفق الحراري يرتبط هنا بـ: يعكس انتقال الحرارة من باطن الأرض إلى السطح.",
+    "explanation": "التدفق الحراري يعكس انتقال الحرارة من باطن الأرض نحو السطح، ويتغير حسب البنية التكتونية للمنطقة. في البكالوريا: خريطة التدفق الحراري تدعم تحديد الحدود مثل خريطة الزلازل.",
     "diagramUrl": "/assets/images/schemas/domaine3_tectonique/schema_13_terre.svg"
   },
   {
@@ -5528,7 +5528,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "حدود الانزلاق تبني دائماً ليثوسفير محيطية جديدة."
     ],
     "correctAnswerIndex": 2,
-    "explanation": "الحمل الحراري يرتبط هنا بـ: ينقل حرارة ومادة في البرنس ببطء شديد.",
+    "explanation": "الحمل الحراري ينقل الحرارة والمادة معاً في البرنس ببطء شديد، بخلاف التوصيل الذي ينقل الحرارة وحدها. في البكالوريا: نقل المادة هو ما يجعل الحمل قادراً على تحريك الصفائح.",
     "diagramUrl": "/assets/images/schemas/domaine3_tectonique/schema_13_terre.svg"
   },
   {
@@ -5542,7 +5542,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يستعمل CO2 كمستقبل نهائي للإلكترونات في التنفس."
     ],
     "correctAnswerIndex": 0,
-    "explanation": "حركة الصفائح يرتبط هنا بـ: نتيجة تفاعل قوى عديدة وليس تياراً واحداً فقط.",
+    "explanation": "حركة الصفائح نتيجة تفاعل قوى عديدة هي سحب اللوح الغائص ودفع الظهرة والحمل البرنسي، لا تيار واحد. لا تبسط الآلية. في البكالوريا: اذكر ثلاث قوى مع ترجيح سحب اللوح.",
     "diagramUrl": "/assets/images/schemas/domaine3_tectonique/schema_13_terre.svg"
   },
   {
@@ -5556,7 +5556,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يصف ظاهرة مناعية نوعية فقط ولا علاقة له بهذا المحور."
     ],
     "correctAnswerIndex": 2,
-    "explanation": "النشاط الإشعاعي يرتبط هنا بـ: ينتج حرارة من تفكك عناصر مثل اليورانيوم.",
+    "explanation": "النشاط الإشعاعي ينتج حرارة من تفكك عناصر مشعة مثل اليورانيوم والثوريوم في الصخور. لا تخلطه بالحرارة البدئية. في البكالوريا: مصدران للطاقة الداخلية أحدهما متجدد ببطء والآخر متناقص.",
     "diagramUrl": "/assets/images/schemas/domaine3_tectonique/schema_13_terre.svg"
   },
   {
@@ -5570,7 +5570,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يستعمل CO2 كمستقبل نهائي للإلكترونات في التنفس."
     ],
     "correctAnswerIndex": 1,
-    "explanation": "الزلزال يرتبط هنا بـ: اهتزاز مفاجئ ناتج عن تحرير طاقة على فالق.",
+    "explanation": "الزلزال اهتزاز مفاجئ للأرض ينتج عن تحرير طاقة تراكمت في الصخور ثم انفلتت على مستوى فالق. لا تفسره بالنشاط البركاني وحده. في البكالوريا: تراكم الإجهاد ثم كسر مفاجئ ثم انتشار موجي.",
     "diagramUrl": "/assets/images/schemas/domaine3_tectonique/schema_14_ondes.svg"
   },
   {
@@ -5584,7 +5584,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "نقطة انطلاق الموجات في العمق"
     ],
     "correctAnswerIndex": 3,
-    "explanation": "البؤرة يرتبط هنا بـ: نقطة انطلاق الموجات في العمق.",
+    "explanation": "البؤرة هي نقطة انطلاق الموجات الزلزالية في العمق، أي الموضع الذي تتحرر عنده الطاقة فعلياً، وعمقها يميز نمط الحد التكتوني. لا تخلطها بالمركز السطحي. في البكالوريا: بؤرة عميقة تعني منطقة غوص.",
     "diagramUrl": "/assets/images/schemas/domaine3_tectonique/schema_14_ondes.svg"
   },
   {
@@ -5598,7 +5598,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "هو بنية ثابتة لا تتأثر بالشروط الفيزيائية أبداً."
     ],
     "correctAnswerIndex": 1,
-    "explanation": "المركز السطحي يرتبط هنا بـ: إسقاط البؤرة على سطح الأرض.",
+    "explanation": "المركز السطحي هو الإسقاط العمودي للبؤرة على سطح الأرض، وعنده تكون الأضرار أشد عموماً. لا تعتبره مصدر الموجات. في البكالوريا: البؤرة في العمق، والمركز السطحي على السطح.",
     "diagramUrl": "/assets/images/schemas/domaine3_tectonique/schema_14_ondes.svg"
   },
   {
@@ -5612,7 +5612,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "موجة طولية سريعة تنتشر في الصلب والسائل"
     ],
     "correctAnswerIndex": 3,
-    "explanation": "الموجة P يرتبط هنا بـ: موجة طولية سريعة تنتشر في الصلب والسائل.",
+    "explanation": "الموجة P طولية سريعة تنتشر في الأوساط الصلبة والسائلة معاً لأنها تعتمد على الانضغاط. لا تحصرها في الصلب. في البكالوريا: انتشارها في السوائل هو ما يجعلها تعبر اللب الخارجي.",
     "diagramUrl": "/assets/images/schemas/domaine3_tectonique/schema_14_ondes.svg"
   },
   {
@@ -5626,7 +5626,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "ينتج مباشرة أجساماً مضادة في كل الحالات."
     ],
     "correctAnswerIndex": 2,
-    "explanation": "الموجة S يرتبط هنا بـ: موجة عرضية لا تنتشر في السوائل.",
+    "explanation": "الموجة S عرضية لا تنتشر في السوائل لأنها تحتاج مقاومة للقص لا توفرها الموائع. لا تفسر غيابها بالبعد. في البكالوريا: توقف S عند عمق معين حجة على وجود وسط سائل.",
     "diagramUrl": "/assets/images/schemas/domaine3_tectonique/schema_14_ondes.svg"
   },
   {
@@ -5640,7 +5640,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يمثل مرحلة جيولوجية عميقة لا علاقة لها بالخلايا."
     ],
     "correctAnswerIndex": 2,
-    "explanation": "الموجات L يرتبط هنا بـ: سطحية وبطيئة وكبيرة السعة ومدمرة.",
+    "explanation": "الموجات L سطحية بطيئة كبيرة السعة، ولهذا كانت الأشد تدميراً رغم وصولها المتأخر. لا تربط الخطورة بالسرعة. في البكالوريا: السعة لا السرعة هي التي تحدد قوة التدمير.",
     "diagramUrl": "/assets/images/schemas/domaine3_tectonique/schema_14_ondes.svg"
   },
   {
@@ -5654,7 +5654,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "تسجيل وصول الموجات الزلزالية"
     ],
     "correctAnswerIndex": 3,
-    "explanation": "السيزموغرام يرتبط هنا بـ: تسجيل وصول الموجات الزلزالية.",
+    "explanation": "السيزموغرام تسجيل بياني لوصول الموجات الزلزالية يبين ترتيبها وسعاتها وأزمنة وصولها. لا تقرأه كصورة للأرض. في البكالوريا: استخرج منه دائماً فرق زمن وصول P وS.",
     "diagramUrl": "/assets/images/schemas/domaine3_tectonique/schema_14_ondes.svg"
   },
   {
@@ -5668,7 +5668,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "الموجات S تنتشر في السوائل أسرع من P."
     ],
     "correctAnswerIndex": 0,
-    "explanation": "فرق وصول P وS يرتبط هنا بـ: يساعد على حساب بعد المحطة عن البؤرة.",
+    "explanation": "فرق وصول P وS يزداد كلما ابتعدت المحطة عن البؤرة، ولذلك يُستعمل لحساب هذا البعد بواسطة منحنيات مرجعية. في البكالوريا: فرق أكبر يعني محطة أبعد.",
     "diagramUrl": "/assets/images/schemas/domaine3_tectonique/schema_14_ondes.svg"
   },
   {
@@ -5682,7 +5682,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "سطح موهو يفصل اللب الخارجي عن الداخلي."
     ],
     "correctAnswerIndex": 0,
-    "explanation": "سرعة P يرتبط هنا بـ: أكبر من سرعة S لذلك تصل أولاً.",
+    "explanation": "سرعة P أكبر من سرعة S في الوسط نفسه، ولذلك تصل أولاً دائماً وتُسمى الموجات الأولية. لا تعكس الترتيب. في البكالوريا: ترتيب الوصول هو P ثم S ثم الموجات السطحية.",
     "diagramUrl": "/assets/images/schemas/domaine3_tectonique/schema_14_ondes.svg"
   },
   {
@@ -5696,7 +5696,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يحدث في كل البروتينات بالطريقة نفسها دون نوعية."
     ],
     "correctAnswerIndex": 0,
-    "explanation": "الموجات السطحية يرتبط هنا بـ: تصل أخيراً غالباً وتسبب أضراراً كبيرة.",
+    "explanation": "الموجات السطحية تصل أخيراً غالباً لكنها تسبب أضراراً كبيرة لأنها تنتشر قرب السطح بسعة عالية. لا تهملها في قراءة التسجيل. في البكالوريا: آخر الواصلين هو أشدها تخريباً.",
     "diagramUrl": "/assets/images/schemas/domaine3_tectonique/schema_14_ondes.svg"
   },
   {
@@ -5710,7 +5710,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "الكثافة تنقص دائماً كلما تعمقنا نحو المركز."
     ],
     "correctAnswerIndex": 1,
-    "explanation": "السعة يرتبط هنا بـ: ترتبط بشدة الاهتزاز المسجل.",
+    "explanation": "سعة الموجة ترتبط بشدة الاهتزاز المسجل وتستعمل في تقدير قوة الزلزال. لا تخلطها بالتردد أو بالمدة. في البكالوريا: ميز بين القوة المقيسة آلياً والشدة المقدرة من الأضرار.",
     "diagramUrl": "/assets/images/schemas/domaine3_tectonique/schema_14_ondes.svg"
   },
   {
@@ -5724,7 +5724,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يحدث دائماً داخل النواة ولا يرتبط بباقي العضيات."
     ],
     "correctAnswerIndex": 1,
-    "explanation": "ثلاث محطات يرتبط هنا بـ: تكفي تقريباً لتحديد المركز السطحي بالتثليث.",
+    "explanation": "ثلاث محطات تكفي تقريباً لتحديد المركز السطحي بالتثليث، إذ يعطي تقاطع الدوائر الثلاث نقطة واحدة. لا تكتف بمحطتين. في البكالوريا: محطتان تعطيان نقطتين محتملتين، والثالثة تحسم.",
     "diagramUrl": "/assets/images/schemas/domaine3_tectonique/schema_14_ondes.svg"
   },
   {
@@ -5738,7 +5738,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يتم فقط في غياب الماء والأيونات."
     ],
     "correctAnswerIndex": 0,
-    "explanation": "الفالق يرتبط هنا بـ: كسر تتحرك على جانبيه الكتل الصخرية.",
+    "explanation": "الفالق كسر في الصخور تتحرك على جانبيه الكتل، وهو الموقع الذي تتحرر عنده الطاقة المتراكمة. لا تخلطه بالطية المرنة. في البكالوريا: الفالق يعني كسراً مع إزاحة.",
     "diagramUrl": "/assets/images/schemas/domaine3_tectonique/schema_14_ondes.svg"
   },
   {
@@ -5752,7 +5752,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يستعمل CO2 كمستقبل نهائي للإلكترونات في التنفس."
     ],
     "correctAnswerIndex": 2,
-    "explanation": "الانكسار الزلزالي يرتبط هنا بـ: تغير اتجاه وسرعة الموجة عند تغير الوسط.",
+    "explanation": "الانكسار الزلزالي تغير في اتجاه وسرعة الموجة عند عبورها سطحاً فاصلاً بين وسطين مختلفين. لا تخلطه بالانعكاس. في البكالوريا: الانكسار عبور مع انحراف، والانعكاس رجوع.",
     "diagramUrl": "/assets/images/schemas/domaine3_tectonique/schema_14_ondes.svg"
   },
   {
@@ -5766,7 +5766,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "ينتج مباشرة أجساماً مضادة في كل الحالات."
     ],
     "correctAnswerIndex": 1,
-    "explanation": "الانعكاس الزلزالي يرتبط هنا بـ: رجوع جزء من الموجة عند سطح فاصل.",
+    "explanation": "الانعكاس الزلزالي رجوع جزء من الموجة عند سطح فاصل، وهو ما يسمح بكشف الطبقات العميقة. لا تعتبر كل الطاقة عابرة. في البكالوريا: الموجة تنقسم عند كل سطح فاصل.",
     "diagramUrl": "/assets/images/schemas/domaine3_tectonique/schema_14_ondes.svg"
   },
   {
@@ -5780,7 +5780,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يصف ظاهرة مناعية نوعية فقط ولا علاقة له بهذا المحور."
     ],
     "correctAnswerIndex": 1,
-    "explanation": "منطقة الظل يرتبط هنا بـ: منطقة لا تسجل فيها موجات معينة.",
+    "explanation": "منطقة الظل مجال على سطح الأرض لا تُسجل فيه موجات معينة، ووجودها حجة على بنية داخلية غير متجانسة. لا تفسرها بضعف الزلزال. في البكالوريا: الظل معطى استنتاجي أساسي.",
     "diagramUrl": "/assets/images/schemas/domaine3_tectonique/schema_14_ondes.svg"
   },
   {
@@ -5794,7 +5794,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يدل على زيادة غير محدودة في السرعة دون إشباع."
     ],
     "correctAnswerIndex": 2,
-    "explanation": "ظل S يرتبط هنا بـ: ينتج عن توقف S عند اللب الخارجي السائل.",
+    "explanation": "ظل S واسع جداً وينتج عن توقف الموجات العرضية عند اللب الخارجي السائل، وهو الدليل الرئيسي على سيولته. في البكالوريا: غياب S خلف اللب حجة قاطعة على وسط مائع.",
     "diagramUrl": "/assets/images/schemas/domaine3_tectonique/schema_14_ondes.svg"
   },
   {
@@ -5808,7 +5808,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يحدث في كل البروتينات بالطريقة نفسها دون نوعية."
     ],
     "correctAnswerIndex": 1,
-    "explanation": "ظل P يرتبط هنا بـ: ينتج عن انكسار P عند حدود اللب.",
+    "explanation": "ظل P أضيق وينتج عن انكسار الموجات الطولية بقوة عند حدود اللب بسبب الانخفاض المفاجئ لسرعتها. لا تفسره بتوقف P. في البكالوريا: P لا تتوقف بل تنحرف.",
     "diagramUrl": "/assets/images/schemas/domaine3_tectonique/schema_14_ondes.svg"
   },
   {
@@ -5822,7 +5822,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يدل على تغير الكثافة أو الصلابة أو التركيب"
     ],
     "correctAnswerIndex": 3,
-    "explanation": "تغير السرعة يرتبط هنا بـ: يدل على تغير الكثافة أو الصلابة أو التركيب.",
+    "explanation": "تغير سرعة الموجات يدل على تغير الكثافة أو الصلابة أو التركيب الكيميائي للوسط المعبور. لا تفسره بالعمق وحده. في البكالوريا: كل قفزة في السرعة تشير إلى سطح فاصل.",
     "diagramUrl": "/assets/images/schemas/domaine3_tectonique/schema_14_ondes.svg"
   },
   {
@@ -5836,7 +5836,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يمثل مرحلة جيولوجية عميقة لا علاقة لها بالخلايا."
     ],
     "correctAnswerIndex": 0,
-    "explanation": "الموجات P يرتبط هنا بـ: تنحرف عند عبور أوساط مختلفة.",
+    "explanation": "الموجات P تنحرف عند عبور أوساط مختلفة الخصائص فترسم مسارات منحنية، وهذا الانحراف هو ما يكشف البنية. في البكالوريا: تتبع المسار يعني قراءة تغير الأوساط.",
     "diagramUrl": "/assets/images/schemas/domaine3_tectonique/schema_14_ondes.svg"
   },
   {
@@ -5850,7 +5850,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "غيابها دليل قوي على وسط سائل"
     ],
     "correctAnswerIndex": 3,
-    "explanation": "الموجات S يرتبط هنا بـ: غيابها دليل قوي على وسط سائل.",
+    "explanation": "غياب الموجات S في مجال واسع دليل قوي على وجود وسط سائل يعترض مسارها، أي اللب الخارجي. لا تفسر الغياب بالتخامد. في البكالوريا: هذا الاستدلال سؤال متكرر.",
     "diagramUrl": "/assets/images/schemas/domaine3_tectonique/schema_14_ondes.svg"
   },
   {
@@ -5864,7 +5864,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "ينتج مباشرة أجساماً مضادة في كل الحالات."
     ],
     "correctAnswerIndex": 2,
-    "explanation": "المسارات المنحنية يرتبط هنا بـ: تنتج عن تغير تدريجي في خواص الطبقات.",
+    "explanation": "المسارات المنحنية تنتج عن تغير تدريجي في خواص الطبقات مع العمق، فتنحني الموجة باستمرار بدل السير مستقيمة. في البكالوريا: انحناء تدريجي يعني تدرجاً، وانكساراً حاداً يعني سطحاً فاصلاً.",
     "diagramUrl": "/assets/images/schemas/domaine3_tectonique/schema_14_ondes.svg"
   },
   {
@@ -5878,7 +5878,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يدل على وسط صلب دائماً مهما كانت المعطيات الزلزالية."
     ],
     "correctAnswerIndex": 1,
-    "explanation": "بيانات عالمية يرتبط هنا بـ: تسمح باستنتاج بنية الأرض الداخلية.",
+    "explanation": "البيانات العالمية المجمعة من شبكات المحطات تسمح باستنتاج بنية الأرض الداخلية رغم استحالة الوصول إليها مباشرة. في البكالوريا: نموذج الأرض استنتاجي مبني على القياس غير المباشر.",
     "diagramUrl": "/assets/images/schemas/domaine3_tectonique/schema_14_ondes.svg"
   },
   {
@@ -5892,7 +5892,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يفسر منطقة ظل S الواسعة"
     ],
     "correctAnswerIndex": 3,
-    "explanation": "اللب الخارجي يرتبط هنا بـ: يفسر منطقة ظل S الواسعة.",
+    "explanation": "اللب الخارجي سائل، ولذلك يوقف الموجات S ويفسر منطقة ظلها الواسعة، كما يفسر انخفاض سرعة P عنده. في البكالوريا: اربط السيولة بالظل وبانخفاض السرعة معاً.",
     "diagramUrl": "/assets/images/schemas/domaine3_tectonique/schema_14_ondes.svg"
   },
   {
@@ -5906,7 +5906,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "تسجل أزمنة الوصول لاستنتاج المسارات"
     ],
     "correctAnswerIndex": 3,
-    "explanation": "المحطات الزلزالية يرتبط هنا بـ: تسجل أزمنة الوصول لاستنتاج المسارات.",
+    "explanation": "المحطات الزلزالية تسجل أزمنة وصول الموجات في مواقع متعددة حول الكرة الأرضية، وتقاطع هذه المعطيات هو ما يسمح باستنتاج المسارات والسرعات ثم البنية. في البكالوريا: كثرة المحطات ترفع دقة النموذج.",
     "diagramUrl": "/assets/images/schemas/domaine3_tectonique/schema_14_ondes.svg"
   },
   {
@@ -5920,7 +5920,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "سطح موهو يفصل اللب الخارجي عن الداخلي."
     ],
     "correctAnswerIndex": 0,
-    "explanation": "الموجات العميقة يرتبط هنا بـ: تكشف الطبقات التي لا يمكن أخذ عينات منها مباشرة.",
+    "explanation": "الموجات العميقة تكشف طبقات لا يمكن أخذ عينات منها مباشرة، فهي بمثابة أشعة تصوير لباطن الأرض. لا تنتظر أدلة مباشرة. في البكالوريا: أعمق حفر لا يتجاوز بضعة عشر كيلومتراً.",
     "diagramUrl": "/assets/images/schemas/domaine3_tectonique/schema_14_ondes.svg"
   },
   {
@@ -5934,7 +5934,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يمثل مرحلة جيولوجية عميقة لا علاقة لها بالخلايا."
     ],
     "correctAnswerIndex": 0,
-    "explanation": "سطح موهو يرتبط هنا بـ: يفصل القشرة عن البرنس.",
+    "explanation": "سطح موهو يفصل القشرة عن البرنس وتزداد عنده سرعة الموجات فجأة بسبب تغير التركيب الصخري. لا تخلطه بحد الليثوسفير. في البكالوريا: موهو حد كيميائي لا ميكانيكي.",
     "diagramUrl": "/assets/images/schemas/domaine3_tectonique/schema_13_terre.svg"
   },
   {
@@ -5948,7 +5948,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يقارب 30 إلى 70 كم"
     ],
     "correctAnswerIndex": 3,
-    "explanation": "عمق موهو تحت القارات يرتبط هنا بـ: يقارب 30 إلى 70 كم.",
+    "explanation": "عمق موهو تحت القارات يقارب ثلاثين إلى سبعين كيلومتراً، وهو يتغير حسب سماكة القشرة القارية وتضاريسها الجبلية. لا تعتبره ثابتاً. في البكالوريا: أكبر الأعماق توجد تحت السلاسل الجبلية الكبرى.",
     "diagramUrl": "/assets/images/schemas/domaine3_tectonique/schema_13_terre.svg"
   },
   {
@@ -5962,7 +5962,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "أقل عمقاً غالباً من القارات"
     ],
     "correctAnswerIndex": 3,
-    "explanation": "موهو تحت المحيطات يرتبط هنا بـ: أقل عمقاً غالباً من القارات.",
+    "explanation": "موهو تحت المحيطات أقل عمقاً بكثير من القارات ولا يتجاوز غالباً بضعة كيلومترات تحت قاع البحر. في البكالوريا: الفارق في العمق يعكس الفارق في سماكة القشرتين.",
     "diagramUrl": "/assets/images/schemas/domaine3_tectonique/schema_13_terre.svg"
   },
   {
@@ -5976,7 +5976,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "هو بنية ثابتة لا تتأثر بالشروط الفيزيائية أبداً."
     ],
     "correctAnswerIndex": 0,
-    "explanation": "سطح غوتنبرغ يرتبط هنا بـ: يفصل البرنس عن اللب الخارجي عند نحو 2900 كم.",
+    "explanation": "سطح غوتنبرغ يفصل البرنس عن اللب الخارجي عند نحو ألفين وتسعمائة كيلومتر، وهو أهم سطح فاصل في الأرض. في البكالوريا: احفظ العمق مقروناً بالسطح المقابل له.",
     "diagramUrl": "/assets/images/schemas/domaine3_tectonique/schema_13_terre.svg"
   },
   {
@@ -5990,7 +5990,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "عنده تتوقف S وتنخفض سرعة P فجأة"
     ],
     "correctAnswerIndex": 3,
-    "explanation": "غوتنبرغ يرتبط هنا بـ: عنده تتوقف S وتنخفض سرعة P فجأة.",
+    "explanation": "عند سطح غوتنبرغ تتوقف الموجات S نهائياً وتنخفض سرعة P انخفاضاً مفاجئاً، وهذان المعطيان معاً يثبتان الانتقال إلى وسط سائل. في البكالوريا: دليلان متكاملان لا دليل واحد.",
     "diagramUrl": "/assets/images/schemas/domaine3_tectonique/schema_13_terre.svg"
   },
   {
@@ -6004,7 +6004,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "ينتج مباشرة أجساماً مضادة في كل الحالات."
     ],
     "correctAnswerIndex": 0,
-    "explanation": "سطح ليمان يرتبط هنا بـ: يفصل اللب الخارجي عن الداخلي عند نحو 5100 كم.",
+    "explanation": "سطح ليمان يفصل اللب الخارجي السائل عن اللب الداخلي الصلب عند نحو خمسة آلاف ومائة كيلومتر. في البكالوريا: اكتشف بفضل تحليل دقيق للموجات المنعكسة داخل اللب.",
     "diagramUrl": "/assets/images/schemas/domaine3_tectonique/schema_13_terre.svg"
   },
   {
@@ -6018,7 +6018,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "عنده ترتفع سرعة P بسبب صلابة اللب الداخلي"
     ],
     "correctAnswerIndex": 3,
-    "explanation": "ليمان يرتبط هنا بـ: عنده ترتفع سرعة P بسبب صلابة اللب الداخلي.",
+    "explanation": "عند ليمان ترتفع سرعة P من جديد بسبب صلابة اللب الداخلي، ما يدل على العودة إلى وسط صلب. لا تفسر الارتفاع بتغير التركيب. في البكالوريا: نفس التركيب وحالة مختلفة.",
     "diagramUrl": "/assets/images/schemas/domaine3_tectonique/schema_13_terre.svg"
   },
   {
@@ -6032,7 +6032,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يتم فقط في غياب الماء والأيونات."
     ],
     "correctAnswerIndex": 1,
-    "explanation": "السطح الفاصل يرتبط هنا بـ: حد يحدث عنده تغير مفاجئ في خصائص الموجات.",
+    "explanation": "السطح الفاصل حد يحدث عنده تغير مفاجئ في خصائص انتشار الموجات، ويعكس تغيراً في التركيب أو الحالة. في البكالوريا: ثلاثة سطوح رئيسية هي موهو وغوتنبرغ وليمان.",
     "diagramUrl": "/assets/images/schemas/domaine3_tectonique/schema_13_terre.svg"
   },
   {
@@ -6046,7 +6046,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "هو بنية ثابتة لا تتأثر بالشروط الفيزيائية أبداً."
     ],
     "correctAnswerIndex": 1,
-    "explanation": "القشرة/البرنس يرتبط هنا بـ: انتقال من صخور خفيفة إلى بيريدوتيت أكثف.",
+    "explanation": "الانتقال من القشرة إلى البرنس عبر موهو هو انتقال من صخور خفيفة غرانيتية أو بازلتية إلى بيريدوتيت أكثف. في البكالوريا: علل قفزة السرعة بتغير الطبيعة الصخرية.",
     "diagramUrl": "/assets/images/schemas/domaine3_tectonique/schema_13_terre.svg"
   },
   {
@@ -6060,7 +6060,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "الموجات S تنتشر في السوائل أسرع من P."
     ],
     "correctAnswerIndex": 2,
-    "explanation": "البرنس/اللب يرتبط هنا بـ: انتقال إلى وسط غني بالحديد والنيكل.",
+    "explanation": "الانتقال من البرنس إلى اللب هو انتقال من سيليكات المغنيزيوم والحديد إلى وسط معدني غني بالحديد والنيكل. في البكالوريا: تغير كيميائي جذري يفسر ضخامة القفزة عند غوتنبرغ.",
     "diagramUrl": "/assets/images/schemas/domaine3_tectonique/schema_13_terre.svg"
   },
   {
@@ -6074,7 +6074,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يعني توقف كل التحولات الطاقوية في الخلية."
     ],
     "correctAnswerIndex": 2,
-    "explanation": "اللب الخارجي/الداخلي يرتبط هنا بـ: انتقال من سائل إلى صلب.",
+    "explanation": "الانتقال من اللب الخارجي إلى الداخلي انتقال من الحالة السائلة إلى الصلبة دون تغير يذكر في التركيب. لا تفترض تغيراً كيميائياً. في البكالوريا: الضغط هو سبب التصلب.",
     "diagramUrl": "/assets/images/schemas/domaine3_tectonique/schema_13_terre.svg"
   },
   {
@@ -6088,7 +6088,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "هو بنية ثابتة لا تتأثر بالشروط الفيزيائية أبداً."
     ],
     "correctAnswerIndex": 2,
-    "explanation": "اكتشاف السطوح يرتبط هنا بـ: اعتمد على تحليل أزمنة وسرعات الموجات.",
+    "explanation": "اكتشاف السطوح الفاصلة اعتمد على تحليل أزمنة وصول الموجات وسرعاتها وعلى تحديد مناطق الظل، لا على أي ملاحظة مباشرة للباطن. في البكالوريا: اذكر المنهج الاستدلالي لا النتيجة فقط.",
     "diagramUrl": "/assets/images/schemas/domaine3_tectonique/schema_13_terre.svg"
   },
   {
@@ -6102,7 +6102,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يعني توقف كل التحولات الطاقوية في الخلية."
     ],
     "correctAnswerIndex": 2,
-    "explanation": "القشرة القارية يرتبط هنا بـ: غرانيتية تقريباً وغنية بالسيليسيوم والألمنيوم.",
+    "explanation": "القشرة القارية غرانيتية في مجملها وغنية بالسيليسيوم والألمنيوم، ولهذا كانت أقل كثافة وأكثر سماكة. لا تخلطها بالقشرة المحيطية. في البكالوريا: التركيب يفسر الكثافة، والكثافة تفسر السلوك التكتوني.",
     "diagramUrl": "/assets/images/schemas/domaine3_tectonique/schema_13_terre.svg"
   },
   {
@@ -6116,7 +6116,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يحدث في كل البروتينات بالطريقة نفسها دون نوعية."
     ],
     "correctAnswerIndex": 2,
-    "explanation": "القشرة المحيطية يرتبط هنا بـ: بازلتية وغابروية وأكثر كثافة.",
+    "explanation": "القشرة المحيطية بازلتية في أعلاها وغابروية في أسفلها، وهي أكثر كثافة لغناها بالحديد والمغنيزيوم. لا تنسب لها تركيباً غرانيتياً. في البكالوريا: كثافتها الأعلى هي سبب غوصها تحت القارية.",
     "diagramUrl": "/assets/images/schemas/domaine3_tectonique/schema_13_terre.svg"
   },
   {
@@ -6130,7 +6130,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يحدث في كل البروتينات بالطريقة نفسها دون نوعية."
     ],
     "correctAnswerIndex": 0,
-    "explanation": "البرنس يرتبط هنا بـ: غني بالبيريدوتيت والأوليفين والبيروكسين.",
+    "explanation": "البرنس غني بالبيريدوتيت المكون أساساً من الأوليفين والبيروكسين، وهو أكبر أغلفة الأرض حجماً. لا تعتبره منصهراً. في البكالوريا: البرنس صلب في مجمله رغم لدونة الأستينوسفير.",
     "diagramUrl": "/assets/images/schemas/domaine3_tectonique/schema_13_terre.svg"
   },
   {
@@ -6144,7 +6144,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "سطح موهو يفصل اللب الخارجي عن الداخلي."
     ],
     "correctAnswerIndex": 1,
-    "explanation": "اللب الخارجي يرتبط هنا بـ: سائل غني بالحديد والنيكل.",
+    "explanation": "اللب الخارجي وسط سائل غني بالحديد والنيكل، وحركات الحمل في هذا المعدن السائل هي مصدر الحقل المغناطيسي الأرضي. لا تعتبره صلباً. في البكالوريا: اربط السيولة بظل S وبالحقل المغناطيسي معاً.",
     "diagramUrl": "/assets/images/schemas/domaine3_tectonique/schema_13_terre.svg"
   },
   {
@@ -6158,7 +6158,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يستعمل CO2 كمستقبل نهائي للإلكترونات في التنفس."
     ],
     "correctAnswerIndex": 0,
-    "explanation": "اللب الداخلي يرتبط هنا بـ: صلب غني بالحديد والنيكل.",
+    "explanation": "اللب الداخلي صلب غني بالحديد والنيكل رغم حرارته القصوى، لأن الضغط الهائل يمنع الانصهار. في البكالوريا: الحالة الفيزيائية تتحدد بالحرارة والضغط معاً لا بالحرارة وحدها.",
     "diagramUrl": "/assets/images/schemas/domaine3_tectonique/schema_13_terre.svg"
   },
   {
@@ -6172,7 +6172,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يعني توقف كل التحولات الطاقوية في الخلية."
     ],
     "correctAnswerIndex": 2,
-    "explanation": "الكثافة يرتبط هنا بـ: تزداد عموماً نحو مركز الأرض.",
+    "explanation": "الكثافة تزداد عموماً كلما اتجهنا نحو مركز الأرض بسبب تركز العناصر الثقيلة كالحديد وارتفاع الضغط. لا تعتبر هذا التدرج منتظماً. في البكالوريا: الزيادة تحدث بقفزات عند السطوح الفاصلة.",
     "diagramUrl": "/assets/images/schemas/domaine3_tectonique/schema_13_terre.svg"
   },
   {
@@ -6186,7 +6186,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يدل على وسط صلب دائماً مهما كانت المعطيات الزلزالية."
     ],
     "correctAnswerIndex": 1,
-    "explanation": "الحرارة يرتبط هنا بـ: تزداد مع العمق لكنها لا تحدد الحالة وحدها.",
+    "explanation": "الحرارة تزداد مع العمق لكنها لا تحدد الحالة الفيزيائية وحدها، والدليل صلابة اللب الداخلي الأشد حرارة. في البكالوريا: أي استدلال على الحالة يجب أن يجمع الحرارة والضغط.",
     "diagramUrl": "/assets/images/schemas/domaine3_tectonique/schema_13_terre.svg"
   },
   {
@@ -6200,7 +6200,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "الموجات S تنتشر في السوائل أسرع من P."
     ],
     "correctAnswerIndex": 2,
-    "explanation": "الضغط يرتبط هنا بـ: يبقي اللب الداخلي صلباً رغم الحرارة العالية.",
+    "explanation": "الضغط الهائل في المركز يبقي اللب الداخلي صلباً رغم حرارته العالية، لأنه يرفع درجة انصهار الحديد. لا تهمله في التعليل. في البكالوريا: الضغط يرفع درجة الانصهار.",
     "diagramUrl": "/assets/images/schemas/domaine3_tectonique/schema_13_terre.svg"
   },
   {
@@ -6214,7 +6214,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "الموجات S تنتشر في السوائل أسرع من P."
     ],
     "correctAnswerIndex": 0,
-    "explanation": "الحقل المغناطيسي يرتبط هنا بـ: ينتج عن حركات اللب الخارجي المعدني السائل.",
+    "explanation": "الحقل المغناطيسي ينتج عن حركات الحمل في اللب الخارجي المعدني السائل وفق آلية الدينامو الذاتي. في البكالوريا: سيولة اللب الخارجي شرط ضروري لوجود الحقل المغناطيسي.",
     "diagramUrl": "/assets/images/schemas/domaine3_tectonique/schema_13_terre.svg"
   },
   {
@@ -6228,7 +6228,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يحدث في كل البروتينات بالطريقة نفسها دون نوعية."
     ],
     "correctAnswerIndex": 2,
-    "explanation": "النموذج الداخلي يرتبط هنا بـ: مبني أساساً من معطيات زلزالية غير مباشرة.",
+    "explanation": "النموذج الداخلي للأرض مبني أساساً على معطيات زلزالية غير مباشرة تدعمها الكثافة الكلية ودراسة النيازك. لا تعتبره ملاحظة مباشرة. في البكالوريا: بين حدود النموذج عند مناقشته.",
     "diagramUrl": "/assets/images/schemas/domaine3_tectonique/schema_13_terre.svg"
   },
   {
@@ -6242,7 +6242,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "يحدث في كل البروتينات بالطريقة نفسها دون نوعية."
     ],
     "correctAnswerIndex": 2,
-    "explanation": "الأستينوسفير يرتبط هنا بـ: لدن جزئياً وليس سائلاً كلياً.",
+    "explanation": "الأستينوسفير في النموذج الداخلي لدن جزئياً وليس سائلاً كلياً، إذ لا تتجاوز نسبة الانصهار فيه بضعة بالمائة. لا تسمه بحر صهير. في البكالوريا: استمرار مرور S فيه يثبت أنه ليس سائلاً.",
     "diagramUrl": "/assets/images/schemas/domaine3_tectonique/schema_13_terre.svg"
   },
   {
@@ -6256,7 +6256,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
       "غلاف صلب فوق الأستينوسفير"
     ],
     "correctAnswerIndex": 3,
-    "explanation": "الليثوسفير يرتبط هنا بـ: غلاف صلب فوق الأستينوسفير.",
+    "explanation": "الليثوسفير غلاف صلب هش يعلو الأستينوسفير اللدن، والتباين الميكانيكي بين الغلافين هو الذي يسمح أصلاً بحركة الصفائح. لا تخلطه بالقشرة. في البكالوريا: حد الليثوسفير ميكانيكي وحد موهو كيميائي.",
     "diagramUrl": "/assets/images/schemas/domaine3_tectonique/schema_13_terre.svg"
   },
   {

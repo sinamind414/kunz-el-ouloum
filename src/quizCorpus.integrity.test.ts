@@ -116,19 +116,26 @@ describe('corpus QCM — qualité des explications (constat #1)', () => {
   // fermentation, 8 — Le bilan énergétique : 130 QCM, ids 217-346) : le
   // domaine 2 est à son tour intégralement réécrit. Plafonds ramenés de
   // 223 → 93. La dette résiduelle correspond exactement aux unités 9 et 10.
-  const MAX_CIRCULAR = 93;
-  const MAX_TOO_SHORT = 93;
+  //
+  // Lot 5 (unité 9 — La tectonique des plaques, 43 QCM, ids 347-389 ;
+  // unité 10 — La structure du globe terrestre, 50 QCM, ids 390-439) : le
+  // domaine 3 est clos, et avec lui la totalité du corpus. Les 508
+  // explications des 11 unités sont désormais réécrites.
+  //
+  // La dette est soldée : les plafonds de tolérance sont remplacés par une
+  // interdiction stricte. Toute explication circulaire ou de moins de
+  // 25 mots ajoutée au corpus fait désormais échouer la suite.
 
-  it('ne régresse pas sur le nombre d’explications circulaires', () => {
+  it('ne contient aucune explication circulaire', () => {
     const circular = SVT_QUIZ_QUESTIONS.filter(isCircular);
-    expect(circular.length).toBeLessThanOrEqual(MAX_CIRCULAR);
+    expect(circular.map((q) => q.id)).toEqual([]);
   });
 
-  it('ne régresse pas sur le nombre d’explications trop courtes', () => {
+  it('ne contient aucune explication de moins de 25 mots', () => {
     const tooShort = SVT_QUIZ_QUESTIONS.filter(
       (q) => wordCount(q.explanation ?? '') < MIN_WORDS,
     );
-    expect(tooShort.length).toBeLessThanOrEqual(MAX_TOO_SHORT);
+    expect(tooShort.map((q) => q.id)).toEqual([]);
   });
 
   // Échafaudage de génération retiré des énoncés le 12/08/2026 : les 500 QCM
@@ -160,9 +167,10 @@ describe('corpus QCM — qualité des explications (constat #1)', () => {
     expect(duplicates).toEqual([]);
   });
 
-  // Lots déjà traités : verrouillés à zéro défaut pour interdire tout retour
-  // en arrière sur le travail de réécriture déjà validé.
-  const REWRITTEN_UNITS = [1, 2, 3, 4, 5, 6, 7, 8, 11];
+  // Les 11 unités du programme sont désormais traitées : chacune est
+  // verrouillée à zéro défaut, unité par unité, pour que l'échec de la suite
+  // désigne immédiatement l'unité fautive en cas de régression.
+  const REWRITTEN_UNITS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
 
   it.each(REWRITTEN_UNITS)(
     'garde l’unité %i totalement exempte d’explications circulaires ou trop courtes',
