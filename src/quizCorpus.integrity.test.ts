@@ -205,4 +205,60 @@ describe('corpus QCM — qualité des explications (constat #1)', () => {
     const empty = SVT_QUIZ_QUESTIONS.filter((q) => !q.explanation?.trim());
     expect(empty.map((q) => q.id)).toEqual([]);
   });
+
+  // --- Qualité des distracteurs (Sprint 2) ---
+  //
+  // Le corpus généré contenait 5 phrases de remplissage réutilisées 176 fois au
+  // total comme 4e choix, systématiquement empruntées à un AUTRE domaine que
+  // celui de la question (ex. « utilise le CO2 comme accepteur final
+  // d'électrons » proposé dans une question sur la traduction). Un tel
+  // distracteur s'élimine sans rien connaître au cours et n'enseigne rien.
+  // Ces 5 phrases sont désormais bannies : un distracteur doit porter sur le
+  // concept visé, pas servir de bouche-trou.
+  const BANNED_FILLERS = [
+    'يستعمل CO2 كمستقبل نهائي للإلكترونات في التنفس.',
+    'يحدث في كل البروتينات بالطريقة نفسها دون نوعية.',
+    'يدل على وسط صلب دائماً مهما كانت المعطيات الزلزالية.',
+    'يعني توقف كل التحولات الطاقوية في الخلية.',
+    'يصف ظاهرة مناعية نوعية فقط ولا علاقة له بهذا المحور.',
+  ];
+
+  it('n’emploie plus aucune phrase de remplissage recyclée comme distracteur', () => {
+    const offenders = SVT_QUIZ_QUESTIONS.filter((q) =>
+      q.options.some((option) => BANNED_FILLERS.includes(option.trim())),
+    );
+    expect(offenders.map((q) => q.id)).toEqual([]);
+  });
+
+  // Un même distracteur peut légitimement resservir entre questions voisines,
+  // mais au-delà d'un seuil il devient un motif reconnaissable : l'élève
+  // apprend la forme du corpus au lieu du cours. Seuil volontairement large
+  // (25) pour ne bloquer que le recyclage industriel, pas la réutilisation
+  // pédagogique d'une confusion classique.
+  it('ne recycle aucun distracteur au-delà d’un seuil de reconnaissance', () => {
+    const RECYCLING_LIMIT = 25;
+    const counts = new Map<string, number>();
+    SVT_QUIZ_QUESTIONS.forEach((q) => {
+      q.options.forEach((option, index) => {
+        if (index === q.correctAnswerIndex) return;
+        const key = option.trim();
+        counts.set(key, (counts.get(key) ?? 0) + 1);
+      });
+    });
+    const overused = [...counts.entries()]
+      .filter(([, n]) => n > RECYCLING_LIMIT)
+      .map(([option, n]) => `${n}× ${option}`);
+    expect(overused).toEqual([]);
+  });
+
+  // Le scaffolding de génération laissait des marqueurs d'axe (« 3 | La
+  // relation entre ») directement dans l'énoncé et dans la bonne réponse, ce
+  // qui produisait des questions littéralement illisibles (items 326 et 336).
+  it('ne laisse aucun marqueur d’axe dans les énoncés ni dans les réponses', () => {
+    const marker = /\d\s*\|\s*/;
+    const offenders = SVT_QUIZ_QUESTIONS.filter(
+      (q) => marker.test(q.questionText) || q.options.some((o) => marker.test(o)),
+    );
+    expect(offenders.map((q) => q.id)).toEqual([]);
+  });
 });
