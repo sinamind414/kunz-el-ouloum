@@ -30,3 +30,30 @@ describe('ValidationEngine qualitative trends', () => {
     expect(result.matchedLois).toContain(2);
   });
 });
+
+// Regression : les verbes de tendance au FEMININ etaient absents de MONOTONE, si
+// bien qu'une reponse correcte sur un sujet feminin (السرعة, النسبة...) recevait
+// a tort MISSING_KULLAMA. Mesure : 4 des 6 formes testees etaient rejetees.
+describe('ValidationEngine — accord en genre des verbes de tendance', () => {
+  const ctx = {
+    docType: 'quantitative',
+    actionVerb: 'analyse',
+    isNeuromuscular: false,
+  } as const;
+
+  const feminins = ['تزداد', 'ترتفع', 'تنخفض', 'تقل', 'تستقر'];
+  const masculins = ['يزداد', 'يرتفع', 'ينخفض', 'يقل', 'يستقر'];
+
+  it.each([...feminins, ...masculins])(
+    'accepte « %s » comme marqueur de tendance quantitative',
+    (verbe) => {
+      const res = validateAnswer(`${verbe} السرعة لتبلغ 13 كم/ث`, ctx);
+      expect(res.errors.map((e) => e.code)).not.toContain('MISSING_KULLAMA');
+    },
+  );
+
+  it('sanctionne toujours une analyse quantitative sans marqueur de tendance', () => {
+    const res = validateAnswer('السرعة تساوي 13 كم/ث في هذه الطبقة', ctx);
+    expect(res.errors.map((e) => e.code)).toContain('MISSING_KULLAMA');
+  });
+});

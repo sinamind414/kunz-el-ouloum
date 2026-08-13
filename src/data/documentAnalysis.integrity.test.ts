@@ -15,6 +15,7 @@
 
 import { describe, expect, it } from 'vitest';
 import { DOCUMENT_ANALYSIS_EXERCISES } from './documentAnalysisExercises';
+import { validateAnswer } from '../lib/validation/ValidationEngine';
 import { DOCUMENT_PRACTICE_CONTEXTS, getDocumentPracticeContext } from './documentPracticeContexts';
 import { isDocumentAssetAvailable } from './documentAssets';
 import { INITIAL_UNITS } from '../unitCatalog';
@@ -23,6 +24,14 @@ const UNIT_IDS = new Set(INITIAL_UNITS.map((u) => u.id));
 
 /** Questions réellement atteignables : la vue masque le bloc si l'asset manque. */
 const reachable = DOCUMENT_ANALYSIS_EXERCISES.filter((e) => isDocumentAssetAvailable(e.doc.assetKey));
+
+/**
+ * Unités couvertes par l'AUTRE surface d'analyse documentaire : la sortie de leçon
+ * (`LESSON_DOCUMENT_EXERCISE_ID` -> `LiveDocumentUracile`). Mesurée par exécution :
+ * unités 1, 2, 4, 5, 6 et 9. Sans elle on conclurait à tort que ces unités sont
+ * dépourvues de document — erreur effectivement commise, puis corrigée, sur la géologie.
+ */
+const LESSON_SURFACE_UNITS = new Set([1, 2, 4, 5, 6, 9]);
 
 describe('exercices d analyse documentaire — intégrité', () => {
   it('rattache chaque exercice à une unité existante du catalogue', () => {
@@ -33,7 +42,8 @@ describe('exercices d analyse documentaire — intégrité', () => {
 
   it('place chaque exercice dans l unité dont il traite réellement le contenu', () => {
     // Vérité établie à la main depuis INITIAL_UNITS (1 protéines, 2 structure/fonction,
-    // 3 enzymes, 4 immunité, 5 nerveux, 6 photosynthèse).
+    // 3 enzymes, 4 immunité, 5 nerveux, 6 photosynthèse, 7 respiration/fermentation,
+    // 8 bilan énergétique, 10 structure de la Terre, 11 structures géologiques).
     const expected: Record<string, number> = {
       nmj_ppm_courbe: 5,
       ach_jnm_schema: 5,
@@ -50,6 +60,11 @@ describe('exercices d analyse documentaire — intégrité', () => {
       ouchterlony_arcs: 4,
       membrane_hla_schema: 4,
       photosynth_courbe: 6,
+      // Lot 4 : les 4 unités qui n'avaient AUCUN document.
+      respiration_bilan: 7,
+      bilan_energetique_cellule: 8,
+      structure_terre_ondes: 10,
+      structures_geologiques_compare: 11,
     };
 
     for (const exercise of DOCUMENT_ANALYSIS_EXERCISES) {
@@ -89,14 +104,27 @@ describe('exercices d analyse documentaire — intégrité', () => {
     }
   });
 
-  it('note l écart entre les 15 exercices annoncés et les documents réellement affichables', () => {
-    expect(DOCUMENT_ANALYSIS_EXERCISES).toHaveLength(15);
-    // 9 exercices exploitables (lot 3 : +3 documents reconstruits en données —
-    // enzyme_ph_temp, glycemie_januvia, photosynth_courbe). Les 6 restants
-    // affichent « هذه الوثيقة غير جاهزة بعد. » car ils exigent une VRAIE image
-    // (schéma, immunodiffusion, électrophorèse) qu'on ne peut pas inventer.
-    // Faire monter ce chiffre est un progrès : mettre à jour sciemment.
-    expect(reachable).toHaveLength(9);
+  it('note l écart entre les exercices annoncés et les documents réellement affichables', () => {
+    // 19 exercices : 15 d'origine + 4 ajoutés au lot 4 pour les unités 7, 8, 10 et 11,
+    // qui ne disposaient d'AUCUN document alors qu'elles portent 196 QCM.
+    expect(DOCUMENT_ANALYSIS_EXERCISES).toHaveLength(19);
+    // 13 exploitables (9 après le lot 3, +4 tableaux du lot 4 issus des tableaux
+    // de synthèse du livre officiel : pages 206, 228, 259-286, 287-330).
+    // Les 6 restants affichent « هذه الوثيقة غير جاهزة بعد. » car ils exigent une
+    // VRAIE image (schéma, immunodiffusion, électrophorèse) qu'on ne peut inventer.
+    // Faire monter ces chiffres est un progrès : mettre à jour sciemment.
+    expect(reachable).toHaveLength(13);
+  });
+
+  it('couvre les 11 unités du programme, aucune unité sans document', () => {
+    // Régression majeure corrigée au lot 4 : U7, U8, U10 et U11 n'avaient aucun
+    // document alors qu'elles totalisent 196 QCM. Ce test empêche qu'une unité
+    // redevienne muette sur le format le plus proche de l'épreuve réelle.
+    const covered = new Set(reachable.map((e) => e.unitId));
+    const missing = INITIAL_UNITS.map((u) => u.id).filter(
+      (id) => !covered.has(id) && !LESSON_SURFACE_UNITS.has(id)
+    );
+    expect(missing, `unités sans aucun document: ${missing.join(', ')}`).toEqual([]);
   });
 
   it('barème d entraînement à 20 points et étiquette anti-confusion présente', () => {
@@ -107,5 +135,30 @@ describe('exercices d analyse documentaire — intégrité', () => {
       // cette grille d'entraînement avec le barème officiel du sujet BAC.
       expect(exercise.label, `${exercise.id}`).toContain("n'est pas le barème officiel");
     }
+  });
+});
+
+// Invariant : l'application ne doit jamais SUGGERER a l'eleve une phrase que son
+// propre correcteur sanctionnerait. Mesure a l'ajout : 6 gabarits sur 43 etaient
+// rejetes (verbes de tendance au feminin absents de MONOTONE, ctx 'quantitative'
+// sur des documents a echelles textuelles, et un gabarit contenant « كلما » dans
+// sa mise en garde). Ce test empeche la reapparition du defaut.
+describe('gabarits de reponse vs moteur de correction', () => {
+  const avecGabarit = DOCUMENT_ANALYSIS_EXERCISES.flatMap((ex) =>
+    (ex.questions ?? [])
+      .filter((q) => q.templateHint && q.ctx)
+      .map((q) => [`${ex.id}/${q.id}`, q] as const),
+  );
+
+  it('couvre tous les gabarits existants', () => {
+    expect(avecGabarit.length).toBeGreaterThanOrEqual(43);
+  });
+
+  it.each(avecGabarit)('le gabarit %s est accepte par validateAnswer', (_id, q) => {
+    const res = validateAnswer(q.templateHint!, q.ctx!);
+    const bloquants = res.errors
+      .filter((e) => e.severity === 'critical' || e.severity === 'major')
+      .map((e) => e.code);
+    expect(bloquants).toEqual([]);
   });
 });

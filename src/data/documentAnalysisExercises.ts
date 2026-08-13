@@ -208,8 +208,9 @@ export const DOCUMENT_ANALYSIS_EXERCISES: DocAnalysisExercise[] = [
     questions: [
       {
         id: 'enzyme_ph_temp_q1', verb: 'حلل', promptAr: 'حلل تغير النشاط حسب pH ودرجة الحرارة.',
-        loiFocus: 2, ctx: { docType: 'quantitative', actionVerb: 'analyse', isNeuromuscular: false, domain: 'enzyme' },
-        templateHint: 'نلاحظ قمة عند … بينما تنخفض عند …',
+        loiFocus: 2, ctx: { docType: 'qualitative', actionVerb: 'analyse', isNeuromuscular: false, domain: 'enzyme' },
+        templateHint:
+          'نلاحظ أن النشاط الإنزيمي أعظمي في الوسط الأمثل، بينما يكون ضعيفاً جداً في الوسط الحمضي البارد ومنعدماً في الوسط الحار.',
       },
       {
         id: 'enzyme_ph_temp_q2', verb: 'فسر', promptAr: 'فسّر سبب فقدان النشاط عند درجات الحرارة المرتفعة.',
@@ -295,7 +296,8 @@ export const DOCUMENT_ANALYSIS_EXERCISES: DocAnalysisExercise[] = [
       {
         id: 'ouchterlony_arcs_q1', verb: 'حلل', promptAr: 'حلل شكل الهالات وما يدل عليه (اندماج/تقاطع).',
         loiFocus: 2, ctx: { docType: 'qualitative', actionVerb: 'analyse', isNeuromuscular: false, domain: 'immuno' },
-        templateHint: 'نلاحظ هالة … بينما … (لا كلما!).',
+        templateHint:
+          'نلاحظ تشكل قوس ترسيب متصل بين الحفرتين، بينما لا يتشكل أي قوس في مواجهة الحفرة الشاهدة.',
       },
       {
         id: 'ouchterlony_arcs_q2', verb: 'فسر', promptAr: 'فسّر معنى اندماج الهالتين.',
@@ -348,8 +350,10 @@ export const DOCUMENT_ANALYSIS_EXERCISES: DocAnalysisExercise[] = [
     questions: [
       {
         id: 'glycemie_januvia_q1', verb: 'حلل', promptAr: 'حلل تطور نسبة السكر في الدم.',
-        loiFocus: 2, ctx: { docType: 'quantitative', actionVerb: 'analyse', isNeuromuscular: false, domain: 'hormonal' },
-        templateHint: 'كلما مرّ الزمن كلما …',
+        loiFocus: 2, ctx: { docType: 'qualitative',
+          qualitativeTrend: true, actionVerb: 'analyse', isNeuromuscular: false, domain: 'hormonal' },
+        templateHint:
+          'كلما مرّ الزمن بعد تناول الدواء، كلما انخفضت نسبة السكر في الدم وارتفع مستوى الهرمون المعزز لإفراز الأنسولين.',
       },
       {
         id: 'glycemie_januvia_q2', verb: 'اقترح فرضية', promptAr: 'اقترح فرضية جزيئية لعمل الجانوفيا.',
@@ -407,7 +411,8 @@ export const DOCUMENT_ANALYSIS_EXERCISES: DocAnalysisExercise[] = [
     questions: [
       {
         id: 'photosynth_courbe_q1', verb: 'حلل', promptAr: 'حلل تطور معدل التركيب الضوئي حسب شدة الضوء.',
-        loiFocus: 2, ctx: { docType: 'quantitative', actionVerb: 'analyse', isNeuromuscular: false, domain: 'metabo' },
+        loiFocus: 2, ctx: { docType: 'qualitative',
+          qualitativeTrend: true, actionVerb: 'analyse', isNeuromuscular: false, domain: 'metabo' },
         templateHint: 'كلما زاد الضوء كلما زاد المعدل حتى التشبع.',
       },
       {
@@ -449,6 +454,130 @@ export const DOCUMENT_ANALYSIS_EXERCISES: DocAnalysisExercise[] = [
       { critereAr: 'تركيب + رابط', points: 6 },
       { critereAr: 'حذر H2', points: 5 },
       { critereAr: 'مصطلحات', points: 4 },
+    ],
+    label: LABEL,
+  },
+  // --- Lot 4 du Sprint 2 : quatre exercices pour les quatre unites qui n'en
+  // avaient AUCUN (U7 respiration, U8 bilan energetique, U10 structure de la
+  // Terre, U11 structures geologiques) -- soit 196 QCM sans le moindre document.
+  // Donnees issues des tableaux de synthese du livre officiel corrige.
+  // `domain` n'est PAS lu par ValidationEngine (champ inerte cote moteur) ; il
+  // sert l'affichage. Les verbes et docType, eux, pilotent les controles reels.
+  {
+    id: 'respiration_bilan',
+    unitId: 7,
+    domain: 'metabo',
+    corpus: 'elite',
+    doc: { type: 'tableau', assetKey: 'respiration_bilan', descriptionAr: 'جدول مراحل التنفس الخلوي ومردودها من ATP.' },
+    questions: [
+      {
+        id: 'respiration_bilan_q1', verb: 'حلل', promptAr: 'حلل توزع إنتاج ATP على مراحل الهدم التنفسي.',
+        loiFocus: 2, ctx: { docType: 'quantitative', actionVerb: 'analyse', isNeuromuscular: false, domain: 'metabo' },
+        templateHint: 'يزداد الإنتاج من 2 ATP في التحلل السكري إلى ≈34 ATP في الفسفرة التأكسدية.',
+      },
+      {
+        id: 'respiration_bilan_q2', verb: 'فسر', promptAr: 'فسّر لماذا تنتج الفسفرة التأكسدية معظم الـ ATP.',
+        loiFocus: 3, ctx: { docType: 'quantitative', actionVerb: 'interpret', isNeuromuscular: false, domain: 'metabo', expectedTargets: ['إنزيم', 'غشاء'] },
+        templateHint: 'لأن الوحدات المختزلة تُصرف كلها على السلسلة التنفسية.',
+      },
+      {
+        id: 'respiration_bilan_q3', verb: 'قارن', promptAr: 'قارن مردود التنفس ومردود التخمر انطلاقاً من الجدول.',
+        loiFocus: 2, ctx: { docType: 'quantitative', actionVerb: 'compare', isNeuromuscular: false, domain: 'metabo' },
+        templateHint: 'يرتفع المردود من 2 ATP في التخمر إلى 38 ATP في التنفس، أي يزداد بشكل كبير.',
+      },
+    ],
+    correctionAr: 'يوفر التحلل السكري صافي 2 ATP وحلقة كريبس 2 ATP، بينما تنتج الفسفرة التأكسدية ≈34 ATP، أي جُلّ المردود، لأن كل الوحدات المختزلة (NADH,H⁺ و FADH₂) تُصرف على السلسلة التنفسية المثبتة في الغشاء الداخلي، والأكسجين هو المستقبل النهائي للإلكترونات. المجموع 38 ATP لكل غلوكوز مقابل 2 ATP فقط في التخمر، لأن هذا الأخير يتوقف عند التحلل السكري في غياب الأكسجين.',
+    grilleEntrainement: [
+      { critereAr: 'تحليل الجدول بقيم ووحدات', points: 5 },
+      { critereAr: 'ربط المردود بالمقر الغشائي', points: 6 },
+      { critereAr: 'مقارنة تنفس/تخمر', points: 5 },
+      { critereAr: 'مصطلحات طاقوية دقيقة', points: 4 },
+    ],
+    label: LABEL,
+  },
+  {
+    id: 'bilan_energetique_cellule',
+    unitId: 8,
+    domain: 'metabo',
+    corpus: 'elite',
+    doc: { type: 'tableau', assetKey: 'bilan_energetique', descriptionAr: 'جدول الحالات الطاقوية الثلاث للخلية حسب النوع وشروط الوسط.' },
+    questions: [
+      {
+        id: 'bilan_energetique_q1', verb: 'قارن', promptAr: 'قارن المبادلات الغازية للخلية اليخضورية بين النهار والليل.',
+        loiFocus: 2, ctx: { docType: 'qualitative', actionVerb: 'compare', isNeuromuscular: false, domain: 'metabo' },
+        templateHint: 'تصدّر الخلية O₂ نهاراً بينما تستهلكه ليلاً.',
+      },
+      {
+        id: 'bilan_energetique_q2', verb: 'فسر', promptAr: 'فسّر استمرار انطلاق CO₂ من النبات أثناء الليل.',
+        loiFocus: 3, ctx: { docType: 'qualitative', actionVerb: 'interpret', isNeuromuscular: false, domain: 'metabo' },
+        templateHint: 'لأن التنفس مستمر دائماً بينما يتوقف التركيب الضوئي.',
+      },
+    ],
+    correctionAr: 'نهاراً تجري في الخلية اليخضورية العمليتان معاً: تركيب ضوئي يثبّت CO₂ ويصدّر O₂، وتنفس يستهلك جزءاً من الإنتاج، فتكون الحصيلة العضوية موجبة. ليلاً يتوقف التركيب الضوئي لغياب الضوء بينما يستمر التنفس على المخزون، فتستهلك الخلية O₂ وتصدّر CO₂. أما الخلية غير اليخضورية فتستورد مادتها العضوية كلها، وتنتج ATP بالتنفس عند توفر الأكسجين أو بالتخمر عند غيابه.',
+    grilleEntrainement: [
+      { critereAr: 'مقارنة نهار/ليل بمؤشر بينما', points: 6 },
+      { critereAr: 'استمرار التنفس دائماً', points: 5 },
+      { critereAr: 'حالة الخلية غير اليخضورية', points: 5 },
+      { critereAr: 'مصطلحات', points: 4 },
+    ],
+    label: LABEL,
+  },
+  {
+    id: 'structure_terre_ondes',
+    unitId: 10,
+    domain: 'tectonique',
+    corpus: 'elite',
+    doc: { type: 'mixed', assetKey: 'structure_terre', descriptionAr: 'وثيقتان: خصائص الموجات الزلزالية وانقطاعات البنية الداخلية.' },
+    questions: [
+      {
+        id: 'structure_terre_q1', verb: 'حلل', promptAr: 'حلل اختلاف سرعة الموجات P و S والأوساط التي تجتازها.',
+        loiFocus: 2, ctx: { docType: 'quantitative', actionVerb: 'analyse', isNeuromuscular: false, domain: 'tectonique' },
+        templateHint: 'تزداد سرعة الموجات P لتبلغ 6–13 كم/ث بينما تنخفض سرعة S إلى 3.5–7 كم/ث.',
+      },
+      {
+        id: 'structure_terre_q2', verb: 'اقترح فرضية', promptAr: 'اقترح فرضية حول حالة اللب الخارجي انطلاقاً من توقف الموجات S عند 2900 كم.',
+        loiFocus: 4, ctx: { docType: 'mixed', actionVerb: 'hypothesize', isNeuromuscular: false, domain: 'tectonique', expectedTargets: ['اللب', 'سائل', 'وسط'] },
+        templateHint: 'نفترض أن اللب الخارجي وسط سائل.',
+      },
+      {
+        id: 'structure_terre_q3', verb: 'صادق', promptAr: 'صادق على فرضيتك بربط الوثيقتين.',
+        loiFocus: 5, ctx: { docType: 'mixed', actionVerb: 'validate', isNeuromuscular: false, domain: 'tectonique' },
+        templateHint: 'تبين الوثيقة 1 … وتبين الوثيقة 2 … وبربطهما نستنتج …',
+      },
+    ],
+    correctionAr: 'تبين الوثيقة 1 أن الموجات P طولية تنتشر في الأوساط الصلبة والسائلة والغازية بسرعة 6–13 كم/ث، بينما الموجات S عرضية لا تنتشر إلا في الأوساط الصلبة. وتبين الوثيقة 2 توقف الموجات S عند انقطاع غوتنبرغ على عمق 2900 كم مع هبوط حادّ لسرعة P. نفترض أن اللب الخارجي وسط سائل، وبربط الوثيقتين نصادق على هذه الفرضية لأن غياب الموجات العرضية دليل على انعدام الصلابة. ويؤكد ارتفاع سرعة P عند انقطاع ليمان (≈5100 كم) أن اللب الداخلي صلب.',
+    grilleEntrainement: [
+      { critereAr: 'تحليل الجدول بقيم ووحدات', points: 5 },
+      { critereAr: 'صياغة فرضية بـ«نفترض أن»', points: 5 },
+      { critereAr: 'ربط الوثيقتين والمصادقة', points: 6 },
+      { critereAr: 'مصطلحات زلزالية', points: 4 },
+    ],
+    label: LABEL,
+  },
+  {
+    id: 'structures_geologiques_compare',
+    unitId: 11,
+    domain: 'tectonique',
+    corpus: 'elite',
+    doc: { type: 'tableau', assetKey: 'structures_geologiques', descriptionAr: 'جدول مقارن للظهرة ومنطقة الغوص ومنطقة التصادم.' },
+    questions: [
+      {
+        id: 'structures_geologiques_q1', verb: 'قارن', promptAr: 'قارن الصخور الناتجة عند الظهرة وعند منطقة الغوص.',
+        loiFocus: 2, ctx: { docType: 'qualitative', actionVerb: 'compare', isNeuromuscular: false, domain: 'tectonique' },
+        templateHint: 'ينتج عند الظهرة بازلت وغابرو بينما ينتج عند الغوص أنديزيت وغرانوديوريت.',
+      },
+      {
+        id: 'structures_geologiques_q2', verb: 'فسر', promptAr: 'فسّر وجود صخور الأوفيوليت في السلاسل الجبلية القارية.',
+        loiFocus: 3, ctx: { docType: 'qualitative', actionVerb: 'interpret', isNeuromuscular: false, domain: 'tectonique' },
+        templateHint: 'لأنها بقايا قشرة محيطية قديمة اختفت بالتصادم.',
+      },
+    ],
+    correctionAr: 'عند الظهرة وسط محيطية تُبنى قشرة محيطية جديدة فتنتج صخور بازلتية وسائدية ودوليريت وغابرو مع زلازل ضحلة فقط، بينما عند منطقة الغوص يُهدم اللوح المحيطي فتنتج صخور أنديزيتية وغرانوديوريتية مع صخور متحولة ذات ضغط مرتفع وحرارة منخفضة (شست أزرق، إكلوجيت) وزلازل متدرجة العمق على مستوى بينيوف. أما الأوفيوليت في السلاسل الجبلية فهو شاهد على محيط قديم اختفى بالغوص ثم التصادم، إذ تُرفع بقايا القشرة المحيطية وتُدمج في السلسلة.',
+    grilleEntrainement: [
+      { critereAr: 'مقارنة الصخور بمؤشر بينما', points: 6 },
+      { critereAr: 'ربط الأوفيوليت بمحيط قديم', points: 6 },
+      { critereAr: 'ذكر شواهد ميدانية', points: 4 },
+      { critereAr: 'مصطلحات تكتونية', points: 4 },
     ],
     label: LABEL,
   },

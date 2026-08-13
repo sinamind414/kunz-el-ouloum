@@ -220,6 +220,75 @@ const glycemieJanuviaDocument: DocumentAsset = {
   ],
 };
 
+
+// --- Lot 4 du Sprint 2 : les quatre unites sans aucun document (U7, U8, U10, U11).
+// Toutes les valeurs proviennent des tableaux de synthese du livre officiel corrige
+// (`الكتاب_المصحح_v1.0.md`), pages citees dans chaque captionAr. Aucune valeur inventee.
+const respirationBilanTable: DocumentAsset = {
+  kind: 'table',
+  columns: ['المرحلة', 'المقر', 'الشرط', 'الوحدات المختزلة', 'ATP المباشر'],
+  rows: [
+    ['التحلل السكري', 'الهيولى', 'مادة عضوية', '2 NADH,H⁺', '2'],
+    ['أكسدة البيروفات', 'المصفوفة', 'نزع الهيدروجين', '2 NADH,H⁺', '0'],
+    ['حلقة كريبس (×2)', 'المصفوفة', 'أستيل-CoA', '6 NADH,H⁺ + 2 FADH₂', '2'],
+    ['الفسفرة التأكسدية', 'الغشاء الداخلي (الأعراف)', 'O₂ وغشاء سليم', 'استهلاك الكل', '≈34'],
+    ['المجموع (تنفس)', '—', 'وسط هوائي', '—', '38'],
+    ['التخمر', 'الهيولى', 'غياب O₂', 'إعادة NAD⁺ موضعياً', '2'],
+  ],
+  captionAr: 'جدول مراحل الهدم التنفسي ومردودها من ATP — الكتاب المدرسي الرسمي ص 206.',
+};
+
+const bilanEnergetiqueTable: DocumentAsset = {
+  kind: 'table',
+  columns: ['المعيار', 'خلية يخضورية + نهار', 'خلية يخضورية + ليل', 'خلية غير يخضورية'],
+  rows: [
+    ['العمليات', 'تركيب ضوئي + تنفس', 'تنفس فقط', 'تنفس أو تخمر'],
+    ['O₂', 'تصدير', 'استهلاك', 'استهلاك (تنفس فقط)'],
+    ['CO₂', 'استهلاك (تثبيت)', 'تصدير', 'تصدير'],
+    ['المادة العضوية', 'إنتاج صافٍ', 'استهلاك من المخزون', 'استهلاك كامل'],
+    ['حصيلة الطاقة', 'تخزين كامن + ATP', 'صرف المخزون فقط', 'تدبير ATP'],
+  ],
+  captionAr: 'الحالات الطاقوية الخلوية الثلاث — الكتاب المدرسي الرسمي ص 228.',
+};
+
+const structureTerreDocument: DocumentAsset = {
+  kind: 'mixed',
+  captionAr: 'وثيقتان حول الموجات الزلزالية وانقطاعات البنية الداخلية للأرض — الكتاب الرسمي ص 259–286.',
+  assets: [
+    {
+      kind: 'table',
+      columns: ['الموجة', 'الطبيعة', 'السرعة', 'الأوساط المجتازة', 'الترتيب في التسجيل'],
+      rows: [
+        ['P (أولية)', 'طولية ضغط–تمدد', '6–13 كم/ث', 'صلب + سائل + غاز', '①'],
+        ['S (ثانوية)', 'عرضية قصّ', '3.5–7 كم/ث', 'صلب فقط', '②'],
+        ['L و R (سطحية)', 'سطحية', '2–4 كم/ث', 'سطح الأرض', '③'],
+      ],
+      captionAr: 'الوثيقة 1: خصائص الموجات الزلزالية.',
+    },
+    {
+      kind: 'table',
+      columns: ['الانقطاع', 'العمق', 'سلوك الموجات', 'الاستنتاج'],
+      rows: [
+        ['موهو', '5–70 كم', 'ارتفاع مفاجئ في سرعة P', 'حدّ القشرة/البرنس'],
+        ['غوتنبرغ', '2900 كم', 'توقف S وهبوط حادّ لـ P', 'اللب الخارجي سائل'],
+        ['ليمان', '≈5100 كم', 'ارتفاع سرعة P', 'اللب الداخلي صلب'],
+      ],
+      captionAr: 'الوثيقة 2: الانقطاعات الزلزالية الكبرى وأعماقها.',
+    },
+  ],
+};
+
+const structuresGeologiquesTable: DocumentAsset = {
+  kind: 'table',
+  columns: ['المنطقة', 'العملية', 'الصخور الناتجة', 'الشواهد المميزة'],
+  rows: [
+    ['الظهرة وسط محيطية', 'بناء قشرة محيطية', 'بازلت وسائدي + دوليريت + غابرو', 'ريفت، زلازل ضحلة فقط'],
+    ['منطقة الغوص', 'هدم اللوح المحيطي', 'أنديزيت + غرانوديوريت؛ شست أزرق وإكلوجيت', 'خندق، مستوى بينيوف، براكين انفجارية'],
+    ['منطقة التصادم', 'تسمّك قشري دون ماغما', 'لا صخور ماغمائية جديدة', 'طيات، فوالق عكسية، أوفيوليت'],
+  ],
+  captionAr: 'البنيات الجيولوجية الكبرى وشواهدها — الكتاب المدرسي الرسمي ص 287–330.',
+};
+
 export const DOCUMENT_ASSETS: Record<string, DocumentAssetEntry> = {
   nmj_ppm: { status: 'ready', asset: nmjPpmCurve },
   ach_jnm: {
@@ -244,6 +313,10 @@ export const DOCUMENT_ASSETS: Record<string, DocumentAssetEntry> = {
   membrane_hla: { status: 'unavailable' },
   photosynth: { status: 'ready', asset: photosynthCurve },
   h1_h2_generic: { status: 'unavailable' },
+  respiration_bilan: { status: 'ready', asset: respirationBilanTable },
+  bilan_energetique: { status: 'ready', asset: bilanEnergetiqueTable },
+  structure_terre: { status: 'ready', asset: structureTerreDocument },
+  structures_geologiques: { status: 'ready', asset: structuresGeologiquesTable },
 };
 
 export function getDocumentAsset(assetKey: string): DocumentAsset | null {

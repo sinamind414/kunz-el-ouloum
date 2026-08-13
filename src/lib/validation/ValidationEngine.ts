@@ -64,10 +64,20 @@ export interface ValidationResult {
 // ── Tokens de détection ────────────────────────────────────────────────────────
 const KULLAMA = ['كلما'];
 const QUALI_MARKERS = ['بينما', 'في حين', 'في حين'];
+// Les verbes arabes s'accordent en genre avec le sujet : « يزداد التركيز » mais
+// « تزداد السرعة ». La liste ne contenait que les formes MASCULINES (préfixe ي),
+// si bien qu'une reponse correcte portant sur un sujet feminin (السرعة, الكمية,
+// النسبة, درجة الحرارة...) etait faussement sanctionnee MISSING_KULLAMA.
+// On couvre donc les deux genres.
 const MONOTONE = [
+  // masculin
   'يزداد', 'يرتفع', 'يتزايد', 'يزيد', 'تزايد',
   'ينقص', 'ينخفض', 'يقل', 'تناقص',
   'يرتبط', 'ثابت', 'يستقر', 'استقرار',
+  // feminin
+  'تزداد', 'ترتفع', 'تتزايد', 'تزيد',
+  'تنقص', 'تنخفض', 'تقل',
+  'ترتبط', 'تستقر',
 ];
 const VALUE_UNIT = [
   'ثا', 'ثانية', 'دقيقه', 'دقيقة', 'ساعه', 'ساعة',
