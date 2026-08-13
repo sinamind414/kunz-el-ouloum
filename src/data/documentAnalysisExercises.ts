@@ -34,7 +34,7 @@ const LABEL = "Grille d'entraînement Kunz — n'est pas le barème officiel du 
 export const DOCUMENT_ANALYSIS_EXERCISES: DocAnalysisExercise[] = [
   {
     id: 'nmj_ppm_courbe',
-    unitId: 1,
+    unitId: 5,
     domain: 'nerveux',
     corpus: 'elite',
     doc: { type: 'courbe', assetKey: 'nmj_ppm', descriptionAr: 'منحنى زمن الكمون بدلالة تركيز الناقل عند اللوحة المحركة.' },
@@ -61,7 +61,7 @@ export const DOCUMENT_ANALYSIS_EXERCISES: DocAnalysisExercise[] = [
   },
   {
     id: 'ach_jnm_schema',
-    unitId: 1,
+    unitId: 5,
     domain: 'nerveux',
     corpus: 'elite',
     doc: { type: 'schema', assetKey: 'ach_jnm', descriptionAr: 'تخطيط للوحة المحركة يبين المستقبل والقنوات.' },
@@ -88,7 +88,7 @@ export const DOCUMENT_ANALYSIS_EXERCISES: DocAnalysisExercise[] = [
   },
   {
     id: 'ppse_ppsi_compare',
-    unitId: 1,
+    unitId: 5,
     domain: 'nerveux',
     corpus: 'elite',
     doc: { type: 'mixed', assetKey: 'ppse_ppsi', descriptionAr: 'مقارنة بين كمون ما بعد التشابك (PPSE) وكمون ما بعد التشابك الاستثاري (PPSI).' },
@@ -115,7 +115,7 @@ export const DOCUMENT_ANALYSIS_EXERCISES: DocAnalysisExercise[] = [
   },
   {
     id: 'curare_table',
-    unitId: 1,
+    unitId: 5,
     domain: 'nerveux',
     corpus: 'elite',
     doc: { type: 'tableau', assetKey: 'curare_table', descriptionAr: 'جدول تجارب تأثير الكورار على الانقباض العضلي.' },
@@ -142,7 +142,7 @@ export const DOCUMENT_ANALYSIS_EXERCISES: DocAnalysisExercise[] = [
   },
   {
     id: 'sarin_gb_double',
-    unitId: 1,
+    unitId: 5,
     domain: 'nerveux',
     corpus: 'elite',
     doc: { type: 'mixed', assetKey: 'sarin_gb', descriptionAr: 'وثيقتان: منحنى نشاط AChE وتخطيط تأثير السارين.' },
@@ -174,7 +174,7 @@ export const DOCUMENT_ANALYSIS_EXERCISES: DocAnalysisExercise[] = [
   },
   {
     id: 'michaelis_courbe',
-    unitId: 2,
+    unitId: 3,
     domain: 'enzyme',
     corpus: 'elite',
     doc: { type: 'courbe', assetKey: 'michaelis', descriptionAr: 'منحنى ميكاييلس-منتان: السرعة بدلالة تركيز الركيزة.' },
@@ -201,7 +201,7 @@ export const DOCUMENT_ANALYSIS_EXERCISES: DocAnalysisExercise[] = [
   },
   {
     id: 'enzyme_ph_temp',
-    unitId: 2,
+    unitId: 3,
     domain: 'enzyme',
     corpus: 'elite',
     doc: { type: 'tableau', assetKey: 'enzyme_ph_temp', descriptionAr: 'جدول نشاط إنزيم حسب pH ودرجة الحرارة.' },
@@ -228,7 +228,7 @@ export const DOCUMENT_ANALYSIS_EXERCISES: DocAnalysisExercise[] = [
   },
   {
     id: 'rifamycine_h1h2',
-    unitId: 9,
+    unitId: 1,
     domain: 'genetique',
     corpus: 'elite',
     doc: { type: 'mixed', assetKey: 'rifamycine', descriptionAr: 'وثيقتان حول تأثير الريفاميسين على النسخ (H1/H2).' },
@@ -260,7 +260,7 @@ export const DOCUMENT_ANALYSIS_EXERCISES: DocAnalysisExercise[] = [
   },
   {
     id: 'translation_schema',
-    unitId: 9,
+    unitId: 1,
     domain: 'genetique',
     corpus: 'elite',
     doc: { type: 'schema', assetKey: 'translation', descriptionAr: 'تخطيط لآلية الترجمة على مستوى الريبوزوم.' },
@@ -287,7 +287,7 @@ export const DOCUMENT_ANALYSIS_EXERCISES: DocAnalysisExercise[] = [
   },
   {
     id: 'ouchterlony_arcs',
-    unitId: 9,
+    unitId: 4,
     domain: 'immuno',
     corpus: 'elite',
     doc: { type: 'ouchterlony', assetKey: 'ouchterlony', descriptionAr: 'هالات أوشترلوني لكشف العلاقة بين مستضدات.' },
@@ -314,7 +314,7 @@ export const DOCUMENT_ANALYSIS_EXERCISES: DocAnalysisExercise[] = [
   },
   {
     id: 'electro_hb',
-    unitId: 9,
+    unitId: 2,
     domain: 'genetique',
     corpus: 'elite',
     doc: { type: 'electrophorese', assetKey: 'electro_hb', descriptionAr: 'تَرَحُّل كهربائي للهيموغلوبين HbA/HbS.' },
@@ -341,7 +341,7 @@ export const DOCUMENT_ANALYSIS_EXERCISES: DocAnalysisExercise[] = [
   },
   {
     id: 'glycemie_januvia',
-    unitId: 7,
+    unitId: 3,
     domain: 'hormonal',
     corpus: 'elite',
     doc: { type: 'courbe', assetKey: 'glycemie_januvia', descriptionAr: 'منحنى نسبة السكر بعد جرعة جانوفيا.' },
@@ -373,7 +373,7 @@ export const DOCUMENT_ANALYSIS_EXERCISES: DocAnalysisExercise[] = [
   },
   {
     id: 'membrane_hla_schema',
-    unitId: 9,
+    unitId: 4,
     domain: 'immuno',
     corpus: 'elite',
     doc: { type: 'schema', assetKey: 'membrane_hla', descriptionAr: 'تخطيط غشاء خلية عارضة مع معقد HLA.' },
@@ -427,7 +427,7 @@ export const DOCUMENT_ANALYSIS_EXERCISES: DocAnalysisExercise[] = [
   },
   {
     id: 'h1_h2_generic_double_doc',
-    unitId: 11,
+    unitId: 1,
     domain: 'genetique',
     corpus: 'elite',
     doc: { type: 'mixed', assetKey: 'h1_h2_generic', descriptionAr: 'وثيقتان عامتان لتركيب علمي (H1/H2).' },

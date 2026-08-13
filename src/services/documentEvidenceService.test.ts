@@ -36,8 +36,15 @@ const failResult = (): ValidationResult => ({
 
 describe('DocumentPracticeContext', () => {
   it('les 16 contextes prioritaires existent (dont uracile_marque V3 + codon_anticodon + photosynthese_cycle + synapse_integration + subduction_water_melting + mutation_protein_function + cmh_transplant_compatibility + lb_antibody_response + lt_target_cell_response + primary_secondary_response + seismic_p_s_core)', () => {
-    const ids = DOCUMENT_PRACTICE_CONTEXTS.map((c) => c.exerciseId);
-    expect(ids).toEqual(['michaelis_courbe', 'curare_table', 'nmj_ppm_courbe', 'sarin_gb_double', 'rifamycine_h1h2', 'uracile_marque', 'codon_anticodon', 'photosynthese_cycle', 'synapse_integration', 'subduction_water_melting', 'mutation_protein_function', 'cmh_transplant_compatibility', 'lb_antibody_response', 'lt_target_cell_response', 'primary_secondary_response', 'seismic_p_s_core']);
+    // La liste était comparée par égalité stricte ET dans l'ordre, ce qui interdisait
+    // d'ajouter le moindre contexte — y compris ceux, manquants, dont l'absence
+    // faisait planter la correction sur les questions q2/q3.
+    // On vérifie donc la PRÉSENCE de ces 16 exercices prioritaires, sans figer
+    // ni l'ordre ni le total.
+    const ids = new Set(DOCUMENT_PRACTICE_CONTEXTS.map((c) => c.exerciseId));
+    for (const expected of ['michaelis_courbe', 'curare_table', 'nmj_ppm_courbe', 'sarin_gb_double', 'rifamycine_h1h2', 'uracile_marque', 'codon_anticodon', 'photosynthese_cycle', 'synapse_integration', 'subduction_water_melting', 'mutation_protein_function', 'cmh_transplant_compatibility', 'lb_antibody_response', 'lt_target_cell_response', 'primary_secondary_response', 'seismic_p_s_core']) {
+      expect(ids.has(expected), `contexte prioritaire manquant: ${expected}`).toBe(true);
+    }
   });
 
   it('chaque contexte a goalAr, 3-8 vocabulaire, expectedEvidence non vide, altAr', () => {

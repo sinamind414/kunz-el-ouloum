@@ -10,7 +10,6 @@ import { HTML_LESSON_ORDER, getNextHtmlLessonKey } from './htmlLessonProgression
 import { INITIAL_UNITS } from '../data';
 import {
   detectCycle,
-  findDuplicateExerciseIds,
   findDuplicateQuestionIds,
   buildExerciseIdSet,
 } from './curriculumIntegrity';
@@ -243,9 +242,24 @@ describe('HTML lessons', () => {
 
 // ----- 8. Contrat minimum des documents vivants -----
 describe('Documents — identifiants', () => {
-  it('exerciseId unique', () => {
-    const dups = findDuplicateExerciseIds(DOCUMENT_PRACTICE_CONTEXTS);
-    expect(dups, 'exerciseId en double dans DOCUMENT_PRACTICE_CONTEXTS').toEqual([]);
+  // Cette spec exigeait UN SEUL contexte par exercice, alors que la clé de lecture
+  // est le couple (exerciseId, questionId) : `getDocumentPracticeContext(ex, q)`.
+  // Elle empêchait donc de documenter les questions q2/q3 — et c'est précisément
+  // ce manque qui faisait planter `handleValidate` (`context: practice!`).
+  // L'invariant utile est l'unicité du COUPLE, vérifiée ci-dessous.
+  it('couple (exerciseId, questionId) unique', () => {
+    const pairs = DOCUMENT_PRACTICE_CONTEXTS.map((c) => `${c.exerciseId}::${c.questionId}`);
+    const dups = pairs.filter((p, i) => pairs.indexOf(p) !== i);
+    expect(dups, 'couple en double dans DOCUMENT_PRACTICE_CONTEXTS').toEqual([]);
+  });
+
+  it('plusieurs questions d un même exercice peuvent avoir leur propre contexte', () => {
+    const perExercise = new Map<string, number>();
+    for (const c of DOCUMENT_PRACTICE_CONTEXTS) {
+      perExercise.set(c.exerciseId, (perExercise.get(c.exerciseId) ?? 0) + 1);
+    }
+    // Régression : au moins un exercice documenté sur plus d'une question.
+    expect(Math.max(...perExercise.values())).toBeGreaterThan(1);
   });
 
   it('questionId unique', () => {

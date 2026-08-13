@@ -30,6 +30,12 @@ const VERB_COLOR: Record<string, string> = {
 
 const MAX_HINTS = 2;
 
+// L'en-tête annonçait « 15 وثيقة نخبة » alors que 9 documents sur 15 affichent
+// « هذه الوثيقة غير جاهزة بعد. ». On annonce le nombre réellement exploitable.
+const READY_COUNT = DOCUMENT_ANALYSIS_EXERCISES.filter((e) =>
+  isDocumentAssetAvailable(e.doc.assetKey)
+).length;
+
 export default function DocumentAnalysisView({ onBack, initialExerciseId = null }: DocumentAnalysisViewProps) {
   const [selectedId, setSelectedId] = useState<string | null>(initialExerciseId);
   const [activeQ, setActiveQ] = useState(0);
@@ -57,7 +63,7 @@ export default function DocumentAnalysisView({ onBack, initialExerciseId = null 
           <ChevronRight className="w-4 h-4" /> رجوع
         </button>
         <span className="flex items-center gap-1.5 font-black text-sm text-[#059669]">
-          <BookOpen className="w-4 h-4" /> تحليل الوثائق — 15 وثيقة نخبة
+          <BookOpen className="w-4 h-4" /> تحليل الوثائق — {READY_COUNT} وثيقة جاهزة من {DOCUMENT_ANALYSIS_EXERCISES.length}
         </span>
       </div>
 
@@ -79,6 +85,12 @@ export default function DocumentAnalysisView({ onBack, initialExerciseId = null 
               <div className="flex items-center gap-2 text-[10px] font-bold text-gray-400">
                 <span className="px-2 py-0.5 rounded-md bg-gray-100 dark:bg-gray-800">{ex.domain}</span>
                 <span className="px-2 py-0.5 rounded-md bg-gray-100 dark:bg-gray-800">{ex.questions.length} أسئلة</span>
+                {/* Le document manquant n'était visible qu'après le clic. */}
+                {!isDocumentAssetAvailable(ex.doc.assetKey) && (
+                  <span className="px-2 py-0.5 rounded-md bg-amber-100 text-amber-800 dark:bg-amber-950/40 dark:text-amber-300">
+                    غير جاهزة
+                  </span>
+                )}
               </div>
             </button>
           ))}
@@ -117,8 +129,15 @@ export function ExerciseScreen({
   const handleValidate = () => {
     if (answer.trim().length < 2) return;
     const r = submit(answer);
+    // Sans contexte de pratique, aucune trace n'est enregistrable : le moteur de
+    // validation corrige quand même la réponse, mais on ne fabrique pas de preuve.
+    // (Auparavant `practice!` provoquait un TypeError qui laissait le bouton mort.)
+    if (!practice) {
+      setRecorded(null);
+      return;
+    }
     // Validation de la trace documentaire réelle (preuve + vocabulaire).
-    const outcome = recordDocumentTrace({ context: practice!, answer, validationResult: r });
+    const outcome = recordDocumentTrace({ context: practice, answer, validationResult: r });
     setRecorded(outcome.evidence != null);
   };
 
