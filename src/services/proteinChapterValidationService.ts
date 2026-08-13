@@ -19,23 +19,62 @@ function markArrows(text: string): string {
   return text.replace(/(->|-->|→|⟶|⇒|=>)/g, ' نحو ');
 }
 
+function keywordVariants(keyword: string): string[] {
+  return (
+    keyword
+      .split('|')
+      // Le filtrage se fait APRÈS normalisation : « → » et « -> » sont réduits à
+      // du vide par normalizeAr, et `haystack.includes('')` vaut toujours true.
+      // Filtrer la graphie brute laissait donc passer n'importe quelle réponse.
+      .map((variant) => normalizeAr(variant))
+      .filter((variant) => variant.length > 0)
+  );
+}
+
 function includesNormalized(text: string, keyword: string): boolean {
   const haystack = normalizeAr(markArrows(text));
-  const variants = keyword
-    .split('|')
-    // Le filtrage se fait APRÈS normalisation : « → » et « -> » sont réduits à
-    // du vide par normalizeAr, et `haystack.includes('')` vaut toujours true.
-    // Filtrer la graphie brute laissait donc passer n'importe quelle réponse.
-    .map((variant) => normalizeAr(variant))
-    .filter((variant) => variant.length > 0);
+  const variants = keywordVariants(keyword);
   if (variants.length === 0) return false;
   return variants.some((variant) => haystack.includes(variant));
+}
+
+// #44 — Certaines questions portent sur un SENS, et le sens ne se vérifie pas
+// par présence : « من 5 نحو 3 » et « من 3 نحو 5 » contiennent exactement les
+// mêmes mots-clés, alors que le second est faux.
+//
+// `orderedKeywords` désigne le SOUS-ENSEMBLE des mots-clés qui portent le sens,
+// et non la totalité : la marque de direction (« نحو », « من ») se place tantôt
+// entre les deux bornes, tantôt avant, et exiger l'ordre sur tous les mots-clés
+// refusait les sept formulations correctes mesurées.
+//
+// On cherche la première occurrence de chaque borne À PARTIR du curseur, et non
+// l'ordre des premières occurrences dans toute la réponse : une copie complète
+// cite d'abord le sens de LECTURE (3'→5') puis le sens de SYNTHÈSE (5'→3'),
+// et doit rester acceptée.
+function includesInOrder(text: string, orderedKeywords: string[]): boolean {
+  const haystack = normalizeAr(markArrows(text));
+  let cursor = 0;
+  for (const keyword of orderedKeywords) {
+    let found = -1;
+    let length = 0;
+    for (const variant of keywordVariants(keyword)) {
+      const index = haystack.indexOf(variant, cursor);
+      if (index !== -1 && (found === -1 || index < found)) {
+        found = index;
+        length = variant.length;
+      }
+    }
+    if (found === -1) return false;
+    cursor = found + length;
+  }
+  return true;
 }
 
 export function validateKeywordAnswer(
   answer: string,
   requiredKeywords: string[],
   forbiddenKeywords: string[] = [],
+  options: { orderedKeywords?: string[] } = {},
 ): LocalCheckResult {
   const raw = answer.trim();
   if (!raw) {
@@ -58,6 +97,16 @@ export function validateKeywordAnswer(
       valid: false,
       code: 'MISSING_REQUIRED_KEYWORDS',
       messageAr: `أضف العناصر الأساسية: ${missing.slice(0, 3).join('، ')}`,
+    };
+  }
+
+  // Tous les mots-clés sont présents : reste à vérifier le sens, s'il est en jeu.
+  const ordered = options.orderedKeywords ?? [];
+  if (ordered.length > 1 && !includesInOrder(raw, ordered)) {
+    return {
+      valid: false,
+      code: 'WRONG_KEYWORD_ORDER',
+      messageAr: 'العناصر موجودة لكن الاتجاه معكوس. راجع ترتيب الأطراف.',
     };
   }
 

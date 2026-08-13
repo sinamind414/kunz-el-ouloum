@@ -1285,7 +1285,9 @@ function GuidedDocQaBlockView({
     const answer = answers[question.id] ?? '';
     const result = question.validationMode === 'engine' && question.validationCtx
       ? validateEngineAnswer(answer, question.validationCtx)
-      : validateKeywordAnswer(answer, question.requiredKeywords ?? [], question.forbiddenKeywords ?? []);
+      : validateKeywordAnswer(answer, question.requiredKeywords ?? [], question.forbiddenKeywords ?? [], {
+          orderedKeywords: question.orderedKeywords,
+        });
 
     if (!result.valid) {
       logEvent('METHOD_FAIL', { lessonId, blockIndex, questionId: question.id, code: result.code });

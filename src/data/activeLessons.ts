@@ -85,6 +85,8 @@ export interface GuidedDocQaBlock {
     validationMode: 'engine' | 'keywords';
     validationCtx?: ValidationContext;
     requiredKeywords?: string[];
+    /** #44 — Sous-ensemble de `requiredKeywords` dont l'ORDRE d'apparition fait la réponse (sens, chronologie). */
+    orderedKeywords?: string[];
     forbiddenKeywords?: string[];
     successMessageAr?: string;
     errorHintAr?: string;
@@ -1110,6 +1112,9 @@ export const ACTIVE_LESSONS: Record<string, ActiveLesson> = {
             // juste écrite en toutes lettres. On accepte les deux graphies et on
             // exige la marque du sens (de … vers …), qui est le fond de la question.
             requiredKeywords: ['5|خماسي', '3|ثلاثي', 'نحو|الى|إلى|من'],
+            // #44 — Le sens EST la réponse : « من 3 نحو 5 » contient les mêmes
+            // mots-clés que la réponse juste tout en énonçant l'inverse.
+            orderedKeywords: ['5|خماسي', '3|ثلاثي'],
             successMessageAr: 'أحسنت، حددت اتجاه القراءة والتركيب.',
             errorHintAr: 'اذكر اتجاه قراءة السلسلة الناسخة واتجاه تركيب ARNm.',
           },
