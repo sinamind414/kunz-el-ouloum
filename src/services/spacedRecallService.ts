@@ -23,9 +23,32 @@ export interface SpacedRecallOutcome {
   recall: RecallItem;
 }
 
+/**
+ * Familles morphologiques des verbes de tendance.
+ * `acceptedEvidence` stocke une seule forme (ex. 'تزداد'), alors que l'eleve ecrit
+ * une forme conjuguee tout aussi correcte ('زادت'). Comme minEvidence vaut souvent
+ * le nombre TOTAL de preuves, une seule variante non reconnue bloque la progression.
+ * Liste fermee et volontairement etroite : aucun rapprochement approximatif.
+ */
+const TREND_VERB_FAMILIES: string[][] = [
+  ['تزداد', 'يزداد', 'ازداد', 'ازدادت', 'زاد', 'زادت', 'تزايد', 'يتزايد', 'ترتفع', 'يرتفع', 'ارتفع', 'ارتفعت'],
+  ['تنخفض', 'ينخفض', 'انخفض', 'انخفضت', 'تنقص', 'ينقص', 'نقص', 'نقصت', 'تتناقص', 'يتناقص', 'تناقص'],
+  ['تستقر', 'يستقر', 'استقر', 'استقرت', 'ثابتة', 'ثابت'],
+];
+
+function evidenceVariants(term: string): string[] {
+  const normalizedTerm = normalizeArabic(term);
+  const family = TREND_VERB_FAMILIES.find((forms) =>
+    forms.some((form) => normalizeArabic(form) === normalizedTerm)
+  );
+  return family ? family.map(normalizeArabic) : [normalizedTerm];
+}
+
 function matchedEvidence(answer: string, prompt: SpacedRecallPrompt): string[] {
   const normalized = normalizeArabic(answer);
-  return prompt.acceptedEvidence.filter((term) => normalized.includes(normalizeArabic(term)));
+  return prompt.acceptedEvidence.filter((term) =>
+    evidenceVariants(term).some((variant) => normalized.includes(variant))
+  );
 }
 
 export function recordSpacedRecallAttempt(input: {
@@ -35,8 +58,15 @@ export function recordSpacedRecallAttempt(input: {
   now?: number;
 }): SpacedRecallOutcome {
   const now = input.now ?? Date.now();
+  // Un rappel espacé est une restitution de mémoire SANS document sous les yeux :
+  // l'élève ne peut donc pas citer de valeur chiffrée relevée sur une courbe/un tableau.
+  // Le figer à 'mixed' déclenchait MISSING_VALUE_UNIT sur des réponses pourtant
+  // conformes aux acceptedEvidence de la carte (cf. enzymes/s0). On qualifie donc le
+  // contexte de 'qualitative' avec qualitativeTrend: le vocabulaire de tendance
+  // (كلما / تزداد…) reste accepté, mais aucun chiffre n'est exigé.
   const validationResult = validateAnswer(input.answer, {
-    docType: 'mixed',
+    docType: 'qualitative',
+    qualitativeTrend: true,
     actionVerb: input.prompt.reflexId,
     isNeuromuscular: false,
   });

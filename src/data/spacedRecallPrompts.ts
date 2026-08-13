@@ -29,7 +29,11 @@ export const SPACED_RECALL_PROMPTS: Record<string, SpacedRecallPrompt[]> = {
   ],
   enzymes: [
     { stage: 0, conceptId: 'enzymes', questionAr: 'كيف تتغير السرعة مع تركيز الركيزة؟', reflexId: 'analyse', acceptedEvidence: ['السرعة', 'تركيز الركيزة', 'تزداد'], minEvidence: 3 },
-    { stage: 1, conceptId: 'enzymes', questionAr: 'متى يبدأ التشبّع؟', reflexId: 'analyse', acceptedEvidence: ['التشبع', 'المواقع النشطة', 'الركيزة'], minEvidence: 2 },
+    // 'explain' et non 'analyse' : la question porte sur un ETAT (le seuil de saturation),
+    // pas sur une VARIATION. Etiquetee 'analyse', elle exigeait un vocabulaire de tendance
+    // (كلما/تزداد) que sa propre reponse attendue ne contient pas. Convention du fichier :
+    // 11 des 12 concepts utilisent 'explain' au stage 1.
+    { stage: 1, conceptId: 'enzymes', questionAr: 'متى يبدأ التشبّع؟', reflexId: 'explain', acceptedEvidence: ['التشبع', 'المواقع النشطة', 'الركيزة'], minEvidence: 2 },
     { stage: 2, conceptId: 'enzymes', questionAr: 'فسّر استقرار المنحنى عند Vmax.', reflexId: 'interpret', acceptedEvidence: ['Vmax', 'المواقع النشطة', 'مشغولة', 'التشبع'], minEvidence: 3 },
     { stage: 3, conceptId: 'enzymes', questionAr: 'اكتب إجابة BAC قصيرة: علل استقرار السرعة.', reflexId: 'validate', acceptedEvidence: ['السرعة', 'Vmax', 'المواقع النشطة', 'التشبع', 'الركيزة'], minEvidence: 3 },
   ],
