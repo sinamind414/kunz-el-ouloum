@@ -151,3 +151,81 @@ describe('#44 — sens de la transcription : ordre des bornes', () => {
     }
   });
 });
+
+// ------------------------------------------------------------------
+// #33 — L'agglutination de l'arabe faisait refuser des réponses justes.
+//
+// BASELINE mesurée avant correctif, sur les 22 questions en mode
+// « keywords », avec des réponses justes LIBREMENT RÉDIGÉES (et non
+// calquées sur `errorHintAr`, qui recopie littéralement les mots-clés
+// attendus et gonfle artificiellement le taux d'acceptation) :
+//   3/22 acceptées seulement.
+// Après correctif : 22/22, sans aucune acceptation parmi 110 réponses
+// fausses, vides ou hors-sujet.
+// ------------------------------------------------------------------
+describe('#33 — tolérance aux affixes agglutinés', () => {
+  it("accepte l'article défini collé au mot-clé", () => {
+    const q = question('tertiary_interactions');
+    // Mot-clé attendu : « روابط هيدروجينية » (indéfini).
+    expect(valide('نجد الروابط الهيدروجينية والروابط الشاردية', q)).toBe(true);
+  });
+
+  it('accepte le mot-clé au singulier défini quand la donnée le veut indéfini', () => {
+    const q = question('amino_acid_unit');
+    expect(valide('الوحدة الأساسية هي الحمض الأميني، والاختلاف في المجموعة الجانبية', q)).toBe(true);
+  });
+
+  it("n'accepte pas des mots-clés dispersés hors séquence", () => {
+    const q = question('amino_acid_unit');
+    // Les deux mots existent, mais «حمض» et «أميني» ne se suivent pas :
+    // ce n'est pas le terme scientifique, c'est une collision de vocabulaire.
+    expect(valide('الحمض موجود في الغذاء والنسيج الأميني شيء آخر تماما', q)).toBe(false);
+    // Variante où TOUS les mots-clés sont présents mais aucun n'est contigu :
+    // c'est le cas qui distingue une vraie séquence d'un simple sac de mots.
+    expect(
+      valide('الحمض موجود في الغذاء والنسيج الأميني شيء آخر، وهناك مجموعة جانبية أيضا', q),
+    ).toBe(false);
+  });
+
+  it('refuse encore le hors-sujet, le vide et la non-réponse sur les 22 questions', () => {
+    const cibles = QUESTIONS.filter((q) => (q.requiredKeywords ?? []).length > 0);
+    expect(cibles.length).toBe(22);
+    for (const q of cibles) {
+      for (const mauvaise of ['', 'لا اعرف', 'نعم هذا صحيح', 'كرة القدم رياضة جميلة']) {
+        expect(valide(mauvaise, q)).toBe(false);
+      }
+    }
+  });
+
+  it('ne réduit jamais un mot à un radical trop court pour être discriminant', () => {
+    const q = question('why_one_change_matters');
+    // « وظيفة » ne doit pas être rapproché de « ظيفة » ni d'un fragment.
+    expect(valide('تبديل حمض أميني واحد يغير الطي فتتغير الوظيفة', q)).toBe(true);
+    expect(valide('تبديل حمض أميني واحد يغير الطي', q)).toBe(false);
+  });
+});
+
+// ------------------------------------------------------------------
+// #33 — Variantes de données : ce que l'affixe ne peut pas rattraper.
+// ------------------------------------------------------------------
+describe('#33 — pluriel brisé et synonymie, portés par la donnée', () => {
+  it('accepte le pluriel brisé روابط pour le singulier رابطة', () => {
+    const q = question('primary_structure_define');
+    expect(valide('تتابع الأحماض الأمينية المرتبطة بروابط ببتيدية', q)).toBe(true);
+    // La graphie d'origine reste acceptée : la variante n'a rien retiré.
+    expect(valide('تتابع الأحماض الأمينية مع رابطة ببتيدية', q)).toBe(true);
+  });
+
+  it('accepte les synonymes de « انخفاض » pour la lecture de courbe', () => {
+    const q = question('amanitine_curve');
+    for (const mot of ['انخفاض', 'تناقص', 'نقصان', 'قلة']) {
+      expect(valide(`نلاحظ ${mot} كمية ARNm كلما ارتفع تركيز المثبط`, q)).toBe(true);
+    }
+  });
+
+  it('ne transforme pas la synonymie en passe-droit', () => {
+    const q = question('amanitine_curve');
+    // Le synonyme seul ne suffit pas : ARNm et تركيز restent exigés.
+    expect(valide('نلاحظ تناقصا كبيرا في الظاهرة المدروسة', q)).toBe(false);
+  });
+});

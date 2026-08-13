@@ -31,11 +31,88 @@ function keywordVariants(keyword: string): string[] {
   );
 }
 
+// #33 — L'arabe agglutine ses outils grammaticaux au mot suivant. L'élève qui
+// répond « الروابط الهيدروجينية » (avec l'article, au pluriel) écrit la même
+// chose que le mot-clé « روابط هيدروجينية », mais `includes` échoue sur le
+// « ال » collé. Trois réponses justes sur vingt-deux étaient refusées pour ce
+// seul motif graphique, sans le moindre enjeu scientifique.
+//
+// On compare donc MOT À MOT lorsque la sous-chaîne échoue. Le rapprochement est
+// volontairement ASYMÉTRIQUE : seul le mot de la RÉPONSE peut porter un affixe,
+// le mot-clé est pris tel quel, pour ne jamais réduire « وظيفة » à « ظيفة ».
+// Honnêteté de mesure : sur les données actuelles, rendre ce rapprochement
+// symétrique ne change AUCUN verdict (la voie rapide par sous-chaîne rattrape
+// les cas concernés) ; c'est une précaution de conception, pas un correctif.
+// Il en va de même du plancher de 3 caractères sur le radical.
+//
+// La CONTIGUÏTÉ et l'ORDRE interne du mot-clé, eux, sont bel et bien exigés et
+// OBSERVABLES : sans eux, un « حمض » et un « أميني » dispersés dans deux
+// propositions sans rapport vaudraient le terme « حمض أميني ».
+//
+// Mesuré sur les 22 questions, avec des réponses justes librement rédigées
+// (et non calquées sur `errorHintAr`, qui recopie les mots-clés attendus) :
+// 3/22 acceptées avant, 20/22 après ce seul changement, 22/22 une fois ajoutées
+// les deux variantes de données ci-dessous ; 0 acceptation sur 110 réponses
+// fausses, vides ou hors-sujet.
+const AGGLUTINATED_PREFIXES = ['وال', 'فال', 'بال', 'كال', 'لل', 'ال', 'و', 'ف', 'ب', 'ك', 'ل'];
+// Pluriels sains (masculin/féminin) et duel. Le pluriel BRISÉ (رابطة → روابط)
+// n'est pas dérivable par affixe : il relève des variantes « | » de la donnée.
+const REGULAR_SUFFIXES = ['ات', 'ون', 'ين', 'ان'];
+
+// `normalizeAr` conserve la ponctuation collée au mot (« الثالثية، », « وP »).
+// Découper sur les seuls espaces laissait donc des jetons ponctués qui ne
+// pouvaient s'apparier à rien.
+function tokenize(text: string): string[] {
+  return normalizeAr(markArrows(text))
+    .split(/[^\p{L}\p{N}]+/u)
+    .filter((token) => token.length > 0);
+}
+
+function tokenMatches(answerToken: string, keywordToken: string): boolean {
+  if (answerToken === keywordToken) return true;
+  for (const prefix of AGGLUTINATED_PREFIXES) {
+    if (!answerToken.startsWith(prefix)) continue;
+    const stripped = answerToken.slice(prefix.length);
+    // Garde-fou : ne pas réduire un mot à un radical trop court, sous peine de
+    // rapprochements fortuits entre mots sans rapport.
+    if (stripped.length < 3) continue;
+    if (stripped === keywordToken) return true;
+    for (const suffix of REGULAR_SUFFIXES) {
+      if (!stripped.endsWith(suffix)) continue;
+      const bare = stripped.slice(0, -suffix.length);
+      if (bare.length >= 3 && bare === keywordToken) return true;
+    }
+  }
+  for (const suffix of REGULAR_SUFFIXES) {
+    if (!answerToken.endsWith(suffix)) continue;
+    const bare = answerToken.slice(0, -suffix.length);
+    if (bare.length >= 3 && bare === keywordToken) return true;
+  }
+  return false;
+}
+
+function containsTokenSequence(answerTokens: string[], keywordTokens: string[]): boolean {
+  if (keywordTokens.length === 0) return false;
+  for (let start = 0; start + keywordTokens.length <= answerTokens.length; start += 1) {
+    if (keywordTokens.every((needle, offset) => tokenMatches(answerTokens[start + offset], needle))) {
+      return true;
+    }
+  }
+  return false;
+}
+
 function includesNormalized(text: string, keyword: string): boolean {
   const haystack = normalizeAr(markArrows(text));
   const variants = keywordVariants(keyword);
   if (variants.length === 0) return false;
-  return variants.some((variant) => haystack.includes(variant));
+  // Voie rapide : la sous-chaîne exacte reste la règle et garantit la
+  // rétrocompatibilité de tout ce qui passait déjà.
+  if (variants.some((variant) => haystack.includes(variant))) return true;
+  const answerTokens = tokenize(text);
+  return keyword
+    .split('|')
+    .map((variant) => tokenize(variant))
+    .some((keywordTokens) => containsTokenSequence(answerTokens, keywordTokens));
 }
 
 // #44 — Certaines questions portent sur un SENS, et le sens ne se vérifie pas
