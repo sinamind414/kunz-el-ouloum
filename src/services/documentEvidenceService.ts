@@ -42,8 +42,44 @@ function normalizeList(items: string[]): string[] {
   return items.map((i) => normalizeArabic(i));
 }
 
+// #39 — Les `expectedEvidence` sont des PHRASES de correction (68 % font 4 mots
+// ou plus), pas des mots-clés. Les chercher en sous-chaîne littérale exigeait de
+// l'élève qu'il reproduise le corrigé mot pour mot : 10 des 11 corrections
+// OFFICIELLES du corpus étaient refusées par l'app elle-même, avec création
+// d'une LearningError et d'un rappel correctif à tort.
+// On exige donc une COUVERTURE des mots porteurs de sens de la phrase attendue.
+const EVIDENCE_STOPWORDS = new Set([
+  'في', 'من', 'الى', 'على', 'عن', 'مع', 'هذا', 'هذه', 'ثم', 'لان', 'التي',
+  'الذي', 'هو', 'هي', 'عند', 'بين', 'كل', 'قد', 'ان', 'او', 'يتم', 'يدل', 'حيث',
+]);
+
+// Seuil calibré dans les DEUX sens sur le corpus réel : à 0,6 les 11/11
+// corrections officielles sont reconnues et 0/11 réponse hors-sujet ne l'est.
+const EVIDENCE_COVERAGE_RATIO = 0.6;
+
+function contentTokens(phrase: string): string[] {
+  return normalizeArabic(phrase)
+    .split(' ')
+    .filter((t) => t.length >= 3 && !EVIDENCE_STOPWORDS.has(t));
+}
+
+// Vrai si la réponse normalisée couvre assez de mots porteurs de la phrase attendue.
+function coversPhrase(normAnswer: string, phrase: string): boolean {
+  // Un critere redige comme une DISJONCTION ("الوظيفة أو المرض") enumere des
+  // alternatives acceptables : exiger la couverture des deux branches revenait a
+  // exiger "la fonction ET la maladie". On evalue chaque branche separement.
+  const branches = phrase.split(/\s+أو\s+/).filter((b) => b.trim().length > 0);
+  if (branches.length > 1) return branches.some((b) => coversPhrase(normAnswer, b));
+
+  const tokens = contentTokens(phrase);
+  // Terme court/technique (ARNm, Vmax…) : on garde la correspondance littérale.
+  if (tokens.length === 0) return normAnswer.includes(normalizeArabic(phrase));
+  const hits = tokens.filter((t) => normAnswer.includes(t)).length;
+  return hits / tokens.length >= EVIDENCE_COVERAGE_RATIO;
+}
+
 function containsAnyNormalized(answer: string, terms: string[]): boolean {
-  return terms.some((term) => answer.includes(normalizeArabic(term)));
+  return terms.some((term) => coversPhrase(answer, term));
 }
 
 function validateStructuredCriteria(context: DocumentPracticeContext, normAnswer: string) {
@@ -61,9 +97,8 @@ export function validateDocumentTrace(input: DocumentTraceInput): DocumentTraceR
   const { context, answer, validationResult } = input;
   const normAnswer = normalizeArabic(answer);
 
-  const expectedNorm = normalizeList(context.expectedEvidence);
-  const foundEvidence = context.expectedEvidence.filter((_, i) => normAnswer.includes(expectedNorm[i]));
-  const missingEvidence = context.expectedEvidence.filter((_, i) => !normAnswer.includes(expectedNorm[i]));
+  const foundEvidence = context.expectedEvidence.filter((e) => coversPhrase(normAnswer, e));
+  const missingEvidence = context.expectedEvidence.filter((e) => !coversPhrase(normAnswer, e));
 
   const vocabNorm = normalizeList(context.vocabulary);
   const vocabularyFound = context.vocabulary.filter((_, i) => normAnswer.includes(vocabNorm[i]));
