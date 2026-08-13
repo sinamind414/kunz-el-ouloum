@@ -276,7 +276,10 @@ describe('Uracile → proof → recall cycle', () => {
   });
 
   it('11. cmh preuve document → RecallItem stage 0 planifié', () => {
-    const answer = 'اختلاف CMH بين المعطي والمستقبل. تعرف الجهاز المناعي على الخلايا الغريبة. رفض الطعم غير المتوافق.';
+    // Rédigée, et non recopiée : le collage littéral des `expectedEvidence`
+    // (ratio de récitation 1,000) est désormais refusé — cf. #39 (résidu).
+    const answer =
+      'نلاحظ وجود اختلاف في CMH بين المعطي والمستقبل، و بسبب ذلك يتعرف الجهاز المناعي على الخلايا الغريبة و يعتبرها غير ذاتية، مما يؤدي في النهاية الى رفض الطعم غير المتوافق.';
     const { evidence, errorCreated, store, trace } = recordDocumentTrace({
       context: cmhCtx,
       answer,
@@ -296,7 +299,9 @@ describe('Uracile → proof → recall cycle', () => {
   });
 
   it('12. LB preuve document → RecallItem stage 0 planifié', () => {
-    const answer = 'تعرف اللمفاوية B على المستضد. تكاثر وتمايز إلى خلايا بلازمية. إفراز أجسام مضادة نوعية.';
+    // Rédigée, et non recopiée (cf. #39 résidu).
+    const answer =
+      'يتم تعرف اللمفاوية B على المستضد بشكل نوعي، فتدخل في تكاثر وتمايز الى خلايا بلازمية، و هذه الاخيرة تقوم بإفراز أجسام مضادة نوعية تبطل مفعول المستضد.';
     const { evidence, errorCreated, store } = recordDocumentTrace({
       context: lbCtx,
       answer,
@@ -316,7 +321,9 @@ describe('Uracile → proof → recall cycle', () => {
   });
 
   it('13. LT preuve document → RecallItem stage 0 planifié', () => {
-    const answer = 'لمفاويات T نوعية. تعرف نوعي على المحدد المستضدي. إقصاء الخلية الهدف.';
+    // Rédigée, et non recopiée (cf. #39 résidu).
+    const answer =
+      'تتدخل لمفاويات T نوعية التي يتم فيها تعرف نوعي على المحدد المستضدي المعروض، و بعد الارتباط تحدث عملية إقصاء الخلية الهدف عن طريق ثقب غشائها.';
     const { evidence, errorCreated, store, trace } = recordDocumentTrace({
       context: ltCtx,
       answer,

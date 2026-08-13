@@ -109,6 +109,63 @@ function validateStructuredCriteria(context: DocumentPracticeContext, normAnswer
 // accueillant envers une réponse d'élève reformulée.
 const DISPLAY_COVERAGE_RATIO = 0.15;
 
+// #39 (résidu) — Garde-fou anti « sac de mots ».
+//
+// Le recouvrement lexical de #41 et la couverture de phrase de #39 mesurent
+// tous deux une PRÉSENCE de termes. Ni l'un ni l'autre ne distingue une copie
+// rédigée d'un simple empilement des attendus : en concaténant `expectedEvidence`
+// et `vocabulary`, sans écrire une seule phrase, on obtenait 31/31 questions
+// acceptées, 80-100 % au moteur, et l'enregistrement d'une MasteryEvidence.
+//
+// Observable retenue : la part de la réponse qui est un fragment RECOPIÉ, mesurée
+// comme la proportion de mots appartenant à une suite d'au moins deux mots
+// consécutifs d'un attendu. Un élève qui reformule relie les termes par ses
+// propres mots et fait chuter ce ratio ; une concaténation le sature.
+//
+// Calibré dans les deux sens sur les 31 questions réelles :
+//   - pire correction OFFICIELLE ................ 0,233
+//   - pire copie d'élève reformulée (simulée) ... 0,471
+//   - meilleur (= plus bas) sac de mots ......... 0,714
+// Le seuil est placé à mi-chemin entre les deux populations, ~0,13 de marge
+// de chaque côté. Une seconde condition (≥ 2 fragments distincts recopiés)
+// protège les réponses légitimement brèves, qui n'ont qu'un attendu à citer.
+const RECITATION_RATIO = 0.6;
+const RECITATION_MIN_FRAGMENTS = 2;
+
+/**
+ * Vrai si la réponse est une juxtaposition d'attendus plutôt qu'une rédaction.
+ * Ne juge jamais le fond : uniquement la forme « liste de mots recopiés ».
+ */
+function isRecitedBag(answer: string, fragments: string[]): boolean {
+  const answerTokens = normalizeArabic(answer).split(' ').filter(Boolean);
+  if (answerTokens.length === 0) return false;
+
+  const covered = new Array<boolean>(answerTokens.length).fill(false);
+  let matchedFragments = 0;
+
+  for (const fragment of fragments) {
+    const fragTokens = normalizeArabic(fragment).split(' ').filter(Boolean);
+    // Un terme isolé (ATP, ARNm…) n'est pas du recopiage : l'élève DOIT l'employer.
+    if (fragTokens.length < 2) continue;
+    let seen = false;
+    for (let i = 0; i + fragTokens.length <= answerTokens.length; i++) {
+      if (fragTokens.every((t, j) => answerTokens[i + j] === t)) {
+        seen = true;
+        for (let j = 0; j < fragTokens.length; j++) covered[i + j] = true;
+      }
+    }
+    if (seen) matchedFragments++;
+  }
+
+  if (matchedFragments < RECITATION_MIN_FRAGMENTS) return false;
+  return covered.filter(Boolean).length / answerTokens.length >= RECITATION_RATIO;
+}
+
+// Fragments de référence d'un contexte : preuves attendues + vocabulaire.
+function recitationFragments(context: DocumentPracticeContext): string[] {
+  return [...(context.expectedEvidence ?? []), ...(context.vocabulary ?? [])];
+}
+
 /**
  * Vrai si la réponse mobilise réellement les notions du document.
  * Sert à conditionner le verdict montré à l'élève, jamais le score du moteur.
@@ -122,6 +179,8 @@ export function answerHasDocumentContent(
   const expected = Array.from(new Set(contentTokens(reference))).filter((t) => t.length >= 4);
   if (expected.length === 0) return true;
   const normAnswer = normalizeArabic(answer);
+  // Un empilement des attendus n'est pas une réponse : cf. RECITATION_RATIO.
+  if (isRecitedBag(answer, recitationFragments(context))) return false;
   const hits = expected.filter((t) => normAnswer.includes(t)).length;
   return hits / expected.length >= DISPLAY_COVERAGE_RATIO;
 }
@@ -140,7 +199,10 @@ export function validateDocumentTrace(input: DocumentTraceInput): DocumentTraceR
   // Convertir le score du moteur (/maxScore) en pourcentage pour le seuil 70.
   const percentage = Math.round((validationResult.score / validationResult.maxScore) * 100);
   const passed = validationResult.passed && percentage >= PASS_THRESHOLD;
+  // Une trace de MAÎTRISE ne peut pas naître d'une récitation juxtaposée.
+  const recited = isRecitedBag(answer, recitationFragments(context));
   const valid =
+    !recited &&
     passed &&
     foundEvidence.length >= 1 &&
     vocabularyFound.length >= 1 &&

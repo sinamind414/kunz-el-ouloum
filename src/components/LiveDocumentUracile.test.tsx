@@ -44,7 +44,12 @@ describe('LiveDocumentUracile', () => {
     render(<LiveDocumentUracile onEvidence={onEvidence} />);
 
     const textarea = screen.getByRole('textbox');
-    await user.type(textarea, 'ظهور الوسم أولاً في النواة ظهور الوسم لاحقاً في الهيولى انتقال المعلومة عبر ARNm انتقال ARNm المعلومة تنسخ ثم تنقل');
+    // Réponse RÉDIGÉE : le collage littéral des attendus (ratio de récitation
+    // 0,700) est désormais refusé comme non-réponse — cf. #39 (résidu).
+    await user.type(
+      textarea,
+      'نلاحظ ظهور الوسم أولاً في النواة ثم ظهور الوسم لاحقاً في الهيولى، و هذا يدل على ان انتقال المعلومة عبر ARNm يتم من النواة نحو الهيولى، فالمعلومة تنسخ ثم تنقل.'
+    );
     await user.click(screen.getAllByRole('button', { name: /صحّح بالمصحح الحقيقي/ })[0]);
 
     expect(await screen.findByText(/أحسنت/)).toBeDefined();

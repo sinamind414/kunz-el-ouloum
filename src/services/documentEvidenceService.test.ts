@@ -92,7 +92,8 @@ describe('validateDocumentTrace', () => {
     });
     const complete = validateDocumentTrace({
       context: ltCtx,
-      answer: 'لمفاويات T نوعية تعرف نوعي على المحدد المستضدي إقصاء الخلية الهدف',
+      answer:
+        'تتدخل لمفاويات T نوعية التي يتم فيها تعرف نوعي على المحدد المستضدي، مما يسمح لها بإقصاء الخلية الهدف.',
       validationResult: okResult(),
     });
 
