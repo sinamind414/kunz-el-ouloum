@@ -17,6 +17,7 @@ import {
   type MissionSelection,
 } from '../services/missionEngine';
 import { loadStore } from '../data/store';
+import { getConceptRoute, routeErrorToTarget } from '../data/conceptRoutes';
 import { getPublishableSurvivalCardById } from '../data/survivalCards';
 import type { ConceptRoute } from '../data/store';
 import type { CoreReflexId } from '../data/reflexes';
@@ -29,6 +30,8 @@ interface MyPathViewProps {
   onNavigateToTab: (tab: TabId) => void;
   onLaunchReflexMission?: (reflexId: CoreReflexId, meta: { missionId: string; conceptId: string; relatedErrorIds?: string[] }) => void;
   onLaunchSurvivalCard?: (cardId: string) => void;
+  onOpenDocumentExercise?: (exerciseId: string) => void;
+  onStartLesson?: (lessonId: string) => void;
 }
 
 // Mappe une mission Manhadjiya (M0–M5) vers le réflexe méthodologique ciblé (P1.1-B).
@@ -37,6 +40,22 @@ const MISSION_REFLEX: Record<string, CoreReflexId | undefined> = {
   M3: 'interpret',
   M4: 'hypothesize',
   M5: 'validate',
+};
+
+// #46 — M0 (التعرف على الوثيقة) et M1 (الوصف) relèvent des SUPPORTING_SKILLS
+// `identify`/`describe`, absents des six réflexes canoniques du Trainer : un test
+// délibéré (methodologyTrainerService.test.ts) fige cette liste à six entrées, et
+// l'élargir pour deux missions aurait dénaturé le modèle méthodologique.
+// Ces deux missions sont donc rattachées aux exercices documentaires RÉELS qui
+// portent déjà ces verbes, validés par le moteur (ctx.actionVerb identify/describe) :
+//   - translation_schema_q1 → حدد / identify  (unité 1, asset présent)
+//   - ach_jnm_schema_q2     → صف  / describe  (unité 5, asset présent)
+// Avant ce câblage, le clic sur M0/M1 ne montrait AUCUN écran : il marquait la
+// mission « done » et créditait 20 XP, soit un tiers du parcours fondateur franchi
+// à vide, sur le tout premier contact de l'élève avec l'application.
+const MISSION_DOCUMENT_EXERCISE: Record<string, string | undefined> = {
+  M0: 'translation_schema',
+  M1: 'ach_jnm_schema',
 };
 
 // Mappe une mission Manhadjiya vers la carte de survie validée de son concept (P1.2-B).
@@ -57,6 +76,10 @@ interface MotivationIcon {
   ring: number; // 0-100 anneau de progression
   from: string;
   to: string;
+  // Unité visée par l'icône. Rend la promesse vérifiable et garantit qu'aucune
+  // cible n'est annoncée deux fois. `undefined` = icône sans cible d'unité
+  // (compteur BAC), seule tolérée sans `unitId`.
+  unitId?: number;
   onClick: () => void;
 }
 
@@ -109,7 +132,7 @@ function BeginnerLaunchpad({ onNavigateToTab }: { onNavigateToTab: (tab: TabId) 
 }
 
 export default function MyPathView(props: MyPathViewProps) {
-  const { units, progress, onLaunchQuiz, onLaunchRevision, onNavigateToTab, onLaunchReflexMission, onLaunchSurvivalCard } = props;
+  const { units, progress, onLaunchQuiz, onLaunchRevision, onNavigateToTab, onLaunchReflexMission, onLaunchSurvivalCard, onOpenDocumentExercise, onStartLesson } = props;
 
   // Formation Jour 0 (onboarding « 6 lois ») : accessible via un bouton dédié,
   // mais NE BLOQUE PLUS l'accès au tableau de bord (les 6 icônes s'affichent tout de suite).
@@ -134,6 +157,7 @@ export default function MyPathView(props: MyPathViewProps) {
           onNavigateToTab={onNavigateToTab}
           onLaunchReflexMission={onLaunchReflexMission}
           onLaunchSurvivalCard={onLaunchSurvivalCard}
+          onOpenDocumentExercise={onOpenDocumentExercise}
         />
       </div>
     );
@@ -158,6 +182,9 @@ export default function MyPathView(props: MyPathViewProps) {
         onLaunchRevision={onLaunchRevision}
         onNavigateToTab={onNavigateToTab}
         memoizedMissions={missions}
+        onLaunchSurvivalCard={onLaunchSurvivalCard}
+        onOpenDocumentExercise={onOpenDocumentExercise}
+        onStartLesson={onStartLesson}
       />
     </div>
   );
@@ -174,6 +201,7 @@ function JourZeroView({
   onNavigateToTab,
   onLaunchReflexMission,
   onLaunchSurvivalCard,
+  onOpenDocumentExercise,
 }: {
   missions: Mission[];
   progress: UserProgress;
@@ -181,6 +209,7 @@ function JourZeroView({
   onNavigateToTab: (tab: TabId) => void;
   onLaunchReflexMission?: (reflexId: CoreReflexId, meta: { missionId: string; conceptId: string; relatedErrorIds?: string[] }) => void;
   onLaunchSurvivalCard?: (cardId: string) => void;
+  onOpenDocumentExercise?: (exerciseId: string) => void;
 }) {
   const current = getCurrentMission(missions);
   const { done: doneCount, total } = getMissionsProgress(missions);
@@ -189,39 +218,50 @@ function JourZeroView({
 
   const isFirstSessions = progress && progress.xp <= 150;
 
-  const handleStart = () => {
-    if (!current) return;
-    // P1.2-B — la mission démarre par la carte de survie UNIQUEMENT si publiable (revue).
-    const cardId = MISSION_SURVIVAL_CARD[current.id];
+  /**
+   * #46 — Résout la cible de contenu d'une mission d'accueil, dans l'ordre de
+   * priorité pédagogique : carte de survie publiable > réflexe méthodologique >
+   * exercice documentaire portant le verbe de la mission.
+   *
+   * Renvoie `null` uniquement si AUCUN contenu n'est atteignable (cas d'un
+   * appelant qui ne fournirait pas les callbacks). C'est la seule fonction
+   * autorisée à décider ce qu'ouvre une mission : avant, `handleStart` et
+   * `handleExtra` dupliquaient cette logique et retombaient tous deux sur un
+   * `completeMission()` silencieux dès que la table ne connaissait pas la
+   * mission — ce qui était le cas de M0 et M1.
+   */
+  const resolveMissionTarget = (missionId: string): (() => void) | null => {
+    const cardId = MISSION_SURVIVAL_CARD[missionId];
     if (cardId && onLaunchSurvivalCard && getPublishableSurvivalCardById(cardId)) {
-      onLaunchSurvivalCard(cardId);
-      return;
+      return () => onLaunchSurvivalCard(cardId);
     }
-    const reflex = MISSION_REFLEX[current.id];
+    const reflex = MISSION_REFLEX[missionId];
     if (reflex && onLaunchReflexMission) {
       // P1.1-B : ouvre l'entraînement sur le bon réflexe, sans choix intermédiaire.
-      onLaunchReflexMission(reflex, { missionId: current.id, conceptId: current.id });
+      return () => onLaunchReflexMission(reflex, { missionId, conceptId: missionId });
+    }
+    const exerciseId = MISSION_DOCUMENT_EXERCISE[missionId];
+    if (exerciseId && onOpenDocumentExercise) {
+      return () => onOpenDocumentExercise(exerciseId);
+    }
+    return null;
+  };
+
+  const runMission = (allowExtraToday: boolean) => {
+    if (!current) return;
+    const open = resolveMissionTarget(current.id);
+    if (open) {
+      open();
       return;
     }
-    const updated = completeMission(current.id, false);
+    // Aucun contenu atteignable : on ne crédite RIEN. Valider une mission sans
+    // rien avoir montré apprend à l'élève que la progression ne mesure rien.
+    const updated = completeMission(current.id, allowExtraToday);
     if (updated) onMissionsChange(updated);
   };
 
-  const handleExtra = () => {
-    if (!current) return;
-    const cardId = MISSION_SURVIVAL_CARD[current.id];
-    if (cardId && onLaunchSurvivalCard && getPublishableSurvivalCardById(cardId)) {
-      onLaunchSurvivalCard(cardId);
-      return;
-    }
-    const reflex = MISSION_REFLEX[current.id];
-    if (reflex && onLaunchReflexMission) {
-      onLaunchReflexMission(reflex, { missionId: current.id, conceptId: current.id });
-      return;
-    }
-    const updated = completeMission(current.id, true);
-    if (updated) onMissionsChange(updated);
-  };
+  const handleStart = () => runMission(false);
+  const handleExtra = () => runMission(true);
 
   return (
     <div className="w-full max-w-2xl mx-auto p-4 md:p-6 pb-28" dir="rtl">
@@ -271,7 +311,11 @@ function JourZeroView({
       <div className="rounded-3xl bg-white dark:bg-[#141916] border border-gray-200 dark:border-gray-800 p-4 shadow-sm mb-4">
         <div className="flex items-center justify-between mb-3">
           {missions.map((m) => (
-            <div key={m.id} className="flex flex-col items-center gap-1 flex-1">
+            <div
+              key={m.id}
+              className="flex flex-col items-center gap-1 flex-1"
+              {...(resolveMissionTarget(m.id) ? { 'data-testid': `mission-target-${m.id}` } : {})}
+            >
               <div
                 className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-black ${
                   m.status === 'done'
@@ -335,6 +379,7 @@ function JourZeroView({
         current && (
           <button
             onClick={handleStart}
+            data-testid="mission-start"
             className={`w-full text-right rounded-3xl p-5 bg-gradient-to-br from-[#ffb347] to-[#ff9a4a] text-white shadow-md hover:brightness-105 active:scale-[0.99] transition-all cursor-pointer relative overflow-hidden ${isFirstSessions ? 'ring-4 ring-[#ff9a4a]/50 ring-offset-2 ring-offset-white dark:ring-offset-[#0c0f0d] animate-[pulse_2s_cubic-bezier(0.4,0,0.6,1)_infinite]' : ''}`}
           >
             {isFirstSessions && (
@@ -373,19 +418,27 @@ interface MotivationViewProps extends MyPathViewProps {
   memoizedMissions: Mission[];
 }
 
-function MotivationView({ units, progress, onLaunchQuiz, onLaunchRevision, onNavigateToTab, memoizedMissions }: MotivationViewProps) {
+function MotivationView({ units, progress, onLaunchQuiz, onLaunchRevision, onNavigateToTab, memoizedMissions, onLaunchSurvivalCard, onOpenDocumentExercise, onStartLesson }: MotivationViewProps) {
   const { user } = useAuth();
 
   // Sélection moteur (SpecKit §2/§6) : mission prioritaire OU état idle explicite.
   const selection: MissionSelection = useMemo(() => {
     const store = loadStore();
     const errors = store.learningErrors;
+    // #47/#50 — La route était fabriquée ici à la volée, avec deux défauts :
+    // elle cherchait une carte de survie par CONCEPT (`getPublishableSurvivalCardById(cid)`)
+    // alors que cette fonction attend un ID DE CARTE (`sc_*`) — donc toujours
+    // `undefined` — et elle figeait `unitId: 0`, une unité qui n'existe pas,
+    // perdant le routage vers la leçon, le document et le quiz de l'unité.
+    // `CONCEPT_ROUTES` porte déjà ces liaisons, est testée (conceptRoutes.test.ts)
+    // et sert déjà CoachView et MethodologyView : on l'utilise au lieu de la
+    // réimplémenter.
     const routes: Record<string, ConceptRoute> = {};
     for (const e of errors) {
       const cid = e.conceptId ?? e.id;
       if (!routes[cid]) {
-        const cardId = getPublishableSurvivalCardById(cid)?.id;
-        routes[cid] = { conceptId: cid, unitId: 0, ...(cardId ? { survivalCardId: cardId } : {}) };
+        const known = getConceptRoute(cid);
+        if (known) routes[cid] = known;
       }
     }
     const completedMissions = memoizedMissions.filter((m) => m.completedAt != null).length;
@@ -398,28 +451,79 @@ function MotivationView({ units, progress, onLaunchQuiz, onLaunchRevision, onNav
     return incomplete[0] || units[0];
   }, [units]);
 
-  // Lacune dangereuse : unité débloquée la plus basse (urgence de révision).
+  // #49 — Lacune dangereuse : unité débloquée la plus basse, DISTINCTE de la cible
+  // du jour. Sans cette exclusion, les deux tris (quasi identiques : seul le filtre
+  // `< 100` diffère) désignaient la même unité, présentée à la fois comme « défi du
+  // jour » et comme « lacune dangereuse ». On exige en outre une marge de progression
+  // réelle : qualifier de « ثغرة خطيرة » une unité à 100 % est un contresens.
   const criticalWeakUnit = useMemo(() => {
-    const unlocked = units.filter((u) => !u.isLocked).sort((a, b) => a.progress - b.progress);
-    return unlocked[0] || units[0];
-  }, [units]);
+    const unlocked = units
+      .filter((u) => !u.isLocked && u.progress < 100 && u.id !== dailyTargetUnit?.id)
+      .sort((a, b) => a.progress - b.progress);
+    return unlocked[0];
+  }, [units, dailyTargetUnit]);
 
-  // Presque terminée : unité la plus avancée encore < 100 (effet Zeigarnik / goal gradient).
+  // #49 — Presque terminée : la plus avancée encore < 100. Le filtre `isLocked`
+  // manquait, si bien qu'un élève pouvait se voir promettre « إنجاز قريب » sur une
+  // unité verrouillée, donc inaccessible. Exclut aussi les deux cibles précédentes.
   const nearCompletionUnit = useMemo(() => {
-    const almost = units.filter((u) => u.progress < 100).sort((a, b) => b.progress - a.progress);
-    return almost[0] || units[0];
-  }, [units]);
+    const exclus = new Set([dailyTargetUnit?.id, criticalWeakUnit?.id].filter((v) => v != null));
+    const almost = units
+      .filter((u) => !u.isLocked && u.progress < 100 && !exclus.has(u.id))
+      .sort((a, b) => b.progress - a.progress);
+    return almost[0];
+  }, [units, dailyTargetUnit, criticalWeakUnit]);
 
-  // Question surprise : unité débloquée au hasard (curiosity gap).
+  // #50 — Question surprise : `Math.random()` était appelé DANS un `useMemo([units])`,
+  // donc la cible changeait à chaque recalcul du memo — ni reproductible, ni testable.
+  // Le tirage est désormais dérivé du jour civil : stable sur une même journée
+  // (l'élève retrouve la même surprise s'il revient), renouvelé le lendemain.
   const randomUnit = useMemo(() => {
-    const pool = units.filter((u) => !u.isLocked);
-    const src = pool.length ? pool : units;
-    return src[Math.floor(Math.random() * src.length)] || units[0];
-  }, [units]);
+    const exclus = new Set(
+      [dailyTargetUnit?.id, criticalWeakUnit?.id, nearCompletionUnit?.id].filter((v) => v != null)
+    );
+    // Pas de repli sur les unités déjà ciblées : au premier lancement une seule
+    // unité est déverrouillée, et un repli ferait doublon avec la cible du jour —
+    // deux icônes, une seule unité, deux promesses. Sans unité distincte à
+    // proposer, l'icône n'est simplement pas rendue.
+    const pool = units.filter((u) => !u.isLocked && !exclus.has(u.id));
+    if (!pool.length) return undefined;
+    const daySeed = Math.floor(Date.now() / 86_400_000);
+    return pool[daySeed % pool.length];
+  }, [units, dailyTargetUnit, criticalWeakUnit, nearCompletionUnit]);
+
+  /**
+   * #47 — Exécute RÉELLEMENT la mission calculée par le moteur.
+   *
+   * Le bouton de la carte de mission appelait `onLaunchQuiz(dailyTargetUnit.id)` :
+   * il annonçait une mission née d'une erreur précise et lançait un QCM sur une
+   * unité sans rapport. `selection.mission.steps` n'était utilisé que pour en
+   * afficher la longueur. On route désormais vers la cible du concept en cause,
+   * via `routeErrorToTarget` — la même fonction que CoachView et MethodologyView,
+   * déjà testée — en respectant sa priorité : carte publiable > leçon > document >
+   * quiz de l'unité.
+   */
+  const runMissionAction = () => {
+    if (selection.kind !== 'mission') return;
+    const conceptId = selection.mission.steps.find((s) => s.conceptId)?.conceptId;
+    if (conceptId) {
+      const target = routeErrorToTarget(conceptId, { quizUnitId: dailyTargetUnit?.id });
+      if (target.kind === 'survival_card' && onLaunchSurvivalCard) return onLaunchSurvivalCard(target.cardId);
+      if (target.kind === 'lesson' && onStartLesson) return onStartLesson(target.lessonId);
+      if (target.kind === 'document' && onOpenDocumentExercise) return onOpenDocumentExercise(target.exerciseId);
+      if (target.kind === 'quiz') return onLaunchQuiz(target.unitId);
+    }
+    // Mission d'onboarding (aucun concept) : la cible du jour est la bonne porte.
+    if (dailyTargetUnit) onLaunchQuiz(dailyTargetUnit.id);
+  };
 
   const bacDays = useMemo(() => calculateCountdown().timeLeft.days, []);
   const firstName = (user?.name || 'Élève Kunz').split(' ')[0];
 
+  // #49/#50 — Chaque icône déclare l'unité qu'elle vise (`unitId`), ce qui rend la
+  // promesse vérifiable et empêche deux icônes de désigner la même cible. Une icône
+  // dont la cible est absente n'est pas rendue : mieux vaut cinq repères exacts que
+  // six dont un ment.
   const icons: MotivationIcon[] = [
     {
       key: 'streak',
@@ -429,33 +533,29 @@ function MotivationView({ units, progress, onLaunchQuiz, onLaunchRevision, onNav
       ring: Math.min(100, (progress.streak % 30) * (100 / 30)),
       from: '#059669',
       to: '#10b981',
-      onClick: () => onLaunchRevision(dailyTargetUnit.id),
-    },
-    {
-      key: 'challenge',
-      Icon: Target,
-      title: 'تحدي 3 دقائق',
-      line: 'ابدأ التحدي — اختبر معرفتك بسرعة',
-      ring: dailyTargetUnit?.progress ?? 0,
-      from: '#ffb347',
-      to: '#ff9a4a',
-      onClick: () => onLaunchQuiz(dailyTargetUnit.id),
+      // La série se cultive en révisant : on renvoie sur la cible du jour, qui est
+      // aussi celle du héros — c'est la même intention, pas une promesse distincte.
+      unitId: dailyTargetUnit?.id,
+      onClick: () => dailyTargetUnit && onLaunchRevision(dailyTargetUnit.id),
     },
     {
       key: 'gap',
       Icon: AlertTriangle,
       title: 'ثغرة خطيرة',
-      line: `« ${criticalWeakUnit?.title} » تحتاج مراجعة!`,
+      line: criticalWeakUnit ? `« ${criticalWeakUnit.title} » تحتاج مراجعة!` : '',
       ring: criticalWeakUnit?.progress ?? 0,
       from: '#f59e0b',
       to: '#ef4444',
-      onClick: () => onLaunchRevision(criticalWeakUnit.id),
+      unitId: criticalWeakUnit?.id,
+      onClick: () => criticalWeakUnit && onLaunchRevision(criticalWeakUnit.id),
     },
     {
       key: 'bac',
       Icon: Hourglass,
       title: 'عدّاد BAC',
       line: `${bacDays} يوم الباقي — الوقت يمر`,
+      // Cet anneau représente le TEMPS écoulé, pas une maîtrise : c'est assumé et
+      // signalé à l'élève par le libellé (« يوم الباقي »).
       ring: Math.max(5, Math.min(100, 100 - (bacDays / 365) * 100)),
       from: '#0ea5e9',
       to: '#6366f1',
@@ -466,23 +566,31 @@ function MotivationView({ units, progress, onLaunchQuiz, onLaunchRevision, onNav
       Icon: Dices,
       badge: <HelpCircle className="w-4 h-4" />,
       title: 'سؤال مفاجئ',
-      line: 'اختبر معلوماتك — سؤال عشوائي',
-      ring: 60,
+      line: randomUnit ? `« ${randomUnit.title} » — سؤال عشوائي` : '',
+      // #49 — `ring: 60` était codé en dur : l'anneau affichait une progression que
+      // l'élève n'avait jamais réalisée. Il reflète désormais l'unité tirée.
+      ring: randomUnit?.progress ?? 0,
       from: '#a855f7',
       to: '#ec4899',
-      onClick: () => onLaunchQuiz(randomUnit.id),
+      unitId: randomUnit?.id,
+      onClick: () => randomUnit && onLaunchQuiz(randomUnit.id),
     },
     {
       key: 'almost',
       Icon: Trophy,
       title: 'إنجاز قريب',
-      line: `« ${nearCompletionUnit?.title} » ${nearCompletionUnit?.progress ?? 0}% — أكمل الوحدة!`,
+      line: nearCompletionUnit
+        ? `« ${nearCompletionUnit.title} » ${nearCompletionUnit.progress}% — أكمل الوحدة!`
+        : '',
       ring: nearCompletionUnit?.progress ?? 0,
       from: '#eab308',
       to: '#f59e0b',
-      onClick: () => onNavigateToTab('lessons'),
+      unitId: nearCompletionUnit?.id,
+      // #50 — `onNavigateToTab('lessons')` perdait l'unité annoncée : l'élève
+      // atterrissait sur la liste complète des leçons. On ouvre sa révision.
+      onClick: () => nearCompletionUnit && onLaunchRevision(nearCompletionUnit.id),
     },
-  ];
+  ].filter((icon) => icon.key === 'bac' || icon.unitId != null);
 
   return (
     <div className="w-full" dir="rtl">
@@ -510,6 +618,7 @@ function MotivationView({ units, progress, onLaunchQuiz, onLaunchRevision, onNav
           <p className="text-sm font-bold text-gray-900 dark:text-white">{selection.messageAr}</p>
           <button
             onClick={() => dailyTargetUnit && onLaunchQuiz(dailyTargetUnit.id)}
+            data-testid="primary-action"
             className="mt-4 w-full rounded-2xl border border-dashed border-[#006d37]/40 text-[#006d37] dark:text-[#2ecc71] font-black py-3 text-sm hover:bg-[#fff9ed] dark:hover:bg-[#1a221d] transition-all cursor-pointer"
           >
             تحدٍ إضافي اختياري
@@ -530,7 +639,8 @@ function MotivationView({ units, progress, onLaunchQuiz, onLaunchRevision, onNav
               </p>
             </div>
             <button
-              onClick={() => dailyTargetUnit && onLaunchQuiz(dailyTargetUnit.id)}
+              onClick={runMissionAction}
+              data-testid="primary-action"
               className="bg-white text-[#b45309] font-black text-sm px-4 py-2 rounded-xl shrink-0 cursor-pointer hover:brightness-105 transition-all"
             >
               {selection.mission.primaryActionLabelAr}
@@ -539,31 +649,14 @@ function MotivationView({ units, progress, onLaunchQuiz, onLaunchRevision, onNav
         </div>
       )}
 
-      {/* Hero unique orange : 1 seule action principale */}
-      <button
-        onClick={() => dailyTargetUnit && onLaunchQuiz(dailyTargetUnit.id)}
-        className="w-full text-right rounded-3xl p-5 bg-gradient-to-br from-[#ffb347] to-[#ff9a4a] text-white shadow-md mb-5 hover:brightness-105 active:scale-[0.99] transition-all cursor-pointer"
-      >
-        <div className="flex items-center gap-3">
-          <div className="w-14 h-14 rounded-2xl bg-white/20 flex items-center justify-center shrink-0">
-            <Target className="w-7 h-7" />
-          </div>
-          <div className="flex-1">
-            <h2 className="font-black text-lg leading-tight">مهمة 3 دقائق <span className="text-[#fff3d6]">+15 XP</span></h2>
-            <p className="text-white/90 text-sm mt-0.5 truncate">« {dailyTargetUnit?.title} »</p>
-          </div>
-          <span className="bg-white text-[#b45309] font-black text-sm px-4 py-2 rounded-xl shrink-0">
-            ابدأ الآن!
-          </span>
-        </div>
-      </button>
-
       {/* Grille 2x3 = 6 icônes rondes motivantes (aucune duplication bottom nav) */}
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-        {icons.map(({ key, Icon, badge, title, line, ring, from, to, onClick }) => (
+        {icons.map(({ key, Icon, badge, title, line, ring, from, to, unitId, onClick }) => (
           <button
             key={key}
             onClick={onClick}
+            data-testid={`compass-icon-${key}`}
+            data-unit-id={unitId ?? ''}
             className="flex flex-col items-center text-center gap-2 rounded-3xl bg-white dark:bg-[#141916] border border-gray-200 dark:border-gray-800 p-4 shadow-sm hover:shadow-md hover:-translate-y-0.5 active:scale-[0.98] transition-all cursor-pointer"
           >
             <div

@@ -1,4 +1,4 @@
-import React, { useMemo, useState, lazy, Suspense } from 'react';
+import React, { useEffect, useMemo, useState, lazy, Suspense } from 'react';
 import { Zap, Layers, Target, BookOpen, Rocket, Lightbulb, ChevronRight, Trophy, Flame, Lock } from 'lucide-react';
 import { Unit, UserProgress, Flashcard, TabId } from '../types';
 import { DOMAINS_INFO, getUnitDomainId } from '../utils/domainMapper';
@@ -29,6 +29,14 @@ interface TrainingViewProps {
   isFocusMode: boolean;
   setIsFocusMode: (v: boolean) => void;
   onNavigateToTab: (tab: TabId) => void;
+  // #46/#47 — Exercice documentaire à ouvrir d'emblée, demandé depuis un autre
+  // onglet (une mission de la boussole). `null` = entrée normale par le menu.
+  entryDocumentExerciseId?: string | null;
+  onEntryDocumentExerciseConsumed?: () => void;
+  // #50 — Unite dont il faut ouvrir directement les cartes de revision, demandee
+  // par une icone de la boussole qui annonce cette unite precise.
+  entryRevisionUnitId?: number | null;
+  onEntryRevisionConsumed?: () => void;
 }
 
 type SubTab = 'quick' | 'cards' | 'bac' | 'methodo' | 'docs' | 'challenge';
@@ -44,6 +52,10 @@ export default function TrainingView({
   onRateCard,
   isFocusMode,
   setIsFocusMode,
+  entryDocumentExerciseId = null,
+  onEntryDocumentExerciseConsumed,
+  entryRevisionUnitId = null,
+  onEntryRevisionConsumed,
 }: TrainingViewProps) {
   // Accueil أتدرب : sub = null => grille des rubriques (icônes), sinon on est dans une rubrique.
   const [sub, setSub] = useState<SubTab | null>(null);
@@ -52,7 +64,27 @@ export default function TrainingView({
   // Navigation à 2 niveaux dans « بطاقات » : domaine sélectionné puis chapitre, puis vue de révision.
   const [cardsDomainId, setCardsDomainId] = useState<number | null>(null);
   const [cardsUnitId, setCardsUnitId] = useState<number | null>(null);
-  const [initialDocumentExerciseId, setInitialDocumentExerciseId] = useState<string | null>(null);
+  const [initialDocumentExerciseId, setInitialDocumentExerciseId] = useState<string | null>(entryDocumentExerciseId);
+
+  // #46 — Une mission de la boussole peut demander l'ouverture d'un exercice
+  // documentaire alors que cet onglet est deja monte : l'etat initial ne suffit
+  // pas, il faut reagir au changement de prop puis la consommer (sinon un retour
+  // au menu rouvrirait indefiniment le meme exercice).
+  useEffect(() => {
+    if (!entryDocumentExerciseId) return;
+    setInitialDocumentExerciseId(entryDocumentExerciseId);
+    setSub('docs');
+    onEntryDocumentExerciseConsumed?.();
+  }, [entryDocumentExerciseId, onEntryDocumentExerciseConsumed]);
+
+  // #50 — Ouvre les cartes de l'unite promise par la boussole, au bon domaine.
+  useEffect(() => {
+    if (entryRevisionUnitId == null) return;
+    setCardsDomainId(getUnitDomainId(entryRevisionUnitId));
+    setCardsUnitId(entryRevisionUnitId);
+    setSub('cards');
+    onEntryRevisionConsumed?.();
+  }, [entryRevisionUnitId, onEntryRevisionConsumed]);
 
   // Stats par domaine (les 3 toujours présents pour la grille d'icônes).
   const domainStats = useMemo(() => {

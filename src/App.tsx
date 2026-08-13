@@ -250,7 +250,19 @@ function AppShell() {
   const navigateToTab = (tab: TabId) => setCurrentTab(tab);
 
   const handleLaunchQuiz = (unitId: number) => setActiveQuizUnitId(unitId);
-  const handleLaunchRevision = (_unitId: number) => {
+  // #50 — L'unite annoncee par la boussole etait jetee (`_unitId`) : l'eleve qui
+  // cliquait « ثغرة خطيرة — U3 » atterrissait sur l'entrainement generique. On
+  // ouvre desormais les cartes de l'unite promise.
+  const [revisionUnitId, setRevisionUnitId] = useState<number | null>(null);
+  const handleLaunchRevision = (unitId: number) => {
+    setRevisionUnitId(unitId);
+    setCurrentTab('training');
+  };
+
+  // #46/#47 — Un exercice documentaire demande par une mission de la boussole.
+  const [pendingDocumentExerciseId, setPendingDocumentExerciseId] = useState<string | null>(null);
+  const handleOpenDocumentExercise = (exerciseId: string) => {
+    setPendingDocumentExerciseId(exerciseId);
     setCurrentTab('training');
   };
   const handleStartLesson = (lessonId: string) => {
@@ -420,11 +432,11 @@ function AppShell() {
           <ErrorBoundary>
             <div key={currentTab}>
               <Suspense fallback={<LoadingFallback />}>
-                {currentTab === 'path' && <MyPathView units={units} progress={progress} onLaunchQuiz={handleLaunchQuiz} onLaunchRevision={handleLaunchRevision} onNavigateToTab={navigateToTab} onLaunchReflexMission={handleLaunchReflexMission} onLaunchSurvivalCard={handleLaunchSurvivalCard} />}
+                {currentTab === 'path' && <MyPathView units={units} progress={progress} onLaunchQuiz={handleLaunchQuiz} onLaunchRevision={handleLaunchRevision} onNavigateToTab={navigateToTab} onLaunchReflexMission={handleLaunchReflexMission} onLaunchSurvivalCard={handleLaunchSurvivalCard} onOpenDocumentExercise={handleOpenDocumentExercise} onStartLesson={handleStartLesson} />}
                 {currentTab === 'lessons' && <LessonsView units={units} progress={progress} onStartLesson={handleStartLesson} />}
                 {currentTab === 'training' && (
                   quizQuestions && flashcards.length > 0
-                    ? <TrainingView units={units} flashcards={flashcards} progress={progress} onLaunchQuiz={handleLaunchQuiz} onLaunchRevision={handleLaunchRevision} onStartLesson={handleStartLesson} onLaunchSurvivalCard={handleLaunchSurvivalCard} onRateCard={handleRateCard} isFocusMode={isFocusMode} setIsFocusMode={setIsFocusMode} onNavigateToTab={navigateToTab} />
+                    ? <TrainingView units={units} flashcards={flashcards} progress={progress} onLaunchQuiz={handleLaunchQuiz} onLaunchRevision={handleLaunchRevision} onStartLesson={handleStartLesson} onLaunchSurvivalCard={handleLaunchSurvivalCard} onRateCard={handleRateCard} isFocusMode={isFocusMode} setIsFocusMode={setIsFocusMode} onNavigateToTab={navigateToTab} entryDocumentExerciseId={pendingDocumentExerciseId} onEntryDocumentExerciseConsumed={() => setPendingDocumentExerciseId(null)} entryRevisionUnitId={revisionUnitId} onEntryRevisionConsumed={() => setRevisionUnitId(null)} />
                     : <LoadingFallback />
                 )}
                 {currentTab === 'progress' && <ProgressView progress={progress} units={units} onNavigateToTab={navigateToTab} />}
