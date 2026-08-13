@@ -14,7 +14,8 @@ export interface TelemetryEvent {
     | 'GUEST_LOGIN_OFFLINE'
     | 'QUIZ_COMPLETED'
     | 'BOSS_COMPLETED'
-    | 'DOMAIN_SELECTED';
+    | 'DOMAIN_SELECTED'
+    | 'COACH_DIAGNOSTIC_CLICKED';
   payload: Record<string, any>;
   userId: string;
   timestamp: number;

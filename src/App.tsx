@@ -488,8 +488,17 @@ function AppShell() {
               <CoachView
                 progress={progress}
                 units={units}
-                onStartLesson={handleStartLesson}
+                onStartLesson={(lessonId) => {
+                  setIsCoachOpen(false);
+                  handleStartLesson(lessonId);
+                }}
                 onSignOut={signOut}
+                onNavigateToTab={(tab) => {
+                  // Sans cette prop, les replis du Coach (#51/#54) étaient
+                  // inertes en production : le bouton ne faisait rien.
+                  setIsCoachOpen(false);
+                  navigateToTab(tab);
+                }}
                 onClose={() => setIsCoachOpen(false)}
               />
             </Suspense>

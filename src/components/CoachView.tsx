@@ -4,7 +4,9 @@ import { Unit, UserProgress, TabId } from '../types';
 import { CoachConfig } from '../data/kunzDatabase';
 import { logEvent } from '../utils/telemetryService';
 import { loadStore } from '../data/store';
-import { routeErrorToTarget, getConceptRoute } from '../data/conceptRoutes';
+import { routeErrorToTarget, getConceptRoute, CONCEPT_ROUTES } from '../data/conceptRoutes';
+import { ACTIVE_LESSONS } from '../data/activeLessons';
+import { INITIAL_UNITS } from '../unitCatalog';
 import { type RecallItem } from '../data/store';
 
 interface CoachViewProps {
@@ -25,36 +27,95 @@ interface RealWeakPoint {
   conceptAr: string;
   errorCount: number;
   kind: 'methodology' | 'knowledge' | 'document';
+  unitId?: number;
+  lessonId?: string;
 }
 
 interface CoachState {
   weakPoints: RealWeakPoint[];
-  dueToday: { conceptId: string; conceptAr: string; reasonAr: string }[];
-  mastered: string[];
+  dueToday: { conceptId: string; conceptAr: string; reasonAr: string; lessonId?: string }[];
+  mastered: { conceptId: string; label: string }[];
   methodologyScore: number;
 }
 
-function resolveLessonId(conceptId: string): string {
-  const target = routeErrorToTarget(conceptId);
-  if (target.kind === 'lesson') return target.lessonId;
-  const route = getConceptRoute(conceptId);
-  if (route?.lessonId) return route.lessonId;
-  return conceptId;
+/**
+ * #51 — Unité portée par un conceptId, y compris les identifiants de synthèse
+ * `unit:N` produits par documentEvidenceService pour les exercices sans concept
+ * nommé.
+ */
+function resolveUnitId(conceptId: string, fallbackUnitId?: number): number | undefined {
+  const synthetic = /^unit:(\d+)$/.exec(conceptId);
+  if (synthetic) return Number(synthetic[1]);
+  return getConceptRoute(conceptId)?.unitId ?? fallbackUnitId;
 }
 
-function buildConceptLabel(conceptId: string): string {
-  // Libellé lisible à partir de l'id de concept (lexique DZ simplifié).
-  const map: Record<string, string> = {
-    enzmes: 'الإنزيمات',
-    enzymes: 'الإنزيمات',
-    adn_proteine: 'علاقة ADN-بروتين',
-    photosynthese: 'البناء الضوئي',
-    synapse: 'المشبك العصبي',
-    subduction: 'الانغمار',
-    lecon_transcription: 'الاستنساخ',
-    lecon_traduction: 'الترجمة',
-  };
-  return map[conceptId] ?? conceptId;
+/**
+ * #51 — Première leçon réellement ouvrable d'une unité, dérivée des routes de
+ * concepts (source unique déjà testée par conceptRoutes.test.ts).
+ */
+function firstLessonOfUnit(unitId: number): string | undefined {
+  for (const route of Object.values(CONCEPT_ROUTES)) {
+    if (route.unitId === unitId && route.lessonId && ACTIVE_LESSONS[route.lessonId] !== undefined) {
+      return route.lessonId;
+    }
+  }
+  return undefined;
+}
+
+/**
+ * #51 — Cible de remédiation. Renvoie `undefined` plutôt qu'un identifiant
+ * non ouvrable : InteractiveLessonView retombe sinon en silence sur la leçon
+ * de transcription (unité 1), ce qui envoyait l'élève dans une tout autre
+ * unité que celle où il a échoué.
+ */
+function resolveLessonId(conceptId: string, fallbackUnitId?: number): string | undefined {
+  const target = routeErrorToTarget(conceptId);
+  if (target.kind === 'lesson' && ACTIVE_LESSONS[target.lessonId] !== undefined) return target.lessonId;
+
+  const route = getConceptRoute(conceptId);
+  if (route?.lessonId && ACTIVE_LESSONS[route.lessonId] !== undefined) return route.lessonId;
+
+  const unitId = resolveUnitId(conceptId, fallbackUnitId);
+  if (unitId != null) return firstLessonOfUnit(unitId);
+  return undefined;
+}
+
+// Lexique DZ des concepts nommés (libellés courts, alignés sur le programme).
+const CONCEPT_LABELS_AR: Record<string, string> = {
+  enzymes: 'الإنزيمات',
+  expression_genique: 'التعبير المورثي',
+  adn_proteine: 'علاقة ADN-بروتين',
+  transcription: 'الاستنساخ',
+  traduction: 'الترجمة',
+  photosynthese: 'البناء الضوئي',
+  synapse: 'المشبك العصبي',
+  subduction: 'الانغمار',
+  protein_structure_function: 'بنية ووظيفة البروتين',
+  immunity_self_nonself: 'الذات واللاذات',
+  immunity_humoral_response: 'الاستجابة المناعية الخلطية',
+  immunity_cellular_response: 'الاستجابة المناعية الخلوية',
+  immunity_memory: 'الذاكرة المناعية',
+  seismic_waves: 'الأمواج الزلزالية',
+  lecon_transcription: 'الاستنساخ',
+  lecon_traduction: 'الترجمة',
+};
+
+/**
+ * #52 — Libellé arabe affichable. Un identifiant technique latin
+ * (« immunity_memory », « unit:5 ») ne doit JAMAIS atteindre l'interface :
+ * il apparaissait tel quel au milieu d'une phrase arabe RTL. Les conceptId de
+ * synthèse `unit:N` sont rendus par le titre officiel de l'unité.
+ */
+function buildConceptLabel(conceptId: string, fallbackUnitId?: number): string {
+  const known = CONCEPT_LABELS_AR[conceptId];
+  if (known) return known;
+
+  const unitId = resolveUnitId(conceptId, fallbackUnitId);
+  const unit = unitId != null ? INITIAL_UNITS.find((u) => u.id === unitId) : undefined;
+  if (unit) return unit.title;
+
+  // Dernier recours : jamais l'id brut.
+  return 'مفهوم قيد المراجعة';
 }
 
 function buildCoachState(): CoachState {
@@ -82,9 +143,11 @@ function buildCoachState(): CoachState {
     } else {
       byConcept.set(cid, {
         conceptId: cid,
-        conceptAr: buildConceptLabel(cid),
+        conceptAr: buildConceptLabel(cid, e.unitId),
         errorCount: 1,
         kind: e.kind,
+        unitId: e.unitId,
+        lessonId: resolveLessonId(cid, e.unitId),
       });
     }
   }
@@ -98,18 +161,27 @@ function buildCoachState(): CoachState {
       conceptId: item.conceptId,
       conceptAr: buildConceptLabel(item.conceptId),
       reasonAr: 'مراجعة مستحقة — تذكير متباعد',
+      lessonId: resolveLessonId(item.conceptId),
     }));
 
   // Maîtrises réelles (cellule evidenceCount > 0 et niveau != unknown).
-  const mastered: string[] = [];
+  // #53 — « أنت جاهز في » ne doit énoncer qu'une maîtrise ÉTABLIE. Le niveau
+  // `developing` est atteint dès UNE preuve à 60/100 : le retenir affichait le
+  // même concept comme point faible urgent ET comme acquis. Deux garde-fous :
+  // seul `mastered` compte, et tout concept en erreur active est exclu.
+  const conceptsWithActiveError = new Set(
+    errors.filter((e) => e.resolvedAt == null).map((e) => e.conceptId ?? e.id)
+  );
+  const mastered: CoachState['mastered'] = [];
   for (const [conceptId, record] of Object.entries(store.mastery)) {
+    if (conceptsWithActiveError.has(conceptId)) continue;
     const cells: { level: string; evidenceCount: number }[] = [
       record.knowledge,
       record.document,
       ...Object.values(record.methodology ?? {}),
     ];
-    const strong = cells.some((c) => (c?.level === 'mastered' || c?.level === 'developing') && (c?.evidenceCount ?? 0) > 0);
-    if (strong) mastered.push(buildConceptLabel(conceptId));
+    const strong = cells.some((c) => c?.level === 'mastered' && (c?.evidenceCount ?? 0) > 0);
+    if (strong) mastered.push({ conceptId, label: buildConceptLabel(conceptId) });
   }
 
   // Score méthodologique RÉEL = moyenne des preuves méthodologiques (réelles).
@@ -171,10 +243,14 @@ export default function CoachView({ onStartLesson, onSignOut, onNavigateToTab, o
             {state.weakPoints.map((wp, idx) => (
               <div key={idx} className="flex items-center justify-between bg-white dark:bg-slate-800/50 p-3 rounded-xl border border-rose-100 dark:border-rose-900/30 shadow-sm">
                 <div className="text-right">
-                  <p className="font-black text-[#1f1c0b] dark:text-white text-sm">{CoachConfig.coachMessages.weakPointDetected.replace('{concept}', wp.conceptAr).replace('{count}', String(wp.errorCount))}</p>
+                  <p data-testid={`weak-point-label-${wp.conceptId}`} className="font-black text-[#1f1c0b] dark:text-white text-sm">{CoachConfig.coachMessages.weakPointDetected.replace('{concept}', wp.conceptAr).replace('{count}', String(wp.errorCount))}</p>
                 </div>
                 <button
-                  onClick={() => onStartLesson(resolveLessonId(wp.conceptId))}
+                  data-testid={`weak-point-action-${wp.conceptId}`}
+                  onClick={() => {
+                    if (wp.lessonId) onStartLesson(wp.lessonId);
+                    else onNavigateToTab?.('training');
+                  }}
                   className="px-4 py-2 bg-rose-600 hover:bg-rose-500 text-white text-xs font-black rounded-xl transition-colors flex items-center gap-1.5 cursor-pointer shadow-md shrink-0"
                 >
                   <RefreshCw className="w-3.5 h-3.5" />
@@ -201,7 +277,11 @@ export default function CoachView({ onStartLesson, onSignOut, onNavigateToTab, o
                   <p className="text-xs text-amber-700 dark:text-amber-400 font-bold">{card.reasonAr}</p>
                 </div>
                 <button
-                  onClick={() => onStartLesson(resolveLessonId(card.conceptId))}
+                  data-testid={`due-action-${card.conceptId}`}
+                  onClick={() => {
+                    if (card.lessonId) onStartLesson(card.lessonId);
+                    else onNavigateToTab?.('training');
+                  }}
                   className="px-4 py-2 bg-amber-600 hover:bg-amber-500 text-white text-xs font-black rounded-xl transition-colors cursor-pointer shadow-md shrink-0"
                 >
                   ابدأ المراجعة
@@ -220,9 +300,9 @@ export default function CoachView({ onStartLesson, onSignOut, onNavigateToTab, o
             أنت جاهز في
           </h2>
           <div className="flex flex-wrap gap-2">
-            {state.mastered.map((concept, idx) => (
-              <span key={idx} className="px-3 py-1.5 bg-white dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300 text-xs font-black rounded-full border border-emerald-200 dark:border-emerald-800/50 shadow-sm">
-                ✓ {concept}
+            {state.mastered.map((concept) => (
+              <span key={concept.conceptId} data-testid={`mastered-${concept.conceptId}`} className="px-3 py-1.5 bg-white dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300 text-xs font-black rounded-full border border-emerald-200 dark:border-emerald-800/50 shadow-sm">
+                ✓ {concept.label}
               </span>
             ))}
           </div>
@@ -278,7 +358,15 @@ export default function CoachView({ onStartLesson, onSignOut, onNavigateToTab, o
       {/* Bouton Test Diagnostique */}
       <div className="pt-2 space-y-3">
         <button
-          onClick={() => onStartLesson('lecon_transcription')}
+          data-testid="diagnostic-action"
+          onClick={() => {
+            // #54 — Le libellé annonce un diagnostic couvrant les trois
+            // domaines : il ouvrait en réalité une seule leçon d'unité 1.
+            // On conduit désormais l'élève vers l'entraînement, seule surface
+            // qui balaie effectivement l'ensemble du programme.
+            logEvent('COACH_DIAGNOSTIC_CLICKED', {});
+            onNavigateToTab?.('training');
+          }}
           className="w-full py-4 bg-[#006d37] hover:bg-[#00562b] border border-[#006d37] rounded-2xl font-black text-white flex items-center justify-center gap-3 transition-colors shadow-md cursor-pointer"
         >
           <Target className="w-5 h-5 text-[#fed65b]" />
