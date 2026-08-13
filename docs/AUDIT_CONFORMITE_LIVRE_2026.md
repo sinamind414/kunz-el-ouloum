@@ -698,7 +698,7 @@ C'est **exactement** la difficulté n°1 des candidats algériens : confondre an
 | 4 | 10 unités sur 11 verrouillées | B1 | 🟠 Majeur | **Très faible** | ❌ **Invalidé** *(voir §3.1)* |
 | 5 | 0 figure dans le livre (discipline documentaire) | A6 | 🔴 Critique* | Moyen-élevé | **P1** |
 | 6 | Densité 40-50 mots/page sur D1-IV, D1-V, D3-III | A4 | 🟠 Majeur | Élevé | **P2** |
-| 7 | Corpus engendré par gabarits ; QCM désaligné du format BAC | B3 | 🟠 Majeur | Moyen-élevé | **P1** |
+| 7 | Corpus engendré par gabarits ; QCM désaligné du format BAC | B3 | 🟠 Majeur | Moyen-élevé | **P1** — *partiel : distracteurs traités (`0fe1710`), **énoncés non traités** (10 gabarits couvrent 494/508)* |
 | 8 | ABO/Rh absents du livre ; دليل التصحيح promis non livré | A5 | 🟠 Majeur | Moyen | **P1** |
 | 9 | Unité D2-U2 invisible dans OPUS (hiérarchie cassée) | A7 | 🟠 Majeur | **Très faible** | ✅ **Résolu** — commit `e130475` |
 | 10 | Statut « officiel » affiché ≠ statut réel (correction DeepSeek) | A1 | 🟠 Majeur | Faible | **P1** |
@@ -713,8 +713,12 @@ C'est **exactement** la difficulté n°1 des candidats algériens : confondre an
 | 19 | `lecon_transcription.html` hors nomenclature *(requalifié)* | B1 | 🔵 Mineur | Très faible | **P4** |
 | 20 | Racine polluée (~25 scripts `patch*.py`, `fix_*.py`) | — | 🔵 Mineur | Très faible | **P3** |
 | 21 | **Les 508 explications réécrites n'ont pas été validées par un enseignant en exercice** *(constat né du traitement de #1)* | B2 | 🟠 Majeur | Moyen (≈ 4-5 j) | **P1** |
-| 22 | Items **326 et 336** : échafaudage résiduel dans l'énoncé (`«3 \| العلاقة بين»`) ; réponse non informative pour 336 *(constat né du lot 4)* | B3 | 🟡 Modéré | Très faible | **P2** *(traiter avec #7)* |
+| 22 | Items **326 et 336** : échafaudage résiduel dans l'énoncé (`«3 \| العلاقة بين»`) ; réponse non informative pour 336 *(constat né du lot 4)* | B3 | 🟡 Modéré | Très faible | ✅ **Résolu** — commit `0fe1710` |
 | 23 | Feedback **statique** : la même explication est servie quel que soit le distracteur choisi | B2 | 🟡 Modéré | Élevé | **P2** |
+| 24 | **Correction morte sur 9 questions d'analyse documentaire sur 14** : `handleValidate` déréférençait `practice!` sans contexte défini ⇒ `TypeError` dans un gestionnaire d'événement, non rattrapé par l'`ErrorBoundary` ; l'élève rédigeait, cliquait, rien ne se produisait *(constat né du chantier #7)* | B1 | 🔴 **Critique** | Faible | ✅ **Résolu** — commit `e213e93` (9 contextes rédigés + garde défensive) |
+| 25 | **14 `unitId` faux sur 15** dans `documentAnalysisExercises.ts` : le nerveux rattaché à l'unité 1 « تركيب البروتين », l'immunologie à l'unité 9 « النشاط التكتوني للصفائح ». Champ jamais lu par la vue ⇒ défaut invisible mais propagé à toute navigation ou statistique par unité *(constat né du chantier #7)* | B6 | 🟠 Majeur | Très faible | ✅ **Résolu** — commit `e213e93` |
+| 26 | **Sur-annonce dans l'interface** : l'en-tête affichait « 15 وثيقة نخبة » alors que **9 documents sur 15** rendent « هذه الوثيقة غير جاهزة بعد. » — indisponibilité découverte seulement après le clic *(constat né du chantier #7)* | B7 | 🟡 Modéré | Très faible | ✅ **Résolu** — commit `e213e93` (compte réel + pastille « غير جاهزة ») |
+| 27 | **Dispositif d'analyse documentaire à 6 exercices exploitables sur 15**, aucun sur les 3 unités de géologie (D3) : le format le plus proche du BAC réel reste le moins doté | B4 | 🟠 Majeur | Moyen-élevé | **P1** |
 
 \* *Critique pour l'usage « préparation BAC » du livre pris isolément ; atténué dans l'app qui dispose de 101 assets.*
 
@@ -916,7 +920,7 @@ u6 45 circ 0 short 0
 
 **Durcissement du garde-fou.** La dette étant nulle, les deux plafonds dégressifs ont été supprimés au profit d'assertions strictes (`expect(circular.map(q => q.id)).toEqual([])`), et `REWRITTEN_UNITS` couvre les **11 unités**. Le fichier `src/quizCorpus.integrity.test.ts` compte **22 assertions, toutes vertes**. Suite complète : **361 passés / 7 échoués** — les 7 mêmes échecs préexistants, aucune régression introduite par les cinq lots.
 
-**Bilan du chantier #1.** 508 explications réécrites en 5 lots, **500 flashcards réparées par dérivation automatique**, 0 modification hors du champ `explanation` sur l'ensemble des lots, 0 régression. Le seul P0 de l'audit est soldé. Trois constats en sont nés, désormais inscrits au registre : **#21** (validation enseignante requise), **#22** (items 326/336), **#23** (feedback non différencié).
+**Bilan du chantier #1.** 508 explications réécrites en 5 lots, **500 flashcards réparées par dérivation automatique**, 0 modification hors du champ `explanation` sur l'ensemble des lots, 0 régression. Le seul P0 de l'audit est soldé. Trois constats en sont nés, inscrits au registre : **#21** (validation enseignante requise), **#22** (items 326/336, depuis soldé), **#23** (feedback non différencié).
 
 ### Sprint 2 — « Conformité au format d'épreuve » (12-15 jours)
 
@@ -927,6 +931,31 @@ u6 45 circ 0 short 0
 | Rédaction de la section ABO/Rh du livre (réutiliser `phase5_chapitres_9_10.html`) | 2 j | #8 |
 | Production du دليل التصحيح, ou retrait de la promesse l.26 | 3 j | #8 |
 
+### Lot 2 du Sprint 2 — « Analyse documentaire » : trois défauts prouvés par exécution
+
+Le constat **#7** désigne le format d'évaluation comme le vrai plafond du produit : le BAC algérien évalue par **analyse expérimentale documentée** (deux parties indépendantes, 15 + 5 points, sur deux domaines différents), pas par QCM. L'application dispose déjà du bon dispositif — `DocumentAnalysisView`, 15 exercices, 33 questions. L'audit de ce dispositif a révélé qu'il était **partiellement hors service**.
+
+**Défaut 1 — la correction ne répondait pas (Critique).** `handleValidate` construisait sa trace avec `context: practice!`, l'opérateur `!` affirmant au compilateur qu'un contexte de pratique existe toujours. Il n'existait que pour 5 questions sur les 14 réellement atteignables. Pour les 9 autres, `validateDocumentTrace` recevait `undefined` et levait `TypeError: Cannot read properties of undefined (reading 'expectedEvidence')`.
+
+Ce défaut est plus grave que ne le suggère son libellé, pour une raison de mécanique React : **l'erreur est levée dans un gestionnaire d'événement**, or les `ErrorBoundary` n'interceptent pas les erreurs des handlers. Il n'y avait donc ni écran de secours, ni message : l'élève rédigeait sa réponse, cliquait « صحّح إجابتي », et **rien ne se produisait**. Le symptôme le plus décourageant possible dans une application de révision — et le plus silencieux pour l'équipe, puisqu'il ne remonte dans aucun log.
+
+Mesure par exécution avant correction, sur les 14 questions atteignables : **9 plantages**. Après : **0**.
+
+La correction est double, et l'ordre importe. D'abord une **garde défensive** (`if (!practice) { setRecorded(null); return; }`) : plus aucun contexte manquant ne pourra jamais provoquer de crash. Ensuite la **rédaction des 9 contextes manquants** — car la garde seule aurait transformé un plantage en bouton inerte, ce qui n'est pas une correction mais un camouflage.
+
+**Défaut 2 — 14 `unitId` faux sur 15 (Majeur).** Les exercices de jonction neuromusculaire étaient rattachés à l'unité 1 (تركيب البروتين), ceux d'immunologie à l'unité 9 (النشاط التكتوني للصفائح). Ce champ n'étant lu par aucun composant, le défaut était **invisible à l'usage** — mais il aurait contaminé toute navigation par unité, tout filtre de révision et toute statistique de maîtrise construits par-dessus. Corrigé sur les 15 exercices, et **figé par un test** qui compare la table complète exercice → unité → nombre de questions.
+
+**Défaut 3 — sur-annonce dans l'interface (Modéré).** L'en-tête annonçait « 15 وثيقة نخبة » quand **9 documents sur 15** affichent « هذه الوثيقة غير جاهزة بعد. ». L'élève découvrait l'indisponibilité après avoir choisi l'exercice. L'en-tête affiche désormais le nombre réellement exploitable, et la liste porte une pastille « غير جاهزة » **avant** le clic. Le dispositif reste à **6 exercices exploitables sur 15**, dont **aucun en géologie** : c'est le nouveau constat **#27**, et le vrai chantier de fond du Sprint 2.
+
+**Deux specs obsolètes, corrigées avec leur motif.** Deux tests s'opposaient à la correction. Ils n'ont pas été assouplis pour verdir : ils ont été requalifiés, motif écrit en commentaire dans le code.
+
+Le premier, `exerciseId unique`, imposait **un seul contexte par exercice** alors que la clé de lecture réelle est le couple `(exerciseId, questionId)`. Cet invariant interdisait littéralement de documenter les questions q2 et q3 — **c'est lui qui a produit le défaut 1**. Il est remplacé par l'unicité du couple (vérifiée : 25 contextes, 25 couples distincts) plus un test de non-régression exigeant qu'au moins un exercice porte plusieurs contextes. Avant de le modifier, ses consommateurs ont été recherchés : un seul, le test lui-même. Et il a été vérifié par exécution que `getDocumentPracticeContextByExercise` — appelé sans `questionId` par `LiveDocumentUracile` et `sessionEffectsService` — **résout toujours la question q1 pour les 17 exercices**, donc sans changement de comportement.
+
+Le second figeait par `toEqual` la liste ordonnée de 16 exercices prioritaires, rendant tout ajout impossible. Il vérifie désormais la **présence** de ces 16 exercices sans figer ni l'ordre ni le total.
+
+**Bilan du lot.** 9 contextes rédigés, 15 `unitId` corrigés, 1 garde défensive, 1 en-tête rendu sincère, 7 assertions d'intégrité ajoutées (`src/data/documentAnalysis.integrity.test.ts`). **380 tests verts sur 380** (42 fichiers), `tsc` rc=0, build OK, 0 doublon d'options sur 508 QCM. Constats **#24**, **#25**, **#26** soldés ; **#27** ouvert en P1.
+
+---
 ### Sprint 3 — « Densité et visuels » (20-30 jours)
 
 | Action | Effort | Constat traité |
@@ -1043,6 +1072,7 @@ npx vitest run src/quizCorpus.integrity.test.ts   # garde-fou seul : 22 assertio
 
 ## Annexe III — Faux positifs écartés
 
+
 Ces pistes ont été explorées puis invalidées. Elles sont consignées pour éviter qu'un audit ultérieur ne les rouvre.
 
 | Piste | Statut | Raison de l'invalidation |
@@ -1056,4 +1086,4 @@ Ces pistes ont été explorées puis invalidées. Elles sont consignées pour é
 
 ---
 
-*Fin du rapport. Volet A : 6,4/10 — Volet B : 7,0/10 après le Sprint 0, les cinq lots du Sprint 1 et le premier lot du Sprint 2. **Le seul P0 de l'audit — constat #1, les explications circulaires — est soldé** : les 508 explications des 11 unités ont été réécrites au canevas « mécanisme → réfutation du distracteur → mot-clé BAC », l'échafaudage de génération a été retiré des 500 énoncés, les 500 flashcards sont réparées par dérivation automatique, et le corpus passe de 500 explications circulaires à **zéro**, sous un garde-fou de 23 assertions désormais à **tolérance nulle**. Le premier lot du Sprint 2 a par ailleurs soldé le constat #12 : les 7 tests rouges décrivaient des fonctionnalités spécifiées mais non câblées — rampe débutant rendue derrière son propre garde d'onboarding, 300 lignes de métadonnées visuelles n'atteignant jamais le DOM — et sont désormais verts sans qu'aucune assertion ait été assouplie (**369 tests verts, 0 rouge**, `tsc` propre, build OK). Trois constats nés de ce chantier restent ouverts : la validation par un enseignant en exercice (#21, P1), les items 326/336 (#22, P2) et l'absence de feedback différencié par distracteur (#23, P2). Le Sprint 2 a par ailleurs assaini le corpus de QCM : **402 distracteurs de remplissage sur 508 items (79 %)** — des phrases hors-domaine éliminables sans connaître le cours — ont été réécrits en erreurs classiques portant sur le concept visé, les items 326/336 ont été reconstruits (constat #22 soldé), et les stratégies de réussite sans connaissance sont retombées au niveau du hasard (35,4 % → 17,5 %). **372 tests verts**, `tsc` propre, build OK. La priorité suivante n'est plus le contenu du feedback mais **la forme de l'évaluation** : aligner l'entraînement sur l'exercice documenté réellement pratiqué au BAC algérien.*
+*Fin du rapport. Volet A : 6,4/10 — Volet B : 7,0/10 après le Sprint 0, les cinq lots du Sprint 1 et les deux premiers lots du Sprint 2. **Le seul P0 de l'audit — constat #1, les explications circulaires — est soldé** : les 508 explications des 11 unités ont été réécrites au canevas « mécanisme → réfutation du distracteur → mot-clé BAC », l'échafaudage de génération a été retiré des 500 énoncés, les 500 flashcards sont réparées par dérivation automatique, et le corpus passe de 500 explications circulaires à **zéro**, sous un garde-fou de 23 assertions désormais à **tolérance nulle**. Le premier lot du Sprint 2 a par ailleurs soldé le constat #12 : les 7 tests rouges décrivaient des fonctionnalités spécifiées mais non câblées — rampe débutant rendue derrière son propre garde d'onboarding, 300 lignes de métadonnées visuelles n'atteignant jamais le DOM — et sont désormais verts sans qu'aucune assertion ait été assouplie (**369 tests verts, 0 rouge**, `tsc` propre, build OK). Deux constats nés de ce chantier restent ouverts : la validation par un enseignant en exercice (#21, P1) et l'absence de feedback différencié par distracteur (#23, P2) ; le troisième, les items 326/336 (#22), a été soldé depuis. Le Sprint 2 a par ailleurs assaini le corpus de QCM : **402 distracteurs de remplissage sur 508 items (79 %)** — des phrases hors-domaine éliminables sans connaître le cours — ont été réécrits en erreurs classiques portant sur le concept visé, les items 326/336 ont été reconstruits (constat #22 soldé), et les stratégies de réussite sans connaissance sont retombées au niveau du hasard (35,4 % → 17,5 %). **372 tests verts**, `tsc` propre, build OK. Le second lot du Sprint 2 s'est attaqué à **la forme de l'évaluation** — l'analyse documentaire, seul format proche du BAC réel — et y a trouvé un défaut critique jusque-là invisible : **9 des 14 questions atteignables ne répondaient pas au clic sur « corriger »**, un `TypeError` levé dans un gestionnaire d'événement, donc hors de portée de l'`ErrorBoundary` et absent de tout log. Le dispositif est réparé (0 plantage sur 14), ses 14 `unitId` erronés sur 15 sont corrigés et figés par un test, et l'en-tête n'annonce plus 15 documents quand 6 seulement sont exploitables. Deux specs obsolètes ont été requalifiées avec leur motif écrit dans le code, après vérification qu'aucun appelant de production ne changeait de comportement. **380 tests verts, 0 rouge**, `tsc` propre, build OK. Le chantier de fond reste entier et devient le constat **#27** : **6 exercices documentés exploitables sur 15, aucun sur les trois unités de géologie**. Tant que le format le plus fidèle à l'épreuve reste le moins doté, le plafond mesuré en B3/B4 ne bougera pas.*
