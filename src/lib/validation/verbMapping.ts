@@ -42,6 +42,14 @@ const MAP: Record<string, VerbMapping> = {
   ناقش: { actionVerb: 'validate', loiFocus: 5, checks: ['BLOCKS', 'H2_SOFT'] },
   أثبت: { actionVerb: 'validate', loiFocus: 5, checks: ['BLOCKS', 'H2_SOFT'] },
 
+  // Guide méthodologique §9 « استخرج مقابل استنتج » : استخرج = relever ce qui figure
+  // dans le document ; استنتج = produire une conclusion logique NOUVELLE, rattachée au
+  // problème scientifique. Les deux verbes manquaient alors que le livre officiel emploie
+  // استنتج 26 fois et que 8 des 22 questions guidées reposent dessus.
+  استخرج: { actionVerb: 'identify', loiFocus: 0, checks: ['IDENTIFY'] },
+  استنتج: { actionVerb: 'synthesize', loiFocus: 5, checks: ['TEXT_STRUCTURE'] },
+  'استنتج العلاقة': { actionVerb: 'analyse', loiFocus: 2, checks: ['KULLAMA', 'VALUE_UNIT'] },
+
   'اكتب نصا علميا': { actionVerb: 'synthesize', loiFocus: 5, checks: ['TEXT_STRUCTURE'] },
   'أنجز مخططا': { actionVerb: 'schematize', loiFocus: 5, checks: ['SCHEMA_TITLE'] },
   'أنجز رسما': { actionVerb: 'schematize', loiFocus: 5, checks: ['SCHEMA_TITLE'] },
@@ -57,8 +65,15 @@ export function mapVerb(input: string): VerbMapping | null {
   for (const [key, val] of Object.entries(MAP)) {
     if (normalizeAr(key) === norm) return val;
   }
-  // Puis mots-clés contenus
-  for (const [key, val] of Object.entries(MAP)) {
+  // Puis mots-clés contenus, du plus SPÉCIFIQUE au plus général.
+  // Sans ce tri, l'itération suit l'ordre d'insertion : la clé courte « حدد »
+  // interceptait « حدد العلاقة » / « حدد الآلية » / « حدد المشكل », rendant ces
+  // trois entrées inatteignables et écrasant la polysémie que ce fichier
+  // documente pourtant explicitement en tête.
+  const parEntreeLaPlusLongue = Object.entries(MAP).sort(
+    ([a], [b]) => normalizeAr(b).length - normalizeAr(a).length
+  );
+  for (const [key, val] of parEntreeLaPlusLongue) {
     if (norm.includes(normalizeAr(key))) return val;
   }
   return null;
