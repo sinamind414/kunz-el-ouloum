@@ -91,10 +91,12 @@ describe('exercices d analyse documentaire — intégrité', () => {
 
   it('note l écart entre les 15 exercices annoncés et les documents réellement affichables', () => {
     expect(DOCUMENT_ANALYSIS_EXERCISES).toHaveLength(15);
-    // 6 exercices exploitables aujourd'hui ; les 9 autres affichent
-    // « هذه الوثيقة غير جاهزة بعد. ». Faire monter ce chiffre est un progrès :
-    // le test devra alors être mis à jour sciemment.
-    expect(reachable).toHaveLength(6);
+    // 9 exercices exploitables (lot 3 : +3 documents reconstruits en données —
+    // enzyme_ph_temp, glycemie_januvia, photosynth_courbe). Les 6 restants
+    // affichent « هذه الوثيقة غير جاهزة بعد. » car ils exigent une VRAIE image
+    // (schéma, immunodiffusion, électrophorèse) qu'on ne peut pas inventer.
+    // Faire monter ce chiffre est un progrès : mettre à jour sciemment.
+    expect(reachable).toHaveLength(9);
   });
 
   it('barème d entraînement à 20 points et étiquette anti-confusion présente', () => {

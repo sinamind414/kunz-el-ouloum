@@ -140,6 +140,86 @@ const rifamycineDocument: DocumentAsset = {
   ],
 };
 
+// --- Lot 3 du Sprint 2 : documents reconstruits en DONNEES (aucune image requise).
+// Le renderer sait deja dessiner 'table' et 'curve' ; ces trois documents etaient
+// declares 'unavailable' alors que leurs questions, correction et grille existaient
+// deja en entier. Echelles qualitatives : le programme n'en fixe aucune valeur
+// numerique, et inventer des chiffres serait une donnee non sourcee.
+
+const enzymePhTempTable: DocumentAsset = {
+  kind: 'table',
+  columns: ['الشرط التجريبي', 'pH الوسط', 'درجة الحرارة', 'نشاط الإنزيم'],
+  rows: [
+    ['وسط حمضي بارد', 'منخفض', 'منخفضة', 'ضعيف جداً'],
+    ['وسط حمضي معتدل الحرارة', 'منخفض', 'مثلى', 'ضعيف'],
+    ['الوسط الأمثل', 'مثالي', 'مثلى', 'أعظمي'],
+    ['وسط قاعدي معتدل الحرارة', 'مرتفع', 'مثلى', 'ضعيف'],
+    ['وسط أمثل حار', 'مثالي', 'مرتفعة جداً', 'منعدم'],
+  ],
+  captionAr: 'تمثيل نوعي لنشاط الإنزيم حسب pH ودرجة الحرارة: قمة عند الشروط المثلى وانعدام النشاط عند الحرارة المرتفعة جداً.',
+};
+
+const photosynthCurve: DocumentAsset = {
+  kind: 'curve',
+  captionAr: 'تمثيل نوعي: يرتفع معدل التركيب الضوئي مع شدة الضوء ثم يستقر عند التشبع.',
+  altAr: 'منحنى نوعي يصعد مع شدة الإضاءة ثم يستوي أفقياً عند مستوى التشبع.',
+  xAxisAr: 'شدة الإضاءة',
+  yAxisAr: 'معدل التركيب الضوئي',
+  xScaleAr: ['منعدمة', 'مرتفعة'],
+  yScaleAr: ['منعدم', 'التشبع'],
+  points: [
+    { x: 0, y: 2 },
+    { x: 18, y: 34 },
+    { x: 36, y: 61 },
+    { x: 56, y: 80 },
+    { x: 78, y: 89 },
+    { x: 100, y: 91 },
+  ],
+};
+
+// q3 demande explicitement de « صادق بربط منحنى السكر والهرمون » : il faut donc
+// DEUX courbes, pas une. Le document est monte en 'mixed'.
+const glycemieJanuviaDocument: DocumentAsset = {
+  kind: 'mixed',
+  captionAr: 'وثيقتان نوعيتان لمتابعة نسبة السكر ومستوى الهرمون بعد تناول الجانوفيا.',
+  assets: [
+    {
+      kind: 'curve',
+      captionAr: 'الوثيقة 1: تنخفض نسبة السكر في الدم بعد تناول الجانوفيا ثم تستقر.',
+      altAr: 'منحنى نوعي تنازلي يبين انخفاض نسبة السكر في الدم مع مرور الزمن بعد الجرعة.',
+      xAxisAr: 'الزمن بعد الجرعة',
+      yAxisAr: 'نسبة السكر في الدم',
+      xScaleAr: ['الجرعة', 'بعد ساعات'],
+      yScaleAr: ['منخفضة', 'مرتفعة'],
+      points: [
+        { x: 0, y: 88 },
+        { x: 20, y: 78 },
+        { x: 42, y: 60 },
+        { x: 64, y: 45 },
+        { x: 82, y: 38 },
+        { x: 100, y: 35 },
+      ],
+    },
+    {
+      kind: 'curve',
+      captionAr: 'الوثيقة 2: يرتفع مستوى الهرمون المعزز لإفراز الأنسولين في نفس الفترة.',
+      altAr: 'منحنى نوعي تصاعدي يبين ارتفاع مستوى الهرمون المعزز لإفراز الأنسولين مع مرور الزمن.',
+      xAxisAr: 'الزمن بعد الجرعة',
+      yAxisAr: 'مستوى الهرمون',
+      xScaleAr: ['الجرعة', 'بعد ساعات'],
+      yScaleAr: ['منخفض', 'مرتفع'],
+      points: [
+        { x: 0, y: 20 },
+        { x: 20, y: 38 },
+        { x: 42, y: 58 },
+        { x: 64, y: 74 },
+        { x: 82, y: 82 },
+        { x: 100, y: 85 },
+      ],
+    },
+  ],
+};
+
 export const DOCUMENT_ASSETS: Record<string, DocumentAssetEntry> = {
   nmj_ppm: { status: 'ready', asset: nmjPpmCurve },
   ach_jnm: {
@@ -155,14 +235,14 @@ export const DOCUMENT_ASSETS: Record<string, DocumentAssetEntry> = {
   curare_table: { status: 'ready', asset: curareTable },
   sarin_gb: { status: 'ready', asset: sarinDocument },
   michaelis: { status: 'ready', asset: michaelisCurve },
-  enzyme_ph_temp: { status: 'unavailable' },
+  enzyme_ph_temp: { status: 'ready', asset: enzymePhTempTable },
   rifamycine: { status: 'ready', asset: rifamycineDocument },
   translation: { status: 'unavailable' },
   ouchterlony: { status: 'unavailable' },
   electro_hb: { status: 'unavailable' },
-  glycemie_januvia: { status: 'unavailable' },
+  glycemie_januvia: { status: 'ready', asset: glycemieJanuviaDocument },
   membrane_hla: { status: 'unavailable' },
-  photosynth: { status: 'unavailable' },
+  photosynth: { status: 'ready', asset: photosynthCurve },
   h1_h2_generic: { status: 'unavailable' },
 };
 
