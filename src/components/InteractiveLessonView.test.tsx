@@ -176,18 +176,26 @@ vi.mock('../data/lessonGoldSummaries', () => ({
   getLessonGoldSummary: () => undefined,
 }));
 
-vi.mock('../data/lessonTransferChallenges', () => ({
-  getLessonTransferChallenge: () => ({
-    lessonId: 'd1-u1-l2-transcription',
-    conceptId: 'concept_exit_test',
-    reflexId: 'analyse',
-    titleAr: 'تحدي BAC اختباري',
-    contextAr: 'سياق اختباري',
-    questionAr: 'سؤال تحدي BAC',
-    correctionAr: 'تصحيح اختباري',
-    validation: { docType: 'mixed', actionVerb: 'analyse', domain: 'autre' },
-  }),
-}));
+vi.mock('../data/lessonTransferChallenges', async (importOriginal) => {
+  // #41 — On conserve la VRAIE implémentation de hasTransferContent : ce
+  // garde-fou fait partie du verdict testé ici, le neutraliser reviendrait à
+  // tester une version de l'écran que l'élève ne voit jamais.
+  const actual =
+    await importOriginal<typeof import('../data/lessonTransferChallenges')>();
+  return {
+    ...actual,
+    getLessonTransferChallenge: () => ({
+      lessonId: 'd1-u1-l2-transcription',
+      conceptId: 'concept_exit_test',
+      reflexId: 'analyse',
+      titleAr: 'تحدي BAC اختباري',
+      contextAr: 'سياق اختباري',
+      questionAr: 'سؤال تحدي BAC',
+      correctionAr: 'يظهر الوسم في النواة حيث يركب ARNm ثم ينتقل إلى الهيولى.',
+      validation: { docType: 'mixed', actionVerb: 'analyse', domain: 'autre' },
+    }),
+  };
+});
 
 vi.mock('../lib/validation/ValidationEngine', () => ({
   validateAnswer: () => ({ passed: true, score: 80, maxScore: 100, errors: [] }),
@@ -249,12 +257,35 @@ describe('InteractiveLessonView exit practice', () => {
     const user = await completeLastBlock();
 
     await user.click(screen.getByRole('button', { name: 'document réussi' }));
-    await user.type(screen.getByPlaceholderText('اكتب إجابتك التحليلية هنا…'), 'إجابة BAC صحيحة');
+    await user.type(
+      screen.getByPlaceholderText('اكتب إجابتك التحليلية هنا…'),
+      // #41 — « إجابة BAC صحيحة » ne contient aucune notion du cours et validait
+      // pourtant le défi. Vraie réponse d'élève, reformulée sans copier le corrigé.
+      'يظهر الوسم اولا في النواه اين يركب arnm ثم ينتقل الى الهيولى',
+    );
     await user.click(screen.getByRole('button', { name: 'صحّح بالمصحح الحقيقي' }));
     await user.click(screen.getByRole('button', { name: 'إنهاء الممارسة والانتقال' }));
 
     expect(screen.getByText('أكملت الوثيقة وتحدي BAC بنجاح.')).toBeDefined();
     expect(recordLessonTransferEvidence).toHaveBeenCalledTimes(1);
+  });
+
+  // #41 — Contre-épreuve au niveau de l'ÉCRAN : ValidationEngine est ici mocké
+  // « passed:true, 80 % », exactement la situation qui laissait une réponse
+  // hors-sujet valider le Défi BAC et enregistrer une preuve de transfert.
+  it('une réponse hors-sujet au Défi BAC n’est pas comptée comme réussie', async () => {
+    render(<InteractiveLessonView lessonId="d1-u1-l2-transcription" onClose={vi.fn()} />);
+    const user = await completeLastBlock();
+
+    await user.click(screen.getByRole('button', { name: 'document réussi' }));
+    await user.type(
+      screen.getByPlaceholderText('اكتب إجابتك التحليلية هنا…'),
+      'كرة القدم رياضة جميلة والطقس حار اليوم في المدينة',
+    );
+    await user.click(screen.getByRole('button', { name: 'صحّح بالمصحح الحقيقي' }));
+    await user.click(screen.getByRole('button', { name: 'إنهاء الممارسة والانتقال' }));
+
+    expect(screen.queryByText('أكملت الوثيقة وتحدي BAC بنجاح.')).toBeNull();
   });
 
   it('autorise une fin failed apres erreur sans preuve methodologique', async () => {
@@ -402,7 +433,12 @@ describe('InteractiveLessonView session resume', () => {
     await user.type(screen.getByPlaceholderText('اكتب الكلمة السرية هنا...'), 'صحيح');
     await user.click(screen.getByRole('button', { name: 'تحقق' }));
     await user.click(screen.getByRole('button', { name: 'document réussi' }));
-    await user.type(screen.getByPlaceholderText('اكتب إجابتك التحليلية هنا…'), 'إجابة BAC صحيحة');
+    await user.type(
+      screen.getByPlaceholderText('اكتب إجابتك التحليلية هنا…'),
+      // #41 — « إجابة BAC صحيحة » ne contient aucune notion du cours et validait
+      // pourtant le défi. Vraie réponse d'élève, reformulée sans copier le corrigé.
+      'يظهر الوسم اولا في النواه اين يركب arnm ثم ينتقل الى الهيولى',
+    );
     await user.click(screen.getByRole('button', { name: 'صحّح بالمصحح الحقيقي' }));
     await user.click(screen.getByRole('button', { name: 'إنهاء الممارسة والانتقال' }));
 

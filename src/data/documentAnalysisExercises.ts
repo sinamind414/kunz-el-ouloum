@@ -91,16 +91,20 @@ export const DOCUMENT_ANALYSIS_EXERCISES: DocAnalysisExercise[] = [
     unitId: 5,
     domain: 'nerveux',
     corpus: 'elite',
-    doc: { type: 'mixed', assetKey: 'ppse_ppsi', descriptionAr: 'مقارنة بين كمون ما بعد التشابك (PPSE) وكمون ما بعد التشابك الاستثاري (PPSI).' },
+    doc: { type: 'mixed', assetKey: 'ppse_ppsi', descriptionAr: 'مقارنة بين كمون ما بعد التشابك الاستثاري (PPSE) وكمون ما بعد التشابك التثبيطي (PPSI).' },
     questions: [
       {
         id: 'ppse_ppsi_compare_q1', verb: 'قارن', promptAr: 'قارن بين PPSE و PPSI من حيث الاتجاه والآلية.',
-        loiFocus: 2, ctx: { docType: 'quantitative', actionVerb: 'compare', isNeuromuscular: true },
+        // #40 — Cet exercice porte sur la SYNAPSE (PPSE/PPSI), pas sur la jonction
+        // neuromusculaire. `isNeuromuscular: true` y declenchait WRONG_PPM_PPSE
+        // (critical) des que l'eleve ecrivait « PPSE » — ce que l'enonce EXIGE.
+        loiFocus: 2, ctx: { docType: 'quantitative', actionVerb: 'compare', isNeuromuscular: false },
         templateHint: 'نلاحظ … بينما … (كلما/بينما).',
       },
       {
         id: 'ppse_ppsi_compare_q2', verb: 'فسر', promptAr: 'فسّر الفرق على المستوى الجزيئي.',
-        loiFocus: 3, ctx: { docType: 'mixed', actionVerb: 'interpret', isNeuromuscular: true },
+        // #40 — idem q1 : sujet synaptique, la regle PPM ne s'y applique pas.
+        loiFocus: 3, ctx: { docType: 'mixed', actionVerb: 'interpret', isNeuromuscular: false },
         templateHint: 'يرجع ذلك إلى نوع المستقبل …',
       },
     ],

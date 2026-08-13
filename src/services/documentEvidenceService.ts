@@ -93,6 +93,39 @@ function validateStructuredCriteria(context: DocumentPracticeContext, normAnswer
   return { observation, mechanism, conclusion };
 }
 
+// #41 — Garde-fou du VERDICT AFFICHÉ à l'élève.
+//
+// Mesuré sur les données réelles : ValidationEngine note la FORME
+// méthodologique et non le fond ; une réponse hors-sujet ou « لا اعرف الجواب »
+// obtenait 80-95 % et l'étiquette « مقبول » sur les 31 questions atteignables.
+//
+// On ne peut pas réutiliser validateDocumentTrace() pour cet affichage : sa
+// règle stricte (destinée à la trace de maîtrise) refuse 8 corrections
+// OFFICIELLES sur 31. On mesure donc un simple recouvrement lexical avec les
+// notions attendues, calibré dans les deux sens sur les données réelles :
+//   - pire correction officielle ....... 0,538
+//   - meilleur négatif (155 mesures) ... 0,042
+// Le seuil est placé dans cet intervalle, près du bruit, pour rester
+// accueillant envers une réponse d'élève reformulée.
+const DISPLAY_COVERAGE_RATIO = 0.15;
+
+/**
+ * Vrai si la réponse mobilise réellement les notions du document.
+ * Sert à conditionner le verdict montré à l'élève, jamais le score du moteur.
+ */
+export function answerHasDocumentContent(
+  answer: string,
+  context: DocumentPracticeContext,
+  extraReference = ''
+): boolean {
+  const reference = [...(context.expectedEvidence ?? []), extraReference].join(' ');
+  const expected = Array.from(new Set(contentTokens(reference))).filter((t) => t.length >= 4);
+  if (expected.length === 0) return true;
+  const normAnswer = normalizeArabic(answer);
+  const hits = expected.filter((t) => normAnswer.includes(t)).length;
+  return hits / expected.length >= DISPLAY_COVERAGE_RATIO;
+}
+
 export function validateDocumentTrace(input: DocumentTraceInput): DocumentTraceResult {
   const { context, answer, validationResult } = input;
   const normAnswer = normalizeArabic(answer);

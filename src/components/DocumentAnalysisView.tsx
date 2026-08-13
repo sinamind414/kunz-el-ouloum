@@ -4,7 +4,7 @@ import { BookOpen, ChevronRight, ArrowRight, CheckCircle2, XCircle, Lightbulb, T
 import { DOCUMENT_ANALYSIS_EXERCISES, type DocAnalysisExercise } from '../data/documentAnalysisExercises';
 import { getDocumentPracticeContext } from '../data/documentPracticeContexts';
 import { useSmartValidation } from '../hooks/useSmartValidation';
-import { recordDocumentTrace } from '../services/documentEvidenceService';
+import { recordDocumentTrace, answerHasDocumentContent } from '../services/documentEvidenceService';
 import DocumentAssetRenderer from './DocumentAssetRenderer';
 import { isDocumentAssetAvailable } from '../data/documentAssets';
 import CockpitChecklist from './CockpitChecklist';
@@ -118,6 +118,8 @@ export function ExerciseScreen({
   const [answer, setAnswer] = useState('');
   const [hintsShown, setHintsShown] = useState(0);
   const [recorded, setRecorded] = useState<boolean | null>(null);
+  // #41 — validite de la trace documentaire, pour aligner le verdict affiche.
+  const [evidenceValid, setEvidenceValid] = useState<boolean | null>(null);
   const assetAvailable = isDocumentAssetAvailable(exercise.doc.assetKey);
 
   // Contexte de pratique documentaire (objectif, vocabulaire, preuve attendue).
@@ -134,11 +136,16 @@ export function ExerciseScreen({
     // (Auparavant `practice!` provoquait un TypeError qui laissait le bouton mort.)
     if (!practice) {
       setRecorded(null);
+      setEvidenceValid(null);
       return;
     }
     // Validation de la trace documentaire réelle (preuve + vocabulaire).
     const outcome = recordDocumentTrace({ context: practice, answer, validationResult: r });
     setRecorded(outcome.evidence != null);
+    // Verdict affiché : recouvrement lexical calibré (cf. #41). On n'utilise pas
+    // outcome.trace.valid, dont la règle stricte — juste pour la trace de
+    // maîtrise — refuse 8 corrections officielles sur 31.
+    setEvidenceValid(answerHasDocumentContent(answer, practice, exercise.correctionAr));
   };
 
   const handleNext = () => {
@@ -148,12 +155,14 @@ export function ExerciseScreen({
       reset();
       setHintsShown(0);
       setRecorded(null);
+      setEvidenceValid(null);
     } else {
       onBackToList();
       setAnswer('');
       reset();
       setHintsShown(0);
       setRecorded(null);
+      setEvidenceValid(null);
     }
   };
 
@@ -264,7 +273,7 @@ export function ExerciseScreen({
 
       {/* Résultat — correction modèle masquée jusqu'à la tentative */}
       {assetAvailable && result && (
-        <ResultSheet result={result} correctionAr={exercise.correctionAr} recorded={recorded} />
+        <ResultSheet result={result} correctionAr={exercise.correctionAr} recorded={recorded} evidenceValid={evidenceValid} />
       )}
     </div>
   );
@@ -274,13 +283,21 @@ function ResultSheet({
   result,
   correctionAr,
   recorded,
+  evidenceValid,
 }: {
   result: ReturnType<typeof useSmartValidation>['result'];
   correctionAr: string;
   recorded: boolean | null;
+  evidenceValid?: boolean | null;
 }) {
   if (!result) return null;
-  const passed = result.passed;
+  // #41 — Le verdict affiche suivait le seul ValidationEngine, qui note la FORME
+  // methodologique et non le fond : une reponse hors-sujet obtenait 80-95 % et
+  // l'etiquette « مقبول » sur les 31 questions atteignables, alors que la trace
+  // documentaire (preuve + vocabulaire) la refusait au meme instant. L'eleve
+  // lisait « accepte » pendant que l'application n'enregistrait aucune preuve.
+  // Le verdict montre est desormais celui qui fait foi.
+  const passed = result.passed && evidenceValid !== false;
   return (
     <motion.div
       initial={{ opacity: 0, y: 10 }}

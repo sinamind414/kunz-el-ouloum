@@ -20,7 +20,7 @@ import {
 import { checkProduction, checkMethodologyStep, checkAnalysisPurity, isInsideHotspot } from '../utils/methodologyChecker';
 import { logEvent } from '../utils/telemetryService';
 import { ZoomImageButton } from './ZoomableImage';
-import { getLessonTransferChallenge, type LessonTransferChallenge } from '../data/lessonTransferChallenges';
+import { getLessonTransferChallenge, hasTransferContent, type LessonTransferChallenge } from '../data/lessonTransferChallenges';
 import { validateAnswer } from '../lib/validation/ValidationEngine';
 import { runSessionEffects, buildEffectsForEvent, buildTransferEvidenceEffect } from '../lib/lesson/sessionEffectsService';
 import { getLessonProgression, type LessonProgression } from '../data/activeLessons';
@@ -976,7 +976,10 @@ function BacTransferChallenge({
     const s = Math.round((result.score / result.maxScore) * 100);
     setAttempted(true);
     setScore(s);
-    const attemptPassed = result.passed && s >= 70;
+    // #41 — la forme méthodologique ne suffit pas : sans recouvrement avec le
+    // corrigé officiel, une réponse hors-sujet validait le défi et enregistrait
+    // une preuve de transfert.
+    const attemptPassed = result.passed && s >= 70 && hasTransferContent(answer, challenge);
     setPassed(attemptPassed);
 
     runSessionEffects([

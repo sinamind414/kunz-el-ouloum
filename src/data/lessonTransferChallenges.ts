@@ -4,6 +4,7 @@
 // Correction masquée avant toute tentative (règle produit-avant-correction).
 
 import type { CoreReflexId } from './reflexes';
+import { normalizeArabic } from '../utils/arabicNormalize';
 
 export interface LessonTransferChallenge {
   id: string;
@@ -87,6 +88,43 @@ export const LESSON_TRANSFER_CHALLENGES: Record<string, LessonTransferChallenge>
       'تزداد السرعة مع تركيز الركيزة لأن المواقع النشطة تتحرّك نحو التشبّع، ثم تستقر عند Vmax لأن جميع المواقع النشطة أصبحت مشغولة ولا يمكن للإنزيم استقبال ركيزة أكثر.',
   },
 };
+
+// #41 — Le Défi BAC notait sur le seul ValidationEngine, qui mesure la FORME
+// méthodologique (« كلما … كلما », valeur+unité, connecteurs) et non le fond.
+// Mesuré sur les données réelles : une réponse hors-sujet obtenait 80-95 % et
+// validait les 3 défis, en enregistrant une preuve de TRANSFERT — le signal de
+// maîtrise le plus fort de l'application.
+// On exige donc un recouvrement minimal avec la correction officielle du défi.
+const TRANSFER_STOPWORDS = new Set([
+  'في', 'من', 'الى', 'على', 'عن', 'مع', 'هذا', 'هذه', 'ثم', 'لان', 'التي',
+  'الذي', 'هو', 'هي', 'عند', 'بين', 'كل', 'قد', 'ان', 'او', 'يتم', 'يدل',
+  'حيث', 'لها', 'الا', 'كما', 'بعد', 'اما',
+]);
+
+// Deux notions du corrigé suffisent : le défi reste un exercice de production,
+// pas une dictée. Calibré dans les deux sens sur les 3 corrigés officiels
+// (qui obtiennent 6 à 12 recouvrements) contre 0 pour une réponse hors-sujet.
+const MIN_TRANSFER_OVERLAP = 2;
+
+function transferContentTokens(text: string): string[] {
+  return Array.from(
+    new Set(
+      normalizeArabic(text)
+        .split(' ')
+        .map((t) => t.replace(/[^\u0600-\u06ffa-z0-9]/g, ''))
+        .filter((t) => t.length >= 4 && !TRANSFER_STOPWORDS.has(t)),
+    ),
+  );
+}
+
+// Vrai si la réponse mobilise assez de notions du corrigé officiel du défi.
+export function hasTransferContent(answer: string, challenge: LessonTransferChallenge): boolean {
+  const attendus = transferContentTokens(challenge.correctionAr);
+  if (attendus.length === 0) return true;
+  const normAnswer = normalizeArabic(answer);
+  const recouvrement = attendus.filter((t) => normAnswer.includes(t)).length;
+  return recouvrement >= Math.min(MIN_TRANSFER_OVERLAP, attendus.length);
+}
 
 export function getLessonTransferChallenge(lessonId: string): LessonTransferChallenge | undefined {
   return LESSON_TRANSFER_CHALLENGES[lessonId];
