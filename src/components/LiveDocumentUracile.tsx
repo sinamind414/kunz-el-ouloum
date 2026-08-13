@@ -15,6 +15,7 @@ import {
 import { getDocumentPracticeContextByExercise } from '../data/documentPracticeContexts';
 import { runSessionEffects, type SessionEffect } from '../lib/lesson/sessionEffectsService';
 import { ZoomImageButton } from './ZoomableImage';
+import { toValidationContext } from '../lib/validation/practiceContextMapping';
 
 interface LiveDocumentUracileProps {
   exerciseId?: string;
@@ -42,31 +43,10 @@ export default function LiveDocumentUracile({ exerciseId = 'uracile_marque', onE
     ...(ctx.gallery ?? []),
   ].filter((item) => item.assetSrc || item.altAr);
 
-  const getDocumentTypeForValidation = (context: any) => {
-    if (context.documentType === 'experiment') return 'qualitative';
-    if (context.reflexId === 'analyse') return 'quantitative';
-    return 'mixed';
-  };
-
-  const getActionVerbForValidation = (context: any) => {
-    switch (context.reflexId) {
-      case 'analyse': return 'analyse';
-      case 'interpret': return 'interpret';
-      case 'explain': return 'explain';
-      default: return 'describe';
-    }
-  };
-
   const handleValidate = () => {
     if (answer.trim().length < 8) return;
 
-    const result = validateAnswer(answer, {
-      docType: getDocumentTypeForValidation(ctx),
-      actionVerb: getActionVerbForValidation(ctx),
-      domain: ctx.domain ?? 'autre',
-      isNeuromuscular: false,
-      expectedTargets: ctx.expectedEvidence,
-    });
+    const result = validateAnswer(answer, toValidationContext(ctx));
 
     const effect: SessionEffect = {
       eventId: `document_${exerciseId}_${attemptId}_${++attemptRevision.current}`,
