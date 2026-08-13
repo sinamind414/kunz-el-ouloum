@@ -173,6 +173,16 @@ export default function MethodologyTrainer({ onClose, initialVerb = 'analyse', m
             </div>
           </div>
 
+          {evaluation.isKeywordStuffing && (
+            <div className="rounded-xl border border-amber-200 dark:border-amber-900/40 bg-amber-50 dark:bg-amber-950/20 p-3 text-[12px] font-bold leading-7 text-amber-800 dark:text-amber-300 flex items-start gap-2">
+              <AlertTriangle className="w-4 h-4 shrink-0 mt-1" />
+              <div>
+                لا تكتفِ بسرد المصطلحات: المطلوب فقرة مُحرَّرة بجُمَل كاملة تربط بين المعطيات.
+                في البكالوريا تُنقَّط الصياغة العلمية لا عدد الكلمات المفتاحية.
+              </div>
+            </div>
+          )}
+
           {evaluation.forbiddenFound.length > 0 && (
             <div className="rounded-xl border border-rose-200 dark:border-rose-900/40 bg-rose-50 dark:bg-rose-950/20 p-3 text-[12px] font-bold leading-7 text-rose-700 dark:text-rose-300 flex items-start gap-2">
               <AlertTriangle className="w-4 h-4 shrink-0 mt-1" />
