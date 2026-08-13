@@ -6,7 +6,7 @@ import { logEvent } from '../utils/telemetryService';
 import { loadStore } from '../data/store';
 import { routeErrorToTarget, getConceptRoute, CONCEPT_ROUTES } from '../data/conceptRoutes';
 import { ACTIVE_LESSONS } from '../data/activeLessons';
-import { INITIAL_UNITS } from '../unitCatalog';
+import { buildConceptLabel } from '../utils/conceptLabels';
 import { type RecallItem } from '../data/store';
 
 interface CoachViewProps {
@@ -81,42 +81,7 @@ function resolveLessonId(conceptId: string, fallbackUnitId?: number): string | u
 }
 
 // Lexique DZ des concepts nommés (libellés courts, alignés sur le programme).
-const CONCEPT_LABELS_AR: Record<string, string> = {
-  enzymes: 'الإنزيمات',
-  expression_genique: 'التعبير المورثي',
-  adn_proteine: 'علاقة ADN-بروتين',
-  transcription: 'الاستنساخ',
-  traduction: 'الترجمة',
-  photosynthese: 'البناء الضوئي',
-  synapse: 'المشبك العصبي',
-  subduction: 'الانغمار',
-  protein_structure_function: 'بنية ووظيفة البروتين',
-  immunity_self_nonself: 'الذات واللاذات',
-  immunity_humoral_response: 'الاستجابة المناعية الخلطية',
-  immunity_cellular_response: 'الاستجابة المناعية الخلوية',
-  immunity_memory: 'الذاكرة المناعية',
-  seismic_waves: 'الأمواج الزلزالية',
-  lecon_transcription: 'الاستنساخ',
-  lecon_traduction: 'الترجمة',
-};
 
-/**
- * #52 — Libellé arabe affichable. Un identifiant technique latin
- * (« immunity_memory », « unit:5 ») ne doit JAMAIS atteindre l'interface :
- * il apparaissait tel quel au milieu d'une phrase arabe RTL. Les conceptId de
- * synthèse `unit:N` sont rendus par le titre officiel de l'unité.
- */
-function buildConceptLabel(conceptId: string, fallbackUnitId?: number): string {
-  const known = CONCEPT_LABELS_AR[conceptId];
-  if (known) return known;
-
-  const unitId = resolveUnitId(conceptId, fallbackUnitId);
-  const unit = unitId != null ? INITIAL_UNITS.find((u) => u.id === unitId) : undefined;
-  if (unit) return unit.title;
-
-  // Dernier recours : jamais l'id brut.
-  return 'مفهوم قيد المراجعة';
-}
 
 function buildCoachState(): CoachState {
   let store;

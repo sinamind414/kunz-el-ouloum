@@ -223,3 +223,49 @@ describe('Rappels espacés — cadence J+1/3/7/14 (§5)', () => {
     vi.useRealTimers();
   });
 });
+
+/**
+ * #55 — Le titre de la mission est le gros titre (`<h2>`) de la carte
+ * principale de l'onglet مساري (`MyPathView.tsx:635`). Il interpolait le
+ * conceptId brut : « راجع immunity_memory ». Même défaut que #52 sur le
+ * Coach, sur l'autre face de la boussole.
+ */
+describe('#55 — titre de mission affichable en arabe', () => {
+  it("n'expose aucun identifiant latin dans le titre, sur toute la population réelle", async () => {
+    const { DOCUMENT_PRACTICE_CONTEXTS } = await import('../data/documentPracticeContexts');
+    const { CONCEPT_ROUTES } = await import('../data/conceptRoutes');
+
+    const contexts = (
+      Array.isArray(DOCUMENT_PRACTICE_CONTEXTS)
+        ? DOCUMENT_PRACTICE_CONTEXTS
+        : Object.values(DOCUMENT_PRACTICE_CONTEXTS)
+    ) as Array<{ conceptId: string }>;
+    const conceptIds = [...new Set(contexts.map((c) => c.conceptId))];
+    expect(conceptIds.length).toBeGreaterThan(10);
+
+    const offenders: string[] = [];
+    for (const conceptId of conceptIds) {
+      const error = makeError(conceptId, { kind: 'knowledge', conceptId });
+      const mission = selectMission([error], CONCEPT_ROUTES as Record<string, ConceptRoute>, { now: Date.now() });
+      const title = mission?.titleAr ?? '';
+      expect(title.length).toBeGreaterThan(0);
+      if (/[A-Za-z]/.test(title) || /\bunit:\d+/.test(title)) offenders.push(`${conceptId} -> ${title}`);
+    }
+    expect(offenders).toEqual([]);
+  });
+
+  it('rend le concept sous son nom arabe, et non un libellé générique', async () => {
+    const { CONCEPT_ROUTES } = await import('../data/conceptRoutes');
+    const error = makeError('immunity_memory', { kind: 'knowledge', conceptId: 'immunity_memory' });
+    const mission = selectMission([error], CONCEPT_ROUTES as Record<string, ConceptRoute>, { now: Date.now() });
+    expect(mission?.titleAr).toContain('الذاكرة المناعية');
+  });
+
+  it("désigne l'unité par son titre officiel pour un conceptId de synthèse unit:N", async () => {
+    const { CONCEPT_ROUTES } = await import('../data/conceptRoutes');
+    const error = makeError('unit:5', { kind: 'knowledge', conceptId: 'unit:5' });
+    const mission = selectMission([error], CONCEPT_ROUTES as Record<string, ConceptRoute>, { now: Date.now() });
+    // Unité 5 = الاتصال العصبي (INITIAL_UNITS).
+    expect(mission?.titleAr).toContain('الاتصال العصبي');
+  });
+});

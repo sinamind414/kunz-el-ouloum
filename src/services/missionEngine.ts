@@ -13,6 +13,7 @@ import {
   applyEvidenceToError,
   REVIEW_INTERVALS_DAYS,
 } from '../data/store';
+import { buildConceptLabel } from '../utils/conceptLabels';
 
 // Ordre de priorité exact (SpecKit §3) :
 // 1. méthode répétée (erreur méthodologique non résolue, count >= 2)
@@ -98,10 +99,13 @@ function buildMissionFromError(error: LearningError, route: ConceptRoute | undef
         ? 'خطأ منهجي واحد.'
         : 'خطأ في المحتوى.';
 
+  // #55 — jamais le conceptId brut dans un titre affiché à l'élève.
+  const conceptLabel = buildConceptLabel(conceptId, route?.unitId);
+
   return {
     id: `mission_${error.id}_${now}`,
     source: 'error',
-    titleAr: route?.lessonId ? `راجع ${conceptId}` : `صحح ${conceptId}`,
+    titleAr: route?.lessonId ? `راجع ${conceptLabel}` : `صحح ${conceptLabel}`,
     reasonAr,
     expectedMinutes: computeMissionDuration(steps),
     primaryActionLabelAr: 'ابدأ المهمة',
