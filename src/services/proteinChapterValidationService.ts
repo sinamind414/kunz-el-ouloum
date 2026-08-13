@@ -7,8 +7,29 @@ export interface LocalCheckResult {
   messageAr: string;
 }
 
+// #43 — Un mot-clé peut désormais proposer des variantes séparées par « | ».
+// Sans cela, la vérification exigeait UNE graphie exacte : l'élève qui écrit
+// « من الطرف الخماسي نحو الطرف الثلاثي » — réponse juste, en toutes lettres —
+// était refusé parce que la donnée n'attendait que les chiffres « 5 » et « 3 ».
+// Rétrocompatible : aucun mot-clé existant ne contient « | ».
+// Les flèches (→, ->, ⟶) sont effacées par normalizeAr, qui ne conserve ni
+// ponctuation ni symboles. Or « 5' → 3' » est la façon la plus courante
+// d'écrire un sens de lecture. On les traduit donc en mot avant normalisation.
+function markArrows(text: string): string {
+  return text.replace(/(->|-->|→|⟶|⇒|=>)/g, ' نحو ');
+}
+
 function includesNormalized(text: string, keyword: string): boolean {
-  return normalizeAr(text).includes(normalizeAr(keyword));
+  const haystack = normalizeAr(markArrows(text));
+  const variants = keyword
+    .split('|')
+    // Le filtrage se fait APRÈS normalisation : « → » et « -> » sont réduits à
+    // du vide par normalizeAr, et `haystack.includes('')` vaut toujours true.
+    // Filtrer la graphie brute laissait donc passer n'importe quelle réponse.
+    .map((variant) => normalizeAr(variant))
+    .filter((variant) => variant.length > 0);
+  if (variants.length === 0) return false;
+  return variants.some((variant) => haystack.includes(variant));
 }
 
 export function validateKeywordAnswer(

@@ -1106,7 +1106,10 @@ export const ACTIVE_LESSONS: Record<string, ActiveLesson> = {
             promptAr: 'حدد اتجاه حدوث الاستنساخ انطلاقاً من الوثيقة.',
             answerType: 'short_text',
             validationMode: 'keywords',
-            requiredKeywords: ['5', '3'],
+            // #43 — ['5','3'] acceptait la date « 2035 » et refusait la réponse
+            // juste écrite en toutes lettres. On accepte les deux graphies et on
+            // exige la marque du sens (de … vers …), qui est le fond de la question.
+            requiredKeywords: ['5|خماسي', '3|ثلاثي', 'نحو|الى|إلى|من'],
             successMessageAr: 'أحسنت، حددت اتجاه القراءة والتركيب.',
             errorHintAr: 'اذكر اتجاه قراءة السلسلة الناسخة واتجاه تركيب ARNm.',
           },
