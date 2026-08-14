@@ -10,7 +10,6 @@ import {
   PieChart,
   Pie,
   Cell,
-  Legend,
   LineChart,
   Line,
   CartesianGrid
@@ -79,15 +78,21 @@ export default function StatsView({ progress, units, onNavigateToTab }: StatsVie
   // Total lessons completed
   const completedUnitsCount = progress.completedUnits.length;
 
-  // 4. Mock Monthly Unit Progress Data for Recharts
-  const monthlyUnitProgress = [
-    { name: 'الأسبوع 1', 'تركيب البروتين': 20, 'بنية البروتين': 0, 'الأنزيمات': 0, 'المناعة': 0 },
-    { name: 'الأسبوع 2', 'تركيب البروتين': 50, 'بنية البروتين': 30, 'الأنزيمات': 0, 'المناعة': 0 },
-    { name: 'الأسبوع 3', 'تركيب البروتين': 80, 'بنية البروتين': 60, 'الأنزيمات': 20, 'المناعة': 0 },
-    { name: 'الأسبوع 4', 'تركيب البروتين': 100, 'بنية البروتين': 85, 'الأنزيمات': 50, 'المناعة': 10 }
-  ];
+  // 4. #56 — Progression RÉELLE par unité.
+  //
+  // Cette section affichait auparavant une trajectoire inventée sur quatre
+  // semaines (20 -> 50 -> 80 -> 100 %) qui ne lisait ni `progress` ni
+  // `units` : elle montrait la même « progression » à tous les élèves, y
+  // compris à celui qui n'avait jamais ouvert l'application. L'application
+  // ne mémorise aucun historique daté de progression par unité ; afficher
+  // une évolution « sur le mois » est donc impossible sans la fabriquer.
+  // On affiche l'état réel atteint par unité travaillée, ou rien.
+  const unitProgressData = units
+    .filter((u) => u.progress > 0)
+    .map((u) => ({ name: u.title, 'نسبة الإنجاز %': u.progress }));
 
-  const colors = ['#006d37', '#2ecc71', '#ff9a4a', '#ba1a1a', '#fed65b'];
+  const hasUnitProgress = unitProgressData.length > 0;
+
 
 
   return (
@@ -156,39 +161,52 @@ export default function StatsView({ progress, units, onNavigateToTab }: StatsVie
         </div>
       </section>
 
-      {/* Monthly Unit Progress LineChart */}
+      {/* #56 — Progression réelle par unité (remplace une courbe inventée) */}
       <section className="bg-[#ffffff] border border-[#e2dabf]/60 rounded-3xl p-5 shadow-sm space-y-4">
         <div className="flex items-center gap-2">
           <Activity className="w-5 h-5 text-[#006d37]" />
-          <h3 className="font-extrabold text-base text-[#1f1c0b]">تطور مستوى الوحدات على مدار الشهر</h3>
+          <h3 className="font-extrabold text-base text-[#1f1c0b]">نسبة إنجاز الوحدات</h3>
         </div>
 
-        <div className="h-72 w-full">
-          <ResponsiveContainer width="100%" height="100%">
-            <LineChart data={monthlyUnitProgress} margin={{ top: 15, right: 15, left: -20, bottom: 0 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#e2dabf" strokeOpacity={0.3} />
-              <XAxis dataKey="name" stroke="#506072" fontSize={10} tickLine={false} />
-              <YAxis stroke="#506072" fontSize={10} tickLine={false} domain={[0, 100]} />
-              <Tooltip 
-                formatter={(value: any, name: any) => [`${value}%`, name]}
-                contentStyle={{ direction: 'rtl', fontFamily: 'Noto Kufi Arabic', fontSize: 11, borderRadius: '12px', border: '1px solid #e2dabf' }}
-              />
-              <Legend verticalAlign="top" height={36} wrapperStyle={{ fontSize: '11px', fontFamily: 'Noto Kufi Arabic', direction: 'rtl' }}/>
-              {Object.keys(monthlyUnitProgress[0])
-                .filter(key => key !== 'name')
-                .map((key, index) => (
-                  <Line 
-                    key={key}
-                    type="monotone" 
-                    dataKey={key} 
-                    stroke={colors[index % colors.length]} 
-                    strokeWidth={3}
-                    activeDot={{ r: 6 }} 
+        {!hasUnitProgress ? (
+          <div
+            data-testid="units-progress-empty"
+            className="text-center bg-[#fff9ed] p-5 rounded-2xl border border-[#fed65b]/40 space-y-1"
+          >
+            <p className="text-sm font-bold text-[#944a00]">لم تسجل بيانات كافية بعد.</p>
+            <p className="text-xs text-[#506072] leading-relaxed">
+              أكمل أول درس أو اختبار لرؤية تقدمك الحقيقي في الوحدات.
+            </p>
+          </div>
+        ) : (
+          <div data-testid="units-progress-real" className="space-y-4">
+            <div className="h-64 w-full">
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={unitProgressData} layout="vertical" margin={{ top: 5, right: 15, left: 10, bottom: 0 }}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#e2dabf" strokeOpacity={0.3} />
+                  <XAxis type="number" domain={[0, 100]} stroke="#506072" fontSize={10} tickLine={false} />
+                  <YAxis type="category" dataKey="name" stroke="#506072" fontSize={10} width={90} tickLine={false} />
+                  <Tooltip
+                    formatter={(value: any) => [`${value}%`, 'نسبة الإنجاز']}
+                    contentStyle={{ direction: 'rtl', fontFamily: 'Noto Kufi Arabic', fontSize: 11, borderRadius: '12px', border: '1px solid #e2dabf' }}
                   />
-                ))}
-            </LineChart>
-          </ResponsiveContainer>
-        </div>
+                  <Bar dataKey="نسبة الإنجاز %" fill="#006d37" radius={[0, 6, 6, 0]} />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+
+            {/* Équivalent textuel : le graphique seul n'est lisible ni par un
+                lecteur d'écran ni sans rendu SVG. */}
+            <ul className="space-y-2 text-xs text-right">
+              {unitProgressData.map((u) => (
+                <li key={u.name} className="flex items-center justify-between gap-4">
+                  <span className="font-bold text-[#1f1c0b]">{u.name}</span>
+                  <span className="text-[#006d37] font-extrabold">{u['نسبة الإنجاز %']}%</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
       </section>
 
       {/* Evolution Over Time LineChart */}
