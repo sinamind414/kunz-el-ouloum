@@ -155,6 +155,7 @@ export default function ZoomableImage({ src, alt = '', className, style, ...rest
         className={className}
         style={{ cursor: 'zoom-in', ...style }}
         onClick={() => { setOpen(true); }}
+        loading="lazy"
         {...rest}
       />
       {open && (

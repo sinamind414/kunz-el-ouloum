@@ -309,6 +309,7 @@ export default function LessonAdventurePortal({ lesson, onClose, onAskTutor }: L
             src={MASCOT_URL}
             alt="رفيق المراجعة"
             className="max-w-[80%] max-h-[80%] rounded-3xl bg-white p-4 shadow-2xl"
+            loading="lazy"
           />
         </div>
       )}

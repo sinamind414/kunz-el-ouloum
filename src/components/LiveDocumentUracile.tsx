@@ -100,7 +100,7 @@ export default function LiveDocumentUracile({ exerciseId = 'uracile_marque', onE
                 {item.assetSrc ? (
                   <>
                     <ZoomImageButton src={item.assetSrc} alt={item.altAr} referrerPolicy="no-referrer" className="absolute top-2 right-2" />
-                    <img src={item.assetSrc} alt={item.altAr} className="max-h-72 w-full object-contain" draggable={false} />
+                    <img src={item.assetSrc} alt={item.altAr} className="max-h-72 w-full object-contain" draggable={false} loading="lazy" />
                   </>
                 ) : (
                   <p className="text-xs text-center text-[#506072] dark:text-gray-400 leading-6">{item.altAr}</p>

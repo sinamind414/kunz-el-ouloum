@@ -113,7 +113,7 @@ function Asset({ asset }: { asset: DocumentAsset }) {
     return (
       <figure className="space-y-2">
         <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white dark:border-gray-700">
-          <img src={asset.src} alt={asset.altAr} className="h-auto max-h-[520px] w-full object-contain" />
+          <img src={asset.src} alt={asset.altAr} className="h-auto max-h-[520px] w-full object-contain" loading="lazy" />
         </div>
         {asset.captionAr && (
           <figcaption className="text-[11px] font-medium leading-6 text-gray-500 dark:text-gray-400">{asset.captionAr}</figcaption>

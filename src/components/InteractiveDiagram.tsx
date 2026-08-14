@@ -41,6 +41,7 @@ export default function InteractiveDiagram({ imageSrc, altAr, title, hotspots }:
           alt={altAr} 
           className="w-full h-full object-cover image-svt-filter"
           draggable={false}
+          loading="lazy"
         />
 
         {/* Bouton de zoom natif (réutilisé) */}

@@ -1151,7 +1151,7 @@ function LessonDocPreview({
         {assetSrc ? (
           <>
             <ZoomImageButton src={assetSrc} alt={altAr} referrerPolicy="no-referrer" className="absolute top-2 right-2" />
-            <img src={assetSrc} alt={altAr} className="max-h-64 w-full object-contain" draggable={false} />
+            <img src={assetSrc} alt={altAr} className="max-h-64 w-full object-contain" draggable={false} loading="lazy" />
           </>
         ) : (
           <p className="text-xs text-center text-[#506072] dark:text-gray-400 leading-6">{altAr}</p>
@@ -2004,6 +2004,7 @@ function HotspotAndMethodologyBlockView({
             className="w-full h-56 object-contain cursor-crosshair select-none"
             onClick={onHotspotClick}
             draggable={false}
+            loading="lazy"
           />
           {state.hotspotOk && (
             <div className="absolute inset-0 flex items-center justify-center bg-[#006d37]/20">
