@@ -7,6 +7,7 @@ import {
   setReviewOverride,
   clearReviewOverride,
 } from '../services/editorialReviewService';
+import { isReviewMetadataUsable } from '../types/survivalCard';
 
 const TYPE_META: Record<EditorialItemType, { icon: React.ElementType; label: string }> = {
   survival_card: { icon: FileText, label: 'بطاقات النجاة' },
@@ -37,11 +38,27 @@ function EditorialItemRow({ item, onToggle }: { item: EditorialItem; onToggle: (
             )}
           </div>
           {item.reviewed && (
-            <div className="text-[10px] text-gray-500 dark:text-gray-400 leading-5">
-              {item.reviewedBy && <span>المراجع: {item.reviewedBy} · </span>}
-              {item.reviewedAt && <span>{new Date(item.reviewedAt).toLocaleDateString('ar-DZ')} · </span>}
-              {item.sourceProgram && <span>{item.sourceProgram}</span>}
-            </div>
+            /* #62 — La porte de plausibilite de #59 ne protegeait QUE les
+               cartes de survie. Le panneau presentait donc comme valides des
+               revues au nom blanc ou datees de l'an 3000 pour les 55 autres
+               items (13 resumes de lecon, 42 contextes de document). Le meme
+               controle s'applique desormais aux trois types. */
+            isReviewMetadataUsable({
+              reviewed: item.reviewed,
+              reviewedBy: item.reviewedBy,
+              reviewedAt: item.reviewedAt,
+              sourceProgram: item.sourceProgram,
+            }) ? (
+              <div className="text-[10px] text-gray-500 dark:text-gray-400 leading-5">
+                {item.reviewedBy && <span>المراجع: {item.reviewedBy} · </span>}
+                {item.reviewedAt && <span>{new Date(item.reviewedAt).toLocaleDateString('ar-DZ')} · </span>}
+                {item.sourceProgram && <span>{item.sourceProgram}</span>}
+              </div>
+            ) : (
+              <div data-testid={`editorial-implausible-${item.id}`} className="text-[10px] text-amber-700 dark:text-amber-500 leading-5 font-bold">
+                بيانات المراجعة غير صالحة (اسم فارغ أو تاريخ غير معقول) — لن تُعرض على التلميذ
+              </div>
+            )
           )}
         </div>
       )}

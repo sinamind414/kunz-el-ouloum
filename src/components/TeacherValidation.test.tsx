@@ -11,7 +11,7 @@ import { resolve } from 'node:path';
 import SurvivalCardView from './SurvivalCardView';
 import EditorialReviewPanel from './EditorialReviewPanel';
 import { SURVIVAL_CARDS, getPublishableSurvivalCards, getPublishableSurvivalCardById } from '../data/survivalCards';
-import { setReviewOverride } from '../services/editorialReviewService';
+import { setReviewOverride, getAllEditorialItems } from '../services/editorialReviewService';
 import { isCardPublishable } from '../types/survivalCard';
 import type { SurvivalCard } from '../types/survivalCard';
 
@@ -111,5 +111,58 @@ describe('#59 — un aller-retour export/import ne blanchit pas une signature', 
     expect(importBlock).toContain('locallyDeclared: true');
     // et surtout : pas de recopie brute de la valeur importée.
     expect(importBlock).not.toContain('replacement.set(key, JSON.stringify(value));');
+  });
+});
+
+describe('#62 — la porte de plausibilité couvre les trois types éditoriaux', () => {
+  // #59 avait placé le contrôle sur `isCardPublishable`, donc sur les seules
+  // bttes de survie (5 items). Le panneau en arbitre 60 : 13 résumés de leçon
+  // et 42 contextes de document échappaient au contrôle et s'affichaient
+  // comme des revues valides avec un nom vide ou une date de l'an 3000.
+  const forgeOverride = (type: string, id: string, meta: Record<string, unknown>) => {
+    localStorage.setItem(`kunz_review_v2:${type}:${id}`, JSON.stringify(meta));
+  };
+
+  it('signale une revue de résumé de leçon au réviseur vide', () => {
+    const target = getAllEditorialItems().find((i) => i.type === 'lesson_summary')!;
+    forgeOverride('lesson_summary', target.id, {
+      reviewed: true,
+      reviewedBy: '   ',
+      reviewedAt: '2026-01-01T00:00:00.000Z',
+      sourceProgram: 'BAC DZ',
+    });
+    render(<EditorialReviewPanel />);
+    fireEvent.click(screen.getAllByText(target.label)[0]);
+
+    expect(screen.getByTestId(`editorial-implausible-${target.id}`)).toBeTruthy();
+  });
+
+  it('signale un contexte de document daté dans le futur', () => {
+    const target = getAllEditorialItems().find((i) => i.type === 'document_context')!;
+    forgeOverride('document_context', target.id, {
+      reviewed: true,
+      reviewedBy: 'أستاذ فلان',
+      reviewedAt: '3000-01-01T00:00:00.000Z',
+      sourceProgram: 'BAC DZ',
+    });
+    render(<EditorialReviewPanel />);
+    fireEvent.click(screen.getAllByText(target.label)[0]);
+
+    expect(screen.getByTestId(`editorial-implausible-${target.id}`)).toBeTruthy();
+  });
+
+  it('laisse intacte une revue plausible (contre-épreuve)', () => {
+    const target = getAllEditorialItems().find((i) => i.type === 'lesson_summary')!;
+    forgeOverride('lesson_summary', target.id, {
+      reviewed: true,
+      reviewedBy: 'أستاذة سميرة',
+      reviewedAt: '2026-02-01T00:00:00.000Z',
+      sourceProgram: 'BAC DZ',
+    });
+    render(<EditorialReviewPanel />);
+    fireEvent.click(screen.getAllByText(target.label)[0]);
+
+    expect(screen.queryByTestId(`editorial-implausible-${target.id}`)).toBeNull();
+    expect(document.body.textContent).toContain('أستاذة سميرة');
   });
 });

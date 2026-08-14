@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState, lazy, Suspense } from 'react';
+import React, { useCallback, useEffect, useMemo, useState, lazy, Suspense } from 'react';
 import { Zap, Layers, Target, BookOpen, Rocket, Lightbulb, ChevronRight, Trophy, Flame, Lock } from 'lucide-react';
 import { Unit, UserProgress, Flashcard, TabId } from '../types';
 import { DOMAINS_INFO, getUnitDomainId } from '../utils/domainMapper';
@@ -87,14 +87,34 @@ export default function TrainingView({
   }, [entryRevisionUnitId, onEntryRevisionConsumed]);
 
   // Stats par domaine (les 3 toujours présents pour la grille d'icônes).
+  //
+  // #61 — `weak` ne filtrait que `progress < 100`, jamais `isLocked` : le
+  // sous-onglet « أسئلة سريعة » proposait un bouton « ابدأ QCM » pour les
+  // 10 unités verrouillées du catalogue, dès 20 XP et sans aucune porte.
+  // C'était la même fuite que #58 (Défi BAC), sur l'écran voisin — et elle
+  // portait sur 10 unités au lieu de 2. On distingue désormais ce qui est
+  // ouvert et travaillable (`weak`) de ce qui est encore fermé (`locked`),
+  // pour ne jamais annoncer « مكتمل » à propos d'un domaine simplement
+  // verrouillé : les deux états sont rendus différemment.
+  // Règle d'ouverture d'une unité — définition UNIQUE, partagée par le
+  // sous-onglet « أسئلة سريعة » (#61) et le Défi BAC (#58). Les deux écrans
+  // divergeaient : le second a été corrigé, le premier laissait passer les
+  // 10 unités verrouillées. Une seule source évite que l'écart se rouvre.
+  const isUnitOpen = useCallback(
+    (u: Unit) => !u.isLocked || progress.completedUnits.includes(u.id - 1),
+    [progress.completedUnits],
+  );
+
   const domainStats = useMemo(() => {
     return DOMAINS_INFO.map((domain) => {
       const all = units.filter((u) => getUnitDomainId(u.id) === domain.id);
-      const weak = all.filter((u) => u.progress < 100).sort((a, b) => a.progress - b.progress);
+      const open = all.filter((u) => isUnitOpen(u));
+      const weak = open.filter((u) => u.progress < 100).sort((a, b) => a.progress - b.progress);
+      const locked = all.filter((u) => !isUnitOpen(u));
       const avg = all.length ? Math.round(all.reduce((s, u) => s + u.progress, 0) / all.length) : 0;
-      return { domain, all, weak, avg };
+      return { domain, all, weak, locked, avg };
     });
-  }, [units]);
+  }, [units, isUnitOpen]);
 
   const activeDomain = quickDomainId != null ? domainStats.find((d) => d.domain.id === quickDomainId) : null;
 
@@ -130,15 +150,14 @@ export default function TrainingView({
   // un domaine encore entierement verrouille est annonce comme tel au lieu
   // d'etre presente comme un boss jouable.
   const bosses = useMemo(() => {
-    const isOpen = (u: Unit) => !u.isLocked || progress.completedUnits.includes(u.id - 1);
     const domains: string[] = [];
     for (const u of units) if (!domains.includes(u.domain)) domains.push(u.domain);
     return domains.slice(0, 3).map((domain) => {
       const inDomain = units.filter((u) => u.domain === domain);
-      const open = inDomain.find(isOpen);
+      const open = inDomain.find(isUnitOpen);
       return { domain, unit: open ?? inDomain[0], locked: !open };
     });
-  }, [units, progress.completedUnits]);
+  }, [units, isUnitOpen]);
 
   // Rubriques d'entraînement présentées en icônes rondes (style écran principal).
   const RUBRICS: {
@@ -350,7 +369,7 @@ export default function TrainingView({
         <div className="space-y-3">
           <h2 className="font-black text-gray-800 dark:text-gray-100">اختر المجال</h2>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-            {domainStats.map(({ domain, weak, avg }) => (
+            {domainStats.map(({ domain, weak, locked, avg }) => (
               <button
                 key={domain.id}
                 onClick={() => setQuickDomainId(domain.id)}
@@ -364,7 +383,7 @@ export default function TrainingView({
                 </span>
                 <h3 className="font-black text-sm" style={{ color: domain.color }}>{domain.title}</h3>
                 <span className="text-[11px] text-gray-400">
-                  {weak.length > 0 ? `${weak.length} وحدة للمراجعة` : 'مكتمل ✓'} · إتقان {avg}%
+                  {weak.length > 0 ? `${weak.length} وحدة للمراجعة` : locked.length > 0 ? 'مقفل 🔒' : 'مكتمل ✓'} · إتقان {avg}%
                 </span>
                 {/* Barre de progression du domaine */}
                 <div className="w-full h-1.5 rounded-full bg-gray-100 dark:bg-gray-800 overflow-hidden mt-1">
@@ -403,7 +422,16 @@ export default function TrainingView({
           </div>
 
           {activeDomain.weak.length === 0 ? (
-            <p className="text-sm text-gray-500 dark:text-gray-400">أحسنت! كل وحدات هذا المجال مكتملة (≥ 100%).</p>
+            /* #61 — Un domaine entièrement verrouillé n'est PAS un domaine
+               terminé : afficher « مكتمل » dans ce cas serait un mensonge
+               d'écran. Les deux états vides sont donc distincts. */
+            activeDomain.locked.length > 0 ? (
+              <p data-testid="quick-domain-locked" className="text-sm text-gray-500 dark:text-gray-400">
+                هذا المجال لم يُفتح بعد — أكمل الوحدات السابقة للوصول إليه.
+              </p>
+            ) : (
+              <p data-testid="quick-domain-done" className="text-sm text-gray-500 dark:text-gray-400">أحسنت! كل وحدات هذا المجال مكتملة (≥ 100%).</p>
+            )
           ) : (
             activeDomain.weak.map((u) => (
               <div
@@ -430,7 +458,7 @@ export default function TrainingView({
         <div className="space-y-3">
           <h2 className="font-black text-gray-800 dark:text-gray-100">اختر المجال</h2>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-            {domainStats.map(({ domain, weak, avg }) => (
+            {domainStats.map(({ domain, weak, locked, avg }) => (
               <button
                 key={domain.id}
                 onClick={() => setCardsDomainId(domain.id)}
@@ -444,7 +472,7 @@ export default function TrainingView({
                 </span>
                 <h3 className="font-black text-sm" style={{ color: domain.color }}>{domain.title}</h3>
                 <span className="text-[11px] text-gray-400">
-                  {weak.length > 0 ? `${weak.length} وحدة للمراجعة` : 'مكتمل ✓'} · إتقان {avg}%
+                  {weak.length > 0 ? `${weak.length} وحدة للمراجعة` : locked.length > 0 ? 'مقفل 🔒' : 'مكتمل ✓'} · إتقان {avg}%
                 </span>
                 <div className="w-full h-1.5 rounded-full bg-gray-100 dark:bg-gray-800 overflow-hidden mt-1">
                   <div className="h-full rounded-full transition-all" style={{ width: `${avg}%`, backgroundColor: domain.color }} />
