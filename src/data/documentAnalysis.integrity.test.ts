@@ -131,8 +131,11 @@ describe('exercices d analyse documentaire — intégrité', () => {
     for (const exercise of DOCUMENT_ANALYSIS_EXERCISES) {
       const total = exercise.grilleEntrainement.reduce((sum, c) => sum + c.points, 0);
       expect(total, `${exercise.id}`).toBe(20);
-      // Étiquette rédigée en français dans la source : elle empêche de confondre
-      // cette grille d'entraînement avec le barème officiel du sujet BAC.
+      // #67 — cette étiquette source reste en français : elle documente le champ
+      // pour l'équipe, elle n'est PLUS ce que lit l'élève. Le message affiché est
+      // rédigé en arabe et verrouillé par DocumentAnalysisResult.test.tsx, qui
+      // interdit toute lettre latine. Un test de présence de chaîne ne prouve pas
+      // qu'un avertissement est lu par son destinataire.
       expect(exercise.label, `${exercise.id}`).toContain("n'est pas le barème officiel");
     }
   });
