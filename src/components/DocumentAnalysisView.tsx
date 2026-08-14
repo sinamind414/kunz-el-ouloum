@@ -8,6 +8,7 @@ import { recordDocumentTrace, answerHasDocumentContent } from '../services/docum
 import DocumentAssetRenderer from './DocumentAssetRenderer';
 import { isDocumentAssetAvailable } from '../data/documentAssets';
 import CockpitChecklist from './CockpitChecklist';
+import { recordCorrectionFeedback } from '../services/correctionFeedbackService';
 
 interface DocumentAnalysisViewProps {
   onBack: () => void;
@@ -273,7 +274,16 @@ export function ExerciseScreen({
 
       {/* Résultat — correction modèle masquée jusqu'à la tentative */}
       {assetAvailable && result && (
-        <ResultSheet result={result} correctionAr={exercise.correctionAr} recorded={recorded} evidenceValid={evidenceValid} />
+        <ResultSheet
+          result={result}
+          correctionAr={exercise.correctionAr}
+          recorded={recorded}
+          evidenceValid={evidenceValid}
+          grille={exercise.grilleEntrainement}
+          exerciseId={exercise.id}
+          questionId={q.id}
+          answer={answer}
+        />
       )}
     </div>
   );
@@ -284,12 +294,23 @@ function ResultSheet({
   correctionAr,
   recorded,
   evidenceValid,
+  grille,
+  exerciseId,
+  questionId,
+  answer,
 }: {
   result: ReturnType<typeof useSmartValidation>['result'];
   correctionAr: string;
   recorded: boolean | null;
   evidenceValid?: boolean | null;
+  grille: DocAnalysisExercise['grilleEntrainement'];
+  exerciseId: string;
+  questionId: string;
+  answer: string;
 }) {
+  // #64 — état local du signalement : on n'affiche une confirmation QUE si
+  // l'écriture a réellement eu lieu.
+  const [reported, setReported] = useState<boolean | null>(null);
   if (!result) return null;
   // #41 — Le verdict affiche suivait le seul ValidationEngine, qui note la FORME
   // methodologique et non le fond : une reponse hors-sujet obtenait 80-95 % et
@@ -311,8 +332,11 @@ function ResultSheet({
           ) : (
             <XCircle className="w-6 h-6 text-[#e11d48]" />
           )}
-          <span className="font-black text-gray-900 dark:text-white">
-            {result.score}/{result.maxScore} · {passed ? 'مقبول' : 'يحتاج تحسين'}
+          <span className="font-black text-gray-900 dark:text-white" data-testid="doc-form-score">
+            {/* #65 — « 20/20 » se lisait comme une note d'épreuve : le maximum du
+                moteur vaut 20 par défaut, homonyme du barème BAC. On nomme donc
+                explicitement ce que la note mesure — la FORME méthodologique. */}
+            منهجية: {result.score}/{result.maxScore} · {passed ? 'مقبول' : 'يحتاج تحسين'}
           </span>
         </div>
         <span className="text-xs font-bold text-[#b45309] dark:text-[#ffd27a]">+{result.xp} XP</span>
@@ -359,19 +383,77 @@ function ResultSheet({
         <span className="font-black">التصحيح:</span> {correctionAr}
       </div>
 
-      <div className="flex items-center justify-between border-t border-gray-100 dark:border-gray-800 pt-2 mt-1">
-        <p className="text-[10px] text-gray-400 leading-5">
-          {result.label}
+      {/* #66 — Barème d'entraînement : 76 critères pondérés existaient en donnée
+          (4 par exercice, 20 points au total) et n'étaient affichés NULLE PART.
+          L'élève voyait une note sans savoir sur quoi elle portait. On les montre
+          après la tentative, comme grille d'auto-correction — l'app ne sait pas
+          les évaluer automatiquement, elle ne prétend donc pas le faire. */}
+      {grille.length > 0 && (
+        <div
+          className="bg-[#fff9ed] dark:bg-[#1c241f] border border-[#e2dabf]/60 dark:border-amber-900/30 rounded-2xl p-3 space-y-2"
+          data-testid="doc-grille"
+        >
+          <div className="text-[11px] font-black text-[#944a00] dark:text-amber-300 flex items-center gap-1">
+            <Target className="w-3.5 h-3.5" /> سلّم التنقيط — صحّح نفسك بنفسك
+          </div>
+          <ul className="space-y-1">
+            {grille.map((c, i) => (
+              <li
+                key={i}
+                className="flex items-center justify-between gap-2 text-[12px] font-bold text-[#1f1c0b] dark:text-white"
+                data-testid={`doc-grille-critere-${i}`}
+              >
+                <span className="leading-6">{c.critereAr}</span>
+                <span className="shrink-0 text-[11px] font-black px-2 py-0.5 rounded-md bg-[#006d37]/10 text-[#006d37] dark:text-[#2ecc71]">
+                  {c.points} ن
+                </span>
+              </li>
+            ))}
+          </ul>
+          <p className="text-[10px] text-gray-500 dark:text-gray-400 leading-5">
+            المجموع {grille.reduce((s, c) => s + c.points, 0)} نقطة — قارن إجابتك بالتصحيح أعلاه وامنح لنفسك النقاط.
+          </p>
+        </div>
+      )}
+
+      <div className="flex items-center justify-between border-t border-gray-100 dark:border-gray-800 pt-2 mt-1 gap-2">
+        {/* #67 — `result.label` est rédigé en FRANÇAIS et s'affichait tel quel à un
+            élève arabophone, en 10 px gris : l'avertissement le plus important de
+            l'écran — « ce n'est pas le barème officiel » — était illisible pour
+            son destinataire. Traduit, et non plus dilué. */}
+        <p className="text-[10px] text-gray-500 dark:text-gray-400 leading-5" data-testid="doc-training-label">
+          سلّم تدريبي من إعداد التطبيق — ليس سلّم التنقيط الرسمي لموضوع البكالوريا.
         </p>
         <button
           onClick={() => {
-            alert('تم تسجيل إشعارك. سيتولى فريقنا مراجعة هذه الإجابة وتدريب الخوارزمية لتحسين التصحيح.');
+            const ok = recordCorrectionFeedback({
+              exerciseId,
+              questionId,
+              answer,
+              score: result.score,
+              maxScore: result.maxScore,
+            });
+            setReported(ok);
           }}
-          className="text-[10px] text-rose-500 font-bold hover:underline cursor-pointer flex items-center gap-1"
+          className="text-[10px] text-rose-500 font-bold hover:underline cursor-pointer flex items-center gap-1 shrink-0"
+          data-testid="doc-report-button"
         >
           <XCircle className="w-3 h-3" /> أبلغ عن خطأ في التصحيح
         </button>
       </div>
+
+      {/* #64 — On ne confirme QUE ce qui a réellement été écrit, et on n'annonce
+          aucune relecture par une équipe : l'application est hors ligne. */}
+      {reported != null && (
+        <p
+          className={`text-[11px] font-bold p-2 rounded-lg ${reported ? 'bg-[#2ecc71]/10 text-[#006d37]' : 'bg-rose-50 text-rose-700 dark:bg-rose-950/20 dark:text-rose-300'}`}
+          data-testid="doc-report-notice"
+        >
+          {reported
+            ? 'حُفظ اعتراضك على هذا الجهاز فقط — لا يُرسل إلى أي جهة. اعرضه على أستاذك عند المراجعة.'
+            : 'تعذّر حفظ الاعتراض على هذا الجهاز.'}
+        </p>
+      )}
     </motion.div>
   );
 }
