@@ -16,6 +16,7 @@ import {
   selectMissionSelection,
   type MissionSelection,
 } from '../services/missionEngine';
+import type { MasteryState } from '../services/masteryEngine';
 import { loadStore } from '../data/store';
 import { getConceptRoute, routeErrorToTarget } from '../data/conceptRoutes';
 import { getPublishableSurvivalCardById } from '../data/survivalCards';
@@ -25,6 +26,7 @@ import type { CoreReflexId } from '../data/reflexes';
 interface MyPathViewProps {
   units: Unit[];
   progress: UserProgress;
+  mastery?: MasteryState;
   onLaunchQuiz: (unitId: number) => void;
   onLaunchRevision: (unitId: number) => void;
   onNavigateToTab: (tab: TabId) => void;
@@ -32,6 +34,8 @@ interface MyPathViewProps {
   onLaunchSurvivalCard?: (cardId: string) => void;
   onOpenDocumentExercise?: (exerciseId: string) => void;
   onStartLesson?: (lessonId: string) => void;
+  onResumeMission?: (mission: { kind: string; unitId: number }) => void;
+  onLaunchExam?: (unitId: number) => void;
 }
 
 // Mappe une mission Manhadjiya (M0–M5) vers le réflexe méthodologique ciblé (P1.1-B).
