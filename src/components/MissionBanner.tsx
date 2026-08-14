@@ -3,6 +3,8 @@
 import { useState } from 'react';
 import { Target, ChevronDown, BookOpen, Clock } from 'lucide-react';
 import type { LessonGoldSummary } from '../data/lessonGoldSummaries';
+import { loadReviewOverride } from '../services/editorialReviewService';
+import { isReviewMetadataUsable } from '../types/survivalCard';
 
 interface MissionBannerProps {
   summary: LessonGoldSummary;
@@ -11,12 +13,32 @@ interface MissionBannerProps {
 
 export default function MissionBanner({ summary, estimatedMinutes }: MissionBannerProps) {
   const [open, setOpen] = useState(false);
-  const statusLabel =
-    summary.status === 'manuel_officiel_verifie'
-      ? 'مصدر موثّق'
-      : summary.status === 'a_valider_enseignant'
-      ? 'بانتظار مراجعة أستاذ'
-      : 'شرح Kunz';
+
+  // #63 — Le panneau « وضع الأستاذ » arbitre les 13 resumes de lecon, mais son
+  // verdict n'atteignait jamais cet ecran : le libelle etait calcule sur le seul
+  // `status` fige dans la donnee. Un enseignant pouvait donc relire une lecon et
+  // l'eleve continuait de lire « شرح Kunz ». On lit desormais la revue effective.
+  // Comme pour les cartes de survie (#59), une revue saisie localement est
+  // annoncee comme telle et ne fait pas autorite : elle n'emprunte pas le
+  // libelle « مصدر موثّق », reserve a la donnee livree.
+  const override = loadReviewOverride('lesson_summary', summary.lessonId);
+  const localReview =
+    override && isReviewMetadataUsable({
+      reviewed: override.reviewed,
+      reviewedBy: override.reviewedBy,
+      reviewedAt: override.reviewedAt,
+      sourceProgram: override.sourceProgram,
+    })
+      ? override
+      : null;
+
+  const statusLabel = localReview
+    ? `مراجعة محلية على هذا الجهاز (${localReview.reviewedBy}) — غير موثقة`
+    : summary.status === 'manuel_officiel_verifie'
+    ? 'مصدر موثّق'
+    : summary.status === 'a_valider_enseignant'
+    ? 'بانتظار مراجعة أستاذ'
+    : 'شرح Kunz';
 
   return (
     <div className="mx-4 mt-3 rounded-2xl bg-white dark:bg-[#141916] border border-[#e2dabf]/60 shadow-sm overflow-hidden">
@@ -38,7 +60,7 @@ export default function MissionBanner({ summary, estimatedMinutes }: MissionBann
       {open && (
         <div className="px-3 pb-3 space-y-2 border-t border-[#e2dabf]/40">
           <div className="flex items-center gap-2 text-[10px] text-[#506072] dark:text-gray-400 pt-2">
-            <BookOpen className="w-3.5 h-3.5" /> {statusLabel}
+            <BookOpen className="w-3.5 h-3.5" /> <span data-testid="mission-status-label">{statusLabel}</span>
             {summary.vocabulary.length > 0 && <span>• {summary.vocabulary.length} كلمات مفتاحية</span>}
           </div>
           <p className="text-xs text-[#1f1c0b] dark:text-gray-200 leading-6">
