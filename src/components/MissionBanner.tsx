@@ -3,8 +3,7 @@
 import { useState } from 'react';
 import { Target, ChevronDown, BookOpen, Clock } from 'lucide-react';
 import type { LessonGoldSummary } from '../data/lessonGoldSummaries';
-import { loadReviewOverride } from '../services/editorialReviewService';
-import { isReviewMetadataUsable } from '../types/survivalCard';
+import { getReviewBadge } from '../services/reviewBadgeService';
 
 interface MissionBannerProps {
   summary: LessonGoldSummary;
@@ -21,24 +20,12 @@ export default function MissionBanner({ summary, estimatedMinutes }: MissionBann
   // Comme pour les cartes de survie (#59), une revue saisie localement est
   // annoncee comme telle et ne fait pas autorite : elle n'emprunte pas le
   // libelle « مصدر موثّق », reserve a la donnee livree.
-  const override = loadReviewOverride('lesson_summary', summary.lessonId);
-  const localReview =
-    override && isReviewMetadataUsable({
-      reviewed: override.reviewed,
-      reviewedBy: override.reviewedBy,
-      reviewedAt: override.reviewedAt,
-      sourceProgram: override.sourceProgram,
-    })
-      ? override
-      : null;
-
-  const statusLabel = localReview
-    ? `مراجعة محلية على هذا الجهاز (${localReview.reviewedBy}) — غير موثقة`
-    : summary.status === 'manuel_officiel_verifie'
-    ? 'مصدر موثّق'
-    : summary.status === 'a_valider_enseignant'
-    ? 'بانتظار مراجعة أستاذ'
-    : 'شرح Kunz';
+  // #69 — La regle etait recopiee ici, dans SurvivalCardView et nulle part pour
+  // les contextes de document. Elle est desormais unique (reviewBadgeService) :
+  // trois copies d'une regle de confiance, c'est trois occasions de la desserrer
+  // d'un seul cote. Le libelle par defaut passe de « شرح Kunz » — qui melait un
+  // mot latin a une interface arabe (cf. #67) — a un enonce explicite.
+  const statusLabel = getReviewBadge('lesson_summary', summary.lessonId, summary.status).labelAr;
 
   return (
     <div className="mx-4 mt-3 rounded-2xl bg-white dark:bg-[#141916] border border-[#e2dabf]/60 shadow-sm overflow-hidden">

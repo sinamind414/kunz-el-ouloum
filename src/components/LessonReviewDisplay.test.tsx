@@ -12,11 +12,18 @@
 //   1. une revue locale plausible DOIT devenir visible dans la lecon ;
 //   2. elle ne doit PAS emprunter le vocabulaire de l'autorite (#59) —
 //      « مصدر موثّق » reste reserve a la donnee livree.
+//
+// #69 — Le libelle par defaut etait « شرح Kunz », recopie en dur dans ces trois
+// assertions. Il porte desormais un enonce sans mot latin (cf. #67) et provient
+// d'une constante partagee. L'intention des tests est INCHANGEE — aucune revue
+// non plausible ne doit modifier le libelle — et la comparaison reste stricte
+// (`toBe`) : on repointe la reference, on ne desserre pas l'assertion.
 import { render, screen, fireEvent, cleanup } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import MissionBanner from './MissionBanner';
 import { LESSON_GOLD_SUMMARIES, getLessonGoldSummary } from '../data/lessonGoldSummaries';
 import { setReviewOverride } from '../services/editorialReviewService';
+import { REVIEW_BADGE_APP } from '../services/reviewBadgeService';
 
 beforeEach(() => localStorage.clear());
 afterEach(cleanup);
@@ -42,7 +49,7 @@ const publishAs = (by: string, at = '2020-01-01', program = 'BAC DZ') =>
 describe('#63 — la revue enseignant atteint la lecon', () => {
   it('sans revue locale, le libelle reste celui de la donnee livree', () => {
     const label = openBanner();
-    expect(label.textContent).toBe('شرح Kunz');
+    expect(label.textContent).toBe(REVIEW_BADGE_APP);
   });
 
   it('une revue locale plausible devient visible dans la lecon', () => {
@@ -50,7 +57,7 @@ describe('#63 — la revue enseignant atteint la lecon', () => {
     const label = openBanner();
     // Le verdict de l'enseignant franchit desormais la frontiere du panneau.
     expect(label.textContent).toContain('أ. بن يوسف');
-    expect(label.textContent).not.toBe('شرح Kunz');
+    expect(label.textContent).not.toBe(REVIEW_BADGE_APP);
   });
 
   it('une revue locale est annoncee comme locale et non documentee', () => {
@@ -71,13 +78,13 @@ describe('#63 — la revue enseignant atteint la lecon', () => {
   it('un nom blanc ne publie rien : le libelle d origine est conserve', () => {
     publishAs('   ');
     const label = openBanner();
-    expect(label.textContent).toBe('شرح Kunz');
+    expect(label.textContent).toBe(REVIEW_BADGE_APP);
   });
 
   it('une revue datee dans le futur ne publie rien', () => {
     publishAs('أ. بن يوسف', '3000-01-01');
     const label = openBanner();
-    expect(label.textContent).toBe('شرح Kunz');
+    expect(label.textContent).toBe(REVIEW_BADGE_APP);
   });
 
   it('la revue d une lecon ne deteint pas sur une autre lecon', () => {

@@ -3,6 +3,8 @@ import { motion } from 'motion/react';
 import { BookOpen, ChevronRight, ArrowRight, CheckCircle2, XCircle, Lightbulb, Target, Search } from 'lucide-react';
 import { DOCUMENT_ANALYSIS_EXERCISES, type DocAnalysisExercise } from '../data/documentAnalysisExercises';
 import { getDocumentPracticeContext } from '../data/documentPracticeContexts';
+import { documentContextReviewId } from '../services/editorialReviewService';
+import { getReviewBadge } from '../services/reviewBadgeService';
 import { useSmartValidation } from '../hooks/useSmartValidation';
 import { recordDocumentTrace, answerHasDocumentContent } from '../services/documentEvidenceService';
 import DocumentAssetRenderer from './DocumentAssetRenderer';
@@ -129,6 +131,20 @@ export function ExerciseScreen({
     [exercise.id, q.id]
   );
 
+  // #63 (second volet) — Les 42 contextes de document etaient arbitrables dans
+  // le panneau enseignant et n'avaient AUCUNE surface d'affichage : l'eleve ne
+  // pouvait pas savoir si le document qu'il travaille a ete relu, ni par qui.
+  // C'est la majorite des items du circuit editorial. Le badge suit la doctrine
+  // de #59 : une revue locale est annoncee locale, jamais presentee comme source certifiee.
+  const reviewBadge = useMemo(
+    () => getReviewBadge(
+      'document_context',
+      documentContextReviewId(exercise.id, q.id),
+      practice?.sourceStatus
+    ),
+    [exercise.id, q.id, practice?.sourceStatus]
+  );
+
   const handleValidate = () => {
     if (answer.trim().length < 2) return;
     const r = submit(answer);
@@ -195,6 +211,21 @@ export function ExerciseScreen({
           <span className="text-[10px] font-bold text-gray-400">القانون رقم {q.loiFocus}</span>
         </div>
         <p className="text-gray-900 dark:text-white font-bold leading-8">{q.promptAr}</p>
+
+        {/* #63 — Provenance editoriale du document, visible par l'eleve. */}
+        <div
+          data-testid="doc-review-badge"
+          data-tone={reviewBadge.tone}
+          className={`text-[10px] font-bold leading-5 rounded-lg px-2 py-1 inline-block ${
+            reviewBadge.tone === 'trusted'
+              ? 'bg-emerald-50 text-emerald-800 dark:bg-emerald-950/20 dark:text-emerald-300'
+              : reviewBadge.tone === 'local'
+              ? 'bg-amber-50 text-amber-800 dark:bg-amber-950/20 dark:text-amber-300'
+              : 'bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400'
+          }`}
+        >
+          {reviewBadge.labelAr}
+        </div>
 
         {/* Objectif + preuve attendue visibles AVANT la production (Speckit §4). */}
         {practice && (

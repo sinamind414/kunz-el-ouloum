@@ -99,12 +99,28 @@ function summaryToItem(summary: LessonGoldSummary): EditorialItem {
   };
 }
 
+// #68 — L'identite d'un contexte documentaire est le COUPLE (exerciseId,
+// questionId), jamais l'exerciseId seul : 42 contextes ne portent que 24
+// exerciseId distincts, et 13 exercices comptent 2 a 3 questions. Indexer la
+// revue sur l'exerciseId faisait deborder une relecture sur les questions
+// voisines — relire « determiner le mecanisme du sarin » marquait aussi
+// « proposer une hypothese » et « valider l'hypothese », deux contenus jamais
+// lus. C'est la meme cle que celle du resolveur de contenu
+// (`getDocumentPracticeContext(exerciseId, questionId)`) : une revue doit
+// designer exactement ce qui a ete relu.
+export function documentContextReviewId(exerciseId: string, questionId: string): string {
+  return `${exerciseId}::${questionId}`;
+}
+
 function documentToItem(doc: DocumentPracticeContext): EditorialItem {
-  const effective = getMergedReview('document_context', doc.exerciseId, { reviewed: false });
+  const reviewId = documentContextReviewId(doc.exerciseId, doc.questionId);
+  const effective = getMergedReview('document_context', reviewId, { reviewed: false });
   return {
-    id: doc.exerciseId,
+    id: reviewId,
     type: 'document_context',
-    label: doc.goalAr.slice(0, 80),
+    // Le panneau empile 2 a 3 questions du meme exercice : sans le rang, le
+    // relecteur ne peut pas savoir laquelle il publie (#68).
+    label: `${doc.goalAr.slice(0, 80)} — ${doc.questionId}`,
     reviewed: effective.reviewed,
     reviewedBy: effective.reviewedBy,
     reviewedAt: effective.reviewedAt,
