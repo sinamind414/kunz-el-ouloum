@@ -11,6 +11,7 @@ import DocumentAssetRenderer from './DocumentAssetRenderer';
 import { isDocumentAssetAvailable } from '../data/documentAssets';
 import CockpitChecklist from './CockpitChecklist';
 import { recordCorrectionFeedback } from '../services/correctionFeedbackService';
+import MicrophoneButton from './MicrophoneButton';
 
 interface DocumentAnalysisViewProps {
   onBack: () => void;
@@ -277,12 +278,17 @@ export function ExerciseScreen({
 
         <CockpitChecklist verb={q.verb} verbColor={VERB_COLOR[q.verb] || '#006d37'} />
 
-        <textarea
-          value={answer}
-          onChange={(e) => { setAnswer(e.target.value); setRecorded(null); }}
-          placeholder="اكتب إجابتك العلمية هنا…"
-          className="w-full mt-1 rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-[#0c0f0d] p-3 text-sm text-gray-800 dark:text-gray-100 leading-7 min-h-[120px] resize-y outline-none focus:border-[#006d37]"
-        />
+        <div className="relative">
+          <textarea
+            value={answer}
+            onChange={(e) => { setAnswer(e.target.value); setRecorded(null); }}
+            placeholder="اكتب إجابتك العلمية هنا…"
+            className="w-full mt-1 rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-[#0c0f0d] p-3 text-sm text-gray-800 dark:text-gray-100 leading-7 min-h-[120px] resize-y outline-none focus:border-[#006d37]"
+          />
+          <div className="absolute bottom-2 left-2">
+            <MicrophoneButton onTranscript={(text) => setAnswer((prev) => prev + text)} />
+          </div>
+        </div>
 
         <div className="flex items-center gap-2 mt-3">
           <button

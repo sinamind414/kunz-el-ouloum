@@ -5,6 +5,7 @@ import LessonAdventurePortal from './LessonAdventurePortal';
 import { getExperimentalLesson, LESSON_LIBRARY } from '../lessonData';
 import { SINGLE_PATH_LESSONS, SinglePathLesson } from '../data/singlePathLessons';
 import SpeechToTextInput from './SpeechToTextInput';
+import MicrophoneButton from './MicrophoneButton';
 import {
   ACTIVE_LESSONS,
   ActiveLesson,
@@ -1005,14 +1006,19 @@ function BacTransferChallenge({
       <p className="text-sm leading-8 text-[#1f1c0b] dark:text-gray-100">{challenge.contextAr}</p>
       <p className="text-sm font-bold text-[#1f1c0b] dark:text-white">{challenge.questionAr}</p>
 
-      <textarea
-        value={answer}
-        onChange={(e) => { setAnswer(e.target.value); setAttempted(false); setScore(null); }}
-        rows={4}
-        placeholder="اكتب إجابتك التحليلية هنا…"
-        className="w-full p-3 rounded-2xl border border-[#e2dabf]/60 bg-white dark:bg-[#0c0f0d] text-sm leading-8 text-right focus:outline-none focus:ring-2 focus:ring-[#006d37]/20"
-        dir="rtl"
-      />
+      <div className="relative">
+        <textarea
+          value={answer}
+          onChange={(e) => { setAnswer(e.target.value); setAttempted(false); setScore(null); }}
+          rows={4}
+          placeholder="اكتب إجابتك التحليلية هنا…"
+          className="w-full p-3 rounded-2xl border border-[#e2dabf]/60 bg-white dark:bg-[#0c0f0d] text-sm leading-8 text-right focus:outline-none focus:ring-2 focus:ring-[#006d37]/20"
+          dir="rtl"
+        />
+        <div className="absolute bottom-2 left-2">
+          <MicrophoneButton onTranscript={(text) => setAnswer((prev) => prev + text)} />
+        </div>
+      </div>
 
       {!attempted && (
         <button
