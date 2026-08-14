@@ -135,6 +135,10 @@ export interface ReviewMetadata {
   reviewedAt?: string;
   reviewedBy?: string;
   sourceProgram?: string;
+  // #59 — Vrai si la revue provient du « mode enseignant » local, qui n'exige
+  // aucune authentification : l'information reste affichable mais ne doit
+  // jamais etre presentee a l'eleve comme une validation externe.
+  locallyDeclared?: boolean;
 }
 
 // Cadence de rappels espacés (P2.3) : offsets depuis reviewStartedAt.

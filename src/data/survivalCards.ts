@@ -4,7 +4,7 @@
 // Statut : mixed — sc_enzymes reviewed:true, les autres reviewed:false.
 // Le code n'affiche que les cartes reviewed:true (getPublishableSurvivalCards).
 
-import type { SurvivalCard } from '../types/survivalCard';
+import { isCardPublishable, type SurvivalCard } from '../types/survivalCard';
 import type { ReviewMetadata } from './store';
 
 const REVIEW_OVERRIDE_PREFIX = 'kunz_review_v2:survival_card:';
@@ -113,9 +113,7 @@ export const SURVIVAL_CARDS: SurvivalCard[] = [
 // Cartes réellement publiables (revue humaine valide) — seules celles-ci sont
 // affichées à l'élève (P1.2-B). Tant que reviewed=false, la liste est vide.
 export function getPublishableSurvivalCards(): SurvivalCard[] {
-  return SURVIVAL_CARDS.map(applyOverride).filter(
-    (c) => c.review.reviewed && !!c.review.reviewedBy && !!c.review.reviewedAt && !!c.review.sourceProgram
-  );
+  return SURVIVAL_CARDS.map(applyOverride).filter(isCardPublishable);
 }
 
 // Renvoie la carte UNIQUEMENT si elle est publiable (jamais un brouillon).
@@ -123,8 +121,7 @@ export function getPublishableSurvivalCardById(id: string): SurvivalCard | undef
   const card = SURVIVAL_CARDS.find((c) => c.id === id);
   if (!card) return undefined;
   const overridden = applyOverride(card);
-  const ok = overridden.review.reviewed && !!overridden.review.reviewedBy && !!overridden.review.reviewedAt && !!overridden.review.sourceProgram;
-  return ok ? overridden : undefined;
+  return isCardPublishable(overridden) ? overridden : undefined;
 }
 
 export function getSurvivalCardById(id: string): SurvivalCard | undefined {

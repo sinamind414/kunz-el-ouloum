@@ -38,8 +38,15 @@ export default function SurvivalCardView({ card, onClose, onRecallDone }: Props)
           </div>
           <div>
             <h3 className="font-black text-lg text-gray-900 dark:text-white">بطاقة نجاة — {card.conceptId}</h3>
-            <p className="text-[11px] text-[#506072] dark:text-gray-400">
-              مراجعة: {card.review.reviewedBy} · {card.review.sourceProgram}
+            {/* #59 — On affichait « مراجعة: <nom> · <programme> » a partir d'un
+                nom saisi librement dans le mode enseignant local, sans aucune
+                authentification : l'eleve pouvait signer lui-meme et lisait
+                ensuite sa propre saisie comme une caution. On qualifie
+                desormais la source au lieu de la presenter comme une autorite. */}
+            <p className="text-[11px] text-[#506072] dark:text-gray-400" data-testid="survival-card-review-origin">
+              {card.review.locallyDeclared
+                ? `مراجعة محلية على هذا الجهاز (${card.review.reviewedBy}) — غير موثقة`
+                : `مراجعة: ${card.review.reviewedBy} · ${card.review.sourceProgram}`}
             </p>
           </div>
         </div>

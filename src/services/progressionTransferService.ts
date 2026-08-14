@@ -40,7 +40,7 @@ export interface ProgressionTransferFile {
     mastery: Record<string, MasteryRecord>;
     recalls: RecallItem[];
     snapshots: LessonSessionSnapshot[];
-    editorialOverrides?: Record<string, { reviewed: boolean; reviewedBy?: string; reviewedAt?: string; sourceProgram?: string }>;
+    editorialOverrides?: Record<string, { reviewed: boolean; reviewedBy?: string; reviewedAt?: string; sourceProgram?: string; locallyDeclared?: boolean }>;
   };
 }
 
@@ -292,8 +292,8 @@ export function rebuildMastery(evidences: MasteryEvidence[]): Record<string, Mas
   return mastery;
 }
 
-function collectEditorialOverrides(): Record<string, { reviewed: boolean; reviewedBy?: string; reviewedAt?: string; sourceProgram?: string }> {
-  const overrides: Record<string, { reviewed: boolean; reviewedBy?: string; reviewedAt?: string; sourceProgram?: string }> = {};
+function collectEditorialOverrides(): Record<string, { reviewed: boolean; reviewedBy?: string; reviewedAt?: string; sourceProgram?: string; locallyDeclared?: boolean }> {
+  const overrides: Record<string, { reviewed: boolean; reviewedBy?: string; reviewedAt?: string; sourceProgram?: string; locallyDeclared?: boolean }> = {};
   try {
     for (let index = 0; index < localStorage.length; index++) {
       const key = localStorage.key(index);
@@ -302,7 +302,7 @@ function collectEditorialOverrides(): Record<string, { reviewed: boolean; review
       if (!raw) continue;
       const parsed: unknown = JSON.parse(raw);
       if (isObject(parsed) && typeof parsed.reviewed === 'boolean') {
-        overrides[key] = { reviewed: parsed.reviewed, reviewedBy: isString(parsed.reviewedBy) ? parsed.reviewedBy : undefined, reviewedAt: isString(parsed.reviewedAt) ? parsed.reviewedAt : undefined, sourceProgram: isString(parsed.sourceProgram) ? parsed.sourceProgram : undefined };
+        overrides[key] = { reviewed: parsed.reviewed, reviewedBy: isString(parsed.reviewedBy) ? parsed.reviewedBy : undefined, reviewedAt: isString(parsed.reviewedAt) ? parsed.reviewedAt : undefined, sourceProgram: isString(parsed.sourceProgram) ? parsed.sourceProgram : undefined, locallyDeclared: parsed.locallyDeclared === true ? true : undefined };
       }
     }
   } catch {}
@@ -439,7 +439,11 @@ export function applyProgressionImport(file: ProgressionTransferFile, currentUni
   }
   if (file.data.editorialOverrides) {
     for (const [key, value] of Object.entries(file.data.editorialOverrides)) {
-      replacement.set(key, JSON.stringify(value));
+      // #59 — Le fichier de sauvegarde est un JSON que l'utilisateur peut
+      // editer a la main. Une revue qui en provient n'a donc jamais valeur de
+      // validation externe : on la marque comme declaree localement, sinon un
+      // aller-retour export/import blanchirait une signature inventee.
+      replacement.set(key, JSON.stringify({ ...value, locallyDeclared: true }));
     }
   }
 

@@ -119,19 +119,26 @@ export default function TrainingView({
   // Si l'élève a peu d'XP (< 150), on considère que c'est l'une de ses 3 premières sessions.
   const isFirstSessions = progress && progress.xp <= 150;
 
-  // 3 "bosses" : une unité représentative par domaine
+  // 3 "bosses" : une unité représentative par domaine.
+  // #58 — On ne retenait que la PREMIERE unite de chaque domaine, sans regarder
+  // `isLocked` : deux des trois boss (U6 « التركيب الضوئي », U9 « النشاط
+  // التكتوني ») etaient des unites verrouillees que le bouton « تحدّى »
+  // lancait quand meme. Le defi BAC etait donc le seul ecran de l'application
+  // a contourner la progression que tous les autres respectent
+  // (DashboardView, LessonsView, MyPathView filtrent tous `!isLocked`).
+  // On choisit desormais, par domaine, la premiere unite REELLEMENT ouverte ;
+  // un domaine encore entierement verrouille est annonce comme tel au lieu
+  // d'etre presente comme un boss jouable.
   const bosses = useMemo(() => {
-    const seen = new Set<string>();
-    const result: Unit[] = [];
-    for (const u of units) {
-      if (!seen.has(u.domain)) {
-        seen.add(u.domain);
-        result.push(u);
-      }
-      if (result.length === 3) break;
-    }
-    return result;
-  }, [units]);
+    const isOpen = (u: Unit) => !u.isLocked || progress.completedUnits.includes(u.id - 1);
+    const domains: string[] = [];
+    for (const u of units) if (!domains.includes(u.domain)) domains.push(u.domain);
+    return domains.slice(0, 3).map((domain) => {
+      const inDomain = units.filter((u) => u.domain === domain);
+      const open = inDomain.find(isOpen);
+      return { domain, unit: open ?? inDomain[0], locked: !open };
+    });
+  }, [units, progress.completedUnits]);
 
   // Rubriques d'entraînement présentées en icônes rondes (style écran principal).
   const RUBRICS: {
@@ -533,23 +540,34 @@ export default function TrainingView({
           <h2 className="font-black text-gray-800 dark:text-gray-100">تحدي BAC — 3 بطولات</h2>
           {bosses.map((b, i) => (
             <div
-              key={b.id}
+              key={b.unit.id}
+              data-testid={`boss-row-${i + 1}`}
               className="flex items-center gap-3 bg-gradient-to-br from-[#1f2937] to-[#111827] text-white rounded-2xl p-4 shadow-sm"
             >
-              <div className="w-11 h-11 rounded-xl bg-rose-500/20 text-rose-300 flex items-center justify-center shrink-0">
-                <Rocket className="w-6 h-6" />
+              <div className={`w-11 h-11 rounded-xl flex items-center justify-center shrink-0 ${b.locked ? 'bg-gray-500/20 text-gray-400' : 'bg-rose-500/20 text-rose-300'}`}>
+                {b.locked ? <Lock className="w-6 h-6" /> : <Rocket className="w-6 h-6" />}
               </div>
               <div className="flex-1">
-                <span className="text-[10px] font-bold text-rose-300">BOSS {i + 1}</span>
-                <h3 className="font-black">{b.title}</h3>
+                <span className={`text-[10px] font-bold ${b.locked ? 'text-gray-400' : 'text-rose-300'}`}>BOSS {i + 1}</span>
+                <h3 className="font-black">{b.unit.title}</h3>
                 <span className="text-[11px] text-gray-300">{b.domain}</span>
               </div>
-              <button
-                onClick={() => onLaunchQuiz(b.id)}
-                className="bg-rose-500 text-white text-sm font-bold px-3 py-2 rounded-xl hover:bg-rose-600 transition-colors cursor-pointer"
-              >
-                تحدّى
-              </button>
+              {b.locked ? (
+                <span
+                  data-testid={`boss-locked-${i + 1}`}
+                  className="text-[11px] font-bold text-gray-300 bg-white/10 px-3 py-2 rounded-xl text-center leading-4"
+                >
+                  أكمل الوحدة السابقة
+                </span>
+              ) : (
+                <button
+                  data-testid={`boss-launch-${i + 1}`}
+                  onClick={() => onLaunchQuiz(b.unit.id)}
+                  className="bg-rose-500 text-white text-sm font-bold px-3 py-2 rounded-xl hover:bg-rose-600 transition-colors cursor-pointer"
+                >
+                  تحدّى
+                </button>
+              )}
             </div>
           ))}
         </div>

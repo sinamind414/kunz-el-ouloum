@@ -76,6 +76,10 @@ export default function EditorialReviewPanel() {
         reviewedBy: teacherName || 'أستاذ',
         reviewedAt: new Date().toISOString(),
         sourceProgram: sourceProgram || 'BAC DZ',
+        // #59 — Cette revue est declaree localement, sans authentification.
+        // Le marqueur suit la donnee (y compris a l'export) pour que l'ecran
+        // eleve ne puisse pas la presenter comme une validation externe.
+        locallyDeclared: true,
       });
     }
     refresh();
@@ -101,6 +105,16 @@ export default function EditorialReviewPanel() {
       </h2>
       <p className="text-[10px] leading-5 text-gray-500 dark:text-gray-400 mt-1">
         وضع الأستاذ — المراجعة والنشر. التغييرات محفوظة محلياً.
+      </p>
+      {/* #59 — Ce mode n'est protege par aucun mot de passe : n'importe quel
+          utilisateur peut l'ouvrir et signer du nom qu'il veut. Le dire ici
+          est le minimum tant qu'aucune authentification n'existe. */}
+      <p
+        data-testid="editorial-local-only-notice"
+        className="text-[10px] leading-5 text-amber-800 dark:text-amber-300 bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-900/40 rounded-xl p-2 mt-2"
+      >
+        هذا الوضع غير محمي بكلمة سر ولا يتحقق من هوية من يستعمله. ما يُنشر هنا يُعدّ
+        <strong> مراجعة محلية على هذا الجهاز فقط</strong>، ولا يمثل مصادقة من أي أستاذ أو هيئة.
       </p>
 
       {mode === 'edit' && (
