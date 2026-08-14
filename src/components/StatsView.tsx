@@ -27,6 +27,15 @@ export default function StatsView({ progress, units, onNavigateToTab }: StatsVie
   const [showReportModal, setShowReportModal] = useState<boolean>(false);
   const [studentName, setStudentName] = useState<string>('');
   const reportRef = useRef<HTMLDivElement>(null);
+
+  // #57 - A record of achievement may only be issued for work actually done.
+  // Without this, a student who has just installed the app can export a document
+  // certifying '0 XP' and 'excellent mastery of scientific methodology'.
+  const hasCertifiableWork =
+    progress.xp > 0 ||
+    progress.completedQuestionsCount > 0 ||
+    progress.quizScoreHistory.length > 0 ||
+    progress.completedUnits.length > 0;
   
   // 1. Format data for the Spaced Repetition card status chart
   const cardData = [
@@ -104,14 +113,23 @@ export default function StatsView({ progress, units, onNavigateToTab }: StatsVie
           <h2 className="text-2xl font-black text-[#006d37] dark:text-[#2ecc71] font-display">إحصائيات الإنجاز والتقدم</h2>
           <p className="text-xs text-[#506072] dark:text-zinc-300 font-semibold mt-1">تتبع رحلتك العلمية والتحضير للبكالوريا</p>
         </div>
-        <button
-          onClick={() => setShowReportModal(true)}
-          className="flex items-center justify-center gap-2 bg-gradient-to-r from-[#006d37] to-[#2ecc71] hover:from-[#005027] hover:to-[#27ae60] text-white font-extrabold text-xs px-5 py-3 rounded-2xl shadow-md cursor-pointer transition-all active:scale-95 self-start sm:self-auto border border-transparent"
-          id="generate-report-btn"
-        >
-          <Award className="w-4 h-4 text-[#fed65b] fill-[#fed65b] animate-pulse" />
-          <span>تصدير كشف النقاط الرسمي (PDF)</span>
-        </button>
+        {hasCertifiableWork ? (
+          <button
+            onClick={() => setShowReportModal(true)}
+            className="flex items-center justify-center gap-2 bg-gradient-to-r from-[#006d37] to-[#2ecc71] hover:from-[#005027] hover:to-[#27ae60] text-white font-extrabold text-xs px-5 py-3 rounded-2xl shadow-md cursor-pointer transition-all active:scale-95 self-start sm:self-auto border border-transparent"
+            id="generate-report-btn"
+          >
+            <Award className="w-4 h-4 text-[#fed65b] fill-[#fed65b] animate-pulse" />
+            <span>تصدير بطاقة متابعة التقدم</span>
+          </button>
+        ) : (
+          <p
+            data-testid="report-locked-hint"
+            className="text-[11px] font-bold text-[#506072] dark:text-zinc-300 bg-[#e2dabf]/30 border border-[#e2dabf] rounded-2xl px-4 py-3 self-start sm:self-auto max-w-xs text-right"
+          >
+            لا توجد بيانات لتصديرها بعد. أنجز أول اختبار أو درس لتتمكن من تصدير بطاقة متابعة تقدمك.
+          </p>
+        )}
       </section>
 
       {/* Grid Stats Highlights */}
@@ -426,11 +444,11 @@ export default function StatsView({ progress, units, onNavigateToTab }: StatsVie
                           ctx.fillStyle = '#006d37';
                           ctx.font = 'bold 22px Arial, sans-serif';
                           ctx.textAlign = 'center';
-                          ctx.fillText('الجمهورية الجزائرية الديمقراطية الشعبية', canvas.width / 2, 80);
+                          ctx.fillText('فضاء كنز العلوم التفاعلي', canvas.width / 2, 80);
                           
                           ctx.fillStyle = '#506072';
                           ctx.font = 'bold 12px Arial, sans-serif';
-                          ctx.fillText('وزارة التربية الوطنية • الديوان الوطني للامتحانات والمسابقات', canvas.width / 2, 110);
+                          ctx.fillText('تطبيق تعليمي مستقل • لا يمثل أي جهة رسمية', canvas.width / 2, 110);
                           ctx.fillText('فضاء كنز العلوم لتسهيل مادة علوم الطبيعة والحياة للبكالوريا', canvas.width / 2, 130);
 
                           ctx.strokeStyle = '#e2dabf';
@@ -442,11 +460,11 @@ export default function StatsView({ progress, units, onNavigateToTab }: StatsVie
 
                           ctx.fillStyle = '#944a00';
                           ctx.font = 'bold 24px Arial, sans-serif';
-                          ctx.fillText('كشف النقاط الإنجازي وشهادة التفوق للبكالوريا', canvas.width / 2, 200);
+                          ctx.fillText('بطاقة متابعة التقدم الشخصي', canvas.width / 2, 200);
 
                           ctx.fillStyle = '#1f1c0b';
                           ctx.font = '15px Arial, sans-serif';
-                          ctx.fillText('يشهد فضاء كنز العلوم التفاعلي بأن الطالب(ة):', canvas.width / 2, 245);
+                          ctx.fillText('سجل النشاط داخل التطبيق للطالب(ة):', canvas.width / 2, 245);
 
                           ctx.fillStyle = '#006d37';
                           ctx.font = 'bold 28px Arial, sans-serif';
@@ -454,7 +472,7 @@ export default function StatsView({ progress, units, onNavigateToTab }: StatsVie
 
                           ctx.fillStyle = '#506072';
                           ctx.font = '13px Arial, sans-serif';
-                          ctx.fillText('قد أنجز مسار المراجعة الذكية والتدريبات المنهجية وحقق المؤشرات التحصيلية التالية:', canvas.width / 2, 330);
+                          ctx.fillText('سجل التطبيق النشاط التالي داخل التطبيق فقط، وهو لا يعكس أي تقييم رسمي:', canvas.width / 2, 330);
 
                           const drawRoundRect = (x: number, y: number, w: number, h: number, r: number) => {
                             ctx.beginPath();
@@ -568,7 +586,7 @@ export default function StatsView({ progress, units, onNavigateToTab }: StatsVie
                           ctx.fillStyle = 'rgba(0,109,55,0.6)';
                           ctx.font = 'bold 8px Arial, sans-serif';
                           ctx.textAlign = 'center';
-                          ctx.fillText('تمت المصادقة', 150, footerY - 10);
+                          ctx.fillText('وثيقة غير رسمية', 150, footerY - 10);
                           ctx.fillText('منصة كنز العلوم', 150, footerY + 3);
                           ctx.fillText('SVT BAC DZ', 150, footerY + 16);
 
@@ -578,6 +596,11 @@ export default function StatsView({ progress, units, onNavigateToTab }: StatsVie
                           
                           ctx.font = '10px Arial, sans-serif';
                           ctx.fillText(`تاريخ الإصدار: ${new Date().toLocaleDateString('ar-DZ')}`, canvas.width - 150, footerY + 15);
+
+                          ctx.fillStyle = '#ba1a1a';
+                          ctx.font = 'bold 11px Arial, sans-serif';
+                          ctx.textAlign = 'center';
+                          ctx.fillText('هذه البطاقة صادرة عن تطبيق تعليمي خاص، وليست وثيقة رسمية ولا يُعتد بها لدى أي جهة إدارية أو تربوية.', canvas.width / 2, 1060);
 
                           const dataUrl = canvas.toDataURL('image/png');
                           const link = document.createElement('a');
@@ -608,25 +631,34 @@ export default function StatsView({ progress, units, onNavigateToTab }: StatsVie
                   </div>
 
                   <div className="text-center space-y-1.5 border-b-2 border-dashed border-[#006d37]/20 pb-4">
-                    <span className="text-xs font-bold text-[#506072] block tracking-wide">الجمهورية الجزائرية الديمقراطية الشعبية</span>
-                    <span className="text-[11px] font-bold text-gray-500 block">وزارة التربية الوطنية • الديوان الوطني للامتحانات والمسابقات</span>
+                    <span className="text-xs font-bold text-[#506072] block tracking-wide">فضاء كنز العلوم التفاعلي</span>
+                    <span className="text-[11px] font-bold text-gray-500 block">تطبيق تعليمي مستقل • لا يمثل أي جهة رسمية</span>
                     <span className="text-xs font-extrabold text-[#006d37] bg-[#2ecc71]/10 px-3 py-1 rounded-full inline-block mt-1">
                       منصة كنز العلوم التفاعلية لعلوم الطبيعة والحياة للبكالوريا
                     </span>
                   </div>
 
+                  <div
+                    data-testid="certificate-unofficial-notice"
+                    className="border-2 border-[#ba1a1a]/40 bg-[#ba1a1a]/5 rounded-2xl px-4 py-3 text-center"
+                  >
+                    <p className="text-[11px] font-extrabold text-[#ba1a1a] leading-relaxed">
+                      هذه البطاقة صادرة عن تطبيق تعليمي خاص. <strong>ليست وثيقة رسمية</strong> ولا يُعتد بها لدى أي جهة إدارية أو تربوية، ولا تصدر عن أي هيئة حكومية أو امتحانية.
+                    </p>
+                  </div>
+
                   <div className="text-center space-y-2 py-2">
-                    <h2 className="text-2xl font-black text-[#944a00] font-display">كشف الإنجاز والتقدم الدراسي النموذجي</h2>
-                    <p className="text-xs text-gray-500 font-semibold">شهادة إثبات الكفاءة وتحصيل المنهجية العلمية لمادة علوم الطبيعة والحياة</p>
+                    <h2 className="text-2xl font-black text-[#944a00] font-display">بطاقة متابعة التقدم الشخصي</h2>
+                    <p className="text-xs text-gray-500 font-semibold">سجل نشاطك داخل التطبيق في مادة علوم الطبيعة والحياة</p>
                   </div>
 
                   <div className="bg-white/50 border border-[#e2dabf]/30 p-4 rounded-2xl text-center space-y-2">
-                    <p className="text-xs text-gray-500">يشهد الديوان الإلكتروني لمنصة كنز العلوم التفاعلية بأن الطالب(ة):</p>
+                    <p className="text-xs text-gray-500">سجل النشاط داخل التطبيق للطالب(ة):</p>
                     <div className="text-xl font-black text-[#006d37] py-1 border-b border-dashed border-[#006d37]/20 inline-block px-8">
                       {studentName || 'طالب متميز'}
                     </div>
                     <p className="text-xs text-gray-600 leading-relaxed max-w-xl mx-auto">
-                      قد واصل تدريبات المراجعة الذكية بالتكرار المتباعد، وأظهر تحكماً ممتازاً في المنهجية العلمية (الاستدلال والمسعى العلمي) للتحضير لبكالوريا 2026 محرزاً الإحصائيات التالية:
+                      سجل التطبيق الأرقام التالية بناءً على نشاطك داخله فقط. هذه الأرقام لا تعكس أي تقييم رسمي لمستواك، ولا تغني عن تقييم أستاذك في القسم:
                     </p>
                   </div>
 
@@ -706,12 +738,12 @@ export default function StatsView({ progress, units, onNavigateToTab }: StatsVie
                   <div className="flex flex-row-reverse justify-between items-center pt-4 border-t border-dashed border-[#006d37]/20">
                     <div className="relative w-20 h-20 flex items-center justify-center border-2 border-dashed border-[#006d37]/30 rounded-full bg-white text-[9px] text-[#006d37]/80 text-center flex-col font-bold leading-tight p-2 shadow-inner">
                       <CheckCircle2 className="w-4 h-4 mb-0.5 text-[#2ecc71] fill-[#2ecc71]/10" />
-                      <span>منصة كنز العلوم</span>
-                      <span className="text-[7px] text-gray-400">SVT BAC DZ</span>
+                      <span>وثيقة غير رسمية</span>
+                      <span className="text-[7px] text-gray-400">كنز العلوم</span>
                     </div>
                     
                     <div className="text-right space-y-1">
-                      <span className="text-[10px] text-gray-400 block font-bold">توقيع ومصادقة:</span>
+                      <span className="text-[10px] text-gray-400 block font-bold">صادرة عن:</span>
                       <span className="text-xs font-extrabold text-[#506072] block">المرشد الذكي للبكالوريا</span>
                       <span className="text-[10px] font-mono text-gray-400 block">تاريخ الإصدار: {new Date().toLocaleDateString('ar-DZ', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
                     </div>
