@@ -22,6 +22,11 @@ export default defineConfig({
   test: {
     environment: 'jsdom',
     globals: true,
+    // Les runners GitHub Actions (2 vCPU partagés) sont plus lents que les
+    // machines locales : le test lourd InteractiveLessonView.transcriptionSprint
+    // dépassait le timeout par défaut de 5 s et faisait échouer la CI
+    // uniquement côté runner. 15 s laisse une marge confortable.
+    testTimeout: 15000,
   },
   build: {
     sourcemap: false, // pas de sourcemap publique en production
