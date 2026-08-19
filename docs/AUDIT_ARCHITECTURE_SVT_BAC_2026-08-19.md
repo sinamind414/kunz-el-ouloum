@@ -511,7 +511,7 @@ Classement par priorité : risque utilisateur > perte/fuite de données > contin
 - **Risque métier :** réputation du produit détruite au lancement.
 - **Cause probable :** ajout de l'obfuscateur sans vérification du contenu de `dist/` ; la CI (tests rouges) ne déclenche plus ni build ni E2E.
 - **Recommandation :** supprimer le plugin et son import ; conserver `sourcemap: false`. L'obfuscation d'un client web n'apporte aucune protection réelle.
-- **Priorité :** P0 · **Effort :** Faible · **Dépendances :** — 
+- **Priorité :** P0 · **Effort :** Faible · **Dépendances :** —
 - **Critères de validation :** build ≥ 50 chunks ; E2E vert ; `curl` d'un chunk de vue = `application/javascript` ; suppression de `javascript-obfuscator` des devDependencies.
 
 ### ARCH-002 — Tests unitaires rouges et CI en échec sur master
