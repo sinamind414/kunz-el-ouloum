@@ -135,8 +135,149 @@ function BeginnerLaunchpad({ onNavigateToTab }: { onNavigateToTab: (tab: TabId) 
   );
 }
 
+/**
+ * Boussole V3 — carte de focus unique : objectif courant, examen de validation
+ * quand l'unité est prête (≥ 60 %), remédiation ciblée après un échec, félicitations
+ * quand toutes les unités débloquées sont validées.
+ * Les data-testid et les textes arabes ci-dessous sont contractuels
+ * (MyPathView.focusCompass.test.tsx).
+ */
+function FocusCompass({
+  units,
+  mastery,
+  onResumeMission,
+  onLaunchExam,
+}: {
+  units: Unit[];
+  mastery?: MasteryState;
+  onResumeMission?: (mission: { kind: string; unitId: number }) => void;
+  onLaunchExam?: (unitId: number) => void;
+}) {
+  const unlockedUnits = units.filter((u) => !u.isLocked);
+  const validated = new Set(mastery?.validatedUnits ?? []);
+  const allValidated = unlockedUnits.length > 0 && unlockedUnits.every((u) => validated.has(u.id));
+
+  if (allValidated) {
+    return (
+      <section
+        data-testid="mypath-focus-card"
+        className="mb-4 rounded-3xl border border-[#2ecc71]/40 bg-gradient-to-br from-[#eafaf1] to-white dark:from-[#0f2418] dark:to-[#141916] p-4 md:p-5 shadow-sm"
+      >
+        <div className="flex items-center gap-3">
+          <div className="w-12 h-12 rounded-2xl bg-[#006d37] text-white flex items-center justify-center shrink-0">
+            <Trophy className="w-6 h-6" />
+          </div>
+          <div className="min-w-0">
+            <h2 className="text-lg md:text-xl font-black text-[#006d37] dark:text-[#2ecc71]">
+              مبروك! أتقنت كل الوحدات
+            </h2>
+            <p className="text-sm text-[#506072] dark:text-gray-300 leading-7 mt-1">
+              استمر في المراجعة المنتظمة عبر «أتدرب» للحفاظ على مستواك حتى يوم الامتحان.
+            </p>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  const failure = mastery?.lastFailure ?? null;
+  const focusUnit = unlockedUnits.find((u) => !validated.has(u.id)) ?? unlockedUnits[0];
+
+  if (failure) {
+    const topics = failure.weakTopicsAr.length > 0 ? failure.weakTopicsAr : ['مراجعة شاملة'];
+    return (
+      <section
+        data-testid="mypath-focus-card"
+        className="mb-4 rounded-3xl border border-[#f43f5e]/40 bg-gradient-to-br from-[#fff1f2] to-white dark:from-[#2a1519] dark:to-[#141916] p-4 md:p-5 shadow-sm"
+      >
+        <div className="flex items-start gap-3">
+          <div className="w-12 h-12 rounded-2xl bg-[#e11d48] text-white flex items-center justify-center shrink-0">
+            <AlertTriangle className="w-6 h-6" />
+          </div>
+          <div className="min-w-0 flex-1">
+            <h2 className="text-lg md:text-xl font-black text-[#be123c] dark:text-[#fda4af]">
+              ابدأ المعالجة المستهدفة
+            </h2>
+            <p className="text-sm text-[#506072] dark:text-gray-300 leading-7 mt-1">
+              {`تحتاج إلى مراجعة: ${topics.join('، ')}`}
+            </p>
+            <ul className="mt-2 space-y-1">
+              {topics.map((topic) => (
+                <li key={topic} className="flex items-center gap-2 text-sm font-bold text-[#881337] dark:text-[#fecdd3]">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#e11d48] shrink-0" />
+                  {topic}
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+        <button
+          data-testid="mypath-resume-btn"
+          onClick={() => onResumeMission?.({ kind: 'quiz', unitId: failure.unitId })}
+          className="mt-4 w-full rounded-2xl bg-[#e11d48] hover:brightness-105 text-white font-black py-3 text-sm shadow-sm cursor-pointer"
+        >
+          ابدأ المعالجة الآن
+        </button>
+      </section>
+    );
+  }
+
+  if (!focusUnit) return null;
+
+  const focusProgress = focusUnit.progress;
+  const isReady = focusProgress >= 60;
+
+  return (
+    <section
+      data-testid="mypath-focus-card"
+      className="mb-4 rounded-3xl border border-[#006d37]/30 bg-gradient-to-br from-[#eafaf1] to-white dark:from-[#0f2418] dark:to-[#141916] p-4 md:p-5 shadow-sm"
+    >
+      <div className="flex items-start gap-3">
+        <div className="w-12 h-12 rounded-2xl bg-[#006d37] text-white flex items-center justify-center shrink-0">
+          <Compass className="w-6 h-6" />
+        </div>
+        <div className="min-w-0 flex-1">
+          <div className="inline-flex items-center rounded-full bg-[#006d37]/10 dark:bg-[#2ecc71]/10 px-2.5 py-1 text-[10px] font-black text-[#006d37] dark:text-[#2ecc71] mb-2">
+            هدفك الحالي — البوصلة
+          </div>
+          <h2 className="text-lg md:text-xl font-black text-[#1f1c0b] dark:text-white">
+            {`الوحدة ${focusUnit.id} — ${focusUnit.title}`}
+          </h2>
+          <div className="mt-3 flex items-center gap-3">
+            <div className="flex-1 h-2.5 rounded-full bg-[#006d37]/10 dark:bg-white/10 overflow-hidden">
+              <div
+                className="h-full rounded-full bg-[#006d37] dark:bg-[#2ecc71] transition-all"
+                style={{ width: `${Math.min(100, Math.max(0, focusProgress))}%` }}
+              />
+            </div>
+            <span className="text-xs font-black text-[#006d37] dark:text-[#2ecc71]">{focusProgress}%</span>
+          </div>
+        </div>
+      </div>
+      <div className="mt-4 flex flex-col sm:flex-row gap-2">
+        {isReady && (
+          <button
+            data-testid="mypath-exam-btn"
+            onClick={() => onLaunchExam?.(focusUnit.id)}
+            className="flex-1 rounded-2xl bg-[#ff9a4a] hover:brightness-105 text-white font-black py-3 text-sm shadow-sm cursor-pointer"
+          >
+            اجتاز امتحان الوحدة
+          </button>
+        )}
+        <button
+          data-testid="mypath-resume-btn"
+          onClick={() => onResumeMission?.({ kind: isReady ? 'exam' : 'quiz', unitId: focusUnit.id })}
+          className="flex-1 rounded-2xl bg-[#006d37] hover:bg-[#00562b] text-white font-black py-3 text-sm shadow-sm cursor-pointer"
+        >
+          أكمل من حيث توقفت
+        </button>
+      </div>
+    </section>
+  );
+}
+
 export default function MyPathView(props: MyPathViewProps) {
-  const { units, progress, onLaunchQuiz, onLaunchRevision, onNavigateToTab, onLaunchReflexMission, onLaunchSurvivalCard, onOpenDocumentExercise, onStartLesson } = props;
+  const { units, progress, onLaunchQuiz, onLaunchRevision, onNavigateToTab, onLaunchReflexMission, onLaunchSurvivalCard, onOpenDocumentExercise, onStartLesson, mastery, onResumeMission, onLaunchExam } = props;
 
   // Formation Jour 0 (onboarding « 6 lois ») : accessible via un bouton dédié,
   // mais NE BLOQUE PLUS l'accès au tableau de bord (les 6 icônes s'affichent tout de suite).
@@ -146,6 +287,7 @@ export default function MyPathView(props: MyPathViewProps) {
   if (showOnboarding) {
     return (
       <div className="w-full max-w-2xl mx-auto p-4 md:p-6 pb-28" dir="rtl">
+        <FocusCompass units={units} mastery={mastery} onResumeMission={onResumeMission} onLaunchExam={onLaunchExam} />
         <BeginnerLaunchpad onNavigateToTab={onNavigateToTab} />
         <button
           onClick={() => setShowOnboarding(false)}
@@ -169,6 +311,7 @@ export default function MyPathView(props: MyPathViewProps) {
 
   return (
     <div className="w-full max-w-2xl mx-auto p-4 md:p-6 pb-28" dir="rtl">
+      <FocusCompass units={units} mastery={mastery} onResumeMission={onResumeMission} onLaunchExam={onLaunchExam} />
       <BeginnerLaunchpad onNavigateToTab={onNavigateToTab} />
 
       {/* Accès direct à la formation Jour 0 (ne bloque plus le dashboard). */}

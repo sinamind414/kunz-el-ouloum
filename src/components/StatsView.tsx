@@ -47,12 +47,6 @@ export default function StatsView({ progress, units, onNavigateToTab }: StatsVie
 
   // Fallback if no cards have been rated yet
   const hasCardData = cardData.length > 0;
-  const mockCardData = [
-    { name: 'إعادة', value: 3, color: '#ba1a1a' },
-    { name: 'صعب', value: 5, color: '#506072' },
-    { name: 'جيد', value: 12, color: '#006d37' },
-    { name: 'سهل', value: 8, color: '#2ecc71' }
-  ];
 
   // 2. Format quiz history data
   const quizHistory = progress.quizScoreHistory.map((item) => ({
@@ -62,11 +56,6 @@ export default function StatsView({ progress, units, onNavigateToTab }: StatsVie
   }));
 
   const hasQuizHistory = quizHistory.length > 0;
-  const mockQuizHistory = [
-    { name: 'تركيب البروتين', 'النتيجة %': 75, scoreText: '3 / 4' },
-    { name: 'بنية البروتين', 'النتيجة %': 90, scoreText: '5 / 6' },
-    { name: 'دور البروتينات', 'النتيجة %': 60, scoreText: '3 / 5' }
-  ];
 
   // 3. Format quiz timeline progress (scores over time)
   const quizTimeline = progress.quizScoreHistory.map((item) => ({
@@ -77,12 +66,6 @@ export default function StatsView({ progress, units, onNavigateToTab }: StatsVie
   }));
 
   const hasQuizTimeline = quizTimeline.length > 0;
-  const mockQuizTimeline = [
-    { date: '05/07', 'الدرجة %': 65, title: 'آليات تركيب البروتين', scoreText: '3/5' },
-    { date: '05/07', 'الدرجة %': 80, title: 'العلاقة بين البنية والوظيفة', scoreText: '4/5' },
-    { date: '06/07', 'الدرجة %': 75, title: 'الذات واللاذات', scoreText: '3/4' },
-    { date: '06/07', 'الدرجة %': 90, title: 'الاستجابة المناعية الخلطية', scoreText: '9/10' }
-  ];
 
   // Total lessons completed
   const completedUnitsCount = progress.completedUnits.length;
@@ -234,32 +217,35 @@ export default function StatsView({ progress, units, onNavigateToTab }: StatsVie
           <h3 className="font-extrabold text-base text-[#1f1c0b]">منحنى تطور المستوى العلمي عبر الزمن</h3>
         </div>
 
-        <div className="h-64 w-full">
-          <ResponsiveContainer width="100%" height="100%">
-            <LineChart data={hasQuizTimeline ? quizTimeline : mockQuizTimeline} margin={{ top: 15, right: 15, left: -20, bottom: 0 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#e2dabf" strokeOpacity={0.3} />
-              <XAxis dataKey="date" stroke="#506072" fontSize={10} tickLine={false} />
-              <YAxis stroke="#506072" fontSize={10} tickLine={false} domain={[0, 100]} />
-              <Tooltip 
-                formatter={(value: any, _name: any, props: any) => [`${value}% (${props.payload.scoreText})`, 'النتيجة']}
-                labelFormatter={(label) => `التاريخ: ${label}`}
-                contentStyle={{ direction: 'rtl', fontFamily: 'Noto Kufi Arabic', fontSize: 11, borderRadius: '12px', border: '1px solid #e2dabf' }}
-              />
-              <Line 
-                type="monotone" 
-                dataKey="الدرجة %" 
-                stroke="#006d37" 
-                strokeWidth={3}
-                activeDot={{ r: 8 }} 
-                dot={{ stroke: '#fed65b', strokeWidth: 2, r: 4, fill: '#006d37' }}
-              />
-            </LineChart>
-          </ResponsiveContainer>
-        </div>
-        {!hasQuizTimeline && (
-          <p className="text-[11px] text-[#506072] text-center bg-[#fff9ed] p-2 rounded-xl border border-[#fed65b]/30">
-            💡 يظهر المخطط البياني التجريبي أعلاه. قم بحل الاختبارات المتعددة لبناء منحنى تقدمك الحقيقي!
-          </p>
+        {hasQuizTimeline ? (
+          <div className="h-64 w-full">
+            <ResponsiveContainer width="100%" height="100%">
+              <LineChart data={quizTimeline} margin={{ top: 15, right: 15, left: -20, bottom: 0 }}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#e2dabf" strokeOpacity={0.3} />
+                <XAxis dataKey="date" stroke="#506072" fontSize={10} tickLine={false} />
+                <YAxis stroke="#506072" fontSize={10} tickLine={false} domain={[0, 100]} />
+                <Tooltip
+                  formatter={(value: any, _name: any, props: any) => [`${value}% (${props.payload.scoreText})`, 'النتيجة']}
+                  labelFormatter={(label) => `التاريخ: ${label}`}
+                  contentStyle={{ direction: 'rtl', fontFamily: 'Noto Kufi Arabic', fontSize: 11, borderRadius: '12px', border: '1px solid #e2dabf' }}
+                />
+                <Line
+                  type="monotone"
+                  dataKey="الدرجة %"
+                  stroke="#006d37"
+                  strokeWidth={3}
+                  activeDot={{ r: 8 }}
+                  dot={{ stroke: '#fed65b', strokeWidth: 2, r: 4, fill: '#006d37' }}
+                />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
+        ) : (
+          <div className="h-64 w-full flex items-center justify-center">
+            <p className="text-[11px] text-[#506072] text-center bg-[#fff9ed] p-2 rounded-xl border border-[#fed65b]/30 max-w-xs">
+              💡 لا توجد بيانات بعد. قم بحل الاختبارات المتعددة لبناء منحنى تقدمك الحقيقي!
+            </p>
+          </div>
         )}
       </section>
 
@@ -272,23 +258,26 @@ export default function StatsView({ progress, units, onNavigateToTab }: StatsVie
             <h3 className="font-extrabold text-base text-[#1f1c0b]">نتائج التدريبات والاختبارات</h3>
           </div>
           
-          <div className="h-64 w-full">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={hasQuizHistory ? quizHistory : mockQuizHistory} margin={{ top: 10, right: 0, left: -20, bottom: 0 }}>
-                <XAxis dataKey="name" stroke="#506072" fontSize={10} tickLine={false} />
-                <YAxis stroke="#506072" fontSize={10} tickLine={false} domain={[0, 100]} />
-                <Tooltip 
-                  formatter={(value: any, _name: any, props: any) => [`${value}% (${props.payload.scoreText || 'نموذجية'})`, 'الدرجة']}
-                  contentStyle={{ direction: 'rtl', fontFamily: 'Noto Kufi Arabic', fontSize: 11, borderRadius: '12px', border: '1px solid #e2dabf' }}
-                />
-                <Bar dataKey="النتيجة %" fill="#006d37" radius={[6, 6, 0, 0]} />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
-          {!hasQuizHistory && (
-            <p className="text-[11px] text-[#506072] text-center bg-[#fff9ed] p-2 rounded-xl border border-[#fed65b]/30">
-              💡 يظهر أعلاه تمثيل تجريبي. ابدأ بحل أول اختبار لتسجيل نتيجتك الحقيقية!
-            </p>
+          {hasQuizHistory ? (
+            <div className="h-64 w-full">
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={quizHistory} margin={{ top: 10, right: 0, left: -20, bottom: 0 }}>
+                  <XAxis dataKey="name" stroke="#506072" fontSize={10} tickLine={false} />
+                  <YAxis stroke="#506072" fontSize={10} tickLine={false} domain={[0, 100]} />
+                  <Tooltip
+                    formatter={(value: any, _name: any, props: any) => [`${value}% (${props.payload.scoreText || ''})`, 'الدرجة']}
+                    contentStyle={{ direction: 'rtl', fontFamily: 'Noto Kufi Arabic', fontSize: 11, borderRadius: '12px', border: '1px solid #e2dabf' }}
+                  />
+                  <Bar dataKey="النتيجة %" fill="#006d37" radius={[6, 6, 0, 0]} />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+          ) : (
+            <div className="h-64 w-full flex items-center justify-center">
+              <p className="text-[11px] text-[#506072] text-center bg-[#fff9ed] p-2 rounded-xl border border-[#fed65b]/30 max-w-xs">
+                💡 لا توجد نتائج بعد. ابدأ بحل أول اختبار لتسجيل نتيجتك الحقيقية!
+              </p>
+            </div>
           )}
         </div>
 
@@ -299,47 +288,50 @@ export default function StatsView({ progress, units, onNavigateToTab }: StatsVie
             <h3 className="font-extrabold text-base text-[#1f1c0b]">مستويات تذكر بطاقات المراجعة</h3>
           </div>
 
-          <div className="flex flex-col sm:flex-row items-center gap-4 h-64">
-            <div className="h-full flex-1 w-full max-w-[200px]">
-              <ResponsiveContainer width="100%" height="100%">
-                <PieChart>
-                  <Pie
-                    data={hasCardData ? cardData : mockCardData}
-                    cx="50%"
-                    cy="50%"
-                    innerRadius={60}
-                    outerRadius={80}
-                    paddingAngle={3}
-                    dataKey="value"
-                  >
-                    {(hasCardData ? cardData : mockCardData).map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={entry.color} />
-                    ))}
-                  </Pie>
-                  <Tooltip 
-                    contentStyle={{ direction: 'rtl', fontFamily: 'Noto Kufi Arabic', fontSize: 11, borderRadius: '12px', border: '1px solid #e2dabf' }}
-                  />
-                </PieChart>
-              </ResponsiveContainer>
-            </div>
+          {hasCardData ? (
+            <div className="flex flex-col sm:flex-row items-center gap-4 h-64">
+              <div className="h-full flex-1 w-full max-w-[200px]">
+                <ResponsiveContainer width="100%" height="100%">
+                  <PieChart>
+                    <Pie
+                      data={cardData}
+                      cx="50%"
+                      cy="50%"
+                      innerRadius={60}
+                      outerRadius={80}
+                      paddingAngle={3}
+                      dataKey="value"
+                    >
+                      {cardData.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={entry.color} />
+                      ))}
+                    </Pie>
+                    <Tooltip
+                      contentStyle={{ direction: 'rtl', fontFamily: 'Noto Kufi Arabic', fontSize: 11, borderRadius: '12px', border: '1px solid #e2dabf' }}
+                    />
+                  </PieChart>
+                </ResponsiveContainer>
+              </div>
 
-            {/* Legend info lists */}
-            <div className="space-y-2 shrink-0 text-xs text-right w-full sm:w-auto">
-              {(hasCardData ? cardData : mockCardData).map((item, idx) => (
-                <div key={idx} className="flex items-center justify-between gap-4">
-                  <div className="flex items-center gap-2">
-                    <span className="w-3 h-3 rounded-full" style={{ backgroundColor: item.color }} />
-                    <span className="font-bold text-[#1f1c0b]">{item.name}</span>
+              {/* Legend info lists */}
+              <div className="space-y-2 shrink-0 text-xs text-right w-full sm:w-auto">
+                {cardData.map((item, idx) => (
+                  <div key={idx} className="flex items-center justify-between gap-4">
+                    <div className="flex items-center gap-2">
+                      <span className="w-3 h-3 rounded-full" style={{ backgroundColor: item.color }} />
+                      <span className="font-bold text-[#1f1c0b]">{item.name}</span>
+                    </div>
+                    <span className="text-[#506072] font-semibold">{item.value} بطاقة</span>
                   </div>
-                  <span className="text-[#506072] font-semibold">{item.value} بطاقة</span>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
-          </div>
-          {!hasCardData && (
-            <p className="text-[11px] text-[#506072] text-center bg-[#fff9ed] p-2 rounded-xl border border-[#fed65b]/30">
-              💡 تظهر مستويات التذكر بالتكرار المتباعد بعد تقييمك للبطاقات الذكية.
-            </p>
+          ) : (
+            <div className="h-64 w-full flex items-center justify-center">
+              <p className="text-[11px] text-[#506072] text-center bg-[#fff9ed] p-2 rounded-xl border border-[#fed65b]/30 max-w-xs">
+                💡 تظهر مستويات التذكر بالتكرار المتباعد بعد تقييمك للبطاقات الذكية.
+              </p>
+            </div>
           )}
         </div>
 

@@ -2,52 +2,19 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
-import obfuscatorPlugin from 'vite-plugin-javascript-obfuscator'
 
-export default defineConfig(({ mode }) => ({
+// NOTE (audit ARCH-001) : l'obfuscateur javascript-obfuscator a été retiré.
+// Il transformait les imports dynamiques de React.lazy en concaténations
+// calculées à l'exécution, ce qui empêchait Vite d'émettre les chunks de vue :
+// le build de production ne produisait que 3 chunks (au lieu de ~59) et toutes
+// les vues lazy échouaient au chargement (chunk manquant servi en text/html).
+// L'obfuscation d'un client web n'apporte par ailleurs aucune protection réelle.
+
+export default defineConfig({
   plugins: [
     react(),
     tailwindcss(),
-    // On active l'obfuscation uniquement en production pour ne pas ralentir ton développement local
-    mode === 'production' ? obfuscatorPlugin({
-      include: ['src/**/*.ts', 'src/**/*.tsx'],
-      exclude: [/node_modules/],
-      apply: 'build',
-      debugger: true,
-      options: {
-        // Niveau moyen/élevé d'obfuscation (équilibre entre sécurité et performance)
-        compact: true,
-        controlFlowFlattening: true,
-        controlFlowFlatteningThreshold: 0.5, // 50% du code sera restructuré
-        deadCodeInjection: true,
-        deadCodeInjectionThreshold: 0.2, // Injecte du code mort pour tromper le hacker
-        debugProtection: true, // Fait crasher la console DevTools (Anti-Debug)
-        debugProtectionInterval: 2000,
-        disableConsoleOutput: true, // Coupe les console.log
-        identifierNamesGenerator: 'hexadecimal', // Les variables deviennent des _0x3b1c
-        log: false,
-        numbersToExpressions: true, // Transforme les nombres en calculs aléatoires
-        renameGlobals: false,
-        selfDefending: true, // Le code se bloque s'il est formaté (beautifié)
-        simplify: true,
-        splitStrings: true,
-        splitStringsChunkLength: 5,
-        stringArray: true,
-        stringArrayCallsTransform: true,
-        stringArrayCallsTransformThreshold: 0.5,
-        stringArrayEncoding: ['base64'], // Crypte les chaînes de caractères
-        stringArrayIndexShift: true,
-        stringArrayRotate: true,
-        stringArrayShuffle: true,
-        stringArrayWrappersCount: 1,
-        stringArrayWrappersChainedCalls: true,
-        stringArrayWrappersParametersMaxCount: 2,
-        stringArrayWrappersType: 'variable',
-        stringArrayThreshold: 0.75,
-        unicodeEscapeSequence: false
-      }
-    }) : undefined
-  ].filter(Boolean),
+  ],
   server: {
     // Autorise les hôtes de prévisualisation distants (sandbox/tunnels) en développement.
     allowedHosts: true,
@@ -57,22 +24,8 @@ export default defineConfig(({ mode }) => ({
     globals: true,
   },
   build: {
-    sourcemap: false, // CRITIQUE : on ne génère JAMAIS les sourcemaps en production
-    chunkSizeWarningLimit: 1500, // On augmente la limite car l'obfuscator alourdit le code
-    modulePreload: {
-      resolveDependencies: (_filename, deps, context) => {
-        if (context.hostType !== 'html') return deps
-        return deps.filter((dep) => !(
-          dep.includes('training-')
-          || dep.includes('progress-')
-          || dep.includes('methodology-')
-          || dep.includes('mypath-')
-          || dep.includes('validation-')
-          || dep.includes('vendor-supabase-')
-          || dep.includes('vendor-charts-')
-        ))
-      },
-    },
+    sourcemap: false, // pas de sourcemap publique en production
+    chunkSizeWarningLimit: 800,
     rollupOptions: {
       output: {
         manualChunks(id) {
@@ -107,4 +60,4 @@ export default defineConfig(({ mode }) => ({
       },
     },
   },
-}))
+})

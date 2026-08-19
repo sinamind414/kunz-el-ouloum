@@ -64,12 +64,15 @@ create policy "profiles insert own" on public.profiles for insert with check (au
 -- Télémétrie : insert anonyme autorisé (buffer offline-first) MAIS restreint à une
 -- whitelist d'event_name connus + une borne de longueur user_id (anti-spam).
 -- Pas de SELECT pour anon (les stats globales seront lues côté serveur / service role).
+-- ARCH-007 : cette whitelist doit rester alignée sur ALLOWED_EVENT_NAMES dans
+-- src/utils/telemetryService.ts (source de vérité côté client).
 drop policy if exists "telemetry insert anon" on public.telemetry_events;
 create policy "telemetry insert anon" on public.telemetry_events
   for insert with check (
     event_name in (
       'APP_OPENED','METHOD_FAIL','METHOD_SUCCESS','PRO_TEASER_CLICKED',
-      'GUEST_LOGIN_OFFLINE','QUIZ_COMPLETED','BOSS_COMPLETED','DOMAIN_SELECTED'
+      'GUEST_LOGIN_OFFLINE','QUIZ_COMPLETED','BOSS_COMPLETED','DOMAIN_SELECTED',
+      'COACH_DIAGNOSTIC_CLICKED'
     )
     and char_length(user_id) between 3 and 128
   );

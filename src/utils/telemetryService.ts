@@ -22,6 +22,21 @@ export interface TelemetryEvent {
   isOnline: boolean;
 }
 
+// ARCH-007 — source de vérité unique des événements autorisés côté serveur.
+// Doit rester aligné sur la policy RLS de supabase/schema.sql
+// ("telemetry insert anon"). Tout écart bloquait le flush complet de la file.
+export const ALLOWED_EVENT_NAMES: readonly TelemetryEvent['eventName'][] = [
+  'APP_OPENED',
+  'METHOD_FAIL',
+  'METHOD_SUCCESS',
+  'PRO_TEASER_CLICKED',
+  'GUEST_LOGIN_OFFLINE',
+  'QUIZ_COMPLETED',
+  'BOSS_COMPLETED',
+  'DOMAIN_SELECTED',
+  'COACH_DIAGNOSTIC_CLICKED',
+] as const;
+
 const QUEUE_KEY = 'kunz_telemetry_queue';
 
 // Phase 2 — quota : borne la file pour ne jamais saturer localStorage.
@@ -98,9 +113,23 @@ export async function flushEvents() {
   const supabase = await getSupabaseClient();
   if (!supabase) return;
 
+  // ARCH-007 — garde-fou local : on ne tente jamais d'envoyer un événement
+  // interdit par la policy RLS (un seul événement hors whitelist faisait
+  // échouer l'insert multi-lignes et bloquait toute la file).
+  const allowed = (ALLOWED_EVENT_NAMES as readonly string[]);
+  const eligible = queue.filter((e) => allowed.includes(e.eventName));
+  const dropped = queue.length - eligible.length;
+  if (dropped > 0) {
+    console.warn(`[telemetry] ${dropped} événement(s) hors whitelist ignoré(s).`);
+  }
+  if (eligible.length === 0) {
+    setQueue([]);
+    return;
+  }
+
   try {
     const { error } = await supabase.from('telemetry_events').insert(
-      queue.map((e) => ({
+      eligible.map((e) => ({
         user_id: e.userId,
         event_name: e.eventName,
         payload: e.payload,

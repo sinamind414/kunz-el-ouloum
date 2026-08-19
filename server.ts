@@ -7,6 +7,9 @@ async function startServer() {
   const app = express();
   const PORT = Number(process.env.PORT) || 3000;
 
+  // Ne pas exposer la technologie serveur (audit ARCH-013).
+  app.disable('x-powered-by');
+
   // Fable 5 audit - security headers (sans dépendance helmet pour rester offline-light)
   app.use((_, res, next) => {
     res.setHeader('X-Content-Type-Options', 'nosniff');
@@ -20,7 +23,7 @@ async function startServer() {
       'Content-Security-Policy',
       [
         "default-src 'self'",
-        "script-src 'self' 'unsafe-inline'",
+        "script-src 'self'",
         "style-src 'self' 'unsafe-inline' data:",
         "img-src 'self' data: blob:",
         "font-src 'self' data:",

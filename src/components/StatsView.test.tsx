@@ -82,13 +82,19 @@ describe("#56 — aucune progression fabriquée sur l'écran de statistiques", (
     expect(source).not.toMatch(/'الأسبوع 1'/);
   });
 
-  it('conserve une mention « تجريبي » sur les graphiques de démonstration restants', () => {
+  it('n\'affiche aucune donnée fabriquée : états vides honnêtes à la place des graphiques de démonstration', () => {
     const { container } = render(<StatsView progress={virginProgress()} units={VIRGIN_UNITS} />);
 
-    // Les trois mocks tolérés (quiz, timeline, cartes) restent affichés mais
-    // DOIVENT rester annoncés comme tels. Ce test échoue si un correctif
-    // futur retire la mention en gardant les données fictives.
-    expect(container.textContent).toMatch(/تجريبي/);
+    // Les trois graphiques (quiz, timeline, cartes) affichaient des mocks
+    // (3/4, 75 %…) déguisés en vraies données. Désormais, un élève vierge
+    // ne voit que des états vides honnêtes qui l'orientent vers sa première
+    // action réelle.
+    expect(container.textContent).toMatch(/لا توجد بيانات بعد/);
+    expect(container.textContent).toMatch(/لا توجد نتائج بعد/);
+    expect(container.textContent).toMatch(/تظهر مستويات التذكر بالتكرار المتباعد بعد تقييمك/);
+    // Aucune valeur inventée ne doit apparaître (score simulé des anciens mocks).
+    expect(container.textContent).not.toContain('3 / 4');
+    expect(container.textContent).not.toMatch(/تجريبي/);
   });
 });
 

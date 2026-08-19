@@ -6,6 +6,7 @@ import { LESSON_LIBRARY, LessonLibraryItem } from '../lessonData';
 import { SINGLE_PATH_LESSONS } from '../data/singlePathLessons';
 import { ACTIVE_LESSONS } from '../data/activeLessons';
 import SvtConceptsView from './SvtConceptsView';
+import ZoomableImage from './ZoomableImage';
 
 const InteractiveLessonView = lazy(() => import('./InteractiveLessonView'));
 const HtmlLessonViewer = lazy(() => import('./HtmlLessonViewer'));
@@ -614,7 +615,16 @@ export default function LessonsView({ units, progress, onStartLesson }: LessonsV
                       ابدأ بدروس هذا المجال
                     </div>
                   )}
-                  
+
+                  {visual && (
+                    <ZoomableImage
+                      src={visual.imageSrc}
+                      alt={visual.altAr}
+                      loading="lazy"
+                      className="w-full h-28 object-cover bg-[#f7f4ea] dark:bg-[#101613]"
+                    />
+                  )}
+
                   <div className="flex flex-col items-center text-center gap-3 p-6">
                     <span
                       className="w-20 h-20 rounded-full flex items-center justify-center text-white shadow-md"
@@ -674,6 +684,12 @@ export default function LessonsView({ units, progress, onStartLesson }: LessonsV
                     key={card.lessonId}
                     className="rounded-3xl border border-[#e2dabf]/60 dark:border-[#2ecc71]/10 bg-white dark:bg-[#141916] shadow-sm overflow-hidden flex flex-col"
                   >
+                    <ZoomableImage
+                      src={card.imageSrc}
+                      alt={card.altAr}
+                      loading="lazy"
+                      className="w-full h-28 object-cover bg-[#f7f4ea] dark:bg-[#101613]"
+                    />
                     <div className="p-4 flex flex-col gap-2 flex-1">
                       <div className="text-[10px] font-black text-[#006d37] dark:text-[#2ecc71]">{card.metaAr}</div>
                       <h3 className="text-xs font-black text-[#1f1c0b] dark:text-gray-100 leading-6">{card.title}</h3>
@@ -716,6 +732,15 @@ export default function LessonsView({ units, progress, onStartLesson }: LessonsV
                 className="group text-right rounded-3xl shadow-sm border border-[#e2dabf]/60 dark:border-[#2ecc71]/10 bg-white dark:bg-[#141916] hover:shadow-md transition-all overflow-hidden flex flex-col"
                 style={{ borderTop: `4px solid ${info.color}` }}
               >
+                {visual && (
+                  <ZoomableImage
+                    src={visual.imageSrc}
+                    alt={visual.altAr}
+                    loading="lazy"
+                    className="w-full h-32 object-cover bg-[#f7f4ea] dark:bg-[#101613]"
+                  />
+                )}
+
                 <div className="p-5 flex flex-col gap-3">
                   <div className="flex items-center justify-between">
                     <span
@@ -793,6 +818,15 @@ export default function LessonsView({ units, progress, onStartLesson }: LessonsV
                     }`}
                   >
                     <div className="flex items-start gap-2.5 sm:gap-3">
+                      {lesson.imageSrc && (
+                        <ZoomableImage
+                          src={lesson.imageSrc}
+                          alt={lesson.altAr}
+                          loading="lazy"
+                          className="w-16 h-16 sm:w-20 sm:h-20 shrink-0 rounded-xl sm:rounded-2xl object-cover bg-[#f7f4ea] dark:bg-[#101613]"
+                        />
+                      )}
+
                       <div className="min-w-0 flex-1 flex flex-col gap-2">
                         <div>
                           <div className="flex flex-wrap items-center gap-1.5 mb-1">

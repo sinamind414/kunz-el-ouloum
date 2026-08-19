@@ -94,7 +94,7 @@ export default function LoginScreen() {
         
         {/* En-tête accrocheur (Le Donnant-Donnant de l'audit) */}
         <div className="bg-[#006d37] p-6 text-center relative overflow-hidden">
-           <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10" />
+           <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'radial-gradient(rgba(255,255,255,0.55) 1.5px, transparent 1.5px)', backgroundSize: '14px 14px' }} />
            <img src={MASCOT_URL} alt="Mascot" className="w-20 h-20 mx-auto mb-3 drop-shadow-md relative z-10" />
            <h1 className="text-2xl font-black text-white relative z-10 mb-1 font-display tracking-tight">كنز العلوم</h1>
            <p className="text-[#fed65b] text-xs font-bold relative z-10">منصة المنهجية الأولى للبكالوريا</p>
