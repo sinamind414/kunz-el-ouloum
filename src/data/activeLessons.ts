@@ -1206,7 +1206,7 @@ export const ACTIVE_LESSONS: Record<string, ActiveLesson> = {
         objective: 'فهم العلاقة بين الكودون على ARNm ومضاد الكودون على ARNt داخل الريبوزوم.',
         doc: {
           assetSrc: '/assets/images/schemas/domaine1_proteines/schema_03_traduction.svg',
-          altAr: 'مخطط يبين ARNm والريبوزوم وARNt الحامل لمضاد الكودون والحمض الأميني.',
+          altAr: 'مخطط يبين ARNm والريبوزوم و ARNt الحامل لمضاد الكودون والحمض الأميني.',
           captionAr: 'مخطط الترجمة: كودون ↔ مضاد الكودون ↔ حمض أميني.',
           secondaryAssetSrc: '/assets/images/schemas/domaine1_proteines/schema_23_genetic_code_table_modern.svg',
           secondaryAltAr: 'جدول الشفرة الوراثية لقراءة الرامزات وتحديد الحمض الأميني الموافق.',
@@ -1308,7 +1308,7 @@ export const ACTIVE_LESSONS: Record<string, ActiveLesson> = {
         doc: {
           assetSrc: '/assets/images/schemas/domaine1_proteines/schema_25_ribosome_arnt_structure_modern.svg',
           altAr: 'رسم يوضح الريبوزوم بموقعي A وP وبنية ARNt.',
-          captionAr: 'الريبوزوم وARNt: بنية مرتبطة مباشرة بالوظيفة.',
+          captionAr: 'الريبوزوم و ARNt: بنية مرتبطة مباشرة بالوظيفة.',
         },
         questions: [
           {
@@ -1341,7 +1341,7 @@ export const ACTIVE_LESSONS: Record<string, ActiveLesson> = {
         assetSrc: '/assets/images/schemas/domaine1_proteines/schema_26_aa_activation_modern.svg',
         altAr: 'رسم يوضح تدخل الإنزيم النوعي وATP في شحن ARNt بحمضه الأميني.',
         steps: [
-          { id: 'elements', labelAr: 'يجتمع حمض أميني وARNt وإنزيم نوعي', expectedOrder: 1 },
+          { id: 'elements', labelAr: 'يجتمع حمض أميني و ARNt وإنزيم نوعي', expectedOrder: 1 },
           { id: 'energy', labelAr: 'تُستهلك طاقة ATP لتشكيل المعقد', expectedOrder: 2 },
           { id: 'binding', labelAr: 'يرتبط الحمض الأميني بـ ARNt الموافق', expectedOrder: 3 },
           { id: 'release', labelAr: 'يتحرر ARNt مشحون وجاهز للترجمة', expectedOrder: 4 },
