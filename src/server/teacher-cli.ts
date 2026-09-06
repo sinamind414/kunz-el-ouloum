@@ -9,6 +9,7 @@
 // ============================================================
 import bcrypt from "bcryptjs";
 import dotenv from "dotenv";
+import { pathToFileURL } from "node:url";
 import { openStore } from "../../server/store";
 import { PostgresStore } from "../../server/store.pg";
 import type { Student, Teacher } from "../../server/store";
@@ -44,7 +45,7 @@ export async function createTeacherCLI(): Promise<void> {
   }
 }
 
-if (process.argv[1] && import.meta.url === `file://${process.argv[1]}`) {
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
   createTeacherCLI().catch((e) => {
     console.error(e instanceof Error ? e.message : e);
     process.exit(1);

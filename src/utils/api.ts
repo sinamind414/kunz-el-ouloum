@@ -61,7 +61,16 @@ export async function logActivity(type: 'quiz' | 'mission' | 'drill' | 'producti
 export async function requestPasswordReset(code: string, newPassword: string) {
   return request('/api/student/reset-password', {
     method: 'POST',
-    body: JSON.stringify({ code, newPassword }),
+    body: JSON.stringify({ code, password: newPassword }),
+  });
+}
+
+export async function requestTeacherPasswordReset(studentId: string) {
+  const token = getTeacherApiToken();
+  return request('/api/teacher/reset-password', {
+    method: 'POST',
+    headers: { Authorization: `Bearer ${token}` },
+    body: JSON.stringify({ studentId }),
   });
 }
 
@@ -80,6 +89,15 @@ export async function fetchStudentEntries() {
   return request('/api/student/entries', {
     headers: { Authorization: `Bearer ${token}` },
   });
+}
+
+export function setTeacherApiToken(token: string | null) {
+  if (!token) localStorage.removeItem('boussole_teacher_token');
+  else localStorage.setItem('boussole_teacher_token', token);
+}
+
+export function getTeacherApiToken(): string | null {
+  return localStorage.getItem('boussole_teacher_token');
 }
 
 export async function loginTeacher(email: string, password: string) {

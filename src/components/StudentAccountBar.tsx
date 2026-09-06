@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Wifi, WifiOff, LogOut, User, ChevronDown } from 'lucide-react';
-import { fetchMe, setApiToken, getApiToken, requestPasswordReset } from '../utils/api';
+import { fetchMe, setApiToken, getApiToken, requestPasswordReset, requestTeacherPasswordReset } from '../utils/api';
 
 interface Props {
   onOpenTeacher: () => void;
@@ -53,11 +53,7 @@ export default function StudentAccountBar({ onOpenTeacher }: Props) {
     setError(null);
     setMessage(null);
     try {
-      const data = await fetch('/api/teacher/reset-password', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${localStorage.getItem('boussole_teacher_token')}` },
-        body: JSON.stringify({ studentId: student?.id }),
-      }).then((r) => r.json());
+      const data = await requestTeacherPasswordReset(student?.id || '');
       if (data?.code) {
         setMode('reset');
         setMessage(data.code);

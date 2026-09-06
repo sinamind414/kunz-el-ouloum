@@ -1,7 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { motion } from 'motion/react';
-import { ArrowLeft, Loader2 } from 'lucide-react';
-import { fetchTeacherDashboard, fetchTeacherEntries, fetchTeacherExport, setApiToken, getApiToken } from '../utils/api';
+import { ArrowLeft, Loader2, LogIn } from 'lucide-react';
+import {
+  fetchTeacherDashboard,
+  fetchTeacherEntries,
+  fetchTeacherExport,
+  loginTeacher,
+  setTeacherApiToken,
+  getTeacherApiToken,
+  requestTeacherPasswordReset,
+} from '../utils/api';
 
 interface Props {
   onBack: () => void;
@@ -39,14 +47,21 @@ export default function TeacherDashboardView({ onBack }: Props) {
   const [error, setError] = useState<string | null>(null);
   const [resetCode, setResetCode] = useState<string | null>(null);
   const [resetTarget, setResetTarget] = useState<string | null>(null);
+  const [teacherEmail, setTeacherEmail] = useState('');
+  const [teacherPassword, setTeacherPassword] = useState('');
+  const [authError, setAuthError] = useState<string | null>(null);
+  const [authLoading, setAuthLoading] = useState(false);
 
-  useEffect(() => {
-    const token = getApiToken();
-    if (!token) {
-      setError('جلسة المعلم غير موجودة. تأكد من تسجيل الدخول.');
-      setLoading(false);
-      return;
-    }
+  // 401 du serveur (jeton expiré/révoqué) → on déconnecte l'enseignant
+  // et on retombe sur le formulaire de connexion au lieu d'un écran bloqué.
+  const isAuthFailure = (err: unknown) => {
+    const msg = err instanceof Error ? err.message : String(err);
+    return msg === 'invalid_token' || msg === 'missing_token';
+  };
+
+  const loadDashboard = () => {
+    setLoading(true);
+    setError(null);
     fetchTeacherDashboard()
       .then((data) => {
         const enriched = (data.students || []).map((s: any) => {
@@ -62,9 +77,52 @@ export default function TeacherDashboardView({ onBack }: Props) {
         });
         setStudents(enriched);
       })
-      .catch(() => setError('تعذر تحميل لوحة المتابعة.'))
+      .catch((err) => {
+        if (isAuthFailure(err)) setTeacherApiToken(null);
+        else setError('تعذر تحميل لوحة المتابعة.');
+      })
       .finally(() => setLoading(false));
+  };
+
+  const handleTeacherLogout = () => {
+    setTeacherApiToken(null);
+    setStudents([]);
+    setEntries([]);
+    setSelectedStudentId(null);
+    setError(null);
+    setAuthError(null);
+    setResetCode(null);
+    setResetTarget(null);
+  };
+
+  useEffect(() => {
+    if (!getTeacherApiToken()) {
+      setLoading(false);
+      return;
+    }
+    loadDashboard();
   }, []);
+
+  const handleTeacherLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setAuthError(null);
+    setAuthLoading(true);
+    try {
+      const data = await loginTeacher(teacherEmail, teacherPassword);
+      setTeacherApiToken(data.token);
+      setTeacherEmail('');
+      setTeacherPassword('');
+      loadDashboard();
+    } catch (err: any) {
+      setAuthError(
+        err?.message === 'invalid_credentials'
+          ? 'البريد أو كلمة المرور غير صحيحة.'
+          : 'تعذر تسجيل الدخول. حاول مرة أخرى.'
+      );
+    } finally {
+      setAuthLoading(false);
+    }
+  };
 
   const openStudent = async (studentId: string) => {
     setSelectedStudentId(studentId);
@@ -73,25 +131,26 @@ export default function TeacherDashboardView({ onBack }: Props) {
     try {
       const data = await fetchTeacherEntries(studentId);
       setEntries(data.entries);
-    } catch {
+    } catch (err: any) {
       setEntries([]);
+      if (isAuthFailure(err)) handleTeacherLogout();
     }
   };
 
   const handleResetPassword = async (studentId: string) => {
     try {
-      const data = await fetch(`/api/teacher/reset-password`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${getApiToken()}` },
-        body: JSON.stringify({ studentId }),
-      }).then((r) => r.json());
+      const data = await requestTeacherPasswordReset(studentId);
       if (data?.code) {
         setResetCode(data.code);
         setResetTarget(studentId);
       } else {
         alert(data?.error || 'تعذر إنشاء رمز إعادة التعيين.');
       }
-    } catch {
+    } catch (err: any) {
+      if (isAuthFailure(err)) {
+        handleTeacherLogout();
+        return;
+      }
       alert('تعذر الاتصال بالخادم.');
     }
   };
@@ -110,10 +169,76 @@ export default function TeacherDashboardView({ onBack }: Props) {
     }
   };
 
+  const handleTeacherLogoutConfirm = () => {
+    if (window.confirm('تسجيل الخروج من حساب المعلم؟')) handleTeacherLogout();
+  };
+
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
         <Loader2 className="w-6 h-6 text-emerald-600 animate-spin" />
+      </div>
+    );
+  }
+
+  if (!getTeacherApiToken()) {
+    return (
+      <div className="p-4 md:p-6 space-y-4">
+        <button onClick={onBack} className="flex items-center gap-2 text-sm font-bold text-gray-600 dark:text-gray-300">
+          <ArrowLeft className="w-4 h-4" />
+          رجوع
+        </button>
+        <div className="max-w-md mx-auto bg-white dark:bg-[#141916] rounded-2xl border border-gray-200 dark:border-gray-800 p-6 shadow-sm">
+          <div className="flex items-center gap-2 mb-4">
+            <LogIn className="w-5 h-5 text-emerald-600" />
+            <h3 className="font-black text-base text-gray-900 dark:text-white">دخول المعلمين</h3>
+          </div>
+          <form onSubmit={handleTeacherLogin} className="space-y-3">
+            <div>
+              <label htmlFor="teacher-email" className="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">البريد الإلكتروني</label>
+              <input
+                id="teacher-email"
+                type="email"
+                autoComplete="email"
+                value={teacherEmail}
+                onChange={(e) => setTeacherEmail(e.target.value)}
+                required
+                aria-required="true"
+                className="w-full rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-[#1b221e] px-3 py-2 text-sm text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-emerald-500"
+                placeholder="prof@ecole.dz"
+              />
+            </div>
+            <div>
+              <label htmlFor="teacher-password" className="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">كلمة المرور</label>
+              <input
+                id="teacher-password"
+                type="password"
+                autoComplete="current-password"
+                value={teacherPassword}
+                onChange={(e) => setTeacherPassword(e.target.value)}
+                required
+                aria-required="true"
+                className="w-full rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-[#1b221e] px-3 py-2 text-sm text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-emerald-500"
+                placeholder="••••••••"
+              />
+            </div>
+            {authError && (
+              <div role="alert" className="rounded-xl bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-900/60 p-3 text-xs text-red-700 dark:text-red-300">
+                {authError}
+              </div>
+            )}
+            <button
+              type="submit"
+              disabled={authLoading}
+              className="w-full py-3 rounded-xl bg-[#006d37] hover:bg-[#00562b] text-white font-black text-sm shadow-md disabled:opacity-60"
+            >
+              {authLoading ? 'جاري المعالجة...' : 'دخول'}
+            </button>
+          </form>
+          <p className="mt-3 text-[11px] text-gray-500 dark:text-gray-400 text-center">
+            يتم إنشاء حساب المعلم من طرف مسؤول التطبيق.
+          </p>
+        </div>
       </div>
     );
   }
@@ -216,18 +341,26 @@ export default function TeacherDashboardView({ onBack }: Props) {
         رجوع
       </button>
       <div className="bg-white dark:bg-[#141916] rounded-2xl border border-gray-200 dark:border-gray-800 p-5 shadow-sm">
-        <div className="flex items-center justify-between">
-          <div>
-            <h3 className="font-black text-base text-gray-900 dark:text-white mb-1">لوحة المتابعة</h3>
-            <p className="text-xs text-gray-500 dark:text-gray-400">ملخص كل تلميذ مسجل في التطبيق.</p>
+          <div className="flex items-center justify-between gap-3 flex-wrap">
+            <div>
+              <h3 className="font-black text-base text-gray-900 dark:text-white mb-1">لوحة المتابعة</h3>
+              <p className="text-xs text-gray-500 dark:text-gray-400">ملخص كل تلميذ مسجل في التطبيق.</p>
+            </div>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => handleExportCsv()}
+                className="px-3 py-2 rounded-xl bg-emerald-100 dark:bg-emerald-900/40 text-emerald-800 dark:text-emerald-300 text-xs font-black hover:bg-emerald-200"
+              >
+                تصدير Excel (CSV)
+              </button>
+              <button
+                onClick={handleTeacherLogoutConfirm}
+                className="px-3 py-2 rounded-xl bg-red-50 dark:bg-red-950/40 text-red-700 dark:text-red-300 text-xs font-black hover:bg-red-100"
+              >
+                خروج المعلم
+              </button>
+            </div>
           </div>
-          <button
-            onClick={() => handleExportCsv()}
-            className="px-3 py-2 rounded-xl bg-emerald-100 dark:bg-emerald-900/40 text-emerald-800 dark:text-emerald-300 text-xs font-black hover:bg-emerald-200"
-          >
-            تصدير Excel (CSV)
-          </button>
-        </div>
       </div>
       <div className="grid grid-cols-1 gap-3">
         {students.length === 0 && <p className="text-xs text-gray-500">لا تلاميذ مسجلين بعد.</p>}

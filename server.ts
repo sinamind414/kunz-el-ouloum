@@ -7,6 +7,7 @@ import jwt from "jsonwebtoken";
 import { openStore, SqliteStore } from "./server/store";
 import { PostgresStore, migrateJsonFilesToPostgres } from "./server/store.pg";
 import { makeRateLimiter } from "./server/rateLimit";
+import { makeStudentAuth, makeTeacherAuth } from "./server/auth";
 import type { ProductionEntry, ActivityEntry, DashboardStudentRow, Student, Teacher } from "./server/store";
 
 dotenv.config();
@@ -127,26 +128,15 @@ async function startServer() {
     }
   });
 
-  function authMiddleware(req: Request, res: Response, next: express.NextFunction) {
-    const header = req.headers.authorization || "";
-    const token = header.startsWith("Bearer ") ? header.slice(7) : null;
-    if (!token) return res.status(401).json({ error: "missing_token" });
-    try {
-      const payload = jwt.verify(token, JWT_SECRET) as { studentId: string; email: string };
-      (req as any).studentId = payload.studentId;
-      next();
-    } catch {
-      return res.status(401).json({ error: "invalid_token" });
-    }
-  }
+  const studentAuth = makeStudentAuth(JWT_SECRET);
 
-  app.get("/api/auth/me", authMiddleware, async (req: Request, res: Response) => {
+  app.get("/api/auth/me", studentAuth, async (req: Request, res: Response) => {
     const student = await store.findStudentById((req as any).studentId);
     if (!student) return res.status(404).json({ error: "not_found" });
     res.json({ student: { id: student.id, email: student.email, name: student.name } });
   });
 
-  app.post("/api/student/sync", authMiddleware, async (req: Request, res: Response) => {
+  app.post("/api/student/sync", studentAuth, async (req: Request, res: Response) => {
     try {
       const studentId = (req as any).studentId;
       const body = req.body || {};
@@ -166,22 +156,11 @@ async function startServer() {
     }
   });
 
-  app.get("/api/student/entries", authMiddleware, async (req: Request, res: Response) => {
+  app.get("/api/student/entries", studentAuth, async (req: Request, res: Response) => {
     res.json({ entries: await store.listEntries((req as any).studentId) });
   });
 
-  function teacherAuth(req: Request, res: Response, next: express.NextFunction) {
-    const header = req.headers.authorization || "";
-    const token = header.startsWith("Bearer ") ? header.slice(7) : null;
-    if (!token) return res.status(401).json({ error: "missing_token" });
-    try {
-      const payload = jwt.verify(token, JWT_SECRET) as { email: string; role: "teacher" };
-      (req as any).teacherEmail = payload.email;
-      next();
-    } catch {
-      return res.status(401).json({ error: "invalid_token" });
-    }
-  }
+  const teacherAuth = makeTeacherAuth(JWT_SECRET);
 
   app.post("/api/teacher/login", async (req: Request, res: Response) => {
     try {
@@ -249,7 +228,7 @@ async function startServer() {
     }
   });
 
-  app.post("/api/student/activity", authMiddleware, async (req: Request, res: Response) => {
+  app.post("/api/student/activity", studentAuth, async (req: Request, res: Response) => {
     try {
       const studentId = (req as any).studentId;
       const { type, payload } = req.body;
