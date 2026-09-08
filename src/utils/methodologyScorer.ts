@@ -166,9 +166,9 @@ export function evaluateStudentProduction(
         passed = !detected.has('conditional_hypothesis');
         feedback = passed ? 'صياغة إخبارية جازمة.' : `خطأ منهجي: « ${compass} » - تجنب صيغ الشك.`;
         break;
-      case 'ded_c2':
-        passed = !detected.has('verb_confusion');
-        feedback = passed ? 'استنتاج مجرّد بلا أرقام معادة.' : `تنبيه: « ${compass} » - الأرقام مكانها التحليل لا الاستنتاج.`;
+      case 'ded_c2': // D2 (MARQUE §11) : استنتج = فيلم — le critère clé est le lien causal
+        passed = !detected.has('unsupported_claim');
+        feedback = passed ? 'تم الربط السببي صراحة بالآلية.' : `تنبيه: « ${compass} » - أين آلية النتيجة («لأنّ» / «يعود ذلك إلى» / «عن طريق»)?`;
         break;
       case 'def_c1':
         passed = text.length > 20 && /(هو|هي)\s+.+\s+(يتميز|يسرّع|يحتوي|يمتلك|يقوم)/.test(text) && text.length < 500;

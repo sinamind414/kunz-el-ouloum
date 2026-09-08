@@ -3,7 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MIFTAH · مفتاح الكنز — منهجية الإجابة في علوم الحياة والأرض · كنز العلوم</title>
+<title>المفتاح · مفتاح المنهجية — منهجية الإجابة في علوم الحياة والأرض · كنز العلوم</title>
+<meta name="description" content="مفتاح المنهجية — منهجية الإجابة في علوم الحياة والأرض (SVT) · بكالوريا الجزائر · 4 خطوات و3 بوابات · كنز العلوم">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Naskh+Arabic:wght@400;700&family=Cairo:wght@600;800&family=Inter:wght@400;600&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -27,6 +28,7 @@
   .brand{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;border-bottom:3px solid var(--gold);padding-bottom:14px}
   .brand .app{font-size:12.5px;color:var(--mute);line-height:1.6}
   .tag{color:var(--mute);font-size:13.8px;margin-top:3px}
+  .official{color:var(--gold-d);font-family:"Cairo","Noto Naskh Arabic",sans-serif;font-size:13.5px;font-weight:800;margin-top:2px;letter-spacing:.01em}
   .teacher{background:#f8fafc;border:1px dashed #cbd5e1;border-radius:12px;padding:11px 14px;font-size:12.3px;color:var(--mute);margin:14px 0;line-height:1.6}
   table{width:100%;border-collapse:separate;border-spacing:0;margin:10px 0 16px;font-size:14px;border:1px solid var(--line);border-radius:10px;overflow:hidden}
   th,td{border-bottom:1px solid var(--line);border-left:1px solid var(--line);padding:9px 11px;vertical-align:top;text-align:right}
@@ -66,22 +68,35 @@
   .card-label.plus{background:linear-gradient(135deg,var(--gold) 0%,var(--gold-d) 100%)}
   @media print{
     html,body{background:#fff !important}
-    body{font-size:10.7px;line-height:1.62}
-    .page{box-shadow:none;margin:0;border-radius:0;max-width:none;padding:10mm 11mm;border:none}
+    /* Garde-fou A4 : le recto doit tenir sur UNE page (+ erreurs 1-3 + sous-titre officiel — marge de sécurité ≈ 60 px) */
+    body{font-size:10.4px;line-height:1.58}
+    .page{box-shadow:none;margin:0;border-radius:0;max-width:none;padding:8mm 10mm;border:none}
     .teacher{display:none !important}
     .break{page-break-before:always;break-before:page}
-    h1{font-size:22.5px}
-    h2{font-size:14.8px;margin:13px 0 8px;padding-bottom:5px;border-bottom-width:2px}
-    h3{font-size:12.8px;margin:11px 0 6px}
+    h1{font-size:20px}
+    .official{font-size:10.5px;margin-top:1px}
+    .tag{font-size:12.5px;margin-top:2px}
+    .brand{padding-bottom:10px}
+    h2{font-size:14.8px;margin:10px 0 7px;padding-bottom:4px;border-bottom-width:2px}
+    h3{font-size:12.8px;margin:8px 0 5px}
     h3 .num{width:19px;height:19px;font-size:10px}
-    table{font-size:9.6px;margin:7px 0 10px;break-inside:auto}
-    th,td{padding:5px 7px}
+    table{font-size:9.6px;margin:5px 0 8px;break-inside:auto}
+    th,td{padding:4px 6px}
     tr{break-inside:avoid;break-after:auto}
     .box,.gate,.corr-note,.sent,.chain{break-inside:avoid}
-    .key-wrap svg{width:190px;height:66px}
+    .box{padding:10px 13px;margin:7px 0}
+    .gate{padding:10px 14px;margin:7px 0}
+    .corr-note{padding:6px 11px;margin:6px 0}
+    .sent{padding:6px 11px;margin:5px 0}
+    .check{gap:6px}
+    .check div{padding:6px 10px}
+    .key-wrap{margin:8px 0}
+    .key-wrap svg{width:168px;height:58px}
+    .teeth span{padding:4px 10px}
     .chain{padding:8px;gap:5px}
     .chain .node{padding:3px 8px;font-size:11px}
-    footer{margin:12px 0 0;font-size:9.5px}
+    ul{margin:2px 0} li{margin:3px 0}
+    footer{margin:8px 0 0;font-size:9.5px}
     @page{size:A4; margin:9mm 10mm 9mm 10mm}
     @page :first{margin-top:8mm}
   }
@@ -93,17 +108,18 @@
 <div class="page">
   <div class="brand">
     <div>
-      <h1>🔑 المِفْتَاح · <span class="latin">MIFTAH</span></h1>
-      <div class="tag">مفتاح الكنز — منهجية الإجابة في علوم الحياة والأرض · بكالوريا</div>
+      <h1>🔑 المفتاح</h1>
+      <div class="official">مفتاح المنهجية</div>
+      <div class="tag">منهجية الإجابة في علوم الحياة والأرض · بكالوريا</div>
       <div class="tag latin" style="text-align:left;direction:ltr">4 dents · 2 portes · une réponse qui ouvre le point</div>
     </div>
     <div class="app latin" style="text-align:right">
-      <b>كنز العلوم</b> · Kunz El Ouloum<br>v3.1 · fiche élève · recto = المفتاح · verso = المفتاح+
+      <b>كنز العلوم</b> · Kunz El Ouloum<br>v3.3 · fiche élève · recto = المفتاح · verso = المفتاح+ · annexe = المفتاح PRO
     </div>
   </div>
 
   <div class="teacher">
-    <b>Note enseignant :</b> le noyau compte 10 éléments (la <b>بوابة 1</b> et le <b>وضع الحفظ</b> y sont : ce sont les points les moins chers de l'exercice 1). Les cases « 📝 المصحح » décrivent la logique réelle du barème. Ne distribuer le verso (المفتاح+) qu'après maîtrise du recto. Cette note n'est pas imprimée.
+    <b>Note enseignant :</b> le noyau compte <b>11 éléments</b> (les <b>2 بوابات</b> et le <b>وضع الحفظ</b> y sont : ce sont les points les moins chers de l'exercice 1). La ligne « عائلتي » est une reconnaissance, pas une décision — non comptée, comme l'était l'ancien switch. Gel 10→11 acté le 09-07 (MARQUE §12bis). Les cases « 📝 المصحح » décrivent la logique réelle du barème. Ne distribuer le verso (المفتاح+) qu'après maîtrise du recto. Les erreurs 1-3 (base) sont sur le recto, 4-5 (formes avancées) sur le verso. Cette note n'est pas imprimée.
   </div>
 
   <span class="card-label">البطاقة الأولى · للجميع، من اليوم الأول</span>
@@ -125,42 +141,43 @@
       </g>
     </svg>
     <div>
-      <div class="teeth"><span>1 اِقْرَأْ</span><span>2 اِجْمَعْ</span><span>3 اِرْبِطْ</span><span>4 اِخْتِمْ</span></div>
-      <div style="color:var(--mute);margin-top:6px">سنّ ناقصة = مفتاح لا يفتح. <span class="path">3</span> تُستعمل فقط إن سمح الفعل.</div>
+      <div class="teeth"><span>1 🔍 تَبَصَّر</span><span>2 🔑 أدخل</span><span>3 🔄 أدر</span><span>4 🔓 افتح</span></div>
+      <div style="color:var(--mute);margin-top:6px"><b>تَبَصَّر · أدخل · أدر · افتح — أربع حركات، لا أكثر، وينفتح القفل.</b> سنّ ناقصة = مفتاح لا يفتح. <span class="path">3</span> تُستعمل فقط إن سمح الفعل.</div>
     </div>
   </div>
 
   <h3><span class="num">أ</span> الأسنان الأربع — ماذا أفعل بالضبط</h3>
   <table>
     <tr><th style="width:36px">#</th><th style="width:90px">السنّ</th><th>ماذا أفعل</th><th class="corr" style="width:38%">📝 المصحح</th></tr>
-    <tr><td class="c">1</td><td class="c">اِقْرَأْ</td>
+    <tr><td class="c">1</td><td class="c">🔍 تَبَصَّر</td>
       <td>أطوّق <b>الفعل</b> · أسطّر <b>الكلمات المفتاحية</b> · أرقّم إجابتي <b>برقم السؤال</b> (1-أ، 1-ب…) لا غير.</td>
       <td class="corr">إجابة بلا رقم أو تحت رقم خاطئ = <b>0</b> ولو كانت صحيحة. الفعل الخاطئ (وصفتَ بدل أن تفسّر) = تفقد نقطة الفعل كاملة.</td></tr>
-    <tr><td class="c">2</td><td class="c">اِجْمَعْ</td>
+    <tr><td class="c">2</td><td class="c">🔑 أدخل</td>
       <td>أستخرج من الوثيقة <b>أرقاما + وحدات + اتجاه التغيّر</b> («يرتفع من 2 إلى 8 <span class="latin">mg/L</span> بين 0 و 10 <span class="latin">min</span>»).</td>
       <td class="corr">نقطة الاستخراج تُمنح <b>للرقم مع وحدته</b>. «يرتفع» وحدها = نصف نقطة. رقم بلا وحدة = خطأ محسوب.</td></tr>
-    <tr><td class="c">3</td><td class="c">اِرْبِطْ<br><small>إن سمح الفعل</small></td>
+    <tr><td class="c">3</td><td class="c">🔄 أدر<br><small>إن سمح الفعل</small></td>
       <td>أربط المعطى بالسبب/الآلية من الدرس: «لأنّ… / بسبب… / ممّا يدلّ على…».</td>
       <td class="corr">هنا نقاط الفهم (غالبا الأثقل). ربط بلا معطى = «حفظ» → نصف النقطة. معطى بلا ربط والفعل يطلبه = نصف النقطة.</td></tr>
-    <tr><td class="c">4</td><td class="c">اِخْتِمْ</td>
+    <tr><td class="c">4</td><td class="c">🔓 افتح</td>
       <td>جملة واحدة تجيب <b>حرفيا</b> على الكلمات التي سطّرتُها في السنّ 1.</td>
       <td class="corr">خاتمة غائبة = نقطة الاستنتاج ضائعة. خاتمة لا تحوي كلمات السؤال = <b>لا تُقرأ</b> كإجابة.</td></tr>
   </table>
 
-  <h3><span class="num">ب</span> البوابتان — أقرّر قبل أن أكتب، لا أثناء</h3>
+  <h3><span class="num">ب</span> البوابتان + عائلتي — أقرّر قبل أن أكتب، لا أثناء</h3>
   <div class="gate">
-    <div class="q">🚪 البوابة 1 — ورقة أم رأس؟</div>
+    <div class="q">🚪 البوابة 1 — قفل أصلا؟</div>
     <div>هل سطّرتُ في السنّ 1 كلمة: <b>وثيقة / شكل / جدول / منحنى / رسم</b>؟</div>
-    <div class="opt a"><b>لا → 🧠 رأس</b> : وضع الحفظ (ج) — مسار <span class="path">1 → 4</span></div>
-    <div class="opt b"><b>نعم → 📄 ورقة</b> : أمرّ إلى البوابة 2.</div>
-    <div class="opt" style="background:#fff;border:1px dashed var(--line)">«بالاعتماد على <b>معلوماتك</b> و<b>الوثيقة</b>» → 📄 ورقة، والسنّ 2 بعمودين في المسودة: <b>[من الوثيقة | من الدرس]</b>.</div>
+    <div class="opt a"><b>لا → 🧠 لا قفل</b> : دُرج المعرفة — من تَبَصَّر إلى افتح مباشرة <span class="path">1 → 4</span></div>
+    <div class="opt b"><b>نعم → 🔒 قفل</b> : أمرّ إلى البوابة 2.</div>
   </div>
   <div class="gate">
-    <div class="q">🚪 البوابة 2 — صورة أم فيلم؟</div>
-    <div class="opt a"><b>📷 صورة</b> : حلّل، صِف، استخرج، قارن، حدّد — مسار <span class="path">1 → 2 → 4</span></div>
-    <div class="opt b"><b>🎬 فيلم</b> : فسّر، اشرح، علّل، بيّن كيف، استنتج — مسار <span class="path">1 → 2 → 3 → 4</span></div>
+    <div class="q">📥 البوابة 2 — من أين مادة الإدخال؟</div>
+    <div>«ومعلوماتك / ومكتسباتك» مذكورة في السؤال؟</div>
+    <div class="opt a"><b>📄 وثيقة فقط</b> : عمود واحد في المسودة.</div>
+    <div class="opt b"><b>📄+🧠 مختلط</b> : عمودان — <b>[من الوثيقة | من معلوماتي]</b>.</div>
   </div>
-  <div class="corr-note"><b>📝 المصحح:</b> في «صورة»، كل جملة تفسيرية = وقت ضائع لا يُنقَّط. في «فيلم»، وصف بلا سبب = نصف النقاط على أحسن تقدير.</div>
+  <div class="check" style="text-align:right">⚙️ <b>عائلتي قبل أن أكتب:</b> 📷 الصورة (حلّل · صِف · استخرج · قارن) — مسار <span class="path">1 → 2 → 4</span> · 🎬 الفيلم (فسّر · اشرح · علّل · استنتج) — <span class="path">1 → 2 → 3 → 4</span> · 🔨 الحدّاد (اقترح · برّر · ناقض · قدّم حلا) — <b>تصنيع</b>: منتج منطقي جديد (فرضية / اقتراح / توصية)، لا جواب واحد في الوثيقة.</div>
+  <div class="corr-note"><b>📝 المصحح:</b> في «صورة»، كل جملة تفسيرية = وقت ضائع لا يُنقَّط. في «فيلم»، وصف بلا سبب = نصف النقاط على أحسن تقدير. في «الحدّاد»، إعادة الملاحظة بدل التصنيع = صفر: المطلوب منتج مُبرَّر، لا وصف ولا تفسير جاهز.</div>
 
   <h3><span class="num">ج</span> وضع الحفظ — 🧠 رأس</h3>
   <table>
@@ -187,23 +204,32 @@
     <div><b>1</b> ← هل الفعل الذي طوّقتُه هو الذي نفّذتُه؟</div>
   </div>
 
-  <footer>كنز العلوم · MIFTAH v3.1 · الوجه الأول — المفتاح (10 عناصر) · يكفي وحده للأغلبية</footer>
+  <h3><span class="num">📝</span> ثلاثة أخطاء تكلّف أكثر من الجهل — خلاصة مصحح</h3>
+  <div class="box red">
+    <ol style="margin:0;padding-right:22px">
+      <li><b>إجابة بلا رقم سؤال</b> — أكثر النقاط ضياعا عبثا.</li>
+      <li><b>رقم بلا وحدة</b> — يُعدّ خطأ لا نسيانا.</li>
+      <li><b>خاتمة غائبة</b> — الاستنتاج له نقطته المستقلة في كل سؤال «فيلم».</li>
+    </ol>
+  </div>
+
+  <footer>مفتاح المنهجية · كنز العلوم · الوجه الأول — المفتاح (11 عنصرًا) · يكفي وحده للأغلبية</footer>
 </div>
 
 <!-- ═══════════════════════════ الوجه الثاني : المفتاح+ ═══════════════════════════ -->
 <div class="page break">
   <div class="brand">
     <div>
-      <h1>🔑 المِفْتَاح<span style="color:var(--gold)">+</span> · <span class="latin">MIFTAH+</span></h1>
-      <div class="tag">نفس المفتاح، أسنان إضافية — لمن أتقن الوجه الأول</div>
+      <h1>🔑 المفتاح<span style="color:var(--gold)">+</span></h1>
+      <div class="tag">نفس المفتاح — القفل والأسنان الإضافية — لمن أتقن الوجه الأول</div>
     </div>
-    <div class="app latin" style="text-align:right"><b>كنز العلوم</b> · Kunz El Ouloum<br>v3.1 · verso</div>
+    <div class="app latin" style="text-align:right"><b>كنز العلوم</b> · Kunz El Ouloum<br>v3.3 · verso</div>
   </div>
 
   <span class="card-label plus">البطاقة الثانية · عند الحاجة فقط</span>
-  <h2>🧫🧱 المفتاح+ — الأسنان الإضافية</h2>
+  <h2>🧫🧱 المفتاح+ — القفل والأسنان الإضافية</h2>
 
-  <h3><span class="num">و</span> السنّ 0 — اِفهم (مرة واحدة لكل تمرين)</h3>
+  <h3><span class="num">و</span> القفل — اِفهم (مرة واحدة لكل تمرين)</h3>
   <div class="box teal">
     بعد قراءة <b>سياق التمرين</b> مباشرة، أكتب في أعلى المسودة: <b>«الهدف العام: ……»</b> (≤ 5 كلمات).<br>
     مثال: «بغرض معرفة آلية عمل الأنسولين…» ← «<b>الهدف العام: آلية عمل الأنسولين</b>».
@@ -212,16 +238,17 @@
 
   <h3><span class="num">ز</span> البنية المتسلسلة + قالب التركيب</h3>
   <div class="chain">
-    <div class="node z">اِفهم 0</div><span class="ar">←</span>
+    <div class="node z">القفل · اِفهم</div><span class="ar">←</span>
     <div class="node">جزء I · 1 2 3 4</div><span class="ar">←</span>
     <div class="node">جزء II · 1 2 3 4</div><span class="ar">←</span>
     <div class="node">جزء III · 1 2 3 4</div><span class="ar">←</span>
     <div class="node s">التركيب = يُجيب «اِفهم»</div>
   </div>
   <div class="sent"><b>قالب التركيب (جملة واحدة مركّبة):</b> «من الجزء I نعلم أنّ … ، ومن الجزء II أنّ … ، ومن الجزء III أنّ … ؛ <b>ومنه</b> [الإجابة على سطر «الهدف العام»].»</div>
+  <div class="sent"><b>مسار السن 3:</b> معطى ← مقارنة ← علاقة ← تفسير — <b>الصيغة الذهبية:</b> «تُظهر الوثيقة …، وبمقارنة … نلاحظ …، ويُفسَّر ذلك بـ …»</div>
   <div class="corr-note"><b>📝 المصحح:</b> تركيب يعيد النتائج بلا «ومنه» = نصف النقطة. تركيب يُدخل معلومة من الدرس لم تظهر في الأجزاء = لا يُحتسب.</div>
 
-  <h3><span class="num">ح</span> صيغتان خاصتان</h3>
+  <h3><span class="num">ح</span> ثلاث صيغ خاصة</h3>
   <table>
     <tr><th style="width:120px">الصيغة</th><th>الأسنان</th><th class="corr" style="width:36%">📝 المصحح</th></tr>
     <tr><td class="c">الحساب<br><small>احسب…</small></td>
@@ -230,6 +257,9 @@
     <tr><td class="c">شجرة النسب<br><small>حدّد نمط الوراثة</small></td>
       <td><b>2</b> = <b>حدثان حاسمان</b>: ① أبوان سليمان ← طفل مصاب (يحسم <b>السيادة</b>) ② بنت مصابة من أب سليم / ابن سليم من أم مصابة (يحسم <b>الموقع</b>) · <b>3</b> = لماذا كل حدث يستبعد الفرضية المقابلة · <b>4</b> = <b>الحكمان</b> (متنحٍّ/سائد + جسمي/مرتبط بـ <span class="latin">X</span>) <b>ثم</b> الأنماط الوراثية بالترميز.</td>
       <td class="corr">نمط بلا الحكم الثاني = <b>نصف النقطة دائما</b>. إن لم يوجد حدث حاسم للموقع: «على الأرجح جسمي لأنّ …» + مبرر = النقطة كاملة. أنماط وراثية بلا حكم مبرَّر = لا تُنقَّط.</td></tr>
+    <tr><td class="c">الحدّاد<br><small>اقترح / برّر / ناقض / قدّم حلا</small></td>
+      <td><b>2</b> = <b>البيانات</b>: كل المعطيات اللازمة (الوثيقة + معلوماتي)، لا نسخ شامل · <b>3</b> = <b>المعالجة</b>: مقارنة، علاقة، تفسير أو مناقشة · <b>4</b> = <b>المنتج</b>: حسب التعليمة — فرضية / تبرير / توصية / مخطط، جازمة وقابلة للتجربة.</td>
+      <td class="corr">إعادة الملاحظة بدل التصنيع = <b>صفر</b>. المطلوب منتج منطقي جديد مُبرَّر: لا وصف ولا تفسير جاهز. فرضية بلا آلية = نصف النقطة.</td></tr>
   </table>
 
   <h3><span class="num">ط</span> فحص الخاتمة — عامّ أم خاصّ؟</h3>
@@ -249,32 +279,75 @@
 
   <h3><span class="num">ك</span> شحذ المفتاح — تدريب 60 ثانية</h3>
   <div class="box teal">
-    تمرّ أمامي <b>12 تعليمة قصيرة كاملة</b> (لا أفعال معزولة)، لكل واحدة ثانيتان: <b>ورقة / رأس</b> ثم <b>صورة / فيلم</b>.<br>
-    أمثلة: «اذكر من الوثيقة 2 العناصر…» (ورقة/صورة) · «اذكر مراحل…» (رأس) · «فسّر بالاعتماد على معلوماتك والشكل 3…» (ورقة بعمودين/فيلم) · «عرّف…» (رأس).<br>
-    <b>الهدف: 12/12 ثلاث مرات متتالية</b> قبل أي تحرير كامل. في التطبيق: يُفتح المفتاح+ تلقائيا بعد هذا الشرط.
+    تمرّ أمامي <b>12 تعليمة قصيرة كاملة</b> (لا أفعال معزولة)، لكل واحدة ثانيتان: <b>🚪 قفل؟</b> ثم <b>📥 من أين؟</b> ثم <b>⚙️ أي حركة؟</b>.<br>أمثلة: «اذكر من الوثيقة 2 العناصر…» (قفل/وثيقة/📷) · «اذكر مراحل…» (لا قفل/🧠) · «فسّر بالاعتماد على معلوماتك والشكل 3…» (قفل/مختلط/🎬) · «اقترح فرضيتين بالاستعانة بالوثيقة 1 ومعلوماتك…» (قفل/مختلط/🔨).<br><b>الهدف: 12/12 على ثلاثة أيام مختلفة</b> قبل أي تحرير كامل. في التطبيق: يُفتح بعد هذا الشرط <b>التدريب الموجَّه (المرحلة 2)</b> والشارة «حامل المفتاح»، وتُنشر بطاقة <b>المفتاح+</b> بعد تثبيت النواة على ثلاثة أنواع مختلفة من الأسئلة.
   </div>
 
   <h3><span class="num">📊</span> ما أحمله حسب مستواي</h3>
   <table class="lvl">
     <tr><th>الملف</th><th>البطاقة</th><th style="width:110px">العناصر</th></tr>
-    <tr><td>متعثّر</td><td>المفتاح كاملا (أ → هـ)</td><td class="c">10</td></tr>
-    <tr><td>متوسط</td><td>المفتاح + و، ز، ط</td><td class="c">≈ 13</td></tr>
-    <tr><td>يستهدف الامتياز</td><td>المفتاح+ كاملا — لكن لا شيء يُستدعى في آن واحد</td><td class="c">≈ 17</td></tr>
+    <tr><td>متعثّر</td><td>المفتاح كاملا (أ → هـ)</td><td class="c">11</td></tr>
+    <tr><td>متوسط</td><td>المفتاح + و، ز، ط</td><td class="c">≈ 14</td></tr>
+    <tr><td>يستهدف الامتياز</td><td>المفتاح+ + الملحق (ذ، ر، س) — لا شيء يُستدعى في آن واحد</td><td class="c">≈ 21</td></tr>
   </table>
 
-  <h3><span class="num">📝</span> خمسة أخطاء تكلّف أكثر من الجهل — خلاصة مصحح</h3>
+  <h3><span class="num">📝</span> الخطآن المتبقيان — خلاصة مصحح (1-3 على الوجه الأول)</h3>
   <div class="box red">
-    <ol style="margin:0;padding-right:22px">
-      <li><b>إجابة بلا رقم سؤال</b> — أكثر النقاط ضياعا عبثا.</li>
-      <li><b>رقم بلا وحدة</b> — يُعدّ خطأ لا نسيانا.</li>
-      <li><b>خاتمة غائبة</b> — الاستنتاج له نقطته المستقلة في كل سؤال «فيلم».</li>
+    <ol start="4" style="margin:0;padding-right:22px">
       <li><b>شجرة نسب بحكم واحد</b> — نصف النقطة مضمون الضياع.</li>
       <li><b>تركيب يعيد الأجزاء دون «ومنه»</b> — الجملة الأغلى في الورقة، تُكتب في 30 ثانية.</li>
     </ol>
   </div>
 
-  <footer>كنز العلوم · MIFTAH+ v3.1 · الوجه الثاني — لا يحتاجه أحد في اليوم الأول · <span class="latin">4 dents · 2 portes · une réponse qui ouvre le point</span></footer>
+  <footer>مفتاح المنهجية · كنز العلوم · الوجه الثاني — المفتاح+ · لا يحتاجه أحد في اليوم الأول · <span class="latin">4 dents · 2 portes · une réponse qui ouvre le point</span></footer>
 </div>
+<div class="page break">
+  <div class="brand">
+    <div>
+      <h1>🔑 المفتاح<span style="color:var(--gold)">PRO</span></h1>
+      <div class="tag">قوة الدليل والتجريب — لمن يستهدف الامتياز، بعد إتقان الوجهين الأول والثاني</div>
+    </div>
+    <div class="app latin" style="text-align:right"><b>كنز العلوم</b> · Kunz El Ouloum<br>v3.3 · annexe</div>
+  </div>
+
+  <span class="card-label plus">الملحق · يُوزَّع عند الطلب فقط — للامتياز</span>
+  <h2>🔬 المفتاح PRO — قوة الكلام = قوة الدليل</h2>
+
+  <div class="box gold"><b>القاعدة الذهبية:</b> لا أبحث عن جواب فقط؛ بل أبني جوابًا تُظهر فيه الأدلة كيف وصلتُ إلى النتيجة.</div>
+
+  <h3><span class="num">ذ</span> قوة الكلام = قوة الدليل</h3>
+  <table><thead><tr><th style="width:44%">نوع الدليل</th><th>اللغة التي أستعملها</th></tr></thead><tbody>
+    <tr><td>ملاحظة مباشرة</td><td>«تُظهر الوثيقة…» / «نلاحظ أن…»</td></tr>
+    <tr><td>علاقة بين متغيرين</td><td>«توجد علاقة بين … و…»</td></tr>
+    <tr><td>دليل يدعم فكرة</td><td>«تشير النتائج إلى…»</td></tr>
+    <tr><td>أدلة قوية ومتوافقة</td><td>«تسمح النتائج بالاستنتاج أن…»</td></tr>
+    <tr><td>اختبار فرضية</td><td>«تُدعَم / تُرفض الفرضية وفق النتائج والشروط»</td></tr>
+  </tbody></table>
+  <div class="box red"><b>🔴 قاعدة حمراء:</b> لا أكتب «X يسبب Y» لمجرد أن X وY تغيّرا معًا — السببية تحتاج تصميمًا تجريبيًا (شاهد + شروط مضبوطة). الارتباط وحده = علاقة لا سبب.</div>
+  <div class="corr-note"><b>📝 المصحح:</b> مبالغة الخاتمة (سبب بلا تصميم تجريبي) = نقطة الفهم تضيع ولو كانت الخاتمة علمية صحيحة. «تُظهر الوثيقة» بلا رقم محدد = استخراج ناقص.</div>
+
+  <h3><span class="num">ر</span> التجربة — 4 أسئلة قبل أي تحليل</h3>
+  <div class="check">
+    <div>🧪 ماذا غيّرنا؟ ← <b>المتغيّر المُختبَر</b></div>
+    <div>📏 ماذا قِسنا؟ ← <b>المتغيّر المُقاس</b></div>
+    <div>⚖️ ما الشاهد؟ ← <b>الحالة المرجعية للمقارنة</b></div>
+    <div>🔒 ماذا أبقينا ثابتًا؟ ← <b>الشروط المضبوطة</b></div>
+  </div>
+  <div class="sent"><b>تغيير واحد + قياس واحد + شاهد + شروط ثابتة = تجربة صالحة</b></div>
+  <div class="corr-note"><b>📝 المصحح:</b> سؤال تجربة بلا المتغيّر المُختبَر + الشاهد = نصف النقطة. وصف البروتوكول بلا النتيجة المتوقعة = لا يُحتسب تحليلًا.</div>
+
+  <h3><span class="num">س</span> الفرضية — تصنيع يُختبَر (حدّاد 3 ← 4)</h3>
+  <div class="box gold"><b>القالب:</b> «نقترح أن …… لأن ……، ويمكن اختبارها بدراسة أثر …… على …… مع اعتماد …… كشاهد.»</div>
+  <div class="check">
+    <div>هل النتيجة متوافقة مع ما تتنبأ به الفرضية؟</div>
+    <div>هل الشاهد يسمح بالمقارنة؟</div>
+    <div>هل يمكن استبعاد تفسير بديل معقول؟</div>
+    <div>هل الأدلة كافية للحكم المطلوب؟</div>
+  </div>
+  <div class="corr-note"><b>📝 المصحح:</b> فرضية بلا آلية («لأنّ» فارغة) = نصف النقطة. فرضية بلا تجربة قابلة (بلا شاهد/أثر) = صفر — التصنيع ليس أمنية (الحدّاد، الوجه الثاني).</div>
+
+  <footer>مفتاح المنهجية · كنز العلوم · الملحق — المفتاح PRO · قوة الدليل لمن يستهدف الامتياز · <span class="latin">4 dents · 2 portes · une réponse qui ouvre le point</span></footer>
+</div>
+
 
 </body>
 </html>

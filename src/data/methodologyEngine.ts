@@ -107,17 +107,17 @@ export const VERB_CARDS: VerbCard[] = [
       { id:'hyp_c3', order:3, wording:{compass:'أصوغ الفرضية بصيغة إخبارية جازمة خالية من صيغ التردد (ربما، لعل).',check:'صياغة جازمة دون تردد.',probe:'هل تخلو جملتي تماماً من كلمات مثل "ربما" أو "قد"؟',ar_label:'الصياغة الجازمة'}, selfProofPrompt:'تأكد من عدم وجود كلمات الشك والتردد', errorTag:'conditional_hypothesis', weight:1 }
     ]
   },
-  { id:'verb_deduce_v1', verbAr:'اسْتَنْتِجْ', verbFr:'Déduire', category:'descriptive',
-    goal:'استخلاص معلومة علمية عامة جديدة ومجردة انطلاقاً من المعطيات السابقة دون تكرار الوصف.',
-    structureSteps:['1. استحضار الهدف العلمي من التجربة أو الوثيقة','2. تجريد النتائج والتخلي عن التفاصيل الرقمية والأرقام الجزئية','3. صياغة خلاصة مباشرة ومركزة في جملة واحدة جامعة'],
-    requiredConnectors:['نستنتج أن...','الاستنتاج: يتبين أن...'],
+  { id:'verb_deduce_v1', verbAr:'اسْتَنْتِجْ', verbFr:'Déduire', category:'reasoned', // D2 (MARQUE §11) : استنتج = 🎬 فيلم
+    goal:'استخلاص حقيقة علمية عامة جديدة ومجردة، مرتبطة بآليتها السببية، انطلاقا من المعطيات السابقة دون تكرار الوصف.',
+    structureSteps:['1. استحضار الهدف العلمي من التجربة أو الوثيقة (المعطيات الملاحظة)','2. تجريد النتائج والتخلي عن التفاصيل الرقمية والأرقام الجزئية','3. الربط السببي: ما الآلية التي تفسر هذه النتيجة؟ (لأنّ / يعود ذلك إلى / عن طريق)','4. صياغة خلاصة مباشرة ومركزة في جملة واحدة جامعة'],
+    requiredConnectors:['نستنتج أن...','الاستنتاج: يتبين أن...','يعود ذلك إلى ... / لأنّ ...'],
     forbiddenPatterns:['إعادة أرقام المنحنى أو سرد التفاصيل التجريبية من جديد'],
     stopCriteria:['جملة وحيدة واضحة تعبر عن قاعدة علمية عامة قابلة للتعميم'],
-    goodExample:{ context:'إضافة إنزيم مع مادة تفاعله في وسطين: الأول بدرجة حرارة 37° (نشاط أعظمي) والثاني 70° (انعدام النشاط الدائم).', question:'ماذا تستنتج حول تأثير درجة الحرارة المرتفعة على الإنزيم؟', answer:'الاستنتاج: تؤثر درجات الحرارة المرتفعة سلباً وغير عكوس على النشاط الإنزيمي عن طريق تخريب بنيته الفراغية.', annotatedSteps:[{step:1,text:'تأثير درجات الحرارة المرتفعة',color:'#3b82f6'},{step:2,text:'سلباً وغير عكوس على النشاط الإنزيمي',color:'#10b981'},{step:3,text:'عن طريق تخريب بنيته الفراغية',color:'#8b5cf6'}] },
-    badExample:{ answer:'نستنتج أنه عندما نضع الإنزيم عند 70 درجة تتوقف سرعة التفاعل وتصبح 0 ميكرومول/دقيقة.', flawDescription:'إعادة وصف النتائج التجريبية والأرقام بدلاً من استخلاص الحقيقة العلمية المكتسبة.', circledError:'تتوقف سرعة التفاعل وتصبح 0 ميكرومول/دقيقة', errorTag:'verb_confusion', scorePercent:30 },
+    goodExample:{ context:'إضافة إنزيم مع مادة تفاعله في وسطين: الأول بدرجة حرارة 37° (نشاط أعظمي) والثاني 70° (انعدام النشاط الدائم).', question:'ماذا تستنتج حول تأثير درجة الحرارة المرتفعة على الإنزيم؟', answer:'الملاحظة: انطلاقا من المعطيات، ينعدم النشاط الإنزيمي نهائيا في الوسط الساخن.\nالتجريد: هذا الانعدام دائم ولا يعود عند تبريد الوسط.\nالآلية: يعود ذلك إلى أن الحرارة المرتفعة تخرّب البنية الفراغية للإنزيم فيفقد الموقع الفعال شكله.\nالاستنتاج: تؤثر درجة الحرارة المرتفعة سلبا وغير عكوس على النشاط الإنزيمي، لأنّها تخرّب بنيته الفراغية.', annotatedSteps:[{step:1,text:'الملاحظة: ينعدم النشاط الإنزيمي نهائيا في الوسط الساخن',color:'#3b82f6'},{step:2,text:'هذا الانعدام دائم ولا يعود عند تبريد الوسط',color:'#10b981'},{step:3,text:'يعود ذلك إلى أن الحرارة المرتفعة تخرّب البنية الفراغية للإنزيم',color:'#8b5cf6'},{step:4,text:'الاستنتاج: تؤثر درجة الحرارة المرتفعة سلبا وغير عكوس، لأنّها تخرّب بنيته الفراغية',color:'#f43f5e'}] },
+    badExample:{ answer:'نستنتج أنه عندما نضع الإنزيم عند 70 درجة تتوقف سرعة التفاعل وتصبح 0 ميكرومول/دقيقة.', flawDescription:'إعادة وصف النتائج التجريبية والأرقام دون أي آلية سببية — خلاصة غير مرتبطة بعلتها (D2 : استنتج = فيلم، الربط إلزامي).', circledError:'تتوقف سرعة التفاعل وتصبح 0 ميكرومول/دقيقة', errorTag:'unsupported_claim', scorePercent:30 },
     criteria:[
       { id:'ded_c1', order:1, wording:{compass:'أصوغ حقيقة علمية عامة تمثل إجابة مباشرة للهدف من التجربة.',check:'صياغة قاعدة علمية مجردة.',probe:'هل استنتجت حقيقة عامة أم أعدت قراءة المنحنى؟',ar_label:'تجريد النتيجة'}, selfProofPrompt:'حدد الحقيقة العلمية المستخلصة', errorTag:'missing_conclusion', weight:1 },
-      { id:'ded_c2', order:2, wording:{compass:'أتجنب تكرار الأرقام والتفاصيل التجريبية السطحية.',check:'خلو الاستنتاج من الأرقام المعادة.',probe:'هل يخلو استنتاجي من الأرقام والوصف؟',ar_label:'تجنب تكرار الوصف'}, selfProofPrompt:'تأكد من عدم وجود أرقام مكررة', errorTag:'verb_confusion', weight:1 }
+      { id:'ded_c2', order:2, wording:{compass:'أربط النتيجة بآليتها السببية برابط صريح (لأنّ / يعود ذلك إلى / عن طريق).',check:'رابط سببي صريح يربط النتيجة بآليتها.',probe:'هل أدرجت الآلية التي تفسر النتيجة؟',ar_label:'الربط السببي'}, selfProofPrompt:'حدد الرابط الذي يربط النتيجة بسببها', errorTag:'unsupported_claim', weight:1 }
     ]
   },
   { id:'verb_validate_v1', verbAr:'صَادِقْ عَلَى الصِّحَّة', verbFr:'Valider l\'hypothèse', category:'reasoned',
@@ -235,28 +235,72 @@ export const TRAINING_EXERCISES: TrainingExercise[] = [
   { id:'ex_pedigree_mendelian_11', verbId:'verb_pedigree_v1', theme:'genetics', themeAr:'الوراثة', supportType:'schema', supportTitle:'الوثيقة 11: شجرة نسب مرض وراثي', context:'شجرة نسب تظهر أبوان سليمان I1×I2 أنجبا بنتا مصابة II3، وأم مصابة II3 تزوجت رجلا سليما أنجبت ابنا سليما III1.', question:'حدد نمط وراثة المرض (سائد/متنح، جسمي/مرتبط بـ X).', dataSnippet:'I1 (سليم) × I2 (سليمة) → II3 (مصابة)\nII3 (مصابة) × رجل سليم → III1 (سليم)', diagramUrl:'/assets/images/schemas/domaine1_proteines/schema_22b_pedigree_modern_ar.svg', stage1:{ expertAnswer:'انطلاقا من الوثيقة 11 الحدث ① : أبوان سليمان I1×I2 أنجبا طفلة مصابة II3 بينما السائد لا يختبئ — يستبعد السائد لأن السائد يظهر كل جيل، إذن متنحٍّ.\nالحدث ② : بنت مصابة II3 من أب سليم I1 بينما المرتبط بـ X ينتقل عبر X — يستبعد المرتبط بـ X لأن الأب السليم لا ينقل X مصاب، إذن جسمي.\nومنه المرض متنحٍّ جسمي بينما الأنماط I1 Aa , I2 Aa , II3 aa , III1 Aa أو AA (الوثيقة 11).', segments:[{stepNumber:1,text:'أبوان سليمان ← طفلة مصابة II3',colorClass:'bg-blue-100 dark:bg-blue-900/40 text-blue-800 dark:text-blue-300'},{stepNumber:2,text:'بنت مصابة من أب سليم I1',colorClass:'bg-emerald-100 dark:bg-emerald-900/40 text-emerald-800 dark:text-emerald-300'},{stepNumber:3,text:'متنحٍّ جسمي + الأنماط Aa/aa',colorClass:'bg-purple-100 dark:bg-purple-900/40 text-purple-800 dark:text-purple-300'}] }, stage2:{ clozePrompt:'الحدث ① (السيادة): {{1}} ← النتيجة: {{2}}\nالحدث ② (الموقع): {{3}} ← النتيجة: {{4}}\nالحكمان والأنماط: {{5}}', blanks:[{id:'1',expectedText:'أبوان سليمان I1×I2 أنجبا مصابة II3',hint:'الحدث الحاسم 1'},{id:'2',expectedText:'متنحٍّ',hint:'السيادة'},{id:'3',expectedText:'بنت مصابة II3 من أب سليم I1',hint:'الحدث الحاسم 2'},{id:'4',expectedText:'جسمي (غير مرتبط بـ X)',hint:'الموقع'},{id:'5',expectedText:'متنحٍّ جسمي — I1 Aa , I2 Aa , II3 aa',hint:'الحكمان والأنماط'}] }, stage3:{ recommendedTimeSec:200, hints:['استخرج الحدثين الحاسمين','علل لماذا يستبعد كل فرضية','اختم بالحكمين ثم الأنماط بالترميز'] }, stage4:{ timeLimitSec:200, passIcmThreshold:90 } }
 ];
 // MIFTAH v3.1 — source unique (miftahSpec) pour la nomenclature et les gabarits pro
-export { MIFTAH_VERSION, MIFTAH_NOMENCLATURE, STEP0, ASNAN, READY_SENTENCES, SYNTHESIS, SPECIAL_FORMS, CONCLUSION_CHECK, RESCUE_SENTENCE, DRILL, LEVELS, FIVE_COSTLY_ERRORS } from './miftahSpec';
+export { MIFTAH_VERSION, MIFTAH_NAME_AR, MIFTAH_NAME_OFFICIAL_AR, MIFTAH_NOMENCLATURE, STEP0, ASNAN, READY_SENTENCES, SYNTHESIS, SPECIAL_FORMS, CONCLUSION_CHECK, RESCUE_SENTENCE, DRILL, LEVELS, FIVE_COSTLY_ERRORS, RECTO_ERRORS, VERSO_ERRORS, FOOTER_RECTO_AR, FOOTER_VERSO_AR, NARRATIVE_AR, POSITIONING_AR, MIFTAH_ANNEXE_AR, ANNEXE, FOOTER_ANNEXE_AR } from './miftahSpec';
 import { STEP0 as MIFTAH_STEP0 } from './miftahSpec';
 
 export type StepId = 1 | 2 | 3 | 4;
 export type MiftahStepId = 0 | 1 | 2 | 3 | 4;
-export const STEP_NAMES_AR: Record<StepId, string> = { 1: 'اِقْرَأْ', 2: 'اِجْمَعْ', 3: 'اِرْبِطْ', 4: 'اِخْتِمْ' };
-export const MIFTAH_STEP_NAMES_AR: Record<MiftahStepId, string> = { 0: MIFTAH_STEP0.nameAr, 1: 'اِقْرَأْ', 2: 'اِجْمَعْ', 3: 'اِرْبِطْ', 4: 'اِخْتِمْ' };
+// Update 2026-09-06 (docs/MARQUE.md §12) — les 4 dents nomment le GESTE PHYSIQUE d'une clé :
+// 🔍 تَبَصَّر (reconnaître le verrou) · 🔑 أدخل (insérer) · 🔄 أدر (tourner) · 🔓 افتح (la serrure s'ouvre).
+// Contenu pédagogique inchangé — seul le nom change (tableau de migration MARQUE §12).
+export const STEP_NAMES_AR: Record<StepId, string> = { 1: 'تَبَصَّر', 2: 'أدخل', 3: 'أدر', 4: 'افتح' };
+export const MIFTAH_STEP_NAMES_AR: Record<MiftahStepId, string> = { 0: MIFTAH_STEP0.nameAr, 1: 'تَبَصَّر', 2: 'أدخل', 3: 'أدر', 4: 'افتح' };
 export type Switch = 'open' | 'closed';
 export type Step3Mode = 'none' | 'confront' | 'explain' | 'hypothesis' | 'dual';
 export type SpecialFormat = 'compare' | 'diagram' | 'hypothesis' | 'text' | null;
-export type SourceGate = 'paper' | 'memory'; // ورقة (وثيقة موجودة) vs رأس (حفظ)
+export type SourceGate = 'paper' | 'memory'; // compat — = l'existence : lock (قفل) / no_lock (لا قفل)
 
-// V3.1 — Gate 1 : ورقة vs رأس (هل سطّرت وثيقة/شكل/جدول/منحنى/رسم؟)
+// ═══════════════════════════════════════════════════════════════════════════
+// Update 2026-09-06 (docs/MARQUE.md §12) — TROIS PORTES, cascade :
+//   🚪 البوابة ١ — الوجود : قفل أصلا؟ (وثيقة؟) → لا قفل ⇒ 🧠 دُرج المعرفة (fin)
+//   📥 البوابة ٢ — المصدر : من أين مادة الإدخال؟ وثيقة فقط / مختلط (+معلوماتك/مكتسباتك)
+//   ⚙️ البوابة ٣ — الحركة : أي حركة يطلب القفل؟ 📷 صورة / 🎬 فيلم / 🔨 حدّاد (NOUVEAU)
+// Le 🔨 حدّاد (اقترح/برر/ناقض/قدّم حلا) était l'angle mort du modèle 2 portes :
+// prouvé 6× sur les sujets BAC 2025 (MARQUE §12).
+// ═══════════════════════════════════════════════════════════════════════════
+export type ExistenceGate = 'lock' | 'no_lock';   // 🚪 قفل؟
+export type SourceKind = 'document' | 'mixed';    // 📥 من الوثيقة / من الوثيقة + معلوماتي
+export type Movement = 'photo' | 'film' | 'smith';// ⚙️ 📷 / 🎬 / 🔨
+
 const DOC_KEYWORDS_RE = /(وثيق|شكل|جدول|منحن|رسم|صورة|سند|بيان|مخطط)/;
-const DUAL_KW_RE = /معلومات/;
-export function detectSourceGate(instruction: string): SourceGate {
+const MIXED_KW_RE = /(معلومات|مكتسبات)/; // «ومعلوماتك / ومكتسباتك» — la norme, pas l'exception (BAC 2025)
+
+// 🚪 البوابة ١ — الوجود : une consigne qui s'appuie sur une وثيقة porte un mot-document.
+export function detectExistenceGate(instruction: string): ExistenceGate {
+  return DOC_KEYWORDS_RE.test((instruction || '').normalize('NFC')) ? 'lock' : 'no_lock';
+}
+// 📥 البوابة ٢ — المصدر : null si pas de قفل (لا قفل ⇒ دُرج، pas de source).
+export function detectSourceKind(instruction: string): SourceKind | null {
+  if (detectExistenceGate(instruction) === 'no_lock') return null;
+  return MIXED_KW_RE.test((instruction || '').normalize('NFC')) ? 'mixed' : 'document';
+}
+// ⚙️ البوابة ٣ — la mouvement par le verbe de la consigne (texte) :
+// smith d'abord (le plus discriminant), puis film, photo par défaut si قفل.
+const SMITH_KW_RE = /(اقترَح|اقترح|بَرِّر|برر|ناقِض|ناقض|قدّم حلا|قدم حلا|توصية)/;
+const FILM_KW_RE = /(فسِّر|فسر|اُشرَح|اشرح|علِّل|علل|استَنتَج|استنتج|وضَّح|وضح|بيِّن|بين|صَادِق|صادق|أرجِع|ارجع|سَبَّب|لماذا)/;
+export function detectMovement(instruction: string): Movement {
   const t = (instruction || '').normalize('NFC');
-  return DOC_KEYWORDS_RE.test(t) ? 'paper' : 'memory';
+  if (SMITH_KW_RE.test(t)) return 'smith';
+  if (FILM_KW_RE.test(t)) return 'film';
+  return 'photo';
+}
+export interface GateCascade {
+  existence: ExistenceGate;
+  source: SourceKind | null;        // null ⇔ pas de قفل
+  movement: Movement | 'drawer';    // 'drawer' ⇔ pas de قفل (🧠 دُرج المعرفة)
+}
+export function getGateCascade(instruction: string): GateCascade {
+  const e = detectExistenceGate(instruction);
+  if (e === 'no_lock') return { existence: e, source: null, movement: 'drawer' };
+  return { existence: e, source: detectSourceKind(instruction), movement: detectMovement(instruction) };
+}
+
+// ── Compat V3.1 (scorer, harnais, vues existantes) — les anciens exports restent valables.
+export function detectSourceGate(instruction: string): SourceGate {
+  return detectExistenceGate(instruction) === 'lock' ? 'paper' : 'memory';
 }
 export function isDualSource(instruction: string): boolean {
-  const t = (instruction || '').normalize('NFC');
-  return DUAL_KW_RE.test(t) && DOC_KEYWORDS_RE.test(t);
+  return detectSourceKind(instruction) === 'mixed';
 }
 export function getSourceGateInfo(instruction: string): { source: SourceGate; isDual: boolean } {
   return { source: detectSourceGate(instruction), isDual: isDualSource(instruction) };
@@ -294,22 +338,25 @@ export interface VerbV2Meta {
   formatCheckAr?: string;
   typicalErrorTag: 'premature_interpretation' | 'unsupported_claim';
   step3Evidence?: RegExp;
+  /** ⚙️ Update 2026-09-06 — mouvement de la carte SI le قفل existe.
+   *  'drawer' ⇔ verbe du دُرج (pas de قفل possible : عرّف). */
+  movement: Movement | 'drawer';
 }
 export const switchOf = (c: Pick<VerbCard, 'category'>): Switch =>
   c.category === 'reasoned' ? 'open' : 'closed';
 export const VERB_V2_META: Record<string, VerbV2Meta> = {
-  verb_define_v1: { step3Mode:'none', path:[1,4], stepMap:[1,1,4], format:null, typicalErrorTag:'premature_interpretation' },
-  verb_list_v1: { step3Mode:'none', path:[1,4], stepMap:[1,1,4], format:null, typicalErrorTag:'premature_interpretation' },
-  verb_analyse_v1: { step3Mode:'confront', path:[1,2,3,4], stepMap:[2,2,3,4], format:null, typicalErrorTag:'premature_interpretation' },
-  verb_deduce_v1: { step3Mode:'none', path:[1,4], stepMap:[1,1,4], format:null, typicalErrorTag:'premature_interpretation' },
-  verb_compare_v1: { step3Mode:'confront', path:[1,2,3,4], stepMap:[2,2,3,4], format:'compare', formatCheckAr:'هل قلتُ عن الطرفين نفس عدد الأشياء ؟', typicalErrorTag:'premature_interpretation' },
-  verb_schema_v1: { step3Mode:'confront', path:[1,2,3,4], stepMap:[2,3,2,4], format:'diagram', formatCheckAr:'عنوان ✓ مفتاح ✓ أسهم مرقّمة ✓', typicalErrorTag:'premature_interpretation' },
-  verb_explain_v1: { step3Mode:'explain', path:[1,2,3,4], stepMap:[2,3,3,4], format:null, typicalErrorTag:'unsupported_claim' },
-  verb_explain_multi_v1: { step3Mode:'explain', path:[1,2,3,4], stepMap:[2,2,3,4], format:null, typicalErrorTag:'unsupported_claim', step3Evidence:/(بالربط|تتكامل|الربط والتركيب|يتبين أن|بربط)/ },
-  verb_validate_v1: { step3Mode:'explain', path:[1,2,3,4], stepMap:[2,3,4], format:null, typicalErrorTag:'unsupported_claim', step3Evidence:/(يتوافق مع|يؤكد صحة|يفند|ينفي|يلغي|يدحض)/ },
-  verb_hypothesis_v1: { step3Mode:'hypothesis', path:[1,3], stepMap:[1,3,3,3], format:'hypothesis', formatCheckAr:'هل خلَت من «ربما / لعل / يمكن أن» ؟', typicalErrorTag:'unsupported_claim' },
-  verb_calcul_v1: { step3Mode:'explain', path:[1,2,3,4], stepMap:[2,3,4], format:null, typicalErrorTag:'unsupported_claim' },
-  verb_pedigree_v1: { step3Mode:'confront', path:[1,2,3,4], stepMap:[2,3,4], format:null, typicalErrorTag:'unsupported_claim' },
+  verb_define_v1: { step3Mode:'none', path:[1,4], stepMap:[1,1,4], format:null, typicalErrorTag:'premature_interpretation', movement: 'drawer', },
+  verb_list_v1: { step3Mode:'none', path:[1,4], stepMap:[1,1,4], format:null, typicalErrorTag:'premature_interpretation', movement: 'photo', },
+  verb_analyse_v1: { step3Mode:'confront', path:[1,2,3,4], stepMap:[2,2,3,4], format:null, typicalErrorTag:'premature_interpretation', movement: 'photo', },
+  verb_deduce_v1: { step3Mode:'explain', path:[1,2,3,4], stepMap:[1,2,3,4], format:null, typicalErrorTag:'unsupported_claim', movement: 'film', },
+  verb_compare_v1: { step3Mode:'confront', path:[1,2,3,4], stepMap:[2,2,3,4], format:'compare', formatCheckAr:'هل قلتُ عن الطرفين نفس عدد الأشياء ؟', typicalErrorTag:'premature_interpretation', movement: 'photo', },
+  verb_schema_v1: { step3Mode:'confront', path:[1,2,3,4], stepMap:[2,3,2,4], format:'diagram', formatCheckAr:'عنوان ✓ مفتاح ✓ أسهم مرقّمة ✓', typicalErrorTag:'premature_interpretation', movement: 'photo', },
+  verb_explain_v1: { step3Mode:'explain', path:[1,2,3,4], stepMap:[2,3,3,4], format:null, typicalErrorTag:'unsupported_claim', movement: 'film', },
+  verb_explain_multi_v1: { step3Mode:'explain', path:[1,2,3,4], stepMap:[2,2,3,4], format:null, typicalErrorTag:'unsupported_claim', step3Evidence:/(بالربط|تتكامل|الربط والتركيب|يتبين أن|بربط)/, movement: 'film', },
+  verb_validate_v1: { step3Mode:'explain', path:[1,2,3,4], stepMap:[2,3,4], format:null, typicalErrorTag:'unsupported_claim', step3Evidence:/(يتوافق مع|يؤكد صحة|يفند|ينفي|يلغي|يدحض)/, movement: 'film', },
+  verb_hypothesis_v1: { step3Mode:'hypothesis', path:[1,3], stepMap:[1,3,3,3], format:'hypothesis', formatCheckAr:'هل خلَت من «ربما / لعل / يمكن أن» ؟', typicalErrorTag:'unsupported_claim', movement: 'smith', },
+  verb_calcul_v1: { step3Mode:'explain', path:[1,2,3,4], stepMap:[2,3,4], format:null, typicalErrorTag:'unsupported_claim', movement: 'film', },
+  verb_pedigree_v1: { step3Mode:'confront', path:[1,2,3,4], stepMap:[2,3,4], format:null, typicalErrorTag:'unsupported_claim', movement: 'film', },
 };
 export const STEP_TEMPLATES = {
   2: ['انطلاقًا من الوثيقة (…) نلاحظ أنّ …', 'تمثل الوثيقة (…) … حيث نلاحظ …'],

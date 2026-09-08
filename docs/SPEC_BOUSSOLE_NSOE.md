@@ -1,6 +1,7 @@
 # 🧭 SPEC — BOUSSOLE v2 (بوصلة الإجابة · 4 خطوات + مفتاح واحد)
 
 > **Source** : audit v1 (NSOE) → refonte v2, `boussole_svt_v2.html` (conception validée).
+> **Update 2026-09-06 (MARQUE §12)** : les 4 étapes = les 4 dents du المفتاح — noms alignés : اِقْرَأْ→**🔍 تَبَصَّر** · اِجْمَعْ→**🔑 أدخل** · اِرْبِطْ→**🔄 أدر** · اِخْتِمْ→**🔓 افتح** (le geste, les questions, les templates et les couleurs sont inchangés).
 > **Principe** : une méthode d'examen doit être plus petite que la panique — la v2 ne demande
 > que **8 éléments** à mémoriser (contre ~40 en v1). **Aucune modification du moteur de score.**
 > Cible : app « كنز العلوم » (Vite + React 19 + TS, UI 100 % arabe RTL, offline, localStorage).
@@ -13,10 +14,10 @@
 
 | # | Étape | Où | Question mécanique | Phrase-type (à écrire telle quelle) | Couleur |
 |---|---|---|---|---|---|
-| 1 | **اِقْرَأْ** | المسودة فقط | ماذا يُطلَب منّي بالضبط؟ | — (entourer le verbe, souligner les mots-clés, « المطلوب: … » ≤ 5 mots) | `#1d4ed8` |
-| 2 | **اِجْمَعْ** | على الورقة | ماذا أملك؟ | « انطلاقًا من الوثيقة (…) نلاحظ أنّ … (قيمة + وحدة) » | `#059669` |
-| 3 | **اِرْبِطْ** | على الورقة (si مفتاح ouvert) | هل الفعل يسمح بـ«لأنّ»؟ | « وهذا لأنّ … وبالتالي … » | `#d97706` |
-| 4 | **اِخْتِمْ** | على الورقة | ما خلاصتي؟ | « ومنه نستنتج أنّ … (أُعيد صياغة المطلوب كحقيقة) » | `#7c3aed` |
+| 1 | **🔍 تَبَصَّر** | المسودة فقط | ماذا يُطلَب منّي بالضبط؟ | — (entourer le verbe, souligner les mots-clés, « المطلوب: … » ≤ 5 mots) | `#1d4ed8` |
+| 2 | **🔑 أدخل** | على الورقة | ماذا أملك؟ | « انطلاقًا من الوثيقة (…) نلاحظ أنّ … (قيمة + وحدة) » | `#059669` |
+| 3 | **🔄 أدر** | على الورقة (si مفتاح ouvert) | هل الفعل يسمح بـ«لأنّ»؟ | « وهذا لأنّ … وبالتالي … » | `#d97706` |
+| 4 | **🔓 افتح** | على الورقة | ما خلاصتي؟ | « ومنه نستنتج أنّ … (أُعيد صياغة المطلوب كحقيقة) » | `#7c3aed` |
 
 **🔑 Le seul interrupteur** (avant d'écrire) : *هل الفعل يسمح بـ«لأنّ» ؟*
 - **مغلق** (وصف — trajet ١←٢←٤) : حَلِّلْ · قَارِنْ · اسْتَنْتِجْ · لَخِّصْ فِي مُخَطَّطْ · أَنْجِزْ رَسْمًا تَخْطِيطِيًا
@@ -25,7 +26,7 @@
 **Contrôles = les 4 étapes relues à l'envers** (rien de neuf à mémoriser) :
 ٤ هل آخر جملة تُجيب «المطلوب»؟ · ٣ هل كل تأكيد له «لأنّ»؟ · ٢ هل ذكرت الوثيقة والقيمة والوحدة؟ · ١ هل احترمت الفعل؟
 
-**Temps** : الربع الأول (اقرأ + اجمع) · النصف (اربط أو الكتابة) · الربع الأخير (اختم + الفحص). L'allocution est proportionnelle aux points.
+**Temps** : الربع الأول (تَبَصَّر + أدخل) · النصف (أدر أو الكتابة) · الربع الأخير (افتح + الفحص). L'allocution est proportionnelle aux points.
 
 **Règle d'or (conservée mot pour mot)** : « لا خاتمةَ قبل حُجّة، ولا حُجّةَ قبل مُعطى، ولا مُعطى قبلَ فَهْمِ السؤال »
 
@@ -37,14 +38,14 @@ Le moteur de correction et ses **8 tags ne changent pas** ; seule change leur ad
 
 | Adresse | Tag | Remède |
 |---|---|---|
-| ١ اقرأ | `verb_confusion` | أُحيط بالفعل وأكتب «المطلوب: …» قبل أي سطر |
+| ١ تَبَصَّر | `verb_confusion` | أُحيط بالفعل وأكتب «المطلوب: …» قبل أي سطر |
 | 🔑 المفتاح | `premature_interpretation` | هل الفعل يسمح بـ«لأنّ»؟ ثم أغلق الخطوة 3 |
-| ٢ اجمع | `missing_unit` | كل رقم بوحدته — أراجع أرقامي واحدًا واحدًا |
-| ٢ اجمع | `missing_reference` | أستعمل القالب: «انطلاقًا من الوثيقة (…)» |
-| ٢ اجمع | `comparison_without_criteria` | أكتب المعيار في المسودة قبل العمودين |
-| ٣ اربط | `conditional_hypothesis` | صيغة إخبارية جازمة فقط — لا «ربما/لعل» |
-| ٣ اربط | `unbalanced_comparison` | ما قلته عن الطرف الأول أقوله عن الثاني بـ«بينما» |
-| ٤ اختم | `missing_conclusion` | «ومنه نستنتج أنّ …» — لا أسلّم ورقة بدونها |
+| ٢ أدخل | `missing_unit` | كل رقم بوحدته — أراجع أرقامي واحدًا واحدًا |
+| ٢ أدخل | `missing_reference` | أستعمل القالب: «انطلاقًا من الوثيقة (…)» |
+| ٢ أدخل | `comparison_without_criteria` | أكتب المعيار في المسودة قبل العمودين |
+| ٣ أدر | `conditional_hypothesis` | صيغة إخبارية جازمة فقط — لا «ربما/لعل» |
+| ٣ أدر | `unbalanced_comparison` | ما قلته عن الطرف الأول أقوله عن الثاني بـ«بينما» |
+| ٤ افتح | `missing_conclusion` | «ومنه نستنتج أنّ …» — لا أسلّم ورقة بدونها |
 
 ### 4 formats spéciaux = habillages, pas de méthodes
 | Verbe(s) | Ce qui change | Fiche de contrôle |
@@ -98,7 +99,7 @@ bloc interrupteur avec les 2 familles de verbes ; règle d'or + règle de temps 
 - Pills des stades → **`AID_LEVELS`** (titre arabe + sous-titre FR + desc ; actif = anneau émeraude « النشط » — **plus de couleurs de caps, plus de « كاب الآن »**).
 - `<BoussolePanel activeLevel={currentStage} verbId={selectedVerbId} />`.
 - Titres : « المستوى 1 — مَعَ النَّمُوذَج… », « المستوى 2 — إكْمالُ الفَراغات… », bannière bac « المستوى 4 — بَكالوريا (توقيت رسمي) ».
-- **Rapport de correction → 5 lignes** (remplace le bloc « تقرير الملاحة NSOE ») : verdict du مفتاح (choix élève vs vérité du verbe : ✓/✗/؟ + chemin) puis grille `groupErrorsByAddress(detectedErrors.map(e=>e.tag))` : « 🔑 المفتاح · 1. اقرأ · 2. اجمع · 3. اربط · 4. اختم » chacun ✓/✗ avec nom de l'erreur + **الدواء** (`ERROR_REMEDY_MAP`) ; pied : les 4 contrôles à l'envers.
+- **Rapport de correction → 5 lignes** (remplace le bloc « تقرير الملاحة NSOE ») : verdict du مفتاح (choix élève vs vérité du verbe : ✓/✗/؟ + chemin) puis grille `groupErrorsByAddress(detectedErrors.map(e=>e.tag))` : « 🔑 المفتاح · 1. تَبَصَّر · 2. أدخل · 3. أدر · 4. افتح » chacun ✓/✗ avec nom de l'erreur + **الدواء** (`ERROR_REMEDY_MAP`) ; pied : les 4 contrôles à l'envers.
 - Fin de JSX : `<SwitchGateModal open={showSwitchGate} verbAr={currentVerb.verbAr} onDecide={(c)=>{ setSwitchChoice(c); setShowSwitchGate(false); }} />`.
 - `handleResetExercise` : `setSwitchChoice(null)`.
 - Onglets : « بوصلة الإجابة · المحاكي » ; « مصفوفة الإتقان ودفتر الأخطاء ».
@@ -107,7 +108,7 @@ bloc interrupteur avec les 2 familles de verbes ; règle d'or + règle de temps 
 ### LOT F — `src/components/MethodologyGlobalStats.tsx`
 - Imports : `{ getStep, ERROR_ADDRESS_MAP, ERROR_REMEDY_MAP, errorAddressAr, ErrorAddress }` ; icônes `KeyRound` (retirer `Wind`, `CapId`, `BOUSSOLE_CAPS`, `VENT_CAP_MAP`).
 - `errsByAddr` (Record<ErrorAddress, {tag,count}[]>), `totalErrs`, `maxErrCount`, **`weakest`** (l'adresse à plus d'erreurs) + `weakestCount`.
-- Remplacer « خريطة الرياح NSOE » par **« خريطة الأخطاء — حسب خطوات البوصلة »** : grille 5 cases (١ اقرأ · 🔑 المفتاح · ٢ اجمع · ٣ اربط · ٤ اختم), couleurs d'étapes, « سليم » / erreurs ×N avec barres + remède, badge **« أولوية العلاج »** sur la case la plus faible, bannière rémédiation (« تمرينك المقترح في الجلسة القادمة : تقوية … »), pied : 4 contrôles à l'envers.
+- Remplacer « خريطة الرياح NSOE » par **« خريطة الأخطاء — حسب خطوات البوصلة »** : grille 5 cases (١ تَبَصَّر · 🔑 المفتاح · ٢ أدخل · ٣ أدر · ٤ افتح), couleurs d'étapes, « سليم » / erreurs ×N avec barres + remède, badge **« أولوية العلاج »** sur la case la plus faible, bannière rémédiation (« تمرينك المقترح في الجلسة القادمة : تقوية … »), pied : 4 contrôles à l'envers.
 - Bannière rang : badge « 4 خطوات · مفتاح واحد » (remplacer « NSOE ») ; état vide : « اكتب أول إجابة بالبوصلة… ».
 
 ### LOT G — divers
@@ -142,7 +143,7 @@ et « إغلاق » dans `#boussole-print-no-print` (masqué à l'impression). C
 
 ### `src/components/QuarterTimerBar.tsx` (créé)
 `{ timeLimit, timeLeft }` → fraction f = (timeLimit - timeLeft)/timeLimit. 3 segments RTL
-(25 % phase « ١ اقرأ + ٢ اجمع » bleu · 50 % « ٣ اربط / اكتب » orange · 25 % « ٤ اختم + الفحص » violet) ;
+(25 % phase « ١ تَبَصَّر + ٢ أدخل » bleu · 50 % « ٣ أدر / اكتب » orange · 25 % « ٤ افتح + الفحص » violet) ;
 segment courant surligné + remplissage progressif ; label « أنت الآن في: … » + « الربع الأخير لا يُناقَش ».
 
 ### Intégration

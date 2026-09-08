@@ -47,7 +47,10 @@ const MAP: Record<string, VerbMapping> = {
   // problème scientifique. Les deux verbes manquaient alors que le livre officiel emploie
   // استنتج 26 fois et que 8 des 22 questions guidées reposent dessus.
   استخرج: { actionVerb: 'identify', loiFocus: 0, checks: ['IDENTIFY'] },
-  استنتج: { actionVerb: 'synthesize', loiFocus: 5, checks: ['TEXT_STRUCTURE'] },
+  // D2 (2026-09-06, MARQUE §11) : استنتج = 🎬 فيلم (raisonné) — le moteur suit la fiche.
+  // Réponse argumentée avec lien causal (le BAC récompense le lien ; description sans
+  // cause = «نصف النقاط على أحسن تقدير»). Aligné sur فسر.
+  استنتج: { actionVerb: 'interpret', loiFocus: 3, checks: ['CAUSAL', 'LEVELS'] },
   'استنتج العلاقة': { actionVerb: 'analyse', loiFocus: 2, checks: ['KULLAMA', 'VALUE_UNIT'] },
 
   'اكتب نصا علميا': { actionVerb: 'synthesize', loiFocus: 5, checks: ['TEXT_STRUCTURE'] },

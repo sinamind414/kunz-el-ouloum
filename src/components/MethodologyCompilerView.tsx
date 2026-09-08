@@ -9,12 +9,16 @@ import {
 import {
   VERB_CARDS, UNIVERSAL_GRAMMAR_RULES, TRAINING_EXERCISES,
   ERROR_TAXONOMY, TrainingExercise, Switch, StepId, STEP_NAMES_AR, STEP_TEMPLATES, VERB_CARDS_V2, getVerbCardV2,
-  detectSourceGate, isDualSource, SourceGate, MEMORY_TEMPLATES, STEP0_TEMPLATE_AR, classifyConclusion,
-  MIFTAH_VERSION, MIFTAH_NOMENCLATURE, READY_SENTENCES, SYNTHESIS, SPECIAL_FORMS
+  detectSourceGate, isDualSource, detectExistenceGate, detectSourceKind, SourceGate, ExistenceGate, SourceKind, Movement, MEMORY_TEMPLATES, STEP0_TEMPLATE_AR, classifyConclusion,
+  MIFTAH_VERSION, MIFTAH_NAME_OFFICIAL_AR, MIFTAH_NOMENCLATURE, READY_SENTENCES, SYNTHESIS, SPECIAL_FORMS
 } from '../data/methodologyEngine';
-import { isExtensionUnlocked, recordDrillResult, getDrillStreak } from '../data/v3Progress';
+import { isExtensionUnlocked, recordDrillResult, getDrillStatus, getMasteryStatus, recordTypeMastery, todayISO } from '../data/v3Progress';
+import { DRILL_BANK, drawDailyConsignes, gradeDrill, PHASE0_DEMOS, isPhase0Done, completePhase0, resetPhase0, DrillAnswer, DrillConsigne, DrillGrade, DRILL_LABELS } from '../data/drillBank';
 import { evaluateStudentProduction, ScoreReport, SwitchLine, StepLine } from '../utils/methodologyScorer';
-import { logProduction, getProductionLogs, getVerbEvolution, VerbEvolutionStats, ProductionLogEntry } from '../utils/methodologyLog';
+import { logProduction, getProductionLogs, getVerbEvolution, VerbEvolutionStats, ProductionLogEntry, verbSlidingRatio } from '../utils/methodologyLog';
+import { evaluatePhase2, remediationTargets } from '../utils/phase2';
+import { addCorrectionItem, getCorrectionQueue, markCorrection, correctionStats, setRealScore } from '../utils/correctionQueue';
+import { calibrationStats, calibrationMessageAr, gapOf } from '../utils/calibration';
 import ProductionEvolutionPanel from './ProductionEvolutionPanel';
 import BoussoleCard from './BoussoleCard';
 import MiftahCard from './MiftahCard';
@@ -47,7 +51,21 @@ interface MethodologyProps {
 
 export default function MethodologyCompilerView({ onBackToHome }: MethodologyProps) {
   // Navigation Tabs: 'engine_rules' (Couche 0) | 'verbs_ref' (Fiches) | 'simulator' (4 Stades) | 'mastery_matrix' (Analytics & Erreurs)
-  const [activeTab, setActiveTab] = useState<'simulator' | 'verbs_ref' | 'engine_rules' | 'mastery_matrix' | 'boussole_card'>('simulator');
+  const [activeTab, setActiveTab] = useState<'simulator' | 'verbs_ref' | 'engine_rules' | 'mastery_matrix' | 'correction' | 'boussole_card'>('simulator');
+  // File de correction (Phase 3) — bump pour rafraîchir l'onglet + le badge
+  const [correctionVersion, setCorrectionVersion] = useState(0);
+  const [refCardOpen, setRefCardOpen] = useState(false); // carte-référence en stage 4
+  // Phase 4 — auto-évaluation /20 (calibration) + brouillons des notes réelles
+  const [selfScore, setSelfScore] = useState<string>('');
+  const [realScoreDrafts, setRealScoreDrafts] = useState<Record<string, string>>({});
+  // Ligne 7 — mode examen (auto-scoring + note réelle humaine de référence) / révision libre (dernier mois)
+  const [examMode, setExamMode] = useState(false);
+  const [freeReview, setFreeReview] = useState(false);
+  // Update 2026-09-06 (MARQUE §12) — TROIS PORTES en cascade :
+  //   🚪 existence = sourceGate ('paper'⇔قفل / 'memory'⇔لا قفل) · 📥 gate2 · ⚙️ gate3
+  const [gate2Choice, setGate2Choice] = useState<SourceKind | null>(null);
+  const [gate3Choice, setGate3Choice] = useState<Movement | null>(null);
+  const [showGate2, setShowGate2] = useState(false);
 
   // Selected Verb & Exercise for Training
   const [selectedVerbId, setSelectedVerbId] = useState<string>('verb_analyse_v1');
@@ -61,24 +79,21 @@ export default function MethodologyCompilerView({ onBackToHome }: MethodologyPro
   const [isDual, setIsDual] = useState(false);
   const [step0Text, setStep0Text] = useState<string>('');
   const [extensionUnlocked, setExtensionUnlocked] = useState<boolean>(false);
-  // V3.1 drill مصفاة التعليمات 60s 12 consignes
+  // D1 (MARQUE §11) : drill = 3 jours distincts à 12/12 ; verso = 3 types maîtrisés (stage 4).
+  const [drillStatus, setDrillStatus] = useState(() => getDrillStatus());
+  const [masteryStatus, setMasteryStatus] = useState(() => getMasteryStatus());
+  // Phase 1 (audit §6) : مصفاة التعليمات — 12 consignes tirées du jour sur une banque ≥ 50,
+  // deux portes par consigne (source + mode), 60 s. Phase 0 ouvre le d'abord.
+  const DRILL_TODAY: DrillConsigne[] = React.useMemo(() => drawDailyConsignes(todayISO()), []);
   const [drillActive, setDrillActive] = useState(false);
   const [drillSec, setDrillSec] = useState(60);
-  const [drillAnswers, setDrillAnswers] = useState<Record<number, SourceGate | 'dual'>>({});
-  const DRILL_CONSIGNES: {id:number, consigne:string, expected: SourceGate|'dual'}[] = [
-    {id:1, consigne:'حلل الوثيقة ١', expected:'paper'},
-    {id:2, consigne:'عرّف الإنزيم', expected:'memory'},
-    {id:3, consigne:'فسر الوثيقة مستعينا بمكتسباتك', expected:'dual'},
-    {id:4, consigne:'قارن بين المنحنيين', expected:'paper'},
-    {id:5, consigne:'اذكر مراحل الترجمة', expected:'memory'},
-    {id:6, consigne:'استخرج من الجدول', expected:'paper'},
-    {id:7, consigne:'استنتج العلاقة من الوثيقة ومعلوماتك', expected:'dual'},
-    {id:8, consigne:'صف شكل الخلية', expected:'paper'},
-    {id:9, consigne:'حدد مصدر المعلومات', expected:'paper'},
-    {id:10, consigne:'بين كيف يحدث التنشيط', expected:'paper'},
-    {id:11, consigne:'لخص في رسم تخطيطي', expected:'paper'},
-    {id:12, consigne:'وضح مستعينا بالوثيقة ومعارفك', expected:'dual'},
-  ];
+  const [drillAnswers, setDrillAnswers] = useState<Record<string, DrillAnswer>>({});
+  const [drillGrade, setDrillGrade] = useState<DrillGrade | null>(null);
+  // Phase 0 — auto-pace, avec feedback
+  const [phase0Done, setPhase0Done] = useState(() => isPhase0Done());
+  const [p0Index, setP0Index] = useState(0);
+  const [p0Pick, setP0Pick] = useState<DrillAnswer>({});
+  const [p0Shown, setP0Shown] = useState(false);
 
   // Stage 1: Modelage State
   const [highlightedSteps, setHighlightedSteps] = useState<Record<number, boolean>>({});
@@ -125,7 +140,7 @@ export default function MethodologyCompilerView({ onBackToHome }: MethodologyPro
 
   // B2 · écran interrupteur : tant que le gate est ouvert, seuls contexte + gate sont rendus
   // V3.1 : double gate — Gate1 ورقة/رأس puis Gate2 صورة/فيلم
-  const gateOpen = currentStage === 3 && (showSwitchGate || showSourceGate);
+  const gateOpen = currentStage === 3 && (showSourceGate || showGate2 || showSwitchGate);
 
   // m3 · bouton de dev réservé au développement
   const isDev = (import.meta as unknown as { env?: { DEV?: boolean } }).env?.DEV === true;
@@ -133,6 +148,8 @@ export default function MethodologyCompilerView({ onBackToHome }: MethodologyPro
   // V3.1 : extension unlocked check
   useEffect(() => {
     setExtensionUnlocked(isExtensionUnlocked());
+    setDrillStatus(getDrillStatus());
+    setMasteryStatus(getMasteryStatus());
   }, [evolutionVersion]);
 
   // m1 · header = dernier ICM du carnet, ou « — » si aucune production
@@ -206,9 +223,11 @@ export default function MethodologyCompilerView({ onBackToHome }: MethodologyPro
     if (!drillActive) return;
     if (drillSec <= 0) {
       setDrillActive(false);
-      const score = DRILL_CONSIGNES.reduce((acc,c)=> acc + (drillAnswers[c.id]===c.expected ? 1:0),0);
-      const unlocked = recordDrillResult(score);
-      setExtensionUnlocked(unlocked.unlocked || isExtensionUnlocked());
+      const g = gradeDrill(DRILL_TODAY, drillAnswers);
+      setDrillGrade(g);
+      recordDrillResult(g.score);
+      setDrillStatus(getDrillStatus());
+      setExtensionUnlocked(isExtensionUnlocked());
       return;
     }
     const id = setInterval(()=> setDrillSec(s=> s-1), 1000);
@@ -222,32 +241,36 @@ const handleSelectStage = (stage: 1 | 2 | 3 | 4) => {
      setScoreReport(null);
      setSwitchChoice(null);
      if (stage === 3) {
+      if (freeReview) {
+        // Révision libre (dernier mois) : la méthode est un outil, pas un mur — pas de portes
+        setSourceGate(null);
+        setIsDual(false);
+        setSwitchChoice(null);
+        setGate2Choice(null);
+        setGate3Choice(null);
+        setShowSourceGate(false);
+        setShowGate2(false);
+        setShowSwitchGate(false);
+        return;
+      }
        // V3.1 double gate : Gate1 ورقة/رأس auto-skip pour paper pour préserver test harness
-       const sg = detectSourceGate(currentExercise.question);
-       const dual = isDualSource(currentExercise.question);
-       setSourceGate(sg);
-       setIsDual(dual);
-       // Si la consigne est papier (ex existants) → skip Gate1 directement à Gate2 pour garder le test gateIsolation vert
-       const verbCard = getVerbCardV2(selectedVerbId);
-       const isMemoryVerb = verbCard?.id === 'verb_define_v1' || verbCard?.id === 'verb_list_v1';
-       if (isMemoryVerb || sg === 'memory') {
-         setShowSourceGate(true);
-         setShowSwitchGate(false);
-       } else if (sg === 'paper') {
-         setShowSourceGate(false);
-         setShowSwitchGate(true);
-       } else {
-         // fallback : show Gate1 first
-         setShowSourceGate(true);
-         setShowSwitchGate(false);
-       }
+      // TROIS PORTES en cascade (MARQUE §12) — l'élève répond TOUJOURS la porte 1 d'abord.
+      setSourceGate(null);
+      setIsDual(false);
+      setSwitchChoice(null);
+      setGate2Choice(null);
+      setGate3Choice(null);
+      setShowSourceGate(true);
+      setShowGate2(false);
+      setShowSwitchGate(false);
      } else if (stage === 4) {
        setSourceGate(null);
        setShowSourceGate(false);
        setShowSwitchGate(false);
-       setTimerSeconds(currentExercise.stage4.timeLimitSec);
+       setTimerSeconds(examMode ? 3600 : currentExercise.stage4.timeLimitSec);
        setIsTimerRunning(true);
        setIsDraftCompleted(false);
+       if (freeReview) setRefCardOpen(true); // la carte reste un outil permanent
      } else {
        setShowSourceGate(false);
        setShowSwitchGate(false);
@@ -314,6 +337,47 @@ const handleSelectStage = (stage: 1 | 2 | 3 | 4) => {
       errorTags: rep.detectedErrors.map(e => e.tag),
       durationSec: currentStage === 4 && currentExercise ? Math.max(0, currentExercise.stage4.timeLimitSec - timerSeconds) : undefined,
     });
+    // D1 (MARQUE §11) : stage 4 au seuil = type de question maîtrisé → verso débloqué à 3 types.
+    if (currentStage === 4 && rep.icm >= currentExercise.stage4.passIcmThreshold) {
+      recordTypeMastery(selectedVerbId);
+      setMasteryStatus(getMasteryStatus());
+      setExtensionUnlocked(isExtensionUnlocked());
+    }
+
+    // Phase 3 (audit §3.5) : la production passe au correcteur UNIQUEMENT si la
+    // FORME est validée — sinon renvoi ciblé (micro-2a), pas de file.
+    if (currentStage >= 3) {
+      // Update 2026-09-06 (MARQUE §12) — verdict sur les 3 portes + la forme
+      const q = currentExercise.question;
+      const cardV2 = getVerbCardV2(selectedVerbId);
+      const expExistence = detectExistenceGate(q);
+      const expSource = expExistence === 'lock' ? (detectSourceKind(q) ?? 'document') : null;
+      const expMovement: Movement | null = expExistence === 'lock' ? (cardV2 && cardV2.movement !== 'drawer' ? cardV2.movement : 'photo') : null;
+      const gatesActive = currentStage === 3 && !freeReview;
+      const existenceOk = gatesActive && sourceGate ? ((sourceGate === 'paper' ? 'lock' : 'no_lock') === expExistence) : null;
+      const sourceOk = gatesActive && sourceGate === 'paper' ? (gate2Choice && expSource ? gate2Choice === expSource : null) : null;
+      const movementOk = gatesActive && sourceGate === 'paper' ? (gate3Choice && expMovement ? gate3Choice === expMovement : null) : null;
+      const verdict = evaluatePhase2({
+        existenceGateOk: existenceOk,
+        sourceGateOk: sourceOk,
+        movementGateOk: movementOk,
+        icm: rep.icm,
+        typicalErrorViolated: rep.switchLine.violated,
+      });
+      if (verdict.formeValidee) {
+        const self = currentStage === 4 ? Number(selfScore) : undefined;
+        addCorrectionItem({
+          verbId: selectedVerbId, verbAr: currentVerb.verbAr, theme: currentExercise.theme,
+          stage: currentStage === 4 ? 4 : 3,
+          dateISO: new Date().toISOString(),
+          text: fullDraft, icm: rep.icm, errorTags: rep.detectedErrors.map(e => e.tag),
+          selfScore: self != null && isFinite(self) && self >= 0 && self <= 20 ? self : undefined,
+          mode: examMode ? 'examen' : undefined,
+        });
+        setCorrectionVersion(v => v + 1);
+        if (!examMode) setSelfScore(''); // en examen: la prévision reste visible sur la carte de résultat
+      }
+    }
     setEvolutionVersion(v => v + 1);
 
     // Update matrix score & error counters
@@ -413,9 +477,9 @@ const handleSelectStage = (stage: 1 | 2 | 3 | 4) => {
               <Cpu className="w-3.5 h-3.5" />
               <span>نظام التجميع البيداغوجي الموحد (Compilateur SVT)</span>
             </div>
-            <h1 className="text-2xl md:text-3xl font-black tracking-tight">🔑 {MIFTAH_NOMENCLATURE.miftah} · MIFTAH — مفتاح الكنز v{MIFTAH_VERSION}</h1>
+            <h1 className="text-2xl md:text-3xl font-black tracking-tight">🔑 {MIFTAH_NAME_OFFICIAL_AR} v{MIFTAH_VERSION}</h1>
             <p className="text-white/90 text-sm md:text-base mt-1 max-w-2xl font-medium">
-              4 أسنان · 2 بوابتان · إجابة تفتح النقطة — منهجية الإجابة في علوم الحياة والأرض · بكالوريا
+              4 أسنان · 3 بوابات · إجابة تفتح النقطة — منهجية الإجابة في علوم الحياة والأرض · بكالوريا
             </p>
           </div>
 
@@ -472,6 +536,18 @@ const handleSelectStage = (stage: 1 | 2 | 3 | 4) => {
           </button>
 
           <button
+            onClick={() => setActiveTab('correction')}
+            className={`px-4 py-2 rounded-xl font-bold text-xs md:text-sm whitespace-nowrap transition-all flex items-center gap-2 ${
+              activeTab === 'correction'
+                ? 'bg-white text-[#006d37] shadow-md'
+                : 'bg-white/15 text-white hover:bg-white/25'
+            }`}
+          >
+            <FileText className="w-4 h-4" />
+            <span>المصححة {correctionStats().pending > 0 ? `(${correctionStats().pending})` : ''}</span>
+          </button>
+
+          <button
             onClick={() => setActiveTab('engine_rules')}
             className={`px-4 py-2 rounded-xl font-bold text-xs md:text-sm whitespace-nowrap transition-all flex items-center gap-2 ${
               activeTab === 'engine_rules'
@@ -492,7 +568,7 @@ const handleSelectStage = (stage: 1 | 2 | 3 | 4) => {
             }`}
           >
             <FileText className="w-4 h-4" />
-            <span>🔑 {MIFTAH_NOMENCLATURE.miftah} (MIFTAH) — للطباعة</span>
+            <span>🔑 {MIFTAH_NOMENCLATURE.miftah} — للطباعة</span>
           </button>
         </div>
       </header>
@@ -519,7 +595,7 @@ const handleSelectStage = (stage: 1 | 2 | 3 | 4) => {
                      const isMemory = v.id === 'verb_define_v1' || v.id === 'verb_list_v1';
                      const locked = isMemory && !extensionUnlocked;
                      return (
-                     <option key={v.id} value={v.id} disabled={locked}>{v.verbAr}{locked ? ' — 🔒 بعد مصفاة ٣×١٢/١٢' : ''}</option>
+                     <option key={v.id} value={v.id} disabled={locked}>{v.verbAr}{locked ? ' — 🔒 بعد إتقان ٣ أنواع أسئلة' : ''}</option>
                      );
                   })}
                 </select>
@@ -571,6 +647,37 @@ const handleSelectStage = (stage: 1 | 2 | 3 | 4) => {
               </div>
             )}
 
+{/* Ligne 7 — mode examen / mode révision libre (dernier mois) */}
+            <div className="flex flex-wrap gap-2 pt-2">
+              <button
+                onClick={() => {
+                  const next = !examMode;
+                  setExamMode(next);
+                  if (next && currentExercise) {
+                    handleSelectStage(4);
+                    setTimerSeconds(3600);
+                    setIsTimerRunning(true);
+                  } else if (!next && currentStage === 4 && currentExercise) {
+                    setTimerSeconds(currentExercise.stage4.timeLimitSec);
+                  }
+                }}
+                className={`px-3 py-1.5 rounded-xl text-[11px] font-black border transition-all ${examMode ? 'bg-slate-800 text-white border-slate-700 ring-2 ring-slate-500/30' : 'bg-gray-50 dark:bg-gray-800/40 border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300'}`}
+              >
+                🎓 وضع الامتحان — 60د · بلا إعادة · النتيجة هي الحكم
+              </button>
+              <button
+                onClick={() => setFreeReview(f => !f)}
+                className={`px-3 py-1.5 rounded-xl text-[11px] font-black border transition-all ${freeReview ? 'bg-violet-600 text-white border-violet-500 ring-2 ring-violet-500/30' : 'bg-gray-50 dark:bg-gray-800/40 border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300'}`}
+              >
+                📖 المراجعة الحرة (الشهر الأخير) — بلا جدران
+              </button>
+            </div>
+            {freeReview && (
+              <div className="mt-2 p-3 rounded-xl bg-violet-50 dark:bg-violet-950/30 border border-violet-200 dark:border-violet-900/50 text-[11px] font-bold text-violet-900 dark:text-violet-300 leading-relaxed">
+                📖 المراجعة الحرة: أي محطة مطلوبة، البطاقة مرجع دائم، بلا جدران — المنهجية أداة، لا سياج.
+              </div>
+            )}
+
 {/* 4 Stages Pills */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-2 pt-2">
 {[
@@ -607,42 +714,147 @@ const handleSelectStage = (stage: 1 | 2 | 3 | 4) => {
             </div>
           </div>
 
+
+          {/* Phase 0 — افتح الباب : 6 éléments auto-pace avec feedback (audit §6) */}
+          {/* Phase 0 — افتح الباب : 6 éléments auto-pace, cascade des 3 portes (MARQUE §12) */}
+          {!phase0Done && (() => {
+            const demo = PHASE0_DEMOS[p0Index];
+            const item = DRILL_BANK.find(c => c.id === demo.bankId)!;
+            const ok1 = p0Pick.g1 === item.existence;
+            const ok2 = item.source === null ? true : p0Pick.g2 === item.source;
+            const ok3 = item.movement === 'drawer' ? true : p0Pick.g3 === item.movement;
+            const allOk = ok1 && ok2 && ok3;
+            const answered = !!p0Pick.g1 && (item.source === null || !!p0Pick.g2) && (item.movement === 'drawer' || !!p0Pick.g3);
+            const btnCls = (active: boolean, correct: boolean, tone: string) =>
+              p0Shown ? `${correct ? 'bg-emerald-600 text-white border-emerald-600' : `bg-white dark:bg-[#1b221e] border-gray-300 opacity-60`}`
+                      : (active ? `bg-${tone}-600 text-white border-${tone}-600` : 'bg-white dark:bg-[#1b221e] border-gray-300');
+            return (
+              <div className="bg-gradient-to-r from-emerald-50 to-amber-50 dark:from-emerald-950/30 dark:to-amber-950/20 p-4 rounded-2xl border border-emerald-200 dark:border-emerald-900/40 space-y-3">
+                <div className="flex items-center justify-between">
+                  <div className="font-black text-sm">🚪 Phase 0 — افتح الباب <span className="text-xs font-bold text-gray-500">({p0Index + 1}/6)</span></div>
+                  <button onClick={()=>{resetPhase0(); setP0Index(0); setP0Pick({}); setP0Shown(false);}} className="text-[11px] text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 underline">إعادة</button>
+                </div>
+                <div className="bg-white dark:bg-[#161c18] p-3 rounded-xl border border-gray-200 dark:border-gray-700 text-sm font-bold">{item.consigne}</div>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                  <div>
+                    <div className="text-[11px] font-bold text-gray-500 mb-1">🚪 البوابة ١ — قفل؟</div>
+                    <div className="flex gap-1">
+                      {([['lock','🔒 قفل'],['no_lock','🧠 لا قفل']] as const).map(([v,l])=>(
+                        <button key={v} disabled={p0Shown} onClick={()=> setP0Pick(pk=>({...pk, g1: v}))} className={`px-2 py-1.5 rounded-lg text-xs font-bold border ${btnCls(p0Pick.g1===v, p0Shown && v===item.existence, 'emerald')}`}>{l}</button>
+                      ))}
+                    </div>
+                  </div>
+                  {p0Pick.g1 === 'lock' && (
+                    <div>
+                      <div className="text-[11px] font-bold text-gray-500 mb-1">📥 البوابة ٢ — المصدر؟</div>
+                      <div className="flex gap-1">
+                        {([['document','📄 وثيقة'],['mixed','📄+🧠 مختلط']] as const).map(([v,l])=>(
+                          <button key={v} disabled={p0Shown} onClick={()=> setP0Pick(pk=>({...pk, g2: v}))} className={`px-2 py-1.5 rounded-lg text-xs font-bold border ${btnCls(p0Pick.g2===v, p0Shown && v===item.source, 'sky')}`}>{l}</button>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                  {p0Pick.g1 === 'lock' && p0Pick.g2 && (
+                    <div>
+                      <div className="text-[11px] font-bold text-gray-500 mb-1">⚙️ البوابة ٣ — الحركة؟</div>
+                      <div className="flex gap-1">
+                        {([['photo','📷'],['film','🎬'],['smith','🔨']] as const).map(([v,l])=>(
+                          <button key={v} disabled={p0Shown} onClick={()=> setP0Pick(pk=>({...pk, g3: v}))} className={`px-2 py-1.5 rounded-lg text-xs font-bold border ${btnCls(p0Pick.g3===v, p0Shown && v===item.movement, 'violet')}`}>{l}</button>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+                {p0Shown ? (
+                  <div className="space-y-1.5">
+                    <div className={`text-xs font-bold ${allOk ? 'text-emerald-600' : 'text-amber-600'}`}>{allOk ? '✅ صحيح — القفل فُتح' : '✗ الإجابة الصحيحة مظللة أعلاه'}</div>
+                    <div className="text-[11px] text-gray-600 dark:text-gray-400">{demo.whyAr}</div>
+                    <button onClick={()=>{ if (p0Index + 1 >= PHASE0_DEMOS.length) { completePhase0(); setPhase0Done(true); } else { setP0Index(i=>i+1); setP0Pick({}); setP0Shown(false); } }} className="px-4 py-1.5 bg-[#006d37] text-white rounded-xl font-bold text-xs">{p0Index + 1 >= PHASE0_DEMOS.length ? '✅ إنهاء Phase 0 — المصفاة مفتوحة' : 'التالي'}</button>
+                  </div>
+                ) : (
+                  <button disabled={!answered} onClick={()=> setP0Shown(true)} className={`px-4 py-1.5 rounded-xl font-bold text-xs ${answered ? 'bg-amber-600 text-white' : 'bg-gray-200 dark:bg-gray-800 text-gray-400 cursor-not-allowed'}`}>تأكيد</button>
+                )}
+              </div>
+            );
+          })()}
+
           {/* V3.1 مصفاة التعليمات — 60s 12 consignes (débloque verso) */}
           <div className="bg-gradient-to-r from-amber-50 to-sky-50 dark:from-amber-950/20 dark:to-sky-950/20 p-4 rounded-2xl border border-amber-200 dark:border-amber-900/40 flex flex-col md:flex-row items-start md:items-center justify-between gap-3">
             <div>
-              <div className="font-black text-sm flex items-center gap-2">🧠 مصفاة التعليمات — ٦٠ ث <span className="text-xs bg-white dark:bg-black/20 px-2 py-0.5 rounded-full border">٣ × ١٢/١٢ → يفتح الورقة الخلفية</span></div>
-              <div className="text-xs text-gray-600 dark:text-gray-400">ورقة أم رأس؟ {extensionUnlocked ? '✅ مفتوحة' : `سلسلة: ${getDrillStreak()} / ٣`} — بلا خسارة إلى أن تفوز ثلاث مرات</div>
+              <div className="font-black text-sm flex items-center gap-2">🧠 مصفاة التعليمات — ٦٠ ث <span className="text-xs bg-white dark:bg-black/20 px-2 py-0.5 rounded-full border">٣ أيام × ١٢/١٢ → شارة «حامل المفتاح» + المرحلة ٢</span></div>
+              <div className="text-xs text-gray-600 dark:text-gray-400">ورقة أم رأس؟ 🚪 قفل؟ 📥 من أين؟ ⚙️ أي حركة؟ {drillStatus.met ? '✅ ' + drillStatus.badgeAr : `أيام ناجحة: ${drillStatus.perfectDays} / ${drillStatus.goal}`} — الإخفاق لا يصفّر: يؤجل اليوم التالي فقط · الورقة الخلفية: {masteryStatus.met ? '✅ ' + masteryStatus.badgeAr : `إتقان ${masteryStatus.types.length} / ${masteryStatus.goal} أنواع`}</div>
+              <div className="text-[11px] text-gray-500 dark:text-gray-400">تتبدل التعليمات كل يوم (بنك ٦٩) — القاعدة واحدة: احفظ القاعدة لا العناصر</div>
             </div>
             {!drillActive ? (
-              <button onClick={()=>{setDrillAnswers({}); setDrillSec(60); setDrillActive(true);}} className="px-4 py-2 bg-[#006d37] text-white rounded-xl font-bold text-xs shadow">{extensionUnlocked ? 'إعادة المصفاة' : 'ابدأ المصفاة'}</button>
+              <button disabled={!phase0Done} onClick={()=>{setDrillAnswers({}); setDrillGrade(null); setDrillSec(60); setDrillActive(true);}} className={`px-4 py-2 rounded-xl font-bold text-xs shadow ${phase0Done ? 'bg-[#006d37] text-white' : 'bg-gray-300 dark:bg-gray-700 text-gray-500 dark:text-gray-400 cursor-not-allowed'}`}>{phase0Done ? (drillStatus.met ? 'إعادة المصفاة' : 'ابدأ المصفاة') : '🔒 أكمل Phase 0 أولا'}</button>
             ) : (
               <div className="font-mono font-black text-lg bg-black/10 px-3 py-1 rounded-xl">{drillSec} ث</div>
             )}
           </div>
-          {drillActive && (
+{drillActive && (
             <div className="bg-white dark:bg-[#161c18] p-4 rounded-2xl border border-gray-200 dark:border-gray-800 shadow-sm space-y-3">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                {DRILL_CONSIGNES.map(c=> (
-                  <div key={c.id} className="p-2 rounded-xl border flex items-center justify-between gap-2 bg-gray-50 dark:bg-black/20">
-                    <span className="text-xs font-bold">{c.id}. {c.consigne}</span>
-                    <div className="flex gap-1">
-                      {(['paper','memory','dual'] as const).map(opt=> (
-                        <button key={opt} onClick={()=> setDrillAnswers(a=> ({...a, [c.id]: opt}))} className={`px-2 py-1 rounded-lg text-[11px] font-bold border ${drillAnswers[c.id]===opt ? 'bg-emerald-600 text-white border-emerald-600' : 'bg-white dark:bg-[#1b221e] border-gray-300'}`}>
-                          {opt==='paper'?'ورقة': opt==='memory'?'رأس':'عمودان'}
-                        </button>
+                {DRILL_TODAY.map((c, i)=> (
+                  <div key={c.id} className="p-2 rounded-xl border bg-gray-50 dark:bg-black/20 space-y-1">
+                    <span className="text-xs font-bold leading-tight">{i + 1}. {c.consigne}</span>
+                    <div className="flex flex-wrap items-center gap-1">
+                      {([['lock','🔒 قفل'],['no_lock','🧠 لا قفل']] as const).map(([v,l])=> (
+                        <button key={v} onClick={()=> setDrillAnswers(a=> ({...a, [c.id]: {...a[c.id], g1: v}}))} className={`px-2 py-1 rounded-lg text-[11px] font-bold border ${drillAnswers[c.id]?.g1===v ? 'bg-emerald-600 text-white border-emerald-600' : 'bg-white dark:bg-[#1b221e] border-gray-300'}`}>{l}</button>
                       ))}
+                      {drillAnswers[c.id]?.g1 === 'lock' && (
+                        <>
+                          <span className="w-1 shrink-0" />
+                          {([['document','📄 وثيقة'],['mixed','📄+🧠 مختلط']] as const).map(([v,l])=> (
+                            <button key={v} onClick={()=> setDrillAnswers(a=> ({...a, [c.id]: {...a[c.id], g2: v}}))} className={`px-2 py-1 rounded-lg text-[11px] font-bold border ${drillAnswers[c.id]?.g2===v ? 'bg-sky-600 text-white border-sky-600' : 'bg-white dark:bg-[#1b221e] border-gray-300'}`}>{l}</button>
+                          ))}
+                        </>
+                      )}
+                      {drillAnswers[c.id]?.g1 === 'lock' && drillAnswers[c.id]?.g2 && (
+                        <>
+                          <span className="w-1 shrink-0" />
+                          {([['photo','📷'],['film','🎬'],['smith','🔨']] as const).map(([v,l])=> (
+                            <button key={v} onClick={()=> setDrillAnswers(a=> ({...a, [c.id]: {...a[c.id], g3: v}}))} className={`px-2 py-1 rounded-lg text-[11px] font-bold border ${drillAnswers[c.id]?.g3===v ? 'bg-violet-600 text-white border-violet-600' : 'bg-white dark:bg-[#1b221e] border-gray-300'}`}>{l}</button>
+                          ))}
+                        </>
+                      )}
                     </div>
                   </div>
                 ))}
               </div>
               <button onClick={()=>{
-                const score = DRILL_CONSIGNES.reduce((acc,c)=> acc + (drillAnswers[c.id]===c.expected ? 1:0),0);
-                const unlocked = recordDrillResult(score);
-                setExtensionUnlocked(unlocked.unlocked || isExtensionUnlocked());
+                const g = gradeDrill(DRILL_TODAY, drillAnswers);
+                setDrillGrade(g);
+                recordDrillResult(g.score);
+                setDrillStatus(getDrillStatus());
+                setExtensionUnlocked(isExtensionUnlocked());
                 setDrillActive(false);
-              }} className="w-full py-2 bg-emerald-600 text-white rounded-xl font-bold text-sm">صحّح — {Object.keys(drillAnswers).length}/12</button>
+
+              }} className="w-full py-2 bg-emerald-600 text-white rounded-xl font-bold text-sm">صحّح — {gradeDrill(DRILL_TODAY, drillAnswers).results.filter(r=>r.answered).length}/12</button>
             </div>
           )}
+          {/* Phase 1 — résultats de la tentative du jour */}
+          {drillGrade && !drillActive && (
+            <div className="bg-white dark:bg-[#161c18] p-4 rounded-2xl border border-gray-200 dark:border-gray-800 shadow-sm space-y-2">
+              <div className="font-black text-sm flex items-center justify-between">
+                <span>نتيجة اليوم — {drillGrade.score}/12</span>
+                <span className="text-xs text-gray-500">{drillStatus.met ? '✅ ' + drillStatus.badgeAr : `أيام ناجحة: ${drillStatus.perfectDays} / ${drillStatus.goal}`}</span>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-1">
+                {drillGrade.results.map(r=> (
+                  <div key={r.c.id} className={`p-1.5 rounded-lg text-[11px] border ${r.correct ? 'bg-emerald-50 dark:bg-emerald-950/30 border-emerald-200 dark:border-emerald-900/40' : 'bg-red-50 dark:bg-red-950/30 border-red-200 dark:border-red-900/40'}`}>
+                    <span className="font-bold">{r.correct ? '✓' : '✗'} {r.c.consigne}</span>
+                    {!r.correct && (() => {
+                      const fail = [!r.ok1 ? 'البوابة ١' : null, !r.ok2 ? 'البوابة ٢' : null, !r.ok3 ? 'البوابة ٣' : null].filter(Boolean).join(' + ');
+                      const ok = `${DRILL_LABELS.g1[r.c.existence]} · ${r.c.source ? DRILL_LABELS.g2[r.c.source] : '—'} · ${DRILL_LABELS.g3[r.c.movement]}`;
+                      return <span className="block text-gray-500 dark:text-gray-400">الصحيح: {ok} — الخطأ: {fail}</span>;
+                    })()}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+
 
 {/* StepBar — stages 1-3, masquée tant que le gate est ouvert (B2) */}
           {currentStage >= 1 && currentStage <= 3 && currentExercise && !gateOpen && (() => {
@@ -698,29 +910,56 @@ const handleSelectStage = (stage: 1 | 2 | 3 | 4) => {
           })()}
 
           {/* V3.1 Gate1 — ورقة أم رأس؟ (double gate) */}
+          {/* 🚪 Update 2026-09-06 (MARQUE §12) — TROIS PORTES, cascade progressive */}
           {showSourceGate && currentStage === 3 && currentExercise && (() => {
             return (
               <div className="bg-white dark:bg-[#161c18] p-5 md:p-6 rounded-2xl border-2 border-amber-300 dark:border-amber-800 shadow-sm space-y-4">
                 <div className="flex items-center gap-2 font-bold text-sm">
                   <Key className="w-5 h-5 text-amber-500" />
-                  <span>المفتاح ١ — ورقة أم رأس؟</span>
-                  {isDual && <span className="text-[11px] bg-amber-100 dark:bg-amber-900/40 px-2 py-0.5 rounded-full">معلوماتك + الوثيقة ← عمودان</span>}
+                  <span>🚪 البوابة ١ — قفل أصلا؟</span>
                 </div>
-                <p className="text-xs text-gray-600 dark:text-gray-400">هل سطّرتَ وثيقة/شكل/جدول/منحنى/رسم؟ لا → 🧠 رأس (حفظ) · نعم → 📄 ورقة</p>
+                <p className="text-xs text-gray-600 dark:text-gray-400">هل تستند المعطيات إلى وثيقة / شكل / جدول / منحنى / رسم؟ لا ⇒ 🧠 الدُرج مباشرة · نعم ⇒ البوابة ٢</p>
                 <div className="grid grid-cols-2 gap-3">
                   <button
-                    onClick={() => { setSourceGate('memory'); setShowSourceGate(false); setSwitchChoice(null); }}
-                    className="p-4 rounded-xl border-2 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:border-amber-500 dark:hover:border-amber-400 hover:bg-amber-50 dark:hover:bg-amber-950/20 transition-all font-bold text-center"
+                    onClick={() => { setSourceGate('paper'); setShowSourceGate(false); setShowGate2(true); setSwitchChoice(null); }}
+                    className="p-4 rounded-xl border-2 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:border-gray-500 dark:hover:border-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800/40 transition-all font-bold text-center"
                   >
-                    <div>🧠 رأس</div>
-                    <div className="text-[11px] font-normal">عرّف / اذكر — حفظ</div>
+                    <div>🔒 قفل</div>
+                    <div className="text-[11px] font-normal">وثيقة / شكل — هناك ما يُفتَح</div>
                   </button>
                   <button
-                    onClick={() => { setSourceGate('paper'); setIsDual(isDualSource(currentExercise.question)); setShowSourceGate(false); setShowSwitchGate(true); }}
-                    className="p-4 rounded-xl border-2 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:border-emerald-500 dark:hover:border-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-950/20 transition-all font-bold text-center"
+                    onClick={() => { setSourceGate('memory'); setShowSourceGate(false); setShowGate2(false); setShowSwitchGate(false); setIsDual(false); setSwitchChoice(null); setGate2Choice(null); setGate3Choice(null); }}
+                    className="p-4 rounded-xl border-2 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:border-gray-500 dark:hover:border-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800/40 transition-all font-bold text-center"
                   >
-                    <div>📄 ورقة</div>
-                    <div className="text-[11px] font-normal">وثيقة / شكل — تحليل</div>
+                    <div>🧠 لا قفل</div>
+                    <div className="text-[11px] font-normal">دُرج المعرفة — من تَبَصَّر إلى افتح</div>
+                  </button>
+                </div>
+              </div>
+            );
+          })()}
+          {showGate2 && currentStage === 3 && currentExercise && (() => {
+            return (
+              <div className="bg-white dark:bg-[#161c18] p-5 md:p-6 rounded-2xl border-2 border-sky-300 dark:border-sky-800 shadow-sm space-y-4">
+                <div className="flex items-center gap-2 font-bold text-sm">
+                  <Key className="w-5 h-5 text-sky-500" />
+                  <span>📥 البوابة ٢ — من أين آتي بمادة الإدخال؟</span>
+                </div>
+                <p className="text-xs text-gray-600 dark:text-gray-400">«ومعلوماتك / ومكتسباتك» مذكورة في السؤال ⇒ مختلط (عمودان) · غير ذلك ⇒ وثيقة فقط</p>
+                <div className="grid grid-cols-2 gap-3">
+                  <button
+                    onClick={() => { setIsDual(false); setGate2Choice('document'); setShowGate2(false); setShowSwitchGate(true); }}
+                    className="p-4 rounded-xl border-2 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:border-gray-500 dark:hover:border-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800/40 transition-all font-bold text-center"
+                  >
+                    <div>📄 وثيقة فقط</div>
+                    <div className="text-[11px] font-normal">عمود واحد في المسودة</div>
+                  </button>
+                  <button
+                    onClick={() => { setIsDual(true); setGate2Choice('mixed'); setShowGate2(false); setShowSwitchGate(true); }}
+                    className="p-4 rounded-xl border-2 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:border-gray-500 dark:hover:border-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800/40 transition-all font-bold text-center"
+                  >
+                    <div>📄+🧠 مختلط</div>
+                    <div className="text-[11px] font-normal">عمودان: [من الوثيقة | من معلوماتي]</div>
                   </button>
                 </div>
               </div>
@@ -728,34 +967,38 @@ const handleSelectStage = (stage: 1 | 2 | 3 | 4) => {
           })()}
           {/* Switch Gate — stage 3 only, Gate2 صورة/فيلم (renommage de مغلق/مفتوح) — B2 : boutons neutres */}
           {showSwitchGate && currentStage === 3 && currentExercise && !showSourceGate && (() => {
-            const card = getVerbCardV2(selectedVerbId);
-            if (!card) return null;
             return (
-              <div className="bg-white dark:bg-[#161c18] p-5 md:p-6 rounded-2xl border border-gray-200 dark:border-gray-800 shadow-sm space-y-4">
+              <div className="bg-white dark:bg-[#161c18] p-5 md:p-6 rounded-2xl border-2 border-violet-300 dark:border-violet-800 shadow-sm space-y-4">
                 <div className="flex items-center gap-2 font-bold text-sm">
-                  <Key className="w-5 h-5 text-amber-500" />
-                  <span>المفتاح — هل الفعل يسمح بـ«لأنّ»؟</span>
-                  <span className="text-[11px] text-gray-400">المفتاح ٢ — صورة أم فيلم؟</span>
-                  {isDual && <span className="text-[11px] bg-emerald-100 dark:bg-emerald-900/40 px-2 py-0.5 rounded-full">ورقة بعمودين</span>}
+                  <Key className="w-5 h-5 text-violet-500" />
+                  <span>⚙️ البوابة ٣ — أي حركة يطلب هذا القفل؟</span>
                 </div>
-                <div className="grid grid-cols-2 gap-3">
+                <p className="text-xs text-gray-600 dark:text-gray-400">📷 وصف واستخراج · 🎬 تفسير ورابط «لأنّ» · 🔨 تصنيع: فرضية / اقتراح / توصية (لا جواب واحد صحيح)</p>
+                <div className="grid grid-cols-3 gap-3">
                   <button
-                    onClick={() => { setSwitchChoice('closed'); setShowSwitchGate(false); }}
+                    onClick={() => { setGate3Choice('photo'); setSwitchChoice('closed'); setShowSwitchGate(false); }}
                     className="p-4 rounded-xl border-2 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:border-gray-500 dark:hover:border-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800/40 transition-all font-bold text-center"
                   >
-                    <div>لا — مغلق</div>
-                    <div className="text-[11px] font-normal">📷 صورة</div>
+                    <div className="text-2xl">📷</div>
+                    <div className="text-sm">الصورة</div>
+                    <div className="text-[10px] font-normal text-gray-400">حلل · قارن · استخرج</div>
                   </button>
                   <button
-                    onClick={() => { setSwitchChoice('open'); setShowSwitchGate(false); }}
+                    onClick={() => { setGate3Choice('film'); setSwitchChoice('open'); setShowSwitchGate(false); }}
                     className="p-4 rounded-xl border-2 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:border-gray-500 dark:hover:border-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800/40 transition-all font-bold text-center"
                   >
-                    <div>نعم — مفتوح</div>
-                    <div className="text-[11px] font-normal">🎬 فيلم</div>
+                    <div className="text-2xl">🎬</div>
+                    <div className="text-sm">الفيلم</div>
+                    <div className="text-[10px] font-normal text-gray-400">اشرح · فسر · استنتج</div>
                   </button>
-                </div>
-                <div className="flex items-center justify-between text-xs text-gray-400">
-                  <span>الخطوة 3 ({STEP_NAMES_AR[3]}) — المفتاح يحدّد هل تكتب «لأنّ»</span>
+                  <button
+                    onClick={() => { setGate3Choice('smith'); setSwitchChoice('open'); setShowSwitchGate(false); }}
+                    className="p-4 rounded-xl border-2 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:border-gray-500 dark:hover:border-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800/40 transition-all font-bold text-center"
+                  >
+                    <div className="text-2xl">🔨</div>
+                    <div className="text-sm">الحدّاد</div>
+                    <div className="text-[10px] font-normal text-gray-400">اقترح · برر · ناقض</div>
+                  </button>
                 </div>
               </div>
             );
@@ -1008,6 +1251,27 @@ const handleSelectStage = (stage: 1 | 2 | 3 | 4) => {
                       </div>
                     </div>
 
+                    {/* Phase 3 — carte-référence : rédaction libre avec la carte à portée de main */}
+                    <div className="bg-white/10 backdrop-blur-sm p-3.5 rounded-xl border border-white/20 text-xs space-y-2">
+                      <button onClick={()=> setRefCardOpen(o=>!o)} className="w-full flex items-center justify-between font-bold text-white">
+                        <span>📇 البطاقة — مرجع حر (افتحها في أي لحظة)</span>
+                        <ChevronDown className={`w-4 h-4 transition-transform ${refCardOpen ? 'rotate-180' : ''}`} />
+                      </button>
+                      {refCardOpen && (
+                        <div className="space-y-1.5 pt-1 border-t border-white/15">
+                          <div className="font-bold text-emerald-300">{currentVerb.verbAr} — {currentVerb.goal}</div>
+                          {currentVerb.structureSteps.map((st, i) => (
+                            <div key={i} className="text-white/80 leading-relaxed">• {st}</div>
+                          ))}
+                          <div className="pt-1 text-white/70"><span className="font-bold text-amber-300">الروابط:</span> {currentVerb.requiredConnectors.join(' · ')}</div>
+                          <details className="pt-1">
+                            <summary className="cursor-pointer font-bold text-white/70">المثال النموذجي</summary>
+                            <p className="mt-1 text-white/60 whitespace-pre-line">{currentVerb.goodExample.answer}</p>
+                          </details>
+                        </div>
+                      )}
+                    </div>
+
                     {/* Compulsory 90s Draft Accordion */}
                     <div className="bg-white/10 backdrop-blur-sm p-3.5 rounded-xl border border-white/20 text-xs space-y-2">
                       <div className="flex items-center justify-between font-bold">
@@ -1083,6 +1347,20 @@ const handleSelectStage = (stage: 1 | 2 | 3 | 4) => {
                     className="w-full bg-gray-50 dark:bg-[#121614] border border-gray-200 dark:border-gray-700 rounded-xl p-4 text-sm md:text-base text-gray-900 dark:text-white font-medium leading-relaxed focus:ring-2 focus:ring-emerald-500 outline-none"
                   />
 
+                   {/* Phase 4 — auto-évaluation /20 AVANT le verdict (calibration) */}
+                   {currentStage === 4 && (
+                    <div className="flex flex-wrap items-center gap-3 bg-sky-50 dark:bg-sky-950/30 p-3 rounded-xl border border-sky-200 dark:border-sky-800/60">
+                      <span className="text-xs font-black text-sky-900 dark:text-sky-300">🪞 قبل التصحيح: ما النقطة التي تتوقعها على 20؟</span>
+                      <input
+                        type="number" min={0} max={20} step={0.25}
+                        value={selfScore}
+                        onChange={(e) => setSelfScore(e.target.value)}
+                        className="w-24 px-2.5 py-1.5 rounded-lg border border-sky-200 dark:border-sky-800/60 bg-white dark:bg-black/30 text-sky-900 dark:text-sky-200 text-sm font-black focus:ring-2 focus:ring-sky-500 outline-none"
+                      />
+                      <span className="text-[11px] text-sky-700 dark:text-sky-400 font-medium">تتنبأ ثم تُصحَّح: الفارق بين توقعك ونقطة الأستاذ هو مرآة المرحلة 4.</span>
+                    </div>
+                   )}
+
                    {/* Actions & Submit */}
                    <div className="flex flex-wrap items-center justify-between gap-3 pt-2">
                       {isDev && (
@@ -1104,7 +1382,7 @@ const handleSelectStage = (stage: 1 | 2 | 3 | 4) => {
                       </button>
                       <button
                         onClick={handleSubmitProduction}
-                        disabled={studentText.trim().length === 0 || (currentStage === 4 && !isDraftCompleted)}
+                        disabled={studentText.trim().length === 0 || (currentStage === 4 && !isDraftCompleted) || (currentStage === 4 && !(Number(selfScore) >= 0 && Number(selfScore) <= 20 && selfScore !== ''))}
                         className="px-6 py-2.5 bg-[#006d37] hover:bg-[#00562b] disabled:opacity-50 text-white rounded-xl font-bold text-sm shadow-md flex items-center gap-2"
                       >
                         <Sparkles className="w-4 h-4 text-[#fed65b]" />
@@ -1222,6 +1500,100 @@ const handleSelectStage = (stage: 1 | 2 | 3 | 4) => {
                   </div>
                 </div>
               </div>
+
+              {/* Phase 2 — verdict « forme validée » (audit §3.3) : les 3 portes, jamais le fond */}
+              {/* Ligne 7 — mode examen : le score auto par tags, la note réelle humaine est la référence */}
+              {examMode && (() => {
+                const steps = scoreReport.stepReport.filter(l => l.applicable);
+                const passed = steps.filter(l => l.passed).length;
+                return (
+                  <div className="p-4 rounded-2xl bg-slate-900 dark:bg-black/70 border border-slate-700 text-white space-y-1.5">
+                    <div className="flex items-center gap-2 font-black text-sm">📝 ورقة الامتحان — النتيجة الآلية</div>
+                    <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs font-bold">
+                      <span>ICM الشكل: {scoreReport.icm}/100</span>
+                      <span>الخطوات: {passed}/{steps.length}</span>
+                      {scoreReport.detectedErrors.length > 0 && (
+                        <span className="text-red-300">الأخطاء: {scoreReport.detectedErrors.map(e => e.tag).join(' · ')}</span>
+                      )}
+                      {selfScore !== '' && <span className="text-sky-300">توقعك: {selfScore}/20</span>}
+                    </div>
+                    <p className="text-[11px] text-slate-300 leading-relaxed">
+                      في الامتحان لا إعادة: النتيجة هي الحكم، والدرس في المعايرة — النقطة الفعلية /20 يضيفها الأستاذ في «المصححة»، وسيظهر لك العبر.
+                    </p>
+                  </div>
+                );
+              })()}
+
+              {(() => {
+                const q = currentExercise?.question ?? '';
+                const cardV2 = getVerbCardV2(selectedVerbId);
+                const expExistence = detectExistenceGate(q);
+                const expSource = expExistence === 'lock' ? (detectSourceKind(q) ?? 'document') : null;
+                const expMovement: Movement | null = expExistence === 'lock' ? (cardV2 && cardV2.movement !== 'drawer' ? cardV2.movement : 'photo') : null;
+                const gatesActive = currentStage === 3 && !freeReview;
+                const existenceOk = gatesActive && sourceGate ? ((sourceGate === 'paper' ? 'lock' : 'no_lock') === expExistence) : null;
+                const sourceOk = gatesActive && sourceGate === 'paper' ? (gate2Choice && expSource ? gate2Choice === expSource : null) : null;
+                const movementOk = gatesActive && sourceGate === 'paper' ? (gate3Choice && expMovement ? gate3Choice === expMovement : null) : null;
+                const v = evaluatePhase2({
+                  existenceGateOk: existenceOk,
+                  sourceGateOk: sourceOk,
+                  movementGateOk: movementOk,
+                  icm: scoreReport.icm,
+                  typicalErrorViolated: scoreReport.switchLine.violated,
+                });
+                return (
+                  <div className={`p-4 rounded-2xl border flex items-start gap-3 ${v.formeValidee ? 'bg-sky-50 dark:bg-sky-950/30 border-sky-200 dark:border-sky-800/60' : 'bg-amber-50 dark:bg-amber-950/30 border-amber-200 dark:border-amber-800/60'}`}>
+                    <ShieldAlert className={`w-5 h-5 shrink-0 mt-0.5 ${v.formeValidee ? 'text-sky-600 dark:text-sky-400' : 'text-amber-600 dark:text-amber-400'}`} />
+                    <div className="flex-1">
+                      <h4 className={`font-black text-sm ${v.formeValidee ? 'text-sky-900 dark:text-sky-300' : 'text-amber-900 dark:text-amber-300'}`}>الحكم الآلي — {v.formeValidee ? 'الشكل مُتحقَّق منه' : 'الشكل ناقص'}</h4>
+                      <p className={`text-xs md:text-sm font-medium mt-0.5 ${v.formeValidee ? 'text-sky-800 dark:text-sky-400' : 'text-amber-800 dark:text-amber-400'}`}>{v.messageAr}</p>
+                      <div className="flex flex-wrap gap-1.5 mt-2">
+                        {v.gates.map(g => (
+                          <span key={g.id} className={`px-2 py-0.5 rounded-full text-[11px] font-bold border ${g.passed === null ? 'bg-gray-100 dark:bg-gray-800/50 text-gray-400 border-gray-200 dark:border-gray-700' : g.passed ? 'bg-emerald-100 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800/60' : 'bg-red-100 dark:bg-red-950/50 text-red-700 dark:text-red-300 border-red-200 dark:border-red-800/60'}`}>{g.passed === null ? '—' : g.passed ? '✓' : '✗'} {g.labelAr}</span>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                );
+              })()}
+
+              {/* Renvoi ciblé (audit §3.7) : micro-2a sur la sous-étape en défaut, pas la re-Phase-2 */}
+              {currentStage < 4 && (() => {
+                const targets = remediationTargets(scoreReport.stepReport);
+                if (targets.length === 0) return null;
+                return (
+                  <div className="bg-red-50 dark:bg-red-950/30 p-4 rounded-2xl border border-red-200 dark:border-red-800/60 space-y-2">
+                    <div className="flex items-start gap-3">
+                      <RotateCcw className="w-5 h-5 text-red-600 dark:text-red-400 shrink-0 mt-0.5" />
+                      <div className="flex-1">
+                        <h4 className="font-black text-sm text-red-900 dark:text-red-300">الرجوع المستهدف — إكمال 2a مصغّر</h4>
+                        <p className="text-xs text-red-800 dark:text-red-400 font-medium mt-0.5">لا إعادة المرحلة 2 كاملة: نعكف فقط على الخطوة الناقصة في النموذج، ثم نعود للإنتاج.</p>
+                        <div className="mt-1.5 space-y-1">
+                          {targets.map(t => (
+                            <div key={t.step} className="text-xs font-bold text-red-900 dark:text-red-300 flex items-start gap-1.5">
+                              <span className="shrink-0">الخطوة {t.step}:</span>
+                              <span className="font-medium">{t.remedyAr ?? 'راجع نموذج هذه الخطوة ثم أعد كتابتها.'}</span>
+                            </div>
+                          ))}
+                        </div>
+                        {examMode ? (
+                          <p className="text-[11px] font-bold text-red-900 dark:text-red-300 bg-white dark:bg-black/30 rounded-lg p-2">في الامتحان لا إعادة: النتيجة هي الحكم، والدرس في المعايرة — أضف نقطتك الفعلية في «المصححة».</p>
+                        ) : (
+                        <div className="flex flex-wrap gap-2 mt-2">
+                          <button onClick={()=>{
+                            setCurrentStage(1);
+                            setHighlightedSteps(Object.fromEntries(scoreReport.stepReport.filter(l=>l.applicable && !l.passed).map(l=>[l.step, true])));
+                            setShowSourceGate(false);
+                            setShowSwitchGate(false);
+                          }} className="px-3 py-1.5 bg-red-600 hover:bg-red-700 text-white rounded-xl font-bold text-xs">🔁 إعادة الخطوات الناقصة (النموذج)</button>
+                          <button onClick={()=> setCurrentStage(3)} className="px-3 py-1.5 bg-white dark:bg-black/30 text-red-700 dark:text-red-300 rounded-xl font-bold text-xs border border-red-200 dark:border-red-800/60">العودة للإنتاج</button>
+                        </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                );
+              })()}
 
               {/* Pedagogical Decision Engine Result */}
               <div className="bg-emerald-50 dark:bg-emerald-950/30 p-4 rounded-2xl border border-emerald-200 dark:border-emerald-800/60 flex items-start gap-3">
@@ -1563,6 +1935,31 @@ const handleSelectStage = (stage: 1 | 2 | 3 | 4) => {
               </p>
             </div>
 
+            {/* B (audit §3.8) — stabilité sur le noyau : ratio glissant (fenêtre 10) */}
+            {(() => {
+              const logs = getProductionLogs();
+              const rows = VERB_CARDS_V2.map(v => ({ v, r: verbSlidingRatio(v.id, 10, logs) })).filter(x => x.r.total > 0);
+              if (rows.length === 0) return null;
+              return (
+                <div className="space-y-2">
+                  <h4 className="font-black text-sm text-gray-700 dark:text-gray-300">الاستقرار على النواة — الإنتاجات الأخيرة (١٠) الخالية من الخطأ النموذجي للفعل</h4>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
+                    {rows.map(({ v, r }) => (
+                      <div key={v.id} className="p-2.5 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-black/20">
+                        <div className="flex items-center justify-between text-xs font-bold">
+                          <span className="text-gray-800 dark:text-gray-200">{v.verbAr}</span>
+                          <span className={r.ratio === null ? 'text-gray-400' : r.ratio >= 80 ? 'text-emerald-600' : r.ratio >= 50 ? 'text-amber-600' : 'text-red-600'}>{r.ratio === null ? '—' : r.ratio + '%'} <span className="text-[10px] text-gray-400 font-normal">({r.clean}/{r.total})</span></span>
+                        </div>
+                        <div className="mt-1.5 h-1.5 rounded-full bg-gray-200 dark:bg-gray-800 overflow-hidden">
+                          <div className={`h-full rounded-full ${r.ratio === null ? '' : r.ratio >= 80 ? 'bg-emerald-500' : r.ratio >= 50 ? 'bg-amber-500' : 'bg-red-500'}`} style={{ width: (r.ratio ?? 0) + '%' }} />
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              );
+            })()}
+
             {/* Matrix Table */}
             <div className="overflow-x-auto">
               <table className="w-full text-xs md:text-sm text-right border-collapse">
@@ -1771,6 +2168,123 @@ const handleSelectStage = (stage: 1 | 2 | 3 | 4) => {
       )}
 
       {/* TAB 5: MIFTAH — بطاقة المفتاح recto/verso (pro) */}
+      {activeTab === 'correction' && (() => {
+        const queue = getCorrectionQueue();
+        const stats = correctionStats();
+        return (
+          <section className="space-y-4">
+            <div className="bg-white dark:bg-[#161c18] p-5 md:p-6 rounded-2xl border border-gray-200 dark:border-gray-800 shadow-sm">
+              <h2 className="text-xl md:text-2xl font-black text-gray-900 dark:text-white">المصححة — قائمة التصحيح</h2>
+              <p className="text-xs md:text-sm text-gray-500 dark:text-gray-400 mt-1">
+                القاعدة: الآلة تحقّق من الشكل (٣ بوابات) — الأستاذ يضمن المضمون. كل إنتاج «صحيح الشكل» يصل هنا.
+              </p>
+              <div className="flex flex-wrap gap-2 mt-3">
+                <span className="px-3 py-1 rounded-full text-xs font-bold bg-amber-100 dark:bg-amber-950/50 text-amber-800 dark:text-amber-300">بانتظار: {stats.pending}</span>
+                <span className="px-3 py-1 rounded-full text-xs font-bold bg-emerald-100 dark:bg-emerald-950/50 text-emerald-800 dark:text-emerald-300">مضمونها سليم: {stats.approved}</span>
+                <span className="px-3 py-1 rounded-full text-xs font-bold bg-red-100 dark:bg-red-950/50 text-red-800 dark:text-red-300">تحتاج تصحيحا: {stats.corrections}</span>
+                <span className="px-3 py-1 rounded-full text-xs font-bold bg-slate-200 dark:bg-slate-800/70 text-slate-800 dark:text-slate-300">📝 امتحانات: {stats.examCount}</span>
+              </div>
+              {(() => {
+                const cs = calibrationStats(queue);
+                if (cs.n === 0) return null;
+                const msg = calibrationMessageAr(cs);
+                return (
+                  <div className="mt-3 p-3 rounded-xl bg-sky-50 dark:bg-sky-950/30 border border-sky-200 dark:border-sky-800/60 space-y-1.5">
+                    <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs font-bold">
+                      <span className="text-sky-900 dark:text-sky-300">🪞 المعايرة — توقع مقابل حقيقي (n={cs.n}):</span>
+                      <span className="text-gray-700 dark:text-gray-300">متوسط العبر {cs.meanGap! >= 0 ? '+' : ''}{cs.meanGap!.toFixed(1)} · |المتوسط| {cs.meanAbsGap!.toFixed(1)}</span>
+                      <span className="text-amber-700 dark:text-amber-300">مبالغة {cs.overconfident}</span>
+                      <span className="text-emerald-700 dark:text-emerald-300">تواضع {cs.underconfident}</span>
+                      <span className="text-sky-700 dark:text-sky-300">مضبوط {cs.calibrated}/{cs.n}</span>
+                    </div>
+                    {cs.spark.length >= 2 && (
+                      <div className="flex items-end gap-0.5 h-6" title="|العبر| — آخر 5">
+                        {cs.spark.map((v, i) => (
+                          <div key={i} className="w-2.5 bg-sky-400/80 rounded-t" style={{ height: `${Math.max(8, Math.min(100, (v / 10) * 100))}%` }} />
+                        ))}
+                      </div>
+                    )}
+                    {msg && <p className="text-[11px] leading-relaxed text-sky-800 dark:text-sky-400 font-medium">{msg}</p>}
+                  </div>
+                );
+              })()}
+            </div>
+            {queue.length === 0 ? (
+              <div className="bg-white dark:bg-[#161c18] p-8 rounded-2xl border border-dashed border-gray-300 dark:border-gray-700 text-center text-sm text-gray-400">
+                لا إنتاجات بعد — أرسل إنتاجاً من المحاكاة (الشكل الصحيح يصل تلقائياً إلى هنا).
+              </div>
+            ) : (
+              <div className="space-y-3">
+                {queue.map(item => (
+                  <div key={item.id} className={`bg-white dark:bg-[#161c18] p-4 rounded-2xl border shadow-sm ${item.status === 'pending' ? 'border-amber-200 dark:border-amber-900/50' : item.status === 'approved' ? 'border-emerald-200 dark:border-emerald-900/50' : 'border-red-200 dark:border-red-900/50'}`}>
+                    <div className="flex flex-wrap items-center justify-between gap-2">
+                      <div className="font-black text-sm text-gray-900 dark:text-white">{item.verbAr} {item.theme ? <span className="text-xs font-bold text-gray-400">· {item.theme}</span> : null}</div>
+                      <div className="flex items-center gap-2 text-[11px] font-bold">
+                        <span className="text-gray-400">{new Date(item.dateISO).toLocaleDateString('fr-DZ')}</span>
+                        <span className="px-2 py-0.5 rounded-full bg-gray-100 dark:bg-gray-800/60 text-gray-600 dark:text-gray-300">ICM {item.icm}%</span>
+                        {item.mode === 'examen' && <span className="px-2 py-0.5 rounded-full bg-slate-200 dark:bg-slate-800/70 text-slate-800 dark:text-slate-300">📝 امتحان — 60د</span>}
+                        <span className={`px-2 py-0.5 rounded-full ${item.status === 'pending' ? 'bg-amber-100 dark:bg-amber-950/50 text-amber-800 dark:text-amber-300' : item.status === 'approved' ? 'bg-emerald-100 dark:bg-emerald-950/50 text-emerald-800 dark:text-emerald-300' : 'bg-red-100 dark:bg-red-950/50 text-red-800 dark:text-red-300'}`}>
+                          {item.status === 'pending' ? 'بانتظار المصحح' : item.status === 'approved' ? 'المضمون سليم' : 'تحتاج تصحيحاً'}
+                        </span>
+                      </div>
+                    </div>
+                    {item.errorTags.length > 0 && (
+                      <div className="mt-1 text-[11px] text-gray-400 font-bold">أخطاء الشكل المرصودة: {item.errorTags.join(' · ')}</div>
+                    )}
+                    {(item.selfScore != null || item.realScore != null || item.status === 'pending') && (
+                      <div className="flex flex-wrap items-center gap-2 mt-2">
+                        {item.selfScore != null && (
+                          <span className="px-2 py-0.5 rounded-full bg-sky-100 dark:bg-sky-950/50 text-sky-800 dark:text-sky-300 text-[11px] font-bold">التوقع: {item.selfScore}/20</span>
+                        )}
+                        {item.realScore != null && (
+                          <span className="px-2 py-0.5 rounded-full bg-gray-100 dark:bg-gray-800/60 text-gray-700 dark:text-gray-300 text-[11px] font-bold">الحقيقي: {item.realScore}/20</span>
+                        )}
+                        {(() => {
+                          const g = gapOf(item);
+                          if (g === null) return null;
+                          const tone = Math.abs(g) <= 1 ? 'bg-emerald-100 dark:bg-emerald-950/50 text-emerald-800 dark:text-emerald-300' : Math.abs(g) <= 3 ? 'bg-amber-100 dark:bg-amber-950/50 text-amber-800 dark:text-amber-300' : 'bg-red-100 dark:bg-red-950/50 text-red-800 dark:text-red-300';
+                          return <span className={`px-2 py-0.5 rounded-full ${tone} text-[11px] font-black`}>العبر {g > 0 ? '+' : ''}{g} — {g > 0 ? 'مبالغة' : g < 0 ? 'تواضع' : 'معايرة مثالية'}</span>;
+                        })()}
+                        {item.status === 'pending' && (
+                          <span className="flex items-center gap-1.5 mr-auto">
+                            <input
+                              type="number" min={0} max={20} step={0.25}
+                              placeholder="النقطة الفعلية /20"
+                              value={realScoreDrafts[item.id] ?? ''}
+                              onChange={(e) => setRealScoreDrafts(d => ({ ...d, [item.id]: e.target.value }))}
+                              className="w-28 px-2 py-1 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-black/30 text-xs font-bold text-gray-800 dark:text-gray-200 outline-none focus:ring-2 focus:ring-sky-500"
+                            />
+                            <button
+                              disabled={realScoreDrafts[item.id] === ''}
+                              onClick={() => {
+                                const v = Number(realScoreDrafts[item.id]);
+                                setRealScore(item.id, v);
+                                setRealScoreDrafts(d => ({ ...d, [item.id]: '' }));
+                                setCorrectionVersion(x => x + 1);
+                              }}
+                              className={`px-2.5 py-1 rounded-lg text-[11px] font-bold ${realScoreDrafts[item.id] !== '' ? 'bg-sky-600 text-white' : 'bg-gray-200 dark:bg-gray-800 text-gray-400 cursor-not-allowed'}`}
+                            >حفظ النقطة الفعلية</button>
+                          </span>
+                        )}
+                      </div>
+                    )}
+                    <p className="mt-2 text-xs leading-relaxed text-gray-700 dark:text-gray-300 bg-gray-50 dark:bg-black/20 p-3 rounded-xl whitespace-pre-line max-h-40 overflow-y-auto">{item.text}</p>
+                    {item.status === 'pending' ? (
+                      <div className="flex flex-wrap items-center gap-2 mt-3">
+                        <button onClick={()=>{ markCorrection(item.id, 'approved'); setCorrectionVersion(v=>v+1); }} className="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-bold text-xs">✅ المضمون سليم</button>
+                        <button onClick={()=>{ markCorrection(item.id, 'corrections'); setCorrectionVersion(v=>v+1); }} className="px-3 py-1.5 bg-red-600 hover:bg-red-700 text-white rounded-xl font-bold text-xs">✏️ تحتاج تصحيحاً</button>
+                      </div>
+                    ) : item.noteAr ? (
+                      <div className="mt-2 text-xs text-gray-500 dark:text-gray-400">ملاحظة المصحح: {item.noteAr}</div>
+                    ) : null}
+                  </div>
+                ))}
+              </div>
+            )}
+          </section>
+        );
+      })()}
+
       {activeTab === 'boussole_card' && (
         <section className="space-y-4">
           <div className="flex flex-wrap items-center justify-between gap-3 print:hidden">

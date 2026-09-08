@@ -7,7 +7,7 @@
 // ============================================================
 
 // M4 · source unique des libellés : dérivé de ERROR_TAXONOMY (pas de quatrième liste manuelle)
-import { ERROR_TAXONOMY } from '../data/methodologyEngine';
+import { ERROR_TAXONOMY, getVerbCardV2 } from '../data/methodologyEngine';
 
 export interface ProductionLogEntry {
   id: string;
@@ -39,6 +39,25 @@ export interface VerbEvolutionStats {
 
 const STORAGE_KEY = 'kunz_methodology_production_log_v1';
 const MAX_ENTRIES = 300; // rotation : jamais plus de 300 productions archivées
+
+/**
+ * B (docs/AUDIT_APPROCHE_APP.md §3.8) : la « cellule » de la matrice est un RATIO
+ * GLISSANT de binaires du scoreur — jamais un % inventé.
+ * Pour un verbe : sur les N dernières productions, la part sans l'erreur TYPIQUE du verbe.
+ * ratio = null quand il n'y a pas encore de production (l'absence de donnée n'est pas 0 %).
+ */
+export function verbSlidingRatio(
+  verbId: string,
+  windowSize = 10,
+  logs: ProductionLogEntry[] = getProductionLogs(),
+): { total: number; clean: number; ratio: number | null } {
+  const card = getVerbCardV2(verbId);
+  const tag = card?.typicalErrorTag ?? null;
+  const recent = logs.filter(l => l.verbId === verbId).slice(-windowSize);
+  if (recent.length === 0) return { total: 0, clean: 0, ratio: null };
+  const clean = tag ? recent.filter(l => !l.errorTags.includes(tag)).length : recent.length;
+  return { total: recent.length, clean, ratio: Math.round((clean / recent.length) * 100) };
+}
 
 function safeRead(): ProductionLogEntry[] {
   try {

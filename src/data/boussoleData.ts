@@ -19,7 +19,7 @@ export interface BoussoleStep {
 export const BOUSSOLE_STEPS: BoussoleStep[] = [
   {
     num: 1,
-    ar: 'اقرأْ',
+    ar: 'تَبَصَّر',
     word: 'أحدد فعل الأداء والكلمات المفتاحية',
     wordAr: 'أحدد الفعل',
     whereAr: 'المسودة فقط',
@@ -33,7 +33,7 @@ export const BOUSSOLE_STEPS: BoussoleStep[] = [
   },
   {
     num: 2,
-    ar: 'اجمعْ',
+    ar: 'أدخل',
     word: 'أربط المعطيات بالوحدات',
     wordAr: 'جمع المعطيات',
     whereAr: 'على الورقة',
@@ -47,7 +47,7 @@ export const BOUSSOLE_STEPS: BoussoleStep[] = [
   },
   {
     num: 3,
-    ar: 'اربطْ',
+    ar: 'أدر',
     word: 'أقرأ الوثيقة ثم أستنتج',
     wordAr: 'الربط السببي',
     whereAr: 'على الورقة',
@@ -61,7 +61,7 @@ export const BOUSSOLE_STEPS: BoussoleStep[] = [
   },
   {
     num: 4,
-    ar: 'اختمْ',
+    ar: 'افتح',
     word: 'أعيد صياغة المطلوب كحقيقة علمية',
     wordAr: 'الإنهاء',
     whereAr: 'على الورقة',
@@ -81,7 +81,7 @@ export function getStep(id: 1 | 2 | 3 | 4): BoussoleStep | undefined {
 
 export const REGLE_D_OR_AR = '« لا خاتمةَ قبل حُجّة، ولا حُجّةَ قبل مُعطى، ولا مُعطى قبلَ فَهْمِ السؤال »';
 
-export const TIME_RULE_AR = 'الربع الأول: اقرأ + اجمع · النصف: الربط · الربع الأخير: اختم + الفحص';
+export const TIME_RULE_AR = 'الربع الأول: تَبَصَّر + أدخل · النصف: أدر · الربع الأخير: افتح + الفحص';
 
 export const FINGERS_RITUAL_AR = 'الإصبع ≈ الخطوة 1-2-3-4 تحت الطاولة';
 
@@ -125,10 +125,10 @@ export const ERROR_ADDRESS_MAP: Record<string, '1' | '2' | '3' | '4' | 'switch'>
 
 export function errorAddressAr(addr: '1' | '2' | '3' | '4' | 'switch'): string {
   const map: Record<typeof addr, string> = {
-    1: '١ اقرأ',
-    2: '٢ اجمع',
-    3: '٣ اربط',
-    4: '٤ اختم',
+    1: '١ تَبَصَّر',
+    2: '٢ أدخل',
+    3: '٣ أدر',
+    4: '٤ افتح',
     switch: '🔑 المفتاح',
   };
   return map[addr];
@@ -209,9 +209,9 @@ export const SPECIAL_FORMATS: SpecialFormat[] = [
   {
     verbId: 'verb_deduce_v1',
     name: 'استنتاج',
-    step2Template: 'حقيقة عامة فقط',
-    step3Template: 'بدون أرقام متكررة',
-    step4Template: 'جملة واحدة مختصرة',
+    step2Template: 'تجريد النتائج (بلا أرقام معادة)',
+    step3Template: 'الربط السببي: الآلية (لأنّ / يعود ذلك إلى)',
+    step4Template: 'جملة جامعة واحدة',
   },
 ];
 
@@ -281,9 +281,9 @@ export const AID_LEVELS: NavigatorGrade[] = [
 ];
 
 export const TIME_RULES = {
-  quart: 'الرُّبع الأول: اقرأ + اجمع',
-  half: 'النِّصف: الربط (أو الكتابة إن كان مغلقًا)',
-  quarter: 'الرُّبع الأخير: اختم + الفحص',
+  quart: 'الرُّبع الأول: تَبَصَّر + أدخل',
+  half: 'النِّصف: أدر (أو الكتابة إن كان مغلقًا)',
+  quarter: 'الرُّبع الأخير: افتح + الفحص',
 };
 
 export const ERROR_TAG_LABELS_AR: Record<string, string> = {
@@ -334,25 +334,25 @@ export interface BoussoleCap {
 
 export const BOUSSOLE_CAPS: BoussoleCap[] = [
   {
-    id: 1, num: 1, ar: 'اقرأْ', word: 'أحدد الفعل', color: '#1d4ed8', colorSoft: '#3b82f6',
+    id: 1, num: 1, ar: 'تَبَصَّر', word: 'أحدد الفعل', color: '#1d4ed8', colorSoft: '#3b82f6',
     questionAr: 'ما المطلوب؟', verbAr: 'حَلِّلْ / فَسِّرْ', gestureAr: '👇 4 أضراس',
     stepsAr: ['حدد الفعل', 'سَبّب الكلمات'],
     desc: 'نوتيّ — أولى الرحلات — واصل الإبحار لتكتسب الرتب',
   },
   {
-    id: 2, num: 2, ar: 'اجمعْ', word: 'جمع المعطيات', color: '#059669', colorSoft: '#10b981',
+    id: 2, num: 2, ar: 'أدخل', word: 'جمع المعطيات', color: '#059669', colorSoft: '#10b981',
     questionAr: 'ما الأملك؟', verbAr: 'حَلِّلْ / فَسِّرْ', gestureAr: '👇 3 أضراس',
     stepsAr: ['اكتب الوثيقة', 'أرد القيم'],
     desc: 'ملاح — 5 رحلات مكتملة + رحلة واحدة بلا خطأ منهجي',
   },
   {
-    id: 3, num: 3, ar: 'اربطْ', word: 'الربط السببي', color: '#d97706', colorSoft: '#f59e0b',
+    id: 3, num: 3, ar: 'أدر', word: 'الربط السببي', color: '#d97706', colorSoft: '#f59e0b',
     questionAr: 'هل يسمح بالسبب؟', verbAr: 'فَسِّرْ', gestureAr: '👇 2 أضراس',
     stepsAr: ['استخدم لأن', 'كن جديراً بالنتيجة'],
     desc: 'رجل البحر — متوسط ≥ 75% في 3 أفعال أداء مختلفة',
   },
   {
-    id: 4, num: 4, ar: 'اختمْ', word: 'الإنهاء', color: '#7c3aed', colorSoft: '#a855f7',
+    id: 4, num: 4, ar: 'افتح', word: 'الإنهاء', color: '#7c3aed', colorSoft: '#a855f7',
     questionAr: 'ما الخلاصة؟', verbAr: 'حَلِّلْ / فَسِّرْ', gestureAr: '👇 1 إصبع',
     stepsAr: ['أعد صياغة السؤال', '،كتب جملة خاتمية'],
     desc: 'قبطان — ICM ≥ 90% في 3 وحدات مختلفة على الأقل',

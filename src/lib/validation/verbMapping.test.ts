@@ -9,7 +9,7 @@ describe('mapVerb — verbes de consigne du BAC', () => {
       حلل: 'analyse',
       حدد: 'describe',
       فسر: 'interpret',
-      استنتج: 'synthesize',
+      استنتج: 'interpret',
     };
 
     for (const [verbe, actionVerb] of Object.entries(attendus)) {
@@ -21,8 +21,12 @@ describe('mapVerb — verbes de consigne du BAC', () => {
   it('distingue استخرج (relever) de استنتج (conclure)', () => {
     // Guide methodologique §9 : استخرج = ce qui figure dans le document ;
     // استنتج = conclusion logique nouvelle rattachee au probleme scientifique.
+    // D2 (2026-09-06, MARQUE §11) : le moteur suit la fiche — استنتج = film 1→2→3→4,
+    // donc verbe raisonne (interpret, loi 3) exigeant le lien causal.
     expect(mapVerb('استخرج')?.actionVerb).toBe('identify');
-    expect(mapVerb('استنتج')?.actionVerb).toBe('synthesize');
+    expect(mapVerb('استنتج')?.actionVerb).toBe('interpret');
+    expect(mapVerb('استنتج')?.loiFocus).toBe(3);
+    expect(mapVerb('استنتج')?.checks).toEqual(['CAUSAL', 'LEVELS']);
     expect(mapVerb('استخرج')?.actionVerb).not.toBe(mapVerb('استنتج')?.actionVerb);
   });
 
