@@ -1,4 +1,4 @@
-// correcteurV1.test.ts
+﻿// correcteurV1.test.ts
 // Jeu de validation du correcteur V1 — Sciences de la Nature et de la Vie (3AS).
 //
 // Deux responsabilités :
@@ -13,7 +13,7 @@
 //      charabia ÉCHOUE. Réponses modèles rédigées naturellement (phrases), jamais
 //      comme une simple liste de mots-clés (anti sur-ajustement).
 
-import { readFileSync } from 'node:fs';
+import { readFileSync, existsSync } from 'node:fs';
 import path from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { normalizeAr } from './lib/validation/normalizeAr';
@@ -29,6 +29,12 @@ import {
 // ──────────────────────────────────────────────────────────────────────────────
 
 const SRC_DIR = path.resolve(import.meta.dirname, '..', 'docs', 'sources');
+
+// Fixtures L1–L4 non commitées (contenus livres — voir docs/MARQUE.md) :
+// si absentes, la suite se skippe proprement au lieu de crasher en ENOENT.
+const FIXTURES_PRESENT = Object.values(SOURCES_LABELS).every((f) =>
+  existsSync(path.join(SRC_DIR, f)),
+);
 
 function readSource(label: string): string {
   const filename = SOURCES_LABELS[label];
@@ -47,12 +53,12 @@ function normForTrace(s: string): string {
   return normalizeAr(fixSubscripts(s));
 }
 
-const SOURCES_NORM = (['L1', 'L2', 'L3', 'L4'] as const).reduce<
-  Record<string, string>
->((acc, l) => {
-  acc[l] = normForTrace(readSource(l));
-  return acc;
-}, {});
+const SOURCES_NORM = FIXTURES_PRESENT
+  ? (['L1', 'L2', 'L3', 'L4'] as const).reduce<Record<string, string>>((acc, l) => {
+      acc[l] = normForTrace(readSource(l));
+      return acc;
+    }, {})
+  : {};
 
 // ──────────────────────────────────────────────────────────────────────────────
 // 1. Intégrité de la banque
@@ -111,7 +117,8 @@ describe('banque de mots-clés — intégrité', () => {
 // 2. Traçabilité : chaque mot-clé provient d'au moins une source officielle
 // ──────────────────────────────────────────────────────────────────────────────
 
-describe('traçabilité des mots-clés dans les sources officielles', () => {
+// Skip si fixtures absentes (docs/sources/ non commitées — lire disque impossible).
+describe.skipIf(!FIXTURES_PRESENT)('traçabilité des mots-clés dans les sources officielles', () => {
   it('chaque mot-clé apparaît dans au moins une des sources DÉCLARÉES de son unité', () => {
     const untraceable: string[] = [];
     for (const u of CORRECTEUR_V1_UNITES) {
@@ -289,7 +296,7 @@ const QUESTIONS_V1: QuestionV1[] = [
   },
 ];
 
-describe('jeu de questions neuves (hors Golden Set) — les 3 domaines, les 11 unités', () => {
+describe.skipIf(!FIXTURES_PRESENT)('jeu de questions neuves (hors Golden Set) — les 3 domaines, les 11 unités', () => {
   it('contient 11 questions : chaque unité du programme a sa question (5 + 3 + 3)', () => {
     expect(QUESTIONS_V1).toHaveLength(11);
     const couvertes = new Set(QUESTIONS_V1.map((q) => q.uniteId));

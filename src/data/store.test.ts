@@ -1,6 +1,6 @@
 // store.test.ts
 // P0.0 — Tests obligatoires de migration (Spec V2 §2.4).
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import {
   migrateStore,
   migrateFromRaw,
@@ -37,7 +37,11 @@ class MockStorage implements Storage {
 }
 
 beforeEach(() => {
-  global.localStorage = new MockStorage() as unknown as Storage;
+  vi.stubGlobal('localStorage', new MockStorage());
+});
+
+afterEach(() => {
+  vi.unstubAllGlobals();
 });
 
 function makeError(id: string, resolved = false): LearningError {

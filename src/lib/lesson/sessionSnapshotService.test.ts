@@ -1,5 +1,5 @@
 // src/lib/lesson/sessionSnapshotService.test.ts
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import {
   saveLessonSnapshot,
   loadLessonSnapshot,
@@ -19,7 +19,11 @@ class MockStorage implements Storage {
 }
 
 beforeEach(() => {
-  global.localStorage = new MockStorage() as unknown as Storage;
+  vi.stubGlobal('localStorage', new MockStorage());
+});
+
+afterEach(() => {
+  vi.unstubAllGlobals();
 });
 
 function makeSnapshot(lessonId: string, overrides?: Partial<LessonSessionSnapshot>): LessonSessionSnapshot {
