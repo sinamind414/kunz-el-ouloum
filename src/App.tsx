@@ -189,7 +189,20 @@ export default function App() {
     }
 
     if (savedUnits && Array.isArray(savedUnits) && savedUnits.length > 0) setUnits(savedUnits);
-    if (savedFlashcards && Array.isArray(savedFlashcards) && savedFlashcards.length > 0) setFlashcards(savedFlashcards);
+    if (savedFlashcards && Array.isArray(savedFlashcards) && savedFlashcards.length > 0) {
+      // Migration (D3) : l'ancien stock local ne comptait que 3 cartes "fc_1..fc_3"
+      // sans état utilisateur exploitable (handleRateCard ne persiste rien sur la carte).
+      // Si le format corpus (fc_q_*) est absent, on écrase par le jeu complet 508+3.
+      const hasCorpusCards = savedFlashcards.some((c) => typeof c.id === 'string' && c.id.startsWith('fc_q_'));
+      if (!hasCorpusCards) {
+        setFlashcards(SVT_FLASHCARDS);
+        try {
+          localStorage.setItem('svt_flashcards', JSON.stringify(SVT_FLASHCARDS));
+        } catch { /* quota — sera retenté au prochain save */ }
+      } else {
+        setFlashcards(savedFlashcards);
+      }
+    }
     if (savedProgress) {
       const parsed: UserProgress = savedProgress;
       const today = new Date().toISOString().split('T')[0];

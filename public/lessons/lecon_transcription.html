@@ -702,25 +702,25 @@
             </div>
 
             <!-- Q1 -->
-            <div class="question-item" id="q1-container">
+            <div class="question-item" id="c1q1-container">
                 <h4 style="margin-bottom: 12px;">1. ما هو الإنزيم المسؤول حصريا عن عملية استنساخ الـ <span class="ltr-seq">ARNm</span>؟</h4>
                 <div class="options-grid">
                     <button class="option-btn" onclick="checkAnswer(1, 0, false)">أ) إنزيم <span class="ltr-seq">ADN Polymérase</span></button>
                     <button class="option-btn" onclick="checkAnswer(1, 1, true)">ب) إنزيم <span class="ltr-seq">ARN Polymérase</span></button>
                     <button class="option-btn" onclick="checkAnswer(1, 2, false)">ج) إنزيم الهيليكاز (<span class="ltr-seq">Hélicase</span>)</button>
                 </div>
-                <div class="feedback-box" id="q1-feedback"></div>
+                <div class="feedback-box" id="c1q1-feedback"></div>
             </div>
 
             <!-- Q2 -->
-            <div class="question-item" id="q2-container">
+            <div class="question-item" id="c1q2-container">
                 <h4 style="margin-bottom: 12px;">2. إذا كانت قطعة من السلسلة غير المستنسخة للـ <span class="ltr-seq">ADN</span> تحمل التسلسل <span class="ltr-seq">5'- ATG CGC -3'</span>، فإن تسلسل الـ <span class="ltr-seq">ARNm</span> الموافق هو:</h4>
                 <div class="options-grid">
                     <button class="option-btn" onclick="checkAnswer(2, 0, false)">أ) <span class="ltr-seq">5'- UAC GCG -3'</span></button>
                     <button class="option-btn" onclick="checkAnswer(2, 1, true)">ب) <span class="ltr-seq">5'- AUG CGC -3'</span></button>
                     <button class="option-btn" onclick="checkAnswer(2, 2, false)">ج) <span class="ltr-seq">5'- TAC GCG -3'</span></button>
                 </div>
-                <div class="feedback-box" id="q2-feedback"></div>
+                <div class="feedback-box" id="c1q2-feedback"></div>
                 <div class="quiz-badge" id="c1-badge"></div>
             </div>
         </section>
@@ -770,9 +770,9 @@
 
         // Quiz checker
         function checkAnswer(qIndex, optIndex, isCorrect) {
-            let container = document.getElementById(`q${qIndex}-container`);
+            let container = document.getElementById(`c1q${qIndex}-container`);
             let buttons = container.querySelectorAll('.option-btn');
-            let feedback = document.getElementById(`q${qIndex}-feedback`);
+            let feedback = document.getElementById(`c1q${qIndex}-feedback`);
 
             buttons.forEach((btn, idx) => {
                 btn.disabled = true;
