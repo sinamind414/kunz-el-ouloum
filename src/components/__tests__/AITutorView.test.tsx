@@ -2,7 +2,7 @@
 // Exercice réel du scénario promis : domaines → diagnostic → quiz → mission → BAC → erreurs.
 import { cleanup, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { afterEach, beforeAll, beforeEach, describe, expect, it } from 'vitest';
+import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 import AITutorView from '../AITutorView';
 
 // jsdom n'implémente pas scrollIntoView — polyfill minimal pour le harnais.
@@ -43,6 +43,65 @@ describe('AITutorView — rendu riche du moteur (T2)', () => {
     // Les quickActions du domaine incluent le diagnostic et le BAC
     expect(messagesText()).toMatch(/اختبار تشخيصي/);
   });
+
+  it('les 3 domaines routent tous vers leur menu (routeur exact AVANT les bases sémantiques)', async () => {
+    const user = userEvent.setup();
+    render(<AITutorView />);
+
+    // Chaque titre de domaine saisi doit OUVRIR LE DOMAINE (اخترت مجال),
+    // pas répondre via un guide sémantique (bug domaines 2/3 corrigé).
+    // Retour au menu entre chaque domaine : le routeur ne s'applique qu' hors domaine actif.
+    const domainTitles = ['البروتينات والمناعة', 'التحولات الطاقوية', 'التكتونية العامة'];
+    for (const title of domainTitles) {
+      const input = screen.getByPlaceholderText('اسأل المرشد الذكي عن أي سؤال في مادة العلوم...');
+      await user.type(input, `${title}{Enter}`);
+      await waitFor(() => {
+        // NB : le markdown ** est consommé par renderBoldText → textContent sans astérisques.
+        expect(messagesText()).toContain(`اخترت مجال: ${title}`);
+      });
+      await user.click(screen.getByTestId('journey-home'));
+      await waitFor(() => {
+        expect(messagesText()).toContain('رجعنا إلى القائمة الرئيسية');
+      });
+    }
+  });
+
+  it('propage les XP gagnés au parent via onXPGained (score final du quiz)', async () => {
+    const xpSpy = vi.fn();
+    const user = userEvent.setup();
+    render(<AITutorView onXPGained={xpSpy} />);
+
+    // Domaine 1 → diagnostic → 1 réponse → le moteur émet reward (10 XP par bonne réponse)
+    await user.click(screen.getAllByTestId(/^quick-action-\d+$/)[0]);
+    await waitFor(() => expect(messagesText()).toMatch(/اخترت مجال|البروتينات والمناعة/));
+    await user.click(screen.getByTestId('journey-diagnostic'));
+    await waitFor(() => expect(messagesText()).toContain('بدأ التشخيص'));
+
+    await user.click(screen.getAllByTestId(/^quiz-option-\d+$/)[0]);
+    await waitFor(() => {
+      expect(messagesText()).toMatch(/إجابة صحيحة|إجابة خاطئة/);
+    });
+    expect(xpSpy).not.toHaveBeenCalled(); // XP seulement à la clôture du quiz
+
+    // Terminer le quiz → reward émis → propagation au parent
+    let guard = 0;
+    while (!messagesText().includes('نتيجتك النهائية') && guard < 40) {
+      const opts = screen.getAllByTestId(/^quiz-option-\d+$/);
+      if (opts.length === 0) break;
+      await user.click(opts[0]);
+      guard += 1;
+      await waitFor(
+        () => expect(messagesText()).toMatch(/إجابة صحيحة|إجابة خاطئة|نتيجتك النهائية/),
+        { timeout: 3000 }
+      );
+    }
+    await waitFor(() => {
+      expect(xpSpy).toHaveBeenCalled();
+      const [xp, questions] = xpSpy.mock.calls[xpSpy.mock.calls.length - 1];
+      expect(xp).toBeGreaterThan(0);
+      expect(questions).toBe(1);
+    });
+  }, 60000);
 
   it('affiche sources sur une réponse scientifique + confiance sur une réponse méthodo', async () => {
     const user = userEvent.setup();

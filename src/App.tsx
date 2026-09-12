@@ -333,6 +333,19 @@ export default function App() {
     setCurrentTab('review');
   };
 
+  // XP gagnés dans le المرشد الذكي (tutor) — même patron que handleQuizComplete :
+  // incrément XP + questions comptées + son, persisté immédiatement.
+  const handleTutorXPGained = (xpGained: number, questionsAnswered: number) => {
+    const updatedProgress: UserProgress = {
+      ...progress,
+      xp: progress.xp + xpGained,
+      completedQuestionsCount: progress.completedQuestionsCount + questionsAnswered,
+    };
+    setProgress(updatedProgress);
+    saveToLocalStorage(units, flashcards, updatedProgress);
+    playXPGainSound();
+  };
+
   const handleQuizComplete = (score: number, total: number) => {
     const activeUnit = units.find(u => u.id === activeQuizUnitId);
     if (!activeUnit) return;
@@ -728,8 +741,9 @@ export default function App() {
               )}
 
               {currentTab === 'chat' && (
-                <AITutorView 
+                <AITutorView
                   onBackToDashboard={() => setCurrentTab('home')}
+                  onXPGained={handleTutorXPGained}
                 />
               )}
 

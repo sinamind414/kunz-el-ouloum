@@ -484,6 +484,16 @@ export function processStudentInput(session: BotSession, rawInput: string): Engi
 
   if (norm.includes(n('راجع أخطائي'))) return reviewMistakes(session);
 
+  // Navigation domaine : un clic sur un titre de domaine (match EXACT de la
+  // question normalisée) doit ouvrir le menu du domaine AVANT les bases
+  // sémantiques — les guides « مدخل المجال… » déclarent ces titres comme
+  // triggers et interceptaient la navigation (domaines 2/3). Le match exact
+  // ne détourne pas les vraies questions (« اشرح لي التكتونية العامة… »).
+  if (session.activeDomainId == null && norm.length >= 3) {
+    const domain = DOMAINS.find((d) => normalizeArabic(d.title) === norm);
+    if (domain) return handleDomainClick(session, domain.id);
+  }
+
   // Priorité absolue : une session active (quiz/boss) doit traiter l'entrée AVANT
   // toute recherche sémantique, sinon une réponse comme "A" est interceptée par un guide.
   if (session.mode === 'bac_challenge' && session.boss) return handleBossInput(session, input);

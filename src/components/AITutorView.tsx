@@ -10,6 +10,8 @@ import { loadSession, saveSession, resetSession, type BotSession } from '../util
 
 interface AITutorViewProps {
   onBackToDashboard?: () => void;
+  /** Propagation des XP gagnés dans le tutor vers le UserProgress global de l'App. */
+  onXPGained?: (xpGained: number, questionsAnswered: number) => void;
 }
 
 const JOURNEY_BUTTONS = [
@@ -22,7 +24,7 @@ const JOURNEY_BUTTONS = [
 
 const WELCOME_TEXT = "مرحباً بك يا بحار المعرفة! أنا المرشد الذكي لـ **كنز العلوم** 🏴‍☠️.\n\nأنا هنا لأبسط لك كل ما يتعلق بعلوم الطبيعة والحياة للبكالوريا. اسألني عن آليات تركيب البروتين، أو بنيته الفراغية وسلوكه الحمقلي، أو آليات الاستجابة المناعية وتفاصيل الذات واللاذات!\n\nاختر مجالاً أو أحد أزرار الرحلة أدناه للبدء:";
 
-export default function AITutorView({ onBackToDashboard }: AITutorViewProps) {
+export default function AITutorView({ onBackToDashboard, onXPGained }: AITutorViewProps) {
   const [session, setSession] = useState<BotSession>(() => loadSession());
   const [messages, setMessages] = useState<ChatMessage[]>([
     {
@@ -61,6 +63,11 @@ export default function AITutorView({ onBackToDashboard }: AITutorViewProps) {
       },
     };
     setMessages((prev) => [...prev, aiMsg]);
+    // Propagation XP vers le UserProgress global (badge header + stats).
+    // questionsAnswered = 1 seulement quand le moteur clôture un quiz (reward présent).
+    if (result.action.reward && result.action.reward.xpGained > 0) {
+      onXPGained?.(result.action.reward.xpGained, 1);
+    }
   };
 
   const handleSend = async (textToSend: string) => {
