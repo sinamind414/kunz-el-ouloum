@@ -10,7 +10,7 @@ import {
   VERB_CARDS, UNIVERSAL_GRAMMAR_RULES, TRAINING_EXERCISES,
   ERROR_TAXONOMY, TrainingExercise, Switch, StepId, STEP_NAMES_AR, STEP_TEMPLATES, VERB_CARDS_V2, getVerbCardV2,
   detectSourceGate, isDualSource, detectExistenceGate, detectSourceKind, SourceGate, ExistenceGate, SourceKind, Movement, MEMORY_TEMPLATES, STEP0_TEMPLATE_AR, classifyConclusion,
-  MIFTAH_VERSION, MIFTAH_NAME_OFFICIAL_AR, MIFTAH_NOMENCLATURE, READY_SENTENCES, SYNTHESIS, SPECIAL_FORMS
+  MIFTAH_VERSION, MIFTAH_NAME_OFFICIAL_AR, MIFTAH_TAGLINE_AR, MIFTAH_NOMENCLATURE, READY_SENTENCES, SYNTHESIS, SPECIAL_FORMS
 } from '../data/methodologyEngine';
 import { isExtensionUnlocked, recordDrillResult, getDrillStatus, getMasteryStatus, recordTypeMastery, todayISO } from '../data/v3Progress';
 import { DRILL_BANK, drawDailyConsignes, gradeDrill, PHASE0_DEMOS, isPhase0Done, completePhase0, resetPhase0, DrillAnswer, DrillConsigne, DrillGrade, DRILL_LABELS } from '../data/drillBank';
@@ -22,6 +22,8 @@ import { calibrationStats, calibrationMessageAr, gapOf } from '../utils/calibrat
 import ProductionEvolutionPanel from './ProductionEvolutionPanel';
 import BoussoleCard from './BoussoleCard';
 import MiftahCard from './MiftahCard';
+import MeftahView from './MeftahView';
+import TahlilWall from './TahlilWall';
 import { TIME_RULES, getStepData } from '../data/boussoleData';
 
 // B1 · tons du rapport + libellés interrupteur au niveau module (le bloc « 4 étapes » les lit hors closure)
@@ -51,7 +53,7 @@ interface MethodologyProps {
 
 export default function MethodologyCompilerView({ onBackToHome }: MethodologyProps) {
   // Navigation Tabs: 'engine_rules' (Couche 0) | 'verbs_ref' (Fiches) | 'simulator' (4 Stades) | 'mastery_matrix' (Analytics & Erreurs)
-  const [activeTab, setActiveTab] = useState<'simulator' | 'verbs_ref' | 'engine_rules' | 'mastery_matrix' | 'correction' | 'boussole_card'>('simulator');
+  const [activeTab, setActiveTab] = useState<'simulator' | 'verbs_ref' | 'engine_rules' | 'mastery_matrix' | 'correction' | 'boussole_card' | 'meftah_v43' | 'tahlil_wall'>('simulator');
   // File de correction (Phase 3) — bump pour rafraîchir l'onglet + le badge
   const [correctionVersion, setCorrectionVersion] = useState(0);
   const [refCardOpen, setRefCardOpen] = useState(false); // carte-référence en stage 4
@@ -479,7 +481,7 @@ const handleSelectStage = (stage: 1 | 2 | 3 | 4) => {
             </div>
             <h1 className="text-2xl md:text-3xl font-black tracking-tight">🔑 {MIFTAH_NAME_OFFICIAL_AR} v{MIFTAH_VERSION}</h1>
             <p className="text-white/90 text-sm md:text-base mt-1 max-w-2xl font-medium">
-              4 أسنان · 3 بوابات · إجابة تفتح النقطة — منهجية الإجابة في علوم الحياة والأرض · بكالوريا
+              4 أسنان · 3 بوابات · إجابة تفتح النقطة — {MIFTAH_TAGLINE_AR}
             </p>
           </div>
 
@@ -569,6 +571,30 @@ const handleSelectStage = (stage: 1 | 2 | 3 | 4) => {
           >
             <FileText className="w-4 h-4" />
             <span>🔑 {MIFTAH_NOMENCLATURE.miftah} — للطباعة</span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab('meftah_v43')}
+            className={`px-4 py-2 rounded-xl font-bold text-xs md:text-sm whitespace-nowrap transition-all flex items-center gap-2 ${
+              activeTab === 'meftah_v43'
+                ? 'bg-white text-[#006d37] shadow-md'
+                : 'bg-white/15 text-white hover:bg-white/25'
+            }`}
+          >
+            <Key className="w-4 h-4" />
+            <span>المفتاح V4.3 — الأوجه الستة + BAC 2025</span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab('tahlil_wall')}
+            className={`px-4 py-2 rounded-xl font-bold text-xs md:text-sm whitespace-nowrap transition-all flex items-center gap-2 ${
+              activeTab === 'tahlil_wall'
+                ? 'bg-white text-[#006d37] shadow-md'
+                : 'bg-white/15 text-white hover:bg-white/25'
+            }`}
+          >
+            <ShieldAlert className="w-4 h-4" />
+            <span>جدار حلّل — التدريب</span>
           </button>
         </div>
       </header>
@@ -2292,7 +2318,7 @@ const handleSelectStage = (stage: 1 | 2 | 3 | 4) => {
               بطاقة {MIFTAH_NOMENCLATURE.miftah} v{MIFTAH_VERSION} — مطابقة 100% للـ HTML المستقل <span className="latin">/miftah.html</span> — تُطبع A4 recto/verso
             </p>
             <div className="flex gap-2">
-              <a href="/miftah.html" target="_blank" rel="noopener" className="px-3 py-2 bg-white border border-gray-200 rounded-xl font-bold text-xs">فتح HTML المستقل</a>
+              <a href="/miftah.html" target="_blank" rel="noopener" className="px-4 py-2 bg-white border border-gray-200 rounded-xl font-bold text-xs">فتح HTML المستقل</a>
               <button onClick={() => window.print()} className="px-4 py-2 bg-[#006d37] hover:bg-[#00562b] text-white rounded-xl font-bold text-sm shadow-md">
                 طباعة (A4)
               </button>
@@ -2304,6 +2330,16 @@ const handleSelectStage = (stage: 1 | 2 | 3 | 4) => {
             <div className="mt-3"><BoussoleCard /></div>
           </details>
         </section>
+      )}
+
+      {/* TAB 6: المفتاح V4.3 — les 6 visages (3 méthode + 3 BAC 2025) — la loi lisible */}
+      {activeTab === 'meftah_v43' && (
+        <MeftahView onOpenVerb={() => setActiveTab('verbs_ref')} />
+      )}
+
+      {/* TAB 7: جدار حلّل — couche 1 Trainer : le geste, gate v2 (audits 1-2) */}
+      {activeTab === 'tahlil_wall' && (
+        <TahlilWall onBack={() => setActiveTab('meftah_v43')} />
       )}
 
     </div>

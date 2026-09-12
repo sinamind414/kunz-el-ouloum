@@ -13,7 +13,9 @@ export const MIFTAH_NAME_OFFICIAL_AR = 'مفتاح المنهجية';
 export const MIFTAH_NAME_LATIN = 'MIFTAH';
 export const MIFTAH_PLUS_AR = 'المفتاح+';
 // Tagline descriptive (pas un nom)
-export const MIFTAH_TAGLINE_AR = 'منهجية الإجابة في علوم الحياة والأرض · بكالوريا';
+// M3 (audit V4.3) : le nom officiel de la matière est « علوم الطبيعة والحياة » —
+// « علوم الحياة والأرض » est le nom marocain/tunisien, erroné pour le BAC Algérie.
+export const MIFTAH_TAGLINE_AR = 'منهجية الإجابة في علوم الطبيعة والحياة · بكالوريا';
 export const MIFTAH_BRAND_AR = 'كنز العلوم';
 
 // Phrase-récit — UNE seule version, partout où la marque se présente (docs/MARQUE.md §2)

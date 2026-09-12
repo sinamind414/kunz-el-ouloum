@@ -4,7 +4,7 @@
 // Pro : styles isolés (préfixe miftah-) pour ne pas fuir, print natif, aucune logique
 import React from 'react';
 import {
-  MIFTAH_VERSION, MIFTAH_NAME_AR, MIFTAH_NAME_OFFICIAL_AR,
+  MIFTAH_VERSION, MIFTAH_NAME_AR, MIFTAH_NAME_OFFICIAL_AR, MIFTAH_TAGLINE_AR,
   FOOTER_RECTO_AR, FOOTER_VERSO_AR, FOOTER_ANNEXE_AR,
   RECTO_ERRORS, VERSO_ERRORS, ANNEXE, TOOTH3_ROUTE_AR, GOLDEN_FORMULA_AR,
 } from '../data/miftahSpec';
@@ -68,7 +68,7 @@ export default function MiftahCard() {
           <div>
             <h1>🔑 {MIFTAH_NAME_AR}</h1>
             <div className="miftah-official">{MIFTAH_NAME_OFFICIAL_AR}</div>
-            <div className="miftah-tag">منهجية الإجابة في علوم الحياة والأرض · بكالوريا</div>
+            <div className="miftah-tag">{MIFTAH_TAGLINE_AR}</div>
             <div className="miftah-tag latin" style={{textAlign:'left', direction:'ltr'}}>4 dents · 2 portes · une réponse qui ouvre le point</div>
           </div>
           <div className="app latin" style={{textAlign:'right'}}>
