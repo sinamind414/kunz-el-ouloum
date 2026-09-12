@@ -8,6 +8,8 @@ export interface MethodologyQA {
   category: 'general' | 'verb' | 'bac' | 'scientific_reasoning';
   sourceBook: string;
   template?: string;
+  /** Formulations alternatives qui doivent matcher cette entrée (alias d'élève). */
+  triggers?: string[];
 }
 
 export const METHODOLOGY_QA: MethodologyQA[] = [
@@ -123,6 +125,7 @@ export const METHODOLOGY_QA: MethodologyQA[] = [
     category: 'scientific_reasoning',
     sourceBook: 'LIVRE MANHADJIYA.md',
     template: 'أقترح أن سبب ... هو ... ويمكن التحقق من ذلك بـ ...',
+    triggers: ['قالب فرضية', 'قالب الفرضية', 'صياغة فرضية', 'أصوغ فرضية', 'كيف أصوغ فرضية', 'طريقة الفرضية'],
   },
   {
     id: 'meth_13',
@@ -168,6 +171,13 @@ export function findBestMethodologyQA(query: string): MethodologyMatch[] {
     const qn = normalizeArabic(qa.question).replace(/[؟?.!،,]/g, ' ').replace(/\s+/g, ' ').trim();
     if (norm === qn) score += 60;
     else if (norm.length >= 3 && qn.length >= 3 && (norm.includes(qn) || qn.includes(norm))) score += 40;
+    // Alias d'élève (ex: «قالب فرضية») — poids fort, matchées comme la question elle-même.
+    for (const trigger of qa.triggers ?? []) {
+      const nt = normalizeArabic(trigger).replace(/[؟?.!،,]/g, ' ').replace(/\s+/g, ' ').trim();
+      if (nt.length >= 3 && (norm === nt || norm.includes(nt) || nt.includes(norm))) {
+        score += nt.length >= 6 ? 55 : 30;
+      }
+    }
     for (const kw of qa.keywords) {
       const nk = normalizeArabic(kw);
       if (nk.length >= 3 && norm.includes(nk)) score += 10;

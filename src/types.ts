@@ -73,4 +73,16 @@ export interface ChatMessage {
   sender: 'user' | 'ai';
   text: string;
   timestamp: string;
+  /** Charge complète du moteur (quickActions, quiz, sources, reward) pour le rendu riche. */
+  action?: {
+    quickActions?: string[];
+    quiz?: {
+      id: string;
+      question: string;
+      options: string[];
+    };
+    sources?: { type: string; title: string }[];
+    confidence?: number;
+    reward?: { xpGained: number };
+  };
 }
