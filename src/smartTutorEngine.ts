@@ -49,13 +49,23 @@ export interface QuizPrompt {
   explanation: string;
 }
 
+/** Détails de fin d'activité (journalisation serveur + affichage). */
+export interface TutorRewardDetails {
+  /** Nature de l'activité terminée. */
+  kind?: 'quiz' | 'mission';
+  score?: number;
+  total?: number;
+  /** Titre du domaine — utilisé par la file /api/student/sync. */
+  domain?: string;
+}
+
 export interface TutorAction {
   text: string;
   confidence?: number;
   quickActions?: string[];
   quiz?: QuizPrompt;
   sources?: SourceRef[];
-  reward?: { xpGained: number };
+  reward?: { xpGained: number } & TutorRewardDetails;
 }
 
 export interface EngineResult {
@@ -67,13 +77,48 @@ const OUT_OF_PROGRAM = [
   'كرة القدم', 'كره القدم', 'كرة قدم', 'مباراة', 'فيلم سينما', 'موسيقى', 'سيارة', 'سياره', 'اغنية',
 ];
 
-function toQuizPrompt(q: QuizQuestion): QuizPrompt {
+/**
+ * Mélange DÉTERMINISTE des options (seed = id de la question) : le même
+ * mélange est appliqué à l'affichage (toQuizPrompt) ET à la notation
+ * (gradeQuizAnswer), sans état supplémentaire dans la session.
+ * Corrige l'audit : correctIndex était 0 (option A) sur les 66 questions —
+ * la bonne réponse s'affichait toujours en A.
+ */
+function hashSeed(id: string): number {
+  let h = 2166136261;
+  for (let i = 0; i < id.length; i++) {
+    h ^= id.charCodeAt(i);
+    h = Math.imul(h, 16777619);
+  }
+  return h >>> 0;
+}
+
+export function shuffledView(q: QuizQuestion): QuizQuestion {
+  let s = hashSeed(q.id);
+  const rnd = () => {
+    s = (Math.imul(s, 1664525) + 1013904223) >>> 0;
+    return s / 4294967296;
+  };
+  const order = q.options.map((_, i) => i);
+  for (let i = order.length - 1; i > 0; i--) {
+    const j = Math.floor(rnd() * (i + 1));
+    [order[i], order[j]] = [order[j], order[i]];
+  }
   return {
-    id: q.id,
-    question: q.question,
-    options: q.options,
-    correctIndex: q.correctIndex,
-    explanation: q.explanation,
+    ...q,
+    options: order.map((i) => q.options[i]),
+    correctIndex: order.indexOf(q.correctIndex),
+  };
+}
+
+function toQuizPrompt(q: QuizQuestion): QuizPrompt {
+  const view = shuffledView(q);
+  return {
+    id: view.id,
+    question: view.question,
+    options: view.options,
+    correctIndex: view.correctIndex,
+    explanation: view.explanation,
   };
 }
 
@@ -381,7 +426,8 @@ export function reviewMistakes(session: BotSession): EngineResult {
     return { session, action: { text: '✅ لا توجد أخطاء مسجلة لديك بعد. واصل التدريب لتسجيل نقاط ضعفك ومعالجتها!', quickActions: ['العودة للقائمة الرئيسية'] } };
   }
   const cards = session.mistakes.map((id) => getCardById(id)).filter((c): c is KnowledgeCard => Boolean(c));
-  const text = '📌 هذه المواضيع التي سجلت أخطاءً فيها:\n' + cards.map((c, i) => `${i + 1}. ${c.title} (${c.aliases[0]})`).join('\n') + '\n\nراجع كل موضوع لترسيخه قبل إعادة الاختبار.';
+  const bacDone = session.completedBac.length;
+  const text = '📌 هذه المواضيع التي سجلت أخطاءً فيها:\n' + cards.map((c, i) => `${i + 1}. ${c.title} (${c.aliases[0]})`).join('\n') + '\n\nراجع كل موضوع لترسيخه قبل إعادة الاختبار.' + (bacDone > 0 ? `\n\n🏆 تحديات BAC مكتملة: ${bacDone}` : '');
   const quickActions = [...cards.map((c) => `راجع ${c.title}`), 'إعادة الاختبار التشخيصي', 'العودة للقائمة الرئيسية'];
   return { session, action: { text, quickActions } };
 }
@@ -391,15 +437,16 @@ export function gradeQuizAnswer(session: BotSession, rawAnswer: string): EngineR
   if (!current) return { session, action: { text: 'لا يوجد اختبار جارٍ حالياً.', quickActions: ['العودة للقائمة الرئيسية'] } };
   const question = getQuestionById(current.questionId);
   if (!question) return { session, action: { text: 'تعذر العثور على السؤال.', quickActions: ['العودة للقائمة الرئيسية'] } };
+  const view = shuffledView(question); // même ordre mélangé que le prompt affiché
   const selected = parseAnswer(rawAnswer);
   if (selected === null) return { session, action: { text: '⚠️ الرجاء اختيار إجابة بكتابة A أو B أو C أو D (أو 1، 2، 3، 4).', quiz: toQuizPrompt(question), quickActions: [] } };
-  const isCorrect = selected === question.correctIndex;
+  const isCorrect = selected === view.correctIndex;
   const mistake = getMistakeById(question.commonMistakeId);
   let text: string;
   if (isCorrect) {
     text = `✅ إجابة صحيحة!\n\n${question.explanation}`;
   } else {
-    text = `❌ إجابة خاطئة.\nالإجابة الصحيحة هي: ${question.options[question.correctIndex]}\n\n${question.explanation}`;
+    text = `❌ إجابة خاطئة.\nالإجابة الصحيحة هي: ${view.options[view.correctIndex]}\n\n${question.explanation}`;
     if (mistake) text += `\n\n⚠️ خطأ شائع: ${mistake.mistake}\n✅ التصحيح: ${mistake.correction}`;
   }
   const questions = getQuestionsForDomain(question.domainId);
@@ -419,7 +466,10 @@ export function gradeQuizAnswer(session: BotSession, rawAnswer: string): EngineR
     quiz = undefined;
   }
   const quickActions = quiz === undefined ? ['راجع أخطائي السابقة', 'اعاده الاختبار التشخيصي', 'العودة للقائمة الرئيسية'] : [];
-  const reward = quiz === undefined ? { xpGained: correctCount * 10 } : undefined;
+  const domain = DOMAINS.find((d) => d.id === question.domainId);
+  const reward = quiz === undefined
+    ? { xpGained: correctCount * 10, score: correctCount, total, kind: 'quiz' as const, domain: domain?.title ?? '' }
+    : undefined;
   return { session: newSession, action: { text, quiz, quickActions, reward } };
 }
 
@@ -431,8 +481,37 @@ export function startBossFight(session: BotSession): EngineResult {
   if (scenarios.length === 0) return { session, action: { text: 'لا يوجد تحدي BAC لهذا المجال بعد.', quickActions: ['العودة للقائمة الرئيسية'] } };
   const first = scenarios[0];
   const newSession = startBossFightSession(session, first.id, scenarios.length);
-  const text = `⚔️ **تحدي BAC** — مجال ${domain.title}\n` + `ستُطرح عليك ${scenarios.length} وضعيات مشكلة. أجب ثم قيّم إجابتك بنفسك.\n\n${first.situation}\n\n📝 اكتب إجابتك الكاملة، أو اختر «لا أعرف» لعرض التصحيح النموذجي.`;
+  const replay = session.completedBac.includes(String(domainId));
+  const text = `⚔️ **تحدي BAC** — مجال ${domain.title}\n` +
+    (replay ? '🏆 سبق إتمامك هذا التحدي — إعادة بدون XP إضافي.\n' : '') +
+    `ستُطرح عليك ${scenarios.length} وضعيات مشكلة. اكتب إجابتك وسيقوّمها المرشد آلياً وفق النقاط الأساسية.\n\n${first.situation}\n\n📝 اكتب إجابتك، أو اختر «لا أعرف» لعرض التصحيح.`;
   return { session: newSession, action: { text, quickActions: ['لا أعرف'], sources: [{ type: 'domain' as SourceType, title: 'تحدي BAC' }] } };
+}
+
+/**
+ * Auto-évaluation honnête (recommandation audit #3) : la couverture des
+ * points-clés du scénario par la réponse remplace l'auto-note (+10/+5/0)
+ * que l'élève se donnait lui-même — l'XP n'est plus fermable au clic.
+ * Barème : ≥ 50 % des mots-clés couverts = 10 pts · ≥ 20 % = 5 pts · sinon 0.
+ */
+function gradeKeyPoints(answer: string, keyPoints: string[]): number {
+  const tokens = new Set(tokenizeArabic(normalizeArabic(answer)).filter((t) => t.length >= 3));
+  if (tokens.size === 0) return 0;
+  const expected = new Set<string>();
+  for (const kp of keyPoints) {
+    for (const t of tokenizeArabic(normalizeArabic(kp))) {
+      if (t.length >= 3) expected.add(t);
+    }
+  }
+  if (expected.size === 0) return 0;
+  let hits = 0;
+  for (const t of expected) {
+    if (tokens.has(t)) hits += 1;
+  }
+  const coverage = hits / expected.size;
+  if (coverage >= 0.5) return 10;
+  if (coverage >= 0.2) return 5;
+  return 0;
 }
 
 function handleBossInput(session: BotSession, rawInput: string): EngineResult {
@@ -443,32 +522,49 @@ function handleBossInput(session: BotSession, rawInput: string): EngineResult {
     const finished = finishBossFight(session);
     return { session: finished, action: { text: 'انتهى التحدي.', quickActions: ['العودة للقائمة الرئيسية'] } };
   }
-  if (boss.phase === 'answer') {
-    const text = `✅ **التصحيح النموذجي**\n\n${scenario.correction}\n\n🔑 **النقاط الأساسية:**\n${scenario.keyPoints.map((p) => `- ${p}`).join('\n')}\n\nقيّم إجابتك لمنح نقاطك:`;
-    const newSession: BotSession = { ...session, boss: { ...boss, phase: 'eval' } };
-    saveSession(newSession);
-    return { session: newSession, action: { text, quickActions: ['إجابة كاملة (+10)', 'إجابة ناقصة (+5)', 'لم أجب (0)'], sources: [{ type: 'domain' as SourceType, title: 'تحدي BAC' }] } };
-  }
+  // La phase « eval » (auto-note) n'existe plus : TOUTE saisie est notée
+  // automatiquement — y compris les sessions héritées restées en 'eval'.
   const n = normalizeArabic(rawInput);
-  let points = 0;
-  if (n.includes(normalizeArabic('كاملة'))) points = 10;
-  else if (n.includes(normalizeArabic('ناقصة'))) points = 5;
-  else points = 0;
+  const giveUp = n.includes(normalizeArabic('لا أعرف')) || n.includes(normalizeArabic('لم أجب'));
+  const points = giveUp ? 0 : gradeKeyPoints(rawInput, scenario.keyPoints);
+  const correctionText =
+    `✅ **التصحيح النموذجي**\n\n${scenario.correction}\n\n🔑 **النقاط الأساسية:**\n${scenario.keyPoints.map((p) => `- ${p}`).join('\n')}` +
+    `\n\n🎯 نقاطك لهذه الوضعية: ${points}/10`;
   const scenarios = getBossScenariosForDomain(session.activeDomainId);
   const idx = scenarios.findIndex((s) => s.id === boss.scenarioId);
   const next = idx >= 0 ? scenarios[idx + 1] : undefined;
   if (next) {
     const newSession = startBossStep(session, points, next.id, boss.questionIndex + 1);
-    const text = `➡️ **السؤال التالي (${boss.questionIndex + 2}/${boss.totalQuestions})**\n\n${next.situation}\n\n📝 اكتب إجابتك أو اختر «لا أعرف».`;
+    const text = `${correctionText}\n\n➡️ **السؤال التالي (${boss.questionIndex + 2}/${boss.totalQuestions})**\n\n${next.situation}\n\n📝 اكتب إجابتك أو اختر «لا أعرف» لعرض التصحيح.`;
     return { session: newSession, action: { text, quickActions: ['لا أعرف'], sources: [{ type: 'domain' as SourceType, title: 'تحدي BAC' }] } };
   }
   const total = boss.score + points;
   const max = boss.totalQuestions * 10;
   const pct = max > 0 ? Math.round((total / max) * 100) : 0;
   const appreciation = pct >= 80 ? 'ممتاز 🏆' : pct >= 50 ? 'جيد 👍' : 'يحتاج مراجعة 📖';
-  const newSession = finishBossFight(session);
-  const text = `🏁 **انتهى تحدي BAC!**\nنتيجتك: ${total}/${max} نقطة (${pct}%).\nالتقدير: ${appreciation}.`;
-  return { session: newSession, action: { text, quickActions: ['راجع أخطائي السابقة', 'العودة للقائمة الرئيسية'], reward: { xpGained: total }, sources: [{ type: 'domain' as SourceType, title: 'تحدي BAC' }] } };
+  // Anti-farm (recommandation audit #4) : l'XP du défi n'est accordé qu'à la
+  // PREMIÈRE complétion du domaine — completedBac, jusqu'ici jamais rempli,
+  // devient le garde-fou de rejouabilité.
+  const domainKey = String(session.activeDomainId ?? '');
+  const firstTime = domainKey !== '' && !session.completedBac.includes(domainKey);
+  const finished = finishBossFight(session);
+  const newSession: BotSession = firstTime
+    ? { ...finished, completedBac: [...finished.completedBac, domainKey] }
+    : finished;
+  saveSession(newSession);
+  const domain = DOMAINS.find((d) => d.id === session.activeDomainId);
+  const text =
+    `🏁 **انتهى تحدي BAC!**\nنتيجتك: ${total}/${max} نقطة (${pct}%).\nالتقدير: ${appreciation}.` +
+    (firstTime ? '' : '\n🏆 سبق إتمامك هذا التحدي — إعادة بدون XP إضافي.');
+  return {
+    session: newSession,
+    action: {
+      text,
+      quickActions: ['راجع أخطائي السابقة', 'العودة للقائمة الرئيسية'],
+      reward: { xpGained: firstTime ? total : 0, score: total, total: max, kind: 'mission', domain: domain?.title ?? '' },
+      sources: [{ type: 'domain' as SourceType, title: 'تحدي BAC' }],
+    },
+  };
 }
 
 export function processStudentInput(session: BotSession, rawInput: string): EngineResult {

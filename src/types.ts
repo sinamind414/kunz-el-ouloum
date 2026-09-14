@@ -83,6 +83,14 @@ export interface ChatMessage {
     };
     sources?: { type: string; title: string }[];
     confidence?: number;
-    reward?: { xpGained: number };
+    reward?: {
+      xpGained: number;
+      /** Nature de l'activité terminée (journalisation serveur). */
+      kind?: 'quiz' | 'mission';
+      score?: number;
+      total?: number;
+      /** Titre du domaine — part dans la file /api/student/sync. */
+      domain?: string;
+    };
   };
 }

@@ -335,7 +335,11 @@ export default function App() {
 
   // XP gagnés dans le المرشد الذكي (tutor) — même patron que handleQuizComplete :
   // incrément XP + questions comptées + son, persisté immédiatement.
-  const handleTutorXPGained = (xpGained: number, questionsAnswered: number) => {
+  const handleTutorXPGained = (
+    xpGained: number,
+    questionsAnswered: number,
+    details?: { kind?: 'quiz' | 'mission'; score?: number; total?: number; domain?: string }
+  ) => {
     const updatedProgress: UserProgress = {
       ...progress,
       xp: progress.xp + xpGained,
@@ -344,6 +348,15 @@ export default function App() {
     setProgress(updatedProgress);
     saveToLocalStorage(units, flashcards, updatedProgress);
     playXPGainSound();
+
+    // Rec #2 de l'audit المرشد : le travail du tutor part AUSSI dans la file
+    // serveur (/api/student/sync → table activities → dashboard enseignant),
+    // au lieu de rester confiné au localStorage.
+    if (details && (details.total ?? 0) > 0) {
+      import('./utils/studentAccount').then(({ logTutorActivity }) => {
+        logTutorActivity(details.kind ?? 'quiz', details.score ?? 0, details.total ?? 0, details.domain ?? '');
+      });
+    }
   };
 
   const handleQuizComplete = (score: number, total: number) => {

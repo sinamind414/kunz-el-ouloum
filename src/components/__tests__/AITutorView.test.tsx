@@ -4,6 +4,7 @@ import { cleanup, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 import AITutorView from '../AITutorView';
+import { getQuestionById } from '../../data/smartBotData';
 
 // jsdom n'implémente pas scrollIntoView — polyfill minimal pour le harnais.
 beforeAll(() => {
@@ -24,6 +25,25 @@ function messagesText(): string {
 async function typeAndSubmit(user: ReturnType<typeof userEvent.setup>, text: string) {
   const input = screen.getByPlaceholderText('اسأل المرشد الذكي عن أي سؤال في مادة العلوم...');
   await user.type(input, `${text}{Enter}`);
+}
+
+/** Texte de la BONNE option de la question courante (session → id → données). */
+function correctOptionText(): string {
+  const raw = window.localStorage.getItem('smart_tutor_session');
+  const qid = raw ? (JSON.parse(raw) as { currentQuiz?: { questionId?: string } }).currentQuiz?.questionId : undefined;
+  const q = qid ? getQuestionById(qid) : undefined;
+  if (!q) throw new Error(`question courante introuvable (id=${String(qid)})`);
+  return q.options[q.correctIndex];
+}
+
+/** Clique l'option affichée portant le TEXTE de la bonne réponse — insensible au mélange (rec #1). */
+async function answerCorrect(user: ReturnType<typeof userEvent.setup>) {
+  const correct = correctOptionText();
+  const target = screen
+    .getAllByTestId(/^quiz-option-\d+$/)
+    .find((b) => (b.textContent || '').includes(correct));
+  expect(target, `option correcte introuvable: ${correct}`).toBeTruthy();
+  await user.click(target!);
 }
 
 describe('AITutorView — rendu riche du moteur (T2)', () => {
@@ -77,7 +97,7 @@ describe('AITutorView — rendu riche du moteur (T2)', () => {
     await user.click(screen.getByTestId('journey-diagnostic'));
     await waitFor(() => expect(messagesText()).toContain('بدأ التشخيص'));
 
-    await user.click(screen.getAllByTestId(/^quiz-option-\d+$/)[0]);
+    await answerCorrect(user);
     await waitFor(() => {
       expect(messagesText()).toMatch(/إجابة صحيحة|إجابة خاطئة/);
     });
@@ -88,7 +108,7 @@ describe('AITutorView — rendu riche du moteur (T2)', () => {
     while (!messagesText().includes('نتيجتك النهائية') && guard < 40) {
       const opts = screen.getAllByTestId(/^quiz-option-\d+$/);
       if (opts.length === 0) break;
-      await user.click(opts[0]);
+      await answerCorrect(user);
       guard += 1;
       await waitFor(
         () => expect(messagesText()).toMatch(/إجابة صحيحة|إجابة خاطئة|نتيجتك النهائية/),
@@ -139,12 +159,13 @@ describe('AITutorView — rendu riche du moteur (T2)', () => {
     expect(screen.getAllByTestId(/^quiz-option-\d+$/).length).toBe(4);
 
     // 4. Répondre jusqu'au score final — toujours au DERNIER bloc quiz rendu.
-    //    (Toutes les réponses correctes du domaine 1 sont à l'index 0 = A → score 23/23.)
+    //    (rec #1 : les options sont mélangées → on clique le TEXTE de la bonne
+    //    réponse via answerCorrect, pas une position fixe.)
     let guard = 0;
     while (!messagesText().includes('نتيجتك النهائية') && guard < 40) {
       const opts = screen.getAllByTestId(/^quiz-option-\d+$/);
       if (opts.length === 0) break;
-      await user.click(opts[0]);
+      await answerCorrect(user);
       guard += 1;
       await waitFor(
         () => expect(messagesText()).toMatch(/إجابة صحيحة|إجابة خاطئة|نتيجتك النهائية/),
@@ -188,14 +209,19 @@ describe('AITutorView — rendu riche du moteur (T2)', () => {
       expect(messagesText()).toContain('وضعية مشكلة');
     });
 
-    // « لا أعرف » (quickAction du boss) → correction + auto-éval
+    // « لا أعرف » (quickAction du boss) → correction + 0 نقطة + question suivante
+    // (rec #3 : l'auto-évaluation +10/+5/0 est remplacée par la notation moteur).
     await user.click(screen.getByText('لا أعرف'));
     await waitFor(() => {
       expect(messagesText()).toContain('التصحيح النموذجي');
-    });
-    await user.click(screen.getByText('إجابة كاملة (+10)'));
-    await waitFor(() => {
+      expect(messagesText()).toMatch(/نقاطك لهذه الوضعية/);
       expect(messagesText()).toMatch(/السؤال التالي|انتهى تحدي BAC/);
+    });
+
+    // 2e scénario : une réponse libre est notée automatiquement puis le défi se clôt.
+    await typeAndSubmit(user, 'إجابة قصيرة غير كافية');
+    await waitFor(() => {
+      expect(messagesText()).toContain('انتهى تحدي BAC');
     });
   });
 

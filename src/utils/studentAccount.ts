@@ -37,3 +37,20 @@ export function logProductionActivity(theme: string, icm: number, durationSec?: 
   });
   flushActivityQueue();
 }
+
+/** Le المرشد الذكي journalise ses quiz (diagnostic) et défis BAC — rec #2 audit.
+ *  Même contrat que logQuizActivity : file locale → flush /api/student/sync. */
+export function logTutorActivity(kind: 'quiz' | 'mission', score: number, total: number, domainLabel: string) {
+  logActivityLocally({
+    studentId: 'local',
+    type: kind,
+    payload: {
+      title: kind === 'quiz' ? 'المرشد — اختبار تشخيصي' : 'المرشد — تحدي BAC',
+      score,
+      total,
+      percent: total > 0 ? Math.round((score / total) * 100) : 0,
+      domain: domainLabel,
+    },
+  });
+  flushActivityQueue();
+}

@@ -4,14 +4,15 @@ import { Send, Sparkles, AlertCircle, Trash2, BrainCircuit, Target, Stethoscope,
 import { ChatMessage } from '../types';
 import { MASCOT_URL } from '../data';
 
-import { processStudentInput, getDailyMission } from '../smartTutorEngine';
+import { processStudentInput, getDailyMission, type TutorRewardDetails, type EngineResult } from '../smartTutorEngine';
 import { DOMAINS } from '../data/smartBotData';
 import { loadSession, saveSession, resetSession, type BotSession } from '../utils/sessionManager';
 
 interface AITutorViewProps {
   onBackToDashboard?: () => void;
-  /** Propagation des XP gagnés dans le tutor vers le UserProgress global de l'App. */
-  onXPGained?: (xpGained: number, questionsAnswered: number) => void;
+  /** Propagation des XP gagnés dans le tutor vers le UserProgress global de l'App.
+   *  details (3e param) porte la fin d'activité → journalisation serveur (rec #2 de l'audit). */
+  onXPGained?: (xpGained: number, questionsAnswered: number, details?: TutorRewardDetails) => void;
 }
 
 const JOURNEY_BUTTONS = [
@@ -46,7 +47,7 @@ export default function AITutorView({ onBackToDashboard, onXPGained }: AITutorVi
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages, isLoading]);
 
-  const runEngine = (result: { session: BotSession; action: { text: string; quickActions?: string[]; quiz?: unknown; sources?: unknown; confidence?: number; reward?: { xpGained: number } } }) => {
+  const runEngine = (result: EngineResult) => {
     setSession(result.session);
     saveSession(result.session);
     const aiMsg: ChatMessage = {
@@ -66,7 +67,12 @@ export default function AITutorView({ onBackToDashboard, onXPGained }: AITutorVi
     // Propagation XP vers le UserProgress global (badge header + stats).
     // questionsAnswered = 1 seulement quand le moteur clôture un quiz (reward présent).
     if (result.action.reward && result.action.reward.xpGained > 0) {
-      onXPGained?.(result.action.reward.xpGained, 1);
+      onXPGained?.(result.action.reward.xpGained, 1, {
+        kind: result.action.reward.kind ?? 'quiz',
+        score: result.action.reward.score ?? 0,
+        total: result.action.reward.total ?? 0,
+        domain: result.action.reward.domain ?? '',
+      });
     }
   };
 
