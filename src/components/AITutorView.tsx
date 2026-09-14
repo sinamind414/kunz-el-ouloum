@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Send, Sparkles, AlertCircle, Trash2, BrainCircuit, Target, Stethoscope, Swords, ClipboardList, Globe2 } from 'lucide-react';
 import { ChatMessage } from '../types';
-import { MASCOT_URL } from '../data';
+import { MORCHID_LOGO_URL } from '../data';
 
 import { processStudentInput, getDailyMission, type TutorRewardDetails, type EngineResult } from '../smartTutorEngine';
 import { DOMAINS } from '../data/smartBotData';
@@ -187,8 +187,8 @@ export default function AITutorView({ onBackToDashboard, onXPGained }: AITutorVi
           <div className="relative">
             <div className="absolute inset-0 bg-[#006d37]/10 rounded-full blur-sm" />
             <img
-              src={MASCOT_URL}
-              alt="Mascot Avatar"
+              src={MORCHID_LOGO_URL}
+              alt="Morchid Logo"
               className="w-10 h-10 rounded-full object-contain border border-[#006d37]/10 relative bg-[#ffffff] p-1"
               referrerPolicy="no-referrer"
             />
@@ -225,7 +225,7 @@ export default function AITutorView({ onBackToDashboard, onXPGained }: AITutorVi
               {msg.sender === 'ai' && (
                 <div className="shrink-0">
                   <img
-                    src={MASCOT_URL}
+                    src={MORCHID_LOGO_URL}
                     alt="AI Avatar"
                     className="w-8 h-8 rounded-full border border-[#e2dabf]/50 p-0.5 bg-[#ffffff] object-contain"
                     referrerPolicy="no-referrer"
@@ -343,7 +343,7 @@ export default function AITutorView({ onBackToDashboard, onXPGained }: AITutorVi
           >
             <div className="shrink-0">
               <img
-                src={MASCOT_URL}
+                src={MORCHID_LOGO_URL}
                 alt="AI Avatar"
                 className="w-8 h-8 rounded-full border border-[#e2dabf]/50 p-0.5 bg-[#ffffff] object-contain"
                 referrerPolicy="no-referrer"

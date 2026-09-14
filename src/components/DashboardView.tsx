@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { Trophy, Flame, Play, Lock, ChevronRight, User, Compass, Target, Hourglass, AlertTriangle, Dices, HelpCircle, Moon, Share2, Network, Sparkles } from 'lucide-react';
+import { Trophy, Flame, Play, Lock, ChevronRight, Compass, Target, Hourglass, AlertTriangle, Dices, HelpCircle, Moon, Share2, Network, Sparkles } from 'lucide-react';
 import { Unit, UserProgress, DailyGoalConfig } from '../types';
+import { LOGO_URL } from '../data';
 import DailyGoalWidget from './DailyGoalWidget';
 import SmartReminderCard from './SmartReminderCard';
 import WeeklyReportShareModal from './WeeklyReportShareModal';
@@ -40,8 +41,8 @@ export default function DashboardView({
       {/* Header */}
       <div className="flex justify-between items-center mb-4">
         <div className="flex items-center gap-3">
-          <div className="w-12 h-12 bg-[#006d37] rounded-2xl flex items-center justify-center text-white shadow-sm font-black">
-             <User className="w-6 h-6" />
+          <div className="w-12 h-12 bg-white dark:bg-[#141916] rounded-2xl flex items-center justify-center shadow-sm border border-[#006d37]/15 overflow-hidden">
+             <img src={LOGO_URL} alt="كنز العلوم" className="w-11 h-11 object-contain" />
           </div>
           <div>
             <h1 className="text-2xl font-black text-[#006d37] dark:text-emerald-400">مساري</h1>

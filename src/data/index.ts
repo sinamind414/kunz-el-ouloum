@@ -6,6 +6,12 @@ export const DIAGRAM_QUIZ_URL = "https://lh3.googleusercontent.com/aida-public/A
 export const DIAGRAM_FLASHCARD_URL = "https://lh3.googleusercontent.com/aida-public/AB6AXuBm2eS7wegmPkIFmjuqd-3EAxmECqfZvrjse-TYR8LjmIMIWMm3CICN7WobYQumt8a3OCLBjP6S_2-FCQ5q86oM0SVUfFql3evu1K0IUv1_Ex6axew-StCgYxHfUBwYWd8RDn-sVOlCLCXb5qwEjgeJLBioKizAOkweCqP816LrJHRXD_U-nPmGX09AlUHYYnaJV2eG4J5vbNnKavSTcb_ChNrXPtdLMmok63LgMDRpJokSTgwLOCx4v8D2JXq19F7Ri3T_TCMu4Q";
 export const MASCOT_URL = "/assets/images/mascot-512.png";
 
+/** Logo officiel de la plateforme كنز العلوم (page d'accueil / splash / favicon). */
+export const LOGO_URL = "/logo_site.png";
+
+/** Logo dédié au المرشد الذكي (en-tête + avatars de la conversation). */
+export const MORCHID_LOGO_URL = "/logo_morchid.png";
+
 export const INITIAL_UNITS: Unit[] = CATALOG_UNITS;
 export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = CORPUS_QUIZ_QUESTIONS;
 

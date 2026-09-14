@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Rocket, ChevronLeft, ShieldCheck, Trophy, Sparkles, Volume2, VolumeX, Key, Music, Anchor } from 'lucide-react';
-import { MASCOT_URL } from '../data';
+import { LOGO_URL } from '../data';
 import { startPirateMusic, stopPirateMusic } from '../utils/audio';
 
 interface SplashViewProps {
@@ -106,8 +106,8 @@ export default function SplashView({ onStart }: SplashViewProps) {
                 initial={{ scale: 1.1, opacity: 0.15 }}
                 animate={{ scale: 1.0, opacity: 0.25 }}
                 transition={{ duration: 10, repeat: Infinity, repeatType: "reverse" }}
-                src={MASCOT_URL} 
-                alt="Pirate Watermark" 
+                src={LOGO_URL} 
+                alt="Kunz El Ouloum Watermark" 
                 className="w-full h-full object-cover opacity-25 filter brightness-50 mix-blend-overlay"
                 referrerPolicy="no-referrer"
               />
@@ -186,8 +186,8 @@ export default function SplashView({ onStart }: SplashViewProps) {
                   className="relative p-2"
                 >
                   <img 
-                    src={MASCOT_URL} 
-                    alt="Pirate Mascot" 
+                    src={LOGO_URL} 
+                    alt="Kunz El Ouloum" 
                     className="w-56 h-56 md:w-72 md:h-72 object-contain filter drop-shadow-[0_12px_24px_rgba(254,214,91,0.35)]"
                     referrerPolicy="no-referrer"
                   />
@@ -259,8 +259,8 @@ export default function SplashView({ onStart }: SplashViewProps) {
                   <motion.img 
                     animate={{ y: [0, -10, 0] }}
                     transition={{ repeat: Infinity, duration: 5, ease: "easeInOut" }}
-                    src={MASCOT_URL} 
-                    alt="Mascot" 
+                    src={LOGO_URL} 
+                    alt="Kunz El Ouloum" 
                     className="w-40 h-40 md:w-52 md:h-52 object-contain"
                     referrerPolicy="no-referrer"
                   />
