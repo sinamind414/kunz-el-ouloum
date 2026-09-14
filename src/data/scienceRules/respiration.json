@@ -1,0 +1,96 @@
+{
+  "id": "respiration",
+  "theme": "respiration_métabolisme",
+  "facts": [
+    {
+      "id": "glycolyse_cytoplasme",
+      "label_ar": "Glycolyse dans le cytoplasme hyaloplasme (2 ATP)",
+      "variants": [
+        "الغليكوليز في الهيولى",
+        "الغليكوليز في الهيلوبلاسم",
+        "سير الغليكوليز في الهيولى الخلوي",
+        "تحلل السكريات في الهيولى",
+        "مرحلة الغليكوليز في السيتوبلازم"
+      ],
+      "weight": 2
+    },
+    {
+      "id": "krebs_matrice",
+      "label_ar": "Cycle de Krebs dans la matrice mitochondriale (2 ATP)",
+      "variants": [
+        "دورة كريبس في المصفوفة الميتوكوندرية",
+        "دورة كريبس في مصفوفة الميتوكوندريا",
+        "دورة كريبس في الميتوكوندري",
+        "المرحلة الكيموهيدروجينية في الميتوكوندريا",
+        "دورة كيربس في المصفوفة",
+        "دورة Krebs dans la matrice"
+      ],
+      "weight": 2
+    },
+    {
+      "id": "chaine_membrane_interne",
+      "label_ar": "Chaîne respiratoire sur la membrane interne mitochondriale (34 ATP)",
+      "variants": [
+        "سلسلة التنفس على الغشاء الداخلي للميتوكوندريا",
+        "سلسلة التنفس على الغشاء الداخلي",
+        "الفسفرة التأكسدية على الغشاء الداخلي",
+        "سلسلة النقل الإلكتروني",
+        "سلسلة التنفس على الغشاء",
+        "الفسفرة التاكسيداتيفة",
+        "سلسلة التنفس الخلوي على الغشاء",
+        "السلسلة التنفسية على الغشاء الداخلي"
+      ],
+      "weight": 3
+    },
+    {
+      "id": "total_38_atp",
+      "label_ar": "Bilan total 38 ATP (glycolyse 2 + Krebs 2 + chaîne 34)",
+      "variants": [
+        "38 ATP",
+        "إجمالي 38 ATP",
+        "38 وحدة طاقة",
+        "إجمالي طاقة 38",
+        "مجموع 38 ATP",
+        "الإجمالي 38"
+      ],
+      "weight": 3
+    },
+    {
+      "id": "compartmentnes",
+      "label_ar": "Compartimentation cellulaire : hyaloplasme → mitochondrie",
+      "variants": [
+        "الهيولي والميتوكوندري",
+        "السيتوبلازم والميتوكوندري",
+        "الهيلوبلاسم والميتوكوندري",
+        "مكانين مختلفين",
+        "الميتوكوندري عضي تنفسي",
+        "المصفوفه والغشاء الداخلي"
+      ],
+      "weight": 2
+    }
+  ],
+  "errors": [
+    {
+      "id": "erreur_36_atp",
+      "pattern": "36 ATP",
+      "label_ar": "خطأ grave : 36 ATP au lieu de 38 ATP",
+      "msg_ar": "⚠️ خطأ جسيم: 36 ATP غير صحيح - يجب 38 ATP (2 غليكوليز + 2 كريبس + 34 سلسلة)",
+      "severity": "grave"
+    },
+    {
+      "id": "glycolyse_mitochondrie",
+      "pattern": "(الغليكوليز|التحلل السكري)(\\s+\\S+){0,3}\\s+(داخل|في|ب)\\s+(ال)?ميتوكوندري",
+      "label_ar": "خطأ : glycolyse dans mitochondria (c'est dans l'hyaloplasme)",
+      "msg_ar": "⚠️ الغليكوليز لا يكون داخل الميتوكوندريا بل في الهيولى الخلوي (السيتوبلازم)",
+      "severity": "grave"
+    },
+    {
+      "id": "Krebs_hyaloplasme",
+      "pattern": "(كريبس|كيربس|دوره كريبس)(\\s+\\S+){0,3}\\s+(داخل|في|ب)\\s+(ال)?(هيولي|سيتوبلازم)",
+      "label_ar": "خطأ : Krebs dans l'hyaloplasme (c'est dans la matrice)",
+      "msg_ar": "⚠️ دورة كريبس تكون داخل المصفوفة الميتوكوندرية لا في الهيولى",
+      "severity": "grave"
+    }
+  ],
+  "contradictions": []
+}

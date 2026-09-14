@@ -22,7 +22,13 @@ export function normalizeAr(input: string): string {
 /** Recherche insensible à la casse pour un token latin (PPM, PPSE, ACh, H2…). */
 export function containsLatin(raw: string, token: string): boolean {
   const norm = normalizeAr(raw).toLowerCase();
-  return norm.includes(token.toLowerCase());
+  // Le token doit subir la MÊME normalisation que le texte (tatweel, ة→ه,
+  // hamzas, harakat…) : un terme mixte arabe+latin comme « نضج الـ ARNm »
+  // contient un tatweel qui sinon ne se retrouve jamais dans le texte
+  // normalisé. Garde-fou : un token qui disparaît à la normalisation
+  // (ex. « % ») ne doit jamais matcher toute la chaîne (includes('')).
+  const needle = normalizeAr(token).toLowerCase();
+  return needle.length > 0 && norm.includes(needle);
 }
 
 /** Recherche d'un mot arabe normalisé. */

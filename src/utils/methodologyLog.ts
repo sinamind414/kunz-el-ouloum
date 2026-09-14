@@ -3,11 +3,14 @@
 // Chaque production écrite de l'élève (brouillon + note + critères
 // + erreurs détectées) est archivée localement pour permettre un
 // vrai diagnostic de progression dans le temps.
-// 100% local : aucune donnée ne quitte l'appareil de l'élève.
+// Local PAR DÉFAUT (aucune donnée ne quitte l'appareil sans compte) ;
+// avec compte élève : la production part AUSSI en file serveur
+// (activityLog.queueSyncEntry) → dashboard enseignant.
 // ============================================================
 
 // M4 · source unique des libellés : dérivé de ERROR_TAXONOMY (pas de quatrième liste manuelle)
 import { ERROR_TAXONOMY, getVerbCardV2 } from '../data/methodologyEngine';
+import { queueSyncEntry } from './activityLog';
 
 export interface ProductionLogEntry {
   id: string;
@@ -93,6 +96,23 @@ export function logProduction(entry: Omit<ProductionLogEntry, 'id' | 'dateISO'>)
       all.splice(0, all.length - MAX_ENTRIES);
     }
     localStorage.setItem(STORAGE_KEY, JSON.stringify(all));
+
+    // WIRE-SYNC : si l'élève a un compte, la production part AUSSI vers le
+    // serveur (file d'attente offline-first, flush immédiat best-effort).
+    // Sans token, queueSyncEntry ne sort RIEN de l'appareil.
+    queueSyncEntry({
+      id: full.id,
+      verbId: full.verbId,
+      verbAr: full.verbAr,
+      theme: full.theme,
+      stage: full.stage,
+      text: full.text,
+      icm: full.icm,
+      criteriaSummary: full.criteriaSummary || [],
+      errorTags: full.errorTags || [],
+      durationSec: full.durationSec,
+      createdAt: full.dateISO,
+    });
   } catch (e) {
     console.warn('Impossible d’archiver la production:', e);
   }

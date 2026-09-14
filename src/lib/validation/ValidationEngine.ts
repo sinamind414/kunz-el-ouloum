@@ -7,6 +7,8 @@ import { detectLevels, matchesSynonym } from './synonyms';
 import { getMessageAr } from './messages.ar';
 import { mapVerb } from './verbMapping';
 import { computePositiveScore, computeXp, DEFAULT_THRESHOLD, LABEL_TRAINING } from './scoring';
+import { chercherErratum } from '../../data/manuelErrata';
+import { estNonExigible } from '../../data/curriculumOfficial';
 
 export type LoiId = `loi_${0 | 1 | 2 | 3 | 4 | 5}`;
 
@@ -403,6 +405,42 @@ export function validateAnswer(rawAnswer: string, ctx: ValidationContext): Valid
   checksRun.push('COPY_PROMPT');
   if (promptCopyRatio(raw, ctx.promptAr) >= 0.7) {
     pushError(errors, broken, 'COPY_PROMPT', 'major', null);
+  }
+
+  // 15) Errata officiel (دليل الأستاذ) — HINT non pénalisant : une forme
+  // imprimée à tort dans le manuel n'est JAMAIS sanctionnée chez l'élève ;
+  // on signale simplement la forme correcte officielle (severity hint = 0 pt).
+  checksRun.push('ERRATA_OFFICIEL');
+  const erratum = chercherErratum(raw);
+  if (erratum) {
+    errors.push({
+      code: 'ERRATA_MANUEL',
+      severity: 'hint',
+      loi: null,
+      messageAr: getMessageAr('ERRATA_MANUEL'),
+      found: erratum.faux,
+      expected: erratum.formeCorrecte,
+    });
+  }
+
+  // 16) Non-exigibles BAC (التدرج السنوي p.6 : « يمتحن التلميذ على ما جاء في
+  // المنهاج وليس على المحتوى المعرفي الموجود في الكتاب المدرسي ») — HINT :
+  // un terme du manuel officiellement écarté du BAC est crédité à sa juste
+  // valeur (jamais exigé), sans pénalité pour l'élève qui l'emploie.
+  checksRun.push('NON_EXIGIBLES');
+  for (const t of ctx.expectedTargets ?? []) {
+    const nonExigible = /[a-zA-Z]/.test(t) ? containsLatin(raw, t) && estNonExigible(t) : containsAr(raw, t) ? estNonExigible(t) : null;
+    if (nonExigible) {
+      errors.push({
+        code: 'NON_EXIGIBLE_BAC',
+        severity: 'hint',
+        loi: null,
+        messageAr: getMessageAr('NON_EXIGIBLE_BAC'),
+        found: t,
+        expected: nonExigible.raison,
+      });
+      break; // un seul HINT suffit, pas de spam
+    }
   }
 
   // Crédits positifs de contenu (barème positif, audit #01) :

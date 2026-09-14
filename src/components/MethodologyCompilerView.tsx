@@ -15,6 +15,7 @@ import {
 import { isExtensionUnlocked, recordDrillResult, getDrillStatus, getMasteryStatus, recordTypeMastery, todayISO } from '../data/v3Progress';
 import { DRILL_BANK, drawDailyConsignes, gradeDrill, PHASE0_DEMOS, isPhase0Done, completePhase0, resetPhase0, DrillAnswer, DrillConsigne, DrillGrade, DRILL_LABELS } from '../data/drillBank';
 import { evaluateStudentProduction, ScoreReport, SwitchLine, StepLine } from '../utils/methodologyScorer';
+import { methodologyToLetterWithText, MethodologyLetterReport } from '../utils/methodologyToLetter';
 import { logProduction, getProductionLogs, getVerbEvolution, VerbEvolutionStats, ProductionLogEntry, verbSlidingRatio } from '../utils/methodologyLog';
 import { evaluatePhase2, remediationTargets } from '../utils/phase2';
 import { addCorrectionItem, getCorrectionQueue, markCorrection, correctionStats, setRealScore } from '../utils/correctionQueue';
@@ -24,6 +25,7 @@ import BoussoleCard from './BoussoleCard';
 import MiftahCard from './MiftahCard';
 import MeftahView from './MeftahView';
 import TahlilWall from './TahlilWall';
+import CorrecteurPanel from './CorrecteurPanel';
 import { TIME_RULES, getStepData } from '../data/boussoleData';
 
 // B1 · tons du rapport + libellés interrupteur au niveau module (le bloc « 4 étapes » les lit hors closure)
@@ -56,6 +58,8 @@ export default function MethodologyCompilerView({ onBackToHome }: MethodologyPro
   const [activeTab, setActiveTab] = useState<'simulator' | 'verbs_ref' | 'engine_rules' | 'mastery_matrix' | 'correction' | 'boussole_card' | 'meftah_v43' | 'tahlil_wall'>('simulator');
   // File de correction (Phase 3) — bump pour rafraîchir l'onglet + le badge
   const [correctionVersion, setCorrectionVersion] = useState(0);
+  // Grille de lettres (portage TS) — verdict officiel calculé au submit
+  const [letterReport, setLetterReport] = useState<MethodologyLetterReport | null>(null);
   const [refCardOpen, setRefCardOpen] = useState(false); // carte-référence en stage 4
   // Phase 4 — auto-évaluation /20 (calibration) + brouillons des notes réelles
   const [selfScore, setSelfScore] = useState<string>('');
@@ -239,9 +243,10 @@ export default function MethodologyCompilerView({ onBackToHome }: MethodologyPro
   // Handle stage change
 const handleSelectStage = (stage: 1 | 2 | 3 | 4) => {
      if (!currentExercise) return;
-     setCurrentStage(stage);
-     setScoreReport(null);
-     setSwitchChoice(null);
+      setCurrentStage(stage);
+      setScoreReport(null);
+      setLetterReport(null);
+      setSwitchChoice(null);
      if (stage === 3) {
       if (freeReview) {
         // Révision libre (dernier mois) : la méthode est un outil, pas un mur — pas de portes
@@ -290,6 +295,8 @@ const handleSelectStage = (stage: 1 | 2 | 3 | 4) => {
     });
     const rep = evaluateStudentProduction(selectedVerbId, fullText, undefined, 2, { switchChoice });
     setScoreReport(rep);
+    // Stage 2 (complétion) : la lettre n'est pas le verdict d'une copie — pas de grille
+    setLetterReport(null);
     // Carnet de bord : archiver la production complétée (diagnostic d'évolution)
     logProduction({
       verbId: selectedVerbId,
@@ -325,6 +332,8 @@ const handleSelectStage = (stage: 1 | 2 | 3 | 4) => {
     };
     const rep = evaluateStudentProduction(selectedVerbId, studentText, draft, currentStage, { switchChoice });
     setScoreReport(rep);
+    // Grille de lettres : la lettre naît des statuts des critères (jamais du %)
+    setLetterReport(methodologyToLetterWithText(rep, studentText));
 
     // Carnet de bord : archiver le brouillon complet de l'élève (texte + résumé)
     const fullDraft = `${studentText}${draftVerb || draftSteps || draftFinalSentence ? `\n— البطاقة: ${[draftVerb, draftSteps, draftFinalSentence].filter(Boolean).join(' · ')}` : ''}`.trim();
@@ -1514,6 +1523,14 @@ const handleSelectStage = (stage: 1 | 2 | 3 | 4) => {
                 </div>
 
                 <div className="flex items-center gap-3">
+                  {/* Grille de lettres — verdict officiel (statuts → lettre, jamais un % converti).
+                      Stage 3/4 uniquement : une complétion (stage 2) n'est pas une copie. */}
+                  {letterReport && (
+                    <div className="px-5 py-2.5 rounded-2xl bg-[#006d37] text-white text-center font-black shadow-md min-w-[120px]">
+                      <span className="text-3xl md:text-4xl block leading-none tracking-tight">{letterReport.display.overall}</span>
+                      <span className="text-[10px] uppercase opacity-90 block mt-1">التقييم الرسمي — الحروف</span>
+                    </div>
+                  )}
                   <div className={`px-5 py-2.5 rounded-2xl text-center font-black ${
                     scoreReport.icm >= 90
                       ? 'bg-emerald-500 text-white'
@@ -1526,6 +1543,29 @@ const handleSelectStage = (stage: 1 | 2 | 3 | 4) => {
                   </div>
                 </div>
               </div>
+
+              {/* Grille de lettres — 3 lignes pour l'élève (المنهجية / العلم / العام) + next step */}
+              {letterReport && (
+                <div dir="rtl" className="p-4 rounded-2xl bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-gray-800 space-y-2">
+                  <div className="flex items-center gap-2 font-black text-sm text-gray-800 dark:text-gray-100">
+                    <Award className="w-4 h-4 text-amber-500" />
+                    <span>شبكة الحروف — الحكم الرسمي على الشكل</span>
+                  </div>
+                  {letterReport.display.lines.map((line, i) => (
+                    <div key={i} className={`text-sm font-bold ${i === 2 ? 'text-[#006d37] dark:text-emerald-400' : 'text-gray-800 dark:text-gray-200'}`}>
+                      {line}
+                    </div>
+                  ))}
+                  {letterReport.letters.nextStepAr && (
+                    <div className="pt-2 border-t border-gray-200 dark:border-gray-700 text-xs text-gray-600 dark:text-gray-400 font-medium leading-relaxed">
+                      {letterReport.letters.nextStepAr}
+                    </div>
+                  )}
+                  <div className="text-[10px] text-gray-400 font-medium">
+                    ملاحظة: هذه ليست علامة بكالوريا رسمية — الشكل يقيمه المحرك، والمضمون العلمي يقرره الأستاذ في «المصححة».
+                  </div>
+                </div>
+              )}
 
               {/* Phase 2 — verdict « forme validée » (audit §3.3) : les 3 portes, jamais le fond */}
               {/* Ligne 7 — mode examen : le score auto par tags, la note réelle humaine est la référence */}
@@ -2295,6 +2335,8 @@ const handleSelectStage = (stage: 1 | 2 | 3 | 4) => {
                       </div>
                     )}
                     <p className="mt-2 text-xs leading-relaxed text-gray-700 dark:text-gray-300 bg-gray-50 dark:bg-black/20 p-3 rounded-xl whitespace-pre-line max-h-40 overflow-y-auto">{item.text}</p>
+                    {/* المصحح الآلي — تحليل المفاهيم (dictionnaire final) + sanctions + barème */}
+                    <CorrecteurPanel text={item.text} />
                     {item.status === 'pending' ? (
                       <div className="flex flex-wrap items-center gap-2 mt-3">
                         <button onClick={()=>{ markCorrection(item.id, 'approved'); setCorrectionVersion(v=>v+1); }} className="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-bold text-xs">✅ المضمون سليم</button>

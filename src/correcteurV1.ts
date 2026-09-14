@@ -1,4 +1,4 @@
-// correcteurV1.ts
+﻿// correcteurV1.ts
 // Banque de mots-clés du correcteur V1 — Sciences de la Nature et de la Vie (3AS, Sciences expérimentales).
 //
 // CONTRAT : chaque mot-clé est issu exclusivement des sources officielles suivantes :
@@ -6,10 +6,27 @@
 //   [L2] 504601676-كتاب-العلوم-للطالبة-اكرام-بوزار.txt — livre de révision (élève tête de classe)
 //   [L3] LIVRE MANHADJIYA.md           — guide de méthodologie BAC (الكلمات المفتاحية، الأفعال الأدائية)
 //   [L4] PROGRAMME NATIONAL SCIENCE VIE BAC - Copie.txt — programme national détaillé
+//   [L5] التدرج-السنوي-للتعلمات-2017.txt — progression annuelle officielle (Ministère, جوان 2017)
+//   [L6] دليل-الأستاذ-2017.txt          — guide officiel de l'enseignant (Ministère, 2017)
 // Le test src/correcteurV1.test.ts vérifie la traçabilité : chaque mot-clé doit apparaître
 // dans au moins une de ces sources. Aucun terme ajouté "à la main" sans source.
+// Mots-clés [L5] = الموارد المستهدفة mot à mot (exigibles BAC : « يمتحن التلميذ على
+// ما جاء في المنهاج وليس على المحتوى المعرفي الموجود في الكتاب المدرسي »).
+//
+// COUCHE DICTIONNAIRE (build 2026-09-14 — src/data/dictionaries/dictionnaire_final.json) :
+// en complément de la banque L1..L6 ci-dessous (JAMAIS modifiée), le chemin PAR DÉFAUT
+// consomme les entités du DICTIONNAIRE FINAL (617 entités, build généré — sources =
+// fichiers data/). Règle moteur du build appliquée (voir dictionnaireCorrecteur.ts) :
+//   · notation sur fiabilite « officiel » + « verifie » uniquement ;
+//   · « a_valider » = piste + flag AMBIGUITE_LEXICALE — tolérée, JAMAIS notée ;
+//   · rattachement aux unités via les refs sources (D1U1..D3U3 → ids 1..11).
 
 import { normalizeAr } from './lib/validation/normalizeAr';
+import {
+  evaluerEntites,
+  formesArUnite,
+  type EntiteDetectee,
+} from './data/dictionaries/dictionnaireCorrecteur';
 
 export type DomaineCorrecteur = 1 | 2 | 3;
 
@@ -28,6 +45,8 @@ export const SOURCES_LABELS: Record<string, string> = {
   L2: '504601676-كتاب-العلوم-للطالبة-اكرام-بوزار.txt',
   L3: 'LIVRE MANHADJIYA.md',
   L4: 'PROGRAMME NATIONAL SCIENCE VIE BAC - Copie.txt',
+  L5: 'التدرج-السنوي-للتعلمات-2017.txt',
+  L6: 'دليل-الأستاذ-2017.txt',
 };
 
 // ══════════════════════════════════════════════════════════════════════════════
@@ -49,8 +68,13 @@ export const CORRECTEUR_V1_UNITES: CorrecteurUnite[] = [
       'تنشيط', 'الأمينو أسيل', 'الترجمة', 'الاستنساخ المتعدد', 'استطالة',
       'الإنترونات', 'الإكزونات', 'القطع الدالة', 'القطع غير الدالة',
       'النيوكليوتيدات', 'التصوير الإشعاعي الذاتي', 'الريبونوكلياز', 'تعدد الرموز',
+      // [L5] الموارد المستهدفة (exigibles BAC — التدرج السنوي 2017)
+      'مقر تركيب البروتين', 'انتقال المعلومة الوراثية من النواة', 'حل شفرة المعلومة',
+      'شروط التركيب',
+      // [L6] دليل الأستاذ 2017 (corrigés officiels)
+      'الحمض الريبي النووي الرسول', 'رامزة AUG', 'الانتخاب اللمي',
     ],
-    sources: ['L1', 'L2'],
+    sources: ['L1', 'L2', 'L5', 'L6'],
   },
   {
     uniteId: 2,
@@ -66,8 +90,12 @@ export const CORRECTEUR_V1_UNITES: CorrecteurUnite[] = [
       'الرابطة الببتيدية', 'طفرة', 'الموقع 6', 'التخريب', 'المنجلي',
       'الطرف الأميني', 'الطرف الكربوكسيلي', 'مناطق الانعطاف', 'الأوراق المطوية',
       'الكيراتين', 'الترحيل الكهربائي',
+      // [L5] الموارد المستهدفة (التدرج السنوي 2017)
+      'تدخل الأحماض الأمينية في تشكيل البروتين',
+      // [L6] دليل الأستاذ 2017 (corrigés officiels)
+      'الفبرووين', 'pHi', 'سلوك الأحماض', 'جسور ثنائية الكبريت',
     ],
-    sources: ['L1', 'L2'],
+    sources: ['L1', 'L2', 'L5', 'L6'],
   },
   {
     uniteId: 3,
@@ -80,8 +108,12 @@ export const CORRECTEUR_V1_UNITES: CorrecteurUnite[] = [
       'pH المثلى', 'تخريب غير عكسي', 'كاتلاز', 'البيبسين', 'التربسين',
       'البيبسينوجين', 'الشروط المثلى', 'نوعية', 'تثبيط',
       'التكامل الحفزي', 'محلول اليود', 'سكر مختزل', 'الراشح',
+      // [L5] الموارد المستهدفة (التدرج السنوي 2017)
+      'شروط الوسط المثلى', 'معقد أنزيم-مادة تفاعل',
+      // [L6] دليل الأستاذ 2017 (corrigés officiels)
+      'عدم تحمل اللكتوز', 'إنزيم السكراز', 'إنزيم المالتاز',
     ],
-    sources: ['L1', 'L2'],
+    sources: ['L1', 'L2', 'L5', 'L6'],
   },
   {
     uniteId: 4,
@@ -98,8 +130,16 @@ export const CORRECTEUR_V1_UNITES: CorrecteurUnite[] = [
       'معقد الهجوم الغشائي', 'اللمفاويات السامة', 'اللمفاويات المساعدة',
       'التسامح الذاتي', 'الغلوبيولينات المناعية', 'المناعة المكتسبة', 'رفض الطعم',
       'العدوى الانتهازية', 'GP120',
+      // [L5] الموارد المستهدفة (التدرج السنوي 2017)
+      'التمييز بين الذات', 'مظاهر التعرف', 'التخلص من المعقد المناعي',
+      'مصدر الأجسام المضادة', 'طريقة تأثير الخلايا اللمفاوية التائية',
+      'مصدر الخلايا اللمفوية التائية السامة', 'آلية تحفيز الخلايا البائية والتائية',
+      'اختيار نمط الاستجابة المناعية المناسبة', 'سبب العجز الجهاز المناعي',
+      // [L6] دليل الأستاذ 2017 (corrigés officiels)
+      'الوسم المناعي', 'مستضد D', 'دور البلعميات في القضاء', 'الأنترلوكين 2',
+      'التعرف المزدوج', 'صدمة حلولية',
     ],
-    sources: ['L1', 'L2'],
+    sources: ['L1', 'L2', 'L5', 'L6'],
   },
   {
     uniteId: 5,
@@ -114,8 +154,15 @@ export const CORRECTEUR_V1_UNITES: CorrecteurUnite[] = [
       'المورفين', 'المادة P', 'الأنكيفالين', 'الإدمان', 'قانون الكل أو لا شيء',
       'المبلغ العصبي', 'الكمون الغشائي', 'النهاية المشبكية', 'مضخة الصوديوم-بوتاسيوم',
       'المحور الأسطواني', 'الدوبامين', 'الغلوتامات', 'الإندورفين',
+      // [L5] الموارد المستهدفة (التدرج السنوي 2017)
+      'آلية النقل المشبكي بواسطة المبلغات العصبية', 'ترجمة الرسالة العصبية قبل مشبكية',
+      'مصدر كمون العمل', 'آلية الإدماج العصبي', 'تأثير المخدرات في مستوى المشابك',
+      // [L6] دليل الأستاذ 2017 (corrigés officiels)
+      'زوال استقطاب الغشاء بعد مشبكي', 'فرط استقطاب الغشاء بعد مشبكي',
+      'مضخة Na+/K+', 'تثبت 3 شوارد الصوديوم', 'Tetrodotoxine', 'Tetraethyl-ammonium',
+      'قنوات الكيميائية', 'قنوات الفولطية', 'الكالسيوم في الزر المشبكي',
     ],
-    sources: ['L1', 'L2'],
+    sources: ['L1', 'L2', 'L5', 'L6'],
   },
 
   // ══════════════════════════════════════════════════════════════════════════════
@@ -135,8 +182,14 @@ export const CORRECTEUR_V1_UNITES: CorrecteurUnite[] = [
       'APG', 'PGal', 'مخطط Z', 'الستروما',
       'تجربة هيل', 'الكيسيات', 'الصفائح الحشوية', 'الأنظمة الضوئية',
       'الورقة المبرقشة', 'حمض فسفوغليسيريك', 'فسفوغليسيرألدهيد',
+      // [L5] الموارد المستهدفة (التدرج السنوي 2017)
+      'آلية المرحلة الكيموضوئية', 'مصير البروتونات الناتجة عن التحلل الضوئي للماء',
+      'آلية إرجاع الـ CO2 على مستوى الحشوة', 'دورة كالفن وبنسون',
+      // [L6] دليل الأستاذ 2017 (corrigés officiels)
+      'تجربة ياغندورف', 'الناقل T1', 'مركب سداسي الكربون', 'حمض الفوسفو غليسيريك',
+      'الريبولوز ثنائي الفوسفات', 'مختلف الصبغات',
     ],
-    sources: ['L1', 'L2'],
+    sources: ['L1', 'L2', 'L5', 'L6'],
   },
   {
     uniteId: 7,
@@ -151,8 +204,14 @@ export const CORRECTEUR_V1_UNITES: CorrecteurUnite[] = [
       'نزع الهيدروجين', 'نزع الكربوكسيل', 'الأكسدة', 'الغشاء الداخلي',
       'المصفوفة', 'الفراغ بين الغشائين', 'البيروفات', 'الدين الأكسجيني',
       'الخميرة', 'الفسفرة على مستوى الركيزة',
+      // [L5] الموارد المستهدفة (التدرج السنوي 2017)
+      'هدم الركيزة العضوية', 'آلية تحويل الطاقة الكامنة في الجزيئات العضوية',
+      'مادة الأيض المستعملة', 'مختلف النشاطات الحيوية المستهلكة',
+      // [L6] دليل الأستاذ 2017 (corrigés officiels)
+      'دورة كريبس', 'نزع الكربوكسيل التأكسدية', 'الطاقة الكلية 2860 كيلوجول',
+      'مردود التنفس', 'أخضر جانوس',
     ],
-    sources: ['L1', 'L2'],
+    sources: ['L1', 'L2', 'L5', 'L6'],
   },
   {
     uniteId: 8,
@@ -164,8 +223,10 @@ export const CORRECTEUR_V1_UNITES: CorrecteurUnite[] = [
       '38 ATP', '2 ATP', 'السلسلة الغذائية', 'المنتج', 'المستهلك', 'المفكك',
       'تدفق الطاقة', 'المادة تدور', 'نهار', 'ليل', 'اليخضورية',
       'خلية يخضورية', 'خلية غير يخضورية', 'مبادلات الغاز',
+      // [L5] الموارد المستهدفة (التدرج السنوي 2017)
+      'مخطط تحصيلي للتحولات الطاقوية',
     ],
-    sources: ['L1', 'L2'],
+    sources: ['L1', 'L2', 'L5', 'L6'],
   },
 
   // ══════════════════════════════════════════════════════════════════════════════
@@ -184,8 +245,14 @@ export const CORRECTEUR_V1_UNITES: CorrecteurUnite[] = [
       'الطاقة الداخلية', 'تيارات الحمل', 'البرنس', 'القشرة المحيطية', 'القشرة القارية',
       'الأنديزيت', 'مستوى بينيوف', 'توسع قاع المحيط', 'الانتشار',
       'اللوح الغائص', 'قوس بركاني', 'الصهير البازلتي', 'تفكك العناصر المشعة',
+      // [L5] الموارد المستهدفة (التدرج السنوي 2017)
+      'مظاهر حركة التباعد وعواقبها', 'عواقب التوسع المحيطي',
+      'المحرك الدافع لزحزحة الصفائح التكتونية',
+      // [L6] دليل الأستاذ 2017 (corrigés officiels)
+      'دور تيارات الحمل', 'درجة حرارة الماغما 570', 'نقطة تورى',
+      'المحرك الأساسي للصفائح', 'مستوى بنيوف',
     ],
-    sources: ['L1', 'L2'],
+    sources: ['L1', 'L2', 'L5', 'L6'],
   },
   {
     uniteId: 10,
@@ -200,8 +267,11 @@ export const CORRECTEUR_V1_UNITES: CorrecteurUnite[] = [
       'التثليث', 'المجال المغناطيسي',
       'السيسموغراف', 'السيزموغرام', 'العمق البؤري', 'السطوح الفاصلة',
       'السيال', 'السيما',
+      // [L5] الموارد المستهدفة (التدرج السنوي 2017)
+      'نموذج لبنية الكرة الأرضية يتضمن الأغلفة والانقطاعات',
+      'التركيب الكيميائي للمعطف',
     ],
-    sources: ['L1', 'L2'],
+    sources: ['L1', 'L2', 'L5', 'L6'],
   },
   {
     uniteId: 11,
@@ -217,8 +287,15 @@ export const CORRECTEUR_V1_UNITES: CorrecteurUnite[] = [
       'البرنس', 'ألوشطون', 'مداخن هيدروحرارية',
       'قوس بركاني', 'الانجرافات', 'الغلوكوفان', 'شواهد التقلص',
       'شواهد محيط قديم', 'تسمك قشري', 'النفاثات السوداء',
+      // [L5] الموارد المستهدفة (التدرج السنوي 2017)
+      'التضاريس والظواهر المرتبطة بالبناء', 'الحوادث التي تعقب الغوص',
+      // [L6] دليل الأستاذ 2017 (corrigés officiels)
+      'وسائد صخرية', 'مستوى بينيوف', 'المستوى الثاني لسلوك مطاطي',
+      'تحلل الغابرو', 'الغلوكونا', 'الجادييت', 'الغرونا',
+      'الفالق الجبهي القبائلي', 'ميكرو قارة الألبوران', 'التصادم والطفو',
+      'دخول الماء وطرده', 'مصادر السحنات', 'معدن الغلوكوفان',
     ],
-    sources: ['L1', 'L2'],
+    sources: ['L1', 'L2', 'L5', 'L6'],
   },
 ];
 
@@ -240,18 +317,43 @@ export interface ResultatKeywords {
   passe: boolean;
   /** Liste des mots-clés trouvés (retour pédagogique). */
   trouves: string[];
+  /** Entités du DICTIONNAIRE FINAL reconnues (fiabilite officiel+verifie — règle moteur). */
+  entitesReconnues: EntiteDetectee[];
 }
 
 /** Seuil de couverture calibré : une réponse complète couvre ~2/3 des termes. */
 export const SEUIL_KEYWORDS = 0.6;
 
-function motsClesUnite(uniteId: number): string[] {
+/**
+ * Pool enrichi : mots-clés L1..L6 (contrat de traçabilité — JAMAIS modifiés) +
+ * formes arabes du DICTIONNAIRE FINAL (fiabilite officiel+verifie — règle moteur
+ * du build) rattachées à l'unité via ses refs sources (D1U1..D3U3 → ids 1..11).
+ * Dédupliqué par forme normalisée, mots-clés L1..L6 prioritaires. Ce pool sert au
+ * chemin PAR DÉFAUT (sans attendus explicites) ; un appel avec attendus ne
+ * consomme que les attendus fournis.
+ */
+export function motsClesUniteEnrichis(uniteId: number): string[] {
   const unite = CORRECTEUR_V1_UNITES.find((u) => u.uniteId === uniteId);
-  return unite ? unite.motsCles : [];
+  if (!unite) return [];
+  const pool = [...unite.motsCles];
+  const vus = new Set<string>();
+  for (const kw of pool) {
+    const nk = normalizeAr(kw);
+    if (nk) vus.add(nk);
+  }
+  for (const forme of formesArUnite(uniteId)) {
+    const nf = normalizeAr(forme);
+    if (!nf || vus.has(nf)) continue;
+    vus.add(nf);
+    pool.push(forme);
+  }
+  return pool;
 }
 
 /**
  * Évalue une réponse d'élève contre la banque de mots-clés d'une unité.
+ * Sans attendus explicites, le pool enrichi est utilisé (mots-clés L1..L6 +
+ * formes du DICTIONNAIRE FINAL — voir motsClesUniteEnrichis).
  * Utilise le normaliseur partagé (normalizeAr) : أ/إ/آ→ا, ة→ه, ى→ي, diacritiques off.
  */
 export function evaluerReponseKeywords(
@@ -260,7 +362,8 @@ export function evaluerReponseKeywords(
   attendus?: string[]
 ): ResultatKeywords {
   const norm = normalizeAr(reponse || '');
-  const cibles = attendus && attendus.length > 0 ? attendus : motsClesUnite(uniteId);
+  const cibles =
+    attendus && attendus.length > 0 ? attendus : motsClesUniteEnrichis(uniteId);
 
   const trouves: string[] = [];
   const manquants: string[] = [];
@@ -282,5 +385,8 @@ export function evaluerReponseKeywords(
     manquants,
     passe: couverture >= SEUIL_KEYWORDS,
     trouves,
+    // COUCHE DICTIONNAIRE : entités officiel+verifie reconnues (retour pédagogique
+    // sémantique ; les pistes a_valider restent dans evaluerEntites().pistesAmbigues).
+    entitesReconnues: evaluerEntites(reponse, uniteId).trouvees,
   };
 }
