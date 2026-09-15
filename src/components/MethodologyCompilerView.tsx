@@ -4,7 +4,7 @@ import {
   Target, Sparkles, BookOpen, Layers, CheckCircle2, AlertTriangle, 
   Clock, ShieldAlert, ArrowLeft, ArrowRight, RotateCcw, 
   HelpCircle, Check, X, Award, ChevronDown, ChevronUp, Cpu, 
-  Calendar, FileText, CheckSquare, Zap, Eye, Lightbulb, Compass, Key
+  Calendar, FileText, CheckSquare, Zap, Eye, Lightbulb, Compass, Key, Printer
 } from 'lucide-react';
 import {
   VERB_CARDS, UNIVERSAL_GRAMMAR_RULES, TRAINING_EXERCISES,
@@ -42,6 +42,30 @@ const switchTone = (s: SwitchLine): ToneKey =>
   : 'emerald';
 const swAr = (s: Switch): string => (s === 'open' ? 'مفتوح' : 'مغلق');
 
+// ─── Ateliers du 🔑 مفتاح المنهجية (owner 2026-09-15) ────────────────────────
+// La barre d'onglets défilante est remplacée par une grille d'icônes : les 7
+// ateliers demandés sont visibles d'un coup, sans scroll horizontal.
+type AtelierId =
+  | 'simulator' | 'verbs_ref' | 'mastery_matrix' | 'correction'
+  | 'engine_rules' | 'boussole_card' | 'meftah_v43' | 'tahlil_wall';
+
+interface AtelierDef {
+  id: AtelierId;
+  label: string;
+  hint: string;
+  icon: React.ComponentType<{ className?: string }>;
+}
+
+const ATELIERS: AtelierDef[] = [
+  { id: 'simulator',      label: 'الخطوات الأربع',                 hint: 'المحاكي · 4 مراحل',      icon: Zap },
+  { id: 'verbs_ref',      label: 'فهرس الأفعال الثمانية والنماذج', hint: 'بطاقات الأفعال + نماذج', icon: BookOpen },
+  { id: 'mastery_matrix', label: 'مصفوفة الإتقان',                 hint: 'الخلايا وتحليل الأخطاء', icon: Layers },
+  { id: 'correction',     label: 'المصححة',                        hint: 'ملف التصحيح',            icon: FileText },
+  { id: 'engine_rules',   label: 'قواعد الإجابة الـ 4 (الطبقة 0)', hint: 'الطبقة 0 · البوابات',    icon: Compass },
+  { id: 'meftah_v43',     label: 'الأوجه الستة + BAC 2025',        hint: 'المفتاح V4.3',           icon: Key },
+  { id: 'tahlil_wall',    label: 'جدار حلّل — التدريب',            hint: 'تحليل أم تفسير؟',        icon: ShieldAlert },
+];
+
 // m2 · seuil d'automatisation unique (code + texte d'aide)
 const AUTOMATION_THRESHOLD = 90;
 const icmLabel = (icm: number | null): string => icm === null ? '' : icm < 60 ? 'ضعيف' : icm < 90 ? 'متوسط' : 'ممتاز';
@@ -55,7 +79,7 @@ interface MethodologyProps {
 
 export default function MethodologyCompilerView({ onBackToHome }: MethodologyProps) {
   // Navigation Tabs: 'engine_rules' (Couche 0) | 'verbs_ref' (Fiches) | 'simulator' (4 Stades) | 'mastery_matrix' (Analytics & Erreurs)
-  const [activeTab, setActiveTab] = useState<'simulator' | 'verbs_ref' | 'engine_rules' | 'mastery_matrix' | 'correction' | 'boussole_card' | 'meftah_v43' | 'tahlil_wall'>('simulator');
+  const [activeTab, setActiveTab] = useState<AtelierId>('simulator');
   // File de correction (Phase 3) — bump pour rafraîchir l'onglet + le badge
   const [correctionVersion, setCorrectionVersion] = useState(0);
   // Grille de lettres (portage TS) — verdict officiel calculé au submit
@@ -509,101 +533,48 @@ const handleSelectStage = (stage: 1 | 2 | 3 | 4) => {
         </div>
 
         {/* Global Navigation Tabs */}
-        <div className="flex items-center gap-2 overflow-x-auto pt-5 mt-4 border-t border-white/20 no-scrollbar">
-          <button
-            onClick={() => setActiveTab('simulator')}
-            className={`px-4 py-2 rounded-xl font-bold text-xs md:text-sm whitespace-nowrap transition-all flex items-center gap-2 ${
-              activeTab === 'simulator'
-                ? 'bg-white text-[#006d37] shadow-md'
-                : 'bg-white/15 text-white hover:bg-white/25'
-            }`}
-          >
-            <Zap className="w-4 h-4" />
-            <span>الخطوات الأربع</span>
-          </button>
+        {/* Grille d'ateliers — les 7 vues du المفتاح visibles d'un coup (remplace la barre défilante) */}
+        <div className="pt-5 mt-4 border-t border-white/20">
+          <span className="block text-[11px] font-bold text-white/80 mb-2">اختر الورشة التي تريد العمل بها</span>
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2">
+            {ATELIERS.map(a => {
+              const Icon = a.icon;
+              const isActive = activeTab === a.id;
+              const pending = a.id === 'correction' ? correctionStats().pending : 0;
+              return (
+                <button
+                  key={a.id}
+                  onClick={() => setActiveTab(a.id)}
+                  className={`relative flex flex-col items-start gap-1 p-3 rounded-2xl text-right transition-all min-h-[76px] cursor-pointer ${
+                    isActive
+                      ? 'bg-white text-[#006d37] shadow-md ring-2 ring-[#fed65b]'
+                      : 'bg-white/15 text-white hover:bg-white/25'
+                  }`}
+                >
+                  <span className="flex items-center gap-2 w-full">
+                    <Icon className="w-4 h-4 shrink-0" />
+                    <span className="text-[11px] md:text-xs font-black leading-tight flex-1">{a.label}</span>
+                    {pending > 0 && (
+                      <span className="bg-[#ff8c42] text-white text-[10px] font-black px-1.5 rounded-full shrink-0">{pending}</span>
+                    )}
+                  </span>
+                  <span className={`text-[10px] font-bold leading-tight ${isActive ? 'text-[#006d37]/70' : 'text-white/70'}`}>{a.hint}</span>
+                </button>
+              );
+            })}
+          </div>
 
-          <button
-            onClick={() => setActiveTab('verbs_ref')}
-            className={`px-4 py-2 rounded-xl font-bold text-xs md:text-sm whitespace-nowrap transition-all flex items-center gap-2 ${
-              activeTab === 'verbs_ref'
-                ? 'bg-white text-[#006d37] shadow-md'
-                : 'bg-white/15 text-white hover:bg-white/25'
-            }`}
-          >
-            <BookOpen className="w-4 h-4" />
-            <span>فهرس الأفعال الثمانية والنماذج</span>
-          </button>
-
-          <button
-            onClick={() => setActiveTab('mastery_matrix')}
-            className={`px-4 py-2 rounded-xl font-bold text-xs md:text-sm whitespace-nowrap transition-all flex items-center gap-2 ${
-              activeTab === 'mastery_matrix'
-                ? 'bg-white text-[#006d37] shadow-md'
-                : 'bg-white/15 text-white hover:bg-white/25'
-            }`}
-          >
-            <Layers className="w-4 h-4" />
-            <span>مصفوفة الإتقان</span>
-          </button>
-
-          <button
-            onClick={() => setActiveTab('correction')}
-            className={`px-4 py-2 rounded-xl font-bold text-xs md:text-sm whitespace-nowrap transition-all flex items-center gap-2 ${
-              activeTab === 'correction'
-                ? 'bg-white text-[#006d37] shadow-md'
-                : 'bg-white/15 text-white hover:bg-white/25'
-            }`}
-          >
-            <FileText className="w-4 h-4" />
-            <span>المصححة {correctionStats().pending > 0 ? `(${correctionStats().pending})` : ''}</span>
-          </button>
-
-          <button
-            onClick={() => setActiveTab('engine_rules')}
-            className={`px-4 py-2 rounded-xl font-bold text-xs md:text-sm whitespace-nowrap transition-all flex items-center gap-2 ${
-              activeTab === 'engine_rules'
-                ? 'bg-white text-[#006d37] shadow-md'
-                : 'bg-white/15 text-white hover:bg-white/25'
-            }`}
-          >
-            <Compass className="w-4 h-4" />
-            <span>قواعد الإجابة الـ 4 (الطبقة 0)</span>
-          </button>
-
+          {/* Fiche المفتاح imprimable — accès secondaire (le bouton طبع vit dans cette vue) */}
           <button
             onClick={() => setActiveTab('boussole_card')}
-            className={`px-4 py-2 rounded-xl font-bold text-xs md:text-sm whitespace-nowrap transition-all flex items-center gap-2 ${
+            className={`mt-2 inline-flex items-center gap-2 rounded-xl px-3 py-1.5 text-[11px] font-bold transition-all cursor-pointer ${
               activeTab === 'boussole_card'
                 ? 'bg-white text-[#006d37] shadow-md'
                 : 'bg-white/15 text-white hover:bg-white/25'
             }`}
           >
-            <FileText className="w-4 h-4" />
-            <span>🔑 {MIFTAH_NOMENCLATURE.miftah} — للطباعة</span>
-          </button>
-
-          <button
-            onClick={() => setActiveTab('meftah_v43')}
-            className={`px-4 py-2 rounded-xl font-bold text-xs md:text-sm whitespace-nowrap transition-all flex items-center gap-2 ${
-              activeTab === 'meftah_v43'
-                ? 'bg-white text-[#006d37] shadow-md'
-                : 'bg-white/15 text-white hover:bg-white/25'
-            }`}
-          >
-            <Key className="w-4 h-4" />
-            <span>المفتاح V4.3 — الأوجه الستة + BAC 2025</span>
-          </button>
-
-          <button
-            onClick={() => setActiveTab('tahlil_wall')}
-            className={`px-4 py-2 rounded-xl font-bold text-xs md:text-sm whitespace-nowrap transition-all flex items-center gap-2 ${
-              activeTab === 'tahlil_wall'
-                ? 'bg-white text-[#006d37] shadow-md'
-                : 'bg-white/15 text-white hover:bg-white/25'
-            }`}
-          >
-            <ShieldAlert className="w-4 h-4" />
-            <span>جدار حلّل — التدريب</span>
+            <Printer className="w-3.5 h-3.5" />
+            <span> {MIFTAH_NOMENCLATURE.miftah} — للطباعة</span>
           </button>
         </div>
       </header>

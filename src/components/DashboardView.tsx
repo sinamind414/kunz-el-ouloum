@@ -115,7 +115,7 @@ export default function DashboardView({
             <Compass className="w-5 h-5" />
           </div>
           <div>
-            <h3 className="font-black text-[#006d37] dark:text-emerald-400 text-[15px]">محرك المنهجية الخوارزمي (ICM + 4 مراحل)</h3>
+            <h3 className="font-black text-[#006d37] dark:text-emerald-400 text-[15px]">🔑 مفتاح المنهجية (ICM + 4 مراحل)</h3>
             <p className="text-xs text-[#006d37]/80 dark:text-emerald-300/80 font-medium">ابدأ التدريب على الأفعال الـ 8 واختبار مسودة 90 ثانية</p>
           </div>
         </div>

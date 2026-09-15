@@ -12,11 +12,11 @@ import {
   GraduationCap,
   Sun,
   Moon,
-  Target,
   Swords,
   Award,
   PlayCircle,
   Layers,
+  Key,
   Compass,
   Route,
   NotebookPen,
@@ -558,7 +558,7 @@ export default function App() {
           {currentTab === 'review' ? 'المراجعة الذكية' : 
            currentTab === 'stats' ? 'لوحة الإحصائيات' : 
            currentTab === 'badges' ? 'الأوسمة والإنجازات' : 
-           currentTab === 'methodology' ? 'بوصلة' : 
+           currentTab === 'methodology' ? 'مفتاح المنهجية' : 
            currentTab === 'bootcamp' ? 'تحدي البكالوريا' : 
             currentTab === 'lesson' ? 'الدروس' :
             currentTab === 'workshop' ? 'الورشة التفاعلية' : 
@@ -670,7 +670,7 @@ export default function App() {
             <span>الخرائط الذهنية</span>
           </button>
 
-          {/* Methodology Tab */}
+          {/* Methodology Tab — 🔑 مفتاح المنهجية */}
            <button
              onClick={() => setCurrentTab('methodology')}
              className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-2xl text-sm font-bold transition-all cursor-pointer ${
@@ -679,8 +679,8 @@ export default function App() {
                  : 'text-[#504441] hover:bg-[#fff9ed] hover:text-[#006d37]'
              }`}
            >
-             <Target className="w-5 h-5" />
-             <span>المنهجية</span>
+             <Key className="w-5 h-5" />
+             <span>مفتاح المنهجية</span>
            </button>
 
            {/* Teacher Dashboard Tab */}
@@ -842,7 +842,7 @@ export default function App() {
           {currentTab === 'lesson' && <div className="absolute -bottom-1 w-1.5 h-1.5 rounded-full bg-[#006d37]"></div>}
         </button>
 
-        {/* Methodology Button (أتدرب) */}
+        {/* Methodology Button (🔑 مفتاح المنهجية) */}
         <button
           onClick={() => handleTabChange('methodology')}
           className={`relative flex flex-col items-center justify-center p-2 rounded-2xl transition-all w-[72px] h-[64px] cursor-pointer ${
@@ -851,8 +851,8 @@ export default function App() {
               : 'text-[#64748b] hover:text-[#006d37]'
           }`}
         >
-          <Layers className="w-6 h-6 mb-1" />
-          <span className="text-[11px] font-bold">أتدرب</span>
+          <Key className="w-6 h-6 mb-1" />
+          <span className="text-[9px] leading-tight font-bold text-center">مفتاح المنهجية</span>
           {currentTab === 'methodology' && <div className="absolute -bottom-1 w-1.5 h-1.5 rounded-full bg-[#006d37]"></div>}
         </button>
 
