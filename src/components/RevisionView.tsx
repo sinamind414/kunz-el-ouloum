@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
 import { Volume2, Key, Star, Award, ChevronLeft, ArrowRight, HelpCircle, Layers, BookOpen, VolumeX, Sparkles, Eye, EyeOff } from 'lucide-react';
 import { Flashcard, Unit } from '../types';
@@ -12,18 +12,23 @@ interface RevisionViewProps {
   onRateCard: (cardId: string, rating: 'again' | 'hard' | 'good' | 'easy') => void;
   isFocusMode: boolean;
   setIsFocusMode: (val: boolean) => void;
+  // Unité présélectionnée (tuile « ثغرة خطيرة ») — défaut 1 comme avant.
+  initialUnitId?: number;
 }
 
-export default function RevisionView({ units, flashcards, xp, streak, onRateCard, isFocusMode, setIsFocusMode }: RevisionViewProps) {
-  const [selectedUnitId, setSelectedUnitId] = useState<number>(1);
+export default function RevisionView({ units, flashcards, xp, streak, onRateCard, isFocusMode, setIsFocusMode, initialUnitId = 1 }: RevisionViewProps) {
+  const [selectedUnitId, setSelectedUnitId] = useState<number>(initialUnitId);
   const [currentCardIndex, setCurrentCardIndex] = useState(0);
   const [isFlipped, setIsFlipped] = useState(false);
   const [isPlayingAudio, setIsPlayingAudio] = useState(false);
   const [isReaderMode, setIsReaderMode] = useState(false);
 
-  // Filter cards by selected unit
-  const activeCards = flashcards.filter(c => c.unitId === selectedUnitId);
-  const currentCard = activeCards[currentCardIndex];
+  const stopAudio = () => {
+    if ('speechSynthesis' in window) {
+      window.speechSynthesis.cancel();
+    }
+    setIsPlayingAudio(false);
+  };
 
   const handleUnitChange = (unitId: number) => {
     setSelectedUnitId(unitId);
@@ -31,6 +36,17 @@ export default function RevisionView({ units, flashcards, xp, streak, onRateCard
     setIsFlipped(false);
     stopAudio();
   };
+
+  // La vue est remontée à chaque changement d'onglet (key={currentTab} dans App),
+  // mais si initialUnitId change pendant qu'elle est montée, on suit la nouvelle cible.
+  useEffect(() => {
+    handleUnitChange(initialUnitId);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [initialUnitId]);
+
+  // Filter cards by selected unit
+  const activeCards = flashcards.filter(c => c.unitId === selectedUnitId);
+  const currentCard = activeCards[currentCardIndex];
 
   const handleFlip = () => {
     playFlipSound();
@@ -88,13 +104,6 @@ export default function RevisionView({ units, flashcards, xp, streak, onRateCard
     } else {
       alert("متصفحك لا يدعم توليد الصوت للغة العربية.");
     }
-  };
-
-  const stopAudio = () => {
-    if ('speechSynthesis' in window) {
-      window.speechSynthesis.cancel();
-    }
-    setIsPlayingAudio(false);
   };
 
   const getSelectedUnitTitle = () => {

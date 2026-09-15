@@ -80,7 +80,6 @@ export default function App() {
   
   // Quiz and revision action states
   const [activeQuizUnitId, setActiveQuizUnitId] = useState<number | null>(null);
-  const [activeRevisionUnitId, setActiveRevisionUnitId] = useState<number | null>(null);
 
   // Focus Mode state
   const [isFocusMode, setIsFocusMode] = useState<boolean>(false);
@@ -328,11 +327,15 @@ export default function App() {
     }
   };
 
+  // Unité présélectionnée dans المراجعة الذكية (tuile « ثغرة خطيرة », SmartReminderCard).
+  const [selectedRevisionUnitId, setSelectedRevisionUnitId] = useState<number>(1);
+
   const handleLaunchRevision = (unitId: number) => {
     setSelectedRevisionUnit(unitId);
   };
 
   const setSelectedRevisionUnit = (unitId: number) => {
+    setSelectedRevisionUnitId(unitId);
     setCurrentTab('review');
   };
 
@@ -745,6 +748,7 @@ export default function App() {
                   onRateCard={handleRateCard}
                   isFocusMode={isFocusMode}
                   setIsFocusMode={setIsFocusMode}
+                  initialUnitId={selectedRevisionUnitId}
                 />
               )}
 

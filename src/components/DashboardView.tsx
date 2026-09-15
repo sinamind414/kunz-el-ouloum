@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { Trophy, Flame, Play, Lock, ChevronRight, Compass, Target, Hourglass, AlertTriangle, Dices, HelpCircle, Moon, Share2, Network, Sparkles } from 'lucide-react';
 import { Unit, UserProgress, DailyGoalConfig } from '../types';
 import { LOGO_URL } from '../data';
@@ -9,6 +9,14 @@ import SmartReminderCard from './SmartReminderCard';
 import WeeklyReportShareModal from './WeeklyReportShareModal';
 import StreakCelebrationModal from './StreakCelebrationModal';
 import { playStreakMilestoneSound } from '../utils/audio';
+// Cibles réelles des tuiles (owner 2026-09-15) — les 7 tuiles étaient inertes : aucun onClick.
+import {
+  bacDaysLeft,
+  biggestGapUnit,
+  closestAchievementUnit,
+  continueUnit,
+  surpriseUnitId,
+} from '../utils/dashboardActions';
 
 interface DashboardViewProps {
   units: Unit[];
@@ -35,6 +43,20 @@ export default function DashboardView({
   const handleOpenStreakCelebration = () => {
     playStreakMilestoneSound(progress.streak || 1);
     setShowStreakModal(true);
+  };
+
+  // ── Tuiles d'action (owner 2026-09-15) ──────────────────────────────────────
+  // Chaque tuile vise une cible RÉELLE recalculée depuis units/progress : la
+  // maquette affichait « 325 يوم الباقي » et « 0% » figés, sans aucun handler.
+  const missionUnit = useMemo(() => continueUnit(units, progress), [units, progress]);
+  const gapUnit = useMemo(() => biggestGapUnit(units), [units]);
+  const achievementUnit = useMemo(() => closestAchievementUnit(units), [units]);
+  // `null` tant que la date officielle n'est pas tranchée (util/dashboardActions BAC_EXAM_DATE).
+  const bacDays = useMemo(() => bacDaysLeft(new Date()), []);
+
+  const openSurpriseQuiz = () => {
+    const unitId = surpriseUnitId(units, progress);
+    if (unitId !== null) onLaunchQuiz(unitId);
   };
 
   return (
@@ -192,11 +214,15 @@ export default function DashboardView({
                   <h3 className="font-black text-2xl text-white">مهمة 3</h3>
                   <h3 className="font-black text-2xl text-white">دقائق +15 XP</h3>
                   <p className="text-white/90 text-[13px] mt-1 font-bold">
-                     « تركيب البروتين » 
+                     {missionUnit ? `« ${missionUnit.title} »` : 'لا توجد وحدة متاحة حالياً'}
                   </p>
                </div>
             </div>
-            <button className="bg-white text-[#ff8c42] font-bold px-5 py-2.5 rounded-2xl shadow-md hover:bg-gray-50 transition-colors text-sm">
+            <button
+              onClick={() => missionUnit && onLaunchQuiz(missionUnit.id)}
+              disabled={!missionUnit}
+              className="bg-white text-[#ff8c42] font-bold px-5 py-2.5 rounded-2xl shadow-md hover:bg-gray-50 transition-colors text-sm cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
+            >
               ابدأ الآن!
             </button>
          </div>
@@ -205,7 +231,10 @@ export default function DashboardView({
       {/* Grid of smaller cards */}
       <div className="grid grid-cols-2 gap-4 mt-6">
          {/* Streak Card */}
-         <div className="bg-white rounded-[28px] p-6 shadow-[0_8px_24px_rgba(0,0,0,0.04)] border border-gray-100 flex flex-col items-center text-center transition-transform hover:scale-[1.02] active:scale-[0.98]">
+         <div
+            onClick={handleOpenStreakCelebration}
+            className="bg-white rounded-[28px] p-6 shadow-[0_8px_24px_rgba(0,0,0,0.04)] border border-gray-100 flex flex-col items-center text-center transition-transform hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
+         >
             <div className="w-20 h-20 bg-gradient-to-tr from-[#10b981] to-[#34d399] rounded-full flex items-center justify-center mb-4 shadow-[0_8px_16px_rgba(16,185,129,0.25)] relative">
                <div className="absolute inset-0 rounded-full border-4 border-white/20"></div>
                <Flame className="w-10 h-10 text-white" fill="currentColor" />
@@ -215,7 +244,10 @@ export default function DashboardView({
          </div>
 
          {/* 3 Min Challenge Card */}
-         <div className="bg-white rounded-[28px] p-6 shadow-[0_8px_24px_rgba(0,0,0,0.04)] border border-gray-100 flex flex-col items-center text-center transition-transform hover:scale-[1.02] active:scale-[0.98]">
+         <div
+            onClick={() => onNavigateToTab && onNavigateToTab('bootcamp')}
+            className="bg-white rounded-[28px] p-6 shadow-[0_8px_24px_rgba(0,0,0,0.04)] border border-gray-100 flex flex-col items-center text-center transition-transform hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
+         >
             <div className="w-20 h-20 bg-gradient-to-tr from-[#f97316] to-[#fb923c] rounded-full flex items-center justify-center mb-4 shadow-[0_8px_16px_rgba(249,115,22,0.25)] relative">
                <div className="absolute inset-0 rounded-full border-4 border-white/20"></div>
                <Target className="w-10 h-10 text-white" />
@@ -225,28 +257,34 @@ export default function DashboardView({
          </div>
 
          {/* Warning Card */}
-         <div className="bg-white rounded-[28px] p-6 shadow-[0_8px_24px_rgba(0,0,0,0.04)] border border-gray-100 flex flex-col items-center text-center transition-transform hover:scale-[1.02] active:scale-[0.98]">
+         <div
+            onClick={() => gapUnit && onLaunchRevision(gapUnit.id)}
+            className={`bg-white rounded-[28px] p-6 shadow-[0_8px_24px_rgba(0,0,0,0.04)] border border-gray-100 flex flex-col items-center text-center transition-transform hover:scale-[1.02] active:scale-[0.98] ${gapUnit ? 'cursor-pointer' : ''}`}>
             <div className="w-20 h-20 bg-gradient-to-tr from-[#ef4444] to-[#f87171] rounded-full flex items-center justify-center mb-4 shadow-[0_8px_16px_rgba(239,68,68,0.25)] relative">
                <div className="absolute inset-0 rounded-full border-4 border-white/20"></div>
                <AlertTriangle className="w-10 h-10 text-white" />
             </div>
             <h4 className="font-black text-[17px] text-[#0f172a] mb-1">ثغرة خطيرة</h4>
-            <p className="text-[12px] text-gray-500 font-bold">« تركيب البروتين » تحتاج مراجعة!</p>
+            <p className="text-[12px] text-gray-500 font-bold">{gapUnit ? `« ${gapUnit.title} » تحتاج مراجعة!` : 'لا توجد ثغرة — ممتاز!'}</p>
          </div>
 
          {/* BAC Timer Card */}
-         <div className="bg-white rounded-[28px] p-6 shadow-[0_8px_24px_rgba(0,0,0,0.04)] border border-gray-100 flex flex-col items-center text-center transition-transform hover:scale-[1.02] active:scale-[0.98]">
+         <div
+            onClick={() => onNavigateToTab && onNavigateToTab('stats')}
+            className="bg-white rounded-[28px] p-6 shadow-[0_8px_24px_rgba(0,0,0,0.04)] border border-gray-100 flex flex-col items-center text-center transition-transform hover:scale-[1.02] active:scale-[0.98] cursor-pointer">
             <div className="w-20 h-20 bg-gradient-to-tr from-[#3b82f6] to-[#60a5fa] rounded-full flex items-center justify-center mb-4 shadow-[0_8px_16px_rgba(59,130,246,0.25)] relative overflow-hidden">
                <Hourglass className="w-10 h-10 text-white relative z-10" />
                <div className="absolute -top-4 -right-4 w-12 h-12 bg-white/20 rounded-full"></div>
                <div className="absolute inset-0 rounded-full border-4 border-white/20"></div>
             </div>
             <h4 className="font-black text-[17px] text-[#0f172a] mb-1">عدّاد BAC</h4>
-            <p className="text-[12px] text-gray-500 font-bold">325 يوم الباقي — الوقت يمر</p>
+            <p className="text-[12px] text-gray-500 font-bold">{bacDays !== null ? `${bacDays} يوم الباقي — الوقت يمر` : 'التاريخ الرسمي قيد التأكيد'}</p>
          </div>
 
          {/* Surprise Question Card */}
-         <div className="bg-white rounded-[28px] p-6 shadow-[0_8px_24px_rgba(0,0,0,0.04)] border border-gray-100 flex flex-col items-center text-center transition-transform hover:scale-[1.02] active:scale-[0.98]">
+         <div
+            onClick={openSurpriseQuiz}
+            className="bg-white rounded-[28px] p-6 shadow-[0_8px_24px_rgba(0,0,0,0.04)] border border-gray-100 flex flex-col items-center text-center transition-transform hover:scale-[1.02] active:scale-[0.98] cursor-pointer">
             <div className="w-20 h-20 bg-gradient-to-tr from-[#d946ef] to-[#e879f9] rounded-full flex items-center justify-center mb-4 shadow-[0_8px_16px_rgba(217,70,239,0.25)] relative">
                <div className="absolute inset-0 rounded-full border-4 border-white/20"></div>
                <Dices className="w-10 h-10 text-white" />
@@ -259,13 +297,15 @@ export default function DashboardView({
          </div>
 
          {/* Close to Achievement Card */}
-         <div className="bg-white rounded-[28px] p-6 shadow-[0_8px_24px_rgba(0,0,0,0.04)] border border-gray-100 flex flex-col items-center text-center transition-transform hover:scale-[1.02] active:scale-[0.98]">
+         <div
+            onClick={() => onNavigateToTab && onNavigateToTab('badges')}
+            className="bg-white rounded-[28px] p-6 shadow-[0_8px_24px_rgba(0,0,0,0.04)] border border-gray-100 flex flex-col items-center text-center transition-transform hover:scale-[1.02] active:scale-[0.98] cursor-pointer">
             <div className="w-20 h-20 bg-gradient-to-tr from-[#eab308] to-[#facc15] rounded-full flex items-center justify-center mb-4 shadow-[0_8px_16px_rgba(234,179,8,0.25)] relative">
                <div className="absolute inset-0 rounded-full border-4 border-white/20"></div>
                <Trophy className="w-10 h-10 text-white" />
             </div>
             <h4 className="font-black text-[17px] text-[#0f172a] mb-1">إنجاز قريب</h4>
-            <p className="text-[12px] text-gray-500 font-bold">« تركيب البروتين » 0% — أكمل الوحدة!</p>
+            <p className="text-[12px] text-gray-500 font-bold">{achievementUnit ? `« ${achievementUnit.title} » ${Math.round(achievementUnit.progress ?? 0)}% — أكمل الوحدة!` : 'ابدأ وحدة لتقترب من إنجاز!'}</p>
          </div>
       </div>
 
