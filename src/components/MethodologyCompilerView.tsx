@@ -42,7 +42,7 @@ const switchTone = (s: SwitchLine): ToneKey =>
   : 'emerald';
 const swAr = (s: Switch): string => (s === 'open' ? 'مفتوح' : 'مغلق');
 
-// ─── Ateliers du 🔑 مفتاح المنهجية (owner 2026-09-15) ────────────────────────
+// ─── Ateliers du  — nom officiel via MIFTAH_NAME_OFFICIAL_AR — owner 2026-09-15 ────────────────────────
 // La barre d'onglets défilante est remplacée par une grille d'icônes : les 7
 // ateliers demandés sont visibles d'un coup, sans scroll horizontal.
 type AtelierId =

@@ -1,5 +1,5 @@
 // MeftahView.tsx
-// « المفتاح » — مفتاح المنهجية V4.3 : 3 visages méthode + 3 visages application BAC 2025.
+// « المفتاح » — V4.3 (nom officiel : MIFTAH_NAME_OFFICIAL_AR) : 3 visages méthode + 3 visages application BAC 2025.
 // Navigation 3 niveaux : grille des visages → visage (sections) → question BAC.
 // Les أفعال détaillés renvoient au composant parent via onOpenVerb (methodologyVerbs.tsx).
 
@@ -20,6 +20,8 @@ import {
   type MeftahBacQuestion,
 } from '../data/meftahManhajia';
 import { normalizeArabic } from '../utils/arabicNormalize';
+// Nom officiel figé (docs/MARQUE.md §3) — source unique miftahSpec : zéro littéral rendu ici.
+import { MIFTAH_NAME_OFFICIAL_AR } from '../data/miftahSpec';
 
 interface Props {
   /** Ouvre le détail d'un réflexe canonique (فعل) dans la méthodologie existante. */
@@ -362,7 +364,7 @@ export default function MeftahView({ onOpenVerb }: Props) {
           <div>
             <h1 className="text-2xl md:text-3xl font-black text-gray-900 dark:text-white">المفتاح</h1>
             <p className="text-gray-600 dark:text-gray-400 text-sm font-medium mt-0.5">
-              مفتاح المنهجية · 4 أسنان · بابان · تحليل دون تفسير
+              {MIFTAH_NAME_OFFICIAL_AR} · 4 أسنان · بابان · تحليل دون تفسير
             </p>
           </div>
         </div>

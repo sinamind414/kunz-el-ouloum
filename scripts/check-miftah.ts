@@ -7,6 +7,9 @@
 //                            variantes latines et « مفتاح الكنز » bannies de l'UI
 //   §4 règle de placement  : les deux noms jamais ensemble hors en-tête de la fiche
 //   §10 bugs corrigés      : السنّ 0 → القفل, erreurs 1-3 sur le recto, garde-fou A4
+//   §13 (2026-09-15)       : le nom officiel n'existe qu'une fois dans le code
+//                            (miftahSpec.MIFTAH_NAME_OFFICIAL_AR) — les 4 vues UI
+//                            l'importent et n'en écrivent jamais le littéral
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -18,6 +21,10 @@ const html = read('public/miftah.html');
 const card = read('src/components/MiftahCard.tsx');
 const spec = read('src/data/miftahSpec.ts');
 const compiler = read('src/components/MethodologyCompilerView.tsx');
+// Vues UI qui portent le nom officiel (owner 2026-09-15) — §13
+const app = read('src/App.tsx');
+const dashboard = read('src/components/DashboardView.tsx');
+const meftah = read('src/components/MeftahView.tsx');
 
 // Découpe la fiche : recto = avant la balise de commentaire « الوجه الثاني »
 const versoIdx = html.indexOf('الوجه الثاني');
@@ -203,6 +210,32 @@ must(card, '3</b> = <b>المعالجة</b>', 'carte : حدّad 3 phases (parit�
 must(spec, '3 = المعالجة', 'spec : SPECIAL_FORMS.hamad 3 phases');
 mustNot(html, 'V4.1', 'fiche : « V4.1 » banni (version fork non adoptée)');
 mustNot(card, 'V4.1', 'carte : « V4.1 » banni');
+
+console.log('\n§ 13 (2026-09-15) — nom officiel : constante unique, zéro littéral dans les vues UI');
+// Le nom officiel figé (§3) ne doit exister qu'une fois dans le code : MIFTAH_NAME_OFFICIAL_AR.
+// Littéral dupliqué ici à dessein : si la spec change de nom, ce bloc doit échouer.
+const OFFICIAL_NAME = 'مفتاح المنهجية';
+must(app, 'MIFTAH_NAME_OFFICIAL_AR', 'App.tsx : importe la source unique');
+mustNot(app, OFFICIAL_NAME, 'App.tsx : aucun littéral du nom officiel');
+must(app, "currentTab === 'methodology' ? MIFTAH_NAME_OFFICIAL_AR", 'en-tête : libellé depuis la constante');
+must(app, '<span>{MIFTAH_NAME_OFFICIAL_AR}</span>', 'menu latéral : libellé depuis la constante');
+must(app, 'text-center">{MIFTAH_NAME_OFFICIAL_AR}</span>', 'barre mobile : libellé depuis la constante');
+must(dashboard, 'MIFTAH_NAME_OFFICIAL_AR', 'DashboardView : importe la source unique');
+mustNot(dashboard, OFFICIAL_NAME, 'DashboardView : aucun littéral du nom officiel');
+must(dashboard, '🔑 {MIFTAH_NAME_OFFICIAL_AR} (ICM', 'carte dashboard : libellé depuis la constante');
+must(meftah, 'MIFTAH_NAME_OFFICIAL_AR', 'MeftahView : importe la source unique');
+mustNot(meftah, OFFICIAL_NAME, 'MeftahView : aucun littéral du nom officiel');
+must(meftah, '{MIFTAH_NAME_OFFICIAL_AR} · 4', 'sous-titre Meftah : libellé depuis la constante');
+must(compiler, 'MIFTAH_NAME_OFFICIAL_AR', 'compilateur : importe la source unique');
+mustNot(compiler, OFFICIAL_NAME, 'compilateur : aucun littéral du nom officiel');
+must(compiler, '🔑 {MIFTAH_NAME_OFFICIAL_AR} v{MIFTAH_VERSION}', 'header compilateur : libellé depuis la constante');
+// Cardinalité : les 3 emplacements App.tsx (en-tête ternaire + menu latéral + barre mobile)
+const appUses = (app.match(/\{MIFTAH_NAME_OFFICIAL_AR\}/g) ?? []).length;
+if (appUses === 2 && app.includes("? MIFTAH_NAME_OFFICIAL_AR :")) {
+  ok('App.tsx : 3 emplacements (2 interpolations + ternaire d’en-tête)');
+} else {
+  fail(`App.tsx : ${appUses} interpolation(s) — attendu 2, plus le ternaire d’en-tête`);
+}
 
 if (failures > 0) {
   console.error(`\n✗ ${failures} échec(s) — réaligner fiche/spec/carte sur docs/MARQUE.md`);

@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { Trophy, Flame, Play, Lock, ChevronRight, Compass, Target, Hourglass, AlertTriangle, Dices, HelpCircle, Moon, Share2, Network, Sparkles } from 'lucide-react';
 import { Unit, UserProgress, DailyGoalConfig } from '../types';
 import { LOGO_URL } from '../data';
+// Nom officiel figé (docs/MARQUE.md §3) — source unique miftahSpec : zéro littéral rendu ici.
+import { MIFTAH_NAME_OFFICIAL_AR } from '../data/miftahSpec';
 import DailyGoalWidget from './DailyGoalWidget';
 import SmartReminderCard from './SmartReminderCard';
 import WeeklyReportShareModal from './WeeklyReportShareModal';
@@ -115,7 +117,7 @@ export default function DashboardView({
             <Compass className="w-5 h-5" />
           </div>
           <div>
-            <h3 className="font-black text-[#006d37] dark:text-emerald-400 text-[15px]">🔑 مفتاح المنهجية (ICM + 4 مراحل)</h3>
+            <h3 className="font-black text-[#006d37] dark:text-emerald-400 text-[15px]">🔑 {MIFTAH_NAME_OFFICIAL_AR} (ICM + 4 مراحل)</h3>
             <p className="text-xs text-[#006d37]/80 dark:text-emerald-300/80 font-medium">ابدأ التدريب على الأفعال الـ 8 واختبار مسودة 90 ثانية</p>
           </div>
         </div>

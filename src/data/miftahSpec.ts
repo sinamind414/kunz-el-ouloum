@@ -7,7 +7,7 @@
 export const MIFTAH_VERSION = '3.3' as const;
 // Nom d'usage (UI, bouche de l'élève) — jamais autre chose
 export const MIFTAH_NAME_AR = 'المفتاح';
-// Nom officiel (documents légaux/CGU, argumentaire) — jamais abrégé
+// Nom officiel (documents légaux/CGU, argumentaire, titre de la rubrique depuis le 2026-09-15) — jamais abrégé
 export const MIFTAH_NAME_OFFICIAL_AR = 'مفتاح المنهجية';
 // Nom latin « MIFTAH » : réservé aux commentaires internes — interdit dans l'UI (docs/MARQUE.md §3)
 export const MIFTAH_NAME_LATIN = 'MIFTAH';

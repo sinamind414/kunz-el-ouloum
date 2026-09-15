@@ -27,6 +27,9 @@ import {
 
 import { Unit, UserProgress, Flashcard } from './types';
 import { INITIAL_UNITS, SVT_QUIZ_QUESTIONS, SVT_FLASHCARDS } from './data';
+// Nomenclature figée (docs/MARQUE.md §3) — la rubrique porte le nom officiel de la source
+// unique miftahSpec : aucun littéral dans ce fichier (garde-fou check:miftah §13, 2026-09-15).
+import { MIFTAH_NAME_OFFICIAL_AR } from './data/miftahSpec';
 
 import SplashView from './components/SplashView';
 import DashboardView from './components/DashboardView';
@@ -558,7 +561,7 @@ export default function App() {
           {currentTab === 'review' ? 'المراجعة الذكية' : 
            currentTab === 'stats' ? 'لوحة الإحصائيات' : 
            currentTab === 'badges' ? 'الأوسمة والإنجازات' : 
-           currentTab === 'methodology' ? 'مفتاح المنهجية' : 
+           currentTab === 'methodology' ? MIFTAH_NAME_OFFICIAL_AR : 
            currentTab === 'bootcamp' ? 'تحدي البكالوريا' : 
             currentTab === 'lesson' ? 'الدروس' :
             currentTab === 'workshop' ? 'الورشة التفاعلية' : 
@@ -670,7 +673,7 @@ export default function App() {
             <span>الخرائط الذهنية</span>
           </button>
 
-          {/* Methodology Tab — 🔑 مفتاح المنهجية */}
+          {/* Methodology Tab — 🔑 nom officiel via MIFTAH_NAME_OFFICIAL_AR */}
            <button
              onClick={() => setCurrentTab('methodology')}
              className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-2xl text-sm font-bold transition-all cursor-pointer ${
@@ -680,7 +683,7 @@ export default function App() {
              }`}
            >
              <Key className="w-5 h-5" />
-             <span>مفتاح المنهجية</span>
+             <span>{MIFTAH_NAME_OFFICIAL_AR}</span>
            </button>
 
            {/* Teacher Dashboard Tab */}
@@ -842,7 +845,7 @@ export default function App() {
           {currentTab === 'lesson' && <div className="absolute -bottom-1 w-1.5 h-1.5 rounded-full bg-[#006d37]"></div>}
         </button>
 
-        {/* Methodology Button (🔑 مفتاح المنهجية) */}
+        {/* Methodology Button — 🔑 nom officiel via MIFTAH_NAME_OFFICIAL_AR */}
         <button
           onClick={() => handleTabChange('methodology')}
           className={`relative flex flex-col items-center justify-center p-2 rounded-2xl transition-all w-[72px] h-[64px] cursor-pointer ${
@@ -852,7 +855,7 @@ export default function App() {
           }`}
         >
           <Key className="w-6 h-6 mb-1" />
-          <span className="text-[9px] leading-tight font-bold text-center">مفتاح المنهجية</span>
+          <span className="text-[9px] leading-tight font-bold text-center">{MIFTAH_NAME_OFFICIAL_AR}</span>
           {currentTab === 'methodology' && <div className="absolute -bottom-1 w-1.5 h-1.5 rounded-full bg-[#006d37]"></div>}
         </button>
 
