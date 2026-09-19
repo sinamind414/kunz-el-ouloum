@@ -5,11 +5,12 @@
 // puis total /20 — plafonnée par l'intégrité (salade/négations/perroquet).
 // Aucun dénominateur caché : le registre est la seule source (attendusBac2025).
 
-import { useMemo, useState } from 'react';
-import { ClipboardList, FileText, RotateCcw, Send, ShieldCheck } from 'lucide-react';
+import { useState } from 'react';
+import { ClipboardList, FileText, History, RotateCcw, Send, ShieldCheck, Trash2 } from 'lucide-react';
 import { listeGroupesBac2025, attendusDeGroupe } from '../data/dictionaries/attendusBac2025';
 import { noterCopieCalibree } from '../data/dictionaries/calibrationBac2025';
 import SectionObligatoire from './SectionObligatoire';
+import { logExamAttempt, getExamAttempts, getExamStats, clearExamLog, type ExamAttempt } from '../utils/examLog';
 
 const GROUPES = listeGroupesBac2025();
 
@@ -17,16 +18,34 @@ export default function Bac2025ExamView({ onClose }: { onClose: () => void }) {
   const [sujet, setSujet] = useState<1 | 2>(1);
   const [reponses, setReponses] = useState<Record<1 | 2 | 3, string>>({ 1: '', 2: '', 3: '' });
   const [soumis, setSoumis] = useState(false);
-
-  const copie = useMemo(
-    () => (soumis ? noterCopieCalibree([reponses[1], reponses[2], reponses[3]], sujet) : null),
-    [soumis, reponses, sujet]
-  );
+  const [copie, setCopie] = useState<ReturnType<typeof noterCopieCalibree> | null>(null);
+  const [historiqueOuvert, setHistoriqueOuvert] = useState(false);
+  const [historique, setHistorique] = useState<ExamAttempt[]>(() => getExamAttempts());
 
   const reset = (nouveauSujet?: 1 | 2) => {
     setSoumis(false);
+    setCopie(null);
     setReponses({ 1: '', 2: '', 3: '' });
     if (nouveauSujet) setSujet(nouveauSujet);
+  };
+
+  // Soumission : note calculée UNE fois, archivée (historique + dashboard si compte).
+  const soumettre = () => {
+    const c = noterCopieCalibree([reponses[1], reponses[2], reponses[3]], sujet);
+    setCopie(c);
+    setSoumis(true);
+    logExamAttempt({
+      sujet,
+      total: c.total,
+      exercices: c.exercices.map((n) => ({
+        sujet: n.sujet,
+        exercice: n.exercice,
+        points: n.points,
+        maxPts: n.maxPts,
+        couverture: Math.round(n.couverture * 100) / 100,
+      })),
+    });
+    setHistorique(getExamAttempts());
   };
 
   return (
@@ -41,12 +60,21 @@ export default function Bac2025ExamView({ onClose }: { onClose: () => void }) {
                 <ClipboardList className="w-6 h-6 text-emerald-400" />
                 الإطار الرسمي — بكالوريا 2025
               </h1>
-              <button
-                onClick={onClose}
-                className="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-bold text-slate-300"
-              >
-                إغلاق
-              </button>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => setHistoriqueOuvert((o) => !o)}
+                  className="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-bold text-emerald-300 flex items-center gap-1"
+                >
+                  <History className="w-3.5 h-3.5" />
+                  سجل النقاط
+                </button>
+                <button
+                  onClick={onClose}
+                  className="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-bold text-slate-300"
+                >
+                  إغلاق
+                </button>
+              </div>
             </div>
             <p className="text-xs text-slate-300 leading-relaxed">
               أجب عن التمارين الثلاثة، ثم سُلِّم لتشاهد التنقيط الإلزامي على مقتضيات الإجابة الرسمية
@@ -76,6 +104,64 @@ export default function Bac2025ExamView({ onClose }: { onClose: () => void }) {
             </button>
           ))}
         </div>
+
+        {/* Historique des notes (décision propriétaire : historique de notes) */}
+        {historiqueOuvert && (
+          <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 overflow-hidden">
+            <div className="px-4 py-3 bg-gray-50 dark:bg-black/20 border-b border-gray-100 dark:border-gray-800/60 flex items-center justify-between">
+              <p className="text-xs font-black text-gray-700 dark:text-gray-300 flex items-center gap-1.5">
+                <History className="w-3.5 h-3.5 text-emerald-600" />
+                سجل النقاط ({historique.length} محاولة)
+              </p>
+              {historique.length > 0 && (
+                <button
+                  onClick={() => {
+                    clearExamLog();
+                    setHistorique([]);
+                  }}
+                  className="text-[10px] font-bold text-red-500 hover:text-red-400 flex items-center gap-1"
+                >
+                  <Trash2 className="w-3 h-3" />
+                  مسح السجل
+                </button>
+              )}
+            </div>
+            {historique.length === 0 ? (
+              <p className="px-4 py-4 text-[11px] font-bold text-gray-400">
+                لا محاولات مؤرشفة بعد — سلّم إطاراً كاملاً ليظهر هنا سجلك.
+              </p>
+            ) : (
+              <ul className="divide-y divide-gray-100 dark:divide-gray-800/60">
+                {[...historique].reverse().map((a) => (
+                  <li key={a.id} className="px-4 py-2.5 flex items-center gap-3">
+                    <span
+                      className={`text-base font-black w-12 shrink-0 ${a.total >= 10 ? 'text-emerald-600 dark:text-emerald-400' : 'text-amber-600 dark:text-amber-400'}`}
+                    >
+                      {a.total}
+                    </span>
+                    <div className="min-w-0 flex-1">
+                      <p className="text-[11px] font-black text-gray-700 dark:text-gray-300">
+                        الموضوع {a.sujet === 1 ? 'الأول' : 'الثاني'}
+                        <span className="font-bold text-gray-400"> · {new Date(a.dateISO).toLocaleDateString('ar-DZ')}</span>
+                      </p>
+                      <div className="flex gap-1 mt-1" aria-label={`التمارين: ${a.exercices.map((e) => e.points + '/' + e.maxPts).join(' · ')}`}>
+                        {a.exercices.map((e) => (
+                          <span
+                            key={e.exercice}
+                            title={`التمرين ${e.exercice}: ${e.points}/${e.maxPts}`}
+                            className="px-1.5 py-0.5 rounded-md bg-gray-100 dark:bg-gray-800 text-[9px] font-black text-gray-500 dark:text-gray-400"
+                          >
+                            ت{e.exercice} {e.points}/{e.maxPts}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+        )}
 
         {/* Les 3 exercices */}
         {([1, 2, 3] as const).map((ex) => {
@@ -110,7 +196,7 @@ export default function Bac2025ExamView({ onClose }: { onClose: () => void }) {
         {/* Actions */}
         {!soumis ? (
           <button
-            onClick={() => setSoumis(true)}
+            onClick={soumettre}
             className="w-full py-3 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white font-black text-sm flex items-center justify-center gap-2 shadow-lg shadow-emerald-900/20"
           >
             <Send className="w-4 h-4" />

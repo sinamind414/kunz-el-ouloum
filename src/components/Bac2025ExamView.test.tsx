@@ -5,9 +5,12 @@
 // Réponses modèle Meftah → ≈19/20 · copie vide → 0 · hors-sujet → 0/8.
 
 import { cleanup, fireEvent, render, screen } from '@testing-library/react';
-import { afterEach, describe, expect, it } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import Bac2025ExamView from './Bac2025ExamView';
 import { MEFTA_BAC_EXERCISES } from '../data/meftahManhajia';
+import { getExamAttempts } from '../utils/examLog';
+
+beforeEach(() => localStorage.clear());
 
 afterEach(cleanup);
 
@@ -46,6 +49,27 @@ describe('Bac2025ExamView — la boucle élève (R6)', () => {
     remplirEtSoumettre([reflexe, reflexe, reflexe]);
     // 3 sections dont au moins une à 0/8 (aucun attendu touché)
     expect(screen.getAllByText(/0 \/ 8 ن/).length).toBeGreaterThanOrEqual(1);
+  });
+
+  it('la soumission archive la tentative : note affichée = note historisée', () => {
+    remplirEtSoumettre([MODELE_S1[0], MODELE_S1[1], MODELE_S1[2]]);
+    const all = getExamAttempts();
+    expect(all).toHaveLength(1);
+    expect(all[0]!.total).toBe(19.5); // 5 + 7 + 7.5 — la même note que l'affichage
+    expect(all[0]!.sujet).toBe(1);
+    expect(all[0]!.exercices).toHaveLength(3);
+    // une seule tentative même après re-render (pas de doublon)
+    fireEvent.click(screen.getByText(/سجل النقاط/));
+    expect(getExamAttempts()).toHaveLength(1);
+    // l'entrée d'historique est visible dans le panneau
+    expect(screen.getAllByText(/محاولة/).length).toBeGreaterThan(0);
+    expect(screen.getAllByText(/19/).length).toBeGreaterThan(1); // total + ligne d'historique
+  });
+
+  it('historique vide → message honnête (pas un 0 inventé)', () => {
+    render(<Bac2025ExamView onClose={() => {}} />);
+    fireEvent.click(screen.getByText(/سجل النقاط/));
+    expect(screen.getAllByText(/لا محاولات مؤرشفة بعد/).length).toBeGreaterThan(0);
   });
 
   it('l énoncé officiel de chaque exercice est affiché (registre, pas un substitut)', () => {

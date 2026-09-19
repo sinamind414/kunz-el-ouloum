@@ -321,3 +321,33 @@ autres exercices (au premier faux positif réel observé).
 **Reste ouvert (hors plan, décisions produits)** : التدرج السنوي (traçabilité L5) et exigibilité du
 livre prof — points demandés par le propriétaire, jamais arbitrés ; branchement de la note
 obligatoire sur la sauvegarde élève (الرقم السري) si le produit doit archiver les notes.
+
+### Pierre 2e — HISTORIQUE DES NOTES (décision propriétaire, même journée)
+
+Le troisième arbitrage produit restant est tranché par le propriétaire : « je veux un
+historique de notes ». Livré :
+
+1. **`src/utils/examLog.ts`** — archivage local de chaque épreuve soumise
+   (`kunz_exam_attempts_log_v1`, rotation 200) : total /20 + détail par exercice
+   (points, maxPts, couverture) = exactement la note affichée par le correcteur.
+   JSON corrompu → historique vide (jamais un crash). Stats : last/previous/best/
+   average/spark (10 derniers) — null tant qu'il n'y a aucune tentative.
+2. **Dashboard enseignant** : chaque tentative pousse un événement activité
+   (file offline-first `logActivityLocally`, type `quiz`, domaine `bac2025`) —
+   il n'arrive sur le serveur QUE si l'élève a un compte (`boussole_token`) ;
+   en invité, rien ne quitte l'appareil. Décision assumée : le TEXTE des réponses
+   reste local (aucun contrat de synchro ne le porte — l'historique de NOTES
+   n'exige pas la réplication des copies).
+3. **UI** (`Bac2025ExamView`) : la note est calculée UNE fois au clic (fin du
+   useMemo post-soumission — zéro double-archivage possible) ; bouton
+   « سجل النقاط » → panneau : nombre de tentatives, liste antéchronologique
+   (total, sujet, date ar-DZ, badges ت1/ت2/ت3 avec points/max), message honnête
+   « لا محاولات مؤرشفة بعد » si vide, purge manuelle.
+
+**Vérification** : vitest **738/738** (56 fichiers : +7 examLog, +2 UI) · boussole 138/138 ·
+build 8,9 s · check:miftah OK. Le test UI verrouille l'invariant central :
+**note affichée = note historisée** (19,5 = 5+7+7,5 — le test a d'abord attrapé mon
+assertion périmée d'avant la granularité P5, preuve qu'il lit la note réelle).
+
+**Reste ouvert (décisions propriétaire)** : التدرج السنوي (traçabilité L5), exigibilité du
+livre prof. Rien d'autre ne pends côté correcteur.

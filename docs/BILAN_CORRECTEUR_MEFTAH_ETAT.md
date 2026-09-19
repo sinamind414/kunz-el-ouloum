@@ -111,3 +111,8 @@ transférés aux cartes ; fin des portes 50/60 ; « Mars à 100 % » assuré = l
 le registre juge le fond), R4 rétrogradée (le barème EST le modèle — plus de fit à caler).
 Plan originel : 7/7 actions closes. 729/729 · 138/138 · build · check:miftah.
 Reste hors plan : التدرج السنوي (L5), livre prof, archivage élève de la note obligatoire.
+
+**Pierre 2e (historique de notes)** : décision propriétaire tranchée et livrée — chaque
+épreuve soumise est archivée (total /20 + détail par exercice), panneau « سجل النقاط »,
+événement dashboard si compte élève (rien ne quitte l'appareil en invité, textes locaux).
+738/738 · 138/138 · build · check:miftah. Reste : التدرج السنوي (L5), livre prof.
