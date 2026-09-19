@@ -179,3 +179,19 @@ DEPASSEMENTS, sinon échec). 752/752 (747+5) · 138/138 · build · check:miftah
 - **Déblocage** : si le propriétaire veut pousser L5, recoller le texte via le
   canal fiable (texte collé) comme pour le دليل الأستاذ — alors seulement une
   fiche d'extraits sourcés sera produite.
+
+**Banc de supervision R4 (2026-09-19, fin)** : le propriétaire a tenté de fournir
+40 copies élèves + RECAPITULATIF — **5e échec du canal d'upload** (aucun fichier
+sur disque, vérifié `ls`+`find`). En attente du recollage texte. Le banc est prêt :
+- `src/supervision/evaluerCopies.ts` (9 tests) : split sujet-complet sur repères
+  التمرين (ordinaux + numériques), parseur RECAP tolérant (virgule décimale, /20,
+  3 notes par exercice sommées, chiffres arabes, lignes non parsées signalées),
+  Pearson, écart moyen/|écart|, mode exercice auto-argmax 6 groupes, flag
+  d'attribution S1/S2 ambiguë (< 1 pt).
+- `scripts/evaluer-copies.ts` + `npm run evaluer-copies -- --dir … [--sujet|--groupe|--out]`
+  : tableau par copie + stats fiabilité + rapport MD.
+- Contrat vérifié sur copies synthétiques : couverture 1 → salade plafonnée
+  non_prose 30 % (0.3×20=6 max) — le blindage s'applique aussi au banc.
+- Règle d'usage : le banc MESURE l'écart correcteur↔prof (supervision), il ne
+  remplace jamais la décision pédagogique.
+761/761 (752+9) · check:miftah OK.
