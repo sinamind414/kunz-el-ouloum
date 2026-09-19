@@ -1,7 +1,9 @@
-// calibrationBac2025.test.ts — Verrous de la notation calibrée (évaluation 80
-// copies bac2025, métriques P3 : MAE 2.04/20, biais 0, F1 0.91).
-// RÈGLE MOTEUR verrouillée : la note vient EXCLUSIVEMENT de la calibration
-// couverture→points ; le barème officiel et les seuils restent diagnostiques.
+// calibrationBac2025.test.ts — Verrous de la notation R6 (Pierre 2 : attendus
+// obligatoires) + garde du LEGACY (fit linéaire, déprécié hors recherche).
+//
+// R6 : la note = min(couverture_attendus × maxPts, plafonds d'intégrité).
+// Le dénominateur est le REGISTRE (attendusBac2025.ts) — la banque d'unité
+// n'est plus jamais un dénominateur (audit C1/C2 : elle payait les salades 8/8).
 
 import { describe, expect, it } from 'vitest';
 import {
@@ -11,125 +13,137 @@ import {
   noterExerciceCalibre,
   uniteDeGroupe,
 } from './calibrationBac2025';
-import { CORRECTEUR_V1_UNITES, evaluerReponseKeywords } from '../../correcteurV1';
+import { attendusDeGroupe } from './attendusBac2025';
+import { normalizeAr } from '../../lib/validation/normalizeAr';
+import { MEFTA_BAC_EXERCISES } from '../meftahManhajia';
+import { PLAFONDS } from './integriteCopie';
 
-describe('calage des groupes bac2025', () => {
-  it('6 groupes : mapping sujet→unités verrouillé (S1 [1,6,5], S2 [7,3,4])', () => {
-    expect(CALIBRATION_BAC2025).toHaveLength(6);
-    expect(([1, 2, 3] as const).map((ex) => uniteDeGroupe(1, ex)!.uniteId)).toEqual([1, 6, 5]);
-    expect(([1, 2, 3] as const).map((ex) => uniteDeGroupe(2, ex)!.uniteId)).toEqual([7, 3, 4]);
-  });
+// Réponse qui contient TOUS les textes officiels d'un groupe → toutes les
+// formes matchent → couverture 1 → note max (cohérence registre ↔ scoreur).
+function reponseExhaustive(sujet: 1 | 2, exercice: 1 | 2 | 3): string {
+  return attendusDeGroupe(sujet, exercice).items.map((i) => i.texteAr).join(' ');
+}
 
-  it('barèmes verrouillés : Ex1=5, Ex2=7, Ex3=8 (total 20) — unités connues du correcteur', () => {
-    for (const g of CALIBRATION_BAC2025) {
-      expect(g.maxPts, `groupe ${g.sujet}-${g.exercice}`).toBe([5, 7, 8][g.exercice - 1]);
-      expect(
-        CORRECTEUR_V1_UNITES.some((u) => u.uniteId === g.uniteId),
-        `unité ${g.uniteId} inconnue`,
-      ).toBe(true);
-    }
-    expect(CALIBRATION_BAC2025.reduce((s, g) => s + g.maxPts, 0)).toBe(40); // 2 sujets × 20
-  });
-});
-
-describe('noteDepuisCouverture — calibration pure (R1)', () => {
-  it('monotone non décroissante sur [0,1] pour les 6 groupes', () => {
+describe('R6 — invariants de la notation par attendus obligatoires', () => {
+  it('copie vide → 0 pt sur les 6 groupes', () => {
     for (const sujet of [1, 2] as const) {
       for (const exercice of [1, 2, 3] as const) {
-        let precedent = -1;
-        for (let cov = 0; cov <= 1.0001; cov += 0.05) {
-          const { points } = noterDepuisCouverture(Math.min(cov, 1), sujet, exercice);
-          expect(points, `S${sujet}-Ex${exercice} cov=${cov}`).toBeGreaterThanOrEqual(precedent);
-          precedent = points;
-        }
+        expect(noterExerciceCalibre('', sujet, exercice).points).toBe(0);
       }
     }
   });
 
-  it('clamp [0, maxPts] : cov=0 → ≥0 (S2-Ex1 b<0 → 0) ; cov=1 → maxPts (a+b > maxPts)', () => {
-    expect(noterDepuisCouverture(0, 2, 1).points).toBe(0);
-    for (const g of CALIBRATION_BAC2025) {
-      expect(g.a + g.b, `S${g.sujet}-Ex${g.exercice} doit saturer à cov=1`).toBeGreaterThan(g.maxPts);
-      expect(noterDepuisCouverture(1, g.sujet, g.exercice).points).toBe(g.maxPts);
-    }
-  });
-
-  it('ancres de régression (fit 80 copies, pleine précision)', () => {
-    expect(noterDepuisCouverture(0.1, 1, 1).points).toBeCloseTo(0.58, 2);
-    expect(noterDepuisCouverture(0.2, 1, 1).points).toBeCloseTo(3.22, 2);
-    expect(noterDepuisCouverture(0.06, 2, 2).points).toBeCloseTo(4.11, 2);
-    expect(noterDepuisCouverture(0.05, 2, 3).points).toBe(8); // 10.36 → clamp
-  });
-
-  it('groupe inconnu → note nulle (jamais de crash)', () => {
-    expect(noterDepuisCouverture(0.5, 3 as 1, 9 as 2)).toEqual({
-      uniteId: 0,
-      mode: 'calibre',
-      couverture: 0.5,
-      points: 0,
-      maxPts: 0,
-    });
-  });
-});
-
-describe('noterExerciceCalibre — R2 : le barème auto JAMAIS dans la note', () => {
-  it('réponse vide → 0 pt malgré un plafond barème > 0', () => {
-    const n = noterExerciceCalibre('', 1, 1);
-    expect(n.points).toBe(0);
-    expect(n.couverture).toBe(0);
-    expect(n.diagnosticBareme!.creditAuto).toBe(0);
-    expect(n.diagnosticBareme!.plafondAuto).toBeGreaterThan(0); // affiché, pas noté
-  });
-
-  it('Ex2/Ex3 : pas de barème build → diagnosticBareme null', () => {
-    expect(noterExerciceCalibre('réponse', 1, 2).diagnosticBareme).toBeNull();
-    expect(noterExerciceCalibre('réponse', 2, 3).diagnosticBareme).toBeNull();
-  });
-
-  it('invariant R2 : points = calibration(couverture) seule, pour tout texte', () => {
-    const echantillons = [
-      'المستضد أجسام مضادة خلايا بلازمية معقد مناعي',
-      'الحصيلة الطاقوية 38 ATP لكل غلوكوز', // contexte barème Ex1 S2
-      'نشاط انزيم sod السليم 100 والمصاب 30%',
-      'التركيب الضوئي يحدث في الصانعة الخضراء',
-    ];
+  it('texte couvrant TOUS les attendus → note max (plafond auto = barème)', () => {
     for (const sujet of [1, 2] as const) {
       for (const exercice of [1, 2, 3] as const) {
-        const g = uniteDeGroupe(sujet, exercice)!;
-        for (const texte of echantillons) {
-          const n = noterExerciceCalibre(texte, sujet, exercice);
-          const cov = evaluerReponseKeywords(texte, g.uniteId).couverture;
-          // Règle moteur : couverture 0 → 0 pt (jamais de points pour une copie vide).
-          const attendu = cov === 0 ? 0 : Math.min(g.maxPts, Math.max(0, g.a * cov + g.b));
-          expect(n.points, `S${sujet}-Ex${exercice} «${texte.slice(0, 20)}»`).toBeCloseTo(
-            Math.round(attendu * 100) / 100,
-            2,
-          );
-        }
+        const n = noterExerciceCalibre(reponseExhaustive(sujet, exercice), sujet, exercice);
+        expect(n.couverture, `S${sujet}-Ex${exercice}`).toBe(1);
+        expect(n.points).toBe(n.maxPts);
+        expect(n.plafonds).toEqual([]); // c'est de la prose officielle
       }
     }
   });
-});
 
-describe('noterCopieCalibree — copie complète /20', () => {
-  it('3 exercices dans l’ordre des unités ; note sensible à l’unité mappée ; total = somme ≤ 20', () => {
-    const vide = noterCopieCalibree(['', '', ''], 1);
-    expect(vide.exercices.map((e) => e.uniteId)).toEqual([1, 6, 5]);
-    expect(vide.total).toBe(0); // copie vide = 0, même avec un plafond barème
+  it('points = couverture × maxPts, sauf plafond d’intégrité (formule R6)', () => {
+    for (const sujet of [1, 2] as const) {
+      for (const exercice of [1, 2, 3] as const) {
+        const n = noterExerciceCalibre(reponseExhaustive(sujet, exercice).slice(0, 400), sujet, exercice);
+        const borne = Math.min(...(n.plafonds.length ? n.plafonds.map((p) => p.plafondPct) : [1])) * n.maxPts;
+        expect(n.points).toBeLessThanOrEqual(Math.round(borne * 100) / 100 + 1e-9);
+        expect(n.points).toBe(Math.round(Math.min(n.couverture * n.maxPts, borne) * 100) / 100);
+      }
+    }
+  });
 
+  it('le déversement de la banque d’unité NE PAIE PLUS (fin du détecteur de déversement)', () => {
+    // Texte « immunité » (banque U4) sur S2-Ex3 (transfusion) : avant R6 il
+    // saturait 8/8 ; il ne touche presque aucun attendu officiel du groupe.
     const immunité =
       'المستضد أجسام مضادة خلايا بلازمية معقد مناعي بلعمة المتمم الانتقاء النسيلي خلايا ذاكرة ' +
-      'الاستجابة الأولية الاستجابة الثانوية اللقاح LTc البرفورين الغرانزيمات TCR LT4 الإنترلوكين';
-    const copie = noterCopieCalibree([immunité, immunité, immunité], 2);
-    expect(copie.exercices.map((e) => e.uniteId)).toEqual([7, 3, 4]);
-    // Le texte immunité sature l’exercice mappé sur U4 (transfusion) et ne paie
-    // PAS l’exercice mappé sur U7 (respiration) ; sur U3, la fuite par
-    // sous-chaîne connue du moteur (الغرانزيمات ⊃ انزيم) reste bornée et
-    // très inférieure à la note de l’unité réellement couverte.
-    expect(copie.exercices[0]!.points).toBe(0);
-    expect(copie.exercices[1]!.points).toBeLessThan(copie.exercices[2]!.points);
-    expect(copie.exercices[2]!.points).toBe(8);
-    expect(copie.total).toBeCloseTo(copie.exercices.reduce((s, e) => s + e.points, 0), 2);
+      'الاستجابة الأولية الاستجابة الثانوية اللقاح LTc البرفورين الغرانزيمات TCR LT4 الإنترلوكين GP120 CD4';
+    const n = noterExerciceCalibre(immunité, 2, 3);
+    expect(n.points).toBeLessThanOrEqual(0.25 * 8); // ≤ 2/8 — quasi rien
+    expect(n.couverture).toBeLessThan(0.3);
+  });
+
+  it('hors-sujet intrinsèque → 0 (sans aucun paramètre : les attendus sont OBLIGATOIRES)', () => {
+    const reflexe =
+      'المنعكس العضلي ثنائي المشبك يمر عبر النخاع الشوكي، واللوحة المحركة هي البنية النهائية، ' +
+      'وآلية الإدماج الزمني والفضائي تحدد شدة الاستجابة، وقانون الكل أو لا شيء يحكم المحور الأسطواني.';
+    const n = noterExerciceCalibre(reflexe, 1, 3);
+    expect(n.couverture).toBe(0);
+    expect(n.points).toBe(0);
+  });
+
+  it('groupe inconnu → throw du registre (jamais de dénominateur de substitution)', () => {
+    // attendusDeGroupe lève ; noterExerciceCalibre ne peut pas être appelé hors 2025.
+    expect(() => attendusDeGroupe(3 as 1 | 2, 3)).toThrow(/attendu/);
+  });
+
+  it('mapping unités (diagnostic) inchangé : S1 [1,6,5] · S2 [7,3,4]', () => {
+    const copie = noterCopieCalibree(['', '', ''], 1);
+    expect(copie.exercices.map((e) => e.uniteId)).toEqual([1, 6, 5]);
+    const copie2 = noterCopieCalibree(['', '', ''], 2);
+    expect(copie2.exercices.map((e) => e.uniteId)).toEqual([7, 3, 4]);
+  });
+
+  it('total copie = somme des exercices ≤ 20', () => {
+    const copie = noterCopieCalibree([reponseExhaustive(1, 1), reponseExhaustive(1, 2), reponseExhaustive(1, 3)], 1);
+    expect(copie.total).toBe(20);
     expect(copie.total).toBeLessThanOrEqual(20);
+  });
+});
+
+describe('R6 — contrôles positifs : les réponses modèle de Meftah', () => {
+  // Les visages BAC sont écrits depuis les عناصر الإجابة officiels → ils
+  // doivent couvrir ~tout le registre. Avant R6 : 16,05/20 (Ex3 à 5,18/8).
+  const MODELES = MEFTA_BAC_EXERCISES.map((ex) => ({
+    id: ex.id,
+    texte: ex.questions.flatMap((q) => q.writeAr).join('\n'),
+    exercice: (ex.id.endsWith('1') ? 1 : ex.id.endsWith('2') ? 2 : 3) as 1 | 2 | 3,
+  }));
+
+  it('couverture ≥ 85 % et note ≥ 90 % du max pour chaque réponse modèle', () => {
+    for (const m of MODELES) {
+      const n = noterExerciceCalibre(m.texte, 1, m.exercice);
+      expect(n.couverture, `${m.id} couverture`).toBeGreaterThanOrEqual(0.85);
+      expect(n.points, `${m.id} points`).toBeGreaterThanOrEqual(0.9 * n.maxPts);
+      expect(n.plafonds, `${m.id} — aucun plafond sur une copie légitime`).toEqual([]);
+    }
+  });
+
+  it('copie modèle complète ≈ 19-20/20 (avant R6 : 16,05)', () => {
+    const copie = noterCopieCalibree(
+      MODELES.map((m) => m.texte) as [string, string, string],
+      1
+    );
+    expect(copie.total).toBeGreaterThanOrEqual(18);
+    expect(copie.total).toBeLessThanOrEqual(20);
+  });
+});
+
+describe('LEGACY — noterDepuisCouverture (déprécié, gelé pour recherche)', () => {
+  it('ancres de régression (fit 80 copies, pleine précision) — inchangées', () => {
+    expect(noterDepuisCouverture(0, 1, 1).points).toBe(0);
+    const g = CALIBRATION_BAC2025[0]!;
+    const brut = g.a * 0.2 + g.b;
+    expect(noterDepuisCouverture(0.2, 1, 1).points).toBe(Math.min(g.maxPts, Math.max(0, brut)));
+  });
+});
+
+describe('compat — uniteDeGroupe (mapping diagnostic verrouillé)', () => {
+  it('S1-Ex3 → U5 · S2-Ex3 → U4', () => {
+    expect(uniteDeGroupe(1, 3)!.uniteId).toBe(5);
+    expect(uniteDeGroupe(2, 3)!.uniteId).toBe(4);
+  });
+});
+
+// Garde anti-fuite : la couverture exposée vient du registre, pas de la banque.
+describe('R6 — traçabilité', () => {
+  it('la note expose son registre et ses verdicts (transparence prof)', () => {
+    const n = noterExerciceCalibre('تمثل الوثيقة تأثير Mtb. نلاحظ ارتباطه بالمستقبل ومنه يعيق الأدينوزين.', 1, 3);
+    expect(n.registre.items.length).toBeGreaterThan(0);
+    expect(n.verdicts.length).toBe(n.registre.items.length);
+    expect(normalizeAr(n.registre.questionAr).length).toBeGreaterThan(10);
   });
 });

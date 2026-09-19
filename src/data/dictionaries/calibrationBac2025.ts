@@ -1,25 +1,41 @@
-// calibrationBac2025.ts
-// NOTATION CALIBRÉE du correcteur (évaluation 80 copies bac2025 SVT, vérité terrain).
+// calibrationBac2025.ts — NOTATION PAR ATTENDUS OBLIGATOIRES (Pierre 2, R6).
 //
-// RÈGLE MOTEUR (évaluation du 2026-09-16) :
-//   · La NOTE = calibration linéaire de la couverture mots-clés PAR EXERCICE
-//     (pts ≈ a·cov + b, ajustée sur les 80 copies, clampée [0, maxPts]) —
-//     P3-full : r=0.86 · ρ=0.87 · MAE=2.03/20 · biais=0 ; validation croisée
-//     4-fold honnête : MAE=2.04 · F1=0.91 · rappel 1.0 (aucun élève méritant raté) ;
-//   · le BARÈME AUTOMATIQUE (bac2025 Ex1) = crédit automatique affiché en
-//     DIAGNOSTIC — JAMAIS sommé ni substitué à la note (r=0 contre la vérité
-//     terrain : prédicteur nul, plafond trop bas 1.75/3 pts) ;
-//   · les SEUILS de couverture (SEUIL_KEYWORDS/DEFAUT) et les ENTITÉS =
-//     diagnostic pédagogique — jamais convertis en points.
+// HISTORIQUE : v1 notait couverture-banque-d'unité → fit linéaire (a·cov+b)
+// ajusté sur 80 copies (r=0.86 global, mais S2-Ex3 r=0.45, interceptes
+// généreux, saturation 3-14 mots-clés — audit C1/C4). Ce chemin
+// (`noterDepuisCouverture`) reste exporté en LEGACY ; ses constantes étaient
+// ajustées sur l'ANCIEN dénominateur et ne peuvent plus gouverner la note.
 //
-// R4 — recalibrage : exécuter `npx tsx scripts/recalibrer-copiees.ts` sur un
-// échantillon de vraies copies corrigées par un humain (CSV), puis remplacer
-// les constantes ci-dessous par le fit obtenu (le fit actuel dépend du
-// générateur du corpus — voir analyse 80 copies, 11 faux positifs N°5–13).
+// RÈGLE MOTEUR ACTUELLE (Pierre 2 — audit §5.1) :
+//   · la note se calcule EXCLUSIVEMENT contre les attendus officiels de la
+//     question (attendusBac2025.ts — sources : build prouvé fidèle + corrigé
+//     ministériel 2025) : plus JAMAIS la banque d'unité en dénominateur ;
+//   · item auto = une forme reconnue dans la réponse → ses points ;
+//   · couverture = Σ auto crédité / Σ auto (les items manuels sont exclus du
+//     dénominateur et remontés au correcteur humain) ;
+//   · note = couverture × maxPts, PUIS plafonds d'intégrité
+//     (integriteCopie.ts : salade 30 % · négations 50 % · perroquet 25 %) ;
+//   · couverture 0 (aucun attendu touché) → 0 pt ;
+//   · le diagnostic (entités, seuils mots-clés) reste pédagogique, hors note.
 
 import { evaluerBareme } from './baremeCorrecteur';
 import { evaluerEntites, type EntiteDetectee } from './dictionnaireCorrecteur';
 import { evaluerReponseKeywords } from '../../correcteurV1';
+import {
+  attendusDeGroupe,
+  plafondAutoDe,
+  type AttendusExercice,
+  type AttenduItem,
+} from './attendusBac2025';
+import {
+  analyserSignaux,
+  calculerPlafonds,
+  appliquerPlafonds,
+  type PlafondApplique,
+  type SignauxCopie,
+} from './integriteCopie';
+import { normalizeAr } from '../../lib/validation/normalizeAr';
+import { CORRECTEUR_V1_UNITES as CORRECTEUR_UNITES } from '../../correcteurV1';
 
 export interface GroupeCalibre {
   sujet: 1 | 2;
@@ -49,7 +65,7 @@ export function uniteDeGroupe(sujet: 1 | 2, exercice: 1 | 2 | 3): GroupeCalibre 
 
 export interface ResultatNotation {
   uniteId: number;
-  mode: 'calibre';
+  mode: 'attendus' | 'calibre';
   /** Couverture mots-clés de la réponse (0..1). */
   couverture: number;
   /** Note calibrée, clampée [0, maxPts]. */
@@ -58,8 +74,11 @@ export interface ResultatNotation {
 }
 
 /**
- * Note pure depuis la couverture seule (R2) : N'utilise NI le barème automatique,
- * NI les seuils bruts — la note vient exclusivement de la calibration.
+ * LEGACY (R2 historique, déprécié par Pierre 2/R6) : note depuis la couverture
+ * sur banque d'unité via le fit linéaire. Conservé pour recherche/repasse du
+ * harnais 80 copies — INTERDIT dans le chemin de notation produit : le
+ * dénominateur de production est le registre des attendus.
+ * @deprecated utiliser noterExerciceCalibre (attendus obligatoires).
  */
 export function noterDepuisCouverture(
   couverture: number,
@@ -94,83 +113,132 @@ const QUESTIONS_EX1_BAC2025: Record<1 | 2, string[]> = {
   2: ['bac2025_S2/S2-Ex1/Q1', 'bac2025_S2/S2-Ex1/Q2'],
 };
 
+export interface OptionsNotation {
+  /** Override de l'énoncé (détection de perroquet) — sinon le registre. */
+  question?: string;
+}
+
+export interface VerdictAttendu {
+  id: string;
+  texteAr: string;
+  points: number;
+  /** Crédité automatiquement (une forme reconnue). */
+  credite: boolean;
+  /** false = item manuel (aucune forme) → correcteur humain. */
+  auto: boolean;
+  source: AttenduItem['source'];
+}
+
 export interface NoteCalibree extends ResultatNotation {
   sujet: 1 | 2;
   exercice: 1 | 2 | 3;
+  /** Couverture des attendus AUTO crédités (0..1). */
+  couverture: number;
+  /** Σ points attendus auto crédités / Σ points auto. */
+  pointsAttendusCredites: number;
+  pointsAttendusAuto: number;
+  /** Détail par attendu (le prof voit tout, y compris les items manuels). */
+  verdicts: VerdictAttendu[];
   /** Couche DICTIONNAIRE : entités officiel+verifie reconnues (pédagogique). */
   entitesReconnues: EntiteDetectee[];
-  /** Mots-clés trouvés / manquants (pédagogique). */
-  trouves: string[];
-  manquants: string[];
-  /** La couverture franchit le seuil diagnostic ? (jamais converti en points). */
-  passeDiagnostic: boolean;
+  /** Diagnostic mots-clés de l'unité (pédagogique — JAMAIS la note). */
+  diagnosticMotsCles: { trouves: string[]; manquants: string[]; passe: boolean };
   diagnosticBareme: {
-    /** Crédit automatique du barème officiel (Ex1) — JAMAIS une note. */
-    creditAuto: number | null;
-    /** Plafond automatiquement créditable par signature (items auto). */
-    plafondAuto: number | null;
-  } | null;
+    creditAuto: number;
+    plafondAuto: number;
+  };
+  /** Blindage anti-jeu (Pierre 1) : plafonds appliqués à la note. */
+  plafonds: PlafondApplique[];
+  /** Signaux de surface ayant alimenté les plafonds (transparence). */
+  signaux: SignauxCopie;
+  /** Le registre d'attendus utilisé (traçabilité). */
+  registre: AttendusExercice;
 }
 
 /**
  * Évalue UNE réponse d'exercice bac2025 : note calibrée + couches de diagnostic.
- * RÈGLE MOTEUR : `points` ne dépend QUE de la couverture via la calibration ;
- * le crédit du barème officiel reste affiché en diagnostic (jamais additionné).
+ * RÈGLE MOTEUR : `points` ne dépend QUE de la couverture via la calibration,
+ * PUIS est plafonné par les signaux d'intégrité (salade / perroquet /
+ * négations — integriteCopie.ts) ; le crédit du barème officiel reste
+ * affiché en diagnostic (jamais additionné).
  */
 export function noterExerciceCalibre(
   reponse: string,
   sujet: 1 | 2,
-  exercice: 1 | 2 | 3
+  exercice: 1 | 2 | 3,
+  options?: OptionsNotation
 ): NoteCalibree {
+  const registre = attendusDeGroupe(sujet, exercice); // OBLIGATOIRE — throw si absent
   const g = uniteDeGroupe(sujet, exercice);
-  if (!g) throw new Error(`groupe bac2025 inconnu : sujet ${sujet} exercice ${exercice}`);
-  const kw = evaluerReponseKeywords(reponse, g.uniteId);
-  const base = noterDepuisCouverture(kw.couverture, sujet, exercice);
-  const ent = evaluerEntites(reponse, g.uniteId);
 
-  let diagnosticBareme: NoteCalibree['diagnosticBareme'] = null;
-  if (exercice === 1) {
-    let credit = 0;
-    let plafond = 0;
-    for (const qid of QUESTIONS_EX1_BAC2025[sujet]) {
-      const res = evaluerBareme(reponse, qid);
-      if (!res) continue;
-      credit += res.pointsObtenus;
-      plafond += res.verdicts
-        .filter((v) => v.mode === 'auto')
-        .reduce((s, v) => s + v.item.points, 0);
+  // R6 : la couverture vient des ATTENDUS (jamais de la banque d'unité).
+  const norm = normalizeAr(reponse || '').toLowerCase();
+  const verdicts: VerdictAttendu[] = [];
+  let credite = 0;
+  let totalAuto = 0;
+  for (const it of registre.items) {
+    if (it.points <= 0) {
+      verdicts.push({ id: it.id, texteAr: it.texteAr, points: it.points, credite: false, auto: false, source: it.source });
+      continue;
     }
-    diagnosticBareme = {
-      creditAuto: Math.round(credit * 100) / 100,
-      plafondAuto: Math.round(plafond * 100) / 100,
-    };
+    if (it.formes.length === 0) {
+      // Item manuel : aucune forme → correcteur humain, exclu du dénominateur.
+      verdicts.push({ id: it.id, texteAr: it.texteAr, points: it.points, credite: false, auto: false, source: it.source });
+      continue;
+    }
+    totalAuto = Math.round((totalAuto + it.points) * 100) / 100;
+    const hit = it.formes.some((f) => norm.includes(f));
+    if (hit) credite = Math.round((credite + it.points) * 100) / 100;
+    verdicts.push({ id: it.id, texteAr: it.texteAr, points: it.points, credite: hit, auto: true, source: it.source });
   }
+
+  const couverture = totalAuto > 0 ? Math.min(1, credite / totalAuto) : 0;
+
+  // Pierre 1 : plafonds d'intégrité (salade / négations / perroquet).
+  const question = options?.question ?? registre.questionAr;
+  const signaux = analyserSignaux(reponse, question);
+  const plafonds = calculerPlafonds(signaux);
+  const brut = couverture * registre.maxPts;
+  const points = couverture === 0 ? 0 : appliquerPlafonds(brut, registre.maxPts, plafonds);
+
+  // Diagnostic (pédagogique, jamais converti en points).
+  const unite = g ? CORRECTEUR_UNITES.find((u) => u.uniteId === g.uniteId) : undefined;
+  const ent = evaluerEntites(reponse, g?.uniteId ?? 0);
+  const diag = unite
+    ? evaluerReponseKeywords(reponse, g!.uniteId)
+    : { trouves: [] as string[], manquants: [] as string[], passe: false };
 
   return {
     sujet,
     exercice,
-    uniteId: g.uniteId,
-    mode: 'calibre',
-    couverture: kw.couverture,
-    points: Math.round(base.points * 100) / 100,
-    maxPts: g.maxPts,
-    entitesReconnues: ent.trouvees,
-    trouves: kw.trouves,
-    manquants: kw.manquants,
-    passeDiagnostic: kw.passe,
-    diagnosticBareme,
+    uniteId: g?.uniteId ?? 0,
+    mode: 'attendus',
+    couverture,
+    points: Math.round(points * 100) / 100,
+    maxPts: registre.maxPts,
+    pointsAttendusCredites: credite,
+    pointsAttendusAuto: totalAuto,
+    verdicts,
+    entitesReconnues: g ? ent.trouvees : [],
+    diagnosticMotsCles: { trouves: diag.trouves, manquants: diag.manquants, passe: diag.passe },
+    diagnosticBareme: { creditAuto: credite, plafondAuto: plafondAutoDe(registre) },
+    plafonds,
+    signaux,
+    registre,
   };
 }
 
 /** Note une copie complète (3 exercices) → total /20 + détail par exercice. */
 export function noterCopieCalibree(
   sections: readonly [string, string, string],
-  sujet: 1 | 2
+  sujet: 1 | 2,
+  options?: readonly (OptionsNotation | undefined)[]
 ): { total: number; exercices: NoteCalibree[] } {
-  const exercices = ([1, 2, 3] as const).map((ex) =>
-    noterExerciceCalibre(sections[ex - 1] ?? '', sujet, ex)
+  const exercices = ([1, 2, 3] as const).map((ex, i) =>
+    noterExerciceCalibre(sections[ex - 1] ?? '', sujet, ex, options?.[i])
   );
   const total = exercices.reduce((s, e) => s + e.points, 0);
   return { total: Math.round(total * 100) / 100, exercices };
 }
+
 

@@ -1,5 +1,5 @@
 import {
-  VERB_CARDS_V2, getVerbCardV2, ERROR_TAXONOMY,
+  getVerbCardV2, ERROR_TAXONOMY,
   Switch, StepId, Step3Mode,
 } from '../data/methodologyEngine';
 
@@ -76,7 +76,12 @@ export function evaluateStudentProduction(
   currentStage: 1 | 2 | 3 | 4 = 3,
   switchContext?: SwitchContext
 ): ScoreReport {
-  const card = getVerbCardV2(verbId) ?? VERB_CARDS_V2[0];
+  const card = getVerbCardV2(verbId);
+  // Audit 2026-09-19 (C7) : plus de fallback silencieux — un verbId inconnu
+  // notait contre la carte [0] (analyse) sans avertissement (ex. « hypothesize »
+  // issu de l'espace d'ids reflexes.ts → critères an_c* absurdes pour une
+  // hypothèse). Toute erreur d'id doit crier, jamais noter au hasard.
+  if (!card) throw new Error(`[methodologyScorer] verbId inconnu : « ${verbId} » — aucune note silencieuse (audit 2026-09-19 C7)`);
   const sw = card.switch;
   const writes = (s: StepId) => card.path.includes(s);
   const text = (userText || '').trim().toLowerCase();

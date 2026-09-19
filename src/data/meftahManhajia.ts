@@ -368,6 +368,15 @@ const PLUSPLUS_LEVEL: MeftahLevel = {
 };
 
 // ─── Visages 4-6 : تطبيق BAC 2025 (سؤال بسؤال، ما أفكر / ما أكتب / فخ) ────────
+// NOTE barèmes (2026-09-19) : labels alignés sur الإجابة النموذجية الرسمية
+// (correction-bac-sci-sciences-2025.pdf — eddirasa) :
+//   Ex1 : Q1 = 0.25×5 = 1.25 · Q2 = 3.75 (RIP 1.25, intro 0.5, ARNm/t/r 0.5,
+//         خاتمة 0.5, annonce 0) → 5 ✓  [vérifié item par item]
+//   Ex2 : Q1 = 1.5 · Q2 = 2.5 (explicite) · Q3 = 2.5 · تبرير = 0.5 → 7 ✓
+//         [Q1/Q3 par contrainte de somme, Q2 explicite]
+//   Ex3 : 2.5 / 4.5 / 0.5 / 0.5 → 8 ✓ [découpage non contredit par le corrigé ;
+//         ventilation fine à confirmer sur le scan — l'OCR est bruité]
+// Verrouillé par test : src/data/hikalaBac.test.ts (sommes + parité dictionnaire).
 
 export interface MeftahBacQuestion {
   id: string;
@@ -404,7 +413,11 @@ export const MEFTA_BAC_EXERCISES: MeftahBacExercise[] = [
       {
         id: 'bac2025-ex1-q1',
         instructionAr: 'اذكر مختلف أنواع ال ARN المتواجدة في الهيولى خلال وخارج فترة تركيب البروتين',
-        pointsLabel: '0.5 ن',
+        // CORRIGÉ 2026-09-19 : 0.5 → 1.25 (5 items × 0.25) — الإجابة النموذجية
+        // الرسمية (eddirasa, correction-bac-sci-sciences-2025.pdf, ص 1) :
+        // « 0.25 × 5 » — concordant item par item avec dictionnaire_final.json
+        // (bac2025_S1/S1-Ex1/Q1/item1..5). L'ancien label 0.5 était FAUX (audit M2).
+        pointsLabel: '1.25 ن',
         tags: ['سنّ 1', 'فعل بسيط'],
         thinkAr: 'الفعل «اذكر» = قائمة من المكتسبات. الشرط المخفي: خلال / خارج فترة التركيب. لا أحلل الوثيقة.',
         writeAr: [
@@ -416,7 +429,10 @@ export const MEFTA_BAC_EXERCISES: MeftahBacExercise[] = [
       {
         id: 'bac2025-ex1-q2',
         instructionAr: 'اشرح في نص علمي دور مختلف أنواع ال ARN في تركيب البروتين مبرزا تأثير ال RIP في علاج بعض الأورام السرطانية',
-        pointsLabel: '4.5 ن',
+        // CORRIGÉ 2026-09-19 : 4.5 → 3.75 (مقدمة 0.5 + ARNm 0.5 + ARNt 0.5 +
+        // ARNr 0.5 + RIP 1.25 + خاتمة 0.5) — même source officielle ;
+        // concordant avec les items du dictionnaire (RIP=1.25, annonce=0).
+        pointsLabel: '3.75 ن',
         tags: ['نص علمي', 'مقدمة · عرض · خاتمة', 'قيد «مبرزا»'],
         thinkAr: 'ليس استغلال وثيقة — هو درس مهيكل. كلمة «مبرزا» = RIP إجباري داخل العرض لا في الخاتمة فقط.',
         writeAr: [
@@ -443,7 +459,9 @@ export const MEFTA_BAC_EXERCISES: MeftahBacExercise[] = [
       {
         id: 'bac2025-ex2-q1',
         instructionAr: 'حلّل نتائج الشكل(أ) من الوثيقة 1',
-        pointsLabel: '1 ن',
+        // CORRIGÉ 2026-09-19 : 1 → 1.5 — الإجابة النموذجية (تحليل + استنتاج
+        // مُنقّطان) ; contrainte de somme : 7 = 1.5 + 2.5 + 2.5 + 0.5.
+        pointsLabel: '1.5 ن',
         tags: ['سنّ 2 حلّل', 'تحليل مقارن'],
         thinkAr: 'الفعل حلّل فقط. مقارن: طبيعي / طافر × تركيز منخفض / مرتفع. أكتب قيما. ممنوع هذا يدل / لأن.',
         writeAr: [
@@ -458,7 +476,9 @@ export const MEFTA_BAC_EXERCISES: MeftahBacExercise[] = [
       {
         id: 'bac2025-ex2-q2',
         instructionAr: 'أبرز أثر الخصائص البنيوية للصانعات الخضراء على النمو عند الطبيعية والطافرة باستغلال الشكل(ب) والمعلومة المستخلصة من الشكل(أ)',
-        pointsLabel: '1.5 ن',
+        // CORRIGÉ 2026-09-19 : 1.5 → 2.5 (تشابه 0.5 + بيرنويدة 1.5 + ربط 0.5)
+        // — valeur « 2.5 » explicite sur le corrigé officiel, à la question 2.
+        pointsLabel: '2.5 ن',
         tags: ['تعليمة مفتوحة', 'عرّف → حلّل → فسّر → اربط'],
         thinkAr: '«أبرز + باستغلال» = السلسلة كاملة. الشكل(ب) للبنية + معلومة (أ) للنمو. أقارن متوازيا: مشترك ثم مختلف.',
         writeAr: [
@@ -471,7 +491,9 @@ export const MEFTA_BAC_EXERCISES: MeftahBacExercise[] = [
       {
         id: 'bac2025-ex2-q3',
         instructionAr: 'استغلال أشكال الوثيقة 2 ثم ربط الآلية',
-        pointsLabel: '4.5 ن',
+        // CORRIGÉ 2026-09-19 : 4.5 → 2.5 — contrainte de somme (7) avec les
+        // valeurs explicites du corrigé (Q2=2.5, تبرير=0.5, Q1=1.5).
+        pointsLabel: '2.5 ن',
         tags: ['3 سندات ثم تركيب'],
         thinkAr: 'لكل شكل: عرّف → حلّل بقيم → استنتج خاص. بعد الثلاثة: ربط عام = الآلية. لا أبدأ بالنظرية.',
         writeAr: [
