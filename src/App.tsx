@@ -45,6 +45,7 @@ import TeacherDashboardView from './components/TeacherDashboardView';
 import UnitIntroPortal from './components/UnitIntroPortal';
 import CombatTrainerView from './components/CombatTrainerView';
 import CombatChallengePortal from './components/CombatChallengePortal';
+import Bac2025ExamView from './components/Bac2025ExamView';
 import BadgesView from './components/BadgesView';
 import LessonTwoView from './components/LessonTwoView';
 import LessonsView from './components/LessonsView';
@@ -459,6 +460,10 @@ export default function App() {
 
   // If in quiz mode, override full interface to focus purely on scientific learning
   if (activeCombatChallenge) {
+    // Épreuve officielle bac2025 : la boucle élève de bout en bout (Pierre 2).
+    if (activeCombatChallenge.id === 'bac-2025-sujets') {
+      return <Bac2025ExamView onClose={() => setActiveCombatChallenge(null)} />;
+    }
     return (
       <CombatChallengePortal 
         challengeId={activeCombatChallenge.id}

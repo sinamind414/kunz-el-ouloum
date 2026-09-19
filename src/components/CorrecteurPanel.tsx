@@ -21,6 +21,7 @@ import {
 import { evaluerBareme, listBaremeQuestions } from '../data/dictionaries/baremeCorrecteur';
 import { listeGroupesBac2025 } from '../data/dictionaries/attendusBac2025';
 import { noterExerciceCalibre, type NoteCalibree } from '../data/dictionaries/calibrationBac2025';
+import SectionObligatoire from './SectionObligatoire';
 import { evaluerSanctions } from '../data/dictionaries/sanctionsCorrecteur';
 
 interface Props {
@@ -35,12 +36,6 @@ const BAREMES = listBaremeQuestions();
 const GROUPES_2025 = listeGroupesBac2025();
 const UNITES = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
 
-/** Étiquettes arabes des plafonds d'intégrité (transparence du plafonnement). */
-const LABEL_PLAFOND: Record<string, string> = {
-  non_prose: 'نص غير نثري (كلمات مفككة) — سقف',
-  negation: 'نفي الحقيقة العلمية — سقف',
-  echo_question: 'نسخ نص السؤال — سقف',
-};
 
 /** 1.25 → « 1.25 » · 0.5 → « 0.5 » · 5 → « 5 » */
 function fmtPoints(n: number): string {
@@ -254,73 +249,7 @@ export default function CorrecteurPanel({
         ))}
 
         {/* 5. Notation obligatoire (attendus officiels 2025 — Pierre 2) */}
-        {analyse.obligatoire && (
-          <div className="rounded-lg border-2 border-[#006d37]/30 dark:border-emerald-800/60 overflow-hidden">
-            <div className="flex items-center justify-between px-2 py-1.5 bg-emerald-50 dark:bg-emerald-950/30">
-              <span className="text-[10px] font-black text-[#006d37] dark:text-emerald-300">
-                التنقيط الإلزامي على مقتضيات الإجابة الرسمية
-              </span>
-              <span className="text-[13px] font-black text-[#006d37] dark:text-emerald-300">
-                {fmtPoints(analyse.obligatoire.points)} / {fmtPoints(analyse.obligatoire.maxPts)} ن
-              </span>
-            </div>
-            <div className="px-2 py-1.5 text-[9px] font-bold text-gray-500 dark:text-gray-400 bg-emerald-50/50 dark:bg-emerald-950/20 space-y-0.5">
-              <p>
-                التغطية: {Math.round(analyse.obligatoire.couverture * 100)}% من النقاط الآلية (
-                {fmtPoints(analyse.obligatoire.pointsAttendusCredites)}/{fmtPoints(analyse.obligatoire.pointsAttendusAuto)}) —
-                {' '}المعادلة: التغطية × {fmtPoints(analyse.obligatoire.maxPts)}
-              </p>
-              {analyse.obligatoire.plafonds.length > 0 && (
-                <p className="text-red-700 dark:text-red-300">
-                  سقوف النزاهة المطبقة:{' '}
-                  {analyse.obligatoire.plafonds
-                    .map((p) => `${LABEL_PLAFOND[p.type] ?? p.type} ${Math.round(p.plafondPct * 100)}%`)
-                    .join(' · ')}
-                </p>
-              )}
-              {analyse.obligatoire.verdicts.filter((v) => !v.auto).length > 0 && (
-                <p className="text-amber-700 dark:text-amber-300">
-                  {analyse.obligatoire.verdicts.filter((v) => !v.auto).length} بنداً/بنوداً تقديرية يدوية (تمهيد، خاتمة، اقتراح…) —
-                  {' '}خارج النقاط الآلية، تقديرها للمصحح.
-                </p>
-              )}
-            </div>
-            <ul className="divide-y divide-gray-100 dark:divide-gray-800/60">
-              {analyse.obligatoire.verdicts.map((v) => (
-                <li key={v.id} className="px-2 py-1.5 flex items-start gap-2">
-                  <span
-                    className={`shrink-0 mt-0.5 w-4 h-4 rounded-full text-[9px] font-black flex items-center justify-center ${
-                      v.credite
-                        ? 'bg-emerald-500 text-white'
-                        : !v.auto
-                          ? 'bg-amber-400 text-white'
-                          : 'bg-gray-200 dark:bg-gray-700 text-gray-500'
-                    }`}
-                  >
-                    {v.credite ? '✓' : !v.auto ? '؟' : ''}
-                  </span>
-                  <div className="min-w-0 flex-1">
-                    <p className="text-[10px] text-gray-700 dark:text-gray-300 leading-snug" dir="auto">
-                      {v.texteAr}
-                    </p>
-                    {!v.auto && (
-                      <p className="text-[9px] text-amber-600 dark:text-amber-400">بند يدوي — تقديره للمصحح</p>
-                    )}
-                  </div>
-                  <span
-                    className={`shrink-0 text-[10px] font-black ${v.credite ? 'text-emerald-600 dark:text-emerald-400' : 'text-gray-400'}`}
-                  >
-                    {fmtPoints(v.points)}
-                  </span>
-                </li>
-              ))}
-            </ul>
-            <p className="px-2 py-1.5 text-[9px] text-gray-400 border-t border-gray-100 dark:border-gray-800/60">
-              تقدير أولي آلي بالكامل على مقتضيات السند الرسمي (بناء إثبات + التصحيح الرسمي 2025) —
-              لا يشمل البنود اليدوية ولا جودة الصياغة. القرار النهائي للمصحح.
-            </p>
-          </div>
-        )}
+        {analyse.obligatoire && <SectionObligatoire note={analyse.obligatoire} />}
 
         {/* 6. Rapport de barème (diagnostic) */}
         {analyse.bareme && (

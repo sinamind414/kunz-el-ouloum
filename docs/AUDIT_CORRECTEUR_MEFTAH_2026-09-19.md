@@ -255,3 +255,20 @@ officiels (`src/data/dictionaries/attendusBac2025.ts`), sources tracées.*
 - `npx vitest run` : **703/703** (52 fichiers) · boussole `npx tsx tests/boussole.test.ts` : **138/138** · `npx vite build` : OK (8,8 s).
 - Le hors-sujet intrinsèque ferme l'action 4 (a) ; la penalité sanctions sur items (4b) est couverte par la couverture registre (les salades ne touchent quasi aucun attendu) ; la détection non-prose était la Pierre 1.
 
+### Pierre 2b — RÉSOLUTION DES 5 LIMITES (même journée, 2026-09-19)
+
+| Limite (§7) | Résolution | Preuve |
+|---|---|---|
+| 1. Un mot = un item entier (P5) | Mécanisme **`composantes`** : groupes (OU dans un groupe, ET entre groupes), crédit = points × détectés/exigés. Décomposition des items à rôles du S1-Ex1 (Q1 ×5 : contexte hors/pendant synthèse + ARN ; Q2 : ARNm/ARNt/ARNr + rôle, RIP + mécanisme adénine/ribose) | « ARNm ARNr ARNt » : item Q1 = **0,13/0,25** (avant : 0,25) ; « RIP » seul = **0,63/1,25** (avant : 1,25) ; RIP + تكسر الرابطة بين الأدنين = 1,25/1,25. Contrôles intacts : Meftah Ex1 **5/5**, Ex2 **7/7** (↑ de 6,5), Ex3 7,5/8 |
+| 2. Items manuels hors pré-note | Dernier item manuel (S2-Ex1 « C : Pi ») doté de formes **sources officielles** : l'équation du corrigé p.7 « +2ADP+**2Pi**+2NAD⁺ » (l'item = identifier Pi, le « فوسفات » arabe accepté aussi). Le registre est désormais **100 % auto** : plafond auto = barème sur les 6 groupes (5/7/8 ×2) — la pré-note couvre 100 % de l'échelle | `plafondAutoDe` = 5·7·8·5·7·8 partout ; test registre verrouille |
+| 3. شاهد S2-Ex2 non confirmé | **CONFIRMÉ par ventilation arithmétique** : re-lecture du corrigé (p.7-8) — parties 1+2 forcées à 3,5 pts par les rangées officielles (tableau partie 3 = 3,0 + اقتراح 0,5 ; total imposé 7,0) ; les 6 items lisibles = 3,0 ; le 0,5 manquant est nécessairement le شاهد (tube témoin du protocole). Item marqué confirmé dans le code | Commentaire dans attendusBac2025.ts + presentiel des 0,5 dans le chunk |
+| 4. Boucle élève non branchée | **`Bac2025ExamView`** : choix du sujet (2 cartes) → 3 zones de réponse avec énoncés officiels du registre → تسليم → **note /20** + détail par exercice. Câblée comme défi déverrouillé « الإطار الرسمي: بكالوريا 2025 » dans معسكر التدريب (App intercepte `bac-2025-sujets`). Rendu partagé `SectionObligatoire` (un seul contrat d'affichage panneau/examen) | Tests jsdom : Meftah → 19/20 affiché ; copie vide → 0 ; hors-sujet → 0/8 affiché |
+| 5. (affichage) | Le verdict montre désormais le crédit réel « 0.63/1.25 » et « عناصر مطلوبة: 1/2 — عنصر ناقص » pour les items à composantes | SectionObligatoire.tsx |
+
+**Vérification** : vitest **711/711** (53 fichiers) · boussole **138/138** · build OK (9,0 s).
+
+**Limites restantes (franches)** : la granularité P5 n'est décomposée que sur les items où le
+corrigé exige des rôles identifiés (S1-Ex1) — les items 1,0 des autres exercices restent
+tout-ou-rien (à décomposer si un faux positif réel est observé) ; les formes restent des
+sous-chaînes (le FP CO₂/O₂ connu subsiste) ; la calibration sur copies humaines (R4), les
+sanctions 6→30 et le durcissement ICM restent les prochaines pierres.

@@ -28,19 +28,38 @@ describe('registre — sommes = barèmes officiels', () => {
     expect(GROUPES.map((g) => g.maxPts)).toEqual([5, 7, 8, 5, 7, 8]);
   });
 
-  it('aucun item à points sans forme (sinon il est manuel — doit être explicite)', () => {
+  it('aucun item à points sans forme NI composantes (sinon manuel — build only)', () => {
     for (const g of GROUPES) {
       for (const it of g.items) {
-        if (it.points > 0 && it.formes.length === 0) {
-          // Toléré UNIQUEMENT pour les items build (décision : remontés au prof) —
+        const aComposantes = (it.composantes?.length ?? 0) > 0;
+        if (it.points > 0 && it.formes.length === 0 && !aComposantes) {
+          // Toléré UNIQUEMENT pour les items build (remontés au prof) —
           // tout item encodé à la main doit avoir ses formes.
           expect(it.source, `${g.sujet}/${it.id}`).toBe('build');
         }
         for (const f of it.formes) {
           expect(normalizeAr(f).length, `forme vide: ${it.id}`).toBeGreaterThan(0);
         }
+        for (const comp of it.composantes ?? []) {
+          expect(comp.length, `composante vide: ${it.id}`).toBeGreaterThan(0);
+          for (const f of comp) expect(normalizeAr(f).length, `forme de composante vide: ${it.id}`).toBeGreaterThan(0);
+        }
       }
     }
+  });
+
+  it('P5 — les items à rôles du S1-Ex1 portent leurs composantes (contexte + ARN)', () => {
+    const g = attendusDeGroupe(1, 1);
+    for (const it of g.items.filter((x) => x.id.includes('/Q1/'))) {
+      expect(it.composantes?.length, `${it.id} : 2 composantes (contexte, ARN)`).toBe(2);
+    }
+    // Fin du « un mot = un item entier » : l'item RIP exige le mécanisme (adénine/ribose).
+    const rip = g.items.find((x) => x.id.endsWith('/RIP'))!;
+    expect(rip.composantes?.length).toBe(2);
+    expect(rip.composantes![1].some((f) => ['ادنين', 'adenine'].includes(f))).toBe(true);
+    // Pi (S2-Ex1) : la forme ajoutée à la main (équation officielle « +2Pi+ »).
+    const pi = attendusDeGroupe(2, 1).items.find((x) => x.id.endsWith('Q1/item3'))!;
+    expect(pi.formes).toContain('pi');
   });
 
   it('la Σ auto (plafond) est ≥ 70 % du barème sur les 6 groupes', () => {

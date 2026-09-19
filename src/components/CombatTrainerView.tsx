@@ -8,6 +8,16 @@ interface CombatTrainerViewProps {
 
 const CHALLENGES = [
   {
+    id: 'bac-2025-sujets',
+    title: 'الإطار الرسمي: بكالوريا 2025 — الموضوعان كاملان',
+    description: 'الإطار الرسمي الكامل: أجب عن التمارين الثلاثة (5+7+8 نقاط) وشاهد التنقيط الإلزامي على مقتضيات الإجابة الرسمية — موضوعان رسميان 2025.',
+    time: 'ساعتان',
+    points: 40,
+    locked: false,
+    color: 'from-emerald-600 to-emerald-500',
+    verified: true
+  },
+  {
     id: 'bac-2008-immunity',
     title: 'تفكيك وثيقة: مقر تركيب البروتين',
     description: 'تحدي تفكيك وثيقة التصوير الإشعاعي الذاتي، صياغة تحليل منهجي (ملاحظة-تفسير-استنتاج)، وبناء نص علمي.',

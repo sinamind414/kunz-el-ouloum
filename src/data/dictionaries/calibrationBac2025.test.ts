@@ -20,8 +20,18 @@ import { PLAFONDS } from './integriteCopie';
 
 // Réponse qui contient TOUS les textes officiels d'un groupe → toutes les
 // formes matchent → couverture 1 → note max (cohérence registre ↔ scoreur).
+// + les réponses modèle Meftah (S1) : les variantes arabes des composantes P5
+//   n'existent que dans la formulation élève officielle.
+// + glossaire S2-Ex1 : « فوسفات » (l'item C = Pi n'emporte pas le mot arabe).
 function reponseExhaustive(sujet: 1 | 2, exercice: 1 | 2 | 3): string {
-  return attendusDeGroupe(sujet, exercice).items.map((i) => i.texteAr).join(' ');
+  const textes = attendusDeGroupe(sujet, exercice).items.map((i) => i.texteAr).join(' ');
+  let extra = '';
+  if (sujet === 1) {
+    const ex = MEFTA_BAC_EXERCISES.find((x) => x.id === `bac2025-ex${exercice}`);
+    extra = ex ? ex.questions.flatMap((q) => q.writeAr).join('\n') : '';
+  }
+  if (sujet === 2 && exercice === 1) extra = 'فوسفات';
+  return `${textes} ${extra}`;
 }
 
 describe('R6 — invariants de la notation par attendus obligatoires', () => {
@@ -91,6 +101,41 @@ describe('R6 — invariants de la notation par attendus obligatoires', () => {
     const copie = noterCopieCalibree([reponseExhaustive(1, 1), reponseExhaustive(1, 2), reponseExhaustive(1, 3)], 1);
     expect(copie.total).toBe(20);
     expect(copie.total).toBeLessThanOrEqual(20);
+  });
+});
+
+describe('P5 — granularité par composantes : fin du « un mot = un item entier »', () => {
+  it('« ARNm ARNr ARNt » ne crédite plus les rôles exigés (Q1 : 1/2 composante par item)', () => {
+    const n = noterExerciceCalibre('ARNm ARNr ARNt', 1, 1);
+    const q1 = n.verdicts.filter((v) => v.id.includes('/Q1/'));
+    expect(q1.length).toBe(5);
+    for (const v of q1) {
+      expect(v.composantesTotal).toBe(2);
+      expect(v.composantesDetectees).toBe(1); // l'ARN est nommé, le contexte (hors/pendant synthèse) manque
+      expect(v.pointsCredites).toBeCloseTo(v.points / 2, 1); // arrondi 0.01 du crédit
+    }
+    // L'item RIP (1.25) exige le mécanisme : absent → 0.
+    expect(n.verdicts.find((v) => v.id.endsWith('/RIP'))!.pointsCredites).toBe(0);
+    expect(n.points).toBeLessThan(n.maxPts);
+  });
+
+  it('« RIP » seul = la moitié de l item ; RIP + mécanisme = item entier', () => {
+    const seul = noterExerciceCalibre('RIP', 1, 1).verdicts.find((v) => v.id.endsWith('/RIP'))!;
+    expect(seul.composantesDetectees).toBe(1);
+    expect(seul.pointsCredites).toBeCloseTo(1.25 / 2, 1);
+
+    const complet = noterExerciceCalibre('RIP تكسر الرابطة بين الأدنين وسكر الريبوز فيفقد ARN بنيته', 1, 1)
+      .verdicts.find((v) => v.id.endsWith('/RIP'))!;
+    expect(complet.composantesDetectees).toBe(2);
+    expect(complet.pointsCredites).toBe(1.25);
+  });
+
+  it('les composantes sont OU-dans-un-groupe : une seule variante suffit', () => {
+    // « خارج فترة تركيب » (formulation Meftah) suffit pour la composante contexte.
+    const n = noterExerciceCalibre('خارج فترة تركيب البروتين: ARNr', 1, 1);
+    const v = n.verdicts.find((x) => x.id.endsWith('Q1/item1'))!;
+    expect(v.composantesDetectees).toBe(2);
+    expect(v.pointsCredites).toBe(v.points);
   });
 });
 

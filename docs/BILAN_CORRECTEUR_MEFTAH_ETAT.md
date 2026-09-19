@@ -90,3 +90,10 @@ câblé dans le panneau correcteur, 703/703 + 138/138 + build OK. Détail comple
 `docs/AUDIT_CORRECTEUR_MEFTAH_2026-09-19.md` §7 (avant/après chiffrés et limites).
 Reste du plan : calibration sur copies humaines (R4), sanctions 6→30, ICM, granularité
 par item (P5), branchement élève de bout en bout.
+
+**Pierre 2b (même journée)** : les 5 limites de la Pierre 2 sont réglées — granularité par
+composantes (P5 : « ARNm ARNr ARNt » sans les rôles ne prend plus les points des rôles),
+registre 100 % automatique (Pi confirmé par l'équation officielle), شاهد confirmé par
+ventilation arithmétique du corrigé, boucle élève branchée de bout en bout (défi
+« الإطار الرسمي: بكالوريا 2025 » → note /20 + détail). 711/711 · 138/138 · build OK.
+Détail : AUDIT §« Pierre 2b ».

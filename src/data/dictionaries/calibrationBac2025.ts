@@ -122,11 +122,16 @@ export interface VerdictAttendu {
   id: string;
   texteAr: string;
   points: number;
-  /** Crédité automatiquement (une forme reconnue). */
+  /** Crédité (au moins en partie) automatiquement. */
   credite: boolean;
   /** false = item manuel (aucune forme) → correcteur humain. */
   auto: boolean;
   source: AttenduItem['source'];
+  /** Crédit fractionnaire réel (composantes) = points × ratio. */
+  pointsCredites: number;
+  /** P5 : composants co-requis détectés / exigés (absent = item OU simple). */
+  composantesDetectees?: number;
+  composantesTotal?: number;
 }
 
 export interface NoteCalibree extends ResultatNotation {
@@ -177,19 +182,38 @@ export function noterExerciceCalibre(
   let credite = 0;
   let totalAuto = 0;
   for (const it of registre.items) {
-    if (it.points <= 0) {
-      verdicts.push({ id: it.id, texteAr: it.texteAr, points: it.points, credite: false, auto: false, source: it.source });
-      continue;
-    }
-    if (it.formes.length === 0) {
+    const auto = it.points > 0 && (it.formes.length > 0 || (it.composantes?.length ?? 0) > 0);
+    if (!auto) {
       // Item manuel : aucune forme → correcteur humain, exclu du dénominateur.
-      verdicts.push({ id: it.id, texteAr: it.texteAr, points: it.points, credite: false, auto: false, source: it.source });
+      verdicts.push({ id: it.id, texteAr: it.texteAr, points: it.points, credite: false, auto: false, source: it.source, pointsCredites: 0 });
       continue;
     }
     totalAuto = Math.round((totalAuto + it.points) * 100) / 100;
-    const hit = it.formes.some((f) => norm.includes(f));
-    if (hit) credite = Math.round((credite + it.points) * 100) / 100;
-    verdicts.push({ id: it.id, texteAr: it.texteAr, points: it.points, credite: hit, auto: true, source: it.source });
+    let pointsItem = 0;
+    let det = 0;
+    let tot = 0;
+    if (it.composantes?.length) {
+      // P5 : composants co-requis → crédit proportionnel. OU dans un groupe,
+      // ET entre groupes : écrire « ARNm ARNr ARNt » sans les rôles ne prend
+      // plus la moitié des points réservée aux rôles.
+      tot = it.composantes.length;
+      det = it.composantes.filter((g) => g.some((f) => norm.includes(f))).length;
+      pointsItem = Math.round(it.points * (det / tot) * 100) / 100;
+    } else {
+      const hit = it.formes.some((f) => norm.includes(f));
+      if (hit) pointsItem = it.points;
+    }
+    credite = Math.round((credite + pointsItem) * 100) / 100;
+    verdicts.push({
+      id: it.id,
+      texteAr: it.texteAr,
+      points: it.points,
+      credite: pointsItem > 0,
+      auto: true,
+      source: it.source,
+      pointsCredites: pointsItem,
+      ...(tot > 0 ? { composantesDetectees: det, composantesTotal: tot } : {}),
+    });
   }
 
   const couverture = totalAuto > 0 ? Math.min(1, credite / totalAuto) : 0;

@@ -23,6 +23,12 @@
 // SÉMANTIQUE DE LA NOTE (R6) :
 //   · item « auto » = a au moins une forme → crédité si une forme figure
 //     dans la réponse (texte normalisé) ;
+//   · item à COMPOSANTES (P5) : quand le corrigé exige PLUSIEURS éléments
+//     simultanés (ex. Q1 : contexte « hors/pendant synthèse » ET l'ARN nommé),
+//     `composantes` = liste de groupes (OU dans un groupe = synonymes, ET
+//     entre groupes = co-requis) ; crédit = points × (groupes détectés /
+//     groupes totaux). Fin du « un mot = un item entier » : écrire
+//     « ARNm ARNr ARNt » ne crédite plus les rôles non exprimés ;
 //   · item « manuel » = aucune forme définissable (intros/annonces, items
 //     build sans entité) → JAMAIS crédité automatiquement, EXCLU du
 //     dénominateur, remonté au correcteur humain ;
@@ -46,8 +52,13 @@ export interface AttenduItem {
   /** Texte officiel de l'élément (affichage + traçabilité). */
   texteAr: string;
   points: number;
-  /** Sous-chaînes normalisées de reconnaissance — vides = item manuel. */
+  /** Sous-chaînes normalisées de reconnaissance (synonymes : OU) — vides = item manuel. */
   formes: string[];
+  /**
+   * Composants co-requis (P5) : OU dans un groupe, ET entre groupes.
+   * Présentes → remplacent `formes` pour le crédit (proportionnel).
+   */
+  composantes?: string[][];
   source: 'build' | 'corrige-officiel-2025';
 }
 
@@ -77,6 +88,28 @@ function siglesDeTexte(texte: string): string[] {
   return out;
 }
 
+// Groupes de contextes du Q1 (S1-Ex1) — le corrigé exige le PAIRE (contexte, ARN).
+const HORS_SYNTH = ['hors synthese', 'خارج فترة تركيب', 'خارج عملية التركيب', 'خارج التركيب'];
+const PEND_SYNTH = ['pendant synthese', 'خلال فترة تركيب', 'اثناء فترة تركيب', 'أثناء فترة تركيب', 'اثناء التركيب', 'خلال التركيب'];
+
+/**
+ * Décomposition par composantes des items build où le corrigé exige des rôles
+ * (P5) — clé = suffixe d'id dans le groupe. + formes manquantes ajoutées à la
+ * main quand le sigle échappe au détecteur (Pi : 1 majuscule seulement).
+ */
+const OVERLAY_BUILD: Record<string, { composantes?: string[][]; formes?: string[] }> = {
+  'S1-Ex1/Q1/item1': { composantes: [HORS_SYNTH, ['arnr']] },
+  'S1-Ex1/Q1/item2': { composantes: [HORS_SYNTH, ['arnt']] },
+  'S1-Ex1/Q1/item3': { composantes: [PEND_SYNTH, ['arnm']] },
+  'S1-Ex1/Q1/item4': { composantes: [PEND_SYNTH, ['arnr']] },
+  'S1-Ex1/Q1/item5': { composantes: [PEND_SYNTH, ['arnt']] },
+  'S1-Ex1/Q2/ARNm': { composantes: [['arnm'], ['messager', 'transporte', 'رسول', 'انتقال المعلومه', 'نقل المعلومه']] },
+  'S1-Ex1/Q2/ARNt': { composantes: [['arnt'], ['aa', 'anticodon', 'احماض امينيه', 'رامزه']] },
+  'S1-Ex1/Q2/ARNr': { composantes: [['arnr'], ['ribosome', 'ريبوزوم']] },
+  'S1-Ex1/Q2/RIP': { composantes: [['rip'], ['adenine', 'ادنين', 'ribose', 'ريبوز']] },
+  'S2-Ex1/Q1/item3': { formes: ['pi', 'فوسفات'] }, // corrigé p.7 : « +2ADP+2Pi+2NAD+ » — C = Pi (phosphate inorganique)
+};
+
 function itemsDepuisBuild(prefix: string): AttenduItem[] {
   const items: AttenduItem[] = [];
   for (const [cle, v] of Object.entries(ATTENDUS_BAREME)) {
@@ -86,11 +119,14 @@ function itemsDepuisBuild(prefix: string): AttenduItem[] {
       ...entitesDansTexte(texte).trouvees.map((t) => normalizeAr(t.terme).toLowerCase()),
       ...siglesDeTexte(texte),
     ].filter(Boolean);
+    const ov = Object.entries(OVERLAY_BUILD).find(([k]) => cle.endsWith(k))?.[1];
+    if (ov?.formes?.length) sig.push(...ov.formes.map((f) => normalizeAr(f).toLowerCase()));
     items.push({
       id: cle,
       texteAr: texte,
       points: typeof v.points === 'number' ? v.points : 0,
       formes: [...new Set(sig)],
+      composantes: ov?.composantes?.map((g) => g.map((f) => normalizeAr(f).toLowerCase())),
       source: 'build',
     });
   }
@@ -188,6 +224,9 @@ const S2_EX2: AttenduItem[] = [
     'الشكل(أ) بوجود SOD: ينخفض الأوكسيد الفائق (من ~20) حتى الانعدام، ويظهر بيروكسيد الهيدروجين (~18) والأكسجين (~8)'),
   item(0.5, ['catalase'],
     'بوجود Catalase: ينخفض بيروكسيد الهيدروجين تدريجياً (~18→انعدام) ويستمر تزايد O2'),
+  // Confirmé le 2026-09-19 par re-lecture du corrigé (p.7-8) : la ventilation
+  // officielle force parties 1+2 = 3.5 pts dont 3.0 lisibles (SOD/Catalase/
+  // استنتاج + EDA×3) — le 0.5 manquant est le شاهد (tube témoin sans enzyme).
   item(0.5, ['في غياب الانزيم', 'شاهد'],
     'في غياب الأنزيم (شاهد): ثبات تراكيز الأوكسيد الفائق والمنتجات مع الزمن'),
   item(0.5, ['يحفز'],
@@ -264,9 +303,10 @@ export function attendusDeGroupe(sujet: SujetId, exercice: ExerciceId): Attendus
   return g;
 }
 
-/** Σ points des items AUTO (formes non vides, points > 0) = plafond automatique. */
+/** Σ points des items AUTO (formes OU composantes non vides, points > 0). */
 export function plafondAutoDe(g: AttendusExercice): number {
-  return Math.round(g.items.filter((i) => i.points > 0 && i.formes.length > 0).reduce((s, i) => s + i.points, 0) * 100) / 100;
+  const auto = (i: AttenduItem) => i.points > 0 && (i.formes.length > 0 || (i.composantes?.length ?? 0) > 0);
+  return Math.round(g.items.filter(auto).reduce((s, i) => s + i.points, 0) * 100) / 100;
 }
 
 /** Étiquette lisible d'un groupe (sélecteur produit). */
