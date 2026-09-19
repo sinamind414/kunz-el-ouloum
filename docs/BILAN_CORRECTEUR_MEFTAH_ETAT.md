@@ -104,3 +104,10 @@ latines (CO2/O2, ARNm/ARN, Edaravone/EDA — fin des faux positifs de sous-chaî
 C6 sanctions 6→26 (inversions « forte », co-occurrences « vigilance »).
 720/720 · 138/138 · build OK · check:miftah OK. Reste : R4 (copies humaines, bloqué
 données), ICM sémantique (éditorial), P5 étendue (au premier FP réel).
+
+**Pierre 2d (clôture du plan)** : C4b (inversions factuelles −0,5 n, vigilances gratuites),
+C7 (5 critères qui tombaient dans « 40 caractères » ont leur sémantique ; critères de contenu
+transférés aux cartes ; fin des portes 50/60 ; « Mars à 100 % » assuré = l'ICM juge la méthode,
+le registre juge le fond), R4 rétrogradée (le barème EST le modèle — plus de fit à caler).
+Plan originel : 7/7 actions closes. 729/729 · 138/138 · build · check:miftah.
+Reste hors plan : التدرج السنوي (L5), livre prof, archivage élève de la note obligatoire.

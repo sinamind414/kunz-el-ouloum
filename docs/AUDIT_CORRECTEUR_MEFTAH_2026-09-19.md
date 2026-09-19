@@ -292,3 +292,32 @@ Piège de débogage consigné : `formePresente` retournait l'INDEX (0 = trouvé)
 données) ; C7 — ICM sémantique (seuils 25/50/60 + ped_c1/calc_c1 externalisés : travail
 éditorial, le throw sur verbId inconnu est fait) ; granularité P5 étendue aux items 1,0 des
 autres exercices (au premier faux positif réel observé).
+
+### Pierre 2d — FINALISATION FINALE (même journée) : C4b ✅ C7 ✅ · R4 rétrogradé
+
+| Chantier | État | Contenu mesuré |
+|---|---|---|
+| C4b — sanctions × note | ✅ | Une sanction **forte** (inversion factuelle : AChE « متحررة », anticodon-sur-ARNm, 2-DG↑ATP) coûte **0,5 n** sur la pré-note (plancher 0) ; les **vigilances** affichent sans pénaliser. Contrôles intacts : Meftah déclenche **zéro** forte (vérifié sur les 18 réponses). Mesuré : Meftah Ex3 7,5/8 → **7/8** avec inversion greffée, **7,5/8** avec vigilance seule. Affiché dans la même section obligatoire (« خصم أخطاء علمية −0.5 ن ») |
+| C7 — fallback silencieux | ✅ | Inventaire réel : **5 critères tombaient dans `length > 40`** (`hyp_c1`, `sch_c1`, `sch_c2`, `exp_m_c1`, `exp_m_c2` — jamais gérés par le scoreur). Chacun a désormais son cas sémantique (ancrage expérimental, boîtes/flammes du canon des cartes, pont entre documents). `default` → **throw** `criterionId inconnu` — un critère non géré est un bug de carte, plus une note gratuite |
+| C7 — critères codés en dur | ✅ | `ped_c1..c3` (arbre généalogique) et `calc_c1` (Chargaff) : les regex de CONTENU sont sorties du scoreur générique vers les cartes (`verifAr: string[]`, ET logique) — un autre exercice de calcul n'est plus esclave de Chargaff. Mesuré : calcul 100 %, pedigree 100 %, sans loi/encodage → échec du critère |
+| C7 — portes de longueur | ✅ | `ex_c2`/`hyp_c2` : 60 caractères → **marqueur de mécanisme** (المستقبل/الأنزيم/القناة/ومنه…) — l'hypothèse concise ancrée repasse à **100 %**, la vague tautologique = **0 %**. `an_c4`-famille : seuil 50 supprimé (la conclusion est déjà un marqueur sémantique) |
+| C7 — « Mars à 100 % » | ⚠️ ASSUMÉ | « نستنتج أن الغلوكوز يسكن على المريخ » reste à 100 % **et c'est correct** : l'ICM mesure la MÉTHODE (structure, seners, conclusions), pas la vérité du contenu. La vérité du contenu est désormais jugée par le registre obligatoire + les sanctions fortes (chemin BAC). Un détecteur d'absurdité sémantique générale serait un LLM-judge — refusé (décision acquise) |
+| R4 — calibration | ⬇️ RÉTROGRADÉE | Avec le registre comme dénominateur, le fit linéaire (a·cov+b) est **obsolète** : le barème EST le modèle, plus aucun coefficient à ajuster. R4 se réduit à : surveiller les seuils d'intégrité (30/50/25 %) sur un lot de vraies copies quand des données arriveront — une tâche de supervision, pas de calibration. `recalibrer-copiees.ts` reste pour l'étude LEGACY |
+
+**Vérification** : vitest **729/729** (55 fichiers) · boussole **138/138** · build 8,3 s · `check:miftah` vert.
+
+### ÉTAT FINAL DU PLAN (5 actions de l'audit + résolutions)
+
+| # | Action du plan originel | État |
+|---|---|---|
+| 1 | Arbitrer M2 sur le corrigé officiel + tests sommes/parité | ✅ (M2, verrouillé) |
+| 2 | Renommer l'affichage + granularité du crédit | ✅ (P2b : « تقرير بنود المقياس (تشخيصي) » + composantes P5) |
+| 3 | Sort de calibrationBac2025 + métriques par groupe | ✅ (R6 obligatoire, LEGACY gelé ; métriques = tests §R6 ; R4 rétrogradée ici) |
+| 4 | Contre-probes + attendus obligatoires + pénalités | ✅ (P2/P2b/C4b/C6/C7 — 4 pièges ≤ 1/8, hors-sujet 0 sans paramètre) |
+| 5 | Scoreur ICM : throw, critères carte, fin des seuils | ✅ (C7 ci-dessus) |
+| 6 | Sanctions 6 → ~30 | ✅ (26 — extensible) |
+| 7 | Versions unifiées + check-miftah pédagogique | ✅ (M3+M4) |
+
+**Reste ouvert (hors plan, décisions produits)** : التدرج السنوي (traçabilité L5) et exigibilité du
+livre prof — points demandés par le propriétaire, jamais arbitrés ; branchement de la note
+obligatoire sur la sauvegarde élève (الرقم السري) si le produit doit archiver les notes.

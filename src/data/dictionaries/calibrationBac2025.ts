@@ -21,6 +21,7 @@
 import { evaluerBareme } from './baremeCorrecteur';
 import { evaluerEntites, type EntiteDetectee } from './dictionnaireCorrecteur';
 import { evaluerReponseKeywords } from '../../correcteurV1';
+import { evaluerSanctions } from './sanctionsCorrecteur';
 import {
   attendusDeGroupe,
   plafondAutoDe,
@@ -154,6 +155,8 @@ export interface NoteCalibree extends ResultatNotation {
   };
   /** Blindage anti-jeu (Pierre 1) : plafonds appliqués à la note. */
   plafonds: PlafondApplique[];
+  /** C4b : sanctions FORTES (inversions factuelles) — 0,5 n chacune sur la pré-note. */
+  sanctionsForte: { id: string; titreAr: string; penalite: number }[];
   /** Signaux de surface ayant alimenté les plafonds (transparence). */
   signaux: SignauxCopie;
   /** Le registre d'attendus utilisé (traçabilité). */
@@ -245,7 +248,19 @@ export function noterExerciceCalibre(
   const signaux = analyserSignaux(reponse, question);
   const plafonds = calculerPlafonds(signaux);
   const brut = couverture * registre.maxPts;
-  const points = couverture === 0 ? 0 : appliquerPlafonds(brut, registre.maxPts, plafonds);
+  let points = couverture === 0 ? 0 : appliquerPlafonds(brut, registre.maxPts, plafonds);
+
+  // C4b : une inversion factuelle (« forte ») coûte 0,5 n — les vigilances
+  // n'affichent que. Les contrôles Meftah déclenchent zéro sanction forte
+  // (vérifié 2026-09-19) ; une comparaison légitime n'est jamais « forte ».
+  const sanctionsForte = evaluerSanctions(reponse)
+    .filter((s) => s.gravite === 'forte')
+    .map((s) => ({ id: s.id, titreAr: s.titreAr, penalite: 0.5 }));
+  const penalite = Math.min(
+    Math.round(sanctionsForte.reduce((s, x) => s + x.penalite, 0) * 100) / 100,
+    points
+  );
+  points = Math.round((points - penalite) * 100) / 100;
 
   // Diagnostic (pédagogique, jamais converti en points).
   const unite = g ? CORRECTEUR_UNITES.find((u) => u.uniteId === g.uniteId) : undefined;
@@ -270,6 +285,7 @@ export function noterExerciceCalibre(
     diagnosticBareme: { creditAuto: credite, plafondAuto: plafondAutoDe(registre) },
     plafonds,
     signaux,
+    sanctionsForte,
     registre,
   };
 }

@@ -48,6 +48,12 @@ export default function SectionObligatoire({ note }: { note: NoteCalibree }) {
               .join(' · ')}
           </p>
         )}
+        {note.sanctionsForte.length > 0 && (
+          <p className="text-red-700 dark:text-red-300">
+            خصم أخطاء علمية (−0.5 ن لكل خطأ):{' '}
+            {note.sanctionsForte.map((s) => s.titreAr).join(' · ')}
+          </p>
+        )}
         {manuels.length > 0 && (
           <p className="text-amber-700 dark:text-amber-300">
             {manuels.length} بنداً/بنوداً تقديرية يدوية (تمهيد، خاتمة، اقتراح…) —
