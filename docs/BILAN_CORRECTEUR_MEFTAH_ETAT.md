@@ -165,3 +165,17 @@ corrections de justesse sourcées corrigé ministériel 2025 (re-fetché, verbat
    (`bac2025_S1/S1-Ex1/…`), verrou anti-fuite par test.
 Garde-fou appris : `check:miftah` accepte les débordements SOURCÉS (registre
 DEPASSEMENTS, sinon échec). 752/752 (747+5) · 138/138 · build · check:miftah.
+
+**L5 — التدرج السنوي : décision d'exigibilité (déléguée, tranchée 2026-09-19)** :
+- **Décision** : le التدرج reste BIBLIOTHÈQUE de référence — aucune règle moteur n'en
+  dérive. Un document de pilotage annuel (pacing, وضعيات, durée) ne fonde aucune
+  sanction ni barème ; les attendus de notation viennent du corrigé + du guide.
+- **État de la source en dépôt** : `docs/sources/التدرج-السنوي-للتعلمات-2017.txt`
+  = OCR de tableau EN MIETTES (cellules éclatées mot à mot, transpositions ل/د) —
+  non citable verbatim, donc aucune fiche d'extraits n'en est tirée (refus
+  d'inventer). Couverture thématique vérifiée par comptage NFKC : les 3 domaines
+  SE présents (بروتينات 77 · énergie 42 · تكتوني 59), module Math absent
+  (filière SE seule — conforme au périmètre).
+- **Déblocage** : si le propriétaire veut pousser L5, recoller le texte via le
+  canal fiable (texte collé) comme pour le دليل الأستاذ — alors seulement une
+  fiche d'extraits sourcés sera produite.
