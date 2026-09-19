@@ -97,3 +97,10 @@ registre 100 % automatique (Pi confirmé par l'équation officielle), شاهد c
 ventilation arithmétique du corrigé, boucle élève branchée de bout en bout (défi
 « الإطار الرسمي: بكالوريا 2025 » → note /20 + détail). 711/711 · 138/138 · build OK.
 Détail : AUDIT §« Pierre 2b ».
+
+**Pierre 2c (finalisation)** : M3 versions (constantes uniques, littéraux bannis), M4
+check-miftah = garde-fou pédagogique runtime (sommes, parité, registre), C5 frontières
+latines (CO2/O2, ARNm/ARN, Edaravone/EDA — fin des faux positifs de sous-chaînes),
+C6 sanctions 6→26 (inversions « forte », co-occurrences « vigilance »).
+720/720 · 138/138 · build OK · check:miftah OK. Reste : R4 (copies humaines, bloqué
+données), ICM sémantique (éditorial), P5 étendue (au premier FP réel).

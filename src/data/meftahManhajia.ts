@@ -1,5 +1,7 @@
 // meftahManhajia.ts
-// « المفتاح » — مفتاح المنهجية V4.3 (3 visages méthode + 3 visages application BAC 2025).
+// « المفتاح » — مفتاح المنهجية (3 visages méthode + 3 visages application BAC 2025).
+// Version de CETTE extension : MIFTAH_MANHAJIA_VERSION ci-dessous (source unique) —
+// parente de MIFTAH_VERSION = '3.3' (la fiche méthode, miftahSpec.ts).
 // Source : carte « المفتاح » (métadonnées conformes au barème officiel BAC 2025 —
 // les réponses modèles des visages 4-6 reprennent les عناصر الإجابة officiels).
 // Contrat : contenu affiché dans MeftahView ; les أفعال détaillés renvoient vers
@@ -377,6 +379,9 @@ const PLUSPLUS_LEVEL: MeftahLevel = {
 //   Ex3 : 2.5 / 4.5 / 0.5 / 0.5 → 8 ✓ [découpage non contredit par le corrigé ;
 //         ventilation fine à confirmer sur le scan — l'OCR est bruité]
 // Verrouillé par test : src/data/hikalaBac.test.ts (sommes + parité dictionnaire).
+
+/** Version de l'extension manhajia (fiche + BAC 2025) — parente de MIFTAH_VERSION (miftahSpec). */
+export const MIFTAH_MANHAJIA_VERSION = '4.3' as const;
 
 export interface MeftahBacQuestion {
   id: string;

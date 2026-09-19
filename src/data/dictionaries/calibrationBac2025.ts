@@ -167,6 +167,27 @@ export interface NoteCalibree extends ResultatNotation {
  * négations — integriteCopie.ts) ; le crédit du barème officiel reste
  * affiché en diagnostic (jamais additionné).
  */
+const RE_LATIN_PUR = /^[a-z0-9-]+$/;
+const RE_CHIFFRES_PUR = /^\d+$/;
+const echapper = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
+/**
+ * Présence d'une forme dans le texte normalisé (audit C5 — faux positifs de
+ * sous-chaînes). Formes ARABES : sous-chaîne (pas de frontières fiables).
+ * Formes LATINES : frontières = pas de LETTRE adjacente (les chiffres passent :
+ * « 2Pi » crédite Pi) — « co2 » ne crédite plus la forme « o2 », « ARNm » ne
+ * crédite plus « arn », « Edaravone » ne crédite plus « eda ».
+ * Formes CHIFFRES pures : frontière alphanumérique complète (« 98 » ∉ « 1982 »).
+ * Contrat : BOOLEAN strict (true/false) — jamais un index (0 est falsy sous
+ * Array.some, piège qui a coûté une passe de débogage : 0 = « trouvé »).
+ */
+export function formePresente(norm: string, forme: string): boolean {
+  if (!RE_LATIN_PUR.test(forme)) return norm.includes(forme);
+  const gauche = RE_CHIFFRES_PUR.test(forme) ? '(?<![a-z0-9])' : '(?<![a-z])';
+  const droite = RE_CHIFFRES_PUR.test(forme) ? '(?![a-z0-9])' : '(?![a-z])';
+  return new RegExp(`${gauche}${echapper(forme)}${droite}`).test(norm);
+}
+
 export function noterExerciceCalibre(
   reponse: string,
   sujet: 1 | 2,
@@ -178,6 +199,7 @@ export function noterExerciceCalibre(
 
   // R6 : la couverture vient des ATTENDUS (jamais de la banque d'unité).
   const norm = normalizeAr(reponse || '').toLowerCase();
+  const detecte = (f: string) => formePresente(norm, f);
   const verdicts: VerdictAttendu[] = [];
   let credite = 0;
   let totalAuto = 0;
@@ -197,10 +219,10 @@ export function noterExerciceCalibre(
       // ET entre groupes : écrire « ARNm ARNr ARNt » sans les rôles ne prend
       // plus la moitié des points réservée aux rôles.
       tot = it.composantes.length;
-      det = it.composantes.filter((g) => g.some((f) => norm.includes(f))).length;
+      det = it.composantes.filter((g) => g.some(detecte)).length;
       pointsItem = Math.round(it.points * (det / tot) * 100) / 100;
     } else {
-      const hit = it.formes.some((f) => norm.includes(f));
+      const hit = it.formes.some(detecte);
       if (hit) pointsItem = it.points;
     }
     credite = Math.round((credite + pointsItem) * 100) / 100;

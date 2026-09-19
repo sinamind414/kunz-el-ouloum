@@ -272,3 +272,23 @@ corrigé exige des rôles identifiés (S1-Ex1) — les items 1,0 des autres exer
 tout-ou-rien (à décomposer si un faux positif réel est observé) ; les formes restent des
 sous-chaînes (le FP CO₂/O₂ connu subsiste) ; la calibration sur copies humaines (R4), les
 sanctions 6→30 et le durcissement ICM restent les prochaines pierres.
+
+### Pierre 2c — FINALISATION (même journée) : M3 ✅ M4 ✅ C5 ✅ C6 ✅ (6→26)
+
+| Action du plan | État | Contenu |
+|---|---|---|
+| M3 — dérive de versions | ✅ | `MIFTAH_MANHAJIA_VERSION = '4.3'` (meftahManhajia, source unique de l'extension) parente de `MIFTAH_VERSION = '3.3'` (miftahSpec, la fiche) ; tous les littéraux « V4.3 » supprimés (commentaires compris) ; check-miftah verrouille les deux constantes et bannit le littéral |
+| M4 — check-miftah police de marque | ✅ | Le garde-fou exécute maintenant des **assertions pédagogiques runtime** : Σ questions Meftah = total exercice (5/7/8), total copie 20, registre 6 groupes Σ=maxPts=plafond auto (100 % auto), 2×20=40, parité S1-Ex1 (Q1 1.25 · Q2 3.75). Échec → exit 1 |
+| C5 — faux positifs de sous-chaînes | ✅ | `formePresente()` : formes latines à frontières (pas de lettre adjacente ; chiffres pleins pour les formes numériques) — « co2 » ne crédite plus « o2 », « ARNm » plus « arn », « Edaravone » plus « eda », « 1982 » plus « 98 » ; « 2Pi » crédite toujours Pi. Le FP H2O2 ⊃ o2 subsiste (documenté, l'exercice concerné ne mentionne pas H2O2) |
+| C6 — sanctions 6 → ~30 | ✅ (26) | +20 règles : inversion AChE « متحررة », anticodon-sur-ARNm (déclencheur d'inversion avec lookahead anti-faux-positif), 2-DG « augmente ATP » (forte) ; vigilances : ribosome/ATP, antibiotique≠anticorps, نخاع شوكي/عظمي, SEP≠SLA, Hb/plasma, « phase à l'obscurité »≠nuit, chloroplaste/respiration, glycolyse/mitochondrie, LTC/LT4, مستضد/مصل, برفورين/بلازموسيت, ATP≠ADN, « تثبت الفرضية », fermentation/38, خلطية/LTC, Rubisco/CA. Les co-occurrences légitimes (comparaisons des corrigés) restent en vigilance, jamais pénalisantes |
+
+Piège de débogage consigné : `formePresente` retournait l'INDEX (0 = trouvé) — falsy sous
+`Array.some` → toute forme arabe manquée. Contrat fixé : booléen strict.
+
+**Vérification** : vitest **720/720** (54 fichiers) · boussole **138/138** · build 8,1 s ·
+`npm run check:miftah` vert (marque + versions + pédagogie).
+
+**Ce qui reste (franc)** : R4 — calibration sur copies humaines réelles (bloqué : pas de
+données) ; C7 — ICM sémantique (seuils 25/50/60 + ped_c1/calc_c1 externalisés : travail
+éditorial, le throw sur verbId inconnu est fait) ; granularité P5 étendue aux items 1,0 des
+autres exercices (au premier faux positif réel observé).

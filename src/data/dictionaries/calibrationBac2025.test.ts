@@ -8,6 +8,7 @@
 import { describe, expect, it } from 'vitest';
 import {
   CALIBRATION_BAC2025,
+  formePresente,
   noterDepuisCouverture,
   noterCopieCalibree,
   noterExerciceCalibre,
@@ -101,6 +102,37 @@ describe('R6 — invariants de la notation par attendus obligatoires', () => {
     const copie = noterCopieCalibree([reponseExhaustive(1, 1), reponseExhaustive(1, 2), reponseExhaustive(1, 3)], 1);
     expect(copie.total).toBe(20);
     expect(copie.total).toBeLessThanOrEqual(20);
+  });
+});
+
+describe('C5 — frontières latines (fin des faux positifs de sous-chaînes)', () => {
+  it('formePresente : « co2 » ne crédite pas « o2 », « ARNm » pas « arn », « Edaravone » pas « eda »', () => {
+    expect(formePresente('خلط co2 و h2o', 'o2')).toBe(false);
+    expect(formePresente('توفير o2', 'o2')).toBe(true);
+    expect(formePresente('arnm arnr', 'arn')).toBe(false);
+    expect(formePresente('انواع arn', 'arn')).toBe(true);
+    expect(formePresente('edaravone', 'eda')).toBe(false);
+    expect(formePresente('eda دواء', 'eda')).toBe(true);
+    // chiffres : frontière alphanumérique complète
+    expect(formePresente('saison 1982', '98')).toBe(false);
+    expect(formePresente('تراكيز 98', '98')).toBe(true);
+    // chiffres adjacents admis pour les formes alphabétiques (« 2Pi » crédite Pi)
+    expect(formePresente('2pi', 'pi')).toBe(true);
+    // arabes : sous-chaîne (inchangé)
+    expect(formePresente('مواد مضاده للاجسام المضاده', 'مضاده للاجسام')).toBe(true); // paire réelle du registre (S2-Ex3)
+  });
+
+  it('S1-Ex1 : « ARNm » seul crédite son item à moitié, PAS l item intro (forme « arn »)', () => {
+    const n = noterExerciceCalibre('ARNm', 1, 1);
+    expect(n.verdicts.find((v) => v.id.endsWith('Q2/intro'))!.pointsCredites).toBe(0);
+    const arnm = n.verdicts.find((v) => v.id.endsWith('Q2/ARNm'))!;
+    expect(arnm.composantesDetectees).toBe(1);
+  });
+
+  it('S2-Ex2 : « Edaravone » (nom complet) crédite son item (forme dédiée)', () => {
+    const n = noterExerciceCalibre('يستعمل دواء Edaravone لعلاج المرض.', 2, 2);
+    const v = n.verdicts.find((x) => x.texteAr.includes('الربط بالمعادلات'))!;
+    expect(v.pointsCredites).toBe(0.5);
   });
 });
 
