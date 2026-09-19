@@ -195,3 +195,23 @@ sur disque, vérifié `ls`+`find`). En attente du recollage texte. Le banc est p
 - Règle d'usage : le banc MESURE l'écart correcteur↔prof (supervision), il ne
   remplace jamais la décision pédagogique.
 761/761 (752+9) · check:miftah OK.
+
+**R4 exécutée — supervision sur 40 copies (2026-09-19, sources : branche master)** :
+les copies (simulées, Sujet 1, gradient 2,5→19,5) étaient sur GitHub master — récupérées
+par `git checkout origin/master --` (mêmes chemins, fusion future propre). Le banc
+(`npm run evaluer-copies -- --dir . --sujet 1`) a mesuré puis la calibration a corrigé :
+- **Avant** : r = 0,969 · écart moyen −1,53 · |écart| moyen 1,82 (moteur trop dur).
+- **Après** : r = 0,967 · écart moyen +0,79 · |écart| moyen **1,22** ·
+  par exercice r = 0,90/0,97/0,88 et |écart| = 0,64/0,84/1,30.
+- Corrections moteur : FP intro/concl (formes `arn`/`rip` génériques — l'overlay
+  REMPLACE maintenant les formes d'entités), piège normalAr « تيلاكوئيدات »
+  (ئ→يي : stème « تيلاكو »), composantes proportionnelles sur les valeurs des
+  courbes (80/90 · 20 · 70), crédit Ex3 lié aux phrases (« افراز ne », تفعيل+Go/Gi)
+  et non aux jetons nus (« mtb »).
+- Résidus documentés dans `docs/SUPERVISION_COPIES_BAC2025_S1.md` : Ex1 −0,6
+  structurel (ventilation du générateur 0,5/4,5 ≠ corrigé 1,25/3,75), Ex3 1,30
+  (compression partie 2 chez le générateur), 2 items volontairement inatteignables
+  sur ce lot (نفوذ · سكر/APG).
+- ⚠️ Le « prof » de ce lot = barème interne du GÉNÉRATEUR des copies — supervision
+  définitive = vraies copies seulement.
+765/765 (761+4) · boussole 138/138 · build · check:miftah.

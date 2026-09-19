@@ -109,7 +109,11 @@ const OVERLAY_BUILD: Record<string, { composantes?: string[][]; formes?: string[
   'bac2025_S1/S1-Ex1/Q2/ARNt': { composantes: [['arnt'], ['aa', 'anticodon', 'احماض امينيه', 'رامزه']] },
   'bac2025_S1/S1-Ex1/Q2/ARNr': { composantes: [['arnr'], ['ribosome', 'ريبوزوم']] },
   'bac2025_S1/S1-Ex1/Q2/RIP': { composantes: [['rip'], ['adenine', 'ادنين', 'ribose', 'ريبوز']] },
-  'bac2025_S2/S2-Ex1/Q1/item3': { formes: ['pi', 'فوسفات'] }, // corrigé p.7 : « +2ADP+2Pi+2NAD+ » — C = Pi (phosphate inorganique)
+  'bac2025_S2/S2-Ex1/Q1/item3': { formes: ['pi', 'فوسفات'] },
+  // R4 (40 copies) : formes « arn/rip » = FP — toute mention d'ARN créditait
+  // l'intro ET la conclusion sans qu'elles existent. Formes STRUCTURELLES.
+  'bac2025_S1/S1-Ex1/Q2/intro': { formes: ['مشكل', 'تساؤل', 'ما دور', 'ما تأثير'] },
+  'bac2025_S1/S1-Ex1/Q2/concl': { formes: ['خاتمة', 'نستنتج', 'نتيجة', 'تشارك', 'ويمكن تعطيل'] }, // corrigé p.7 : « +2ADP+2Pi+2NAD+ » — C = Pi (phosphate inorganique)
   // P2g (2026-09-19) — corrigé officiel 2025, verbatim : « عناصر من مجموع الخمسة
   // المسطرة في المعادلة؛ يُمنح 0.25 نقطة لكل عنصر » → l'équation vaut 1.25 pt
   // (le build encodait 0.75 — aucun « 0.75 » n'existe dans le corrigé). Les cinq
@@ -138,12 +142,15 @@ export function itemsDepuisBuild(prefix: string): AttenduItem[] {
   for (const [cle, v] of Object.entries(ATTENDUS_BAREME)) {
     if (!cle.startsWith(prefix)) continue;
     const texte = v.ar || v.fr || cle;
-    const sig = [
-      ...entitesDansTexte(texte).trouvees.map((t) => normalizeAr(t.terme).toLowerCase()),
-      ...siglesDeTexte(texte),
-    ].filter(Boolean);
     const ov = Object.entries(OVERLAY_BUILD).find(([k]) => cle.endsWith(k))?.[1];
-    if (ov?.formes?.length) sig.push(...ov.formes.map((f) => normalizeAr(f).toLowerCase()));
+    // R4 : des formes d'overlay = REMPLACEMENT (ce sont des formes STRUCTURELLES
+    // choisies à la main — ex. intro/concl) ; sinon, dérivation par entités.
+    const sig = ov?.formes?.length
+      ? ov.formes.map((f) => normalizeAr(f).toLowerCase())
+      : [
+          ...entitesDansTexte(texte).trouvees.map((t) => normalizeAr(t.terme).toLowerCase()),
+          ...siglesDeTexte(texte),
+        ].filter(Boolean);
     items.push({
       id: cle,
       texteAr: texte,
@@ -159,13 +166,16 @@ export function itemsDepuisBuild(prefix: string): AttenduItem[] {
 // ── Aides d'encodage (S1-Ex2/Ex3, S2-Ex2/Ex3 depuis le corrigé officiel) ─────
 
 let seq = 0;
-function item(points: number, formes: string[], texteAr: string): AttenduItem {
+function item(points: number, formes: string[], texteAr: string, composantes?: string[][]): AttenduItem {
   seq += 1;
   return {
     id: `corr-2025-${seq}`,
     texteAr,
     points,
     formes: formes.map((f) => normalizeAr(f).toLowerCase()).filter(Boolean),
+    ...(composantes?.length
+      ? { composantes: composantes.map((g) => g.map((f) => normalizeAr(f).toLowerCase())) }
+      : {}),
     source: 'corrige-officiel-2025',
   };
 }
@@ -183,13 +193,17 @@ const Q_S2: Record<ExerciceId, string> = {
 
 // ── S1-Ex2 (7 ن) — طحالب T.P · بيرنويدة · CA / Rubisco ───────────────────────
 const S1_EX2: AttenduItem[] = [
+  // R4 (40 copies master) : les copies citent les TAUX (80 %/20 %, 80 %/70 %),
+  // pas les tournures du corrigé — composantes proportionnelles 0.25/valeur.
   item(0.5, ['نسبه نمو الطبيعيه اعظميه', 'لا تتعدى'],
-    'عند التركيز المنخفض: نسبة نمو الطبيعية أعظمية (~90%) أما الطافرة فلا تتعدى ~20%'),
+    'عند التركيز المنخفض: نسبة نمو الطبيعية أعظمية (~90%) أما الطافرة فلا تتعدى ~20%',
+    [['80', '90'], ['20']]),
   item(0.5, ['ثابته عند حوالي 90', 'ترتفع عند الطافره'],
-    'عند التركيز المرتفع: تبقى نسبة نمو الطبيعية ~90% بينما ترتفع عند الطافرة (~70%)'),
+    'عند التركيز المرتفع: تبقى نسبة نمو الطبيعية ~90% بينما ترتفع عند الطافرة (~70%)',
+    [['80', '90'], ['70']]),
   item(0.5, ['بقدرتها على النمو في الاوساط'],
     'الاستنتاج: تمتاز الطبيعية بقدرتها على النمو في الأوساط ذات HCO3⁻ منخفض التركيز'),
-  item(0.5, ['وجود غلاف', 'تيلاكويدات'],
+  item(0.5, ['وجود غلاف', 'تيلاكو', 'rubisco'],
     'تتشابه البنيتان بوجود غلاف وحشوة تحتوي أنزيم Rubisco وتيلاكويدات بداخلها أنزيم CA'),
   item(1.5, ['البيرنويد', 'غشاء بروتيني يحيط'],
     // Corrigé : description البيرنويدة (~1.5) — ventilation OCR atténuée, somme contrainte.
@@ -199,7 +213,8 @@ const S1_EX2: AttenduItem[] = [
   item(0.5, ['قبل اضافه', 'بعد اضافه'],
     'الشكل(أ): قبل إضافة CA ثبات HCO3⁻ المشع (~100%) وانعدام CO2؛ بعد إضافته تناقص HCO3⁻ وتزايد CO2 حتى ~100%'),
   item(0.5, ['يحفز انزيم', 'تفكيك'],
-    'الاستنتاج: يحفز أنزيم CA تفكيك HCO3⁻ وإنتاج CO2'),
+    'الاستنتاج: يحفز أنزيم CA تفكيك HCO3⁻ وإنتاج CO2',
+    [['ca'], ['hco3']]),
   item(0.5, ['تراكم', 'الحشوه'],
     'الشكل(ب): عند الطبيعية تتراكم كمية CO2 في البيرنويدة؛ عند الطافرة تكون مرتفعة في الحشوة وقليلة في الهيولى'),
   item(0.5, ['غير نفوذ', 'نفوذ'],
@@ -228,11 +243,13 @@ const S1_EX3: AttenduItem[] = [
   item(0.5, ['النورادرينالين', 'نورادرينالين', 'norepinephrine', 'noradrenaline'],
     'الجزء 2-الشكل(أ): كلما ارتفعت نسبة المعقدات Ado-A1R نقص تركيز NE/النورأدرينالين (من ~8 إلى ~2 nmol/L)'),
   item(0.5, ['يقلل افراز'],
-    'الاستنتاج: ارتباط Ado بـ A1R يقلل إفراز NE من الخلايا قبل المشبكية'),
+    'الاستنتاج: ارتباط Ado بـ A1R يقلل إفراز NE من الخلايا قبل المشبكية',
+    [['افراز ne', 'يقلل افراز', 'ينخفض افراز', 'منع افراز']]),
   item(1.0, ['قنوات', 'الحويصلات'],
     'الشكل(ب) غياب Mtb: ارتباط Ado → تفعيل Go/Gi → تنشيط قنوات K⁺ وتثبيط قنوات Ca²⁺ → لا اندفاع Ca²⁺ → عدم إفراز NE من الحويصلات'),
   item(1.0, ['يتثبت', 'يعود'],
-    'وجود Mtb: يتثبت Mtb على A1R (تكامل بنيوي) ← منع تثبيت Ado ← لا تفعيل Go/Gi ← عودة قنوات Ca²⁺ وإفراز NE'),
+    'وجود Mtb: يتثبت Mtb على A1R (تكامل بنيوي) ← منع تثبيت Ado ← لا تفعيل Go/Gi ← عودة قنوات Ca²⁺ وإفراز NE',
+    [['تفعيل'], ['go', 'gi']]),
   item(0.5, ['صحه الفرضيه', 'الفرضيه 1'],
     'الحسم: يؤكد صحة الفرضية 1 — يرتبط Mtb بمستقبل الأدينوزين A1R'),
   item(0.5, ['الاعتدال', 'قبل النوم'],

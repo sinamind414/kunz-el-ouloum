@@ -10,7 +10,7 @@
 
 import { readdirSync, readFileSync, writeFileSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
-import { evaluerBatch, parserRecap, type CopieResultat } from '../src/supervision/evaluerCopies';
+import { evaluerBatch, parserRecap, parserScoreAttendu, couperBlocScore, type CopieResultat } from '../src/supervision/evaluerCopies';
 
 function arg(flag: string): string | undefined {
   const i = process.argv.indexOf(flag);
@@ -47,7 +47,11 @@ if (fichiers.length === 0) {
   process.exit(1);
 }
 
-const copies = fichiers.map((f) => ({ fichier: f, texte: readFileSync(join(dir, f), 'utf-8') }));
+const copies = fichiers.map((f) => {
+  const brut = readFileSync(join(dir, f), 'utf-8');
+  const attendu = parserScoreAttendu(brut);
+  return { fichier: f, texte: couperBlocScore(brut), attendu: attendu ?? undefined };
+});
 const cheminRecap = join(dir, 'RECAPITULATIF.txt');
 const recap = existsSync(cheminRecap) ? parserRecap(readFileSync(cheminRecap, 'utf-8')) : undefined;
 
@@ -67,7 +71,11 @@ const ligne = (r: CopieResultat): string => {
   const ecart = r.ecart !== undefined ? (r.ecart > 0 ? '+' : '') + r.ecart : '—';
   const flags = [r.attributionAmbigue ? '⚠attribution' : '', ...r.sanctionsForte].filter(Boolean).join(',');
   const plaf = r.plafondsActifs.length ? ` [${r.plafondsActifs.join(',')}]` : '';
-  return `eleve_${String(r.numero).padStart(2, '0')}  ${ident.padEnd(8)} correcteur=${String(r.note).padStart(5)}  prof=${prof.padStart(5)}  écart=${ecart.padStart(5)}  couv=${r.couverture}${plaf}${flags ? '  ⛔' + flags : ''}`;
+  const parEx =
+    r.notesParExercice && r.attenduParExercice
+      ? `  par Ex (moteur/attendu): ${r.notesParExercice.map((n, i) => `${n}/${r.attenduParExercice![i] ?? '?'}`).join(' · ')}`
+      : '';
+  return `eleve_${String(r.numero).padStart(2, '0')}  ${ident.padEnd(8)} correcteur=${String(r.note).padStart(5)}  prof=${prof.padStart(5)}  écart=${ecart.padStart(5)}  couv=${r.couverture}${plaf}${flags ? '  ⛔' + flags : ''}${parEx}`;
 };
 
 for (const r of resultats) console.log(ligne(r));
@@ -78,7 +86,14 @@ if (stats.pearson !== null) {
   console.log(`Pearson r = ${stats.pearson}`);
   console.log(`écart moyen = ${stats.ecartMoyen} · écart absolu moyen = ${stats.ecartAbsoluMoyen}`);
   console.log(`moyenne correcteur = ${stats.noteMoyenneCorrecteur} · moyenne prof = ${stats.noteMoyenneProf}`);
-} else {
+}
+if (stats.pearsonParExercice.some((x) => x !== null)) {
+  console.log(
+    `par exercice — r: ${stats.pearsonParExercice.map((x, i) => `Ex${i + 1}=${x ?? 'n/a'}`).join(' · ')}` +
+      ` | |écart| moy: ${stats.ecartAbsoluMoyenParExercice.map((x, i) => `Ex${i + 1}=${x ?? 'n/a'}`).join(' · ')}`
+  );
+}
+if (stats.pearson === null) {
   console.log('Pearson n/a (moins de 2 copies comparables ou variance nulle)');
 }
 if (stats.attributionsAmbigues > 0) console.log(`⚠ ${stats.attributionsAmbigues} copie(s) avec attribution S1/S2 ambiguë (< 1 pt d'écart) — trancher à la main`);
@@ -96,6 +111,9 @@ if (out) {
     ),
     ``,
     `**Fiabilité** : Pearson r = ${stats.pearson ?? 'n/a'} · écart moyen = ${stats.ecartMoyen ?? 'n/a'} · |écart| moyen = ${stats.ecartAbsoluMoyen ?? 'n/a'} · attributions ambiguës = ${stats.attributionsAmbigues}`,
+    ``,
+    `**Par exercice** : r = ${stats.pearsonParExercice.map((x, i) => `Ex${i + 1} ${x ?? 'n/a'}`).join(' · ')}`,
+    `**|écart| moyen par exercice** : ${stats.ecartAbsoluMoyenParExercice.map((x, i) => `Ex${i + 1} ${x ?? 'n/a'}`).join(' · ')}`,
     ``,
   ].join('\n');
   writeFileSync(out, md, 'utf-8');

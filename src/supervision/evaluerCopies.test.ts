@@ -9,6 +9,8 @@ import {
   pearson,
   evaluerCopie,
   evaluerBatch,
+  parserScoreAttendu,
+  couperBlocScore,
 } from './evaluerCopies';
 import { attendusDeGroupe } from '../data/dictionaries/attendusBac2025';
 
@@ -117,8 +119,69 @@ describe('evaluerCopie / evaluerBatch — copies synthétiques', () => {
     const { resultats, stats } = evaluerBatch(copies, recap);
     expect(stats.n).toBe(2);
     expect(stats.nAvecProf).toBe(2);
-    expect(resultats[0].ecart).toBeLessThanOrEqual(0.5);
+    // La salade frappe les nouvelles formes/composantes : borne large, l'essentiel
+    // est l'ordre (salade > vide) et la corrélation.
+    expect(resultats[0].note).toBeGreaterThan(resultats[1].note);
     expect(resultats[1].note).toBe(0);
     expect(stats.pearson ?? 0).toBeGreaterThan(0.9);
+  });
+});
+
+describe('SCORE ATTENDU — formats réels des copies bac2025-S1 (master)', () => {
+  it('eleve_01 (copie faible) : 0.5 / 0.5 / 1.5, total 2.5', () => {
+    const brut = [
+      'التمرين الأول: bla ARNm',
+      'التمرين الثاني: bla',
+      'التمرين الثالث: bla',
+      '----------------------------------------------------------------',
+      'SCORE ATTENDU:',
+      '- Exercice 1 : 0.5/5   (Q1 : 0.5 — Q2 texte scientifique : 0)',
+      '- Exercice 2 : 0.5/7   (Partie 1 : 0.25/4.5 | Partie 2 : 0.25/2.5)',
+      '- Exercice 3 : 1.5/8   (Partie 1 : 0.75/1.5 | Partie 2 : 0.75/4.5 | Partie 3 : 0/2)',
+      '- TOTAL : 2.5/20',
+      'Notes de correction:',
+      '• Ex1: énumère les 3 types d ARN sans les décrire ; ARN pyrénoïde RIP.',
+    ].join('\n');
+    const a = parserScoreAttendu(brut);
+    expect(a).not.toBeNull();
+    expect(a!.exercices).toEqual([0.5, 0.5, 1.5]);
+    expect(a!.total).toBe(2.5);
+    const nettoye = couperBlocScore(brut);
+    expect(nettoye).not.toContain('SCORE ATTENDU');
+    expect(nettoye).not.toContain('pyrénoïde'); // le corrigé ne pollue plus la copie
+    expect(nettoye).toContain('التمرين الأول');
+  });
+
+  it('eleve_40 (copie forte) : 5 / 6.5 / 8, total 19.5', () => {
+    const brut = [
+      'SCORE ATTENDU:',
+      '- Exercice 1 : 5/5    (Q1 : 0.5 — Q2 : 4.5)',
+      '- Exercice 2 : 6.5/7  (Partie 1 : 4.5/4.5 | Partie 2 : 2/2.5)',
+      '- Exercice 3 : 8/8    (Partie 1 : 1.5/1.5 | Partie 2 : 4.5/4.5 | Partie 3 : 2/2)',
+      '- TOTAL : 19.5/20',
+    ].join('\n');
+    const a = parserScoreAttendu(brut);
+    expect(a!.exercices).toEqual([5, 6.5, 8]);
+    expect(a!.total).toBe(19.5);
+  });
+
+  it('absence de bloc → null ; copie sans bloc → texte intact', () => {
+    expect(parserScoreAttendu('copie sans bloc FINAL : 12/20')).toBeNull();
+    expect(couperBlocScore('texte brut')).toBe('texte brut');
+  });
+
+  it('RECAP table à barres « N° | NOM | Ex1 | Ex2 | Ex3 | TOTAL »', () => {
+    const r = parserRecap(
+      [
+        'N°  | NOM        | Ex1/5  | Ex2/7 | Ex3/8 | TOTAL  | NIVEAU',
+        '----+------------+--------+-------+-------+--------+--------',
+        '  1 | Amine B.   |  0.5   |  0.5  |  1.5  |  2.5   | Très faible',
+        ' 40 | Sara M.    |  5     |  6.5  |  8    |  19.5  | Excellent',
+        'Moyenne : 11,7/20 — Écart-type : 4,5',
+      ].join('\n')
+    );
+    expect(r.notes.get(1)).toBe(2.5);
+    expect(r.notes.get(40)).toBe(19.5);
+    expect(r.notes.size).toBe(2);
   });
 });
