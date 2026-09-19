@@ -33,6 +33,12 @@ export interface CopieResultat {
   sanctionsForte: string[];
   noteProf?: number;
   ecart?: number;
+  /** Mode complet : notes moteur [Ex1, Ex2, Ex3]. */
+  notesParExercice?: number[];
+  /** Notes attendues du correcteur (bloc SCORE ATTENDU). */
+  attenduParExercice?: (number | null)[];
+  /** Écarts par exercice (moteur − attendu) quand les deux existent. */
+  ecartsParExercice?: (number | null)[];
 }
 
 export interface StatsBatch {
@@ -44,6 +50,9 @@ export interface StatsBatch {
   noteMoyenneCorrecteur: number;
   noteMoyenneProf: number | null;
   attributionsAmbigues: number;
+  /** Par exercice (sur les copies avec SCORE ATTENDU) : [Ex1, Ex2, Ex3]. */
+  pearsonParExercice: (number | null)[];
+  ecartAbsoluMoyenParExercice: (number | null)[];
 }
 
 const AR_VERS_LATIN: Record<string, string> = {
@@ -53,6 +62,34 @@ const AR_VERS_LATIN: Record<string, string> = {
 
 function latiniser(s: string): string {
   return s.replace(/[٠-٩]/g, (d) => AR_VERS_LATIN[d] ?? d);
+}
+
+/**
+ * Supprime le bloc « SCORE ATTENDU » (fin de copie) : il contient les termes du
+ * corrigé (ARN, pyrénoïde, hypothèse…) qui pollueraient la détection — on note
+ * la COPIE, pas les notes du correcteur.
+ */
+export function couperBlocScore(texte: string): string {
+  const i = texte.search(/SCORE\s+ATTENDU/i);
+  return i < 0 ? texte : texte.slice(0, i);
+}
+
+export interface ScoreAttendu {
+  exercices: (number | null)[]; // index 0..2 = Ex1..Ex3
+  total: number | null;
+}
+
+/** Parse « - Exercice N : X/Y » + « - TOTAL : T/20 » (décimales . ou ,). */
+export function parserScoreAttendu(texte: string): ScoreAttendu | null {
+  const bloc = texte.slice(texte.search(/SCORE\s+ATTENDU/i));
+  if (!bloc) return null;
+  const exercices: (number | null)[] = [null, null, null];
+  let m: RegExpExecArray | null;
+  const re = /Exercice\s*([123])\s*:\s*(\d{1,2}(?:[.,]\d{1,2})?)\s*\/\s*\d+/gi;
+  while ((m = re.exec(bloc)) !== null) exercices[parseInt(m[1], 10) - 1] = parseFloat(m[2].replace(',', '.'));
+  const t = bloc.match(/TOTAL\s*:\s*(\d{1,2}(?:[.,]\d{1,2})?)\s*\/\s*20/i);
+  const any = exercices.some((x) => x !== null) || t !== null;
+  return any ? { exercices, total: t ? parseFloat(t[1].replace(',', '.')) : null } : null;
 }
 
 /**
@@ -97,12 +134,15 @@ export function parserRecap(texteBrut: string): RecapParse {
     const ligne = ligneBrute.trim();
     if (!ligne) continue;
     const mEleve = ligne.match(/eleve\s*[_\-\s]?\s*(\d{1,2})/i);
-    if (!mEleve) {
+    const mTable = mEleve ? null : ligne.match(/^(\d{1,2})\s*\|/);
+    if (!mEleve && !mTable) {
       if (/\d/.test(ligne)) lignesNonParsees.push(ligneBrute);
       continue;
     }
-    const numero = parseInt(mEleve[1], 10);
-    const apres = ligne.slice((mEleve.index ?? 0) + mEleve[0].length);
+    const numero = parseInt((mEleve ?? mTable)![1], 10);
+    const apres = mEleve
+      ? ligne.slice((mEleve.index ?? 0) + mEleve[0].length)
+      : ligne.slice((mTable!.index ?? 0) + mTable![0].length);
     const nombres = [...apres.matchAll(/(\d{1,2}(?:[.,]\d{1,2})?)\s*(?:\/\s*20)?/g)]
       .map((x) => parseFloat(x[1].replace(',', '.')))
       .filter((x) => Number.isFinite(x));
@@ -110,12 +150,15 @@ export function parserRecap(texteBrut: string): RecapParse {
       lignesNonParsees.push(ligneBrute);
       continue;
     }
+    const somme = Math.round(nombres.slice(0, -1).reduce((a, b) => a + b, 0) * 100) / 100;
     const note =
       nombres.length === 1
         ? nombres[0]
-        : nombres.every((x) => x <= 8)
-          ? Math.round(nombres.reduce((a, b) => a + b, 0) * 100) / 100
-          : nombres[0];
+        : Math.abs(somme - nombres[nombres.length - 1]) < 0.01
+          ? nombres[nombres.length - 1] // « n1 n2 n3 TOTAL » avec TOTAL = Σ
+          : nombres.every((x) => x <= 8)
+            ? Math.round(nombres.reduce((a, b) => a + b, 0) * 100) / 100
+            : nombres[0];
     notes.set(numero, note);
   }
   return { notes, lignesNonParsees };
@@ -180,6 +223,7 @@ export function evaluerCopie(
     return {
       fichier, numero, mode: 'sujet-complet', sujet: best!.sujet, note: best!.total,
       attributionAmbigue: ambigue || undefined, couverture: Math.round(couv * 1000) / 1000,
+      notesParExercice: best!.ex.map((e) => e.points),
       plafondsActifs: [...new Set(best!.ex.flatMap(fmtPlafonds))],
       sanctionsForte: [...new Set(best!.ex.flatMap((e) => e.sanctionsForte.map((s) => s.id)))],
     };
@@ -200,17 +244,32 @@ export function evaluerCopie(
   };
 }
 
-/** Batch : évalue toutes les copies et rapproche le RECAP (notes /20, mode complet). */
+/** Batch : évalue toutes les copies et rapproche SCORE ATTENDU / RECAP (mode complet). */
 export function evaluerBatch(
-  copies: readonly { fichier: string; texte: string }[],
+  copies: readonly { fichier: string; texte: string; attendu?: ScoreAttendu }[],
   recap?: RecapParse,
   opts: { sujet?: 1 | 2; groupe?: { sujet: 1 | 2; exercice: 1 | 2 | 3 } } = {}
 ): { resultats: CopieResultat[]; stats: StatsBatch } {
   const resultats = copies.map((c) => {
     const r = evaluerCopie(c.fichier, c.texte, opts);
-    if (recap?.notes.has(r.numero) && r.mode === 'sujet-complet') {
+    if (r.mode === 'sujet-complet' && c.attendu) {
+      r.attenduParExercice = c.attendu.exercices;
+      if (c.attendu.total !== null) r.noteProf = c.attendu.total;
+      else {
+        const vals = c.attendu.exercices.filter((x): x is number => x !== null);
+        if (vals.length === 3) r.noteProf = Math.round(vals.reduce((a, b) => a + b, 0) * 100) / 100;
+      }
+    }
+    if (r.noteProf === undefined && recap?.notes.has(r.numero) && r.mode === 'sujet-complet') {
       r.noteProf = recap.notes.get(r.numero);
+    }
+    if (r.noteProf !== undefined) {
       r.ecart = Math.round((r.note - (r.noteProf ?? 0)) * 100) / 100;
+    }
+    if (r.notesParExercice && r.attenduParExercice) {
+      r.ecartsParExercice = r.attenduParExercice.map((a, i) =>
+        a === null ? null : Math.round((r.notesParExercice![i] - a) * 100) / 100
+      );
     }
     return r;
   });
@@ -229,6 +288,21 @@ export function evaluerBatch(
     noteMoyenneCorrecteur: resultats.length === 0 ? 0 : Math.round(resultats.reduce((s, x) => s + x.note, 0) / resultats.length * 100) / 100,
     noteMoyenneProf: avecProf.length === 0 ? null : Math.round((ys.reduce((a, b) => a + b, 0) / avecProf.length) * 100) / 100,
     attributionsAmbigues: resultats.filter((x) => x.attributionAmbigue).length,
+    pearsonParExercice: [0, 1, 2].map((i) => {
+      const paires = resultats
+        .filter((x) => x.notesParExercice && x.attenduParExercice && x.attenduParExercice[i] !== null)
+        .map((x) => [x.notesParExercice![i], x.attenduParExercice![i] as number]);
+      const r = pearson(paires.map((p) => p[0]), paires.map((p) => p[1]));
+      return r === null ? null : Math.round(r * 1000) / 1000;
+    }),
+    ecartAbsoluMoyenParExercice: [0, 1, 2].map((i) => {
+      const ecarts = resultats
+        .map((x) => x.ecartsParExercice?.[i])
+        .filter((x): x is number => x !== undefined && x !== null);
+      return ecarts.length === 0
+        ? null
+        : Math.round((ecarts.reduce((a, b) => a + Math.abs(b), 0) / ecarts.length) * 100) / 100;
+    }),
   };
   return { resultats, stats };
 }
