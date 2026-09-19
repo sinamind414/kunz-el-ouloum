@@ -270,7 +270,10 @@ const totalMeftah = Math.round(MEFTA_BAC_EXERCISES.reduce((s, ex) => s + pts(ex.
 if (totalMeftah === 20) ok('Meftah : total copie = 20 ن');
 else fail(`Meftah : total copie = ${totalMeftah} ≠ 20`);
 
-// 2. Registre des attendus : 6 groupes, Σ items = maxPts, 100 % auto, énoncés présents.
+// 2. Registre des attendus : 6 groupes, Σ items = maxPts (+ débordements SOURCÉS
+// au corrigé, absorbés par le plafond maxPts), 100 % auto, énoncés présents.
+// P2g : S2-Ex1 2025 — équation officielle 0.25×5 = 1.25 (Σ جزئيات = 5.5 > 5).
+const DEPASSEMENTS: Record<string, number> = { '2-1': 0.5 };
 const sujets: SujetId[] = [1, 2];
 const exercices: ExerciceId[] = [1, 2, 3];
 let totalRegistre = 0;
@@ -281,12 +284,15 @@ for (const s of sujets) {
     totalSujet += g.maxPts;
     const somme = Math.round(g.items.reduce((a, i) => a + i.points, 0) * 100) / 100;
     const auto = plafondAutoDe(g);
+    const depassement = DEPASSEMENTS[`${s}-${e}`] ?? 0;
     const toutAuto = g.items.every((i) => i.points <= 0 || i.formes.length > 0 || (i.composantes?.length ?? 0) > 0);
-    if (somme !== g.maxPts) fail(`registre S${s}-Ex${e} : Σ items ${somme} ≠ maxPts ${g.maxPts}`);
-    else if (auto !== g.maxPts) fail(`registre S${s}-Ex${e} : plafond auto ${auto} ≠ ${g.maxPts} (item manuel résiduel)`);
+    if (somme !== g.maxPts + depassement) fail(`registre S${s}-Ex${e} : Σ items ${somme} ≠ maxPts ${g.maxPts} (+${depassement} sourcé)`);
+    else if (auto !== somme) fail(`registre S${s}-Ex${e} : plafond auto ${auto} ≠ Σ ${somme} (item manuel résiduel)`);
     else if (!toutAuto) fail(`registre S${s}-Ex${e} : item à points sans formes ni composantes`);
     else if (g.questionAr.length < 20) fail(`registre S${s}-Ex${e} : énoncé absent`);
-    else ok(`registre S${s}-Ex${e} : Σ = plafond auto = ${g.maxPts} · énoncé présent`);
+    else ok(depassement > 0
+      ? `registre S${s}-Ex${e} : Σ = plafond auto = ${somme} (maxPts ${g.maxPts} + débordement sourcé ${depassement}) · énoncé présent`
+      : `registre S${s}-Ex${e} : Σ = plafond auto = ${g.maxPts} · énoncé présent`);
   }
   if (totalSujet !== 20) fail(`registre S${s} : total ${totalSujet} ≠ 20`);
   totalRegistre += totalSujet;

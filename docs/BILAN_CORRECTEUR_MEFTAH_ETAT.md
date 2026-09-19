@@ -146,3 +146,22 @@ Intégré au dictionnaire de sanctions :
 (L5 — source brute déjà en dépôt : `docs/sources/التدرج-السنوي-للتعلمات-2017.txt`),
 structure du programme extraite dans les extraits (§10). Cleanup : probe_p5_tmp.ts
 supprimé du dépôt (git rm).
+
+**Pierre 2g (barème officiel de l'équation + isolement d'année des overlays)** — deux
+corrections de justesse sourcées corrigé ministériel 2025 (re-fetché, verbatim) :
+1. **Équation glycolyse S2-Ex1 : 0.75 → 1.25 pt**. Le corrigé dit « عناصر من مجموع
+   الخمسة المسطرة في المعادلة؛ يُمنح 0.25 نقطة لكل عنصر » ; le « 0.75 » du build
+   n'existe nulle part dans le corrigé. Les cinq éléments soulignés = les composés
+   A,B,C,D,D' de la Q1 (ATP, ADP, Pi, NAD⁺, NADH,H⁺) — encodés en 5 composantes
+   OU (crédit proportionnel : 3 éléments sur 5 = 0.75). Garde «nad» ≠ «nadh»
+   (lookarounds). **Conséquence assumée** : Σ جزئيات = 5.5 > enveloppe 5 —
+   l'excédent est absorbé par le plafond maxPts (couverture ≤ 1), comme le
+   correcteur officiel qui plafonne aussi ; effet bord = redistribution
+   proportionnelle légère sur les copies partielles de S2-Ex1 (~9 % max).
+2. **Bug de fuite inter-années des overlays (préexistant, silencieux)** : la lookup
+   `cle.endsWith(k)` sans préfixe d'année appliquait les formes/composantes 2025 aux
+   items homonymes 2023/2024 — 11 clés contaminées (« فوسفات » créditait l'item
+   ARNt de bac2024 !). Tous les clés OVERLAY_BUILD préfixés par année
+   (`bac2025_S1/S1-Ex1/…`), verrou anti-fuite par test.
+Garde-fou appris : `check:miftah` accepte les débordements SOURCÉS (registre
+DEPASSEMENTS, sinon échec). 752/752 (747+5) · 138/138 · build · check:miftah.

@@ -97,20 +97,43 @@ const PEND_SYNTH = ['pendant synthese', 'خلال فترة تركيب', 'اثن�
  * (P5) — clé = suffixe d'id dans le groupe. + formes manquantes ajoutées à la
  * main quand le sigle échappe au détecteur (Pi : 1 majuscule seulement).
  */
-const OVERLAY_BUILD: Record<string, { composantes?: string[][]; formes?: string[] }> = {
-  'S1-Ex1/Q1/item1': { composantes: [HORS_SYNTH, ['arnr']] },
-  'S1-Ex1/Q1/item2': { composantes: [HORS_SYNTH, ['arnt']] },
-  'S1-Ex1/Q1/item3': { composantes: [PEND_SYNTH, ['arnm']] },
-  'S1-Ex1/Q1/item4': { composantes: [PEND_SYNTH, ['arnr']] },
-  'S1-Ex1/Q1/item5': { composantes: [PEND_SYNTH, ['arnt']] },
-  'S1-Ex1/Q2/ARNm': { composantes: [['arnm'], ['messager', 'transporte', 'رسول', 'انتقال المعلومه', 'نقل المعلومه']] },
-  'S1-Ex1/Q2/ARNt': { composantes: [['arnt'], ['aa', 'anticodon', 'احماض امينيه', 'رامزه']] },
-  'S1-Ex1/Q2/ARNr': { composantes: [['arnr'], ['ribosome', 'ريبوزوم']] },
-  'S1-Ex1/Q2/RIP': { composantes: [['rip'], ['adenine', 'ادنين', 'ribose', 'ريبوز']] },
-  'S2-Ex1/Q1/item3': { formes: ['pi', 'فوسفات'] }, // corrigé p.7 : « +2ADP+2Pi+2NAD+ » — C = Pi (phosphate inorganique)
+// Dérogations sourcées au build. `points` n'est utilisé QUE sur preuve verbatim du
+// corrigé ministériel — voir l'entrée « S2-Ex1/Q2/equation » (P2g, 2026-09-19).
+const OVERLAY_BUILD: Record<string, { composantes?: string[][]; formes?: string[]; points?: number }> = {
+  'bac2025_S1/S1-Ex1/Q1/item1': { composantes: [HORS_SYNTH, ['arnr']] },
+  'bac2025_S1/S1-Ex1/Q1/item2': { composantes: [HORS_SYNTH, ['arnt']] },
+  'bac2025_S1/S1-Ex1/Q1/item3': { composantes: [PEND_SYNTH, ['arnm']] },
+  'bac2025_S1/S1-Ex1/Q1/item4': { composantes: [PEND_SYNTH, ['arnr']] },
+  'bac2025_S1/S1-Ex1/Q1/item5': { composantes: [PEND_SYNTH, ['arnt']] },
+  'bac2025_S1/S1-Ex1/Q2/ARNm': { composantes: [['arnm'], ['messager', 'transporte', 'رسول', 'انتقال المعلومه', 'نقل المعلومه']] },
+  'bac2025_S1/S1-Ex1/Q2/ARNt': { composantes: [['arnt'], ['aa', 'anticodon', 'احماض امينيه', 'رامزه']] },
+  'bac2025_S1/S1-Ex1/Q2/ARNr': { composantes: [['arnr'], ['ribosome', 'ريبوزوم']] },
+  'bac2025_S1/S1-Ex1/Q2/RIP': { composantes: [['rip'], ['adenine', 'ادنين', 'ribose', 'ريبوز']] },
+  'bac2025_S2/S2-Ex1/Q1/item3': { formes: ['pi', 'فوسفات'] }, // corrigé p.7 : « +2ADP+2Pi+2NAD+ » — C = Pi (phosphate inorganique)
+  // P2g (2026-09-19) — corrigé officiel 2025, verbatim : « عناصر من مجموع الخمسة
+  // المسطرة في المعادلة؛ يُمنح 0.25 نقطة لكل عنصر » → l'équation vaut 1.25 pt
+  // (le build encodait 0.75 — aucun « 0.75 » n'existe dans le corrigé). Les cinq
+  // éléments soulignés = les composés A,B,C,D,D' de la Q1 (ATP, ADP, Pi, NAD+,
+  // NADH,H+), reportés dans l'équation. Conséquence assumée : Σ جزئيات officielles
+  // du groupe = 5.5 > enveloppe 5.0 — l'excédent est absorbé par le plafond
+  // maxPts (couverture ≤ 1 → note ≤ 5.0, comportement du correcteur officiel qui
+  // plafonne aussi). Redondance Q1/Q2 VOLONTAIRE : 0.25 identifier + 0.25 placer,
+  // comme le corrigé. Garde anti-croisement : 'nad' ≠ 'nadh' (lookarounds
+  // formePresente) — écrire NADH seul ne crédite pas la case NAD+.
+  'bac2025_S2/S2-Ex1/Q2/equation': {
+    points: 1.25,
+    composantes: [
+      ['atp'],
+      ['adp'],
+      ['pi', 'فوسفات'],
+      ['nad'],
+      ['nadh'],
+    ],
+  },
 };
 
-function itemsDepuisBuild(prefix: string): AttenduItem[] {
+/** Exporté pour les tests : isolement d'année des overlays (P2g). */
+export function itemsDepuisBuild(prefix: string): AttenduItem[] {
   const items: AttenduItem[] = [];
   for (const [cle, v] of Object.entries(ATTENDUS_BAREME)) {
     if (!cle.startsWith(prefix)) continue;
@@ -124,7 +147,7 @@ function itemsDepuisBuild(prefix: string): AttenduItem[] {
     items.push({
       id: cle,
       texteAr: texte,
-      points: typeof v.points === 'number' ? v.points : 0,
+      points: typeof ov?.points === 'number' ? ov.points : (typeof v.points === 'number' ? v.points : 0),
       formes: [...new Set(sig)],
       composantes: ov?.composantes?.map((g) => g.map((f) => normalizeAr(f).toLowerCase())),
       source: 'build',
