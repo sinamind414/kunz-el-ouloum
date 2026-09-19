@@ -6,6 +6,12 @@
 // pose 30/32/30-32/36/37 est taguée CONFLIT_REF avec rappel du barème officiel DZ
 // (livre 8, حصيلة التنفس L9843). Le décompte ATP n'a jamais été demandé aux BAC
 // 2023-2025 (contexte_bac du build) — le tag est donc préventif.
+//
+// P2f (2026-09-19) : دليل الأستاذ (guide prof officiel 2017, extraits sourcés dans
+// docs/sources/dalil-alustadh-3AS-extraits.md) devient la 3e référence, à côté du
+// corrigé ministériel 2025 et du DICTIONNAIRE FINAL. Il apporte : errata officiels
+// du manuel (TTX/TEA ص132), corrections d'erreurs historiques (ARNr/ARNt bac1999,
+// بنية ربعية), et attendus d'exercices (38 ATP, source de l'O2, pompe Na/K).
 // Les double-sens (Km, matrice, noyau) restent des alertes « vigilance » : jamais
 // pénalisants (règle moteur du build : flag AMBIGUITE_LEXICALE).
 // Détection sur le texte normalisé (normalizeAr) : hamzas unifiées, casse latine libre.
@@ -89,9 +95,31 @@ const RE_CONTEXTE_SLA = /(sod|eda|الادارافون|الاوكسيد الفا
 // Le Hb est DANS les GR — pas libre dans le plasma.
 const RE_HEMOGLOBINE2 = /الهيموغلوب/;
 const RE_PLASMA = /في البلازمه/;
-// Photosynthèse : « phase à l'obscurité » ≠ « la nuit ».
-const RE_PHOTOSYNTHESE = /البناء الضوئي/;
-const RE_SANS_LUMIERE = /(ليلا|في الظلام|في الظلمه|غياب الضوء|بدون ضوء)/;
+// Photosynthèse P2f : le canon (دليل الأستاذ) est « المرحلة ب لا تحتاج إلى الضوء
+// لكنها تتم في الضوء » — « في غياب الضوء » est une formulation LÉGITIME du guide
+// (expérience Calvin : امتصاص CO2 في غياب الضوء وفي وجوده). La méconception visée
+// est la PHASE nommée placée dans l'obscurité/la nuit — fenêtre 25 chars.
+const RE_PHASE_OBSCURE_FAUX = new RegExp(
+  `(?:لاضوييه|كيميحيويه|كيميائيه الحيويه)[^\\n]{0,25}(?:في الظلام|في الظلمه|ليلا)` +
+  `|(?:في الظلام|في الظلمه|ليلا)[^\\n]{0,25}(?:لاضوييه|كيميحيويه|كيميائيه الحيويه)`
+);
+
+// ── P2f — errata officiels du manuel + attendus d'exercices (دليل الأستاذ) ──
+const RE_O2_LIBERE = /(اكسجين|اوكسيد)[^\n]{0,20}(المنطلق|المتحرر|مصدر)/;
+const RE_O2_DEPUIS_CO2 = /(?:من|عن|هو|هي) (?:co2|ثاني اكسيد)|co2 (?:هو المصدر|هو المنبع)/;
+const RE_STRUCTURE_QUAT = /(رابعيه|رباعيه)/;
+const RE_QUAT_4_CHAINES = /(اربعه|4) [^\n]{0,15}(سلاسل|تحت وحدات)/;
+const RE_TERME_RUBAIYA = /البنيه الرباعيه/;
+const RE_TRIPSINE = /تربسين/;
+const RE_AROMATIQUES = /(تيروزين|تايروزين|فينيل الانين)/;
+const RE_KIMOTRIPSINE = /كيموتريبسين/;
+const RE_BASIQUES = /(ليزين|ارجينين)/;
+const RE_TTX = /tetrodotoxine|تترودوتوكس/;
+const RE_TEA = /tetraethyl|تترا ايثيل|\btea\b/;
+const RE_SODIUM = /الصوديوم/;
+const RE_POTASSIUM = /البوتاسيوم/;
+const RE_POMPE_3K = /(3|ثلاث) [^\n]{0,12}البوتاسيوم/;
+const RE_POMPE_2NA = /2 [^\n]{0,12}الصوديوم/;
 
 /**
  * Analyse les sanctions pédagogiques d'une réponse.
@@ -137,7 +165,7 @@ export function evaluerSanctions(reponse: string): Sanction[] {
       gravite: 'forte',
       titreAr: 'حصيلة التنفس — قيمة ATP غير المقررة',
       constatAr: 'وردت في الإجابة قيمة حديثة (30-32 أو 36/37 ATP لكل غلوكوز) مع ذكر ATP.',
-      correctionAr: 'القيمة المقررة رسميا: 38 ATP لكل غلوكوز (حصيلة التنفس — الكتاب المدرسي L9843). تُقبل 38 فقط في الحصيلة. ملاحظة: الحصيلة الكمية لم تُطلب في BAC 2023-2025.',
+      correctionAr: 'القيمة المقررة رسميا: 38 ATP لكل غلوكوز (حصيلة التنفس — الكتاب المدرسي L9843، مؤكدة في دليل الأستاذ: «الحصيلة الكلية لعدد ATP هي 38 جزيئة»). تُقبل 38 فقط في الحصيلة. ملاحظة: الحصيلة الكمية لم تُطلب في BAC 2023-2025.',
     });
   }
 
@@ -253,14 +281,14 @@ export function evaluerSanctions(reponse: string): Sanction[] {
     });
   }
 
-  if (RE_PHOTOSYNTHESE.test(norm) && RE_SANS_LUMIERE.test(norm)) {
+  if (RE_PHASE_OBSCURE_FAUX.test(norm)) {
     out.push({
       type: 'VIGILANCE',
       id: 'phase_obscure_nuit',
       gravite: 'vigilance',
-      titreAr: '«مرحلة الظلام» ليست ليلاً',
-      constatAr: 'الإجابة تجمع البناء الضوئي مع الليل/الظلام.',
-      correctionAr: '«المرحلة الظلمانية» (تثبيت CO2 على RuBP) تعني مستقلة عن الضوء مباشرة — تحدث نهاراً أيضاً. الليل يوقف المرحلة الكيميائية الضوئية فقط، ومنه يتوقف التثبيت لاحقاً.',
+      titreAr: '«المرحلة اللاضوئية تتم في الظلام»؟',
+      constatAr: 'الإجابة تضع المرحلة (اللاضوئية/الكيميائية الحيوية) في الظلام أو الليل.',
+      correctionAr: 'دليل الأستاذ: المرحلة ب «لا تحتاج إلى الضوء لكنها تتم في الضوء» — وامتصاص CO2 الذي يكشفها يتم في غياب الضوء وفي وجوده. «الظلام» هنا مصطلح تجريبي قديم (منهج سابق) لا موعد زمني؛ الليل يوقف المرحلة الكيموضوئية فقط ومنه يتوقف التثبيت لاحقاً.',
     });
   }
 
@@ -382,6 +410,106 @@ export function evaluerSanctions(reponse: string): Sanction[] {
       titreAr: 'Rubisco وأنزيم الكربونيك أنhydrase',
       constatAr: 'الإجابة تجمع Rubisco مع الكاربونيك أنhydrase.',
       correctionAr: 'Rubisco: تثبيت CO2 على RuBP (APG). CA: تفكيك HCO3⁻ إلى CO2 (في البيرنويدة). وصف البيرنويدة يذكرهما معاً — لكن دوريهما مختلفان تماماً.',
+    });
+  }
+
+  // ── P2f : erreurs officielles du manuel, tranchées par دليل الأستاذ ──
+
+  if (RE_O2_LIBERE.test(norm) && RE_O2_DEPUIS_CO2.test(norm)) {
+    // Garde anti-négation : « الماء وليس CO2 » (réponse JUSTE du guide) ne déclenche pas.
+    let affirm = false;
+    const rx = /(?:من|عن|هو|هي) (?:co2|ثاني اكسيد)|co2 (?:هو المصدر|هو المنبع)/g;
+    let m;
+    while ((m = rx.exec(norm)) !== null) {
+      const avant = norm.slice(Math.max(0, m.index - 14), m.index);
+      if (!/(ليس|ليست|غير|بدون|إلا)/.test(avant)) { affirm = true; break; }
+    }
+    if (affirm) {
+      out.push({
+        type: 'FAUX_AMI',
+        id: 'oxygene_source_co2',
+        gravite: 'forte',
+        titreAr: 'مصدر الأكسجين المنطلق منسوب إلى CO2',
+        constatAr: 'الإجابة تجعل CO2 مصدر الأكسجين المنطلق في التركيب الضوئي.',
+        correctionAr: 'المصدر هو الماء (H2O) بفقد إلكتروناته بعد تهيج الأنظمة الضوئية (دليل الأستاذ: «مصدر الأكسجين المنطلق هو الماء وليس CO2»). CO2 غير ضروري لعمل التيلاكويد — دوره في تثبيت الكربون (الحشوة).',
+      });
+    }
+  }
+
+  if (RE_TERME_RUBAIYA.test(norm)) {
+    out.push({
+      type: 'VIGILANCE',
+      id: 'structure_terme_rubaiya',
+      gravite: 'vigilance',
+      titreAr: '«البنية الرباعية» — مصطلح محذور',
+      constatAr: 'استُعملت عبارة «البنية الرباعية».',
+      correctionAr: 'دليل الأستاذ يحذّر من هذا المصطلح لأنه يوحي بوجود 4 سلاسل دائماً — الصحيح: «البنية الرابعية» (quaternaire).',
+    });
+  }
+
+  if (RE_STRUCTURE_QUAT.test(norm) && RE_QUAT_4_CHAINES.test(norm)) {
+    out.push({
+      type: 'VIGILANCE',
+      id: 'structure_quaternaire_4_chaines',
+      gravite: 'vigilance',
+      titreAr: 'البنية الرابعية = 4 سلاسل؟',
+      constatAr: 'الإجابة تربط البنية الرابعية بعدد 4 سلاسل/تحت وحدات.',
+      correctionAr: 'لا علاقة بين العدد 4 والبنية الرابعية (دليل الأستاذ): الحد الأدنى 2 تحت وحدة والحد الأقصى غير محدد — الرابعية = تجمع سلاسل ذات بنى ثالثية، وهي أهم المستويات تعقيداً.',
+    });
+  }
+
+  if ((RE_TRIPSINE.test(norm) && RE_AROMATIQUES.test(norm)) || (RE_KIMOTRIPSINE.test(norm) && RE_BASIQUES.test(norm))) {
+    out.push({
+      type: 'FAUX_AMI',
+      id: 'protease_specificite_inversee',
+      gravite: 'forte',
+      titreAr: 'تخصص التربسين/الكيموتريبسين معكوس',
+      constatAr: 'الإجابة تعكس مواضع التحلل: التربسين عند التيروزين/الفينيل ألانين أو الكيموتريبسين عند الليزين/الأرجينين.',
+      correctionAr: 'العكس هو الصحيح (دليل الأستاذ — تمرين الببتيد): التربسين يحلل الرابطة بعد Lys/Arg (القاعدية) فينتج Ala-Gly-Tyr-Arg | Ser-Phe-Glu-Val-Lys | Leu؛ الكيموتريبسين بعد Tyr/Phe (العطرية) فينتج Ala-Gly-Tyr | Arg-Ser-Phe | Glu-Val-Lys-Leu.',
+    });
+  }
+
+  if ((RE_TTX.test(norm) && RE_POTASSIUM.test(norm)) || (RE_TEA.test(norm) && RE_SODIUM.test(norm))) {
+    out.push({
+      type: 'VIGILANCE',
+      id: 'bloqueurs_ttx_tea',
+      gravite: 'vigilance',
+      titreAr: 'حاصرات القنوات الأيونية — تحقق من الشاردة',
+      constatAr: 'الإجابة تربط Tetrodotoxine بالبوتاسيوم أو Tetraethyl-ammonium بالصوديوم.',
+      correctionAr: 'التصويب الرسمي للدليل (ص132): Tetrodotoxine تحصر انتقال Na+ وTetraethyl-ammonium يحصر انتقال K+ — التبديل خطأ منقول من نسخ مطبوعة خاطئة.',
+    });
+  }
+
+  if (/كورار/.test(norm) && /(فولطي|فولطيه)/.test(norm) && /قن/.test(norm)) {
+    out.push({
+      type: 'VIGILANCE',
+      id: 'curare_sur_canal_voltage',
+      gravite: 'vigilance',
+      titreAr: 'الكورار والقنوات — تحقق من النوع',
+      constatAr: 'الإجابة تجمع الكورار مع القنوات الفولطية.',
+      correctionAr: 'دليل الأستاذ: الكورار يثبت على القنوات المرتبطة بالكيمياء منافساً الأستيل كولين فيحدث الشلل — لا على القنوات الفولطية. إن كانت إجابتك منفية («لا يعمل على الفولطية») فهي صحيحة.',
+    });
+  }
+
+  if (RE_POMPE_3K.test(norm) && RE_POMPE_2NA.test(norm)) {
+    out.push({
+      type: 'VIGILANCE',
+      id: 'pompe_na_k_inversee',
+      gravite: 'vigilance',
+      titreAr: 'أعداد مضخة Na⁺/K⁺ معكوسة',
+      constatAr: 'الإجابة تذكر 3 شوارد بوتاسيوم و2 صوديوم.',
+      correctionAr: 'العكس هو الصحيح (دليل الأستاذ): تثبت 3 شوارد الصوديوم وتُنقل خارج الخلية و2 شاردتي البوتاسيوم تدخلان، باستهلاك جزيئة ATP واحدة — صيانة كمون الراحة.',
+    });
+  }
+
+  if (/(3|ثلاثه|ثلاث) [^\n]{0,12}arnt/.test(norm)) {
+    out.push({
+      type: 'VIGILANCE',
+      id: 'arnr_3_types_pas_arnt',
+      gravite: 'vigilance',
+      titreAr: '«3 أنواع من ARNt» — خطأ مكرر',
+      constatAr: 'الإجابة تذكر 3 أنواع من ARNt (سياق الشواضر/الطرد المركزي).',
+      correctionAr: 'دليل الأستاذ يصحح هنا خطأ بكالوريا 1999: الصحيح 3 أنواع من ARNr بأوزان جزيئية مختلفة (الشواضر 1 و2 و3). أنواع ARNt كثيرة وتتجمع في شوكة واحدة لتماثل أوزانها الجزيئية.',
     });
   }
 

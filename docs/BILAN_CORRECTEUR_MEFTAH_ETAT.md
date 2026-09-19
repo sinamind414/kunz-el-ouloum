@@ -116,3 +116,33 @@ Reste hors plan : التدرج السنوي (L5), livre prof, archivage élève 
 épreuve soumise est archivée (total /20 + détail par exercice), panneau « سجل النقاط »,
 événement dashboard si compte élève (rien ne quitte l'appareil en invité, textes locaux).
 738/738 · 138/138 · build · check:miftah. Reste : التدرج السنوي (L5), livre prof.
+
+**Pierre 2f (livre prof ingéré — 3e référence du correcteur)** : le propriétaire a
+fourni le texte intégral du دليل الأستاذ (guide officiel 2017, 133 pages, 3AS Bio).
+Extraits sourcés : `docs/sources/dalil-alustadh-3AS-extraits.md` ; copie brute d'extraction
+PDF déjà en dépôt (`docs/sources/دليل-الأستاذ-2017.txt`, non greppable — ligatures).
+Intégré au dictionnaire de sanctions :
+- **8 règles nouvelles sourcées guide** : `oxygene_source_co2` (forte — « مصدر الأكسجين
+  هو الماء وليس CO2 », garde anti-négation), `protease_specificite_inversee` (forte —
+  trypsine=Lys/Arg, chymotrypsine=Tyr/Phe, garde sur les séquences latines du guide),
+  `structure_terme_rubaiya` + `structure_quaternaire_4_chaines` (vigilance — erratum
+  « لا علاقة بين 4 تحت وحدات والبنية الرابعية »), `bloqueurs_ttx_tea` (vigilance —
+  erratum ص132 TTX=Na+, TEA=K+), `curare_sur_canal_voltage` (vigilance — canaux
+  CHIMIQUES, jamais forte pour ne pas pénaliser la phrase juste), `pompe_na_k_inversee`
+  (vigilance — 3 Na⁺ sortent / 2 K⁺ entrent, fenêtres serrées), `arnr_3_types_pas_arnt`
+  (vigilance — correction explicite du BAC 1999).
+- **2 renforcements** : `atp_bilan_respiration` cite désormais le guide (« الحصيلة
+  الكلية لعدد ATP هي 38 جزيئة ») en plus du livre L9843 ; `phase_obscure_nuit`
+  RESSERRÉE — le guide dit « المرحلة ب لا تحتاج إلى الضوء لكنها تتم في الضوء » et
+  utilise lui-même « في غياب الضوء » : la règle ne sonne plus que sur la PHASE nommée
+  placée dans le noir/la nuit (fenêtre 25 chars), plus jamais sur une co-occurrence
+  simple (FP éliminés).
+- **Décompte tranché** : le nombre réel pré-P2f était 25 règles (les docs disaient 26
+  — surestimation d'une unité, corrigée) → **33 règles** désormais.
+- **Pièges de normalisation rencontrés (consignés)** : اللاضوئية → « للاضوييه » (ئ→ي)
+  — un pattern contenant ئ/ؤ ne matche JAMAIS post-normalAr ; قنوات = ق-ن-و-ات (pas
+  de substring « قنا » au pluriel).
+747/747 (738+9 tests P2f) · 138/138 · build · check:miftah. Reste : التدرج السنوي
+(L5 — source brute déjà en dépôt : `docs/sources/التدرج-السنوي-للتعلمات-2017.txt`),
+structure du programme extraite dans les extraits (§10). Cleanup : probe_p5_tmp.ts
+supprimé du dépôt (git rm).
