@@ -1,0 +1,76 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="760" viewBox="0 0 1200 760" font-family="Arial, sans-serif">
+  <defs>
+    <marker id="arr91" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L9,3 L0,6 Z" fill="#0f172a"/>
+    </marker>
+  </defs>
+  <rect width="1200" height="760" fill="#f8fafc"/>
+  <rect x="24" y="24" width="1152" height="712" rx="24" fill="#ffffff" stroke="#e2e8f0" stroke-width="3"/>
+  <text x="600" y="80" text-anchor="middle" font-size="25" font-weight="bold" fill="#0f172a">تجربة كالفن : تتبع ¹⁴CO₂ بكروماتوغرافيا ثنائية الأبعاد</text>
+
+  <!-- ======== الجهاز : المصاصة ======== -->
+  <rect x="60" y="112" width="480" height="440" rx="18" fill="#f0fdf4" stroke="#86efac" stroke-width="2"/>
+  <text x="300" y="150" text-anchor="middle" font-size="18" font-weight="bold" fill="#14532d">التركيب التجريبي (المصاصة اللاحنة)</text>
+
+  <rect x="130" y="180" width="90" height="300" rx="45" fill="#dcfce7" stroke="#166534" stroke-width="3"/>
+  <text x="175" y="270" text-anchor="middle" font-size="12" fill="#14532d">معلق أشنة</text>
+  <text x="175" y="292" text-anchor="middle" font-size="12" fill="#14532d">خضراء</text>
+  <text x="175" y="330" text-anchor="middle" font-size="14" font-weight="bold" fill="#166534">¹⁴CO₂</text>
+  <circle cx="88" cy="220" r="20" fill="#fbbf24"/>
+  <g stroke="#f59e0b" stroke-width="2.5" stroke-linecap="round">
+    <line x1="88" y1="192" x2="88" y2="180"/><line x1="88" y1="248" x2="88" y2="260"/>
+    <line x1="62" y1="220" x2="50" y2="220"/><line x1="114" y1="220" x2="126" y2="220"/>
+  </g>
+  <text x="88" y="286" text-anchor="middle" font-size="12" fill="#b45309">ضوء</text>
+
+  <path d="M230 230 L300 260" stroke="#0f172a" stroke-width="3" marker-end="url(#arr91)"/>
+  <text x="262" y="222" text-anchor="middle" font-size="13" fill="#0f172a">عيّنة عند t</text>
+
+  <path d="M330 260 L402 300" stroke="#dc2626" stroke-width="3" marker-end="url(#arr91)"/>
+  <path d="M330 300 L402 340" stroke="#dc2626" stroke-width="3" marker-end="url(#arr91)"/>
+  <text x="366" y="292" text-anchor="middle" font-size="13" fill="#b91c1c">حقن في</text>
+  <text x="366" y="326" text-anchor="middle" font-size="13" fill="#b91c1c">ميثانول مغلي</text>
+
+  <rect x="406" y="286" width="96" height="76" rx="10" fill="#fee2e2" stroke="#dc2626" stroke-width="2"/>
+  <text x="454" y="318" text-anchor="middle" font-size="13" font-weight="bold" fill="#991b1b">ميثانول</text>
+  <text x="454" y="342" text-anchor="middle" font-size="13" font-weight="bold" fill="#991b1b">مغلي</text>
+  <text x="300" y="516" text-anchor="middle" font-size="13.5" fill="#166534">إيقاف فوري للتفاعلات ثم تحليل مستخلص الأشنة</text>
+
+  <!-- ======== اللوحات الكروماتوغرافية ======== -->
+  <rect x="570" y="112" width="570" height="440" rx="18" fill="#fffbeb" stroke="#fcd34d" stroke-width="2"/>
+  <text x="855" y="150" text-anchor="middle" font-size="18" font-weight="bold" fill="#78350f">كروماتوغرافيا ثنائية الأبعاد + تصوير إشعاعي ذاتي</text>
+
+  <rect x="600" y="180" width="160" height="160" rx="10" fill="#ffffff" stroke="#92400e" stroke-width="3"/>
+  <circle cx="680" cy="260" r="10" fill="#dc2626"/>
+  <text x="680" y="372" text-anchor="middle" font-size="14" font-weight="bold" fill="#92400e">t = 5 ثوان</text>
+  <text x="680" y="352" text-anchor="middle" font-size="12" fill="#b45309">نقطة واحدة</text>
+
+  <rect x="790" y="180" width="160" height="160" rx="10" fill="#ffffff" stroke="#92400e" stroke-width="3"/>
+  <circle cx="870" cy="260" r="10" fill="#dc2626"/>
+  <circle cx="898" cy="236" r="8" fill="#ea580c"/>
+  <circle cx="846" cy="296" r="8" fill="#f59e0b"/>
+  <text x="870" y="372" text-anchor="middle" font-size="14" font-weight="bold" fill="#92400e">t = 30 ثانية</text>
+  <text x="870" y="352" text-anchor="middle" font-size="12" fill="#b45309">نقطتان</text>
+
+  <rect x="980" y="180" width="160" height="160" rx="10" fill="#ffffff" stroke="#92400e" stroke-width="3"/>
+  <circle cx="1060" cy="260" r="10" fill="#dc2626"/>
+  <circle cx="1088" cy="236" r="8" fill="#ea580c"/>
+  <circle cx="1036" cy="296" r="8" fill="#f59e0b"/>
+  <circle cx="1096" cy="300" r="7" fill="#ca8a04"/>
+  <circle cx="1024" cy="238" r="7" fill="#facc15"/>
+  <text x="1060" y="372" text-anchor="middle" font-size="14" font-weight="bold" fill="#92400e">t = 60 ثانية</text>
+  <text x="1060" y="352" text-anchor="middle" font-size="12" fill="#b45309">عدة نقط</text>
+
+  <text x="680" y="402" text-anchor="middle" font-size="12.5" fill="#b91c1c">حمض فوسفوغليسريك</text>
+  <text x="680" y="420" text-anchor="middle" font-size="12.5" fill="#b91c1c">3-PGA</text>
+  <text x="870" y="402" text-anchor="middle" font-size="12.5" fill="#9a3412">+ APG (تريوزات فوسفاتية)</text>
+  <text x="1060" y="402" text-anchor="middle" font-size="12.5" fill="#a16207">+ سكريات (غلوكوز...)</text>
+
+  <text x="855" y="478" text-anchor="middle" font-size="14" fill="#78350f">الوسم يظهر أولاً في 3-PGA ثم يتوسع إلى بقية المركبات</text>
+  <text x="855" y="506" text-anchor="middle" font-size="13" fill="#92400e">الوقت القصير = كشف المركب الأول المتشكل</text>
+
+  <!-- ======== شريط الحلقة ======== -->
+  <rect x="60" y="586" width="1080" height="106" rx="16" fill="#ecfdf5" stroke="#10b981" stroke-width="3"/>
+  <text x="600" y="626" text-anchor="middle" font-size="17" font-weight="bold" fill="#065f46">حلقة كالفن : تثبيت الكربون ⟶ اختزال ⟶ تجديد المستقبل</text>
+  <text x="600" y="662" text-anchor="middle" font-size="14.5" fill="#047857">CO₂ + مركب 5 كربون (RuBP) ⟶ 3-PGA ⟶ APG (بوساطة ATP و NADPH) ⟶ سكريات + تجديد RuBP</text>
+</svg>

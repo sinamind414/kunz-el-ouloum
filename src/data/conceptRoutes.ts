@@ -104,6 +104,46 @@ export const CONCEPT_ROUTES: Record<string, ConceptRoute> = {
     lessonId: 'seismic_waves',
     documentExerciseId: 'seismic_p_s_core',
   },
+  hill_ruben_water_splitting: {
+    conceptId: 'hill_ruben_water_splitting',
+    unitId: 6,
+    lessonId: 'd2-u6-l1-hill-ruben',
+    documentExerciseId: 'photosynthese_cycle',
+    survivalCardId: 'sc_photosynthese',
+  },
+  jagendorf_proton_gradient: {
+    conceptId: 'jagendorf_proton_gradient',
+    unitId: 6,
+    lessonId: 'd2-u6-l2-jagendorf',
+    documentExerciseId: 'photosynthese_cycle',
+    survivalCardId: 'sc_photosynthese',
+  },
+  calvin_14c_tracing: {
+    conceptId: 'calvin_14c_tracing',
+    unitId: 6,
+    lessonId: 'd2-u6-l3-calvin',
+    documentExerciseId: 'photosynthese_cycle',
+    survivalCardId: 'sc_photosynthese',
+  },
+  mitchell_racker_chemiosmosis: {
+    conceptId: 'mitchell_racker_chemiosmosis',
+    unitId: 7,
+    lessonId: 'd2-u7-l1-mitchell-racker',
+    documentExerciseId: 'photosynthese_cycle',
+  },
+  benioff_plan_earthquakes: {
+    conceptId: 'benioff_plan_earthquakes',
+    unitId: 9,
+    lessonId: 'd3-u9-l2-benioff',
+    documentExerciseId: 'subduction_water_melting',
+    survivalCardId: 'sc_subduction',
+  },
+  migmatite_crustal_thickening: {
+    conceptId: 'migmatite_crustal_thickening',
+    unitId: 11,
+    lessonId: 'd3-u11-l1-migmatite',
+    documentExerciseId: 'subduction_water_melting',
+  },
 };
 
 export function getConceptRoute(conceptId: string): ConceptRoute | undefined {

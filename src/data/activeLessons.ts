@@ -239,7 +239,7 @@ export const LESSON_PROGRESSION: Record<string, LessonProgression> = {
     completionMessageAr: 'أحسنت! فهمت تحوّل التنبيه الكهربائي إلى رسالة كيميائية ثم كهربائية.',
   },
   'subduction': {
-    nextLessonId: 'seismic_waves',
+    nextLessonId: 'd3-u9-l2-benioff',
     recommendedReflexId: 'interpret',
     completionMessageAr: 'أحسنت! فهمت كيف يؤدي الغوص إلى انصهار الوشاح ونشاط بركاني.',
   },
@@ -286,6 +286,34 @@ export const LESSON_PROGRESSION: Record<string, LessonProgression> = {
   'd1-u3-l1-enzyme': {
     recommendedReflexId: 'hypothesize',
     completionMessageAr: 'أحسنت! أكملت سلسلة الإنزيمات.',
+  },
+  'd2-u6-l1-hill-ruben': {
+    nextLessonId: 'd2-u6-l2-jagendorf',
+    recommendedReflexId: 'hypothesize',
+    completionMessageAr: 'أحسنت! أثبتت تجربتا هيل وروبن أن الأكسجين المنطلق مصدره الماء. الآن اكتشف دور الضوء الحقيقي في تركيب ATP.',
+  },
+  'd2-u6-l2-jagendorf': {
+    nextLessonId: 'd2-u6-l3-calvin',
+    recommendedReflexId: 'interpret',
+    completionMessageAr: 'ممتاز! تجربة جاغندورف أثبتت أن تدرج البروتونات هو مصدر طاقة تركيب ATP. الآن تتبع مسار الكربون مع كالفن.',
+  },
+  'd2-u6-l3-calvin': {
+    nextLessonId: 'd2-u7-l1-mitchell-racker',
+    recommendedReflexId: 'explain',
+    completionMessageAr: 'رائع! اكتشفت كيف يتحول ¹⁴CO₂ إلى سكريات في حلقة كالفن. الآن انتقل إلى التنفس وإثبات النظرية الكيمياؤسموزية.',
+  },
+  'd2-u7-l1-mitchell-racker': {
+    recommendedReflexId: 'interpret',
+    completionMessageAr: 'أحسنت! إعادة البناء الاصطناعي عند راكر أثبتت نظرية ميتشل: تدرج البروتونات يوحد التركيب الضوئي والتنفس الخلوي.',
+  },
+  'd3-u11-l1-migmatite': {
+    recommendedReflexId: 'interpret',
+    completionMessageAr: 'ممتاز! أثبت صخر المغماتيت التضاعف القشري الناتج عن التقلص. راجع شواهد المحيط القديم (الأفيوليت) في الدرس الموالي.',
+  },
+  'd3-u9-l2-benioff': {
+    nextLessonId: 'seismic_waves',
+    recommendedReflexId: 'interpret',
+    completionMessageAr: 'ممتاز! اصطفاف بؤر الزلازل على مستوى بنيوف دليل قاطع على الغوص. الآن اكتشف كيف تكشف الموجات الزلزالية عن باطن الأرض.',
   },
 };
 
@@ -429,7 +457,7 @@ export const ACTIVE_LESSONS: Record<string, ActiveLesson> = {
   },
   lecon_transcription: {
     id: 'lecon_transcription',
-    title: 'الدرس 3 : الاستنساخ (La Transcription)',
+    title: 'الفصل 3 : استنساخ المعلومات الوراثية الموجودة على مستوى ADN',
     blocks: [
       {
         type: 'TEXT_AND_PRODUCE',
@@ -494,7 +522,7 @@ export const ACTIVE_LESSONS: Record<string, ActiveLesson> = {
 
   phase11_chapitres_21_22: {
     id: 'phase11_chapitres_21_22',
-    title: 'الدرس 21 : التفاعلات الضوئية (Photosynthèse)',
+    title: 'الفصل 31 : تذكير بالمكتسبات — الفصل 32 : مقر عملية التركيب الضوئي',
     blocks: [
       {
         type: 'HOTSPOT_AND_METHODOLOGY',
@@ -527,7 +555,7 @@ export const ACTIVE_LESSONS: Record<string, ActiveLesson> = {
   },
   synapse: {
     id: 'synapse',
-    title: 'الدرس 5 : المشبك العصبي (Synapse)',
+    title: 'الفصل 26 : آلية النقل المشبكي',
     blocks: [
       {
         type: 'HOTSPOT_AND_METHODOLOGY',
@@ -568,7 +596,7 @@ export const ACTIVE_LESSONS: Record<string, ActiveLesson> = {
   },
   subduction: {
     id: 'subduction',
-    title: 'الدرس 11 : الغوص (Subduction)',
+    title: 'الفصل 43 : تحديد الصفائح التكتونية — الفصل 44 : حركات الصفائح التكتونية',
     blocks: [
       {
         type: 'HOTSPOT_AND_METHODOLOGY',
@@ -606,7 +634,7 @@ export const ACTIVE_LESSONS: Record<string, ActiveLesson> = {
   },
   protein_structure_function: {
     id: 'protein_structure_function',
-    title: 'الدرس 8 : بنية ووظيفة البروتين (Protein structure–function)',
+    title: 'الفصل 8 : العلاقة بين بنية ووظيفة البروتين',
     blocks: [
       {
         type: 'MISSION_CHOICE',
@@ -796,7 +824,7 @@ export const ACTIVE_LESSONS: Record<string, ActiveLesson> = {
   },
   immunity_self_nonself: {
     id: 'immunity_self_nonself',
-    title: 'الدرس 12 : الذات واللاذات (Immunité 1)',
+    title: 'الفصل 14 : الذات واللاذات',
     blocks: [
       {
         type: 'HOTSPOT_AND_METHODOLOGY',
@@ -857,7 +885,7 @@ export const ACTIVE_LESSONS: Record<string, ActiveLesson> = {
   },
   immunity_humoral_response: {
     id: 'immunity_humoral_response',
-    title: 'الدرس 13 : الاستجابة الخلطية (Immunité 2)',
+    title: 'الفصل 16 : المعقد المناعي',
     blocks: [
       {
         type: 'HOTSPOT_AND_METHODOLOGY',
@@ -908,7 +936,7 @@ export const ACTIVE_LESSONS: Record<string, ActiveLesson> = {
   },
   immunity_cellular_response: {
     id: 'immunity_cellular_response',
-    title: 'الدرس 14 : الاستجابة الخلوية (Immunité 3)',
+    title: 'الفصل 18 : العناصر الدفاعية في الحالة الثانية',
     blocks: [
       {
         type: 'HOTSPOT_AND_METHODOLOGY',
@@ -959,7 +987,7 @@ export const ACTIVE_LESSONS: Record<string, ActiveLesson> = {
   },
   immunity_memory_response: {
     id: 'immunity_memory_response',
-    title: 'الدرس 15 : الذاكرة المناعية (Immunité 4)',
+    title: 'الفصل 20 : مصدر اللمفاويات LTc',
     blocks: [
       {
         type: 'HOTSPOT_AND_METHODOLOGY',
@@ -1015,7 +1043,7 @@ export const ACTIVE_LESSONS: Record<string, ActiveLesson> = {
   },
   seismic_waves: {
     id: 'seismic_waves',
-    title: 'الدرس 20 : الأمواج الزلزالية (Séismes & structure terrestre)',
+    title: 'الفصل 39 : الموجات الزلزالية — الفصل 40 : التركيب الكيميائي للصخور',
     blocks: [
       {
         type: 'HOTSPOT_AND_METHODOLOGY',
@@ -1055,7 +1083,7 @@ export const ACTIVE_LESSONS: Record<string, ActiveLesson> = {
   // Leçons officielles câblées depuis la Source de Vérité (kunzDatabase.ts).
   'd1-u1-l2-transcription': {
     id: 'd1-u1-l2-transcription',
-    title: 'الدرس 3 : استنساخ المعلومات الوراثية الموجودة على مستوى ADN',
+    title: 'الفصل 3 : استنساخ المعلومات الوراثية الموجودة على مستوى ADN',
     blocks: [
       {
         type: 'COMPARISON_TABLE',
@@ -1184,7 +1212,7 @@ export const ACTIVE_LESSONS: Record<string, ActiveLesson> = {
   },
   'd1-u1-l3-traduction': {
     id: 'd1-u1-l3-traduction',
-    title: 'الدرس 4 : الترجمة',
+    title: 'الفصل 4 : الترجمة',
     blocks: [
       {
         type: 'REASONING_COUNT',
@@ -1379,4 +1407,535 @@ export const ACTIVE_LESSONS: Record<string, ActiveLesson> = {
     ],
   },
   'd1-u3-l1-enzyme': ActiveLesson_D1_U3_L1_Enzyme as ActiveLesson,
+
+  // ===== Leçons expérimentales historiques (Pilier 1 — mot par mot) =====
+  'd2-u6-l1-hill-ruben': {
+    id: 'd2-u6-l1-hill-ruben',
+    title: 'تجربة هيل وروبن : مصدر الأكسجين المنطلق في التركيب الضوئي',
+    blocks: [
+      {
+        type: 'MISSION_CHOICE',
+        objective: 'الدخول إلى التجربتين التاريخيتين من وضعية مشكلة: من أين يأتي الأكسجين المنطلق؟',
+        heroTitle: 'هل يأتي الأكسجين المنطلق من CO₂ أم من الماء H₂O؟',
+        heroText: 'حتى سنة 1937 اعتُقد أن الأكسجين المنطلق في التركيب الضوئي يأتي من تحلل ثاني أكسيد الكربون. جاءت تجربة هيل ثم تجربة روبن بالوسم المشع لتثبت العكس ببرهان تجريبي صارم.',
+        imageSrc: '/assets/images/schemas/domaine2_energie/schema_89_hill_ruben_experiment_modern_ar.svg',
+        choices: [
+          {
+            id: 'start_hill_question',
+            labelAr: 'ابدأ من وضعية تجربة هيل',
+            descriptionAr: 'أعِد ذكر شروط عمل الصانعة الخضراء ثم صِغ فرضياتك حول مصدر الأكسجين.',
+            completeOnSelect: true,
+          },
+        ],
+      },
+      {
+        type: 'HYPOTHESIS_EXPERIMENT',
+        objective: 'صياغة فرضيات حول مصدر الأكسجين المنطلق والتحقق منها بتجربتي هيل وروبن.',
+        problemAr: 'انطلاقا من معادلة التركيب الضوئي الكلية، ما مصدر الأكسجين المنطلق: جزيئة CO₂ أم جزيئة H₂O؟',
+        experimentAssetSrc: '/assets/images/schemas/domaine2_energie/schema_89_hill_ruben_experiment_modern_ar.svg',
+        experimentAltAr: 'وثيقة تجريبية: تجربة هيل بالصانعات المعزولة مع مستقبل اصطناعي، ثم وسم ¹⁸O عند روبن.',
+        hypothesisPromptAr: 'اقترح فرضية أو فرضيتين توضحان مصدر الأكسجين المنطلق (من CO₂ أم من H₂O؟).',
+        resultPromptAr: 'حلل النتائج: انطلاق O₂ من الصانعات المعزولة في وسط خالٍ من CO₂، ثم وسم O₂ المنطلق بـ ¹⁸O فقط حين يكون الوسم في الماء.',
+        validationPromptAr: 'تحقق من الفرضيات: أي جزيء يأتي منه الأكسجين المنطلق؟ علّل اعتمادا على الوثيقتين.',
+        namingPromptAr: 'سمِّ تحلل الماء تحت تأثير الضوء داخل النظام الضوئي.',
+        expectedTargets: ['التحلل الضوئي للماء', 'الأكسجين', 'الماء', 'الإلكترونات'],
+        resultKeywords: ['انطلاق O₂', 'بدون CO₂', 'H₂O', '¹⁸O'],
+        validationKeywords: ['الماء', 'التحلل الضوئي', 'الأكسجين'],
+        namingAccepted: ['التحلل الضوئي للماء', 'التحلل الضوئي'],
+        summaryAr: 'تظهر تجربة هيل أن الصانعات المعزولة تنطلق O₂ في غياب CO₂، وتثبت تجربة روبن بوسم ¹⁸O أن مصدر الأكسجين المنطلق هو التحلل الضوئي لجزيئات الماء.',
+      },
+      {
+        type: 'GUIDED_DOC_QA',
+        objective: 'استثمار وثيقة التجربتين لاستخلاص دور الضوء واليخضور ومصدر الإلكترونات.',
+        doc: {
+          assetSrc: '/assets/images/schemas/domaine2_energie/schema_89_hill_ruben_experiment_modern_ar.svg',
+          altAr: 'لوحتان تجريبيتان: تجربة هيل بالصانعات المعزولة، وتجربة روبن بمياه موسومة بـ ¹⁸O.',
+          captionAr: 'الوسم يتبع الماء: الأكسجين المنطلق يأتي من H₂O لا من CO₂.',
+        },
+        questions: [
+          {
+            id: 'hill_artificial_acceptor',
+            verbAr: 'حدد',
+            promptAr: 'حدد دور أملاح الحديد Fe³⁺ في تجربة هيل.',
+            answerType: 'short_text',
+            validationMode: 'keywords',
+            requiredKeywords: ['مستقبل اصطناعي', 'الإلكترونات'],
+            successMessageAr: 'أحسنت: Fe³⁺ يقوم دور المستقبل الاصطناعي الذي يقبل الإلكترونات المحررة.',
+            errorHintAr: 'اذكر أن Fe³⁺ يُرجَع إلى Fe²⁺ إذ يقبل الإلكترونات: هو مستقبل اصطناعي يحل محل NADP الطبيعي.',
+          },
+          {
+            id: 'hill_no_co2',
+            verbAr: 'فسّر',
+            promptAr: 'فسّر لماذا يعد انطلاق O₂ في تجربة هيل دليلا على أن CO₂ ليس مصدره.',
+            answerType: 'short_text',
+            validationMode: 'keywords',
+            requiredKeywords: ['بدون CO₂', 'الأكسجين'],
+            successMessageAr: 'صحيح: انطلاق الأكسجين في غياب كلي للـ CO₂ يفيد أن CO₂ ليس مصدره.',
+            errorHintAr: 'اذكر أن الوسط المعزول خالٍ تماما من CO₂ ومع ذلك ينطلق O₂.',
+          },
+          {
+            id: 'ruben_deduction',
+            verbAr: 'استنتج',
+            promptAr: 'استنتج من وسم ¹⁸O عند روبن مصدر الأكسجين المنطلق.',
+            answerType: 'short_text',
+            validationMode: 'keywords',
+            requiredKeywords: ['H₂O', 'التحلل الضوئي'],
+            successMessageAr: 'ممتاز: الوسم يظهر في O₂ فقط عندما يكون في الماء، إذن المصدر هو التحلل الضوئي للماء.',
+            errorHintAr: 'اذكر أن O₂ موسوم بـ ¹⁸O فقط في الوسط المحتوي على H₂¹⁸O.',
+          },
+        ],
+        summaryAr: 'الضوء الممتص في النظام الضوئي يطرد إلكترونات اليخضور، وتعوّضها إلكترونات الماء: التحلل الضوئي للماء يوفر الإلكترونات ويحرر الأكسجين.',
+      },
+      {
+        type: 'SEQUENCE_ORDER',
+        objective: 'ترتيب أحداث المرحلة الكيميوضوئية منذ امتصاص الفوتون إلى إرجاع المستقبل النهائي.',
+        promptAr: 'رتب أحداث المرحلة الكيميوضوئية منذ امتصاص الضوء إلى تشكل نواتجها.',
+        assetSrc: '/assets/images/schemas/domaine2_energie/schema_89_hill_ruben_experiment_modern_ar.svg',
+        altAr: 'وثيقة تجريبية تربط تحلل الماء بمرور الإلكترونات وإرجاع المستقبل.',
+        steps: [
+          { id: 'photon', labelAr: 'يمتص اليخضور فوتون الضوء فيتهيج ويطرد إلكترونا', expectedOrder: 1 },
+          { id: 'water', labelAr: 'تحلل الماء يعوّض الإلكترون المطرود ويحرر O₂', expectedOrder: 2 },
+          { id: 'chain', labelAr: 'تمر الإلكترونات في سلسلة النواقل داخل غشاء التيلاكويد', expectedOrder: 3 },
+          { id: 'acceptor', labelAr: 'يُرجَع NADP إلى NADPH ويتركب ATP', expectedOrder: 4 },
+        ],
+        summaryPromptAr: 'اشرح بإيجاز علاقة تحلل الماء بمرور الإلكترونات في السلسلة.',
+        summaryKeywords: ['الماء', 'الإلكترونات', 'التحلل الضوئي'],
+        summaryAr: 'الفوتون يطرد إلكترونات اليخضور، وتعوّضها الإلكترونات الآتية من تحلل الماء الذي يحرر الأكسجين، ثم تمر الإلكترونات في السلسلة فتُرجَع NADP ويتركب ATP.',
+      },
+    ],
+  },
+  'd2-u6-l2-jagendorf': {
+    id: 'd2-u6-l2-jagendorf',
+    title: 'تجربة جاغندورف : تركيب ATP في الظلام وتدرج البروتونات',
+    blocks: [
+      {
+        type: 'MISSION_CHOICE',
+        objective: 'مساءلة الفكرة الشائعة القائلة إن الضوء يتركب ATP مباشرة داخل الصانعة.',
+        heroTitle: 'هل يتركب ATP في الصانعة بفعل الضوء مباشرة؟',
+        heroText: 'جرت العادة على القول إن الضوء يصنع ATP في التركيب الضوئي. جاءت تجربة جاغندورف سنة 1966 لتوضح الدور الحقيقي للضوء: لا يتركب ATP إلا بفضل فرق تدرج البروتونات H⁺.',
+        imageSrc: '/assets/images/schemas/domaine2_energie/schema_90_jagendorf_acid_bath_modern_ar.svg',
+        choices: [
+          {
+            id: 'start_jagendorf',
+            labelAr: 'اكتشف بروتوكول جاغندورف',
+            descriptionAr: 'انظر ماذا يحدث عندما نحاكي تدرج H⁺ صناعيا في الظلام.',
+            completeOnSelect: true,
+          },
+        ],
+      },
+      {
+        type: 'TEXT_AND_PRODUCE',
+        objective: 'تحديد مسار البروتونات في المرحلة الكيميوضوئية قبل تفسير التجربة.',
+        content: 'أثناء المرحلة الكيميوضوئية تُضخ شوارد H⁺ من الحشوة إلى تجويف [____] داخل غشاء [____]، فيتكون تدرج في التركيز، ثم تعود H⁺ نحو الحشوة عبر [____] التي تقوم بدور تركيب ATP.',
+        popups: {
+          'الكييس': 'تجويف الكييس: الفضاء الداخلي للثيلاكويد حيث يتجمع البروتون H⁺.',
+          'التيلاكويد': 'كيس غشائي داخل الصانعة الخضراء تحدث فيه تفاعلات المرحلة الكيميوضوئية.',
+          'الكرية المذنبة': 'معقد إنزيمي (ATP-synthase) يسمح بعودة H⁺ وتركيب ATP.',
+        },
+        microTest: {
+          prompt: 'أكمل: تعود H⁺ عبر ______ المذنبة لتركيب ATP.',
+          acceptedAnswers: ['الكرية المذنبة', 'الكرية'],
+          errorHint: 'الجواب: الكرية المذنبة (ATP-synthase).',
+        },
+      },
+      {
+        type: 'HYPOTHESIS_EXPERIMENT',
+        objective: 'التحقق من دور تدرج البروتونات في تركيب ATP عبر تجربة جاغندورف.',
+        problemAr: 'ما الدور الحقيقي للضوء في تركيب ATP في الصانعة: تركيب مباشر أم تكوين تدرج H⁺؟',
+        experimentAssetSrc: '/assets/images/schemas/domaine2_energie/schema_90_jagendorf_acid_bath_modern_ar.svg',
+        experimentAltAr: 'بروتوكول جاغندورف: كييسات في الظلام عند pH = 4 ثم نقلها إلى pH = 8 مع ADP وPi في الظلام.',
+        hypothesisPromptAr: 'اقترح فرضية: إذا كان تدرج H⁺ هو مصدر الطاقة لتركيب ATP، فماذا تتوقع في الظلام عند خلق فرق pH صناعي؟',
+        resultPromptAr: 'حلل النتيجة: تكوّن ATP في الظلام بعد خلق فرق تدرج خارجي.',
+        validationPromptAr: 'تحقق من الفرضية وعلل: لماذا لا يتركب ATP بدون فرق تدرج البروتونات؟',
+        namingPromptAr: 'سمِّ النظرية التي تفسر تركيب ATP عبر تدرج البروتونات.',
+        expectedTargets: ['تدرج البروتونات', 'ATP', 'الكرية المذنبة'],
+        resultKeywords: ['ATP', 'الظلام', 'فرق pH', 'تدرج'],
+        validationKeywords: ['تدرج البروتونات', 'الكرية المذنبة', 'ATP'],
+        namingAccepted: ['النظرية الكيمياؤسموزية', 'نظرية ميتشل', 'الكيمياؤسموزية'],
+        summaryAr: 'تكوّن ATP في الظلام عند فرق pH صناعي يثبت أن تدرج البروتونات هو مصدر الطاقة، وأن دور الضوء هو تكوين هذا التدرج داخل التيلاكويد.',
+      },
+      {
+        type: 'SEQUENCE_ORDER',
+        objective: 'ترتيب مراحل تجربة جاغندورف التي أثبتت تركيب ATP في الظلام.',
+        promptAr: 'رتب مراحل تجربة جاغندورف منذ تحضير الكييسات إلى ظهور ATP.',
+        assetSrc: '/assets/images/schemas/domaine2_energie/schema_90_jagendorf_acid_bath_modern_ar.svg',
+        altAr: 'أربع مراحل لتجربة جاغندورف في الظلام: pH 4 ثم pH 8 مع ADP وPi ثم تركيب ATP.',
+        steps: [
+          { id: 'step1', labelAr: 'وضع الكييسات في الظلام في محلول pH = 4', expectedOrder: 1 },
+          { id: 'step2', labelAr: 'نقل الكييسات إلى محلول pH = 8 يحتوي ADP و Pi', expectedOrder: 2 },
+          { id: 'step3', labelAr: 'عودة H⁺ من التجويف إلى الوسط عبر الكرية المذنبة', expectedOrder: 3 },
+          { id: 'step4', labelAr: 'تكوّن ATP في الظلام بلا ضوء', expectedOrder: 4 },
+        ],
+        summaryPromptAr: 'اشرح لماذا تدل تجربة جاغندورف على كفاية التدرج البروتوني.',
+        summaryKeywords: ['الظلام', 'تدرج', 'ATP'],
+        summaryAr: 'تحقق تركيب ATP في الظلام بمجرد خلق فرق تدرج H⁺ صناعي: التدرج هو مصدر الطاقة وليس الضوء مباشرة.',
+      },
+    ],
+  },
+  'd2-u6-l3-calvin': {
+    id: 'd2-u6-l3-calvin',
+    title: 'تجربة كالفن : تتبع ¹⁴CO₂ وكشف حلقة كالفن',
+    blocks: [
+      {
+        type: 'MISSION_CHOICE',
+        objective: 'الدخول إلى تجربة كالفن من سؤال مصير CO₂ الممتص.',
+        heroTitle: 'ما مصير ثاني أكسيد الكربون الممتص في الصانعة الخضراء؟',
+        heroText: 'نواتج المرحلة الكيميوضوئية (ATP و NADPH) تُوظف في المرحلة الكيميوحيوية لصنع مركبات عضوية. لكشف المسار استعمل كالفن الكربون الموسوم ¹⁴CO₂ مع كروماتوغرافيا ثنائية الأبعاد وتصوير إشعاعي ذاتي.',
+        imageSrc: '/assets/images/schemas/domaine2_energie/schema_91_calvin_2d_chromatography_modern_ar.svg',
+        choices: [
+          {
+            id: 'start_calvin',
+            labelAr: 'تتبع الكربون في الزمن',
+            descriptionAr: 'خذ عينات عند 5 و30 و60 ثانية وراقب المركبات الموسومة.',
+            completeOnSelect: true,
+          },
+        ],
+      },
+      {
+        type: 'GUIDED_DOC_QA',
+        objective: 'استثمار نتائج الكروماتوغرافيا ثنائية الأبعاد لتحديد أول مركب مثبت للكربون.',
+        doc: {
+          assetSrc: '/assets/images/schemas/domaine2_energie/schema_91_calvin_2d_chromatography_modern_ar.svg',
+          altAr: 'تركيب تجريبي (مصاصة) ولوحات كروماتوغرافية عند 5 و30 و60 ثانية.',
+          captionAr: 'الوسم يظهر أولا في 3-PGA ثم يتوسع إلى تريوزات فوسفاتية ثم سكريات.',
+        },
+        questions: [
+          {
+            id: 'first_compound',
+            verbAr: 'حدد',
+            promptAr: 'حدد أول مركب عضوي موسوم بعد 5 ثوان من التثبيت.',
+            answerType: 'short_text',
+            validationMode: 'keywords',
+            requiredKeywords: ['حمض فوسفوغليسريك', '3-PGA'],
+            successMessageAr: 'أحسنت: أول مركب موسوم هو حمض فوسفوغليسريك (3-PGA).',
+            errorHintAr: 'اذكر حمض فوسفوغليسريك (3-PGA) الذي يظهر وحده على اللوحة عند 5 ثوان.',
+          },
+          {
+            id: 'methanol_role',
+            verbAr: 'فسّر',
+            promptAr: 'فسّر سبب استعمال الميثانول المغلي لإيقاف العينة.',
+            answerType: 'short_text',
+            validationMode: 'keywords',
+            requiredKeywords: ['إيقاف', 'التفاعلات'],
+            successMessageAr: 'صحيح: الميثانول المغلي يوقف التفاعلات فورا فيتثبت الوضع الحالي للمركبات.',
+            errorHintAr: 'اذكر أن الميثانول المغلي يوقف التفاعلات لحظيا ليحفظ المركبات المتشكلة في اللحظة المأخوذة.',
+          },
+          {
+            id: 'cycle_deduction',
+            verbAr: 'استنتج',
+            promptAr: 'استنتج من تدرج ظهور الوسم طبيعة مسار تثبيت الكربون.',
+            answerType: 'short_text',
+            validationMode: 'keywords',
+            requiredKeywords: ['حلقة', 'تجديد', 'المستقبل'],
+            successMessageAr: 'ممتاز: الظهور التدريجي يفيد مسارا حلقيا مع تجديد مستقبل CO₂.',
+            errorHintAr: 'اذكر أن المسار حلقي: تثبيت ثم اختزال ثم تجديد المستقبل الذي يعاد توظيفه.',
+          },
+        ],
+        summaryAr: 'كشف كالفن أول مركب مثبت (3-PGA) وتدرج الوسم في التريوزات ثم السكريات: تثبيت الكربون يدور في حلقة تجدد فيها المستقبل.',
+      },
+      {
+        type: 'SEQUENCE_ORDER',
+        objective: 'ترتيب خطوات حلقة كالفن كما كشفتها تجربة كالفن.',
+        promptAr: 'رتب خطوات حلقة كالفن من تثبيت CO₂ إلى بناء السكريات.',
+        assetSrc: '/assets/images/schemas/domaine2_energie/schema_91_calvin_2d_chromatography_modern_ar.svg',
+        altAr: 'لوحات كروماتوغرافية ومسار حلقة كالفن.',
+        steps: [
+          { id: 'fix', labelAr: 'تثبيت CO₂ على مركب 5 كربون (RuBP) بوساطة إنزيم Rubisco', expectedOrder: 1 },
+          { id: 'pga', labelAr: 'تشكل 3-PGA (حمض فوسفوغليسريك)', expectedOrder: 2 },
+          { id: 'red', labelAr: 'اختزال 3-PGA إلى APG (تريوزات فوسفاتية) بوساطة ATP و NADPH', expectedOrder: 3 },
+          { id: 'regen', labelAr: 'تجديد RuBP وبناء جزيئات عضوية (غلوكوز)', expectedOrder: 4 },
+        ],
+        summaryPromptAr: 'اشرح دور نواتج المرحلة الكيميوضوئية في الحلقة.',
+        summaryKeywords: ['ATP', 'NADPH', 'الاختزال'],
+        summaryAr: 'تزود المرحلة الكيميوضوئية الحلقة بـ ATP للطاقة و NADPH لقدرة الإرجاع: تثبيت ثم اختزال ثم تجديد المستقبل.',
+      },
+      {
+        type: 'TEXT_AND_PRODUCE',
+        objective: 'حفظ الحصيلة الطاقوية للحلقة الكالفنية.',
+        content: 'لكل 3 جزيئات CO₂ مثبتة في حلقة كالفن، تستهلك الخلية [____] جزيئات ATP و [____] جزيئات NADPH لتكوين جزيء APG (تريوز فوسفاتي) واحد قابل لبناء الجزيئات العضوية.',
+        popups: {
+          'APG': 'غليسيرين ألدهيد 3 فوسفات: تريوز فوسفاتية ناتجة عن اختزال 3-PGA، تبنى منها السكريات وتجدد منها RuBP.',
+        },
+        microTest: {
+          prompt: 'أكمل: 3 CO₂ تحتاج 9 ATP و ______ NADPH.',
+          acceptedAnswers: ['6', 'ستة'],
+          errorHint: 'الجواب: 6 جزيئات NADPH (مضاعفة 9 ATP / 6 NADPH لكل 3 CO₂).',
+        },
+      },
+    ],
+  },
+  'd2-u7-l1-mitchell-racker': {
+    id: 'd2-u7-l1-mitchell-racker',
+    title: 'تجربة راكر : إثبات النظرية الكيمياؤسموزية لميتشل',
+    blocks: [
+      {
+        type: 'MISSION_CHOICE',
+        objective: 'الدخول إلى إعادة البناء الاصطناعي عند راكر من سؤال آلية التحويل.',
+        heroTitle: 'ما الذي يحوِّل تدرج H⁺ إلى ATP داخل الكرية المذنبة؟',
+        heroText: 'بعد اكتشاف تدرج البروتونات في الميتوكندرون والصانعة، ظلت آلية تحويله إلى ATP لغزا. أعاد راكر سنة 1974 بناء النظام اصطناعيا: مضخة بروتونات تعمل بالضوء (بكتيريورودوبسين) + كرية مذنبة = ATP. برهان قاطع على نظرية ميتشل.',
+        imageSrc: '/assets/images/schemas/domaine2_energie/schema_92_racker_bacteriorhodopsin_modern_ar.svg',
+        choices: [
+          {
+            id: 'start_racker',
+            labelAr: 'ابنِ الحويصلة مع راكر',
+            descriptionAr: 'ضَع بروتينين فقط في غشاء اصطناعي وراقب ما يحدث مع الضوء.',
+            completeOnSelect: true,
+          },
+        ],
+      },
+      {
+        type: 'GUIDED_DOC_QA',
+        objective: 'استثمار وثيقة إعادة البناء الاصطناعي لاستخلاص البرهان على النظرية الكيمياؤسموزية.',
+        doc: {
+          assetSrc: '/assets/images/schemas/domaine2_energie/schema_92_racker_bacteriorhodopsin_modern_ar.svg',
+          altAr: 'حويصلة غشائية تحمل بروتين بكتيريورودوبسين مضخة H⁺ وكرية مذنبة، مع شواهد الضوء والظلام.',
+          captionAr: 'بروتينان فقط: مضخة H⁺ بالضوء + كرية مذنبة = تركيب ATP.',
+        },
+        questions: [
+          {
+            id: 'racker_pump_source',
+            verbAr: 'حدد',
+            promptAr: 'حدد مصدر تشكل تدرج H⁺ في تجربة راكر.',
+            answerType: 'short_text',
+            validationMode: 'keywords',
+            requiredKeywords: ['البكتيريورودوبسين', 'الضوء'],
+            successMessageAr: 'أحسنت: البكتيريورودوبسين مضخة H⁺ تحركها طاقة الضوء (مستخلصة من البكتيريا Halobacterium).',
+            errorHintAr: 'اذكر البكتيريورودوبسين: بروتين مضخة H⁺ تعمل بفعل الضوء دون أي سلسلة تنفسية.',
+          },
+          {
+            id: 'racker_light_role',
+            verbAr: 'فسّر',
+            promptAr: 'فسّر دور الضوء في هذه التجربة.',
+            answerType: 'short_text',
+            validationMode: 'keywords',
+            requiredKeywords: ['ضخ', 'H⁺', 'تدرج'],
+            successMessageAr: 'صحيح: الضوء لا يتركب ATP مباشرة بل يحرك مضخة البروتونات فيتكون التدرج.',
+            errorHintAr: 'اذكر أن الضوء يضخ H⁺ داخل الحويصلة فيتكون تدرج البروتونات.',
+          },
+          {
+            id: 'racker_deduction',
+            verbAr: 'استنتج',
+            promptAr: 'استنتج البرهان الذي تقدمه هذه التجربة لنظرية ميتشل.',
+            answerType: 'short_text',
+            validationMode: 'keywords',
+            requiredKeywords: ['تدرج البروتونات', 'الكرية المذنبة', 'ATP'],
+            successMessageAr: 'ممتاز: تدرج H⁺ وحده كاف لتركيب ATP عبر الكرية المذنبة: النظرية صحيحة.',
+            errorHintAr: 'اذكر أن عودة H⁺ عبر الكرية المذنبة تتركب ATP في غياب كل شيء آخر.',
+          },
+        ],
+        summaryAr: 'إعادة البناء الاصطناعي عند راكر برهنت أن تدرج البروتونات وحده، مع الكرية المذنبة، كاف لتركيب ATP: إذ صححت النظرية الكيمياؤسموزية لميتشل (نوبل 1978).',
+      },
+      {
+        type: 'SEQUENCE_ORDER',
+        objective: 'ترتيب خطوات تجربة راكر من تركيب الحويصلة إلى إنتاج ATP.',
+        promptAr: 'رتب خطوات تجربة راكر.',
+        assetSrc: '/assets/images/schemas/domaine2_energie/schema_92_racker_bacteriorhodopsin_modern_ar.svg',
+        altAr: 'ترتيب خطوات إعادة البناء الاصطناعي.',
+        steps: [
+          { id: 's1', labelAr: 'عزل بروتين البكتيريورودوبسين من البكتيريا وإدخاله في حويصلة غشائية', expectedOrder: 1 },
+          { id: 's2', labelAr: 'إضافة الكرية المذنبة (ATP-synthase) إلى الغشاء الاصطناعي', expectedOrder: 2 },
+          { id: 's3', labelAr: 'إضاءة الحويصلات: ضخ H⁺ إلى الداخل وتكوين التدرج', expectedOrder: 3 },
+          { id: 's4', labelAr: 'تركيب ATP خارج الحويصلة بفضل عودة H⁺ عبر الكرية المذنبة', expectedOrder: 4 },
+        ],
+        summaryPromptAr: 'اشرح لماذا تدل التجربة على صحة النظرية الكيمياؤسموزية.',
+        summaryKeywords: ['تدرج', 'ATP', 'الكرية المذنبة'],
+        summaryAr: 'بغياب كل مكونات السلسلة التنفسية، يكفي تدرج H⁺ مع الكرية المذنبة لتركيب ATP: دليل أن التدرج هو الوسيط الطاقوي الوحيد.',
+      },
+      {
+        type: 'TEXT_AND_PRODUCE',
+        objective: 'ربط التحويلات الطاقوية في التركيب الضوئي والتنفس الخلوي بمفهوم التدرج البروتوني.',
+        content: 'التفسير الكيمياؤسموزي يوحد بين التركيب الضوئي والتنفس الخلوي: في الصانعة تُضخ H⁺ داخل تجويف [____]، وفي الميتوكوندريون تُضخ H⁺ في المسافة [____]، وفي الحالتين تعود H⁺ عبر [____] لتركيب ATP.',
+        popups: {
+          'التيلاكويد': 'الغشاء الداخلي للكييس في الصانعة الخضراء: مقر ضخ H⁺ في التركيب الضوئي.',
+          'بين الغشاءين': 'الفضاء بين الغشاء الداخلي والخارجي في الميتوكوندريون: مقر تراكم H⁺ في التنفس الخلوي.',
+          'الكرية المذنبة': 'ATP-synthase: الإنزيم الذي يحول طاقة التدرج البروتوني إلى طاقة كيميائية في ATP.',
+        },
+        microTest: {
+          prompt: 'أكمل: يعود H⁺ عبر ______ لتركيب ATP في الصانعة والميتوكندريون معا.',
+          acceptedAnswers: ['الكرية المذنبة', 'الكرية', 'ATP-synthase'],
+          errorHint: 'الجواب: الكرية المذنبة (ATP-synthase) في كلتا الحالتين.',
+        },
+      },
+    ],
+  },
+  'd3-u9-l2-benioff': {
+    id: 'd3-u9-l2-benioff',
+    title: 'مستوى بنيوف : توزع بؤر الزلازل دليل على الغوص',
+    blocks: [
+      {
+        type: 'MISSION_CHOICE',
+        objective: 'الدخول إلى تحليل بنيوف من سؤال الشاهد الجيوفيزيائي على الغوص.',
+        heroTitle: 'كيف نثبت أن الصفيحة المحيطية تغوص فعلا داخل البرنس؟',
+        heroText: 'لا يمكن ملاحظة الغوص مباشرة في عمق الأرض. لكن أعاد واداتي ثم بنيوف ترصيد بؤر الزلازل في مناطق الاندساس: اصطففت على مستوى مائل من الخندق حتى عمق 700 كلم. هذا الاصطفاف هو بصمة الغوص.',
+        imageSrc: '/assets/images/schemas/domaine3_tectonique/schema_93_benioff_plan_modern_ar.svg',
+        choices: [
+          {
+            id: 'start_benioff',
+            labelAr: 'حلل توزع بؤر الزلازل',
+            descriptionAr: 'لاحظ كيف تتعمق البؤر كلما ابتعدنا عن الخندق نحو القارة.',
+            completeOnSelect: true,
+          },
+        ],
+      },
+      {
+        type: 'GUIDED_DOC_QA',
+        objective: 'استثمار وثيقة توزع البؤر الزلزالية لاستخلاص دليل الغوص.',
+        doc: {
+          assetSrc: '/assets/images/schemas/domaine3_tectonique/schema_93_benioff_plan_modern_ar.svg',
+          altAr: 'مقطع في منطقة غوص يبين الخندق والصفيحة الغائصة واصطفاف البؤر الزلزالية على مستوى مائل.',
+          captionAr: 'بؤر الزلازل ترسم مستوى مائلا من الخندق حتى 700 كلم: مستوى بنيوف.',
+        },
+        questions: [
+          {
+            id: 'foci_distribution',
+            verbAr: 'حدد',
+            promptAr: 'حدد كيف تتوزع بؤر الزلازل في منطقة الغوص.',
+            answerType: 'short_text',
+            validationMode: 'keywords',
+            requiredKeywords: ['سطحية', 'الخندق', 'عميقة'],
+            successMessageAr: 'أحسنت: البؤر سطحية عند الخندق وتتعمق تدريجيا نحو القارة.',
+            errorHintAr: 'اذكر أن البؤر سطحية قرب الخندق ثم تتعمق كلما ابتعدنا نحو القارة.',
+          },
+          {
+            id: 'deep_earthquakes',
+            verbAr: 'فسّر',
+            promptAr: 'فسّر وجود زلازل على عمق 300 و500 و700 كلم.',
+            answerType: 'short_text',
+            validationMode: 'keywords',
+            requiredKeywords: ['صفيحة صلبة', 'برنس', 'تنكسر'],
+            successMessageAr: 'صحيح: وجود بؤر عميقة يثبت أن مادة صلبة وباردة تغوص وتنكسر داخل البرنس المطاطي.',
+            errorHintAr: 'اذكر أن الاستينوسفير المطاطي لا يولد زلازل، إذن البؤر العميقة تعود إلى صفيحة صلبة غائصة تنكسر.',
+          },
+          {
+            id: 'benioff_deduction',
+            verbAr: 'استنتج',
+            promptAr: 'استنتج ما يدل عليه اصطفاف البؤر على مستوى مائل.',
+            answerType: 'short_text',
+            validationMode: 'keywords',
+            requiredKeywords: ['مستوى بنيوف', 'الغوص', 'الصفيحة'],
+            successMessageAr: 'ممتاز: مستوى بنيوف هو مسار الصفيحة المحيطية الغائصة داخل البرنس.',
+            errorHintAr: 'اذكر أن اصطفاف البؤر على مستوى مائل يرسم مسار غوص الصفيحة المحيطية.',
+          },
+        ],
+        summaryAr: 'اصطفاف بؤر الزلازل على مستوى مائل (مستوى بنيوف) من الخندق حتى 700 كلم هو الدليل الجيوفيزيائي القاطع على غوص الصفيحة المحيطية الصلبة الباردة داخل البرنس.',
+      },
+      {
+        type: 'SEQUENCE_ORDER',
+        objective: 'ترتيب الشواهد الجيوفيزيائية من السطح إلى العمق في منطقة الغوص.',
+        promptAr: 'رتب الشواهد المرصودة في منطقة الغوص من الأقرب إلى الأبعد عن الخندق.',
+        assetSrc: '/assets/images/schemas/domaine3_tectonique/schema_93_benioff_plan_modern_ar.svg',
+        altAr: 'مقطع يبين الخندق ثم بؤر الزلازل العميقة ثم البركان الأنديزي.',
+        steps: [
+          { id: 'trench', labelAr: 'خندق محيطي عميق عند حدود التقاء الصفيحتين', expectedOrder: 1 },
+          { id: 'shallow', labelAr: 'زلازل سطحية قرب الخندق (< 70 كلم)', expectedOrder: 2 },
+          { id: 'deep', labelAr: 'زلازل عميقة جدا على مستوى مائل (حتى 700 كلم)', expectedOrder: 3 },
+          { id: 'volcano', labelAr: 'بركان أنديزي على الصفيحة الطافية بعد أن يتحرر الماء', expectedOrder: 4 },
+        ],
+        summaryPromptAr: 'اشرح علاقة عمق الزلازل بمسافة الخندق.',
+        summaryKeywords: ['العمق', 'الخندق', 'الغوص'],
+        summaryAr: 'كلما ابتعدنا عن الخندق اتجهنا نحو القارة ازداد عمق البؤر الزلزالية: ذلك يرسم مسار الغوص المائل للصفيحة المحيطية.',
+      },
+      {
+        type: 'TEXT_AND_PRODUCE',
+        objective: 'ربط مستوى بنيوف بالانصهار المائي والنشاط البركاني على الصفيحة الطافية.',
+        content: 'الصفيحة الغائصة تحمل معها ماء التحولات، وعند عمق معين يتحرر الماء فيُميّه بيريدوتيت [____] للصفيحة الطافية فيخفض درجة انصهاره، فينشأ انصهار جزئي وتصعد ماغما أنديزيتية فتتشكل [____] على الصفيحة الطافية.',
+        popups: {
+          'البرنس': 'الجزء الصخري الدافئ أسفل القشرة: مصدر الانصهار الجزئي المائي في مناطق الغوص.',
+          'البراكين': 'قوس بركاني (كالأنديز أو اليابان) ينشأ فوق منطقة الغوص بفعل الماغما الأنديزيتية اللزجة.',
+        },
+        microTest: {
+          prompt: 'أكمل: يخفض الماء درجة انصهار بيريدوتيت ______ فيحدث انصهار جزئي.',
+          acceptedAnswers: ['البرنس', 'الستار', 'المعطف'],
+          errorHint: 'الجواب: بيريدوتيت البرنس (المعطف) للصفيحة الطافية.',
+        },
+      },
+    ],
+  },
+  'd3-u11-l1-migmatite': {
+    id: 'd3-u11-l1-migmatite',
+    title: 'الدرس 7 : شواهد التقلص — التضاعف القشري وصخر المغماتيت',
+    blocks: [
+      {
+        type: 'MISSION_CHOICE',
+        objective: 'الدخول إلى شواهد التقلص من سؤال دليل التضاعف القشري.',
+        heroTitle: 'كيف نثبت أن القشرة تزداد سمكا عند التصادم القاري؟',
+        heroText: 'يؤدي التصادم القاري إلى تقلص أفقي. لكن كيف نحصل على دليل صخري على أن الليتوسفير صار أسمك؟ الجواب موجود في صخر المغماتيت : صخر متحول لا يتشكل إلا في أعماق القشرة المتضاعفة.',
+        imageSrc: '/assets/images/schemas/domaine3_tectonique/schema_94_migmatite_crustal_thickening_modern_ar.svg',
+        choices: [
+          {
+            id: 'start_migmatite',
+            labelAr: 'ابدأ من الصخر الشاهد',
+            descriptionAr: 'اقرأ الوثيقة البتروغرافية واستخرج معادن المغماتيت.',
+            completeOnSelect: true,
+          },
+        ],
+      },
+      {
+        type: 'GUIDED_DOC_QA',
+        objective: 'استثمار وثيقة المغماتيت والتضاعف القشري لاستخلاص شواهد التقلص.',
+        doc: {
+          assetSrc: '/assets/images/schemas/domaine3_tectonique/schema_94_migmatite_crustal_thickening_modern_ar.svg',
+          altAr: 'لوحة تربط التصادم القاري بالتضاعف القشري، مع شريحة المغماتيت ومعادنه المميزة.',
+          captionAr: 'المغماتيت : تناوب كوارتز-غرونا-ميكا-بلاجيوكلاز مع صفوف أومفيبوليت.',
+        },
+        questions: [
+          {
+            id: 'deformation_type',
+            verbAr: 'حدّد',
+            promptAr: 'حدّد نوع التركيب الجيولوجي الناشئ المميز لمنطقة التصادم.',
+            answerType: 'short_text',
+            validationMode: 'keywords',
+            requiredKeywords: ['طية', 'فالق عكسي', 'تضاعف قشري'],
+            successMessageAr: 'أحسنت: الطيات والفوالق العكسية والصخور المغتربة هي تراكيب مناطق التصادم.',
+            errorHintAr: 'اذكر الطيات والفوالق العكسية والصخور المغتربة التي تنشأ بفعل قوى الانضغاط.',
+          },
+          {
+            id: 'migmatite_minerals',
+            verbAr: 'صف',
+            promptAr: 'صف كيفية توضع المعادن المكونة لصخر المغماتيت.',
+            answerType: 'short_text',
+            validationMode: 'keywords',
+            requiredKeywords: ['تناوب', 'غرونا', 'ميكا'],
+            successMessageAr: 'جيد: معادن المغماتيت متوضعة في صفوف متناوبة (كوارتز-غرونا-ميكا-بلاجيوكلاز) مع صفوف أومفيبوليت.',
+            errorHintAr: 'اذكر التناوب بين صفوف المعادن : الغرونا والميكا والكوارتز والبلاجيوكلاز.',
+          },
+          {
+            id: 'crustal_thickening_evidence',
+            verbAr: 'استنتج',
+            promptAr: 'استنتج لماذا يعد المغماتيت شاهد ودليلا على التضاعف القشري.',
+            answerType: 'short_text',
+            validationMode: 'keywords',
+            requiredKeywords: ['انصهار جزئي', 'الغرانيت', 'السمك'],
+            successMessageAr: 'ممتاز: المغماتيت ناتج عن انصهار جزئي لغرانيت القشرة العميقة بفعل ارتفاع الحرارة والضغط ⟶ دليل زيادة سمك الليتوسفير.',
+            errorHintAr: 'اربط المغماتيت بالانصهار الجزئي لغرانيت القشرة العميقة الذي لا يحدث إلا في سمك قشري متزايد.',
+          },
+        ],
+        summaryAr: 'يدل صخر المغماتيت على التضاعف القشري وزيادة سمك الليتوسفير : فهو ينتج عن تحول الصخور العميقة وانصهار جزئي لغرانيت القشرة القارية بفعل ارتفاع الحرارة والضغط.',
+      },
+      {
+        type: 'SEQUENCE_ORDER',
+        objective: 'ترتيب مراحل تشكل صخر المغماتيت : التقلص ⇐ التضاعف القشري ⇐ التحول ⇐ الانصهار الجزئي.',
+        promptAr: 'رتّب مراحل تشكل صخر المغماتيت من التصادم القاري حتى الصخر الشاهد.',
+        assetSrc: '/assets/images/schemas/domaine3_tectonique/schema_94_migmatite_crustal_thickening_modern_ar.svg',
+        altAr: 'لوحة التضاعف القشري والمغماتيت.',
+        steps: [
+          { id: 'collision', labelAr: 'التصادم القاري يسبب تقلصا أفقيا', expectedOrder: 1 },
+          { id: 'thickening', labelAr: 'التضاعف القشري يزيد سمك الليتوسفير', expectedOrder: 2 },
+          { id: 'metamorphism', labelAr: 'تحول الصخور العميقة بارتفاع الحرارة والضغط', expectedOrder: 3 },
+          { id: 'melting', labelAr: 'انصهار جزئي لغرانيت القشرة ⇐ المغماتيت', expectedOrder: 4 },
+        ],
+        summaryPromptAr: 'لخّص في نص علمي مراحل تشكل صخر المغماتيت.',
+        summaryKeywords: ['التقلص', 'التضاعف القشري', 'الانصهار الجزئي', 'المغماتيت'],
+        summaryAr: 'التصادم القاري ⇐ تقلص أفقي ⇐ تضاعف قشري وزيادة سمك الليتوسفير ⇐ تحول الصخور العميقة ⇐ انصهار جزئي للغرانيت ⇐ صخر المغماتيت الشاهد على التقلص.',
+      },
+      {
+        type: 'TEXT_AND_PRODUCE',
+        objective: 'إنتاج النص العلمي المطلوب في الكتاب : مراحل تشكل المغماتيت.',
+        prompt: 'لخّص في نص علمي مراحل تشكل صخر المغماتيت.',
+        acceptedAnswers: ['التقلص', 'التضاعف القشري', 'الانصهار الجزئي', 'الغرانيت'],
+        errorHint: 'الجواب : التصادم ⇐ التقلص ⇐ التضاعف القشري ⇐ الانصهار الجزئي للغرانيت ⇐ المغماتيت.',
+      },
+    ],
+  },
+  // ANCHOR_MIG_L2
 };

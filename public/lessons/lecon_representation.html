@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>الدرس 1 : تمثيل البنية الفراغية للبروتين (Rastop)</title>
+    <style>
+        :root {
+            --bg-main: #f8fafc;
+            --surface: #ffffff;
+            --primary: #0f172a;
+            --accent: #2563eb;
+            --accent-light: #eff6ff;
+            --success: #16a34a;
+            --success-light: #f0fdf4;
+            --warning: #d97706;
+            --warning-light: #fffbeb;
+            --danger: #dc2626;
+            --danger-light: #fef2f2;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            --radius: 16px;
+            --shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Cairo', 'Tajawal', sans-serif;
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            line-height: 1.8;
+            padding-bottom: 60px;
+        }
+
+        /* LTR Helper for scientific formulas in RTL text */
+        .ltr-seq {
+            direction: ltr;
+            unicode-bidi: embed;
+            display: inline-block;
+            font-family: monospace;
+            font-weight: bold;
+            color: var(--accent);
+            background: #f1f5f9;
+            padding: 2px 8px;
+            border-radius: 6px;
+        }
+
+        
+
+        .nav-links {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-muted);
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: color 0.2s;
+        }
+
+        .nav-links a:hover, .nav-links a.active {
+            color: var(--accent);
+        }
+
+        /* Responsive Navbar */
+        @media (max-width: 640px) {
+            .nav-links {
+                justify-content: center;
+                width: 100%;
+            }
+        }
+
+        /* Layout */
+        .container {
+            max-width: 1100px;
+            margin: 2rem auto;
+            padding: 0 1.2rem;
+        }
+
+        /* Hero Header */
+        .lesson-header {
+            background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%);
+            color: white;
+            border-radius: var(--radius);
+            padding: 2.5rem;
+            margin-bottom: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .lesson-breadcrumb {
+            font-size: 0.85rem;
+            color: #93c5fd;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .lesson-header h1 {
+            font-size: 2.2rem;
+            font-weight: 900;
+            margin-bottom: 1rem;
+            line-height: 1.3;
+        }
+
+        .lesson-objectives {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            font-size: 0.95rem;
+        }
+
+        /* Section Cards */
+        .card {
+            background: var(--surface);
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow);
+        }
+
+        @media (max-width: 600px) {
+            .lesson-header { padding: 1.5rem; }
+            .lesson-header h1 { font-size: 1.5rem; }
+            .card { padding: 1.2rem; }
+        }
+
+        .section-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid var(--bg-main);
+            padding-bottom: 0.8rem;
+        }
+
+        .step-num {
+            background: var(--accent-light);
+            color: var(--accent);
+            width: 38px;
+            height: 38px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 10px;
+            font-weight: 900;
+            font-size: 1.1rem;
+        }
+
+        /* Problématique interactive */
+        .problem-box {
+            background: var(--warning-light);
+            border-right: 5px solid var(--warning);
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin-bottom: 1.5rem;
+        }
+
+        .problem-title {
+            font-weight: 800;
+            color: #92400e;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Interactive Tabs */
+        .tabs-header {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 10px;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            background: var(--bg-main);
+            border: 1px solid var(--border);
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-family: inherit;
+            font-weight: 700;
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .tab-btn.active {
+            background: var(--accent);
+            color: white;
+            border-color: var(--accent);
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Interactive Experiment / Document */
+        .doc-viewer {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            align-items: start;
+        }
+
+        @media (max-width: 800px) {
+            .doc-viewer {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .doc-visual {
+            background: #0f172a;
+            border-radius: 12px;
+            padding: 1.5rem;
+            color: white;
+            position: relative;
+        }
+
+        .svg-container {
+            width: 100%;
+            height: auto;
+            max-height: 260px;
+        }
+
+        .doc-analysis {
+            background: var(--bg-main);
+            border-radius: 12px;
+            padding: 1.5rem;
+            border: 1px solid var(--border);
+        }
+
+        .method-tag {
+            display: inline-block;
+            background: #e0f2fe;
+            color: #0369a1;
+            font-size: 0.75rem;
+            font-weight: 800;
+            padding: 2px 8px;
+            border-radius: 4px;
+            margin-bottom: 8px;
+        }
+
+        /* Animation interactive ADN -> ARNm */
+        .sim-box {
+            background: #1e293b;
+            border-radius: 12px;
+            padding: 1.5rem;
+            color: white;
+            text-align: center;
+            margin: 1.5rem 0;
+            overflow-x: auto;
+        }
+
+        .dna-strand, .rna-strand {
+            font-family: monospace;
+            font-size: 1.15rem;
+            letter-spacing: 3px;
+            margin: 10px 0;
+            padding: 12px;
+            border-radius: 8px;
+            direction: ltr;
+            unicode-bidi: embed;
+            white-space: nowrap;
+            overflow-x: auto;
+        }
+
+        .dna-strand { background: rgba(37, 99, 235, 0.2); border: 1px dashed #3b82f6; color: #93c5fd; }
+        .rna-strand { background: rgba(22, 163, 74, 0.2); border: 1px solid #22c55e; color: #4ade80; min-height: 52px; }
+
+        .btn-sim {
+            background: var(--accent);
+            color: white;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 8px;
+            font-family: inherit;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background 0.2s;
+            margin: 5px;
+        }
+
+        .btn-sim:hover { background: #1d4ed8; }
+        .btn-reset { background: #475569; }
+
+        /* Bilan & Texte scientifique */
+        .scientific-text {
+            background: var(--surface);
+            border: 2px solid #cbd5e1;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-top: 1rem;
+        }
+
+        .text-part {
+            margin-bottom: 1.2rem;
+            padding-right: 1rem;
+            border-right: 4px solid var(--accent);
+        }
+
+        .text-part h4 {
+            font-size: 0.95rem;
+            color: var(--accent);
+            margin-bottom: 0.3rem;
+            font-weight: 800;
+        }
+
+        /* Quiz & BAC Exercise */
+        .question-item {
+            background: var(--bg-main);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 10px;
+            margin-top: 1rem;
+        }
+
+        .option-btn {
+            background: white;
+            border: 1.5px solid var(--border);
+            padding: 12px 16px;
+            border-radius: 10px;
+            text-align: right;
+            font-family: inherit;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: var(--text-main);
+        }
+
+        .option-btn:hover {
+            border-color: var(--accent);
+            background: var(--accent-light);
+        }
+
+        .option-btn.correct {
+            background: var(--success-light);
+            border-color: var(--success);
+            color: var(--success);
+            font-weight: 700;
+        }
+
+        .option-btn.wrong {
+            background: var(--danger-light);
+            border-color: var(--danger);
+            color: var(--danger);
+        }
+
+        .feedback-box {
+            margin-top: 1rem;
+            padding: 1rem;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            display: none;
+            line-height: 1.6;
+        }
+
+        /* BAC Methodology Corner */
+        .bac-tip {
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .bac-tip-header {
+            color: #166534;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 0.8rem;
+        }
+    
+        /* === MIFTAH + Sommaire + Badge (v3.2 transcription) === */
+        .sommaire{position:sticky;top:60px;z-index:999;background:#ffffffee;backdrop-filter:blur(8px);border-bottom:1px solid var(--border);padding:8px 1.2rem;display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;box-shadow:0 2px 10px rgba(0,0,0,.04)}
+        .sommaire::-webkit-scrollbar{display:none}
+        .sommaire a{white-space:nowrap;font-size:.82rem;font-weight:800;color:var(--text-muted);text-decoration:none;padding:6px 12px;border-radius:8px;border:1px solid var(--border);background:var(--bg-main);transition:all .15s}
+        .sommaire a:hover{border-color:var(--accent);color:var(--accent)}
+        .sommaire a.active{background:var(--primary);color:#fff;border-color:var(--primary)}
+        .miftah-encadre{background:#fffdf4;border:1px solid #f3e0b0;border-right:4px solid #c08a1f;border-radius:10px;padding:10px 13px;margin:10px 0;font-size:.88rem;line-height:1.65}
+        .miftah-encadre b{color:#7a5610}
+        .quiz-badge{display:none;margin-top:12px;padding:10px 14px;border-radius:10px;font-weight:800;text-align:center;font-size:.95rem;animation:fadeIn .25s ease}
+        .quiz-badge.show{display:block}
+        .quiz-badge.faible{background:#fef2f2;color:#991b1b;border:1px solid #fecaca}
+        .quiz-badge.moyen{background:#fffbeb;color:#92400e;border:1px solid #fde68a}
+        .quiz-badge.mumtaz{background:#f0fdf4;color:#166534;border:1px solid #bbf7d0}
+        @media(max-width:640px){.sommaire{top:96px}}
+
+    </style>
+</head>
+<body>
+
+    
+
+    
+    <!-- Sommaire sticky (transcription) -->
+    <div class="sommaire" id="sommaire">
+        <a href="#step1" id="link-step1" onclick="scrollToStep('step1',event)">📖 1 وضعية</a>
+        <a href="#step2" id="link-step2" onclick="scrollToStep('step2',event)">🔬 2 تحليل</a>
+        <a href="#step3" id="link-step3" onclick="scrollToStep('step3',event)">🧩 3 دليل</a>
+        <a href="#step4" id="link-step4" onclick="scrollToStep('step4',event)">📝 4 خلاصة</a>
+        <a href="#step5" id="link-step5" onclick="scrollToStep('step5',event)">✅ 5 تقويم</a>
+    </div>
+
+    <div class="container">
+                <div id="chU21" class="chapter-view active">
+        <!-- Hero Header -->
+        <header class="lesson-header">
+            <div class="lesson-breadcrumb">المجال الأول : التخصص الوظيفي للبروتينات • الوحدة الثانية : العلاقة بين بنية ووظيفة البروتين</div>
+            <h1>الدرس 1 : تمثيل البنية الفراغية للبروتين (Rastop)</h1>
+            <div class="lesson-objectives">
+                <div>🎯 <strong>الهدف الحصري للدرس :</strong> التمييز بين نماذج راستوب الثلاثة واختيار النموذج المناسب للسؤال المطروح في البكالوريا.</div>
+                <div>⏱️ <strong>المدة التقديرية للتعلم الذاتي :</strong> 20 دقيقة (بدون معلم)</div>
+            </div>
+        </header>
+
+        <!-- STEP 1 : LE PROBLÈME -->
+        <section class="card" id="step1">
+            <div class="section-title">
+                <span class="step-num">1</span>
+                <span>وضعية الانطلاق وبناء الإشكالية العلمية</span>
+            </div>
+            <div class="problem-box">
+                <div class="problem-title">⚠️ ثلاث صور مختلفة لجزيء واحد، فأيها البنية الحقيقية؟</div>
+                <p>عرض برنامج <span class="ltr-seq">Rastop</span> نفس جزيء الليزوزيم بثلاث صور مختلفة تماما : كومة من الكرات الملونة، وتشابك من العيدان، وشريط ملتف. علما أن الجزيء واحد لا يتغير، فكيف نفسر هذا الاختلاف؟ وأي صورة نعتمد للإجابة عن أسئلة البكالوريا؟</p>
+            </div>
+            <p>لحل هذه الإشكالية، يجب أن نفهم أن صور راستوب ليست صورا فوتوغرافية، بل <strong>نماذج (Modèles)</strong> : كل نموذج يُظهر جانبا من البنية ويُخفي جوانب أخرى، ويُختار حسب السؤال المطروح.</p>
+        </section>
+
+        <!-- STEP 2 : LES DOCUMENTS -->
+        <section class="card" id="step2">
+            <div class="section-title">
+                <span class="step-num">2</span>
+                <span>التحليل المنهجي لوثيقتي النمذجة (ماذا يُظهر كل نموذج؟)</span>
+            </div>
+            <div class="tabs-header">
+                <button class="tab-btn active" onclick="switchTab('exp1', event)">🧪 نموذج الكرات المكدسة</button>
+                <button class="tab-btn" onclick="switchTab('exp2', event)">🔬 النموذج الشريطي</button>
+            </div>
+            <!-- Tab 1 -->
+            <div id="exp1" class="tab-content active">
+                <div class="doc-viewer">
+                    <div class="doc-visual">
+                        <h4 style="margin-bottom: 1rem; color: #93c5fd; font-size: 0.95rem;">نموذج الكرات : كل ذرة كرة بحجمها الحقيقي</h4>
+                        <svg class="svg-container" viewBox="0 0 400 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="150" cy="100" r="42" fill="#3b82f6" opacity="0.85"/>
+                            <circle cx="195" cy="85" r="34" fill="#22c55e" opacity="0.85"/>
+                            <circle cx="195" cy="125" r="30" fill="#f59e0b" opacity="0.85"/>
+                            <circle cx="235" cy="100" r="26" fill="#ef4444" opacity="0.85"/>
+                            <circle cx="120" cy="125" r="20" fill="#a78bfa" opacity="0.85"/>
+                            <text x="200" y="185" fill="#e2e8f0" font-size="12" text-anchor="middle">كل كرة = ذرة (C ،O ،N ،S) بحجم فان دير فالس</text>
+                        </svg>
+                        <p style="font-size: 0.85rem; color: #cbd5e1; margin-top: 10px;">🔵 يُظهر الحجم الحقيقي والتكامل السطحي بين تحت الوحدات، ولا يُظهر ما بداخل الجزيء.</p>
+                    </div>
+                    <div class="doc-analysis">
+                        <span class="method-tag">منهجية البكالوريا : تحليل وثيقة</span>
+                        <div class="miftah-encadre">🔑 <b>مفتاح المنهجية:</b> البوابة 1 → <b>📄 ورقة</b> · البوابة 2 → <b>📷 صورة</b> · صِف ما يُرى (كرات متلاصقة) قبل الاستنتاج</div>
+                        <h4 style="margin: 8px 0; color: var(--primary);">ماذا نستخرج من نموذج الكرات؟</h4>
+                        <ul style="list-style-type: none; padding-right: 0;">
+                            <li style="margin-bottom: 12px;"><strong>1. التعريف بالوثيقة :</strong> تمثيل كروي مكدس لجزيء بروتيني حيث تُمثل كل ذرة بكرة بنصف قطرها الحقيقي.</li>
+                            <li style="margin-bottom: 12px;"><strong>2. الملاحظة :</strong> لا فراغات بين الكرات، والسطح الخارجي أملس متصل، ولا تظهر أي لولبيات أو أوراق.</li>
+                            <li style="margin-bottom: 0; background: #eff6ff; padding: 12px; border-radius: 8px; border-right: 3px solid var(--accent);"><strong>3. الاستنتاج :</strong> هذا النموذج يُظهر <strong>الحجم الحقيقي والتجمع الرباعي</strong> للبروتين، لكنه <strong>يُخفي البنيات الثانوية والروابط الداخلية</strong>.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <!-- Tab 2 -->
+            <div id="exp2" class="tab-content">
+                <div class="doc-viewer">
+                    <div class="doc-visual">
+                        <h4 style="margin-bottom: 1rem; color: #93c5fd; font-size: 0.95rem;">النموذج الشريطي : مسار السلسلة الببتيدية فقط</h4>
+                        <svg class="svg-container" viewBox="0 0 400 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M30 100 Q 60 60 90 100 T 150 100 T 210 100" stroke="#f59e0b" stroke-width="7" stroke-linecap="round"/>
+                            <path d="M220 100 H 260" stroke="#3b82f6" stroke-width="4"/>
+                            <polygon points="260,100 248,94 248,106" fill="#3b82f6"/>
+                            <path d="M275 100 H 315" stroke="#3b82f6" stroke-width="4"/>
+                            <polygon points="315,100 303,94 303,106" fill="#3b82f6"/>
+                            <path d="M325 100 Q 350 130 375 100" stroke="#22c55e" stroke-width="4"/>
+                            <text x="120" y="60" fill="#f59e0b" font-size="12">لولب α</text>
+                            <text x="265" y="85" fill="#93c5fd" font-size="12">ورقة β</text>
+                            <text x="200" y="185" fill="#e2e8f0" font-size="12" text-anchor="middle">الشريط يتبع العمود الفقري للسلسلة ويُخفي الذرات</text>
+                        </svg>
+                        <p style="font-size: 0.85rem; color: #cbd5e1; margin-top: 10px;">🟠 البرتقالي = لوالب <span style="direction:ltr; display:inline-block;">α</span> · 🔵 الأسهم = أوراق <span style="direction:ltr; display:inline-block;">β</span> · 🟢 = منعطفات.</p>
+                    </div>
+                    <div class="doc-analysis">
+                        <span class="method-tag">منهجية البكالوريا : استخراج المعلومات من الشكل</span>
+                        <div class="miftah-encadre">🔑 <b>مفتاح المنهجية:</b> البوابة 1 → <b>📄 ورقة</b> · البوابة 2 → <b>📷 صورة</b> · عُد اللوالب والأسهم قبل المقارنة</div>
+                        <h4 style="margin: 8px 0; color: var(--primary);">متى نختار النموذج الشريطي؟</h4>
+                        <p>عندما يسأل الموضوع عن <strong>المقارنة بين بنيتين</strong> (طبيعي/طافر) أو عن <strong>أثر طفرة على الطي</strong>، لأن الشريطي وحده يُظهر اللوالب والأوراق والمنعطفات، أي <strong>مستوى البنية الثانوية والثالثية</strong>.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- STEP 3 : GUIDE DE CHOIX -->
+        <section class="card" id="step3">
+            <div class="section-title">
+                <span class="step-num">3</span>
+                <span>دليل اختيار النموذج (النموذج الثالث : العيدان)</span>
+            </div>
+            <div class="miftah-encadre">🔑 <b>مفتاح المنهجية:</b> البوابة 1 → <b>📄 ورقة</b> · البوابة 2 → <b>🎬 فيلم</b> · <b>لأنّ</b> السؤال يحدد النموذج لا الجزيء</div>
+            <p>يُظهر نموذج <strong>العيدان والكرات (Bâtonnets)</strong> كل ذرة وكل رابطة كيميائية، لذلك يُستعمل لدراسة <strong>تفاصيل الموقع الفعال</strong> : الأحماض الأمينية المتقاربة فراغيا والروابط بين جذورها.</p>
+            <div class="sim-box">
+                <div style="font-size: 0.9rem; color: #93c5fd; margin-bottom: 5px;">جدول الاختيار المعتمد في التصحيح :</div>
+                <div class="dna-strand">سؤال مقارنة / طفرة ← الشريطي | سؤال موقع فعال / روابط ← العيدان | سؤال حجم / تجمع ← الكرات</div>
+            </div>
+            <div class="bac-tip">
+                <div class="bac-tip-header">💡 خطأ شائع في البكالوريا : الخلط بين النموذج والبنية!</div>
+                <ul style="margin-right: 1.5rem; font-size: 0.95rem;">
+                    <li style="margin-bottom: 6px;">تغير النموذج <strong>لا يغير الجزيء</strong> : نفس البروتين بثلاث صور، والمعلومة المستخرجة تتوقف على النموذج المختار.</li>
+                    <li>اذكر دائما <strong>ماذا يُظهر النموذج وماذا يُخفي</strong> قبل أي استنتاج.</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- STEP 4 : SYNTHÈSE -->
+        <section class="card" id="step4">
+            <div class="section-title">
+                <span class="step-num">4</span>
+                <span>الخلاصة المعتمدة في البكالوريا (الرسم التخطيطي + النص العلمي)</span>
+            </div>
+            <h3 style="color: var(--primary); margin-bottom: 1rem;">✍️ النص العلمي النموذجي :</h3>
+            <div class="scientific-text">
+                <div class="text-part">
+                    <h4>مقدمة (طرح الإشكالية)</h4>
+                    <p>يأخذ كل بروتين بنية فراغية محددة تحدد وظيفته، ويعرض برنامج <span class="ltr-seq">Rastop</span> هذه البنية بعدة نماذج مختلفة لنفس الجزيء، فأي نموذج نعتمد؟</p>
+                </div>
+                <div class="text-part">
+                    <h4>العرض (النماذج الثلاثة)</h4>
+                    <p>• <strong>نموذج الكرات المكدسة :</strong> يُظهر الحجم الحقيقي والتجمع الرباعي والتكامل السطحي، ويُخفي البنيات الداخلية.</p>
+                    <p>• <strong>النموذج الشريطي :</strong> يُظهر اللوالب <span class="ltr-seq">α</span> والأوراق <span class="ltr-seq">β</span> والمنعطفات، ويُستعمل للمقارنة وكشف أثر الطفرات على الطي.</p>
+                    <p>• <strong>نموذج العيدان :</strong> يُظهر الذرات والروابط بتفصيل، ويُستعمل لدراسة الموقع الفعال.</p>
+                </div>
+                <div class="text-part" style="border-right-color: var(--success); margin-bottom: 0;">
+                    <h4 style="color: var(--success);">خاتمة (الإجابة عن الإشكالية)</h4>
+                    <p>لا توجد صورة واحدة حقيقية والباقي خاطئ : النماذج متكاملة، ويُختار النموذج حسب السؤال المطروح في الموضوع.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- STEP 5 : QUIZ -->
+        <section class="card" id="step5">
+            <div class="section-title">
+                <span class="step-num">5</span>
+                <span>التقويم الذاتي الفوري (اختبر استيعابك دون مساعدة)</span>
+            </div>
+            <!-- Q1 -->
+            <div class="question-item" id="c1q1-container">
+                <h4 style="margin-bottom: 12px;">1. ماذا يُظهر النموذج الشريطي للبروتين؟</h4>
+                <div class="options-grid">
+                    <button class="option-btn" onclick="checkAnswer(1, 0, true)">أ) البنيات الثانوية (لوالب α وأوراق β) والمنعطفات ومسار السلسلة</button>
+                    <button class="option-btn" onclick="checkAnswer(1, 1, false)">ب) كل ذرة على حدة بحجمها الحقيقي</button>
+                    <button class="option-btn" onclick="checkAnswer(1, 2, false)">ج) تتابع النكليوتيدات في المورثة</button>
+                </div>
+                <div class="feedback-box" id="c1q1-feedback"></div>
+            </div>
+            <!-- Q2 -->
+            <div class="question-item" id="c1q2-container">
+                <h4 style="margin-bottom: 12px;">2. لإظهار أثر استبدال حمض الغلوتاميك بالفالين في الهيموغلوبين (المنجلي)، أي نموذج نختار؟</h4>
+                <div class="options-grid">
+                    <button class="option-btn" onclick="checkAnswer(2, 0, true)">أ) النموذج الشريطي، لأنه يكشف تغير الطي الفراغي للسلسلة</button>
+                    <button class="option-btn" onclick="checkAnswer(2, 1, false)">ب) نموذج الكرات، لأنه يُظهر عدد الذرات</button>
+                    <button class="option-btn" onclick="checkAnswer(2, 2, false)">ج) لا نحتاج أي نموذج، تكفي الصيغة الجزيئية</button>
+                </div>
+                <div class="feedback-box" id="c1q2-feedback"></div>
+                <div class="quiz-badge" id="c1-badge"></div>
+            </div>
+        </section>
+
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script>
+        // Tab switching
+        function switchTab(tabId, evt) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            if (evt) evt.target.classList.add('active');
+        }
+
+        // Transcription Simulator
+        const codons = ['AUG', 'CGA', 'UUC', 'GAU', 'UAA'];
+        let currentStep = 0;
+
+        function transcribeNext() {
+            if (currentStep < codons.length) {
+                let rnaEl = document.getElementById('rnaStrand');
+                if (currentStep === 0) {
+                    rnaEl.innerText = "5'- " + codons[0];
+                } else {
+                    rnaEl.innerText += ' - ' + codons[currentStep];
+                }
+                currentStep++;
+            }
+            if (currentStep === codons.length) {
+                document.getElementById('rnaStrand').innerText += " -3'";
+                document.getElementById('btnStep').innerText = '✅ اكتمل استنساخ جزيئة الـ ARNm';
+                document.getElementById('btnStep').disabled = true;
+                document.getElementById('btnStep').style.background = '#16a34a';
+            }
+        }
+
+        function resetSim() {
+            currentStep = 0;
+            document.getElementById('rnaStrand').innerText = "5'- _ _ _ - _ _ _ - _ _ _ - _ _ _ - _ _ _ -3'";
+            let btn = document.getElementById('btnStep');
+            btn.innerText = '⚡ إضافة الرامزة التالية';
+            btn.disabled = false;
+            btn.style.background = '#2563eb';
+        }
+
+        // Quiz checker
+        function checkAnswer(qIndex, optIndex, isCorrect) {
+            let container = document.getElementById(`c1q${qIndex}-container`);
+            let buttons = container.querySelectorAll('.option-btn');
+            let feedback = document.getElementById(`c1q${qIndex}-feedback`);
+
+            buttons.forEach((btn, idx) => {
+                btn.disabled = true;
+                if (idx === optIndex) {
+                    btn.classList.add(isCorrect ? 'correct' : 'wrong');
+                }
+            });
+
+            feedback.style.display = 'block';
+            if (isCorrect) {
+                feedback.style.background = '#f0fdf4';
+                feedback.style.color = '#166534';
+                feedback.style.border = '1px solid #bbf7d0';
+                feedback.innerHTML = '<strong>✅ إجابة صحيحة، ممتاز!</strong> التبرير العلمي مضبوط بدقة وفق مبادئ الدرس.';
+            } else {
+                feedback.style.background = '#fef2f2';
+                feedback.style.color = '#991b1b';
+                feedback.style.border = '1px solid #fecaca';
+                if (qIndex === 1) {
+                    feedback.innerHTML = '<strong>❌ إجابة خاطئة.</strong> النموذج الشريطي هو الذي يُظهر اللوالب <span class="ltr-seq">α</span> والصفائح <span class="ltr-seq">β</span> والمنعطفات، بينما نموذج الكرات يُظهر الحجم الحقيقي فقط.';
+                } else {
+                    feedback.innerHTML = '<strong>❌ إجابة خاطئة.</strong> الطفرة النقطية تغير الطي الفراغي للسلسلة دون تغيير كبير في عدد الذرات، لذلك يقارن المصحح بالشريطي لا بالكرات.';
+                }
+            }
+        }
+    
+        // === v3.2 transcription: sommaire + badge ===
+        function scrollToStep(id, evt){
+            if(evt) evt.preventDefault();
+            const el = document.getElementById(id);
+            if(el) window.scrollTo({top: el.getBoundingClientRect().top + window.scrollY - 110, behavior:'smooth'});
+            document.querySelectorAll('.sommaire a').forEach(a=>a.classList.remove('active'));
+            const link = document.getElementById('link-'+id);
+            if(link) link.classList.add('active');
+        }
+        function updateBadges(){
+            const questions = document.querySelectorAll('.question-item');
+            if(questions.length===0) return;
+            let total=questions.length, answered=0, correct=0;
+            questions.forEach(q=>{
+                const btns=q.querySelectorAll('.option-btn');
+                let qAnswered=false,qCorrect=false;
+                btns.forEach(b=>{ if(b.classList.contains('correct')){qAnswered=true;qCorrect=true;} if(b.classList.contains('wrong')) qAnswered=true; });
+                if(qAnswered) answered++;
+                if(qCorrect) correct++;
+            });
+            const badge=document.getElementById('c1-badge');
+            if(!badge) return;
+            if(answered < total) return;
+            const score=Math.round(correct/total*100);
+            badge.classList.add('show');
+            if(score===100){ badge.className='quiz-badge show mumtaz'; badge.textContent='ممتاز (fort) — 100% · جاهز للتدريب المنهجي'; }
+            else if(score>=50){ badge.className='quiz-badge show moyen'; badge.textContent='متوسط (moyen) — '+score+'% · راجع ثم أعد'; }
+            else { badge.className='quiz-badge show faible'; badge.textContent='ضعيف (faible) — '+score+'% · راجع الدرس ثم أعد'; }
+        }
+        document.addEventListener('click', (e)=>{
+            if(e.target.closest('.option-btn')) setTimeout(updateBadges, 80);
+        });
+        // also wrap checkAnswer if exists
+        (function(){
+            if(typeof window.checkAnswer==='function' && !window.checkAnswer._patched){
+                const orig=window.checkAnswer;
+                window.checkAnswer=function(...a){ const r=orig.apply(this,a); setTimeout(updateBadges,50); return r; };
+                window.checkAnswer._patched=true;
+            }
+        })();
+        const observer=new IntersectionObserver((entries)=>{
+            entries.forEach(e=>{
+                if(e.isIntersecting){
+                    document.querySelectorAll('.sommaire a').forEach(a=>a.classList.remove('active'));
+                    const link=document.getElementById('link-'+e.target.id);
+                    if(link) link.classList.add('active');
+                }
+            });
+        },{rootMargin:'-120px 0px -70% 0px',threshold:0});
+        window.addEventListener('DOMContentLoaded', ()=>{
+            document.querySelectorAll('section.card[id]').forEach(s=>observer.observe(s));
+        });
+
+    </script>
+</body>
+</html>

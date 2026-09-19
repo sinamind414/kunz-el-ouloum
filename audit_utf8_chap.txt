@@ -1,0 +1,189 @@
+﻿TDM officielle : 55 chapitres
+
+=== lecon_transcription.html (38827 chars) — 0 chapitre(s) ===
+
+=== phase10_chapitres_19_20.html (40389 chars) — 2 chapitre(s) ===
+  [1] #ch19 :: الدرس 5 : تأثير المخدرات على النقل المشبكي (آلية تسكين الألم بالمورفين والأنكيفالين)
+  [2] #ch20 :: الدرس 6 : مقر التركيب الضوئي والبنية الفوقية للصانعة الخضراء (Chloroplaste)
+
+=== phase11_chapitres_21_22.html (40111 chars) — 2 chapitre(s) ===
+  [1] #ch21 :: الدرس 1 : تفاعلات المرحلة الكيميوضوئية (تهيج الأنظمة الضوئية والتحلل الضوئي للماء)
+  [2] #ch22 :: الدرس 2 : السلسلة التركيبية الضوئية والفسفرة الضوئية لإنتاج ATP و NADPH, H⁺
+
+=== phase12_chapitres_23_24.html (41689 chars) — 2 chapitre(s) ===
+  [1] #ch23 :: الدرس 3 : تفاعلات المرحلة الكيميوحيوية (حلقة كالفن تثبيت غاز CO₂ وبناء السكريات)
+  [2] #ch24 :: الدرس 4 : التكامل بين المرحلتين (الكيميوضوئية والكيميوحيوية) والحصيلة الطاقوية الشاملة
+
+=== phase13_chapitres_25_26.html (42147 chars) — 2 chapitre(s) ===
+  [1] #ch25 :: الدرس 1 : التحلل السكري في الهيولى الأساسية (تفكيك الغلوكوز إلى حمض البيروفيك)
+  [2] #ch26 :: الدرس 2 : البنية الفوقية للميتوكندرون وحلقة كريبس (تفكيك حمض البيروفيك في المادة الأساسية)
+
+=== phase14_chapitres_27_28.html (40539 chars) — 2 chapitre(s) ===
+  [1] #ch27 :: الدرس 3 : الفسفرة التأكسدية والسلسلة التنفسية في الغشاء الداخلي للميتوكندرون
+  [2] #ch28 :: الدرس 4 : التخمر اللبني والكحولي والحصيلة الطاقوية في غياب الأكسجين (وسط لاهوائي)
+
+=== phase15_chapitres_29_30.html (40674 chars) — 2 chapitre(s) ===
+  [1] #ch29 :: الدرس 5 : المقارنة الشاملة بين آليات تحويل الطاقة في الصانعة الخضراء والميتوكندرون
+  [2] #ch30 :: الدرس 6 : دورة الطاقة والمادة في المحيط الحيوي (التكامل بين الذاتية والغير ذاتية التغذية)
+
+=== phase16_chapitres_31_32.html (40617 chars) — 2 chapitre(s) ===
+  [1] #ch31 :: الدرس 1 : مفهوم الصفيحة التكتونية وتحديد حدودها بالنشاط الزلزالي والبركاني
+  [2] #ch32 :: الدرس 2 : شواهد اتساع قاع المحيط والمغناطيسية القديمة (Paléomagnétisme)
+
+=== phase17_chapitres_33_34.html (41362 chars) — 2 chapitre(s) ===
+  [1] #ch33 :: الدرس 3 : حركات التقارب وهدم الغلاف الصخري المحيطي (ظاهرة الغوص وشواهدها الجيوفيزيائية)
+  [2] #ch34 :: الدرس 4 : المغمايتية المميزة لمناطق الغوص وتشكل الأنديزيت والغرانودوريت
+
+=== phase18_chapitres_35_36.html (38818 chars) — 2 chapitre(s) ===
+  [1] #ch35 :: الدرس 5 : الطاقة الداخلية للكرة الأرضية (التدرج الجيوتحراري وطرق انتقال الحرارة)
+  [2] #ch36 :: الدرس 6 : تيارات الحمل الحراري المحرك الأساسي لحركات الصفائح التكتونية
+
+=== phase19_chapitres_37_38.html (41313 chars) — 2 chapitre(s) ===
+  [1] #ch37 :: الدرس 1 : انتشار الموجات الزلزالية (P و S) وتحديد الانقطاعات الرئيسية لباطن الأرض
+  [2] #ch38 :: الدرس 2 : التركيب الصخري والمعدني والكيميائي للقشرة الأرضية والبرنس (الستار)
+
+=== phase1_chapitres_1_2.html (44657 chars) — 2 chapitre(s) ===
+  [1] #ch1 :: الدرس 1 : تذكير بالمكتسبات ومقر تركيب البروتين في الخلية
+  [2] #ch2 :: الدرس 2 : الشفرة الوراثية وتنشيط الأحماض الأمينية
+  ⚠ MISS-updateBadges
+
+=== phase20_chapitres_39_40.html (40912 chars) — 2 chapitre(s) ===
+  [1] #ch39 :: الدرس 1 : نمذجة البنية الداخلية للكرة الأرضية (الخصائص الفيزيائية والكيميائية للأغلفة الخمسة)
+  [2] #ch40 :: الدرس 2 : البنيات الجيولوجية المرتبطة بالنشاط التكتوني (التشوهات : الطيات والفوالق الانكسارية)
+
+=== phase21_chapitres_41_42.html (39877 chars) — 2 chapitre(s) ===
+  [1] #ch41 :: الدرس 3 : المغمايتية المميزة للظهرات المحيطية (الانصهار الجاف بتخفيف الضغط وتشكل البازلت والغابرو)
+  [2] #ch42 :: الدرس 4 : التكتونية والمغمايتية المميزة لمناطق التصادم القاري (تشكل سلاسل الجبال كالألب والهيمالايا)
+
+=== phase22_chapitres_43_44.html (41538 chars) — 2 chapitre(s) ===
+  [1] #ch43 :: الدرس 5 : دورة الصخور في الطبيعة (التحول المتبادل والمستمر بين المجموعات الصخرية الثلاث)
+  [2] #ch44 :: الدرس 6 : الموارد الجيولوجية والطاقوية في الجزائر (تشكل ومصائد البترول والغاز والمياه الجوفية بالصحراء)
+
+=== phase23_chapitres_45_46.html (1466 chars) — 1 chapitre(s) ===
+  [1] #ch45 :: الدرس 45 : الغوص والانصهار في المناطق النشطة
+  ⚠ MISS-sommaire MISS-miftah MISS-scrollToStep
+
+=== phase24_chapitres_47_48.html (1400 chars) — 1 chapitre(s) ===
+  [1] #ch47 :: الدرس 47 : الزلازل وموجاتها (البنية الداخلية للأرض)
+  ⚠ MISS-sommaire MISS-miftah MISS-scrollToStep
+
+=== phase25_chapitres_49_50.html (1379 chars) — 1 chapitre(s) ===
+  [1] #ch49 :: الدرس 49 : التصحر وآليات تكون الكثبان الرملية
+  ⚠ MISS-sommaire MISS-miftah MISS-scrollToStep
+
+=== phase26_chapitres_51_52.html (1365 chars) — 1 chapitre(s) ===
+  [1] #ch51 :: الدرس 51 : الأقاليم الجيولوجية الجزائرية
+  ⚠ MISS-sommaire MISS-miftah MISS-scrollToStep
+
+=== phase2_chapitres_3_4.html (44294 chars) — 2 chapitre(s) ===
+  [1] #ch3 :: الدرس 4 : مراحل الترجمة في الريبوزوم وظاهرة متعدد الريبوزوم (Polysome)
+  [2] #ch4 :: الدرس 5 : مستويات البنية الفراغية للبروتين وأنواع الروابط الكيميائية
+
+=== phase3_chapitres_5_6.html (40541 chars) — 2 chapitre(s) ===
+  [1] #ch5 :: الدرس 1 : العلاقة بين بنية ووظيفة البروتين وتأثير الطفرات الوراثية
+  [2] #ch6 :: الدرس 2 : مفهوم الإنزيم والخصوصية المزدوجة (الموقع الفعال والتوافق المحرض)
+
+=== phase4_chapitres_7_8.html (40463 chars) — 2 chapitre(s) ===
+  [1] #ch7 :: الدرس 1 : تأثير درجة الحموضة (pH الوسط) على النشاط الإنزيمي
+  [2] #ch8 :: الدرس 2 : تأثير درجة الحرارة وحركية التفاعل الإنزيمي
+
+=== phase5_chapitres_9_10.html (40294 chars) — 2 chapitre(s) ===
+  [1] #ch9 :: الدرس 1 : التمييز بين الذات واللاذات ومؤشرات الهوية البيولوجية (CMH / HLA)
+  [2] #ch10 :: الدرس 2 : نظام الزمر الدموية ABO والعامل الريزوسي Rh
+
+=== phase6_chapitres_11_12.html (40443 chars) — 2 chapitre(s) ===
+  [1] #ch11 :: الدرس 3 : الاستجابة المناعية الخلطية وبنية الجسم المضاد (Anticorps / γ-globuline)
+  [2] #ch12 :: الدرس 4 : تشكل المعقد المناعي وآلية التخلص منه بواسطة البلعميات الكبيرة (Phagocytose)
+
+=== phase7_chapitres_13_14.html (40804 chars) — 2 chapitre(s) ===
+  [1] #ch13 :: الدرس 5 : الاستجابة المناعية ذات الوساطة الخلوية (RIMC) وآلية القضاء على الخلية المصابة
+  [2] #ch14 :: الدرس 6 : التعاون الخلوي ودور اللمفاويات التائية المساعدة (LT4) والأنترلوكين-2 (IL-2)
+
+=== phase8_chapitres_15_16.html (39911 chars) — 2 chapitre(s) ===
+  [1] #ch15 :: الدرس 1 : كمون الراحة والآليات الأيونية والغشائية للحفاظ عليه (-70 mV)
+  [2] #ch16 :: الدرس 2 : كمون العمل وآلية عمل القنوات المبوبة كهربائياً (Voltage-dépendantes)
+
+=== phase9_chapitres_17_18.html (40777 chars) — 2 chapitre(s) ===
+  [1] #ch17 :: الدرس 3 : النقل المشبكي الكيميائي وآلية عمل المبلغ العصبي الأستيل كولين (ACh)
+  [2] #ch18 :: الدرس 4 : الإدماج العصبي وأنواع المشابك (التنبيهي PPSE مقابل التثبيطي PPSI)
+
+### TOTAL chapitres HTML = 48 (attendu 55)
+
+### Confrontation TDM <-> fichiers HTML (numéro de chapitre par unité)
+
+--- D1/U1 (5 chapitres attendus)
+  attendu 1. تذكير بالمكتسبات - Rappel des acquis
+  attendu 2. مقر تركيب البروتين - Siège de la synthèse des protéines
+  attendu 3. استنساخ المعلومات الوراثية الموجودة على مستوى ADN - Transcription
+  attendu 4. الترجمة - La traduction
+  attendu 5. مراحل الترجمة - Les étapes de la traduction
+
+--- D1/U2 (3 chapitres attendus)
+  attendu 1. تمثيل البنية الفراغية للبروتين - Représentation structure tridimensionnelle
+  attendu 2. مستويات البنية الفراغية للبروتينات - Niveaux structure spatiale
+  attendu 3. العلاقة بين بنية ووظيفة البروتين - Relation structure-fonction
+
+--- D1/U3 (4 chapitres attendus)
+  attendu 1. مفهوم الإنزيم وأهميته - Notion d'enzyme
+  attendu 2. النشاط الإنزيمي وعلاقته ببنية الإنزيم - Activité enzymatique et structure
+  attendu 3. دراسة تأثير تغير درجة pH الوسط على نشاط الإنزيم - Influence du pH
+  attendu 4. دراسة تأثير تغيرات درجة الحرارة على نشاط الإنزيم - Influence de la température
+
+--- D1/U4 (11 chapitres attendus)
+  attendu 1. تذكير بالمكتسبات - Rappel des acquis
+  attendu 2. الذات واللاذات - Le soi et le non-soi
+  attendu 3. الحزينات الدفاعية في الحالة الأولى - Immunité non spécifique
+  attendu 4. المعقد المناعي - Le complexe immun
+  attendu 5. مصدر الأجسام المضادة - Origine des anticorps
+  attendu 6. العناصر الدفاعية في الحالة الثانية - Immunité spécifique
+  attendu 7. طرق تأثير اللمفاويات LTc - Modes d'action des lymphocytes LTc
+  attendu 8. مصدر اللمفاويات LTc - Origine des lymphocytes LTc
+  attendu 9. تحفيز الخلايا LB و LT - Activation des cellules LB et LT
+  attendu 10. اختيار نمط الاستجابة المناعية - Choix du type de réponse immunitaire
+  attendu 11. سبب فقدان المناعة المكتسبة - Cause de la perte de l'immunité acquise (SIDA)
+
+--- D1/U5 (7 chapitres attendus)
+  attendu 1. تذكير بالمكتسبات - Rappel des acquis
+  attendu 2. النقل المشبكي (الكمون الغشائي) - Transmission synaptique
+  attendu 3. آلية النقل المشبكي - Mécanisme de la transmission synaptique
+  attendu 4. كمون الراحة - Potentiel de repos
+  attendu 5. كمون العمل - Potentiel d'action
+  attendu 6. آلية الإدماج العصبي - Mécanisme de l'intégration nerveuse
+  attendu 7. تأثير المخدرات على مستوى المشابك - Effet des drogues au niveau des synapses
+
+--- D2/U1 (4 chapitres attendus)
+  attendu 1. تذكير بالمكتسبات - Rappel des acquis
+  attendu 2. مقر عملية التركيب الضوئي - Siège de la photosynthèse
+  attendu 3. تفاعلات المرحلة الكيموضوئية - Phase photochimique
+  attendu 4. تفاعلات المرحلة الكيموحيوية - Phase chimique (cycle de Calvin)
+
+--- D2/U2 (6 chapitres attendus)
+  attendu 1. تذكير بالمكتسبات - Rappel des acquis
+  attendu 2. مقر الأكسدة التنفسية - Siège de l'oxydation respiratoire
+  attendu 3. التحلل السكري - La glycolyse
+  attendu 4. مراحل تفكك حمض البيروفيك (تفاعلات حلقة كريبس) - Cycle de Krebs
+  attendu 5. الفسفرة التأكسدية - La phosphorylation oxydative
+  attendu 6. آليات تحويل الطاقة الكيميائية الكامنة في وسط لا هوائي - Fermentation
+
+--- D2/U3 (1 chapitres attendus)
+  attendu 1. التحولات الطاقوية على المستوى الخلوي - Les transformations énergétiques au niveau cellulaire
+
+--- D3/U1 (3 chapitres attendus)
+  attendu 1. تحديد الصفائح التكتونية - Identification des plaques tectoniques
+  attendu 2. حركات الصفائح التكتونية - Mouvements des plaques tectoniques
+  attendu 3. الطاقة الداخلية للكرة الأرضية - Énergie interne du globe terrestre
+
+--- D3/U2 (3 chapitres attendus)
+  attendu 1. الموجات الزلزالية - Les ondes sismiques
+  attendu 2. التركيب الكيميائي لصخور القشرة الأرضية والمعطف (البرنس) - Composition chimique
+  attendu 3. نمذجة البنية الداخلية للكرة الأرضية - Modélisation de la structure interne
+
+--- D3/U3 (8 chapitres attendus)
+  attendu 1. الظواهر المرتبطة بالبناء (خصائص الظهرات وسط محيطية) - Phénomènes liés à la construction
+  attendu 2. المغماتية وتشكل اللوح المحيطي - Magmatisme et formation de la plaque océanique
+  attendu 3. تشكل الصخور المميزة للظهرة وسط محيطية - Formation des roches caractéristiques de la dorsale
+  attendu 4. الظواهر المرتبطة بالغوص - Phénomènes liés à la subduction
+  attendu 5. اختفاء اللوح المحيطي والظواهر المرتبطة بالغوص - Disparition de la plaque océanique
+  attendu 6. التضاريس الناجمة عن التصادم - Reliefs résultant de la collision
+  attendu 7. شواهد التقلص - Indices du raccourcissement
+  attendu 8. شواهد محيط قديم - Indices d'un ancien océan (ophiolites)

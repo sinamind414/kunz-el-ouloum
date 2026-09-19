@@ -209,10 +209,10 @@ describe('Cycle dans la progression', () => {
   });
 });
 
-// ----- 7. 44 HTML ordonnés et résolus -----
+// ----- 7. 47 HTML ordonnés et résolus -----
 describe('HTML lessons', () => {
-  it('HTML_LESSON_ORDER contient exactement 44 clés', () => {
-    expect(HTML_LESSON_ORDER.length).toBe(44);
+  it('HTML_LESSON_ORDER contient exactement 47 clés', () => {
+    expect(HTML_LESSON_ORDER.length).toBe(47);
   });
 
   it('getNextHtmlLessonKey(dernière leçon) = undefined', () => {

@@ -2,8 +2,8 @@ import { describe, expect, it } from 'vitest';
 import { HTML_LESSON_ORDER, getNextHtmlLessonKey, isHtmlLesson } from '../data/htmlLessonProgression';
 
 describe('htmlLessonProgression', () => {
-  it('contient exactement 44 leçons HTML dans l\'ordre', () => {
-    expect(HTML_LESSON_ORDER).toHaveLength(44);
+  it('contient exactement 47 leçons HTML dans l\'ordre', () => {
+    expect(HTML_LESSON_ORDER).toHaveLength(47);
   });
 
   it('commence par phase1_chapitres_1_2', () => {
@@ -11,7 +11,7 @@ describe('htmlLessonProgression', () => {
   });
 
   it('finit par phase22_chapitres_43_44_2', () => {
-    expect(HTML_LESSON_ORDER[44 - 1]).toBe('phase22_chapitres_43_44_2');
+    expect(HTML_LESSON_ORDER[47 - 1]).toBe('phase22_chapitres_43_44_2');
   });
 
   it('chaque phase de base est suivie de sa continuation _2', () => {
@@ -27,7 +27,10 @@ describe('htmlLessonProgression', () => {
 
   it('getNextHtmlLessonKey retourne la leçon suivante', () => {
     expect(getNextHtmlLessonKey('phase1_chapitres_1_2')).toBe('phase1_chapitres_1_2_2');
-    expect(getNextHtmlLessonKey('phase1_chapitres_1_2_2')).toBe('phase2_chapitres_3_4');
+    expect(getNextHtmlLessonKey('phase1_chapitres_1_2_2')).toBe('lecon_transcription');
+    expect(getNextHtmlLessonKey('lecon_transcription')).toBe('phase2_chapitres_3_4');
+    expect(getNextHtmlLessonKey('phase2_chapitres_3_4_2')).toBe('lecon_representation');
+    expect(getNextHtmlLessonKey('phase3_chapitres_5_6_2')).toBe('lecon_activite_structure');
     expect(getNextHtmlLessonKey('phase22_chapitres_43_44')).toBe('phase22_chapitres_43_44_2');
   });
 
@@ -42,7 +45,9 @@ describe('htmlLessonProgression', () => {
   it('isHtmlLesson identifie les leçons HTML', () => {
     expect(isHtmlLesson('phase1_chapitres_1_2')).toBe(true);
     expect(isHtmlLesson('phase22_chapitres_43_44_2')).toBe(true);
-    expect(isHtmlLesson('lecon_transcription')).toBe(false);
+    expect(isHtmlLesson('lecon_transcription')).toBe(true);
+    expect(isHtmlLesson('lecon_representation')).toBe(true);
+    expect(isHtmlLesson('lecon_activite_structure')).toBe(true);
     expect(isHtmlLesson('lecon2_transcription')).toBe(false);
   });
 });

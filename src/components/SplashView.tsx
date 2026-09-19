@@ -316,13 +316,19 @@ export default function SplashView({ onStart }: SplashViewProps) {
                   // Keep playing shanty but also play default click sound
                   onStart();
                 }}
-                className="group w-full h-14 md:h-16 bg-[#006d37] hover:bg-[#00562b] text-[#ffffff] rounded-2xl font-black text-base md:text-lg flex flex-row-reverse justify-between px-6 shadow-[0_8px_24px_-6px_rgba(0,109,55,0.3)] transition-all duration-300 cursor-pointer"
+                className="group relative w-full h-14 md:h-16 bg-gradient-to-l from-[#00562b] via-[#006d37] to-[#007d3e] hover:from-[#004520] hover:via-[#005e30] hover:to-[#006d37] text-[#ffffff] rounded-2xl font-black text-base md:text-lg flex items-center justify-between px-5 shadow-[0_10px_28px_-8px_rgba(0,109,55,0.45)] hover:shadow-[0_14px_32px_-8px_rgba(0,109,55,0.55)] transition-all duration-300 cursor-pointer overflow-hidden"
               >
-                <span className="flex items-center gap-3 flex-row-reverse">
-                  <Rocket className="w-5 h-5 text-[#fed65b] fill-[#fed65b] animate-pulse" />
-                  <span>ابدأ رحلة التعلم</span>
+                {/* Sheen sweep au survol */}
+                <span className="pointer-events-none absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-out bg-gradient-to-l from-transparent via-white/15 to-transparent" />
+
+                <span className="relative flex h-full items-center gap-3">
+                  {/* Badge circulaire doré pour l'icône */}
+                  <span className="flex h-9 w-9 md:h-10 md:w-10 shrink-0 items-center justify-center rounded-full bg-[#fed65b] shadow-inner transition-transform duration-300 group-hover:rotate-12 group-hover:scale-110">
+                    <Rocket className="w-5 h-5 text-[#005e30] fill-[#005e30] transition-transform duration-300 group-hover:-translate-y-0.5" />
+                  </span>
+                  <span className="leading-none translate-y-[2px]">ابدأ رحلة التعلم</span>
                 </span>
-                <ChevronLeft className="w-6 h-6 transition-transform group-hover:-translate-x-1" />
+                <ChevronLeft className="relative w-6 h-6 transition-transform duration-300 group-hover:-translate-x-1.5" />
               </motion.button>
 
               <p className="text-center mt-6 text-[10px] sm:text-xs text-[#504441] opacity-75 flex items-center justify-center gap-1.5 font-bold">

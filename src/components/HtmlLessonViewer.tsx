@@ -3,6 +3,7 @@
 // srcdoc = isolation CSS totale : les styles Tailwind de l'app ne fuient pas dans la leçon, et inversement.
 import { useEffect, useState } from 'react';
 import { LESSON_HTML_GETTERS } from '../data/lessonHtmlGetters';
+import { sliceLessonHtml } from '../data/lessonChapterSplit';
 
 interface Props {
   lessonKey: string;
@@ -25,7 +26,7 @@ export default function HtmlLessonViewer({ lessonKey, onBack, onNext, nextTitleA
       return;
     }
     getter()
-      .then((m) => { if (alive) setHtml(m.default); })
+      .then((m) => { if (alive) setHtml(sliceLessonHtml(m.default, lessonKey)); })
       .catch(() => { if (alive) setError('تعذّر تحميل الدرس.'); });
     return () => { alive = false; };
   }, [lessonKey]);

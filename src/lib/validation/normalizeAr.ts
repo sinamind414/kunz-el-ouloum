@@ -1,12 +1,19 @@
 // normalizeAr.ts
 // Normaliseur arabe unique, partagé par ValidationEngine + fuzzyMatch (fillBlank).
 // Aucune dépendance externe. Règle (Speckit §5.3) :
-//   tatweel off · أإآ→ا · ى→ي · ة→ه (tolérance) · diacritiques off · espaces repliés.
-// Les chiffres arabes/latins et lettres latines (PPM, PPSE, ACh, H2…) sont conservés.
+//   NFKC d'abord · tatweel off · أإآ→ا · ى→ي · ة→ه (tolérance) · diacritiques off · espaces repliés.
+// Les chiffres arabes/latins, lettres latines (PPM, PPSE, ACh, H2…) et les
+// marqueurs unitaires % / ٪ / ° sont conservés.
+// NFKC (audit 2026-09-16) : déplie les « presentation forms » U+FBxx/U+FExx que
+// les PDF/OCR arabes emploient (ﻣﻬﺎم → مهم, ﻻ → لا) — sinon ces mots, hors
+// \u0600-\u06FF, devenaient des espaces (54,7 % des caractères de L6 = perdus).
+// % / ° conservés (évaluation 80 copies bac2025) : « المصاب 30% » (données SOD)
+// ne doit PAS devenir le nombre isolé 30 — faux déclencheur du conflit ATP.
 
 export function normalizeAr(input: string): string {
   if (!input) return '';
   return input
+    .normalize('NFKC') // déplie presentation forms (ﻣﻬﺎم→مهم) + indices (₂→2)
     .replace(/[\u064B-\u065F\u0670]/g, '') // harakat + alef suscrite + hamza souscrite
     .replace(/ـ/g, '') // tatweel (allongement)
     .replace(/[إأآٱا]/g, 'ا')
@@ -14,7 +21,7 @@ export function normalizeAr(input: string): string {
     .replace(/ؤ/g, 'و')
     .replace(/ئ/g, 'ي')
     .replace(/ة/g, 'ه') // tolérance ة→ه
-    .replace(/[^\u0600-\u06FF\u0750-\u077F0-9a-zA-Z\s]/g, ' ')
+    .replace(/[^\u0600-\u06FF\u0750-\u077F0-9a-zA-Z\s%٪°]/g, ' ')
     .replace(/\s+/g, ' ')
     .trim();
 }
@@ -26,7 +33,7 @@ export function containsLatin(raw: string, token: string): boolean {
   // hamzas, harakat…) : un terme mixte arabe+latin comme « نضج الـ ARNm »
   // contient un tatweel qui sinon ne se retrouve jamais dans le texte
   // normalisé. Garde-fou : un token qui disparaît à la normalisation
-  // (ex. « % ») ne doit jamais matcher toute la chaîne (includes('')).
+  // ne doit jamais matcher toute la chaîne (includes('')).
   const needle = normalizeAr(token).toLowerCase();
   return needle.length > 0 && norm.includes(needle);
 }

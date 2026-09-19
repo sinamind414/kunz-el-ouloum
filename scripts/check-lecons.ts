@@ -27,7 +27,7 @@ for (const file of files) {
   if (!html.includes('.sommaire{position:sticky')) errs.push('CSS sommaire manquant');
 
   // ids
-  if (file === 'lecon_transcription.html') {
+  if (file.startsWith('lecon_')) {
     if (!html.includes('id="step1"')) errs.push('ids step* manquants');
     if (!html.includes('id="c1-badge"')) errs.push('c1-badge manquant');
   } else {
@@ -53,5 +53,5 @@ if (failures) {
   console.error(`\n${failures}/${files.length} leçons en échec — v3.2 incomplet`);
   process.exit(1);
 } else {
-  console.log(`\n✓ Toutes les leçons v3.2 OK (${files.length}/23)`);
+    console.log(`\n✓ Toutes les leçons v3.2 OK (${files.length}/${files.length})`);
 }

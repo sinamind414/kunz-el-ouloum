@@ -87,6 +87,126 @@ export const LESSON_TRANSFER_CHALLENGES: Record<string, LessonTransferChallenge>
     correctionAr:
       'تزداد السرعة مع تركيز الركيزة لأن المواقع النشطة تتحرّك نحو التشبّع، ثم تستقر عند Vmax لأن جميع المواقع النشطة أصبحت مشغولة ولا يمكن للإنزيم استقبال ركيزة أكثر.',
   },
+  'd2-u6-l1-hill-ruben': {
+    id: 'lt_hill_ruben_o2_source',
+    lessonId: 'd2-u6-l1-hill-ruben',
+    conceptId: 'hill_ruben_water_splitting',
+    reflexId: 'interpret',
+    titleAr: 'تحدي BAC — مصدر الأكسجين المنطلق',
+    contextAr:
+      'حُضنت صانعات خضراء معزولة في وسط خالٍ من CO₂ مع أملاح الحديد Fe³⁺ والضوء: انطلق O₂ وأرجع الحديد. وفي تجربة أخرى موسوم O₂ الوسط بـ ¹⁸O في الماء فقط.',
+    questionAr:
+      'فسّر النتائج: من أي جزيء يأتي الأكسجين المنطلق، وما دور Fe³⁺؟',
+    validation: {
+      docType: 'qualitative',
+      actionVerb: 'interpret',
+      domain: 'metabo',
+      isNeuromuscular: false,
+      expectedTargets: ['الماء', 'التحلل الضوئي', 'الأكسجين', 'مستقبل اصطناعي', 'الإلكترونات'],
+    },
+    correctionAr:
+      'يأتي الأكسجين المنطلق من تحلل الماء تحت تأثير الضوء وليس من CO₂: انطلق O₂ في وسط خالٍ من CO₂، والوسم ¹⁸O يظهر في O₂ فقط حين يكون في الماء. يوظف Fe³⁺ كمستقبل اصطناعي يقبل الإلكترونات المحررة من تحلل الماء فيرجع إلى Fe²⁺.',
+  },
+  'd2-u6-l2-jagendorf': {
+    id: 'lt_jagendorf_gradient',
+    lessonId: 'd2-u6-l2-jagendorf',
+    conceptId: 'jagendorf_proton_gradient',
+    reflexId: 'interpret',
+    titleAr: 'تحدي BAC — تركيب ATP في الظلام',
+    contextAr:
+      'وُضعت كييسات ثيلاكويد معزولة في الظلام في وسط pH = 4 ثم نُقلت إلى وسط pH = 8 يحتوي ADP وPi، فظهر ATP في الظلام.',
+    questionAr:
+      'فسّر تكوّن ATP في الظلام، واستنتج الدور الحقيقي للضوء في الصانعة الخضراء.',
+    validation: {
+      docType: 'qualitative',
+      actionVerb: 'interpret',
+      domain: 'metabo',
+      isNeuromuscular: false,
+      expectedTargets: ['تدرج البروتونات', 'الكرية المذنبة', 'ATP', 'الظلام'],
+    },
+    correctionAr:
+      'تكوّن ATP في الظلام لأن فرق pH خلَق تدرجا للبروتونات H⁺ بين التجويف والوسط، وعادت H⁺ عبر الكرية المذنبة فترجمت الطاقة الحررة في تركيب ATP. إذن دور الضوء ليس التركيب المباشر بل تكوين تدرج H⁺ داخل التيلاكويد أثناء المرحلة الكيميوضوئية.',
+  },
+  'd2-u6-l3-calvin': {
+    id: 'lt_calvin_14c',
+    lessonId: 'd2-u6-l3-calvin',
+    conceptId: 'calvin_14c_tracing',
+    reflexId: 'analyse',
+    titleAr: 'تحدي BAC — أول مركب يتلقى الكربون',
+    contextAr:
+      'عرّض كالفن أشنة خضراء لـ ¹⁴CO₂ وأخذ عينات عند 5 و30 و60 ثانية، ثم حللها بكروماتوغرافيا ثنائية الأبعاد وتصوير إشعاعي ذاتي: عند 5 ثوان ظهرت نقطة واحدة (3-PGA)، ثم تعددت النقاط مع الزمن.',
+    questionAr:
+      'حلّل النتائج: ما أول مركب يتلقى كربون CO₂، وماذا يستنتج من تدرج ظهور الوسم؟',
+    validation: {
+      docType: 'qualitative',
+      actionVerb: 'analyse',
+      domain: 'metabo',
+      isNeuromuscular: false,
+      expectedTargets: ['3-PGA', 'حمض فوسفوغليسريك', 'الوسم', 'الحلقة'],
+    },
+    correctionAr:
+      'أول مركب موسوم هو حمض فوسفوغليسريك 3-PGA لأنه وحده ظهر عند 5 ثوان. تدرج ظهور الوسم بعدها (تريوزات فوسفاتية ثم سكريات) يفيد أن تثبيت الكربون يتم في مسار حلقي: تثبيت CO₂ على RuBP ثم اختزال 3-PGA بوساطة ATP وNADPH ثم تجديد المستقبل.',
+  },
+  'd2-u7-l1-mitchell-racker': {
+    id: 'lt_racker_chemiosmosis',
+    lessonId: 'd2-u7-l1-mitchell-racker',
+    conceptId: 'mitchell_racker_chemiosmosis',
+    reflexId: 'interpret',
+    titleAr: 'تحدي BAC — إعادة البناء الاصطناعي',
+    contextAr:
+      'أدخل راكر بروتين البكتيريورودوبسين (مضخة H⁺ تعمل بالضوء) والكرية المذنبة في حويصلة غشائية اصطناعية: عند الإضاءة تركب ATP خارج الحويصلة، وفي الظلام لا يتركب.',
+    questionAr:
+      'فسّر هذه النتائج، وبيّن البرهان الذي تقدمه لنظرية ميتشل الكيمياؤسموزية.',
+    validation: {
+      docType: 'qualitative',
+      actionVerb: 'interpret',
+      domain: 'metabo',
+      isNeuromuscular: false,
+      expectedTargets: ['تدرج البروتونات', 'الكرية المذنبة', 'ATP', 'الضوء'],
+    },
+    correctionAr:
+      'الضوء يحرك مضخة البكتيريورودوبسين فيضخ H⁺ داخل الحويصلة فيتكون تدرج بروتوني، وعودة H⁺ عبر الكرية المذنبة تترجم طاقة التدرج في تركيب ATP، وفي الظلام لا تضخ ولا ATP. إذن تدرج H⁺ وحده مع الكرية المذنبة كاف لتركيب ATP: برهان على النظرية الكيمياؤسموزية لميتشل.',
+  },
+  'd3-u9-l2-benioff': {
+    id: 'lt_benioff_plan',
+    lessonId: 'd3-u9-l2-benioff',
+    conceptId: 'benioff_plan_earthquakes',
+    reflexId: 'interpret',
+    titleAr: 'تحدي BAC — بؤر الزلازل والغوص',
+    contextAr:
+      'في منطقة الاندساس رُصدت بؤر زلزالية سطحية قرب الخندق ثم عميقة (300، 500، 700 كلم) كلما اتجهنا نحو القارة، واصطففت على مستوى مائل.',
+    questionAr:
+      'حلّل توزع البؤر الزلزالية واستنتج الشاهد الذي يقدمه على ظاهرة الغوص.',
+    validation: {
+      docType: 'qualitative',
+      actionVerb: 'interpret',
+      domain: 'tectonique',
+      isNeuromuscular: false,
+      expectedTargets: ['مستوى بنيوف', 'الغوص', 'الصفيحة المحيطية', 'البرنس'],
+    },
+    correctionAr:
+      'تتعمق بؤر الزلازل تدريجيا من الخندق نحو القارة واصطففت على مستوى مائل يدعى مستوى بنيوف: ذلك يثبت أن صفيحة محيطية صلبة وباردة تنزلق وتنكسر داخل البرنس المطاطي، إذ لا تولد الاستينوسفير المطاطي زلازل. الاصطفاف المائل هو بصمة مسار الغوص حتى 700 كلم.',
+  },
+  'd3-u11-l1-migmatite': {
+    id: 'lt_migmatite_thickening',
+    lessonId: 'd3-u11-l1-migmatite',
+    conceptId: 'migmatite_crustal_thickening',
+    reflexId: 'interpret',
+    titleAr: 'تحدي BAC — المغماتيت شاهد التقلص',
+    contextAr:
+      'في منطقة تصادم قاري لوحظت طيات وفوالق عكسية وصخور مغتربة، وصخر متحول يتناوب فيه الكوارتز والغرونا والميكا والبلاجيوكلاز مع صفوف أومفيبوليت، ناتج عن انصهار جزئي لغرانيت القشرة العميقة.',
+    questionAr:
+      'حدّد نوع البنيات المميزة لمنطقة التصادم، واستنتج لماذا يعد هذا الصخر دليلا على التضاعف القشري.',
+    validation: {
+      docType: 'qualitative',
+      actionVerb: 'interpret',
+      domain: 'tectonique',
+      isNeuromuscular: false,
+      expectedTargets: ['التضاعف القشري', 'الانصهار الجزئي', 'الغرانيت', 'المغماتيت', 'التقلص'],
+    },
+    correctionAr:
+      'البنيات طيات وفوالق عكسية وصخور مغتربة ناشئة عن قوى الانضغاط. الصخر هو المغماتيت: تناوب معادن ناتج عن انصهار جزئي لغرانيت القشرة العميقة تحت الحرارة والضغط العاليين، ولا يحدث هذا إلا حيث ازداد سمك الليتوسفير — أي التضاعف القشري شاهد التقلص.',
+  },
 };
 
 // #41 — Le Défi BAC notait sur le seul ValidationEngine, qui mesure la FORME

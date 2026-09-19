@@ -171,3 +171,59 @@ describe('sanctions pédagogiques', () => {
     expect(evaluerSanctions('xcvb qsdq 12345')).toEqual([]);
   });
 });
+
+// ── 4. Non-régression faux positifs (audit 2026-09-16) ──────────────────────
+// Verrouille les correctifs de précision : la sanction ATP exige un contexte
+// énergétique (ATP / حصيلة / غلوكوز), et la co-occurrence Hb + « كروي » est
+// dégradée en vigilance quand la réponse parle bien de la cellule.
+
+describe('non-régression faux positifs sanctions (audit 2026-09-16)', () => {
+  it('A1 — température optimale 37° (unité 3) : AUCUNE sanction ATP', () => {
+    const s = evaluerSanctions('درجة الحرارة المثلى للإنزيم هي 37 درجة');
+    expect(s.find((x) => x.id === 'atp_bilan_respiration')).toBeUndefined();
+  });
+
+  it('A2 — température corporelle décimale 36.8 : AUCUNE sanction ATP', () => {
+    const s = evaluerSanctions('حرارة الجسم 36.8 درجة');
+    expect(s.find((x) => x.id === 'atp_bilan_respiration')).toBeUndefined();
+  });
+
+  it('A3 — numéros de documents 30/32 : AUCUNE sanction ATP', () => {
+    const s = evaluerSanctions('كما هو مبيّن في الوثيقة 30 والوثيقة 32 نستنتج أن');
+    expect(s.find((x) => x.id === 'atp_bilan_respiration')).toBeUndefined();
+  });
+
+  it('A5 — pourcentage de données expérimentales « المصاب 30% » (copies bac2025 S2) : AUCUNE sanction ATP', () => {
+    // Évaluation 80 copies : le % de « المصاب 30% » (données SOD, sujet 2)
+    // était supprimé par le normaliseur → « 30 » isolé → faux conflit ATP
+    // sur 39 copies (dont 5 « excellentes »). Verrouille la conservation de %.
+    const s = evaluerSanctions(
+      'نشاط انزيم sod السليم 100 والمصاب 30% تركيز ros السليم 4umol l والمصاب 12'
+    );
+    expect(s.find((x) => x.id === 'atp_bilan_respiration')).toBeUndefined();
+  });
+
+  it('A4 — contexte énergétique présent : la sanction ATP reste active', () => {
+    for (const rep of ['الحصيلة 37 ATP', 'الحصيلة الطاقوية هي 32', '36 ATP لكل غلوكوز']) {
+      const s = evaluerSanctions(rep).find((x) => x.id === 'atp_bilan_respiration');
+      expect(s, `déclencheur attendu: ${rep}`).toBeDefined();
+      expect(s!.gravite).toBe('forte');
+    }
+  });
+
+  it('B1 — globule rouge décrit comme cellule contenant Hb : vigilance (pas forte)', () => {
+    const s = evaluerSanctions(
+      'الكريه الحمراء خلية كروية الشكل تقريبا تحتوي على الهيموغلوبين',
+    ).find((x) => x.id === 'hemoglobine_vs_globule');
+    expect(s).toBeDefined();
+    expect(s!.gravite).toBe('vigilance');
+  });
+
+  it('B2 — molécule qualifié de cellule sans contexte cellulaire : forte', () => {
+    const s = evaluerSanctions('الهيموغلوبين مستدير الشكل').find(
+      (x) => x.id === 'hemoglobine_vs_globule',
+    );
+    expect(s).toBeDefined();
+    expect(s!.gravite).toBe('forte');
+  });
+});

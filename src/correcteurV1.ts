@@ -14,9 +14,12 @@
 // ما جاء في المنهاج وليس على المحتوى المعرفي الموجود في الكتاب المدرسي »).
 //
 // COUCHE DICTIONNAIRE (build 2026-09-14 — src/data/dictionaries/dictionnaire_final.json) :
-// en complément de la banque L1..L6 ci-dessous (JAMAIS modifiée), le chemin PAR DÉFAUT
-// consomme les entités du DICTIONNAIRE FINAL (617 entités, build généré — sources =
-// fichiers data/). Règle moteur du build appliquée (voir dictionnaireCorrecteur.ts) :
+// en complément de la banque L1..L6 ci-dessous (JAMAIS modifiée), les entités du
+// DICTIONNAIRE FINAL (617 entités, build généré — sources = fichiers data/) enrichissent
+// le RETOUR PÉDAGOGIQUE (entitesReconnues de evaluerReponseKeywords) ; elles ne
+// gonflent PLUS le dénominateur du chemin PAR DÉFAUT (audit 2026-09-16 : un pool de
+// 128–280 formes rendait le seuil de couverture mathématiquement inatteignable).
+// Règle moteur du build appliquée (voir dictionnaireCorrecteur.ts) :
 //   · notation sur fiabilite « officiel » + « verifie » uniquement ;
 //   · « a_valider » = piste + flag AMBIGUITE_LEXICALE — tolérée, JAMAIS notée ;
 //   · rattachement aux unités via les refs sources (D1U1..D3U3 → ids 1..11).
@@ -36,7 +39,7 @@ export interface CorrecteurUnite {
   titre: string;
   /** Mots-clés scientifiques officiels (arabe + sigles latins techniques). */
   motsCles: string[];
-  /** Provenance (étiquettes L1..L4). */
+  /** Provenance (étiquettes L1..L6 — voir docs/sources/README.md). */
   sources: string[];
 }
 
@@ -120,7 +123,11 @@ export const CORRECTEUR_V1_UNITES: CorrecteurUnite[] = [
     domaine: 1,
     titre: 'المناعة (دور البروتينات في الدفاع عن الذات)',
     motsCles: [
-      'الذات', 'اللاذات', 'HLA', 'معقد التوافق النسيجي', 'HLA-I', 'HLA-II',
+      // R3 (évaluation 80 copies, 2026-09-16) : الذات/اللاذات (mots vides,
+      // jamais productifs en matching) remplacés par les formes pleines du
+      // concept ; termes précis du contexte transfusion (sujet bac2025 Ex3)
+      // ajoutés — voir docs/copies-bac2025 (harnais scripts/evaluer-copies.ts).
+      'مناعة الذات', 'مناعة غير الذات', 'HLA', 'معقد التوافق النسيجي', 'HLA-I', 'HLA-II',
       'المستضد', 'أجسام مضادة', 'خلايا بلازمية', 'معقد مناعي', 'بلعمة',
       'المتمم', 'LB', 'BCR', 'الانتقاء النسيلي', 'خلايا ذاكرة',
       'الاستجابة الأولية', 'الاستجابة الثانوية', 'اللقاح', 'LTc', 'LT8',
@@ -130,6 +137,8 @@ export const CORRECTEUR_V1_UNITES: CorrecteurUnite[] = [
       'معقد الهجوم الغشائي', 'اللمفاويات السامة', 'اللمفاويات المساعدة',
       'التسامح الذاتي', 'الغلوبيولينات المناعية', 'المناعة المكتسبة', 'رفض الطعم',
       'العدوى الانتهازية', 'GP120',
+      // [bac2025 S2-Ex3] contexte transfusion (copies réelles) — R3
+      'الجلسمة', 'رفض الجلسمة', 'الزمرة الدموية', 'العامل الريزوسي', 'نقل الدم',
       // [L5] الموارد المستهدفة (التدرج السنوي 2017)
       'التمييز بين الذات', 'مظاهر التعرف', 'التخلص من المعقد المناعي',
       'مصدر الأجسام المضادة', 'طريقة تأثير الخلايا اللمفاوية التائية',
@@ -305,6 +314,8 @@ export const CORRECTEUR_V1_UNITES: CorrecteurUnite[] = [
 
 export interface ResultatKeywords {
   uniteId: number;
+  /** Mode de scoring : 'attendus' = barème de la question ; 'defaut' = banque L1–L6 de l'unité. */
+  mode: 'attendus' | 'defaut';
   /** Nombre de mots-clés de l'unité présents dans la réponse. */
   trouve: number;
   /** Nombre total de mots-clés de l'unité considérés. */
@@ -313,7 +324,7 @@ export interface ResultatKeywords {
   couverture: number;
   /** Mots-clés requis mais absents. */
   manquants: string[];
-  /** Vrai si la réponse couvre au moins SEUIL_KEYWORDS des mots-clés. */
+  /** Vrai si la réponse couvre au moins le seuil du mode courant. */
   passe: boolean;
   /** Liste des mots-clés trouvés (retour pédagogique). */
   trouves: string[];
@@ -321,15 +332,28 @@ export interface ResultatKeywords {
   entitesReconnues: EntiteDetectee[];
 }
 
-/** Seuil de couverture calibré : une réponse complète couvre ~2/3 des termes. */
+/** Seuil mode « attendus » : une réponse complète couvre ~2/3 des attendus de la question. */
 export const SEUIL_KEYWORDS = 0.6;
+
+/**
+ * Seuil mode « defaut » (AUDIT 2026-09-16) : la cible est la banque L1–L6 COMPLÈTE
+ * de l'unité (49–60 termes), pas les attendus d'une question précise. Une réponse
+ * substantielle couvrant un sous-thème majeur atteint ~1/4 des mots-clés de l'unité ;
+ * exiger 60 % d'une unité entière est irréaliste (constat : 10 % pour une réponse
+ * modèle riche sur un pool de 128 termes). CE MODE RESTE UN DIAGNOSTIC de couverture
+ * d'unité — la notation formelle passe par les attendus explicites ou le barème.
+ */
+export const SEUIL_KEYWORDS_DEFAUT = 0.25;
 
 /**
  * Pool enrichi : mots-clés L1..L6 (contrat de traçabilité — JAMAIS modifiés) +
  * formes arabes du DICTIONNAIRE FINAL (fiabilite officiel+verifie — règle moteur
  * du build) rattachées à l'unité via ses refs sources (D1U1..D3U3 → ids 1..11).
- * Dédupliqué par forme normalisée, mots-clés L1..L6 prioritaires. Ce pool sert au
- * chemin PAR DÉFAUT (sans attendus explicites) ; un appel avec attendus ne
+ * Dédupliqué par forme normalisée, mots-clés L1..L6 prioritaires.
+ * AUDIT 2026-09-16 : ce pool ne sert PLUS au scoring du chemin par défaut (le
+ * dénominateur gonflé rendait le seuil inatteignable) — il reste exposé pour
+ * l'inspection/le rappel lexical ; les variantes dictionnaire remontent dans
+ * evaluerReponseKeywords via entitesReconnues. Un appel avec attendus ne
  * consomme que les attendus fournis.
  */
 export function motsClesUniteEnrichis(uniteId: number): string[] {
@@ -352,8 +376,13 @@ export function motsClesUniteEnrichis(uniteId: number): string[] {
 
 /**
  * Évalue une réponse d'élève contre la banque de mots-clés d'une unité.
- * Sans attendus explicites, le pool enrichi est utilisé (mots-clés L1..L6 +
- * formes du DICTIONNAIRE FINAL — voir motsClesUniteEnrichis).
+ * Deux modes (AUDIT 2026-09-16) :
+ *   · « attendus » (attendus fournis) → scoring sur CEUX-CI uniquement, seuil
+ *     SEUIL_KEYWORDS (0.6) — inchangé, verrouillé par test anti-fuite ;
+ *   · « defaut » (sans attendus) → banque L1–L6 curatée de l'unité, seuil
+ *     SEUIL_KEYWORDS_DEFAUT (0.25) — diagnostic de couverture d'unité ; les
+ *     formes du DICTIONNAIRE FINAL ne gonflent plus le dénominateur, elles
+ *     remontent via entitesReconnues.
  * Utilise le normaliseur partagé (normalizeAr) : أ/إ/آ→ا, ة→ه, ى→ي, diacritiques off.
  */
 export function evaluerReponseKeywords(
@@ -361,10 +390,17 @@ export function evaluerReponseKeywords(
   uniteId: number,
   attendus?: string[]
 ): ResultatKeywords {
-  const norm = normalizeAr(reponse || '');
+  const mode: 'attendus' | 'defaut' =
+    attendus && attendus.length > 0 ? 'attendus' : 'defaut';
+  const unite = CORRECTEUR_V1_UNITES.find((u) => u.uniteId === uniteId);
   const cibles =
-    attendus && attendus.length > 0 ? attendus : motsClesUniteEnrichis(uniteId);
+    mode === 'attendus'
+      ? attendus!
+      : unite
+        ? unite.motsCles
+        : [];
 
+  const norm = normalizeAr(reponse || '');
   const trouves: string[] = [];
   const manquants: string[] = [];
   for (const mot of cibles) {
@@ -379,11 +415,12 @@ export function evaluerReponseKeywords(
   const couverture = total === 0 ? 1 : trouve / total;
   return {
     uniteId,
+    mode,
     trouve,
     total,
     couverture,
     manquants,
-    passe: couverture >= SEUIL_KEYWORDS,
+    passe: couverture >= (mode === 'attendus' ? SEUIL_KEYWORDS : SEUIL_KEYWORDS_DEFAUT),
     trouves,
     // COUCHE DICTIONNAIRE : entités officiel+verifie reconnues (retour pédagogique
     // sémantique ; les pistes a_valider restent dans evaluerEntites().pistesAmbigues).

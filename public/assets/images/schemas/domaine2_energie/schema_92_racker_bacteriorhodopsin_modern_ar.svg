@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="760" viewBox="0 0 1200 760" font-family="Arial, sans-serif">
+  <defs>
+    <marker id="arr92" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L9,3 L0,6 Z" fill="#0f172a"/>
+    </marker>
+    <marker id="arr92b" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L9,3 L0,6 Z" fill="#1d4ed8"/>
+    </marker>
+  </defs>
+  <rect width="1200" height="760" fill="#f8fafc"/>
+  <rect x="24" y="24" width="1152" height="712" rx="24" fill="#ffffff" stroke="#e2e8f0" stroke-width="3"/>
+  <text x="600" y="80" text-anchor="middle" font-size="25" font-weight="bold" fill="#0f172a">تجربة راكر (1974) : إثبات النظرية الكيمياؤسموزية لميتشل</text>
+
+  <!-- ======== الحويصلة ======== -->
+  <rect x="60" y="112" width="620" height="470" rx="18" fill="#faf5ff" stroke="#c4b5fd" stroke-width="2"/>
+  <text x="370" y="150" text-anchor="middle" font-size="18" font-weight="bold" fill="#4c1d95">حويصلة غشائية (Liposome) معاد بناؤها في المخبر</text>
+
+  <circle cx="370" cy="330" r="160" fill="#ede9fe" stroke="#6d28d9" stroke-width="6"/>
+  <circle cx="370" cy="330" r="146" fill="#f5f3ff" stroke="#a78bfa" stroke-width="3"/>
+  <text x="370" y="256" text-anchor="middle" font-size="14" fill="#4c1d95">داخل الحويصلة : تجمع H⁺</text>
+
+  <!-- بكتيريورودوبسين -->
+  <rect x="290" y="160" width="52" height="44" rx="8" fill="#7c3aed"/>
+  <text x="316" y="140" text-anchor="middle" font-size="13" font-weight="bold" fill="#5b21b6">بكتيريورودوبسين</text>
+  <text x="316" y="224" text-anchor="middle" font-size="12" fill="#5b21b6">مضخة H⁺ فولطية</text>
+  <path d="M316 208 L316 258" stroke="#1d4ed8" stroke-width="3" marker-end="url(#arr92b)"/>
+
+  <!-- أشعة الضوء -->
+  <path d="M120 150 L282 172" stroke="#f59e0b" stroke-width="3" marker-end="url(#arr92)"/>
+  <path d="M120 190 L280 184" stroke="#f59e0b" stroke-width="3" marker-end="url(#arr92)"/>
+  <circle cx="80" cy="168" r="22" fill="#fbbf24"/>
+  <text x="80" y="230" text-anchor="middle" font-size="13" fill="#b45309">ضوء</text>
+  <text x="80" y="252" text-anchor="middle" font-size="11.5" fill="#b45309">(محرّك المضخة)</text>
+
+  <!-- كرية مذنبة -->
+  <rect x="398" y="160" width="34" height="44" fill="#0891b2"/>
+  <circle cx="415" cy="140" r="22" fill="#22d3ee"/>
+  <text x="415" y="108" text-anchor="middle" font-size="12.5" font-weight="bold" fill="#155e75">الكرية المذنبة</text>
+  <text x="415" y="226" text-anchor="middle" font-size="12" fill="#155e75">ATP-synthase</text>
+  <path d="M415 208 L415 258" stroke="#1d4ed8" stroke-width="3" marker-end="url(#arr92b)"/>
+
+  <!-- ATP خارج -->
+  <rect x="540" y="118" width="110" height="40" rx="10" fill="#ffffff" stroke="#059669" stroke-width="3"/>
+  <text x="595" y="146" text-anchor="middle" font-size="15" font-weight="bold" fill="#059669">ATP</text>
+  <path d="M442 150 L534 140" stroke="#059669" stroke-width="3" marker-end="url(#arr92)"/>
+  <text x="595" y="182" text-anchor="middle" font-size="12.5" fill="#047857">ADP + Pi ⟶ ATP (خارج الحويصلة)</text>
+
+  <text x="370" y="528" text-anchor="middle" font-size="14" fill="#4c1d95">بروتينان فقط في غشاء اصطناعي : مضخة H⁺ بالضوء + كرية مذنبة</text>
+
+  <!-- ======== الشواهد ======== -->
+  <rect x="710" y="112" width="430" height="470" rx="18" fill="#f1f5f9" stroke="#94a3b8" stroke-width="2"/>
+  <text x="925" y="150" text-anchor="middle" font-size="18" font-weight="bold" fill="#1e293b">الشواهد (التجارب الشاهدة)</text>
+
+  <rect x="740" y="182" width="370" height="96" rx="12" fill="#ffffff" stroke="#cbd5e1" stroke-width="2"/>
+  <text x="925" y="218" text-anchor="middle" font-size="14.5" font-weight="bold" fill="#059669">مع الضوء : ATP يتركب</text>
+  <text x="925" y="252" text-anchor="middle" font-size="13" fill="#334155">تدرج H⁺ يتشكل ⟶ الكرية تدور</text>
+
+  <rect x="740" y="298" width="370" height="96" rx="12" fill="#ffffff" stroke="#cbd5e1" stroke-width="2"/>
+  <text x="925" y="334" text-anchor="middle" font-size="14.5" font-weight="bold" fill="#dc2626">بدون ضوء : لا ATP</text>
+  <text x="925" y="368" text-anchor="middle" font-size="13" fill="#334155">شاهد سلبي : المضخة لا تعمل</text>
+
+  <rect x="740" y="414" width="370" height="96" rx="12" fill="#ffffff" stroke="#cbd5e1" stroke-width="2"/>
+  <text x="925" y="450" text-anchor="middle" font-size="14.5" font-weight="bold" fill="#dc2626">+ مركب فك الارتباط : لا ATP</text>
+  <text x="925" y="484" text-anchor="middle" font-size="13" fill="#334155">التدرج يُهدم ⟶ إثبات الحتمية</text>
+
+  <!-- ======== شريط الاستنتاج ======== -->
+  <rect x="120" y="616" width="960" height="72" rx="16" fill="#ecfdf5" stroke="#10b981" stroke-width="3"/>
+  <text x="600" y="648" text-anchor="middle" font-size="16.5" font-weight="bold" fill="#065f46">تدرج H⁺ وحده كافٍ لتركيب ATP : النظرية الكيمياؤسموزية لميتشل صحيحة (جائزة نوبل 1978)</text>
+  <text x="600" y="674" text-anchor="middle" font-size="13.5" fill="#047857">لا حاجة لأي جزيء وسيط صلب : الطاقة الحررة لتدرج البروتونات تُحوَّل في الكرية المذنبة</text>
+</svg>

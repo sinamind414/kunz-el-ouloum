@@ -1,9 +1,9 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>منصة المتفوق 3AS | المرحلة 12 : الدرس 23 والدرس 24</title>
+    <title>منصة بنزر العلم | المرحلة 12 : الدرس 23 والدرس 24</title>
     <style>
         :root {
             --bg-main: #f8fafc;
@@ -52,87 +52,6 @@
             background: #f1f5f9;
             padding: 2px 8px;
             border-radius: 6px;
-        }
-
-        /* Navbar */
-        .navbar {
-            background: var(--surface);
-            border-bottom: 1px solid var(--border);
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            padding: 1rem 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.02);
-            flex-wrap: wrap;
-            gap: 1rem;
-        }
-
-        .brand {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            font-weight: 900;
-            font-size: 1.25rem;
-            color: var(--primary);
-        }
-
-        .brand-badge {
-            background: var(--emerald-dark);
-            color: white;
-            padding: 4px 10px;
-            border-radius: 8px;
-            font-size: 0.8rem;
-            white-space: nowrap;
-        }
-
-        .chapter-switcher {
-            display: flex;
-            gap: 12px;
-            flex-wrap: wrap;
-        }
-
-        .ch-btn {
-            background: var(--bg-main);
-            border: 2px solid var(--border);
-            padding: 8px 18px;
-            border-radius: 12px;
-            font-family: inherit;
-            font-weight: 800;
-            font-size: 0.95rem;
-            color: var(--text-muted);
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .ch-btn:hover {
-            border-color: var(--emerald-dark);
-            color: var(--emerald-dark);
-        }
-
-        .ch-btn.active {
-            background: var(--primary);
-            color: white;
-            border-color: var(--primary);
-        }
-
-        @media (max-width: 768px) {
-            .navbar {
-                flex-direction: column;
-                padding: 1rem;
-                text-align: center;
-            }
-            .chapter-switcher {
-                justify-content: center;
-                width: 100%;
-            }
-            .ch-btn {
-                flex: 1;
-                font-size: 0.85rem;
-                padding: 8px 10px;
-            }
         }
 
         .container {
@@ -435,30 +354,20 @@
 </head>
 <body>
 
-    <!-- Navbar with Phase Switcher -->
-    <nav class="navbar">
-        <div class="brand">
-            <span>منصة المتفوق 3AS</span>
-            <span class="brand-badge">المرحلة 12 (الدرس 23 و 24)</span>
-        </div>
-        <div class="chapter-switcher">
-            <button class="ch-btn active" onclick="showChapter('ch23', event)">🔄 الدرس 23 : حلقة كالفن تثبيت CO₂ وبناء السكريات</button>
-            <button class="ch-btn" onclick="showChapter('ch24', event)">🔗 الدرس 24 : التكامل بين المرحلتين والحصيلة الطاقوية</button>
-        </div>
-    </nav>
+    
 
     
     <!-- Sommaire sticky (v3.2) -->
     <div class="sommaire" id="sommaire">
         <a href="#ch1-step1" id="link-ch1-step1" onclick="scrollToStep('ch1-step1',event)">📖 1-1 وضعية</a>
-        <a href="#ch1-step2" id="link-ch1-step2" onclick="scrollToStep('ch1-step2',event)">1-2 تحليل</a>
-        <a href="#ch1-step3" id="link-ch1-step3" onclick="scrollToStep('ch1-step3',event)">1-3 مستكشف</a>
-        <a href="#ch1-step4" id="link-ch1-step4" onclick="scrollToStep('ch1-step4',event)">1-4 خلاصة + Quiz</a>
+        <a href="#ch1-step2" id="link-ch1-step2" onclick="scrollToStep('ch1-step2',event)">🔬 1-2 تحليل</a>
+        <a href="#ch1-step3" id="link-ch1-step3" onclick="scrollToStep('ch1-step3',event)">🧪 1-3 محاكي</a>
+        <a href="#ch1-step4" id="link-ch1-step4" onclick="scrollToStep('ch1-step4',event)">✅ 1-4 تقويم</a>
         <span class="sep"></span>
-        <a href="#ch2-step1" id="link-ch2-step1" onclick="scrollToStep('ch2-step1',event)">🧬 2-1 إشكالية</a>
-        <a href="#ch2-step2" id="link-ch2-step2" onclick="scrollToStep('ch2-step2',event)">2-2 فك الشفرة</a>
-        <a href="#ch2-step3" id="link-ch2-step3" onclick="scrollToStep('ch2-step3',event)">2-3 تنشيط</a>
-        <a href="#ch2-step4" id="link-ch2-step4" onclick="scrollToStep('ch2-step4',event)">2-4 تقويم</a>
+        <a href="#ch2-step1" id="link-ch2-step1" onclick="scrollToStep('ch2-step1',event)">❓ 2-1 إشكالية</a>
+        <a href="#ch2-step2" id="link-ch2-step2" onclick="scrollToStep('ch2-step2',event)">🔬 2-2 تحليل</a>
+        <a href="#ch2-step3" id="link-ch2-step3" onclick="scrollToStep('ch2-step3',event)">🧪 2-3 محاكي</a>
+        <a href="#ch2-step4" id="link-ch2-step4" onclick="scrollToStep('ch2-step4',event)">✅ 2-4 تقويم</a>
     </div>
 
     <div class="container">
@@ -470,7 +379,7 @@
             
             <header class="lesson-header header-ch23">
                 <div class="lesson-breadcrumb">المجال الثاني : التحولات الطاقوية • الوحدة 1 : آليات تحويل الطاقة الضوئية إلى طاقة كيميائية كامنة</div>
-                <h1>الدرس 3 : تفاعلات المرحلة الكيميوحيوية (حلقة كالفن تثبيت غاز CO₂ وبناء السكريات)</h1>
+                <h1>الدرس 4 : تفاعلات المرحلة الكيميوحيوية (حلقة كالفن تثبيت غاز CO₂ وبناء السكريات)</h1>
                 <div class="lesson-objectives">
                     <div>🎯 <strong>الهدف العلمي :</strong> تحديد خطوات حلقة كالفن (التثبيت، الإرجاع، التجديد)، وتوضيح دور إنزيم الروبيسكو واستهلاك نواتج المرحلة الضوئية (ATP و NADPH).</div>
                     <div>⏱️ <strong>المدة التقديرية للتعلم الذاتي :</strong> 25 دقيقة</div>
@@ -564,7 +473,7 @@
             <section class="card" id="ch1-step4">
                 <div class="section-title">
                     <span class="step-num">4</span>
-                    <span>تقويم الدرس 3 : أسئلة البكالوريا المتكررة</span>
+                    <span>تقويم الدرس 4 : أسئلة البكالوريا المتكررة</span>
                 </div>
 
                 <div class="question-item" id="c23q1-container">
@@ -587,7 +496,7 @@
             
             <header class="lesson-header header-ch24">
                 <div class="lesson-breadcrumb">المجال الثاني : التحولات الطاقوية • الوحدة 1 : آليات تحويل الطاقة الضوئية إلى طاقة كيميائية كامنة</div>
-                <h1>الدرس 4 : التكامل بين المرحلتين (الكيميوضوئية والكيميوحيوية) والحصيلة الطاقوية الشاملة</h1>
+                <h1>الدرس 5 : التكامل بين المرحلتين (الكيميوضوئية والكيميوحيوية) والحصيلة الطاقوية الشاملة</h1>
                 <div class="lesson-objectives">
                     <div>🎯 <strong>الهدف العلمي :</strong> إثبات تجريبي أن المرحلتين متكاملتان وضروريتان لبعضهما، وكتابة المعادلة الإجمالية وحساب استهلاك طاقة ATP لنبتة واحدة.</div>
                     <div>⏱️ <strong>المدة التقديرية للتعلم الذاتي :</strong> 25 دقيقة</div>
@@ -602,7 +511,7 @@
                 </div>
                 <div class="problem-box" style="border-right-color: var(--amber-dark); background: var(--amber-light);">
                     <div class="problem-title" style="color: #92400e;">⚠️ لماذا تتوقف المرحلة الكيميوحيوية في الظلام بعد ثوانٍ رغم أنها لا تتطلب ضوءاً؟</div>
-                    <p>تسمى المرحلة الثانية بـ "مرحلة الظلام" أو المرحلة الكيميوحيوية لأنها لا تتطلب ضوءاً بشكل مباشر في تفاعلاتها. ولكن تجريبياً، إذا نقلنا نبتة من الضوء إلى الظلام التام، تتوقف حلقة كالفن عن تثبيت <span class="ltr-seq">CO₂</span> بعد ثوانٍ معدودة! وكذلك إذا منعنا الـ <span class="ltr-seq">CO₂</span> في الضوء تتوقف أكسدة الماء في التيلاكويد! <strong>كيف يفسر هذا الترابط الوثيق والتكامل التام بين المرحلتين؟</strong></p>
+                    <p>تسمى المرحلة الثانية بالمرحلة الكيميوحيوية لأنها لا تتطلب ضوءاً بشكل مباشر في تفاعلاتها. ولكن تجريبياً، إذا نقلنا نبتة من الضوء إلى الظلام التام، تتوقف حلقة كالفن عن تثبيت <span class="ltr-seq">CO₂</span> بعد ثوانٍ معدودة! وكذلك إذا منعنا الـ <span class="ltr-seq">CO₂</span> في الضوء تتوقف أكسدة الماء في التيلاكويد! <strong>كيف يفسر هذا الترابط الوثيق والتكامل التام بين المرحلتين؟</strong></p>
                 </div>
             </section>
 
@@ -677,7 +586,7 @@
             <section class="card" id="ch2-step4">
                 <div class="section-title">
                     <span class="step-num step-num-amber">4</span>
-                    <span>تقويم الدرس 4 : الحصيلة الطاقوية الشاملة</span>
+                    <span>تقويم الدرس 5 : الحصيلة الطاقوية الشاملة</span>
                 </div>
 
                 <div class="question-item" id="c24q1-container">

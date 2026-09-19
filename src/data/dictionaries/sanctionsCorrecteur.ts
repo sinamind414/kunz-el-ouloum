@@ -36,9 +36,18 @@ const RE_CLOCHE = /جرسي|الجرس|cloche/;
 // Faux ami « hemoglobine_vs_globule » : HbA (molécule) vs GR (cellule).
 const RE_HEMOGLOBINE = /هيموغلوب|هيمغلوب|hba|(^| )hb( |$)/;
 const RE_SPHERIQUE = /كروي|مستدير|كوره/;
+// AUDIT 2026-09-16 : contexte « cellule » — la phrase décrit le GLOBULE
+// (ex. « الكريه الحمراء خلية … تحتوي الهيموغلوبين ») : co-occurrence légitime,
+// on dégrade la sanction en vigilance. « forte » réservée aux réponses qui
+// attribuent la forme cellulaire au MOLÉCULE sans contexte cellulaire clair.
+const RE_CONTEXTE_CELLULE = /خلية|خلوه|كريه|كريات|الدم|خلايا/;
 
 // Conflit « atp_bilan_respiration » — valeurs modernes NON acceptées (décision).
+// AUDIT 2026-09-16 : PRÉ-CONDITION de contexte énergétique. Le seul nombre
+// 30/32/36/37 isolé (température 37°, numéro de document, année…) ne déclenche
+// PLUS la sanction — il faut en plus ATP / حصيلة / غلوكوز dans la réponse.
 const RE_ATP_MAUVAISE = /(^| )(30|32|36|37)( |$)|30 [-–—]?32/;
+const RE_CONTEXTE_ATP = /atp|حصيله|حصيلة|غلوكوز|جلوكوز/;
 
 // Vigilance « km_kilometre_vs_michaelis » : Km + contexte enzymatique.
 const RE_KM = /(^| )km( |$)/;
@@ -75,17 +84,21 @@ export function evaluerSanctions(reponse: string): Sanction[] {
   }
 
   if (RE_HEMOGLOBINE.test(norm) && RE_SPHERIQUE.test(norm)) {
+    // AUDIT 2026-09-16 : « forte » uniquement si le MOLÉCULE semble qualifié de
+    // cellule sans contexte cellulaire ; si la réponse parle bien de la cellule
+    // (كريه/خلية/الدم), la co-occurrence est légitime → vigilance.
+    const contexteCellule = RE_CONTEXTE_CELLULE.test(norm);
     out.push({
       type: 'FAUX_AMI',
       id: 'hemoglobine_vs_globule',
-      gravite: 'forte',
+      gravite: contexteCellule ? 'vigilance' : 'forte',
       titreAr: 'خلط بين الجزيء (HbA) والخلية (الكريه الحمراء)',
-      constatAr: 'وصف الهيموغلوبين بالشكل الكروي يعني اعتباره خلية — وهو بروتين.',
+      constatAr: 'وصف الهيموغلوبين بالشكل الكروي قد يعني اعتباره خلية — وهو بروتين.',
       correctionAr: 'الكريه الحمراء = خلية مقعرة الوجهين (ثنائية التقعر)؛ HbA = بروتين رباعي الوحدات (جزيء). تُقبل «المنجلية» للكريه المصاب بفقر الدم المنجلي.',
     });
   }
 
-  if (RE_ATP_MAUVAISE.test(norm)) {
+  if (RE_ATP_MAUVAISE.test(norm) && RE_CONTEXTE_ATP.test(norm)) {
     out.push({
       type: 'CONFLIT_REF',
       id: 'atp_bilan_respiration',

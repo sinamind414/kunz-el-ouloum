@@ -1,9 +1,9 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>منصة المتفوق 3AS | المرحلة 1 : الدرس 1 والدرس 2</title>
+    <title>منصة بنزر العلم | المرحلة 1 : الدرس 1 والدرس 2</title>
     <style>
         :root {
             --bg-main: #f8fafc;
@@ -50,87 +50,6 @@
             background: #f1f5f9;
             padding: 2px 8px;
             border-radius: 6px;
-        }
-
-        /* Navbar & Phase selector */
-        .navbar {
-            background: var(--surface);
-            border-bottom: 1px solid var(--border);
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            padding: 1rem 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.02);
-            flex-wrap: wrap;
-            gap: 1rem;
-        }
-
-        .brand {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            font-weight: 900;
-            font-size: 1.25rem;
-            color: var(--primary);
-        }
-
-        .brand-badge {
-            background: var(--accent);
-            color: white;
-            padding: 4px 10px;
-            border-radius: 8px;
-            font-size: 0.8rem;
-            white-space: nowrap;
-        }
-
-        .chapter-switcher {
-            display: flex;
-            gap: 12px;
-            flex-wrap: wrap;
-        }
-
-        .ch-btn {
-            background: var(--bg-main);
-            border: 2px solid var(--border);
-            padding: 8px 18px;
-            border-radius: 12px;
-            font-family: inherit;
-            font-weight: 800;
-            font-size: 0.95rem;
-            color: var(--text-muted);
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .ch-btn:hover {
-            border-color: var(--accent);
-            color: var(--accent);
-        }
-
-        .ch-btn.active {
-            background: var(--primary);
-            color: white;
-            border-color: var(--primary);
-        }
-
-        @media (max-width: 768px) {
-            .navbar {
-                flex-direction: column;
-                padding: 1rem;
-                text-align: center;
-            }
-            .chapter-switcher {
-                justify-content: center;
-                width: 100%;
-            }
-            .ch-btn {
-                flex: 1;
-                font-size: 0.85rem;
-                padding: 8px 10px;
-            }
         }
 
         .container {
@@ -480,30 +399,20 @@
 </head>
 <body>
 
-    <!-- Navbar with Phase Switcher -->
-    <nav class="navbar">
-        <div class="brand">
-            <span>منصة المتفوق 3AS</span>
-            <span class="brand-badge">المرحلة 1 (الدرس 1 و 2)</span>
-        </div>
-        <div class="chapter-switcher">
-            <button class="ch-btn active" onclick="showChapter('ch1', event)">📖 الدرس 1 : مقر تركيب البروتين</button>
-            <button class="ch-btn" onclick="showChapter('ch2', event)">🧬 الدرس 2 : الشفرة الوراثية وتنشيط الأحماض الأمينية</button>
-        </div>
-    </nav>
+    
 
     
     <!-- Sommaire sticky (prototype v3.2) -->
     <div class="sommaire" id="sommaire">
         <a href="#ch1-step1" id="link-ch1-step1" onclick="scrollToStep('ch1-step1',event)">📖 1-1 وضعية</a>
-        <a href="#ch1-step2" id="link-ch1-step2" onclick="scrollToStep('ch1-step2',event)">1-2 تحليل</a>
-        <a href="#ch1-step3" id="link-ch1-step3" onclick="scrollToStep('ch1-step3',event)">1-3 مستكشف</a>
-        <a href="#ch1-step4" id="link-ch1-step4" onclick="scrollToStep('ch1-step4',event)">1-4 خلاصة + Quiz</a>
+        <a href="#ch1-step2" id="link-ch1-step2" onclick="scrollToStep('ch1-step2',event)">🔬 1-2 تحليل</a>
+        <a href="#ch1-step3" id="link-ch1-step3" onclick="scrollToStep('ch1-step3',event)">🔍 1-3 مستكشف</a>
+        <a href="#ch1-step4" id="link-ch1-step4" onclick="scrollToStep('ch1-step4',event)">📝 1-4 خلاصة + Quiz</a>
         <span class="sep"></span>
         <a href="#ch2-step1" id="link-ch2-step1" onclick="scrollToStep('ch2-step1',event)">🧬 2-1 إشكالية</a>
-        <a href="#ch2-step2" id="link-ch2-step2" onclick="scrollToStep('ch2-step2',event)">2-2 فك الشفرة</a>
-        <a href="#ch2-step3" id="link-ch2-step3" onclick="scrollToStep('ch2-step3',event)">2-3 تنشيط</a>
-        <a href="#ch2-step4" id="link-ch2-step4" onclick="scrollToStep('ch2-step4',event)">2-4 تقويم</a>
+        <a href="#ch2-step2" id="link-ch2-step2" onclick="scrollToStep('ch2-step2',event)">🔓 2-2 فك الشفرة</a>
+        <a href="#ch2-step3" id="link-ch2-step3" onclick="scrollToStep('ch2-step3',event)">⚡ 2-3 تنشيط</a>
+        <a href="#ch2-step4" id="link-ch2-step4" onclick="scrollToStep('ch2-step4',event)">✅ 2-4 تقويم</a>
     </div>
 
     <div class="container">
@@ -618,7 +527,7 @@
                 <div class="scientific-text">
                     <div class="text-part" style="border-right-color: var(--success); margin-bottom: 0;">
                         <h4 style="color: var(--success);">الحقيقة العلمية المعتمدة في البكالوريا</h4>
-                        <p>يتم تركيب البروتين عند حقيقيات النوى في <strong>الهيولى</strong> (الستوبلازم)، وبالتحديد على مستوى <strong>الشبكة الهيولية الداخلية المحببة (<span class="ltr-seq">Réticulum Endoplasmique Granuleux</span>)</strong> انطلاقا من الأحماض الأمينية الناتجة عن الهضم.</p>
+                        <p>يتم تركيب البروتين عند حقيقيات النوى في <strong>الهيولى (الستوبلازم)</strong>، وبالتحديد على مستوى <strong>الشبكة الهيولية الداخلية المحببة (<span class="ltr-seq">Réticulum Endoplasmique Granuleux</span>)</strong> انطلاقا من الأحماض الأمينية.</p>
                     </div>
                 </div>
 
@@ -664,7 +573,7 @@
                 <ul style="margin-right: 1.5rem; line-height: 2;">
                     <li>• إذا كانت كل قاعدة تشفر لحمض أميني واحد ($4^1 = 4$) : هذا غير كافٍ لتغطية 20 حمضاً.</li>
                     <li>• إذا كانت كل قاعدتين تشفران لحمض أميني ($4^2 = 16$) : يبقى العدد غير كافٍ.</li>
-                    <li>• <strong>الاستنتاج الحتمي ($4^3 = 64$) :</strong> كل <strong>3 قواعد آزوتية متتالية (رامزة أو Triplet)</strong> تشفر لحمض أميني واحد. وبما أن 64 > 20، فهذا يفسر تشفير عدة رامزات لحمض أميني واحد (الترادف).</li>
+                    <li>• <strong>الاستنتاج الحتمي ($4^3 = 64$) :</strong> كل <strong>3 قواعد آزوتية متتالية (رامزة)</strong> تشفر لحمض أميني واحد. وبما أن 64 > 20، فهذا يفسر تشفير عدة رامزات لحمض أميني واحد (الترادف).</li>
                 </ul>
             </section>
 
@@ -739,7 +648,7 @@
                                                 <div class="miftah-encadre">🔑 <b>مفتاح المنهجية:</b> البوابة 1 → <b>📄 ورقة</b> · البوابة 2 → <b>🎬 فيلم</b> (فسّر/علل → <span class="ltr-seq" style="font-size:.8rem">1→2→3→4</span>) · السنّ 3: <b>لأنّ</b> مسبوقة بمعطى من الوثيقة</div>
                         <span class="method-tag" style="background: #f3e8ff; color: #6b21a8;">خطوات التنشيط في البكالوريا</span>
                         <p style="margin-top: 5px;">1. يتوضع كل من الحمض الأميني والـ <span class="ltr-seq">ARNt</span> في المواقع الفعالة النوعية لإنزيم التنشيط.</p>
-                        <p>2. يتم إماتة جزيئة الـ <span class="ltr-seq">ATP</span> لربط الحمض الأميني بالـ <span class="ltr-seq">ARNt</span> برابطة إسترية غنية بالطاقة.</p>
+                        <p>2. تتم إماهة جزيئة الـ <span class="ltr-seq">ATP</span> لربط الحمض الأميني بالـ <span class="ltr-seq">ARNt</span> برابطة إسترية غنية بالطاقة.</p>
                         <p>3. يتحرر المعقد <strong>(حمض أميني - <span class="ltr-seq">ARNt</span> منشط)</strong> وينفصل عن الإنزيم ليتجه نحو الريبوزوم.</p>
                     </div>
                 </div>

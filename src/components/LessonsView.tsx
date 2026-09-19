@@ -1,14 +1,18 @@
 // LessonsView.tsx
 // Onglet الدروس restructuré en deux modes :
 //   1) درس نشيط (Leçon Active)  : leçons TS interactives « mot par mot » (ACTIVE_LESSONS).
-//   2) درس سلبي  (Leçon Passive) : les 23 leçons HTML officielles, organisées en
-//      3 domaines du BAC → unités → chapitres (ordre canonique OFFICIAL_PROGRAM_SEQUENCE).
+//   2) درس سلبي  (Leçon Passive) : les leçons HTML officielles (public/lessons),
+//      organisées en 3 domaines du BAC → unités → chapitres (ordre canonique
+//      OFFICIAL_PROGRAM_SEQUENCE). Chaque fichier de phase portant 2 leçons,
+//      la séquence expose la clé de base puis la clé `_2` — une leçon affichée
+//      à la fois (isolation par sliceLessonHtml).
 import { useState } from 'react';
 import { BookOpen, ChevronLeft, Zap, MonitorPlay, Network, FlaskConical, Leaf, Globe2 } from 'lucide-react';
 import HtmlLessonViewer from './HtmlLessonViewer';
 import ActiveLessonView from './ActiveLessonView';
 import { INITIAL_UNITS } from '../data';
 import { getUnitLessonSequence } from '../data/unitLessonSequences';
+import { HTML_LESSON_ORDER } from '../data/htmlLessonProgression';
 import {
   PASSIVE_DOMAINS,
   hasHtmlFile,
@@ -118,7 +122,7 @@ export default function LessonsView() {
             </span>
             <span className="block text-lg font-black text-gray-800 dark:text-gray-100">الدرس السلبي</span>
             <span className="block text-xs font-bold text-gray-500 dark:text-gray-400 leading-relaxed">
-              الدروس المقروءة الرسمية (23 درساً) — ثلاثة مجالات، كل مجال بوحداته وفصوله
+              الدروس المقروءة الرسمية ({HTML_LESSON_ORDER.length} درساً) — ثلاثة مجالات، كل مجال بوحداته وفصوله
             </span>
           </button>
         </div>

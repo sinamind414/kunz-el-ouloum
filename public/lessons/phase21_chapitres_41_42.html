@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>منصة المتفوق 3AS | المرحلة 21 : الدرس 41 والدرس 42</title>
+    <title>منصة بنزر العلم | المرحلة 21 : الدرس 41 والدرس 42</title>
     <style>
         :root {
             --bg-main: #f8fafc;
@@ -52,87 +52,6 @@
             background: #f1f5f9;
             padding: 2px 8px;
             border-radius: 6px;
-        }
-
-        /* Navbar */
-        .navbar {
-            background: var(--surface);
-            border-bottom: 1px solid var(--border);
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            padding: 1rem 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.02);
-            flex-wrap: wrap;
-            gap: 1rem;
-        }
-
-        .brand {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            font-weight: 900;
-            font-size: 1.25rem;
-            color: var(--primary);
-        }
-
-        .brand-badge {
-            background: var(--cyan-dark);
-            color: white;
-            padding: 4px 10px;
-            border-radius: 8px;
-            font-size: 0.8rem;
-            white-space: nowrap;
-        }
-
-        .chapter-switcher {
-            display: flex;
-            gap: 12px;
-            flex-wrap: wrap;
-        }
-
-        .ch-btn {
-            background: var(--bg-main);
-            border: 2px solid var(--border);
-            padding: 8px 18px;
-            border-radius: 12px;
-            font-family: inherit;
-            font-weight: 800;
-            font-size: 0.95rem;
-            color: var(--text-muted);
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .ch-btn:hover {
-            border-color: var(--cyan-dark);
-            color: var(--cyan-dark);
-        }
-
-        .ch-btn.active {
-            background: var(--primary);
-            color: white;
-            border-color: var(--primary);
-        }
-
-        @media (max-width: 768px) {
-            .navbar {
-                flex-direction: column;
-                padding: 1rem;
-                text-align: center;
-            }
-            .chapter-switcher {
-                justify-content: center;
-                width: 100%;
-            }
-            .ch-btn {
-                flex: 1;
-                font-size: 0.85rem;
-                padding: 8px 10px;
-            }
         }
 
         .container {
@@ -435,30 +354,20 @@
 </head>
 <body>
 
-    <!-- Navbar with Phase Switcher -->
-    <nav class="navbar">
-        <div class="brand">
-            <span>منصة المتفوق 3AS</span>
-            <span class="brand-badge">المرحلة 21 (الدرس 41 و 42)</span>
-        </div>
-        <div class="chapter-switcher">
-            <button class="ch-btn active" onclick="showChapter('ch41', event)">🌊 الدرس 41 : المغمايتية الثولييتية للظهرات (تخفيف الضغط)</button>
-            <button class="ch-btn" onclick="showChapter('ch42', event)">🏔️ الدرس 42 : التصادم القاري وتشكّل سلاسل الجبال (الهيمالايا)</button>
-        </div>
-    </nav>
+    
 
     
     <!-- Sommaire sticky (v3.2) -->
     <div class="sommaire" id="sommaire">
         <a href="#ch1-step1" id="link-ch1-step1" onclick="scrollToStep('ch1-step1',event)">📖 1-1 وضعية</a>
-        <a href="#ch1-step2" id="link-ch1-step2" onclick="scrollToStep('ch1-step2',event)">1-2 تحليل</a>
-        <a href="#ch1-step3" id="link-ch1-step3" onclick="scrollToStep('ch1-step3',event)">1-3 مستكشف</a>
-        <a href="#ch1-step4" id="link-ch1-step4" onclick="scrollToStep('ch1-step4',event)">1-4 خلاصة + Quiz</a>
+        <a href="#ch1-step2" id="link-ch1-step2" onclick="scrollToStep('ch1-step2',event)">🔬 1-2 تحليل</a>
+        <a href="#ch1-step3" id="link-ch1-step3" onclick="scrollToStep('ch1-step3',event)">🧪 1-3 محاكي</a>
+        <a href="#ch1-step4" id="link-ch1-step4" onclick="scrollToStep('ch1-step4',event)">✅ 1-4 تقويم</a>
         <span class="sep"></span>
-        <a href="#ch2-step1" id="link-ch2-step1" onclick="scrollToStep('ch2-step1',event)">🧬 2-1 إشكالية</a>
-        <a href="#ch2-step2" id="link-ch2-step2" onclick="scrollToStep('ch2-step2',event)">2-2 فك الشفرة</a>
-        <a href="#ch2-step3" id="link-ch2-step3" onclick="scrollToStep('ch2-step3',event)">2-3 تنشيط</a>
-        <a href="#ch2-step4" id="link-ch2-step4" onclick="scrollToStep('ch2-step4',event)">2-4 تقويم</a>
+        <a href="#ch2-step1" id="link-ch2-step1" onclick="scrollToStep('ch2-step1',event)">❓ 2-1 إشكالية</a>
+        <a href="#ch2-step2" id="link-ch2-step2" onclick="scrollToStep('ch2-step2',event)">🔬 2-2 تحليل</a>
+        <a href="#ch2-step3" id="link-ch2-step3" onclick="scrollToStep('ch2-step3',event)">🧪 2-3 محاكي</a>
+        <a href="#ch2-step4" id="link-ch2-step4" onclick="scrollToStep('ch2-step4',event)">✅ 2-4 تقويم</a>
     </div>
 
     <div class="container">
@@ -470,9 +379,9 @@
             
             <header class="lesson-header header-ch41">
                 <div class="lesson-breadcrumb">المجال الثالث : التكتونية العامة • الوحدة 3 : النشاط التكتوني والبنيات الجيولوجية المرتبطة به</div>
-                <h1>الدرس 1 : المغمايتية المميزة للظهرات المحيطية (الانصهار الجاف بتخفيف الضغط وتشكل البازلت والغابرو)</h1>
+                <h1>الدرس 3 : المغمايتية المميزة للظهرات المحيطية (الانصهار الجاف بتخفيف الضغط وتشكل البازلت والغابرو)</h1>
                 <div class="lesson-objectives">
-                    <div>🎯 <strong>الهدف العلمي :</strong> تفسير انصهار بيريدوتيت الاستينوسفير تحت الظهيرة بظاهرة تخفيف الضغط (Décompression adiabatique)، وتحديد خصائص البازلت الوسائدي والغابرو الثولييتي.</div>
+                    <div>🎯 <strong>الهدف العلمي :</strong> تفسير انصهار بيريدوتيت الاستينوسفير تحت الظهرة بظاهرة تخفيف الضغط (Décompression adiabatique)، وتحديد خصائص البازلت الوسائدي والغابرو الثولييتي.</div>
                     <div>⏱️ <strong>المدة التقديرية للتعلم الذاتي :</strong> 25 دقيقة</div>
                 </div>
             </header>
@@ -484,8 +393,8 @@
                     <span>وضعية الانطلاق وبناء الإشكالية العلميـة</span>
                 </div>
                 <div class="problem-box">
-                    <div class="problem-title">⚠️ كيف ينصهر البيريدوتيت الجاف تحت الظهيرة المحيطية رغم غياب الماء؟</div>
-                    <p>في الدرس 34 عرفنا أن انصهار البرنس في مناطق الغوص يتطلب وجود الماء (الإماهة) لخفض نقطة الانصهار. ولكن في محور الظهيرة المحيطية لا يوجد ماء محرر في العمق (صخر بيريدوتيت جاف تماماً)! ومع ذلك، تصعد ماغما بازلتية مائعة بكثافة هائلة وتبني القشرة المحيطية يومياً. <strong>ما هو العامل الترموديناميكي الخفي الذي يؤدي إلى انصهار البيريدوتيت الجاف أسفل الظهيرة المحيطية؟</strong></p>
+                    <div class="problem-title">⚠️ كيف ينصهر البيريدوتيت الجاف تحت الظهرة المحيطية رغم غياب الماء؟</div>
+                    <p>في الدرس 34 عرفنا أن انصهار البرنس في مناطق الغوص يتطلب وجود الماء (الإماهة) لخفض نقطة الانصهار. ولكن في محور الظهرة المحيطية لا يوجد ماء محرر في العمق (صخر بيريدوتيت جاف تماماً)! ومع ذلك، تصعد ماغما بازلتية مائعة بكثافة هائلة وتبني القشرة المحيطية يومياً. <strong>ما هو العامل الترموديناميكي الخفي الذي يؤدي إلى انصهار البيريدوتيت الجاف أسفل الظهرة المحيطية؟</strong></p>
                 </div>
             </section>
 
@@ -497,7 +406,7 @@
                 </div>
                 <div class="doc-viewer">
                     <div class="doc-visual" style="background: #083344;">
-                        <h4 style="color: #67e8f9; margin-bottom: 1rem; font-size: 0.95rem;">مقطع في محور الظهيرة يوضح صعود البيريدوتيت وتقاطع مساره مع منحنى الصلابة</h4>
+                        <h4 style="color: #67e8f9; margin-bottom: 1rem; font-size: 0.95rem;">مقطع في محور الظهرة يوضح صعود البيريدوتيت وتقاطع مساره مع منحنى الصلابة</h4>
                         <!-- SVG Dorsale Magmatism -->
                         <svg class="svg-container" viewBox="0 0 400 220" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <!-- Ocean water -->
@@ -525,7 +434,7 @@
                         <span class="method-tag" style="background: #ecfeff; color: #0e7490;">السر الترموديناميكي في البكالوريا</span>
                         <h4 style="margin: 8px 0; color: var(--primary);">كيف ينصهر البيريدوتيت بتخفيف الضغط؟</h4>
                         <ol style="padding-right: 1.2rem; line-height: 1.8;">
-                            <li><strong>الصعود الأدياباتيكي (<span class="ltr-seq">Montée adiabatique</span>) :</strong> تتسبب قوى الشد والتباعد في الظهيرة في صعود سريع لعمود ساخن من البيريدوتيت الاستينوسفيري نحو الأعلى.</li>
+                            <li><strong>الصعود الأدياباتيكي (<span class="ltr-seq">Montée adiabatique</span>) :</strong> تتسبب قوى الشد والتباعد في الظهرة في صعود سريع لعمود ساخن من البيريدوتيت الاستينوسفيري نحو الأعلى.</li>
                             <li><strong>انخفاض الضغط مع حفظ الحرارة :</strong> أثناء الصعود، ينخفض الضغط الواقع على الصخر بسرعة كبيرة جداً مقارنة بفقدان الحرارة، فيحتفظ البيريدوتيت بحرارته العالية (~1300°C) عند ضغط منخفض.</li>
                             <li><strong>الانصهار الجزئي الجاف :</strong> يتقاطع مسار البيريدوتيت الصاعد مع منحنى تصلبه الجاف (<span class="ltr-seq">Solidus anhydre</span>)، فيحدث له انصهار جزئي بنسبة 20 إلى 30% مولداً <strong>ماغما ثولييتية مائعة (<span class="ltr-seq">Magma tholéiitique</span>)</strong> قليلة الغازات والماء.</li>
                         </ol>
@@ -548,7 +457,7 @@
                     </div>
                     <div id="dorsDisplayBox" style="background: #164e63; border: 2px solid #22d3ee; border-radius: 12px; padding: 1.5rem; text-align: center;">
                         <h3 style="color: #67e8f9; margin-bottom: 10px;">🌊 بازلت الوسائد (Pillow Lavas - سطح القشرة المحيطية)</h3>
-                        <p style="color: #cbd5e1; line-height: 1.8;">عندما تتدفق الماغما البازلتية المائعة عبر خسف الظهيرة وتلامس مياه المحيط الباردة (2°C)، تتصلب قشرتها الخارجية فوراً على شكل وسائد كروية متتالية. تتميز ببنية ميكروليتية وزجاجية بسبب التبريد الصاعق.</p>
+                        <p style="color: #cbd5e1; line-height: 1.8;">عندما تتدفق الماغما البازلتية المائعة عبر خسف الظهرة وتلامس مياه المحيط الباردة (2°C)، تتصلب قشرتها الخارجية فوراً على شكل وسائد كروية متتالية. تتميز ببنية ميكروليتية وزجاجية بسبب التبريد الصاعق.</p>
                     </div>
                 </div>
             </section>
@@ -561,11 +470,11 @@
                 </div>
 
                 <div class="question-item" id="c41q1-container">
-                    <h4 style="margin-bottom: 12px;">1. ما هو الفرق الأساسي في عامل الانصهار بين الظهيرة المحيطية (تباعد) ومنطقة الغوص (تقارب)؟</h4>
+                    <h4 style="margin-bottom: 12px;">1. ما هو الفرق الأساسي في عامل الانصهار بين الظهرة المحيطية (تباعد) ومنطقة الغوص (تقارب)؟</h4>
                     <div class="options-grid">
-                        <button class="option-btn" onclick="checkCh41Answer(0, true)">أ) في الظهيرة العامل هو انخفاض الضغط (تخفيف الضغط الأدياباتيكي) في غياب الماء، بينما في الغوص العامل هو دخول الماء (الإماهة) الذي يخفض نقطة الانصهار.</button>
+                        <button class="option-btn" onclick="checkCh41Answer(0, true)">أ) في الظهرة العامل هو انخفاض الضغط (تخفيف الضغط الأدياباتيكي) في غياب الماء، بينما في الغوص العامل هو دخول الماء (الإماهة) الذي يخفض نقطة الانصهار.</button>
                         <button class="option-btn" onclick="checkCh41Answer(1, false)">ب) لا يوجد فرق، فكلاهما انصهار مائي.</button>
-                        <button class="option-btn" onclick="checkCh41Answer(2, false)">ج) في الظهيرة ينصهر الغرانيت وفي الغوص ينصهر الكلس.</button>
+                        <button class="option-btn" onclick="checkCh41Answer(2, false)">ج) في الظهرة ينصهر الغرانيت وفي الغوص ينصهر الكلس.</button>
                     </div>
                     <div class="feedback-box" id="c41q1-feedback"></div>
                     <div class="quiz-badge" id="c1-badge"></div>
@@ -580,7 +489,7 @@
             
             <header class="lesson-header header-ch42">
                 <div class="lesson-breadcrumb">المجال الثالث : التكتونية العامة • الوحدة 3 : النشاط التكتوني والبنيات الجيولوجية المرتبطة به</div>
-                <h1>الدرس 2 : التكتونية والمغمايتية المميزة لمناطق التصادم القاري (تشكل سلاسل الجبال كالألب والهيمالايا)</h1>
+                <h1>الدرس 4 : التكتونية والمغمايتية المميزة لمناطق التصادم القاري (تشكل سلاسل الجبال كالألب والهيمالايا)</h1>
                 <div class="lesson-objectives">
                     <div>🎯 <strong>الهدف العلمي :</strong> تفسير تشكل سلاسل الجبال العظمى (الهيمالايا) باصطدام قارتين بعد إغلاق المحيط بالغوص، وتحديد شواهد التقصير والتسميك القاري والتراكبات.</div>
                     <div>⏱️ <strong>المدة التقديرية للتعلم الذاتي :</strong> 25 دقيقة</div>
@@ -591,7 +500,7 @@
             <section class="card" id="ch2-step1">
                 <div class="section-title">
                     <span class="step-num step-num-stone">1</span>
-                    <span>الإشكالية الجبلية لختام برنامج العلوم الطبيعية 3AS</span>
+                    <span>الإشكالية الجبلية لختام برنامج العلوم الطبيعية</span>
                 </div>
                 <div class="problem-box" style="border-right-color: var(--stone-dark); background: var(--stone-light);">
                     <div class="problem-title" style="color: #1e293b;">⚠️ كيف تكونت قمة إيفرست (8848 متر) وسلسلة الأطلس التلي؟</div>
@@ -704,12 +613,12 @@
             if (type === 'pillow') {
                 box.innerHTML = `
                     <h3 style="color: #67e8f9; margin-bottom: 10px;">🌊 بازلت الوسائد (Pillow Lavas - سطح القشرة المحيطية)</h3>
-                    <p style="color: #cbd5e1; line-height: 1.8;">عندما تتدفق الماغما البازلتية المائعة عبر خسف الظهيرة وتلامس مياه المحيط الباردة (2°C)، تتصلب قشرتها الخارجية فوراً على شكل وسائد كروية متتالية. تتميز ببنية ميكروليتية وزجاجية بسبب التبريد الصاعق.</p>
+                    <p style="color: #cbd5e1; line-height: 1.8;">عندما تتدفق الماغما البازلتية المائعة عبر خسف الظهرة وتلامس مياه المحيط الباردة (2°C)، تتصلب قشرتها الخارجية فوراً على شكل وسائد كروية متتالية. تتميز ببنية ميكروليتية وزجاجية بسبب التبريد الصاعق.</p>
                 `;
             } else {
                 box.innerHTML = `
                     <h3 style="color: #4ade80; margin-bottom: 10px;">🪨 صخر الغابرو (Gabbro - عمق القشرة المحيطية)</h3>
-                    <p style="color: #cbd5e1; line-height: 1.8;">جزء من الماغما الثولييتية يبقى محبوساً داخل الغرفة الماغماتية العميقة أسفل الظهيرة. يبرد ببطء شديد على مدى آلاف السنين، فتتاح الفرصة للأيونات لتشكل بلورات كبيرة مرئية للعين المجردة (بنية محببة كاملة التبلور).</p>
+                    <p style="color: #cbd5e1; line-height: 1.8;">جزء من الماغما الثولييتية يبقى محبوساً داخل الغرفة الماغماتية العميقة أسفل الظهرة. يبرد ببطء شديد على مدى آلاف السنين، فتتاح الفرصة للأيونات لتشكل بلورات كبيرة مرئية للعين المجردة (بنية محببة كاملة التبلور).</p>
                 `;
             }
         }
@@ -750,7 +659,7 @@
                 fb.innerHTML = '<strong>✅ إجابة صحيحة ممتاز!</strong> المقارنة التكتونية بين انصهار تخفيف الضغط (دراس) وانصهار الإماهة (غوص) جوهرية في البكالوريا.';
             } else {
                 fb.style.background = '#fef2f2'; fb.style.color = '#991b1b'; fb.style.border = '1px solid #fecaca';
-                fb.innerHTML = '<strong>❌ إجابة خاطئة.</strong> الظهيرة لا تحتوي على ماء محرر، فالانصهار فيها جاف وناجم عن الصعود الأدياباتيكي السريع.';
+                fb.innerHTML = '<strong>❌ إجابة خاطئة.</strong> الظهرة لا تحتوي على ماء محرر، فالانصهار فيها جاف وناجم عن الصعود الأدياباتيكي السريع.';
             }
         }
 

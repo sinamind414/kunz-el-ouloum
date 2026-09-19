@@ -87,9 +87,12 @@ export function continueUnit(units: Unit[], progress?: UserProgress): Unit | nul
 }
 
 /**
- * « سؤال مفاجئ » — tirage d'une unité au hasard parmi celles déjà rencontrées par
- * l'élève (entamées ou validées) ; à défaut parmi les unités déverrouillées, puis
- * toutes. `rng` injectable → tirage déterministe en test.
+ * « سؤال مفاجئ » — tirage STRICT selon l'avancement de l'élève : uniquement
+ * parmi les unités déverrouillées DÉJÀ rencontrées (entamées `progress > 0`
+ * ou validées dans `completedUnits`). Aucun repli vers les unités non
+ * révisées : si l'élève n'a révisé que l'unité 1, le tirage ne peut donner
+ * que l'unité 1. `null` si aucune unité révisée (la tuile reste inerte).
+ * `rng` injectable → tirage déterministe en test.
  */
 export function surpriseUnitId(
   units: Unit[],
@@ -98,9 +101,7 @@ export function surpriseUnitId(
 ): number | null {
   const started = (u: Unit) => (u.progress ?? 0) > 0 || !!progress?.completedUnits?.includes(u.id);
   const byStart = unlockedUnits(units).filter(started);
-  const pool = byStart.length > 0 ? byStart : unlockedUnits(units);
-  const finalPool = pool.length > 0 ? pool : units;
-  if (finalPool.length === 0) return null;
-  const index = Math.min(finalPool.length - 1, Math.floor(rng() * finalPool.length));
-  return finalPool[index].id;
+  if (byStart.length === 0) return null;
+  const index = Math.min(byStart.length - 1, Math.floor(rng() * byStart.length));
+  return byStart[index].id;
 }

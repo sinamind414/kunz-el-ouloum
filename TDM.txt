@@ -1,0 +1,80 @@
+# TDM LIVRE SCOLAIRE extraite - 3AS Sciences de la Vie et de la Terre
+## Domaine 1 : التخصص الوظيفي للبروتينات
+### Unité 1 : تركيب البروتين - Synthèse des Protéines
+1. تذكير بالمكتسبات - Rappel des acquis
+2. مقر تركيب البروتين - Siège de la synthèse des protéines
+3. استنساخ المعلومات الوراثية الموجودة على مستوى ADN - Transcription
+4. الترجمة - La traduction
+5. مراحل الترجمة - Les étapes de la traduction
+
+### Unité 2 : العلاقة بين بنية ووظيفة البروتين - Relation structure-fonction
+1. تمثيل البنية الفراغية للبروتين - Représentation structure tridimensionnelle
+2. مستويات البنية الفراغية للبروتينات - Niveaux structure spatiale
+3. العلاقة بين بنية ووظيفة البروتين - Relation structure-fonction
+
+### Unité 3 : النشاط الإنزيمي للبروتينات - Activité enzymatique
+1. مفهوم الإنزيم وأهميته - Notion d'enzyme
+2. النشاط الإنزيمي وعلاقته ببنية الإنزيم - Activité enzymatique et structure
+3. دراسة تأثير تغير درجة pH الوسط على نشاط الإنزيم - Influence du pH
+4. دراسة تأثير تغيرات درجة الحرارة على نشاط الإنزيم - Influence de la température
+
+### Unité 4 : دور البروتينات في الدفاع عن الذات - Immunité
+1. تذكير بالمكتسبات - Rappel des acquis
+2. الذات واللاذات - Le soi et le non-soi
+3. الحزينات الدفاعية في الحالة الأولى - Immunité non spécifique
+4. المعقد المناعي - Le complexe immun
+5. مصدر الأجسام المضادة - Origine des anticorps
+6. العناصر الدفاعية في الحالة الثانية - Immunité spécifique
+7. طرق تأثير اللمفاويات LTc - Modes d'action des lymphocytes LTc
+8. مصدر اللمفاويات LTc - Origine des lymphocytes LTc
+9. تحفيز الخلايا LB و LT - Activation des cellules LB et LT
+10. اختيار نمط الاستجابة المناعية - Choix du type de réponse immunitaire
+11. سبب فقدان المناعة المكتسبة - Cause de la perte de l'immunité acquise (SIDA)
+
+### Unité 5 : دور البروتينات في الاتصال العصبي - Communication nerveuse
+1. تذكير بالمكتسبات - Rappel des acquis
+2. النقل المشبكي (الكمون الغشائي) - Transmission synaptique
+3. آلية النقل المشبكي - Mécanisme de la transmission synaptique
+4. كمون الراحة - Potentiel de repos
+5. كمون العمل - Potentiel d'action
+6. آلية الإدماج العصبي - Mécanisme de l'intégration nerveuse
+7. تأثير المخدرات على مستوى المشابك - Effet des drogues au niveau des synapses
+
+## Domaine 2 : التحولات الطاقوية
+### Unité 1 : آليات تحويل الطاقة الضوئية إلى طاقة كيميائية كامنة - Photosynthèse
+1. تذكير بالمكتسبات - Rappel des acquis
+2. مقر عملية التركيب الضوئي - Siège de la photosynthèse
+3. تفاعلات المرحلة الكيموضوئية - Phase photochimique
+4. تفاعلات المرحلة الكيموحيوية - Phase chimique (cycle de Calvin)
+
+### Unité 2 : آليات تحويل الطاقة الكيميائية الكامنة في الجزيئات العضوية إلى ATP
+1. تذكير بالمكتسبات - Rappel des acquis
+2. مقر الأكسدة التنفسية - Siège de l'oxydation respiratoire
+3. التحلل السكري - La glycolyse
+4. مراحل تفكك حمض البيروفيك (تفاعلات حلقة كريبس) - Cycle de Krebs
+5. الفسفرة التأكسدية - La phosphorylation oxydative
+6. آليات تحويل الطاقة الكيميائية الكامنة في وسط لا هوائي - Fermentation
+
+### Unité 3 : تحويل الطاقة على المستوى ما فوق البنية الخلوية
+1. التحولات الطاقوية على المستوى الخلوي - Les transformations énergétiques au niveau cellulaire
+
+## Domaine 3 : التكتونية العامة
+### Unité 1 : النشاط التكتوني للصفائح
+1. تحديد الصفائح التكتونية - Identification des plaques tectoniques
+2. حركات الصفائح التكتونية - Mouvements des plaques tectoniques
+3. الطاقة الداخلية للكرة الأرضية - Énergie interne du globe terrestre
+
+### Unité 2 : بنية الكرة الأرضية
+1. الموجات الزلزالية - Les ondes sismiques
+2. التركيب الكيميائي لصخور القشرة الأرضية والمعطف (البرنس) - Composition chimique
+3. نمذجة البنية الداخلية للكرة الأرضية - Modélisation de la structure interne
+
+### Unité 3 : النشاط التكتوني والبنيات الجيولوجية المرتبطة به
+1. الظواهر المرتبطة بالبناء (خصائص الظهرات وسط محيطية) - Phénomènes liés à la construction
+2. المغماتية وتشكل اللوح المحيطي - Magmatisme et formation de la plaque océanique
+3. تشكل الصخور المميزة للظهرة وسط محيطية - Formation des roches caractéristiques de la dorsale
+4. الظواهر المرتبطة بالغوص - Phénomènes liés à la subduction
+5. اختفاء اللوح المحيطي والظواهر المرتبطة بالغوص - Disparition de la plaque océanique
+6. التضاريس الناجمة عن التصادم - Reliefs résultant de la collision
+7. شواهد التقلص - Indices du raccourcissement
+8. شواهد محيط قديم - Indices d'un ancien océan (ophiolites)

@@ -3,8 +3,10 @@
 //
 // Deux responsabilités :
 //   1. GARDE-FOU DE TRACABILITÉ : chaque mot-clé de la banque doit apparaître dans
-//      au moins une des 4 sources officielles (L1..L4). Aucun terme « inventé à la
-//      main » ne doit survivre. Les indices Unicode (CO₂, O₂) sont ramenés à leur
+//      au moins une des 6 sources officielles (L1..L6) DISPONIBLES — gate
+//      granulaire : L5/L6 commitées (traçables en CI), L1–L4 via extraits
+//      tronqués (docs/sources/tronque/). Aucun terme « inventé à la main » ne
+//      doit survivre. Les indices Unicode (CO₂, O₂) sont ramenés à leur
 //      chiffre avant normalisation — sinon normalizeAr les détruit en espace.
 //   2. JEU DE QUESTIONS NEUVES HORS GOLDEN SET : une question par unité (5 en
 //      domaine 1 protéines, 3 en domaine 2 énergie, 3 en domaine 3 tectonique),
@@ -30,15 +32,32 @@ import {
 
 const SRC_DIR = path.resolve(import.meta.dirname, '..', 'docs', 'sources');
 
-// Fixtures L1–L4 non commitées (contenus livres — voir docs/MARQUE.md) :
-// si absentes, la suite se skippe proprement au lieu de crasher en ENOENT.
-const FIXTURES_PRESENT = Object.values(SOURCES_LABELS).every((f) =>
-  existsSync(path.join(SRC_DIR, f)),
+// Gate GRANULAIRE (audit 2026-09-16) : disponibilité par source L1..L6, plus de
+// tout-ou-rien. L5/L6 (التدرج السنوي, دليل الأستاذ) sont commitées → leurs
+// mots-clés sont traçables en CI dès maintenant. L1–L4 (livres — contenus
+// soumis à droits) n'existent que localement : procédure dans
+// docs/sources/README.md (npm run sources:tronquer → commit de l'extrait
+// tronqué uniquement, jamais du livre complet).
+// Résolution d'une source : livre complet (local uniquement) d'abord, sinon
+// extrait tronqué commité (docs/sources/tronque/, généré par npm run
+// sources:tronquer — voir docs/sources/README.md).
+function resolveSourcePath(label: string): string {
+  const filename = SOURCES_LABELS[label];
+  const direct = path.join(SRC_DIR, filename);
+  if (existsSync(direct)) return direct;
+  return path.join(SRC_DIR, 'tronque', filename);
+}
+
+const SOURCE_PRESENT: Record<string, boolean> = Object.fromEntries(
+  Object.keys(SOURCES_LABELS).map((label) => [label, existsSync(resolveSourcePath(label))]),
 );
+/** Au moins une fixture disponible → le bloc traçabilité s'exécute (partiellement). */
+const AU_MOINS_UNE_FIXTURE = Object.values(SOURCE_PRESENT).some(Boolean);
+/** Les 6 fixtures réunies → garantie stricte sur 100 % des mots-clés. */
+const TOUTES_FIXTURES = Object.values(SOURCE_PRESENT).every(Boolean);
 
 function readSource(label: string): string {
-  const filename = SOURCES_LABELS[label];
-  return readFileSync(path.join(SRC_DIR, filename), 'utf-8');
+  return readFileSync(resolveSourcePath(label), 'utf-8');
 }
 
 /** Ramène les indices Unicode (CO₂, O₂…) à leur chiffre ASCII avant normalizeAr. */
@@ -53,12 +72,12 @@ function normForTrace(s: string): string {
   return normalizeAr(fixSubscripts(s));
 }
 
-const SOURCES_NORM = FIXTURES_PRESENT
-  ? (['L1', 'L2', 'L3', 'L4'] as const).reduce<Record<string, string>>((acc, l) => {
-      acc[l] = normForTrace(readSource(l));
-      return acc;
-    }, {})
-  : {};
+const SOURCES_NORM = (Object.keys(SOURCES_LABELS) as Array<keyof typeof SOURCES_LABELS>).reduce<
+  Record<string, string>
+>((acc, l) => {
+  if (SOURCE_PRESENT[l]) acc[l] = normForTrace(readSource(l));
+  return acc;
+}, {});
 
 // ──────────────────────────────────────────────────────────────────────────────
 // 1. Intégrité de la banque
@@ -117,11 +136,22 @@ describe('banque de mots-clés — intégrité', () => {
 // 2. Traçabilité : chaque mot-clé provient d'au moins une source officielle
 // ──────────────────────────────────────────────────────────────────────────────
 
-// Skip si fixtures absentes (docs/sources/ non commitées — lire disque impossible).
-describe.skipIf(!FIXTURES_PRESENT)('traçabilité des mots-clés dans les sources officielles', () => {
-  it('chaque mot-clé apparaît dans au moins une des sources DÉCLARÉES de son unité', () => {
+// Gate granulaire PAR UNITÉ (audit 2026-09-16) : une unité n'est vérifiée que si
+// TOUTES ses sources déclarées sont disponibles — la preuve d'un mot-clé peut
+// vivre dans n'importe laquelle de ses sources (ex. « amylase » prouvée par le
+// livre L2, absent de L5/L6) ; vérifier partiellement produirait de faux échecs.
+// Les unités en attente d'extraits sont comptées, non bloquantes ; quand les 6
+// fixtures sont réunies, la garantie devient stricte (100 % vérifiées).
+describe.skipIf(!AU_MOINS_UNE_FIXTURE)('traçabilité des mots-clés dans les sources officielles', () => {
+  it('chaque unité dont TOUTES les sources déclarées sont disponibles a ses mots-clés traçables', () => {
     const untraceable: string[] = [];
+    const horsPerimetre: string[] = [];
     for (const u of CORRECTEUR_V1_UNITES) {
+      const manquantes = u.sources.filter((label) => !SOURCE_PRESENT[label]);
+      if (manquantes.length > 0) {
+        horsPerimetre.push(`unite ${u.uniteId} (en attente de: ${manquantes.join(',')})`);
+        continue;
+      }
       for (const kw of u.motsCles) {
         const nk = normForTrace(kw);
         if (!nk) {
@@ -137,13 +167,28 @@ describe.skipIf(!FIXTURES_PRESENT)('traçabilité des mots-clés dans les source
           return relaxed !== '' && sourceText.includes(relaxed);
         });
         if (!tracable) {
-          untraceable.push(
-            `unite ${u.uniteId} - ${kw} (sources déclarées: ${u.sources.join(',')})`,
-          );
+          untraceable.push(`unite ${u.uniteId} - ${kw} (sources: ${u.sources.join(',')})`);
         }
       }
     }
     expect(untraceable, `mots-clés sans source: ${untraceable.join(' | ')}`).toEqual([]);
+    // Quand les 6 fixtures sont réunies, plus AUCUNE unité hors périmètre.
+    if (TOUTES_FIXTURES) {
+      expect(
+        horsPerimetre,
+        'fixtures complètes réunies : chaque unité doit être vérifiable',
+      ).toEqual([]);
+    }
+  });
+
+  it('chaque fixture disponible est exploitable comme preuve (≥ 300 caractères normalisés)', () => {
+    for (const [label, filename] of Object.entries(SOURCES_LABELS)) {
+      if (!SOURCE_PRESENT[label]) continue;
+      expect(
+        SOURCES_NORM[label].length,
+        `fixture ${label} (${filename}) vide ou corrompue`,
+      ).toBeGreaterThan(300);
+    }
   });
 });
 
@@ -296,7 +341,7 @@ const QUESTIONS_V1: QuestionV1[] = [
   },
 ];
 
-describe.skipIf(!FIXTURES_PRESENT)('jeu de questions neuves (hors Golden Set) — les 3 domaines, les 11 unités', () => {
+describe('jeu de questions neuves (hors Golden Set) — les 3 domaines, les 11 unités', () => {
   it('contient 11 questions : chaque unité du programme a sa question (5 + 3 + 3)', () => {
     expect(QUESTIONS_V1).toHaveLength(11);
     const couvertes = new Set(QUESTIONS_V1.map((q) => q.uniteId));

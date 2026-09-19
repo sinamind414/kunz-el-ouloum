@@ -5,11 +5,15 @@
 import { LESSON_LIBRARY } from '../lessonData';
 
 function isTrackedHtmlLesson(key: string): boolean {
-  if (key === 'lecon_transcription') return false;
+  if (key.startsWith('lecon_')) return true;
   return key.startsWith('phase');
 }
 
 function extractPhaseNumber(key: string): number {
+  // Leçons mono-fichier (U1-3, U2-1, U3-2) :positions pédagogiques fixes
+  if (key === 'lecon_transcription') return 1.5;
+  if (key === 'lecon_representation') return 2.05;
+  if (key === 'lecon_activite_structure') return 3.05;
   const m = key.match(/^phase(\d+)_/);
   return m ? Number(m[1]) : Number.MAX_SAFE_INTEGER;
 }

@@ -1,9 +1,9 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>منصة المتفوق 3AS | استنساخ المعلومات الوراثية</title>
+    <title>منصة بنزر العلم | استنساخ المعلومات الوراثية</title>
     <style>
         :root {
             --bg-main: #f8fafc;
@@ -51,39 +51,7 @@
             border-radius: 6px;
         }
 
-        /* Navbar */
-        .navbar {
-            background: var(--surface);
-            border-bottom: 1px solid var(--border);
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            padding: 1rem 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.02);
-            flex-wrap: wrap;
-            gap: 1rem;
-        }
-
-        .brand {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            font-weight: 900;
-            font-size: 1.25rem;
-            color: var(--primary);
-        }
-
-        .brand-badge {
-            background: var(--accent);
-            color: white;
-            padding: 4px 10px;
-            border-radius: 8px;
-            font-size: 0.8rem;
-            white-space: nowrap;
-        }
+        
 
         .nav-links {
             display: flex;
@@ -105,12 +73,6 @@
 
         /* Responsive Navbar */
         @media (max-width: 640px) {
-            .navbar {
-                flex-direction: column;
-                align-items: center;
-                text-align: center;
-                padding: 1rem;
-            }
             .nav-links {
                 justify-content: center;
                 width: 100%;
@@ -469,30 +431,20 @@
 </head>
 <body>
 
-    <!-- Navbar -->
-    <nav class="navbar">
-        <div class="brand">
-            <span>منصة المتفوق علوم الطبيعة والحياة</span>
-            <span class="brand-badge">بكالوريا 3AS</span>
-        </div>
-        <div class="nav-links">
-            <a href="#" class="active">المجال 1: التخصص الوظيفي للبروتينات</a>
-            <a href="#">منهجية البكالوريا</a>
-        </div>
-    </nav>
+    
 
     
     <!-- Sommaire sticky (transcription) -->
     <div class="sommaire" id="sommaire">
-        <a href="#step1" id="link-step1" onclick="scrollToStep('step1',event)">1 وضعية</a>
-        <a href="#step2" id="link-step2" onclick="scrollToStep('step2',event)">2 تحليل</a>
-        <a href="#step3" id="link-step3" onclick="scrollToStep('step3',event)">3 محاكي</a>
-        <a href="#step4" id="link-step4" onclick="scrollToStep('step4',event)">4 خلاصة</a>
-        <a href="#step5" id="link-step5" onclick="scrollToStep('step5',event)">5 تقويم</a>
+        <a href="#step1" id="link-step1" onclick="scrollToStep('step1',event)">📖 1 وضعية</a>
+        <a href="#step2" id="link-step2" onclick="scrollToStep('step2',event)">🔬 2 تحليل</a>
+        <a href="#step3" id="link-step3" onclick="scrollToStep('step3',event)">🧪 3 محاكي</a>
+        <a href="#step4" id="link-step4" onclick="scrollToStep('step4',event)">📝 4 خلاصة</a>
+        <a href="#step5" id="link-step5" onclick="scrollToStep('step5',event)">✅ 5 تقويم</a>
     </div>
 
     <div class="container">
-        
+        <div id="ch3" class="chapter-view active">
         <!-- Hero Header -->
         <header class="lesson-header">
             <div class="lesson-breadcrumb">المجال الأول : التخصص الوظيفي للبروتينات • الوحدة الأولى : تركيب البروتين</div>
@@ -512,7 +464,7 @@
             
             <div class="problem-box">
                 <div class="problem-title">⚠️ التناقض الظاهري (مفتاح فهم الدرس)</div>
-                <p>تتواجد المعلومات الوراثية <span class="ltr-seq">ADN</span> داخل <strong>النواة</strong> عند حقيقيات النوى، بينما تتم عملية تركيب البروتينات في <strong>الهيولى</strong> (الستوبلازم). علما أن جزيئة الـ <span class="ltr-seq">ADN</span> <strong>لا تغادر النواة أبدا</strong> بسبب حجمها الجزيئي الضخم، كيف تنتقل نسخة من هذه المعلومات إلى الهيولى لتركيب البروتين الخاص بها؟</p>
+                <p>تتواجد المعلومات الوراثية <span class="ltr-seq">ADN</span> داخل <strong>النواة</strong> عند حقيقيات النوى، بينما تتم عملية تركيب البروتينات في <strong>الهيولى (الستوبلازم)</strong>. علما أن جزيئة الـ <span class="ltr-seq">ADN</span> <strong>لا تغادر النواة أبدا</strong> بسبب حجمها الجزيئي الضخم، كيف تنتقل نسخة من هذه المعلومات إلى الهيولى لتركيب البروتين الخاص بها؟</p>
             </div>
 
             <p>لحل هذه الإشكالية، اقترح العلماء وجود وسيط كيميائي (جزيئة ناقلة) ينقل الرسالة الوراثية من النواة إلى الهيولى. سميت هذه الجزيئة بـ <strong>الـ <span class="ltr-seq">ARNm</span> (حمض ريبي نووي رسول - ARN messager)</strong>.</p>
@@ -650,7 +602,7 @@
                 <div class="rna-strand" id="rnaStrand">5'- _ _ _ - _ _ _ - _ _ _ - _ _ _ - _ _ _ -3'</div>
 
                 <div style="margin-top: 15px;">
-                    <button class="btn-sim" id="btnStep" onclick="transcribeNext()">⚡ إضافة الرامزة التالية (Triplet)</button>
+                    <button class="btn-sim" id="btnStep" onclick="transcribeNext()">⚡ إضافة الرامزة التالية</button>
                     <button class="btn-sim btn-reset" onclick="resetSim()">🔄 إعادة المحاكاة</button>
                 </div>
             </div>
@@ -725,6 +677,7 @@
             </div>
         </section>
 
+        </div>
     </div>
 
     <!-- Scripts -->
@@ -763,7 +716,7 @@
             currentStep = 0;
             document.getElementById('rnaStrand').innerText = "5'- _ _ _ - _ _ _ - _ _ _ - _ _ _ - _ _ _ -3'";
             let btn = document.getElementById('btnStep');
-            btn.innerText = '⚡ إضافة الرامزة التالية (Triplet)';
+            btn.innerText = '⚡ إضافة الرامزة التالية';
             btn.disabled = false;
             btn.style.background = '#2563eb';
         }

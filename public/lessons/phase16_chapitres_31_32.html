@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>منصة المتفوق 3AS | المرحلة 16 : الدرس 31 والدرس 32</title>
+    <title>منصة بنزر العلم | المرحلة 16 : الدرس 31 والدرس 32</title>
     <style>
         :root {
             --bg-main: #f8fafc;
@@ -52,87 +52,6 @@
             background: #f1f5f9;
             padding: 2px 8px;
             border-radius: 6px;
-        }
-
-        /* Navbar */
-        .navbar {
-            background: var(--surface);
-            border-bottom: 1px solid var(--border);
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            padding: 1rem 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.02);
-            flex-wrap: wrap;
-            gap: 1rem;
-        }
-
-        .brand {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            font-weight: 900;
-            font-size: 1.25rem;
-            color: var(--primary);
-        }
-
-        .brand-badge {
-            background: var(--stone-dark);
-            color: white;
-            padding: 4px 10px;
-            border-radius: 8px;
-            font-size: 0.8rem;
-            white-space: nowrap;
-        }
-
-        .chapter-switcher {
-            display: flex;
-            gap: 12px;
-            flex-wrap: wrap;
-        }
-
-        .ch-btn {
-            background: var(--bg-main);
-            border: 2px solid var(--border);
-            padding: 8px 18px;
-            border-radius: 12px;
-            font-family: inherit;
-            font-weight: 800;
-            font-size: 0.95rem;
-            color: var(--text-muted);
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .ch-btn:hover {
-            border-color: var(--stone-dark);
-            color: var(--stone-dark);
-        }
-
-        .ch-btn.active {
-            background: var(--primary);
-            color: white;
-            border-color: var(--primary);
-        }
-
-        @media (max-width: 768px) {
-            .navbar {
-                flex-direction: column;
-                padding: 1rem;
-                text-align: center;
-            }
-            .chapter-switcher {
-                justify-content: center;
-                width: 100%;
-            }
-            .ch-btn {
-                flex: 1;
-                font-size: 0.85rem;
-                padding: 8px 10px;
-            }
         }
 
         .container {
@@ -435,30 +354,20 @@
 </head>
 <body>
 
-    <!-- Navbar with Phase Switcher -->
-    <nav class="navbar">
-        <div class="brand">
-            <span>منصة المتفوق 3AS</span>
-            <span class="brand-badge">المرحلة 16 (الدرس 31 و 32)</span>
-        </div>
-        <div class="chapter-switcher">
-            <button class="ch-btn active" onclick="showChapter('ch31', event)">🗺️ الدرس 31 : تحديد الصفائح التكتونية وحدودها النشطة</button>
-            <button class="ch-btn" onclick="showChapter('ch32', event)">🌊 الدرس 32 : شواهد اتساع قاع المحيط والمغناطيسية القديمة</button>
-        </div>
-    </nav>
+    
 
     
     <!-- Sommaire sticky (v3.2) -->
     <div class="sommaire" id="sommaire">
         <a href="#ch1-step1" id="link-ch1-step1" onclick="scrollToStep('ch1-step1',event)">📖 1-1 وضعية</a>
-        <a href="#ch1-step2" id="link-ch1-step2" onclick="scrollToStep('ch1-step2',event)">1-2 تحليل</a>
-        <a href="#ch1-step3" id="link-ch1-step3" onclick="scrollToStep('ch1-step3',event)">1-3 مستكشف</a>
-        <a href="#ch1-step4" id="link-ch1-step4" onclick="scrollToStep('ch1-step4',event)">1-4 خلاصة + Quiz</a>
+        <a href="#ch1-step2" id="link-ch1-step2" onclick="scrollToStep('ch1-step2',event)">🔬 1-2 تحليل</a>
+        <a href="#ch1-step3" id="link-ch1-step3" onclick="scrollToStep('ch1-step3',event)">🧪 1-3 محاكي</a>
+        <a href="#ch1-step4" id="link-ch1-step4" onclick="scrollToStep('ch1-step4',event)">✅ 1-4 تقويم</a>
         <span class="sep"></span>
-        <a href="#ch2-step1" id="link-ch2-step1" onclick="scrollToStep('ch2-step1',event)">🧬 2-1 إشكالية</a>
-        <a href="#ch2-step2" id="link-ch2-step2" onclick="scrollToStep('ch2-step2',event)">2-2 فك الشفرة</a>
-        <a href="#ch2-step3" id="link-ch2-step3" onclick="scrollToStep('ch2-step3',event)">2-3 تنشيط</a>
-        <a href="#ch2-step4" id="link-ch2-step4" onclick="scrollToStep('ch2-step4',event)">2-4 تقويم</a>
+        <a href="#ch2-step1" id="link-ch2-step1" onclick="scrollToStep('ch2-step1',event)">❓ 2-1 إشكالية</a>
+        <a href="#ch2-step2" id="link-ch2-step2" onclick="scrollToStep('ch2-step2',event)">🔬 2-2 تحليل</a>
+        <a href="#ch2-step3" id="link-ch2-step3" onclick="scrollToStep('ch2-step3',event)">🧪 2-3 محاكي</a>
+        <a href="#ch2-step4" id="link-ch2-step4" onclick="scrollToStep('ch2-step4',event)">✅ 2-4 تقويم</a>
     </div>
 
     <div class="container">
@@ -518,7 +427,7 @@
 
                             <!-- Dorsale divergence -->
                             <path d="M140 60 L 150 45 L 160 60" fill="#ea580c"/>
-                            <text x="150" y="38" fill="#fdba74" font-size="8" text-anchor="middle" font-weight="bold">ظهيرة (تباعد)</text>
+                            <text x="150" y="38" fill="#fdba74" font-size="8" text-anchor="middle" font-weight="bold">ظهرة (تباعد)</text>
                             <path d="M130 65 H 110 M 170 65 H 190" stroke="#fdba74" stroke-width="2" marker-end="url(#arrow)"/>
 
                             <!-- Subduction convergence -->
@@ -551,13 +460,13 @@
                 
                 <div class="interactive-box" style="background: #1e293b;">
                     <div style="margin-bottom: 15px;">
-                        <button class="btn-action" onclick="simPlates('dorsale')">🌋 محور الظهيرة المحيطية (حدود تباعد)</button>
+                        <button class="btn-action" onclick="simPlates('dorsale')">🌋 محور الظهرة المحيطية (حدود تباعد)</button>
                         <button class="btn-action" style="background:#dc2626;" onclick="simPlates('subd')">💥 منطقة الغوص (حدود تقارب وهدم)</button>
                         <button class="btn-action" style="background:#475569;" onclick="simPlates('faille')">↔️ فالق تحويلي (حدود محافظة)</button>
                     </div>
                     <div id="platesDisplayBox" style="background: #0f172a; border: 2px solid #64748b; border-radius: 12px; padding: 1.5rem; text-align: center;">
-                        <h3 style="color: #4ade80; margin-bottom: 10px;">🌋 محور الظهيرة المحيطية (Dorsale)</h3>
-                        <p style="color: #cbd5e1; line-height: 1.8;">تتميز بقوى شد وتباعد تؤدي إلى صعود الماغما البازلتية الساخنة من الاستينوسفير. تشهد <strong>براكين بازلتية طفحية هادئة</strong> و<strong>زلازل سطحية قليلة العمق (< 30 كم)</strong> تتبع خسف الظهيرة (<span class="ltr-seq">Rift</span>).</p>
+                        <h3 style="color: #4ade80; margin-bottom: 10px;">🌋 محور الظهرة المحيطية (Dorsale)</h3>
+                        <p style="color: #cbd5e1; line-height: 1.8;">تتميز بقوى شد وتباعد تؤدي إلى صعود الماغما البازلتية الساخنة من الاستينوسفير. تشهد <strong>براكين بازلتية طفحية هادئة</strong> و<strong>زلازل سطحية قليلة العمق (< 30 كم)</strong> تتبع خسف الظهرة (<span class="ltr-seq">Rift</span>).</p>
                     </div>
                 </div>
             </section>
@@ -591,7 +500,7 @@
                 <div class="lesson-breadcrumb">المجال الثالث : التكتونية العامة • الوحدة 1 : النشاط التكتوني للصفائح</div>
                 <h1>الدرس 2 : شواهد اتساع قاع المحيط والمغناطيسية القديمة (Paléomagnétisme)</h1>
                 <div class="lesson-objectives">
-                    <div>🎯 <strong>الهدف العلمي :</strong> إثبات اتساع قاع المحيط بالأدلة الرسوبية (عمر وسُمك الرسوبيات) والأدلة المغناطيسية (تناوب الأشرطة المغناطيسية المتناظرة بالنسبة للظهيرة).</div>
+                    <div>🎯 <strong>الهدف العلمي :</strong> إثبات اتساع قاع المحيط بالأدلة الرسوبية (عمر وسُمك الرسوبيات) والأدلة المغناطيسية (تناوب الأشرطة المغناطيسية المتناظرة بالنسبة للظهرة).</div>
                     <div>⏱️ <strong>المدة التقديرية للتعلم الذاتي :</strong> 25 دقيقة</div>
                 </div>
             </header>
@@ -616,12 +525,12 @@
                 </div>
                 <div class="doc-viewer">
                     <div class="doc-visual" style="background: #083344;">
-                        <h4 style="color: #67e8f9; margin-bottom: 1rem; font-size: 0.95rem;">تناوب أشرطة المغناطيسية العادية والمقلوبة وسُمك الرسوبيات على جانبي الظهيرة</h4>
+                        <h4 style="color: #67e8f9; margin-bottom: 1rem; font-size: 0.95rem;">تناوب أشرطة المغناطيسية العادية والمقلوبة وسُمك الرسوبيات على جانبي الظهرة</h4>
                         <!-- SVG Expansion -->
                         <svg class="svg-container" viewBox="0 0 400 200" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <!-- Rift center -->
                             <rect x="190" y="40" width="20" height="120" fill="#ea580c"/>
-                            <text x="200" y="32" fill="#fdba74" font-size="9" text-anchor="middle" font-weight="bold">محور الظهيرة (Rift - حديث جداً 0 سنة)</text>
+                            <text x="200" y="32" fill="#fdba74" font-size="9" text-anchor="middle" font-weight="bold">محور الظهرة (Rift - حديث جداً 0 سنة)</text>
 
                             <!-- Normal magnetic bands (dark cyan) -->
                             <rect x="160" y="40" width="30" height="120" fill="#0e7490"/>
@@ -645,15 +554,15 @@
                             <path d="M150 175 H 60 M 250 175 H 340" stroke="#38bdf8" stroke-width="3" marker-end="url(#arrow)"/>
                             <text x="200" y="192" fill="#67e8f9" font-size="10" text-anchor="middle" font-weight="bold">← اتساع وحركة تباعد القاع نحو القارات →</text>
                         </svg>
-                        <p style="font-size: 0.85rem; color: #cbd5e1; margin-top: 10px;">💡 التناظر التام للأشرطة بالنسبة لمحور الظهيرة يثبت عمل الظهيرة كمصنع مستمر لقاع المحيط.</p>
+                        <p style="font-size: 0.85rem; color: #cbd5e1; margin-top: 10px;">💡 التناظر التام للأشرطة بالنسبة لمحور الظهرة يثبت عمل الظهرة كمصنع مستمر لقاع المحيط.</p>
                     </div>
 
                     <div class="doc-analysis">
                         <span class="method-tag" style="background: #ecfeff; color: #0e7490;">الأدلة القاطعة في البكالوريا</span>
                         <h4 style="margin: 8px 0; color: var(--primary);">ما هي شواهد اتساع قاع المحيط؟</h4>
                         <ol style="padding-right: 1.2rem; line-height: 1.8;">
-                            <li><strong>الشاهد الرسوبي (الحفر البحري) :</strong> كلما ابتعدنا عن محور الظهيرة واقتربنا من القارات، <strong>يزداد عمر الرسوبيات ويزداد سُمكها</strong>. وهذا يثبت أن القاع القريب من الظهيرة حديث التكوين، والقاع البعيد قديم.</li>
-                            <li><strong>الشاهد المغناطيسي (<span class="ltr-seq">Paléomagnétisme</span>) :</strong> تحتوي صخور البازلت على معادن مغناطيسية (المغنيتيت) تسجل اتجاه الحقل المغناطيسي للأرض وقت تصلبها. نلاحظ وجود <strong>أشرطة مغناطيسية عادية ومقلوبة متناظرة تماماً</strong> بالنسبة لمحور الظهيرة، مما يثبت أن القاع يتشكل باستمرار ويندفع بالتساوي نحو الجانبين.</li>
+                            <li><strong>الشاهد الرسوبي (الحفر البحري) :</strong> كلما ابتعدنا عن محور الظهرة واقتربنا من القارات، <strong>يزداد عمر الرسوبيات ويزداد سُمكها</strong>. وهذا يثبت أن القاع القريب من الظهرة حديث التكوين، والقاع البعيد قديم.</li>
+                            <li><strong>الشاهد المغناطيسي (<span class="ltr-seq">Paléomagnétisme</span>) :</strong> تحتوي صخور البازلت على معادن مغناطيسية (المغنيتيت) تسجل اتجاه الحقل المغناطيسي للأرض وقت تصلبها. نلاحظ وجود <strong>أشرطة مغناطيسية عادية ومقلوبة متناظرة تماماً</strong> بالنسبة لمحور الظهرة، مما يثبت أن القاع يتشكل باستمرار ويندفع بالتساوي نحو الجانبين.</li>
                         </ol>
                     </div>
                 </div>
@@ -665,16 +574,16 @@
                     <span class="step-num step-num-cyan">3</span>
                     <span>محاكي اتساع قاع المحيط والمغناطيسية القديمة</span>
                 </div>
-                <p>اضغط لاختبار عمر وسُمك الرسوبيات حسب المسافة من محور الظهيرة :</p>
+                <p>اضغط لاختبار عمر وسُمك الرسوبيات حسب المسافة من محور الظهرة :</p>
                 
                 <div class="interactive-box" style="background: #083344;">
                     <div style="margin-bottom: 15px;">
-                        <button class="btn-action btn-cyan" onclick="simOcean('rift')">🌋 عند محور الظهيرة مباشرة (المسافة = 0 كم)</button>
-                        <button class="btn-action btn-cyan" onclick="simOcean('mid')">🌊 على مسافة متوسطة (500 كم من الظهيرة)</button>
-                        <button class="btn-action btn-cyan" style="background:#0284c7;" onclick="simOcean('cont')">🏖️ بالقرب من الساحل القاري (1500 كم من الظهيرة)</button>
+                        <button class="btn-action btn-cyan" onclick="simOcean('rift')">🌋 عند محور الظهرة مباشرة (المسافة = 0 كم)</button>
+                        <button class="btn-action btn-cyan" onclick="simOcean('mid')">🌊 على مسافة متوسطة (500 كم من الظهرة)</button>
+                        <button class="btn-action btn-cyan" style="background:#0284c7;" onclick="simOcean('cont')">🏖️ بالقرب من الساحل القاري (1500 كم من الظهرة)</button>
                     </div>
                     <div id="oceanDisplayBox" style="background: #164e63; border: 2px solid #22d3ee; border-radius: 12px; padding: 1.5rem; text-align: center;">
-                        <h3 style="color: #67e8f9; margin-bottom: 10px;">🌋 عند محور الظهيرة مباشرة</h3>
+                        <h3 style="color: #67e8f9; margin-bottom: 10px;">🌋 عند محور الظهرة مباشرة</h3>
                         <p style="color: #cbd5e1; line-height: 1.8;">صخور بازلتية حديثة التكوين جداً (عمرها يقارب 0 سنة). <strong>سُمك الرسوبيات معدوم تماماً (0 متر)</strong> لعدم مرور وقت يسمح بترسب المستحاثات.</p>
                     </div>
                 </div>
@@ -688,11 +597,11 @@
                 </div>
 
                 <div class="question-item" id="c32q1-container">
-                    <h4 style="margin-bottom: 12px;">1. ماذا يدل التناظر الهندسي التام لأشرطة المغناطيسية القديمة (العادية والمقلوبة) على جانبي محور الظهيرة المحيطية؟</h4>
+                    <h4 style="margin-bottom: 12px;">1. ماذا يدل التناظر الهندسي التام لأشرطة المغناطيسية القديمة (العادية والمقلوبة) على جانبي محور الظهرة المحيطية؟</h4>
                     <div class="options-grid">
-                        <button class="option-btn" onclick="checkCh32Answer(0, true)">أ) يدل على أن صخور قاع المحيط تتشكل بشكل مستمر وبسرعة متساوية من صعود الماغما في محور الظهيرة، وتندفع نحو الجانبين بشكل متناظر مع مرور الزمن.</button>
+                        <button class="option-btn" onclick="checkCh32Answer(0, true)">أ) يدل على أن صخور قاع المحيط تتشكل بشكل مستمر وبسرعة متساوية من صعود الماغما في محور الظهرة، وتندفع نحو الجانبين بشكل متناظر مع مرور الزمن.</button>
                         <button class="option-btn" onclick="checkCh32Answer(1, false)">ب) يدل على أن الأرض تتوقف عن الدوران.</button>
-                        <button class="option-btn" onclick="checkCh32Answer(2, false)">ج) يدل على أن المحيط يتقلص وينكمش في محور الظهيرة.</button>
+                        <button class="option-btn" onclick="checkCh32Answer(2, false)">ج) يدل على أن المحيط يتقلص وينكمش في محور الظهرة.</button>
                     </div>
                     <div class="feedback-box" id="c32q1-feedback"></div>
                     <div class="quiz-badge" id="c2-badge"></div>
@@ -716,8 +625,8 @@
             let box = document.getElementById('platesDisplayBox');
             if (type === 'dorsale') {
                 box.innerHTML = `
-                    <h3 style="color: #4ade80; margin-bottom: 10px;">🌋 محور الظهيرة المحيطية (Dorsale - تباعد وبناء)</h3>
-                    <p style="color: #cbd5e1; line-height: 1.8;">تتميز بقوى شد وتباعد تؤدي إلى صعود الماغما البازلتية الساخنة من الاستينوسفير. تشهد <strong>براكين بازلتية طفحية هادئة</strong> و<strong>زلازل سطحية قليلة العمق (< 30 كم)</strong> تتبع خسف الظهيرة (<span class="ltr-seq">Rift</span>).</p>
+                    <h3 style="color: #4ade80; margin-bottom: 10px;">🌋 محور الظهرة المحيطية (Dorsale - تباعد وبناء)</h3>
+                    <p style="color: #cbd5e1; line-height: 1.8;">تتميز بقوى شد وتباعد تؤدي إلى صعود الماغما البازلتية الساخنة من الاستينوسفير. تشهد <strong>براكين بازلتية طفحية هادئة</strong> و<strong>زلازل سطحية قليلة العمق (< 30 كم)</strong> تتبع خسف الظهرة (<span class="ltr-seq">Rift</span>).</p>
                 `;
             } else if (type === 'subd') {
                 box.innerHTML = `
@@ -736,17 +645,17 @@
             let box = document.getElementById('oceanDisplayBox');
             if (pos === 'rift') {
                 box.innerHTML = `
-                    <h3 style="color: #67e8f9; margin-bottom: 10px;">🌋 عند محور الظهيرة مباشرة</h3>
+                    <h3 style="color: #67e8f9; margin-bottom: 10px;">🌋 عند محور الظهرة مباشرة</h3>
                     <p style="color: #cbd5e1; line-height: 1.8;">صخور بازلتية حديثة التكوين جداً (عمرها يقارب 0 سنة). <strong>سُمك الرسوبيات معدوم تماماً (0 متر)</strong> لعدم مرور وقت يسمح بترسب المستحاثات.</p>
                 `;
             } else if (pos === 'mid') {
                 box.innerHTML = `
-                    <h3 style="color: #38bdf8; margin-bottom: 10px;">🌊 على مسافة متوسطة (500 كم من الظهيرة)</h3>
+                    <h3 style="color: #38bdf8; margin-bottom: 10px;">🌊 على مسافة متوسطة (500 كم من الظهرة)</h3>
                     <p style="color: #cbd5e1; line-height: 1.8;">عمر البازلت يقارب 25 مليون سنة. <strong>سُمك الرسوبيات متوسط (حوالي 200 متر)</strong>، وتحتوي على مستحاثات بحرية متوسطة القدم.</p>
                 `;
             } else {
                 box.innerHTML = `
-                    <h3 style="color: #fef08a; margin-bottom: 10px;">🏖️ بالقرب من الساحل القاري (1500 كم من الظهيرة)</h3>
+                    <h3 style="color: #fef08a; margin-bottom: 10px;">🏖️ بالقرب من الساحل القاري (1500 كم من الظهرة)</h3>
                     <p style="color: #cbd5e1; line-height: 1.8;">صخور بازلتية قديمة جداً (عمرها يفوق 100 مليون سنة). <strong>سُمك الرسوبيات ضخم جداً (يفوق 1000 متر)</strong> وتتراكم فيها طبقات رسوبية قديمة من العصر الجوراسي.</p>
                 `;
             }
@@ -785,10 +694,10 @@
             fb.style.display = 'block';
             if (isCorrect) {
                 fb.style.background = '#f0fdf4'; fb.style.color = '#166534'; fb.style.border = '1px solid #bbf7d0';
-                fb.innerHTML = '<strong>✅ إجابة صحيحة ممتاز!</strong> التناظر المغناطيسي هو الدليل القاطع على عمل الظهيرة كمصنع متسع لقاع المحيط.';
+                fb.innerHTML = '<strong>✅ إجابة صحيحة ممتاز!</strong> التناظر المغناطيسي هو الدليل القاطع على عمل الظهرة كمصنع متسع لقاع المحيط.';
             } else {
                 fb.style.background = '#fef2f2'; fb.style.color = '#991b1b'; fb.style.border = '1px solid #fecaca';
-                fb.innerHTML = '<strong>❌ إجابة خاطئة.</strong> التناظر المغناطيسي يثبت التوسع وحركة التباعد المنتظمة من محور الظهيرة.';
+                fb.innerHTML = '<strong>❌ إجابة خاطئة.</strong> التناظر المغناطيسي يثبت التوسع وحركة التباعد المنتظمة من محور الظهرة.';
             }
         }
     

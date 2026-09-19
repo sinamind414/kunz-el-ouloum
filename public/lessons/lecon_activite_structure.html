@@ -1,0 +1,739 @@
+﻿<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>الدرس 2 : النشاط الإنزيمي وعلاقته ببنية الإنزيم (المعقد ES)</title>
+    <style>
+        :root {
+            --bg-main: #f8fafc;
+            --surface: #ffffff;
+            --primary: #0f172a;
+            --accent: #2563eb;
+            --accent-light: #eff6ff;
+            --success: #16a34a;
+            --success-light: #f0fdf4;
+            --warning: #d97706;
+            --warning-light: #fffbeb;
+            --danger: #dc2626;
+            --danger-light: #fef2f2;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            --radius: 16px;
+            --shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Cairo', 'Tajawal', sans-serif;
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            line-height: 1.8;
+            padding-bottom: 60px;
+        }
+
+        /* LTR Helper for scientific formulas in RTL text */
+        .ltr-seq {
+            direction: ltr;
+            unicode-bidi: embed;
+            display: inline-block;
+            font-family: monospace;
+            font-weight: bold;
+            color: var(--accent);
+            background: #f1f5f9;
+            padding: 2px 8px;
+            border-radius: 6px;
+        }
+
+        
+
+        .nav-links {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-muted);
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: color 0.2s;
+        }
+
+        .nav-links a:hover, .nav-links a.active {
+            color: var(--accent);
+        }
+
+        /* Responsive Navbar */
+        @media (max-width: 640px) {
+            .nav-links {
+                justify-content: center;
+                width: 100%;
+            }
+        }
+
+        /* Layout */
+        .container {
+            max-width: 1100px;
+            margin: 2rem auto;
+            padding: 0 1.2rem;
+        }
+
+        /* Hero Header */
+        .lesson-header {
+            background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%);
+            color: white;
+            border-radius: var(--radius);
+            padding: 2.5rem;
+            margin-bottom: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .lesson-breadcrumb {
+            font-size: 0.85rem;
+            color: #93c5fd;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .lesson-header h1 {
+            font-size: 2.2rem;
+            font-weight: 900;
+            margin-bottom: 1rem;
+            line-height: 1.3;
+        }
+
+        .lesson-objectives {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            font-size: 0.95rem;
+        }
+
+        /* Section Cards */
+        .card {
+            background: var(--surface);
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow);
+        }
+
+        @media (max-width: 600px) {
+            .lesson-header { padding: 1.5rem; }
+            .lesson-header h1 { font-size: 1.5rem; }
+            .card { padding: 1.2rem; }
+        }
+
+        .section-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid var(--bg-main);
+            padding-bottom: 0.8rem;
+        }
+
+        .step-num {
+            background: var(--accent-light);
+            color: var(--accent);
+            width: 38px;
+            height: 38px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 10px;
+            font-weight: 900;
+            font-size: 1.1rem;
+        }
+
+        /* Problématique interactive */
+        .problem-box {
+            background: var(--warning-light);
+            border-right: 5px solid var(--warning);
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin-bottom: 1.5rem;
+        }
+
+        .problem-title {
+            font-weight: 800;
+            color: #92400e;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Interactive Tabs */
+        .tabs-header {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 10px;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            background: var(--bg-main);
+            border: 1px solid var(--border);
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-family: inherit;
+            font-weight: 700;
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .tab-btn.active {
+            background: var(--accent);
+            color: white;
+            border-color: var(--accent);
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Interactive Experiment / Document */
+        .doc-viewer {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            align-items: start;
+        }
+
+        @media (max-width: 800px) {
+            .doc-viewer {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .doc-visual {
+            background: #0f172a;
+            border-radius: 12px;
+            padding: 1.5rem;
+            color: white;
+            position: relative;
+        }
+
+        .svg-container {
+            width: 100%;
+            height: auto;
+            max-height: 260px;
+        }
+
+        .doc-analysis {
+            background: var(--bg-main);
+            border-radius: 12px;
+            padding: 1.5rem;
+            border: 1px solid var(--border);
+        }
+
+        .method-tag {
+            display: inline-block;
+            background: #e0f2fe;
+            color: #0369a1;
+            font-size: 0.75rem;
+            font-weight: 800;
+            padding: 2px 8px;
+            border-radius: 4px;
+            margin-bottom: 8px;
+        }
+
+        /* Animation interactive ADN -> ARNm */
+        .sim-box {
+            background: #1e293b;
+            border-radius: 12px;
+            padding: 1.5rem;
+            color: white;
+            text-align: center;
+            margin: 1.5rem 0;
+            overflow-x: auto;
+        }
+
+        .dna-strand, .rna-strand {
+            font-family: monospace;
+            font-size: 1.15rem;
+            letter-spacing: 3px;
+            margin: 10px 0;
+            padding: 12px;
+            border-radius: 8px;
+            direction: ltr;
+            unicode-bidi: embed;
+            white-space: nowrap;
+            overflow-x: auto;
+        }
+
+        .dna-strand { background: rgba(37, 99, 235, 0.2); border: 1px dashed #3b82f6; color: #93c5fd; }
+        .rna-strand { background: rgba(22, 163, 74, 0.2); border: 1px solid #22c55e; color: #4ade80; min-height: 52px; }
+
+        .btn-sim {
+            background: var(--accent);
+            color: white;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 8px;
+            font-family: inherit;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background 0.2s;
+            margin: 5px;
+        }
+
+        .btn-sim:hover { background: #1d4ed8; }
+        .btn-reset { background: #475569; }
+
+        /* Bilan & Texte scientifique */
+        .scientific-text {
+            background: var(--surface);
+            border: 2px solid #cbd5e1;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-top: 1rem;
+        }
+
+        .text-part {
+            margin-bottom: 1.2rem;
+            padding-right: 1rem;
+            border-right: 4px solid var(--accent);
+        }
+
+        .text-part h4 {
+            font-size: 0.95rem;
+            color: var(--accent);
+            margin-bottom: 0.3rem;
+            font-weight: 800;
+        }
+
+        /* Quiz & BAC Exercise */
+        .question-item {
+            background: var(--bg-main);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 10px;
+            margin-top: 1rem;
+        }
+
+        .option-btn {
+            background: white;
+            border: 1.5px solid var(--border);
+            padding: 12px 16px;
+            border-radius: 10px;
+            text-align: right;
+            font-family: inherit;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: var(--text-main);
+        }
+
+        .option-btn:hover {
+            border-color: var(--accent);
+            background: var(--accent-light);
+        }
+
+        .option-btn.correct {
+            background: var(--success-light);
+            border-color: var(--success);
+            color: var(--success);
+            font-weight: 700;
+        }
+
+        .option-btn.wrong {
+            background: var(--danger-light);
+            border-color: var(--danger);
+            color: var(--danger);
+        }
+
+        .feedback-box {
+            margin-top: 1rem;
+            padding: 1rem;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            display: none;
+            line-height: 1.6;
+        }
+
+        /* BAC Methodology Corner */
+        .bac-tip {
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .bac-tip-header {
+            color: #166534;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 0.8rem;
+        }
+    
+        /* === MIFTAH + Sommaire + Badge (v3.2 transcription) === */
+        .sommaire{position:sticky;top:60px;z-index:999;background:#ffffffee;backdrop-filter:blur(8px);border-bottom:1px solid var(--border);padding:8px 1.2rem;display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;box-shadow:0 2px 10px rgba(0,0,0,.04)}
+        .sommaire::-webkit-scrollbar{display:none}
+        .sommaire a{white-space:nowrap;font-size:.82rem;font-weight:800;color:var(--text-muted);text-decoration:none;padding:6px 12px;border-radius:8px;border:1px solid var(--border);background:var(--bg-main);transition:all .15s}
+        .sommaire a:hover{border-color:var(--accent);color:var(--accent)}
+        .sommaire a.active{background:var(--primary);color:#fff;border-color:var(--primary)}
+        .miftah-encadre{background:#fffdf4;border:1px solid #f3e0b0;border-right:4px solid #c08a1f;border-radius:10px;padding:10px 13px;margin:10px 0;font-size:.88rem;line-height:1.65}
+        .miftah-encadre b{color:#7a5610}
+        .quiz-badge{display:none;margin-top:12px;padding:10px 14px;border-radius:10px;font-weight:800;text-align:center;font-size:.95rem;animation:fadeIn .25s ease}
+        .quiz-badge.show{display:block}
+        .quiz-badge.faible{background:#fef2f2;color:#991b1b;border:1px solid #fecaca}
+        .quiz-badge.moyen{background:#fffbeb;color:#92400e;border:1px solid #fde68a}
+        .quiz-badge.mumtaz{background:#f0fdf4;color:#166534;border:1px solid #bbf7d0}
+        @media(max-width:640px){.sommaire{top:96px}}
+
+    </style>
+</head>
+<body>
+
+    
+
+    
+    <!-- Sommaire sticky (transcription) -->
+    <div class="sommaire" id="sommaire">
+        <a href="#step1" id="link-step1" onclick="scrollToStep('step1',event)">📖 1 وضعية</a>
+        <a href="#step2" id="link-step2" onclick="scrollToStep('step2',event)">🔬 2 تحليل</a>
+        <a href="#step3" id="link-step3" onclick="scrollToStep('step3',event)">⚙️ 3 آلية</a>
+        <a href="#step4" id="link-step4" onclick="scrollToStep('step4',event)">📝 4 خلاصة</a>
+        <a href="#step5" id="link-step5" onclick="scrollToStep('step5',event)">✅ 5 تقويم</a>
+    </div>
+
+    <div class="container">
+                <div id="chU32" class="chapter-view active">
+        <!-- Hero Header -->
+        <header class="lesson-header">
+            <div class="lesson-breadcrumb">المجال الأول : التخصص الوظيفي للبروتينات • الوحدة الثالثة : النشاط الإنزيمي للبروتينات</div>
+            <h1>الدرس 2 : النشاط الإنزيمي وعلاقته ببنية الإنزيم (المعقد ES)</h1>
+            <div class="lesson-objectives">
+                <div>🎯 <strong>الهدف الحصري للدرس :</strong> تفسير النوعية المزدوجة للإنزيم انطلاقا من بنية موقعه الفعال (المعقد ES).</div>
+                <div>⏱️ <strong>المدة التقديرية للتعلم الذاتي :</strong> 20 دقيقة (بدون معلم)</div>
+            </div>
+        </header>
+
+        <!-- STEP 1 : LE PROBLÈME -->
+        <section class="card" id="step1">
+            <div class="section-title">
+                <span class="step-num">1</span>
+                <span>وضعية الانطلاق وبناء الإشكالية العلمية</span>
+            </div>
+            <div class="problem-box">
+                <div class="problem-title">⚠️ نفس النشا يُهضم في الفم ولا يُهضم في المعدة، فلماذا؟</div>
+                <p>يحول لعاب الفم (إنزيم <span class="ltr-seq">Amylase</span>) النشا إلى سكريات في دقائق عند <span class="ltr-seq">37°C</span>، بينما لا يؤثر إنزيم المعدة (الببسين) في النشا إطلاقا، ولا يؤثر الأميلاز في السليلوز رغم تشابههما الكيميائي. علما أن الإنزيمات كلها بروتينات، فمن أين تأتي هذه الدقة في الاختيار؟</p>
+            </div>
+            <p>لحل هذه الإشكالية، يجب أن نكتشف العلاقة بين <strong>بنية الإنزيم الفراغية</strong> (موقعه الفعال) و<strong>نشاطه التحفيزي</strong> تجاه ركيزة محددة وتفاعل محدد.</p>
+        </section>
+
+        <!-- STEP 2 : LES DOCUMENTS -->
+        <section class="card" id="step2">
+            <div class="section-title">
+                <span class="step-num">2</span>
+                <span>التحليل المنهجي لتجربتي النوعية والبنية</span>
+            </div>
+            <div class="tabs-header">
+                <button class="tab-btn active" onclick="switchTab('exp1', event)">🧪 النوعية تجاه الركيزة</button>
+                <button class="tab-btn" onclick="switchTab('exp2', event)">🔬 البنية شرط النشاط</button>
+            </div>
+            <!-- Tab 1 -->
+            <div id="exp1" class="tab-content active">
+                <div class="doc-viewer">
+                    <div class="doc-visual">
+                        <h4 style="margin-bottom: 1rem; color: #93c5fd; font-size: 0.95rem;">أنبوبان : نشا + أميلاز / سليلوز + أميلاز (37°C)</h4>
+                        <svg class="svg-container" viewBox="0 0 400 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <rect x="60" y="40" width="70" height="120" rx="8" fill="#1e293b" stroke="#3b82f6" stroke-width="2"/>
+                            <rect x="60" y="110" width="70" height="50" rx="8" fill="#ef4444" opacity="0.8"/>
+                            <text x="95" y="30" fill="#e2e8f0" font-size="12" text-anchor="middle">نشا + أميلاز</text>
+                            <text x="95" y="180" fill="#4ade80" font-size="12" text-anchor="middle">راسب فهلنغ أحمر</text>
+                            <rect x="270" y="40" width="70" height="120" rx="8" fill="#1e293b" stroke="#3b82f6" stroke-width="2"/>
+                            <rect x="270" y="60" width="70" height="100" rx="8" fill="#3b82f6" opacity="0.5"/>
+                            <text x="305" y="30" fill="#e2e8f0" font-size="12" text-anchor="middle">سليلوز + أميلاز</text>
+                            <text x="305" y="180" fill="#93c5fd" font-size="12" text-anchor="middle">أزرق اليود يبقى</text>
+                        </svg>
+                        <p style="font-size: 0.85rem; color: #cbd5e1; margin-top: 10px;">🔴 الراسب الأحمر = سكريات مختزلة (تحول النشا) · 🔵 بقاء الأزرق = لا تحول (السليلوز).</p>
+                    </div>
+                    <div class="doc-analysis">
+                        <span class="method-tag">منهجية البكالوريا : تحليل وثيقة</span>
+                        <div class="miftah-encadre">🔑 <b>مفتاح المنهجية:</b> البوابة 1 → <b>📄 ورقة</b> · البوابة 2 → <b>📷 صورة</b> · قارن الأنبوبين (شاهد/تجريبي) قبل الاستنتاج</div>
+                        <h4 style="margin: 8px 0; color: var(--primary);">ماذا نستنتج عن النوعية تجاه الركيزة؟</h4>
+                        <ul style="list-style-type: none; padding-right: 0;">
+                            <li style="margin-bottom: 12px;"><strong>1. التعريف بالوثيقة :</strong> نتيجتا تجربتين بنفس الإنزيم (الأميلاز) ونفس الشروط، بركيزتين مختلفتين (النشا والسليلوز).</li>
+                            <li style="margin-bottom: 12px;"><strong>2. الملاحظة :</strong> تحول النشا (راسب أحمر) وعدم تحول السليلوز (أزرق ثابت).</li>
+                            <li style="margin-bottom: 0; background: #eff6ff; padding: 12px; border-radius: 8px; border-right: 3px solid var(--accent);"><strong>3. الاستنتاج :</strong> الإنزيم <strong>نوعي تجاه ركيزته</strong> : لا يتكامل بنيويا إلا مع جزيئة محددة الشكل.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <!-- Tab 2 -->
+            <div id="exp2" class="tab-content">
+                <div class="doc-viewer">
+                    <div class="doc-visual">
+                        <h4 style="margin-bottom: 1rem; color: #93c5fd; font-size: 0.95rem;">أميلاز عند 37°C وعند 80°C ثم التبريد</h4>
+                        <svg class="svg-container" viewBox="0 0 400 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M40 150 Q 100 150 110 110 Q 120 70 180 70 Q 240 70 250 110 Q 260 150 320 150" stroke="#22c55e" stroke-width="5" stroke-linecap="round"/>
+                            <circle cx="185" cy="70" r="14" fill="none" stroke="#f59e0b" stroke-width="3"/>
+                            <text x="185" y="45" fill="#f59e0b" font-size="12" text-anchor="middle">موقع فعال سليم (37°)</text>
+                            <path d="M40 60 Q 120 60 160 100 Q 200 140 320 140" stroke="#ef4444" stroke-width="5" stroke-linecap="round"/>
+                            <text x="185" y="170" fill="#ef4444" font-size="12" text-anchor="middle">موقع مشوه (80°) : لا تكامل ← لا نشاط</text>
+                        </svg>
+                        <p style="font-size: 0.85rem; color: #cbd5e1; margin-top: 10px;">🟢 الشكل المنتظم = تكامل مع الركيزة · 🔴 الشكل المشوه = فقدان التكامل نهائيا.</p>
+                    </div>
+                    <div class="doc-analysis">
+                        <span class="method-tag">منهجية البكالوريا : استخراج المعلومات من الشكل</span>
+                        <div class="miftah-encadre">🔑 <b>مفتاح المنهجية:</b> البوابة 1 → <b>📄 ورقة</b> · البوابة 2 → <b>📷 صورة</b> · اربط الشكل (بنية) بالنشاط (وظيفة)</div>
+                        <h4 style="margin: 8px 0; color: var(--primary);">لماذا لا يستعيد الإنزيم نشاطه بعد التسخين؟</h4>
+                        <p>الحرارة المرتفعة تكسر الروابط الضعيفة (هيدروجينية وشاردية) فيتشوه <strong>الموقع الفعال</strong> تشوها <strong>غير عكسي</strong>، فلا يتشكل المعقد <span class="ltr-seq">ES</span> : <strong>النشاط = البنية</strong>.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- STEP 3 : MÉCANISME -->
+        <section class="card" id="step3">
+            <div class="section-title">
+                <span class="step-num">3</span>
+                <span>آلية العمل : الموقع الفعال والمعقد ES والتكامل المحفز</span>
+            </div>
+            <div class="miftah-encadre">🔑 <b>مفتاح المنهجية:</b> البوابة 1 → <b>📄 ورقة</b> · البوابة 2 → <b>🎬 فيلم</b> · <b>لأنّ</b> التكامل بنيوي قبل أن يكون كيميائيا</div>
+            <p>يتكون <strong>الموقع الفعال</strong> من منطقتين متكاملتين : <strong>منطقة التثبيت</strong> (تمسك الركيزة) و<strong>منطقة التحفيز</strong> (تحولها)، من أحماض أمينية <strong>متقاربة فراغيا</strong> وليست متجاورة بالضرورة في السلسلة.</p>
+            <div class="sim-box">
+                <div style="font-size: 0.9rem; color: #93c5fd; margin-bottom: 5px;">معادلة النشاط الإنزيمي :</div>
+                <div class="dna-strand">E + S → [ES] → E + P (الإنزيم لا يُستهلك)</div>
+            </div>
+            <div class="bac-tip">
+                <div class="bac-tip-header">💡 التكامل المحفز (Koshland) مقابل القفل والمفتاح (Fischer)!</div>
+                <ul style="margin-right: 1.5rem; font-size: 0.95rem;">
+                    <li style="margin-bottom: 6px;">عند اقتراب الركيزة <strong>يتغير شكل الموقع الفعال</strong> ليحتضنها (تكامل محفز) ثم يعود لشكله بعد تحرير النواتج.</li>
+                    <li>من هنا <strong>النوعية المزدوجة</strong> : نوعية تجاه الركيزة ونوعية تجاه التفاعل (تفكيك/تركيب/تحويل).</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- STEP 4 : SYNTHÈSE -->
+        <section class="card" id="step4">
+            <div class="section-title">
+                <span class="step-num">4</span>
+                <span>الخلاصة المعتمدة في البكالوريا (الرسم التخطيطي + النص العلمي)</span>
+            </div>
+            <h3 style="color: var(--primary); margin-bottom: 1rem;">✍️ النص العلمي النموذجي :</h3>
+            <div class="scientific-text">
+                <div class="text-part">
+                    <h4>مقدمة (طرح الإشكالية)</h4>
+                    <p>تسرع الإنزيمات التفاعلات الحيوية في شروط الجسم دون أن تُستهلك، وتختار ركائزها بدقة، فما أساس هذه النوعية؟</p>
+                </div>
+                <div class="text-part">
+                    <h4>العرض (الموقع الفعال والمعقد)</h4>
+                    <p>• <strong>الموقع الفعال :</strong> جيب بنيوي من منطقتي تثبيت وتحفيز، بأحماض أمينية متقاربة فراغيا.</p>
+                    <p>• <strong>المعقد <span class="ltr-seq">ES</span> :</strong> ارتباط مؤقت بالتكامل البنيوي (تكامل محفز)، يليه التحول ثم تحرير الإنزيم سليما.</p>
+                    <p>• <strong>البنية شرط النشاط :</strong> أي تخرب للموقع (حرارة، <span class="ltr-seq">pH</span> متطرف) يلغي التكامل والنشاط.</p>
+                </div>
+                <div class="text-part" style="border-right-color: var(--success); margin-bottom: 0;">
+                    <h4 style="color: var(--success);">خاتمة (الإجابة عن الإشكالية)</h4>
+                    <p>النوعية المزدوجة للإنزيم (ركيزة + تفاعل) ناتجة عن التكامل البنيوي لموقعه الفعال، لذلك فتغير البنية يعني فقدان الوظيفة.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- STEP 5 : QUIZ -->
+        <section class="card" id="step5">
+            <div class="section-title">
+                <span class="step-num">5</span>
+                <span>التقويم الذاتي الفوري (اختبر استيعابك دون مساعدة)</span>
+            </div>
+            <!-- Q1 -->
+            <div class="question-item" id="c1q1-container">
+                <h4 style="margin-bottom: 12px;">1. مما يتكون الموقع الفعال للإنزيم؟</h4>
+                <div class="options-grid">
+                    <button class="option-btn" onclick="checkAnswer(1, 0, true)">أ) منطقتا تثبيت الركيزة وتحفيز التفاعل، من أحماض أمينية متقاربة فراغيا</button>
+                    <button class="option-btn" onclick="checkAnswer(1, 1, false)">ب) سلسلة كاملة من الأحماض الأمينية للإنزيم</button>
+                    <button class="option-btn" onclick="checkAnswer(1, 2, false)">ج) جزيء الركيزة نفسها</button>
+                </div>
+                <div class="feedback-box" id="c1q1-feedback"></div>
+            </div>
+            <!-- Q2 -->
+            <div class="question-item" id="c1q2-container">
+                <h4 style="margin-bottom: 12px;">2. لماذا يفقد الأميلاز نشاطه نهائيا بعد تسخينه إلى 80°C؟</h4>
+                <div class="options-grid">
+                    <button class="option-btn" onclick="checkAnswer(2, 0, true)">أ) لتخرب بنيته الفراغية (موقعه الفعال) تشوها غير عكسي يمنع تشكل المعقد ES</button>
+                    <button class="option-btn" onclick="checkAnswer(2, 1, false)">ب) لتبخر الركيزة من الوسط</button>
+                    <button class="option-btn" onclick="checkAnswer(2, 2, false)">ج) لاستهلاك الإنزيم كليا في التفاعل</button>
+                </div>
+                <div class="feedback-box" id="c1q2-feedback"></div>
+                <div class="quiz-badge" id="c1-badge"></div>
+            </div>
+        </section>
+
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script>
+        // Tab switching
+        function switchTab(tabId, evt) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            if (evt) evt.target.classList.add('active');
+        }
+
+        // Transcription Simulator
+        const codons = ['AUG', 'CGA', 'UUC', 'GAU', 'UAA'];
+        let currentStep = 0;
+
+        function transcribeNext() {
+            if (currentStep < codons.length) {
+                let rnaEl = document.getElementById('rnaStrand');
+                if (currentStep === 0) {
+                    rnaEl.innerText = "5'- " + codons[0];
+                } else {
+                    rnaEl.innerText += ' - ' + codons[currentStep];
+                }
+                currentStep++;
+            }
+            if (currentStep === codons.length) {
+                document.getElementById('rnaStrand').innerText += " -3'";
+                document.getElementById('btnStep').innerText = '✅ اكتمل استنساخ جزيئة الـ ARNm';
+                document.getElementById('btnStep').disabled = true;
+                document.getElementById('btnStep').style.background = '#16a34a';
+            }
+        }
+
+        function resetSim() {
+            currentStep = 0;
+            document.getElementById('rnaStrand').innerText = "5'- _ _ _ - _ _ _ - _ _ _ - _ _ _ - _ _ _ -3'";
+            let btn = document.getElementById('btnStep');
+            btn.innerText = '⚡ إضافة الرامزة التالية';
+            btn.disabled = false;
+            btn.style.background = '#2563eb';
+        }
+
+        // Quiz checker
+        function checkAnswer(qIndex, optIndex, isCorrect) {
+            let container = document.getElementById(`c1q${qIndex}-container`);
+            let buttons = container.querySelectorAll('.option-btn');
+            let feedback = document.getElementById(`c1q${qIndex}-feedback`);
+
+            buttons.forEach((btn, idx) => {
+                btn.disabled = true;
+                if (idx === optIndex) {
+                    btn.classList.add(isCorrect ? 'correct' : 'wrong');
+                }
+            });
+
+            feedback.style.display = 'block';
+            if (isCorrect) {
+                feedback.style.background = '#f0fdf4';
+                feedback.style.color = '#166534';
+                feedback.style.border = '1px solid #bbf7d0';
+                feedback.innerHTML = '<strong>✅ إجابة صحيحة، ممتاز!</strong> التبرير العلمي مضبوط بدقة وفق مبادئ الدرس.';
+            } else {
+                feedback.style.background = '#fef2f2';
+                feedback.style.color = '#991b1b';
+                feedback.style.border = '1px solid #fecaca';
+                if (qIndex === 1) {
+                    feedback.innerHTML = '<strong>❌ إجابة خاطئة.</strong> الموقع الفعال منطقتان متكاملتان : <strong>تثبيت</strong> الركيزة و<strong>تحفيز</strong> التفاعل، من أحماض أمينية متقاربة فراغيا وليست متجاورة بالضرورة في السلسلة.';
+                } else {
+                    feedback.innerHTML = '<strong>❌ إجابة خاطئة.</strong> الحرارة المرتفعة تكسر الروابط الضعيفة (هيدروجينية وشاردية) فيتشوه الموقع الفعال تشوها غير عكسي، فلا يتشكل المعقد <span class="ltr-seq">ES</span>.';
+                }
+            }
+        }
+    
+        // === v3.2 transcription: sommaire + badge ===
+        function scrollToStep(id, evt){
+            if(evt) evt.preventDefault();
+            const el = document.getElementById(id);
+            if(el) window.scrollTo({top: el.getBoundingClientRect().top + window.scrollY - 110, behavior:'smooth'});
+            document.querySelectorAll('.sommaire a').forEach(a=>a.classList.remove('active'));
+            const link = document.getElementById('link-'+id);
+            if(link) link.classList.add('active');
+        }
+        function updateBadges(){
+            const questions = document.querySelectorAll('.question-item');
+            if(questions.length===0) return;
+            let total=questions.length, answered=0, correct=0;
+            questions.forEach(q=>{
+                const btns=q.querySelectorAll('.option-btn');
+                let qAnswered=false,qCorrect=false;
+                btns.forEach(b=>{ if(b.classList.contains('correct')){qAnswered=true;qCorrect=true;} if(b.classList.contains('wrong')) qAnswered=true; });
+                if(qAnswered) answered++;
+                if(qCorrect) correct++;
+            });
+            const badge=document.getElementById('c1-badge');
+            if(!badge) return;
+            if(answered < total) return;
+            const score=Math.round(correct/total*100);
+            badge.classList.add('show');
+            if(score===100){ badge.className='quiz-badge show mumtaz'; badge.textContent='ممتاز (fort) — 100% · جاهز للتدريب المنهجي'; }
+            else if(score>=50){ badge.className='quiz-badge show moyen'; badge.textContent='متوسط (moyen) — '+score+'% · راجع ثم أعد'; }
+            else { badge.className='quiz-badge show faible'; badge.textContent='ضعيف (faible) — '+score+'% · راجع الدرس ثم أعد'; }
+        }
+        document.addEventListener('click', (e)=>{
+            if(e.target.closest('.option-btn')) setTimeout(updateBadges, 80);
+        });
+        // also wrap checkAnswer if exists
+        (function(){
+            if(typeof window.checkAnswer==='function' && !window.checkAnswer._patched){
+                const orig=window.checkAnswer;
+                window.checkAnswer=function(...a){ const r=orig.apply(this,a); setTimeout(updateBadges,50); return r; };
+                window.checkAnswer._patched=true;
+            }
+        })();
+        const observer=new IntersectionObserver((entries)=>{
+            entries.forEach(e=>{
+                if(e.isIntersecting){
+                    document.querySelectorAll('.sommaire a').forEach(a=>a.classList.remove('active'));
+                    const link=document.getElementById('link-'+e.target.id);
+                    if(link) link.classList.add('active');
+                }
+            });
+        },{rootMargin:'-120px 0px -70% 0px',threshold:0});
+        window.addEventListener('DOMContentLoaded', ()=>{
+            document.querySelectorAll('section.card[id]').forEach(s=>observer.observe(s));
+        });
+
+    </script>
+</body>
+</html>

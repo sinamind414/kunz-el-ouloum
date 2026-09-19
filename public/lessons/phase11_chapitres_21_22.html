@@ -1,9 +1,9 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>منصة المتفوق 3AS | المرحلة 11 : الدرس 21 والدرس 22</title>
+    <title>منصة بنزر العلم | المرحلة 11 : الدرس 21 والدرس 22</title>
     <style>
         :root {
             --bg-main: #f8fafc;
@@ -52,87 +52,6 @@
             background: #f1f5f9;
             padding: 2px 8px;
             border-radius: 6px;
-        }
-
-        /* Navbar */
-        .navbar {
-            background: var(--surface);
-            border-bottom: 1px solid var(--border);
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            padding: 1rem 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.02);
-            flex-wrap: wrap;
-            gap: 1rem;
-        }
-
-        .brand {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            font-weight: 900;
-            font-size: 1.25rem;
-            color: var(--primary);
-        }
-
-        .brand-badge {
-            background: var(--green-dark);
-            color: white;
-            padding: 4px 10px;
-            border-radius: 8px;
-            font-size: 0.8rem;
-            white-space: nowrap;
-        }
-
-        .chapter-switcher {
-            display: flex;
-            gap: 12px;
-            flex-wrap: wrap;
-        }
-
-        .ch-btn {
-            background: var(--bg-main);
-            border: 2px solid var(--border);
-            padding: 8px 18px;
-            border-radius: 12px;
-            font-family: inherit;
-            font-weight: 800;
-            font-size: 0.95rem;
-            color: var(--text-muted);
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .ch-btn:hover {
-            border-color: var(--green-dark);
-            color: var(--green-dark);
-        }
-
-        .ch-btn.active {
-            background: var(--primary);
-            color: white;
-            border-color: var(--primary);
-        }
-
-        @media (max-width: 768px) {
-            .navbar {
-                flex-direction: column;
-                padding: 1rem;
-                text-align: center;
-            }
-            .chapter-switcher {
-                justify-content: center;
-                width: 100%;
-            }
-            .ch-btn {
-                flex: 1;
-                font-size: 0.85rem;
-                padding: 8px 10px;
-            }
         }
 
         .container {
@@ -435,30 +354,20 @@
 </head>
 <body>
 
-    <!-- Navbar with Phase Switcher -->
-    <nav class="navbar">
-        <div class="brand">
-            <span>منصة المتفوق 3AS</span>
-            <span class="brand-badge">المرحلة 11 (الدرس 21 و 22)</span>
-        </div>
-        <div class="chapter-switcher">
-            <button class="ch-btn active" onclick="showChapter('ch21', event)">☀️ الدرس 21 : تهيج اليخضور وأكسدة الماء (التحلل الضوئي)</button>
-            <button class="ch-btn" onclick="showChapter('ch22', event)">⚡ الدرس 22 : الفسفرة الضوئية وإنتاج ATP و NADPH, H⁺</button>
-        </div>
-    </nav>
+    
 
     
     <!-- Sommaire sticky (v3.2) -->
     <div class="sommaire" id="sommaire">
         <a href="#ch1-step1" id="link-ch1-step1" onclick="scrollToStep('ch1-step1',event)">📖 1-1 وضعية</a>
-        <a href="#ch1-step2" id="link-ch1-step2" onclick="scrollToStep('ch1-step2',event)">1-2 تحليل</a>
-        <a href="#ch1-step3" id="link-ch1-step3" onclick="scrollToStep('ch1-step3',event)">1-3 مستكشف</a>
-        <a href="#ch1-step4" id="link-ch1-step4" onclick="scrollToStep('ch1-step4',event)">1-4 خلاصة + Quiz</a>
+        <a href="#ch1-step2" id="link-ch1-step2" onclick="scrollToStep('ch1-step2',event)">🔬 1-2 تحليل</a>
+        <a href="#ch1-step3" id="link-ch1-step3" onclick="scrollToStep('ch1-step3',event)">🧪 1-3 محاكي</a>
+        <a href="#ch1-step4" id="link-ch1-step4" onclick="scrollToStep('ch1-step4',event)">✅ 1-4 تقويم</a>
         <span class="sep"></span>
-        <a href="#ch2-step1" id="link-ch2-step1" onclick="scrollToStep('ch2-step1',event)">🧬 2-1 إشكالية</a>
-        <a href="#ch2-step2" id="link-ch2-step2" onclick="scrollToStep('ch2-step2',event)">2-2 فك الشفرة</a>
-        <a href="#ch2-step3" id="link-ch2-step3" onclick="scrollToStep('ch2-step3',event)">2-3 تنشيط</a>
-        <a href="#ch2-step4" id="link-ch2-step4" onclick="scrollToStep('ch2-step4',event)">2-4 تقويم</a>
+        <a href="#ch2-step1" id="link-ch2-step1" onclick="scrollToStep('ch2-step1',event)">❓ 2-1 إشكالية</a>
+        <a href="#ch2-step2" id="link-ch2-step2" onclick="scrollToStep('ch2-step2',event)">🔬 2-2 تحليل</a>
+        <a href="#ch2-step3" id="link-ch2-step3" onclick="scrollToStep('ch2-step3',event)">🧪 2-3 محاكي</a>
+        <a href="#ch2-step4" id="link-ch2-step4" onclick="scrollToStep('ch2-step4',event)">✅ 2-4 تقويم</a>
     </div>
 
     <div class="container">
@@ -470,7 +379,7 @@
             
             <header class="lesson-header header-ch21">
                 <div class="lesson-breadcrumb">المجال الثاني : التحولات الطاقوية • الوحدة 1 : آليات تحويل الطاقة الضوئية إلى طاقة كيميائية كامنة</div>
-                <h1>الدرس 1 : تفاعلات المرحلة الكيميوضوئية (تهيج الأنظمة الضوئية والتحلل الضوئي للماء)</h1>
+                <h1>الدرس 2 : تفاعلات المرحلة الكيميوضوئية (تهيج الأنظمة الضوئية والتحلل الضوئي للماء)</h1>
                 <div class="lesson-objectives">
                     <div>🎯 <strong>الهدف العلمي :</strong> تحديد دور الأنظمة الضوئية (PSII و PSI) في التقاط الفوتونات، وإثبات أن مصدر غاز الأكسجين المنطلق هو التحلل الضوئي لجزيئة الماء.</div>
                     <div>⏱️ <strong>المدة التقديرية للتعلم الذاتي :</strong> 25 دقيقة</div>
@@ -564,7 +473,7 @@
             <section class="card" id="ch1-step4">
                 <div class="section-title">
                     <span class="step-num">4</span>
-                    <span>تقويم الدرس 1 : أسئلة البكالوريا المتكررة</span>
+                    <span>تقويم الدرس 2 : أسئلة البكالوريا المتكررة</span>
                 </div>
 
                 <div class="question-item" id="c21q1-container">
@@ -587,7 +496,7 @@
             
             <header class="lesson-header header-ch22">
                 <div class="lesson-breadcrumb">المجال الثاني : التحولات الطاقوية • الوحدة 1 : آليات تحويل الطاقة الضوئية إلى طاقة كيميائية كامنة</div>
-                <h1>الدرس 2 : السلسلة التركيبية الضوئية والفسفرة الضوئية لإنتاج ATP و NADPH, H⁺</h1>
+                <h1>الدرس 3 : السلسلة التركيبية الضوئية والفسفرة الضوئية لإنتاج ATP و NADPH, H⁺</h1>
                 <div class="lesson-objectives">
                     <div>🎯 <strong>الهدف العلمي :</strong> تفسير تدرج تركيز البروتونات، ودور الكرية المذذبة (ATP synthase) في فسفرة الـ ADP وإرجاع مستقبل الإلكترونات النهائي (NADP⁺).</div>
                     <div>⏱️ <strong>المدة التقديرية للتعلم الذاتي :</strong> 25 دقيقة</div>
@@ -644,7 +553,7 @@
                         <h4 style="margin: 8px 0; color: var(--primary);">كيف تعمل الكرية المذذبة (<span class="ltr-seq">ATP synthase</span>)؟</h4>
                         <ol style="padding-right: 1.2rem; line-height: 1.8;">
                             <li><strong>نشأة التدرج الكهروكيميائي :</strong> تتراكم البروتونات <span class="ltr-seq">H⁺</span> في تجويف التيلاكويد (من أكسدة الماء ومن ضخ الناقل <span class="ltr-seq">T₂</span>)، بينما يقل تركيزها في الحشوة، فينشأ تدرج تركيز قوي.</li>
-                            <li><strong>خروج البروتونات (<span class="ltr-seq">ميد التدرج</span>) :</strong> الغشاء غير منفذ للبروتونات، فالمنفذ الوحيد لخروجها نحو الحشوة هو عبر قناة <strong>الكرية المذذبة (<span class="ltr-seq">ATP synthase</span>)</strong>.</li>
+                            <li><strong>خروج البروتونات (<span class="ltr-seq">تبديد التدرج</span>) :</strong> الغشاء غير منفذ للبروتونات، فالمنفذ الوحيد لخروجها نحو الحشوة هو عبر قناة <strong>الكرية المذذبة (<span class="ltr-seq">ATP synthase</span>)</strong>.</li>
                             <li><strong>الفسفرة الضوئية (<span class="ltr-seq">Photophosphorylation</span>) :</strong> خروج السيل الجارف من <span class="ltr-seq">H⁺</span> يحرر طاقة تدير الجزء التحفيزي للكرية المذذبة وتدمج الفوسفات (<span class="ltr-seq">Pi</span>) مع الـ <span class="ltr-seq">ADP</span> لإنتاج جزيئات الـ <strong><span class="ltr-seq">ATP</span></strong>.</li>
                         </ol>
                     </div>
@@ -675,7 +584,7 @@
             <section class="card" id="ch2-step4">
                 <div class="section-title">
                     <span class="step-num step-num-yellow">4</span>
-                    <span>تقويم الدرس 2 : أسئلة البكالوريا المتكررة</span>
+                    <span>تقويم الدرس 3 : أسئلة البكالوريا المتكررة</span>
                 </div>
 
                 <div class="question-item" id="c22q1-container">

@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="760" viewBox="0 0 1200 760" font-family="Arial, sans-serif">
+  <defs>
+    <marker id="arr93" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L9,3 L0,6 Z" fill="#7f1d1d"/>
+    </marker>
+  </defs>
+  <rect width="1200" height="760" fill="#f8fafc"/>
+  <rect x="24" y="24" width="1152" height="712" rx="24" fill="#ffffff" stroke="#e2e8f0" stroke-width="3"/>
+  <text x="600" y="80" text-anchor="middle" font-size="25" font-weight="bold" fill="#0f172a">مستوى بنيوف (Wadati-Benioff) : توزع بؤر الزلازل دليل على الغوص</text>
+
+  <!-- المحيط -->
+  <rect x="40" y="120" width="420" height="80" fill="#bae6fd"/>
+  <text x="250" y="170" text-anchor="middle" font-size="17" font-weight="bold" fill="#0c4a6e">محيط</text>
+
+  <!-- القشرة القارية -->
+  <path d="M1120 200 L1120 700 L760 700 L820 340 L900 220 Z" fill="#fde68a" stroke="#a16207" stroke-width="3"/>
+  <text x="1010" y="300" text-anchor="middle" font-size="16" font-weight="bold" fill="#854d0e">الصفيحة القارية (الطافية)</text>
+
+  <!-- الخندق -->
+  <path d="M460 200 L520 240 L580 200" fill="none" stroke="#0c4a6e" stroke-width="4"/>
+  <text x="520" y="150" text-anchor="middle" font-size="16" font-weight="bold" fill="#0c4a6e">الخندق المحيطي</text>
+
+  <!-- الصفيحة الغائصة -->
+  <path d="M460 200 L540 250 L960 660 L1120 700 L1120 640 L980 620 L580 240 Z" fill="#cbd5e1" stroke="#475569" stroke-width="3"/>
+  <text x="880" y="580" text-anchor="middle" font-size="15" font-weight="bold" fill="#1e293b">الصفيحة المحيطية الغائصة</text>
+
+  <!-- بؤر الزلازل -->
+  <g fill="#dc2626">
+    <circle cx="545" cy="255" r="7"/><circle cx="588" cy="290" r="7"/><circle cx="628" cy="330" r="7"/>
+    <circle cx="668" cy="372" r="7"/><circle cx="708" cy="415" r="7"/><circle cx="748" cy="458" r="7"/>
+    <circle cx="788" cy="502" r="7"/><circle cx="828" cy="548" r="7"/><circle cx="866" cy="594" r="7"/>
+    <circle cx="902" cy="638" r="7"/>
+  </g>
+  <path d="M560 270 L890 625" stroke="#7f1d1d" stroke-width="3" stroke-dasharray="8,7" marker-end="url(#arr93)"/>
+  <text x="720" y="352" text-anchor="middle" font-size="15" font-weight="bold" fill="#7f1d1d">مستوى بنيوف</text>
+
+  <!-- البركان -->
+  <path d="M960 340 L1020 340 L990 270 Z" fill="#f97316" stroke="#7c2d12" stroke-width="2"/>
+  <path d="M990 268 L990 236" stroke="#7c2d12" stroke-width="3" stroke-dasharray="5,5"/>
+  <text x="1000" y="380" text-anchor="middle" font-size="14" font-weight="bold" fill="#7c2d12">بركان أنديزي</text>
+  <text x="1000" y="404" text-anchor="middle" font-size="12" fill="#92400e">(قوس بركاني)</text>
+  <path d="M905 640 L955 352" stroke="#92400e" stroke-width="2" stroke-dasharray="4,4"/>
+
+  <!-- سلم العمق -->
+  <g font-size="12" fill="#475569">
+    <text x="30" y="204">0</text><text x="30" y="264">100</text><text x="30" y="324">200</text>
+    <text x="30" y="384">300</text><text x="30" y="444">400</text><text x="30" y="504">500</text>
+    <text x="30" y="564">600</text><text x="30" y="624">700</text>
+    <text x="30" y="128" font-weight="bold">العمق (كلم)</text>
+  </g>
+  <g stroke="#94a3b8" stroke-width="1.5">
+    <line x1="40" y1="200" x2="1120" y2="200"/><line x1="40" y1="260" x2="700" y2="260"/>
+    <line x1="40" y1="320" x2="700" y2="320"/><line x1="40" y1="380" x2="700" y2="380"/>
+    <line x1="40" y1="440" x2="700" y2="440"/><line x1="40" y1="500" x2="700" y2="500"/>
+    <line x1="40" y1="560" x2="700" y2="560"/><line x1="40" y1="620" x2="700" y2="620"/>
+    <line x1="40" y1="700" x2="1120" y2="700"/>
+  </g>
+
+  <!-- شريط الاستنتاج -->
+  <rect x="60" y="720" width="1080" height="0" rx="0" fill="none"/>
+  <text x="600" y="716" text-anchor="middle" font-size="16" font-weight="bold" fill="#7f1d1d">اصطفاف البؤر على مستوى مائل من الخندق حتى 700 كلم يثبت غوص الصفيحة المحيطية الصلبة الباردة</text>
+</svg>

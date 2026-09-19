@@ -92,7 +92,7 @@ describe('continueUnit — مهمة 3 دقائق', () => {
 });
 
 describe('surpriseUnitId — سؤال مفاجئ', () => {
-  it('tire dans les unités déjà rencontrées', () => {
+  it('tire uniquement dans les unités déjà rencontrées (entamées ou validées)', () => {
     const units = [unit(1, 0), unit(2, 30), unit(3, 0)];
     const progress = progressOf([3]);
     // pool = unités 2 et 3 (entamée ou validée) ; 0 → première du pool
@@ -100,18 +100,36 @@ describe('surpriseUnitId — سؤال مفاجئ', () => {
     expect(surpriseUnitId(units, progress, () => 0.999)).toBe(3);
   });
 
-  it('ne propose jamais une unité verrouillée', () => {
-    const units = [unit(1, 50, { isLocked: true }), unit(2, 0)];
-    expect(surpriseUnitId(units, progressOf(), () => 0)).toBe(2);
+  it('renvoie null si l\'élève n’a révisé aucune unité (repli supprimé)', () => {
+    const units = [unit(1, 0), unit(2, 0), unit(3, 0)];
+    expect(surpriseUnitId(units, progressOf(), () => 0)).toBeNull();
+    // égal avec quelques unités déverrouillées mais non révisées
+    const units2 = [unit(1, 0, { isLocked: false }), unit(2, 0, { isLocked: false })];
+    expect(surpriseUnitId(units2, progressOf(), () => 0)).toBeNull();
   });
 
-  it('repli sur la liste complète si aucun pool disponible', () => {
-    const units = [unit(1, 0, { isLocked: true }), unit(2, 0, { isLocked: true })];
-    expect(surpriseUnitId(units, progressOf(), () => 0)).toBe(1);
+  it('ne propose jamais une unité verrouillée (même si révisée ailleurs)', () => {
+    // une unité révisée mais verrouillée n'est pas dans unlockedUnits → exclue
+    const units = [unit(1, 50, { isLocked: true }), unit(2, 0, { isLocked: false })];
+    expect(surpriseUnitId(units, progressOf(), () => 0)).toBeNull();
+  });
+
+  it('valide par le repli sur toute la liste complète est supprimé', () => {
+    // ancien comportement : si aucun pool, repli sur toutes les unités.
+    // nouveau comportement : null dès qu'aucune unité révisée = déverrouillée rencontrée.
+    const units = [unit(1, 0, { isLocked: false }), unit(2, 0, { isLocked: false })];
+    expect(surpriseUnitId(units, progressOf(), () => 0)).toBeNull();
   });
 
   it('renvoie null sur une liste vide', () => {
     expect(surpriseUnitId([])).toBeNull();
+  });
+
+  it('avec 1 seule unité révisée, ne peut retourner que celle-ci', () => {
+    const units = [unit(1, 0), unit(2, 30), unit(3, 0)];
+    // unité 2 seule rencontrée
+    expect(surpriseUnitId(units, progressOf([2]), () => 0.42)).toBe(2);
+    expect(surpriseUnitId(units, progressOf([2]), () => 0.99)).toBe(2);
   });
 });
 

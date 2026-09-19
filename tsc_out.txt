@@ -1,157 +1,98 @@
-server.ts(1,21): error TS2307: Cannot find module 'express' or its corresponding type declarations.
-server.ts(2,18): error TS2591: Cannot find name 'path'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node` and then add 'node' to the types field in your tsconfig.
-server.ts(3,50): error TS2307: Cannot find module 'vite' or its corresponding type declarations.
-server.ts(4,29): error TS2307: Cannot find module '@google/genai' or its corresponding type declarations.
-server.ts(5,20): error TS2307: Cannot find module 'dotenv' or its corresponding type declarations.
-server.ts(10,16): error TS2591: Cannot find name 'process'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node` and then add 'node' to the types field in your tsconfig.
-server.ts(27,27): error TS7006: Parameter 'req' implicitly has an 'any' type.
-server.ts(27,32): error TS7006: Parameter 'res' implicitly has an 'any' type.
-server.ts(28,36): error TS2591: Cannot find name 'process'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node` and then add 'node' to the types field in your tsconfig.
-server.ts(32,32): error TS7006: Parameter 'req' implicitly has an 'any' type.
-server.ts(32,37): error TS7006: Parameter 'res' implicitly has an 'any' type.
-server.ts(56,12): error TS2591: Cannot find name 'process'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node` and then add 'node' to the types field in your tsconfig.
-server.ts(93,7): error TS2591: Cannot find name 'process'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node` and then add 'node' to the types field in your tsconfig.
-server.ts(100,32): error TS2591: Cannot find name 'process'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node` and then add 'node' to the types field in your tsconfig.
-server.ts(102,19): error TS7006: Parameter 'req' implicitly has an 'any' type.
-server.ts(102,24): error TS7006: Parameter 'res' implicitly has an 'any' type.
-src/App.tsx(2,41): error TS2307: Cannot find module 'motion/react' or its corresponding type declarations.
-src/App.tsx(26,8): error TS2307: Cannot find module 'lucide-react' or its corresponding type declarations.
-src/App.tsx(323,26): error TS18047: 'activeQuizUnitId' is possibly 'null'.
-src/App.tsx(324,22): error TS18047: 'activeQuizUnitId' is possibly 'null'.
-src/App.tsx(478,12): error TS2367: This comparison appears to be unintentional because the types '"methodology" | "mindmap" | "review" | "stats" | "chat" | "bootcamp" | "badges" | "lesson"' and '"home"' have no overlap.
-src/components/AITutorView.tsx(2,41): error TS2307: Cannot find module 'motion/react' or its corresponding type declarations.
-src/components/AITutorView.tsx(3,100): error TS2307: Cannot find module 'lucide-react' or its corresponding type declarations.
-src/components/BadgesView.tsx(2,24): error TS2307: Cannot find module 'framer-motion' or its corresponding type declarations.
-src/components/BadgesView.tsx(3,87): error TS2307: Cannot find module 'lucide-react' or its corresponding type declarations.
-src/components/CombatChallengePortal.tsx(2,41): error TS2307: Cannot find module 'motion/react' or its corresponding type declarations.
-src/components/CombatChallengePortal.tsx(3,129): error TS2307: Cannot find module 'lucide-react' or its corresponding type declarations.
-src/components/CombatTrainerView.tsx(2,41): error TS2307: Cannot find module 'motion/react' or its corresponding type declarations.
-src/components/CombatTrainerView.tsx(3,111): error TS2307: Cannot find module 'lucide-react' or its corresponding type declarations.
-src/components/DailyGoalWidget.tsx(17,8): error TS2307: Cannot find module 'lucide-react' or its corresponding type declarations.
-src/components/DashboardView.tsx(2,158): error TS2307: Cannot find module 'lucide-react' or its corresponding type declarations.
-src/components/LessonTwoView.tsx(2,41): error TS2307: Cannot find module 'framer-motion' or its corresponding type declarations.
-src/components/LessonTwoView.tsx(3,134): error TS2307: Cannot find module 'lucide-react' or its corresponding type declarations.
-src/components/MethodologyCompilerView.tsx(2,41): error TS2307: Cannot find module 'motion/react' or its corresponding type declarations.
-src/components/MethodologyCompilerView.tsx(8,8): error TS2307: Cannot find module 'lucide-react' or its corresponding type declarations.
-src/components/MethodologyView.tsx(2,41): error TS2307: Cannot find module 'motion/react' or its corresponding type declarations.
-src/components/MethodologyView.tsx(3,104): error TS2307: Cannot find module 'lucide-react' or its corresponding type declarations.
-src/components/MindMap/D3MindMapCanvas.tsx(2,21): error TS2307: Cannot find module 'd3' or its corresponding type declarations.
-src/components/MindMap/D3MindMapCanvas.tsx(16,8): error TS2307: Cannot find module 'lucide-react' or its corresponding type declarations.
-src/components/MindMap/D3MindMapCanvas.tsx(124,20): error TS7006: Parameter 'event' implicitly has an 'any' type.
-src/components/MindMap/D3MindMapCanvas.tsx(197,25): error TS7006: Parameter 'event' implicitly has an 'any' type.
-src/components/MindMap/D3MindMapCanvas.tsx(197,32): error TS7006: Parameter 'd' implicitly has an 'any' type.
-src/components/MindMap/D3MindMapCanvas.tsx(202,24): error TS7006: Parameter 'event' implicitly has an 'any' type.
-src/components/MindMap/D3MindMapCanvas.tsx(202,31): error TS7006: Parameter 'd' implicitly has an 'any' type.
-src/components/MindMap/D3MindMapCanvas.tsx(206,23): error TS7006: Parameter 'event' implicitly has an 'any' type.
-src/components/MindMap/D3MindMapCanvas.tsx(206,30): error TS7006: Parameter 'd' implicitly has an 'any' type.
-src/components/MindMap/D3MindMapCanvas.tsx(213,21): error TS7006: Parameter 'event' implicitly has an 'any' type.
-src/components/MindMap/D3MindMapCanvas.tsx(213,28): error TS7006: Parameter 'd' implicitly has an 'any' type.
-src/components/MindMap/D3MindMapCanvas.tsx(218,26): error TS7006: Parameter 'event' implicitly has an 'any' type.
-src/components/MindMap/D3MindMapCanvas.tsx(218,33): error TS7006: Parameter 'd' implicitly has an 'any' type.
-src/components/MindMap/D3MindMapCanvas.tsx(322,28): error TS2683: 'this' implicitly has type 'any' because it does not have a type annotation.
-src/components/MindMap/D3MindMapCanvas.tsx(345,28): error TS2683: 'this' implicitly has type 'any' because it does not have a type annotation.
-src/components/MindMap/MindMapNodeDetails.tsx(2,24): error TS2307: Cannot find module 'motion/react' or its corresponding type declarations.
-src/components/MindMap/MindMapNodeDetails.tsx(16,8): error TS2307: Cannot find module 'lucide-react' or its corresponding type declarations.
-src/components/MindMap/MindMapView.tsx(2,41): error TS2307: Cannot find module 'motion/react' or its corresponding type declarations.
-src/components/MindMap/MindMapView.tsx(24,8): error TS2307: Cannot find module 'lucide-react' or its corresponding type declarations.
-src/components/QuizView.tsx(2,41): error TS2307: Cannot find module 'motion/react' or its corresponding type declarations.
-src/components/QuizView.tsx(3,175): error TS2307: Cannot find module 'lucide-react' or its corresponding type declarations.
-src/components/RevisionView.tsx(2,24): error TS2307: Cannot find module 'motion/react' or its corresponding type declarations.
-src/components/RevisionView.tsx(3,130): error TS2307: Cannot find module 'lucide-react' or its corresponding type declarations.
-src/components/SmartReminderCard.tsx(16,8): error TS2307: Cannot find module 'lucide-react' or its corresponding type declarations.
-src/components/SplashView.tsx(2,41): error TS2307: Cannot find module 'motion/react' or its corresponding type declarations.
-src/components/SplashView.tsx(3,106): error TS2307: Cannot find module 'lucide-react' or its corresponding type declarations.
-src/components/StatsView.tsx(2,41): error TS2307: Cannot find module 'motion/react' or its corresponding type declarations.
-src/components/StatsView.tsx(21,8): error TS2307: Cannot find module 'recharts' or its corresponding type declarations.
-src/components/StatsView.tsx(44,8): error TS2307: Cannot find module 'lucide-react' or its corresponding type declarations.
-src/components/StatsView.tsx(409,28): error TS7031: Binding element 'x' implicitly has an 'any' type.
-src/components/StatsView.tsx(409,31): error TS7031: Binding element 'y' implicitly has an 'any' type.
-src/components/StatsView.tsx(409,34): error TS7031: Binding element 'payload' implicitly has an 'any' type.
-src/components/StatsView.tsx(447,31): error TS7031: Binding element 'active' implicitly has an 'any' type.
-src/components/StatsView.tsx(447,39): error TS7031: Binding element 'payload' implicitly has an 'any' type.
-src/components/StatsView.tsx(447,48): error TS7031: Binding element 'label' implicitly has an 'any' type.
-src/components/StatsView.tsx(645,34): error TS7006: Parameter 'label' implicitly has an 'any' type.
-src/components/StreakCelebrationModal.tsx(2,41): error TS2307: Cannot find module 'motion/react' or its corresponding type declarations.
-src/components/StreakCelebrationModal.tsx(16,8): error TS2307: Cannot find module 'lucide-react' or its corresponding type declarations.
-src/components/StudyReminderModal.tsx(2,41): error TS2307: Cannot find module 'motion/react' or its corresponding type declarations.
-src/components/StudyReminderModal.tsx(3,39): error TS2307: Cannot find module 'lucide-react' or its corresponding type declarations.
-src/components/StudyReminderModal.tsx(29,21): error TS7006: Parameter 'e' implicitly has an 'any' type.
-src/components/UnitIntroPortal.tsx(2,41): error TS2307: Cannot find module 'motion/react' or its corresponding type declarations.
-src/components/UnitIntroPortal.tsx(3,76): error TS2307: Cannot find module 'lucide-react' or its corresponding type declarations.
-src/components/UnitIntroPortal.tsx(307,25): error TS7006: Parameter 'e' implicitly has an 'any' type.
-src/components/WeeklyReportShareModal.tsx(2,41): error TS2307: Cannot find module 'motion/react' or its corresponding type declarations.
-src/components/WeeklyReportShareModal.tsx(21,8): error TS2307: Cannot find module 'lucide-react' or its corresponding type declarations.
-src/main.tsx(4,8): error TS2882: Cannot find module or type declarations for side-effect import of './index.css'.
-src/smartTutorEngine.ts(12,8): error TS2307: Cannot find module './sessionManager' or its corresponding type declarations.
-src/smartTutorEngine.ts(24,8): error TS2307: Cannot find module '../data/smartBotData' or its corresponding type declarations.
-src/smartTutorEngine.ts(25,59): error TS2307: Cannot find module '../tutorKnowledge' or its corresponding type declarations.
-src/smartTutorEngine.ts(26,65): error TS2307: Cannot find module '../bookTutorQA' or its corresponding type declarations.
-src/smartTutorEngine.ts(27,39): error TS2307: Cannot find module '../methodologyKnowledge' or its corresponding type declarations.
-src/smartTutorEngine.ts(31,8): error TS2307: Cannot find module '../knowledgeCards' or its corresponding type declarations.
-src/smartTutorEngine.ts(32,56): error TS2307: Cannot find module '../studyGuide' or its corresponding type declarations.
-src/smartTutorEngine.ts(33,49): error TS2307: Cannot find module './arabicNormalize' or its corresponding type declarations.
-src/smartTutorEngine.ts(35,72): error TS2307: Cannot find module './arabicNormalize' or its corresponding type declarations.
-src/smartTutorEngine.ts(109,31): error TS7006: Parameter 'a' implicitly has an 'any' type.
-src/smartTutorEngine.ts(110,33): error TS7006: Parameter 'k' implicitly has an 'any' type.
-src/smartTutorEngine.ts(124,33): error TS7006: Parameter 'k' implicitly has an 'any' type.
-src/smartTutorEngine.ts(136,33): error TS7006: Parameter 'k' implicitly has an 'any' type.
-src/smartTutorEngine.ts(145,49): error TS7006: Parameter 'section' implicitly has an 'any' type.
-src/smartTutorEngine.ts(149,35): error TS7006: Parameter 'trigger' implicitly has an 'any' type.
-src/smartTutorEngine.ts(152,31): error TS7006: Parameter 'section' implicitly has an 'any' type.
-src/smartTutorEngine.ts(183,33): error TS7006: Parameter 'card' implicitly has an 'any' type.
-src/smartTutorEngine.ts(208,14): error TS7006: Parameter 'x' implicitly has an 'any' type.
-src/smartTutorEngine.ts(209,12): error TS7006: Parameter 'a' implicitly has an 'any' type.
-src/smartTutorEngine.ts(209,15): error TS7006: Parameter 'b' implicitly has an 'any' type.
-src/smartTutorEngine.ts(214,11): error TS7006: Parameter 'section' implicitly has an 'any' type.
-src/smartTutorEngine.ts(214,74): error TS7006: Parameter 'bullet' implicitly has an 'any' type.
-src/smartTutorEngine.ts(304,32): error TS7006: Parameter 'd' implicitly has an 'any' type.
-src/smartTutorEngine.ts(306,125): error TS7006: Parameter 'd' implicitly has an 'any' type.
-src/smartTutorEngine.ts(309,41): error TS7006: Parameter 'c' implicitly has an 'any' type.
-src/smartTutorEngine.ts(312,16): error TS7006: Parameter 'c' implicitly has an 'any' type.
-src/smartTutorEngine.ts(312,19): error TS7006: Parameter 'i' implicitly has an 'any' type.
-src/smartTutorEngine.ts(314,68): error TS7006: Parameter 'c' implicitly has an 'any' type.
-src/smartTutorEngine.ts(365,32): error TS7006: Parameter 'd' implicitly has an 'any' type.
-src/smartTutorEngine.ts(367,101): error TS7006: Parameter 'd' implicitly has an 'any' type.
-src/smartTutorEngine.ts(383,39): error TS7006: Parameter 'id' implicitly has an 'any' type.
-src/smartTutorEngine.ts(383,71): error TS7006: Parameter 'c' implicitly has an 'any' type.
-src/smartTutorEngine.ts(384,72): error TS7006: Parameter 'c' implicitly has an 'any' type.
-src/smartTutorEngine.ts(384,75): error TS7006: Parameter 'i' implicitly has an 'any' type.
-src/smartTutorEngine.ts(385,39): error TS7006: Parameter 'c' implicitly has an 'any' type.
-src/smartTutorEngine.ts(406,36): error TS7006: Parameter 'q' implicitly has an 'any' type.
-src/smartTutorEngine.ts(429,32): error TS7006: Parameter 'd' implicitly has an 'any' type.
-src/smartTutorEngine.ts(430,133): error TS7006: Parameter 'd' implicitly has an 'any' type.
-src/smartTutorEngine.ts(447,122): error TS7006: Parameter 'p' implicitly has an 'any' type.
-src/smartTutorEngine.ts(458,36): error TS7006: Parameter 's' implicitly has an 'any' type.
-src/smartTutorEngine.ts(482,136): error TS7006: Parameter 'd' implicitly has an 'any' type.
-src/smartTutorEngine.ts(502,27): error TS7006: Parameter 'd' implicitly has an 'any' type.
-src/smartTutorEngine.ts(503,26): error TS7006: Parameter 'd' implicitly has an 'any' type.
-src/smartTutorEngine.ts(569,34): error TS7006: Parameter 'd' implicitly has an 'any' type.
-src/smartTutorEngine.ts(604,21): error TS7006: Parameter 'd' implicitly has an 'any' type.
-src/smartTutorEngine.ts(605,20): error TS7006: Parameter 'd' implicitly has an 'any' type.
-src/smartTutorEngine.ts(616,40): error TS7006: Parameter 'q' implicitly has an 'any' type.
-src/smartTutorEngine.ts(633,43): error TS7006: Parameter 'c' implicitly has an 'any' type.
-src/smartTutorEngine.ts(643,151): error TS7006: Parameter 'd' implicitly has an 'any' type.
-src/smartTutorEngine.ts(649,32): error TS7006: Parameter 'd' implicitly has an 'any' type.
-src/utils/smartTutorEngine.ts(12,8): error TS2307: Cannot find module './sessionManager' or its corresponding type declarations.
-src/utils/smartTutorEngine.ts(32,56): error TS2307: Cannot find module '../studyGuide' or its corresponding type declarations.
-src/utils/smartTutorEngine.ts(145,49): error TS7006: Parameter 'section' implicitly has an 'any' type.
-src/utils/smartTutorEngine.ts(149,35): error TS7006: Parameter 'trigger' implicitly has an 'any' type.
-src/utils/smartTutorEngine.ts(152,31): error TS7006: Parameter 'section' implicitly has an 'any' type.
-src/utils/smartTutorEngine.ts(183,33): error TS7006: Parameter 'card' implicitly has an 'any' type.
-src/utils/smartTutorEngine.ts(208,14): error TS7006: Parameter 'x' implicitly has an 'any' type.
-src/utils/smartTutorEngine.ts(209,12): error TS7006: Parameter 'a' implicitly has an 'any' type.
-src/utils/smartTutorEngine.ts(209,15): error TS7006: Parameter 'b' implicitly has an 'any' type.
-src/utils/smartTutorEngine.ts(214,11): error TS7006: Parameter 'section' implicitly has an 'any' type.
-src/utils/smartTutorEngine.ts(214,74): error TS7006: Parameter 'bullet' implicitly has an 'any' type.
-src/utils/smartTutorEngine.ts(383,39): error TS7006: Parameter 'id' implicitly has an 'any' type.
-src/utils/smartTutorEngine.ts(383,71): error TS7006: Parameter 'c' implicitly has an 'any' type.
-src/utils/smartTutorEngine.ts(384,72): error TS7006: Parameter 'c' implicitly has an 'any' type.
-src/utils/smartTutorEngine.ts(384,75): error TS7006: Parameter 'i' implicitly has an 'any' type.
-src/utils/smartTutorEngine.ts(385,39): error TS7006: Parameter 'c' implicitly has an 'any' type.
-vite.config.ts(1,25): error TS2307: Cannot find module '@tailwindcss/vite' or its corresponding type declarations.
-vite.config.ts(2,19): error TS2307: Cannot find module '@vitejs/plugin-react' or its corresponding type declarations.
-vite.config.ts(3,18): error TS2591: Cannot find name 'path'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node` and then add 'node' to the types field in your tsconfig.
-vite.config.ts(4,28): error TS2307: Cannot find module 'vite' or its corresponding type declarations.
-vite.config.ts(11,27): error TS2304: Cannot find name '__dirname'.
-vite.config.ts(17,12): error TS2591: Cannot find name 'process'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node` and then add 'node' to the types field in your tsconfig.
-vite.config.ts(19,14): error TS2591: Cannot find name 'process'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node` and then add 'node' to the types field in your tsconfig.
+﻿fix_lesson_data.js(8,2320): error TS1127: Invalid character.
+fix_lesson_data.js(8,2321): error TS1134: Variable declaration expected.
+fix_lesson_data.js(8,2329): error TS1005: ',' expected.
+fix_lesson_data.js(8,2336): error TS1005: ',' expected.
+fix_lesson_data.js(8,2344): error TS1005: ',' expected.
+fix_lesson_data.js(8,2351): error TS1005: ',' expected.
+fix_lesson_data.js(8,2354): error TS1005: ',' expected.
+fix_lesson_data.js(8,2359): error TS1005: ',' expected.
+fix_lesson_data.js(8,2368): error TS1005: ',' expected.
+fix_lesson_data.js(8,2372): error TS1127: Invalid character.
+fix_lesson_data.js(8,2381): error TS1005: ',' expected.
+fix_lesson_data.js(8,2387): error TS1005: ',' expected.
+fix_lesson_data.js(8,2395): error TS1005: ',' expected.
+fix_lesson_data.js(8,2400): error TS1005: ';' expected.
+fix_lesson_data.js(8,2403): error TS1127: Invalid character.
+fix_lesson_data.js(8,2405): error TS1434: Unexpected keyword or identifier.
+fix_lesson_data.js(8,2412): error TS1434: Unexpected keyword or identifier.
+fix_lesson_data.js(8,2416): error TS1434: Unexpected keyword or identifier.
+fix_lesson_data.js(8,2422): error TS1434: Unexpected keyword or identifier.
+fix_lesson_data.js(8,2425): error TS1434: Unexpected keyword or identifier.
+fix_lesson_data.js(8,2431): error TS1434: Unexpected keyword or identifier.
+fix_lesson_data.js(8,2442): error TS1005: ';' expected.
+fix_lesson_data.js(8,2451): error TS1127: Invalid character.
+fix_lesson_data.js(8,2452): error TS1128: Declaration or statement expected.
+fix_lesson_data.js(8,2471): error TS1005: ';' expected.
+fix_lesson_data.js(8,2472): error TS1443: Module declaration names may only use ' or " quoted strings.
+fix_lesson_data.js(8,2498): error TS1443: Module declaration names may only use ' or " quoted strings.
+fix_lesson_data.js(8,2513): error TS1127: Invalid character.
+fix_lesson_data.js(8,2514): error TS1128: Declaration or statement expected.
+fix_lesson_data.js(8,2516): error TS1434: Unexpected keyword or identifier.
+fix_lesson_data.js(8,2522): error TS1434: Unexpected keyword or identifier.
+fix_lesson_data.js(8,2528): error TS1434: Unexpected keyword or identifier.
+fix_lesson_data.js(8,2545): error TS1127: Invalid character.
+fix_lesson_data.js(8,2559): error TS1127: Invalid character.
+fix_lesson_data.js(8,2560): error TS1128: Declaration or statement expected.
+fix_lesson_data.js(8,2562): error TS1434: Unexpected keyword or identifier.
+fix_lesson_data.js(8,2571): error TS1434: Unexpected keyword or identifier.
+fix_lesson_data.js(8,2575): error TS1434: Unexpected keyword or identifier.
+fix_lesson_data.js(8,2579): error TS1434: Unexpected keyword or identifier.
+fix_lesson_data.js(8,2584): error TS1434: Unexpected keyword or identifier.
+fix_lesson_data.js(8,2590): error TS1434: Unexpected keyword or identifier.
+fix_lesson_data.js(8,2602): error TS1434: Unexpected keyword or identifier.
+fix_lesson_data.js(8,2609): error TS1434: Unexpected keyword or identifier.
+fix_lesson_data.js(8,2616): error TS1434: Unexpected keyword or identifier.
+fix_lesson_data.js(8,2620): error TS1434: Unexpected keyword or identifier.
+fix_lesson_data.js(8,2625): error TS1434: Unexpected keyword or identifier.
+fix_lesson_data.js(8,2631): error TS1434: Unexpected keyword or identifier.
+fix_lesson_data.js(8,2636): error TS1434: Unexpected keyword or identifier.
+fix_lesson_data.js(8,2646): error TS1127: Invalid character.
+fix_lesson_data.js(8,2647): error TS1128: Declaration or statement expected.
+fix_lesson_data.js(8,2663): error TS1005: ';' expected.
+fix_lesson_data.js(8,2664): error TS1127: Invalid character.
+fix_lesson_data.js(8,2665): error TS1128: Declaration or statement expected.
+fix_lesson_data.js(8,2667): error TS1434: Unexpected keyword or identifier.
+fix_lesson_data.js(8,2671): error TS1434: Unexpected keyword or identifier.
+fix_lesson_data.js(8,2681): error TS1434: Unexpected keyword or identifier.
+fix_lesson_data.js(8,2686): error TS1434: Unexpected keyword or identifier.
+fix_lesson_data.js(8,2692): error TS1434: Unexpected keyword or identifier.
+fix_lesson_data.js(8,2699): error TS1434: Unexpected keyword or identifier.
+fix_lesson_data.js(8,2708): error TS1434: Unexpected keyword or identifier.
+fix_lesson_data.js(8,2716): error TS1434: Unexpected keyword or identifier.
+fix_lesson_data.js(8,2721): error TS1434: Unexpected keyword or identifier.
+fix_lesson_data.js(8,2728): error TS1434: Unexpected keyword or identifier.
+fix_lesson_data.js(8,2736): error TS1434: Unexpected keyword or identifier.
+fix_lesson_data.js(8,2742): error TS1434: Unexpected keyword or identifier.
+fix_lesson_data.js(8,2746): error TS1434: Unexpected keyword or identifier.
+fix_lesson_data.js(8,2752): error TS1434: Unexpected keyword or identifier.
+fix_lesson_data.js(8,2758): error TS1434: Unexpected keyword or identifier.
+fix_lesson_data.js(8,2765): error TS1434: Unexpected keyword or identifier.
+fix_lesson_data.js(8,2774): error TS1434: Unexpected keyword or identifier.
+fix_lesson_data.js(8,2781): error TS1434: Unexpected keyword or identifier.
+fix_lesson_data.js(8,2788): error TS1434: Unexpected keyword or identifier.
+fix_lesson_data.js(8,2793): error TS1434: Unexpected keyword or identifier.
+fix_lesson_data.js(8,2797): error TS1434: Unexpected keyword or identifier.
+fix_lesson_data.js(8,2808): error TS1127: Invalid character.
+fix_lesson_data.js(8,2809): error TS1128: Declaration or statement expected.
+fix_lesson_data.js(8,2814): error TS1005: ';' expected.
+fix_lesson_data.js(8,2815): error TS1127: Invalid character.
+fix_lesson_data.js(8,2816): error TS1128: Declaration or statement expected.
+fix_lesson_data.js(8,2818): error TS1434: Unexpected keyword or identifier.
+fix_lesson_data.js(8,2822): error TS1434: Unexpected keyword or identifier.
+fix_lesson_data.js(8,2829): error TS1434: Unexpected keyword or identifier.
+fix_lesson_data.js(8,2835): error TS1434: Unexpected keyword or identifier.
+fix_lesson_data.js(8,2838): error TS1434: Unexpected keyword or identifier.
+fix_lesson_data.js(8,2845): error TS1434: Unexpected keyword or identifier.
+fix_lesson_data.js(8,2858): error TS1127: Invalid character.
+fix_lesson_data.js(8,2859): error TS1128: Declaration or statement expected.
+fix_lesson_data.js(8,2864): error TS1005: ';' expected.
+fix_lesson_data.js(8,2865): error TS1127: Invalid character.
+fix_lesson_data.js(8,2866): error TS1128: Declaration or statement expected.
+fix_lesson_data.js(8,2868): error TS1434: Unexpected keyword or identifier.
+fix_lesson_data.js(8,2872): error TS1434: Unexpected keyword or identifier.
+fix_lesson_data.js(8,2876): error TS1434: Unexpected keyword or identifier.
+fix_lesson_data.js(8,2883): error TS1434: Unexpected keyword or identifier.
+fix_lesson_data.js(8,2888): error TS1434: Unexpected keyword or identifier.
+fix_lesson_data.js(8,2901): error TS1127: Invalid character.
+fix_lesson_data.js(8,2902): error TS1128: Declaration or statement expected.
+fix_lesson_data.js(17,1): error TS1160: Unterminated template literal.

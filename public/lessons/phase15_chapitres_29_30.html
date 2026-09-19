@@ -1,9 +1,9 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>منصة المتفوق 3AS | المرحلة 15 : الدرس 29 والدرس 30</title>
+    <title>منصة بنزر العلم | المرحلة 15 : الدرس 29 والدرس 30</title>
     <style>
         :root {
             --bg-main: #f8fafc;
@@ -52,87 +52,6 @@
             background: #f1f5f9;
             padding: 2px 8px;
             border-radius: 6px;
-        }
-
-        /* Navbar */
-        .navbar {
-            background: var(--surface);
-            border-bottom: 1px solid var(--border);
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            padding: 1rem 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.02);
-            flex-wrap: wrap;
-            gap: 1rem;
-        }
-
-        .brand {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            font-weight: 900;
-            font-size: 1.25rem;
-            color: var(--primary);
-        }
-
-        .brand-badge {
-            background: var(--teal-dark);
-            color: white;
-            padding: 4px 10px;
-            border-radius: 8px;
-            font-size: 0.8rem;
-            white-space: nowrap;
-        }
-
-        .chapter-switcher {
-            display: flex;
-            gap: 12px;
-            flex-wrap: wrap;
-        }
-
-        .ch-btn {
-            background: var(--bg-main);
-            border: 2px solid var(--border);
-            padding: 8px 18px;
-            border-radius: 12px;
-            font-family: inherit;
-            font-weight: 800;
-            font-size: 0.95rem;
-            color: var(--text-muted);
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .ch-btn:hover {
-            border-color: var(--teal-dark);
-            color: var(--teal-dark);
-        }
-
-        .ch-btn.active {
-            background: var(--primary);
-            color: white;
-            border-color: var(--primary);
-        }
-
-        @media (max-width: 768px) {
-            .navbar {
-                flex-direction: column;
-                padding: 1rem;
-                text-align: center;
-            }
-            .chapter-switcher {
-                justify-content: center;
-                width: 100%;
-            }
-            .ch-btn {
-                flex: 1;
-                font-size: 0.85rem;
-                padding: 8px 10px;
-            }
         }
 
         .container {
@@ -435,30 +354,20 @@
 </head>
 <body>
 
-    <!-- Navbar with Phase Switcher -->
-    <nav class="navbar">
-        <div class="brand">
-            <span>منصة المتفوق 3AS</span>
-            <span class="brand-badge">المرحلة 15 (الدرس 29 و 30)</span>
-        </div>
-        <div class="chapter-switcher">
-            <button class="ch-btn active" onclick="showChapter('ch29', event)">⚡ الدرس 29 : مقارنة الصانعة الخضراء والميتوكندرون</button>
-            <button class="ch-btn" onclick="showChapter('ch30', event)">🌍 الدرس 30 : دورة الطاقة والمادة في المحيط الحيوي</button>
-        </div>
-    </nav>
+    
 
     
     <!-- Sommaire sticky (v3.2) -->
     <div class="sommaire" id="sommaire">
         <a href="#ch1-step1" id="link-ch1-step1" onclick="scrollToStep('ch1-step1',event)">📖 1-1 وضعية</a>
-        <a href="#ch1-step2" id="link-ch1-step2" onclick="scrollToStep('ch1-step2',event)">1-2 تحليل</a>
-        <a href="#ch1-step3" id="link-ch1-step3" onclick="scrollToStep('ch1-step3',event)">1-3 مستكشف</a>
-        <a href="#ch1-step4" id="link-ch1-step4" onclick="scrollToStep('ch1-step4',event)">1-4 خلاصة + Quiz</a>
+        <a href="#ch1-step2" id="link-ch1-step2" onclick="scrollToStep('ch1-step2',event)">🔬 1-2 تحليل</a>
+        <a href="#ch1-step3" id="link-ch1-step3" onclick="scrollToStep('ch1-step3',event)">🧪 1-3 محاكي</a>
+        <a href="#ch1-step4" id="link-ch1-step4" onclick="scrollToStep('ch1-step4',event)">✅ 1-4 تقويم</a>
         <span class="sep"></span>
-        <a href="#ch2-step1" id="link-ch2-step1" onclick="scrollToStep('ch2-step1',event)">🧬 2-1 إشكالية</a>
-        <a href="#ch2-step2" id="link-ch2-step2" onclick="scrollToStep('ch2-step2',event)">2-2 فك الشفرة</a>
-        <a href="#ch2-step3" id="link-ch2-step3" onclick="scrollToStep('ch2-step3',event)">2-3 تنشيط</a>
-        <a href="#ch2-step4" id="link-ch2-step4" onclick="scrollToStep('ch2-step4',event)">2-4 تقويم</a>
+        <a href="#ch2-step1" id="link-ch2-step1" onclick="scrollToStep('ch2-step1',event)">❓ 2-1 إشكالية</a>
+        <a href="#ch2-step2" id="link-ch2-step2" onclick="scrollToStep('ch2-step2',event)">🔬 2-2 تحليل</a>
+        <a href="#ch2-step3" id="link-ch2-step3" onclick="scrollToStep('ch2-step3',event)">🧪 2-3 محاكي</a>
+        <a href="#ch2-step4" id="link-ch2-step4" onclick="scrollToStep('ch2-step4',event)">✅ 2-4 تقويم</a>
     </div>
 
     <div class="container">
@@ -524,7 +433,7 @@
                             <path d="M280 150 L 280 178" stroke="#38bdf8" stroke-width="2"/>
                             <text x="320" y="190" fill="#fef08a" font-size="8">ATP في المادة الأساسية</text>
                         </svg>
-                        <p style="font-size: 0.85rem; color: #cbd5e1; margin-top: 10px;">💡 تخرج الـ ATP دائماً نحو المقصورة التي ستستهلكها (الحشوة للنشا، والمادة الأساسية للخلية).</p>
+                        <p style="font-size: 0.85rem; color: #cbd5e1; margin-top: 10px;">💡 تستهلك الـ ATP حيث تنتج (الحشوة لبناء النشا)، بينما الـ ATP الميتوكندرية تُصدَّر نحو الهيولى لإنجاز مختلف الوظائف الحيوية.</p>
                     </div>
 
                     <div class="doc-analysis">
@@ -536,6 +445,7 @@
                             <li>• <strong>جهة ضخ البروتونات <span class="ltr-seq">H⁺</span> :</strong> من الحشوة إلى تجويف التيلاكويد في الصانعة، ومن المادة الأساسية إلى الفراغ بين غشائي في الميتوكندرون.</li>
                             <li>• <strong>مصير طاقة الـ <span class="ltr-seq">ATP</span> المنتجة :</strong> تستهلك محلياً في الحشوة لبناء السكر (حلقة كالفن)، مقابل تصديرها لهيولى الخلية لإنجاز مختلف الوظائف الحيوية.</li>
                         </ul>
+                        <div class="miftah-encadre">🔑 <b>المخطط التحصيلي للتحولات الطاقوية على المستوى الخلوي (BAC) :</b> تركيب ضوئي : <b><span class="ltr-seq">6CO₂ + 6H₂O → C₆H₁₂O₆ + 6O₂</span></b> (طاقة ضوئية ← كيميائية كامنة) · تنفس : <b><span class="ltr-seq">C₆H₁₂O₆ + 6O₂ → 6CO₂ + 6H₂O + 38ATP</span></b> (كيميائية كامنة ← ATP) · المادة تدور في حلقة مغلقة والطاقة يصنعها الضوء ويبددها التنفس.</div>
                     </div>
                 </div>
             </section>
@@ -585,6 +495,7 @@
         <!-- CHAPTER 30 : CYCLE DE L'ÉNERGIE ET DE LA MATIÈRE (الدرس 30) -->
         <!-- ================================================================= -->
         <div id="ch30" class="chapter-view">
+            <div style="background:#fffbeb;border:2px dashed #d97706;border-radius:12px;padding:10px 14px;margin:0 0 14px;font-size:.85rem;font-weight:800;color:#92400e;">📚 ثقافة عامة إثرائية — هذا الامتداد الكوني يتجاوز المنهاج الرسمي (المطلوب : المخطط التحصيلي على المستوى الخلوي) وغير مطلوب في البكالوريا.</div>
             
             <header class="lesson-header header-ch30">
                 <div class="lesson-breadcrumb">المجال الثاني : التحولات الطاقوية • الوحدة 3 : تحويل الطاقة على المستوى ما فوق البنية الخلوية</div>

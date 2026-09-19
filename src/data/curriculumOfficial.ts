@@ -38,6 +38,21 @@ export const NON_EXIGIBLES: ReadonlyArray<{
 ];
 
 /**
+ * Chapitres ENRICHISSEMENT (ثقافة عامة) : contenus corrects mais hors TDM et
+ * hors ressources exigibles — signalés par un bandeau dans le HTML, à exclure
+ * de toute statistique d'exigibilité BAC. Séquences et navigation inchangées.
+ */
+export const CULTURE_GENERALE: ReadonlyArray<{
+  lessonKey: string;
+  chapitre: string;
+  raison: string;
+}> = [
+  { lessonKey: 'phase22_chapitres_43_44', chapitre: 'دورة الصخور في الطبيعة', raison: 'غير واردة في TDM المجال 3 ولا في موارد U11' },
+  { lessonKey: 'phase22_chapitres_43_44_2', chapitre: 'الموارد البترولية والطاقوية في الجزائر', raison: 'غير واردة في TDM المجال 3 ولا في موارد U11' },
+  { lessonKey: 'phase15_chapitres_29_30_2', chapitre: 'دورة الطاقة والمادة في المحيط الحيوي', raison: 'U8 exige le niveau cellulaire uniquement (مخطط تحصيلي خلوي)' },
+];
+
+/**
  * Progression annuelle officielle — 11 unités (L5, pp.3-6 + tableaux par unité).
  * Fenêtres et volumes : 8h/2sem (U1, sept), 5h (U2, U3, oct), 18h/4sem (U4,
  * mi-oct → nov), 15h/3sem (U5, déc → mi-janv, encadrée par les devoirs du 1er

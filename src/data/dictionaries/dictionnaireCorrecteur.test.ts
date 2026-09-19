@@ -21,6 +21,7 @@ import {
   CORRECTEUR_V1_UNITES,
   evaluerReponseKeywords,
   motsClesUniteEnrichis,
+  SEUIL_KEYWORDS_DEFAUT,
 } from '../../correcteurV1';
 
 const UNITE_IDS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
@@ -179,19 +180,32 @@ describe('détection par entité', () => {
 // ── 4. Intégration correcteur V1 ─────────────────────────────────────────────
 
 describe('intégration correcteur V1', () => {
-  it('une variante dictionnaire est reconnue par le chemin par défaut (hors L1..L6)', () => {
+  it('mode defaut (sans attendus) : banque L1–L6 curatée + variantes via entitesReconnues', () => {
+    const unite4 = CORRECTEUR_V1_UNITES.find((u) => u.uniteId === 4)!;
     const res = evaluerReponseKeywords(
       'يتم دمج الـ ADNv ضمن ADN الخلية بواسطة الانتبغراز',
       4,
     );
-    expect(res.trouves.some((t) => normalizeAr(t) === normalizeAr('الانتبغراز'))).toBe(true);
+    // AUDIT 2026-09-16 : le mode defaut ne score PLUS le pool enrichi (128–280
+    // formes → seuil inatteignable) mais la banque L1–L6 curatée. « الانتبغراز »
+    // (variante dictionnaire) remonte via entitesReconnues (E0036), pas trouves.
+    expect(res.mode).toBe('defaut');
+    expect(res.total).toBe(unite4.motsCles.length);
+    expect(res.trouves.some((t) => normalizeAr(t) === normalizeAr('الانتبغراز'))).toBe(false);
     expect(res.entitesReconnues.some((t) => t.id === 'E0036')).toBe(true);
+  });
+
+  it('mode defaut : le seuil appliqué est SEUIL_KEYWORDS_DEFAUT (et non SEUIL_KEYWORDS)', () => {
+    const res = evaluerReponseKeywords('الأجسام المضادة', 4);
+    expect(res.mode).toBe('defaut');
+    expect(res.passe).toBe(res.couverture >= SEUIL_KEYWORDS_DEFAUT);
   });
 
   it('le chemin à attendus explicites reste intact (pas de fuite du pool enrichi)', () => {
     const unite4 = CORRECTEUR_V1_UNITES.find((u) => u.uniteId === 4)!;
     const attendus = unite4.motsCles.slice(0, 3);
     const res = evaluerReponseKeywords('الانتبغراز الانتبغراز', 4, attendus);
+    expect(res.mode).toBe('attendus');
     expect(res.total).toBe(attendus.length);
   });
 });

@@ -10,3 +10,6 @@ coverage/
 # donnÃ©es locales (jamais commitÃ©es)
 data/students.db*
 data/teachers.json
+
+# copies d'eleves bac2025 (donnees personnelles — jamais commitées)
+docs/copies-bac2025/
