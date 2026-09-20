@@ -69,6 +69,15 @@
   audit, §roadmap 2).
 - **Tests** : couverture TDM ↔ JSON (55/55 chapitres) comme verrou de complétude.
 
+## 5. STATUT (2026-09-20, fin de journée) — l ingestion a eu lieu
+
+`data/bookContent.json` EXISTE désormais (master cb4afe6, cherry-pické en 4ead072
+sur la branche) : OCR intégral 319 774 car. / 76 % arabe + grille TDM 3/11/55 +
+hashes des sources. Audit indépendant : `AUDIT_INGESTION_MANUEL_2026-09-20.md`
+(réel et exploitable ; réserves : positions de chapitres non persistées,
+texte « corrigé v1.0 » et sources brutes non committés — hashes seuls).
+Verrous permanents : `src/data/bookContent.lock.test.ts` (6 tests).
+
 ## 4. Ce qui est nécessaire pour exécuter — et le canal qui marche (2026-09-20)
 
 **Inventaire Dropbox du propriétaire** (vérifié via fetcher plateforme) : dossier
