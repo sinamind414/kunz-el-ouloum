@@ -63,10 +63,26 @@ describe('hygiène de la banque qcmLivre (mêmes règles que l audit)', () => {
     }
   });
 
-  it('aucune fuite : la bonne réponse n est pas dans la question', () => {
+  it('pas de fuite : la bonne réponse n est pas dans la question', () => {
     for (const q of QCM_CHAPITRES) {
       const bonne = norm(q.options[q.correct]);
       expect(norm(q.question).includes(bonne), `C${q.chapitre} : fuite`).toBe(false);
+    }
+  });
+
+  it('l index de la réponse n est pas prévisible : chaque position 0/1/2 utilisée ≥5 fois (régression « tout en 0 »)', () => {
+    const dist = [0, 0, 0];
+    for (const q of QCM_CHAPITRES) dist[q.correct]++;
+    expect(dist[0]).toBeGreaterThanOrEqual(5);
+    expect(dist[1]).toBeGreaterThanOrEqual(5);
+    expect(dist[2]).toBeGreaterThanOrEqual(5);
+  });
+
+  it('pas d artefact latin collé à l arabe (الظهرates, forming… — régressions R4)', () => {
+    const colle = /[\u0600-\u06FF][A-Za-z]+|[A-Za-z]+[\u0600-\u06FF]/u;
+    for (const q of QCM_CHAPITRES) {
+      const champs = [q.question, ...q.options, q.explication];
+      for (const c of champs) expect(colle.test(c), `C${q.chapitre} : latin collé « ${c.slice(0, 50)} »`).toBe(false);
     }
   });
 
