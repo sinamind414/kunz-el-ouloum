@@ -78,6 +78,17 @@ hashes des sources. Audit indépendant : `AUDIT_INGESTION_MANUEL_2026-09-20.md`
 texte « corrigé v1.0 » et sources brutes non committés — hashes seuls).
 Verrous permanents : `src/data/bookContent.lock.test.ts` (6 tests).
 
+**Complément du 2026-09-20 (plus tard) — INDEX DE LOCALISATION fait.**
+`data/bookContent.index.json` (régénérable par `scripts/build_chapter_index.ts`)
+localise les 55 chapitres par lignes OCR : affectation monotone, passes
+verbatim → biline → tiges, **3 exceptions documentées et VÉRIFIÉES au build**
+(C19@1797, C20@1850 : en-têtes OCR tronqués ; C18 borné l.1796 : bannière p.97
+non reconstruite — le seul autre « العناصر الدفاعية » du texte, l.2179, est le
+récap de fin d'unité avant الحصيلة المعرفية l.2193). Correction norm : toLowerCase
+AVANT le filtre (les majuscules latines ADN/pH/LT étaient détruites) ; seuil TDM
+recalibré ≥47/55 (mesure corrigée ; les 8 titres restants exigent les passes
+OCR du builder — voir verrou `src/data/bookIndex.lock.test.ts`, 8 tests).
+
 ## 4. Ce qui est nécessaire pour exécuter — et le canal qui marche (2026-09-20)
 
 **Inventaire Dropbox du propriétaire** (vérifié via fetcher plateforme) : dossier
