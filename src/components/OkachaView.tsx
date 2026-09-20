@@ -4,7 +4,7 @@
 
 import { useMemo, useState } from 'react';
 import { BookMarked } from 'lucide-react';
-import { OKACHA_UNITES } from '../data/okacha';
+import { OKACHA_UNITES, OKACHA_METHODO } from '../data/okacha';
 
 interface Props {
   onBack: () => void;
@@ -17,10 +17,10 @@ const NOM_DOMAINE: Record<number, string> = {
 };
 
 export default function OkachaView({ onBack }: Props) {
-  const [domaine, setDomaine] = useState<1 | 2 | 3>(1);
+  const [onglet, setOnglet] = useState<1 | 2 | 3 | 'm'>(1);
   const [ouverte, setOuverte] = useState<string | null>(OKACHA_UNITES[0]?.id ?? null);
 
-  const unites = useMemo(() => OKACHA_UNITES.filter((u) => u.domaine === domaine), [domaine]);
+  const unites = useMemo(() => OKACHA_UNITES.filter((u) => u.domaine === onglet), [onglet]);
 
   return (
     <div dir="rtl" className="space-y-4">
@@ -43,17 +43,35 @@ export default function OkachaView({ onBack }: Props) {
         منقّى آلياً) — اقرأ، ثم اختبر نفسك في « اختبار الكتاب ».
       </div>
 
-      <div className="flex gap-2">
+      <div className="flex gap-2 flex-wrap">
+        <button
+          onClick={() => setOnglet('m')}
+          className={`px-3 py-2 rounded-xl text-xs font-black transition-colors ${onglet === 'm' ? 'bg-[#b45309] text-white' : 'bg-amber-50 dark:bg-amber-950/30 text-amber-800 dark:text-amber-300 hover:bg-amber-100'}`}
+        >
+          🧭 المنهجية (عكاشة)
+        </button>
         {([1, 2, 3] as const).map((d) => (
           <button
             key={d}
-            onClick={() => { setDomaine(d); setOuverte(OKACHA_UNITES.find((u) => u.domaine === d)?.id ?? null); }}
-            className={`flex-1 px-3 py-2 rounded-xl text-xs font-black transition-colors ${domaine === d ? 'bg-[#1d4ed8] text-white' : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-200 hover:bg-gray-200'}`}
+            onClick={() => { setOnglet(d); setOuverte(OKACHA_UNITES.find((u) => u.domaine === d)?.id ?? null); }}
+            className={`flex-1 px-3 py-2 rounded-xl text-xs font-black transition-colors ${onglet === d ? 'bg-[#1d4ed8] text-white' : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-200 hover:bg-gray-200'}`}
           >
             {NOM_DOMAINE[d]}
           </button>
         ))}
       </div>
+
+      {onglet === 'm' && (
+        <section className="rounded-3xl border border-amber-200 dark:border-amber-900/50 bg-white dark:bg-[#161c18] overflow-hidden">
+          <header className="px-4 py-3 bg-gradient-to-l from-amber-500/10 to-transparent dark:from-amber-950/40 border-b border-gray-200 dark:border-gray-800">
+            <span className="text-sm font-black text-gray-800 dark:text-gray-100">{OKACHA_METHODO.titreAr}</span>
+            <span className="text-[10px] font-black text-amber-700 dark:text-amber-300 mr-2">({OKACHA_METHODO.lignes.length} سطراً)</span>
+          </header>
+          <pre dir="rtl" className="px-4 py-3 whitespace-pre-wrap text-xs font-bold text-gray-800 dark:text-gray-100 leading-relaxed">
+            {OKACHA_METHODO.lignes.join('\n')}
+          </pre>
+        </section>
+      )}
 
       <div className="space-y-3">
         {unites.map((u) => {

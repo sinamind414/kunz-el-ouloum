@@ -6,7 +6,7 @@
 // et l'intégrité minimale de chaque unité.
 
 import { describe, expect, it } from 'vitest';
-import { OKACHA_UNITES } from './okacha';
+import { OKACHA_UNITES, OKACHA_METHODO } from './okacha';
 
 const norm = (s: string) =>
   s
@@ -33,6 +33,29 @@ describe('structure du بنك الحفظ عكاشة (10 unités, mapping documen
       expect(u.sourceRange, u.id).toMatch(/^l\.\d+-\d+$/);
       expect(u.lignes.length, `${u.id} : ${u.lignes.length} lignes`).toBeGreaterThanOrEqual(25);
       expect(u.lignes.join(' ').length, u.id).toBeGreaterThan(500);
+    }
+  });
+});
+
+describe('section méthodologie (l.115-660 — croisée avec مفتاح, doc : docs/CROISEMENT_OKACHA_MEFTAH)', () => {
+  it('présente, substantielle, sans périmètre commercial', () => {
+    expect(OKACHA_METHODO.lignes.length).toBeGreaterThanOrEqual(300);
+    expect(OKACHA_METHODO.sourceRange).toBe('l.115-660');
+    const t = norm(OKACHA_METHODO.lignes.join(' '));
+    for (const interdit of ['عكاش', 'المتفوق', 'camscanner', '300 دج']) {
+      expect(t.includes(norm(interdit)), `métho : trouvé « ${interdit} »`).toBe(false);
+    }
+  });
+
+  it('les marqueurs méthodologiques clés sont présents (grille 3 consignes + أفعال + استدلال)', () => {
+    const t = norm(OKACHA_METHODO.lignes.join(' '));
+    for (const cle of [
+      'استرداد الموارد', 'توظيف الموارد', 'البناء والتركيب', // = grille 5/7/8 (corrobore v5.0)
+      'التحليل', 'التفسير', 'الاستنتاج', 'الفرضية',
+      'أثبت', 'ناقش', 'علل', 'صف', // أفعال أدائية (famille أحكم/أصف)
+      'الاستدلال العلمي', 'المسعى العلمي',
+    ]) {
+      expect(t.includes(norm(cle)), `métho : « ${cle} » absent`).toBe(true);
     }
   });
 });
