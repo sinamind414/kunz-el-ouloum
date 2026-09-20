@@ -6,6 +6,7 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { openStore, SqliteStore } from "./server/store";
 import { PostgresStore, migrateJsonFilesToPostgres } from "./server/store.pg";
+import { resumeActivite, calculeActivite } from "./server/activite";
 import { makeRateLimiter } from "./server/rateLimit";
 import { makeStudentAuth, makeTeacherAuth } from "./server/auth";
 import type { ProductionEntry, ActivityEntry, DashboardStudentRow, Student, Teacher } from "./server/store";
@@ -182,7 +183,10 @@ async function startServer() {
 
   app.get("/api/teacher/dashboard", teacherAuth, async (req: Request, res: Response) => {
     // Agrégats SQL + cache 30 s (invalidé à chaque écriture).
-    res.json({ students: await dashboardRows(store) });
+    // resume = activité RÉELLE (7j/30j). NB : comptabilise les INSCRITS only —
+    // un invité n'envoie rien (offline by design) et reste donc invisible ici.
+    const students = await dashboardRows(store);
+    res.json({ students, resume: resumeActivite(students) });
   });
 
   app.get("/api/teacher/entries", teacherAuth, async (req: Request, res: Response) => {
@@ -251,10 +255,12 @@ async function startServer() {
     res.setHeader("Content-Type", "text/csv; charset=utf-8");
     res.setHeader("Content-Disposition", `attachment; filename="boussole-export-${studentId || "all"}.csv"`);
     res.write("\uFEFF"); // BOM → Excel ouvre l'arabe correctement
-    res.write(["student_id", "name", "email", "productions", "avg_icm", "last_production", "top_errors"].join(";") + "\n");
+    res.write(["student_id", "name", "email", "productions", "avg_icm", "last_production", "top_errors", "last_activity", "actif_7j", "actif_30j"].join(";") + "\n");
     if (studentId) {
       // Un seul élève : même forme de ligne (petit volume).
       const entries = await store.listEntries(studentId);
+      const acts = store.listActivities(studentId);
+      const act = calculeActivite([entries.map((e) => e.createdAt), acts.map((a) => a.createdAt)].flat());
       const avgIcm = entries.length ? Math.round(entries.reduce((s, e) => s + (Number(e.icm) || 0), 0) / entries.length) : 0;
       const dominantErrors = entries.flatMap((e) => e.errorTags).reduce<Record<string, number>>((acc, tag) => {
         acc[tag] = (acc[tag] || 0) + 1;
@@ -262,11 +268,11 @@ async function startServer() {
       }, {});
       const topErrors = Object.entries(dominantErrors).sort((a, b) => b[1] - a[1]).slice(0, 5).map(([tag, count]) => `${tag}:${count}`).join("; ");
       const student = await store.findStudentById(studentId);
-      res.write([studentId, student?.name || "", student?.email || "", String(entries.length), String(avgIcm), student?.createdAt || "", topErrors].join(";") + "\n");
+      res.write([studentId, student?.name || "", student?.email || "", String(entries.length), String(avgIcm), student?.createdAt || "", topErrors, act.lastActivity || "", act.actif7j ? "1" : "0", act.actif30j ? "1" : "0"].join(";") + "\n");
     } else {
       // Streaming : itérateur SQL — 300 000 lignes sans jamais tout charger en RAM.
       for await (const row of store.iterateExportRows()) {
-        res.write([row.id, row.name, row.email, String(row.productions), String(row.avgIcm), row.lastProduction || "", row.topErrors].join(";") + "\n");
+        res.write([row.id, row.name, row.email, String(row.productions), String(row.avgIcm), row.lastProduction || "", row.topErrors, row.lastActivity || "", row.actif7j ? "1" : "0", row.actif30j ? "1" : "0"].join(";") + "\n");
       }
     }
     res.end();

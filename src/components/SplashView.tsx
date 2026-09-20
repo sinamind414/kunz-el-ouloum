@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
+import { SECTIONS_CONFIDENTIALITE, DERNIERE_MISE_A_JOUR } from '../data/politiqueConfidentialite';
 import { Rocket, ChevronLeft, ShieldCheck, Trophy, Sparkles, Volume2, VolumeX, Key, Music, Anchor } from 'lucide-react';
 import { LOGO_URL } from '../data';
 import { startPirateMusic, stopPirateMusic } from '../utils/audio';
@@ -9,7 +10,8 @@ interface SplashViewProps {
 }
 
 export default function SplashView({ onStart }: SplashViewProps) {
-  const [showIntroSplash, setShowIntroSplash] = useState<boolean>(true);
+    const [showPrivacy, setShowPrivacy] = useState(false);
+const [showIntroSplash, setShowIntroSplash] = useState<boolean>(true);
   const [isMusicMuted, setIsMusicMuted] = useState<boolean>(false);
   
   // Clean up music when component unmounts
@@ -333,12 +335,51 @@ export default function SplashView({ onStart }: SplashViewProps) {
 
               <p className="text-center mt-6 text-[10px] sm:text-xs text-[#504441] opacity-75 flex items-center justify-center gap-1.5 font-bold">
                 <ShieldCheck className="w-3.5 h-3.5 text-[#006d37]" />
-                <span>بالانضمام إلينا، أنت توافق على شروط الاستخدام وسياسة الخصوصية</span>
+                <button type="button" onClick={() => setShowPrivacy(true)} className="underline decoration-dotted underline-offset-2 hover:opacity-80">
+                  سياسة الخصوصية
+                </button>
+                <span>— بالانضمام إلينا فأنت توافق عليها</span>
               </p>
             </footer>
           </motion.div>
         )}
       </AnimatePresence>
+
+      {showPrivacy && (
+        <div className="fixed inset-0 z-[100] flex items-end sm:items-center justify-center bg-black/50 p-0 sm:p-6" onClick={() => setShowPrivacy(false)}>
+          <div
+            dir="rtl"
+            onClick={(e) => e.stopPropagation()}
+            className="bg-white dark:bg-[#161c18] w-full sm:max-w-lg max-h-[85vh] overflow-y-auto rounded-t-3xl sm:rounded-3xl shadow-2xl"
+          >
+            <div className="sticky top-0 bg-white/95 dark:bg-[#161c18]/95 backdrop-blur px-5 py-4 border-b border-gray-100 dark:border-gray-800 flex items-center justify-between">
+              <h2 className="text-base font-black text-gray-900 dark:text-white">🔒 سياسة الخصوصية</h2>
+              <button
+                type="button"
+                onClick={() => setShowPrivacy(false)}
+                className="px-3 py-1.5 rounded-xl bg-gray-100 dark:bg-gray-800 text-xs font-black text-gray-600 dark:text-gray-300 hover:bg-gray-200"
+              >
+                إغلاق
+              </button>
+            </div>
+            <div className="px-5 py-4 space-y-4">
+              {SECTIONS_CONFIDENTIALITE.map((sec) => (
+                <section key={sec.titre}>
+                  <h3 className="text-sm font-black text-[#006d37] dark:text-emerald-300 mb-1">{sec.titre}</h3>
+                  {sec.paragraphes.map((par, i) => (
+                    <p key={i} className="text-xs font-bold text-gray-600 dark:text-gray-300 leading-relaxed mb-1">
+                      {par}
+                    </p>
+                  ))}
+                </section>
+              ))}
+              <p className="text-[10px] font-bold text-gray-400 pt-2 border-t border-gray-100 dark:border-gray-800">
+                آخر تحديث: {DERNIERE_MISE_A_JOUR}
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
