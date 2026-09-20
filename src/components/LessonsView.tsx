@@ -14,6 +14,7 @@ import { INITIAL_UNITS } from '../data';
 import { getUnitLessonSequence } from '../data/unitLessonSequences';
 import { HTML_LESSON_ORDER } from '../data/htmlLessonProgression';
 import { sourceLivre, badgeSource, sourceAmbigue } from '../data/bookIndex';
+import QcmLivreView from './QcmLivreView';
 import {
   PASSIVE_DOMAINS,
   hasHtmlFile,
@@ -65,7 +66,7 @@ const unitOfActiveLesson = (key: string): number =>
   INITIAL_UNITS.find((u) => getActiveLessonKeysForUnit(u.id).includes(key))?.id ?? 1;
 
 export default function LessonsView() {
-  const [mode, setMode] = useState<LessonMode | null>(null);
+  const [mode, setMode] = useState<LessonMode | 'qcm' | null>(null);
   const [selectedUnit, setSelectedUnit] = useState<number>(1);
   const [selectedDomain, setSelectedDomain] = useState<number | null>(null);
   const [selectedActiveLesson, setSelectedActiveLesson] = useState<string | null>(null);
@@ -99,6 +100,11 @@ export default function LessonsView() {
     );
   }
 
+  // ----- Écran 0 : QCM du livre officiel (par chapitre) -----
+  if (mode === 'qcm') {
+    return <QcmLivreView onBack={() => setMode(null)} />;
+  }
+
   // ----- Écran 1 : les deux icônes (Leçon Active / Leçon Passive) -----
   if (mode === null) {
     return (
@@ -114,7 +120,7 @@ export default function LessonsView() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {/* Leçon Active */}
           <button
             onClick={() => { setMode('active'); setSelectedDomain(null); }}
@@ -140,6 +146,19 @@ export default function LessonsView() {
             <span className="block text-lg font-black text-gray-800 dark:text-gray-100">الدرس السلبي</span>
             <span className="block text-xs font-bold text-gray-500 dark:text-gray-400 leading-relaxed">
               الدروس المقروءة الرسمية ({HTML_LESSON_ORDER.length} درساً) — ثلاثة مجالات، كل مجال بوحداته وفصوله
+            </span>
+          </button>
+          {/* QCM du livre */}
+          <button
+            onClick={() => setMode('qcm')}
+            className="group p-6 rounded-3xl border-2 border-amber-200 dark:border-amber-900/50 bg-gradient-to-b from-amber-50 to-white dark:from-amber-950/30 dark:to-[#161c18] hover:border-amber-500 hover:shadow-lg transition-all text-center space-y-3"
+          >
+            <span className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-[#b45309] text-white shadow-md group-hover:scale-105 transition-transform">
+              <BookOpen className="w-8 h-8" />
+            </span>
+            <span className="block text-lg font-black text-gray-800 dark:text-gray-100">اختبار الكتاب</span>
+            <span className="block text-xs font-bold text-gray-500 dark:text-gray-400 leading-relaxed">
+              أسئلة حسب فصول الكتاب الرسمي — مع مخططات وتفسيرات فورية
             </span>
           </button>
         </div>
