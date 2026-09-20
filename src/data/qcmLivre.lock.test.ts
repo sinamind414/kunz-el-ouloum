@@ -26,7 +26,7 @@ const norm = (s: string) => normalizeAr(s);
 describe('couverture QCM — la totalité des 55 chapitres du livre', () => {
   it('la banque couvre les 16 chapitres manquants (audit R4) + les 6 D3 épaissis (R6 bis)', () => {
     const manquantsAudit = [1, 13, 17, 18, 20, 22, 23, 24, 25, 26, 31, 35, 36, 49, 50, 54];
-    const d3Epais = [42, 47, 48, 52, 53, 55]; // R6 bis : C52×2, les autres ×1
+    const d3Epais = [42, 45, 46, 47, 48, 52, 53, 55]; // R6 bis + R7 bis (C45/C46 index effondrés, ancres lues)
     const couvertsBanque = [...new Set(QCM_CHAPITRES.map((q) => q.chapitre))].sort((a, b) => a - b);
     expect(couvertsBanque).toEqual([...manquantsAudit, ...d3Epais].sort((a, b) => a - b));
   });
@@ -36,12 +36,12 @@ describe('couverture QCM — la totalité des 55 chapitres du livre', () => {
     expect([...tous].sort((a, b) => a - b)).toEqual(Array.from({ length: 55 }, (_, i) => i + 1));
   });
 
-  it('chaque chapitre de la banque a 1 à 2 QCM ; total figé = 39 (28 R4 + 11 R6 bis)', () => {
-    expect(QCM_CHAPITRES).toHaveLength(39);
+  it('chaque chapitre de la banque a 1 à 2 QCM ; total figé = 41 (28 R4 + 11 R6 bis + 2 R7 bis)', () => {
+    expect(QCM_CHAPITRES).toHaveLength(41);
     const par = new Map<number, number>();
     for (const q of QCM_CHAPITRES) par.set(q.chapitre, (par.get(q.chapitre) ?? 0) + 1);
     for (const [, n] of par) expect(n).toBeLessThanOrEqual(2);
-    expect(par.size).toBe(22);
+    expect(par.size).toBe(24);
   });
 
   it('les numéros de chapitre existent dans l index et les titres correspondent', () => {

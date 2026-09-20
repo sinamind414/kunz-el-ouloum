@@ -80,8 +80,13 @@ for uid, dom, label, a, b in UNITES:
     unit.append({'id': uid, 'domaine': dom, 'uniteAr': label,
                  'sourceRange': f'l.{a}-{b}', 'lignes': lignes})
 
+# ── méthodologie (l.115-660) — v2, croisée avec مفتاح (voir note docs/) ──
+METHODO = {'titreAr': 'قسم المنهجية', 'sourceRange': 'l.115-660',
+           'lignes': filtrer(lines[114:660])}
+assert len(METHODO['lignes']) >= 300, f"métho : {len(METHODO['lignes'])} lignes (<300)"
+
 # ── post-conditions avant écriture ──
-raw = json.dumps(unit, ensure_ascii=False)
+raw = json.dumps(unit, ensure_ascii=False) + json.dumps(METHODO, ensure_ascii=False)
 for interdit in ['0672388202', '0560420993', '300 دج', 'CamScanner', 'Scanne',
                  'المتفوق', 'الظهيرة']:
     assert interdit not in raw, f'interdit présent : {interdit}'
@@ -123,6 +128,16 @@ for u in unit:
     out.append('    ],')
     out.append('  },')
 out.append('];')
+out.append('')
+out.append('// Section méthodologie (l.115-660) — croisée avec مفتاح, non éditée.')
+out.append('export const OKACHA_METHODO = {')
+out.append(f'  titreAr: {j(METHODO["titreAr"])},')
+out.append(f'  sourceRange: {j(METHODO["sourceRange"])},')
+out.append('  lignes: [')
+for l in METHODO['lignes']:
+    out.append(f'    {j(l)},')
+out.append('  ],')
+out.append('} as const;')
 out.append('')
 
 OUT.write_text('\n'.join(out), encoding='utf-8')

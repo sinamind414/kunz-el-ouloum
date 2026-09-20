@@ -523,6 +523,33 @@ export const QCM_CHAPITRES: QcmChapitre[] = [
     schema: `${S}/domaine3_tectonique/schema_18_wilson.svg`,
     explication: 'النص (l.5980-5982) : اندساس بقايا الليتوسفير المحيطي (الأفيوليت) داخل السلسلة شاهد على التصادم القاري وغلق المحيط؛ (l.5984) : متتاليتها بيريدوتيت-غابرو-مركب بازلتي.',
   },
+  // ══ R7 bis — C45/C46 (index effondrés, contenu réel localisé) : l'OCR place
+  // les ondes (l.4709-4797) et la chimie du brns (l.5206-5208) sous C47 ; ancres
+  // directes lues et citées. SVG 14_ondes activé (attendu depuis R4).
+  {
+    chapitre: 45,
+    question: 'بالمقارنة مع الموجات (P)، تتميز الموجات (S) بـ:',
+    options: [
+      'سرعة أكبر وقدرة على الانتشار في كل الأوساط',
+      'سرعة أقل وانتشار في المواد الصلبة فقط',
+      'انتشار مواز لسطح الأرض فقط',
+    ],
+    correct: 1,
+    schema: `${S}/domaine3_tectonique/schema_14_ondes.svg`,
+    explication: 'النص (l.4770) : P أولية لأن سرعتها كبيرة (طولية)؛ (l.4774) : S ثانوية لأن سرعتها أقل وتنتشر في المواد الصلبة فقط.',
+  },
+  {
+    chapitre: 46,
+    question: 'التركيب الكيميائي لصخر البرنس (البيريدوتيت) يتميز بـ:',
+    options: [
+      'غنى بالسيليس وفقرة بالحديد والمغنيزيوم',
+      'كونه أساسا من الكوارتز والفلسبار',
+      'فقرة بالسيليس وغنى بالحديد والمغنيزيوم',
+    ],
+    correct: 2,
+    schema: `${S}/domaine3_tectonique/schema_13_terre.svg`,
+    explication: 'النص (l.5206-5208) : البيريدوتيت صخر البرنس — السيليس 44%، المغنيزيوم 42%، الحديد 8.5%: فقير بالسيليس وغني بالحديد والمغنيزيوم.',
+  },
 ];
 
-// Banque épaissie R6 bis : 39 QCM / 22 chapitres (16 originaux + 6 D3 nouveaux).
+// Banque R7 bis : 41 QCM / 24 chapitres (C45+C46 réhabilités, index effondrés).
