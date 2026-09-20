@@ -12,6 +12,7 @@
 // RÈGLE MOTEUR : cette notation est une AIDE au corrigé (advisory), pas un verdict.
 
 import { ATTENDUS_BAREME, entitesDansTexte } from './dictionnaireCorrecteur';
+import { formePresente } from '../../lib/validation/formePresente';
 import { normalizeAr } from '../../lib/validation/normalizeAr';
 
 export interface ItemBareme {
@@ -180,7 +181,8 @@ export function evaluerBareme(reponse: string, questionId: string): ResultatBare
     const mode: 'auto' | 'manuelle' = sig.length > 0 ? 'auto' : 'manuelle';
     if (mode === 'manuelle') nbManuelles++;
     else nbAuto++;
-    const via = mode === 'auto' && norm ? sig.filter((s) => norm.includes(s.norm)) : [];
+    // P2 : matching borné (frontières) — « atp » ne crédite plus « ATPase ».
+    const via = mode === 'auto' && norm ? sig.filter((s) => formePresente(norm, s.norm)) : [];
     const credite = via.length > 0;
     if (credite) pointsObtenus += item.points;
     verdicts.push({ item, credite, mode, via });

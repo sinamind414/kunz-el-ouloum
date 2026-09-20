@@ -215,3 +215,30 @@ par `git checkout origin/master --` (mêmes chemins, fusion future propre). Le b
 - ⚠️ Le « prof » de ce lot = barème interne du GÉNÉRATEUR des copies — supervision
   définitive = vraies copies seulement.
 765/765 (761+4) · boussole 138/138 · build · check:miftah.
+
+**P2 — règle dure « attendus obligatoires » (2026-09-19, complétion)** : audit de
+tous les chemins de note → trois fuites fermées :
+1. **`noterDepuisCouverture` SUPPRIMÉ du code** (fit a·cov+b sur la banque
+   d'unité, déprécié depuis R6 mais toujours exporté+testé = porte ouverte). Il
+   n'existe plus AUCUN chemin de note hors `noterExerciceCalibre`/
+   `noterCopieCalibree`. Les constantes a/b de CALIBRATION_BAC2025 restent en
+   archives du fit 80 copies + mapping d'unité (uniteDeGroupe) ; le script de
+   recherche recalibrer-copiees.ts recalcule le fit lui-même.
+2. **Diagnostic barème borné** : `evaluerBareme` matchait par `includes` nu —
+   « ATPase » crédité l'item ATP. `formePresente` déplacée dans
+   `lib/validation/` (partagée note calibrée ↔ diagnostic) : frontières
+   lettres/chiffres partout, zéro substring nu dans le produit.
+3. **CorrecteurPanel fail-loud** : le try/catch qui avalait l'absence
+   d'attendus (note silencieusement absente) est supprimé — un groupe sans
+   registre doit faire échouer bruyamment, jamais dégrader en silence.
+Verrous d'architecture (`p2.attendusObligatoires.test.ts`, 4 tests) : tombstone
+du legacy, frontières du diagnostic (ATPase≠ATP), CorrecteurPanel n'importe que
+le moteur calibré + label « تشخيصي — ليس تنقيطاً » affiché, boucle élève et banc
+R4 exclusivement sur attendus.
+Périmètre assumé : la note obligatoire couvre les 6 groupes bac2025 ; les
+Ex1 2023/2024 restent au stade DIAGNOSTIC (label clair) — leur calibration
+exigerait des libellés de question officiels (questionAr) que le build ne
+porte pas : inventer un prompt violerait la règle de sourcing. Ex2/Ex3
+2023/2024 : aucun attendu sourcé (corrigés non fournis).
+769/769 · boussole 138/138 · build · smoke 4/4 · check:miftah.
+NB infra : node_modules re-reset (4e) → npm ci avant les runs.

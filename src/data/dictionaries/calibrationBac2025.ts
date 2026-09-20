@@ -3,8 +3,8 @@
 // HISTORIQUE : v1 notait couverture-banque-d'unité → fit linéaire (a·cov+b)
 // ajusté sur 80 copies (r=0.86 global, mais S2-Ex3 r=0.45, interceptes
 // généreux, saturation 3-14 mots-clés — audit C1/C4). Ce chemin
-// (`noterDepuisCouverture`) reste exporté en LEGACY ; ses constantes étaient
-// ajustées sur l'ANCIEN dénominateur et ne peuvent plus gouverner la note.
+// (`noterDepuisCouverture`) a été SUPPRIMÉ (P2, règle dure) — ses constantes
+// a/b survivent en archives du fit seulement.
 //
 // RÈGLE MOTEUR ACTUELLE (Pierre 2 — audit §5.1) :
 //   · la note se calcule EXCLUSIVEMENT contre les attendus officiels de la
@@ -74,37 +74,11 @@ export interface ResultatNotation {
   maxPts: number;
 }
 
-/**
- * LEGACY (R2 historique, déprécié par Pierre 2/R6) : note depuis la couverture
- * sur banque d'unité via le fit linéaire. Conservé pour recherche/repasse du
- * harnais 80 copies — INTERDIT dans le chemin de notation produit : le
- * dénominateur de production est le registre des attendus.
- * @deprecated utiliser noterExerciceCalibre (attendus obligatoires).
- */
-export function noterDepuisCouverture(
-  couverture: number,
-  sujet: 1 | 2,
-  exercice: 1 | 2 | 3
-): ResultatNotation {
-  const g = uniteDeGroupe(sujet, exercice);
-  if (!g) return { uniteId: 0, mode: 'calibre', couverture, points: 0, maxPts: 0 };
-  // RÈGLE MOTEUR : une réponse sans AUCUN mot-clé de l'unité = 0 point.
-  // (les interceptes b>0 du fit encodent la générosité du correcteur humain du
-  // corpus sur les copies à faible substance — ils ne doivent jamais payer une
-  // copie vide ; le saut à la première occurrence de mot-clé reproduit le
-  // « crédit d'effort » constaté chez le correcteur humain : décile 2 ≈ 3,3 pts).
-  if (couverture === 0) {
-    return { uniteId: g.uniteId, mode: 'calibre', couverture, points: 0, maxPts: g.maxPts };
-  }
-  const brut = g.a * couverture + g.b;
-  return {
-    uniteId: g.uniteId,
-    mode: 'calibre',
-    couverture,
-    points: Math.min(g.maxPts, Math.max(0, brut)),
-    maxPts: g.maxPts,
-  };
-}
+// P2 (règle dure, 2026-09-19) : noterDepuisCouverture (fit a·cov+b sur la banque
+// d'unité) est SUPPRIMÉE du code — il n'existe plus AUCUN chemin de note hors
+// attendus. Les constantes a/b restent dans CALIBRATION_BAC2025 uniquement comme
+// archives du fit 80 copies et mapping d'unité (uniteDeGroupe) ; le script de
+// recherche scripts/recalibrer-copiees.ts recalcule le fit lui-même.
 
 
 
@@ -170,26 +144,10 @@ export interface NoteCalibree extends ResultatNotation {
  * négations — integriteCopie.ts) ; le crédit du barème officiel reste
  * affiché en diagnostic (jamais additionné).
  */
-const RE_LATIN_PUR = /^[a-z0-9-]+$/;
-const RE_CHIFFRES_PUR = /^\d+$/;
-const echapper = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-
-/**
- * Présence d'une forme dans le texte normalisé (audit C5 — faux positifs de
- * sous-chaînes). Formes ARABES : sous-chaîne (pas de frontières fiables).
- * Formes LATINES : frontières = pas de LETTRE adjacente (les chiffres passent :
- * « 2Pi » crédite Pi) — « co2 » ne crédite plus la forme « o2 », « ARNm » ne
- * crédite plus « arn », « Edaravone » ne crédite plus « eda ».
- * Formes CHIFFRES pures : frontière alphanumérique complète (« 98 » ∉ « 1982 »).
- * Contrat : BOOLEAN strict (true/false) — jamais un index (0 est falsy sous
- * Array.some, piège qui a coûté une passe de débogage : 0 = « trouvé »).
- */
-export function formePresente(norm: string, forme: string): boolean {
-  if (!RE_LATIN_PUR.test(forme)) return norm.includes(forme);
-  const gauche = RE_CHIFFRES_PUR.test(forme) ? '(?<![a-z0-9])' : '(?<![a-z])';
-  const droite = RE_CHIFFRES_PUR.test(forme) ? '(?![a-z0-9])' : '(?![a-z])';
-  return new RegExp(`${gauche}${echapper(forme)}${droite}`).test(norm);
-}
+// formePresente vit dans lib/validation (partagée avec le diagnostic barème —
+// P2 : aucun matching par substring nu dans le produit).
+import { formePresente } from '../../lib/validation/formePresente';
+export { formePresente };
 
 export function noterExerciceCalibre(
   reponse: string,

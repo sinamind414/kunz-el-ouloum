@@ -7,9 +7,7 @@
 
 import { describe, expect, it } from 'vitest';
 import {
-  CALIBRATION_BAC2025,
   formePresente,
-  noterDepuisCouverture,
   noterCopieCalibree,
   noterExerciceCalibre,
   uniteDeGroupe,
@@ -199,12 +197,10 @@ describe('R6 — contrôles positifs : les réponses modèle de Meftah', () => {
   });
 });
 
-describe('LEGACY — noterDepuisCouverture (déprécié, gelé pour recherche)', () => {
-  it('ancres de régression (fit 80 copies, pleine précision) — inchangées', () => {
-    expect(noterDepuisCouverture(0, 1, 1).points).toBe(0);
-    const g = CALIBRATION_BAC2025[0]!;
-    const brut = g.a * 0.2 + g.b;
-    expect(noterDepuisCouverture(0.2, 1, 1).points).toBe(Math.min(g.maxPts, Math.max(0, brut)));
+describe('P2 — le chemin legacy est SUPPRIMÉ (règle dure : aucune note hors attendus)', () => {
+  it('noterDepuisCouverture n existe plus', async () => {
+    const mod = await import('./calibrationBac2025');
+    expect((mod as unknown as Record<string, unknown>).noterDepuisCouverture).toBeUndefined();
   });
 });
 

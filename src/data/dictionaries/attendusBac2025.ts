@@ -39,7 +39,7 @@
 //
 // La calibration linéaire (a·cov+b sur banque d'unité) N'EST PLUS le chemin
 // de notation : ses constantes étaient ajustées sur l'ANCIEN dénominateur ;
-// `noterDepuisCouverture` reste exporté en LEGACY pour recherche/tests.
+// le chemin legacy `noterDepuisCouverture` a été supprimé du code (P2).
 
 import { normalizeAr } from '../../lib/validation/normalizeAr';
 import { ATTENDUS_BAREME, entitesDansTexte } from './dictionnaireCorrecteur';
