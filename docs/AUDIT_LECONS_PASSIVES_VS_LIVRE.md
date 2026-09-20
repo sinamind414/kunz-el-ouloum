@@ -154,6 +154,37 @@ Les objectifs des leçons passives utilisent des **masdar (noms d'action)** :
   défi BAC `lt_migmatite_thickening` + Gold Summary `adaptation_pedagogique`
   (source : manuel p.319-321, non relu par enseignant) + schéma 94 + entrée U11 en tête de séquence.
 
+### ✅ Erratum appliqué (2026-09-20) — objectifs HTML + 3 gaps de contenu (audit de qualité)
+
+**A. Objectifs : les HTML n'avaient JAMAIS été convertis** — l'alignement masdar→impératif
+du 19/09 avait touché uniquement `src/lessonData.ts` (registre app) ; les blocs
+« 🎯 الهدف العلمي » des 23 fichiers HTML contenaient encore des masdars dans **22/25
+fichiers** (44 blocs). **Corrigé le 20/09** : 33 remplacements (blocs simples) + 23 blocs
+de coordinations (`والتمييز`→`وميّز`, `وإثبات`→`وبيّن`, `وتفسير`→`وفسّر`, `وتحديد`→`وحدّد`,
+`تعريف`→`عرّف`…) + micro-fixes phase19/20 (phrases composées réécrites intégralement)
++ `لبيّن`→`لإظهار`. **Compteur final (strict, normalisé chadda) : 0 masdar restant.**
+Mapping utilisé : إثبات→بيّن · تحديد→حدّد · توضيح→وضّح · مقارنة→قارن · تمييز→ميّز ·
+تفسير→فسّر · فهم→وضّح · تعريف→عرّف · استغلال→استغلّ · بناء→أنشئ (réflexes canoniques).
+
+**B. Gaps de contenu corrigés** (vs synthèses النشاط du livre, audit terme-à-terme du 20/09) :
+- **U1§3** : bloc **نضج ARNm** ajouté à `lecon_transcription.html` (step3, encadré `bac-tip`) :
+  ARNm ما قبل الرسول (pre-messenger) → introns/قطع غير دالة → exons/قطع دالة → ARNm
+  ناضج أقصر → حقيقيات النواة seulement. Source : synthèse النشاط 3 du livre (p.14-16).
+  ⚠️ Respect de la règle 5 : ajouté **dans le corps** (encadré), PAS dans titre/objectif.
+- **U4§8** : bloc **الثيموس + الانتقاء الذاتي (Sélection clonale)** ajouté à
+  `phase7_chapitres_13_14.html` (avant le bloc VIH). Source : النشاط 8 (مصدر LTc).
+- **U5§2** : encadré **Patch-clamp** ajouté à `phase9_chapitres_17_18.html` (section ACh).
+  Source : النشاط 2 du livre (تقنية رسمية).
+
+**C. Audit lexical leçons↔synthèses (nouveau)** : couverture terme-à-terme
+**46/46 blocs < 45 %** (médiane ≈ 31 %) même contre la bonne sous-leçon → les leçons
+sont des reconstructions pédagogiques, pas des reprises : synonymies systématiques
+(السيتوبلازم↔الهيولى, Calvin↔كالفن, Glycolyse↔التحلل السكري…) + vrais gaps traités en B.
+
+**D. Resté ouvert (20/09)** : غولجي/secretion (U1§5, 1×) · VIH/SIDA étoffage complet
+(U4§11, 2×) · exemples insuline/mioglobine (U2§3) · sources enzymes (U3§1) ·
+`الكتاب_المصحح_v1.0.md` couvre ~50 % du livre (163k/326k car.) — D3 s'appuie sur l'OCR.
+
 ## 6. Reste à faire (recommandations)
 
 1. ~~**Créer la leçon manquante U11 §8**~~ ✅ **FAIT (ophiolite)** — déjà couverte
