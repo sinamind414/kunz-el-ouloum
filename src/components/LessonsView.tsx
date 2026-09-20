@@ -7,7 +7,7 @@
 //      la séquence expose la clé de base puis la clé `_2` — une leçon affichée
 //      à la fois (isolation par sliceLessonHtml).
 import { useState } from 'react';
-import { BookOpen, ChevronLeft, Zap, MonitorPlay, Network, FlaskConical, Leaf, Globe2, GraduationCap } from 'lucide-react';
+import { BookOpen, ChevronLeft, Zap, MonitorPlay, Network, FlaskConical, Leaf, Globe2, GraduationCap, BookMarked } from 'lucide-react';
 import HtmlLessonViewer from './HtmlLessonViewer';
 import ActiveLessonView from './ActiveLessonView';
 import { INITIAL_UNITS } from '../data';
@@ -16,6 +16,7 @@ import { HTML_LESSON_ORDER } from '../data/htmlLessonProgression';
 import { sourceLivre, badgeSource, sourceAmbigue } from '../data/bookIndex';
 import QcmLivreView from './QcmLivreView';
 import BacExamView from './BacExamView';
+import OkachaView from './OkachaView';
 import {
   PASSIVE_DOMAINS,
   hasHtmlFile,
@@ -67,7 +68,7 @@ const unitOfActiveLesson = (key: string): number =>
   INITIAL_UNITS.find((u) => getActiveLessonKeysForUnit(u.id).includes(key))?.id ?? 1;
 
 export default function LessonsView() {
-  const [mode, setMode] = useState<LessonMode | 'qcm' | 'bac' | null>(null);
+  const [mode, setMode] = useState<LessonMode | 'qcm' | 'bac' | 'okacha' | null>(null);
   const [selectedUnit, setSelectedUnit] = useState<number>(1);
   const [selectedDomain, setSelectedDomain] = useState<number | null>(null);
   const [selectedActiveLesson, setSelectedActiveLesson] = useState<string | null>(null);
@@ -109,6 +110,11 @@ export default function LessonsView() {
   // ----- Écran 0 bis : tests bac (PROGRAMME NATIONAL, injection vérifiée) -----
   if (mode === 'bac') {
     return <BacExamView onBack={() => setMode(null)} />;
+  }
+
+  // ----- Écran 0 ter : بنك الحفظ (عكاشة, injection mécanique filtrée) -----
+  if (mode === 'okacha') {
+    return <OkachaView onBack={() => setMode(null)} />;
   }
 
   // ----- Écran 1 : les deux icônes (Leçon Active / Leçon Passive) -----
@@ -178,6 +184,19 @@ export default function LessonsView() {
             <span className="block text-lg font-black text-gray-800 dark:text-gray-100">اختبار بكالوريا</span>
             <span className="block text-xs font-bold text-gray-500 dark:text-gray-400 leading-relaxed">
               3 اختبارات كاملة (20 نقطة) — تصحيح ذاتي بسلّم التنقيط
+            </span>
+          </button>
+          {/* بنك الحفظ عكاشة */}
+          <button
+            onClick={() => setMode('okacha')}
+            className="group p-6 rounded-3xl border-2 border-blue-200 dark:border-blue-900/50 bg-gradient-to-b from-blue-50 to-white dark:from-blue-950/30 dark:to-[#161c18] hover:border-blue-500 hover:shadow-lg transition-all text-center space-y-3"
+          >
+            <span className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-[#1d4ed8] text-white shadow-md group-hover:scale-105 transition-transform">
+              <BookMarked className="w-8 h-8" />
+            </span>
+            <span className="block text-lg font-black text-gray-800 dark:text-gray-100">بنك الحفظ</span>
+            <span className="block text-xs font-bold text-gray-500 dark:text-gray-400 leading-relaxed">
+              كل ما يجب حفظه — ملخصات مرقّمة لكل وحدة (عكاشة)
             </span>
           </button>
         </div>
