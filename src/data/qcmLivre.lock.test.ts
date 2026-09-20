@@ -86,6 +86,14 @@ describe('hygiène de la banque qcmLivre (mêmes règles que l audit)', () => {
     }
   });
 
+  it('terminologie tectonique : jamais ظهيرة/ظهيره (forme absente du livre ; sing. = الظهرة, pl. = الظهرات)', () => {
+    for (const q of QCM_CHAPITRES) {
+      const t = norm([q.question, ...q.options, q.explication].join(' '));
+      // norm(ة→ه) : الظهيرة et ظهيره deviennent tous deux « ظهيره »
+      expect(t.includes('ظهيره'), `C${q.chapitre} : forme ظهيرة interdite (livre : الظهرة sing.)`).toBe(false);
+    }
+  });
+
   it('chaque QCM a un visuel ET une explication non vides', () => {
     for (const q of QCM_CHAPITRES) {
       expect(q.schema.length, `C${q.chapitre} : schema manquant`).toBeGreaterThan(10);
