@@ -1,6 +1,6 @@
 // qcmBilan.lock.test.ts — verrous du mode « اختبار تشخيصي شامل ».
 // Le bilan ne crée AUCUN contenu : il puise mécaniquement dans les deux banques
-// déjà verrouillées (50 quiz leçons + 28 QCM livre = 78 ; single-path booléen exclu).
+// déjà verrouillées (50 quiz leçons + 39 QCM livre = 89 ; single-path booléen exclu).
 // Fige : taille et répartition du pool (D1=54, D2=14, D3=10 — phase21→D3 par lecture du contenu),
 // l'hygiène de chaque item, et le DÉTERMINISME du tirage (5/domaine, sans doublon).
 
@@ -8,18 +8,18 @@ import { describe, expect, it } from 'vitest';
 import { POOL, tirageBilan, type Domaine } from './qcmBilan';
 
 describe('pool unifié du bilan (réutilisation mécanique, zéro contenu nouveau)', () => {
-  it('78 items = 50 quiz leçons + 28 QCM livre', () => {
+  it('89 items = 50 quiz leçons + 39 QCM livre (28 R4 + 11 R6 bis)', () => {
     expect(POOL.filter((q) => q.source === 'lecon')).toHaveLength(50);
-    expect(POOL.filter((q) => q.source === 'livre')).toHaveLength(28);
-    expect(POOL).toHaveLength(78);
+    expect(POOL.filter((q) => q.source === 'livre')).toHaveLength(39);
+    expect(POOL).toHaveLength(89);
   });
 
-  it('répartition par domaine figée : D1=54, D2=14, D3=10', () => {
+  it('répartition par domaine figée : D1=56, D2=16, D3=17', () => {
     const par: Record<number, number> = { 1: 0, 2: 0, 3: 0 };
     for (const q of POOL) par[q.domaine]++;
-    expect(par[1]).toBe(54);
-    expect(par[2]).toBe(14);
-    expect(par[3]).toBe(10);
+    expect(par[1]).toBe(56);
+    expect(par[2]).toBe(16);
+    expect(par[3]).toBe(17);
   });
 
   it('ids uniques, question non vide, options 3+, index de réponse valide', () => {
@@ -32,7 +32,7 @@ describe('pool unifié du bilan (réutilisation mécanique, zéro contenu nouvea
     }
   });
 
-  it('les 28 items livre : chapitre exact, schéma SVG, explication', () => {
+  it('les 39 items livre : chapitre exact, schéma SVG, explication', () => {
     for (const q of POOL.filter((x) => x.source === 'livre')) {
       expect(q.chapitre, q.id).toBeDefined();
       expect(q.schema?.endsWith('.svg'), q.id).toBe(true);
