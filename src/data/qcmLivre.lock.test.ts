@@ -1,7 +1,7 @@
 // qcmLivre.lock.test.ts — verrous de la COUVERTURE QCM DU LIVRE (demande
 // propriétaire 2026-09-20 : « les QCM couvrent la totalité des chapitres avec
 // schémas »). Fige : la couverture 55/55 (39 chapitres via les quiz de leçons
-// + 16 via qcmLivre.ts — la liste figée des manquants de l'audit R4), l'hygiène
+// + 16 via qcmLivre.ts (audit R4) + épaississement R6 bis : 11 QCM D3/seconds → 39, l'hygiène
 // de la banque (options uniques, réponse valide, pas de fuite), et l'EXISTENCE
 // DE CHAQUE SCHÉMA sur le disque (un visuel 404 = test rouge).
 
@@ -24,10 +24,11 @@ const CHAPITRES_VIA_LECONS = [
 const norm = (s: string) => normalizeAr(s);
 
 describe('couverture QCM — la totalité des 55 chapitres du livre', () => {
-  it('la banque qcmLivre couvre EXACTEMENT les 16 chapitres manquants (audit R4)', () => {
+  it('la banque couvre les 16 chapitres manquants (audit R4) + les 6 D3 épaissis (R6 bis)', () => {
     const manquantsAudit = [1, 13, 17, 18, 20, 22, 23, 24, 25, 26, 31, 35, 36, 49, 50, 54];
+    const d3Epais = [42, 47, 48, 52, 53, 55]; // R6 bis : C52×2, les autres ×1
     const couvertsBanque = [...new Set(QCM_CHAPITRES.map((q) => q.chapitre))].sort((a, b) => a - b);
-    expect(couvertsBanque).toEqual(manquantsAudit);
+    expect(couvertsBanque).toEqual([...manquantsAudit, ...d3Epais].sort((a, b) => a - b));
   });
 
   it('couverture totale : les 55 chapitres ont au moins un QCM (leçons + banque)', () => {
@@ -35,12 +36,12 @@ describe('couverture QCM — la totalité des 55 chapitres du livre', () => {
     expect([...tous].sort((a, b) => a - b)).toEqual(Array.from({ length: 55 }, (_, i) => i + 1));
   });
 
-  it('chaque chapitre de la banque a 1 à 2 QCM ; total figé = 28', () => {
-    expect(QCM_CHAPITRES).toHaveLength(28);
+  it('chaque chapitre de la banque a 1 à 2 QCM ; total figé = 39 (28 R4 + 11 R6 bis)', () => {
+    expect(QCM_CHAPITRES).toHaveLength(39);
     const par = new Map<number, number>();
     for (const q of QCM_CHAPITRES) par.set(q.chapitre, (par.get(q.chapitre) ?? 0) + 1);
     for (const [, n] of par) expect(n).toBeLessThanOrEqual(2);
-    expect(par.size).toBe(16);
+    expect(par.size).toBe(22);
   });
 
   it('les numéros de chapitre existent dans l index et les titres correspondent', () => {
