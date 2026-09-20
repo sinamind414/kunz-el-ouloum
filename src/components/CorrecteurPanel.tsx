@@ -72,12 +72,9 @@ export default function CorrecteurPanel({
       obligatoire: (() => {
         const g = GROUPES_2025.find((x) => `${x.sujet}-${x.exercice}` === groupeId);
         if (!g) return null;
-        let note: NoteCalibree | null = null;
-        try {
-          note = noterExerciceCalibre(text, g.sujet, g.exercice);
-        } catch {
-          note = null;
-        }
+        // P2 (règle dure) : pas de try/catch — un groupe sans attendus doit
+        // faire ÉCHOUER bruyamment (jamais une note silencieusement absente).
+        const note: NoteCalibree = noterExerciceCalibre(text, g.sujet, g.exercice);
         return note;
       })(),
     };
