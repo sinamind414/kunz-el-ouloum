@@ -18,6 +18,7 @@
 import { Pool, PoolClient } from 'pg';
 import fs from 'node:fs';
 import type { Student, ProductionEntry, ActivityEntry, ResetCode, Teacher, DashboardStudentRow } from './store';
+import { calculeActivite } from './activite';
 
 const SCHEMA = `
 CREATE TABLE IF NOT EXISTS students (
@@ -387,7 +388,7 @@ export class PostgresStore {
 
   // ── Tableau de bord enseignant ──────────────────────────
   /** Même contrat que SqliteStore.dashboardRows() (mêmes agrégats). */
-  async dashboardRows(): Promise<DashboardStudentRow[]> {
+  async dashboardRows(maintenant: number = Date.now()): Promise<DashboardStudentRow[]> {
     const stats = await this.pool.query(`
       SELECT s.id, s.name, s.email,
         COALESCE(e.productions, 0)::int AS productions,
@@ -414,11 +415,11 @@ export class PostgresStore {
     const actRows = await this.pool.query(
       'SELECT id, student_id, type, payload_json, created_at FROM activities ORDER BY student_id',
     );
-    return assembleDashboard(stats.rows, errRows.rows, actRows.rows);
+    return assembleDashboard(stats.rows, errRows.rows, actRows.rows, maintenant);
   }
 
   /** Itérateur CSV — pages keyset (s.id ASC) + agrégats LATERAL par élève. */
-  async *iterateExportRows(studentId?: string): AsyncIterableIterator<{ id: string; name: string; email: string; productions: number; avgIcm: number; lastProduction: string; topErrors: string }> {
+  async *iterateExportRows(studentId?: string, maintenant: number = Date.now()): AsyncIterableIterator<{ id: string; name: string; email: string; productions: number; avgIcm: number; lastProduction: string; topErrors: string; lastActivity: string | null; actif7j: boolean; actif30j: boolean }> {
     const PAGE = 2000;
     let after: string | null = null;
     for (;;) {
@@ -427,12 +428,17 @@ export class PostgresStore {
       if (studentId) { params.push(studentId); where = 'WHERE s.id = $1'; }
       else if (after !== null) { params.push(after); where = 'WHERE s.id > $1'; }
       const sql = `SELECT s.id, s.name, s.email, s.created_at,
-          COALESCE(e.productions, 0) AS productions, COALESCE(e.avg_icm, 0) AS avg_icm
+          COALESCE(e.productions, 0) AS productions, COALESCE(e.avg_icm, 0) AS avg_icm,
+          e.last_entry, a2.last_act
         FROM students s
         LEFT JOIN LATERAL (
-          SELECT COUNT(*)::int AS productions, AVG(icm) AS avg_icm
+          SELECT COUNT(*)::int AS productions, AVG(icm) AS avg_icm, MAX(en.created_at) AS last_entry
           FROM entries en WHERE en.student_id = s.id
         ) e ON true
+        LEFT JOIN LATERAL (
+          SELECT MAX(ac.created_at) AS last_act
+          FROM activities ac WHERE ac.student_id = s.id
+        ) a2 ON true
         ${where}
         ORDER BY s.id
         ${studentId ? '' : `LIMIT ${PAGE}`}`;
@@ -455,6 +461,10 @@ export class PostgresStore {
       }
       for (const row of r.rows) {
         const sid = String(row.id);
+        const act = calculeActivite(
+          [row.last_entry ? iso(row.last_entry) : null, row.last_act ? iso(row.last_act) : null],
+          maintenant,
+        );
         yield {
           id: sid,
           name: String(row.name),
@@ -463,6 +473,9 @@ export class PostgresStore {
           avgIcm: Math.round(Number(row.avg_icm)),
           lastProduction: iso(row.created_at),
           topErrors: (bySid.get(sid) || []).slice(0, 5).join('; '),
+          lastActivity: act.lastActivity,
+          actif7j: act.actif7j,
+          actif30j: act.actif30j,
         };
       }
       if (studentId || r.rows.length < PAGE) break;
@@ -511,6 +524,7 @@ export function assembleDashboard(
   statsRows: Record<string, unknown>[],
   errRows: { sid: string; tag: string; c: unknown; first: unknown }[],
   actRows: Record<string, unknown>[],
+  maintenant: number = Date.now(),
 ): DashboardStudentRow[] {
   const errorsByStudent = new Map<string, { tag: string; count: number; first: number }[]>();
   for (const r of errRows) {
@@ -527,20 +541,30 @@ export function assembleDashboard(
     actsByStudent.set(sid, arr);
   }
   for (const arr of actsByStudent.values()) arr.sort((a, b) => (a.createdAt < b.createdAt ? 1 : a.createdAt > b.createdAt ? -1 : 0));
-  return statsRows.map((s) => ({
-    id: String(s.id),
-    name: String(s.name),
-    email: String(s.email),
-    productions: Number(s.productions),
-    avgIcm: Math.round(Number(s.avg_icm)),
-    dominantErrors: (errorsByStudent.get(String(s.id)) || [])
-      .sort((a, b) => b.count - a.count || a.first - b.first)
-      .slice(0, 5)
-      .map(({ tag, count }) => ({ tag, count })),
-    lastProduction: s.last_production ? iso(s.last_production) : null,
-    activities: actsByStudent.get(String(s.id)) || [],
-    quizCount: Number(s.quiz_count),
-    missionCount: Number(s.mission_count),
-    avgQuizPercent: s.avg_quiz_percent != null ? Math.round(Number(s.avg_quiz_percent)) : null,
-  }));
+  return statsRows.map((s) => {
+    const acts = actsByStudent.get(String(s.id)) || [];
+    const act = calculeActivite(
+      [s.last_production ? iso(s.last_production) : null, acts[0]?.createdAt ?? null],
+      maintenant,
+    );
+    return {
+      id: String(s.id),
+      name: String(s.name),
+      email: String(s.email),
+      productions: Number(s.productions),
+      avgIcm: Math.round(Number(s.avg_icm)),
+      dominantErrors: (errorsByStudent.get(String(s.id)) || [])
+        .sort((a, b) => b.count - a.count || a.first - b.first)
+        .slice(0, 5)
+        .map(({ tag, count }) => ({ tag, count })),
+      lastProduction: s.last_production ? iso(s.last_production) : null,
+      activities: acts,
+      quizCount: Number(s.quiz_count),
+      missionCount: Number(s.mission_count),
+      avgQuizPercent: s.avg_quiz_percent != null ? Math.round(Number(s.avg_quiz_percent)) : null,
+      lastActivity: act.lastActivity,
+      actif7j: act.actif7j,
+      actif30j: act.actif30j,
+    };
+  });
 }
