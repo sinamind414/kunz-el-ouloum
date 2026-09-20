@@ -13,6 +13,7 @@ import ActiveLessonView from './ActiveLessonView';
 import { INITIAL_UNITS } from '../data';
 import { getUnitLessonSequence } from '../data/unitLessonSequences';
 import { HTML_LESSON_ORDER } from '../data/htmlLessonProgression';
+import { sourceLivre, badgeSource, sourceAmbigue } from '../data/bookIndex';
 import {
   PASSIVE_DOMAINS,
   hasHtmlFile,
@@ -24,6 +25,22 @@ import {
 } from '../data/lessonModes';
 
 const DOMAIN_ICONS = [FlaskConical, Leaf, Globe2];
+
+/**
+ * Badge « source livre officiel » : chapitres + plage de lignes OCR
+ * (data/bookContent.index.json). Absent si aucun appariement prouvé —
+ * ⚠️ si un chapitre reconstruit (en-tête OCR détruit) est couvert.
+ */
+function SourceBadge({ cle, titre }: { cle: string; titre: string }) {
+  const s = sourceLivre(cle, titre);
+  if (!s) return null;
+  return (
+    <span className="block text-[10px] font-bold text-gray-400 dark:text-gray-500 mt-0.5">
+      📖 {badgeSource(s)}
+      {sourceAmbigue(s) ? ' ⚠️' : ''}
+    </span>
+  );
+}
 
 const nextActiveInUnit = (unitId: number, currentKey: string): string | undefined => {
   const keys = getActiveLessonKeysForUnit(unitId);
@@ -176,6 +193,7 @@ export default function LessonsView() {
                       </span>
                       <span className="flex-1 text-sm font-bold text-gray-800 dark:text-gray-100 leading-snug">
                         {getActiveLessonTitle(key)}
+                        <SourceBadge cle={key} titre={getActiveLessonTitle(key)} />
                       </span>
                       <ChevronLeft className="w-4 h-4 text-gray-300 group-hover:text-emerald-500 transition-all shrink-0" />
                     </button>
@@ -281,6 +299,7 @@ export default function LessonsView() {
                     </span>
                     <span className="flex-1 text-sm font-bold text-gray-800 dark:text-gray-100 leading-snug">
                       {getPassiveLessonTitle(key)}
+                      <SourceBadge cle={key} titre={getPassiveLessonTitle(key)} />
                     </span>
                     <ChevronLeft className="w-4 h-4 text-gray-300 group-hover:text-teal-500 transition-all shrink-0" />
                   </button>

@@ -89,6 +89,19 @@ AVANT le filtre (les majuscules latines ADN/pH/LT étaient détruites) ; seuil T
 recalibré ≥47/55 (mesure corrigée ; les 8 titres restants exigent les passes
 OCR du builder — voir verrou `src/data/bookIndex.lock.test.ts`, 8 tests).
 
+**Consommateurs câblés (2026-09-20, soirée)** — `src/data/bookIndex.ts` :
+(1) `sourceLivre(cle, titre)` : leçon → chapitres + plages OCR, appariement
+automatique (exact → composition contiguë → contenance → jetons) + 3 ancres
+documentées ; **42/53 leçons mappées, 11 nulls documentés** (5 leçons
+expérimentales, 3 culture générale hors TDM, 3 sans preuve OCR) — verrou
+`src/data/leconSource.lock.test.ts` (12 tests, liste figée). Badge « 📖 الفصل N ·
+أسطر a–b » (+ ⚠️ si chapitre ambigu) affiché dans LessonsView (cartes actives et
+passives). Décalage programme/livre figé par test : « الظواهر المرتبطة بالغوص »
+séquencée en U9 mais chapitre C51 (U11). (2) `chapitresDeUnite(uniteId)` :
+uniteId 1-11 ↔ (domain, unité LOCALE) de l'index — comptes [5,3,4,11,7,4,6,1,3,3,8]
+= grille, 55 chapitres couverts exactement une fois, calibrationBac2025 vérifiée.
+Suite : 795/795.
+
 ## 4. Ce qui est nécessaire pour exécuter — et le canal qui marche (2026-09-20)
 
 **Inventaire Dropbox du propriétaire** (vérifié via fetcher plateforme) : dossier
