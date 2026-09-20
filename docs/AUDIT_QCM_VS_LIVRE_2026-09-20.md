@@ -98,6 +98,15 @@ d'alignement retenue pour ces cas.
   objectif 'livre' — à garder avec badge**.
 
 ## 5. Recommandations priorisées
+
+> **EXÉCUTION (2026-09-20, après audit)** : R1 fait — 17 distracteurs farces
+> remplacés par des confusions plausibles du même chapitre (Q3×2, Q6, Q12, Q14,
+> Q18×2, Q20, Q26, Q29, Q30×2, Q31, Q33×2, Q38, Q46, Q47 ; bonnes réponses et
+> difficulté inchangées). R2 fait — Q21 réancré sur « العمق 2900 كم » (le nom
+> Gutenberg reste absent du livre) ; الظهرates harmonisé dans les QCM (Q16, Q28).
+> Reste en file : harmoniser الظهيرة dans les TEXTES de cours (10 occurrences,
+> chantier leçons séparé) ; badges R3 ; couverture R4. Verrou étendu à 10 tests
+> (liste des farces interdites + R2).
 1. **R1 — distracteurs** : reprendre les ~20 QCM à distracteurs farces (§3.2).
 2. **R2 — harmonisation lexicale** : dorsal ظهيرة→الظهرات (Q16/27/28) ;
    Gutenberg→profondeur 2900 km (Q21).
