@@ -162,9 +162,37 @@ du 19/09 avait touché uniquement `src/lessonData.ts` (registre app) ; les blocs
 fichiers** (44 blocs). **Corrigé le 20/09** : 33 remplacements (blocs simples) + 23 blocs
 de coordinations (`والتمييز`→`وميّز`, `وإثبات`→`وبيّن`, `وتفسير`→`وفسّر`, `وتحديد`→`وحدّد`,
 `تعريف`→`عرّف`…) + micro-fixes phase19/20 (phrases composées réécrites intégralement)
-+ `لبيّن`→`لإظهار`. **Compteur final (strict, normalisé chadda) : 0 masdar restant.**
++ `لبيّن`→`لإظهار`. ~~**Compteur final (strict, normalisé chadda) : 0 masdar restant.**~~
 Mapping utilisé : إثبات→بيّن · تحديد→حدّد · توضيح→وضّح · مقارنة→قارن · تمييز→ميّز ·
 تفسير→فسّر · فهم→وضّح · تعريف→عرّف · استغلال→استغلّ · بناء→أنشئ (réflexes canoniques).
+
+**A-bis. ⚠️ Erratum de l'erratum (2026-09-20, soir) — la revendication « 0 masdar » était FAUSSE**
+
+La phrase barrée ci-dessus a été écrite **avant mesure complète**. Contre-scan réel :
+**41 masdars objectifs restants** — 10 dans `src/lessonData.ts`, 23 dans
+`src/tutorKnowledge.ts`, 8 dans les HTML (+ 2 occurrences en **prose** `مقارنة` dans
+`tutorKnowledge.ts`, non touchées car hors objectifs). La vague 1 n'avait traité que les
+HTML ; les **deux registres TypeScript de l'app** n'avaient jamais été mesurés.
+
+**Correction vérifiée** : **83 remplacements ciblés** (8 `lessonData.ts` + 66
+`tutorKnowledge.ts` + 9 HTML), appliqués **uniquement à l'intérieur des segments
+d'objectifs** (détection par marqueurs `🎯 الهدف العلمي` / `الهدف الحصري للدرس`), jamais
+en substitution globale de prose. Réparations collatérales réelles : chaîne de
+coordination corrompue `وااااااااااااربطها`→`واربطها` (phase20) · phrase cassée
+`وآلية بيّن الحمض الأميني`→`عرّف الإنزيم وآلية ربط الحمض الأميني` (héritage du passage
+automatique précédent) · coquille `الكرة المذذبة`→`المذنّبة` (phase15).
+
+**Preuve de fiabilité du `0` final** (un scan qui trouve 0 peut être un faux négatif) :
+1. **Sensibilité** : 188 segments d'objectifs réellement scannés (47 + 45 + 96) ;
+2. **Auto-test 9/9 PASS** : 5 cas positifs injectés détectés (`مقارنة`, `استخراج`,
+   `تعريف`, `بناء`, `التمييز`) + 4 négatifs ignorés (impératifs `افهم`, `قارن`,
+   `واربطها` déjà conformes ; terme technique `آلية ربط` en whitelist) ;
+3. `TOTAL_MASDAR=0` après correction, avec `TSC_EXIT=0` et **49 fichiers / 663 tests verts**.
+
+**Découverte structurante** : le libellé `🎯 الهدف العلمي` **n'existe pas dans le livre**
+(0 occurrence) — le manuel porte ses objectifs par les titres `النشاط` (134×) et leurs
+verbes. Ce libellé est donc une **construction éditoriale de l'app**, pas une donnée
+officielle : à traiter comme telle dans toute future traçabilité.
 
 **B. Gaps de contenu corrigés** (vs synthèses النشاط du livre, audit terme-à-terme du 20/09) :
 - **U1§3** : bloc **نضج ARNm** ajouté à `lecon_transcription.html` (step3, encadré `bac-tip`) :
