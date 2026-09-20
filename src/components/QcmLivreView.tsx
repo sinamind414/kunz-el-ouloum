@@ -6,6 +6,7 @@
 import { useMemo, useState } from 'react';
 import { BookOpen, ChevronLeft } from 'lucide-react';
 import { QCM_CHAPITRES } from '../data/qcmLivre';
+import QcmBilanView from './QcmBilanView';
 import { CHAPITRES } from '../data/bookIndex';
 
 interface Props {
@@ -16,6 +17,7 @@ const titreChapitre = (n: number) => CHAPITRES[n - 1]?.titreAr ?? `الفصل ${
 
 export default function QcmLivreView({ onBack }: Props) {
   const [selectedChapter, setSelectedChapter] = useState<number | null>(null);
+  const [bilan, setBilan] = useState(false);
   const [answers, setAnswers] = useState<Record<number, number>>({});
 
   const parUnite = useMemo(() => {
@@ -38,6 +40,10 @@ export default function QcmLivreView({ onBack }: Props) {
   const score = questions.filter((q, i) => answers[i] === q.correct).length;
   const termine = selectedChapter !== null && repondu === questions.length && questions.length > 0;
 
+  if (bilan) {
+    return <QcmBilanView onBack={() => setBilan(false)} />;
+  }
+
   // ----- Écran 1 : unités → chapitres disponibles -----
   if (selectedChapter === null) {
     return (
@@ -54,6 +60,12 @@ export default function QcmLivreView({ onBack }: Props) {
             <BookOpen className="w-5 h-5 text-[#006d37]" />
             اختبار الكتاب — حسب الفصول
           </h2>
+          <button
+            onClick={() => setBilan(true)}
+            className="mr-auto inline-flex items-center gap-2 px-4 py-2 rounded-xl font-black text-sm bg-[#b45309] text-white hover:bg-[#92400e] transition-colors shadow"
+          >
+            🎯 اختبار تشخيصي شامل
+          </button>
         </div>
         <p className="text-xs font-bold text-gray-500 dark:text-gray-400">
           {QCM_CHAPITRES.length} سؤالا يغطي {new Set(QCM_CHAPITRES.map((q) => q.chapitre)).size} فصلا من الكتاب الرسمي — كل سؤال مع مخططه وتفسيره
