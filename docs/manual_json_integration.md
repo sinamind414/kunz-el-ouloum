@@ -69,10 +69,23 @@
   audit, §roadmap 2).
 - **Tests** : couverture TDM ↔ JSON (55/55 chapitres) comme verrou de complétude.
 
-## 4. Ce qui est nécessaire pour exécuter
+## 4. Ce qui est nécessaire pour exécuter — et le canal qui marche (2026-09-20)
 
-Le **texte intégral du livre officiel** via le canal fiable (texte collé dans le
-chat, par lots si besoin) — l'OCR du dépôt (`audit_livre_dump.txt`) et le
-`LIVRE SVT BAC .txt` cité dans l'audit leçons ne sont PAS dans git. Sans ce
-texte, ce contrat reste vide — et c'est volontaire : **un README qui citerait un
-fichier inexistant mentirait**.
+**Inventaire Dropbox du propriétaire** (vérifié via fetcher plateforme) : dossier
+« LIVRE SVT BAC OFFICIEL 2026 » = 1 fichier `LIVRE SVT BAC SCOLAIRE OFFICIEL.pdf`
+(15,3 Mo). **Le sandbox est coupé de Dropbox au niveau réseau** (TLS killé sur
+www.dropbox.com ET dl.dropboxusercontent.com — curl/wget/python). Le fetcher de
+texte de la plateforme voit les pages HTML mais ne peut pas déposer un PDF de
+334 pages sur disque de façon fidèle — et le re-taper depuis des extraits de
+contexte violerait la règle de sourcing.
+
+**Canal validé par l'usage : l'upload GitHub web** (les 40 copies élève sont
+arrivées ainsi sur master, commit 7ba77d4). 15,3 Mo < limite 25 Mo du web UI :
+1. https://github.com/sinamind414/kunz-el-ouloum → « Add file » → « Upload files »
+2. Déposer `LIVRE SVT BAC SCOLAIRE OFFICIEL.pdf` (ou mieux : son export **.txt**,
+   immédiatement greppable)
+3. Prévenir ici → `git fetch` → extraction + validation TDM 55/55 + build du JSON
+   selon les règles dures de la section 2.
+
+Alternatives : texte collé par lots dans le chat (comme le دليل الأستاذ), ou
+nouvel essai de pièce jointe (vérification `ls /home/user/uploads` au tour suivant).
