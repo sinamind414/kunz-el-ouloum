@@ -120,12 +120,45 @@ describe('banque QCM — dette lexicale app/livre MESURÉE et figée', () => {
     // cet état et retirer le badge « hors nomenclature du livre » (audit §4.1).
     expect(present('روبيسكو')).toBe(false); // Q7 (le livre ne nomme pas l'enzyme)
     expect(present('غرانودوريت')).toBe(false); // Q18 (l'andésite est présente)
-    expect(present('غوتنبرغ')).toBe(false); // Q21 (la profondeur 2900 est présente)
+    expect(present('غوتنبرغ')).toBe(false); // Q21 réparée (R2) : le QCM dit العمق 2900 كم ; le terme reste absent du LIVRE
   });
 
   it('divergence dorsale : le livre dit الظهرات, l app dit ظهيرة — état figé', () => {
     expect(present('ظهرات')).toBe(true);
     expect(present('ظهيره')).toBe(false);
+  });
+
+  it('R1 (2026-09-20) : les distracteurs farces historiques ne reviennent pas', () => {
+    const farces = [
+      'النواة وتخرب الـ ADN',
+      'العضلات وتسبب انقباضها',
+      'يتحول التيلاكويد إلى ميتوكندرون',
+      'الخميرة لا تحتوي على إنزيمات',
+      'الشمس تدور حول الأرض',
+      'لا يوجد أي فرق بينهما',
+      'حرارتها تشبه حرارة محرك السيارة',
+      'صخر الغرانيت والكوارتز',
+      'الجبال تتكون من براكين بازلتية حديثة',
+      'الصخر المتحول يتكون في السطح فقط',
+      'عشوائي ومختلط دائماً',
+      'يتجمد فيموت ثم يحيى',
+      'الليف العصبي يموت بعد كل تنبيه',
+    ];
+    const corpus = [...quizLecons, ...quizSinglePath]
+      .map((q) => `${q.question} ${q.options.join(' ')}`)
+      .join(' ');
+    for (const f of farces) {
+      expect(corpus.includes(f), `farce réapparue : « ${f} »`).toBe(false);
+    }
+  });
+
+  it('R2 (2026-09-20) : les QCM disent الظهرات (terme du livre) et s ancrent à 2900 km', () => {
+    const corpus = [...quizLecons, ...quizSinglePath]
+      .map((q) => `${q.question} ${q.options.join(' ')}`)
+      .join(' ');
+    expect(corpus.includes('ظهيره'), 'R2 : الظهيرة est revenu dans un QCM (le livre dit الظهرات)').toBe(false);
+    expect(corpus.includes('غوتنبرغ'), 'R2 : le nom Gutenberg est revenu (le livre : profondeur 2900)').toBe(false);
+    expect(corpus.includes('2900')).toBe(true);
   });
 
   it('les 2 QCM de culture générale (phase22) restent identifiés comme hors-TDM', () => {
