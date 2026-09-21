@@ -136,3 +136,27 @@ couche texte PyMuPDF est localement moins fidèle que l'OCR ingéré, à garder 
 | D2-U8 | ch41 | 4287-4288 | حصيلة sans texte (enchaîne sur les exercices) |
 | D3-U11 | ch54 | 5976-5989 | التقلص + أوفيوليت + مخطط ديناميكية الليتوسفير |
 | **Sans حصيلة** | — | — | **U3, U5, U9, U10** (المخطط التحصيلي/exercices seulement) |
+
+## 10. Injection « pro » dans les leçons passives (GO user, 2026-09-21)
+
+Les 7 حصائل officielles sont injectées dans la **leçon de clôture de chaque unité**
+(carte ambre « 🏛 الحصيلة المعرفية — النص الرسمي للكتاب المدرسي », page du manuel
+citée quand lisible dans l'OCR, lien nav 🏛 après le lien 📝 خلاصة) :
+
+| Leçon de clôture | Unité | Source livre | Page |
+|---|---|---|---|
+| `phase2_chapitres_3_4` | D1-U1 | ch5 (مخطط تركيب البروتين) | ص 34 |
+| `phase3_chapitres_5_6` | D1-U2 | ch8 (روابط ببتيدية, بنية فراغية) | ص 152 |
+| `phase7_chapitres_13_14` | D1-U4 | ch23 (الذات واللاذات) | — |
+| `phase12_chapitres_23_24` | D2-U6 | ch34 (معادلة + بنية الصانعة) | — |
+| `phase14_chapitres_27_28` | D2-U7 | ch39 (3 équations + **tableau 38 ATP**) | ص 222 |
+| `phase15_chapitres_29_30` | D2-U8 | ch41 (الإمداد المستمر من الطاقة) | — |
+| `phase22_chapitres_43_44` | D3-U11 | ch54 (تقلص + أوفيوليت + Orogenèse) | ص 330 |
+
+Présentation pro : équations en cadres LTR, tableau ATP en table HTML stylée,
+notice de transparence (« نص الكتاب بتنسيق قرائي، دون تغيير المعنى »). Les U3/U5/U9/U10
+(sans حصيلة officielle) gardent uniquement nos résumés 📝 — la carte 🏛 n'existe qu'où
+le livre en a une, c'est sa valeur d'autorité.
+
+**Verrou** : resumes.lock.test.ts étendu — 7 cartes `id="hosila"` + marqueurs +
+liens nav + ancrage lexical au livre + le chiffre 38ATP tracé à sa source (l.4154).
