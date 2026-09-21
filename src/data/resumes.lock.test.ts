@@ -37,8 +37,8 @@ describe('couverture : toute leçon rendue a un résumé', () => {
     }
   });
 
-  it('les 19 leçons passives sans résumé hérité ont une entrée', () => {
-    expect(CLES_PASSIVES.length).toBe(19);
+  it('les 25 leçons passives ont une entrée (19 injectées + 6 héritées restructurées É2)', () => {
+    expect(CLES_PASSIVES.length).toBe(25);
     for (const k of CLES_PASSIVES) expect(RESUMES_LECONS[k], k).toBeDefined();
   });
 
@@ -49,9 +49,9 @@ describe('couverture : toute leçon rendue a un résumé', () => {
 });
 
 describe('standard du résumé : simple, borné, structuré', () => {
-  it('39 entrées : objectif ≥ 15 car., 4-6 points ≤ 24 mots, terme bac', () => {
+  it('44 entrées : objectif ≥ 15 car., 4-6 points ≤ 24 mots, terme bac', () => {
     const cles = Object.keys(RESUMES_LECONS);
-    expect(cles.length).toBe(39);
+    expect(cles.length).toBe(44);
     for (const [k, r] of Object.entries(RESUMES_LECONS)) {
       expect(r.objectif.trim().length, `objectif ${k}`).toBeGreaterThanOrEqual(15);
       expect(r.points.length, `nb points ${k}`).toBeGreaterThanOrEqual(4);
@@ -82,7 +82,7 @@ describe('standard du résumé : simple, borné, structuré', () => {
 });
 
 describe('injection dans les surfaces', () => {
-  it('les 19 fichiers passifs contiennent la section + le lien nav + l\'objectif', () => {
+  it('les 25 fichiers passifs contiennent la section + le lien nav + l\'objectif', () => {
     for (const k of CLES_PASSIVES) {
       const html = readFileSync(resolve(__dirname, `../../public/lessons/${k}.html`), 'utf-8');
       expect(html.includes('id="resume"'), `section خلاصة absente de ${k}`).toBe(true);

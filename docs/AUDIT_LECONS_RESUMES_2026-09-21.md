@@ -109,3 +109,22 @@ côtés avec des contenus différents : la phase11 active = مقر ch31-32, la p
 
 **Restant (É2, non bloquant)** : restructurer les 6 résumés hérités au standard
 simple (contenu réel mais dense : 2-4 phrases > 22 mots).
+
+## 7. É2 exécuté — les 6 résumés hérités restructurés (2026-09-21)
+
+Les 6 leçons (lecon_* + phase1/2/3) reçoivent la **même carte standard** (objectif +
+4-6 points + terme bac) juste avant leur تقويم — ancrées livre, vérifiées par le
+même verrou (désormais **44 entrées / 25 passives / 210 points ancrés**).
+
+**Décisions d'É2** :
+- le **contenu hérité dense est conservé** en profondeur (النص العلمي النموذجي =
+  critères de تنقيط bac ; الخلاصة الشاملة = matière comparative) — la carte simple
+  le précède, aucune perte, aucune chirurgie risquée dans les step existants ;
+- **contenu réel, pas slugs** : phase2 enseigne la ترجمة (ch4-5), phase3 la
+  structure-fonction (Anfinsen/HbA, ch6-8) — ancrages contenu-basés ;
+- **mine détectée au passage** : l'OCR du livre est **quasi vide pour ch9 (23 car.),
+  ch10 (39 car.), ch11 (46 car.)** — tout le fond enzymatique du livre est en ch12
+  (17 687 car.). Les ancrages enzymatiques pointent donc ch12. Tâche future possible :
+  ré-ingestion des chapitres enzymatiques du livre (canal upload GitHub validé).
+
+**Couverture finale : 45/45 surfaces avec résumé au standard — uniformité totale.**
