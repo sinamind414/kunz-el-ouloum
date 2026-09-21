@@ -86,10 +86,10 @@ export const TIME_RULE_AR = 'الربع الأول: تَبَصَّر + أدخل 
 export const FINGERS_RITUAL_AR = 'الإصبع ≈ الخطوة 1-2-3-4 تحت الطاولة';
 
 export const SELF_CHECKS = [
-  '٤ هل آخر جملة تُجيب «المطلوب»؟',
-  '٣ هل كل تأكيد له «لأنّ»؟',
-  '٢ هل ذكرت الوثيقة والقيمة والوحدة؟',
-  '١ هل احترمت الفعل؟',
+  '4 هل آخر جملة تُجيب «المطلوب»؟',
+  '3 هل كل تأكيد له «لأنّ»؟',
+  '2 هل ذكرت الوثيقة والقيمة والوحدة؟',
+  '1 هل احترمت الفعل؟',
 ];
 
 export const SWITCH_QUESTION_AR = 'هل الفعل يسمح بـ«لأنّ»؟';
@@ -105,7 +105,7 @@ export function getSwitchForVerb(verbId: string): SwitchState {
 }
 
 export function switchPathAr(verbId: string): string {
-  return getSwitchForVerb(verbId) === 'open' ? '١٢٣٤' : '١٢٤';
+  return getSwitchForVerb(verbId) === 'open' ? '1234' : '124';
 }
 
 export interface ErrorAddress {
@@ -125,10 +125,10 @@ export const ERROR_ADDRESS_MAP: Record<string, '1' | '2' | '3' | '4' | 'switch'>
 
 export function errorAddressAr(addr: '1' | '2' | '3' | '4' | 'switch'): string {
   const map: Record<typeof addr, string> = {
-    1: '١ تَبَصَّر',
-    2: '٢ أدخل',
-    3: '٣ أدر',
-    4: '٤ افتح',
+    1: '1 تَبَصَّر',
+    2: '2 أدخل',
+    3: '3 أدر',
+    4: '4 افتح',
     switch: '🔑 المفتاح',
   };
   return map[addr];

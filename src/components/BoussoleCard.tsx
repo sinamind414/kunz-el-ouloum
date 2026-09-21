@@ -1,13 +1,11 @@
 // src/components/BoussoleCard.tsx
 // Fiche élève · 1 page A4 · arabe seul · à imprimer. V3.1 : double porte ورقة/رأس + صورة/فيلم,
 // preservation estompé si non débloqué, STEP0 et عام/خاص en note. Sans logique lourde.
+// CHIFFRES LATINS PARTOUT (règle app) : texte arabe, chiffres 0-9.
 import {
   VERB_CARDS_V2, STEP_NAMES_AR, STEP_TEMPLATES, StepId, VerbCardV2, Step3Mode,
   MEMORY_TEMPLATES, STEP0_TEMPLATE_AR,
 } from '../data/methodologyEngine';
-
-const AR_DIGITS = ['٠','١','٢','٣','٤','٥','٦','٧','٨','٩'];
-const ar = (n: number) => String(n).split('').map(d => AR_DIGITS[+d]).join('');
 
 const pathAr = (c: VerbCardV2) => c.path.map(String).join(' ← ');
 

@@ -38,10 +38,11 @@ const dashboard = read('src/components/DashboardView.tsx');
 const meftah = read('src/components/MeftahView.tsx');
 const manhajia = read('src/data/meftahManhajia.ts');
 
-// Découpe la fiche : recto = avant la balise de commentaire « الوجه الثاني »
-const versoIdx = html.indexOf('الوجه الثاني');
+// Découpe la fiche : recto = avant le commentaire « <!-- VERSO --> »
+// (marqueur v5.0 ; l'ancien marqueur « الوجه الثاني » appartenait à la fiche v3.x)
+const versoIdx = html.indexOf('<!-- VERSO -->');
 if (versoIdx <= 0) {
-  console.error('✗ impossible de découper le recto/verso de public/miftah.html');
+  console.error('✗ impossible de découper le recto/verso de public/miftah.html (marqueur <!-- VERSO --> absent)');
   process.exit(1);
 }
 const recto = html.slice(0, versoIdx);
@@ -78,37 +79,41 @@ if (errorsBlock) {
   fail('FIVE_COSTLY_ERRORS introuvable dans la spec');
 }
 
-console.log('\n§ Fiche — recto (public/miftah.html)');
-must(recto, '<title>المفتاح · مفتاح المنهجية', 'title : usage + officiel');
-must(recto, '<meta name="description" content="مفتاح المنهجية', 'meta description : officiel');
-must(recto, '<h1>🔑 المفتاح</h1>', 'h1 : nom d’usage seul');
-must(recto, '<div class="official">مفتاح المنهجية</div>', 'sous-titre discret : officiel');
-must(recto, '<b>كنز العلوم</b>', 'marquage de la marque dans le header');
-must(recto, 'مفتاح المنهجية · كنز العلوم · الوجه الأول', 'footer recto : officiel + marque');
-must(recto, 'إجابة بلا رقم سؤال', 'erreur 1 sur le recto');
-must(recto, 'رقم بلا وحدة', 'erreur 2 sur le recto');
-must(recto, 'خاتمة غائبة', 'erreur 3 sur le recto');
-mustNot(recto, 'شجرة نسب بحكم واحد', 'erreur 4 absente du recto');
+console.log('\n§ Fiche v5.0 — recto (public/miftah.html, MARQUE §13bis)');
+must(recto, '<title>المفتاح في منهجية العلوم — v5.0', 'title : fiche v5.0');
+must(recto, '<h1>المفتاح في منهجية العلوم</h1>', 'h1 : nom d’usage');
+must(recto, '<b>كنز العلوم</b>', 'marquage de la marque (signature .app)');
+must(recto, 'الصفحة 1 / 2', 'footer recto paginé');
+must(recto, 'القانون الذهبي للمصحح', 'loi dorée : grille 0.25 / 0.5 d’abord');
+must(recto, '5 نقاط', 'pilier T1 = 5 نقاط');
+must(recto, '7 نقاط', 'pilier T2 = 7 نقاط');
+must(recto, '8 نقاط', 'pilier T3 = 8 نقاط');
+must(recto, 'أَصِف / أُحَلِّل', 'famille 1 (tashkeel normatif)');
+must(recto, 'أُفَسِّر / أُعَلِّل', 'famille 2 (tashkeel normatif)');
+must(recto, 'أَسْتَدِلّ / أُصَادِق', 'famille 3 (tashkeel normatif)');
+must(recto, 'لا يُعيد نص السؤال', 'anti-tautologie v5.0 (remplace « توتولوجي »)');
+mustNot(recto, 'شجرة نسب بحكم واحد', 'arbre à verdict unique retiré du recto (arbitrage 2)');
 mustNot(recto, 'السنّ 0', '« السنّ 0 » banni');
 mustNot(recto, 'مفتاح الكنز', 'variante « مفتاح الكنز » bannie');
 mustNot(html, 'MIFTAH', 'latin « MIFTAH » banni de la fiche');
 
-console.log('\n§ Fiche — verso');
-must(verso, '<b>كنز العلوم</b>', 'marquage de la marque dans le header');
-must(verso, 'القفل — اِفهم', 'h3 : « القفل — اِفهم »');
-must(verso, 'القفل · اِفهم', 'chaîne : nœud « القفل · اِفهم »');
-must(verso, 'مفتاح المنهجية · كنز العلوم · الوجه الثاني', 'footer verso : officiel + marque');
-must(verso, 'شجرة نسب بحكم واحد', 'erreur 4 sur le verso');
-must(verso, 'دون «ومنه»', 'erreur 5 sur le verso');
-must(verso, 'start="4"', 'numérotation continue (start=4)');
+console.log('\n§ Fiche v5.0 — verso (المفتاح+ : أربع أدوات)');
+must(verso, '<h1>المفتاح+ — أربع أدوات بعد النواة</h1>', 'h1 : المفتاح+ (أربع أدوات)');
+must(verso, '<span class="n">أ</span> تحليل السند', 'outil أ : analyse du سند');
+must(verso, '<span class="n">ب</span> هندسة النص العلمي', 'outil ب : texte scientifique');
+must(verso, '<span class="n">ج</span> بروتوكول المصادقة على الفرضيات', 'outil ج : protocole فرضيات');
+must(verso, '<span class="n">د</span> قاموس الروابط المنطقية', 'outil د : dictionnaire des connecteurs');
+must(verso, '<span class="n">★</span> شحذ 60 ثانية', 'drill « شحذ 60 ثانية » (badge ★ — Option A, arbitrage 5)');
+must(verso, 'حكم + تركيب يجيب القفل', 'synthèse : le verdict répond au verrou');
+must(verso, 'الصفحة 2 / 2', 'footer verso paginé');
 mustNot(verso, 'السنّ 0', '« السنّ 0 » banni');
+mustNot(verso, 'الحدّاد', 'الحدّاد retiré de la fiche élève (réservé au guide enseignant, arbitrage 3)');
 
-console.log('\n§ Fiche — garde-fou A4 (le recto tient sur une page)');
-must(html, '@page{size:A4', 'print : format A4');
-must(html, 'page-break-before:always', 'verso : saut de page forcé');
-must(html, 'font-size:10.4px', 'print : corps resserré (10.4 px)');
-must(html, 'line-height:1.58', 'print : interlignage resserré');
-must(html, 'width:168px;height:58px', 'print : SVG clé dimensionné pour l’A4');
+console.log('\n§ Fiche v5.0 — garde-fou A4 (2 pages, 210 × 297 mm)');
+must(html, 'width:210mm', 'print : largeur A4 (210 mm)');
+must(html, 'height:297mm', 'print : hauteur A4 (297 mm)');
+must(html, 'page-break-after:always', 'verso : saut de page forcé');
+must(html, '@media print', 'print : bloc @media print présent');
 
 console.log('\n§ Carte React (MiftahCard.tsx) — parité avec la fiche');
 mustNot(card, '>MIFTAH', 'latin « MIFTAH » banni de la carte');
@@ -144,82 +149,67 @@ console.log('\n§ Décisions d\'audit (docs/MARQUE.md §11 — fiche ك, sémant
 must(spec, "goal: '12/12 على ثلاثة أيام مختلفة'", 'spec : DRILL.goal = 3 jours distincts');
 must(spec, 'UNLOCK_RULE', 'spec : constante UNLOCK_RULE');
 mustNot(spec, 'ثلاث مرات متتالية', 'spec : « متتالية » bannie');
-must(verso, '12/12 على ثلاثة أيام مختلفة', 'fiche ك : 3 jours distincts');
-must(verso, 'حامل المفتاح', 'fiche ك : badge liée au drill');
-must(verso, 'تثبيت النواة على ثلاثة أنواع', 'fiche ك : verso débloqué à 3 types');
+// fiche ك (12/12 · badge « حامل المفتاح » · déverrouillage) : retirée de la fiche
+// élève v5.0 — les assertions DRILL restent sur spec + carte React (ci-dessous).
 mustNot(html, 'ثلاث مرات متتالية', 'fiche : « متتالية » bannie');
-must(card, '12/12 على ثلاثة أيام مختلفة', 'carte React : parité fiche ك');
+must(card, '12/12 على ثلاثة أيام مختلفة', 'carte React : drill 12/12 ×3 (app inchangée)');
 
-console.log('\n§ Update 2026-09-06 (docs/MARQUE.md §12) — 3 portes + nouveaux noms des dents');
-must(spec, "s1: 'تَبَصَّر'", 'spec : dent 1 = تَبَصَّر');
-must(spec, "s2: 'أدخل'", 'spec : dent 2 = أدخل');
-must(spec, "s3: 'أدر'", 'spec : dent 3 = أدر');
-must(spec, "s4: 'افتح'", 'spec : dent 4 = افتح');
+console.log('\n§ Update 2026-09-06 (docs/MARQUE.md §12) — 3 portes + dents : l’app garde les dents v3, la fiche v5.0 ne les porte plus (MARQUE §13bis)');
+// Terminologie dents v3 (تَبَصَّر/أدخل/أدر/افتح) : assertions retirées (arbitrages 1-4) —
+// les constantes restent dans la spec pour l’app, sans verrou de marque.
 must(spec, 'KEY_MNEMONIC_AR', 'spec : phrase-mnémotechnique figée');
-must(spec, 'bawaba1: \'البوابة ١ — الوجود (قفل أم لا؟)\'', 'spec : porte 1 = الوجود');
-must(spec, 'bawaba3: \'البوابة ٣ — الحركة (📷 أم 🎬 أم 🔨؟)\'', 'spec : porte 3 = الحركة (3 issues)');
+must(spec, 'bawaba1: \'البوابة 1 — الوجود (قفل أم لا؟)\'', 'spec : porte 1 = الوجود (chiffres latins)');
+must(spec, 'bawaba3: \'البوابة 3 — الحركة (📷 أم 🎬 أم 🔨؟)\'', 'spec : porte 3 = الحركة (3 issues, chiffres latins)');
 must(spec, "smith: { id: 'smith' as const, labelAr: '🔨 الحدّاد'", 'spec : mouvement 🔨 الحدّاد');
-must(recto, '🔍 تَبَصَّر', 'fiche : dent 1 renommée');
-must(recto, '🔓 افتح', 'fiche : dent 4 renommée');
-must(recto, 'البوابة 1 — قفل أصلا؟', 'fiche : porte 1 = l\'existence');
-must(recto, 'عائلتي قبل أن أكتب', 'fiche : ligne famille (reconnaissance, pas une décision)');
-mustNot(recto, 'البوابة 3', 'fiche : 3e case de décision bannie (09-07)');
-must(recto, 'أربع حركات، لا أكثر، وينفتح القفل', 'fiche : mnémonique');
-must(recto, '🔨 الحدّاد', 'fiche : la 3e issue (angle mort corrigé)');
-mustNot(recto, 'اِقْرَأْ', 'fiche : ancien nom 1 banni');
-mustNot(recto, 'اِجْمَعْ', 'fiche : ancien nom 2 banni');
-mustNot(recto, 'اِرْبِطْ', 'fiche : ancien nom 3 banni');
-mustNot(recto, 'اِخْتِمْ', 'fiche : ancien nom 4 banni');
-must(card, '🔍 تَبَصَّر', 'carte : parité dents avec la fiche');
+must(card, '🔍 تَبَصَّر', 'carte : dents v3 (app inchangée)');
 must(card, '🔨 الحدّاد', 'carte : parité 3e issue');
 mustNot(card, 'اِقْرَأْ', 'carte : anciens noms bannis');
-must(compiler, 'البوابة ١ — قفل أصلا؟', 'vue : porte 1 = l\'existence');
-must(compiler, 'البوابة ٣ — أي حركة يطلب هذا القفل؟', 'vue : porte 3 = le mouvement');
+must(compiler, 'البوابة 1 — قفل أصلا؟', 'vue : porte 1 = l’existence (chiffres latins, règle app)');
+must(compiler, 'البوابة 3 — أي حركة يطلب هذا القفل؟', 'vue : porte 3 = le mouvement (chiffres latins, règle app)');
 must(compiler, 'gate3Choice', 'vue : choix ternaire 📷/🎬/🔨 tracé');
-mustNot(recto, 'البوابات الثلاث', 'fiche : titre « 3 portes » banni (09-07)');
-must(recto, 'البوابتان + عائلتي', 'fiche : titre 2 portes + famille (09-07)');
 mustNot(card, 'البوابات الثلاث', 'carte : titre « 3 portes » banni (09-07)');
-must(card, 'عائلتي قبل أن أكتب', 'carte : ligne famille (parité fiche)');
+must(card, 'عائلتي قبل أن أكتب', 'carte : ligne famille');
 must(compiler, '3 بوابات', 'vue : header 3 portes');
 mustNot(compiler, '2 بوابتان', 'vue : « 2 بوابتان » banni');
-console.log('\n§ Addendum 2026-09-07 (docs/MARQUE.md §12bis) — carte 2 portes + famille, noyau 11, dent 1 تَبَصَّر');
-must(recto, '11 éléments', 'fiche : noyau = 11 (dégelé 10→11, explicite)');
-must(card, '11 éléments', 'carte : noyau = 11 (parité fiche)');
-must(verso, 'الحدّاد', 'fiche ك : حدّاد = 3e forme spéciale (verso)');
-must(card, 'الحدّاد', 'carte : حدّad = 3e forme spéciale (parité verso)');
+console.log('\n§ Addendum 2026-09-07 (docs/MARQUE.md §12bis) — fiche v5.0 : noyau en mouvements ; l’app garde la carte v3');
+mustNot(html, '11 éléments', 'fiche v5.0 : plus de noyau à 11 cases (3 piliers × 5 mouvements — §13bis)');
+must(card, '11 éléments', 'carte app : noyau = 11 (inchangée — arbitrages 2-3)');
+mustNot(html, 'الحدّاد', 'fiche v5.0 : الحدّاد retiré (réservé au guide enseignant — arbitrage 3)');
+must(card, 'الحدّاد', 'carte app : الحدّاد = 3e forme spéciale (inchangée)');
 mustNot(recto, 'تعرّف', 'fiche : nom dent 1 (09-06) banni — collision عَرِّفْ');
 mustNot(card, 'تعرّف', 'carte : nom dent 1 (09-06) banni — collision عَرِّفْ');
-console.log('\n§ Addendum 2026-09-07 (docs/MARQUE.md §12ter) — annexe PRO (page 3, amritat, sur demande)');
-must(spec, 'MIFTAH_ANNEXE_AR', 'spec : constante nom annexe');
-must(spec, 'ANNEXE = {', 'spec : contenu annexe centralisé');
-must(spec, 'FOOTER_ANNEXE_AR', 'spec : footer annexe');
-must(spec, "ruleAr: 'لا أبحث عن جواب فقط", 'spec : règle d’or annexe');
-must(verso, 'المفتاح PRO', 'fiche : annexe présente (page 3)');
-must(verso, 'لا أبحث عن جواب فقط', 'fiche : règle d’or (parité spec)');
-must(verso, 'قاعدة حمراء', 'fiche : règle rouge causalité (ذ)');
-must(verso, 'المتغيّر المُختبَر', 'fiche : 4 questions expérience (ر)');
-must(verso, 'نقترح أن', 'fiche : template hypothèse (س)');
-must(verso, 'عند الطلب', 'fiche : distribution sur demande');
-must(recto, 'الوجه الأول — المفتاح (11 عنصرًا)', 'fiche : footer recto réparé 10→11');
-must(verso, '≈ 21', 'fiche : niveau amritat ≈ 21 (annexe)');
-must(card, '{ANNEXE.ruleAr}', 'carte : règle d’or rendue depuis la spec');
-must(card, '{ANNEXE.causalAr}', 'carte : règle rouge rendue depuis la spec');
-must(card, 'FOOTER_ANNEXE_AR', 'carte : footer annexe depuis la spec');
-mustNot(verso, 'علوم الطبيعة والحياة', 'fiche : nom de série ≠ matière banni (régression doc PRO)');
+console.log('\n§ Addendum 2026-09-07 (docs/MARQUE.md §12ter) — annexe PRO : retirée de la fiche élève (dépréciée §13bis)');
+must(spec, 'MIFTAH_ANNEXE_AR', 'spec : constante nom annexe (drapeau mort — app inchangée)');
+must(spec, 'ANNEXE = {', 'spec : contenu annexe centralisé (drapeau mort)');
+must(spec, 'FOOTER_ANNEXE_AR', 'spec : footer annexe (drapeau mort)');
+must(spec, "ruleAr: 'لا أبحث عن جواب فقط", 'spec : règle d’or annexe (drapeau mort)');
+mustNot(html, 'المفتاح PRO', 'fiche : annexe PRO retirée (2 faces, plus de page 3)');
+mustNot(html, 'لا أبحث عن جواب فقط', 'fiche : règle d’or annexe hors fiche élève');
+must(html, 'قاعدة ذهبية', 'fiche : règle d’or v5.0 portée par l’outil أ (analyse ≠ conclusion)');
+must(verso, 'المتغيّر المُختبَر', 'fiche : 4 questions expérience (outil أ)');
+mustNot(html, 'نقترح أن', 'fiche : template hypothèse v3.3 (س) déprécié — v5.0 = protocole de validation');
+mustNot(html, 'عند الطلب', 'fiche : plus de « distribution sur demande » (annexe hors fiche élève)');
+mustNot(html, '11 عنصرًا', 'fiche : footer recto v3.3 « 11 عنصرًا » abandonné (noyau v5.0)');
+mustNot(html, '≈ 21', 'fiche : échelle amritat (annexe) retirée de la fiche élève');
+must(card, '{ANNEXE.ruleAr}', 'carte app : règle d’or rendue depuis la spec (inchangée)');
+must(card, '{ANNEXE.causalAr}', 'carte app : règle rouge rendue depuis la spec (inchangée)');
+must(card, 'FOOTER_ANNEXE_AR', 'carte app : footer annexe depuis la spec (inchangée)');
+mustNot(verso, 'علوم الطبيعة والحياة', 'fiche : matière hors verso (N12 — nommée une fois dans l’en-tête recto)');
+must(recto, 'علوم الطبيعة والحياة', 'fiche recto : matière nommée dans l’en-tête (N12)');
 mustNot(card, 'علوم الطبيعة والحياة', 'carte : nom de série ≠ matière banni');
-must(spec, "hamad: {", 'spec : SPECIAL_FORMS + الحدّاد (parité verso)');
-must(spec, "countAr: '≈ 21'", 'spec : LEVELS amritat ≈ 21 (parité fiche)');
-console.log('\n§ v3.3 (docs/MARQUE.md §12quater) — collision close + import V4.1 au niveau contenu');
-must(spec, "MIFTAH_VERSION = '3.3'", 'spec : version 3.3');
-must(spec, 'TOOTH3_ROUTE_AR', 'spec : route dent 3');
-must(spec, 'GOLDEN_FORMULA_AR', 'spec : formule dorée');
-must(verso, 'معطى ← مقارنة ← علاقة ← تفسير', 'fiche verso : route dent 3 (ز)');
-must(verso, 'تُظهر الوثيقة …، وبمقارنة', 'fiche verso : formule dorée (ز)');
-must(card, '{GOLDEN_FORMULA_AR}', 'carte : formule dorée depuis la spec');
-must(card, '{TOOTH3_ROUTE_AR}', 'carte : route dent 3 depuis la spec');
-must(verso, '3</b> = <b>المعالجة</b>', 'fiche verso : حدّad en 3 phases (données/montage/produit)');
-must(card, '3</b> = <b>المعالجة</b>', 'carte : حدّad 3 phases (parité fiche)');
-must(spec, '3 = المعالجة', 'spec : SPECIAL_FORMS.hamad 3 phases');
+must(spec, "hamad: {", 'spec : SPECIAL_FORMS + الحدّاد (drapeau mort — parité carte)');
+must(spec, "countAr: '≈ 21'", 'spec : LEVELS amritat ≈ 21 (drapeau mort — parité carte)');
+console.log('\n§ v3.3 → v5.0 (docs/MARQUE.md §13bis) — dictionnaire v3.3 déprécié : les 5 mouvements remplacent les 11 cases');
+must(spec, "MIFTAH_VERSION = '5.0'", 'spec : version fiche = 5.0 (§13bis)');
+must(spec, 'TOOTH3_ROUTE_AR', 'spec : route dent 3 (drapeau mort — carte app inchangée)');
+must(spec, 'GOLDEN_FORMULA_AR', 'spec : formule dorée (drapeau mort — carte app inchangée)');
+mustNot(html, 'معطى ← مقارنة ← علاقة ← تفسير', 'fiche v5.0 : route dent 3 (ز) dépréciée (arbitrage 1)');
+mustNot(html, 'تُظهر الوثيقة', 'fiche v5.0 : formule dorée v3.3 dépréciée (arbitrage 1)');
+must(card, '{GOLDEN_FORMULA_AR}', 'carte app : formule dorée depuis la spec (inchangée)');
+must(card, '{TOOTH3_ROUTE_AR}', 'carte app : route dent 3 depuis la spec (inchangée)');
+mustNot(html, '3</b> = <b>المعالجة</b>', 'fiche v5.0 : حدّاد en 3 phases retiré (arbitrage 3)');
+must(card, '3</b> = <b>المعالجة</b>', 'carte app : حدّاد 3 phases (inchangée)');
+must(spec, '3 = المعالجة', 'spec : SPECIAL_FORMS.hamad 3 phases (drapeau mort)');
 mustNot(html, 'V4.1', 'fiche : « V4.1 » banni (version fork non adoptée)');
 mustNot(card, 'V4.1', 'carte : « V4.1 » banni');
 
@@ -250,7 +240,7 @@ if (appUses === 2 && app.includes("? MIFTAH_NAME_OFFICIAL_AR :")) {
 }
 
 console.log('\n§ Versions (M3 — une constante par artefact, zéro littéral dérivé)');
-must(spec, "MIFTAH_VERSION = '3.3'", 'spec : version fiche = 3.3 (constante unique)');
+must(spec, "MIFTAH_VERSION = '5.0'", 'spec : version fiche = 5.0 (constante unique)');
 if (MIFTAH_MANHAJIA_VERSION !== '4.3') fail(`manhajia : MIFTAH_MANHAJIA_VERSION = ${MIFTAH_MANHAJIA_VERSION} (attendu 4.3)`);
 else ok('manhajia : MIFTAH_MANHAJIA_VERSION = 4.3 (constante unique)');
 must(manhajia, "MIFTAH_MANHAJIA_VERSION = '4.3'", 'meftahManhajia : la constante est déclarée');

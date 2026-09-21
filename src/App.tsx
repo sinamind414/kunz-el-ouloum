@@ -31,6 +31,7 @@ import { healSavedFlashcards } from './utils/flashcardsSanitize';
 // Nomenclature figée (docs/MARQUE.md §3) — la rubrique porte le nom officiel de la source
 // unique miftahSpec : aucun littéral dans ce fichier (garde-fou check:miftah §13, 2026-09-15).
 import { MIFTAH_NAME_OFFICIAL_AR } from './data/miftahSpec';
+import { AR_LATN } from './utils/latinDigits';
 
 import SplashView from './components/SplashView';
 import DashboardView from './components/DashboardView';
@@ -395,7 +396,7 @@ export default function App() {
     const updatedHistory = [
       ...progress.quizScoreHistory,
       {
-        date: new Date().toLocaleDateString('ar-DZ'),
+        date: new Date().toLocaleDateString(AR_LATN),
         score,
         total,
         unitTitle: activeUnit.title

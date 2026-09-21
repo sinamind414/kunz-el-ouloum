@@ -47,6 +47,7 @@ import WeeklyReportShareModal from './WeeklyReportShareModal';
 import MethodologyGlobalStats from './MethodologyGlobalStats';
 import StreakCelebrationModal from './StreakCelebrationModal';
 import { playStreakMilestoneSound, playXPGainSound } from '../utils/audio';
+import { AR_LATN, fmtDateLatn, toLatinDigits } from '../utils/latinDigits';
 
 interface StatsViewProps {
   progress: UserProgress;
@@ -77,13 +78,14 @@ export default function StatsView({ progress, units, onNavigate }: StatsViewProp
     const targetDailyXP = 50;
     const targetCompletion = 100;
 
-    // Index réel : date (format stocké ar-DZ) -> XP/questions réel(le)s
+    // Index réel : date (format stocké ar-DZ-u-nu-latn) -> XP/questions réel(le)s.
+    // toLatinDigits : compat avec l'historique déjà stocké en 'ar-DZ' (chiffres ٠-٩).
     const byDate = new Map<string, { xp: number; questions: number }>();
     progress.quizScoreHistory.forEach(q => {
-      const cur = byDate.get(q.date) || { xp: 0, questions: 0 };
+      const cur = byDate.get(toLatinDigits(q.date)) || { xp: 0, questions: 0 };
       cur.xp += q.score * 20;           // règle XP réelle (App.tsx)
       cur.questions += q.total;
-      byDate.set(q.date, cur);
+      byDate.set(toLatinDigits(q.date), cur);
     });
 
     // Fenêtre réelle : les 7 derniers jours (semaine commençant le samedi)
@@ -92,7 +94,7 @@ export default function StatsView({ progress, units, onNavigate }: StatsViewProp
     for (let i = 6; i >= 0; i--) {
       const d = new Date(today);
       d.setDate(today.getDate() - i);
-      const real = byDate.get(d.toLocaleDateString('ar-DZ'));
+      const real = byDate.get(d.toLocaleDateString(AR_LATN));
       realDays.push({ xp: real?.xp ?? 0, questions: real?.questions ?? 0, isToday: i === 0 });
     }
 
@@ -1101,7 +1103,7 @@ export default function StatsView({ progress, units, onNavigate }: StatsViewProp
                           ctx.fillText('المرشد الذكي للبكالوريا', canvas.width - 150, footerY - 10);
                           
                           ctx.font = '10px Arial, sans-serif';
-                          ctx.fillText(`تاريخ الإصدار: ${new Date().toLocaleDateString('ar-DZ')}`, canvas.width - 150, footerY + 15);
+                          ctx.fillText(`تاريخ الإصدار: ${fmtDateLatn(new Date())}`, canvas.width - 150, footerY + 15);
 
                           // Trigger image download
                           const dataUrl = canvas.toDataURL('image/png');
@@ -1248,7 +1250,7 @@ export default function StatsView({ progress, units, onNavigate }: StatsViewProp
                     <div className="text-right space-y-1">
                       <span className="text-[10px] text-gray-400 block font-bold">توقيع ومصادقة:</span>
                       <span className="text-xs font-extrabold text-[#506072] block">المرشد الذكي للبكالوريا</span>
-                      <span className="text-[10px] font-mono text-gray-400 block">تاريخ الإصدار: {new Date().toLocaleDateString('ar-DZ', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
+                      <span className="text-[10px] font-mono text-gray-400 block">تاريخ الإصدار: {fmtDateLatn(new Date(), { year: 'numeric', month: 'long', day: 'numeric' })}</span>
                     </div>
                   </div>
 

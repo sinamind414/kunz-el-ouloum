@@ -20,6 +20,7 @@ import {
   Eye
 } from 'lucide-react';
 import { UserProgress, Unit } from '../types';
+import { fmtDateLatn } from '../utils/latinDigits';
 
 interface WeeklyReportShareModalProps {
   isOpen: boolean;
@@ -365,7 +366,7 @@ export default function WeeklyReportShareModal({
     ctx.fillText('رُصدت الإحصائيات آلياً عبر خوارزمية التكرار المتباعد • SVT BAC 2026', canvas.width / 2, footerY);
 
     const now = new Date();
-    const dateStr = now.toLocaleDateString('ar-DZ', { year: 'numeric', month: 'long', day: 'numeric' });
+    const dateStr = fmtDateLatn(now, { year: 'numeric', month: 'long', day: 'numeric' });
     ctx.fillStyle = currentTheme.subText;
     ctx.font = 'bold 13px sans-serif';
     ctx.fillText(`تاريخ الإصدار: ${dateStr}`, canvas.width / 2, footerY + 28);
@@ -632,7 +633,7 @@ export default function WeeklyReportShareModal({
                       نحو العلامة الكاملة 20/20 في البكالوريا
                     </span>
                     <span className="text-[10px] opacity-70">
-                      {new Date().toLocaleDateString('ar-DZ')}
+                      {fmtDateLatn(new Date())}
                     </span>
                   </div>
 

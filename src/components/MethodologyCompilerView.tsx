@@ -601,7 +601,7 @@ const handleSelectStage = (stage: 1 | 2 | 3 | 4) => {
                      const isMemory = v.id === 'verb_define_v1' || v.id === 'verb_list_v1';
                      const locked = isMemory && !extensionUnlocked;
                      return (
-                     <option key={v.id} value={v.id} disabled={locked}>{v.verbAr}{locked ? ' — 🔒 بعد إتقان ٣ أنواع أسئلة' : ''}</option>
+                     <option key={v.id} value={v.id} disabled={locked}>{v.verbAr}{locked ? ' — 🔒 بعد إتقان 3 أنواع أسئلة' : ''}</option>
                      );
                   })}
                 </select>
@@ -743,7 +743,7 @@ const handleSelectStage = (stage: 1 | 2 | 3 | 4) => {
                 <div className="bg-white dark:bg-[#161c18] p-3 rounded-xl border border-gray-200 dark:border-gray-700 text-sm font-bold">{item.consigne}</div>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                   <div>
-                    <div className="text-[11px] font-bold text-gray-500 mb-1">🚪 البوابة ١ — قفل؟</div>
+                    <div className="text-[11px] font-bold text-gray-500 mb-1">🚪 البوابة 1 — قفل؟</div>
                     <div className="flex gap-1">
                       {([['lock','🔒 قفل'],['no_lock','🧠 لا قفل']] as const).map(([v,l])=>(
                         <button key={v} disabled={p0Shown} onClick={()=> setP0Pick(pk=>({...pk, g1: v}))} className={`px-2 py-1.5 rounded-lg text-xs font-bold border ${btnCls(p0Pick.g1===v, p0Shown && v===item.existence, 'emerald')}`}>{l}</button>
@@ -752,7 +752,7 @@ const handleSelectStage = (stage: 1 | 2 | 3 | 4) => {
                   </div>
                   {p0Pick.g1 === 'lock' && (
                     <div>
-                      <div className="text-[11px] font-bold text-gray-500 mb-1">📥 البوابة ٢ — المصدر؟</div>
+                      <div className="text-[11px] font-bold text-gray-500 mb-1">📥 البوابة 2 — المصدر؟</div>
                       <div className="flex gap-1">
                         {([['document','📄 وثيقة'],['mixed','📄+🧠 مختلط']] as const).map(([v,l])=>(
                           <button key={v} disabled={p0Shown} onClick={()=> setP0Pick(pk=>({...pk, g2: v}))} className={`px-2 py-1.5 rounded-lg text-xs font-bold border ${btnCls(p0Pick.g2===v, p0Shown && v===item.source, 'sky')}`}>{l}</button>
@@ -762,7 +762,7 @@ const handleSelectStage = (stage: 1 | 2 | 3 | 4) => {
                   )}
                   {p0Pick.g1 === 'lock' && p0Pick.g2 && (
                     <div>
-                      <div className="text-[11px] font-bold text-gray-500 mb-1">⚙️ البوابة ٣ — الحركة؟</div>
+                      <div className="text-[11px] font-bold text-gray-500 mb-1">⚙️ البوابة 3 — الحركة؟</div>
                       <div className="flex gap-1">
                         {([['photo','📷'],['film','🎬'],['smith','🔨']] as const).map(([v,l])=>(
                           <button key={v} disabled={p0Shown} onClick={()=> setP0Pick(pk=>({...pk, g3: v}))} className={`px-2 py-1.5 rounded-lg text-xs font-bold border ${btnCls(p0Pick.g3===v, p0Shown && v===item.movement, 'violet')}`}>{l}</button>
@@ -787,9 +787,9 @@ const handleSelectStage = (stage: 1 | 2 | 3 | 4) => {
           {/* V3.1 مصفاة التعليمات — 60s 12 consignes (débloque verso) */}
           <div className="bg-gradient-to-r from-amber-50 to-sky-50 dark:from-amber-950/20 dark:to-sky-950/20 p-4 rounded-2xl border border-amber-200 dark:border-amber-900/40 flex flex-col md:flex-row items-start md:items-center justify-between gap-3">
             <div>
-              <div className="font-black text-sm flex items-center gap-2">🧠 مصفاة التعليمات — ٦٠ ث <span className="text-xs bg-white dark:bg-black/20 px-2 py-0.5 rounded-full border">٣ أيام × ١٢/١٢ → شارة «حامل المفتاح» + المرحلة ٢</span></div>
+              <div className="font-black text-sm flex items-center gap-2">🧠 مصفاة التعليمات — 60 ث <span className="text-xs bg-white dark:bg-black/20 px-2 py-0.5 rounded-full border">3 أيام × 12/12 → شارة «حامل المفتاح» + المرحلة 2</span></div>
               <div className="text-xs text-gray-600 dark:text-gray-400">ورقة أم رأس؟ 🚪 قفل؟ 📥 من أين؟ ⚙️ أي حركة؟ {drillStatus.met ? '✅ ' + drillStatus.badgeAr : `أيام ناجحة: ${drillStatus.perfectDays} / ${drillStatus.goal}`} — الإخفاق لا يصفّر: يؤجل اليوم التالي فقط · الورقة الخلفية: {masteryStatus.met ? '✅ ' + masteryStatus.badgeAr : `إتقان ${masteryStatus.types.length} / ${masteryStatus.goal} أنواع`}</div>
-              <div className="text-[11px] text-gray-500 dark:text-gray-400">تتبدل التعليمات كل يوم (بنك ٦٩) — القاعدة واحدة: احفظ القاعدة لا العناصر</div>
+              <div className="text-[11px] text-gray-500 dark:text-gray-400">تتبدل التعليمات كل يوم (بنك 69) — القاعدة واحدة: احفظ القاعدة لا العناصر</div>
             </div>
             {!drillActive ? (
               <button disabled={!phase0Done} onClick={()=>{setDrillAnswers({}); setDrillGrade(null); setDrillSec(60); setDrillActive(true);}} className={`px-4 py-2 rounded-xl font-bold text-xs shadow ${phase0Done ? 'bg-[#006d37] text-white' : 'bg-gray-300 dark:bg-gray-700 text-gray-500 dark:text-gray-400 cursor-not-allowed'}`}>{phase0Done ? (drillStatus.met ? 'إعادة المصفاة' : 'ابدأ المصفاة') : '🔒 أكمل Phase 0 أولا'}</button>
@@ -850,7 +850,7 @@ const handleSelectStage = (stage: 1 | 2 | 3 | 4) => {
                   <div key={r.c.id} className={`p-1.5 rounded-lg text-[11px] border ${r.correct ? 'bg-emerald-50 dark:bg-emerald-950/30 border-emerald-200 dark:border-emerald-900/40' : 'bg-red-50 dark:bg-red-950/30 border-red-200 dark:border-red-900/40'}`}>
                     <span className="font-bold">{r.correct ? '✓' : '✗'} {r.c.consigne}</span>
                     {!r.correct && (() => {
-                      const fail = [!r.ok1 ? 'البوابة ١' : null, !r.ok2 ? 'البوابة ٢' : null, !r.ok3 ? 'البوابة ٣' : null].filter(Boolean).join(' + ');
+                      const fail = [!r.ok1 ? 'البوابة 1' : null, !r.ok2 ? 'البوابة 2' : null, !r.ok3 ? 'البوابة 3' : null].filter(Boolean).join(' + ');
                       const ok = `${DRILL_LABELS.g1[r.c.existence]} · ${r.c.source ? DRILL_LABELS.g2[r.c.source] : '—'} · ${DRILL_LABELS.g3[r.c.movement]}`;
                       return <span className="block text-gray-500 dark:text-gray-400">الصحيح: {ok} — الخطأ: {fail}</span>;
                     })()}
@@ -922,9 +922,9 @@ const handleSelectStage = (stage: 1 | 2 | 3 | 4) => {
               <div className="bg-white dark:bg-[#161c18] p-5 md:p-6 rounded-2xl border-2 border-amber-300 dark:border-amber-800 shadow-sm space-y-4">
                 <div className="flex items-center gap-2 font-bold text-sm">
                   <Key className="w-5 h-5 text-amber-500" />
-                  <span>🚪 البوابة ١ — قفل أصلا؟</span>
+                  <span>🚪 البوابة 1 — قفل أصلا؟</span>
                 </div>
-                <p className="text-xs text-gray-600 dark:text-gray-400">هل تستند المعطيات إلى وثيقة / شكل / جدول / منحنى / رسم؟ لا ⇒ 🧠 الدُرج مباشرة · نعم ⇒ البوابة ٢</p>
+                <p className="text-xs text-gray-600 dark:text-gray-400">هل تستند المعطيات إلى وثيقة / شكل / جدول / منحنى / رسم؟ لا ⇒ 🧠 الدُرج مباشرة · نعم ⇒ البوابة 2</p>
                 <div className="grid grid-cols-2 gap-3">
                   <button
                     onClick={() => { setSourceGate('paper'); setShowSourceGate(false); setShowGate2(true); setSwitchChoice(null); }}
@@ -949,7 +949,7 @@ const handleSelectStage = (stage: 1 | 2 | 3 | 4) => {
               <div className="bg-white dark:bg-[#161c18] p-5 md:p-6 rounded-2xl border-2 border-sky-300 dark:border-sky-800 shadow-sm space-y-4">
                 <div className="flex items-center gap-2 font-bold text-sm">
                   <Key className="w-5 h-5 text-sky-500" />
-                  <span>📥 البوابة ٢ — من أين آتي بمادة الإدخال؟</span>
+                  <span>📥 البوابة 2 — من أين آتي بمادة الإدخال؟</span>
                 </div>
                 <p className="text-xs text-gray-600 dark:text-gray-400">«ومعلوماتك / ومكتسباتك» مذكورة في السؤال ⇒ مختلط (عمودان) · غير ذلك ⇒ وثيقة فقط</p>
                 <div className="grid grid-cols-2 gap-3">
@@ -977,7 +977,7 @@ const handleSelectStage = (stage: 1 | 2 | 3 | 4) => {
               <div className="bg-white dark:bg-[#161c18] p-5 md:p-6 rounded-2xl border-2 border-violet-300 dark:border-violet-800 shadow-sm space-y-4">
                 <div className="flex items-center gap-2 font-bold text-sm">
                   <Key className="w-5 h-5 text-violet-500" />
-                  <span>⚙️ البوابة ٣ — أي حركة يطلب هذا القفل؟</span>
+                  <span>⚙️ البوابة 3 — أي حركة يطلب هذا القفل؟</span>
                 </div>
                 <p className="text-xs text-gray-600 dark:text-gray-400">📷 وصف واستخراج · 🎬 تفسير ورابط «لأنّ» · 🔨 تصنيع: فرضية / اقتراح / توصية (لا جواب واحد صحيح)</p>
                 <div className="grid grid-cols-3 gap-3">
@@ -1030,7 +1030,7 @@ const handleSelectStage = (stage: 1 | 2 | 3 | 4) => {
             <div className="space-y-3">
               {/* STEP0 — الهدف العام (V3.1) : ligne 0 avant tout */}
               <div className="bg-sky-50 dark:bg-sky-950/20 p-3 rounded-xl border border-sky-200 dark:border-sky-900/40">
-                <label className="text-xs font-black text-sky-800 dark:text-sky-300 block mb-1">الهدف العام ٠ — ماذا أفهم قبل أن أقرأ؟</label>
+                <label className="text-xs font-black text-sky-800 dark:text-sky-300 block mb-1">الهدف العام 0 — ماذا أفهم قبل أن أقرأ؟</label>
                 <input
                   type="text"
                   value={step0Text}
@@ -1299,7 +1299,7 @@ const handleSelectStage = (stage: 1 | 2 | 3 | 4) => {
                           type="text"
                           value={draftSteps}
                           onChange={(e) => setDraftSteps(e.target.value)}
-                          placeholder="المطلوب (≤ ٥ كلمات)"
+                          placeholder="المطلوب (≤ 5 كلمات)"
                           className="bg-black/20 border border-white/20 rounded-lg p-2 text-white placeholder-white/60 text-xs outline-none"
                         />
                         <input
@@ -1739,7 +1739,7 @@ const handleSelectStage = (stage: 1 | 2 | 3 | 4) => {
                   const cls = classifyConclusion(lastSentence, step0Text || '');
                   return (
                     <div className="p-3 rounded-xl bg-sky-50 dark:bg-sky-950/20 border border-sky-200 dark:border-sky-900/40 text-xs">
-                      <span className="font-black">الهدف العام ٠ + الخاتمة — عام أم خاص؟</span>
+                      <span className="font-black">الهدف العام 0 + الخاتمة — عام أم خاص؟</span>
                       <span className="mx-2 px-2 py-0.5 rounded-full bg-white dark:bg-black/20 border text-[11px] font-bold">{cls === 'generic' ? 'عام (يعيد الهدف)' : cls === 'specific' ? 'خاص (يجيب المطلوب)' : 'غير مصنّف'}</span>
                       <span className="text-[11px] text-gray-600 dark:text-gray-400">— إن كانت «خاص» بلا سند من الوثيقة فهي تهويل</span>
                     </div>
@@ -1979,7 +1979,7 @@ const handleSelectStage = (stage: 1 | 2 | 3 | 4) => {
               if (rows.length === 0) return null;
               return (
                 <div className="space-y-2">
-                  <h4 className="font-black text-sm text-gray-700 dark:text-gray-300">الاستقرار على النواة — الإنتاجات الأخيرة (١٠) الخالية من الخطأ النموذجي للفعل</h4>
+                  <h4 className="font-black text-sm text-gray-700 dark:text-gray-300">الاستقرار على النواة — الإنتاجات الأخيرة (10) الخالية من الخطأ النموذجي للفعل</h4>
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
                     {rows.map(({ v, r }) => (
                       <div key={v.id} className="p-2.5 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-black/20">
@@ -2213,7 +2213,7 @@ const handleSelectStage = (stage: 1 | 2 | 3 | 4) => {
             <div className="bg-white dark:bg-[#161c18] p-5 md:p-6 rounded-2xl border border-gray-200 dark:border-gray-800 shadow-sm">
               <h2 className="text-xl md:text-2xl font-black text-gray-900 dark:text-white">المصححة — قائمة التصحيح</h2>
               <p className="text-xs md:text-sm text-gray-500 dark:text-gray-400 mt-1">
-                القاعدة: الآلة تحقّق من الشكل (٣ بوابات) — الأستاذ يضمن المضمون. كل إنتاج «صحيح الشكل» يصل هنا.
+                القاعدة: الآلة تحقّق من الشكل (3 بوابات) — الأستاذ يضمن المضمون. كل إنتاج «صحيح الشكل» يصل هنا.
               </p>
               <div className="flex flex-wrap gap-2 mt-3">
                 <span className="px-3 py-1 rounded-full text-xs font-bold bg-amber-100 dark:bg-amber-950/50 text-amber-800 dark:text-amber-300">بانتظار: {stats.pending}</span>

@@ -10,6 +10,7 @@ import {
   getTeacherApiToken,
   requestTeacherPasswordReset,
 } from '../utils/api';
+import { fmtDateTimeLatn } from '../utils/latinDigits';
 
 interface Props {
   onBack: () => void;
@@ -288,7 +289,7 @@ export default function TeacherDashboardView({ onBack }: Props) {
             <div className="rounded-xl bg-gray-50 dark:bg-[#1b221e] p-3 border border-gray-200 dark:border-gray-700">
               <div className="text-[11px] text-gray-500 dark:text-gray-400 font-bold">آخر نشاط</div>
               <div className="text-sm font-black text-gray-900 dark:text-white">
-                {student?.lastProduction ? new Date(student.lastProduction).toLocaleString('ar-DZ') : '—'}
+                {student?.lastProduction ? fmtDateTimeLatn(new Date(student.lastProduction)) : '—'}
               </div>
             </div>
           </div>
@@ -322,7 +323,7 @@ export default function TeacherDashboardView({ onBack }: Props) {
               <div key={entry.id} className="rounded-xl border border-gray-100 dark:border-gray-800 p-3 space-y-1">
                 <div className="flex items-center justify-between">
                   <span className="text-xs font-black text-gray-900 dark:text-white">ICM {entry.icm}%</span>
-                  <span className="text-[10px] text-gray-500">{new Date(entry.createdAt).toLocaleString('ar-DZ')}</span>
+                  <span className="text-[10px] text-gray-500 tabular-nums" dir="ltr">{fmtDateTimeLatn(new Date(entry.createdAt))}</span>
                 </div>
                 <p className="text-[11px] text-gray-700 dark:text-gray-300 line-clamp-3">{entry.text}</p>
                 {entry.errorTags.length > 0 && (
@@ -402,7 +403,7 @@ export default function TeacherDashboardView({ onBack }: Props) {
               <div className="flex items-center gap-3">
                 <span
                   className={`w-2.5 h-2.5 rounded-full shrink-0 ${student.actif7j ? 'bg-emerald-500' : student.actif30j ? 'bg-amber-400' : 'bg-gray-300 dark:bg-gray-700'}`}
-                  title={student.lastActivity ? `آخر نشاط: ${new Date(student.lastActivity).toLocaleString('ar-DZ')}` : 'لا نشاط مسجل'}
+                  title={student.lastActivity ? `آخر نشاط: ${fmtDateTimeLatn(new Date(student.lastActivity))}` : 'لا نشاط مسجل'}
                 />
                 <div className="text-left">
                   <div className="text-[10px] text-gray-500 font-bold">ICM moyen</div>

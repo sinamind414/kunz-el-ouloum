@@ -13,11 +13,11 @@
 export const PHASE2_FORM_THRESHOLD = 60;
 
 export interface Phase2GateInput {
-  /** 🚪 البوابة ١ — الوجود : l'élève a-t-il bien classé قفل/لا قفل ? null = non évaluée. */
+  /** 🚪 البوابة 1 — الوجود : l'élève a-t-il bien classé قفل/لا قفل ? null = non évaluée. */
   existenceGateOk: boolean | null;
-  /** 📥 البوابة ٢ — المصدر : وثيقة/مختلط bien classée ? null = non évaluée. */
+  /** 📥 البوابة 2 — المصدر : وثيقة/مختلط bien classée ? null = non évaluée. */
   sourceGateOk: boolean | null;
-  /** ⚙️ البوابة ٣ — الحركة : 📷/🎬/🔨 bien classée ? null = non évaluée. */
+  /** ⚙️ البوابة 3 — الحركة : 📷/🎬/🔨 bien classée ? null = non évaluée. */
   movementGateOk: boolean | null;
   /** Scoreur — ICM 0-100. */
   icm: number;
@@ -60,9 +60,9 @@ export function remediationTargets(stepReport: StepLine[]): RemediationTarget[] 
 export function evaluatePhase2(inp: Phase2GateInput): Phase2Verdict {
   // Update 2026-09-06 (MARQUE §12) : TROIS portes de classification + la forme.
   const gates: Phase2GateResult[] = [
-    { id: 'existence', labelAr: 'البوابة ١ — الوجود (قفل؟)', passed: inp.existenceGateOk },
-    { id: 'source', labelAr: 'البوابة ٢ — المصدر (وثيقة/مختلط)', passed: inp.sourceGateOk },
-    { id: 'movement', labelAr: 'البوابة ٣ — الحركة (📷/🎬/🔨)', passed: inp.movementGateOk },
+    { id: 'existence', labelAr: 'البوابة 1 — الوجود (قفل؟)', passed: inp.existenceGateOk },
+    { id: 'source', labelAr: 'البوابة 2 — المصدر (وثيقة/مختلط)', passed: inp.sourceGateOk },
+    { id: 'movement', labelAr: 'البوابة 3 — الحركة (📷/🎬/🔨)', passed: inp.movementGateOk },
     {
       id: 'forme',
       labelAr: `البنية (ICM ≥ ${PHASE2_FORM_THRESHOLD} بلا الخطأ النموذجي)`,

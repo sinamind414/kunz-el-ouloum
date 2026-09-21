@@ -11,6 +11,7 @@ import { listeGroupesBac2025, attendusDeGroupe } from '../data/dictionaries/atte
 import { noterCopieCalibree } from '../data/dictionaries/calibrationBac2025';
 import SectionObligatoire from './SectionObligatoire';
 import { logExamAttempt, getExamAttempts, getExamStats, clearExamLog, type ExamAttempt } from '../utils/examLog';
+import { fmtDateLatn } from '../utils/latinDigits';
 
 const GROUPES = listeGroupesBac2025();
 
@@ -142,7 +143,7 @@ export default function Bac2025ExamView({ onClose }: { onClose: () => void }) {
                     <div className="min-w-0 flex-1">
                       <p className="text-[11px] font-black text-gray-700 dark:text-gray-300">
                         الموضوع {a.sujet === 1 ? 'الأول' : 'الثاني'}
-                        <span className="font-bold text-gray-400"> · {new Date(a.dateISO).toLocaleDateString('ar-DZ')}</span>
+                        <span className="font-bold text-gray-400"> · {fmtDateLatn(new Date(a.dateISO))}</span>
                       </p>
                       <div className="flex gap-1 mt-1" aria-label={`التمارين: ${a.exercices.map((e) => e.points + '/' + e.maxPts).join(' · ')}`}>
                         {a.exercices.map((e) => (

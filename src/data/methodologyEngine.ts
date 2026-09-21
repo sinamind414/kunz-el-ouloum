@@ -259,9 +259,9 @@ export type SourceGate = 'paper' | 'memory'; // compat — = l'existence : lock 
 
 // ═══════════════════════════════════════════════════════════════════════════
 // Update 2026-09-06 (docs/MARQUE.md §12) — TROIS PORTES, cascade :
-//   🚪 البوابة ١ — الوجود : قفل أصلا؟ (وثيقة؟) → لا قفل ⇒ 🧠 دُرج المعرفة (fin)
-//   📥 البوابة ٢ — المصدر : من أين مادة الإدخال؟ وثيقة فقط / مختلط (+معلوماتك/مكتسباتك)
-//   ⚙️ البوابة ٣ — الحركة : أي حركة يطلب القفل؟ 📷 صورة / 🎬 فيلم / 🔨 حدّاد (NOUVEAU)
+//   🚪 البوابة 1 — الوجود : قفل أصلا؟ (وثيقة؟) → لا قفل ⇒ 🧠 دُرج المعرفة (fin)
+//   📥 البوابة 2 — المصدر : من أين مادة الإدخال؟ وثيقة فقط / مختلط (+معلوماتك/مكتسباتك)
+//   ⚙️ البوابة 3 — الحركة : أي حركة يطلب القفل؟ 📷 صورة / 🎬 فيلم / 🔨 حدّاد (NOUVEAU)
 // Le 🔨 حدّاد (اقترح/برر/ناقض/قدّم حلا) était l'angle mort du modèle 2 portes :
 // prouvé 6× sur les sujets BAC 2025 (MARQUE §12).
 // ═══════════════════════════════════════════════════════════════════════════
@@ -272,16 +272,16 @@ export type Movement = 'photo' | 'film' | 'smith';// ⚙️ 📷 / 🎬 / 🔨
 const DOC_KEYWORDS_RE = /(وثيق|شكل|جدول|منحن|رسم|صورة|سند|بيان|مخطط)/;
 const MIXED_KW_RE = /(معلومات|مكتسبات)/; // «ومعلوماتك / ومكتسباتك» — la norme, pas l'exception (BAC 2025)
 
-// 🚪 البوابة ١ — الوجود : une consigne qui s'appuie sur une وثيقة porte un mot-document.
+// 🚪 البوابة 1 — الوجود : une consigne qui s'appuie sur une وثيقة porte un mot-document.
 export function detectExistenceGate(instruction: string): ExistenceGate {
   return DOC_KEYWORDS_RE.test((instruction || '').normalize('NFC')) ? 'lock' : 'no_lock';
 }
-// 📥 البوابة ٢ — المصدر : null si pas de قفل (لا قفل ⇒ دُرج، pas de source).
+// 📥 البوابة 2 — المصدر : null si pas de قفل (لا قفل ⇒ دُرج، pas de source).
 export function detectSourceKind(instruction: string): SourceKind | null {
   if (detectExistenceGate(instruction) === 'no_lock') return null;
   return MIXED_KW_RE.test((instruction || '').normalize('NFC')) ? 'mixed' : 'document';
 }
-// ⚙️ البوابة ٣ — la mouvement par le verbe de la consigne (texte) :
+// ⚙️ البوابة 3 — la mouvement par le verbe de la consigne (texte) :
 // smith d'abord (le plus discriminant), puis film, photo par défaut si قفل.
 const SMITH_KW_RE = /(اقترَح|اقترح|بَرِّر|برر|ناقِض|ناقض|قدّم حلا|قدم حلا|توصية)/;
 const FILM_KW_RE = /(فسِّر|فسر|اُشرَح|اشرح|علِّل|علل|استَنتَج|استنتج|وضَّح|وضح|بيِّن|بين|صَادِق|صادق|أرجِع|ارجع|سَبَّب|لماذا)/;

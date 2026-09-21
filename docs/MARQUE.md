@@ -381,3 +381,41 @@ L'analyse lit une version **pré-annexe** (elle nomme les dents « Observer/Extr
 ### F. Réparations
 
 - Header recto HTML **v3.1 → v3.3** : bug hérité de 489715b (l'édition du header recto n'avait pas pris — le check `must(html, 'v3.2')` était satisfait par le header verso ; le garde-fou vérifie maintenant la version par header).
+
+## §13bis — Fiche élève v5.0 : 5 mouvements + 3 familles (2026-09-21)
+
+**Décision actée :** la fiche élève (`public/miftah.html`) passe de **v3.3 (11 cases, 3 pages)** à **v5.0 (5 mouvements, 2 faces recto/verso)**. La carte React (`MiftahCard.tsx`) **reste v3.3** (inchangée) : c'est le seul des deux supports qui porte encore les 11 cases.
+
+### A. Arbitrages rendus (5 points en suspens)
+
+| # | Sujet | Décision | Justification |
+|---|---|---|---|
+| 1 | Formule dorée `تُظهر الوثيقة…` + route dent 3 | **Rationalisation** — retirées de la fiche élève | La mécanique est portée par les 4 mouvements d'analyse (شروط/شاهد ← ملاحظة/دلالة ← علاقة ← استنتاج) et par l'ancrage de `علاقة` dans la famille *أصف*. La formule rigide v3.3 induisait du par-cœur mécanique. |
+| 2 | شجرة نسب → حكم واحد | **Retrait** du recto/verso élève | Le verso v5.0 sanctionne déjà le découplage (verrou *« حكم + تركيب يجيب القفل »*, sanction *« حشو بلا خدمة = لا يُحتسب »*). |
+| 3 | الحدّاد (prototypes atypiques) | **Retrait** de la fiche élève | Notion réservée au guide méthodologique enseignant ; pas de place sur un 2-faces A4 ultra-dense destiné à l'élève. |
+| 4 | Annexe PRO + `لا أبحث عن جواب فقط` | **Dépréciation** (fiche) | Remplacés par la distinction *Structure BAC (5/7/8)* et le drill d'auto-évaluation *شحذ 60 ثانية*. |
+| 5 | N10 (outils verso) | **Option A** : `<span class="n">ك</span>` → `★` | Le drill reste un entraînement transversal ; le titre « quatre outils » et les mentions `أ–د` restent exacts. |
+
+Le nom officiel de la matière est **`علوم الطبيعة والحياة`** (nommé une fois, en-tête recto) ; le verso ne le répète plus (exigence N12).
+
+### B. Parité — ce qui change et où
+
+| Support | v3.3 (avant) | v5.0 (après) |
+|---|---|---|
+| `public/miftah.html` | 3 pages (recto + verso + annexe PRO) | **2 faces** : recto = المفتاح (5 mouvements), verso = المفتاح+ (4 outils أ–د) |
+| `MiftahCard.tsx` (app) | identique | **inchangée** (noyau 11, الحدّاد, annexe, formule dorée) |
+| `miftahSpec.ts` | `MIFTAH_VERSION = '3.3'` | `MIFTAH_VERSION = '5.0'` (constante unique ; le reste de la spec reste la source de la carte) |
+
+### C. Migration de `scripts/check-miftah.ts`
+
+36 lignes migrées — les assertions « fiche » ciblent la v5.0, les assertions « carte » (spec + `MiftahCard`) restent sur v3.3 :
+
+- `must(recto, '11 éléments')` → `mustNot(html, …)` + `must(card, '11 éléments')`
+- `must(verso, 'الحدّاد')` → `mustNot(html, …)` + `must(card, 'الحدّاد')` (idem annexe PRO, `≈ 21`, `نقترح أن`, `عند الطلب`, `11 عنصرًا`)
+- `must(verso, 'قاعدة حمراء')` → `must(html, 'قاعدة ذهبية')` (règle d'or portée par l'outil أ)
+- annexe : constantes `MIFTAH_ANNEXE_AR` / `ANNEXE` / `FOOTER_ANNEXE_AR` / `ruleAr` vérifiées sur la **spec** (drapeau mort, app inchangée)
+- route dent 3 / formule dorée / حدّاد 3 phases : `mustNot(html, …)` + `must(card, '{GOLDEN_FORMULA_AR}')`, `must(card, '{TOOTH3_ROUTE_AR}')`, `must(card, '3</b> = <b>المعالجة</b>')`
+- `MIFTAH_VERSION = '3.3'` → `'5.0'` (§12quater, constante unique) ; `MIFTAH_MANHAJIA_VERSION = '4.3'` **reste** (extension parente, non touchée)
+- N12 : `mustNot(verso, 'علوم الطبيعة والحياة')` + `must(recto, 'علوم الطبيعة والحياة')`
+
+**Le dictionnaire v3.3 (`تَبَصَّر` / `أدخل` / `أدر` / `افتح`, 11 cases, `PRO`, `توتولوجي`) est déprécié côté fiche élève.** Les assertions correspondantes du §12 (carte app + moteur + harnais `v3.harness.test.ts`) restent valides : la carte n'a pas bougé.
