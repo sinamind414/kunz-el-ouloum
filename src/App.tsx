@@ -27,6 +27,7 @@ import {
 
 import { Unit, UserProgress, Flashcard } from './types';
 import { INITIAL_UNITS, SVT_QUIZ_QUESTIONS, SVT_FLASHCARDS } from './data';
+import { healSavedFlashcards } from './utils/flashcardsSanitize';
 // Nomenclature figée (docs/MARQUE.md §3) — la rubrique porte le nom officiel de la source
 // unique miftahSpec : aucun littéral dans ce fichier (garde-fou check:miftah §13, 2026-09-15).
 import { MIFTAH_NAME_OFFICIAL_AR } from './data/miftahSpec';
@@ -192,19 +193,17 @@ export default function App() {
     }
 
     if (savedUnits && Array.isArray(savedUnits) && savedUnits.length > 0) setUnits(savedUnits);
-    if (savedFlashcards && Array.isArray(savedFlashcards) && savedFlashcards.length > 0) {
-      // Migration (D3) : l'ancien stock local ne comptait que 3 cartes "fc_1..fc_3"
-      // sans état utilisateur exploitable (handleRateCard ne persiste rien sur la carte).
-      // Si le format corpus (fc_q_*) est absent, on écrase par le jeu complet 508+3.
-      const hasCorpusCards = savedFlashcards.some((c) => typeof c.id === 'string' && c.id.startsWith('fc_q_'));
-      if (!hasCorpusCards) {
-        setFlashcards(SVT_FLASHCARDS);
-        try {
-          localStorage.setItem('svt_flashcards', JSON.stringify(SVT_FLASHCARDS));
-        } catch { /* quota — sera retenté au prochain save */ }
-      } else {
-        setFlashcards(savedFlashcards);
-      }
+    // Garde-fou verso vide (bug 2026-09-20) : UNE carte au verso vide dans le stock
+    // local ⇒ tout le blob est rejeté (healSavedFlashcards strict) et remplacé par le
+    // jeu complet du dépôt — soigne n'importe quel appareil au prochain chargement.
+    const healedFlashcards = savedFlashcards ? healSavedFlashcards(savedFlashcards) : null;
+    if (healedFlashcards) {
+      setFlashcards(healedFlashcards);
+    } else if (savedFlashcards) {
+      setFlashcards(SVT_FLASHCARDS);
+      try {
+        localStorage.setItem('svt_flashcards', JSON.stringify(SVT_FLASHCARDS));
+      } catch { /* quota — sera retenté au prochain save */ }
     }
     if (savedProgress) {
       const parsed: UserProgress = savedProgress;
