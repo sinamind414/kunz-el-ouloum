@@ -7,12 +7,16 @@
 //      la séquence expose la clé de base puis la clé `_2` — une leçon affichée
 //      à la fois (isolation par sliceLessonHtml).
 import { useState } from 'react';
-import { BookOpen, ChevronLeft, Zap, MonitorPlay, Network, FlaskConical, Leaf, Globe2 } from 'lucide-react';
+import { BookOpen, ChevronLeft, Zap, MonitorPlay, Network, FlaskConical, Leaf, Globe2, GraduationCap, BookMarked } from 'lucide-react';
 import HtmlLessonViewer from './HtmlLessonViewer';
 import ActiveLessonView from './ActiveLessonView';
 import { INITIAL_UNITS } from '../data';
 import { getUnitLessonSequence } from '../data/unitLessonSequences';
 import { HTML_LESSON_ORDER } from '../data/htmlLessonProgression';
+import { sourceLivre, badgeSource, sourceAmbigue } from '../data/bookIndex';
+import QcmLivreView from './QcmLivreView';
+import BacExamView from './BacExamView';
+import OkachaView from './OkachaView';
 import {
   PASSIVE_DOMAINS,
   hasHtmlFile,
@@ -24,6 +28,22 @@ import {
 } from '../data/lessonModes';
 
 const DOMAIN_ICONS = [FlaskConical, Leaf, Globe2];
+
+/**
+ * Badge « source livre officiel » : chapitres + plage de lignes OCR
+ * (data/bookContent.index.json). Absent si aucun appariement prouvé —
+ * ⚠️ si un chapitre reconstruit (en-tête OCR détruit) est couvert.
+ */
+function SourceBadge({ cle, titre }: { cle: string; titre: string }) {
+  const s = sourceLivre(cle, titre);
+  if (!s) return null;
+  return (
+    <span className="block text-[10px] font-bold text-gray-400 dark:text-gray-500 mt-0.5">
+      📖 {badgeSource(s)}
+      {sourceAmbigue(s) ? ' ⚠️' : ''}
+    </span>
+  );
+}
 
 const nextActiveInUnit = (unitId: number, currentKey: string): string | undefined => {
   const keys = getActiveLessonKeysForUnit(unitId);
@@ -48,7 +68,7 @@ const unitOfActiveLesson = (key: string): number =>
   INITIAL_UNITS.find((u) => getActiveLessonKeysForUnit(u.id).includes(key))?.id ?? 1;
 
 export default function LessonsView() {
-  const [mode, setMode] = useState<LessonMode | null>(null);
+  const [mode, setMode] = useState<LessonMode | 'qcm' | 'bac' | 'okacha' | null>(null);
   const [selectedUnit, setSelectedUnit] = useState<number>(1);
   const [selectedDomain, setSelectedDomain] = useState<number | null>(null);
   const [selectedActiveLesson, setSelectedActiveLesson] = useState<string | null>(null);
@@ -82,6 +102,21 @@ export default function LessonsView() {
     );
   }
 
+  // ----- Écran 0 : QCM du livre officiel (par chapitre) -----
+  if (mode === 'qcm') {
+    return <QcmLivreView onBack={() => setMode(null)} />;
+  }
+
+  // ----- Écran 0 bis : tests bac (PROGRAMME NATIONAL, injection vérifiée) -----
+  if (mode === 'bac') {
+    return <BacExamView onBack={() => setMode(null)} />;
+  }
+
+  // ----- Écran 0 ter : بنك الحفظ (عكاشة, injection mécanique filtrée) -----
+  if (mode === 'okacha') {
+    return <OkachaView onBack={() => setMode(null)} />;
+  }
+
   // ----- Écran 1 : les deux icônes (Leçon Active / Leçon Passive) -----
   if (mode === null) {
     return (
@@ -97,7 +132,7 @@ export default function LessonsView() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
           {/* Leçon Active */}
           <button
             onClick={() => { setMode('active'); setSelectedDomain(null); }}
@@ -123,6 +158,45 @@ export default function LessonsView() {
             <span className="block text-lg font-black text-gray-800 dark:text-gray-100">الدرس السلبي</span>
             <span className="block text-xs font-bold text-gray-500 dark:text-gray-400 leading-relaxed">
               الدروس المقروءة الرسمية ({HTML_LESSON_ORDER.length} درساً) — ثلاثة مجالات، كل مجال بوحداته وفصوله
+            </span>
+          </button>
+          {/* QCM du livre */}
+          <button
+            onClick={() => setMode('qcm')}
+            className="group p-6 rounded-3xl border-2 border-amber-200 dark:border-amber-900/50 bg-gradient-to-b from-amber-50 to-white dark:from-amber-950/30 dark:to-[#161c18] hover:border-amber-500 hover:shadow-lg transition-all text-center space-y-3"
+          >
+            <span className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-[#b45309] text-white shadow-md group-hover:scale-105 transition-transform">
+              <BookOpen className="w-8 h-8" />
+            </span>
+            <span className="block text-lg font-black text-gray-800 dark:text-gray-100">اختبار الكتاب</span>
+            <span className="block text-xs font-bold text-gray-500 dark:text-gray-400 leading-relaxed">
+              أسئلة حسب فصول الكتاب الرسمي — مع مخططات وتفسيرات فورية
+            </span>
+          </button>
+          {/* Tests bac */}
+          <button
+            onClick={() => setMode('bac')}
+            className="group p-6 rounded-3xl border-2 border-violet-200 dark:border-violet-900/50 bg-gradient-to-b from-violet-50 to-white dark:from-violet-950/30 dark:to-[#161c18] hover:border-violet-500 hover:shadow-lg transition-all text-center space-y-3"
+          >
+            <span className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-[#6d28d9] text-white shadow-md group-hover:scale-105 transition-transform">
+              <GraduationCap className="w-8 h-8" />
+            </span>
+            <span className="block text-lg font-black text-gray-800 dark:text-gray-100">اختبار بكالوريا</span>
+            <span className="block text-xs font-bold text-gray-500 dark:text-gray-400 leading-relaxed">
+              3 اختبارات كاملة (20 نقطة) — تصحيح ذاتي بسلّم التنقيط
+            </span>
+          </button>
+          {/* بنك الحفظ عكاشة */}
+          <button
+            onClick={() => setMode('okacha')}
+            className="group p-6 rounded-3xl border-2 border-blue-200 dark:border-blue-900/50 bg-gradient-to-b from-blue-50 to-white dark:from-blue-950/30 dark:to-[#161c18] hover:border-blue-500 hover:shadow-lg transition-all text-center space-y-3"
+          >
+            <span className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-[#1d4ed8] text-white shadow-md group-hover:scale-105 transition-transform">
+              <BookMarked className="w-8 h-8" />
+            </span>
+            <span className="block text-lg font-black text-gray-800 dark:text-gray-100">بنك الحفظ</span>
+            <span className="block text-xs font-bold text-gray-500 dark:text-gray-400 leading-relaxed">
+              كل ما يجب حفظه — ملخصات مرقّمة لكل وحدة (عكاشة)
             </span>
           </button>
         </div>
@@ -176,6 +250,7 @@ export default function LessonsView() {
                       </span>
                       <span className="flex-1 text-sm font-bold text-gray-800 dark:text-gray-100 leading-snug">
                         {getActiveLessonTitle(key)}
+                        <SourceBadge cle={key} titre={getActiveLessonTitle(key)} />
                       </span>
                       <ChevronLeft className="w-4 h-4 text-gray-300 group-hover:text-emerald-500 transition-all shrink-0" />
                     </button>
@@ -281,6 +356,7 @@ export default function LessonsView() {
                     </span>
                     <span className="flex-1 text-sm font-bold text-gray-800 dark:text-gray-100 leading-snug">
                       {getPassiveLessonTitle(key)}
+                      <SourceBadge cle={key} titre={getPassiveLessonTitle(key)} />
                     </span>
                     <ChevronLeft className="w-4 h-4 text-gray-300 group-hover:text-teal-500 transition-all shrink-0" />
                   </button>

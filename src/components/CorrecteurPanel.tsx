@@ -19,6 +19,9 @@ import {
   titreUnite,
 } from '../data/dictionaries/dictionnaireCorrecteur';
 import { evaluerBareme, listBaremeQuestions } from '../data/dictionaries/baremeCorrecteur';
+import { listeGroupesBac2025 } from '../data/dictionaries/attendusBac2025';
+import { noterExerciceCalibre, type NoteCalibree } from '../data/dictionaries/calibrationBac2025';
+import SectionObligatoire from './SectionObligatoire';
 import { evaluerSanctions } from '../data/dictionaries/sanctionsCorrecteur';
 
 interface Props {
@@ -30,7 +33,9 @@ interface Props {
 }
 
 const BAREMES = listBaremeQuestions();
+const GROUPES_2025 = listeGroupesBac2025();
 const UNITES = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
+
 
 /** 1.25 → « 1.25 » · 0.5 → « 0.5 » · 5 → « 5 » */
 function fmtPoints(n: number): string {
@@ -48,6 +53,7 @@ export default function CorrecteurPanel({
   const [open, setOpen] = useState(defaultOpen);
   const [uniteOverride, setUniteOverride] = useState<number | null>(null);
   const [baremeId, setBaremeId] = useState<string>(defaultBaremeQuestionId ?? '');
+  const [groupeId, setGroupeId] = useState<string>('');
 
   const analyse = useMemo(() => {
     const inferee = inferreUnite(text);
@@ -63,8 +69,16 @@ export default function CorrecteurPanel({
       pistes: parUnite ? parUnite.pistesAmbigues : transversal.pistes,
       sanctions: evaluerSanctions(text),
       bareme: baremeId ? evaluerBareme(text, baremeId) : null,
+      obligatoire: (() => {
+        const g = GROUPES_2025.find((x) => `${x.sujet}-${x.exercice}` === groupeId);
+        if (!g) return null;
+        // P2 (règle dure) : pas de try/catch — un groupe sans attendus doit
+        // faire ÉCHOUER bruyamment (jamais une note silencieusement absente).
+        const note: NoteCalibree = noterExerciceCalibre(text, g.sujet, g.exercice);
+        return note;
+      })(),
     };
-  }, [text, uniteOverride, baremeId]);
+  }, [text, uniteOverride, baremeId, groupeId]);
 
   if (!text.trim()) return null;
 
@@ -102,6 +116,21 @@ export default function CorrecteurPanel({
               {UNITES.map((uid) => (
                 <option key={uid} value={uid}>
                   {uid} — {titreUnite(uid)}
+                </option>
+              ))}
+            </select>
+          </label>
+          <label className="flex items-center gap-1">
+            المقتضيات الرسمية (2025):
+            <select
+              value={groupeId}
+              onChange={(e) => setGroupeId(e.target.value)}
+              className="px-1.5 py-1 rounded-lg bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 text-[10px] font-bold text-gray-700 dark:text-gray-300 max-w-60"
+            >
+              <option value="">بدون تمرين</option>
+              {GROUPES_2025.map((g) => (
+                <option key={`${g.sujet}-${g.exercice}`} value={`${g.sujet}-${g.exercice}`}>
+                  {g.labelAr}
                 </option>
               ))}
             </select>
@@ -216,11 +245,14 @@ export default function CorrecteurPanel({
           </div>
         ))}
 
-        {/* 5. Barème officiel */}
+        {/* 5. Notation obligatoire (attendus officiels 2025 — Pierre 2) */}
+        {analyse.obligatoire && <SectionObligatoire note={analyse.obligatoire} />}
+
+        {/* 6. Rapport de barème (diagnostic) */}
         {analyse.bareme && (
           <div className="rounded-lg border border-gray-200 dark:border-gray-800 overflow-hidden">
             <div className="flex items-center justify-between px-2 py-1.5 bg-gray-50 dark:bg-black/20">
-              <span className="text-[10px] font-black text-gray-700 dark:text-gray-300">التنقيط على المقياس الرسمي</span>
+              <span className="text-[10px] font-black text-gray-700 dark:text-gray-300">تقرير بنود المقياس (تشخيصي — ليس تنقيطاً)</span>
               <span className="text-[11px] font-black text-[#006d37] dark:text-emerald-400">
                 {fmtPoints(analyse.bareme.pointsObtenus)} / {fmtPoints(analyse.bareme.pointsTotal)} ن
               </span>

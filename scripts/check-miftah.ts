@@ -13,6 +13,17 @@
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+// M4 (audit 2026-09-19) : le garde-fou porte désormais des ASSERTIONS PÉDAGOGIQUES
+// (sommes de barèmes, parité dictionnaire ↔ Meftah, complétude du registre) —
+// plus seulement la marque.
+import {
+  ATTENDUS_BAC2025,
+  attendusDeGroupe,
+  plafondAutoDe,
+  type SujetId,
+  type ExerciceId,
+} from '../src/data/dictionaries/attendusBac2025';
+import { MEFTA_BAC_EXERCISES, MIFTAH_MANHAJIA_VERSION } from '../src/data/meftahManhajia';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const read = (p: string) => readFileSync(path.join(root, p), 'utf8');
@@ -25,6 +36,7 @@ const compiler = read('src/components/MethodologyCompilerView.tsx');
 const app = read('src/App.tsx');
 const dashboard = read('src/components/DashboardView.tsx');
 const meftah = read('src/components/MeftahView.tsx');
+const manhajia = read('src/data/meftahManhajia.ts');
 
 // Découpe la fiche : recto = avant la balise de commentaire « الوجه الثاني »
 const versoIdx = html.indexOf('الوجه الثاني');
@@ -237,8 +249,65 @@ if (appUses === 2 && app.includes("? MIFTAH_NAME_OFFICIAL_AR :")) {
   fail(`App.tsx : ${appUses} interpolation(s) — attendu 2, plus le ternaire d’en-tête`);
 }
 
+console.log('\n§ Versions (M3 — une constante par artefact, zéro littéral dérivé)');
+must(spec, "MIFTAH_VERSION = '3.3'", 'spec : version fiche = 3.3 (constante unique)');
+if (MIFTAH_MANHAJIA_VERSION !== '4.3') fail(`manhajia : MIFTAH_MANHAJIA_VERSION = ${MIFTAH_MANHAJIA_VERSION} (attendu 4.3)`);
+else ok('manhajia : MIFTAH_MANHAJIA_VERSION = 4.3 (constante unique)');
+must(manhajia, "MIFTAH_MANHAJIA_VERSION = '4.3'", 'meftahManhajia : la constante est déclarée');
+mustNot(manhajia, 'V4.3', 'meftahManhajia : aucun littéral V4.3 (commentaires compris)');
+mustNot(meftah, 'V4.3', 'MeftahView : aucun littéral V4.3');
+
+console.log('\n§ Assertions pédagogiques (M4 — audit 2026-09-19)');
+
+// 1. Barèmes Meftah : ventilation par question = total de l'exercice = 5/7/8.
+const pts = (s: string) => Math.round(Number(s.replace(/[^\d.]/g, '')) * 100) / 100;
+for (const ex of MEFTA_BAC_EXERCISES) {
+  const sommeQ = Math.round(ex.questions.reduce((s, q) => s + pts(q.pointsLabel), 0) * 100) / 100;
+  if (sommeQ === pts(ex.pointsLabel)) ok(`Meftah ${ex.id} : Σ questions ${sommeQ} = ${ex.pointsLabel}`);
+  else fail(`Meftah ${ex.id} : Σ questions ${sommeQ} ≠ ${ex.pointsLabel}`);
+}
+const totalMeftah = Math.round(MEFTA_BAC_EXERCISES.reduce((s, ex) => s + pts(ex.pointsLabel), 0) * 100) / 100;
+if (totalMeftah === 20) ok('Meftah : total copie = 20 ن');
+else fail(`Meftah : total copie = ${totalMeftah} ≠ 20`);
+
+// 2. Registre des attendus : 6 groupes, Σ items = maxPts (+ débordements SOURCÉS
+// au corrigé, absorbés par le plafond maxPts), 100 % auto, énoncés présents.
+// P2g : S2-Ex1 2025 — équation officielle 0.25×5 = 1.25 (Σ جزئيات = 5.5 > 5).
+const DEPASSEMENTS: Record<string, number> = { '2-1': 0.5 };
+const sujets: SujetId[] = [1, 2];
+const exercices: ExerciceId[] = [1, 2, 3];
+let totalRegistre = 0;
+for (const s of sujets) {
+  let totalSujet = 0;
+  for (const e of exercices) {
+    const g = attendusDeGroupe(s, e);
+    totalSujet += g.maxPts;
+    const somme = Math.round(g.items.reduce((a, i) => a + i.points, 0) * 100) / 100;
+    const auto = plafondAutoDe(g);
+    const depassement = DEPASSEMENTS[`${s}-${e}`] ?? 0;
+    const toutAuto = g.items.every((i) => i.points <= 0 || i.formes.length > 0 || (i.composantes?.length ?? 0) > 0);
+    if (somme !== g.maxPts + depassement) fail(`registre S${s}-Ex${e} : Σ items ${somme} ≠ maxPts ${g.maxPts} (+${depassement} sourcé)`);
+    else if (auto !== somme) fail(`registre S${s}-Ex${e} : plafond auto ${auto} ≠ Σ ${somme} (item manuel résiduel)`);
+    else if (!toutAuto) fail(`registre S${s}-Ex${e} : item à points sans formes ni composantes`);
+    else if (g.questionAr.length < 20) fail(`registre S${s}-Ex${e} : énoncé absent`);
+    else ok(depassement > 0
+      ? `registre S${s}-Ex${e} : Σ = plafond auto = ${somme} (maxPts ${g.maxPts} + débordement sourcé ${depassement}) · énoncé présent`
+      : `registre S${s}-Ex${e} : Σ = plafond auto = ${g.maxPts} · énoncé présent`);
+  }
+  if (totalSujet !== 20) fail(`registre S${s} : total ${totalSujet} ≠ 20`);
+  totalRegistre += totalSujet;
+}
+if (totalRegistre === 40) ok('registre : 2 sujets × 20 = 40 ن');
+
+// 3. Parité dictionnaire ↔ Meftah (M2) : S1-Ex1 ventilation officielle.
+const g11 = ATTENDUS_BAC2025[1][1];
+const q1 = Math.round(g11.items.filter((i) => i.id.includes('/Q1/')).reduce((s, i) => s + i.points, 0) * 100) / 100;
+const q2 = Math.round(g11.items.filter((i) => i.id.includes('/Q2/')).reduce((s, i) => s + i.points, 0) * 100) / 100;
+if (q1 === 1.25 && q2 === 3.75) ok('parité S1-Ex1 : Q1 = 1.25 · Q2 = 3.75 (corrigé officiel)');
+else fail(`parité S1-Ex1 : Q1 = ${q1} · Q2 = ${q2} (attendu 1.25 / 3.75)`);
+
 if (failures > 0) {
   console.error(`\n✗ ${failures} échec(s) — réaligner fiche/spec/carte sur docs/MARQUE.md`);
   process.exit(1);
 }
-console.log('\n✓ Garde-fou MARQUE OK — fiche, spec, carte et vue compilateur alignés');
+console.log('\n✓ Garde-fou OK — marque, versions et assertions pédagogiques alignés');

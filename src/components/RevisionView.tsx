@@ -46,7 +46,9 @@ export default function RevisionView({ units, flashcards, xp, streak, onRateCard
 
   // Filter cards by selected unit
   const activeCards = flashcards.filter(c => c.unitId === selectedUnitId);
-  const currentCard = activeCards[currentCardIndex];
+  // Clamp : un index hors bornes (unité changée sous les pieds de l'index) ne doit
+  // jamais produire currentCard === undefined (crash « carte blanche »).
+  const currentCard = activeCards[Math.min(currentCardIndex, Math.max(activeCards.length - 1, 0))];
 
   const handleFlip = () => {
     playFlipSound();

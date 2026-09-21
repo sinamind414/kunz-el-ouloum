@@ -1,5 +1,5 @@
 import {
-  VERB_CARDS_V2, getVerbCardV2, ERROR_TAXONOMY,
+  getVerbCardV2, ERROR_TAXONOMY,
   Switch, StepId, Step3Mode,
 } from '../data/methodologyEngine';
 
@@ -54,6 +54,9 @@ const REFERENCE_RE  = /(الوثيق|الوثائق|منحنى|جدول|المل
 const DOC_NUMBER_RE = /(?:الوثيقة|الوثيقتين|الوثيقتان|الوثائق|المنحنى|المنحنيين|الجدول|الجدولين|الشكل|الشكلين|الرسم|النموذج|التجربة|الملاحظة|الصورة|الفرضية)[\u0600-\u06FF]*\s*\d+(?:\s*(?:و|،|,)\s*\d+)*/g;
 
 const NUMBER_RE = /(?<![A-Za-z=+\-\/\d.,])\d+(?:[.,]\d+)?(?![A-Za-z+\-\d])/g;
+// C7 : « détailler la mécanisme » = marqueur sémantique, plus un seuil de caractères
+// (la concision que Meftah enseigne n'est plus punie ; le verbiage ne paie plus).
+const MECHANISM_RE = /(بفضل|بسبب|لأنّ?|يعود|عن طريق|ومنه|يؤدي إلى|ينتج عن|ينشّط|ينشط|يثبّط|يرتبط|المستقبل|الأنزيم|الإنزيم|القناة|الناقل|بروتين|جزيئي|خلوي|الترميز|المتلقية)/;
 const UNIT_AFTER_RE  = /(غ\/ل|g\/l|%|دقيقة|دقائق|دق\b|min|ساعة|ساعات|ثانية|ثواني|s\b|وحدة اعتبارية|ua|°|درجة|ميكرومول|مول|نل|مل|لتر|مم|سم|نانومتر|كيلومتر|خلايا|بلورات|وحدات|يوم|أيام|أسبوع|شهر|سنة)/i;
 const UNIT_BEFORE_RE = /(?:^|\s)(?:د|دقيقة|الدقيقة|ph)\s*=?\s*/i;
 
@@ -76,7 +79,12 @@ export function evaluateStudentProduction(
   currentStage: 1 | 2 | 3 | 4 = 3,
   switchContext?: SwitchContext
 ): ScoreReport {
-  const card = getVerbCardV2(verbId) ?? VERB_CARDS_V2[0];
+  const card = getVerbCardV2(verbId);
+  // Audit 2026-09-19 (C7) : plus de fallback silencieux — un verbId inconnu
+  // notait contre la carte [0] (analyse) sans avertissement (ex. « hypothesize »
+  // issu de l'espace d'ids reflexes.ts → critères an_c* absurdes pour une
+  // hypothèse). Toute erreur d'id doit crier, jamais noter au hasard.
+  if (!card) throw new Error(`[methodologyScorer] verbId inconnu : « ${verbId} » — aucune note silencieuse (audit 2026-09-19 C7)`);
   const sw = card.switch;
   const writes = (s: StepId) => card.path.includes(s);
   const text = (userText || '').trim().toLowerCase();
@@ -129,7 +137,11 @@ export function evaluateStudentProduction(
     let feedback = '';
     const compass = c.wording.compass;
 
-    switch (c.id) {
+    // C7 : contenu de l'exercice possédé par la carte (verifAr) — ET logique.
+    if (c.verifAr?.length) {
+      passed = c.verifAr.every((source) => new RegExp(source, 'i').test(text));
+      feedback = passed ? `${c.wording.ar_label}: مستوفى.` : `تنبيه: « ${compass} » - ${c.wording.probe}`;
+    } else switch (c.id) {
       case 'an_c1': case 'ex_c1': case 'val_c1':
         passed = REFERENCE_RE.test(text) && text.length > 25;
         feedback = passed ? 'تم تحديد الوثيقة والسياق بنجاح.' : `تنبيه: « ${compass} » - لم يتم ذكر السند بوضوح.`;
@@ -147,11 +159,13 @@ export function evaluateStudentProduction(
         feedback = passed ? 'ممتاز: التحليل وصفي وخالٍ من التعليل المسبق.' : `خطأ منهجي: « ${compass} » - تم رصد كلمات تعليل داخل التحليل!`;
         break;
       case 'an_c4': case 'ex_c4': case 'comp_c4': case 'ded_c1': case 'val_c3': case 'sch_c3':
-        passed = !detected.has('missing_conclusion') && text.length > 50;
+        // C7 : la conclusion est déjà un marqueur sémantique (missing_conclusion).
+        // Le seuil « 50 caractères » punissait la conclusion concise.
+        passed = !detected.has('missing_conclusion');
         feedback = passed ? 'تمت صياغة الجملة الختامية بنجاح.' : `تنبيه: « ${compass} » - غياب الجملة الختامية.`;
         break;
       case 'ex_c2': case 'hyp_c2':
-        passed = text.length > 60;
+        passed = MECHANISM_RE.test(text);
         feedback = passed ? 'تم استحضار الآلية البيولوجية.' : `تنبيه: « ${compass} » - فصِّل الآلية الجزيئية/الخلوية.`;
         break;
       case 'ex_c3': case 'val_c2': case 'exp_m_c3':
@@ -198,9 +212,28 @@ export function evaluateStudentProduction(
         }
         break;
       }
-      case 'calc_c1':
-        passed = /(chargaff|%A|قانون|chargaff)/i.test(text) && text.length > 15;
-        feedback = passed ? 'القانون بالحروف مذكور.' : `تنبيه: « ${compass} » - اكتب القانون أولا.`;
+      case 'hyp_c1': // المنطلق التجريبي — سند مذكور أو نظام بيولوجي ملموس (كانون المثال النموذجي)
+        passed =
+          REFERENCE_RE.test(text) ||
+          /(المعطى|الملاحظة|نتائج|النتيجة|التجربة|الوثيق)/i.test(text) ||
+          /(مستقبل|قنوات|قناة|عضلة|جزيء|بروتين|مورث|إنزيم|هرمون)/i.test(text);
+        feedback = passed ? 'المنطلق التجريبي مذكور.' : `تنبيه: « ${compass} » - انطلق من المعطى التجريبي الذي يطرح المشكل.`;
+        break;
+      case 'exp_m_c1': // الوثيقة الأولى + نتيجتها
+        passed = REFERENCE_RE.test(text) && /(يتبين|نستخرج|نلاحظ|تؤكد|تظهر|النتيجة)/i.test(text);
+        feedback = passed ? 'الوثيقة الأولى مستغلة بنتيجتها.' : `تنبيه: « ${compass} » - استغل الوثيقة الأولى وأبرز نتيجتها (يتبين أن…).`;
+        break;
+      case 'exp_m_c2': // الوثيقة الثانية + الجسر
+        passed = /(الوثيقة\s*2|الوثيقتين|ومن الوثيقة|بالربط|بالاستناد|وكذلك|إضافة إلى)/i.test(text);
+        feedback = passed ? 'الوثيقة الثانية مربوطة بالسياق.' : `تنبيه: « ${compass} » - استغل الوثيقة الثانية واربطها (« بالربط بين معطيات الوثيقتين »).`;
+        break;
+      case 'sch_c1': // عناصر في أشكال منظمة (كانون المثال: [ عنصر ] + أسهم ──►)
+        passed = /(مخطط|رسم|إطار|سهم|شكل|\[|←|→|►|◄|▼|▲)/i.test(text);
+        feedback = passed ? 'العناصر داخل أشكال منظمة.' : `تنبيه: « ${compass} » - ضع العناصر الفاعلة داخل أشكال منظمة (أطر، أسهم).`;
+        break;
+      case 'sch_c2': // اتجاهات الأسهم + المعنى الوظيفي
+        passed = /(→|←|►|◄|▼|▲|↔|──)/.test(text) || /(سهم|اتجاه).*(تحفيز|تثبيط|[+−-])/.test(text);
+        feedback = passed ? 'اتجاهات الأسهم ومعانيها مضبوطة.' : `تنبيه: « ${compass} » - اضبط اتجاه الأسهم ومعناها الوظيفي (+/−، تحفيز/تثبيط).`;
         break;
       case 'calc_c2':
         passed = /(بالتعويض|تعويض|=)/.test(text) && /=/.test(text);
@@ -210,21 +243,10 @@ export function evaluateStudentProduction(
         passed = /%/.test(text) && /(ومنه|النتيجة|=)/.test(text) && bare.length===0;
         feedback = passed ? 'النتيجة بوحدتها.' : `تنبيه: « ${compass} » - لا تنس % ومع «ومنه».`;
         break;
-      case 'ped_c1':
-        passed = /(أبوان سليمان|I1.*I2|سليمان.*مصاب)/.test(text);
-        feedback = passed ? 'حدث السيادة مذكور.' : `تنبيه: « ${compass} » - اذكر أبوان سليمان ← مصاب.`;
-        break;
-      case 'ped_c2':
-        passed = /(بنت مصابة|ابن سليم|موقع|مرتبط بـ X)/.test(text);
-        feedback = passed ? 'حدث الموقع مذكور.' : `تنبيه: « ${compass} » - اذكر بنت/ابن للموقع.`;
-        break;
-      case 'ped_c3':
-        passed = /(متنح|سائد).*(جسمي|مرتبط)/.test(text) && /Aa|aa|AA/.test(text);
-        feedback = passed ? 'الحكمان + الأنماط.' : `تنبيه: « ${compass} » - الحكمان ثم الأنماط بالترميز.`;
-        break;
       default:
-        passed = text.length > 40;
-        feedback = passed ? 'معيار مستوفى.' : `يرجى مراجعة المعيار: « ${compass} ».`;
+        // C7 : fin du fallback silencieux — un critère inconnu est un BUG de
+        // carte, pas une copie à noter sur « 40 caractères ».
+        throw new Error(`[methodologyScorer] criterionId inconnu du scoreur: ${c.id} — ajouter le cas ou verifAr à la carte`);
     }
 
     const w = c.weight || 1;
