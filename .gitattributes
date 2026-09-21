@@ -1,0 +1,6 @@
+# Verrous d'octets (tests « empreintes figées ») : ces sources sont épinglées
+# par taille + sha256 dans la suite de tests. -text = aucun filtre EOL :
+# pas de conversion LF→CRLF au checkout (Windows/autocrlf), pas de
+# normalisation au commit — l'empreinte lue sur disque = le blob git.
+docs/sources/*.txt -text
+data/bookContent.json -text
