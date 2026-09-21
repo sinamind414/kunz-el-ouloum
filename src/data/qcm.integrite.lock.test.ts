@@ -60,7 +60,7 @@ for (const lecon of Object.values(SINGLE_PATH_LESSONS)) {
         | undefined;
       if (!d?.options || typeof d.question !== 'string') continue;
       quizSinglePath.push({
-        cle: lecon.id ?? '?',
+        cle: lecon.key,
         question: d.question,
         options: d.options.map((o) => o.text),
         corrects: d.options.map((o, i) => (o.correct ? i : -1)).filter((i) => i >= 0),

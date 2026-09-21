@@ -13,13 +13,23 @@ export interface MicroTest {
   errorHint: string;
 }
 
-export interface TextAndProduceBlock {
-  type: 'TEXT_AND_PRODUCE';
-  objective: string;
-  content: string; // Contient des [____] pour les trous
-  popups: Record<string, string>; // Définitions des termes cliquables
-  microTest: MicroTest;
-}
+export type TextAndProduceBlock =
+  | {
+      // Forme 1 : remplissage à trous (contenu avec [____] + micro-test intégré).
+      type: 'TEXT_AND_PRODUCE';
+      objective: string;
+      content: string; // Contient des [____] pour les trous
+      popups: Record<string, string>; // Définitions des termes cliquables
+      microTest: MicroTest;
+    }
+  | {
+      // Forme 2 : production de texte libre (aucun trou) — prompt + réponses acceptées.
+      type: 'TEXT_AND_PRODUCE';
+      objective: string;
+      prompt: string;
+      acceptedAnswers: string[];
+      errorHint: string;
+    };
 
 export interface HotspotAndMethodologyBlock {
   type: 'HOTSPOT_AND_METHODOLOGY';

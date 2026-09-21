@@ -115,6 +115,8 @@ interface Entree {
   chapter: number;
   titreAr: string;
   ligneDebut: number;
+  /** Borne supérieure de la plage du chapitre (calculée après l'affectation). */
+  ligneFin?: number;
   mode: 'verbatim-ligne' | 'verbatim-contient' | 'biline' | 'tiges' | 'ancre-documentee' | 'inferred-borne';
   evidence: string;
   tiges?: string[];
@@ -145,7 +147,7 @@ for (let i = 0; i < 55; i++) {
     continue;
   }
   const cands = occ[i].filter((o) => o.ligne > precedent);
-  let choisi: { ligne: number; mode: Entree['mode']; evidence: string } | null = null;
+  let choisi: { ligne: number; mode: Entree['mode']; evidence: string; tiges?: string[] } | null = null;
 
   // passes 1-2 anti-drift : la ligne qui contient un titre d'en-tête est courte
   // (une mention en corps de texte est une longue ligne) — plafond relatif.
@@ -196,7 +198,7 @@ for (let i = 0; i < 55; i++) {
   }
   precedent = choisi.ligne;
   console.log(`  C${String(g.n).padStart(2, '0')} D${g.domain}U${g.unit} → l.${String(choisi.ligne).padStart(4)} [${choisi.mode}] ${t.ar.slice(0, 44)}`);
-  chapitres.push({
+  const entree: Entree = {
     domain: g.domain,
     unit: g.unit,
     chapter: i + 1,
@@ -204,8 +206,9 @@ for (let i = 0; i < 55; i++) {
     ligneDebut: choisi.ligne,
     mode: choisi.mode,
     evidence: choisi.evidence,
-    ...(choisi.mode === 'tiges' && 'tiges' in choisi ? { tiges: choisi.tiges } : {}),
-  });
+  };
+  if (choisi.mode === 'tiges' && choisi.tiges) entree.tiges = choisi.tiges;
+  chapitres.push(entree);
 }
 if (chapitres.length !== 55) throw new Error(`${chapitres.length}/55 — index partiel refusé`);
 
