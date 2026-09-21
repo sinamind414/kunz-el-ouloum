@@ -467,7 +467,7 @@ export class SqliteStore {
       SELECT student_id AS sid, tag, SUM(cnt) AS c
       FROM entry_errors GROUP BY student_id, tag ORDER BY student_id, c DESC, MIN(rowid)`);
     const statsIt = (studentId ? stmt.iterate(studentId) : stmt.iterate()) as IterableIterator<{
-      id: string; name: string; email: string; created_at: string; productions: number; avg_icm: number;
+      id: string; name: string; email: string; created_at: string; productions: number; avg_icm: number; last_entry: string | null;
     }>;
     // Agrégat « dernier événement » par élève : #élèves lignes → Map en RAM OK.
     const lastAct = new Map(

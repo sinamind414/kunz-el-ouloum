@@ -180,59 +180,94 @@ export default function ActiveLessonView({ lessonKey, onBack, onNext, nextTitleA
       }
 
       case 'TEXT_AND_PRODUCE': {
-        const parts = b.content.split('[____]');
-        const blanks = parts.length - 1;
         const result = outcomes[blockIdx];
-        return (
-          <div className="space-y-4">
-            <p className="text-base font-bold text-gray-800 dark:text-gray-100 leading-loose">
-              {parts.map((p, i) => (
-                <span key={i}>
-                  {p}
-                  {i < blanks && (
-                    <input
-                      value={answers[blockIdx]?.[`blank_${i}`] ?? ''}
-                      onChange={(e) => setAnswer(blockIdx, `blank_${i}`, e.target.value)}
-                      disabled={session.validatedBlocks[blockIdx]}
-                      className="mx-1 w-32 border-b-2 border-emerald-500 bg-transparent focus:outline-none text-center font-black"
-                      aria-label={`فراغ ${i + 1}`}
-                    />
-                  )}
-                </span>
-              ))}
-            </p>
-            {Object.keys(b.popups).length > 0 && (
-              <div className="flex flex-wrap gap-2">
-                {Object.entries(b.popups).map(([term, def]) => (
-                  <span key={term} className="relative inline-block">
-                    <button
-                      onClick={() => setOpenPopup(openPopup === term ? null : term)}
-                      className="text-xs font-bold bg-emerald-50 dark:bg-emerald-950/40 text-[#006d37] dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 px-2.5 py-1 rounded-lg hover:border-emerald-400"
-                    >
-                      {term} ↩
-                    </button>
-                    {openPopup === term && (
-                      <span className="absolute z-30 bottom-full left-1/2 -translate-x-1/2 mb-2 w-64 bg-white dark:bg-[#1a201c] p-3 rounded-xl shadow-2xl border border-gray-200 dark:border-gray-700 text-xs leading-relaxed text-gray-700 dark:text-gray-200 block">
-                        {def}
-                      </span>
+        // Forme 1 : remplissage à trous (contenu avec [____] + micro-test intégré).
+        if ('content' in b) {
+          const parts = b.content.split('[____]');
+          const blanks = parts.length - 1;
+          return (
+            <div className="space-y-4">
+              <p className="text-base font-bold text-gray-800 dark:text-gray-100 leading-loose">
+                {parts.map((p, i) => (
+                  <span key={i}>
+                    {p}
+                    {i < blanks && (
+                      <input
+                        value={answers[blockIdx]?.[`blank_${i}`] ?? ''}
+                        onChange={(e) => setAnswer(blockIdx, `blank_${i}`, e.target.value)}
+                        disabled={session.validatedBlocks[blockIdx]}
+                        className="mx-1 w-32 border-b-2 border-emerald-500 bg-transparent focus:outline-none text-center font-black"
+                        aria-label={`فراغ ${i + 1}`}
+                      />
                     )}
                   </span>
                 ))}
+              </p>
+              {Object.keys(b.popups).length > 0 && (
+                <div className="flex flex-wrap gap-2">
+                  {Object.entries(b.popups).map(([term, def]) => (
+                    <span key={term} className="relative inline-block">
+                      <button
+                        onClick={() => setOpenPopup(openPopup === term ? null : term)}
+                        className="text-xs font-bold bg-emerald-50 dark:bg-emerald-950/40 text-[#006d37] dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 px-2.5 py-1 rounded-lg hover:border-emerald-400"
+                      >
+                        {term} ↩
+                      </button>
+                      {openPopup === term && (
+                        <span className="absolute z-30 bottom-full left-1/2 -translate-x-1/2 mb-2 w-64 bg-white dark:bg-[#1a201c] p-3 rounded-xl shadow-2xl border border-gray-200 dark:border-gray-700 text-xs leading-relaxed text-gray-700 dark:text-gray-200 block">
+                          {def}
+                        </span>
+                      )}
+                    </span>
+                  ))}
+                </div>
+              )}
+              <div className="bg-gray-50 dark:bg-gray-900/40 rounded-2xl p-4 border border-gray-200 dark:border-gray-800">
+                <p className="text-sm font-black text-gray-800 dark:text-gray-100 mb-2">🧪 اختبار مصغّر</p>
+                <p className="text-sm text-gray-600 dark:text-gray-300 mb-3">{b.microTest.prompt}</p>
+                <div className="flex gap-2 flex-wrap">
+                  <input
+                    value={answers[blockIdx]?.['micro'] ?? ''}
+                    onChange={(e) => setAnswer(blockIdx, 'micro', e.target.value)}
+                    disabled={session.validatedBlocks[blockIdx]}
+                    className="flex-1 min-w-48 border border-gray-300 dark:border-gray-700 rounded-xl px-3 py-2 text-sm bg-white dark:bg-[#161c18] focus:border-emerald-500 focus:outline-none"
+                    aria-label="إجابة الاختبار المصغر"
+                  />
+                  <button
+                    onClick={() => passBlock(validateAccepted(answers[blockIdx]?.['micro'] ?? '', b.microTest.acceptedAnswers))}
+                    disabled={session.validatedBlocks[blockIdx]}
+                    className="px-4 py-2 rounded-xl font-black text-sm bg-[#006d37] hover:bg-[#00562b] text-white disabled:opacity-40"
+                  >
+                    تحقّق
+                  </button>
+                </div>
+                {result && (
+                  <p className={`mt-2 text-xs font-bold flex items-center gap-1.5 ${result.passed ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-600 dark:text-red-400'}`}>
+                    {result.passed ? <CheckCircle2 className="w-4 h-4" /> : <XCircle className="w-4 h-4" />}
+                    {result.passed ? result.feedbackAr : `${result.feedbackAr} — تلميح: ${b.microTest.errorHint}`}
+                  </p>
+                )}
               </div>
-            )}
+            </div>
+          );
+        }
+        // Forme 2 : production de texte libre (aucun trou) — prompt + réponses acceptées.
+        const answer = answers[blockIdx]?.['text'] ?? '';
+        return (
+          <div className="space-y-4">
+            <p className="text-base font-bold text-gray-800 dark:text-gray-100 leading-loose">{b.prompt}</p>
             <div className="bg-gray-50 dark:bg-gray-900/40 rounded-2xl p-4 border border-gray-200 dark:border-gray-800">
               <p className="text-sm font-black text-gray-800 dark:text-gray-100 mb-2">🧪 اختبار مصغّر</p>
-              <p className="text-sm text-gray-600 dark:text-gray-300 mb-3">{b.microTest.prompt}</p>
               <div className="flex gap-2 flex-wrap">
-                <input
-                  value={answers[blockIdx]?.['micro'] ?? ''}
-                  onChange={(e) => setAnswer(blockIdx, 'micro', e.target.value)}
+                <textarea
+                  value={answer}
+                  onChange={(e) => setAnswer(blockIdx, 'text', e.target.value)}
                   disabled={session.validatedBlocks[blockIdx]}
                   className="flex-1 min-w-48 border border-gray-300 dark:border-gray-700 rounded-xl px-3 py-2 text-sm bg-white dark:bg-[#161c18] focus:border-emerald-500 focus:outline-none"
-                  aria-label="إجابة الاختبار المصغر"
+                  aria-label="إجابة الاختبار المصغّر"
                 />
                 <button
-                  onClick={() => passBlock(validateAccepted(answers[blockIdx]?.['micro'] ?? '', b.microTest.acceptedAnswers))}
+                  onClick={() => passBlock(validateAccepted(answer, b.acceptedAnswers))}
                   disabled={session.validatedBlocks[blockIdx]}
                   className="px-4 py-2 rounded-xl font-black text-sm bg-[#006d37] hover:bg-[#00562b] text-white disabled:opacity-40"
                 >
@@ -242,7 +277,7 @@ export default function ActiveLessonView({ lessonKey, onBack, onNext, nextTitleA
               {result && (
                 <p className={`mt-2 text-xs font-bold flex items-center gap-1.5 ${result.passed ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-600 dark:text-red-400'}`}>
                   {result.passed ? <CheckCircle2 className="w-4 h-4" /> : <XCircle className="w-4 h-4" />}
-                  {result.passed ? result.feedbackAr : `${result.feedbackAr} — تلميح: ${b.microTest.errorHint}`}
+                  {result.passed ? result.feedbackAr : `${result.feedbackAr} — تلميح: ${b.errorHint}`}
                 </p>
               )}
             </div>

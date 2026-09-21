@@ -16,7 +16,7 @@ describe('Leçon active "Enzymes et catalyse" (d1-u3-l1-enzyme)', () => {
 
   it('définit des micro-tests avec au moins une réponse acceptée', () => {
     for (const block of lesson.blocks) {
-      if (block.type === 'TEXT_AND_PRODUCE') {
+      if (block.type === 'TEXT_AND_PRODUCE' && 'microTest' in block) {
         expect(Array.isArray(block.microTest.acceptedAnswers)).toBe(true);
         expect(block.microTest.acceptedAnswers.length).toBeGreaterThan(0);
       }
@@ -24,12 +24,12 @@ describe('Leçon active "Enzymes et catalyse" (d1-u3-l1-enzyme)', () => {
   });
 
   it('valide la réponse correcte du micro-test "طاقة التنشيط"', () => {
-    const block = lesson.blocks[0] as Extract<typeof lesson.blocks[number], { type: 'TEXT_AND_PRODUCE' }>;
+    const block = lesson.blocks[0] as Extract<typeof lesson.blocks[number], { type: 'TEXT_AND_PRODUCE'; microTest: unknown }>;
     expect(checkProduction('الإنزيم يخفض طاقة التنشيط', block.microTest.acceptedAnswers)).toBe(true);
   });
 
   it('rejette une réponse vide au micro-test', () => {
-    const block = lesson.blocks[0] as Extract<typeof lesson.blocks[number], { type: 'TEXT_AND_PRODUCE' }>;
+    const block = lesson.blocks[0] as Extract<typeof lesson.blocks[number], { type: 'TEXT_AND_PRODUCE'; microTest: unknown }>;
     expect(checkProduction('', block.microTest.acceptedAnswers)).toBe(false);
   });
 
@@ -44,7 +44,7 @@ describe('Leçon active "Enzymes et catalyse" (d1-u3-l1-enzyme)', () => {
 
   it('exerce le parcours : chaque réponse acceptée de chaque micro-test passe via le moteur réel', () => {
     for (const block of lesson.blocks) {
-      if (block.type !== 'TEXT_AND_PRODUCE') continue;
+      if (block.type !== 'TEXT_AND_PRODUCE' || !('microTest' in block)) continue;
       for (const answer of block.microTest.acceptedAnswers) {
         expect(
           checkProduction(answer, block.microTest.acceptedAnswers),

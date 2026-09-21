@@ -18,11 +18,23 @@
     "jsx": "react-jsx",
     "paths": {
       "@/*": [
-        "./*"
+        "./"
       ]
     },
-    "types": ["node", "vite/client"],
+    "types": [
+      "node",
+      "vite/client"
+    ],
     "allowImportingTsExtensions": true,
     "noEmit": true
-  }
+  },
+  "include": [
+    "src",
+    "scripts"
+  ],
+  "exclude": [
+    ".kilo",
+    "node_modules",
+    "dist"
+  ]
 }
