@@ -160,3 +160,45 @@ le livre en a une, c'est sa valeur d'autorité.
 
 **Verrou** : resumes.lock.test.ts étendu — 7 cartes `id="hosila"` + marqueurs +
 liens nav + ancrage lexical au livre + le chiffre 38ATP tracé à sa source (l.4154).
+
+## 11. ANALYSE du texte corrigé fourni par l'utilisateur (2026-09-21) — 3 conséquences
+
+L'utilisateur a fourni le **texte OCR corrigé** des pages clés du livre (p51-53, 68,
+109-115, 156-164, 195-200, 219-223, 229, 280-281, 326+). Analyse :
+
+### 11.1 AUTO-CORRECTION MAJEURE : les حصيلة U3, U5, U9, U10 EXISTENT
+
+Le §0 et le §9 de ce doc affirmaient « le livre n'imprime pas de حصيلة pour U3, U5,
+U9, U10 » — **FAUX** : le texte corrigé prouve qu'elles existent (**p68 الإنزيمات,
+p156-164 الاتصال العصبي, p280-281 بنية الكرة, + U9 الصفائح**). L'affirmation venait
+d'un **artefact d'ingestion** : l'OCR versionné est troué sur ces pages (ch9 : 23 car.,
+ch10 : 39 car., ch11 : 46 car. — le lien avec la mine enzymatique signalée en §7 d'
+AUDIT_LECONS_RESUMES est direct : les pages non ingérées = les chapitres quasi vides).
+→ **4 nouvelles cartes 🏛 injectées** : `phase4` (U3, ص68 : ES, الموقع الفعال,
+**التكامل المحفّز Adaptation induite**, pH/حرارة مثلى), `phase10` (U5, ص156-164 :
+كمون الراحة −70 mV, مضخة 3Na⁺/2K⁺, قنوات 5 تحت وحدات, PPSE/PPSI-GABA, الإدماج,
+6 مستويات للمخدرات), `phase18` (U9 : جلد الحمار الوحشي, مستوى بينيوف 45°/90°,
+تيارات الحمل), `phase20` (U10, ص280-281 : P/S/L-R, سيال/سيما/بيريدوتيت 70-15/49-20/44-42-8.5,
+ليتوسفير/أستينوسفير, نواة 17%). **Total : 11 cartes officielles / 11 unités qui en ont une.**
+
+### 11.2 Corrections des 3 cartes existantes
+
+- **D2-U6 (phase12)** : équation alignée sur la forme du livre : **n(H₂O)+n(CO₂) →(ضوء/يخضور) (CH₂O)ₙ+n(O₂)** ;
+- **D2-U7 (phase14)** : équation حلقة كريبس = **forme officielle du livre** (Acétyl-CoA + 3NAD⁺ + FAD + ADP + Pi → 2CO₂ + 3NADH,H⁺ + FADH₂ + ATP + CoA-SH ; mon ancienne version était un doublement ×2 par 2 pyruvates) + ligne الفسفرة التأكسدية **34 ATP (30+4)** ajoutée au tableau ;
+- **D2-U8 (phase15)** : la حصيلة « sans texte » du §6 était un artefact OCR aussi —
+  le texte corrigé fournit la **حصيلة complète** (cellules compartimentées, التركيب
+  الضوئي نهارا/التنفس ليلا, 4 fonctions de l'ATP : الحركة/البناء/النقل الفعال/الحرارة,
+  phrase finale). Carte enrichie avec le texte intégral.
+
+### 11.3 Confirmations indirectes (aucune retouche nécessaire)
+
+- **C46 (QCM)** : « فقيرة بالسيليس وغنى بالحديد والمغنيزيوم » = mot pour mot p281 (بيريدوتيت 44/42/8.5) ✓ — le débat historique sur ce QCM est clos par le texte officiel ;
+- **C45** : « سرعة أقل وانتشار في المواد الصلبة فقط » ✓ (p280 : الموجات S) ;
+- Résumés D1 : التكامل المحفّز (p68) justifie notre reformulation « تكامل بنيوي » (l'OCR ne le contenait pas ; le terme officiel est désormais DANS la carte U3) ;
+- Résumés U4/U5/U6/U7/U8 : structure et chiffres (38 ATP, −70 mV, 5 تحت وحدات) concordent.
+
+**Limites** : le document couvre U1-U10 (p51-281) + تتمة U11 ; pages des حصيلة U9 non
+numérotées dans le doc (cartes sans page citée). L'ancrage verrou des hosila reste
+au JSON ingéré pour les tokens communs ; les tokens révélés par le texte corrigé
+(التكامل المحفّز…) sont figés par marqueurs de carte, pas par ancrage JSON (source
+absente de l'ingestion trouée — cf. tâche future : ré-ingestion des pages manquantes).
