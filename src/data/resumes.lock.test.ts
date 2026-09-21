@@ -140,7 +140,35 @@ describe('الحصيلة المعرفية الرسمية du livre — injectée 
   });
 });
 
-describe('injection dans les surfaces', () => {
+  it('le schéma synthèse تركيب البروتين (U1) est injecté dans la leçon de clôture phase2', () => {
+    const brut = readFileSync(resolve(__dirname, '../../public/lessons/phase2_chapitres_3_4.html'), 'utf-8');
+    expect(brut.includes('id="schema-synthese"'), 'section schéma absente').toBe(true);
+    expect(brut.includes('link-schema'), 'lien nav schéma absent').toBe(true);
+    const texte = brut.replace(/<[^>]+>/g, ' ');
+    for (const m of ['المخطط الشامل لآليات تركيب البروتين', 'بدائيات النواة', 'حقيقيات النواة', 'Introns', 'البوليزوم', 'AUG', 'UAA/UAG/UGA', 'مُعاد بناؤه آليا']) {
+      expect(texte.includes(m), `marqueur schéma « ${m} » absent`).toBe(true);
+    }
+    // ordre : 📝 خلاصة → 🏛 حصيلة → 🗺 schéma → تقويم
+    const iResume = brut.indexOf('id="resume"');
+    const iHosila = brut.indexOf('id="hosila"');
+    const iSchema = brut.indexOf('id="schema-synthese"');
+    const iTaquim = brut.indexOf('id="ch2-step4"');
+    expect(iResume).toBeGreaterThan(-1);
+    expect(iHosila).toBeGreaterThan(iResume);
+    expect(iSchema).toBeGreaterThan(iHosila);
+    expect(iTaquim).toBeGreaterThan(iSchema);
+  });
+
+  it('toutes les affirmations du schéma sont ancrées au livre', () => {
+    const book = norm((JSON.parse(
+      readFileSync(resolve(__dirname, '../../data/bookContent.json'), 'utf-8'),
+    ) as { book: { full_text: string[] } }).book.full_text.join(' '));
+    for (const jeton of ['قبل انتهاء', 'نفس المكان', 'غشاء نووي يفصل', 'ماقبل', 'ناضج', 'البوليزوم', 'رامزه الانطلاق', 'الحويصلات', 'غولجي']) {
+      expect(book.includes(jeton), `« ${jeton} » (schéma) introuvable dans le livre`).toBe(true);
+    }
+  });
+
+  describe('injection dans les surfaces', () => {
   it('les 25 fichiers passifs contiennent la section + le lien nav + l\'objectif', () => {
     for (const k of CLES_PASSIVES) {
       const html = readFileSync(resolve(__dirname, `../../public/lessons/${k}.html`), 'utf-8');
