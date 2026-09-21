@@ -17,9 +17,14 @@ import type { SqliteStore as TSqliteStore } from '../../server/store';
 
 // Détection SANS faire échouer le chargement du fichier de test.
 let store: TSqliteStore | null = null;
+let creerStore: (() => TSqliteStore) | null = null;
 try {
   const { SqliteStore } = await import('../../server/store');
-  store = new SqliteStore(':memory:');
+  // Chaque storeNeuf() doit avoir SA PROPRE base : on garde le constructeur,
+  // pas seulement une instance (sinon les 2e/3e/4e it échouent sur
+  // UNIQUE(students.email) — les élèves du « store neuf » précédent traînent).
+  creerStore = (): TSqliteStore => new SqliteStore(':memory:');
+  store = creerStore();
 } catch {
   store = null; // bindings natifs absents → intégration sautée, plus bas
 }
@@ -30,11 +35,12 @@ const JOUR = 24 * 60 * 60 * 1000;
 const iso = (joursAvant: number) => new Date(MAINTENANT - joursAvant * JOUR).toISOString();
 
 function storeNeuf(): TSqliteStore {
-  if (!store) throw new Error('better-sqlite3 indisponible');
+  if (!creerStore) throw new Error('better-sqlite3 indisponible');
+  const st = creerStore(); // base VIERGE à chaque appel (véritable « store neuf »)
   for (const [id, nom] of [['stu_a', 'أمين'], ['stu_b', 'بدر'], ['stu_c', 'وسام']] as const) {
-    store.createStudent(id, `${id}@ecole.dz`, 'hash-invalide-pour-test', nom);
+    st.createStudent(id, `${id}@ecole.dz`, 'hash-invalide-pour-test', nom);
   }
-  return store;
+  return st;
 }
 
 function entryDe(studentId: string, id: string, joursAvant: number) {
