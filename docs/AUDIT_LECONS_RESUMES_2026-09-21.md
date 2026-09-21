@@ -70,3 +70,42 @@ Verrou mécanique associé : chaque leçon a un bloc خلاصة · 4-6 points ·
 simple par leçon » n'est satisfaite nulle part à 100 % — 44 leçons sans résumé, 6
 avec un résumé à simplifier. Priorité : É1 (19-20 résumés partagés aux 2 surfaces),
 puis É2/É3.
+
+---
+
+## 6. Correction de surface + exécution du GO (2026-09-21, après audit)
+
+**Correction de surface (erreur de l'audit initial).** La section §2 mesurait les
+« actives » sur `EXPERIMENTAL_LESSONS` (25 slugs) — or cette structure **n'est rendue
+par aucun composant** : elle ne sert que de source des quiz du bilan (`qcmBilan.ts`).
+La surface active RÉELLE = `ACTIVE_LESSONS` (`src/data/activeLessons.ts`,
+`ActiveLessonView.tsx`) : **20 leçons** (keys dont `synapse`, `subduction`,
+`immunity_*`, `d2-u6-l*`…), et **0/20 a un résumé** — la conclusion de l'audit
+tient, les chiffres de surface sont corrigés. Univers réel : **45 surfaces**
+(25 passives + 20 actives ; `lecon_transcription` et `phase11` existent des deux
+côtés avec des contenus différents : la phase11 active = مقر ch31-32, la passive =
+الكيموضوئية ch33-34 — deux résumés distincts sous un même slug).
+
+**GO exécuté le même jour.**
+
+| Avant | Après |
+|---|---|
+| Résumés : **6/45** surfaces (6 passives héritées, 0 active) | **45/45** (25/25 passives = 19 injectés + 6 hérités · 20/20 actives = carte 📝) |
+| Résumé au standard simple : 0 | **39 textes** (38 clés + dédoublement phase11) — 185 points, tous ≤ 24 mots |
+| Ancrage livre : non mesuré | **185/185 points ancrés** (≥ 1 jeton normalisé ≥ 5 car. dans les chapitres déclarés `CHAPITRES_ANCRAGE`) |
+
+**Implémentation** :
+- `src/data/resumesLecons.ts` — 39 entrées {objectif, 4-6 points, termeBac} +
+  `CHAPITRES_ANCRAGE` (chapitres du livre par clé, contenu-basé : les slugs mentent)
+  + `resumePourActif()` (résout le cas phase11 active≠passive) ;
+- `ActiveLessonView.tsx` — carte « 📝 خلاصة الدرس » en bas des 20 actives, **hors
+  machine d'états** du tunnel (zéro risque sur sessions/snapshots) ;
+- 19 fichiers HTML passifs — section `<section id="resume">` (objectif + points +
+  terme bac) insérée avant le تقويم + lien nav sticky (19/19, sans exception) ;
+- `src/data/resumes.lock.test.ts` — 8 tests : couverture 20 actives + 19 passives,
+  câblage viewer, standard (4-6 points ≤ 24 mots), **ancrage livre par point**,
+  présence effective de la section/objectif/lien dans les 19 fichiers, cas phase11
+  et phase10 (hybride couvrant المخدرات + الصانعة الخضراء).
+
+**Restant (É2, non bloquant)** : restructurer les 6 résumés hérités au standard
+simple (contenu réel mais dense : 2-4 phrases > 22 mots).

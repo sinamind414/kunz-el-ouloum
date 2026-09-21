@@ -6,6 +6,7 @@
 import { useEffect, useMemo, useReducer, useState } from 'react';
 import { CheckCircle2, XCircle, ChevronLeft, Lightbulb, Info } from 'lucide-react';
 import { ACTIVE_LESSONS, getLessonProgression } from '../data/activeLessons';
+import { resumePourActif } from '../data/resumesLecons';
 import type { Block } from '../data/activeLessons';
 import { normalizeAr } from '../lib/validation/normalizeAr';
 import { validateAnswer } from '../lib/validation/ValidationEngine';
@@ -848,6 +849,23 @@ export default function ActiveLessonView({ lessonKey, onBack, onNext, nextTitleA
           )}
         </div>
       )}
+
+      {(() => {
+        // 📝 خلاصة الدرس : carte indépendante (hors machine d états du tunnel),
+        // ancrée livre officiel — verrou resumes.lock.test.ts.
+        const resume = resumePourActif(lessonKey);
+        if (!resume) return null;
+        return (
+          <div dir="rtl" className="mt-6 rounded-3xl p-5 border-2 border-emerald-300/60 dark:border-emerald-800/60 bg-emerald-50/60 dark:bg-emerald-950/20">
+            <p className="text-sm font-black text-emerald-800 dark:text-emerald-300 mb-2">📝 خلاصة الدرس</p>
+            <p className="text-xs font-bold leading-relaxed mb-3 text-gray-800 dark:text-gray-200">🎯 {resume.objectif}</p>
+            <ol className="list-decimal pr-5 space-y-1.5 text-xs leading-relaxed text-gray-700 dark:text-gray-300">
+              {resume.points.map((pt, i) => (<li key={i}>{pt}</li>))}
+            </ol>
+            <p className="text-xs font-black mt-3 text-amber-700 dark:text-amber-400">🔑 المصطلح المفتاح للبكالوريا : {resume.termeBac}</p>
+          </div>
+        );
+      })()}
     </div>
   );
 }
