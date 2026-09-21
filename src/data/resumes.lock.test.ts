@@ -191,6 +191,32 @@ describe('الحصيلة المعرفية الرسمية du livre — injectée 
     expect(iTaquim).toBeGreaterThan(iSchema);
   });
 
+  it('le schéma synthèse Orogenèse (U11, p330) est injecté dans la leçon de clôture phase22', () => {
+    const brut = readFileSync(resolve(__dirname, '../../public/lessons/phase22_chapitres_43_44.html'), 'utf-8');
+    expect(brut.includes('id="schema-synthese"'), 'section schéma U11 absente').toBe(true);
+    expect(brut.includes('/assets/images/schemas/domaine3_tectonique/schema_synthese_orogenese_U11.jpg'), 'image schéma U11 absente').toBe(true);
+    expect(brut.includes('link-schema'), 'lien nav schéma absent').toBe(true);
+    const texte = brut.replace(/<[^>]+>/g, ' ');
+    for (const m of ['Orogenèse', 'سلسلة جبلية', 'التصادم', 'تقارب', 'قشرة محيطية', 'السينوزوي', 'الترياسي', 'الليثوسفيري']) {
+      expect(texte.includes(m), `marqueur schéma U11 « ${m} » absent`).toBe(true);
+    }
+    const iHosila = brut.indexOf('id="hosila"');
+    const iSchema = brut.indexOf('id="schema-synthese"');
+    const iTaquim = brut.indexOf('id="ch2-step4"');
+    expect(iHosila).toBeGreaterThan(-1);
+    expect(iSchema).toBeGreaterThan(iHosila);
+    expect(iTaquim).toBeGreaterThan(iSchema);
+  });
+
+  it('les jetons du schéma U11 sont ancrés au livre', () => {
+    const book = norm((JSON.parse(
+      readFileSync(resolve(__dirname, '../../data/bookContent.json'), 'utf-8'),
+    ) as { book: { full_text: string[] } }).book.full_text.join(' '));
+    for (const jeton of ['سلسله جبليه', 'الوجه', 'الليتوسفير', 'الاستينوسفير', 'سينوزوي', 'الترياسي', 'قشره محيطيه', 'التصادم', 'تقارب', 'تباعد']) {
+      expect(book.includes(jeton), `« ${jeton} » (schéma U11) introuvable dans le livre`).toBe(true);
+    }
+  });
+
   it('les jetons du schéma U10 sont ancrés au livre', () => {
     const book = norm((JSON.parse(
       readFileSync(resolve(__dirname, '../../data/bookContent.json'), 'utf-8'),
