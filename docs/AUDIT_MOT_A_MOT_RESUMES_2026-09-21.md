@@ -60,7 +60,7 @@ Sondes négatives → reformulation dans le VOCABULAIRE RÉEL du livre (comptage
 
 ## 4. Découvertes lexicales (livre vs lexique pédagogique courant)
 
-Le livre OCR ne nomme JAMAIS : **ثيلاكويد** (0× — il dit الحشوه 22×), **le thymus**
+Le livre OCR n'emploie jamais l'orthographe **ثيلاكويد** (0×) mais écrit **التيلاكويد avec تā' (تيلاكويد : 38×, ex. l.3656) — précision ajoutée le 2026-09-21, voir RESUMES_MAARIFI §8** (il dit aussi الحشوه 22×), **le thymus**
 (زعتر/صعتر 0×), **غوتنبرغ/ليمان** (0×), « القفل والمفتاح » (0×), **تخليق** (0×).
 Il dit : مستقبلات (23×), تعرض (26×), بلعم (17×), بلاسموسيت (5×), ذاكرة (2×),
 حويصلات (8×), تماثل (1×), برفورين (1×), موهو (2×), كالفن (5×), هيل (3×).
