@@ -140,6 +140,32 @@ describe('الحصيلة المعرفية الرسمية du livre — injectée 
   });
 });
 
+  it('le schéma synthèse المناعة (U4, p118) est injecté dans la leçon de clôture phase7', () => {
+    const brut = readFileSync(resolve(__dirname, '../../public/lessons/phase7_chapitres_13_14.html'), 'utf-8');
+    expect(brut.includes('id="schema-synthese"'), 'section schéma U4 absente').toBe(true);
+    expect(brut.includes('/assets/images/schemas/domaine1_proteines/schema_synthese_immunite_U4.jpg'), 'image schéma U4 absente').toBe(true);
+    expect(brut.includes('link-schema'), 'lien nav schéma absent').toBe(true);
+    const texte = brut.replace(/<[^>]+>/g, ' ');
+    for (const m of ['بلاسموسيت', 'البرفورين', 'HLA II', 'HLA I', 'TCR', 'LBm', 'LTc', 'IL2']) {
+      expect(texte.includes(m), `marqueur schéma U4 « ${m} » absent`).toBe(true);
+    }
+    const iHosila = brut.indexOf('id="hosila"');
+    const iSchema = brut.indexOf('id="schema-synthese"');
+    const iTaquim = brut.indexOf('id="ch2-step4"');
+    expect(iHosila).toBeGreaterThan(-1);
+    expect(iSchema).toBeGreaterThan(iHosila);
+    expect(iTaquim).toBeGreaterThan(iSchema);
+  });
+
+  it('les jetons du schéma U4 sont ancrés au livre', () => {
+    const book = norm((JSON.parse(
+      readFileSync(resolve(__dirname, '../../data/bookContent.json'), 'utf-8'),
+    ) as { book: { full_text: string[] } }).book.full_text.join(' '));
+    for (const jeton of ['بلاسموسيت', 'برفورين', 'التكاثر', 'الانترلوكين', 'ذاكره', 'المستضد']) {
+      expect(book.includes(jeton), `« ${jeton} » (schéma U4) introuvable dans le livre`).toBe(true);
+    }
+  });
+
   it('le schéma synthèse تركيب البروتين (U1) est injecté dans la leçon de clôture phase2', () => {
     const brut = readFileSync(resolve(__dirname, '../../public/lessons/phase2_chapitres_3_4.html'), 'utf-8');
     expect(brut.includes('id="schema-synthese"'), 'section schéma absente').toBe(true);
