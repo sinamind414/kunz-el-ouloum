@@ -26,7 +26,12 @@ type StudentAgg = {
   quizCount: number;
   missionCount: number;
   avgQuizPercent: number | null;
+  lastActivity?: string | null;
+  actif7j?: boolean;
+  actif30j?: boolean;
 };
+
+type Resume = { inscrits: number; actifs7j: number; actifs30j: number };
 
 type Entry = {
   id: string;
@@ -41,6 +46,7 @@ type Entry = {
 
 export default function TeacherDashboardView({ onBack }: Props) {
   const [students, setStudents] = useState<StudentAgg[]>([]);
+  const [resume, setResume] = useState<Resume | null>(null);
   const [loading, setLoading] = useState(true);
   const [selectedStudentId, setSelectedStudentId] = useState<string | null>(null);
   const [entries, setEntries] = useState<Entry[]>([]);
@@ -76,6 +82,7 @@ export default function TeacherDashboardView({ onBack }: Props) {
           };
         });
         setStudents(enriched);
+        setResume((data as { resume?: Resume }).resume ?? null);
       })
       .catch((err) => {
         if (isAuthFailure(err)) setTeacherApiToken(null);
@@ -87,6 +94,7 @@ export default function TeacherDashboardView({ onBack }: Props) {
   const handleTeacherLogout = () => {
     setTeacherApiToken(null);
     setStudents([]);
+    setResume(null);
     setEntries([]);
     setSelectedStudentId(null);
     setError(null);
@@ -362,6 +370,22 @@ export default function TeacherDashboardView({ onBack }: Props) {
             </div>
           </div>
       </div>
+      {resume && (
+        <div className="flex flex-wrap items-center gap-2 mb-3">
+          <span className="text-xs font-black px-3 py-1.5 rounded-full bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-200">
+            {resume.inscrits} مسجل
+          </span>
+          <span className="text-xs font-black px-3 py-1.5 rounded-full bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300">
+            {resume.actifs7j} نشط (7 أيام)
+          </span>
+          <span className="text-xs font-black px-3 py-1.5 rounded-full bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-300">
+            {resume.actifs30j} نشط (30 يوما)
+          </span>
+          <span className="text-[10px] font-bold text-gray-400 dark:text-gray-500">
+            الأوضاع دون حساب غير محسوبة — لا ترسل أي بيانات إلى الخادم
+          </span>
+        </div>
+      )}
       <div className="grid grid-cols-1 gap-3">
         {students.length === 0 && <p className="text-xs text-gray-500">لا تلاميذ مسجلين بعد.</p>}
         {students.map((student) => (
@@ -376,6 +400,10 @@ export default function TeacherDashboardView({ onBack }: Props) {
                 <div className="text-[11px] text-gray-500 dark:text-gray-400">{student.email}</div>
               </div>
               <div className="flex items-center gap-3">
+                <span
+                  className={`w-2.5 h-2.5 rounded-full shrink-0 ${student.actif7j ? 'bg-emerald-500' : student.actif30j ? 'bg-amber-400' : 'bg-gray-300 dark:bg-gray-700'}`}
+                  title={student.lastActivity ? `آخر نشاط: ${new Date(student.lastActivity).toLocaleString('ar-DZ')}` : 'لا نشاط مسجل'}
+                />
                 <div className="text-left">
                   <div className="text-[10px] text-gray-500 font-bold">ICM moyen</div>
                   <div className="text-sm font-black text-gray-900 dark:text-white">{student.avgIcm}%</div>

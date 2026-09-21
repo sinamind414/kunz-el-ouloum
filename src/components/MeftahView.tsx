@@ -1,5 +1,6 @@
 // MeftahView.tsx
-// « المفتاح » — V4.3 (nom officiel : MIFTAH_NAME_OFFICIAL_AR) : 3 visages méthode + 3 visages application BAC 2025.
+// « المفتاح » (nom officiel : MIFTAH_NAME_OFFICIAL_AR) : 3 visages méthode + 3 visages application BAC 2025.
+// Version : MIFTAH_MANHAJIA_VERSION (meftahManhajia) — plus aucun littéral de version ici.
 // Navigation 3 niveaux : grille des visages → visage (sections) → question BAC.
 // Les أفعال détaillés renvoient au composant parent via onOpenVerb (methodologyVerbs.tsx).
 

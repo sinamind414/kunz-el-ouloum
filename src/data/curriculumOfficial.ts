@@ -1,6 +1,10 @@
 // curriculumOfficial.ts
-// Curriculum officiel 3AS Sciences expérimentales — extrait mot à mot des 2 sources
-// officielles du Ministère (جوان 2017) :
+// Curriculum officiel 3AS Sciences expérimentales — extrait des 2 sources
+// officielles du Ministère (جوان 2017). MESURE 2026-09-20 : l'ancrage L5 n'est
+// PAS mot à mot (15/42 sous-chaînes exactes ; 22/42 à couverture lexicale 100 %,
+// 13 citations < 85 % à réviser — L5 est un OCR bruité). État figé + liste
+// a-revoir : src/data/bibliothequeOfficielle.lock.test.ts. Ne PAS réintroduire
+// la promesse « mot à mot » sans re-vérification complète.
 //   [L5] التدرج السنوي للتعلمات (docs/sources/التدرج-السنوي-للتعلمات-2017.txt)
 //   [L6] دليل الأستاذ (docs/sources/دليل-الأستاذ-2017.txt)
 //

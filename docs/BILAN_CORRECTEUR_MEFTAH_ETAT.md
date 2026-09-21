@@ -1,0 +1,244 @@
+# BILAN D'ÉTAT — Correcteur & Meftah (au 2026-09-19, fin de session)
+
+**Santé globale : 692/692 tests vitest · 138/138 harnais · check:v2 OK · build production OK.**
+**Documents de référence :** `AUDIT_CORRECTEUR_MEFTAH_2026-09-19.md` (audit + Pierre 1) · `VERIF_HIKALA_BAC.md` (fiche هيكلة) · `AUDIT_ARCHITECTURE_2026-09-19.md` (repo global).
+
+---
+
+## 1. LE CORRECTEUR — état actuel
+
+### Ce qu'il est aujourd'hui
+
+Un pipeline en 6 couches : banque de mots-clés L1–L6 (traçable, testée) → dictionnaire 617 entités → barème officiel 80 items (2023→2025) → **blindage d'intégrité (NOUVEAU)** → sanctions scientifiques (6 règles) → note calibrée (non branchée, voir dette).
+
+### Ce qui a été prouvé (audit du jour, sorties réelles)
+
+| Constat | Verdict |
+|---|---|
+| Salade de mots-clés, hors-sujet, négations, perroquet | **4/4 attaques à 8/8 avant blindage** — détecteur de déversement lexical |
+| Barème auto affiché aux élèves | Prédicteur nul (r=0) selon vos propres données, présenté sous le titre « التنقيط على المقياس الرسمي » |
+| Note calibrée (80 copies) | Sature à 3–14 mots-clés ; interceptes payant la copie creuse ; **code mort** (zéro composant) ; corpus non reproductible ; S2-Ex3 à r=0,45 |
+| Matching | Sous-chaînes : CO2 crédite O2, PSII crédite PSI |
+| Fidélité du dictionnaire | ✅ **VALIDÉE contre le corrigé ministériel 2025** (item par item : Q1=0,25×5, Q2=3,75, RIP=1,25, annonce=0) |
+
+### Ce qui a été corrigé (Pierre 1 + arbitrage officiel)
+
+| Correctif | Fichier | Effet mesuré |
+|---|---|---|
+| Vigile anti-jeu : 3 plafonds (non-prose 30 %, négations 50 %, perroquet 25 %) | `integriteCopie.ts` + câblage dans `noterExerciceCalibre` | 8/8 → **2,4/8** (salade, hors-sujet, négations), 8/8 → **0/8** (perroquet) |
+| Contrôle positif verrouillé : les 3 réponses modèle Meftah **ne bougent pas** | `integriteCopie.test.ts` | 3,87/5 · 7/7 · 5,18/8 — zéro plafond |
+| La QUESTION entre dans le moteur (`{question, attendus}`) | `calibrationBac2025.ts` | Perroquet détecté par écho lexical ; hors-sujet = 0/8 quand les attendus sont fournis (testé) |
+| Fin de la note au hasard : verbId inconnu → `throw` | `methodologyScorer.ts` | « hypothesize » ne note plus contre la carte analyse |
+| Tests anciens adaptés honnêtement | `calibrationBac2025.test.ts` | R2 étendu en R2+R5 ; le test « salade immunité 8/8 » exige maintenant ≤ 2,4/8 |
+
+### La dette du correcteur (dans l'ordre de priorité)
+
+1. **P2 — Brancher les attendus par question** (le cœur). Les 80 items officiels sont dans le build, **prouvés fidèles** ; le mécanisme est câblé et testé. Reste : rendre `attendus` obligatoire pour toute notation + l'alimenter par question. *Sans ça, le hors-sujet intrinsèque reste indétectable (allié accidentel : le signal prose).*
+2. **P3 — Trancher le sort de la calibration** : brancher derrière flag « expérimental » ou geler ; refitter sur vraies copies humaines (protocole R4 existant) ; publier les métriques PAR GROUPE.
+3. **P4 — Sanctions 6 → ~30** (une confusion/semaine, source = rapports de correction).
+4. **P5 — Renommer l'affichage** « التنقيط » → statut expérimental + crédit proportionnel aux entités de signature (1 entité = item entier aujourd'hui).
+5. **P6 — Sous-chaînes** : frontières de mots dans le matching.
+
+---
+
+## 2. MEFTAH — état actuel
+
+### Ce qui est validé
+
+- **Le fond (M1) ✅** : 4 dents, loi unique sourcée (`meftahLaw`), deux patrons d'analyse, interdits avec contextes légitimes, think/write/trap — conforme à la doctrine officielle et à la fiche هيكلة (colonne « قياس التعليمة », vérifiée et verrouillée en test).
+- **Les réponses modèle BAC 2025 ✅** : scientifiquement exactes (RIP, pyrénoïde/CA/Rubisco, mécanisme Ado/A1R/NE), et servent désormais de **contrôle positif permanent** du correcteur.
+- **La vérité des barèmes ✅ (M2 CLOSE)** : le corrigé ministériel a tranché — le dictionnaire était exact, Meftah était faux. Corrigé : Q1 **1,25** / Q2 **3,75** ; et bug découvert au passage : **Ex2 sommait 7,5 ≠ 7**, réparé (1,5 / 2,5 / 2,5 / 0,5).
+
+### Les verrous posés (plus jamais de dérive silencieuse)
+
+`hikalaBac.test.ts` : somme des questions = barème (5/7/8) · parité programmatique Meftah ↔ `ATTENDUS_BAREME` · فخ RIP=1,25 cohérent · mapping calibration ↔ هيكلة · dette des أفعال bornée et visible.
+
+### La dette de Meftah
+
+1. **P2 — Drift de versions** : spec `3.3` vs données/Vue `V4.3` — unifier (½ j).
+2. **P3 — Collision d'espaces d'ids** : `linkedVerbId` (reflexes : `hypothesize`…) ≠ cartes scoreur (`verb_*`). Aujourd'hui la navigation Meftah ne score pas — mais le jour où ça score, ça throw (c'est voulu). Harmoniser.
+3. **P4 — check-miftah** = police de marque (~120 chaînes, 0 assertion pédagogique) ; y déplacer les verrous de barème.
+
+### Le constat structurel qui reste
+
+**~40 % de couverture des أفعال officiels** par les 12 cartes du scoreur. T2+T3 (15 pts/20) portent 17+ occurrences sans carte : **ناقش، علّل، برّر، أثبت، استخرج، برهن، صغ المشكل**. L'app n'entraîne ni ne note les verbes du مسعى — le plus gros exercice du bac. (Faux du jour corrigés par la mesure : la dette = 27 occurrences, pas ~15 ; T1 est le pire en ratio, mais ce sont les points de T2+T3 qui comptent.)
+
+---
+
+## 3. LES CHIFFRES DE LA SESSION
+
+| | Avant | Après |
+|---|---|---|
+| Attaques adversariales réussies (note max) | 4/4 | **0/4** |
+| Réponses légitimes dégradées | — | **0/3** (verrouillé par test) |
+| Barème Meftah faux | 5 labels (dont somme 7,5≠7) | **0** (verrouillé par test) |
+| VerbId inconnu | notait 100 % en silence | **throw** |
+| Contradiction de sources (M2) | ouverte | **close sur corrigé officiel** |
+| Tests | 663 (+4 rouges hors build) | **692 verts, build inclus** |
+
+## 4. LA DÉCISION QUI T'ATTEND
+
+Le correcteur est maintenant **un détecteur de déversement plafonné** — honnête, testé, non-gameable au niveau superficiel. Il n'est **pas encore un correcteur au sens plein**, parce qu'il ne note pas contre la question. La marche à franchir est éditoriale, pas algorithmique : transformer les 80 items officiels (prouvés exacts) en attendus obligatoires par question. C'est P2. Tout le reste est secondaire.
+
+
+---
+## Mise à jour du 2026-09-19 (même journée) — Pierre 2 EXÉCUTÉE
+
+« rendre les attendus obligatoires » : fait. Registre 6 groupes (build prouvé + corrigé
+ministériel intégral), moteur R6 (couverture attendus × max, puis plafonds d'intégrité),
+câblé dans le panneau correcteur, 703/703 + 138/138 + build OK. Détail complet :
+`docs/AUDIT_CORRECTEUR_MEFTAH_2026-09-19.md` §7 (avant/après chiffrés et limites).
+Reste du plan : calibration sur copies humaines (R4), sanctions 6→30, ICM, granularité
+par item (P5), branchement élève de bout en bout.
+
+**Pierre 2b (même journée)** : les 5 limites de la Pierre 2 sont réglées — granularité par
+composantes (P5 : « ARNm ARNr ARNt » sans les rôles ne prend plus les points des rôles),
+registre 100 % automatique (Pi confirmé par l'équation officielle), شاهد confirmé par
+ventilation arithmétique du corrigé, boucle élève branchée de bout en bout (défi
+« الإطار الرسمي: بكالوريا 2025 » → note /20 + détail). 711/711 · 138/138 · build OK.
+Détail : AUDIT §« Pierre 2b ».
+
+**Pierre 2c (finalisation)** : M3 versions (constantes uniques, littéraux bannis), M4
+check-miftah = garde-fou pédagogique runtime (sommes, parité, registre), C5 frontières
+latines (CO2/O2, ARNm/ARN, Edaravone/EDA — fin des faux positifs de sous-chaînes),
+C6 sanctions 6→26 (inversions « forte », co-occurrences « vigilance »).
+720/720 · 138/138 · build OK · check:miftah OK. Reste : R4 (copies humaines, bloqué
+données), ICM sémantique (éditorial), P5 étendue (au premier FP réel).
+
+**Pierre 2d (clôture du plan)** : C4b (inversions factuelles −0,5 n, vigilances gratuites),
+C7 (5 critères qui tombaient dans « 40 caractères » ont leur sémantique ; critères de contenu
+transférés aux cartes ; fin des portes 50/60 ; « Mars à 100 % » assuré = l'ICM juge la méthode,
+le registre juge le fond), R4 rétrogradée (le barème EST le modèle — plus de fit à caler).
+Plan originel : 7/7 actions closes. 729/729 · 138/138 · build · check:miftah.
+Reste hors plan : التدرج السنوي (L5), livre prof, archivage élève de la note obligatoire.
+
+**Pierre 2e (historique de notes)** : décision propriétaire tranchée et livrée — chaque
+épreuve soumise est archivée (total /20 + détail par exercice), panneau « سجل النقاط »,
+événement dashboard si compte élève (rien ne quitte l'appareil en invité, textes locaux).
+738/738 · 138/138 · build · check:miftah. Reste : التدرج السنوي (L5), livre prof.
+
+**Pierre 2f (livre prof ingéré — 3e référence du correcteur)** : le propriétaire a
+fourni le texte intégral du دليل الأستاذ (guide officiel 2017, 133 pages, 3AS Bio).
+Extraits sourcés : `docs/sources/dalil-alustadh-3AS-extraits.md` ; copie brute d'extraction
+PDF déjà en dépôt (`docs/sources/دليل-الأستاذ-2017.txt`, non greppable — ligatures).
+Intégré au dictionnaire de sanctions :
+- **8 règles nouvelles sourcées guide** : `oxygene_source_co2` (forte — « مصدر الأكسجين
+  هو الماء وليس CO2 », garde anti-négation), `protease_specificite_inversee` (forte —
+  trypsine=Lys/Arg, chymotrypsine=Tyr/Phe, garde sur les séquences latines du guide),
+  `structure_terme_rubaiya` + `structure_quaternaire_4_chaines` (vigilance — erratum
+  « لا علاقة بين 4 تحت وحدات والبنية الرابعية »), `bloqueurs_ttx_tea` (vigilance —
+  erratum ص132 TTX=Na+, TEA=K+), `curare_sur_canal_voltage` (vigilance — canaux
+  CHIMIQUES, jamais forte pour ne pas pénaliser la phrase juste), `pompe_na_k_inversee`
+  (vigilance — 3 Na⁺ sortent / 2 K⁺ entrent, fenêtres serrées), `arnr_3_types_pas_arnt`
+  (vigilance — correction explicite du BAC 1999).
+- **2 renforcements** : `atp_bilan_respiration` cite désormais le guide (« الحصيلة
+  الكلية لعدد ATP هي 38 جزيئة ») en plus du livre L9843 ; `phase_obscure_nuit`
+  RESSERRÉE — le guide dit « المرحلة ب لا تحتاج إلى الضوء لكنها تتم في الضوء » et
+  utilise lui-même « في غياب الضوء » : la règle ne sonne plus que sur la PHASE nommée
+  placée dans le noir/la nuit (fenêtre 25 chars), plus jamais sur une co-occurrence
+  simple (FP éliminés).
+- **Décompte tranché** : le nombre réel pré-P2f était 25 règles (les docs disaient 26
+  — surestimation d'une unité, corrigée) → **33 règles** désormais.
+- **Pièges de normalisation rencontrés (consignés)** : اللاضوئية → « للاضوييه » (ئ→ي)
+  — un pattern contenant ئ/ؤ ne matche JAMAIS post-normalAr ; قنوات = ق-ن-و-ات (pas
+  de substring « قنا » au pluriel).
+747/747 (738+9 tests P2f) · 138/138 · build · check:miftah. Reste : التدرج السنوي
+(L5 — source brute déjà en dépôt : `docs/sources/التدرج-السنوي-للتعلمات-2017.txt`),
+structure du programme extraite dans les extraits (§10). Cleanup : probe_p5_tmp.ts
+supprimé du dépôt (git rm).
+
+**Pierre 2g (barème officiel de l'équation + isolement d'année des overlays)** — deux
+corrections de justesse sourcées corrigé ministériel 2025 (re-fetché, verbatim) :
+1. **Équation glycolyse S2-Ex1 : 0.75 → 1.25 pt**. Le corrigé dit « عناصر من مجموع
+   الخمسة المسطرة في المعادلة؛ يُمنح 0.25 نقطة لكل عنصر » ; le « 0.75 » du build
+   n'existe nulle part dans le corrigé. Les cinq éléments soulignés = les composés
+   A,B,C,D,D' de la Q1 (ATP, ADP, Pi, NAD⁺, NADH,H⁺) — encodés en 5 composantes
+   OU (crédit proportionnel : 3 éléments sur 5 = 0.75). Garde «nad» ≠ «nadh»
+   (lookarounds). **Conséquence assumée** : Σ جزئيات = 5.5 > enveloppe 5 —
+   l'excédent est absorbé par le plafond maxPts (couverture ≤ 1), comme le
+   correcteur officiel qui plafonne aussi ; effet bord = redistribution
+   proportionnelle légère sur les copies partielles de S2-Ex1 (~9 % max).
+2. **Bug de fuite inter-années des overlays (préexistant, silencieux)** : la lookup
+   `cle.endsWith(k)` sans préfixe d'année appliquait les formes/composantes 2025 aux
+   items homonymes 2023/2024 — 11 clés contaminées (« فوسفات » créditait l'item
+   ARNt de bac2024 !). Tous les clés OVERLAY_BUILD préfixés par année
+   (`bac2025_S1/S1-Ex1/…`), verrou anti-fuite par test.
+Garde-fou appris : `check:miftah` accepte les débordements SOURCÉS (registre
+DEPASSEMENTS, sinon échec). 752/752 (747+5) · 138/138 · build · check:miftah.
+
+**L5 — التدرج السنوي : décision d'exigibilité (déléguée, tranchée 2026-09-19)** :
+- **Décision** : le التدرج reste BIBLIOTHÈQUE de référence — aucune règle moteur n'en
+  dérive. Un document de pilotage annuel (pacing, وضعيات, durée) ne fonde aucune
+  sanction ni barème ; les attendus de notation viennent du corrigé + du guide.
+- **État de la source en dépôt** : `docs/sources/التدرج-السنوي-للتعلمات-2017.txt`
+  = OCR de tableau EN MIETTES (cellules éclatées mot à mot, transpositions ل/د) —
+  non citable verbatim, donc aucune fiche d'extraits n'en est tirée (refus
+  d'inventer). Couverture thématique vérifiée par comptage NFKC : les 3 domaines
+  SE présents (بروتينات 77 · énergie 42 · تكتوني 59), module Math absent
+  (filière SE seule — conforme au périmètre).
+- **Déblocage** : si le propriétaire veut pousser L5, recoller le texte via le
+  canal fiable (texte collé) comme pour le دليل الأستاذ — alors seulement une
+  fiche d'extraits sourcés sera produite.
+
+**Banc de supervision R4 (2026-09-19, fin)** : le propriétaire a tenté de fournir
+40 copies élèves + RECAPITULATIF — **5e échec du canal d'upload** (aucun fichier
+sur disque, vérifié `ls`+`find`). En attente du recollage texte. Le banc est prêt :
+- `src/supervision/evaluerCopies.ts` (9 tests) : split sujet-complet sur repères
+  التمرين (ordinaux + numériques), parseur RECAP tolérant (virgule décimale, /20,
+  3 notes par exercice sommées, chiffres arabes, lignes non parsées signalées),
+  Pearson, écart moyen/|écart|, mode exercice auto-argmax 6 groupes, flag
+  d'attribution S1/S2 ambiguë (< 1 pt).
+- `scripts/evaluer-copies.ts` + `npm run evaluer-copies -- --dir … [--sujet|--groupe|--out]`
+  : tableau par copie + stats fiabilité + rapport MD.
+- Contrat vérifié sur copies synthétiques : couverture 1 → salade plafonnée
+  non_prose 30 % (0.3×20=6 max) — le blindage s'applique aussi au banc.
+- Règle d'usage : le banc MESURE l'écart correcteur↔prof (supervision), il ne
+  remplace jamais la décision pédagogique.
+761/761 (752+9) · check:miftah OK.
+
+**R4 exécutée — supervision sur 40 copies (2026-09-19, sources : branche master)** :
+les copies (simulées, Sujet 1, gradient 2,5→19,5) étaient sur GitHub master — récupérées
+par `git checkout origin/master --` (mêmes chemins, fusion future propre). Le banc
+(`npm run evaluer-copies -- --dir . --sujet 1`) a mesuré puis la calibration a corrigé :
+- **Avant** : r = 0,969 · écart moyen −1,53 · |écart| moyen 1,82 (moteur trop dur).
+- **Après** : r = 0,967 · écart moyen +0,79 · |écart| moyen **1,22** ·
+  par exercice r = 0,90/0,97/0,88 et |écart| = 0,64/0,84/1,30.
+- Corrections moteur : FP intro/concl (formes `arn`/`rip` génériques — l'overlay
+  REMPLACE maintenant les formes d'entités), piège normalAr « تيلاكوئيدات »
+  (ئ→يي : stème « تيلاكو »), composantes proportionnelles sur les valeurs des
+  courbes (80/90 · 20 · 70), crédit Ex3 lié aux phrases (« افراز ne », تفعيل+Go/Gi)
+  et non aux jetons nus (« mtb »).
+- Résidus documentés dans `docs/SUPERVISION_COPIES_BAC2025_S1.md` : Ex1 −0,6
+  structurel (ventilation du générateur 0,5/4,5 ≠ corrigé 1,25/3,75), Ex3 1,30
+  (compression partie 2 chez le générateur), 2 items volontairement inatteignables
+  sur ce lot (نفوذ · سكر/APG).
+- ⚠️ Le « prof » de ce lot = barème interne du GÉNÉRATEUR des copies — supervision
+  définitive = vraies copies seulement.
+765/765 (761+4) · boussole 138/138 · build · check:miftah.
+
+**P2 — règle dure « attendus obligatoires » (2026-09-19, complétion)** : audit de
+tous les chemins de note → trois fuites fermées :
+1. **`noterDepuisCouverture` SUPPRIMÉ du code** (fit a·cov+b sur la banque
+   d'unité, déprécié depuis R6 mais toujours exporté+testé = porte ouverte). Il
+   n'existe plus AUCUN chemin de note hors `noterExerciceCalibre`/
+   `noterCopieCalibree`. Les constantes a/b de CALIBRATION_BAC2025 restent en
+   archives du fit 80 copies + mapping d'unité (uniteDeGroupe) ; le script de
+   recherche recalibrer-copiees.ts recalcule le fit lui-même.
+2. **Diagnostic barème borné** : `evaluerBareme` matchait par `includes` nu —
+   « ATPase » crédité l'item ATP. `formePresente` déplacée dans
+   `lib/validation/` (partagée note calibrée ↔ diagnostic) : frontières
+   lettres/chiffres partout, zéro substring nu dans le produit.
+3. **CorrecteurPanel fail-loud** : le try/catch qui avalait l'absence
+   d'attendus (note silencieusement absente) est supprimé — un groupe sans
+   registre doit faire échouer bruyamment, jamais dégrader en silence.
+Verrous d'architecture (`p2.attendusObligatoires.test.ts`, 4 tests) : tombstone
+du legacy, frontières du diagnostic (ATPase≠ATP), CorrecteurPanel n'importe que
+le moteur calibré + label « تشخيصي — ليس تنقيطاً » affiché, boucle élève et banc
+R4 exclusivement sur attendus.
+Périmètre assumé : la note obligatoire couvre les 6 groupes bac2025 ; les
+Ex1 2023/2024 restent au stade DIAGNOSTIC (label clair) — leur calibration
+exigerait des libellés de question officiels (questionAr) que le build ne
+porte pas : inventer un prompt violerait la règle de sourcing. Ex2/Ex3
+2023/2024 : aucun attendu sourcé (corrigés non fournis).
+769/769 · boussole 138/138 · build · smoke 4/4 · check:miftah.
+NB infra : node_modules re-reset (4e) → npm ci avant les runs.

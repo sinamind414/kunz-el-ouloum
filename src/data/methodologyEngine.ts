@@ -3,6 +3,13 @@ export interface VerbCriteriaItem {
   order: number;
   wording: { compass: string; check: string; probe: string; ar_label: string };
   evidencePattern?: string;
+  /**
+   * C7 (audit 2026-09-19) : contenu SPÉCIFIQUE à l'exercice, possédé par la
+   * carte (et non codé en dur dans le scoreur générique). Sources de RegExp
+   * (drapeau 'i') — TOUS les motifs doivent être présents (ET logique).
+   * Présentes → le scoreur les applique et ignore son cas générique.
+   */
+  verifAr?: string[];
   selfProofPrompt: string;
   errorTag: string;
   weight: number;
@@ -172,7 +179,7 @@ export const VERB_CARDS: VerbCard[] = [
     goodExample:{ context:'ADN : %A = 30%. احسب %G.', question:'احسب النسبة المئوية للغوانين.', answer:'انطلاقا من الوثيقة 10 حسب قانون Chargaff : %A = %T و %G = %C و %A + %G = 50% لأنّ البيورين = بيريميدين.\nبالتعويض: %G = 50% − %A = 50% − 30% = 20% بينما %A يبقى 30%.\nومنه %G = 20% (الوثيقة 10).', annotatedSteps:[{step:1,text:'حسب قانون Chargaff : %A = %T و %G = %C',color:'#3b82f6'},{step:2,text:'بالتعويض: %G = 50% − 30% = 20%',color:'#10b981'},{step:3,text:'ومنه %G = 20%',color:'#f59e0b'}] },
     badExample:{ answer:'%G = 20%.', flawDescription:'نتيجة بلا قانون ولا تعويض — نصف النقطة حتى لو صحيحة، وبلا وحدة = خصم.', circledError:'%G = 20% بلا خطوات', errorTag:'missing_reference', scorePercent:40 },
     criteria:[
-      { id:'calc_c1', order:1, wording:{compass:'أكتب القانون بالحروف أولا.',check:'قانون بالحروف مذكور.',probe:'هل كتبت القانون مثل Chargaff؟',ar_label:'القانون بالحروف'}, selfProofPrompt:'حدد القانون', errorTag:'missing_reference', weight:1 },
+      { id:'calc_c1', order:1, wording:{compass:'أكتب القانون بالحروف أولا.',check:'قانون بالحروف مذكور.',probe:'هل كتبت القانون مثل Chargaff؟',ar_label:'القانون بالحروف'}, verifAr:['chargaff|%A|قانون'], selfProofPrompt:'حدد القانون', errorTag:'missing_reference', weight:1 },
       { id:'calc_c2', order:2, wording:{compass:'أعوّض خطوة خطوة.',check:'تعويض مفصل.',probe:'هل كل تعويض في سطر؟',ar_label:'التعويض'}, selfProofPrompt:'حدد التعويض', errorTag:'unsupported_claim', weight:1 },
       { id:'calc_c3', order:3, wording:{compass:'أكتب النتيجة بوحدتها.',check:'نتيجة + وحدة.',probe:'هل النتيجة مع %؟',ar_label:'النتيجة بوحدتها'}, selfProofPrompt:'حدد الوحدة', errorTag:'missing_unit', weight:1 }
     ]
@@ -186,9 +193,9 @@ export const VERB_CARDS: VerbCard[] = [
     goodExample:{ context:'شجرة نسب مرض متنحٍ جسمي.', question:'حدد نمط وراثة المرض.', answer:'انطلاقا من الوثيقة 11 الحدث ① : أبوان سليمان (I1×I2) أنجبا طفلة مصابة II3 بينما السائد لا يختبئ — يستبعد السائد لأن السائد يظهر كل جيل، إذن متنحٍّ.\nالحدث ② : بنت مصابة II3 من أب سليم I1 بينما المرتبط بـ X ينتقل عبر X — يستبعد المرتبط بـ X لأن الأب السليم لا ينقل X مصاب، إذن جسمي.\nومنه المرض متنحٍّ جسمي بينما الأنماط I1 Aa , I2 Aa , II3 aa (الوثيقة 11).', annotatedSteps:[{step:1,text:'أبوان سليمان ← طفل مصاب',color:'#3b82f6'},{step:2,text:'بنت مصابة من أب سليم',color:'#10b981'},{step:3,text:'متنحٍّ جسمي + الأنماط Aa/aa',color:'#f59e0b'}] },
     badExample:{ answer:'المرض متنحٍ لأنه يوجد طفل مصاب.', flawDescription:'حكم واحد بلا حدث ثانٍ للموقع — نصف النقطة دائما، وأناط بلا تبرير = 0.', circledError:'متنحٍ بلا تحديد الموقع', errorTag:'unsupported_claim', scorePercent:30 },
     criteria:[
-      { id:'ped_c1', order:1, wording:{compass:'أذكر الحدث الحاسم للسيادة (أبوان سليمان ← مصاب).',check:'حدث السيادة مذكور.',probe:'هل ذكرت حدث السيادة؟',ar_label:'حدث السيادة'}, selfProofPrompt:'حدد حدث السيادة', errorTag:'missing_reference', weight:1 },
-      { id:'ped_c2', order:2, wording:{compass:'أذكر الحدث الحاسم للموقع (بنت/ابن).',check:'حدث الموقع مذكور.',probe:'هل ذكرت حدث الموقع؟',ar_label:'حدث الموقع'}, selfProofPrompt:'حدد حدث الموقع', errorTag:'missing_reference', weight:1 },
-      { id:'ped_c3', order:3, wording:{compass:'أصوغ الحكمان ثم الأنماط بالترميز.',check:'حكمان + أنماط.',probe:'هل كتبت متنحٍ/سائد وجسمي/X ثم الأنماط؟',ar_label:'الحكمان والأنماط'}, selfProofPrompt:'حدد الحكمان', errorTag:'missing_conclusion', weight:1 }
+      { id:'ped_c1', order:1, wording:{compass:'أذكر الحدث الحاسم للسيادة (أبوان سليمان ← مصاب).',check:'حدث السيادة مذكور.',probe:'هل ذكرت حدث السيادة؟',ar_label:'حدث السيادة'}, verifAr:['أبوان سليمان|I1.*I2|سليمان.*مصاب'], selfProofPrompt:'حدد حدث السيادة', errorTag:'missing_reference', weight:1 },
+      { id:'ped_c2', order:2, wording:{compass:'أذكر الحدث الحاسم للموقع (بنت/ابن).',check:'حدث الموقع مذكور.',probe:'هل ذكرت حدث الموقع؟',ar_label:'حدث الموقع'}, verifAr:['بنت مصابة|ابن سليم|موقع|مرتبط بـ X'], selfProofPrompt:'حدد حدث الموقع', errorTag:'missing_reference', weight:1 },
+      { id:'ped_c3', order:3, wording:{compass:'أصوغ الحكمان ثم الأنماط بالترميز.',check:'حكمان + أنماط.',probe:'هل كتبت متنحٍ/سائد وجسمي/X ثم الأنماط؟',ar_label:'الحكمان والأنماط'}, verifAr:['(متنح|سائد).*(جسمي|مرتبط)', 'Aa|aa|AA'], selfProofPrompt:'حدد الحكمان', errorTag:'missing_conclusion', weight:1 }
     ]
   },
   // V3.1 — حفظ : رأس (sans document) — deux verbes du noyau étendu 8→10

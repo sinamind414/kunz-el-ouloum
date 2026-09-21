@@ -14,6 +14,7 @@
 import Database from 'better-sqlite3';
 import fs from 'node:fs';
 import path from 'node:path';
+import { calculeActivite } from './activite';
 
 // ── Types du contrat HTTP (miroir de server.ts) ──────────────
 export interface Student {
@@ -71,6 +72,10 @@ export interface DashboardStudentRow {
   quizCount: number;
   missionCount: number;
   avgQuizPercent: number | null;
+  /** Dernière activité TOUT CONFLIT confondu (production ou événement). */
+  lastActivity: string | null;
+  actif7j: boolean;
+  actif30j: boolean;
 }
 
 const SCHEMA = `
@@ -360,7 +365,7 @@ export class SqliteStore {
    * dominantErrors (top 5), lastProduction, activities, quizCount,
    * missionCount, avgQuizPercent — identique au serveur JSON.
    */
-  dashboardRows(): DashboardStudentRow[] {
+  dashboardRows(maintenant: number = Date.now()): DashboardStudentRow[] {
     // UNE passe par table (GROUP BY) — plus de 7 sous-requêtes corrélées × n élèves.
     const stats = this.db.prepare(`
       SELECT s.id, s.name, s.email,
@@ -414,22 +419,30 @@ export class SqliteStore {
     }
     for (const arr of actsByStudent.values()) arr.sort((a, b) => (a.createdAt < b.createdAt ? 1 : a.createdAt > b.createdAt ? -1 : 0));
 
-    return stats.map(s => ({
-      id: s.id,
-      name: s.name,
-      email: s.email,
-      productions: Number(s.productions),
-      avgIcm: Math.round(Number(s.avg_icm)),
-      dominantErrors: (errorsByStudent.get(s.id) || [])
-        .sort((a, b) => b.count - a.count || a.first - b.first)
-        .slice(0, 5)
-        .map(({ tag, count }) => ({ tag, count })),
-      lastProduction: s.last_production || null,
-      activities: actsByStudent.get(s.id) || [],
-      quizCount: Number(s.quiz_count),
-      missionCount: Number(s.mission_count),
-      avgQuizPercent: s.avg_quiz_percent != null ? Math.round(Number(s.avg_quiz_percent)) : null,
-    }));
+    return stats.map(s => {
+      const acts = actsByStudent.get(s.id) || [];
+      // acts triées created_at DESC → la plus récente est en tête.
+      const act = calculeActivite([s.last_production || null, acts[0]?.createdAt ?? null], maintenant);
+      return {
+        id: s.id,
+        name: s.name,
+        email: s.email,
+        productions: Number(s.productions),
+        avgIcm: Math.round(Number(s.avg_icm)),
+        dominantErrors: (errorsByStudent.get(s.id) || [])
+          .sort((a, b) => b.count - a.count || a.first - b.first)
+          .slice(0, 5)
+          .map(({ tag, count }) => ({ tag, count })),
+        lastProduction: s.last_production || null,
+        activities: acts,
+        quizCount: Number(s.quiz_count),
+        missionCount: Number(s.mission_count),
+        avgQuizPercent: s.avg_quiz_percent != null ? Math.round(Number(s.avg_quiz_percent)) : null,
+        lastActivity: act.lastActivity,
+        actif7j: act.actif7j,
+        actif30j: act.actif30j,
+      };
+    });
   }
 
   /** Itérateur du CSV global — streaming, jamais tout chargé en RAM.
@@ -437,14 +450,15 @@ export class SqliteStore {
    * zéro sous-requête par élève. CONTRAT ORIGINAL : la colonne
    * « last_production » contient en réalité STUDENT.createdAt (date
    * d'inscription) — fidélité à la lettre au serveur JSON d'origine. */
-  *iterateExportRows(studentId?: string): IterableIterator<{ id: string; name: string; email: string; productions: number; avgIcm: number; lastProduction: string; topErrors: string }> {
+  *iterateExportRows(studentId?: string, maintenant: number = Date.now()): IterableIterator<{ id: string; name: string; email: string; productions: number; avgIcm: number; lastProduction: string; topErrors: string; lastActivity: string | null; actif7j: boolean; actif30j: boolean }> {
     const stmt = this.db.prepare(`
       SELECT s.id, s.name, s.email, s.created_at,
         COALESCE(e.productions, 0) AS productions,
-        COALESCE(e.avg_icm, 0) AS avg_icm
+        COALESCE(e.avg_icm, 0) AS avg_icm,
+        e.last_entry
       FROM students s
       LEFT JOIN (
-        SELECT student_id, COUNT(*) AS productions, AVG(icm) AS avg_icm
+        SELECT student_id, COUNT(*) AS productions, AVG(icm) AS avg_icm, MAX(created_at) AS last_entry
         FROM entries GROUP BY student_id
       ) e ON e.student_id = s.id
       ${studentId ? 'WHERE s.id = ?' : ''}
@@ -455,6 +469,11 @@ export class SqliteStore {
     const statsIt = (studentId ? stmt.iterate(studentId) : stmt.iterate()) as IterableIterator<{
       id: string; name: string; email: string; created_at: string; productions: number; avg_icm: number;
     }>;
+    // Agrégat « dernier événement » par élève : #élèves lignes → Map en RAM OK.
+    const lastAct = new Map(
+      (this.db.prepare('SELECT student_id AS sid, MAX(created_at) AS last FROM activities GROUP BY student_id').all() as { sid: string; last: string }[])
+        .map((r) => [r.sid, r.last]),
+    );
     const errIt = errStmt.iterate() as IterableIterator<{ sid: string; tag: string; c: number }>;
     let curErr = errIt.next();
     for (const r of statsIt) {
@@ -463,6 +482,7 @@ export class SqliteStore {
         errs.push({ tag: curErr.value.tag, count: Number(curErr.value.c) });
         curErr = errIt.next();
       }
+      const act = calculeActivite([r.last_entry || null, lastAct.get(r.id) || null], maintenant);
       yield {
         id: r.id,
         name: r.name,
@@ -471,6 +491,9 @@ export class SqliteStore {
         avgIcm: Math.round(Number(r.avg_icm)),
         lastProduction: r.created_at,
         topErrors: errs.slice(0, 5).map(e => `${e.tag}:${e.count}`).join('; '),
+        lastActivity: act.lastActivity,
+        actif7j: act.actif7j,
+        actif30j: act.actif30j,
       };
     }
   }
