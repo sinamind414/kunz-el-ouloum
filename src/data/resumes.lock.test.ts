@@ -143,6 +143,7 @@ describe('الحصيلة المعرفية الرسمية du livre — injectée 
   it('le schéma synthèse تركيب البروتين (U1) est injecté dans la leçon de clôture phase2', () => {
     const brut = readFileSync(resolve(__dirname, '../../public/lessons/phase2_chapitres_3_4.html'), 'utf-8');
     expect(brut.includes('id="schema-synthese"'), 'section schéma absente').toBe(true);
+    expect(brut.includes('/assets/images/schemas/domaine1_traduction/schema_synthese_traduction_U1.jpg'), 'image schéma absente').toBe(true);
     expect(brut.includes('link-schema'), 'lien nav schéma absent').toBe(true);
     const texte = brut.replace(/<[^>]+>/g, ' ');
     for (const m of ['المخطط الشامل لآليات تركيب البروتين', 'بدائيات النواة', 'حقيقيات النواة', 'Introns', 'البوليزوم', 'AUG', 'UAA/UAG/UGA', 'مُعاد بناؤه آليا']) {
