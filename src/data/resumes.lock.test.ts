@@ -163,7 +163,7 @@ describe('الحصيلة المعرفية الرسمية du livre — injectée 
     expect(brut.includes('/assets/images/schemas/domaine1_proteines/schema_synthese_nerf_U5.jpg'), 'image schéma U5 absente').toBe(true);
     expect(brut.includes('link-schema'), 'lien nav schéma absent').toBe(true);
     const texte = brut.replace(/<[^>]+>/g, ' ');
-    for (const m of ['كمون العمل', 'زوال الاستقطاب', 'الحويصلات المشبكية', 'الشق المشبكي', 'المستقبلات الغشائية', 'الصوديوم', 'Ca²⁺']) {
+    for (const m of ['كمون العمل', 'زوال استقطاب', 'الحويصلات المشبكية', 'الشق المشبكي', 'المستقبلات الغشائية', 'الصوديوم', 'Ca²⁺']) {
       expect(texte.includes(m), `marqueur schéma U5 « ${m} » absent`).toBe(true);
     }
     const iHosila = brut.indexOf('id="hosila"');
@@ -178,7 +178,7 @@ describe('الحصيلة المعرفية الرسمية du livre — injectée 
     const book = norm((JSON.parse(
       readFileSync(resolve(__dirname, '../../data/bookContent.json'), 'utf-8'),
     ) as { book: { full_text: string[] } }).book.full_text.join(' '));
-    for (const jeton of ['المشبك', 'الحويصلات', 'زوال الاستقطاب', 'الصوديوم', 'المستقبلات', 'كمون عمل']) {
+    for (const jeton of ['المشبك', 'الحويصلات', 'زوال استقطاب', 'الصوديوم', 'المستقبلات', 'كمون عمل']) {
       expect(book.includes(jeton), `« ${jeton} » (schéma U5) introuvable dans le livre`).toBe(true);
     }
   });
