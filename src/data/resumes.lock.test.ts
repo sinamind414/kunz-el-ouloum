@@ -157,6 +157,32 @@ describe('الحصيلة المعرفية الرسمية du livre — injectée 
     expect(iTaquim).toBeGreaterThan(iSchema);
   });
 
+  it('le schéma synthèse العصب (U5, p165) est injecté dans la leçon de clôture phase10', () => {
+    const brut = readFileSync(resolve(__dirname, '../../public/lessons/phase10_chapitres_19_20.html'), 'utf-8');
+    expect(brut.includes('id="schema-synthese"'), 'section schéma U5 absente').toBe(true);
+    expect(brut.includes('/assets/images/schemas/domaine1_proteines/schema_synthese_nerf_U5.jpg'), 'image schéma U5 absente').toBe(true);
+    expect(brut.includes('link-schema'), 'lien nav schéma absent').toBe(true);
+    const texte = brut.replace(/<[^>]+>/g, ' ');
+    for (const m of ['كمون العمل', 'زوال الاستقطاب', 'الحويصلات المشبكية', 'الشق المشبكي', 'المستقبلات الغشائية', 'الصوديوم', 'Ca²⁺']) {
+      expect(texte.includes(m), `marqueur schéma U5 « ${m} » absent`).toBe(true);
+    }
+    const iHosila = brut.indexOf('id="hosila"');
+    const iSchema = brut.indexOf('id="schema-synthese"');
+    const iTaquim = brut.indexOf('id="ch2-step4"');
+    expect(iHosila).toBeGreaterThan(-1);
+    expect(iSchema).toBeGreaterThan(iHosila);
+    expect(iTaquim).toBeGreaterThan(iSchema);
+  });
+
+  it('les jetons du schéma U5 sont ancrés au livre', () => {
+    const book = norm((JSON.parse(
+      readFileSync(resolve(__dirname, '../../data/bookContent.json'), 'utf-8'),
+    ) as { book: { full_text: string[] } }).book.full_text.join(' '));
+    for (const jeton of ['المشبك', 'الحويصلات', 'زوال الاستقطاب', 'الصوديوم', 'المستقبلات', 'كمون عمل']) {
+      expect(book.includes(jeton), `« ${jeton} » (schéma U5) introuvable dans le livre`).toBe(true);
+    }
+  });
+
   it('les jetons du schéma U4 sont ancrés au livre', () => {
     const book = norm((JSON.parse(
       readFileSync(resolve(__dirname, '../../data/bookContent.json'), 'utf-8'),
