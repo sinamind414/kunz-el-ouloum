@@ -75,3 +75,29 @@ Il dit : مستقبلات (23×), تعرض (26×), بلعم (17×), بلاسمو
   internes restent sous-comptées (le biais est donc CONSERVATEUR : la couverture
   réelle est ≥ mesure) ;
 - la contre-signature binaire PDF exige le re-upload du PDF (canal GitHub validé).
+
+## 6. CONTRE-SIGNATURE BINAIRE — le PDF déposé (commit b59a6a1, 2026-09-21)
+
+L'user a déposé `LIVRE SVT BAC SCOLAIRE OFFICIEL.pdf` sur master (commit **b59a6a1**).
+
+| Vérification | Résultat |
+|---|---|
+| Taille | 16 040 028 B = taille de la référence `bookContent.report.txt` |
+| **sha256** | **`e873bd7a4f43478a…` = IDENTIQUE bit à bit à la référence de l'ingestion** |
+| Extraction (PyMuPDF, 334 pages) | 397 481 car. dont 243 761 arabes |
+
+**Conclusion de chaîne : `data/bookContent.json` provient bien de CE binaire.** La
+vérification mot à mot du §2 est donc une vérification contre le livre officiel lui-même.
+
+**Preuves lexicales d'identité** (comptages PDF = comptages JSON, au près) :
+تعرض 26×=26× · بلعم 17×=17× · تكامل 11×=11× · موهو 2×=2× · كالفن 5×=5× · هيل 3×=3× ·
+تماثل 1×=1× · برفورين 1×=1× · ستينوس 4×=4×. Les absences du §3-4 (الزعترية،
+غوتنبرغ، ليمان، المطاعن، ثيلاكويد، القفل والمفتاح، تخليق) sont **confirmées sur le
+PDF réel** — les 12 retouches étaient donc alignées sur le vrai livre.
+
+**Métrique finale contre le PDF DIRECT** (artefact de ligature لا→ال géré :
+خلايا→خاليا 249×) : **210 points, moyenne 91,0 %, min 57 %, 0 point < 50 %** —
+les mêmes 2 points < 60 % (leçon-expérience Jagendorf). Convergence proxy/PDF :
+90,9 % ≈ 91,0 % — le proxy est validé.
+
+(PDF et extraction conservés hors Git côté atelier ; master reste la seule copie.)
