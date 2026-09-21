@@ -7,8 +7,10 @@
 // phase21 (ch41-42) contient 0 quiz → aucun chevauchement D2/D3 à arbitrer ;
 // representation + activite_structure = noyau D1 (0 quiz hors D1) ; transcription = 0 quiz.
 // Répartition du pool : D1=54, D2=14, D3=10 (figée par qcmBilan.lock.test.ts).
-// Override phase21 (ch41-42) : ses 2 quiz = الظهرات/الغوص/الأفيوليت → D3, tranché par
-// LECTURE du contenu (l'attribution « premier chapitre du slug » donnait D2 à tort).
+// Attribution par BREADCRUMB (audit 2026-09-20) : les slugs mentent sur les chapitres
+// (phase19 = الموجات الزلزالية/D3, phase5 = CMH/U4, phase9 = ACh/U5…) — l'ancien
+// calcul « premier chapitre du slug » et l'override phase21 sont remplacés par
+// META_LECONS (domaine + unité globale 1-11 de chaque leçon, 25/25 parsées).
 
 import { EXPERIMENTAL_LESSONS } from '../lessonData';
 import { QCM_CHAPITRES } from './qcmLivre';
@@ -31,15 +33,44 @@ export interface QcmBilanItem {
 
 const domDuChapitre = (c: number): Domaine => (CHAPITRES[c - 1]?.domain ?? 1) as Domaine;
 
-/** Chevauchements slug → domaine tranchés par lecture du contenu (voir en-tête). */
-const OVERRIDES_SLUG: Record<string, Domaine> = { phase21_chapitres_41_42: 3 };
+// ── source de vérité du rattachement : la BREADCRUMB de chaque leçon
+// (« المجال … • الوحدة … »), PAS le slug : mesuré 2026-09-20, le nommage des slugs
+// ment (ex. phase19_chapitres_37_38 = « الموجات الزلزالية », D3-U2 — pas la
+// respiration ch37-38 ; phase5_chapitres_9_10 = CMH/زمر, U4 — pas les enzymes).
+const NOMBRES_AR: Record<string, number> = {
+  'الأولى': 1, 'الثانية': 2, 'الثالثة': 3, 'الرابعة': 4, 'الخامسة': 5,
+};
+function numArabe(t: string): number {
+  const x = t.trim();
+  if (/^[0-9]+$/.test(x)) return Number(x);
+  return NOMBRES_AR[x] ?? 0;
+}
+function domDeMot(mot: string): Domaine {
+  if (mot.includes('الثاني')) return 2;
+  if (mot.includes('الثالث')) return 3;
+  return 1;
+}
+
+export interface MetaLecon { domaine: Domaine; uniteGlobale: number }
+
+/** (domaine, unité globale 1-11) de chaque leçon, extraits de la breadcrumb. */
+export const META_LECONS: Record<string, MetaLecon> = {};
+for (const [slug, lecon] of Object.entries(EXPERIMENTAL_LESSONS)) {
+  const bc = (lecon as unknown as { breadcrumb?: string }).breadcrumb ?? '';
+  const mDom = bc.match(/المجال\s+([^:：]+)/);
+  const mUn = bc.match(/الوحدة\s+([^:：]+)/);
+  if (!mDom || !mUn) throw new Error(`breadcrumb non parsable : ${slug} — ${bc.slice(0, 60)}`);
+  const domaine = domDeMot(mDom[1]);
+  const unite = numArabe(mUn[1]);
+  if (!unite) throw new Error(`unité non parsable : ${slug} — ${mUn[1]}`);
+  META_LECONS[slug] = { domaine, uniteGlobale: unite + (domaine === 1 ? 0 : domaine === 2 ? 5 : 8) };
+}
 
 function domaineDeSlug(slug: string): Domaine {
-  if (OVERRIDES_SLUG[slug]) return OVERRIDES_SLUG[slug];
+  const meta = META_LECONS[slug];
+  if (meta) return meta.domaine;
   const m = slug.match(/chapitres_(\d+)_(\d+)/);
-  if (m) return domDuChapitre(Number(m[1]));
-  if (slug === 'lecon_transcription') return domDuChapitre(1);
-  return domDuChapitre(2); // representation / activite_structure : noyau D1
+  return m ? domDuChapitre(Number(m[1])) : 1;
 }
 
 function construirePool(): QcmBilanItem[] {
