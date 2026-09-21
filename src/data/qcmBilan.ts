@@ -66,6 +66,10 @@ for (const [slug, lecon] of Object.entries(EXPERIMENTAL_LESSONS)) {
   META_LECONS[slug] = { domaine, uniteGlobale: unite + (domaine === 1 ? 0 : domaine === 2 ? 5 : 8) };
 }
 
+// Override PAR-ITEM (audit leçons 2026-09-21) : phase10 = leçon hybride (المادة P/عصبي
+// D1 + التركيب الضوئي D2 dans le même fichier) ; l item الصانعة الخضراء relève de D2.
+const OVERRIDES_ITEM: Record<string, Domaine> = { 'L:phase10_chapitres_19_20:2': 2 };
+
 function domaineDeSlug(slug: string): Domaine {
   const meta = META_LECONS[slug];
   if (meta) return meta.domaine;
@@ -97,11 +101,13 @@ function construirePool(): QcmBilanItem[] {
       for (const bloc of phase.blocks) {
         if (bloc.type !== 'quiz' || !bloc.options) continue;
         n += 1;
+        const id = `L:${slug}:${n}`;
         pool.push({
-          id: `L:${slug}:${n}`,
+          id,
           source: 'lecon',
           sourceLabel: slug,
-          domaine: domaineDeSlug(slug),
+          // override par-item d'abord (leçons hybrides), sinon breadcrumb de la leçon
+          domaine: OVERRIDES_ITEM[id] ?? domaineDeSlug(slug),
           question: (bloc.question ?? '').replace(/^\d+\.\s*/, ''), // numérotation locale retirée (mécanique)
           options: [...bloc.options],
           correct: bloc.correct ?? 0,

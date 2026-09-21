@@ -14,11 +14,11 @@ describe('pool unifié du bilan (réutilisation mécanique, zéro contenu nouvea
     expect(POOL).toHaveLength(91);
   });
 
-  it('répartition par domaine figée : D1=46, D2=16, D3=29 (attribution par breadcrumb — audit 2026-09-20)', () => {
+  it('répartition par domaine figée : D1=45, D2=17, D3=29 (breadcrumb + override par-item phase10:2 → D2 — audits 2026-09-20/21)', () => {
     const par: Record<number, number> = { 1: 0, 2: 0, 3: 0 };
     for (const q of POOL) par[q.domaine]++;
-    expect(par[1]).toBe(46);
-    expect(par[2]).toBe(16);
+    expect(par[1]).toBe(45);
+    expect(par[2]).toBe(17);
     expect(par[3]).toBe(29);
   });
 
