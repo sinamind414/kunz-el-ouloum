@@ -14,9 +14,11 @@ afterEach(() => cleanup());
 
 const STEP_BAR_MARK = /الفعل يطلب الوصف/;      // ligne de justification §8 sous la StepBar
 const CRITERIA_MARK = /توجيه قبلي وتأكيد بالإثبات/; // sidebar critères stade 3
-const GATE1_MARK = '🚪 البوابة ١ — قفل أصلا؟';
-const GATE2_MARK = '📥 البوابة ٢ — من أين آتي بمادة الإدخال؟';
-const GATE3_MARK = '⚙️ البوابة ٣ — أي حركة يطلب هذا القفل؟';
+// Update 2026-09-21 (règle app « chiffres latins ») — les libellés des portes
+// portent désormais des chiffres 0-9 (miftahSpec.bawaba1-3 + vue compilateur).
+const GATE1_MARK = '🚪 البوابة 1 — قفل أصلا؟';
+const GATE2_MARK = '📥 البوابة 2 — من أين آتي بمادة الإدخال؟';
+const GATE3_MARK = '⚙️ البوابة 3 — أي حركة يطلب هذا القفل؟';
 
 const gotoStage3 = () => {
   fireEvent.click(screen.getAllByText('إنتاج موجه (Guidée)')[0]);

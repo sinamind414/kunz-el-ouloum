@@ -7,6 +7,7 @@ import {
 import {
   getProductionLogs, getLatestDraft, VerbEvolutionStats, ProductionLogEntry, ERROR_TAG_LABELS_AR, clearProductionLog
 } from '../utils/methodologyLog';
+import { fmtDateLatn } from '../utils/latinDigits';
 
 interface Props {
   stats: VerbEvolutionStats[];
@@ -15,7 +16,7 @@ interface Props {
 }
 
 function fmtDate(iso: string): string {
-  try { return new Date(iso).toLocaleDateString('ar-DZ', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }); }
+  try { return fmtDateLatn(new Date(iso), { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }); }
   catch { return iso.slice(0, 16); }
 }
 

@@ -96,6 +96,9 @@ body {
   background-color: var(--background-color);
   color: var(--on-surface-color);
   transition: background-color 0.3s ease, color 0.3s ease;
+  /* CHIFFRES LATINS PARTOUT : la police arabe peut substituer 0-9 par ٠-٩ ;
+     on force le rendu latin des chiffres dans toute l'app. */
+  font-variant-numeric: tabular-nums lining-nums;
 }
 
 /* Redefining hardcoded Tailwind classes so they match variables */

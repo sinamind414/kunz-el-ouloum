@@ -4,7 +4,7 @@
 // Marque : docs/MARQUE.md est le document de décision (noms, phrase-récit, placement).
 //         Le garde-fou `npm run check:miftah` prouve la cohérence fiche ↔ spec ↔ carte.
 
-export const MIFTAH_VERSION = '3.3' as const;
+export const MIFTAH_VERSION = '5.0' as const;
 // Nom d'usage (UI, bouche de l'élève) — jamais autre chose
 export const MIFTAH_NAME_AR = 'المفتاح';
 // Nom officiel (documents légaux/CGU, argumentaire, titre de la rubrique depuis le 2026-09-15) — jamais abrégé
@@ -40,9 +40,9 @@ export const MIFTAH_NOMENCLATURE = {
   qafal: 'القفل',
   bawaba: 'البوابة',
   // Update 2026-09-06 (MARQUE §12) — TROIS portes, cascade :
-  bawaba1: 'البوابة ١ — الوجود (قفل أم لا؟)',
-  bawaba2: 'البوابة ٢ — المصدر (وثيقة أم مختلط؟)',
-  bawaba3: 'البوابة ٣ — الحركة (📷 أم 🎬 أم 🔨؟)',
+  bawaba1: 'البوابة 1 — الوجود (قفل أم لا؟)',
+  bawaba2: 'البوابة 2 — المصدر (وثيقة أم مختلط؟)',
+  bawaba3: 'البوابة 3 — الحركة (📷 أم 🎬 أم 🔨؟)',
   s0: 'اِفهم',
   s1: 'تَبَصَّر',
   s2: 'أدخل',

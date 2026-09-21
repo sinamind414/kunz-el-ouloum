@@ -4,9 +4,9 @@
 // (même tirage le même jour, nouveau tirage le lendemain) — anti-mémorisation (D3).
 //
 // TROIS PORTES par consigne, en cascade (progressive disclosure) :
-//   🚪 بوابة ١ — الوجود : قفل (وثيقة) / لا قفل (🧠 دُرج المعرفة)
-//   📥 بوابة ٢ — المصدر : وثيقة فقط / مختلط («ومعلوماتك / ومكتسباتك»)
-//   ⚙️ بوابة ٣ — الحركة : 📷 صورة / 🎬 فيلم / 🔨 حدّاد (NOUVEAU)
+//   🚪 بوابة 1 — الوجود : قفل (وثيقة) / لا قفل (🧠 دُرج المعرفة)
+//   📥 بوابة 2 — المصدر : وثيقة فقط / مختلط («ومعلوماتك / ومكتسباتك»)
+//   ⚙️ بوابة 3 — الحركة : 📷 صورة / 🎬 فيلم / 🔨 حدّاد (NOUVEAU)
 //
 // Règles d'écriture (auto-vérifiées au chargement en DEV + par le test vitest) :
 //   - existence est DÉRIVÉ par le moteur (detectExistenceGate) : les mots-clés
@@ -72,7 +72,7 @@ export function deriveMovement(consigne: string, verbCardId: string): D3 {
 const RAW: RawConsigne[] = [
   // ── 🚪 قفل + 📥 وثيقة + 📷 صورة ──────────────────────────────────
   { id:'p01', consigne:'حلل منحنى الوثيقة 1', verbCardId:'verb_analyse_v1', existence:'lock', source:'document' },
-  { id:'p02', consigne:'حلل الوثيقة ١', verbCardId:'verb_analyse_v1', existence:'lock', source:'document' },
+  { id:'p02', consigne:'حلل الوثيقة 1', verbCardId:'verb_analyse_v1', existence:'lock', source:'document' },
   { id:'p03', consigne:'قارن بين المنحنيين', verbCardId:'verb_compare_v1', existence:'lock', source:'document' },
   { id:'p04', consigne:'قارن الجدول 1 مع الجدول 2', verbCardId:'verb_compare_v1', existence:'lock', source:'document' },
   { id:'p05', consigne:'استخرج من الجدول', verbCardId:'verb_list_v1', existence:'lock', source:'document' },
