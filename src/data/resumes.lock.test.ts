@@ -174,6 +174,32 @@ describe('الحصيلة المعرفية الرسمية du livre — injectée 
     expect(iTaquim).toBeGreaterThan(iSchema);
   });
 
+  it('le schéma synthèse البنية الداخلية للأرض (U10) est injecté dans la leçon de clôture phase20', () => {
+    const brut = readFileSync(resolve(__dirname, '../../public/lessons/phase20_chapitres_39_40.html'), 'utf-8');
+    expect(brut.includes('id="schema-synthese"'), 'section schéma U10 absente').toBe(true);
+    expect(brut.includes('/assets/images/schemas/domaine3_tectonique/schema_synthese_geologie_U10.jpg'), 'image schéma U10 absente').toBe(true);
+    expect(brut.includes('link-schema'), 'lien nav schéma absent').toBe(true);
+    const texte = brut.replace(/<[^>]+>/g, ' ');
+    for (const m of ['البنية الداخلية للأرض', 'الانقطاعات الزلزالية', 'البتروغرافية', 'الحالة الفيزيائية', '2900', '5100', '6375']) {
+      expect(texte.includes(m), `marqueur schéma U10 « ${m} » absent`).toBe(true);
+    }
+    const iHosila = brut.indexOf('id="hosila"');
+    const iSchema = brut.indexOf('id="schema-synthese"');
+    const iTaquim = brut.indexOf('id="ch2-step4"');
+    expect(iHosila).toBeGreaterThan(-1);
+    expect(iSchema).toBeGreaterThan(iHosila);
+    expect(iTaquim).toBeGreaterThan(iSchema);
+  });
+
+  it('les jetons du schéma U10 sont ancrés au livre', () => {
+    const book = norm((JSON.parse(
+      readFileSync(resolve(__dirname, '../../data/bookContent.json'), 'utf-8'),
+    ) as { book: { full_text: string[] } }).book.full_text.join(' '));
+    for (const jeton of ['البنيه الداخليه', 'الانقطاعات', 'النواه', 'القشره', 'بتروغرافيه', 'الموجات الزلزاليه', '2900', '5100']) {
+      expect(book.includes(jeton), `« ${jeton} » (schéma U10) introuvable dans le livre`).toBe(true);
+    }
+  });
+
   it('les jetons du schéma U5 sont ancrés au livre', () => {
     const book = norm((JSON.parse(
       readFileSync(resolve(__dirname, '../../data/bookContent.json'), 'utf-8'),
