@@ -89,8 +89,14 @@ describe('الحصيلة المعرفية الرسمية du livre — injectée 
     ['phase7_chapitres_13_14', ['وحدة بيولوجية مستقلة بذاتها', 'الذات واللاذات']],               // D1-U4
     ['phase12_chapitres_23_24', ['التيلاكويد', 'كيميوحيوية']],                                   // D2-U6
     ['phase14_chapitres_27_28', ['حصيلة التحلل السكري', '38 ATP']],                              // D2-U7, ص 222
-    ['phase15_chapitres_29_30', ['الإمداد المستمر من الطاقة']],                                  // D2-U8
+    ['phase15_chapitres_29_30', ['الإمداد المستمر من الطاقة', 'التنفس الخلوي']],                // D2-U8 (texte complet, doc corrigé user)
     ['phase22_chapitres_43_44', ['أوفيوليت', 'التقلص القشري']],                                  // D3-U11, ص 330
+    // les 4 حصيلة révélées par le texte corrigé fourni par l'utilisateur (2026-09-21) :
+    // absentes de l'OCR ingéré (ch9-11 quasi vides) mais présentes dans le PDF
+    ['phase4_chapitres_7_8', ['التكامل المحف', 'الموقع الفعال', '37°C']],                        // U3, ص 68
+    ['phase10_chapitres_19_20', ['كمون الراحة', 'PPSE', 'الإدماج العصبي']],                      // U5, ص 156-164
+    ['phase18_chapitres_35_36', ['جلد الحمار الوحشي', 'مستوى بينيوف', 'تيارات حمل']],            // U9
+    ['phase20_chapitres_39_40', ['السيسمومتر', 'سيما', 'الأستينوسفير']],                         // U10, ص 280-281
   ];
 
   it('les 7 cartes officielles (id="hosila") sont présentes avec leurs marqueurs', () => {
