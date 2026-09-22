@@ -1,5 +1,9 @@
 # Croisement méthodologie عكاشة ↔ مفتاح — 2026-09-20
 
+>
+> **Libellés §14 (2026-09-22)** — document **historique** : les noms « تَبَصَّر / أدخل / أدر / افتح » y sont conservés comme trace d'arbitrage. L'app et la fiche utilisent désormais les gestes « فعل / دليل · علاقة · جواب » (voir `docs/MARQUE.md` §14).
+>
+
 **Objet.** La section méthodologie du livre عكاشة (l.115-660, injectée mécaniquement :
 `src/data/okacha.ts → OKACHA_METHODO`, onglet « 🧭 المنهجية » de بنك الحفظ) croisée avec
 le système مفتاح en place (v3.3) et la proposition v5.0 en attente d'arbitrage.

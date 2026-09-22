@@ -1,5 +1,9 @@
 # Audit du correcteur (correcteurV1 + barème + calibration + scoreur ICM) et de la méthode مفتاح المنهجية
 
+>
+> **Libellés §14 (2026-09-22)** — document **historique** : les noms « تَبَصَّر / أدخل / أدر / افتح » y sont conservés comme trace d'arbitrage. L'app et la fiche utilisent désormais les gestes « فعل / دليل · علاقة · جواب » (voir `docs/MARQUE.md` §14).
+>
+
 **Date :** 2026-09-19 · **Commit :** `724e137`
 **Méthode :** lecture intégrale des 6 couches du correcteur et des 4 fichiers Meftah + **probes adversariales exécutées** (les notes citées ci-dessous sont des sorties réelles du code, pas des hypothèses). Toutes les suites passent : 127 tests correcteur/dictionnaires, 130 tests Meftah/scorer/utils, 138 invariants harnais.
 
