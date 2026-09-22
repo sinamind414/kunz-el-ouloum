@@ -86,11 +86,13 @@ CREATE TABLE IF NOT EXISTS students (
   name          TEXT NOT NULL,
   created_at    TEXT NOT NULL
 );
+CREATE INDEX IF NOT EXISTS idx_students_email_lower ON students(LOWER(email));
 CREATE TABLE IF NOT EXISTS teachers (
   email         TEXT PRIMARY KEY,
   password_hash TEXT NOT NULL,
   name          TEXT NOT NULL
 );
+CREATE INDEX IF NOT EXISTS idx_teachers_email_lower ON teachers(LOWER(email));
 CREATE TABLE IF NOT EXISTS entries (
   student_id TEXT NOT NULL,
   id         TEXT NOT NULL,
@@ -188,8 +190,10 @@ export class SqliteStore {
   }
 
   // ── Étudiants ────────────────────────────────────────────
+  /** Recherche email insensible à la casse/espaces (comptes hérités mixtes). */
   findStudentByEmail(email: string): Student | undefined {
-    const r = this.db.prepare('SELECT * FROM students WHERE email = ?').get(email) as Record<string, unknown> | undefined;
+    const r = this.db.prepare('SELECT * FROM students WHERE LOWER(email) = ?')
+      .get((email || '').trim().toLowerCase()) as Record<string, unknown> | undefined;
     return r ? this.mapStudent(r) : undefined;
   }
 
@@ -218,8 +222,10 @@ export class SqliteStore {
   }
 
   // ── Enseignants ──────────────────────────────────────────
+  /** Recherche email insensible à la casse/espaces (comptes hérités mixtes). */
   findTeacherByEmail(email: string): Teacher | undefined {
-    const r = this.db.prepare('SELECT * FROM teachers WHERE email = ?').get(email) as Record<string, unknown> | undefined;
+    const r = this.db.prepare('SELECT * FROM teachers WHERE LOWER(email) = ?')
+      .get((email || '').trim().toLowerCase()) as Record<string, unknown> | undefined;
     return r ? { email: String(r.email), passwordHash: String(r.password_hash), name: String(r.name) } : undefined;
   }
 

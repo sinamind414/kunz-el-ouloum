@@ -27,6 +27,22 @@ import {
 
 import { Unit, UserProgress, Flashcard } from './types';
 import { INITIAL_UNITS, SVT_QUIZ_QUESTIONS, SVT_FLASHCARDS } from './data';
+
+/** Identité élève persistée entre les sessions (le JWT vit dans api.ts). */
+const STUDENT_STORE_KEY = 'boussole_student';
+function loadStoredStudent(): { name: string; email: string } | null {
+  try {
+    const raw = localStorage.getItem(STUDENT_STORE_KEY);
+    if (!raw) return null;
+    const j = JSON.parse(raw) as { name?: unknown; email?: unknown };
+    if (typeof j.name === 'string' && typeof j.email === 'string') {
+      return { name: j.name, email: j.email };
+    }
+  } catch {
+    /* JSON corrompu → pas de session */
+  }
+  return null;
+}
 import { healSavedFlashcards } from './utils/flashcardsSanitize';
 // Nomenclature figée (docs/MARQUE.md §3) — la rubrique porte le nom officiel de la source
 // unique miftahSpec : aucun littéral dans ce fichier (garde-fou check:miftah §13, 2026-09-15).
@@ -43,6 +59,7 @@ import StudyReminderModal from './components/StudyReminderModal';
 import MethodologyCompilerView from './components/MethodologyCompilerView';
 import StudentAuthView from './components/StudentAuthView';
 import StudentAccountBar from './components/StudentAccountBar';
+import { getApiToken } from './utils/api';
 import TeacherDashboardView from './components/TeacherDashboardView';
 import UnitIntroPortal from './components/UnitIntroPortal';
 import CombatTrainerView from './components/CombatTrainerView';
@@ -71,8 +88,23 @@ export default function App() {
   const [currentTab, setCurrentTab] = useState<'splash' | 'home' | 'review' | 'stats' | 'chat' | 'methodology' | 'bootcamp' | 'badges' | 'lesson' | 'workshop' | 'mindmap' | 'teacher'>('splash');
   const [activeMindMapUnitId, setActiveMindMapUnitId] = useState<number>(1);
   const [isAuthOpen, setIsAuthOpen] = useState(false);
-  const [studentName, setStudentName] = useState<string | null>(null);
-  const [studentEmail, setStudentEmail] = useState<string | null>(null);
+  // Session élève persistée (correctif : la session était perdue à chaque F5).
+  // On ne réaffiche un compte que s'il reste AVEC un jeton valide.
+  const [studentName, setStudentName] = useState<string | null>(() =>
+    getApiToken() ? loadStoredStudent()?.name ?? null : null,
+  );
+  const [studentEmail, setStudentEmail] = useState<string | null>(() =>
+    getApiToken() ? loadStoredStudent()?.email ?? null : null,
+  );
+  const handleStudentLogout = () => {
+    setStudentName(null);
+    setStudentEmail(null);
+    try {
+      localStorage.removeItem(STUDENT_STORE_KEY);
+    } catch {
+      /* stockage indisponible */
+    }
+  };
   
   // Stop music once we exit the splash screen
   useEffect(() => {
@@ -539,6 +571,11 @@ export default function App() {
         onLogin={(name, email) => {
           setStudentName(name);
           setStudentEmail(email);
+          try {
+            localStorage.setItem(STUDENT_STORE_KEY, JSON.stringify({ name, email }));
+          } catch {
+            /* stockage indisponible */
+          }
         }}
       />
 
@@ -549,7 +586,10 @@ export default function App() {
         {/* Left Side: Avatar block */}
         <div className="flex items-center gap-3">
           {studentEmail ? (
-            <StudentAccountBar onOpenTeacher={() => setCurrentTab('teacher')} />
+            <StudentAccountBar
+              onOpenTeacher={() => setCurrentTab('teacher')}
+              onLogout={handleStudentLogout}
+            />
           ) : (
             <div className="relative cursor-pointer" onClick={() => setIsAuthOpen(true)}>
               <div className="absolute inset-0 bg-[#2ecc71]/20 rounded-full blur-sm" />
