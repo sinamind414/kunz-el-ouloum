@@ -610,7 +610,34 @@
             </section>
 
             <!-- الحصيلة المعرفية الرسمية (texte corrigé fourni par l'utilisateur 2026-09-21 — voir docs/RESUMES_MAARIFI_LIVRE_2026-09-21.md §11) -->
-            <section class="card" id="hosila" style="border:2px solid #f59e0b;">
+            <section class="card" 
+
+            <!-- مخطط تحصيلي النقل العصبي (image originale user, master e32086e — ancrage 9/12 + termes du texte corrigé, verrou resumes.lock) -->
+            <section class="card" 
+
+            <section class="card" id="ch2-step4">
+                <div class="section-title">
+                    <span class="step-num step-num-lime">4</span>
+                    <span>تقويم الدرس 1 : أسئلة البكالوريا المتكررة</span>
+                </div>
+
+                <div class="question-item" id="c20q1-container">
+                    <h4 style="margin-bottom: 12px;">1. لماذا تعتبر الصانعة الخضراء عضية مقسمة إلى مقصورات (<span class="ltr-seq">Compartimentée</span>)؟</h4>
+                    <div class="options-grid">
+                        <button class="option-btn" onclick="checkCh20Answer(0, true)">أ) لأنها تحتوي على فراغات وأغشية منفصلة (التيلاكويد والحشوة) تمنح شروطاً كيميائية وإنزيمية مختلفة ومستقلة تسمح بحدوث مرحلتي التركيب الضوئي بانتظام.</button>
+                        <button class="option-btn" onclick="checkCh20Answer(1, false)">ب) لأنها تحتوي على نواة مستقلة.</button>
+                        <button class="option-btn" onclick="checkCh20Answer(2, false)">ج) لأنها تتواجد في خلايا الإنسان.</button>
+                    </div>
+                    <div class="feedback-box" id="c20q1-feedback"></div>
+                    <div class="quiz-badge" id="c2-badge"></div>
+                </div>
+            </section>
+        </div>
+
+        <!-- ═══ Zone de synthèse commune (🏛 حصيلة + 🗺 مخطط) — hors chapter-view :
+             visible dans LES DEUX leçons du fichier (survit au slicing lessonChapterSplit) ═══ -->
+        <div class="synthese-zone" id="zone-synthese">
+id="hosila" style="border:2px solid #f59e0b;">
                 <div class="section-title">
                     <span class="step-num" style="background:#b45309;">🏛</span>
                     <span>الحصيلة المعرفية — النص الرسمي للكتاب المدرسي (الفصل 24-30، ص 156-164)</span>
@@ -629,9 +656,7 @@
 
 
             </section>
-
-            <!-- مخطط تحصيلي النقل العصبي (image originale user, master e32086e — ancrage 9/12 + termes du texte corrigé, verrou resumes.lock) -->
-            <section class="card" id="schema-synthese" style="border:2px solid #2563eb;">
+id="schema-synthese" style="border:2px solid #2563eb;">
                 <div class="section-title">
                     <span class="step-num" style="background:#2563eb;">🗺</span>
                     <span>مخطط تحصيلي — آلية النقل العصبي على مستوى المشبك (ص 165)</span>
@@ -651,24 +676,6 @@
                     <li>إعادة تكوين الحويصلات المشبكية انطلاقا من الغشاء (لإعادة الاستعمال).</li>
                 </ol>
                 <p style="font-size:10.5px; color:#78716c; margin-top:8px; text-align:center;">🗺 الصورة الأصلية + تنسيق قرائي مصحح — المفردات مثبتة في النص الرسمي (ancrage mécanique, verrou resumes.lock).</p>
-            </section>
-
-            <section class="card" id="ch2-step4">
-                <div class="section-title">
-                    <span class="step-num step-num-lime">4</span>
-                    <span>تقويم الدرس 1 : أسئلة البكالوريا المتكررة</span>
-                </div>
-
-                <div class="question-item" id="c20q1-container">
-                    <h4 style="margin-bottom: 12px;">1. لماذا تعتبر الصانعة الخضراء عضية مقسمة إلى مقصورات (<span class="ltr-seq">Compartimentée</span>)؟</h4>
-                    <div class="options-grid">
-                        <button class="option-btn" onclick="checkCh20Answer(0, true)">أ) لأنها تحتوي على فراغات وأغشية منفصلة (التيلاكويد والحشوة) تمنح شروطاً كيميائية وإنزيمية مختلفة ومستقلة تسمح بحدوث مرحلتي التركيب الضوئي بانتظام.</button>
-                        <button class="option-btn" onclick="checkCh20Answer(1, false)">ب) لأنها تحتوي على نواة مستقلة.</button>
-                        <button class="option-btn" onclick="checkCh20Answer(2, false)">ج) لأنها تتواجد في خلايا الإنسان.</button>
-                    </div>
-                    <div class="feedback-box" id="c20q1-feedback"></div>
-                    <div class="quiz-badge" id="c2-badge"></div>
-                </div>
             </section>
         </div>
 

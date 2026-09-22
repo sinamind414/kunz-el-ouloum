@@ -6,7 +6,7 @@ import { MORCHID_LOGO_URL } from '../data';
 
 import { processStudentInput, getDailyMission, type TutorRewardDetails, type EngineResult } from '../smartTutorEngine';
 import { DOMAINS } from '../data/smartBotData';
-import { loadSession, saveSession, resetSession, type BotSession } from '../utils/sessionManager';
+import { loadSession, saveSession, resetSession, clearPendingInteractions, type BotSession } from '../utils/sessionManager';
 
 interface AITutorViewProps {
   onBackToDashboard?: () => void;
@@ -25,39 +25,73 @@ const JOURNEY_BUTTONS = [
 
 const WELCOME_TEXT = "مرحباً بك يا بحار المعرفة! أنا المرشد الذكي لـ **كنز العلوم** 🏴‍☠️.\n\nأنا هنا لأبسط لك كل ما يتعلق بعلوم الطبيعة والحياة للبكالوريا. اسألني عن آليات تركيب البروتين، أو بنيته الفراغية وسلوكه الحمقلي، أو آليات الاستجابة المناعية وتفاصيل الذات واللاذات!\n\nاختر مجالاً أو أحد أزرار الرحلة أدناه للبدء:";
 
+/** B8 (audit) : un seul accueil — init et « مسح المحادثة » utilisent la même factory. */
+function buildWelcomeMessage(): ChatMessage {
+  return {
+    id: 'welcome',
+    sender: 'ai',
+    text: WELCOME_TEXT,
+    timestamp: new Date().toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' }),
+    action: { quickActions: DOMAINS.map((d) => d.title) },
+  };
+}
+
 export default function AITutorView({ onBackToDashboard, onXPGained }: AITutorViewProps) {
   const [session, setSession] = useState<BotSession>(() => loadSession());
-  const [messages, setMessages] = useState<ChatMessage[]>([
-    {
-      id: 'welcome',
-      sender: 'ai',
-      text: WELCOME_TEXT,
-      timestamp: new Date().toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' }),
-      action: { quickActions: DOMAINS.map((d) => d.title) },
-    },
-  ]);
+  const [messages, setMessages] = useState<ChatMessage[]>(() => [buildWelcomeMessage()]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const listRef = useRef<HTMLDivElement>(null);
 
-  // Scroll to bottom when messages change
+  // Séquenceur d'ids — B7 (audit) : Date.now() seul collide en double-clic rapide.
+  const idSeq = useRef(0);
+  const nextId = (prefix: string) => `${prefix}_${Date.now()}_${idSeq.current++}`;
+
+  // B1 (audit Morchid) : positionner le HAUT du dernier élément en tête de la zone
+  // visible — la question reste à l'écran pendant que la correction se déroule
+  // dessous. L'ancien scrollIntoView (fond de chat) poussait la question hors champ.
+  // NB : offsetTop est relatif à l'offsetParent → le conteneur est en position:relative.
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    const c = listRef.current;
+    if (!c || typeof c.scrollTo !== 'function') return;
+    const items = c.querySelectorAll<HTMLElement>('[data-message]');
+    const last = items.length ? items[items.length - 1] : null;
+    if (last) c.scrollTo({ top: Math.max(0, last.offsetTop - 8), behavior: 'smooth' });
   }, [messages, isLoading]);
+
+  // B3 (audit Morchid) : un quiz/boss en cours persiste dans localStorage mais pas
+  // les messages → au refresh, tout input serait noté sur une question invisible.
+  // Au montage, on neutralise l'état actif (stats conservées) et on prévient l'élève.
+  useEffect(() => {
+    const stored = loadSession();
+    if (!stored.currentQuiz && !stored.boss) return;
+    const cleaned = clearPendingInteractions(stored);
+    saveSession(cleaned);
+    setSession(cleaned);
+    setMessages((prev) => [...prev, {
+      id: nextId('ai_ghost'),
+      sender: 'ai',
+      text: 'ℹ️ وُجد اختبار غير مكتمل من جلسة سابقة — ألغيته حتى لا تُحتسب إجاباتك على أسئلة غير ظاهرة على الشاشة. ابدأ اختباراً جديداً متى شئت.',
+      timestamp: new Date().toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' }),
+      action: { quickActions: DOMAINS.map((d) => d.title) },
+    }]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const runEngine = (result: EngineResult) => {
     setSession(result.session);
     saveSession(result.session);
     const aiMsg: ChatMessage = {
-      id: `ai_${Date.now()}`,
+      id: nextId('ai'),
       sender: 'ai',
       text: result.action.text,
       timestamp: new Date().toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' }),
       action: {
         quickActions: result.action.quickActions,
-        quiz: result.action.quiz as NonNullable<ChatMessage['action']>['quiz'],
+        // B5 : QuizPrompt = { id, question, options } — la correction ne voyage plus dans le payload.
+        quiz: result.action.quiz,
         sources: result.action.sources as NonNullable<ChatMessage['action']>['sources'],
         confidence: result.action.confidence,
         reward: result.action.reward,
@@ -76,14 +110,20 @@ export default function AITutorView({ onBackToDashboard, onXPGained }: AITutorVi
     }
   };
 
-  const handleSend = async (textToSend: string) => {
-    if (!textToSend.trim() || isLoading) return;
+  /**
+   * B4 (audit Morchid) : sépare l'entrée DU MOTEUR (engineInput) du texte AFFICHÉ
+   * dans la bulle de l'élève (displayText). Un clic sur une option envoie la lettre
+   * au moteur (contrat parseAnswer) mais affiche « إجابتي : X — <texte> » — la
+   * boucle question↔réponse reste lisible à l'écran.
+   */
+  const dispatchToEngine = async (engineInput: string, displayText?: string) => {
+    if (!engineInput.trim() || isLoading) return;
 
     setError(null);
     const userMsg: ChatMessage = {
-      id: `user_${Date.now()}`,
+      id: nextId('user'),
       sender: 'user',
-      text: textToSend,
+      text: displayText ?? engineInput,
       timestamp: new Date().toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' })
     };
 
@@ -95,7 +135,7 @@ export default function AITutorView({ onBackToDashboard, onXPGained }: AITutorVi
       // Moteur local offline — UNIQUE source (audit T3 : la route /api/chat
       // n'existe pas côté serveur ; le fetch mort renvoyait 404 à l'élève).
       // Quand le moteur ne sait pas, il le dit honnêtement dans son texte.
-      const result = processStudentInput(session, textToSend);
+      const result = processStudentInput(session, engineInput);
       runEngine(result);
     } catch (err: any) {
       console.error(err);
@@ -105,11 +145,13 @@ export default function AITutorView({ onBackToDashboard, onXPGained }: AITutorVi
     }
   };
 
+  const handleSend = (textToSend: string) => dispatchToEngine(textToSend);
+
   const handleJourneyClick = (label: string) => {
     if (label === 'القائمة الرئيسية') {
       const fresh = resetSession();
       const aiMsg: ChatMessage = {
-        id: `ai_${Date.now()}`,
+        id: nextId('ai'),
         sender: 'ai',
         text: '↩️ رجعنا إلى القائمة الرئيسية. اختر مجالاً لبدء جلسة مراجعة:',
         timestamp: new Date().toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' }),
@@ -117,7 +159,7 @@ export default function AITutorView({ onBackToDashboard, onXPGained }: AITutorVi
       };
       setSession(fresh);
       setMessages((prev) => [...prev, {
-        id: `user_${Date.now()}`,
+        id: nextId('user'),
         sender: 'user',
         text: label,
         timestamp: new Date().toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' }),
@@ -129,7 +171,7 @@ export default function AITutorView({ onBackToDashboard, onXPGained }: AITutorVi
       setIsLoading(true);
       try {
         const userMsg: ChatMessage = {
-          id: `user_${Date.now()}`,
+          id: nextId('user'),
           sender: 'user',
           text: label,
           timestamp: new Date().toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' }),
@@ -149,23 +191,16 @@ export default function AITutorView({ onBackToDashboard, onXPGained }: AITutorVi
     handleSend(label);
   };
 
-  const handleQuizAnswer = (optionLabel: string) => {
-    handleSend(optionLabel);
+  // B4 : la lettre part au moteur, le texte de l'option s'affiche dans la bulle.
+  const handleQuizAnswer = (letter: string, optionText: string) => {
+    dispatchToEngine(letter, `إجابتي : ${letter} — ${optionText}`);
   };
 
   const handleClear = () => {
     if (window.confirm("هل تريد مسح سجل المحادثة والبدء من جديد؟")) {
       const fresh = resetSession();
       setSession(fresh);
-      setMessages([
-        {
-          id: 'welcome',
-          sender: 'ai',
-          text: "مرحباً بك مجدداً يا بحار المعرفة! أنا مستعد لأسئلتك الجديدة حول مقرر العلوم الطبيعية للبكالوريا. ما هو الكنز العلمي الذي تود استكشافه الآن؟",
-          timestamp: new Date().toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' }),
-          action: { quickActions: DOMAINS.map((d) => d.title) },
-        }
-      ]);
+      setMessages([buildWelcomeMessage()]);
       setError(null);
     }
   };
@@ -198,7 +233,7 @@ export default function AITutorView({ onBackToDashboard, onXPGained }: AITutorVi
               <span>المرشد الذكي (الأستاذ كنز العلوم)</span>
               <BrainCircuit className="w-4 h-4 text-[#944a00]" />
             </h3>
-            <span className="text-[10px] text-[#506072] font-semibold block">مساعد ذكاء اصطناعي تفاعلي وموجه لمنهج البكالوريا</span>
+            <span className="text-[10px] text-[#506072] font-semibold block">مرشد تفاعلي محلي موجه لمنهج البكالوريا — يعمل دون اتصال بالإنترنت</span>
           </div>
         </div>
 
@@ -212,11 +247,12 @@ export default function AITutorView({ onBackToDashboard, onXPGained }: AITutorVi
       </div>
 
       {/* Messages Scroll area */}
-      <div className="flex-1 overflow-y-auto p-4 md:p-6 space-y-4 bg-[#fcf3d8]/10" data-testid="tutor-messages">
+      <div ref={listRef} className="relative flex-1 overflow-y-auto p-4 md:p-6 space-y-4 bg-[#fcf3d8]/10" data-testid="tutor-messages">
         <AnimatePresence initial={false}>
           {messages.map((msg) => (
             <motion.div
               key={msg.id}
+              data-message
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               className={`flex gap-3 max-w-[85%] ${msg.sender === 'user' ? 'mr-auto flex-row-reverse' : 'ml-auto'}`}
@@ -226,7 +262,7 @@ export default function AITutorView({ onBackToDashboard, onXPGained }: AITutorVi
                 <div className="shrink-0">
                   <img
                     src={MORCHID_LOGO_URL}
-                    alt="AI Avatar"
+                    alt="شعار المرشد الذكي"
                     className="w-8 h-8 rounded-full border border-[#e2dabf]/50 p-0.5 bg-[#ffffff] object-contain"
                     referrerPolicy="no-referrer"
                   />
@@ -244,29 +280,40 @@ export default function AITutorView({ onBackToDashboard, onXPGained }: AITutorVi
                 >
                   {/* Handle basic markdown formatting (bullet points, bold texts) */}
                   <div className="whitespace-pre-wrap space-y-2">
-                    {msg.text.split('\n').map((line, lIdx) => {
-                      if (line.trim().startsWith('- ') || line.trim().startsWith('* ')) {
-                        const content = line.trim().substring(2);
-                        return <li key={lIdx} className="list-disc list-inside ml-2">{renderBoldText(content)}</li>;
-                      }
-                      return <p key={lIdx}>{renderBoldText(line)}</p>;
-                    })}
+                    {renderMarkdownBlocks(msg.text)}
                   </div>
 
                   {/* — Rendu riche du moteur (T2) — */}
 
-                  {/* Quiz interactif : boutons A/B/C/D */}
-                  {msg.action?.quiz && (
+                  {/* Quiz interactif : énoncé + boutons A/B/C/D */}
+                  {msg.action?.quiz && (() => {
+                    // Anti-contamination (audit B5) : seul le DERNIER quiz proposé
+                    // est cliquable — les anciens restent visibles mais désactivés.
+                    const lastQuizMsgId = [...messages].reverse().find((m) => m.sender === 'ai' && m.action?.quiz)?.id;
+                    const isActiveQuiz = msg.id === lastQuizMsgId;
+                    return (
                     <div className="mt-3 pt-3 border-t border-[#e2dabf]/40 space-y-2" data-testid={`tutor-quiz-${msg.action.quiz.id}`}>
+                      {/* Énoncé de la question (audit B0 : jamais rendu avant → l'élève
+                          voyait les options sans la question, puis la correction d'une
+                          question invisible) */}
+                      <p className="text-sm font-extrabold text-[#1f1c0b] leading-relaxed">
+                        ❓ {msg.action.quiz.question}
+                      </p>
                       <p className="text-xs font-bold text-[#944a00] flex items-center gap-1.5">
                         <Target className="w-3.5 h-3.5" />
-                        <span>اختر إجابتك:</span>
+                        <span>{isActiveQuiz ? 'اختر إجابتك:' : 'تمت الإجابة — السؤال الموالي أدناه'}</span>
                       </p>
                       {msg.action.quiz.options.map((opt, oIdx) => (
                         <button
                           key={oIdx}
-                          onClick={() => handleQuizAnswer(['A', 'B', 'C', 'D'][oIdx])}
-                          className="w-full text-right px-3 py-2 rounded-xl bg-[#fff9ed] hover:bg-[#fed65b]/30 border border-[#e2dabf] text-xs font-bold text-[#1f1c0b] cursor-pointer transition-colors flex items-center gap-2"
+                          onClick={() => handleQuizAnswer(['A', 'B', 'C', 'D'][oIdx], opt)}
+                          aria-label={`الخيار ${['A', 'B', 'C', 'D'][oIdx]}: ${opt}`}
+                          disabled={!isActiveQuiz}
+                          className={`w-full text-right px-3 py-2 rounded-xl border text-xs font-bold transition-colors flex items-center gap-2 ${
+                            isActiveQuiz
+                              ? 'bg-[#fff9ed] hover:bg-[#fed65b]/30 border-[#e2dabf] text-[#1f1c0b] cursor-pointer'
+                              : 'bg-[#f3f4f5] border-[#e2dabf]/50 text-[#506072] opacity-60 cursor-not-allowed'
+                          }`}
                           data-testid={`quiz-option-${oIdx}`}
                         >
                           <span className="shrink-0 w-6 h-6 rounded-full bg-[#006d37] text-[#ffffff] flex items-center justify-center text-[10px] font-extrabold">
@@ -276,7 +323,8 @@ export default function AITutorView({ onBackToDashboard, onXPGained }: AITutorVi
                         </button>
                       ))}
                     </div>
-                  )}
+                    );
+                  })()}
 
                   {/* Sources + traçabilité */}
                   {msg.action?.sources && msg.action.sources.length > 0 && (
@@ -337,6 +385,7 @@ export default function AITutorView({ onBackToDashboard, onXPGained }: AITutorVi
         {/* Loading Indicator */}
         {isLoading && (
           <motion.div
+            data-message
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             className="flex gap-3 max-w-[80%] ml-auto"
@@ -344,7 +393,7 @@ export default function AITutorView({ onBackToDashboard, onXPGained }: AITutorVi
             <div className="shrink-0">
               <img
                 src={MORCHID_LOGO_URL}
-                alt="AI Avatar"
+                alt="شعار المرشد الذكي"
                 className="w-8 h-8 rounded-full border border-[#e2dabf]/50 p-0.5 bg-[#ffffff] object-contain"
                 referrerPolicy="no-referrer"
               />
@@ -364,8 +413,6 @@ export default function AITutorView({ onBackToDashboard, onXPGained }: AITutorVi
             <span>{error}</span>
           </div>
         )}
-
-        <div ref={messagesEndRef} />
       </div>
 
       {/* Suggestion Chips Box */}
@@ -418,6 +465,7 @@ export default function AITutorView({ onBackToDashboard, onXPGained }: AITutorVi
             value={input}
             onChange={(e) => setInput(e.target.value)}
             placeholder="اسأل المرشد الذكي عن أي سؤال في مادة العلوم..."
+            aria-label="حقل السؤال إلى المرشد الذكي"
             className="flex-1 px-4 h-12 rounded-xl bg-[#f3f4f5] border border-transparent focus:border-[#006d37] focus:bg-[#ffffff] text-sm focus:outline-none transition-all placeholder:text-[#506072]/60"
             disabled={isLoading}
           />
@@ -447,7 +495,33 @@ const SOURCE_LABELS: Record<string, string> = {
   out_of_scope: 'خارج المقرر',
 };
 
-// Basic formatter to bold markdown text (**text**)
+// B6 (audit) : rendu markdown par BLOCS — les lignes « - »/« * » consécutives sont
+// regroupées dans un vrai <ul> (les <li> orphans étaient du DOM invalide).
+// Exportée pour être testée unitairement.
+export function renderMarkdownBlocks(text: string) {
+  const blocks: Array<{ type: 'ul'; items: string[] } | { type: 'p'; text: string }> = [];
+  for (const line of text.split('\n')) {
+    const t = line.trim();
+    if (t.startsWith('- ') || t.startsWith('* ')) {
+      const last = blocks[blocks.length - 1];
+      if (last && last.type === 'ul') last.items.push(t.substring(2));
+      else blocks.push({ type: 'ul', items: [t.substring(2)] });
+    } else {
+      blocks.push({ type: 'p', text: line });
+    }
+  }
+  return blocks.map((b, i) =>
+    b.type === 'ul' ? (
+      <ul key={i} className="list-disc list-inside ml-2 space-y-1">
+        {b.items.map((it, j) => (
+          <li key={j}>{renderBoldText(it)}</li>
+        ))}
+      </ul>
+    ) : (
+      <p key={i}>{renderBoldText(b.text)}</p>
+    ),
+  );
+}
 function renderBoldText(text: string) {
   const parts = text.split('**');
   return parts.map((part, index) =>
