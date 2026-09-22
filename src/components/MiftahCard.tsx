@@ -87,7 +87,7 @@ export default function MiftahCard() {
             <g fontFamily="Inter,Cairo,sans-serif" fontSize={11} fontWeight={700} fill="#fff" textAnchor="middle"><text x={97} y={63}>1</text><text x={127} y={59}>2</text><text x={157} y={64}>3</text><text x={192} y={61}>4</text></g>
           </svg>
           <div>
-            <div className="miftah-teeth"><span>1 🔍 تَبَصَّر</span><span>2 🔑 أدخل</span><span>3 🔄 أدر</span><span>4 🔓 افتح</span></div>
+            <div className="miftah-teeth"><span>1 🔍 فعل</span><span>2 🔑 دليل</span><span>3 🔄 علاقة</span><span>4 🔓 جواب</span></div>
             <div style={{color:'var(--mute)', marginTop:6}}>سنّ ناقصة = مفتاح لا يفتح. <span className="miftah-path">3</span> تُستعمل فقط إن سمح الفعل.</div>
           </div>
         </div>
@@ -95,14 +95,14 @@ export default function MiftahCard() {
         <table>
           <thead><tr><th style={{width:36}}>#</th><th style={{width:90}}>السنّ</th><th>ماذا أفعل</th><th className="corr" style={{width:'38%'}}>📝 المصحح</th></tr></thead>
           <tbody>
-            <tr><td className="c">1</td><td className="c">🔍 تَبَصَّر</td><td>أطوّق <b>الفعل</b> · أسطّر <b>الكلمات المفتاحية</b> · أرقّم إجابتي <b>برقم السؤال</b> (1-أ، 1-ب…) لا غير.</td><td className="corr">إجابة بلا رقم أو تحت رقم خاطئ = <b>0</b> ولو كانت صحيحة. الفعل الخاطئ (وصفتَ بدل أن تفسّر) = تفقد نقطة الفعل كاملة.</td></tr>
-            <tr><td className="c">2</td><td className="c">🔑 أدخل</td><td>أستخرج من الوثيقة <b>أرقاما + وحدات + اتجاه التغيّر</b> («يرتفع من 2 إلى 8 <span className="latin">mg/L</span> بين 0 و 10 <span className="latin">min</span>»).</td><td className="corr">نقطة الاستخراج تُمنح <b>للرقم مع وحدته</b>. «يرتفع» وحدها = نصف نقطة. رقم بلا وحدة = خطأ محسوب.</td></tr>
-            <tr><td className="c">3</td><td className="c">🔄 أدر<br/><small>إن سمح الفعل</small></td><td>أربط المعطى بالسبب/الآلية من الدرس: «لأنّ… / بسبب… / ممّا يدلّ على…».</td><td className="corr">هنا نقاط الفهم (غالبا الأثقل). ربط بلا معطى = «حفظ» → نصف النقطة. معطى بلا ربط والفعل يطلبه = نصف النقطة.</td></tr>
-            <tr><td className="c">4</td><td className="c">🔓 افتح</td><td>جملة واحدة تجيب <b>حرفيا</b> على الكلمات التي سطّرتُها في السنّ 1.</td><td className="corr">خاتمة غائبة = نقطة الاستنتاج ضائعة. خاتمة لا تحوي كلمات السؤال = <b>لا تُقرأ</b> كإجابة.</td></tr>
+            <tr><td className="c">1</td><td className="c">🔍 فعل</td><td>أطوّق <b>الفعل</b> · أسطّر <b>الكلمات المفتاحية</b> · أرقّم إجابتي <b>برقم السؤال</b> (1-أ، 1-ب…) لا غير.</td><td className="corr">إجابة بلا رقم أو تحت رقم خاطئ = <b>0</b> ولو كانت صحيحة. الفعل الخاطئ (وصفتَ بدل أن تفسّر) = تفقد نقطة الفعل كاملة.</td></tr>
+            <tr><td className="c">2</td><td className="c">🔑 دليل</td><td>أستخرج من الوثيقة <b>أرقاما + وحدات + اتجاه التغيّر</b> («يرتفع من 2 إلى 8 <span className="latin">mg/L</span> بين 0 و 10 <span className="latin">min</span>»).</td><td className="corr">نقطة الاستخراج تُمنح <b>للرقم مع وحدته</b>. «يرتفع» وحدها = نصف نقطة. رقم بلا وحدة = خطأ محسوب.</td></tr>
+            <tr><td className="c">3</td><td className="c">🔄 علاقة<br/><small>إن سمح الفعل</small></td><td>أربط المعطى بالسبب/الآلية من الدرس: «لأنّ… / بسبب… / ممّا يدلّ على…».</td><td className="corr">هنا نقاط الفهم (غالبا الأثقل). ربط بلا معطى = «حفظ» → نصف النقطة. معطى بلا ربط والفعل يطلبه = نصف النقطة.</td></tr>
+            <tr><td className="c">4</td><td className="c">🔓 جواب</td><td>جملة واحدة تجيب <b>حرفيا</b> على الكلمات التي سطّرتُها في السنّ 1.</td><td className="corr">خاتمة غائبة = نقطة الاستنتاج ضائعة. خاتمة لا تحوي كلمات السؤال = <b>لا تُقرأ</b> كإجابة.</td></tr>
           </tbody>
         </table>
         <h3><span className="num">ب</span> البوابتان + عائلتي — أقرّر قبل أن أكتب، لا أثناء</h3>
-        <div className="miftah-gate"><div className="q">🚪 البوابة 1 — قفل أصلا؟</div><div>هل سطّرتُ في السنّ 1 كلمة: <b>وثيقة / شكل / جدول / منحنى / رسم</b>؟</div><div className="opt a"><b>لا → 🧠 لا قفل</b> : دُرج المعرفة — من تَبَصَّر إلى افتح مباشرة <span className="miftah-path">1 → 4</span></div><div className="opt b"><b>نعم → 🔒 قفل</b> : أمرّ إلى البوابة 2.</div></div>
+        <div className="miftah-gate"><div className="q">🚪 البوابة 1 — قفل أصلا؟</div><div>هل سطّرتُ في السنّ 1 كلمة: <b>وثيقة / شكل / جدول / منحنى / رسم</b>؟</div><div className="opt a"><b>لا → 🧠 لا قفل</b> : دُرج المعرفة — من فعل إلى جواب مباشرة <span className="miftah-path">1 → 4</span></div><div className="opt b"><b>نعم → 🔒 قفل</b> : أمرّ إلى البوابة 2.</div></div>
         <div className="miftah-gate"><div className="q">📥 البوابة 2 — من أين مادة الإدخال؟</div><div>«ومعلوماتك / ومكتسباتك» مذكورة في السؤال؟</div><div className="opt a"><b>📄 وثيقة فقط</b> : عمود واحد في المسودة.</div><div className="opt b"><b>📄+🧠 مختلط</b> : عمودان — <b>[من الوثيقة | من معلوماتي]</b>.</div></div>
         <div className="miftah-sent">⚙️ <b>عائلتي قبل أن أكتب:</b> 📷 الصورة (حلّل · صِف · استخرج · قارن) — <span className="miftah-path">1 → 2 → 4</span> · 🎬 الفيلم (فسّر · اشرح · علّل · استنتج) — <span className="miftah-path">1 → 2 → 3 → 4</span> · 🔨 الحدّاد (اقترح · برّر · ناقض · قدّم حلا) — <b>تصنيع</b>: منتج منطقي جديد (فرضية / اقتراح / توصية)، لا جواب واحد في الوثيقة.</div>
         <div className="miftah-corr-note"><b>📝 المصحح:</b> في «صورة»، كل جملة تفسيرية = وقت ضائع لا يُنقَّط. في «فيلم»، وصف بلا سبب = نصف النقاط على أحسن تقدير. في «الحدّاد»، إعادة الملاحظة بدل التصنيع = صفر: المطلوب منتج مُبرَّر، لا وصف ولا تفسير جاهز.</div>
