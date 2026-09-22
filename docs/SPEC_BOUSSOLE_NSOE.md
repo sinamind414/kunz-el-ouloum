@@ -1,5 +1,9 @@
 # 🧭 SPEC — BOUSSOLE v2 (بوصلة الإجابة · 4 خطوات + مفتاح واحد)
 
+>
+> **Libellés §14 (2026-09-22)** — document **historique** : les noms « تَبَصَّر / أدخل / أدر / افتح » y sont conservés comme trace d'arbitrage. L'app et la fiche utilisent désormais les gestes « فعل / دليل · علاقة · جواب » (voir `docs/MARQUE.md` §14).
+>
+
 > **Source** : audit v1 (NSOE) → refonte v2, `boussole_svt_v2.html` (conception validée).
 > **Update 2026-09-06 (MARQUE §12)** : les 4 étapes = les 4 dents du المفتاح — noms alignés : اِقْرَأْ→**🔍 تَبَصَّر** · اِجْمَعْ→**🔑 أدخل** · اِرْبِطْ→**🔄 أدر** · اِخْتِمْ→**🔓 افتح** (le geste, les questions, les templates et les couleurs sont inchangés).
 > **Principe** : une méthode d'examen doit être plus petite que la panique — la v2 ne demande

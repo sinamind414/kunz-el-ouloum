@@ -88,11 +88,12 @@ must(recto, 'فعل · دليل · علاقة · جواب · فحص', 'chaîne d
 must(recto, 'بوصلة 20–30 ثانية', 'boosula 20–30 s (compass)');
 must(recto, 'علامة أمان', 'table des 5 mouvements : علامة أمان');
 must(recto, 'العائلات الثلاث', 'section ب : les 3 familles');
-must(recto, 'أصف', 'famille 1 : أصف');
-must(recto, 'أقرأ', 'famille 2 : أقرأ');
-must(recto, 'أحكم', 'famille 3 : أحكم');
+must(recto, '🟡 <span class="big">أصف</span>', 'famille 1 : أصف (ancre badge — anti faux positif)');
+must(recto, '🟢 <span class="big">أقرأ</span>', 'famille 2 : أقرأ (ancre badge — anti faux positif P3-1)');
+must(recto, '🟣 <span class="big">أحكم</span>', 'famille 3 : أحكم (ancre badge — anti faux positif)');
 must(recto, 'فحص 10 ثوانٍ', 'section هـ : فحص 10 s (ceinture — option α §14)');
 must(recto, 'ثلاثة فخاخ متكررة', '3 pièges récurrents');
+must(recto, 'دون نسخ التعليمة', 'anti-tautologie v6 : جواب = دون نسخ التعليمة (P3-2, hérite de « لا يُعيد نص السؤال » v5)');
 must(recto, 'الوجه الأول — النواة', 'footer recto (fiche 2 cartes)');
 mustNot(recto, 'شجرة نسب بحكم واحد', 'arbre à verdict unique retiré (arbitrage 2)');
 mustNot(recto, 'السنّ 0', '« السنّ 0 » banni');
