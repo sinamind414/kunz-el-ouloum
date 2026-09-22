@@ -42,6 +42,8 @@ describe('OkachaView — بنك الحفظ modernisé', () => {
     const user = userEvent.setup();
     const onRate = vi.fn();
     render(<OkachaView onBack={vi.fn()} onRate={onRate} />);
+    // Navigation par icônes : ouvrir l'unité d1u1 (تركيب البروتين).
+    await user.click(screen.getByTestId('okacha-unite-d1u1'));
     await user.click(screen.getByTestId('toggle-hafiz'));
     // Des points sont masqués (d1u1 en contient 24).
     const reveals = screen.getAllByTestId(/^reveal-/);
@@ -64,11 +66,58 @@ describe('OkachaView — بنك الحفظ modernisé', () => {
   it('unité marquée « محفوظة » persistée en localStorage (progression)', async () => {
     const user = userEvent.setup();
     render(<OkachaView onBack={vi.fn()} />);
+    // Le marqueur vit dans l'en-tête de l'unité ouverte (navigation par icônes).
+    await user.click(screen.getByTestId('okacha-unite-d1u1'));
     await user.click(screen.getByTestId('lu-d1u1'));
     expect(JSON.parse(window.localStorage.getItem('kunz_okacha_progress_v1')!).lus).toEqual(['d1u1']);
     // Re-cliquer = annuler le marqueur (toggle).
     await user.click(screen.getByTestId('lu-d1u1'));
     expect(JSON.parse(window.localStorage.getItem('kunz_okacha_progress_v1')!).lus).toEqual([]);
+  });
+
+  it('navigation par icônes : domaine → 5 unités, puis contenu + bande d’unités', async () => {
+    const user = userEvent.setup();
+    render(<OkachaView onBack={vi.fn()} />);
+    // Écran d'entrée : icônes des 5 unités du domaine 1.
+    expect(screen.getByTestId('okacha-unites-icones')).toBeTruthy();
+    for (const id of ['d1u1', 'd1u2', 'd1u3', 'd1u4', 'd1u5']) {
+      expect(screen.getByTestId(`okacha-unite-${id}`)).toBeTruthy();
+    }
+    expect(screen.queryByTestId('okacha-unite-d2u1')).toBeNull();
+    // Un clic = l'unité s'ouvre, les autres icônes laissent place au contenu.
+    await user.click(screen.getByTestId('okacha-unite-d1u3'));
+    expect(screen.queryByTestId('okacha-unites-icones')).toBeNull();
+    expect(screen.getByTestId('bande-unites-okacha')).toBeTruthy();
+    expect(screen.getByText(/النشاط الإنزيمي للبروتينات/)).toBeTruthy();
+    // Bande : passer à l'unité suivante icône après icône.
+    await user.click(screen.getByTestId('bande-unite-okacha-d1u5'));
+    expect(screen.getByText(/الاتصال العصبي/)).toBeTruthy();
+    // Retour à la grille d'icônes.
+    await user.click(screen.getByTestId('okacha-retour-unites'));
+    expect(screen.getByTestId('okacha-unites-icones')).toBeTruthy();
+  });
+
+  it('changer de domaine remet l’écran d’icônes (D2 : 2 unités, D3 : 3)', async () => {
+    const user = userEvent.setup();
+    render(<OkachaView onBack={vi.fn()} />);
+    await user.click(screen.getByTestId('okacha-unite-d1u1'));
+    expect(screen.getByTestId('bande-unites-okacha')).toBeTruthy();
+    await user.click(screen.getByTestId('onglet-domaine-2'));
+    expect(screen.getByTestId('okacha-unites-icones')).toBeTruthy();
+    expect(screen.getAllByTestId(/^okacha-unite-/)).toHaveLength(2);
+    await user.click(screen.getByTestId('onglet-domaine-3'));
+    expect(screen.getAllByTestId(/^okacha-unite-/)).toHaveLength(3);
+  });
+
+  it('méthodologie : 8 sections, chacune avec une icône (aucun repère manquant)', async () => {
+    const user = userEvent.setup();
+    render(<OkachaView onBack={vi.fn()} />);
+    await user.click(screen.getByTestId('onglet-methode'));
+    const sections = screen.getAllByTestId(/^methodo-section-/);
+    expect(sections).toHaveLength(8);
+    for (const s of sections) {
+      expect(s.querySelector('svg'), 'section sans icône').toBeTruthy();
+    }
   });
 
   it('bouton « اختبار الكتاب » appelle onOpenQcm (lien vers le QCM du livre)', async () => {

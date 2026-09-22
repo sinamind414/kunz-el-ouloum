@@ -17,7 +17,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import {
   BookMarked, Search, X, Compass, FlaskConical, Leaf, Globe2,
-  Eye, EyeOff, CheckCircle2, Printer, BookOpen, RotateCcw, Check, Star, Lightbulb,
+  Eye, EyeOff, CheckCircle2, Printer, BookOpen, RotateCcw, Check, Star, Lightbulb, ChevronLeft,
 } from 'lucide-react';
 import {
   OKACHA_UNITES_ENRICHIES,
@@ -27,6 +27,8 @@ import {
   type BlocOkacha,
   type SectionMethodo,
 } from '../data/okachaEnriched';
+import Icone from './Icone';
+import { okachaUniteIcone, methodoIcone } from '../data/lessonIcons';
 import {
   loadOkachaProgress,
   toggleUniteLue,
@@ -219,7 +221,8 @@ function BlocView({
 
 export default function OkachaView({ onBack, onRate, onOpenQcm }: Props) {
   const [onglet, setOnglet] = useState<1 | 2 | 3 | 'm'>(1);
-  const [ouverte, setOuverte] = useState<string | null>(OKACHA_UNITES_ENRICHIES[0]?.id ?? null);
+  /** Unité ouverte : `null` = écran d'icônes des unités du domaine. */
+  const [ouverte, setOuverte] = useState<string | null>(null);
   const [sectionM, setSectionM] = useState<string | null>('intro');
   const [q, setQ] = useState('');
   const [modeHafiz, setModeHafiz] = useState(false);
@@ -234,6 +237,8 @@ export default function OkachaView({ onBack, onRate, onOpenQcm }: Props) {
 
   const unites = useMemo(() => OKACHA_UNITES_ENRICHIES.filter((u) => u.domaine === (onglet as number)), [onglet]);
   const taille = grand ? 'text-[17px]' : 'text-[15px]';
+  /** Unité du livre actuellement ouverte (null = écran d'icônes). */
+  const uniteCourante = ouverte ? OKACHA_UNITES_ENRICHIES.find((u) => u.id === ouverte) ?? null : null;
 
   // Index de recherche normalisé (unités + méthodo) — construit une seule fois.
   const index = useMemo(() => {
@@ -366,20 +371,23 @@ export default function OkachaView({ onBack, onRate, onOpenQcm }: Props) {
       {/* ── Onglets domaines + méthodo ── */}
       <div className="flex gap-2 flex-wrap print:hidden">
         <button
-          onClick={() => setOnglet('m')}
-          className={`px-3 py-2 rounded-xl text-xs font-black transition-colors ${onglet === 'm' ? THEME.m.actif : THEME.m.dormand}`}
+          onClick={() => { setOnglet('m'); setOuverte(null); }}
+          data-testid="onglet-methode"
+          className={`inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-black transition-colors ${onglet === 'm' ? THEME.m.actif : THEME.m.dormand}`}
         >
-          🧭 المنهجية (عكاشة)
+          <Icone cle="Compass" className="w-3.5 h-3.5" />
+          المنهجية (عكاشة)
         </button>
         {([1, 2, 3] as const).map((d) => {
-          const Icone = THEME[d].icone;
+          const IconeDomaine = THEME[d].icone;
           return (
             <button
               key={d}
-              onClick={() => { setOnglet(d); setOuverte(OKACHA_UNITES_ENRICHIES.find((u) => u.domaine === d)?.id ?? null); }}
+              onClick={() => { setOnglet(d); setOuverte(null); }}
+              data-testid={`onglet-domaine-${d}`}
               className={`flex-1 inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl text-xs font-black transition-colors ${onglet === d ? THEME[d].actif : THEME[d].dormand}`}
             >
-              <Icone className="w-3.5 h-3.5" />
+              <IconeDomaine className="w-3.5 h-3.5" />
               {NOM_DOMAINE[d]}
             </button>
           );
@@ -423,9 +431,15 @@ export default function OkachaView({ onBack, onRate, onOpenQcm }: Props) {
               <section key={s.id} className={`rounded-3xl border ${THEME.m.bord} bg-white dark:bg-[#161c18] overflow-hidden`}>
                 <button
                   onClick={() => setSectionM(ouverteS ? null : s.id)}
+                  data-testid={`methodo-section-${s.id}`}
                   className={`w-full flex items-center justify-between px-4 py-3 text-right bg-gradient-to-l ${THEME.m.grad} hover:opacity-90`}
                 >
-                  <span className="text-sm font-black text-gray-800 dark:text-gray-100">🧭 {s.titreAr}</span>
+                  <span className="flex items-center gap-2 text-sm font-black text-gray-800 dark:text-gray-100">
+                    <span className="inline-flex items-center justify-center w-7 h-7 rounded-xl bg-emerald-600 text-white shrink-0">
+                      <Icone cle={methodoIcone(s.id)} className="w-4 h-4" />
+                    </span>
+                    {s.titreAr}
+                  </span>
                   <span className="text-[10px] font-black text-emerald-700 dark:text-emerald-300">
                     {ouverteS ? '▲ إخفاء' : `▼ ${s.blocs.length} سطراً`}
                   </span>
@@ -458,78 +472,140 @@ export default function OkachaView({ onBack, onRate, onOpenQcm }: Props) {
         </div>
       )}
 
-      {/* ── Unités du domaine courant ── */}
-      {!resultats && onglet !== 'm' && (
-        <div className="space-y-3">
+      {/* ── Unités du domaine : ICÔNES (une icône = une unité du livre) ── */}
+      {!resultats && onglet !== 'm' && ouverte === null && (
+        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4" data-testid="okacha-unites-icones">
           {unites.map((u) => {
-            const ouverteU = ouverte === u.id;
             const th = THEME[u.domaine as ThemeCle];
-            const Icone = th.icone;
             const lue = prog.lus.includes(u.id);
             const nbNot = notationsUnite(prog, u.id);
             return (
-              <section key={u.id} className={`rounded-3xl border ${th.bord} bg-white dark:bg-[#161c18] overflow-hidden`}>
-                <div className={`flex items-stretch bg-gradient-to-l ${th.grad}`}>
-                  <button
-                    onClick={() => setOuverte(ouverteU ? null : u.id)}
-                    className="flex-1 flex items-center justify-between gap-2 px-4 py-3 text-right hover:opacity-95"
-                  >
-                    <span className="flex items-center gap-2 text-sm font-black text-gray-800 dark:text-gray-100">
-                      <span className={`inline-flex w-7 h-7 rounded-xl ${th.actif} items-center justify-center shrink-0`}>
-                        <Icone className="w-4 h-4" />
-                      </span>
-                      {u.uniteAr}
+              <button
+                key={u.id}
+                onClick={() => setOuverte(u.id)}
+                data-testid={`okacha-unite-${u.id}`}
+                className={`group p-5 rounded-3xl border-2 ${th.bord} bg-white dark:bg-[#161c18] hover:shadow-lg transition-all text-right flex items-start gap-4`}
+              >
+                <span className={`shrink-0 inline-flex items-center justify-center w-14 h-14 rounded-2xl ${th.actif} shadow-md group-hover:scale-105 transition-transform`}>
+                  <Icone cle={okachaUniteIcone(u.id, u.domaine)} className="w-7 h-7" />
+                </span>
+                <span className="flex-1 min-w-0 space-y-1">
+                  <span className="flex items-start gap-2">
+                    <span className={`inline-flex items-center justify-center w-6 h-6 rounded-lg ${th.num} text-[11px] font-black shrink-0`}>
+                      {u.id.slice(2)}
                     </span>
-                    <span className="flex items-center gap-2 text-[10px] font-black shrink-0">
-                      <span className="text-gray-400 dark:text-gray-500 hidden sm:inline">📖 {u.sourceRange}</span>
-                      <span className="text-blue-700 dark:text-blue-300">
-                        {ouverteU ? '▲ إخفاء' : `▼ ${u.blocs.length} بطاقة · ${u.nbPoints} نقطة`}
-                      </span>
+                    <span className="text-sm font-black text-gray-800 dark:text-gray-100">{u.uniteAr}</span>
+                    {lue && <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />}
+                  </span>
+                  <span className="block text-[10px] font-bold text-gray-400 dark:text-gray-500">📖 {u.sourceRange}</span>
+                  <span className="flex items-center gap-1.5 flex-wrap pt-0.5">
+                    <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-lg ${th.num} text-[10px] font-black`}>
+                      {u.nbPoints} نقطة
                     </span>
-                  </button>
-                  <button
-                    onClick={() => setProg((p) => toggleUniteLue(p, u.id))}
-                    data-testid={`lu-${u.id}`}
-                    title={lue ? 'محفوظة — اضغط للتراجع' : 'علّم الوحدة كمحفوظة'}
-                    className={`px-3 border-r border-gray-200/60 dark:border-gray-700/60 print:hidden transition-colors ${lue ? 'text-emerald-600 dark:text-emerald-400' : 'text-gray-300 dark:text-gray-600 hover:text-emerald-500'}`}
-                  >
-                    <CheckCircle2 className="w-5 h-5" />
-                  </button>
-                </div>
-                {ouverteU && (
-                  <div className="px-4 pb-4 pt-2 border-t border-gray-100 dark:border-gray-800">
-                    <div className="flex items-center justify-between mb-2 text-[10px] font-black text-gray-400 dark:text-gray-500 print:hidden">
-                      <span>{nbNot > 0 ? `🗳 تقييماتك في هذه الوحدة : ${nbNot}` : modeHafiz ? 'اخفِ · اكشف · قيّم أداء حفظك' : 'فعّل « وضع الحفظ » للاختبار الذاتي'}</span>
-                      {modeHafiz && (
-                        <button onClick={() => setRevelves(new Set())} className="inline-flex items-center gap-1 hover:text-gray-600">
-                          <RotateCcw className="w-3 h-3" /> إعادة الإخفاء
-                        </button>
-                      )}
-                    </div>
-                    {u.blocs.map((b, idx) => {
-                      const cle = `${u.id}#${idx}`;
-                      return (
-                        <BlocView
-                          key={idx}
-                          b={b}
-                          cle={cle}
-                          domaine={u.domaine as ThemeCle}
-                          cache={modeHafiz && b.kind === 'point' && !revelves.has(cle)}
-                          revele={revelves.has(cle)}
-                          onReveler={() => setRevelves((prev) => new Set(prev).add(cle))}
-                          onNoter={(n) => noter(cle, n)}
-                          notes={prog.evals[cle]}
-                          taille={taille}
-                          q={q}
-                        />
-                      );
-                    })}
-                  </div>
-                )}
-              </section>
+                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg bg-gray-100 dark:bg-gray-800 text-[10px] font-black text-gray-500 dark:text-gray-400">
+                      {u.blocs.length} بطاقة
+                    </span>
+                    {nbNot > 0 && (
+                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg bg-emerald-50 dark:bg-emerald-950/30 text-[10px] font-black text-emerald-700 dark:text-emerald-300">
+                        🗳 {nbNot}
+                      </span>
+                    )}
+                  </span>
+                </span>
+                <ChevronLeft className="w-5 h-5 text-gray-300 group-hover:text-gray-500 transition-all shrink-0 mt-4" />
+              </button>
             );
           })}
         </div>
+      )}
+      {/* ── Contenu de l'unité ouverte + BANDE d'unités (icône après icône) ── */}
+      {!resultats && onglet !== 'm' && uniteCourante && (
+        <>
+          <div className="flex items-center gap-3 flex-wrap">
+            <button
+              onClick={() => setOuverte(null)}
+              data-testid="okacha-retour-unites"
+              className="inline-flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-black bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-200 hover:bg-gray-200"
+            >
+              <span>→</span>
+              <span>عودة إلى وحدات المجال</span>
+            </button>
+            <span className="flex items-center gap-2 text-sm font-black text-gray-800 dark:text-gray-100">
+              <Icone cle={okachaUniteIcone(uniteCourante.id, uniteCourante.domaine)} className="w-4 h-4" />
+              {uniteCourante.uniteAr}
+            </span>
+          </div>
+
+          <div className="flex items-center gap-2 flex-wrap" data-testid="bande-unites-okacha">
+            {unites.map((v) => (
+              <button
+                key={v.id}
+                onClick={() => setOuverte(v.id)}
+                title={v.uniteAr}
+                data-testid={`bande-unite-okacha-${v.id}`}
+                className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-[11px] font-black transition-colors ${
+                  v.id === uniteCourante.id
+                    ? THEME[v.domaine as ThemeCle].actif
+                    : 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-200'
+                }`}
+              >
+                <Icone cle={okachaUniteIcone(v.id, v.domaine)} className="w-3.5 h-3.5" />
+                {v.id.slice(2)}
+              </button>
+            ))}
+          </div>
+
+          <section className={`rounded-3xl border ${THEME[uniteCourante.domaine as ThemeCle].bord} bg-white dark:bg-[#161c18] overflow-hidden`}>
+            <header className={`flex items-center justify-between gap-3 px-4 py-3 bg-gradient-to-l ${THEME[uniteCourante.domaine as ThemeCle].grad}`}>
+              <span className="text-[10px] font-black text-gray-400 dark:text-gray-500">📖 {uniteCourante.sourceRange}</span>
+              <button
+                onClick={() => setProg((p) => toggleUniteLue(p, uniteCourante.id))}
+                data-testid={`lu-${uniteCourante.id}`}
+                title={prog.lus.includes(uniteCourante.id) ? 'محفوظة — اضغط للتراجع' : 'علّم الوحدة كمحفوظة'}
+                className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-[11px] font-black transition-colors ${
+                  prog.lus.includes(uniteCourante.id)
+                    ? 'bg-emerald-600 text-white'
+                    : 'bg-white/70 dark:bg-gray-800 text-gray-500 dark:text-gray-400 hover:text-emerald-600'
+                }`}
+              >
+                <CheckCircle2 className="w-4 h-4" />
+                {prog.lus.includes(uniteCourante.id) ? 'محفوظة' : 'علّم كمحفوظة'}
+              </button>
+            </header>
+            <div className="px-4 pb-4 pt-2">
+              <div className="flex items-center justify-between mb-2 text-[10px] font-black text-gray-400 dark:text-gray-500 print:hidden">
+                <span>
+                  {notationsUnite(prog, uniteCourante.id) > 0
+                    ? `🗳 تقييماتك في هذه الوحدة : ${notationsUnite(prog, uniteCourante.id)}`
+                    : modeHafiz ? 'اخفِ · اكشف · قيّم أداء حفظك' : 'فعّل « وضع الحفظ » للاختبار الذاتي'}
+                </span>
+                {modeHafiz && (
+                  <button onClick={() => setRevelves(new Set())} className="inline-flex items-center gap-1 hover:text-gray-600">
+                    <RotateCcw className="w-3 h-3" /> إعادة الإخفاء
+                  </button>
+                )}
+              </div>
+              {uniteCourante.blocs.map((b, idx) => {
+                const cle = `${uniteCourante.id}#${idx}`;
+                return (
+                  <BlocView
+                    key={idx}
+                    b={b}
+                    cle={cle}
+                    domaine={uniteCourante.domaine as ThemeCle}
+                    cache={modeHafiz && b.kind === 'point' && !revelves.has(cle)}
+                    revele={revelves.has(cle)}
+                    onReveler={() => setRevelves((prev) => new Set(prev).add(cle))}
+                    onNoter={(n) => noter(cle, n)}
+                    notes={prog.evals[cle]}
+                    taille={taille}
+                    q={q}
+                  />
+                );
+              })}
+            </div>
+          </section>
+        </>
       )}
     </div>
   );

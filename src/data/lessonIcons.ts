@@ -1,16 +1,19 @@
-// passiveLessonIcons.ts — icônes de la navigation « icône après icône » des
-// leçons passives (onglet الدروس → الدرس السلبي).
+// lessonIcons.ts — icônes de la navigation « icône après icône » des leçons.
 //
-// Décision propriétaire 2026-09-22 : entrer dans un domaine doit montrer des
-// ICÔNES d'unités, puis des ICÔNES de chapitres — une icône = une leçon, sur
-// TOUTES les unités des leçons passives (D1 U1-U5, D2 U6-U8, D3 U9-U11).
+// Décision propriétaire 2026-09-22, étendue le même jour aux 3 rubriques :
+//   • الدرس النشيط (leçons actives TS)  : icônes d'unités → icônes de leçons ;
+//   • الدرس السلبي (leçons passives HTML): icônes d'unités → icônes de chapitres ;
+//   • بنك الحفظ (عكاشة)                  : icônes de domaines → icônes d'unités.
+// Principe : une icône = une entrée ; on avance icône après icône, sur TOUTES
+// les unités (actives : 4 unités / 6 leçons · passives : 11 unités / 47 chapitres
+// · حفظ : 10 unités).
 //
 // Ce module ne contient que des CLÉS (chaînes) : aucune dépendance à lucide-react
-// côté data — la vue `LessonsView.tsx` résout la clé en composant (ICONES).
-// Verrou : passiveLessonIcons.test.ts (les 11 unités couvertes, clés licites,
-// déterminisme).
+// côté data — le composant `src/components/Icone.tsx` résout la clé (Record
+// exhaustif : une clé licite sans composant casse la compilation).
+// Verrou : lessonIcons.test.ts.
 
-/** Clés licites = composants lucide réellement importés par LessonsView. */
+/** Clés licites = composants réellement résolus par src/components/Icone.tsx. */
 export const ICONES_AUTORISEES = [
   'Dna',
   'Boxes',
@@ -26,6 +29,10 @@ export const ICONES_AUTORISEES = [
   'Activity',
   'Microscope',
   'FileText',
+  'Compass',
+  'Grid3x3',
+  'Lightbulb',
+  'Target',
 ] as const;
 
 export type IconeCle = (typeof ICONES_AUTORISEES)[number];
@@ -81,3 +88,54 @@ export function chapitreIcone(titre: string, unitId: number): IconeCle {
   }
   return uniteIcone(unitId);
 }
+
+// ---------------------------------------------------------------------------
+// بنك الحفظ (عكاشة) — icônes des unités du livre et des sections de méthodologie.
+// Cartes EXPLICITES (pas de règles sémantiques) : les identifiants sont figés par
+// okacha.lock.test.ts / okachaEnriched.lock.test.ts, et le verrou de ce module
+// exige une icône pour chaque identifiant réellement présent.
+// ---------------------------------------------------------------------------
+
+/** Icône de repli d'un domaine de بنك الحفظ (1 protéines / 2 énergie / 3 tectonique). */
+export const OKACHA_DOMAINE_ICON_KEY: Record<number, IconeCle> = {
+  1: 'Dna',
+  2: 'BatteryCharging',
+  3: 'Earth',
+};
+
+/** Icône-repère de chaque unité du livre عكاشة (ids « dXuY »). */
+export const OKACHA_UNIT_ICON_KEY: Record<string, IconeCle> = {
+  d1u1: 'Dna',           // تركيب البروتين
+  d1u2: 'Boxes',         // العلاقة بين بنية ووظيفة البروتين
+  d1u3: 'Gauge',         // النشاط الإنزيمي للبروتينات
+  d1u4: 'ShieldCheck',   // دور البروتينات في الدفاع عن الذات
+  d1u5: 'Brain',         // الاتصال العصبي
+  d2u1: 'Sun',           // تحويل الطاقة الضوئية إلى طاقة كيميائية كامنة
+  d2u2: 'BatteryCharging', // تحويل الطاقة الكيميائية الكامنة إلى طاقة قابلة للاستعمال
+  d3u1: 'Layers',        // بنية الكرة الأرضية
+  d3u2: 'Earth',         // الصفائح التكتونية
+  d3u3: 'Mountain',      // الظواهر المرتبطة بالنشاط التكتوني
+};
+
+/** Icône d'une unité de بنك الحفظ ; repli = icône de son domaine. */
+export function okachaUniteIcone(id: string, domaine: number): IconeCle {
+  return OKACHA_UNIT_ICON_KEY[id] ?? OKACHA_DOMAINE_ICON_KEY[domaine] ?? 'FileText';
+}
+
+/** Icône de chaque section de méthodologie عكاشة (ordre du livre). */
+export const METHODO_ICON_KEY: Record<string, IconeCle> = {
+  intro: 'Compass',       // مقدمة المنهجية — قواعد العمل
+  hikala: 'FileText',     // هيكلة الموضوع — التمهيد، الوثائق، التعليمة
+  tamarin1: 'Grid3x3',    // التمرين الأول — أسئلة استرداد الموارد
+  tahil: 'Microscope',    // التحليل — استغلال الوثيقة
+  tafsir: 'Lightbulb',    // التفسير — من الملاحظة إلى العلّة
+  mouqarana: 'Boxes',     // المقارنة — التشابه والاختلاف
+  istinj: 'Target',       // الاستنتاج — خاص وعام
+  istidlal: 'Activity',   // الاستدلال العلمي ومعاييره
+};
+
+/** Icône d'une section de méthodologie ; repli neutre si la section est nouvelle. */
+export function methodoIcone(id: string): IconeCle {
+  return METHODO_ICON_KEY[id] ?? 'FileText';
+}
+
