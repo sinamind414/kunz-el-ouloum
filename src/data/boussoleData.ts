@@ -19,7 +19,7 @@ export interface BoussoleStep {
 export const BOUSSOLE_STEPS: BoussoleStep[] = [
   {
     num: 1,
-    ar: 'تَبَصَّر',
+    ar: 'فعل',
     word: 'أحدد فعل الأداء والكلمات المفتاحية',
     wordAr: 'أحدد الفعل',
     whereAr: 'المسودة فقط',
@@ -33,7 +33,7 @@ export const BOUSSOLE_STEPS: BoussoleStep[] = [
   },
   {
     num: 2,
-    ar: 'أدخل',
+    ar: 'دليل',
     word: 'أربط المعطيات بالوحدات',
     wordAr: 'جمع المعطيات',
     whereAr: 'على الورقة',
@@ -47,7 +47,7 @@ export const BOUSSOLE_STEPS: BoussoleStep[] = [
   },
   {
     num: 3,
-    ar: 'أدر',
+    ar: 'علاقة',
     word: 'أقرأ الوثيقة ثم أستنتج',
     wordAr: 'الربط السببي',
     whereAr: 'على الورقة',
@@ -61,7 +61,7 @@ export const BOUSSOLE_STEPS: BoussoleStep[] = [
   },
   {
     num: 4,
-    ar: 'افتح',
+    ar: 'جواب',
     word: 'أعيد صياغة المطلوب كحقيقة علمية',
     wordAr: 'الإنهاء',
     whereAr: 'على الورقة',
@@ -81,7 +81,7 @@ export function getStep(id: 1 | 2 | 3 | 4): BoussoleStep | undefined {
 
 export const REGLE_D_OR_AR = '« لا خاتمةَ قبل حُجّة، ولا حُجّةَ قبل مُعطى، ولا مُعطى قبلَ فَهْمِ السؤال »';
 
-export const TIME_RULE_AR = 'الربع الأول: تَبَصَّر + أدخل · النصف: أدر · الربع الأخير: افتح + الفحص';
+export const TIME_RULE_AR = 'الربع الأول: فعل + دليل · النصف: علاقة · الربع الأخير: جواب + الفحص';
 
 export const FINGERS_RITUAL_AR = 'الإصبع ≈ الخطوة 1-2-3-4 تحت الطاولة';
 
@@ -125,10 +125,10 @@ export const ERROR_ADDRESS_MAP: Record<string, '1' | '2' | '3' | '4' | 'switch'>
 
 export function errorAddressAr(addr: '1' | '2' | '3' | '4' | 'switch'): string {
   const map: Record<typeof addr, string> = {
-    1: '1 تَبَصَّر',
-    2: '2 أدخل',
-    3: '3 أدر',
-    4: '4 افتح',
+    1: '1 فعل',
+    2: '2 دليل',
+    3: '3 علاقة',
+    4: '4 جواب',
     switch: '🔑 المفتاح',
   };
   return map[addr];
@@ -281,9 +281,9 @@ export const AID_LEVELS: NavigatorGrade[] = [
 ];
 
 export const TIME_RULES = {
-  quart: 'الرُّبع الأول: تَبَصَّر + أدخل',
-  half: 'النِّصف: أدر (أو الكتابة إن كان مغلقًا)',
-  quarter: 'الرُّبع الأخير: افتح + الفحص',
+  quart: 'الرُّبع الأول: فعل + دليل',
+  half: 'النِّصف: علاقة (أو الكتابة إن كان مغلقًا)',
+  quarter: 'الرُّبع الأخير: جواب + الفحص',
 };
 
 export const ERROR_TAG_LABELS_AR: Record<string, string> = {
@@ -334,25 +334,25 @@ export interface BoussoleCap {
 
 export const BOUSSOLE_CAPS: BoussoleCap[] = [
   {
-    id: 1, num: 1, ar: 'تَبَصَّر', word: 'أحدد الفعل', color: '#1d4ed8', colorSoft: '#3b82f6',
+    id: 1, num: 1, ar: 'فعل', word: 'أحدد الفعل', color: '#1d4ed8', colorSoft: '#3b82f6',
     questionAr: 'ما المطلوب؟', verbAr: 'حَلِّلْ / فَسِّرْ', gestureAr: '👇 4 أضراس',
     stepsAr: ['حدد الفعل', 'سَبّب الكلمات'],
     desc: 'نوتيّ — أولى الرحلات — واصل الإبحار لتكتسب الرتب',
   },
   {
-    id: 2, num: 2, ar: 'أدخل', word: 'جمع المعطيات', color: '#059669', colorSoft: '#10b981',
+    id: 2, num: 2, ar: 'دليل', word: 'جمع المعطيات', color: '#059669', colorSoft: '#10b981',
     questionAr: 'ما الأملك؟', verbAr: 'حَلِّلْ / فَسِّرْ', gestureAr: '👇 3 أضراس',
     stepsAr: ['اكتب الوثيقة', 'أرد القيم'],
     desc: 'ملاح — 5 رحلات مكتملة + رحلة واحدة بلا خطأ منهجي',
   },
   {
-    id: 3, num: 3, ar: 'أدر', word: 'الربط السببي', color: '#d97706', colorSoft: '#f59e0b',
+    id: 3, num: 3, ar: 'علاقة', word: 'الربط السببي', color: '#d97706', colorSoft: '#f59e0b',
     questionAr: 'هل يسمح بالسبب؟', verbAr: 'فَسِّرْ', gestureAr: '👇 2 أضراس',
     stepsAr: ['استخدم لأن', 'كن جديراً بالنتيجة'],
     desc: 'رجل البحر — متوسط ≥ 75% في 3 أفعال أداء مختلفة',
   },
   {
-    id: 4, num: 4, ar: 'افتح', word: 'الإنهاء', color: '#7c3aed', colorSoft: '#a855f7',
+    id: 4, num: 4, ar: 'جواب', word: 'الإنهاء', color: '#7c3aed', colorSoft: '#a855f7',
     questionAr: 'ما الخلاصة؟', verbAr: 'حَلِّلْ / فَسِّرْ', gestureAr: '👇 1 إصبع',
     stepsAr: ['أعد صياغة السؤال', '،كتب جملة خاتمية'],
     desc: 'قبطان — ICM ≥ 90% في 3 وحدات مختلفة على الأقل',

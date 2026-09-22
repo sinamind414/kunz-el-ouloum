@@ -938,7 +938,7 @@ const handleSelectStage = (stage: 1 | 2 | 3 | 4) => {
                     className="p-4 rounded-xl border-2 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:border-gray-500 dark:hover:border-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800/40 transition-all font-bold text-center"
                   >
                     <div>🧠 لا قفل</div>
-                    <div className="text-[11px] font-normal">دُرج المعرفة — من تَبَصَّر إلى افتح</div>
+                    <div className="text-[11px] font-normal">دُرج المعرفة — من فعل إلى جواب</div>
                   </button>
                 </div>
               </div>
