@@ -606,7 +606,31 @@
             </section>
 
             <!-- الحصيلة المعرفية الرسمية (citation verbatim du livre officiel — voir docs/RESUMES_MAARIFI_LIVRE_2026-09-21.md) -->
-            <section class="card" id="hosila" style="border:2px solid #f59e0b;">
+            <section class="card" 
+
+            <section class="card" id="ch2-step4">
+                <div class="section-title">
+                    <span class="step-num step-num-amber">4</span>
+                    <span>تقويم الدرس 4 : أسئلة البكالوريا المتكررة</span>
+                </div>
+
+                <div class="question-item" id="c28q1-container">
+                    <h4 style="margin-bottom: 12px;">1. لماذا تعتبر الحصيلة الطاقوية للتخمر (2 ATP) ضئيلة جداً مقارنة بالتنفس (38 ATP)؟</h4>
+                    <div class="options-grid">
+                        <button class="option-btn" onclick="checkCh28Answer(0, true)">أ) لأن التخمر هدم جزئي للغلوكوز، حيث تبقى معظم الطاقة الكيميائية الكامنة مخزنة في الروابط الكربونية للمنتج العضوي النهائي (كحول الإيثانول أو حمض اللبن).</button>
+                        <button class="option-btn" onclick="checkCh28Answer(1, false)">ب) لأن التخمر يستهلك 36 ATP في الهيولى.</button>
+                        <button class="option-btn" onclick="checkCh28Answer(2, false)">ج) لأن الخميرة لا تحتوي على إنزيمات.</button>
+                    </div>
+                    <div class="feedback-box" id="c28q1-feedback"></div>
+                    <div class="quiz-badge" id="c2-badge"></div>
+                </div>
+            </section>
+        </div>
+
+        <!-- ═══ Zone de synthèse commune (🏛 حصيلة + 🗺 مخطط) — hors chapter-view :
+             visible dans LES DEUX leçons du fichier (survit au slicing lessonChapterSplit) ═══ -->
+        <div class="synthese-zone" id="zone-synthese">
+id="hosila" style="border:2px solid #f59e0b;">
                 <div class="section-title">
                     <span class="step-num" style="background:#b45309;">🏛</span>
                     <span>الحصيلة المعرفية — النص الرسمي للكتاب المدرسي (الفصل 39، ص 222)</span>
@@ -633,24 +657,6 @@
 <p style="text-align:center; font-weight:900; font-size:15px; margin-top:8px; color:#b45309;">الحصيلة الإجمالية : 38 ATP</p>
 <p style="font-size:12px; line-height:1.9;">وفي التخمر (الهدم في غياب الأكسجين) تكون الطاقة المنتجة قليلة : <b>2 ATP فقط</b> مقابل 38 ATP في التنفس.</p>
 
-            </section>
-
-            <section class="card" id="ch2-step4">
-                <div class="section-title">
-                    <span class="step-num step-num-amber">4</span>
-                    <span>تقويم الدرس 4 : أسئلة البكالوريا المتكررة</span>
-                </div>
-
-                <div class="question-item" id="c28q1-container">
-                    <h4 style="margin-bottom: 12px;">1. لماذا تعتبر الحصيلة الطاقوية للتخمر (2 ATP) ضئيلة جداً مقارنة بالتنفس (38 ATP)؟</h4>
-                    <div class="options-grid">
-                        <button class="option-btn" onclick="checkCh28Answer(0, true)">أ) لأن التخمر هدم جزئي للغلوكوز، حيث تبقى معظم الطاقة الكيميائية الكامنة مخزنة في الروابط الكربونية للمنتج العضوي النهائي (كحول الإيثانول أو حمض اللبن).</button>
-                        <button class="option-btn" onclick="checkCh28Answer(1, false)">ب) لأن التخمر يستهلك 36 ATP في الهيولى.</button>
-                        <button class="option-btn" onclick="checkCh28Answer(2, false)">ج) لأن الخميرة لا تحتوي على إنزيمات.</button>
-                    </div>
-                    <div class="feedback-box" id="c28q1-feedback"></div>
-                    <div class="quiz-badge" id="c2-badge"></div>
-                </div>
             </section>
         </div>
 

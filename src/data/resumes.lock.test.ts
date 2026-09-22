@@ -152,9 +152,10 @@ describe('الحصيلة المعرفية الرسمية du livre — injectée 
     const iHosila = brut.indexOf('id="hosila"');
     const iSchema = brut.indexOf('id="schema-synthese"');
     const iTaquim = brut.indexOf('id="ch2-step4"');
-    expect(iHosila).toBeGreaterThan(-1);
+    expect(iTaquim).toBeGreaterThan(-1);
+    // zone de synthèse commune : APRÈS le dernier chapter-view (visible dans les 2 leçons)
+    expect(iHosila).toBeGreaterThan(iTaquim);
     expect(iSchema).toBeGreaterThan(iHosila);
-    expect(iTaquim).toBeGreaterThan(iSchema);
   });
 
   it('le schéma synthèse العصب (U5, p165) est injecté dans la leçon de clôture phase10', () => {
@@ -169,9 +170,10 @@ describe('الحصيلة المعرفية الرسمية du livre — injectée 
     const iHosila = brut.indexOf('id="hosila"');
     const iSchema = brut.indexOf('id="schema-synthese"');
     const iTaquim = brut.indexOf('id="ch2-step4"');
-    expect(iHosila).toBeGreaterThan(-1);
+    expect(iTaquim).toBeGreaterThan(-1);
+    // zone de synthèse commune : APRÈS le dernier chapter-view (visible dans les 2 leçons)
+    expect(iHosila).toBeGreaterThan(iTaquim);
     expect(iSchema).toBeGreaterThan(iHosila);
-    expect(iTaquim).toBeGreaterThan(iSchema);
   });
 
   it('le schéma synthèse البنية الداخلية للأرض (U10) est injecté dans la leçon de clôture phase20', () => {
@@ -186,9 +188,10 @@ describe('الحصيلة المعرفية الرسمية du livre — injectée 
     const iHosila = brut.indexOf('id="hosila"');
     const iSchema = brut.indexOf('id="schema-synthese"');
     const iTaquim = brut.indexOf('id="ch2-step4"');
-    expect(iHosila).toBeGreaterThan(-1);
+    expect(iTaquim).toBeGreaterThan(-1);
+    // zone de synthèse commune : APRÈS le dernier chapter-view (visible dans les 2 leçons)
+    expect(iHosila).toBeGreaterThan(iTaquim);
     expect(iSchema).toBeGreaterThan(iHosila);
-    expect(iTaquim).toBeGreaterThan(iSchema);
   });
 
   it('le schéma synthèse Orogenèse (U11, p330) est injecté dans la leçon de clôture phase22', () => {
@@ -203,9 +206,10 @@ describe('الحصيلة المعرفية الرسمية du livre — injectée 
     const iHosila = brut.indexOf('id="hosila"');
     const iSchema = brut.indexOf('id="schema-synthese"');
     const iTaquim = brut.indexOf('id="ch2-step4"');
-    expect(iHosila).toBeGreaterThan(-1);
+    expect(iTaquim).toBeGreaterThan(-1);
+    // zone de synthèse commune : APRÈS le dernier chapter-view (visible dans les 2 leçons)
+    expect(iHosila).toBeGreaterThan(iTaquim);
     expect(iSchema).toBeGreaterThan(iHosila);
-    expect(iTaquim).toBeGreaterThan(iSchema);
   });
 
   it('les jetons du schéma U11 sont ancrés au livre', () => {
@@ -253,15 +257,16 @@ describe('الحصيلة المعرفية الرسمية du livre — injectée 
     for (const m of ['المخطط الشامل لآليات تركيب البروتين', 'بدائيات النواة', 'حقيقيات النواة', 'Introns', 'البوليزوم', 'AUG', 'UAA/UAG/UGA', 'مُعاد بناؤه آليا']) {
       expect(texte.includes(m), `marqueur schéma « ${m} » absent`).toBe(true);
     }
-    // ordre : 📝 خلاصة → 🏛 حصيلة → 🗺 schéma → تقويم
+    // ordre : 📝 خلاصة et تقويم dans la leçon 2 (ch4), puis zone de synthèse commune (🏛 ثم 🗺)
+    // — hors chapter-view : visible dans LES DEUX leçons du fichier (fix bug app 🗺).
     const iResume = brut.indexOf('id="resume"');
     const iHosila = brut.indexOf('id="hosila"');
     const iSchema = brut.indexOf('id="schema-synthese"');
     const iTaquim = brut.indexOf('id="ch2-step4"');
     expect(iResume).toBeGreaterThan(-1);
-    expect(iHosila).toBeGreaterThan(iResume);
+    expect(iTaquim).toBeGreaterThan(iResume);
+    expect(iHosila).toBeGreaterThan(iTaquim);
     expect(iSchema).toBeGreaterThan(iHosila);
-    expect(iTaquim).toBeGreaterThan(iSchema);
   });
 
   it('toutes les affirmations du schéma sont ancrées au livre', () => {

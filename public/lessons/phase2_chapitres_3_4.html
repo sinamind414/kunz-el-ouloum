@@ -641,7 +641,43 @@
                 <p style="font-weight:800; font-size:13px; color:#b45309; margin-top:10px;">🔑 المصطلح المفتاح للبكالوريا : المراحل الثلاث للترجمة / متعدد الريبوزومات</p>
             </section>
 
-            <!-- الحصيلة المعرفية الرسمية (citation verbatim du livre officiel — voir docs/RESUMES_MAARIFI_LIVRE_2026-09-21.md) -->
+            
+            
+
+            
+            <section class="card" id="ch2-step4">
+                <div class="section-title">
+                    <span class="step-num step-num-rose">4</span>
+                    <span>تقويم الدرس 2 : أسئلة البكالوريا المتكررة</span>
+                </div>
+
+                <div class="question-item" id="c4q1-container">
+                    <h4 style="margin-bottom: 12px;">1. ما هو الفرق الأساسي الذي يميز البنية الرابعية عن البنية الثالثية؟</h4>
+                    <div class="options-grid">
+                        <button class="option-btn" onclick="checkCh4Answer(1, 0, true)">أ) البنية الرابعية تتكون من تجمع تحت وحدتين أو أكثر (سلسلتين بيبتيديتين أو أكثر ذوات بنية ثالثية).</button>
+                        <button class="option-btn" onclick="checkCh4Answer(1, 1, false)">ب) البنية الرابعية لا تحتوي على أي روابط بيبتيدية.</button>
+                        <button class="option-btn" onclick="checkCh4Answer(1, 2, false)">ج) البنية الرابعية تتواجد داخل النواة فقط.</button>
+                    </div>
+                    <div class="feedback-box" id="c4q1-feedback"></div>
+                </div>
+
+                <div class="question-item" id="c4q2-container">
+                    <h4 style="margin-bottom: 12px;">2. ما هي الرابطة التكافؤية (القوية جداً) الوحيدة التي تساهم في استقرار البنية الثالثية؟</h4>
+                    <div class="options-grid">
+                        <button class="option-btn" onclick="checkCh4Answer(2, 0, false)">أ) الرابطة الهيدروجينية.</button>
+                        <button class="option-btn" onclick="checkCh4Answer(2, 1, false)">ب) الرابطة الشاردية الأيونية.</button>
+                        <button class="option-btn" onclick="checkCh4Answer(2, 2, true)">ج) الجسر ثنائي الكبريت (<span class="ltr-seq">Pont disulfure</span>).</button>
+                    </div>
+                    <div class="feedback-box" id="c4q2-feedback"></div>
+                    <div class="quiz-badge" id="c2-badge"></div>
+                </div>
+            </section>
+        </div>
+
+        <!-- ═══ Zone de synthèse commune (🏛 حصيلة + 🗺 مخطط) — hors chapter-view :
+             visible dans LES DEUX leçons du fichier (survit au slicing lessonChapterSplit) ═══ -->
+        <div class="synthese-zone" id="zone-synthese">
+<!-- الحصيلة المعرفية الرسمية (citation verbatim du livre officiel — voir docs/RESUMES_MAARIFI_LIVRE_2026-09-21.md) -->
             <section class="card" id="hosila" style="border:2px solid #f59e0b;">
                 <div class="section-title">
                     <span class="step-num" style="background:#b45309;">🏛</span>
@@ -656,7 +692,7 @@ ADN (النواة عند حقيقيات النواة)<br>⬇ استنساخ<br>A
 <p style="font-size:11px; color:#78716c; margin-top:6px;">يميز المخطط الرسمي بين موقع الترجمة عند البدائيات النواة (في الهيولى) وعند الحقيقيات (على الشبكة الهيولية) — تنسيق قرائي لعناصر المخطط دون تغيير مضمونه.</p>
 
             </section>
-            <!-- المخطط الشامل لآليات تركيب البروتين (reconstruit mécaniquement depuis le texte officiel — ancrage 12/12, verrou resumes.lock) -->
+<!-- المخطط الشامل لآليات تركيب البروتين (reconstruit mécaniquement depuis le texte officiel — ancrage 12/12, verrou resumes.lock) -->
             <section class="card" id="schema-synthese" style="border:2px solid #2563eb;">
                 <div class="section-title">
                     <span class="step-num" style="background:#2563eb;">🗺</span>
@@ -712,35 +748,6 @@ ADN (النواة عند حقيقيات النواة)<br>⬇ استنساخ<br>A
                     </div>
                 </div>
                 <p style="font-size:10.5px; color:#78716c; margin-top:10px; text-align:center;">🗺 مخطط مُعاد بناؤه آليا من النص الرسمي للكتاب (ص 34 + مصير البروتين) — كل مفرداته مثبتة في النص (ancrage 12/12, verrou resumes.lock).</p>
-            </section>
-
-            
-            <section class="card" id="ch2-step4">
-                <div class="section-title">
-                    <span class="step-num step-num-rose">4</span>
-                    <span>تقويم الدرس 2 : أسئلة البكالوريا المتكررة</span>
-                </div>
-
-                <div class="question-item" id="c4q1-container">
-                    <h4 style="margin-bottom: 12px;">1. ما هو الفرق الأساسي الذي يميز البنية الرابعية عن البنية الثالثية؟</h4>
-                    <div class="options-grid">
-                        <button class="option-btn" onclick="checkCh4Answer(1, 0, true)">أ) البنية الرابعية تتكون من تجمع تحت وحدتين أو أكثر (سلسلتين بيبتيديتين أو أكثر ذوات بنية ثالثية).</button>
-                        <button class="option-btn" onclick="checkCh4Answer(1, 1, false)">ب) البنية الرابعية لا تحتوي على أي روابط بيبتيدية.</button>
-                        <button class="option-btn" onclick="checkCh4Answer(1, 2, false)">ج) البنية الرابعية تتواجد داخل النواة فقط.</button>
-                    </div>
-                    <div class="feedback-box" id="c4q1-feedback"></div>
-                </div>
-
-                <div class="question-item" id="c4q2-container">
-                    <h4 style="margin-bottom: 12px;">2. ما هي الرابطة التكافؤية (القوية جداً) الوحيدة التي تساهم في استقرار البنية الثالثية؟</h4>
-                    <div class="options-grid">
-                        <button class="option-btn" onclick="checkCh4Answer(2, 0, false)">أ) الرابطة الهيدروجينية.</button>
-                        <button class="option-btn" onclick="checkCh4Answer(2, 1, false)">ب) الرابطة الشاردية الأيونية.</button>
-                        <button class="option-btn" onclick="checkCh4Answer(2, 2, true)">ج) الجسر ثنائي الكبريت (<span class="ltr-seq">Pont disulfure</span>).</button>
-                    </div>
-                    <div class="feedback-box" id="c4q2-feedback"></div>
-                    <div class="quiz-badge" id="c2-badge"></div>
-                </div>
             </section>
         </div>
 

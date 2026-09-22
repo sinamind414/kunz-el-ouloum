@@ -6,15 +6,17 @@ import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vite
 import AITutorView from '../AITutorView';
 import { getQuestionById } from '../../data/smartBotData';
 
-// jsdom n'implémente pas scrollIntoView — polyfill minimal pour le harnais.
+// jsdom n'implémente ni scrollIntoView ni scrollTo — polyfill + espion (test B1).
 beforeAll(() => {
   Element.prototype.scrollIntoView = () => {};
+  Element.prototype.scrollTo = vi.fn();
 });
 
 afterEach(cleanup);
 
 beforeEach(() => {
   window.localStorage.clear();
+  (Element.prototype.scrollTo as ReturnType<typeof vi.fn>).mockClear?.();
 });
 
 /** Texte complet de la zone messages — insensible au découpage markdown (**bold**). */
@@ -36,14 +38,25 @@ function correctOptionText(): string {
   return q.options[q.correctIndex];
 }
 
-/** Clique l'option affichée portant le TEXTE de la bonne réponse — insensible au mélange (rec #1). */
-async function answerCorrect(user: ReturnType<typeof userEvent.setup>) {
+/** Clique l'option ACTIVE portant le TEXTE de la bonne réponse — insensible au mélange (rec #1)
+ *  et aux anciens quiz désactivés (B2). Retourne le texte de l'option cliquée (assert B4). */
+async function answerCorrect(user: ReturnType<typeof userEvent.setup>): Promise<string> {
   const correct = correctOptionText();
   const target = screen
     .getAllByTestId(/^quiz-option-\d+$/)
-    .find((b) => (b.textContent || '').includes(correct));
-  expect(target, `option correcte introuvable: ${correct}`).toBeTruthy();
+    .find((b) => !(b as HTMLButtonElement).disabled && (b.textContent || '').includes(correct));
+  expect(target, `option correcte active introuvable: ${correct}`).toBeTruthy();
   await user.click(target!);
+  return correct;
+}
+
+/** Énoncé de la question courante (session → id → données). */
+function currentQuestion(): { id: string; question: string } {
+  const raw = window.localStorage.getItem('smart_tutor_session');
+  const qid = raw ? (JSON.parse(raw) as { currentQuiz?: { questionId?: string } }).currentQuiz?.questionId : undefined;
+  const q = qid ? getQuestionById(qid) : undefined;
+  if (!q) throw new Error(`question courante introuvable (id=${String(qid)})`);
+  return q;
 }
 
 describe('AITutorView — rendu riche du moteur (T2)', () => {
@@ -270,5 +283,130 @@ describe('AITutorView — rendu riche du moteur (T2)', () => {
     await waitFor(() => {
       expect(messagesText()).toContain('لم أجد إجابة دقيقة');
     });
+  });
+});
+
+describe('AITutorView — paquet « expérience quiz saine » (B0/B2/B3/B4/B5, audit 2026-09-22)', () => {
+  async function startDiagnostic(user: ReturnType<typeof userEvent.setup>) {
+    render(<AITutorView />);
+    await user.click(screen.getAllByTestId(/^quick-action-\d+$/)[0]);
+    await waitFor(() => expect(messagesText()).toMatch(/اخترت مجال/));
+    await user.click(screen.getByTestId('journey-diagnostic'));
+    await waitFor(() => expect(messagesText()).toContain('بدأ التشخيص'));
+  }
+
+  it('B0 : l énoncé de la question est rendu au-dessus des options', async () => {
+    const user = userEvent.setup();
+    await startDiagnostic(user);
+    expect(messagesText()).toContain(currentQuestion().question);
+  });
+
+  it('B2 : après réponse, les options de l ancien quiz sont désactivées (4 seules)', async () => {
+    const user = userEvent.setup();
+    await startDiagnostic(user);
+    await answerCorrect(user);
+    await waitFor(() => expect(messagesText()).toMatch(/إجابة صحيحة|إجابة خاطئة/));
+    const disabled = screen
+      .getAllByTestId(/^quiz-option-\d+$/)
+      .filter((b) => (b as HTMLButtonElement).disabled);
+    expect(disabled.length).toBe(4);
+  });
+
+  it('B4 : la bulle élève affiche « إجابتي : X — <texte de l option> »', async () => {
+    const user = userEvent.setup();
+    await startDiagnostic(user);
+    const clicked = await answerCorrect(user);
+    const bubble = await screen.findByText(/إجابتي : [A-D] — /);
+    expect(bubble.textContent).toContain(clicked);
+  });
+
+  it('B3 : session fantôme (quiz persisté sans messages) neutralisée au montage', async () => {
+    window.localStorage.setItem('smart_tutor_session', JSON.stringify({
+      activeDomainId: 1,
+      activeUnitId: null,
+      activeTopicId: null,
+      mode: 'diagnostic',
+      currentQuiz: { questionId: 'q_ghost', questionIndex: 0, totalQuestions: 23, correctAnswers: 0 },
+      boss: null,
+      mistakes: [],
+      completedBac: [],
+      lastMissionDate: null,
+      lastMissionTopic: null,
+      lastCardId: null,
+      lastInteraction: Date.now(),
+    }));
+    render(<AITutorView />);
+    await waitFor(() => expect(messagesText()).toContain('ألغيته'));
+    const raw = JSON.parse(window.localStorage.getItem('smart_tutor_session') || '{}') as {
+      currentQuiz?: unknown; boss?: unknown; mode?: string;
+    };
+    expect(raw.currentQuiz ?? null).toBeNull();
+    expect(raw.boss ?? null).toBeNull();
+    expect(raw.mode).toBe('idle');
+    // End-to-end : un input libre n'est PLUS noté comme réponse de quiz → réponse normale.
+    const user = userEvent.setup();
+    await typeAndSubmit(user, 'ما هو الغوص؟');
+    await waitFor(() => expect(messagesText()).toContain('بطاقة معرفة'));
+  });
+
+  it('B5 : le payload quiz vers l UI ne contient ni correctIndex ni explanation', async () => {
+    const { processStudentInput } = await import('../../smartTutorEngine');
+    const { getDefaultSession } = await import('../../utils/sessionManager');
+    const p1 = processStudentInput(getDefaultSession(), 'البروتينات والمناعة');
+    const p2 = processStudentInput(p1.session, 'اختبار تشخيصي');
+    expect(p2.action.quiz).toBeTruthy();
+    expect(p2.action.quiz!.options.length).toBe(4);
+    expect('correctIndex' in p2.action.quiz!).toBe(false);
+    expect('explanation' in p2.action.quiz!).toBe(false);
+  });
+});
+
+describe('AITutorView — finition B1/B6/B8/B9/B10 (audit 2026-09-22, phase par phase)', () => {
+  it('B1 : le scroll positionne le HAUT du dernier message (la question reste visible)', async () => {
+    const user = userEvent.setup();
+    render(<AITutorView />);
+    await user.click(screen.getAllByTestId(/^quick-action-\d+$/)[0]);
+    await waitFor(() => expect(messagesText()).toMatch(/اخترت مجال/));
+    const calls = (Element.prototype.scrollTo as ReturnType<typeof vi.fn>).mock.calls as Array<[{ top?: number }]>;
+    expect(calls.length).toBeGreaterThan(0);
+    expect(calls.some((c) => typeof c[0]?.top === 'number' && c[0]!.top! >= 0)).toBe(true);
+  });
+
+  it('B6 : renderMarkdownBlocks regroupe les puces consécutives dans de vrais <ul>', async () => {
+    const { renderMarkdownBlocks } = await import('../AITutorView');
+    const { container } = render(
+      <div>{renderMarkdownBlocks('سطر تمهيدي\n- نقطة 1\n- نقطة 2\nخاتمة\n- نقطة 3')}</div>,
+    );
+    const uls = container.querySelectorAll('ul');
+    expect(uls.length).toBe(2);
+    expect(uls[0].querySelectorAll('li').length).toBe(2);
+    expect(uls[1].querySelectorAll('li').length).toBe(1);
+    expect(container.querySelectorAll('li').length).toBe(3); // zéro <li> orphelin
+    expect(container.textContent).toContain('سطر تمهيدي');
+    expect(container.textContent).toContain('خاتمة');
+  });
+
+  it('B8 : « مسح المحادثة » restaure l accueil standard (factory unique)', async () => {
+    const confirmSpy = vi.spyOn(window, 'confirm').mockReturnValue(true);
+    const user = userEvent.setup();
+    render(<AITutorView />);
+    await typeAndSubmit(user, 'ما هو الغوص؟');
+    await waitFor(() => expect(messagesText()).toContain('بطاقة معرفة'));
+    await user.click(screen.getByTitle('مسح المحادثة'));
+    await waitFor(() => {
+      expect(messagesText()).toContain('اختر مجالاً أو أحد أزرار الرحلة أدناه للبدء');
+    });
+    expect(messagesText()).not.toContain('مرحباً بك مجدداً');
+    confirmSpy.mockRestore();
+  });
+
+  it('B9+B10 : étiquette honnête (moteur local), alt parlants, champ et options labellisés', () => {
+    render(<AITutorView />);
+    expect(screen.getByText(/مرشد تفاعلي محلي موجه لمنهج البكالوريا/)).toBeTruthy();
+    expect(screen.queryByText(/مساعد ذكاء اصطناعي/)).toBeNull();
+    expect(screen.getAllByAltText('شعار المرشد الذكي').length).toBeGreaterThanOrEqual(1); // avatar du message IA (le 2e n'apparaît qu'au chargement)
+    expect(screen.getByLabelText('حقل السؤال إلى المرشد الذكي')).toBeTruthy();
+    const welcome = screen.getByTestId('tutor-messages');
+    expect(welcome).toBeTruthy();
   });
 });

@@ -41,12 +41,15 @@ export interface SourceRef {
   title: string;
 }
 
+/**
+ * Charge envoyée à l'UI : volontairement SANS correctIndex/explanation
+ * (B5, audit Morchid 2026-09-22) — le module n'est pas trichable via le
+ * payload ; la correction arrive dans le texte noté par le moteur.
+ */
 export interface QuizPrompt {
   id: string;
   question: string;
   options: string[];
-  correctIndex: number;
-  explanation: string;
 }
 
 /** Détails de fin d'activité (journalisation serveur + affichage). */
@@ -113,12 +116,11 @@ export function shuffledView(q: QuizQuestion): QuizQuestion {
 
 function toQuizPrompt(q: QuizQuestion): QuizPrompt {
   const view = shuffledView(q);
+  // B5 : seul l'énoncé + les options mélangées partent vers l'UI.
   return {
     id: view.id,
     question: view.question,
     options: view.options,
-    correctIndex: view.correctIndex,
-    explanation: view.explanation,
   };
 }
 

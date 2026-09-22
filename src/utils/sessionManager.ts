@@ -51,6 +51,17 @@ export function getDefaultSession(): BotSession {
   return { ...defaultSession, mistakes: [], currentQuiz: null, boss: null, lastInteraction: Date.now() };
 }
 
+/**
+ * B3 (audit Morchid 2026-09-22) : neutralise un état actif (quiz/boss) resté dans
+ * localStorage alors que les messages ne sont pas persistés. Sans cela, au refresh,
+ * TOUT input de l'élève serait noté comme réponse à une question jamais affichée.
+ * Préserve stats/mistakes/completedBac — ne touche qu'au mode et aux états actifs.
+ */
+export function clearPendingInteractions(session: BotSession): BotSession {
+  if (!session.currentQuiz && !session.boss) return session;
+  return { ...session, mode: 'idle', currentQuiz: null, boss: null, lastInteraction: Date.now() };
+}
+
 export function loadSession(): BotSession {
   if (typeof window === 'undefined') return getDefaultSession();
 

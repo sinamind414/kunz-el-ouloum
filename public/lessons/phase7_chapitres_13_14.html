@@ -350,6 +350,34 @@
         .quiz-badge.mumtaz{background:#f0fdf4;color:#166534;border:1px solid #bbf7d0}
         @media(max-width:768px){.sommaire{top:96px}}
 
+    
+        /* ═══ Zone التثبيت : design system des cartes de synthèse (📝🏛🗺) — pilot ═══ */
+        .card-resume{background:linear-gradient(180deg,#f0fdf4 0%,#ffffff 55%);border:1.5px solid #16a34a;border-radius:16px;padding:1.6rem 1.8rem;margin-bottom:1.6rem;box-shadow:0 2px 10px rgba(22,163,74,.08)}
+        .fix-question{display:flex;align-items:flex-start;gap:8px;background:#dcfce7;border-radius:12px;padding:10px 14px;font-weight:800;font-size:15px;color:#14532d;margin:0 0 14px}
+        .card-resume ol{margin:0;padding:0 28px 0 0;line-height:2.05;font-size:15px}
+        .card-resume ol li{margin-bottom:8px}
+        .card-resume ol li::marker{color:#16a34a;font-weight:900}
+        .fix-key{display:block;background:#fffbeb;border:1.5px dashed #d97706;border-radius:12px;padding:10px 14px;font-weight:800;font-size:14px;color:#92400e;margin-top:14px}
+        .card-hosila{position:relative;background:#fffbeb;border:1.5px solid #f59e0b;border-radius:16px;padding:1.6rem 1.8rem;margin-bottom:1.6rem;box-shadow:0 2px 10px rgba(245,158,11,.10);overflow:hidden}
+        .card-hosila::before{content:'❝';position:absolute;top:-6px;left:10px;font-size:96px;color:#f59e0b;opacity:.12;font-weight:900;line-height:1}
+        .hosila-meta{font-size:12.5px;color:#92400e;font-weight:700;margin:0 0 12px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+        .hosila-meta .src-chip{background:#fef3c7;border-radius:999px;padding:4px 12px;font-size:12px}
+        .hosila-quote{font-weight:700;line-height:2.15;font-size:16px;color:#78350f;margin:0}
+        .hosila-quote .kw{color:#b45309;background:#fef3c7;border-radius:6px;padding:0 5px;font-weight:900}
+        .hosila-source{display:flex;align-items:center;gap:8px;margin:14px 0 0;padding-top:10px;border-top:1.5px dashed #fbbf24;font-size:12px;color:#92400e;font-weight:700}
+        .card-schema{background:#ffffff;border:1.5px solid #2563eb;border-radius:16px;padding:1.6rem 1.8rem;margin-bottom:0;box-shadow:0 2px 10px rgba(37,99,235,.08)}
+        .schema-figure{margin:0 0 14px}
+        .schema-figure img{width:100%;max-width:920px;display:block;margin:0 auto;border-radius:12px;border:1px solid #dbeafe}
+        .schema-figure figcaption{text-align:center;font-size:13px;color:#1e40af;font-weight:800;margin-top:8px}
+        .schema-legend{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:10px;margin:0 0 12px}
+        .schema-legend .leg{background:#f8fafc;border:1.5px solid #e2e8f0;border-radius:12px;padding:10px 12px}
+        .schema-legend .leg h4{margin:0 0 6px;font-size:14px;font-weight:900}
+        .schema-legend .leg p{margin:0;font-size:13px;line-height:1.95}
+        .schema-keyline{background:#eff6ff;border-radius:12px;padding:10px 14px;font-weight:800;font-size:14px;color:#1e3a8a;text-align:center;margin:0}
+        .schema-notes{margin-top:10px;font-size:11.5px;color:#78716c}
+        .schema-notes summary{cursor:pointer;font-weight:800;color:#92400e}
+        .schema-notes p{margin:6px 0 0;line-height:1.9}
+        .nav-zone{font-size:.75rem;font-weight:900;color:#059669;background:#ecfdf5;border:1px dashed #10b981;border-radius:8px;padding:6px 10px;white-space:nowrap;flex-shrink:0}
     </style>
 </head>
 <body>
@@ -368,6 +396,7 @@
         <a href="#ch2-step2" id="link-ch2-step2" onclick="scrollToStep('ch2-step2',event)">🔬 2-2 تحليل</a>
         <a href="#ch2-step3" id="link-ch2-step3" onclick="scrollToStep('ch2-step3',event)">🧪 2-3 محاكي</a>
         <a href="#ch2-step4" id="link-ch2-step4" onclick="scrollToStep('ch2-step4',event)">✅ 2-4 تقويم</a>
+        <span class="sep"></span><span class="nav-zone">🎯 التثبيت</span>
         <a href="#resume" id="link-resume" onclick="scrollToStep('resume',event)">📝 خلاصة</a>
         <a href="#hosila" id="link-hosila" onclick="scrollToStep('hosila',event)">🏛 الحصيلة</a>
         <a href="#schema-synthese" id="link-schema" onclick="scrollToStep('schema-synthese',event)">🗺 مخطط</a>
@@ -589,12 +618,12 @@
 
             <!-- Step 4: Quiz Ch14 -->
             <!-- خلاصة الدرس (standard 2026-09-21, ancrée au livre officiel — verrou resumes.lock) -->
-            <section class="card" id="resume">
+            <section class="card-resume" id="resume">
                 <div class="section-title">
                     <span class="step-num" style="background:#059669;">📝</span>
                     <span>خلاصة الدرس</span>
                 </div>
-                <p style="font-weight:700; font-size:14px; margin:10px 0;">🎯 فسّر طرق تأثير اللمفاويات السامة LTc على الخلية المصابة.</p>
+                <p class="fix-question">🎯 فسّر طرق تأثير اللمفاويات السامة LTc على الخلية المصابة.</p>
                 <ol style="margin:8px 0; padding-right:24px; line-height:1.9; font-size:13px;">
                     <li style="margin-bottom:6px;">تعبرز الخلية المصابة مستضداً غريباً بجزيئة CMH-I تُعلن حالتها.</li>
                     <li style="margin-bottom:6px;">تتعرف اللمفاويات LTc على الخلية المصابة بمرابطها المتخصصة وترتبط بها تماساً مباشراً.</li>
@@ -602,45 +631,14 @@
                     <li style="margin-bottom:6px;">تنفصل LTc بعد تدمير الهدف وتعود إلى الدورة الدموية لمهاجمة خلايا مصابة أخرى.</li>
                     <li style="margin-bottom:6px;">تُلتهم بقايا الخلية المصابة من طرف الخلايا البالعة.</li>
                 </ol>
-                <p style="font-weight:800; font-size:13px; color:#b45309; margin-top:10px;">🔑 المصطلح المفتاح للبكالوريا : LTc / البرفورين / الموت الخلوي المبرمج</p>
+                <span class="fix-key">🔑 المصطلح المفتاح للبكالوريا : LTc / البرفورين / الموت الخلوي المبرمج</span>
             </section>
 
             <!-- الحصيلة المعرفية الرسمية (citation verbatim du livre officiel — voir docs/RESUMES_MAARIFI_LIVRE_2026-09-21.md) -->
-            <section class="card" id="hosila" style="border:2px solid #f59e0b;">
-                <div class="section-title">
-                    <span class="step-num" style="background:#b45309;">🏛</span>
-                    <span>الحصيلة المعرفية — النص الرسمي للكتاب المدرسي (الفصل 23)</span>
-                </div>
-                <p style="font-size:11px; color:#92400e; font-weight:700; margin:6px 0;">وحدة : D1-U4 — الدفاع عن الذات — نص الكتاب بتنسيق قرائي، دون تغيير المعنى (OCR rendu lisible).</p>
-
-<p style="font-weight:700; line-height:2; font-size:14px;">« يمثل كل فرد وحدة بيولوجية مستقلة بذاتها، إذ تستطيع عضويته التمييز بين مكونات <span style="color:#b45309;">الذات واللاذات</span>. »</p>
-
-            </section>
+            <section class="card-hosila" 
 
             <!-- مخطط تحصيلي المناعة (image originale user, master 3b8cf69 — ancrage 12/12, verrou resumes.lock) -->
-            <section class="card" id="schema-synthese" style="border:2px solid #2563eb;">
-                <div class="section-title">
-                    <span class="step-num" style="background:#2563eb;">🗺</span>
-                    <span>مخطط تحصيلي — المناعة الخلطية والخلوية (ص 118)</span>
-                </div>
-                <img src="/assets/images/schemas/domaine1_proteines/schema_synthese_immunite_U4.jpg" alt="مخطط تحصيلي المناعة : خطوط LB و LT4 و LT8" style="width:100%; max-width:920px; display:block; margin:0 auto 10px; border-radius:12px; border:1px solid #e2e8f0;">
-                <div style="display:flex; gap:8px; flex-wrap:wrap;">
-                    <div style="flex:1; min-width:200px; background:#fff; border:2px solid #16a34a; border-radius:12px; padding:8px; text-align:center;">
-                        <p style="font-weight:900; font-size:12.5px;">خط اللمفاويات LB (الاستجابة الخلطية)</p>
-                        <p style="font-size:11.5px; line-height:1.8;">تعرف المستضد بمستقبلاتها الغشائية ← تركيب مستقبلات لـ IL2 ← تكاثر تحت تأثير IL2 ← تمايز إلى <b>خلايا بلازمية (بلاسموسيت)</b> تفرز الأجسام المضادة + <b>LBm</b> خلايا ذاكرة.</p>
-                    </div>
-                    <div style="flex:1; min-width:200px; background:#fff; border:2px solid #0891b2; border-radius:12px; padding:8px; text-align:center;">
-                        <p style="font-weight:900; font-size:12.5px;">خط اللمفاويات LT₄ (المساعدة)</p>
-                        <p style="font-size:11.5px; line-height:1.8;">تتعرف على المستضد المعروض بجزيئات <b>HLA II</b> (بواسطة <b>TCR</b>) ← مستقبلات IL2 ← تكاثر ← <b>LTh</b> المساعدة (تفرز IL2 لدعم LB و LT₈) + <b>LT₄m</b> ذاكرة.</p>
-                    </div>
-                    <div style="flex:1; min-width:200px; background:#fff; border:2px solid #dc2626; border-radius:12px; padding:8px; text-align:center;">
-                        <p style="font-weight:900; font-size:12.5px;">خط اللمفاويات LT₈ (السامة)</p>
-                        <p style="font-size:11.5px; line-height:1.8;">تتعرف على المستضد المعروض بجزيئات <b>HLA I</b> (بواسطة TCR) ← مستقبلات IL2 ← تكاثر ← <b>LTc</b> السامة التي تفرز <b>البرفورين</b> فيحدث انحلال الخلية المصابة.</p>
-                    </div>
-                </div>
-                <p style="font-weight:700; text-align:center; margin:10px 0 0; font-size:12.5px;">🔑 العامل المشترك : الأنترلوكين 2 (IL2) المفرز من LTh هو مبلغ التكاثر المشترك للخطوط الثلاثة.</p>
-                <p style="font-size:10.5px; color:#78716c; margin-top:8px; text-align:center;">🗺 الصورة الأصلية من الكتاب (ص 118) + تنسيق قرائي مصحح — كل المفردات مثبتة في النص الرسمي (ancrage 12/12, verrou resumes.lock).</p>
-            </section>
+            <section class="card-schema" 
 
             <section class="card" id="ch2-step4">
                 <div class="section-title">
@@ -658,6 +656,43 @@
                     <div class="feedback-box" id="c14q1-feedback"></div>
                     <div class="quiz-badge" id="c2-badge"></div>
                 </div>
+            </section>
+        </div>
+
+        <!-- ═══ Zone de synthèse commune (🏛 حصيلة + 🗺 مخطط) — hors chapter-view :
+             visible dans LES DEUX leçons du fichier (survit au slicing lessonChapterSplit) ═══ -->
+        <div class="synthese-zone" id="zone-synthese">
+id="hosila">
+                <div class="section-title">
+                    <span class="step-num" style="background:#b45309;">🏛</span>
+                    <span>الحصيلة المعرفية — النص الرسمي للكتاب المدرسي (الفصل 23)</span>
+                </div>
+                <p class="hosila-meta"><span class="src-chip">وحدة : D1-U4 — الدفاع عن الذات</span><span>نص الكتاب الرسمي بتنسيق قرائي، دون تغيير في المعنى</span></p>
+                <p class="hosila-quote">« يمثل كل فرد وحدة بيولوجية مستقلة بذاتها، إذ تستطيع عضويته التمييز بين مكونات <span class="kw">الذات واللاذات</span>. »</p>
+                <p class="hosila-source">📖 النص الرسمي للكتاب المدرسي — نقلا حرفيا (مطابقة نصية 100 %)</p>
+            </section>
+id="schema-synthese">
+                <div class="section-title">
+                    <span class="step-num" style="background:#2563eb;">🗺</span>
+                    <span>مخطط تحصيلي — المناعة الخلطية والخلوية (ص 118)</span>
+                </div>
+                <figure class="schema-figure">
+                    <img src="/assets/images/schemas/domaine1_proteines/schema_synthese_immunite_U4.jpg" alt="مخطط تحصيلي المناعة : خطوط LB و LT4 و LT8" style="width:100%; max-width:920px; display:block; margin:0 auto 10px; border-radius:12px; border:1px solid #e2e8f0;">
+                    <figcaption>المخطط الأصلي (ص 118) — اقرأ الشرح الملوّن أسفله، خطا بخط 👇</figcaption>
+                </figure>
+                <div class="schema-legend">
+                    <div class="leg"><h4 style="color:#16a34a;">خط اللمفاويات LB (الاستجابة الخلطية)</h4><p>تعرف المستضد بمستقبلاتها الغشائية ← تركيب مستقبلات لـ IL2 ← تكاثر تحت تأثير IL2 ← تمايز إلى <b>خلايا بلازمية (بلاسموسيت)</b> تفرز الأجسام المضادة + <b>LBm</b> خلايا ذاكرة.</p></div>
+                    <div class="leg"><h4 style="color:#0891b2;">خط اللمفاويات LT₄ (المساعدة)</h4><p>تتعرف على المستضد المعروض بجزيئات <b>HLA II</b> (بواسطة <b>TCR</b>) ← مستقبلات IL2 ← تكاثر ← <b>LTh</b> المساعدة (تفرز IL2 لدعم LB و LT₈) + <b>LT₄m</b> ذاكرة.</p></div>
+                    <div class="leg"><h4 style="color:#dc2626;">خط اللمفاويات LT₈ (السامة)</h4><p>تتعرف على المستضد المعروض بجزيئات <b>HLA I</b> (بواسطة TCR) ← مستقبلات IL2 ← تكاثر ← <b>LTc</b> السامة التي تفرز <b>البرفورين</b> فيحدث انحلال الخلية المصابة.</p></div>
+                </div>
+                <p class="schema-keyline">🔑 العامل المشترك : الأنترلوكين 2 (IL2) المفرز من LTh هو مبلغ التكاثر المشترك للخطوط الثلاثة.</p>
+                <details class="schema-notes">
+                    <summary>🗂 ملاحظات الأرشفة (للأستاذ — مخفية عن التلميذ)</summary>
+                    <p>تعرف المستضد بمستقبلاتها الغشائية ← تركيب مستقبلات لـ IL2 ← تكاثر تحت تأثير IL2 ← تمايز إلى <b>خلايا بلازمية (بلاسموسيت)</b> تفرز الأجسام المضادة + <b>LBm</b> خلايا ذاكرة.</p>
+                    <p>تتعرف على المستضد المعروض بجزيئات <b>HLA II</b> (بواسطة <b>TCR</b>) ← مستقبلات IL2 ← تكاثر ← <b>LTh</b> المساعدة (تفرز IL2 لدعم LB و LT₈) + <b>LT₄m</b> ذاكرة.</p>
+                    <p>تتعرف على المستضد المعروض بجزيئات <b>HLA I</b> (بواسطة TCR) ← مستقبلات IL2 ← تكاثر ← <b>LTc</b> السامة التي تفرز <b>البرفورين</b> فيحدث انحلال الخلية المصابة.</p>
+                    <p>🗺 الصورة الأصلية من الكتاب (ص 118) + تنسيق قرائي مصحح — كل المفردات مثبتة في النص الرسمي (ancrage 12/12, verrou resumes.lock).</p>
+                </details>
             </section>
         </div>
 
