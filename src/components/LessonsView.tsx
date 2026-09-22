@@ -29,6 +29,13 @@ import {
 
 const DOMAIN_ICONS = [FlaskConical, Leaf, Globe2];
 
+/** Props : le callback d'auto-évaluation des flashcards (handleRateCard, App.tsx)
+ *  est transmis au بنك الحفظ pour créditer XP + flashcardStats (SM-2). */
+interface LessonsProps {
+  onRateCard?: (cardId: string, rating: 'again' | 'hard' | 'good' | 'easy') => void;
+}
+
+
 /**
  * Badge « source livre officiel » : chapitres + plage de lignes OCR
  * (data/bookContent.index.json). Absent si aucun appariement prouvé —
@@ -67,7 +74,7 @@ const firstActiveLessonOfNextUnit = (unitId: number): { unitId: number; key: str
 const unitOfActiveLesson = (key: string): number =>
   INITIAL_UNITS.find((u) => getActiveLessonKeysForUnit(u.id).includes(key))?.id ?? 1;
 
-export default function LessonsView() {
+export default function LessonsView({ onRateCard }: LessonsProps) {
   const [mode, setMode] = useState<LessonMode | 'qcm' | 'bac' | 'okacha' | null>(null);
   const [selectedUnit, setSelectedUnit] = useState<number>(1);
   const [selectedDomain, setSelectedDomain] = useState<number | null>(null);
@@ -114,7 +121,13 @@ export default function LessonsView() {
 
   // ----- Écran 0 ter : بنك الحفظ (عكاشة, injection mécanique filtrée) -----
   if (mode === 'okacha') {
-    return <OkachaView onBack={() => setMode(null)} />;
+    return (
+      <OkachaView
+        onBack={() => setMode(null)}
+        onRate={onRateCard}
+        onOpenQcm={() => setMode('qcm')}
+      />
+    );
   }
 
   // ----- Écran 1 : les deux icônes (Leçon Active / Leçon Passive) -----
