@@ -192,8 +192,48 @@ Absents : **CSP**, **Referrer-Policy**, **Permissions-Policy**, HSTS (à placer 
 
 ---
 
-## 10. Verdict
+---
 
-L'application est **techniquement bien construite** (typage, tests, architecture offline, sécurité serveur de base) mais **la fonctionnalité comptes/suivi est en panne depuis son intégration** (bug n° 1 : le jeton est détruit au moment exact du login), et le serveur reste vulnérable à un arrêt forcé (bug n° 3). Ce sont deux correctifs minuscules à fort impact ; les autres points sont des renforts de sécurité et d'hygiène.
+## 10. ✅ État des corrections (mise à jour du même jour)
 
-**Corriger les bugs 1 à 5 avant toute mise en production.**
+### Vague 1 — bugs critiques/hauts (#1 à #5) · commit `8f2a0d5`
+| # | Bug | État | Preuve |
+|---|---|---|---|
+| 1 | `fetchMe` sans Authorization → jeton effacé après login | ✅ **corrigé** | header Bearer envoyé ; 401 seule condition de coupure ; tests `StudentAccountBar.session` + `serverFixesAudit` |
+| 2 | Session perdue à chaque F5 | ✅ **corrigé** | persistance `boussole_student` + restauration si jeton présent |
+| 3 | Crash serveur (CRLF CSV / async non catché) | ✅ **corrigé** | `asyncHandler` + handler d'erreurs + `safeId` ; smoke : CRLF → serveur **vivant** |
+| 4 | Reset sans rate-limit + `Math.random()` | ✅ **corrigé** | 10 essais/15 min/IP (429 après 10 prouvé) + `randomBytes` |
+| 5 | Email non normalisé (doublons de casse) | ✅ **corrigé** | `TEST@dz.dz` → 409 ; login ` Test@DZ.DZ ` → 200 ; lookup `LOWER(email)` SQLite+PG |
+
+### Vague 2 — bugs moyens (#6 à #9) · commit suivant
+| # | Bug | État | Preuve |
+|---|---|---|---|
+| 6 | Aucune politique de mot de passe | ✅ **corrigé** | `password "1"` → `400 weak_password` (register **et** reset, avant consommation du code) + message UI arabe |
+| 7 | Deadlock file 413 (limite 100 kB) | ✅ **corrigé** | `express.json({limit:"2mb"})` + `doFlush` découpe le lot sur 413 (tests wireSync : 40→20→vidée ; 413 sur 1 item = abandon propre) — payload 150 kB → **200** |
+| 8 | CSV : formules Excel + `last_production` = inscription | ✅ **corrigé** | `csvCell` préfixe `'` (prouvé `'=HYPERLINK(`) ; colonne = réelle dernière production (`2025-12-01` au lieu du jour d'inscription) |
+| 9 | CI sans lint complet ni build ; 7 vulns npm | ✅ **corrigé** | job `quality` (npm run lint + build) ; **`server.ts` ajouté au tsconfig** (n'était type-checké NULLE part) ; `npm audit fix` → **0 vulnérabilité** |
+
+### Bug bonus découvert pendant le fix #8
+- **CSV mono-élève cassé sur PostgreSQL** : `store.listActivities()` non `await`é → `Promise.map` → crash. Découvert grâce à l'ajout de `server.ts` au typecheck. Corrigé (`await`), verrouillé par test statique.
+
+### Nouveaux garde-fous tests
+- `src/__tests__/serverFixesAudit.test.ts` — 21 verrous statiques/dynamiques sur les 9 correctifs
+- `src/components/__tests__/StudentAccountBar.session.test.tsx` — 4 tests de session (401 / réseau / affichage / logout)
+- `src/utils/__tests__/wireSync.test.ts` — +2 tests anti-deadlock 413
+
+### Bilan final
+`tsc` 0 erreur (serveur inclus) · `check:v2` 0 · **1004 tests vitest verts** · **138 tests natifs** · build OK · **npm audit : 0 vulnérabilité** (7 → 0).
+
+### Reste ouvert (#10 à #12 — mineurs, non traités)
+- Bouton « demande de reset » côté élève appelle la route enseignante (UX)
+- Hygiène dépôt : fichiers perso/PII, doublons `public/images` vs `public/assets`, PDF 16 Mo
+- CSP + Referrer-Policy ; secrets docker-compose hors du fichier ; bundle 3,3 Mo
+
+
+---
+
+## 11. Verdict
+
+L'application est **techniquement bien construite** (typage, tests, architecture offline, sécurité serveur de base). Les bugs n° 1 à 9 listés dans cet audit sont désormais **corrigés et verrouillés par tests** (voir §10) : la fonctionnalité comptes/suivi fonctionne, le serveur ne peut plus être mis à mort par une requête CSV, et la surface sécurité (rate-limit reset, mots de passe, emails, CSV, vulnérabilités npm) est renforcée.
+
+**Reste les points mineurs #10 à #12 (UX reset, hygiène du dépôt, CSP/perf) avant un passage en production serein.**

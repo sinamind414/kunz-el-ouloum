@@ -128,9 +128,11 @@ export default function StudentAuthView({ isOpen, onClose, onLogin }: Props) {
                       ? 'يرجى إدخال الاسم الكامل.'
                       : error === 'email_exists'
                         ? 'هذا البريد مسجل بالفعل.'
-                        : error === 'invalid_credentials'
-                          ? 'البريد أو كلمة المرور غير صحيحة.'
-                          : 'خطأ أثناء المصادقة. حاول مرة أخرى.'}
+                        : error === 'weak_password'
+                          ? 'كلمة المرور قصيرة جدا — 6 أحرف على الأقل.'
+                          : error === 'invalid_credentials'
+                            ? 'البريد أو كلمة المرور غير صحيحة.'
+                            : 'خطأ أثناء المصادقة. حاول مرة أخرى.'}
                   </span>
                 </div>
               )}

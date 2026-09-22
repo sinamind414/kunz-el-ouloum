@@ -26,6 +26,17 @@ const JWT_SECRET = process.env.JWT_SECRET;
 const normalizeEmail = (raw: unknown): string =>
   typeof raw === "string" ? raw.trim().toLowerCase() : "";
 
+/** Politique de mot de passe (miroir du minLength={6} des formulaires). */
+const MIN_PASSWORD_LEN = 6;
+const isWeakPassword = (password: unknown): boolean =>
+  typeof password !== "string" || password.length < MIN_PASSWORD_LEN;
+
+/** Cellule CSV sûre : neutralise l'injection de formules Excel (=, +, -, @). */
+const csvCell = (v: unknown): string => {
+  const s = String(v ?? "");
+  return /^[=+\-@]/.test(s) ? `'${s}` : s;
+};
+
 // ── Garde-fou async : Express 4 ne rattrape PAS les promesses rejetées ──
 // Une erreur non catchée dans une route async devenait unhandledRejection →
 // arrêt du process (crash confirmé : export CSV avec CRLF dans studentId).
@@ -101,7 +112,10 @@ async function startServer() {
 
   const store = await selectStore();
 
-  app.use(express.json());
+  // Limite explicite : la file de synchro offline peut envoyer jusqu'à 100
+  // productions longues (> 100 kB = 413 de l'ancien défaut Express → deadlock
+  // du flush). 2 marge : lot max << 2 Mo, et le client coupe sur 413 (file d'A.).
+  app.use(express.json({ limit: "2mb" }));
 
   app.use((_req: Request, res: Response, next: express.NextFunction) => {
     res.setHeader("X-Content-Type-Options", "nosniff");
@@ -121,6 +135,9 @@ async function startServer() {
       const email = normalizeEmail(req.body.email);
       if (!email || !password || !name) {
         return res.status(400).json({ error: "missing_fields" });
+      }
+      if (isWeakPassword(password)) {
+        return res.status(400).json({ error: "weak_password" });
       }
       if (await store.findStudentByEmail(email)) {
         return res.status(409).json({ error: "email_exists" });
@@ -255,6 +272,9 @@ async function startServer() {
       }
       const { code, password } = req.body;
       if (!code || !password) return res.status(400).json({ error: "missing_fields" });
+      // Politique AVANT toute consommation du code (un mot de passe faible
+      // ne doit pas brûler le jeton de reset).
+      if (isWeakPassword(password)) return res.status(400).json({ error: "weak_password" });
       const resetCode = await store.findUsableResetCode(code);
       if (!resetCode) return res.status(400).json({ error: "invalid_or_used_code" });
       if (new Date(resetCode.expiresAt).getTime() < Date.now()) {
@@ -303,7 +323,9 @@ async function startServer() {
     if (studentId) {
       // Un seul élève : même forme de ligne (petit volume).
       const entries = await store.listEntries(studentId);
-      const acts = store.listActivities(studentId);
+      // await OBLIGATOIRE : sur PostgreSQL listActivities est asynchrone —
+      // sans lui, acts.map plantait (Promise.map) — bug découvert par l'audit.
+      const acts = await store.listActivities(studentId);
       const act = calculeActivite([entries.map((e) => e.createdAt), acts.map((a) => a.createdAt)].flat());
       const avgIcm = entries.length ? Math.round(entries.reduce((s, e) => s + (Number(e.icm) || 0), 0) / entries.length) : 0;
       const dominantErrors = entries.flatMap((e) => e.errorTags).reduce<Record<string, number>>((acc, tag) => {
@@ -314,11 +336,14 @@ async function startServer() {
       const student = await store.findStudentById(studentId);
       // Cellule CSV : pas de sauts de ligne dans une ligne non quotée (RFC 4180).
       const cellId = String(studentId).replace(/[\r\n]+/g, " ");
-      res.write([cellId, student?.name || "", student?.email || "", String(entries.length), String(avgIcm), student?.createdAt || "", topErrors, act.lastActivity || "", act.actif7j ? "1" : "0", act.actif30j ? "1" : "0"].join(";") + "\n");
+      // Vraie dernière production (listEntries est trié created_at DESC) —
+      // l'ancienne valeur = date d'inscription contredisait le dashboard.
+      const lastProduction = entries[0]?.createdAt || "";
+      res.write([csvCell(cellId), csvCell(student?.name || ""), csvCell(student?.email || ""), String(entries.length), String(avgIcm), csvCell(lastProduction), csvCell(topErrors), csvCell(act.lastActivity || ""), act.actif7j ? "1" : "0", act.actif30j ? "1" : "0"].join(";") + "\n");
     } else {
       // Streaming : itérateur SQL — 300 000 lignes sans jamais tout charger en RAM.
       for await (const row of store.iterateExportRows()) {
-        res.write([row.id, row.name, row.email, String(row.productions), String(row.avgIcm), row.lastProduction || "", row.topErrors, row.lastActivity || "", row.actif7j ? "1" : "0", row.actif30j ? "1" : "0"].join(";") + "\n");
+        res.write([csvCell(row.id), csvCell(row.name), csvCell(row.email), String(row.productions), String(row.avgIcm), csvCell(row.lastProduction || ""), csvCell(row.topErrors), csvCell(row.lastActivity || ""), row.actif7j ? "1" : "0", row.actif30j ? "1" : "0"].join(";") + "\n");
       }
     }
     res.end();

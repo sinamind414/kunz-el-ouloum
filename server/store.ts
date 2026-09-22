@@ -453,9 +453,10 @@ export class SqliteStore {
 
   /** Itérateur du CSV global — streaming, jamais tout chargé en RAM.
    * Deux itérateurs triés par student_id fusionnés par positions :
-   * zéro sous-requête par élève. CONTRAT ORIGINAL : la colonne
-   * « last_production » contient en réalité STUDENT.createdAt (date
-   * d'inscription) — fidélité à la lettre au serveur JSON d'origine. */
+   * zéro sous-requête par élève. CONTRAT : la colonne « last_production »
+   * contient la date de RÉELLE dernière production (MAX created_at des
+   * entries) — cohérente avec le dashboard (l'ancien comportement =
+   * date d'inscription contredisait l'interface, audit 2026-09-22). */
   *iterateExportRows(studentId?: string, maintenant: number = Date.now()): IterableIterator<{ id: string; name: string; email: string; productions: number; avgIcm: number; lastProduction: string; topErrors: string; lastActivity: string | null; actif7j: boolean; actif30j: boolean }> {
     const stmt = this.db.prepare(`
       SELECT s.id, s.name, s.email, s.created_at,
@@ -495,7 +496,7 @@ export class SqliteStore {
         email: r.email,
         productions: Number(r.productions),
         avgIcm: Math.round(Number(r.avg_icm)),
-        lastProduction: r.created_at,
+        lastProduction: r.last_entry || "",
         topErrors: errs.slice(0, 5).map(e => `${e.tag}:${e.count}`).join('; '),
         lastActivity: act.lastActivity,
         actif7j: act.actif7j,
