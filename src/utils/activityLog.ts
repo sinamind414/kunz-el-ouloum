@@ -121,12 +121,14 @@ export function flushActivityQueue(): Promise<void> {
 async function doFlush(): Promise<void> {
   const token = localStorage.getItem('boussole_token');
   if (!token) return; // mode invité : rien ne quitte l'appareil
+  let batchLimit = BATCH_LIMIT;
   for (;;) {
     const queue = readQueue();
     if (queue.length === 0) return;
-    const batch = queue.slice(0, BATCH_LIMIT);
+    const batch = queue.slice(0, Math.min(batchLimit, queue.length));
     const entries = batch.filter(i => i.kind === 'entry').map(i => i.payload);
     const events = batch.filter(i => i.kind === 'event').map(i => i.payload);
+    let status = 0;
     let ok = false;
     try {
       const res = await fetch('/api/student/sync', {
@@ -137,15 +139,23 @@ async function doFlush(): Promise<void> {
         },
         body: JSON.stringify({ entries, events }),
       });
+      status = res.status;
       ok = res.ok;
     } catch {
       ok = false;
     }
-    if (!ok) return; // offline / erreur serveur → file conservée, retry au prochain flush
+    // 413 = lot trop gros pour le serveur : on découpe et on réessaie.
+    // (Sans ça, la file renvoyait toujours le MÊME lot → bloquée éternellement.)
+    if (status === 413 && batch.length > 1) {
+      batchLimit = Math.max(1, Math.floor(batch.length / 2));
+      continue;
+    }
+    if (!ok) return; // offline / erreur / 413 résiduel → file conservée, retry au prochain flush
     // Retrait PAR ID (et non par position) : des items ajoutés PENDANT le fetch
     // doivent survivre — ils partiront au lot suivant.
     const sent = new Set(batch.map(itemKey));
     writeQueue(readQueue().filter(i => !sent.has(itemKey(i))));
+    batchLimit = BATCH_LIMIT; // palier entier restauré après succès
   }
 }
 

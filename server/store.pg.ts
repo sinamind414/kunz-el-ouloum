@@ -3,7 +3,7 @@
 // MÊME contrat que server/store.ts (SQLite) : mêmes types, mêmes
 // réponses, mêmes sémantiques (occurences de tags, ordre à
 // égalité = première occurrence, col. CSV « last_production » =
-// date d'inscription, idempotence par (student_id, id)).
+// réelle dernière production, idempotence par (student_id, id)).
 // Sélection au démarrage : DATABASE_URL définit → PostgreSQL,
 // sinon SQLite (zéro service externe). Parité testée.
 //
@@ -475,7 +475,7 @@ export class PostgresStore {
           email: String(row.email),
           productions: Number(row.productions),
           avgIcm: Math.round(Number(row.avg_icm)),
-          lastProduction: iso(row.created_at),
+          lastProduction: row.last_entry ? iso(row.last_entry) : '',
           topErrors: (bySid.get(sid) || []).slice(0, 5).join('; '),
           lastActivity: act.lastActivity,
           actif7j: act.actif7j,

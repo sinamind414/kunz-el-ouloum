@@ -144,3 +144,79 @@ describe('fix #5 — client : register/login normalisent l’email', () => {
     expect(body.email).toBe('eleve@ecole.dz');
   });
 });
+
+// ============================================================
+// Correctifs v2 (bugs 6-9 de l'audit) — verrous statiques.
+// ============================================================
+
+describe('fix #6 — politique de mot de passe (API, ≥ 6)', () => {
+  it('register ET reset-password vérifient weak_password', () => {
+    const src = serverSrc();
+    expect(src).toContain('const MIN_PASSWORD_LEN = 6');
+    expect(src).toContain('const isWeakPassword');
+    // Deux applications : /api/auth/register + /api/student/reset-password.
+    expect(src.match(/isWeakPassword\(password\)/g)!.length).toBeGreaterThanOrEqual(2);
+    expect(src.match(/error: "weak_password"/g)!.length).toBeGreaterThanOrEqual(2);
+  });
+
+  it('la vérification reset précède la consommation du code', () => {
+    const src = serverSrc();
+    const iWeak = src.indexOf('if (isWeakPassword(password)) return res.status(400)');
+    const iCode = src.indexOf('await store.findUsableResetCode(code)');
+    expect(iWeak).toBeGreaterThan(-1);
+    expect(iCode).toBeGreaterThan(-1);
+    expect(iWeak).toBeLessThan(iCode);
+  });
+});
+
+describe('fix #7 — synchro : limite JSON explicite (anti-deadlock 413)', () => {
+  it('express.json a une limite explicite ≥ 1 Mo (défaut 100 kB trop juste)', () => {
+    expect(serverSrc()).toContain('express.json({ limit: "2mb" })');
+  });
+
+  it('doFlush découpe le lot sur 413 (voir wireSync.test) — verrou source', () => {
+    const log = fs.readFileSync(path.resolve(process.cwd(), 'src', 'utils', 'activityLog.ts'), 'utf-8');
+    expect(log).toContain('status === 413 && batch.length > 1');
+    expect(log).toContain('batchLimit = Math.max(1, Math.floor(batch.length / 2))');
+  });
+});
+
+describe('fix #8 — CSV : formules neutralisées + vraie last_production', () => {
+  it('csvCell existe et est utilisé dans les deux branches du flux', () => {
+    const src = serverSrc();
+    expect(src).toContain('const csvCell');
+    expect(src).toContain("return /^[=+\\-@]/.test(s) ? `'${s}` : s");
+    // Branche mono-élève + branche streaming.
+    expect(src).toContain('csvCell(student?.name || "")');
+    expect(src).toContain('csvCell(row.name)');
+  });
+
+  it('la colonne last_production n’est plus la date d’inscription', () => {
+    const src = serverSrc();
+    expect(src).toContain('const lastProduction = entries[0]?.createdAt || ""');
+    expect(src).not.toContain('student?.createdAt || "", topErrors');
+    // Les deux stores exposent la réelle dernière production.
+    expect(storeSrc()).toContain('lastProduction: r.last_entry || ""');
+    expect(storePgSrc()).toContain("lastProduction: row.last_entry ? iso(row.last_entry) : ''");
+  });
+
+  it('listActivities est awaité (sinon crash Promise.map sur PostgreSQL)', () => {
+    expect(serverSrc()).toContain('const acts = await store.listActivities(studentId)');
+  });
+});
+
+describe('fix #9 — CI : lint complet (serveur inclus) + build', () => {
+  it('ci.yml exécute npm run lint et npm run build', () => {
+    const ci = fs.readFileSync(path.resolve(process.cwd(), '.github', 'workflows', 'ci.yml'), 'utf-8');
+    expect(ci).toContain('npm run lint');
+    expect(ci).toContain('npm run build');
+  });
+
+  it('tsconfig.json inclut server.ts et server/ (sinon « lint » ne les couvre pas)', () => {
+    const ts = JSON.parse(
+      fs.readFileSync(path.resolve(process.cwd(), 'tsconfig.json'), 'utf-8'),
+    ) as { include?: string[] };
+    expect(ts.include).toContain('server.ts');
+    expect(ts.include).toContain('server');
+  });
+});
