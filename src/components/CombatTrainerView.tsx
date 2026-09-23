@@ -46,6 +46,17 @@ const CHALLENGES = [
     locked: true,
     color: 'from-slate-700 to-slate-600',
     verified: false
+  },
+  {
+    // P0-2 — branche DOCUMENT_ANALYSIS_EXERCISES (élite offline, 13 docs ready).
+    id: 'elite-doc-analysis',
+    title: 'تحليل الوثائق: تمارين النخبة',
+    description: '13 وثائق جاهزة (منحنيات/جداول/مخططات) مع تصحيح المحرّك الدلالي وشبكة 20 ن — الوثائق غير الجاهزة مخفية.',
+    time: '60 دقيقة',
+    points: 25,
+    locked: false,
+    color: 'from-indigo-600 to-indigo-500',
+    verified: false
   }
 ];
 

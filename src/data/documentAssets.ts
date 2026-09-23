@@ -141,10 +141,12 @@ const rifamycineDocument: DocumentAsset = {
 };
 
 // --- Lot 3 du Sprint 2 : documents reconstruits en DONNEES (aucune image requise).
-// Le renderer sait deja dessiner 'table' et 'curve' ; ces trois documents etaient
-// declares 'unavailable' alors que leurs questions, correction et grille existaient
-// deja en entier. Echelles qualitatives : le programme n'en fixe aucune valeur
-// numerique, et inventer des chiffres serait une donnee non sourcee.
+// Le renderer live est `src/components/DocumentAssetView.tsx` (branché par
+// DocumentAnalysisView, P0-2) et sait dessiner 'table' et 'curve' ; ces trois
+// documents etaient declares 'unavailable' alors que leurs questions, correction
+// et grille existaient deja en entier. Echelles qualitatives : le programme
+// n'en fixe aucune valeur numerique, et inventer des chiffres serait une
+// donnee non sourcee.
 
 const enzymePhTempTable: DocumentAsset = {
   kind: 'table',

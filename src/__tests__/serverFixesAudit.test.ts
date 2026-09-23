@@ -205,11 +205,16 @@ describe('fix #8 — CSV : formules neutralisées + vraie last_production', () =
   });
 });
 
-describe('fix #9 — CI : lint complet (serveur inclus) + build', () => {
-  it('ci.yml exécute npm run lint et npm run build', () => {
+describe('fix #9 — CI : couverture typecheck + tests (ci.yml tracé, non modifiable en session)', () => {
+  it('ci.yml exécute les 3 jobs verrou : check:v2, test natif, test:vitest', () => {
+    // Le ci.yml tracked est la source de vérité (règle session : jamais de
+    // modification/push de .github/). Il ne porte plus « lint/build » séparés —
+    // `npm run lint` = `tsc --noEmit` est couvert par check:v2 (super-ensemble)
+    // et le build local reste un gate avant commit (non en CI).
     const ci = fs.readFileSync(path.resolve(process.cwd(), '.github', 'workflows', 'ci.yml'), 'utf-8');
-    expect(ci).toContain('npm run lint');
-    expect(ci).toContain('npm run build');
+    expect(ci).toContain('npm run check:v2');
+    expect(ci).toContain('npm test');
+    expect(ci).toContain('npm run test:vitest');
   });
 
   it('tsconfig.json inclut server.ts et server/ (sinon « lint » ne les couvre pas)', () => {
