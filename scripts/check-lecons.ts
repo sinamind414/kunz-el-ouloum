@@ -1,6 +1,6 @@
 #!/usr/bin/env tsx
 // scripts/check-lecons.ts — CI guard for v3.2 leçons
-// Vérifie que chaque HTML public/lessons/*.html contient :
+// Vérifie que chaque HTML content/lessons/*.html contient :
 // - sommaire sticky (id="sommaire")
 // - au moins 1 miftah-encadre
 // - badges c1-badge (et c2-badge pour les phases)
@@ -10,7 +10,7 @@
 import { readdirSync, readFileSync } from 'fs';
 import { join } from 'path';
 
-const dir = 'public/lessons';
+const dir = 'content/lessons';
 const files = readdirSync(dir).filter(f => f.endsWith('.html')).sort();
 
 let failures = 0;

@@ -8,18 +8,21 @@ import { sliceLessonHtml, countLessonChapters, getBaseLessonKey } from './lesson
 import { existsSync, readdirSync } from 'node:fs';
 import { resolve } from 'node:path';
 
+// P5/F4 : sources de leçons hors public/ (pas de double dist/lessons) ;
+// les assets restent sous public/ (servis en absolu par le viewer srcdoc).
+const CONTENT = resolve(__dirname, '../../content');
 const PUBLIC = resolve(__dirname, '../../public');
 const KEYS = Object.keys(LESSON_HTML_GETTERS);
 
 describe('parcours de rendu — invariants du HTML effectivement rendu dans le viewer', () => {
   it('le catalogue couvre exactement les fichiers de leçons sur disque (0 trou, 0 orphelin)', () => {
-    const onDisk = readdirSync(resolve(PUBLIC, 'lessons')).filter((f) => f.endsWith('.html'));
+    const onDisk = readdirSync(resolve(CONTENT, 'lessons')).filter((f) => f.endsWith('.html'));
     // NB : phase1_chapitres_1_2 SE TERMINE légitimement par _2 (piège documenté) —
     // la clé de base se détermine par la forme canonique, jamais par un replace naïf.
     const bases = new Set(KEYS.map(getBaseLessonKey));
     expect(KEYS.length).toBe(47);
     for (const f of onDisk) expect(bases.has(f.replace(/\.html$/, '')), `fichier orphelin : ${f}`).toBe(true);
-    for (const b of bases) expect(existsSync(resolve(PUBLIC, 'lessons', `${b}.html`)), `getter sans fichier : ${b}`).toBe(true);
+    for (const b of bases) expect(existsSync(resolve(CONTENT, 'lessons', `${b}.html`)), `getter sans fichier : ${b}`).toBe(true);
   });
 
   for (const key of KEYS) {

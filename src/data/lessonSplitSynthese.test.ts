@@ -14,7 +14,7 @@ import { resolve } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { sliceLessonHtml, countLessonChapters } from './lessonChapterSplit';
 
-const DIR = resolve(__dirname, '../../public/lessons');
+const DIR = resolve(__dirname, '../../content/lessons');
 
 /** Les 11 fichiers portant une carte 🏛 (toutes unités à حصيلة). */
 const FILES_HOSILA = [

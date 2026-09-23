@@ -1,7 +1,7 @@
 // lessonModes.ts
 // Source de vérité pour la structure de l'onglet الدروس :
 //   - Leçon Active (درس نشيط) : leçons TS interactives « mot par mot » (ACTIVE_LESSONS).
-//   - Leçon Passive (درس سلبي) : les leçons HTML officielles (public/lessons),
+//   - Leçon Passive (درس سلبي) : les leçons HTML officielles (content/lessons),
 //     chaque fichier de phase contenant 2 leçons exposées séparément
 //     (clé de base = 1re leçon, clé `_2` = 2e leçon).
 // La Leçon Passive est organisée en 3 domaines du BAC DZ, chaque domaine
@@ -45,7 +45,7 @@ export const PASSIVE_DOMAINS: DomainGroup[] = [
   },
 ];
 
-/** Les clés HTML sont celles qui ont un fichier dans public/lessons (les autres sont des leçons actives TS). */
+/** Les clés HTML sont celles qui ont un fichier dans content/lessons (les autres sont des leçons actives TS). */
 export const hasHtmlFile = (key: string): boolean =>
   key.startsWith('lecon_') || key.startsWith('phase');
 

@@ -1,5 +1,5 @@
 // src/data/lessonChapterSplit.ts
-// Chaque fichier HTML de phase (public/lessons/phaseN_chapitres_X_Y.html, source
+// Chaque fichier HTML de phase (content/lessons/phaseN_chapitres_X_Y.html, source
 // canonique suivie par git et validée par check:lecons) contient DEUX leçons,
 // un <div class="chapter-view">.
 // Ce module isole UNE SEULE leçon avant injection dans l'iframe (srcDoc) :

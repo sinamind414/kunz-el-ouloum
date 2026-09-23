@@ -354,7 +354,7 @@ def audit_html_hosila(hosila_ancres: list[tuple[str, list[str]]]):
     """Marqueurs حصيلة dans les HTML (mirroir resumes.lock HOSILA)."""
     rows = []
     for f, marqueurs in hosila_ancres:
-        p = ROOT / "public/lessons" / f"{f}.html"
+        p = ROOT / "content/lessons" / f"{f}.html"
         if not p.exists():
             rows.append({"file": f, "absent": True})
             continue
@@ -586,7 +586,7 @@ def classify(rows_points, suspects, gold_rows, html_rows, hosila, okacha, resume
         p0.append(
             {
                 "id": "P0-html-hosila",
-                "fichier": "public/lessons/*.html",
+                "fichier": "content/lessons/*.html",
                 "exemples": ko,
                 "preuve": f"{len(ko)} HTML cassant le verrou حصيلة",
                 "rec": "Réinjecter carte hosila + marqueurs.",
@@ -596,7 +596,7 @@ def classify(rows_points, suspects, gold_rows, html_rows, hosila, okacha, resume
         p2.append(
             {
                 "id": "P2-html-hosila-ok",
-                "fichier": "public/lessons/*.html",
+                "fichier": "content/lessons/*.html",
                 "preuve": f"{len(html_rows)}/11 cartes حصيلة HTML OK (id + marqueurs)",
                 "rec": "Aucun (statut vert).",
             }
@@ -730,7 +730,7 @@ def main() -> int:
     lines.append("")
     lines.append("**Date :** 2026-09-23 · **Branche :** `arena/01a0c955-kunz-el-ouloum` · **HEAD :** purge `778f271`")
     lines.append("")
-    lines.append("**Périmètre :** `src/data/resumesLecons.ts` · `lessonGoldSummaries.ts` · `public/lessons/*.html` · `okachaEnriched.ts` · `hosila.ts`")
+    lines.append("**Périmètre :** `src/data/resumesLecons.ts` · `lessonGoldSummaries.ts` · `content/lessons/*.html` · `okachaEnriched.ts` · `hosila.ts`")
     lines.append("")
     lines.append("**Étalon :** texte الحصيلة collé par l'utilisateur (`docs/RESUMES_MAARIFI_LIVRE_2026-09-21.md`) + `data/bookContent.json` (identité PDF sha256, cf. AUDIT_MOT_A_MOT).")
     lines.append("")

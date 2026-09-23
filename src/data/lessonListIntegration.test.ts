@@ -1,6 +1,6 @@
 // lessonListIntegration.test.ts — Verrou end-to-end de la liste des leçons passives.
 // Garantit que CHAQUE leçon proposée dans l'onglet الدروس :
-//   1) possède un getter HTML (donc un fichier dans public/lessons) ;
+//   1) possède un getter HTML (donc un fichier dans content/lessons) ;
 //   2) a un titre arabe résolu (jamais la clé technique) ;
 //   3) s'affiche SEULE : le découpage ne laisse qu'une leçon (chapter-view).
 // Note : la source de vérité de l'affichage est `unitLessonSequences.ts`.
@@ -24,7 +24,7 @@ const HTML_CACHE = new Map<string, string>();
 function readHtml(base: string): string {
   const cached = HTML_CACHE.get(base);
   if (cached !== undefined) return cached;
-  const html = readFileSync(resolve(process.cwd(), 'public', 'lessons', `${base}.html`), 'utf-8');
+  const html = readFileSync(resolve(process.cwd(), 'content', 'lessons', `${base}.html`), 'utf-8');
   HTML_CACHE.set(base, html);
   return html;
 }
