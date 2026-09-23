@@ -16,7 +16,7 @@ const PHASE_BASE_KEYS = Object.keys(LESSON_HTML_GETTERS).filter(
 );
 
 function readLessonHtml(baseKey: string): string {
-  return readFileSync(resolve(process.cwd(), 'public', 'lessons', `${baseKey}.html`), 'utf-8');
+  return readFileSync(resolve(process.cwd(), 'content', 'lessons', `${baseKey}.html`), 'utf-8');
 }
 
 describe('lessonChapterSplit — clés', () => {

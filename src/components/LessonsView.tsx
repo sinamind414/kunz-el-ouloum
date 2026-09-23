@@ -1,7 +1,7 @@
 // LessonsView.tsx
 // Onglet الدروس restructuré en deux modes :
 //   1) درس نشيط (Leçon Active)  : leçons TS interactives « mot par mot » (ACTIVE_LESSONS).
-//   2) درس سلبي  (Leçon Passive) : les leçons HTML officielles (public/lessons),
+//   2) درس سلبي  (Leçon Passive) : les leçons HTML officielles (content/lessons),
 //      organisées en 3 domaines du BAC → unités → chapitres (ordre canonique
 //      OFFICIAL_PROGRAM_SEQUENCE). Chaque fichier de phase portant 2 leçons,
 //      la séquence expose la clé de base puis la clé `_2` — une leçon affichée

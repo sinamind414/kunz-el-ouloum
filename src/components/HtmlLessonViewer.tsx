@@ -1,5 +1,5 @@
 // HtmlLessonViewer.tsx
-// Affiche une leçon HTML de public/lessons via LESSON_HTML_GETTERS (?raw) dans une iframe srcdoc.
+// Affiche une leçon HTML de content/lessons via LESSON_HTML_GETTERS (?raw) dans une iframe srcdoc.
 // srcdoc = isolation CSS totale : les styles Tailwind de l'app ne fuient pas dans la leçon, et inversement.
 import { useEffect, useState } from 'react';
 import { LESSON_HTML_GETTERS } from '../data/lessonHtmlGetters';

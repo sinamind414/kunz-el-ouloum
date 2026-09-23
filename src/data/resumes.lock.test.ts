@@ -101,7 +101,7 @@ describe('الحصيلة المعرفية الرسمية du livre — injectée 
 
   it('les 7 cartes officielles (id="hosila") sont présentes avec leurs marqueurs', () => {
     for (const [f, marqueurs] of HOSILA) {
-      const brut = readFileSync(resolve(__dirname, `../../public/lessons/${f}.html`), 'utf-8');
+      const brut = readFileSync(resolve(__dirname, `../../content/lessons/${f}.html`), 'utf-8');
       expect(brut.includes('id="hosila"'), `carte حصيلة absente de ${f}`).toBe(true);
       expect(brut.includes('link-hosila'), `lien nav حصيلة absent de ${f}`).toBe(true);
       const texte = brut.replace(/<[^>]+>/g, ' ');
@@ -122,7 +122,7 @@ describe('الحصيلة المعرفية الرسمية du livre — injectée 
       ['phase22_chapitres_43_44', ['التكتونية', 'الليتوسفير']],
     ];
     for (const [f, mots] of jetons) {
-      const brut = readFileSync(resolve(__dirname, `../../public/lessons/${f}.html`), 'utf-8');
+      const brut = readFileSync(resolve(__dirname, `../../content/lessons/${f}.html`), 'utf-8');
       const texte = norm(brut.replace(/<[^>]+>/g, ' '));
       for (const w of mots) {
         const wn = norm(w);
@@ -141,7 +141,7 @@ describe('الحصيلة المعرفية الرسمية du livre — injectée 
 });
 
   it('le schéma synthèse المناعة (U4, p118) est injecté dans la leçon de clôture phase7', () => {
-    const brut = readFileSync(resolve(__dirname, '../../public/lessons/phase7_chapitres_13_14.html'), 'utf-8');
+    const brut = readFileSync(resolve(__dirname, '../../content/lessons/phase7_chapitres_13_14.html'), 'utf-8');
     expect(brut.includes('id="schema-synthese"'), 'section schéma U4 absente').toBe(true);
     expect(brut.includes('/assets/images/schemas/domaine1_proteines/schema_synthese_immunite_U4.jpg'), 'image schéma U4 absente').toBe(true);
     expect(brut.includes('link-schema'), 'lien nav schéma absent').toBe(true);
@@ -159,7 +159,7 @@ describe('الحصيلة المعرفية الرسمية du livre — injectée 
   });
 
   it('le schéma synthèse العصب (U5, p165) est injecté dans la leçon de clôture phase10', () => {
-    const brut = readFileSync(resolve(__dirname, '../../public/lessons/phase10_chapitres_19_20.html'), 'utf-8');
+    const brut = readFileSync(resolve(__dirname, '../../content/lessons/phase10_chapitres_19_20.html'), 'utf-8');
     expect(brut.includes('id="schema-synthese"'), 'section schéma U5 absente').toBe(true);
     expect(brut.includes('/assets/images/schemas/domaine1_proteines/schema_synthese_nerf_U5.jpg'), 'image schéma U5 absente').toBe(true);
     expect(brut.includes('link-schema'), 'lien nav schéma absent').toBe(true);
@@ -177,7 +177,7 @@ describe('الحصيلة المعرفية الرسمية du livre — injectée 
   });
 
   it('le schéma synthèse البنية الداخلية للأرض (U10) est injecté dans la leçon de clôture phase20', () => {
-    const brut = readFileSync(resolve(__dirname, '../../public/lessons/phase20_chapitres_39_40.html'), 'utf-8');
+    const brut = readFileSync(resolve(__dirname, '../../content/lessons/phase20_chapitres_39_40.html'), 'utf-8');
     expect(brut.includes('id="schema-synthese"'), 'section schéma U10 absente').toBe(true);
     expect(brut.includes('/assets/images/schemas/domaine3_tectonique/schema_synthese_geologie_U10.jpg'), 'image schéma U10 absente').toBe(true);
     expect(brut.includes('link-schema'), 'lien nav schéma absent').toBe(true);
@@ -195,7 +195,7 @@ describe('الحصيلة المعرفية الرسمية du livre — injectée 
   });
 
   it('le schéma synthèse Orogenèse (U11, p330) est injecté dans la leçon de clôture phase22', () => {
-    const brut = readFileSync(resolve(__dirname, '../../public/lessons/phase22_chapitres_43_44.html'), 'utf-8');
+    const brut = readFileSync(resolve(__dirname, '../../content/lessons/phase22_chapitres_43_44.html'), 'utf-8');
     expect(brut.includes('id="schema-synthese"'), 'section schéma U11 absente').toBe(true);
     expect(brut.includes('/assets/images/schemas/domaine3_tectonique/schema_synthese_orogenese_U11.jpg'), 'image schéma U11 absente').toBe(true);
     expect(brut.includes('link-schema'), 'lien nav schéma absent').toBe(true);
@@ -249,7 +249,7 @@ describe('الحصيلة المعرفية الرسمية du livre — injectée 
   });
 
   it('le schéma synthèse تركيب البروتين (U1) est injecté dans la leçon de clôture phase2', () => {
-    const brut = readFileSync(resolve(__dirname, '../../public/lessons/phase2_chapitres_3_4.html'), 'utf-8');
+    const brut = readFileSync(resolve(__dirname, '../../content/lessons/phase2_chapitres_3_4.html'), 'utf-8');
     expect(brut.includes('id="schema-synthese"'), 'section schéma absente').toBe(true);
     expect(brut.includes('/assets/images/schemas/domaine1_traduction/schema_synthese_traduction_U1.jpg'), 'image schéma absente').toBe(true);
     expect(brut.includes('link-schema'), 'lien nav schéma absent').toBe(true);
@@ -281,7 +281,7 @@ describe('الحصيلة المعرفية الرسمية du livre — injectée 
   describe('injection dans les surfaces', () => {
   it('les 25 fichiers passifs contiennent la section + le lien nav + l\'objectif', () => {
     for (const k of CLES_PASSIVES) {
-      const html = readFileSync(resolve(__dirname, `../../public/lessons/${k}.html`), 'utf-8');
+      const html = readFileSync(resolve(__dirname, `../../content/lessons/${k}.html`), 'utf-8');
       expect(html.includes('id="resume"'), `section خلاصة absente de ${k}`).toBe(true);
       expect(html.includes('link-resume'), `lien nav absent de ${k}`).toBe(true);
       expect(html.includes(RESUMES_LECONS[k].objectif.slice(0, 40)), `objectif absent de ${k}`).toBe(true);

@@ -10,29 +10,6 @@ const CORE_URLS = [
   '/assets/images/mascot-192.png',
   '/assets/svt/d1_u1_l2_transcription_met.svg',
   '/assets/svt/d1_u1_l3_traduction_ribosome.svg',
-  '/lessons/lecon_transcription.html',
-  '/lessons/phase1_chapitres_1_2.html',
-  '/lessons/phase2_chapitres_3_4.html',
-  '/lessons/phase3_chapitres_5_6.html',
-  '/lessons/phase4_chapitres_7_8.html',
-  '/lessons/phase5_chapitres_9_10.html',
-  '/lessons/phase6_chapitres_11_12.html',
-  '/lessons/phase7_chapitres_13_14.html',
-  '/lessons/phase8_chapitres_15_16.html',
-  '/lessons/phase9_chapitres_17_18.html',
-  '/lessons/phase10_chapitres_19_20.html',
-  '/lessons/phase11_chapitres_21_22.html',
-  '/lessons/phase12_chapitres_23_24.html',
-  '/lessons/phase13_chapitres_25_26.html',
-  '/lessons/phase14_chapitres_27_28.html',
-  '/lessons/phase15_chapitres_29_30.html',
-  '/lessons/phase16_chapitres_31_32.html',
-  '/lessons/phase17_chapitres_33_34.html',
-  '/lessons/phase18_chapitres_35_36.html',
-  '/lessons/phase19_chapitres_37_38.html',
-  '/lessons/phase20_chapitres_39_40.html',
-  '/lessons/phase21_chapitres_41_42.html',
-  '/lessons/phase22_chapitres_43_44.html',
 ];
 
 function unique(urls) {
@@ -68,10 +45,12 @@ async function collectSchemaAssets() {
 
 async function precacheShell() {
   const cache = await caches.open(SHELL_CACHE);
-  // ARCH-005/006 — précache SÉLECTIF : shell + leçons + assets du build
-  // (~1 MB). Les ~120 schémas (8 MB) sont précachés EN ARRIÈRE-PLAN après
-  // l'activation (lazySchemaPrecache) : l'installation n'impose plus ~11 MB
-  // au premier lancement sur une connexion 3G.
+  // ARCH-005/006 — précache SÉLECTIF : shell + assets du build (~1 MB).
+  // P5/F4 : les leçons ne sont PLUS précachées en /lessons/* — elles sont
+  // embarquées via les getters ?raw (srcdoc), une seule source content/lessons.
+  // Les ~120 schémas (8 MB) sont précachés EN ARRIÈRE-PLAN après l'activation
+  // (lazySchemaPrecache) : l'installation n'impose plus ~11 MB au premier
+  // lancement sur une connexion 3G.
   const buildAssets = await collectBuildAssets();
   const urls = unique([...CORE_URLS, ...buildAssets]);
 
