@@ -6,7 +6,7 @@
 // et l'intégrité minimale de chaque unité.
 
 import { describe, expect, it } from 'vitest';
-import { OKACHA_UNITES, OKACHA_METHODO } from './okacha';
+import { OKACHA_UNITES } from './okacha';
 
 const norm = (s: string) =>
   s
@@ -37,25 +37,41 @@ describe('structure du بنك الحفظ عكاشة (10 unités, mapping documen
   });
 });
 
-describe('section méthodologie (l.115-660 — croisée avec مفتاح, doc : docs/CROISEMENT_OKACHA_MEFTAH)', () => {
-  it('présente, substantielle, sans périmètre commercial', () => {
-    expect(OKACHA_METHODO.lignes.length).toBeGreaterThanOrEqual(300);
-    expect(OKACHA_METHODO.sourceRange).toBe('l.115-660');
-    const t = norm(OKACHA_METHODO.lignes.join(' '));
-    for (const interdit of ['عكاش', 'المتفوق', 'camscanner', '300 دج']) {
-      expect(t.includes(norm(interdit)), `métho : trouvé « ${interdit} »`).toBe(false);
+describe('purge المنهجية (عكاشة) 2026-09-23 : zéro reste méthodo dans les unités', () => {
+  it('aucun marqueur قسم النصائح / المنهجية / conseils_personnels dans le بنك', () => {
+    const tout = norm(OKACHA_UNITES.map((u) => u.lignes.join('\n')).join('\n'));
+    for (const marqueur of [
+      'قسم النصائح',
+      'قسم المنهجية',
+      'لا أنصحك',
+      'إذاكادن',
+      'الفيتامينات',
+      'استعمال اليوتيوب',
+      'مواقع التواصل الاجتماعي',
+      'حصص الدعم',
+    ]) {
+      expect(tout.includes(norm(marqueur)), `reste méthodo : « ${marqueur} »`).toBe(false);
     }
   });
 
-  it('les marqueurs méthodologiques clés sont présents (grille 3 consignes + أفعال + استدلال)', () => {
-    const t = norm(OKACHA_METHODO.lignes.join(' '));
-    for (const cle of [
-      'استرداد الموارد', 'توظيف الموارد', 'البناء والتركيب', // = grille 5/7/8 (corrobore v5.0)
-      'التحليل', 'التفسير', 'الاستنتاج', 'الفرضية',
-      'أثبت', 'ناقش', 'علل', 'صف', // أفعال أدائية (famille أحكم/أصف)
-      'الاستدلال العلمي', 'المسعى العلمي',
+  it('purge OCR « 17 signatures » 2026-09-23 : zéro échantillon P0 résiduel (12+1+4)', () => {
+    const tout = norm(OKACHA_UNITES.map((u) => u.lignes.join('\n')).join('\n'));
+    for (const sig of [
+      'اا40من ارتباط',
+      'الأم اض النووية',
+      'فعاياكاي الابية',
+      'موقمين نحفبزين',
+      'ARNmJl',
+      'ابونان',
+      'الااا٧ يصيب',
+      'معادلة التحلل السكري:٧٨',
+      'Blot اا0 ا٤',
     ]) {
-      expect(t.includes(norm(cle)), `métho : « ${cle} » absent`).toBe(true);
+      expect(tout.includes(norm(sig)), `OCR résidu : « ${sig} »`).toBe(false);
+    }
+    for (const u of OKACHA_UNITES) {
+      expect(u.lignes.length, u.id).toBeGreaterThanOrEqual(25);
+      expect(u.lignes.join(' ').length, u.id).toBeGreaterThan(500);
     }
   });
 });

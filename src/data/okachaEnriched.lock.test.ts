@@ -2,18 +2,22 @@
 // scripts/enrich_okacha.ts à partir de l'injection v1 verbatim okacha.ts).
 // Fige : parité totale avec okacha.ts (10 unités, mêmes ids/domaines/libellés,
 // même ordre), zéro fragment orphelin (< 20 car.), numérotation propre
-// (« N- texte », sans tabulation), couverture INTÉGRALE du texte source (toute
-// ligne d'origine reste présente — recollée ou corrigée via ENRICH_FIXES),
-// sections méthodo dans l'ordre du livre, périmètre commercial filtré.
+// (« N- texte », sans tabulation), couverture INTÉGRALE du texte source unité
+// (toute ligne d'origine reste présente — recollée ou corrigée via ENRICH_FIXES),
+// périmètre commercial filtré.
+// PURGE المنهجية (عكاشة) 2026-09-23 : plus de sections méthodo, plus de
+// conseils-personnels infiltrés dans d2u2 (mélange conseils-methodo + OCR cassé)
+// — verrous d'absence dédiés ci-dessous.
+import { readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import {
   OKACHA_UNITES_ENRICHIES,
-  OKACHA_METHODO_SECTIONS,
   ENRICH_FIXES,
   ENRICH_STATS,
   normAr,
 } from './okachaEnriched';
-import { OKACHA_UNITES, OKACHA_METHODO } from './okacha';
+import { OKACHA_UNITES } from './okacha';
 
 const flat = (s: string) => normAr(s).replace(/\s+/g, '');
 /** Comparaison de couverture : on retire les marqueurs de tête (numéros, puces,
@@ -26,10 +30,7 @@ const avecFixes = (ligne: string) => {
   for (const f of ENRICH_FIXES) t = t.split(f.from).join(f.to);
   return t;
 };
-const toutTexte = [
-  ...OKACHA_UNITES_ENRICHIES.flatMap((u) => u.blocs.map((b) => b.texte)),
-  ...OKACHA_METHODO_SECTIONS.flatMap((s) => s.blocs.map((b) => b.texte)),
-]
+const toutTexte = OKACHA_UNITES_ENRICHIES.flatMap((u) => u.blocs.map((b) => b.texte))
   .map(bare)
   .join('§');
 const couverte = (ligne: string) =>
@@ -45,18 +46,11 @@ describe('parité avec linjection v1 (okacha.ts)', () => {
 });
 
 describe('zéro fragment orphelin (audit A2 corrigé)', () => {
-  it('aucun bloc non-titre < 20 caractères (unités + méthodo)', () => {
+  it('aucun bloc non-titre < 20 caractères (unités)', () => {
     for (const u of OKACHA_UNITES_ENRICHIES) {
       for (const b of u.blocs) {
         if (b.kind !== 'titre') {
           expect(b.texte.trim().length, `${u.id}/${b.kind}`).toBeGreaterThanOrEqual(20);
-        }
-      }
-    }
-    for (const s of OKACHA_METHODO_SECTIONS) {
-      for (const b of s.blocs) {
-        if (b.kind !== 'titre') {
-          expect(b.texte.trim().length, `méthodo/${s.id}/${b.kind}`).toBeGreaterThanOrEqual(20);
         }
       }
     }
@@ -73,12 +67,14 @@ describe('zéro fragment orphelin (audit A2 corrigé)', () => {
       }
     }
     expect(points).toBe(ENRICH_STATS.pointsTotal);
-    expect(points).toBeGreaterThanOrEqual(60);
+    // 61 avant purge OCR « 17 signatures » (2026-09-23) — 3 points numérotés
+    // (36-/37- d1u1, 47- d2u2) supprimés avec les lignes corrompues → 58.
+    expect(points).toBeGreaterThanOrEqual(58);
   });
 });
 
-describe('couverture intégrale : toute ligne dorigine reste présente', () => {
-  it('unités : chaque ligne (normalisée, marqueurs retirés) contenue dans lenrichi', () => {
+describe('couverture intégrale unités : toute ligne dorigine reste présente', () => {
+  it('chaque ligne (normalisée, marqueurs retirés) contenue dans lenrichi', () => {
     for (const u of OKACHA_UNITES) {
       for (const l of u.lignes) {
         if (!l.trim()) continue;
@@ -86,38 +82,51 @@ describe('couverture intégrale : toute ligne dorigine reste présente', () => {
       }
     }
   });
-
-  it('méthodo : chaque ligne (normalisée, marqueurs retirés) contenue dans lenrichi', () => {
-    for (const l of OKACHA_METHODO.lignes) {
-      if (!l.trim()) continue;
-      expect(couverte(l), `méthodo : ${l.slice(0, 45)}`).toBe(true);
-    }
-  });
 });
 
-describe('sections méthodo dans lordre du livre', () => {
-  it('7 à 9 sections, intro en tête, chacune >= 3 blocs', () => {
-    const ids = OKACHA_METHODO_SECTIONS.map((s) => s.id);
-    expect(ids[0]).toBe('intro');
-    expect(ids.length).toBeGreaterThanOrEqual(7);
-    expect(ids.length).toBeLessThanOrEqual(9);
-    for (const s of OKACHA_METHODO_SECTIONS) {
-      expect(s.blocs.length, s.id).toBeGreaterThanOrEqual(3);
+describe('PURGE المنهجية (عكاشة) 2026-09-23 — verrous dabsence', () => {
+  const src = readFileSync(resolve(__dirname, 'okachaEnriched.ts'), 'utf-8');
+
+  it('aucune section méthodo ni export SectionMethodo dans le généré', () => {
+    expect(src.includes('OKACHA_METHODO_SECTIONS')).toBe(false);
+    expect(src.includes('SectionMethodo')).toBe(false);
+    expect(OKACHA_UNITES_ENRICHIES).toHaveLength(10);
+  });
+
+  it('aucun conseil-personnel / marqueur méthodo résiduel dans les blocs unités', () => {
+    const tout = normAr(
+      OKACHA_UNITES_ENRICHIES.flatMap((u) => u.blocs.map((b) => b.texte)).join(' ')
+    );
+    for (const marqueur of [
+      'قسم النصائح',
+      'قسم المنهجية',
+      'لا أنصحك',
+      'إذاكادن',
+      'الفيتامينات',
+      'استعمال اليوتيوب',
+      'مواقع التواصل الاجتماعي',
+      'حصص الدعم',
+      'التحضير المسبق',
+      'أواق بيضاء',
+      'اا40من',
+      'الأم اض النووية',
+      'فعاياكاي',
+      'موقمين نحفبزين',
+      'ARNmJl',
+      'الااا٧ يصيب',
+      'معادلة التحلل السكري:٧٨',
+      'Blot اا0',
+    ]) {
+      expect(tout.includes(normAr(marqueur)), `reste méthodo/OCR : « ${marqueur} »`).toBe(false);
     }
-    expect(ids).toEqual([...new Set(ids)]); // pas de doublon (le pointeur d'ordre)
+  });
+
+  it('stats sans sectionsMethodo (champ supprimé par le générateur)', () => {
+    expect('sectionsMethodo' in ENRICH_STATS).toBe(false);
   });
 });
 
 describe('périmètre commercial filtré + traçabilité', () => {
-  it('méthodo : aucun terme commercial (miroir du verrou v1)', () => {
-    const t = normAr(
-      OKACHA_METHODO_SECTIONS.flatMap((s) => s.blocs.map((b) => b.texte)).join(' ')
-    );
-    for (const interdit of ['عكاش', 'المتفوق', 'camscanner', '300 دج']) {
-      expect(t.includes(normAr(interdit)), `méthodo : « ${interdit} »`).toBe(false);
-    }
-  });
-
   it('unités : pas de scan ni de prix (le reste du périmètre est déjà filtré v1)', () => {
     const t = normAr(
       OKACHA_UNITES_ENRICHIES.flatMap((u) => u.blocs.map((b) => b.texte)).join(' ')
@@ -128,13 +137,10 @@ describe('périmètre commercial filtré + traçabilité', () => {
   });
 
   it('stats cohérentes et corrections tracées', () => {
-    expect(ENRICH_STATS.fragmentsRecolles).toBeGreaterThan(150);
-    expect(ENRICH_STATS.rattrapagesContinuation).toBeGreaterThan(100);
+    expect(ENRICH_STATS.fragmentsRecolles).toBeGreaterThan(80);
+    expect(ENRICH_STATS.rattrapagesContinuation).toBeGreaterThan(50);
     expect(ENRICH_STATS.correctionsAppliquees).toBeGreaterThan(0);
-    expect(ENRICH_STATS.sectionsMethodo).toBe(OKACHA_METHODO_SECTIONS.length);
-    expect(ENRICH_STATS.genere).toBe('2026-09-22');
-    // Le total des occurrences source >= corrections réellement appliquées
-    // (un mot coupé par un recollage peut échapper au dictionnaire — verbatim).
+    expect(ENRICH_STATS.genere).toBe('2026-09-23');
     const total = ENRICH_FIXES.reduce((s, f) => s + f.count, 0);
     expect(total).toBeGreaterThanOrEqual(ENRICH_STATS.correctionsAppliquees);
     for (const f of ENRICH_FIXES) expect(f.count, f.from).toBeGreaterThanOrEqual(0);
