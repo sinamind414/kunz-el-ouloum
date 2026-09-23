@@ -1,4 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="900" height="580" viewBox="0 0 900 580" font-family="Arial, sans-serif">
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="580" viewBox="0 0 900 580" font-family="Arial, sans-serif" role="img" aria-labelledby="schema-title">
+  <title id="schema-title">الاصطدام القاري</title>
   <rect width="900" height="580" fill="#ffffff"/>
   <text x="450" y="30" text-anchor="middle" font-size="18" font-weight="bold">الاصطدام القاري</text>
   <rect x="120" y="120" width="160" height="260" fill="#e5f6ed" stroke="#006d37" stroke-width="2"/>

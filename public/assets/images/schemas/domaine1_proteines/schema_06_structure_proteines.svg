@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 700" width="800" height="700">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 700" width="800" height="700" role="img" aria-labelledby="schema-title">
+  <title id="schema-title">مستويات البنية الفراغية للبروتين — 4 niveaux de structure</title>
   <defs>
     <style>text{font-family:'Noto Kufi Arabic','Segoe UI',system-ui,sans-serif;}
 .title,.t{font-size:21px;font-weight:800;fill:#0F2A1D;}

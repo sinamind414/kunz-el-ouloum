@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="900" viewBox="0 0 1400 900">
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="900" viewBox="0 0 1400 900" role="img" aria-labelledby="schema-title">
+  <title id="schema-title">مقارنة طفرة موضعية</title>
 <rect width="1400" height="900" fill="#f7fbff"/>
 <rect x="70" y="120" width="1260" height="700" rx="28" fill="white" stroke="#d5dee8" stroke-width="4"/>
 <text x="700" y="76" text-anchor="middle" font-family="Arial, sans-serif" font-size="50" font-weight="700" fill="#17233b">مقارنة طفرة موضعية</text>

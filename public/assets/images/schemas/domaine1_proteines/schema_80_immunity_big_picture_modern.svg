@@ -1,4 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 820">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 820" role="img" aria-labelledby="schema-title">
+  <title id="schema-title">الخريطة الكبرى للمناعة: التعرف → الاستجابة → الذاكرة</title>
   <rect width="1400" height="820" rx="32" fill="#f8fbff"/>
   <text x="700" y="70" text-anchor="middle" font-size="40" font-weight="800" fill="#0f172a">الخريطة الكبرى للمناعة: التعرف → الاستجابة → الذاكرة</text>
 

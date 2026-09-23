@@ -1,4 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 760">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 760" role="img" aria-labelledby="schema-title">
+  <title id="schema-title">التلقيح والجرعة التذكيرية يستغلان مبدأ الذاكرة المناعية</title>
   <rect width="1200" height="760" rx="28" fill="#f8fbff"/>
   <text x="600" y="68" text-anchor="middle" font-size="38" font-weight="800" fill="#0f172a">التلقيح والجرعة التذكيرية يستغلان مبدأ الذاكرة المناعية</text>
 

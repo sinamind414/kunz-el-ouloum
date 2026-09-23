@@ -1,4 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 650">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 650" role="img" aria-labelledby="schema-title">
+  <title id="schema-title">بعد مدة قصيرة</title>
   <rect width="1100" height="650" fill="#f7fbff" rx="32"/>
   <rect x="80" y="100" width="420" height="420" rx="28" fill="#ffffff" stroke="#d8eadf" stroke-width="4"/>
   <text x="290" y="145" text-anchor="middle" font-size="30" font-weight="700" fill="#0f5132">بعد مدة قصيرة</text>
