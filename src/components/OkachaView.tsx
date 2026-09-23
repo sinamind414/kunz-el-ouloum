@@ -1,4 +1,4 @@
-// OkachaView.tsx — « بنك الحفظ » : récapitulatifs numérotés par unité du livre
+// OkachaView.tsx — « الحصيلة المعرفية » : récapitulatifs numérotés par unité du livre
 // عكاشة — MODERNISÉ (audit 2026-09-22, phases design + contenu).
 //
 // Contenu : src/data/okachaEnriched.ts (GÉNÉRÉ par scripts/enrich_okacha.ts —
@@ -28,6 +28,7 @@ import {
   type SectionMethodo,
 } from '../data/okachaEnriched';
 import Icone from './Icone';
+import { HOSILA_IDS, HOSILA_STATS, unitesAffichees } from '../data/hosila';
 import { okachaUniteIcone, methodoIcone } from '../data/lessonIcons';
 import {
   loadOkachaProgress,
@@ -293,7 +294,7 @@ export default function OkachaView({ onBack, onRate, onOpenQcm }: Props) {
         </button>
         <h2 className="text-xl font-black flex items-center gap-2">
           <BookMarked className="w-5 h-5 text-[#1d4ed8]" />
-          بنك الحفظ — كل ما يجب حفظه
+          الحصيلة المعرفية — كل ما يجب حفظه
         </h2>
         <div className="mr-auto flex items-center gap-1.5 flex-wrap">
           <button
