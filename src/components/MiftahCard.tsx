@@ -1,4 +1,4 @@
-// src/components/MiftahCard.tsx — Carte « المفتاح » (مفتاح المنهجية) v3.1 recto/verso,
+// src/components/MiftahCard.tsx — Carte « المفتاح » (مفتاح المنهجية) recto/verso — version via MIFTAH_VERSION,
 // fidèle à l'HTML autonome /miftah.html. Noms, erreurs et footers viennent de miftahSpec
 // (source unique) ; le garde-fou `npm run check:miftah` vérifie la parité (docs/MARQUE.md).
 // Pro : styles isolés (préfixe miftah-) pour ne pas fuir, print natif, aucune logique
