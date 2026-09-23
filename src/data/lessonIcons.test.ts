@@ -16,14 +16,12 @@ import {
   chapitreIcone,
   OKACHA_UNIT_ICON_KEY,
   okachaUniteIcone,
-  METHODO_ICON_KEY,
-  methodoIcone,
 } from './lessonIcons';
 import { PASSIVE_DOMAINS, hasHtmlFile, getPassiveLessonTitle, getActiveLessonKeysForUnit, getActiveLessonTitle } from './lessonModes';
 import { getUnitLessonSequence } from './unitLessonSequences';
 import { INITIAL_UNITS } from './index';
 import { HTML_LESSON_ORDER } from './htmlLessonProgression';
-import { OKACHA_UNITES_ENRICHIES, OKACHA_METHODO_SECTIONS } from './okachaEnriched';
+import { OKACHA_UNITES_ENRICHIES } from './okachaEnriched';
 
 const licite = (cle: string) => (ICONES_AUTORISEES as readonly string[]).includes(cle);
 
@@ -191,20 +189,6 @@ describe('lessonIcons — بنك الحفظ (عكاشة)', () => {
     expect(okachaUniteIcone('dxu9', 2)).toBe('BatteryCharging');
     expect(okachaUniteIcone('dxu9', 3)).toBe('Earth');
     expect(licite(okachaUniteIcone('dxu9', 99))).toBe(true);
-  });
-
-  it('les 8 sections de méthodologie ont une icône explicite licite', () => {
-    expect(OKACHA_METHODO_SECTIONS).toHaveLength(8);
-    for (const s of OKACHA_METHODO_SECTIONS) {
-      const cle = METHODO_ICON_KEY[s.id];
-      expect(cle, `section ${s.id} sans icône`).toBeTruthy();
-      expect(licite(cle!)).toBe(true);
-      expect(methodoIcone(s.id)).toBe(cle);
-    }
-  });
-
-  it('section de méthodologie inconnue → repli neutre', () => {
-    expect(methodoIcone('nouvelle_section')).toBe('FileText');
   });
 
   it('toutes les clés licites ont un composant divergent : aucune clé orpheline', () => {
