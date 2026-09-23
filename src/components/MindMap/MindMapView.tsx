@@ -59,11 +59,22 @@ export default function MindMapView({
     setSelectedNode(node);
   };
 
-  const unitsList = [
-    { id: 1, title: 'الوحدة 1: آليات تركيب البروتين', badge: '14 مفهوماً علمياً' },
-    { id: 2, title: 'الوحدة 2: بنية ووظيفة البروتين', badge: '8 مفاهيم رئيسية' },
-    { id: 3, title: 'الوحدة 3: دور البروتينات في الدفاع عن الذات', badge: '9 مفاهيم مناعية' }
-  ];
+  // Badges = comptages RÉELS dérivés de MIND_MAPS_DATABASE (P1) :
+  // l'ancien hardcode 14/8/9 ne correspondait ni aux nœuds totaux (15/8/8)
+  // ni aux concepts hors racine (14/7/7).
+  const unitsList = useMemo(() => {
+    const meta: Record<number, { title: string; noun: string }> = {
+      1: { title: 'الوحدة 1: آليات تركيب البروتين', noun: 'مفهوماً علمياً' },
+      2: { title: 'الوحدة 2: بنية ووظيفة البروتين', noun: 'مفاهيم رئيسية' },
+      3: { title: 'الوحدة 3: دور البروتينات في الدفاع عن الذات', noun: 'مفاهيم مناعية' },
+    };
+    return Object.entries(meta).map(([idStr, { title, noun }]) => {
+      const id = Number(idStr);
+      const map = MIND_MAPS_DATABASE[id];
+      const concepts = map ? map.nodes.filter((n) => n.level !== 0).length : 0;
+      return { id, title, badge: `${concepts} ${noun}`, concepts };
+    });
+  }, []);
 
   return (
     <div className={`space-y-4 pb-20 px-3 sm:px-5 pt-4 bg-[#f8fbfa] dark:bg-gray-950 min-h-full ${
@@ -212,6 +223,7 @@ export default function MindMapView({
             data={currentMapData}
             selectedNodeId={selectedNode?.id || null}
             onSelectNode={handleSelectNode}
+            onClearSelection={() => setSelectedNode(null)}
             searchQuery={searchQuery}
             layoutMode={layoutMode}
             isDarkMode={isDarkMode}
