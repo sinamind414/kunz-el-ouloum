@@ -251,6 +251,9 @@ else ok('manhajia : MIFTAH_MANHAJIA_VERSION = 4.3 (constante unique)');
 must(manhajia, "MIFTAH_MANHAJIA_VERSION = '4.3'", 'meftahManhajia : la constante est déclarée');
 mustNot(manhajia, 'V4.3', 'meftahManhajia : aucun littéral V4.3 (commentaires compris)');
 mustNot(meftah, 'V4.3', 'MeftahView : aucun littéral V4.3');
+mustNot(compiler, 'V4.3', 'compilateur : aucun littéral V4.3 (ancienne appellation onglet)');
+mustNot(compiler, 'الأوجه الستة', 'compilateur : appellation « الأوجه الستة » bannie (V5)');
+mustNot(compiler, "meftah_v43", "compilateur : id onglet meftah_v43 banni");
 
 console.log('\n§ Assertions pédagogiques (M4 — audit 2026-09-19)');
 
