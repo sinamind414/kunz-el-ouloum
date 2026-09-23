@@ -30,17 +30,17 @@ beforeEach(() => {
 
 describe('okachaProgress — progression du بنك الحفظ', () => {
   it('clé absente → état vide, jamais de crash', () => {
-    expect(loadOkachaProgress()).toEqual({ lus: [], evals: {} });
+    expect(loadOkachaProgress()).toEqual({ lus: [], evals: {}, sectionsLues: [] });
   });
 
   it('JSON corrompu → état vide', () => {
     localStorage.setItem('kunz_okacha_progress_v1', '{pas du json');
-    expect(loadOkachaProgress()).toEqual({ lus: [], evals: {} });
+    expect(loadOkachaProgress()).toEqual({ lus: [], evals: {}, sectionsLues: [] });
   });
 
   it('forme invalide (lus pas un tableau) → état vide', () => {
     localStorage.setItem('kunz_okacha_progress_v1', JSON.stringify({ lus: 'nan', evals: {} }));
-    expect(loadOkachaProgress()).toEqual({ lus: [], evals: {} });
+    expect(loadOkachaProgress()).toEqual({ lus: [], evals: {}, sectionsLues: [] });
   });
 
   it('round-trip : marquer une unité lue puis la démarquer', () => {

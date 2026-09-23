@@ -122,6 +122,21 @@ export function okachaUniteIcone(id: string, domaine: number): IconeCle {
   return OKACHA_UNIT_ICON_KEY[id] ?? OKACHA_DOMAINE_ICON_KEY[domaine] ?? 'FileText';
 }
 
-/** La méthodologie عكاشة a été supprimée à 100 % (purge 2026-09-23) :
- *  plus de METHODO_ICON_KEY / methodoIcone — verrou okacha.lock.test.ts. */
+/** Icône de chaque section de méthodologie عكاشة (ordre du livre). */
+export const METHODO_ICON_KEY: Record<string, IconeCle> = {
+  intro: 'Compass',       // مقدمة المنهجية — قواعد العمل
+  hikala: 'FileText',     // هيكلة الموضوع — التمهيد، الوثائق، التعليمة
+  tamarin1: 'Grid3x3',    // التمرين الأول — أسئلة استرداد الموارد
+  tahil: 'Microscope',    // التحليل — استغلال الوثيقة
+  tafsir: 'Lightbulb',    // التفسير — من الملاحظة إلى العلّة
+  mouqarana: 'Boxes',     // المقارنة — التشابه والاختلاف
+  istinj: 'Target',       // الاستنتاج — خاص وعام
+  istidlal: 'Activity',   // الاستدلال العلمي ومعاييره
+  nasiha: 'Lightbulb',    // نصائح المراجعة والتحضير (قسم النصائح — ex-d2u2)
+};
+
+/** Icône d'une section de méthodologie ; repli neutre si la section est nouvelle. */
+export function methodoIcone(id: string): IconeCle {
+  return METHODO_ICON_KEY[id] ?? 'FileText';
+}
 
