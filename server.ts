@@ -9,7 +9,16 @@ import { openStore, SqliteStore } from "./server/store";
 import { PostgresStore, migrateJsonFilesToPostgres } from "./server/store.pg";
 import { resumeActivite, calculeActivite } from "./server/activite";
 import { makeRateLimiter } from "./server/rateLimit";
-import { makeStudentAuth, makeTeacherAuth } from "./server/auth";
+import { makeStudentAuth, makeTeacherAuth, pwdTag } from "./server/auth";
+import {
+  ActivityBody,
+  LoginBody,
+  RegisterBody,
+  StudentResetBody,
+  SyncBody,
+  TeacherResetBody,
+  parseBody,
+} from "./server/schemas";
 import type { ProductionEntry, ActivityEntry, DashboardStudentRow, Student, Teacher } from "./server/store";
 
 dotenv.config();
@@ -149,7 +158,10 @@ async function startServer() {
   app.post("/api/auth/register", async (req: Request, res: Response) => {
     try {
       if (!ipLimiter.hit(req.ip || "unknown")) return res.status(429).json({ error: "too_many_attempts" });
-      const { password, name } = req.body;
+      const parsed = parseBody(RegisterBody, req.body);
+      if (!parsed) return res.status(400).json({ error: "missing_fields" });
+      const password = parsed.password;
+      const name = parsed.name;
       const email = normalizeEmail(req.body.email);
       if (!email || !password || !name) {
         return res.status(400).json({ error: "missing_fields" });
@@ -168,7 +180,11 @@ async function startServer() {
         name,
       );
       invalidateDashboard();
-      const token = jwt.sign({ studentId: student.id, email: student.email }, JWT_SECRET, { expiresIn: "7d" });
+      const token = jwt.sign(
+        { studentId: student.id, email: student.email, pwd: pwdTag(student.passwordHash) },
+        JWT_SECRET,
+        { expiresIn: "7d" },
+      );
       res.status(201).json({ token, student: { id: student.id, email: student.email, name: student.name } });
     } catch (e) {
       // Course inscrits/doublon : UNIQUE(email) → 409 (pas un 500).
@@ -183,7 +199,9 @@ async function startServer() {
 
   app.post("/api/auth/login", async (req: Request, res: Response) => {
     try {
-      const { password } = req.body;
+      const parsed = parseBody(LoginBody, req.body);
+      if (!parsed) return res.status(400).json({ error: "missing_fields" });
+      const password = parsed.password;
       const email = normalizeEmail(req.body.email);
       if (!ipLimiter.hit(req.ip || "unknown") || !loginAccountLimiter.hit(String(email || ""))) {
         return res.status(429).json({ error: "too_many_attempts" });
@@ -193,14 +211,22 @@ async function startServer() {
         return res.status(401).json({ error: "invalid_credentials" });
       }
       loginAccountLimiter.reset(String(email)); // succès → compteur remis à zéro
-      const token = jwt.sign({ studentId: student.id, email: student.email }, JWT_SECRET, { expiresIn: "7d" });
+      const token = jwt.sign(
+        { studentId: student.id, email: student.email, pwd: pwdTag(student.passwordHash) },
+        JWT_SECRET,
+        { expiresIn: "7d" },
+      );
       res.json({ token, student: { id: student.id, email: student.email, name: student.name } });
     } catch {
       res.status(500).json({ error: "server_error" });
     }
   });
 
-  const studentAuth = makeStudentAuth(JWT_SECRET);
+  // F8 : lookup hash pour la révocation (claim pwd) après reset.
+  const studentAuth = makeStudentAuth(JWT_SECRET, async (id: string) => {
+    const s = await store.findStudentById(id);
+    return s ? { passwordHash: s.passwordHash } : undefined;
+  });
 
   app.get("/api/auth/me", studentAuth, asyncHandler(async (req: Request, res: Response) => {
     const student = await store.findStudentById((req as any).studentId);
@@ -211,12 +237,10 @@ async function startServer() {
   app.post("/api/student/sync", studentAuth, async (req: Request, res: Response) => {
     try {
       const studentId = (req as any).studentId;
-      const body = req.body || {};
-      const entries: ProductionEntry[] = body.entries || [];
-      const events: ActivityEntry[] = body.events || [];
-      if ((!Array.isArray(entries) || entries.length === 0) && (!Array.isArray(events) || events.length === 0)) {
-        return res.status(400).json({ error: "invalid_payload" });
-      }
+      const parsed = parseBody(SyncBody, req.body);
+      if (!parsed) return res.status(400).json({ error: "invalid_payload" });
+      const entries: ProductionEntry[] = parsed.entries;
+      const events: ActivityEntry[] = parsed.events;
       // ⚡ UNE transaction SQL pour tout le lot (upsert « si absent » — idempotent).
       const addedEntries = await store.addEntriesIfNew(studentId, entries);
       const addedEvents = await store.addActivitiesIfNew(studentId, events);
@@ -236,7 +260,9 @@ async function startServer() {
 
   app.post("/api/teacher/login", async (req: Request, res: Response) => {
     try {
-      const { password } = req.body;
+      const parsed = parseBody(LoginBody, req.body);
+      if (!parsed) return res.status(400).json({ error: "missing_fields" });
+      const password = parsed.password;
       const email = normalizeEmail(req.body.email);
       if (!ipLimiter.hit(req.ip || "unknown") || !loginAccountLimiter.hit(String(email || ""))) {
         return res.status(429).json({ error: "too_many_attempts" });
@@ -269,8 +295,9 @@ async function startServer() {
 
   app.post("/api/teacher/reset-password", teacherAuth, async (req: Request, res: Response) => {
     try {
-      const { studentId } = req.body;
-      if (!studentId) return res.status(400).json({ error: "missing_student_id" });
+      const parsed = parseBody(TeacherResetBody, req.body);
+      if (!parsed) return res.status(400).json({ error: "missing_student_id" });
+      const studentId = parsed.studentId;
       const student = await store.findStudentById(studentId);
       if (!student) return res.status(404).json({ error: "student_not_found" });
       const code = generateResetCode(); // CSPRNG — voir generateResetCode()
@@ -288,8 +315,9 @@ async function startServer() {
       if (!resetCodeLimiter.hit(req.ip || "unknown")) {
         return res.status(429).json({ error: "too_many_attempts" });
       }
-      const { code, password } = req.body;
-      if (!code || !password) return res.status(400).json({ error: "missing_fields" });
+      const parsed = parseBody(StudentResetBody, req.body);
+      if (!parsed) return res.status(400).json({ error: "missing_fields" });
+      const { code, password } = parsed;
       // Politique AVANT toute consommation du code (un mot de passe faible
       // ne doit pas brûler le jeton de reset).
       if (isWeakPassword(password)) return res.status(400).json({ error: "weak_password" });
@@ -314,8 +342,9 @@ async function startServer() {
   app.post("/api/student/activity", studentAuth, async (req: Request, res: Response) => {
     try {
       const studentId = (req as any).studentId;
-      const { type, payload } = req.body;
-      if (!type || !payload) return res.status(400).json({ error: "missing_fields" });
+      const parsed = parseBody(ActivityBody, req.body);
+      if (!parsed) return res.status(400).json({ error: "missing_fields" });
+      const { type, payload } = parsed;
       await store.pushActivity(
         studentId,
         type,
