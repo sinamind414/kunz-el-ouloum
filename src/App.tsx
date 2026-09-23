@@ -831,7 +831,7 @@ export default function App() {
               )}
 
               {currentTab === 'lesson' && (
-                <LessonsView />
+                <LessonsView onRateCard={handleRateCard} />
               )}
 
               {currentTab === 'workshop' && (
