@@ -47,7 +47,7 @@ const swAr = (s: Switch): string => (s === 'open' ? 'مفتوح' : 'مغلق');
 // ateliers demandés sont visibles d'un coup, sans scroll horizontal.
 type AtelierId =
   | 'simulator' | 'verbs_ref' | 'mastery_matrix' | 'correction'
-  | 'engine_rules' | 'boussole_card' | 'meftah_v43' | 'tahlil_wall';
+  | 'engine_rules' | 'boussole_card' | 'meftah' | 'tahlil_wall';
 
 interface AtelierDef {
   id: AtelierId;
@@ -62,7 +62,7 @@ const ATELIERS: AtelierDef[] = [
   { id: 'mastery_matrix', label: 'مصفوفة الإتقان',                 hint: 'الخلايا وتحليل الأخطاء', icon: Layers },
   { id: 'correction',     label: 'المصححة',                        hint: 'ملف التصحيح',            icon: FileText },
   { id: 'engine_rules',   label: 'قواعد الإجابة الـ 4 (الطبقة 0)', hint: 'الطبقة 0 · البوابات',    icon: Compass },
-  { id: 'meftah_v43',     label: 'الأوجه الستة + BAC 2025',        hint: 'المفتاح V4.3',           icon: Key },
+  { id: 'meftah',         label: `${MIFTAH_NAME_OFFICIAL_AR} + BAC 2025`, hint: `v${MIFTAH_VERSION} · 3 وجوه + تطبيق`, icon: Key },
   { id: 'tahlil_wall',    label: 'جدار حلّل — التدريب',            hint: 'تحليل أم تفسير؟',        icon: ShieldAlert },
 ];
 
@@ -2345,14 +2345,14 @@ const handleSelectStage = (stage: 1 | 2 | 3 | 4) => {
         </section>
       )}
 
-      {/* TAB 6: المفتاح V4.3 — les 6 visages (3 méthode + 3 BAC 2025) — la loi lisible */}
-      {activeTab === 'meftah_v43' && (
+      {/* TAB 6: المفتاح v{MIFTAH_VERSION} — 3 visages méthode + BAC 2025 — la loi lisible */}
+      {activeTab === 'meftah' && (
         <MeftahView onOpenVerb={() => setActiveTab('verbs_ref')} />
       )}
 
       {/* TAB 7: جدار حلّل — couche 1 Trainer : le geste, gate v2 (audits 1-2) */}
       {activeTab === 'tahlil_wall' && (
-        <TahlilWall onBack={() => setActiveTab('meftah_v43')} />
+        <TahlilWall onBack={() => setActiveTab('meftah')} />
       )}
 
     </div>

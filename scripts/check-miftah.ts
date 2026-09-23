@@ -36,6 +36,7 @@ const compiler = read('src/components/MethodologyCompilerView.tsx');
 const app = read('src/App.tsx');
 const dashboard = read('src/components/DashboardView.tsx');
 const meftah = read('src/components/MeftahView.tsx');
+const miftahDoc = read('docs/PROTOCOLE_PREUVE.md');
 const manhajia = read('src/data/meftahManhajia.ts');
 
 // Découpe la fiche : recto = avant le commentaire « <!-- VERSO --> »
@@ -251,6 +252,20 @@ else ok('manhajia : MIFTAH_MANHAJIA_VERSION = 4.3 (constante unique)');
 must(manhajia, "MIFTAH_MANHAJIA_VERSION = '4.3'", 'meftahManhajia : la constante est déclarée');
 mustNot(manhajia, 'V4.3', 'meftahManhajia : aucun littéral V4.3 (commentaires compris)');
 mustNot(meftah, 'V4.3', 'MeftahView : aucun littéral V4.3');
+mustNot(compiler, 'V4.3', 'compilateur : aucun littéral V4.3 (ancienne appellation onglet)');
+mustNot(compiler, 'الأوجه الستة', 'compilateur : appellation « الأوجه الستة » bannie (V5)');
+mustNot(compiler, "meftah_v43", "compilateur : id onglet meftah_v43 banni");
+// Verrous multi-pages : l'appellation V6/nom officiel doit tenir partout
+mustNot(app, 'الأوجه الستة', 'App.tsx : aucune ancienne appellation onglet');
+mustNot(dashboard, 'الأوجه الستة', 'DashboardView : aucune ancienne appellation onglet');
+mustNot(meftah, 'الأوجه الستة', 'MeftahView : aucune ancienne appellation onglet');
+mustNot(app, 'meftah_v43', 'App.tsx : aucun id onglet v43');
+mustNot(app, 'V4.3', 'App.tsx : aucun littéral V4.3');
+mustNot(dashboard, 'V4.3', 'DashboardView : aucun littéral V4.3');
+mustNot(spec, 'الأوجه الستة', 'spec : aucune ancienne appellation');
+mustNot(miftahDoc, 'الأوجه الستة', 'PROTOCOLE_PREUVE : ancienne appellation bannie');
+mustNot(miftahDoc, 'المفتاح V4.3', 'PROTOCOLE_PREUVE : hint V4.3 banni');
+mustNot(miftahDoc, 'v5.0 (onglet', 'PROTOCOLE_PREUVE : version figée v5.0 dépassée (étalon MIFTAH_VERSION)');
 
 console.log('\n§ Assertions pédagogiques (M4 — audit 2026-09-19)');
 

@@ -1,5 +1,5 @@
 // src/data/miftahSpec.ts
-// Spécification MIFTAH v3.1 — source unique du HTML, du moteur et des cartes React
+// Spécification MIFTAH — source unique du HTML, du moteur et des cartes React (version = MIFTAH_VERSION)
 // Pro : centralise la nomenclature, les couleurs, les gabarits et les erreurs coûteuses
 // Marque : docs/MARQUE.md est le document de décision (noms, phrase-récit, placement).
 //         Le garde-fou `npm run check:miftah` prouve la cohérence fiche ↔ spec ↔ carte.
