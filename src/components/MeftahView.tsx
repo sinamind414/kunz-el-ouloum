@@ -365,7 +365,7 @@ export default function MeftahView({ onOpenVerb }: Props) {
           <div>
             <h1 className="text-2xl md:text-3xl font-black text-gray-900 dark:text-white">المفتاح</h1>
             <p className="text-gray-600 dark:text-gray-400 text-sm font-medium mt-0.5">
-              {MIFTAH_NAME_OFFICIAL_AR} · 4 أسنان · بابان · تحليل دون تفسير
+              {MIFTAH_NAME_OFFICIAL_AR} · 4 حركات · بابان · تحليل دون تفسير
             </p>
           </div>
         </div>

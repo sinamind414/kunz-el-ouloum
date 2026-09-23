@@ -73,7 +73,7 @@ describe('MeftahView — liens croisés vers les réflexes', () => {
     const onOpenVerb = vi.fn();
     render(<MeftahView onOpenVerb={onOpenVerb} />);
     await user.click(screen.getByTestId('meftah-level-base'));
-    await user.click(screen.getByText('أدر — وصفة حلّل كما في الكتاب'));
+    await user.click(screen.getByText('علاقة — وصفة حلّل كما في الكتاب'));
     const btn = screen.getAllByRole('button').find((b) => b.textContent?.includes('جرّب هذا الفعل'));
     expect(btn).toBeDefined();
     await user.click(btn!);

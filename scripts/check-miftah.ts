@@ -251,6 +251,18 @@ if (MIFTAH_MANHAJIA_VERSION !== '4.3') fail(`manhajia : MIFTAH_MANHAJIA_VERSION 
 else ok('manhajia : MIFTAH_MANHAJIA_VERSION = 4.3 (constante unique)');
 must(manhajia, "MIFTAH_MANHAJIA_VERSION = '4.3'", 'meftahManhajia : la constante est déclarée');
 mustNot(manhajia, 'V4.3', 'meftahManhajia : aucun littéral V4.3 (commentaires compris)');
+// §14 — anciens libellés de dents bannis (MeftahView / extension)
+mustNot(manhajia, 'تبصر —', 'manhajia : dent 1 §12 « تبصر » → « فعل » (§14)');
+mustNot(manhajia, 'تبصّر —', 'manhajia : dent 1 §12 « تبصّر » → « فعل » (§14)');
+mustNot(manhajia, 'أدخل —', 'manhajia : dent 2 §12 « أدخل » → « دليل » (§14)');
+mustNot(manhajia, 'أدر —', 'manhajia : dent 3 §12 « أدر » → « علاقة » (§14)');
+mustNot(manhajia, 'افتح — الاستنتاج', 'manhajia : dent 4 §12 « افتح » → « جواب » (§14)');
+mustNot(manhajia, 'الأسنان الأربعة', 'manhajia : « الأسنان الأربعة » → « الحركات الأربع » (v6)');
+must(manhajia, "title: 'الحركات الأربع'", 'manhajia : section centrale = gestes v6');
+must(manhajia, "title: 'فعل — ماذا تريد", 'manhajia : section 1 = فعل (§14)');
+must(manhajia, "title: 'دليل — لا آخذ", 'manhajia : section 2 = دليل (§14)');
+must(manhajia, "title: 'علاقة — وصفة", 'manhajia : section 3 = علاقة (§14)');
+must(manhajia, "title: 'جواب — الاستنتاج", 'manhajia : section 4 = جواب (§14)');
 mustNot(meftah, 'V4.3', 'MeftahView : aucun littéral V4.3');
 mustNot(compiler, 'V4.3', 'compilateur : aucun littéral V4.3 (ancienne appellation onglet)');
 mustNot(compiler, 'الأوجه الستة', 'compilateur : appellation « الأوجه الستة » bannie (V5)');
