@@ -1,4 +1,4 @@
-// src/components/__tests__/OkachaView.test.tsx — harnais RTL du بنك الحفظ modernisé.
+// src/components/__tests__/OkachaView.test.tsx — harnais RTL de الحصيلة المعرفية modernisée.
 // Contrats de l'audit 2026-09-22 (Phase A) : plus de <pre> brut, recherche
 // normalisée, mode حفظ (masquer → révéler → auto-évaluation branchée onRate),
 // unité marquée lue persistée en localStorage.
@@ -10,13 +10,13 @@ import OkachaView from '../OkachaView';
 afterEach(cleanup);
 beforeEach(() => window.localStorage.clear());
 
-describe('OkachaView — بنك الحفظ modernisé', () => {
+describe('OkachaView — الحصيلة المعرفية modernisée', () => {
   it('rendu structuré : AUCUN <pre> brut, unités + bandeau stats', () => {
     const { container } = render(<OkachaView onBack={vi.fn()} />);
     // Le bug initial : tout le contenu dans un <pre> ~12 px.
     expect(container.querySelector('pre')).toBeNull();
     // En-tête + unités du domaine 1 (onglet par défaut).
-    expect(screen.getByText(/بنك الحفظ/)).toBeTruthy();
+    expect(screen.getByText(/الحصيلة المعرفية/)).toBeTruthy();
     // « تركيب البروتين » : en-tête d'unité + titre dans le corps ouvert → au moins 1.
     expect(screen.getAllByText(/تركيب البروتين/).length).toBeGreaterThan(0);
     // Bandeau statistiques (points totaux du corpus enrichi).
@@ -45,7 +45,7 @@ describe('OkachaView — بنك الحفظ modernisé', () => {
     // Navigation par icônes : ouvrir l'unité d1u1 (تركيب البروتين).
     await user.click(screen.getByTestId('okacha-unite-d1u1'));
     await user.click(screen.getByTestId('toggle-hafiz'));
-    // Des points sont masqués (d1u1 en contient 24).
+    // Des points sont masqués (d1u1 officiel en contient 13).
     const reveals = screen.getAllByTestId(/^reveal-/);
     expect(reveals.length).toBeGreaterThan(0);
     await user.click(reveals[0]!);

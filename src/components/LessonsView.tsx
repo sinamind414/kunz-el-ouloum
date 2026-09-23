@@ -33,7 +33,7 @@ const DOMAIN_ICONS = [FlaskConical, Leaf, Globe2];
 
 
 /** Props : le callback d'auto-évaluation des flashcards (handleRateCard, App.tsx)
- *  est transmis au بنك الحفظ pour créditer XP + flashcardStats (SM-2). */
+ *  est transmis au الحصيلة المعرفية pour créditer XP + flashcardStats (SM-2). */
 interface LessonsProps {
   onRateCard?: (cardId: string, rating: 'again' | 'hard' | 'good' | 'easy') => void;
 }
@@ -132,7 +132,7 @@ export default function LessonsView({ onRateCard }: LessonsProps) {
     return <BacExamView onBack={() => setMode(null)} />;
   }
 
-  // ----- Écran 0 ter : بنك الحفظ (عكاشة, injection mécanique filtrée) -----
+  // ----- Écran 0 ter : الحصيلة المعرفية (عكاشة, injection mécanique filtrée) -----
   if (mode === 'okacha') {
     return (
       <OkachaView
@@ -212,7 +212,7 @@ export default function LessonsView({ onRateCard }: LessonsProps) {
               3 اختبارات كاملة (20 نقطة) — تصحيح ذاتي بسلّم التنقيط
             </span>
           </button>
-          {/* بنك الحفظ عكاشة */}
+          {/* الحصيلة المعرفية عكاشة */}
           <button
             onClick={() => setMode('okacha')}
             className="group p-6 rounded-3xl border-2 border-blue-200 dark:border-blue-900/50 bg-gradient-to-b from-blue-50 to-white dark:from-blue-950/30 dark:to-[#161c18] hover:border-blue-500 hover:shadow-lg transition-all text-center space-y-3"
@@ -220,7 +220,7 @@ export default function LessonsView({ onRateCard }: LessonsProps) {
             <span className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-[#1d4ed8] text-white shadow-md group-hover:scale-105 transition-transform">
               <BookMarked className="w-8 h-8" />
             </span>
-            <span className="block text-lg font-black text-gray-800 dark:text-gray-100">بنك الحفظ</span>
+            <span className="block text-lg font-black text-gray-800 dark:text-gray-100">الحصيلة المعرفية</span>
             <span className="block text-xs font-bold text-gray-500 dark:text-gray-400 leading-relaxed">
               كل ما يجب حفظه — ملخصات مرقّمة لكل وحدة (عكاشة)
             </span>
