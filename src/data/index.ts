@@ -2,8 +2,8 @@ import { QuizQuestion, Unit, Flashcard } from '../types';
 import { INITIAL_UNITS as CATALOG_UNITS } from '../unitCatalog';
 import { SVT_QUIZ_QUESTIONS as CORPUS_QUIZ_QUESTIONS, SVT_FLASHCARDS as CORPUS_FLASHCARDS } from '../quizCorpus';
 
-export const DIAGRAM_QUIZ_URL = "https://lh3.googleusercontent.com/aida-public/AB6AXuBHewZo48wjNdNC_EGWYGRzduDxicgGztWMu2vdFW48avFtjF3GBVCPyR-uin214yMvhTNb6UmG6v704clB_WDvWy3qs1DW86A791f9S_NllwZaq-vEomxojQaTchhv-OaMqVl7TAhckwtSOZ-3QhLq-uJfeKCMgwXlpWGV_MQKtqAV_7yFaoQmu3T9zDPHw7v7JgNCRoSj6JqlIbElWTLoqTnvMOu3A0w0kaaqrWvJ8ruHNc57yr2v9EDgjTKJOew1yrlmDWDe2A";
-export const DIAGRAM_FLASHCARD_URL = "https://lh3.googleusercontent.com/aida-public/AB6AXuBm2eS7wegmPkIFmjuqd-3EAxmECqfZvrjse-TYR8LjmIMIWMm3CICN7WobYQumt8a3OCLBjP6S_2-FCQ5q86oM0SVUfFql3evu1K0IUv1_Ex6axew-StCgYxHfUBwYWd8RDn-sVOlCLCXb5qwEjgeJLBioKizAOkweCqP816LrJHRXD_U-nPmGX09AlUHYYnaJV2eG4J5vbNnKavSTcb_ChNrXPtdLMmok63LgMDRpJokSTgwLOCx4v8D2JXq19F7Ri3T_TCMu4Q";
+export const DIAGRAM_QUIZ_URL = "/assets/images/schemas/domaine1_proteines/schema_02_transcription.svg";
+export const DIAGRAM_FLASHCARD_URL = "/assets/images/schemas/domaine1_proteines/schema_17_transcription_bubble_modern.svg";
 export const MASCOT_URL = "/assets/images/mascot-512.png";
 
 /** Logo officiel de la plateforme كنز العلوم (page d'accueil / splash / favicon). */

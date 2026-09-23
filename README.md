@@ -1,20 +1,35 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://ai.google.dev/static/site-assets/images/share-ais-513315318.png" />
-</div>
+# كنز العلوم — Kunz El Ouloum
 
-# Run and deploy your AI Studio app
+Plateforme d'étude **SVT — BAC DZ** : leçons hors-ligne, quiz, boussole méthodologique **المفتاح v6**, suivi enseignant.
 
-This contains everything you need to run your app locally.
+## Démarrage
 
-View your app in AI Studio: https://ai.studio/apps/5002d9ec-69bf-4101-a72f-13ce530d3a73
+```bash
+npm ci
+npm run dev        # serveur Express + Vite
+```
 
-## Run Locally
+Variables serveur : voir `.env.example` (`JWT_SECRET` obligatoire, options `DATABASE_URL` PostgreSQL).
 
-**Prerequisites:**  Node.js
+## Commandes
 
+| Commande | Rôle |
+|---|---|
+| `npm run dev` | développement (port 3000) |
+| `npm run build` | `vite build` + bundle serveur |
+| `npm start` | production (`dist/server.cjs`) |
+| `npm test` | harnais natif (boussole, 138 invariants) |
+| `npm run test:vitest` | suite Vitest complète |
+| `npm run check:v2` | noyau méthodologique |
+| `npm run check:miftah` | verrous de marque Miftah |
 
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+## Déploiement
+
+- **Docker** : `docker compose up --build` (lit les secrets du `.env` à la racine — jamais dans le dépôt).
+- **PM2 / nginx** : exemples dans `deploy/`.
+
+## Notes
+
+- App **offline-first** côté élève (service worker + cache local).
+- Comptes et tableau de bord enseignant optionnels (SQLite par défaut).
+- Fiche élève live : `public/miftah.html` (source historique v6 : `docs/propositions/al_miftah_final_v6.html`).
