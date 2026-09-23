@@ -132,6 +132,7 @@ export const METHODO_ICON_KEY: Record<string, IconeCle> = {
   mouqarana: 'Boxes',     // المقارنة — التشابه والاختلاف
   istinj: 'Target',       // الاستنتاج — خاص وعام
   istidlal: 'Activity',   // الاستدلال العلمي ومعاييره
+  nasiha: 'Lightbulb',    // نصائح المراجعة والتحضير (قسم النصائح — ex-d2u2)
 };
 
 /** Icône d'une section de méthodologie ; repli neutre si la section est nouvelle. */

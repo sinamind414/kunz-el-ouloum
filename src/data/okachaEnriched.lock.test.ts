@@ -24,8 +24,13 @@ const bare = (s: string) => flat(s).replace(/^[0-9٠-٩اا\-–.٫:\s*•'ʼ?؟
 const avecFixes = (ligne: string) => {
   let t = ligne;
   for (const f of ENRICH_FIXES) t = t.split(f.from).join(f.to);
+  // Filtre OCR documenté (enrich_okacha.ts) : 9070 → 90 % + queue de chiffres.
+  t = t.split('9070').join('90 %');
   return t;
 };
+/** Résidus OCR volontairement filtrés des sections (retrait — pas une perte de sens). */
+const RE_RESIDU_OCR =
+  /مكاداللطالس المنهول|كاداللطالس المنهول|ماشة الطالس المنهوق|كاشة لإطالس المنهوق|كاشة لاطالب المنفوق|زعبف مهما|طتتلاعفيه قالبا|ييياييبيطات|ف مفات مرب|فعاياكاي|موقمين نحفبزين|اا40من|Blot اا0|ابونان|تديييدييتديييدييي|خثئكلكتلاتتكبيككادافاة|عوف تتعاعل مع القادة|يعكائ للطاف|لابهم حجم المرض|توترة إل باه|لنت كابنة رقور|اشلنكمات الفتاحية|باكاد اليان الاحن|إق \(رس بعوان|أعلب السومات|لابيي»ال64ال|نئ\^ عدت|المنهوف ا عاوم|إنماز رسم تهطيطي|و ددابة لبا|خرل ازنجامة|أولا عليك بقراءة التعليمة بحذر|^[\s\W]*لفار\.|تكيكك|القسم ؟|،٠٠/u;
 const toutTexte = [
   ...OKACHA_UNITES_ENRICHIES.flatMap((u) => u.blocs.map((b) => b.texte)),
   ...OKACHA_METHODO_SECTIONS.flatMap((s) => s.blocs.map((b) => b.texte)),
@@ -73,7 +78,9 @@ describe('zéro fragment orphelin (audit A2 corrigé)', () => {
       }
     }
     expect(points).toBe(ENRICH_STATS.pointsTotal);
-    expect(points).toBeGreaterThanOrEqual(60);
+    // 61 avant purge OCR « 17 signatures » (2026-09-23) — 3 points corrompus
+    // (36-/37- d1u1, 47- d2u2) retirés → 58.
+    expect(points).toBeGreaterThanOrEqual(58);
   });
 });
 
@@ -87,11 +94,65 @@ describe('couverture intégrale : toute ligne dorigine reste présente', () => {
     }
   });
 
-  it('méthodo : chaque ligne (normalisée, marqueurs retirés) contenue dans lenrichi', () => {
+  it('méthodo : chaque ligne couverte SAUF résidus OCR documentés (filtrés)', () => {
+    let filtrees = 0;
     for (const l of OKACHA_METHODO.lignes) {
       if (!l.trim()) continue;
+      if (RE_RESIDU_OCR.test(l)) { filtrees++; continue; }
       expect(couverte(l), `méthodo : ${l.slice(0, 45)}`).toBe(true);
     }
+    // Le filtre a bien des cibles documentées (sinon le masque est cassé).
+    expect(filtrees).toBeGreaterThanOrEqual(5);
+  });
+});
+
+describe('sections méthodo : 9 (8 livre + nasiha) + sous-sections tamarin1 stables', () => {
+  it('ids dans l’ordre du livre, nasiha en 9ᵉ, sous tamarin1 valides', () => {
+    const ids = OKACHA_METHODO_SECTIONS.map((s) => s.id);
+    expect(ids).toEqual([
+      'intro', 'hikala', 'tamarin1', 'tahil', 'tafsir',
+      'mouqarana', 'istinj', 'istidlal', 'nasiha',
+    ]);
+    const t1 = OKACHA_METHODO_SECTIONS.find((s) => s.id === 'tamarin1')!;
+    expect(t1.sous?.length).toBeGreaterThanOrEqual(5);
+    const sousIds = (t1.sous ?? []).map((x) => x.id);
+    expect(sousIds).toEqual([...new Set(sousIds)]); // ids stables uniques
+    expect(sousIds[0]).toBe('t1-entree');
+    for (const ss of t1.sous ?? []) {
+      expect(ss.from, ss.id).toBeGreaterThanOrEqual(0);
+      expect(ss.from, ss.id).toBeLessThan(t1.blocs.length);
+      expect(ss.titreAr.length, ss.id).toBeGreaterThan(3);
+    }
+    // from strictement croissant
+    const froms = (t1.sous ?? []).map((x) => x.from);
+    for (let i = 1; i < froms.length; i++) expect(froms[i]).toBeGreaterThan(froms[i - 1]);
+  });
+
+  it('nasiha : section finale Issue de قسم النصائح (ex-d2u2), ≥ 20 blocs', () => {
+    const nas = OKACHA_METHODO_SECTIONS.find((s) => s.id === 'nasiha');
+    expect(nas).toBeTruthy();
+    expect(nas!.blocs.length).toBeGreaterThanOrEqual(20);
+    const t = normAr(nas!.blocs.map((b) => b.texte).join(' '));
+    expect(t.includes(normAr('قسم النصائح'))).toBe(true);
+    expect(t.includes(normAr('لا أنصح'))).toBe(true);
+    // Plus de mélange : les conseils ne sont PLUS dans les unités
+    const unites = normAr(OKACHA_UNITES_ENRICHIES.flatMap((u) => u.blocs.map((b) => b.texte)).join(' '));
+    expect(unites.includes(normAr('قسم النصائح'))).toBe(false);
+    expect(unites.includes(normAr('لا أنصحك بالتغيب'))).toBe(false);
+  });
+});
+
+describe('anti-résidu OCR dans les sections (filtre enrich_okacha)', () => {
+  it('zéro footer éditeur / signature illisible / 9070 dans les 9 sections', () => {
+    const t = OKACHA_METHODO_SECTIONS.flatMap((s) => s.blocs.map((b) => b.texte)).join('\n');
+    for (const interdit of [
+      '9070', 'مكاداللطالس', 'ماشة الطالس', 'كاشة لإطالس', '٦٤٥٦٢٦١٨',
+      'Blot اا0', 'اا40من', 'زعبف مهما', 'La هي المراجعة',
+    ]) {
+      expect(t.includes(interdit), `résidu OCR : « ${interdit} »`).toBe(false);
+    }
+    expect(ENRICH_STATS.ocrRetraits).toBeGreaterThanOrEqual(10);
+    expect(ENRICH_STATS.ocrRetraits).toBeLessThan(80); // filtre ciblé, pas purgé en masse
   });
 });
 
@@ -132,7 +193,7 @@ describe('périmètre commercial filtré + traçabilité', () => {
     expect(ENRICH_STATS.rattrapagesContinuation).toBeGreaterThan(100);
     expect(ENRICH_STATS.correctionsAppliquees).toBeGreaterThan(0);
     expect(ENRICH_STATS.sectionsMethodo).toBe(OKACHA_METHODO_SECTIONS.length);
-    expect(ENRICH_STATS.genere).toBe('2026-09-22');
+    expect(ENRICH_STATS.genere).toBe('2026-09-23');
     // Le total des occurrences source >= corrections réellement appliquées
     // (un mot coupé par un recollage peut échapper au dictionnaire — verbatim).
     const total = ENRICH_FIXES.reduce((s, f) => s + f.count, 0);

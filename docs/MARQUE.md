@@ -419,3 +419,30 @@ Le nom officiel de la matière est **`علوم الطبيعة والحياة`** 
 - N12 : `mustNot(verso, 'علوم الطبيعة والحياة')` + `must(recto, 'علوم الطبيعة والحياة')`
 
 **Le dictionnaire v3.3 (`تَبَصَّر` / `أدخل` / `أدر` / `افتح`, 11 cases, `PRO`, `توتولوجي`) est déprécié côté fiche élève.** Les assertions correspondantes du §12 (carte app + moteur + harnais `v3.harness.test.ts`) restent valides : la carte n'a pas bougé.
+
+## §14 — Rename : les 4 dents portent les noms des gestes v6 (décision owner, 2026-09-22)
+
+**Décision (owner, 2026-09-22)** : inverser le sens du renommage de §12 — les **libellés** des 4 dents deviennent les noms des gestes de la fiche **v6** (`al_miftah_final_v6.html`, upload master `d19d93b`). Le **cœur du moteur ne change pas** : ids 1–4, graphe `switch`, `ERROR_ADDRESS_MAP`/`ERROR_TAXONOMY`, `UNLOCK_RULE`, DRILL, LEVELS, portes/`MOVEMENTS`, scorer — **seuls les libellés affichés changent**. La règle §12.2 reste la loi : *le nom change, le geste ne change pas* (`actionAr`/`correctorAr` = le geste — inchangés, déjà alignés mot pour mot sur v6).
+
+| Dent (avant, §12) | **Geste (après, §14)** | Icône | `actionAr` (inchangé) |
+|---|---|---|---|
+| 1 `تَبَصَّر` | **1 `فعل`** | 🔍 | أطوّق الفعل · أسطّر… |
+| 2 `أدخل` | **2 `دليل`** | 🔑 | أستخرج… أرقاما + وحدات… |
+| 3 `أدر` | **3 `علاقة`** | 🔄 | أربط المعطى بالسبب/الآلية… |
+| 4 `افتح` | **4 `جواب`** | 🔓 | جملة واحدة تجيب حرفيا… |
+
+**فحص — option α (ceinture)** : le 5ᵉ geste v6 n'a **pas** de dent. Il vit (i) sur la fiche v6 (« فحص 10 ثوانٍ »), (ii) dans `SELF_CHECKS` (4 questions de la boussole), (iii) comme réflexe `validate`. Pas de 5ᵉ dent visuelle (option β réservée, UI seule).
+
+**Touch points (libellés uniquement)** — un seul vocabulaire public, app + fiche :
+- `miftahSpec.ts` : `NOMENCLATURE.s1–s4`, `KEY_MNEMONIC_AR`, `ASNAN[].nameAr`, **`MIFTAH_VERSION '5.0' → '6.0'`**
+- `methodologyEngine.ts` : `STEP_NAMES_AR`, `MIFTAH_STEP_NAMES_AR`
+- `boussoleData.ts` : `BOUSSOLE_STEPS[].ar`, `BOUSSOLE_CAPS[].ar`, `TIME_RULE_AR`, `TIME_RULES`, `errorAddressAr()`
+- `MiftahCard.tsx` (dents, tableau, phrase « دُرج المعرفة ») · `MethodologyCompilerView.tsx` · `drillBank.ts` (m01)
+- **Fiche `public/miftah.html` remplacée par la v6.0** (source `origin/master:al_miftah_final_v6.html` @ `d19d93b` + marqueur `<!-- VERSO -->` + `@page{size:210mm 297mm}` ajouté)
+- Garde-fou `check:miftah` : sections recto/verso/A4 réalignées v6.0 ; asserts carte `🔍 فعل` + `mustNot` ancien libellé (anti-régression) ; versions `6.0` ×2
+
+**Inchangé** : `MIFTAH_MANHAJIA_VERSION = '4.3'` · `SELF_CHECKS` · spaced recall · portes · `FIVE_COSTLY_ERRORS` · drill 12/12×3 · badges · tous les ids/numérotations.
+
+**Arbre (§7)** : (1) **ce rename d'abord** — l'app et la fiche parlent le même vocabulaire (5 gestes) ; (2) sprints/jeux de la proposition MIFTah OS ensuite, **sans réécrire le moteur** — voir `BILAN_PROPOSITION_MIFTAH_OS_VS_CONTRAT_REEL.md` (option B/C rename).
+
+**Historique** : §12 (2026-09-06, dents v3) → §13bis (2026-09-21, fiche v5.0 sans dents) → **§14 (2026-09-22, libellés = gestes, fiche v6.0, version 6.0)**. Les §12–§13bis restent valables pour le moteur et les portes ; **sur les seuls libellés des dents, §14 les remplace.**

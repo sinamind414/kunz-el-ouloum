@@ -4,6 +4,7 @@ import { createServer as createViteServer } from "vite";
 import dotenv from "dotenv";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import { randomBytes } from "node:crypto";
 import { openStore, SqliteStore } from "./server/store";
 import { PostgresStore, migrateJsonFilesToPostgres } from "./server/store.pg";
 import { resumeActivite, calculeActivite } from "./server/activite";
@@ -21,6 +22,32 @@ if (!process.env.JWT_SECRET) {
 }
 const JWT_SECRET = process.env.JWT_SECRET;
 
+/** Email canonique : trim + minuscules — évite test@x ≠ Test@x (2 comptes). */
+const normalizeEmail = (raw: unknown): string =>
+  typeof raw === "string" ? raw.trim().toLowerCase() : "";
+
+/** Politique de mot de passe (miroir du minLength={6} des formulaires). */
+const MIN_PASSWORD_LEN = 6;
+const isWeakPassword = (password: unknown): boolean =>
+  typeof password !== "string" || password.length < MIN_PASSWORD_LEN;
+
+/** Cellule CSV sûre : neutralise l'injection de formules Excel (=, +, -, @). */
+const csvCell = (v: unknown): string => {
+  const s = String(v ?? "");
+  return /^[=+\-@]/.test(s) ? `'${s}` : s;
+};
+
+// ── Garde-fou async : Express 4 ne rattrape PAS les promesses rejetées ──
+// Une erreur non catchée dans une route async devenait unhandledRejection →
+// arrêt du process (crash confirmé : export CSV avec CRLF dans studentId).
+// asyncHandler la redirige vers le handler d'erreurs final (500 JSON).
+type AsyncRoute = (req: Request, res: Response) => Promise<unknown>;
+const asyncHandler =
+  (fn: AsyncRoute) =>
+  (req: Request, res: Response, next: express.NextFunction): void => {
+    Promise.resolve(fn(req, res)).catch(next);
+  };
+
 // ── Limiteurs (fenêtre glissante, en mémoire — voir server/rateLimit.ts) ──
 // Par IP : anti-spam (généreux — une école partage souvent 1 IP publique).
 const IP_LIMIT = 60;
@@ -30,6 +57,18 @@ const ACCOUNT_LIMIT = 5;
 const WINDOW_MS = 15 * 60 * 1000;
 const ipLimiter = makeRateLimiter(IP_LIMIT, WINDOW_MS);
 const loginAccountLimiter = makeRateLimiter(ACCOUNT_LIMIT, WINDOW_MS);
+// Reset mot de passe : 10 essais / 15 min / IP — la force brute d'un code
+// à 8 symboles (32^8 ≈ 1,1e12) devient hors d'atteinte.
+const resetCodeLimiter = makeRateLimiter(10, WINDOW_MS);
+
+// ── Code de réinitialisation : CSPRNG (Math.random était prévisible) ──
+const RESET_ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"; // 32 symboles, sans O/0/I/1
+function generateResetCode(): string {
+  const bytes = randomBytes(8); // 256 % 32 = 0 → aucune biais de modulo
+  let code = "";
+  for (let i = 0; i < 8; i++) code += RESET_ALPHABET[bytes[i] % RESET_ALPHABET.length];
+  return code;
+}
 
 // ── Cache du tableau de bord (30 s, invalidé à chaque écriture) ──
 const DASH_TTL_MS = 30_000;
@@ -73,7 +112,10 @@ async function startServer() {
 
   const store = await selectStore();
 
-  app.use(express.json());
+  // Limite explicite : la file de synchro offline peut envoyer jusqu'à 100
+  // productions longues (> 100 kB = 413 de l'ancien défaut Express → deadlock
+  // du flush). 2 marge : lot max << 2 Mo, et le client coupe sur 413 (file d'A.).
+  app.use(express.json({ limit: "2mb" }));
 
   app.use((_req: Request, res: Response, next: express.NextFunction) => {
     res.setHeader("X-Content-Type-Options", "nosniff");
@@ -89,9 +131,13 @@ async function startServer() {
   app.post("/api/auth/register", async (req: Request, res: Response) => {
     try {
       if (!ipLimiter.hit(req.ip || "unknown")) return res.status(429).json({ error: "too_many_attempts" });
-      const { email, password, name } = req.body;
+      const { password, name } = req.body;
+      const email = normalizeEmail(req.body.email);
       if (!email || !password || !name) {
         return res.status(400).json({ error: "missing_fields" });
+      }
+      if (isWeakPassword(password)) {
+        return res.status(400).json({ error: "weak_password" });
       }
       if (await store.findStudentByEmail(email)) {
         return res.status(409).json({ error: "email_exists" });
@@ -107,13 +153,20 @@ async function startServer() {
       const token = jwt.sign({ studentId: student.id, email: student.email }, JWT_SECRET, { expiresIn: "7d" });
       res.status(201).json({ token, student: { id: student.id, email: student.email, name: student.name } });
     } catch (e) {
-      res.status(500).json({ error: "server_error" });
+      // Course inscrits/doublon : UNIQUE(email) → 409 (pas un 500).
+      const err = e as { code?: string; message?: string };
+      const dup =
+        err?.code === "SQLITE_CONSTRAINT_UNIQUE" ||
+        err?.code === "23505" ||
+        /unique/i.test(err?.message || "");
+      res.status(dup ? 409 : 500).json({ error: dup ? "email_exists" : "server_error" });
     }
   });
 
   app.post("/api/auth/login", async (req: Request, res: Response) => {
     try {
-      const { email, password } = req.body;
+      const { password } = req.body;
+      const email = normalizeEmail(req.body.email);
       if (!ipLimiter.hit(req.ip || "unknown") || !loginAccountLimiter.hit(String(email || ""))) {
         return res.status(429).json({ error: "too_many_attempts" });
       }
@@ -131,11 +184,11 @@ async function startServer() {
 
   const studentAuth = makeStudentAuth(JWT_SECRET);
 
-  app.get("/api/auth/me", studentAuth, async (req: Request, res: Response) => {
+  app.get("/api/auth/me", studentAuth, asyncHandler(async (req: Request, res: Response) => {
     const student = await store.findStudentById((req as any).studentId);
     if (!student) return res.status(404).json({ error: "not_found" });
     res.json({ student: { id: student.id, email: student.email, name: student.name } });
-  });
+  }));
 
   app.post("/api/student/sync", studentAuth, async (req: Request, res: Response) => {
     try {
@@ -157,15 +210,16 @@ async function startServer() {
     }
   });
 
-  app.get("/api/student/entries", studentAuth, async (req: Request, res: Response) => {
+  app.get("/api/student/entries", studentAuth, asyncHandler(async (req: Request, res: Response) => {
     res.json({ entries: await store.listEntries((req as any).studentId) });
-  });
+  }));
 
   const teacherAuth = makeTeacherAuth(JWT_SECRET);
 
   app.post("/api/teacher/login", async (req: Request, res: Response) => {
     try {
-      const { email, password } = req.body;
+      const { password } = req.body;
+      const email = normalizeEmail(req.body.email);
       if (!ipLimiter.hit(req.ip || "unknown") || !loginAccountLimiter.hit(String(email || ""))) {
         return res.status(429).json({ error: "too_many_attempts" });
       }
@@ -181,19 +235,19 @@ async function startServer() {
     }
   });
 
-  app.get("/api/teacher/dashboard", teacherAuth, async (req: Request, res: Response) => {
+  app.get("/api/teacher/dashboard", teacherAuth, asyncHandler(async (req: Request, res: Response) => {
     // Agrégats SQL + cache 30 s (invalidé à chaque écriture).
     // resume = activité RÉELLE (7j/30j). NB : comptabilise les INSCRITS only —
     // un invité n'envoie rien (offline by design) et reste donc invisible ici.
     const students = await dashboardRows(store);
     res.json({ students, resume: resumeActivite(students) });
-  });
+  }));
 
-  app.get("/api/teacher/entries", teacherAuth, async (req: Request, res: Response) => {
+  app.get("/api/teacher/entries", teacherAuth, asyncHandler(async (req: Request, res: Response) => {
     const studentId = req.query.studentId as string | undefined;
     if (!studentId) return res.status(400).json({ error: "missing_student_id" });
     res.json({ entries: await store.listEntries(studentId) });
-  });
+  }));
 
   app.post("/api/teacher/reset-password", teacherAuth, async (req: Request, res: Response) => {
     try {
@@ -201,7 +255,7 @@ async function startServer() {
       if (!studentId) return res.status(400).json({ error: "missing_student_id" });
       const student = await store.findStudentById(studentId);
       if (!student) return res.status(404).json({ error: "student_not_found" });
-      const code = Math.random().toString(36).slice(2, 10).toUpperCase();
+      const code = generateResetCode(); // CSPRNG — voir generateResetCode()
       const expiresAt = new Date(Date.now() + 30 * 60 * 1000).toISOString();
       await store.createResetCode(studentId, code, expiresAt);
       res.json({ code, expiresAt });
@@ -212,8 +266,15 @@ async function startServer() {
 
   app.post("/api/student/reset-password", async (req: Request, res: Response) => {
     try {
+      // Anti force brute du code (le code EST l'auth — pas de session) :
+      if (!resetCodeLimiter.hit(req.ip || "unknown")) {
+        return res.status(429).json({ error: "too_many_attempts" });
+      }
       const { code, password } = req.body;
       if (!code || !password) return res.status(400).json({ error: "missing_fields" });
+      // Politique AVANT toute consommation du code (un mot de passe faible
+      // ne doit pas brûler le jeton de reset).
+      if (isWeakPassword(password)) return res.status(400).json({ error: "weak_password" });
       const resetCode = await store.findUsableResetCode(code);
       if (!resetCode) return res.status(400).json({ error: "invalid_or_used_code" });
       if (new Date(resetCode.expiresAt).getTime() < Date.now()) {
@@ -250,16 +311,21 @@ async function startServer() {
     }
   });
 
-  app.get("/api/teacher/export/csv", teacherAuth, async (req: Request, res: Response) => {
+  app.get("/api/teacher/export/csv", teacherAuth, asyncHandler(async (req: Request, res: Response) => {
     const studentId = req.query.studentId as string | undefined;
+    // Assainissement : un seul caractère CRLF dans studentId faisait planter
+    // tout le process (ERR_INVALID_CHAR sur Content-Disposition — crash confirmé).
+    const safeId = studentId ? String(studentId).replace(/[^\w.-]/g, "_").slice(0, 64) : "";
     res.setHeader("Content-Type", "text/csv; charset=utf-8");
-    res.setHeader("Content-Disposition", `attachment; filename="boussole-export-${studentId || "all"}.csv"`);
+    res.setHeader("Content-Disposition", `attachment; filename="boussole-export-${safeId || "all"}.csv"`);
     res.write("\uFEFF"); // BOM → Excel ouvre l'arabe correctement
     res.write(["student_id", "name", "email", "productions", "avg_icm", "last_production", "top_errors", "last_activity", "actif_7j", "actif_30j"].join(";") + "\n");
     if (studentId) {
       // Un seul élève : même forme de ligne (petit volume).
       const entries = await store.listEntries(studentId);
-      const acts = store.listActivities(studentId);
+      // await OBLIGATOIRE : sur PostgreSQL listActivities est asynchrone —
+      // sans lui, acts.map plantait (Promise.map) — bug découvert par l'audit.
+      const acts = await store.listActivities(studentId);
       const act = calculeActivite([entries.map((e) => e.createdAt), acts.map((a) => a.createdAt)].flat());
       const avgIcm = entries.length ? Math.round(entries.reduce((s, e) => s + (Number(e.icm) || 0), 0) / entries.length) : 0;
       const dominantErrors = entries.flatMap((e) => e.errorTags).reduce<Record<string, number>>((acc, tag) => {
@@ -268,18 +334,23 @@ async function startServer() {
       }, {});
       const topErrors = Object.entries(dominantErrors).sort((a, b) => b[1] - a[1]).slice(0, 5).map(([tag, count]) => `${tag}:${count}`).join("; ");
       const student = await store.findStudentById(studentId);
-      res.write([studentId, student?.name || "", student?.email || "", String(entries.length), String(avgIcm), student?.createdAt || "", topErrors, act.lastActivity || "", act.actif7j ? "1" : "0", act.actif30j ? "1" : "0"].join(";") + "\n");
+      // Cellule CSV : pas de sauts de ligne dans une ligne non quotée (RFC 4180).
+      const cellId = String(studentId).replace(/[\r\n]+/g, " ");
+      // Vraie dernière production (listEntries est trié created_at DESC) —
+      // l'ancienne valeur = date d'inscription contredisait le dashboard.
+      const lastProduction = entries[0]?.createdAt || "";
+      res.write([csvCell(cellId), csvCell(student?.name || ""), csvCell(student?.email || ""), String(entries.length), String(avgIcm), csvCell(lastProduction), csvCell(topErrors), csvCell(act.lastActivity || ""), act.actif7j ? "1" : "0", act.actif30j ? "1" : "0"].join(";") + "\n");
     } else {
       // Streaming : itérateur SQL — 300 000 lignes sans jamais tout charger en RAM.
       for await (const row of store.iterateExportRows()) {
-        res.write([row.id, row.name, row.email, String(row.productions), String(row.avgIcm), row.lastProduction || "", row.topErrors, row.lastActivity || "", row.actif7j ? "1" : "0", row.actif30j ? "1" : "0"].join(";") + "\n");
+        res.write([csvCell(row.id), csvCell(row.name), csvCell(row.email), String(row.productions), String(row.avgIcm), csvCell(row.lastProduction || ""), csvCell(row.topErrors), csvCell(row.lastActivity || ""), row.actif7j ? "1" : "0", row.actif30j ? "1" : "0"].join(";") + "\n");
       }
     }
     res.end();
-  });
+  }));
 
   async function ensureTeacher() {
-    const email = process.env.ADMIN_EMAIL;
+    const email = normalizeEmail(process.env.ADMIN_EMAIL);
     const password = process.env.ADMIN_PASSWORD;
     if (!email || !password) return;
     if (await store.findTeacherByEmail(email)) return;
@@ -300,6 +371,18 @@ async function startServer() {
       res.sendFile(path.join(distPath, "index.html"));
     });
   }
+
+  // ── Handler d'erreurs final (4 params) : 500 JSON, jamais de stack, jamais de crash ──
+  app.use((err: unknown, _req: Request, res: Response, _next: express.NextFunction) => {
+    console.error("[server] erreur non rattrapée:", err);
+    if (!res.headersSent) res.status(500).json({ error: "server_error" });
+  });
+
+  // Filet de sécurité : une rejection hors des routes (edge non couverte par
+  // asyncHandler) est LOGGUÉE au lieu d'arrêter le process (défaut Node ≥ 15).
+  process.on("unhandledRejection", (reason) => {
+    console.error("[server] unhandledRejection:", reason);
+  });
 
   await ensureTeacher();
 

@@ -1,5 +1,9 @@
 # Audit — « apprendre le مفتاح dans l'app » (bilan, 2026-09-06)
 
+>
+> **Libellés §14 (2026-09-22)** — document **historique** : les noms « تَبَصَّر / أدخل / أدر / افتح » y sont conservés comme trace d'arbitrage. L'app et la fiche utilisent désormais les gestes « فعل / دليل · علاقة · جواب » (voir `docs/MARQUE.md` §14).
+>
+
 > Audit demandé « sans code » de l'approche pédagogique (5 phases d'acquisition + moteur A–K).
 > **Décisions actées : `docs/MARQUE.md` §11 (D1, D2, D3).** Ce document est la référence
 > de l'ordre de développement — pas une spec de code.

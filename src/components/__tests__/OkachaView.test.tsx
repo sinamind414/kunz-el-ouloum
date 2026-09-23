@@ -109,15 +109,32 @@ describe('OkachaView — الحصيلة المعرفية modernisée', () => {
     expect(screen.getAllByTestId(/^okacha-unite-/)).toHaveLength(3);
   });
 
-  it('méthodologie : 8 sections, chacune avec une icône (aucun repère manquant)', async () => {
+  it('méthodologie : 9 sections (8 livre + nasiha), chacune avec une icône', async () => {
     const user = userEvent.setup();
     render(<OkachaView onBack={vi.fn()} />);
     await user.click(screen.getByTestId('onglet-methode'));
     const sections = screen.getAllByTestId(/^methodo-section-/);
-    expect(sections).toHaveLength(8);
+    expect(sections).toHaveLength(9);
     for (const s of sections) {
       expect(s.querySelector('svg'), 'section sans icône').toBeTruthy();
     }
+    expect(screen.getByTestId('methodo-sommaire')).toBeTruthy();
+    expect(screen.getAllByTestId(/^sommaire-/)).toHaveLength(9);
+    // badge « n/9 sections lues »
+    expect(screen.getByText(/0\/9 أقسام مقروءة/)).toBeTruthy();
+  });
+
+  it('sommaire : clique ouvre la section et incrémente le badge (1/9)', async () => {
+    const user = userEvent.setup();
+    render(<OkachaView onBack={vi.fn()} />);
+    await user.click(screen.getByTestId('onglet-methode'));
+    await user.click(screen.getByTestId('sommaire-nasiha'));
+    expect(screen.getByTestId('methodo-section-nasiha')).toBeTruthy();
+    expect(screen.getByText(/1\/9 أقسام مقروءة/)).toBeTruthy();
+    // sous-sections tamarin1 : puce cliquable presente
+    await user.click(screen.getByTestId('sommaire-tamarin1'));
+    expect(screen.getByTestId('methodo-sous-tamarin1')).toBeTruthy();
+    expect(screen.getByTestId('sous-t1-texte')).toBeTruthy();
   });
 
   it('bouton « اختبار الكتاب » appelle onOpenQcm (lien vers le QCM du livre)', async () => {
