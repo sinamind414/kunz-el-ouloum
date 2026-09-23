@@ -19,6 +19,8 @@ interface D3MindMapCanvasProps {
   data: MindMapData;
   selectedNodeId: string | null;
   onSelectNode: (node: MindMapNode) => void;
+  /** Clic sur le fond du canvas → ferme le panneau de détails (P1). */
+  onClearSelection?: () => void;
   searchQuery?: string;
   layoutMode?: 'force' | 'radial';
   isDarkMode?: boolean;
@@ -28,6 +30,7 @@ export default function D3MindMapCanvas({
   data,
   selectedNodeId,
   onSelectNode,
+  onClearSelection,
   searchQuery = '',
   layoutMode = 'force',
   isDarkMode = false
@@ -37,8 +40,24 @@ export default function D3MindMapCanvas({
   const zoomBehaviorRef = useRef<d3.ZoomBehavior<SVGSVGElement, unknown> | null>(null);
   const simulationRef = useRef<d3.Simulation<any, any> | null>(null);
 
+  // Refs : le rendu D3 (effect à deps stables) capture toujours les callbacks
+  // à jour sans relancer la simulation à chaque sélection (deps manquantes P1).
+  const onSelectNodeRef = useRef(onSelectNode);
+  onSelectNodeRef.current = onSelectNode;
+  const onClearSelectionRef = useRef(onClearSelection);
+  onClearSelectionRef.current = onClearSelection;
+  const selectedNodeIdRef = useRef(selectedNodeId);
+  selectedNodeIdRef.current = selectedNodeId;
+
   const [hoveredNodeId, setHoveredNodeId] = useState<string | null>(null);
   const [dimensions, setDimensions] = useState<{ width: number; height: number }>({ width: 800, height: 600 });
+  // Debounce recherche (P1) : le highlight ne rejoue pas à chaque frappe.
+  const [debouncedQuery, setDebouncedQuery] = useState(searchQuery);
+
+  useEffect(() => {
+    const t = setTimeout(() => setDebouncedQuery(searchQuery), 200);
+    return () => clearTimeout(t);
+  }, [searchQuery]);
 
   // Handle Container Resizing
   useEffect(() => {
@@ -213,7 +232,7 @@ export default function D3MindMapCanvas({
       .on('click', (event, d) => {
         event.stopPropagation();
         playXPGainSound();
-        onSelectNode(d);
+        onSelectNodeRef.current(d);
       })
       .on('mouseenter', (event, d) => {
         setHoveredNodeId(d.id);
@@ -299,14 +318,17 @@ export default function D3MindMapCanvas({
       node.attr('transform', (d: any) => `translate(${d.x},${d.y})`);
     });
 
-    // Background Click Clears Selection
+    // Background Click Clears Selection (P1 : handler vide → ferme le drawer)
     svg.on('click', () => {
-      // Background click
+      onClearSelectionRef.current?.();
     });
 
     return () => {
       simulation.stop();
     };
+    // onSelectNode / onClearSelection / selectedNodeId passent par des refs :
+    // on ne redessine la simulation que sur data/layout/dimensions/thème.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data, layoutMode, dimensions, isDarkMode]);
 
   // Update Visual Highlights when selection, hover, or search query changes
@@ -314,8 +336,8 @@ export default function D3MindMapCanvas({
     if (!svgRef.current) return;
     const svg = d3.select(svgRef.current);
 
-    const hasActiveFocus = Boolean(hoveredNodeId || selectedNodeId || searchQuery.trim());
-    const query = searchQuery.trim().toLowerCase();
+    const hasActiveFocus = Boolean(hoveredNodeId || selectedNodeId || debouncedQuery.trim());
+    const query = debouncedQuery.trim().toLowerCase();
 
     // Node Highlights
     svg.selectAll<SVGGElement, any>('g.node-item').each(function(d: any) {
@@ -360,7 +382,7 @@ export default function D3MindMapCanvas({
         .attr('stroke-width', isLinkedToActive ? 3.5 : (d.type === 'primary' ? 2.5 : 1.7));
     });
 
-  }, [selectedNodeId, hoveredNodeId, connectedNodeIds, searchQuery, isDarkMode]);
+  }, [selectedNodeId, hoveredNodeId, connectedNodeIds, debouncedQuery, isDarkMode]);
 
   // Programmatic Zoom Controls
   const handleZoomIn = () => {

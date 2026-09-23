@@ -47,7 +47,13 @@ import WeeklyReportShareModal from './WeeklyReportShareModal';
 import MethodologyGlobalStats from './MethodologyGlobalStats';
 import StreakCelebrationModal from './StreakCelebrationModal';
 import { playStreakMilestoneSound, playXPGainSound } from '../utils/audio';
-import { AR_LATN, fmtDateLatn, toLatinDigits } from '../utils/latinDigits';
+import { fmtDateLatn } from '../utils/latinDigits';
+import {
+  avgCompletionRate as computeAvgCompletionRate,
+  bestDay as pickBestDay,
+  buildWeeklyPerformanceData,
+  toWeeklyChartRows,
+} from '../utils/weeklyStats';
 
 interface StatsViewProps {
   progress: UserProgress;
@@ -69,77 +75,24 @@ export default function StatsView({ progress, units, onNavigate }: StatsViewProp
     setShowStreakModal(true);
   };
   
-  // Weekly XP & Achievement Progress Data (Recharts)
   // Weekly XP & Achievement Progress Data (Recharts) — 100 % réel.
-  // Plus AUCUNE donnée de démonstration : on reconstruit chaque jour à partir
-  // de l'historique réel (règle XP de l'app : +20 XP par bonne réponse).
-  const weeklyPerformanceData = useMemo(() => {
-    const dayNames = ['السبت', 'الأحد', 'الإثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة'];
-    const targetDailyXP = 50;
-    const targetCompletion = 100;
-
-    // Index réel : date (format stocké ar-DZ-u-nu-latn) -> XP/questions réel(le)s.
-    // toLatinDigits : compat avec l'historique déjà stocké en 'ar-DZ' (chiffres ٠-٩).
-    const byDate = new Map<string, { xp: number; questions: number }>();
-    progress.quizScoreHistory.forEach(q => {
-      const cur = byDate.get(toLatinDigits(q.date)) || { xp: 0, questions: 0 };
-      cur.xp += q.score * 20;           // règle XP réelle (App.tsx)
-      cur.questions += q.total;
-      byDate.set(toLatinDigits(q.date), cur);
-    });
-
-    // Fenêtre réelle : les 7 derniers jours (semaine commençant le samedi)
-    const today = new Date();
-    const realDays: { xp: number; questions: number; isToday: boolean }[] = [];
-    for (let i = 6; i >= 0; i--) {
-      const d = new Date(today);
-      d.setDate(today.getDate() - i);
-      const real = byDate.get(d.toLocaleDateString(AR_LATN));
-      realDays.push({ xp: real?.xp ?? 0, questions: real?.questions ?? 0, isToday: i === 0 });
-    }
-
-    return dayNames.map((day, idx) => {
-      const real = realDays[idx];
-      let xpEarned = real.xp;
-      let completionRate = Math.min(130, Math.round((xpEarned / targetDailyXP) * 100));
-      let studyMins = 0;
-
-      if (real.isToday && progress.dailyGoals) {
-        const dg = progress.dailyGoals;
-        const curr = dg.type === 'minutes' ? dg.todayMinutes : dg.todayQuestions;
-        const target = dg.type === 'minutes' ? dg.targetMinutes : dg.targetQuestions;
-        completionRate = Math.max(completionRate, Math.min(150, Math.round((curr / Math.max(1, target)) * 100)));
-        if (dg.type === 'minutes') studyMins = dg.todayMinutes;
-      }
-
-      return {
-        day,
-        isToday: real.isToday,
-        isPast: true,
-        'نقاط XP': xpEarned,
-        'معدل الإنجاز %': completionRate,
-        'الهدف المستهدف XP': targetDailyXP,
-        'هدف الإنجاز %': targetCompletion,
-        questionsCount: real.questions,
-        studyMins,
-      };
-    });
-  }, [progress.quizScoreHistory, progress.dailyGoals]);
+  // Logique pure extraite dans src/utils/weeklyStats.ts (P1) :
+  //  · étiquettes = vrais jours civils (plus de grille סبت→جمعة figée) ;
+  //  · isPast = jour clos (le jour en cours n'est plus « passé » à tort) ;
+  //  · avgCompletionRate ne moyenne que les jours clos.
+  const weeklyPoints = useMemo(
+    () => buildWeeklyPerformanceData(progress.quizScoreHistory, progress.dailyGoals),
+    [progress.quizScoreHistory, progress.dailyGoals],
+  );
+  const weeklyPerformanceData = useMemo(() => toWeeklyChartRows(weeklyPoints), [weeklyPoints]);
 
   const totalWeeklyXP = useMemo(() => {
     return weeklyPerformanceData.reduce((acc, curr) => acc + (curr['نقاط XP'] || 0), 0);
   }, [weeklyPerformanceData]);
 
-  const avgCompletionRate = useMemo(() => {
-    const pastDays = weeklyPerformanceData.filter(d => d.isPast);
-    if (!pastDays.length) return 0;
-    const sum = pastDays.reduce((acc, curr) => acc + curr['معدل الإنجاز %'], 0);
-    return Math.round(sum / pastDays.length);
-  }, [weeklyPerformanceData]);
+  const avgCompletionRate = useMemo(() => computeAvgCompletionRate(weeklyPoints), [weeklyPoints]);
 
-  const bestDay = useMemo(() => {
-    return [...weeklyPerformanceData].sort((a, b) => b['نقاط XP'] - a['نقاط XP'])[0];
-  }, [weeklyPerformanceData]);
+  const bestDay = useMemo(() => pickBestDay(weeklyPoints), [weeklyPoints]);
 
   // Activité réelle de la semaine (0 donnée inventée) :
   // on n'affiche le graphique que s'il existe du vrai travail à montrer.
@@ -380,7 +333,7 @@ export default function StatsView({ progress, units, onNavigate }: StatsViewProp
           <div className="bg-[#f2f7ff] border border-blue-100 rounded-2xl p-3 flex flex-col sm:flex-row items-center sm:items-start justify-between gap-1 text-center sm:text-right">
             <div>
               <span className="text-[10px] text-gray-500 font-bold block">أعلى يوم إنتاجية</span>
-              <span className="text-base sm:text-lg font-black text-[#1e40af]">{bestDay?.day || 'السبت'}</span>
+              <span className="text-base sm:text-lg font-black text-[#1e40af]">{bestDay?.day || '—'}</span>
             </div>
             <div className="w-7 h-7 rounded-xl bg-blue-100 text-[#1e40af] flex items-center justify-center shrink-0">
               <Award className="w-4 h-4" />
