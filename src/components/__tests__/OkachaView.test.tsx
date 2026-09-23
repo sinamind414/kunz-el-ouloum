@@ -109,15 +109,11 @@ describe('OkachaView — الحصيلة المعرفية modernisée', () => {
     expect(screen.getAllByTestId(/^okacha-unite-/)).toHaveLength(3);
   });
 
-  it('méthodologie : 8 sections, chacune avec une icône (aucun repère manquant)', async () => {
-    const user = userEvent.setup();
+  it('méthodologie عكاشة purgée : aucun onglet ni section methodo', () => {
     render(<OkachaView onBack={vi.fn()} />);
-    await user.click(screen.getByTestId('onglet-methode'));
-    const sections = screen.getAllByTestId(/^methodo-section-/);
-    expect(sections).toHaveLength(8);
-    for (const s of sections) {
-      expect(s.querySelector('svg'), 'section sans icône').toBeTruthy();
-    }
+    expect(screen.queryByTestId('onglet-methode')).toBeNull();
+    expect(screen.queryAllByTestId(/^methodo-section-/)).toHaveLength(0);
+    expect(screen.queryByText('المنهجية (عكاشة)')).toBeNull();
   });
 
   it('bouton « اختبار الكتاب » appelle onOpenQcm (lien vers le QCM du livre)', async () => {

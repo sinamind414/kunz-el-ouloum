@@ -26,6 +26,10 @@ Transformations documentées (aucune autre) :
   T-lab  — les 10 libellés d'unités sont les titres CANONIQUES (les en-têtes OCR
            sont parfois corrompus, ex. « خخدة الاتية ») ; le CONTENU reste verbatim.
 
+  T-adv  — d2u2 : arrêt de l'extraction à « قسم النصائح » (conseils personnels /
+           mélange conseils-methodo hors-sujet) ; METHODO non exportée
+           (purge 100 % المنهجية 2026-09-23).
+
 Le verrou src/data/okacha.lock.test.ts re-vérifie : 10 unités (5/2/3), interdits
 (téléphones/prix/CamScanner/promo), الظهيرة absente, longueurs min, unicité ids.
 """
@@ -76,17 +80,19 @@ def filtrer(tranche):
 unit = []
 for uid, dom, label, a, b in UNITES:
     lignes = filtrer(lines[a - 1:b])
+    # T-adv — coupe قسم النصائح (mélange conseils-methodo hors-sujet) — purge 2026-09-23
+    if 'قسم النصائح' in lignes:
+        lignes = lignes[:lignes.index('قسم النصائح')]
     assert len(lignes) >= 40, f'{uid} : {len(lignes)} lignes filtrées (<40) — bornes à revoir'
     unit.append({'id': uid, 'domaine': dom, 'uniteAr': label,
                  'sourceRange': f'l.{a}-{b}', 'lignes': lignes})
 
 # ── méthodologie (l.115-660) — v2, croisée avec مفتاح (voir note docs/) ──
-METHODO = {'titreAr': 'قسم المنهجية', 'sourceRange': 'l.115-660',
-           'lignes': filtrer(lines[114:660])}
-assert len(METHODO['lignes']) >= 300, f"métho : {len(METHODO['lignes'])} lignes (<300)"
+# Méthodo (l.115-660) : SUPPRIMÉE — purge 100 % المنهجية (عكاشة) 2026-09-23.
+# (l'export OKACHA_METHODO n'est plus émis ; قسم النصائح coupé — cf. T-adv.)
 
 # ── post-conditions avant écriture ──
-raw = json.dumps(unit, ensure_ascii=False) + json.dumps(METHODO, ensure_ascii=False)
+raw = json.dumps(unit, ensure_ascii=False)
 for interdit in ['0672388202', '0560420993', '300 دج', 'CamScanner', 'Scanne',
                  'المتفوق', 'الظهيرة']:
     assert interdit not in raw, f'interdit présent : {interdit}'
@@ -105,7 +111,8 @@ out.append('// okacha.ts — FICHIER GÉNÉRÉ par scripts/build_okacha.py — N
 out.append('// Source : livre عكاشة (upload GitHub master 5548459), extraction mécanique verbatim')
 out.append('// (filtres OCR documentés dans le script). Récapitulatifs numérotés « ما يجب حفظه »')
 out.append('// par unité — AUCUN corrigé dans la source (le livre nen contient pas). Verrou :')
-out.append('// okacha.lock.test.ts. Méthodo (l.115-660) non intégrée v1 (chevauche مفتاح v5.0).')
+out.append('// okacha.lock.test.ts. Méthodo (l.115-660) + قسم النصائح (d2u2) SUPPRIMÉES —')
+out.append('// purge 100 % المنهجية (عكاشة) : mélange conseils-methodo + OCR cassé, 2026-09-23.')
 out.append('')
 out.append('export interface UniteOkacha {')
 out.append('  id: string;')
@@ -129,16 +136,7 @@ for u in unit:
     out.append('  },')
 out.append('];')
 out.append('')
-out.append('// Section méthodologie (l.115-660) — croisée avec مفتاح, non éditée.')
-out.append('export const OKACHA_METHODO = {')
-out.append(f'  titreAr: {j(METHODO["titreAr"])},')
-out.append(f'  sourceRange: {j(METHODO["sourceRange"])},')
-out.append('  lignes: [')
-for l in METHODO['lignes']:
-    out.append(f'    {j(l)},')
-out.append('  ],')
-out.append('} as const;')
-out.append('')
+out.append('// Méthodo (l.115-660) + قسم النصائح : SUPPRIMÉS — purge 100 % المنهجية 2026-09-23.')
 
 OUT.write_text('\n'.join(out), encoding='utf-8')
 total = sum(len(u['lignes']) for u in unit)

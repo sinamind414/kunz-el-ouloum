@@ -2,34 +2,33 @@
 // عكاشة — MODERNISÉ (audit 2026-09-22, phases design + contenu).
 //
 // Contenu : src/data/okachaEnriched.ts (GÉNÉRÉ par scripts/enrich_okacha.ts —
-// blocs sémantiques titre/point/puce/note/texte, OCR 2ᵉ passe, méthodo en 8
-// sections ; verrous okacha.lock.test.ts + okachaEnriched.lock.test.ts).
+// blocs sémantiques titre/point/puce/note/texte, OCR 2ᵉ passe — المنهجية
+// (عكاشة) supprimée à 100 % (purge 2026-09-23) ; verrous okacha.lock.test.ts
+// + okachaEnriched.lock.test.ts).
 //
 // Phase A (cette vue) :
 //  1. rendu STRUCTURÉ (hiérarchie + puces + notes, 15-17 px — plus de <pre>) ;
-//  2. recherche arabe normalisée (normAr) sur tout le corpus (unités + méthodo) ;
+//  2. recherche arabe normalisée (normAr) sur tout le corpus (unités) ;
 //  3. mode حفظ : masquer les points → révéler → auto-évaluation (again/hard/
 //     good/easy) branchée sur le SM-2/XP existant (handleRateCard, App.tsx) ;
 //  4. progression par unité en localStorage (okachaProgress.ts) + accès QCM livre ;
-//  5. design system : D1 bleu / D2 ambre / D3 violet / méthodo émeraude,
+//  5. design system : D1 bleu / D2 ambre / D3 violet,
 //     icônes par domaine, taille de lecture, impression.
 
 import { useEffect, useMemo, useState } from 'react';
 import {
-  BookMarked, Search, X, Compass, FlaskConical, Leaf, Globe2,
+  BookMarked, Search, X, FlaskConical, Leaf, Globe2,
   Eye, EyeOff, CheckCircle2, Printer, BookOpen, RotateCcw, Check, Star, Lightbulb, ChevronLeft,
 } from 'lucide-react';
 import {
   OKACHA_UNITES_ENRICHIES,
-  OKACHA_METHODO_SECTIONS,
   ENRICH_STATS,
   normAr,
   type BlocOkacha,
-  type SectionMethodo,
 } from '../data/okachaEnriched';
 import Icone from './Icone';
 import { HOSILA_IDS, HOSILA_STATS, unitesAffichees } from '../data/hosila';
-import { okachaUniteIcone, methodoIcone } from '../data/lessonIcons';
+import { okachaUniteIcone } from '../data/lessonIcons';
 import {
   loadOkachaProgress,
   toggleUniteLue,
@@ -60,7 +59,6 @@ const THEME = {
   1: { icone: FlaskConical, actif: 'bg-[#1d4ed8] text-white', dormand: 'bg-blue-50 dark:bg-blue-950/30 text-blue-800 dark:text-blue-300 hover:bg-blue-100', bar: 'bg-blue-600', bord: 'border-blue-200 dark:border-blue-900/60', grad: 'from-blue-500/10 dark:from-blue-950/40', num: 'bg-blue-100 dark:bg-blue-950/60 text-blue-800 dark:text-blue-300' },
   2: { icone: Leaf, actif: 'bg-[#b45309] text-white', dormand: 'bg-amber-50 dark:bg-amber-950/30 text-amber-800 dark:text-amber-300 hover:bg-amber-100', bar: 'bg-amber-600', bord: 'border-amber-200 dark:border-amber-900/60', grad: 'from-amber-500/10 dark:from-amber-950/40', num: 'bg-amber-100 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300' },
   3: { icone: Globe2, actif: 'bg-violet-700 text-white', dormand: 'bg-violet-50 dark:bg-violet-950/30 text-violet-800 dark:text-violet-300 hover:bg-violet-100', bar: 'bg-violet-600', bord: 'border-violet-200 dark:border-violet-900/60', grad: 'from-violet-500/10 dark:from-violet-950/40', num: 'bg-violet-100 dark:bg-violet-950/60 text-violet-800 dark:text-violet-300' },
-  m: { icone: Compass, actif: 'bg-[#006d37] text-white', dormand: 'bg-emerald-50 dark:bg-emerald-950/30 text-emerald-800 dark:text-emerald-300 hover:bg-emerald-100', bar: 'bg-emerald-600', bord: 'border-emerald-200 dark:border-emerald-900/60', grad: 'from-emerald-500/10 dark:from-emerald-950/40', num: 'bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300' },
 } as const;
 
 type ThemeCle = keyof typeof THEME;
@@ -85,7 +83,7 @@ function Surligne({ texte, q }: { texte: string; q: string }) {
   );
 }
 
-/** Ligne de résultats de recherche (unité OU section méthodo). */
+/** Ligne de résultats de recherche (unité). */
 interface LigneResultat {
   cleParent: string; // unité (« d1u4 ») ou section (« m:tahil »)
   libelleParent: string;
@@ -221,10 +219,9 @@ function BlocView({
 }
 
 export default function OkachaView({ onBack, onRate, onOpenQcm }: Props) {
-  const [onglet, setOnglet] = useState<1 | 2 | 3 | 'm'>(1);
+  const [onglet, setOnglet] = useState<1 | 2 | 3>(1);
   /** Unité ouverte : `null` = écran d'icônes des unités du domaine. */
   const [ouverte, setOuverte] = useState<string | null>(null);
-  const [sectionM, setSectionM] = useState<string | null>('intro');
   const [q, setQ] = useState('');
   const [modeHafiz, setModeHafiz] = useState(false);
   const [grand, setGrand] = useState(false);
@@ -241,17 +238,12 @@ export default function OkachaView({ onBack, onRate, onOpenQcm }: Props) {
   /** Unité du livre actuellement ouverte (null = écran d'icônes). */
   const uniteCourante = ouverte ? OKACHA_UNITES_ENRICHIES.find((u) => u.id === ouverte) ?? null : null;
 
-  // Index de recherche normalisé (unités + méthodo) — construit une seule fois.
+  // Index de recherche normalisé (unités) — construit une seule fois.
   const index = useMemo(() => {
     const rows: { norm: string; r: LigneResultat }[] = [];
     for (const u of OKACHA_UNITES_ENRICHIES) {
       u.blocs.forEach((b, idx) =>
         rows.push({ norm: normAr(b.texte), r: { cleParent: u.id, libelleParent: u.uniteAr, domaine: u.domaine as ThemeCle, b, idx } }),
-      );
-    }
-    for (const s of OKACHA_METHODO_SECTIONS) {
-      s.blocs.forEach((b, idx) =>
-        rows.push({ norm: normAr(b.texte), r: { cleParent: `m:${s.id}`, libelleParent: s.titreAr, domaine: 'm' as const, b, idx } }),
       );
     }
     return rows;
@@ -265,13 +257,8 @@ export default function OkachaView({ onBack, onRate, onOpenQcm }: Props) {
   const pct = Math.round((lues / OKACHA_UNITES_ENRICHIES.length) * 100);
 
   const ouvrirResultat = (r: LigneResultat) => {
-    if (r.cleParent.startsWith('m:')) {
-      setOnglet('m');
-      setSectionM(r.cleParent.slice(2));
-    } else {
-      const u = OKACHA_UNITES_ENRICHIES.find((x) => x.id === r.cleParent);
-      if (u) { setOnglet(u.domaine); setOuverte(u.id); }
-    }
+    const u = OKACHA_UNITES_ENRICHIES.find((x) => x.id === r.cleParent);
+    if (u) { setOnglet(u.domaine); setOuverte(u.id); }
     setQ('');
   };
 
@@ -339,7 +326,7 @@ export default function OkachaView({ onBack, onRate, onOpenQcm }: Props) {
         <input
           value={q}
           onChange={(e) => setQ(e.target.value)}
-          placeholder="ابحث في كل الملخصات والمنهجية… (مثال: الاستنساخ، المورثة، التفسير)"
+          placeholder="ابحث في كل الملخصات… (مثال: الاستنساخ، المورثة، التفسير)"
           data-testid="okacha-search"
           className="w-full rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-[#161c18] pr-9 pl-9 py-2.5 text-sm font-bold text-gray-800 dark:text-gray-100 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50"
         />
@@ -353,7 +340,7 @@ export default function OkachaView({ onBack, onRate, onOpenQcm }: Props) {
       {/* ── Bandeau notice + progression ── */}
       <div className="p-3 rounded-2xl bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-900 text-xs font-bold text-blue-900 dark:text-blue-200 leading-relaxed print:break-inside-avoid">
         ملخصات مرقّمة « ما يجب حفظه » لكل وحدة (المصدر : كتاب عكاشة، OCR منقى
-        ومُهيكل في {ENRICH_STATS.sectionsMethodo} أقسام منهجية) — اقرأ، فعّل
+        ومُهيكل) — اقرأ، فعّل
         « وضع الحفظ » لتختبر نفسك، ثم اختبر في « اختبار الكتاب ».
         <div className="mt-2 flex items-center gap-2 flex-wrap">
           <span className="inline-flex items-center gap-1 text-[10px] font-black text-blue-700 dark:text-blue-300">
@@ -369,16 +356,8 @@ export default function OkachaView({ onBack, onRate, onOpenQcm }: Props) {
         </div>
       </div>
 
-      {/* ── Onglets domaines + méthodo ── */}
+      {/* ── Onglets domaines ── */}
       <div className="flex gap-2 flex-wrap print:hidden">
-        <button
-          onClick={() => { setOnglet('m'); setOuverte(null); }}
-          data-testid="onglet-methode"
-          className={`inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-black transition-colors ${onglet === 'm' ? THEME.m.actif : THEME.m.dormand}`}
-        >
-          <Icone cle="Compass" className="w-3.5 h-3.5" />
-          المنهجية (عكاشة)
-        </button>
         {([1, 2, 3] as const).map((d) => {
           const IconeDomaine = THEME[d].icone;
           return (
@@ -423,58 +402,8 @@ export default function OkachaView({ onBack, onRate, onOpenQcm }: Props) {
         </section>
       )}
 
-      {/* ── Méthodo (8 sections du livre, ordre du livre) ── */}
-      {!resultats && onglet === 'm' && (
-        <div className="space-y-3">
-          {OKACHA_METHODO_SECTIONS.map((s: SectionMethodo) => {
-            const ouverteS = sectionM === s.id;
-            return (
-              <section key={s.id} className={`rounded-3xl border ${THEME.m.bord} bg-white dark:bg-[#161c18] overflow-hidden`}>
-                <button
-                  onClick={() => setSectionM(ouverteS ? null : s.id)}
-                  data-testid={`methodo-section-${s.id}`}
-                  className={`w-full flex items-center justify-between px-4 py-3 text-right bg-gradient-to-l ${THEME.m.grad} hover:opacity-90`}
-                >
-                  <span className="flex items-center gap-2 text-sm font-black text-gray-800 dark:text-gray-100">
-                    <span className="inline-flex items-center justify-center w-7 h-7 rounded-xl bg-emerald-600 text-white shrink-0">
-                      <Icone cle={methodoIcone(s.id)} className="w-4 h-4" />
-                    </span>
-                    {s.titreAr}
-                  </span>
-                  <span className="text-[10px] font-black text-emerald-700 dark:text-emerald-300">
-                    {ouverteS ? '▲ إخفاء' : `▼ ${s.blocs.length} سطراً`}
-                  </span>
-                </button>
-                {ouverteS && (
-                  <div className="px-4 pb-4 pt-1 border-t border-gray-100 dark:border-gray-800">
-                    {s.blocs.map((b, idx) => {
-                      const cle = `m:${s.id}#${idx}`;
-                      return (
-                        <BlocView
-                          key={idx}
-                          b={b}
-                          cle={cle}
-                          domaine="m"
-                          cache={modeHafiz && b.kind === 'point' && !revelves.has(cle)}
-                          revele={revelves.has(cle)}
-                          onReveler={() => setRevelves((prev) => new Set(prev).add(cle))}
-                          onNoter={(n) => noter(cle, n)}
-                          notes={prog.evals[cle]}
-                          taille={taille}
-                          q={q}
-                        />
-                      );
-                    })}
-                  </div>
-                )}
-              </section>
-            );
-          })}
-        </div>
-      )}
-
       {/* ── Unités du domaine : ICÔNES (une icône = une unité du livre) ── */}
-      {!resultats && onglet !== 'm' && ouverte === null && (
+      {!resultats && ouverte === null && (
         <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4" data-testid="okacha-unites-icones">
           {unites.map((u) => {
             const th = THEME[u.domaine as ThemeCle];
@@ -520,7 +449,7 @@ export default function OkachaView({ onBack, onRate, onOpenQcm }: Props) {
         </div>
       )}
       {/* ── Contenu de l'unité ouverte + BANDE d'unités (icône après icône) ── */}
-      {!resultats && onglet !== 'm' && uniteCourante && (
+      {!resultats && uniteCourante && (
         <>
           <div className="flex items-center gap-3 flex-wrap">
             <button
