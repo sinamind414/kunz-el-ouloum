@@ -1,12 +1,12 @@
 // okacha.lock.test.ts — verrous du « بنك الحفظ » (livre عكاشة, injection mécanique
 // par scripts/build_okacha.py). Fige : 10 unités (D1=5, D2=2, D3=3 — mapping des
-// domaines documenté : l'ordre عكاشة ≠ ordre officiel), l'absence TOTALE du
-// périmètre commercial (téléphones, prix, bannières promo/scan — même aux lettres
-// tronquées par l'OCR), la terminologie (الظهيرة absente — عكاشة écrit الظهرة),
-// et l'intégrité minimale de chaque unité.
+// domaines documenté : l'ordre عكاشة ≠ ordre officiel), la PRÉSENCE de METHODO
+// (l.115-660) + OKACHA_CONSEILS (ex-d2u2), l'absence TOTALE du périmètre
+// commercial, l'anti-résidu des 17 signatures OCR purgées des unités (2026-09-23),
+// la terminologie (الظهيرة absente — عكاشة écrit الظهرة), et l'intégrité minimale.
 
 import { describe, expect, it } from 'vitest';
-import { OKACHA_UNITES } from './okacha';
+import { OKACHA_UNITES, OKACHA_METHODO, OKACHA_CONSEILS } from './okacha';
 
 const norm = (s: string) =>
   s
@@ -37,24 +37,42 @@ describe('structure du بنك الحفظ عكاشة (10 unités, mapping documen
   });
 });
 
-describe('purge المنهجية (عكاشة) 2026-09-23 : zéro reste méthodo dans les unités', () => {
-  it('aucun marqueur قسم النصائح / المنهجية / conseils_personnels dans le بنك', () => {
-    const tout = norm(OKACHA_UNITES.map((u) => u.lignes.join('\n')).join('\n'));
-    for (const marqueur of [
-      'قسم النصائح',
-      'قسم المنهجية',
-      'لا أنصحك',
-      'إذاكادن',
-      'الفيتامينات',
-      'استعمال اليوتيوب',
-      'مواقع التواصل الاجتماعي',
-      'حصص الدعم',
-    ]) {
-      expect(tout.includes(norm(marqueur)), `reste méthodo : « ${marqueur} »`).toBe(false);
+describe('section méthodologie (l.115-660 — croisée avec مفتاح, doc : docs/CROISEMENT_OKACHA_MEFTAH)', () => {
+  it('présente, substantielle, sans périmètre commercial', () => {
+    expect(OKACHA_METHODO.lignes.length).toBeGreaterThanOrEqual(300);
+    expect(OKACHA_METHODO.sourceRange).toBe('l.115-660');
+    const t = norm(OKACHA_METHODO.lignes.join(' '));
+    for (const interdit of ['عكاش', 'المتفوق', 'camscanner', '300 دج']) {
+      expect(t.includes(norm(interdit)), `métho : trouvé « ${interdit} »`).toBe(false);
     }
   });
 
-  it('purge OCR « 17 signatures » 2026-09-23 : zéro échantillon P0 résiduel (12+1+4)', () => {
+  it('les marqueurs méthodologiques clés sont présents (grille 3 consignes + أفعال + استدلال)', () => {
+    const t = norm(OKACHA_METHODO.lignes.join(' '));
+    for (const cle of [
+      'استرداد الموارد', 'توظيف الموارد', 'البناء والتركيب', // = grille 5/7/8 (corrobore v5.0)
+      'التحليل', 'التفسير', 'الاستنتاج', 'الفرضية',
+      'أثبت', 'ناقش', 'علل', 'صف', // أفعال أدائية (famille أحكم/أصف)
+      'الاستدلال العلمي', 'المسعى العلمي',
+    ]) {
+      expect(t.includes(norm(cle)), `métho : « ${cle} » absent`).toBe(true);
+    }
+  });
+});
+
+describe('restauration المنهجية 2026-09-23 : METHODO + CONSEILS présents, unités propres', () => {
+  it('OKACHA_CONSEILS : قسم النصائح isolé (ex-d2u2), >= 80 lignes, trace source', () => {
+    expect(OKACHA_CONSEILS.titreAr).toBe('قسم النصائح');
+    expect(OKACHA_CONSEILS.sourceRange).toBe('l.1926-2199');
+    expect(OKACHA_CONSEILS.lignes.length).toBeGreaterThanOrEqual(80);
+    expect(norm(OKACHA_CONSEILS.lignes[0])).toContain(norm('قسم النصائح'));
+    const t = norm(OKACHA_CONSEILS.lignes.join(' '));
+    for (const interdit of ['camscanner', '300 دج', '0672388202']) {
+      expect(t.includes(norm(interdit)), `conseils : « ${interdit} »`).toBe(false);
+    }
+  });
+
+  it('les 17 signatures OCR purgées (2026-09-23) restent ABSENTES des unités', () => {
     const tout = norm(OKACHA_UNITES.map((u) => u.lignes.join('\n')).join('\n'));
     for (const sig of [
       'اا40من ارتباط',
@@ -69,10 +87,21 @@ describe('purge المنهجية (عكاشة) 2026-09-23 : zéro reste méthodo 
     ]) {
       expect(tout.includes(norm(sig)), `OCR résidu : « ${sig} »`).toBe(false);
     }
+    // Sanity : les unités restent substantielles après retraits
     for (const u of OKACHA_UNITES) {
       expect(u.lignes.length, u.id).toBeGreaterThanOrEqual(25);
       expect(u.lignes.join(' ').length, u.id).toBeGreaterThan(500);
     }
+  });
+
+  it('d2u2 ne mélange plus résumés et conseils (قسم النصيحه hors unités)', () => {
+    const d2 = OKACHA_UNITES.find((u) => u.id === 'd2u2')!;
+    const t = norm(d2.lignes.join('\n'));
+    expect(t.includes(norm('قسم النصائح'))).toBe(false);
+    expect(t.includes(norm('لا أنصحك بالتغيب'))).toBe(false);
+    expect(t.includes(norm('الفيتامينات'))).toBe(false);
+    // …mais les points techniques d2u2 restent (techniques criblage etc.)
+    expect(t.includes(norm('اختبار ELISA'))).toBe(true);
   });
 });
 
