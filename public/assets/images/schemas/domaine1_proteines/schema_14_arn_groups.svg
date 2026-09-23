@@ -1,4 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 700">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 700" role="img" aria-labelledby="schema-title">
+  <title id="schema-title">المجموعة 1</title>
   <rect width="1200" height="700" fill="#f8fafc" rx="32"/>
   <g>
     <rect x="70" y="90" width="300" height="500" rx="26" fill="#ffffff" stroke="#d8eadf" stroke-width="4"/>

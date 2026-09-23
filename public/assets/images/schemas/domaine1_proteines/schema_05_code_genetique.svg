@@ -1,4 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1300 860">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1300 860" role="img" aria-labelledby="schema-title">
+  <title id="schema-title">الشفرة الوراثية : قراءة الرامزات وتحديد البدء والتوقف</title>
   <rect width="1300" height="860" rx="28" fill="#f8fbff"/>
   <text x="650" y="68" text-anchor="middle" font-size="40" font-weight="800" fill="#0f172a">الشفرة الوراثية : قراءة الرامزات وتحديد البدء والتوقف</text>
 

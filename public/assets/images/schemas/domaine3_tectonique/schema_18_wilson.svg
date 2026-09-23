@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 650" width="800" height="650">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 650" width="800" height="650" role="img" aria-labelledby="schema-title">
+  <title id="schema-title">دورة ويلسون — Cycle de Wilson (6 مراحل)</title>
 <defs><style>text{font-family:'Noto Kufi Arabic','Segoe UI',system-ui,sans-serif;}
 .title,.t{font-size:21px;font-weight:800;fill:#0F2A1D;}
 .subtitle{font-size:13px;fill:#6B7280;}

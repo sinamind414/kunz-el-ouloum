@@ -1,4 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 700">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 700" role="img" aria-labelledby="schema-title">
+  <title id="schema-title">تأثير ألفا-أمانيتين على اصطناع ARNm</title>
   <rect width="1200" height="700" fill="#fbfcff" rx="30"/>
   <text x="600" y="70" text-anchor="middle" font-size="40" font-weight="800" fill="#0f172a">تأثير ألفا-أمانيتين على اصطناع ARNm</text>
   <rect x="70" y="120" width="420" height="500" rx="26" fill="#ffffff" stroke="#d9e2e8" stroke-width="4"/>

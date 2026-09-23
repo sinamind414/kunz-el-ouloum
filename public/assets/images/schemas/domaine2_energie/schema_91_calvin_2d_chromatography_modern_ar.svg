@@ -1,4 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="760" viewBox="0 0 1200 760" font-family="Arial, sans-serif">
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="760" viewBox="0 0 1200 760" font-family="Arial, sans-serif" role="img" aria-labelledby="schema-title">
+  <title id="schema-title">تجربة كالفن : تتبع ¹⁴CO₂ بكروماتوغرافيا ثنائية الأبعاد</title>
   <defs>
     <marker id="arr91" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
       <path d="M0,0 L9,3 L0,6 Z" fill="#0f172a"/>
