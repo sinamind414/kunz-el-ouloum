@@ -86,11 +86,13 @@ CREATE TABLE IF NOT EXISTS students (
   name          TEXT NOT NULL,
   created_at    TEXT NOT NULL
 );
+CREATE INDEX IF NOT EXISTS idx_students_email_lower ON students(LOWER(email));
 CREATE TABLE IF NOT EXISTS teachers (
   email         TEXT PRIMARY KEY,
   password_hash TEXT NOT NULL,
   name          TEXT NOT NULL
 );
+CREATE INDEX IF NOT EXISTS idx_teachers_email_lower ON teachers(LOWER(email));
 CREATE TABLE IF NOT EXISTS entries (
   student_id TEXT NOT NULL,
   id         TEXT NOT NULL,
@@ -188,8 +190,10 @@ export class SqliteStore {
   }
 
   // ── Étudiants ────────────────────────────────────────────
+  /** Recherche email insensible à la casse/espaces (comptes hérités mixtes). */
   findStudentByEmail(email: string): Student | undefined {
-    const r = this.db.prepare('SELECT * FROM students WHERE email = ?').get(email) as Record<string, unknown> | undefined;
+    const r = this.db.prepare('SELECT * FROM students WHERE LOWER(email) = ?')
+      .get((email || '').trim().toLowerCase()) as Record<string, unknown> | undefined;
     return r ? this.mapStudent(r) : undefined;
   }
 
@@ -218,8 +222,10 @@ export class SqliteStore {
   }
 
   // ── Enseignants ──────────────────────────────────────────
+  /** Recherche email insensible à la casse/espaces (comptes hérités mixtes). */
   findTeacherByEmail(email: string): Teacher | undefined {
-    const r = this.db.prepare('SELECT * FROM teachers WHERE email = ?').get(email) as Record<string, unknown> | undefined;
+    const r = this.db.prepare('SELECT * FROM teachers WHERE LOWER(email) = ?')
+      .get((email || '').trim().toLowerCase()) as Record<string, unknown> | undefined;
     return r ? { email: String(r.email), passwordHash: String(r.password_hash), name: String(r.name) } : undefined;
   }
 
@@ -447,9 +453,10 @@ export class SqliteStore {
 
   /** Itérateur du CSV global — streaming, jamais tout chargé en RAM.
    * Deux itérateurs triés par student_id fusionnés par positions :
-   * zéro sous-requête par élève. CONTRAT ORIGINAL : la colonne
-   * « last_production » contient en réalité STUDENT.createdAt (date
-   * d'inscription) — fidélité à la lettre au serveur JSON d'origine. */
+   * zéro sous-requête par élève. CONTRAT : la colonne « last_production »
+   * contient la date de RÉELLE dernière production (MAX created_at des
+   * entries) — cohérente avec le dashboard (l'ancien comportement =
+   * date d'inscription contredisait l'interface, audit 2026-09-22). */
   *iterateExportRows(studentId?: string, maintenant: number = Date.now()): IterableIterator<{ id: string; name: string; email: string; productions: number; avgIcm: number; lastProduction: string; topErrors: string; lastActivity: string | null; actif7j: boolean; actif30j: boolean }> {
     const stmt = this.db.prepare(`
       SELECT s.id, s.name, s.email, s.created_at,
@@ -489,7 +496,7 @@ export class SqliteStore {
         email: r.email,
         productions: Number(r.productions),
         avgIcm: Math.round(Number(r.avg_icm)),
-        lastProduction: r.created_at,
+        lastProduction: r.last_entry || "",
         topErrors: errs.slice(0, 5).map(e => `${e.tag}:${e.count}`).join('; '),
         lastActivity: act.lastActivity,
         actif7j: act.actif7j,

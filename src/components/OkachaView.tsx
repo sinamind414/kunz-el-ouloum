@@ -33,6 +33,7 @@ import { okachaUniteIcone, methodoIcone } from '../data/lessonIcons';
 import {
   loadOkachaProgress,
   toggleUniteLue,
+  marquerSectionLue,
   noterPoint,
   notationsUnite,
   totalNotations,
@@ -423,15 +424,58 @@ export default function OkachaView({ onBack, onRate, onOpenQcm }: Props) {
         </section>
       )}
 
-      {/* ── Méthodo (8 sections du livre, ordre du livre) ── */}
+      {/* ── Méthodo (9 sections : 8 du livre + nasiha — ordre du livre) ── */}
       {!resultats && onglet === 'm' && (
         <div className="space-y-3">
+          {/* Sommaire : 9 puces cliquables + badge « n/9 sections lues » */}
+          <nav
+            className="flex flex-wrap items-center gap-1.5 p-2.5 rounded-2xl border border-emerald-200 dark:border-emerald-900/60 bg-emerald-50/60 dark:bg-emerald-950/20 print:hidden"
+            data-testid="methodo-sommaire"
+            aria-label="Sommaire des sections méthodologie"
+          >
+            <span className="text-[10px] font-black text-emerald-800 dark:text-emerald-300 ml-1">
+              📑 {prog.sectionsLues.length}/{OKACHA_METHODO_SECTIONS.length} أقسام مقروءة
+            </span>
+            {OKACHA_METHODO_SECTIONS.map((s, i) => {
+              const lue = prog.sectionsLues.includes(s.id);
+              const active = sectionM === s.id;
+              return (
+                <button
+                  key={s.id}
+                  onClick={() => {
+                    setSectionM(s.id);
+                    setProg((p) => marquerSectionLue(p, s.id));
+                  }}
+                  data-testid={`sommaire-${s.id}`}
+                  title={s.titreAr}
+                  className={`inline-flex items-center gap-1 px-2 py-1 rounded-lg text-[10px] font-black transition-colors ${
+                    active
+                      ? 'bg-emerald-600 text-white'
+                      : lue
+                        ? 'bg-emerald-100 dark:bg-emerald-900/50 text-emerald-800 dark:text-emerald-200 hover:bg-emerald-200'
+                        : 'bg-white dark:bg-gray-900 text-gray-600 dark:text-gray-300 hover:bg-gray-100 border border-gray-200 dark:border-gray-700'
+                  }`}
+                >
+                  <span>{lue ? '✓' : i + 1}</span>
+                  <span className="max-w-[7.5rem] truncate">{s.titreAr.split('—')[0].trim()}</span>
+                </button>
+              );
+            })}
+          </nav>
+
           {OKACHA_METHODO_SECTIONS.map((s: SectionMethodo) => {
             const ouverteS = sectionM === s.id;
             return (
               <section key={s.id} className={`rounded-3xl border ${THEME.m.bord} bg-white dark:bg-[#161c18] overflow-hidden`}>
                 <button
-                  onClick={() => setSectionM(ouverteS ? null : s.id)}
+                  onClick={() => {
+                    if (ouverteS) {
+                      setSectionM(null);
+                    } else {
+                      setSectionM(s.id);
+                      setProg((p) => marquerSectionLue(p, s.id));
+                    }
+                  }}
                   data-testid={`methodo-section-${s.id}`}
                   className={`w-full flex items-center justify-between px-4 py-3 text-right bg-gradient-to-l ${THEME.m.grad} hover:opacity-90`}
                 >
@@ -447,11 +491,36 @@ export default function OkachaView({ onBack, onRate, onOpenQcm }: Props) {
                 </button>
                 {ouverteS && (
                   <div className="px-4 pb-4 pt-1 border-t border-gray-100 dark:border-gray-800">
+                    {s.sous && s.sous.length > 0 && (
+                      <div
+                        className="flex flex-wrap gap-1.5 mb-3 py-2 border-b border-dashed border-emerald-200 dark:border-emerald-900/50 print:hidden"
+                        data-testid={`methodo-sous-${s.id}`}
+                      >
+                        {s.sous.map((ss) => (
+                          <button
+                            key={ss.id}
+                            onClick={() => {
+                              document
+                                .querySelector(`[data-bloc-anchor="${s.id}:${ss.from}"]`)
+                                ?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                            }}
+                            data-testid={`sous-${ss.id}`}
+                            className="px-2 py-1 rounded-lg bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-900/60 text-[10px] font-black text-emerald-800 dark:text-emerald-200 hover:bg-emerald-100"
+                          >
+                            {ss.titreAr}
+                          </button>
+                        ))}
+                      </div>
+                    )}
                     {s.blocs.map((b, idx) => {
                       const cle = `m:${s.id}#${idx}`;
+                      const estAncrage = s.sous?.some((ss) => ss.from === idx);
                       return (
-                        <BlocView
+                        <div
                           key={idx}
+                          data-bloc-anchor={estAncrage ? `${s.id}:${idx}` : undefined}
+                        >
+                        <BlocView
                           b={b}
                           cle={cle}
                           domaine="m"
@@ -463,6 +532,7 @@ export default function OkachaView({ onBack, onRate, onOpenQcm }: Props) {
                           taille={taille}
                           q={q}
                         />
+                        </div>
                       );
                     })}
                   </div>

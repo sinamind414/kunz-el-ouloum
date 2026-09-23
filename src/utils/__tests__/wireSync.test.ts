@@ -125,6 +125,37 @@ describe('WIRE-SYNC — production vers file serveur', () => {
     expect(raw[0].kind).toBe('entry');
   });
 
+  it('413 (lot trop gros) : découpe le lot et vide la file — anti-deadlock', async () => {
+    localStorage.setItem('boussole_token', 'tok');
+    const sizes: number[] = [];
+    const fetchMock = vi.fn(async (_url: string, init: RequestInit) => {
+      const body = JSON.parse(String(init.body)) as { entries: unknown[]; events: unknown[] };
+      const total = body.entries.length + body.events.length;
+      sizes.push(total);
+      if (total > 25) return new Response('{}', { status: 413 });
+      return new Response(JSON.stringify({ ok: true }), { status: 200 });
+    });
+    vi.stubGlobal('fetch', fetchMock);
+    for (let i = 0; i < 40; i++) {
+      logActivityLocally({ studentId: 'local', type: 'drill', payload: { percent: i } });
+    }
+    await flushActivityQueue();
+    // 1er essai (40 > 25) → 413 → lot coupé à 20 → succès → lot suivant 20 → succès.
+    expect(sizes[0]).toBe(40);
+    expect(sizes[1]).toBe(20);
+    expect(JSON.parse(localStorage.getItem(QUEUE_KEY) || '[]')).toEqual([]);
+  });
+
+  it('413 résiduel sur UN seul item : abandon propre, pas de boucle infinie', async () => {
+    localStorage.setItem('boussole_token', 'tok');
+    const fetchMock = vi.fn(async () => new Response('{}', { status: 413 }));
+    vi.stubGlobal('fetch', fetchMock);
+    mkProd();
+    await flushActivityQueue();
+    expect(fetchMock).toHaveBeenCalledTimes(1); // une seule tentative, file intacte
+    expect(JSON.parse(localStorage.getItem(QUEUE_KEY)!).length).toBe(1);
+  });
+
   it('rotation carnet : jamais plus de 300 productions locales', () => {
     for (let i = 0; i < 305; i++) {
       mkProd({ text: `p${i}` });

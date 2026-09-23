@@ -1,5 +1,8 @@
 const API_BASE = (import.meta.env.VITE_API_URL as string | undefined) || '';
 
+/** Email normalisé (trim + minuscules) — miroir de la règle serveur. */
+const normalizeEmail = (email: string) => (email || '').trim().toLowerCase();
+
 async function request(path: string, options: RequestInit = {}) {
   const res = await fetch(`${API_BASE}${path}`, {
     ...options,
@@ -25,19 +28,41 @@ export function getApiToken(): string | null {
 export async function registerStudent(email: string, password: string, name: string) {
   return request('/api/auth/register', {
     method: 'POST',
-    body: JSON.stringify({ email, password, name }),
+    body: JSON.stringify({ email: normalizeEmail(email), password, name }),
   });
 }
 
 export async function loginStudent(email: string, password: string) {
   return request('/api/auth/login', {
     method: 'POST',
-    body: JSON.stringify({ email, password }),
+    body: JSON.stringify({ email: normalizeEmail(email), password }),
   });
 }
 
-export async function fetchMe() {
-  return request('/api/auth/me');
+/**
+ * Vérifie le jeton courant AUPRÈS du serveur.
+ * · envoie bien le header Authorization (correctif bug critique — sans lui,
+ *   le serveur répond 401 et l'appareil effaçait le jeton après chaque login) ;
+ * · seule une 401 « jeton refusé » est distinguée (err.status) pour que
+ *   l'appelant puisse couper la session — un échec réseau/5xx ne la détruit pas
+ *   (l'app est offline-first).
+ */
+export async function fetchMe(): Promise<{ student: { id: string; email: string; name: string } }> {
+  const token = getApiToken();
+  const res = await fetch(`${API_BASE}/api/auth/me`, {
+    headers: {
+      'Content-Type': 'application/json',
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    },
+  });
+  if (res.status === 401) {
+    const err = new Error('unauthorized') as Error & { status?: number };
+    err.status = 401;
+    throw err;
+  }
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(data?.error || 'request_failed');
+  return data;
 }
 
 export async function syncEntries(entries: Array<Record<string, unknown>>, events: Array<Record<string, unknown>> = []) {
@@ -103,7 +128,7 @@ export function getTeacherApiToken(): string | null {
 export async function loginTeacher(email: string, password: string) {
   return request('/api/teacher/login', {
     method: 'POST',
-    body: JSON.stringify({ email, password }),
+    body: JSON.stringify({ email: normalizeEmail(email), password }),
   });
 }
 

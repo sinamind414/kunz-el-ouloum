@@ -80,13 +80,25 @@ for uid, dom, label, a, b in UNITES:
     unit.append({'id': uid, 'domaine': dom, 'uniteAr': label,
                  'sourceRange': f'l.{a}-{b}', 'lignes': lignes})
 
-# ── méthodologie (l.115-660) — v2, croisée avec مفتاح (voir note docs/) ──
+# ── méthodologie (l.115-660) — v2, croisée مع مفتاح (voir note docs/) ──
 METHODO = {'titreAr': 'قسم المنهجية', 'sourceRange': 'l.115-660',
            'lignes': filtrer(lines[114:660])}
 assert len(METHODO['lignes']) >= 300, f"métho : {len(METHODO['lignes'])} lignes (<300)"
 
+# ── T-adv — d2u2 : قسم النصائح isolé (conseils personnels hors résumés) ──
+# Restauration المنهجية 2026-09-23 : les conseils ne sont PLUS dans OKACHA_UNITES
+# ni mélangés aux points — export dédié OKACHA_CONSEILS (9ᵉ section méthodo).
+CONSEILS = None
+for u in unit:
+    if u['id'] == 'd2u2' and 'قسم النصائح' in u['lignes']:
+        i = u['lignes'].index('قسم النصائح')
+        CONSEILS = {'titreAr': 'قسم النصائح', 'sourceRange': 'l.1926-2199',
+                    'lignes': u['lignes'][i:]}
+        u['lignes'] = u['lignes'][:i]
+assert CONSEILS and len(CONSEILS['lignes']) >= 80, 'T-adv : قسم النصيحه non isolé'
+
 # ── post-conditions avant écriture ──
-raw = json.dumps(unit, ensure_ascii=False) + json.dumps(METHODO, ensure_ascii=False)
+raw = json.dumps(unit, ensure_ascii=False) + json.dumps(METHODO, ensure_ascii=False) + json.dumps(CONSEILS, ensure_ascii=False)
 for interdit in ['0672388202', '0560420993', '300 دج', 'CamScanner', 'Scanne',
                  'المتفوق', 'الظهيرة']:
     assert interdit not in raw, f'interdit présent : {interdit}'
@@ -105,7 +117,8 @@ out.append('// okacha.ts — FICHIER GÉNÉRÉ par scripts/build_okacha.py — N
 out.append('// Source : livre عكاشة (upload GitHub master 5548459), extraction mécanique verbatim')
 out.append('// (filtres OCR documentés dans le script). Récapitulatifs numérotés « ما يجب حفظه »')
 out.append('// par unité — AUCUN corrigé dans la source (le livre nen contient pas). Verrou :')
-out.append('// okacha.lock.test.ts. Méthodo (l.115-660) non intégrée v1 (chevauche مفتاح v5.0).')
+out.append('// okacha.lock.test.ts. Restauration 2026-09-23 : METHODO + OKACHA_CONSEILS')
+out.append('// (قسم النصيحه ex-d2u2) ; 17 signatures OCR restent purgées des unités.')
 out.append('')
 out.append('export interface UniteOkacha {')
 out.append('  id: string;')
@@ -138,6 +151,16 @@ for l in METHODO['lignes']:
     out.append(f'    {j(l)},')
 out.append('  ],')
 out.append('} as const;')
+out.append('')
+out.append('/** قسم النصيحه — ex-d2u2, isolé (T-adv / restauration 2026-09-23). */')
+out.append('export const OKACHA_CONSEILS = {')
+out.append(f'  titreAr: {j(CONSEILS["titreAr"])},')
+out.append(f'  sourceRange: {j(CONSEILS["sourceRange"])},')
+out.append('  lignes: [')
+for l in CONSEILS['lignes']:
+    out.append(f'    {j(l)},')
+out.append('  ],')
+out.append('};')
 out.append('')
 
 OUT.write_text('\n'.join(out), encoding='utf-8')

@@ -3,7 +3,7 @@
 // MÊME contrat que server/store.ts (SQLite) : mêmes types, mêmes
 // réponses, mêmes sémantiques (occurences de tags, ordre à
 // égalité = première occurrence, col. CSV « last_production » =
-// date d'inscription, idempotence par (student_id, id)).
+// réelle dernière production, idempotence par (student_id, id)).
 // Sélection au démarrage : DATABASE_URL définit → PostgreSQL,
 // sinon SQLite (zéro service externe). Parité testée.
 //
@@ -28,11 +28,13 @@ CREATE TABLE IF NOT EXISTS students (
   name          text NOT NULL,
   created_at    timestamptz NOT NULL
 );
+CREATE INDEX IF NOT EXISTS idx_students_email_lower ON students (LOWER(email));
 CREATE TABLE IF NOT EXISTS teachers (
   email         text PRIMARY KEY,
   password_hash text NOT NULL,
   name          text NOT NULL
 );
+CREATE INDEX IF NOT EXISTS idx_teachers_email_lower ON teachers (LOWER(email));
 CREATE TABLE IF NOT EXISTS entries (
   student_id  text NOT NULL,
   id          text NOT NULL,
@@ -117,9 +119,10 @@ export class PostgresStore {
   }
 
   // ── Étudiants ────────────────────────────────────────────
+  /** Recherche email insensible à la casse/espaces (comptes hérités mixtes). */
   async findStudentByEmail(email: string): Promise<Student | undefined> {
     const r = await this.pool.query(
-      'SELECT * FROM students WHERE email = $1', [email],
+      'SELECT * FROM students WHERE LOWER(email) = $1', [(email || '').trim().toLowerCase()],
     );
     return r.rows[0] ? this.mapStudent(r.rows[0]) : undefined;
   }
@@ -151,8 +154,9 @@ export class PostgresStore {
   }
 
   // ── Enseignants ──────────────────────────────────────────
+  /** Recherche email insensible à la casse/espaces (comptes hérités mixtes). */
   async findTeacherByEmail(email: string): Promise<Teacher | undefined> {
-    const r = await this.pool.query('SELECT * FROM teachers WHERE email = $1', [email]);
+    const r = await this.pool.query('SELECT * FROM teachers WHERE LOWER(email) = $1', [(email || '').trim().toLowerCase()]);
     return r.rows[0] ? { email: String(r.rows[0].email), passwordHash: String(r.rows[0].password_hash), name: String(r.rows[0].name) } : undefined;
   }
 
@@ -471,7 +475,7 @@ export class PostgresStore {
           email: String(row.email),
           productions: Number(row.productions),
           avgIcm: Math.round(Number(row.avg_icm)),
-          lastProduction: iso(row.created_at),
+          lastProduction: row.last_entry ? iso(row.last_entry) : '',
           topErrors: (bySid.get(sid) || []).slice(0, 5).join('; '),
           lastActivity: act.lastActivity,
           actif7j: act.actif7j,

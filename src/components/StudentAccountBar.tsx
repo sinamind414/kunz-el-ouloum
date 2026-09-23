@@ -5,11 +5,13 @@ import { fetchMe, setApiToken, getApiToken, requestPasswordReset, requestTeacher
 
 interface Props {
   onOpenTeacher: () => void;
+  /** Appelé à la déconnexion OU quand le serveur refuse le jeton (401). */
+  onLogout?: () => void;
 }
 
 type Mode = 'menu' | 'forgot' | 'reset';
 
-export default function StudentAccountBar({ onOpenTeacher }: Props) {
+export default function StudentAccountBar({ onOpenTeacher, onLogout }: Props) {
   const [student, setStudent] = useState<{ id: string; name: string; email: string } | null>(null);
   const [online, setOnline] = useState<boolean>(navigator.onLine);
   const [open, setOpen] = useState(false);
@@ -24,7 +26,16 @@ export default function StudentAccountBar({ onOpenTeacher }: Props) {
     if (!token) return;
     fetchMe()
       .then((data) => setStudent(data.student))
-      .catch(() => setApiToken(null));
+      .catch((err: unknown) => {
+        // 401 = jeton réellement refusé (expiré/forge) → on coupe la session.
+        // Réseau ou 5xx : on GARDE le jeton — l'app est offline-first et une
+        // coupure ne doit pas déconnecter l'élève (correctif bug critique).
+        if ((err as { status?: number })?.status === 401) {
+          setApiToken(null);
+          onLogout?.();
+        }
+      });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -47,6 +58,7 @@ export default function StudentAccountBar({ onOpenTeacher }: Props) {
     setNewPassword('');
     setMessage(null);
     setError(null);
+    onLogout?.();
   };
 
   const handleResetRequest = async () => {

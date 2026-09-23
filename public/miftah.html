@@ -1,759 +1,295 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<title>المفتاح في منهجية العلوم — v5.0 (5 حركات و3 عائلات)</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>المفتاح · مفتاح المنهجية — علوم الطبيعة والحياة · بكالوريا الجزائر</title>
+<meta name="description" content="المفتاح — منهجية عملية لفهم التعليمة، استغلال السند، بناء الجواب وفحصه في علوم الطبيعة والحياة">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Cairo:wght@400;600;700;800;900&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;700;800&family=Inter:wght@400;600;700&family=Noto+Kufi+Arabic:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 :root{
-  --c-p1:#8a1c14;
-  --c-p1-bg:#fbf1f0;
-  --c-p1-bd:#e8b4b0;
-  --c-p2:#1a5235;
-  --c-p2-bg:#f0f7f3;
-  --c-p2-bd:#a3d4bb;
-  --c-p3:#1c3d5a;
-  --c-p3-bg:#f0f4f8;
-  --c-p3-bd:#adc6dc;
-  --ink:#14171a;
-  --ink-soft:#4a5568;
-  --ink-mute:#718096;
-  --bg:#f8fafc;
-  --card-bg:#ffffff;
-  --bd:#e2e8f0;
-  --bd-dark:#cbd5e1;
-  --gold:#b45309;
-  --gold-bg:#fef3c7;
-  --gold-bd:#fcd34d;
-  --crimson:#991b1b;
-  --crimson-bg:#fee2e2;
-  --teal:#0f766e;
-  --teal-bg:#ccfbf1;
+  --gold:#b77a12;--gold2:#6e4a09;--gold-l:#fff8e8;--gold-m:#efd69e;
+  --teal:#0b6f6a;--teal2:#07534f;--teal-l:#eaf7f5;
+  --red:#b42318;--red-l:#fff1ef;
+  --blue:#265fd5;--blue-l:#eef4ff;
+  --violet:#6b46c1;--violet-l:#f5f0ff;
+  --ink:#14181d;--mute:#52606d;--line:#dfe7eb;--paper:#fff;--bg:#edf1f3;
+  --shadow:0 10px 30px rgba(9,73,70,.08),0 2px 8px rgba(0,0,0,.05);
+  --r:18px;
 }
-
-*{box-sizing:border-box;margin:0;padding:0}
-html{font-size:13.5px;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+*{box-sizing:border-box}
+html{-webkit-print-color-adjust:exact;print-color-adjust:exact;scroll-behavior:smooth}
 body{
-  font-family:"IBM Plex Sans Arabic",system-ui,sans-serif;
-  color:var(--ink);
-  background:var(--bg);
-  line-height:1.45;
-  direction:rtl;
+  margin:0;background:var(--bg);color:var(--ink);
+  font-family:"Noto Kufi Arabic","Kufi","Cairo",Tahoma,Arial,sans-serif;
+  font-size:15px;line-height:1.85;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
 }
-
-.page{
-  width:210mm;
-  min-height:297mm;
-  margin:0 auto 12mm;
-  padding:9mm 10mm 8mm;
-  background:#fff;
-  box-shadow:0 4px 20px rgba(0,0,0,.08);
-  position:relative;
-  display:flex;
-  flex-direction:column;
-  justify-content:space-between;
-}
-
+.page{max-width:1000px;margin:24px auto;background:var(--paper);padding:32px 40px;border:1px solid #e4eaee;border-radius:var(--r);box-shadow:var(--shadow)}
+.brand{display:flex;align-items:flex-start;justify-content:space-between;gap:20px;border-bottom:3px solid var(--gold);padding-bottom:14px}
+h1,h2,h3{font-family:"Noto Kufi Arabic","Kufi","Cairo",sans-serif}
+h1{margin:0;color:var(--gold2);font-size:32px;font-weight:800;line-height:1.2}
+.official{color:var(--gold2);font-size:13px;font-weight:800;margin-top:4px}
+.tag{color:var(--mute);font-size:12.5px;margin-top:2px}
+.app{color:var(--mute);font-family:Inter,sans-serif;font-size:11px;line-height:1.6;text-align:left;direction:ltr}
+h2{margin:18px 0 10px;color:var(--teal2);font-size:19px;font-weight:800;border-bottom:2px solid var(--teal);padding-bottom:5px}
+h3{margin:12px 0 6px;font-size:14.5px;font-weight:800;color:var(--ink);display:flex;align-items:center;gap:7px}
+h3 .n{display:inline-flex;width:24px;height:24px;border-radius:50%;align-items:center;justify-content:center;flex:0 0 auto;color:#fff;background:linear-gradient(135deg,var(--gold),var(--gold2));font-size:11px}
+.label{display:inline-block;background:var(--teal);color:#fff;border-radius:999px;padding:4px 12px;font-size:11.5px;font-weight:800;margin-top:10px}
+.label.gold{background:linear-gradient(135deg,var(--gold),var(--gold2))}
+.legend{font-size:10.5px;color:var(--mute);margin:4px 0 8px;line-height:1.55}
+.box{border-radius:12px;padding:10px 13px;margin:8px 0;line-height:1.65}
+.gold{background:var(--gold-l);border:1px solid var(--gold-m)}
+.teal{background:var(--teal-l);border:1px solid #bfdfdb}
+.red{background:var(--red-l);border:1px solid #f4c3be}
+.blue{background:var(--blue-l);border:1px solid #c9d9fb}
+.violet{background:var(--violet-l);border:1px solid #ddd0fb}
+.corr{background:var(--red-l);border-right:4px solid var(--red);padding:7px 10px;border-radius:7px;font-size:11px;line-height:1.55;margin:7px 0}
+.corr b{color:var(--red)}
+.key-wrap{display:flex;align-items:center;gap:16px;flex-wrap:wrap;background:#fbfcfd;border:1px solid var(--line);border-radius:14px;padding:11px 13px}
+.key-wrap svg{flex:0 0 auto;filter:drop-shadow(0 2px 7px rgba(183,122,18,.18))}
+.teeth{display:flex;flex-wrap:wrap;gap:6px}
+.tooth{background:linear-gradient(135deg,var(--gold),var(--gold2));color:#fff;border-radius:9px;padding:4px 9px;font-weight:800;font-size:11.5px;box-shadow:0 2px 5px rgba(183,122,18,.2)}
+table{width:100%;border-collapse:separate;border-spacing:0;border:1px solid var(--line);border-radius:10px;overflow:hidden;margin:6px 0 10px;font-size:12px}
+th,td{border-left:1px solid var(--line);border-bottom:1px solid var(--line);padding:6px 8px;vertical-align:top;text-align:right}
+th{background:#eef7f6;color:var(--teal2);font-weight:800}
+tr:last-child td{border-bottom:0}
+th:last-child,td:last-child{border-left:0}
+td.c{text-align:center;font-weight:800;color:var(--gold2);background:#fffdf4}
+.fam{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.gate{background:#fbfcfd;border:1px solid var(--line);border-radius:11px;padding:10px}
+.q{font-size:13px;margin-bottom:4px}
+.q .big{color:var(--gold2);font-weight:800}
+.smallcaps{font-size:10.5px;color:var(--mute)}
+.opt{margin-top:5px;border-radius:7px;padding:5px 7px;font-size:11px;line-height:1.5}
+.opt.a{background:var(--gold-l);border:1px solid #f0d9a8}.opt.b{background:var(--teal-l);border:1px solid #b9d9d9}.opt.c{background:var(--violet-l);border:1px solid #ddd0fb}
+.chain{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:6px;background:#fbfcfd;border:1px solid var(--line);border-radius:11px;padding:9px;margin:7px 0}
+.node{background:#fff;border:2px solid var(--teal);border-radius:9px;padding:3px 9px;color:var(--teal);font-weight:800;font-size:11.5px}
+.node.g{border-color:var(--gold);color:var(--gold2);background:#fffdf4}.node.r{border-color:var(--red);color:var(--red);background:var(--red-l)}.arr{color:var(--mute);font-size:16px}
+.sent{background:#fff;border:1px solid var(--line);border-right:4px solid var(--gold);border-radius:8px;padding:6px 9px;margin:5px 0;font-size:11.8px}
+.check{display:flex;flex-wrap:wrap;gap:6px}.check div{flex:1 1 170px;background:var(--gold-l);border:1px solid #f0dfb6;border-radius:9px;padding:6px 8px;font-size:11.2px}.check b{color:var(--gold2)}
+.small{font-size:10.5px;color:var(--mute)}.center{text-align:center}.ltr{direction:ltr;unicode-bidi:isolate;font-family:Inter,sans-serif}
+.sec30{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.pill-row{display:flex;flex-wrap:wrap;gap:7px;margin:6px 0}.pill{padding:5px 9px;border-radius:999px;border:1px solid var(--line);background:#fff;font-size:11.2px;font-weight:700}.pill.gold{background:var(--gold-l);border-color:var(--gold-m);color:var(--gold2)}.pill.teal{background:var(--teal-l);border-color:#bfdfdb;color:var(--teal2)}
+.tri{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}.tri .card{border:1px solid var(--line);border-radius:11px;padding:10px;background:#fbfcfd}.card .num{font-family:Inter,sans-serif;font-weight:800;font-size:20px;color:var(--gold2)}.card b{color:var(--teal2)}
+.example{display:grid;grid-template-columns:1fr 1fr;gap:8px}.example .e{border-radius:11px;padding:10px;border:1px solid var(--line);background:#fff}.example .e strong{display:block;color:var(--teal2);margin-bottom:3px}
+footer{text-align:center;color:var(--mute);font-size:10px;margin-top:12px}
+@media(max-width:700px){body{font-size:14px}.page{margin:10px;padding:20px}.brand{flex-direction:column}.fam,.sec30,.tri,.example{grid-template-columns:1fr}.key-wrap{justify-content:center}}
 @media print{
-  body{background:#fff}
-  .page{
-    width:210mm;
-    height:297mm;
-    margin:0;
-    padding:8mm 9mm 7mm;
-    box-shadow:none;
-    page-break-after:always;
-    page-break-inside:avoid;
-  }
-}
-
-/* Header */
-header{
-  border-bottom:2px solid var(--ink);
-  padding-bottom:5px;
-  margin-bottom:7px;
-  display:flex;
-  justify-content:space-between;
-  align-items:flex-end;
-}
-.brand{display:flex;align-items:baseline;gap:8px}
-.brand h1{
-  font-family:"Cairo",sans-serif;
-  font-weight:900;
-  font-size:20px;
-  letter-spacing:-0.5px;
-  color:var(--ink);
-}
-.brand .tag{
-  font-size:10.5px;
-  font-weight:600;
-  color:var(--gold);
-  background:var(--gold-bg);
-  padding:2px 7px;
-  border-radius:3px;
-  border:1px solid var(--gold-bd);
-}
-.meta{
-  font-size:10px;
-  color:var(--ink-soft);
-  text-align:left;
-  line-height:1.3;
-}
-
-/* Base Headings & Badges */
-h2{
-  font-family:"Cairo",sans-serif;
-  font-weight:800;
-  font-size:13px;
-  margin-bottom:4px;
-  display:flex;
-  align-items:center;
-  gap:6px;
-}
-.badge{
-  display:inline-block;
-  font-size:9.5px;
-  font-weight:700;
-  padding:1px 6px;
-  border-radius:3px;
-  vertical-align:middle;
-}
-.b-p1{background:var(--c-p1);color:#fff}
-.b-p2{background:var(--c-p2);color:#fff}
-.b-p3{background:var(--c-p3);color:#fff}
-.b-dark{background:var(--ink);color:#fff}
-
-/* Law Banner */
-.law{
-  background:linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
-  border:1.5px solid var(--gold);
-  border-radius:5px;
-  padding:6px 10px;
-  margin-bottom:7px;
-  font-size:11px;
-  line-height:1.4;
-  display:flex;
-  align-items:center;
-  gap:10px;
-}
-.law-icon{
-  font-size:18px;
-  font-weight:900;
-  color:var(--gold);
-  line-height:1;
-}
-.law strong{color:#78350f}
-
-/* Three Pillars Grid */
-.pillars{
-  display:grid;
-  grid-template-columns:1fr 1fr 1fr;
-  gap:6px;
-  margin-bottom:7px;
-}
-.pillar{
-  border-radius:5px;
-  padding:7px 8px;
-  border:1.5px solid;
-  display:flex;
-  flex-direction:column;
-  justify-content:space-between;
-}
-.pillar.p1{background:var(--c-p1-bg);border-color:var(--c-p1-bd)}
-.pillar.p2{background:var(--c-p2-bg);border-color:var(--c-p2-bd)}
-.pillar.p3{background:var(--c-p3-bg);border-color:var(--c-p3-bd)}
-
-.pillar-head{
-  display:flex;
-  justify-content:space-between;
-  align-items:baseline;
-  margin-bottom:4px;
-  border-bottom:1px dashed;
-  padding-bottom:3px;
-}
-.p1 .pillar-head{border-color:var(--c-p1-bd)}
-.p2 .pillar-head{border-color:var(--c-p2-bd)}
-.p3 .pillar-head{border-color:var(--c-p3-bd)}
-
-.p-title{font-family:"Cairo",sans-serif;font-weight:800;font-size:12.5px}
-.p1 .p-title{color:var(--c-p1)}
-.p2 .p-title{color:var(--c-p2)}
-.p3 .p-title{color:var(--c-p3)}
-.p-pts{font-weight:800;font-size:13px}
-
-.p-mission{font-size:10.5px;font-weight:600;margin-bottom:5px;line-height:1.35}
-.p-list{list-style:none;font-size:10px;margin-bottom:5px}
-.p-list li{position:relative;padding-right:10px;margin-bottom:2px;line-height:1.3}
-.p-list li::before{content:"•";position:absolute;right:0;font-weight:bold}
-.p-trap{
-  font-size:9.5px;
-  background:rgba(255,255,255,0.7);
-  padding:3px 5px;
-  border-radius:3px;
-  border-right:2px solid;
-  line-height:1.3;
-}
-.p1 .p-trap{border-color:var(--c-p1);color:var(--c-p1)}
-.p2 .p-trap{border-color:var(--c-p2);color:var(--c-p2)}
-.p3 .p-trap{border-color:var(--c-p3);color:var(--c-p3)}
-
-/* Action Engine */
-.action-box{
-  border:1.5px solid var(--ink);
-  border-radius:5px;
-  padding:7px 9px;
-  margin-bottom:7px;
-  background:#fff;
-}
-.action-grid{
-  display:grid;
-  grid-template-columns:1fr 1fr 1fr;
-  gap:8px;
-  font-size:10.5px;
-}
-.action-col{
-  padding:4px 6px;
-  border-radius:4px;
-  background:var(--bg);
-  border:1px solid var(--bd);
-}
-.action-col strong{display:block;font-size:11px;margin-bottom:3px;color:var(--ink)}
-.action-col ol{padding-right:14px;margin:0}
-.action-col li{margin-bottom:2px;line-height:1.3}
-
-/* Master Table */
-.table-box{
-  border:1.5px solid var(--ink);
-  border-radius:5px;
-  overflow:hidden;
-  margin-bottom:7px;
-}
-table{
-  width:100%;
-  border-collapse:collapse;
-  font-size:10px;
-  text-align:right;
-}
-thead{background:var(--ink);color:#fff}
-th{
-  padding:4px 6px;
-  font-family:"Cairo",sans-serif;
-  font-weight:700;
-  font-size:10.5px;
-  border-left:1px solid rgba(255,255,255,0.15);
-}
-th:last-child{border-left:none}
-td{
-  padding:4px 6px;
-  border-bottom:1px solid var(--bd);
-  border-left:1px solid var(--bd);
-  vertical-align:top;
-  line-height:1.3;
-}
-td:last-child{border-left:none}
-tbody tr:last-child td{border-bottom:none}
-tbody tr:nth-child(even){background:var(--bg)}
-.verb-tag{
-  font-family:"Cairo",sans-serif;
-  font-weight:800;
-  font-size:11px;
-  color:var(--ink);
-  display:inline-block;
-}
-.sanction{color:var(--crimson);font-weight:600}
-
-/* Strip Checklist */
-.strip{
-  background:var(--teal-bg);
-  border:1.5px solid var(--teal);
-  border-radius:5px;
-  padding:5px 8px;
-  font-size:10px;
-  margin-bottom:6px;
-}
-.strip-title{
-  font-family:"Cairo",sans-serif;
-  font-weight:800;
-  font-size:11px;
-  color:var(--teal);
-  margin-bottom:3px;
-}
-.strip-items{
-  display:grid;
-  grid-template-columns:repeat(5,1fr);
-  gap:4px;
-}
-.strip-item{
-  background:#fff;
-  padding:3px 5px;
-  border-radius:3px;
-  border:1px solid var(--bd-dark);
-  line-height:1.25;
-}
-.strip-item b{color:var(--teal);display:block;font-size:10px}
-
-/* Teacher Note & Footer */
-.note{
-  font-size:9.5px;
-  color:var(--ink-soft);
-  border-top:1px dashed var(--bd-dark);
-  padding-top:4px;
-  margin-top:auto;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-}
-footer{
-  border-top:1.5px solid var(--ink);
-  padding-top:4px;
-  margin-top:5px;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  font-size:9px;
-  color:var(--ink-mute);
-}
-footer .app{font-weight:700;color:var(--ink);text-align:left;direction:ltr;line-height:1.4}
-
-/* Verso specific */
-.verso-grid{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:6px;
-  margin-bottom:6px;
-}
-.v-card{
-  border:1.5px solid var(--bd-dark);
-  border-radius:5px;
-  padding:6px 8px;
-  background:#fff;
-  font-size:10px;
-}
-.v-card h3{
-  font-family:"Cairo",sans-serif;
-  font-size:11.5px;
-  font-weight:800;
-  margin-bottom:4px;
-  color:var(--ink);
-  display:flex;
-  align-items:center;
-  gap:5px;
-}
-.v-card h3 .n{
-  background:var(--ink);
-  color:#fff;
-  width:16px;
-  height:16px;
-  border-radius:50%;
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  font-size:9.5px;
-}
-.v-card ol,.v-card ul{padding-right:14px;margin:0}
-.v-card li{margin-bottom:2px;line-height:1.3}
-
-.doc-matrix{
-  width:100%;
-  border-collapse:collapse;
-  font-size:9.5px;
-  margin-top:3px;
-}
-.doc-matrix th,.doc-matrix td{
-  border:1px solid var(--bd-dark);
-  padding:3px 4px;
-  text-align:right;
-}
-.doc-matrix th{background:var(--bg);font-weight:700}
-
-.synth-box{
-  background:var(--c-p3-bg);
-  border:1.5px solid var(--c-p3-bd);
-  border-radius:5px;
-  padding:6px 8px;
-  font-size:10px;
-  margin-bottom:6px;
-}
-.synth-box h3{
-  font-family:"Cairo",sans-serif;
-  font-size:11.5px;
-  font-weight:800;
-  color:var(--c-p3);
-  margin-bottom:3px;
-}
-.synth-layout{
-  display:grid;
-  grid-template-columns:1.2fr 1fr;
-  gap:8px;
-}
-
-.drill-box{
-  background:var(--gold-bg);
-  border:1.5px solid var(--gold-bd);
-  border-radius:5px;
-  padding:6px 8px;
-  font-size:10px;
-  margin-bottom:6px;
-}
-.drill-box h3{
-  font-family:"Cairo",sans-serif;
-  font-size:11.5px;
-  font-weight:800;
-  color:#78350f;
-  margin-bottom:3px;
-}
-.drill-steps{
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  gap:4px;
-  margin-top:3px;
-}
-.d-step{
-  background:#fff;
-  padding:4px 5px;
-  border-radius:3px;
-  border:1px solid var(--gold-bd);
-  font-size:9.5px;
-  line-height:1.25;
-}
-.d-step b{display:block;color:var(--gold);font-size:10px}
-
-.check{
-  background:#fff;
-  border:1px dashed var(--bd-dark);
-  border-radius:4px;
-  padding:4px 6px;
-  margin-top:4px;
-  font-size:9.5px;
-  line-height:1.35;
+  @page{size:210mm 297mm;margin:0}
+  body{background:#fff;font-size:9pt;line-height:1.45}
+  .page{max-width:none;margin:0;padding:0;border:0;border-radius:0;box-shadow:none}
+  .break{page-break-before:always;break-before:page}
+  h1{font-size:16pt}.official,.tag{font-size:8pt}.brand{padding-bottom:6px}
+  h2{font-size:11pt;margin:7px 0 5px;padding-bottom:3px}h3{font-size:9pt;margin:6px 0 3px}h3 .n{width:16px;height:16px;font-size:7pt}
+  .key-wrap{padding:6px;gap:8px}.key-wrap svg{width:168px;height:58px}.tooth{font-size:8pt;padding:2px 6px}
+  table{font-size:8pt;margin:4px 0 6px}th,td{padding:3px 5px}.box{padding:6px 8px;margin:4px 0}.corr{padding:4px 7px;font-size:8pt}
+  .gate{padding:6px}.opt,.sent,.legend{font-size:8pt;padding:3px 5px}.chain{padding:5px}.node{font-size:8pt;padding:2px 6px}.check div{font-size:8pt;padding:4px 6px}.footer{font-size:8pt;margin-top:4px}.app{font-size:8pt}.label{margin-top:6px;font-size:8pt;padding:2px 8px}.pill{font-size:8pt;padding:2px 6px}.card{padding:5px!important}
+  @page{size:A4;margin:8mm 9mm}
 }
 </style>
 </head>
 <body>
 
-<!-- RECTO -->
-<div class="page">
-  <div>
-    <header>
-      <div class="brand">
-        <h1>المفتاح في منهجية العلوم</h1>
-        <span class="tag">النسخة 5.0 — قواعد التصحيح والحركات الخمس</span>
-      </div>
-      <div class="meta">
-        <strong>هيكل البكالوريا — علوم تجريبية (ع ت) / علوم الطبيعة والحياة</strong><br>
-        وثيقة التلميذ المرجعية · 2025/2026
-      </div>
-    </header>
-
-    <div class="law">
-      <div class="law-icon">⚖</div>
-      <div>
-        <strong>القانون الذهبي للمصحح:</strong> المصحح لا يمنح النقطة لأنك «فاهم»، بل لأن <em>الكلمة الدقيقة المفتاحية</em> كُتبت في <em>مكانها المنهجي الصحيح</em>. المصحح يملك شبكة تنقيط مقسمة على <strong>0.25 / 0.5</strong>؛ كل حركة ناقصة = خصم فوري.
-      </div>
+<section class="page">
+  <div class="brand">
+    <div>
+      <h1>المفتاح</h1>
+      <div class="official">مفتاح المنهجية</div>
+      <div class="tag">منهجية الإجابة في علوم الطبيعة والحياة · بكالوريا الجزائر</div>
+      <div class="tag ltr">5 gestes · 3 familles · 1 boussole · une réponse lisible</div>
     </div>
+    <div class="app"><b>كنز العلوم</b> · Kunz El Ouloum<br>v6.0 · fiche élève · recto = النواة · verso = المفتاح+</div>
+  </div>
 
-    <h2><span class="badge b-dark">1</span> أركان البكالوريا الثلاثة — العائلات الخمس للحركات</h2>
-    <div class="pillars">
-      <div class="pillar p1">
-        <div>
-          <div class="pillar-head">
-            <span class="p-title">التمرين الأول — استرجاع منظم</span>
-            <span class="p-pts">5 نقاط</span>
-          </div>
-          <div class="p-mission">الهدف: إبراز المعارف المهيكلة وحل مشكل علمي مباشر</div>
-          <ul class="p-list">
-            <li><strong>المهمة:</strong> استرجاع دقيق للمكتسبات مع ربط سببي.</li>
-            <li><strong>المخرج:</strong> نص علمي مهيكل (مقدمة + مشكل، عرض منطقي، خاتمة/حل) أو رسم تخطيطي وظيفي شامل.</li>
-          </ul>
-        </div>
-        <div class="p-trap"><strong>خطر الصفر:</strong> الخروج عن المشكل، غياب الربط، أو نسيان البيانات والعنوان.</div>
+  <span class="label">البطاقة الأولى · ابدأ هنا</span>
+  <h2>المفتاح — قبل أن أكتب، أعرف ماذا أُنتج</h2>
+  <p class="legend">المفتاح هنا أداة منهجية للتدريب والتنظيم؛ العبارات الخاصة بالتنقيط ليست سلّمًا رسميًا عامًا.</p>
+
+  <div class="key-wrap">
+    <svg width="248" height="78" viewBox="0 0 248 78" aria-label="مفتاح بخمس حركات">
+      <circle cx="37" cy="39" r="27" fill="none" stroke="#b77a12" stroke-width="8"/>
+      <circle cx="37" cy="39" r="8" fill="#fff" stroke="#b77a12" stroke-width="4"/>
+      <rect x="62" y="32" width="176" height="14" rx="4" fill="#b77a12"/>
+      <g fill="#b77a12"><rect x="84" y="46" width="13" height="21" rx="2"/><rect x="112" y="46" width="13" height="16" rx="2"/><rect x="140" y="46" width="13" height="23" rx="2"/><rect x="168" y="46" width="13" height="18" rx="2"/><rect x="200" y="46" width="13" height="20" rx="2"/></g>
+    </svg>
+    <div style="flex:1;min-width:240px">
+      <div class="teeth">
+        <span class="tooth">1 فعل</span><span class="tooth">2 دليل</span><span class="tooth">3 علاقة</span><span class="tooth">4 جواب</span><span class="tooth">5 فحص</span>
       </div>
-
-      <div class="pillar p2">
-        <div>
-          <div class="pillar-head">
-            <span class="p-title">التمرين الثاني — استدلال علمي</span>
-            <span class="p-pts">7 نقاط</span>
-          </div>
-          <div class="p-mission">الهدف: حل مشكل جديد بالسندات وتأسيس فرضيات/نتائج</div>
-          <ul class="p-list">
-            <li><strong>المهمة:</strong> استغلال منهجي لسندين أو جزأين.</li>
-            <li><strong>المسار:</strong> تحليل مقارن/تفسير للوثائق ← استخراج أدلة ← صياغة فرضية وجيهة أو المصادقة عليها.</li>
-          </ul>
-        </div>
-        <div class="p-trap"><strong>خطر الصفر:</strong> قراءة السند دون استنتاج، أو فرضية لا علاقة لها بالمعطيات.</div>
-      </div>
-
-      <div class="pillar p3">
-        <div>
-          <div class="pillar-head">
-            <span class="p-title">التمرين الثالث — مسعى علمي</span>
-            <span class="p-pts">8 نقاط</span>
-          </div>
-          <div class="p-mission">الهدف: بحث وتقصٍ كامل في 3 أجزاء لمشكل معقد</div>
-          <ul class="p-list">
-            <li><strong>ج1:</strong> طرح مشكل واقتراح فرضيات تفسيرية.</li>
-            <li><strong>ج2:</strong> فحص الفرضيات بسلسلة تجارب واستدلال مركب.</li>
-            <li><strong>ج3:</strong> تركيب نهائي (مخطط، نص علمي، أو حصيلة وظيفية).</li>
-          </ul>
-        </div>
-        <div class="p-trap"><strong>خطر الصفر:</strong> عزل الأجزاء؛ الجزء 3 يبنى كلياً على أدلة ج1 وج2.</div>
-      </div>
-    </div>
-
-    <h2><span class="badge b-dark">2</span> المحرك التنفيذي — الحركات المنهجية الخمس (من السند إلى النقطة)</h2>
-    <div class="action-box">
-      <div class="action-grid">
-        <div class="action-col">
-          <strong>1. التفكيك والقفل</strong>
-          <ol>
-            <li><strong>تسطير الفعل الدال:</strong> حدد الفعل (حلل، فسر، صادق...).</li>
-            <li><strong>تحديد القفل:</strong> صِغ الهدف النهائي في ≤5 كلمات («المطلوب إثبات أن...»).</li>
-            <li><strong>حصر المعطيات:</strong> استخرج الشروط التجريبية والشاهد.</li>
-          </ol>
-        </div>
-        <div class="action-col">
-          <strong>2. المسار الاستدلالي</strong>
-          <ol>
-            <li><strong>تحليل السند:</strong> عنوان الوثيقة + تفكيك المعطيات (تغيرات/مقارنة).</li>
-            <li><strong>استخراج الدلالة:</strong> ماذا تعني هذه النتيجة بيولوجياً؟</li>
-            <li><strong>بناء العلاقة:</strong> الربط السببي (بما أن... فإن... وهذا يفسر...).</li>
-          </ol>
-        </div>
-        <div class="action-col">
-          <strong>3. القفل والتركيب</strong>
-          <ol>
-            <li><strong>الاستنتاج الصريح:</strong> المعلومة المستخرجة من الوثيقة وحدها.</li>
-            <li><strong>التركيب/الإجابة:</strong> الربط المباشر لحل المشكل والإجابة عن القفل.</li>
-            <li><strong>التدقيق اللغوي:</strong> استعمال المصطلحات العلمية الدقيقة.</li>
-          </ol>
-        </div>
-      </div>
-    </div>
-
-    <h2><span class="badge b-dark">3</span> جدول الأفعال الدالة وشبكة التنقيط الصارمة</h2>
-    <div class="table-box">
-      <table>
-        <thead>
-          <tr>
-            <th style="width:18%">عائلة الفعل</th>
-            <th style="width:36%">ماذا يطلب المصحح؟ <span style="font-weight:400">(منطق شبكة التنقيط، لا سلّم رسمي)</span></th>
-            <th style="width:26%">الهيكل الإلزامي للإجابة</th>
-            <th style="width:20%">العقوبة عند الإخلال</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td><span class="verb-tag">أَصِف / أُحَلِّل</span><br><span style="font-size:9px;color:var(--ink-soft)">حلّل، قارن، صف</span></td>
-            <td>تفكيك معطيات الوثيقة إلى دلالات دون إدخال تفسير خارجي غير موجود في السند.</td>
-            <td>1. تعريف بالوثيقة.<br>2. تفكيك منظم (تغيرات/شروط).<br>3. استنتاج مستقل.</td>
-            <td><span class="sanction">تحليل دون استنتاج = خصم 50% من العلامة.</span></td>
-          </tr>
-          <tr>
-            <td><span class="verb-tag">أُفَسِّر / أُعَلِّل</span><br><span style="font-size:9px;color:var(--ink-soft)">فسّر، علّل، بيّن سبب</span></td>
-            <td>إبراز الآلية السببية («لماذا وكيف؟») بربط معطيات السند بالمعارف الدقيقة للدرس.</td>
-            <td>1. الملاحظة من السند.<br>2. الربط بالآلية البيولوجية.<br>3. النتيجة السببية.</td>
-            <td><span class="sanction">ذكر الظاهرة دون الآلية الجزئية = صفر في التفسير.</span></td>
-          </tr>
-          <tr>
-            <td><span class="verb-tag">أَسْتَدِلّ / أُصَادِق</span><br><span style="font-size:9px;color:var(--ink-soft)">استدل، صادق، ناقش</span></td>
-            <td>استخراج مؤشرات علمية من عدة وثائق للوصول لحكم منطقي يؤكد أو ينفي الفرضية.</td>
-            <td>1. استغلال الوثيقة (أ) + استنتاج.<br>2. استغلال الوثيقة (ب) + استنتاج.<br>3. تركيب يربط الأدلة للحكم.</td>
-            <td><span class="sanction">حكم مباشر دون استغلال السندات = يُلغى الجواب كلياً.</span></td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-
-    <div class="strip">
-      <div class="strip-title">شريط الفحص السريع قبل الانتقال للسؤال التالي (5/5):</div>
-      <div class="strip-items">
-        <div class="strip-item"><b>1. قفل السؤال</b>هل الجواب يُجيب فعلاً، لا يُعيد نص السؤال؟</div>
-        <div class="strip-item"><b>2. الاستنتاج</b>هل كتبت «الاستنتاج: ...» بعد كل تحليل لوثيقة؟</div>
-        <div class="strip-item"><b>3. المصطلحات</b>هل ذُكرت الكلمات المفتاحية الأساسية للوحدة؟</div>
-        <div class="strip-item"><b>4. الربط السببي</b>هل استعملت (بما أن... مما أدى إلى... وبالتالي)؟</div>
-        <div class="strip-item"><b>5. النظافة والهيكلة</b>هل الخط مقروء ومقسم لعوارض ومقدمة/عرض/خاتمة؟</div>
-      </div>
+      <div class="small" style="margin-top:5px"><b>فعل · دليل · علاقة · جواب · فحص</b> — الخمس حركات تحوّل التفكير إلى جواب قابل للقراءة.</div>
     </div>
   </div>
 
-  <div>
-    <div class="note">
-      <span><strong>توجيه للأستاذ/التلميذ:</strong> تُقرأ هذه الورقة كمنظومة واحدة: الركن يحدد النطاق (5، 7، 8) ← الحركة تحدد المسار ← العائلة تحدد الهيكل. الوجه الثاني (أ–د) يقدم الأدوات التطبيقية التفصيلية.</span>
-    </div>
-    <footer>
-      <span>المفتاح في منهجية العلوم الطبيعية والحياة — بكالوريا الجزائر</span>
-      <span class="app"><b>كنز العلوم</b> · Kunz El Ouloum<br>v5.0 · fiche eleve · recto = المفتاح · verso = المفتاح+</span>
-      <span>الصفحة 1 / 2</span>
-    </footer>
+  <h3><span class="n">0</span> بوصلة 20–30 ثانية</h3>
+  <div class="tri">
+    <div class="card"><div class="num">1</div><b>ماذا يريد السؤال؟</b><br><span class="small">أطوّق الفعل وأحدّد المطلوب الحقيقي.</span></div>
+    <div class="card"><div class="num">2</div><b>على ماذا سأعتمد؟</b><br><span class="small">وثيقة، قيم، مقارنة، معارف، تجربة… حسب التعليمة.</span></div>
+    <div class="card"><div class="num">3</div><b>ماذا يجب أن أُنتج؟</b><br><span class="small">وصف، تفسير، حكم، تعريف، اقتراح… لا أخلط بينها.</span></div>
   </div>
-</div>
+
+  <h3><span class="n">أ</span> الحركات الخمس — نسخة عملية</h3>
+  <table>
+    <tr><th style="width:32px">#</th><th style="width:78px">الحركة</th><th>ما الذي أفعله؟</th><th style="width:31%">علامة أمان</th></tr>
+    <tr><td class="c">1</td><td class="c">فعل</td><td>أقرأ التعليمة كاملة، أطوّق الفعل، وأضع رقم السؤال بوضوح.</td><td>لا أجيب عن سؤال آخر لمجرد أنني أعرف معلومات عنه.</td></tr>
+    <tr><td class="c">2</td><td class="c">دليل</td><td>أختار فقط المعطيات utiles : valeurs, unités, variations, comparaison, conditions, témoin…</td><td>كل donnée retenue doit servir le raisonnement.</td></tr>
+    <tr><td class="c">3</td><td class="c">علاقة</td><td>أربط المعطى بما يليه : كلما… / بينما… / مقارنة بـ… عندما تسمح التعليمة بذلك.</td><td>لا أحوّل علاقة بين متغيرين إلى سببية بلا دليل.</td></tr>
+    <tr><td class="c">4</td><td class="c">جواب</td><td>أكتب جملة أو منتجًا يجيب المطلوب مباشرة، دون نسخ التعليمة.</td><td>الجملة النهائية يجب أن يمكن قراءتها وحدها.</td></tr>
+    <tr><td class="c">5</td><td class="c">فحص</td><td>Je vérifie : ai-je fait le bon geste ? utilisé le bon support ? répondu à la bonne question ?</td><td>الفحص عادة تدريبية، وليس حكمًا آليًا على التنقيط.</td></tr>
+  </table>
+
+  <h3><span class="n">ب</span> العائلات الثلاث — ليست قائمة حفظ، بل أنواع إنتاج</h3>
+  <div class="fam">
+    <div class="gate">
+      <div class="q">🟡 <span class="big">أصف</span> <span class="smallcaps">— ماذا تُظهر المعطيات؟</span></div>
+      <div class="opt a"><b>أنتظر:</b> ملاحظة، استخراج، مقارنة، تنظيم قيم.</div>
+      <div class="opt b"><b>لغة مساعدة:</b> نلاحظ · يرتفع · ينخفض · يثبت · يختلف · يقارن.</div>
+      <div class="opt c"><b>تنبيه:</b> لا أضيف تفسيرًا لم تطلبه التعليمة.</div>
+    </div>
+    <div class="gate">
+      <div class="q">🟢 <span class="big">أقرأ</span> <span class="smallcaps">— ماذا تعني المعطيات؟</span></div>
+      <div class="opt a"><b>أنتظر:</b> تفسيرًا أو تعليلًا يربط الدليل بالمعرفة العلمية.</div>
+      <div class="opt b"><b>لغة مساعدة:</b> وهذا راجع إلى… · نعلم أن… · مما يؤدي إلى…</div>
+      <div class="opt c"><b>تنبيه:</b> لا أكتفي بإعادة الأرقام إذا كان المطلوب تفسيرًا.</div>
+    </div>
+    <div class="gate">
+      <div class="q">🟣 <span class="big">أحكم</span> <span class="smallcaps">— ماذا أقرر بناءً على الدليل؟</span></div>
+      <div class="opt a"><b>أنتظر:</b> validation, rejet, hypothèse, justification, proposition…</div>
+      <div class="opt b"><b>لغة مساعدة:</b> يتوافق مع… · لا يتوافق… · لذلك…</div>
+      <div class="opt c"><b>تنبيه:</b> الحكم يحتاج أساسًا؛ لا أقرر قبل استغلال المعطيات.</div>
+    </div>
+  </div>
+
+  <div class="corr"><b>قاعدة ذهبية:</b> لا أحفظ «فعل = عائلة» بشكل آلي. <b>الفعل أول إشارة</b>، لكن التعليمة كاملة هي التي تحدد نوع المنتج المطلوب.</div>
+
+  <h3><span class="n">ج</span> وضع الحفظ — عندما لا يُطلب منك تفسير</h3>
+  <table>
+    <tr><th style="width:120px">الفعل</th><th>Réflexe</th></tr>
+    <tr><td class="c">سمّ / اذكر / عدّد</td><td>قائمة واضحة؛ عنصر مستقل لكل معلومة، والعدد يطابق المطلوب.</td></tr>
+    <tr><td class="c">عرّف</td><td>النوع / الانتماء + الخاصية المميزة + الدور إذا كان مطلوبًا.</td></tr>
+    <tr><td class="c">حدّد</td><td>أقرأ الجملة كاملة؛ قد يعني التعرف أو التعيين أو بيانًا يحدده السياق.</td></tr>
+  </table>
+
+  <h3><span class="n">د</span> Mini-exemple — la transformation en 4 coups</h3>
+  <div class="example">
+    <div class="e"><strong>التعليمة</strong>حلّل تغيّر شدة التنفس حسب شدة الجهد.</div>
+    <div class="e"><strong>1 · الفعل</strong>حلّل → أبحث أولًا عن استغلال منظم للبيانات.</div>
+    <div class="e"><strong>2 · الدليل</strong>ألتقط المجالات والقيم والوحدات واتجاه التغير.</div>
+    <div class="e"><strong>3 · العلاقة</strong>أقارن التغيرات بصيغة مناسبة: كلما… أو بينما… حسب السند.</div>
+  </div>
+  <div class="box gold center"><b>ثم فقط:</b> أكتب الجواب qui répond exactement à la consigne — لا أضيف تفسيرًا لم يُطلب.</div>
+
+  <h3><span class="n">هـ</span> فحص 10 ثوانٍ — “هل أستطيع الدفاع عن كل جملة؟”</h3>
+  <div class="check">
+    <div><b>1</b> هل نفذت الفعل المطلوب؟</div>
+    <div><b>2</b> هل استعملت الدليل المناسب؟</div>
+    <div><b>3</b> هل فرّقت بين الملاحظة والتفسير؟</div>
+    <div><b>4</b> هل الجواب النهائي يجيب السؤال فعلًا؟</div>
+  </div>
+
+  <div class="box red"><b>ثلاثة فخاخ متكررة:</b> معلومة صحيحة لكنها لا تجيب السؤال · تفسير في مكان الوصف · معطى بلا استعمال حقيقي في الاستدلال.</div>
+
+  <footer>المفتاح · كنز العلوم · الوجه الأول — النواة التي تكفي للبدء والتدريب</footer>
+</section>
 
 <!-- VERSO -->
-<div class="page">
-  <div>
-    <header>
-      <div class="brand">
-        <h1>المفتاح+ — أربع أدوات بعد النواة</h1>
-        <span class="tag">المستوى المتقدم · أ – د</span>
-      </div>
-      <div class="meta">
-        <strong>أدوات الإنتاج المنهجي والتطبيق الميداني</strong><br>
-        دليل التعامل مع الوثائق وبناء النصوص العلمية
-      </div>
-    </header>
-
-    <div class="verso-grid">
-      <!-- Tool A -->
-      <div class="v-card">
-        <h3><span class="n">أ</span> تحليل السند — حلّل في أربع خطوات (حلّل = عائلة أصف، حتى على السند)</h3>
-        <table class="doc-matrix">
-          <thead>
-            <tr>
-              <th>النوع</th>
-              <th>خطوة التفكيك الإلزامية</th>
-              <th>الاستنتاج المنهجي المطلوب</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td><b>منحنى / جدول</b></td>
-              <td>تحديد الشروط + المتغير التابع، تقسيم فترات التغير (تزايد، ثبات، تناقص) مع أرقام دقيقة.</td>
-              <td>العلاقة بين المتغيّر المُختبَر والمقاس (تأثير X على Y).</td>
-            </tr>
-            <tr>
-              <td><b>رسم / صورة مجهرية</b></td>
-              <td>وصف البنية بدقة: البيانات الأساسية، الموقع، الحالة الوظيفية مقارنة بالشاهد.</td>
-              <td>المميزات البنيوية المسؤولة عن الوظيفة.</td>
-            </tr>
-            <tr>
-              <td><b>تجربة / نتائج حيوية</b></td>
-              <td>المتغيّر المُختبَر / المقاس + شروط + شاهد (عنصر تحكّم / وثيقة مقارنة) إن وُجد، مع إبراز الفارق.</td>
-              <td>الدور الوظيفي للعنصر المدروس وشروط عمله.</td>
-            </tr>
-          </tbody>
-        </table>
-        <div class="check">
-          <b>قاعدة ذهبية:</b> التحليل يصف <em>«ماذا نرى؟»</em> فقط، والاستنتاج يجيب <em>«ماذا نلتقط كمعلومة مفيدة؟»</em>. لا تفسر في مرحلة التحليل إلا إذا طُلب «حلل تحليلاً مقارناً مفسراً».
-        </div>
-      </div>
-
-      <!-- Tool B -->
-      <div class="v-card">
-        <h3><span class="n">ب</span> هندسة النص العلمي (معايير التنقيط الصارمة)</h3>
-        <ul>
-          <li><strong>1. المقدمة (0.5 – 1 ن):</strong>
-            <ul>
-              <li>سياق عام يمهد للموضوع انطلاقاً من السياق المعطى (سطران).</li>
-              <li>صياغة مشكل علمي دقيق ينتهي بعلامة استفهام <strong>(؟)</strong> يطابق التعليمة تماماً.</li>
-            </ul>
-          </li>
-          <li><strong>2. العِرض (2.5 – 3.5 ن):</strong>
-            <ul>
-              <li>هيكلة في فقرات منطقية متسلسلة مفصولة بمؤشرات ربط سببية.</li>
-              <li>إدراج <em>المفاهيم والكلمات المفتاحية الأساسية</em> مع تسطيرها بخط خفيف.</li>
-              <li>توضيح الآليات والظواهر البيولوجية بدقة دون حشو أو استرسال خارج المشكل.</li>
-            </ul>
-          </li>
-          <li><strong>3. الخاتمة (0.5 – 1 ن):</strong>
-            <ul>
-              <li>حل مباشر وموجز للمشكل العلمي المطروح في المقدمة (سطرين إلى 3 أسطر).</li>
-              <li>يمكن أن تنتهي بفتح أفق جديد/مشكل فرعي ناتج عن الحل.</li>
-            </ul>
-          </li>
-        </ul>
-      </div>
-
-      <!-- Tool C -->
-      <div class="v-card">
-        <h3><span class="n">ج</span> بروتوكول المصادقة على الفرضيات في التمرينين 2 و3</h3>
-        <ol>
-          <li><strong>الاستخراج الدقيق:</strong> أعيد نص الفرضية المُختبَرة (F1 / F2) في مطلع الإجابة بوضوح.</li>
-          <li><strong>فرز الأدلة من السندات:</strong>
-            <ul>
-              <li>استغلال الوثيقة 1: بما أن الوثيقة تبين (...) إذن نستنتج (...).</li>
-              <li>استغلال الوثيقة 2: وبما أن التجربة توضح (...) إذن نستنتج (...).</li>
-            </ul>
-          </li>
-          <li><strong>الربط التكاملي (التركيب):</strong> أجمع استنتاجات السندات في فقرة واحدة لبيان توافقها أو تناقضها مع الفرضية.</li>
-          <li><strong>الحكم النهائي الصريح:</strong> «وهذا ما يُؤكد صحة الفرضية رقم (...) وينفي الفرضية (...)».</li>
-        </ol>
-        <div class="check">
-          <strong>تنبيه صارم:</strong> المصادقة بلا استغلال منفصل للوثائق = علامة صفر على المعيار.
-        </div>
-      </div>
-
-      <!-- Tool D -->
-      <div class="v-card">
-        <h3><span class="n">د</span> قاموس الروابط المنطقية ومفاتيح التعليل البيولوجي</h3>
-        <ul>
-          <li><strong>للتعبير عن السببية:</strong> يُعزى ذلك إلى... / ناتج عن... / مرده لـ...</li>
-          <li><strong>للتعبير عن النتيجة والتسلسل:</strong> مما يؤدي إلى... / يترتب عنه... / بالتالي...</li>
-          <li><strong>للتعبير عن المقارنة والتناقض:</strong> في حين... / بينما يُلاحظ... / بالمقابل...</li>
-          <li><strong>للتعبير عن الاستخلاص:</strong> يتضح من ذلك... / نصل إلى أن... / يثبت هذا...</li>
-          <li><strong>للتعبير عن التفسير الجزيئي:</strong> على المستوى الجزيئي... / تشكل معقد... / تغير في البنية الفراغية لـ...</li>
-        </ul>
-      </div>
+<section class="page break">
+  <div class="brand">
+    <div>
+      <h1>المفتاح<span style="color:var(--gold)">+</span></h1>
+      <div class="official">المستوى المتقدم · من أتقن النواة</div>
+      <div class="tag">السند · التجربة · الفرضية · الحكم · التركيب</div>
     </div>
-
-    <!-- Synthesis Box -->
-    <div class="synth-box">
-      <h3>التركيب وبناء الحصيلة المعرفية — كيف تجمع خيوط التمرين الثالث (8 نقاط)؟</h3>
-      <div class="synth-layout">
-        <div>
-          <p><strong>المخطط التحصيلي / الرسم التخطيطي الوظيفي:</strong></p>
-          <ul style="padding-right:14px">
-            <li><strong>العنوان الكامل:</strong> يُكتب في الأعلى أو الأسفل ويشمل (الظاهرة + الشروط المدروسة).</li>
-            <li><strong>الإطار والبيانات:</strong> تأطير الرسم، أسهم اتجاهية واضحة، كتابة كافة البيانات الجزيئية والخلوية.</li>
-            <li><strong>الرمزية والترميز:</strong> تمييز الحالات الطبيعية عن المعالجة (ألوان/أشكال هندسية واضحة).</li>
-          </ul>
-        </div>
-        <div>
-          <p><strong>قواعد التصحيح الخاصة بالتركيب:</strong></p>
-          <ul style="padding-right:14px">
-            <li>حكم + تركيب يجيب القفل. الدرس يُستدعى إن خدم القفل فقط؛ حشو بلا خدمة = لا يُحتسب.</li>
-            <li>تطابق الربط بين الجزء 1، الجزء 2، ومخرجات الجزء 3.</li>
-            <li>الزيادة الصحيحة لا تُخصم، لكنها تستهلك الوقت دون إضافة نقاط.</li>
-          </ul>
-        </div>
-      </div>
-    </div>
-
-    <!-- Drill Box -->
-    <div class="drill-box">
-      <h3><span class="n">★</span> شحذ 60 ثانية — التمرين الذاتي قبل تسليم الورقة</h3>
-      <div class="drill-steps">
-        <div class="d-step">
-          <b>1. مطابقة المطلوب</b>
-          هل نفذت ما يطلبه الفعل بالحرف (حلل ≠ فسر)؟
-        </div>
-        <div class="d-step">
-          <b>2. سلامة الفرضية</b>
-          هل الفرضية تفسيرية وجيهة قابلة للاختبار؟
-        </div>
-        <div class="d-step">
-          <b>3. تكامل الأدلة</b>
-          هل كل وثيقة معطاة استُخرج منها استنتاج مستقل؟
-        </div>
-        <div class="d-step">
-          <b>4. دقة القفل</b>
-          هل جوابك يغلق المشكل العلمي المطروح في البداية؟
-        </div>
-      </div>
-    </div>
+    <div class="app"><b>كنز العلوم</b> · Kunz El Ouloum<br>v6.0 · verso = المفتاح+</div>
   </div>
 
-  <div>
-    <footer>
-      <span>المفتاح+ — أدوات التميز المنهجي في العلوم الطبيعية</span>
-      <span class="app"><b>كنز العلوم</b> · Kunz El Ouloum<br>v5.0 · fiche eleve · recto = المفتاح · verso = المفتاح+</span>
-      <span>الصفحة 2 / 2</span>
-    </footer>
+  <span class="label gold">البطاقة الثانية · عند الحاجة</span>
+  <h2>المفتاح+ — عندما يصبح السؤال مركّبًا</h2>
+  <p class="legend">Cette face développe la méthode : elle ne remplace pas la consigne et ne prétend pas reproduire à elle seule un barème officiel.</p>
+
+  <h3><span class="n">أ</span> Carte de décision — 4 questions avant une consigne complexe</h3>
+  <div class="chain">
+    <div class="node g">1 ماذا أُنتج؟</div><div class="arr">←</div>
+    <div class="node">2 ما دليلي؟</div><div class="arr">←</div>
+    <div class="node">3 ما الرابط؟</div><div class="arr">←</div>
+    <div class="node r">4 ما الحكم / الجواب؟</div>
   </div>
-</div>
+  <div class="pill-row">
+    <span class="pill gold">أصف = ce que montrent les données</span>
+    <span class="pill teal">أقرأ = ce que signifient les données</span>
+    <span class="pill" style="background:var(--violet-l);border-color:#ddd0fb;color:var(--violet)">أحكم = ce que je conclus avec les données</span>
+  </div>
+
+  <h3><span class="n">ب</span> تحليل السند — أربع خطوات ثابتة، adaptable au support</h3>
+  <div class="chain">
+    <div class="node">1 تعريف / nature</div><div class="arr">←</div>
+    <div class="node">2 استخراج</div><div class="arr">←</div>
+    <div class="node">3 comparaison / relation</div><div class="arr">←</div>
+    <div class="node g">4 réponse</div>
+  </div>
+  <table>
+    <tr><th style="width:92px">السند</th><th>Réflexe</th><th>À éviter</th></tr>
+    <tr><td class="c">منحنى</td><td>محوران + وحدات إن وجدت، ثم المجالات والتغيرات، ثم مقارنة إذا طلبت.</td><td>وصف شكل الخط بدل وصف الظاهرة.</td></tr>
+    <tr><td class="c">جدول</td><td>قراءة منظمة للسطر / العمود؛ أبحث عن القيم والعلاقة التي تخدم السؤال.</td><td>نسخ الجدول كله.</td></tr>
+    <tr><td class="c">تجربة</td><td>ماذا غُيّر؟ ماذا قيس؟ بماذا أقارن؟ ما الشروط الثابتة؟ ما النتيجة؟</td><td>استنتاج السببية قبل فحص تصميم التجربة.</td></tr>
+    <tr><td class="c">مقارنة</td><td>أضع العنصرين في نفس معيار المقارنة : بينما / في حين / يقابله.</td><td>شرح كل شكل على حدة ثم ترك المقارنة implicit.</td></tr>
+    <tr><td class="c">رسم بنية</td><td>تعرف، تحديد، وصف أو استخراج حسب التعليمة.</td><td>تطبيق automatiquement une grille de courbe.</td></tr>
+  </table>
+
+  <div class="box red"><b>⚠ فاصل علمي:</b> تزامن تغيّر X وY لا يكفي وحده لإثبات أن X يسبب Y. افحص المقارنة، الشاهد، الشروط والعلاقة بين المتغيرات.</div>
+
+  <h3><span class="n">ج</span> التجربة — بطاقة “المتغيرات الأربعة”</h3>
+  <div class="check">
+    <div>ماذا غيّرنا؟ ← <b>المتغيّر المختبَر</b></div>
+    <div>ماذا قسنا؟ ← <b>المتغيّر المقاس</b></div>
+    <div>بماذا نقارن؟ ← <b>الشاهد / المقارنة</b></div>
+    <div>ماذا ثبّتنا؟ ← <b>الشروط الثابتة</b></div>
+  </div>
+  <div class="sent"><b>Réflexe :</b> لا أكتب «هذا يثبت…» قبل أن أرى ما الذي تغير فعلًا وما الذي بقي ثابتًا.</div>
+
+  <h3><span class="n">د</span> أحكم — فرضية ثم مواجهة ثم قرار</h3>
+  <div class="chain">
+    <div class="node g">فرضية</div><div class="arr">←</div>
+    <div class="node">دليل</div><div class="arr">←</div>
+    <div class="node">مواجهة</div><div class="arr">←</div>
+    <div class="node r">حكم</div>
+  </div>
+  <div class="sent"><b>الفرضية:</b> proposition claire et testable، لا مجرد احتمال غامض.</div>
+  <div class="sent"><b>الدليل:</b> «انطلاقًا من الوثيقة…» ثم المعلومة التي تسمح بالمقارنة.</div>
+  <div class="sent"><b>المواجهة:</b> هل تتوافق النتيجة مع الفرضية أم لا؟</div>
+  <div class="sent"><b>الحكم:</b> قرار مرتبط بما تسمح به المعطيات؛ عند نقص الدليل، أصرّح بحدود ما يمكن استنتاجه.</div>
+
+  <h3><span class="n">هـ</span> التركيب — “أجيب عن القفل” وليس عن نسخة من السؤال</h3>
+  <div class="chain">
+    <div class="node g">الهدف العام</div><div class="arr">←</div>
+    <div class="node">المعلومة 1</div><div class="arr">←</div>
+    <div class="node">المعلومة 2</div><div class="arr">←</div>
+    <div class="node">المعلومة 3</div><div class="arr">←</div>
+    <div class="node r">الاستنتاج</div>
+  </div>
+  <div class="sent"><b>القالب المقترح:</b> «من الجزء I نعلم أنّ…، ومن الجزء II أنّ…، ومن الجزء III أنّ…؛ ومنه [الجواب عن الهدف العام].»</div>
+  <div class="corr"><b>لكن:</b> لا أستعمل «ومنه» ككلمة سحرية. قيمتها تأتي من أن الجملة الأخيرة تُبنى فعلًا على العناصر السابقة.</div>
+
+  <h3><span class="n">و</span> Les “règles rouges” — version fiable</h3>
+  <table>
+    <tr><th>Au lieu de mémoriser…</th><th>Je retiens…</th></tr>
+    <tr><td>« رقم بلا وحدة = toujours faux »</td><td>إذا كانت الوحدة ضرورية لفهم القيمة، أكتب القيمة بوحدتها.</td></tr>
+    <tr><td>« لأنّ = interdit »</td><td>في التحليل أصف الدليل أولًا؛ إذا دخلت في سبب، فأتحول إلى التفسير.</td></tr>
+    <tr><td>« ربما = interdit »</td><td>أصوغ الفرضية بوضوح وبما يجعلها قابلة للاختبار.</td></tr>
+    <tr><td>« حلّل = une seule recette »</td><td>أقرأ التعليمة كاملة، ثم أختار شكل التحليل المناسب للسند.</td></tr>
+  </table>
+
+  <h3><span class="n">ز</span> Sprint 60 secondes — entraînement intelligent</h3>
+  <div class="box teal">خذ 6 إلى 12 تعليمة من مواضيع مختلفة. لكل تعليمة، في ثانيتين تقريبًا : <b>ما المنتج المطلوب؟</b> ثم <b>ما الدليل الذي سأحتاجه؟</b> وبعدها فقط ابدأ الكتابة. الهدف هو سرعة القرار، لا سرعة الكتابة.</div>
+
+  <div class="box gold center">
+    <div style="font-size:16px;font-weight:800;color:var(--gold2)">فعل ← دليل ← علاقة ← جواب ← فحص</div>
+    <div class="small">أصف ما تظهره المعطيات · أقرأ ما تعنيه · أحكم بما تسمح به الأدلة</div>
+  </div>
+
+  <footer>المفتاح+ · كنز العلوم · الوجه الثاني — مرجع متقدم للتدريب والاستدلال والتركيب</footer>
+</section>
 
 </body>
 </html>

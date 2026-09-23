@@ -4,7 +4,7 @@
 // Marque : docs/MARQUE.md est le document de décision (noms, phrase-récit, placement).
 //         Le garde-fou `npm run check:miftah` prouve la cohérence fiche ↔ spec ↔ carte.
 
-export const MIFTAH_VERSION = '5.0' as const;
+export const MIFTAH_VERSION = '6.0' as const;
 // Nom d'usage (UI, bouche de l'élève) — jamais autre chose
 export const MIFTAH_NAME_AR = 'المفتاح';
 // Nom officiel (documents légaux/CGU, argumentaire, titre de la rubrique depuis le 2026-09-15) — jamais abrégé
@@ -44,14 +44,14 @@ export const MIFTAH_NOMENCLATURE = {
   bawaba2: 'البوابة 2 — المصدر (وثيقة أم مختلط؟)',
   bawaba3: 'البوابة 3 — الحركة (📷 أم 🎬 أم 🔨؟)',
   s0: 'اِفهم',
-  s1: 'تَبَصَّر',
-  s2: 'أدخل',
-  s3: 'أدر',
-  s4: 'افتح',
+  s1: 'فعل',
+  s2: 'دليل',
+  s3: 'علاقة',
+  s4: 'جواب',
 } as const;
 
 // Phrase-mnémotechnique unique (MARQUE §12) — le geste physique de la clé
-export const KEY_MNEMONIC_AR = 'تَبَصَّر · أدخل · أدر · افتح — أربع حركات، لا أكثر، وينفتح القفل.';
+export const KEY_MNEMONIC_AR = 'فعل · دليل · علاقة · جواب — أربع حركات، لا أكثر، وينفتح القفل.';
 
 // Les 3 mouvements de la porte 3 (MARQUE §12) — le 🔨 حدّاد est l'angle mort corrigé
 export const MOVEMENTS = {
@@ -69,13 +69,13 @@ export const STEP0 = {
   checkAr: 'هل كتبت الهدف العام في سطر واحد قبل القراءة التفصيلية؟',
 } as const;
 
-// Les 4 dents — Update 2026-09-06 (MARQUE §12) : chaque dent nomme le GESTE d'une clé.
-// Contenu pédagogique (actionAr/correctorAr) inchangé — seul le nom change.
+// Les 4 dents — Update 2026-09-22 (MARQUE §14) : chaque dent porte le nom du GESTE v6 (فعْل · دليل · علاقة · جواب).
+// Ids et contenu pédagogique (actionAr/correctorAr) inchangés — seul le libellé change (owner 2026-09-22).
 export const ASNAN = [
-  { id: 1 as const, nameAr: 'تَبَصَّر', iconAr: '🔍', actionAr: 'أطوّق الفعل · أسطّر الكلمات المفتاحية · أرقّم إجابتي برقم السؤال', correctorAr: 'إجابة بلا رقم أو تحت رقم خاطئ = 0. الفعل الخاطئ = تفقد نقطة الفعل كاملة.' },
-  { id: 2 as const, nameAr: 'أدخل', iconAr: '🔑', actionAr: 'أستخرج من الوثيقة أرقاما + وحدات + اتجاه التغيّر', correctorAr: 'نقطة الاستخراج للرقم مع وحدته. «يرتفع» وحدها = نصف نقطة. رقم بلا وحدة = خطأ.' },
-  { id: 3 as const, nameAr: 'أدر', iconAr: '🔄', noteAr: 'إن سمح الفعل', actionAr: 'أربط المعطى بالسبب/الآلية من الدرس: «لأنّ…»', correctorAr: 'ربط بلا معطى = نصف النقطة. معطى بلا ربط والفعل يطلبه = نصف النقطة.' },
-  { id: 4 as const, nameAr: 'افتح', iconAr: '🔓', actionAr: 'جملة واحدة تجيب حرفيا على الكلمات التي سطّرتُها في السنّ 1', correctorAr: 'خاتمة غائبة = نقطة ضائعة. خاتمة لا تحوي كلمات السؤال = لا تُقرأ.' },
+  { id: 1 as const, nameAr: 'فعل', iconAr: '🔍', actionAr: 'أطوّق الفعل · أسطّر الكلمات المفتاحية · أرقّم إجابتي برقم السؤال', correctorAr: 'إجابة بلا رقم أو تحت رقم خاطئ = 0. الفعل الخاطئ = تفقد نقطة الفعل كاملة.' },
+  { id: 2 as const, nameAr: 'دليل', iconAr: '🔑', actionAr: 'أستخرج من الوثيقة أرقاما + وحدات + اتجاه التغيّر', correctorAr: 'نقطة الاستخراج للرقم مع وحدته. «يرتفع» وحدها = نصف نقطة. رقم بلا وحدة = خطأ.' },
+  { id: 3 as const, nameAr: 'علاقة', iconAr: '🔄', noteAr: 'إن سمح الفعل', actionAr: 'أربط المعطى بالسبب/الآلية من الدرس: «لأنّ…»', correctorAr: 'ربط بلا معطى = نصف النقطة. معطى بلا ربط والفعل يطلبه = نصف النقطة.' },
+  { id: 4 as const, nameAr: 'جواب', iconAr: '🔓', actionAr: 'جملة واحدة تجيب حرفيا على الكلمات التي سطّرتُها في السنّ 1', correctorAr: 'خاتمة غائبة = نقطة ضائعة. خاتمة لا تحوي كلمات السؤال = لا تُقرأ.' },
 ] as const;
 
 // Les 3 phrases prêtes (d)
