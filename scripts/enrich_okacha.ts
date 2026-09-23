@@ -11,13 +11,17 @@
 //     « 3 1 - » → « 31- ») — AUCUNE renumérotation, seul le séparateur est nettoyé ;
 //  4. Corrections OCR à haute confiance (dictionnaire ci-dessous) — zéro invention :
 //     un mot non réparable reste verbatim ;
-//  5. المنهجية (عكاشة) : SUPPRIMÉE à 100 % — purge 2026-09-23 (plus de sections).
+//  5. Méthodo : découpage en sections par déclencheurs documentés ;
+//     9ᵉ section « nasiha » = OKACHA_CONSEILS (ex-d2u2, isolée 2026-09-23) ;
+//     tamarin1 : sous-sections à ids stables (t1-def/don/inter/dessin/texte) ;
+//     filtre OCR anti-résidu (footer éditeur, marqueurs page, fragments cassés)
+//     sur sections + conseils — SANS réécriture du sens (retrait seul).
 //
 // Verrou : src/data/okachaEnriched.lock.test.ts (v2).
 
 import { writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
-import { OKACHA_UNITES } from '../src/data/okacha';
+import { OKACHA_UNITES, OKACHA_METHODO, OKACHA_CONSEILS } from '../src/data/okacha';
 
 // ── Dictionnaire de corrections OCR (haute confiance uniquement) ──
 const FIXES: Record<string, string> = {
@@ -167,6 +171,207 @@ function structurize(lignes: string[]): { blocs: Bloc[]; fragments: number; ratt
   return { blocs, fragments, rattrapages, numeros };
 }
 
+
+// ── Filtre OCR anti-résidu (retrait seul — zéro réécriture du sens) ──
+// Appliqué aux sections méthodo + conseils. Motifs documentés (audit 2026-09-23).
+const RE_FOOTER_EDITEUR = /[,،;]?\s*(مكاداللطالس المنهول|كاداللطالس المنهول|كاشة لإطالس المنهوق[^.،\n]*|كاشة لاطالب المنفوق[^.،\n]*|ماشة الطالس المنهوق[^.،\n]*|لطالس المنهوق|لطالس المنه|,?\s*مكاداللطالس المنهول)\s*$/u;
+const RE_FOOTER_MID = /[,،]\s*(مكاداللطالس المنهول|كاداللطالس المنهول)\b/u;
+const RE_PAGE_MARK = /^\s*(?:صفحة\s*)?\d{1,4}\s*[٪%]?\s*$/u;
+const RE_PURE_JUNK = /^\s*[\d\s%.\-–—٠-٩]+\s*$/u;
+/** Fragments entièrement illisibles attestés (liste fermée — retraits documentés).
+ *  NB : jamais de classe \W générique — l'arabe n'est PAS \w en JS, un motif
+ *  large supprimerait tout le corpus. On ne retire QUE des signatures connues. */
+const JUNK_EXACT = new Set([
+  'ابونان\t٠ف٤ش٠٠ا١كد',
+  'زعبف مهما',
+  'ف مفات مرب',
+  'م العلوم الطبيعية.',
+  '،٠٠',
+  'القسم ؟',
+]);
+const JUNK_INCLUDES = [
+  'زعبف مهما',
+  'طتتلاعفيه قالبا لتجنب النكات',
+  'ييياييبيطات يميماخم',
+  'فعاياكاي الابية',
+  'موقمين نحفبزين',
+  'اا40من ارتباط',
+  'Blot اا0 ا٤',
+  'ماشة الطالس المنهوق',
+  'كاشة لإطالس المنهوق',
+  'كاشة لاطالب المنفوق',
+  'تديييدييتديييدييي',
+  'خثئكلكتلاتتكبيككادافاة',
+  'عوف تتعاعل مع القادة',
+  'يعكائ للطاف سول حيفيعم',
+  'لابهم حجم المرض بقدر',
+  'توترة إل باه الص العلمي',
+  'لنت كابنة رقور أقلام',
+  'اشلنكمات الفتاحية العلمية',
+  'باكاد اليان الاحن',
+  'إق (رس بعوان',
+  'أعلب السومات النخطبطية',
+  'لابيي»ال64ال',
+  'نئ^ عدت على مستوى',
+  'المنهوف ا عاوم العطبمة',
+  '،-إنماز رسم تهطيطي',
+  'و ددابة لبا أن',
+];
+function estJunk(t: string): boolean {
+  const s = t.trim();
+  if (JUNK_EXACT.has(s)) return true;
+  return JUNK_INCLUDES.some((x) => s.includes(x));
+}
+
+function filtreOcrBlocs(blocs: { kind: string; num?: string; texte: string }[]): number {
+  let retraits = 0;
+  for (let i = blocs.length - 1; i >= 0; i--) {
+    let t = blocs[i].texte;
+    // 9070 → 90 % (OCR attesté : « يوفر لك 9070 من الزاد » → 90 %)
+    if (t.includes('9070')) { t = t.split('9070').join('90 %'); retraits++; }
+    // footer éditeur (fin ou milieu)
+    const av = t;
+    t = t.replace(RE_FOOTER_MID, '').replace(RE_FOOTER_EDITEUR, '').trim();
+    // queue de chiffres type n° page / téléphone OCR (ex. « … الفيتامين سي. ٦٤٥٦٢٦١٨ »)
+    t = t.replace(/[.،؛]\s*[\d٠-٩\s]{6,}$/u, '').trim();
+    if (t !== av) retraits++;
+    // marqueurs de page purs
+    if (RE_PAGE_MARK.test(t) || (blocs[i].kind !== 'titre' && RE_PURE_JUNK.test(t) && t.length < 12)) {
+      blocs.splice(i, 1); retraits++; continue;
+    }
+    // bloc entier illisible (liste fermée documentée)
+    if (blocs[i].kind !== 'titre' && estJunk(t)) { blocs.splice(i, 1); retraits++; continue; }
+    // vide après filtre → retirer (sauf titre conservé tel quel)
+    if (!t && blocs[i].kind !== 'titre') { blocs.splice(i, 1); retraits++; continue; }
+    blocs[i] = { ...blocs[i], texte: t };
+  }
+  return retraits;
+}
+
+// ── Sections méthodo : dans L'ORDRE DU LIVRE. Déclencheurs testés sur le texte
+// NORMALISÉ (normAr : ة→ه, أ→ا, ى→ي) — motifs écrits en forme normalisée :
+// « 1- التحليل: » (l.205), « 2-التفهلسوير: » (l.289, OCR de التفسير),
+// « 3- المقارنة: » → « 3- المقارنه: », « ٠. اللالملقفقاة: » (l.339, OCR de
+// الاستنتاج), « 9-الاستدلال العلمي: » (l.437) — sondage scripts/_probe_okacha.ts.
+const SECTION_RULES: { id: string; titreAr: string; test: (t: string) => boolean }[] = [
+  {
+    id: 'intro',
+    titreAr: 'مقدمة المنهجية — قواعد العمل',
+    test: () => false, // section par défaut (tout ce qui précède le 1ᵉʳ déclencheur)
+  },
+  {
+    id: 'hikala',
+    titreAr: 'هيكلة الموضوع — التمهيد، الوثائق، التعليمة',
+    test: (t) => t.includes('الهيكله العامه') || t.startsWith('التمهيد'),
+  },
+  {
+    id: 'tamarin1',
+    titreAr: 'التمرين الأول — أسئلة استرداد الموارد',
+    test: (t) =>
+      t.length < 60 &&
+      /النمريف الامل|التمرين الاول|النمرين الاول|ارز ما يطرح/.test(t),
+  },
+  {
+    id: 'tahil',
+    titreAr: 'التحليل — استغلال الوثيقة',
+    test: (t) => t.length < 45 && /^1\s*[''ʼ٠]?\s*[-–٫.]?\s*التحليل|^التحليل:/.test(t),
+  },
+  {
+    id: 'tafsir',
+    titreAr: 'التفسير — من الملاحظة إلى العلّة',
+    // Variantes OCR attestées : « 2-التفهلسير: » (l.289) et « التفسير ».
+    test: (t) => t.length < 45 && /^2\s*[-–٫.]?\s*التف\S{0,5}ير/.test(t),
+  },
+  {
+    id: 'mouqarana',
+    titreAr: 'المقارنة — أوجه التشابه والاختلاف',
+    test: (t) => t.length < 45 && /^3\s*[-–٫.]?\s*المقارنه/.test(t),
+  },
+  {
+    id: 'istinj',
+    titreAr: 'الاستنتاج — خاص وعام',
+    test: (t) => {
+      const core = t.replace(/^[\s٠.٫\-–]+/, '');
+      return (
+        /^٠\s*[.٫]?\s*(اللالملقفقاه|الاستنتاج)/.test(t) ||
+        (core.length < 45 && /الاستنتاج|الاستتاج|اللالملقفقاه/.test(core))
+      );
+    },
+  },
+  {
+    id: 'istidlal',
+    titreAr: 'الاستدلال العلمي ومعاييره',
+    test: (t) => t.length < 50 && /الاستدلال العلمي|الاست»دلال/.test(t),
+  },
+];
+
+function sectionsMethodo(lignes: string[]): {
+  sections: { id: string; titreAr: string; blocs: Bloc[]; sous?: { id: string; titreAr: string; from: number }[] }[];
+  corrections: number;
+  fragments: number;
+  rattrapages: number;
+  numeros: number;
+  ocr: number;
+} {
+  const { blocs, fragments, rattrapages, numeros } = structurize(lignes);
+  const corrections = applyFixes(blocs);
+  const sections: { id: string; titreAr: string; blocs: Bloc[]; sous?: { id: string; titreAr: string; from: number }[] }[] = [];
+  let current: { id: string; titreAr: string; blocs: Bloc[]; sous?: { id: string; titreAr: string; from: number }[] } = { id: 'intro', titreAr: SECTION_RULES[0].titreAr, blocs: [] as Bloc[] };
+  sections.push(current);
+  // Pointeur : chaque déclencheur n'est testé que dans l'ordre du livre —
+  // une mention tardive d'un thème déjà traité ne rouvre jamais sa section.
+  let nextRule = 1;
+  for (const b of blocs) {
+    const t = normAr(b.texte);
+    if (nextRule < SECTION_RULES.length && SECTION_RULES[nextRule].test(t)) {
+      current = { id: SECTION_RULES[nextRule].id, titreAr: SECTION_RULES[nextRule].titreAr, blocs: [b] };
+      sections.push(current);
+      nextRule++;
+    } else {
+      current.blocs.push(b);
+    }
+  }
+  // Fusion des sections trop petites (< 3 blocs) dans la précédente — jamais de section vide.
+  for (let i = 1; i < sections.length; ) {
+    if (sections[i].blocs.length < 3) {
+      sections[i - 1].blocs.push(...sections[i].blocs);
+      sections.splice(i, 1);
+    } else i++;
+  }
+  // Filtre OCR anti-résidu sur chaque section (retrait seul).
+  let ocr = 0;
+  for (const s of sections) ocr += filtreOcrBlocs(s.blocs);
+  // Re-fusion post-filtre si une section a été vidée sous le seuil.
+  for (let i = 1; i < sections.length; ) {
+    if (sections[i].blocs.length < 3) {
+      sections[i - 1].blocs.push(...sections[i].blocs);
+      sections.splice(i, 1);
+    } else i++;
+  }
+  // Sous-sections à ids stables dans tamarin1 (découpage logique — ancrage par contenu).
+  const t1 = sections.find((s) => s.id === 'tamarin1');
+  if (t1) {
+    const sousDefs: { id: string; titreAr: string; ancre: (t: string) => boolean }[] = [
+      { id: 't1-def', titreAr: 'التعريف والكلمات المفتاحية', ancre: (t) => /التعريف:|الكلمه المفتاحيه|الكلمة المفتاحية/.test(t) },
+      { id: 't1-don', titreAr: 'البيانات واستخراج المعطيات', ancre: (t) => /اشحاج العلومات|استخراج العناصر|العلومات من الرسم/.test(t) },
+      { id: 't1-inter', titreAr: 'استغلال الوثيقة والتفسير الموجز', ancre: (t) => /اذاكان الرسم يوضح وظيفه|اذاكان الرسم يوضح بنيه/.test(t) },
+      { id: 't1-dessin', titreAr: 'الرسم التخطيطي — الرسم والبيانات', ancre: (t) => /انواع الرسومات التخطيطيه|رسم تخطيطي تفسيري/.test(t) },
+      { id: 't1-texte', titreAr: 'كتابة النص العلمي', ancre: (t) => /كابه نص علمي|كتابه نص علمي|النص العلمي يشبه/.test(t) },
+    ];
+    const idxs: number[] = [];
+    for (const d of sousDefs) {
+      const i = t1.blocs.findIndex((b, gi) => idxs.every((x) => gi > x) && d.ancre(normAr(b.texte)));
+      if (i >= 0 && (idxs.length === 0 || i > idxs[idxs.length - 1])) idxs.push(i);
+      else idxs.push(-1); // ancre absente — on n'insère pas de faux repère
+    }
+    const starts: { id: string; titreAr: string; from: number }[] = [{ id: 't1-entree', titreAr: 'مقدمة التمرين وأساليب الأسئلة', from: 0 }];
+    for (let k = 0; k < sousDefs.length; k++) {
+      if (idxs[k] >= 0) starts.push({ id: sousDefs[k].id, titreAr: sousDefs[k].titreAr, from: idxs[k] });
+    }
+    t1.sous = starts;
+  }
+  return { sections, corrections, fragments, rattrapages, numeros, ocr };
+}
 function applyFixes(blocs: Bloc[]): number {
   let n = 0;
   for (const b of blocs) {
@@ -181,7 +386,7 @@ function applyFixes(blocs: Bloc[]): number {
 }
 
 // ── Génération ──
-const stats = { fragments: 0, rattrapages: 0, numeros: 0, corrections: 0 };
+const stats = { fragments: 0, rattrapages: 0, numeros: 0, corrections: 0, ocr: 0 };
 const unitesOut = OKACHA_UNITES.map((u) => {
   const r = structurize(u.lignes);
   const corrections = applyFixes(r.blocs);
@@ -199,10 +404,31 @@ const unitesOut = OKACHA_UNITES.map((u) => {
   };
 });
 
+// Copie mutable : OKACHA_METHODO.lignes est un tuple readonly (okacha.ts as const).
+const meth = sectionsMethodo([...OKACHA_METHODO.lignes]);
+stats.corrections += meth.corrections;
+stats.fragments += meth.fragments;
+stats.rattrapages += meth.rattrapages;
+stats.numeros += meth.numeros;
+stats.ocr += meth.ocr;
+
+// 9ᵉ section « nasiha » : قسم النصائح isolé (OKACHA_CONSEILS, ex-d2u2).
+{
+  const r = structurize([...OKACHA_CONSEILS.lignes]);
+  const c = applyFixes(r.blocs);
+  const o = filtreOcrBlocs(r.blocs);
+  stats.corrections += c;
+  stats.fragments += r.fragments;
+  stats.rattrapages += r.rattrapages;
+  stats.numeros += r.numeros;
+  stats.ocr += o;
+  meth.sections.push({ id: 'nasiha', titreAr: 'نصائح المراجعة والتحضير (قسم النصائح)', blocs: r.blocs });
+}
+
 // Comptage précis des corrections : réapplication sur les textes ORIGINAUX.
 const fixesOut = Object.entries(FIXES).map(([from, to]) => {
   let count = 0;
-  for (const l of OKACHA_UNITES.flatMap((u) => u.lignes)) {
+  for (const l of [...OKACHA_UNITES.flatMap((u) => u.lignes), ...OKACHA_METHODO.lignes, ...OKACHA_CONSEILS.lignes]) {
     count += l.split(from).length - 1;
   }
   return { from, to, count };
@@ -215,7 +441,7 @@ function blocTs(b: Bloc): string {
 
 const out: string[] = [];
 out.push('// okachaEnriched.ts — GÉNÉRÉ par scripts/enrich_okacha.ts — NE PAS ÉDITER À LA MAIN.');
-out.push('// 2ᵉ passe OCR + structuration du بنك الحفظ (audit 2026-09-22 + purge المنهجية 2026-09-23).');
+out.push('// 2ᵉ passe OCR + structuration du بنك الحفظ (audit 2026-09-22, phases A+B).');
 out.push('// Source : src/data/okacha.ts (injection mécanique v1) — transformations tracées');
 out.push('// dans ENRICH_STATS / ENRICH_FIXES. Verrou : src/data/okachaEnriched.lock.test.ts');
 out.push('');
@@ -236,6 +462,21 @@ out.push('  blocs: BlocOkacha[];');
 out.push('  nbPoints: number;');
 out.push('}');
 out.push('');
+out.push('export interface SousSectionMethodo {');
+out.push('  id: string;');
+out.push('  titreAr: string;');
+out.push('  /** Index du premier bloc (inclus) dans section.blocs. */');
+out.push('  from: number;');
+out.push('}');
+out.push('');
+out.push('export interface SectionMethodo {');
+out.push('  id: string;');
+out.push('  titreAr: string;');
+out.push('  blocs: BlocOkacha[];');
+out.push('  /** Sous-sections à ids stables (tamarin1) — ancrage par index de bloc. */');
+out.push('  sous?: SousSectionMethodo[];');
+out.push('}');
+out.push('');
 out.push('/** Normalisation arabe pour la recherche (miroir de okacha.lock.test.ts). */');
 out.push('export const normAr = ' + normAr.toString() + ';');
 out.push('');
@@ -254,6 +495,25 @@ for (const u of unitesOut) {
 }
 out.push('];');
 out.push('');
+out.push('export const OKACHA_METHODO_SECTIONS: SectionMethodo[] = [');
+for (const s of meth.sections) {
+  out.push('  {');
+  out.push(`    id: ${JSON.stringify(s.id)},`);
+  out.push(`    titreAr: ${JSON.stringify(s.titreAr)},`);
+  if (s.sous && s.sous.length) {
+    out.push('    sous: [');
+    for (const ss of s.sous) {
+      out.push(`      { id: ${JSON.stringify(ss.id)}, titreAr: ${JSON.stringify(ss.titreAr)}, from: ${ss.from} },`);
+    }
+    out.push('    ],');
+  }
+  out.push('    blocs: [');
+  for (const b of s.blocs) out.push(blocTs(b) + ',');
+  out.push('    ],');
+  out.push('  },');
+}
+out.push('];');
+out.push('');
 out.push('/** Corrections OCR appliquées (haute confiance) — comptées sur les textes sources. */');
 out.push('export const ENRICH_FIXES: { from: string; to: string; count: number }[] = [');
 for (const f of fixesOut) {
@@ -261,13 +521,15 @@ for (const f of fixesOut) {
 }
 out.push('];');
 out.push('');
-out.push("/** Bilan de la passe d'enrichissement (audit 2026-09-22 + purge المنهجية 2026-09-23). */");
+out.push("/** Bilan de la passe d'enrichissement (audit 2026-09-22). */");
 out.push('export const ENRICH_STATS = {');
 out.push(`  fragmentsRecolles: ${stats.fragments},`);
 out.push(`  rattrapagesContinuation: ${stats.rattrapages},`);
 out.push(`  numerosNormalises: ${stats.numeros},`);
 out.push(`  correctionsAppliquees: ${stats.corrections},`);
+out.push(`  sectionsMethodo: ${meth.sections.length},`);
 out.push(`  pointsTotal: ${unitesOut.reduce((s, u) => s + u.nbPoints, 0)},`);
+out.push(`  ocrRetraits: ${stats.ocr},`);
 out.push("  genere: '2026-09-23',");
 out.push('} as const;');
 out.push('');
@@ -282,4 +544,6 @@ console.log('  fragments recollés :', stats.fragments);
 console.log('  rattrapages        :', stats.rattrapages);
 console.log('  numéros normalisés :', stats.numeros);
 console.log('  corrections OCR    :', stats.corrections);
+console.log('  sections méthodo   :', meth.sections.length, '→', meth.sections.map((s) => `${s.id}(${s.blocs.length})`).join(' '));
+console.log('  filtre OCR retraits:', stats.ocr);
 
