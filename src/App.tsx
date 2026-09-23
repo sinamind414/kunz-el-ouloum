@@ -65,6 +65,7 @@ import UnitIntroPortal from './components/UnitIntroPortal';
 import CombatTrainerView from './components/CombatTrainerView';
 import CombatChallengePortal from './components/CombatChallengePortal';
 import Bac2025ExamView from './components/Bac2025ExamView';
+import DocumentAnalysisView from './components/DocumentAnalysisView';
 import BadgesView from './components/BadgesView';
 import LessonTwoView from './components/LessonTwoView';
 import LessonsView from './components/LessonsView';
@@ -495,6 +496,10 @@ export default function App() {
     // Épreuve officielle bac2025 : la boucle élève de bout en bout (Pierre 2).
     if (activeCombatChallenge.id === 'bac-2025-sujets') {
       return <Bac2025ExamView onClose={() => setActiveCombatChallenge(null)} />;
+    }
+    // P0-2 — surface analyse documentaire elite (13/19 assets ready).
+    if (activeCombatChallenge.id === 'elite-doc-analysis') {
+      return <DocumentAnalysisView onClose={() => setActiveCombatChallenge(null)} />;
     }
     return (
       <CombatChallengePortal 
