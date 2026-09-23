@@ -1,8 +1,12 @@
-import { readdirSync } from 'node:fs';
+import { existsSync, readdirSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { describe, expect, it } from 'vitest';
 
 const DIST_ASSETS = resolve(process.cwd(), 'dist', 'assets');
+// CI (test:vitest) ne lance PAS `vite build` avant les tests : le smoke
+// build n'a de sens qu'après un build local. Sans dist/assets → skip
+// (sinon ENOENT sur chaque it et job vitest rouge).
+const HAS_DIST = existsSync(DIST_ASSETS);
 
 // Le build actuel ne lazy-load plus les vues par composant (architecture
 // abandonnée) : il découpe par LEÇON (phase*_chapitres_*) + bases tutor.
@@ -14,7 +18,7 @@ const DIST_ASSETS = resolve(process.cwd(), 'dist', 'assets');
 const LESSON_CHUNK_PREFIX = 'phase';
 const TUTOR_BASES = ['tutor-knowledge-base', 'tutor-qa-base'];
 
-describe('Build smoke — chunks de leçons', () => {
+describe.skipIf(!HAS_DIST)('Build smoke — chunks de leçons', () => {
   it('produit un bundle principal index-*.js', () => {
     const files = readdirSync(DIST_ASSETS);
     const main = files.find((f) => /^index-.*\.js$/.test(f));
