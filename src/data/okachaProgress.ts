@@ -21,11 +21,13 @@ export interface OkachaProgress {
   lus: string[];
   /** auto-évaluations par point, clé « unitId#idxBloc » dans les blocs de l'unité. */
   evals: Record<string, CompteurNote>;
+  /** ids de sections méthodo ouvertes (badge « n/9 sections lues »). */
+  sectionsLues: string[];
 }
 
 const STORAGE_KEY = 'kunz_okacha_progress_v1';
 
-const EMPTY: OkachaProgress = { lus: [], evals: {} };
+const EMPTY: OkachaProgress = { lus: [], evals: {}, sectionsLues: [] };
 
 const isCompteur = (v: unknown): v is CompteurNote =>
   !!v && typeof v === 'object' &&
@@ -37,13 +39,19 @@ export function loadOkachaProgress(): OkachaProgress {
     if (!raw) return EMPTY;
     const p: unknown = JSON.parse(raw);
     if (!p || typeof p !== 'object') return EMPTY;
-    const { lus, evals } = p as { lus?: unknown; evals?: unknown };
+    const { lus, evals, sectionsLues } = p as { lus?: unknown; evals?: unknown; sectionsLues?: unknown };
     if (!Array.isArray(lus) || !evals || typeof evals !== 'object') return EMPTY;
     const evalsPropres: Record<string, CompteurNote> = {};
     for (const [k, v] of Object.entries(evals as Record<string, unknown>)) {
       if (isCompteur(v)) evalsPropres[k] = v;
     }
-    return { lus: lus.filter((x): x is string => typeof x === 'string'), evals: evalsPropres };
+    return {
+      lus: lus.filter((x): x is string => typeof x === 'string'),
+      evals: evalsPropres,
+      sectionsLues: Array.isArray(sectionsLues)
+        ? sectionsLues.filter((x): x is string => typeof x === 'string')
+        : [],
+    };
   } catch {
     return EMPTY;
   }
@@ -91,6 +99,14 @@ export function totalNotations(p: OkachaProgress): number {
     (s, c) => s + c.again + c.hard + c.good + c.easy,
     0,
   );
+}
+
+/** Ouvre une section méthodo → marquée lue (idempotent). */
+export function marquerSectionLue(p: OkachaProgress, sectionId: string): OkachaProgress {
+  if (p.sectionsLues.includes(sectionId)) return p;
+  const next = { ...p, sectionsLues: [...p.sectionsLues, sectionId] };
+  saveOkachaProgress(next);
+  return next;
 }
 
 /** Sous-total de notes d'une unité (badge sur l'accordéon). */

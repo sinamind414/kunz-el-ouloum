@@ -193,8 +193,8 @@ describe('lessonIcons — بنك الحفظ (عكاشة)', () => {
     expect(licite(okachaUniteIcone('dxu9', 99))).toBe(true);
   });
 
-  it('les 8 sections de méthodologie ont une icône explicite licite', () => {
-    expect(OKACHA_METHODO_SECTIONS).toHaveLength(8);
+  it('les 9 sections de méthodologie (8 livre + nasiha) ont une icône explicite licite', () => {
+    expect(OKACHA_METHODO_SECTIONS).toHaveLength(9);
     for (const s of OKACHA_METHODO_SECTIONS) {
       const cle = METHODO_ICON_KEY[s.id];
       expect(cle, `section ${s.id} sans icône`).toBeTruthy();

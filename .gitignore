@@ -13,3 +13,4 @@ data/teachers.json
 
 # copies d'eleves bac2025 (donnees personnelles — jamais commitées)
 docs/copies-bac2025/
+__pycache__/
