@@ -121,6 +121,24 @@ async function startServer() {
     res.setHeader("X-Content-Type-Options", "nosniff");
     res.setHeader("X-Frame-Options", "DENY");
     res.setHeader("X-XSS-Protection", "1; mode=block");
+    // Audit qualité #12 : Referrer-Policy + CSP (SPA same-origin + Google
+    // Fonts + Supabase optionnel ; pas d'inline script en prod Vite).
+    res.setHeader("Referrer-Policy", "strict-origin-when-cross-origin");
+    res.setHeader(
+      "Content-Security-Policy",
+      [
+        "default-src 'self'",
+        "base-uri 'self'",
+        "object-src 'none'",
+        "frame-ancestors 'none'",
+        "form-action 'self'",
+        "img-src 'self' data: blob:",
+        "font-src 'self' data: https://fonts.gstatic.com",
+        "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+        "script-src 'self'",
+        "connect-src 'self' https://*.supabase.co wss://*.supabase.co",
+      ].join("; "),
+    );
     next();
   });
 

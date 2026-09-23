@@ -14,7 +14,8 @@ services:
     restart: unless-stopped
     environment:
       POSTGRES_USER: boussole
-      POSTGRES_PASSWORD: change-me-strong
+      # Secrets hors du fichier tracké — renseignés dans .env (voir .env.example) :
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD manquant dans .env}
       POSTGRES_DB: boussole
     volumes:
       - pgdata:/var/lib/postgresql/data
@@ -32,12 +33,13 @@ services:
     environment:
       NODE_ENV: production
       PORT: 3000
-      DATABASE_URL: postgres://boussole:change-me-strong@db:5432/boussole
-      # ⚠️ À CHANGER en production (sinon les JWT sont forgeables) :
-      JWT_SECRET: change-moi-64-caracteres-aleatoires
+      # Secrets hors du fichier tracké — POSTGRES_PASSWORD / JWT_SECRET /
+      # ADMIN_PASSWORD viennent de .env (voir .env.example, openssl rand -hex 32) :
+      DATABASE_URL: postgres://boussole:${POSTGRES_PASSWORD:?POSTGRES_PASSWORD manquant dans .env}@db:5432/boussole
+      JWT_SECRET: ${JWT_SECRET:?JWT_SECRET manquant dans .env}
       # Compte enseignant amorcé au premier démarrage (PUIS MODIFIER !) :
-      ADMIN_EMAIL: maitre@ecole.dz
-      ADMIN_PASSWORD: change-moi-strong-123
+      ADMIN_EMAIL: ${ADMIN_EMAIL:-maitre@ecole.dz}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:?ADMIN_PASSWORD manquant dans .env}
       # Derrière nginx : l'IP réelle des élèves (limiteur par compte) :
       TRUST_PROXY: '1'
     depends_on:

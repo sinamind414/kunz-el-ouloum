@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Wifi, WifiOff, LogOut, User, ChevronDown } from 'lucide-react';
-import { fetchMe, setApiToken, getApiToken, requestPasswordReset, requestTeacherPasswordReset } from '../utils/api';
+import { fetchMe, setApiToken, getApiToken, requestPasswordReset } from '../utils/api';
 
 interface Props {
   onOpenTeacher: () => void;
@@ -61,20 +61,13 @@ export default function StudentAccountBar({ onOpenTeacher, onLogout }: Props) {
     onLogout?.();
   };
 
-  const handleResetRequest = async () => {
+  // Bug audit #10 : ce bouton appelait la route enseignante (teacherAuth)
+  // avec le jeton élève → 401 systématique. Le code est créé par
+  // l'enseignant ; l'élève n'ouvre que le formulaire de saisie.
+  const handleOpenResetForm = () => {
     setError(null);
     setMessage(null);
-    try {
-      const data = await requestTeacherPasswordReset(student?.id || '');
-      if (data?.code) {
-        setMode('reset');
-        setMessage(data.code);
-      } else {
-        setError(data?.error || 'تعذر إنشاء الرمز.');
-      }
-    } catch {
-      setError('تعذر الاتصال بالخادم.');
-    }
+    setMode('reset');
   };
 
   const handleResetApply = async (e: React.FormEvent) => {
@@ -162,7 +155,7 @@ export default function StudentAccountBar({ onOpenTeacher, onLogout }: Props) {
                 <div className="text-xs font-black text-gray-900 dark:text-white">إعادة تعيين كلمة السر</div>
                 <p className="text-[11px] text-gray-500">اطلب الرمز من المعلم، ثم أدخله هنا مع كلمة السر الجديدة.</p>
                 <button
-                  onClick={handleResetRequest}
+                  onClick={handleOpenResetForm}
                   className="w-full px-3 py-2 rounded-xl bg-amber-100 dark:bg-amber-900/40 text-amber-800 dark:text-amber-300 text-xs font-black hover:bg-amber-200"
                 >
                   طلب رمز إعادة التعيين

@@ -225,3 +225,57 @@ describe('fix #9 — CI : couverture typecheck + tests (ci.yml tracé, non modif
     expect(ts.include).toContain('server');
   });
 });
+
+describe('fix #10 — barre élève : plus d’appel à la route enseignante', () => {
+  it('StudentAccountBar n’importe plus requestTeacherPasswordReset', () => {
+    const bar = fs.readFileSync(
+      path.resolve(process.cwd(), 'src/components/StudentAccountBar.tsx'),
+      'utf-8',
+    );
+    expect(bar).not.toContain('requestTeacherPasswordReset');
+    expect(bar).not.toContain('/api/teacher/reset-password');
+    // Le formulaire de saisie du code reste (l’enseignant crée le code).
+    expect(bar).toContain('handleOpenResetForm');
+    expect(bar).toContain('requestPasswordReset');
+  });
+
+  it('requestTeacherPasswordReset reste réservé au dashboard enseignant', () => {
+    const teacher = fs.readFileSync(
+      path.resolve(process.cwd(), 'src/components/TeacherDashboardView.tsx'),
+      'utf-8',
+    );
+    expect(teacher).toContain('requestTeacherPasswordReset');
+  });
+});
+
+describe('fix #12 — headers sécurité + secrets docker hors du tracké', () => {
+  it('server.ts pose Referrer-Policy et Content-Security-Policy', () => {
+    const src = serverSrc();
+    expect(src).toContain('Referrer-Policy');
+    expect(src).toContain('strict-origin-when-cross-origin');
+    expect(src).toContain('Content-Security-Policy');
+    expect(src).toContain("default-src 'self'");
+    expect(src).toContain("frame-ancestors 'none'");
+    // X-Content-Type-Options / X-Frame-Options déjà présents (vague 1).
+    expect(src).toContain('X-Content-Type-Options');
+    expect(src).toContain('X-Frame-Options');
+  });
+
+  it('docker-compose.yml ne contient plus de secrets en clair', () => {
+    const compose = fs.readFileSync(
+      path.resolve(process.cwd(), 'docker-compose.yml'),
+      'utf-8',
+    );
+    expect(compose).not.toContain('change-me-strong');
+    expect(compose).not.toContain('change-moi-64-caracteres-aleatoires');
+    expect(compose).not.toContain('change-moi-strong-123');
+    expect(compose).toContain('${POSTGRES_PASSWORD:?');
+    expect(compose).toContain('${JWT_SECRET:?');
+    expect(compose).toContain('${ADMIN_PASSWORD:?');
+    // .env.example documente les variables attendues.
+    const envEx = fs.readFileSync(path.resolve(process.cwd(), '.env.example'), 'utf-8');
+    expect(envEx).toContain('POSTGRES_PASSWORD');
+    expect(envEx).toContain('JWT_SECRET');
+    expect(envEx).toContain('ADMIN_PASSWORD');
+  });
+});
