@@ -7,7 +7,7 @@
 //      la séquence expose la clé de base puis la clé `_2` — une leçon affichée
 //      à la fois (isolation par sliceLessonHtml).
 import { useState } from 'react';
-import { BookOpen, ChevronLeft, Zap, MonitorPlay, Network, FlaskConical, Leaf, Globe2, GraduationCap, BookMarked } from 'lucide-react';
+import { BookOpen, ChevronLeft, Zap, MonitorPlay, Network, FlaskConical, Leaf, Globe2, GraduationCap, BookMarked, Grid3x3 } from 'lucide-react';
 import HtmlLessonViewer from './HtmlLessonViewer';
 import ActiveLessonView from './ActiveLessonView';
 import { INITIAL_UNITS } from '../data';
@@ -17,6 +17,8 @@ import { sourceLivre, badgeSource, sourceAmbigue } from '../data/bookIndex';
 import QcmLivreView from './QcmLivreView';
 import BacExamView from './BacExamView';
 import OkachaView from './OkachaView';
+import Icone from './Icone';
+import { chapitreIcone, uniteIcone } from '../data/lessonIcons';
 import {
   PASSIVE_DOMAINS,
   hasHtmlFile,
@@ -28,6 +30,14 @@ import {
 } from '../data/lessonModes';
 
 const DOMAIN_ICONS = [FlaskConical, Leaf, Globe2];
+
+
+/** Props : le callback d'auto-évaluation des flashcards (handleRateCard, App.tsx)
+ *  est transmis au الحصيلة المعرفية pour créditer XP + flashcardStats (SM-2). */
+interface LessonsProps {
+  onRateCard?: (cardId: string, rating: 'again' | 'hard' | 'good' | 'easy') => void;
+}
+
 
 /**
  * Badge « source livre officiel » : chapitres + plage de lignes OCR
@@ -67,12 +77,16 @@ const firstActiveLessonOfNextUnit = (unitId: number): { unitId: number; key: str
 const unitOfActiveLesson = (key: string): number =>
   INITIAL_UNITS.find((u) => getActiveLessonKeysForUnit(u.id).includes(key))?.id ?? 1;
 
-export default function LessonsView() {
+export default function LessonsView({ onRateCard }: LessonsProps) {
   const [mode, setMode] = useState<LessonMode | 'qcm' | 'bac' | 'okacha' | null>(null);
   const [selectedUnit, setSelectedUnit] = useState<number>(1);
   const [selectedDomain, setSelectedDomain] = useState<number | null>(null);
   const [selectedActiveLesson, setSelectedActiveLesson] = useState<string | null>(null);
   const [selectedPassiveLesson, setSelectedPassiveLesson] = useState<string | null>(null);
+  /** Unité passive ouverte (navigation par icônes : domaine → unité → chapitres). */
+  const [selectedPassiveUnitId, setSelectedPassiveUnitId] = useState<number | null>(null);
+  /** Unité active ouverte (navigation par icônes : unité → leçons). */
+  const [selectedActiveUnitId, setSelectedActiveUnitId] = useState<number | null>(null);
 
   // ----- Rendu d'une leçon ouverte -----
   if (selectedActiveLesson) {
@@ -83,7 +97,13 @@ export default function LessonsView() {
     return (
       <ActiveLessonView
         lessonKey={selectedActiveLesson}
-        onBack={() => { setSelectedActiveLesson(null); setSelectedUnit(unitOfActiveLesson(selectedActiveLesson)); }}
+        onBack={() => {
+          const uid = unitOfActiveLesson(selectedActiveLesson);
+          setSelectedActiveLesson(null);
+          setSelectedUnit(uid);
+          // Retour sur les icônes de la MÊME unité (pas la liste des unités).
+          setSelectedActiveUnitId(uid);
+        }}
         onNext={nextKey && nextUnit ? () => { setSelectedUnit(nextUnit); setSelectedActiveLesson(nextKey); } : undefined}
         nextTitleAr={nextKey ? getActiveLessonTitle(nextKey) : undefined}
       />
@@ -112,9 +132,15 @@ export default function LessonsView() {
     return <BacExamView onBack={() => setMode(null)} />;
   }
 
-  // ----- Écran 0 ter : بنك الحفظ (عكاشة, injection mécanique filtrée) -----
+  // ----- Écran 0 ter : الحصيلة المعرفية (عكاشة, injection mécanique filtrée) -----
   if (mode === 'okacha') {
-    return <OkachaView onBack={() => setMode(null)} />;
+    return (
+      <OkachaView
+        onBack={() => setMode(null)}
+        onRate={onRateCard}
+        onOpenQcm={() => setMode('qcm')}
+      />
+    );
   }
 
   // ----- Écran 1 : les deux icônes (Leçon Active / Leçon Passive) -----
@@ -135,7 +161,7 @@ export default function LessonsView() {
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
           {/* Leçon Active */}
           <button
-            onClick={() => { setMode('active'); setSelectedDomain(null); }}
+            onClick={() => { setMode('active'); setSelectedDomain(null); setSelectedActiveUnitId(null); }}
             className="group p-6 rounded-3xl border-2 border-emerald-200 dark:border-emerald-900/50 bg-gradient-to-b from-emerald-50 to-white dark:from-emerald-950/30 dark:to-[#161c18] hover:border-emerald-500 hover:shadow-lg transition-all text-center space-y-3"
           >
             <span className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-[#006d37] text-white shadow-md group-hover:scale-105 transition-transform">
@@ -149,7 +175,7 @@ export default function LessonsView() {
 
           {/* Leçon Passive */}
           <button
-            onClick={() => { setMode('passive'); setSelectedDomain(null); }}
+            onClick={() => { setMode('passive'); setSelectedDomain(null); setSelectedPassiveUnitId(null); }}
             className="group p-6 rounded-3xl border-2 border-teal-200 dark:border-teal-900/50 bg-gradient-to-b from-teal-50 to-white dark:from-teal-950/30 dark:to-[#161c18] hover:border-teal-500 hover:shadow-lg transition-all text-center space-y-3"
           >
             <span className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-[#0e6b6b] text-white shadow-md group-hover:scale-105 transition-transform">
@@ -186,7 +212,7 @@ export default function LessonsView() {
               3 اختبارات كاملة (20 نقطة) — تصحيح ذاتي بسلّم التنقيط
             </span>
           </button>
-          {/* بنك الحفظ عكاشة */}
+          {/* الحصيلة المعرفية عكاشة */}
           <button
             onClick={() => setMode('okacha')}
             className="group p-6 rounded-3xl border-2 border-blue-200 dark:border-blue-900/50 bg-gradient-to-b from-blue-50 to-white dark:from-blue-950/30 dark:to-[#161c18] hover:border-blue-500 hover:shadow-lg transition-all text-center space-y-3"
@@ -194,7 +220,7 @@ export default function LessonsView() {
             <span className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-[#1d4ed8] text-white shadow-md group-hover:scale-105 transition-transform">
               <BookMarked className="w-8 h-8" />
             </span>
-            <span className="block text-lg font-black text-gray-800 dark:text-gray-100">بنك الحفظ</span>
+            <span className="block text-lg font-black text-gray-800 dark:text-gray-100">الحصيلة المعرفية</span>
             <span className="block text-xs font-bold text-gray-500 dark:text-gray-400 leading-relaxed">
               كل ما يجب حفظه — ملخصات مرقّمة لكل وحدة (عكاشة)
             </span>
@@ -204,59 +230,133 @@ export default function LessonsView() {
     );
   }
 
-  // ----- Écran 2a : Leçon Active — liste des unités avec leurs leçons actives -----
+  // ----- Écran 2a : Leçon Active — ICÔNES DES UNITÉS actives -----
+  // Même principe que les leçons passives : une icône = une unité, un clic ouvre
+  // les icônes de ses leçons actives (U6 ×3, U7, U9, U11 — 4 unités / 6 leçons).
   if (mode === 'active') {
     const activeUnits = INITIAL_UNITS.filter((u) => getActiveLessonKeysForUnit(u.id).length > 0);
+
+    if (selectedActiveUnitId === null) {
+      return (
+        <div dir="rtl" className="space-y-5">
+          <div className="flex items-center gap-3 flex-wrap">
+            <button
+              onClick={() => { setMode(null); setSelectedActiveUnitId(null); }}
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-xl font-bold text-sm bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-700 transition-all"
+            >
+              <span>→</span>
+              <span>عودة</span>
+            </button>
+            <h2 className="text-xl font-black flex items-center gap-2">
+              <Zap className="w-5 h-5 text-[#006d37]" />
+              الدرس النشيط — اختر الوحدة (أيقونة)
+            </h2>
+          </div>
+
+          {activeUnits.length === 0 && (
+            <p className="text-sm font-bold text-gray-500 dark:text-gray-400 text-center py-6">
+              لا توجد دروس نشيطة بعد.
+            </p>
+          )}
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4" data-testid="unites-actives-icones">
+            {activeUnits.map((u) => {
+              const keys = getActiveLessonKeysForUnit(u.id);
+              return (
+                <button
+                  key={u.id}
+                  onClick={() => setSelectedActiveUnitId(u.id)}
+                  data-testid={`unite-active-${u.id}`}
+                  className="group p-5 rounded-3xl border-2 border-gray-200 dark:border-gray-800 bg-white dark:bg-[#161c18] hover:border-emerald-500 hover:shadow-lg transition-all text-right flex items-start gap-4"
+                >
+                  <span className="shrink-0 inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-tr from-[#006d37] to-[#10b981] text-white shadow-md group-hover:scale-105 transition-transform">
+                    <Icone cle={uniteIcone(u.id)} className="w-7 h-7" />
+                  </span>
+                  <span className="flex-1 min-w-0 space-y-1">
+                    <span className="flex items-center gap-2">
+                      <span className="inline-flex items-center justify-center w-6 h-6 rounded-lg bg-emerald-50 dark:bg-emerald-950/40 text-[#006d37] dark:text-emerald-300 text-[11px] font-black shrink-0">
+                        {u.id}
+                      </span>
+                      <span className="text-sm font-black text-gray-800 dark:text-gray-100">{u.title}</span>
+                    </span>
+                    <span className="block text-[11px] font-bold text-gray-500 dark:text-gray-400">{u.description}</span>
+                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg bg-emerald-50 dark:bg-emerald-950/30 text-[10px] font-black text-emerald-700 dark:text-emerald-300">
+                      <Grid3x3 className="w-3 h-3" />
+                      {keys.length} دروس
+                    </span>
+                  </span>
+                  <ChevronLeft className="w-5 h-5 text-gray-300 group-hover:text-emerald-500 transition-all shrink-0 mt-4" />
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      );
+    }
+    const uniteActive = INITIAL_UNITS.find((u) => u.id === selectedActiveUnitId);
+    const clesActives = getActiveLessonKeysForUnit(selectedActiveUnitId);
     return (
       <div dir="rtl" className="space-y-5">
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3 flex-wrap">
           <button
-            onClick={() => setMode(null)}
+            onClick={() => setSelectedActiveUnitId(null)}
             className="inline-flex items-center gap-2 px-4 py-2 rounded-xl font-bold text-sm bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-700 transition-all"
           >
             <span>→</span>
-            <span>عودة</span>
+            <span>عودة إلى وحدات الدروس النشيطة</span>
           </button>
           <h2 className="text-xl font-black flex items-center gap-2">
-            <Zap className="w-5 h-5 text-[#006d37]" />
-            الدرس النشيط — تعلّم خطوة بخطوة
+            <Icone cle={uniteIcone(selectedActiveUnitId)} className="w-5 h-5 text-[#006d37]" />
+            {uniteActive?.title}
           </h2>
         </div>
 
-        {activeUnits.length === 0 && (
-          <p className="text-sm font-bold text-gray-500 dark:text-gray-400 text-center py-6">
-            لا توجد دروس نشيطة بعد.
-          </p>
-        )}
+        {/* Bande d'unités actives : passer d'une unité à l'autre icône après icône. */}
+        <div className="flex items-center gap-2 flex-wrap" data-testid="bande-unites-actives">
+          {activeUnits.map((u) => (
+            <button
+              key={u.id}
+              onClick={() => setSelectedActiveUnitId(u.id)}
+              title={getUnitTitle(u.id)}
+              data-testid={`bande-unite-active-${u.id}`}
+              className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-[11px] font-black transition-colors ${
+                u.id === selectedActiveUnitId
+                  ? 'bg-[#006d37] text-white'
+                  : 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-emerald-100'
+              }`}
+            >
+              <Icone cle={uniteIcone(u.id)} className="w-3.5 h-3.5" />
+              {u.id}
+            </button>
+          ))}
+        </div>
 
-        <div className="space-y-5">
-          {activeUnits.map((u) => {
-            const keys = getActiveLessonKeysForUnit(u.id);
+        <p className="text-[11px] font-bold text-gray-500 dark:text-gray-400">{uniteActive?.description}</p>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3" data-testid="lecons-actives-icones">
+          {clesActives.map((key, i) => {
+            const titre = getActiveLessonTitle(key);
             return (
-              <section key={u.id} className="rounded-3xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-[#161c18] overflow-hidden">
-                <header className="bg-gradient-to-l from-[#006d37]/10 to-[#10b981]/10 dark:from-emerald-950/40 dark:to-teal-950/40 px-4 py-3 border-b border-gray-200 dark:border-gray-800">
-                  <h3 className="text-sm font-black text-[#006d37] dark:text-emerald-300">{getUnitTitle(u.id)}</h3>
-                  <p className="text-[11px] font-bold text-gray-500 mt-0.5">{u.description}</p>
-                </header>
-                <div className="p-4 grid grid-cols-1 md:grid-cols-2 gap-3">
-                  {keys.map((key, i) => (
-                    <button
-                      key={key}
-                      onClick={() => { setSelectedUnit(u.id); setSelectedActiveLesson(key); }}
-                      className="group p-4 rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-[#161c18] hover:border-emerald-400 hover:shadow-md transition-all text-right flex items-center gap-3"
-                    >
-                      <span className="shrink-0 w-9 h-9 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 text-[#006d37] dark:text-emerald-300 font-black flex items-center justify-center text-sm">
-                        {i + 1}
-                      </span>
-                      <span className="flex-1 text-sm font-bold text-gray-800 dark:text-gray-100 leading-snug">
-                        {getActiveLessonTitle(key)}
-                        <SourceBadge cle={key} titre={getActiveLessonTitle(key)} />
-                      </span>
-                      <ChevronLeft className="w-4 h-4 text-gray-300 group-hover:text-emerald-500 transition-all shrink-0" />
-                    </button>
-                  ))}
-                </div>
-              </section>
+              <button
+                key={key}
+                onClick={() => { setSelectedUnit(selectedActiveUnitId); setSelectedActiveLesson(key); }}
+                data-testid={`lecon-active-${key}`}
+                className="group p-4 rounded-2xl border-2 border-gray-200 dark:border-gray-800 bg-white dark:bg-[#161c18] hover:border-emerald-500 hover:shadow-md transition-all text-right"
+              >
+                <span className="flex items-start gap-3">
+                  <span className="relative shrink-0 inline-flex items-center justify-center w-11 h-11 rounded-2xl bg-emerald-50 dark:bg-emerald-950/40 text-[#006d37] dark:text-emerald-300 group-hover:bg-[#006d37] group-hover:text-white transition-colors">
+                    <Icone cle={chapitreIcone(titre, selectedActiveUnitId)} className="w-5 h-5" />
+                    <span className="absolute -top-1.5 -right-1.5 inline-flex items-center justify-center w-4 h-4 rounded-full bg-[#006d37] text-white text-[9px] font-black">
+                      {i + 1}
+                    </span>
+                  </span>
+                  <span className="flex-1 text-sm font-bold text-gray-800 dark:text-gray-100 leading-snug">
+                    {titre}
+                    <SourceBadge cle={key} titre={titre} />
+                  </span>
+                  <ChevronLeft className="w-4 h-4 text-gray-300 group-hover:text-emerald-500 transition-all shrink-0 mt-1" />
+                </span>
+              </button>
             );
           })}
         </div>
@@ -292,7 +392,8 @@ export default function LessonsView() {
             return (
               <button
                 key={d.id}
-                onClick={() => setSelectedDomain(d.id)}
+                onClick={() => { setSelectedDomain(d.id); setSelectedPassiveUnitId(null); }}
+                data-testid={`domaine-${d.id}`}
                 className="group p-6 rounded-3xl border-2 border-gray-200 dark:border-gray-800 bg-white dark:bg-[#161c18] hover:border-teal-500 hover:shadow-lg transition-all text-center space-y-3"
               >
                 <span className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-[#0e6b6b] text-white shadow-md group-hover:scale-105 transition-transform">
@@ -304,6 +405,18 @@ export default function LessonsView() {
                 <span className="block text-xs font-bold text-gray-500 dark:text-gray-400">
                   {d.unitIds.length} وحدات · {chapters} فصلاً
                 </span>
+                {/* Aperçu : les icônes des unités du domaine (entrée « icône après icône »). */}
+                <span className="flex items-center justify-center gap-1.5 flex-wrap pt-1">
+                  {d.unitIds.map((uid) => (
+                    <span
+                      key={uid}
+                      title={getUnitTitle(uid)}
+                      className="inline-flex items-center justify-center w-7 h-7 rounded-lg bg-teal-50 dark:bg-teal-950/40 text-[#0e6b6b] dark:text-teal-300 group-hover:bg-teal-100 transition-colors"
+                    >
+                      <Icone cle={uniteIcone(uid)} className="w-3.5 h-3.5" />
+                    </span>
+                  ))}
+                </span>
               </button>
             );
           })}
@@ -312,60 +425,140 @@ export default function LessonsView() {
     );
   }
 
-  // ----- Écran 3 : Leçon Passive — unités du domaine, chacune avec ses chapitres -----
+  // ----- Écran 3 : Leçon Passive — ICÔNES DES UNITÉS du domaine -----
+  // Une icône = une unité (D1 : 5 icônes, D2 : 3, D3 : 3) ; un clic ouvre les
+  // icônes des chapitres. Vaut pour TOUTES les unités des leçons passives.
   const domain = PASSIVE_DOMAINS.find((d) => d.id === selectedDomain);
+
+  if (selectedPassiveUnitId === null) {
+    return (
+      <div dir="rtl" className="space-y-5">
+        <div className="flex items-center gap-3 flex-wrap">
+          <button
+            onClick={() => { setSelectedDomain(null); setSelectedPassiveUnitId(null); }}
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-xl font-bold text-sm bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-700 transition-all"
+          >
+            <span>→</span>
+            <span>عودة إلى المجالات</span>
+          </button>
+          <h2 className="text-xl font-black">
+            {domain?.emoji} {domain?.titleAr}
+          </h2>
+          <span className="text-[11px] font-black text-gray-400 dark:text-gray-500">
+            اختر الوحدة (أيقونة) ثم فصولها
+          </span>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4" data-testid="unites-icones">
+          {domain?.unitIds.map((uid) => {
+            const unit = INITIAL_UNITS.find((u) => u.id === uid);
+            const chapters = getUnitLessonSequence(uid).filter(hasHtmlFile);
+            return (
+              <button
+                key={uid}
+                onClick={() => setSelectedPassiveUnitId(uid)}
+                data-testid={`unite-${uid}`}
+                className="group p-5 rounded-3xl border-2 border-gray-200 dark:border-gray-800 bg-white dark:bg-[#161c18] hover:border-teal-500 hover:shadow-lg transition-all text-right flex items-start gap-4"
+              >
+                <span className="shrink-0 inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-tr from-[#0e6b6b] to-[#10b981] text-white shadow-md group-hover:scale-105 transition-transform">
+                  <Icone cle={uniteIcone(uid)} className="w-7 h-7" />
+                </span>
+                <span className="flex-1 min-w-0 space-y-1">
+                  <span className="flex items-center gap-2">
+                    <span className="inline-flex items-center justify-center w-6 h-6 rounded-lg bg-teal-50 dark:bg-teal-950/40 text-[#0e6b6b] dark:text-teal-300 text-[11px] font-black shrink-0">
+                      {uid}
+                    </span>
+                    <span className="text-sm font-black text-gray-800 dark:text-gray-100">{unit?.title}</span>
+                  </span>
+                  <span className="block text-[11px] font-bold text-gray-500 dark:text-gray-400">{unit?.description}</span>
+                  <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg bg-emerald-50 dark:bg-emerald-950/30 text-[10px] font-black text-emerald-700 dark:text-emerald-300">
+                    <Grid3x3 className="w-3 h-3" />
+                    {chapters.length} دروس
+                  </span>
+                </span>
+                <ChevronLeft className="w-5 h-5 text-gray-300 group-hover:text-teal-500 transition-all shrink-0 mt-4" />
+              </button>
+            );
+          })}
+        </div>
+      </div>
+    );
+  }
+
+  // ----- Écran 4 : Leçon Passive — ICÔNES DES CHAPITRES (une icône = une leçon) -----
+  const unitCourante = INITIAL_UNITS.find((u) => u.id === selectedPassiveUnitId);
+  const chapitres = getUnitLessonSequence(selectedPassiveUnitId).filter(hasHtmlFile);
   return (
     <div dir="rtl" className="space-y-5">
       <div className="flex items-center gap-3 flex-wrap">
         <button
-          onClick={() => setSelectedDomain(null)}
+          onClick={() => setSelectedPassiveUnitId(null)}
           className="inline-flex items-center gap-2 px-4 py-2 rounded-xl font-bold text-sm bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-700 transition-all"
         >
           <span>→</span>
-          <span>عودة إلى المجالات</span>
+          <span>عودة إلى وحدات المجال</span>
         </button>
-        <h2 className="text-xl font-black">
-          {domain?.emoji} {domain?.titleAr}
+        <h2 className="text-xl font-black flex items-center gap-2">
+          <Icone cle={uniteIcone(selectedPassiveUnitId)} className="w-5 h-5 text-[#0e6b6b]" />
+          {unitCourante?.title}
         </h2>
       </div>
 
-      <div className="space-y-5">
-        {domain?.unitIds.map((uid) => {
-          const unit = INITIAL_UNITS.find((u) => u.id === uid);
-          const chapters = getUnitLessonSequence(uid).filter(hasHtmlFile);
+      {/* Bande d'unités : passer d'une unité à l'autre icône après icône. */}
+      <div className="flex items-center gap-2 flex-wrap" data-testid="bande-unites">
+        {domain?.unitIds.map((uid) => (
+          <button
+            key={uid}
+            onClick={() => setSelectedPassiveUnitId(uid)}
+            title={getUnitTitle(uid)}
+            data-testid={`bande-unite-${uid}`}
+            className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-[11px] font-black transition-colors ${
+              uid === selectedPassiveUnitId
+                ? 'bg-[#0e6b6b] text-white'
+                : 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-teal-100'
+            }`}
+          >
+            <Icone cle={uniteIcone(uid)} className="w-3.5 h-3.5" />
+            {uid}
+          </button>
+        ))}
+      </div>
+
+      <p className="text-[11px] font-bold text-gray-500 dark:text-gray-400">{unitCourante?.description}</p>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3" data-testid="chapitres-icones">
+        {chapitres.length === 0 && (
+          <p className="text-xs font-bold text-gray-500 dark:text-gray-400 col-span-full text-center py-6">
+            لا توجد فصول في هذه الوحدة بعد.
+          </p>
+        )}
+        {chapitres.map((key, i) => {
+          const titre = getPassiveLessonTitle(key);
           return (
-            <section key={uid} className="rounded-3xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-[#161c18] overflow-hidden">
-              <header className="bg-gradient-to-l from-[#0e6b6b]/10 to-[#10b981]/10 dark:from-teal-950/40 dark:to-emerald-950/40 px-4 py-3 border-b border-gray-200 dark:border-gray-800">
-                <h3 className="text-sm font-black text-[#0e6b6b] dark:text-teal-300">{getUnitTitle(uid)}</h3>
-                <p className="text-[11px] font-bold text-gray-500 mt-0.5">{unit?.description}</p>
-              </header>
-              <div className="p-4 grid grid-cols-1 md:grid-cols-2 gap-3">
-                {chapters.length === 0 && (
-                  <p className="text-xs font-bold text-gray-500 dark:text-gray-400 col-span-2 text-center py-4">
-                    لا توجد فصول في هذه الوحدة بعد.
-                  </p>
-                )}
-                {chapters.map((key, i) => (
-                  <button
-                    key={key}
-                    onClick={() => { setSelectedUnit(uid); setSelectedPassiveLesson(key); }}
-                    className="group p-4 rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-[#161c18] hover:border-teal-400 hover:shadow-md transition-all text-right flex items-center gap-3"
-                  >
-                    <span className="shrink-0 w-9 h-9 rounded-xl bg-teal-50 dark:bg-teal-950/40 text-[#0e6b6b] dark:text-teal-300 font-black flex items-center justify-center text-sm">
-                      {i + 1}
-                    </span>
-                    <span className="flex-1 text-sm font-bold text-gray-800 dark:text-gray-100 leading-snug">
-                      {getPassiveLessonTitle(key)}
-                      <SourceBadge cle={key} titre={getPassiveLessonTitle(key)} />
-                    </span>
-                    <ChevronLeft className="w-4 h-4 text-gray-300 group-hover:text-teal-500 transition-all shrink-0" />
-                  </button>
-                ))}
-              </div>
-            </section>
+            <button
+              key={key}
+              onClick={() => { setSelectedUnit(selectedPassiveUnitId); setSelectedPassiveLesson(key); }}
+              data-testid={`chapitre-${key}`}
+              className="group p-4 rounded-2xl border-2 border-gray-200 dark:border-gray-800 bg-white dark:bg-[#161c18] hover:border-teal-500 hover:shadow-md transition-all text-right"
+            >
+              <span className="flex items-start gap-3">
+                <span className="relative shrink-0 inline-flex items-center justify-center w-11 h-11 rounded-2xl bg-teal-50 dark:bg-teal-950/40 text-[#0e6b6b] dark:text-teal-300 group-hover:bg-[#0e6b6b] group-hover:text-white transition-colors">
+                  <Icone cle={chapitreIcone(titre, selectedPassiveUnitId)} className="w-5 h-5" />
+                  <span className="absolute -top-1.5 -right-1.5 inline-flex items-center justify-center w-4 h-4 rounded-full bg-[#0e6b6b] text-white text-[9px] font-black">
+                    {i + 1}
+                  </span>
+                </span>
+                <span className="flex-1 text-sm font-bold text-gray-800 dark:text-gray-100 leading-snug">
+                  {titre}
+                  <SourceBadge cle={key} titre={titre} />
+                </span>
+                <ChevronLeft className="w-4 h-4 text-gray-300 group-hover:text-teal-500 transition-all shrink-0 mt-1" />
+              </span>
+            </button>
           );
         })}
       </div>
     </div>
   );
 }
+
