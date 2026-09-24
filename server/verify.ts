@@ -5,7 +5,9 @@
 //   · dashboard : productions, avgIcm, dominantErrors (occurrences
 //     + ordre à égalité = première occurrence), activités (ordre),
 //     quizCount, missionCount, avgQuizPercent
-//   · CSV : colonne « last_production » = student.createdAt,
+//   · CSV : colonne « last_production » = MAX(created_at) des
+//     entries (dernière production réelle, '' si aucune) —
+//     contrat aligné sur le dashboard depuis l'audit 2026-09-22,
 //     top_errors = "tag:count" décroissant, 5 max
 //   · idempotence (re-sync client SANS studentId) — épingle la
 //     régression entry_errors du backend PostgreSQL
@@ -116,7 +118,7 @@ async function runSuite(label: string, make: () => AnyStore | Promise<AnyStore>)
       if (g.quizCount !== s.quiz || g.missionCount !== s.mission) fail(`${label}: ${s.id} quiz/mission`);
     }
     ok("dashboard");
-    // 4) CSV vs référence (col. 6 = createdAt du student).
+    // 4) CSV vs référence (col. 6 = MAX created_at des entries).
     const csv: { id: string; productions: number; avgIcm: number; lastProduction: string; topErrors: string }[] = [];
     for await (const row of store.iterateExportRows()) csv.push(row);
     if (csv.length !== students.length) fail(`${label}: CSV ${csv.length} lignes ≠ ${students.length}`);
@@ -126,7 +128,9 @@ async function runSuite(label: string, make: () => AnyStore | Promise<AnyStore>)
       if (!s || !st) fail(`${label}: CSV élève inconnu ${row.id}`);
       if (row.productions !== s.prod || row.avgIcm !== s.avgIcm) fail(`${label}: CSV ${row.id} agrégats`);
       if (row.topErrors !== s.errs.slice(0, 5).join("; ")) fail(`${label}: CSV ${row.id} topErrors ${row.topErrors} ≠ ${s.errs.join("; ")}`);
-      if (row.lastProduction !== st.createdAt) fail(`${label}: CSV ${row.id} col.6 ${row.lastProduction} ≠ ${st.createdAt}`);
+      const es = entries.filter((e) => e.studentId === row.id);
+      const lastProd = es.length ? es.map((e) => e.createdAt).sort().at(-1)! : "";
+      if (row.lastProduction !== lastProd) fail(`${label}: CSV ${row.id} col.6 ${row.lastProduction} ≠ ${lastProd}`);
     }
     ok("csv");
     // 5) Occurrences (tag répété 3× dans un même errorTags = 3).
