@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, lazy, Suspense } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { 
   Home, 
@@ -26,7 +26,18 @@ import {
 } from 'lucide-react';
 
 import { Unit, UserProgress, Flashcard } from './types';
-import { INITIAL_UNITS, SVT_QUIZ_QUESTIONS, SVT_FLASHCARDS } from './data';
+import { INITIAL_UNITS } from './data';
+import type { QuizQuestion } from './types';
+
+// F2 — corpus QCM/flashcards hors d'entrée (chunk dynamique, cf. data/quizBank.ts).
+type QuizBankModule = typeof import('./data/quizBank');
+let quizBankPromise: Promise<QuizBankModule> | null = null;
+function loadQuizBank(): Promise<QuizBankModule> {
+  if (!quizBankPromise) {
+    quizBankPromise = import('./data/quizBank');
+  }
+  return quizBankPromise;
+}
 
 /** Identité élève persistée entre les sessions (le JWT vit dans api.ts). */
 const STUDENT_STORE_KEY = 'boussole_student';
@@ -49,27 +60,42 @@ import { healSavedFlashcards } from './utils/flashcardsSanitize';
 import { MIFTAH_NAME_OFFICIAL_AR } from './data/miftahSpec';
 import { AR_LATN } from './utils/latinDigits';
 
-import SplashView from './components/SplashView';
-import DashboardView from './components/DashboardView';
-import QuizView from './components/QuizView';
-import RevisionView from './components/RevisionView';
-import StatsView from './components/StatsView';
-import AITutorView from './components/AITutorView';
+// F2 — chaque vue métier est un chunk lazy (budget index gzip en CI locale).
+const SplashView = lazy(() => import('./components/SplashView'));
+const DashboardView = lazy(() => import('./components/DashboardView'));
+const QuizView = lazy(() => import('./components/QuizView'));
+const RevisionView = lazy(() => import('./components/RevisionView'));
+const StatsView = lazy(() => import('./components/StatsView'));
+const AITutorView = lazy(() => import('./components/AITutorView'));
+const MethodologyCompilerView = lazy(() => import('./components/MethodologyCompilerView'));
+const TeacherDashboardView = lazy(() => import('./components/TeacherDashboardView'));
+const UnitIntroPortal = lazy(() => import('./components/UnitIntroPortal'));
+const CombatTrainerView = lazy(() => import('./components/CombatTrainerView'));
+const CombatChallengePortal = lazy(() => import('./components/CombatChallengePortal'));
+const Bac2025ExamView = lazy(() => import('./components/Bac2025ExamView'));
+const DocumentAnalysisView = lazy(() => import('./components/DocumentAnalysisView'));
+const BadgesView = lazy(() => import('./components/BadgesView'));
+const LessonTwoView = lazy(() => import('./components/LessonTwoView'));
+const LessonsView = lazy(() => import('./components/LessonsView'));
+const MindMapView = lazy(() => import('./components/MindMap/MindMapView'));
+
+// Chrome permanent (modale / barre) — volontairement eager pour le premier paint.
 import StudyReminderModal from './components/StudyReminderModal';
-import MethodologyCompilerView from './components/MethodologyCompilerView';
 import StudentAuthView from './components/StudentAuthView';
 import StudentAccountBar from './components/StudentAccountBar';
 import { getApiToken } from './utils/api';
-import TeacherDashboardView from './components/TeacherDashboardView';
-import UnitIntroPortal from './components/UnitIntroPortal';
-import CombatTrainerView from './components/CombatTrainerView';
-import CombatChallengePortal from './components/CombatChallengePortal';
-import Bac2025ExamView from './components/Bac2025ExamView';
-import DocumentAnalysisView from './components/DocumentAnalysisView';
-import BadgesView from './components/BadgesView';
-import LessonTwoView from './components/LessonTwoView';
-import LessonsView from './components/LessonsView';
-import MindMapView from './components/MindMap/MindMapView';
+
+function ViewFallback() {
+  return (
+    <div className="flex items-center justify-center h-full min-h-[40vh]" aria-busy="true" aria-live="polite">
+      <div
+        className="w-9 h-9 rounded-full border-4 border-[#006d37] border-t-transparent animate-spin"
+        role="status"
+        aria-label="chargement"
+      />
+    </div>
+  );
+}
 import { 
   startPirateMusic, 
   stopPirateMusic, 
@@ -170,7 +196,9 @@ export default function App() {
 
   // Core progression state (persisted to localStorage)
   const [units, setUnits] = useState<Unit[]>(INITIAL_UNITS);
-  const [flashcards, setFlashcards] = useState<Flashcard[]>(SVT_FLASHCARDS);
+  // Hydraté par loadQuizBank + localStorage (F2 : corpus hors bundle d'entrée).
+  const [flashcards, setFlashcards] = useState<Flashcard[]>([]);
+  const [quizQuestions, setQuizQuestions] = useState<QuizQuestion[]>([]);
   // Seed 100 % honnête : premier lancement = zéro réel.
   // (plus aucune statistique de démonstration — tout s'écrit avec l'activité réelle)
   const [progress, setProgress] = useState<UserProgress>({
@@ -230,15 +258,28 @@ export default function App() {
     // Garde-fou verso vide (bug 2026-09-20) : UNE carte au verso vide dans le stock
     // local ⇒ tout le blob est rejeté (healSavedFlashcards strict) et remplacé par le
     // jeu complet du dépôt — soigne n'importe quel appareil au prochain chargement.
-    const healedFlashcards = savedFlashcards ? healSavedFlashcards(savedFlashcards) : null;
-    if (healedFlashcards) {
-      setFlashcards(healedFlashcards);
-    } else if (savedFlashcards) {
-      setFlashcards(SVT_FLASHCARDS);
-      try {
-        localStorage.setItem('svt_flashcards', JSON.stringify(SVT_FLASHCARDS));
-      } catch { /* quota — sera retenté au prochain save */ }
-    }
+    // F2 : le jeu complet arrive via chunk dynamique (quizBank) — même sémantique.
+    let cancelled = false;
+    loadQuizBank()
+      .then(({ SVT_FLASHCARDS, SVT_QUIZ_QUESTIONS }) => {
+        if (cancelled) return;
+        setQuizQuestions(SVT_QUIZ_QUESTIONS);
+        const healedFlashcards = savedFlashcards ? healSavedFlashcards(savedFlashcards) : null;
+        if (healedFlashcards) {
+          setFlashcards(healedFlashcards);
+        } else if (savedFlashcards) {
+          setFlashcards(SVT_FLASHCARDS);
+          try {
+            localStorage.setItem('svt_flashcards', JSON.stringify(SVT_FLASHCARDS));
+          } catch { /* quota — sera retenté au prochain save */ }
+        } else {
+          setFlashcards(SVT_FLASHCARDS);
+        }
+      })
+      .catch((err) => {
+        console.warn('quizBank indisponible:', err);
+      });
+
     if (savedProgress) {
       const parsed: UserProgress = savedProgress;
       const today = new Date().toISOString().split('T')[0];
@@ -264,6 +305,10 @@ export default function App() {
       }
       setProgress(parsed);
     }
+
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   // Sync state to localStorage
@@ -495,55 +540,77 @@ export default function App() {
   if (activeCombatChallenge) {
     // Épreuve officielle bac2025 : la boucle élève de bout en bout (Pierre 2).
     if (activeCombatChallenge.id === 'bac-2025-sujets') {
-      return <Bac2025ExamView onClose={() => setActiveCombatChallenge(null)} />;
+      return (
+        <Suspense fallback={<ViewFallback />}>
+          <Bac2025ExamView onClose={() => setActiveCombatChallenge(null)} />
+        </Suspense>
+      );
     }
     // P0-2 — surface analyse documentaire elite (13/19 assets ready).
     if (activeCombatChallenge.id === 'elite-doc-analysis') {
-      return <DocumentAnalysisView onClose={() => setActiveCombatChallenge(null)} />;
+      return (
+        <Suspense fallback={<ViewFallback />}>
+          <DocumentAnalysisView onClose={() => setActiveCombatChallenge(null)} />
+        </Suspense>
+      );
     }
     return (
-      <CombatChallengePortal 
-        challengeId={activeCombatChallenge.id}
-        challengeTitle={activeCombatChallenge.title}
-        mode={activeCombatChallenge.mode}
-        onClose={() => setActiveCombatChallenge(null)}
-      />
+      <Suspense fallback={<ViewFallback />}>
+        <CombatChallengePortal 
+          challengeId={activeCombatChallenge.id}
+          challengeTitle={activeCombatChallenge.title}
+          mode={activeCombatChallenge.mode}
+          onClose={() => setActiveCombatChallenge(null)}
+        />
+      </Suspense>
     );
   }
 
   if (activeUnitPortalId !== null) {
     const activeUnit = units.find(u => u.id === activeUnitPortalId);
     return (
-      <UnitIntroPortal 
-        unitId={activeUnitPortalId}
-        unitTitle={activeUnit ? activeUnit.title : ''}
-        onClose={() => setActiveUnitPortalId(null)}
-        onStartLesson={() => {
-          setActiveQuizUnitId(activeUnitPortalId);
-          setActiveUnitPortalId(null);
-        }}
-      />
+      <Suspense fallback={<ViewFallback />}>
+        <UnitIntroPortal 
+          unitId={activeUnitPortalId}
+          unitTitle={activeUnit ? activeUnit.title : ''}
+          onClose={() => setActiveUnitPortalId(null)}
+          onStartLesson={() => {
+            setActiveQuizUnitId(activeUnitPortalId);
+            setActiveUnitPortalId(null);
+          }}
+        />
+      </Suspense>
     );
   }
 
   if (activeQuizUnitId !== null) {
     const activeUnit = units.find(u => u.id === activeQuizUnitId);
-    const questions = SVT_QUIZ_QUESTIONS.filter(q => q.unitId === activeQuizUnitId);
+    // quizQuestions hydraté par le chunk quizBank — spinner le temps du fetch local.
+    if (quizQuestions.length === 0) {
+      return <ViewFallback />;
+    }
+    const questions = quizQuestions.filter(q => q.unitId === activeQuizUnitId);
 
     return (
-      <QuizView 
-        unitId={activeQuizUnitId}
-        unitTitle={activeUnit ? activeUnit.title : ''}
-        questions={questions.length > 0 ? questions : SVT_QUIZ_QUESTIONS}
-        onClose={() => setActiveQuizUnitId(null)}
-        onQuizComplete={handleQuizComplete}
-      />
+      <Suspense fallback={<ViewFallback />}>
+        <QuizView 
+          unitId={activeQuizUnitId}
+          unitTitle={activeUnit ? activeUnit.title : ''}
+          questions={questions.length > 0 ? questions : quizQuestions}
+          onClose={() => setActiveQuizUnitId(null)}
+          onQuizComplete={handleQuizComplete}
+        />
+      </Suspense>
     );
   }
 
   // Render Splash Landing Screen
   if (currentTab === 'splash') {
-    return <SplashView onStart={() => setCurrentTab('home')} />;
+    return (
+      <Suspense fallback={<ViewFallback />}>
+        <SplashView onStart={() => setCurrentTab('home')} />
+      </Suspense>
+    );
   }
 
   const handleTabChange = (tab: any) => {
@@ -777,6 +844,7 @@ export default function App() {
               exit={{ opacity: 0, y: -10 }}
               transition={{ duration: 0.2 }}
             >
+              <Suspense fallback={<ViewFallback />}>
               {currentTab === 'home' && (
                 <DashboardView 
                   units={units}
@@ -851,6 +919,7 @@ export default function App() {
                   isDarkMode={isDarkMode}
                 />
               )}
+              </Suspense>
             </motion.div>
           </AnimatePresence>
         </main>
