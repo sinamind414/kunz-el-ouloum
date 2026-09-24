@@ -1,7 +1,17 @@
-const VERSION = new URL(self.location.href).searchParams.get('v') || 'dev';
+// F3 — versionnage par OCTETS, pas par query string.
+// `__SW_BUILD_HASH__` est remplacé à la construction (plugin vite closeBundle)
+// par un hash shell+assets : le navigateur compare les octets → réinstall →
+// activate → cleanupOldCaches. Avant F3, `?v=Date.now()` ne changeait pas les
+// octets de sw.js → jamais de réinstallation, VERSION figé à la 1ʳᵉ visite.
+const VERSION = '__SW_BUILD_HASH__';
 const CACHE_PREFIX = 'kunz-offline-web';
 const SHELL_CACHE = `${CACHE_PREFIX}-shell-${VERSION}`;
 const RUNTIME_CACHE = `${CACHE_PREFIX}-runtime-${VERSION}`;
+
+// F3 — RUNTIME borné (LRU approximation par ordre d'insertion de Cache.keys).
+// Sans borne, chaque asset y entre à vie et peut faire purger l'origin
+// (localStorage de l'élève inclus) sous pression de quota mobile.
+const RUNTIME_MAX_ENTRIES = 80;
 
 const CORE_URLS = [
   '/',
@@ -100,8 +110,33 @@ async function cleanupOldCaches() {
   );
 }
 
+/**
+ * F3 — borne RUNTIME à RUNTIME_MAX_ENTRIES entrées (les plus anciennes sortent).
+ * SHELL reste non borné au même seuil : il porte le précache schémas (voulu).
+ */
+async function trimRuntimeCache() {
+  try {
+    const cache = await caches.open(RUNTIME_CACHE);
+    const keys = await cache.keys();
+    if (keys.length <= RUNTIME_MAX_ENTRIES) return;
+    const excess = keys.length - RUNTIME_MAX_ENTRIES;
+    // Cache.keys() : ordre d'insertion dans les navigateurs modernes → FIFO.
+    for (let i = 0; i < excess; i++) {
+      await cache.delete(keys[i]);
+    }
+  } catch {
+    // best effort — ne jamais casser la réponse réseau à cause du trim
+  }
+}
+
 function isCacheableResponse(response) {
   return Boolean(response && response.ok && (response.type === 'basic' || response.type === 'default'));
+}
+
+async function putRuntime(request, response) {
+  const cache = await caches.open(RUNTIME_CACHE);
+  await cache.put(request, response);
+  await trimRuntimeCache();
 }
 
 async function networkFirstNavigation(request) {
@@ -109,7 +144,7 @@ async function networkFirstNavigation(request) {
   try {
     const response = await fetch(request);
     if (isCacheableResponse(response)) {
-      await cache.put(request, response.clone());
+      await putRuntime(request, response.clone());
       const shellCache = await caches.open(SHELL_CACHE);
       await shellCache.put('/index.html', response.clone());
     }
@@ -127,8 +162,7 @@ async function staleWhileRevalidate(request) {
   const updatePromise = fetch(request)
     .then(async (response) => {
       if (isCacheableResponse(response)) {
-        const cache = await caches.open(RUNTIME_CACHE);
-        await cache.put(request, response.clone());
+        await putRuntime(request, response.clone());
       }
       return response;
     })
