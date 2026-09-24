@@ -40,10 +40,18 @@ const MIN_PASSWORD_LEN = 6;
 const isWeakPassword = (password: unknown): boolean =>
   typeof password !== "string" || password.length < MIN_PASSWORD_LEN;
 
-/** Cellule CSV sûre : neutralise l'injection de formules Excel (=, +, -, @). */
+/**
+ * Cellule CSV sûre (RFC 4180 + anti-formule Excel) :
+ * · CRLF → espace (ligne non cassée) ;
+ * · préfixe `= + - @` → apostrophe (injection de formule) ;
+ * · `;` (délimiteur) ou `"` → guillemets + doublement des quotes.
+ * Sans le 3ᵉ point, un errorTag élève contenant `;` décale les colonnes
+ * de l'export enseignant (injection CSV — audit F8).
+ */
 const csvCell = (v: unknown): string => {
-  const s = String(v ?? "");
-  return /^[=+\-@]/.test(s) ? `'${s}` : s;
+  const raw = String(v ?? "").replace(/[\r\n]+/g, " ");
+  const s = /^[=+\-@]/.test(raw) ? `'${raw}` : raw;
+  return s.includes(";") || s.includes('"') ? `"${s.replace(/"/g, '""')}"` : s;
 };
 
 // ── Garde-fou async : Express 4 ne rattrape PAS les promesses rejetées ──
@@ -70,13 +78,21 @@ const loginAccountLimiter = makeRateLimiter(ACCOUNT_LIMIT, WINDOW_MS);
 // à 8 symboles (32^8 ≈ 1,1e12) devient hors d'atteinte.
 const resetCodeLimiter = makeRateLimiter(10, WINDOW_MS);
 
-// ── Code de réinitialisation : CSPRNG (Math.random était prévisible) ──
+// ── Code de réinitialisation : CSPRNG (l'usage de Math.random était prévisible) ──
 const RESET_ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"; // 32 symboles, sans O/0/I/1
 function generateResetCode(): string {
   const bytes = randomBytes(8); // 256 % 32 = 0 → aucune biais de modulo
   let code = "";
   for (let i = 0; i < 8; i++) code += RESET_ALPHABET[bytes[i] % RESET_ALPHABET.length];
   return code;
+}
+
+/**
+ * F8 — ID serveur CSPRNG. Un PRNG non cryptographique est prévisible :
+ * un élève ne doit pas pouvoir énumérer les IDs stu_/act_ d'autres comptes.
+ */
+function newServerId(prefix: "stu" | "act"): string {
+  return `${prefix}_${Date.now().toString(36)}_${randomBytes(6).toString("hex")}`;
 }
 
 // ── Cache du tableau de bord (30 s, invalidé à chaque écriture) ──
@@ -174,7 +190,7 @@ async function startServer() {
       }
       const passwordHash = await bcrypt.hash(password, 10);
       const student = await store.createStudent(
-        `stu_${Date.now()}_${Math.random().toString(36).slice(2, 9)}`,
+        newServerId("stu"),
         email,
         passwordHash,
         name,
@@ -363,7 +379,7 @@ async function startServer() {
         studentId,
         type,
         payload,
-        `act_${Date.now()}_${Math.random().toString(36).slice(2, 9)}`,
+        newServerId("act"),
       );
       invalidateDashboard();
       res.json({ ok: true });

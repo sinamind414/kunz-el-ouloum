@@ -34,6 +34,10 @@ col. `last_production` = date d'**inscription** (comportement d'origine), stream
 - **Limiteurs** (fenêtre glissante) : par IP 60/15 min (anti-spam, école
   derrière un NAT partagé) + par compte 5/15 min, **remis à zéro après une
   connexion réussie** (une classe ne bloque jamais en bloc).
+- **Monoprocès assumé (F8)** : rate-limits et cache dashboard sont **en
+  mémoire par process**. `docker compose` démarre **UN** `app` ; ne pas
+  scaler en réplicas sans store partagé (Redis/base) — chaque réplica
+  aurait ses propres compteurs (N× les tentatives).
 - **`TRUST_PROXY=1`** derrière nginx/Caddy : `req.ip` = IP réelle de l'élève.
 - **Cache dashboard 30 s**, invalidé à chaque écriture (sync, activity, reset).
 - **CSV en streaming** (itérateurs SQL — jamais tout chargé en RAM).

@@ -185,10 +185,12 @@ describe('fix #8 — CSV : formules neutralisées + vraie last_production', () =
   it('csvCell existe et est utilisé dans les deux branches du flux', () => {
     const src = serverSrc();
     expect(src).toContain('const csvCell');
-    expect(src).toContain("return /^[=+\\-@]/.test(s) ? `'${s}` : s");
-    // Branche mono-élève + branche streaming.
+    // F8 : anti-formule Excel + RFC 4180 (guillemets si `;` ou `"`).
+    expect(src).toContain('/^[=+\\-@]/.test(raw)');
+    expect(src).toContain('s.replace(/"/g');
     expect(src).toContain('csvCell(student?.name || "")');
     expect(src).toContain('csvCell(row.name)');
+    expect(src).toContain('csvCell(topErrors)');
   });
 
   it('la colonne last_production n’est plus la date d’inscription', () => {

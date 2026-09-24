@@ -4,6 +4,9 @@
 // succès) — mêmes règles que le serveur JSON d'origine.
 // F8 : le Map est épongé (clés expirées) pour éviter la fuite
 // mémoire sur clés d'IP/emails jamais remises à zéro.
+// F8-bis : MONO-INSTANCE ASSUMÉE — compteurs par process.
+// Scaler en N réplicas sans store partagé (Redis/base)
+// autoriserait N× les tentatives. Voir docker-compose.yml.
 // ============================================================
 export interface RateLimiter {
   /** Enregistre un essai ; false si la fenêtre est pleine. */
