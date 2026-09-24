@@ -1,9 +1,13 @@
 # ============================================================
-# docker-compose.yml — boussole + PostgreSQL (lot échelle)
-# Démarrage multi-instances (plusieurs `npm start` derrière nginx)
-# avec une vraie base partagée. Sans ce fichier, l'app reste
-# monobloc sur SQLite (zéro service externe) — les deux chemins
-# sont équivalents (même contrat d'API, parité testée).
+# docker-compose.yml — boussole + PostgreSQL
+# ⚠️ MONO-INSTANCE ASSUMÉE (F8) : UN seul process `app`.
+# Les rate-limits + le cache dashboard vivent en mémoire par
+# process — scaler en N réplicas diviserait les tentatives
+# autorisées par N. Multi-réplicas = rate-limit partagé
+# (Redis/base) à ajouter AVANT toute mise à l'échelle.
+# PostgreSQL partagé ≠ limitation multi-instances.
+# Sans ce fichier, l'app reste monobloc sur SQLite
+# (zéro service externe) — même contrat d'API, parité testée.
 #
 #   docker compose up -d --build
 #   docker compose logs -f app
