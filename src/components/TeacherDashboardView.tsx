@@ -295,13 +295,13 @@ export default function TeacherDashboardView({ onBack }: Props) {
           </div>
           <div className="mt-3 flex flex-wrap gap-2">
             <button
-              onClick={() => handleResetPassword(student.id)}
+              onClick={() => student && handleResetPassword(student.id)}
               className="px-3 py-2 rounded-xl bg-amber-100 dark:bg-amber-900/40 text-amber-800 dark:text-amber-300 text-xs font-black hover:bg-amber-200"
             >
               إعادة تعيين كلمة السر
             </button>
             <button
-              onClick={() => handleExportCsv(student.id)}
+              onClick={() => student && handleExportCsv(student.id)}
               className="px-3 py-2 rounded-xl bg-emerald-100 dark:bg-emerald-900/40 text-emerald-800 dark:text-emerald-300 text-xs font-black hover:bg-emerald-200"
             >
               تصدير ملف هذا التلميذ

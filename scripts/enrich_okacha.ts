@@ -678,7 +678,13 @@ out.push('  sous?: SousSectionMethodo[];');
 out.push('}');
 out.push('');
 out.push('/** Normalisation arabe pour la recherche (miroir de okacha.lock.test.ts). */');
-out.push('export const normAr = ' + normAr.toString() + ';');
+// `normAr.toString()` perd l'annotation (esbuild) — on la réinjecte pour
+// garder un fichier généré strict-compliant sans dupliquer la logique.
+const normArSrc = normAr.toString().replace(/^\(?\s*s\s*\)?\s*=>/, '(s: string): string =>');
+if (!normArSrc.startsWith('(s: string): string =>')) {
+  throw new Error('enrich_okacha: forme de normAr.toString() inattendue — réinjecter le typage manuellement');
+}
+out.push('export const normAr = ' + normArSrc + ';');
 out.push('');
 out.push('export const OKACHA_UNITES_ENRICHIES: UniteOkachaEnrichie[] = [');
 for (const u of unitesOut) {

@@ -22,8 +22,8 @@ export interface CorrectionItem {
   errorTags: string[];
   status: CorrectionStatus;
   noteAr?: string;      // note du correcteur
-  selfScore?: number;   // auto-évaluation /20 (élève, à la soumission stage 4)
-  realScore?: number;   // note réelle /20 (enseignant, via la file)
+  selfScore?: number | null;   // auto-évaluation /20 (élève, à la soumission stage 4)
+  realScore?: number | null;   // note réelle /20 (enseignant, via la file)
   mode?: 'examen';      // production issue d'un mode examen (ligne 7)
 }
 

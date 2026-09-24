@@ -36,7 +36,7 @@ export interface SectionMethodo {
 }
 
 /** Normalisation arabe pour la recherche (miroir de okacha.lock.test.ts). */
-export const normAr = s=>s.normalize("NFKC").replace(/[\u064B-\u065F\u0670\u0640]/g,"").replace(/[إأآٱا]/g,"\u0627").replace(/ة/g,"\u0647").replace(/ى/g,"\u064A");
+export const normAr = (s: string): string =>s.normalize("NFKC").replace(/[\u064B-\u065F\u0670\u0640]/g,"").replace(/[إأآٱا]/g,"\u0627").replace(/ة/g,"\u0647").replace(/ى/g,"\u064A");
 
 export const OKACHA_UNITES_ENRICHIES: UniteOkachaEnrichie[] = [
   {
