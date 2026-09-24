@@ -7,11 +7,11 @@
 import { readdirSync, readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { describe, expect, it } from 'vitest';
-import { LESSON_INDEX, LESSON_INDEX_STATS, LESSON_INDEX_MAX } from './lessonIndex';
+import { LESSON_INDEX, LESSON_INDEX_STATS } from './lessonIndex';
 import {
   buildLessonIndex,
   groupCovered,
-  LESSON_INDEX_MAX as BUILDER_MAX,
+  LESSON_INDEX_MAX,
 } from './lessonIndexBuilder';
 import { HTML_LESSON_ORDER } from './htmlLessonProgression';
 import { ACTIVE_LESSONS } from './activeLessons';
@@ -35,7 +35,6 @@ describe('lessonIndex — parité avec la reconstruction depuis les sources', ()
 
   it('LESSON_INDEX_MAX === 520 (granularité okacha)', () => {
     expect(LESSON_INDEX_MAX).toBe(520);
-    expect(BUILDER_MAX).toBe(520);
   });
 
   it('stats du fichier == stats reconstruites', () => {

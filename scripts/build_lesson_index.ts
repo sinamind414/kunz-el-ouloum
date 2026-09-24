@@ -35,11 +35,12 @@ function main(): void {
 import type { LessonIndexChunk, LessonIndexStats } from './lessonIndexBuilder';
 
 export type { LessonIndexChunk, LessonIndexStats };
-export { LESSON_INDEX_MAX } from './lessonIndexBuilder';
 
 export const LESSON_INDEX_STATS: LessonIndexStats = ${JSON.stringify(stats, null, 2)};
 
-export const LESSON_INDEX: LessonIndexChunk[] = ${JSON.stringify(chunks, null, 0)};
+export const LESSON_INDEX: LessonIndexChunk[] = [
+${chunks.map((c) => `  ${JSON.stringify(c)}`).join(',\n')},
+];
 `;
 
   writeFileSync(OUT, header, 'utf-8');
