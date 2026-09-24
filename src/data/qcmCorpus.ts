@@ -2,7 +2,7 @@
 // Corpus dual (Speckit §8) : marque les QCM 'elite' (readiness BAC) vs 'drill'
 // (مراجعة مفردات). Les QCM des unités à forts documents comptent comme elite.
 
-import { SVT_QUIZ_QUESTIONS } from '../data';
+import { SVT_QUIZ_QUESTIONS } from '../quizCorpus';
 import type { QuizQuestion } from '../types';
 
 export const DRILL_LABEL = 'مراجعة مفردات — ليست محاكاة بكالوريا وثائق';

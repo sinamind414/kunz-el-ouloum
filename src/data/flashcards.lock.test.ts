@@ -6,7 +6,7 @@
 // correcte + explication du corpus), et le désinfecteur de restauration.
 
 import { describe, expect, it } from 'vitest';
-import { SVT_FLASHCARDS } from './index';
+import { SVT_FLASHCARDS } from './quizBank';
 import { SVT_QUIZ_QUESTIONS } from '../quizCorpus';
 import { carteSaine, healSavedFlashcards } from '../utils/flashcardsSanitize';
 
