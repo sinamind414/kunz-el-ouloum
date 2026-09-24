@@ -157,4 +157,30 @@ describe('OkachaView — الحصيلة المعرفية modernisée', () => {
     await user.click(screen.getByText('اختبار الكتاب'));
     expect(onOpenQcm).toHaveBeenCalledTimes(1);
   });
+
+  // ── Lot A (2026-09-24) : filtre OCR à l'affichage ──────────────────────
+  it('masque les déchets scan (traits ____, carrés ■, filigranes المتفوف)', async () => {
+    const user = userEvent.setup();
+    const { container } = render(<OkachaView onBack={vi.fn()} />);
+    // Écran unités (aucun corps ouvert) : zéro déchet dans le DOM.
+    expect(container.textContent).not.toMatch(/_{4,}/);
+    expect(container.textContent).not.toMatch(/■/);
+    expect(container.textContent).not.toMatch(/المتفوف/);
+    // Ouvrir une unité riche en OCR (d1u1) + méthodo.
+    await user.click(screen.getByTestId('okacha-unite-d1u1'));
+    expect(container.textContent).not.toMatch(/_{4,}/);
+    expect(container.textContent).not.toMatch(/■/);
+    expect(container.textContent).not.toMatch(/المتفوف/);
+    await user.click(screen.getByTestId('onglet-methode'));
+    expect(container.textContent).not.toMatch(/_{4,}/);
+    expect(container.textContent).not.toMatch(/■/);
+    expect(container.textContent).not.toMatch(/المتفوف/);
+    // La recherche n'expose pas non plus les déchets masqués
+    // (le texte du champ requête reste affiché dans l'en-tête de résultats).
+    const input = screen.getByTestId('okacha-search');
+    await user.type(input, 'بربشفي');
+    const panneau = screen.getByTestId('okacha-results');
+    expect(panneau.textContent).toMatch(/لا نتائج|نتيجة/);
+    expect(panneau.textContent).not.toMatch(/سأةم/); // corps du déchet masqué
+  });
 });

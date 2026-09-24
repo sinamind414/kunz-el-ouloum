@@ -26,6 +26,7 @@
 import { writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { OKACHA_UNITES, OKACHA_METHODO, OKACHA_CONSEILS } from '../src/data/okacha';
+import { assainirTexte, estDechetOCR } from '../src/data/okachaQuality';
 
 // ── Dictionnaire de corrections OCR (haute confiance uniquement) ──
 // v2 (2026-09-24, audit « arabe 100 % » de la rubrique الحصيلة المعرفية) :
@@ -34,7 +35,13 @@ import { OKACHA_UNITES, OKACHA_METHODO, OKACHA_CONSEILS } from '../src/data/okac
 //   · famille B : retraits de résidus 100 % illisibles (valeur to vide) —
 //     aucun sens inventé, on retire ce qui ne peut pas être lu.
 const FIXES: Record<string, string> = {
-  // ── A. Réparations certaines (les plus longues d'abord : non-recouvrement) ──
+  // ── A. Réparations certaines (les plus longues d’abord : non-recouvrement) ──
+  // Audit الحصيلة المعرفية (2026-09-24) : fautes OCR attestées à l’écran.
+  'الغلكوكوكيناز': 'الغليكوكيناز', // استتاج الخاص — l.1603
+  'المستتجة': 'المستنتجة', // ربط المستنجة — l.1701
+  'استتاج': 'استنتاج', // الاستتاج(ات) / باستتاج — ت↔ن OCR
+  'انجاه': 'اتجاه', // اتجاه الموجة / الحقل / مادة التفاعل
+  'انتفال': 'انتقال', // انتقال الموجة الزلزالية — l.822
   'لاكا بصح بالابتعاد عن كل وسائل التشويش (هاتف، موسيقى، تلفاز...) ولدراسة في غفة جبد: ءة وهادئة، بالإضافة إلى':
     'لكن لا بدّ من الابتعاد عن كل وسائل التشويش (الهاتف، الموسيقى، التلفاز...)، وأن تجري الدراسة في غرفة نظيفة هادئة، مع',
   '،:وي النمرين الثاني على جزأين منتابعبن ومنكاملبن من': 'ويتضمّن التمرين الثاني جزأين متتابعين ومتكاملين من',
@@ -114,6 +121,19 @@ const FIXES: Record<string, string> = {
   'براوبط': 'بروابط', // روابط boustrophedon (U1)
   'النيكلبوتيدة': 'النيكليوتيدة', // (U1)
   'النيكلبوتيدات': 'النيكليوتيدات',
+  // ── Lot C (2026-09-24) : corrections ciblées SVT — haute confiance, zéro invention ──
+  'سلسة ببتيدية': 'سلسلة ببتيدية', // U1 : peptide chain
+  'سلسة البيبتيدية': 'سلسلة البيبتيدية',
+  'أحماض أمنية': 'أحماض أمينية', // U1 : amino acids
+  'الأحماض الأمنية': 'الأحماض الأمينية',
+  'إلى صفن': 'إلى صنف', // U1 : « تقس القواعد الآزوتية إلى صفن » → صنف (contexte fermé)
+  'باليوراسبل': 'باليوراسيل', // U1 : uracil
+  'اليوراسبل': 'اليوراسيل',
+  'استرفوسفاتية': 'فوسفاتية', // U1 : phosphodiester linkage
+  'ا لكلونيد': 'النيكليوتيد', // U1 : nucleotide (unité de base ADN)
+  'الكوموسومات': 'الكروموسومات', // U1 : chromosomes
+  'اللاهو الدعامة': 'اللاهوائي الدعامة', // U1 : nuclear matrix context
+  'نبفبة النواة': 'أغشية النواة', // U1 : nuclear envelope (eucaryote)
 };
 
 // ── Normalisation arabe (même logique que okacha.lock.test.ts) ──
@@ -397,8 +417,12 @@ function sectionsMethodo(lignes: string[]): {
   numeros: number;
   ocr: number;
   retires: number;
+  dechets: number;
 } {
-  const { blocs, fragments, rattrapages, numeros } = structurize(lignes);
+  // Lot B : déchets en ligne brute AVANT recollage (ne pas fusionner propre+sale).
+  const pre = filtrerLignesDechet(lignes);
+  let dechets = pre.n;
+  const { blocs, fragments, rattrapages, numeros } = structurize(pre.lignes);
   const corrections = applyFixes(blocs);
   // Propreté post-fixes AVANT découpage (blocs vidés inertes + restes < 20 car.).
   let retires = nettoieBlocs(blocs);
@@ -432,6 +456,8 @@ function sectionsMethodo(lignes: string[]): {
     ocr += filtreOcrBlocs(s.blocs);
     retires += nettoieBlocs(s.blocs);
   }
+  // Lot B : filet post-fixes sur les blocs (déchets restants) AVANT re-fusion + ancrages sous.
+  for (const s of sections) dechets += filtreDechetOCR(s.blocs);
   // Re-fusion post-filtre si une section a été vidée sous le seuil.
   for (let i = 1; i < sections.length; ) {
     if (sections[i].blocs.length < 3) {
@@ -461,7 +487,7 @@ function sectionsMethodo(lignes: string[]): {
     }
     t1.sous = starts;
   }
-  return { sections, corrections, fragments, rattrapages, numeros, ocr, retires };
+  return { sections, corrections, fragments, rattrapages, numeros, ocr, retires, dechets };
 }
 function applyFixes(blocs: Bloc[]): number {
   let n = 0;
@@ -512,12 +538,52 @@ function nettoieBlocs(blocs: Bloc[]): number {
   return retires;
 }
 
+/** Lot B (pré-structurize) : retire les lignes brutes qui SONT des déchets
+ *  (score ≥ seuil) AVANT recollage — évite d'avaler une ligne propre fusionnée
+ *  à un déchet. Assainit ■ sur les lignes conservées. */
+function filtrerLignesDechet(lignes: string[]): { lignes: string[]; n: number } {
+  const out: string[] = [];
+  let n = 0;
+  for (const l of lignes) {
+    if (estDechetOCR(l)) {
+      n++;
+      continue;
+    }
+    out.push(assainirTexte(l));
+  }
+  return { lignes: out, n };
+}
+
+/** Lot B (post-fixes) : retrait des déchets scan restants (score ≥ seuil)
+ *  + assainissement des blocs conservés (retrait ■).
+ *  N'épile JAMAIS une erreur de lettres lisible (lot C s'en charge via FIXES). */
+function filtreDechetOCR(blocs: Bloc[]): number {
+  let retraits = 0;
+  for (let i = blocs.length - 1; i >= 0; i--) {
+    if (estDechetOCR(blocs[i].texte)) {
+      blocs.splice(i, 1);
+      retraits++;
+      continue;
+    }
+    const nettoye = assainirTexte(blocs[i].texte);
+    if (nettoye !== blocs[i].texte) blocs[i] = { ...blocs[i], texte: nettoye };
+    if (!blocs[i].texte) {
+      blocs.splice(i, 1);
+      retraits++;
+    }
+  }
+  return retraits;
+}
+
 // ── Génération ──
-const stats = { fragments: 0, rattrapages: 0, numeros: 0, corrections: 0, ocr: 0, retires: 0 };
+const stats = { fragments: 0, rattrapages: 0, numeros: 0, corrections: 0, ocr: 0, retires: 0, dechets: 0 };
 const unitesOut = OKACHA_UNITES.map((u) => {
-  const r = structurize(u.lignes);
+  const pre = filtrerLignesDechet(u.lignes);
+  stats.dechets += pre.n;
+  const r = structurize(pre.lignes);
   const corrections = applyFixes(r.blocs);
   stats.retires += nettoieBlocs(r.blocs);
+  stats.dechets += filtreDechetOCR(r.blocs);
   stats.fragments += r.fragments;
   stats.rattrapages += r.rattrapages;
   stats.numeros += r.numeros;
@@ -540,13 +606,17 @@ stats.rattrapages += meth.rattrapages;
 stats.numeros += meth.numeros;
 stats.ocr += meth.ocr;
 stats.retires += meth.retires;
+stats.dechets += meth.dechets;
 
 // 9ᵉ section « nasiha » : قسم النصائح isolé (OKACHA_CONSEILS, ex-d2u2).
 {
-  const r = structurize([...OKACHA_CONSEILS.lignes]);
+  const preN = filtrerLignesDechet([...OKACHA_CONSEILS.lignes]);
+  stats.dechets += preN.n;
+  const r = structurize(preN.lignes);
   const c = applyFixes(r.blocs);
   const o = filtreOcrBlocs(r.blocs);
   stats.retires += nettoieBlocs(r.blocs);
+  stats.dechets += filtreDechetOCR(r.blocs);
   stats.corrections += c;
   stats.fragments += r.fragments;
   stats.rattrapages += r.rattrapages;
@@ -661,7 +731,8 @@ out.push(`  correctionsAppliquees: ${stats.corrections},`);
 out.push(`  sectionsMethodo: ${meth.sections.length},`);
 out.push(`  pointsTotal: ${unitesOut.reduce((s, u) => s + u.nbPoints, 0)},`);
 out.push(`  ocrRetraits: ${stats.ocr},`);
-out.push("  genere: '2026-09-23',");
+out.push(`  dechetsRetires: ${stats.dechets},`);
+out.push("  genere: '2026-09-24',");
 out.push('} as const;');
 out.push('');
 
@@ -676,6 +747,6 @@ console.log('  rattrapages        :', stats.rattrapages);
 console.log('  numéros normalisés :', stats.numeros);
 console.log('  corrections OCR    :', stats.corrections);
 console.log('  blocs retirés      :', stats.retires, '(post-fixes, vides ou < 20 car.)');
+console.log('  déchets scan (B)   :', stats.dechets, '(score OCR ≥ seuil)');
 console.log('  sections méthodo   :', meth.sections.length, '→', meth.sections.map((s) => `${s.id}(${s.blocs.length})`).join(' '));
 console.log('  filtre OCR retraits:', stats.ocr);
-

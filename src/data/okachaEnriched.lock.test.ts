@@ -3,7 +3,8 @@
 // Fige : parité totale avec okacha.ts (10 unités, mêmes ids/domaines/libellés,
 // même ordre), zéro fragment orphelin (< 20 car.), numérotation propre
 // (« N- texte », sans tabulation), couverture INTÉGRALE du texte source (toute
-// ligne d'origine reste présente — recollée ou corrigée via ENRICH_FIXES),
+// ligne d'origine reste présente — recollée ou corrigée via ENRICH_FIXES —
+// SAUF déchets scan (score ≥ seuil), retirés en lot B à la génération),
 // sections méthodo dans l'ordre du livre, périmètre commercial filtré.
 import { describe, expect, it } from 'vitest';
 import {
@@ -14,13 +15,15 @@ import {
   normAr,
 } from './okachaEnriched';
 import { OKACHA_UNITES, OKACHA_METHODO } from './okacha';
+import { assainirTexte, estDechetOCR } from './okachaQuality';
 
 const flat = (s: string) => normAr(s).replace(/\s+/g, '');
 /** Comparaison de couverture : on retire les marqueurs de tête (numéros, puces,
  *  tirets, astérisques, alef orphelin, apostrophes/gargouilles OCR « 3'?- »)
  *  qui sont du FORMATAGE — recollés ou normalisés par l'enrichissement.
- *  Symétrique : appliqué aux DEUX côtés. */
-const bare = (s: string) => flat(s).replace(/^[0-9٠-٩اا\-–.٫:\s*•'ʼ?؟]+/, '');
+ *  Symétrique : appliqué aux DEUX côtés. Les carrés ■ sont aussi retirés
+ *  (assainirTexte lot A/B) des deux côtés pour la comparaison. */
+const bare = (s: string) => flat(assainirTexte(s)).replace(/^[0-9٠-٩اا\-–.٫:\s*•'ʼ?؟]+/, '');
 const avecFixes = (ligne: string) => {
   let t = ligne;
   for (const f of ENRICH_FIXES) t = t.split(f.from).join(f.to);
@@ -79,26 +82,30 @@ describe('zéro fragment orphelin (audit A2 corrigé)', () => {
     }
     expect(points).toBe(ENRICH_STATS.pointsTotal);
     // 61 avant purge OCR « 17 signatures » (2026-09-23) — 3 points corrompus
-    // (36-/37- d1u1, 47- d2u2) retirés → 58.
-    expect(points).toBeGreaterThanOrEqual(58);
+    // → 58 ; lot B (2026-09-24) retire 1 point déchet scan → 57.
+    expect(points).toBeGreaterThanOrEqual(57);
   });
 });
 
 describe('couverture intégrale : toute ligne dorigine reste présente', () => {
-  it('unités : chaque ligne (normalisée, marqueurs retirés) contenue dans lenrichi', () => {
+  it('unités : chaque ligne couverte SAUF déchets scan (lot B — retrait documenté)', () => {
+    let dechets = 0;
     for (const u of OKACHA_UNITES) {
       for (const l of u.lignes) {
         if (!l.trim()) continue;
+        if (estDechetOCR(l)) { dechets++; continue; }
         expect(couverte(l), `${u.id} : ${l.slice(0, 45)}`).toBe(true);
       }
     }
+    // Le retrait de déchets a bien des cibles dans les unités (sinon B est aveugle).
+    expect(dechets).toBeGreaterThanOrEqual(1);
   });
 
-  it('méthodo : chaque ligne couverte SAUF résidus OCR documentés (filtrés)', () => {
+  it('méthodo : chaque ligne couverte SAUF résidus OCR + déchets (filtrés)', () => {
     let filtrees = 0;
     for (const l of OKACHA_METHODO.lignes) {
       if (!l.trim()) continue;
-      if (RE_RESIDU_OCR.test(l)) { filtrees++; continue; }
+      if (RE_RESIDU_OCR.test(l) || estDechetOCR(l)) { filtrees++; continue; }
       expect(couverte(l), `méthodo : ${l.slice(0, 45)}`).toBe(true);
     }
     // Le filtre a bien des cibles documentées (sinon le masque est cassé).
@@ -193,7 +200,8 @@ describe('périmètre commercial filtré + traçabilité', () => {
     expect(ENRICH_STATS.rattrapagesContinuation).toBeGreaterThan(100);
     expect(ENRICH_STATS.correctionsAppliquees).toBeGreaterThan(0);
     expect(ENRICH_STATS.sectionsMethodo).toBe(OKACHA_METHODO_SECTIONS.length);
-    expect(ENRICH_STATS.genere).toBe('2026-09-23');
+    expect(ENRICH_STATS.genere).toBe('2026-09-24');
+    expect(ENRICH_STATS.dechetsRetires).toBeGreaterThanOrEqual(8);
     // Le total des occurrences source >= corrections réellement appliquées
     // (un mot coupé par un recollage peut échapper au dictionnaire — verbatim).
     const total = ENRICH_FIXES.reduce((s, f) => s + f.count, 0);

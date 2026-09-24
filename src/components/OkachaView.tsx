@@ -4,6 +4,10 @@
 // GÉNÉRÉ par scripts/build_hosila.ts — verrou hosila.lock.test.ts).
 // Repli (unité non couverte) : src/data/okachaEnriched.ts (OCR عكاشة).
 // Méthodo : OKACHA_METHODO_SECTIONS (sections عكاشة, pas d'équivalent hosila).
+// Qualité affichage (lot A, 2026-09-24) : src/data/okachaQuality.ts masque les
+// déchets scan (score ≥ seuil) — verrou okachaQuality.lock.test.ts. Le corpus
+// généré est nettoyé en amont (lot B, enrich_okacha.ts) ; le filtre ici est
+// la défense en profondeur.
 //
 // Phase A (cette vue) :
 //  1. rendu STRUCTURÉ (hiérarchie + puces + notes, 15-17 px — plus de <pre>) ;
@@ -27,6 +31,7 @@ import {
   type BlocOkacha,
   type SectionMethodo,
 } from '../data/okachaEnriched';
+import { assainirTexte, estDechetOCR } from '../data/okachaQuality';
 import Icone from './Icone';
 import { HOSILA_STATS, unitesAffichees } from '../data/hosila';
 import { okachaUniteIcone, methodoIcone } from '../data/lessonIcons';
@@ -245,17 +250,22 @@ export default function OkachaView({ onBack, onRate, onOpenQcm }: Props) {
   const uniteCourante = ouverte ? corpusUnites.find((u) => u.id === ouverte) ?? null : null;
 
   // Index de recherche normalisé (unités + méthodo) — construit une seule fois.
+  // Lot A : les déchets OCR (score ≥ seuil) n'entrent pas dans l'index.
   const index = useMemo(() => {
     const rows: { norm: string; r: LigneResultat }[] = [];
     for (const u of corpusUnites) {
-      u.blocs.forEach((b, idx) =>
-        rows.push({ norm: normAr(b.texte), r: { cleParent: u.id, libelleParent: u.uniteAr, domaine: u.domaine as ThemeCle, b, idx } }),
-      );
+      u.blocs.forEach((b, idx) => {
+        if (estDechetOCR(b.texte)) return;
+        const bAff = { ...b, texte: assainirTexte(b.texte) };
+        rows.push({ norm: normAr(bAff.texte), r: { cleParent: u.id, libelleParent: u.uniteAr, domaine: u.domaine as ThemeCle, b: bAff, idx } });
+      });
     }
     for (const s of OKACHA_METHODO_SECTIONS) {
-      s.blocs.forEach((b, idx) =>
-        rows.push({ norm: normAr(b.texte), r: { cleParent: `m:${s.id}`, libelleParent: s.titreAr, domaine: 'm' as const, b, idx } }),
-      );
+      s.blocs.forEach((b, idx) => {
+        if (estDechetOCR(b.texte)) return;
+        const bAff = { ...b, texte: assainirTexte(b.texte) };
+        rows.push({ norm: normAr(bAff.texte), r: { cleParent: `m:${s.id}`, libelleParent: s.titreAr, domaine: 'm' as const, b: bAff, idx } });
+      });
     }
     return rows;
   }, [corpusUnites]);
@@ -488,7 +498,9 @@ export default function OkachaView({ onBack, onRate, onOpenQcm }: Props) {
                     {s.titreAr}
                   </span>
                   <span className="text-[10px] font-black text-emerald-700 dark:text-emerald-300">
-                    {ouverteS ? '▲ إخفاء' : `▼ ${s.blocs.length} سطراً`}
+                    {ouverteS
+                      ? '▲ إخفاء'
+                      : `▼ ${s.blocs.filter((b) => !estDechetOCR(b.texte)).length} سطراً`}
                   </span>
                 </button>
                 {ouverteS && (
@@ -515,6 +527,9 @@ export default function OkachaView({ onBack, onRate, onOpenQcm }: Props) {
                       </div>
                     )}
                     {s.blocs.map((b, idx) => {
+                      // Lot A : déchets OCR masqués — l'index d'origine (cle /
+                      // ancrage sous-section) est conservé pour la stabilité.
+                      if (estDechetOCR(b.texte)) return null;
                       const cle = `m:${s.id}#${idx}`;
                       const estAncrage = s.sous?.some((ss) => ss.from === idx);
                       return (
@@ -523,7 +538,7 @@ export default function OkachaView({ onBack, onRate, onOpenQcm }: Props) {
                           data-bloc-anchor={estAncrage ? `${s.id}:${idx}` : undefined}
                         >
                         <BlocView
-                          b={b}
+                          b={{ ...b, texte: assainirTexte(b.texte) }}
                           cle={cle}
                           domaine="m"
                           cache={modeHafiz && b.kind === 'point' && !revelves.has(cle)}
@@ -659,11 +674,13 @@ export default function OkachaView({ onBack, onRate, onOpenQcm }: Props) {
                 )}
               </div>
               {uniteCourante.blocs.map((b, idx) => {
+                // Lot A : déchets OCR masqués — idx d'origine conservé (cles SM-2).
+                if (estDechetOCR(b.texte)) return null;
                 const cle = `${uniteCourante.id}#${idx}`;
                 return (
                   <BlocView
                     key={idx}
-                    b={b}
+                    b={{ ...b, texte: assainirTexte(b.texte) }}
                     cle={cle}
                     domaine={uniteCourante.domaine as ThemeCle}
                     cache={modeHafiz && b.kind === 'point' && !revelves.has(cle)}

@@ -206,10 +206,15 @@ describe('fix #8 — CSV : formules neutralisées + vraie last_production', () =
 });
 
 describe('fix #9 — CI : lint complet (serveur inclus) + build', () => {
-  it('ci.yml exécute npm run lint et npm run build', () => {
+  it('ci.yml : 3 jobs de gate (check:v2 / test / test:vitest) — SANS npm run build (F7)', () => {
+    // Contrainte session : le job build CI (F7) reste hors périmètre —
+    // ci.yml ne doit PAS exécuter npm run build (verrou anti-résidu).
     const ci = fs.readFileSync(path.resolve(process.cwd(), '.github', 'workflows', 'ci.yml'), 'utf-8');
-    expect(ci).toContain('npm run lint');
-    expect(ci).toContain('npm run build');
+    expect(ci).toContain('npm run check:v2');
+    expect(ci).toContain('npm test');
+    expect(ci).toContain('npm run test:vitest');
+    expect(ci).not.toContain('npm run build');
+    expect(ci).not.toContain('npm run lint');
   });
 
   it('tsconfig.json inclut server.ts et server/ (sinon « lint » ne les couvre pas)', () => {
