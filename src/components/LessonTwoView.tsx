@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence } from 'motion/react';
 import { CheckCircle2, XCircle, Info, BookOpen, AlertCircle, ArrowLeft, ArrowRight, PlayCircle, Star, Mic, MicOff, Network, X } from 'lucide-react';
 import MindMapView from './MindMap/MindMapView';
 
