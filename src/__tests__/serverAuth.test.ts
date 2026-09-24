@@ -35,7 +35,8 @@ function run(mw: Middleware, authorization: string | null) {
     const req = {
       headers: authorization ? { authorization } : {},
     } as unknown as Request;
-    const res = {
+    const res: { statusCode: number; status(code: number): typeof res; json(body: any): void } = {
+      statusCode: 0,
       status(code: number) {
         this.statusCode = code;
         return this;
@@ -43,9 +44,9 @@ function run(mw: Middleware, authorization: string | null) {
       json(body: any) {
         resolve({ status: this.statusCode ?? 0, body, req });
       },
-    } as unknown as Response;
+    };
     const next = () => resolve({ status: 200, body: null, req });
-    mw(req, res, next as NextFunction);
+    mw(req, res as unknown as Response, next as NextFunction);
   });
 }
 

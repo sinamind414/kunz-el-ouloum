@@ -420,7 +420,7 @@ export default function App() {
     });
 
     // Automatically unlock next unit if scored well (>= 60%)
-    if (percent >= 60 && activeQuizUnitId < units.length) {
+    if (activeQuizUnitId !== null && percent >= 60 && activeQuizUnitId < units.length) {
       const nextId = activeQuizUnitId + 1;
       updatedUnits[nextId - 1].isLocked = false;
     }
@@ -479,9 +479,11 @@ export default function App() {
 
     // Lot 0022: log quiz activity for teacher dashboard
     const unit = units.find((u) => u.id === activeQuizUnitId);
-    import('./utils/studentAccount').then(({ logQuizActivity }) => {
-      logQuizActivity(activeQuizUnitId, score, total, unit?.title || 'quiz');
-    });
+    if (activeQuizUnitId !== null) {
+      import('./utils/studentAccount').then(({ logQuizActivity }) => {
+        logQuizActivity(activeQuizUnitId, score, total, unit?.title || 'quiz');
+      });
+    }
 
     if (isCompleted && !currentDaily.completedToday) {
       playDailyGoalCelebrationSound();
