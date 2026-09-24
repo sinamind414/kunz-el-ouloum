@@ -1,9 +1,9 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>منصة بنزر العلم | المرحلة 7 : الدرس 13 والدرس 14</title>
+    <title>منصة بنزر العلم | المرحلة 7 : النشاط 13 والنشاط 14</title>
     <style>
         :root {
             --bg-main: #f8fafc;
@@ -35,7 +35,7 @@
         }
 
         body {
-            font-family: 'Cairo', 'Tajawal', sans-serif;
+            font-family: 'Noto Kufi Arabic', 'Kufi', 'Cairo', sans-serif;
             background-color: var(--bg-main);
             color: var(--text-main);
             line-height: 1.8;
@@ -335,12 +335,12 @@
         }
     
         /* === MIFTAH + Sommaire + Badge (v3.2 prototype) === */
-        .sommaire{position:sticky;top:60px;z-index:999;background:#ffffffee;backdrop-filter:blur(8px);border-bottom:1px solid var(--border);padding:8px 1.2rem;display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;box-shadow:0 2px 10px rgba(0,0,0,.04)}
+        .sommaire{position:sticky;top:0;z-index:999;max-width:1100px;width:calc(100% - 16px);margin:8px auto 0;background:#0f172a;border:1px solid #334155;border-radius:0 0 16px 16px;padding:10px 14px;display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;justify-content:flex-start;box-shadow:0 10px 28px rgba(15,23,42,.35)}
         .sommaire::-webkit-scrollbar{display:none}
-        .sommaire a{white-space:nowrap;font-size:.82rem;font-weight:800;color:var(--text-muted);text-decoration:none;padding:6px 12px;border-radius:8px;border:1px solid var(--border);background:var(--bg-main);transition:all .15s}
-        .sommaire a:hover{border-color:var(--accent);color:var(--accent)}
-        .sommaire a.active{background:var(--primary);color:#fff;border-color:var(--primary)}
-        .sommaire .sep{width:1px;background:var(--border);margin:0 4px;flex-shrink:0}
+        .sommaire a{white-space:nowrap;font-size:.82rem;font-weight:800;color:#e2e8f0;text-decoration:none;padding:6px 12px;border-radius:8px;border:1px solid #475569;background:#1e293b;transition:all .15s}
+        .sommaire a:hover{border-color:#38bdf8;color:#7dd3fc;background:#0ea5e9}
+        .sommaire a.active{background:#2563eb;color:#fff;border-color:#60a5fa}
+        .sommaire .sep{width:1px;background:#475569;margin:0 4px;flex-shrink:0}
         .miftah-encadre{background:#fffdf4;border:1px solid #f3e0b0;border-right:4px solid #c08a1f;border-radius:10px;padding:10px 13px;margin:10px 0;font-size:.88rem;line-height:1.65}
         .miftah-encadre b{color:#7a5610}
         .quiz-badge{display:none;margin-top:12px;padding:10px 14px;border-radius:10px;font-weight:800;text-align:center;font-size:.95rem;animation:fadeIn .25s ease}
@@ -348,7 +348,7 @@
         .quiz-badge.faible{background:#fef2f2;color:#991b1b;border:1px solid #fecaca}
         .quiz-badge.moyen{background:#fffbeb;color:#92400e;border:1px solid #fde68a}
         .quiz-badge.mumtaz{background:#f0fdf4;color:#166534;border:1px solid #bbf7d0}
-        @media(max-width:768px){.sommaire{top:96px}}
+        @media(max-width:768px){.sommaire{top:0;width:100%;max-width:100%;border-radius:0;margin-left:0;margin-right:0}}
 
     
         /* ═══ Zone التثبيت : design system des cartes de synthèse (📝🏛🗺) — pilot ═══ */
@@ -405,13 +405,13 @@
     <div class="container">
 
         <!-- ================================================================= -->
-        <!-- CHAPTER 13 : IMMUNITÉ CELLULAIRE RIMC & LTc (الدرس 13) -->
+        <!-- CHAPTER 13 : IMMUNITÉ CELLULAIRE RIMC & LTc (النشاط 13) -->
         <!-- ================================================================= -->
         <div id="ch13" class="chapter-view active">
             
             <header class="lesson-header header-ch13">
                 <div class="lesson-breadcrumb">المجال الأول : التخصص الوظيفي للبروتينات • الوحدة 4 : دور البروتينات في الدفاع عن الذات</div>
-                <h1>الدرس 5 : الاستجابة المناعية ذات الوساطة الخلوية (RIMC) وآلية القضاء على الخلية المصابة</h1>
+                <h1>النشاط 5 : الاستجابة المناعية ذات الوساطة الخلوية (RIMC) وآلية القضاء على الخلية المصابة</h1>
                 <div class="lesson-objectives">
                     <div>🎯 <strong>الهدف العلمي :</strong> حدّد آلية التعرف المزدوج للخلايا اللمفاوية السامة (LTc) على الخلية المصابة، وفسّر الصدمة الحلولية بواسطة البرفورين والغرانزيم.</div>
                     <div>⏱️ <strong>المدة التقديرية للتعلم الذاتي :</strong> 25 دقيقة</div>
@@ -507,7 +507,7 @@
             <section class="card" id="ch1-step4">
                 <div class="section-title">
                     <span class="step-num">4</span>
-                    <span>تقويم الدرس 5 : أسئلة البكالوريا المتكررة</span>
+                    <span>تقويم النشاط 5 : أسئلة البكالوريا المتكررة</span>
                 </div>
 
                 <div class="question-item" id="c13q1-container">
@@ -524,13 +524,13 @@
         </div>
 
         <!-- ================================================================= -->
-        <!-- CHAPTER 14 : COOPÉRATION CELLULAIRE & LT4 / IL-2 (الدرس 14) -->
+        <!-- CHAPTER 14 : COOPÉRATION CELLULAIRE & LT4 / IL-2 (النشاط 14) -->
         <!-- ================================================================= -->
         <div id="ch14" class="chapter-view">
             
             <header class="lesson-header header-ch14">
                 <div class="lesson-breadcrumb">المجال الأول : التخصص الوظيفي للبروتينات • الوحدة 4 : دور البروتينات في الدفاع عن الذات</div>
-                <h1>الدرس 6 : التعاون الخلوي ودور اللمفاويات التائية المساعدة (LT4) والأنترلوكين-2 (IL-2)</h1>
+                <h1>النشاط 6 : التعاون الخلوي ودور اللمفاويات التائية المساعدة (LT4) والأنترلوكين-2 (IL-2)</h1>
                 <div class="lesson-objectives">
                     <div>🎯 <strong>الهدف العلمي :</strong> بيّن أن الخلايا LT4 هي المايسترو المحور المركزي للاستجابة المناعية (الخلطية والخلوية معاً) عن طريق إفراز هرمون الأنترلوكين-2.</div>
                     <div>⏱️ <strong>المدة التقديرية للتعلم الذاتي :</strong> 25 دقيقة</div>
@@ -617,7 +617,7 @@
             </section>
 
             <!-- Step 4: Quiz Ch14 -->
-            <!-- خلاصة الدرس (standard 2026-09-21, ancrée au livre officiel — verrou resumes.lock) -->
+            <!-- خلاصة النشاط (standard 2026-09-21, ancrée au livre officiel — verrou resumes.lock) -->
             <section class="card-resume" id="resume">
                 <div class="section-title">
                     <span class="step-num" style="background:#059669;">📝</span>
@@ -631,19 +631,17 @@
                     <li style="margin-bottom:6px;">تنفصل LTc بعد تدمير الهدف وتعود إلى الدورة الدموية لمهاجمة خلايا مصابة أخرى.</li>
                     <li style="margin-bottom:6px;">تُلتهم بقايا الخلية المصابة من طرف الخلايا البالعة.</li>
                 </ol>
-                <span class="fix-key">🔑 المصطلح المفتاح للبكالوريا : LTc / البرفورين / الموت الخلوي المبرمج</span>
+                <span class="fix-key">🔑 المصطلح المفتاحي في البكالوريا : LTc / البرفورين / الموت الخلوي المبرمج</span>
             </section>
 
             <!-- الحصيلة المعرفية الرسمية (citation verbatim du livre officiel — voir docs/RESUMES_MAARIFI_LIVRE_2026-09-21.md) -->
-            <section class="card-hosila" 
 
-            <!-- مخطط تحصيلي المناعة (image originale user, master 3b8cf69 — ancrage 12/12, verrou resumes.lock) -->
-            <section class="card-schema" 
+            <!-- مخطط تحصيلي المناعة (image originale user, master 3b8cf69 — تحقّق آلي داخلي: 12/12) -->
 
             <section class="card" id="ch2-step4">
                 <div class="section-title">
                     <span class="step-num step-num-gold">4</span>
-                    <span>تقويم الدرس 6 : أسئلة البكالوريا المتكررة</span>
+                    <span>تقويم النشاط 6 : أسئلة البكالوريا المتكررة</span>
                 </div>
 
                 <div class="question-item" id="c14q1-container">
@@ -662,16 +660,16 @@
         <!-- ═══ Zone de synthèse commune (🏛 حصيلة + 🗺 مخطط) — hors chapter-view :
              visible dans LES DEUX leçons du fichier (survit au slicing lessonChapterSplit) ═══ -->
         <div class="synthese-zone" id="zone-synthese">
-id="hosila">
+<section class="card-hosila" id="hosila">
                 <div class="section-title">
                     <span class="step-num" style="background:#b45309;">🏛</span>
                     <span>الحصيلة المعرفية — النص الرسمي للكتاب المدرسي (الفصل 23)</span>
                 </div>
-                <p class="hosila-meta"><span class="src-chip">وحدة : D1-U4 — الدفاع عن الذات</span><span>نص الكتاب الرسمي بتنسيق قرائي، دون تغيير في المعنى</span></p>
+                <p class="hosila-meta"><span class="src-chip">الوحدة: D1-U4 — الدفاع عن الذات</span><span>نص الكتاب الرسمي بتنسيق قرائي، دون تغيير في المعنى</span></p>
                 <p class="hosila-quote">« يمثل كل فرد وحدة بيولوجية مستقلة بذاتها، إذ تستطيع عضويته التمييز بين مكونات <span class="kw">الذات واللاذات</span>. »</p>
                 <p class="hosila-source">📖 النص الرسمي للكتاب المدرسي — نقلا حرفيا (مطابقة نصية 100 %)</p>
             </section>
-id="schema-synthese">
+<section class="card-schema" id="schema-synthese">
                 <div class="section-title">
                     <span class="step-num" style="background:#2563eb;">🗺</span>
                     <span>مخطط تحصيلي — المناعة الخلطية والخلوية (ص 118)</span>
@@ -691,7 +689,7 @@ id="schema-synthese">
                     <p>تعرف المستضد بمستقبلاتها الغشائية ← تركيب مستقبلات لـ IL2 ← تكاثر تحت تأثير IL2 ← تمايز إلى <b>خلايا بلازمية (بلاسموسيت)</b> تفرز الأجسام المضادة + <b>LBm</b> خلايا ذاكرة.</p>
                     <p>تتعرف على المستضد المعروض بجزيئات <b>HLA II</b> (بواسطة <b>TCR</b>) ← مستقبلات IL2 ← تكاثر ← <b>LTh</b> المساعدة (تفرز IL2 لدعم LB و LT₈) + <b>LT₄m</b> ذاكرة.</p>
                     <p>تتعرف على المستضد المعروض بجزيئات <b>HLA I</b> (بواسطة TCR) ← مستقبلات IL2 ← تكاثر ← <b>LTc</b> السامة التي تفرز <b>البرفورين</b> فيحدث انحلال الخلية المصابة.</p>
-                    <p>🗺 الصورة الأصلية من الكتاب (ص 118) + تنسيق قرائي مصحح — كل المفردات مثبتة في النص الرسمي (ancrage 12/12, verrou resumes.lock).</p>
+                    <p>🗺 الصورة الأصلية من الكتاب (ص 118) + تنسيق قرائي مصحح — كل المفردات مثبتة في النص الرسمي (تحقّق آلي داخلي: 12/12).</p>
                 </details>
             </section>
         </div>
@@ -830,7 +828,7 @@ id="schema-synthese">
                 badge.classList.add('show');
                 if(score===100){ badge.className='quiz-badge show mumtaz'; badge.textContent='ممتاز (fort) — 100% · جاهز للمرحلة التالية'; }
                 else if(score>=50){ badge.className='quiz-badge show moyen'; badge.textContent='متوسط (moyen) — '+score+'% · راجع ثم أعد'; }
-                else { badge.className='quiz-badge show faible'; badge.textContent='ضعيف (faible) — '+score+'% · راجع الدرس ثم أعد'; }
+                else { badge.className='quiz-badge show faible'; badge.textContent='ضعيف (faible) — '+score+'% · راجع النشاط ثم أعد'; }
             });
         }
         // hook all check functions and also listen to clicks

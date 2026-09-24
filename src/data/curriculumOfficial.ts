@@ -169,7 +169,7 @@ export const PROGRESSION_OFFICIELLE: ReadonlyArray<ProgressionOfficielle> = [
   {
     uniteId: 7,
     domaine: 2,
-    titre: 'آليات تحويل الطاقة الكامنة في الجزيئات العضوية إلى ATP',
+    titre: 'آليات تحويل الطاقة الكيميائية الكامنة في الجزيئات العضوية إلى ATP',
     heures: 15,
     semaines: 3,
     fenetre: 'الأسبوع الثالث من فيفري إلى الأسبوع الثاني من مارس',

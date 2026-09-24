@@ -83,7 +83,7 @@ function nettoieTitre(t: string): string {
   return norm(
     t
       .replace(/\s*\([^)]*\)\s*/g, ' ')
-      .replace(/(الفصل|الدرس)\s*[0-9٠-٩]+\s*[:：]/g, ' ')
+      .replace(/(الفصل|الدرس|النشاط)\s*[0-9٠-٩]+\s*[:：]/g, ' ')
       .replace(/[—–\-●▪/•]/g, ' ')
       .replace(/⚠️|💡|🎯|📖|🔍|🧬|🌍|⚡/gu, ' ')
   );

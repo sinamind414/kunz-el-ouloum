@@ -11,6 +11,11 @@ coverage/
 data/students.db*
 data/teachers.json
 
-# copies d'eleves bac2025 (donnees personnelles — jamais commitées)
+# copies d'eleves bac2025 (donnees personnelles ï¿½ jamais commitï¿½es)
 docs/copies-bac2025/
 __pycache__/
+
+# config locale opencode (contient clÃ© API â€” jamais commitÃ©e)
+opencode.json
+_vitest_final.txt
+_lint_final.txt

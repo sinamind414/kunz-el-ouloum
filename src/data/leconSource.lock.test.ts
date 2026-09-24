@@ -125,10 +125,9 @@ describe('bookIndex — appariement leçons ↔ chapitres (mesure figée)', () =
       if (s) comptes[s.mode] = (comptes[s.mode] ?? 0) + 1;
     }
     expect(comptes).toEqual({
-      'auto-exact': 25,
+      'auto-exact': 34,
       'auto-compose': 1,
-      'auto-contenance': 11,
-      'auto-jetons': 2,
+      'auto-contenance': 4,
       'ancre-documentee': 3,
     });
   });
