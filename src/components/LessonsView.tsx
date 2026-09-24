@@ -275,8 +275,8 @@ export default function LessonsView({ onRateCard }: LessonsProps) {
                   </span>
                   <span className="flex-1 min-w-0 space-y-1">
                     <span className="flex items-center gap-2">
-                      <span className="inline-flex items-center justify-center w-6 h-6 rounded-lg bg-emerald-50 dark:bg-emerald-950/40 text-[#006d37] dark:text-emerald-300 text-[11px] font-black shrink-0">
-                        {u.id}
+                      <span className="inline-flex items-center justify-center h-6 px-2 rounded-lg bg-emerald-50 dark:bg-emerald-950/40 text-[#006d37] dark:text-emerald-300 text-[11px] font-black shrink-0">
+                        وحدة {u.id}
                       </span>
                       <span className="text-sm font-black text-gray-800 dark:text-gray-100">{u.title}</span>
                     </span>
@@ -327,7 +327,7 @@ export default function LessonsView({ onRateCard }: LessonsProps) {
               }`}
             >
               <Icone cle={uniteIcone(u.id)} className="w-3.5 h-3.5" />
-              {u.id}
+              وحدة {u.id}
             </button>
           ))}
         </div>
@@ -449,7 +449,7 @@ export default function LessonsView({ onRateCard }: LessonsProps) {
             {domain?.emoji} {domain?.titleAr}
           </h2>
           <span className="text-[11px] font-black text-gray-400 dark:text-gray-500">
-            اختر النشاط (أيقونة) ثم فصولها
+            اختر الوحدة (أيقونة) ثم نشاطها
           </span>
         </div>
 
@@ -469,15 +469,15 @@ export default function LessonsView({ onRateCard }: LessonsProps) {
                 </span>
                 <span className="flex-1 min-w-0 space-y-1">
                   <span className="flex items-center gap-2">
-                    <span className="inline-flex items-center justify-center w-6 h-6 rounded-lg bg-teal-50 dark:bg-teal-950/40 text-[#0e6b6b] dark:text-teal-300 text-[11px] font-black shrink-0">
-                      {uid}
+                    <span className="inline-flex items-center justify-center h-6 px-2 rounded-lg bg-teal-50 dark:bg-teal-950/40 text-[#0e6b6b] dark:text-teal-300 text-[11px] font-black shrink-0">
+                      وحدة {uid}
                     </span>
                     <span className="text-sm font-black text-gray-800 dark:text-gray-100">{unit?.title}</span>
                   </span>
                   <span className="block text-[11px] font-bold text-gray-500 dark:text-gray-400">{unit?.description}</span>
                   <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg bg-emerald-50 dark:bg-emerald-950/30 text-[10px] font-black text-emerald-700 dark:text-emerald-300">
                     <Grid3x3 className="w-3 h-3" />
-                    {chapters.length} النشاط
+                    {chapters.length} فصول
                   </span>
                 </span>
                 <ChevronLeft className="w-5 h-5 text-gray-300 group-hover:text-teal-500 transition-all shrink-0 mt-4" />
@@ -523,7 +523,7 @@ export default function LessonsView({ onRateCard }: LessonsProps) {
             }`}
           >
             <Icone cle={uniteIcone(uid)} className="w-3.5 h-3.5" />
-            {uid}
+            وحدة {uid}
           </button>
         ))}
       </div>
@@ -533,7 +533,7 @@ export default function LessonsView({ onRateCard }: LessonsProps) {
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3" data-testid="chapitres-icones">
         {chapitres.length === 0 && (
           <p className="text-xs font-bold text-gray-500 dark:text-gray-400 col-span-full text-center py-6">
-            لا توجد فصول في هذه الوحدة بعد.
+            لا يوجد نشاط في هذه الوحدة بعد.
           </p>
         )}
         {chapitres.map((key, i) => {
