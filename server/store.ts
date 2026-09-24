@@ -54,6 +54,13 @@ export interface ResetCode {
   used: boolean;
 }
 
+/** F6 — sous-clé de progression (LWW par student_id + key). */
+export interface ProgressState {
+  key: string;
+  updatedAt: number;
+  value: unknown;
+}
+
 export interface Teacher {
   email: string;
   passwordHash: string;
@@ -126,6 +133,13 @@ CREATE TABLE IF NOT EXISTS reset_codes (
   student_id TEXT NOT NULL,
   expires_at TEXT NOT NULL,
   used       INTEGER NOT NULL DEFAULT 0
+);
+CREATE TABLE IF NOT EXISTS progress_state (
+  student_id TEXT NOT NULL,
+  pkey       TEXT NOT NULL,
+  updated_at INTEGER NOT NULL,
+  value_json TEXT NOT NULL,
+  PRIMARY KEY (student_id, pkey)
 );
 `;
 
@@ -305,6 +319,53 @@ export class SqliteStore {
 
   countActivities(studentId: string): number {
     return Number((this.db.prepare('SELECT COUNT(*) AS c FROM activities WHERE student_id = ?').get(studentId) as { c: number }).c);
+  }
+
+  // ── Progression F6 (progress_v1) ──────────────────────────
+  /** Merge LWW : n'écrit que si updatedAt strictement plus grand. */
+  mergeProgressState(studentId: string, states: ProgressState[]): number {
+    if (!states || states.length === 0) return 0;
+    const ins = this.db.prepare(
+      `INSERT INTO progress_state (student_id, pkey, updated_at, value_json)
+       VALUES (?,?,?,?)
+       ON CONFLICT(student_id, pkey) DO UPDATE SET
+         updated_at = excluded.updated_at,
+         value_json = excluded.value_json
+       WHERE excluded.updated_at > progress_state.updated_at`,
+    );
+    const run = this.db.transaction(() => {
+      let n = 0;
+      for (const s of states.slice(0, 8)) {
+        if (!s || typeof s.key !== 'string' || !s.key) continue;
+        if (typeof s.updatedAt !== 'number' || !Number.isFinite(s.updatedAt)) continue;
+        let json: string;
+        try {
+          json = JSON.stringify(s.value ?? null);
+        } catch {
+          continue;
+        }
+        if (json.length > 250_000) continue; // garde-fou par sous-clé
+        const res = ins.run(studentId, s.key, Math.trunc(s.updatedAt), json);
+        n += res.changes;
+      }
+      return n;
+    });
+    return run();
+  }
+
+  getProgressState(studentId: string): ProgressState[] {
+    const rows = this.db
+      .prepare('SELECT pkey, updated_at, value_json FROM progress_state WHERE student_id = ? ORDER BY pkey')
+      .all(studentId) as { pkey: string; updated_at: number; value_json: string }[];
+    const out: ProgressState[] = [];
+    for (const r of rows) {
+      try {
+        out.push({ key: r.pkey, updatedAt: Number(r.updated_at), value: JSON.parse(r.value_json) });
+      } catch {
+        // ligne corrompue : ignorée (ne casse pas le pull)
+      }
+    }
+    return out;
   }
 
   // ── Codes de réinitialisation ────────────────────────────

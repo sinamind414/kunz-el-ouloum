@@ -244,9 +244,18 @@ async function startServer() {
       // ⚡ UNE transaction SQL pour tout le lot (upsert « si absent » — idempotent).
       const addedEntries = await store.addEntriesIfNew(studentId, entries);
       const addedEvents = await store.addActivitiesIfNew(studentId, events);
+      // F6 — progression versionnée : merge LWW par sous-clé (progress_v1).
+      const progressAccepted =
+        parsed.state.length > 0 ? await store.mergeProgressState(studentId, parsed.state) : 0;
       const synced = addedEntries + addedEvents;
       if (synced > 0) invalidateDashboard();
-      res.json({ ok: true, synced, total: await store.countEntries(studentId), totalEvents: await store.countActivities(studentId) });
+      res.json({
+        ok: true,
+        synced,
+        progressAccepted,
+        total: await store.countEntries(studentId),
+        totalEvents: await store.countActivities(studentId),
+      });
     } catch {
       res.status(500).json({ error: "server_error" });
     }
@@ -254,6 +263,11 @@ async function startServer() {
 
   app.get("/api/student/entries", studentAuth, asyncHandler(async (req: Request, res: Response) => {
     res.json({ entries: await store.listEntries((req as any).studentId) });
+  }));
+
+  /** F6 — pull de restauration : état progress_v1 complet de l'élève. */
+  app.get("/api/student/progress", studentAuth, asyncHandler(async (req: Request, res: Response) => {
+    res.json({ state: await store.getProgressState((req as any).studentId) });
   }));
 
   const teacherAuth = makeTeacherAuth(JWT_SECRET);

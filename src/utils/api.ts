@@ -74,6 +74,24 @@ export async function syncEntries(entries: Array<Record<string, unknown>>, event
   });
 }
 
+/** F6 — push d'un snapshot progress_v1 (sous-clés LWW, max 8). */
+export async function pushProgressState(state: Array<Record<string, unknown>>) {
+  const token = getApiToken();
+  return request('/api/student/sync', {
+    method: 'POST',
+    headers: { Authorization: `Bearer ${token}` },
+    body: JSON.stringify({ entries: [], events: [], state }),
+  });
+}
+
+/** F6 — pull restauration appareil neuf : état serveur de l'élève. */
+export async function fetchProgressState(): Promise<{ state: Array<Record<string, unknown>> }> {
+  const token = getApiToken();
+  return request('/api/student/progress', {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+}
+
 export async function logActivity(type: 'quiz' | 'mission' | 'drill' | 'production', payload: Record<string, unknown>) {
   const token = getApiToken();
   return request('/api/student/activity', {

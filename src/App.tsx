@@ -55,6 +55,12 @@ function loadStoredStudent(): { name: string; email: string } | null {
   return null;
 }
 import { healSavedFlashcards } from './utils/flashcardsSanitize';
+// F6 — store de progression versionné (push/pull LWW, restauration appareil neuf).
+import {
+  refreshProgressFromLive,
+  pushProgressSnapshot,
+  restoreProgressFromServer,
+} from './data/progressSync';
 // Nomenclature figée (docs/MARQUE.md §3) — la rubrique porte le nom officiel de la source
 // unique miftahSpec : aucun littéral dans ce fichier (garde-fou check:miftah §13, 2026-09-15).
 import { MIFTAH_NAME_OFFICIAL_AR } from './data/miftahSpec';
@@ -264,10 +270,19 @@ export default function App() {
       .then(({ SVT_FLASHCARDS, SVT_QUIZ_QUESTIONS }) => {
         if (cancelled) return;
         setQuizQuestions(SVT_QUIZ_QUESTIONS);
-        const healedFlashcards = savedFlashcards ? healSavedFlashcards(savedFlashcards) : null;
+        // F6 : relecture AU moment de la résolution — un restore serveur
+        // concurrent a pu écrire svt_flashcards entre le mount et ici.
+        let freshSaved = savedFlashcards;
+        try {
+          const freshRaw = localStorage.getItem('svt_flashcards');
+          if (freshRaw) freshSaved = JSON.parse(freshRaw);
+        } catch {
+          /* on garde la capture mount */
+        }
+        const healedFlashcards = freshSaved ? healSavedFlashcards(freshSaved) : null;
         if (healedFlashcards) {
           setFlashcards(healedFlashcards);
-        } else if (savedFlashcards) {
+        } else if (freshSaved) {
           setFlashcards(SVT_FLASHCARDS);
           try {
             localStorage.setItem('svt_flashcards', JSON.stringify(SVT_FLASHCARDS));
@@ -311,12 +326,56 @@ export default function App() {
     };
   }, []);
 
+  // F6 — relecture des clés live dans React (après restore serveur).
+  const rehydrateCoreFromLocalStorage = () => {
+    try {
+      const rawUnits = localStorage.getItem('svt_units');
+      if (rawUnits) {
+        const u = JSON.parse(rawUnits);
+        if (Array.isArray(u) && u.length > 0) setUnits(u);
+      }
+      const rawProgress = localStorage.getItem('svt_progress');
+      if (rawProgress) setProgress(JSON.parse(rawProgress));
+      const rawCards = localStorage.getItem('svt_flashcards');
+      if (rawCards) {
+        const healed = healSavedFlashcards(JSON.parse(rawCards));
+        if (healed) setFlashcards(healed);
+      }
+    } catch {
+      // stockage corrompu — on garde l'état courant
+    }
+  };
+
+  // F6 — restauration cross-device : pull LWW puis rehydratation.
+  // Hors compte / offline : no-op (offline-first, aucun throw).
+  useEffect(() => {
+    let cancelled = false;
+    void restoreProgressFromServer()
+      .then((applied) => {
+        if (cancelled || applied.length === 0) return;
+        // Laisse le loadQuizBank initial finir avant d'écraser flashcards.
+        window.setTimeout(() => {
+          if (!cancelled) rehydrateCoreFromLocalStorage();
+        }, 50);
+      })
+      .catch(() => {
+        /* offline / 5xx — rien */
+      });
+    return () => {
+      cancelled = true;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   // Sync state to localStorage
   const saveToLocalStorage = (newUnits: Unit[], newCards: Flashcard[], newProgress: UserProgress) => {
     try {
       localStorage.setItem('svt_units', JSON.stringify(newUnits));
       localStorage.setItem('svt_flashcards', JSON.stringify(newCards));
       localStorage.setItem('svt_progress', JSON.stringify(newProgress));
+      // F6 — horodate progress_v1 + push best-effort (no-op invité).
+      refreshProgressFromLive();
+      pushProgressSnapshot();
     } catch (e) {
       console.warn('Impossible de sauvegarder la progression localement:', e);
     }
@@ -648,6 +707,14 @@ export default function App() {
           } catch {
             /* stockage indisponible */
           }
+          // F6 — restauration immédiate après login (appareil neuf ou multi-device).
+          void restoreProgressFromServer()
+            .then((applied) => {
+              if (applied.length > 0) rehydrateCoreFromLocalStorage();
+            })
+            .catch(() => {
+              /* offline — le prochain boot retentera */
+            });
         }}
       />
 
