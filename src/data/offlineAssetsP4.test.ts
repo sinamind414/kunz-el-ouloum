@@ -23,9 +23,12 @@ function walkSrc(dir: string, out: string[] = []): string[] {
 
 describe('P4 — F5 : zéro URL googleusercontent dans src/', () => {
   it('aucun fichier src/ ne contient googleusercontent', () => {
-    // Ce fichier contient le littéral dans ses assertions → on l'exclut du scan.
-    const self = path.join(root, 'src/data/offlineAssetsP4.test.ts');
-    const files = walkSrc(path.join(root, 'src')).filter((f) => path.resolve(f) !== self);
+    // Les fichiers de verrou contiennent le littéral dans leurs assertions → exclus.
+    const locks = new Set([
+      path.join(root, 'src/data/offlineAssetsP4.test.ts'),
+      path.join(root, 'src/data/offlineAssetsF5.test.ts'),
+    ]);
+    const files = walkSrc(path.join(root, 'src')).filter((f) => !locks.has(path.resolve(f)));
     const bad = files.filter((f) => fs.readFileSync(f, 'utf-8').includes('googleusercontent'));
     expect(bad).toEqual([]);
   });

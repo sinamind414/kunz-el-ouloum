@@ -77,8 +77,8 @@ const LESSON_PAGES = [
     id: 'intro',
     title: 'سر خيوط العنكبوت',
     subtitle: 'الوضعية الانطلاقية',
-    image: 'https://images.unsplash.com/photo-1517036666144-8d962070e1cb?auto=format&fit=crop&q=80&w=800',
-    zoomImage: 'https://images.unsplash.com/photo-1517036666144-8d962070e1cb?auto=format&fit=crop&q=100&w=1600',
+    image: '/assets/images/decor/unit_intro_spider_silk.svg',
+    zoomImage: '/assets/images/decor/unit_intro_spider_silk.svg',
     content: () => (
       <>
         <p className="text-gray-700 dark:text-gray-300 font-medium leading-loose text-lg md:text-xl">
@@ -104,8 +104,8 @@ const LESSON_PAGES = [
     title: 'مقر تركيب البروتين',
     subtitle: 'النشاط الأول',
     // Using an abstract molecular/cell image for the activity
-    image: 'https://images.unsplash.com/photo-1530026405186-ed1f139313f8?auto=format&fit=crop&q=80&w=800',
-    zoomImage: 'https://images.unsplash.com/photo-1530026405186-ed1f139313f8?auto=format&fit=crop&q=100&w=1600',
+    image: '/assets/images/decor/unit_intro_cell.svg',
+    zoomImage: '/assets/images/decor/unit_intro_cell.svg',
     content: () => (
       <>
         <p className="text-gray-700 dark:text-gray-300 font-medium leading-loose text-lg md:text-xl">
@@ -138,8 +138,8 @@ const LESSON_PAGES = [
     title: 'التركيب الكيميائي للـ ARN',
     subtitle: 'النشاط الثاني',
     // Using an abstract DNA/RNA visualization
-    image: 'https://images.unsplash.com/photo-1614926857083-7be149266cda?auto=format&fit=crop&q=80&w=800',
-    zoomImage: 'https://images.unsplash.com/photo-1614926857083-7be149266cda?auto=format&fit=crop&q=100&w=1600',
+    image: '/assets/images/decor/unit_intro_dna_rna.svg',
+    zoomImage: '/assets/images/decor/unit_intro_dna_rna.svg',
     content: () => (
       <>
         <p className="text-gray-700 dark:text-gray-300 font-medium leading-loose text-lg md:text-xl">

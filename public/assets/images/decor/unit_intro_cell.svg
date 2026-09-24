@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" role="img" aria-label="خلية">
+  <defs>
+    <radialGradient id="cy" cx="50%" cy="50%" r="55%">
+      <stop offset="0%" stop-color="#2d4a3e"/>
+      <stop offset="100%" stop-color="#0f1f1a"/>
+    </radialGradient>
+  </defs>
+  <rect width="800" height="500" fill="#0b1520"/>
+  <ellipse cx="400" cy="250" rx="300" ry="190" fill="url(#cy)" stroke="#5eead4" stroke-opacity="0.35" stroke-width="3"/>
+  <ellipse cx="360" cy="230" rx="90" ry="70" fill="#1e3a5f" stroke="#60a5fa" stroke-opacity="0.5" stroke-width="2"/>
+  <ellipse cx="360" cy="230" rx="40" ry="32" fill="#312e81" opacity="0.8"/>
+  <g stroke="#f472b6" stroke-opacity="0.45" fill="none" stroke-width="2">
+    <path d="M480 160 C540 180 560 240 540 300 C520 350 470 370 440 340"/>
+    <path d="M500 180 C550 210 555 270 530 320"/>
+    <path d="M200 300 C240 340 300 360 360 350"/>
+  </g>
+  <g fill="#a78bfa" opacity="0.55">
+    <circle cx="520" cy="200" r="8"/><circle cx="540" cy="260" r="6"/>
+    <circle cx="500" cy="320" r="7"/><circle cx="250" cy="280" r="6"/>
+    <circle cx="280" cy="320" r="5"/><circle cx="420" cy="150" r="5"/>
+  </g>
+</svg>

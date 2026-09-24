@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" role="img" aria-label="خيوط العنكبوت">
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="45%" r="70%">
+      <stop offset="0%" stop-color="#1a2e1a"/>
+      <stop offset="100%" stop-color="#0a120a"/>
+    </radialGradient>
+    <linearGradient id="silk" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#e8d5a3" stop-opacity="0.9"/>
+      <stop offset="100%" stop-color="#f5e6c8" stop-opacity="0.4"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="500" fill="url(#bg)"/>
+  <g stroke="url(#silk)" fill="none" stroke-width="1.2" opacity="0.85">
+    <path d="M400 250 L80 40 M400 250 L200 30 M400 250 L400 20 M400 250 L600 30 M400 250 L720 40"/>
+    <path d="M400 250 L60 180 M400 250 L60 320 M400 250 L120 460 M400 250 L400 480 M400 250 L680 460 M400 250 L740 320 M400 250 L740 180"/>
+    <path d="M340 190 Q400 160 460 190 Q490 250 460 310 Q400 340 340 310 Q310 250 340 190"/>
+    <path d="M300 150 Q400 90 500 150 Q560 250 500 350 Q400 410 300 350 Q240 250 300 150"/>
+    <path d="M260 110 Q400 30 540 110 Q630 250 540 390 Q400 470 260 390 Q170 250 260 110"/>
+    <path d="M220 70 Q400 -20 580 70 Q700 250 580 430 Q400 520 220 430 Q100 250 220 70"/>
+  </g>
+  <circle cx="400" cy="250" r="6" fill="#e8d5a3" opacity="0.9"/>
+</svg>
