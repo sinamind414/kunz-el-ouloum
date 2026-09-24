@@ -24,6 +24,9 @@ interface D3MindMapCanvasProps {
   isDarkMode?: boolean;
 }
 
+type SimNode = MindMapNode & d3.SimulationNodeDatum;
+type SimLink = MindMapLink & d3.SimulationLinkDatum<SimNode>;
+
 export default function D3MindMapCanvas({
   data,
   selectedNodeId,
@@ -35,7 +38,7 @@ export default function D3MindMapCanvas({
   const containerRef = useRef<HTMLDivElement>(null);
   const svgRef = useRef<SVGSVGElement>(null);
   const zoomBehaviorRef = useRef<d3.ZoomBehavior<SVGSVGElement, unknown> | null>(null);
-  const simulationRef = useRef<d3.Simulation<any, any> | null>(null);
+  const simulationRef = useRef<d3.Simulation<SimNode, SimLink> | null>(null);
 
   const [hoveredNodeId, setHoveredNodeId] = useState<string | null>(null);
   const [dimensions, setDimensions] = useState<{ width: number; height: number }>({ width: 800, height: 600 });
@@ -61,8 +64,8 @@ export default function D3MindMapCanvas({
 
     const set = new Set<string>([activeId]);
     data.links.forEach(l => {
-      const srcId = typeof l.source === 'object' ? (l.source as any).id : l.source;
-      const tgtId = typeof l.target === 'object' ? (l.target as any).id : l.target;
+      const srcId = typeof l.source === 'object' ? (l.source as MindMapNode).id : l.source;
+      const tgtId = typeof l.target === 'object' ? (l.target as MindMapNode).id : l.target;
       if (srcId === activeId) set.add(tgtId);
       if (tgtId === activeId) set.add(srcId);
     });
@@ -80,7 +83,8 @@ export default function D3MindMapCanvas({
 
     // Clone data to avoid in-place mutation issues across renders
     const nodes: (MindMapNode & d3.SimulationNodeDatum)[] = data.nodes.map(d => ({ ...d }));
-    const links: any[] = data.links.map(d => ({ ...d }));
+    const links: SimLink[] =
+      data.links.map(d => ({ ...d }));
 
     // Define SVG Filters & Gradients (Glow, Drop Shadows, Arrow Markers)
     const defs = svg.append('defs');
@@ -132,16 +136,16 @@ export default function D3MindMapCanvas({
     svg.call(zoom.transform, d3.zoomIdentity.translate(width / 2, height / 2).scale(0.85));
 
     // Force Simulation Setup
-    let simulation: d3.Simulation<any, any>;
+    let simulation: d3.Simulation<SimNode, SimLink>;
 
     if (layoutMode === 'radial') {
       simulation = d3.forceSimulation(nodes)
-        .force('link', d3.forceLink(links).id((d: any) => d.id).distance((d: any) => {
-          return d.source.level === 0 ? 160 : 110;
+        .force('link', d3.forceLink<SimNode, SimLink>(links).id((d) => d.id).distance((d) => {
+          return (d.source as SimNode).level === 0 ? 160 : 110;
         }).strength(0.8))
         .force('charge', d3.forceManyBody().strength(-400))
-        .force('collide', d3.forceCollide().radius((d: any) => (d.radius || 25) + 30).iterations(3))
-        .force('r', d3.forceRadial((d: any) => {
+        .force('collide', d3.forceCollide<SimNode>().radius((d) => (d.radius || 25) + 30).iterations(3))
+        .force('r', d3.forceRadial<SimNode>((d) => {
           if (d.level === 0) return 0;
           if (d.level === 1) return 170;
           if (d.level === 2) return 300;
@@ -149,11 +153,11 @@ export default function D3MindMapCanvas({
         }, 0, 0).strength(0.85));
     } else {
       simulation = d3.forceSimulation(nodes)
-        .force('link', d3.forceLink(links).id((d: any) => d.id).distance((d: any) => {
-          return d.source.level === 0 ? 180 : 130;
+        .force('link', d3.forceLink<SimNode, SimLink>(links).id((d) => d.id).distance((d) => {
+          return (d.source as SimNode).level === 0 ? 180 : 130;
         }).strength(0.6))
         .force('charge', d3.forceManyBody().strength(-550))
-        .force('collide', d3.forceCollide().radius((d: any) => (d.radius || 25) + 35).iterations(3))
+        .force('collide', d3.forceCollide<SimNode>().radius((d) => (d.radius || 25) + 35).iterations(3))
         .force('center', d3.forceCenter(0, 0).strength(0.08));
     }
 
@@ -169,8 +173,8 @@ export default function D3MindMapCanvas({
 
     const linkPath = link.append('path')
       .attr('stroke', isDarkMode ? '#334155' : '#cbd5e1')
-      .attr('stroke-width', (d: any) => d.type === 'primary' ? 2.5 : 1.7)
-      .attr('stroke-dasharray', (d: any) => d.type === 'catalytic' ? '5,5' : 'none')
+      .attr('stroke-width', (d: SimLink) => d.type === 'primary' ? 2.5 : 1.7)
+      .attr('stroke-dasharray', (d: SimLink) => d.type === 'catalytic' ? '5,5' : 'none')
       .attr('fill', 'none')
       .attr('marker-end', 'url(#arrow-head)');
 
@@ -182,7 +186,7 @@ export default function D3MindMapCanvas({
       .attr('fill', isDarkMode ? '#94a3b8' : '#64748b')
       .attr('text-anchor', 'middle')
       .attr('dy', -4)
-      .text((d: any) => d.relation || '');
+      .text((d: SimLink) => d.relation || '');
 
     // Nodes Layer
     const nodeGroup = g.append('g').attr('class', 'nodes-layer');
@@ -193,7 +197,7 @@ export default function D3MindMapCanvas({
       .attr('class', 'node-item')
       .attr('cursor', 'pointer')
       .call(
-        d3.drag<any, any>()
+        d3.drag<SVGGElement, SimNode>()
           .on('start', (event, d) => {
             if (!event.active) simulation.alphaTarget(0.3).restart();
             d.fx = d.x;
@@ -224,39 +228,39 @@ export default function D3MindMapCanvas({
 
     // Outer Aura Pulse for Selected / Root Node
     node.append('circle')
-      .attr('r', (d: any) => (d.radius || 25) + 8)
-      .attr('fill', (d: any) => d.color || '#006d37')
-      .attr('opacity', (d: any) => (d.id === selectedNodeId || d.level === 0 ? 0.25 : 0))
+      .attr('r', (d: SimNode) => (d.radius || 25) + 8)
+      .attr('fill', (d: SimNode) => d.color || '#006d37')
+      .attr('opacity', (d: SimNode) => (d.id === selectedNodeId || d.level === 0 ? 0.25 : 0))
       .attr('class', 'node-pulse');
 
     // Main Circle
     node.append('circle')
-      .attr('r', (d: any) => d.radius || 25)
-      .attr('fill', (d: any) => {
+      .attr('r', (d: SimNode) => d.radius || 25)
+      .attr('fill', (d: SimNode) => {
         if (d.level === 0) return isDarkMode ? '#006d37' : '#006d37';
         return isDarkMode ? '#1e293b' : '#ffffff';
       })
-      .attr('stroke', (d: any) => d.color || '#006d37')
-      .attr('stroke-width', (d: any) => d.level === 0 ? 4 : (d.id === selectedNodeId ? 3.5 : 2.5))
-      .attr('filter', (d: any) => d.id === selectedNodeId ? 'url(#glow)' : 'none');
+      .attr('stroke', (d: SimNode) => d.color || '#006d37')
+      .attr('stroke-width', (d: SimNode) => d.level === 0 ? 4 : (d.id === selectedNodeId ? 3.5 : 2.5))
+      .attr('filter', (d: SimNode) => d.id === selectedNodeId ? 'url(#glow)' : 'none');
 
     // Category / Level Badge Ring for Subnodes
-    node.filter((d: any) => d.level > 0).append('circle')
-      .attr('r', (d: any) => (d.radius || 25) - 4)
-      .attr('fill', (d: any) => d.color || '#006d37')
+    node.filter((d: SimNode) => d.level > 0).append('circle')
+      .attr('r', (d: SimNode) => (d.radius || 25) - 4)
+      .attr('fill', (d: SimNode) => d.color || '#006d37')
       .attr('opacity', 0.12);
 
     // Node Icons / Numbers
     node.append('text')
       .attr('text-anchor', 'middle')
       .attr('dominant-baseline', 'central')
-      .attr('font-size', (d: any) => d.level === 0 ? '16px' : '12px')
+      .attr('font-size', (d: SimNode) => d.level === 0 ? '16px' : '12px')
       .attr('font-weight', '900')
-      .attr('fill', (d: any) => {
+      .attr('fill', (d: SimNode) => {
         if (d.level === 0) return '#ffffff';
         return d.color || (isDarkMode ? '#ffffff' : '#0f172a');
       })
-      .text((d: any) => {
+      .text((d: SimNode) => {
         if (d.level === 0) return '🧬';
         if (d.category === 'process') return '⚡';
         if (d.category === 'molecule') return '🧪';
@@ -269,34 +273,34 @@ export default function D3MindMapCanvas({
 
     // Node Text Label Background Pill
     const textGroup = node.append('g')
-      .attr('transform', (d: any) => `translate(0, ${(d.radius || 25) + 16})`);
+      .attr('transform', (d: SimNode) => `translate(0, ${(d.radius || 25) + 16})`);
 
     // Label Text
     textGroup.append('text')
       .attr('text-anchor', 'middle')
-      .attr('font-size', (d: any) => d.level === 0 ? '13px' : '11px')
+      .attr('font-size', (d: SimNode) => d.level === 0 ? '13px' : '11px')
       .attr('font-weight', '800')
       .attr('font-family', 'system-ui, -apple-system, sans-serif')
       .attr('fill', isDarkMode ? '#f8fafc' : '#0f172a')
       .attr('stroke', isDarkMode ? '#0f172a' : '#ffffff')
       .attr('stroke-width', 3)
       .attr('paint-order', 'stroke')
-      .text((d: any) => d.label);
+      .text((d: SimNode) => d.label);
 
     // Simulation Tick Listener
     simulation.on('tick', () => {
-      linkPath.attr('d', (d: any) => {
-        const dx = d.target.x - d.source.x;
-        const dy = d.target.y - d.source.y;
+      linkPath.attr('d', (d: SimLink) => {
+        const dx = (d.target as SimNode).x! - (d.source as SimNode).x!;
+        const dy = (d.target as SimNode).y! - (d.source as SimNode).y!;
         const dr = Math.sqrt(dx * dx + dy * dy) * 1.5; // Slight curved path
-        return `M${d.source.x},${d.source.y}A${dr},${dr} 0 0,1 ${d.target.x},${d.target.y}`;
+        return `M${(d.source as SimNode).x},${(d.source as SimNode).y}A${dr},${dr} 0 0,1 ${(d.target as SimNode).x},${(d.target as SimNode).y}`;
       });
 
       linkText
-        .attr('x', (d: any) => (d.source.x + d.target.x) / 2)
-        .attr('y', (d: any) => (d.source.y + d.target.y) / 2);
+        .attr('x', (d: SimLink) => ((d.source as SimNode).x! + (d.target as SimNode).x!) / 2)
+        .attr('y', (d: SimLink) => ((d.source as SimNode).y! + (d.target as SimNode).y!) / 2);
 
-      node.attr('transform', (d: any) => `translate(${d.x},${d.y})`);
+      node.attr('transform', (d: SimNode) => `translate(${d.x},${d.y})`);
     });
 
     // Background Click Clears Selection
@@ -318,7 +322,7 @@ export default function D3MindMapCanvas({
     const query = searchQuery.trim().toLowerCase();
 
     // Node Highlights
-    svg.selectAll<SVGGElement, any>('g.node-item').each(function(d: any) {
+    svg.selectAll<SVGGElement, SimNode>('g.node-item').each(function(d: SimNode) {
       const el = d3.select(this);
       const isSelected = d.id === selectedNodeId;
       const isHovered = d.id === hoveredNodeId;
@@ -341,7 +345,7 @@ export default function D3MindMapCanvas({
     });
 
     // Link Highlights
-    svg.selectAll<SVGGElement, any>('g.link-item').each(function(d: any) {
+    svg.selectAll<SVGGElement, SimLink>('g.link-item').each(function(d: SimLink) {
       const el = d3.select(this);
       const srcId = typeof d.source === 'object' ? d.source.id : d.source;
       const tgtId = typeof d.target === 'object' ? d.target.id : d.target;
