@@ -17,7 +17,7 @@
 // ============================================================
 import { Pool, PoolClient } from 'pg';
 import fs from 'node:fs';
-import type { Student, ProductionEntry, ActivityEntry, ResetCode, Teacher, DashboardStudentRow } from './store';
+import type { Student, ProductionEntry, ActivityEntry, ResetCode, Teacher, DashboardStudentRow, ProgressState } from './store';
 import { calculeActivite } from './activite';
 
 const SCHEMA = `
@@ -70,6 +70,13 @@ CREATE TABLE IF NOT EXISTS reset_codes (
   student_id text NOT NULL,
   expires_at timestamptz NOT NULL,
   used       boolean NOT NULL DEFAULT false
+);
+CREATE TABLE IF NOT EXISTS progress_state (
+  student_id text NOT NULL,
+  pkey       text NOT NULL,
+  updated_at bigint NOT NULL,
+  value_json jsonb NOT NULL,
+  PRIMARY KEY (student_id, pkey)
 );
 `;
 
@@ -286,6 +293,62 @@ export class PostgresStore {
   async countActivities(studentId: string): Promise<number> {
     const r = await this.pool.query('SELECT COUNT(*)::int AS c FROM activities WHERE student_id = $1', [studentId]);
     return Number(r.rows[0].c);
+  }
+
+  // ── Progression F6 (progress_v1) ──────────────────────────
+  /** Merge LWW : n'écrit que si updatedAt strictement plus grand. */
+  async mergeProgressState(studentId: string, states: ProgressState[]): Promise<number> {
+    if (!states || states.length === 0) return 0;
+    const client = await this.pool.connect();
+    try {
+      await client.query('BEGIN');
+      let n = 0;
+      for (const s of states.slice(0, 8)) {
+        if (!s || typeof s.key !== 'string' || !s.key) continue;
+        if (typeof s.updatedAt !== 'number' || !Number.isFinite(s.updatedAt)) continue;
+        let json: string;
+        try {
+          json = JSON.stringify(s.value ?? null);
+        } catch {
+          continue;
+        }
+        if (json.length > 250_000) continue;
+        const r = await client.query(
+          `INSERT INTO progress_state (student_id, pkey, updated_at, value_json)
+           VALUES ($1,$2,$3,$4::jsonb)
+           ON CONFLICT (student_id, pkey) DO UPDATE SET
+             updated_at = excluded.updated_at,
+             value_json = excluded.value_json
+           WHERE excluded.updated_at > progress_state.updated_at`,
+          [studentId, s.key, Math.trunc(s.updatedAt), json],
+        );
+        n += r.rowCount ?? 0;
+      }
+      await client.query('COMMIT');
+      return n;
+    } catch (e) {
+      await client.query('ROLLBACK').catch(() => undefined);
+      throw e;
+    } finally {
+      client.release();
+    }
+  }
+
+  async getProgressState(studentId: string): Promise<ProgressState[]> {
+    const r = await this.pool.query(
+      'SELECT pkey, updated_at, value_json FROM progress_state WHERE student_id = $1 ORDER BY pkey',
+      [studentId],
+    );
+    const out: ProgressState[] = [];
+    for (const row of r.rows as { pkey: string; updated_at: string | number; value_json: unknown }[]) {
+      try {
+        const value = typeof row.value_json === 'string' ? JSON.parse(row.value_json) : row.value_json;
+        out.push({ key: row.pkey, updatedAt: Number(row.updated_at), value });
+      } catch {
+        // ligne corrompue : ignorée
+      }
+    }
+    return out;
   }
 
   // ── Codes de réinitialisation ────────────────────────────

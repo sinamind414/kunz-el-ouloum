@@ -50,14 +50,46 @@ export const ActivityEntryIn = z.object({
   createdAt: z.string().min(1).max(64),
 });
 
-/** POST /api/student/sync — lot offline (au moins une collection non vide). */
+/** Clés de progression F6 (miroir client progressSync.ts). */
+export const ProgressKeyIn = z.enum(["units", "progress", "flashcards", "okacha"]);
+
+/** Une sous-clé de progress_v1 (LWW par key, updatedAt epoch ms). */
+export const ProgressStateIn = z.object({
+  key: ProgressKeyIn,
+  updatedAt: z.number().int().positive(),
+  value: z.unknown(),
+});
+
+/** Budget total des valeurs de progression dans UN lot (UTF-16 JSON chars). */
+const STATE_BUDGET_CHARS = 500_000;
+
+/**
+ * POST /api/student/sync — lot offline
+ * (au moins une collection non vide : entries, events ou state F6).
+ */
 export const SyncBody = z
   .object({
     entries: z.array(ProductionEntryIn).max(200).default([]),
     events: z.array(ActivityEntryIn).max(500).default([]),
+    state: z.array(ProgressStateIn).max(8).default([]),
   })
-  .refine((d) => d.entries.length > 0 || d.events.length > 0, {
-    message: "invalid_payload",
+  .refine(
+    (d) => d.entries.length > 0 || d.events.length > 0 || d.state.length > 0,
+    { message: "invalid_payload" },
+  )
+  .superRefine((d, ctx) => {
+    let chars = 0;
+    for (const s of d.state) {
+      try {
+        chars += JSON.stringify(s.value ?? null).length;
+      } catch {
+        ctx.addIssue({ code: z.ZodIssueCode.custom, message: "invalid_payload" });
+        return;
+      }
+    }
+    if (chars > STATE_BUDGET_CHARS) {
+      ctx.addIssue({ code: z.ZodIssueCode.custom, message: "invalid_payload" });
+    }
   });
 
 export const TeacherResetBody = z.object({ studentId: IdIn });
