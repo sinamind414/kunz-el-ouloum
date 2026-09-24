@@ -214,10 +214,11 @@ if (chapitres.length !== 55) throw new Error(`${chapitres.length}/55 — index p
 
 // ── bornes de plages + contrôle de monotonie stricte ────────────────────────
 for (let i = 0; i < chapitres.length; i++) {
-  chapitres[i].ligneFin =
-    (i + 1 < chapitres.length ? chapitres[i + 1].ligneDebut : lignes.length) - 1;
-  if (chapitres[i].ligneFin < chapitres[i].ligneDebut)
-    throw new Error(`plage inversée au chapitre ${chapitres[i].chapter}`);
+  const cur = chapitres[i];
+  const suivant = i + 1 < chapitres.length ? chapitres[i + 1] : null;
+  cur.ligneFin = (suivant ? suivant.ligneDebut : lignes.length) - 1;
+  if (cur.ligneFin < cur.ligneDebut)
+    throw new Error(`plage inversée au chapitre ${cur.chapter}`);
 }
 
 const modes = chapitres.reduce<Record<string, number>>((a, c) => ({ ...a, [c.mode]: (a[c.mode] ?? 0) + 1 }), {});
