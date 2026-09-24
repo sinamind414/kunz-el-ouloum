@@ -492,6 +492,7 @@ const SOURCE_LABELS: Record<string, string> = {
   guide: 'دليل الدراسة',
   domain: 'مجال',
   quiz: 'اختبار',
+  lesson: 'الدرس',
   out_of_scope: 'خارج المقرر',
 };
 
