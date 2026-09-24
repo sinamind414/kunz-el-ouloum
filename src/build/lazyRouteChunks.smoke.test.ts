@@ -8,12 +8,11 @@ const DIST_ASSETS = resolve(process.cwd(), 'dist', 'assets');
 // (sinon ENOENT sur chaque it et job vitest rouge).
 const HAS_DIST = existsSync(DIST_ASSETS);
 
-// Le build actuel ne lazy-load plus les vues par composant (architecture
-// abandonnée) : il découpe par LEÇON (phase*_chapitres_*) + bases tutor.
-// Ce smoke test verrouille la réalité du master :
+// Le build découpe par LEÇON (phase*_chapitres_* via import ?raw) + vues lazy
+// (F2) + bases tutor. Ce smoke verrouille la réalité du build :
 //  - chaque leçon phaseN_chapitres_* est un chunk JS séparé
 //  - le bundle principal (index-*.js) existe
-//  - aucune leçon n'est servie en HTML depuis dist/assets
+//  - aucune leçon n'est servie en HTML depuis dist/assets ni dist/lessons (F4)
 //  - les bases tutor lourdes restent isolées (perf, connexions 3G)
 const LESSON_CHUNK_PREFIX = 'phase';
 const TUTOR_BASES = ['tutor-knowledge-base', 'tutor-qa-base'];
@@ -43,10 +42,17 @@ describe.skipIf(!HAS_DIST)('Build smoke — chunks de leçons', () => {
     }
   });
 
-  it('ne sert aucune leçon en HTML depuis dist/assets', () => {
+  it('ne sert aucune leçon en HTML depuis dist/assets ni dist/lessons (F4)', () => {
     const files = readdirSync(DIST_ASSETS);
     const htmlFiles = files.filter((f) => f.endsWith('.html'));
 
     expect(htmlFiles, `chunks HTML inattendus : ${htmlFiles.join(', ')}`).toEqual([]);
+
+    // F4 — le second arbre statique (ex-public/lessons → dist/lessons) est interdit.
+    const distLessons = resolve(process.cwd(), 'dist', 'lessons');
+    if (existsSync(distLessons)) {
+      const staticHtml = readdirSync(distLessons).filter((f) => f.endsWith('.html'));
+      expect(staticHtml, `dist/lessons contient du HTML: ${staticHtml.join(', ')}`).toEqual([]);
+    }
   });
 });
