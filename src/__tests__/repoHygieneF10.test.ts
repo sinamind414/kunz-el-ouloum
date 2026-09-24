@@ -30,7 +30,15 @@ describe('F10 — hygiène VCS (pas de pile de patches)', () => {
     expect(files.filter((f) => f === 'bun.lock')).toEqual([]);
   });
 
-  it('l’historique n’est pas un commit unique', () => {
+  it('l’historique n’est pas un commit unique (skip si shallow clone CI)', () => {
+    const shallow = execSync('git rev-parse --is-shallow-repository', {
+      encoding: 'utf-8',
+      cwd: root,
+    }).trim();
+    if (shallow === 'true') {
+      // actions/checkout@v4 défaut depth=1 — le lock porte sur le dépôt complet
+      return;
+    }
     const n = Number(
       execSync('git rev-list --count HEAD', { encoding: 'utf-8', cwd: root }).trim(),
     );
