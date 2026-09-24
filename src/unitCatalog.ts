@@ -32,7 +32,7 @@ export const INITIAL_UNITS: Unit[] = [
   },
   {
     "id": 3,
-    "title": "النشاط الإنزيمي",
+    "title": "النشاط الإنزيمي للبروتينات",
     "lessonsCount": 5,
     "description": "التخصص الوظيفي للبروتينات — Activité enzymatique",
     "progress": 0,
@@ -41,7 +41,7 @@ export const INITIAL_UNITS: Unit[] = [
   },
   {
     "id": 4,
-    "title": "المناعة",
+    "title": "دور البروتينات في الدفاع عن الذات",
     "lessonsCount": 6,
     "description": "التخصص الوظيفي للبروتينات — Immunité",
     "progress": 0,
@@ -50,7 +50,7 @@ export const INITIAL_UNITS: Unit[] = [
   },
   {
     "id": 5,
-    "title": "الاتصال العصبي",
+    "title": "دور البروتينات في الاتصال العصبي",
     "lessonsCount": 5,
     "description": "التخصص الوظيفي للبروتينات — Communication nerveuse",
     "progress": 0,
@@ -59,7 +59,7 @@ export const INITIAL_UNITS: Unit[] = [
   },
   {
     "id": 6,
-    "title": "التركيب الضوئي",
+    "title": "آليات تحويل الطاقة الضوئية إلى طاقة كيميائية كامنة",
     "lessonsCount": 3,
     "description": "التحولات الطاقوية — Photosynthèse",
     "progress": 0,
@@ -68,7 +68,7 @@ export const INITIAL_UNITS: Unit[] = [
   },
   {
     "id": 7,
-    "title": "التنفس الخلوي والتخمر",
+    "title": "آليات تحويل الطاقة الكيميائية الكامنة في الجزيئات العضوية إلى ATP",
     "lessonsCount": 3,
     "description": "التحولات الطاقوية — Respiration cellulaire",
     "progress": 0,
@@ -77,7 +77,7 @@ export const INITIAL_UNITS: Unit[] = [
   },
   {
     "id": 8,
-    "title": "الحصيلة الطاقوية",
+    "title": "تحويل الطاقة على المستوى ما فوق البنية الخلوية",
     "lessonsCount": 3,
     "description": "التحولات الطاقوية — Bilan énergétique",
     "progress": 0,
@@ -104,7 +104,7 @@ export const INITIAL_UNITS: Unit[] = [
   },
   {
     "id": 11,
-    "title": "البنيات الجيولوجية",
+    "title": "النشاط التكتوني والبنيات الجيولوجية المرتبطة به",
     "lessonsCount": 3,
     "description": "التكتونية العامة — Structures géologiques",
     "progress": 0,

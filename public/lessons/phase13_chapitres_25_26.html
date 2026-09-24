@@ -1,9 +1,9 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>منصة بنزر العلم | المرحلة 13 : الدرس 25 والدرس 26</title>
+    <title>منصة بنزر العلم | المرحلة 13 : النشاط 25 والنشاط 26</title>
     <style>
         :root {
             --bg-main: #f8fafc;
@@ -35,7 +35,7 @@
         }
 
         body {
-            font-family: 'Cairo', 'Tajawal', sans-serif;
+            font-family: 'Noto Kufi Arabic', 'Kufi', 'Cairo', sans-serif;
             background-color: var(--bg-main);
             color: var(--text-main);
             line-height: 1.8;
@@ -335,12 +335,12 @@
         }
     
         /* === MIFTAH + Sommaire + Badge (v3.2 prototype) === */
-        .sommaire{position:sticky;top:60px;z-index:999;background:#ffffffee;backdrop-filter:blur(8px);border-bottom:1px solid var(--border);padding:8px 1.2rem;display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;box-shadow:0 2px 10px rgba(0,0,0,.04)}
+        .sommaire{position:sticky;top:0;z-index:999;max-width:1100px;width:calc(100% - 16px);margin:8px auto 0;background:#0f172a;border:1px solid #334155;border-radius:0 0 16px 16px;padding:10px 14px;display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;justify-content:flex-start;box-shadow:0 10px 28px rgba(15,23,42,.35)}
         .sommaire::-webkit-scrollbar{display:none}
-        .sommaire a{white-space:nowrap;font-size:.82rem;font-weight:800;color:var(--text-muted);text-decoration:none;padding:6px 12px;border-radius:8px;border:1px solid var(--border);background:var(--bg-main);transition:all .15s}
-        .sommaire a:hover{border-color:var(--accent);color:var(--accent)}
-        .sommaire a.active{background:var(--primary);color:#fff;border-color:var(--primary)}
-        .sommaire .sep{width:1px;background:var(--border);margin:0 4px;flex-shrink:0}
+        .sommaire a{white-space:nowrap;font-size:.82rem;font-weight:800;color:#e2e8f0;text-decoration:none;padding:6px 12px;border-radius:8px;border:1px solid #475569;background:#1e293b;transition:all .15s}
+        .sommaire a:hover{border-color:#38bdf8;color:#7dd3fc;background:#0ea5e9}
+        .sommaire a.active{background:#2563eb;color:#fff;border-color:#60a5fa}
+        .sommaire .sep{width:1px;background:#475569;margin:0 4px;flex-shrink:0}
         .miftah-encadre{background:#fffdf4;border:1px solid #f3e0b0;border-right:4px solid #c08a1f;border-radius:10px;padding:10px 13px;margin:10px 0;font-size:.88rem;line-height:1.65}
         .miftah-encadre b{color:#7a5610}
         .quiz-badge{display:none;margin-top:12px;padding:10px 14px;border-radius:10px;font-weight:800;text-align:center;font-size:.95rem;animation:fadeIn .25s ease}
@@ -348,7 +348,7 @@
         .quiz-badge.faible{background:#fef2f2;color:#991b1b;border:1px solid #fecaca}
         .quiz-badge.moyen{background:#fffbeb;color:#92400e;border:1px solid #fde68a}
         .quiz-badge.mumtaz{background:#f0fdf4;color:#166534;border:1px solid #bbf7d0}
-        @media(max-width:768px){.sommaire{top:96px}}
+        @media(max-width:768px){.sommaire{top:0;width:100%;max-width:100%;border-radius:0;margin-left:0;margin-right:0}}
 
     </style>
 </head>
@@ -374,13 +374,13 @@
     <div class="container">
 
         <!-- ================================================================= -->
-        <!-- CHAPTER 25 : LA GLYCOLYSE CYTOPLASMIQUE (الدرس 25) -->
+        <!-- CHAPTER 25 : LA GLYCOLYSE CYTOPLASMIQUE (النشاط 25) -->
         <!-- ================================================================= -->
         <div id="ch25" class="chapter-view active">
             
             <header class="lesson-header header-ch25">
                 <div class="lesson-breadcrumb">المجال الثاني : التحولات الطاقوية • الوحدة 2 : آليات تحويل الطاقة الكيميائية الكامنة إلى ATP</div>
-                <h1>الدرس 1 : التحلل السكري في الهيولى الأساسية (تفكيك الغلوكوز إلى حمض البيروفيك)</h1>
+                <h1>النشاط 1 : التحلل السكري في الهيولى الأساسية (تفكيك الغلوكوز إلى حمض البيروفيك)</h1>
                 <div class="lesson-objectives">
                     <div>🎯 <strong>الهدف العلمي :</strong> حدّد الهيولى الأساسية كمقر للتحلل السكري، وفصّل خطوات تفكيك الغلوكوز (C₆) إلى جزيئتي حمض البيروفيك (2 × C₃) مع إنتاج 2 ATP و 2 NADH, H⁺.</div>
                     <div>⏱️ <strong>المدة التقديرية للتعلم الذاتي :</strong> 25 دقيقة</div>
@@ -483,7 +483,7 @@
             <section class="card" id="ch1-step4">
                 <div class="section-title">
                     <span class="step-num">4</span>
-                    <span>تقويم الدرس 1 : أسئلة البكالوريا المتكررة</span>
+                    <span>تقويم النشاط 1 : أسئلة البكالوريا المتكررة</span>
                 </div>
 
                 <div class="question-item" id="c25q1-container">
@@ -500,13 +500,13 @@
         </div>
 
         <!-- ================================================================= -->
-        <!-- CHAPTER 26 : MITOCHONDRIE & CYCLE DE KREBS (الدرس 26) -->
+        <!-- CHAPTER 26 : MITOCHONDRIE & CYCLE DE KREBS (النشاط 26) -->
         <!-- ================================================================= -->
         <div id="ch26" class="chapter-view">
             
             <header class="lesson-header header-ch26">
                 <div class="lesson-breadcrumb">المجال الثاني : التحولات الطاقوية • الوحدة 2 : آليات تحويل الطاقة الكيميائية الكامنة إلى ATP</div>
-                <h1>الدرس 2 : البنية الفوقية للميتوكندرون وحلقة كريبس (تفكيك حمض البيروفيك في المادة الأساسية)</h1>
+                <h1>النشاط 2 : البنية الفوقية للميتوكندرون وحلقة كريبس (تفكيك حمض البيروفيك في المادة الأساسية)</h1>
                 <div class="lesson-objectives">
                     <div>🎯 <strong>الهدف العلمي :</strong> حدّد المادة الأساسية للميتوكندرون كمقر لحلقة كريبس، وفصّل تشكل الأستيل مرافق أ ونواتج حلقة كريبس (CO₂ و NADH و FADH₂ و ATP).</div>
                     <div>⏱️ <strong>المدة التقديرية للتعلم الذاتي :</strong> 25 دقيقة</div>
@@ -598,7 +598,7 @@
             </section>
 
             <!-- Step 4: Quiz Ch26 -->
-            <!-- خلاصة الدرس (standard 2026-09-21, ancrée au livre officiel — verrou resumes.lock) -->
+            <!-- خلاصة النشاط (standard 2026-09-21, ancrée au livre officiel — verrou resumes.lock) -->
             <section class="card" id="resume">
                 <div class="section-title">
                     <span class="step-num" style="background:#059669;">📝</span>
@@ -612,13 +612,13 @@
                     <li style="margin-bottom:6px;">يدخل حمض البيروفيك إلى المتوكندري ليكمل تفككه في مرحلة لاحقة.</li>
                     <li style="margin-bottom:6px;">يمثل التحلل السكري الخطوة الأولى المشتركة للأكسدة التنفسية والتخمر.</li>
                 </ol>
-                <p style="font-weight:800; font-size:13px; color:#b45309; margin-top:10px;">🔑 المصطلح المفتاح للبكالوريا : التحلل السكري (Glycolyse) / حمض البيروفيك</p>
+                <p style="font-weight:800; font-size:13px; color:#b45309; margin-top:10px;">🔑 المصطلح المفتاحي في البكالوريا : التحلل السكري (Glycolyse) / حمض البيروفيك</p>
             </section>
 
             <section class="card" id="ch2-step4">
                 <div class="section-title">
                     <span class="step-num step-num-red">4</span>
-                    <span>تقويم الدرس 2 : الحصيلة النوادي المرجعة</span>
+                    <span>تقويم النشاط 2 : الحصيلة النوادي المرجعة</span>
                 </div>
 
                 <div class="question-item" id="c26q1-container">
@@ -768,7 +768,7 @@
                 badge.classList.add('show');
                 if(score===100){ badge.className='quiz-badge show mumtaz'; badge.textContent='ممتاز (fort) — 100% · جاهز للمرحلة التالية'; }
                 else if(score>=50){ badge.className='quiz-badge show moyen'; badge.textContent='متوسط (moyen) — '+score+'% · راجع ثم أعد'; }
-                else { badge.className='quiz-badge show faible'; badge.textContent='ضعيف (faible) — '+score+'% · راجع الدرس ثم أعد'; }
+                else { badge.className='quiz-badge show faible'; badge.textContent='ضعيف (faible) — '+score+'% · راجع النشاط ثم أعد'; }
             });
         }
         // hook all check functions and also listen to clicks

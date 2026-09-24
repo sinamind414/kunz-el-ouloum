@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>منصة بنزر العلم | المرحلة 22 : الدرس 43 والدرس 44</title>
+    <title>منصة بنزر العلم | المرحلة 22 : النشاط 43 والنشاط 44</title>
     <style>
         :root {
             --bg-main: #f8fafc;
@@ -35,7 +35,7 @@
         }
 
         body {
-            font-family: 'Cairo', 'Tajawal', sans-serif;
+            font-family: 'Noto Kufi Arabic', 'Kufi', 'Cairo', sans-serif;
             background-color: var(--bg-main);
             color: var(--text-main);
             line-height: 1.8;
@@ -335,12 +335,12 @@
         }
     
         /* === MIFTAH + Sommaire + Badge (v3.2 prototype) === */
-        .sommaire{position:sticky;top:60px;z-index:999;background:#ffffffee;backdrop-filter:blur(8px);border-bottom:1px solid var(--border);padding:8px 1.2rem;display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;box-shadow:0 2px 10px rgba(0,0,0,.04)}
+        .sommaire{position:sticky;top:0;z-index:999;max-width:1100px;width:calc(100% - 16px);margin:8px auto 0;background:#0f172a;border:1px solid #334155;border-radius:0 0 16px 16px;padding:10px 14px;display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;justify-content:flex-start;box-shadow:0 10px 28px rgba(15,23,42,.35)}
         .sommaire::-webkit-scrollbar{display:none}
-        .sommaire a{white-space:nowrap;font-size:.82rem;font-weight:800;color:var(--text-muted);text-decoration:none;padding:6px 12px;border-radius:8px;border:1px solid var(--border);background:var(--bg-main);transition:all .15s}
-        .sommaire a:hover{border-color:var(--accent);color:var(--accent)}
-        .sommaire a.active{background:var(--primary);color:#fff;border-color:var(--primary)}
-        .sommaire .sep{width:1px;background:var(--border);margin:0 4px;flex-shrink:0}
+        .sommaire a{white-space:nowrap;font-size:.82rem;font-weight:800;color:#e2e8f0;text-decoration:none;padding:6px 12px;border-radius:8px;border:1px solid #475569;background:#1e293b;transition:all .15s}
+        .sommaire a:hover{border-color:#38bdf8;color:#7dd3fc;background:#0ea5e9}
+        .sommaire a.active{background:#2563eb;color:#fff;border-color:#60a5fa}
+        .sommaire .sep{width:1px;background:#475569;margin:0 4px;flex-shrink:0}
         .miftah-encadre{background:#fffdf4;border:1px solid #f3e0b0;border-right:4px solid #c08a1f;border-radius:10px;padding:10px 13px;margin:10px 0;font-size:.88rem;line-height:1.65}
         .miftah-encadre b{color:#7a5610}
         .quiz-badge{display:none;margin-top:12px;padding:10px 14px;border-radius:10px;font-weight:800;text-align:center;font-size:.95rem;animation:fadeIn .25s ease}
@@ -348,7 +348,7 @@
         .quiz-badge.faible{background:#fef2f2;color:#991b1b;border:1px solid #fecaca}
         .quiz-badge.moyen{background:#fffbeb;color:#92400e;border:1px solid #fde68a}
         .quiz-badge.mumtaz{background:#f0fdf4;color:#166534;border:1px solid #bbf7d0}
-        @media(max-width:768px){.sommaire{top:96px}}
+        @media(max-width:768px){.sommaire{top:0;width:100%;max-width:100%;border-radius:0;margin-left:0;margin-right:0}}
 
     </style>
 </head>
@@ -376,14 +376,14 @@
     <div class="container">
 
         <!-- ================================================================= -->
-        <!-- CHAPTER 43 : LE CYCLE DES ROCHES DANS LA NATURE (الدرس 43) -->
+        <!-- CHAPTER 43 : LE CYCLE DES ROCHES DANS LA NATURE (النشاط 43) -->
         <!-- ================================================================= -->
         <div id="ch43" class="chapter-view active">
             <div style="background:#fffbeb;border:2px dashed #d97706;border-radius:12px;padding:10px 14px;margin:0 0 14px;font-size:.85rem;font-weight:800;color:#92400e;">📚 ثقافة عامة إثرائية — دورة الصخور خارج المنهاج الرسمي (TDM) وغير مطلوبة في البكالوريا : للاطلاع فقط.</div>
             
             <header class="lesson-header header-ch43">
                 <div class="lesson-breadcrumb">المجال الثالث : التكتونية العامة • الوحدة 3 : النشاط التكتوني والبنيات الجيولوجية المرتبطة به</div>
-                <h1>الدرس 5 : دورة الصخور في الطبيعة (التحول المتبادل والمستمر بين المجموعات الصخرية الثلاث)</h1>
+                <h1>النشاط 5 : دورة الصخور في الطبيعة (التحول المتبادل والمستمر بين المجموعات الصخرية الثلاث)</h1>
                 <div class="lesson-objectives">
                     <div>🎯 <strong>الهدف العلمي :</strong> بيّن أن الصخور النارية والرسوبية والمتحولة في دورة جيولوجية مغلقة ومستمرة بفعل عوامل التجوية، التصخر، التحول، والانصهار.</div>
                     <div>⏱️ <strong>المدة التقديرية للتعلم الذاتي :</strong> 25 دقيقة</div>
@@ -486,7 +486,7 @@
             <section class="card" id="ch1-step4">
                 <div class="section-title">
                     <span class="step-num">4</span>
-                    <span>تقويم الدرس 3 : أسئلة البكالوريا المتكررة</span>
+                    <span>تقويم النشاط 3 : أسئلة البكالوريا المتكررة</span>
                 </div>
 
                 <div class="question-item" id="c43q1-container">
@@ -503,14 +503,14 @@
         </div>
 
         <!-- ================================================================= -->
-        <!-- CHAPTER 44 : RESSOURCES GÉOLOGIQUES EN ALGÉRIE (الدرس 44 - ختام البرنامج) -->
+        <!-- CHAPTER 44 : RESSOURCES GÉOLOGIQUES EN ALGÉRIE (النشاط 44 - ختام البرنامج) -->
         <!-- ================================================================= -->
         <div id="ch44" class="chapter-view">
             <div style="background:#fffbeb;border:2px dashed #d97706;border-radius:12px;padding:10px 14px;margin:0 0 14px;font-size:.85rem;font-weight:800;color:#92400e;">📚 ثقافة عامة إثرائية — الموارد البترولية والطاقوية خارج المنهاج الرسمي (TDM) وغير مطلوبة في البكالوريا : للاطلاع فقط.</div>
             
             <header class="lesson-header header-ch44">
                 <div class="lesson-breadcrumb">المجال الثالث : التكتونية العامة • الوحدة 3 : النشاط التكتوني والبنيات الجيولوجية المرتبطة به</div>
-                <h1>الدرس 6 : الموارد الجيولوجية والطاقوية في الجزائر (تشكل ومصائد البترول والغاز والمياه الجوفية بالصحراء)</h1>
+                <h1>النشاط 6 : الموارد الجيولوجية والطاقوية في الجزائر (تشكل ومصائد البترول والغاز والمياه الجوفية بالصحراء)</h1>
                 <div class="lesson-objectives">
                     <div>🎯 <strong>الهدف العلمي :</strong> حدّد أصل المحروقات (العوالق البحرية) وشروط تشكل المصيدة البترولية (صخر الأم، الخزان، والغطاء)، وبيّن ثروة الأحواض المائية الجوفية بالجنوب الجزائري.</div>
                     <div>⏱️ <strong>المدة التقديرية للتعلم الذاتي :</strong> 25 دقيقة</div>
@@ -603,7 +603,7 @@
             </section>
 
             <!-- Step 4: Quiz Ch44 -->
-            <!-- خلاصة الدرس (standard 2026-09-21, ancrée au livre officiel — verrou resumes.lock) -->
+            <!-- خلاصة النشاط (standard 2026-09-21, ancrée au livre officiel — verrou resumes.lock) -->
             <section class="card" id="resume">
                 <div class="section-title">
                     <span class="step-num" style="background:#059669;">📝</span>
@@ -617,19 +617,17 @@
                     <li style="margin-bottom:6px;">تشكل الدورة الجيولوجية نظاماً مغلقاً ومستمراً منذ تشكل الأرض.</li>
                     <li style="margin-bottom:6px;">توثق الصخور وشواهدها الأحفورية أحداث التاريخ الجيولوجي القديم.</li>
                 </ol>
-                <p style="font-weight:800; font-size:13px; color:#b45309; margin-top:10px;">🔑 المصطلح المفتاح للبكالوريا : دورة الصخور / التحول (المطاعن)</p>
+                <p style="font-weight:800; font-size:13px; color:#b45309; margin-top:10px;">🔑 المصطلح المفتاحي في البكالوريا : دورة الصخور / التحول (المطاعن)</p>
             </section>
 
             <!-- الحصيلة المعرفية الرسمية (citation verbatim du livre officiel — voir docs/RESUMES_MAARIFI_LIVRE_2026-09-21.md) -->
-            <section class="card" 
 
             <!-- مخطط تحصيلي من الوجه إلى سلسلة جبلية (image originale user, master 994331f — ancrage 11 jetons, verrou resumes.lock) -->
-            <section class="card" 
 
             <section class="card" id="ch2-step4">
                 <div class="section-title">
                     <span class="step-num step-num-amber">4</span>
-                    <span>تقويم الدرس 4 : الختام التام لأسئلة البكالوريا</span>
+                    <span>تقويم النشاط 4 : الختام التام لأسئلة البكالوريا</span>
                 </div>
 
                 <div class="question-item" id="c44q1-container">
@@ -648,12 +646,12 @@
         <!-- ═══ Zone de synthèse commune (🏛 حصيلة + 🗺 مخطط) — hors chapter-view :
              visible dans LES DEUX leçons du fichier (survit au slicing lessonChapterSplit) ═══ -->
         <div class="synthese-zone" id="zone-synthese">
-id="hosila" style="border:2px solid #f59e0b;">
+<section class="card" id="hosila" style="border:2px solid #f59e0b;">
                 <div class="section-title">
                     <span class="step-num" style="background:#b45309;">🏛</span>
                     <span>الحصيلة المعرفية — النص الرسمي للكتاب المدرسي (الفصل 54، ص 330)</span>
                 </div>
-                <p style="font-size:11px; color:#92400e; font-weight:700; margin:6px 0;">وحدة : D3-U11 — الظواهر التكتونية — نص الكتاب بتنسيق قرائي، دون تغيير المعنى (OCR rendu lisible).</p>
+                <p style="font-size:11px; color:#92400e; font-weight:700; margin:6px 0;">الوحدة: D3-U11 — الظواهر التكتونية — نص الكتاب بتنسيق قرائي، دون تغيير في المعنى، مع تنسيق قرائي يجعل النص مقروءاً.</p>
 
 <ul style="margin:8px 0; padding-right:24px; line-height:2; font-size:13px;">
 <li>ينتج عن <b>التقلص القشري</b> تحول الصخور العميقة تحت تأثير ارتفاع درجة الحرارة والضغط، وانصهار جزئي لغرانيت القشرة القارية (صخر الميغماتيت).</li>
@@ -663,7 +661,7 @@ id="hosila" style="border:2px solid #f59e0b;">
 </ul>
 
             </section>
-id="schema-synthese" style="border:2px solid #2563eb;">
+<section class="card" id="schema-synthese" style="border:2px solid #2563eb;">
                 <div class="section-title">
                     <span class="step-num" style="background:#2563eb;">🗺</span>
                     <span>مخطط تحصيلي — من الوجه إلى سلسلة جبلية (Orogenèse) (ص 330)</span>
@@ -816,7 +814,7 @@ id="schema-synthese" style="border:2px solid #2563eb;">
                 badge.classList.add('show');
                 if(score===100){ badge.className='quiz-badge show mumtaz'; badge.textContent='ممتاز (fort) — 100% · جاهز للمرحلة التالية'; }
                 else if(score>=50){ badge.className='quiz-badge show moyen'; badge.textContent='متوسط (moyen) — '+score+'% · راجع ثم أعد'; }
-                else { badge.className='quiz-badge show faible'; badge.textContent='ضعيف (faible) — '+score+'% · راجع الدرس ثم أعد'; }
+                else { badge.className='quiz-badge show faible'; badge.textContent='ضعيف (faible) — '+score+'% · راجع النشاط ثم أعد'; }
             });
         }
         // hook all check functions and also listen to clicks
@@ -868,3 +866,6 @@ id="schema-synthese" style="border:2px solid #2563eb;">
     </script>
 </body>
 </html>
+
+
+

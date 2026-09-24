@@ -6,10 +6,16 @@
 import { LESSON_LIBRARY } from '../lessonData';
 
 export const OFFICIAL_PROGRAM_SEQUENCE: Record<number, string[]> = {
-  // U1 — تركيب البروتين (TDM p.10 : 5 chapitres) : phases 1,2 + transcription
-  // lecon_transcription (U1-3, format mono-leçon rétrofité chapter-view ch3).
+  // U1 — تركيب البروتين (TDM p.10 : 5 chapitres) : phase1(§1-2), transcription(§3),
+  // phase1_2(§4 الترجمة), phase2(§5 مراحل الترجمة). phase1_2 est listée explicitement
+  // APRÈS la transcription pour suivre l'ordre officiel du TDM.
   // NOTE : phase2_2 (niveaux) appartient à U2 — listée en U2, dédupliquée ici.
-  1: ['phase1_chapitres_1_2', 'lecon_transcription', 'phase2_chapitres_3_4'],
+  1: [
+    'phase1_chapitres_1_2',
+    'lecon_transcription',
+    'phase1_chapitres_1_2_2',
+    'phase2_chapitres_3_4',
+  ],
   // U2 — بنية/وظيفة (TDM p.39 : 3 chapitres) : représentation + 2e moitié de phase2 + 1re de phase3
   // NOTE : phase3_2 (enzyme) appartient à U3 — listée en U3.
   2: ['lecon_representation', 'phase2_chapitres_3_4_2', 'phase3_chapitres_5_6'],
@@ -63,6 +69,9 @@ function withSplitChapters(keys: string[], unitId?: number): string[] {
     if (TWO_CHAPTER_KEY_RE.test(key)) {
       const splitKey = `${key}_2`;
       if (out.includes(splitKey)) continue;
+      // Clé `_2` déjà placée explicitement plus loin dans cette unité : ne pas
+      // l'insérer ici (sinon l'ordre TDM serait forcé immédiatement après la base).
+      if (keys.includes(splitKey)) continue;
       const owner = ownerOf.get(splitKey);
       // Ajout auto sauf si la 2e moitié vit explicitement dans une autre unité
       if (owner !== undefined && unitId !== undefined && owner !== unitId) continue;

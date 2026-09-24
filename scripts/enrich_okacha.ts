@@ -15,7 +15,11 @@
 //     9ᵉ section « nasiha » = OKACHA_CONSEILS (ex-d2u2, isolée 2026-09-23) ;
 //     tamarin1 : sous-sections à ids stables (t1-def/don/inter/dessin/texte) ;
 //     filtre OCR anti-résidu (footer éditeur, marqueurs page, fragments cassés)
-//     sur sections + conseils — SANS réécriture du sens (retrait seul).
+//     sur sections + conseils — SANS réécriture du sens (retrait seul) ;
+//  6. Nettoyage post-fixes : un retrait (famille B) peut vider un bloc ou le
+//     réduire sous 20 car. APRÈS les passes de structurize → on retire les
+//     blocs vides (aucun sens inventé — la ligne source reste couverte côté
+//     verrou via ENRICH_FIXES) et on recolle les restes courts au précédent.
 //
 // Verrou : src/data/okachaEnriched.lock.test.ts (v2).
 
@@ -24,7 +28,87 @@ import { resolve } from 'node:path';
 import { OKACHA_UNITES, OKACHA_METHODO, OKACHA_CONSEILS } from '../src/data/okacha';
 
 // ── Dictionnaire de corrections OCR (haute confiance uniquement) ──
+// v2 (2026-09-24, audit « arabe 100 % » de la rubrique الحصيلة المعرفية) :
+//   · famille A : réparations فصحى certaines (darija « بصح » retirée, mots OCR
+//     attestés : العرض / حيث / الطالب / التمرين / الأسئلة / وثائق…) ;
+//   · famille B : retraits de résidus 100 % illisibles (valeur to vide) —
+//     aucun sens inventé, on retire ce qui ne peut pas être lu.
 const FIXES: Record<string, string> = {
+  // ── A. Réparations certaines (les plus longues d'abord : non-recouvrement) ──
+  'لاكا بصح بالابتعاد عن كل وسائل التشويش (هاتف، موسيقى، تلفاز...) ولدراسة في غفة جبد: ءة وهادئة، بالإضافة إلى':
+    'لكن لا بدّ من الابتعاد عن كل وسائل التشويش (الهاتف، الموسيقى، التلفاز...)، وأن تجري الدراسة في غرفة نظيفة هادئة، مع',
+  '،:وي النمرين الثاني على جزأين منتابعبن ومنكاملبن من': 'ويتضمّن التمرين الثاني جزأين متتابعين ومتكاملين من',
+  '،انيا ما بحنوي النمرين الثاني على:': 'أمّا ما يحتوي عليه التمرين الثاني فهو:',
+  'نرظبف الموارد المعرفية والمنهجية في مارسة الاسنادلال المامي.': 'نوظِّف الموارد المعرفية والمنهجية في ممارسة الاستدلال العلمي.',
+  'ماشرة ونمر-لعمر مطلوب': 'مباشرةً ونمرّر للعنوان المطلوب',
+  'آلة عمل لاريم إما تكبها': 'آلية عمل الإنزيم إمّا تكتبها',
+  'تفنع عأيهد فسلن لس مهاود سر ته دفيديبافايد اد اعزما بمن الاعتبار:':
+    'ينبغي أن نأخذ في الحسبان:',
+  'أنناء الإجابة عن كل موضوع يوجد معلومات رنبسبة (.ركرية) و.ملممات تانري: (مطن)':
+    'أنّ في الإجابة عن كل موضوع معلومات رئيسية ومعلومات ثانوية',
+  'يركر الطالب على المعلومات الرلبسية': 'يُركّز الطالب على المعلومات الرئيسية',
+  'يادللإجانة على السوال': 'عند الإجابة عن السؤال',
+  'حبث يخير اطالب': 'حيث يختار الطالب',
+  'ويحبذلوتكون الإجابة': 'ويُحبَّذ لو تكون الإجابة',
+  'تسهيل همة المصحح': 'تسهيل مهمة المصحح',
+  'الممنومات لنربا الإمام والغموض': 'المعلومات لرفع الإبهام والغموض',
+  'مفدمة خاصة بكل جزء': 'مقدمة خاصة بكل جزء',
+  'عنوان النحلبل': 'عنوان التحليل',
+  'الحلالب أن محس. استغلالها': 'الطالب أن يُحسِن استغلالها',
+  'بتلربفة الحصول عليها': 'بطريقة الحصول عليها',
+  'لبي شكل عنوان': 'في شكل عنوان',
+  'اللمران المناني:': 'التمرين الثاني:',
+  'الورض:': 'العرض:',
+  'مجموعة طمات': 'مجموعة كلمات',
+  'الأعضاء المناعبة الهيطية': 'الأعضاء المناعية اللمفاوية',
+  'بدائيات النواة': 'أوليات النواة',
+  'النمرين': 'التمرين',
+  'الأستلة': 'الأسئلة',
+  'الأسلة': 'الأسئلة',
+  'السوال': 'السؤال',
+  'الجزيات': 'الجزئيات',
+  'استنباطين': 'استنباطية',
+  'ونائف': 'وثائق',
+  'المنعلف: بها': 'المتعلقة بها',
+  'وإذاكان': 'وإذا كان',
+  'إذاكانت': 'إذا كانت',
+  'إذاكان': 'إذا كان',
+  'إذاكتبت': 'إذا كتبت',
+  'دكرت سافا': 'ذكرت سالفاً',
+  // ── B. Retraits de résidus illisibles (aucune réécriture) ──
+  'فاتارز': '', // fin de « . نقوم بس … نادفلد\tفاتارز » (méthodo l.1669) — 100 % illisible
+  'غاد منه املية علي اللفة لورية بن ال»اع٨ و د٩ا٩«مع امتالال الألميث لي لا5"أيأ': '',
+  'يفايي فاد اطمي في ود فنففأ، ٥ اشه ١ي٤عب٢ دبئ ودش': '',
+  'ب-شو ثالع نجية: و هذه الالذ بمدا قمتا شحليل للمطيات افحيية والقطما الفحرن ت٢٢،': '',
+  'فلي ميازفي انحاب تحرية شاهدة أي نكودفيه التبحة طيمية، واقي التجاي فم ٠٠': '',
+  'مرة ي كف فدد ايحداد أش فيفافيأتلبنت دطد ود فد ': '',
+  'ءماش، الملالس الممو لك': '',
+  'يحسن تغ و على': '',
+  'مشروع ءكاشة للطالس المنفوفى المفوف في ءلوم العليم.': '',
+  'الصاغة الدقيقة للمخكر لملمك وحصره جيدا٠ ا': '',
+  'الصاغة الدقيقة للمخكر لملمك وحصره جيدا٠\tا': '',
+  'نقوم بس سبدبدتديتفي«نادفلد': '',
+  'المصدرية ..الخ)': '',
+  '"أمثي" يكرف ساف وففو في، أ، ٨صد دب د"٩، فى شكل«آ»( أدينوزين ثلاثي الفوسفات).': '',
+  'مت مد إم ف يدر د الة فنخ مداع اني ي فا ة': '',
+  'بربشفي^سأةم :': '',
+  'الالياسدسماي كد ا بي١٨٠٨دششت اد بصورة أدف.': '',
+  'باندثاعن مستويات الينية الفراغية ني العرض، نقول في الخاتمة أن النية الفراغية محددة ورايا وأي طفرة ض ,-^,,؛٠٠٠:-٠٠٠-^—, ;د بلا٠': '',
+  "لأحأض'لأ^في'^٠ اصاد ي ك": '',
+  'يل امم تف كصرس اسب المامة 2٢ ياط فهاماالاكايا أسحت ٢ الكا ير': '',
+  'وا لتدن عدانهارب فعية، نتك رقب نر من كل نهبة(عوااإن أحد) نم غمللكل ت2 مله': '',
+  'تحدر مدف م شد « شطأ أتا سي -١٢ ٥٢ قطب ٨٩٢ ٤': '',
+  'ادب سه قبل ٦2 يوما، ينما يد دام سريعا في - مد اس في س': '',
+  '٠ ٥٤٨ الجدول نغبرات عا.د الركائز المعولة بادلالة نهبرات درجة الممارة، و المالة ف.. ،ا ١١٠ : بغه " " أ': '',
+  'تد التالة: لماذا، كيف، انساخ مس مب ادمكة :': '',
+  '- ه يوتسم ح -ف 5 ١٠، لر:': '',
+  'يمد مع افد الي اميياك الكن من صحة م ) الخروج بمعلون .': '',
+  'لمه النسل في هو يعود ل، يرجع ال، يتسبب ب، يفر ر٠ لأن...':
+    'يعود إلى، يرجع إلى، يتسبب في، يُفسَّر بـ ...',
+  'با تكتب في نقاط وجيزة، أي ما فل': 'بل تُكتب في نقاط وجيزة.',
+  '- La هي المراجمة الغير فعالة؟': '- ما هي المراجعة غير الفعّالة؟',
+  "1 ' اشحاج العلومات من الرسم التخطيطي:": 'استخراج المعلومات من الرسم التخطيطي:',
+  // ── Historique v1 (audit 2026-09-22) ──
   'الرونبنات': 'البروتينات', // permutation boustrophedon attestée (U1)
   'الأمنية': 'الأمينية', // أحماض أمينية (U1)
   'براوبط': 'بروابط', // روابط boustrophedon (U1)
@@ -312,9 +396,12 @@ function sectionsMethodo(lignes: string[]): {
   rattrapages: number;
   numeros: number;
   ocr: number;
+  retires: number;
 } {
   const { blocs, fragments, rattrapages, numeros } = structurize(lignes);
   const corrections = applyFixes(blocs);
+  // Propreté post-fixes AVANT découpage (blocs vidés inertes + restes < 20 car.).
+  let retires = nettoieBlocs(blocs);
   const sections: { id: string; titreAr: string; blocs: Bloc[]; sous?: { id: string; titreAr: string; from: number }[] }[] = [];
   let current: { id: string; titreAr: string; blocs: Bloc[]; sous?: { id: string; titreAr: string; from: number }[] } = { id: 'intro', titreAr: SECTION_RULES[0].titreAr, blocs: [] as Bloc[] };
   sections.push(current);
@@ -338,9 +425,13 @@ function sectionsMethodo(lignes: string[]): {
       sections.splice(i, 1);
     } else i++;
   }
-  // Filtre OCR anti-résidu sur chaque section (retrait seul).
+  // Filtre OCR anti-résidu sur chaque section (retrait seul) + re-nettoyage
+  // (le filtre peut vider un bloc ou laisser un titre vide).
   let ocr = 0;
-  for (const s of sections) ocr += filtreOcrBlocs(s.blocs);
+  for (const s of sections) {
+    ocr += filtreOcrBlocs(s.blocs);
+    retires += nettoieBlocs(s.blocs);
+  }
   // Re-fusion post-filtre si une section a été vidée sous le seuil.
   for (let i = 1; i < sections.length; ) {
     if (sections[i].blocs.length < 3) {
@@ -370,7 +461,7 @@ function sectionsMethodo(lignes: string[]): {
     }
     t1.sous = starts;
   }
-  return { sections, corrections, fragments, rattrapages, numeros, ocr };
+  return { sections, corrections, fragments, rattrapages, numeros, ocr, retires };
 }
 function applyFixes(blocs: Bloc[]): number {
   let n = 0;
@@ -385,11 +476,48 @@ function applyFixes(blocs: Bloc[]): number {
   return n;
 }
 
+/** Propreté POST-fixes (étape 6 du header) : un retrait (famille B) peut vider
+ *  un bloc ou le réduire sous 20 car. APRÈS les passes de structurize.
+ *   1. trim + retrait des blocs vides (tous kinds — un titre vide ne sert à rien) ;
+ *      la ligne source reste couverte côté verrou (avecFixes → '' → toujours inclus) ;
+ *   2. promotion « titre » des restes < 20 finissant par « : » (miroir parseBloc) ;
+ *   3. recollage des restes courts non-titre vers le précédent (règle Pass C).
+ *  Idempotent — appelé après applyFixes (unités, méthodo) et après filtreOcr
+ *  (sections, conseils). Renvoie le nombre de blocs retirés. */
+function nettoieBlocs(blocs: Bloc[]): number {
+  let retires = 0;
+  for (const b of blocs) b.texte = b.texte.trim();
+  for (let i = blocs.length - 1; i >= 0; i--) {
+    if (blocs[i].texte.length === 0) {
+      blocs.splice(i, 1);
+      retires++;
+    }
+  }
+  for (const b of blocs) {
+    if (b.kind !== 'titre' && b.texte.endsWith(':') && b.texte.length < 20) b.kind = 'titre';
+  }
+  for (let i = 0; i < blocs.length; ) {
+    const b = blocs[i];
+    if (b.kind !== 'titre' && b.texte.length < 20) {
+      if (i > 0) {
+        blocs[i - 1].texte += ` ${b.texte}`;
+        blocs.splice(i, 1);
+      } else if (blocs.length > 1) {
+        blocs[i + 1].texte = `${b.texte} ${blocs[i + 1].texte}`;
+        blocs.splice(i, 1);
+      } else break;
+      retires++;
+    } else i++;
+  }
+  return retires;
+}
+
 // ── Génération ──
-const stats = { fragments: 0, rattrapages: 0, numeros: 0, corrections: 0, ocr: 0 };
+const stats = { fragments: 0, rattrapages: 0, numeros: 0, corrections: 0, ocr: 0, retires: 0 };
 const unitesOut = OKACHA_UNITES.map((u) => {
   const r = structurize(u.lignes);
   const corrections = applyFixes(r.blocs);
+  stats.retires += nettoieBlocs(r.blocs);
   stats.fragments += r.fragments;
   stats.rattrapages += r.rattrapages;
   stats.numeros += r.numeros;
@@ -411,12 +539,14 @@ stats.fragments += meth.fragments;
 stats.rattrapages += meth.rattrapages;
 stats.numeros += meth.numeros;
 stats.ocr += meth.ocr;
+stats.retires += meth.retires;
 
 // 9ᵉ section « nasiha » : قسم النصائح isolé (OKACHA_CONSEILS, ex-d2u2).
 {
   const r = structurize([...OKACHA_CONSEILS.lignes]);
   const c = applyFixes(r.blocs);
   const o = filtreOcrBlocs(r.blocs);
+  stats.retires += nettoieBlocs(r.blocs);
   stats.corrections += c;
   stats.fragments += r.fragments;
   stats.rattrapages += r.rattrapages;
@@ -527,6 +657,7 @@ out.push(`  fragmentsRecolles: ${stats.fragments},`);
 out.push(`  rattrapagesContinuation: ${stats.rattrapages},`);
 out.push(`  numerosNormalises: ${stats.numeros},`);
 out.push(`  correctionsAppliquees: ${stats.corrections},`);
+  out.push(`  blocsRetiresPostFix: ${stats.retires},`);
 out.push(`  sectionsMethodo: ${meth.sections.length},`);
 out.push(`  pointsTotal: ${unitesOut.reduce((s, u) => s + u.nbPoints, 0)},`);
 out.push(`  ocrRetraits: ${stats.ocr},`);
@@ -544,6 +675,7 @@ console.log('  fragments recollés :', stats.fragments);
 console.log('  rattrapages        :', stats.rattrapages);
 console.log('  numéros normalisés :', stats.numeros);
 console.log('  corrections OCR    :', stats.corrections);
+console.log('  blocs retirés      :', stats.retires, '(post-fixes, vides ou < 20 car.)');
 console.log('  sections méthodo   :', meth.sections.length, '→', meth.sections.map((s) => `${s.id}(${s.blocs.length})`).join(' '));
 console.log('  filtre OCR retraits:', stats.ocr);
 

@@ -27,7 +27,7 @@ export interface DomainGroup {
 export const PASSIVE_DOMAINS: DomainGroup[] = [
   {
     id: 1,
-    titleAr: 'البروتينات والمناعة',
+    titleAr: 'التخصص الوظيفي للبروتينات',
     emoji: '🧬',
     unitIds: [1, 2, 3, 4, 5],
   },
@@ -61,15 +61,37 @@ export function getActiveLessonTitle(key: string): string {
 
 /**
  * Titre arabe d'une leçon passive : override officiel (TDM) prioritaire, sinon LESSON_LIBRARY.
- * Le préfixe « الدرس N : » (numérotation globale historique, incohérente avec
- * la numérotation 1..N par unité affichée en badge) est retiré : la carte montre
- * le seul intitulé descriptif, le badge donnant déjà la position dans l'unité.
+ * Le préfixe numérique historique (« الدرس N : », « النشاط N : », « الفصل N : »)
+ * est retiré de la source, puis recalculé selon la position dans l'unité choisie :
+ * la carte montre donc toujours « النشاط {position} : {description} », le badge
+ * donnant la position visuelle 1..N.
  */
-export function getPassiveLessonTitle(key: string): string {
+export function getPassiveLessonTitle(key: string, unitId?: number): string {
   const override = PASSIVE_TITLE_OVERRIDES[key];
   const raw = override ?? LESSON_LIBRARY.find((x) => x.key === key)?.titleAr;
   const title = raw ? String(raw) : key;
-  return title.replace(/^\s*(الدرس|الفصل)\s*[0-9٠-٩]+\s*[:：\-–]\s*/, '').trim() || title;
+  const clean = title.replace(/^\s*(الدرس|النشاط|الفصل)\s*[0-9٠-٩]+\s*[:：\-–]\s*/, '').trim() || title;
+
+  if (unitId !== undefined) {
+    const position = getPassiveLessonPosition(key, unitId);
+    if (position > 0) {
+      return `النشاط ${position} : ${clean}`;
+    }
+  }
+
+  return clean;
+}
+
+/**
+ * Position 1-based d'une leçon passive dans la séquence d'une unité.
+ * Seules les leçons HTML (celles affichées, `hasHtmlFile`) sont comptées,
+ * pour que le numéro du titre corresponde au badge visuel 1..N de la liste
+ * (la séquence officielle peut aussi contenir des leçons actives TS).
+ */
+export function getPassiveLessonPosition(key: string, unitId: number): number {
+  const sequence = getUnitLessonSequence(unitId).filter(hasHtmlFile);
+  const idx = sequence.indexOf(key);
+  return idx >= 0 ? idx + 1 : 0;
 }
 
 /** Libellé arabe d'une unité depuis le catalogue. */

@@ -27,7 +27,7 @@ async function ouvrirDomaine(domaine: 1 | 2 | 3) {
 }
 
 describe('LessonsView — leçons passives par icônes', () => {
-  it('domaine البروتينات والمناعة → 5 icônes d’unités, aucun chapitre affiché', async () => {
+  it('domaine التخصص الوظيفي للبروتينات → 5 icônes d’unités, aucun chapitre affiché', async () => {
     await ouvrirDomaine(1);
     expect(screen.getByTestId('unites-icones')).toBeTruthy();
     for (const uid of [1, 2, 3, 4, 5]) {

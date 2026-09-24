@@ -1,9 +1,9 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>منصة بنزر العلم | المرحلة 1 : الدرس 1 والدرس 2</title>
+    <title>منصة بنزر العلم | المرحلة 1 : النشاط 1 والنشاط 2</title>
     <style>
         :root {
             --bg-main: #f8fafc;
@@ -33,7 +33,7 @@
         }
 
         body {
-            font-family: 'Cairo', 'Tajawal', sans-serif;
+            font-family: 'Noto Kufi Arabic', 'Kufi', 'Cairo', sans-serif;
             background-color: var(--bg-main);
             color: var(--text-main);
             line-height: 1.8;
@@ -380,12 +380,12 @@
         }
     
         /* === MIFTAH + Sommaire + Badge (v3.2 prototype phase1) === */
-        .sommaire{position:sticky;top:60px;z-index:999;background:#ffffffee;backdrop-filter:blur(8px);border-bottom:1px solid var(--border);padding:8px 1.2rem;display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;box-shadow:0 2px 10px rgba(0,0,0,.04)}
+        .sommaire{position:sticky;top:0;z-index:999;max-width:1100px;width:calc(100% - 16px);margin:8px auto 0;background:#0f172a;border:1px solid #334155;border-radius:0 0 16px 16px;padding:10px 14px;display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;justify-content:flex-start;box-shadow:0 10px 28px rgba(15,23,42,.35)}
         .sommaire::-webkit-scrollbar{display:none}
-        .sommaire a{white-space:nowrap;font-size:.82rem;font-weight:800;color:var(--text-muted);text-decoration:none;padding:6px 12px;border-radius:8px;border:1px solid var(--border);background:var(--bg-main);transition:all .15s}
-        .sommaire a:hover{border-color:var(--accent);color:var(--accent)}
-        .sommaire a.active{background:var(--primary);color:#fff;border-color:var(--primary)}
-        .sommaire .sep{width:1px;background:var(--border);margin:0 4px;flex-shrink:0}
+        .sommaire a{white-space:nowrap;font-size:.82rem;font-weight:800;color:#e2e8f0;text-decoration:none;padding:6px 12px;border-radius:8px;border:1px solid #475569;background:#1e293b;transition:all .15s}
+        .sommaire a:hover{border-color:#38bdf8;color:#7dd3fc;background:#0ea5e9}
+        .sommaire a.active{background:#2563eb;color:#fff;border-color:#60a5fa}
+        .sommaire .sep{width:1px;background:#475569;margin:0 4px;flex-shrink:0}
         .miftah-encadre{background:#fffdf4;border:1px solid #f3e0b0;border-right:4px solid #c08a1f;border-radius:10px;padding:10px 13px;margin:10px 0;font-size:.88rem;line-height:1.65}
         .miftah-encadre b{color:#7a5610}
         .quiz-badge{display:none;margin-top:12px;padding:10px 14px;border-radius:10px;font-weight:800;text-align:center;font-size:.95rem;animation:fadeIn .25s ease}
@@ -393,7 +393,7 @@
         .quiz-badge.faible{background:#fef2f2;color:#991b1b;border:1px solid #fecaca}
         .quiz-badge.moyen{background:#fffbeb;color:#92400e;border:1px solid #fde68a}
         .quiz-badge.mumtaz{background:#f0fdf4;color:#166534;border:1px solid #bbf7d0}
-        @media(max-width:768px){.sommaire{top:96px}}
+        @media(max-width:768px){.sommaire{top:0;width:100%;max-width:100%;border-radius:0;margin-left:0;margin-right:0}}
 
     </style>
 </head>
@@ -425,7 +425,7 @@
             
             <header class="lesson-header header-ch1">
                 <div class="lesson-breadcrumb">المجال الأول : التخصص الوظيفي للبروتينات • الوحدة 1 : تركيب البروتين</div>
-                <h1>الدرس 1 : تذكير بالمكتسبات ومقر تركيب البروتين في الخلية</h1>
+                <h1>النشاط 1 : تذكير بالمكتسبات ومقر تركيب البروتين في الخلية</h1>
                 <div class="lesson-objectives">
                     <div>🎯 <strong>الهدف العلمي :</strong> بيّن أن تركيب البروتين يتم في الهيولى بالضبط على مستوى الشبكة الهيولية الداخلية المحببة (REG).</div>
                     <div>⏱️ <strong>المدة التقديرية للتعلم الذاتي :</strong> 20 دقيقة</div>
@@ -523,7 +523,7 @@
             <section class="card" id="ch1-step4">
                 <div class="section-title">
                     <span class="step-num">4</span>
-                    <span>الخلاصة والتقويم الذاتي (الدرس 1)</span>
+                    <span>الخلاصة والتقويم الذاتي (النشاط 1)</span>
                 </div>
                 <div class="scientific-text">
                     <div class="text-part" style="border-right-color: var(--success); margin-bottom: 0;">
@@ -553,7 +553,7 @@
             
             <header class="lesson-header header-ch2">
                 <div class="lesson-breadcrumb">المجال الأول : التخصص الوظيفي للبروتينات • الوحدة 1 : تركيب البروتين</div>
-                <h1>الدرس 2 : الشفرة الوراثية وتنشيط الأحماض الأمينية</h1>
+                <h1>النشاط 2 : الشفرة الوراثية وتنشيط الأحماض الأمينية</h1>
                 <div class="lesson-objectives">
                     <div>🎯 <strong>الهدف العلمي :</strong> وضّح كيفية ترجمة اللغة النووية (4 أحرف) إلى لغة بروتينية (20 حمض أميني)، وفسّر آلية تنشيط الحمض الأميني بالـ <span class="ltr-seq">ARNt</span>.</div>
                     <div>⏱️ <strong>المدة التقديرية للتعلم الذاتي :</strong> 25 دقيقة</div>
@@ -656,7 +656,7 @@
             </section>
 
             <!-- Step 4: Quiz Ch2 -->
-            <!-- خلاصة الدرس (standard 2026-09-21, ancrée au livre officiel — verrou resumes.lock ; restructuration É2 du résumé hérité) -->
+            <!-- خلاصة النشاط (standard 2026-09-21, ancrée au livre officiel — verrou resumes.lock ; restructuration É2 du résumé hérité) -->
             <section class="card" id="resume">
                 <div class="section-title">
                     <span class="step-num" style="background:#059669;">📝</span>
@@ -670,13 +670,13 @@
                     <li style="margin-bottom:6px;">تنشط الأحماض الأمينية بإنزيمات وبطاقة ATP قبل ارتباطها بـ ARNt الموافق.</li>
                     <li style="margin-bottom:6px;">يحمل الـ ARNm الرسول المعلومة الوراثية من النواة إلى الهيولى.</li>
                 </ol>
-                <p style="font-weight:800; font-size:13px; color:#b45309; margin-top:10px;">🔑 المصطلح المفتاح للبكالوريا : الشبكة الهيولية المحببة / مقر تركيب البروتين</p>
+                <p style="font-weight:800; font-size:13px; color:#b45309; margin-top:10px;">🔑 المصطلح المفتاحي في البكالوريا : الشبكة الهيولية المحببة / مقر تركيب البروتين</p>
             </section>
 
             <section class="card" id="ch2-step4">
                 <div class="section-title">
                     <span class="step-num step-num-purple">4</span>
-                    <span>تقويم الدرس 2 : أسئلة البكالوريا المتكررة</span>
+                    <span>تقويم النشاط 2 : أسئلة البكالوريا المتكررة</span>
                 </div>
 
                 <div class="question-item" id="c2q1-container">
@@ -840,7 +840,7 @@
             c1Score = isCorrect ? 100 : 0;
             const badge = document.getElementById('c1-badge');
             badge.classList.add('show');
-            if(c1Score===100){ badge.className='quiz-badge show mumtaz'; badge.innerHTML='ممتاز (fort) — 100% · <span style="font-weight:600">يمكنك المرور إلى الدرس 2 أو إعادة التحدي</span> <a href="#ch1-step2" onclick="scrollToStep(\'ch1-step2\',event)" style="color:#166534;text-decoration:underline">مراجعة التحليل</a>'; }
+            if(c1Score===100){ badge.className='quiz-badge show mumtaz'; badge.innerHTML='ممتاز (fort) — 100% · <span style="font-weight:600">يمكنك المرور إلى النشاط 2 أو إعادة التحدي</span> <a href="#ch1-step2" onclick="scrollToStep(\'ch1-step2\',event)" style="color:#166534;text-decoration:underline">مراجعة التحليل</a>'; }
             else { badge.className='quiz-badge show faible'; badge.innerHTML='ضعيف (faible) — 0% · راجع السنّ 2 (الريبوزومات على REG) ثم أعد المحاولة'; }
         }
         function updateBadgeC2(isCorrect){

@@ -254,7 +254,7 @@ describe('الحصيلة المعرفية الرسمية du livre — injectée 
     expect(brut.includes('/assets/images/schemas/domaine1_traduction/schema_synthese_traduction_U1.jpg'), 'image schéma absente').toBe(true);
     expect(brut.includes('link-schema'), 'lien nav schéma absent').toBe(true);
     const texte = brut.replace(/<[^>]+>/g, ' ');
-    for (const m of ['المخطط الشامل لآليات تركيب البروتين', 'بدائيات النواة', 'حقيقيات النواة', 'Introns', 'البوليزوم', 'AUG', 'UAA/UAG/UGA', 'مُعاد بناؤه آليا']) {
+    for (const m of ['المخطط الشامل لآليات تركيب البروتين', 'أوليات النواة', 'حقيقيات النواة', 'Introns', 'البوليزوم', 'AUG', 'UAA/UAG/UGA', 'مُعاد بناؤه آلياً']) {
       expect(texte.includes(m), `marqueur schéma « ${m} » absent`).toBe(true);
     }
     // ordre : 📝 خلاصة et تقويم dans la leçon 2 (ch4), puis zone de synthèse commune (🏛 ثم 🗺)

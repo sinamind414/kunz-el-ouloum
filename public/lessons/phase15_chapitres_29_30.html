@@ -1,9 +1,9 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>منصة بنزر العلم | المرحلة 15 : الدرس 29 والدرس 30</title>
+    <title>منصة بنزر العلم | المرحلة 15 : النشاط 29 والنشاط 30</title>
     <style>
         :root {
             --bg-main: #f8fafc;
@@ -35,7 +35,7 @@
         }
 
         body {
-            font-family: 'Cairo', 'Tajawal', sans-serif;
+            font-family: 'Noto Kufi Arabic', 'Kufi', 'Cairo', sans-serif;
             background-color: var(--bg-main);
             color: var(--text-main);
             line-height: 1.8;
@@ -335,12 +335,12 @@
         }
     
         /* === MIFTAH + Sommaire + Badge (v3.2 prototype) === */
-        .sommaire{position:sticky;top:60px;z-index:999;background:#ffffffee;backdrop-filter:blur(8px);border-bottom:1px solid var(--border);padding:8px 1.2rem;display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;box-shadow:0 2px 10px rgba(0,0,0,.04)}
+        .sommaire{position:sticky;top:0;z-index:999;max-width:1100px;width:calc(100% - 16px);margin:8px auto 0;background:#0f172a;border:1px solid #334155;border-radius:0 0 16px 16px;padding:10px 14px;display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;justify-content:flex-start;box-shadow:0 10px 28px rgba(15,23,42,.35)}
         .sommaire::-webkit-scrollbar{display:none}
-        .sommaire a{white-space:nowrap;font-size:.82rem;font-weight:800;color:var(--text-muted);text-decoration:none;padding:6px 12px;border-radius:8px;border:1px solid var(--border);background:var(--bg-main);transition:all .15s}
-        .sommaire a:hover{border-color:var(--accent);color:var(--accent)}
-        .sommaire a.active{background:var(--primary);color:#fff;border-color:var(--primary)}
-        .sommaire .sep{width:1px;background:var(--border);margin:0 4px;flex-shrink:0}
+        .sommaire a{white-space:nowrap;font-size:.82rem;font-weight:800;color:#e2e8f0;text-decoration:none;padding:6px 12px;border-radius:8px;border:1px solid #475569;background:#1e293b;transition:all .15s}
+        .sommaire a:hover{border-color:#38bdf8;color:#7dd3fc;background:#0ea5e9}
+        .sommaire a.active{background:#2563eb;color:#fff;border-color:#60a5fa}
+        .sommaire .sep{width:1px;background:#475569;margin:0 4px;flex-shrink:0}
         .miftah-encadre{background:#fffdf4;border:1px solid #f3e0b0;border-right:4px solid #c08a1f;border-radius:10px;padding:10px 13px;margin:10px 0;font-size:.88rem;line-height:1.65}
         .miftah-encadre b{color:#7a5610}
         .quiz-badge{display:none;margin-top:12px;padding:10px 14px;border-radius:10px;font-weight:800;text-align:center;font-size:.95rem;animation:fadeIn .25s ease}
@@ -348,7 +348,7 @@
         .quiz-badge.faible{background:#fef2f2;color:#991b1b;border:1px solid #fecaca}
         .quiz-badge.moyen{background:#fffbeb;color:#92400e;border:1px solid #fde68a}
         .quiz-badge.mumtaz{background:#f0fdf4;color:#166534;border:1px solid #bbf7d0}
-        @media(max-width:768px){.sommaire{top:96px}}
+        @media(max-width:768px){.sommaire{top:0;width:100%;max-width:100%;border-radius:0;margin-left:0;margin-right:0}}
 
     </style>
 </head>
@@ -375,13 +375,13 @@
     <div class="container">
 
         <!-- ================================================================= -->
-        <!-- CHAPTER 29 : CHLOROPLASTE VS MITOCHONDRIE (الدرس 29) -->
+        <!-- CHAPTER 29 : CHLOROPLASTE VS MITOCHONDRIE (النشاط 29) -->
         <!-- ================================================================= -->
         <div id="ch29" class="chapter-view active">
             
             <header class="lesson-header header-ch29">
                 <div class="lesson-breadcrumb">المجال الثاني : التحولات الطاقوية • الوحدة 3 : تحويل الطاقة على المستوى ما فوق البنية الخلوية</div>
-                <h1>الدرس 1 : المقارنة الشاملة بين آليات تحويل الطاقة في الصانعة الخضراء والميتوكندرون</h1>
+                <h1>النشاط 1 : المقارنة الشاملة بين آليات تحويل الطاقة في الصانعة الخضراء والميتوكندرون</h1>
                 <div class="lesson-objectives">
                     <div>🎯 <strong>الهدف العلمي :</strong> استخرج أوجه التشابه البنيوي (الأغشية والكرية المذنّبة) والتمايز الوظيفي (فسفرة ضوئية مقابل فسفرة تأكسدية) بين العضيتين الطاقويتين.</div>
                     <div>⏱️ <strong>المدة التقديرية للتعلم الذاتي :</strong> 25 دقيقة</div>
@@ -477,7 +477,7 @@
             <section class="card" id="ch1-step4">
                 <div class="section-title">
                     <span class="step-num">4</span>
-                    <span>تقويم الدرس 1 : أسئلة البكالوريا المتكررة</span>
+                    <span>تقويم النشاط 1 : أسئلة البكالوريا المتكررة</span>
                 </div>
 
                 <div class="question-item" id="c29q1-container">
@@ -494,14 +494,14 @@
         </div>
 
         <!-- ================================================================= -->
-        <!-- CHAPTER 30 : CYCLE DE L'ÉNERGIE ET DE LA MATIÈRE (الدرس 30) -->
+        <!-- CHAPTER 30 : CYCLE DE L'ÉNERGIE ET DE LA MATIÈRE (النشاط 30) -->
         <!-- ================================================================= -->
         <div id="ch30" class="chapter-view">
             <div style="background:#fffbeb;border:2px dashed #d97706;border-radius:12px;padding:10px 14px;margin:0 0 14px;font-size:.85rem;font-weight:800;color:#92400e;">📚 ثقافة عامة إثرائية — هذا الامتداد الكوني يتجاوز المنهاج الرسمي (المطلوب : المخطط التحصيلي على المستوى الخلوي) وغير مطلوب في البكالوريا.</div>
             
             <header class="lesson-header header-ch30">
                 <div class="lesson-breadcrumb">المجال الثاني : التحولات الطاقوية • الوحدة 3 : تحويل الطاقة على المستوى ما فوق البنية الخلوية</div>
-                <h1>الدرس 2 : دورة الطاقة والمادة في المحيط الحيوي (التكامل بين الذاتية والغير ذاتية التغذية)</h1>
+                <h1>النشاط 2 : دورة الطاقة والمادة في المحيط الحيوي (التكامل بين الذاتية والغير ذاتية التغذية)</h1>
                 <div class="lesson-objectives">
                     <div>🎯 <strong>الهدف العلمي :</strong> بيّن أن المادة تدور في حلقة مغلقة بين التركيب الضوئي والتنفس، بينما الطاقة تتدفق في اتجاه واحد وتتبدد كحرارة.</div>
                     <div>⏱️ <strong>المدة التقديرية للتعلم الذاتي :</strong> 25 دقيقة</div>
@@ -592,7 +592,7 @@
             </section>
 
             <!-- Step 4: Quiz Ch30 -->
-            <!-- خلاصة الدرس (standard 2026-09-21, ancrée au livre officiel — verrou resumes.lock) -->
+            <!-- خلاصة النشاط (standard 2026-09-21, ancrée au livre officiel — verrou resumes.lock) -->
             <section class="card" id="resume">
                 <div class="section-title">
                     <span class="step-num" style="background:#059669;">📝</span>
@@ -606,16 +606,15 @@
                     <li style="margin-bottom:6px;">يتكامل المساران في دورة المادة والطاقة: تبادل O2 و CO2 بين الصانعة والمتوكندريا.</li>
                     <li style="margin-bottom:6px;">تمثل جزيئة ATP العملة الطاقوية المشتركة بين جميع خلايا الكائنات الحية.</li>
                 </ol>
-                <p style="font-weight:800; font-size:13px; color:#b45309; margin-top:10px;">🔑 المصطلح المفتاح للبكالوريا : التحولات الطاقوية / ATP</p>
+                <p style="font-weight:800; font-size:13px; color:#b45309; margin-top:10px;">🔑 المصطلح المفتاحي في البكالوريا : التحولات الطاقوية / ATP</p>
             </section>
 
             <!-- الحصيلة المعرفية الرسمية (citation verbatim du livre officiel — voir docs/RESUMES_MAARIFI_LIVRE_2026-09-21.md) -->
-            <section class="card" 
 
             <section class="card" id="ch2-step4">
                 <div class="section-title">
                     <span class="step-num step-num-amber">4</span>
-                    <span>تقويم الدرس 2 : أسئلة البكالوريا المتكررة</span>
+                    <span>تقويم النشاط 2 : أسئلة البكالوريا المتكررة</span>
                 </div>
 
                 <div class="question-item" id="c30q1-container">
@@ -634,12 +633,12 @@
         <!-- ═══ Zone de synthèse commune (🏛 حصيلة + 🗺 مخطط) — hors chapter-view :
              visible dans LES DEUX leçons du fichier (survit au slicing lessonChapterSplit) ═══ -->
         <div class="synthese-zone" id="zone-synthese">
-id="hosila" style="border:2px solid #f59e0b;">
+<section class="card" id="hosila" style="border:2px solid #f59e0b;">
                 <div class="section-title">
                     <span class="step-num" style="background:#b45309;">🏛</span>
                     <span>الحصيلة المعرفية — النص الرسمي للكتاب المدرسي (الفصل 41)</span>
                 </div>
-                <p style="font-size:11px; color:#92400e; font-weight:700; margin:6px 0;">وحدة : D2-U8 — التحولات الطاقوية — نص الكتاب بتنسيق قرائي، دون تغيير المعنى (OCR rendu lisible).</p>
+                <p style="font-size:11px; color:#92400e; font-weight:700; margin:6px 0;">الوحدة: D2-U8 — التحولات الطاقوية — نص الكتاب بتنسيق قرائي، دون تغيير في المعنى، مع تنسيق قرائي يجعل النص مقروءاً.</p>
 
 <p style="line-height:2; font-size:13px;">« تحتاج الكائنات الحية إلى إمداد مستمر من المواد ومن الطاقة لأداء مختلف الوظائف الحيوية والمحافظة على حياتها. تتكون الكائنات العليا (نباتية أو حيوانية) من خلايا مقسمة إلى حجرات مختلفة (هيولي، ميتوكوندري، صانعات خضراء) تحدث فيها تحولات للمادة والطاقة تختلف حسب نوع الخلية وشروط الوسط. »</p>
 <p style="line-height:2; font-size:13px;">« ففي الخلايا النباتية اليخضورية أثناء النهار تقوم الخلية بتحويل الطاقة الضوئية إلى طاقة كيميائية كامنة في صورة جزيئات عضوية أثناء <b>التركيب الضوئي</b> في الصانعة الخضراء، وتحويل الطاقة الكيميائية الكامنة إلى طاقة قابلة للاستعمال في صورة ATP خلال <b>التنفس الخلوي</b> في الميتوكوندري. أثناء الليل تتوقف عملية التركيب الضوئي وتحصل الخلية النباتية على طاقتها من التنفس الخلوي. »</p>
@@ -785,7 +784,7 @@ id="hosila" style="border:2px solid #f59e0b;">
                 badge.classList.add('show');
                 if(score===100){ badge.className='quiz-badge show mumtaz'; badge.textContent='ممتاز (fort) — 100% · جاهز للمرحلة التالية'; }
                 else if(score>=50){ badge.className='quiz-badge show moyen'; badge.textContent='متوسط (moyen) — '+score+'% · راجع ثم أعد'; }
-                else { badge.className='quiz-badge show faible'; badge.textContent='ضعيف (faible) — '+score+'% · راجع الدرس ثم أعد'; }
+                else { badge.className='quiz-badge show faible'; badge.textContent='ضعيف (faible) — '+score+'% · راجع النشاط ثم أعد'; }
             });
         }
         // hook all check functions and also listen to clicks

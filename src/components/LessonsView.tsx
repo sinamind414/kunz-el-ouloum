@@ -25,6 +25,7 @@ import {
   getActiveLessonKeysForUnit,
   getActiveLessonTitle,
   getPassiveLessonTitle,
+  getPassiveLessonPosition,
   getUnitTitle,
   type LessonMode,
 } from '../data/lessonModes';
@@ -117,7 +118,7 @@ export default function LessonsView({ onRateCard }: LessonsProps) {
         lessonKey={selectedPassiveLesson}
         onBack={() => setSelectedPassiveLesson(null)}
         onNext={nextKey ? () => setSelectedPassiveLesson(nextKey) : undefined}
-        nextTitleAr={nextKey ? getPassiveLessonTitle(nextKey) : undefined}
+        nextTitleAr={nextKey ? getPassiveLessonTitle(nextKey, selectedUnit) : undefined}
       />
     );
   }
@@ -396,8 +397,11 @@ export default function LessonsView({ onRateCard }: LessonsProps) {
                 data-testid={`domaine-${d.id}`}
                 className="group p-6 rounded-3xl border-2 border-gray-200 dark:border-gray-800 bg-white dark:bg-[#161c18] hover:border-teal-500 hover:shadow-lg transition-all text-center space-y-3"
               >
-                <span className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-[#0e6b6b] text-white shadow-md group-hover:scale-105 transition-transform">
+                <span className="relative inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-[#0e6b6b] text-white shadow-md group-hover:scale-105 transition-transform">
                   <Icon className="w-8 h-8" />
+                  <span className="absolute -bottom-2 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full bg-white text-[#0e6b6b] text-[10px] font-black px-2 py-0.5 shadow ring-1 ring-[#0e6b6b]/20">
+                    المجال {i + 1}
+                  </span>
                 </span>
                 <span className="block text-lg font-black text-gray-800 dark:text-gray-100">
                   {d.emoji} {d.titleAr}
@@ -445,7 +449,7 @@ export default function LessonsView({ onRateCard }: LessonsProps) {
             {domain?.emoji} {domain?.titleAr}
           </h2>
           <span className="text-[11px] font-black text-gray-400 dark:text-gray-500">
-            اختر الوحدة (أيقونة) ثم فصولها
+            اختر النشاط (أيقونة) ثم فصولها
           </span>
         </div>
 
@@ -473,7 +477,7 @@ export default function LessonsView({ onRateCard }: LessonsProps) {
                   <span className="block text-[11px] font-bold text-gray-500 dark:text-gray-400">{unit?.description}</span>
                   <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg bg-emerald-50 dark:bg-emerald-950/30 text-[10px] font-black text-emerald-700 dark:text-emerald-300">
                     <Grid3x3 className="w-3 h-3" />
-                    {chapters.length} دروس
+                    {chapters.length} النشاط
                   </span>
                 </span>
                 <ChevronLeft className="w-5 h-5 text-gray-300 group-hover:text-teal-500 transition-all shrink-0 mt-4" />
@@ -533,7 +537,7 @@ export default function LessonsView({ onRateCard }: LessonsProps) {
           </p>
         )}
         {chapitres.map((key, i) => {
-          const titre = getPassiveLessonTitle(key);
+          const titre = getPassiveLessonTitle(key, selectedPassiveUnitId);
           return (
             <button
               key={key}
@@ -545,7 +549,7 @@ export default function LessonsView({ onRateCard }: LessonsProps) {
                 <span className="relative shrink-0 inline-flex items-center justify-center w-11 h-11 rounded-2xl bg-teal-50 dark:bg-teal-950/40 text-[#0e6b6b] dark:text-teal-300 group-hover:bg-[#0e6b6b] group-hover:text-white transition-colors">
                   <Icone cle={chapitreIcone(titre, selectedPassiveUnitId)} className="w-5 h-5" />
                   <span className="absolute -top-1.5 -right-1.5 inline-flex items-center justify-center w-4 h-4 rounded-full bg-[#0e6b6b] text-white text-[9px] font-black">
-                    {i + 1}
+                    {getPassiveLessonPosition(key, selectedPassiveUnitId)}
                   </span>
                 </span>
                 <span className="flex-1 text-sm font-bold text-gray-800 dark:text-gray-100 leading-snug">

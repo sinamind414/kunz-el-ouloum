@@ -103,7 +103,7 @@ export const CORRECTEUR_V1_UNITES: CorrecteurUnite[] = [
   {
     uniteId: 3,
     domaine: 1,
-    titre: 'النشاط الإنزيمي',
+    titre: 'النشاط الإنزيمي للبروتينات',
     motsCles: [
       'إنزيم', 'محفز بيولوجي', 'ركيزة', 'الموقع الفعال', 'معقد',
       'النشا', 'أميلاز', 'مالتوز', 'غلوكوز', 'سرعة التفاعل', 'Vmax',
@@ -121,7 +121,7 @@ export const CORRECTEUR_V1_UNITES: CorrecteurUnite[] = [
   {
     uniteId: 4,
     domaine: 1,
-    titre: 'المناعة (دور البروتينات في الدفاع عن الذات)',
+    titre: 'دور البروتينات في الدفاع عن الذات',
     motsCles: [
       // R3 (évaluation 80 copies, 2026-09-16) : الذات/اللاذات (mots vides,
       // jamais productifs en matching) remplacés par les formes pleines du
@@ -153,7 +153,7 @@ export const CORRECTEUR_V1_UNITES: CorrecteurUnite[] = [
   {
     uniteId: 5,
     domaine: 1,
-    titre: 'الاتصال العصبي',
+    titre: 'دور البروتينات في الاتصال العصبي',
     motsCles: [
       'المنعكس العضلي', 'المشبك', 'النخاع الشوكي', 'شق مشبكي', 'اللوحة المحركة',
       'كمون الراحة', 'كمون العمل', 'مضخة', 'نفاذية انتقائية', 'المشبك الكيميائي',
@@ -181,7 +181,7 @@ export const CORRECTEUR_V1_UNITES: CorrecteurUnite[] = [
   {
     uniteId: 6,
     domaine: 2,
-    titre: 'التركيب الضوئي',
+    titre: 'آليات تحويل الطاقة الضوئية إلى طاقة كيميائية كامنة',
     motsCles: [
       'التركيب الضوئي', 'الطاقة الضوئية', 'طاقة كيميائية كامنة', 'يخضور', 'النشا',
       'CO2', 'H2O', 'الصانعة الخضراء', 'التيلاكويد', 'الغرانا', 'الحشوة',
@@ -203,7 +203,7 @@ export const CORRECTEUR_V1_UNITES: CorrecteurUnite[] = [
   {
     uniteId: 7,
     domaine: 2,
-    titre: 'التنفس الخلوي والتخمر',
+    titre: 'آليات تحويل الطاقة الكيميائية الكامنة في الجزيئات العضوية إلى ATP',
     motsCles: [
       'التنفس', 'الطاقة الكيميائية الكامنة', 'غلوكوز', 'ATP', 'الميتوكوندري',
       'الأعراف', 'المادة الأساسية', 'التحلل السكري', 'حمض البيروفيك', 'NADH',
@@ -225,7 +225,7 @@ export const CORRECTEUR_V1_UNITES: CorrecteurUnite[] = [
   {
     uniteId: 8,
     domaine: 2,
-    titre: 'الحصيلة الطاقوية',
+    titre: 'تحويل الطاقة على المستوى ما فوق البنية الخلوية',
     motsCles: [
       'الحصيلة الطاقوية', 'التركيب الضوئي', 'التنفس', 'التخمر', 'الصانعة الخضراء',
       'الميتوكوندري', 'ATP', 'ADP', 'غلوكوز', 'نشا', 'CO2', 'O2',
@@ -285,7 +285,7 @@ export const CORRECTEUR_V1_UNITES: CorrecteurUnite[] = [
   {
     uniteId: 11,
     domaine: 3,
-    titre: 'البنيات الجيولوجية',
+    titre: 'النشاط التكتوني والبنيات الجيولوجية المرتبطة به',
     motsCles: [
       'الظهرات وسط محيطية', 'توسع قاع المحيط', 'الريفت', 'فوالق تحويلية',
       'مداخن', 'الانصهار الجزئي', 'البيريدوتيت', 'ماغما بازلتية',
