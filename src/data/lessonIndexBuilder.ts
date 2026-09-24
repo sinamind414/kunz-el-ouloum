@@ -22,11 +22,11 @@
 // scripts/build_lesson_index.ts — NE PAS ÉDITER À LA MAIN).
 
 import { HTML_LESSON_ORDER } from './htmlLessonProgression';
-import { sliceLessonHtml, getBaseLessonKey } from './lessonChapterSplit';
+import { getBaseLessonKey, sliceLessonHtml } from './lessonChapterSplit';
 import { LESSON_LIBRARY, type LessonLibraryItem } from '../lessonData';
 import { ACTIVE_LESSONS, type ActiveLesson } from './activeLessons';
 import { OFFICIAL_PROGRAM_SEQUENCE } from './unitLessonSequences';
-import { tokenizeArabic, normalizeArabic } from '../utils/arabicNormalize';
+import { tokenizeArabic } from '../utils/arabicNormalize';
 
 /** Taille maximale d'un chunk (caractères) — alignée sur la granularité okacha. */
 export const LESSON_INDEX_MAX = 520;
@@ -106,7 +106,7 @@ function buildUnitOwner(): Map<string, number> {
 
 const UNIT_OWNER = buildUnitOwner();
 
-export function unitIdForActiveLesson(key: string): number {
+function unitIdForActiveLesson(key: string): number {
   const owned = UNIT_OWNER.get(key);
   if (owned !== undefined) return owned;
   const m = key.match(/^d\d-u(\d+)/);
@@ -118,8 +118,10 @@ export function unitIdForActiveLesson(key: string): number {
 
 const CARD_OPEN_RE = /<section class="card(?:\s|")[^>]*>/;
 
-/** Texte visible d'un fragment HTML : tags retirés, entités décodées, espaces normalisés. */
-export function stripHtml(html: string): string {
+/** Texte visible d'un fragment HTML : tags retirés, entités décodées UNE fois,
+ *  espaces normalisés. Ordre de décodage : sous-entités d'abord, `&amp;` EN DERNIER
+ *  (sinon « &amp;lt; » est double-décodé en « < »). */
+function stripHtml(html: string): string {
   return html
     .replace(/<!--[\s\S]*?-->/g, ' ')
     .replace(/<script\b[\s\S]*?<\/script>/gi, ' ')
@@ -128,12 +130,12 @@ export function stripHtml(html: string): string {
     .replace(/<br\s*\/?>/gi, '\n')
     .replace(/<[^>]+>/g, ' ')
     .replace(/&nbsp;/g, ' ')
-    .replace(/&amp;/g, '&')
     .replace(/&lt;/g, '<')
     .replace(/&gt;/g, '>')
     .replace(/&quot;/g, '"')
     .replace(/&#39;/g, "'")
     .replace(/&#\d+;/g, ' ')
+    .replace(/&amp;/g, '&')
     .replace(/[\t\u00a0]+/g, ' ')
     .replace(/[ ]*\n[ ]*/g, '\n')
     .replace(/\n{2,}/g, '\n')
@@ -142,7 +144,7 @@ export function stripHtml(html: string): string {
 }
 
 /** Normalisation de comparaison pour le verrou de couverture (espaces only). */
-export function normSpaces(s: string): string {
+function normSpaces(s: string): string {
   return s.replace(/\s+/g, ' ').trim();
 }
 
@@ -155,7 +157,7 @@ function firstHeading(fragment: string): string | null {
 }
 
 /** Découpe le texte en parties ≤ max : frontières de phrases, puis mots. */
-export function splitLongText(text: string, max: number): string[] {
+function splitLongText(text: string, max: number): string[] {
   const clean = normSpaces(text);
   if (clean.length <= max) return clean ? [clean] : [];
   const parts: string[] = [];
@@ -196,7 +198,7 @@ export function splitLongText(text: string, max: number): string[] {
 }
 
 /** Fusionne les parties < min dans la voisine si ça reste ≤ max (résidus de fin de split). */
-export function mergeTinyParts(parts: string[], min: number, max: number): string[] {
+function mergeTinyParts(parts: string[], min: number, max: number): string[] {
   const out = parts.slice();
   for (let i = 1; i < out.length; i++) {
     if (out[i].length >= min) continue;
@@ -246,7 +248,7 @@ export function mergeTinyParts(parts: string[], min: number, max: number): strin
 // ── Titre / alias ───────────────────────────────────────────────────────────
 
 /** Segments d'un titre (« A : B — C ») → aliases de recherche. */
-export function titleAliases(title: string): string[] {
+function titleAliases(title: string): string[] {
   const segs = title
     .split(/\s*[•—–]\s*|\s*:\s*/u)
     .map((s) => s.trim())
@@ -271,6 +273,10 @@ interface RawGroup {
 function extractHtmlGroups(htmlFiles: Record<string, string>): RawGroup[] {
   const libByKey = new Map<string, LessonLibraryItem>(LESSON_LIBRARY.map((l) => [l.key, l]));
   const groups: RawGroup[] = [];
+  // Textes déjà indexés PAR FICHIER source : les cards hors `chapter-view`
+  // (footer / zone commune) apparaissent dans les deux slices d'un fichier
+  // scindé — on ne les indexe qu'une fois (clé de base gagnante).
+  const seenInFile = new Map<string, Set<string>>();
 
   for (const lessonKey of HTML_LESSON_ORDER) {
     const lib = libByKey.get(lessonKey);
@@ -279,18 +285,26 @@ function extractHtmlGroups(htmlFiles: Record<string, string>): RawGroup[] {
     const file = htmlFiles[base];
     if (file === undefined) throw new Error(`lessonIndexBuilder : fichier HTML absent — ${base}.html`);
 
+    const seenSources = seenInFile.get(base) ?? new Set<string>();
+    seenInFile.set(base, seenSources);
+
     const slice = sliceLessonHtml(file, lessonKey);
 
     // Groupe 0 — préambule : breadcrumb + objectifs (métadonnées de la lib).
+    // Entre une clé de base et sa jumelle `_2`, breadcrumb/objectifs sont
+    // identiques : dédoublonné par fichier → une seule intro indexée (clé de base).
     const preamble = normSpaces([lib.breadcrumb, ...lib.objectives].join('\n'));
-    groups.push({
-      key: `${lessonKey}::intro`,
-      title: lib.titleAr,
-      lessonKey,
-      lessonTitle: lib.titleAr,
-      unitId: lib.unitId,
-      source: preamble,
-    });
+    if (!seenSources.has(preamble)) {
+      seenSources.add(preamble);
+      groups.push({
+        key: `${lessonKey}::intro`,
+        title: lib.titleAr,
+        lessonKey,
+        lessonTitle: lib.titleAr,
+        unitId: lib.unitId,
+        source: preamble,
+      });
+    }
 
     // Groupes 1..n — une card = un groupe.
     const cardRe = /<section class="card(?:\s|")[^>]*>([\s\S]*?)<\/section>/g;
@@ -301,6 +315,10 @@ function extractHtmlGroups(htmlFiles: Record<string, string>): RawGroup[] {
       const raw = m[1];
       const text = stripHtml(raw);
       if (text.length < 20) continue; // card quasi vide (badge/JS seul)
+      // Texte déjà indexé dans ce fichier (card hors chapter-view commune aux
+      // deux slices, ou carte identique entre les deux chapitres) → on saute.
+      if (seenSources.has(text)) continue;
+      seenSources.add(text);
       const heading = firstHeading(raw);
       groups.push({
         key: `${lessonKey}::card${cardIndex}`,
@@ -480,9 +498,4 @@ export function buildLessonIndex(
 /** Vérifie la couverture d'un groupe : join(' ') des parties == source (espaces normalisés). */
 export function groupCovered(source: string, parts: string[]): boolean {
   return normSpaces(parts.join(' ')) === normSpaces(source);
-}
-
-/** Utilitaire exporté pour le test de recherche : normalise comme le moteur. */
-export function normalizeForMotor(s: string): string {
-  return normalizeArabic(s);
 }
