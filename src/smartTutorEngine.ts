@@ -25,6 +25,7 @@ import {
 import { TUTOR_KNOWLEDGE, type TutorKnowledgeChunk } from './tutorKnowledge';
 import { BOOK_TUTOR_QA, findBestBookQA, type BookTutorQA } from './bookTutorQA';
 import { findBestMethodologyQA } from './methodologyKnowledge';
+import { LESSON_INDEX } from './data/lessonIndex';
 import {
   KNOWLEDGE_CARDS as LEGACY_KNOWLEDGE_CARDS,
   type KnowledgeCard as LegacyKnowledgeCard,
@@ -34,7 +35,7 @@ import { normalizeArabic, tokenizeArabic } from './utils/arabicNormalize';
 
 export { normalizeArabic, calculateKeywordScore, tokenizeArabic } from './utils/arabicNormalize';
 
-export type SourceType = 'internal_card' | 'legacy_card' | 'book' | 'opus' | 'methodology' | 'guide' | 'domain' | 'quiz' | 'out_of_scope';
+export type SourceType = 'internal_card' | 'legacy_card' | 'book' | 'opus' | 'methodology' | 'guide' | 'domain' | 'quiz' | 'lesson' | 'out_of_scope';
 
 export interface SourceRef {
   type: SourceType;
@@ -132,7 +133,7 @@ const DOMAIN_UNITS: Record<number, [number, number]> = {
 
 interface SearchChunk {
   id: string;
-  type: 'card' | 'book' | 'opus' | 'guide';
+  type: 'card' | 'book' | 'opus' | 'guide' | 'lesson';
   title: string;
   unitId: number;
   unitTitle: string;
@@ -200,7 +201,23 @@ const GUIDE_CHUNKS: SearchChunk[] = STUDY_GUIDE_CARDS.map((card: StudyGuideCard)
   ].map((k) => normalizeArabic(k)),
 }));
 
-const ALL_CHUNKS: SearchChunk[] = [...GUIDE_CHUNKS, ...LEGACY_CHUNKS, ...BOOK_CHUNKS, ...OPUS_CHUNKS];
+/** Index des leçons (47 HTML + 20 actives) — lot « index leçons » 2026-09-24. */
+const LESSON_CHUNKS: SearchChunk[] = LESSON_INDEX.map((c) => ({
+  id: c.id,
+  type: 'lesson' as const,
+  title: c.title,
+  unitId: c.unitId,
+  unitTitle: c.lessonTitle,
+  text: c.text,
+  sourceLabel: c.kind === 'html' ? 'كتاب الدروس التفاعلي' : 'درس نشط',
+  // Suffixe de granularité « (n/m) » retiré : le match titre exact (+80) doit
+  // rester possible sur les chunks découpés.
+  normTitle: normalizeArabic(c.title.replace(/\s*\(\d+\/\d+\)\s*$/, '')),
+  normAliases: c.aliases.map((a) => normalizeArabic(a)),
+  normKeywords: c.keywords.map((k) => normalizeArabic(k)),
+}));
+
+const ALL_CHUNKS: SearchChunk[] = [...GUIDE_CHUNKS, ...LEGACY_CHUNKS, ...BOOK_CHUNKS, ...OPUS_CHUNKS, ...LESSON_CHUNKS];
 
 function scoreChunk(norm: string, ch: SearchChunk, activeDomainId: number | null): number {
   if (norm.length < 3) return 0;
@@ -329,6 +346,7 @@ function buildAnswer(norm: string, activeDomainId: number | null): TutorAction |
   if (best.type === 'book') sourceType = 'book';
   else if (best.type === 'card') sourceType = 'legacy_card';
   else if (best.type === 'guide') sourceType = 'guide';
+  else if (best.type === 'lesson') sourceType = 'lesson';
 
   return {
     text: `📚 **${best.title}**\n\n${snippet}`,

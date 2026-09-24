@@ -1,4 +1,4 @@
-﻿import tailwindcss from '@tailwindcss/vite';
+import tailwindcss from '@tailwindcss/vite';
 import react from '@vitejs/plugin-react';
 import path from 'path';
 import {defineConfig} from 'vite';
@@ -24,6 +24,9 @@ export default defineConfig(() => {
             }
             if (id.includes('bookTutorQA') || id.includes('methodologyKnowledge')) {
               return 'tutor-qa-base';
+            }
+            if (id.includes('lessonIndex')) {
+              return 'tutor-lesson-index';
             }
           },
         },
