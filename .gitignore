@@ -11,7 +11,7 @@ coverage/
 data/students.db*
 data/teachers.json
 
-# copies d'eleves bac2025 (donnees personnelles � jamais commit�es)
+# copies d'eleves bac2025 (donnees personnelles � jamais commit�es)
 docs/copies-bac2025/
 __pycache__/
 
@@ -32,39 +32,12 @@ src/**/__write_test.ts
 __write_test.ts
 
 # hygiene P3 (audit qualité #11) — ne plus tracker
-eleve_*.txt
-RECAPITULATIF.txt
-*.pdf
-*.patch
-tmp_*.txt
 tmp-*.txt
-tsc_out.txt
-vite_build_err.txt
-check_out*.txt
-tools-*.mjs
-apply_patches.sh
 bun.lock
-src/**/*.bak
-src/**/__write_test.ts
 giologie*.jpg
 resume manaaa.jpg
 PROGRAMME NATIONAL*.MD
 
-# hygiene P3 (audit qualité #11) — ne plus tracker
-eleve_*.txt
-RECAPITULATIF.txt
-*.patch
-*.pdf
-tmp_*.txt
-tmp-*
-tsc_out.txt
-vite_build_err.txt
-check_out*.txt
-tools-*.mjs
-apply_patches.sh
-src/**/*.bak
-src/**/__write_test.ts
-bun.lock
-PROGRAMME NATIONAL*.MD
-giologie*.jpg
-resume manaaa.jpg
+# F10 — dumps lourds non code (restent locaux, jamais trackés)
+المكتبة_الكاملة_SVT.md
+الملخص_الشامل_لآليات_تركيب_البروتين.jpg
