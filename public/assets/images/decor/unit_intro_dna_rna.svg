@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" role="img" aria-label="ADN ARN">
+  <defs>
+    <linearGradient id="hel" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#34d399"/>
+      <stop offset="100%" stop-color="#38bdf8"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="500" fill="#0c1222"/>
+  <g fill="none" stroke="url(#hel)" stroke-width="4" opacity="0.9">
+    <path d="M280 40 C340 100 340 160 280 220 C220 280 220 340 280 400 C340 460 340 460 280 500"/>
+    <path d="M400 40 C340 100 340 160 400 220 C460 280 460 340 400 400 C340 460 340 460 400 500"/>
+  </g>
+  <g stroke="#fbbf24" stroke-width="3" opacity="0.75">
+    <line x1="290" y1="70" x2="390" y2="70"/>
+    <line x1="275" y1="110" x2="405" y2="110"/>
+    <line x1="275" y1="150" x2="405" y2="150"/>
+    <line x1="290" y1="190" x2="390" y2="190"/>
+    <line x1="290" y1="250" x2="390" y2="250"/>
+    <line x1="275" y1="290" x2="405" y2="290"/>
+    <line x1="275" y1="330" x2="405" y2="330"/>
+    <line x1="290" y1="370" x2="390" y2="370"/>
+  </g>
+  <g fill="none" stroke="#f472b6" stroke-width="3" opacity="0.7">
+    <path d="M560 80 C620 140 620 200 560 260 C500 320 500 380 560 440"/>
+    <path d="M560 80 L700 60 M560 260 L720 250 M560 440 L700 460"/>
+  </g>
+  <circle cx="560" cy="80" r="7" fill="#f472b6"/><circle cx="560" cy="260" r="7" fill="#f472b6"/><circle cx="560" cy="440" r="7" fill="#f472b6"/>
+</svg>

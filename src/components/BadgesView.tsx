@@ -142,7 +142,15 @@ export default function BadgesView({ progress }: BadgesViewProps) {
               }`}
             >
               {ach.unlocked && (
-                <div className="absolute top-0 right-0 w-24 h-24 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10 pointer-events-none" />
+                <div
+                  className="absolute top-0 right-0 w-24 h-24 opacity-10 pointer-events-none"
+                  style={{
+                    backgroundImage:
+                      'linear-gradient(45deg, #006d37 25%, transparent 25%, transparent 75%, #006d37 75%), linear-gradient(45deg, #006d37 25%, transparent 25%, transparent 75%, #006d37 75%)',
+                    backgroundSize: '12px 12px',
+                    backgroundPosition: '0 0, 6px 6px',
+                  }}
+                />
               )}
               
               <div className="flex items-start justify-between mb-4">

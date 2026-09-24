@@ -176,7 +176,7 @@ export default function CombatChallengePortal({ challengeId, challengeTitle, mod
 
                 <div className="relative rounded-2xl overflow-hidden border-2 border-slate-700 bg-slate-900 aspect-video md:aspect-[21/9] shadow-2xl">
                   <img 
-                    src="https://images.unsplash.com/photo-1530026405186-ed1f139313f8?auto=format&fit=crop&q=80&w=1200" 
+                    src="/assets/images/decor/unit_intro_cell.svg" 
                     alt="Cellule" 
                     className="w-full h-full object-cover opacity-60"
                   />
