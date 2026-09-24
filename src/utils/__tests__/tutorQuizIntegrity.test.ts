@@ -35,7 +35,7 @@ describe('REC #1 — mélange déterministe des options de quiz', () => {
   });
 
   it('aller-retour complet : diagnostique domaine 1 répondu via les options affichées → 23/23, XP 230', () => {
-    let cur = processStudentInput(getDefaultSession(), 'البروتينات والمناعة').session;
+    let cur = processStudentInput(getDefaultSession(), 'التخصص الوظيفي للبروتينات').session;
     cur = processStudentInput(cur, 'اختبار تشخيصي').session;
     let correct = 0;
     let xp = 0;
@@ -54,7 +54,7 @@ describe('REC #1 — mélange déterministe des options de quiz', () => {
         expect(res.action.reward.score).toBe(23);
         expect(res.action.reward.total).toBe(23);
         expect(res.action.reward.kind).toBe('quiz');
-        expect(res.action.reward.domain).toBe('البروتينات والمناعة');
+        expect(res.action.reward.domain).toBe('التخصص الوظيفي للبروتينات');
         break;
       }
     }
@@ -65,7 +65,7 @@ describe('REC #1 — mélange déterministe des options de quiz', () => {
 
 describe('REC #3/#4 — défi BAC auto-évalué, XP anti-farm', () => {
   function runBoss(startSession: ReturnType<typeof getDefaultSession>): { xp: number; text: string } {
-    let cur = processStudentInput(startSession, 'البروتينات والمناعة').session;
+    let cur = processStudentInput(startSession, 'التخصص الوظيفي للبروتينات').session;
     cur = processStudentInput(cur, 'تحدي BAC').session;
     let xp = -1;
     let text = '';
@@ -105,7 +105,7 @@ describe('REC #3/#4 — défi BAC auto-évalué, XP anti-farm', () => {
 describe('REC #2 — le المرشد part dans la file serveur', () => {
   it('logTutorActivity empile un event quiz dans boussole_activity_queue', () => {
     localStorage.clear();
-    logTutorActivity('quiz', 23, 23, 'البروتينات والمناعة');
+    logTutorActivity('quiz', 23, 23, 'التخصص الوظيفي للبروتينات');
     const raw = JSON.parse(localStorage.getItem('boussole_activity_queue') || '[]') as Array<{
       kind: string;
       payload: { type: string; payload: { title: string; score: number; total: number; percent: number; domain: string } };
@@ -115,7 +115,7 @@ describe('REC #2 — le المرشد part dans la file serveur', () => {
     expect(mine[0].payload.payload.score).toBe(23);
     expect(mine[0].payload.payload.total).toBe(23);
     expect(mine[0].payload.payload.percent).toBe(100);
-    expect(mine[0].payload.payload.domain).toBe('البروتينات والمناعة');
+    expect(mine[0].payload.payload.domain).toBe('التخصص الوظيفي للبروتينات');
   });
 });
 

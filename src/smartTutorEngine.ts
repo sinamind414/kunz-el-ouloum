@@ -605,7 +605,7 @@ export function processStudentInput(session: BotSession, rawInput: string): Engi
       session,
       action: {
         confidence: 0,
-        text: '❓ هذا السؤال خارج قاعدة علوم الطبيعة والحياة للبكالوريا. ركّز مراجعتك على المجالات الثلاثة: البروتينات والمناعة، التحولات الطاقوية، والتكتونية العامة.',
+        text: '❓ هذا السؤال خارج قاعدة علوم الطبيعة والحياة للبكالوريا. ركّز مراجعتك على المجالات الثلاثة: التخصص الوظيفي للبروتينات، التحولات الطاقوية، والتكتونية العامة.',
         quickActions: session.activeDomainId
           ? DOMAINS.find((d) => d.id === session.activeDomainId)?.quickActions || ['العودة للقائمة الرئيسية']
           : DOMAINS.map((d) => d.title),
@@ -712,7 +712,7 @@ export function processStudentInput(session: BotSession, rawInput: string): Engi
     ? DOMAINS.find((d) => d.id === session.activeDomainId)?.quickActions || ['العودة للقائمة الرئيسية']
     : DOMAINS.map((d) => d.title);
 
-  return { session, action: { text: 'لم أجد إجابة دقيقة في قاعدتي المحلية. جرّب اختيار مجال، أو اطرح سؤالاً حول: البروتينات والمناعة، التحولات الطاقوية، أو التكتونية العامة.\n\n💡 أسئلة منهجية مقترحة:\n' + METHODOLOGY_SUGGESTIONS.map((s) => `• ${s}`).join('\n'), quickActions: fallbackActions } };
+  return { session, action: { text: 'لم أجد إجابة دقيقة في قاعدتي المحلية. جرّب اختيار مجال، أو اطرح سؤالاً حول: التخصص الوظيفي للبروتينات، التحولات الطاقوية، أو التكتونية العامة.\n\n💡 أسئلة منهجية مقترحة:\n' + METHODOLOGY_SUGGESTIONS.map((s) => `• ${s}`).join('\n'), quickActions: fallbackActions } };
 }
 
 export function answerTutorQuestion(rawInput: string): TutorAction {

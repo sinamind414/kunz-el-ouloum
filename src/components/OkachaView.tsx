@@ -1,9 +1,9 @@
-// OkachaView.tsx — « الحصيلة المعرفية » : récapitulatifs numérotés par unité du livre
-// عكاشة — MODERNISÉ (audit 2026-09-22, phases design + contenu).
+// OkachaView.tsx — « الحصيلة المعرفية » : récapitulatifs par unité.
 //
-// Contenu : src/data/okachaEnriched.ts (GÉNÉRÉ par scripts/enrich_okacha.ts —
-// blocs sémantiques titre/point/puce/note/texte, OCR 2ᵉ passe, méthodo en 8
-// sections ; verrous okacha.lock.test.ts + okachaEnriched.lock.test.ts).
+// Contenu unités : src/data/hosila.ts (نصّ OFFICIEL du livre scolaire,
+// GÉNÉRÉ par scripts/build_hosila.ts — verrou hosila.lock.test.ts).
+// Repli (unité non couverte) : src/data/okachaEnriched.ts (OCR عكاشة).
+// Méthodo : OKACHA_METHODO_SECTIONS (sections عكاشة, pas d'équivalent hosila).
 //
 // Phase A (cette vue) :
 //  1. rendu STRUCTURÉ (hiérarchie + puces + notes, 15-17 px — plus de <pre>) ;
@@ -28,7 +28,7 @@ import {
   type SectionMethodo,
 } from '../data/okachaEnriched';
 import Icone from './Icone';
-import { HOSILA_IDS, HOSILA_STATS, unitesAffichees } from '../data/hosila';
+import { HOSILA_STATS, unitesAffichees } from '../data/hosila';
 import { okachaUniteIcone, methodoIcone } from '../data/lessonIcons';
 import {
   loadOkachaProgress,
@@ -237,15 +237,17 @@ export default function OkachaView({ onBack, onRate, onOpenQcm }: Props) {
     if (!modeHafiz) setRevelves(new Set());
   }, [modeHafiz]);
 
-  const unites = useMemo(() => OKACHA_UNITES_ENRICHIES.filter((u) => u.domaine === (onglet as number)), [onglet]);
+  /** Contenu affiché : الحصيلة الرسمية (hosila) prioritaire, repli عكاشة si absent. */
+  const corpusUnites = useMemo(() => unitesAffichees(OKACHA_UNITES_ENRICHIES), []);
+  const unites = useMemo(() => corpusUnites.filter((u) => u.domaine === (onglet as number)), [corpusUnites, onglet]);
   const taille = grand ? 'text-[17px]' : 'text-[15px]';
   /** Unité du livre actuellement ouverte (null = écran d'icônes). */
-  const uniteCourante = ouverte ? OKACHA_UNITES_ENRICHIES.find((u) => u.id === ouverte) ?? null : null;
+  const uniteCourante = ouverte ? corpusUnites.find((u) => u.id === ouverte) ?? null : null;
 
   // Index de recherche normalisé (unités + méthodo) — construit une seule fois.
   const index = useMemo(() => {
     const rows: { norm: string; r: LigneResultat }[] = [];
-    for (const u of OKACHA_UNITES_ENRICHIES) {
+    for (const u of corpusUnites) {
       u.blocs.forEach((b, idx) =>
         rows.push({ norm: normAr(b.texte), r: { cleParent: u.id, libelleParent: u.uniteAr, domaine: u.domaine as ThemeCle, b, idx } }),
       );
@@ -256,21 +258,21 @@ export default function OkachaView({ onBack, onRate, onOpenQcm }: Props) {
       );
     }
     return rows;
-  }, []);
+  }, [corpusUnites]);
 
   const qNorm = normAr(q.trim());
   const resultats: LigneResultat[] | null =
     qNorm.length >= 2 ? index.filter((x) => x.norm.includes(qNorm)).slice(0, 80).map((x) => x.r) : null;
 
   const lues = prog.lus.length;
-  const pct = Math.round((lues / OKACHA_UNITES_ENRICHIES.length) * 100);
+  const pct = Math.round((lues / corpusUnites.length) * 100);
 
   const ouvrirResultat = (r: LigneResultat) => {
     if (r.cleParent.startsWith('m:')) {
       setOnglet('m');
       setSectionM(r.cleParent.slice(2));
     } else {
-      const u = OKACHA_UNITES_ENRICHIES.find((x) => x.id === r.cleParent);
+      const u = corpusUnites.find((x) => x.id === r.cleParent);
       if (u) { setOnglet(u.domaine); setOuverte(u.id); }
     }
     setQ('');
@@ -353,15 +355,15 @@ export default function OkachaView({ onBack, onRate, onOpenQcm }: Props) {
 
       {/* ── Bandeau notice + progression ── */}
       <div className="p-3 rounded-2xl bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-900 text-xs font-bold text-blue-900 dark:text-blue-200 leading-relaxed print:break-inside-avoid">
-        ملخصات مرقّمة « ما يجب حفظه » لكل وحدة (المصدر : كتاب عكاشة، OCR منقى
-        ومُهيكل في {ENRICH_STATS.sectionsMethodo} أقسام منهجية) — اقرأ، فعّل
-        « وضع الحفظ » لتختبر نفسك، ثم اختبر في « اختبار الكتاب ».
+        الحصيلة المعرفية الرسمية من الكتاب المدرسي ({HOSILA_STATS.unites} وحدات)
+        + المنهجية من كتاب عكاشة ({ENRICH_STATS.sectionsMethodo} أقسام منهجية)
+        — اقرأ، فعّل « وضع الحفظ » لتختبر نفسك، ثم اختبر في « اختبار الكتاب ».
         <div className="mt-2 flex items-center gap-2 flex-wrap">
           <span className="inline-flex items-center gap-1 text-[10px] font-black text-blue-700 dark:text-blue-300">
-            📚 {ENRICH_STATS.pointsTotal} نقطة · {OKACHA_UNITES_ENRICHIES.length} وحدات · {index.length} سجلاً قابلاً للبحث
+            📚 {HOSILA_STATS.points} نقطة · {HOSILA_STATS.unites} وحدات · {index.length} سجلاً قابلاً للبحث
           </span>
           <span className="inline-flex items-center gap-1 text-[10px] font-black text-emerald-700 dark:text-emerald-300">
-            ✅ {lues}/{OKACHA_UNITES_ENRICHIES.length} وحدات محفوظة
+            ✅ {lues}/{corpusUnites.length} وحدات محفوظة
             {totalNotations(prog) > 0 && <> · 🗳 {totalNotations(prog)} تقييم</>}
           </span>
           <span className="flex-1 min-w-[80px] h-2 rounded-full bg-blue-100 dark:bg-blue-950 overflow-hidden" role="progressbar" aria-valuenow={pct}>

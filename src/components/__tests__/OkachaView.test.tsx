@@ -1,7 +1,8 @@
 // src/components/__tests__/OkachaView.test.tsx — harnais RTL de الحصيلة المعرفية modernisée.
-// Contrats de l'audit 2026-09-22 (Phase A) : plus de <pre> brut, recherche
-// normalisée, mode حفظ (masquer → révéler → auto-évaluation branchée onRate),
-// unité marquée lue persistée en localStorage.
+// Contrats de l'audit 2026-09-22 (Phase A) + 2026-09-23 (contenu officiel) :
+// plus de <pre> brut, recherche normalisée, mode حفظ (masquer → révéler →
+// auto-évaluation branchée onRate), unité marquée lue persistée en localStorage,
+// et rendu du نصّ hosila officiel (pas de l'OCR عكاشة seul).
 import { cleanup, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
@@ -16,11 +17,23 @@ describe('OkachaView — الحصيلة المعرفية modernisée', () => {
     // Le bug initial : tout le contenu dans un <pre> ~12 px.
     expect(container.querySelector('pre')).toBeNull();
     // En-tête + unités du domaine 1 (onglet par défaut).
-    expect(screen.getByText(/الحصيلة المعرفية/)).toBeTruthy();
+    expect(screen.getByRole('heading', { name: /الحصيلة المعرفية/ })).toBeTruthy();
     // « تركيب البروتين » : en-tête d'unité + titre dans le corps ouvert → au moins 1.
     expect(screen.getAllByText(/تركيب البروتين/).length).toBeGreaterThan(0);
-    // Bandeau statistiques (points totaux du corpus enrichi).
+    // Bandeau statistiques (HOSILA_STATS : 71 points · 10 unités).
     expect(screen.getByText(/نقطة · 10 وحدات/)).toBeTruthy();
+    // La source affichée est la حصيلة الرسمية, pas l'OCR عكاشة seul.
+    expect(screen.getByText(/الحصيلة المعرفية الرسمية/)).toBeTruthy();
+  });
+
+  it('contenu officiel (hosila) : d1u1 rend les ancrages livre pages 32-34', async () => {
+    const user = userEvent.setup();
+    render(<OkachaView onBack={vi.fn()} />);
+    await user.click(screen.getByTestId('okacha-unite-d1u1'));
+    // Ancrages hosila.lock.test.ts d1u1 — absents de l'OCR عكاشة corrompu.
+    expect(screen.getByText(/64 رامزة/)).toBeTruthy();
+    expect(screen.getByText(/Introns/)).toBeTruthy();
+    expect(screen.getByText(/النشاط ➎/)).toBeTruthy();
   });
 
   it('recherche arabe normalisée : filtre tout le corpus et affiche les résultats', async () => {
@@ -45,7 +58,7 @@ describe('OkachaView — الحصيلة المعرفية modernisée', () => {
     // Navigation par icônes : ouvrir l'unité d1u1 (تركيب البروتين).
     await user.click(screen.getByTestId('okacha-unite-d1u1'));
     await user.click(screen.getByTestId('toggle-hafiz'));
-    // Des points sont masqués (d1u1 officiel en contient 13).
+    // Des points sont masqués (d1u1 officiel en contient 12).
     const reveals = screen.getAllByTestId(/^reveal-/);
     expect(reveals.length).toBeGreaterThan(0);
     await user.click(reveals[0]!);
