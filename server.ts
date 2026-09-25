@@ -117,10 +117,40 @@ async function startServer() {
   // du flush). 2 marge : lot max << 2 Mo, et le client coupe sur 413 (file d'A.).
   app.use(express.json({ limit: "2mb" }));
 
-  app.use((_req: Request, res: Response, next: express.NextFunction) => {
+  // ── En-têtes de sécurité ────────────────────────────────────────
+  // CSP modérée : 'unsafe-inline' est OBLIGATOIRE (les 25 leçons HTML
+  // statiques utilisent ~514 handlers on* + <script> inline). Ce que la
+  // CSP bloque ici : TOUT domaine externe non listé (exfiltration de
+  // données, scripts/feuilles externes injectés). Google Fonts est
+  // explicitement autorisé (police arabe Noto Kufi).
+  app.use((req: Request, res: Response, next: express.NextFunction) => {
     res.setHeader("X-Content-Type-Options", "nosniff");
     res.setHeader("X-Frame-Options", "DENY");
     res.setHeader("X-XSS-Protection", "1; mode=block");
+    res.setHeader("Referrer-Policy", "strict-origin-when-cross-origin");
+    res.setHeader(
+      "Content-Security-Policy",
+      [
+        "default-src 'self'",
+        "script-src 'self' 'unsafe-inline'",
+        "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+        "font-src 'self' https://fonts.gstatic.com data:",
+        "img-src 'self' data: blob:",
+        "connect-src 'self'",
+        "frame-src 'self'",
+        "frame-ancestors 'none'",
+        "base-uri 'self'",
+        "form-action 'self'",
+        "object-src 'none'",
+      ].join("; "),
+    );
+    // HSTS : UNIQUEMENT si la requête arrive chiffrée (HTTPS direct, ou
+    // X-Forwarded-Proto: https via trust proxy). Ne JAMAIS l'émettre sur
+    // HTTP simple — le navigateur pinnerait HTTPS pour max-age et refuserait
+    // tout futur accès HTTP sur le LAN de l'école (app offline-first).
+    if (req.secure) {
+      res.setHeader("Strict-Transport-Security", "max-age=31536000; includeSubDomains");
+    }
     next();
   });
 
