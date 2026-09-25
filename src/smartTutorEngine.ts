@@ -395,6 +395,35 @@ export function handleDomainClick(session: BotSession, domainId: number): Engine
   return { session: newSession, action: { text, quickActions } };
 }
 
+/**
+ * B3 (audit Morchid 2026-09-25) : recherche par MOT ENTIER et non par sous-chaîne.
+ * « الباك » contient la sous-chaîne « لب » → il renvoyait la carte du noyau
+ * terrestre. Le mot englobant l'occurrence doit valoir le needle, ou sa forme
+ * avec l'article défini « ال ». Les needles multi-mots (espaces) retombent sur
+ * un `includes` simple (ils ne peuvent pas être engulfés dans un mot).
+ */
+function includesAsWord(haystack: string, needle: string): boolean {
+  if (!needle) return false;
+  if (needle.includes(' ')) return haystack.includes(needle);
+  // Lettres/chiffres « de mot » : on EXCLUT la ponctuation arabe (؟ ، ؛) qui
+  // appartient pourtant au bloc U+0600–U+06FF, sinon « الغوص؟ » ne vaudrait
+  // jamais « الغوص ».
+  const isWordChar = (ch: string | undefined) =>
+    typeof ch === 'string' && /[\u0621-\u063A\u0641-\u064A\u0660-\u0669A-Za-z0-9]/.test(ch);
+  let from = 0;
+  while (true) {
+    const idx = haystack.indexOf(needle, from);
+    if (idx < 0) return false;
+    let s = idx;
+    while (s > 0 && isWordChar(haystack[s - 1])) s -= 1;
+    let e = idx + needle.length;
+    while (e < haystack.length && isWordChar(haystack[e])) e += 1;
+    const word = haystack.slice(s, e);
+    if (word === needle || word === `ال${needle}`) return true;
+    from = idx + 1;
+  }
+}
+
 export function findBestKnowledgeCard(input: string, activeDomainId: number | null): KnowledgeCard | null {
   const norm = normalizeArabic(input);
   if (!norm || norm.length < 2) return null;
@@ -408,19 +437,19 @@ export function findBestKnowledgeCard(input: string, activeDomainId: number | nu
 
     for (const alias of card.aliases) {
       const na = normalizeArabic(alias);
-      if (na && na.length >= 2 && norm.includes(na)) {
+      if (na && na.length >= 2 && includesAsWord(norm, na)) {
         contentScore += 100 + na.length;
       }
     }
 
     const nt = normalizeArabic(card.title);
-    if (nt && nt.length >= 2 && norm.includes(nt)) contentScore += 50;
+    if (nt && nt.length >= 2 && includesAsWord(norm, nt)) contentScore += 50;
 
     let keywordHits = 0;
     for (const kw of card.keywords) {
       const nk = normalizeArabic(kw);
       if (nk.length < 2) continue;
-      if (inputTokens.includes(nk) || norm.includes(nk)) {
+      if (inputTokens.includes(nk) || includesAsWord(norm, nk)) {
         keywordHits += 1;
       }
     }
@@ -457,19 +486,19 @@ function findBestKnowledgeCardScored(
 
     for (const alias of card.aliases) {
       const na = normalizeArabic(alias);
-      if (na && na.length >= 2 && norm.includes(na)) {
+      if (na && na.length >= 2 && includesAsWord(norm, na)) {
         contentScore += 100 + na.length;
       }
     }
 
     const nt = normalizeArabic(card.title);
-    if (nt && nt.length >= 2 && norm.includes(nt)) contentScore += 50;
+    if (nt && nt.length >= 2 && includesAsWord(norm, nt)) contentScore += 50;
 
     let keywordHits = 0;
     for (const kw of card.keywords) {
       const nk = normalizeArabic(kw);
       if (nk.length < 2) continue;
-      if (inputTokens.includes(nk) || norm.includes(nk)) {
+      if (inputTokens.includes(nk) || includesAsWord(norm, nk)) {
         keywordHits += 1;
       }
     }
@@ -585,19 +614,66 @@ export function startBossFight(session: BotSession): EngineResult {
  * que l'élève se donnait lui-même — l'XP n'est plus fermable au clic.
  * Barème : ≥ 50 % des mots-clés couverts = 10 pts · ≥ 20 % = 5 pts · sinon 0.
  */
+const NEGATION_PARTICLES = ['لا', 'لم', 'لن', 'ليس', 'غير'];
+const DENIAL_STARTERS = ['ليس', 'ليست', 'غير صحيح', 'مستحيل', 'يستحيل', 'انفي', 'ارفض'];
+
+/** Vrai si `token` est précédé (à un séparateur près) d'une particule de
+ *  négation atomique dans `text` — ex. « لا ينتقل ». */
+function adjacentNegation(text: string, token: string): boolean {
+  let from = 0;
+  while (true) {
+    const idx = text.indexOf(token, from);
+    if (idx < 0) return false;
+    const before = text.slice(Math.max(0, idx - 12), idx);
+    for (const p of NEGATION_PARTICLES) {
+      const at = before.lastIndexOf(p);
+      if (at < 0) continue;
+      const okBefore = at === 0 || /[\s،,؛;.\-]/.test(before[at - 1]);
+      const okAfter = /^[\s،,؛;.\-]*$/.test(before.slice(at + p.length));
+      if (okBefore && okAfter) return true;
+    }
+    from = idx + 1;
+  }
+}
+
+/** B2 (audit Morchid 2026-09-25) : une clause qui s'ouvre par une forme de
+ *  réfutation (« ليس صحيحاً أن… », « أرفض… », « مستحيل… ») nie tout point-clé
+ *  qu'elle reprend. Une réponse niant chaque point-clé obtenait 10/10. */
+function clauseIsDenial(clause: string): boolean {
+  const c = clause.trim();
+  return DENIAL_STARTERS.some((s) => c.startsWith(s));
+}
+
+/** Un point-clé est couvert s'il apparaît dans une clause NON réfutée, et sans
+ *  inversion de polarité par rapport au point-clé attendu (si l'attendu dit
+ *  « لا تنتقل », une réponse « لا تنتقل » reste juste). */
+function tokenAffirmed(normAnswer: string, token: string, normKp: string): boolean {
+  const clauses = normAnswer.split(/[،,؛;.]+/);
+  for (const clause of clauses) {
+    if (!clause.includes(token)) continue;
+    const denies = clauseIsDenial(clause) && !clauseIsDenial(normKp);
+    const inverted = adjacentNegation(clause, token) && !adjacentNegation(normKp, token);
+    if (!denies && !inverted) return true;
+  }
+  return false;
+}
+
 function gradeKeyPoints(answer: string, keyPoints: string[]): number {
-  const tokens = new Set(tokenizeArabic(normalizeArabic(answer)).filter((t) => t.length >= 3));
+  const normAnswer = normalizeArabic(answer);
+  const tokens = new Set(tokenizeArabic(normAnswer).filter((t) => t.length >= 3));
   if (tokens.size === 0) return 0;
-  const expected = new Set<string>();
+  // token -> point-clé normalisé qui l'a produit (pour la comparaison de polarité)
+  const expected = new Map<string, string>();
   for (const kp of keyPoints) {
-    for (const t of tokenizeArabic(normalizeArabic(kp))) {
-      if (t.length >= 3) expected.add(t);
+    const nk = normalizeArabic(kp);
+    for (const t of tokenizeArabic(nk)) {
+      if (t.length >= 3 && !expected.has(t)) expected.set(t, nk);
     }
   }
   if (expected.size === 0) return 0;
   let hits = 0;
-  for (const t of expected) {
-    if (tokens.has(t)) hits += 1;
+  for (const [t, nk] of expected) {
+    if (tokenAffirmed(normAnswer, t, nk)) hits += 1;
   }
   const coverage = hits / expected.size;
   if (coverage >= 0.5) return 10;
@@ -664,7 +740,16 @@ export function processStudentInput(session: BotSession, rawInput: string): Engi
   const n = (s: string) => normalizeArabic(s);
 
   if (norm.includes(n('القائمة الرئيسية')) || norm.includes(n('العودة للقائمة')) || norm.includes(n('رجوع للقائمة'))) {
-    const back: BotSession = { ...getDefaultSession(), mistakes: [...session.mistakes] };
+    // B5 (audit Morchid 2026-09-25) : l'accueil réinitialise la NAVIGATION mais
+    // préserve le SUIVI — erreurs, défis BAC déjà complétés (garde-fou anti-farm)
+    // et date de la mission quotidienne. Sans cela, retourner à l'accueil effaçait
+    // completedBac et permettait de re-gagner l'XP d'un défi BAC déjà récompensé.
+    const back: BotSession = {
+      ...getDefaultSession(),
+      mistakes: [...session.mistakes],
+      completedBac: [...session.completedBac],
+      lastMissionDate: session.lastMissionDate,
+    };
     saveSession(back);
     return { session: back, action: { text: '↩️ رجعنا إلى القائمة الرئيسية. اختر مجالاً لبدء جلسة مراجعة:', quickActions: DOMAINS.map((d) => d.title) } };
   }
@@ -685,6 +770,32 @@ export function processStudentInput(session: BotSession, rawInput: string): Engi
   // toute recherche sémantique, sinon une réponse comme "A" est interceptée par un guide.
   if (session.mode === 'bac_challenge' && session.boss) return handleBossInput(session, input);
   if (session.currentQuiz && (session.mode === 'quiz' || session.mode === 'diagnostic')) return gradeQuizAnswer(session, input);
+
+  // B7 (audit Morchid 2026-09-25) : « اختبرني (في X) » doit LANCER UN QCM sur le
+  // sujet ciblé. Jusqu'ici l'intention tombait sur la recherche sémantique et
+  // renvoyait une carte de cours : le bouton promettait un test, pas un cours.
+  if (norm.includes(n('اختبرني'))) {
+    const scored = findBestKnowledgeCardScored(norm, session.activeDomainId);
+    const card = scored?.card ?? (session.activeDomainId != null
+      ? KNOWLEDGE_CARDS.find((c) => c.domainId === session.activeDomainId) ?? null
+      : null);
+    if (card) {
+      const pool = getQuestionsForDomain(card.domainId).filter((q) => q.topicId === card.id);
+      if (pool.length > 0) {
+        const picked = pool[Math.floor(Math.random() * pool.length)];
+        const newSession = startQuiz(session, pool.length, picked.id, 'quiz');
+        return {
+          session: newSession,
+          action: {
+            text: `🧪 اختبار سريع في **${card.title}** — ${pool.length} أسئلة. اكتب الحرف A أو B أو C أو D (أو 1 2 3 4) لكل سؤال.`,
+            quiz: toQuizPrompt(picked),
+            quickActions: [],
+            sources: [{ type: 'internal_card' as SourceType, title: card.title }],
+          },
+        };
+      }
+    }
+  }
 
   if (norm.length >= 3 && OUT_OF_PROGRAM.some((k) => {
     const nk = n(k);
