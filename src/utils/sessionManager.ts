@@ -134,6 +134,13 @@ export function recordQuizAnswer(
   if (!isCorrect && topicIdForMistake && !updatedMistakes.includes(topicIdForMistake)) {
     updatedMistakes.push(topicIdForMistake);
   }
+  // B7 (audit Morchid 2026-09-25) : boucle de remédiation — une réponse JUSTE sur
+  // un sujet précédemment raté le retire des lacunes. Sans cela, les erreurs
+  // s'accumulaient à vie dans « راجع أخطائي السابقة » sans moyen de les effacer.
+  if (isCorrect && topicIdForMistake) {
+    const at = updatedMistakes.indexOf(topicIdForMistake);
+    if (at >= 0) updatedMistakes.splice(at, 1);
+  }
 
   const correctAnswers = session.currentQuiz.correctAnswers + (isCorrect ? 1 : 0);
   const nextIndex = session.currentQuiz.questionIndex + 1;

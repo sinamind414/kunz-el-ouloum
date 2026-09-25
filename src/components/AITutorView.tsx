@@ -100,8 +100,12 @@ export default function AITutorView({ onBackToDashboard, onXPGained }: AITutorVi
     setMessages((prev) => [...prev, aiMsg]);
     // Propagation XP vers le UserProgress global (badge header + stats).
     // questionsAnswered = 1 seulement quand le moteur clôture un quiz (reward présent).
-    if (result.action.reward && result.action.reward.xpGained > 0) {
-      onXPGained?.(result.action.reward.xpGained, 1, {
+    // B6 (audit Morchid 2026-09-25) : toute activité TERMINÉE est propagée, même
+    // à 0 XP (quiz entièrement raté) — sinon la tentative n'était jamais
+    // journalisée dans le suivi enseignant (/api/student/sync). L'incrément XP
+    // n'est crédité que si > 0.
+    if (result.action.reward) {
+      onXPGained?.(Math.max(0, result.action.reward.xpGained ?? 0), 1, {
         kind: result.action.reward.kind ?? 'quiz',
         score: result.action.reward.score ?? 0,
         total: result.action.reward.total ?? 0,
@@ -148,22 +152,11 @@ export default function AITutorView({ onBackToDashboard, onXPGained }: AITutorVi
   const handleSend = (textToSend: string) => dispatchToEngine(textToSend);
 
   const handleJourneyClick = (label: string) => {
+    // B5 (audit Morchid 2026-09-25) : « القائمة الرئيسية » passe par le MOTEUR
+    // (et non par resetSession()) — le moteur préserve erreurs, completedBac
+    // (anti-farm) et date de mission, ce que resetSession() effaçait.
     if (label === 'القائمة الرئيسية') {
-      const fresh = resetSession();
-      const aiMsg: ChatMessage = {
-        id: nextId('ai'),
-        sender: 'ai',
-        text: '↩️ رجعنا إلى القائمة الرئيسية. اختر مجالاً لبدء جلسة مراجعة:',
-        timestamp: new Date().toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' }),
-        action: { quickActions: DOMAINS.map((d) => d.title) },
-      };
-      setSession(fresh);
-      setMessages((prev) => [...prev, {
-        id: nextId('user'),
-        sender: 'user',
-        text: label,
-        timestamp: new Date().toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' }),
-      }, aiMsg]);
+      handleSend(label);
       return;
     }
 
