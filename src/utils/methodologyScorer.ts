@@ -39,7 +39,9 @@ export interface SwitchContext {
   switchChoice: Switch | null;
 }
 
-const CLOSED_FORBIDDEN_RE = /(لأنّ?|راجع إلى|بسبب|يفسر ذلك|نعلل|يدل على أن|car|parce que|s'explique)/i;
+// Audit Fable-5 (2026-09-25) : « car » borné par \b — sinon « carbone »,
+// « caractéristique », « carreau » déclenchaient premature_interpretation.
+const CLOSED_FORBIDDEN_RE = /(لأنّ?|راجع إلى|بسبب|يفسر ذلك|نعلل|يدل على أن|\bcar\b|parce que|s'explique)/i;
 const STEP3_EVIDENCE: Record<Step3Mode, RegExp | null> = {
   explain:    /(لأنّ?|يعود ذلك|يرجع|بسبب|مما يؤدي|وبالتالي|يفسر ذلك|نتيجة ل)/i,
   confront:   /(بينما|في المقابل|في حين|مقابل|يقابله|كلاهما|أوجه التشابه|أوجه الاختلاف|alors que|tandis que)/i,
@@ -51,6 +53,14 @@ const DOUBT_RE      = /(ربما|قد يكون|لعل|احتمال|يمكن أن
 const CONCLUSION_RE = /(الاستنتاج|نستنتج|الخلاصة|نخلص|يؤكد صحة|خاتمة|ومنه|conclusion)/i;
 const TITLE_RE      = /(العنوان|عنوان\s*:)/i;
 const REFERENCE_RE  = /(الوثيق|الوثائق|منحنى|جدول|الملاحظة|الشاهد|الشكل|الرسم|التجربة|document|graphe)/i;
+// Audit Fable-5 (2026-09-25) : hyp_c1 — un mot biologique générique seul
+// (« بروتين », « هرمون ») ne suffit plus pour valider l'ancrage. On exige
+// maintenant 2 marqueurs biologiques DISTINCTS (un « système concret » =
+// au moins deux composants en interaction : ligand+récepteur, enzyme+site,
+// cellule+organe…) ou un ancrage expérimental explicite (support/donnée).
+// La liste couvre les 3 domaines du programme (cellule, énergie, géologie
+// n'étant pas un ancrage hyp) + système nerveux/immunitaire.
+const ANCRAGE_BIO_RE = /(مستقبل|قنوات|قناة|عضل|جزيء|بروتين|مورث|إنزيم|هرمون|خلية|خلايا|عضية|ميتوكوندريا|ريبوزوم|الشبكة|غولجي|النواة|غشاء|وسط|ظروف|تفاعل|جسم|عضو|الدم|سائل|نبات|فأر|إنسان|كائن|عصب|مشبك|إفراز|غدة|ناقل|أدينوزين|كولين|سم|فيروس|بكتيريا|مناعة|لقاح|مستضد|جين|صبغي|حمض|أمين|سكر|غلوكوز|أكسجين)/gi;
 const DOC_NUMBER_RE = /(?:الوثيقة|الوثيقتين|الوثيقتان|الوثائق|المنحنى|المنحنيين|الجدول|الجدولين|الشكل|الشكلين|الرسم|النموذج|التجربة|الملاحظة|الصورة|الفرضية)[\u0600-\u06FF]*\s*\d+(?:\s*(?:و|،|,)\s*\d+)*/g;
 
 const NUMBER_RE = /(?<![A-Za-z=+\-\/\d.,])\d+(?:[.,]\d+)?(?![A-Za-z+\-\d])/g;
@@ -185,7 +195,11 @@ export function evaluateStudentProduction(
         feedback = passed ? 'تم الربط السببي صراحة بالآلية.' : `تنبيه: « ${compass} » - أين آلية النتيجة («لأنّ» / «يعود ذلك إلى» / «عن طريق»)?`;
         break;
       case 'def_c1':
-        passed = text.length > 20 && /(هو|هي)\s+.+\s+(يتميز|يسرّع|يحتوي|يمتلك|يقوم)/.test(text) && text.length < 500;
+        // Audit Fable-5 (2026-09-25) : la liste des marqueurs d'appartenance et
+        // des verbes de propriété était trop fermée — une définition canonique
+        // en « عبارة عن » ou « يُعرَّف » échouait injustement.
+        passed = text.length > 20 && text.length < 500 &&
+          /(هو|هي|عبارة عن|يُعرَّف|يُعرَف|يعرَّف|يُسمَّى|يسمى)\s+.+\s+(يتميز|يسرّع|يحتوي|يمتلك|يقوم|يتكون|يشتمل|يؤمن|يحقق|يساهم|يمنح|يختص)/.test(text);
         feedback = passed ? 'تم ذكر الانتماء والخاصية.' : `تنبيه: « ${compass} » - اذكر الانتماء والخاصية.`;
         break;
       case 'def_c2':
@@ -204,21 +218,33 @@ export function evaluateStudentProduction(
           passed = isList;
           feedback = passed ? 'قائمة مرقّمة حاضرة.' : `تنبيه: « ${compass} » - اكتب قائمة مرقّمة.`;
         } else if (c.id === 'list_c2') {
-          passed = isList && lineCount >= 2 && lineCount <= 5;
-          feedback = passed ? 'عدد الأسطر مطابق.' : `تنبيه: « ${compass} » - احترم العدد.`;
+          // Audit Fable-5 (2026-09-25) : la fourchette 2-5 était codée en dur et
+          // ignorait le nombre exigé par la question. Le compte vient de la carte
+          // (expectedCount) ; tolerance +1 pour absorber un retour à la ligne.
+          const minList = c.expectedCount ?? 2;
+          const maxList = c.expectedCount != null ? c.expectedCount + 1 : 5;
+          passed = isList && lineCount >= minList && lineCount <= maxList;
+          feedback = passed ? 'عدد الأسطر مطابق.' : `تنبيه: « ${compass} » - احترم العدد المطلوب (${minList} عناصر).`;
         } else {
           passed = isList && !hasSentence;
           feedback = passed ? 'بلا فقرة نثرية.' : `تنبيه: « ${compass} » - تجنب الفقرة.`;
         }
         break;
       }
-      case 'hyp_c1': // المنطلق التجريبي — سند مذكور أو نظام بيولوجي ملموس (كانون المثال النموذجي)
+      case 'hyp_c1': { // المنطلق التجريبي — سند مذكور أو نظام بيولوجي ملموس (كانون المثال النموذجي)
+        // Audit Fable-5 (2026-09-25) : un mot biologique générique seul (بروتين،
+        // هرمون…) validait le critère sans aucun ancrage concret. On exige
+        // maintenant 2 marqueurs biologiques distincts — un « système » concret
+        // (composants en interaction) — ou un ancrage expérimental explicite.
+        const ancres = new Set<string>();
+        for (const m of text.matchAll(ANCRAGE_BIO_RE)) ancres.add(m[0].toLowerCase());
         passed =
           REFERENCE_RE.test(text) ||
           /(المعطى|الملاحظة|نتائج|النتيجة|التجربة|الوثيق)/i.test(text) ||
-          /(مستقبل|قنوات|قناة|عضلة|جزيء|بروتين|مورث|إنزيم|هرمون)/i.test(text);
+          ancres.size >= 2;
         feedback = passed ? 'المنطلق التجريبي مذكور.' : `تنبيه: « ${compass} » - انطلق من المعطى التجريبي الذي يطرح المشكل.`;
         break;
+      }
       case 'exp_m_c1': // الوثيقة الأولى + نتيجتها
         passed = REFERENCE_RE.test(text) && /(يتبين|نستخرج|نلاحظ|تؤكد|تظهر|النتيجة)/i.test(text);
         feedback = passed ? 'الوثيقة الأولى مستغلة بنتيجتها.' : `تنبيه: « ${compass} » - استغل الوثيقة الأولى وأبرز نتيجتها (يتبين أن…).`;

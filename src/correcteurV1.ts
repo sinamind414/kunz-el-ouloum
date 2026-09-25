@@ -24,7 +24,7 @@
 //   · « a_valider » = piste + flag AMBIGUITE_LEXICALE — tolérée, JAMAIS notée ;
 //   · rattachement aux unités via les refs sources (D1U1..D3U3 → ids 1..11).
 
-import { normalizeAr } from './lib/validation/normalizeAr';
+import { normalizeAr, motPresentDans } from './lib/validation/normalizeAr';
 import {
   evaluerEntites,
   formesArUnite,
@@ -405,8 +405,10 @@ export function evaluerReponseKeywords(
   const manquants: string[] = [];
   for (const mot of cibles) {
     const nMot = normalizeAr(mot);
+    // Audit Fable-5 (2026-09-25) : frontières de mot — sinon un mot-clé court
+    // était compté « trouvé » à l'intérieur d'un mot plus long (couverture gonflée).
     if (!nMot) continue;
-    if (norm.includes(nMot)) trouves.push(mot);
+    if (motPresentDans(norm, nMot)) trouves.push(mot);
     else manquants.push(mot);
   }
 
