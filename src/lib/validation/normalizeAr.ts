@@ -44,6 +44,28 @@ export function containsAr(raw: string, arWord: string): boolean {
   return norm.includes(normalizeAr(arWord));
 }
 
+/**
+ * Recherche d'un mot-clé À FRONTIÈRES DE MOT (audit Fable-5, 2026-09-25).
+ * `includes` pur laissait un mot-clé matcher à l'intérieur d'un mot plus long
+ * (« دنا » dans « مادنا », « ATP » dans « ATPase ») et gonflait la couverture
+ * de mots-clés. On borne le needle par des caractères qui ne sont NI lettres
+ * latines NI lettres arabes —\b \p{Script=Arabic}, et NON le bloc \u0600-\u06FF
+ * entier, car ce dernier contient la ponctuation arabe (، U+060C, ؛, ؟) qui doit
+ * compter comme une frontière. Les clitiques arabes (ال، و، ف، ب، ل، ك) sont
+ * acceptés devant le needle (« بالمادة », « والتنفس ») car ils sont eux-mêmes
+ * à une frontière de mot — c'est la morphologie agglutinante de l'arabe.
+ * Les deux arguments doivent être DÉJÀ normalisés (normalizeAr).
+ */
+export function motPresentDans(normText: string, normNeedle: string): boolean {
+  if (!normNeedle) return false;
+  const escaped = normNeedle.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const re = new RegExp(
+    '(?<![A-Za-z\\p{Script=Arabic}])(?:ال|[وفبلك])?' + escaped + '(?![A-Za-z\\p{Script=Arabic}])',
+    'u'
+  );
+  return re.test(normText);
+}
+
 /** Recherche l'un des tokens (arabe ou latin) parmi une liste. */
 export function containsAny(raw: string, tokens: string[]): boolean {
   return tokens.some((t) =>

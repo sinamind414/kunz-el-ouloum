@@ -298,11 +298,13 @@ export function evaluerEntites(reponse: string, uniteId: number): ResultatEntite
 // Sections annexes du build exposées pour les couches supérieures
 // ────────────────────────────────────────────────────────────────────────────
 
-/** Confusions sanctionnables (ex. courbe de Michaelis dite « en cloche »). */
-export const FAUX_AMIS: Readonly<Record<string, FauxAmi>> = dictionnaire.faux_amis ?? {};
-
-/** Conflits de sources actifs (ex. ATP 38 vs 30-32) — accepter les deux + tagger. */
-export const CONFLITS: Readonly<Record<string, ConflitRef>> = dictionnaire.conflits ?? {};
+// Audit Fable-5 (2026-09-25) : FAUX_AMIS et CONFLITS n'étaient consommés par
+// AUCUN chemin de notation — la détection vivante (26 sanctions, tests +
+// affichage UI) est implémentée dans sanctionsCorrecteur.ts, qui réimplémente
+// ces 5 confusions de façon plus riche (contexte, garde anti-négation…).
+// Les exports ci-dessous ont été supprimés pour ne pas laisser un pont mort
+// vers une donnée que rien ne lit. Les sections restent dans le JSON build
+// (documentation du dictionnaire) et les interfaces servent au typage ci-dessus.
 
 /** Attendus officiels des barèmes BAC (80 items, statut/fr/ar/points). */
 export const ATTENDUS_BAREME: Readonly<Record<string, AttenduBareme>> =
