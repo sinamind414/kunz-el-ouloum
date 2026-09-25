@@ -143,6 +143,11 @@ interface SearchChunk {
   normTitle: string;
   normAliases: string[];
   normKeywords: string[];
+  /** R5 (recherche globale) : pour les chunks de type 'lesson', clé canonique
+   *  permettant d'ouvrir la leçon complète (ActiveLessonView / HtmlLessonViewer). */
+  lessonKey?: string;
+  /** Kind du lesson chunk : 'html' (leçon passive) vs 'active' (leçon active TS). */
+  lessonKind?: 'html' | 'active';
 }
 
 const LEGACY_CHUNKS: SearchChunk[] = LEGACY_KNOWLEDGE_CARDS.map((c: LegacyKnowledgeCard) => ({
@@ -210,6 +215,9 @@ const LESSON_CHUNKS: SearchChunk[] = LESSON_INDEX.map((c) => ({
   unitTitle: c.lessonTitle,
   text: c.text,
   sourceLabel: c.kind === 'html' ? 'كتاب الدروس التفاعلي' : 'درس نشط',
+  // R5 : clé + kind pour le deep-link vers la leçon complète.
+  lessonKey: c.lessonKey,
+  lessonKind: c.kind,
   // Suffixe de granularité « (n/m) » retiré : le match titre exact (+80) doit
   // rester possible sur les chunks découpés.
   normTitle: normalizeArabic(c.title.replace(/\s*\(\d+\/\d+\)\s*$/, '')),
@@ -319,18 +327,22 @@ function findMicroAnswer(card: KnowledgeCard, norm: string): string | null {
 
 function buildAnswer(norm: string, activeDomainId: number | null): TutorAction | null {
   if (!norm || norm.length < 3) return null;
-  const scienceCard = findBestKnowledgeCard(norm, activeDomainId);
+  const scored = findBestKnowledgeCardScored(norm, activeDomainId);
 
-  if (scienceCard) {
+  if (scored) {
+    const scienceCard = scored.card;
+    const confidence = confidenceFromCardScore(scored.score);
     const microHit = findMicroAnswer(scienceCard, norm);
     if (microHit) {
       return {
+        confidence,
         text: `🎯 **${scienceCard.title}**\n\n${microHit}`,
         quickActions: filterQuickActions(scienceCard.relatedQuestions, norm),
         sources: [{ type: 'internal_card' as SourceType, title: scienceCard.title }],
       };
     }
     return {
+      confidence,
       text: `🧩 **${scienceCard.title}**\n\n${scienceCard.shortAnswer}\n\n🔑 كلمات مفتاحية: ${scienceCard.keywords.join(' • ')}`,
       quickActions: filterQuickActions(scienceCard.relatedQuestions, norm),
       sources: [{ type: 'internal_card' as SourceType, title: scienceCard.title }],
@@ -349,6 +361,9 @@ function buildAnswer(norm: string, activeDomainId: number | null): TutorAction |
   else if (best.type === 'lesson') sourceType = 'lesson';
 
   return {
+    // R5 : la recherche brute (fallback) est moins fiable qu'une carte
+    // curatée — confiance plafonnée à 70.
+    confidence: 70,
     text: `📚 **${best.title}**\n\n${snippet}`,
     quickActions: best.followUp ? filterQuickActions([best.followUp], norm) : [],
     sources: [{ type: sourceType, title: best.title }],
@@ -423,6 +438,62 @@ export function findBestKnowledgeCard(input: string, activeDomainId: number | nu
 
   if (best && bestContentScore >= 8) return best;
   return null;
+}
+
+/** Variante scorée (R4 audit/G4) : permet d'alimenter `confidence` partout. */
+function findBestKnowledgeCardScored(
+  input: string,
+  activeDomainId: number | null,
+): { card: KnowledgeCard; score: number } | null {
+  const norm = normalizeArabic(input);
+  if (!norm || norm.length < 2) return null;
+  const inputTokens = tokenizeArabic(norm);
+  let best: KnowledgeCard | null = null;
+  let bestRankingScore = 0;
+  let bestContentScore = 0;
+
+  for (const card of KNOWLEDGE_CARDS) {
+    let contentScore = 0;
+
+    for (const alias of card.aliases) {
+      const na = normalizeArabic(alias);
+      if (na && na.length >= 2 && norm.includes(na)) {
+        contentScore += 100 + na.length;
+      }
+    }
+
+    const nt = normalizeArabic(card.title);
+    if (nt && nt.length >= 2 && norm.includes(nt)) contentScore += 50;
+
+    let keywordHits = 0;
+    for (const kw of card.keywords) {
+      const nk = normalizeArabic(kw);
+      if (nk.length < 2) continue;
+      if (inputTokens.includes(nk) || norm.includes(nk)) {
+        keywordHits += 1;
+      }
+    }
+    contentScore += keywordHits * 8;
+
+    const domainBonus = (activeDomainId != null && card.domainId === activeDomainId) ? 5 : 0;
+    const rankingScore = contentScore + domainBonus;
+
+    if (rankingScore > bestRankingScore) {
+      bestRankingScore = rankingScore;
+      bestContentScore = contentScore;
+      best = card;
+    }
+  }
+
+  if (best && bestContentScore >= 8) return { card: best, score: bestContentScore };
+  return null;
+}
+
+/** Confiance homogène (G4) : alias fort ≥ 100 → 90, titre/mots-clés → 80, sinon 70. */
+function confidenceFromCardScore(score: number): number {
+  if (score >= 100) return 90;
+  if (score >= 30) return 80;
+  return 70;
 }
 
 export function startDiagnostic(session: BotSession): EngineResult {
@@ -699,14 +770,17 @@ export function processStudentInput(session: BotSession, rawInput: string): Engi
     if (domain) return handleDomainClick(session, domain.id);
   }
 
-  const scienceCard = findBestKnowledgeCard(norm, session.activeDomainId);
+  const scoredCard = findBestKnowledgeCardScored(norm, session.activeDomainId);
 
-  if (scienceCard) {
+  if (scoredCard) {
+    const scienceCard = scoredCard.card;
+    const confidence = confidenceFromCardScore(scoredCard.score);
     const microHit = findMicroAnswer(scienceCard, norm);
     if (microHit) {
       return {
         session,
         action: {
+          confidence,
           text: `🎯 **${scienceCard.title}**\n\n${microHit}`,
           quickActions: filterQuickActions(scienceCard.relatedQuestions, norm),
           sources: [{ type: 'internal_card' as SourceType, title: scienceCard.title }],
@@ -716,6 +790,7 @@ export function processStudentInput(session: BotSession, rawInput: string): Engi
     return {
       session,
       action: {
+        confidence,
         text: `🧩 **${scienceCard.title}**\n\n${scienceCard.shortAnswer}\n\n🔑 كلمات مفتاحية: ${scienceCard.keywords.join(' • ')}`,
         quickActions: filterQuickActions(scienceCard.relatedQuestions, norm),
         sources: [{ type: 'internal_card' as SourceType, title: scienceCard.title }],
