@@ -1,14 +1,12 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { 
-  Home, 
-  BookOpen, 
-  TrendingUp, 
-  User, 
-  Flame, 
-  Trophy, 
+import {
+  Home,
+  BookOpen,
+  User,
+  Flame,
+  Trophy,
   Sparkles,
-  Menu,
   GraduationCap,
   Sun,
   Moon,
@@ -18,15 +16,13 @@ import {
   Layers,
   Key,
   Compass,
-  Route,
-  NotebookPen,
-  BarChart3,
-  MessageCircle,
   Network
 } from 'lucide-react';
+import type { LucideIcon } from 'lucide-react';
 
-import { Unit, UserProgress, Flashcard } from './types';
+import { Unit, UserProgress, Flashcard, QuizQuestion } from './types';
 import { INITIAL_UNITS, SVT_QUIZ_QUESTIONS, SVT_FLASHCARDS } from './data';
+import { FILL_BLANK_QUESTIONS } from './data/fillBlanks';
 
 /** Identité élève persistée entre les sessions (le JWT vit dans api.ts). */
 const STUDENT_STORE_KEY = 'boussole_student';
@@ -52,6 +48,7 @@ import { AR_LATN } from './utils/latinDigits';
 import SplashView from './components/SplashView';
 import DashboardView from './components/DashboardView';
 import QuizView from './components/QuizView';
+import AnimationsView from './components/AnimationsView';
 import RevisionView from './components/RevisionView';
 import StatsView from './components/StatsView';
 import AITutorView from './components/AITutorView';
@@ -85,7 +82,7 @@ export default function App() {
   });
 
   // Navigation tab state
-  const [currentTab, setCurrentTab] = useState<'splash' | 'home' | 'review' | 'stats' | 'chat' | 'methodology' | 'bootcamp' | 'badges' | 'lesson' | 'workshop' | 'mindmap' | 'teacher'>('splash');
+  const [currentTab, setCurrentTab] = useState<'splash' | 'home' | 'review' | 'stats' | 'chat' | 'methodology' | 'bootcamp' | 'badges' | 'lesson' | 'workshop' | 'mindmap' | 'teacher' | 'animations'>('splash');
   const [activeMindMapUnitId, setActiveMindMapUnitId] = useState<number>(1);
   const [isAuthOpen, setIsAuthOpen] = useState(false);
   // Session élève persistée (correctif : la session était perdue à chaque F5).
@@ -525,7 +522,24 @@ export default function App() {
 
   if (activeQuizUnitId !== null) {
     const activeUnit = units.find(u => u.id === activeQuizUnitId);
-    const questions = SVT_QUIZ_QUESTIONS.filter(q => q.unitId === activeQuizUnitId);
+    // S-C4 : on réintègre les micro-tests « remplir le trou » (161 questions
+    // à trous d'origine Flutter, jusqu'ici définies mais jamais câblées).
+    const fillBlankQuestions: QuizQuestion[] = FILL_BLANK_QUESTIONS
+      .filter(q => q.unitId === activeQuizUnitId)
+      .map((q, i) => ({
+        id: 9_000_000 + i,
+        unitId: q.unitId,
+        questionText: q.microTest.prompt,
+        options: [],
+        correctAnswerIndex: -1,
+        explanation: q.microTest.errorHint,
+        kind: 'fillBlank',
+        acceptedAnswers: q.microTest.acceptedAnswers,
+      }));
+    const questions = [
+      ...SVT_QUIZ_QUESTIONS.filter(q => q.unitId === activeQuizUnitId),
+      ...fillBlankQuestions,
+    ];
 
     return (
       <QuizView 
@@ -549,6 +563,26 @@ export default function App() {
     }
     setCurrentTab(tab);
   };
+
+  // U1 (audits Opus 5.5 / Gemini 3.8) : navigation principale consolidée 12 → 5.
+  // Les vues secondaires restent accessibles à un clic (groupe « المزيد »)
+  // et par les cartes du tableau de bord (onNavigateToTab).
+  const PRIMARY_NAV: { tab: typeof currentTab; label: string; Icon: LucideIcon }[] = [
+    { tab: 'home', label: 'الرئيسية', Icon: Home },
+    { tab: 'lesson', label: 'الدروس', Icon: BookOpen },
+    { tab: 'review', label: 'المراجعة', Icon: Layers },
+    { tab: 'chat', label: 'المرشد', Icon: Compass },
+    { tab: 'stats', label: 'تقدمي', Icon: Trophy },
+  ];
+  const SECONDARY_NAV: { tab: typeof currentTab; label: string; Icon: LucideIcon }[] = [
+    { tab: 'workshop', label: 'الورشة التفاعلية', Icon: PlayCircle },
+    { tab: 'mindmap', label: 'الخرائط الذهنية', Icon: Network },
+    { tab: 'methodology', label: MIFTAH_NAME_OFFICIAL_AR, Icon: Key },
+    { tab: 'badges', label: 'الأوسمة والإنجازات', Icon: Award },
+    { tab: 'bootcamp', label: 'تحدي البكالوريا', Icon: Swords },
+    { tab: 'animations', label: 'الأنميشن العلمي', Icon: Sparkles },
+    { tab: 'teacher', label: 'لوحة المتابعة', Icon: GraduationCap },
+  ];
 
   return (
     <div className={`h-[100dvh] w-full overflow-hidden relative transition-all duration-500 flex flex-col ${
@@ -615,6 +649,7 @@ export default function App() {
            currentTab === 'bootcamp' ? 'تحدي البكالوريا' : 
             currentTab === 'lesson' ? 'الدروس' :
             currentTab === 'workshop' ? 'الورشة التفاعلية' : 
+           currentTab === 'animations' ? 'الأنميشن العلمي' :
            currentTab === 'mindmap' ? 'الخرائط الذهنية (D3)' :
             currentTab === 'chat' ? 'المرشد الذكي' :
             currentTab === 'teacher' ? 'لوحة المتابعة' :
@@ -657,110 +692,40 @@ export default function App() {
         {!isFocusMode && (
           <aside className="hidden md:flex shrink-0 w-64 bg-[#ffffff] dark:bg-[#141916] border-l border-[#e2dabf]/50 dark:border-[#2ecc71]/10 flex-col py-6 px-4 gap-2 select-none h-full overflow-y-auto">
           <div className="text-[10px] font-black tracking-widest text-[#506072] uppercase px-4 mb-4">القائمة الرئيسية</div>
-          
-          {/* Dashboard Tab */}
-          <button
-            onClick={() => setCurrentTab('home')}
-            className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-2xl text-sm font-bold transition-all cursor-pointer ${
-              currentTab === 'home'
-                ? 'bg-[#2ecc71]/15 text-[#006d37]'
-                : 'text-[#504441] hover:bg-[#fff9ed] hover:text-[#006d37]'
-            }`}
-          >
-            <Home className="w-5 h-5" />
-            <span>الرئيسية</span>
-          </button>
 
-          {/* Lesson Tab */}
-          <button
-            onClick={() => setCurrentTab('lesson')}
-            className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-2xl text-sm font-bold transition-all cursor-pointer ${
-              currentTab === 'lesson'
-                ? 'bg-[#2ecc71]/15 text-[#006d37]'
-                : 'text-[#504441] hover:bg-[#fff9ed] hover:text-[#006d37]'
-            }`}
-          >
-            <BookOpen className="w-5 h-5" />
-            <span>الدروس</span>
-          </button>
+          {/* U1 (audit Opus/Gemini) : navigation principale consolidée — 5 onglets. */}
+          {PRIMARY_NAV.map(({ tab, label, Icon }) => (
+            <button
+              key={tab}
+              onClick={() => handleTabChange(tab)}
+              className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-2xl text-sm font-bold transition-all cursor-pointer ${
+                currentTab === tab
+                  ? 'bg-[#2ecc71]/15 text-[#006d37]'
+                  : 'text-[#504441] hover:bg-[#fff9ed] hover:text-[#006d37]'
+              }`}
+            >
+              <Icon className="w-5 h-5" />
+              <span>{label}</span>
+            </button>
+          ))}
 
-          {/* Workshop Tab (leçon interactive Transcription) */}
-          <button
-            onClick={() => setCurrentTab('workshop')}
-            className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-2xl text-sm font-bold transition-all cursor-pointer ${
-              currentTab === 'workshop'
-                ? 'bg-[#2ecc71]/15 text-[#006d37]'
-                : 'text-[#504441] hover:bg-[#fff9ed] hover:text-[#006d37]'
-            }`}
-          >
-            <BookOpen className="w-5 h-5" />
-            <span>الورشة التفاعلية</span>
-          </button>
+          <div className="text-[10px] font-black tracking-widest text-[#506072] uppercase px-4 mt-5 mb-3">المزيد</div>
 
-          {/* Flashcards / Revision Tab */}
-          <button
-            onClick={() => setCurrentTab('review')}
-            className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-2xl text-sm font-bold transition-all cursor-pointer ${
-              currentTab === 'review'
-                ? 'bg-[#2ecc71]/15 text-[#006d37]'
-                : 'text-[#504441] hover:bg-[#fff9ed] hover:text-[#006d37]'
-            }`}
-          >
-            <Layers className="w-5 h-5" />
-            <span>المراجعة</span>
-          </button>
-
-          {/* Mind Maps Tab */}
-          <button
-            onClick={() => setCurrentTab('mindmap')}
-            className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-2xl text-sm font-bold transition-all cursor-pointer ${
-              currentTab === 'mindmap'
-                ? 'bg-[#2ecc71]/15 text-[#006d37]'
-                : 'text-[#504441] hover:bg-[#fff9ed] hover:text-[#006d37]'
-            }`}
-          >
-            <Network className="w-5 h-5" />
-            <span>الخرائط الذهنية</span>
-          </button>
-
-          {/* Methodology Tab — 🔑 nom officiel via MIFTAH_NAME_OFFICIAL_AR */}
-           <button
-             onClick={() => setCurrentTab('methodology')}
-             className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-2xl text-sm font-bold transition-all cursor-pointer ${
-               currentTab === 'methodology'
-                 ? 'bg-[#2ecc71]/15 text-[#006d37]'
-                 : 'text-[#504441] hover:bg-[#fff9ed] hover:text-[#006d37]'
-             }`}
-           >
-             <Key className="w-5 h-5" />
-             <span>{MIFTAH_NAME_OFFICIAL_AR}</span>
-           </button>
-
-           {/* Teacher Dashboard Tab */}
-           <button
-             onClick={() => setCurrentTab('teacher')}
-             className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-2xl text-sm font-bold transition-all cursor-pointer ${
-               currentTab === 'teacher'
-                 ? 'bg-[#2ecc71]/15 text-[#006d37]'
-                 : 'text-[#504441] hover:bg-[#fff9ed] hover:text-[#006d37]'
-             }`}
-           >
-             <GraduationCap className="w-5 h-5" />
-             <span>لوحة المتابعة</span>
-           </button>
-
-          {/* AI Chat / Tutor Tab */}
-          <button
-            onClick={() => setCurrentTab('chat')}
-            className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-2xl text-sm font-bold transition-all cursor-pointer ${
-              currentTab === 'chat'
-                ? 'bg-[#2ecc71]/15 text-[#006d37]'
-                : 'text-[#504441] hover:bg-[#fff9ed] hover:text-[#006d37]'
-            }`}
-          >
-            <Compass className="w-5 h-5" />
-            <span>المرشد</span>
-          </button>
+          {/* U1 : outils avancés — groupe secondaire compact, à un clic. */}
+          {SECONDARY_NAV.map(({ tab, label, Icon }) => (
+            <button
+              key={tab}
+              onClick={() => handleTabChange(tab)}
+              className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-2xl text-[13px] font-semibold transition-all cursor-pointer ${
+                currentTab === tab
+                  ? 'bg-[#2ecc71]/15 text-[#006d37]'
+                  : 'text-[#504441]/80 hover:bg-[#fff9ed] hover:text-[#006d37]'
+              }`}
+            >
+              <Icon className="w-4 h-4" />
+              <span>{label}</span>
+            </button>
+          ))}
         </aside>
         )}
 
@@ -848,81 +813,34 @@ export default function App() {
                   isDarkMode={isDarkMode}
                 />
               )}
+
+              {currentTab === 'animations' && (
+                <AnimationsView onBackToHome={() => setCurrentTab('home')} />
+              )}
             </motion.div>
           </AnimatePresence>
         </main>
       </div>
-      
-      {!isFocusMode && currentTab !== 'chat' && (
-        <button
-          onClick={() => handleTabChange('chat')}
-          className="md:hidden absolute bottom-[90px] right-4 z-50 bg-[#006d37] hover:bg-[#005a2d] text-white w-14 h-14 rounded-full shadow-lg flex items-center justify-center transition-transform active:scale-95"
-        >
-          <div className="relative flex items-center justify-center w-full h-full">
-            <MessageCircle className="w-7 h-7" />
-            <div className="absolute top-0 right-0 bg-[#ff8c42] text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center shadow-sm">1</div>
-          </div>
-        </button>
-      )}
 
+      {/* U1 : barre mobile consolidée à 5 onglets (audit — 12 → 5). */}
       {!isFocusMode && (
-        <nav className="md:hidden bg-[#f8fbfa] shadow-[0_-5px_15px_rgba(0,0,0,0.05)] shrink-0 h-[80px] z-40 flex items-center justify-around px-2 pb-2 rounded-t-[24px] select-none border-t border-[#e2e8f0]/50" dir="rtl">
-        
-        {/* Home Button (مساري) */}
-        <button
-          onClick={() => handleTabChange('home')}
-          className={`relative flex flex-col items-center justify-center p-2 rounded-2xl transition-all w-[72px] h-[64px] cursor-pointer ${
-            currentTab === 'home'
-              ? 'bg-[#e5f6ed] text-[#006d37]'
-              : 'text-[#64748b] hover:text-[#006d37]'
-          }`}
-        >
-          <Compass className="w-6 h-6 mb-1" />
-          <span className="text-[11px] font-bold">مساري</span>
-          {currentTab === 'home' && <div className="absolute -bottom-1 w-1.5 h-1.5 rounded-full bg-[#006d37]"></div>}
-        </button>
+        <nav className="md:hidden bg-[#f8fbfa] shadow-[0_-5px_15px_rgba(0,0,0,0.05)] shrink-0 h-[80px] z-40 flex items-center justify-around px-1 pb-2 rounded-t-[24px] select-none border-t border-[#e2e8e0]/50" dir="rtl">
 
-        {/* Lesson Button (الدروس) */}
-        <button
-          onClick={() => handleTabChange('lesson')}
-          className={`relative flex flex-col items-center justify-center p-2 rounded-2xl transition-all w-[72px] h-[64px] cursor-pointer ${
-            currentTab === 'lesson'
-              ? 'bg-[#e5f6ed] text-[#006d37]'
-              : 'text-[#64748b] hover:text-[#006d37]'
-          }`}
-        >
-          <BookOpen className="w-6 h-6 mb-1" />
-          <span className="text-[11px] font-bold">الدروس</span>
-          {currentTab === 'lesson' && <div className="absolute -bottom-1 w-1.5 h-1.5 rounded-full bg-[#006d37]"></div>}
-        </button>
-
-        {/* Methodology Button — 🔑 nom officiel via MIFTAH_NAME_OFFICIAL_AR */}
-        <button
-          onClick={() => handleTabChange('methodology')}
-          className={`relative flex flex-col items-center justify-center p-2 rounded-2xl transition-all w-[72px] h-[64px] cursor-pointer ${
-            currentTab === 'methodology'
-              ? 'bg-[#e5f6ed] text-[#006d37]'
-              : 'text-[#64748b] hover:text-[#006d37]'
-          }`}
-        >
-          <Key className="w-6 h-6 mb-1" />
-          <span className="text-[9px] leading-tight font-bold text-center">{MIFTAH_NAME_OFFICIAL_AR}</span>
-          {currentTab === 'methodology' && <div className="absolute -bottom-1 w-1.5 h-1.5 rounded-full bg-[#006d37]"></div>}
-        </button>
-
-        {/* Stats Button (تقدمي) */}
-        <button
-          onClick={() => handleTabChange('stats')}
-          className={`relative flex flex-col items-center justify-center p-2 rounded-2xl transition-all w-[72px] h-[64px] cursor-pointer ${
-            currentTab === 'stats'
-              ? 'bg-[#e5f6ed] text-[#006d37]'
-              : 'text-[#64748b] hover:text-[#006d37]'
-          }`}
-        >
-          <Trophy className="w-6 h-6 mb-1" />
-          <span className="text-[11px] font-bold">تقدمي</span>
-          {currentTab === 'stats' && <div className="absolute -bottom-1 w-1.5 h-1.5 rounded-full bg-[#006d37]"></div>}
-        </button>
+        {PRIMARY_NAV.map(({ tab, label, Icon }) => (
+          <button
+            key={tab}
+            onClick={() => handleTabChange(tab)}
+            className={`relative flex flex-col items-center justify-center p-2 rounded-2xl transition-all flex-1 max-w-[76px] h-[64px] cursor-pointer ${
+              currentTab === tab
+                ? 'bg-[#e5f6ed] text-[#006d37]'
+                : 'text-[#64748b] hover:text-[#006d37]'
+            }`}
+          >
+            <Icon className="w-6 h-6 mb-1" />
+            <span className="text-[11px] font-bold">{label}</span>
+            {currentTab === tab && <div className="absolute -bottom-1 w-1.5 h-1.5 rounded-full bg-[#006d37]"></div>}
+          </button>
+        ))}
 
       </nav>
       )}
