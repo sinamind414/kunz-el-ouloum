@@ -5,6 +5,7 @@ import { QuizQuestion } from '../types';
 import { playSuccessSound, playFailureSound } from '../utils/audio';
 import { MASCOT_URL } from '../data';
 import { getHintForIncorrectOption, getGeneralHint } from '../utils/hints';
+import { validateFillBlank } from '../utils/fillBlankValidate';
 
 interface QuizViewProps {
   unitId: number;
@@ -23,6 +24,9 @@ export default function QuizView({ unitId, unitTitle, questions, onClose, onQuiz
   const [score, setScore] = useState(0);
   const [showGeneralHint, setShowGeneralHint] = useState<boolean>(false);
   const [isFocusMode, setIsFocusMode] = useState<boolean>(false);
+  // État des questions à trou (kind === 'fillBlank') — S-C4.
+  const [fbInput, setFbInput] = useState<{ [key: number]: string }>({});
+  const [fbResult, setFbResult] = useState<{ [key: number]: boolean }>({});
 
   const currentQuestion = questions[currentIndex] || questions[0];
 
@@ -55,6 +59,19 @@ export default function QuizView({ unitId, unitTitle, questions, onClose, onQuiz
     });
 
     if (optionIdx === currentQuestion.correctAnswerIndex) {
+      playSuccessSound();
+      setScore((prev) => prev + 1);
+    } else {
+      playFailureSound();
+    }
+  };
+
+  const handleFbSubmit = () => {
+    if (isAnswered[currentIndex] || currentQuestion.kind !== 'fillBlank') return;
+    const { correct } = validateFillBlank(fbInput[currentIndex] ?? '', currentQuestion.acceptedAnswers ?? []);
+    setFbResult((prev) => ({ ...prev, [currentIndex]: correct }));
+    setIsAnswered((prev) => ({ ...prev, [currentIndex]: true }));
+    if (correct) {
       playSuccessSound();
       setScore((prev) => prev + 1);
     } else {
@@ -251,7 +268,43 @@ export default function QuizView({ unitId, unitTitle, questions, onClose, onQuiz
                   </AnimatePresence>
                 </div>
 
-                {/* Multiple Choice Options */}
+                {/* Question à trou (S-C4) : input + validation tolérante */}
+                {/* QCM (par défaut) ou question à trou (S-C4) selon le type */}
+                {currentQuestion.kind === 'fillBlank' ? (
+                  <div className="flex flex-col gap-3">
+                    <div className={`flex flex-row-reverse items-center gap-2 rounded-2xl p-2 border ${
+                      isFocusMode ? 'bg-black/30 border-[#006d37]/20' : 'bg-[#f3f4f5] dark:bg-black/20 border-[#bbcbbb]/30 dark:border-[#2ecc71]/10'
+                    }`}>
+                      <input
+                        dir="rtl"
+                        value={fbInput[currentIndex] ?? ''}
+                        onChange={(e) => setFbInput((prev) => ({ ...prev, [currentIndex]: e.target.value }))}
+                        disabled={isAnswered[currentIndex]}
+                        onKeyDown={(e) => { if (e.key === 'Enter') handleFbSubmit(); }}
+                        placeholder="اكتب إجابتك هنا..."
+                        aria-label="فراغ الإجابة"
+                        className={`flex-1 bg-transparent focus:outline-none text-right text-base font-bold p-2 ${
+                          isFocusMode ? 'text-gray-100' : 'text-[#1f1c0b] dark:text-gray-100'
+                        } ${isAnswered[currentIndex] ? (fbResult[currentIndex] ? 'text-[#006d37] dark:text-[#2ecc71]' : 'text-[#ba1a1a]') : ''}`}
+                      />
+                      {!isAnswered[currentIndex] && (
+                        <button
+                          onClick={handleFbSubmit}
+                          disabled={(fbInput[currentIndex] ?? '').trim().length === 0}
+                          className="shrink-0 bg-[#006d37] text-white font-bold text-sm px-5 py-2.5 rounded-xl hover:bg-[#00562b] active:scale-95 transition-all disabled:opacity-40 cursor-pointer"
+                        >
+                          تحقّق
+                        </button>
+                      )}
+                    </div>
+                    {isAnswered[currentIndex] && (
+                      <span className={`text-sm font-bold flex flex-row-reverse items-center gap-2 ${fbResult[currentIndex] ? 'text-[#006d37] dark:text-[#2ecc71]' : 'text-[#ba1a1a]'}`}>
+                        {fbResult[currentIndex] ? <Check className="w-5 h-5" /> : <AlertCircle className="w-5 h-5" />}
+                        {fbResult[currentIndex] ? 'إجابة صحيحة' : 'إجابة غير مكتملة — راجع التصحيح أدناه'}
+                      </span>
+                    )}
+                  </div>
+                ) : (
                 <div className="flex flex-col gap-3">
                   {currentQuestion.options.map((option, idx) => {
                     const isSelected = selectedAnswers[currentIndex] === idx;
@@ -316,6 +369,7 @@ export default function QuizView({ unitId, unitTitle, questions, onClose, onQuiz
                     );
                   })}
                 </div>
+                )}
 
                 {/* Explanation Card (Pedagogical Feedback) */}
                 {isAnswered[currentIndex] && (
@@ -343,7 +397,7 @@ export default function QuizView({ unitId, unitTitle, questions, onClose, onQuiz
                     {/* Smart Hint Assistant (Analyzing incorrect answers) */}
                     {(() => {
                       const selectedOptionIdx = selectedAnswers[currentIndex];
-                      const isWrong = selectedOptionIdx !== undefined && selectedOptionIdx !== currentQuestion.correctAnswerIndex;
+                      const isWrong = currentQuestion.kind !== 'fillBlank' && selectedOptionIdx !== undefined && selectedOptionIdx !== currentQuestion.correctAnswerIndex;
                       if (!isWrong) return null;
 
                       return (

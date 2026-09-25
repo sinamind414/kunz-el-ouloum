@@ -6,6 +6,10 @@ export interface QuizQuestion {
   explanation: string;
   diagramUrl?: string;
   unitId: number;
+  /** 'fillBlank' = question à trou (micro-test S-C4) ; 'qcm' par défaut. */
+  kind?: 'qcm' | 'fillBlank';
+  /** Réponses acceptées (forme normale) quand kind === 'fillBlank'. */
+  acceptedAnswers?: string[];
 }
 
 export interface Unit {

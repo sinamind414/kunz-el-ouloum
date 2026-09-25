@@ -38,6 +38,8 @@ module.exports = {
     'LessonsViewPassiveNav\\.test\\.tsx$',
     'sessionEffectsService\\.test\\.ts$',
     'examLog\\.test\\.ts$',
+    // S-C4 : mock de utils/audio (vi.mock) — couvert par vitest.
+    'QuizView\\.fillBlank\\.test\\.tsx$',
     // vitest-only : top-level `await` (ESM) — non transformable en CJS par
     // babel. Test d'integration serveur (better-sqlite3) couvert par vitest.
     'serverDashboard\\.test\\.ts$',
