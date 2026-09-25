@@ -13,6 +13,12 @@ export interface VerbCriteriaItem {
   selfProofPrompt: string;
   errorTag: string;
   weight: number;
+  /**
+   * Audit Fable-5 (2026-09-25) : compte exact d'éléments exigé par la question,
+   * possédé par la carte (ex. list_c2 = 3 إنزيمات). Le scoreur générique
+   * l'utilise comme cible au lieu d'une fourchette codée en dur.
+   */
+  expectedCount?: number;
 }
 export interface VerbCard {
   id: string; verbAr: string; verbFr: string; category: 'descriptive' | 'reasoned';
@@ -223,7 +229,7 @@ export const VERB_CARDS: VerbCard[] = [
     badExample:{ answer:'الإنزيمات هي الليباز والبروتياز والأميلاز وهي مهمة للهضم وتعمل في المعدة.', flawDescription:'فقرة بدل قائمة — المصحح يبحث عن العناصر وقد لا يجدها.', circledError:'الإنزيمات هي... وهي مهمة', errorTag:'unbalanced_comparison', scorePercent:30 },
     criteria:[
       { id:'list_c1', order:1, wording:{compass:'أكتب قائمة مرقّمة، عنصر في كل سطر.',check:'قائمة مرقّمة.',probe:'هل كتبت قائمة مرقّمة؟',ar_label:'قائمة مرقّمة'}, selfProofPrompt:'حدد القائمة المرقّمة', errorTag:'unbalanced_comparison', weight:1 },
-      { id:'list_c2', order:2, wording:{compass:'أحترم العدد المطلوب في السؤال.',check:'العدد مطابق.',probe:'هل عدد الأسطر = العدد المطلوب؟',ar_label:'العدد المطلوب'}, selfProofPrompt:'عدّ الأسطر', errorTag:'unbalanced_comparison', weight:1 },
+      { id:'list_c2', order:2, wording:{compass:'أحترم العدد المطلوب في السؤال.',check:'العدد مطابق.',probe:'هل عدد الأسطر = العدد المطلوب؟',ar_label:'العدد المطلوب'}, selfProofPrompt:'عدّ الأسطر', errorTag:'unbalanced_comparison', weight:1, expectedCount:3 },
       { id:'list_c3', order:3, wording:{compass:'بلا جُمل — عناصر فقط.',check:'بلا فقرة.',probe:'هل تجنبت الفقرة النثرية؟',ar_label:'بلا فقرة'}, selfProofPrompt:'تأكد من عدم كتابة فقرة', errorTag:'verb_confusion', weight:1 }
     ]
   }
