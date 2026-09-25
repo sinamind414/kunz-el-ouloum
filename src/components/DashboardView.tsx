@@ -171,6 +171,25 @@ export default function DashboardView({
         </span>
       </div>
 
+      {/* U4 (audit) : galerie d'animations de mécanismes — accès mobile. */}
+      <div
+        onClick={() => onNavigateToTab && onNavigateToTab('animations')}
+        className="bg-white dark:bg-gray-900 rounded-3xl p-4 border border-gray-100 dark:border-gray-800 shadow-[0_4px_15px_rgba(0,0,0,0.03)] flex items-center justify-between cursor-pointer hover:border-[#006d37]/30 transition-all active:scale-[0.99]"
+      >
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-2xl bg-[#e8f5ee] dark:bg-emerald-900/30 flex items-center justify-center">
+            <Sparkles className="w-5 h-5 text-[#006d37] dark:text-emerald-400 animate-pulse" />
+          </div>
+          <div>
+            <h3 className="font-black text-[#006d37] dark:text-emerald-400 text-[15px]">الأنميشن العلمي</h3>
+            <p className="text-xs text-[#506072] dark:text-gray-400 font-medium">محاكاة متحركة لآليات البكالوريا (السيالة العصبية، الصفائح، تركيب البروتين)</p>
+          </div>
+        </div>
+        <span className="text-xs font-black bg-[#006d37] text-white px-3.5 py-2 rounded-xl shadow-sm">
+          عرض
+        </span>
+      </div>
+
       {/* Stats Summary Card */}
       <div className="bg-white dark:bg-gray-900 rounded-3xl p-4 border border-gray-100 dark:border-gray-800 shadow-[0_4px_15px_rgba(0,0,0,0.03)] flex items-center justify-between">
         <div className="flex flex-col items-center flex-1">
