@@ -7,7 +7,7 @@
 //      la séquence expose la clé de base puis la clé `_2` — une leçon affichée
 //      à la fois (isolation par sliceLessonHtml).
 import { useState } from 'react';
-import { BookOpen, ChevronLeft, Zap, MonitorPlay, Network, FlaskConical, Leaf, Globe2, GraduationCap, BookMarked, Grid3x3 } from 'lucide-react';
+import { BookOpen, ChevronLeft, Zap, MonitorPlay, Network, FlaskConical, Leaf, Globe2, GraduationCap, BookMarked, Grid3x3, Search } from 'lucide-react';
 import HtmlLessonViewer from './HtmlLessonViewer';
 import ActiveLessonView from './ActiveLessonView';
 import { INITIAL_UNITS } from '../data';
@@ -17,6 +17,7 @@ import { sourceLivre, badgeSource, sourceAmbigue } from '../data/bookIndex';
 import QcmLivreView from './QcmLivreView';
 import BacExamView from './BacExamView';
 import OkachaView from './OkachaView';
+import SearchView from './SearchView';
 import Icone from './Icone';
 import { chapitreIcone, uniteIcone } from '../data/lessonIcons';
 import {
@@ -79,7 +80,7 @@ const unitOfActiveLesson = (key: string): number =>
   INITIAL_UNITS.find((u) => getActiveLessonKeysForUnit(u.id).includes(key))?.id ?? 1;
 
 export default function LessonsView({ onRateCard }: LessonsProps) {
-  const [mode, setMode] = useState<LessonMode | 'qcm' | 'bac' | 'okacha' | null>(null);
+  const [mode, setMode] = useState<LessonMode | 'qcm' | 'bac' | 'okacha' | 'search' | null>(null);
   const [selectedUnit, setSelectedUnit] = useState<number>(1);
   const [selectedDomain, setSelectedDomain] = useState<number | null>(null);
   const [selectedActiveLesson, setSelectedActiveLesson] = useState<string | null>(null);
@@ -88,6 +89,19 @@ export default function LessonsView({ onRateCard }: LessonsProps) {
   const [selectedPassiveUnitId, setSelectedPassiveUnitId] = useState<number | null>(null);
   /** Unité active ouverte (navigation par icônes : unité → leçons). */
   const [selectedActiveUnitId, setSelectedActiveUnitId] = useState<number | null>(null);
+
+  // R5 : ouverture d'une leçon depuis la recherche globale (deep-link).
+  const openLessonFromSearch = (lessonKey: string, kind: 'html' | 'active', unitId: number) => {
+    setSelectedUnit(unitId);
+    if (kind === 'active') {
+      setSelectedActiveUnitId(unitId);
+      setSelectedActiveLesson(lessonKey);
+    } else {
+      setSelectedPassiveUnitId(unitId);
+      setSelectedPassiveLesson(lessonKey);
+    }
+    setMode(null);
+  };
 
   // ----- Rendu d'une leçon ouverte -----
   if (selectedActiveLesson) {
@@ -128,6 +142,16 @@ export default function LessonsView({ onRateCard }: LessonsProps) {
     return <QcmLivreView onBack={() => setMode(null)} />;
   }
 
+  // ----- Écran 0 quater : RECHERCHE GLOBALE (R5, moteur Morchid) -----
+  if (mode === 'search') {
+    return (
+      <SearchView
+        onBack={() => setMode(null)}
+        onOpenLesson={openLessonFromSearch}
+      />
+    );
+  }
+
   // ----- Écran 0 bis : tests bac (PROGRAMME NATIONAL, injection vérifiée) -----
   if (mode === 'bac') {
     return <BacExamView onBack={() => setMode(null)} />;
@@ -158,6 +182,25 @@ export default function LessonsView({ onRateCard }: LessonsProps) {
             اختر نوع الدرس : نشيط (تفاعلي خطوة بخطوة) أو سلبي (الدروس المقروءة)
           </p>
         </div>
+
+        {/* R5 : recherche globale dans tous les cours (moteur Morchid) */}
+        <button
+          onClick={() => setMode('search')}
+          className="group w-full flex items-center gap-4 p-4 rounded-2xl border-2 border-emerald-200 dark:border-emerald-900/50 bg-gradient-to-l from-emerald-50 to-white dark:from-emerald-950/30 dark:to-[#161c18] hover:border-emerald-500 hover:shadow-lg transition-all text-right"
+        >
+          <span className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-[#006d37] text-white shadow-md group-hover:scale-105 transition-transform shrink-0">
+            <Search className="w-6 h-6" />
+          </span>
+          <span className="flex-1 min-w-0">
+            <span className="block text-base font-black text-gray-800 dark:text-gray-100">
+              🔎 بحث في كل الدروس
+            </span>
+            <span className="block text-xs font-bold text-gray-500 dark:text-gray-400 leading-relaxed">
+              ابحث عن موضوع أو كلمة في ٤٥٠ مقطعاً — وافتح الدرس مباشرةً (يعمل دون اتصال)
+            </span>
+          </span>
+          <ChevronLeft className="w-5 h-5 text-emerald-600 dark:text-emerald-400 shrink-0" />
+        </button>
 
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
           {/* Leçon Active */}

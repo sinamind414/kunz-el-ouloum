@@ -147,10 +147,12 @@ describe('AITutorView — rendu riche du moteur (T2)', () => {
     });
     expect(messagesText()).toContain('بطاقة معرفة');
 
-    // Réponse méthodo → confiance affichée (80%)
+    // Réponse méthodo → confiance affichée. Depuis R5-G4, la confiance est
+    // alimentée sur TOUTES les réponses basées sur les cartes connaissances
+    // (y compris la carte scientifique ci-dessus) → plusieurs badges possibles.
     await typeAndSubmit(user, 'كيف أحلل وثيقة؟');
     await waitFor(() => {
-      expect(screen.getByText(/الثقة/)).toBeTruthy();
+      expect(screen.getAllByText(/الثقة/).length).toBeGreaterThan(0);
     });
   });
 
