@@ -127,6 +127,18 @@ describe('C2 — contre-probes : les pièges ne paient plus', () => {
     expect(n.points).toBeLessThanOrEqual(0.25 * 8);
   });
 
+  it('PIÈGE 5 — salade contenant un mot-attendu QUI EST un marqueur de relation : ≤ 30 %', () => {
+    // Audit qualité (2026-09-26) : « نستنتج » est une forme attendue officielle
+    // ET un marqueur de relation → estProse=true → le plafond non_prose était
+    // désactivé et la salade payait 66 %. La colle grammaticale (clitiques)
+    // fait maintenant la différence.
+    const salade = 'arnr arnt arnm مشكل تساول ما دور ما تاثير arn aa rip خاتمه نستنتج نتيجه تشارك ويمكن تعطيل';
+    const n = noterExerciceCalibre(salade, 1, 1);
+    expect(n.signaux.estProse).toBe(false);
+    expect(n.plafonds.map((p) => p.type)).toContain('non_prose');
+    expect(n.points).toBeLessThanOrEqual(PLAFONDS.non_prose * MAX.ex1 + 1e-9);
+  });
+
   it('copie vide → 0 (inchangé)', () => {
     expect(noterExerciceCalibre('', 1, 3).points).toBe(0);
   });

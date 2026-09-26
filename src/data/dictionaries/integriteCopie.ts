@@ -46,6 +46,11 @@ export interface SignauxCopie {
 const RELATION_RE =
   /(كلما|بينما|في حين|نلاحظ|تمثل|يمثل|علاقه|يزداد|يتزايد|ينقص|يتناقص|راجع الى|نستنتج|الاستنتاج|ومنه|يؤكد)/;
 
+// Clitique arabe agglutiné + radical de ≥3 lettres (morphologie d'une vraie phrase).
+const RE_CLIT = /^(?:ال|[وفبلك]).{3,}$/;
+/** Densité minimale de clitiques pour qu'un segment long + marqueur soit de la prose. */
+const SEUIL_GLUE = 0.2; // audit 2026-09-26 : salade 0.06 vs légitimes 0.26–0.57
+
 /**
  * Négations d'ASSERTION uniquement — PAS les négations légitimes d'un
  * mécanisme décrit (« فلا تفرز حويصلات » dans la réponse modèle officielle
@@ -81,7 +86,19 @@ function estDeLaProse(brut: string, norm: string): boolean {
   for (const seg of segments) {
     if (seg.split(/\s+/).filter((w) => w.length >= 2).length >= 4) phrases++;
   }
-  return phrases >= 2 || (phrases >= 1 && RELATION_RE.test(norm));
+  if (phrases >= 2) return true;
+  if (phrases < 1 || !RELATION_RE.test(norm)) return false;
+  // AUDIT qualité correcteur (2026-09-26) : une salade de mots-clés contenant
+  // une forme attendue qui EST un marqueur de relation (ex. « نستنتج ») passait
+  // pour de la prose et désactivait le plafond non_prose → 66 % pour du
+  // déversement lexical. Une vraie phrase courte a une morphologie : clitiques
+  // agglutinés (ال / و / ف / ب / ل / ك + radical). On exige cette colle
+  // grammaticale au-dessus de 10 tokens ; en-dessous, la salade ne peut de
+  // toute façon pas créditer beaucoup d'attendus.
+  const tokens = norm.split(/\s+/).filter((t) => t.length >= 2);
+  if (tokens.length < 10) return true;
+  const clitiques = tokens.filter((t) => RE_CLIT.test(t)).length;
+  return clitiques / tokens.length >= SEUIL_GLUE;
 }
 
 export function analyserSignaux(reponse: string, question?: string): SignauxCopie {

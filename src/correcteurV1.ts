@@ -400,11 +400,11 @@ export function evaluerReponseKeywords(
         ? unite.motsCles
         : [];
 
-  const norm = normalizeAr(reponse || '');
+  const norm = normalizeAr(reponse || '').toLowerCase();
   const trouves: string[] = [];
   const manquants: string[] = [];
   for (const mot of cibles) {
-    const nMot = normalizeAr(mot);
+    const nMot = normalizeAr(mot).toLowerCase();
     // Audit Fable-5 (2026-09-25) : frontières de mot — sinon un mot-clé court
     // était compté « trouvé » à l'intérieur d'un mot plus long (couverture gonflée).
     if (!nMot) continue;
