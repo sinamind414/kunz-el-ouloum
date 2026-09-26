@@ -188,6 +188,41 @@ const FIXES: Record<string, string> = {
   'من خلال ترجمة الرساة الوراثية': 'من خلال ترجمة الرسالة الوراثية',
   '(لا، ٨، )، 6)': '(A، G، C، U)',
 
+  // ── Lot E (2026-09-26, audit lexique unités 2 → 11) ──────────────────────
+  // Sélection faite par scripts/audit_lexique.ts (formes affichées absentes des
+  // 2 livres), puis PARS CHAQUE candidat vérifié à la main par scripts/
+  // dbg_probe*.ts : comptage brut, toutes les occurrences enrichies (contexte)
+  // et fréquence dans الكتاب_المصحح_v1.0.md + المكتبة_الكاملة_SVT.md.
+  // Règle : on ne corrige QUE si le contexte prouve le mot attendu — sinon on
+  // laisse tel quel (« نشفر », « اغيطي », « زنط » : cibles divergentes ou non
+  // attestées → aucune réécriture). NB : l'ordre de déclaration EST l'ordre
+  // d'application (applyFixes parcourt Object.entries(FIXES)).
+  'العصيي': 'العصبي', // 1× « داخل الليف العصيي » — AVANT « العصي » (sinon « العصبيي »)
+  'العصي': 'العصبي', // 20× النظام/المركز/الليف العصي → العصبي (réf. 28 + 188 ; 0 usage légitime au corpus)
+  ' لليف': ' الليف', // 7× alif absent : « السطح الخارجي لليف » (26 autres «الليف » sont justes)
+  'جاني': 'جانبي', // 16× « على جاني الغشاء / الجذر الجاني » (réf. 0 + 10/73)
+  'نركيز': 'تركيز', // 3× « تركيز جزيئات الإنزيم » (réf. 0 → 113/700)
+  'نركيب': 'تركيب', // 2× « دور الإنزيم في تركيب ATP »
+  'بالنالي': 'بالتالي', // 4× « وبالنالي تحافظ المضخة » (préfixe و déjà présent)
+  'بؤدي': 'يؤدي', // 8× « ما يؤدي إلى … » (réf. 0 → 12/142)
+  'فنوات': 'قنوات', // 5× « قنوات الفولطية » (réf. 0 → 22/107)
+  'اخلاياالتي': 'الخلايا التي', // 1× « -اخلاياالتي » — AVANT « اخلايا » (espace + article)
+  'اخلايا': 'الخلايا', // 3× « اخلايا التي تتعرف … » (réf. 0)
+  'إنزم': 'إنزيم', // 11× (10 «الإنزم » + 1 «إنزم ») → couvre الإنزم/الإنزمات/الإنزمية
+  'الإزم': 'الإنزيم', // 1× « تركيز الإزم والركيزة » (sans nûn)
+  'البيتيدية': 'الببتيدية', // 3× « السلسلة البيتيدية » (réf. 0 → 22/54)
+  'الإلكزون': 'الإلكترون', // 3× « الإلكترونات الناتجة عن أكسدة الماء » — électrons, PAS exons (réf. 0 → 7/14)
+  'الأنترولكين': 'الانترلوكين', // 3× aligné sur la forme déjà employée ailleurs au corpus (2×)
+  'ألديهيد': 'ألدهيد', // 3× « غليسير ألدهيد / أستيل ألديهيد » (réf. 0 → 2)
+  'للمتوكندري': 'للميتوكوندري', // 4× (réf. 0 → 0/6)
+  'المتوكندري': 'الميتوكوندري', // 4× (réf. 0 → 0/18)
+  'عددكبير': 'عدد كبير', // 3× espace manquant (réf. 0 → 0/16)
+  'تياركهربائي': 'تيار كهربائي', // 2× espace manquant (réf. 0 → 0/1)
+  'ذوكمون': 'ذو كمون', // 2× « ناقل ذو كمون أكسدة-إرجاع » — espace manquant
+  'انزبم': 'إنزيم', // 1× « تشبيط انزبم » (m ↔ ي)
+  'اشترلوني': 'اوشترلوني', // 2× graphie du livre officiel : « راجع تجربة اوشترلوني »
+  'بخفض تيمة ال': 'بخفض قيمة ال', // 1× « بخفض تيمة ال PH » (2ᵉ « تيمة » reste : phrase entièrement illisible)
+  'نفع في قاع': 'تقع في قاع', // 2× « سلاسل جبلية محيطية مرتفعة تقع في قاع المحيط »
 };
 
 // ── Normalisation arabe (même logique que okacha.lock.test.ts) ──
