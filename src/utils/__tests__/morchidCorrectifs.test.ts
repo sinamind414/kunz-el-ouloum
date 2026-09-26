@@ -10,6 +10,9 @@ import {
   gradeQuizAnswer,
   startDiagnostic,
   shuffledView,
+  getDailyMission,
+  couperExtrait,
+  SNIPPET_MAX,
 } from '../../smartTutorEngine';
 import {
   getDefaultSession,
@@ -230,4 +233,78 @@ describe('cohérence des domaines et QCM', () => {
       expect(qs.every((q) => q.domainId === d.id)).toBe(true);
     });
   }
+});
+
+// ---------------------------------------------------------------------------
+// F10 (audit Solar Pro 2026-09-26) : la mission quotidienne affiche
+// « المكافأة: +15 XP » et affiche une question de consolidation, mais
+// getDailyMission ne positionnait JAMAIS session.currentQuiz → la réponse de
+// l'élève retombait sur «لا يوجد اختبار جارٍ حالياً». Double dégât : les 15 XP
+// promis n'étaient jamais versés, et completeDailyMission (jamais appelé) ne
+// clôturait jamais la mission → elle se rejouait à l'infini, XP non compté.
+// ---------------------------------------------------------------------------
+
+describe('F10 — mission quotidienne : QCM démarré, 15 XP versés, mission clôturée', () => {
+  it('démarre un QCM répondable (currentQuiz + mode quiz + carte ciblée)', () => {
+    const m = getDailyMission(getDefaultSession());
+    expect(!!m.action.quiz).toBeTruthy();
+    expect(m.session.currentQuiz).toBeTruthy();
+    expect(m.session.mode).toBe('quiz');
+    // La question affichée et la question notée doivent être LA même.
+    expect(m.session.currentQuiz?.questionId).toBe(m.action.quiz?.id);
+    // missionTopicId est ce qui permet de clôturer + verser le bon barème.
+    expect(!!m.session.currentQuiz?.missionTopicId).toBeTruthy();
+  });
+
+  it("achèvement → 15 XP (et non correctCount*10), kind 'mission', mission clôturée", () => {
+    const m = getDailyMission(getDefaultSession());
+    expect(!!m.action.quiz).toBeTruthy();
+
+    // «ا» n'est pas la bonne réponse : le barème mission ne dépend pas du
+    // succès, il est branché sur l'ACHÈVEMENT, comme l'affiche le texte.
+    const r = processStudentInput(m.session, 'ا');
+    const today = new Date().toISOString().split('T')[0];
+
+    expect(r.action.reward?.xpGained).toBe(15);
+    expect(r.action.reward?.kind).toBe('mission');
+    expect(r.session.lastMissionDate).toBe(today);
+    expect(r.session.currentQuiz).toBeNull();
+    expect(r.action.text).toContain('مهمة اليوم مكتملة');
+    expect(r.action.text).toContain('15 XP');
+  });
+
+  it('relance le jour même → clôturée (anti-rejeu, pas de farm d’XP)', () => {
+    const m = getDailyMission(getDefaultSession());
+    expect(!!m.action.quiz).toBeTruthy();
+    const r = processStudentInput(m.session, 'ا');
+
+    const again = getDailyMission(r.session);
+    expect(again.action.quiz).toBeUndefined();
+    expect(again.action.text).toContain('أنجزت مهمة اليوم');
+    // Et surtout : aucun QCM ne redémarre → pas de 15 XP supplémentaires.
+    expect(again.session.currentQuiz).toBeNull();
+  });
+
+  it('couperExtrait : coupe sur une fin de phrase, jamais au-delà de la limite', () => {
+    const long = ('البروتين جزيء عظيم الأهمية في الكائنات الحية. يتألف من وحدات بنائية. '
+      + 'تتصل هذه الأحماض بروابط ببتيدية. ').repeat(12);
+    expect(long.length).toBeGreaterThan(SNIPPET_MAX);
+
+    const c = couperExtrait(long);
+    expect(c.truncated).toBeTruthy();
+    expect(c.text.length).toBeLessThanOrEqual(SNIPPET_MAX);
+    expect(['.', '؟', '!', '،', '؛', ';']).toContain(c.text.slice(-1));
+    // On ne remonte à la phrase précédente que si elle garde ≥50% du max.
+    expect(c.text.length).toBeGreaterThanOrEqual(SNIPPET_MAX * 0.5);
+  });
+
+  it('couperExtrait : texte court intact, sans ponctuation → limite dure', () => {
+    const court = 'بنية البروتين الفراغية.';
+    expect(couperExtrait(court)).toEqual({ text: court, truncated: false });
+
+    const brut = 'الحمض النووي الريبوسومي'.repeat(80);
+    const b = couperExtrait(brut);
+    expect(b.truncated).toBeTruthy();
+    expect(b.text.length).toBe(SNIPPET_MAX);
+  });
 });
