@@ -3,19 +3,24 @@
 // Contenu unités : src/data/hosila.ts (نصّ OFFICIEL du livre scolaire,
 // GÉNÉRÉ par scripts/build_hosila.ts — verrou hosila.lock.test.ts).
 // Repli (unité non couverte) : src/data/okachaEnriched.ts (OCR عكاشة).
-// Méthodo : OKACHA_METHODO_SECTIONS (sections عكاشة, pas d'équivalent hosila).
+// Méthodo : src/data/guideManhajia.ts — الدليل العام للمنهجية
+//   (GÉNÉRÉ par scripts/build_guide_manhajia.ts — verrou
+//    guideManhajia.lock.test.ts). L'ancien corpus OCR « عكاشة »
+//   (OKACHA_METHODO_SECTIONS) n'est plus affiché : audit F3
+//   (docs/AUDIT_ARABE_HOSILA_2026-09-24.md) — il reste verrouillé par
+//   okachaEnriched.lock.test.ts / lessonIcons.test.ts, il n'est juste plus
+//   rendu ici.
 // Qualité affichage (lot A, 2026-09-24) : src/data/okachaQuality.ts masque les
-// déchets scan (score ≥ seuil) — verrou okachaQuality.lock.test.ts. Le corpus
-// généré est nettoyé en amont (lot B, enrich_okacha.ts) ; le filtre ici est
-// la défense en profondeur.
+//   déchets scan (score ≥ seuil) — verrou okachaQuality.lock.test.ts. Le filtre
+//   est appliqué aux unités OCR ; le guide est déjà propre (aucun déchet).
 //
 // Phase A (cette vue) :
-//  1. rendu STRUCTURÉ (hiérarchie + puces + notes, 15-17 px — plus de <pre>) ;
-//  2. recherche arabe normalisée (normAr) sur tout le corpus (unités + méthodo) ;
+//  1. rendu STRUCTURÉ (hiérarchie + puces + notes + tableaux, 15-17 px) ;
+//  2. recherche arabe normalisée (normAr) sur tout le corpus (unités + guide) ;
 //  3. mode حفظ : masquer les points → révéler → auto-évaluation (again/hard/
 //     good/easy) branchée sur le SM-2/XP existant (handleRateCard, App.tsx) ;
 //  4. progression par unité en localStorage (okachaProgress.ts) + accès QCM livre ;
-//  5. design system : D1 bleu / D2 ambre / D3 violet / méthodo émeraude,
+//  5. design system : D1 bleu / D2 ambre / D3 violet / guide émeraude,
 //     icônes par domaine, taille de lecture, impression.
 
 import { useEffect, useMemo, useState } from 'react';
@@ -25,16 +30,13 @@ import {
 } from 'lucide-react';
 import {
   OKACHA_UNITES_ENRICHIES,
-  OKACHA_METHODO_SECTIONS,
-  ENRICH_STATS,
   normAr,
-  type BlocOkacha,
-  type SectionMethodo,
 } from '../data/okachaEnriched';
+import { GUIDE_SECTIONS, GUIDE_TITRE } from '../data/guideManhajia';
 import { assainirTexte, estDechetOCR } from '../data/okachaQuality';
 import Icone from './Icone';
 import { HOSILA_STATS, unitesAffichees } from '../data/hosila';
-import { okachaUniteIcone, methodoIcone } from '../data/lessonIcons';
+import { okachaUniteIcone } from '../data/lessonIcons';
 import {
   loadOkachaProgress,
   toggleUniteLue,
@@ -91,26 +93,43 @@ function Surligne({ texte, q }: { texte: string; q: string }) {
   );
 }
 
-/** Ligne de résultats de recherche (unité OU section méthodo). */
+/**
+ * Bloc rendu à l'écran : soit un bloc des unités (BlocOkacha, OCR عكاشة /
+ * نصّ hosila), soit un bloc du الدليل العام للمنهجية (BlocGuide, qui ajoute
+ * `tableau`, la profondeur de titre et l'ancre cliquable).
+ */
+interface BlocAffiche {
+  kind: 'titre' | 'point' | 'puce' | 'note' | 'texte' | 'tableau';
+  num?: string;
+  texte: string;
+  niveau?: number;
+  entetes?: string[];
+  lignes?: string[][];
+  cible?: string;
+}
+
+/** Ligne de résultats de recherche (unité OU section du guide méthodologie). */
 interface LigneResultat {
-  cleParent: string; // unité (« d1u4 ») ou section (« m:tahil »)
+  cleParent: string; // unité (« d1u4 ») ou section (« m:s3 »)
   libelleParent: string;
   domaine: ThemeCle;
-  b: BlocOkacha;
+  b: BlocAffiche;
   idx: number;
 }
 
-/** Un bloc sémantique rendu dans sa hiérarchie (titre > point > puce > note > texte). */
+/** Un bloc sémantique rendu dans sa hiérarchie (titre > point > puce > note > texte > tableau). */
 function BlocView({
-  b, cle, domaine, cache, revele, onReveler, onNoter, notes, taille, q,
+  b, cle, domaine, cache, revele, onReveler, onNoter, onAller, notes, taille, q,
 }: {
-  b: BlocOkacha;
+  b: BlocAffiche;
   cle: string;
   domaine: ThemeCle;
   cache: boolean;        // mode حفظ actif ET point masqué
   revele: boolean;
   onReveler: () => void;
   onNoter: (n: NoteHafiz) => void;
+  /** Ancre cliquable (sommaire du guide) → ouvre la section de destination. */
+  onAller?: (sectionId: string) => void;
   notes?: { again: number; hard: number; good: number; easy: number };
   taille: string;        // classes de corps de texte
   q: string;
@@ -118,11 +137,51 @@ function BlocView({
   const th = THEME[domaine];
   const noteDeja = notes ? notes.again + notes.hard + notes.good + notes.easy > 0 : false;
 
-  if (b.kind === 'titre') {
+  if (b.kind === 'tableau') {
+    const entetes = b.entetes ?? [];
+    const lignes = b.lignes ?? [];
     return (
-      <div className="mt-5 mb-2 first:mt-0 flex items-center gap-2">
-        <span className={`w-1.5 h-5 rounded-full ${th.bar}`} />
-        <span className={`${taille} font-black text-gray-900 dark:text-gray-50`}>
+      <div className="my-3 overflow-x-auto rounded-2xl border border-gray-200 dark:border-gray-700">
+        <table dir="ltr" className="w-full border-collapse text-left" data-testid={`tableau-${cle}`}>
+          <thead>
+            <tr className="bg-gray-50 dark:bg-gray-900/70">
+              {entetes.map((h, i) => (
+                <th
+                  key={i}
+                  className="px-2.5 py-2 text-[12px] font-black text-gray-900 dark:text-gray-100 border-b border-gray-200 dark:border-gray-700 align-top"
+                >
+                  {h}
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {lignes.map((r, ri) => (
+              <tr key={ri} className="odd:bg-white even:bg-gray-50 dark:odd:bg-[#161c18] dark:even:bg-gray-900/40">
+                {entetes.map((_, ci) => (
+                  <td
+                    key={ci}
+                    className="px-2.5 py-1.5 text-[12px] font-bold text-gray-700 dark:text-gray-200 border-b border-gray-100 dark:border-gray-800 align-top"
+                  >
+                    <Surligne texte={r[ci] ?? ''} q={q} />
+                  </td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    );
+  }
+
+  if (b.kind === 'titre') {
+    const profond = b.niveau === 3;
+    return (
+      <div className={`mt-5 mb-2 first:mt-0 flex items-center gap-2 ${profond ? 'pr-3' : ''}`}>
+        <span className={`w-1.5 ${profond ? 'h-4 opacity-70' : 'h-5'} rounded-full ${th.bar}`} />
+        <span
+          className={`${taille} ${profond ? 'font-extrabold text-gray-700 dark:text-gray-200' : 'font-black text-gray-900 dark:text-gray-50'}`}
+        >
           <Surligne texte={b.texte} q={q} />
         </span>
       </div>
@@ -156,6 +215,15 @@ function BlocView({
               className={`flex-1 text-right rounded-xl border-2 border-dashed ${th.bord} bg-gray-50 dark:bg-gray-900/60 px-3 py-1.5 text-xs font-black text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors`}
             >
               👁 مخفي — اضغط للكشف
+            </button>
+          ) : b.cible && onAller ? (
+            <button
+              type="button"
+              onClick={() => onAller(b.cible!)}
+              data-testid={`aller-${b.cible}`}
+              className={`flex-1 text-right ${taille} font-bold text-emerald-700 dark:text-emerald-300 hover:underline leading-[1.95]`}
+            >
+              <Surligne texte={b.texte} q={q} />
             </button>
           ) : (
             <span className={`flex-1 ${taille} font-bold text-gray-800 dark:text-gray-100 leading-[1.95]`}>
@@ -209,14 +277,27 @@ function BlocView({
   }
 
   if (b.kind === 'puce') {
-    return (
-      <div className="flex items-start gap-2 my-1.5 pr-1">
+    const contenu = (
+      <>
         <span className={`shrink-0 w-1.5 h-1.5 rounded-full ${th.bar} mt-2.5`} />
         <span className={`flex-1 ${taille} font-bold text-gray-700 dark:text-gray-200 leading-[1.9]`}>
           <Surligne texte={b.texte} q={q} />
         </span>
-      </div>
+      </>
     );
+    if (b.cible && onAller) {
+      return (
+        <button
+          type="button"
+          onClick={() => onAller(b.cible!)}
+          data-testid={`aller-${b.cible}`}
+          className="flex w-full items-start gap-2 my-1.5 pr-1 text-right hover:opacity-80"
+        >
+          {contenu}
+        </button>
+      );
+    }
+    return <div className="flex items-start gap-2 my-1.5 pr-1">{contenu}</div>;
   }
 
   return (
@@ -230,7 +311,7 @@ export default function OkachaView({ onBack, onRate, onOpenQcm }: Props) {
   const [onglet, setOnglet] = useState<1 | 2 | 3 | 'm'>(1);
   /** Unité ouverte : `null` = écran d'icônes des unités du domaine. */
   const [ouverte, setOuverte] = useState<string | null>(null);
-  const [sectionM, setSectionM] = useState<string | null>('intro');
+  const [sectionM, setSectionM] = useState<string | null>(GUIDE_SECTIONS[0]?.id ?? null);
   const [q, setQ] = useState('');
   const [modeHafiz, setModeHafiz] = useState(false);
   const [grand, setGrand] = useState(false);
@@ -249,8 +330,9 @@ export default function OkachaView({ onBack, onRate, onOpenQcm }: Props) {
   /** Unité du livre actuellement ouverte (null = écran d'icônes). */
   const uniteCourante = ouverte ? corpusUnites.find((u) => u.id === ouverte) ?? null : null;
 
-  // Index de recherche normalisé (unités + méthodo) — construit une seule fois.
-  // Lot A : les déchets OCR (score ≥ seuil) n'entrent pas dans l'index.
+  // Index de recherche normalisé (unités + الدليل العام للمنهجية).
+  // Lot A : les déchets OCR (score ≥ seuil) des unités n'entrent pas dans
+  // l'index ; le guide est nativement propre, aucun filtre n'y est appliqué.
   const index = useMemo(() => {
     const rows: { norm: string; r: LigneResultat }[] = [];
     for (const u of corpusUnites) {
@@ -260,15 +342,17 @@ export default function OkachaView({ onBack, onRate, onOpenQcm }: Props) {
         rows.push({ norm: normAr(bAff.texte), r: { cleParent: u.id, libelleParent: u.uniteAr, domaine: u.domaine as ThemeCle, b: bAff, idx } });
       });
     }
-    for (const s of OKACHA_METHODO_SECTIONS) {
+    for (const s of GUIDE_SECTIONS) {
       s.blocs.forEach((b, idx) => {
-        if (estDechetOCR(b.texte)) return;
-        const bAff = { ...b, texte: assainirTexte(b.texte) };
-        rows.push({ norm: normAr(bAff.texte), r: { cleParent: `m:${s.id}`, libelleParent: s.titreAr, domaine: 'm' as const, b: bAff, idx } });
+        rows.push({ norm: normAr(b.texte), r: { cleParent: `m:${s.id}`, libelleParent: s.titre, domaine: 'm' as const, b, idx } });
       });
     }
     return rows;
   }, [corpusUnites]);
+
+  /** Ids du guide — sert à ne compter comme « lu » que les sections réelles. */
+  const idsGuide = useMemo(() => new Set(GUIDE_SECTIONS.map((s) => s.id)), []);
+  const sectionsLues = prog.sectionsLues.filter((id) => idsGuide.has(id));
 
   const qNorm = normAr(q.trim());
   const resultats: LigneResultat[] | null =
@@ -292,6 +376,17 @@ export default function OkachaView({ onBack, onRate, onOpenQcm }: Props) {
     const [parent, idxStr] = cle.split('#');
     setProg((p) => noterPoint(p, parent, Number(idxStr), n));
     onRate?.(cle, n);
+  };
+
+  /** Ancre du sommaire du guide : ouvre la section et fait défiler jusqu'à elle. */
+  const allerSection = (id: string) => {
+    setSectionM(id);
+    setProg((p) => marquerSectionLue(p, id));
+    requestAnimationFrame(() => {
+      document
+        .querySelector(`[data-testid="methodo-section-${id}"]`)
+        ?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
   };
 
   return (
@@ -352,7 +447,7 @@ export default function OkachaView({ onBack, onRate, onOpenQcm }: Props) {
         <input
           value={q}
           onChange={(e) => setQ(e.target.value)}
-          placeholder="ابحث في كل الملخصات والمنهجية… (مثال: الاستنساخ، المورثة، التفسير)"
+          placeholder="ابحث في كل الملخصات والدليل العام… (مثال: الاستنساخ، المورثة، التفسير)"
           data-testid="okacha-search"
           className="w-full rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-[#161c18] pr-9 pl-9 py-2.5 text-sm font-bold text-gray-800 dark:text-gray-100 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50"
         />
@@ -366,7 +461,7 @@ export default function OkachaView({ onBack, onRate, onOpenQcm }: Props) {
       {/* ── Bandeau notice + progression ── */}
       <div className="p-3 rounded-2xl bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-900 text-xs font-bold text-blue-900 dark:text-blue-200 leading-relaxed print:break-inside-avoid">
         الحصيلة المعرفية الرسمية من الكتاب المدرسي ({HOSILA_STATS.unites} وحدات)
-        + المنهجية من كتاب عكاشة ({ENRICH_STATS.sectionsMethodo} أقسام منهجية)
+        + الدليل العام للمنهجية ({GUIDE_SECTIONS.length} أقسام)
         — اقرأ، فعّل « وضع الحفظ » لتختبر نفسك، ثم اختبر في « اختبار الكتاب ».
         <div className="mt-2 flex items-center gap-2 flex-wrap">
           <span className="inline-flex items-center gap-1 text-[10px] font-black text-blue-700 dark:text-blue-300">
@@ -390,7 +485,7 @@ export default function OkachaView({ onBack, onRate, onOpenQcm }: Props) {
           className={`inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-black transition-colors ${onglet === 'm' ? THEME.m.actif : THEME.m.dormand}`}
         >
           <Icone cle="Compass" className="w-3.5 h-3.5" />
-          المنهجية (عكاشة)
+          الدليل العام للمنهجية
         </button>
         {([1, 2, 3] as const).map((d) => {
           const IconeDomaine = THEME[d].icone;
@@ -428,7 +523,10 @@ export default function OkachaView({ onBack, onRate, onOpenQcm }: Props) {
                   📖 {r.libelleParent}
                 </span>
                 <span className={`${taille} font-bold text-gray-800 dark:text-gray-100 leading-relaxed`}>
-                  <Surligne texte={r.b.texte} q={q} />
+                  <Surligne
+                    texte={r.b.kind === 'tableau' ? `${r.b.texte.slice(0, 220)}${r.b.texte.length > 220 ? '…' : ''}` : r.b.texte}
+                    q={q}
+                  />
                 </span>
               </button>
             ))}
@@ -436,20 +534,24 @@ export default function OkachaView({ onBack, onRate, onOpenQcm }: Props) {
         </section>
       )}
 
-      {/* ── Méthodo (9 sections : 8 du livre + nasiha — ordre du livre) ── */}
+      {/* ── الدليل العام للمنهجية (sections générées depuis le guide Markdown) ── */}
       {!resultats && onglet === 'm' && (
         <div className="space-y-3">
-          {/* Sommaire : 9 puces cliquables + badge « n/9 sections lues » */}
+          {/* Titre du document + sommaire cliquable + badge « n/N sections lues » */}
+          <div className="flex items-center gap-2 flex-wrap" data-testid="guide-titre">
+            <Icone cle="Compass" className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+            <h3 className="text-sm font-black text-gray-900 dark:text-gray-50">{GUIDE_TITRE}</h3>
+          </div>
           <nav
             className="flex flex-wrap items-center gap-1.5 p-2.5 rounded-2xl border border-emerald-200 dark:border-emerald-900/60 bg-emerald-50/60 dark:bg-emerald-950/20 print:hidden"
             data-testid="methodo-sommaire"
-            aria-label="Sommaire des sections méthodologie"
+            aria-label="Sommaire du guide de méthodologie"
           >
             <span className="text-[10px] font-black text-emerald-800 dark:text-emerald-300 ml-1">
-              📑 {prog.sectionsLues.length}/{OKACHA_METHODO_SECTIONS.length} أقسام مقروءة
+              📑 {sectionsLues.length}/{GUIDE_SECTIONS.length} أقسام مقروءة
             </span>
-            {OKACHA_METHODO_SECTIONS.map((s, i) => {
-              const lue = prog.sectionsLues.includes(s.id);
+            {GUIDE_SECTIONS.map((s, i) => {
+              const lue = sectionsLues.includes(s.id);
               const active = sectionM === s.id;
               return (
                 <button
@@ -459,7 +561,7 @@ export default function OkachaView({ onBack, onRate, onOpenQcm }: Props) {
                     setProg((p) => marquerSectionLue(p, s.id));
                   }}
                   data-testid={`sommaire-${s.id}`}
-                  title={s.titreAr}
+                  title={s.titre}
                   className={`inline-flex items-center gap-1 px-2 py-1 rounded-lg text-[10px] font-black transition-colors ${
                     active
                       ? 'bg-emerald-600 text-white'
@@ -469,13 +571,13 @@ export default function OkachaView({ onBack, onRate, onOpenQcm }: Props) {
                   }`}
                 >
                   <span>{lue ? '✓' : i + 1}</span>
-                  <span className="max-w-[7.5rem] truncate">{s.titreAr.split('—')[0].trim()}</span>
+                  <span className="max-w-[7.5rem] truncate">{s.titre.split('—')[0].trim()}</span>
                 </button>
               );
             })}
           </nav>
 
-          {OKACHA_METHODO_SECTIONS.map((s: SectionMethodo) => {
+          {GUIDE_SECTIONS.map((s) => {
             const ouverteS = sectionM === s.id;
             return (
               <section key={s.id} className={`rounded-3xl border ${THEME.m.bord} bg-white dark:bg-[#161c18] overflow-hidden`}>
@@ -493,14 +595,14 @@ export default function OkachaView({ onBack, onRate, onOpenQcm }: Props) {
                 >
                   <span className="flex items-center gap-2 text-sm font-black text-gray-800 dark:text-gray-100">
                     <span className="inline-flex items-center justify-center w-7 h-7 rounded-xl bg-emerald-600 text-white shrink-0">
-                      <Icone cle={methodoIcone(s.id)} className="w-4 h-4" />
+                      <Icone cle={s.icone} className="w-4 h-4" />
                     </span>
-                    {s.titreAr}
+                    {s.titre}
                   </span>
                   <span className="text-[10px] font-black text-emerald-700 dark:text-emerald-300">
                     {ouverteS
                       ? '▲ إخفاء'
-                      : `▼ ${s.blocs.filter((b) => !estDechetOCR(b.texte)).length} سطراً`}
+                      : `▼ ${s.blocs.length} مدخلاً`}
                   </span>
                 </button>
                 {ouverteS && (
@@ -521,15 +623,12 @@ export default function OkachaView({ onBack, onRate, onOpenQcm }: Props) {
                             data-testid={`sous-${ss.id}`}
                             className="px-2 py-1 rounded-lg bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-900/60 text-[10px] font-black text-emerald-800 dark:text-emerald-200 hover:bg-emerald-100"
                           >
-                            {ss.titreAr}
+                            {ss.titre}
                           </button>
                         ))}
                       </div>
                     )}
                     {s.blocs.map((b, idx) => {
-                      // Lot A : déchets OCR masqués — l'index d'origine (cle /
-                      // ancrage sous-section) est conservé pour la stabilité.
-                      if (estDechetOCR(b.texte)) return null;
                       const cle = `m:${s.id}#${idx}`;
                       const estAncrage = s.sous?.some((ss) => ss.from === idx);
                       return (
@@ -538,13 +637,14 @@ export default function OkachaView({ onBack, onRate, onOpenQcm }: Props) {
                           data-bloc-anchor={estAncrage ? `${s.id}:${idx}` : undefined}
                         >
                         <BlocView
-                          b={{ ...b, texte: assainirTexte(b.texte) }}
+                          b={b}
                           cle={cle}
                           domaine="m"
-                          cache={modeHafiz && b.kind === 'point' && !revelves.has(cle)}
+                          cache={modeHafiz && b.kind === 'point' && !b.cible && !revelves.has(cle)}
                           revele={revelves.has(cle)}
                           onReveler={() => setRevelves((prev) => new Set(prev).add(cle))}
                           onNoter={(n) => noter(cle, n)}
+                          onAller={allerSection}
                           notes={prog.evals[cle]}
                           taille={taille}
                           q={q}
