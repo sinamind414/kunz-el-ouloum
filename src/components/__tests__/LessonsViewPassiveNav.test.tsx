@@ -76,4 +76,32 @@ describe('LessonsView — leçons passives par icônes', () => {
     // Toutes les unités portent une icône rendue (svg lucide).
     expect(screen.getByTestId('unite-11').querySelector('svg')).toBeTruthy();
   });
+
+  // ── الحصيلة المعرفية déplacée dans les leçons passives ─────────────────
+  it('l’écran principal n’a plus de carte « الحصيلة المعرفية » autonome', () => {
+    render(<LessonsView />);
+    expect(screen.queryByText('الحصيلة المعرفية')).toBeNull();
+    expect(screen.queryByTestId('okacha-entree-domaine')).toBeNull();
+    // Les 4 autres rubriques sont toujours là.
+    expect(screen.getByText('الدرس السلبي')).toBeTruthy();
+    expect(screen.getByText('اختبار الكتاب')).toBeTruthy();
+    expect(screen.getByText('اختبار بكالوريا')).toBeTruthy();
+  });
+
+  it('chaque domaine a SA الحصيلة : entrée en fin d’écran, ouverte sur ce domaine', async () => {
+    const user = await ouvrirDomaine(3);
+    const entree = screen.getByTestId('okacha-entree-domaine');
+    // La carte porte bien le nom du domaine courant.
+    expect(entree.textContent).toMatch(/الحصيلة المعرفية/);
+    expect(entree.textContent).toMatch(/التكتونية العامة/);
+    await user.click(entree);
+    // La حصيلة s'ouvre sur le domaine courant (D3), pas en domaine 1 par défaut.
+    expect(screen.getAllByTestId(/^okacha-unite-/)).toHaveLength(3);
+    // Et avec les numéros des LEÇONS (الصفائح = وحدة 9, بنية الكرة = وحدة 10).
+    expect(screen.getByTestId('unite-numero-d3u2').textContent).toMatch(/وحدة 9/);
+    expect(screen.getByTestId('unite-numero-d3u1').textContent).toMatch(/وحدة 10/);
+    // Retour → on revient à l'écran des unités du domaine (pas au menu principal).
+    await user.click(screen.getByText('عودة'));
+    expect(screen.getByTestId('unites-icones')).toBeTruthy();
+  });
 });

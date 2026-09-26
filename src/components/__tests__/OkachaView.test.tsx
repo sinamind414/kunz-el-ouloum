@@ -210,4 +210,39 @@ describe('OkachaView — الحصيلة المعرفية modernisée', () => {
     expect(panneau.textContent).toMatch(/لا نتائج|نتيجة/);
     expect(panneau.textContent).not.toMatch(/سأةم/); // corps du déchet masqué
   });
+
+  // ── Numéros d'unité alignés sur les leçons passives ────────────────────
+  // Les badges affichaient « u1/u2/u3 » (numéro local remis à zéro à chaque
+  // domaine) : un même chiffre désignait deux unités différentes. Ils portent
+  // désormais le numéro OFFICIEL (INITIAL_UNITS, 1..11).
+  it('badges = numéro officiel de l’unité (D1 : 1..5, D3 : 9 · 10 · 11)', async () => {
+    const user = userEvent.setup();
+    render(<OkachaView onBack={vi.fn()} />);
+    // D1 : 5 icônes, badges 1..5 dans l'ordre.
+    expect(screen.getAllByTestId(/^unite-numero-/).map((e) => e.textContent)).toEqual([
+      'وحدة 1',
+      'وحدة 2',
+      'وحدة 3',
+      'وحدة 4',
+      'وحدة 5',
+    ]);
+    // D3 : l'ordre suit le LIVRE (الصفائح 9 puis بنية الكرة 10), pas l'ordre
+    // alphabétique des ids « d3u1/d3u2 ».
+    await user.click(screen.getByTestId('onglet-domaine-3'));
+    expect(screen.getAllByTestId(/^unite-numero-/).map((e) => e.textContent)).toEqual([
+      'وحدة 9',
+      'وحدة 10',
+      'وحدة 11',
+    ]);
+    expect(screen.getByTestId('unite-numero-d3u2').textContent).toMatch(/وحدة 9/);
+    expect(screen.getByTestId('unite-numero-d3u1').textContent).toMatch(/وحدة 10/);
+  });
+
+  it('domaineInitial : ouvre la حصيلة sur le domaine demandé (D2 = 2 unités)', () => {
+    render(<OkachaView onBack={vi.fn()} domaineInitial={2} />);
+    expect(screen.getByTestId('okacha-unites-icones')).toBeTruthy();
+    expect(screen.getAllByTestId(/^okacha-unite-/)).toHaveLength(2);
+    expect(screen.queryByTestId('okacha-unite-d1u1')).toBeNull();
+    expect(screen.getByTestId('unite-numero-d2u1').textContent).toMatch(/وحدة 6/);
+  });
 });

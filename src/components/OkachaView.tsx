@@ -36,6 +36,7 @@ import { GUIDE_SECTIONS, GUIDE_TITRE } from '../data/guideManhajia';
 import { assainirTexte, estDechetOCR } from '../data/okachaQuality';
 import Icone from './Icone';
 import { HOSILA_STATS, unitesAffichees } from '../data/hosila';
+import { numeroUniteHosila } from '../data/hosilaUnitNumbers';
 import { okachaUniteIcone } from '../data/lessonIcons';
 import {
   loadOkachaProgress,
@@ -55,6 +56,12 @@ interface Props {
   onRate?: (cardId: string, rating: NoteHafiz) => void;
   /** Ouvre le QCM du livre (اختبار الكتاب). */
   onOpenQcm?: () => void;
+  /**
+   * Domaine ouvert au montage (1 | 2 | 3 | 'm').
+   * Entrée depuis les leçons passives : chaque domaine a SA propre
+   * الحصيلة المعرفية — on n'ouvre plus la rubrique « au hasard » en domaine 1.
+   */
+  domaineInitial?: 1 | 2 | 3 | 'm';
 }
 
 const NOM_DOMAINE: Record<number, string> = {
@@ -307,8 +314,8 @@ function BlocView({
   );
 }
 
-export default function OkachaView({ onBack, onRate, onOpenQcm }: Props) {
-  const [onglet, setOnglet] = useState<1 | 2 | 3 | 'm'>(1);
+export default function OkachaView({ onBack, onRate, onOpenQcm, domaineInitial }: Props) {
+  const [onglet, setOnglet] = useState<1 | 2 | 3 | 'm'>(domaineInitial ?? 1);
   /** Unité ouverte : `null` = écran d'icônes des unités du domaine. */
   const [ouverte, setOuverte] = useState<string | null>(null);
   const [sectionM, setSectionM] = useState<string | null>(GUIDE_SECTIONS[0]?.id ?? null);
@@ -325,7 +332,15 @@ export default function OkachaView({ onBack, onRate, onOpenQcm }: Props) {
 
   /** Contenu affiché : الحصيلة الرسمية (hosila) prioritaire, repli عكاشة si absent. */
   const corpusUnites = useMemo(() => unitesAffichees(OKACHA_UNITES_ENRICHIES), []);
-  const unites = useMemo(() => corpusUnites.filter((u) => u.domaine === (onglet as number)), [corpusUnites, onglet]);
+  // Tri sur le numéro OFFICIEL de l'unité (1..11) : en domaine 3 les ids
+  // « d3u1/d3u2 » ne sont pas dans l'ordre du livre, l'affichage doit l'être.
+  const unites = useMemo(
+    () =>
+      corpusUnites
+        .filter((u) => u.domaine === (onglet as number))
+        .sort((a, b) => (numeroUniteHosila(a.id) ?? 0) - (numeroUniteHosila(b.id) ?? 0)),
+    [corpusUnites, onglet],
+  );
   const taille = grand ? 'text-[17px]' : 'text-[15px]';
   /** Unité du livre actuellement ouverte (null = écran d'icônes). */
   const uniteCourante = ouverte ? corpusUnites.find((u) => u.id === ouverte) ?? null : null;
@@ -679,8 +694,11 @@ export default function OkachaView({ onBack, onRate, onOpenQcm }: Props) {
                 </span>
                 <span className="flex-1 min-w-0 space-y-1">
                   <span className="flex items-start gap-2">
-                    <span className={`inline-flex items-center justify-center w-6 h-6 rounded-lg ${th.num} text-[11px] font-black shrink-0`}>
-                      {u.id.slice(2)}
+                    <span
+                      data-testid={`unite-numero-${u.id}`}
+                      className={`inline-flex items-center justify-center h-6 px-2 rounded-lg ${th.num} text-[11px] font-black shrink-0`}
+                    >
+                      وحدة {numeroUniteHosila(u.id)}
                     </span>
                     <span className="text-sm font-black text-gray-800 dark:text-gray-100">{u.uniteAr}</span>
                     {lue && <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />}
@@ -738,7 +756,7 @@ export default function OkachaView({ onBack, onRate, onOpenQcm }: Props) {
                 }`}
               >
                 <Icone cle={okachaUniteIcone(v.id, v.domaine)} className="w-3.5 h-3.5" />
-                {v.id.slice(2)}
+                وحدة {numeroUniteHosila(v.id)}
               </button>
             ))}
           </div>
