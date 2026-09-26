@@ -223,6 +223,67 @@ const FIXES: Record<string, string> = {
   'اشترلوني': 'اوشترلوني', // 2× graphie du livre officiel : « راجع تجربة اوشترلوني »
   'بخفض تيمة ال': 'بخفض قيمة ال', // 1× « بخفض تيمة ال PH » (2ᵉ « تيمة » reste : phrase entièrement illisible)
   'نفع في قاع': 'تقع في قاع', // 2× « سلاسل جبلية محيطية مرتفعة تقع في قاع المحيط »
+
+  // ── Lot F (2026-09-26, retrait des fragments de filigrane de scan) ────────
+  // Famille B : retrait pur, aucun ajout, aucune réécriture. Fragments
+  // inventoriés par scripts/scan_okacha_filigrane.ts, puis cartographiés ligne
+  // par ligne (pièce = sous-chaîne coincée entre deux frontières de ligne).
+  // UNE clé doit exister à la fois
+  // dans le BLOC structuré (espaces normalisés) ET dans la LIGNE BRUTE,
+  // sinon l'application devient asymétrique et le verrou de couverture échoue.
+  //  · pièce traversant une frontière de ligne → émise à part, PLAFONNÉE par le
+  //    bord de ligne (jamais de clé contenant un « \n ») ;
+  //  · ligne à tabulation → les DEUX formes sont déclarées (« \t » frappe la
+  //    source brute, espace frappe le bloc) — cf. note l.90-92 ;
+  //  · fréquence = 1 ligne exigée : « ب: » (17×) et « ، » (717×) ne peuvent
+  //    PAS être des clés — leurs pièces restent donc volontairement en place.
+  // Le numéro manquant (« ١- » de tafsir) est recollé au point précédent par
+  // nettoieBlocs : accepté, préférable au filigrane complet.
+  'كاشة لنطانس النهوق....': '', // d1u1#61 suffixe — le « . » de fin de phrase reste au bloc
+  'المنهوق اي ،1,م المطسعة والحماة': '', // d1u1#63 préfixe
+  'المنهوق بي،لموم الطبعة والحباء': '', // d1u3#13 pièce 1/2 — bloc entier
+  '،٩ إنالس المفوك......': '', // d1u3#13 pièce 2/2 — bloc vidé puis retiré
+  'خيرن مكاشه الطالس المدود . - شا بنرب': '', // d1u4#7 — « 177-المط … » (contenu) suit sur la même ligne
+  '،روءكاءة': '', // d1u4#16 pièce 1/2 — le « . » initial reste sur la ligne brute
+  'للطالس المتهول.....': '', // d1u4#16 pièce 2/2
+  'كاشة للطالب المنهوك': '', // d1u4#59 pièce 1/3 — « ب: » (17×) reste : pièce non cléable
+  'للط١ب الفوق المنفوق في علوم الطبيعة والحباة': '', // d3u2#2 — AVANT la clé suivante
+  'المنفوق في علوم الطبيعة والحباة': '', // d1u4#59 pièce 2/3 + d3u2#2 — 2 lignes, TOUTES filigrane
+  'مضرو ءكاخة للعطالس المنهوق\tالمنهو ف، و ء': '', // d1u4#73 forme brute (tab)
+  'مضرو ءكاخة للعطالس المنهوق المنهو ف، و ء': '', // d1u4#73 forme bloc (espace)
+  'ز المنفوفى لي عاوم العل...': '', // d1u4#93 bloc entier
+  'كاشة للطالب المنفوث.': '', // d1u4#104
+  'مخروع ثكاشة الطال المتوك.-٠٠—“--—-—٠ثويرممس': '', // d1u4#151
+  'للمطالب المنفوق': '', // d1u5#34 ligne brute isolée
+  'المه وقى ! عاوم الطمبعة والحجاة': '', // d1u5#34 ligne brute isolée
+  '»اشف الملالب المنهوف': '', // d1u5#69 pièce 1/2 — la « ، » de la pièce 2 reste (717× corpus)
+  'كاشة للطالب المتفوك........ المفود لي ما,م المطبمة ,الهباة لل سفة ساة عصية عم عصود حسى، تشابلك مد الأدود : الهايه افد شحي المشاد . المذكور سابقا.': '', // d1u5#110
+  'كاشة الدلالب المنهوق\tالمنهوفى في،لوم المطيم: والحجاء': '', // d3u1#7 forme brute (tab)
+  'كاشة الدلالب المنهوق المنهوفى في،لوم المطيم: والحجاء': '', // d3u1#7 forme bloc (espace)
+  '٦بلمض.م-': '', // d3u3#39 pièce 1/3
+  '٤رو٤': '', // d3u3#39 pièce 2/3
+  '»اشة الطالب المنهوق': '', // d3u3#39 pièce 3/3
+  '»كاشة للطالب المنفوق\t- ٠': '', // d2u1#15 forme brute (tab)
+  '»كاشة للطالب المنفوق - ٠': '', // d2u1#15 forme bloc (espace) — AVANT « كاشة للطالب المنفوق »
+  'ا67.': '', // d2u1#15 pièce 2/2
+  'كاشة لنطالس المنهوفالمنهف في ،له٠ احطمبعة ٠اخمباء': '', // d2u2#16 pièce 1/2
+  'ع٤\tماء ا: ب٠': '', // d2u2#16 pièce 2/2 forme brute (tab)
+  'ع٤ ماء ا: ب٠': '', // d2u2#16 pièce 2/2 forme bloc (espace)
+  'المنهوف ا عاوم العطبمة ,المجبا:': '', // d2u2#43 titre entier
+  'مدسدمصح': '', // méth:intro#5 pièce 1/3 — jeton orphelin isolé sur sa ligne
+  'مشروع عكامة للطالب المذفوفى': '', // méth:intro#5 pièce 2/3
+  'المنهوق وي ء1و٠ الوز': '', // méth:intro#5 pièce 3/3
+  'المنفوق إ ،اوم الطبعة والحماة': '', // tamarin1#22 préfixe
+  'كاشة للطالب المنفوق': '', // tamarin1#38 pièce 1/2 (1ʳᵉ ligne ; l'occurrence d2u1#15 est déjà vidée)
+  'تمد المارمات المستخرجة غيم عدده': '', // tamarin1#38 pièce 2/2
+  'لطالب المنفوق\t,صوى د علوم الضئ واخباة': '', // tafsir#16 forme brute (tab, SANS tiret — le bloc, lui, a « ١- »)
+  'لطالب المنفوق ,صوى د علوم الضئ واخباة': '', // tafsir#16 forme bloc (espace)
+  'المذفوق لي ءاوم الطبيعة والحياة': '', // istinj#19
+  'المنفوف في ءاوم الطببعة والحباة': '', // istinj#60
+  // DERNIÈRE : ne reste couverte par aucune clé longue que d1u5#34 (« .كاشة »,
+  // ligne brute L668). Les 9 autres blocs affichés porteurs de « كاشة » sont
+  // déjà vidés ci-dessus — déclarée avant, elle y laisserait des débris.
+  'كاشة': '',
 };
 
 // ── Normalisation arabe (même logique que okacha.lock.test.ts) ──
