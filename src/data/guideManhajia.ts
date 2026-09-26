@@ -38,774 +38,704 @@ export interface SectionGuide {
 }
 
 /** Titre du document (# de la source). */
-export const GUIDE_TITRE = "📘 GUIDE FUSED — Méthodologie SVT BAC 3AS Sciences Expérimentales";
+export const GUIDE_TITRE = "الدليل المتكامل — منهجية مادة علوم الطبيعة والحياة — باكالوريا السنة الثالثة ثانوي";
 
 export const GUIDE_SECTIONS: SectionGuide[] = [
   {
     "id": "sommaire",
-    "titre": "TABLE DES MATIÈRES",
+    "titre": "فهرس المحتويات",
     "icone": "Grid3x3",
     "blocs": [
       {
-        "kind": "point",
-        "num": "1",
-        "texte": "Introduction — Pourquoi ce guide ?",
+        "kind": "puce",
+        "texte": "مقدمة — لماذا هذا الدليل؟",
         "cible": "s1"
       },
       {
-        "kind": "point",
-        "num": "2",
-        "texte": "Le nouveau format du BAC depuis 2017",
+        "kind": "puce",
+        "texte": "النموذج الجديد للبكالوريا منذ 2017",
         "cible": "s2"
       },
       {
-        "kind": "point",
-        "num": "3",
-        "texte": "Typologie complète des verbes d'action",
+        "kind": "puce",
+        "texte": "التصنيف الكامل لأفعال المهمة الأدائية",
         "cible": "s3"
       },
       {
         "kind": "puce",
-        "texte": "3.1 Verbes simples (mobilisation des connaissances)",
-        "cible": "s3"
-      },
-      {
-        "kind": "puce",
-        "texte": "3.2 Verbes d'analyse et d'interprétation",
-        "cible": "s3"
-      },
-      {
-        "kind": "puce",
-        "texte": "3.3 Verbes de raisonnement scientifique (Exercice 3)",
-        "cible": "s3"
-      },
-      {
-        "kind": "puce",
-        "texte": "3.4 Tableau de reconnaissance rapide",
-        "cible": "s3"
-      },
-      {
-        "kind": "point",
-        "num": "4",
-        "texte": "Structure de la réponse — Les deux approches",
+        "texte": "هيكلة الإجابة — النهج المزدوج",
         "cible": "s4"
       },
       {
         "kind": "puce",
-        "texte": "4.1 La structure en 3 parties",
-        "cible": "s4"
-      },
-      {
-        "kind": "puce",
-        "texte": "4.2 La méthode d'analyse de document",
-        "cible": "s4"
-      },
-      {
-        "kind": "puce",
-        "texte": "4.3 La méthode du schéma fonctionnel",
-        "cible": "s4"
-      },
-      {
-        "kind": "point",
-        "num": "5",
-        "texte": "Méthode par exercice — Types 1, 2, 3",
+        "texte": "المنهجية حسب نوع التمرين (1، 2، 3)",
         "cible": "s5"
       },
       {
         "kind": "puce",
-        "texte": "5.1 Exercice 1 (5 pts) — Récupération et organisation",
-        "cible": "s5"
-      },
-      {
-        "kind": "puce",
-        "texte": "5.2 Exercice 2 (7 pts) — Analyse et interprétation",
-        "cible": "s5"
-      },
-      {
-        "kind": "puce",
-        "texte": "5.3 Exercice 3 (8 pts) — Démarche scientifique complète",
-        "cible": "s5"
-      },
-      {
-        "kind": "point",
-        "num": "6",
-        "texte": "Méthodologie de révision",
+        "texte": "منهجية المراجعة والتحضير",
         "cible": "s6"
       },
       {
-        "kind": "point",
-        "num": "7",
-        "texte": "Pièges à éviter",
+        "kind": "puce",
+        "texte": "الأخطاء الشائعة والمحاذير",
         "cible": "s7"
       },
       {
-        "kind": "point",
-        "num": "8",
-        "texte": "Checklist de préparation",
+        "kind": "puce",
+        "texte": "قائمة مراجعة سريعة",
         "cible": "s8"
       },
       {
-        "kind": "point",
-        "num": "9",
-        "texte": "Conclusion — Le message ultime",
+        "kind": "puce",
+        "texte": "الخلاصة — الرسالة الأساسية",
         "cible": "s9"
       }
     ]
   },
   {
     "id": "s1",
-    "titre": "1. INTRODUCTION — POURQUOI CE GUIDE ?",
+    "titre": "1. مقدمة — لماذا هذا الدليل؟",
     "icone": "Lightbulb",
     "blocs": [
       {
         "kind": "texte",
-        "texte": "Deux ressources de référence ont été croisées et fusionnées pour produire ce guide unique de méthodologie SVT BAC 3AS Sciences Expérimentales."
+        "texte": "دمجت مصادر مرجعية ناضجة في منهجية الإجابة لشهادة البكالوريا — مادة علوم الطبيعة والحياة — شعبة العلوم التجريبية، لتكون مرجعاً شاملاً وممتعاً."
       },
       {
         "kind": "texte",
-        "texte": "Le premier ouvrage (2023) apporte :"
+        "texte": "ما يقدمه الدليل المدمج :"
       },
       {
         "kind": "puce",
-        "texte": "Une taxinomie systématique des verbes d'action avec définitions, niveaux (simple/composé), exercices concernés et exemples traités"
+        "texte": "نظام تصنيفي متكامل لأفعال المهمة الأدائية مع تعريفات واضحة ومستويات (بسيط / مركب) وتمرينات معنية وأمثلة محلولة"
       },
       {
         "kind": "puce",
-        "texte": "Une méthode détaillée d'analyse de document (étapes, mots-clés, exemples)"
+        "texte": "طريقة تحليل الوثائق خطوة بخطوة"
       },
       {
         "kind": "puce",
-        "texte": "Une coverage scientifique étendue (génétique moléculaire, biotechnologies, physiologie détaillée, immunologie, communication nerveuse)"
+        "texte": "هيكلة الإجابة المثلى (مقدمة + عرض + خاتمة)"
+      },
+      {
+        "kind": "puce",
+        "texte": "منهجية المتابعة الفعلية حسب نوع التمرين (1، 2، 3)"
+      },
+      {
+        "kind": "puce",
+        "texte": "منهجية المراجعة والتحضير الفعالة (إدارة الوقت، الجلسات، التقويم الذاتي)"
+      },
+      {
+        "kind": "puce",
+        "texte": "نصائح نفسية وتربوية وإدارية"
       },
       {
         "kind": "texte",
-        "texte": "Le second ouvrage (2021), rédigé par une élève brillante (ayant obtenu une moyenne exceptionnelle au baccalauréat), apporte :"
-      },
-      {
-        "kind": "puce",
-        "texte": "Une perspective pratique et vécue sur la réussite à l'examen"
-      },
-      {
-        "kind": "puce",
-        "texte": "Des conseils de structuration de la réponse (titres, ordre, présentation)"
-      },
-      {
-        "kind": "puce",
-        "texte": "Une méthodologie de révision complète (gestion du temps, sessions, auto-évaluation)"
-      },
-      {
-        "kind": "puce",
-        "texte": "Des conseils psychologiques et motivationnels"
-      },
-      {
-        "kind": "texte",
-        "texte": "Ce guide fusion est conçu pour servir de référence méthodologique complète à tout élève de 3AS Sciences Expérimentales préparant le baccalauréat."
+        "texte": "يهدف هذا الدليل إلى كونه المرجع المنهجي الشامل لكل تلميذ في السنة الثالثة ثانوي شعبة العلوم التجريبية يحضر للبكالوريا."
       }
     ]
   },
   {
     "id": "s2",
-    "titre": "2. LE NOUVEAU FORMAT DU BAC DEPUIS 2017",
+    "titre": "2. النموذج الجديد للبكالوريا منذ 2017",
     "icone": "Target",
     "blocs": [
       {
         "kind": "titre",
         "niveau": 2,
-        "texte": "2.1. Répartition des points et durée"
+        "texte": "2.1 توزيع النقط والأوقات"
       },
       {
         "kind": "tableau",
-        "texte": "Exercice · Points · Durée estimée · Type de tâche · Verbes typiques · Exercice 1 · 5 pts · ~45 min · استرجاع، تنظيم، هيكلة (récupération + organisation) · تعرف, عرف, حدد, ذكر, عدد, رتب, صنف, ميز, وصف بنية, رسم تخطيطي · Exercice 2 · 7 pts · ~1h15 · Analyse et interprétation · تحليل, تفسير, مقارنة, مناقشة, استنتاج, علّق, أنقد, علل/برر, فسر/وضّح/بين, اشرح · Exercice 3 · 8 pts · ~2h · Démarche scientifique complète (مسعى علمي) · صياغ مشكل علني, اقتراح فرضية, التحقق من صحة, إثبات, نقاش, اكتب نصا علميا, أنجز مخططا",
+        "texte": "تمرين · النقط · المدة التقريبية · طبيعة المهمة · الأفعال المتعارف عليها · تمرين 1 · 5 ن · ~45 د · استرجاع، تنظيم، هيكلة · تعرف، عرف، صف، أذكر، عدد، رتب، صنف، ميز، حدد، رسم تخطيطي · تمرين 2 · 7 ن · ~1س و15 د · تحليل وتفسير ومناقشة · تحليل، تفسير، مقارنة، مناقشة، استنتاج، علّق، أنقد، علّل/برر، فسر/وضّح/بين، اشرح · تمرين 3 · 8 ن · ~2س · مسار علمي كامل · صياغة مشكل علمي، اقتراح فرضية، التحقق من صحة، إثبات، نقاش، اكتب نصا علمياً، أنجز مخططاً",
         "entetes": [
-          "Exercice",
-          "Points",
-          "Durée estimée",
-          "Type de tâche",
-          "Verbes typiques"
+          "تمرين",
+          "النقط",
+          "المدة التقريبية",
+          "طبيعة المهمة",
+          "الأفعال المتعارف عليها"
         ],
         "lignes": [
           [
-            "Exercice 1",
-            "5 pts",
-            "~45 min",
-            "استرجاع، تنظيم، هيكلة (récupération + organisation)",
-            "تعرف, عرف, حدد, ذكر, عدد, رتب, صنف, ميز, وصف بنية, رسم تخطيطي"
+            "تمرين 1",
+            "5 ن",
+            "~45 د",
+            "استرجاع، تنظيم، هيكلة",
+            "تعرف، عرف، صف، أذكر، عدد، رتب، صنف، ميز، حدد، رسم تخطيطي"
           ],
           [
-            "Exercice 2",
-            "7 pts",
-            "~1h15",
-            "Analyse et interprétation",
-            "تحليل, تفسير, مقارنة, مناقشة, استنتاج, علّق, أنقد, علل/برر, فسر/وضّح/بين, اشرح"
+            "تمرين 2",
+            "7 ن",
+            "~1س و15 د",
+            "تحليل وتفسير ومناقشة",
+            "تحليل، تفسير، مقارنة، مناقشة، استنتاج، علّق، أنقد، علّل/برر، فسر/وضّح/بين، اشرح"
           ],
           [
-            "Exercice 3",
-            "8 pts",
-            "~2h",
-            "Démarche scientifique complète (مسعى علمي)",
-            "صياغ مشكل علني, اقتراح فرضية, التحقق من صحة, إثبات, نقاش, اكتب نصا علميا, أنجز مخططا"
+            "تمرين 3",
+            "8 ن",
+            "~2س",
+            "مسار علمي كامل",
+            "صياغة مشكل علمي، اقتراح فرضية، التحقق من صحة، إثبات، نقاش، اكتب نصا علمياً، أنجز مخططاً"
           ]
         ]
       },
       {
         "kind": "titre",
         "niveau": 2,
-        "texte": "2.2. Ce que change le nouveau format par rapport à l'ancien (BAC 2013)"
+        "texte": "2.2 ما الذي تغير مقارنة بالنموذج القديم (2013)؟"
       },
       {
         "kind": "tableau",
-        "texte": "Ancien format (2013) · Nouveau format (2017+) · Questions multiples imbriquées (a → b → c) · 3 exercices structurés, consignes courtes et autonomes · Documents nombreux, questions dispersées · Documents ciblés, questions précises et focalisées · Privilégie le savoir acquis · Privilégie la démarche scientifique et le raisonnement · Perte en chaîne si un point manqué · Organisation autonome, structuration de la réponse · Questions fermées surtout · Questions ouvertes et tâches complexes",
+        "texte": "النموذج القديم (2013) · النموذج الجديد (2017+) · أسئلة متعددة متشعبة (أ → ب → ج) · 3 تمارين منظمة، تعليمات قصيرة ومستقلة · وثائق كثيرة، أسئلة متباعدة · وثائق مستهدفة، أسئلة دقيقة ومركزة · المعرفة المدرسية هي الغالب · المسار العلمي والاستدلال هما الغالب · خسارة متتالية إذا ضاع نقطة · تنظيم ذاتي وهيكلة الإجابة بوضوح · أسئلة مغلقة في العادة · أسئلة مفتوحة ومهمات مركبة",
         "entetes": [
-          "Ancien format (2013)",
-          "Nouveau format (2017+)"
+          "النموذج القديم (2013)",
+          "النموذج الجديد (2017+)"
         ],
         "lignes": [
           [
-            "Questions multiples imbriquées (a → b → c)",
-            "3 exercices structurés, consignes courtes et autonomes"
+            "أسئلة متعددة متشعبة (أ → ب → ج)",
+            "3 تمارين منظمة، تعليمات قصيرة ومستقلة"
           ],
           [
-            "Documents nombreux, questions dispersées",
-            "Documents ciblés, questions précises et focalisées"
+            "وثائق كثيرة، أسئلة متباعدة",
+            "وثائق مستهدفة، أسئلة دقيقة ومركزة"
           ],
           [
-            "Privilégie le savoir acquis",
-            "Privilégie la démarche scientifique et le raisonnement"
+            "المعرفة المدرسية هي الغالب",
+            "المسار العلمي والاستدلال هما الغالب"
           ],
           [
-            "Perte en chaîne si un point manqué",
-            "Organisation autonome, structuration de la réponse"
+            "خسارة متتالية إذا ضاع نقطة",
+            "تنظيم ذاتي وهيكلة الإجابة بوضوح"
           ],
           [
-            "Questions fermées surtout",
-            "Questions ouvertes et tâches complexes"
+            "أسئلة مغلقة في العادة",
+            "أسئلة مفتوحة ومهمات مركبة"
           ]
         ]
       },
       {
         "kind": "titre",
         "niveau": 2,
-        "texte": "2.3. Conséquences pratiques pour l'élève"
+        "texte": "2.3 العواقب العملية على التلميذ"
       },
       {
-        "kind": "point",
-        "num": "1",
-        "texte": "Il faut savoir structurer sa pensée — pas juste réciter des notions"
+        "kind": "puce",
+        "texte": "هيكلة التفكير ضرورية — لا يكفي مجرد استظهار المعلومات"
       },
       {
-        "kind": "point",
-        "num": "2",
-        "texte": "La reconnaissance des verbes d'action est cruciale — elle dicte la nature de la réponse attendue"
+        "kind": "puce",
+        "texte": "التعرف على أفعال المهمة الأدائية أساسي — هي التي تحدد نوع الإجابة المتوقعة"
       },
       {
-        "kind": "point",
-        "num": "3",
-        "texte": "La qualité de la rédaction compte — présentation, clarté, précision terminologique"
+        "kind": "puce",
+        "texte": "جودة التعبير واحترافية اللغة العلمية — وضوح العرض، دقة المصطلحات"
       },
       {
-        "kind": "point",
-        "num": "4",
-        "texte": "Le schéma doit être bien pensé — pas juste une illustration, mais un outil de communication scientifique"
+        "kind": "puce",
+        "texte": "المخطط يحتاج تفكيراً مسبقاً — ليس مجرد توضيح، بل أداة موضوعية للتواصل العلمي"
       }
     ],
     "sous": [
       {
         "id": "s2-h0",
-        "titre": "2.1. Répartition des points et durée",
+        "titre": "2.1 توزيع النقط والأوقات",
         "from": 0
       },
       {
         "id": "s2-h1",
-        "titre": "2.2. Ce que change le nouveau format par rapport à l'ancien (BAC 2013)",
+        "titre": "2.2 ما الذي تغير مقارنة بالنموذج القديم (2013)؟",
         "from": 2
       },
       {
         "id": "s2-h2",
-        "titre": "2.3. Conséquences pratiques pour l'élève",
+        "titre": "2.3 العواقب العملية على التلميذ",
         "from": 4
       }
     ]
   },
   {
     "id": "s3",
-    "titre": "3. TYPOLOGIE COMPLÈTE DES VERBES D'ACTION",
+    "titre": "3. التصنيف الكامل لأفعال المهمة الأدائية",
     "icone": "Compass",
     "blocs": [
       {
         "kind": "titre",
         "niveau": 2,
-        "texte": "3.1 Verbes simples (mobilisation des connaissances)"
+        "texte": "3.1 أفعال الاسترجاع (تعليمات بسيطة)"
       },
       {
         "kind": "texte",
-        "texte": "Ces verbes appellent une réponse ciblée, directe, sans ambigüité. L'élève sait exactement ce qu'on attend."
+        "texte": "هذه الأفعال تتطلب إجابة مركزة ومباشرة وغير غامضة. التلميذ يعرف تماماً ما هو مطلوب."
       },
       {
         "kind": "titre",
         "niveau": 3,
-        "texte": "A. Identification / Nommage"
+        "texte": "أ. التعريف والوصف والتعيين"
       },
       {
         "kind": "tableau",
-        "texte": "Verbe · Définition · Ce qu'il faut faire · Exemple d'utilisation · تعرف / سمّ / تعريف · Nommer, identifier, donner le nom exact · Donner le nom précis de l'élément demandé (structure, concept, molécule, organite) · \"سم البيانات المرقمة\", \"تعريف الإنزيم\", \"تعريف المورثة\" · ذكر عناصر · Citer les constituants · Lister brièvement les éléments sans détails excessifs · \"ذكر مراحل الانقسام\", \"ذكر عناصر التركيب الوراثي\", \"ذكر شروط التنفس\" · حدد · Identifier, délimiter, préciser · Donner précisément ce qui est demandé, sans développement excessif · \"حدد دور الضوء\", \"حدد العوامل المؤثرة\", \"حدد المشكل المطروح\" · ملحوظة / لاحظ · Observer, constater, relever · Identifier ce qui est visible dans le document, ce qu'on peut constater · \"نلاحظ que...\", \"ملاحظة المجهر\"",
+        "texte": "الفعل · المقصود · ما يجب فعله · نموذج استخدام · تعرف / سمّ / تعريف · تسمية دقيقة لمكون أو مفهوم أو بنية أو ظاهرة · تحديد الاسم العلمي الدقيق · سم البيانات المرقمة، تعريف أنزيم، تعريف مورثة · ذكر عناصر · استدعاء المكونات بشكل موجز · تعداد مختصر للعناصر · ذكر مراحل الانقسام، ذكر عناصر التركيب الوراثي · حدد · تحديد دقيق للعنصر أو الظاهرة أو المشكل المطروح · تحديد ماهيته أو دوره أو طبيعته بدقة · حدد دور الضوء، حدد العوامل المؤثرة · ملاحظة / لاحظ · استنتاج ملاحظة بصرية أو مجهرية · استنتاج ما هو ملموس أو مرئي أو مقاس · ملاحظة مجهرية، استنتاج من المنحنى",
         "entetes": [
-          "Verbe",
-          "Définition",
-          "Ce qu'il faut faire",
-          "Exemple d'utilisation"
+          "الفعل",
+          "المقصود",
+          "ما يجب فعله",
+          "نموذج استخدام"
         ],
         "lignes": [
           [
             "تعرف / سمّ / تعريف",
-            "Nommer, identifier, donner le nom exact",
-            "Donner le nom précis de l'élément demandé (structure, concept, molécule, organite)",
-            "\"سم البيانات المرقمة\", \"تعريف الإنزيم\", \"تعريف المورثة\""
+            "تسمية دقيقة لمكون أو مفهوم أو بنية أو ظاهرة",
+            "تحديد الاسم العلمي الدقيق",
+            "سم البيانات المرقمة، تعريف أنزيم، تعريف مورثة"
           ],
           [
             "ذكر عناصر",
-            "Citer les constituants",
-            "Lister brièvement les éléments sans détails excessifs",
-            "\"ذكر مراحل الانقسام\", \"ذكر عناصر التركيب الوراثي\", \"ذكر شروط التنفس\""
+            "استدعاء المكونات بشكل موجز",
+            "تعداد مختصر للعناصر",
+            "ذكر مراحل الانقسام، ذكر عناصر التركيب الوراثي"
           ],
           [
             "حدد",
-            "Identifier, délimiter, préciser",
-            "Donner précisément ce qui est demandé, sans développement excessif",
-            "\"حدد دور الضوء\", \"حدد العوامل المؤثرة\", \"حدد المشكل المطروح\""
+            "تحديد دقيق للعنصر أو الظاهرة أو المشكل المطروح",
+            "تحديد ماهيته أو دوره أو طبيعته بدقة",
+            "حدد دور الضوء، حدد العوامل المؤثرة"
           ],
           [
-            "ملحوظة / لاحظ",
-            "Observer, constater, relever",
-            "Identifier ce qui est visible dans le document, ce qu'on peut constater",
-            "\"نلاحظ que...\", \"ملاحظة المجهر\""
+            "ملاحظة / لاحظ",
+            "استنتاج ملاحظة بصرية أو مجهرية",
+            "استنتاج ما هو ملموس أو مرئي أو مقاس",
+            "ملاحظة مجهرية، استنتاج من المنحنى"
           ]
         ]
       },
       {
         "kind": "titre",
         "niveau": 3,
-        "texte": "B. Description / Structuration conceptuelle"
+        "texte": "ب. الوصف والتصنيف والتمييز"
       },
       {
         "kind": "tableau",
-        "texte": "Verbe · Définition · Ce qu'il faut faire · Exemple · وصف بنية · Décrire une structure en détail · Mentionner tous les composants, leur localisation, leur forme, leurs caractéristiques, les relations entre eux · بنية الغشاء الهيولي, بنية الإنزيم, البنية الفراغية للبروتين · صنف (Classer) · Ranger en groupes selon des critères · Donner les critères de classification, puis classer les éléments · الأغذية (حسب التركيب/الوظيفة/المصدر), الخلايا (حسب المادة الوراثية/عدد الخلايا) · ميز (Distinguer) · Opposer deux éléments · Identifier le paramètre de comparaison, puis opposer les différences de façon structurée · انقسام نباتي vs حيواني, مناعة خلطية vs خلوية, خلية نباتية vs حيوانية",
+        "texte": "الفعل · المقصود · ما يجب فعله · نموذج استخدام · وصف بنية · وصف تفصيلي للمكونات والترتيب والشكل والوظيفة · ذكر كل المكونات والمكان والشكل والعلاقات بينها · وصف بنية الغشاء الهيولي، وصف بنية الإنزيم · صنف · توزيع في مجموعات حسب معيار محدد · ذكر المعايير ثم التصنيف · تصنيف الأغذية، تصنيف الخلايا · ميز · مقارنة عنصرين مع إبراز الفروق الجوهرية · تحديد معيار المقارنة ثم إبراز الفروقات · ميز بين خلية نباتية وخلية حيوانية",
         "entetes": [
-          "Verbe",
-          "Définition",
-          "Ce qu'il faut faire",
-          "Exemple"
+          "الفعل",
+          "المقصود",
+          "ما يجب فعله",
+          "نموذج استخدام"
         ],
         "lignes": [
           [
             "وصف بنية",
-            "Décrire une structure en détail",
-            "Mentionner tous les composants, leur localisation, leur forme, leurs caractéristiques, les relations entre eux",
-            "بنية الغشاء الهيولي, بنية الإنزيم, البنية الفراغية للبروتين"
+            "وصف تفصيلي للمكونات والترتيب والشكل والوظيفة",
+            "ذكر كل المكونات والمكان والشكل والعلاقات بينها",
+            "وصف بنية الغشاء الهيولي، وصف بنية الإنزيم"
           ],
           [
-            "صنف (Classer)",
-            "Ranger en groupes selon des critères",
-            "Donner les critères de classification, puis classer les éléments",
-            "الأغذية (حسب التركيب/الوظيفة/المصدر), الخلايا (حسب المادة الوراثية/عدد الخلايا)"
+            "صنف",
+            "توزيع في مجموعات حسب معيار محدد",
+            "ذكر المعايير ثم التصنيف",
+            "تصنيف الأغذية، تصنيف الخلايا"
           ],
           [
-            "ميز (Distinguer)",
-            "Opposer deux éléments",
-            "Identifier le paramètre de comparaison, puis opposer les différences de façon structurée",
-            "انقسام نباتي vs حيواني, مناعة خلطية vs خلوية, خلية نباتية vs حيوانية"
+            "ميز",
+            "مقارنة عنصرين مع إبراز الفروق الجوهرية",
+            "تحديد معيار المقارنة ثم إبراز الفروقات",
+            "ميز بين خلية نباتية وخلية حيوانية"
           ]
         ]
       },
       {
         "kind": "titre",
         "niveau": 3,
-        "texte": "C. Énumération / Séquence / Ordonnancement"
+        "texte": "ج. الترتيب والعد والتعداد"
       },
       {
         "kind": "tableau",
-        "texte": "Verbe · Définition · Format attendu · اذكر (Citer) · Lister brièvement · Liste concise, ordre important si séquence temporelle ou logique · عدد (Enumérer) · Lister les étapes dans l'ordre · Séquence chronologique ou logique, numérotation recommandée · رتب / نظم · Organiser dans un ordre cohérent · Séquence ordonnée selon un critère (temporel, logique, fonctionnel)",
+        "texte": "الفعل · المقصود · الشكل المتوقع · اذكر · تعداد موجز للسطور الأساسية · قائمة مختصرة، الترتيب مهم إن كان تسلسلاً · عدد · تعداد مراحل أو خطوات مرتبة زمنياً أو منطقياً · تسلسل زمني أو منطقي، ترقيم مرغوب · رتب / نظم · تنظيم الأفكار أو العناصر حسب ترتيب معين · تسلسل مرتب منطقياً",
         "entetes": [
-          "Verbe",
-          "Définition",
-          "Format attendu"
+          "الفعل",
+          "المقصود",
+          "الشكل المتوقع"
         ],
         "lignes": [
           [
-            "اذكر (Citer)",
-            "Lister brièvement",
-            "Liste concise, ordre important si séquence temporelle ou logique"
+            "اذكر",
+            "تعداد موجز للسطور الأساسية",
+            "قائمة مختصرة، الترتيب مهم إن كان تسلسلاً"
           ],
           [
-            "عدد (Enumérer)",
-            "Lister les étapes dans l'ordre",
-            "Séquence chronologique ou logique, numérotation recommandée"
+            "عدد",
+            "تعداد مراحل أو خطوات مرتبة زمنياً أو منطقياً",
+            "تسلسل زمني أو منطقي، ترقيم مرغوب"
           ],
           [
             "رتب / نظم",
-            "Organiser dans un ordre cohérent",
-            "Séquence ordonnée selon un critère (temporel, logique, fonctionnel)"
+            "تنظيم الأفكار أو العناصر حسب ترتيب معين",
+            "تسلسل مرتب منطقياً"
           ]
         ]
       },
       {
         "kind": "titre",
         "niveau": 2,
-        "texte": "3.2 Verbes d'analyse et d'interprétation (Exercice 1 et 2)"
+        "texte": "3.2 أفعال التحليل والتفسير (تمرين 1 و2)"
       },
       {
         "kind": "texte",
-        "texte": "Ces verbes appellent une organisation autonome de la réponse. L'élève doit structurer sa pensée."
+        "texte": "هذه الأفعال تستدعي تنظيماً ذاتياً للإجابة وتفكراً منظمًا."
       },
       {
         "kind": "titre",
         "niveau": 3,
-        "texte": "D. Analyse des données"
+        "texte": "د. تحليل الوثائق"
       },
       {
         "kind": "tableau",
-        "texte": "Verbe · Définition · Étape 1 → Étape 2 → Étape 3 → Étape 4 → Étape 5 · حلل (Analyser) · Décomposer, identifier les composantes, observer les tendances, les valeurs remarquables · تعريف الوثيقة → تفكيك المعطيات → إيجاد العلاقات → استنتاج · استخرج · Extraire l'information pertinente · Identifier ce qui est demandé → Extraire l'information clé liée au but · تحليل ثم تفسير · Combiner analyse + interprétation · D'abord décrire/identifier (analyse) → Puis expliquer le mécanisme (interprétation)",
+        "texte": "الفعل · المقصود · الخطوات · حلل · فك التركيب، ملاحظة الاتجاهات والقيم الرئيسية · 1. تعريف الوثيقة ← 2. تفكيك المعطيات ← 3. إيجاد العلاقات ← 4. استنتاج · استخرج · استخلاص المعلومة الأساسية المرتبطة بالهدف · تحديد المطلوب ← استخراج المعلومة المركزية · تحليل ثم تفسير · تحليل أولاً ثم تفسير لاحقاً · وصف الملاحظات ← تفسير الآلية أو السبب",
         "entetes": [
-          "Verbe",
-          "Définition",
-          "Étape 1 → Étape 2 → Étape 3 → Étape 4 → Étape 5"
+          "الفعل",
+          "المقصود",
+          "الخطوات"
         ],
         "lignes": [
           [
-            "حلل (Analyser)",
-            "Décomposer, identifier les composantes, observer les tendances, les valeurs remarquables",
-            "تعريف الوثيقة → تفكيك المعطيات → إيجاد العلاقات → استنتاج"
+            "حلل",
+            "فك التركيب، ملاحظة الاتجاهات والقيم الرئيسية",
+            "1. تعريف الوثيقة ← 2. تفكيك المعطيات ← 3. إيجاد العلاقات ← 4. استنتاج"
           ],
           [
             "استخرج",
-            "Extraire l'information pertinente",
-            "Identifier ce qui est demandé → Extraire l'information clé liée au but"
+            "استخلاص المعلومة الأساسية المرتبطة بالهدف",
+            "تحديد المطلوب ← استخراج المعلومة المركزية"
           ],
           [
             "تحليل ثم تفسير",
-            "Combiner analyse + interprétation",
-            "D'abord décrire/identifier (analyse) → Puis expliquer le mécanisme (interprétation)"
+            "تحليل أولاً ثم تفسير لاحقاً",
+            "وصف الملاحظات ← تفسير الآلية أو السبب"
           ]
         ]
       },
       {
         "kind": "titre",
         "niveau": 3,
-        "texte": "E. Interprétation / Explication"
+        "texte": "هـ. التفسير والشرح"
       },
       {
         "kind": "tableau",
-        "texte": "Verbe · Définition · Ce qu'il faut faire · Exemple · فسر / وضّح / بين · Clarifier, expliciter un mécanisme, établir un lien de cause à effet · Observer → Identifier la cause/effet → Expliquer en étapes logiques (cause → effet, ou étapes séquentielles) · دور اليوريدين المشع, mecanisme du transport synaptique · اشرح · Expliquer en détail · Peut être simple (explication directe) ou complexe (analyse + explication) · آلية النقل المشبكي, مبدأ التصوير الإشعاعي · تفسير النتيجة / تفسير الظاهرة · Donner le sens des données · Observer → Identifier les tendances → Expliquer le mécanisme sous-jacent (connaissances + documents) · تفسير نتائج expérimentales, تفسير آلية",
+        "texte": "الفعل · المقصود · ما يجب فعله · نموذج استخدام · فسر / وضّح / بين · توضيح آلية أو سبب أو علاقة سببية · ملاحظة ← تحديد السبب/النتيجة ← شرح مرحلي · دور اليوريدين المشع، آلية النقل المشبكي · اشرح · شرح مفصل (قد يكون بسيطاً أو مركباً) · شرح مباشر أو تحليل + شرح حسب تعقيد السؤال · آلية النقل المشبكي، مبدأ التصوير الإشعاعي · تفسير النتيجة / تفسير الظاهرة · إعطاء معنى للملاحظات أو النتائج · ملاحظة ← تحديد الاتجاهات ← شرح الآلية الكامنة · تفسير نتائج تجريبية، تفسير آلية حيوية",
         "entetes": [
-          "Verbe",
-          "Définition",
-          "Ce qu'il faut faire",
-          "Exemple"
+          "الفعل",
+          "المقصود",
+          "ما يجب فعله",
+          "نموذج استخدام"
         ],
         "lignes": [
           [
             "فسر / وضّح / بين",
-            "Clarifier, expliciter un mécanisme, établir un lien de cause à effet",
-            "Observer → Identifier la cause/effet → Expliquer en étapes logiques (cause → effet, ou étapes séquentielles)",
-            "دور اليوريدين المشع, mecanisme du transport synaptique"
+            "توضيح آلية أو سبب أو علاقة سببية",
+            "ملاحظة ← تحديد السبب/النتيجة ← شرح مرحلي",
+            "دور اليوريدين المشع، آلية النقل المشبكي"
           ],
           [
             "اشرح",
-            "Expliquer en détail",
-            "Peut être simple (explication directe) ou complexe (analyse + explication)",
-            "آلية النقل المشبكي, مبدأ التصوير الإشعاعي"
+            "شرح مفصل (قد يكون بسيطاً أو مركباً)",
+            "شرح مباشر أو تحليل + شرح حسب تعقيد السؤال",
+            "آلية النقل المشبكي، مبدأ التصوير الإشعاعي"
           ],
           [
             "تفسير النتيجة / تفسير الظاهرة",
-            "Donner le sens des données",
-            "Observer → Identifier les tendances → Expliquer le mécanisme sous-jacent (connaissances + documents)",
-            "تفسير نتائج expérimentales, تفسير آلية"
+            "إعطاء معنى للملاحظات أو النتائج",
+            "ملاحظة ← تحديد الاتجاهات ← شرح الآلية الكامنة",
+            "تفسير نتائج تجريبية، تفسير آلية حيوية"
           ]
         ]
       },
       {
         "kind": "titre",
         "niveau": 3,
-        "texte": "F. Comparaison"
+        "texte": "و. المقارنة"
       },
       {
         "kind": "tableau",
-        "texte": "Verbe · Définition · Structure recommandée · قارن (Comparer) · Confronter deux éléments sur un même paramètre · 1) Identifier le paramètre commun 2) Citer les ressemblances 3) Citer les différences 4) استنتاج si demandé · مقارنة منحنين / مقارنة نتائج · Comparer des données graphiques ou tabulaires · Identifier les axes, les tendances, les différences de valeurs, les points d'intersection, les paliers · مقارنة بين بنيتين / بين ظاهرتين · Confronter deux structures ou phénomènes · Identifier les caractéristiques de chacun → Établir les ressemblances et différences sous forme de tableau ou de points structurés",
+        "texte": "الفعل · المقصود · الهيكل المقترح · قارن · مقارنة عنصرين أو أكثر على معيار مشترك · 1. تحديد المعيار ← 2. نقاط التشابه ← 3. نقاط الاختلاف ← 4. استنتاج إن طلب · مقارنة منحنين / مقارنة نتائج · مقارنة بيانات بيانية أو جدولية · تحديد المحاور، الاتجاهات، الفروقات في القيم، نقاط التقاطع · مقارنة بين بنيتين / بين ظاهرتين · مقارنة هياكل أو آليات أو ظواهر · تحديد خصائص كل عنصر ← إبراز أوجه التشابه والاختلاف في جدول أو نقاط",
         "entetes": [
-          "Verbe",
-          "Définition",
-          "Structure recommandée"
+          "الفعل",
+          "المقصود",
+          "الهيكل المقترح"
         ],
         "lignes": [
           [
-            "قارن (Comparer)",
-            "Confronter deux éléments sur un même paramètre",
-            "1) Identifier le paramètre commun 2) Citer les ressemblances 3) Citer les différences 4) استنتاج si demandé"
+            "قارن",
+            "مقارنة عنصرين أو أكثر على معيار مشترك",
+            "1. تحديد المعيار ← 2. نقاط التشابه ← 3. نقاط الاختلاف ← 4. استنتاج إن طلب"
           ],
           [
             "مقارنة منحنين / مقارنة نتائج",
-            "Comparer des données graphiques ou tabulaires",
-            "Identifier les axes, les tendances, les différences de valeurs, les points d'intersection, les paliers"
+            "مقارنة بيانات بيانية أو جدولية",
+            "تحديد المحاور، الاتجاهات، الفروقات في القيم، نقاط التقاطع"
           ],
           [
             "مقارنة بين بنيتين / بين ظاهرتين",
-            "Confronter deux structures ou phénomènes",
-            "Identifier les caractéristiques de chacun → Établir les ressemblances et différences sous forme de tableau ou de points structurés"
+            "مقارنة هياكل أو آليات أو ظواهر",
+            "تحديد خصائص كل عنصر ← إبراز أوجه التشابه والاختلاف في جدول أو نقاط"
           ]
         ]
       },
       {
         "kind": "titre",
         "niveau": 3,
-        "texte": "G. Jugement / Évaluation / Argumentation"
+        "texte": "ز. الحكم والنقاش والبرهنة"
       },
       {
         "kind": "tableau",
-        "texte": "Verbe · Définition · Ce qu'il faut faire · Exemple · علّق (Commenter) · Analyser, juger, nuancer · Observation → Jugement → Justification, avantages/inconvénients, prise de position éclairée · استخدام البوتوكس, المثبطات المناعية · أنقد (Critiquer) · Évaluer de manière constructive · Avantages → Inconvénients → Avis éclairé, appuyé par des arguments solides · استخدام البوتوكس, المثبطات المناعية · علل / برر (Argumenter) · Justifier, convaincre · Arguments → Preuves (documents, connaissances) → Exemples → Avis personnel ou position · استخدام الكربون المشع · نقاش صحة / مناقشة صحة · Évaluer la validité · Confronter les arguments pour et contre → Confirmer ou infirmer avec justification",
+        "texte": "الفعل · المقصود · ما يجب فعله · نموذج استخدام · علّق · تحليل، حكم، توازن · ملاحظة ← حكم ← تبرير، إيجابيات/سلبيات، موقف مدروس · استخدام البوتوكس، المثبطات المناعية · أنقد · تقييم بناء يبرر موقفاً · إيجابيات ← سلبيات ← موقف مدروس مدعوم بالأسباب · استخدام البوتوكس، المثبطات المناعية · علل / برر · تبرير وإقناع · أدلة ← شهادات (وثائق، معارف) ← أمثلة ← رأي شخصي · استخدام الكربون المشع · نقاش صحة / مناقشة صحة · تقييم الصلاحية · مقارنة الأدلة لصالح وضد ← تأكيد أو نفي مع تبرير · مناقشة صحة فرضية",
         "entetes": [
-          "Verbe",
-          "Définition",
-          "Ce qu'il faut faire",
-          "Exemple"
+          "الفعل",
+          "المقصود",
+          "ما يجب فعله",
+          "نموذج استخدام"
         ],
         "lignes": [
           [
-            "علّق (Commenter)",
-            "Analyser, juger, nuancer",
-            "Observation → Jugement → Justification, avantages/inconvénients, prise de position éclairée",
-            "استخدام البوتوكس, المثبطات المناعية"
+            "علّق",
+            "تحليل، حكم، توازن",
+            "ملاحظة ← حكم ← تبرير، إيجابيات/سلبيات، موقف مدروس",
+            "استخدام البوتوكس، المثبطات المناعية"
           ],
           [
-            "أنقد (Critiquer)",
-            "Évaluer de manière constructive",
-            "Avantages → Inconvénients → Avis éclairé, appuyé par des arguments solides",
-            "استخدام البوتوكس, المثبطات المناعية"
+            "أنقد",
+            "تقييم بناء يبرر موقفاً",
+            "إيجابيات ← سلبيات ← موقف مدروس مدعوم بالأسباب",
+            "استخدام البوتوكس، المثبطات المناعية"
           ],
           [
-            "علل / برر (Argumenter)",
-            "Justifier, convaincre",
-            "Arguments → Preuves (documents, connaissances) → Exemples → Avis personnel ou position",
+            "علل / برر",
+            "تبرير وإقناع",
+            "أدلة ← شهادات (وثائق، معارف) ← أمثلة ← رأي شخصي",
             "استخدام الكربون المشع"
           ],
           [
             "نقاش صحة / مناقشة صحة",
-            "Évaluer la validité",
-            "Confronter les arguments pour et contre → Confirmer ou infirmer avec justification"
+            "تقييم الصلاحية",
+            "مقارنة الأدلة لصالح وضد ← تأكيد أو نفي مع تبرير",
+            "مناقشة صحة فرضية"
           ]
         ]
       },
       {
         "kind": "titre",
         "niveau": 2,
-        "texte": "3.3 Verbes de raisonnement scientifique (Exercice 3 — مسعى علمي)"
+        "texte": "3.3 أفعال المسار العلمي (تمرين 3 — مسعى علمي)"
       },
       {
         "kind": "texte",
-        "texte": "Ces verbes structurent la démarche scientifique complète."
+        "texte": "هذه الأفعال تبني المسار العلمي الكامل من الصياغة إلى التوصل."
       },
       {
         "kind": "titre",
         "niveau": 3,
-        "texte": "H. Formulation du problème et hypothèse"
+        "texte": "ح. صياغة المشكل والفرضية"
       },
       {
         "kind": "tableau",
-        "texte": "Verbe · Définition · Processus · صياغ مشكل علني · Formuler le problème à résoudre · Identifier le but sous-jacent (لماذا؟ كيف؟ أين؟ متى؟ ما هو...) → Reformuler sous forme de question précise · اقتراح فرضية · Proposer une explication testable · Proposer une explication plausible, testable, fondée sur les données disponibles et les connaissances · اختيار فرضية · Sélectionner la plus pertinente · Choisir en fonction du réalisme, du pouvoir explicatif, de la testabilité",
+        "texte": "الفعل · المقصود · الخطوات · صياغة مشكل علمي · صياغة السؤال الأساسي بدقة · تحديد الهدف الكامن (لماذا؟ كيف؟ أين؟ متى؟ ما هو...) ← صياغة سؤال دقيق · اقتراح فرضية · اقتراح تفسير قابل للاختبار · اقتراح تفسير منطقي وقابل للاختبار مبني على المعطيات والمعارف · اختيار فرضية · اختيار الأكثر ترجيحاً · الاختيار حسب الواقعية، القوة التفسيرية، قابلية الاختبار",
         "entetes": [
-          "Verbe",
-          "Définition",
-          "Processus"
+          "الفعل",
+          "المقصود",
+          "الخطوات"
         ],
         "lignes": [
           [
-            "صياغ مشكل علني",
-            "Formuler le problème à résoudre",
-            "Identifier le but sous-jacent (لماذا؟ كيف؟ أين؟ متى؟ ما هو...) → Reformuler sous forme de question précise"
+            "صياغة مشكل علمي",
+            "صياغة السؤال الأساسي بدقة",
+            "تحديد الهدف الكامن (لماذا؟ كيف؟ أين؟ متى؟ ما هو...) ← صياغة سؤال دقيق"
           ],
           [
             "اقتراح فرضية",
-            "Proposer une explication testable",
-            "Proposer une explication plausible, testable, fondée sur les données disponibles et les connaissances"
+            "اقتراح تفسير قابل للاختبار",
+            "اقتراح تفسير منطقي وقابل للاختبار مبني على المعطيات والمعارف"
           ],
           [
             "اختيار فرضية",
-            "Sélectionner la plus pertinente",
-            "Choisir en fonction du réalisme, du pouvoir explicatif, de la testabilité"
+            "اختيار الأكثر ترجيحاً",
+            "الاختيار حسب الواقعية، القوة التفسيرية، قابلية الاختبار"
           ]
         ]
       },
       {
         "kind": "titre",
         "niveau": 3,
-        "texte": "I. Vérification / Démonstration"
+        "texte": "ط. التحقق والبرهنة"
       },
       {
         "kind": "tableau",
-        "texte": "Verbe · Définition · Ce qu'il faut faire · التحقق من صحة الفرضية · Vérifier si l'hypothèse est soutenue par les données · Confronter hypothèse avec les données → Confirmer ou infirmer avec justification · إثبات / تأكيد صحة · Étayer une affirmation · Arguments + Preuves (documents, connaissances) + Logique → Conclusion affirmée · نقاش · Discuter un point de vue · Analyser les arguments → Confronter les positions → Nuancer, prendre position",
+        "texte": "الفعل · المقصود · ما يجب فعله · التحقق من صحة الفرضية · فحص مدى مدعومية الفرضية بالمعطيات · مقارنة الفرضية بالمعطيات ← تأكيد أو نفي مع تبرير · إثبات / تأكيد صحة · دعم عبارة والتأكيد عليها · أدلة + شهادات (وثائق، معارف) + منطق ← نتيجة مؤكدة · نقاش · نقاش وجهة نظر مع توازن · تحليل الأدلة ← مقارنة المواقف ← موقف متوازن",
         "entetes": [
-          "Verbe",
-          "Définition",
-          "Ce qu'il faut faire"
+          "الفعل",
+          "المقصود",
+          "ما يجب فعله"
         ],
         "lignes": [
           [
             "التحقق من صحة الفرضية",
-            "Vérifier si l'hypothèse est soutenue par les données",
-            "Confronter hypothèse avec les données → Confirmer ou infirmer avec justification"
+            "فحص مدى مدعومية الفرضية بالمعطيات",
+            "مقارنة الفرضية بالمعطيات ← تأكيد أو نفي مع تبرير"
           ],
           [
             "إثبات / تأكيد صحة",
-            "Étayer une affirmation",
-            "Arguments + Preuves (documents, connaissances) + Logique → Conclusion affirmée"
+            "دعم عبارة والتأكيد عليها",
+            "أدلة + شهادات (وثائق، معارف) + منطق ← نتيجة مؤكدة"
           ],
           [
             "نقاش",
-            "Discuter un point de vue",
-            "Analyser les arguments → Confronter les positions → Nuancer, prendre position"
+            "نقاش وجهة نظر مع توازن",
+            "تحليل الأدلة ← مقارنة المواقف ← موقف متوازن"
           ]
         ]
       },
       {
         "kind": "titre",
         "niveau": 3,
-        "texte": "J. Production synthétique"
+        "texte": "ي. الإنتاج التركيبي"
       },
       {
         "kind": "tableau",
-        "texte": "Verbe · Définition · Format attendu · اكتب نصا علميا (Composer) · Rédiger une réponse structurée · 3 parties : مقدمة (contexte + problème) → عرض (développement argumenté, données + connaissances) → خاتمة (synthèse + réponse explicite) · أنجز مخططا تخطيطيا · Produire un schéma structuré · Structure logique + Légendes + Flèches si nécessaire + Titre · أنجز رسمًا تخطيطيًا تفسيريًا · Schéma fonctionnel avec commentaire · Montrer le mécanisme/phénomène + Légendes + Commentaire explicatif · أنجز رسمًا تخطيطيًا وظيفيًا · Schéma montrant les relations fonctionnelles · Phénomènes/étapes numérotées + Légendes + Mise en relation fonctionnelle",
+        "texte": "الفعل · المقصود · الشكل المتوقع · اكتب نصا علمياً · صياغة إجابة منظمة ومقسمة · 3 أجزاء: مقدمة (سياق + مشكل) ← عرض (شرح مفصل مع معطيات ومعارف) ← خاتمة (تلخيص + إجابة صريحة) · أنجز مخططاً تخطيطياً · إنتاج مخطط منظم · هيكل منطقي + تسميات + أسهم إن لزم + عنوان واضح · أنجز رسمًا تخطيطيًا تفسيريًا · مخطط يفسر ظاهرة أو آلية · إبراز بنية/آلية ظاهرة مع تسميات وتفسير · أنجز رسمًا تخطيطيًا وظيفيًا · مخطط يبين العلاقات الوظيفية والمراحل · مراحل مرقمة + تسميات + علاقات وظيفية",
         "entetes": [
-          "Verbe",
-          "Définition",
-          "Format attendu"
+          "الفعل",
+          "المقصود",
+          "الشكل المتوقع"
         ],
         "lignes": [
           [
-            "اكتب نصا علميا (Composer)",
-            "Rédiger une réponse structurée",
-            "3 parties : مقدمة (contexte + problème) → عرض (développement argumenté, données + connaissances) → خاتمة (synthèse + réponse explicite)"
+            "اكتب نصا علمياً",
+            "صياغة إجابة منظمة ومقسمة",
+            "3 أجزاء: مقدمة (سياق + مشكل) ← عرض (شرح مفصل مع معطيات ومعارف) ← خاتمة (تلخيص + إجابة صريحة)"
           ],
           [
-            "أنجز مخططا تخطيطيا",
-            "Produire un schéma structuré",
-            "Structure logique + Légendes + Flèches si nécessaire + Titre"
+            "أنجز مخططاً تخطيطياً",
+            "إنتاج مخطط منظم",
+            "هيكل منطقي + تسميات + أسهم إن لزم + عنوان واضح"
           ],
           [
             "أنجز رسمًا تخطيطيًا تفسيريًا",
-            "Schéma fonctionnel avec commentaire",
-            "Montrer le mécanisme/phénomène + Légendes + Commentaire explicatif"
+            "مخطط يفسر ظاهرة أو آلية",
+            "إبراز بنية/آلية ظاهرة مع تسميات وتفسير"
           ],
           [
             "أنجز رسمًا تخطيطيًا وظيفيًا",
-            "Schéma montrant les relations fonctionnelles",
-            "Phénomènes/étapes numérotées + Légendes + Mise en relation fonctionnelle"
+            "مخطط يبين العلاقات الوظيفية والمراحل",
+            "مراحل مرقمة + تسميات + علاقات وظيفية"
           ]
         ]
       },
       {
         "kind": "titre",
         "niveau": 2,
-        "texte": "3.4 Tableau de reconnaissance rapide des verbes"
+        "texte": "3.4 جدول التعرف السريع على الأفعال"
       },
       {
         "kind": "tableau",
-        "texte": "Verbe · Niveau · Exercice typique · Réponse attendue · Points clés · تعرف، سمّ، عرف، حدد، ملحوظة · Simple · 1, 2 · Réponse ciblée, directe, concise · Précision terminologique + concision · وصف بنية، ذكر عناصر، صنف، ميز · Simple · 1 · Description / Classification ciblée · Ordre, exhaustivité relative, critères si classification · ذكر، عدد، رتب، نظم · Simple · 1 · Énumération ordonnée · Respect de l'ordre si séquence · رسم تخطيطي · Simple/Composé · 1, 2, 3 · Schéma avec légendes, flèches si nécessaire, titre · Qualité du dessin + légendes complètes · حلل، قارن، مقارنة · Composé · 2 · Analyse → استنتاج · Décomposer → Identifier tendances → Établir relations → Conclure · فسر، وضّح، بين، اشرح، تفسير · Composé · 2 · Observation → Explication mécanisme · Ne pas confondre observation et explication · علّق, أنقد, علل/برر, نقاش صحة · Composé · 2 · Jugement argumenté, nuancé · Avantages + inconvénients + avis éclairé · استخرج, استنتاج · Composé · 2, 3 · Info clé liée au but · Tirer la conclusion liée au but de l'exercice · اكتب نصا علميا (Composer) · Composé · 2, 3 · 3 parties : مقدمة, عرض, خاتمة · Structure claire, titre par idée, ordre logique · أنجز مخططا / رسم تخطيطي · Composé · 1, 2, 3 · Schéma avec légendes, flèches, titre · Clarity, exhaustivité relative, justesse · صياغ مشكل علني · Composé · 3 · Question précise + but · Identifier le but sous-jacent, reformuler sous forme de question · اقتراح فرضية · Composé · 3 · Hypothèse testable, plausible, fondée · Proposer une explication testable, pas une simple affirmation · التحقق من صحة, إثبات, نقاش, أثبت · Composé · 3 · Confronter hypothèse avec données → conclure · Confronter explicitement, confirmer ou infirmer avec justification",
+        "texte": "الفعل · المستوى · التمرين النموذجي · الشكل المتوقع · ملاحظات جوهرية · تعرف، سمّ، عرف، حدد، ملاحظة · بسيط · 1، 2 · إجابة مركزة وموجزة · الدقة المصطلحية + الاختصار · وصف بنية، ذكر عناصر، صنف، ميز · بسيط · 1 · وصف/تصنيف/تمييز مركّز · الترتيب، اكتمال نسبي، معايير إن كان تصنيفاً · ذكر، عدد، رتب، نظم · بسيط · 1 · تعداد مرتب وموجز · احترام الترتيب إن كان تسلسلاً · رسم تخطيطي / أنجز مخططا · بسيط أو مركب · 1، 2، 3 · مخطط مع تسميات وأسهم وعنوان · جودة الرسم + اكتمال التسميات · حلل، قارن، تحليل مقارن · مركب · 2 · تحليل ← استنتاج · فك التركيب ← تحديد الاتجاهات ← علاقات ← خاتمة · فسر، وضّح، بين، اشرح، تفسير · مركب · 2 · ملاحظة ← شرح الآلية ← خطوات منطقية · لا تخلط بين الملاحظة والشرح · علّق، أنقد، علل/برر، نقاش صحة · مركب · 2 · حكم مدروس مع إيجابيات وسلبيات وأسباب · توازن + تبرير مدعوم · استخرج، استنتاج · مركب · 2، 3 · معلومة مركزية مرتبطة بالهدف · استنتاج مرتبط بالهدف من التمرين · اكتب نصا علمياً · مركب · 2، 3 · 3 أجزاء: مقدمة، عرض، خاتمة · هيكل واضح، عنوان لكل فكرة، ترتيب منطقي · أنجز مخططاً / رسمًا تخطيطيًا · مركب · 1، 2، 3 · مخطط كامل بالتسميات والأسهم والعنوان · الوضوح، الاكتمال النسبي، الدقة · صياغة مشكل علمي · مركب · 3 · سؤال دقيق + هدف أساسي · تحديد الهدف الكامن، صياغة سؤال · اقتراح فرضية · مركب · 3 · فرضية قابلة للاختبار ومنطقية · اقتراح تفسير قابل للاختبار وليس مجرد إفصاح · التحقق من صحة، إثبات، نقاش، أثبت · مركب · 3 · مقارنة الفرضية بالمعطيات ← تأكيد أو نفي مبرر · المقارنة الصريحة مع التبرير",
         "entetes": [
-          "Verbe",
-          "Niveau",
-          "Exercice typique",
-          "Réponse attendue",
-          "Points clés"
+          "الفعل",
+          "المستوى",
+          "التمرين النموذجي",
+          "الشكل المتوقع",
+          "ملاحظات جوهرية"
         ],
         "lignes": [
           [
-            "تعرف، سمّ، عرف، حدد، ملحوظة",
-            "Simple",
-            "1, 2",
-            "Réponse ciblée, directe, concise",
-            "Précision terminologique + concision"
+            "تعرف، سمّ، عرف، حدد، ملاحظة",
+            "بسيط",
+            "1، 2",
+            "إجابة مركزة وموجزة",
+            "الدقة المصطلحية + الاختصار"
           ],
           [
             "وصف بنية، ذكر عناصر، صنف، ميز",
-            "Simple",
+            "بسيط",
             "1",
-            "Description / Classification ciblée",
-            "Ordre, exhaustivité relative, critères si classification"
+            "وصف/تصنيف/تمييز مركّز",
+            "الترتيب، اكتمال نسبي، معايير إن كان تصنيفاً"
           ],
           [
             "ذكر، عدد، رتب، نظم",
-            "Simple",
+            "بسيط",
             "1",
-            "Énumération ordonnée",
-            "Respect de l'ordre si séquence"
+            "تعداد مرتب وموجز",
+            "احترام الترتيب إن كان تسلسلاً"
           ],
           [
-            "رسم تخطيطي",
-            "Simple/Composé",
-            "1, 2, 3",
-            "Schéma avec légendes, flèches si nécessaire, titre",
-            "Qualité du dessin + légendes complètes"
+            "رسم تخطيطي / أنجز مخططا",
+            "بسيط أو مركب",
+            "1، 2، 3",
+            "مخطط مع تسميات وأسهم وعنوان",
+            "جودة الرسم + اكتمال التسميات"
           ],
           [
-            "حلل، قارن، مقارنة",
-            "Composé",
+            "حلل، قارن، تحليل مقارن",
+            "مركب",
             "2",
-            "Analyse → استنتاج",
-            "Décomposer → Identifier tendances → Établir relations → Conclure"
+            "تحليل ← استنتاج",
+            "فك التركيب ← تحديد الاتجاهات ← علاقات ← خاتمة"
           ],
           [
             "فسر، وضّح، بين، اشرح، تفسير",
-            "Composé",
+            "مركب",
             "2",
-            "Observation → Explication mécanisme",
-            "Ne pas confondre observation et explication"
+            "ملاحظة ← شرح الآلية ← خطوات منطقية",
+            "لا تخلط بين الملاحظة والشرح"
           ],
           [
-            "علّق, أنقد, علل/برر, نقاش صحة",
-            "Composé",
+            "علّق، أنقد، علل/برر، نقاش صحة",
+            "مركب",
             "2",
-            "Jugement argumenté, nuancé",
-            "Avantages + inconvénients + avis éclairé"
+            "حكم مدروس مع إيجابيات وسلبيات وأسباب",
+            "توازن + تبرير مدعوم"
           ],
           [
-            "استخرج, استنتاج",
-            "Composé",
-            "2, 3",
-            "Info clé liée au but",
-            "Tirer la conclusion liée au but de l'exercice"
+            "استخرج، استنتاج",
+            "مركب",
+            "2، 3",
+            "معلومة مركزية مرتبطة بالهدف",
+            "استنتاج مرتبط بالهدف من التمرين"
           ],
           [
-            "اكتب نصا علميا (Composer)",
-            "Composé",
-            "2, 3",
-            "3 parties : مقدمة, عرض, خاتمة",
-            "Structure claire, titre par idée, ordre logique"
+            "اكتب نصا علمياً",
+            "مركب",
+            "2، 3",
+            "3 أجزاء: مقدمة، عرض، خاتمة",
+            "هيكل واضح، عنوان لكل فكرة، ترتيب منطقي"
           ],
           [
-            "أنجز مخططا / رسم تخطيطي",
-            "Composé",
-            "1, 2, 3",
-            "Schéma avec légendes, flèches, titre",
-            "Clarity, exhaustivité relative, justesse"
+            "أنجز مخططاً / رسمًا تخطيطيًا",
+            "مركب",
+            "1، 2، 3",
+            "مخطط كامل بالتسميات والأسهم والعنوان",
+            "الوضوح، الاكتمال النسبي، الدقة"
           ],
           [
-            "صياغ مشكل علني",
-            "Composé",
+            "صياغة مشكل علمي",
+            "مركب",
             "3",
-            "Question précise + but",
-            "Identifier le but sous-jacent, reformuler sous forme de question"
+            "سؤال دقيق + هدف أساسي",
+            "تحديد الهدف الكامن، صياغة سؤال"
           ],
           [
             "اقتراح فرضية",
-            "Composé",
+            "مركب",
             "3",
-            "Hypothèse testable, plausible, fondée",
-            "Proposer une explication testable, pas une simple affirmation"
+            "فرضية قابلة للاختبار ومنطقية",
+            "اقتراح تفسير قابل للاختبار وليس مجرد إفصاح"
           ],
           [
-            "التحقق من صحة, إثبات, نقاش, أثبت",
-            "Composé",
+            "التحقق من صحة، إثبات، نقاش، أثبت",
+            "مركب",
             "3",
-            "Confronter hypothèse avec données → conclure",
-            "Confronter explicitement, confirmer ou infirmer avec justification"
+            "مقارنة الفرضية بالمعطيات ← تأكيد أو نفي مبرر",
+            "المقارنة الصريحة مع التبرير"
           ]
         ]
       }
@@ -813,1440 +743,1418 @@ export const GUIDE_SECTIONS: SectionGuide[] = [
     "sous": [
       {
         "id": "s3-h0",
-        "titre": "3.1 Verbes simples (mobilisation des connaissances)",
+        "titre": "3.1 أفعال الاسترجاع (تعليمات بسيطة)",
         "from": 0
       },
       {
         "id": "s3-h1",
-        "titre": "3.2 Verbes d'analyse et d'interprétation (Exercice 1 et 2)",
+        "titre": "3.2 أفعال التحليل والتفسير (تمرين 1 و2)",
         "from": 8
       },
       {
         "id": "s3-h2",
-        "titre": "3.3 Verbes de raisonnement scientifique (Exercice 3 — مسعى علمي)",
+        "titre": "3.3 أفعال المسار العلمي (تمرين 3 — مسعى علمي)",
         "from": 18
       },
       {
         "id": "s3-h3",
-        "titre": "3.4 Tableau de reconnaissance rapide des verbes",
+        "titre": "3.4 جدول التعرف السريع على الأفعال",
         "from": 26
       }
     ]
   },
   {
     "id": "s4",
-    "titre": "4. STRUCTURE DE LA RÉPONSE — LES DEUX APPROCHES",
+    "titre": "4. هيكلة الإجابة — النهج المزدوج",
     "icone": "FileText",
     "blocs": [
       {
         "kind": "titre",
         "niveau": 2,
-        "texte": "4.1 La structure en 3 parties (مقدمة + عرض + خاتمة)"
+        "texte": "4.1 الهيكل في 3 أجزاء (مقدمة + عرض + خاتمة)"
       },
       {
         "kind": "texte",
-        "texte": "Les deux ouvrages s'accordent sur cette structure fondamentale pour tout texte scientifique."
+        "texte": "يتفق المصدران على هذه الهيكلة الأساسية للإجابة العلمية."
       },
       {
         "kind": "titre",
         "niveau": 3,
-        "texte": "مقدمة (Introduction)"
+        "texte": "المقدمة"
       },
       {
         "kind": "texte",
-        "texte": "Fonction : Orienter le lecteur, contextualiser, annoncer le plan, poser le problème."
+        "texte": "وظيفتها : توجيه القارئ، وضع السياق، إعلان الخطة، طرح المشكل."
       },
       {
         "kind": "texte",
-        "texte": "Ce qu'elle doit contenir :"
+        "texte": "ما يجب أن تحتويه :"
       },
       {
         "kind": "puce",
-        "texte": "Contexte général du phénomène (principe, définition rapide, contexte biologique)"
+        "texte": "السياق العام للظاهرة (مبدأ أساسي، تعريف سريع، سياق حيوي)"
       },
       {
         "kind": "puce",
-        "texte": "Rappel des connaissances de base nécessaires pour aborder le sujet"
+        "texte": "تذكر المعارف الأساسية اللازمة لمواجهة الموضوع"
       },
       {
         "kind": "puce",
-        "texte": "Transition vers le problème ou la question centrale"
+        "texte": "الانتقال إلى المشكل أو السؤال المركزي"
       },
       {
         "kind": "texte",
-        "texte": "Conseil méthodologique clé :"
+        "texte": "نصيحة منهجية جوهرية :"
       },
       {
         "kind": "note",
-        "texte": "« Il faut identifier les mots-clés et la notion sous-jacente. Déchiffrer le mot-clé, c'est déchiffrer la question. »"
+        "texte": "يجب تحديد الكلمات المفتاحية والفكرة الكاملة. فك شفرة الكلمة المفتاحية هو فك شفرة السؤال."
       },
       {
         "kind": "texte",
-        "texte": "Exemple (extrait des deux ouvrages, sur un sujet de mécanisme enzymatique) :"
+        "texte": "مثال (مستمد من المصدرين، حول آلية أنزيمية) :"
       },
       {
         "kind": "note",
-        "texte": "_\"Les enzymes catalysent de nombreuses réactions métaboliques au sein de la cellule. Définition d'un enzyme + rôle dans la régulation des réactions + importance pour le fonctionnement cellulaire → puis poser la question centrale : comment expliquer le mécanisme d'action de cet enzyme ?\"_"
+        "texte": "الأنزيمات تحفز العديد من التفاعلات الأيضية داخل الخلية. تعريف الأنزيم + دوره في تنظيم التفاعلات + أهميته في تسيير الخلية ← ثم طرح السؤال المركزي : كيف تفسر آلية عمل هذا الأنزيم؟"
       },
       {
         "kind": "titre",
         "niveau": 3,
-        "texte": "عرض (Développement)"
+        "texte": "العرض"
       },
       {
         "kind": "texte",
-        "texte": "Fonction : Développer les arguments, présenter les données, expliquer les mécanismes, structurer logiquement l'information."
+        "texte": "وظيفتها : تطوير الحجج، عرض البيانات، شرح الآليات، هيكلة المعلومات منطقياً."
       },
       {
         "kind": "texte",
-        "texte": "Organisation recommandée :"
+        "texte": "التنظيم المقترح :"
       },
       {
-        "kind": "point",
-        "num": "1",
-        "texte": "Par idée principale — un paragraphe (ou un bloc structuré) par idée"
+        "kind": "puce",
+        "texte": "حسب الفكرة الرئيسية — فقرة (أو كتلة منظمة) لكل فكرة"
       },
       {
-        "kind": "point",
-        "num": "2",
-        "texte": "Ordre logique — chronologique, de cause à effet, du général au particulier, ou dans l'ordre des étapes"
+        "kind": "puce",
+        "texte": "ترتيب منطقي — زمني، سبب ← نتيجة، من العام إلى الخاص، أو حسب تسلسل الخطوات"
       },
       {
-        "kind": "point",
-        "num": "3",
-        "texte": "Connecteurs de liaison explicites — إذن، حيث، لذلك، عليه، علاوة على ذلك، بالمقابل، 그리고، ..."
+        "kind": "puce",
+        "texte": "روابط منطقية صريحة — بالتالي، إذن، لذلك، حيث، هذا يراجع إلى، ..."
       },
       {
-        "kind": "point",
-        "num": "4",
-        "texte": "Précision terminologique — les termes scientifiques justes, pas des approximations"
+        "kind": "puce",
+        "texte": "دقة مصطلحية — المصطلحات العلمية الدقيقة، لا التقريبات"
       },
       {
-        "kind": "point",
-        "num": "5",
-        "texte": "Titre par idée — chaque idée ou groupe d'idées doit avoir un titre clair (ou une étiquette) pour guider le correcteur"
+        "kind": "puce",
+        "texte": "عنوان لكل فكرة — لكل فكرة أو مجموعة أفكار عنوان واضح (أو تذييل) لتهديم المصحح"
       },
       {
         "kind": "texte",
-        "texte": "Conseil méthodologique clé (du second ouvrage) :"
+        "texte": "نصيحة منهجية جوهرية (المصدر الثاني) :"
       },
       {
         "kind": "note",
-        "texte": "« Il faut écrire le titre de chaque idée d'information dans le même ordre que dans l'énoncé. »"
+        "texte": "اكتب عنوان كل فكرة معلوماتية بنفس الترتيب الموجود في نص التمرين."
       },
       {
         "kind": "texte",
-        "texte": "→ Chaque idée doit avoir un titre clair, dans un ordre logique et cohérent avec le sujet."
+        "texte": "→ لكل فكرة عنوان واضح، في ترتيب منطقي ومتسق مع الموضوع."
       },
       {
         "kind": "texte",
-        "texte": "Conseil complémentaire (du premier ouvrage) :"
+        "texte": "نصيحة مكملة (المصدر الأول) :"
       },
       {
         "kind": "note",
-        "texte": "« Lors de l'analyse de document, identifier les tendances, les valeurs remarquables, les relations causales potentielles avant d'interpréter. Séparer l'analyse de l'interprétation. »"
+        "texte": "عند تحليل الوثيقة، حدد الاتجاهات والقيم الرئيسية والعلاقات السببية المحتملة قبل التفسير. افصل بين التحليل والتفسير."
       },
       {
         "kind": "titre",
         "niveau": 3,
-        "texte": "خاتمة (Conclusion)"
+        "texte": "الخاتمة"
       },
       {
         "kind": "texte",
-        "texte": "Fonction : Synthétiser, répondre explicitement au problème posé, ouvrir si pertinent."
+        "texte": "وظيفتها : تلخيص، الإجابة الصريحة على المشكل، فتح باب المناقشة إن كان ملائماً."
       },
       {
         "kind": "texte",
-        "texte": "Ce qu'elle doit contenir :"
+        "texte": "ما يجب أن تحتويه :"
       },
       {
         "kind": "puce",
-        "texte": "Synthèse des points principaux (1 à 3 phrases)"
+        "texte": "تلخيص النقاط الأساسية (جملة أو جملتان)"
       },
       {
         "kind": "puce",
-        "texte": "Réponse claire et explicite au problème posé (la conclusion doit répondre à la question posée)"
+        "texte": "إجابة صريحة ودقيقة على المشكل المطروح (الخاتمة ترد على السؤال المطروح)"
       },
       {
         "kind": "puce",
-        "texte": "Éventuellement : ouverture, limite, perspective, ou lien avec un sujet connexe"
+        "texte": "في حال ملائمة : فتح باب، أو تحديد محدودية، أو ربط بموضوع مجاور"
       },
       {
         "kind": "texte",
-        "texte": "Conseil méthodologique clé :"
+        "texte": "نصيحة منهجية جوهرية :"
       },
       {
         "kind": "note",
-        "texte": "« La conclusion doit être la réponse explicite au problème posé. Pas de nouvelle information dans la conclusion. »"
+        "texte": "الخاتمة هي الإجابة الصريحة على المشكل المطروح. لا تقدم معلومات جديدة في الخاتمة."
       },
       {
         "kind": "titre",
         "niveau": 2,
-        "texte": "4.2 La méthode d'analyse de document"
+        "texte": "4.2 طريقة تحليل الوثيقة"
       },
       {
         "kind": "texte",
-        "texte": "Le premier ouvrage a détaillé la méthode d'analyse de document en 5 étapes structurées :"
+        "texte": "علق المصدر الأول على طريقة تحليل الوثيقة العلمية في 5 خطوات منظمة."
       },
       {
         "kind": "texte",
-        "texte": "Étapes d'analyse d'un document scientifique :"
+        "texte": "خطوات تحليل الوثيقة العلمية :"
       },
       {
         "kind": "point",
         "num": "1",
-        "texte": "تعريف الوثيقة / تعريف البيانات (Définir le document)"
+        "texte": "تعريف الوثيقة / تعريف البيانات"
       },
       {
         "kind": "puce",
-        "texte": "Qu'est-ce que ce document représente ? (photographie, schéma, tableau, graphique, expérience...)"
+        "texte": "ما الذي تمثله هذه الوثيقة؟ (صورة، مخطط، جدول، منحنى، تجربة...)"
       },
       {
         "kind": "puce",
-        "texte": "Quelles sont les conditions expérimentales si pertinentes ?"
+        "texte": "شروط التجربة إن وجدت؟"
       },
       {
         "kind": "puce",
-        "texte": "Quel est le contexte ?"
+        "texte": "السياق العام؟"
       },
       {
         "kind": "point",
         "num": "2",
-        "texte": "تفكيك المعطيات (Décomposer les données)"
+        "texte": "تفكيك المعطيات"
       },
       {
         "kind": "puce",
-        "texte": "Identifier les composantes, les données, les valeurs, les axes, les tendances"
+        "texte": "تحديد المكونات، البيانات، القيم، المحاور، الاتجاهات"
       },
       {
         "kind": "puce",
-        "texte": "Dégager les valeurs remarquables (paliers, pics, points d'intersection, changements de tendance)"
+        "texte": "إبراز القيم الرئيسية (سوية، قمم، نقاط تقاطع، تغيرات في الاتجاه)"
       },
       {
         "kind": "puce",
-        "texte": "Identifier les relations apparentes entre les éléments"
+        "texte": "تحديد العلاقات الظاهرة بين العناصر"
       },
       {
         "kind": "point",
         "num": "3",
-        "texte": "إيجاد العلاقات (Établir les relations)"
+        "texte": "إيجاد العلاقات"
       },
       {
         "kind": "puce",
-        "texte": "Chercher les relations de cause à effet potentielles"
+        "texte": "البحث عن علاقات سببية محتملة"
       },
       {
         "kind": "puce",
-        "texte": "Chercher les relations de corrélation (proportionnalité, inversement)"
+        "texte": "البحث عن علاقات ارتباط (تناسب، عكسية)"
       },
       {
         "kind": "puce",
-        "texte": "Chercher les relations fonctionnelles (rôle, fonction, mécanisme)"
+        "texte": "البحث عن علاقات وظيفية (دور، وظيفة، آلية)"
       },
       {
         "kind": "point",
         "num": "4",
-        "texte": "التفسير (Interpréter — si demandé)"
+        "texte": "التفسير (إن طُلب)"
       },
       {
         "kind": "puce",
-        "texte": "Expliquer ce que les données signifient dans le contexte du sujet"
+        "texte": "شرح ما تعنيه البيانات في سياق الموضوع"
       },
       {
         "kind": "puce",
-        "texte": "Mobiliser les connaissances + les documents pour expliciter le mécanisme"
+        "texte": "الاستعانة بالمعلومات + الوثائق لشرح الآلية"
       },
       {
         "kind": "puce",
-        "texte": "Ne pas confondre observation (données) et interprétation (explication)"
+        "texte": "عدم الخلط بين الملاحظة (بيانات) والتفسير (شرح)"
       },
       {
         "kind": "point",
         "num": "5",
-        "texte": "استنتاج (Conclure)"
+        "texte": "الاستنتاج"
       },
       {
         "kind": "puce",
-        "texte": "Tirer la conclusion liée au but de l'exercice"
+        "texte": "إسقاط الاستنتاج المتعلق بغرض التمرين"
       },
       {
         "kind": "puce",
-        "texte": "Confronter les informations extraites avec le but sous-jacent"
+        "texte": "مقارنة المعلومات المستخلصة بالهدف الكامن"
       },
       {
         "kind": "texte",
-        "texte": "Mots-clés typiques de chaque étape (à utiliser dans la rédaction) :"
+        "texte": "كلمات دالة نموذجية لكل خطوة (للاستخدام في الصياغة) :"
       },
       {
         "kind": "puce",
-        "texte": "Analyse : \"تمثل الوثيقة...، حيث نلاحظ...، نلاحظ أن...\""
+        "texte": "تحليل : «تمثل الوثيقة...، حيث نلاحظ...، نلاحظ أن...»"
       },
       {
         "kind": "puce",
-        "texte": "Interprétation : \"وهذا يراجع إلى...، يدل على...، لأن...\""
+        "texte": "تفسير : «وهذا يراجع إلى...، يدل على...، لأن...»"
       },
       {
         "kind": "puce",
-        "texte": "Relation : \"كلما...، كلما...، هناك علاقة...\""
+        "texte": "علاقة : «كلما...، كلما...، هناك علاقة...»"
       },
       {
         "kind": "puce",
-        "texte": "Conclusion : \"ومنه نستنتج أن...، وهذا ما يجعلنا نطرح...\""
+        "texte": "استنتاج : «ومنه نستنتج أن...، وهذا ما يجعلنا نطرح...»"
       },
       {
         "kind": "titre",
         "niveau": 2,
-        "texte": "4.3 La méthode du schéma fonctionnel"
+        "texte": "4.3 طريقة المخطط الوظيفي"
       },
       {
         "kind": "texte",
-        "texte": "Le premier ouvrage a détaillé la méthode du schéma fonctionnel (et le second ouvrage a apporté des conseils complémentaires sur la qualité de la production graphique)."
+        "texte": "علق المصدر الأول على طريقة المخطط الوظيفي (وقد أضاف المصدر الثاني نصائح مكملة حول جودة الإنتاج الرسومي)."
       },
       {
         "kind": "texte",
-        "texte": "Étapes de production d'un schéma fonctionnel :"
+        "texte": "خطوات إنتاج مخطط وظيفي :"
       },
       {
         "kind": "point",
         "num": "1",
-        "texte": "Identifier le type de schéma demandé"
+        "texte": "تحديد نوع المخطط المطلوب"
       },
       {
         "kind": "puce",
-        "texte": "Schéma descriptif (description de structure) : mettre en évidence les composants et leur organisation"
+        "texte": "مخطط وصفي (وصف بنية) : إبراز المكونات وتنظيمها"
       },
       {
         "kind": "puce",
-        "texte": "Schéma fonctionnel (représentation d'un mécanisme/fonctionnement) : mettre en évidence les phénomènes, les étapes, les relations fonctionnelles"
+        "texte": "مخطط وظيفي (تمثيل آلية/وظيفة) : إبراز الظواهر والخطوات والعلاقات الوظيفية"
       },
       {
         "kind": "puce",
-        "texte": "Schéma fonctionnel avec transposition (comparaison état normal / état pathologique, par exemple)"
+        "texte": "مخطط وظيفي مع تحول (مقارنة حالة طبيعية / حالة مرضية، مثلاً)"
       },
       {
         "kind": "point",
         "num": "2",
-        "texte": "Lister les éléments à représenter"
+        "texte": "تعداد العناصر المراد تمثيلها"
       },
       {
         "kind": "puce",
-        "texte": "Composants (structures, organites, molécules, etc.)"
+        "texte": "المكونات (هياكل، عضيات، جزيئات، إلخ)"
       },
       {
         "kind": "puce",
-        "texte": "Étapes ou phénomènes (évènements, transformations, réactions)"
+        "texte": "الخطوات أو الظواهر (أحداث، تحولات، تفاعلات)"
       },
       {
         "kind": "puce",
-        "texte": "Relations (flèches, influences, régulations)"
+        "texte": "العلاقات (أسهم، تأثيرات، تنظيمات، تفاعلات)"
       },
       {
         "kind": "point",
         "num": "3",
-        "texte": "Choisir une disposition claire"
+        "texte": "اختيار ترتيب واضح"
       },
       {
         "kind": "puce",
-        "texte": "Ordre logique (chronologique, fonctionnel, hiérarchique)"
+        "texte": "ترتيب منطقي (زمني، وظيفي، تسلسلي)"
       },
       {
         "kind": "puce",
-        "texte": "Direction des flèches cohérente"
+        "texte": "اتجاه الأسهم متناسقاً"
       },
       {
         "kind": "puce",
-        "texte": "Gestion de l'espace (ne pas surcharger, laisser de l'air)"
+        "texte": "إدارة الفراغ (عدم الاكتظاظ، ترك مساحة)"
       },
       {
         "kind": "point",
         "num": "4",
-        "texte": "Ajouter les légendes"
+        "texte": "إضافة التسميات"
       },
       {
         "kind": "puce",
-        "texte": "Chaque élément représenté doit avoir une légende ou une indication claire"
+        "texte": "كل عنصر ممثل يجب أن يحمل تسمية أو إشارة واضحة"
       },
       {
         "kind": "puce",
-        "texte": "Les flèches doivent avoir un sens clair (formation, transport, activation, inhibition, etc.)"
+        "texte": "الأسهم يجب أن يكون لها معنى واضح (تكوين، نقل، تنشيط، تثبيط، إلخ)"
       },
       {
         "kind": "puce",
-        "texte": "Numéroter si nécessaire (schéma fonctionnel) + légende en bas (même titre)"
+        "texte": "ترقيم إن لزم (مخطط وظيفي) + تذييل في الأسفل (نفس العنوان)"
       },
       {
         "kind": "point",
         "num": "5",
-        "texte": "Ajouter un titre clair"
+        "texte": "إضافة عنوان واضح"
       },
       {
         "kind": "puce",
-        "texte": "Titre qui décrit ce que le schéma représente (le mécanisme, le phénomène, la fonction)"
+        "texte": "عنوان يصف ما يمثله المخطط (الآلية، الظاهرة، الوظيفة)"
       },
       {
         "kind": "point",
         "num": "6",
-        "texte": "Vérifier"
+        "texte": "التحقق"
       },
       {
         "kind": "puce",
-        "texte": "Est-ce complet ? (tous les éléments demandés sont présents)"
+        "texte": "هل هو كامل؟ (كل العناصر المطلوبة ممثلة)"
       },
       {
         "kind": "puce",
-        "texte": "Est-ce clair ? (compréhensible sans avoir besoin de l'énoncé)"
+        "texte": "هل هو واضح؟ (قابل للفهم دون الحاجة إلى نص التمرين)"
       },
       {
         "kind": "puce",
-        "texte": "Est-ce juste ? (les informations sont scientifiquement correctes)"
+        "texte": "هل هو دقيق علمياً؟ (المعلومات صحيحة علمياً)"
       },
       {
         "kind": "texte",
-        "texte": "Conseils complémentaires (du second ouvrage) :"
+        "texte": "نصائح مكملة (من المصدر الثاني) :"
       },
       {
-        "kind": "puce",
-        "texte": "\"Si le schéma est descriptif, privilégier le descriptif précis. Si fonctionnel, privilégier les relations fonctionnelles.\""
+        "kind": "note",
+        "texte": "إن كان المخطط وصفياً، فالأولوية للدقة الوصفية. إن كان وظيفياً، فالأولوية للعلاقات الوظيفية."
       },
       {
-        "kind": "puce",
-        "texte": "\"Les flèches doivent avoir un sens clair. Les légendes doivent être précises.\""
+        "kind": "note",
+        "texte": "الأسهم يجب أن يكون لها معنى واضح. التسميات يجب أن تكون دقيقة."
       },
       {
-        "kind": "puce",
-        "texte": "\"Un schéma sans titre ni légendes est incomplet — chaque élément dessiné doit être identifiable.\""
+        "kind": "note",
+        "texte": "مخطط بلا عنوان ولا تسميات غير مكتمل — كل عنصر مرسوم يجب أن يكون قابلاً للتعرف."
       },
       {
         "kind": "texte",
-        "texte": "Types de schémas (du premier ouvrage) :"
+        "texte": "أنواع المخططات (من المصدر الأول) :"
       },
       {
         "kind": "puce",
-        "texte": "رسم تخطيطي تفسيري : schéma qui interprète un phénomène biologique (visible au microscope ou observé) — mettre en évidence la structure/le mécanisme et l'expliquer par des légendes"
+        "texte": "رسم تخطيطي تفسيري : مخطط يفسر ظاهرة حيوية (مرئية بالمجهر أو جزيئية) — إبراز البنية/الآلية وشرحها بتسميات"
       },
       {
         "kind": "puce",
-        "texte": "رسم تخطيطي وظيفي : schéma qui met en évidence les relations fonctionnelles, les étapes, les phénomènes séquentiels — numérotation des étapes + légende des flèches"
+        "texte": "رسم تخطيطي وظيفي : مخطط يبرز العلاقات الوظيفية والمراحل والظواهر المتسلسلة — ترقيم الخطوات + تسميات للأسهم"
       }
     ],
     "sous": [
       {
         "id": "s4-h0",
-        "titre": "4.1 La structure en 3 parties (مقدمة + عرض + خاتمة)",
+        "titre": "4.1 الهيكل في 3 أجزاء (مقدمة + عرض + خاتمة)",
         "from": 0
       },
       {
         "id": "s4-h1",
-        "titre": "4.2 La méthode d'analyse de document",
+        "titre": "4.2 طريقة تحليل الوثيقة",
         "from": 33
       },
       {
         "id": "s4-h2",
-        "titre": "4.3 La méthode du schéma fonctionnel",
+        "titre": "4.3 طريقة المخطط الوظيفي",
         "from": 60
       }
     ]
   },
   {
     "id": "s5",
-    "titre": "5. MÉTHODE PAR EXERCICE — TYPES 1, 2, 3",
+    "titre": "5. المنهجية حسب نوع التمرين (1، 2، 3)",
     "icone": "Gauge",
     "blocs": [
       {
         "kind": "titre",
         "niveau": 2,
-        "texte": "5.1 Exercice 1 (5 pts) — Récupération et organisation"
+        "texte": "5.1 تمرين 1 (5 نقاط) — الاسترجاع والتنظيم"
       },
       {
         "kind": "texte",
-        "texte": "Objectif : Montrer que tu sais extraire et organiser les informations directement disponibles dans les documents et ta connaissance."
+        "texte": "الهدف : إثبات القدرة على استخلاص وتنظيم المعلومات المتاحة مباشرة في الوثائق والمعارف."
       },
       {
         "kind": "texte",
-        "texte": "Verbes typiques : تعرف, سمّ, عرف, حدد, ملحوظة, ذكر, عدد, رتب, وصف بنية, صنف, ميز, رسم تخطيطي (descriptif ou fonctionnel simple)"
+        "texte": "أفعال نموذجية : تعرف، سم، عرف، حدد، ملاحظة، ذكر، عدد، رتب، وصف بنية، صنف، ميز، رسم تخطيطي (وصفي أو وظيفي بسيط)"
       },
       {
         "kind": "texte",
-        "texte": "Durée indicative : ~45 minutes"
+        "texte": "المدة التقريبية : ~45 دقيقة"
       },
       {
         "kind": "texte",
-        "texte": "Méthode détaillée :"
-      },
-      {
-        "kind": "point",
-        "num": "1",
-        "texte": "Lire l'intégralité de l'énoncé et des documents avant de commencer"
+        "texte": "المنهجية المفصلة :"
       },
       {
         "kind": "puce",
-        "texte": "Ne pas se lancer dans la première question sans avoir une vue d'ensemble"
+        "texte": "قراءة كاملة لنص التمرين والوثائق قبل البدء"
       },
       {
         "kind": "puce",
-        "texte": "Identifier la logique globale de l'exercice"
-      },
-      {
-        "kind": "point",
-        "num": "2",
-        "texte": "Identifier les verbes d'action dans chaque consigne"
+        "texte": "عدم الانطلاق في السؤال الأول دون إبصار عام"
       },
       {
         "kind": "puce",
-        "texte": "Déterminer pour chaque question : simple ou composé ?"
+        "texte": "تحديد المنطق العام للتمرين"
       },
       {
         "kind": "puce",
-        "texte": "Adapter sa réponse en conséquence (ciblée vs développée)"
-      },
-      {
-        "kind": "point",
-        "num": "3",
-        "texte": "Pour les questions simples (تعريف, ذكر, عدد, وصف, ميز, etc.)"
+        "texte": "تحديد أفعال المهمة الأدائية في كل تعليمة"
       },
       {
         "kind": "puce",
-        "texte": "Lire le document concerné attentivement"
+        "texte": "تحديد لكل سؤال : بسيط أم مركب؟"
       },
       {
         "kind": "puce",
-        "texte": "Identifier exactement ce qui est demandé"
+        "texte": "تكييف الإجابة على هذا الأساس (مركزة أم مطورة)"
       },
       {
         "kind": "puce",
-        "texte": "Donner la réponse directe, concise, précise"
+        "texte": "بالنسبة للأسئلة البسيطة (تعريف، ذكر، عدد، وصف، ميز، إلخ)"
       },
       {
         "kind": "puce",
-        "texte": "Si schéma demandé : identifier les éléments à nommer/décrire, ajouter les légendes, titre"
-      },
-      {
-        "kind": "point",
-        "num": "4",
-        "texte": "Pour les questions de schéma"
+        "texte": "قراءة الوثيقة المعنية بتمعن"
       },
       {
         "kind": "puce",
-        "texte": "Identifier le type ( descriptif / fonctionnel)"
+        "texte": "تحديد المطلوب بدقة"
       },
       {
         "kind": "puce",
-        "texte": "Lister les éléments à représenter"
+        "texte": "إجابة مباشرة وموجزة ودقيقة"
       },
       {
         "kind": "puce",
-        "texte": "Dessiner proprement, avec légendes et flèches si nécessaire"
+        "texte": "إن طُلب مخطط : تحديد العناصر المراد تسميتها/وصفها، إضافة التسميات، العنوان"
       },
       {
         "kind": "puce",
-        "texte": "Ajouter un titre clair"
-      },
-      {
-        "kind": "point",
-        "num": "5",
-        "texte": "Vérifier"
+        "texte": "بالنسبة لأسئلة المخطط"
       },
       {
         "kind": "puce",
-        "texte": "Chaque réponse correspond-elle exactement à la consigne ?"
+        "texte": "تحديد النوع (وصفي / وظيفي)"
       },
       {
         "kind": "puce",
-        "texte": "Les légendes sont-elles complètes ?"
+        "texte": "تعداد العناصر المراد تمثيلها"
       },
       {
         "kind": "puce",
-        "texte": "Les termes sont-ils précis ?"
+        "texte": "الرسم بانتظام مع التسميات والأسهم إن لزم"
+      },
+      {
+        "kind": "puce",
+        "texte": "إضافة عنوان واضح"
+      },
+      {
+        "kind": "puce",
+        "texte": "التحقق"
+      },
+      {
+        "kind": "puce",
+        "texte": "هل كل إجابة مطابقة للتعليمية تماماً؟"
+      },
+      {
+        "kind": "puce",
+        "texte": "هل التسميات كاملة؟"
+      },
+      {
+        "kind": "puce",
+        "texte": "هل المصطلحات دقيقة؟"
       },
       {
         "kind": "texte",
-        "texte": "Pièges à éviter :"
+        "texte": "المحاذير :"
       },
       {
         "kind": "puce",
-        "texte": "Trop écrire au-delà de ce qui est demandé (perdre du temps, risquer de s'éloigner du sujet)"
+        "texte": "الإكثار من الكتابة خارج المطلوب (ضياع وقت، خطر الانحراف عن الموضوع)"
       },
       {
         "kind": "puce",
-        "texte": "Oublier les légendes sur un schéma"
+        "texte": "نسيان التسميات في المخطط"
       },
       {
         "kind": "puce",
-        "texte": "Confondre deux éléments similaires dans un document"
+        "texte": "الخلط بين مكونين متشابهين في الوثيقة"
       },
       {
         "kind": "puce",
-        "texte": "Ne pas respecter l'ordre des étapes demandées (si séquence)"
+        "texte": "عدم احترام ترتيب الخطوات إن كان تسلسلاً"
       },
       {
         "kind": "puce",
-        "texte": "Réponse approximative (termes imprécis, descriptions vagues)"
+        "texte": "إجابة تقريبية (مصطلحات غير دقيقة، أوصاف غامضة)"
       },
       {
         "kind": "titre",
         "niveau": 2,
-        "texte": "5.2 Exercice 2 (7 pts) — Analyse et interprétation"
+        "texte": "5.2 تمرين 2 (7 نقاط) — التحليل والتفسير"
       },
       {
         "kind": "texte",
-        "texte": "Objectif : Montrer que tu sais analyser des données, les interpréter, confronter des informations, discuter, argumenter."
+        "texte": "الهدف : إثبات القدرة على تحليل البيانات وتفسيرها ومقارنتها ومناقشتها وبرهنتها."
       },
       {
         "kind": "texte",
-        "texte": "Verbes typiques : تحليل, تفسير, مقارنة, مناقشة, استنتاج, علّق, أنقد, علل/برر, فسر/وضّح/بين, اشرح, تحليل مقارن"
+        "texte": "أفعال نموذجية : تحليل، تفسير، مقارنة، مناقشة، استنتاج، علّق، أنقد، علّل/برر، فسر/وضّح/بين، اشرح، تحليل مقارن"
       },
       {
         "kind": "texte",
-        "texte": "Durée indicative : ~1h15 à 1h30"
+        "texte": "المدة التقريبية : ~1س و15 د إلى 1س و30 د"
       },
       {
         "kind": "texte",
-        "texte": "Structure générale de l'exercice 2 :"
+        "texte": "الهيكل العام لتمرين 2 :"
       },
       {
         "kind": "puce",
-        "texte": "Partie 1 (souvent) : données présentées (expériences, graphiques, tableaux, schémas), questions d'analyse et d'interprétation"
+        "texte": "الجزء 1 (غالباً) : معطيات مقدمة (تجارب، منحنيات، جداول، مخططات)، أسئلة تحليل وتفسير"
       },
       {
         "kind": "puce",
-        "texte": "Partie 2 (souvent) : confrontation, discussion, confirmation/infirmation, argumentation"
+        "texte": "الجزء 2 (غالباً) : مقارنة، نقاش، تأكيد/نفي، برهنة"
       },
       {
         "kind": "texte",
-        "texte": "Méthode détaillée par type de tâche :"
-      },
-      {
-        "kind": "titre",
-        "niveau": 3,
-        "texte": "⬇️ Analyse de données (تحليل)"
-      },
-      {
-        "kind": "point",
-        "num": "1",
-        "texte": "تعريف الوثيقة : Qu'est-ce que ce document représente ?"
-      },
-      {
-        "kind": "point",
-        "num": "2",
-        "texte": "تفكيك المعطيات : Identifier les données, les valeurs, les axes, les tendances, les valeurs remarquables"
-      },
-      {
-        "kind": "point",
-        "num": "3",
-        "texte": "إيجاد العلاقات : Chercher les relations entre les éléments (cause/effet, corrélation,anomalie, différence)"
-      },
-      {
-        "kind": "point",
-        "num": "4",
-        "texte": "استنتاج intermédiaire (si demandé) : Tirer les conclusions intermédiaires liées au but"
-      },
-      {
-        "kind": "titre",
-        "niveau": 3,
-        "texte": "⬇️ Interprétation (تفسير)"
-      },
-      {
-        "kind": "point",
-        "num": "1",
-        "texte": "Observer les données (déjà fait à l'étape d'analyse)"
-      },
-      {
-        "kind": "point",
-        "num": "2",
-        "texte": "Identifier le mécanisme sous-jacent (connaissances + documents)"
-      },
-      {
-        "kind": "point",
-        "num": "3",
-        "texte": "Expliquer en étapes logiques (cause → effet, ou étapes séquentielles)"
-      },
-      {
-        "kind": "point",
-        "num": "4",
-        "texte": "Utiliser des connecteurs de cause à effet : بالتالي، إذن، لذلك، حيث، هذا يراجع إلى..."
-      },
-      {
-        "kind": "point",
-        "num": "5",
-        "texte": "Ne pas confondre observation et explication — les données ≠ le mécanisme"
-      },
-      {
-        "kind": "titre",
-        "niveau": 3,
-        "texte": "⬇️ Comparaison (مقارنة)"
-      },
-      {
-        "kind": "point",
-        "num": "1",
-        "texte": "Identifier le paramètre commun (le critère de comparaison)"
-      },
-      {
-        "kind": "point",
-        "num": "2",
-        "texte": "Citer les ressemblances (points communs)"
-      },
-      {
-        "kind": "point",
-        "num": "3",
-        "texte": "Citer les différences (points distinctifs)"
-      },
-      {
-        "kind": "point",
-        "num": "4",
-        "texte": "Aboutir à un استنتاج si demandé"
-      },
-      {
-        "kind": "titre",
-        "niveau": 3,
-        "texte": "⬇️ Discussion / Commentaire / Jugement (مناقشة, علّق, أنقد, نقاش صحة)"
-      },
-      {
-        "kind": "point",
-        "num": "1",
-        "texte": "Identifier les arguments pour et contre"
-      },
-      {
-        "kind": "point",
-        "num": "2",
-        "texte": "Confronter les points de vue"
-      },
-      {
-        "kind": "point",
-        "num": "3",
-        "texte": "Donner un avis éclairé (avantages / inconvénients, position nuancée)"
-      },
-      {
-        "kind": "point",
-        "num": "4",
-        "texte": "Appuyer par des preuves (documents ou connaissances)"
+        "texte": "المنهجية المفصلة حسب نوع المهمة :"
       },
       {
         "kind": "texte",
-        "texte": "Pièges à éviter :"
+        "texte": "⬇️ تحليل البيانات (تحليل)"
       },
       {
         "kind": "puce",
-        "texte": "Confondre observation et interprétation (les données ≠ le mécanisme)"
+        "texte": "تحديد الوثيقة : ما الذي تمثله هذه الوثيقة؟"
       },
       {
         "kind": "puce",
-        "texte": "Donner une interprétation sans être fondée sur les données"
+        "texte": "تفكيك المعطيات : تحديد البيانات، القيم، المحاور، الاتجاهات، القيم الرئيسية"
       },
       {
         "kind": "puce",
-        "texte": "Bafouer un point de vue sans nuance (quand le sujet demande la nuance)"
+        "texte": "إيجاد العلاقات : البحث عن علاقات بين العناصر (سبب/نتيجة، ارتباط، انحراف، فرق)"
       },
       {
         "kind": "puce",
-        "texte": "Ne pas aboutir à un استنتاج quand c'est demandé"
+        "texte": "استنتاج وسيطي (إن طُلب) : استنتاجات وسيطة مرتبطة بالهدف"
+      },
+      {
+        "kind": "texte",
+        "texte": "⬇️ التفسير (تفسير)"
       },
       {
         "kind": "puce",
-        "texte": "Utiliser des termes imprécis (approximatifs plutôt que scientifiques)"
+        "texte": "ملاحظة البيانات (مجموع من مرحلة التحليل)"
       },
       {
         "kind": "puce",
-        "texte": "Ne pas structurer la réponse (paragraphes sans titre, idées hors ordre)"
+        "texte": "تحديد الآلية الكامنة (معارف + وثائق)"
+      },
+      {
+        "kind": "puce",
+        "texte": "شرح مرحلي منطقي (سبب ← نتيجة، أو خطوات متسلسلة)"
+      },
+      {
+        "kind": "puce",
+        "texte": "استعمال رابط سببي صريح : بالتالي، إذن، لذلك، حيث، هذا يراجع إلى..."
+      },
+      {
+        "kind": "puce",
+        "texte": "عدم الخلط بين الملاحظة والشرح — البيانات ≠ الآلية"
+      },
+      {
+        "kind": "texte",
+        "texte": "⬇️ المقارنة (مقارنة)"
+      },
+      {
+        "kind": "puce",
+        "texte": "تحديد المعيار المشترك (معيار المقارنة)"
+      },
+      {
+        "kind": "puce",
+        "texte": "ذكر نقاط التشابه"
+      },
+      {
+        "kind": "puce",
+        "texte": "ذكر نقاط الاختلاف"
+      },
+      {
+        "kind": "puce",
+        "texte": "الوصول إلى استنتاج إن طُلب"
+      },
+      {
+        "kind": "texte",
+        "texte": "⬇️ النقاش / التعليق / الحكم (مناقشة، علّق، أنقد، نقاش صحة)"
+      },
+      {
+        "kind": "puce",
+        "texte": "تحديد الأدلة لصالح وضد"
+      },
+      {
+        "kind": "puce",
+        "texte": "مقارنة وجهات النظر"
+      },
+      {
+        "kind": "puce",
+        "texte": "إبداء رأي مدروس (إيجابيات / سلبيات، موقف متوازن)"
+      },
+      {
+        "kind": "puce",
+        "texte": "دعم بالشهادات (وثائق أو معارف)"
+      },
+      {
+        "kind": "texte",
+        "texte": "المحاذير :"
+      },
+      {
+        "kind": "puce",
+        "texte": "خلط الملاحظة بالتفسير (البيانات ≠ الآلية)"
+      },
+      {
+        "kind": "puce",
+        "texte": "تقديم تفسير غير مدعوم بالمعطيات"
+      },
+      {
+        "kind": "puce",
+        "texte": "حكم قيمي بدون توازن (عندما يطلب السؤال التوازن)"
+      },
+      {
+        "kind": "puce",
+        "texte": "عدم الوصول إلى استنتاج إن طُلب"
+      },
+      {
+        "kind": "puce",
+        "texte": "استعمال مصطلحات غير دقيقة (تقريبية بدلاً من علمية)"
+      },
+      {
+        "kind": "puce",
+        "texte": "عدم هيكلة الإجابة (فقرات بدون عناوين، أفكار خارج الترتيب)"
       },
       {
         "kind": "titre",
         "niveau": 2,
-        "texte": "5.3 Exercice 3 (8 pts) — Démarche scientifique complète (مسعى علمي)"
+        "texte": "5.3 تمرين 3 (8 نقاط) — المسار العلمي الكامل (مسعى علمي)"
       },
       {
         "kind": "texte",
-        "texte": "Objectif : Montrer que tu sais mener une démarche scientifique complète, de la formulation du problème à la conclusion."
+        "texte": "الهدف : إثبات القدرة على قيادة مسار علمي كامل، من صياغة المشكل إلى التوصل."
       },
       {
         "kind": "texte",
-        "texte": "Verbes typiques : صياغ مشكل علني, اقتراح فرضية, التحقق من صحة الفرضية, إثبات, نقاش, اكتب نصا علميا, أنجز مخططا, تحليل مقارن"
+        "texte": "أفعال نموذجية : صياغة مشكل علمي، اقتراح فرضية، التحقق من صحة الفرضية، إثبات، نقاش، اكتب نصا علمياً، أنجز مخططاً، تحليل مقارن"
       },
       {
         "kind": "texte",
-        "texte": "Durée indicative : ~2h"
+        "texte": "المدة التقريبية : ~2 ساعة"
       },
       {
         "kind": "texte",
-        "texte": "Structure générale de l'exercice 3 :"
+        "texte": "الهيكل العام لتمرين 3 :"
       },
       {
         "kind": "puce",
-        "texte": "Partie 1 : Présentation d'une situation / d'un problème, propositions d'hypothèses"
+        "texte": "الجزء 1 : عرض وضعية/مشكل، اقتراح فرضيات"
       },
       {
         "kind": "puce",
-        "texte": "Partie 2 : Exploitation de documents pour vérifier/infirmer les hypothèses, analyse comparative"
+        "texte": "الجزء 2 : استغلال وثائق لمقارنة الفرضيات، تحليل مقارن"
       },
       {
         "kind": "puce",
-        "texte": "Partie 3 : Synthèse — texte scientifique ou schéma récapitulatif"
+        "texte": "الجزء 3 : تركيب — نص علمي أو مخطط تلخيصي"
       },
       {
         "kind": "texte",
-        "texte": "Méthode détaillée — 6 étapes :"
+        "texte": "المنهجية المفصلة — 6 خطوات :"
       },
       {
         "kind": "titre",
         "niveau": 3,
-        "texte": "Étape 1 — Formulation du problème (صياغ مشكل علني)"
+        "texte": "الخطوة 1 — صياغة المشكل العلمي (صياغة مشكل علمي)"
       },
       {
         "kind": "texte",
-        "texte": "But : Identifier ce qu'on cherche vraiment à comprendre."
+        "texte": "الهدف : تحديد ما نبحث عنه فعلياً."
       },
       {
         "kind": "texte",
-        "texte": "Comment :"
+        "texte": "كيف :"
       },
       {
         "kind": "puce",
-        "texte": "Lire attentivement tous les documents et l'énoncé"
+        "texte": "قراءة جميع الوثائق ونص التمرين بتمعن"
       },
       {
         "kind": "puce",
-        "texte": "Identifier le but sous-jacent (لماذا؟ كيف؟ أين؟ متى؟ ما هو...)"
+        "texte": "تحديد الهدف الكامن (لماذا؟ كيف؟ أين؟ متى؟ ما هو...)"
       },
       {
         "kind": "puce",
-        "texte": "Reformuler en une question précise"
+        "texte": "صياغة سؤال دقيق"
       },
       {
         "kind": "puce",
-        "texte": "Parfois, le but est explicite (clarifié par l'énoncé) ; parfois il est implicite (à déduire de la logique)"
+        "texte": "أحياناً الهدف صريح (مبين في النص)؛ أحياناً ضمني (يُستنتج من المنطق)"
       },
       {
         "kind": "texte",
-        "texte": "Exemple (extrait des deux ouvrages) :"
+        "texte": "مثال (مستمد من المصدرين) :"
       },
       {
         "kind": "note",
-        "texte": "\"Comment l'information génétique passe-t-elle du noyau au cytoplasme avec transfert de l'ARNm à travers les pores nucléaires ?\""
+        "texte": "كيف تنتقل المعلومة الوراثية من النواة إلى الهيولي مع انتقال الـ ARNm عبر الثقوب النووية؟"
       },
       {
         "kind": "texte",
-        "texte": "Ou plus généralement :"
+        "texte": "أو بشكل أعمّ :"
       },
       {
         "kind": "note",
-        "texte": "\"ما هو الآلية qui permet [...] ?\" / \"كيف fonctionne [...] ?\" / \"ما هي les facteurs qui influencent [...] ?\""
+        "texte": "ما هي الآلية التي تسمح بـ [...]؟ / كيف تعمل [...]؟ / ما هي العوامل المؤثرة على [...]؟"
       },
       {
         "kind": "titre",
         "niveau": 3,
-        "texte": "Étape 2 — Proposition d'hypothèse (اقتراح فرضية)"
+        "texte": "الخطوة 2 — اقتراح فرضية (اقتراح فرضية)"
       },
       {
         "kind": "texte",
-        "texte": "But : Proposer une explication plausible et testable."
+        "texte": "الهدف : اقتراح تفسير منطقي وقابل للاختبار."
       },
       {
         "kind": "texte",
-        "texte": "Comment (du premier ouvrage) :"
+        "texte": "كيف (المصدر الأول) :"
       },
       {
         "kind": "puce",
-        "texte": "S'appuyer sur les données disponibles + les connaissances"
+        "texte": "الاعتماد على المعطيات المتاحة + المعارف"
       },
       {
         "kind": "puce",
-        "texte": "Proposer une explication testable (qui pourrait être vérifiée ou infirmée par une expérience ou par des données)"
+        "texte": "اقتراح تفسير قابل للاختبار (يمكن التحقق منه أو نفيه بتجربة أو ببيانات)"
       },
       {
         "kind": "puce",
-        "texte": "Une hypothèse peut être partiellement bonne ; plusieurs hypothèses peuvent coexister"
+        "texte": "قد تكون الفرضية جزئياً صحيحة؛ قد تتعايش عدة فرضيات"
       },
       {
         "kind": "puce",
-        "texte": "Elle doit être reformulable en une proposition testable"
+        "texte": "يجب أن تكون قابلة لإعادة الصياغة كاقتراح قابل للاختبار"
       },
       {
         "kind": "texte",
-        "texte": "Comment (du second ouvrage) :"
+        "texte": "كيف (المصدر الثاني) :"
       },
       {
         "kind": "note",
-        "texte": "\"اقتراح فرضية : proposition conjecturale, testable, plausible, pertinente\""
+        "texte": "اقتراح فرضية : مقترح افتراضي، قابل للاختبار، منطقي، ذو صلة."
       },
       {
         "kind": "texte",
-        "texte": "Ce qu'il faut éviter (du second ouvrage) :"
+        "texte": "ما يجب تجنبه (المصدر الثاني) :"
       },
       {
         "kind": "puce",
-        "texte": "Ne pas confondre hypothèse et explication détaillée — l'hypothèse est une proposition de départ, pas une explication complète"
+        "texte": "عدم الخلط بين الفرضية والتفسير المفصل — الفرضية مقترح انطلاق، ليس شرحاً كاملاً"
       },
       {
         "kind": "puce",
-        "texte": "Ne pas proposer une hypothèse qui est déjà confirmée par les données"
+        "texte": "عدم اقتراح فرضية تكون بالفعل مؤكدة بالمعطيات"
       },
       {
         "kind": "texte",
-        "texte": "Exemple d'hypothèse testable :"
+        "texte": "نموذج فرضية قابلة للاختبار :"
       },
       {
         "kind": "note",
-        "texte": "\"Il est possible que le rôle de l'uridine radioactive dans la traduction soit de permettre le suivi des ARN messagers synthétisés\""
+        "texte": "من الممكن أن يكون دور اليوريدين المشع في الترجمة هو تتبع الـ ARNm المُنسخّ."
       },
       {
         "kind": "titre",
         "niveau": 3,
-        "texte": "Étape 3 — Choix du protocole de test (si demandé)"
+        "texte": "الخطوة 3 — اختيار بروتوكول اختبار (إن طُلب)"
       },
       {
         "kind": "texte",
-        "texte": "But : Proposer une expérience de vérification pertinente."
+        "texte": "الهدف : اقتراح تجربة تحقق ملائمة."
       },
       {
         "kind": "texte",
-        "texte": "Comment :"
+        "texte": "كيف :"
       },
       {
         "kind": "puce",
-        "texte": "Identifier les variables pertinentes (ce qu'on veut tester)"
+        "texte": "تحديد المتغيرات ذات الصلة (ما الذي نريد اختباره)"
       },
       {
         "kind": "puce",
-        "texte": "Proposer des conditions expérimentales qui permettront de confirmer ou infirmer l'hypothèse"
+        "texte": "اقتراح شروط تجريبية تسمح بتأكيد أو نفي الفرضية"
       },
       {
         "kind": "puce",
-        "texte": "Justifier le choix du protocole (pourquoi cette expérience, qu'est-ce qu'elle va permettre de conclure)"
+        "texte": "تبرير اختيار البروتوكول (لماذا هذه التجربة، ما الذي ستسمح باستنتاجه)"
       },
       {
         "kind": "texte",
-        "texte": "Ce qu'il faut montrer :"
+        "texte": "ما يجب إظهاره :"
       },
       {
         "kind": "puce",
-        "texte": "Que tu comprends ce qu'une expérience de test doit faire (manipuler une variable, mesurer l'effet, confronter à l'hypothèse)"
+        "texte": "فهمك لما يجب أن تفعله تجربة الاختبار (التحكم بمتغير، قياس الأثر، مقابلة مع الفرضية)"
       },
       {
         "kind": "titre",
         "niveau": 3,
-        "texte": "Étape 4 — Analyse et interprétation des données (Partie 2 de l'exercice)"
+        "texte": "الخطوة 4 — تحليل وتفسير البيانات (الجزء 2 من التمرين)"
       },
       {
         "kind": "texte",
-        "texte": "Méthode (identique à l'exercice 2) :"
+        "texte": "الطريقة (نفسها تمرين 2) :"
       },
       {
-        "kind": "point",
-        "num": "1",
-        "texte": "تعريف الوثيقة (si nouveau document)"
+        "kind": "puce",
+        "texte": "تحديد الوثيقة (إن كانت وثيقة جديدة)"
       },
       {
-        "kind": "point",
-        "num": "2",
-        "texte": "تفكيك المعطيات (identifier les données, valeurs, tendances)"
+        "kind": "puce",
+        "texte": "تفكيك المعطيات (تحديد البيانات، القيم، الاتجاهات)"
       },
       {
-        "kind": "point",
-        "num": "3",
-        "texte": "تفسير (expliquer ce que les données montrent, le mécanisme sous-jacent)"
+        "kind": "puce",
+        "texte": "تفسير (شرح ما تظهره البيانات، الآلية الكامنة)"
       },
       {
-        "kind": "point",
-        "num": "4",
-        "texte": "استنتاج (confirmer ou infirmer l'hypothèse avec justification)"
+        "kind": "puce",
+        "texte": "استنتاج (تأكيد أو نفي الفرضية مع تبرير)"
       },
       {
         "kind": "texte",
-        "texte": "Important (du premier ouvrage) : confronter chaque donnée avec l'hypothèse, et conclure explicitement"
+        "texte": "مهم (المصدر الأول) : مقابلة كل معطى مع الفرضية، والخاتمة صراحة."
       },
       {
         "kind": "titre",
         "niveau": 3,
-        "texte": "Étape 5 — Vérification / infirment / discussion (confronter avec les données)"
+        "texte": "الخطوة 5 — التحقق / النفي / النقاش (مقابلة مع البيانات)"
       },
       {
         "kind": "texte",
-        "texte": "Méthode :"
+        "texte": "الطريقة :"
       },
       {
         "kind": "puce",
-        "texte": "Si les données soutiennent l'hypothèse : confirmer avec justification (lignes de données + interprétation)"
+        "texte": "إن كانت البيانات تدعم الفرضية : تأكيد مع تبرير (سطور بيانات + تفسير)"
       },
       {
         "kind": "puce",
-        "texte": "Si les données infirment l'hypothèse : expliquer pourquoi, proposer une alternative si pertinent"
+        "texte": "إن كانت البيانات تنفي الفرضية : شرح لماذا، اقتراح بديل إن كان ملائماً"
       },
       {
         "kind": "puce",
-        "texte": "Si les données sont partiellement en accord : nuancer, identifier les points forts et les limites"
+        "texte": "إن كانت البيانات جزئياً متوافقة : توضيح، تحديد نقاط القوة والحدود"
       },
       {
         "kind": "texte",
-        "texte": "Conseil (du second ouvrage) :"
+        "texte": "نصيحة (المصدر الثاني) :"
       },
       {
         "kind": "note",
-        "texte": "\"إذا كانت الأسئلة : هل تأكدت من صحة الفرضية؟ → الإجابة : نعم ou لا, ثم justification\""
+        "texte": "إذا كانت الأسئلة : هل تأكدت من صحة الفرضية؟ ← الإجابة : نعم أو لا، ثم تبرير."
       },
       {
         "kind": "texte",
-        "texte": "→ Ne pas juste dire \"نعم\" ou \"لا\", mais appuyer par les données"
+        "texte": "→ لا تقف عند «نعم» أو «لا»، بل ادعم بالبيانات."
       },
       {
         "kind": "titre",
         "niveau": 3,
-        "texte": "Étape 6 — Production synthétique (si demandé : نص علمي / مخطط)"
+        "texte": "الخطوة 6 — الإنتاج التركيبي (إن طُلب : نص علمي / مخطط)"
       },
       {
         "kind": "texte",
-        "texte": "Texte scientifique :"
+        "texte": "النص العلمي :"
       },
       {
         "kind": "puce",
-        "texte": "مقدمة : contexte, rappel des connaissances, annonce du mécanisme/phénomène traité, problème posé"
+        "texte": "مقدمة : سياق، تذكر معارف، إعلان الظاهرة/الآلية موضوعة، المشكل المطروح"
       },
       {
         "kind": "puce",
-        "texte": "عرض : explication détaillée en étapes, avec les données et connaissances, connecteurs logiques, titres par idée"
+        "texte": "عرض : شرح مفصل مرحلي، مع البيانات والمعارف، روابط منطقية، عناوين لكل فكرة"
       },
       {
         "kind": "puce",
-        "texte": "خاتمة : synthèse, réponse claire au problème, éventuellement ouverture"
+        "texte": "خاتمة : تلخيص، إجابة صريحة على المشكل، في حال ملائمة فتح باب"
       },
       {
         "kind": "texte",
-        "texte": "Schéma fonctionnel :"
+        "texte": "المخطط الوظيفي :"
       },
       {
         "kind": "puce",
-        "texte": "Montrer le mécanisme/phénomène de façon claire et complète"
+        "texte": "إبراز الآلية/الظاهرة بشكل واضح وكامل"
       },
       {
         "kind": "puce",
-        "texte": "Légendes précises pour chaque élément"
+        "texte": "تسميات دقيقة لكل عنصر"
       },
       {
         "kind": "puce",
-        "texte": "Flèches si nécessaire (sens, progression, transformation)"
+        "texte": "أسهم إن لزم (اتجاه، تقدم، تحول)"
       },
       {
         "kind": "puce",
-        "texte": "Titre clair"
+        "texte": "عنوان واضح"
       },
       {
         "kind": "texte",
-        "texte": "Conseil du second ouvrage :"
+        "texte": "نصيحة المصدر الثاني :"
       },
       {
         "kind": "note",
-        "texte": "\"Dans le schéma fonctionnel du partie III, il faut représenter l'état normal ET l'état pathologique (ou l'état avec intervention) — même si le sujet ne le demande pas explicitement.\""
+        "texte": "في مخطط الجزء الثالث، يجب تمثيل الحالة الطبيعية والحالة المرضية (أو الحالة مع تدخل) — حتى إن لم يطلب الموضوع ذلك صراحة."
       }
     ],
     "sous": [
       {
         "id": "s5-h0",
-        "titre": "5.1 Exercice 1 (5 pts) — Récupération et organisation",
+        "titre": "5.1 تمرين 1 (5 نقاط) — الاسترجاع والتنظيم",
         "from": 0
       },
       {
         "id": "s5-h1",
-        "titre": "5.2 Exercice 2 (7 pts) — Analyse et interprétation",
+        "titre": "5.2 تمرين 2 (7 نقاط) — التحليل والتفسير",
         "from": 31
       },
       {
         "id": "s5-h2",
-        "titre": "5.3 Exercice 3 (8 pts) — Démarche scientifique complète (مسعى علمي)",
+        "titre": "5.3 تمرين 3 (8 نقاط) — المسار العلمي الكامل (مسعى علمي)",
         "from": 67
       }
     ]
   },
   {
     "id": "s6",
-    "titre": "6. MÉTHODOLOGIE DE RÉVISION",
+    "titre": "6. منهجية المراجعة والتحضير",
     "icone": "Boxes",
     "blocs": [
       {
         "kind": "titre",
         "niveau": 2,
-        "texte": "6.1. Principes fondamentaux"
+        "texte": "6.1 المبادئ الأساسية"
       },
       {
         "kind": "titre",
         "niveau": 3,
-        "texte": "1. La pratique > la théorie passive"
+        "texte": "1. التمرين > النظرية السلبية"
       },
       {
         "kind": "puce",
-        "texte": "90% du savoir se acquiert par la pratique et l'auto-évaluation, 10% par la théorie"
+        "texte": "90% من المعرفة تُكتسب عبر الممارسة والتقويم الذاتي، 10% عبر النظرية"
       },
       {
         "kind": "puce",
-        "texte": "La reconstitution du savoir par la pratique seule permet d'atteindre la méthode idéale"
+        "texte": "إعادة بناء المعرفة بالتمارين تحقق الحالة المثالية للمنهجية"
       },
       {
         "kind": "puce",
-        "texte": "Il faut résoudre des exercices variés dans toutes les unités"
+        "texte": "حل تمارين متنوعة في جميع الوحدات"
       },
       {
         "kind": "titre",
         "niveau": 3,
-        "texte": "2. L'importance de l'auto-évaluation continue"
+        "texte": "2. أهمية التقويم الذاتي المستمر"
       },
       {
         "kind": "puce",
-        "texte": "Après chaque leçon, faire des exercices types"
+        "texte": "بعد كل درس، حل تمارين نموذجية"
       },
       {
         "kind": "puce",
-        "texte": "Comparer avec les corrigés (si disponibles) ou avec sa propre logique"
+        "texte": "مقارنة الإجابة بالتصحيح النموذجي (إن وجد) أو مع المنطق الشخصي"
       },
       {
         "kind": "puce",
-        "texte": "Identifier ses points faibles et les travailler spécifiquement"
+        "texte": "تحديد نقاط الضعف والعمل عليها بشكل مستهدف"
       },
       {
         "kind": "puce",
-        "texte": "Ne pas accumuler le savoir sans le vérifier"
+        "texte": "عدم تراكم العلم دون التحقق منه"
       },
       {
         "kind": "titre",
         "niveau": 3,
-        "texte": "3. La structuration de la révision"
+        "texte": "3. تنظيم المراجعة"
       },
       {
         "kind": "tableau",
-        "texte": "Phase · Contenu · Durée indicative · Revue des concepts · Réviser les notions, compléter les fiches, ajouter des schémas · 1-2h par session · Auto-évaluation par unité · Résoudre des exercices types par unité · Après revue du concept · Sujets complets d'entraînement · Résoudre des sujets bac complets, chronométrés · Avant les tests blancs · Test blanc · Simulation d'examen, chronométré, sans aide · Avant le bac",
+        "texte": "المرحلة · المحتوى · المدة التقريبية · مراجعة المفاهيم · مراجعة المفاهيم، إتمام الملخصات، إضافة المخططات · 1-2س لكل جلسة · تقويم ذاتي بالوحدة · حل تمارين نموذجية حسب الوحدة · بعد مراجعة المفهوم · مواضيع كاملة تدريبية · حل مواضيع باك كاملة، مؤقّتة · قبل الاختبارات التجريبية · اختبار تجريبي · محاكاة امتحان، مؤقّتة، بدون مساعدة · قبل البكالوريا",
         "entetes": [
-          "Phase",
-          "Contenu",
-          "Durée indicative"
+          "المرحلة",
+          "المحتوى",
+          "المدة التقريبية"
         ],
         "lignes": [
           [
-            "Revue des concepts",
-            "Réviser les notions, compléter les fiches, ajouter des schémas",
-            "1-2h par session"
+            "مراجعة المفاهيم",
+            "مراجعة المفاهيم، إتمام الملخصات، إضافة المخططات",
+            "1-2س لكل جلسة"
           ],
           [
-            "Auto-évaluation par unité",
-            "Résoudre des exercices types par unité",
-            "Après revue du concept"
+            "تقويم ذاتي بالوحدة",
+            "حل تمارين نموذجية حسب الوحدة",
+            "بعد مراجعة المفهوم"
           ],
           [
-            "Sujets complets d'entraînement",
-            "Résoudre des sujets bac complets, chronométrés",
-            "Avant les tests blancs"
+            "مواضيع كاملة تدريبية",
+            "حل مواضيع باك كاملة، مؤقّتة",
+            "قبل الاختبارات التجريبية"
           ],
           [
-            "Test blanc",
-            "Simulation d'examen, chronométré, sans aide",
-            "Avant le bac"
+            "اختبار تجريبي",
+            "محاكاة امتحان، مؤقّتة، بدون مساعدة",
+            "قبل البكالوريا"
           ]
         ]
       },
       {
         "kind": "titre",
         "niveau": 3,
-        "texte": "4. La gestion du temps (du second ouvrage)"
+        "texte": "4. إدارة الوقت (من المصدر الثاني)"
       },
       {
         "kind": "texte",
-        "texte": "Conseils :"
+        "texte": "نصائح :"
       },
       {
         "kind": "puce",
-        "texte": "Ne pas reprendre directement l'école pour les matières intensives (maths, SVT)"
+        "texte": "عدم الرجوع مباشرة للمدرسة للمواد المكثفة (رياضيات، علوم)"
       },
       {
         "kind": "puce",
-        "texte": "Sessions de révision : 3-4h maximum, avec pauses"
+        "texte": "جلسات المراجعة : 3-4 ساعات كحد أقصى، مع استراحات"
       },
       {
         "kind": "puce",
-        "texte": "\"تجزئة\" la révision par unité, pas tout d'un coup"
+        "texte": "«تجزئة» المراجعة حسب الوحدة، ليس كل شيء في آن واحد"
       },
       {
         "kind": "puce",
-        "texte": "Pas de révision la nuit avant (concentration trop faible, besoin de sommeil)"
+        "texte": "عدم المراجعة ليلة الامتحان (تركيز ضعيف، حاجة للنوم)"
       },
       {
         "kind": "texte",
-        "texte": "Plan de révision type :"
+        "texte": "خطة المراجعة النموذجية :"
       },
       {
         "kind": "tableau",
-        "texte": "Période · Activité · Début du programme · Revue des notions + fiches + premiers exercices types · Milieu du programme · Compléter fiches, exercices variés par unité, premiers sujets d'entraînement · Après fin du programme · Sujets complets chronométrés, tests blancs, correction des erreurs · Semaine du bac · Revue finale des fiches, 1-2 sujets complets, repos mental",
+        "texte": "الفترة · النشاط · بداية البرنامج · مراجعة المفاهيم + الملخصات + أول تمارين نموذجية · وسط البرنامج · إتمام الملخصات، تمارين متنوعة حسب الوحدة، أول مواضيع تدريبية · بعد انتهاء البرنامج · مواضيع كاملة مؤقّتة، اختبارات تجريبية، تصحيح الأخطاء · أسبوع البكالوريا · مراجعة أخيرة للملخصات، 1-2 موضوع كامل، راحة عقلية",
         "entetes": [
-          "Période",
-          "Activité"
+          "الفترة",
+          "النشاط"
         ],
         "lignes": [
           [
-            "Début du programme",
-            "Revue des notions + fiches + premiers exercices types"
+            "بداية البرنامج",
+            "مراجعة المفاهيم + الملخصات + أول تمارين نموذجية"
           ],
           [
-            "Milieu du programme",
-            "Compléter fiches, exercices variés par unité, premiers sujets d'entraînement"
+            "وسط البرنامج",
+            "إتمام الملخصات، تمارين متنوعة حسب الوحدة، أول مواضيع تدريبية"
           ],
           [
-            "Après fin du programme",
-            "Sujets complets chronométrés, tests blancs, correction des erreurs"
+            "بعد انتهاء البرنامج",
+            "مواضيع كاملة مؤقّتة، اختبارات تجريبية، تصحيح الأخطاء"
           ],
           [
-            "Semaine du bac",
-            "Revue finale des fiches, 1-2 sujets complets, repos mental"
+            "أسبوع البكالوريا",
+            "مراجعة أخيرة للملخصات، 1-2 موضوع كامل، راحة عقلية"
           ]
         ]
       },
       {
         "kind": "titre",
         "niveau": 3,
-        "texte": "5. Les pièges de la révision (du second ouvrage)"
+        "texte": "5. محاذير المراجعة (من المصدر الثاني)"
       },
       {
         "kind": "tableau",
-        "texte": "Piège · Solution · La révision passive (relire sans s'auto-évaluer) · Toujours faire des exercices après la lecture · La procrastination · Commencer tôt, petits pas réguliers · La surcharge mentale (trop de choses sans organisation) · Découper par unité, un sujet à la fois · La comparaison avec les autres élèves · Se concentrer sur sa propre progression · Le manque de confiance en soi · Se rappeler sa progression, se rappeler que la pratique améliore · La révision non focalisée (diffuse, sans objectif) · Définir un objectif par session (réviser une unité, résoudre un type d'exercice)",
+        "texte": "المفهوم · الحل · المراجعة السلبية (إعادة القراءة بدون تمارين) · دائماً حل تمارين بعد القراءة · التأجيل · البدء مبكراً، خطوات صغيرة منتظمة · الإجهاد الذهني (كل شيء دون تنظيم) · تجزئة حسب الوحدة، موضوع واحد في كل مرة · المقارنة مع التلاميذ الآخرين · التركيز على التقدم الشخصي · نقص الثقة بالنفس · تذكر التقدم، تذكر أن الممارسة تطور · المراجعة غير المركزة (متباعدة، بدون هدف) · تحديد هدف لكل جلسة (مراجعة وحدة، حل نوع تمرين)",
         "entetes": [
-          "Piège",
-          "Solution"
+          "المفهوم",
+          "الحل"
         ],
         "lignes": [
           [
-            "La révision passive (relire sans s'auto-évaluer)",
-            "Toujours faire des exercices après la lecture"
+            "المراجعة السلبية (إعادة القراءة بدون تمارين)",
+            "دائماً حل تمارين بعد القراءة"
           ],
           [
-            "La procrastination",
-            "Commencer tôt, petits pas réguliers"
+            "التأجيل",
+            "البدء مبكراً، خطوات صغيرة منتظمة"
           ],
           [
-            "La surcharge mentale (trop de choses sans organisation)",
-            "Découper par unité, un sujet à la fois"
+            "الإجهاد الذهني (كل شيء دون تنظيم)",
+            "تجزئة حسب الوحدة، موضوع واحد في كل مرة"
           ],
           [
-            "La comparaison avec les autres élèves",
-            "Se concentrer sur sa propre progression"
+            "المقارنة مع التلاميذ الآخرين",
+            "التركيز على التقدم الشخصي"
           ],
           [
-            "Le manque de confiance en soi",
-            "Se rappeler sa progression, se rappeler que la pratique améliore"
+            "نقص الثقة بالنفس",
+            "تذكر التقدم، تذكر أن الممارسة تطور"
           ],
           [
-            "La révision non focalisée (diffuse, sans objectif)",
-            "Définir un objectif par session (réviser une unité, résoudre un type d'exercice)"
+            "المراجعة غير المركزة (متباعدة، بدون هدف)",
+            "تحديد هدف لكل جلسة (مراجعة وحدة، حل نوع تمرين)"
           ]
         ]
       },
       {
         "kind": "titre",
-        "niveau": 3,
-        "texte": "6. Conseils psychologiques & motivationnels (du second ouvrage)"
+        "niveau": 2,
+        "texte": "6.2 نصائح نفسية وتحفيزية (من المصدر الثاني)"
       },
       {
-        "kind": "puce",
-        "texte": "\"Le cerveau n'est pas une machine électrique qui fonctionne sans arrêt. Il a aussi besoin d'énergie\""
+        "kind": "note",
+        "texte": "العقل ليس آلة كهربائية تعمل بلا توقف. يحتاج أيضاً للطاقة."
       },
       {
-        "kind": "puce",
-        "texte": "\"Rechargez votre énergie par une alimentation saine, un sommeil de qualité, et des pauses\""
+        "kind": "note",
+        "texte": "أعد شحن طاقتك بغذاء صحي، نوم جيد، واستراحات."
       },
       {
-        "kind": "puce",
-        "texte": "\"La confiance en soi vient de la préparation méthodeique\""
-      },
-      {
-        "kind": "texte",
-        "texte": "Message clé : le bac est une épreuve, mais avec une bonne préparation méthodique, on peut la réussir. Il faut à la fois :"
-      },
-      {
-        "kind": "puce",
-        "texte": "Comprendre le contenu (fiches, cours, exercices)"
-      },
-      {
-        "kind": "puce",
-        "texte": "S'entraîner sur la forme (exercices, chronométrage, rédaction)"
-      },
-      {
-        "kind": "puce",
-        "texte": "Gérer le mental (confiance, gestion du stress, repos, équilibre)"
+        "kind": "note",
+        "texte": "الثقة بالنفس تأتي من التحضير المنهجي."
       },
       {
         "kind": "texte",
-        "texte": "Piège émotionnel à éviter (du second ouvrage) :"
+        "texte": "الرسالة الجوهرية : البكالوريا امتحان، لكن مع تحضير منهجي جيد، يمكن النجاح. يلزم :"
       },
       {
         "kind": "puce",
-        "texte": "La peur du bilan, du résultat"
+        "texte": "فهم المحتوى (ملخصات، دروس، تمارين)"
       },
       {
         "kind": "puce",
-        "texte": "La comparaison sociale (« les autres sont meilleurs »)"
+        "texte": "التمرين على الشكل (تمارين، مؤقّتة، كتابة)"
       },
       {
         "kind": "puce",
-        "texte": "La pression du temps qui conduit à la précipitation"
+        "texte": "إدارة العقل (الثقة، إدارة التوتر، الراحة، التوازن)"
       },
       {
         "kind": "texte",
-        "texte": "Stratégie face à l'échec ou à la difficulté (du second ouvrage) :"
+        "texte": "المحاذير العاطفية التي يجب تجنبها (من المصدر الثاني) :"
       },
       {
         "kind": "puce",
-        "texte": "Analyser les erreurs (comprendre pourquoi on a eu tort)"
+        "texte": "الخوف من التقويم، من النتيجة"
       },
       {
         "kind": "puce",
-        "texte": "Identifier le point bloquant précis"
+        "texte": "المقارنة الاجتماعية («الآخرون أفضل»)"
       },
       {
         "kind": "puce",
-        "texte": "Travailler spécifiquement ce point"
+        "texte": "ضغط الوقت الذي يؤدي للاستعجال"
+      },
+      {
+        "kind": "texte",
+        "texte": "الاستراتيجية أمام الفشل أو الصعوبة (من المصدر الثاني) :"
       },
       {
         "kind": "puce",
-        "texte": "Répéter jusqu'à automatisation"
+        "texte": "تحليل الأخطاء (فهم سبب الخطأ)"
+      },
+      {
+        "kind": "puce",
+        "texte": "تحديد نقطة الانسداد الدقيقة"
+      },
+      {
+        "kind": "puce",
+        "texte": "العمل بشكل مستهدف على هذه النقطة"
+      },
+      {
+        "kind": "puce",
+        "texte": "التكرار حتى الأتمتة"
       }
     ],
     "sous": [
       {
         "id": "s6-h0",
-        "titre": "6.1. Principes fondamentaux",
+        "titre": "6.1 المبادئ الأساسية",
         "from": 0
+      },
+      {
+        "id": "s6-h1",
+        "titre": "6.2 نصائح نفسية وتحفيزية (من المصدر الثاني)",
+        "from": 22
       }
     ]
   },
   {
     "id": "s7",
-    "titre": "7. PIÈGES À ÉVITER",
+    "titre": "7. الأخطاء الشائعة والمحاذير",
     "icone": "ShieldCheck",
     "blocs": [
       {
         "kind": "titre",
         "niveau": 2,
-        "texte": "7.1. Pièges dans la lecture de l'énoncé"
+        "texte": "7.1 محاذير في قراءة نص التمرين"
       },
       {
         "kind": "tableau",
-        "texte": "Piège · Conséquence · Solution · Ne pas identifier les verbes d'action · Répondre à côté, perdre des points · Lister les verbes, déterminer simple/composé · Penser que tous les exercices sont pareils · Méthode inadaptée · Adapter la méthode selon le type d'exercice (1, 2, 3) · Ne pas lire TOUS les documents avant de commencer · Manquer des informations, inachevé · Lire l'ensemble avant de répondre, identifier la logique · Confondre observation et interprétation (exercice 2) · Réponse superficielle ou hors sujet · Séparer analyse (données) et interprétation (explication) · Penser que le problème est la question explicite (exercice 3) · Problème mal formulé, réponse non ciblée · Identifier le but sous-jacent, reformuler en question",
+        "texte": "المحذر · العواقب · الحل · عدم تحديد أفعال المهمة الأدائية · إجابة غير ملائمة، خسارة نقاط · تعداد الأفعال، تحديد بسيط/مركب · الاعتقاد أن كل التمارين متشابهة · منهجية غير ملائمة · تكييف المنهجية حسب نوع التمرين (1، 2، 3) · عدم قراءة جميع الوثائق قبل البدء · تفويت معلومات، إجابة ناقصة · قراءة الكل قبل الإجابة، تحديد المنطق · خلط الملاحظة بالتفسير (تمرين 2) · إجابة سطحية أو خارج موضوع · فصل التحليل (بيانات) عن التفسير (شرح) · الاعتقاد أن المشكل هو السؤال الصريح (تمرين 3) · مشكل غير مضبوط، إجابة غير مركزية · تحديد الهدف الكامن، إعادة صياغة كسؤال",
         "entetes": [
-          "Piège",
-          "Conséquence",
-          "Solution"
+          "المحذر",
+          "العواقب",
+          "الحل"
         ],
         "lignes": [
           [
-            "Ne pas identifier les verbes d'action",
-            "Répondre à côté, perdre des points",
-            "Lister les verbes, déterminer simple/composé"
+            "عدم تحديد أفعال المهمة الأدائية",
+            "إجابة غير ملائمة، خسارة نقاط",
+            "تعداد الأفعال، تحديد بسيط/مركب"
           ],
           [
-            "Penser que tous les exercices sont pareils",
-            "Méthode inadaptée",
-            "Adapter la méthode selon le type d'exercice (1, 2, 3)"
+            "الاعتقاد أن كل التمارين متشابهة",
+            "منهجية غير ملائمة",
+            "تكييف المنهجية حسب نوع التمرين (1، 2، 3)"
           ],
           [
-            "Ne pas lire TOUS les documents avant de commencer",
-            "Manquer des informations, inachevé",
-            "Lire l'ensemble avant de répondre, identifier la logique"
+            "عدم قراءة جميع الوثائق قبل البدء",
+            "تفويت معلومات، إجابة ناقصة",
+            "قراءة الكل قبل الإجابة، تحديد المنطق"
           ],
           [
-            "Confondre observation et interprétation (exercice 2)",
-            "Réponse superficielle ou hors sujet",
-            "Séparer analyse (données) et interprétation (explication)"
+            "خلط الملاحظة بالتفسير (تمرين 2)",
+            "إجابة سطحية أو خارج موضوع",
+            "فصل التحليل (بيانات) عن التفسير (شرح)"
           ],
           [
-            "Penser que le problème est la question explicite (exercice 3)",
-            "Problème mal formulé, réponse non ciblée",
-            "Identifier le but sous-jacent, reformuler en question"
+            "الاعتقاد أن المشكل هو السؤال الصريح (تمرين 3)",
+            "مشكل غير مضبوط، إجابة غير مركزية",
+            "تحديد الهدف الكامن، إعادة صياغة كسؤال"
           ]
         ]
       },
       {
         "kind": "titre",
         "niveau": 2,
-        "texte": "7.2. Pièges dans la réponse"
+        "texte": "7.2 محاذير في الإجابة"
       },
       {
         "kind": "tableau",
-        "texte": "Piège · Conséquence · Solution · Trop écrire (hors sujet) → perdre des points, perdre du temps · Se limiter à ce qui est demandé, mais avec précision et complétude relative · Réponse non structurée → illisible, mal notée · Utiliser la structure en 3 parties (pour texte) ou la méthode structurée (pour analyse) · Schéma sans légendes / flèches / titre → incomplet · Toujours ajouter légendes, flèches si nécessaire, titre · Termes imprécis / approximatifs → moins de crédit, moins de précision · Utiliser les termes scientifiques justes, précis · Oublier l'استنتاج quand c'est demandé · Vérifier si chaque question demande un استنتاج, et le faire · Donner un avis sans justification (discussion/commentaire) · Appuyer chaque affirmation par des preuves (documents ou connaissances) · Confondre hypothèse testable et simple affirmation · Vérifier que l'hypothèse est testable, fondée, plausible · Ne pas confronter les données avec l'hypothèse (exercice 3) · Confronter explicitement, confirmer ou infirmer avec justification",
+        "texte": "المحذر · العواقب · الحل · الإكثار من الكتابة (خارج الموضوع) · خسارة نقاط، ضياع وقت · تحديد ما هو مطلوب، لكن بدقة واكتمال نسبي · إجابة غير منظمة · غير مقروءة، تقييم سيء · هيكلة في 3 أجزاء (للنص) أو طريقة منظمة (لتحليل) · مخطط بدون تسميات أو أسهم أو عنوان · غير مكتمل · دائماً إضافة تسميات، أسهم إن لزم، عنوان · مصطلحات غير دقيقة أو تقريبية · أقل مصداقية، أقل دقة · استعمال المصطلحات العلمية الدقيقة · نسيان الاستنتاج إن طُلب · إجابة ناقصة · التحقق إن كل سؤال يطلب استنتاج، والقيام به · إبداء رأي بدون تبرير (مناقشة/تعليق) · حكم غير مقبول · دعم كل ادعاء بالشهادات (وثائق أو معارف) · خلط الفرضية القابلة للاختبار بالإفصاح البسيط · فرضية غير صالحة · التحقق إن الفرضية قابلة للاختبار، مدعومة، منطقية · عدم مقابلة البيانات مع الفرضية (تمرين 3) · استنتاج ضعيف · مقابلة صريحة، تأكيد أو نفي مع تبرير",
         "entetes": [
-          "Piège",
-          "Conséquence",
-          "Solution"
+          "المحذر",
+          "العواقب",
+          "الحل"
         ],
         "lignes": [
           [
-            "Trop écrire (hors sujet) → perdre des points, perdre du temps",
-            "Se limiter à ce qui est demandé, mais avec précision et complétude relative"
+            "الإكثار من الكتابة (خارج الموضوع)",
+            "خسارة نقاط، ضياع وقت",
+            "تحديد ما هو مطلوب، لكن بدقة واكتمال نسبي"
           ],
           [
-            "Réponse non structurée → illisible, mal notée",
-            "Utiliser la structure en 3 parties (pour texte) ou la méthode structurée (pour analyse)"
+            "إجابة غير منظمة",
+            "غير مقروءة، تقييم سيء",
+            "هيكلة في 3 أجزاء (للنص) أو طريقة منظمة (لتحليل)"
           ],
           [
-            "Schéma sans légendes / flèches / titre → incomplet",
-            "Toujours ajouter légendes, flèches si nécessaire, titre"
+            "مخطط بدون تسميات أو أسهم أو عنوان",
+            "غير مكتمل",
+            "دائماً إضافة تسميات، أسهم إن لزم، عنوان"
           ],
           [
-            "Termes imprécis / approximatifs → moins de crédit, moins de précision",
-            "Utiliser les termes scientifiques justes, précis"
+            "مصطلحات غير دقيقة أو تقريبية",
+            "أقل مصداقية، أقل دقة",
+            "استعمال المصطلحات العلمية الدقيقة"
           ],
           [
-            "Oublier l'استنتاج quand c'est demandé",
-            "Vérifier si chaque question demande un استنتاج, et le faire"
+            "نسيان الاستنتاج إن طُلب",
+            "إجابة ناقصة",
+            "التحقق إن كل سؤال يطلب استنتاج، والقيام به"
           ],
           [
-            "Donner un avis sans justification (discussion/commentaire)",
-            "Appuyer chaque affirmation par des preuves (documents ou connaissances)"
+            "إبداء رأي بدون تبرير (مناقشة/تعليق)",
+            "حكم غير مقبول",
+            "دعم كل ادعاء بالشهادات (وثائق أو معارف)"
           ],
           [
-            "Confondre hypothèse testable et simple affirmation",
-            "Vérifier que l'hypothèse est testable, fondée, plausible"
+            "خلط الفرضية القابلة للاختبار بالإفصاح البسيط",
+            "فرضية غير صالحة",
+            "التحقق إن الفرضية قابلة للاختبار، مدعومة، منطقية"
           ],
           [
-            "Ne pas confronter les données avec l'hypothèse (exercice 3)",
-            "Confronter explicitement, confirmer ou infirmer avec justification"
+            "عدم مقابلة البيانات مع الفرضية (تمرين 3)",
+            "استنتاج ضعيف",
+            "مقابلة صريحة، تأكيد أو نفي مع تبرير"
           ]
         ]
       },
       {
         "kind": "titre",
         "niveau": 2,
-        "texte": "7.3. Pièges dans la révision"
+        "texte": "7.3 محاذير في المراجعة"
       },
       {
         "kind": "tableau",
-        "texte": "Piège · Conséquence · Solution · Révision passive (relire sans exercices) · Connaissance fragile, non mobilisée · Toujours faire des exercices après lecture · Procrastination · Retard, accumulation, stress · Commencer tôt, petits pas, planning · Surcharge (trop simultanément) · Confusion, inefficacité · Découper par unité, un sujet à la fois · Manque de sommeil / repos · Perte de concentration, fatigue mentale · Respecter les besoins de récupération, dormir suffisamment · Comparaison avec les autres · Perte de confiance, anxiété · Se concentrer sur sa propre progression, pas sur celle des autres · Fixer sur les points négatifs sans voir la progression · Démotivation · Se rappeler les progrès, se féliciter des réussites",
+        "texte": "المحذر · العواقب · الحل · مراجعة سلبية (إعادة قراءة بدون تمارين) · معرفة هشة، غير قابلة للتوظيف · دائماً حل تمارين بعد القراءة · التأجيل · تأخر، تراكم، توتر · البدء مبكراً، خطوات صغيرة، تخطيط · إفراط متزامن · ارتباك، عدم كفاءة · تجزئة حسب الوحدة، موضوع واحد في كل مرة · نقص نوم أو راحة · نقص تركيز، إرهاق ذهني · احترام حاجات الاستعادة، نوم كافٍ · مقارنة مع الآخرين · فقدان ثقة، قلق · التركيز على التقدم الشخصي، ليس على الآخرين · التركيز على السلبيات دون رؤية التقدم · فقدان تحفيز · تذكر التقدم، الاعتزاز بالنجاحات",
         "entetes": [
-          "Piège",
-          "Conséquence",
-          "Solution"
+          "المحذر",
+          "العواقب",
+          "الحل"
         ],
         "lignes": [
           [
-            "Révision passive (relire sans exercices)",
-            "Connaissance fragile, non mobilisée",
-            "Toujours faire des exercices après lecture"
+            "مراجعة سلبية (إعادة قراءة بدون تمارين)",
+            "معرفة هشة، غير قابلة للتوظيف",
+            "دائماً حل تمارين بعد القراءة"
           ],
           [
-            "Procrastination",
-            "Retard, accumulation, stress",
-            "Commencer tôt, petits pas, planning"
+            "التأجيل",
+            "تأخر، تراكم، توتر",
+            "البدء مبكراً، خطوات صغيرة، تخطيط"
           ],
           [
-            "Surcharge (trop simultanément)",
-            "Confusion, inefficacité",
-            "Découper par unité, un sujet à la fois"
+            "إفراط متزامن",
+            "ارتباك، عدم كفاءة",
+            "تجزئة حسب الوحدة، موضوع واحد في كل مرة"
           ],
           [
-            "Manque de sommeil / repos",
-            "Perte de concentration, fatigue mentale",
-            "Respecter les besoins de récupération, dormir suffisamment"
+            "نقص نوم أو راحة",
+            "نقص تركيز، إرهاق ذهني",
+            "احترام حاجات الاستعادة، نوم كافٍ"
           ],
           [
-            "Comparaison avec les autres",
-            "Perte de confiance, anxiété",
-            "Se concentrer sur sa propre progression, pas sur celle des autres"
+            "مقارنة مع الآخرين",
+            "فقدان ثقة، قلق",
+            "التركيز على التقدم الشخصي، ليس على الآخرين"
           ],
           [
-            "Fixer sur les points négatifs sans voir la progression",
-            "Démotivation",
-            "Se rappeler les progrès, se féliciter des réussites"
+            "التركيز على السلبيات دون رؤية التقدم",
+            "فقدان تحفيز",
+            "تذكر التقدم، الاعتزاز بالنجاحات"
           ]
         ]
       }
@@ -2254,330 +2162,327 @@ export const GUIDE_SECTIONS: SectionGuide[] = [
     "sous": [
       {
         "id": "s7-h0",
-        "titre": "7.1. Pièges dans la lecture de l'énoncé",
+        "titre": "7.1 محاذير في قراءة نص التمرين",
         "from": 0
       },
       {
         "id": "s7-h1",
-        "titre": "7.2. Pièges dans la réponse",
+        "titre": "7.2 محاذير في الإجابة",
         "from": 2
       },
       {
         "id": "s7-h2",
-        "titre": "7.3. Pièges dans la révision",
+        "titre": "7.3 محاذير في المراجعة",
         "from": 4
       }
     ]
   },
   {
     "id": "s8",
-    "titre": "8. CHECKLIST DE PRÉPARATION",
+    "titre": "8. قائمة مراجعة سريعة",
     "icone": "Activity",
     "blocs": [
       {
         "kind": "titre",
         "niveau": 2,
-        "texte": "8.1. Avant l'examen (phase de révision)"
+        "texte": "8.1 قبل الامتحان (مرحلة المراجعة)"
       },
       {
         "kind": "puce",
-        "texte": "☐ Maîtriser les notions de chaque unité (fiches complètes, schémas, mécanismes)"
+        "texte": "☐ إتقان مفاهيم كل وحدة (ملخصات كاملة، مخططات، آليات)"
       },
       {
         "kind": "puce",
-        "texte": "☐ Savoir reconnaître les verbes d'action et associer la réponse appropriée"
+        "texte": "☐ القدرة على تحديد أفعال المهمة الأدائية وربط الإجابة المناسبة"
       },
       {
         "kind": "puce",
-        "texte": "☐ S'entraîner sur des exercices types par unité (variés, pas juste un type)"
+        "texte": "☐ التمرين على تمارين نموذجية حسب الوحدة (متنوعة، لا نوع واحد فقط)"
       },
       {
         "kind": "puce",
-        "texte": "☐ Résoudre des sujets complets chronométrés (simulation d'examen)"
+        "texte": "☐ حل مواضيع كاملة مؤقّتة (محاكاة امتحان)"
       },
       {
         "kind": "puce",
-        "texte": "☐ Corriger ses erreurs : comprendre pourquoi, noter les leçons tirées"
+        "texte": "☐ تصحيح الأخطاء : فهم السبب، تدوين الدروس المستفادة"
       },
       {
         "kind": "titre",
         "niveau": 2,
-        "texte": "8.2. Le jour de l'examen"
+        "texte": "8.2 يوم الامتحان"
       },
       {
         "kind": "puce",
-        "texte": "☐ Lire TOUS les documents avant de commencer (ne pas se lancer dans la question 1 sans vue d'ensemble)"
+        "texte": "☐ قراءة جميع الوثائق قبل البدء (لا الانطلاق في السؤال 1 دون إبصار عام)"
       },
       {
         "kind": "puce",
-        "texte": "☐ Identifier les verbes d'action dans chaque consigne"
+        "texte": "☐ تحديد أفعال المهمة الأدائية في كل تعليمة"
       },
       {
         "kind": "puce",
-        "texte": "☐ Déterminer le type d'exercice (1, 2, ou 3) et adapter la méthode"
+        "texte": "☐ تحديد نوع التمرين (1، 2، أو 3) وتكييف المنهجية"
       },
       {
         "kind": "puce",
-        "texte": "☐ Gérer le temps (Exercice 1: ~45 min, Exercice 2: ~1h15, Exercice 3: ~2h)"
+        "texte": "☐ إدارة الوقت (تمرين 1 : ~45 د، تمرين 2 : ~1س15، تمرين 3 : ~2س)"
       },
       {
         "kind": "puce",
-        "texte": "☐ Vérifier que toutes les questions sont répondues (pas de question oubliée)"
+        "texte": "☐ التحقق من إجابة جميع الأسئلة (لا سؤال منسي)"
       },
       {
         "kind": "puce",
-        "texte": "☐ Laisser du temps pour la relecture (vérifier, corriger, compléter)"
+        "texte": "☐ ترك وقت لإعادة القراءة (التحقق، التصحيح، الإتمام)"
       },
       {
         "kind": "titre",
         "niveau": 2,
-        "texte": "8.3. Pendant la réponse — Checklist par consigne"
+        "texte": "8.3 أثناء الإجابة — قائمة مراجعة لكل تعليمة"
       },
       {
         "kind": "texte",
-        "texte": "Pour chaque consigne, vérifier :"
+        "texte": "لكل تعليمة، التحقق :"
       },
       {
         "kind": "point",
         "num": "1",
-        "texte": "☐ Identifier le verbe d'action (simple ou composé ?)"
+        "texte": "☐ تحديد فعل المهمة الأدائية (بسيط أم مركب؟)"
       },
       {
         "kind": "point",
         "num": "2",
-        "texte": "☐ Choisir la méthode adaptée (réponse ciblée vs réponse structurée)"
+        "texte": "☐ اختيار المنهجية الملائمة (إجابة مركزة أم إجابة منظمة)"
       },
       {
         "kind": "point",
         "num": "3",
-        "texte": "☐ Répondre avec précision, clarté, terminologie scientifique juste"
+        "texte": "☐ الإجابة بدقة ووضوح ومصطلحات علمية دقيقة"
       },
       {
         "kind": "point",
         "num": "4",
-        "texte": "☐ (Si schéma) Ajouter légendes, flèches si nécessaire, titre"
+        "texte": "☐ (إن كان مخططاً) إضافة تسميات، أسهم إن لزم، عنوان"
       },
       {
         "kind": "point",
         "num": "5",
-        "texte": "☐ (Si analyse) Suivre la méthode (تعريف → تفكيك → تفسير → استنتاج)"
+        "texte": "☐ (إن كان تحليلاً) اتباع الطريقة (تعريف ← تفكيك ← تفسير ← استنتاج)"
       },
       {
         "kind": "point",
         "num": "6",
-        "texte": "☐ (Si discussion/jugement) Confronter, nuancer, appuyer par des preuves"
+        "texte": "☐ (إن كان نقاشاً أو حكماً) مقابلة، توازن، دعم بالشهادات"
       },
       {
         "kind": "point",
         "num": "7",
-        "texte": "☐ (Si exercice 3) Formuler problème → hypothèse → confronter avec données → conclure"
+        "texte": "☐ (إن كان تمرين 3) صياغة مشكل ← فرضية ← مقابلة مع البيانات ← خاتمة"
       },
       {
         "kind": "point",
         "num": "8",
-        "texte": "☐ (Si texte scientifique) Structure 3 parties : مقدمة, عرض, خاتمة"
+        "texte": "☐ (إن كان نصاً علمياً) هيكل 3 أجزاء : مقدمة، عرض، خاتمة"
       },
       {
         "kind": "titre",
         "niveau": 2,
-        "texte": "8.4. Après réponse — Vérification"
+        "texte": "8.4 بعد الإجابة — التحقق"
       },
       {
         "kind": "puce",
-        "texte": "☐ Vérifier que toutes les questions sont répondues (aucune oubliée)"
+        "texte": "☐ التحقق من إجابة جميع الأسئلة (أي سؤال منسي)"
       },
       {
         "kind": "puce",
-        "texte": "☐ Vérifier la précision terminologique (termes scientifiques justes, pas d'approximations)"
+        "texte": "☐ التحقق من الدقة المصطلحية (مصطلحات علمية دقيقة، لا تقريبات)"
       },
       {
         "kind": "puce",
-        "texte": "☐ Vérifier que les schémas sont complets (légendes, flèches, titre)"
+        "texte": "☐ التحقق من كمال المخططات (تسميات، أسهم، عنوان)"
       },
       {
         "kind": "puce",
-        "texte": "☐ Vérifier que les استنتاجs sont présents quand demandés"
+        "texte": "☐ التحقق من وجود الاستنتاجات إن طُلبت"
       },
       {
         "kind": "puce",
-        "texte": "☐ Vérifier la cohérence logique de la réponse (les idées suivent-elles les unes les autres ?)"
+        "texte": "☐ التحقق من الترابط المنطقي للإجابة (الأفكار تتالى بشكل منسق؟)"
       },
       {
         "kind": "puce",
-        "texte": "☐ Vérifier l'orthographe et la présentation (lisibilité, titres, paragraphes)"
+        "texte": "☐ التحقق من الإملاء والعرض (قراءة، عناوين، فقرات)"
       }
     ],
     "sous": [
       {
         "id": "s8-h0",
-        "titre": "8.1. Avant l'examen (phase de révision)",
+        "titre": "8.1 قبل الامتحان (مرحلة المراجعة)",
         "from": 0
       },
       {
         "id": "s8-h1",
-        "titre": "8.2. Le jour de l'examen",
+        "titre": "8.2 يوم الامتحان",
         "from": 6
       },
       {
         "id": "s8-h2",
-        "titre": "8.3. Pendant la réponse — Checklist par consigne",
+        "titre": "8.3 أثناء الإجابة — قائمة مراجعة لكل تعليمة",
         "from": 13
       },
       {
         "id": "s8-h3",
-        "titre": "8.4. Après réponse — Vérification",
+        "titre": "8.4 بعد الإجابة — التحقق",
         "from": 23
       }
     ]
   },
   {
     "id": "s9",
-    "titre": "9. CONCLUSION — LE MESSAGE ULTIME",
+    "titre": "9. الخلاصة — الرسالة الأساسية",
     "icone": "Brain",
     "blocs": [
       {
         "kind": "texte",
-        "texte": "Ce guide fusion synthétise deux approches complémentaires :"
+        "texte": "دمج هذا الدليل نهجين مكملتين :"
       },
       {
         "kind": "puce",
-        "texte": "La précision technique et systématique du premier ouvrage sur la taxinomie des verbes et la méthode d'analyse"
+        "texte": "الدقة المنهجية والنظامية للمصدر الأول في تصنيف الأفعال وطريقة تحليل الوثائق"
       },
       {
         "kind": "puce",
-        "texte": "La perspective pratique, vécue et psychologique du second ouvrage sur la révision, la gestion, la confiance en soi"
+        "texte": "المنظور العملي والتجريبي والنفسي للمصدر الثاني في المراجعة، الإدارة، الثقة بالنفس"
       },
       {
         "kind": "texte",
-        "texte": "Le message ultime pour l'élève :"
+        "texte": "الرسالة الأساسية للتلميذ :"
       },
       {
-        "kind": "point",
-        "num": "1",
-        "texte": "Le bac SVT n'est pas une épreuve de mémoire : c'est une épreuve de raisonnement scientifique. Il ne suffit pas de savoir — il faut savoir mobiliser ses connaissances pour répondre à des questions précises."
+        "kind": "puce",
+        "texte": "بكالوريا علوم الطبيعة والحياة ليست امتحاناً لحفظ المعلومات : هي امتحان للاستدلال العلمي. لا يكفي أن تعرف — يجب أن تعرف كيف توظّف معرفتك للإجابة على أسئلة محددة."
       },
       {
-        "kind": "point",
-        "num": "2",
-        "texte": "La clé est la méthode : savoir reconnaître ce qu'on demande (verbes d'action), structurer sa réponse (structure, schéma, analyse), et s'entraîner (pratique, chronométrage, correction des erreurs)."
+        "kind": "puce",
+        "texte": "المفتاح هو المنهجية : معرفة ما يُطلب (أفعال المهمة الأدائية)، وهيكلة الإجابة (هيكل، مخطط، تحليل)، والتمرين (ممارسة، مؤقّتة، تصحيح الأخطاء)."
       },
       {
-        "kind": "point",
-        "num": "3",
-        "texte": "La réussite vient de la préparation méthodique : connaissances + entraînement + gestion mentale + confiance."
+        "kind": "puce",
+        "texte": "النجاح يأتي من التحضير المنهجي : معارف + تمارين + إدارة عقلية + ثقة."
       },
       {
         "kind": "texte",
-        "texte": "Citation de clôture (du second ouvrage) :"
+        "texte": "اقتباس ختامي (من المصدر الثاني) :"
       },
       {
         "kind": "note",
-        "texte": "« Le cerveau n'est pas une machine électrique qui fonctionne sans arrêt. Il a aussi besoin d'énergie. »"
+        "texte": "العقل ليس آلة كهربائية تعمل بلا توقف. يحتاج أيضاً للطاقة."
       },
       {
         "kind": "note",
-        "texte": "« La confiance en soi vient de la préparation. »"
+        "texte": "الثقة بالنفس تأتي من التحضير."
       }
     ]
   },
   {
     "id": "annexe",
-    "titre": "ANNEXE — RÉFÉRENCE RAPIDE DES VERBES (Fiche mémo)",
+    "titre": "ملحق — مرجع سريع للأفعال (ورقة تذكّر سريعة)",
     "icone": "Microscope",
     "blocs": [
       {
         "kind": "tableau",
-        "texte": "Famille · Verbes · Réponse attendue · Exercice typique · Identification / Nommage · تعرف, سمّ, عرف, حدد, ملحوظة, ذكر عناصر · Réponse ciblée, directe · 1, 2 · Description / Structuration · وصف بنية, صنف, ميز · Description détaillée / Classification / Opposition · 1 · Énumération / Séquence · ذكر, عدد, رتب, نظم · Liste ordonnée, concise · 1 · Schéma · رسم تخطيطي, أنجز مخططا, رسم تخطيطي تفسيري, رسم تخطيطي وظيفي · Schéma avec légendes + flèches + titre · 1, 2, 3 · Analyse · حلل, تحليل مقارن, تحليل ثم تفسير · Décomposer → identifier tendances → relations → استنتاج · 2 · Interprétation · فسر, وضّح, بين, اشرح, تفسير, تفسير الظاهرة · Observer → expliquer le mécanisme → étapes logiques · 2 · Comparaison · قارن, مقارنة, مقارنة منحنين, مقارنة نتائج · Réssemblances + différences sur paramètre commun → استنتاج · 2 · Jugement / Argumentation · علّق, أنقد, علل/برر, نقاش صحة · Avantages + inconvénients + avis éclairé + preuves · 2 · Conclusion / Inférence · استخرج, استنتاج · Info clé liée au but, conclusion logique · 2, 3 · Texte scientifique · اكتب نصا علميا (Composer) · 3 parties : مقدمة, عرض, خاتمة · 2, 3 · Problème & Hypothèse · صياغ مشكل علني, اقتراح فرضية · Question précise + hypothèse testable, plausible, fondée · 3 · Vérification · التحقق من صحة الفرضية, إثبات, نقاش, أثبت, تأكيد صحة · Confronter hypothèse avec données → confirmer ou infirmer avec justification · 3 · Synthèse · أنجز مخططا، أنجز رسمًا تخطيطيًا · Schéma récapitulatif complet (état normal + état pathologique si pertinent) · 3",
+        "texte": "العائلة · أفعال · الإجابة المتوقعة · تمرين نموذجي · التعريف / التسمية · تعرف، سمّ، عرف، حدد، ملاحظة، ذكر عناصر · إجابة مركزة ومباشرة · 1، 2 · الوصف / الهيكلة · وصف بنية، صنف، ميز · وصف تفصيلي / تصنيف / تمييز مركّز · 1 · الترتيب / التعداد · ذكر، عدد، رتب، نظم · تعداد مرتب وموجز · 1 · المخطط · رسم تخطيطي، أنجز مخططا، رسم تخطيطي تفسيري، رسم تخطيطي وظيفي · مخطط مع تسميات + أسهم + عنوان · 1، 2، 3 · التحليل · حلل، تحليل مقارن، تحليل ثم تفسير · فك التركيب ← تحديد اتجاهات ← علاقات ← استنتاج · 2 · التفسير · فسر، وضّح، بين، اشرح، تفسير، تفسير الظاهرة · ملاحظة ← شرح الآلية ← خطوات منطقية · 2 · المقارنة · قارن، مقارنة، مقارنة منحنين، مقارنة نتائج · أوجه تشابه + أوجه اختلاف على معيار مشترك ← استنتاج · 2 · الحكم / البرهنة · علّق، أنقد، علل/برر، نقاش صحة · إيجابيات + سلبيات + رأي مدروس + شهادات · 2 · الخاتمة / الاستنتاج · استخرج، استنتاج · معلومة مركزية مرتبطة بالهدف، استنتاج منطقي · 2، 3 · النص العلمي · اكتب نصا علمياً · 3 أجزاء : مقدمة، عرض، خاتمة · 2، 3 · المشكل والفرضية · صياغة مشكل علمي، اقتراح فرضية · سؤال دقيق + فرضية قابلة للاختبار ومنطقية ومدعومة · 3 · التحقق · التحقق من صحة الفرضية، إثبات، نقاش، أثبت، تأكيد صحة · مقابلة الفرضية مع البيانات ← تأكيد أو نفي مع تبرير · 3 · التركيب · أنجز مخططاً، أنجز رسمًا تخطيطيًا · مخطط تلخيصي كامل (حالة طبيعية + حالة مرضية إن ملائمة) · 3",
         "entetes": [
-          "Famille",
-          "Verbes",
-          "Réponse attendue",
-          "Exercice typique"
+          "العائلة",
+          "أفعال",
+          "الإجابة المتوقعة",
+          "تمرين نموذجي"
         ],
         "lignes": [
           [
-            "Identification / Nommage",
-            "تعرف, سمّ, عرف, حدد, ملحوظة, ذكر عناصر",
-            "Réponse ciblée, directe",
-            "1, 2"
+            "التعريف / التسمية",
+            "تعرف، سمّ، عرف، حدد، ملاحظة، ذكر عناصر",
+            "إجابة مركزة ومباشرة",
+            "1، 2"
           ],
           [
-            "Description / Structuration",
-            "وصف بنية, صنف, ميز",
-            "Description détaillée / Classification / Opposition",
+            "الوصف / الهيكلة",
+            "وصف بنية، صنف، ميز",
+            "وصف تفصيلي / تصنيف / تمييز مركّز",
             "1"
           ],
           [
-            "Énumération / Séquence",
-            "ذكر, عدد, رتب, نظم",
-            "Liste ordonnée, concise",
+            "الترتيب / التعداد",
+            "ذكر، عدد، رتب، نظم",
+            "تعداد مرتب وموجز",
             "1"
           ],
           [
-            "Schéma",
-            "رسم تخطيطي, أنجز مخططا, رسم تخطيطي تفسيري, رسم تخطيطي وظيفي",
-            "Schéma avec légendes + flèches + titre",
-            "1, 2, 3"
+            "المخطط",
+            "رسم تخطيطي، أنجز مخططا، رسم تخطيطي تفسيري، رسم تخطيطي وظيفي",
+            "مخطط مع تسميات + أسهم + عنوان",
+            "1، 2، 3"
           ],
           [
-            "Analyse",
-            "حلل, تحليل مقارن, تحليل ثم تفسير",
-            "Décomposer → identifier tendances → relations → استنتاج",
+            "التحليل",
+            "حلل، تحليل مقارن، تحليل ثم تفسير",
+            "فك التركيب ← تحديد اتجاهات ← علاقات ← استنتاج",
             "2"
           ],
           [
-            "Interprétation",
-            "فسر, وضّح, بين, اشرح, تفسير, تفسير الظاهرة",
-            "Observer → expliquer le mécanisme → étapes logiques",
+            "التفسير",
+            "فسر، وضّح، بين، اشرح، تفسير، تفسير الظاهرة",
+            "ملاحظة ← شرح الآلية ← خطوات منطقية",
             "2"
           ],
           [
-            "Comparaison",
-            "قارن, مقارنة, مقارنة منحنين, مقارنة نتائج",
-            "Réssemblances + différences sur paramètre commun → استنتاج",
+            "المقارنة",
+            "قارن، مقارنة، مقارنة منحنين، مقارنة نتائج",
+            "أوجه تشابه + أوجه اختلاف على معيار مشترك ← استنتاج",
             "2"
           ],
           [
-            "Jugement / Argumentation",
-            "علّق, أنقد, علل/برر, نقاش صحة",
-            "Avantages + inconvénients + avis éclairé + preuves",
+            "الحكم / البرهنة",
+            "علّق، أنقد، علل/برر، نقاش صحة",
+            "إيجابيات + سلبيات + رأي مدروس + شهادات",
             "2"
           ],
           [
-            "Conclusion / Inférence",
-            "استخرج, استنتاج",
-            "Info clé liée au but, conclusion logique",
-            "2, 3"
+            "الخاتمة / الاستنتاج",
+            "استخرج، استنتاج",
+            "معلومة مركزية مرتبطة بالهدف، استنتاج منطقي",
+            "2، 3"
           ],
           [
-            "Texte scientifique",
-            "اكتب نصا علميا (Composer)",
-            "3 parties : مقدمة, عرض, خاتمة",
-            "2, 3"
+            "النص العلمي",
+            "اكتب نصا علمياً",
+            "3 أجزاء : مقدمة، عرض، خاتمة",
+            "2، 3"
           ],
           [
-            "Problème & Hypothèse",
-            "صياغ مشكل علني, اقتراح فرضية",
-            "Question précise + hypothèse testable, plausible, fondée",
+            "المشكل والفرضية",
+            "صياغة مشكل علمي، اقتراح فرضية",
+            "سؤال دقيق + فرضية قابلة للاختبار ومنطقية ومدعومة",
             "3"
           ],
           [
-            "Vérification",
-            "التحقق من صحة الفرضية, إثبات, نقاش, أثبت, تأكيد صحة",
-            "Confronter hypothèse avec données → confirmer ou infirmer avec justification",
+            "التحقق",
+            "التحقق من صحة الفرضية، إثبات، نقاش، أثبت، تأكيد صحة",
+            "مقابلة الفرضية مع البيانات ← تأكيد أو نفي مع تبرير",
             "3"
           ],
           [
-            "Synthèse",
-            "أنجز مخططا، أنجز رسمًا تخطيطيًا",
-            "Schéma récapitulatif complet (état normal + état pathologique si pertinent)",
+            "التركيب",
+            "أنجز مخططاً، أنجز رسمًا تخطيطيًا",
+            "مخطط تلخيصي كامل (حالة طبيعية + حالة مرضية إن ملائمة)",
             "3"
           ]
         ]
       },
       {
         "kind": "texte",
-        "texte": "Fichier généré à partir de l'analyse fusionnée de deux ouvrages de référence SVT BAC 3AS Algérie. À intégrer dans l'application Kunz El Ouloum pour exploitation pédagogique."
+        "texte": "تم إعداد هذا الدليل من خلال دمج وتحليل مصدرَين مرجعيَين في منهجية الإجابة لمادة علوم الطبيعة والحياة الباكالوريا في الجزائر. يُدمج في تطبيق كونز العلم لاستغلال تعليمي. بصياغة فريق مشروع عكاشة للطالب المتميز. الأستاذة كتفي شريف زينة — بالتعاون مع فريق عكاشة"
       }
     ]
   }
@@ -2585,7 +2490,7 @@ export const GUIDE_SECTIONS: SectionGuide[] = [
 
 export const GUIDE_STATS = {
   sections: 11,
-  blocs: 382,
+  blocs: 370,
   tableaux: 20,
-  entrees: 226,
+  entrees: 209,
 };

@@ -26,7 +26,10 @@ const licite = (c: string): boolean => (ICONES_AUTORISEES as readonly string[]).
 describe('guideManhajia — structure', () => {
   it('titre du document présent et non vide', () => {
     expect(GUIDE_TITRE.length).toBeGreaterThan(10);
-    expect(GUIDE_TITRE).toContain('GUIDE FUSED');
+    expect(GUIDE_TITRE).toContain('الدليل المتكامل');
+    expect(GUIDE_TITRE).toContain('علوم الطبيعة والحياة');
+    // Titre du guide : entièrement en arabe (aucun résidu latin).
+    expect(/[A-Za-z]/.test(GUIDE_TITRE)).toBe(false);
   });
 
   it('11 sections, ids exacts et ordre du document source', () => {
@@ -59,7 +62,7 @@ describe('guideManhajia — structure', () => {
     expect(GUIDE_STATS.entrees).toBe(nb('point') + nb('puce'));
     // Volume de contenu : détecte une troncature silencieuse du parser.
     const caracteres = tousBlocs.reduce((n, x) => n + x.b.texte.length, 0);
-    expect(caracteres).toBeGreaterThan(30000);
+    expect(caracteres).toBeGreaterThan(22000);
   });
 });
 
@@ -123,9 +126,11 @@ describe('guideManhajia — propreté typographique', () => {
 describe('guideManhajia — navigation', () => {
   it('chaque ancre du sommaire vise une section existante', () => {
     const ancrages = tousBlocs.filter((x) => x.b.cible);
-    expect(ancrages.length).toBe(19);
+    // 9 entrées appariées aux sections 1 … 9 (pas de destination inventée).
+    expect(ancrages.length).toBe(9);
     for (const a of ancrages) {
       expect(toutesLesSections, `${a.s}#${a.i} → ${a.b.cible}`).toContain(a.b.cible);
+      expect(a.s, 'les ancres ne vivent que dans le sommaire').toBe('sommaire');
     }
   });
 
@@ -142,13 +147,15 @@ describe('guideManhajia — navigation', () => {
         expect(b.niveau, `${s.id}/${ss.id}`).toBe(2);
       }
     }
-    expect(total).toBe(21);
+    expect(total).toBe(22);
   });
 
-  it('toutes les entrées numérotées du sommaire sont cliquables', () => {
+  it('chaque entrée du sommaire est cliquable', () => {
     const sommaire = GUIDE_SECTIONS.find((s) => s.id === 'sommaire')!;
-    const points = sommaire.blocs.filter((b) => b.kind === 'point');
-    expect(points).toHaveLength(9);
-    for (const p of points) expect(p.cible, p.texte).toBeTruthy();
+    const entrees = sommaire.blocs.filter(
+      (b) => b.kind === 'point' || b.kind === 'puce',
+    );
+    expect(entrees).toHaveLength(9);
+    for (const p of entrees) expect(p.cible, p.texte).toBeTruthy();
   });
 });

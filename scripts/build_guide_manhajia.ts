@@ -12,8 +12,9 @@
  *   > citation            → `note` (encadré conseil)
  *   paragraphe            → `texte`
  *   --- / ligne vide      → séparateurs (ignorés)
- * Les liens d'ancres `[x](#y)` de la table des matières deviennent des
- * entrées cliquables (`cible` = id de la section de destination).
+ * Les entrées de la table des matières deviennent des entrées cliquables
+ * (`cible` = id de section) : soit par lien Markdown `[x](#y)`, soit par appariement
+ * du libellé au titre d'une section réellement présente (guide arabe sans liens).
  *
  * Usage : npx tsx scripts/build_guide_manhajia.ts
  */
@@ -94,8 +95,8 @@ const estSeparateurTable = (cellsLigne: string[]): boolean =>
 function idSection(titre: string): string {
   const num = /^(\d+)\./.exec(titre);
   if (num) return `s${num[1]}`;
-  if (/^TABLE DES MATI/i.test(titre)) return 'sommaire';
-  if (/^ANNEXE/i.test(titre)) return 'annexe';
+  if (/^(TABLE DES MATI|فهرس)/i.test(titre)) return 'sommaire';
+  if (/^(ANNEXE|ملحق)/i.test(titre)) return 'annexe';
   const slug = titre
     .normalize('NFD')
     .replace(/[\u0300-\u036f]/g, '')
@@ -110,6 +111,30 @@ function idSection(titre: string): string {
 function cibleLien(libelle: string): string | undefined {
   const num = /^(\d+)\./.exec(libelle);
   return num ? `s${num[1]}` : undefined;
+}
+
+/** Libellé ramené à sa forme comparable : sans numérotation, espaces normalisés. */
+const libelleCle = (t: string): string =>
+  t.replace(/^\d+\.\s*/, '').replace(/\s+/g, ' ').trim();
+
+/**
+ * Ancre le sommaire sans lien Markdown explicite : chaque entrée est appariée à
+ * la section dont le titre est identique (hors numéro). Ne crée donc aucune
+ * destination — uniquement un lien vers un contenu réellement présent.
+ */
+function ancrerSommaire(sections: SectionGuide[]): void {
+  const sommaire = sections.find((s) => s.id === 'sommaire');
+  if (!sommaire) return;
+  const parTitre = new Map<string, string>();
+  for (const s of sections) {
+    if (s.id === 'sommaire') continue;
+    parTitre.set(libelleCle(s.titre), s.id);
+  }
+  for (const b of sommaire.blocs) {
+    if (b.cible) continue;
+    const cible = parTitre.get(libelleCle(b.texte));
+    if (cible) b.cible = cible;
+  }
 }
 
 /* ── Parser ─────────────────────────────────────────────────────────────── */
@@ -244,6 +269,7 @@ function parseGuide(md: string): { titre: string; sections: SectionGuide[] } {
 function generer(): string {
   const md = readFileSync(join(racine, CHEMIN_SOURCE), 'utf8');
   const { titre, sections } = parseGuide(md);
+  ancrerSommaire(sections);
   const blocs = sections.reduce((n, s) => n + s.blocs.length, 0);
   const tableaux = sections.reduce(
     (n, s) => n + s.blocs.filter((b) => b.kind === 'tableau').length, 0,

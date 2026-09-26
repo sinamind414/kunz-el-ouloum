@@ -1,734 +1,734 @@
-# 📘 GUIDE FUSED — Méthodologie SVT BAC 3AS Sciences Expérimentales
+# الدليل المتكامل — منهجية مادة علوم الطبيعة والحياة — باكالوريا السنة الثالثة ثانوي
 
-> _Kit fusionné à usage pédagogique — application Kunz El Ouloum_
-> _Contenu synthétisé à partir de deux ouvrages de référence (2023 + 2021), réunis en un seul guide sans mentionner leurs noms._
-
----
-
-## TABLE DES MATIÈRES
-
-1. [Introduction — Pourquoi ce guide ?](#1-introduction--pourquoi-ce-guide-)
-2. [Le nouveau format du BAC depuis 2017](#2-le-nouveau-format-du-bac-depuis-2017)
-3. [Typologie complète des verbes d'action](#3-typologie-complete-des-verbes-daction)
-   - [3.1 Verbes simples (mobilisation des connaissances)](#31-verbes-simples--mobilisation-des-connaissances-)
-   - [3.2 Verbes d'analyse et d'interprétation](#32-verbes-danalyse-et-dinterpétation-)
-   - [3.3 Verbes de raisonnement scientifique (Exercice 3)](#33-verbes-de-raisonnement-scientifique--exercice-3-)
-   - [3.4 Tableau de reconnaissance rapide](#34-tableau-de-reconnaissance-rapide)
-4. [Structure de la réponse — Les deux approches](#4-structure-de-la-réponse--les-deux-approches-)
-   - [4.1 La structure en 3 parties](#41-la-structure-en-3-parties--mise-en-page-)
-   - [4.2 La méthode d'analyse de document](#42-la-méthode-danalyse-de-document-)
-   - [4.3 La méthode du schéma fonctionnel](#43-la-méthode-du-schéma-fonctionnel-)
-5. [Méthode par exercice — Types 1, 2, 3](#5-méthode-par-exercice--types-1-2-3-)
-   - [5.1 Exercice 1 (5 pts) — Récupération et organisation](#51-exercice-1--5-pts--récupération-et-organisation-)
-   - [5.2 Exercice 2 (7 pts) — Analyse et interprétation](#52-exercice-2--7-pts--analyse-et-interprétation-)
-   - [5.3 Exercice 3 (8 pts) — Démarche scientifique complète](#53-exercice-3--8-pts--démarche-scientifique-complete-)
-6. [Méthodologie de révision](#6-méthodologie-de-révision-)
-7. [Pièges à éviter](#7-pièges-à-éviter-)
-8. [Checklist de préparation](#8-checklist-de-préparation-)
-9. [Conclusion — Le message ultime](#9-conclusion--le-message-ultime-)
+دليل منهجي شامل مبني على دمج مصادر مرجعية ناضجة (2023 + 2021) في منهجية الإجابة لشهادة الباكالوريا
 
 ---
 
-## 1. INTRODUCTION — POURQUOI CE GUIDE ?
+## فهرس المحتويات
 
-Deux ressources de référence ont été croisées et fusionnées pour produire ce guide unique de méthodologie SVT BAC 3AS Sciences Expérimentales.
-
-Le premier ouvrage (2023) apporte :
-- Une **taxinomie systématique** des verbes d'action avec définitions, niveaux (simple/composé), exercices concernés et exemples traités
-- Une **méthode détaillée d'analyse de document** (étapes, mots-clés, exemples)
-- Une **coverage scientifique étendue** (génétique moléculaire, biotechnologies, physiologie détaillée, immunologie, communication nerveuse)
-
-Le second ouvrage (2021), rédigé par une élève brillante (ayant obtenu une moyenne exceptionnelle au baccalauréat), apporte :
-- Une **perspective pratique et vécue** sur la réussite à l'examen
-- Des **conseils de structuration de la réponse** (titres, ordre, présentation)
-- Une **méthodologie de révision** complète (gestion du temps, sessions, auto-évaluation)
-- Des **conseils psychologiques et motivationnels**
-
-Ce guide fusion est conçu pour servir de **référence méthodologique complète** à tout élève de 3AS Sciences Expérimentales préparant le baccalauréat.
+- مقدمة — لماذا هذا الدليل؟
+- النموذج الجديد للبكالوريا منذ 2017
+- التصنيف الكامل لأفعال المهمة الأدائية
+- هيكلة الإجابة — النهج المزدوج
+- المنهجية حسب نوع التمرين (1، 2، 3)
+- منهجية المراجعة والتحضير
+- الأخطاء الشائعة والمحاذير
+- قائمة مراجعة سريعة
+- الخلاصة — الرسالة الأساسية
 
 ---
 
-## 2. LE NOUVEAU FORMAT DU BAC DEPUIS 2017
+## 1. مقدمة — لماذا هذا الدليل؟
 
-### 2.1. Répartition des points et durée
+دمجت مصادر مرجعية ناضجة في منهجية الإجابة لشهادة البكالوريا — مادة علوم الطبيعة والحياة — شعبة العلوم التجريبية، لتكون مرجعاً شاملاً وممتعاً.
 
-| Exercice | Points | Durée estimée | Type de tâche | Verbes typiques |
+ما يقدمه الدليل المدمج :
+
+- نظام تصنيفي متكامل لأفعال المهمة الأدائية مع تعريفات واضحة ومستويات (بسيط / مركب) وتمرينات معنية وأمثلة محلولة
+- طريقة تحليل الوثائق خطوة بخطوة
+- هيكلة الإجابة المثلى (مقدمة + عرض + خاتمة)
+- منهجية المتابعة الفعلية حسب نوع التمرين (1، 2، 3)
+- منهجية المراجعة والتحضير الفعالة (إدارة الوقت، الجلسات، التقويم الذاتي)
+- نصائح نفسية وتربوية وإدارية
+
+يهدف هذا الدليل إلى كونه المرجع المنهجي الشامل لكل تلميذ في السنة الثالثة ثانوي شعبة العلوم التجريبية يحضر للبكالوريا.
+
+---
+
+## 2. النموذج الجديد للبكالوريا منذ 2017
+
+### 2.1 توزيع النقط والأوقات
+
+| تمرين | النقط | المدة التقريبية | طبيعة المهمة | الأفعال المتعارف عليها |
 |---|---|---|---|---|
-| **Exercice 1** | 5 pts | ~45 min | استرجاع، تنظيم، هيكلة (récupération + organisation) | تعرف, عرف, حدد, ذكر, عدد, رتب, صنف, ميز, وصف بنية, رسم تخطيطي |
-| **Exercice 2** | 7 pts | ~1h15 | Analyse et interprétation | تحليل, تفسير, مقارنة, مناقشة, استنتاج, علّق, أنقد, علل/برر, فسر/وضّح/بين, اشرح |
-| **Exercice 3** | 8 pts | ~2h | Démarche scientifique complète (مسعى علمي) | صياغ مشكل علني, اقتراح فرضية, التحقق من صحة, إثبات, نقاش, اكتب نصا علميا, أنجز مخططا |
+| تمرين 1 | 5 ن | ~45 د | استرجاع، تنظيم، هيكلة | تعرف، عرف، صف، أذكر، عدد، رتب، صنف، ميز، حدد، رسم تخطيطي |
+| تمرين 2 | 7 ن | ~1س و15 د | تحليل وتفسير ومناقشة | تحليل، تفسير، مقارنة، مناقشة، استنتاج، علّق، أنقد، علّل/برر، فسر/وضّح/بين، اشرح |
+| تمرين 3 | 8 ن | ~2س | مسار علمي كامل | صياغة مشكل علمي، اقتراح فرضية، التحقق من صحة، إثبات، نقاش، اكتب نصا علمياً، أنجز مخططاً |
 
-### 2.2. Ce que change le nouveau format par rapport à l'ancien (BAC 2013)
+### 2.2 ما الذي تغير مقارنة بالنموذج القديم (2013)؟
 
-| Ancien format (2013) | Nouveau format (2017+) |
+| النموذج القديم (2013) | النموذج الجديد (2017+) |
 |---|---|
-| Questions multiples imbriquées (a → b → c) | 3 exercices structurés, consignes courtes et autonomes |
-| Documents nombreux, questions dispersées | Documents ciblés, questions précises et focalisées |
-| Privilégie le savoir acquis | Privilégie la démarche scientifique et le raisonnement |
-| Perte en chaîne si un point manqué | Organisation autonome, structuration de la réponse |
-| Questions fermées surtout | Questions ouvertes et tâches complexes |
+| أسئلة متعددة متشعبة (أ → ب → ج) | 3 تمارين منظمة، تعليمات قصيرة ومستقلة |
+| وثائق كثيرة، أسئلة متباعدة | وثائق مستهدفة، أسئلة دقيقة ومركزة |
+| المعرفة المدرسية هي الغالب | المسار العلمي والاستدلال هما الغالب |
+| خسارة متتالية إذا ضاع نقطة | تنظيم ذاتي وهيكلة الإجابة بوضوح |
+| أسئلة مغلقة في العادة | أسئلة مفتوحة ومهمات مركبة |
 
-### 2.3. Conséquences pratiques pour l'élève
+### 2.3 العواقب العملية على التلميذ
 
-1. **Il faut savoir structurer sa pensée** — pas juste réciter des notions
-2. **La reconnaissance des verbes d'action est cruciale** — elle dicte la nature de la réponse attendue
-3. **La qualité de la rédaction compte** — présentation, clarté, précision terminologique
-4. **Le schéma doit être bien pensé** — pas juste une illustration, mais un outil de communication scientifique
+- هيكلة التفكير ضرورية — لا يكفي مجرد استظهار المعلومات
+- التعرف على أفعال المهمة الأدائية أساسي — هي التي تحدد نوع الإجابة المتوقعة
+- جودة التعبير واحترافية اللغة العلمية — وضوح العرض، دقة المصطلحات
+- المخطط يحتاج تفكيراً مسبقاً — ليس مجرد توضيح، بل أداة موضوعية للتواصل العلمي
 
 ---
 
-## 3. TYPOLOGIE COMPLÈTE DES VERBES D'ACTION
+## 3. التصنيف الكامل لأفعال المهمة الأدائية
 
-### 3.1 Verbes simples (mobilisation des connaissances)
+### 3.1 أفعال الاسترجاع (تعليمات بسيطة)
 
-Ces verbes appellent **une réponse ciblée, directe, sans ambigüité**. L'élève sait exactement ce qu'on attend.
+هذه الأفعال تتطلب إجابة مركزة ومباشرة وغير غامضة. التلميذ يعرف تماماً ما هو مطلوب.
 
-#### A. Identification / Nommage
+#### أ. التعريف والوصف والتعيين
 
-| Verbe | Définition | Ce qu'il faut faire | Exemple d'utilisation |
+| الفعل | المقصود | ما يجب فعله | نموذج استخدام |
 |---|---|---|---|
-| **تعرف / سمّ / تعريف** | Nommer, identifier, donner le nom exact | Donner le nom précis de l'élément demandé (structure, concept, molécule, organite) | "سم البيانات المرقمة", "تعريف الإنزيم", "تعريف المورثة" |
-| **ذكر عناصر** | Citer les constituants | Lister brièvement les éléments sans détails excessifs | "ذكر مراحل الانقسام", "ذكر عناصر التركيب الوراثي", "ذكر شروط التنفس" |
-| **حدد** | Identifier, délimiter, préciser | Donner précisément ce qui est demandé, sans développement excessif | "حدد دور الضوء", "حدد العوامل المؤثرة", "حدد المشكل المطروح" |
-| **ملحوظة / لاحظ** | Observer, constater, relever | Identifier ce qui est visible dans le document, ce qu'on peut constater | "نلاحظ que...", "ملاحظة المجهر" |
+| تعرف / سمّ / تعريف | تسمية دقيقة لمكون أو مفهوم أو بنية أو ظاهرة | تحديد الاسم العلمي الدقيق | سم البيانات المرقمة، تعريف أنزيم، تعريف مورثة |
+| ذكر عناصر | استدعاء المكونات بشكل موجز | تعداد مختصر للعناصر | ذكر مراحل الانقسام، ذكر عناصر التركيب الوراثي |
+| حدد | تحديد دقيق للعنصر أو الظاهرة أو المشكل المطروح | تحديد ماهيته أو دوره أو طبيعته بدقة | حدد دور الضوء، حدد العوامل المؤثرة |
+| ملاحظة / لاحظ | استنتاج ملاحظة بصرية أو مجهرية | استنتاج ما هو ملموس أو مرئي أو مقاس | ملاحظة مجهرية، استنتاج من المنحنى |
 
-#### B. Description / Structuration conceptuelle
+#### ب. الوصف والتصنيف والتمييز
 
-| Verbe | Définition | Ce qu'il faut faire | Exemple |
+| الفعل | المقصود | ما يجب فعله | نموذج استخدام |
 |---|---|---|---|
-| **وصف بنية** | Décrire une structure en détail | Mentionner tous les composants, leur localisation, leur forme, leurs caractéristiques, les relations entre eux | بنية الغشاء الهيولي, بنية الإنزيم, البنية الفراغية للبروتين |
-| **صنف (Classer)** | Ranger en groupes selon des critères | Donner les critères de classification, puis classer les éléments | الأغذية (حسب التركيب/الوظيفة/المصدر), الخلايا (حسب المادة الوراثية/عدد الخلايا) |
-| **ميز (Distinguer)** | Opposer deux éléments | Identifier le paramètre de comparaison, puis opposer les différences de façon structurée | انقسام نباتي vs حيواني, مناعة خلطية vs خلوية, خلية نباتية vs حيوانية |
+| وصف بنية | وصف تفصيلي للمكونات والترتيب والشكل والوظيفة | ذكر كل المكونات والمكان والشكل والعلاقات بينها | وصف بنية الغشاء الهيولي، وصف بنية الإنزيم |
+| صنف | توزيع في مجموعات حسب معيار محدد | ذكر المعايير ثم التصنيف | تصنيف الأغذية، تصنيف الخلايا |
+| ميز | مقارنة عنصرين مع إبراز الفروق الجوهرية | تحديد معيار المقارنة ثم إبراز الفروقات | ميز بين خلية نباتية وخلية حيوانية |
 
-#### C. Énumération / Séquence / Ordonnancement
+#### ج. الترتيب والعد والتعداد
 
-| Verbe | Définition | Format attendu |
+| الفعل | المقصود | الشكل المتوقع |
 |---|---|---|
-| **اذكر (Citer)** | Lister brièvement | Liste concise, ordre important si séquence temporelle ou logique |
-| **عدد (Enumérer)** | Lister les étapes dans l'ordre | Séquence chronologique ou logique, numérotation recommandée |
-| **رتب / نظم** | Organiser dans un ordre cohérent | Séquence ordonnée selon un critère (temporel, logique, fonctionnel) |
+| اذكر | تعداد موجز للسطور الأساسية | قائمة مختصرة، الترتيب مهم إن كان تسلسلاً |
+| عدد | تعداد مراحل أو خطوات مرتبة زمنياً أو منطقياً | تسلسل زمني أو منطقي، ترقيم مرغوب |
+| رتب / نظم | تنظيم الأفكار أو العناصر حسب ترتيب معين | تسلسل مرتب منطقياً |
 
-### 3.2 Verbes d'analyse et d'interprétation (Exercice 1 et 2)
+### 3.2 أفعال التحليل والتفسير (تمرين 1 و2)
 
-Ces verbes appellent **une organisation autonome** de la réponse. L'élève doit structurer sa pensée.
+هذه الأفعال تستدعي تنظيماً ذاتياً للإجابة وتفكراً منظمًا.
 
-#### D. Analyse des données
+#### د. تحليل الوثائق
 
-| Verbe | Définition | Étape 1 → Étape 2 → Étape 3 → Étape 4 → Étape 5 |
+| الفعل | المقصود | الخطوات |
 |---|---|---|
-| **حلل (Analyser)** | Décomposer, identifier les composantes, observer les tendances, les valeurs remarquables | تعريف الوثيقة → تفكيك المعطيات → إيجاد العلاقات → استنتاج |
-| **استخرج** | Extraire l'information pertinente | Identifier ce qui est demandé → Extraire l'information clé liée au but |
-| **تحليل ثم تفسير** | Combiner analyse + interprétation | D'abord décrire/identifier (analyse) → Puis expliquer le mécanisme (interprétation) |
+| حلل | فك التركيب، ملاحظة الاتجاهات والقيم الرئيسية | 1. تعريف الوثيقة ← 2. تفكيك المعطيات ← 3. إيجاد العلاقات ← 4. استنتاج |
+| استخرج | استخلاص المعلومة الأساسية المرتبطة بالهدف | تحديد المطلوب ← استخراج المعلومة المركزية |
+| تحليل ثم تفسير | تحليل أولاً ثم تفسير لاحقاً | وصف الملاحظات ← تفسير الآلية أو السبب |
 
-#### E. Interprétation / Explication
+#### هـ. التفسير والشرح
 
-| Verbe | Définition | Ce qu'il faut faire | Exemple |
+| الفعل | المقصود | ما يجب فعله | نموذج استخدام |
 |---|---|---|---|
-| **فسر / وضّح / بين** | Clarifier, expliciter un mécanisme, établir un lien de cause à effet | Observer → Identifier la cause/effet → Expliquer en étapes logiques (cause → effet, ou étapes séquentielles) | دور اليوريدين المشع, mecanisme du transport synaptique |
-| **اشرح** | Expliquer en détail | Peut être simple (explication directe) ou complexe (analyse + explication) | آلية النقل المشبكي, مبدأ التصوير الإشعاعي |
-| **تفسير النتيجة / تفسير الظاهرة** | Donner le sens des données | Observer → Identifier les tendances → Expliquer le mécanisme sous-jacent (connaissances + documents) | تفسير نتائج expérimentales, تفسير آلية |
+| فسر / وضّح / بين | توضيح آلية أو سبب أو علاقة سببية | ملاحظة ← تحديد السبب/النتيجة ← شرح مرحلي | دور اليوريدين المشع، آلية النقل المشبكي |
+| اشرح | شرح مفصل (قد يكون بسيطاً أو مركباً) | شرح مباشر أو تحليل + شرح حسب تعقيد السؤال | آلية النقل المشبكي، مبدأ التصوير الإشعاعي |
+| تفسير النتيجة / تفسير الظاهرة | إعطاء معنى للملاحظات أو النتائج | ملاحظة ← تحديد الاتجاهات ← شرح الآلية الكامنة | تفسير نتائج تجريبية، تفسير آلية حيوية |
 
-#### F. Comparaison
+#### و. المقارنة
 
-| Verbe | Définition | Structure recommandée |
+| الفعل | المقصود | الهيكل المقترح |
 |---|---|---|
-| **قارن (Comparer)** | Confronter deux éléments sur un même paramètre | 1) Identifier le paramètre commun 2) Citer les ressemblances 3) Citer les différences 4) **استنتاج** si demandé |
-| **مقارنة منحنين / مقارنة نتائج** | Comparer des données graphiques ou tabulaires | Identifier les axes, les tendances, les différences de valeurs, les points d'intersection, les paliers |
-| **مقارنة بين بنيتين / بين ظاهرتين** | Confronter deux structures ou phénomènes | Identifier les caractéristiques de chacun → Établir les ressemblances et différences sous forme de tableau ou de points structurés |
+| قارن | مقارنة عنصرين أو أكثر على معيار مشترك | 1. تحديد المعيار ← 2. نقاط التشابه ← 3. نقاط الاختلاف ← 4. استنتاج إن طلب |
+| مقارنة منحنين / مقارنة نتائج | مقارنة بيانات بيانية أو جدولية | تحديد المحاور، الاتجاهات، الفروقات في القيم، نقاط التقاطع |
+| مقارنة بين بنيتين / بين ظاهرتين | مقارنة هياكل أو آليات أو ظواهر | تحديد خصائص كل عنصر ← إبراز أوجه التشابه والاختلاف في جدول أو نقاط |
 
-#### G. Jugement / Évaluation / Argumentation
+#### ز. الحكم والنقاش والبرهنة
 
-| Verbe | Définition | Ce qu'il faut faire | Exemple |
+| الفعل | المقصود | ما يجب فعله | نموذج استخدام |
 |---|---|---|---|
-| **علّق (Commenter)** | Analyser, juger, nuancer | Observation → Jugement → Justification, avantages/inconvénients, prise de position éclairée | استخدام البوتوكس, المثبطات المناعية |
-| **أنقد (Critiquer)** | Évaluer de manière constructive | Avantages → Inconvénients → Avis éclairé, appuyé par des arguments solides | استخدام البوتوكس, المثبطات المناعية |
-| **علل / برر (Argumenter)** | Justifier, convaincre | Arguments → Preuves (documents, connaissances) → Exemples → Avis personnel ou position | استخدام الكربون المشع |
-| **نقاش صحة / مناقشة صحة** | Évaluer la validité | Confronter les arguments pour et contre → Confirmer ou infirmer avec justification |
+| علّق | تحليل، حكم، توازن | ملاحظة ← حكم ← تبرير، إيجابيات/سلبيات، موقف مدروس | استخدام البوتوكس، المثبطات المناعية |
+| أنقد | تقييم بناء يبرر موقفاً | إيجابيات ← سلبيات ← موقف مدروس مدعوم بالأسباب | استخدام البوتوكس، المثبطات المناعية |
+| علل / برر | تبرير وإقناع | أدلة ← شهادات (وثائق، معارف) ← أمثلة ← رأي شخصي | استخدام الكربون المشع |
+| نقاش صحة / مناقشة صحة | تقييم الصلاحية | مقارنة الأدلة لصالح وضد ← تأكيد أو نفي مع تبرير | مناقشة صحة فرضية |
 
-### 3.3 Verbes de raisonnement scientifique (Exercice 3 — مسعى علمي)
+### 3.3 أفعال المسار العلمي (تمرين 3 — مسعى علمي)
 
-Ces verbes structurent **la démarche scientifique complète**.
+هذه الأفعال تبني المسار العلمي الكامل من الصياغة إلى التوصل.
 
-#### H. Formulation du problème et hypothèse
+#### ح. صياغة المشكل والفرضية
 
-| Verbe | Définition | Processus |
+| الفعل | المقصود | الخطوات |
 |---|---|---|
-| **صياغ مشكل علني** | Formuler le problème à résoudre | Identifier le but sous-jacent (لماذا؟ كيف؟ أين؟ متى؟ ما هو...) → Reformuler sous forme de question précise |
-| **اقتراح فرضية** | Proposer une explication testable | Proposer une explication plausible, testable, fondée sur les données disponibles et les connaissances |
-| **اختيار فرضية** | Sélectionner la plus pertinente | Choisir en fonction du réalisme, du pouvoir explicatif, de la testabilité |
+| صياغة مشكل علمي | صياغة السؤال الأساسي بدقة | تحديد الهدف الكامن (لماذا؟ كيف؟ أين؟ متى؟ ما هو...) ← صياغة سؤال دقيق |
+| اقتراح فرضية | اقتراح تفسير قابل للاختبار | اقتراح تفسير منطقي وقابل للاختبار مبني على المعطيات والمعارف |
+| اختيار فرضية | اختيار الأكثر ترجيحاً | الاختيار حسب الواقعية، القوة التفسيرية، قابلية الاختبار |
 
-#### I. Vérification / Démonstration
+#### ط. التحقق والبرهنة
 
-| Verbe | Définition | Ce qu'il faut faire |
+| الفعل | المقصود | ما يجب فعله |
 |---|---|---|
-| **التحقق من صحة الفرضية** | Vérifier si l'hypothèse est soutenue par les données | Confronter hypothèse avec les données → Confirmer ou infirmer avec justification |
-| **إثبات / تأكيد صحة** | Étayer une affirmation | Arguments + Preuves (documents, connaissances) + Logique → Conclusion affirmée |
-| **نقاش** | Discuter un point de vue | Analyser les arguments → Confronter les positions → Nuancer, prendre position |
+| التحقق من صحة الفرضية | فحص مدى مدعومية الفرضية بالمعطيات | مقارنة الفرضية بالمعطيات ← تأكيد أو نفي مع تبرير |
+| إثبات / تأكيد صحة | دعم عبارة والتأكيد عليها | أدلة + شهادات (وثائق، معارف) + منطق ← نتيجة مؤكدة |
+| نقاش | نقاش وجهة نظر مع توازن | تحليل الأدلة ← مقارنة المواقف ← موقف متوازن |
 
-#### J. Production synthétique
+#### ي. الإنتاج التركيبي
 
-| Verbe | Définition | Format attendu |
+| الفعل | المقصود | الشكل المتوقع |
 |---|---|---|
-| **اكتب نصا علميا (Composer)** | Rédiger une réponse structurée | 3 parties : مقدمة (contexte + problème) → عرض (développement argumenté, données + connaissances) → خاتمة (synthèse + réponse explicite) |
-| **أنجز مخططا تخطيطيا** | Produire un schéma structuré | Structure logique + Légendes + Flèches si nécessaire + Titre |
-| **أنجز رسمًا تخطيطيًا تفسيريًا** | Schéma fonctionnel avec commentaire | Montrer le mécanisme/phénomène + Légendes + Commentaire explicatif |
-| **أنجز رسمًا تخطيطيًا وظيفيًا** | Schéma montrant les relations fonctionnelles | Phénomènes/étapes numérotées + Légendes + Mise en relation fonctionnelle |
+| اكتب نصا علمياً | صياغة إجابة منظمة ومقسمة | 3 أجزاء: مقدمة (سياق + مشكل) ← عرض (شرح مفصل مع معطيات ومعارف) ← خاتمة (تلخيص + إجابة صريحة) |
+| أنجز مخططاً تخطيطياً | إنتاج مخطط منظم | هيكل منطقي + تسميات + أسهم إن لزم + عنوان واضح |
+| أنجز رسمًا تخطيطيًا تفسيريًا | مخطط يفسر ظاهرة أو آلية | إبراز بنية/آلية ظاهرة مع تسميات وتفسير |
+| أنجز رسمًا تخطيطيًا وظيفيًا | مخطط يبين العلاقات الوظيفية والمراحل | مراحل مرقمة + تسميات + علاقات وظيفية |
 
-### 3.4 Tableau de reconnaissance rapide des verbes
+### 3.4 جدول التعرف السريع على الأفعال
 
-| Verbe | Niveau | Exercice typique | Réponse attendue | Points clés |
+| الفعل | المستوى | التمرين النموذجي | الشكل المتوقع | ملاحظات جوهرية |
 |---|---|---|---|---|
-| **تعرف، سمّ، عرف، حدد، ملحوظة** | Simple | 1, 2 | Réponse ciblée, directe, concise | Précision terminologique + concision |
-| **وصف بنية، ذكر عناصر، صنف، ميز** | Simple | 1 | Description / Classification ciblée | Ordre, exhaustivité relative, critères si classification |
-| **ذكر، عدد، رتب، نظم** | Simple | 1 | Énumération ordonnée | Respect de l'ordre si séquence |
-| **رسم تخطيطي** | Simple/Composé | 1, 2, 3 | Schéma avec légendes, flèches si nécessaire, titre | Qualité du dessin + légendes complètes |
-| **حلل، قارن، مقارنة** | Composé | 2 | Analyse → **استنتاج** | Décomposer → Identifier tendances → Établir relations → Conclure |
-| **فسر، وضّح، بين، اشرح، تفسير** | Composé | 2 | Observation → Explication mécanisme | Ne pas confondre observation et explication |
-| **علّق, أنقد, علل/برر, نقاش صحة** | Composé | 2 | Jugement argumenté, nuancé | Avantages + inconvénients + avis éclairé |
-| **استخرج, استنتاج** | Composé | 2, 3 | Info clé liée au but | Tirer la conclusion liée au but de l'exercice |
-| **اكتب نصا علميا (Composer)** | Composé | 2, 3 | 3 parties : مقدمة, عرض, خاتمة | Structure claire, titre par idée, ordre logique |
-| **أنجز مخططا / رسم تخطيطي** | Composé | 1, 2, 3 | Schéma avec légendes, flèches, titre | Clarity, exhaustivité relative, justesse |
-| **صياغ مشكل علني** | Composé | 3 | Question précise + but | Identifier le but sous-jacent, reformuler sous forme de question |
-| **اقتراح فرضية** | Composé | 3 | Hypothèse testable, plausible, fondée | Proposer une explication testable, pas une simple affirmation |
-| **التحقق من صحة, إثبات, نقاش, أثبت** | Composé | 3 | Confronter hypothèse avec données → conclure | Confronter explicitement, confirmer ou infirmer avec justification |
+| تعرف، سمّ، عرف، حدد، ملاحظة | بسيط | 1، 2 | إجابة مركزة وموجزة | الدقة المصطلحية + الاختصار |
+| وصف بنية، ذكر عناصر، صنف، ميز | بسيط | 1 | وصف/تصنيف/تمييز مركّز | الترتيب، اكتمال نسبي، معايير إن كان تصنيفاً |
+| ذكر، عدد، رتب، نظم | بسيط | 1 | تعداد مرتب وموجز | احترام الترتيب إن كان تسلسلاً |
+| رسم تخطيطي / أنجز مخططا | بسيط أو مركب | 1، 2، 3 | مخطط مع تسميات وأسهم وعنوان | جودة الرسم + اكتمال التسميات |
+| حلل، قارن، تحليل مقارن | مركب | 2 | تحليل ← استنتاج | فك التركيب ← تحديد الاتجاهات ← علاقات ← خاتمة |
+| فسر، وضّح، بين، اشرح، تفسير | مركب | 2 | ملاحظة ← شرح الآلية ← خطوات منطقية | لا تخلط بين الملاحظة والشرح |
+| علّق، أنقد، علل/برر، نقاش صحة | مركب | 2 | حكم مدروس مع إيجابيات وسلبيات وأسباب | توازن + تبرير مدعوم |
+| استخرج، استنتاج | مركب | 2، 3 | معلومة مركزية مرتبطة بالهدف | استنتاج مرتبط بالهدف من التمرين |
+| اكتب نصا علمياً | مركب | 2، 3 | 3 أجزاء: مقدمة، عرض، خاتمة | هيكل واضح، عنوان لكل فكرة، ترتيب منطقي |
+| أنجز مخططاً / رسمًا تخطيطيًا | مركب | 1، 2، 3 | مخطط كامل بالتسميات والأسهم والعنوان | الوضوح، الاكتمال النسبي، الدقة |
+| صياغة مشكل علمي | مركب | 3 | سؤال دقيق + هدف أساسي | تحديد الهدف الكامن، صياغة سؤال |
+| اقتراح فرضية | مركب | 3 | فرضية قابلة للاختبار ومنطقية | اقتراح تفسير قابل للاختبار وليس مجرد إفصاح |
+| التحقق من صحة، إثبات، نقاش، أثبت | مركب | 3 | مقارنة الفرضية بالمعطيات ← تأكيد أو نفي مبرر | المقارنة الصريحة مع التبرير |
 
 ---
 
-## 4. STRUCTURE DE LA RÉPONSE — LES DEUX APPROCHES
+## 4. هيكلة الإجابة — النهج المزدوج
 
-### 4.1 La structure en 3 parties (مقدمة + عرض + خاتمة)
+### 4.1 الهيكل في 3 أجزاء (مقدمة + عرض + خاتمة)
 
-Les deux ouvrages s'accordent sur cette structure fondamentale pour tout texte scientifique.
+يتفق المصدران على هذه الهيكلة الأساسية للإجابة العلمية.
 
-#### مقدمة (Introduction)
+#### المقدمة
 
-**Fonction** : Orienter le lecteur, contextualiser, annoncer le plan, poser le problème.
+وظيفتها : توجيه القارئ، وضع السياق، إعلان الخطة، طرح المشكل.
 
-**Ce qu'elle doit contenir** :
-- Contexte général du phénomène (principe, définition rapide, contexte biologique)
-- Rappel des connaissances de base nécessaires pour aborder le sujet
-- Transition vers le problème ou la question centrale
+ما يجب أن تحتويه :
 
-**Conseil méthodologique clé** :
-> « Il faut identifier les mots-clés et la notion sous-jacente. Déchiffrer le mot-clé, c'est déchiffrer la question. »
+- السياق العام للظاهرة (مبدأ أساسي، تعريف سريع، سياق حيوي)
+- تذكر المعارف الأساسية اللازمة لمواجهة الموضوع
+- الانتقال إلى المشكل أو السؤال المركزي
 
-**Exemple** (extrait des deux ouvrages, sur un sujet de mécanisme enzymatique) :
-> _"Les enzymes catalysent de nombreuses réactions métaboliques au sein de la cellule. Définition d'un enzyme + rôle dans la régulation des réactions + importance pour le fonctionnement cellulaire → puis poser la question centrale : comment expliquer le mécanisme d'action de cet enzyme ?"_
+نصيحة منهجية جوهرية :
 
-#### عرض (Développement)
+> يجب تحديد الكلمات المفتاحية والفكرة الكاملة. فك شفرة الكلمة المفتاحية هو فك شفرة السؤال.
 
-**Fonction** : Développer les arguments, présenter les données, expliquer les mécanismes, structurer logiquement l'information.
+مثال (مستمد من المصدرين، حول آلية أنزيمية) :
 
-**Organisation recommandée** :
-1. **Par idée principale** — un paragraphe (ou un bloc structuré) par idée
-2. **Ordre logique** — chronologique, de cause à effet, du général au particulier, ou dans l'ordre des étapes
-3. **Connecteurs de liaison** explicites — إذن، حيث، لذلك، عليه، علاوة على ذلك، بالمقابل، 그리고، ...
-4. **Précision terminologique** — les termes scientifiques justes, pas des approximations
-5. **Titre par idée** — chaque idée ou groupe d'idées doit avoir un titre clair (ou une étiquette) pour guider le correcteur
+> الأنزيمات تحفز العديد من التفاعلات الأيضية داخل الخلية. تعريف الأنزيم + دوره في تنظيم التفاعلات + أهميته في تسيير الخلية ← ثم طرح السؤال المركزي : كيف تفسر آلية عمل هذا الأنزيم؟
 
-**Conseil méthodologique clé (du second ouvrage)** :
-> « Il faut écrire le titre de chaque idée d'information dans le même ordre que dans l'énoncé. »
+#### العرض
 
-→ Chaque idée doit avoir un titre clair, dans un ordre logique et cohérent avec le sujet.
+وظيفتها : تطوير الحجج، عرض البيانات، شرح الآليات، هيكلة المعلومات منطقياً.
 
-**Conseil complémentaire (du premier ouvrage)** :
-> « Lors de l'analyse de document, identifier les tendances, les valeurs remarquables, les relations causales potentielles avant d'interpréter. Séparer l'analyse de l'interprétation. »
+التنظيم المقترح :
 
-#### خاتمة (Conclusion)
+- حسب الفكرة الرئيسية — فقرة (أو كتلة منظمة) لكل فكرة
+- ترتيب منطقي — زمني، سبب ← نتيجة، من العام إلى الخاص، أو حسب تسلسل الخطوات
+- روابط منطقية صريحة — بالتالي، إذن، لذلك، حيث، هذا يراجع إلى، ...
+- دقة مصطلحية — المصطلحات العلمية الدقيقة، لا التقريبات
+- عنوان لكل فكرة — لكل فكرة أو مجموعة أفكار عنوان واضح (أو تذييل) لتهديم المصحح
 
-**Fonction** : Synthétiser, répondre explicitement au problème posé, ouvrir si pertinent.
+نصيحة منهجية جوهرية (المصدر الثاني) :
 
-**Ce qu'elle doit contenir** :
-- Synthèse des points principaux (1 à 3 phrases)
-- Réponse claire et explicite au problème posé (la conclusion doit répondre à la question posée)
-- Éventuellement : ouverture, limite, perspective, ou lien avec un sujet connexe
+> اكتب عنوان كل فكرة معلوماتية بنفس الترتيب الموجود في نص التمرين.
 
-**Conseil méthodologique clé** :
-> « La conclusion doit être la réponse explicite au problème posé. Pas de nouvelle information dans la conclusion. »
+→ لكل فكرة عنوان واضح، في ترتيب منطقي ومتسق مع الموضوع.
+
+نصيحة مكملة (المصدر الأول) :
+
+> عند تحليل الوثيقة، حدد الاتجاهات والقيم الرئيسية والعلاقات السببية المحتملة قبل التفسير. افصل بين التحليل والتفسير.
+
+#### الخاتمة
+
+وظيفتها : تلخيص، الإجابة الصريحة على المشكل، فتح باب المناقشة إن كان ملائماً.
+
+ما يجب أن تحتويه :
+
+- تلخيص النقاط الأساسية (جملة أو جملتان)
+- إجابة صريحة ودقيقة على المشكل المطروح (الخاتمة ترد على السؤال المطروح)
+- في حال ملائمة : فتح باب، أو تحديد محدودية، أو ربط بموضوع مجاور
+
+نصيحة منهجية جوهرية :
+
+> الخاتمة هي الإجابة الصريحة على المشكل المطروح. لا تقدم معلومات جديدة في الخاتمة.
+
+### 4.2 طريقة تحليل الوثيقة
+
+علق المصدر الأول على طريقة تحليل الوثيقة العلمية في 5 خطوات منظمة.
+
+خطوات تحليل الوثيقة العلمية :
+
+1. تعريف الوثيقة / تعريف البيانات
+   - ما الذي تمثله هذه الوثيقة؟ (صورة، مخطط، جدول، منحنى، تجربة...)
+   - شروط التجربة إن وجدت؟
+   - السياق العام؟
+2. تفكيك المعطيات
+   - تحديد المكونات، البيانات، القيم، المحاور، الاتجاهات
+   - إبراز القيم الرئيسية (سوية، قمم، نقاط تقاطع، تغيرات في الاتجاه)
+   - تحديد العلاقات الظاهرة بين العناصر
+3. إيجاد العلاقات
+   - البحث عن علاقات سببية محتملة
+   - البحث عن علاقات ارتباط (تناسب، عكسية)
+   - البحث عن علاقات وظيفية (دور، وظيفة، آلية)
+4. التفسير (إن طُلب)
+   - شرح ما تعنيه البيانات في سياق الموضوع
+   - الاستعانة بالمعلومات + الوثائق لشرح الآلية
+   - عدم الخلط بين الملاحظة (بيانات) والتفسير (شرح)
+5. الاستنتاج
+   - إسقاط الاستنتاج المتعلق بغرض التمرين
+   - مقارنة المعلومات المستخلصة بالهدف الكامن
+
+كلمات دالة نموذجية لكل خطوة (للاستخدام في الصياغة) :
+
+- تحليل : «تمثل الوثيقة...، حيث نلاحظ...، نلاحظ أن...»
+- تفسير : «وهذا يراجع إلى...، يدل على...، لأن...»
+- علاقة : «كلما...، كلما...، هناك علاقة...»
+- استنتاج : «ومنه نستنتج أن...، وهذا ما يجعلنا نطرح...»
+
+### 4.3 طريقة المخطط الوظيفي
+
+علق المصدر الأول على طريقة المخطط الوظيفي (وقد أضاف المصدر الثاني نصائح مكملة حول جودة الإنتاج الرسومي).
+
+خطوات إنتاج مخطط وظيفي :
+
+1. تحديد نوع المخطط المطلوب
+   - مخطط وصفي (وصف بنية) : إبراز المكونات وتنظيمها
+   - مخطط وظيفي (تمثيل آلية/وظيفة) : إبراز الظواهر والخطوات والعلاقات الوظيفية
+   - مخطط وظيفي مع تحول (مقارنة حالة طبيعية / حالة مرضية، مثلاً)
+2. تعداد العناصر المراد تمثيلها
+   - المكونات (هياكل، عضيات، جزيئات، إلخ)
+   - الخطوات أو الظواهر (أحداث، تحولات، تفاعلات)
+   - العلاقات (أسهم، تأثيرات، تنظيمات، تفاعلات)
+3. اختيار ترتيب واضح
+   - ترتيب منطقي (زمني، وظيفي، تسلسلي)
+   - اتجاه الأسهم متناسقاً
+   - إدارة الفراغ (عدم الاكتظاظ، ترك مساحة)
+4. إضافة التسميات
+   - كل عنصر ممثل يجب أن يحمل تسمية أو إشارة واضحة
+   - الأسهم يجب أن يكون لها معنى واضح (تكوين، نقل، تنشيط، تثبيط، إلخ)
+   - ترقيم إن لزم (مخطط وظيفي) + تذييل في الأسفل (نفس العنوان)
+5. إضافة عنوان واضح
+   - عنوان يصف ما يمثله المخطط (الآلية، الظاهرة، الوظيفة)
+6. التحقق
+   - هل هو كامل؟ (كل العناصر المطلوبة ممثلة)
+   - هل هو واضح؟ (قابل للفهم دون الحاجة إلى نص التمرين)
+   - هل هو دقيق علمياً؟ (المعلومات صحيحة علمياً)
+
+نصائح مكملة (من المصدر الثاني) :
+
+> إن كان المخطط وصفياً، فالأولوية للدقة الوصفية. إن كان وظيفياً، فالأولوية للعلاقات الوظيفية.
+
+> الأسهم يجب أن يكون لها معنى واضح. التسميات يجب أن تكون دقيقة.
+
+> مخطط بلا عنوان ولا تسميات غير مكتمل — كل عنصر مرسوم يجب أن يكون قابلاً للتعرف.
+
+أنواع المخططات (من المصدر الأول) :
+
+- رسم تخطيطي تفسيري : مخطط يفسر ظاهرة حيوية (مرئية بالمجهر أو جزيئية) — إبراز البنية/الآلية وشرحها بتسميات
+- رسم تخطيطي وظيفي : مخطط يبرز العلاقات الوظيفية والمراحل والظواهر المتسلسلة — ترقيم الخطوات + تسميات للأسهم
 
 ---
 
-### 4.2 La méthode d'analyse de document
+## 5. المنهجية حسب نوع التمرين (1، 2، 3)
 
-Le premier ouvrage a détaillé la méthode d'analyse de document en 5 étapes structurées :
+### 5.1 تمرين 1 (5 نقاط) — الاسترجاع والتنظيم
 
-**Étapes d'analyse d'un document scientifique** :
+الهدف : إثبات القدرة على استخلاص وتنظيم المعلومات المتاحة مباشرة في الوثائق والمعارف.
 
-1. **تعريف الوثيقة / تعريف البيانات** (Définir le document)
-   - Qu'est-ce que ce document représente ? (photographie, schéma, tableau, graphique, expérience...)
-   - Quelles sont les conditions expérimentales si pertinentes ?
-   - Quel est le contexte ?
+أفعال نموذجية : تعرف، سم، عرف، حدد، ملاحظة، ذكر، عدد، رتب، وصف بنية، صنف، ميز، رسم تخطيطي (وصفي أو وظيفي بسيط)
 
-2. **تفكيك المعطيات** (Décomposer les données)
-   - Identifier les composantes, les données, les valeurs, les axes, les tendances
-   - Dégager les valeurs remarquables (paliers, pics, points d'intersection, changements de tendance)
-   - Identifier les relations apparentes entre les éléments
+المدة التقريبية : ~45 دقيقة
 
-3. **إيجاد العلاقات** (Établir les relations)
-   - Chercher les relations de cause à effet potentielles
-   - Chercher les relations de corrélation (proportionnalité, inversement)
-   - Chercher les relations fonctionnelles (rôle, fonction, mécanisme)
+المنهجية المفصلة :
 
-4. **التفسير** (Interpréter — si demandé)
-   - Expliquer ce que les données signifient dans le contexte du sujet
-   - Mobiliser les connaissances + les documents pour expliciter le mécanisme
-   - Ne pas confondre observation (données) et interprétation (explication)
+- قراءة كاملة لنص التمرين والوثائق قبل البدء
+  - عدم الانطلاق في السؤال الأول دون إبصار عام
+  - تحديد المنطق العام للتمرين
+- تحديد أفعال المهمة الأدائية في كل تعليمة
+  - تحديد لكل سؤال : بسيط أم مركب؟
+  - تكييف الإجابة على هذا الأساس (مركزة أم مطورة)
+- بالنسبة للأسئلة البسيطة (تعريف، ذكر، عدد، وصف، ميز، إلخ)
+  - قراءة الوثيقة المعنية بتمعن
+  - تحديد المطلوب بدقة
+  - إجابة مباشرة وموجزة ودقيقة
+  - إن طُلب مخطط : تحديد العناصر المراد تسميتها/وصفها، إضافة التسميات، العنوان
+- بالنسبة لأسئلة المخطط
+  - تحديد النوع (وصفي / وظيفي)
+  - تعداد العناصر المراد تمثيلها
+  - الرسم بانتظام مع التسميات والأسهم إن لزم
+  - إضافة عنوان واضح
+- التحقق
+  - هل كل إجابة مطابقة للتعليمية تماماً؟
+  - هل التسميات كاملة؟
+  - هل المصطلحات دقيقة؟
 
-5. **استنتاج** (Conclure)
-   - Tirer la conclusion liée au but de l'exercice
-   - Confronter les informations extraites avec le but sous-jacent
+المحاذير :
 
-**Mots-clés typiques de chaque étape** (à utiliser dans la rédaction) :
-- Analyse : "تمثل الوثيقة...، حيث نلاحظ...، نلاحظ أن..." 
-- Interprétation : "وهذا يراجع إلى...، يدل على...، لأن..."
-- Relation : "كلما...، كلما...، هناك علاقة..." 
-- Conclusion : "ومنه نستنتج أن...، وهذا ما يجعلنا نطرح..."
+- الإكثار من الكتابة خارج المطلوب (ضياع وقت، خطر الانحراف عن الموضوع)
+- نسيان التسميات في المخطط
+- الخلط بين مكونين متشابهين في الوثيقة
+- عدم احترام ترتيب الخطوات إن كان تسلسلاً
+- إجابة تقريبية (مصطلحات غير دقيقة، أوصاف غامضة)
+
+### 5.2 تمرين 2 (7 نقاط) — التحليل والتفسير
+
+الهدف : إثبات القدرة على تحليل البيانات وتفسيرها ومقارنتها ومناقشتها وبرهنتها.
+
+أفعال نموذجية : تحليل، تفسير، مقارنة، مناقشة، استنتاج، علّق، أنقد، علّل/برر، فسر/وضّح/بين، اشرح، تحليل مقارن
+
+المدة التقريبية : ~1س و15 د إلى 1س و30 د
+
+الهيكل العام لتمرين 2 :
+
+- الجزء 1 (غالباً) : معطيات مقدمة (تجارب، منحنيات، جداول، مخططات)، أسئلة تحليل وتفسير
+- الجزء 2 (غالباً) : مقارنة، نقاش، تأكيد/نفي، برهنة
+
+المنهجية المفصلة حسب نوع المهمة :
+
+⬇️ تحليل البيانات (تحليل)
+- تحديد الوثيقة : ما الذي تمثله هذه الوثيقة؟
+- تفكيك المعطيات : تحديد البيانات، القيم، المحاور، الاتجاهات، القيم الرئيسية
+- إيجاد العلاقات : البحث عن علاقات بين العناصر (سبب/نتيجة، ارتباط، انحراف، فرق)
+- استنتاج وسيطي (إن طُلب) : استنتاجات وسيطة مرتبطة بالهدف
+
+⬇️ التفسير (تفسير)
+- ملاحظة البيانات (مجموع من مرحلة التحليل)
+- تحديد الآلية الكامنة (معارف + وثائق)
+- شرح مرحلي منطقي (سبب ← نتيجة، أو خطوات متسلسلة)
+- استعمال رابط سببي صريح : بالتالي، إذن، لذلك، حيث، هذا يراجع إلى...
+- عدم الخلط بين الملاحظة والشرح — البيانات ≠ الآلية
+
+⬇️ المقارنة (مقارنة)
+- تحديد المعيار المشترك (معيار المقارنة)
+- ذكر نقاط التشابه
+- ذكر نقاط الاختلاف
+- الوصول إلى استنتاج إن طُلب
+
+⬇️ النقاش / التعليق / الحكم (مناقشة، علّق، أنقد، نقاش صحة)
+- تحديد الأدلة لصالح وضد
+- مقارنة وجهات النظر
+- إبداء رأي مدروس (إيجابيات / سلبيات، موقف متوازن)
+- دعم بالشهادات (وثائق أو معارف)
+
+المحاذير :
+
+- خلط الملاحظة بالتفسير (البيانات ≠ الآلية)
+- تقديم تفسير غير مدعوم بالمعطيات
+- حكم قيمي بدون توازن (عندما يطلب السؤال التوازن)
+- عدم الوصول إلى استنتاج إن طُلب
+- استعمال مصطلحات غير دقيقة (تقريبية بدلاً من علمية)
+- عدم هيكلة الإجابة (فقرات بدون عناوين، أفكار خارج الترتيب)
+
+### 5.3 تمرين 3 (8 نقاط) — المسار العلمي الكامل (مسعى علمي)
+
+الهدف : إثبات القدرة على قيادة مسار علمي كامل، من صياغة المشكل إلى التوصل.
+
+أفعال نموذجية : صياغة مشكل علمي، اقتراح فرضية، التحقق من صحة الفرضية، إثبات، نقاش، اكتب نصا علمياً، أنجز مخططاً، تحليل مقارن
+
+المدة التقريبية : ~2 ساعة
+
+الهيكل العام لتمرين 3 :
+
+- الجزء 1 : عرض وضعية/مشكل، اقتراح فرضيات
+- الجزء 2 : استغلال وثائق لمقارنة الفرضيات، تحليل مقارن
+- الجزء 3 : تركيب — نص علمي أو مخطط تلخيصي
+
+المنهجية المفصلة — 6 خطوات :
+
+#### الخطوة 1 — صياغة المشكل العلمي (صياغة مشكل علمي)
+
+الهدف : تحديد ما نبحث عنه فعلياً.
+
+كيف :
+
+- قراءة جميع الوثائق ونص التمرين بتمعن
+- تحديد الهدف الكامن (لماذا؟ كيف؟ أين؟ متى؟ ما هو...)
+- صياغة سؤال دقيق
+- أحياناً الهدف صريح (مبين في النص)؛ أحياناً ضمني (يُستنتج من المنطق)
+
+مثال (مستمد من المصدرين) :
+
+> كيف تنتقل المعلومة الوراثية من النواة إلى الهيولي مع انتقال الـ ARNm عبر الثقوب النووية؟
+
+أو بشكل أعمّ :
+
+> ما هي الآلية التي تسمح بـ [...]؟ / كيف تعمل [...]؟ / ما هي العوامل المؤثرة على [...]؟
+
+#### الخطوة 2 — اقتراح فرضية (اقتراح فرضية)
+
+الهدف : اقتراح تفسير منطقي وقابل للاختبار.
+
+كيف (المصدر الأول) :
+
+- الاعتماد على المعطيات المتاحة + المعارف
+- اقتراح تفسير قابل للاختبار (يمكن التحقق منه أو نفيه بتجربة أو ببيانات)
+- قد تكون الفرضية جزئياً صحيحة؛ قد تتعايش عدة فرضيات
+- يجب أن تكون قابلة لإعادة الصياغة كاقتراح قابل للاختبار
+
+كيف (المصدر الثاني) :
+
+> اقتراح فرضية : مقترح افتراضي، قابل للاختبار، منطقي، ذو صلة.
+
+ما يجب تجنبه (المصدر الثاني) :
+
+- عدم الخلط بين الفرضية والتفسير المفصل — الفرضية مقترح انطلاق، ليس شرحاً كاملاً
+- عدم اقتراح فرضية تكون بالفعل مؤكدة بالمعطيات
+
+نموذج فرضية قابلة للاختبار :
+
+> من الممكن أن يكون دور اليوريدين المشع في الترجمة هو تتبع الـ ARNm المُنسخّ.
+
+#### الخطوة 3 — اختيار بروتوكول اختبار (إن طُلب)
+
+الهدف : اقتراح تجربة تحقق ملائمة.
+
+كيف :
+
+- تحديد المتغيرات ذات الصلة (ما الذي نريد اختباره)
+- اقتراح شروط تجريبية تسمح بتأكيد أو نفي الفرضية
+- تبرير اختيار البروتوكول (لماذا هذه التجربة، ما الذي ستسمح باستنتاجه)
+
+ما يجب إظهاره :
+
+- فهمك لما يجب أن تفعله تجربة الاختبار (التحكم بمتغير، قياس الأثر، مقابلة مع الفرضية)
+
+#### الخطوة 4 — تحليل وتفسير البيانات (الجزء 2 من التمرين)
+
+الطريقة (نفسها تمرين 2) :
+
+- تحديد الوثيقة (إن كانت وثيقة جديدة)
+- تفكيك المعطيات (تحديد البيانات، القيم، الاتجاهات)
+- تفسير (شرح ما تظهره البيانات، الآلية الكامنة)
+- استنتاج (تأكيد أو نفي الفرضية مع تبرير)
+
+مهم (المصدر الأول) : مقابلة كل معطى مع الفرضية، والخاتمة صراحة.
+
+#### الخطوة 5 — التحقق / النفي / النقاش (مقابلة مع البيانات)
+
+الطريقة :
+
+- إن كانت البيانات تدعم الفرضية : تأكيد مع تبرير (سطور بيانات + تفسير)
+- إن كانت البيانات تنفي الفرضية : شرح لماذا، اقتراح بديل إن كان ملائماً
+- إن كانت البيانات جزئياً متوافقة : توضيح، تحديد نقاط القوة والحدود
+
+نصيحة (المصدر الثاني) :
+
+> إذا كانت الأسئلة : هل تأكدت من صحة الفرضية؟ ← الإجابة : نعم أو لا، ثم تبرير.
+
+→ لا تقف عند «نعم» أو «لا»، بل ادعم بالبيانات.
+
+#### الخطوة 6 — الإنتاج التركيبي (إن طُلب : نص علمي / مخطط)
+
+النص العلمي :
+
+- مقدمة : سياق، تذكر معارف، إعلان الظاهرة/الآلية موضوعة، المشكل المطروح
+- عرض : شرح مفصل مرحلي، مع البيانات والمعارف، روابط منطقية، عناوين لكل فكرة
+- خاتمة : تلخيص، إجابة صريحة على المشكل، في حال ملائمة فتح باب
+
+المخطط الوظيفي :
+
+- إبراز الآلية/الظاهرة بشكل واضح وكامل
+- تسميات دقيقة لكل عنصر
+- أسهم إن لزم (اتجاه، تقدم، تحول)
+- عنوان واضح
+
+نصيحة المصدر الثاني :
+
+> في مخطط الجزء الثالث، يجب تمثيل الحالة الطبيعية والحالة المرضية (أو الحالة مع تدخل) — حتى إن لم يطلب الموضوع ذلك صراحة.
 
 ---
 
-### 4.3 La méthode du schéma fonctionnel
+## 6. منهجية المراجعة والتحضير
 
-Le premier ouvrage a détaillé la méthode du schéma fonctionnel (et le second ouvrage a apporté des conseils complémentaires sur la qualité de la production graphique).
+### 6.1 المبادئ الأساسية
 
-**Étapes de production d'un schéma fonctionnel** :
+#### 1. التمرين > النظرية السلبية
 
-1. **Identifier le type de schéma demandé**
-   - Schéma descriptif (description de structure) : mettre en évidence les composants et leur organisation
-   - Schéma fonctionnel (représentation d'un mécanisme/fonctionnement) : mettre en évidence les phénomènes, les étapes, les relations fonctionnelles
-   - Schéma fonctionnel avec transposition (comparaison état normal / état pathologique, par exemple)
+- 90% من المعرفة تُكتسب عبر الممارسة والتقويم الذاتي، 10% عبر النظرية
+- إعادة بناء المعرفة بالتمارين تحقق الحالة المثالية للمنهجية
+- حل تمارين متنوعة في جميع الوحدات
 
-2. **Lister les éléments à représenter**
-   - Composants (structures, organites, molécules, etc.)
-   - Étapes ou phénomènes (évènements, transformations, réactions)
-   - Relations (flèches, influences, régulations)
+#### 2. أهمية التقويم الذاتي المستمر
 
-3. **Choisir une disposition claire**
-   - Ordre logique (chronologique, fonctionnel, hiérarchique)
-   - Direction des flèches cohérente
-   - Gestion de l'espace (ne pas surcharger, laisser de l'air)
+- بعد كل درس، حل تمارين نموذجية
+- مقارنة الإجابة بالتصحيح النموذجي (إن وجد) أو مع المنطق الشخصي
+- تحديد نقاط الضعف والعمل عليها بشكل مستهدف
+- عدم تراكم العلم دون التحقق منه
 
-4. **Ajouter les légendes**
-   - Chaque élément représenté doit avoir une légende ou une indication claire
-   - Les flèches doivent avoir un sens clair (formation, transport, activation, inhibition, etc.)
-   - Numéroter si nécessaire (schéma fonctionnel) + légende en bas (même titre)
+#### 3. تنظيم المراجعة
 
-5. **Ajouter un titre clair**
-   - Titre qui décrit ce que le schéma représente (le mécanisme, le phénomène, la fonction)
-
-6. **Vérifier**
-   - Est-ce complet ? (tous les éléments demandés sont présents)
-   - Est-ce clair ? (compréhensible sans avoir besoin de l'énoncé)
-   - Est-ce juste ? (les informations sont scientifiquement correctes)
-
-**Conseils complémentaires (du second ouvrage)** :
-- _"Si le schéma est descriptif, privilégier le descriptif précis. Si fonctionnel, privilégier les relations fonctionnelles."_
-- _"Les flèches doivent avoir un sens clair. Les légendes doivent être précises."_
-- _"Un schéma sans titre ni légendes est incomplet — chaque élément dessiné doit être identifiable."_
-
-**Types de schémas (du premier ouvrage)** :
-- **رسم تخطيطي تفسيري** : schéma qui interprète un phénomène biologique (visible au microscope ou observé) — mettre en évidence la structure/le mécanisme et l'expliquer par des légendes
-- **رسم تخطيطي وظيفي** : schéma qui met en évidence les relations fonctionnelles, les étapes, les phénomènes séquentiels — numérotation des étapes + légende des flèches
-
----
-
-## 5. MÉTHODE PAR EXERCICE — TYPES 1, 2, 3
-
-### 5.1 Exercice 1 (5 pts) — Récupération et organisation
-
-**Objectif** : Montrer que tu sais extraire et organiser les informations directement disponibles dans les documents et ta connaissance.
-
-**Verbes typiques** : تعرف, سمّ, عرف, حدد, ملحوظة, ذكر, عدد, رتب, وصف بنية, صنف, ميز, رسم تخطيطي (descriptif ou fonctionnel simple)
-
-**Durée indicative** : ~45 minutes
-
-**Méthode détaillée** :
-
-1. **Lire l'intégralité de l'énoncé et des documents avant de commencer**
-   - Ne pas se lancer dans la première question sans avoir une vue d'ensemble
-   - Identifier la logique globale de l'exercice
-
-2. **Identifier les verbes d'action dans chaque consigne**
-   - Déterminer pour chaque question : simple ou composé ?
-   - Adapter sa réponse en conséquence (ciblée vs développée)
-
-3. **Pour les questions simples (تعريف, ذكر, عدد, وصف, ميز, etc.)**
-   - Lire le document concerné attentivement
-   - Identifier exactement ce qui est demandé
-   - Donner la réponse directe, concise, précise
-   - Si schéma demandé : identifier les éléments à nommer/décrire, ajouter les légendes, titre
-
-4. **Pour les questions de schéma**
-   - Identifier le type ( descriptif / fonctionnel)
-   - Lister les éléments à représenter
-   - Dessiner proprement, avec légendes et flèches si nécessaire
-   - Ajouter un titre clair
-
-5. **Vérifier**
-   - Chaque réponse correspond-elle exactement à la consigne ?
-   - Les légendes sont-elles complètes ?
-   - Les termes sont-ils précis ?
-
-**Pièges à éviter** :
-- Trop écrire au-delà de ce qui est demandé (perdre du temps, risquer de s'éloigner du sujet)
-- Oublier les légendes sur un schéma
-- Confondre deux éléments similaires dans un document
-- Ne pas respecter l'ordre des étapes demandées (si séquence)
-- Réponse approximative (termes imprécis, descriptions vagues)
-
-### 5.2 Exercice 2 (7 pts) — Analyse et interprétation
-
-**Objectif** : Montrer que tu sais analyser des données, les interpréter, confronter des informations, discuter, argumenter.
-
-**Verbes typiques** : تحليل, تفسير, مقارنة, مناقشة, استنتاج, علّق, أنقد, علل/برر, فسر/وضّح/بين, اشرح, تحليل مقارن
-
-**Durée indicative** : ~1h15 à 1h30
-
-**Structure générale de l'exercice 2** :
-
-- **Partie 1** (souvent) : données présentées (expériences, graphiques, tableaux, schémas), questions d'analyse et d'interprétation
-- **Partie 2** (souvent) : confrontation, discussion, confirmation/infirmation, argumentation
-
-**Méthode détaillée par type de tâche** :
-
-#### ⬇️ Analyse de données (تحليل)
-
-1. **تعريف الوثيقة** : Qu'est-ce que ce document représente ?
-2. **تفكيك المعطيات** : Identifier les données, les valeurs, les axes, les tendances, les valeurs remarquables
-3. **إيجاد العلاقات** : Chercher les relations entre les éléments (cause/effet, corrélation,anomalie, différence)
-4. **استنتاج intermédiaire** (si demandé) : Tirer les conclusions intermédiaires liées au but
-
-#### ⬇️ Interprétation (تفسير)
-
-1. **Observer les données** (déjà fait à l'étape d'analyse)
-2. **Identifier le mécanisme sous-jacent** (connaissances + documents)
-3. **Expliquer en étapes logiques** (cause → effet, ou étapes séquentielles)
-4. **Utiliser des connecteurs de cause à effet** : بالتالي، إذن، لذلك، حيث، هذا يراجع إلى...
-5. **Ne pas confondre** observation et explication — les données ≠ le mécanisme
-
-#### ⬇️ Comparaison (مقارنة)
-
-1. **Identifier le paramètre commun** (le critère de comparaison)
-2. **Citer les ressemblances** (points communs)
-3. **Citer les différences** (points distinctifs)
-4. **Aboutir à un استنتاج** si demandé
-
-#### ⬇️ Discussion / Commentaire / Jugement (مناقشة, علّق, أنقد, نقاش صحة)
-
-1. **Identifier les arguments pour et contre**
-2. **Confronter les points de vue**
-3. **Donner un avis éclairé** (avantages / inconvénients, position nuancée)
-4. **Appuyer par des preuves** (documents ou connaissances)
-
-**Pièges à éviter** :
-- Confondre observation et interprétation (les données ≠ le mécanisme)
-- Donner une interprétation sans être fondée sur les données
-- Bafouer un point de vue sans nuance (quand le sujet demande la nuance)
-- Ne pas aboutir à un استنتاج quand c'est demandé
-- Utiliser des termes imprécis (approximatifs plutôt que scientifiques)
-- Ne pas structurer la réponse (paragraphes sans titre, idées hors ordre)
-
-### 5.3 Exercice 3 (8 pts) — Démarche scientifique complète (مسعى علمي)
-
-**Objectif** : Montrer que tu sais mener une démarche scientifique complète, de la formulation du problème à la conclusion.
-
-**Verbes typiques** : صياغ مشكل علني, اقتراح فرضية, التحقق من صحة الفرضية, إثبات, نقاش, اكتب نصا علميا, أنجز مخططا, تحليل مقارن
-
-**Durée indicative** : ~2h
-
-**Structure générale de l'exercice 3** :
-
-- **Partie 1** : Présentation d'une situation / d'un problème, propositions d'hypothèses
-- **Partie 2** : Exploitation de documents pour vérifier/infirmer les hypothèses, analyse comparative
-- **Partie 3** : Synthèse — texte scientifique ou schéma récapitulatif
-
-**Méthode détaillée — 6 étapes** :
-
-#### Étape 1 — Formulation du problème (صياغ مشكل علني)
-
-**But** : Identifier ce qu'on cherche vraiment à comprendre.
-
-**Comment** :
-- Lire attentivement tous les documents et l'énoncé
-- Identifier le but sous-jacent (لماذا؟ كيف؟ أين؟ متى؟ ما هو...)
-- Reformuler en une question précise
-- Parfois, le but est explicite (clarifié par l'énoncé) ; parfois il est implicite (à déduire de la logique)
-
-**Exemple** (extrait des deux ouvrages) :
-> "Comment l'information génétique passe-t-elle du noyau au cytoplasme avec transfert de l'ARNm à travers les pores nucléaires ?"
-
-**Ou plus généralement** :
-> "ما هو الآلية qui permet [...] ?" / "كيف fonctionne [...] ?" / "ما هي les facteurs qui influencent [...] ?"
-
-#### Étape 2 — Proposition d'hypothèse (اقتراح فرضية)
-
-**But** : Proposer une explication plausible et testable.
-
-**Comment** (du premier ouvrage) :
-- S'appuyer sur les données disponibles + les connaissances
-- Proposer une explication testable (qui pourrait être vérifiée ou infirmée par une expérience ou par des données)
-- Une hypothèse peut être partiellement bonne ; plusieurs hypothèses peuvent coexister
-- Elle doit être **reformulable en une proposition testable**
-
-**Comment** (du second ouvrage) :
-> "اقتراح فرضية : proposition conjecturale, testable, plausible, pertinente"
-
-**Ce qu'il faut éviter** (du second ouvrage) :
-- Ne pas confondre hypothèse et explication détaillée — l'hypothèse est une proposition de départ, pas une explication complète
-- Ne pas proposer une hypothèse qui est déjà confirmée par les données
-
-**Exemple d'hypothèse testable** :
-> "Il est possible que le rôle de l'uridine radioactive dans la traduction soit de permettre le suivi des ARN messagers synthétisés"
-
-#### Étape 3 — Choix du protocole de test (si demandé)
-
-**But** : Proposer une expérience de vérification pertinente.
-
-**Comment** :
-- Identifier les variables pertinentes (ce qu'on veut tester)
-- Proposer des conditions expérimentales qui permettront de confirmer ou infirmer l'hypothèse
-- Justifier le choix du protocole (pourquoi cette expérience, qu'est-ce qu'elle va permettre de conclure)
-
-**Ce qu'il faut montrer** :
-- Que tu comprends ce qu'une expérience de test doit faire (manipuler une variable, mesurer l'effet, confronter à l'hypothèse)
-
-#### Étape 4 — Analyse et interprétation des données (Partie 2 de l'exercice)
-
-**Méthode** (identique à l'exercice 2) :
-
-1. **تعريف الوثيقة** (si nouveau document)
-2. **تفكيك المعطيات** (identifier les données, valeurs, tendances)
-3. **تفسير** (expliquer ce que les données montrent, le mécanisme sous-jacent)
-4. **استنتاج** (confirmer ou infirmer l'hypothèse avec justification)
-
-**Important** (du premier ouvrage) : confronter chaque donnée avec l'hypothèse, et conclure explicitement
-
-#### Étape 5 — Vérification / infirment / discussion (confronter avec les données)
-
-**Méthode** :
-- Si les données **soutiennent** l'hypothèse : confirmer avec justification (lignes de données + interprétation)
-- Si les données **infirment** l'hypothèse : expliquer pourquoi, proposer une alternative si pertinent
-- Si les données sont **partiellement** en accord : nuancer, identifier les points forts et les limites
-
-**Conseil** (du second ouvrage) :
-> "إذا كانت الأسئلة : هل تأكدت من صحة الفرضية؟ → الإجابة : نعم ou لا, ثم justification"
-
-→ Ne pas juste dire "نعم" ou "لا", mais appuyer par les données
-
-#### Étape 6 — Production synthétique (si demandé : نص علمي / مخطط)
-
-**Texte scientifique** :
-- **مقدمة** : contexte, rappel des connaissances, annonce du mécanisme/phénomène traité, problème posé
-- **عرض** : explication détaillée en étapes, avec les données et connaissances, connecteurs logiques, titres par idée
-- **خاتمة** : synthèse, réponse claire au problème, éventuellement ouverture
-
-**Schéma fonctionnel** :
-- Montrer le mécanisme/phénomène de façon claire et complète
-- Légendes précises pour chaque élément
-- Flèches si nécessaire (sens, progression, transformation)
-- Titre clair
-
-**Conseil du second ouvrage** :
-> "Dans le schéma fonctionnel du partie III, il faut représenter l'état normal ET l'état pathologique (ou l'état avec intervention) — même si le sujet ne le demande pas explicitement."
-
----
-
-## 6. MÉTHODOLOGIE DE RÉVISION
-
-### 6.1. Principes fondamentaux
-
-#### 1. La pratique > la théorie passive
-
-- 90% du savoir se acquiert par la **pratique et l'auto-évaluation**, 10% par la théorie
-- La reconstitution du savoir par la pratique seule permet d'atteindre la méthode idéale
-- Il faut résoudre des **exercices variés** dans toutes les unités
-
-#### 2. L'importance de l'auto-évaluation continue
-
-- Après chaque leçon, faire des exercices types
-- Comparer avec les corrigés (si disponibles) ou avec sa propre logique
-- Identifier ses points faibles et les travailler spécifiquement
-- Ne pas accumuler le savoir sans le vérifier
-
-#### 3. La structuration de la révision
-
-| Phase | Contenu | Durée indicative |
+| المرحلة | المحتوى | المدة التقريبية |
 |---|---|---|
-| **Revue des concepts** | Réviser les notions, compléter les fiches, ajouter des schémas | 1-2h par session |
-| **Auto-évaluation par unité** | Résoudre des exercices types par unité | Après revue du concept |
-| **Sujets complets d'entraînement** | Résoudre des sujets bac complets, chronométrés | Avant les tests blancs |
-| **Test blanc** | Simulation d'examen, chronométré, sans aide | Avant le bac |
+| مراجعة المفاهيم | مراجعة المفاهيم، إتمام الملخصات، إضافة المخططات | 1-2س لكل جلسة |
+| تقويم ذاتي بالوحدة | حل تمارين نموذجية حسب الوحدة | بعد مراجعة المفهوم |
+| مواضيع كاملة تدريبية | حل مواضيع باك كاملة، مؤقّتة | قبل الاختبارات التجريبية |
+| اختبار تجريبي | محاكاة امتحان، مؤقّتة، بدون مساعدة | قبل البكالوريا |
 
-#### 4. La gestion du temps (du second ouvrage)
+#### 4. إدارة الوقت (من المصدر الثاني)
 
-**Conseils** :
-- Ne pas reprendre directement l'école pour les matières intensives (maths, SVT)
-- Sessions de révision : 3-4h maximum, avec pauses
-- "تجزئة" la révision par unité, pas tout d'un coup
-- Pas de révision la nuit avant (concentration trop faible, besoin de sommeil)
+نصائح :
 
-**Plan de révision type** :
+- عدم الرجوع مباشرة للمدرسة للمواد المكثفة (رياضيات، علوم)
+- جلسات المراجعة : 3-4 ساعات كحد أقصى، مع استراحات
+- «تجزئة» المراجعة حسب الوحدة، ليس كل شيء في آن واحد
+- عدم المراجعة ليلة الامتحان (تركيز ضعيف، حاجة للنوم)
 
-| Période | Activité |
+خطة المراجعة النموذجية :
+
+| الفترة | النشاط |
 |---|---|
-| **Début du programme** | Revue des notions + fiches + premiers exercices types |
-| **Milieu du programme** | Compléter fiches, exercices variés par unité, premiers sujets d'entraînement |
-| **Après fin du programme** | Sujets complets chronométrés, tests blancs, correction des erreurs |
-| **Semaine du bac** | Revue finale des fiches, 1-2 sujets complets, repos mental |
+| بداية البرنامج | مراجعة المفاهيم + الملخصات + أول تمارين نموذجية |
+| وسط البرنامج | إتمام الملخصات، تمارين متنوعة حسب الوحدة، أول مواضيع تدريبية |
+| بعد انتهاء البرنامج | مواضيع كاملة مؤقّتة، اختبارات تجريبية، تصحيح الأخطاء |
+| أسبوع البكالوريا | مراجعة أخيرة للملخصات، 1-2 موضوع كامل، راحة عقلية |
 
-#### 5. Les pièges de la révision (du second ouvrage)
+#### 5. محاذير المراجعة (من المصدر الثاني)
 
-| Piège | Solution |
+| المفهوم | الحل |
 |---|---|
-| La révision passive (relire sans s'auto-évaluer) | Toujours faire des exercices après la lecture |
-| La procrastination | Commencer tôt, petits pas réguliers |
-| La surcharge mentale (trop de choses sans organisation) | Découper par unité, un sujet à la fois |
-| La comparaison avec les autres élèves | Se concentrer sur sa propre progression |
-| Le manque de confiance en soi | Se rappeler sa progression, se rappeler que la pratique améliore |
-| La révision non focalisée (diffuse, sans objectif) | Définir un objectif par session (réviser une unité, résoudre un type d'exercice) |
+| المراجعة السلبية (إعادة القراءة بدون تمارين) | دائماً حل تمارين بعد القراءة |
+| التأجيل | البدء مبكراً، خطوات صغيرة منتظمة |
+| الإجهاد الذهني (كل شيء دون تنظيم) | تجزئة حسب الوحدة، موضوع واحد في كل مرة |
+| المقارنة مع التلاميذ الآخرين | التركيز على التقدم الشخصي |
+| نقص الثقة بالنفس | تذكر التقدم، تذكر أن الممارسة تطور |
+| المراجعة غير المركزة (متباعدة، بدون هدف) | تحديد هدف لكل جلسة (مراجعة وحدة، حل نوع تمرين) |
 
-#### 6. Conseils psychologiques & motivationnels (du second ouvrage)
+### 6.2 نصائح نفسية وتحفيزية (من المصدر الثاني)
 
-- "Le cerveau n'est pas une machine électrique qui fonctionne sans arrêt. Il a aussi besoin d'énergie"
-- "Rechargez votre énergie par une alimentation saine, un sommeil de qualité, et des pauses"
-- "La confiance en soi vient de la préparation méthodeique"
+> العقل ليس آلة كهربائية تعمل بلا توقف. يحتاج أيضاً للطاقة.
 
-**Message clé** : le bac est une épreuve, mais avec une bonne préparation méthodique, on peut la réussir. Il faut à la fois :
-- Comprendre le contenu (fiches, cours, exercices)
-- S'entraîner sur la forme (exercices, chronométrage, rédaction)
-- Gérer le mental (confiance, gestion du stress, repos, équilibre)
+> أعد شحن طاقتك بغذاء صحي، نوم جيد، واستراحات.
 
-**Piège émotionnel à éviter (du second ouvrage)** :
-- La peur du bilan, du résultat
-- La comparaison sociale (« les autres sont meilleurs »)
-- La pression du temps qui conduit à la précipitation
+> الثقة بالنفس تأتي من التحضير المنهجي.
 
-**Stratégie face à l'échec ou à la difficulté** (du second ouvrage) :
-- Analyser les erreurs (comprendre pourquoi on a eu tort)
-- Identifier le point bloquant précis
-- Travailler spécifiquement ce point
-- Répéter jusqu'à automatisation
+الرسالة الجوهرية : البكالوريا امتحان، لكن مع تحضير منهجي جيد، يمكن النجاح. يلزم :
+
+- فهم المحتوى (ملخصات، دروس، تمارين)
+- التمرين على الشكل (تمارين، مؤقّتة، كتابة)
+- إدارة العقل (الثقة، إدارة التوتر، الراحة، التوازن)
+
+المحاذير العاطفية التي يجب تجنبها (من المصدر الثاني) :
+
+- الخوف من التقويم، من النتيجة
+- المقارنة الاجتماعية («الآخرون أفضل»)
+- ضغط الوقت الذي يؤدي للاستعجال
+
+الاستراتيجية أمام الفشل أو الصعوبة (من المصدر الثاني) :
+
+- تحليل الأخطاء (فهم سبب الخطأ)
+- تحديد نقطة الانسداد الدقيقة
+- العمل بشكل مستهدف على هذه النقطة
+- التكرار حتى الأتمتة
 
 ---
 
-## 7. PIÈGES À ÉVITER
+## 7. الأخطاء الشائعة والمحاذير
 
-### 7.1. Pièges dans la lecture de l'énoncé
+### 7.1 محاذير في قراءة نص التمرين
 
-| Piège | Conséquence | Solution |
+| المحذر | العواقب | الحل |
 |---|---|---|
-| Ne pas identifier les verbes d'action | Répondre à côté, perdre des points | Lister les verbes, déterminer simple/composé |
-| Penser que tous les exercices sont pareils | Méthode inadaptée | Adapter la méthode selon le type d'exercice (1, 2, 3) |
-| Ne pas lire TOUS les documents avant de commencer | Manquer des informations, inachevé | Lire l'ensemble avant de répondre, identifier la logique |
-| Confondre observation et interprétation (exercice 2) | Réponse superficielle ou hors sujet | Séparer analyse (données) et interprétation (explication) |
-| Penser que le problème est la question explicite (exercice 3) | Problème mal formulé, réponse non ciblée | Identifier le but sous-jacent, reformuler en question |
+| عدم تحديد أفعال المهمة الأدائية | إجابة غير ملائمة، خسارة نقاط | تعداد الأفعال، تحديد بسيط/مركب |
+| الاعتقاد أن كل التمارين متشابهة | منهجية غير ملائمة | تكييف المنهجية حسب نوع التمرين (1، 2، 3) |
+| عدم قراءة جميع الوثائق قبل البدء | تفويت معلومات، إجابة ناقصة | قراءة الكل قبل الإجابة، تحديد المنطق |
+| خلط الملاحظة بالتفسير (تمرين 2) | إجابة سطحية أو خارج موضوع | فصل التحليل (بيانات) عن التفسير (شرح) |
+| الاعتقاد أن المشكل هو السؤال الصريح (تمرين 3) | مشكل غير مضبوط، إجابة غير مركزية | تحديد الهدف الكامن، إعادة صياغة كسؤال |
 
-### 7.2. Pièges dans la réponse
+### 7.2 محاذير في الإجابة
 
-| Piège | Conséquence | Solution |
+| المحذر | العواقب | الحل |
 |---|---|---|
-| Trop écrire (hors sujet) → perdre des points, perdre du temps | Se limiter à ce qui est demandé, mais avec précision et complétude relative |
-| Réponse non structurée → illisible, mal notée | Utiliser la structure en 3 parties (pour texte) ou la méthode structurée (pour analyse) |
-| Schéma sans légendes / flèches / titre → incomplet | Toujours ajouter légendes, flèches si nécessaire, titre |
-| Termes imprécis / approximatifs → moins de crédit, moins de précision | Utiliser les termes scientifiques justes, précis |
-| Oublier l'استنتاج quand c'est demandé | Vérifier si chaque question demande un استنتاج, et le faire |
-| Donner un avis sans justification (discussion/commentaire) | Appuyer chaque affirmation par des preuves (documents ou connaissances) |
-| Confondre hypothèse testable et simple affirmation | Vérifier que l'hypothèse est testable, fondée, plausible |
-| Ne pas confronter les données avec l'hypothèse (exercice 3) | Confronter explicitement, confirmer ou infirmer avec justification |
+| الإكثار من الكتابة (خارج الموضوع) | خسارة نقاط، ضياع وقت | تحديد ما هو مطلوب، لكن بدقة واكتمال نسبي |
+| إجابة غير منظمة | غير مقروءة، تقييم سيء | هيكلة في 3 أجزاء (للنص) أو طريقة منظمة (لتحليل) |
+| مخطط بدون تسميات أو أسهم أو عنوان | غير مكتمل | دائماً إضافة تسميات، أسهم إن لزم، عنوان |
+| مصطلحات غير دقيقة أو تقريبية | أقل مصداقية، أقل دقة | استعمال المصطلحات العلمية الدقيقة |
+| نسيان الاستنتاج إن طُلب | إجابة ناقصة | التحقق إن كل سؤال يطلب استنتاج، والقيام به |
+| إبداء رأي بدون تبرير (مناقشة/تعليق) | حكم غير مقبول | دعم كل ادعاء بالشهادات (وثائق أو معارف) |
+| خلط الفرضية القابلة للاختبار بالإفصاح البسيط | فرضية غير صالحة | التحقق إن الفرضية قابلة للاختبار، مدعومة، منطقية |
+| عدم مقابلة البيانات مع الفرضية (تمرين 3) | استنتاج ضعيف | مقابلة صريحة، تأكيد أو نفي مع تبرير |
 
-### 7.3. Pièges dans la révision
+### 7.3 محاذير في المراجعة
 
-| Piège | Conséquence | Solution |
-|---|---|
-| Révision passive (relire sans exercices) | Connaissance fragile, non mobilisée | Toujours faire des exercices après lecture |
-| Procrastination | Retard, accumulation, stress | Commencer tôt, petits pas, planning |
-| Surcharge (trop simultanément) | Confusion, inefficacité | Découper par unité, un sujet à la fois |
-| Manque de sommeil / repos | Perte de concentration, fatigue mentale | Respecter les besoins de récupération, dormir suffisamment |
-| Comparaison avec les autres | Perte de confiance, anxiété | Se concentrer sur sa propre progression, pas sur celle des autres |
-| Fixer sur les points négatifs sans voir la progression | Démotivation | Se rappeler les progrès, se féliciter des réussites |
-
----
-
-## 8. CHECKLIST DE PRÉPARATION
-
-### 8.1. Avant l'examen (phase de révision)
-
-- [ ] Maîtriser les notions de chaque unité (fiches complètes, schémas, mécanismes)
-- [ ] Savoir reconnaître les verbes d'action et associer la réponse appropriée
-- [ ] S'entraîner sur des exercices types par unité (variés, pas juste un type)
-- [ ] Résoudre des sujets complets chronométrés (simulation d'examen)
-- [ ] Corriger ses erreurs : comprendre pourquoi, noter les leçons tirées
-
-### 8.2. Le jour de l'examen
-
-- [ ] Lire TOUS les documents avant de commencer (ne pas se lancer dans la question 1 sans vue d'ensemble)
-- [ ] Identifier les verbes d'action dans chaque consigne
-- [ ] Déterminer le type d'exercice (1, 2, ou 3) et adapter la méthode
-- [ ] Gérer le temps (Exercice 1: ~45 min, Exercice 2: ~1h15, Exercice 3: ~2h)
-- [ ] Vérifier que toutes les questions sont répondues (pas de question oubliée)
-- [ ] Laisser du temps pour la relecture (vérifier, corriger, compléter)
-
-### 8.3. Pendant la réponse — Checklist par consigne
-
-**Pour chaque consigne, vérifier** :
-
-1. [ ] Identifier le verbe d'action (simple ou composé ?)
-2. [ ] Choisir la méthode adaptée (réponse ciblée vs réponse structurée)
-3. [ ] Répondre avec précision, clarté, terminologie scientifique juste
-4. [ ] (Si schéma) Ajouter légendes, flèches si nécessaire, titre
-5. [ ] (Si analyse) Suivre la méthode (تعريف → تفكيك → تفسير → استنتاج)
-6. [ ] (Si discussion/jugement) Confronter, nuancer, appuyer par des preuves
-7. [ ] (Si exercice 3) Formuler problème → hypothèse → confronter avec données → conclure
-8. [ ] (Si texte scientifique) Structure 3 parties : مقدمة, عرض, خاتمة
-
-### 8.4. Après réponse — Vérification
-
-- [ ] Vérifier que toutes les questions sont répondues (aucune oubliée)
-- [ ] Vérifier la précision terminologique (termes scientifiques justes, pas d'approximations)
-- [ ] Vérifier que les schémas sont complets (légendes, flèches, titre)
-- [ ] Vérifier que les استنتاجs sont présents quand demandés
-- [ ] Vérifier la cohérence logique de la réponse (les idées suivent-elles les unes les autres ?)
-- [ ] Vérifier l'orthographe et la présentation (lisibilité, titres, paragraphes)
+| المحذر | العواقب | الحل |
+|---|---|---|
+| مراجعة سلبية (إعادة قراءة بدون تمارين) | معرفة هشة، غير قابلة للتوظيف | دائماً حل تمارين بعد القراءة |
+| التأجيل | تأخر، تراكم، توتر | البدء مبكراً، خطوات صغيرة، تخطيط |
+| إفراط متزامن | ارتباك، عدم كفاءة | تجزئة حسب الوحدة، موضوع واحد في كل مرة |
+| نقص نوم أو راحة | نقص تركيز، إرهاق ذهني | احترام حاجات الاستعادة، نوم كافٍ |
+| مقارنة مع الآخرين | فقدان ثقة، قلق | التركيز على التقدم الشخصي، ليس على الآخرين |
+| التركيز على السلبيات دون رؤية التقدم | فقدان تحفيز | تذكر التقدم، الاعتزاز بالنجاحات |
 
 ---
 
-## 9. CONCLUSION — LE MESSAGE ULTIME
+## 8. قائمة مراجعة سريعة
 
-Ce guide fusion synthétise deux approches complémentaires :
-- La **précision technique et systématique** du premier ouvrage sur la taxinomie des verbes et la méthode d'analyse
-- La **perspective pratique, vécue et psychologique** du second ouvrage sur la révision, la gestion, la confiance en soi
+### 8.1 قبل الامتحان (مرحلة المراجعة)
 
-**Le message ultime pour l'élève** :
+- [ ] إتقان مفاهيم كل وحدة (ملخصات كاملة، مخططات، آليات)
+- [ ] القدرة على تحديد أفعال المهمة الأدائية وربط الإجابة المناسبة
+- [ ] التمرين على تمارين نموذجية حسب الوحدة (متنوعة، لا نوع واحد فقط)
+- [ ] حل مواضيع كاملة مؤقّتة (محاكاة امتحان)
+- [ ] تصحيح الأخطاء : فهم السبب، تدوين الدروس المستفادة
 
-1. **Le bac SVT n'est pas une épreuve de mémoire** : c'est une épreuve de raisonnement scientifique. Il ne suffit pas de savoir — il faut savoir **mobiliser** ses connaissances pour répondre à des questions précises.
+### 8.2 يوم الامتحان
 
-2. **La clé est la méthode** : savoir reconnaître ce qu'on demande (verbes d'action), structurer sa réponse (structure, schéma, analyse), et s'entraîner (pratique, chronométrage, correction des erreurs).
+- [ ] قراءة جميع الوثائق قبل البدء (لا الانطلاق في السؤال 1 دون إبصار عام)
+- [ ] تحديد أفعال المهمة الأدائية في كل تعليمة
+- [ ] تحديد نوع التمرين (1، 2، أو 3) وتكييف المنهجية
+- [ ] إدارة الوقت (تمرين 1 : ~45 د، تمرين 2 : ~1س15، تمرين 3 : ~2س)
+- [ ] التحقق من إجابة جميع الأسئلة (لا سؤال منسي)
+- [ ] ترك وقت لإعادة القراءة (التحقق، التصحيح، الإتمام)
 
-3. **La réussite vient de la préparation méthodique** : connaissances + entraînement + gestion mentale + confiance.
+### 8.3 أثناء الإجابة — قائمة مراجعة لكل تعليمة
 
-**Citation de clôture (du second ouvrage)** :
-> « Le cerveau n'est pas une machine électrique qui fonctionne sans arrêt. Il a aussi besoin d'énergie. »
-> « La confiance en soi vient de la préparation. »
+**لكل تعليمة، التحقق :**
+
+1. [ ] تحديد فعل المهمة الأدائية (بسيط أم مركب؟)
+2. [ ] اختيار المنهجية الملائمة (إجابة مركزة أم إجابة منظمة)
+3. [ ] الإجابة بدقة ووضوح ومصطلحات علمية دقيقة
+4. [ ] (إن كان مخططاً) إضافة تسميات، أسهم إن لزم، عنوان
+5. [ ] (إن كان تحليلاً) اتباع الطريقة (تعريف ← تفكيك ← تفسير ← استنتاج)
+6. [ ] (إن كان نقاشاً أو حكماً) مقابلة، توازن، دعم بالشهادات
+7. [ ] (إن كان تمرين 3) صياغة مشكل ← فرضية ← مقابلة مع البيانات ← خاتمة
+8. [ ] (إن كان نصاً علمياً) هيكل 3 أجزاء : مقدمة، عرض، خاتمة
+
+### 8.4 بعد الإجابة — التحقق
+
+- [ ] التحقق من إجابة جميع الأسئلة (أي سؤال منسي)
+- [ ] التحقق من الدقة المصطلحية (مصطلحات علمية دقيقة، لا تقريبات)
+- [ ] التحقق من كمال المخططات (تسميات، أسهم، عنوان)
+- [ ] التحقق من وجود الاستنتاجات إن طُلبت
+- [ ] التحقق من الترابط المنطقي للإجابة (الأفكار تتالى بشكل منسق؟)
+- [ ] التحقق من الإملاء والعرض (قراءة، عناوين، فقرات)
 
 ---
 
-## ANNEXE — RÉFÉRENCE RAPIDE DES VERBES (Fiche mémo)
+## 9. الخلاصة — الرسالة الأساسية
 
-| Famille | Verbes | Réponse attendue | Exercice typique |
+دمج هذا الدليل نهجين مكملتين :
+
+- الدقة المنهجية والنظامية للمصدر الأول في تصنيف الأفعال وطريقة تحليل الوثائق
+- المنظور العملي والتجريبي والنفسي للمصدر الثاني في المراجعة، الإدارة، الثقة بالنفس
+
+الرسالة الأساسية للتلميذ :
+
+- **بكالوريا علوم الطبيعة والحياة ليست امتحاناً لحفظ المعلومات : هي امتحان للاستدلال العلمي.** لا يكفي أن تعرف — يجب أن تعرف كيف توظّف معرفتك للإجابة على أسئلة محددة.
+- **المفتاح هو المنهجية** : معرفة ما يُطلب (أفعال المهمة الأدائية)، وهيكلة الإجابة (هيكل، مخطط، تحليل)، والتمرين (ممارسة، مؤقّتة، تصحيح الأخطاء).
+- **النجاح يأتي من التحضير المنهجي** : معارف + تمارين + إدارة عقلية + ثقة.
+
+اقتباس ختامي (من المصدر الثاني) :
+
+> العقل ليس آلة كهربائية تعمل بلا توقف. يحتاج أيضاً للطاقة.
+
+> الثقة بالنفس تأتي من التحضير.
+
+---
+
+## ملحق — مرجع سريع للأفعال (ورقة تذكّر سريعة)
+
+| العائلة | أفعال | الإجابة المتوقعة | تمرين نموذجي |
 |---|---|---|---|
-| **Identification / Nommage** | تعرف, سمّ, عرف, حدد, ملحوظة, ذكر عناصر | Réponse ciblée, directe | 1, 2 |
-| **Description / Structuration** | وصف بنية, صنف, ميز | Description détaillée / Classification / Opposition | 1 |
-| **Énumération / Séquence** | ذكر, عدد, رتب, نظم | Liste ordonnée, concise | 1 |
-| **Schéma** | رسم تخطيطي, أنجز مخططا, رسم تخطيطي تفسيري, رسم تخطيطي وظيفي | Schéma avec légendes + flèches + titre | 1, 2, 3 |
-| **Analyse** | حلل, تحليل مقارن, تحليل ثم تفسير | Décomposer → identifier tendances → relations → استنتاج | 2 |
-| **Interprétation** | فسر, وضّح, بين, اشرح, تفسير, تفسير الظاهرة | Observer → expliquer le mécanisme → étapes logiques | 2 |
-| **Comparaison** | قارن, مقارنة, مقارنة منحنين, مقارنة نتائج | Réssemblances + différences sur paramètre commun → استنتاج | 2 |
-| **Jugement / Argumentation** | علّق, أنقد, علل/برر, نقاش صحة | Avantages + inconvénients + avis éclairé + preuves | 2 |
-| **Conclusion / Inférence** | استخرج, استنتاج | Info clé liée au but, conclusion logique | 2, 3 |
-| **Texte scientifique** | اكتب نصا علميا (Composer) | 3 parties : مقدمة, عرض, خاتمة | 2, 3 |
-| **Problème & Hypothèse** | صياغ مشكل علني, اقتراح فرضية | Question précise + hypothèse testable, plausible, fondée | 3 |
-| **Vérification** | التحقق من صحة الفرضية, إثبات, نقاش, أثبت, تأكيد صحة | Confronter hypothèse avec données → confirmer ou infirmer avec justification | 3 |
-| **Synthèse** | أنجز مخططا، أنجز رسمًا تخطيطيًا | Schéma récapitulatif complet (état normal + état pathologique si pertinent) | 3 |
+| التعريف / التسمية | تعرف، سمّ، عرف، حدد، ملاحظة، ذكر عناصر | إجابة مركزة ومباشرة | 1، 2 |
+| الوصف / الهيكلة | وصف بنية، صنف، ميز | وصف تفصيلي / تصنيف / تمييز مركّز | 1 |
+| الترتيب / التعداد | ذكر، عدد، رتب، نظم | تعداد مرتب وموجز | 1 |
+| المخطط | رسم تخطيطي، أنجز مخططا، رسم تخطيطي تفسيري، رسم تخطيطي وظيفي | مخطط مع تسميات + أسهم + عنوان | 1، 2، 3 |
+| التحليل | حلل، تحليل مقارن، تحليل ثم تفسير | فك التركيب ← تحديد اتجاهات ← علاقات ← استنتاج | 2 |
+| التفسير | فسر، وضّح، بين، اشرح، تفسير، تفسير الظاهرة | ملاحظة ← شرح الآلية ← خطوات منطقية | 2 |
+| المقارنة | قارن، مقارنة، مقارنة منحنين، مقارنة نتائج | أوجه تشابه + أوجه اختلاف على معيار مشترك ← استنتاج | 2 |
+| الحكم / البرهنة | علّق، أنقد، علل/برر، نقاش صحة | إيجابيات + سلبيات + رأي مدروس + شهادات | 2 |
+| الخاتمة / الاستنتاج | استخرج، استنتاج | معلومة مركزية مرتبطة بالهدف، استنتاج منطقي | 2، 3 |
+| النص العلمي | اكتب نصا علمياً | 3 أجزاء : مقدمة، عرض، خاتمة | 2، 3 |
+| المشكل والفرضية | صياغة مشكل علمي، اقتراح فرضية | سؤال دقيق + فرضية قابلة للاختبار ومنطقية ومدعومة | 3 |
+| التحقق | التحقق من صحة الفرضية، إثبات، نقاش، أثبت، تأكيد صحة | مقابلة الفرضية مع البيانات ← تأكيد أو نفي مع تبرير | 3 |
+| التركيب | أنجز مخططاً، أنجز رسمًا تخطيطيًا | مخطط تلخيصي كامل (حالة طبيعية + حالة مرضية إن ملائمة) | 3 |
 
----
-
-_Fichier généré à partir de l'analyse fusionnée de deux ouvrages de référence SVT BAC 3AS Algérie. À intégrer dans l'application Kunz El Ouloum pour exploitation pédagogique._
+_تم إعداد هذا الدليل من خلال دمج وتحليل مصدرَين مرجعيَين في منهجية الإجابة لمادة علوم الطبيعة والحياة الباكالوريا في الجزائر. يُدمج في تطبيق كونز العلم لاستغلال تعليمي. بصياغة فريق مشروع عكاشة للطالب المتميز. الأستاذة كتفي شريف زينة — بالتعاون مع فريق عكاشة_
