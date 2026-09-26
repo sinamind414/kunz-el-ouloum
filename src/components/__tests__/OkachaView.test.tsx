@@ -7,9 +7,13 @@ import { cleanup, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import OkachaView from '../OkachaView';
+import { GUIDE_SECTIONS } from '../../data/guideManhajia';
 
 afterEach(cleanup);
 beforeEach(() => window.localStorage.clear());
+
+// jsdom n'implémente ni scrollIntoView (ancrage du sommaire du guide).
+Element.prototype.scrollIntoView = () => {};
 
 describe('OkachaView — الحصيلة المعرفية modernisée', () => {
   it('rendu structuré : AUCUN <pre> brut, unités + bandeau stats', () => {
@@ -122,32 +126,55 @@ describe('OkachaView — الحصيلة المعرفية modernisée', () => {
     expect(screen.getAllByTestId(/^okacha-unite-/)).toHaveLength(3);
   });
 
-  it('méthodologie : 9 sections (8 livre + nasiha), chacune avec une icône', async () => {
+  it('الدليل العام للمنهجية : 11 sections, chacune avec une icône', async () => {
     const user = userEvent.setup();
     render(<OkachaView onBack={vi.fn()} />);
     await user.click(screen.getByTestId('onglet-methode'));
+    // Titre du document + libellé de l'onglet renommé.
+    expect(screen.getByTestId('guide-titre').textContent).toMatch(/GUIDE FUSED/);
     const sections = screen.getAllByTestId(/^methodo-section-/);
-    expect(sections).toHaveLength(9);
+    expect(sections).toHaveLength(GUIDE_SECTIONS.length);
+    expect(GUIDE_SECTIONS).toHaveLength(11);
     for (const s of sections) {
       expect(s.querySelector('svg'), 'section sans icône').toBeTruthy();
     }
     expect(screen.getByTestId('methodo-sommaire')).toBeTruthy();
-    expect(screen.getAllByTestId(/^sommaire-/)).toHaveLength(9);
-    // badge « n/9 sections lues »
-    expect(screen.getByText(/0\/9 أقسام مقروءة/)).toBeTruthy();
+    expect(screen.getAllByTestId(/^sommaire-/)).toHaveLength(GUIDE_SECTIONS.length);
+    // badge « n/11 sections lues »
+    expect(screen.getByText(/0\/11 أقسام مقروءة/)).toBeTruthy();
+    // L'ancien corpus OCR عكاشة n'est plus rendu dans cette rubrique.
+    expect(screen.getByRole('button', { name: /الدليل العام للمنهجية/ })).toBeTruthy();
   });
 
-  it('sommaire : clique ouvre la section et incrémente le badge (1/9)', async () => {
+  it('sommaire : clique ouvre la section, incrémente le badge et expose les sous-sections', async () => {
     const user = userEvent.setup();
     render(<OkachaView onBack={vi.fn()} />);
     await user.click(screen.getByTestId('onglet-methode'));
-    await user.click(screen.getByTestId('sommaire-nasiha'));
-    expect(screen.getByTestId('methodo-section-nasiha')).toBeTruthy();
-    expect(screen.getByText(/1\/9 أقسام مقروءة/)).toBeTruthy();
-    // sous-sections tamarin1 : puce cliquable presente
-    await user.click(screen.getByTestId('sommaire-tamarin1'));
-    expect(screen.getByTestId('methodo-sous-tamarin1')).toBeTruthy();
-    expect(screen.getByTestId('sous-t1-texte')).toBeTruthy();
+    // s3 (verbes d'action) est fermée au départ : pas de barre de sous-sections.
+    expect(screen.queryByTestId('methodo-sous-s3')).toBeNull();
+    await user.click(screen.getByTestId('sommaire-s3'));
+    expect(screen.getByTestId('methodo-section-s3')).toBeTruthy();
+    expect(screen.getByText(/1\/11 أقسام مقروءة/)).toBeTruthy();
+    // 4 sous-sections (3.1 → 3.4) : pastilles cliquables présentes.
+    expect(screen.getByTestId('methodo-sous-s3')).toBeTruthy();
+    expect(screen.getAllByTestId(/^sous-s3-h\d$/)).toHaveLength(4);
+    expect(screen.getByTestId('sous-s3-h0')).toBeTruthy();
+  });
+
+  it('table des matières : ancres cliquables → ouvrent la section de destination', async () => {
+    const user = userEvent.setup();
+    render(<OkachaView onBack={vi.fn()} />);
+    await user.click(screen.getByTestId('onglet-methode'));
+    // Les 9 entrées numérotées du sommaire sont cliquables (aller-s1 … aller-s9).
+    const ancres = screen.getAllByTestId(/^aller-s\d$/);
+    expect(ancres.length).toBeGreaterThanOrEqual(9);
+    expect(screen.queryByTestId('methodo-sous-s2')).toBeNull();
+    // 2ᵉ entrée = « 2. Le nouveau format du BAC depuis 2017 ».
+    await user.click(ancres[1]);
+    expect(screen.getByTestId('methodo-sous-s2')).toBeTruthy();
+    expect(screen.getByText(/1\/11 أقسام مقروءة/)).toBeTruthy();
+    // Les tableaux du guide sont bien rendus en HTML.
+    expect(screen.getAllByTestId(/^tableau-/).length).toBeGreaterThan(0);
   });
 
   it('bouton « اختبار الكتاب » appelle onOpenQcm (lien vers le QCM du livre)', async () => {
