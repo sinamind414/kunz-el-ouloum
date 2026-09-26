@@ -404,6 +404,12 @@ export default function OkachaView({ onBack, onRate, onOpenQcm, domaineInitial }
     });
   };
 
+  // Contexte affiché — AUCUN onglet cliquable : la حصيلة d'un domaine est
+  // choisie depuis l'écran des domaines (chaque domaine a la sienne), et le
+  // الدليل العام للمنهجية a lui aussi quitté cette barre pour cet écran.
+  const thContexte = THEME[onglet];
+  const IconeContexte = thContexte.icone;
+
   return (
     <div dir="rtl" className="space-y-4">
       {/* ── En-tête + barre d'outils (imprimable sans les boutons) ── */}
@@ -492,30 +498,15 @@ export default function OkachaView({ onBack, onRate, onOpenQcm, domaineInitial }
         </div>
       </div>
 
-      {/* ── Onglets domaines + méthodo ── */}
+      {/* ── Contexte (statique, non cliquable) — plus d'onglets ── */}
       <div className="flex gap-2 flex-wrap print:hidden">
-        <button
-          onClick={() => { setOnglet('m'); setOuverte(null); }}
-          data-testid="onglet-methode"
-          className={`inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-black transition-colors ${onglet === 'm' ? THEME.m.actif : THEME.m.dormand}`}
+        <span
+          data-testid="okacha-contexte"
+          className={`inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-black ${thContexte.actif}`}
         >
-          <Icone cle="Compass" className="w-3.5 h-3.5" />
-          الدليل العام للمنهجية
-        </button>
-        {([1, 2, 3] as const).map((d) => {
-          const IconeDomaine = THEME[d].icone;
-          return (
-            <button
-              key={d}
-              onClick={() => { setOnglet(d); setOuverte(null); }}
-              data-testid={`onglet-domaine-${d}`}
-              className={`flex-1 inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl text-xs font-black transition-colors ${onglet === d ? THEME[d].actif : THEME[d].dormand}`}
-            >
-              <IconeDomaine className="w-3.5 h-3.5" />
-              {NOM_DOMAINE[d]}
-            </button>
-          );
-        })}
+          <IconeContexte className="w-3.5 h-3.5" />
+          {onglet === 'm' ? 'الدليل العام للمنهجية' : NOM_DOMAINE[onglet]}
+        </span>
       </div>
 
       {/* ── Résultats de recherche (remplace la liste) ── */}

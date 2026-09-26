@@ -104,4 +104,24 @@ describe('LessonsView — leçons passives par icônes', () => {
     await user.click(screen.getByText('عودة'));
     expect(screen.getByTestId('unites-icones')).toBeTruthy();
   });
+
+  it('الدليل العام للمنهجية : carte sur l’écran des domaines, hors des حصائل', async () => {
+    const user = userEvent.setup();
+    render(<LessonsView />);
+    await user.click(screen.getByText('الدرس السلبي'));
+    // Écran des domaines : les 3 domaines + le guide (qui n'appartient à aucun).
+    const guide = screen.getByTestId('guide-entree');
+    expect(guide.textContent).toMatch(/الدليل العام للمنهجية/);
+    expect(screen.getByTestId('domaine-1')).toBeTruthy();
+    expect(screen.queryByTestId('okacha-entree-domaine')).toBeNull();
+    // Ouverture : on arrive sur le guide, pas sur une حصيلة de domaine.
+    await user.click(guide);
+    expect(screen.getByTestId('guide-titre')).toBeTruthy();
+    expect(screen.getByTestId('okacha-contexte').textContent).toMatch(/الدليل العام للمنهجية/);
+    expect(screen.queryByTestId('okacha-unites-icones')).toBeNull();
+    // Retour → écran des domaines (selectedDomain est toujours null).
+    await user.click(screen.getByText('عودة'));
+    expect(screen.getByTestId('domaine-1')).toBeTruthy();
+    expect(screen.queryByTestId('okacha-contexte')).toBeNull();
+  });
 });

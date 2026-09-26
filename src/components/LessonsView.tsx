@@ -7,7 +7,7 @@
 //      la séquence expose la clé de base puis la clé `_2` — une leçon affichée
 //      à la fois (isolation par sliceLessonHtml).
 import { useState } from 'react';
-import { BookOpen, ChevronLeft, Zap, MonitorPlay, Network, FlaskConical, Leaf, Globe2, GraduationCap, BookMarked, Grid3x3, Search } from 'lucide-react';
+import { BookOpen, ChevronLeft, Zap, MonitorPlay, Network, FlaskConical, Leaf, Globe2, GraduationCap, BookMarked, Grid3x3, Search, Compass } from 'lucide-react';
 import HtmlLessonViewer from './HtmlLessonViewer';
 import ActiveLessonView from './ActiveLessonView';
 import { INITIAL_UNITS } from '../data';
@@ -92,8 +92,9 @@ export default function LessonsView({ onRateCard }: LessonsProps) {
   /**
    * Domaine dont on consulte la الحصيلة المعرفية (déplacée depuis l'écran 1) :
    * chaque domaine des leçons passives ouvre SA propre حصيلة.
+   * 'm' = الدليل العام للمنهجية, entré depuis l'écran des domaines.
    */
-  const [okachaDomaine, setOkachaDomaine] = useState<1 | 2 | 3>(1);
+  const [okachaDomaine, setOkachaDomaine] = useState<1 | 2 | 3 | 'm'>(1);
 
   // R5 : ouverture d'une leçon depuis la recherche globale (deep-link).
   const openLessonFromSearch = (lessonKey: string, kind: 'html' | 'active', unitId: number) => {
@@ -466,6 +467,27 @@ export default function LessonsView({ onRateCard }: LessonsProps) {
             );
           })}
         </div>
+
+        {/* ── الدليل العام للمنهجية : sorti de la الحصيلة, il vit désormais sur
+            l'écran des domaines (il n'appartient à AUCUN domaine). ── */}
+        <button
+          onClick={() => { setOkachaDomaine('m'); setMode('okacha'); }}
+          data-testid="guide-entree"
+          className="group w-full flex items-center gap-4 p-5 rounded-3xl border-2 border-emerald-200 dark:border-emerald-900/50 bg-gradient-to-l from-emerald-50 to-white dark:from-emerald-950/30 dark:to-[#161c18] hover:border-emerald-500 hover:shadow-lg transition-all text-right"
+        >
+          <span className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-[#006d37] text-white shadow-md group-hover:scale-105 transition-transform shrink-0">
+            <Compass className="w-7 h-7" />
+          </span>
+          <span className="flex-1 min-w-0 space-y-1">
+            <span className="block text-base font-black text-gray-800 dark:text-gray-100">
+              🧭 الدليل العام للمنهجية
+            </span>
+            <span className="block text-xs font-bold text-gray-500 dark:text-gray-400 leading-relaxed">
+              منهجية الامتحان وتحليل الوثائق — خارج المجالات، لأنه يخصّ المادّة كلّها
+            </span>
+          </span>
+          <ChevronLeft className="w-5 h-5 text-gray-300 group-hover:text-emerald-500 transition-all shrink-0" />
+        </button>
       </div>
     );
   }
