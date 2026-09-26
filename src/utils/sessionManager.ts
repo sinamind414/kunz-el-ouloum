@@ -5,6 +5,11 @@ export interface QuizState {
   questionIndex: number;
   totalQuestions: number;
   correctAnswers: number;
+  /** F10 (audit Morchid 2026-09-26) : si ce QCM est la question de
+   *  consolidation de la mission quotidienne, identifiant de la carte
+   *  ciblée. Permet de verser les +15 XP promis et de clôturer la mission
+   *  (completeDailyMission) — jusque-là jamais appelé. */
+  missionTopicId?: string;
 }
 
 export interface BossState {
@@ -105,7 +110,8 @@ export function startQuiz(
   session: BotSession,
   totalQuestions: number,
   firstQuestionId: string,
-  mode: BotMode = 'quiz'
+  mode: BotMode = 'quiz',
+  missionTopicId?: string
 ): BotSession {
   const newSession: BotSession = {
     ...session,
@@ -115,6 +121,7 @@ export function startQuiz(
       questionIndex: 0,
       totalQuestions,
       correctAnswers: 0,
+      missionTopicId,
     },
   };
 

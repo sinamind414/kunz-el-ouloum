@@ -8,6 +8,7 @@ import {
   startBossFightSession,
   startBossStep,
   finishBossFight,
+  completeDailyMission,
   type BotSession,
 } from './utils/sessionManager';
 import {
@@ -335,6 +336,26 @@ function findMicroAnswer(card: KnowledgeCard, norm: string): string | null {
   return null;
 }
 
+/** F10 (audit Morchid 2026-09-26) : coupe un extrait à la dernière fin de
+ *  phrase avant la limite, jamais en plein milieu d'un mot. L'ancienne coupe
+ *  fixe à 397 caractères tronquait les phrases (et les mots arabes) en plein
+ *  milieu. On ne remonte à la fin de phrase précédente que si elle garde au
+ *  moins la moitié de la longueur maximale, sinon l'extrait serait trop court. */
+export const SNIPPET_MAX = 400;
+
+export function couperExtrait(texte: string, max = SNIPPET_MAX): { text: string; truncated: boolean } {
+  if (texte.length <= max) return { text: texte, truncated: false };
+  const coupe = texte.slice(0, max);
+  const finsDePhrase = ['.', '؟', '!', '،', '؛', ';'];
+  let fin = -1;
+  for (const f of finsDePhrase) {
+    const i = coupe.lastIndexOf(f);
+    if (i > fin) fin = i;
+  }
+  const text = fin > max * 0.5 ? coupe.slice(0, fin + 1) : coupe;
+  return { text, truncated: true };
+}
+
 function buildAnswer(norm: string, activeDomainId: number | null): TutorAction | null {
   if (!norm || norm.length < 3) return null;
   const scored = findBestKnowledgeCardScored(norm, activeDomainId);
@@ -363,7 +384,7 @@ function buildAnswer(norm: string, activeDomainId: number | null): TutorAction |
   if (hits.length === 0) return null;
 
   const best = hits[0];
-  const snippet = best.text.length > 400 ? `${best.text.slice(0, 397)}…` : best.text;
+  const extrait = couperExtrait(best.text);
   let sourceType: SourceType = 'opus';
   if (best.type === 'book') sourceType = 'book';
   else if (best.type === 'card') sourceType = 'legacy_card';
@@ -374,7 +395,7 @@ function buildAnswer(norm: string, activeDomainId: number | null): TutorAction |
     // R5 : la recherche brute (fallback) est moins fiable qu'une carte
     // curatée — confiance plafonnée à 70.
     confidence: 70,
-    text: `📚 **${best.title}**\n\n${snippet}`,
+    text: `📚 **${best.title}**\n\n${extrait.text}${extrait.truncated ? ' …' : ''}`,
     quickActions: best.followUp ? filterQuickActions([best.followUp], norm) : [],
     sources: [{ type: sourceType, title: best.title }],
   };
@@ -585,7 +606,13 @@ export function gradeQuizAnswer(session: BotSession, rawAnswer: string): EngineR
   const nextId = nextQ ? nextQ.id : null;
   const correctCount = current.correctAnswers + (isCorrect ? 1 : 0);
   const total = current.totalQuestions;
-  const newSession = recordQuizAnswer(session, isCorrect, question.topicId, nextId);
+  // F10 (audit Morchid 2026-09-26) : la mission quotidienne promet +15 XP mais
+  // son QCM de consolidation n'était même pas démarré (getDailyMission ne
+  // positionnait jamais currentQuiz → « لا يوجد اختبار جارٍ حالياً »), et la
+  // mission n'était jamais clôturée. On capture l'id AVANT recordQuizAnswer,
+  // qui vide currentQuiz à la dernière question.
+  const missionTopicId = current.missionTopicId ?? null;
+  let newSession = recordQuizAnswer(session, isCorrect, question.topicId, nextId);
   let quiz: QuizPrompt | undefined;
   if (newSession.currentQuiz && nextQ) {
     quiz = toQuizPrompt(nextQ);
@@ -594,11 +621,20 @@ export function gradeQuizAnswer(session: BotSession, rawAnswer: string): EngineR
     const appreciation = pct === 100 ? 'ممتاز 🏆' : pct >= 50 ? 'جيد 👍' : 'يحتاج مراجعة 📖';
     text += `\n\n📊 نتيجتك النهائية: ${correctCount}/${total} (${pct}%).\nالتقدير: ${appreciation}.`;
     quiz = undefined;
+    if (missionTopicId) {
+      // Clôture la mission (anti-rejoue le même jour) — l'XP promis est versé
+      // à l'ACHÈVEMENT, pas à la réussite, exactement comme l'affiche le
+      // message « المكافأة: +15 XP ». lastMissionDate verrouille le lendemain.
+      newSession = completeDailyMission(newSession, missionTopicId);
+      text += `\n\n🎯 **مهمة اليوم مكتملة!** كسبت ${MISSION_XP} XP. عُد غداً لمهمة جديدة. ⚡`;
+    }
   }
   const quickActions = quiz === undefined ? ['راجع أخطائي السابقة', 'اعاده الاختبار التشخيصي', 'العودة للقائمة الرئيسية'] : [];
   const domain = DOMAINS.find((d) => d.id === question.domainId);
   const reward = quiz === undefined
-    ? { xpGained: correctCount * 10, score: correctCount, total, kind: 'quiz' as const, domain: domain?.title ?? '' }
+    ? missionTopicId
+      ? { xpGained: MISSION_XP, score: correctCount, total, kind: 'mission' as const, domain: domain?.title ?? '' }
+      : { xpGained: correctCount * 10, score: correctCount, total, kind: 'quiz' as const, domain: domain?.title ?? '' }
     : undefined;
   return { session: newSession, action: { text, quiz, quickActions, reward } };
 }
@@ -933,6 +969,10 @@ export function answerTutorQuestion(rawInput: string): TutorAction {
   return processStudentInput(getDefaultSession(), rawInput || '').action;
 }
 
+/** F10 (audit Morchid 2026-09-26) : XP promis par la mission quotidienne.
+ *  Doit rester en phase avec le texte affiché (« المكافأة: +15 XP »). */
+const MISSION_XP = 15;
+
 function pickRandomQuizForTopic(domainId: number, topicId: string): QuizQuestion | undefined {
   const questions = getQuestionsForDomain(domainId);
   const candidates = questions.filter((q) => q.topicId === topicId);
@@ -972,7 +1012,16 @@ export function getDailyMission(session: BotSession): EngineResult {
   const quiz = pickRandomQuizForTopic(card.domainId, card.id);
   const text = `🎯 **مهمة اليوم (3 دقائق):**\nالمجال: **${domain?.title || ''}**\n\nركّز على: **${card.title}**\n\n1. اقرأ بطاقة المعرفة أدناه.\n2. اجب على سؤال التثبيت.\n\nالمكافأة: +15 XP وتعبئة الرادار! ⚡\n\n---\n🧩 **${card.title}**\n\n${card.shortAnswer}\n\n🔑 ${card.keywords.join(' • ')}`;
 
-  return { session, action: { text, quiz: quiz ? toQuizPrompt(quiz) : undefined, quickActions: quiz ? [] : ['العودة للقائمة الرئيسية'], sources: [{ type: 'internal_card' as SourceType, title: card.title }] } };
+  // F10 : sans session.currentQuiz positionnée, l'élève voyait bien la question
+  // mais sa réponse tombait sur « لا يوجد اختبار جارٍ حالياً » (gradeQuizAnswer
+  // n'était jamais atteint) → +15 XP promis n'était jamais versé, et la
+  // mission n'était jamais clôturée (rejouable à l'infini, XP non compté).
+  if (quiz) {
+    const missionSession = startQuiz(session, 1, quiz.id, 'quiz', card.id);
+    return { session: missionSession, action: { text, quiz: toQuizPrompt(quiz), quickActions: [], sources: [{ type: 'internal_card' as SourceType, title: card.title }] } };
+  }
+
+  return { session, action: { text, quickActions: ['العودة للقائمة الرئيسية'], sources: [{ type: 'internal_card' as SourceType, title: card.title }] } };
 }
 
 export const METHODOLOGY_SUGGESTIONS: string[] = [
