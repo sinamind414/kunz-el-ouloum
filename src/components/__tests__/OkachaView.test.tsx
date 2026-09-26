@@ -114,23 +114,28 @@ describe('OkachaView — الحصيلة المعرفية modernisée', () => {
     expect(screen.getByTestId('okacha-unites-icones')).toBeTruthy();
   });
 
-  it('changer de domaine remet l’écran d’icônes (D2 : 2 unités, D3 : 3)', async () => {
-    const user = userEvent.setup();
+  it('chaque domaine a SA حصيلة (D1 5 · D2 2 · D3 3) et aucun sélecteur ne reste', () => {
     render(<OkachaView onBack={vi.fn()} />);
-    await user.click(screen.getByTestId('okacha-unite-d1u1'));
-    expect(screen.getByTestId('bande-unites-okacha')).toBeTruthy();
-    await user.click(screen.getByTestId('onglet-domaine-2'));
+    expect(screen.getAllByTestId(/^okacha-unite-/)).toHaveLength(5);
+    // Les onglets domaines ont disparu : seul un libellé de contexte reste.
+    expect(screen.queryByTestId('onglet-domaine-2')).toBeNull();
+    expect(screen.queryByTestId('onglet-methode')).toBeNull();
+    expect(screen.getByTestId('okacha-contexte').textContent).toMatch(/التخصص الوظيفي للبروتينات/);
+    // Une entrée = une instance liée à SON domaine.
+    cleanup();
+    render(<OkachaView onBack={vi.fn()} domaineInitial={2} />);
     expect(screen.getByTestId('okacha-unites-icones')).toBeTruthy();
     expect(screen.getAllByTestId(/^okacha-unite-/)).toHaveLength(2);
-    await user.click(screen.getByTestId('onglet-domaine-3'));
+    expect(screen.getByTestId('okacha-contexte').textContent).toMatch(/التحولات الطاقوية/);
+    cleanup();
+    render(<OkachaView onBack={vi.fn()} domaineInitial={3} />);
     expect(screen.getAllByTestId(/^okacha-unite-/)).toHaveLength(3);
+    expect(screen.getByTestId('okacha-contexte').textContent).toMatch(/التكتونية العامة/);
   });
 
-  it('الدليل العام للمنهجية : 11 sections, chacune avec une icône', async () => {
-    const user = userEvent.setup();
-    render(<OkachaView onBack={vi.fn()} />);
-    await user.click(screen.getByTestId('onglet-methode'));
-    // Titre du document + libellé de l'onglet renommé.
+  it('الدليل العام للمنهجية : 11 sections, chacune avec une icône', () => {
+    render(<OkachaView onBack={vi.fn()} domaineInitial="m" />);
+    // Titre du document.
     expect(screen.getByTestId('guide-titre').textContent).toMatch(/الدليل المتكامل/);
     const sections = screen.getAllByTestId(/^methodo-section-/);
     expect(sections).toHaveLength(GUIDE_SECTIONS.length);
@@ -142,14 +147,14 @@ describe('OkachaView — الحصيلة المعرفية modernisée', () => {
     expect(screen.getAllByTestId(/^sommaire-/)).toHaveLength(GUIDE_SECTIONS.length);
     // badge « n/11 sections lues »
     expect(screen.getByText(/0\/11 أقسام مقروءة/)).toBeTruthy();
-    // L'ancien corpus OCR عكاشة n'est plus rendu dans cette rubrique.
-    expect(screen.getByRole('button', { name: /الدليل العام للمنهجية/ })).toBeTruthy();
+    // Le guide est annoncé par le libellé de contexte (l'onglet a été retiré).
+    expect(screen.getByTestId('okacha-contexte').textContent).toMatch(/الدليل العام للمنهجية/);
+    expect(screen.queryByTestId('onglet-methode')).toBeNull();
   });
 
   it('sommaire : clique ouvre la section, incrémente le badge et expose les sous-sections', async () => {
     const user = userEvent.setup();
-    render(<OkachaView onBack={vi.fn()} />);
-    await user.click(screen.getByTestId('onglet-methode'));
+    render(<OkachaView onBack={vi.fn()} domaineInitial="m" />);
     // s3 (verbes d'action) est fermée au départ : pas de barre de sous-sections.
     expect(screen.queryByTestId('methodo-sous-s3')).toBeNull();
     await user.click(screen.getByTestId('sommaire-s3'));
@@ -163,8 +168,7 @@ describe('OkachaView — الحصيلة المعرفية modernisée', () => {
 
   it('table des matières : ancres cliquables → ouvrent la section de destination', async () => {
     const user = userEvent.setup();
-    render(<OkachaView onBack={vi.fn()} />);
-    await user.click(screen.getByTestId('onglet-methode'));
+    render(<OkachaView onBack={vi.fn()} domaineInitial="m" />);
     // Les 9 entrées numérotées du sommaire sont cliquables (aller-s1 … aller-s9).
     const ancres = screen.getAllByTestId(/^aller-s\d$/);
     expect(ancres.length).toBeGreaterThanOrEqual(9);
@@ -193,12 +197,8 @@ describe('OkachaView — الحصيلة المعرفية modernisée', () => {
     expect(container.textContent).not.toMatch(/_{4,}/);
     expect(container.textContent).not.toMatch(/■/);
     expect(container.textContent).not.toMatch(/المتفوف/);
-    // Ouvrir une unité riche en OCR (d1u1) + méthodo.
+    // Ouvrir une unité riche en OCR (d1u1).
     await user.click(screen.getByTestId('okacha-unite-d1u1'));
-    expect(container.textContent).not.toMatch(/_{4,}/);
-    expect(container.textContent).not.toMatch(/■/);
-    expect(container.textContent).not.toMatch(/المتفوف/);
-    await user.click(screen.getByTestId('onglet-methode'));
     expect(container.textContent).not.toMatch(/_{4,}/);
     expect(container.textContent).not.toMatch(/■/);
     expect(container.textContent).not.toMatch(/المتفوف/);
@@ -209,14 +209,19 @@ describe('OkachaView — الحصيلة المعرفية modernisée', () => {
     const panneau = screen.getByTestId('okacha-results');
     expect(panneau.textContent).toMatch(/لا نتائج|نتيجة/);
     expect(panneau.textContent).not.toMatch(/سأةم/); // corps du déchet masqué
+    // Le الدليل العام للمنهجية (entrée séparée depuis l'écran des domaines) l'est aussi.
+    cleanup();
+    const guide = render(<OkachaView onBack={vi.fn()} domaineInitial="m" />);
+    expect(guide.container.textContent).not.toMatch(/_{4,}/);
+    expect(guide.container.textContent).not.toMatch(/■/);
+    expect(guide.container.textContent).not.toMatch(/المتفوف/);
   });
 
   // ── Numéros d'unité alignés sur les leçons passives ────────────────────
   // Les badges affichaient « u1/u2/u3 » (numéro local remis à zéro à chaque
   // domaine) : un même chiffre désignait deux unités différentes. Ils portent
   // désormais le numéro OFFICIEL (INITIAL_UNITS, 1..11).
-  it('badges = numéro officiel de l’unité (D1 : 1..5, D3 : 9 · 10 · 11)', async () => {
-    const user = userEvent.setup();
+  it('badges = numéro officiel de l’unité (D1 : 1..5, D3 : 9 · 10 · 11)', () => {
     render(<OkachaView onBack={vi.fn()} />);
     // D1 : 5 icônes, badges 1..5 dans l'ordre.
     expect(screen.getAllByTestId(/^unite-numero-/).map((e) => e.textContent)).toEqual([
@@ -228,7 +233,8 @@ describe('OkachaView — الحصيلة المعرفية modernisée', () => {
     ]);
     // D3 : l'ordre suit le LIVRE (الصفائح 9 puis بنية الكرة 10), pas l'ordre
     // alphabétique des ids « d3u1/d3u2 ».
-    await user.click(screen.getByTestId('onglet-domaine-3'));
+    cleanup();
+    render(<OkachaView onBack={vi.fn()} domaineInitial={3} />);
     expect(screen.getAllByTestId(/^unite-numero-/).map((e) => e.textContent)).toEqual([
       'وحدة 9',
       'وحدة 10',
