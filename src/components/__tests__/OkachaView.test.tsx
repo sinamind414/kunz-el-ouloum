@@ -131,7 +131,7 @@ describe('OkachaView — الحصيلة المعرفية modernisée', () => {
     render(<OkachaView onBack={vi.fn()} />);
     await user.click(screen.getByTestId('onglet-methode'));
     // Titre du document + libellé de l'onglet renommé.
-    expect(screen.getByTestId('guide-titre').textContent).toMatch(/GUIDE FUSED/);
+    expect(screen.getByTestId('guide-titre').textContent).toMatch(/الدليل المتكامل/);
     const sections = screen.getAllByTestId(/^methodo-section-/);
     expect(sections).toHaveLength(GUIDE_SECTIONS.length);
     expect(GUIDE_SECTIONS).toHaveLength(11);
