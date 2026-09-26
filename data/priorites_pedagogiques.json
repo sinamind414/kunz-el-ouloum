@@ -1,0 +1,23 @@
+{
+ "_meta":{"generatedAt":"2026-09-26","basis":"Analyse chaîne YouTube @prof-ketfi.cherif-zina + programme national + unitCatalog.ts",
+  "scoring":"tier 1 = blocage fort ET poids examen fort ; tier 2 = poids examen fort, blocage moyen ; tier 3 = aucune ressource existante"},
+ "priorites":[
+  {"tier":1,"sprint":1,"appUnitId":4,"lecon":"CMH + الزمر الدموية ABO/Rh","diagnostic":"trou de prérequis génétique 2AS","livrables":["module prérequis 2AS (15 min)","leçon CMH","QCM diagnostic"],"preuve":"1,4M vues en 4 parties ; BAC 2015,2016,2020,2021"},
+  {"tier":1,"sprint":2,"appUnitId":4,"lecon":"التعاون الخلوي (humorale ↔ cellulaire)","diagnostic":"acteurs connus, enchaînement non maîtrisé","livrables":["schéma-bilan interactif","3 exercices BAC (2019,2023,2023)"],"preuve":"7h de vidéo ; unité = 24% du corpus d'examen"},
+  {"tier":1,"sprint":3,"appUnitId":2,"lecon":"سلوك الأحماض الأمينية / pHi","diagnostic":"prérequis de chimie (ionisation) manquant","livrables":["4 micro-fiches","simulateur pH → charge → migration","10 QCM"],"preuve":"1,5M vues = vidéo la plus vue de la chaîne"},
+  {"tier":1,"sprint":4,"appUnitId":3,"lecon":"المثبطات الإنزيمية (compétitif/non compétitif)","diagnostic":"confusion + lecture de graphes cinétiques","livrables":["comparatif visuel","atelier 6 courbes","BAC 2019 GO, BAC 2022 méthane"],"preuve":"3h33 + FAQ dédiée ; 18% du corpus d'examen"},
+  {"tier":1,"sprint":5,"appUnitId":6,"lecon":"المرحلة الكيموضوئية","diagnostic":"surcharge cognitive ; aucune synthèse d'unité existante","livrables":["synthèse d'unité (inédite)","5 micro-fiches de 8 min","quiz de passage"],"preuve":"indice de difficulté 83/100 ; décrochage -63%"},
+  {"tier":2,"sprint":6,"appUnitId":1,"lecon":"الاستنساخ / الترجمة / الشفرة","diagnostic":"cours compris, exercices durs","livrables":["banque d'exercices 'antibiotiques' (2019,2020,2021,2022)"],"preuve":"24% du corpus d'examen"},
+  {"tier":2,"sprint":6,"appUnitId":5,"lecon":"كمون الراحة / كمون العمل","diagnostic":"48% de l'unité, abordée trop tard dans l'année","livrables":["simulateur de tracé","exercices poisons (cyanure, GABA, botulique)"],"preuve":"5h20 de cours ; 18% du corpus d'examen"},
+  {"tier":3,"sprint":7,"appUnitId":7,"lecon":"التنفس والتخمر","diagnostic":"unité sous-dotée partout","livrables":["5 leçons","banque d'exercices"],"preuve":"3h40 vs 21h pour l'immunité"},
+  {"tier":3,"sprint":8,"appUnitId":8,"lecon":"الحصيلة الطاقوية (niveau supra-cellulaire)","diagnostic":"aucune ressource existante","livrables":["contenu intégral"],"preuve":"0 vidéo sur la chaîne"},
+  {"tier":3,"sprint":9,"appUnitId":9,"lecon":"الجيولوجيا / التكتونية العامة (U9-U11)","diagnostic":"terrain vide","livrables":["contenu intégral 3 unités"],"preuve":"0 vidéo BAC ; ~30% du programme national"}
+ ],
+ "transversal":[
+  {"competence":"النص العلمي","rang":1,"note":"le plus pénalisant à la correction","module":"src/correcteurV1.ts"},
+  {"competence":"الرسم التخطيطي التفسيري","rang":2,"note":"points faciles à sécuriser"},
+  {"competence":"المسعى / الاستدلال العلمي","rang":3,"note":"le plus discriminant"},
+  {"competence":"استرجاع المعلومات","rang":4,"note":"~5 pts, souvent perdus bêtement"}
+ ],
+ "aNePasPrioriser":["البلعمة","نضج البروتين","بنية الريبوزوم","برنامج أناجين","الإدماج العصبي","ازدواجية التفاعلات","الصبغات اليخضورية"]
+}
