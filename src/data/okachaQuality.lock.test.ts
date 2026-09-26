@@ -32,8 +32,13 @@ const tousBlocs = [
 
 const RE_TRAIT = /_{4,}/;
 const RE_CARRE = /[■□]/;
+// Portée : FIGE l'absence des formes, elle ne score pas. Surtout ne pas
+// recopier les formes du Lot F dans okachaQuality.RE_FILIGRANE : ce-là sert au
+// SCORAGE de filtrerLignesDechet, et y ajouter « كاشة » y ferait tomber des
+// lignes MIXTES (filigrane + contenu) avant nettoyage → perte de contenu.
+// Le retrait du Lot F se fait par clés FIXES (famille B), pas par score.
 const RE_FILIGRANE =
-  /المتفوف|المثفوك|منفون|منفوش|عكاس[ةأ]\s+للطالب|مشروع\s+عكاس|مدروع\s+عكاس|امنفوش/;
+  /المتفوف|المثفوك|منفون|منفوش|عكاس[ةأ]\s+للطالب|مشروع\s+عكاس|مدروع\s+عكاس|امنفوش|كاشة|المنهوق|المنفوق|المنفوف|المنفوث|المنهوك|المنهوف|المتفوك|المذفوف|النهوق|لطالس|الدلالب|روءكاءة|اشف الملالب|اشة الطالب|عكامة للطالب|الطمبعة|المطبمة|الطببعة|المطسعة|مدسدمصح|٦بلمض/;
 
 describe('score OCR (lot A) — signaux durs calibrés', () => {
   it('seuil figé à 0.35 (audit 2026-09-23)', () => {
