@@ -79,7 +79,17 @@ export interface EngineResult {
 
 const OUT_OF_PROGRAM = [
   'كرة القدم', 'كره القدم', 'كرة قدم', 'مباراة', 'فيلم سينما', 'موسيقى', 'سيارة', 'سياره', 'اغنية',
+  'اخبار اليوم', 'أخبار اليوم', 'اخبار', 'أخبار', 'سينما', 'فيلم',
 ];
+
+/** Détection des entrées absurdes, rires répétitifs, ou blabla non scientifique. */
+function isGibberishInput(raw: string): boolean {
+  const s = (raw || '').trim().toLowerCase();
+  if (/^([هha]){3,}$/i.test(s)) return true;
+  if (/^(bla)+$/i.test(s) || /^(blabla)+$/i.test(s)) return true;
+  if (/^(.)\1{3,}$/.test(s)) return true; // aaaa, zzzz, ءءءء...
+  return false;
+}
 
 /**
  * Mélange DÉTERMINISTE des options (seed = id de la question) : le même
@@ -797,10 +807,10 @@ export function processStudentInput(session: BotSession, rawInput: string): Engi
     }
   }
 
-  if (norm.length >= 3 && OUT_OF_PROGRAM.some((k) => {
+  if (isGibberishInput(rawInput || input) || (norm.length >= 3 && OUT_OF_PROGRAM.some((k) => {
     const nk = n(k);
     return nk.length >= 3 && norm.includes(nk);
-  })) {
+  }))) {
     return {
       session,
       action: {
