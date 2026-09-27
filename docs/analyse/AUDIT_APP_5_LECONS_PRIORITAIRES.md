@@ -586,3 +586,47 @@ sont inchangés depuis le sprint 7 : résumés 50 · leçons actives 12 · flash
 12 banque « أفكار التمارين » · 14 révision globale · 15 capsules 1-2 min ·
 16 (suite) cartes mentales U5-U11 · 17 « reproduire le schéma de mémoire » ·
 18 exercices indexés par situation · 19 carte d'ouverture d'unité.
+
+---
+
+## Sprint 9 — livré (2026-09-27)
+
+**Périmètre : item 16 (suite) — cartes mentales du domaine 2.**
+Justification chiffrée : chez **@MostafaBdd**, la carte mentale d'une unité fait
+**×6 à ×7 les vues du cours** correspondant (U2 : 568 K contre 87 K ; U3 : 565 K
+contre 73 K). L'app n'avait que 4 cartes pour 11 unités, et aucune sur le domaine 2.
+
+### Ce qui a été produit
+
+| Carte | Contenu |
+|---|---|
+| **U5 الاتصال العصبي** (12 nœuds, 17 liens) | Potentiel de repos → potentiel d'action → codage fréquentiel → synapse → messager chimique → codage chimique → intégration (PPSE/PPSI) → effecteur, plus myéline, réflexe et toxines |
+| **U6 التركيب الضوئي** (12 nœuds, 16 liens) | Chloroplaste, pigments, phase photochimique (photolyse, chaîne, gradient) → phase biochimique (3-PGA, trioses), facteurs limitants, et un nœud-pont vers U7 |
+| **U7 تحويل الطاقة إلى ATP** (12 nœuds, 16 liens) | ATP, mitochondrie, glycolyse → Krebs → transporteurs → chaîne respiratoire → phosphorylation oxydative → bilan, plus fermentation, application musculaire et pont vers U6 |
+| **U2 étoffée** (8 → **13 nœuds**) | Ajout de : classification des acides aminés, électrophorèse, dénaturation, principe structure/fonction, exemples fonctionnels |
+
+Verrous : `src/data/domain2MindMaps.lock.test.ts` — **15 tests** (intégrité du
+graphe, documentation de chaque nœud, absence de collision d'identifiants,
+présence des pièges d'examen, et **dette explicite** sur U8-U11).
+
+### Un bug de données corrigé au passage
+
+La carte immunitaire (clé 3) déclarait **`unitId: 3`** alors qu'elle porte sur
+l'**unité 4** (المناعة). Or `MindMapNodeDetails` utilise `node.unitId` pour lancer
+le QCM depuis le panneau de détail : **depuis n'importe quel nœud d'immunologie,
+l'élève était envoyé vers le QCM des enzymes.** Les 16 occurrences ont été
+corrigées (les identifiants `node-u3-*` sont conservés pour ne pas casser les
+verrous existants). Le test de cohérence ajouté interdit désormais à deux cartes
+de revendiquer la même unité.
+
+### Compteurs après sprint 9
+
+cartes mentales **7 / 11 unités** (manquent U8, U9, U10, U11) · nœuds documentés
+**91** · suite complète **1308 verts / 4 skipped** (toujours les 4 échecs
+pré-existants `lazyRouteChunks.smoke`).
+
+### Reste au backlog
+
+12 banque « أفكار التمارين » · 14 révision globale · 15 capsules 1-2 min ·
+16 (fin) cartes mentales U8-U11 · 17 « reproduire le schéma de mémoire » ·
+18 exercices indexés par situation · 19 carte d'ouverture d'unité.
