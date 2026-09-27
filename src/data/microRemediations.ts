@@ -214,6 +214,34 @@ export const MICRO_REMEDIATIONS: Record<string, MicroRemediation> = {
     preferredSupportTarget: 'document',
   },
   // ── U4 — coopération immunitaire (audit 2026-09 : 0 micro-reprise ciblée) ──
+  'seropositif_vs_sida': {
+    id: 'mr_seropositif_vs_sida',
+    conceptId: 'immunity_hiv_aids',
+    triggerCodes: ['SEROPOSITIVE_EQUALS_AIDS', 'ANTIBODY_MEANS_CURED', 'PHASE_MISREAD'],
+    titleAr: 'موجب المصل ≠ مريض بالسيدا',
+    estimatedMinutes: 3,
+    explanationAr:
+      'موجب المصل يعني أن العضوية أنتجت أجساماً مضادة ضد VIH : فهو مصاب وناقل للعدوى مدى الحياة، وقد يبقى سنوات بدون أي عرض. السيدا هي المرحلة الأخيرة فقط : ينزل عدد LT4 تحت 200 خلية / ملم³، ترتفع الحمولة الفيروسية، وتظهر الأمراض الانتهازية والأورام. كل مريض بالسيدا موجب المصل، والعكس غير صحيح.',
+    activeQuestionAr: 'شخص موجب المصل، بدون أعراض، عدد LT4 عنده قريب من العادي : ما حالته بالضبط ؟ وهل ينقل العدوى ؟',
+    acceptedEvidence: ['موجب المصل', 'ناقل', 'بدون أعراض', 'ليس السيدا'],
+    nextAction: 'retry_document',
+    reflexId: 'interpret',
+    preferredSupportTarget: 'lesson',
+  },
+  'charge_virale_vs_lt4': {
+    id: 'mr_charge_virale_vs_lt4',
+    conceptId: 'immunity_hiv_aids',
+    triggerCodes: ['CURVE_AXIS_CONFUSION', 'VIRAL_LOAD_MISREAD', 'LT4_THRESHOLD_IGNORED'],
+    titleAr: 'قراءة منحنيي الحمولة الفيروسية و LT4 معاً',
+    estimatedMinutes: 3,
+    explanationAr:
+      'المنحنيان يتحركان في اتجاهين متعاكسين : كلما ارتفعت الحمولة الفيروسية تناقص عدد LT4. اقرأ دائماً النقطتين المفتاحيتين : لحظة الانقلاب المصلي (ظهور الأجسام المضادة وانخفاض الحمولة الفيروسية)، وعتبة 200 خلية / ملم³ التي تُعلن دخول مرحلة السيدا.',
+    activeQuestionAr: 'ما العلاقة بين منحنى الحمولة الفيروسية ومنحنى LT4 ؟ وما دلالة عتبة 200 خلية / ملم³ ؟',
+    acceptedEvidence: ['متعاكسان', 'LT4', 'الحمولة الفيروسية', '200'],
+    nextAction: 'open_reflex',
+    reflexId: 'analyse',
+    preferredSupportTarget: 'document',
+  },
   'inhib_competitif_vs_non': {
     id: 'mr_inhib_competitif_vs_non',
     conceptId: 'enzyme_inhibitors',

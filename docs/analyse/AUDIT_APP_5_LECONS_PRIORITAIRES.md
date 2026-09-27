@@ -423,3 +423,56 @@ résumés **48** · leçons actives **10** · séquence **57** clés (43 mappée
 « أفكار التمارين » · 14 révision globale · 15 capsules 1-2 min · 16 (suite)
 cartes mentales U5-U11 · 17 « reproduire le schéma de mémoire » · 18 exercices
 indexés par situation · 19 carte d'ouverture d'unité.
+
+---
+
+## Sprint 6 — livré (2026-09-27)
+
+**Périmètre : item 3 bis — dossier VIH / السيدا (unité 4).**
+C'était le plus gros écart offre/demande du corpus : **~700 K vues cumulées sur le
+VIH chez trois chaînes concurrentes** (Profchaouch 414 K, Benotmane ج13-15 280 K,
+Ketfi) contre **4 QCM réellement dédiés** dans l'app (151, 153, 159, 160).
+
+### Ce qui a été produit
+
+| Livrable | Détail |
+|---|---|
+| Leçon active `immunity_hiv_aids` | 5 blocs : `GUIDED_DOC_QA` (3 courbes, 3 phases) → `SEQUENCE_ORDER` (cycle viral en 6 étapes) → `COMPARISON_TABLE` (séropositif vs malade) → `GUIDED_DOC_QA` (diagnostic ELISA / Western blot / PCR) → `TEXT_AND_PRODUCE` |
+| 2 figures SVG tracées | `schema_89_vih_evolution_curves_ar.svg` (charge virale, LT4 et anticorps sur les 3 phases, avec séroconversion et seuil 200/mm³) et `schema_90_vih_cycle_lt4_ar.svg` (cycle en 6 étapes dans le LT4) |
+| Document d'entraînement | `vih_evolution_courbes` dans `documentPracticeContexts.ts` (4 indices attendus, piège explicite) |
+| Micro-remédiations | `seropositif_vs_sida` et `charge_virale_vs_lt4` (3 min chacune) |
+| Rappels espacés | 4 étapes (0→3) |
+| QCM | **530 → 539**, dix questions unité 4 : gp120/CD4, rétrovirus, séroconversion, séropositif ≠ SIDA, seuil 200, rôle activateur de LT4, ELISA, fenêtre sérologique, échec vaccinal, multithérapie |
+| Ancrage livre | **ancre documentée [22, 23]** — le ch. 23 « سبب فقدان المناعة المكتسبة » contient bien, malgré un OCR dégradé, gp120/CD4, gp41, الاستنساخ العكسي, ADN مدمج, le seuil des 200 LT4/mm³, ELISA, Western blot, PCR et la multithérapie |
+| Verrous | `src/data/immunityHivAids.lock.test.ts` — **18 tests** |
+
+### Le parti pris pédagogique
+
+Le dossier n'est pas construit comme un cours de virologie mais autour de **trois
+gestes d'examen** :
+
+1. **Lire deux courbes qui bougent en sens inverse** (charge virale ↑ / LT4 ↓) et
+   repérer les deux points datables : la séroconversion et le seuil **200/mm³**.
+2. **Ne pas confondre موجب المصل et مريض بالسيدا.** Le tableau comparatif force ce
+   constat en donnant volontairement **la même réponse dans les deux colonnes** sur
+   la contagiosité : séropositif asymptomatique et malade transmettent tous deux.
+3. **Comprendre que LT4 est une cellule activatrice, pas exécutrice.** C'est la
+   seule explication recevable de l'effondrement *simultané* des immunités humorale
+   et cellulaire, et c'est l'objet de la production finale.
+
+Le bloc diagnostic ajoute le piège classique : un ELISA négatif une semaine après
+la contamination ne prouve rien, puisque les anticorps ne sont pas encore formés.
+
+### Compteurs après sprint 6
+
+résumés **49** · leçons actives **11** · séquence **58** clés (44 mappées, 14 nulls,
+**5 ancres documentées**) · flashcards **542 / 539** · index tuteur **500 chunks**
+(355 html / 145 actives) · suite complète **1263 verts / 4 skipped** (les 4 échecs
+`lazyRouteChunks.smoke` restent pré-existants).
+
+### Reste au backlog
+
+6 `electrophoresis-sim` · 9 synthèse U6+U7 · 10 micro-fiches phase photochimique ·
+11 `photochemical-chain` · 12 banque « أفكار التمارين » · 14 révision globale ·
+15 capsules 1-2 min · 16 (suite) cartes mentales U5-U11 · 17 « reproduire le schéma
+de mémoire » · 18 exercices indexés par situation · 19 carte d'ouverture d'unité.

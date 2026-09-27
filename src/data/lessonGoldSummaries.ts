@@ -243,6 +243,28 @@ export const LESSON_GOLD_SUMMARIES: Record<string, LessonGoldSummary> = {
     recallQuestionAr: 'ما العلاقة بين البنية والوظيفة البروتينية؟',
     review: { reviewed: false },
   },
+  'immunity_hiv_aids': {
+    lessonId: 'immunity_hiv_aids',
+    status: 'adaptation_pedagogique',
+    source: { sourceLabel: 'Résumé Kunz — livre officiel SVT DZ, ch. 22 (اختيار نمط الاستجابة المناعية) et 23 (سبب فقدان المناعة المكتسبة)' },
+    missionAr: 'لماذا يؤدي فيروس يهاجم خلية واحدة إلى انهيار المناعة كلها ؟',
+    mechanismAr: [
+      'تثبيت gp120 على مستقبل CD4 الخاص باللمفاويات LT4',
+      'دخول المحتوى الفيروسي بفضل gp41',
+      'نسخ عكسي : ARN فيروسي ⟵ ADN يندمج في نواة الخلية',
+      'دورة إنتاجية : تبرعم فيروسات جديدة وتخريب الخلية',
+      'تناقص LT4 ⟵ انقطاع الأنترلوكين 2 ⟵ لا تنشيط لـ LB ولا LTc',
+    ],
+    evidenceAr:
+      'منحنيات التطور : ذروة فيروسية ثم انقلاب مصلي، تناقص بطيء لـ LT4 خلال سنوات، ثم انهيارها تحت 200 خلية / ملم³ مع ارتفاع الحمولة الفيروسية وظهور أمراض انتهازية.',
+    vocabulary: ['VIH', 'LT4', 'gp120', 'الاستنساخ العكسي', 'الانقلاب المصلي', 'موجب المصل', 'السيدا', 'الأمراض الانتهازية'],
+    bacSentenceFrameAr:
+      'بما أن عدد LT4 ______ وأن الحمولة الفيروسية ______، فإن الشخص في مرحلة ______ لأن ______.',
+    commonErrorAr:
+      'الخلط بين موجب المصل ومريض السيدا، واعتبار وجود الأجسام المضادة دليل شفاء، أو اعتبار نتيجة ELISA السالبة نفياً للإصابة قبل الانقلاب المصلي.',
+    recallQuestionAr: 'شخص موجب المصل بدون أعراض وعدد LT4 عنده عادي : هل هو ناقل للعدوى ؟ علّل.',
+    review: { reviewed: false },
+  },
   'enzyme_inhibitors': {
     lessonId: 'enzyme_inhibitors',
     status: 'adaptation_pedagogique',

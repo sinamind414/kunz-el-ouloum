@@ -1,5 +1,5 @@
 // flashcards.lock.test.ts — verrous du bug « flashcard : le verso est vide
-// » (rapport 2026-09-20). Audit effectué : les 532 cartes du dépôt sont saines
+// » (rapport 2026-09-20). Audit effectué : les 542 cartes du dépôt sont saines
 // (corpus QCM dérivé + 3 cartes collège), le rendu et le CSS aussi — la seule
 // porte d'entrée du verso vide est un blob localStorage périmé sur l'appareil.
 // Fige : l'intégrité des données, la CHAÎNE de dérivation (verso = option
@@ -10,9 +10,9 @@ import { SVT_FLASHCARDS } from './index';
 import { SVT_QUIZ_QUESTIONS } from '../quizCorpus';
 import { carteSaine, healSavedFlashcards } from '../utils/flashcardsSanitize';
 
-describe('données flashcards — aucun verso vide dans la banque (532 cartes)', () => {
-  it('532 cartes = 529 dérivées du QCM + 3 collège ; ids uniques', () => {
-    expect(SVT_FLASHCARDS.length).toBe(532);
+describe('données flashcards — aucun verso vide dans la banque (542 cartes)', () => {
+  it('542 cartes = 539 dérivées du QCM + 3 collège ; ids uniques', () => {
+    expect(SVT_FLASHCARDS.length).toBe(542);
     expect(new Set(SVT_FLASHCARDS.map((c) => c.id)).size).toBe(SVT_FLASHCARDS.length);
   });
 
@@ -33,10 +33,10 @@ describe('données flashcards — aucun verso vide dans la banque (532 cartes)',
 });
 
 describe('chaîne de dérivation — le verso contient la réponse du QCM source', () => {
-  it('les 529 cartes fc_q_* : verso = option correcte du corpus + explication', () => {
+  it('les 539 cartes fc_q_* : verso = option correcte du corpus + explication', () => {
     const parId = new Map(SVT_QUIZ_QUESTIONS.map((q) => [`fc_q_${q.id}`, q]));
     const derivees = SVT_FLASHCARDS.filter((c) => c.id.startsWith('fc_q_'));
-    expect(derivees.length).toBe(529);
+    expect(derivees.length).toBe(539);
     for (const c of derivees) {
       const q = parId.get(c.id);
       expect(q, `${c.id} sans source`).toBeDefined();
@@ -55,10 +55,10 @@ describe('chaîne de dérivation — le verso contient la réponse du QCM source
 describe('désinfecteur localStorage — un blob troué est rejeté en bloc', () => {
   const saine = SVT_FLASHCARDS[0];
 
-  it('blob propre (les 532 réelles) → restitué tel quel', () => {
+  it('blob propre (les 542 réelles) → restitué tel quel', () => {
     const out = healSavedFlashcards(JSON.parse(JSON.stringify(SVT_FLASHCARDS)));
     expect(out).not.toBeNull();
-    expect(out!.length).toBe(532);
+    expect(out!.length).toBe(542);
   });
 
   it('UNE carte au verso vide ⇒ blob rejeté (null) — le cas exact du bug rapporté', () => {

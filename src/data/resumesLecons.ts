@@ -122,6 +122,18 @@ export const RESUMES_LECONS: Record<string, ResumeLecon> = {
     termeBac: 'الأليل / النمط الوراثي / التوافق النسيجي (HLA)',
   },
   // Synthèse d'unité : coopération cellulaire (ancré ch. 21 + 22).
+  'immunity_hiv_aids': {
+    objectif: 'اقرأ منحنيات تطور الإصابة بـ VIH وميّز موجب المصل عن مريض السيدا.',
+    points: [
+      'فيروس VIH فيروس قهقري يتثبت بـ gp120 على مستقبل CD4 للمفاويات LT4 والبلعميات.',
+      'ينسخ ARN الفيروسي إلى ADN يندمج في مورثات الخلية، فقد يبقى كامناً سنوات.',
+      'يمر المرض بثلاث مراحل : إصابة أولية، مرحلة طويلة بدون أعراض، ثم مرحلة السيدا.',
+      'الانقلاب المصلي هو ظهور الأجسام المضادة، وهو دليل الإصابة لا دليل الشفاء.',
+      'تنهار المناعة عندما ينزل عدد LT4 تحت 200 خلية / ملم³ فتظهر الأمراض الانتهازية.',
+      'يكشف اختبارا ELISA و Western blot عن الأجسام المضادة، وتكشف PCR عن ARN الفيروسي.',
+    ],
+    termeBac: 'الانقلاب المصلي / موجب المصل / مرحلة السيدا',
+  },
   'enzyme_inhibitors': {
     objectif: 'ميّز المثبط التنافسي عن اللاتنافسي بقراءة السرعة القصوى وثابت ميكاليس على المنحنى.',
     points: [
@@ -585,6 +597,7 @@ export const CHAPITRES_ANCRAGE: Record<string, number[]> = {
   'protein_structure_function': [6, 7, 8],
   'amino_acid_behavior': [8],
   'enzyme_inhibitors': [10, 12],
+  'immunity_hiv_aids': [22, 23],
   'd1-u3-l1-enzyme': [9, 10],
   'phase4_chapitres_7_8': [9, 10, 11, 12],
   'phase5_chapitres_9_10': [14, 15, 16, 17],

@@ -147,7 +147,7 @@ describe('lessonIcons — leçons actives', () => {
         total++;
       }
     }
-    expect(total).toBe(10); // U2 سلوك الأحماض الأمينية (pHi), U4 prérequis 2AS + coopération, U6×3 (hill/jagendorf/calvin), U7 racker, U9 benioff, U11 migmatite
+    expect(total).toBe(11); // U2 سلوك الأحماض الأمينية (pHi), U4 prérequis 2AS + coopération, U6×3 (hill/jagendorf/calvin), U7 racker, U9 benioff, U11 migmatite
   });
 
   it('sémantique des 6 leçons actives actuelles', () => {

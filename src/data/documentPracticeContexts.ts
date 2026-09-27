@@ -432,6 +432,53 @@ export const DOCUMENT_PRACTICE_CONTEXTS: DocumentPracticeContext[] = [
     },
   },
   {
+    // Audit item 3 bis — document vivant du dossier VIH : les 3 courbes d'évolution
+    // (livre officiel, ch. 23 « سبب فقدان المناعة المكتسبة »).
+    exerciseId: 'vih_evolution_courbes',
+    questionId: 'vih_evolution_courbes_q1',
+    conceptId: 'immunity_hiv_aids',
+    unitId: 4,
+    lessonId: 'immunity_hiv_aids',
+    documentType: 'curve',
+    reflexId: 'analyse',
+    domain: 'immuno',
+    sourceStatus: 'manuel_officiel_verifie',
+    documentTypeAr: 'منحنيات — تطور الحمولة الفيروسية و LT4 والأجسام المضادة عبر ثلاث مراحل',
+    goalAr: 'ربط كل مرحلة من مراحل الإصابة بحالة المصاب، والتمييز بين موجب المصل ومريض السيدا.',
+    vocabulary: ['الحمولة الفيروسية', 'LT4', 'CD4', 'الانقلاب المصلي', 'موجب المصل', 'السيدا', 'الأمراض الانتهازية'],
+    expectedEvidence: [
+      'ذروة فيروسية في الأسابيع الأولى',
+      'ظهور الأجسام المضادة (الانقلاب المصلي)',
+      'تناقص تدريجي للمفاويات LT4',
+      'انهيار LT4 تحت 200 خلية / ملم³ مع ارتفاع الحمولة الفيروسية',
+    ],
+    trapAr: 'وجود أجسام مضادة لا يعني الشفاء : الشخص موجب المصل مصاب وناقل للعدوى مدى الحياة.',
+    assetSrc: '/assets/images/schemas/domaine1_immunite/schema_89_vih_evolution_curves_ar.svg',
+    altAr: 'منحنيات تطور الحمولة الفيروسية واللمفاويات LT4 والأجسام المضادة عبر ثلاث مراحل.',
+    gallery: [
+      {
+        assetSrc: '/assets/images/schemas/domaine1_immunite/schema_90_vih_cycle_lt4_ar.svg',
+        altAr: 'مخطط دورة فيروس VIH داخل اللمفاوية LT4 في ست خطوات.',
+        captionAr: 'الدورة الفيروسية تفسر لماذا يتناقص عدد اللمفاويات LT4.',
+      },
+    ],
+    observationAr:
+      'عند شخص مصاب بـ VIH دون علاج : ترتفع الحمولة الفيروسية بشدة في الأسابيع الأولى ثم تنخفض مع ظهور الأجسام المضادة، وتبقى منخفضة سنوات بينما يتناقص عدد اللمفاويات LT4 ببطء، ثم ترتفع من جديد في حين ينهار عدد LT4 تحت 200 خلية / ملم³.',
+    promptObserveAr: 'صف تطور كل من المؤشرات الثلاثة عبر المراحل الثلاث دون تفسير.',
+    promptProduceAr: 'فسّر العلاقة بين تناقص اللمفاويات LT4 وظهور الأمراض الانتهازية في المرحلة الأخيرة.',
+    hintsAr: [
+      'ما الذي يحدث للحمولة الفيروسية بالضبط عند ظهور الأجسام المضادة ؟',
+      'ما دور اللمفاويات LT4 في تنشيط بقية الخلايا المناعية ؟',
+    ],
+    correctionAr:
+      'المرحلة 1 : تضاعف فيروسي مكثف ثم انقلاب مصلي (ظهور الأجسام المضادة) يكبح الحمولة الفيروسية دون إزالة الفيروس المدمج. المرحلة 2 : توازن هش، بدون أعراض، مع تناقص بطيء ومستمر للمفاويات LT4. المرحلة 3 : عندما ينزل عدد LT4 تحت 200 خلية / ملم³ ينهار التعاون المناعي — لا تنشيط لـ LB ولا لـ LTc عبر الأنترلوكين 2 — فتظهر الأمراض الانتهازية والأورام : هذه هي مرحلة السيدا.',
+    criteria: {
+      evidence: ['ذروة الحمولة الفيروسية', 'ظهور الأجسام المضادة', 'تناقص LT4'],
+      mechanism: ['الانقلاب المصلي', 'تخريب LT4', 'انهيار التعاون المناعي'],
+      conclusion: ['الأمراض الانتهازية', 'مرحلة السيدا'],
+    },
+  },
+  {
     exerciseId: 'cmh_transplant_compatibility',
     questionId: 'cmh_transplant_compatibility_q1',
     conceptId: 'immunity_self_nonself',

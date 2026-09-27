@@ -316,6 +316,12 @@ export const LESSON_PROGRESSION: Record<string, LessonProgression> = {
     completionMessageAr:
       'أتممت وحدة الإنزيمات : أصبحت تقرأ أي منحنى تثبيط بمقارنتين فقط، Vmax ثم Km.',
   },
+  'immunity_hiv_aids': {
+    nextLessonId: 'immunity_cooperation',
+    recommendedReflexId: 'interpret',
+    completionMessageAr:
+      'أتقنت ملف السيدا. تبقى الحوصلة : كيف تتعاون خلايا المناعة فيما بينها ؟',
+  },
   'd1-u3-l1-enzyme': {
     nextLessonId: 'enzyme_inhibitors',
     recommendedReflexId: 'hypothesize',
@@ -2253,6 +2259,199 @@ export const ACTIVE_LESSONS: Record<string, ActiveLesson> = {
         acceptedAnswers: ['نفس النمط الوراثي', 'نفس الأليلات', 'التوافق النسيجي', 'HLA', 'ذات'],
         errorHint:
           'التوأمان الحقيقيان لهما نفس النمط الوراثي ⇐ نفس محددات HLA ⇐ الطعم ذاتي يُقبل. أما الأخوان فيرثان نمطين فردانيين مختلفين ⇐ محددات مختلفة تُعتبر لا ذات ⇐ خطر الرفض.',
+      },
+    ],
+  },
+  // ─────────── SPRINT 6 (audit, item 3 bis) — U4 : VIH / السيدا ───────────
+  // Plus gros écart offre/demande du corpus : ~700 K vues cumulées sur le VIH chez
+  // trois chaînes concurrentes contre 4 QCM réels dans l'app. Contenu ancré sur le
+  // ch. 23 du livre officiel (« سبب فقدان المناعة المكتسبة »), qui donne gp120/CD4,
+  // gp41, transcriptase inverse, ADN proviral, seuil des 200 LT4/mm³, ELISA +
+  // Western blot, PCR, multithérapie et échec vaccinal par mutations.
+  immunity_hiv_aids: {
+    id: 'immunity_hiv_aids',
+    title: 'فيروس VIH والسيدا : قراءة منحنيات التطور والتمييز بين موجب المصل والمريض',
+    blocks: [
+      {
+        type: 'GUIDED_DOC_QA',
+        objective:
+          'قراءة المنحنيات الثلاثة للإصابة (الحمولة الفيروسية، LT4، الأجسام المضادة) وربط كل مرحلة بحالة المصاب.',
+        doc: {
+          assetSrc: '/assets/images/schemas/domaine1_immunite/schema_89_vih_evolution_curves_ar.svg',
+          altAr:
+            'منحنيات تطور الحمولة الفيروسية واللمفاويات LT4 والأجسام المضادة عبر ثلاث مراحل : إصابة أولية، مرحلة بدون أعراض، ثم السيدا.',
+          captionAr:
+            'الوثيقة : تطور ثلاثة مؤشرات عند شخص مصاب بـ VIH دون علاج، من الإصابة إلى مرحلة السيدا.',
+        },
+        questions: [
+          {
+            id: 'vih_analyse_phases',
+            verbAr: 'حلل',
+            promptAr: 'حلل تطور الحمولة الفيروسية وعدد اللمفاويات LT4 خلال المراحل الثلاث.',
+            answerType: 'short_text',
+            validationMode: 'keywords',
+            requiredKeywords: ['الحمولة الفيروسية', 'LT4', 'تتناقص', 'ترتفع'],
+            successMessageAr:
+              'أحسنت : ذروة فيروسية أولى، ثم مرحلة طويلة شبه صامتة، ثم انقلاب نهائي (الفيروس يرتفع و LT4 تنهار).',
+            errorHintAr:
+              'صف كل منحنى على حدة : الحمولة الفيروسية تبلغ ذروة مبكرة ثم تنخفض ثم ترتفع من جديد ؛ اللمفاويات LT4 تتناقص تدريجياً حتى تنهار.',
+          },
+          {
+            id: 'vih_seroconversion',
+            verbAr: 'فسر',
+            promptAr:
+              'فسّر انخفاض الحمولة الفيروسية في نهاية المرحلة الأولى رغم بقاء الفيروس في العضوية.',
+            answerType: 'short_text',
+            validationMode: 'keywords',
+            requiredKeywords: ['الأجسام المضادة', 'الانقلاب المصلي', 'استجابة مناعية'],
+            successMessageAr:
+              'نعم : الانقلاب المصلي — الاستجابة المناعية تسيطر على الفيروس دون أن تقضي عليه.',
+            errorHintAr:
+              'ظهور الأجسام المضادة (الانقلاب المصلي) يعني أن الاستجابة المناعية النوعية انطلقت وكبحت التضاعف الفيروسي، لكنها لا تقضي على الفيروس المدمج.',
+          },
+          {
+            id: 'vih_effondrement_final',
+            verbAr: 'استنتج',
+            promptAr:
+              'استنتج سبب ظهور الأمراض الانتهازية في المرحلة الثالثة، مستعيناً بعتبة 200 خلية / ملم³.',
+            answerType: 'short_text',
+            validationMode: 'keywords',
+            requiredKeywords: ['LT4', '200', 'التعاون', 'انتهازية'],
+            successMessageAr:
+              'ممتاز : تحت 200 LT4/ملم³ ينهار التعاون الخلوي، فتعجز الاستجابتان الخلطية والخلوية معاً.',
+            errorHintAr:
+              'اللمفاويات LT4 هي محور التعاون المناعي (إفراز الأنترلوكين 2). تحت 200 خلية / ملم³ لا تُنشَّط لا LB ولا LTc، فتستغل الجراثيم الانتهازية هذا العجز.',
+          },
+        ],
+        summaryAr:
+          'ثلاث مراحل : إصابة أولية (ذروة فيروسية قبل الانقلاب المصلي)، مرحلة طويلة بدون أعراض (توازن هش : الفيروس يتضاعف و LT4 تتناقص ببطء)، ثم السيدا (انهيار LT4 تحت 200/ملم³، ارتفاع الحمولة الفيروسية، أمراض انتهازية وأورام).',
+      },
+      {
+        type: 'SEQUENCE_ORDER',
+        objective: 'ترتيب مراحل دورة الفيروس داخل اللمفاوية LT4، وهي مطلوبة حرفياً في أسئلة الاسترجاع.',
+        promptAr: 'رتّب مراحل دورة فيروس VIH داخل الخلية المستهدفة.',
+        assetSrc: '/assets/images/schemas/domaine1_immunite/schema_90_vih_cycle_lt4_ar.svg',
+        altAr: 'مخطط دورة فيروس VIH داخل اللمفاوية LT4 في ست خطوات مرقمة.',
+        steps: [
+          { id: 'vih_fixation', labelAr: 'تثبيت الفيروس بفضل gp120 على مستقبل CD4 للمفاوية LT4', expectedOrder: 1 },
+          { id: 'vih_fusion', labelAr: 'اندماج الغشاءين بفضل gp41 ودخول المحتوى الفيروسي', expectedOrder: 2 },
+          { id: 'vih_transcription_inverse', labelAr: 'النسخ العكسي : تحويل ARN الفيروسي إلى ADN بفضل إنزيم الاستنساخ العكسي', expectedOrder: 3 },
+          { id: 'vih_integration', labelAr: 'اندماج ADN الفيروسي في ADN نواة الخلية (ADN مدمج قد يبقى كامناً)', expectedOrder: 4 },
+          { id: 'vih_synthese', labelAr: 'استنساخ المورثات الفيروسية وترجمتها إلى بروتينات فيروسية', expectedOrder: 5 },
+          { id: 'vih_bourgeonnement', labelAr: 'التبرعم وتحرير فيروسات جديدة، مع تخريب الخلية المستهدفة', expectedOrder: 6 },
+        ],
+        summaryPromptAr: 'لماذا يُصنّف VIH ضمن الفيروسات القهقرية (الراجعة) ؟',
+        summaryKeywords: ['ARN', 'ADN', 'الاستنساخ العكسي'],
+        summaryAr:
+          'الفيروس القهقري يملك ARN ويحوّله إلى ADN بإنزيم الاستنساخ العكسي، عكس الاتجاه المعتاد ADN ⟵ ARN. هذا ما يسمح باندماجه في مورثات الخلية وبقائه كامناً.',
+      },
+      {
+        type: 'COMPARISON_TABLE',
+        objective: 'إزالة الخلط الأكثر شيوعاً في التصحيح : موجب المصل ليس بالضرورة مريضاً بالسيدا.',
+        promptAr: 'قارن بين شخص موجب المصل في المرحلة الصامتة (يمين) ومريض في مرحلة السيدا (يسار).',
+        assetSrc: '/assets/images/schemas/domaine1_immunite/schema_89_vih_evolution_curves_ar.svg',
+        altAr: 'منحنيات تطور الإصابة بفيروس VIH.',
+        criteria: [
+          {
+            id: 'vih_presence_ac',
+            labelAr: 'الأجسام المضادة ضد VIH',
+            leftExpected: ['موجودة', 'تتناقص'],
+            rightExpected: ['موجودة', 'مرتفعة'],
+          },
+          {
+            id: 'vih_taux_lt4',
+            labelAr: 'عدد اللمفاويات LT4',
+            leftExpected: ['أقل من 200', 'منهار', 'ضعيف جداً'],
+            rightExpected: ['شبه عادي', 'يتناقص ببطء'],
+          },
+          {
+            id: 'vih_charge_virale',
+            labelAr: 'الحمولة الفيروسية',
+            leftExpected: ['مرتفعة', 'ترتفع'],
+            rightExpected: ['منخفضة', 'مستقرة'],
+          },
+          {
+            id: 'vih_symptomes',
+            labelAr: 'الأعراض السريرية',
+            leftExpected: ['أمراض انتهازية', 'أورام', 'أعراض'],
+            rightExpected: ['بدون أعراض', 'لا أعراض'],
+          },
+          {
+            id: 'vih_contagion',
+            labelAr: 'إمكانية نقل العدوى',
+            leftExpected: ['ينقل العدوى', 'ناقل'],
+            rightExpected: ['ينقل العدوى', 'ناقل'],
+          },
+        ],
+        conclusionPromptAr:
+          'استنتج لماذا يكون الشخص موجب المصل ناقلاً للعدوى حتى في غياب أي عرض.',
+        conclusionKeywords: ['الفيروس', 'يتضاعف', 'بدون أعراض'],
+        summaryAr:
+          'موجب المصل = يحمل أجساماً مضادة ضد VIH، أي أنه مصاب وناقل للعدوى مدى الحياة. مريض السيدا = المرحلة الأخيرة، حيث ينهار عدد LT4 تحت 200/ملم³ وتظهر الأمراض الانتهازية. كل مريض بالسيدا موجب المصل، والعكس غير صحيح.',
+      },
+      {
+        type: 'GUIDED_DOC_QA',
+        objective:
+          'قراءة نتيجة تشخيص (ELISA ثم Western blot) والتمييز بين الكشف عن الأجسام المضادة والكشف عن الفيروس نفسه.',
+        doc: {
+          assetSrc: '/assets/images/schemas/domaine1_immunite/schema_90_vih_cycle_lt4_ar.svg',
+          altAr: 'مخطط دورة الفيروس داخل اللمفاوية LT4 : الهدف هنا هو تحديد ما يكشف عنه كل اختبار.',
+          captionAr:
+            'الوثيقة : دورة الفيروس. اختبارا ELISA و Western blot يكشفان عن الأجسام المضادة، بينما تكشف تقنية PCR عن ARN الفيروسي نفسه.',
+        },
+        questions: [
+          {
+            id: 'vih_diagnostic_principe',
+            verbAr: 'حدد',
+            promptAr: 'ماذا تكشف تقنية ELISA في مصل الشخص : الفيروس أم الأجسام المضادة ؟',
+            answerType: 'short_text',
+            validationMode: 'keywords',
+            requiredKeywords: ['الأجسام المضادة', 'المصل'],
+            successMessageAr: 'نعم : ELISA تبحث عن الأجسام المضادة ضد بروتينات الفيروس في المصل.',
+            errorHintAr:
+              'الاختبار الروتيني يبحث عن أجسام مضادة ضد بروتينات VIH في المصل، ويُؤكَّد بتقنية Western blot.',
+          },
+          {
+            id: 'vih_fenetre_serologique',
+            verbAr: 'فسر',
+            promptAr:
+              'شخص أصيب منذ أسبوع أعطى اختبار ELISA سالباً. فسّر هذه النتيجة دون أن تستنتج أنه سليم.',
+            answerType: 'short_text',
+            validationMode: 'keywords',
+            requiredKeywords: ['الأجسام المضادة', 'لم تتشكل', 'الانقلاب المصلي'],
+            successMessageAr:
+              'ممتاز : قبل الانقلاب المصلي لا توجد أجسام مضادة قابلة للكشف — نتيجة سالبة لا تعني السلامة.',
+            errorHintAr:
+              'الأجسام المضادة تظهر بعد أسابيع (الانقلاب المصلي). قبل ذلك يكون الشخص مصاباً وناقلاً رغم سلبية الاختبار : لهذا يُلجأ إلى PCR.',
+          },
+          {
+            id: 'vih_traitement_vaccin',
+            verbAr: 'علل',
+            promptAr:
+              'علّل فشل اللقاحات التجريبية ضد VIH، واذكر على ماذا يرتكز العلاج الحالي.',
+            answerType: 'short_text',
+            validationMode: 'keywords',
+            requiredKeywords: ['الطفرات', 'الاستنساخ العكسي', 'كبت'],
+            successMessageAr:
+              'نعم : تعدد الطفرات يُفقد الأجسام المضادة نجاعتها، والعلاج يكبت الإنزيمات الفيروسية دون استئصال الفيروس.',
+            errorHintAr:
+              'الفيروس شديد التحول : الطفرات تغير بروتيناته فتصبح الأجسام المضادة غير فعالة. العلاج متعدد يكبت إنزيم الاستنساخ العكسي والبروتياز.',
+          },
+        ],
+        summaryAr:
+          'ELISA و Western blot يكشفان عن الأجسام المضادة (دليل غير مباشر)، و PCR تكشف عن ARN الفيروسي (دليل مباشر). نتيجة سالبة قبل الانقلاب المصلي لا تنفي الإصابة، والعلاج الحالي يسيطر على التضاعف الفيروسي دون شفاء.',
+      },
+      {
+        type: 'TEXT_AND_PRODUCE',
+        objective: 'إنتاج فقرة تفسيرية تربط بين هدف الفيروس ودور LT4 في التعاون المناعي.',
+        prompt:
+          'بيّن في 4 إلى 5 أسطر لماذا يؤدي فيروس يهاجم اللمفاويات LT4 فقط إلى انهيار المناعتين الخلطية والخلوية معاً.',
+        acceptedAnswers: [
+          'اللمفاويات LT4 المساعدة تفرز الأنترلوكين 2 الذي ينشط LB و LTc، فإذا تناقص عددها ينهار التعاون المناعي وتعجز الاستجابتان الخلطية والخلوية معاً',
+          'لأن LT4 هي محور التعاون المناعي عن طريق الأنترلوكينات، فتخريبها يمنع تنشيط الخلايا البلازمية واللمفاويات السامة معاً',
+        ],
+        errorHint:
+          'الفكرة المحورية : LT4 ليست خلية منفذة بل خلية منشِّطة. عبر الأنترلوكين 2 تنشط LB (خلطية) و LTc (خلوية) ؛ إقصاؤها يقطع التنشيط في الفرعين معاً، وهذا هو سبب النقص المناعي المكتسب.',
       },
     ],
   },

@@ -30,7 +30,9 @@ export const OFFICIAL_PROGRAM_SEQUENCE: Record<number, string[]> = {
   // Ajout 2026-09 : leçon active de RAPPEL des acquis 2AS (مورثة/أليل/نمط وراثي)
   // placée en tête d'unité — prérequis de CMH/HLA et ABO (≈ 15 min).
   // Ajout 2026-09 : حوصلة التعاون الخلوي en clôture d'unité (schéma-bilan + 3 exercices BAC).
-  4: ['prerequis2AS_genetique', 'phase5_chapitres_9_10', 'phase6_chapitres_11_12', 'phase7_chapitres_13_14', 'immunity_cooperation'],
+  // Ajout 2026-09 (audit, item 3 bis) : le dossier VIH/SIDA s'intercale avant la
+  // synthèse d'unité — c'est le plus gros écart offre/demande du corpus.
+  4: ['prerequis2AS_genetique', 'phase5_chapitres_9_10', 'phase6_chapitres_11_12', 'phase7_chapitres_13_14', 'immunity_hiv_aids', 'immunity_cooperation'],
   // U5 — عصبي (TDM p.127 : 7 chapitres, 5 couverts) : phases 8,9 + 1re de phase10
   // NOTE : phase10_2 (chloroplaste) appartient à D2-U1 — listée en U6.
   5: ['phase8_chapitres_15_16', 'phase9_chapitres_17_18', 'phase10_chapitres_19_20'],

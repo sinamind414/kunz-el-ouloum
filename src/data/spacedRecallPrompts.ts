@@ -61,6 +61,12 @@ export const SPACED_RECALL_PROMPTS: Record<string, SpacedRecallPrompt[]> = {
     { stage: 2, conceptId: 'protein_structure_function', questionAr: 'ما العلاقة بين البنية والوظيفة البروتينية؟', reflexId: 'interpret', acceptedEvidence: ['بنية', 'وظيفة', 'موقع نشط', 'تفاعل'], minEvidence: 3 },
     { stage: 3, conceptId: 'protein_structure_function', questionAr: 'اكتب جواب BAC قصير: كيف تؤدي الطفرة إلى تغير وظيفي؟', reflexId: 'validate', acceptedEvidence: ['طفرة', 'حمض أميني', 'بنية', 'وظيفة', 'مرض'], minEvidence: 3 },
   ],
+  immunity_hiv_aids: [
+    { stage: 0, conceptId: 'immunity_hiv_aids', questionAr: 'ما الخلية المستهدفة الأساسية لفيروس VIH ؟ وبأي جزيئة يتثبت عليها ؟', reflexId: 'explain', acceptedEvidence: ['LT4', 'CD4', 'gp120'], minEvidence: 2 },
+    { stage: 1, conceptId: 'immunity_hiv_aids', questionAr: 'ما الفرق بين شخص موجب المصل ومريض بالسيدا ؟', reflexId: 'explain', acceptedEvidence: ['موجب المصل', 'السيدا', '200', 'أعراض'], minEvidence: 3 },
+    { stage: 2, conceptId: 'immunity_hiv_aids', questionAr: 'فسّر لماذا تنهار المناعتان الخلطية والخلوية معاً رغم أن الفيروس يهاجم LT4 فقط.', reflexId: 'interpret', acceptedEvidence: ['الأنترلوكين', 'التعاون', 'LB', 'LTc'], minEvidence: 3 },
+    { stage: 3, conceptId: 'immunity_hiv_aids', questionAr: 'اكتب إجابة BAC : كيف تستغل منحنيات التطور لتحديد مرحلة المصاب ؟', reflexId: 'validate', acceptedEvidence: ['الحمولة الفيروسية', 'LT4', 'الانقلاب المصلي', '200'], minEvidence: 3 },
+  ],
   enzyme_inhibitors: [
     { stage: 0, conceptId: 'enzyme_inhibitors', questionAr: 'ما المعيار الأول للتمييز بين نوعي المثبط ؟', reflexId: 'explain', acceptedEvidence: ['Vmax', 'الشاهد', 'مقارنة'], minEvidence: 2 },
     { stage: 1, conceptId: 'enzyme_inhibitors', questionAr: 'مثبط رفع Km دون أن يغير Vmax : ما نوعه ولماذا ؟', reflexId: 'explain', acceptedEvidence: ['تنافسي', 'الموقع الفعال', 'الركيزة', 'Km'], minEvidence: 3 },

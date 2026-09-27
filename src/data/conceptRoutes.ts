@@ -89,6 +89,13 @@ export const CONCEPT_ROUTES: Record<string, ConceptRoute> = {
     lessonId: 'immunity_cooperation',
     documentExerciseId: 'lt_target_cell_response',
   },
+  // Audit item 3 bis : dossier VIH / SIDA (plus gros écart offre/demande).
+  immunity_hiv_aids: {
+    conceptId: 'immunity_hiv_aids',
+    unitId: 4,
+    lessonId: 'immunity_hiv_aids',
+    documentExerciseId: 'vih_evolution_courbes',
+  },
   // Audit items 7-8 : inhibiteurs enzymatiques et lecture des courbes.
   enzyme_inhibitors: {
     conceptId: 'enzyme_inhibitors',

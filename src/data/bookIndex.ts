@@ -137,6 +137,14 @@ const ANCRES_LECON: Record<string, { chapitres: number[]; raison: string }> = {
   // Leçon active « المثبطات الإنزيمية » (audit 2026-09, items 7 et 8) : notion
   // enseignée par C10 (النشاط الإنزيمي وعلاقته ببنية الإنزيم) et C12, dont l'OCR
   // porte le corps exploitable (الموقع الفعال ×5, نشاط الإنزيم ×22, سرعة ×11).
+  // Leçon active « VIH / السيدا » (audit item 3 bis) : contenu porté par C22
+  // (choix du type de réponse immunitaire) et surtout C23 (سبب فقدان المناعة
+  // المكتسبة), dont l'OCR contient gp120/CD4, gp41, الاستنساخ العكسي, ELISA,
+  // Western blot, PCR et le seuil des 200 LT4/mm³.
+  immunity_hiv_aids: {
+    chapitres: [22, 23],
+    raison: 'contenu = دورة الفيروس وتخريب LT4 (C23) + اختيار نمط الاستجابة المناعية (C22) ; le titre de la leçon ne recoupe aucune en-tête OCR',
+  },
   enzyme_inhibitors: {
     chapitres: [10, 12],
     raison: 'contenu = الموقع الفعال et التكامل البنيوي (C10) + منحنيات نشاط الإنزيم (C12) ; aucune en-tête OCR dédiée aux مثبطات',
