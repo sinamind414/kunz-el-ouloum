@@ -145,6 +145,61 @@ describe('R6 — invariants de la notation par attendus obligatoires', () => {
   });
 });
 
+describe('F1 — points acquis vs réserve manuelle (garder l’échelle officielle)', () => {
+  it('aucun item manuel invisible : verdicts = items du registre (6 groupes)', () => {
+    for (const sujet of [1, 2] as const) {
+      for (const exercice of [1, 2, 3] as const) {
+        const reg = attendusDeGroupe(sujet, exercice);
+        const n = noterExerciceCalibre(reponseExhaustive(sujet, exercice), sujet, exercice);
+        expect(n.verdicts, `S${sujet}-Ex${exercice}`).toHaveLength(reg.items.length);
+      }
+    }
+  });
+
+  it('pointsAutoAcquis = points · réserve = Σ items non auto · noteFinale cohérente', () => {
+    for (const sujet of [1, 2] as const) {
+      for (const exercice of [1, 2, 3] as const) {
+        const reg = attendusDeGroupe(sujet, exercice);
+        const n = noterExerciceCalibre(reponseExhaustive(sujet, exercice), sujet, exercice);
+        expect(n.pointsAutoAcquis).toBe(n.points);
+        const reserve = reg.items
+          .filter((i) => !(i.formes.length > 0 || (i.composantes?.length ?? 0) > 0))
+          .reduce((s, i) => s + i.points, 0);
+        expect(n.pointsManuelsAArbitrer).toBe(Math.round(reserve * 100) / 100);
+        expect(n.noteFinale).toBe(reserve > 0 ? null : n.points);
+      }
+    }
+  });
+
+  it('garde-fou : pointsAutoAcquis + pointsManuelsAArbitrer ≤ maxPts (jamais plus que l’officiel)', () => {
+    for (const sujet of [1, 2] as const) {
+      for (const exercice of [1, 2, 3] as const) {
+        const n = noterExerciceCalibre(reponseExhaustive(sujet, exercice), sujet, exercice);
+        expect(
+          n.pointsAutoAcquis + n.pointsManuelsAArbitrer,
+          `S${sujet}-Ex${exercice}`,
+        ).toBeLessThanOrEqual(n.maxPts + 1e-9);
+      }
+    }
+  });
+
+  it('les items manuels ne sont JAMAIS comptés comme zéro ni redistribués', () => {
+    // Copie vide : la réserve manuelle reste INTACTE (égale à Σ items non auto),
+    // les points auto tombent à 0 — pas de renormalisation de la part manuelle.
+    for (const sujet of [1, 2] as const) {
+      for (const exercice of [1, 2, 3] as const) {
+        const reg = attendusDeGroupe(sujet, exercice);
+        const n = noterExerciceCalibre('', sujet, exercice);
+        const reserve = reg.items
+          .filter((i) => !(i.formes.length > 0 || (i.composantes?.length ?? 0) > 0))
+          .reduce((s, i) => s + i.points, 0);
+        expect(n.pointsManuelsAArbitrer).toBe(Math.round(reserve * 100) / 100);
+        expect(n.pointsAutoAcquis).toBe(0);
+      }
+    }
+  });
+});
+
 describe('C5 — frontières latines (fin des faux positifs de sous-chaînes)', () => {
   it('formePresente : « co2 » ne crédite pas « o2 », « ARNm » pas « arn », « Edaravone » pas « eda »', () => {
     expect(formePresente('خلط co2 و h2o', 'o2')).toBe(false);

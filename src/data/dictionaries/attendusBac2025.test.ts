@@ -156,3 +156,21 @@ describe('P2g — équation glycolyse S2-Ex1 (corrigé officiel 0.25×5) + isole
     }
   });
 });
+
+describe('F1 — enveloppe officielle : un seul débordement documenté', () => {
+  it('Σ points des items ≤ maxPts partout, sauf S2-Ex1 (overlay P2g 2026-09-19)', () => {
+    const debordees: string[] = [];
+    for (const sujet of [1, 2] as const) {
+      for (const exercice of [1, 2, 3] as const) {
+        const g = attendusDeGroupe(sujet, exercice);
+        const somme = g.items.reduce((s, i) => s + i.points, 0);
+        if (somme > g.maxPts + 1e-9) debordees.push(`S${sujet}-Ex${exercice}: ${somme} > ${g.maxPts}`);
+      }
+    }
+    // S2-Ex1 : corrigé officiel verbatim « 0.25 نقطة لكل عنصر » × 5 = 1.25 pour
+    // l'équation ; l'excédent est absorbé par le plafond maxPts (couverture ≤ 1
+    // → note ≤ 5). Ce test verrouille qu'AUCUN autre groupe ne déborde — un
+    // nouveau débordement doit être conscient et documenté ici.
+    expect(debordees).toEqual(['S2-Ex1: 5.5 > 5']);
+  });
+});
