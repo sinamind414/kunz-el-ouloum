@@ -12,6 +12,7 @@ import userEvent from '@testing-library/user-event';
 import { afterEach, describe, expect, it } from 'vitest';
 import BacIdeasView from '../BacIdeasView';
 import { YEARS_COVERED, ideasForYear } from '../../data/bacSessionIndex';
+import { archetypeRecurrence, archetypesForIdea, ideasOfArchetype } from '../../data/bacArchetypes';
 
 afterEach(cleanup);
 
@@ -93,5 +94,53 @@ describe('أفكار التمارين — fiche', () => {
     expect(fiche.textContent).toContain('ما يُقيَّم فعلاً');
     expect(fiche.textContent).toContain('ناقش صحة الفرضية');
     expect(fiche.textContent).toContain('08 ن'.replace('08', '8'));
+  });
+});
+
+describe('أفكار التمارين — montages récurrents (sprint 19)', () => {
+  it('propose un bouton par montage, avec ses points et ses sessions', () => {
+    render(<BacIdeasView />);
+    for (const m of archetypeRecurrence()) {
+      const bouton = screen.getByTestId(`montage-${m.archetypeId}`);
+      expect(bouton.textContent).toContain(m.titleAr);
+      expect(bouton.textContent).toContain(String(m.points));
+    }
+  });
+
+  it('affiche la méthode et le piège quand un montage est choisi', async () => {
+    const user = userEvent.setup();
+    render(<BacIdeasView />);
+    await user.click(screen.getByTestId('montage-arch_inhibiteur_sosie'));
+    const detail = screen.getByTestId('montage-detail');
+    expect(detail.textContent).toContain('كيف أتعرّف عليه؟');
+    expect(detail.textContent).toContain('الفخّ');
+  });
+
+  it('filtre la liste sur les seuls exercices du montage, toutes sessions confondues', async () => {
+    const user = userEvent.setup();
+    render(<BacIdeasView />);
+    await user.click(screen.getByTestId('montage-arch_lecture_geologique'));
+    const attendus = ideasOfArchetype('arch_lecture_geologique');
+    for (const idea of attendus) expect(screen.getByTestId(`idee-${idea.id}`), idea.id).toBeTruthy();
+    expect(screen.getByTestId('idees-total').textContent).toContain(String(attendus.length));
+    expect(screen.queryByTestId('idee-bac2026_s2_e3')).toBeNull();
+  });
+
+  it('libère le filtre quand on revient à une session', async () => {
+    const user = userEvent.setup();
+    render(<BacIdeasView />);
+    await user.click(screen.getByTestId('montage-arch_lecture_geologique'));
+    await user.click(screen.getByTestId('annee-2026'));
+    expect(screen.queryByTestId('montage-detail')).toBeNull();
+    expect(screen.getByTestId('idee-bac2026_s1_e1')).toBeTruthy();
+  });
+
+  it('étiquette chaque fiche avec le ou les montages dont elle relève', () => {
+    render(<BacIdeasView />);
+    for (const idea of ideasForYear(2026)) {
+      for (const a of archetypesForIdea(idea.id)) {
+        expect(screen.getByTestId(`fiche-montage-${idea.id}-${a.id}`)).toBeTruthy();
+      }
+    }
   });
 });

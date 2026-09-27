@@ -10,7 +10,7 @@
 // carte de ce que l'examen demande.
 
 import { useMemo, useState } from 'react';
-import { ArrowRight, BookOpen, FileText, Search, TrendingUp } from 'lucide-react';
+import { ArrowRight, AlertTriangle, BookOpen, FileText, Repeat, Search, TrendingUp } from 'lucide-react';
 import {
   BAC_IDEAS,
   BAC_SESSION_SOURCES,
@@ -23,6 +23,12 @@ import {
   verbFrequency,
   type BacExerciseIdea,
 } from '../data/bacSessionIndex';
+import {
+  ARCHETYPE_BY_ID,
+  archetypeRecurrence,
+  archetypesForIdea,
+  ideasOfArchetype,
+} from '../data/bacArchetypes';
 import { INITIAL_UNITS } from '../unitCatalog';
 
 interface BacIdeasViewProps {
@@ -77,6 +83,18 @@ function Fiche({ idea }: { idea: BacExerciseIdea }) {
         ))}
       </div>
 
+      <div className="flex flex-row-reverse flex-wrap gap-1.5 mb-2">
+        {archetypesForIdea(idea.id).map((a) => (
+          <span
+            key={a.id}
+            data-testid={`fiche-montage-${idea.id}-${a.id}`}
+            className="text-[11px] font-bold px-2 py-0.5 rounded-lg bg-[#fff7e0] text-[#8a6a00] dark:bg-black/20 dark:text-[#d9a400]"
+          >
+            {a.titleAr}
+          </span>
+        ))}
+      </div>
+
       <div className="flex flex-row-reverse flex-wrap gap-1.5 text-[11px] text-[#506072] dark:text-gray-400">
         {idea.unitIds.map((u) => (
           <span key={u} className="px-2 py-0.5 rounded-lg bg-[#e8f5ee] dark:bg-black/20">
@@ -91,13 +109,18 @@ function Fiche({ idea }: { idea: BacExerciseIdea }) {
 export default function BacIdeasView({ onBackToHome }: BacIdeasViewProps) {
   const [annee, setAnnee] = useState<number | 'all'>(YEARS_COVERED[0]);
   const [requete, setRequete] = useState('');
+  const [montage, setMontage] = useState<string | null>(null);
 
   const liste = useMemo(() => {
+    if (montage) return ideasOfArchetype(montage);
     const q = requete.trim();
     if (q) return searchIdeas(q);
     if (annee === 'all') return [...BAC_IDEAS].sort((a, b) => b.year - a.year || a.sujet - b.sujet || a.exercice - b.exercice);
     return ideasForYear(annee);
-  }, [annee, requete]);
+  }, [annee, requete, montage]);
+
+  const montages = useMemo(() => archetypeRecurrence(), []);
+  const montageActif = montage ? ARCHETYPE_BY_ID[montage] : undefined;
 
   const pression = useMemo(() => unitPressure().slice(0, 5), []);
   const verbes = useMemo(() => verbFrequency().slice(0, 6), []);
@@ -168,6 +191,71 @@ export default function BacIdeasView({ onBackToHome }: BacIdeasViewProps) {
         </p>
       </section>
 
+      <section
+        data-testid="montages"
+        className="rounded-3xl p-4 bg-white dark:bg-[#141916] border border-[#bbcbbb]/30 mb-4"
+      >
+        <p className="flex flex-row-reverse items-center gap-2 text-sm font-black text-[#1f1c0b] dark:text-gray-100 mb-1">
+          <Repeat className="w-4 h-4" />
+          التركيبات التي تتكرّر — راجع الشكل لا الجزيئة
+        </p>
+        <p className="text-[12px] leading-6 text-[#506072] dark:text-gray-400 mb-3 text-right">
+          الوزارة لا تخترع الامتحان كل سنة: تُعيد عدداً قليلاً من التركيبات بجزيئة و مرض مختلفين.
+        </p>
+        <div className="flex flex-row-reverse flex-wrap gap-2">
+          {montages.map((m) => (
+            <button
+              key={m.archetypeId}
+              data-testid={`montage-${m.archetypeId}`}
+              onClick={() => setMontage(montage === m.archetypeId ? null : m.archetypeId)}
+              className={`text-[11px] font-bold px-3 py-1.5 rounded-xl cursor-pointer ${
+                montage === m.archetypeId
+                  ? 'bg-[#006d37] text-white'
+                  : 'bg-[#f3f4f5] dark:bg-[#1f2622] text-[#506072] dark:text-gray-300'
+              }`}
+            >
+              {m.titleAr} · {m.points} ن / {m.sessions} دورات
+            </button>
+          ))}
+        </div>
+      </section>
+
+      {montageActif && (
+        <section
+          data-testid="montage-detail"
+          className="rounded-3xl p-4 bg-[#f7fbf8] dark:bg-black/20 border border-[#006d37]/30 mb-4"
+        >
+          <h2 className="text-base font-black text-[#006d37] dark:text-[#2ecc71] mb-1 text-right">
+            {montageActif.titleAr}
+          </h2>
+          <p className="text-[13px] leading-7 text-[#1f1c0b] dark:text-gray-200 text-right mb-3">
+            {montageActif.definitionAr}
+          </p>
+
+          <p className="text-[11px] font-black text-[#506072] dark:text-gray-400 mb-1">كيف أتعرّف عليه؟</p>
+          <ul className="list-disc pr-4 mb-3 space-y-1 text-[12px] leading-6 text-[#506072] dark:text-gray-300 text-right">
+            {montageActif.signalsAr.map((x) => (
+              <li key={x}>{x}</li>
+            ))}
+          </ul>
+
+          <p className="text-[11px] font-black text-[#506072] dark:text-gray-400 mb-1">ماذا أفعل، بالترتيب؟</p>
+          <ol className="list-decimal pr-4 mb-3 space-y-1 text-[12px] leading-6 text-[#1f1c0b] dark:text-gray-200 text-right">
+            {montageActif.methodAr.map((x) => (
+              <li key={x}>{x}</li>
+            ))}
+          </ol>
+
+          <p className="flex flex-row-reverse items-start gap-2 text-[12px] leading-6 text-rose-700 dark:text-rose-400 text-right">
+            <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5" />
+            <span>
+              <span className="font-black">الفخّ: </span>
+              {montageActif.trapAr}
+            </span>
+          </p>
+        </section>
+      )}
+
       <div className="flex flex-row-reverse flex-wrap items-center gap-2 mb-4">
         {YEARS_COVERED.map((y) => (
           <button
@@ -176,9 +264,10 @@ export default function BacIdeasView({ onBackToHome }: BacIdeasViewProps) {
             onClick={() => {
               setAnnee(y);
               setRequete('');
+              setMontage(null);
             }}
             className={`text-xs font-bold px-3 py-1.5 rounded-xl cursor-pointer ${
-              annee === y && !requete
+              annee === y && !requete && !montage
                 ? 'bg-[#006d37] text-white'
                 : 'bg-[#f3f4f5] dark:bg-[#1f2622] text-[#506072] dark:text-gray-300'
             }`}
@@ -191,9 +280,10 @@ export default function BacIdeasView({ onBackToHome }: BacIdeasViewProps) {
           onClick={() => {
             setAnnee('all');
             setRequete('');
+            setMontage(null);
           }}
           className={`text-xs font-bold px-3 py-1.5 rounded-xl cursor-pointer ${
-            annee === 'all' && !requete
+            annee === 'all' && !requete && !montage
               ? 'bg-[#006d37] text-white'
               : 'bg-[#f3f4f5] dark:bg-[#1f2622] text-[#506072] dark:text-gray-300'
           }`}
@@ -207,13 +297,16 @@ export default function BacIdeasView({ onBackToHome }: BacIdeasViewProps) {
         <input
           data-testid="idees-recherche"
           value={requete}
-          onChange={(e) => setRequete(e.target.value)}
+          onChange={(e) => {
+            setRequete(e.target.value);
+            setMontage(null);
+          }}
           placeholder="ابحث: الجينتاميسين، البرفورين، الروبيسكو، 2023…"
           className="w-full rounded-2xl py-2.5 pr-10 pl-3 text-sm bg-white dark:bg-[#141916] border border-[#bbcbbb]/30 text-right text-[#1f1c0b] dark:text-gray-100"
         />
       </div>
 
-      {!requete && annee !== 'all' && (
+      {!requete && !montage && annee !== 'all' && (
         <p data-testid="idees-bareme" className="mb-3 text-[12px] text-[#506072] dark:text-gray-400 text-right">
           الموضوع الأول: {pointsOfSujet(annee, 1)}/20 نقطة · الموضوع الثاني: {pointsOfSujet(annee, 2)}/20 نقطة
           {sourceAnnee && (

@@ -1240,3 +1240,77 @@ Trois tests figent cette règle, dont deux qui documentent l'écart lui-même :
 idées BAC 47 / 8 sessions · index inverse sur situations, capsules et schémas ·
 suite complète **1507 verts / 4 skipped** (toujours les 4 `lazyRouteChunks.smoke`
 pré-existants).
+
+---
+
+## Sprint 19 — les 10 montages qui reviennent : réviser la forme, pas la molécule
+
+### Le constat qui déclenche ce sprint
+
+Un élève qui révise 47 exercices un par un révise 47 fois. Or l'ONEC ne
+réinvente pas l'épreuve chaque année : il **rejoue un petit nombre de
+montages**, en changeant la molécule, l'organisme et la maladie.
+
+Le cas le plus net : « 3-NOP » (2022), « quercétine » (2023), « CA1P » (2024),
+« célécoxib » (2020), « méthylthéobromine » (2025), « ML901 » (2023) et
+« Edaravone » (2025) sont **sept habillages d'un seul montage** — une molécule
+qui ressemble au substrat et occupe le site actif. Qui a compris le montage
+traite les sept ; qui a appris les sept molécules n'en traite aucune de plus.
+
+### Ce qui a été produit
+
+`src/data/bacArchetypes.ts` — **10 montages**, chacun adossé à des exercices
+réels dont les identifiants sont cités et vérifiés. Pour chacun : la
+définition, les **signaux de reconnaissance** dans l'énoncé, la **méthode
+ordonnée**, et le **piège** qui coûte des points année après année.
+
+| Montage | Points cumulés | Exercices | Sessions |
+|---|---|---|---|
+| سمّ أو مادة تعطّل قناة أيونية | 54 | 8 | 7 |
+| الجزيئة الشبيهة بالركيزة | 52 | 7 | 5 |
+| من الطفرة إلى الظاهرة | 49 | 7 | 6 |
+| على أي مستوى تتدخّل هذه المادة؟ | 47 | 7 | 6 |
+| البنية الفراغية شرط الوظيفة | 38 | 6 | 4 |
+| كيف يفلت العامل الممرض أو الورم من المناعة؟ | 37 | 5 | 4 |
+| مبيد يقطع سلسلة التركيب الضوئي | 35 | 5 | 4 |
+| الجسم المضاد كأداة علاجية | 31 | 4 | 4 |
+| محدّدات الذات: من الغشاء إلى الزمرة الدموية | ~26 | 4 | 4 |
+| قراءة وثيقة جيولوجية | 15 | 3 | 2 |
+
+**46 exercices sur 47 sont classés.** Le seul isolat est l'exercice de
+glycolyse / 2-désoxyglucose de 2025 : unique exercice de bioénergétique du
+corpus, il ne constitue pas une récurrence — et il est laissé tel quel plutôt
+que rangé de force dans un montage voisin. Un test plafonne les non-classés à
+10 % du corpus.
+
+Quelques pièges consignés, tous tirés d'exercices réels :
+- l'inhibition compétitive **ne détruit pas** l'enzyme : augmenter le substrat
+  annule son effet ;
+- répondre « ça inhibe la synthèse protéique » **sans localiser l'étape** ne
+  rapporte pas les points ;
+- le sens d'entrée d'un ion dépend du **gradient**, pas du canal (piège 2020,
+  Cl⁻ chez le nouveau-né) ;
+- toute mutation n'est pas nuisible : celles de 2019 hors site actif laissaient
+  l'activité quasi intacte, et celle de 2022 était **exploitée** en thérapie.
+
+### Dans l'écran
+
+« أفكار التمارين حسب الدورة » gagne un bandeau **« التركيبات التي تتكرّر »** :
+un bouton par montage (avec ses points et son nombre de sessions), un panneau
+qui déplie reconnaissance / méthode / piège, et un filtrage de la liste sur
+les exercices concernés — toutes sessions confondues. Chaque fiche porte
+l'étiquette du ou des montages dont elle relève.
+
+### Tests
+
+`bacArchetypes.lock.test.ts` — **11 verrous** : aucun exercice cité qui
+n'existe, minimum 3 exercices et 2 sessions par montage (sinon ce n'est pas une
+récurrence mais une anecdote), méthode et piège obligatoires, classement
+déterministe, cohérence des points avec le barème officiel. Plus **5 tests de
+vue**.
+
+### Compteurs après sprint 19
+
+idées BAC 47 / 8 sessions · **10 montages récurrents** · suite complète
+**1523 verts / 4 skipped** (toujours les 4 `lazyRouteChunks.smoke`
+pré-existants).
