@@ -14,9 +14,12 @@ import {
   unitWeight,
   declaredWeight,
   observedWeight,
+  archetypeHostUnit,
   PRESETS,
   TASK_LABEL_AR,
 } from './revisionPlan';
+import { BAC_ARCHETYPES } from './bacArchetypes';
+import { INITIAL_UNITS } from '../unitCatalog';
 import { CAPSULE_BY_ID } from './microCapsules';
 import { SCHEMA_DRILL_BY_ID } from './schemaDrills';
 import { SITUATION_BY_ID } from './situationIndex';
@@ -186,5 +189,42 @@ describe('plan — déterminisme et préréglages', () => {
       expect(plan.totalTasks, p.labelAr).toBeGreaterThan(p.daysLeft);
       expect(plan.totalMinutes, p.labelAr).toBeGreaterThan(0);
     }
+  });
+});
+
+describe('plan — règle 3 bis : les montages récurrents entrent dans la journée', () => {
+  it('rattache chaque montage à une unité réelle du programme', () => {
+    for (const a of BAC_ARCHETYPES) {
+      const hote = archetypeHostUnit(a.id);
+      expect(INITIAL_UNITS.some((u) => u.id === hote), a.id).toBe(true);
+    }
+  });
+
+  it('programme un montage dès la première journée ordinaire', () => {
+    const plan = buildRevisionPlan({ daysLeft: 14, minutesPerDay: 90 });
+    expect(plan.days[0].tasks.some((t) => t.kind === 'montage')).toBe(true);
+  });
+
+  it('fait passer les dix montages sur un plan d’un mois', () => {
+    const plan = buildRevisionPlan({ daysLeft: 30, minutesPerDay: 90 });
+    const vus = new Set(
+      plan.days.flatMap((j) => j.tasks).filter((t) => t.kind === 'montage').map((t) => t.refId),
+    );
+    for (const a of BAC_ARCHETYPES) expect(vus.has(a.id), a.id).toBe(true);
+  });
+
+  it('les autorise les derniers jours : réviser une méthode n’est pas découvrir une notion', () => {
+    const plan = buildRevisionPlan({ daysLeft: 10, minutesPerDay: 90 });
+    const derniers = plan.days.filter((j) => j.consolidationOnly);
+    expect(derniers.some((j) => j.tasks.some((t) => t.kind === 'montage'))).toBe(true);
+  });
+
+  it('donne une consigne qui cite un exercice réel et son année', () => {
+    const plan = buildRevisionPlan({ daysLeft: 14, minutesPerDay: 90 });
+    const montage = plan.days.flatMap((j) => j.tasks).find((t) => t.kind === 'montage');
+    expect(montage).toBeDefined();
+    expect(montage!.actionAr).toMatch(/20\d\d/);
+    expect(montage!.minutes).toBeLessThanOrEqual(12);
+    expect(TASK_LABEL_AR.montage).toBeTruthy();
   });
 });

@@ -1314,3 +1314,51 @@ vue**.
 idées BAC 47 / 8 sessions · **10 montages récurrents** · suite complète
 **1523 verts / 4 skipped** (toujours les 4 `lazyRouteChunks.smoke`
 pré-existants).
+
+---
+
+## Sprint 20 — les montages entrent dans la journée de travail (et un bug de fond corrigé)
+
+### 1. Un cinquième geste dans le plan : « تركيب متكرّر في البكالوريا »
+
+Les 10 montages du sprint 19 ne servaient que si l'élève ouvrait l'onglet des
+annales. Ils sont désormais **programmés par le plan de révision** au même
+titre qu'une capsule ou un schéma : une tâche de 10 minutes qui dit « révise
+les signaux, la méthode et le piège, puis applique-les à l'exercice de 2023 ».
+
+Chaque montage est rattaché à son **unité porteuse** (`archetypeHostUnit`) :
+celle qui mène le plus de points parmi ses exercices — l'inhibiteur sosie à
+U3, le canal détourné à U5, l'échappement immunitaire à U4. Il est donc
+programmé au moment où cette unité est travaillée, pas au hasard.
+
+Décision explicite : **les montages restent autorisés les deux derniers
+jours**, contrairement aux situations longues. Réviser une méthode n'est pas
+découvrir une notion — c'est même le meilleur usage de la veille.
+
+Vérifié par test : un montage dès la première journée, **les dix vus sur un
+plan de 30 jours**, présence dans les jours de consolidation, et une consigne
+qui cite un exercice réel avec son année.
+
+### 2. Le bug que ce sprint a mis au jour
+
+En voulant vérifier que les dix montages passaient, seuls **six** apparaissaient.
+La cause n'était pas dans les montages mais dans le moteur du plan, depuis le
+sprint 15 : la file des tâches faisait `liste[tour % liste.length]`, alors que
+la séquence pondérée fait revenir une unité lourde **plusieurs fois dans le
+même tour**. Une unité qui revenait sept fois poussait donc **sept fois la même
+capsule**, et les ressources en 2ᵉ ou 3ᵉ position d'une unité chargée — le 2ᵉ et
+le 3ᵉ montage d'immunologie, le 2ᵉ atelier d'enzymologie — n'étaient jamais
+atteintes avant la fin du plan.
+
+Correctif : un **curseur par couple (unité, geste)**, qui avance à chaque
+prise. Effet mesuré sur un plan de 30 jours × 90 min : **83 ressources
+distinctes contre une poignée de titres répétés auparavant**, et les 10
+montages couverts. Les élèves qui suivaient le plan jusqu'au bout voyaient
+jusqu'ici une partie du matériel produit depuis le sprint 10 sans jamais
+l'atteindre.
+
+### Compteurs après sprint 20
+
+5 gestes dans le plan (capsule · schéma · **montage** · situation · carte) ·
+47 idées BAC · 10 montages · suite complète **1528 verts / 4 skipped**
+(toujours les 4 `lazyRouteChunks.smoke` pré-existants).

@@ -31,6 +31,13 @@
 //   l'immunité (U4). Elles reçoivent un bonus : on révise ce qui coince, pas
 //   ce qui rassure.
 //
+// RÈGLE 3 bis (sprint 19) — un montage par journée quand c'est possible.
+//   Les 10 montages de bacArchetypes.ts sont le geste le plus rentable du
+//   corpus : sept exercices de sessions différentes se traitent avec une seule
+//   méthode. Ils entrent donc dans la file au même titre qu'une capsule, et
+//   restent autorisés les deux derniers jours — réviser une méthode n'est pas
+//   découvrir une notion.
+//
 // RÈGLE 3 — alternance des gestes.
 //   Une journée ne peut pas être faite d'un seul type de tâche : lire une
 //   capsule, refaire un schéma et traiter une situation ne sollicitent pas la
@@ -45,9 +52,10 @@ import { SCHEMA_DRILLS, type SchemaDrill } from './schemaDrills';
 import { SITUATION_INDEX, type SituationCard } from './situationIndex';
 import { MIND_MAPS_DATABASE } from './mindMapData';
 import { UNIT_OPENINGS } from './unitOpenings';
-import { observedUnitSharePercent } from './bacSessionIndex';
+import { observedUnitSharePercent, IDEA_BY_ID } from './bacSessionIndex';
+import { BAC_ARCHETYPES, ideasOfArchetype, yearsOfArchetype } from './bacArchetypes';
 
-export type TaskKind = 'capsule' | 'schema' | 'situation' | 'carte';
+export type TaskKind = 'capsule' | 'schema' | 'montage' | 'situation' | 'carte';
 
 export interface PlanTask {
   kind: TaskKind;
@@ -183,6 +191,46 @@ const situationTask = (s: SituationCard): PlanTask => ({
   minutes: s.minutes,
 });
 
+/**
+ * Unité « porteuse » d'un montage : celle qui mène le plus d'exercices du
+ * montage. Un montage est transversal par nature ; on le rattache à l'unité où
+ * l'élève le rencontrera le plus souvent, pour qu'il soit programmé au moment
+ * où cette unité est travaillée.
+ */
+export function archetypeHostUnit(archetypeId: string): number {
+  const compte = new Map<number, number>();
+  for (const idea of ideasOfArchetype(archetypeId)) {
+    const principale = idea.unitIds[0];
+    compte.set(principale, (compte.get(principale) ?? 0) + idea.points);
+  }
+  let meilleur = 0;
+  let meilleurScore = -1;
+  for (const [unitId, score] of [...compte.entries()].sort((a, b) => a[0] - b[0])) {
+    if (score > meilleurScore) {
+      meilleur = unitId;
+      meilleurScore = score;
+    }
+  }
+  return meilleur;
+}
+
+function montageTask(archetypeId: string): PlanTask | null {
+  const arch = BAC_ARCHETYPES.find((a) => a.id === archetypeId);
+  if (!arch) return null;
+  const annees = yearsOfArchetype(archetypeId);
+  const exemple = IDEA_BY_ID[ideasOfArchetype(archetypeId)[0]?.id ?? ''];
+  return {
+    kind: 'montage',
+    refId: arch.id,
+    unitId: archetypeHostUnit(archetypeId),
+    titleAr: `التركيب المتكرّر: ${arch.titleAr}`,
+    actionAr: exemple
+      ? `راجع إشارات التعرّف و الطريقة و الفخّ، ثم طبّقها على تمرين ${exemple.year} (${exemple.titleAr}) — ${annees.length} دورات معنيّة.`
+      : 'راجع إشارات التعرّف و الطريقة و الفخّ، ثم طبّقها على أحد تمارين الدورات.',
+    minutes: 10,
+  };
+}
+
 function carteTask(unitId: number): PlanTask | null {
   const entree = Object.entries(MIND_MAPS_DATABASE).find(([, m]) => m.unitId === unitId);
   if (!entree) return null;
@@ -202,15 +250,18 @@ function poolForUnit(unitId: number) {
   return {
     capsule: MICRO_CAPSULES.filter((c) => c.unitId === unitId).map(capsuleTask),
     schema: SCHEMA_DRILLS.filter((d) => d.unitId === unitId).map(schemaTask),
+    montage: BAC_ARCHETYPES.filter((a) => archetypeHostUnit(a.id) === unitId)
+      .map((a) => montageTask(a.id))
+      .filter((t): t is PlanTask => t !== null),
     situation: SITUATION_INDEX.filter((s) => s.unitIds[0] === unitId).map(situationTask),
     carte: [carteTask(unitId)].filter((t): t is PlanTask => t !== null),
   };
 }
 
 /** Ordre d'alternance des gestes dans une journée ordinaire. */
-const ORDRE_NORMAL: TaskKind[] = ['capsule', 'schema', 'situation', 'carte'];
-/** Les deux derniers jours : rien de long, rien de neuf. */
-const ORDRE_CONSOLIDATION: TaskKind[] = ['capsule', 'schema', 'carte'];
+const ORDRE_NORMAL: TaskKind[] = ['capsule', 'schema', 'montage', 'situation', 'carte'];
+/** Les deux derniers jours : rien de long, rien de neuf — mais les méthodes, oui. */
+const ORDRE_CONSOLIDATION: TaskKind[] = ['capsule', 'schema', 'montage', 'carte'];
 
 /**
  * File globale des tâches : on déroule les unités dans l'ordre pondéré, et
@@ -221,8 +272,19 @@ const ORDRE_CONSOLIDATION: TaskKind[] = ['capsule', 'schema', 'carte'];
  * partir de zéro — est ce qui garantit que le plan AVANCE : la première
  * version reconstruisait la même journée à l'identique du jour 2 au jour 30.
  */
-function buildQueue(pools: Map<number, ReturnType<typeof poolForUnit>>, sequence: number[], besoin: number): PlanTask[] {
+function buildQueue(
+  pools: Map<number, ReturnType<typeof poolForUnit>>,
+  sequence: number[],
+  besoin: number,
+): PlanTask[] {
   const queue: PlanTask[] = [];
+  // Un curseur par couple (unité, geste). Indispensable : la séquence pondérée
+  // fait revenir une unité lourde plusieurs fois DANS LE MÊME tour, et un
+  // simple `tour % liste.length` lui faisait alors repousser la même capsule
+  // sept fois d'affilée. Résultat : les ressources en 2e position d'une unité
+  // chargée (ex. le 2e et le 3e montage de l'immunité) n'étaient jamais
+  // atteintes avant la fin du plan. Le curseur avance à chaque prise.
+  const curseurs = new Map<string, number>();
   const maxTours = 40;
   for (let tour = 0; tour < maxTours && queue.length < besoin; tour += 1) {
     for (const unitId of sequence) {
@@ -231,7 +293,10 @@ function buildQueue(pools: Map<number, ReturnType<typeof poolForUnit>>, sequence
       for (const kind of ORDRE_NORMAL) {
         const liste = pool[kind];
         if (liste.length === 0) continue;
-        queue.push(liste[tour % liste.length]);
+        const cle = `${unitId}:${kind}`;
+        const curseur = curseurs.get(cle) ?? 0;
+        queue.push(liste[curseur % liste.length]);
+        curseurs.set(cle, curseur + 1);
       }
     }
   }
@@ -316,6 +381,7 @@ export function minutesByUnit(plan: RevisionPlan): Record<number, number> {
 export const TASK_LABEL_AR: Record<TaskKind, string> = {
   capsule: 'فكرة في دقيقة',
   schema: 'ارسم من الذاكرة',
+  montage: 'تركيب متكرّر في البكالوريا',
   situation: 'وضعية كاملة',
   carte: 'خريطة ذهنية',
 };
