@@ -20,8 +20,13 @@ import {
   searchIdeas,
   unitPressure,
   verbFrequency,
+  bacEchoForSituation,
+  bacEchoForCapsule,
+  bacEchoForDrill,
+  observedUnitSharePercent,
 } from './bacSessionIndex';
 import { INITIAL_UNITS } from '../unitCatalog';
+import { SITUATION_INDEX } from './situationIndex';
 
 describe('banque أفكار التمارين — intégrité de la collecte', () => {
   it('couvre les huit sessions dépouillées, la plus récente en tête', () => {
@@ -174,5 +179,43 @@ describe('banque أفكار التمارين — accès de l’élève', () => {
 
   it('renvoie une liste vide sur une recherche vide plutôt que tout le corpus', () => {
     expect(searchIdeas('   ')).toEqual([]);
+  });
+});
+
+describe('banque أفكار التمارين — index inverse (sprint 18)', () => {
+  it('rattache une situation de l’app aux sessions où elle est réellement tombée', () => {
+    const echo = bacEchoForSituation('antibiotique_rifamycine');
+    expect(echo.years).toContain(2019);
+    expect(echo.ideaIds).toContain('bac2019_s2_e3');
+    expect(echo.years).toEqual([...echo.years].sort((a, b) => b - a));
+  });
+
+  it('ne renvoie aucun écho pour un identifiant inconnu, sans planter', () => {
+    expect(bacEchoForSituation('situation_qui_n_existe_pas')).toEqual({ years: [], ideaIds: [] });
+  });
+
+  it('couvre la majorité des situations de l’app par au moins une session', () => {
+    const avecEcho = SITUATION_INDEX.filter((s) => bacEchoForSituation(s.id).years.length > 0);
+    expect(avecEcho.length / SITUATION_INDEX.length).toBeGreaterThan(0.6);
+  });
+
+  it('donne aussi l’écho d’une capsule et d’un schéma', () => {
+    expect(bacEchoForCapsule('cap_u3_inhibition_type').years.length).toBeGreaterThanOrEqual(3);
+    expect(bacEchoForDrill('drill_chaine_photochimique').years.length).toBeGreaterThanOrEqual(3);
+  });
+
+  it('exprime la pression mesurée en pourcentage des points, total ≈ 100', () => {
+    const parts = observedUnitSharePercent();
+    const total = Object.values(parts).reduce((s, v) => s + v, 0);
+    expect(total).toBeGreaterThan(99);
+    expect(total).toBeLessThan(101);
+  });
+
+  it('confirme l’écart entre le poids annoncé du programme et la réalité', () => {
+    const parts = observedUnitSharePercent();
+    // U1 est annoncée à 10 % par la répartition du programme.
+    expect(parts[1]).toBeGreaterThan(10);
+    // U6 + U7 sont annoncées à 39 % : l'examen ne le confirme pas.
+    expect((parts[6] ?? 0) + (parts[7] ?? 0)).toBeLessThan(25);
   });
 });

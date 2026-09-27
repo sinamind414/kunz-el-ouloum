@@ -1177,3 +1177,66 @@ suite complète **1496 verts / 4 skipped** (toujours les 4 échecs pré-existant
 `lazyRouteChunks.smoke`).
 
 Le catalogue de provenance est renommé `data/bac_sessions_2019_2026.json`.
+
+---
+
+## Sprint 18 — faire travailler la banque : écho BAC et poids réconciliés
+
+Le sprint 17 a rendu la série complète. Une banque qu'on ne consulte que par
+l'onglet « أفكار التمارين » reste pourtant sous-employée : l'information
+« c'est tombé » doit apparaître **là où l'élève travaille déjà**.
+
+### 1. Index inverse : de la ressource vers les sessions
+
+`bacSessionIndex.ts` expose désormais `bacEchoForSituation`,
+`bacEchoForCapsule` et `bacEchoForDrill`. Conséquence directe dans
+« تمارين بالوضعيات » : chaque carte porte un badge **« بكالوريا 2024، 2023،
+2022 +2 »**, et la fiche ouverte liste toutes les sessions concernées.
+
+Ce n'est pas décoratif. **Plus de 60 % des 23 situations de l'app ont un écho
+réel** dans les sujets officiels — la banque de situations, écrite avant la
+collecte, se trouve validée par l'examen. Un test vérifie qu'aucun badge
+n'apparaît sans écho : on ne décore pas une situation inventée d'un vernis
+d'authenticité.
+
+### 2. Le poids d'examen du plan de révision, réconcilié
+
+Découverte la plus importante de ces trois sprints : **le poids annoncé par la
+répartition du programme et la pression réellement constatée à l'examen ne
+coïncident pas.**
+
+| Unité | Annoncé (programme) | Constaté (8 sessions) | Écart |
+|---|---|---|---|
+| U1 تركيب البروتين | 10 % | **19,7 %** | ×2 |
+| U4 المناعة | 13 % | **22,2 %** | +9 pts |
+| U5 الاتصال العصبي | 16 % | 19,7 % | +4 pts |
+| U3 النشاط الإنزيمي | 13 % | 16,2 % | +3 pts |
+| U6 التركيب الضوئي | 20 % | **11,1 %** | −9 pts |
+| U7 تحويل الطاقة | 19 % | **1,6 %** | ÷12 |
+| U2 بنية/وظيفة | 9 % | 4,8 % | −4 pts |
+
+U6 + U7 pèsent **39 % sur le papier et 12,7 % dans les faits** ; U1 + U4
+pèsent 23 % sur le papier et **42 % dans les faits**. Un élève qui suit la
+répartition officielle passe deux fois trop de temps sur la bioénergétique et
+deux fois trop peu sur la synthèse des protéines.
+
+**Décision prise** : le plan de révision ne choisit pas un camp. `unitWeight()`
+est maintenant la **moyenne des deux mesures** (`declaredWeight` +
+`observedWeight`) / 2, et les deux fonctions sont exportées pour rester
+inspectables. Raison : la pression constatée porte sur 8 sessions — c'est
+robuste mais pas une loi, et une unité peu tombée récemment peut revenir. La
+moyenne corrige l'erreur sans parier sur sa reconduction.
+
+Effet concret sur l'ordre de priorité (poids moyen + bonus de difficulté) :
+**U4 → U6 → U5 → U3 → U1 → U2 → U7 → U9/U10/U11 → U8**. U4 passe en tête, U7
+recule de la 2ᵉ à la 7ᵉ place — le temps qu'il rendait est désormais donné à
+l'immunologie et à la synthèse des protéines.
+
+Trois tests figent cette règle, dont deux qui documentent l'écart lui-même :
+« corrige le poids annoncé là où l'examen dit le contraire ».
+
+### Compteurs après sprint 18
+
+idées BAC 47 / 8 sessions · index inverse sur situations, capsules et schémas ·
+suite complète **1507 verts / 4 skipped** (toujours les 4 `lazyRouteChunks.smoke`
+pré-existants).

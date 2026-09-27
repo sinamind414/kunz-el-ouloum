@@ -1182,3 +1182,60 @@ export function danglingReferences(): string[] {
   }
   return dangling;
 }
+
+// ───────────────────────── Index inverse et pression mesurée ─────────────────
+// Ajouts du sprint 18 : la banque ne sert plus seulement à être lue de l'année
+// vers l'exercice, mais aussi de la RESSOURCE vers les sessions. Une situation
+// de l'app qui est réellement tombée trois fois au BAC ne doit pas avoir l'air
+// d'un exercice inventé pour l'occasion.
+
+export interface BacEcho {
+  /** Sessions où la ressource a un écho, décroissant. */
+  years: number[];
+  /** Identifiants des idées concernées. */
+  ideaIds: string[];
+}
+
+function echoFor(selector: (idea: BacExerciseIdea) => string[], id: string): BacEcho {
+  const touchees = BAC_IDEAS.filter((idea) => selector(idea).includes(id)).sort(
+    (a, b) => b.year - a.year || a.sujet - b.sujet || a.exercice - b.exercice,
+  );
+  return {
+    years: Array.from(new Set(touchees.map((i) => i.year))).sort((a, b) => b - a),
+    ideaIds: touchees.map((i) => i.id),
+  };
+}
+
+/** Sessions où une situation de `situationIndex.ts` a un écho réel. */
+export function bacEchoForSituation(situationId: string): BacEcho {
+  return echoFor((i) => i.situationIds, situationId);
+}
+
+/** Sessions où une micro-capsule a un écho réel. */
+export function bacEchoForCapsule(capsuleId: string): BacEcho {
+  return echoFor((i) => i.capsuleIds, capsuleId);
+}
+
+/** Sessions où un schéma à reproduire a un écho réel. */
+export function bacEchoForDrill(drillId: string): BacEcho {
+  return echoFor((i) => i.drillIds, drillId);
+}
+
+/**
+ * Pression mesurée d'une unité, en POURCENTAGE des points de l'examen, calculée
+ * sur les sessions couvertes (points obtenus comme unité principale).
+ *
+ * À lire à côté de `unitOpenings.bacWeightPercent`, qui donne le poids ANNONCÉ
+ * par la répartition du programme. Les deux ne disent pas la même chose, et
+ * c'est l'information la plus utile de toute la banque : voir le sprint 18 de
+ * docs/analyse/AUDIT_APP_5_LECONS_PRIORITAIRES.md.
+ */
+export function observedUnitSharePercent(): Record<number, number> {
+  const pression = unitPressure();
+  const total = pression.reduce((s, p) => s + p.pointsPrincipaux, 0);
+  const out: Record<number, number> = {};
+  for (const p of pression) {
+    out[p.unitId] = total === 0 ? 0 : Math.round((p.pointsPrincipaux / total) * 1000) / 10;
+  }
+  return out;
+}

@@ -12,6 +12,8 @@ import {
   prioritizedUnitIds,
   unitPriority,
   unitWeight,
+  declaredWeight,
+  observedWeight,
   PRESETS,
   TASK_LABEL_AR,
 } from './revisionPlan';
@@ -59,15 +61,36 @@ describe('plan — aucune ressource fantôme', () => {
 });
 
 describe('plan — règle 1 et 2 : poids d examen puis difficulté observée', () => {
-  it('la priorité combine le poids mesuré et le bonus de difficulté', () => {
-    // U6 : 20 % mesuré + 9 de difficulté = la plus prioritaire du programme.
-    expect(unitWeight(6)).toBe(20);
+  it('le poids retenu est la moyenne de l annoncé et du constaté (sprint 18)', () => {
+    for (const u of [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]) {
+      expect(unitWeight(u)).toBeCloseTo((declaredWeight(u) + observedWeight(u)) / 2, 5);
+    }
+    // U6 : 20 % annoncés par le programme, mais nettement moins constatés sur
+    // les sessions dépouillées — le plan ne suit ni l'un ni l'autre seul.
+    expect(declaredWeight(6)).toBe(20);
+    expect(observedWeight(6)).toBeLessThan(declaredWeight(6));
+    expect(unitWeight(6)).toBeLessThan(declaredWeight(6));
+    expect(unitWeight(6)).toBeGreaterThan(observedWeight(6));
+  });
+
+  it('corrige le poids annoncé là où l examen dit le contraire', () => {
+    // U1 est sous-évaluée par le programme et sur-représentée à l'examen.
+    expect(observedWeight(1)).toBeGreaterThan(declaredWeight(1));
+    expect(unitWeight(1)).toBeGreaterThan(declaredWeight(1));
+    // U4 aussi : c'est l'unité qui pèse le plus de points en tête d'exercice.
+    expect(observedWeight(4)).toBeGreaterThan(declaredWeight(4));
+  });
+
+  it('la priorité combine le poids d examen et le bonus de difficulté', () => {
     expect(unitPriority(6)).toBeGreaterThan(unitPriority(1));
     expect(unitPriority(4)).toBeGreaterThan(unitPriority(10));
   });
 
-  it('les unités non mesurées (8-11) reçoivent un poids par défaut, pas un poids inventé', () => {
-    for (const u of [8, 9, 10, 11]) expect(unitWeight(u)).toBe(5);
+  it('les unités du domaine 3 gardent un poids plancher, jamais zéro', () => {
+    for (const u of [8, 9, 10, 11]) {
+      expect(declaredWeight(u)).toBe(5);
+      expect(unitWeight(u)).toBeGreaterThan(0);
+    }
   });
 
   it('l ordre de priorité place U6, U5 et U4 dans les quatre premières', () => {

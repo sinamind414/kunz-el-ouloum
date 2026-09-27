@@ -13,6 +13,8 @@ import { cleanup, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { afterEach, describe, expect, it } from 'vitest';
 import SituationBankView from '../SituationBankView';
+import { bacEchoForSituation } from '../../data/bacSessionIndex';
+import { SITUATION_INDEX } from '../../data/situationIndex';
 import { SITUATION_COUNT, searchSituations } from '../../data/situationIndex';
 
 afterEach(cleanup);
@@ -105,6 +107,37 @@ describe('SituationBankView — fiche d une situation', () => {
       await user.click(screen.getByTestId(`situation-${id}`));
       expect(screen.getByTestId('fiche-documents'), id).toBeTruthy();
       cleanup();
+    }
+  });
+});
+
+describe('banque de situations — écho BAC (sprint 18)', () => {
+  it('signale sur la carte les situations réellement tombées, avec leurs sessions', () => {
+    render(<SituationBankView />);
+    const badge = screen.getByTestId('echo-bac-antibiotique_rifamycine');
+    const echo = bacEchoForSituation('antibiotique_rifamycine');
+    expect(badge.textContent).toContain('بكالوريا');
+    // La carte reste compacte : trois sessions au plus, puis un compteur.
+    expect(badge.textContent).toContain(String(echo.years[0]));
+    expect(badge.textContent).toContain(`+${echo.years.length - 3}`);
+  });
+
+  it('affiche toutes les sessions concernées dans la fiche ouverte', async () => {
+    const user = userEvent.setup();
+    render(<SituationBankView />);
+    await user.click(screen.getByTestId('situation-antibiotique_rifamycine'));
+    const echo = screen.getByTestId('fiche-echo-bac');
+    expect(echo.textContent).toContain('سقطت في البكالوريا');
+    for (const annee of bacEchoForSituation('antibiotique_rifamycine').years) {
+      expect(echo.textContent).toContain(String(annee));
+    }
+  });
+
+  it('n’invente pas de badge pour une situation sans écho', () => {
+    render(<SituationBankView />);
+    for (const s of SITUATION_INDEX) {
+      const attendu = bacEchoForSituation(s.id).years.length > 0;
+      expect(Boolean(screen.queryByTestId(`echo-bac-${s.id}`)), s.id).toBe(attendu);
     }
   });
 });

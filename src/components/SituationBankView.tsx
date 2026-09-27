@@ -11,6 +11,7 @@
 
 import { useMemo, useState } from 'react';
 import { ArrowRight, Eye, EyeOff, Lightbulb, Search, Target } from 'lucide-react';
+import { bacEchoForSituation } from '../data/bacSessionIndex';
 import {
   SITUATION_COUNT,
   coveredUnitIds,
@@ -82,6 +83,14 @@ function FicheSituation({ card, onClose }: { card: SituationCard; onClose: () =>
         <span className="text-[11px] font-bold px-2.5 py-1 rounded-lg bg-[#f3f4f5] text-[#506072] dark:bg-black/20 dark:text-gray-400">
           {card.minutes} دقيقة
         </span>
+        {bacEchoForSituation(card.id).years.length > 0 && (
+          <span
+            data-testid="fiche-echo-bac"
+            className="text-[11px] font-bold px-2.5 py-1 rounded-lg bg-[#fff7e0] text-[#8a6a00] dark:bg-black/20 dark:text-[#d9a400]"
+          >
+            سقطت في البكالوريا: {bacEchoForSituation(card.id).years.join(' · ')}
+          </span>
+        )}
       </div>
 
       <section className="mb-4">
@@ -290,6 +299,17 @@ export default function SituationBankView({ onBackToHome }: SituationBankViewPro
                 <span className="text-[10px] font-bold px-2 py-0.5 rounded-lg bg-[#f3f4f5] text-[#506072] dark:bg-black/20 dark:text-gray-400">
                   {s.minutes} د
                 </span>
+                {bacEchoForSituation(s.id).years.length > 0 && (
+                  <span
+                    data-testid={`echo-bac-${s.id}`}
+                    className="text-[10px] font-bold px-2 py-0.5 rounded-lg bg-[#fff7e0] text-[#8a6a00] dark:bg-black/20 dark:text-[#d9a400]"
+                  >
+                    بكالوريا {bacEchoForSituation(s.id).years.slice(0, 3).join('، ')}
+                    {bacEchoForSituation(s.id).years.length > 3
+                      ? ` +${bacEchoForSituation(s.id).years.length - 3}`
+                      : ''}
+                  </span>
+                )}
               </div>
             </button>
           ))}

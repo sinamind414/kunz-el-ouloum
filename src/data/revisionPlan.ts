@@ -11,8 +11,19 @@
 // reste, selon quatre règles explicites et testées.
 //
 // RÈGLE 1 — le poids réel à l'examen prime.
-//   Le score d'une unité part de son poids mesuré (docs/analyse/BILAN_DETAILLE_BAC_SVT.md,
-//   repris dans unitOpenings.ts) et non d'un ordre alphabétique ou du numéro d'unité.
+//   Le score d'une unité part de son poids d'examen et non d'un ordre
+//   alphabétique ou du numéro d'unité.
+//
+//   Sprint 18 : ce poids est désormais la MOYENNE de deux mesures qui ne
+//   disent pas la même chose, et les faire dialoguer vaut mieux que d'en
+//   choisir une :
+//     · le poids ANNONCÉ par la répartition du programme
+//       (`unitOpenings.bacWeightPercent`, issu de BILAN_DETAILLE_BAC_SVT.md) ;
+//     · la pression CONSTATÉE sur les 8 sessions réellement dépouillées
+//       (`observedUnitSharePercent()` de bacSessionIndex.ts).
+//   L'écart est spectaculaire sur U6+U7 (39 % annoncés, ~13 % constatés) et
+//   sur U1 (10 % annoncés, ~20 % constatés) : suivre aveuglément l'un ou
+//   l'autre produit un plan faux dans les deux cas.
 //
 // RÈGLE 2 — la difficulté ressentie corrige le poids.
 //   Le dépouillement des chaînes a classé les notions les plus demandées :
@@ -34,6 +45,7 @@ import { SCHEMA_DRILLS, type SchemaDrill } from './schemaDrills';
 import { SITUATION_INDEX, type SituationCard } from './situationIndex';
 import { MIND_MAPS_DATABASE } from './mindMapData';
 import { UNIT_OPENINGS } from './unitOpenings';
+import { observedUnitSharePercent } from './bacSessionIndex';
 
 export type TaskKind = 'capsule' | 'schema' | 'situation' | 'carte';
 
@@ -89,10 +101,23 @@ export const DIFFICULTY_BONUS: Record<number, number> = {
   1: 2,
 };
 
-/** Poids d'examen mesuré ; 5 par défaut là où il n'a pas été mesuré (U8-U11). */
-export function unitWeight(unitId: number): number {
+/** Poids ANNONCÉ par la répartition du programme ; 5 par défaut (U8-U11). */
+export function declaredWeight(unitId: number): number {
   const opening = UNIT_OPENINGS.find((o) => o.unitId === unitId);
   return opening?.bacWeightPercent ?? 5;
+}
+
+/** Pression CONSTATÉE sur les sessions dépouillées, en % des points. */
+export function observedWeight(unitId: number): number {
+  return observedUnitSharePercent()[unitId] ?? 0;
+}
+
+/**
+ * Poids d'examen retenu par le plan : moyenne du poids annoncé et de la
+ * pression constatée (règle 1). Aucune unité n'est effacée par l'autre source.
+ */
+export function unitWeight(unitId: number): number {
+  return (declaredWeight(unitId) + observedWeight(unitId)) / 2;
 }
 
 /** Priorité d'une unité = poids mesuré + bonus de difficulté observée. */
