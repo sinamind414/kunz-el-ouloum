@@ -98,8 +98,8 @@ Or le diagnostic du CMH/ABO/Rh était : *« ce n'est pas un blocage d'immunologi
 
 | # | Fichier | Clé / objet à ajouter | Type | Effort |
 |---|---|---|---|---|
-| 1 | `src/data/activeLessons.ts` + `quizCorpus.ts` | `prerequis2AS_genetique` (+8 QCM de diagnostic) | contenu | S |
-| 2 | `src/data/microRemediations.ts` | `role_interleukine`, `lt4_chef_orchestre`, `humoral_vs_cellulaire` | contenu | S |
+| ~~1~~ ✅ | `src/data/activeLessons.ts` + `quizCorpus.ts` | `prerequis2AS_genetique` (+8 QCM de diagnostic) | contenu | S |
+| ~~2~~ ✅ | `src/data/microRemediations.ts` | `role_interleukine`, `lt4_chef_orchestre`, `humoral_vs_cellulaire` | contenu | S |
 | 3 | `src/data/activeLessons.ts` | `immunity_cooperation` (4 étapes) | contenu | M |
 | 4 | `src/data/mindMapData.ts` | branche `unitId: 4` (coopération immunitaire) | contenu | M |
 | 5 | `src/data/activeLessons.ts` + `resumesLecons.ts` | `amino_acid_behavior` (4 micro-fiches) | contenu | M |
@@ -118,3 +118,35 @@ Or le diagnostic du CMH/ABO/Rh était : *« ce n'est pas un blocage d'immunologi
 - Audit **lexical** (comptage d'occurrences de mots-clés) : une notion peut être traitée avec un vocabulaire différent de celui recherché. Les ❌ ont été vérifiés manuellement, les ✅ ne garantissent pas la qualité pédagogique du contenu existant.
 - Le volume de contenu (`lessonIndex.ts` 648 Ko, `okacha*.ts` 740 Ko) n'a pas été relu intégralement.
 - Aucun test d'usage réel (pas de données de progression élèves dans ce dépôt).
+
+---
+
+## Journal d'implémentation
+
+### Sprint 1 — livré (2026-09-27)
+
+**Item 1 — module « تذكير بالمكتسبات القبلية » (génétique 2AS, unité 4, ≈ 15 min)**
+- `src/data/activeLessons.ts` : leçon active `prerequis2AS_genetique`, 4 blocs —
+  texte à trous (مورثة / أليل / نمط وراثي / نمط ظاهري / تساوي السيادة) avec 6 popups et micro-test,
+  `COMPARISON_TABLE` ABO ↔ HLA (4 critères), `SEQUENCE_ORDER` du raisonnement de greffe (5 étapes),
+  production libre « توأمان حقيقيان / أخوان ».
+- `LESSON_PROGRESSION` : `prerequis2AS_genetique → immunity_self_nonself` (réflexe `compare`).
+- `src/data/unitLessonSequences.ts` : placée **en tête de l'unité 4** → visible comme premier درس نشيط de la مناعة.
+- Câblage complet : `conceptRoutes.ts` (`genetique_prerequis`, unitId 4, doc `cmh_transplant_compatibility`),
+  `lessonGoldSummaries.ts`, `resumesLecons.ts` + `CHAPITRES_ANCRAGE` [14, 23] (ancrage livre vérifié),
+  `lessonIndexBuilder.ts` (unité 4) et `lessonIndex.ts` régénéré (`npx tsx scripts/build_lesson_index.ts`).
+- `src/quizCorpus.ts` : **8 QCM de diagnostic** ids 509-516, unitId 4 (allèle, codominance A//B,
+  localisation HLA, ABO ≠ compatibilité de greffe, haplotype, vrais jumeaux, génotype/phénotype, groupe [O]).
+  Ils alimentent aussi 8 flashcards dérivées.
+
+**Item 2 — 3 micro-reprises de coopération immunitaire**
+- `role_interleukine` (IL2 = messager d'activation, pas un anticorps), `lt4_chef_orchestre`
+  (LT4 coordonne, LTc tue via perforine), `humoral_vs_cellulaire` (transfert par sérum vs par cellules).
+
+**Verrous** : nouveau fichier `src/data/prerequis2AS.lock.test.ts` (14 tests). Compteurs figés mis à jour
+de façon explicite : résumés 44 → 45, flashcards 511 → 519 / dérivées 508 → 516, leçons actives affichées 6 → 7,
+séquence officielle 53 → 54 clés (12 nulls documentés). Suite complète : 1193 tests verts, `tsc --noEmit` propre
+(seuls restent les 4 échecs pré-existants de `lazyRouteChunks.smoke.test.ts`, qui exigent un `npm run build`).
+
+**Reste du backlog** : items 3 à 11 (coopération `immunity_cooperation`, branche mindMap U4,
+comportement des acides aminés + simulateur d'électrophorèse, inhibiteurs, atelier 6 courbes, synthèse U6).

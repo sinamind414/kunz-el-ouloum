@@ -109,6 +109,18 @@ export const RESUMES_LECONS: Record<string, ResumeLecon> = {
     ],
     termeBac: 'الذات واللاذات / المعقد الملائم للنسج (CMH)',
   },
+  // Rappel des acquis 2AS mobilisés par l'unité 4 (ancré ch. 14 + 23).
+  'prerequis2AS_genetique': {
+    objectif: 'استرجع مفاهيم المورثة والأليل والنمط الوراثي قبل دراسة الزمر الدموية ونظام HLA.',
+    points: [
+      'تحمل الصبغيات المورثات، ولكل مورثة أشكال مختلفة تسمى الأليلات في نفس الموقع.',
+      'يمثل النمط الوراثي مجموع الأليلات، أما النمط الظاهري فهو الصفة المعبَّر عنها.',
+      'في نظام الزمر الدموية ABO يكون الأليلان A و B متساويي السيادة ويسودان على O.',
+      'تحدد مورثات نظام HLA (CMH) محددات التوافق النسيجي المحمولة على غشاء الخلايا.',
+      'اختلاف الأليلات بين المعطي والمستقبل هو أساس رفض الطعم في تمارين البكالوريا.',
+    ],
+    termeBac: 'الأليل / النمط الوراثي / التوافق النسيجي (HLA)',
+  },
   'immunity_self_nonself': {
     objectif: 'حدّد أساس التعرف على الذات واللاذات ودور CMH فيه.',
     points: [
@@ -537,6 +549,7 @@ export const CHAPITRES_ANCRAGE: Record<string, number[]> = {
   'd1-u3-l1-enzyme': [9, 10],
   'phase4_chapitres_7_8': [9, 10, 11, 12],
   'phase5_chapitres_9_10': [14, 15, 16, 17],
+  'prerequis2AS_genetique': [14, 23],
   'immunity_self_nonself': [14],
   'phase6_chapitres_11_12': [17, 21],
   'immunity_humoral_response': [16, 17],

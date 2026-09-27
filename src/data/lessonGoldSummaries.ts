@@ -243,6 +243,28 @@ export const LESSON_GOLD_SUMMARIES: Record<string, LessonGoldSummary> = {
     recallQuestionAr: 'ما العلاقة بين البنية والوظيفة البروتينية؟',
     review: { reviewed: false },
   },
+  'prerequis2AS_genetique': {
+    lessonId: 'prerequis2AS_genetique',
+    status: 'adaptation_pedagogique',
+    source: { sourceLabel: 'Rappel Kunz — acquis 2AS mobilisés par l\'unité 4 (livre officiel, ch. 14 et 23)' },
+    missionAr: 'ما المكتسبات الوراثية القبلية اللازمة لفهم الزمر الدموية ونظام HLA في وحدة المناعة؟',
+    mechanismAr: [
+      'تحمل الصبغيات المورثات، ولكل مورثة أشكال بديلة تسمى الأليلات',
+      'يمثل النمط الوراثي مجموع الأليلات (A//O)، والنمط الظاهري الصفة المعبَّر عنها [A]',
+      'في نظام ABO يكون A و B متساويي السيادة ويسودان على الأليل O',
+      'في نظام HLA (CMH) كل الأليلات متساوية السيادة وعددها كبير جداً',
+      'يورَث نمط فرداني من الأب وآخر من الأم، فتختلف محددات الأفراد',
+      'اختلاف المحددات بين المعطي والمستقبل يفسر رفض الطعم',
+    ],
+    evidenceAr:
+      'جدول أنماط وراثية HLA لعائلة : التوأمان الحقيقيان لهما نفس الأليلات فيُقبل الطعم، والأخوان يختلفان في نمط فرداني فيُرفض.',
+    vocabulary: ['المورثة', 'الأليل', 'النمط الوراثي', 'النمط الظاهري', 'تساوي السيادة', 'HLA', 'النمط الفرداني'],
+    bacSentenceFrameAr:
+      'بما أن الشخصين يحملان ______ مختلفة في نظام ______، فإن محددات المعطي تُعتبر ______ فيحدث ______.',
+    commonErrorAr: 'الخلط بين توافق الزمرة الدموية (ABO) والتوافق النسيجي (HLA) عند الحكم على نجاح الطعم.',
+    recallQuestionAr: 'ما الفرق بين النمط الوراثي والنمط الظاهري في نظام ABO؟',
+    review: { reviewed: false },
+  },
   'immunity_self_nonself': {
     lessonId: 'immunity_self_nonself',
     status: 'adaptation_pedagogique',

@@ -2,7 +2,7 @@
 // (src/data/bookIndex.ts : appariement leçons↔chapitres + traçabilité uniteId).
 // Les verrous de l'INDEX lui-même sont dans bookIndex.lock.test.ts.
 // Fige : la recette norm, la couverture uniteId 1-11 ↔ chapitres de l'index,
-// l'appariement leçons↔chapitres (42 mappés / 11 nulls DOCUMENTÉS, 3 ancres),
+// l'appariement leçons↔chapitres (42 mappés / 12 nulls DOCUMENTÉS, 3 ancres),
 // la propagation du flag ambigu, et le décalage programme/livre de la leçon
 // « الظواهر المرتبطة بالغوص » (séquence U9, chapitre C51 = U11).
 
@@ -84,8 +84,8 @@ describe('bookIndex — uniteId 1-11 ↔ chapitres de l index (traçabilité str
 describe('bookIndex — appariement leçons ↔ chapitres (mesure figée)', () => {
   const cles = toutesCles();
 
-  it('53 clés dans la séquence officielle ; 42 mappées, 11 nulls documentés', () => {
-    expect(cles).toHaveLength(53);
+  it('54 clés dans la séquence officielle ; 42 mappées, 12 nulls documentés', () => {
+    expect(cles).toHaveLength(54);
     const mappes = cles.filter((k) => sourceLivre(k, cleToTitre(k)) !== null);
     expect(mappes).toHaveLength(42);
     const nulls = cles.filter((k) => sourceLivre(k, cleToTitre(k)) === null);
@@ -102,6 +102,7 @@ describe('bookIndex — appariement leçons ↔ chapitres (mesure figée)', () =
       'phase22_chapitres_43_44', // culture générale — hors TDM
       'phase22_chapitres_43_44_2', // culture générale — hors TDM
       'phase5_chapitres_9_10_2', // ABO/Rh : aucune preuve OCR dans U4
+      'prerequis2AS_genetique', // rappel des acquis 2AS : pas de chapitre TDM dédié
     ]);
   });
 

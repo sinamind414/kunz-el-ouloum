@@ -213,6 +213,50 @@ export const MICRO_REMEDIATIONS: Record<string, MicroRemediation> = {
     reflexId: 'analyse',
     preferredSupportTarget: 'document',
   },
+  // ── U4 — coopération immunitaire (audit 2026-09 : 0 micro-reprise ciblée) ──
+  'role_interleukine': {
+    id: 'mr_role_interleukine',
+    conceptId: 'immunity_humoral_response',
+    triggerCodes: ['MISSING_INTERLEUKINE', 'IL2_AS_ANTIBODY', 'NO_COOPERATION_SIGNAL'],
+    titleAr: 'الإنترلوكين رسول تنشيط — لا جسم مضاد',
+    estimatedMinutes: 3,
+    explanationAr:
+      'الإنترلوكين 2 (IL2) بلّغ كيميائي تفرزه اللمفاويات LT4 المنشطة. دوره تحفيز التكاثر النسيلي وتمايز LB و LT8. إنه لا يرتبط بالمستضد ولا يعدّله : الذي يرتبط بالمستضد هو الجسم المضاد أو المستقبل الغشائي.',
+    activeQuestionAr: 'ما الخلية التي تفرز الإنترلوكين 2، وعلى أي خلايا يؤثر، وبأي أثر؟',
+    acceptedEvidence: ['LT4', 'الإنترلوكين', 'التكاثر النسيلي', 'التمايز'],
+    nextAction: 'retry_document',
+    reflexId: 'explain',
+    preferredSupportTarget: 'lesson',
+  },
+  'lt4_chef_orchestre': {
+    id: 'mr_lt4_chef_orchestre',
+    conceptId: 'immunity_cellular_response',
+    triggerCodes: ['MISSING_LT4', 'LT4_KILLS_CELL', 'CONFUSION_LT4_LT8'],
+    titleAr: 'LT4 يُنسّق — LT8 هي التي تقتل',
+    estimatedMinutes: 3,
+    explanationAr:
+      'اللمفاوية LT4 تتعرف على المستضد المعروض مع CMH-II فوق الخلية العارضة، ثم تفرز الإنترلوكين : هي المنسّق. اللمفاوية LTc الناتجة عن LT8 هي وحدها التي تحدث الحل الخلوي بالبرفورين. بدون LT4 لا تنطلق أي استجابة نوعية.',
+    activeQuestionAr: 'في وثيقة تبين تخريب خلية مصابة : أي لمفاوية تنفّذ الحل الخلوي وأي لمفاوية تسمح بتكوينها؟',
+    acceptedEvidence: ['LT4', 'LTc', 'البرفورين', 'الإنترلوكين'],
+    nextAction: 'retry_document',
+    reflexId: 'analyse',
+    preferredSupportTarget: 'document',
+  },
+  'humoral_vs_cellulaire': {
+    id: 'mr_humoral_vs_cellulaire',
+    conceptId: 'immunity_memory',
+    triggerCodes: ['CONFUSION_HUMORAL_CELLULAR', 'ANTIBODY_KILLS_CELL', 'WRONG_EFFECTOR'],
+    titleAr: 'المصل ينقل الخلطية — الخلايا تنقل الخلوية',
+    estimatedMinutes: 3,
+    explanationAr:
+      'الاستجابة الخلطية تعمل ضد مستضد حر في السوائل : المنفّذ هو الجسم المضاد الذي يفرزه البلازموسيت، ويمكن نقلها بالمصل. الاستجابة الخلوية تعمل ضد خلية مصابة أو غريبة : المنفّذ هو LTc، ولا تُنقل إلا بالخلايا اللمفاوية.',
+    activeQuestionAr:
+      'تجربة نقل : المصل وحده يحمي الفأر. ما نمط الاستجابة المستنتج، وما العنصر المنفّذ؟',
+    acceptedEvidence: ['المصل', 'الأجسام المضادة', 'خلطية', 'اللمفاويات'],
+    nextAction: 'schedule_recall',
+    reflexId: 'compare',
+    preferredSupportTarget: 'document',
+  },
   'method_conclusion_repeat': {
     id: 'mr_method_conclusion_repeat',
     conceptId: 'enzymes',

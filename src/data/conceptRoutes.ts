@@ -74,6 +74,14 @@ export const CONCEPT_ROUTES: Record<string, ConceptRoute> = {
     documentExerciseId: 'mutation_protein_function',
     survivalCardId: 'sc_adn_proteine',
   },
+  // Prérequis 2AS de l'unité 4 : génétique de base (مورثة/أليل/نمط وراثي) —
+  // sans eux, CMH/HLA et ABO restent du par-cœur. Route vers la leçon de rappel.
+  genetique_prerequis: {
+    conceptId: 'genetique_prerequis',
+    unitId: 4,
+    lessonId: 'prerequis2AS_genetique',
+    documentExerciseId: 'cmh_transplant_compatibility',
+  },
   immunity_self_nonself: {
     conceptId: 'immunity_self_nonself',
     unitId: 4,
