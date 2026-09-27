@@ -20,7 +20,8 @@
     "lint": "tsc --noEmit",
     "db:migrate": "tsx server/migrate.ts",
     "verify:store": "tsx server/verify.ts",
-    "migrate": "tsx server/migrate.ts"
+    "migrate": "tsx server/migrate.ts",
+    "test:build": "vite build && vitest run src/build/lazyRouteChunks.smoke.test.ts"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.115.0",

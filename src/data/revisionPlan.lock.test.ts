@@ -19,6 +19,7 @@ import {
   TASK_LABEL_AR,
 } from './revisionPlan';
 import { BAC_ARCHETYPES } from './bacArchetypes';
+import { IDEA_BY_ID } from './bacSessionIndex';
 import { INITIAL_UNITS } from '../unitCatalog';
 import { CAPSULE_BY_ID } from './microCapsules';
 import { SCHEMA_DRILL_BY_ID } from './schemaDrills';
@@ -226,5 +227,36 @@ describe('plan — règle 3 bis : les montages récurrents entrent dans la journ
     expect(montage!.actionAr).toMatch(/20\d\d/);
     expect(montage!.minutes).toBeLessThanOrEqual(12);
     expect(TASK_LABEL_AR.montage).toBeTruthy();
+  });
+});
+
+describe('plan — règle 3 ter : le geste d’écriture (sprint 25)', () => {
+  it('programme des rédactions sur des exercices réellement tombés', () => {
+    const plan = buildRevisionPlan({ daysLeft: 14, minutesPerDay: 120 });
+    const redactions = plan.days.flatMap((j) => j.tasks).filter((t) => t.kind === 'redaction');
+    expect(redactions.length).toBeGreaterThan(0);
+    for (const t of redactions) expect(IDEA_BY_ID[t.refId], t.refId).toBeTruthy();
+  });
+
+  it('annonce la consigne à rédiger, pas seulement l’exercice', () => {
+    const plan = buildRevisionPlan({ daysLeft: 14, minutesPerDay: 120 });
+    const r = plan.days.flatMap((j) => j.tasks).find((t) => t.kind === 'redaction');
+    expect(r!.actionAr).toContain('التعليمة');
+    expect(r!.titleAr).toMatch(/20\d\d/);
+  });
+
+  it('exclut la rédaction des deux derniers jours, comme les situations', () => {
+    const plan = buildRevisionPlan({ daysLeft: 10, minutesPerDay: 120 });
+    for (const j of plan.days.filter((x) => x.consolidationOnly)) {
+      expect(j.tasks.every((t) => t.kind !== 'redaction'), `jour ${j.day}`).toBe(true);
+    }
+  });
+
+  it('touche plusieurs unités différentes sur un plan d’un mois', () => {
+    const plan = buildRevisionPlan({ daysLeft: 30, minutesPerDay: 120 });
+    const unites = new Set(
+      plan.days.flatMap((j) => j.tasks).filter((t) => t.kind === 'redaction').map((t) => t.unitId),
+    );
+    expect(unites.size).toBeGreaterThanOrEqual(5);
   });
 });

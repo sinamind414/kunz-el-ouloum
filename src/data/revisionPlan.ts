@@ -38,6 +38,13 @@
 //   restent autorisés les deux derniers jours — réviser une méthode n'est pas
 //   découvrir une notion.
 //
+// RÈGLE 3 ter (sprint 25) — écrire, pas seulement réviser.
+//   L'atelier du sprint 24 permet de rédiger la réponse d'un exercice tombé et
+//   d'être repris sur la forme. Le plan programme ce geste : une rédaction par
+//   passage d'unité, sur un exercice réel de cette unité, avec la consigne que
+//   le sujet a posée. C'est le seul geste du plan où l'élève PRODUIT un texte.
+//   Exclu des deux derniers jours, comme les situations : trop long.
+//
 // RÈGLE 3 — alternance des gestes.
 //   Une journée ne peut pas être faite d'un seul type de tâche : lire une
 //   capsule, refaire un schéma et traiter une situation ne sollicitent pas la
@@ -52,10 +59,12 @@ import { SCHEMA_DRILLS, type SchemaDrill } from './schemaDrills';
 import { SITUATION_INDEX, type SituationCard } from './situationIndex';
 import { MIND_MAPS_DATABASE } from './mindMapData';
 import { UNIT_OPENINGS } from './unitOpenings';
-import { observedUnitSharePercent, IDEA_BY_ID } from './bacSessionIndex';
+import { observedUnitSharePercent, BAC_IDEAS, IDEA_BY_ID } from './bacSessionIndex';
+import { VERB_FAMILY_BY_ID } from './verbDemands';
+import { famillesDemandeesParIdee } from './bacWriting';
 import { BAC_ARCHETYPES, ideasOfArchetype, yearsOfArchetype } from './bacArchetypes';
 
-export type TaskKind = 'capsule' | 'schema' | 'montage' | 'situation' | 'carte';
+export type TaskKind = 'capsule' | 'schema' | 'montage' | 'redaction' | 'situation' | 'carte';
 
 export interface PlanTask {
   kind: TaskKind;
@@ -231,6 +240,24 @@ function montageTask(archetypeId: string): PlanTask | null {
   };
 }
 
+/** Rédaction d'une réponse sur un exercice réel de l'unité. */
+function redactionTasks(unitId: number): PlanTask[] {
+  return BAC_IDEAS.filter((idea) => idea.unitIds[0] === unitId).map((idea) => {
+    const familles = famillesDemandeesParIdee(idea);
+    const principale = familles[0] ? VERB_FAMILY_BY_ID[familles[0]] : undefined;
+    return {
+      kind: 'redaction' as const,
+      refId: idea.id,
+      unitId,
+      titleAr: `اكتب جواب تمرين ${idea.year}: ${idea.titleAr}`,
+      actionAr: principale
+        ? `افتح التمرين في ورشة الأفكار و اكتب جواب التعليمة « ${principale.titleAr} »، ثم راجع فحص الشكل.`
+        : 'افتح التمرين في ورشة الأفكار و اكتب جوابك، ثم راجع فحص الشكل.',
+      minutes: 15,
+    };
+  });
+}
+
 function carteTask(unitId: number): PlanTask | null {
   const entree = Object.entries(MIND_MAPS_DATABASE).find(([, m]) => m.unitId === unitId);
   if (!entree) return null;
@@ -253,13 +280,21 @@ function poolForUnit(unitId: number) {
     montage: BAC_ARCHETYPES.filter((a) => archetypeHostUnit(a.id) === unitId)
       .map((a) => montageTask(a.id))
       .filter((t): t is PlanTask => t !== null),
+    redaction: redactionTasks(unitId),
     situation: SITUATION_INDEX.filter((s) => s.unitIds[0] === unitId).map(situationTask),
     carte: [carteTask(unitId)].filter((t): t is PlanTask => t !== null),
   };
 }
 
 /** Ordre d'alternance des gestes dans une journée ordinaire. */
-const ORDRE_NORMAL: TaskKind[] = ['capsule', 'schema', 'montage', 'situation', 'carte'];
+const ORDRE_NORMAL: TaskKind[] = [
+  'capsule',
+  'schema',
+  'montage',
+  'redaction',
+  'situation',
+  'carte',
+];
 /** Les deux derniers jours : rien de long, rien de neuf — mais les méthodes, oui. */
 const ORDRE_CONSOLIDATION: TaskKind[] = ['capsule', 'schema', 'montage', 'carte'];
 
@@ -399,6 +434,7 @@ export const TASK_LABEL_AR: Record<TaskKind, string> = {
   capsule: 'فكرة في دقيقة',
   schema: 'ارسم من الذاكرة',
   montage: 'تركيب متكرّر في البكالوريا',
+  redaction: 'اكتب جواباً كاملاً',
   situation: 'وضعية كاملة',
   carte: 'خريطة ذهنية',
 };

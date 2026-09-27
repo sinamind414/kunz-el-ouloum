@@ -1625,3 +1625,53 @@ Chaîne complète sur un écran : 47 exercices réels · 10 montages · 12 famil
 de consignes · contrôle de forme · brouillons persistants. Suite complète
 **1590 verts / 4 skipped** (toujours les 4 `lazyRouteChunks.smoke`
 pré-existants).
+
+---
+
+## Sprint 25 — la suite passe au vert, et le plan fait écrire
+
+### 1. Les quatre « échecs » de `lazyRouteChunks.smoke` : ni bugs, ni fatalité
+
+Ils traînaient depuis le premier sprint, systématiquement décrits comme
+« pré-existants, ne pas toucher ». Diagnostic : **ce ne sont pas des bugs**.
+Ces quatre contrôles portent sur le résultat d'un build (`dist/assets`), qui
+n'existe pas dans une copie fraîche du dépôt — d'où quatre `ENOENT`
+permanents. Vérification faite : après `vite build`, **les quatre passent**.
+
+Le vrai défaut était donc ailleurs : quatre lignes rouges permanentes que plus
+personne ne lisait, et qui masquaient les vraies régressions.
+
+Règle adoptée, écrite dans le fichier :
+- **pas de build** → contrôles ignorés, avec le message qui dit quoi lancer ;
+- **build présent** → contrôles exécutés normalement ;
+- **`REQUIRE_BUILD_SMOKE=1`** → l'absence de build devient une erreur (CI, où le
+  build précède les tests et où son absence est un incident réel).
+
+Nouveau script : `npm run test:build` (build + smoke). Vérifié dans les deux
+modes.
+
+**Résultat : la suite est intégralement verte pour la première fois —
+123 fichiers, 1595 tests, 8 ignorés (4 contrôles de build + 4 skips
+historiques), 0 échec.**
+
+### 2. Un sixième geste dans le plan : écrire
+
+L'atelier du sprint 24 était atteignable depuis les annales seulement. Le plan
+le programme désormais : **« اكتب جواب تمرين 2023 : المبيد DCMU »**, 15 minutes,
+avec la consigne que le sujet a réellement posée (« اقترح فرضية », « ناقش »…).
+C'est le seul geste du plan où l'élève **produit** un texte plutôt que de
+réviser un contenu — et il est exclu des deux derniers jours, comme les
+situations longues.
+
+Effet de bord utile : la fonction qui déduit les consignes d'un exercice a été
+extraite du composant vers `src/data/bacWriting.ts`. Un module de données ne
+doit pas importer un composant pour construire un plan.
+
+Sur un plan de 30 jours, les rédactions couvrent **au moins cinq unités
+différentes**, toutes adossées à des exercices réels — vérifié par test.
+
+### Compteurs après sprint 25
+
+6 gestes dans le plan (capsule · schéma · montage · **rédaction** · situation ·
+carte) · 47 exercices réels · 10 montages · 12 familles de consignes ·
+**suite complète 1595 verts / 8 skipped / 0 rouge**.

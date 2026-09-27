@@ -28,6 +28,7 @@ const KIND_CLASS: Record<PlanTask['kind'], string> = {
   capsule: 'bg-[#fff7e0] text-[#8a6a00] dark:bg-black/20 dark:text-[#d9a400]',
   schema: 'bg-amber-50 text-amber-800 dark:bg-amber-500/10 dark:text-amber-400',
   montage: 'bg-[#f3e8ff] text-[#6b21a8] dark:bg-purple-500/10 dark:text-purple-300',
+  redaction: 'bg-[#e0f2fe] text-[#075985] dark:bg-sky-500/10 dark:text-sky-300',
   situation: 'bg-[#e8f5ee] text-[#006d37] dark:bg-black/20 dark:text-[#2ecc71]',
   carte: 'bg-blue-50 text-blue-800 dark:bg-blue-500/10 dark:text-blue-300',
 };

@@ -19,7 +19,8 @@ import { useEffect, useMemo, useState } from 'react';
 import { AlertTriangle, ArrowRight, ListChecks, PenLine } from 'lucide-react';
 import type { BacExerciseIdea } from '../data/bacSessionIndex';
 import { archetypesForIdea } from '../data/bacArchetypes';
-import { VERB_FAMILY_BY_ID, classifyVerb } from '../data/verbDemands';
+import { VERB_FAMILY_BY_ID } from '../data/verbDemands';
+import { famillesDemandeesParIdee } from '../data/bacWriting';
 import { structureVerdict } from '../data/answerStructureCheck';
 
 interface Props {
@@ -29,18 +30,11 @@ interface Props {
 
 const cleStockage = (ideaId: string, familyId: string) => `kunz.bacTrainer.${ideaId}.${familyId}`;
 
-/** Familles de consignes réellement demandées par cet exercice, sans doublon. */
-export function famillesDemandees(idea: BacExerciseIdea): string[] {
-  const vues: string[] = [];
-  for (const v of idea.verbsAr) {
-    const f = classifyVerb(v);
-    if (f && !vues.includes(f.id)) vues.push(f.id);
-  }
-  return vues;
-}
+/** Ré-export : la logique vit dans `data/bacWriting.ts` (partagée avec le plan). */
+export const famillesDemandees = famillesDemandeesParIdee;
 
 export default function BacIdeaTrainer({ idea, onClose }: Props) {
-  const familles = useMemo(() => famillesDemandees(idea), [idea]);
+  const familles = useMemo(() => famillesDemandeesParIdee(idea), [idea]);
   const [familleId, setFamilleId] = useState(familles[0] ?? '');
   const [texte, setTexte] = useState('');
   const [notionVisible, setNotionVisible] = useState(false);
