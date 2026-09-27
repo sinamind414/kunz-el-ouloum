@@ -23,7 +23,9 @@ export const OFFICIAL_PROGRAM_SEQUENCE: Record<number, string[]> = {
   // la plus difficile de l'unité et prérequis de toute lecture d'électrophorèse.
   2: ['amino_acid_behavior', 'lecon_representation', 'phase2_chapitres_3_4_2', 'phase3_chapitres_5_6'],
   // U3 — إنزيمي (TDM p.57 : 4 chapitres) : 2e moitié de phase3 + activité/structure + phase4 complète
-  3: ['phase3_chapitres_5_6_2', 'lecon_activite_structure', 'phase4_chapitres_7_8'],
+  // Ajout 2026-09 (audit, items 7 et 8) : leçon active des MTHBBITAT (inhibiteurs)
+  // + atelier des 6 courbes, en clôture d'unité — priorité n°1 du plan de renforcement.
+  3: ['phase3_chapitres_5_6_2', 'lecon_activite_structure', 'phase4_chapitres_7_8', 'enzyme_inhibitors'],
   // U4 — مناعة (TDM p.73 : 11 chapitres, 6 couverts) : phases 5,6,7 complètes
   // Ajout 2026-09 : leçon active de RAPPEL des acquis 2AS (مورثة/أليل/نمط وراثي)
   // placée en tête d'unité — prérequis de CMH/HLA et ABO (≈ 15 min).

@@ -61,6 +61,12 @@ export const SPACED_RECALL_PROMPTS: Record<string, SpacedRecallPrompt[]> = {
     { stage: 2, conceptId: 'protein_structure_function', questionAr: 'ما العلاقة بين البنية والوظيفة البروتينية؟', reflexId: 'interpret', acceptedEvidence: ['بنية', 'وظيفة', 'موقع نشط', 'تفاعل'], minEvidence: 3 },
     { stage: 3, conceptId: 'protein_structure_function', questionAr: 'اكتب جواب BAC قصير: كيف تؤدي الطفرة إلى تغير وظيفي؟', reflexId: 'validate', acceptedEvidence: ['طفرة', 'حمض أميني', 'بنية', 'وظيفة', 'مرض'], minEvidence: 3 },
   ],
+  enzyme_inhibitors: [
+    { stage: 0, conceptId: 'enzyme_inhibitors', questionAr: 'ما المعيار الأول للتمييز بين نوعي المثبط ؟', reflexId: 'explain', acceptedEvidence: ['Vmax', 'الشاهد', 'مقارنة'], minEvidence: 2 },
+    { stage: 1, conceptId: 'enzyme_inhibitors', questionAr: 'مثبط رفع Km دون أن يغير Vmax : ما نوعه ولماذا ؟', reflexId: 'explain', acceptedEvidence: ['تنافسي', 'الموقع الفعال', 'الركيزة', 'Km'], minEvidence: 3 },
+    { stage: 2, conceptId: 'enzyme_inhibitors', questionAr: 'فسّر لماذا لا تلغي زيادة الركيزة أثر المثبط اللاتنافسي.', reflexId: 'interpret', acceptedEvidence: ['موقع آخر', 'البنية', 'Vmax', 'الموقع الفعال'], minEvidence: 3 },
+    { stage: 3, conceptId: 'enzyme_inhibitors', questionAr: 'اكتب إجابة BAC قصيرة : كيف تحدد نوع مثبط من وثيقة منحنيات ؟', reflexId: 'validate', acceptedEvidence: ['الشاهد', 'Vmax', 'Km', 'تنافسي', 'لا تنافسي'], minEvidence: 3 },
+  ],
   amino_acid_behavior: [
     { stage: 0, conceptId: 'amino_acid_behavior', questionAr: 'ماذا تعني نقطة التعادل الكهربائي pHi؟', reflexId: 'explain', acceptedEvidence: ['pHi', 'التعادل', 'الشحنة'], minEvidence: 2 },
     { stage: 1, conceptId: 'amino_acid_behavior', questionAr: 'حمض أميني pHi = 6 في وسط pH = 2 : ما شحنته ولماذا؟', reflexId: 'explain', acceptedEvidence: ['موجبة', 'pHi', 'أقل', 'بروتونات'], minEvidence: 3 },

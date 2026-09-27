@@ -243,6 +243,28 @@ export const LESSON_GOLD_SUMMARIES: Record<string, LessonGoldSummary> = {
     recallQuestionAr: 'ما العلاقة بين البنية والوظيفة البروتينية؟',
     review: { reviewed: false },
   },
+  'enzyme_inhibitors': {
+    lessonId: 'enzyme_inhibitors',
+    status: 'adaptation_pedagogique',
+    source: { sourceLabel: 'Résumé Kunz — livre officiel SVT DZ, ch. 10 (النشاط الإنزيمي وعلاقته ببنية الإنزيم) et 12 (تأثير الحرارة على نشاط الإنزيم)' },
+    missionAr: 'كيف نحدد نوع المثبط الإنزيمي انطلاقاً من منحنى V = f([S]) ؟',
+    mechanismAr: [
+      'الشاهد يعطي المرجع : Vmax و Km للإنزيم دون مثبط',
+      'المثبط التنافسي يشبه الركيزة ويحتل الموقع الفعال',
+      'زيادة الركيزة تزيحه ⟵ نفس Vmax لكن Km يرتفع',
+      'المثبط اللاتنافسي يتثبت على موقع آخر ويشوه الموقع الفعال',
+      'لا يمكن إزاحته ⟵ Vmax تنخفض مهما زاد تركيز الركيزة',
+    ],
+    evidenceAr:
+      'منحنيان في وجود مثبط مقارنة بالشاهد : A يبلغ نفس Vmax بـ Km أكبر (تنافسي)، B لا يبلغ Vmax الشاهد (لا تنافسي).',
+    vocabulary: ['المثبط التنافسي', 'المثبط اللاتنافسي', 'Vmax', 'Km', 'الموقع الفعال', 'التشبع', 'الشاهد'],
+    bacSentenceFrameAr:
+      'بما أن Vmax ______ و Km ______ مقارنة بالشاهد، فإن المثبط ______ لأنه يتثبت على ______.',
+    commonErrorAr:
+      'الاستنتاج من شكل المنحنى دون مقارنة بالشاهد، أو الخلط بين استقرار السرعة بسبب التشبع واستقرارها بسبب نفاد الركيزة في المنحنيات الزمنية.',
+    recallQuestionAr: 'مثبط لم يغير Vmax لكنه رفع Km : ما نوعه، وأين يتثبت ؟',
+    review: { reviewed: false },
+  },
   'amino_acid_behavior': {
     lessonId: 'amino_acid_behavior',
     status: 'adaptation_pedagogique',

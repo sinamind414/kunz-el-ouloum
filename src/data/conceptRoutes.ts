@@ -89,6 +89,14 @@ export const CONCEPT_ROUTES: Record<string, ConceptRoute> = {
     lessonId: 'immunity_cooperation',
     documentExerciseId: 'lt_target_cell_response',
   },
+  // Audit items 7-8 : inhibiteurs enzymatiques et lecture des courbes.
+  enzyme_inhibitors: {
+    conceptId: 'enzyme_inhibitors',
+    unitId: 3,
+    lessonId: 'enzyme_inhibitors',
+    documentExerciseId: 'michaelis_courbe',
+    survivalCardId: 'sc_enzymes',
+  },
   // Audit item 5 : comportement des acides aminés (charge / pHi / migration).
   amino_acid_behavior: {
     conceptId: 'amino_acid_behavior',

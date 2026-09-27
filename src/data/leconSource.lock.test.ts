@@ -2,7 +2,7 @@
 // (src/data/bookIndex.ts : appariement leçons↔chapitres + traçabilité uniteId).
 // Les verrous de l'INDEX lui-même sont dans bookIndex.lock.test.ts.
 // Fige : la recette norm, la couverture uniteId 1-11 ↔ chapitres de l'index,
-// l'appariement leçons↔chapitres (42 mappés / 13 nulls DOCUMENTÉS, 3 ancres),
+// l'appariement leçons↔chapitres (43 mappés / 14 nulls DOCUMENTÉS, 4 ancres),
 // la propagation du flag ambigu, et le décalage programme/livre de la leçon
 // « الظواهر المرتبطة بالغوص » (séquence U9, chapitre C51 = U11).
 
@@ -84,10 +84,10 @@ describe('bookIndex — uniteId 1-11 ↔ chapitres de l index (traçabilité str
 describe('bookIndex — appariement leçons ↔ chapitres (mesure figée)', () => {
   const cles = toutesCles();
 
-  it('56 clés dans la séquence officielle ; 42 mappées, 14 nulls documentés', () => {
-    expect(cles).toHaveLength(56);
+  it('57 clés dans la séquence officielle ; 43 mappées, 14 nulls documentés', () => {
+    expect(cles).toHaveLength(57);
     const mappes = cles.filter((k) => sourceLivre(k, cleToTitre(k)) !== null);
-    expect(mappes).toHaveLength(42);
+    expect(mappes).toHaveLength(43);
     const nulls = cles.filter((k) => sourceLivre(k, cleToTitre(k)) === null);
     // LISTE FIGÉE — toute évolution doit être un choix relu, pas un effet de bord.
     expect(nulls).toEqual([
@@ -108,8 +108,13 @@ describe('bookIndex — appariement leçons ↔ chapitres (mesure figée)', () =
     ]);
   });
 
-  it('exactement 3 ancres documentées, chapitres existants + raison non vide', () => {
-    const ancres = ['phase1_chapitres_1_2_2', 'phase11_chapitres_21_22_2', 'phase12_chapitres_23_24'];
+  it('exactement 4 ancres documentées, chapitres existants + raison non vide', () => {
+    const ancres = [
+      'phase1_chapitres_1_2_2',
+      'phase11_chapitres_21_22_2',
+      'phase12_chapitres_23_24',
+      'enzyme_inhibitors',
+    ];
     for (const k of ancres) {
       const s = sourceLivre(k, cleToTitre(k));
       expect(s?.mode, k).toBe('ancre-documentee');
@@ -119,6 +124,7 @@ describe('bookIndex — appariement leçons ↔ chapitres (mesure figée)', () =
     expect(sourceLivre('phase1_chapitres_1_2_2', '')?.chapitres.map((c) => c.chapter)).toEqual([4, 5]);
     expect(sourceLivre('phase11_chapitres_21_22_2', '')?.chapitres.map((c) => c.chapter)).toEqual([33]);
     expect(sourceLivre('phase12_chapitres_23_24', '')?.chapitres.map((c) => c.chapter)).toEqual([34]);
+    expect(sourceLivre('enzyme_inhibitors', '')?.chapitres.map((c) => c.chapter)).toEqual([10, 12]);
   });
 
   it('répartition des modes auto figée (aucun glissement silencieux du matcher)', () => {
@@ -131,7 +137,7 @@ describe('bookIndex — appariement leçons ↔ chapitres (mesure figée)', () =
       'auto-exact': 34,
       'auto-compose': 1,
       'auto-contenance': 4,
-      'ancre-documentee': 3,
+      'ancre-documentee': 4,
     });
   });
 

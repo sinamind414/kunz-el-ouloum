@@ -134,6 +134,13 @@ const ANCRES_LECON: Record<string, { chapitres: number[]; raison: string }> = {
     chapitres: [34],
     raison: 'variante lexicale كيميوحيوية/كيموحيوية ; حلقة كالفن prouvée dans l OCR de C34',
   },
+  // Leçon active « المثبطات الإنزيمية » (audit 2026-09, items 7 et 8) : notion
+  // enseignée par C10 (النشاط الإنزيمي وعلاقته ببنية الإنزيم) et C12, dont l'OCR
+  // porte le corps exploitable (الموقع الفعال ×5, نشاط الإنزيم ×22, سرعة ×11).
+  enzyme_inhibitors: {
+    chapitres: [10, 12],
+    raison: 'contenu = الموقع الفعال et التكامل البنيوي (C10) + منحنيات نشاط الإنزيم (C12) ; aucune en-tête OCR dédiée aux مثبطات',
+  },
 };
 
 /**

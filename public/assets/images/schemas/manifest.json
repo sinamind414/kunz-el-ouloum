@@ -127,6 +127,8 @@
     "/assets/images/schemas/domaine1_proteines/schema_85_anticorps_primaire_secondaire_modern_ar.svg",
     "/assets/images/schemas/domaine2_energie/schema_86_photosynthese_intensite_lumiere_modern_ar.svg",
     "/assets/images/schemas/domaine2_energie/schema_87_coupe_feuille_modern_ar.svg",
-    "/assets/images/schemas/domaine3_tectonique/schema_88_collision_continentale_modern_ar.svg"
+    "/assets/images/schemas/domaine3_tectonique/schema_88_collision_continentale_modern_ar.svg",
+    "/assets/images/schemas/domaine1_enzymes/schema_87_enzyme_inhibition_curves_ar.svg",
+    "/assets/images/schemas/domaine1_enzymes/schema_88_enzyme_six_curves_workshop_ar.svg"
   ]
 }

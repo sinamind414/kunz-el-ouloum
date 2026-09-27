@@ -214,6 +214,34 @@ export const MICRO_REMEDIATIONS: Record<string, MicroRemediation> = {
     preferredSupportTarget: 'document',
   },
   // ── U4 — coopération immunitaire (audit 2026-09 : 0 micro-reprise ciblée) ──
+  'inhib_competitif_vs_non': {
+    id: 'mr_inhib_competitif_vs_non',
+    conceptId: 'enzyme_inhibitors',
+    triggerCodes: ['INHIBITOR_TYPE_CONFUSION', 'MISSING_VMAX_COMPARISON', 'SUBSTRATE_EXCESS_MISREAD'],
+    titleAr: 'Vmax هي الفيصل بين تنافسي ولا تنافسي',
+    estimatedMinutes: 3,
+    explanationAr:
+      'لا تبدأ من شكل المنحنى بل من Vmax. إذا بلغ المنحنى نفس السرعة القصوى للشاهد فالمثبط تنافسي : يشبه الركيزة، يحتل الموقع الفعال، وتزيحه زيادة الركيزة (Km يرتفع). إذا لم يبلغها فالمثبط لا تنافسي : يتثبت على موقع آخر، يشوّه الموقع الفعال، ولا تنفع زيادة الركيزة.',
+    activeQuestionAr: 'منحنى مع مثبط بلغ نفس Vmax للشاهد لكن ببطء : ما نوع المثبط، وأين يتثبت ؟',
+    acceptedEvidence: ['تنافسي', 'Vmax', 'الموقع الفعال', 'Km'],
+    nextAction: 'retry_document',
+    reflexId: 'interpret',
+    preferredSupportTarget: 'lesson',
+  },
+  'lire_vmax_km': {
+    id: 'mr_lire_vmax_km',
+    conceptId: 'enzyme_inhibitors',
+    triggerCodes: ['VMAX_READ_ERROR', 'KM_READ_ERROR', 'SATURATION_VS_DEPLETION'],
+    titleAr: 'كيف تُقرأ Vmax و Km على الرسم',
+    estimatedMinutes: 3,
+    explanationAr:
+      'Vmax تُقرأ على المستوى الأفقي الذي يستقر عنده المنحنى، و Km هو تركيز الركيزة الموافق لـ Vmax/2 : تُسقط من منتصف الارتفاع نحو محور الفواصل. انتبه للمحور الأفقي : إذا كان الزمن بدل [S]، فاستقرار المنحنى يعني نفاد الركيزة لا تشبع المواقع الفعالة.',
+    activeQuestionAr: 'كيف تحدد Km على منحنى V = f([S]) ؟ وما الفرق بين استقرار بسبب التشبع واستقرار بسبب نفاد الركيزة ؟',
+    acceptedEvidence: ['Vmax', 'Km', 'التشبع', 'الركيزة'],
+    nextAction: 'open_reflex',
+    reflexId: 'analyse',
+    preferredSupportTarget: 'document',
+  },
   'phi_charge_regle': {
     id: 'mr_phi_charge_regle',
     conceptId: 'amino_acid_behavior',

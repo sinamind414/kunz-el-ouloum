@@ -375,3 +375,51 @@ et `aminoAcidBehavior.lock.test.ts` porté à **15 tests**. Suite complète : **
 **Reste du backlog** : 3 bis (VIH/SIDA), 6 (simulateur d'électrophorèse), 7-8 (leçon inhibiteurs + atelier 6 courbes,
 désormais adossés à la carte U3), 9-11 (synthèse U6/U7, micro-fiches photochimique), 12-15, 16 (cartes U5-U11 et
 étoffement de U2, qui n'a que 8 nœuds), 17-19.
+
+---
+
+## Sprint 5 — livré (2026-09-27)
+
+**Périmètre : items 7 et 8 du backlog — priorité n°1 « المثبطات الإنزيمية » (unité 3).**
+La matrice d'audit donnait pour cette notion : leçon ⚠️2, micro-remédiation ⚠️1,
+carte mentale ❌ (livrée au sprint 4), simulation ❌.
+
+### Ce qui a été produit
+
+| Livrable | Détail |
+|---|---|
+| Leçon active `enzyme_inhibitors` | 5 blocs : `GUIDED_DOC_QA` (3 courbes : témoin / A / B) → `COMPARISON_TABLE` (5 critères) → `SEQUENCE_ORDER` (méthode de lecture en 5 étapes) → `GUIDED_DOC_QA` **atelier des 6 courbes** → `TEXT_AND_PRODUCE` (production BAC sur une situation pharmacologique) |
+| 2 figures SVG tracées à la main | `schema_87_enzyme_inhibition_curves_ar.svg` (V = f([S]) témoin + compétitif + non compétitif, repères Vmax, Vmax/2, Km — courbes calculées par l'équation de Michaelis, pas dessinées à l'œil) et `schema_88_enzyme_six_curves_workshop_ar.svg` (grille de 6 mini-graphes). Déclarées dans `manifest.json` (130 assets) |
+| Micro-remédiations (item 7) | `inhib_competitif_vs_non` (3 min) et `lire_vmax_km` (3 min) |
+| Rappels espacés | 4 étapes (0→3) sur le concept `enzyme_inhibitors` |
+| Résumé + résumé d'or | 6 points, terme BAC « المثبط التنافسي / اللاتنافسي (Vmax و Km) » |
+| QCM | **525 → 529** (5 questions unité 3 : type de mثبط ×2, lecture de Km, نفاد الركيزة vs تشبع, effet du pH) |
+| Ancrage livre | **ancre documentée [10, 12]** — seul le ch. 12 a un corps OCR exploitable (`الموقع الفعال` ×5, `نشاط الإنزيم` ×22, `سرعة` ×11) ; aucune en-tête OCR ne porte le mot مثبط, d'où l'ancre explicite plutôt qu'un appariement automatique |
+| Verrous | `src/data/enzymeInhibitors.lock.test.ts` — **17 tests** |
+
+### Le parti pris pédagogique
+
+Le critère de décision est rendu **unique et répétable** : on lit **Vmax d'abord**,
+**Km ensuite**, toujours **par rapport au témoin**. Ce couple apparaît dans chacun
+des six supports (leçon, tableau, méthode, résumé, micro-remédiations, rappels).
+
+L'atelier des 6 courbes traite le vrai point de perte : l'élève sait réciter la
+définition mais confond les vignettes. Les six graphes séparent **trois causes
+distinctes d'un palier** — saturation des sites (courbes 1, 4, 5), destruction de
+la structure (2, 3) et **épuisement du substrat** (6, où l'abscisse est le temps).
+La confusion « saturation / épuisement » est l'erreur la plus coûteuse au corrigé.
+
+### Compteurs après sprint 5
+
+résumés **48** · leçons actives **10** · séquence **57** clés (43 mappées, 14 nulls,
+**4 ancres documentées**) · flashcards **532 / 529** · index tuteur **489 chunks**
+(355 html / 134 actives) · suite complète **1244 verts / 4 skipped** (les 4 échecs
+`lazyRouteChunks.smoke` restent pré-existants : ils exigent un `dist/` construit).
+
+### Reste au backlog
+
+3 bis `immunity_hiv_aids` · 6 `electrophoresis-sim` · 9 synthèse U6+U7 ·
+10 micro-fiches phase photochimique · 11 `photochemical-chain` · 12 banque
+« أفكار التمارين » · 14 révision globale · 15 capsules 1-2 min · 16 (suite)
+cartes mentales U5-U11 · 17 « reproduire le schéma de mémoire » · 18 exercices
+indexés par situation · 19 carte d'ouverture d'unité.

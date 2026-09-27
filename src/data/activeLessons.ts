@@ -310,9 +310,16 @@ export const LESSON_PROGRESSION: Record<string, LessonProgression> = {
     recommendedReflexId: 'interpret',
     completionMessageAr: 'أكملت الترجمة. الآن حان دور فهم المنحنى الإنزيمي.',
   },
+  'enzyme_inhibitors': {
+    nextLessonId: undefined,
+    recommendedReflexId: 'interpret',
+    completionMessageAr:
+      'أتممت وحدة الإنزيمات : أصبحت تقرأ أي منحنى تثبيط بمقارنتين فقط، Vmax ثم Km.',
+  },
   'd1-u3-l1-enzyme': {
+    nextLessonId: 'enzyme_inhibitors',
     recommendedReflexId: 'hypothesize',
-    completionMessageAr: 'أحسنت! أكملت سلسلة الإنزيمات.',
+    completionMessageAr: 'أحسنت! أكملت المنحنى الإنزيمي. تبقى قراءة المثبطات : تنافسي أم لا تنافسي ؟',
   },
   'd2-u6-l1-hill-ruben': {
     nextLessonId: 'd2-u6-l2-jagendorf',
@@ -2246,6 +2253,222 @@ export const ACTIVE_LESSONS: Record<string, ActiveLesson> = {
         acceptedAnswers: ['نفس النمط الوراثي', 'نفس الأليلات', 'التوافق النسيجي', 'HLA', 'ذات'],
         errorHint:
           'التوأمان الحقيقيان لهما نفس النمط الوراثي ⇐ نفس محددات HLA ⇐ الطعم ذاتي يُقبل. أما الأخوان فيرثان نمطين فردانيين مختلفين ⇐ محددات مختلفة تُعتبر لا ذات ⇐ خطر الرفض.',
+      },
+    ],
+  },
+  // ─────────── SPRINT 5 (audit, items 7 et 8) — U3 : المثبطات الإنزيمية ───────────
+  // Priorité n°1 du plan de renforcement : la matrice d'audit donnait pour cette
+  // notion « leçon ⚠️2, micro-remédiation ⚠️1, carte mentale ❌0, simulation ❌ ».
+  // La carte mentale a été livrée au sprint 4 ; voici la leçon active et l'atelier
+  // des 6 courbes (@MostafaBdd : « أفكار تمارين الإنزيمات » 148 K vues — l'entrée
+  // attendue sur cette unité est typologique, pas un cours de plus).
+  enzyme_inhibitors: {
+    id: 'enzyme_inhibitors',
+    title: 'المثبطات الإنزيمية : تنافسي أم لا تنافسي ؟ قراءة منحنيات V = f([S])',
+    blocks: [
+      {
+        type: 'GUIDED_DOC_QA',
+        objective:
+          'تحليل منحنيي تثبيط مقارنة بالشاهد، واستخراج المعيار الحاسم : ماذا يحدث للسرعة القصوى Vmax ؟',
+        doc: {
+          assetSrc: '/assets/images/schemas/domaine1_enzymes/schema_87_enzyme_inhibition_curves_ar.svg',
+          altAr: 'ثلاثة منحنيات V = f([S]) : الشاهد، المنحنى A بنفس Vmax مع Km أكبر، والمنحنى B بـ Vmax منخفضة.',
+          captionAr:
+            'الوثيقة : سرعة التفاعل الابتدائية بدلالة تركيز الركيزة، في غياب المثبط (الشاهد) وفي وجود المثبط A ثم المثبط B، مع نفس تركيز الإنزيم.',
+        },
+        questions: [
+          {
+            id: 'inhib_analyse_courbes',
+            verbAr: 'حلل',
+            promptAr: 'حلل تطور السرعة في المنحنيات الثلاثة مع ارتفاع تركيز الركيزة.',
+            answerType: 'short_text',
+            validationMode: 'keywords',
+            requiredKeywords: ['تزداد', 'تستقر', 'الشاهد'],
+            successMessageAr: 'أحسنت : وصف السلوك العام قبل أي تفسير — هذا هو التحليل.',
+            errorHintAr:
+              'صف ما تراه : في الحالات الثلاث تزداد السرعة مع تركيز الركيزة ثم تستقر، لكن عند مستويات مختلفة مقارنة بالشاهد.',
+          },
+          {
+            id: 'inhib_comparer_vmax',
+            verbAr: 'قارن',
+            promptAr: 'قارن السرعة القصوى Vmax وقيمة Km في المنحنيين A و B مع الشاهد.',
+            answerType: 'short_text',
+            validationMode: 'keywords',
+            requiredKeywords: ['Vmax', 'Km', 'نفس', 'تنخفض'],
+            successMessageAr:
+              'ممتاز : المنحنى A يبلغ نفس Vmax لكن بـ Km أكبر، والمنحنى B لا يبلغ Vmax الشاهد أبداً.',
+            errorHintAr:
+              'اقرأ المستقيم الأفقي لكل منحنى (Vmax)، ثم أسقط Vmax/2 على محور التراكيز (Km). A : نفس Vmax و Km أكبر ؛ B : Vmax تنخفض.',
+          },
+          {
+            id: 'inhib_identifier_type',
+            verbAr: 'استنتج',
+            promptAr: 'استنتج نوع كل مثبط، وعلل بمكان تثبيته على الإنزيم.',
+            answerType: 'short_text',
+            validationMode: 'keywords',
+            requiredKeywords: ['تنافسي', 'الموقع الفعال', 'لا تنافسي', 'آخر'],
+            successMessageAr:
+              'A مثبط تنافسي يحتل الموقع الفعال نفسه، و B مثبط لا تنافسي يتثبت على موقع آخر ويشوّه الموقع الفعال.',
+            errorHintAr:
+              'نفس Vmax ⟵ يمكن التغلب على المثبط بزيادة الركيزة ⟵ منافسة على الموقع الفعال. Vmax منخفضة ⟵ لا يمكن التغلب عليه ⟵ تثبيت على موقع آخر.',
+          },
+        ],
+        summaryAr:
+          'المعيار الحاسم في كل تمرين تثبيط هو Vmax : إذا بقيت كما هي فالمثبط تنافسي (يُزاح بزيادة الركيزة)، وإذا انخفضت فالمثبط لا تنافسي (تشوّه البنية الفراغية للموقع الفعال).',
+      },
+      {
+        type: 'COMPARISON_TABLE',
+        objective: 'تثبيت المقارنة بين المثبط التنافسي والمثبط اللاتنافسي على المعايير الخمسة المطلوبة في التصحيح.',
+        promptAr: 'قارن المثبط التنافسي (يمين) والمثبط اللاتنافسي (يسار) حسب كل معيار.',
+        assetSrc: '/assets/images/schemas/domaine1_enzymes/schema_87_enzyme_inhibition_curves_ar.svg',
+        altAr: 'منحنيات التثبيط الثلاثة.',
+        criteria: [
+          {
+            id: 'site_fixation',
+            labelAr: 'موقع تثبيت المثبط',
+            leftExpected: ['موقع آخر', 'موقع تنظيمي', 'خارج الموقع الفعال'],
+            rightExpected: ['الموقع الفعال', 'نفس الموقع'],
+          },
+          {
+            id: 'ressemblance',
+            labelAr: 'التشابه البنيوي مع الركيزة',
+            leftExpected: ['لا يشبه الركيزة', 'بنية مختلفة'],
+            rightExpected: ['يشبه الركيزة', 'تشابه بنيوي'],
+          },
+          {
+            id: 'effet_vmax',
+            labelAr: 'أثره على السرعة القصوى Vmax',
+            leftExpected: ['تنخفض', 'Vmax أقل'],
+            rightExpected: ['لا تتغير', 'نفس Vmax'],
+          },
+          {
+            id: 'effet_km',
+            labelAr: 'أثره على Km',
+            leftExpected: ['لا يتغير', 'نفس Km'],
+            rightExpected: ['يرتفع', 'Km أكبر'],
+          },
+          {
+            id: 'exces_substrat',
+            labelAr: 'ماذا يحدث عند رفع تركيز الركيزة ؟',
+            leftExpected: ['يبقى التثبيط', 'لا يزول'],
+            rightExpected: ['يزول التثبيط', 'يُزاح المثبط'],
+          },
+        ],
+        conclusionPromptAr:
+          'استنتج لماذا لا يمكن التغلب على المثبط اللاتنافسي بزيادة تركيز الركيزة.',
+        conclusionKeywords: ['موقع آخر', 'البنية', 'الموقع الفعال'],
+        summaryAr:
+          'المثبط التنافسي يشبه الركيزة ويحتل موقعها فتزيحه زيادة الركيزة : Vmax محفوظة و Km يرتفع. المثبط اللاتنافسي يتثبت على موقع آخر فيغير البنية الفراغية ويجعل الموقع الفعال غير مكمل : Vmax تنخفض ولا تنفع زيادة الركيزة.',
+      },
+      {
+        type: 'SEQUENCE_ORDER',
+        objective: 'بناء منهجية ثابتة في 5 خطوات لكل تمرين يعرض منحنى إنزيمياً مع مثبط.',
+        promptAr: 'رتّب خطوات قراءة وثيقة التثبيط كما تُصحَّح في البكالوريا.',
+        assetSrc: '/assets/images/schemas/domaine1_enzymes/schema_87_enzyme_inhibition_curves_ar.svg',
+        altAr: 'منحنيات V = f([S]) للشاهد ومثبطين.',
+        steps: [
+          { id: 'identifier_axes', labelAr: 'أحدد المتغيرين : ماذا على محور الفواصل وماذا على محور التراتيب ؟', expectedOrder: 1 },
+          { id: 'reperer_temoin', labelAr: 'أحدد منحنى الشاهد الذي تُقارن به بقية المنحنيات', expectedOrder: 2 },
+          { id: 'lire_vmax', labelAr: 'أقرأ Vmax لكل منحنى : هل بلغ نفس المستوى الأفقي للشاهد ؟', expectedOrder: 3 },
+          { id: 'lire_km', labelAr: 'أُسقط Vmax/2 على محور التراكيز لأقرأ Km وأقارنه بالشاهد', expectedOrder: 4 },
+          { id: 'conclure_type', labelAr: 'أستنتج نوع المثبط وأعلل بمكان تثبيته على الإنزيم', expectedOrder: 5 },
+        ],
+        summaryPromptAr: 'لخّص المنهجية : ما القراءتان اللتان تكفيان لتحديد نوع المثبط ؟',
+        summaryKeywords: ['Vmax', 'Km', 'الشاهد'],
+        summaryAr:
+          'قراءتان تكفيان : Vmax ثم Km، دائماً بالمقارنة مع الشاهد. لا يُستنتج نوع المثبط من شكل المنحنى وحده.',
+      },
+      {
+        // Item 8 de l'audit — atelier des 6 courbes.
+        type: 'GUIDED_DOC_QA',
+        objective:
+          'التمييز بين المنحنيات الستة الأكثر ورودا في الوحدة 3 قبل قراءة نص السؤال، لتفادي الخلط بين وثيقة وأخرى.',
+        doc: {
+          assetSrc: '/assets/images/schemas/domaine1_enzymes/schema_88_enzyme_six_curves_workshop_ar.svg',
+          altAr:
+            'ست منحنيات : تركيز الركيزة، درجة الحرارة، درجة الحموضة، مثبط تنافسي، مثبط لا تنافسي، وتراكم الناتج بدلالة الزمن.',
+          captionAr:
+            'ورشة : ستة منحنيات مرقمة من 1 إلى 6. لكل منحنى سؤال واحد : ما المتغير ؟ وماذا يعني شكل المنحنى ؟',
+        },
+        questions: [
+          {
+            id: 'atelier_courbe1_substrat',
+            verbAr: 'حلل',
+            promptAr: 'المنحنى 1 : لماذا تستقر السرعة عند مستوى ثابت رغم استمرار زيادة [S] ؟',
+            answerType: 'short_text',
+            validationMode: 'keywords',
+            requiredKeywords: ['التشبع', 'المواقع الفعالة', 'مشغولة'],
+            successMessageAr: 'نعم : تشبع المواقع الفعالة، لا نفاد الإنزيم.',
+            errorHintAr: 'الاستقرار = تشبع : كل المواقع الفعالة مشغولة. الإنزيم لا يُستهلك ولا ينفد.',
+          },
+          {
+            id: 'atelier_courbe2_temperature',
+            verbAr: 'فسر',
+            promptAr: 'المنحنى 2 : فسّر الجزء الصاعد ثم الانهيار السريع بعد الدرجة المثلى.',
+            answerType: 'short_text',
+            validationMode: 'keywords',
+            requiredKeywords: ['التصادم', 'المثلى', 'تخريب'],
+            successMessageAr: 'تفسيران مختلفان في منحنى واحد : تصادمات ثم تخريب البنية.',
+            errorHintAr:
+              'الصعود : ارتفاع الحرارة يزيد التصادمات بين الإنزيم والركيزة. النزول : تخريب البنية الفراغية للموقع الفعال.',
+          },
+          {
+            id: 'atelier_courbe3_ph',
+            verbAr: 'فسر',
+            promptAr: 'المنحنى 3 : لماذا ينخفض النشاط على جانبي pH الأمثل ؟',
+            answerType: 'short_text',
+            validationMode: 'keywords',
+            requiredKeywords: ['الشحنات', 'الموقع الفعال', 'الجذور'],
+            successMessageAr: 'ممتاز : تغير الحالة الأيونية للجذور يشوّه الموقع الفعال.',
+            errorHintAr:
+              'تغير pH يغير شحنات جذور الأحماض الأمينية، فتتفكك الروابط الشاردية ويتشوه الموقع الفعال (رابط مع الوحدة 2).',
+          },
+          {
+            id: 'atelier_courbe4_competitif',
+            verbAr: 'استنتج',
+            promptAr: 'المنحنى 4 : المنحنى المتقطع هو الشاهد. حدد نوع المثبط وعلل.',
+            answerType: 'short_text',
+            validationMode: 'keywords',
+            requiredKeywords: ['تنافسي', 'Vmax', 'Km'],
+            successMessageAr: 'نعم : نفس Vmax مع Km أكبر ⟵ مثبط تنافسي.',
+            errorHintAr: 'إذا بلغ المنحنى نفس Vmax لكن ببطء (Km أكبر) فالمثبط تنافسي.',
+          },
+          {
+            id: 'atelier_courbe5_non_competitif',
+            verbAr: 'استنتج',
+            promptAr: 'المنحنى 5 : حدد نوع المثبط، ثم قل هل تنفع زيادة الركيزة ؟',
+            answerType: 'short_text',
+            validationMode: 'keywords',
+            requiredKeywords: ['لا تنافسي', 'Vmax', 'لا تنفع'],
+            successMessageAr: 'نعم : Vmax منخفضة ⟵ لا تنافسي ⟵ زيادة الركيزة لا ترفع السرعة القصوى.',
+            errorHintAr: 'انخفاض Vmax يعني أن المثبط لا يُزاح : المنافسة مستحيلة لأنه ليس على الموقع الفعال.',
+          },
+          {
+            id: 'atelier_courbe6_produit_temps',
+            verbAr: 'حلل',
+            promptAr: 'المنحنى 6 : المتغير هو الزمن وليس [S]. لماذا يبلغ تراكم الناتج مستوى ثابتاً ؟',
+            answerType: 'short_text',
+            validationMode: 'keywords',
+            requiredKeywords: ['الركيزة', 'نفاد', 'الزمن'],
+            successMessageAr: 'انتبه للفرق : هنا الاستقرار سببه نفاد الركيزة، لا التشبع.',
+            errorHintAr:
+              'المحور الأفقي هو الزمن : المنحنى يستقر لأن الركيزة نفدت (تحولت كلها إلى ناتج)، وليس بسبب تشبع المواقع.',
+          },
+        ],
+        summaryAr:
+          'ستة منحنيات، ثلاثة أسباب مختلفة للاستقرار : تشبع المواقع (1 و 4 و 5)، وتخريب البنية (2 و 3)، ونفاد الركيزة (6). الخلط بين « تشبع » و « نفاد الركيزة » من أكثر الأخطاء كلفة في التصحيح.',
+      },
+      {
+        type: 'TEXT_AND_PRODUCE',
+        objective: 'إنتاج فقرة تعليل من مستوى البكالوريا انطلاقاً من وضعية دوائية.',
+        prompt:
+          'دواء يستعمل لخفض نشاط إنزيم معين. أظهرت الدراسة أن السرعة القصوى Vmax لم تتغير في وجود الدواء، وأن زيادة تركيز الركيزة تلغي أثره. حدد نوع هذا المثبط، واشرح آليته في 3 إلى 4 أسطر.',
+        acceptedAnswers: [
+          'مثبط تنافسي يشبه الركيزة ويتثبت على الموقع الفعال، وزيادة الركيزة تزيحه فتبقى Vmax كما هي مع ارتفاع Km',
+          'تنافسي لأن Vmax لم تتغير ويزول أثره بزيادة الركيزة، فهو ينافس الركيزة على الموقع الفعال',
+        ],
+        errorHint:
+          'المعطيان حاسمان : Vmax محفوظة + أثر يزول بزيادة الركيزة ⟵ مثبط تنافسي. اذكر في التعليل : التشابه البنيوي مع الركيزة، التثبيت على الموقع الفعال، والمنافسة التي تُحسم لصالح الأكثر تركيزاً.',
       },
     ],
   },
