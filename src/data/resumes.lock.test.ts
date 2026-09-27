@@ -49,9 +49,9 @@ describe('couverture : toute leçon rendue a un résumé', () => {
 });
 
 describe('standard du résumé : simple, borné, structuré', () => {
-  it('45 entrées : objectif ≥ 15 car., 4-6 points ≤ 24 mots, terme bac', () => {
+  it('46 entrées : objectif ≥ 15 car., 4-6 points ≤ 24 mots, terme bac', () => {
     const cles = Object.keys(RESUMES_LECONS);
-    expect(cles.length).toBe(45);
+    expect(cles.length).toBe(46);
     for (const [k, r] of Object.entries(RESUMES_LECONS)) {
       expect(r.objectif.trim().length, `objectif ${k}`).toBeGreaterThanOrEqual(15);
       expect(r.points.length, `nb points ${k}`).toBeGreaterThanOrEqual(4);

@@ -82,6 +82,13 @@ export const CONCEPT_ROUTES: Record<string, ConceptRoute> = {
     lessonId: 'prerequis2AS_genetique',
     documentExerciseId: 'cmh_transplant_compatibility',
   },
+  // Synthèse de l'unité 4 : la coopération cellulaire (LT4 pivot).
+  immunity_cooperation: {
+    conceptId: 'immunity_cooperation',
+    unitId: 4,
+    lessonId: 'immunity_cooperation',
+    documentExerciseId: 'lt_target_cell_response',
+  },
   immunity_self_nonself: {
     conceptId: 'immunity_self_nonself',
     unitId: 4,

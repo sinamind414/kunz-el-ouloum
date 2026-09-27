@@ -121,6 +121,19 @@ export const RESUMES_LECONS: Record<string, ResumeLecon> = {
     ],
     termeBac: 'الأليل / النمط الوراثي / التوافق النسيجي (HLA)',
   },
+  // Synthèse d'unité : coopération cellulaire (ancré ch. 21 + 22).
+  'immunity_cooperation': {
+    objectif: 'اشرح التعاون الخلوي الذي يقود من عرض المستضد إلى ظهور الخلايا المنفذة.',
+    points: [
+      'تعرض الخلية البالعة محدد المستضد مرفقاً بجزيئات CMH على سطحها.',
+      'تنتقي اللمفاويات LT4 ذات المستقبل النوعي وتنشط بعد التعرف المزدوج.',
+      'تفرز اللمفاويات LT4 المنشطة الإنترلوكين الذي يحفز التكاثر والتمايز.',
+      'تتمايز اللمفاويات B إلى خلايا بلازمية تفرز الأجسام المضادة النوعية.',
+      'تتمايز اللمفاويات T8 إلى لمفاويات سامة تحدث حل الخلايا المصابة.',
+      'تبقى خلايا ذاكرة تضمن استجابة ثانوية أسرع عند التعرض الموالي.',
+    ],
+    termeBac: 'التعاون الخلوي / الإنترلوكين',
+  },
   'immunity_self_nonself': {
     objectif: 'حدّد أساس التعرف على الذات واللاذات ودور CMH فيه.',
     points: [
@@ -550,6 +563,7 @@ export const CHAPITRES_ANCRAGE: Record<string, number[]> = {
   'phase4_chapitres_7_8': [9, 10, 11, 12],
   'phase5_chapitres_9_10': [14, 15, 16, 17],
   'prerequis2AS_genetique': [14, 23],
+  'immunity_cooperation': [21, 22],
   'immunity_self_nonself': [14],
   'phase6_chapitres_11_12': [17, 21],
   'immunity_humoral_response': [16, 17],

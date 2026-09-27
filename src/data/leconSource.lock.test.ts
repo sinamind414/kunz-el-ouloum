@@ -2,7 +2,7 @@
 // (src/data/bookIndex.ts : appariement leçons↔chapitres + traçabilité uniteId).
 // Les verrous de l'INDEX lui-même sont dans bookIndex.lock.test.ts.
 // Fige : la recette norm, la couverture uniteId 1-11 ↔ chapitres de l'index,
-// l'appariement leçons↔chapitres (42 mappés / 12 nulls DOCUMENTÉS, 3 ancres),
+// l'appariement leçons↔chapitres (42 mappés / 13 nulls DOCUMENTÉS, 3 ancres),
 // la propagation du flag ambigu, et le décalage programme/livre de la leçon
 // « الظواهر المرتبطة بالغوص » (séquence U9, chapitre C51 = U11).
 
@@ -84,8 +84,8 @@ describe('bookIndex — uniteId 1-11 ↔ chapitres de l index (traçabilité str
 describe('bookIndex — appariement leçons ↔ chapitres (mesure figée)', () => {
   const cles = toutesCles();
 
-  it('54 clés dans la séquence officielle ; 42 mappées, 12 nulls documentés', () => {
-    expect(cles).toHaveLength(54);
+  it('55 clés dans la séquence officielle ; 42 mappées, 13 nulls documentés', () => {
+    expect(cles).toHaveLength(55);
     const mappes = cles.filter((k) => sourceLivre(k, cleToTitre(k)) !== null);
     expect(mappes).toHaveLength(42);
     const nulls = cles.filter((k) => sourceLivre(k, cleToTitre(k)) === null);
@@ -96,6 +96,7 @@ describe('bookIndex — appariement leçons ↔ chapitres (mesure figée)', () =
       'd2-u6-l3-calvin',
       'd2-u7-l1-mitchell-racker',
       'd3-u9-l2-benioff',
+      'immunity_cooperation', // حوصلة الوحدة : synthèse inter-chapitres sans en-tête TDM
       'phase12_chapitres_23_24_2', // synthèse inter-chapitres sans en-tête dédié
       'phase15_chapitres_29_30_2', // culture générale — hors TDM (curriculumOfficial)
       'phase18_chapitres_35_36_2', // تيارات الحمل : 0 occurrence OCR

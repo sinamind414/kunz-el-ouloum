@@ -24,7 +24,8 @@ export const OFFICIAL_PROGRAM_SEQUENCE: Record<number, string[]> = {
   // U4 — مناعة (TDM p.73 : 11 chapitres, 6 couverts) : phases 5,6,7 complètes
   // Ajout 2026-09 : leçon active de RAPPEL des acquis 2AS (مورثة/أليل/نمط وراثي)
   // placée en tête d'unité — prérequis de CMH/HLA et ABO (≈ 15 min).
-  4: ['prerequis2AS_genetique', 'phase5_chapitres_9_10', 'phase6_chapitres_11_12', 'phase7_chapitres_13_14'],
+  // Ajout 2026-09 : حوصلة التعاون الخلوي en clôture d'unité (schéma-bilan + 3 exercices BAC).
+  4: ['prerequis2AS_genetique', 'phase5_chapitres_9_10', 'phase6_chapitres_11_12', 'phase7_chapitres_13_14', 'immunity_cooperation'],
   // U5 — عصبي (TDM p.127 : 7 chapitres, 5 couverts) : phases 8,9 + 1re de phase10
   // NOTE : phase10_2 (chloroplaste) appartient à D2-U1 — listée en U6.
   5: ['phase8_chapitres_15_16', 'phase9_chapitres_17_18', 'phase10_chapitres_19_20'],

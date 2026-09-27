@@ -90,6 +90,7 @@ const ACTIVE_UNIT_FALLBACK: Record<string, number> = {
   subduction: 11, // chapitres 43/44 — structures géo (U11)
   protein_structure_function: 2, // chapitre 8 — بنية/وظيفة (U2)
   prerequis2AS_genetique: 4, // chapitres 14/23 — rappel des prérequis 2AS de l'unité مناعة (U4)
+  immunity_cooperation: 4, // chapitres 21/22 — حوصلة التعاون الخلوي (U4)
   immunity_self_nonself: 4, // chapitre 14 — مناعة (U4)
   immunity_humoral_response: 4, // chapitre 16
   immunity_cellular_response: 4, // chapitre 18

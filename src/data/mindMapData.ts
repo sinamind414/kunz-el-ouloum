@@ -495,6 +495,98 @@ export const MIND_MAPS_DATABASE: Record<number, MindMapData> = {
         level: 1,
         color: "#8b5cf6",
         radius: 27
+      },
+      // ── Branche « coopération cellulaire » ajoutée 2026-09 (audit U4) ──
+      {
+        id: "node-u3-cpa",
+        label: "الخلية العارضة للمستضد (CPA)",
+        category: "process",
+        unitId: 3,
+        unitTitle: "دور البروتينات في الدفاع عن الذات",
+        summary: "البلعمية الكبيرة أو الخلية العاصرة التي تبلع المستضد، تهضمه جزئياً ثم تعرض محدده على سطحها مرفقاً بجزيئة CMH-II.",
+        bacTip: "لا تبدأ أي استجابة نوعية قبل مرحلة العرض: اذكر دائماً «تبلعم ⇐ عرض المحدد مع CMH-II» قبل الحديث عن اللمفاويات.",
+        keywords: ["بلعمية كبيرة", "CPA", "عرض المستضد", "CMH-II"],
+        level: 2,
+        color: "#8b5cf6",
+        radius: 24
+      },
+      {
+        id: "node-u3-immune-synapse",
+        label: "المشبك المناعي والتعرف المزدوج",
+        category: "process",
+        unitId: 3,
+        unitTitle: "دور البروتينات في الدفاع عن الذات",
+        summary: "التماس بين مستقبل اللمفاوية TCR والمحدد المعروض مع جزيئة CMH: تعرف مزدوج يضمن نوعية الاستجابة (المحدد + الذات).",
+        bacTip: "التعرف مزدوج: المستضد + CMH. إهمال أحد الطرفين يفقدك نقطة النوعية في سؤال «فسّر نوعية الاستجابة».",
+        keywords: ["TCR", "CD4", "CD8", "تعرف مزدوج", "نوعية"],
+        level: 2,
+        color: "#8b5cf6",
+        radius: 23
+      },
+      {
+        id: "node-u3-il2",
+        label: "الإنترلوكين 2 (IL-2)",
+        category: "molecule",
+        unitId: 3,
+        unitTitle: "دور البروتينات في الدفاع عن الذات",
+        summary: "بلّغ كيميائي (وسيط بروتيني) تفرزه اللمفاويات LT4 المنشطة؛ يثبت على مستقبلات نوعية فيحفز التكاثر النسيلي والتمايز.",
+        bacTip: "الإنترلوكين ليس جسماً مضاداً ولا يرتبط بالمستضد: إنه إشارة تحفيز. في التجارب، إضافته تعوض غياب LT4.",
+        keywords: ["إنترلوكين 2", "بلّغ كيميائي", "مستقبل نوعي", "تحفيز"],
+        level: 2,
+        color: "#a855f7",
+        radius: 24
+      },
+      {
+        id: "node-u3-clonal-selection",
+        label: "الانتقاء والتكاثر النسيلي",
+        category: "process",
+        unitId: 3,
+        unitTitle: "دور البروتينات في الدفاع عن الذات",
+        summary: "انتقاء اللمفاوية ذات المستقبل المكمل للمحدد فقط، ثم تكاثرها إلى نسيلة من خلايا متماثلة قبل التمايز.",
+        bacTip: "اربط النوعية بالانتقاء: من بين ملايين اللمفاويات تُنتقى نسيلة واحدة. هذا مفتاح تعليل «استجابة نوعية».",
+        keywords: ["انتقاء نسيلي", "نسيلة", "تكاثر", "نوعية المستقبل"],
+        level: 2,
+        color: "#8b5cf6",
+        radius: 24
+      },
+      {
+        id: "node-u3-plasmocyte",
+        label: "الخلية البلازمية (المنفِّذ الخلطي)",
+        category: "outcome",
+        unitId: 3,
+        unitTitle: "دور البروتينات في الدفاع عن الذات",
+        summary: "لمفاوية B متمايزة ذات شبكة هيولية داخلية فاحمة متطورة، متخصصة في تركيب وإفراز الأجسام المضادة النوعية.",
+        bacTip: "في الصور الإلكترونية: تطور الشبكة الهيولية وجهاز غولجي دليل على خلية مفرزة ⇐ خلية بلازمية لا لمفاوية بكر.",
+        keywords: ["خلية بلازمية", "شبكة هيولية", "إفراز", "أجسام مضادة"],
+        level: 3,
+        color: "#10b981",
+        radius: 22
+      },
+      {
+        id: "node-u3-ltc",
+        label: "اللمفاوية السامة LTc (المنفِّذ الخلوي)",
+        category: "outcome",
+        unitId: 3,
+        unitTitle: "دور البروتينات في الدفاع عن الذات",
+        summary: "لمفاوية T8 متمايزة بعد تحفيز الإنترلوكين؛ تتعرف على الخلية المصابة عبر CMH-I وتحدث حلها بإفراز البرفورين.",
+        bacTip: "التمييز المطلوب في التصحيح: LT4 تُنسّق ولا تقتل، أما LTc فهي وحدها التي تُحدث الحل الخلوي.",
+        keywords: ["LT8", "LTc", "CMH-I", "حل خلوي", "برفورين"],
+        level: 3,
+        color: "#ef4444",
+        radius: 23
+      },
+      {
+        id: "node-u3-memory",
+        label: "خلايا الذاكرة والاستجابة الثانوية",
+        category: "outcome",
+        unitId: 3,
+        unitTitle: "دور البروتينات في الدفاع عن الذات",
+        summary: "خلايا طويلة البقاء تنشأ من النسيلة المنتقاة؛ تختصر زمن الكمون وترفع شدة الاستجابة عند التماس الثاني، وهو مبدأ التلقيح.",
+        bacTip: "منحنى الاستجابة الثانوية: كمون أقصر + ذروة أعلى + أجسام مضادة من نمط IgG. علّل دائماً بخلايا الذاكرة.",
+        keywords: ["خلايا ذاكرة", "استجابة ثانوية", "زمن الكمون", "التلقيح"],
+        level: 2,
+        color: "#f59e0b",
+        radius: 24
       }
     ],
     links: [
@@ -506,7 +598,18 @@ export const MIND_MAPS_DATABASE: Record<number, MindMapData> = {
       { source: "node-u3-cellular", target: "node-u3-perforin", relation: "تتدخل عبر", type: "primary" },
       { source: "node-u3-root", target: "node-u3-cooperation", relation: "ينسقه ويحفزه", type: "primary" },
       { source: "node-u3-cooperation", target: "node-u3-humoral", relation: "يحفز تكاثر وتمايز", type: "catalytic" },
-      { source: "node-u3-cooperation", target: "node-u3-cellular", relation: "يحفز تكاثر وتمايز", type: "catalytic" }
+      { source: "node-u3-cooperation", target: "node-u3-cellular", relation: "يحفز تكاثر وتمايز", type: "catalytic" },
+      { source: "node-u3-root", target: "node-u3-cpa", relation: "ينطلق من", type: "primary" },
+      { source: "node-u3-cpa", target: "node-u3-immune-synapse", relation: "يعرض المحدد عبر", type: "primary" },
+      { source: "node-u3-immune-synapse", target: "node-u3-cooperation", relation: "ينشّط", type: "primary" },
+      { source: "node-u3-cooperation", target: "node-u3-il2", relation: "تفرز", type: "primary" },
+      { source: "node-u3-il2", target: "node-u3-clonal-selection", relation: "يحفز", type: "catalytic" },
+      { source: "node-u3-clonal-selection", target: "node-u3-plasmocyte", relation: "تمايز خلطي", type: "primary" },
+      { source: "node-u3-clonal-selection", target: "node-u3-ltc", relation: "تمايز خلوي", type: "primary" },
+      { source: "node-u3-clonal-selection", target: "node-u3-memory", relation: "يُبقي", type: "secondary" },
+      { source: "node-u3-plasmocyte", target: "node-u3-antibody", relation: "تفرز", type: "primary" },
+      { source: "node-u3-ltc", target: "node-u3-perforin", relation: "تفرز", type: "primary" },
+      { source: "node-u3-mhc", target: "node-u3-immune-synapse", relation: "شرط التعرف", type: "secondary" }
     ]
   }
 };

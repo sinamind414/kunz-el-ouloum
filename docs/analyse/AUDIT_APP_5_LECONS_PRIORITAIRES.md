@@ -100,8 +100,8 @@ Or le diagnostic du CMH/ABO/Rh était : *« ce n'est pas un blocage d'immunologi
 |---|---|---|---|---|
 | ~~1~~ ✅ | `src/data/activeLessons.ts` + `quizCorpus.ts` | `prerequis2AS_genetique` (+8 QCM de diagnostic) | contenu | S |
 | ~~2~~ ✅ | `src/data/microRemediations.ts` | `role_interleukine`, `lt4_chef_orchestre`, `humoral_vs_cellulaire` | contenu | S |
-| 3 | `src/data/activeLessons.ts` | `immunity_cooperation` (4 étapes) | contenu | M |
-| 4 | `src/data/mindMapData.ts` | branche `unitId: 4` (coopération immunitaire) | contenu | M |
+| ~~3~~ ✅ | `src/data/activeLessons.ts` | `immunity_cooperation` (4 étapes) | contenu | M |
+| ~~4~~ ✅ | `src/data/mindMapData.ts` | branche coopération de la carte immunitaire (voir correction ci-dessous) | contenu | M |
 | 5 | `src/data/activeLessons.ts` + `resumesLecons.ts` | `amino_acid_behavior` (4 micro-fiches) | contenu | M |
 | 6 | `src/components/ScienceAnimations.tsx` | `electrophoresis-sim` (curseur pH → charge → migration) | **code** | L |
 | 7 | `src/data/microRemediations.ts` | `inhib_competitif_vs_non`, `lire_vmax_km` | contenu | S |
@@ -150,3 +150,31 @@ séquence officielle 53 → 54 clés (12 nulls documentés). Suite complète : 1
 
 **Reste du backlog** : items 3 à 11 (coopération `immunity_cooperation`, branche mindMap U4,
 comportement des acides aminés + simulateur d'électrophorèse, inhibiteurs, atelier 6 courbes, synthèse U6).
+
+### Sprint 2 — livré (2026-09-27)
+
+**Item 3 — leçon de synthèse `immunity_cooperation` (clôture de l'unité 4)**
+- `SEQUENCE_ORDER` : schéma-bilan en **6 étapes** — تبلعم ⇐ عرض مع CMH-II ⇐ انتقاء وتنشيط LT4 ⇐ إفراز الإنترلوكين 2 ⇐ تكاثر نسيلي وتمايز LB/LT8 ⇐ منفِّذات + خلايا ذاكرة.
+- `GUIDED_DOC_QA` : **3 exercices type BAC** sur l'expérience des 3 milieux de culture
+  (LB + Ag seuls / + LT4 / + IL2) — analyse, rôle exact de l'interleukine, cas du SIDA.
+- `COMPARISON_TABLE` humorale ↔ cellulaire sur 4 critères dont le critère décisif **« transfert par sérum vs par cellules »**.
+- `TEXT_AND_PRODUCE` : rédaction du texte scientifique de synthèse (4-6 lignes).
+- Câblage : progression `immunity_memory_response → immunity_cooperation` (fin de chaîne),
+  dernière leçon affichée de l'unité 4, route conceptuelle `immunity_cooperation` (doc `lt_target_cell_response`),
+  résumé d'or, résumé ancré au livre (ch. **21 et 22**), index tuteur régénéré.
+
+**Item 4 — carte mentale : correction d'un constat de l'audit**
+L'audit annonçait « aucune carte mentale au-delà de l'unité 3 ». C'était une lecture erronée :
+`MIND_MAPS_DATABASE` utilise **sa propre numérotation à 3 cartes** (1 synthèse des protéines,
+2 structure/fonction, 3 **immunité**) — l'immunité était donc déjà couverte, mais avec 8 nœuds seulement.
+Corrigé en enrichissant cette carte : **+7 nœuds** (CPA, مشبك مناعي/تعرف مزدوج, الإنترلوكين 2,
+الانتقاء والتكاثر النسيلي, الخلية البلازمية, LTc, خلايا الذاكرة) et **+11 liens**, soit **15 nœuds**
+avec résumé + astuce BAC + mots-clés chacun. Le badge de l'écran carte mentale a été mis à jour.
+Il reste vrai qu'aucune carte n'existe pour les unités 5 à 11 du programme.
+
+**Verrous** : `src/data/immunityCooperation.lock.test.ts` (9 tests, dont « aucun lien mort » dans la carte).
+Compteurs figés mis à jour : résumés 45 → 46, leçons actives affichées 7 → 8, séquence officielle 54 → 55 clés.
+Suite complète : **1202 tests verts**, `tsc --noEmit` propre (4 échecs pré-existants de `lazyRouteChunks.smoke.test.ts`, qui exigent `npm run build`).
+
+**Reste du backlog** : items 5 à 11 (comportement des acides aminés + simulateur d'électrophorèse,
+inhibiteurs enzymatiques, atelier 6 courbes, synthèse U6 et micro-fiches de la phase photochimique).

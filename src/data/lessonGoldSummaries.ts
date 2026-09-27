@@ -243,6 +243,28 @@ export const LESSON_GOLD_SUMMARIES: Record<string, LessonGoldSummary> = {
     recallQuestionAr: 'ما العلاقة بين البنية والوظيفة البروتينية؟',
     review: { reviewed: false },
   },
+  'immunity_cooperation': {
+    lessonId: 'immunity_cooperation',
+    status: 'adaptation_pedagogique',
+    source: { sourceLabel: 'Résumé Kunz — livre officiel SVT DZ, ch. 21 (تحفيز LB و LT) et 22 (اختيار نمط الاستجابة)' },
+    missionAr: 'كيف تتعاون الخلايا المناعية لتحويل التعرف على المستضد إلى استجابة نوعية فعالة؟',
+    mechanismAr: [
+      'تبلع الخلية العارضة المستضد وتعرض محدده مع CMH-II',
+      'تنتقى اللمفاوية LT4 ذات المستقبل النوعي وتنشط عبر المشبك المناعي',
+      'تفرز LT4 المنشطة الإنترلوكين 2 كبلّغ كيميائي',
+      'يحفز الإنترلوكين التكاثر النسيلي للّمفاويات LB و LT8 المنتقاة',
+      'تتمايز LB إلى خلايا بلازمية تفرز الأجسام المضادة، و LT8 إلى LTc',
+      'تبقى خلايا ذاكرة تضمن استجابة ثانوية أسرع وأقوى',
+    ],
+    evidenceAr:
+      'تجربة زرع : LB + مستضد وحدهما ⟵ لا أجسام مضادة ؛ بإضافة LT4 أو الإنترلوكين 2 ⟵ إنتاج أجسام مضادة.',
+    vocabulary: ['الخلية العارضة', 'CMH', 'LT4', 'الإنترلوكين', 'التكاثر النسيلي', 'الخلية البلازمية', 'LTc'],
+    bacSentenceFrameAr:
+      'بما أن ______ تعرض المستضد مع ______، تنشط ______ وتفرز ______، مما يؤدي إلى ______ ثم ظهور ______.',
+    commonErrorAr: 'اعتبار الإنترلوكين جسماً مضاداً، أو نسبة الحل الخلوي إلى LT4 بدل LTc.',
+    recallQuestionAr: 'لماذا يؤدي نقص اللمفاويات LT4 إلى انهيار الاستجابتين الخلطية والخلوية معاً؟',
+    review: { reviewed: false },
+  },
   'prerequis2AS_genetique': {
     lessonId: 'prerequis2AS_genetique',
     status: 'adaptation_pedagogique',

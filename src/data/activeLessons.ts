@@ -285,9 +285,14 @@ export const LESSON_PROGRESSION: Record<string, LessonProgression> = {
     completionMessageAr: 'أكملت الاستجابة الخلوية. الآن انتقل إلى الذاكرة المناعية.',
   },
   'immunity_memory_response': {
-    nextLessonId: undefined,
+    nextLessonId: 'immunity_cooperation',
     recommendedReflexId: 'interpret',
-    completionMessageAr: 'أحسنت! أكملت سلسلة المناعة: الذات واللاذات → خلطية → خلوية → ذاكرة.',
+    completionMessageAr: 'أحسنت! أكملت سلسلة المناعة: الذات واللاذات → خلطية → خلوية → ذاكرة. تبقى حوصلة التعاون الخلوي.',
+  },
+  'immunity_cooperation': {
+    nextLessonId: undefined,
+    recommendedReflexId: 'explain',
+    completionMessageAr: 'أتممت حوصلة وحدة المناعة: التعاون الخلوي من الخلية العارضة إلى المنفِّذات وخلايا الذاكرة.',
   },
   'd1-u1-l2-transcription': {
     nextLessonId: 'd1-u1-l3-traduction',
@@ -1954,6 +1959,171 @@ export const ACTIVE_LESSONS: Record<string, ActiveLesson> = {
     ],
   },
   // ANCHOR_MIG_L2
+  // ─────────────────────────────────────────────────────────────────────────
+  // U4 — التعاون الخلوي (synthèse de l'unité مناعة) : schéma-bilan interactif
+  // + 3 exercices type BAC. Livre officiel, chapitres 21 (تحفيز LB و LT) et
+  // 22 (اختيار نمط الاستجابة المناعية).
+  // ─────────────────────────────────────────────────────────────────────────
+  immunity_cooperation: {
+    id: 'immunity_cooperation',
+    title: 'التعاون الخلوي في الاستجابة المناعية النوعية (حوصلة الوحدة)',
+    blocks: [
+      {
+        type: 'SEQUENCE_ORDER',
+        objective:
+          'بناء المخطط الحصيلي للتعاون الخلوي : من دخول المستضد إلى الخلايا المنفِّذة، وهو المخطط المطلوب في تمارين البكالوريا.',
+        promptAr:
+          'رتّب مراحل التعاون الخلوي بين الخلية العارضة واللمفاويات LT4 و LB و LT8 حسب التسلسل الزمني.',
+        assetSrc: '/assets/images/schemas/domaine1_proteines/schema_80_immunity_big_picture_modern.svg',
+        altAr: 'مخطط تركيبي يلخص مسار الاستجابة المناعية من التعرف إلى الخلايا المنفذة.',
+        secondaryAssetSrc: '/assets/images/schemas/domaine1_proteines/schema_74_immunological_synapse_specificity_modern.svg',
+        secondaryAltAr: 'وثيقة تبين المشبك المناعي بين الخلية العارضة واللمفاوية ونوعية التعرف.',
+        secondaryCaptionAr: 'التعرف يتم عبر مشبك مناعي : مستقبل اللمفاوية + المستضد المعروض مع CMH.',
+        steps: [
+          {
+            id: 'phagocytose',
+            labelAr: 'تبلعم المستضد من طرف البلعمية الكبيرة (الخلية العارضة CPA)',
+            expectedOrder: 1,
+          },
+          {
+            id: 'presentation',
+            labelAr: 'عرض محدد المستضد على سطح الخلية العارضة مرفقاً بجزيئة CMH-II',
+            expectedOrder: 2,
+          },
+          {
+            id: 'selection_lt4',
+            labelAr: 'انتقاء اللمفاوية LT4 ذات المستقبل النوعي وتنشيطها (المشبك المناعي)',
+            expectedOrder: 3,
+          },
+          {
+            id: 'interleukine',
+            labelAr: 'إفراز الإنترلوكين 2 من طرف LT4 المنشطة',
+            expectedOrder: 4,
+          },
+          {
+            id: 'proliferation',
+            labelAr: 'تكاثر نسيلي وتمايز للّمفاويات LB و LT8 المنتقاة',
+            expectedOrder: 5,
+          },
+          {
+            id: 'effecteurs',
+            labelAr: 'ظهور المنفِّذات : خلايا بلازمية (أجسام مضادة) و LTc + خلايا ذاكرة',
+            expectedOrder: 6,
+          },
+        ],
+        summaryPromptAr:
+          'لخّص في نص علمي مراحل التعاون الخلوي من دخول المستضد إلى ظهور المنفِّذات.',
+        summaryKeywords: ['العارضة', 'CMH', 'الإنترلوكين', 'التكاثر النسيلي', 'البلازمية'],
+        summaryAr:
+          'تبلعم المستضد ⇐ عرضه مع CMH-II على الخلية العارضة ⇐ انتقاء LT4 النوعية وتنشيطها ⇐ إفراز الإنترلوكين 2 ⇐ تكاثر نسيلي وتمايز LB و LT8 ⇐ خلايا بلازمية تفرز الأجسام المضادة + LTc قاتلة + خلايا ذاكرة. اللمفاوية LT4 هي محور التعاون : بدونها لا تنطلق أي استجابة نوعية.',
+      },
+      {
+        type: 'GUIDED_DOC_QA',
+        objective:
+          'التمرن على ثلاثة أسئلة بكالوريا كلاسيكية حول تجربة الزرع في الوسط الحر : دور LT4 والإنترلوكين.',
+        doc: {
+          assetSrc: '/assets/images/schemas/domaine1_proteines/schema_71_clonal_cd8_activation_modern.svg',
+          altAr: 'وثيقة تبين تنشيط وتكاثر نسيلي للّمفاويات CD8 بعد التعرف على المستضد.',
+          captionAr:
+            'تجربة زرع : الوسط 1 يحوي LB + مستضد فقط ⟵ لا أجسام مضادة. الوسط 2 يحوي LB + مستضد + LT4 ⟵ أجسام مضادة. الوسط 3 يحوي LB + مستضد + إنترلوكين 2 دون LT4 ⟵ أجسام مضادة.',
+          secondaryAssetSrc: '/assets/images/schemas/domaine1_proteines/schema_72_perforin_granzyme_lysis_modern.svg',
+          secondaryAltAr: 'وثيقة تبين حل الخلية المستهدفة بواسطة البرفورين المفرز من LTc.',
+          secondaryCaptionAr: 'الوجه الخلوي للاستجابة : LTc تُحدث الحل الخلوي بالبرفورين.',
+        },
+        questions: [
+          {
+            id: 'coop_analyse_milieux',
+            verbAr: 'حلل',
+            promptAr:
+              'حلل نتائج الأوساط الثلاثة : متى تُنتَج الأجسام المضادة ومتى تنعدم؟',
+            answerType: 'short_text',
+            validationMode: 'keywords',
+            requiredKeywords: ['الوسط 1|LB وحدها|دون LT4', 'أجسام مضادة', 'LT4|الإنترلوكين'],
+            successMessageAr: 'أحسنت : ربطت غياب الإنتاج بغياب LT4 أو الإنترلوكين.',
+            errorHintAr:
+              'قارن الأوساط اثنين اثنين : LB + مستضد وحدهما لا يكفيان ؛ إضافة LT4 أو الإنترلوكين تسمح بالإنتاج.',
+          },
+          {
+            id: 'coop_role_il2',
+            verbAr: 'استنتج',
+            promptAr:
+              'استنتج طبيعة العامل الذي تفرزه LT4 ودوره الدقيق على اللمفاوية LB.',
+            answerType: 'short_text',
+            validationMode: 'keywords',
+            requiredKeywords: ['الإنترلوكين', 'تكاثر|تكاثر نسيلي', 'تمايز|بلازمية'],
+            forbiddenKeywords: ['جسم مضاد يرتبط بالإنترلوكين'],
+            successMessageAr: 'ممتاز : الإنترلوكين بلّغ كيميائي يحفز التكاثر النسيلي والتمايز.',
+            errorHintAr:
+              'الإنترلوكين 2 ليس جسماً مضاداً : إنه بلّغ كيميائي يحفز تكاثر LB النسيلي وتمايزها إلى خلايا بلازمية.',
+          },
+          {
+            id: 'coop_synthese_bac',
+            verbAr: 'فسّر',
+            promptAr:
+              'فسّر لماذا يؤدي تخريب اللمفاويات LT4 (كما في السيدا) إلى انهيار المناعتين الخلطية والخلوية معاً.',
+            answerType: 'short_text',
+            validationMode: 'keywords',
+            requiredKeywords: ['LT4', 'الإنترلوكين', 'خلطية', 'خلوية'],
+            successMessageAr: 'جيد جداً : أثبتّ أن LT4 محور التعاون بين الاستجابتين.',
+            errorHintAr:
+              'بدون LT4 لا إنترلوكين ⇐ لا تكاثر لـ LB (لا أجسام مضادة) ولا لـ LT8 (لا LTc) ⇐ انهيار الاستجابتين معاً.',
+          },
+        ],
+        summaryAr:
+          'LB + مستضد لا يكفيان : لا بد من إشارة LT4. والإنترلوكين 2 يعوض LT4 في الوسط، فهو الوسيط الكيميائي للتعاون. تخريب LT4 يُسقط الاستجابتين الخلطية والخلوية في آن واحد.',
+      },
+      {
+        type: 'COMPARISON_TABLE',
+        objective:
+          'تثبيت الفرق بين وجهي الاستجابة النوعية بعد التعاون : الخلطية والخلوية — أكثر خلط مسجَّل في التصحيح.',
+        promptAr:
+          'قارن بين الاستجابة المناعية الخلطية والاستجابة المناعية الخلوية حسب المعايير الآتية.',
+        assetSrc: '/assets/images/schemas/domaine1_proteines/schema_synthese_immunite_U4.jpg',
+        altAr: 'لوحة تركيبية لوحدة المناعة تجمع الاستجابة الخلطية والاستجابة الخلوية.',
+        criteria: [
+          {
+            id: 'cible',
+            labelAr: 'طبيعة المستضد المستهدف',
+            leftExpected: ['مستضد حر', 'في السوائل', 'سموم'],
+            rightExpected: ['خلية مصابة', 'خلية غريبة', 'خلية سرطانية'],
+          },
+          {
+            id: 'lymphocyte',
+            labelAr: 'اللمفاوية المسؤولة',
+            leftExpected: ['LB', 'خلية بلازمية'],
+            rightExpected: ['LT8', 'LTc'],
+          },
+          {
+            id: 'effecteur',
+            labelAr: 'العنصر المنفِّذ',
+            leftExpected: ['الأجسام المضادة', 'المعقد المناعي'],
+            rightExpected: ['البرفورين', 'الحل الخلوي'],
+          },
+          {
+            id: 'transfert',
+            labelAr: 'نقل المناعة تجريبياً',
+            leftExpected: ['بالمصل', 'المصل'],
+            rightExpected: ['بالخلايا اللمفاوية', 'اللمفاويات'],
+          },
+        ],
+        conclusionPromptAr:
+          'استنتج المعيار العملي الذي يسمح في التمرين بالحكم على نمط الاستجابة انطلاقاً من تجربة نقل.',
+        conclusionKeywords: ['المصل', 'اللمفاويات', 'خلطية', 'خلوية'],
+        summaryAr:
+          'الخلطية : مستضد حر ⇐ LB ⇐ خلايا بلازمية ⇐ أجسام مضادة ⇐ تُنقل بالمصل. الخلوية : خلية مصابة ⇐ LT8 ⇐ LTc ⇐ برفورين وحل خلوي ⇐ تُنقل بالخلايا اللمفاوية. كلتاهما تحتاج إشارة LT4.',
+      },
+      {
+        type: 'TEXT_AND_PRODUCE',
+        objective:
+          'إنتاج النص العلمي المطلوب في البكالوريا : حوصلة التعاون الخلوي في بضعة أسطر.',
+        prompt:
+          'اكتب نصاً علمياً (4 إلى 6 أسطر) تشرح فيه التعاون الخلوي الذي يقود إلى القضاء على فيروس دخل الجسم لأول مرة.',
+        acceptedAnswers: ['العارضة', 'CMH', 'LT4', 'الإنترلوكين', 'التكاثر النسيلي', 'أجسام مضادة', 'LTc', 'ذاكرة'],
+        errorHint:
+          'الخطة المنتظرة : تبلعم وعرض مع CMH-II ⇐ انتقاء LT4 وتنشيطها ⇐ إفراز الإنترلوكين 2 ⇐ تكاثر نسيلي وتمايز LB و LT8 ⇐ أجسام مضادة + LTc ⇐ خلايا ذاكرة تضمن استجابة ثانوية أسرع.',
+      },
+    ],
+  },
   // ─────────────────────────────────────────────────────────────────────────
   // U4 — تذكير بالمكتسبات القبلية (جذع مشترك / السنة الثانية) قبل درس الذات
   // واللاذات. المصدر : الكتاب الرسمي، الفصل 14 (الذات واللاذات) والفصل 23
