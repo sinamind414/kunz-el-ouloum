@@ -754,3 +754,66 @@ capsules **24** (~26 min) · unités couvertes **11/11** · suite complète
 
 12 banque « أفكار التمارين » · 14 révision globale · 16 (fin) cartes mentales
 U8-U11 · 17 « reproduire le schéma de mémoire » · 19 carte d'ouverture d'unité.
+
+---
+
+## Sprint 12 — livré (2026-09-27)
+
+**Périmètre : item 17 — « ارسم من الذاكرة » (reproduire le schéma de mémoire).**
+
+### Le constat
+
+@MostafaBdd consacre **58:58 (76 K vues)** à une seule chose : « جميع الرسومات
+التخطيطية التي يجب حفظها ». Le sujet demande presque chaque année « ارسم مخططاً »
+ou « أنجز رسماً تخطيطياً », et ces points se perdent **par oubli d'éléments**,
+pas par incompréhension.
+
+L'app savait **montrer** 134 schémas. Elle ne savait pas vérifier que l'élève
+sait les **refaire**. Ce sprint inverse le sens de lecture.
+
+### Ce qui a été produit
+
+`src/data/schemaDrills.ts` — **17 schémas** couvrant les unités 1 à 11
+(3 pour U4, 2 pour U1/U3/U5). Chacun expose la consigne telle qu'elle tombe,
+l'**ordre de tracé** (on ne dessine pas au hasard), une **grille cotée**
+(éléments à 2 pts = indispensables, à 1 pt = valorisants, total 8-16 points),
+et les **pièges** qui coûtent les points — « غوص اللوح القاري تحت المحيطي »,
+« ترتيب PSI قبل PSII », « رسم الحويصلات في الجانب بعد المشبكي ».
+
+`src/components/SchemaDrillView.tsx` — nouvel onglet **« ارسم من الذاكرة »**,
+en trois phases strictement ordonnées :
+
+1. **الرسم** — consigne + ordre de tracé. **Aucune image dans le DOM.**
+2. **التقييم** — l'élève coche ce qu'il a réellement tracé sur sa feuille.
+3. **المقارنة** — score sur le barème, **liste nominative des éléments
+   essentiels oubliés**, pièges, *puis seulement* l'image officielle.
+
+### Verrous
+
+- `src/data/schemaDrills.lock.test.ts` — **16 tests**. Le premier lit le
+  **manifeste réel sur disque** et vérifie que chaque `assetSrc` existe :
+  un asset fantôme afficherait une image cassée à l'instant précis où l'élève
+  attend sa correction. Sont figés aussi le barème (5-9 éléments, ≥ 3
+  indispensables, total 8-16) et le calcul des verdicts.
+- `src/components/__tests__/SchemaDrillView.test.tsx` — **13 tests**, dont **le**
+  verrou du module : `container.querySelectorAll('img')` doit valoir **0** en
+  phase 1 et 2. Si l'image fuit avant l'auto-évaluation, l'exercice de mémoire
+  n'en est plus un.
+
+### Dette UI signalée
+
+La navigation secondaire compte désormais **9 entrées** (workshop, mindmap,
+methodology, badges, bootcamp, animations, situations, schemas, teacher).
+C'est la limite haute. Tout nouvel espace devrait être **regroupé** dans un
+hub « التمارين » plutôt qu'ajouté — à arbitrer avant l'item 19.
+
+### Compteurs après sprint 12
+
+schémas à reproduire **17** · unités couvertes **1-11** · suite complète
+**1394 verts / 4 skipped** (toujours les 4 échecs pré-existants
+`lazyRouteChunks.smoke`).
+
+### Reste au backlog
+
+12 banque « أفكار التمارين » · 14 révision globale · 16 (fin) cartes mentales
+U8-U11 · 19 carte d'ouverture d'unité.
