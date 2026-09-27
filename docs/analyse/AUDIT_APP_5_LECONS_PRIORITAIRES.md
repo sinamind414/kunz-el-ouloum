@@ -692,3 +692,65 @@ suite complète **1339 verts / 4 skipped** (toujours les 4 échecs pré-existant
 12 banque « أفكار التمارين » · 14 révision globale · 15 capsules 1-2 min ·
 16 (fin) cartes mentales U8-U11 · 17 « reproduire le schéma de mémoire » ·
 19 carte d'ouverture d'unité.
+
+---
+
+## Sprint 11 — livré (2026-09-27)
+
+**Périmètre : item 15 — capsules « فكرة في دقيقة ».**
+
+### Le trou constaté
+
+L'app proposait deux tailles d'objet : la leçon active (20-40 min) et la
+flashcard (5 s). **Entre les deux, rien.** Or c'est exactement la taille qui
+performe le mieux chez les chaînes de référence :
+- @Prof_benotmane entretient une playlist entière nommée **« فكرة في دقيقة »** ;
+- chez @MostafaBdd, la capsule « كيف نكتب صيغة الحمض الأميني بطريقة صحيحة ؟ »
+  fait **151 K vues — plus que son cours complet de l'unité 2 (87 K)** ;
+- « كيف نفرق بين الخلطية و الخلوية ؟ » règle en **2:11** une confusion qui coûte
+  des points chaque année.
+
+### Ce qui a été produit
+
+`src/data/microCapsules.ts` — **24 capsules**, **11/11 unités couvertes**,
+au moins 2 capsules pour chacune des unités 1 à 7. Total de la collection :
+**~26 minutes**. Chaque capsule respecte un contrat d'écriture strict, vérifié
+par les tests :
+
+1. **une seule idée** (2 à 4 phrases, 120-520 caractères) ;
+2. le titre **est la question** que l'élève se pose (« المصعد أم المهبط؟ ») ;
+3. un **geste mental en 2 à 4 étapes** impératives ;
+4. **l'erreur précise que la capsule tue** — sans erreur visée, pas de capsule ;
+5. un **auto-test immédiat** avec sa réponse.
+
+Échantillon : كيف أكتب صيغة حمض أميني كتابة صحيحة؟ · المصعد أم المهبط؟ ·
+تثبيط تنافسي أم غير تنافسي؟ · كيف أفرّق بين المناعة الخلطية و الخلوية؟ ·
+لماذا LT4 هي مفتاح كل شيء؟ · PPSE أم PPSI أم PPM أم كمون عمل؟ ·
+كيف أحفظ حلقة كالفن؟ · كيف يُصنع ATP في الظلام؟ · ماذا تُثبت منطقة الظلّ؟
+
+`src/components/MicroCapsulePanel.tsx` — panneau branché **en tête de la vue
+المراجعة**, donc là où l'élève vient déjà, et **aligné sur l'unité qu'il a
+choisie** (aucun nouvel onglet à apprendre). Capsule du jour tirée de façon
+stable sur la journée (même principe que le drill « مصفاة التعليمات »),
+navigation précédente/suivante en boucle dans l'unité.
+
+### Verrous
+
+- `src/data/microCapsules.lock.test.ts` — **17 tests**, dont ceux qui protègent
+  la **brièveté** : durée 45-120 s, idée ≤ 520 caractères, ≤ 4 étapes,
+  collection totale ≤ 30 min. Une capsule qui grossit devient un mini-cours et
+  perd sa raison d'être : le test casse avant.
+- `src/components/__tests__/MicroCapsulePanel.test.tsx` — **9 tests**, dont le
+  verrou pédagogique : la réponse reste masquée, et **changer de capsule la
+  remasque** (impossible de survoler les réponses à la file).
+
+### Compteurs après sprint 11
+
+capsules **24** (~26 min) · unités couvertes **11/11** · suite complète
+**1365 verts / 4 skipped** (toujours les 4 échecs pré-existants
+`lazyRouteChunks.smoke`).
+
+### Reste au backlog
+
+12 banque « أفكار التمارين » · 14 révision globale · 16 (fin) cartes mentales
+U8-U11 · 17 « reproduire le schéma de mémoire » · 19 carte d'ouverture d'unité.
