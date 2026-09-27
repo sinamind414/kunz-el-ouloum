@@ -178,3 +178,75 @@ Suite complète : **1202 tests verts**, `tsc --noEmit` propre (4 échecs pré-ex
 
 **Reste du backlog** : items 5 à 11 (comportement des acides aminés + simulateur d'électrophorèse,
 inhibiteurs enzymatiques, atelier 6 courbes, synthèse U6 et micro-fiches de la phase photochimique).
+
+---
+
+## Mise à jour — sources YouTube complémentaires (2026-09-27)
+
+L'audit reposait sur une seule chaîne. Trois chaînes indépendantes ont été relevées pour le vérifier :
+**@Profchaouch**, **@Prof_benotmane**, **@ikramscience8424**. Détail, tableaux et méthode :
+**[ANALYSE_CHAINES_YT_COMPLEMENTAIRES.md](./ANALYSE_CHAINES_YT_COMPLEMENTAIRES.md)** ·
+données brutes `data/youtube_multichaines_catalog.json` et `data/youtube_ikram_catalog.json`.
+
+### Ce qui est confirmé
+
+- **U4 reste la priorité n° 1, sans ambiguïté.** Série « من الألف إلى الياء » de Chaouch (une vidéo par unité, format
+  identique) : U4 = 8 h 26 et **1,30 M de vues en 8 mois, soit 162,5 K/mois**, devant U1 (109,1 K/mois). Playlist U4
+  historique de la même chaîne : **4 060 849 vues**. Benotmane : **798 098 vues** sur 15 capsules. Ikram : 33,7 % de
+  ses vues.
+- **Priorité 2 (coopération) — validée par trois chaînes.** Chaouch consacre 4 parties à
+  « تحفيز الخلايا اللمفاوية » (**616 K**) ; Benotmane en fait une capsule « مخطط شامل لأدوار الخلايا المناعية »
+  (17:52, **124 K**), soit **plus que chacune des deux phases d'exécution prises séparément** (75 K et 70 K) et presque
+  autant que les deux réunies. Le livrable attendu est bien **un schéma global des rôles** — ce qu'a produit le sprint 2.
+- **Priorité 4 (CMH / ABO-Rh) — validée.** Benotmane isole **CMH (12:04, 153 K)** et **Rh (8:38, 119 K)** en capsules
+  autonomes de ~10 min : même granularité que le module `prerequis2AS_genetique` du sprint 1.
+- **Priorité 3 (pHi) — valeur relevée.** **Aucune des quatre chaînes** ne propose de vidéo dédiée au pHi, alors que
+  c'est la 2ᵉ notion la plus difficile du corpus. L'application peut devenir la ressource de référence sur ce point :
+  les items 5 et 6 du backlog gagnent en valeur, pas seulement en urgence.
+- **Aucune chaîne ne propose d'interactif corrigé** (simulateur, atelier de courbes, remédiation déclenchée par
+  l'erreur). Les items 6, 8 et 11 ne dupliquent donc rien de l'offre existante.
+
+### Ce qui est corrigé
+
+- **Le Domaine 2 n'est pas « délaissé par les élèves », il est publié tard.** L'analyse initiale concluait
+  « U6 + U7 < 7 % des vues pour 39 % du BAC ». Corrigé de l'ancienneté des vidéos, **U7 (التنفس) remonte au 3ᵉ rang
+  avec 106,8 K vues/mois**, devant U5, U2 et U3 ; U6 reste le point bas de la biologie (63,8 K/mois).
+  ➜ la priorité 5 est maintenue **mais élargie à U7** : l'item 9 (synthèse d'unité) doit couvrir U6 **et** U7.
+- **Demande ≠ difficulté, confirmé chiffres en main.** U2 (51,3 K/mois) et U3 (41,2 K/mois) ferment la marche des
+  vues alors qu'elles concentrent les notions les plus difficiles. Les élèves n'y cherchent pas un cours complet mais
+  une réponse ciblée ➜ pour ces deux unités, **micro-fiches et simulateurs, pas de « cours de A à Z »**.
+
+### Nouveau manque prioritaire — item 3 bis
+
+**فقدان المناعة المكتسبة (VIH / SIDA) n'a aucune leçon dans l'application.**
+
+| | Chaouch | Benotmane | Ikram | Application |
+|---|---|---|---|---|
+| Traitement | 3 parties, **414 K vues** | 3 capsules, 1 h 12, **280 K vues** | 1 vidéo dédiée | — |
+| Leçon active | — | — | — | **0** |
+| Résumé / gold summary | — | — | — | **0 / 0** |
+| Micro-remédiation | — | — | — | **0** |
+| QCM | — | — | — | 19 (dispersés) |
+
+Trois chaînes sur quatre en font un **chapitre complet** (≈ 700 K vues cumulées), c'est le chapitre 23 du livre, et
+c'est aussi l'application naturelle de la coopération cellulaire livrée au sprint 2 (destruction des LT4 ⇒ effondrement
+de toute la chaîne). ➜ **inséré au backlog en position 3 bis**, juste après les sprints déjà livrés.
+
+### Backlog — ajouts et repositionnements
+
+| # | Item | Taille | Origine |
+|---|---|---|---|
+| **3 bis** | Leçon `immunity_hiv_aids` : bnية du VIH, cellules cibles, 3 phases de l'infection, **lecture du graphe LT4 / charge virale**, 2 exercices BAC, micro-remédiation « pourquoi la chute des LT4 paralyse les deux réponses » | M | Chaouch 414 K, Benotmane 280 K |
+| 5–11 | inchangés (`amino_acid_behavior`, `electrophoresis-sim`, inhibiteurs, atelier 6 courbes, synthèse U6, micro-fiches, `photochemical-chain`) | — | — |
+| 9 | **élargi à U7** : la synthèse d'unité doit couvrir U6 *et* U7 | M | U7 = 106,8 K vues/mois |
+| 12 | Banque « أفكار التمارين » indexée par session BAC 2019 → 2025 | M | Ikram (4 vidéos, 214 K) ; grep dans l'app = 0 |
+| 13 | ~~Module VIH comme application de la coopération~~ → fusionné dans **3 bis** | — | — |
+| 14 | Mode « révision globale » d'une unité en une session | M | mégavidéos Chaouch (U4 : 8 h 26, 1,3 M) et Benotmane (4 h 27, 459 K) |
+| 15 | Capsules « فكرة في دقيقة » : micro-fiches calibrées **1–2 min** (les micro-remédiations actuelles visent 2–4 min) | S | Benotmane, playlist de 8 vidéos |
+
+### Ce qui n'a pas bougé
+
+Les cinq constats initiaux restent valables, y compris le trou total sur le pHi et l'absence de simulation.
+La géologie (U9-U11) reste justifiée : Chaouch y maintient deux playlists de cours (11 + 16 vidéos) et une série
+d'exercices. Aucune des trois chaînes n'a révélé de manque immunitaire autre que le VIH/SIDA (vérification par grep sur
+السيدا, الطفرة, اللقاح, التلقيح, المكتسبات القبلية : tous déjà présents).
