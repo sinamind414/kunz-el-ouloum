@@ -162,7 +162,9 @@ export default function BacIdeasView({ onBackToHome }: BacIdeasViewProps) {
           ))}
         </div>
         <p className="mt-3 text-[11px] leading-6 text-[#506072] dark:text-gray-400">
-          دورة {MISSING_YEARS.join('، ')} غير مدرجة: لم يتوفّر نصّها الرسمي عند جمع المعطيات — لم نخترع لها شيئاً.
+          {MISSING_YEARS.length === 0
+            ? `كل الدورات من ${Math.min(...YEARS_COVERED)} إلى ${Math.max(...YEARS_COVERED)} مقروءة من المواضيع الرسمية، دون فجوة.`
+            : `دورة ${MISSING_YEARS.join('، ')} غير مدرجة: لم يتوفّر نصّها الرسمي — لم نخترع لها شيئاً.`}
         </p>
       </section>
 

@@ -32,17 +32,18 @@ describe('أفكار التمارين — rendu', () => {
     expect(screen.getByTestId('idees-bareme').textContent).toContain('20');
   });
 
-  it('montre le classement de pression et nomme la session manquante', () => {
+  it('montre le classement de pression et annonce la couverture complète', () => {
     render(<BacIdeasView />);
     const bloc = screen.getByTestId('idees-pression');
-    expect(bloc.textContent).toContain('2020');
+    expect(bloc.textContent).toContain('كل الدورات');
     expect(screen.getByTestId('pression-4')).toBeTruthy();
   });
 
-  it('propose un onglet par session dépouillée', () => {
+  it('propose un onglet par session dépouillée, 2020 et 2026 comprises', () => {
     render(<BacIdeasView />);
     for (const y of YEARS_COVERED) expect(screen.getByTestId(`annee-${y}`)).toBeTruthy();
-    expect(screen.queryByTestId('annee-2020')).toBeNull();
+    expect(screen.getByTestId('annee-2020')).toBeTruthy();
+    expect(screen.getByTestId('annee-2026')).toBeTruthy();
   });
 });
 
@@ -50,9 +51,9 @@ describe('أفكار التمارين — navigation', () => {
   it("change réellement de corpus quand on change d'année", async () => {
     const user = userEvent.setup();
     render(<BacIdeasView />);
-    expect(screen.getByTestId('idee-bac2025_s2_e3')).toBeTruthy();
+    expect(screen.getByTestId('idee-bac2026_s2_e3')).toBeTruthy();
     await user.click(screen.getByTestId('annee-2019'));
-    expect(screen.queryByTestId('idee-bac2025_s2_e3')).toBeNull();
+    expect(screen.queryByTestId('idee-bac2026_s2_e3')).toBeNull();
     expect(screen.getByTestId('idee-bac2019_s2_e3')).toBeTruthy();
   });
 
@@ -83,8 +84,10 @@ describe('أفكار التمارين — recherche', () => {
 });
 
 describe('أفكار التمارين — fiche', () => {
-  it("donne l'idée, les supports, la notion et les verbes", () => {
+  it("donne l'idée, les supports, la notion et les verbes", async () => {
+    const user = userEvent.setup();
     render(<BacIdeasView />);
+    await user.click(screen.getByTestId('annee-2025'));
     const fiche = screen.getByTestId('idee-bac2025_s2_e3');
     expect(fiche.textContent).toContain('ABO');
     expect(fiche.textContent).toContain('ما يُقيَّم فعلاً');

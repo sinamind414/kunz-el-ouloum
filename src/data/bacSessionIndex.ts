@@ -25,10 +25,12 @@
 // sont pas recopiées.
 //
 // Trous assumés et documentés :
-//   · session 2020 (session de septembre, COVID) : sujet non récupérable en
-//     texte au moment de la collecte → `MISSING_YEARS`. Ne pas inventer.
 //   · 2021, sujet 2, exercice 1 : non lisible dans la source → absent. Le
 //     total de ce sujet vaut donc 15 points et non 20 (`INCOMPLETE_SUJETS`).
+//   · sprint 17 : la session 2020 (session de septembre, COVID) manquait au
+//     sprint 16 ; elle a été récupérée et ajoutée, et la session 2026 avec
+//     elle. `MISSING_YEARS` est donc vide — mais reste en place pour qu'un
+//     trou futur soit déclaré et non caché.
 //
 // Ce fichier n'invente aucun exercice de l'application : les `situationIds`,
 // `capsuleIds` et `drillIds` pointent vers du contenu existant, et le verrou
@@ -74,15 +76,23 @@ export interface BacExerciseIdea {
 /** Sujets officiels lus pour construire cette banque. */
 export const BAC_SESSION_SOURCES: { year: number; url: string }[] = [
   { year: 2019, url: 'https://eddirasa.com/bac-science-2019-se/' },
+  { year: 2020, url: 'https://eddirasa.com/bac-science-2020-se/' },
   { year: 2021, url: 'https://eddirasa.com/bac-science-2021-se/' },
   { year: 2022, url: 'https://eddirasa.com/bac-science-2022-se/' },
   { year: 2023, url: 'https://eddirasa.com/bac-science-2023-se/' },
   { year: 2024, url: 'https://eddirasa.com/bac-science-2024-se/' },
   { year: 2025, url: 'https://eddirasa.com/bac-science-2025-se/' },
+  { year: 2026, url: 'https://www.dzexams.com/ar/annales/L0tWNjNjZ1pNQ1RmU3JUOUFUbFpTdz09' },
 ];
 
-/** Sessions du programme non couvertes faute de source lisible. */
-export const MISSING_YEARS: number[] = [2020];
+/**
+ * Sessions non couvertes faute de source lisible.
+ * Vide depuis le sprint 17 : la session 2020 (dorée de septembre, COVID) a
+ * fini par être récupérée, et la session 2026 a été ajoutée dans la foulée.
+ * Le tableau reste dans le code : c'est lui qui rend un trou futur visible
+ * plutôt que silencieux.
+ */
+export const MISSING_YEARS: number[] = [];
 
 /** Sujets dont un exercice manque dans la source (total < 20 points). */
 export const INCOMPLETE_SUJETS: { year: number; sujet: BacSujet; raison: string }[] = [
@@ -211,6 +221,138 @@ export const BAC_IDEAS: BacExerciseIdea[] = [
     situationIds: ['antibiotique_rifamycine'],
     capsuleIds: ['cap_u1_transcription_vs_traduction'],
     drillIds: ['drill_transcription', 'drill_traduction'],
+  },
+
+  // ───────────────────────────── 2020 ─────────────────────────────
+  // Session de septembre (COVID). Récupérée au sprint 17.
+  {
+    id: 'bac2020_s1_e1',
+    year: 2020,
+    sujet: 1,
+    exercice: 1,
+    points: 5,
+    titleAr: 'كيف عرفنا بنية الكرة الأرضية دون أن نحفرها؟',
+    ideaAr:
+      'أعمق حفرة لا تتعدى 13 كلم، ومع ذلك نعرف بنية الأرض إلى المركز: الموجات الزلزالية هي المجهر.',
+    supportsAr: [
+      'مقطع للبنية الداخلية للكرة الأرضية ببيانات مرقمة من 1 إلى 10',
+      'جدول يُملأ: اسم كل بيان، و الصخر المميز لكل غلاف',
+    ],
+    notionAr:
+      'انكسار و انعكاس الموجات P و S، مناطق الظل، انقطاعات موهو و غوتنبرغ و ليهمان.',
+    verbsAr: ['انقل الجدول و املأ الخانات', 'بيّن في نص علمي'],
+    unitIds: [10],
+    situationIds: ['seisme_boumerdes'],
+    capsuleIds: ['cap_u10_zone_ombre'],
+    drillIds: ['drill_structure_terre'],
+  },
+  {
+    id: 'bac2020_s1_e2',
+    year: 2020,
+    sujet: 1,
+    exercice: 2,
+    points: 7,
+    titleAr: 'إيبوبروفان و سيليكوكسيب: لماذا يوجع الدواء المعدة؟',
+    ideaAr:
+      'لماذا يسبّب مضاد الالتهاب ألماً في المعدة، و كيف صنع الباحثون دواءً انتقائياً بلا هذا العرض؟',
+    supportsAr: [
+      'مخطط نشاط الأنزيمين Cox-1 و Cox-2 انطلاقاً من حمض الأراشيدونيك',
+      'جدول تركيز الإيبوبروفان اللازم لخفض نشاط كل أنزيم إلى 50٪ (CI₅₀)',
+      'رسوم تخطيطية للموقع الفعال لكل أنزيم في وجود الركيزة و الدوائين',
+      'نشاط الأنزيمين بدلالة تركيز السيليكوكسيب',
+    ],
+    notionAr:
+      'التثبيط التنافسي و انتقائية الموقع الفعال: دواء واحد على أنزيمين متشابهين لا متطابقين.',
+    verbsAr: ['حلّل المخطط', 'وضّح', 'قارن'],
+    unitIds: [3],
+    situationIds: ['digestion_pepsine', 'diabete_januvia'],
+    capsuleIds: ['cap_u3_inhibition_type'],
+    drillIds: ['drill_courbes_inhibition', 'drill_enzyme_site_actif'],
+  },
+  {
+    id: 'bac2020_s1_e3',
+    year: 2020,
+    sujet: 1,
+    exercice: 3,
+    points: 8,
+    titleAr: 'العلاج المناعي لسرطان الثدي: بروتين Her2',
+    ideaAr: 'كيف يقضي جسم مضاد مصنَّع على خلايا سرطانية تفرط في بروتين غشائي؟',
+    supportsAr: [
+      'كمية البروتين الغشائي Her2 عند نوعين من الخلايا السرطانية A و B',
+      'عدد الخلايا بعد سبعة أيام من الحضن',
+      'جدول أوساط: خلايا A و B مع تراكيز مختلفة من Trastuzumab',
+      'نمذجة ارتباط Trastuzumab بـ Her2، و تطور عدد الخلايا بإضافة البالعات',
+    ],
+    notionAr:
+      'نوعية الارتباط جسم مضاد/مستضد، و الاختطاف المناعي: الجسم المضاد يعلّم الخلية للبلعمة.',
+    verbsAr: ['استخرج العلاقة', 'اقترح فرضية', 'حلّل', 'فسّر', 'بيّن في نص علمي'],
+    unitIds: [4, 2],
+    situationIds: ['labo_ouchterlony', 'cellules_cibles_lt'],
+    capsuleIds: ['cap_u4_humorale_cellulaire'],
+    drillIds: ['drill_anticorps'],
+  },
+  {
+    id: 'bac2020_s2_e1',
+    year: 2020,
+    sujet: 2,
+    exercice: 1,
+    points: 5,
+    titleAr: 'الانتقاء اللمفاوي و نمط الاستجابة',
+    ideaAr:
+      'ما الذي يحدّد نمط الاستجابة المناعية: مصدر الببتيد المستضدي المعروض على الخلية العارضة.',
+    supportsAr: ['وثيقة بعناصر مرقمة من 1 إلى 10 و خليتين (ع) و (س) و نمطي استجابة (أ) و (ب)'],
+    notionAr: 'العرض المستضدي بواسطة CMH I أو CMH II، و الانتقاء النسيلي للمفاويات.',
+    verbsAr: ['سمّ', 'تعرّف', 'اكتب نصاً علمياً'],
+    unitIds: [4],
+    situationIds: ['cellules_cibles_lt', 'greffe_rein'],
+    capsuleIds: ['cap_u4_cmh_vs_abo', 'cap_u4_humorale_cellulaire'],
+    drillIds: ['drill_cmh'],
+  },
+  {
+    id: 'bac2020_s2_e2',
+    year: 2020,
+    sujet: 2,
+    exercice: 2,
+    points: 7,
+    titleAr: 'الريسين: سمّ يوقف الترجمة عند الريبوزوم',
+    ideaAr:
+      'مادة مستخلصة من بذور الخروع توقف تكاثر الخلايا السرطانية — لكن على أي مستوى بالضبط؟',
+    supportsAr: [
+      'تكاثر الخلايا السرطانية مع و دون الريسين',
+      'نسبة إدماج التيميدين المشع و اللوسين المشع في تراكيز متزايدة',
+      'وسطان: مستخلص خلوي خالٍ من ARNm + متعدد اليوريدين + فينيل ألانين مشع، مع و دون الريسين',
+      'نمذجة الريبوزوم الوظيفي و غير الوظيفي (ARNr 28S)',
+    ],
+    notionAr:
+      'الترجمة: دور ARNr 28S في الريبوزوم — التيميدين يقيس النسخ، اللوسين يقيس الترجمة.',
+    verbsAr: ['حلّل', 'أبرز العلاقة', 'أعطِ حلاً للمشكلة'],
+    unitIds: [1],
+    situationIds: ['antibiotique_rifamycine', 'uracile_radioactif'],
+    capsuleIds: ['cap_u1_transcription_vs_traduction'],
+    drillIds: ['drill_traduction'],
+  },
+  {
+    id: 'bac2020_s2_e3',
+    year: 2020,
+    sujet: 2,
+    exercice: 3,
+    points: 8,
+    titleAr: 'نضج المشابك المثبّطة عند المولود الجديد',
+    ideaAr:
+      'لماذا لا يتحكّم المولود في حركاته؟ لأن مشبكه « المثبّط » يعمل بالمقلوب في أوّل أيامه.',
+    supportsAr: [
+      'التيار الأيوني و الكمون الغشائي بعد مشبكي عند يومين و عند شهرين من الولادة',
+      'توضع مضختي شوارد الكلور NKCC1 و KCC2 و المستقبلات القنوية للـ GABA',
+      'التركيز الداخلي لشوارد Cl⁻ خلال 60 يوماً بعد الولادة',
+      'تطور كمية ARNm لكل من NKCC1 و KCC2',
+    ],
+    notionAr:
+      'المشبك المثبّط: اتجاه دخول Cl⁻ يتوقف على تدرّج التركيز، الذي تبنيه المضخات — لا القناة.',
+    verbsAr: ['حلّل', 'اقترح فرضية', 'استخرج', 'تأكّد من صحة الفرضية', 'لخّص في نص علمي'],
+    unitIds: [5, 1],
+    situationIds: ['seuil_integration', 'sarin_attaque'],
+    capsuleIds: ['cap_u5_double_codage', 'cap_u5_quatre_potentiels'],
+    drillIds: ['drill_synapse'],
   },
 
   // ───────────────────────────── 2021 ─────────────────────────────
@@ -794,6 +936,138 @@ export const BAC_IDEAS: BacExerciseIdea[] = [
     situationIds: ['greffe_rein', 'labo_ouchterlony'],
     capsuleIds: ['cap_u4_cmh_vs_abo'],
     drillIds: ['drill_cmh', 'drill_anticorps'],
+  },
+
+  // ───────────────────────────── 2026 ─────────────────────────────
+  {
+    id: 'bac2026_s1_e1',
+    year: 2026,
+    sujet: 1,
+    exercice: 1,
+    points: 5,
+    titleAr: 'جذر الهيدروكسيل، الألبومين و الوذمة',
+    ideaAr:
+      'كيف يكفي جذر حرّ واحد لتكسير جسور ثنائية الكبريت فيفقد الألبومين وظيفته و تتورّم القدمان؟',
+    supportsAr: [
+      'نمذجة أثر جذر الهيدروكسيل الحر على بروتين الألبومين',
+      'تذكير: للألبومين 17 جسراً ثنائي الكبريت و السيستين Cys34 حر',
+    ],
+    notionAr:
+      'الصيغة العامة للحمض الأميني، و الروابط المميّزة لكل مستوى بنيوي؛ البنية الفراغية شرط الوظيفة.',
+    verbsAr: ['مثّل الصيغة العامة', 'اذكر الروابط', 'بيّن في نص علمي'],
+    unitIds: [2],
+    situationIds: ['anemie_falciforme', 'mixture_acides_amines'],
+    capsuleIds: ['cap_u2_formule_aa', 'cap_u2_quatre_niveaux'],
+    drillIds: ['drill_niveaux_structure'],
+  },
+  {
+    id: 'bac2026_s1_e2',
+    year: 2026,
+    sujet: 1,
+    exercice: 2,
+    points: 7,
+    titleAr: 'أنزيم السيرتوين SIRT1 و الريسفيراترول',
+    ideaAr:
+      'لماذا يحمي النشاط البدني الـ ADN؟ لأنه يرفع NAD⁺، و NAD⁺ يشغّل أنزيماً ينزع الأستيل عن P53.',
+    supportsAr: [
+      'كمية الركيزة P53A بدلالة الزمن في تراكيز مختلفة من NAD⁺',
+      'العلاقة بين أنزيم SIRT1 و حيوية الخلايا',
+      'نشاط SIRT1 و حيوية الخلايا في تراكيز متزايدة من الريسفيراترول RSV',
+      'نمذجة لجزيئة SIRT1 و آلية عمل RSV',
+    ],
+    notionAr:
+      'المرافق الأنزيمي و المنشّط: ليست كل الجزيئات المتدخلة مثبّطة — بعضها يرفع النشاط.',
+    verbsAr: ['حلّل', 'وضّح الوظيفة', 'بيّن الأهمية', 'برّر'],
+    unitIds: [3, 1],
+    situationIds: ['detergent_enzymatique', 'diabete_januvia'],
+    capsuleIds: ['cap_u3_plateau_michaelis', 'cap_u3_inhibition_type'],
+    drillIds: ['drill_enzyme_site_actif'],
+  },
+  {
+    id: 'bac2026_s1_e3',
+    year: 2026,
+    sujet: 1,
+    exercice: 3,
+    points: 8,
+    titleAr: 'الأترازين: مبيد يقتل العشب و يترك الذرة',
+    ideaAr:
+      'كيف يقضي مبيد على النبتة الضارة دون المحصول، رغم أن كليهما نبات أخضر يقوم بالتركيب الضوئي؟',
+    supportsAr: [
+      'شدة امتصاص CO₂ و شدة الفلورة عند نبتة شاهدة و أخرى معالجة بالأترازين',
+      'متابعة امتصاص CO₂ خلال 50 ساعة عند الذرة و الشوفان و نباتات ضارة',
+      'نمذجة موقع ارتباط Q_B في وجود الأترازين (His215، Ser264، Phe255، Phe265)',
+      'دور أنزيم GST و الغلوتاثيون GSH عند الذرة',
+    ],
+    notionAr:
+      'المرحلة الكيموضوئية: PSII و ناقل الإلكترونات Q_B؛ الفلورة = طاقة ضوئية لم تُحوَّل.',
+    verbsAr: ['بيّن', 'اقترح فرضية', 'صادق على صحة الفرضية', 'برّر', 'أنجز مخططاً وظيفياً'],
+    unitIds: [6, 3],
+    situationIds: ['jagendorf_chloroplaste', 'serre_agricole'],
+    capsuleIds: ['cap_u6_oxygene_eau', 'cap_u6_jagendorf'],
+    drillIds: ['drill_chaine_photochimique'],
+  },
+  {
+    id: 'bac2026_s2_e1',
+    year: 2026,
+    sujet: 2,
+    exercice: 1,
+    points: 5,
+    titleAr: 'غشاء التيلاكوئيد و مبيد الـ Oxyfluorfen',
+    ideaAr: 'ما الذي يحدث لتركيب الـ ATP إذا خُرّبت بنية غشاء التيلاكوئيد نفسها؟',
+    supportsAr: ['نمذجة لجزء من غشاء التيلاكوئيد بعد إضافة المبيد، مع الوسطين (أ) و (ب)'],
+    notionAr:
+      'مكوّنات غشاء التيلاكوئيد: الأنظمة الضوئية، النواقل، و ATP سنتاز؛ تدرّج البروتونات (Mitchell).',
+    verbsAr: ['اذكر المكونات', 'اشرح في نص علمي'],
+    unitIds: [6, 8],
+    situationIds: ['jagendorf_chloroplaste', 'feuille_jour_nuit'],
+    capsuleIds: ['cap_u6_jagendorf', 'cap_u8_chloroplaste_mitochondrie'],
+    drillIds: ['drill_chaine_photochimique'],
+  },
+  {
+    id: 'bac2026_s2_e2',
+    year: 2026,
+    sujet: 2,
+    exercice: 2,
+    points: 7,
+    titleAr: 'الجلطة الدماغية، القناة ASIC1a و سمّ العنكبوت',
+    ideaAr:
+      'لماذا تقتل الجلطة الخلايا العصبية؟ لأن حموضة الوسط تفتح قناة تُغرق الهيولى بالكالسيوم.',
+    supportsAr: [
+      'تركيز Ca²⁺ في الهيولى عند خلايا طبيعية Kwt و أخرى معدّلة وراثياً KO',
+      'التيارات الداخلة عبر القناة ASIC1a عند pH 7,4 و pH 6 بتقنية Patch clamp',
+      'قوة ارتباط السمّ الطبيعي PcTx1 و الطافر PcTx2 بالجيب الحمضي (Asp، Glu)',
+      'نتائج الهجرة الكهربائية للسمّين في وسط حامضي',
+    ],
+    notionAr:
+      'قناة مرتبطة بالـ pH؛ و سلوك الببتيد في الهجرة الكهربائية يكشف شحنته — نفس منطق الـ pHi.',
+    verbsAr: ['حلّل', 'وضّح العلاقة', 'اشرح الآلية', 'برّر'],
+    unitIds: [5, 2],
+    situationIds: ['mixture_acides_amines', 'sarin_attaque'],
+    capsuleIds: ['cap_u2_anode_cathode', 'cap_u5_quatre_potentiels'],
+    drillIds: ['drill_potentiel_action', 'drill_synapse'],
+  },
+  {
+    id: 'bac2026_s2_e3',
+    year: 2026,
+    sujet: 2,
+    exercice: 3,
+    points: 8,
+    titleAr: 'الزهايمر: لماذا فشل الجسم المضاد الأول؟',
+    ideaAr:
+      'جسم مضاد فعّال في الدم و عاجز في المخ: المشكلة ليست في التعرّف بل في العبور إلى المخ.',
+    supportsAr: [
+      'رسم لوعاء دموي و منطقة من المخ عند مصاب بالزهايمر معالج بـ Anti-Aβ',
+      'نسبة صفائح Aβ في المخ و نسبة VLDL في الدم بدلالة تركيز Anti-Aβ',
+      'نسبة تشكّل المعقدات المناعية و بلعمتها مع Anti-Aβ و مع ATV-Aβ',
+      'نمذجة بنية الجسمين المضادين و آلية عملهما على مستوى المخ',
+    ],
+    notionAr:
+      'بنية الجسم المضاد: الموقع المتغيّر يحدّد النوعية، و باقي الجزيئة يحدّد المصير (عبور، بلعمة).',
+    verbsAr: ['اقترح فرضية', 'صادق على صحة الفرضية', 'قارن', 'حلّل'],
+    unitIds: [4, 2],
+    situationIds: ['labo_ouchterlony', 'vaccination_rappel'],
+    capsuleIds: ['cap_u4_humorale_cellulaire', 'cap_u4_primaire_secondaire'],
+    drillIds: ['drill_anticorps'],
   },
 ];
 

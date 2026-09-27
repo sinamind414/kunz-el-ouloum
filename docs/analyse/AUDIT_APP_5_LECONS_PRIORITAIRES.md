@@ -1107,3 +1107,73 @@ complète **1495 verts / 4 skipped** (toujours les 4 échecs pré-existants
 **Vide.** Les items 12, 14, 15, 16, 17, 18, 19 et « 5 bis » sont tous livrés.
 Prochaine dette naturelle, si elle est souhaitée : la session 2020, et la
 2026 dont l'annale est déjà en ligne chez DzExams.
+
+---
+
+## Sprint 17 — la série des sessions devient continue : 2019 → 2026
+
+### Les deux dettes annoncées, soldées
+
+Le sprint 16 laissait deux trous explicites. Les deux sont comblés :
+
+- **Session 2020** (session de septembre, COVID) : le PDF officiel a fini par
+  répondre après plusieurs tentatives. `MISSING_YEARS` est désormais **vide** —
+  le tableau reste dans le code pour qu'un trou futur soit *déclaré* et non
+  caché.
+- **Session 2026**, déjà en ligne chez DzExams (avec son corrigé officiel) :
+  ajoutée dans la foulée.
+
+La banque passe de **35 à 47 idées** sur **8 sessions consécutives**, et un
+nouveau test vérifie la **continuité de la série** : toute année entre la plus
+ancienne et la plus récente doit être soit couverte, soit inscrite comme
+manquante — aucun saut silencieux n'est possible.
+
+### Ce que les deux sessions ajoutent au corpus
+
+**2020** — structure interne de la Terre par les ondes sismiques (U10, la
+première fois qu'une unité géologique mène un exercice de 5 points dans la
+banque) · Cox-1/Cox-2, ibuprofène et célécoxib : pourquoi un anti-inflammatoire
+fait mal à l'estomac, et comment l'inhibition sélective résout le problème
+(U3) · immunothérapie du cancer du sein, Her2 et Trastuzumab (U4) · sélection
+clonale et type de réponse (U4) · **la ricine, qui bloque l'ARNr 28S** — le
+seul exercice du corpus qui distingue thymidine marquée et leucine marquée pour
+localiser le niveau d'action (U1) · maturation des synapses inhibitrices du
+nouveau-né, NKCC1/KCC2 et le sens d'entrée du Cl⁻ (U5).
+
+**2026** — radical hydroxyle, albumine et œdème (U2) · **SIRT1 et le
+resvératrol : le premier exercice du corpus où la molécule étudiée est un
+activateur et non un inhibiteur** (U3) · l'atrazine, Q_B et la résistance du
+maïs par la GST (U6) · membrane du thylakoïde et Oxyfluorfen (U6) · AVC, canal
+ASIC1a et venin d'araignée PcTx1 — **avec une électrophorèse du peptide en
+milieu acide, c'est-à-dire exactement le raisonnement du pHi** (U5+U2) ·
+Alzheimer, Anti-Aβ contre ATV-Aβ : un anticorps efficace dans le sang et
+impuissant dans le cerveau (U4).
+
+### Le classement de pression, recalculé sur 8 sessions
+
+| Unité | Points principaux | Exercices menés | Apparitions |
+|---|---|---|---|
+| **U4 المناعة** | 70 | 10 | 11 |
+| **U1 تركيب البروتين** | 62 | 9 | 14 |
+| **U5 الاتصال العصبي** | 62 | 9 | 9 |
+| **U3 النشاط الإنزيمي** | 51 | 7 | 13 |
+| U6 التركيب الضوئي | 35 | 5 | 5 |
+| U2 بنية/وظيفة | 15 | 3 | 11 |
+
+Avec deux sessions de plus, **U4 repasse en tête** et le constat du sprint 16
+se durcit : **U1 apparaît dans 14 exercices sur 47 et U3 dans 13**, alors que
+U3 n'en mène que 7. Les deux unités les plus *transversales* du programme sont
+celles qu'on révise le moins, parce qu'elles ne portent pas le titre de
+l'exercice.
+
+Côté consignes : **« حلّل » 17 occurrences**, « اقترح فرضية » 8, « برّر » 8,
+« بيّن » 6.
+
+### Compteurs après sprint 17
+
+idées BAC **47** sur **8 sessions (2019→2026, série continue)** · capsules 24 ·
+schémas 17 · situations 23 · cartes mentales 11/11 · cartes d'ouverture 11/11 ·
+suite complète **1496 verts / 4 skipped** (toujours les 4 échecs pré-existants
+`lazyRouteChunks.smoke`).
+
+Le catalogue de provenance est renommé `data/bac_sessions_2019_2026.json`.

@@ -24,13 +24,24 @@ import {
 import { INITIAL_UNITS } from '../unitCatalog';
 
 describe('banque أفكار التمارين — intégrité de la collecte', () => {
-  it('couvre les six sessions réellement dépouillées, la plus récente en tête', () => {
-    expect(YEARS_COVERED).toEqual([2025, 2024, 2023, 2022, 2021, 2019]);
+  it('couvre les huit sessions dépouillées, la plus récente en tête', () => {
+    expect(YEARS_COVERED).toEqual([2026, 2025, 2024, 2023, 2022, 2021, 2020, 2019]);
   });
 
-  it('déclare 2020 comme trou assumé plutôt que de l’inventer', () => {
-    expect(MISSING_YEARS).toEqual([2020]);
-    expect(BAC_IDEAS.some((i) => i.year === 2020)).toBe(false);
+  it('ne déclare plus aucun trou de session, 2020 ayant été récupérée', () => {
+    expect(MISSING_YEARS).toEqual([]);
+    expect(BAC_IDEAS.filter((i) => i.year === 2020).length).toBe(6);
+    expect(BAC_IDEAS.filter((i) => i.year === 2026).length).toBe(6);
+  });
+
+  it('couvre une série continue de sessions, sans saut silencieux', () => {
+    const min = Math.min(...YEARS_COVERED);
+    const max = Math.max(...YEARS_COVERED);
+    for (let y = min; y <= max; y += 1) {
+      const presente = YEARS_COVERED.includes(y);
+      const declaree = MISSING_YEARS.includes(y);
+      expect(presente || declaree, `session ${y} ni couverte ni déclarée manquante`).toBe(true);
+    }
   });
 
   it('cite une source par session couverte', () => {
@@ -152,12 +163,13 @@ describe('banque أفكار التمارين — accès de l’élève', () => {
 
   it('retrouve toutes les idées d’une année par sa saisie numérique', () => {
     expect(searchIdeas('2023').length).toBe(6);
+    expect(searchIdeas('2026').length).toBe(6);
   });
 
   it('rend les exercices d’une unité du plus récent au plus ancien', () => {
     const annees = ideasForUnit(4).map((i) => i.year);
     expect(annees).toEqual([...annees].sort((a, b) => b - a));
-    expect(annees.length).toBeGreaterThanOrEqual(5);
+    expect(annees.length).toBeGreaterThanOrEqual(8);
   });
 
   it('renvoie une liste vide sur une recherche vide plutôt que tout le corpus', () => {

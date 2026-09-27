@@ -6,15 +6,14 @@
     "methode": "lecture du texte des PDF officiels (ONEC) republiés par eddirasa.com et dzexams.com ; aucun énoncé recopié, seules l'idée, les supports, la notion et les verbes sont retenus",
     "sessions_couvertes": [
       2019,
+      2020,
       2021,
       2022,
       2023,
       2024,
-      2025
+      2025,
+      2026
     ],
-    "sessions_manquantes": {
-      "2020": "session de septembre (COVID) — texte non récupérable au moment de la collecte"
-    },
     "lacunes_ponctuelles": [
       "2021 sujet 2 exercice 1 : non lisible dans la source"
     ],
@@ -22,13 +21,20 @@
       "duree": "04 h 30",
       "choix": "2 sujets au choix",
       "bareme": "exercice 1 = 05 pts, exercice 2 = 07 pts, exercice 3 = 08 pts"
-    }
+    },
+    "sessions_manquantes": {},
+    "note_sprint_17": "2020 (session de septembre, COVID) récupérée et 2026 ajoutée : la série 2019→2026 est désormais continue, sans trou."
   },
   "sources": [
     {
       "annee": 2019,
       "url": "https://eddirasa.com/bac-science-2019-se/",
       "pdf": "https://eddirasa.com/wp-content/uploads/2019/06/eddirasa.com-bac-sc-science-2019.pdf"
+    },
+    {
+      "annee": 2020,
+      "url": "https://eddirasa.com/bac-science-2020-se/",
+      "pdf": "https://eddirasa.com/wp-content/uploads/2020/09/eddirasa.com-bac-se-science-2020.pdf"
     },
     {
       "annee": 2021,
@@ -54,6 +60,12 @@
       "annee": 2025,
       "url": "https://eddirasa.com/bac-science-2025-se/",
       "pdf": "https://eddirasa.com/wp-content/uploads/2025/06/bac-se-sciences-2025.pdf"
+    },
+    {
+      "annee": 2026,
+      "url": "https://www.dzexams.com/ar/annales/L0tWNjNjZ1pNQ1RmU3JUOUFUbFpTdz09",
+      "pdf": "https://www.dzexams.com/uploads/annales/dzexams-annale-ZzdzNGR3aUJrbkYvVkRDMEJMQzNIZz09.pdf",
+      "note": "le PDF DzExams contient aussi le corrigé officiel"
     },
     {
       "annee": "index",
