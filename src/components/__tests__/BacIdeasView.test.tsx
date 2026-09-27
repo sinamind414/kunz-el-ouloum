@@ -222,3 +222,31 @@ describe('أفكار التمارين — retour depuis le plan et trace d’éc
     localStorage.clear();
   });
 });
+
+describe('أفكار التمارين — relecture de la production (sprint 27)', () => {
+  it('n’offre la relecture que si l’élève a écrit', () => {
+    render(<BacIdeasView />);
+    expect(screen.queryByTestId('basculer-revue')).toBeNull();
+  });
+
+  it('ouvre et referme le panneau « ما كتبته أنا »', async () => {
+    localStorage.setItem('kunz.bacTrainer.bac2024_s1_e3.verb_analyser', 'نلاحظ ارتفاعاً واضحاً.');
+    const user = userEvent.setup();
+    render(<BacIdeasView />);
+    await user.click(screen.getByTestId('basculer-revue'));
+    expect(screen.getByTestId('writing-review')).toBeTruthy();
+    await user.click(screen.getByTestId('basculer-revue'));
+    expect(screen.queryByTestId('writing-review')).toBeNull();
+    localStorage.clear();
+  });
+
+  it('rouvre l’atelier sur une réponse reprise depuis la relecture', async () => {
+    localStorage.setItem('kunz.bacTrainer.bac2024_s1_e3.verb_analyser', 'نلاحظ ارتفاعاً واضحاً.');
+    const user = userEvent.setup();
+    render(<BacIdeasView />);
+    await user.click(screen.getByTestId('basculer-revue'));
+    await user.click(screen.getByTestId('review-reprendre-bac2024_s1_e3-verb_analyser'));
+    expect(screen.getByTestId('bac-trainer').textContent).toContain('البنزوبيران');
+    localStorage.clear();
+  });
+});

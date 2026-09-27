@@ -35,6 +35,7 @@ import {
   verbFamilyStats,
 } from '../data/verbDemands';
 import BacIdeaTrainer from './BacIdeaTrainer';
+import WritingReviewPanel from './WritingReviewPanel';
 import { draftedFamilies, writingStats } from '../data/writingProgress';
 import { INITIAL_UNITS } from '../unitCatalog';
 
@@ -141,6 +142,9 @@ export default function BacIdeasView({ onBackToHome, focusIdeaId = null }: BacId
     focusIdeaId ? (IDEA_BY_ID[focusIdeaId] ?? null) : null,
   );
   const [redige, setRedige] = useState(() => writingStats());
+  // Change à chaque fermeture d'atelier : force la relecture des brouillons.
+  const [revision, setRevision] = useState(0);
+  const [revueVisible, setRevueVisible] = useState(false);
 
   useEffect(() => {
     if (focusIdeaId && IDEA_BY_ID[focusIdeaId]) setEntrainement(IDEA_BY_ID[focusIdeaId]);
@@ -242,6 +246,7 @@ export default function BacIdeasView({ onBackToHome, focusIdeaId = null }: BacId
           idea={entrainement}
           onClose={() => {
             setRedige(writingStats());
+            setRevision((n) => n + 1);
             setEntrainement(null);
           }}
         />
@@ -421,9 +426,22 @@ export default function BacIdeasView({ onBackToHome, focusIdeaId = null }: BacId
       )}
 
       {redige.exercices > 0 && (
-        <p data-testid="idees-redige" className="mb-2 text-[12px] font-bold text-[#006d37] dark:text-[#2ecc71] text-right">
-          حرّرت {redige.reponses} جواباً على {redige.exercices} تمريناً.
-        </p>
+        <div className="mb-2 flex flex-row-reverse items-center justify-between gap-2">
+          <p data-testid="idees-redige" className="text-[12px] font-bold text-[#006d37] dark:text-[#2ecc71] text-right">
+            حرّرت {redige.reponses} جواباً على {redige.exercices} تمريناً.
+          </p>
+          <button
+            data-testid="basculer-revue"
+            onClick={() => setRevueVisible((v) => !v)}
+            className="text-[11px] font-bold px-3 py-1 rounded-xl bg-[#f3f4f5] dark:bg-[#1f2622] text-[#006d37] dark:text-[#2ecc71] cursor-pointer"
+          >
+            {revueVisible ? 'إخفاء ما كتبته' : 'راجع ما كتبته'}
+          </button>
+        </div>
+      )}
+
+      {revueVisible && (
+        <WritingReviewPanel key={revision} onOpen={(idea) => setEntrainement(idea)} />
       )}
 
       <p data-testid="idees-total" className="mb-2 text-[12px] font-bold text-[#506072] dark:text-gray-400 text-right">

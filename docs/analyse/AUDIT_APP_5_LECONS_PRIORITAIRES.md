@@ -1724,3 +1724,59 @@ régression de suite qui « revient toute seule » doit d'abord faire suspecter 
 
 Plan → atelier en un clic · trace d'écriture visible · suite complète
 **1608 verts / 8 skipped / 0 rouge** (124 fichiers).
+
+---
+
+## Sprint 27 — « ما كتبته أنا » : relire sa propre production, et en tirer un profil d'erreurs
+
+### Ce qui manquait encore
+
+Depuis le sprint 24, l'élève peut rédiger ; depuis le 26, on lui dit combien de
+réponses il a écrites. Mais **il ne pouvait pas les revoir ensemble**, ni
+savoir ce qu'il rate *systématiquement*. Or ces brouillons sont la seule
+production personnelle de l'app : capsules lues, schémas refaits et QCM
+mesurent de la reconnaissance, pas de la rédaction.
+
+### Deux niveaux de retour
+
+**1. Réponse par réponse.** `reviewDrafts()` relit chaque brouillon, le
+rattache à son exercice et à sa consigne, et affiche son état de forme
+(`3 / 4`), ce qui manque, et les alertes déclenchées. **Les réponses les plus
+incomplètes remontent en tête** — c'est là qu'il reste du travail — et chacune
+se rouvre dans l'atelier en un clic.
+
+**2. Le profil d'erreurs.** `weakestChecks()` agrège les échecs sur toutes les
+réponses et donne ce qu'aucun corrigé ne dit : **« tu oublies la conclusion
+dans 4 réponses sur 5 »**. Le compte se fait en *échecs sur occasions* : une
+exigence qui ne s'est présentée qu'une fois affiche « 1 sur 1 » et l'élève
+juge lui-même — plutôt qu'un pourcentage qui ferait passer un incident pour une
+habitude. Les vigilances (la cause glissée dans un تحليل) y figurent aussi.
+
+### Détails qui cassent ce genre de module, traités
+
+- brouillon dont l'exercice n'existe plus : affiché, non rouvrable — pas de
+  plantage, pas de bouton mort ;
+- famille de consigne inconnue : ignorée silencieusement ;
+- extrait tronqué à 90 caractères pour reconnaître son texte, **sans toucher au
+  brouillon enregistré** ;
+- lecture seule, vérifiée par un test qui espionne `Storage.setItem` ;
+- le panneau est remonté (`key`) à chaque fermeture de l'atelier, sinon il
+  afficherait l'état d'avant la dernière rédaction.
+
+### Tests
+
+`writingReview.test.ts` — 11 tests (classement, profil, cas dégradés) ;
+`WritingReviewPanel.test.tsx` — 5 tests ; 3 tests d'intégration côté annales.
+
+### Note d'exploitation
+
+Pour la deuxième fois, `lazyRouteChunks.smoke.test.ts` est revenu dans la copie
+de travail à sa version d'avant le sprint 25. Restauré depuis la branche
+distante, qui reste la référence. Si le phénomène se répète, le correctif
+durable est de sortir ce contrôle de la suite unitaire (`npm run test:build`
+existe déjà pour cela).
+
+### Compteurs après sprint 27
+
+Production personnelle relisible avec profil d'erreurs · suite complète
+**1626 verts / 8 skipped / 0 rouge** (126 fichiers).
