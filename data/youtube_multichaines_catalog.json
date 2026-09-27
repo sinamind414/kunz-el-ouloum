@@ -5,7 +5,8 @@
   "chaines": [
    "@Profchaouch — الأستاذ شاوش",
    "@Prof_benotmane — الأستاذ بن عثمان",
-   "@ikramscience8424 — Ikram science"
+   "@ikramscience8424 — Ikram science",
+   "@MostafaBdd — mostafa bdd العلوم الطبيعية"
   ],
   "methode": "relevé des pages playlists YouTube (fetch_page, 2026-09-27) ; vues telles qu'affichées (arrondies par YouTube) ; durées exactes ; âge en mois tel qu'affiché",
   "limites": [
@@ -13,7 +14,8 @@
    "9 vidéos masquées dans la playlist U4 de Chaouch, 7 dans sa série A→Z, 1 partie (ABO) absente chez Benotmane",
    "les vues mesurent la demande, pas la compréhension",
    "biais d'ancienneté corrigé par la colonne vues/mois, qui reste une approximation linéaire"
-  ]
+  ],
+  "releve2": "2026-09-27 (2e passe) : 5e chaîne, orientée cartes mentales + corrections d'exercices"
  },
  "chaouch": {
   "serieAZ": {
@@ -369,5 +371,351 @@
  },
  "ikram": {
   "voir": "data/youtube_ikram_catalog.json"
+ },
+ "mostafabdd": {
+  "profil": "8 playlists ; positionnement exercices + cartes mentales ; les vidéos d'exercices dépassent les cours en audience",
+  "playlists": {
+   "U2 العلاقة بين بنية ووظيفة البروتين": {
+    "id": "PLGMFG8bVHQnStC__9aUg3rXSa7IupxFBN",
+    "videos": 6,
+    "vuesPlaylist": 273661,
+    "detail": [
+     {
+      "titre": "أقوى شرح للوحدة 2",
+      "duree": "3:05:26",
+      "dureeMin": 185.43,
+      "vuesK": 87,
+      "ageAns": 2,
+      "format": "cours"
+     },
+     {
+      "titre": "خريطة ذهنية للوحدة 2",
+      "duree": "20:50",
+      "dureeMin": 20.83,
+      "vuesK": 568,
+      "ageAns": 4,
+      "format": "carte mentale"
+     },
+     {
+      "titre": "أفكار تمارين الوحدة 2",
+      "duree": "38:28",
+      "dureeMin": 38.47,
+      "vuesK": 159,
+      "ageAns": 3,
+      "format": "typologie d'exercices"
+     },
+     {
+      "titre": "كيف نكتب صيغة الحمض الأميني بطريقة صحيحة ؟",
+      "duree": "12:30",
+      "dureeMin": 12.5,
+      "vuesK": 151,
+      "ageAns": 3,
+      "format": "micro-capsule méthode"
+     },
+     {
+      "titre": "حل 10 تمارين في الوحدة 2",
+      "duree": "3:27:25",
+      "dureeMin": 207.42,
+      "vuesK": 16,
+      "ageAns": 1,
+      "format": "correction d'exercices"
+     },
+     {
+      "titre": "حل و مناقشة 10 تمارين في الوحدة 2",
+      "duree": "5:27:23",
+      "dureeMin": 327.38,
+      "vuesK": 377,
+      "ageAns": 4,
+      "format": "correction d'exercices"
+     }
+    ]
+   },
+   "U3 الإنزيمات": {
+    "id": "PLGMFG8bVHQnTuU7yd29zB8-9wMGGB9NCA",
+    "videos": 8,
+    "vuesPlaylist": 221151,
+    "detail": [
+     {
+      "titre": "أقوى شرح لوحدة الإنزيمات",
+      "duree": "3:28:56",
+      "dureeMin": 208.93,
+      "vuesK": 73,
+      "ageAns": 2,
+      "format": "cours"
+     },
+     {
+      "titre": "خريطة ذهنية للوحدة 3",
+      "duree": "31:32",
+      "dureeMin": 31.53,
+      "vuesK": 565,
+      "ageAns": 4,
+      "format": "carte mentale"
+     },
+     {
+      "titre": "أفكار تمارين الإنزيمات",
+      "duree": "38:39",
+      "dureeMin": 38.65,
+      "vuesK": 148,
+      "ageAns": 3,
+      "format": "typologie d'exercices"
+     },
+     {
+      "titre": "أفضل 10 تمارين في الإنزيمات",
+      "duree": "6:08:51",
+      "dureeMin": 368.85,
+      "vuesK": 218,
+      "ageAns": 3,
+      "format": "correction d'exercices"
+     },
+     {
+      "titre": "التمرين 12 : تمرين مسعى علمي",
+      "duree": "1:03:59",
+      "dureeMin": 63.98,
+      "vuesK": 14,
+      "ageAns": 2,
+      "format": "exercice commenté"
+     },
+     {
+      "titre": "التمرين 11 : يشمل الوحدات 1-2-3",
+      "duree": "1:15:16",
+      "dureeMin": 75.27,
+      "vuesK": 13,
+      "ageAns": 2,
+      "format": "exercice commenté"
+     },
+     {
+      "titre": "التمرين 13 : تمرين المغناطيس",
+      "duree": "51:05",
+      "dureeMin": 51.08,
+      "vuesK": 10,
+      "ageAns": 2,
+      "format": "exercice commenté"
+     },
+     {
+      "titre": "التمرين 14 : سبب مرض البرص (المهاق)",
+      "duree": "45:06",
+      "dureeMin": 45.1,
+      "vuesK": 11,
+      "ageAns": 2,
+      "format": "exercice commenté"
+     }
+    ]
+   },
+   "U4 المناعة": {
+    "id": "PLGMFG8bVHQnTLZeREb8BFiCfTKHOEPiEr",
+    "videos": 11,
+    "vuesPlaylist": 529106,
+    "detail": [
+     {
+      "titre": "ماذا سندرس في المناعة ؟",
+      "duree": "15:44",
+      "dureeMin": 15.73,
+      "vuesK": 79,
+      "ageAns": 3,
+      "format": "orientation d'unité"
+     },
+     {
+      "titre": "أقوى شرح لوحدة المناعة",
+      "duree": "6:47:06",
+      "dureeMin": 407.1,
+      "vuesK": 368,
+      "ageAns": 2,
+      "format": "cours"
+     },
+     {
+      "titre": "خريطة ذهنية للوحدة 4 (Mind Map)",
+      "duree": "47:35",
+      "dureeMin": 47.58,
+      "vuesK": 710,
+      "ageAns": 4,
+      "format": "carte mentale"
+     },
+     {
+      "titre": "شرح المناعة الخلطية ببساطة",
+      "duree": "11:57",
+      "dureeMin": 11.95,
+      "vuesK": 259,
+      "ageAns": 3,
+      "format": "capsule de leçon"
+     },
+     {
+      "titre": "شرح المناعة الخلوية ببساطة",
+      "duree": "11:57",
+      "dureeMin": 11.95,
+      "vuesK": 170,
+      "ageAns": 3,
+      "format": "capsule de leçon"
+     },
+     {
+      "titre": "كيف نفرق بين الخلطية والخلوية ؟",
+      "duree": "2:11",
+      "dureeMin": 2.18,
+      "vuesK": 77,
+      "ageAns": 3,
+      "format": "micro-capsule comparatif"
+     },
+     {
+      "titre": "الخلايا المناعية وأسلحتها ضد اللاذات",
+      "duree": "13:17",
+      "dureeMin": 13.28,
+      "vuesK": 14,
+      "ageAns": 3,
+      "format": "capsule de leçon"
+     },
+     {
+      "titre": "جميع الرسومات التخطيطية والتفسيرية التي يجب حفظها",
+      "duree": "58:58",
+      "dureeMin": 58.97,
+      "vuesK": 76,
+      "ageAns": 3,
+      "format": "banque de schémas"
+     },
+     {
+      "titre": "أقوى ملخص لأهم تمارين المناعة النوعية",
+      "duree": "6:44",
+      "dureeMin": 6.73,
+      "vuesK": 30,
+      "ageAns": 1,
+      "format": "typologie d'exercices"
+     },
+     {
+      "titre": "حل أفضل 10 تمارين في المناعة (A)",
+      "duree": "4:06:13",
+      "dureeMin": 246.22,
+      "vuesK": 173,
+      "ageAns": 3,
+      "format": "correction d'exercices"
+     },
+     {
+      "titre": "حل أفضل 10 تمارين في المناعة (B)",
+      "duree": "5:30:01",
+      "dureeMin": 330.02,
+      "vuesK": 352,
+      "ageAns": 3,
+      "format": "correction d'exercices"
+     }
+    ]
+   },
+   "U6 التركيب الضوئي": {
+    "id": "PLGMFG8bVHQnTkM1bYlTiixO3U6aRQbFBu",
+    "videos": 5,
+    "vuesPlaylist": 121083,
+    "detail": [
+     {
+      "titre": "التركيب الضوئي [ ملخص ]",
+      "duree": "20:27",
+      "dureeMin": 20.45,
+      "vuesK": null,
+      "ageAns": null,
+      "format": "résumé"
+     },
+     {
+      "titre": "المراجعة النهائية + أفكار التمارين",
+      "duree": "28:32",
+      "dureeMin": 28.53,
+      "vuesK": null,
+      "ageAns": null,
+      "format": "typologie d'exercices"
+     },
+     {
+      "titre": "كيف أحفظ حلقة كالفن ؟",
+      "duree": "4:12",
+      "dureeMin": 4.2,
+      "vuesK": null,
+      "ageAns": null,
+      "format": "micro-capsule mémorisation"
+     },
+     {
+      "titre": "التركيب الضوئي من الألف إلى الياء",
+      "duree": "2:44:49",
+      "dureeMin": 164.82,
+      "vuesK": null,
+      "ageAns": null,
+      "format": "cours"
+     },
+     {
+      "titre": "أفضل 6 تمارين في التركيب الضوئي",
+      "duree": "2:34:59",
+      "dureeMin": 154.98,
+      "vuesK": null,
+      "ageAns": null,
+      "format": "correction d'exercices"
+     }
+    ],
+    "note": "vues par vidéo non exposées par la page ; mise à jour sept. 2026"
+   },
+   "U1 تركيب البروتين": {
+    "id": "PLGMFG8bVHQnRcZnLs6oE7pgkqH7AUipyy",
+    "videos": 11
+   },
+   "U5 الاتصال العصبي": {
+    "id": "PLGMFG8bVHQnRUt7jdt9s13UeRhLQowIWF",
+    "videos": 7
+   },
+   "برنامج العلوم لتلاميذ كسالا": {
+    "id": "PLGMFG8bVHQnQ5tL0sRDuT-XGH_rBp2lsA",
+    "videos": 15
+   },
+   "التمارين + المناقشة والحل": {
+    "id": "PLGMFG8bVHQnTZh6j8PV3mYNZrm8QyS4L5",
+    "videos": 121,
+    "vuesPlaylist": 350075,
+    "tete": [
+     {
+      "titre": "منهجية حل التمارين",
+      "duree": "15:30",
+      "vuesK": 145
+     },
+     {
+      "titre": "أهم خطوة بعد الانتهاء من حل التمارين",
+      "duree": "1:00",
+      "vuesK": 15
+     },
+     {
+      "titre": "تمرين 1 تركيب البروتين [المضاد الحيوي]",
+      "duree": "30:38",
+      "vuesK": 134
+     },
+     {
+      "titre": "تمرين 4 [مرض البروجيريا]",
+      "duree": "49:46",
+      "vuesK": 102
+     },
+     {
+      "titre": "تمرين 7 [سرطان الثدي]",
+      "duree": "34:28",
+      "vuesK": 69
+     },
+     {
+      "titre": "تمرين 10 [المورثة و سلوك AA]",
+      "duree": "20:55",
+      "vuesK": 21
+     },
+     {
+      "titre": "تمرين 11 بكالوريا 2022 : حساب الوزن الجزيئي",
+      "duree": "30:48",
+      "vuesK": 48
+     },
+     {
+      "titre": "تمرين 12 بكالوريا 2022 : الأورام السرطانية",
+      "duree": "35:27",
+      "vuesK": 66
+     }
+    ],
+    "indexation": "chaque exercice est nommé par sa SITUATION (antibiotique, progéria, cancer du sein…) et parfois par sa session (بكالوريا 2022)"
+   }
+  },
+  "ratios": {
+   "carteMentale_vs_cours": {
+    "U2": 6.5,
+    "U3": 7.7,
+    "U4": 1.9
+   },
+   "exercicesCorriges_vs_cours": {
+    "U2": 4.5,
+    "U3": 3.0,
+    "U4": 1.4
+   }
+  }
  }
 }

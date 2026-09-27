@@ -1,7 +1,7 @@
 {
  "_meta": {
   "generatedAt": "2026-09-26",
-  "basis": "Analyse croisée de 4 chaînes YouTube SVT BAC (@prof-ketfi.cherif-zina, @Profchaouch, @Prof_benotmane, @ikramscience8424) + programme national + unitCatalog.ts",
+  "basis": "Analyse croisée de 5 chaînes YouTube SVT BAC (@prof-ketfi.cherif-zina, @Profchaouch, @Prof_benotmane, @ikramscience8424, @MostafaBdd) + programme national + unitCatalog.ts",
   "scoring": "tier 1 = blocage fort ET poids examen fort ; tier 2 = poids examen fort, blocage moyen ; tier 3 = aucune ressource existante",
   "updatedAt": "2026-09-27",
   "sources": [
@@ -21,6 +21,15 @@
     "2": 51.3,
     "3": 41.2
    }
+  },
+  "hierarchieDesSupports": {
+   "constat": "@MostafaBdd : à contenu égal, la carte mentale est vue 6 à 8 fois plus que le cours (U2 ×6,5, U3 ×7,7, U4 ×1,9) et les corrections d'exercices dépassent le cours dans les 3 unités mesurées",
+   "ordreCible": [
+    "carte mentale de l'unité",
+    "exercices corrigés indexés par situation",
+    "micro-capsule « comment faire » (1-2 min)",
+    "leçon/cours complet"
+   ]
   }
  },
  "priorites": [
@@ -63,7 +72,7 @@
     "10 QCM"
    ],
    "preuve": "1,5M vues = vidéo la plus vue de la chaîne",
-   "confirmationMultiChaines": "Aucune des 4 chaînes n'a de vidéo dédiée au pHi → l'app peut être la ressource de référence ; valeur relevée",
+   "confirmationMultiChaines": "@MostafaBdd : capsule « كيف نكتب صيغة الحمض الأميني بطريقة صحيحة ؟ » 12:30 = 151K vues, soit plus que le cours complet de l'unité 2 (87K) → la demande sur cette notion est démontrée, pas seulement déduite",
    "statut": "livré — sprint 3 (2026-09-27)",
    "livraison": {
     "lecon": "amino_acid_behavior (tête de l’unité 2, 4 blocs)",
@@ -74,7 +83,7 @@
      "mr_sens_migration_electrode"
     ],
     "verrou": "src/data/aminoAcidBehavior.lock.test.ts (14 tests)",
-    "resteAFaire": "simulateur d’électrophorèse interactif (item 6 du backlog)"
+    "resteAFaire": "item 5 bis : bloc « écrire la forme ionisée aux pH 2 / pHi / 12 » (la leçon livrée s'arrête à la charge et au sens de migration) ; puis item 6 : simulateur d'électrophorèse"
    }
   },
   {
@@ -228,6 +237,36 @@
    "titre": "Capsules « فكرة في دقيقة » : micro-fiches calibrées 1-2 min",
    "taille": "S",
    "preuve": "Benotmane, playlist de 8 micro-vidéos ; micro-remédiations actuelles = 2-4 min"
+  },
+  {
+   "id": "5 bis",
+   "titre": "Bloc « écrire la forme ionisée du AA aux 3 pH » dans amino_acid_behavior",
+   "taille": "S",
+   "preuve": "@MostafaBdd, capsule 12:30 — 151K vues"
+  },
+  {
+   "id": 16,
+   "titre": "Cartes mentales pour toutes les unités (3 sur 11 aujourd'hui ; U2 n'a que 8 nœuds)",
+   "taille": "L",
+   "preuve": "cartes mentales U2 568K / U3 565K / U4 710K contre 87K / 73K / 368K pour les cours"
+  },
+  {
+   "id": 17,
+   "titre": "Mode « reproduire le schéma de mémoire » (liste fermée par unité + autocorrection)",
+   "taille": "M",
+   "preuve": "« جميع الرسومات التخطيطية التي يجب حفظها » 58:58 — 76K"
+  },
+  {
+   "id": 18,
+   "titre": "Indexer les exercices par situation (antibiotique, progéria, cancer…) en plus de l'unité",
+   "taille": "S",
+   "preuve": "banque de 121 exercices nommés par situation — 350 075 vues"
+  },
+  {
+   "id": 19,
+   "titre": "Carte « ماذا سندرس في هذه الوحدة ؟ » en ouverture d'unité",
+   "taille": "S",
+   "preuve": "15:44 — 79K"
   }
  ]
 }

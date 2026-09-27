@@ -286,3 +286,60 @@ restent pré-existants : ils exigent `npm run build`).
 **Reste du backlog** : 3 bis (VIH/SIDA), 6 (simulateur d'électrophorèse interactif), 7-8 (inhibiteurs
 enzymatiques + atelier 6 courbes), 9-11 (synthèse U6/U7, micro-fiches photochimique), 12-15 (banque par session,
 mode révision globale, capsules 1 min).
+
+---
+
+## Mise à jour 2 — @MostafaBdd : la demande porte autant sur le format que sur la leçon (2026-09-27)
+
+Cinquième chaîne auditée : **@MostafaBdd** (8 playlists, dont une banque de **121 exercices corrigés**).
+Elle est construite non pas autour du cours mais autour de la **carte mentale** et de l'**exercice discuté** —
+c'est-à-dire autour des supports que cette application peut réellement produire.
+Détail : [ANALYSE_CHAINES_YT_COMPLEMENTAIRES.md § 6](./ANALYSE_CHAINES_YT_COMPLEMENTAIRES.md).
+
+### Le résultat central
+
+| Unité | Cours complet | Carte mentale | Rapport | Exercices corrigés |
+|---|---|---|---|---|
+| U2 | 3 h 05 — 87 K | 20:50 — **568 K** | **× 6,5** | **393 K** |
+| U3 | 3 h 29 — 73 K | 31:32 — **565 K** | **× 7,7** | 218 K |
+| U4 | 6 h 47 — 368 K | 47:35 — **710 K** | **× 1,9** | 525 K |
+
+À contenu identique, la **synthèse visuelle de 20-30 min est consommée 6 à 8 fois plus que le cours**, et les
+corrections d'exercices dépassent le cours dans les trois unités. U2 et U3 — les deux unités les moins demandées
+quand on mesure par unité (§ 1) — produisent ici deux des trois vidéos les plus vues de la chaîne : **ce n'est pas
+l'unité qui crée la demande, c'est le format.**
+
+### Effet sur les 5 priorités
+
+- **Priorité 3 (pHi / acides aminés) — la demande est désormais démontrée, et le sprint 3 est incomplet.**
+  Le constat « aucune chaîne ne traite le pHi » est **corrigé** : la capsule
+  « **كيف نكتب صيغة الحمض الأميني بطريقة صحيحة ؟** » (12:30) totalise **151 K vues**, plus que le cours entier de
+  l'unité 2 (87 K). Mais elle traite le geste que `amino_acid_behavior` ne couvre pas encore : **écrire la forme
+  ionisée du AA aux trois pH**, là où la leçon livrée s'arrête à en déduire la charge et le sens de migration.
+  ➜ nouvel item **5 bis**.
+- **Priorité 2 (coopération) et 4 (CMH/ABO-Rh)** : confirmées une cinquième fois (carte mentale U4 = 710 K,
+  cours U4 = 368 K, corrections = 525 K). La capsule **« كيف نفرق بين الخلطية و الخلوية ؟ » dure 2 min 11 pour
+  77 K vues** : le comparatif livré au sprint 2 doit exister aussi en version **ultra-courte autonome**.
+- **Priorité 5 (photochimique)** : la chaîne propose « **كيف أحفظ حلقة كالفن ؟** » en 4 min — le format exact des
+  micro-fiches de l'item 10, sur la notion exacte de l'item 11.
+- **Priorité 1 (inhibiteurs, U3)** : aucune capsule dédiée ici non plus, mais la carte mentale U3 (565 K) et les
+  « أفكار تمارين الإنزيمات » (148 K) montrent que l'entrée attendue sur cette unité est **synthétique et typologique**,
+  pas un cours de plus.
+
+### Nouveaux items de backlog
+
+| # | Item | Taille | Preuve |
+|---|---|---|---|
+| **5 bis** | Bloc « écrire la forme ionisée du AA aux pH 2 / pHi / 12 » dans `amino_acid_behavior` (production guidée de la formule développée, pas seulement la charge) | S | capsule 12:30 — **151 K** |
+| **16** | **Cartes mentales pour toutes les unités** : l'app n'en a que 3 (U1 : 15 nœuds, **U2 : 8 nœuds**, U4 : 15) pour 11 unités ; commencer par **U3 et U6**, et étoffer U2 | L | rapports × 6,5 à × 7,7 |
+| **17** | Mode **« reproduire le schéma de mémoire »** : liste fermée des schémas exigibles par unité, avec autocorrection par zones | M | « جميع الرسومات التخطيطية التي يجب حفظها » 58:58 — 76 K |
+| **18** | **Indexer les exercices par situation** (antibiotique, progéria, cancer du sein, drépanocytose…) en plus de l'unité et du concept | S | banque de 121 exercices nommés par situation — 350 K |
+| **19** | Carte **« ماذا سندرس في هذه الوحدة ؟ »** en ouverture de chaque unité (contenu, ordre, ce qui tombe au BAC) | S | 15:44 — 79 K |
+| 15 (révisé) | Micro-capsules calibrées **1-2 min** — cible confirmée par « كيف نفرق بين الخلطية والخلوية » (2:11) et « أهم خطوة بعد حل التمارين » (1:00) | S | 77 K / 15 K |
+
+### Lecture d'ensemble après 5 chaînes
+
+Les cinq priorités de contenu ne bougent pas. Ce qui change est l'**ordre des supports** à produire pour chacune :
+**carte mentale → exercices corrigés indexés par situation → micro-capsule « comment faire » → cours**.
+L'application a construit l'inverse (leçon active d'abord) ; les items 16 à 19 rééquilibrent sans rien jeter,
+puisque les leçons livrées aux sprints 1-3 fournissent précisément la matière de ces synthèses.

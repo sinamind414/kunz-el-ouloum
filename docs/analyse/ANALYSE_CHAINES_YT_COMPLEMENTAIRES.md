@@ -1,10 +1,10 @@
-# Analyse croisée de 4 chaînes YouTube SVT — BAC 3AS (Algérie)
+# Analyse croisée de 5 chaînes YouTube SVT — BAC 3AS (Algérie)
 
 > Complément d'instruction de l'audit **[AUDIT_APP_5_LECONS_PRIORITAIRES.md](./AUDIT_APP_5_LECONS_PRIORITAIRES.md)**.
 > Relevés du **27/09/2026** (pages `playlists` et `playlist?list=…` de YouTube).
 > Données brutes : `data/youtube_multichaines_catalog.json` · `data/youtube_ikram_catalog.json` · `data/youtube_ketfi_catalog.json`.
 
-## 0. Pourquoi trois chaînes de plus
+## 0. Pourquoi quatre chaînes de plus
 
 L'audit initial reposait sur une seule chaîne (**@prof-ketfi.cherif-zina**, ~1 M d'abonnés). Une chaîne unique mélange
 la demande réelle des élèves et le calendrier de publication d'un seul professeur. Trois chaînes indépendantes ont donc
@@ -16,6 +16,7 @@ la demande réelle des élèves et le calendrier de publication d'un seul profes
 | **@Prof_benotmane** (الأستاذ بن عثمان) | 13 playlists, capsules 8–30 min | U4 (15 vidéos, **798 098 vues**), U6 (5 vidéos, 116 615 vues) |
 | **@ikramscience8424** | résumés 20–77 min, offre payante adossée | 20 vidéos, 831 min, **1 251 K vues** |
 | *(référence)* **@prof-ketfi.cherif-zina** | حقيبة عكاشة 45 h 31 + أخطبوط | 6 + 11 vidéos, 849 K vues |
+| **@MostafaBdd** (mostafa bdd — العلوم الطبيعية) | 8 playlists ; **cartes mentales + corrections d'exercices** | U2 (6 vid.), U3 (8), U4 (11), U6 (5) + banque de **121 exercices** (350 075 vues) |
 
 ---
 
@@ -94,7 +95,7 @@ Une seule vidéo par unité, **même auteur, même format, même année** : les 
 
 ---
 
-## 3. Formats : ce que les trois chaînes font, et ce qu'aucune ne fait
+## 3. Formats : ce que les autres chaînes font, et ce qu'aucune ne fait
 
 | Modèle | Chaîne | Exemple | Enseignement pour l'app |
 |---|---|---|---|
@@ -142,7 +143,69 @@ U9–U11 de l'app restent justifiées, aucune raison de les déprioriser.
 
 ---
 
-## 6. Limites méthodologiques
+---
+
+## 6. Cinquième chaîne — @MostafaBdd : le format compte autant que le contenu
+
+Les quatre premières chaînes sont organisées autour du **cours**. Celle-ci est organisée autour de la **carte mentale
+et de l'exercice corrigé**, et c'est ce qui la rend précieuse pour l'audit : elle mesure la demande sur les *formats*
+que l'application peut produire, pas sur le cours magistral qu'elle ne produira jamais.
+
+### 7.1 Dans chaque unité, la carte mentale écrase le cours
+
+| Unité | Cours complet | **Carte mentale** | Rapport | Corrections d'exercices |
+|---|---|---|---|---|
+| U2 بنية/وظيفة | 3 h 05 — **87 K** | 20:50 — **568 K** | **× 6,5** | 5 h 27 + 3 h 27 — **393 K** |
+| U3 الأنزيمات | 3 h 29 — **73 K** | 31:32 — **565 K** | **× 7,7** | 6 h 09 — **218 K** |
+| U4 المناعة | 6 h 47 — **368 K** | 47:35 — **710 K** | **× 1,9** | 4 h 06 + 5 h 30 — **525 K** |
+
+La carte mentale de l'immunité (710 K) est la vidéo la plus vue de la chaîne, et celles de U2 et U3 — deux unités
+pourtant « peu demandées » selon la mesure par unité du § 1 — dépassent les 565 K chacune. **Ce n'est pas l'unité qui
+crée la demande, c'est le format** : à contenu égal, une synthèse visuelle de 20-30 minutes est consommée 6 à 8 fois
+plus qu'un cours de 3 heures.
+
+### 7.2 Les micro-capsules « كيف … ؟ » et la correction du § 4-E
+
+| Capsule | Durée | Vues | Ce qu'elle vise |
+|---|---|---|---|
+| **كيف نكتب صيغة الحمض الأميني بطريقة صحيحة ؟** | 12:30 | **151 K** | écrire la forme développée du AA |
+| كيف نفرق بين المناعة الخلطية و الخلوية ؟ | **2:11** | 77 K | le critère décisif, en 2 minutes |
+| كيف أحفظ حلقة كالفن ؟ | 4:12 | — | mémoriser un cycle |
+| أهم خطوة بعد الانتهاء من حل التمارين | 1:00 | 15 K | méthode de travail |
+
+**Correction d'un constat antérieur.** Le § 4-E affirmait qu'« aucune chaîne n'a de vidéo dédiée au comportement des
+acides aminés ». C'était vrai des quatre premières, ce ne l'est plus : **151 K vues sur une capsule de 12 minutes
+consacrée à l'écriture de la formule du AA**, soit la 2ᵉ vidéo la plus vue de sa playlist U2 après la carte mentale —
+davantage que le cours complet de l'unité (87 K). La demande sur cette notion est donc **démontrée**, pas seulement
+déduite de sa difficulté. Le sprint 3 (`amino_acid_behavior`) est validé ; il lui manque en revanche le geste précis
+que traite cette capsule : **écrire la forme ionisée aux trois pH**, et non seulement en déduire la charge.
+
+### 7.3 Une banque d'exercices indexée par situation, pas par chapitre
+
+La playlist « التمارين + المناقشة و الحل » compte **121 vidéos / 350 075 vues**, ouverte par une **méthodologie de
+résolution** (15:30, **145 K**). Chaque exercice y est nommé **par sa situation** — « المضاد الحيوي » (134 K),
+« مرض البروجيريا » (102 K), « سرطان الثدي » (69 K), « أشعة الشمس », « المورثة و سلوك AA » — et parfois par sa session
+(« بكالوريا 2022 : كيف نحسب الوزن الجزيئي », 48 K). C'est exactement l'entrée que cherche un élève : *un contexte*,
+pas un numéro de chapitre. L'application indexe ses exercices par unité et par concept, **jamais par situation**.
+
+### 7.4 Deux formats que personne d'autre ne produit
+
+- **« جميع الرسومات التخطيطية و التفسيرية التي يجب حفظها » (58:58, 76 K)** — la liste fermée des schémas à savoir
+  reproduire le jour du BAC. L'application possède les schémas mais n'a **aucun mode « reproduire le schéma de
+  mémoire »**.
+- **« ماذا سندرس في المناعة ؟ » (15:44, 79 K)** — une vidéo d'orientation en ouverture d'unité : ce qu'on va
+  apprendre, dans quel ordre, ce qui tombe au BAC. L'application ouvre ses unités directement sur la première leçon.
+
+### 7.5 Ce que cette chaîne change dans la hiérarchie
+
+Elle ne déplace aucune des 5 priorités de contenu — elle **hiérarchise les supports** à produire pour chacune :
+carte mentale d'abord, exercices corrigés et indexés par situation ensuite, micro-capsule « comment faire » enfin.
+Or l'application ne compte aujourd'hui que **3 cartes mentales** (U1 : 15 nœuds, U2 : **8 nœuds**, U4 : 15 nœuds)
+pour 11 unités.
+
+---
+
+## 7. Limites méthodologiques
 
 - Les vues sont arrondies par YouTube (« 1.2M » = 1 150 000 – 1 249 999) ; les écarts inférieurs à 10 % ne sont pas
   significatifs.
@@ -152,3 +215,8 @@ U9–U11 de l'app restent justifiées, aucune raison de les déprioriser.
   surestime légèrement les plus récentes.
 - Les vues mesurent la **demande**, jamais la compréhension. La hiérarchie de difficulté reste celle établie dans
   `BILAN_LECONS_DIFFICILES.md` ; ce document sert à l'arbitrer, pas à la remplacer.
+- Pour @MostafaBdd, la page de la playlist U6 n'expose pas les vues par vidéo : seul le total (121 083) est
+  disponible. Les rapports « carte mentale / cours » y sont donc absents.
+- Les cartes mentales de cette chaîne sont plus anciennes (4 ans) que ses cours (2 ans) : une part de leur avance
+  vient de l'ancienneté. Elle n'explique pas un rapport de × 6 à × 8.
+
