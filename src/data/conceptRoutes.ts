@@ -89,6 +89,13 @@ export const CONCEPT_ROUTES: Record<string, ConceptRoute> = {
     lessonId: 'immunity_cooperation',
     documentExerciseId: 'lt_target_cell_response',
   },
+  // Audit item 5 : comportement des acides aminés (charge / pHi / migration).
+  amino_acid_behavior: {
+    conceptId: 'amino_acid_behavior',
+    unitId: 2,
+    lessonId: 'amino_acid_behavior',
+    documentExerciseId: 'amino_acid_electrophoresis',
+  },
   immunity_self_nonself: {
     conceptId: 'immunity_self_nonself',
     unitId: 4,

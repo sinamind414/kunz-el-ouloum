@@ -63,7 +63,19 @@
     "10 QCM"
    ],
    "preuve": "1,5M vues = vidéo la plus vue de la chaîne",
-   "confirmationMultiChaines": "Aucune des 4 chaînes n'a de vidéo dédiée au pHi → l'app peut être la ressource de référence ; valeur relevée"
+   "confirmationMultiChaines": "Aucune des 4 chaînes n'a de vidéo dédiée au pHi → l'app peut être la ressource de référence ; valeur relevée",
+   "statut": "livré — sprint 3 (2026-09-27)",
+   "livraison": {
+    "lecon": "amino_acid_behavior (tête de l’unité 2, 4 blocs)",
+    "document": "amino_acid_electrophoresis (manuel_officiel_verifie, ch. 8)",
+    "qcm": "517-524",
+    "microRemediations": [
+     "mr_phi_charge_regle",
+     "mr_sens_migration_electrode"
+    ],
+    "verrou": "src/data/aminoAcidBehavior.lock.test.ts (14 tests)",
+    "resteAFaire": "simulateur d’électrophorèse interactif (item 6 du backlog)"
+   }
   },
   {
    "tier": 1,

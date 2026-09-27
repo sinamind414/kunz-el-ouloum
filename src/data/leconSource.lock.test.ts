@@ -84,13 +84,14 @@ describe('bookIndex — uniteId 1-11 ↔ chapitres de l index (traçabilité str
 describe('bookIndex — appariement leçons ↔ chapitres (mesure figée)', () => {
   const cles = toutesCles();
 
-  it('55 clés dans la séquence officielle ; 42 mappées, 13 nulls documentés', () => {
-    expect(cles).toHaveLength(55);
+  it('56 clés dans la séquence officielle ; 42 mappées, 14 nulls documentés', () => {
+    expect(cles).toHaveLength(56);
     const mappes = cles.filter((k) => sourceLivre(k, cleToTitre(k)) !== null);
     expect(mappes).toHaveLength(42);
     const nulls = cles.filter((k) => sourceLivre(k, cleToTitre(k)) === null);
     // LISTE FIGÉE — toute évolution doit être un choix relu, pas un effet de bord.
     expect(nulls).toEqual([
+      'amino_acid_behavior', // pHi : activité interne au ch. 8, sans en-tête TDM propre
       'd2-u6-l1-hill-ruben', // leçons expérimentales : démarche, pas de chapitre TDM dédié
       'd2-u6-l2-jagendorf',
       'd2-u6-l3-calvin',

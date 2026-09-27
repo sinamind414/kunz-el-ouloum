@@ -243,6 +243,28 @@ export const LESSON_GOLD_SUMMARIES: Record<string, LessonGoldSummary> = {
     recallQuestionAr: 'ما العلاقة بين البنية والوظيفة البروتينية؟',
     review: { reviewed: false },
   },
+  'amino_acid_behavior': {
+    lessonId: 'amino_acid_behavior',
+    status: 'adaptation_pedagogique',
+    source: { sourceLabel: 'Résumé Kunz — livre officiel SVT DZ, ch. 8 (سلوك الأحماض الأمينية في الوسط، الهجرة الكهربائية للألانين عند pH 2 و 6 و 12)' },
+    missionAr: 'كيف نتوقع شحنة حمض أميني واتجاه هجرته الكهربائية انطلاقاً من pH الوسط؟',
+    mechanismAr: [
+      'الحمض الأميني مركب أمفوتيري : له مجموعة كربوكسيلية ومجموعة أمينية',
+      'في الوسط الحمضي يكتسب بروتونات ⟵ شحنة إجمالية موجبة',
+      'في الوسط القاعدي يحرر بروتونات ⟵ شحنة إجمالية سالبة',
+      'عند pH = pHi تتعادل الشحنات ⟵ لا هجرة',
+      'الشحنة الموجبة تهاجر نحو المهبط، والسالبة نحو المصعد',
+    ],
+    evidenceAr:
+      'هجرة الألانين (pHi = 6) : نحو المهبط عند pH = 2، لا هجرة عند pH = 6، نحو المصعد عند pH = 12.',
+    vocabulary: ['أمفوتيري', 'pHi', 'نقطة التعادل الكهربائي', 'الهجرة الكهربائية', 'المهبط', 'المصعد', 'المجموعة الكربوكسيلية', 'المجموعة الأمينية'],
+    bacSentenceFrameAr:
+      'بما أن pH الوسط (______) ______ من pHi (______)، فإن الحمض الأميني يحمل شحنة ______ ويهاجر نحو ______.',
+    commonErrorAr:
+      'عكس القاعدة (اعتبار pH المرتفع مكسباً لشحنة موجبة)، أو الخلط بين المهبط والمصعد، أو نسيان أن انعدام الهجرة يعني pH = pHi وليس غياب الحمض الأميني.',
+    recallQuestionAr: 'حمض أميني pHi = 9.7 وُضع عند pH = 6 : ما شحنته وإلى أي قطب يهاجر؟',
+    review: { reviewed: false },
+  },
   'immunity_cooperation': {
     lessonId: 'immunity_cooperation',
     status: 'adaptation_pedagogique',

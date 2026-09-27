@@ -250,3 +250,39 @@ Les cinq constats initiaux restent valables, y compris le trou total sur le pHi 
 La géologie (U9-U11) reste justifiée : Chaouch y maintient deux playlists de cours (11 + 16 vidéos) et une série
 d'exercices. Aucune des trois chaînes n'a révélé de manque immunitaire autre que le VIH/SIDA (vérification par grep sur
 السيدا, الطفرة, اللقاح, التلقيح, المكتسبات القبلية : tous déjà présents).
+
+### Sprint 3 — livré (2026-09-27)
+
+**Item 5 — leçon active `amino_acid_behavior` (ouverture de l'unité 2)**
+Le constat n°1 de l'audit (« pHi = 0 occurrence dans toute l'application ») est levé. La leçon est ancrée
+sur l'activité du **chapitre 8 du livre officiel** (« سلوك الأحماض الأمينية في الوسط » : électrophorèse de
+l'alanine à pH 2, 6 et 12), et non sur un contenu inventé.
+
+- `GUIDED_DOC_QA` — la démarche du livre en 3 questions : **حلل** les trois migrations ⇒ **فسر** la charge
+  dans chaque milieu ⇒ **استنتج** la règle générale (`pH < pHi` ⟵ positif, `pH > pHi` ⟵ négatif).
+- `SEQUENCE_ORDER` — **méthode BAC en 5 étapes** : lire le pH du tampon ⇒ relever le pHi ⇒ comparer ⇒
+  déduire la charge ⇒ déduire l'électrode. Une seule comparaison à retenir au lieu de trois cas à mémoriser.
+- `COMPARISON_TABLE` — `pH < pHi` ↔ `pH > pHi` sur 4 critères : charge nette, état des deux groupements
+  (NH₃⁺ / COO⁻), **sens de migration** (المهبط / المصعد), exemple chiffré de l'alanine.
+- `TEXT_AND_PRODUCE` — séparation d'un mélange Glu (pHi 3,2) / Ala (6) / Lys (9,7) à pH 6 : le cas de
+  séparation effectivement posé au BAC.
+
+**Câblage** : tête de séquence de l'unité 2, progression vers `protein_structure_function`, route conceptuelle
+`amino_acid_behavior` vers un **nouveau document vivant** `amino_acid_electrophoresis` (statut
+`manuel_officiel_verifie`), résumé ancré au ch. 8, résumé d'or, **4 rappels espacés** J+1 → J+14,
+index tuteur régénéré (466 → **475 chunks**).
+
+**Remédiation et évaluation** : 2 micro-remédiations — `mr_phi_charge_regle` (règle inversée) et
+`mr_sens_migration_electrode` (confusion des pôles, et lecture d'une bande immobile) — et **8 QCM (517-524)**
+sur l'unité 2 : règle pH/pHi, sens de migration, bande immobile, caractère amphotère, séparation d'un mélange,
+forme dipolaire au pHi, données indispensables, cas d'un dipeptide.
+
+**Verrou** : `src/data/aminoAcidBehavior.lock.test.ts` (14 tests, dont un qui vérifie explicitement que
+« pHi » n'est plus absent de l'app). Compteurs figés mis à jour : résumés 46 → **47**, leçons actives affichées
+8 → **9**, séquence officielle 55 → **56** clés (42 mappées, 14 nulls documentés), flashcards 519 → **527**.
+Suite complète : **1217 tests verts**, `tsc --noEmit` propre (les 4 échecs de `lazyRouteChunks.smoke.test.ts`
+restent pré-existants : ils exigent `npm run build`).
+
+**Reste du backlog** : 3 bis (VIH/SIDA), 6 (simulateur d'électrophorèse interactif), 7-8 (inhibiteurs
+enzymatiques + atelier 6 courbes), 9-11 (synthèse U6/U7, micro-fiches photochimique), 12-15 (banque par session,
+mode révision globale, capsules 1 min).

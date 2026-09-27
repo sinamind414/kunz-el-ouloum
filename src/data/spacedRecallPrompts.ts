@@ -61,6 +61,12 @@ export const SPACED_RECALL_PROMPTS: Record<string, SpacedRecallPrompt[]> = {
     { stage: 2, conceptId: 'protein_structure_function', questionAr: 'ما العلاقة بين البنية والوظيفة البروتينية؟', reflexId: 'interpret', acceptedEvidence: ['بنية', 'وظيفة', 'موقع نشط', 'تفاعل'], minEvidence: 3 },
     { stage: 3, conceptId: 'protein_structure_function', questionAr: 'اكتب جواب BAC قصير: كيف تؤدي الطفرة إلى تغير وظيفي؟', reflexId: 'validate', acceptedEvidence: ['طفرة', 'حمض أميني', 'بنية', 'وظيفة', 'مرض'], minEvidence: 3 },
   ],
+  amino_acid_behavior: [
+    { stage: 0, conceptId: 'amino_acid_behavior', questionAr: 'ماذا تعني نقطة التعادل الكهربائي pHi؟', reflexId: 'explain', acceptedEvidence: ['pHi', 'التعادل', 'الشحنة'], minEvidence: 2 },
+    { stage: 1, conceptId: 'amino_acid_behavior', questionAr: 'حمض أميني pHi = 6 في وسط pH = 2 : ما شحنته ولماذا؟', reflexId: 'explain', acceptedEvidence: ['موجبة', 'pHi', 'أقل', 'بروتونات'], minEvidence: 3 },
+    { stage: 2, conceptId: 'amino_acid_behavior', questionAr: 'فسّر بقاء بقعة حمض أميني في مكان الوضع بعد الفصل الكهربائي.', reflexId: 'interpret', acceptedEvidence: ['pHi', 'التعادل', 'لا يهاجر', 'الشحنة'], minEvidence: 3 },
+    { stage: 3, conceptId: 'amino_acid_behavior', questionAr: 'اكتب إجابة BAC قصيرة : كيف تحدد اتجاه هجرة حمض أميني انطلاقاً من pH الوسط؟', reflexId: 'validate', acceptedEvidence: ['pHi', 'الشحنة', 'المهبط', 'المصعد', 'مقارنة'], minEvidence: 3 },
+  ],
   immunity_self_nonself: [
     { stage: 0, conceptId: 'immunity_self_nonself', questionAr: 'ما المقصود بالذات واللاذات؟', reflexId: 'explain', acceptedEvidence: ['ذات', 'لاذات', 'CMH', 'خلايا'], minEvidence: 3 },
     { stage: 1, conceptId: 'immunity_self_nonself', questionAr: 'ما دور CMH في التعرف المناعي؟', reflexId: 'explain', acceptedEvidence: ['CMH', 'تعرف مناعي', 'ذات', 'لاذات'], minEvidence: 3 },

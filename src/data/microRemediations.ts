@@ -214,6 +214,34 @@ export const MICRO_REMEDIATIONS: Record<string, MicroRemediation> = {
     preferredSupportTarget: 'document',
   },
   // ── U4 — coopération immunitaire (audit 2026-09 : 0 micro-reprise ciblée) ──
+  'phi_charge_regle': {
+    id: 'mr_phi_charge_regle',
+    conceptId: 'amino_acid_behavior',
+    triggerCodes: ['PHI_RULE_INVERTED', 'MISSING_PHI_COMPARISON', 'CHARGE_WITHOUT_PH'],
+    titleAr: 'القاعدة : pH أقل من pHi ⟵ شحنة موجبة',
+    estimatedMinutes: 3,
+    explanationAr:
+      'لا تحفظ الحالات، احفظ المقارنة : pH الوسط أمام pHi. إذا كان pH أقل من pHi فالوسط حمضي والحمض الأميني يكتسب بروتونات ⟵ شحنة موجبة. إذا كان pH أعلى من pHi فالحمض يحرر بروتونات ⟵ شحنة سالبة. عند التساوي تتعادل الشحنات.',
+    activeQuestionAr: 'حمض أميني pHi = 3.2 في محلول منظم pH = 6 : ما شحنته؟ برر بالمقارنة.',
+    acceptedEvidence: ['pHi', 'أعلى', 'سالبة'],
+    nextAction: 'retry_document',
+    reflexId: 'analyse',
+    preferredSupportTarget: 'lesson',
+  },
+  'sens_migration_electrode': {
+    id: 'mr_sens_migration_electrode',
+    conceptId: 'amino_acid_behavior',
+    triggerCodes: ['ELECTRODE_CONFUSION', 'NO_MIGRATION_MISREAD'],
+    titleAr: 'الشحنة تُجذب نحو القطب المعاكس',
+    estimatedMinutes: 2,
+    explanationAr:
+      'الجسيم موجب الشحنة ينجذب نحو القطب السالب (المهبط)، والجسيم سالب الشحنة ينجذب نحو القطب الموجب (المصعد). أما انعدام الهجرة فيعني أن الشحنة الإجمالية معدومة، أي أن pH الوسط يساوي pHi للحمض الأميني — وليس أن الحمض الأميني غائب.',
+    activeQuestionAr: 'بقعة بقيت في مكان الوضع بعد الفصل : ماذا تستنتج عن العلاقة بين pH الوسط و pHi؟',
+    acceptedEvidence: ['pHi', 'متعادل', 'لا يهاجر'],
+    nextAction: 'retry_document',
+    reflexId: 'interpret',
+    preferredSupportTarget: 'document',
+  },
   'role_interleukine': {
     id: 'mr_role_interleukine',
     conceptId: 'immunity_humoral_response',

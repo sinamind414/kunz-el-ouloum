@@ -18,7 +18,10 @@ export const OFFICIAL_PROGRAM_SEQUENCE: Record<number, string[]> = {
   ],
   // U2 — بنية/وظيفة (TDM p.39 : 3 chapitres) : représentation + 2e moitié de phase2 + 1re de phase3
   // NOTE : phase3_2 (enzyme) appartient à U3 — listée en U3.
-  2: ['lecon_representation', 'phase2_chapitres_3_4_2', 'phase3_chapitres_5_6'],
+  // Ajout 2026-09 (audit, item 5) : leçon active du comportement des acides aminés
+  // (شحنة / pHi / هجرة كهربائية) en TÊTE d'unité — trou n°1 de l'audit, notion
+  // la plus difficile de l'unité et prérequis de toute lecture d'électrophorèse.
+  2: ['amino_acid_behavior', 'lecon_representation', 'phase2_chapitres_3_4_2', 'phase3_chapitres_5_6'],
   // U3 — إنزيمي (TDM p.57 : 4 chapitres) : 2e moitié de phase3 + activité/structure + phase4 complète
   3: ['phase3_chapitres_5_6_2', 'lecon_activite_structure', 'phase4_chapitres_7_8'],
   // U4 — مناعة (TDM p.73 : 11 chapitres, 6 couverts) : phases 5,6,7 complètes

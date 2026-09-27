@@ -294,6 +294,12 @@ export const LESSON_PROGRESSION: Record<string, LessonProgression> = {
     recommendedReflexId: 'explain',
     completionMessageAr: 'أتممت حوصلة وحدة المناعة: التعاون الخلوي من الخلية العارضة إلى المنفِّذات وخلايا الذاكرة.',
   },
+  'amino_acid_behavior': {
+    nextLessonId: 'protein_structure_function',
+    recommendedReflexId: 'analyse',
+    completionMessageAr:
+      'أتقنت قاعدة pH / pHi واتجاه الهجرة. الخطوة الموالية : كيف تحدد بنية البروتين وظيفته.',
+  },
   'd1-u1-l2-transcription': {
     nextLessonId: 'd1-u1-l3-traduction',
     recommendedReflexId: 'explain',
@@ -2240,6 +2246,144 @@ export const ACTIVE_LESSONS: Record<string, ActiveLesson> = {
         acceptedAnswers: ['نفس النمط الوراثي', 'نفس الأليلات', 'التوافق النسيجي', 'HLA', 'ذات'],
         errorHint:
           'التوأمان الحقيقيان لهما نفس النمط الوراثي ⇐ نفس محددات HLA ⇐ الطعم ذاتي يُقبل. أما الأخوان فيرثان نمطين فردانيين مختلفين ⇐ محددات مختلفة تُعتبر لا ذات ⇐ خطر الرفض.',
+      },
+    ],
+  },
+  // ─────────── SPRINT 3 (audit, item 5) — U2 : سلوك الأحماض الأمينية ───────────
+  // Trou n°1 de l'audit : le pHi n'apparaissait NULLE PART dans l'app alors que
+  // c'est la 2e notion la plus difficile du corpus (73 occurrences) et que le
+  // livre officiel lui consacre une activité entière (ch. 8, « سلوك الأحماض
+  // الأمينية في الوسط » : électrophorèse de Ala à pH 2, 6 et 12).
+  amino_acid_behavior: {
+    id: 'amino_acid_behavior',
+    title: 'سلوك الأحماض الأمينية في الوسط : الشحنة، نقطة التعادل الكهربائي (pHi) والهجرة',
+    blocks: [
+      {
+        type: 'GUIDED_DOC_QA',
+        objective:
+          'استغلال نتائج الهجرة الكهربائية للحمض الأميني ألانين Ala عند ثلاث قيم pH، واستنتاج قاعدة تحديد الشحنة.',
+        doc: {
+          assetSrc: '/assets/images/schemas/domaine1_proteines/schema_41_alanine_representations_modern.svg',
+          altAr: 'تمثيلات مختلفة للحمض الأميني ألانين : الصيغة العامة، المجموعة الأمينية والمجموعة الكربوكسيلية والجذر R.',
+          captionAr:
+            'الوثيقة 1 : الصيغة العامة للحمض الأميني — مجموعة أمينية (-NH₂) ومجموعة كربوكسيلية (-COOH) على نفس ذرة الكربون، مع الجذر R.',
+          secondaryAssetSrc: '/assets/images/schemas/domaine1_proteines/schema_66_gamma_globulin_electrophoresis_modern.svg',
+          secondaryAltAr: 'جهاز الهجرة الكهربائية : شريط فصل، محلول منظم ذو pH محدد، ومهبط ومصعد.',
+          secondaryCaptionAr:
+            'الوثيقة 2 : وُضعت قطرة من محلول Ala في منتصف شريط الهجرة الكهربائية عند pH = 2، ثم أُعيدت التجربة عند pH = 6 وعند pH = 12. النتيجة : هجرة نحو المهبط عند 2، لا هجرة عند 6، هجرة نحو المصعد عند 12.',
+        },
+        questions: [
+          {
+            id: 'phi_analyse_migration',
+            verbAr: 'حلل',
+            promptAr: 'حلل نتائج الهجرة الكهربائية للحمض الأميني Ala عند pH = 2 و pH = 6 و pH = 12.',
+            answerType: 'short_text',
+            validationMode: 'keywords',
+            requiredKeywords: ['المهبط', 'المصعد', 'لا يهاجر'],
+            successMessageAr: 'أحسنت : وصفت الاتجاهات الثلاثة دون أن تفسرها بعد — هذا هو التحليل.',
+            errorHintAr:
+              'اذكر الاتجاه في كل حالة : نحو المهبط (السالب) عند pH = 2، لا يهاجر عند pH = 6، نحو المصعد (الموجب) عند pH = 12.',
+          },
+          {
+            id: 'phi_deduire_charge',
+            verbAr: 'فسر',
+            promptAr:
+              'ماذا تستنتج عن شحنة Ala في كل وسط؟ (تذكّر : الجسيم المشحون ينجذب نحو القطب المعاكس لشحنته).',
+            answerType: 'short_text',
+            validationMode: 'keywords',
+            requiredKeywords: ['موجبة', 'متعادل', 'سالبة'],
+            successMessageAr: 'ممتاز : شحنة موجبة عند pH = 2، تعادل كهربائي عند 6، شحنة سالبة عند 12.',
+            errorHintAr:
+              'الهجرة نحو المهبط تعني شحنة موجبة، والهجرة نحو المصعد تعني شحنة سالبة، وانعدام الهجرة يعني التعادل الكهربائي.',
+          },
+          {
+            id: 'phi_regle_generale',
+            verbAr: 'استنتج',
+            promptAr:
+              'علماً أن pH = 6 يمثل نقطة التعادل الكهربائي (pHi) للألانين، استخرج القاعدة التي تسمح بتحديد شحنة أي حمض أميني بمقارنة pH الوسط مع pHi.',
+            answerType: 'short_text',
+            validationMode: 'keywords',
+            requiredKeywords: ['pHi', 'أقل', 'أعلى', 'الشحنة'],
+            successMessageAr:
+              'هذه هي القاعدة المطلوبة في البكالوريا : pH < pHi ⟵ شحنة موجبة ؛ pH = pHi ⟵ متعادل ؛ pH > pHi ⟵ شحنة سالبة.',
+            errorHintAr:
+              'صُغ القاعدة بمقارنة صريحة : إذا كان pH الوسط أقل من pHi تكون الشحنة موجبة، وإذا كان أعلى من pHi تكون الشحنة سالبة.',
+          },
+        ],
+        summaryAr:
+          'الحمض الأميني مركب أمفوتيري : يسلك سلوك حمض في الوسط القاعدي وسلوك قاعدة في الوسط الحمضي. تتغير شحنته حسب pH الوسط، وتسمى قيمة pH التي يكون عندها متعادلاً كهربائياً بنقطة التعادل الكهربائي pHi.',
+      },
+      {
+        type: 'SEQUENCE_ORDER',
+        objective:
+          'بناء منهجية ثابتة من 5 خطوات للإجابة على أي سؤال بكالوريا حول الهجرة الكهربائية للأحماض الأمينية أو الببتيدات.',
+        promptAr:
+          'رتّب خطوات المنهجية التي تقودك من معطيات التمرين إلى تحديد اتجاه الهجرة.',
+        assetSrc: '/assets/images/schemas/domaine1_proteines/schema_66_gamma_globulin_electrophoresis_modern.svg',
+        altAr: 'شريط الهجرة الكهربائية مع المهبط والمصعد والمحلول المنظم.',
+        steps: [
+          { id: 'lire_ph', labelAr: 'أقرأ pH المحلول المنظم المستعمل في جهاز الهجرة الكهربائية', expectedOrder: 1 },
+          { id: 'lire_phi', labelAr: 'أستخرج قيمة pHi الخاصة بالحمض الأميني من نص التمرين أو من الجدول', expectedOrder: 2 },
+          { id: 'comparer', labelAr: 'أقارن : هل pH الوسط أقل من pHi أم يساويه أم أعلى منه؟', expectedOrder: 3 },
+          { id: 'charge', labelAr: 'أستنتج الشحنة : موجبة إذا pH < pHi، متعادلة إذا pH = pHi، سالبة إذا pH > pHi', expectedOrder: 4 },
+          { id: 'sens', labelAr: 'أستنتج الاتجاه : الشحنة الموجبة تهاجر نحو المهبط، والسالبة نحو المصعد، والمتعادلة تبقى في مكان الوضع', expectedOrder: 5 },
+        ],
+        summaryPromptAr:
+          'لخّص المنهجية في جملة واحدة : ما هي المقارنة المحورية، وما الذي تستنتجه منها؟',
+        summaryKeywords: ['pHi', 'الشحنة', 'المهبط', 'المصعد'],
+        summaryAr:
+          'كل تمرين هجرة كهربائية يُحلّ بمقارنة واحدة : pH الوسط أمام pHi. منها تُستنتج الشحنة، ومن الشحنة يُستنتج القطب الذي يهاجر نحوه الحمض الأميني.',
+      },
+      {
+        type: 'COMPARISON_TABLE',
+        objective:
+          'تثبيت الفرق بين الوسط الحمضي (pH < pHi) والوسط القاعدي (pH > pHi) على أربعة معايير مطلوبة في التصحيح.',
+        promptAr: 'قارن سلوك الحمض الأميني في الحالتين : pH أقل من pHi، و pH أعلى من pHi.',
+        assetSrc: '/assets/images/schemas/domaine1_proteines/schema_41_alanine_representations_modern.svg',
+        altAr: 'صيغ الحمض الأميني حسب pH الوسط.',
+        criteria: [
+          {
+            id: 'charge_nette',
+            labelAr: 'الشحنة الإجمالية للحمض الأميني',
+            leftExpected: ['موجبة', 'شحنة موجبة'],
+            rightExpected: ['سالبة', 'شحنة سالبة'],
+          },
+          {
+            id: 'groupement',
+            labelAr: 'حالة المجموعتين الوظيفيتين',
+            leftExpected: ['NH3+', 'المجموعة الأمينية', 'تكتسب بروتون'],
+            rightExpected: ['COO-', 'المجموعة الكربوكسيلية', 'تحرر بروتون'],
+          },
+          {
+            id: 'sens_migration',
+            labelAr: 'اتجاه الهجرة الكهربائية',
+            leftExpected: ['المهبط', 'القطب السالب'],
+            rightExpected: ['المصعد', 'القطب الموجب'],
+          },
+          {
+            id: 'exemple_ala',
+            labelAr: 'مثال الألانين (pHi = 6)',
+            leftExpected: ['pH = 2', 'وسط حمضي'],
+            rightExpected: ['pH = 12', 'وسط قاعدي'],
+          },
+        ],
+        conclusionPromptAr:
+          'استنتج لماذا يوصف الحمض الأميني بأنه مركب أمفوتيري (حمامي).',
+        conclusionKeywords: ['أمفوتيري', 'حمض', 'قاعدة'],
+        summaryAr:
+          'في الوسط الحمضي (pH < pHi) يكتسب الحمض الأميني بروتونات فيصبح موجباً ويهاجر نحو المهبط ؛ وفي الوسط القاعدي (pH > pHi) يحرر بروتونات فيصبح سالباً ويهاجر نحو المصعد. هذا السلوك المزدوج هو معنى المركب الأمفوتيري.',
+      },
+      {
+        type: 'TEXT_AND_PRODUCE',
+        objective: 'إنتاج نص علمي قصير يوظف القاعدة في وضعية بكالوريا (فصل خليط من الأحماض الأمينية).',
+        prompt:
+          'خليط من ثلاثة أحماض أمينية : Glu (pHi = 3.2) و Ala (pHi = 6) و Lys (pHi = 9.7)، وُضع في منتصف شريط الهجرة الكهربائية عند pH = 6. حدد شحنة كل حمض أميني واتجاه هجرته، ثم علل في نص من 3 إلى 4 أسطر.',
+        acceptedAnswers: [
+          'Glu سالب يهاجر نحو المصعد لأن pH أعلى من pHi، Ala متعادل لا يهاجر لأن pH يساوي pHi، Lys موجب يهاجر نحو المهبط لأن pH أقل من pHi',
+          'الغلوتاميك سالب نحو المصعد، الألانين متعادل يبقى في مكانه، الليزين موجب نحو المهبط',
+        ],
+        errorHint:
+          'عالج كل حمض أميني على حدة بنفس المقارنة : pH = 6 أمام pHi الخاص به. عند Glu (3.2) الوسط أعلى ⟵ سالب ⟵ المصعد ؛ عند Ala (6) تساوٍ ⟵ لا هجرة ؛ عند Lys (9.7) الوسط أقل ⟵ موجب ⟵ المهبط.',
       },
     ],
   },

@@ -386,6 +386,52 @@ export const DOCUMENT_PRACTICE_CONTEXTS: DocumentPracticeContext[] = [
     },
   },
   {
+    // Audit item 5 — document vivant du pHi : électrophorèse de l'alanine
+    // (livre officiel, ch. 8 « سلوك الأحماض الأمينية في الوسط »).
+    exerciseId: 'amino_acid_electrophoresis',
+    questionId: 'amino_acid_electrophoresis_q1',
+    conceptId: 'amino_acid_behavior',
+    unitId: 2,
+    lessonId: 'amino_acid_behavior',
+    documentType: 'experiment',
+    reflexId: 'analyse',
+    domain: 'genetique',
+    sourceStatus: 'manuel_officiel_verifie',
+    documentTypeAr: 'تجربة هجرة كهربائية — حمض أميني عند ثلاث قيم pH',
+    goalAr: 'استخراج قاعدة تحديد شحنة الحمض الأميني واتجاه هجرته بمقارنة pH الوسط مع pHi.',
+    vocabulary: ['الهجرة الكهربائية', 'المحلول المنظم', 'نقطة التعادل الكهربائي', 'pHi', 'المهبط', 'المصعد', 'أمفوتيري'],
+    expectedEvidence: [
+      'هجرة نحو المهبط عند pH = 2',
+      'انعدام الهجرة عند pH = 6',
+      'هجرة نحو المصعد عند pH = 12',
+    ],
+    trapAr: 'انعدام الهجرة لا يعني غياب الحمض الأميني، بل تساوي pH الوسط مع pHi.',
+    assetSrc: '/assets/images/schemas/domaine1_proteines/schema_66_gamma_globulin_electrophoresis_modern.svg',
+    altAr: 'وثيقة تبين شريط الهجرة الكهربائية بين مهبط ومصعد مع مكان وضع العينة في المنتصف.',
+    gallery: [
+      {
+        assetSrc: '/assets/images/schemas/domaine1_proteines/schema_41_alanine_representations_modern.svg',
+        altAr: 'وثيقة تبين الصيغة العامة للحمض الأميني : مجموعة أمينية، مجموعة كربوكسيلية وجذر R.',
+        captionAr: 'المجموعتان الوظيفيتان هما أصل السلوك الأمفوتيري.',
+      },
+    ],
+    observationAr:
+      'قطرة من محلول الألانين وُضعت في منتصف الشريط : تهاجر نحو المهبط عند pH = 2، تبقى في مكانها عند pH = 6، وتهاجر نحو المصعد عند pH = 12.',
+    promptObserveAr: 'صف اتجاه هجرة البقعة في كل من الأوساط الثلاثة دون تفسير.',
+    promptProduceAr: 'استنتج شحنة الألانين في كل وسط، ثم استخرج القاعدة العامة بمقارنة pH مع pHi.',
+    hintsAr: [
+      'الجسيم المشحون ينجذب نحو القطب المعاكس لشحنته.',
+      'ما الذي يميز الوسط الذي لا تحدث فيه أي هجرة؟',
+    ],
+    correctionAr:
+      'عند pH = 2 (أقل من pHi = 6) يكتسب الألانين بروتونات فتكون شحنته موجبة ويهاجر نحو المهبط ؛ عند pH = 6 تتعادل الشحنات فلا يهاجر، وهي نقطة التعادل الكهربائي pHi ؛ عند pH = 12 (أعلى من pHi) يحرر بروتونات فتكون شحنته سالبة ويهاجر نحو المصعد. القاعدة : pH < pHi ⟵ موجب، pH > pHi ⟵ سالب.',
+    criteria: {
+      evidence: ['المهبط', 'المصعد', 'انعدام الهجرة'],
+      mechanism: ['اكتساب بروتونات', 'تحرير بروتونات', 'pHi'],
+      conclusion: ['الشحنة الموجبة', 'الشحنة السالبة'],
+    },
+  },
+  {
     exerciseId: 'cmh_transplant_compatibility',
     questionId: 'cmh_transplant_compatibility_q1',
     conceptId: 'immunity_self_nonself',
