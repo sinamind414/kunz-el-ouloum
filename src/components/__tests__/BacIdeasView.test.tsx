@@ -13,6 +13,7 @@ import { afterEach, describe, expect, it } from 'vitest';
 import BacIdeasView from '../BacIdeasView';
 import { YEARS_COVERED, ideasForYear } from '../../data/bacSessionIndex';
 import { archetypeRecurrence, archetypesForIdea, ideasOfArchetype } from '../../data/bacArchetypes';
+import { ideasForVerbFamily, verbFamilyStats } from '../../data/verbDemands';
 
 afterEach(cleanup);
 
@@ -142,5 +143,43 @@ describe('أفكار التمارين — montages récurrents (sprint 19)', () 
         expect(screen.getByTestId(`fiche-montage-${idea.id}-${a.id}`)).toBeTruthy();
       }
     }
+  });
+});
+
+describe('أفكار التمارين — familles de consignes (sprint 22)', () => {
+  it('propose un bouton par famille avec son nombre d’occurrences', () => {
+    render(<BacIdeasView />);
+    for (const f of verbFamilyStats()) {
+      const bouton = screen.getByTestId(`famille-${f.familyId}`);
+      expect(bouton.textContent).toContain(String(f.occurrences));
+    }
+  });
+
+  it('déplie la demande, la structure, le canevas et la confusion', async () => {
+    const user = userEvent.setup();
+    render(<BacIdeasView />);
+    await user.click(screen.getByTestId('famille-verb_analyser'));
+    const bloc = screen.getByTestId('famille-detail');
+    expect(bloc.textContent).toContain('بنية الجواب');
+    expect(screen.getByTestId('famille-template').textContent).toContain('قالب الصياغة');
+    expect(bloc.textContent).toContain('الخلط الشائع');
+  });
+
+  it('filtre sur les exercices où la consigne est réellement tombée', async () => {
+    const user = userEvent.setup();
+    render(<BacIdeasView />);
+    await user.click(screen.getByTestId('famille-verb_comparer'));
+    const attendus = ideasForVerbFamily('verb_comparer');
+    expect(screen.getByTestId('idees-total').textContent).toContain(String(attendus.length));
+    for (const idea of attendus) expect(screen.getByTestId(`idee-${idea.id}`), idea.id).toBeTruthy();
+  });
+
+  it('un montage et une famille ne restent jamais actifs en même temps', async () => {
+    const user = userEvent.setup();
+    render(<BacIdeasView />);
+    await user.click(screen.getByTestId('famille-verb_analyser'));
+    await user.click(screen.getByTestId('montage-arch_lecture_geologique'));
+    expect(screen.queryByTestId('famille-detail')).toBeNull();
+    expect(screen.getByTestId('montage-detail')).toBeTruthy();
   });
 });

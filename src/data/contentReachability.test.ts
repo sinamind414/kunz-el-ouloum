@@ -25,6 +25,9 @@ import { SCHEMA_DRILLS } from './schemaDrills';
 import { BAC_ARCHETYPES } from './bacArchetypes';
 import { BAC_IDEAS } from './bacSessionIndex';
 import { buildRevisionPlan } from './revisionPlan';
+import { SVT_QUIZ_QUESTIONS } from '../data';
+import { INITIAL_UNITS } from '../unitCatalog';
+import { VERB_FAMILIES, classifyVerb } from './verbDemands';
 
 const SRC = join(process.cwd(), 'src');
 
@@ -100,5 +103,31 @@ describe('atteignabilité — chaque élément est réellement atteint', () => {
       ];
       expect(portes.length, idea.id).toBeGreaterThan(0);
     }
+  });
+});
+
+describe('atteignabilité — les 549 QCM et les familles de consignes', () => {
+  it('rattache chaque QCM à une unité réellement présente dans le catalogue', () => {
+    const unites = new Set(INITIAL_UNITS.map((u) => u.id));
+    for (const q of SVT_QUIZ_QUESTIONS) {
+      expect(unites.has(q.unitId), `QCM ${q.id}`).toBe(true);
+    }
+  });
+
+  it('laisse chaque unité du programme avec de quoi réviser', () => {
+    for (const u of INITIAL_UNITS) {
+      const n = SVT_QUIZ_QUESTIONS.filter((q) => q.unitId === u.id).length;
+      expect(n, `unité ${u.id}`).toBeGreaterThan(0);
+    }
+  });
+
+  it('n’a aucun identifiant de QCM en double (un doublon masque une question)', () => {
+    const ids = SVT_QUIZ_QUESTIONS.map((q) => q.id);
+    expect(new Set(ids).size).toBe(ids.length);
+  });
+
+  it('rend les familles de consignes depuis un écran', () => {
+    expect(importeParUnComposant(/verbDemands|verbFamilyStats/)).toBe(true);
+    for (const f of VERB_FAMILIES) expect(classifyVerb(f.titleAr.split(' / ')[0])).toBeTruthy();
   });
 });

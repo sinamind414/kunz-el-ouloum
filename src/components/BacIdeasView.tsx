@@ -20,7 +20,6 @@ import {
   pointsOfSujet,
   searchIdeas,
   unitPressure,
-  verbFrequency,
   type BacExerciseIdea,
 } from '../data/bacSessionIndex';
 import {
@@ -29,6 +28,11 @@ import {
   archetypesForIdea,
   ideasOfArchetype,
 } from '../data/bacArchetypes';
+import {
+  VERB_FAMILY_BY_ID,
+  ideasForVerbFamily,
+  verbFamilyStats,
+} from '../data/verbDemands';
 import { INITIAL_UNITS } from '../unitCatalog';
 
 interface BacIdeasViewProps {
@@ -110,20 +114,23 @@ export default function BacIdeasView({ onBackToHome }: BacIdeasViewProps) {
   const [annee, setAnnee] = useState<number | 'all'>(YEARS_COVERED[0]);
   const [requete, setRequete] = useState('');
   const [montage, setMontage] = useState<string | null>(null);
+  const [famille, setFamille] = useState<string | null>(null);
 
   const liste = useMemo(() => {
+    if (famille) return ideasForVerbFamily(famille);
     if (montage) return ideasOfArchetype(montage);
     const q = requete.trim();
     if (q) return searchIdeas(q);
     if (annee === 'all') return [...BAC_IDEAS].sort((a, b) => b.year - a.year || a.sujet - b.sujet || a.exercice - b.exercice);
     return ideasForYear(annee);
-  }, [annee, requete, montage]);
+  }, [annee, requete, montage, famille]);
 
   const montages = useMemo(() => archetypeRecurrence(), []);
   const montageActif = montage ? ARCHETYPE_BY_ID[montage] : undefined;
+  const familles = useMemo(() => verbFamilyStats(), []);
+  const familleActive = famille ? VERB_FAMILY_BY_ID[famille] : undefined;
 
   const pression = useMemo(() => unitPressure().slice(0, 5), []);
-  const verbes = useMemo(() => verbFrequency().slice(0, 6), []);
   const sourceAnnee =
     annee === 'all' ? undefined : BAC_SESSION_SOURCES.find((s) => s.year === annee);
 
@@ -175,13 +182,22 @@ export default function BacIdeasView({ onBackToHome }: BacIdeasViewProps) {
           ))}
         </div>
         <div className="flex flex-row-reverse flex-wrap gap-1.5">
-          {verbes.map((v) => (
-            <span
-              key={v.verbe}
-              className="text-[11px] px-2 py-0.5 rounded-lg bg-white/70 dark:bg-white/5 text-[#506072] dark:text-gray-300"
+          {familles.map((f) => (
+            <button
+              key={f.familyId}
+              data-testid={`famille-${f.familyId}`}
+              onClick={() => {
+                setMontage(null);
+                setFamille(famille === f.familyId ? null : f.familyId);
+              }}
+              className={`text-[11px] font-bold px-2 py-0.5 rounded-lg cursor-pointer ${
+                famille === f.familyId
+                  ? 'bg-[#006d37] text-white'
+                  : 'bg-white/70 dark:bg-white/5 text-[#506072] dark:text-gray-300'
+              }`}
             >
-              {v.verbe} ×{v.count}
-            </span>
+              {f.titleAr} ×{f.occurrences}
+            </button>
           ))}
         </div>
         <p className="mt-3 text-[11px] leading-6 text-[#506072] dark:text-gray-400">
@@ -207,7 +223,10 @@ export default function BacIdeasView({ onBackToHome }: BacIdeasViewProps) {
             <button
               key={m.archetypeId}
               data-testid={`montage-${m.archetypeId}`}
-              onClick={() => setMontage(montage === m.archetypeId ? null : m.archetypeId)}
+              onClick={() => {
+                setFamille(null);
+                setMontage(montage === m.archetypeId ? null : m.archetypeId);
+              }}
               className={`text-[11px] font-bold px-3 py-1.5 rounded-xl cursor-pointer ${
                 montage === m.archetypeId
                   ? 'bg-[#006d37] text-white'
@@ -256,6 +275,43 @@ export default function BacIdeasView({ onBackToHome }: BacIdeasViewProps) {
         </section>
       )}
 
+      {familleActive && (
+        <section
+          data-testid="famille-detail"
+          className="rounded-3xl p-4 bg-[#fff9ed] dark:bg-black/20 border border-[#d9a400]/40 mb-4"
+        >
+          <h2 className="text-base font-black text-[#8a6a00] dark:text-[#d9a400] mb-1 text-right">
+            التعليمة: {familleActive.titleAr}
+          </h2>
+          <p className="text-[13px] leading-7 text-[#1f1c0b] dark:text-gray-200 text-right mb-3">
+            {familleActive.demandeAr}
+          </p>
+
+          <p className="text-[11px] font-black text-[#506072] dark:text-gray-400 mb-1">بنية الجواب</p>
+          <ol className="list-decimal pr-4 mb-3 space-y-1 text-[12px] leading-6 text-[#1f1c0b] dark:text-gray-200 text-right">
+            {familleActive.structureAr.map((x) => (
+              <li key={x}>{x}</li>
+            ))}
+          </ol>
+
+          <p
+            data-testid="famille-template"
+            className="text-[13px] leading-7 text-[#006d37] dark:text-[#2ecc71] text-right mb-2"
+          >
+            <span className="font-black">قالب الصياغة: </span>
+            {familleActive.templateAr}
+          </p>
+
+          <p className="flex flex-row-reverse items-start gap-2 text-[12px] leading-6 text-rose-700 dark:text-rose-400 text-right">
+            <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5" />
+            <span>
+              <span className="font-black">الخلط الشائع: </span>
+              {familleActive.confusionAr}
+            </span>
+          </p>
+        </section>
+      )}
+
       <div className="flex flex-row-reverse flex-wrap items-center gap-2 mb-4">
         {YEARS_COVERED.map((y) => (
           <button
@@ -265,9 +321,10 @@ export default function BacIdeasView({ onBackToHome }: BacIdeasViewProps) {
               setAnnee(y);
               setRequete('');
               setMontage(null);
+              setFamille(null);
             }}
             className={`text-xs font-bold px-3 py-1.5 rounded-xl cursor-pointer ${
-              annee === y && !requete && !montage
+              annee === y && !requete && !montage && !famille
                 ? 'bg-[#006d37] text-white'
                 : 'bg-[#f3f4f5] dark:bg-[#1f2622] text-[#506072] dark:text-gray-300'
             }`}
@@ -281,9 +338,10 @@ export default function BacIdeasView({ onBackToHome }: BacIdeasViewProps) {
             setAnnee('all');
             setRequete('');
             setMontage(null);
+            setFamille(null);
           }}
           className={`text-xs font-bold px-3 py-1.5 rounded-xl cursor-pointer ${
-            annee === 'all' && !requete && !montage
+            annee === 'all' && !requete && !montage && !famille
               ? 'bg-[#006d37] text-white'
               : 'bg-[#f3f4f5] dark:bg-[#1f2622] text-[#506072] dark:text-gray-300'
           }`}
@@ -300,13 +358,14 @@ export default function BacIdeasView({ onBackToHome }: BacIdeasViewProps) {
           onChange={(e) => {
             setRequete(e.target.value);
             setMontage(null);
+            setFamille(null);
           }}
           placeholder="ابحث: الجينتاميسين، البرفورين، الروبيسكو، 2023…"
           className="w-full rounded-2xl py-2.5 pr-10 pl-3 text-sm bg-white dark:bg-[#141916] border border-[#bbcbbb]/30 text-right text-[#1f1c0b] dark:text-gray-100"
         />
       </div>
 
-      {!requete && !montage && annee !== 'all' && (
+      {!requete && !montage && !famille && annee !== 'all' && (
         <p data-testid="idees-bareme" className="mb-3 text-[12px] text-[#506072] dark:text-gray-400 text-right">
           الموضوع الأول: {pointsOfSujet(annee, 1)}/20 نقطة · الموضوع الثاني: {pointsOfSujet(annee, 2)}/20 نقطة
           {sourceAnnee && (

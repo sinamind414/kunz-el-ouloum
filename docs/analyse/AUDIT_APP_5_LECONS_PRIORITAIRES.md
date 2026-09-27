@@ -1421,3 +1421,75 @@ complète, verrouillée et fausse — si rien ne la rend.
 19 exercices élite rendus (contre 0) · plan de 30 jours à couverture totale ·
 suite complète **1537 verts / 4 skipped** (toujours les 4
 `lazyRouteChunks.smoke` pré-existants).
+
+---
+
+## Sprint 22 — 71 formulations, 12 demandes réelles : le décodeur de consignes
+
+### Point de départ : l'audit QCM est propre
+
+Première moitié du sprint, annoncée : vérifier que les **549 QCM** sont
+atteignables. Résultat : **rien à corriger**. Les 11 unités en ont toutes
+(de 39 pour U1 à 66 pour U4), aucun identifiant en double, et `QuizView`
+reçoit la totalité des questions de l'unité sans troncature. Trois assertions
+ont été ajoutées à `contentReachability.test.ts` pour que cela reste vrai.
+
+### Le vrai gisement : les consignes
+
+Le dépouillement des 8 sessions a relevé **71 formulations de consignes
+différentes** pour 47 exercices. L'élève les lit comme 71 demandes ; le
+correcteur n'en attend qu'une douzaine. `src/data/verbDemands.ts` les classe en
+**12 familles**, chacune avec : ce qui est attendu, la structure de la réponse,
+le **canevas de phrase**, et le **verbe voisin avec lequel on la confond**.
+
+Le classement est **total** — un test échoue si une formulation du corpus
+n'est reconnue par aucune règle.
+
+| Famille | Occurrences | Exercices | Sessions | Points concernés |
+|---|---|---|---|---|
+| سمّ / اذكر / تعرّف / حدّد / صف | 25 | 21 | 8 | 122 |
+| فسّر / اشرح / وضّح / علّل / بيّن | 20 | 16 | 8 | 116 |
+| حلّل | 19 | 18 | 7 | **132** |
+| اكتب في نص علمي | 19 | 19 | 7 | 110 |
+| اقترح فرضية | 16 | 16 | 8 | 127 |
+| صادق / تحقّق / ناقش صحة الفرضية | 13 | 13 | 8 | 103 |
+| برّر · لخّص في مخطط · اقترح حلاً · استنتج · أبرز العلاقة · قارن | 4 à 9 | — | — | — |
+
+Trois enseignements :
+
+1. **« اكتب في نص علمي » tombe sur 19 exercices, soit 7 sessions sur 8.** Ce
+   n'est pas un exercice particulier, c'est une exigence permanente — et les
+   points de *hiérarchisation* (introduction / développement / conclusion) sont
+   perdus même quand le contenu est juste.
+2. **« اقترح فرضية » et « صادق » apparaissent sur les 8 sessions**, toujours en
+   couple : la démarche scientifique complète est évaluée chaque année.
+3. La famille « حلّل » ne domine pas en nombre mais **en points** (132) : c'est
+   l'entrée des exercices lourds.
+
+### La confusion consignée en premier
+
+Pour chaque famille, le champ `confusionAr` nomme l'erreur voisine. La plus
+coûteuse de l'épreuve est verrouillée par un test dédié :
+**حلّل décrit ce que montre le document, avec les chiffres et sans aucune
+connaissance extérieure ; فسّر dit pourquoi, et exige les acquis.** Mélanger
+les deux fait perdre des points deux fois : la description manque dans l'un,
+le mécanisme dans l'autre.
+
+Autres pièges consignés : nier une hypothèse que les données ne soutiennent
+pas (elle est *non étayée*, pas fausse) ; traiter deux hypothèses synonymes
+(aucun document ne pourra les départager) ; redessiner le schéma du cours au
+lieu du schéma-bilan de l'exercice ; développer dans un exercice de
+restitution au détriment de l'exercice à 08 points.
+
+### Dans l'écran
+
+Les puces de verbes de « أفكار التمارين » deviennent **cliquables** : un clic
+ouvre la fiche de la famille (demande, structure, canevas, confusion) et filtre
+la liste sur les exercices où cette consigne est réellement tombée. Un montage
+et une famille ne peuvent pas rester actifs en même temps — vérifié par test.
+
+### Compteurs après sprint 22
+
+12 familles de consignes · 10 montages · 47 idées BAC · 549 QCM audités ·
+suite complète **1558 verts / 4 skipped** (toujours les 4
+`lazyRouteChunks.smoke` pré-existants).
