@@ -62,6 +62,17 @@ export interface AttenduItem {
   source: 'build' | 'corrige-officiel-2025';
 }
 
+export interface PoidsPartie {
+  /** item.id → numéro de partie (1, 2, 3). */
+  partie: Record<string, 1 | 2 | 3>;
+  /** Points que le registre attribue à chaque partie (Σ = maxPts). */
+  registre: Record<1 | 2 | 3, number>;
+  /** Points officiels de chaque partie (Σ = maxPts). */
+  officiel: Record<1 | 2 | 3, number>;
+  /** Source documentaire de la ventilation (corrigé / RECAPITULATIF). */
+  source: string;
+}
+
 export interface AttendusExercice {
   sujet: SujetId;
   exercice: ExerciceId;
@@ -69,6 +80,16 @@ export interface AttendusExercice {
   /** L'énoncé/le verrou de l'exercice (détection de perroquet). */
   questionAr: string;
   items: AttenduItem[];
+  /**
+   * Ventilation officielle en parties (optionnelle).
+   *
+   * Quand la granularité des items (13 ici) dépasse celle du barème officiel
+   * (3 parties), la note est calculée par partie — crédit de la partie × poids
+   * officiel / poids registre — au lieu du modèle plat couverture × maxPts.
+   * Sans `poidsPartie`, ou si la map ne couvre pas tout item auto, on reste sur
+   * le modèle plat (sécurité). Référence : docs/DIAGNOSTIC_EX3.md (S1-Ex3).
+   */
+  poidsPartie?: PoidsPartie;
 }
 
 // ── Pont programmatique : Ex1 des deux sujets depuis le build prouvé fidèle ──
@@ -258,6 +279,26 @@ const S1_EX3: AttenduItem[] = [
     'المخطط: مسار Ado (تراكم → ارتباط A1R → نقص NE → نعاس) ومسار Mtb (احتلال A1R → عودة NE → يقظة)'),
 ];
 
+// Ventilation officielle de l'Ex3 (RECAPITULATIF + corrigé p.2-4) :
+//   Partie 1 = 1,5 (lecture des figures a/b + 2 conclusions + hypothèses)
+//   Partie 2 = 4,5 (mécanisme : NE, Go/Gi, canaux K⁺/Ca²⁺, vésicules)
+//   Partie 3 = 2,0 (conseils + schéma)
+// Le registre totalise 3,5 / 3,5 / 1,0 — la Partie 1 (items faciles : nommer
+// « المجموعة 1 » rapporte 0,5) pèse ×2,3 l'officiel. C'est la cause mesurée du
+// biais +1,20 (docs/DIAGNOSTIC_EX3.md) : la note est ventilée par partie.
+const S1_EX3_PARTIES: PoidsPartie = {
+  partie: {
+    'corr-2025-13': 1, 'corr-2025-14': 1, 'corr-2025-15': 1,
+    'corr-2025-16': 1, 'corr-2025-17': 1, 'corr-2025-18': 1,
+    'corr-2025-19': 2, 'corr-2025-20': 2, 'corr-2025-21': 2,
+    'corr-2025-22': 2, 'corr-2025-23': 2,
+    'corr-2025-24': 3, 'corr-2025-25': 3,
+  },
+  registre: { 1: 3.5, 2: 3.5, 3: 1.0 },
+  officiel: { 1: 1.5, 2: 4.5, 3: 2.0 },
+  source: 'RECAPITULATIF.txt (structure du sujet) + corrigé officiel p.2-4 — 2026-09-27',
+};
+
 // ── S2-Ex2 (7 ن) — SOD · الطفرة · EDA · Catalase (ALS) ───────────────────────
 const S2_EX2: AttenduItem[] = [
   item(0.5, ['اوكسيد فائق', 'بيروكسيد الهيدروجين'],
@@ -329,7 +370,7 @@ export const ATTENDUS_BAC2025: Record<SujetId, Record<ExerciceId, AttendusExerci
   1: {
     1: { sujet: 1, exercice: 1, maxPts: 5, questionAr: Q_S1[1], items: [...itemsDepuisBuild('bac2025_S1/S1-Ex1/')] },
     2: { sujet: 1, exercice: 2, maxPts: 7, questionAr: Q_S1[2], items: S1_EX2 },
-    3: { sujet: 1, exercice: 3, maxPts: 8, questionAr: Q_S1[3], items: S1_EX3 },
+    3: { sujet: 1, exercice: 3, maxPts: 8, questionAr: Q_S1[3], items: S1_EX3, poidsPartie: S1_EX3_PARTIES },
   },
   2: {
     1: { sujet: 2, exercice: 1, maxPts: 5, questionAr: Q_S2[1], items: [...itemsDepuisBuild('bac2025_S2/S2-Ex1/')] },

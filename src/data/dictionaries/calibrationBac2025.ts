@@ -139,10 +139,12 @@ export interface NoteCalibree extends ResultatNotation {
 
 /**
  * Évalue UNE réponse d'exercice bac2025 : note calibrée + couches de diagnostic.
- * RÈGLE MOTEUR : `points` ne dépend QUE de la couverture via la calibration,
- * PUIS est plafonné par les signaux d'intégrité (salade / perroquet /
- * négations — integriteCopie.ts) ; le crédit du barème officiel reste
- * affiché en diagnostic (jamais additionné).
+ * RÈGLE MOTEUR : `points` dépend de la couverture des attendus, soit directement
+ * (couverture × maxPts), soit par ventilation par partie quand le registre
+ * déclare `poidsPartie` (S1-Ex3 : chaque partie est ramenée à son poids
+ * officiel — docs/DIAGNOSTIC_EX3.md) ; PUIS le tout est plafonné par les
+ * signaux d'intégrité (salade / perroquet / négations — integriteCopie.ts) ;
+ * le crédit du barème officiel reste affiché en diagnostic (jamais additionné).
  */
 // formePresente vit dans lib/validation (partagée avec le diagnostic barème —
 // P2 : aucun matching par substring nu dans le produit).
@@ -205,8 +207,29 @@ export function noterExerciceCalibre(
   const question = options?.question ?? registre.questionAr;
   const signaux = analyserSignaux(reponse, question);
   const plafonds = calculerPlafonds(signaux);
-  const brut = couverture * registre.maxPts;
-  let points = couverture === 0 ? 0 : appliquerPlafonds(brut, registre.maxPts, plafonds);
+  let brut = couverture * registre.maxPts;
+  // E (2026-09-27) : ventilation par partie quand la granularité des items
+  // dépasse le barème officiel (S1-Ex3). Chaque partie est ramenée à son poids
+  // officiel : crédit_partie × officiel / registre. Sans map, ou si la map
+  // oublie un item auto, on retombe sur le modèle plat (sécurité).
+  const pp = registre.poidsPartie;
+  if (pp) {
+    const partCredit: Record<number, number> = { 1: 0, 2: 0, 3: 0 };
+    let mapCouvre = true;
+    for (const v of verdicts) {
+      const p = pp.partie[v.id];
+      if (p === undefined) { if (v.auto) mapCouvre = false; continue; }
+      partCredit[p] = Math.round((partCredit[p] + v.pointsCredites) * 100) / 100;
+    }
+    if (mapCouvre) {
+      brut = 0;
+      for (const p of [1, 2, 3] as const) {
+        if (pp.registre[p] > 0) brut += partCredit[p] * (pp.officiel[p] / pp.registre[p]);
+      }
+      brut = Math.min(registre.maxPts, Math.max(0, brut));
+    }
+  }
+  let points = credite === 0 ? 0 : appliquerPlafonds(brut, registre.maxPts, plafonds);
 
   // C4b : une inversion factuelle (« forte ») coûte 0,5 n — les vigilances
   // n'affichent que. Les contrôles Meftah déclenchent zéro sanction forte
