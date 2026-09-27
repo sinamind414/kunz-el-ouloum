@@ -541,3 +541,48 @@ complémentaire : 6 `electrophoresis-sim` (seul livrable « simulation » encore
 zéro) · 12 banque « أفكار التمارين » · 14 révision globale · 15 capsules 1-2 min ·
 16 (suite) cartes mentales U5-U11 · 17 « reproduire le schéma de mémoire » ·
 18 exercices indexés par situation · 19 carte d'ouverture d'unité.
+
+---
+
+## Sprint 8 — livré (2026-09-27)
+
+**Périmètre : item 6 — le simulateur d'électrophorèse.**
+C'était le **seul livrable de type « simulation » encore entièrement à zéro** dans
+la matrice d'audit (ligne « Simulation : ❌ partout »), alors que
+« سلوك الأحماض الأمينية » est la 2ᵉ notion la plus difficile (73 points) et
+qu'**aucune chaîne concurrente ne propose d'interactif** sur le pHi.
+
+### Ce qui a été produit
+
+| Livrable | Détail |
+|---|---|
+| `src/components/ElectrophoresisSimulator.tsx` | Simulateur interactif pH → charge → sens de migration. 4 molécules (Ala pHi 6, Glu 3.2, Lys 9.7, His 7.6), curseur pH de 1 à 13 par pas de 0,5, bande de migration SVG avec anode et cathode, tache animée dont la course est proportionnelle à \|pH − pHi\| |
+| Intégration | Carte mise en avant en tête de `AnimationsView` (onglet الأنميشن العلمي), signalée « محاكاة تفاعلية — الوحدة 2 » |
+| Verrous | `src/components/__tests__/ElectrophoresisSimulator.test.tsx` — **11 tests** |
+
+### Le parti pris : prédire avant de voir
+
+Le bouton « شغّل الهجرة » reste **verrouillé tant que l'élève n'a pas prédit** le
+sens de migration. Une animation regardée passivement n'enseigne pas la règle ; ici
+l'élève s'engage, puis le verdict lui renvoie la comparaison explicite
+(« pH du milieu (2,0) est inférieur au pHi (6) donc charge positive donc cathode »),
+et un score cumulé s'affiche. Changer de molécule ou de pH annule la manche, pour
+qu'on ne puisse pas ajuster sa prédiction après coup.
+
+La **règle physique est isolée dans trois fonctions pures** (`sensMigration`,
+`chargeGlobale`, `positionSpot`) testées indépendamment de l'interface : un
+refactor visuel ne peut pas corrompre la physique. Les trois vecteurs du livre pour
+l'alanine (pH 2 → cathode, pH 6 → immobile, pH 12 → anode) sont figés en test.
+
+### Compteurs après sprint 8
+
+suite complète **1291 verts / 4 skipped** (toujours les 4 échecs pré-existants
+`lazyRouteChunks.smoke`, qui exigent un `dist/` construit). Les autres compteurs
+sont inchangés depuis le sprint 7 : résumés 50 · leçons actives 12 · flashcards 552
+· index tuteur 510 chunks.
+
+### Reste au backlog
+
+12 banque « أفكار التمارين » · 14 révision globale · 15 capsules 1-2 min ·
+16 (suite) cartes mentales U5-U11 · 17 « reproduire le schéma de mémoire » ·
+18 exercices indexés par situation · 19 carte d'ouverture d'unité.
