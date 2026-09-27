@@ -238,7 +238,8 @@
       "id": 14,
       "titre": "Mode révision globale d'une unité en une session",
       "taille": "M",
-      "preuve": "Chaouch U4 8h26 = 1,3M ; Benotmane révision 4h27 = 459K"
+      "preuve": "Chaouch U4 8h26 = 1,3M ; Benotmane révision 4h27 = 459K",
+      "statut": "livré (sprint 15) — « خطة المراجعة النهائية » : moteur déterministe qui répartit les 24 capsules, 17 schémas, 23 situations et 11 cartes mentales sur les jours restants (poids BAC × bonus de difficulté), 4 préréglages 30/14/7/3 jours, cases à cocher persistées et 2 derniers jours en consolidation"
     },
     {
       "id": 15,

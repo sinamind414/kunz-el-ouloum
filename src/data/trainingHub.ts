@@ -11,7 +11,7 @@
 // qu'aucune entrée ne pointe vers un onglet inexistant.
 
 /** Onglets de l'application atteignables depuis le hub. */
-export type TrainingTab = 'situations' | 'schemas' | 'animations' | 'bootcamp' | 'workshop';
+export type TrainingTab = 'plan' | 'situations' | 'schemas' | 'animations' | 'bootcamp' | 'workshop';
 
 export interface TrainingEntry {
   tab: TrainingTab;
@@ -21,10 +21,19 @@ export interface TrainingEntry {
   /** Le geste travaillé, affiché en pastille. */
   gestureAr: string;
   /** Icône lucide (nom), résolue par la vue. */
-  icon: 'search' | 'penTool' | 'sparkles' | 'swords' | 'playCircle';
+  icon: 'search' | 'penTool' | 'sparkles' | 'swords' | 'playCircle' | 'calendar';
 }
 
 export const TRAINING_ENTRIES: TrainingEntry[] = [
+  {
+    // Sprint 15 (item 14) : l'orchestrateur passe en tête — c'est la porte
+    // d'entrée de l'élève qui ne sait pas par où commencer.
+    tab: 'plan',
+    titleAr: 'خطة المراجعة النهائية',
+    descriptionAr: 'قل لي كم بقي من الوقت، وسأعطيك برنامج اليوم: كبسولة، رسم، وضعية، خريطة.',
+    gestureAr: 'أنظّم وقتي',
+    icon: 'calendar',
+  },
   {
     tab: 'situations',
     titleAr: 'تمارين بالوضعيات',

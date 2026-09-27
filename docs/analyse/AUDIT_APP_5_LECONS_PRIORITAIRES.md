@@ -931,3 +931,76 @@ cartes mentales **11/11 unités** · nœuds documentés **139** · suite complè
 ### Reste au backlog
 
 12 banque « أفكار التمارين » · 14 révision globale.
+
+---
+
+## Sprint 15 — item 14 : « خطة المراجعة النهائية », le plan de révision jusqu'au jour J
+
+### Le manque
+
+Après quatorze sprints, l'application contenait beaucoup de matière bien
+rangée : 24 micro-capsules, 17 schémas à reproduire, 23 situations d'exercices,
+11 cartes mentales, 11 cartes d'ouverture. Mais rien ne répondait à la seule
+question que se pose un candidat en avril : **« il me reste N jours et H heures
+par jour — je fais quoi, aujourd'hui ? »** L'élève devait arbitrer seul entre
+sept unités de poids très inégaux, ce qui est précisément la compétence qui lui
+manque.
+
+### La réponse : un ordonnanceur, pas du contenu neuf
+
+`src/data/revisionPlan.ts` n'ajoute **aucune leçon**. Il ordonne l'existant sur
+le temps disponible, selon quatre règles explicites et vérifiables :
+
+1. **poids d'examen mesuré** — `UNIT_OPENINGS.bacWeightPercent` (U1-U7, somme
+   95-105 %), 5 % par défaut pour les unités géologiques U8-U11 ;
+2. **bonus de difficulté** issu du classement des notions les plus cherchées sur
+   YouTube — `{U6:9, U2:8, U4:7, U5:5, U3:4, U7:4, U1:2}` : la phase
+   photochimique et le comportement des acides aminés remontent au-dessus de
+   leur seul poids au barème ;
+3. **alternance des gestes** — chaque journée enchaîne capsule → schéma →
+   situation → carte mentale, jamais quatre tâches du même type à la suite ;
+4. **atterrissage** — si le plan dure au moins 4 jours, les **2 derniers jours
+   sont en consolidation** : plus aucune situation nouvelle, uniquement capsules,
+   schémas et cartes (badge « تثبيت فقط »).
+
+Les unités lourdes reçoivent **plus de minutes**, pas seulement une meilleure
+place dans l'ordre : la file de tâches est construite par répétition
+proportionnelle à la priorité, étalée par la méthode du plus grand reste, puis
+découpée en journées selon le budget quotidien.
+
+### L'écran
+
+`src/components/RevisionPlanView.tsx`, première entrée de l'onglet التدريب
+(icône calendrier) :
+
+- deux curseurs — jours restants (1-60) et minutes par jour (20-240) ;
+- quatre préréglages : **30 j × 60 min**, **14 j × 90 min**, **7 j × 120 min**,
+  **3 j × 120 min** (dernière ligne droite) ;
+- le plan jour par jour, chaque tâche avec son type, sa durée et son unité ;
+- des **cases à cocher persistées** dans `localStorage`
+  (`kunz.revisionPlan.${jours}x${minutes}`) et une barre de progression ;
+- un résumé : nombre de tâches, minutes totales, unités couvertes.
+
+### Ce que les tests protègent
+
+`src/data/revisionPlan.lock.test.ts` — **17 tests** : déterminisme strict (deux
+appels identiques produisent le même plan), respect du budget quotidien, aucune
+journée vide, aucune tâche dupliquée dans une même journée, couverture **11/11
+unités** sur un plan de 30 jours, présence obligatoire de **U6** même dans un
+plan de 3 jours, et le test qui a coûté deux réécritures du moteur : **les
+unités lourdes reçoivent strictement plus de minutes que les unités légères**.
+
+`src/components/__tests__/RevisionPlanView.test.tsx` couvre l'écran : rendu des
+préréglages, cochage persistant, remise à zéro de la progression au changement
+de préréglage, badge de consolidation.
+
+### Compteurs après sprint 15
+
+capsules 24 · schémas 17 · situations 23 · cartes mentales 11/11 · cartes
+d'ouverture 11/11 · suite complète **1466 verts / 4 skipped** (toujours les
+4 échecs pré-existants `lazyRouteChunks.smoke`).
+
+### Reste au backlog
+
+**12** banque « أفكار التمارين » indexée par session BAC 2019→2025 — dernier
+item ouvert.
