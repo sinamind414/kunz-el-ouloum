@@ -1493,3 +1493,74 @@ et une famille ne peuvent pas rester actifs en même temps — vérifié par tes
 12 familles de consignes · 10 montages · 47 idées BAC · 549 QCM audités ·
 suite complète **1558 verts / 4 skipped** (toujours les 4
 `lazyRouteChunks.smoke` pré-existants).
+
+---
+
+## Sprint 23 — la boucle se ferme : le contrôle de forme de la réponse écrite
+
+### Ce qui manquait
+
+Après le sprint 22, l'app savait **ce qui tombe** (47 exercices), **sous quelle
+forme** (10 montages) et **ce que chaque consigne exige** (12 familles). Il
+manquait le retour : l'élève écrit sa réponse, et personne ne lui dit que son
+« تحليل » est en réalité un « تفسير », ou que son texte scientifique n'a ni
+problématique ni conclusion.
+
+`src/data/answerStructureCheck.ts` comble ce trou, avec une limite assumée et
+écrite dans le fichier : **il ne note pas et ne juge pas le fond**. Le contenu
+scientifique reste l'affaire du dictionnaire et de `correcteurV1.ts` ; ici on
+ne vérifie que des marqueurs de FORME, chacun documenté par sa règle.
+
+### Deux natures de contrôle, et c'est le point important
+
+- **`attendu`** : la consigne l'exige (« la conclusion répond explicitement au
+  problème »). Compté dans le score de forme.
+- **`vigilance`** : une présence suspecte, pas une faute. **Non comptée.**
+  Exemple canonique : une cause (« لأن », « يعود ذلك إلى ») dans un exercice
+  d'analyse. L'élève reçoit un ⚠︎ et l'explication — « la cause a sa place dans
+  le تفسير, pas dans le تحليل » — sans perdre de point sur un contrôle
+  heuristique.
+
+Cette distinction évite le piège classique de ce genre d'outil : transformer
+une heuristique grossière en sanction chiffrée.
+
+### Ce que chaque famille contrôle
+
+| Consigne | Exigences vérifiées |
+|---|---|
+| حلّل | chiffres · unités · tendance « كلما… » · ⚠︎ pas de cause |
+| فسّر / اشرح | connecteur causal · niveau (جزيئي/خلوي) · rappel du résultat |
+| اكتب في نص علمي | problématique en tête · conclusion · appui documentaire · volume ≥ 40 mots |
+| اقترح فرضية | modalité (« قد … ») · mécanisme proposé · testabilité |
+| صادق / ناقش | rappel de l'hypothèse · preuve chiffrée · verdict explicite · ⚠︎ pas de rejet tranché sans donnée |
+| لخّص في مخطط | flèches orientées · au moins trois étapes |
+| قارن | marqueur de contraste · critères annoncés · plus d'un critère |
+| استنتج | amorce « نستنتج » · brièveté (≤ 40 mots) |
+| أبرز العلاقة | les deux documents cités · phrase de liaison |
+| برّر · اقترح حلاً · سمّ | connecteur de justification · action + justification · concision |
+
+Le contrôle « prudence » de la validation mérite d'être cité : rejeter
+catégoriquement une hypothèse **sans donnée qui la contredise** déclenche une
+alerte — *l'absence de preuve n'est pas une preuve d'absence*, il faut écrire
+« غير مدعومة » et non « خاطئة ». C'est une faute de raisonnement que le barème
+sanctionne et que peu d'outils détectent.
+
+### Dans l'écran
+
+`CorrecteurPanel` (onglet correction) reçoit un sélecteur **« التعليمة
+المطلوبة »**. L'élève choisit la consigne — la deviner à partir de la réponse
+aurait été une inférence de trop — et obtient la liste des exigences avec ✓, ✗
+ou ⚠︎, chacune accompagnée de son conseil, plus la mention « فحص شكلي فقط ».
+
+### Tests
+
+`answerStructureCheck.test.ts` — **18 tests**, chaque famille éprouvée avec une
+réponse **conforme** et une réponse **défaillante** : un contrôle qui passe
+toujours ne sert à rien, un contrôle qui échoue toujours décourage. Plus 4 tests
+de panneau.
+
+### Compteurs après sprint 23
+
+12 familles de consignes contrôlées · 10 montages · 47 idées BAC · suite
+complète **1580 verts / 4 skipped** (toujours les 4 `lazyRouteChunks.smoke`
+pré-existants).
