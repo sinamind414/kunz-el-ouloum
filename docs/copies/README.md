@@ -9,8 +9,8 @@
 - Base : consentement des familles / autorisation pédagogique de l'établissement. À défaut, retirer la copie du corpus.
 
 ## Anonymisation
-- `Nom : ELEVE_01` → `Code : ELEVE_01`
-- `الاسم: ELEVE_01` → `الرمز: ELEVE_01`
+- `Nom : [prénom nom]` → `Code : ELEVE_01` (exemple fictif)
+- `الاسم: [الاسم بالعربية]` → `الرمز: ELEVE_01`
 - Aucune donnée identifiante ne doit être committée. Les fichiers `docs/copies-bac2025/**` sont gitignorés.
 
 ## Accès
