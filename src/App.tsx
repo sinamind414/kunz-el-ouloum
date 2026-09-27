@@ -18,7 +18,8 @@ import {
   Compass,
   Network,
   Search,
-  PenTool
+  PenTool,
+  Dumbbell
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 
@@ -53,6 +54,7 @@ import QuizView from './components/QuizView';
 import AnimationsView from './components/AnimationsView';
 import SituationBankView from './components/SituationBankView';
 import SchemaDrillView from './components/SchemaDrillView';
+import TrainingHubView from './components/TrainingHubView';
 import RevisionView from './components/RevisionView';
 import StatsView from './components/StatsView';
 import AITutorView from './components/AITutorView';
@@ -86,7 +88,7 @@ export default function App() {
   });
 
   // Navigation tab state
-  const [currentTab, setCurrentTab] = useState<'splash' | 'home' | 'review' | 'stats' | 'chat' | 'methodology' | 'bootcamp' | 'badges' | 'lesson' | 'workshop' | 'mindmap' | 'teacher' | 'animations' | 'situations' | 'schemas'>('splash');
+  const [currentTab, setCurrentTab] = useState<'splash' | 'home' | 'review' | 'stats' | 'chat' | 'methodology' | 'bootcamp' | 'badges' | 'lesson' | 'workshop' | 'mindmap' | 'teacher' | 'animations' | 'situations' | 'schemas' | 'training'>('splash');
   const [activeMindMapUnitId, setActiveMindMapUnitId] = useState<number>(1);
   const [isAuthOpen, setIsAuthOpen] = useState(false);
   // Session élève persistée (correctif : la session était perdue à chaque F5).
@@ -578,17 +580,14 @@ export default function App() {
     { tab: 'chat', label: 'المرشد', Icon: Compass },
     { tab: 'stats', label: 'تقدمي', Icon: Trophy },
   ];
+  // Sprint 13 — dette UI : 9 entrées secondaires devenaient un mur. Les cinq
+  // espaces d'entraînement (situations, schémas, bootcamp, atelier, animations)
+  // passent derrière une porte unique ; voir src/data/trainingHub.ts.
   const SECONDARY_NAV: { tab: typeof currentTab; label: string; Icon: LucideIcon }[] = [
-    { tab: 'workshop', label: 'الورشة التفاعلية', Icon: PlayCircle },
+    { tab: 'training', label: 'التمارين والتدريب', Icon: Dumbbell },
     { tab: 'mindmap', label: 'الخرائط الذهنية', Icon: Network },
     { tab: 'methodology', label: MIFTAH_NAME_OFFICIAL_AR, Icon: Key },
     { tab: 'badges', label: 'الأوسمة والإنجازات', Icon: Award },
-    { tab: 'bootcamp', label: 'تحدي البكالوريا', Icon: Swords },
-    { tab: 'animations', label: 'الأنميشن العلمي', Icon: Sparkles },
-    // Audit item 18 (sprint 10) : entrée par situation concrète.
-    { tab: 'situations', label: 'تمارين بالوضعيات', Icon: Search },
-    // Audit item 17 (sprint 12) : reproduire les schémas de mémoire.
-    { tab: 'schemas', label: 'ارسم من الذاكرة', Icon: PenTool },
     { tab: 'teacher', label: 'لوحة المتابعة', Icon: GraduationCap },
   ];
 
@@ -660,6 +659,7 @@ export default function App() {
            currentTab === 'animations' ? 'الأنميشن العلمي' :
            currentTab === 'situations' ? 'تمارين بالوضعيات' :
            currentTab === 'schemas' ? 'ارسم من الذاكرة' :
+           currentTab === 'training' ? 'التمارين والتدريب' :
            currentTab === 'mindmap' ? 'الخرائط الذهنية (D3)' :
             currentTab === 'chat' ? 'المرشد الذكي' :
             currentTab === 'teacher' ? 'لوحة المتابعة' :
@@ -825,15 +825,22 @@ export default function App() {
               )}
 
               {currentTab === 'animations' && (
-                <AnimationsView onBackToHome={() => setCurrentTab('home')} />
+                <AnimationsView onBackToHome={() => setCurrentTab('training')} />
+              )}
+
+              {currentTab === 'training' && (
+                <TrainingHubView
+                  onOpen={(tab) => setCurrentTab(tab)}
+                  onBackToHome={() => setCurrentTab('home')}
+                />
               )}
 
               {currentTab === 'situations' && (
-                <SituationBankView onBackToHome={() => setCurrentTab('home')} />
+                <SituationBankView onBackToHome={() => setCurrentTab('training')} />
               )}
 
               {currentTab === 'schemas' && (
-                <SchemaDrillView onBackToHome={() => setCurrentTab('home')} />
+                <SchemaDrillView onBackToHome={() => setCurrentTab('training')} />
               )}
             </motion.div>
           </AnimatePresence>

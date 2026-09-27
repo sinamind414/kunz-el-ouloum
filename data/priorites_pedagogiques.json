@@ -279,7 +279,8 @@
       "id": 19,
       "titre": "Carte « ماذا سندرس في هذه الوحدة ؟ » en ouverture d'unité",
       "taille": "S",
-      "preuve": "15:44 — 79K"
+      "preuve": "15:44 — 79K",
+      "statut": "livré (sprint 13) — 11 cartes d'ouverture + portail réécrit (bug unité 1 partout corrigé)"
     }
   ]
 }

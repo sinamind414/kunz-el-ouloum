@@ -817,3 +817,70 @@ schémas à reproduire **17** · unités couvertes **1-11** · suite complète
 
 12 banque « أفكار التمارين » · 14 révision globale · 16 (fin) cartes mentales
 U8-U11 · 19 carte d'ouverture d'unité.
+
+---
+
+## Sprint 13 — livré (2026-09-27)
+
+**Périmètre : dette UI du sprint 12 (regroupement de la navigation) + item 19
+(carte d'ouverture d'unité).**
+
+### 1. La navigation repasse de 9 entrées à 5
+
+Après les sprints 10 et 12, le menu secondaire comptait **9 entrées** : au-delà
+de sept, un menu cesse d'être lu. Les cinq espaces qui servent le même geste —
+**s'entraîner** — passent derrière une porte unique.
+
+`src/data/trainingHub.ts` + `src/components/TrainingHubView.tsx` — hub
+**« التمارين والتدريب »** regroupant : تمارين بالوضعيات · ارسم من الذاكرة ·
+تحدي البكالوريا · الورشة التفاعلية · الأنميشن العلمي. Chaque carte annonce le
+**geste travaillé** (« أحلّل سنداً », « أرسم وأقيّم », « أختبر نفسي ») plutôt que
+le nom de l'outil. Le retour depuis ces espaces ramène au hub, pas à l'accueil.
+
+Menu secondaire désormais : **التمارين والتدريب · الخرائط الذهنية · المفتاح ·
+الأوسمة · لوحة المتابعة** (5 entrées).
+
+Un test lit `App.tsx` et **casse si une entrée regroupée réapparaît dans le
+menu** — sans quoi le hub n'aurait rien allégé.
+
+### 2. Item 19 — « ماذا سندرس في هذه الوحدة ؟ »
+
+Format inspiré de la vidéo d'ouverture d'unité de @MostafaBdd (15:44 — 79 K
+vues) : aucun cours, seulement de quoi entrer dans l'unité en sachant ce qu'on
+cherche.
+
+`src/data/unitOpenings.ts` — **11 cartes, une par unité**, chacune avec :
+la **question centrale** à laquelle l'unité répond, la **promesse** formulée en
+savoir-FAIRE (« ستكون قادراً على… »), l'**itinéraire** en 3-5 étapes, les
+**prérequis 2AS**, les **pièges récurrents**, le **poids mesuré au BAC**, et une
+**première action concrète** reliée à une capsule et à un schéma réels.
+
+### 3. Un bug réel corrigé au passage
+
+`UnitIntroPortal` affichait **le contenu de l'unité 1 (activités sur l'ARN)
+quelle que soit l'unité ouverte** — un élève entrant par l'unité 7 lisait un
+texte sur l'ARN — et chargeait des **photos Unsplash distantes**, donc rien du
+tout hors connexion, alors que l'app est conçue pour le mode offline sur 3G.
+Le portail est réécrit sur les données réelles de l'unité demandée. Deux tests
+interdisent le retour de chacun des deux défauts (contenu identique entre deux
+unités ; toute `img` en `http(s)://`).
+
+### Verrous
+
+- `src/data/unitOpenings.lock.test.ts` — **11 tests**, dont : toute capsule et
+  tout schéma cités existent **et appartiennent à la même unité** ; les poids
+  d'examen ne sont renseignés **que pour les unités mesurées (1-7)** — inventer
+  un pourcentage pour U8-U11 serait présenter une fabrication comme une donnée.
+- `src/components/__tests__/UnitIntroPortal.test.tsx` — **8 tests**.
+- `src/components/__tests__/TrainingHubView.test.tsx` — **9 tests**.
+
+### Compteurs après sprint 13
+
+entrées du menu secondaire **9 → 5** · cartes d'ouverture **11/11 unités** ·
+suite complète **1421 verts / 4 skipped** (toujours les 4 échecs pré-existants
+`lazyRouteChunks.smoke`).
+
+### Reste au backlog
+
+12 banque « أفكار التمارين » · 14 révision globale · 16 (fin) cartes mentales
+U8-U11.
