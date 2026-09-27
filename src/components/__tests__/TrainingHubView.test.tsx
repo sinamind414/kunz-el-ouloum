@@ -3,7 +3,9 @@
 // Ce hub existe pour REMPLACER des entrées de menu, pas pour s'y ajouter.
 // Les tests figent donc deux choses : (1) chaque espace regroupé reste
 // atteignable en un clic, et (2) le regroupement reste réellement lisible —
-// au plus 6 cartes, chacune annonçant le geste travaillé.
+// au plus 7 cartes (limite de Miller, relevée de 6 à 7 au sprint 16 pour
+// accueillir « أفكار التمارين حسب الدورة » — au-delà, il faudra regrouper au
+// lieu d'ajouter), chacune annonçant le geste travaillé.
 
 import { cleanup, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
@@ -21,8 +23,8 @@ describe('hub d entraînement — contenu', () => {
     }
   });
 
-  it('reste lisible : au plus 6 cartes', () => {
-    expect(TRAINING_ENTRY_COUNT).toBeLessThanOrEqual(6);
+  it('reste lisible : au plus 7 cartes', () => {
+    expect(TRAINING_ENTRY_COUNT).toBeLessThanOrEqual(7);
     expect(TRAINING_ENTRY_COUNT).toBeGreaterThanOrEqual(4);
   });
 

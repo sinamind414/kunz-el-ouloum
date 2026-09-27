@@ -4,7 +4,7 @@
 // travaillé (« أحلّل سنداً », « أرسم وأقيّم »…) plutôt que le nom de l'outil :
 // l'élève choisit ce qu'il veut exercer, pas une marque interne.
 
-import { ArrowRight, CalendarDays, Dumbbell, PenTool, PlayCircle, Search, Sparkles, Swords } from 'lucide-react';
+import { ArrowRight, CalendarDays, Dumbbell, FileText, PenTool, PlayCircle, Search, Sparkles, Swords } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import { TRAINING_ENTRIES, type TrainingTab } from '../data/trainingHub';
 
@@ -20,6 +20,7 @@ const ICONS: Record<string, LucideIcon> = {
   swords: Swords,
   playCircle: PlayCircle,
   calendar: CalendarDays,
+  fileText: FileText,
 };
 
 export default function TrainingHubView({ onOpen, onBackToHome }: TrainingHubViewProps) {

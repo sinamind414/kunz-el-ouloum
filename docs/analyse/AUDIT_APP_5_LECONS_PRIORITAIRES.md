@@ -1004,3 +1004,106 @@ d'ouverture 11/11 · suite complète **1466 verts / 4 skipped** (toujours les
 
 **12** banque « أفكار التمارين » indexée par session BAC 2019→2025 — dernier
 item ouvert.
+
+---
+
+## Sprint 16 — item 12 : « أفكار التمارين حسب الدورة », ce que l'examen demande vraiment
+
+### Le manque
+
+C'était le dernier item ouvert du backlog, et le plus embarrassant : un grep
+des sessions du BAC dans `src/` renvoyait **zéro fichier**. L'application
+savait entraîner par unité, par situation, par geste et par notion — mais
+n'avait aucune trace de ce qui est **réellement tombé à l'examen**. Or c'est la
+première chose qu'un candidat cherche en avril, et la demande est mesurée :
+@ikramscience8424 fait **214 K vues avec quatre vidéos** intitulées « أفكار
+التمارين » 2019→2025, pour une chaîne qui ne publie presque rien d'autre.
+
+### La collecte : des sujets officiels, pas des souvenirs
+
+Les sujets de l'ONEC republiés par eddirasa.com et dzexams.com ont été lus en
+texte, session par session. **35 exercices** sont indexés :
+
+| Session | Exercices dépouillés |
+|---|---|
+| 2019 | 6 (2 sujets complets) |
+| 2021 | 5 — l'exercice 1 du sujet 2 est illisible dans la source |
+| 2022 | 6 |
+| 2023 | 6 |
+| 2024 | 6 |
+| 2025 | 6 |
+
+**La session 2020 est absente, et déclarée comme telle** (`MISSING_YEARS`) :
+son texte n'était pas récupérable au moment de la collecte. Un test casse si
+une idée 2020 apparaît un jour sans source — le trou reste un trou tant qu'il
+n'est pas comblé par du réel.
+
+Chaque fiche porte : l'**idée** de l'exercice en une phrase, les **supports
+fournis** au candidat (tableaux, Anagène, Patch-clamp, chromatographie…), la
+**notion réellement évaluée** derrière l'habillage, les **verbes de consigne**
+rencontrés, les unités mobilisées, et des liens vers les situations, capsules
+et schémas déjà présents dans l'app. **Aucun énoncé n'est reproduit** : ce
+n'est pas une annale de plus, c'est la carte de ce que l'examen demande.
+
+### Ce que la collecte révèle (mesuré, pas supposé)
+
+`unitPressure()` classe les unités par points obtenus **en tant qu'unité
+principale** sur les six sessions :
+
+| Unité | Points principaux | Exercices menés | Apparitions totales |
+|---|---|---|---|
+| **U1 تركيب البروتين** | 55 | 8 | 11 |
+| **U4 المناعة** | 49 | 7 | 8 |
+| **U5 الاتصال العصبي** | 47 | 7 | 7 |
+| **U3 النشاط الإنزيمي** | 37 | 5 | 10 |
+| U6 التركيب الضوئي | 22 | 3 | 3 |
+| U2 بنية/وظيفة | 10 | 2 | 7 |
+
+Deux enseignements qui contredisent l'intuition de l'élève :
+
+1. **U3 apparaît dans 10 exercices sur 35 mais n'en mène que 5.** L'enzymologie
+   est le plus souvent la *clé cachée* d'un exercice d'immunologie, de
+   photosynthèse ou de génétique (ML901, Quercétine, 3-NOP, CA1P, NAGA, SOD).
+   La négliger coûte des points ailleurs que dans « son » exercice.
+2. **U2 est presque toujours seconde** : la relation structure/fonction est
+   évaluée *à travers* une autre unité, pas pour elle-même.
+
+Côté consignes, **« حلّل » domine largement (11 occurrences)**, suivi de
+« اقترح فرضيتين » (5), « برّر » (5), « بيّن » (5). C'est exactement la
+hiérarchie que suppose le correcteur de `correcteurV1.ts`.
+
+### L'écran
+
+`src/components/BacIdeasView.tsx`, deuxième entrée de l'onglet التدريب, juste
+après le plan de révision : onglets par session (+ « كل الدورات »), recherche
+plein texte tolérante aux hamzas (« البرفورين », « الجينتاميسين », « 2023 »),
+bandeau « ما الذي يتكرّر؟ » avec le classement de pression et les verbes les
+plus fréquents, barème des deux sujets et lien vers le sujet officiel.
+
+### Ce que les tests protègent
+
+`src/data/bacSessionIndex.lock.test.ts` — **20 tests**, dont :
+- le **barème officiel** 5/7/8 selon le rang, et **20 points par sujet** sauf
+  pour le sujet explicitement déclaré incomplet ;
+- l'absence de session inventée (2020 interdite tant qu'elle n'a pas de source) ;
+- une **source URL par session** couverte ;
+- **aucune référence morte** vers une situation, une capsule ou un schéma, et
+  au moins une porte vers le contenu de l'app par exercice ;
+- le **déterminisme** des statistiques (`unitPressure`, `verbFrequency`).
+
+`src/components/__tests__/BacIdeasView.test.tsx` couvre l'écran (9 tests).
+Le verrou du hub a été relevé de 6 à 7 cartes, avec le commentaire qui va
+avec : au-delà de 7, il faudra **regrouper** au lieu d'ajouter.
+
+### Compteurs après sprint 16
+
+idées BAC indexées **35** sur **6 sessions** · capsules 24 · schémas 17 ·
+situations 23 · cartes mentales 11/11 · cartes d'ouverture 11/11 · suite
+complète **1495 verts / 4 skipped** (toujours les 4 échecs pré-existants
+`lazyRouteChunks.smoke`).
+
+### Backlog
+
+**Vide.** Les items 12, 14, 15, 16, 17, 18, 19 et « 5 bis » sont tous livrés.
+Prochaine dette naturelle, si elle est souhaitée : la session 2020, et la
+2026 dont l'annale est déjà en ligne chez DzExams.

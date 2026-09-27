@@ -11,7 +11,7 @@
 // qu'aucune entrée ne pointe vers un onglet inexistant.
 
 /** Onglets de l'application atteignables depuis le hub. */
-export type TrainingTab = 'plan' | 'situations' | 'schemas' | 'animations' | 'bootcamp' | 'workshop';
+export type TrainingTab = 'plan' | 'bacideas' | 'situations' | 'schemas' | 'animations' | 'bootcamp' | 'workshop';
 
 export interface TrainingEntry {
   tab: TrainingTab;
@@ -21,7 +21,7 @@ export interface TrainingEntry {
   /** Le geste travaillé, affiché en pastille. */
   gestureAr: string;
   /** Icône lucide (nom), résolue par la vue. */
-  icon: 'search' | 'penTool' | 'sparkles' | 'swords' | 'playCircle' | 'calendar';
+  icon: 'search' | 'penTool' | 'sparkles' | 'swords' | 'playCircle' | 'calendar' | 'fileText';
 }
 
 export const TRAINING_ENTRIES: TrainingEntry[] = [
@@ -33,6 +33,15 @@ export const TRAINING_ENTRIES: TrainingEntry[] = [
     descriptionAr: 'قل لي كم بقي من الوقت، وسأعطيك برنامج اليوم: كبسولة، رسم، وضعية، خريطة.',
     gestureAr: 'أنظّم وقتي',
     icon: 'calendar',
+  },
+  {
+    // Sprint 16 (item 12) : la porte « qu'est-ce qui est tombé ? », juste
+    // derrière le plan — c'est ce que l'élève cherche avant de réviser.
+    tab: 'bacideas',
+    titleAr: 'أفكار التمارين حسب الدورة',
+    descriptionAr: 'ما الذي سقط في بكالوريا 2019 إلى 2025: فكرة كل تمرين، سنداته، الفعل الإدائي، و الوحدة المستهدفة.',
+    gestureAr: 'أقرأ الامتحان',
+    icon: 'fileText',
   },
   {
     tab: 'situations',

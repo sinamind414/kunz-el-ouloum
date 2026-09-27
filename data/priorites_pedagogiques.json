@@ -232,7 +232,8 @@
       "id": 12,
       "titre": "Banque « أفكار التمارين » indexée par session BAC 2019→2025",
       "taille": "M",
-      "preuve": "Ikram : 4 vidéos, 214K vues ; grep des sessions dans src/ = 0 fichier"
+      "preuve": "Ikram : 4 vidéos, 214K vues ; grep des sessions dans src/ = 0 fichier",
+      "statut": "livré (sprint 16) — « أفكار التمارين حسب الدورة » : 35 exercices des sessions officielles 2019, 2021→2025 (idée, sndات, notion évaluée, verbes de consigne, unités), statistiques de pression par unité et par verbe, recherche plein texte ; session 2020 déclarée comme trou, jamais inventée"
     },
     {
       "id": 14,

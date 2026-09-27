@@ -56,6 +56,7 @@ import SituationBankView from './components/SituationBankView';
 import SchemaDrillView from './components/SchemaDrillView';
 import TrainingHubView from './components/TrainingHubView';
 import RevisionPlanView from './components/RevisionPlanView';
+import BacIdeasView from './components/BacIdeasView';
 import RevisionView from './components/RevisionView';
 import StatsView from './components/StatsView';
 import AITutorView from './components/AITutorView';
@@ -89,7 +90,7 @@ export default function App() {
   });
 
   // Navigation tab state
-  const [currentTab, setCurrentTab] = useState<'splash' | 'home' | 'review' | 'stats' | 'chat' | 'methodology' | 'bootcamp' | 'badges' | 'lesson' | 'workshop' | 'mindmap' | 'teacher' | 'animations' | 'situations' | 'schemas' | 'training' | 'plan'>('splash');
+  const [currentTab, setCurrentTab] = useState<'splash' | 'home' | 'review' | 'stats' | 'chat' | 'methodology' | 'bootcamp' | 'badges' | 'lesson' | 'workshop' | 'mindmap' | 'teacher' | 'animations' | 'situations' | 'schemas' | 'training' | 'plan' | 'bacideas'>('splash');
   const [activeMindMapUnitId, setActiveMindMapUnitId] = useState<number>(1);
   const [isAuthOpen, setIsAuthOpen] = useState(false);
   // Session élève persistée (correctif : la session était perdue à chaque F5).
@@ -662,6 +663,7 @@ export default function App() {
            currentTab === 'schemas' ? 'ارسم من الذاكرة' :
            currentTab === 'training' ? 'التمارين والتدريب' :
            currentTab === 'plan' ? 'خطة المراجعة النهائية' :
+           currentTab === 'bacideas' ? 'أفكار التمارين حسب الدورة' :
            currentTab === 'mindmap' ? 'الخرائط الذهنية (D3)' :
             currentTab === 'chat' ? 'المرشد الذكي' :
             currentTab === 'teacher' ? 'لوحة المتابعة' :
@@ -839,6 +841,10 @@ export default function App() {
 
               {currentTab === 'plan' && (
                 <RevisionPlanView onBackToHome={() => setCurrentTab('training')} />
+              )}
+
+              {currentTab === 'bacideas' && (
+                <BacIdeasView onBackToHome={() => setCurrentTab('training')} />
               )}
 
               {currentTab === 'situations' && (
