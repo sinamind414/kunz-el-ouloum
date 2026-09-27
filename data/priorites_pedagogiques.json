@@ -119,7 +119,8 @@
         "quiz de passage"
       ],
       "preuve": "indice de difficulté 83/100 ; décrochage -63%",
-      "confirmationMultiChaines": "U6 = point bas de la biologie (63,8K/mois) ; U7 remonte au 3e rang (106,8K/mois) une fois corrigé le biais d'ancienneté → élargir la synthèse d'unité à U7"
+      "confirmationMultiChaines": "U6 = point bas de la biologie (63,8K/mois) ; U7 remonte au 3e rang (106,8K/mois) une fois corrigé le biais d'ancienneté → élargir la synthèse d'unité à U7",
+      "statutApp": "livré — sprint 7 : leçon photochemical_chain (8 étapes + synthèse U6/U7), 2 figures, 3 micro-fiches, QCM 540-549"
     },
     {
       "tier": 2,

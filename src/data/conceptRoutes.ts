@@ -89,6 +89,13 @@ export const CONCEPT_ROUTES: Record<string, ConceptRoute> = {
     lessonId: 'immunity_cooperation',
     documentExerciseId: 'lt_target_cell_response',
   },
+  // Audit items 9-11 : chaîne photochimique et synthèse U6/U7.
+  photochemical_chain: {
+    conceptId: 'photochemical_chain',
+    unitId: 6,
+    lessonId: 'photochemical_chain',
+    documentExerciseId: 'photochemical_chain_membrane',
+  },
   // Audit item 3 bis : dossier VIH / SIDA (plus gros écart offre/demande).
   immunity_hiv_aids: {
     conceptId: 'immunity_hiv_aids',

@@ -122,6 +122,18 @@ export const RESUMES_LECONS: Record<string, ResumeLecon> = {
     termeBac: 'الأليل / النمط الوراثي / التوافق النسيجي (HLA)',
   },
   // Synthèse d'unité : coopération cellulaire (ancré ch. 21 + 22).
+  'photochemical_chain': {
+    objectif: 'تتبّع الإلكترون من الماء إلى NADPH واشرح كيف يولّد الضوء تدرجاً يركّب ATP.',
+    points: [
+      'يمتص PSII فوتوناً فيفقد إلكترونين غنيين بالطاقة من مركز التفاعل.',
+      'يعوّض التحلل الضوئي للماء هذه الإلكترونات : H₂O تعطي 2H⁺ و 2e⁻ و ½O₂.',
+      'تنتقل الإلكترونات عبر سلسلة النواقل محرّرة طاقة تُضخ بها H⁺ نحو تجويف الكييس.',
+      'تصل الإلكترونات إلى PSI فتتهيج من جديد قبل أن يستقبلها NADP⁺ ليعطي NADPH.',
+      'عودة H⁺ نحو الحشوة عبر الكرة المذنبة هي التي تركّب ATP، لا الضوء مباشرة.',
+      'نواتج المرحلة هما ATP و NADPH، والأكسجين فضلة ناتجة عن تحلل الماء.',
+    ],
+    termeBac: 'التحلل الضوئي للماء / تدرج البروتونات / الكرة المذنبة',
+  },
   'immunity_hiv_aids': {
     objectif: 'اقرأ منحنيات تطور الإصابة بـ VIH وميّز موجب المصل عن مريض السيدا.',
     points: [
@@ -598,6 +610,7 @@ export const CHAPITRES_ANCRAGE: Record<string, number[]> = {
   'amino_acid_behavior': [8],
   'enzyme_inhibitors': [10, 12],
   'immunity_hiv_aids': [22, 23],
+  'photochemical_chain': [33],
   'd1-u3-l1-enzyme': [9, 10],
   'phase4_chapitres_7_8': [9, 10, 11, 12],
   'phase5_chapitres_9_10': [14, 15, 16, 17],

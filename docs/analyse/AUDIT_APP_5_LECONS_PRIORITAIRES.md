@@ -476,3 +476,68 @@ résumés **49** · leçons actives **11** · séquence **58** clés (44 mappée
 11 `photochemical-chain` · 12 banque « أفكار التمارين » · 14 révision globale ·
 15 capsules 1-2 min · 16 (suite) cartes mentales U5-U11 · 17 « reproduire le schéma
 de mémoire » · 18 exercices indexés par situation · 19 carte d'ouverture d'unité.
+
+---
+
+## Sprint 7 — livré (2026-09-27)
+
+**Périmètre : items 9, 10 et 11 — la phase photochimique (unité 6).**
+C'est la notion **n°1 du classement de difficulté (83 points)** et U6+U7 pèsent
+**39 %** de l'épreuve. Le diagnostic précis : l'app couvrait bien les **preuves
+expérimentales** (Hill/Ruben, Jagendorf, Calvin) mais **pas la chaîne elle-même**.
+L'élève savait démontrer d'où vient l'O₂ sans pouvoir suivre un électron.
+
+### Ce qui a été produit
+
+| Livrable | Détail |
+|---|---|
+| Leçon active `photochemical_chain` | 5 blocs : `GUIDED_DOC_QA` (membrane du thylakoïde) → `SEQUENCE_ORDER` (chaîne en 8 étapes) → `TEXT_AND_PRODUCE` (bilan à trous, item 10) → `COMPARISON_TABLE` (**synthèse U6/U7**, item 9) → `TEXT_AND_PRODUCE` (production BAC sur Jagendorf) |
+| 2 figures SVG tracées | `schema_93_photochemical_chain_z_scheme_ar.svg` (PSII, photolyse, chaîne + pompe, PSI, NADP⁺, ATP synthase, avec les deux sens de H⁺) et `schema_94_photophosphorylation_vs_oxydative_ar.svg` (thylakoïde vs crête mitochondriale en vis-à-vis) |
+| Document d'entraînement | `photochemical_chain_membrane` |
+| Micro-fiches (item 10) | `photolyse_origine_o2`, `gradient_h_direction`, `psii_avant_psi` |
+| Rappels espacés | 4 étapes (0→3) |
+| QCM | **540 → 549** : 8 sur U6 + **2 sur U7** (l'accepteur final et le principe commun) |
+| Ancrage livre | **ancre documentée [33]** — le ch. 33 contient PSII/PSI, l'enzyme de photolyse, la chaîne de transporteurs, `NADP⁺ + 2e⁻ + 2H⁺ → NADPH + H⁺`, la pompe à protons et Mitchell |
+| Verrous | `src/data/photochemicalChain.lock.test.ts` — **16 tests** |
+
+### Le parti pris pédagogique
+
+Trois confusions structurent la leçon, et chacune a sa micro-fiche :
+
+1. **« L'O₂ vient du CO₂ »** — non : l'eau est décomposée *pour ses électrons*,
+   l'oxygène est un déchet. C'est ce que prouve le marquage de Ruben.
+2. **« PSI avant PSII »** — la numérotation est historique, pas chronologique.
+   L'électron part de PSII et ne revient jamais à son point de départ.
+3. **« La lumière fabrique l'ATP »** — non : la lumière fabrique *le gradient*.
+   Les deux sens de H⁺ sont tracés séparément sur la figure (pompage stroma →
+   lumen, retour lumen → stroma via l'ATP synthase). C'est exactement ce que
+   Jagendorf démontre en produisant de l'ATP dans le noir, et c'est l'objet de la
+   production finale.
+
+La **synthèse U6/U7** (item 9) est intégrée comme quatrième bloc plutôt que comme
+leçon séparée : le tableau met les deux organites en vis-à-vis et **ne coïncide que
+sur une ligne — l'ATP synthase**. C'est cette ligne unique qui porte tout
+l'argument chimiosmotique de Mitchell.
+
+### Compteurs après sprint 7
+
+résumés **50** · leçons actives **12** · séquence **59** clés (45 mappées, 14 nulls,
+**6 ancres documentées**) · flashcards **552 / 549** · index tuteur **510 chunks**
+(355 html / 155 actives) · suite complète **1280 verts / 4 skipped** (toujours les 4
+échecs pré-existants `lazyRouteChunks.smoke`).
+
+### État des 5 leçons prioritaires
+
+| Leçon prioritaire | État |
+|---|---|
+| pHi / acides aminés (U2) | ✅ sprints 3-4 |
+| Coopération immunitaire (U4) | ✅ sprint 2 |
+| Inhibiteurs enzymatiques (U3) | ✅ sprints 4-5 |
+| CMH / ABO-Rh + prérequis 2AS (U4) | ✅ sprint 1 (+ dossier VIH, sprint 6) |
+| Phase photochimique (U6) | ✅ sprint 7 |
+
+**Les cinq priorités de l'audit sont désormais traitées.** Ne reste que le backlog
+complémentaire : 6 `electrophoresis-sim` (seul livrable « simulation » encore à
+zéro) · 12 banque « أفكار التمارين » · 14 révision globale · 15 capsules 1-2 min ·
+16 (suite) cartes mentales U5-U11 · 17 « reproduire le schéma de mémoire » ·
+18 exercices indexés par situation · 19 carte d'ouverture d'unité.

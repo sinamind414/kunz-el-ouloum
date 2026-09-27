@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 600" width="960" height="600" role="img">
+<rect width="960" height="600" fill="#ffffff"/>
+<text x="480.0" y="32" text-anchor="middle" font-size="21" font-weight="700" fill="#006d37" font-family="Noto Naskh Arabic, Amiri, serif">المرحلة الكيموضوئية : مسار الإلكترون وتدرج البروتونات عبر غشاء التيلاكويد</text>
+<defs><marker id="a1" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto"><polygon points="0,0 10,4 0,8" fill="#334155"/></marker><marker id="a2" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto"><polygon points="0,0 10,4 0,8" fill="#dc2626"/></marker><marker id="a3" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto"><polygon points="0,0 10,4 0,8" fill="#2563eb"/></marker></defs>
+<rect x="60" y="90" width="840" height="160" fill="#ecfdf5"/>
+<rect x="60" y="330" width="840" height="150" fill="#e0f2fe"/>
+<rect x="60" y="250" width="840" height="80" fill="#fef9c3" stroke="#a16207" stroke-width="2"/>
+<text x="80" y="115" font-size="15" font-weight="700" fill="#047857" font-family="Noto Naskh Arabic, Amiri, serif">الحشوة (Stroma)</text>
+<text x="80" y="356" font-size="15" font-weight="700" fill="#0369a1" font-family="Noto Naskh Arabic, Amiri, serif">تجويف الكييس (Lumen) — تتراكم فيه H⁺</text>
+<text x="880" y="295.0" text-anchor="end" font-size="14" font-weight="700" fill="#a16207" font-family="Noto Naskh Arabic, Amiri, serif">غشاء التيلاكويد</text>
+<rect x="120" y="236" width="120" height="108" rx="10" fill="#15803d" stroke="#334155" stroke-width="2"/>
+<text x="180.0" y="288.0" text-anchor="middle" font-size="15" font-weight="700" fill="#ffffff">PSII</text>
+<text x="180.0" y="308.0" text-anchor="middle" font-size="12" fill="#f1f5f9" font-family="Noto Naskh Arabic, Amiri, serif">النظام الضوئي II</text>
+<rect x="330" y="236" width="110" height="108" rx="10" fill="#b45309" stroke="#334155" stroke-width="2"/>
+<text x="385.0" y="288.0" text-anchor="middle" font-size="15" font-weight="700" fill="#ffffff">T</text>
+<text x="385.0" y="308.0" text-anchor="middle" font-size="12" fill="#f1f5f9" font-family="Noto Naskh Arabic, Amiri, serif">نواقل + مضخة H⁺</text>
+<rect x="530" y="236" width="120" height="108" rx="10" fill="#15803d" stroke="#334155" stroke-width="2"/>
+<text x="590.0" y="288.0" text-anchor="middle" font-size="15" font-weight="700" fill="#ffffff">PSI</text>
+<text x="590.0" y="308.0" text-anchor="middle" font-size="12" fill="#f1f5f9" font-family="Noto Naskh Arabic, Amiri, serif">النظام الضوئي I</text>
+<rect x="760" y="236" width="110" height="108" rx="10" fill="#7c3aed" stroke="#334155" stroke-width="2"/>
+<text x="815.0" y="288.0" text-anchor="middle" font-size="15" font-weight="700" fill="#ffffff">ATP</text>
+<text x="815.0" y="308.0" text-anchor="middle" font-size="12" fill="#f1f5f9" font-family="Noto Naskh Arabic, Amiri, serif">الكرة المذنبة</text>
+<path d="M180 150 L166 196 L186 196 L172 240" fill="none" stroke="#f59e0b" stroke-width="3.5" marker-end="url(#a1)"/>
+<text x="196" y="165" font-size="14" font-weight="700" fill="#b45309" font-family="Noto Naskh Arabic, Amiri, serif">طاقة ضوئية</text>
+<path d="M590 150 L576 196 L596 196 L582 240" fill="none" stroke="#f59e0b" stroke-width="3.5" marker-end="url(#a1)"/>
+<text x="606" y="165" font-size="14" font-weight="700" fill="#b45309" font-family="Noto Naskh Arabic, Amiri, serif">طاقة ضوئية</text>
+<text x="180" y="392" text-anchor="middle" font-size="15" font-weight="700" fill="#0f172a">H₂O → 2H⁺ + 2e⁻ + ½O₂</text>
+<text x="180" y="414" text-anchor="middle" font-size="13" fill="#0369a1" font-family="Noto Naskh Arabic, Amiri, serif">التحلل الضوئي للماء : مصدر إلكترونات PSII</text>
+<line x1="180" y1="374" x2="180" y2="336" stroke="#dc2626" stroke-width="2.6" marker-end="url(#a2)"/>
+<path d="M240,260 L330,232 L440,262 L530,236 L650,214 L700,175" fill="none" stroke="#dc2626" stroke-width="3" stroke-dasharray="1 0" marker-end="url(#a2)"/>
+<circle cx="240" cy="260" r="6" fill="#dc2626"/>
+<circle cx="330" cy="232" r="6" fill="#dc2626"/>
+<circle cx="440" cy="262" r="6" fill="#dc2626"/>
+<circle cx="530" cy="236" r="6" fill="#dc2626"/>
+<circle cx="650" cy="214" r="6" fill="#dc2626"/>
+<text x="395" y="222" text-anchor="middle" font-size="13" font-weight="700" fill="#dc2626" font-family="Noto Naskh Arabic, Amiri, serif">مسار الإلكترونات e⁻</text>
+<rect x="660" y="120" width="210" height="52" rx="9" fill="#ecfdf5" stroke="#047857" stroke-width="2"/>
+<text x="765" y="143" text-anchor="middle" font-size="15" font-weight="700" fill="#065f46">NADP⁺ + 2e⁻ + 2H⁺</text>
+<text x="765" y="163" text-anchor="middle" font-size="15" font-weight="700" fill="#065f46">→ NADPH + H⁺</text>
+<line x1="368" y1="200" x2="368" y2="370" stroke="#2563eb" stroke-width="2.6" marker-end="url(#a3)"/>
+<text x="384" y="198" font-size="14" font-weight="700" fill="#2563eb">H⁺</text>
+<line x1="815" y1="370" x2="815" y2="210" stroke="#2563eb" stroke-width="2.6" marker-end="url(#a3)"/>
+<text x="830" y="360" font-size="14" font-weight="700" fill="#2563eb">H⁺</text>
+<text x="815" y="196" text-anchor="middle" font-size="15" font-weight="700" fill="#6d28d9">ADP + Pi → ATP</text>
+<text x="250" y="364" font-size="13" fill="#0369a1">H⁺</text>
+<text x="300" y="364" font-size="13" fill="#0369a1">H⁺</text>
+<text x="420" y="364" font-size="13" fill="#0369a1">H⁺</text>
+<text x="470" y="364" font-size="13" fill="#0369a1">H⁺</text>
+<text x="620" y="364" font-size="13" fill="#0369a1">H⁺</text>
+<text x="700" y="364" font-size="13" fill="#0369a1">H⁺</text>
+<text x="480.0" y="566" text-anchor="middle" font-size="15" fill="#475569" font-family="Noto Naskh Arabic, Amiri, serif">ناتجان اثنان فقط : NADPH و ATP — والأكسجين مجرد فضلة من تحلل الماء.</text>
+</svg>

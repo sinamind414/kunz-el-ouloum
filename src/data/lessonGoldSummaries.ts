@@ -243,6 +243,28 @@ export const LESSON_GOLD_SUMMARIES: Record<string, LessonGoldSummary> = {
     recallQuestionAr: 'ما العلاقة بين البنية والوظيفة البروتينية؟',
     review: { reviewed: false },
   },
+  'photochemical_chain': {
+    lessonId: 'photochemical_chain',
+    status: 'adaptation_pedagogique',
+    source: { sourceLabel: 'Résumé Kunz — livre officiel SVT DZ, ch. 33 (تفاعلات المرحلة الكيموضوئية)' },
+    missionAr: 'كيف تتحول الطاقة الضوئية إلى ATP و NADPH داخل غشاء التيلاكويد ؟',
+    mechanismAr: [
+      'تهيج PSII بالضوء وفقدان إلكترونين',
+      'التحلل الضوئي للماء يعوض الإلكترونات ويحرر H⁺ و ½O₂',
+      'انتقال الإلكترونات عبر سلسلة النواقل مع ضخ H⁺ نحو التجويف',
+      'تهيج PSI وإرجاع NADP⁺ إلى NADPH + H⁺',
+      'عودة H⁺ عبر الكرة المذنبة وتركيب ATP',
+    ],
+    evidenceAr:
+      'مخطط غشاء التيلاكويد : مسار الإلكترونات من الماء إلى NADP⁺، وتراكم H⁺ في التجويف ثم عودتها عبر الكرة المذنبة. تجربة جاغندورف تثبت أن التدرج وحده كافٍ لتركيب ATP في الظلام.',
+    vocabulary: ['PSII', 'PSI', 'التحلل الضوئي للماء', 'سلسلة النواقل', 'تدرج البروتونات', 'الكرة المذنبة', 'NADPH', 'ATP'],
+    bacSentenceFrameAr:
+      'بما أن الإلكترونات تنتقل من ______ إلى ______، فإن الطاقة المحررة تُستعمل في ______، وعودة H⁺ عبر ______ تركّب ______.',
+    commonErrorAr:
+      'الاعتقاد أن الضوء يركّب ATP مباشرة، أو أن الأكسجين يأتي من CO₂، أو الخلط بين اتجاه ضخ H⁺ (الحشوة ⟵ التجويف) واتجاه عودتها (التجويف ⟵ الحشوة).',
+    recallQuestionAr: 'أين تتراكم البروتونات ؟ وما الذي يركّب ATP بالضبط ؟',
+    review: { reviewed: false },
+  },
   'immunity_hiv_aids': {
     lessonId: 'immunity_hiv_aids',
     status: 'adaptation_pedagogique',

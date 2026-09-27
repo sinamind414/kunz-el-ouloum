@@ -322,6 +322,12 @@ export const LESSON_PROGRESSION: Record<string, LessonProgression> = {
     completionMessageAr:
       'أتقنت ملف السيدا. تبقى الحوصلة : كيف تتعاون خلايا المناعة فيما بينها ؟',
   },
+  'photochemical_chain': {
+    nextLessonId: 'd2-u6-l3-calvin',
+    recommendedReflexId: 'explain',
+    completionMessageAr:
+      'أتقنت السلسلة الكيموضوئية. النواتج ATP و NADPH جاهزة الآن لحلقة كالفن.',
+  },
   'd1-u3-l1-enzyme': {
     nextLessonId: 'enzyme_inhibitors',
     recommendedReflexId: 'hypothesize',
@@ -333,9 +339,9 @@ export const LESSON_PROGRESSION: Record<string, LessonProgression> = {
     completionMessageAr: 'أحسنت! أثبتت تجربتا هيل وروبن أن الأكسجين المنطلق مصدره الماء. الآن اكتشف دور الضوء الحقيقي في تركيب ATP.',
   },
   'd2-u6-l2-jagendorf': {
-    nextLessonId: 'd2-u6-l3-calvin',
+    nextLessonId: 'photochemical_chain',
     recommendedReflexId: 'interpret',
-    completionMessageAr: 'ممتاز! تجربة جاغندورف أثبتت أن تدرج البروتونات هو مصدر طاقة تركيب ATP. الآن تتبع مسار الكربون مع كالفن.',
+    completionMessageAr: 'ممتاز! تجربة جاغندورف أثبتت أن تدرج البروتونات هو مصدر طاقة تركيب ATP. الآن ركّب السلسلة الكيموضوئية كاملة.',
   },
   'd2-u6-l3-calvin': {
     nextLessonId: 'd2-u7-l1-mitchell-racker',
@@ -2259,6 +2265,175 @@ export const ACTIVE_LESSONS: Record<string, ActiveLesson> = {
         acceptedAnswers: ['نفس النمط الوراثي', 'نفس الأليلات', 'التوافق النسيجي', 'HLA', 'ذات'],
         errorHint:
           'التوأمان الحقيقيان لهما نفس النمط الوراثي ⇐ نفس محددات HLA ⇐ الطعم ذاتي يُقبل. أما الأخوان فيرثان نمطين فردانيين مختلفين ⇐ محددات مختلفة تُعتبر لا ذات ⇐ خطر الرفض.',
+      },
+    ],
+  },
+  // ─────────── SPRINT 7 (audit, items 9, 10 et 11) — U6 : المرحلة الكيموضوئية ───────────
+  // Notion n°1 du classement de difficulté (83 points) et cœur des 39 % que pèsent
+  // U6+U7. L'app avait Hill/Ruben, Jagendorf et Calvin — c'est-à-dire les PREUVES
+  // expérimentales — mais aucune leçon sur la CHAÎNE elle-même (item 11), ni la
+  // synthèse U6/U7 (item 9). Ancrage : ch. 33 « تفاعلات المرحلة الكيموضوئية » (PSII,
+  // enzyme de photolyse, chaîne de transporteurs, NADP⁺ + 2e⁻ + 2H⁺ → NADPH + H⁺,
+  // pompe T, Mitchell) et ch. 40 pour la comparaison avec la respiration.
+  photochemical_chain: {
+    id: 'photochemical_chain',
+    title: 'السلسلة الكيموضوئية : من الفوتون إلى ATP و NADPH',
+    blocks: [
+      {
+        type: 'GUIDED_DOC_QA',
+        objective:
+          'تتبع الإلكترون من تحلل الماء إلى NADPH، وفهم لماذا يُعوَّض الإلكترون المفقود من PSII بالماء.',
+        doc: {
+          assetSrc: '/assets/images/schemas/domaine2_energie/schema_93_photochemical_chain_z_scheme_ar.svg',
+          altAr:
+            'مخطط غشاء التيلاكويد : PSII، سلسلة النواقل والمضخة، PSI، الكرة المذنبة، مع مسار الإلكترونات وتدرج البروتونات بين الحشوة والتجويف.',
+          captionAr:
+            'الوثيقة : تنظيم المعقدات في غشاء التيلاكويد ومسار الإلكترونات والبروتونات أثناء المرحلة الكيموضوئية.',
+        },
+        questions: [
+          {
+            id: 'photo_origine_electrons',
+            verbAr: 'حدد',
+            promptAr: 'من أين يستعيد النظام الضوئي PSII الإلكترونات التي فقدها ؟ اكتب المعادلة.',
+            answerType: 'short_text',
+            validationMode: 'keywords',
+            requiredKeywords: ['الماء', 'التحلل الضوئي', 'O₂'],
+            successMessageAr:
+              'نعم : H₂O → 2H⁺ + 2e⁻ + ½O₂. الماء هو المانح الأول للإلكترونات، والأكسجين مجرد فضلة.',
+            errorHintAr:
+              'أكسدة اليخضور في PSII تترك نقصاً في الإلكترونات. إنزيم ضمن المعقد يحلل الماء : H₂O → 2H⁺ + 2e⁻ + ½O₂.',
+          },
+          {
+            id: 'photo_destination_electrons',
+            verbAr: 'حلل',
+            promptAr:
+              'تتبّع مسار الإلكترون من PSII إلى مستقبله النهائي، مع ذكر ما يحدث في PSI.',
+            answerType: 'short_text',
+            validationMode: 'keywords',
+            requiredKeywords: ['النواقل', 'PSI', 'NADP', 'NADPH'],
+            successMessageAr:
+              'ممتاز : PSII ⟵ سلسلة النواقل ⟵ PSI (تهيج ثانٍ) ⟵ NADP⁺ الذي يُرجَع إلى NADPH + H⁺.',
+            errorHintAr:
+              'الإلكترون لا يعود إلى PSII : ينتقل عبر سلسلة النواقل إلى PSI حيث يتهيج من جديد بفعل الضوء، ثم يُستقبل نهائياً من طرف NADP⁺.',
+          },
+          {
+            id: 'photo_role_gradient',
+            verbAr: 'فسر',
+            promptAr:
+              'فسّر كيف يتحول انتقال الإلكترونات إلى تركيب ATP، مع تحديد اتجاه حركة H⁺.',
+            answerType: 'short_text',
+            validationMode: 'keywords',
+            requiredKeywords: ['تدرج', 'H', 'التجويف', 'الكرة المذنبة'],
+            successMessageAr:
+              'نعم : الطاقة المحررة تضخ H⁺ من الحشوة إلى التجويف، وعودتها عبر الكرة المذنبة هي التي تركّب ATP.',
+            errorHintAr:
+              'الطاقة المحررة من انتقال الإلكترونات لا تركّب ATP مباشرة : تُستعمل أولاً لضخ H⁺ نحو التجويف، ثم عودة H⁺ عبر الكرة المذنبة تركّب ATP (النظرية الكيميواسموزية).',
+          },
+        ],
+        summaryAr:
+          'سلسلة واحدة، مانح أول (الماء) ومستقبل أخير (NADP⁺). بين الاثنين : تهيّجان ضوئيان (PSII ثم PSI)، سلسلة نواقل، وضخ H⁺ نحو التجويف. الضوء لا يصنع ATP مباشرة بل يصنع التدرج.',
+      },
+      {
+        type: 'SEQUENCE_ORDER',
+        objective: 'ترتيب أحداث المرحلة الكيموضوئية في سلسلة واحدة متصلة، وهي مطلوبة في سؤال الاسترجاع.',
+        promptAr: 'رتّب أحداث المرحلة الكيموضوئية بالترتيب الزمني الصحيح.',
+        assetSrc: '/assets/images/schemas/domaine2_energie/schema_93_photochemical_chain_z_scheme_ar.svg',
+        altAr: 'مخطط السلسلة الكيموضوئية في غشاء التيلاكويد.',
+        steps: [
+          { id: 'photo_s1_photon', labelAr: 'امتصاص فوتون من طرف أصبغة PSII وتهيّج اليخضور a في مركز التفاعل', expectedOrder: 1 },
+          { id: 'photo_s2_oxydation', labelAr: 'أكسدة اليخضور : فقدان إلكترونين غنيين بالطاقة', expectedOrder: 2 },
+          { id: 'photo_s3_photolyse', labelAr: 'التحلل الضوئي للماء يعوّض الإلكترونات المفقودة ويحرر H⁺ و ½O₂', expectedOrder: 3 },
+          { id: 'photo_s4_chaine', labelAr: 'انتقال الإلكترونات عبر سلسلة النواقل مع تحرر طاقة', expectedOrder: 4 },
+          { id: 'photo_s5_pompe', labelAr: 'استعمال هذه الطاقة لضخ H⁺ من الحشوة إلى تجويف الكييس', expectedOrder: 5 },
+          { id: 'photo_s6_psi', labelAr: 'وصول الإلكترونات إلى PSI وتهيّجها من جديد بفعل الضوء', expectedOrder: 6 },
+          { id: 'photo_s7_nadph', labelAr: 'إرجاع NADP⁺ : NADP⁺ + 2e⁻ + 2H⁺ → NADPH + H⁺', expectedOrder: 7 },
+          { id: 'photo_s8_atp', labelAr: 'عودة H⁺ نحو الحشوة عبر الكرة المذنبة وتركيب ATP', expectedOrder: 8 },
+        ],
+        summaryPromptAr: 'ما الحدثان اللذان يقعان في التجويف وحده ؟',
+        summaryKeywords: ['التحلل الضوئي', 'تراكم', 'H'],
+        summaryAr:
+          'في التجويف يقع حدثان : التحلل الضوئي للماء وتراكم البروتونات. أما إرجاع NADP⁺ وتركيب ATP فيقعان في الحشوة.',
+      },
+      {
+        // Item 10 — micro-fiche active : le bilan que l'élève doit pouvoir écrire seul.
+        type: 'TEXT_AND_PRODUCE',
+        objective: 'كتابة حصيلة المرحلة الكيموضوئية دون الخلط بين النواتج والفضلات.',
+        content:
+          'تستعمل المرحلة الكيموضوئية ثلاثة مدخلات : الطاقة الضوئية، الماء و[____]. وتعطي ناتجين يُستعملان في المرحلة الكيميوحيوية هما [____] و[____]، بينما يُطرح [____] كفضلة خارج الصانعة.',
+        popups: {
+          'NADP': 'NADP⁺ هو المستقبل النهائي للإلكترونات في هذه المرحلة ؛ إرجاعه يعطي NADPH + H⁺.',
+          'ATP': 'ATP يُركَّب على مستوى الكرة المذنبة بفضل عودة البروتونات، لا بفعل الضوء مباشرة.',
+          'NADPH': 'NADPH هو القوة المرجعة التي ستُستعمل في حلقة كالفن لإرجاع الكربون.',
+          'الأكسجين': 'الأكسجين ناتج عن تحلل الماء فقط، وليس عن CO₂ : هذا ما أثبتته تجربة روبن بالوسم.',
+        },
+        microTest: {
+          prompt: 'لماذا نقول إن الأكسجين المنطلق فضلة وليس هدفاً للمرحلة الكيموضوئية ؟',
+          acceptedAnswers: [
+            'لأنه ناتج جانبي عن التحلل الضوئي للماء، والهدف الحقيقي هو الحصول على الإلكترونات و NADPH و ATP',
+            'لأن هدف المرحلة هو تعويض إلكترونات PSII وإنتاج ATP و NADPH، والأكسجين مجرد ناتج عن تحلل الماء',
+          ],
+          errorHint:
+            'الماء يُحلَّل من أجل إلكتروناته وبروتوناته. الأكسجين هو ما يتبقى من هذا التحلل، ولا تستعمله الصانعة في المرحلة الموالية.',
+        },
+      },
+      {
+        // Item 9 — synthèse U6 + U7 : le même mécanisme dans deux organites.
+        type: 'COMPARISON_TABLE',
+        objective:
+          'ربط الوحدة 6 بالوحدة 7 : نفس الآلية الكيميواسموزية في الصانعة الخضراء وفي الميتوكوندري.',
+        promptAr:
+          'قارن بين الفسفرة الضوئية في الصانعة (يمين) والفسفرة التأكسدية في الميتوكوندري (يسار).',
+        assetSrc: '/assets/images/schemas/domaine2_energie/schema_94_photophosphorylation_vs_oxydative_ar.svg',
+        altAr: 'لوحتان متقابلتان : غشاء التيلاكويد وغشاء الميتوكوندري الداخلي، مع تدرج H⁺ وكرة مذنبة في كل منهما.',
+        criteria: [
+          {
+            id: 'photo_cmp_membrane',
+            labelAr: 'الغشاء الذي يحدث فيه التدرج',
+            leftExpected: ['الغشاء الداخلي', 'الأعراف'],
+            rightExpected: ['غشاء التيلاكويد', 'الكييس'],
+          },
+          {
+            id: 'photo_cmp_source',
+            labelAr: 'مصدر الإلكترونات',
+            leftExpected: ['NADH', 'FADH', 'المواد العضوية'],
+            rightExpected: ['الماء', 'التحلل الضوئي'],
+          },
+          {
+            id: 'photo_cmp_accepteur',
+            labelAr: 'المستقبل النهائي للإلكترونات',
+            leftExpected: ['الأكسجين', 'الماء'],
+            rightExpected: ['NADP', 'NADPH'],
+          },
+          {
+            id: 'photo_cmp_compartiment',
+            labelAr: 'الحيز الذي تتراكم فيه H⁺',
+            leftExpected: ['بين الغشاءين', 'الحيز بين الغشاءين'],
+            rightExpected: ['التجويف', 'تجويف الكييس'],
+          },
+          {
+            id: 'photo_cmp_enzyme',
+            labelAr: 'الإنزيم الذي يركب ATP',
+            leftExpected: ['الكرة المذنبة', 'ATP synthase'],
+            rightExpected: ['الكرة المذنبة', 'ATP synthase'],
+          },
+        ],
+        conclusionPromptAr:
+          'استنتج المبدأ المشترك بين العضيتين رغم اختلاف مصدر الإلكترونات.',
+        conclusionKeywords: ['تدرج', 'H', 'الكرة المذنبة', 'ATP'],
+        summaryAr:
+          'المشترك : تدرج في تركيز H⁺ عبر غشاء، وعودة البروتونات عبر الكرة المذنبة تركّب ATP (نظرية ميتشل الكيميواسموزية). المختلف : في الصانعة المانح هو الماء والمستقبل NADP⁺ ؛ في الميتوكوندري المانح هو المواد العضوية (NADH, FADH₂) والمستقبل الأكسجين.',
+      },
+      {
+        type: 'TEXT_AND_PRODUCE',
+        objective: 'إنتاج تعليل من مستوى البكالوريا حول شرط الضوء.',
+        prompt:
+          'أظهرت تجربة جاغندورف تركيب ATP في الظلام. بيّن في 4 أسطر لماذا لا يتناقض ذلك مع تسمية « المرحلة الكيموضوئية »، محدداً الدور الحقيقي للضوء.',
+        acceptedAnswers: [
+          'الضوء لا يركّب ATP مباشرة بل يحرك الإلكترونات فيتولد تدرج في تركيز H⁺، وجاغندورف أنشأ هذا التدرج صناعياً في الظلام فتركب ATP : الشرط هو التدرج لا الضوء',
+          'دور الضوء هو إنشاء تدرج البروتونات عبر غشاء التيلاكويد، وما دام التدرج موجوداً يتركب ATP حتى في الظلام',
+        ],
+        errorHint:
+          'افصل بين السبب المباشر والسبب البعيد : السبب المباشر لتركيب ATP هو عودة H⁺ عبر الكرة المذنبة، والضوء ليس إلا الوسيلة التي تُنشئ هذا التدرج عادة.',
       },
     ],
   },

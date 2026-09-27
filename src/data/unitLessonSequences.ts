@@ -38,7 +38,10 @@ export const OFFICIAL_PROGRAM_SEQUENCE: Record<number, string[]> = {
   5: ['phase8_chapitres_15_16', 'phase9_chapitres_17_18', 'phase10_chapitres_19_20'],
   // U6 — photosynthèse (TDM p.174) : 2e moitié de phase10 + phases 11,12
   // + leçons expérimentales historiques (Hill/Ruben, Jagendorf, Calvin) en fin d'unité.
-  6: ['phase10_chapitres_19_20_2', 'phase11_chapitres_21_22', 'phase12_chapitres_23_24', 'd2-u6-l1-hill-ruben', 'd2-u6-l2-jagendorf', 'd2-u6-l3-calvin'],
+  // Ajout 2026-09 (audit, items 9-11) : la CHAINE photochimique elle-meme, apres
+  // les preuves experimentales (Hill/Ruben, Jagendorf) et avant Calvin qui en
+  // consomme les produits.
+  6: ['phase10_chapitres_19_20_2', 'phase11_chapitres_21_22', 'phase12_chapitres_23_24', 'd2-u6-l1-hill-ruben', 'd2-u6-l2-jagendorf', 'photochemical_chain', 'd2-u6-l3-calvin'],
   // U7 — respiration (TDM p.205) : phases 13,14 + leçon expérimentale (Mitchell/Racker)
   7: ['phase13_chapitres_25_26', 'phase14_chapitres_27_28', 'd2-u7-l1-mitchell-racker'],
   // U8 — bilan énergie (TDM p.227) : phase15

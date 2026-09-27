@@ -35,18 +35,18 @@ describe('LessonsView — leçons actives par icônes', () => {
     expect(screen.queryByTestId('lecons-actives-icones')).toBeNull();
   });
 
-  it('icône d’unité → icônes des leçons (U6 التركيب الضوئي = 3 leçons)', async () => {
+  it('icône d’unité → icônes des leçons (U6 التركيب الضوئي = 4 leçons)', async () => {
     const user = await ouvrirEspaceActif();
     await user.click(screen.getByTestId('unite-active-6'));
     expect(screen.getByTestId('lecons-actives-icones')).toBeTruthy();
-    expect(screen.getAllByTestId(/^lecon-active-/)).toHaveLength(3);
+    expect(screen.getAllByTestId(/^lecon-active-/)).toHaveLength(4);
     expect(screen.getByText(/تجربة كالفن/)).toBeTruthy();
   });
 
   it('bande d’unités : passer d’une unité à l’autre icône après icône', async () => {
     const user = await ouvrirEspaceActif();
     await user.click(screen.getByTestId('unite-active-6'));
-    expect(screen.getAllByTestId(/^lecon-active-/)).toHaveLength(3);
+    expect(screen.getAllByTestId(/^lecon-active-/)).toHaveLength(4);
     await user.click(screen.getByTestId('bande-unite-active-11'));
     expect(screen.getAllByTestId(/^lecon-active-/)).toHaveLength(1);
     expect(screen.getByText(/شواهد التقلص/)).toBeTruthy();

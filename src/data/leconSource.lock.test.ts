@@ -2,7 +2,7 @@
 // (src/data/bookIndex.ts : appariement leçons↔chapitres + traçabilité uniteId).
 // Les verrous de l'INDEX lui-même sont dans bookIndex.lock.test.ts.
 // Fige : la recette norm, la couverture uniteId 1-11 ↔ chapitres de l'index,
-// l'appariement leçons↔chapitres (44 mappés / 14 nulls DOCUMENTÉS, 5 ancres),
+// l'appariement leçons↔chapitres (45 mappés / 14 nulls DOCUMENTÉS, 6 ancres),
 // la propagation du flag ambigu, et le décalage programme/livre de la leçon
 // « الظواهر المرتبطة بالغوص » (séquence U9, chapitre C51 = U11).
 
@@ -84,10 +84,10 @@ describe('bookIndex — uniteId 1-11 ↔ chapitres de l index (traçabilité str
 describe('bookIndex — appariement leçons ↔ chapitres (mesure figée)', () => {
   const cles = toutesCles();
 
-  it('58 clés dans la séquence officielle ; 44 mappées, 14 nulls documentés', () => {
-    expect(cles).toHaveLength(58);
+  it('59 clés dans la séquence officielle ; 45 mappées, 14 nulls documentés', () => {
+    expect(cles).toHaveLength(59);
     const mappes = cles.filter((k) => sourceLivre(k, cleToTitre(k)) !== null);
-    expect(mappes).toHaveLength(44);
+    expect(mappes).toHaveLength(45);
     const nulls = cles.filter((k) => sourceLivre(k, cleToTitre(k)) === null);
     // LISTE FIGÉE — toute évolution doit être un choix relu, pas un effet de bord.
     expect(nulls).toEqual([
@@ -108,13 +108,14 @@ describe('bookIndex — appariement leçons ↔ chapitres (mesure figée)', () =
     ]);
   });
 
-  it('exactement 5 ancres documentées, chapitres existants + raison non vide', () => {
+  it('exactement 6 ancres documentées, chapitres existants + raison non vide', () => {
     const ancres = [
       'phase1_chapitres_1_2_2',
       'phase11_chapitres_21_22_2',
       'phase12_chapitres_23_24',
       'enzyme_inhibitors',
       'immunity_hiv_aids',
+      'photochemical_chain',
     ];
     for (const k of ancres) {
       const s = sourceLivre(k, cleToTitre(k));
@@ -127,6 +128,7 @@ describe('bookIndex — appariement leçons ↔ chapitres (mesure figée)', () =
     expect(sourceLivre('phase12_chapitres_23_24', '')?.chapitres.map((c) => c.chapter)).toEqual([34]);
     expect(sourceLivre('enzyme_inhibitors', '')?.chapitres.map((c) => c.chapter)).toEqual([10, 12]);
     expect(sourceLivre('immunity_hiv_aids', '')?.chapitres.map((c) => c.chapter)).toEqual([22, 23]);
+    expect(sourceLivre('photochemical_chain', '')?.chapitres.map((c) => c.chapter)).toEqual([33]);
   });
 
   it('répartition des modes auto figée (aucun glissement silencieux du matcher)', () => {
@@ -139,7 +141,7 @@ describe('bookIndex — appariement leçons ↔ chapitres (mesure figée)', () =
       'auto-exact': 34,
       'auto-compose': 1,
       'auto-contenance': 4,
-      'ancre-documentee': 5,
+      'ancre-documentee': 6,
     });
   });
 

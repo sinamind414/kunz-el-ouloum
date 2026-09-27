@@ -2,7 +2,7 @@
 // scripts/build_lesson_index.ts).
 // Fige : parité exacte avec la reconstruction depuis les sources (public/lessons
 // + activeLessons), couverture intégrale du texte de chaque groupe (card /
-// leçon active), chunks ≤ 520 car., ids uniques, 47 clés HTML + 22 actives,
+// leçon active), chunks ≤ 520 car., ids uniques, 47 clés HTML + 23 actives,
 // stats cohérentes.
 import { readdirSync, readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
@@ -52,7 +52,7 @@ describe('lessonIndex — couverture intégrale des sources', () => {
     ).toEqual([]);
   });
 
-  it('47 clés HTML et 22 leçons actives représentées', () => {
+  it('47 clés HTML et 23 leçons actives représentées', () => {
     const htmlKeys = new Set(LESSON_INDEX.filter((c) => c.kind === 'html').map((c) => c.lessonKey));
     const activeKeys = new Set(
       LESSON_INDEX.filter((c) => c.kind === 'active').map((c) => c.lessonKey),

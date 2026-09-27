@@ -61,6 +61,12 @@ export const SPACED_RECALL_PROMPTS: Record<string, SpacedRecallPrompt[]> = {
     { stage: 2, conceptId: 'protein_structure_function', questionAr: 'ما العلاقة بين البنية والوظيفة البروتينية؟', reflexId: 'interpret', acceptedEvidence: ['بنية', 'وظيفة', 'موقع نشط', 'تفاعل'], minEvidence: 3 },
     { stage: 3, conceptId: 'protein_structure_function', questionAr: 'اكتب جواب BAC قصير: كيف تؤدي الطفرة إلى تغير وظيفي؟', reflexId: 'validate', acceptedEvidence: ['طفرة', 'حمض أميني', 'بنية', 'وظيفة', 'مرض'], minEvidence: 3 },
   ],
+  photochemical_chain: [
+    { stage: 0, conceptId: 'photochemical_chain', questionAr: 'ما ناتجا المرحلة الكيموضوئية ؟ ومن أين يأتي الأكسجين المنطلق ؟', reflexId: 'explain', acceptedEvidence: ['ATP', 'NADPH', 'الماء'], minEvidence: 2 },
+    { stage: 1, conceptId: 'photochemical_chain', questionAr: 'تتبّع مسار الإلكترون من مصدره إلى مستقبله النهائي.', reflexId: 'analyse', acceptedEvidence: ['الماء', 'PSII', 'النواقل', 'PSI', 'NADP'], minEvidence: 4 },
+    { stage: 2, conceptId: 'photochemical_chain', questionAr: 'فسّر كيف يتحول انتقال الإلكترونات إلى تركيب ATP.', reflexId: 'interpret', acceptedEvidence: ['تدرج', 'التجويف', 'الكرة المذنبة', 'H'], minEvidence: 3 },
+    { stage: 3, conceptId: 'photochemical_chain', questionAr: 'اكتب إجابة BAC : ما المشترك بين الفسفرة الضوئية والفسفرة التأكسدية ؟', reflexId: 'validate', acceptedEvidence: ['تدرج', 'الكرة المذنبة', 'ATP', 'غشاء'], minEvidence: 3 },
+  ],
   immunity_hiv_aids: [
     { stage: 0, conceptId: 'immunity_hiv_aids', questionAr: 'ما الخلية المستهدفة الأساسية لفيروس VIH ؟ وبأي جزيئة يتثبت عليها ؟', reflexId: 'explain', acceptedEvidence: ['LT4', 'CD4', 'gp120'], minEvidence: 2 },
     { stage: 1, conceptId: 'immunity_hiv_aids', questionAr: 'ما الفرق بين شخص موجب المصل ومريض بالسيدا ؟', reflexId: 'explain', acceptedEvidence: ['موجب المصل', 'السيدا', '200', 'أعراض'], minEvidence: 3 },

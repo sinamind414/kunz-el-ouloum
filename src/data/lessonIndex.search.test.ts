@@ -1,6 +1,6 @@
 // src/data/lessonIndex.search.test.ts — probes de RECHERCHE sur l'index des
 // leçons branché au moteur (lot « index leçons ») : les contenus des 47 leçons
-// HTML + 22 leçons actives doivent être trouvables via searchAllBases et
+// HTML + 23 leçons actives doivent être trouvables via searchAllBases et
 // remonter en source de type 'lesson' quand ils sont le meilleur hit.
 import { describe, expect, it } from 'vitest';
 import { answerTutorQuestion, searchAllBases, normalizeArabic } from '../smartTutorEngine';
@@ -35,7 +35,7 @@ describe('index des leçons — intégration moteur', () => {
     expect(action?.sources?.length || 0).toBeGreaterThan(0);
   });
 
-  it('stats cohérentes : 47 leçons HTML, 22 actives, ≥ 400 chunks', () => {
+  it('stats cohérentes : 47 leçons HTML, 23 actives, ≥ 400 chunks', () => {
     expect(LESSON_INDEX_STATS.lessonsHtml).toBe(HTML_LESSON_ORDER.length);
     expect(LESSON_INDEX_STATS.lessonsActive).toBe(Object.keys(ACTIVE_LESSONS).length);
     expect(LESSON_INDEX_STATS.chunksTotal).toBeGreaterThanOrEqual(400);

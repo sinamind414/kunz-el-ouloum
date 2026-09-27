@@ -141,6 +141,13 @@ const ANCRES_LECON: Record<string, { chapitres: number[]; raison: string }> = {
   // (choix du type de réponse immunitaire) et surtout C23 (سبب فقدان المناعة
   // المكتسبة), dont l'OCR contient gp120/CD4, gp41, الاستنساخ العكسي, ELISA,
   // Western blot, PCR et le seuil des 200 LT4/mm³.
+  // Leçon active « السلسلة الكيموضوئية » (audit items 9-11) : contenu porté par
+  // C33, dont l'OCR contient PSII/PSI, l'enzyme de photolyse, la chaîne de
+  // transporteurs, NADP⁺ → NADPH, la pompe à protons et Mitchell.
+  photochemical_chain: {
+    chapitres: [33],
+    raison: 'contenu = تفاعلات المرحلة الكيموضوئية (C33) : مصير إلكترونات PSII و PSI, تدرج البروتونات, الكرة المذنبة',
+  },
   immunity_hiv_aids: {
     chapitres: [22, 23],
     raison: 'contenu = دورة الفيروس وتخريب LT4 (C23) + اختيار نمط الاستجابة المناعية (C22) ; le titre de la leçon ne recoupe aucune en-tête OCR',

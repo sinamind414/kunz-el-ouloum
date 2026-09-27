@@ -479,6 +479,53 @@ export const DOCUMENT_PRACTICE_CONTEXTS: DocumentPracticeContext[] = [
     },
   },
   {
+    // Audit item 11 — document vivant de la chaîne photochimique
+    // (livre officiel, ch. 33 « تفاعلات المرحلة الكيموضوئية »).
+    exerciseId: 'photochemical_chain_membrane',
+    questionId: 'photochemical_chain_membrane_q1',
+    conceptId: 'photochemical_chain',
+    unitId: 6,
+    lessonId: 'photochemical_chain',
+    documentType: 'schema',
+    reflexId: 'interpret',
+    domain: 'metabo',
+    sourceStatus: 'manuel_officiel_verifie',
+    documentTypeAr: 'مخطط وظيفي — تنظيم المعقدات في غشاء التيلاكويد',
+    goalAr: 'تتبع الإلكترون من الماء إلى NADP⁺ وربط انتقاله بتدرج البروتونات وتركيب ATP.',
+    vocabulary: ['PSII', 'PSI', 'التحلل الضوئي للماء', 'سلسلة النواقل', 'تدرج البروتونات', 'الكرة المذنبة', 'NADPH'],
+    expectedEvidence: [
+      'التحلل الضوئي للماء يعوض إلكترونات PSII',
+      'انتقال الإلكترونات عبر سلسلة النواقل',
+      'ضخ H⁺ من الحشوة نحو التجويف',
+      'إرجاع NADP⁺ إلى NADPH وتركيب ATP عبر الكرة المذنبة',
+    ],
+    trapAr: 'الضوء لا يركب ATP مباشرة : هو ينشئ تدرج H⁺، وعودة H⁺ عبر الكرة المذنبة هي التي تركب ATP.',
+    assetSrc: '/assets/images/schemas/domaine2_energie/schema_93_photochemical_chain_z_scheme_ar.svg',
+    altAr: 'مخطط غشاء التيلاكويد مع PSII وسلسلة النواقل و PSI والكرة المذنبة ومسار الإلكترونات والبروتونات.',
+    gallery: [
+      {
+        assetSrc: '/assets/images/schemas/domaine2_energie/schema_94_photophosphorylation_vs_oxydative_ar.svg',
+        altAr: 'مقارنة بين غشاء التيلاكويد والغشاء الداخلي للميتوكوندري.',
+        captionAr: 'نفس المبدأ الكيميواسموزي في العضيتين، باختلاف مصدر الإلكترونات ومستقبلها.',
+      },
+    ],
+    observationAr:
+      'يبين المخطط أربعة معقدات مغروسة في غشاء التيلاكويد : PSII، سلسلة نواقل تعمل كمضخة، PSI، والكرة المذنبة. الإلكترونات تنتقل من اليسار إلى اليمين، بينما تُضخ H⁺ من الحشوة نحو تجويف الكييس ثم تعود عبر الكرة المذنبة.',
+    promptObserveAr: 'صف مسار الإلكترونات ومسار البروتونات على المخطط دون تفسير.',
+    promptProduceAr: 'فسّر كيف تتحول الطاقة الضوئية إلى طاقة كيميائية في شكل ATP و NADPH.',
+    hintsAr: [
+      'من أين يأتي الإلكترون الأول ؟ وأين ينتهي ؟',
+      'ما الذي يستفيد من الطاقة المحررة أثناء انتقال الإلكترونات ؟',
+    ],
+    correctionAr:
+      'يمتص PSII فوتوناً فيفقد إلكترونين يُعوَّضان بالتحلل الضوئي للماء (H₂O → 2H⁺ + 2e⁻ + ½O₂). تنتقل الإلكترونات عبر سلسلة النواقل محررة طاقة تُستعمل لضخ H⁺ من الحشوة إلى التجويف، ثم تصل إلى PSI حيث تتهيج من جديد قبل أن يستقبلها NADP⁺ : NADP⁺ + 2e⁻ + 2H⁺ → NADPH + H⁺. عودة H⁺ نحو الحشوة عبر الكرة المذنبة تركّب ATP. فالضوء ينشئ التدرج، والتدرج يركّب ATP.',
+    criteria: {
+      evidence: ['التحلل الضوئي للماء', 'سلسلة النواقل', 'تدرج H⁺'],
+      mechanism: ['تهيج PSII و PSI', 'ضخ البروتونات', 'عودة H⁺ عبر الكرة المذنبة'],
+      conclusion: ['NADPH', 'ATP'],
+    },
+  },
+  {
     exerciseId: 'cmh_transplant_compatibility',
     questionId: 'cmh_transplant_compatibility_q1',
     conceptId: 'immunity_self_nonself',

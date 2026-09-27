@@ -214,6 +214,48 @@ export const MICRO_REMEDIATIONS: Record<string, MicroRemediation> = {
     preferredSupportTarget: 'document',
   },
   // ── U4 — coopération immunitaire (audit 2026-09 : 0 micro-reprise ciblée) ──
+  'photolyse_origine_o2': {
+    id: 'mr_photolyse_origine_o2',
+    conceptId: 'photochemical_chain',
+    triggerCodes: ['O2_FROM_CO2', 'PHOTOLYSIS_MISSING', 'WATER_ROLE_IGNORED'],
+    titleAr: 'الأكسجين يأتي من الماء لا من CO₂',
+    estimatedMinutes: 3,
+    explanationAr:
+      'يفقد PSII إلكترونين عند تهيّجه، ولا يستعيد قدرته إلا إذا عُوِّضا. الإنزيم المحلل للماء ضمن المعقد يقوم بذلك : H₂O → 2H⁺ + 2e⁻ + ½O₂. إذن الماء يُحلَّل من أجل إلكتروناته، والأكسجين فضلة. أثبتت تجربة روبن ذلك بالوسم : الأكسجين المنطلق يحمل وسم الماء لا وسم CO₂.',
+    activeQuestionAr: 'اكتب معادلة التحلل الضوئي للماء، ثم قل ما الغاية الحقيقية منه.',
+    acceptedEvidence: ['H₂O', 'إلكترونات', 'الأكسجين', 'PSII'],
+    nextAction: 'retry_document',
+    reflexId: 'explain',
+    preferredSupportTarget: 'lesson',
+  },
+  'gradient_h_direction': {
+    id: 'mr_gradient_h_direction',
+    conceptId: 'photochemical_chain',
+    triggerCodes: ['H_GRADIENT_DIRECTION', 'LIGHT_MAKES_ATP', 'COMPARTMENT_CONFUSION'],
+    titleAr: 'اتجاه البروتونات : من الحشوة إلى التجويف ثم العكس',
+    estimatedMinutes: 3,
+    explanationAr:
+      'حركتان لا تُخلطان : أولاً تُضخ H⁺ من الحشوة إلى تجويف الكييس بفضل الطاقة المحررة من انتقال الإلكترونات (نقل فعال)، فيتكون تدرج. ثانياً تعود H⁺ من التجويف إلى الحشوة عبر الكرة المذنبة، وهذه العودة وحدها هي التي تركّب ATP. لهذا ركّب جاغندورف ATP في الظلام : التدرج كان موجوداً.',
+    activeQuestionAr: 'في أي حيز تتراكم H⁺ ؟ وفي أي اتجاه تعود ؟ وما الذي يركّب ATP بالضبط ؟',
+    acceptedEvidence: ['التجويف', 'الحشوة', 'الكرة المذنبة', 'تدرج'],
+    nextAction: 'open_reflex',
+    reflexId: 'interpret',
+    preferredSupportTarget: 'document',
+  },
+  'psii_avant_psi': {
+    id: 'mr_psii_avant_psi',
+    conceptId: 'photochemical_chain',
+    triggerCodes: ['PS_ORDER_CONFUSION', 'ELECTRON_PATH_REVERSED', 'NADP_ACCEPTOR_MISSED'],
+    titleAr: 'PSII قبل PSI رغم الترقيم',
+    estimatedMinutes: 2,
+    explanationAr:
+      'الترقيم تاريخي لا زمني : الإلكترون ينطلق من PSII (الذي يعوضه الماء)، يمر عبر سلسلة النواقل، ثم يصل إلى PSI حيث يتهيج من جديد بفعل الضوء، وأخيراً يستقبله NADP⁺ ليعطي NADPH + H⁺. الإلكترون لا يعود أبداً إلى نقطة انطلاقه.',
+    activeQuestionAr: 'رتّب : NADP⁺، PSI، الماء، سلسلة النواقل، PSII — حسب مسار الإلكترون.',
+    acceptedEvidence: ['الماء', 'PSII', 'PSI', 'NADP'],
+    nextAction: 'retry_document',
+    reflexId: 'analyse',
+    preferredSupportTarget: 'lesson',
+  },
   'seropositif_vs_sida': {
     id: 'mr_seropositif_vs_sida',
     conceptId: 'immunity_hiv_aids',
