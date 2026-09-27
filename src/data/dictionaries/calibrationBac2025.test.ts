@@ -1,7 +1,9 @@
 // calibrationBac2025.test.ts — Verrous de la notation R6 (Pierre 2 : attendus
 // obligatoires) + garde du LEGACY (fit linéaire, déprécié hors recherche).
 //
-// R6 : la note = min(couverture_attendus × maxPts, plafonds d'intégrité).
+// R6 : la note = min(couverture_attendus × maxPts, plafonds d'intégrité) —
+// sauf les groupes à ventilation par partie (S1-Ex3) où chaque partie est
+// ramenée à son poids officiel avant le plafond (docs/DIAGNOSTIC_EX3.md).
 // Le dénominateur est le REGISTRE (attendusBac2025.ts) — la banque d'unité
 // n'est plus jamais un dénominateur (audit C1/C2 : elle payait les salades 8/8).
 
@@ -53,15 +55,55 @@ describe('R6 — invariants de la notation par attendus obligatoires', () => {
     }
   });
 
-  it('points = couverture × maxPts, sauf plafond d’intégrité (formule R6)', () => {
+  it('points = ventilation par partie (S1-Ex3) ou couverture × maxPts ailleurs (formule R6)', () => {
     for (const sujet of [1, 2] as const) {
       for (const exercice of [1, 2, 3] as const) {
         const n = noterExerciceCalibre(reponseExhaustive(sujet, exercice).slice(0, 400), sujet, exercice);
         const borne = Math.min(...(n.plafonds.length ? n.plafonds.map((p) => p.plafondPct) : [1])) * n.maxPts;
         expect(n.points).toBeLessThanOrEqual(Math.round(borne * 100) / 100 + 1e-9);
-        expect(n.points).toBe(Math.round(Math.min(n.couverture * n.maxPts, borne) * 100) / 100);
+        // Réimplémentation indépendante de la formule moteur.
+        const pp = n.registre.poidsPartie;
+        let formule = n.couverture * n.maxPts;
+        if (pp) {
+          const partCredit: Record<number, number> = { 1: 0, 2: 0, 3: 0 };
+          for (const v of n.verdicts) {
+            const p = pp.partie[v.id];
+            if (p === undefined) continue;
+            partCredit[p] += v.pointsCredites;
+          }
+          formule = 0;
+          for (const p of [1, 2, 3] as const) {
+            if (pp.registre[p] > 0) formule += partCredit[p] * (pp.officiel[p] / pp.registre[p]);
+          }
+          formule = Math.min(n.maxPts, Math.max(0, formule));
+        }
+        expect(n.points, `S${sujet}-Ex${exercice}`).toBe(Math.round(Math.min(formule, borne) * 100) / 100);
       }
     }
+  });
+
+  it('S1-Ex3 : la ventilation par partie plafonne la Partie 1 (facile) à 1,5/8', () => {
+    // Réponse ne contenant QUE les items de la Partie 1 (formes officielles).
+    const pp = attendusDeGroupe(1, 3).poidsPartie!;
+    const itemsP1 = attendusDeGroupe(1, 3).items.filter((i) => pp.partie[i.id] === 1);
+    const reponseP1 = itemsP1.map((i) => i.texteAr).join(' ');
+    const n = noterExerciceCalibre(reponseP1, 1, 3);
+    // Avant E : 3,5 pts crédités → 3,5/8. Maintenant : ramené au poids officiel 1,5/8.
+    expect(n.pointsAttendusCredites).toBe(3.5);
+    expect(n.points).toBe(1.5);
+  });
+
+  it('S1-Ex3 : la map poidsPartie couvre TOUS les items auto du registre', () => {
+    const reg = attendusDeGroupe(1, 3);
+    const pp = reg.poidsPartie!;
+    for (const it of reg.items) {
+      const auto = it.points > 0 && (it.formes.length > 0 || (it.composantes?.length ?? 0) > 0);
+      if (auto) expect(pp.partie[it.id], `${it.id} non mappé`).toBeDefined();
+    }
+    const sommes = { registre: [1, 2, 3].reduce((s, p) => s + pp.registre[p as 1 | 2 | 3], 0),
+                     officiel: [1, 2, 3].reduce((s, p) => s + pp.officiel[p as 1 | 2 | 3], 0) };
+    expect(sommes.registre).toBe(reg.maxPts);
+    expect(sommes.officiel).toBe(reg.maxPts);
   });
 
   it('le déversement de la banque d’unité NE PAIE PLUS (fin du détecteur de déversement)', () => {

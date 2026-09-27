@@ -55,7 +55,10 @@ describe('Bac2025ExamView — la boucle élève (R6)', () => {
     remplirEtSoumettre([MODELE_S1[0], MODELE_S1[1], MODELE_S1[2]]);
     const all = getExamAttempts();
     expect(all).toHaveLength(1);
-    expect(all[0]!.total).toBe(19.5); // 5 + 7 + 7.5 — la même note que l'affichage
+    expect(all[0]!.total).toBe(19.36); // 5 + 7 + 7,36 — la même note que l'affichage
+    // Ex3 = 7,36 (et non 7,5) : ventilation par partie E — la Partie 2 officielle
+    // pèse 4,5 et l'item NE n'est pas créditable (le corrigé écrit « NE », pas
+    // « النورادرينالين »). Voir c7.hardening + docs/DIAGNOSTIC_EX3.md.
     expect(all[0]!.sujet).toBe(1);
     expect(all[0]!.exercices).toHaveLength(3);
     // une seule tentative même après re-render (pas de doublon)
