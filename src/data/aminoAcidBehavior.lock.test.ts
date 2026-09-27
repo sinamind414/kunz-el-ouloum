@@ -21,14 +21,31 @@ const CLE = 'amino_acid_behavior';
 describe('Leçon active — سلوك الأحماض الأمينية / pHi (U2)', () => {
   const lecon = ACTIVE_LESSONS[CLE];
 
-  it('existe, avec 4 blocs : document guidé, méthode ordonnée, comparatif, production', () => {
+  it('existe, avec 5 blocs : document guidé, méthode, comparatif, écriture de la forme, production', () => {
     expect(lecon).toBeDefined();
     expect(lecon.blocks.map((b) => b.type)).toEqual([
       'GUIDED_DOC_QA',
       'SEQUENCE_ORDER',
       'COMPARISON_TABLE',
       'TEXT_AND_PRODUCE',
+      'TEXT_AND_PRODUCE',
     ]);
+  });
+
+  // Item 5 bis — ajouté après l'audit de @MostafaBdd (capsule « كيف نكتب صيغة
+  // الحمض الأميني بطريقة صحيحة ؟ », 151 K vues) : l'élève doit ÉCRIRE la forme
+  // ionisée, pas seulement en déduire la charge.
+  it('le bloc d’écriture fait produire les 3 formes ionisées (4 trous + micro-test)', () => {
+    const b = lecon.blocks[3];
+    if (b.type !== 'TEXT_AND_PRODUCE') throw new Error('bloc 4 inattendu');
+    if (!('content' in b)) throw new Error('forme « remplissage à trous » attendue');
+    expect((b.content.match(/\[____\]/g) ?? []).length).toBe(4);
+    expect(b.content).toContain('pHi');
+    expect(Object.keys(b.popups)).toEqual(
+      expect.arrayContaining(['NH₃⁺', 'COOH', 'ثنائي القطب', 'NH₂']),
+    );
+    expect(b.microTest.acceptedAnswers.length).toBeGreaterThanOrEqual(3);
+    expect(b.microTest.errorHint).toContain('ثنائي القطب');
   });
 
   it('le document guidé suit la démarche du livre : analyse → charge → règle', () => {
@@ -84,7 +101,7 @@ describe('Leçon active — سلوك الأحماض الأمينية / pHi (U2)'
   });
 
   it('la production finale porte sur un mélange à séparer (3 pHi différents)', () => {
-    const b = lecon.blocks[3];
+    const b = lecon.blocks[4];
     if (b.type !== 'TEXT_AND_PRODUCE') throw new Error('bloc 4 inattendu');
     if (!('prompt' in b)) throw new Error('forme « production libre » attendue');
     expect(b.prompt).toContain('pHi');

@@ -343,3 +343,35 @@ Les cinq priorités de contenu ne bougent pas. Ce qui change est l'**ordre des s
 **carte mentale → exercices corrigés indexés par situation → micro-capsule « comment faire » → cours**.
 L'application a construit l'inverse (leçon active d'abord) ; les items 16 à 19 rééquilibrent sans rien jeter,
 puisque les leçons livrées aux sprints 1-3 fournissent précisément la matière de ces synthèses.
+
+### Sprint 4 — livré (2026-09-27)
+
+Deux items issus de l'audit de @MostafaBdd.
+
+**Item 5 bis — écrire la forme ionisée du AA (complément du sprint 3)**
+La leçon `amino_acid_behavior` passe de 4 à **5 blocs**. Le nouveau bloc (remplissage à trous, 4 trous) fait
+**écrire** ce que l'élève savait seulement déduire : NH₃⁺ / COOH en milieu acide, **le zwitterion NH₃⁺ + COO⁻ au pHi**,
+NH₂ / COO⁻ en milieu basique — avec définitions cliquables des quatre formes et un micro-test dont l'indice corrige
+l'erreur classique (« au pHi les charges disparaissent »). C'est précisément le geste de la capsule la plus vue de
+l'unité 2 chez @MostafaBdd (12:30, 151 K vues). Index tuteur régénéré : 475 → **477 chunks**.
+
+**Item 16 (1ʳᵉ tranche) — carte mentale de l'unité 3 (النشاط الإنزيمي)**
+L'application n'avait **3 cartes mentales pour 11 unités** et aucune pour les enzymes, alors que la carte mentale
+U3 de @MostafaBdd totalise **565 K vues contre 73 K pour son cours**. Nouvelle carte de **12 nœuds / 19 liens** :
+nature protéique ⇒ site actif (fixation + catalyse) ⇒ double spécificité ⇒ complexe ES ⇒ courbe substrat/Vmax ⇒ Km,
+plus les trois conditions (température, pH) et surtout le **couple inhibiteur compétitif / non compétitif** avec son
+nœud de lecture de courbes : *Vmax inchangée + Km augmenté* ↔ *Vmax abaissée, effet non levé par l'excès de substrat*.
+Chaque nœud porte résumé, astuce BAC et mots-clés. Onglet ajouté dans l'écran carte mentale (libellé de la carte
+immunitaire corrigé au passage : « الوحدة 4 » et non « الوحدة 3 »).
+
+Cette carte adresse directement la **priorité 1 du plan** (inhibiteurs enzymatiques), dont l'audit relevait
+« ❌ 0 carte mentale, ⚠️ 2 leçons, ⚠️ 1 micro-remédiation ».
+
+**Verrou** : `src/data/enzymeMindMap.lock.test.ts` (8 tests : 12 nœuds documentés, comparatif Vmax/Km présent,
+3 courbes exigibles, aucun lien mort, aucun nœud orphelin, aucune collision d'identifiants avec la carte immunitaire),
+et `aminoAcidBehavior.lock.test.ts` porté à **15 tests**. Suite complète : **1226 tests verts**, `tsc --noEmit` propre
+(4 échecs pré-existants de `lazyRouteChunks.smoke.test.ts`).
+
+**Reste du backlog** : 3 bis (VIH/SIDA), 6 (simulateur d'électrophorèse), 7-8 (leçon inhibiteurs + atelier 6 courbes,
+désormais adossés à la carte U3), 9-11 (synthèse U6/U7, micro-fiches photochimique), 12-15, 16 (cartes U5-U11 et
+étoffement de U2, qui n'a que 8 nœuds), 17-19.

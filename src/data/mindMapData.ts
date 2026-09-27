@@ -611,5 +611,195 @@ export const MIND_MAPS_DATABASE: Record<number, MindMapData> = {
       { source: "node-u3-ltc", target: "node-u3-perforin", relation: "تفرز", type: "primary" },
       { source: "node-u3-mhc", target: "node-u3-immune-synapse", relation: "شرط التعرف", type: "secondary" }
     ]
-  }
+  },
+  // الوحدة 3: النشاط الإنزيمي للبروتينات
+  // Item 16 de l'audit (@MostafaBdd : carte mentale U3 = 565 K vues contre 73 K
+  // pour le cours de la même unité) — l'entrée attendue sur les enzymes est
+  // synthétique, et elle doit porter le comparatif inhibiteur compétitif /
+  // non compétitif, priorité n°1 du plan de renforcement.
+  4: {
+    unitId: 3,
+    unitTitle: "النشاط الإنزيمي للبروتينات",
+    domain: "المجال الأول: التخصص الوظيفي للبروتينات",
+    rootId: "node-enz-root",
+    nodes: [
+      {
+        id: "node-enz-root",
+        label: "النشاط الإنزيمي",
+        category: "core",
+        unitId: 3,
+        unitTitle: "النشاط الإنزيمي للبروتينات",
+        summary: "الإنزيم بروتين متخصص يعمل كوسيط حيوي يسرّع التفاعلات الكيميائية في الخلية دون أن يُستهلك، بفضل موقعه الفعال المكمل بنيوياً للركيزة.",
+        bacTip: "كل سؤال في الوحدة 3 يعود إلى جملة واحدة : النوعية والسرعة ناتجتان عن التكامل البنيوي بين الموقع الفعال والركيزة.",
+        keywords: ["إنزيم", "وسيط حيوي", "تسريع", "موقع فعال"],
+        level: 0,
+        color: "#006d37",
+        radius: 38
+      },
+      {
+        id: "node-enz-protein-nature",
+        label: "الطبيعة البروتينية للإنزيم",
+        category: "molecule",
+        unitId: 3,
+        unitTitle: "النشاط الإنزيمي للبروتينات",
+        summary: "الإنزيم جزيئة بروتينية ذات بنية فراغية ثالثية أو رابعية ؛ تحدد البنية الأولية (تتابع الأحماض الأمينية) شكل موقعه الفعال.",
+        bacTip: "كل عامل يخرب البنية الفراغية (حرارة مرتفعة، pH متطرف، طفرة) يعطل النشاط الإنزيمي : اربط دائماً بالوحدة 2.",
+        keywords: ["بنية ثالثية", "أحماض أمينية", "تخريب", "طفرة"],
+        level: 1,
+        color: "#3b82f6",
+        radius: 27
+      },
+      {
+        id: "node-enz-active-site",
+        label: "الموقع الفعال",
+        category: "organelle",
+        unitId: 3,
+        unitTitle: "النشاط الإنزيمي للبروتينات",
+        summary: "منطقة صغيرة من الإنزيم تتكون من أحماض أمينية متباعدة في السلسلة لكنها متقاربة فراغياً، وتضم موقع تثبيت الركيزة وموقع التحفيز.",
+        bacTip: "لا تخلط : موقع التثبيت يفسر النوعية تجاه الركيزة، وموقع التحفيز يفسر نوعية التأثير (نوع التفاعل).",
+        keywords: ["موقع التثبيت", "موقع التحفيز", "تقارب فراغي"],
+        level: 1,
+        color: "#8b5cf6",
+        radius: 29
+      },
+      {
+        id: "node-enz-specificity",
+        label: "النوعية المزدوجة",
+        category: "rule",
+        unitId: 3,
+        unitTitle: "النشاط الإنزيمي للبروتينات",
+        summary: "للإنزيم نوعيتان : نوعية تجاه الركيزة (لا يثبت إلا الجزيئة المكملة لموقعه) ونوعية تجاه التفاعل (لا يحفز إلا نوعاً واحداً من التحول).",
+        bacTip: "في تمارين الوثائق : إذا اختفت ركيزة واحدة من بين عدة ركائز فالسؤال يخص نوعية الركيزة، وإذا تغير نوع الناتج فهو نوعية التأثير.",
+        keywords: ["نوعية الركيزة", "نوعية التأثير", "تكامل بنيوي"],
+        level: 2,
+        color: "#a855f7",
+        radius: 25
+      },
+      {
+        id: "node-enz-es-complex",
+        label: "معقد إنزيم-ركيزة",
+        category: "process",
+        unitId: 3,
+        unitTitle: "النشاط الإنزيمي للبروتينات",
+        summary: "ترتبط الركيزة مؤقتاً بالموقع الفعال مكوّنة معقداً غير ثابت، يتحول بعده إلى نواتج ثم يتحرر الإنزيم سليماً ليعيد الكرّة.",
+        bacTip: "الإنزيم لا يُستهلك : كمية ضئيلة منه تحوّل كمية كبيرة من الركيزة — حجة تُطلب كثيراً في التعليل.",
+        keywords: ["معقد ES", "تحرر الإنزيم", "لا يُستهلك"],
+        level: 2,
+        color: "#ec4899",
+        radius: 25
+      },
+      {
+        id: "node-enz-substrate-curve",
+        label: "منحنى تركيز الركيزة و التشبع",
+        category: "process",
+        unitId: 3,
+        unitTitle: "النشاط الإنزيمي للبروتينات",
+        summary: "تزداد سرعة التفاعل مع تركيز الركيزة ثم تستقر عند قيمة قصوى Vmax : كل المواقع الفعالة أصبحت مشغولة، وهي حالة التشبع.",
+        bacTip: "استقرار المنحنى يُعلل بتشبع المواقع الفعالة لا بنفاد الإنزيم ولا بنفاد الركيزة : خطأ متكرر في التصحيح.",
+        keywords: ["Vmax", "التشبع", "المواقع الفعالة", "سرعة ابتدائية"],
+        level: 1,
+        color: "#f59e0b",
+        radius: 28
+      },
+      {
+        id: "node-enz-km",
+        label: "ثابت ميكاليس Km",
+        category: "condition",
+        unitId: 3,
+        unitTitle: "النشاط الإنزيمي للبروتينات",
+        summary: "Km هو تركيز الركيزة الموافق لنصف السرعة القصوى (Vmax/2) ؛ كلما كان Km صغيراً كانت ألفة الإنزيم للركيزة أكبر.",
+        bacTip: "قراءة الرسم : Vmax تُقرأ على المستقيم الأفقي، و Km تُسقط من Vmax/2 على محور التراكيز.",
+        keywords: ["Km", "Vmax/2", "الألفة"],
+        level: 2,
+        color: "#f97316",
+        radius: 23
+      },
+      {
+        id: "node-enz-temperature",
+        label: "تأثير درجة الحرارة",
+        category: "condition",
+        unitId: 3,
+        unitTitle: "النشاط الإنزيمي للبروتينات",
+        summary: "يرتفع النشاط مع الحرارة حتى درجة مثلى (حوالي 37°م عند الإنسان) ثم ينهار بسرعة بسبب التخريب غير العكوس للبنية الفراغية.",
+        bacTip: "الجانب الصاعد يُفسر بزيادة التصادمات، والجانب النازل بتخريب الموقع الفعال — تعليلان مختلفان في نفس المنحنى.",
+        keywords: ["الحرارة المثلى", "تصادمات", "تخريب غير عكوس"],
+        level: 2,
+        color: "#ef4444",
+        radius: 24
+      },
+      {
+        id: "node-enz-ph",
+        label: "تأثير درجة الحموضة pH",
+        category: "condition",
+        unitId: 3,
+        unitTitle: "النشاط الإنزيمي للبروتينات",
+        summary: "لكل إنزيم pH أمثل يكون عنده النشاط أعظمياً ؛ خارج هذا المجال تتغير الحالة الأيونية لجذور الموقع الفعال فينخفض النشاط.",
+        bacTip: "اربط بالوحدة 2 : تغير pH يفكك الروابط الشاردية بين الجذور، فيتشوه الموقع الفعال.",
+        keywords: ["pH الأمثل", "روابط شاردية", "تشوه الموقع"],
+        level: 2,
+        color: "#e11d48",
+        radius: 24
+      },
+      {
+        id: "node-enz-competitive",
+        label: "المثبط التنافسي",
+        category: "rule",
+        unitId: 3,
+        unitTitle: "النشاط الإنزيمي للبروتينات",
+        summary: "جزيئة تشبه الركيزة بنيوياً فتتثبت في الموقع الفعال نفسه وتنافسها عليه ؛ يزول أثرها برفع تركيز الركيزة.",
+        bacTip: "العلامة المميزة على المنحنى : Vmax لا تتغير و Km يرتفع — أي أن السرعة القصوى تُبلغ لكن بتركيز ركيزة أكبر.",
+        keywords: ["منافسة", "نفس الموقع", "Vmax ثابتة", "Km يرتفع"],
+        level: 1,
+        color: "#7c3aed",
+        radius: 28
+      },
+      {
+        id: "node-enz-noncompetitive",
+        label: "المثبط اللاتنافسي",
+        category: "rule",
+        unitId: 3,
+        unitTitle: "النشاط الإنزيمي للبروتينات",
+        summary: "جزيئة تتثبت على موقع آخر غير الموقع الفعال (موقع تنظيمي) فتغير البنية الفراغية للإنزيم ويصبح الموقع الفعال غير مكمل للركيزة.",
+        bacTip: "العلامة المميزة : Vmax تنخفض ولا يزول الأثر برفع تركيز الركيزة — لأن المنافسة غير ممكنة أصلاً.",
+        keywords: ["موقع تنظيمي", "تغير البنية", "Vmax تنخفض"],
+        level: 1,
+        color: "#0ea5e9",
+        radius: 28
+      },
+      {
+        id: "node-enz-inhibition-read",
+        label: "قراءة منحنيات التثبيط",
+        category: "outcome",
+        unitId: 3,
+        unitTitle: "النشاط الإنزيمي للبروتينات",
+        summary: "المقارنة بين منحنى شاهد ومنحنى مع مثبط تسمح بتحديد نوع التثبيط : هل تغيرت Vmax ؟ هل يزول الأثر بزيادة الركيزة ؟",
+        bacTip: "منهجية مضمونة في ثلاث خطوات : أقارن Vmax، ثم أقارن Km، ثم أستنتج نوع المثبط وأعلل بالموقع الذي يتثبت عليه.",
+        keywords: ["منحنى شاهد", "مقارنة", "استنتاج نوع المثبط"],
+        level: 2,
+        color: "#14b8a6",
+        radius: 26
+      }
+    ],
+    links: [
+      { source: "node-enz-root", target: "node-enz-protein-nature", relation: "طبيعته الكيميائية", type: "primary" },
+      { source: "node-enz-root", target: "node-enz-active-site", relation: "يعمل بواسطة", type: "primary" },
+      { source: "node-enz-root", target: "node-enz-substrate-curve", relation: "تُقاس فعاليته بـ", type: "primary" },
+      { source: "node-enz-root", target: "node-enz-competitive", relation: "يُثبَّط بـ", type: "primary" },
+      { source: "node-enz-root", target: "node-enz-noncompetitive", relation: "يُثبَّط بـ", type: "primary" },
+      { source: "node-enz-protein-nature", target: "node-enz-active-site", relation: "تحدد شكل", type: "primary" },
+      { source: "node-enz-active-site", target: "node-enz-specificity", relation: "يفسر", type: "primary" },
+      { source: "node-enz-active-site", target: "node-enz-es-complex", relation: "يثبت الركيزة في", type: "primary" },
+      { source: "node-enz-es-complex", target: "node-enz-substrate-curve", relation: "يحدد سرعة", type: "secondary" },
+      { source: "node-enz-substrate-curve", target: "node-enz-km", relation: "تُقرأ منه", type: "primary" },
+      { source: "node-enz-substrate-curve", target: "node-enz-temperature", relation: "تتأثر بـ", type: "secondary" },
+      { source: "node-enz-substrate-curve", target: "node-enz-ph", relation: "تتأثر بـ", type: "secondary" },
+      { source: "node-enz-temperature", target: "node-enz-protein-nature", relation: "تخرب", type: "inhibitory" },
+      { source: "node-enz-ph", target: "node-enz-active-site", relation: "يشوّه", type: "inhibitory" },
+      { source: "node-enz-competitive", target: "node-enz-active-site", relation: "يحتل", type: "inhibitory" },
+      { source: "node-enz-noncompetitive", target: "node-enz-protein-nature", relation: "يغير بنيتها", type: "inhibitory" },
+      { source: "node-enz-competitive", target: "node-enz-inhibition-read", relation: "يُميَّز بـ", type: "primary" },
+      { source: "node-enz-noncompetitive", target: "node-enz-inhibition-read", relation: "يُميَّز بـ", type: "primary" },
+      { source: "node-enz-inhibition-read", target: "node-enz-km", relation: "يقارن", type: "secondary" }
+    ]
+  },
 };

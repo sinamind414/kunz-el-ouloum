@@ -73,9 +73,9 @@
    ],
    "preuve": "1,5M vues = vidéo la plus vue de la chaîne",
    "confirmationMultiChaines": "@MostafaBdd : capsule « كيف نكتب صيغة الحمض الأميني بطريقة صحيحة ؟ » 12:30 = 151K vues, soit plus que le cours complet de l'unité 2 (87K) → la demande sur cette notion est démontrée, pas seulement déduite",
-   "statut": "livré — sprint 3 (2026-09-27)",
+   "statut": "livré — sprints 3 et 4 (2026-09-27)",
    "livraison": {
-    "lecon": "amino_acid_behavior (tête de l’unité 2, 4 blocs)",
+    "lecon": "amino_acid_behavior (tête de l’unité 2, 5 blocs dont écriture de la forme ionisée)",
     "document": "amino_acid_electrophoresis (manuel_officiel_verifie, ch. 8)",
     "qcm": "517-524",
     "microRemediations": [
@@ -83,7 +83,7 @@
      "mr_sens_migration_electrode"
     ],
     "verrou": "src/data/aminoAcidBehavior.lock.test.ts (14 tests)",
-    "resteAFaire": "item 5 bis : bloc « écrire la forme ionisée aux pH 2 / pHi / 12 » (la leçon livrée s'arrête à la charge et au sens de migration) ; puis item 6 : simulateur d'électrophorèse"
+    "resteAFaire": "item 6 : simulateur d’électrophorèse interactif"
    }
   },
   {
@@ -98,7 +98,13 @@
     "BAC 2019 GO, BAC 2022 méthane"
    ],
    "preuve": "3h33 + FAQ dédiée ; 18% du corpus d'examen",
-   "confirmationMultiChaines": "U3 = demande la plus faible (41,2K vues/mois) mais difficulté élevée → micro-fiches ciblées, pas un cours complet"
+   "confirmationMultiChaines": "U3 = demande la plus faible (41,2K vues/mois) mais difficulté élevée → micro-fiches ciblées, pas un cours complet",
+   "statut": "partiel — carte mentale U3 livrée au sprint 4 (2026-09-27)",
+   "livraison": {
+    "carteMentale": "MIND_MAPS_DATABASE[4] — 12 nœuds / 19 liens, dont compétitif vs non compétitif et lecture Vmax/Km",
+    "verrou": "src/data/enzymeMindMap.lock.test.ts (8 tests)",
+    "resteAFaire": "items 7 et 8 : leçon active inhibiteurs + atelier des 6 courbes"
+   }
   },
   {
    "tier": 1,
@@ -242,13 +248,15 @@
    "id": "5 bis",
    "titre": "Bloc « écrire la forme ionisée du AA aux 3 pH » dans amino_acid_behavior",
    "taille": "S",
-   "preuve": "@MostafaBdd, capsule 12:30 — 151K vues"
+   "preuve": "@MostafaBdd, capsule 12:30 — 151K vues",
+   "statut": "livré — sprint 4"
   },
   {
    "id": 16,
    "titre": "Cartes mentales pour toutes les unités (3 sur 11 aujourd'hui ; U2 n'a que 8 nœuds)",
    "taille": "L",
-   "preuve": "cartes mentales U2 568K / U3 565K / U4 710K contre 87K / 73K / 368K pour les cours"
+   "preuve": "cartes mentales U2 568K / U3 565K / U4 710K contre 87K / 73K / 368K pour les cours",
+   "statut": "en cours — U3 livrée ; restent U5-U11 et l’étoffement de U2 (8 nœuds)"
   },
   {
    "id": 17,
