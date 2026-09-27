@@ -630,3 +630,65 @@ pré-existants `lazyRouteChunks.smoke`).
 12 banque « أفكار التمارين » · 14 révision globale · 15 capsules 1-2 min ·
 16 (fin) cartes mentales U8-U11 · 17 « reproduire le schéma de mémoire » ·
 18 exercices indexés par situation · 19 carte d'ouverture d'unité.
+
+---
+
+## Sprint 10 — livré (2026-09-27)
+
+**Périmètre : item 18 — banque d'exercices indexée par situation.**
+
+### Le constat qui déclenche ce sprint
+
+La playlist d'exercices la plus fréquentée du BAC SVT algérien (@MostafaBdd :
+**121 vidéos / 350 075 vues**) ne nomme jamais ses exercices par notion. Elle les
+nomme par **situation concrète** : « المضاد الحيوي » (134 K), « البروجيريا »
+(102 K), « سرطان الثدي » (69 K), « المورثة و سلوك الأحماض الأمينية » (21 K).
+L'élève cherche *l'exercice du diabétique*, pas *le tableau à double entrée*.
+
+L'app possédait pourtant déjà la matière : **31 contextes documentaires**
+(`documentPracticeContexts.ts`) et **19 exercices élite**
+(`documentAnalysisExercises.ts`) — mais atteignables uniquement par unité et par
+type de document. **Le contenu existait, la porte d'entrée manquait.**
+
+### Ce qui a été produit
+
+`src/data/situationIndex.ts` — **23 situations** qui ré-indexent l'existant
+(aucun exercice inventé, aucune donnée dupliquée). Chaque fiche porte :
+la scène réelle, la consigne BAC, **ce qui est réellement évalué**, **le piège**
+que la situation tend, les unités mobilisées, la difficulté (1-3), la durée, les
+mots-clés de recherche (arabe + latin), les `exerciseIds` et la leçon de secours.
+
+Exemples : المضاد الحيوي (U1) · فقر الدم المنجلي (U2) · مريض السكري و دواء
+الجانوفيا (U3) · زرع الكلية (U4) · التسمّم بغاز السارين (U5) · تجربة جاغندورف
+(U6) · العدّاء و التشنّج العضلي (U7) · زلزال و باطن الأرض (U10).
+
+**Couverture : les 11 unités du programme**, U4 avec 4 situations et U5 avec 3
+(les deux plus gros blocs du sujet : 13 % et 16 %).
+
+`src/components/SituationBankView.tsx` — nouvel onglet **« تمارين بالوضعيات »**
+(nav secondaire) : recherche instantanée tolérante aux diacritiques et aux
+variantes d'alef/ta-marbuta, filtres unité et difficulté cumulables, puis fiche
+complète avec les sanads documentaires, les indices, et **la correction masquée
+tant que l'élève ne la demande pas**.
+
+### Verrous
+
+- `src/data/situationIndex.lock.test.ts` — **22 tests** : aucune référence morte
+  (chaque `exerciseId` existe dans l'une des deux banques, chaque `lessonId` est
+  une leçon active), cohérence unité déclarée ↔ unité réelle de l'exercice,
+  qualité éditoriale minimale de chaque fiche, couverture des 11 unités, contrat
+  du moteur de recherche.
+- `src/components/__tests__/SituationBankView.test.tsx` — **9 tests**, dont le
+  verrou pédagogique central : *la correction reste masquée par défaut*.
+
+### Compteurs après sprint 10
+
+situations **23** · exercices ré-indexés **≈ 30** · unités couvertes **11/11** ·
+suite complète **1339 verts / 4 skipped** (toujours les 4 échecs pré-existants
+`lazyRouteChunks.smoke`).
+
+### Reste au backlog
+
+12 banque « أفكار التمارين » · 14 révision globale · 15 capsules 1-2 min ·
+16 (fin) cartes mentales U8-U11 · 17 « reproduire le schéma de mémoire » ·
+19 carte d'ouverture d'unité.

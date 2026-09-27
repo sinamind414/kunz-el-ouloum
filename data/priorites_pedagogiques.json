@@ -270,7 +270,8 @@
       "id": 18,
       "titre": "Indexer les exercices par situation (antibiotique, progéria, cancer…) en plus de l'unité",
       "taille": "S",
-      "preuve": "banque de 121 exercices nommés par situation — 350 075 vues"
+      "preuve": "banque de 121 exercices nommés par situation — 350 075 vues",
+      "statut": "livré (sprint 10) — 23 situations, 11/11 unités, onglet « تمارين بالوضعيات »"
     },
     {
       "id": 19,

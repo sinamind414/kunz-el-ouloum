@@ -16,7 +16,8 @@ import {
   Layers,
   Key,
   Compass,
-  Network
+  Network,
+  Search
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 
@@ -49,6 +50,7 @@ import SplashView from './components/SplashView';
 import DashboardView from './components/DashboardView';
 import QuizView from './components/QuizView';
 import AnimationsView from './components/AnimationsView';
+import SituationBankView from './components/SituationBankView';
 import RevisionView from './components/RevisionView';
 import StatsView from './components/StatsView';
 import AITutorView from './components/AITutorView';
@@ -82,7 +84,7 @@ export default function App() {
   });
 
   // Navigation tab state
-  const [currentTab, setCurrentTab] = useState<'splash' | 'home' | 'review' | 'stats' | 'chat' | 'methodology' | 'bootcamp' | 'badges' | 'lesson' | 'workshop' | 'mindmap' | 'teacher' | 'animations'>('splash');
+  const [currentTab, setCurrentTab] = useState<'splash' | 'home' | 'review' | 'stats' | 'chat' | 'methodology' | 'bootcamp' | 'badges' | 'lesson' | 'workshop' | 'mindmap' | 'teacher' | 'animations' | 'situations'>('splash');
   const [activeMindMapUnitId, setActiveMindMapUnitId] = useState<number>(1);
   const [isAuthOpen, setIsAuthOpen] = useState(false);
   // Session élève persistée (correctif : la session était perdue à chaque F5).
@@ -581,6 +583,8 @@ export default function App() {
     { tab: 'badges', label: 'الأوسمة والإنجازات', Icon: Award },
     { tab: 'bootcamp', label: 'تحدي البكالوريا', Icon: Swords },
     { tab: 'animations', label: 'الأنميشن العلمي', Icon: Sparkles },
+    // Audit item 18 (sprint 10) : entrée par situation concrète.
+    { tab: 'situations', label: 'تمارين بالوضعيات', Icon: Search },
     { tab: 'teacher', label: 'لوحة المتابعة', Icon: GraduationCap },
   ];
 
@@ -650,6 +654,7 @@ export default function App() {
             currentTab === 'lesson' ? 'الدروس' :
             currentTab === 'workshop' ? 'الورشة التفاعلية' : 
            currentTab === 'animations' ? 'الأنميشن العلمي' :
+           currentTab === 'situations' ? 'تمارين بالوضعيات' :
            currentTab === 'mindmap' ? 'الخرائط الذهنية (D3)' :
             currentTab === 'chat' ? 'المرشد الذكي' :
             currentTab === 'teacher' ? 'لوحة المتابعة' :
@@ -816,6 +821,10 @@ export default function App() {
 
               {currentTab === 'animations' && (
                 <AnimationsView onBackToHome={() => setCurrentTab('home')} />
+              )}
+
+              {currentTab === 'situations' && (
+                <SituationBankView onBackToHome={() => setCurrentTab('home')} />
               )}
             </motion.div>
           </AnimatePresence>
