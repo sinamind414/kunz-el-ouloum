@@ -135,6 +135,23 @@ export interface NoteCalibree extends ResultatNotation {
   signaux: SignauxCopie;
   /** Le registre d'attendus utilisé (traçabilité). */
   registre: AttendusExercice;
+  /**
+   * F1 — points acquis AUTOMATIQUEMENT sur l'échelle officielle (= `points`).
+   * Ce sont les seuls points réellement attribués par la machine.
+   */
+  pointsAutoAcquis: number;
+  /**
+   * F1 — points RÉSERVÉS aux items manuels (sans détection auto) : non crédités,
+   * non comptés comme zéro ; à arbitrer par le correcteur. Tant que cette
+   * réserve n'est pas vide, la note est provisoire et la fourchette
+   * `[pointsAutoAcquis, pointsAutoAcquis + pointsManuelsAArbitrer]` s'applique.
+   */
+  pointsManuelsAArbitrer: number;
+  /**
+   * F1 — note finale = `pointsAutoAcquis` quand aucune réserve manuelle ne
+   * reste à arbitrer, sinon `null` (la note n'est pas décidable par la machine).
+   */
+  noteFinale: number | null;
 }
 
 /**
@@ -243,6 +260,13 @@ export function noterExerciceCalibre(
   );
   points = Math.round((points - penalite) * 100) / 100;
 
+  // F1 : séparation points acquis / réserve manuelle. Les items sans détection
+  // auto ne sont JAMAIS comptés comme zéro ni redistribués aux items auto :
+  // ils forment la réserve à arbitrer par le correcteur (fourchette [A, A+U]).
+  const reserveManuelle = Math.round(
+    verdicts.filter((v) => !v.auto).reduce((s, v) => s + v.points, 0) * 100,
+  ) / 100;
+
   // Diagnostic (pédagogique, jamais converti en points).
   const unite = g ? CORRECTEUR_UNITES.find((u) => u.uniteId === g.uniteId) : undefined;
   const ent = evaluerEntites(reponse, g?.uniteId ?? 0);
@@ -268,6 +292,9 @@ export function noterExerciceCalibre(
     signaux,
     sanctionsForte,
     registre,
+    pointsAutoAcquis: Math.round(points * 100) / 100,
+    pointsManuelsAArbitrer: reserveManuelle,
+    noteFinale: reserveManuelle > 0 ? null : Math.round(points * 100) / 100,
   };
 }
 
