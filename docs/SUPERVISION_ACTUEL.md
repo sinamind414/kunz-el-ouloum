@@ -1,6 +1,15 @@
-# Supervision correcteur — 2026-09-27
+# Supervision correcteur — fiabilité mesurée (2026-09-27)
 
-Source : `.` · 40 copies · RECAP : 40 notes
+> **Moteur** : commit `bc52ad8` · **Corpus** : `.` · **n** = 40 copies · **référence prof** : 40 notes
+>
+> ⚠ **PROVENANCE (audit F5, garde-fou)** : ce corpus a servi à **calibrer** les
+> registres d'attendus (items, formes, plafonds). Ce n'est **pas** un jeu de
+> validation indépendant : les écarts publiés sont un **plancher** de l'erreur
+> de généralisation. La validation F5 (300 copies authentiques, double
+> correction à l'aveugle, ≥20 % arbitrées, calibration/test séparés) reste
+> **à constituer**. Voir le protocole ci-dessous.
+
+## Tableau des copies
 
 | élève | groupe | correcteur | prof | écart | couverture | plafonds | sanctions fortes |
 |---|---|---|---|---|---|---|---|
@@ -45,7 +54,65 @@ Source : `.` · 40 copies · RECAP : 40 notes
 | 39 | S1 /20 | 17.26 | 19 | -1.74 | 0.868 | — | — |
 | 40 | S1 /20 | 17.76 | 19.5 | -1.74 | 0.892 | — | — |
 
-**Fiabilité** : Pearson r = 0.972 · écart moyen = 0.26 · |écart| moyen = 0.9 · attributions ambiguës = 0
+## Fiabilité globale /20
 
-**Par exercice** : r = Ex1 0.899 · Ex2 0.967 · Ex3 0.904
-**|écart| moyen par exercice** : Ex1 0.64 · Ex2 0.84 · Ex3 0.96
+| métrique | mesure | cible F5 | statut |
+|---|---|---|---|
+| Pearson r | 0.972 | (association seulement) | — |
+| **MAE** (\|écart\| moyen) | 0.9 | **≤ 1,0 pt** | ✅ |
+| **Biais signé** (moteur − prof) | 0.26 | **\|biais\| ≤ 0,3 pt** | ✅ |
+| **κ pondéré quadratique** | 0.967 | **≥ 0,80** | ✅ |
+| Moyenne correcteur / prof | 11.96 / 11.7 | — | — |
+
+> κ pondéré : Pearson seul mesure une **association** — un correcteur qui
+> surenote tout de +3 a r = 1 et un accord nul. Le κ quadratique pénalise
+> chaque désaccord proportionnellement à sa gravité.
+
+## Par exercice
+
+| exercice | r | MAE | **biais signé** | **κ** | **MAE / barème** | cible | statut |
+|---|---|---|---|---|---|---|---|
+| Ex1 | 0.899 | 0.64 | 0.43 | 0.698 | 13% | ≤ 8 % / κ ≥ 0,80 | ❌ |
+| Ex2 | 0.967 | 0.84 | -0.84 | 0.82 | 12% | ≤ 8 % / κ ≥ 0,80 | ❌ |
+| Ex3 | 0.904 | 0.96 | 0.66 | 0.849 | 12% | ≤ 8 % / κ ≥ 0,80 | ❌ |
+
+## Par tranche de note (référence prof)
+
+| tranche | n | biais signé | MAE |
+|---|---|---|---|
+| 0 ≤ note < 5 | 3 | 0.73 | 1.21 |
+| 5 ≤ note < 10 | 10 | 0.49 | 0.86 |
+| 10 ≤ note < 15 | 16 | 0.68 | 0.81 |
+| 15 ≤ note ≤ 20 | 11 | -0.69 | 0.97 |
+
+> **Lecture du biais par tranche** : un biais positif sur les notes faibles
+> et négatif sur les notes hautes = **compression de la plage** — le moteur
+> surenote les copies faibles et sous-note les copies fortes. Sur les copies
+> fortes, l'écart vient principalement des **variantes de formulation non
+> reconnues** (levier F3) ; le plafond modèle ci-dessous montre si une cause
+> structurelle s'ajoute (levier F2).
+
+## Plafond modèle (réponse modèle officielle)
+
+> Maximum que le moteur peut accorder sur une **réponse modèle parfaite**.
+> Un plafond inférieur au barème est une cause **structurelle** de sous-note :
+> aucun élève, même parfait, ne peut le dépasser.
+
+| sujet | exercice | modèle | barème | plafond | sans plafond structurel |
+|---|---|---|---|---|---|
+| 1 | Ex1 | 5 | 5 | 100 % | ✅ |
+| 1 | Ex2 | 7 | 7 | 100 % | ✅ |
+| 1 | Ex3 | 7.36 | 8 | 92 % | ❌ |
+
+## Protocole de validation F5 (à constituer)
+
+1. 300 copies authentiques anonymisées — 3 exercices × 2 sujets, tous
+   niveaux de réussite, variantes de formulation.
+2. Double correction à l'aveugle par deux enseignants ; référence = moyenne ;
+   arbitrage de ≥ 20 % des copies et de tout désaccord > 2 pts.
+3. Séparation calibration / test par élève ET par sujet : aucune copie ayant
+   servi à ajuster les règles ne réapparaît dans le test final.
+4. Publication de MAE, biais, κ, par exercice et par tranche à chaque version
+   (ce script, `--out`).
+
+Attributions ambiguës S1/S2 (< 1 pt) à trancher à la main : 0
