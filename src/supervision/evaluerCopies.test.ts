@@ -7,6 +7,7 @@ import {
   splitSections,
   parserRecap,
   pearson,
+  kappaPondereQuadratique,
   evaluerCopie,
   evaluerBatch,
   parserScoreAttendu,
@@ -183,5 +184,93 @@ describe('SCORE ATTENDU — formats réels des copies bac2025-S1 (master)', () =
     expect(r.notes.get(1)).toBe(2.5);
     expect(r.notes.get(40)).toBe(19.5);
     expect(r.notes.size).toBe(2);
+  });
+});
+
+describe('F5 — κ pondéré quadratique (l\'accord, pas la corrélation)', () => {
+  it('accord parfait → κ = 1', () => {
+    expect(kappaPondereQuadratique([0, 5, 10, 15, 20], [0, 5, 10, 15, 20])).toBe(1);
+  });
+
+  it('décalage systématique de +3 : Pearson ≈ 1 mais κ < r (Pearson ne voit pas le biais)', () => {
+    const prof = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20];
+    const auto = prof.map((p) => Math.min(20, p + 3));
+    const r = pearson(auto, prof);
+    const k = kappaPondereQuadratique(auto, prof);
+    expect(r!).toBeGreaterThan(0.99); // association (presque) parfaite
+    expect(k!).toBeLessThan(r!); // ... mais l'accord est dégradé
+    expect(k!).toBeLessThan(0.95);
+  });
+
+  it('à marginales IDENTIQUES, plus le désaccord est grave, plus κ chute (poids quadratique)', () => {
+    // Mêmes ensembles de notes des deux côtés (marginales identiques → même
+    // espérance E) : seul le couplage change, donc la comparaison est saine.
+    const auto = [0, 5, 10, 15, 20];
+    const exact = kappaPondereQuadratique(auto, [0, 5, 10, 15, 20])!;
+    const leger = kappaPondereQuadratique(auto, [5, 0, 15, 10, 20])!; // écarts de 5
+    const grave = kappaPondereQuadratique(auto, [20, 15, 10, 5, 0])!; // écarts jusqu'à 20
+    expect(exact).toBe(1);
+    expect(grave).toBeLessThan(leger);
+    expect(leger).toBeLessThan(exact);
+  });
+
+  it('n < 2 → null ; évaluateur constant → κ = 0 (chance, accord nul)', () => {
+    expect(kappaPondereQuadratique([10], [10])).toBeNull();
+    // Un correcteur qui met la même note partout n'a aucun pouvoir discriminant :
+    // κ tombe exactement à 0 (chance), pas à null.
+    expect(kappaPondereQuadratique([5, 5, 5], [10, 12, 8])).toBe(0);
+  });
+});
+
+describe('F5 — biais, MAE normalisée et tranches (cohérence interne)', () => {
+  // Même texte → notes moteur DÉTERMINISTES ; on fait varier les notes prof par
+  // exercice pour générer des écarts connus. On vérifie que les métriques
+  // publiées sont exactement celles déduites des écarts (pas de chiffres sortis
+  // du chapeau).
+  const PROFS = [[1, 3, 4], [3, 5, 6], [5, 7, 8]];
+  const copies = PROFS.map((p, i) => {
+    const brut =
+      sujetExhaustif(1) +
+      `\nSCORE ATTENDU:\n- Exercice 1 : ${p[0]}/5\n- Exercice 2 : ${p[1]}/7\n- Exercice 3 : ${p[2]}/8\n- TOTAL : ${p.reduce((a, b) => a + b, 0)}/20`;
+    return {
+      fichier: `eleve_${String(i + 1).padStart(2, '0')}.txt`,
+      texte: couperBlocScore(brut),
+      attendu: parserScoreAttendu(brut) ?? undefined,
+    };
+  });
+
+  it('biais signé + MAE + MAE normalisée par exercice = moyenne des écarts', () => {
+    const { stats } = evaluerBatch(copies, undefined);
+    const { resultats } = evaluerBatch(copies, undefined);
+    const E = resultats[0].notesParExercice!;
+    const MAX = [5, 7, 8];
+    for (let i = 0; i < 3; i++) {
+      const biais = E[i] - PROFS.reduce((s, p) => s + p[i], 0) / 3;
+      const mae = PROFS.reduce((s, p) => s + Math.abs(E[i] - p[i]), 0) / 3;
+      expect(stats.biaisParExercice[i]).toBeCloseTo(biais, 2);
+      expect(stats.ecartAbsoluMoyenParExercice[i]).toBeCloseTo(mae, 2);
+      expect(stats.maeNormaliseeParExercice[i]).toBeCloseTo(mae / MAX[i], 3);
+    }
+  });
+
+  it('tranchesDeNote : bornes [0,5) [5,10) [10,15) [15,20] — total = copies notées', () => {
+    const { stats } = evaluerBatch(copies, undefined);
+    expect(stats.tranchesDeNote.map((t) => t.tranche)).toEqual([
+      '0 ≤ note < 5',
+      '5 ≤ note < 10',
+      '10 ≤ note < 15',
+      '15 ≤ note ≤ 20',
+    ]);
+    // notes prof 8, 14, 20 → une par tranche non vide.
+    expect(stats.tranchesDeNote.map((t) => t.n)).toEqual([0, 1, 1, 1]);
+    expect(stats.tranchesDeNote.reduce((s, t) => s + t.n, 0)).toBe(stats.nAvecProf);
+  });
+
+  it('κ publié = κ des listes moteur/prof (global et par exercice)', () => {
+    const { resultats, stats } = evaluerBatch(copies, undefined);
+    const xs = resultats.map((r) => r.note);
+    const ys = resultats.map((r) => r.noteProf!);
+    expect(stats.kappaPondere).toBeCloseTo(kappaPondereQuadratique(xs, ys)!, 3);
+    expect(stats.kappaPondereParExercice.every((k) => k !== null)).toBe(true);
   });
 });

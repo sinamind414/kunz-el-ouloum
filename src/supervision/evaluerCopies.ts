@@ -15,6 +15,7 @@
 // note envoyée à un élève.
 
 import { noterExerciceCalibre, noterCopieCalibree, type NoteCalibree } from '../data/dictionaries/calibrationBac2025';
+import { attendusDeGroupe } from '../data/dictionaries/attendusBac2025';
 
 export interface CopieResultat {
   fichier: string;
@@ -53,6 +54,23 @@ export interface StatsBatch {
   /** Par exercice (sur les copies avec SCORE ATTENDU) : [Ex1, Ex2, Ex3]. */
   pearsonParExercice: (number | null)[];
   ecartAbsoluMoyenParExercice: (number | null)[];
+  /** F5 : biais signé par exercice (moteur − prof), [Ex1, Ex2, Ex3]. */
+  biaisParExercice: (number | null)[];
+  /** F5 : κ pondéré quadratique global — l'ACCORD, pas seulement la corrélation. */
+  kappaPondere: number | null;
+  /** F5 : κ pondéré par exercice sur échelle normalisée 0..20. */
+  kappaPondereParExercice: (number | null)[];
+  /** F5 : MAE par exercice normalisée en FRACTION du barème officiel (cible ≤ 0,08). */
+  maeNormaliseeParExercice: (number | null)[];
+  /** F5 : résultats par tranche de note (référence = note prof /20). */
+  tranchesDeNote: TrancheNote[];
+}
+
+export interface TrancheNote {
+  tranche: string;
+  n: number;
+  biais: number | null;
+  mae: number | null;
 }
 
 const AR_VERS_LATIN: Record<string, string> = {
@@ -179,6 +197,61 @@ export function pearson(xs: number[], ys: number[]): number | null {
   return sxy / Math.sqrt(sxx * syy);
 }
 
+/**
+ * F5 : κ pondéré QUADRATIQUE — l'accord, pas la corrélation.
+ *
+ * Pearson mesure une association : un correcteur qui surenote toutes les copies
+ * de +3 pts a r = 1 et un accord nul. Le κ pondéré quadratique pénalise chaque
+ * désaccord proportionnellement à sa gravité (poids (i-j)²) : un écart de 6 pts
+ * coûte 36× un écart de 1 pt.
+ *
+ * Les notes sont ramenées à `echelle+1` niveaux entiers (pratique standard des
+ * correcteurs automatiques de copies). Renvoie null si n < 2, ou si les deux
+ * évaluateurs sont CONSTANTS ET IDENTIQUES (0/0 — accord non défini). Un
+ * évaluateur constant face à un autre qui varie donne κ = 0 : aucune mieux que
+ * le hasard.
+ */
+export function kappaPondereQuadratique(
+  auto: number[],
+  humain: number[],
+  echelle = 20,
+): number | null {
+  const n = Math.min(auto.length, humain.length);
+  if (n < 2) return null;
+  const k = echelle + 1;
+  const bin = (x: number) => Math.min(echelle, Math.max(0, Math.round(x)));
+  const O: number[][] = Array.from({ length: k }, () => new Array<number>(k).fill(0));
+  const row = new Array<number>(k).fill(0);
+  const col = new Array<number>(k).fill(0);
+  for (let i = 0; i < n; i++) {
+    const a = bin(auto[i]);
+    const h = bin(humain[i]);
+    O[a][h] += 1;
+    row[a] += 1;
+    col[h] += 1;
+  }
+  const denom = (k - 1) ** 2;
+  let so = 0;
+  let se = 0;
+  for (let i = 0; i < k; i++) {
+    for (let j = 0; j < k; j++) {
+      const w = (i - j) ** 2 / denom;
+      se += (w * row[i] * col[j]) / n;
+      so += w * O[i][j];
+    }
+  }
+  if (se === 0) return null; // un évaluateur constant → accord non défini
+  return Math.round((1 - so / se) * 1000) / 1000;
+}
+
+/** bornes des tranches de note F5 (sur la note prof /20). */
+const BORNES_TRANCHES: [number, number, string][] = [
+  [0, 5, '0 ≤ note < 5'],
+  [5, 10, '5 ≤ note < 10'],
+  [10, 15, '10 ≤ note < 15'],
+  [15, 20.01, '15 ≤ note ≤ 20'],
+];
+
 // Les plafonds de NoteCalibree = uniquement ceux DÉCLENCHÉS (calculerPlafonds
 // filtre sur les signaux ; appliquerPlafonds prend leur min).
 const fmtPlafonds = (n: NoteCalibree): string[] => n.plafonds.map((p) => String(p.type));
@@ -302,6 +375,55 @@ export function evaluerBatch(
       return ecarts.length === 0
         ? null
         : Math.round((ecarts.reduce((a, b) => a + Math.abs(b), 0) / ecarts.length) * 100) / 100;
+    }),
+    // F5 — biais signé par exercice (moteur − prof) : révèle la tendance à
+    // sur/sous-noter, que la MAE seule masque.
+    biaisParExercice: [0, 1, 2].map((i) => {
+      const ecarts = resultats
+        .map((x) => x.ecartsParExercice?.[i])
+        .filter((x): x is number => x !== undefined && x !== null);
+      return ecarts.length === 0
+        ? null
+        : Math.round((ecarts.reduce((a, b) => a + b, 0) / ecarts.length) * 100) / 100;
+    }),
+    // F5 — κ pondéré par exercice + MAE normalisée en fraction du barème
+    // officiel. Chaque paire est ramenée à l'échelle 0..20 de SON exercice pour
+    // rendre les κ comparables (Ex1 /5, Ex2 /7, Ex3 /8).
+    kappaPondereParExercice: [0, 1, 2].map((i) => {
+      const paires = resultats
+        .filter((x) => x.notesParExercice && x.attenduParExercice && x.attenduParExercice[i] !== null)
+        .map((x) => ({
+          auto: (x.notesParExercice![i] / attendusDeGroupe(x.sujet, (i + 1) as 1 | 2 | 3).maxPts) * 20,
+          prof: ((x.attenduParExercice![i] as number) / attendusDeGroupe(x.sujet, (i + 1) as 1 | 2 | 3).maxPts) * 20,
+        }));
+      return kappaPondereQuadratique(paires.map((p) => p.auto), paires.map((p) => p.prof));
+    }),
+    maeNormaliseeParExercice: [0, 1, 2].map((i) => {
+      const paires = resultats
+        .filter((x) => x.notesParExercice && x.attenduParExercice && x.attenduParExercice[i] !== null)
+        .map((x) => ({
+          ecart: Math.abs(x.notesParExercice![i] - (x.attenduParExercice![i] as number)),
+          maxPts: attendusDeGroupe(x.sujet, (i + 1) as 1 | 2 | 3).maxPts,
+        }));
+      return paires.length === 0
+        ? null
+        : Math.round((paires.reduce((s, p) => s + p.ecart / p.maxPts, 0) / paires.length) * 1000) / 1000;
+    }),
+    // F5 — κ pondéré global sur le total /20.
+    kappaPondere:
+      avecProf.length < 2 ? null : kappaPondereQuadratique(xs, ys),
+    // F5 — résultats par tranche de note (référence = note prof).
+    tranchesDeNote: BORNES_TRANCHES.map(([min, max, label]) => {
+      const groupe = avecProf.filter((r) => r.noteProf! >= min && r.noteProf! < max);
+      if (groupe.length === 0) return { tranche: label, n: 0, biais: null, mae: null };
+      const biais = groupe.reduce((s, r) => s + r.ecart!, 0) / groupe.length;
+      const mae = groupe.reduce((s, r) => s + Math.abs(r.ecart!), 0) / groupe.length;
+      return {
+        tranche: label,
+        n: groupe.length,
+        biais: Math.round(biais * 100) / 100,
+        mae: Math.round(mae * 100) / 100,
+      };
     }),
   };
   return { resultats, stats };
