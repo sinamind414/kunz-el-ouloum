@@ -15,6 +15,7 @@ import { bacEchoForSituation } from '../data/bacSessionIndex';
 import {
   SITUATION_COUNT,
   coveredUnitIds,
+  analysisExercisesForSituation,
   practiceContextsForSituation,
   searchSituations,
   type SituationCard,
@@ -46,6 +47,8 @@ function titreUnite(unitId: number): string {
 function FicheSituation({ card, onClose }: { card: SituationCard; onClose: () => void }) {
   const [correctionVisible, setCorrectionVisible] = useState(false);
   const contextes = useMemo(() => practiceContextsForSituation(card.id), [card.id]);
+  // Sprint 21 : les exercices « élite » n'étaient rendus nulle part.
+  const exercicesElite = useMemo(() => analysisExercisesForSituation(card.id), [card.id]);
 
   return (
     <div
@@ -135,6 +138,42 @@ function FicheSituation({ card, onClose }: { card: SituationCard; onClose: () =>
         </section>
       )}
 
+      {exercicesElite.length > 0 && (
+        <section className="mb-4" data-testid="fiche-exercices-elite">
+          <h3 className="text-sm font-black text-[#006d37] dark:text-[#2ecc71] mb-2">
+            تمارين تحليل الوثائق ({exercicesElite.length})
+          </h3>
+          <ul className="space-y-3">
+            {exercicesElite.map((e) => (
+              <li
+                key={e.id}
+                data-testid={`exercice-elite-${e.id}`}
+                className="rounded-2xl p-3 bg-white dark:bg-black/20 border border-[#006d37]/20"
+              >
+                <p className="text-[13px] font-bold text-[#506072] dark:text-gray-300 mb-2">
+                  {e.doc.descriptionAr}
+                </p>
+                <ol className="list-decimal pr-4 space-y-2">
+                  {e.questions.map((q) => (
+                    <li key={q.id} className="text-sm leading-7 text-[#1f1c0b] dark:text-gray-200">
+                      <span className="font-black text-[#006d37] dark:text-[#2ecc71]">{q.verb} — </span>
+                      {q.promptAr}
+                      <span className="block text-[12px] text-[#8a6a00] dark:text-[#d9a400]">
+                        قالب الصياغة: {q.templateHint}
+                      </span>
+                    </li>
+                  ))}
+                </ol>
+                <p className="mt-2 text-[12px] text-[#506072] dark:text-gray-400">
+                  شبكة التدريب: {e.grilleEntrainement.map((g) => `${g.critereAr} (${g.points})`).join(' · ')}
+                </p>
+                <p className="text-[11px] text-[#506072]/80 dark:text-gray-500">{e.label}</p>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+
       <section className="mb-4 rounded-2xl p-4 bg-[#f3f4f5] dark:bg-black/20">
         <h3 className="flex flex-row-reverse items-center gap-1.5 text-sm font-black text-[#1f1c0b] dark:text-gray-100 mb-1">
           <Target className="w-4 h-4" />
@@ -160,6 +199,15 @@ function FicheSituation({ card, onClose }: { card: SituationCard; onClose: () =>
           data-testid="fiche-correction"
           className="mt-3 rounded-2xl p-4 bg-[#e8f5ee] dark:bg-emerald-500/10 border border-[#006d37]/20"
         >
+          {exercicesElite.map((e) => (
+            <p
+              key={`corr-elite-${e.id}`}
+              data-testid={`correction-elite-${e.id}`}
+              className="mb-3 text-sm leading-7 text-[#1f1c0b] dark:text-gray-100"
+            >
+              {e.correctionAr}
+            </p>
+          ))}
           {contextes.map((c) => (
             <div key={`corr-${c.exerciseId}-${c.questionId}`} className="mb-3 last:mb-0">
               {c.correctionAr && (

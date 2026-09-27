@@ -14,7 +14,7 @@ import userEvent from '@testing-library/user-event';
 import { afterEach, describe, expect, it } from 'vitest';
 import SituationBankView from '../SituationBankView';
 import { bacEchoForSituation } from '../../data/bacSessionIndex';
-import { SITUATION_INDEX } from '../../data/situationIndex';
+import { SITUATION_INDEX, analysisExercisesForSituation } from '../../data/situationIndex';
 import { SITUATION_COUNT, searchSituations } from '../../data/situationIndex';
 
 afterEach(cleanup);
@@ -139,5 +139,34 @@ describe('banque de situations — écho BAC (sprint 18)', () => {
       const attendu = bacEchoForSituation(s.id).years.length > 0;
       expect(Boolean(screen.queryByTestId(`echo-bac-${s.id}`)), s.id).toBe(attendu);
     }
+  });
+});
+
+describe('banque de situations — exercices « élite » rendus (sprint 21)', () => {
+  it('affiche les questions, le canevas de rédaction et la grille d’entraînement', async () => {
+    const user = userEvent.setup();
+    render(<SituationBankView />);
+    const avecElite = SITUATION_INDEX.find((s) => analysisExercisesForSituation(s.id).length > 0);
+    expect(avecElite).toBeDefined();
+    await user.click(screen.getByTestId(`situation-${avecElite!.id}`));
+    const bloc = screen.getByTestId('fiche-exercices-elite');
+    const exercice = analysisExercisesForSituation(avecElite!.id)[0];
+    expect(screen.getByTestId(`exercice-elite-${exercice.id}`)).toBeTruthy();
+    expect(bloc.textContent).toContain(exercice.questions[0].promptAr);
+    expect(bloc.textContent).toContain('شبكة التدريب');
+    expect(bloc.textContent).toContain(exercice.label);
+  });
+
+  it('garde la correction « élite » masquée tant qu’on ne la demande pas', async () => {
+    const user = userEvent.setup();
+    render(<SituationBankView />);
+    const avecElite = SITUATION_INDEX.find((s) => analysisExercisesForSituation(s.id).length > 0)!;
+    const exercice = analysisExercisesForSituation(avecElite.id)[0];
+    await user.click(screen.getByTestId(`situation-${avecElite.id}`));
+    expect(screen.queryByTestId(`correction-elite-${exercice.id}`)).toBeNull();
+    await user.click(screen.getByTestId('basculer-correction'));
+    expect(screen.getByTestId(`correction-elite-${exercice.id}`).textContent).toBe(
+      exercice.correctionAr,
+    );
   });
 });

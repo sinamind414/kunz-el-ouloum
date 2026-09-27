@@ -98,7 +98,7 @@ export const SITUATION_INDEX: SituationCard[] = [
     difficulty: 1,
     minutes: 15,
     tags: ['الشفرة الوراثية', 'الترجمة', 'الرامزة', 'ARNt', 'الريبوزوم'],
-    exerciseIds: ['codon_anticodon', 'translation_schema'],
+    exerciseIds: ['codon_anticodon', 'translation_schema', 'h1_h2_generic_double_doc'],
   },
   {
     id: 'anemie_falciforme',
@@ -468,6 +468,22 @@ export function practiceContextsForSituation(situationId: string) {
   const card = SITUATION_BY_ID[situationId];
   if (!card) return [];
   return DOCUMENT_PRACTICE_CONTEXTS.filter((c) => card.exerciseIds.includes(c.exerciseId));
+}
+
+/**
+ * Exercices « élite » d'analyse documentaire rattachés à une situation.
+ *
+ * Sprint 21 : ces 19 exercices (questions avec verbe de consigne, indice de
+ * rédaction, grille d'entraînement et correction) existaient depuis le sprint
+ * Speckit §6 mais AUCUN composant ne les affichait — `situationIndex.ts` était
+ * le seul fichier à les importer, et seulement pour valider des identifiants.
+ * Ils étaient donc du contenu mort côté élève. Ce sélecteur les rend
+ * atteignables depuis la fiche de situation.
+ */
+export function analysisExercisesForSituation(situationId: string) {
+  const card = SITUATION_BY_ID[situationId];
+  if (!card) return [];
+  return DOCUMENT_ANALYSIS_EXERCISES.filter((e) => card.exerciseIds.includes(e.id));
 }
 
 export const SITUATION_COUNT = SITUATION_INDEX.length;

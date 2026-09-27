@@ -1362,3 +1362,62 @@ l'atteindre.
 5 gestes dans le plan (capsule · schéma · **montage** · situation · carte) ·
 47 idées BAC · 10 montages · suite complète **1528 verts / 4 skipped**
 (toujours les 4 `lazyRouteChunks.smoke` pré-existants).
+
+---
+
+## Sprint 21 — audit d'atteignabilité : du contenu écrit que personne ne voyait
+
+Le sprint 20 a corrigé un biais de sélection dans le plan. La question qui
+suivait était : **est-ce le seul ?** L'audit a porté sur toutes les banques de
+contenu et sur les chemins réels qui y mènent depuis un composant.
+
+### La trouvaille
+
+**Les 19 exercices « élite » d'analyse documentaire n'étaient rendus par aucun
+composant.** Un `grep` sur `src/components` ne donnait rien :
+`documentAnalysisExercises.ts` n'était importé que par `situationIndex.ts`, et
+seulement pour *valider des identifiants*. Ces exercices contiennent pourtant
+ce qu'il y a de plus cher à produire : des questions avec verbe de consigne,
+un **canevas de rédaction** (« كلما زاد … كلما قصر … »), une **grille
+d'entraînement chiffrée** et une correction. Écrits, testés, jamais montrés.
+
+Corrections apportées :
+- nouveau sélecteur `analysisExercisesForSituation()` ;
+- rendu dans la fiche de situation : énoncé du document, questions numérotées
+  avec leur verbe et leur canevas, grille d'entraînement avec ses points, et
+  la mention obligatoire « grille Kunz, pas le barème officiel » ;
+- correction « élite » **masquée** tant que l'élève ne la demande pas, comme le
+  reste de la fiche ;
+- l'unique exercice orphelin (`h1_h2_generic_double_doc`, méthode H1/H2 en deux
+  documents) est rattaché à la situation de lecture du code génétique.
+
+### Le second trou, trouvé par le test lui-même
+
+Le nouveau test « le plan d'un mois atteint toutes les capsules, tous les
+schémas et tous les montages » a immédiatement échoué sur **une capsule de U8**.
+Cause : la séquence pondérée fait revenir une unité lourde jusqu'à **dix fois
+par tour**, ce qui repoussait la fin du tour si loin dans la file que les
+ressources des unités légères n'étaient jamais consommées.
+
+Correctif : **deux passages maximum par unité et par tour**. La pondération
+reste réelle — une unité lourde reçoit deux fois plus de matériel et passe plus
+tôt — mais aucune ressource ne se retrouve hors d'atteinte. Le plan de 30 jours
+couvre désormais **l'intégralité** des capsules, des schémas et des dix
+montages.
+
+### Le filet posé pour l'avenir
+
+`src/data/contentReachability.test.ts` — 7 tests qui lisent le code source des
+composants et vérifient que chaque banque a un chemin vers l'écran, puis que
+chaque élément est réellement atteint par ce chemin : 53 contextes
+documentaires, 19 exercices élite (zéro orphelin), toutes les capsules, tous
+les schémas, tous les montages, et une porte ouverte par idée BAC.
+
+C'est le test qui aurait dû exister depuis le sprint 10 : une banque peut être
+complète, verrouillée et fausse — si rien ne la rend.
+
+### Compteurs après sprint 21
+
+19 exercices élite rendus (contre 0) · plan de 30 jours à couverture totale ·
+suite complète **1537 verts / 4 skipped** (toujours les 4
+`lazyRouteChunks.smoke` pré-existants).

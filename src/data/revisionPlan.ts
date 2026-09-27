@@ -285,9 +285,26 @@ function buildQueue(
   // chargée (ex. le 2e et le 3e montage de l'immunité) n'étaient jamais
   // atteintes avant la fin du plan. Le curseur avance à chaque prise.
   const curseurs = new Map<string, number>();
+  // Deuxième garde-fou (sprint 21) : la séquence pondérée peut faire revenir
+  // une unité jusqu'à dix fois par tour. Même avec un curseur, cela repoussait
+  // la fin du tour si loin dans la file que les ressources des unités légères
+  // (la 2e capsule de U8, par exemple) n'étaient jamais consommées avant la
+  // fin du plan. On plafonne donc à deux passages par unité et par tour : la
+  // pondération reste réelle — une unité lourde reçoit deux fois plus de
+  // matériel qu'une unité légère et passe plus tôt — mais aucune ressource
+  // n'est repoussée hors d'atteinte.
+  const PASSAGES_MAX_PAR_TOUR = 2;
+  const sequenceBornee: number[] = [];
+  const vus = new Map<number, number>();
+  for (const unitId of sequence) {
+    const n = vus.get(unitId) ?? 0;
+    if (n >= PASSAGES_MAX_PAR_TOUR) continue;
+    vus.set(unitId, n + 1);
+    sequenceBornee.push(unitId);
+  }
   const maxTours = 40;
   for (let tour = 0; tour < maxTours && queue.length < besoin; tour += 1) {
-    for (const unitId of sequence) {
+    for (const unitId of sequenceBornee) {
       const pool = pools.get(unitId);
       if (!pool) continue;
       for (const kind of ORDRE_NORMAL) {
