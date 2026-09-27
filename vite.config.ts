@@ -14,6 +14,12 @@ export default defineConfig(() => {
     test: {
       environment: 'jsdom',
       include: ['src/**/*.test.{ts,tsx}'],
+      // Les contrôles de `src/build/` portent sur le RÉSULTAT d'un build
+      // (dist/assets) et non sur le code source : ils n'ont rien à faire dans
+      // la suite unitaire, où ils produisaient des échecs permanents dans
+      // toute copie sans build. Ils se lancent par `npm run test:build`
+      // (vite.build-test.config.ts), après le build.
+      exclude: ['node_modules/**', 'dist/**', 'src/build/**'],
     },
     build: {
       rollupOptions: {

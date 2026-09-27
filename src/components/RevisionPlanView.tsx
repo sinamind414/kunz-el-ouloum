@@ -11,7 +11,8 @@
 // correspond plus aux mêmes tâches.
 
 import { useEffect, useMemo, useState } from 'react';
-import { ArrowRight, CalendarDays, Check, Clock, ListChecks } from 'lucide-react';
+import { ArrowRight, CalendarDays, Check, Clock, ListChecks, Printer } from 'lucide-react';
+import { ARCHETYPE_BY_ID } from '../data/bacArchetypes';
 import {
   PRESETS,
   TASK_LABEL_AR,
@@ -55,6 +56,9 @@ export default function RevisionPlanView({ onBackToHome, onOpenRedaction }: Revi
   const [daysLeft, setDaysLeft] = useState(14);
   const [minutesPerDay, setMinutesPerDay] = useState(90);
   const [fait, setFait] = useState<Set<string>>(() => chargerFait(cleStockage(14, 90)));
+  // Beaucoup d'élèves travaillent sur papier : la feuille du jour est
+  // imprimable, avec les cases à cocher et les pièges des montages programmés.
+  const [feuille, setFeuille] = useState(false);
 
   const plan = useMemo(() => buildRevisionPlan({ daysLeft, minutesPerDay }), [daysLeft, minutesPerDay]);
   const parUnite = useMemo(() => minutesByUnit(plan), [plan]);
@@ -185,6 +189,94 @@ export default function RevisionPlanView({ onBackToHome, onOpenRedaction }: Revi
           {Object.entries(parUnite).sort((a, b) => b[1] - a[1])[0]?.[0] ?? '—'}.
         </p>
       </section>
+
+      <div className="flex flex-row-reverse gap-2 mb-3">
+        <button
+          data-testid="imprimer-jour"
+          onClick={() => {
+            setFeuille(true);
+            // L'impression est demandée après le rendu de la feuille.
+            setTimeout(() => {
+              try {
+                window.print();
+              } catch {
+                /* environnement sans impression : la feuille reste lisible */
+              }
+            }, 0);
+          }}
+          className="flex flex-row-reverse items-center gap-2 px-4 py-2 rounded-2xl bg-[#1f1c0b] text-white text-xs font-bold cursor-pointer"
+        >
+          <span>ورقة اليوم للطباعة</span>
+          <Printer className="w-4 h-4" />
+        </button>
+        {feuille && (
+          <button
+            data-testid="fermer-feuille"
+            onClick={() => setFeuille(false)}
+            className="px-4 py-2 rounded-2xl bg-[#f3f4f5] dark:bg-[#1f2622] text-xs font-bold text-[#506072] dark:text-gray-300 cursor-pointer"
+          >
+            إغلاق الورقة
+          </button>
+        )}
+      </div>
+
+      {feuille && plan.days[0] && (
+        <section
+          data-testid="feuille-impression"
+          className="feuille-impression rounded-3xl p-4 bg-white dark:bg-[#141916] border-2 border-[#1f1c0b]/30 mb-4"
+        >
+          <style>{`@media print {
+            body * { visibility: hidden !important; }
+            .feuille-impression, .feuille-impression * { visibility: visible !important; }
+            .feuille-impression { position: absolute; inset: 0; border: 0; }
+          }`}</style>
+          <h2 className="text-base font-black text-[#1f1c0b] dark:text-gray-100 mb-1">
+            ورقة اليوم — {plan.days[0].totalMinutes} دقيقة
+          </h2>
+          <p className="text-[11px] text-[#506072] dark:text-gray-400 mb-3">
+            {daysLeft} يوماً قبل الامتحان · علّم كل مهمة بعد إنجازها
+          </p>
+          <ol className="space-y-2">
+            {plan.days[0].tasks.map((t) => (
+              <li
+                key={`feuille-${t.kind}-${t.refId}`}
+                data-testid={`feuille-tache-${t.kind}:${t.refId}`}
+                className="flex flex-row-reverse items-start gap-2 text-right"
+              >
+                <span className="shrink-0 w-4 h-4 mt-0.5 border-2 border-[#1f1c0b]/50 rounded" />
+                <span>
+                  <span className="text-[13px] font-bold text-[#1f1c0b] dark:text-gray-100">
+                    {t.titleAr}
+                  </span>
+                  <span className="block text-[11px] text-[#506072] dark:text-gray-400">
+                    {TASK_LABEL_AR[t.kind]} · {t.minutes} د — {t.actionAr}
+                  </span>
+                </span>
+              </li>
+            ))}
+          </ol>
+
+          {plan.days[0].tasks.some((t) => t.kind === 'montage') && (
+            <div data-testid="feuille-pieges" className="mt-3 pt-3 border-t border-[#1f1c0b]/20">
+              <p className="text-[11px] font-black text-[#1f1c0b] dark:text-gray-100 mb-1">
+                الفخاخ التي يجب تفاديها اليوم
+              </p>
+              <ul className="list-disc pr-4 space-y-1">
+                {plan.days[0].tasks
+                  .filter((t) => t.kind === 'montage')
+                  .map((t) => ARCHETYPE_BY_ID[t.refId])
+                  .filter(Boolean)
+                  .map((a) => (
+                    <li key={a.id} className="text-[11px] leading-6 text-[#1f1c0b] dark:text-gray-200 text-right">
+                      <span className="font-bold">{a.titleAr}: </span>
+                      {a.trapAr}
+                    </li>
+                  ))}
+              </ul>
+            </div>
+          )}
+        </section>
+      )}
 
       <div className="space-y-3">
         {plan.days.map((jour) => (

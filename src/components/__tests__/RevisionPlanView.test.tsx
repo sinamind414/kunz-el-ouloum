@@ -13,6 +13,7 @@ import userEvent from '@testing-library/user-event';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import RevisionPlanView from '../RevisionPlanView';
 import { buildRevisionPlan } from '../../data/revisionPlan';
+import { ARCHETYPE_BY_ID } from '../../data/bacArchetypes';
 
 afterEach(cleanup);
 beforeEach(() => localStorage.clear());
@@ -146,5 +147,62 @@ describe('plan de révision — ouverture de l’atelier (sprint 26)', () => {
     const redaction = plan.days.flatMap((j) => j.tasks).find((t) => t.kind === 'redaction');
     if (!redaction) return;
     expect(screen.queryByTestId(`ouvrir-redaction-${redaction.refId}`)).toBeNull();
+  });
+});
+
+describe('plan de révision — feuille du jour imprimable (sprint 28)', () => {
+  it('n’affiche la feuille qu’à la demande', () => {
+    render(<RevisionPlanView />);
+    expect(screen.queryByTestId('feuille-impression')).toBeNull();
+  });
+
+  it('reprend toutes les tâches du jour 1, avec leur consigne', async () => {
+    const user = userEvent.setup();
+    const impression = vi.fn();
+    vi.stubGlobal('print', impression);
+    render(<RevisionPlanView />);
+    await user.click(screen.getByTestId('imprimer-jour'));
+    const jour1 = buildRevisionPlan({ daysLeft: 14, minutesPerDay: 90 }).days[0];
+    for (const t of jour1.tasks) {
+      expect(screen.getByTestId(`feuille-tache-${t.kind}:${t.refId}`), t.refId).toBeTruthy();
+    }
+    expect(screen.getByTestId('feuille-impression').textContent).toContain(jour1.tasks[0].actionAr);
+    vi.unstubAllGlobals();
+  });
+
+  it('déclenche l’impression du navigateur', async () => {
+    const user = userEvent.setup();
+    const impression = vi.fn();
+    vi.stubGlobal('print', impression);
+    render(<RevisionPlanView />);
+    await user.click(screen.getByTestId('imprimer-jour'));
+    await new Promise((r) => setTimeout(r, 0));
+    expect(impression).toHaveBeenCalled();
+    vi.unstubAllGlobals();
+  });
+
+  it('rappelle les pièges des montages programmés le jour même', async () => {
+    const user = userEvent.setup();
+    vi.stubGlobal('print', vi.fn());
+    render(<RevisionPlanView />);
+    await user.click(screen.getByTestId('imprimer-jour'));
+    const jour1 = buildRevisionPlan({ daysLeft: 14, minutesPerDay: 90 }).days[0];
+    const montage = jour1.tasks.find((t) => t.kind === 'montage');
+    if (!montage) return;
+    expect(screen.getByTestId('feuille-pieges').textContent).toContain(
+      ARCHETYPE_BY_ID[montage.refId].trapAr,
+    );
+    vi.unstubAllGlobals();
+  });
+
+  it('se referme sans quitter le plan', async () => {
+    const user = userEvent.setup();
+    vi.stubGlobal('print', vi.fn());
+    render(<RevisionPlanView />);
+    await user.click(screen.getByTestId('imprimer-jour'));
+    await user.click(screen.getByTestId('fermer-feuille'));
+    expect(screen.queryByTestId('feuille-impression')).toBeNull();
+    expect(screen.getByTestId('plan-jour-1')).toBeTruthy();
+    vi.unstubAllGlobals();
   });
 });

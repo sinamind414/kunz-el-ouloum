@@ -1780,3 +1780,46 @@ existe déjà pour cela).
 
 Production personnelle relisible avec profil d'erreurs · suite complète
 **1626 verts / 8 skipped / 0 rouge** (126 fichiers).
+
+---
+
+## Sprint 28 — correctif durable du bruit rouge, et la feuille du jour à imprimer
+
+### 1. Les contrôles de build sortent de la suite unitaire
+
+Le sprint 25 avait rendu `lazyRouteChunks.smoke.test.ts` tolérant à l'absence
+de build. Bonne intention, mauvais niveau : le fichier est revenu **deux fois**
+à sa version d'origine dans la copie de travail, ramenant avec lui quatre
+lignes rouges. Un correctif qui vit dans le fichier qu'il protège n'est pas un
+correctif.
+
+Correctif déplacé d'un cran :
+- `vite.config.ts` **exclut `src/build/**`** de la suite unitaire — ces
+  contrôles lisent `dist/assets`, ils n'ont rien à y faire ;
+- `vite.build-test.config.ts` (nouveau) les exécute seuls ;
+- `npm run test:build` = `vite build && REQUIRE_BUILD_SMOKE=1 vitest run
+  --config vite.build-test.config.ts`.
+
+Désormais, même si le fichier de test redevient strict, **la suite unitaire
+reste verte** : elle ne le charge plus. Vérifié dans les deux modes — suite
+unitaire 125 fichiers verts, contrôles post-build 4 verts après `vite build`.
+
+### 2. « ورقة اليوم للطباعة »
+
+Beaucoup d'élèves algériens travaillent sur papier — et un plan consultable
+seulement à l'écran est un plan qu'on ne suit pas en salle de révision. Le
+bouton **« ورقة اليوم للطباعة »** produit une feuille contenant :
+
+- toutes les tâches du jour, avec leur **case à cocher**, leur durée et la
+  consigne complète (pas seulement le titre) ;
+- un bloc **« الفخاخ التي يجب تفاديها اليوم »** : les pièges des montages
+  programmés ce jour-là, repris tels quels de `bacArchetypes.ts`.
+
+L'impression est déclenchée après le rendu, et une règle `@media print` masque
+tout le reste de l'application. La feuille se referme sans quitter le plan.
+
+### Compteurs après sprint 28
+
+Feuille du jour imprimable · contrôles de build isolés · suite unitaire
+**1631 verts / 4 skipped / 0 rouge** (125 fichiers) · `npm run test:build`
+4 verts.
