@@ -67,7 +67,12 @@ export default function MindMapView({
     // Audit item 16 (sprint 9) : ouverture du domaine 2.
     { id: 5, title: 'الوحدة 5: الاتصال العصبي', badge: '12 مفهوماً عصبياً' },
     { id: 6, title: 'الوحدة 6: التركيب الضوئي', badge: '12 مفهوماً ضوئياً' },
-    { id: 7, title: 'الوحدة 7: تحويل الطاقة إلى ATP', badge: '12 مفهوماً طاقوياً' }
+    { id: 7, title: 'الوحدة 7: تحويل الطاقة إلى ATP', badge: '12 مفهوماً طاقوياً' },
+    // Audit item 16 (sprint 14) : couverture complète des 11 unités.
+    { id: 8, title: 'الوحدة 8: ما فوق البنية الخلوية', badge: '12 مفهوماً بنيوياً' },
+    { id: 9, title: 'الوحدة 9: النشاط التكتوني', badge: '12 مفهوماً تكتونياً' },
+    { id: 10, title: 'الوحدة 10: بنية الكرة الأرضية', badge: '12 مفهوماً زلزالياً' },
+    { id: 11, title: 'الوحدة 11: البنيات الجيولوجية', badge: '12 مفهوماً جيولوجياً' }
   ];
 
   return (

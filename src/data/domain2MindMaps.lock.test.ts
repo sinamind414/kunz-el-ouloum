@@ -177,9 +177,9 @@ describe('carte U2 étoffée (8 → 13 nœuds)', () => {
 });
 
 describe('cohérence de la base de cartes mentales', () => {
-  it('7 cartes publiées, une par clé, sans unité dupliquée', () => {
+  it('11 cartes publiées, une par clé, sans unité dupliquée', () => {
     const cles = Object.keys(MIND_MAPS_DATABASE);
-    expect(cles).toEqual(['1', '2', '3', '4', '5', '6', '7']);
+    expect(cles).toEqual(['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11']);
     const unites = cles.map((k) => MIND_MAPS_DATABASE[Number(k)].unitId);
     expect(new Set(unites).size).toBe(unites.length);
   });
@@ -202,11 +202,11 @@ describe('cohérence de la base de cartes mentales', () => {
     }
   });
 
-  it('restent à produire : U8, U9, U10 et U11 (dette explicite)', () => {
+  // Sprint 14 : la dette U8-U11 est soldée, voir domain3MindMaps.lock.test.ts.
+  it('les 11 unités du programme sont couvertes', () => {
     const couvertes = new Set(
       Object.keys(MIND_MAPS_DATABASE).map((k) => MIND_MAPS_DATABASE[Number(k)].unitId),
     );
-    expect([...couvertes].sort((a, b) => a - b)).toEqual([1, 2, 3, 4, 5, 6, 7]);
-    for (const uid of [8, 9, 10, 11]) expect(couvertes.has(uid)).toBe(false);
+    expect([...couvertes].sort((a, b) => a - b)).toEqual([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]);
   });
 });

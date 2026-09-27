@@ -80,8 +80,10 @@ describe('Carte mentale — النشاط الإنزيمي (unité 3)', () => {
     for (const n of CARTE.nodes) expect(immunite.has(n.id), n.id).toBe(false);
   });
 
-  // Sprint 9 (item 16) : ouverture du domaine 2 — U5, U6 et U7.
-  it('l’application propose désormais 7 cartes mentales', () => {
-    expect(Object.keys(MIND_MAPS_DATABASE)).toEqual(['1', '2', '3', '4', '5', '6', '7']);
+  // Sprint 14 (item 16, fin) : les 11 unités du programme ont leur carte.
+  it('l’application propose désormais 11 cartes mentales', () => {
+    expect(Object.keys(MIND_MAPS_DATABASE)).toEqual([
+      '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11',
+    ]);
   });
 });

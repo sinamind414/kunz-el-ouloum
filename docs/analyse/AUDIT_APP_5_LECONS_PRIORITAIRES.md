@@ -884,3 +884,50 @@ suite complète **1421 verts / 4 skipped** (toujours les 4 échecs pré-existant
 
 12 banque « أفكار التمارين » · 14 révision globale · 16 (fin) cartes mentales
 U8-U11.
+
+---
+
+## Sprint 14 — livré (2026-09-27)
+
+**Périmètre : item 16 (FIN) — cartes mentales U8, U9, U10, U11.**
+
+La dette inscrite noir sur blanc au sprint 9 (« restent à produire : U8-U11 »,
+verrouillée par un test qui l'affirmait) est **soldée**. Les **11 unités du
+programme ont désormais leur carte mentale** — le format qui, chez @MostafaBdd,
+fait ×6 à ×7 les vues du cours correspondant.
+
+| Carte | Contenu |
+|---|---|
+| **U8 ما فوق البنية الخلوية** (12 nœuds / 17 liens) | Chloroplaste (thylakoïde, stroma) vs mitochondrie (crêtes, matrice), ATP synthase rattachée **aux deux** organites, échanges gazeux, point de compensation, principe structure/fonction |
+| **U9 النشاط التكتوني** (12 / 16) | Types de limites, chaîne causale complète غوص → تميّه → انصهار جزئي → صهارة → براكين, plan de Bénioff, collision, courants de convection |
+| **U10 بنية الكرة الأرضية** (12 / 16) | Ondes P et S, zone d'ombre, Moho / Gutenberg / Lehmann, croûte, manteau, noyaux externe et interne |
+| **U11 البنيات الجيولوجية** (12 / 17) | Dorsale (basalte en coussins, gabbro, expansion), subduction (andésite, métamorphisme), collision, ophiolite, cycle de Wilson, grille de classement |
+
+Chaque nœud porte son résumé, son conseil BAC et ses mots-clés ; chaque carte
+est vérifiée sans lien mort ni nœud orphelin.
+
+### Ce que les tests protègent en plus de la structure
+
+`src/data/domain3MindMaps.lock.test.ts` — **18 tests** qui figent les
+**raisonnements**, pas seulement les étiquettes :
+- U9 : la chaîne causale complète غوص → تميّه → انصهار → صهارة → براكين doit
+  exister lien par lien, et le nœud « انصهار جزئي » doit nommer **le rôle de
+  l'eau** (et non la chaleur) ;
+- U10 : le lien `s-waves → outer-core` doit être de type **`inhibitory`** —
+  c'est l'argument décisif de l'unité, pas une relation ordinaire ;
+- U8 : l'ATP synthase doit être reliée **aux deux** organites (unité du
+  mécanisme de Mitchell) ;
+- U11 : l'andésite doit se définir **par opposition au basalte**.
+
+Le test du sprint 9 qui affirmait la dette a été **retourné en test de
+couverture** : il vérifie désormais que les 11 unités sont présentes.
+
+### Compteurs après sprint 14
+
+cartes mentales **11/11 unités** · nœuds documentés **139** · suite complète
+**1439 verts / 4 skipped** (toujours les 4 échecs pré-existants
+`lazyRouteChunks.smoke`).
+
+### Reste au backlog
+
+12 banque « أفكار التمارين » · 14 révision globale.
