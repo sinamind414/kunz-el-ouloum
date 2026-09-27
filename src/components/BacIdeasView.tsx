@@ -33,6 +33,7 @@ import {
   ideasForVerbFamily,
   verbFamilyStats,
 } from '../data/verbDemands';
+import BacIdeaTrainer from './BacIdeaTrainer';
 import { INITIAL_UNITS } from '../unitCatalog';
 
 interface BacIdeasViewProps {
@@ -43,7 +44,7 @@ const UNIT_TITLE: Record<number, string> = Object.fromEntries(
   INITIAL_UNITS.map((u) => [u.id, u.title]),
 );
 
-function Fiche({ idea }: { idea: BacExerciseIdea }) {
+function Fiche({ idea, onTrain }: { idea: BacExerciseIdea; onTrain: (idea: BacExerciseIdea) => void }) {
   return (
     <article
       data-testid={`idee-${idea.id}`}
@@ -99,6 +100,14 @@ function Fiche({ idea }: { idea: BacExerciseIdea }) {
         ))}
       </div>
 
+      <button
+        data-testid={`entrainer-${idea.id}`}
+        onClick={() => onTrain(idea)}
+        className="mb-2 text-[11px] font-bold px-3 py-1.5 rounded-xl bg-[#006d37] text-white cursor-pointer"
+      >
+        تدرّب على هذا التمرين
+      </button>
+
       <div className="flex flex-row-reverse flex-wrap gap-1.5 text-[11px] text-[#506072] dark:text-gray-400">
         {idea.unitIds.map((u) => (
           <span key={u} className="px-2 py-0.5 rounded-lg bg-[#e8f5ee] dark:bg-black/20">
@@ -115,6 +124,7 @@ export default function BacIdeasView({ onBackToHome }: BacIdeasViewProps) {
   const [requete, setRequete] = useState('');
   const [montage, setMontage] = useState<string | null>(null);
   const [famille, setFamille] = useState<string | null>(null);
+  const [entrainement, setEntrainement] = useState<BacExerciseIdea | null>(null);
 
   const liste = useMemo(() => {
     if (famille) return ideasForVerbFamily(famille);
@@ -206,6 +216,10 @@ export default function BacIdeasView({ onBackToHome }: BacIdeasViewProps) {
             : `دورة ${MISSING_YEARS.join('، ')} غير مدرجة: لم يتوفّر نصّها الرسمي — لم نخترع لها شيئاً.`}
         </p>
       </section>
+
+      {entrainement && (
+        <BacIdeaTrainer idea={entrainement} onClose={() => setEntrainement(null)} />
+      )}
 
       <section
         data-testid="montages"
@@ -386,7 +400,7 @@ export default function BacIdeasView({ onBackToHome }: BacIdeasViewProps) {
 
       <div className="space-y-3">
         {liste.map((idea) => (
-          <Fiche key={idea.id} idea={idea} />
+          <Fiche key={idea.id} idea={idea} onTrain={setEntrainement} />
         ))}
         {liste.length === 0 && (
           <p

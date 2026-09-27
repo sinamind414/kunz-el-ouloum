@@ -1564,3 +1564,64 @@ de panneau.
 12 familles de consignes contrôlées · 10 montages · 47 idées BAC · suite
 complète **1580 verts / 4 skipped** (toujours les 4 `lazyRouteChunks.smoke`
 pré-existants).
+
+---
+
+## Sprint 24 — l'atelier : lire un exercice réel, écrire, être repris
+
+### Le problème après le sprint 23
+
+La chaîne était complète mais en pièces détachées, sur quatre écrans :
+l'exercice réel et ses supports (annales), le montage qu'il rejoue et son piège
+(bandeau des montages), ce que la consigne exige (fiche de famille), et le
+contrôle de forme (panneau du correcteur, dans la vue méthodologie). Un élève
+motivé pouvait les enchaîner à la main. Aucun ne le fera.
+
+### Ce qui a été fait
+
+`src/components/BacIdeaTrainer.tsx` met les quatre briques **sur une seule
+page**. Un bouton « تدرّب على هذا التمرين » sur chaque fiche ouvre l'atelier :
+
+1. les **supports réels** de l'exercice (ce que le candidat avait sous les yeux) ;
+2. la **méthode du montage** correspondant, et son piège ;
+3. les **consignes réellement demandées par cet exercice** — pas la liste des
+   12 familles, seulement celles que le sujet a posées ;
+4. le **canevas de phrase** de la consigne sélectionnée ;
+5. une zone d'écriture avec **retour de forme en direct** (✓ / ✗ / ⚠︎) ;
+6. la notion évaluée, **cachée jusqu'à la demande** — après avoir écrit, pas
+   avant.
+
+Le brouillon est conservé **par exercice et par consigne** : changer de
+consigne ouvre une page blanche, revenir retrouve son texte, fermer l'app ne
+perd rien.
+
+### Ce qui est délibérément absent
+
+**Aucune note.** Aucune des briques ne mesure le fond ; afficher un score
+global — même « 4/6 » — laisserait croire à une évaluation. Le retour porte sur
+la structure, et il le dit : « فحص شكلي فقط: المضمون العلمي لا يُقيَّم هنا ».
+
+### Le cas qui illustre le mieux l'intérêt
+
+Exercice DCMU (2023, sujet 2, exercice 3). L'atelier propose les consignes que
+le sujet a réellement posées — hypothèses, discussion, conseil, schéma
+fonctionnel — et rien d'autre. L'élève écrit « المبيد يوقف التركيب الضوئي » :
+le contrôle « modalité » passe au rouge, avec le conseil « la fiche
+d'hypothèse n'est pas une certitude : قد يعود … ». Il reformule
+« قد يعود توقف طرح الأكسجين إلى ارتباط المبيد بناقل الإلكترونات … » et le
+contrôle passe au vert. C'est un aller-retour de dix secondes, sur un sujet
+tombé, avec le piège du montage affiché au-dessus.
+
+### Tests
+
+`BacIdeaTrainer.test.tsx` — 8 tests : les consignes proposées viennent bien de
+l'exercice, le retour réagit au texte saisi (le cas hypothèse ci-dessus est
+joué littéralement), le brouillon survit au démontage, la notion reste cachée.
+Plus 2 tests d'ouverture et de fermeture côté annales.
+
+### Compteurs après sprint 24
+
+Chaîne complète sur un écran : 47 exercices réels · 10 montages · 12 familles
+de consignes · contrôle de forme · brouillons persistants. Suite complète
+**1590 verts / 4 skipped** (toujours les 4 `lazyRouteChunks.smoke`
+pré-existants).

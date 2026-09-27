@@ -183,3 +183,22 @@ describe('أفكار التمارين — familles de consignes (sprint 22)', ()
     expect(screen.getByTestId('montage-detail')).toBeTruthy();
   });
 });
+
+describe('أفكار التمارين — ouverture de l’atelier (sprint 24)', () => {
+  it('propose un bouton d’entraînement sur chaque fiche', () => {
+    render(<BacIdeasView />);
+    for (const idea of ideasForYear(YEARS_COVERED[0])) {
+      expect(screen.getByTestId(`entrainer-${idea.id}`), idea.id).toBeTruthy();
+    }
+  });
+
+  it('ouvre l’atelier sur l’exercice choisi, et le referme', async () => {
+    const user = userEvent.setup();
+    render(<BacIdeasView />);
+    await user.click(screen.getByTestId('entrainer-bac2026_s1_e3'));
+    const atelier = screen.getByTestId('bac-trainer');
+    expect(atelier.textContent).toContain('الأترازين');
+    await user.click(screen.getByTestId('trainer-fermer'));
+    expect(screen.queryByTestId('bac-trainer')).toBeNull();
+  });
+});
