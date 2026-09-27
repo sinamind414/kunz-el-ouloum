@@ -22,6 +22,13 @@ import {
 
 interface RevisionPlanViewProps {
   onBackToHome?: () => void;
+  /**
+   * Ouvre l'atelier d'écriture sur l'exercice demandé (sprint 26). Sans ce
+   * rappel, la tâche « اكتب جواب تمرين 2023 » obligeait l'élève à retrouver
+   * l'exercice à la main dans un autre onglet — le genre de friction qui
+   * transforme une bonne tâche en tâche sautée.
+   */
+  onOpenRedaction?: (ideaId: string) => void;
 }
 
 const KIND_CLASS: Record<PlanTask['kind'], string> = {
@@ -44,7 +51,7 @@ function chargerFait(cle: string): Set<string> {
   }
 }
 
-export default function RevisionPlanView({ onBackToHome }: RevisionPlanViewProps) {
+export default function RevisionPlanView({ onBackToHome, onOpenRedaction }: RevisionPlanViewProps) {
   const [daysLeft, setDaysLeft] = useState(14);
   const [minutesPerDay, setMinutesPerDay] = useState(90);
   const [fait, setFait] = useState<Set<string>>(() => chargerFait(cleStockage(14, 90)));
@@ -236,6 +243,15 @@ export default function RevisionPlanView({ onBackToHome }: RevisionPlanViewProps
                         <span className="block text-[12px] text-[#506072] dark:text-gray-400">{t.actionAr}</span>
                       </span>
                     </button>
+                    {t.kind === 'redaction' && onOpenRedaction && (
+                      <button
+                        data-testid={`ouvrir-redaction-${t.refId}`}
+                        onClick={() => onOpenRedaction(t.refId)}
+                        className="mt-1 mr-8 text-[11px] font-bold px-3 py-1 rounded-xl bg-[#006d37] text-white cursor-pointer"
+                      >
+                        افتح الورشة على هذا التمرين
+                      </button>
+                    )}
                   </li>
                 );
               })}

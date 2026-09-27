@@ -10,7 +10,7 @@
 
 import { cleanup, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { afterEach, beforeEach, describe, expect, it } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import RevisionPlanView from '../RevisionPlanView';
 import { buildRevisionPlan } from '../../data/revisionPlan';
 
@@ -116,5 +116,35 @@ describe('plan de révision — la veille de l examen', () => {
     const dernier = plan.days[plan.days.length - 1];
     expect(dernier.consolidationOnly).toBe(true);
     expect(dernier.tasks.some((t) => t.kind === 'situation')).toBe(false);
+  });
+});
+
+describe('plan de révision — ouverture de l’atelier (sprint 26)', () => {
+  it('propose un accès direct pour chaque tâche de rédaction', () => {
+    const ouvrir = vi.fn();
+    render(<RevisionPlanView onOpenRedaction={ouvrir} />);
+    const plan = buildRevisionPlan({ daysLeft: 14, minutesPerDay: 90 });
+    const redaction = plan.days.flatMap((j) => j.tasks).find((t) => t.kind === 'redaction');
+    if (!redaction) return;
+    expect(screen.getAllByTestId(`ouvrir-redaction-${redaction.refId}`).length).toBeGreaterThan(0);
+  });
+
+  it('transmet l’identifiant de l’exercice au clic', async () => {
+    const user = userEvent.setup();
+    const ouvrir = vi.fn();
+    render(<RevisionPlanView onOpenRedaction={ouvrir} />);
+    const plan = buildRevisionPlan({ daysLeft: 14, minutesPerDay: 90 });
+    const redaction = plan.days.flatMap((j) => j.tasks).find((t) => t.kind === 'redaction');
+    if (!redaction) return;
+    await user.click(screen.getAllByTestId(`ouvrir-redaction-${redaction.refId}`)[0]);
+    expect(ouvrir).toHaveBeenCalledWith(redaction.refId);
+  });
+
+  it('n’affiche aucun bouton d’atelier si l’app ne fournit pas de rappel', () => {
+    render(<RevisionPlanView />);
+    const plan = buildRevisionPlan({ daysLeft: 14, minutesPerDay: 90 });
+    const redaction = plan.days.flatMap((j) => j.tasks).find((t) => t.kind === 'redaction');
+    if (!redaction) return;
+    expect(screen.queryByTestId(`ouvrir-redaction-${redaction.refId}`)).toBeNull();
   });
 });

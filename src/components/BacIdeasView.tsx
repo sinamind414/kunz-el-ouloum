@@ -9,11 +9,12 @@
 // Aucun énoncé n'est reproduit : ce n'est pas une annale de plus, c'est la
 // carte de ce que l'examen demande.
 
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { ArrowRight, AlertTriangle, BookOpen, FileText, Repeat, Search, TrendingUp } from 'lucide-react';
 import {
   BAC_IDEAS,
   BAC_SESSION_SOURCES,
+  IDEA_BY_ID,
   MISSING_YEARS,
   YEARS_COVERED,
   ideasForYear,
@@ -34,10 +35,13 @@ import {
   verbFamilyStats,
 } from '../data/verbDemands';
 import BacIdeaTrainer from './BacIdeaTrainer';
+import { draftedFamilies, writingStats } from '../data/writingProgress';
 import { INITIAL_UNITS } from '../unitCatalog';
 
 interface BacIdeasViewProps {
   onBackToHome?: () => void;
+  /** Ouvre directement l'atelier sur cet exercice (appel depuis le plan). */
+  focusIdeaId?: string | null;
 }
 
 const UNIT_TITLE: Record<number, string> = Object.fromEntries(
@@ -45,6 +49,7 @@ const UNIT_TITLE: Record<number, string> = Object.fromEntries(
 );
 
 function Fiche({ idea, onTrain }: { idea: BacExerciseIdea; onTrain: (idea: BacExerciseIdea) => void }) {
+  const dejaRedige = draftedFamilies(idea.id);
   return (
     <article
       data-testid={`idee-${idea.id}`}
@@ -107,6 +112,14 @@ function Fiche({ idea, onTrain }: { idea: BacExerciseIdea; onTrain: (idea: BacEx
       >
         تدرّب على هذا التمرين
       </button>
+      {dejaRedige.length > 0 && (
+        <span
+          data-testid={`redige-${idea.id}`}
+          className="mr-2 text-[11px] font-bold px-2 py-1 rounded-xl bg-[#e8f5ee] text-[#006d37] dark:bg-black/20 dark:text-[#2ecc71]"
+        >
+          كتبت {dejaRedige.length} جواباً
+        </span>
+      )}
 
       <div className="flex flex-row-reverse flex-wrap gap-1.5 text-[11px] text-[#506072] dark:text-gray-400">
         {idea.unitIds.map((u) => (
@@ -119,12 +132,19 @@ function Fiche({ idea, onTrain }: { idea: BacExerciseIdea; onTrain: (idea: BacEx
   );
 }
 
-export default function BacIdeasView({ onBackToHome }: BacIdeasViewProps) {
+export default function BacIdeasView({ onBackToHome, focusIdeaId = null }: BacIdeasViewProps) {
   const [annee, setAnnee] = useState<number | 'all'>(YEARS_COVERED[0]);
   const [requete, setRequete] = useState('');
   const [montage, setMontage] = useState<string | null>(null);
   const [famille, setFamille] = useState<string | null>(null);
-  const [entrainement, setEntrainement] = useState<BacExerciseIdea | null>(null);
+  const [entrainement, setEntrainement] = useState<BacExerciseIdea | null>(
+    focusIdeaId ? (IDEA_BY_ID[focusIdeaId] ?? null) : null,
+  );
+  const [redige, setRedige] = useState(() => writingStats());
+
+  useEffect(() => {
+    if (focusIdeaId && IDEA_BY_ID[focusIdeaId]) setEntrainement(IDEA_BY_ID[focusIdeaId]);
+  }, [focusIdeaId]);
 
   const liste = useMemo(() => {
     if (famille) return ideasForVerbFamily(famille);
@@ -218,7 +238,13 @@ export default function BacIdeasView({ onBackToHome }: BacIdeasViewProps) {
       </section>
 
       {entrainement && (
-        <BacIdeaTrainer idea={entrainement} onClose={() => setEntrainement(null)} />
+        <BacIdeaTrainer
+          idea={entrainement}
+          onClose={() => {
+            setRedige(writingStats());
+            setEntrainement(null);
+          }}
+        />
       )}
 
       <section
@@ -391,6 +417,12 @@ export default function BacIdeasView({ onBackToHome }: BacIdeasViewProps) {
               </a>
             </>
           )}
+        </p>
+      )}
+
+      {redige.exercices > 0 && (
+        <p data-testid="idees-redige" className="mb-2 text-[12px] font-bold text-[#006d37] dark:text-[#2ecc71] text-right">
+          حرّرت {redige.reponses} جواباً على {redige.exercices} تمريناً.
         </p>
       )}
 

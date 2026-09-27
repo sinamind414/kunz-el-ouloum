@@ -202,3 +202,23 @@ describe('أفكار التمارين — ouverture de l’atelier (sprint 24)',
     expect(screen.queryByTestId('bac-trainer')).toBeNull();
   });
 });
+
+describe('أفكار التمارين — retour depuis le plan et trace d’écriture (sprint 26)', () => {
+  it('ouvre directement l’atelier sur l’exercice demandé par le plan', () => {
+    render(<BacIdeasView focusIdeaId="bac2022_s2_e3" />);
+    expect(screen.getByTestId('bac-trainer').textContent).toContain('الميثان');
+  });
+
+  it('ignore un identifiant inconnu au lieu d’ouvrir un atelier vide', () => {
+    render(<BacIdeasView focusIdeaId="bac1999_s9_e9" />);
+    expect(screen.queryByTestId('bac-trainer')).toBeNull();
+  });
+
+  it('marque les exercices déjà rédigés et affiche le total', () => {
+    localStorage.setItem('kunz.bacTrainer.bac2026_s1_e1.verb_texte_scientifique', 'كيف …؟');
+    render(<BacIdeasView />);
+    expect(screen.getByTestId('redige-bac2026_s1_e1').textContent).toContain('1');
+    expect(screen.getByTestId('idees-redige').textContent).toContain('1');
+    localStorage.clear();
+  });
+});

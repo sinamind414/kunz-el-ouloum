@@ -1675,3 +1675,52 @@ différentes**, toutes adossées à des exercices réels — vérifié par test.
 6 gestes dans le plan (capsule · schéma · montage · **rédaction** · situation ·
 carte) · 47 exercices réels · 10 montages · 12 familles de consignes ·
 **suite complète 1595 verts / 8 skipped / 0 rouge**.
+
+---
+
+## Sprint 26 — du plan à l'atelier en un clic, et la trace de ce qu'on a écrit
+
+### 1. La friction qui tuait la tâche de rédaction
+
+Le sprint 25 a mis « اكتب جواب تمرين 2023 : المبيد DCMU » dans le plan du jour.
+Mais la consigne se terminait par « ouvre l'exercice dans l'atelier des
+idées » : à l'élève de changer d'onglet, de retrouver la session, puis
+l'exercice. C'est exactement le genre de friction qui transforme une bonne
+tâche en tâche sautée.
+
+Chaque tâche de rédaction porte maintenant un bouton **« افتح الورشة على هذا
+التمرين »** qui ouvre l'atelier directement sur le bon exercice. Le câblage
+passe par `App` (`focusIdeaId`), et la vue du plan reste utilisable seule : sans
+rappel fourni, aucun bouton n'apparaît — vérifié par test, pour que le composant
+ne dépende pas de son hôte.
+
+### 2. La production de l'élève devenait invisible
+
+L'atelier sauvegardait les brouillons depuis le sprint 24, mais **rien ne les
+montrait**. Or c'est la seule trace de PRODUCTION que l'élève laisse : une
+capsule lue et un schéma refait ne prouvent pas la même chose qu'une réponse
+rédigée.
+
+`src/data/writingProgress.ts` lit ces clés — **et n'en écrit jamais aucune**,
+propriété vérifiée par un test qui espionne `Storage.setItem`. Chaque fiche
+d'exercice affiche « كتبت n جواباً », et l'en-tête de la liste totalise
+« حرّرت X جواباً على Y تمريناً ».
+
+Détails traités parce qu'ils cassent silencieusement ce genre de module :
+brouillons vides ou blancs ignorés, clés étrangères (`kunz.revisionPlan.14x90`)
+écartées, identifiants à préfixe commun non confondus, `localStorage`
+indisponible géré sans exception.
+
+### 3. Incident de synchronisation, et ce qu'il a révélé
+
+Au cours du sprint, le fichier `lazyRouteChunks.smoke.test.ts` est revenu à sa
+version d'avant le sprint 25 dans la copie de travail — les quatre lignes
+rouges étaient de retour. Restauré depuis la branche distante (le commit
+`6cc90e5` était intact). À retenir : **le dépôt distant fait foi**, et une
+régression de suite qui « revient toute seule » doit d'abord faire suspecter un
+état de travail, pas le code.
+
+### Compteurs après sprint 26
+
+Plan → atelier en un clic · trace d'écriture visible · suite complète
+**1608 verts / 8 skipped / 0 rouge** (124 fichiers).

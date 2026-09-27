@@ -90,6 +90,8 @@ export default function App() {
   });
 
   // Navigation tab state
+  // Exercice sur lequel ouvrir l'atelier quand on arrive depuis le plan.
+  const [bacIdeaFocus, setBacIdeaFocus] = useState<string | null>(null);
   const [currentTab, setCurrentTab] = useState<'splash' | 'home' | 'review' | 'stats' | 'chat' | 'methodology' | 'bootcamp' | 'badges' | 'lesson' | 'workshop' | 'mindmap' | 'teacher' | 'animations' | 'situations' | 'schemas' | 'training' | 'plan' | 'bacideas'>('splash');
   const [activeMindMapUnitId, setActiveMindMapUnitId] = useState<number>(1);
   const [isAuthOpen, setIsAuthOpen] = useState(false);
@@ -840,11 +842,20 @@ export default function App() {
               )}
 
               {currentTab === 'plan' && (
-                <RevisionPlanView onBackToHome={() => setCurrentTab('training')} />
+                <RevisionPlanView
+                  onBackToHome={() => setCurrentTab('training')}
+                  onOpenRedaction={(ideaId) => {
+                    setBacIdeaFocus(ideaId);
+                    setCurrentTab('bacideas');
+                  }}
+                />
               )}
 
               {currentTab === 'bacideas' && (
-                <BacIdeasView onBackToHome={() => setCurrentTab('training')} />
+                <BacIdeasView
+                  onBackToHome={() => setCurrentTab('training')}
+                  focusIdeaId={bacIdeaFocus}
+                />
               )}
 
               {currentTab === 'situations' && (
