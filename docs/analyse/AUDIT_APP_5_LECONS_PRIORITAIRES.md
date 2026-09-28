@@ -1979,3 +1979,52 @@ le dit.
 
 Suite unitaire **1643 verts / 4 skipped / 0 échec** (127 fichiers) + 6 tests du
 chargeur ; contrôles post-build **8 verts**.
+
+---
+
+## Sprint 32 — le chunk des leçons perd la moitié de son poids
+
+### Trois imports, 548 Ko
+
+`LessonsView` pesait **996 Ko**, soit plus que le bundle d'entrée. Deux causes,
+toutes deux des importations trop larges :
+
+1. `import { INITIAL_UNITS } from '../data'` — le même piège qu'au sprint 31 :
+   la liste des 11 unités (quelques lignes) entraînait **tout le corpus QCM**.
+   Corrigé vers `../unitCatalog`. Même correction pour `MASCOT_URL`
+   (`QuizView`) et `MORCHID_LOGO_URL` (`AITutorView`).
+2. Quatre vues secondaires importées statiquement — bibliothèque Okacha,
+   recherche globale, QCM du livre, sujets BAC — alors qu'elles ne s'ouvrent
+   que sur action de l'élève. Passées en `React.lazy` avec une frontière
+   `Suspense` locale.
+
+| Chunk | Avant | Après |
+|---|---|---|
+| `LessonsView` | 996 Ko | **448 Ko** |
+| `OkachaView` | (inclus) | 456 Ko, à la demande |
+
+L'entrée reste à 908 Ko : ce sprint ne l'allège pas, il évite de faire payer
+456 Ko de bibliothèque à l'élève qui veut juste lire une leçon.
+
+### Le garde-fou resserré — et immédiatement utile
+
+Plafond des chunks à la demande ramené de **1 100 à 800 Ko**. Premier essai :
+**rouge** — l'entrée elle-même (907 Ko) était comptée parmi les chunks. Le
+test distingue maintenant l'entrée (plafond propre, plus haut : elle porte
+React, la navigation et le tableau de bord) des chunks à la demande. Un test
+qui échoue pour une bonne raison le jour où on le resserre, c'est le signe
+qu'il mesure vraiment quelque chose.
+
+### Incident de synchronisation (3ᵉ occurrence)
+
+`src/build/bundleBudget.test.ts` avait disparu de la copie de travail — le
+contrôle de budget aurait silencieusement cessé d'exister, et `npm run
+test:build` serait passé au vert avec 4 tests au lieu de 8. Restauré depuis la
+branche distante. **C'est exactement le scénario contre lequel un test de
+budget doit protéger : il faut donc vérifier son décompte, pas seulement sa
+couleur.**
+
+### Vérifications
+
+Suite unitaire **1649 verts / 4 skipped / 0 échec** (128 fichiers) ; contrôles
+post-build **8 verts** (4 chunks de leçons + 4 de budget).

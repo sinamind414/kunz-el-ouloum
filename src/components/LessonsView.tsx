@@ -6,19 +6,32 @@
 //      OFFICIAL_PROGRAM_SEQUENCE). Chaque fichier de phase portant 2 leçons,
 //      la séquence expose la clé de base puis la clé `_2` — une leçon affichée
 //      à la fois (isolation par sliceLessonHtml).
-import { useState } from 'react';
+import { lazy, Suspense, useState } from 'react';
 import { BookOpen, ChevronLeft, Zap, MonitorPlay, Network, FlaskConical, Leaf, Globe2, GraduationCap, BookMarked, Grid3x3, Search } from 'lucide-react';
 import HtmlLessonViewer from './HtmlLessonViewer';
 import ActiveLessonView from './ActiveLessonView';
-import { INITIAL_UNITS } from '../data';
+import { INITIAL_UNITS } from '../unitCatalog';
 import { getUnitLessonSequence } from '../data/unitLessonSequences';
 import { HTML_LESSON_ORDER } from '../data/htmlLessonProgression';
 import { sourceLivre, badgeSource, sourceAmbigue } from '../data/bookIndex';
-import QcmLivreView from './QcmLivreView';
-import BacExamView from './BacExamView';
-import OkachaView from './OkachaView';
-import SearchView from './SearchView';
 import Icone from './Icone';
+
+// Sprint 32 : ces quatre vues (QCM du livre, sujets BAC, bibliothèque Okacha,
+// recherche) embarquaient à elles seules plusieurs centaines de kilo-octets de
+// données dans le chunk des leçons. Elles ne s'ouvrent que sur action de
+// l'élève : leur code est donc récupéré à ce moment-là.
+const QcmLivreView = lazy(() => import('./QcmLivreView'));
+const BacExamView = lazy(() => import('./BacExamView'));
+const OkachaView = lazy(() => import('./OkachaView'));
+const SearchView = lazy(() => import('./SearchView'));
+
+function VueEnChargement() {
+  return (
+    <div className="flex items-center justify-center py-16" dir="rtl" data-testid="lessons-chargement">
+      <span className="text-sm font-bold text-[#506072] dark:text-gray-400">جارٍ التحميل…</span>
+    </div>
+  );
+}
 import { chapitreIcone, uniteIcone } from '../data/lessonIcons';
 import {
   PASSIVE_DOMAINS,
@@ -139,32 +152,41 @@ export default function LessonsView({ onRateCard }: LessonsProps) {
 
   // ----- Écran 0 : QCM du livre officiel (par chapitre) -----
   if (mode === 'qcm') {
-    return <QcmLivreView onBack={() => setMode(null)} />;
+    return (
+      <Suspense fallback={<VueEnChargement />}>
+        <QcmLivreView onBack={() => setMode(null)} />
+      </Suspense>
+    );
   }
 
   // ----- Écran 0 quater : RECHERCHE GLOBALE (R5, moteur Morchid) -----
   if (mode === 'search') {
     return (
-      <SearchView
-        onBack={() => setMode(null)}
-        onOpenLesson={openLessonFromSearch}
-      />
+      <Suspense fallback={<VueEnChargement />}>
+        <SearchView onBack={() => setMode(null)} onOpenLesson={openLessonFromSearch} />
+      </Suspense>
     );
   }
 
   // ----- Écran 0 bis : tests bac (PROGRAMME NATIONAL, injection vérifiée) -----
   if (mode === 'bac') {
-    return <BacExamView onBack={() => setMode(null)} />;
+    return (
+      <Suspense fallback={<VueEnChargement />}>
+        <BacExamView onBack={() => setMode(null)} />
+      </Suspense>
+    );
   }
 
   // ----- Écran 0 ter : الحصيلة المعرفية (عكاشة, injection mécanique filtrée) -----
   if (mode === 'okacha') {
     return (
-      <OkachaView
-        onBack={() => setMode(null)}
-        onRate={onRateCard}
-        onOpenQcm={() => setMode('qcm')}
-      />
+      <Suspense fallback={<VueEnChargement />}>
+        <OkachaView
+          onBack={() => setMode(null)}
+          onRate={onRateCard}
+          onOpenQcm={() => setMode('qcm')}
+        />
+      </Suspense>
     );
   }
 

@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Send, Sparkles, AlertCircle, Trash2, BrainCircuit, Target, Stethoscope, Swords, ClipboardList, Globe2 } from 'lucide-react';
 import { ChatMessage } from '../types';
-import { MORCHID_LOGO_URL } from '../data';
+import { MORCHID_LOGO_URL } from '../data/brandAssets';
 
 import { processStudentInput, getDailyMission, type TutorRewardDetails, type EngineResult } from '../smartTutorEngine';
 import { DOMAINS } from '../data/smartBotData';

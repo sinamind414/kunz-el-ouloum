@@ -21,8 +21,13 @@ const DIST_ASSETS = resolve(DIST, 'assets');
 
 /** Plafond du bundle d'entrée, en kilo-octets (mesuré à ~908 Ko). */
 const BUDGET_ENTREE_KO = 1100;
-/** Plafond d'un chunk à la demande (mesuré : LessonsView ~996 Ko). */
-const BUDGET_CHUNK_KO = 1100;
+/**
+ * Plafond d'un chunk à la demande. Ramené de 1 100 à 800 Ko au sprint 32,
+ * après avoir sorti la bibliothèque Okacha, la recherche, les QCM du livre et
+ * les sujets BAC du chunk des leçons (996 → 448 Ko). Le plus gros chunk
+ * restant est `tutor-lesson-index` (728 Ko), chargé seulement par le tuteur.
+ */
+const BUDGET_CHUNK_KO = 800;
 
 function tailleKo(chemin: string): number {
   return Math.round(statSync(chemin).size / 1024);
@@ -47,7 +52,7 @@ describe('Budget du bundle initial', () => {
 
   it('sort les vues lourdes de l’entrée', () => {
     const fichiers = readdirSync(DIST_ASSETS);
-    for (const vue of ['MethodologyCompilerView', 'StatsView', 'LessonsView']) {
+    for (const vue of ['MethodologyCompilerView', 'StatsView', 'LessonsView', 'OkachaView']) {
       const chunk = fichiers.find((f) => f.startsWith(`${vue}-`) && f.endsWith('.js'));
       expect(chunk, `${vue} devrait être un chunk séparé (import dynamique)`).toBeDefined();
     }
@@ -64,8 +69,11 @@ describe('Budget du bundle initial', () => {
   });
 
   it('garde chaque chunk à la demande sous son plafond', () => {
+    // L'entrée a son propre plafond (plus haut) : elle porte le socle React,
+    // la navigation et le tableau de bord, qui ne sont pas « à la demande ».
+    const entree = fichierEntree();
     const trop = readdirSync(DIST_ASSETS)
-      .filter((f) => f.endsWith('.js'))
+      .filter((f) => f.endsWith('.js') && f !== entree)
       .map((f) => ({ f, ko: tailleKo(resolve(DIST_ASSETS, f)) }))
       .filter((x) => x.ko > BUDGET_CHUNK_KO);
     expect(trop.map((x) => `${x.f} (${x.ko} Ko)`)).toEqual([]);
