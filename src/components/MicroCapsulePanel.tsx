@@ -11,6 +11,7 @@
 //     réponses à la file » sans se poser la question.
 
 import { useEffect, useMemo, useState } from 'react';
+import { bacEchoForCapsule } from '../data/bacSessionIndex';
 import { ChevronLeft, ChevronRight, Timer, Zap } from 'lucide-react';
 import {
   capsuleOfTheDay,
@@ -80,6 +81,15 @@ export default function MicroCapsulePanel({ unitId, dayKey }: MicroCapsulePanelP
           {capsule.durationSec} ثانية
         </span>
       </div>
+
+      {bacEchoForCapsule(capsule.id).years.length > 0 && (
+        <p
+          data-testid="capsule-echo-bac"
+          className="mb-2 text-[11px] font-bold text-[#8a6a00] dark:text-[#d9a400]"
+        >
+          سقطت في البكالوريا: {bacEchoForCapsule(capsule.id).years.join(' · ')}
+        </p>
+      )}
 
       <h4 data-testid="capsule-question" className="text-base font-black text-[#006d37] dark:text-[#2ecc71] mb-2">
         {capsule.questionAr}

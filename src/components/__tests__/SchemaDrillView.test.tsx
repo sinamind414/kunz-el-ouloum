@@ -9,6 +9,8 @@ import { cleanup, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { afterEach, describe, expect, it } from 'vitest';
 import SchemaDrillView from '../SchemaDrillView';
+import { SCHEMA_DRILLS } from '../../data/schemaDrills';
+import { bacEchoForDrill } from '../../data/bacSessionIndex';
 import { SCHEMA_DRILLS, SCHEMA_DRILL_BY_ID, totalPoints } from '../../data/schemaDrills';
 
 afterEach(cleanup);
@@ -154,5 +156,19 @@ describe('SchemaDrillView — phase 3 : comparaison', () => {
 
     await user.click(screen.getByTestId('drill-fini'));
     expect(screen.getByTestId('element-fente').getAttribute('aria-pressed')).toBe('false');
+  });
+});
+
+describe('schéma — écho BAC (sprint 35)', () => {
+  it('annonce les sessions où le schéma a été demandé', async () => {
+    const user = userEvent.setup();
+    const avecEcho = SCHEMA_DRILLS.find((d) => bacEchoForDrill(d.id).years.length > 0)!;
+    render(<SchemaDrillView />);
+    await user.click(screen.getByTestId(`drill-${avecEcho.id}`));
+    const badge = screen.getByTestId('drill-echo-bac');
+    expect(badge.textContent).toContain('مطلوب في البكالوريا');
+    for (const annee of bacEchoForDrill(avecEcho.id).years) {
+      expect(badge.textContent).toContain(String(annee));
+    }
   });
 });

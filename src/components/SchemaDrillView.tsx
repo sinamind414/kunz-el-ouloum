@@ -8,6 +8,7 @@
 //   3. المقارنة — score, éléments essentiels oubliés, pièges, PUIS l'image.
 
 import { useMemo, useState } from 'react';
+import { bacEchoForDrill } from '../data/bacSessionIndex';
 import { ArrowRight, Check, PenTool, RefreshCw, Timer } from 'lucide-react';
 import {
   SCHEMA_DRILLS,
@@ -50,6 +51,14 @@ function Exercice({ drill, onQuitter }: { drill: SchemaDrill; onQuitter: () => v
         <div className="text-right">
           <h2 className="text-xl font-black text-[#1f1c0b] dark:text-gray-100">{drill.titleAr}</h2>
           <p className="text-[13px] text-[#506072] dark:text-gray-400">الوحدة {drill.unitId}</p>
+          {bacEchoForDrill(drill.id).years.length > 0 && (
+            <p
+              data-testid="drill-echo-bac"
+              className="text-[12px] font-bold text-[#8a6a00] dark:text-[#d9a400]"
+            >
+              مطلوب في البكالوريا: {bacEchoForDrill(drill.id).years.join(' · ')}
+            </p>
+          )}
         </div>
         <button
           data-testid="drill-quitter"

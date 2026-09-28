@@ -2144,3 +2144,40 @@ supplémentaire d'adosser la conclusion à un résultat. Le classement reste tot
 
 Suite unitaire **1656 verts / 4 skipped / 0 échec** (129 fichiers) ; contrôles
 post-build **13 verts** (décompte vérifié, pas seulement la couleur).
+
+---
+
+## Sprint 35 — deux sélecteurs écrits au sprint 18, jamais affichés
+
+### Le constat
+
+`bacEchoForSituation`, `bacEchoForCapsule` et `bacEchoForDrill` ont été écrits
+ensemble au sprint 18. Seul le premier a reçu une interface. Les deux autres
+étaient **exacts, testés, et invisibles** depuis dix-sept sprints — exactement
+le défaut que l'audit d'atteignabilité du sprint 21 avait trouvé sur les
+exercices « élite », reproduit à plus petite échelle par mes propres soins.
+
+Le test d'atteignabilité ne l'avait pas vu parce qu'il vérifiait que chaque
+**banque de contenu** avait un écran, pas que chaque **sélecteur exporté** avait
+un consommateur.
+
+### Ce qui est affiché maintenant
+
+- **Micro-capsules** : « سقطت في البكالوريا: 2021 · 2018 » sous le titre. Une
+  capsule sur deux a un écho réel — dont celle du pHi, désormais adossée à
+  l'exercice officiel de 2018 trouvé au sprint précédent.
+- **Schémas à reproduire** : « مطلوب في البكالوريا: 2026 · 2023 · 2018 » sous le
+  titre de l'exercice. Refaire de mémoire la chaîne photochimique n'est plus
+  une consigne abstraite : c'est un schéma **demandé trois fois en neuf ans**.
+
+### Le garde-fou complété
+
+`contentReachability.test.ts` vérifie désormais que **les trois** sélecteurs
+d'écho ont un consommateur dans un composant, et qu'il existe réellement de
+quoi afficher (plus de 10 capsules et plus de 8 schémas avec écho). La règle
+générale à retenir : *une fonction exportée sans consommateur est un bug qui
+attend d'être découvert par quelqu'un d'autre.*
+
+### Vérifications
+
+Suite unitaire **1661 verts / 4 skipped / 0 échec** (129 fichiers).

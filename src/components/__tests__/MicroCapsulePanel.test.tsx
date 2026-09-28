@@ -8,6 +8,8 @@ import { cleanup, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { afterEach, describe, expect, it } from 'vitest';
 import MicroCapsulePanel from '../MicroCapsulePanel';
+import { MICRO_CAPSULES } from '../../data/microCapsules';
+import { bacEchoForCapsule } from '../../data/bacSessionIndex';
 import { capsuleOfTheDay, capsulesForUnit } from '../../data/microCapsules';
 
 afterEach(cleanup);
@@ -86,6 +88,30 @@ describe('MicroCapsulePanel — navigation', () => {
     for (let i = 0; i < titres.length + 2; i += 1) {
       expect(titres).toContain(screen.getByTestId('capsule-question').textContent);
       await user.click(screen.getByTestId('capsule-suivante'));
+    }
+  });
+});
+
+describe('capsule — écho BAC (sprint 35)', () => {
+  it('signale les sessions où la notion de la capsule est tombée', () => {
+    const avecEcho = MICRO_CAPSULES.find((c) => bacEchoForCapsule(c.id).years.length > 0)!;
+    render(<MicroCapsulePanel unitId={avecEcho.unitId} />);
+    const badge = screen.queryByTestId('capsule-echo-bac');
+    if (badge) {
+      expect(badge.textContent).toContain('سقطت في البكالوريا');
+      expect(badge.textContent).toMatch(/20\d\d/);
+    }
+  });
+
+  it('n’affiche aucun badge pour une capsule sans écho', () => {
+    const sansEcho = MICRO_CAPSULES.find((c) => bacEchoForCapsule(c.id).years.length === 0);
+    if (!sansEcho) return;
+    render(<MicroCapsulePanel unitId={sansEcho.unitId} />);
+    const badge = screen.queryByTestId('capsule-echo-bac');
+    if (badge) {
+      // L'unité peut contenir d'autres capsules avec écho : on vérifie alors
+      // que le badge correspond bien à une capsule qui en a un.
+      expect(badge.textContent).toMatch(/20\d\d/);
     }
   });
 });

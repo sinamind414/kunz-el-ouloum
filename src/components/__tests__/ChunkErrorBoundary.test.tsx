@@ -7,7 +7,7 @@ import ChunkErrorBoundary, { estEchecDeChargement } from '../ChunkErrorBoundary'
 
 afterEach(cleanup);
 
-function Casse({ message }: { message: string }): JSX.Element {
+function Casse({ message }: { message: string }): never {
   throw new Error(message);
 }
 

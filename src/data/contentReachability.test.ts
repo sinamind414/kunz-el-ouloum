@@ -23,7 +23,7 @@ import { DOCUMENT_PRACTICE_CONTEXTS } from './documentPracticeContexts';
 import { MICRO_CAPSULES } from './microCapsules';
 import { SCHEMA_DRILLS } from './schemaDrills';
 import { BAC_ARCHETYPES } from './bacArchetypes';
-import { BAC_IDEAS } from './bacSessionIndex';
+import { BAC_IDEAS, bacEchoForCapsule, bacEchoForDrill } from './bacSessionIndex';
 import { buildRevisionPlan } from './revisionPlan';
 import { SVT_QUIZ_QUESTIONS } from '../data';
 import { INITIAL_UNITS } from '../unitCatalog';
@@ -129,5 +129,22 @@ describe('atteignabilité — les 549 QCM et les familles de consignes', () => {
   it('rend les familles de consignes depuis un écran', () => {
     expect(importeParUnComposant(/verbDemands|verbFamilyStats/)).toBe(true);
     for (const f of VERB_FAMILIES) expect(classifyVerb(f.titleAr.split(' / ')[0])).toBeTruthy();
+  });
+});
+
+describe('atteignabilité — les échos BAC sont montrés, pas seulement calculés', () => {
+  it('branche l’écho des situations, des capsules ET des schémas sur un écran', () => {
+    // Sprint 35 : `bacEchoForCapsule` et `bacEchoForDrill` existaient depuis le
+    // sprint 18 sans aucun consommateur — du code exact, testé, et invisible.
+    expect(importeParUnComposant(/bacEchoForSituation/)).toBe(true);
+    expect(importeParUnComposant(/bacEchoForCapsule/)).toBe(true);
+    expect(importeParUnComposant(/bacEchoForDrill/)).toBe(true);
+  });
+
+  it('a réellement de quoi afficher : des capsules et des schémas avec écho', () => {
+    const capsules = MICRO_CAPSULES.filter((c) => bacEchoForCapsule(c.id).years.length > 0);
+    const schemas = SCHEMA_DRILLS.filter((d) => bacEchoForDrill(d.id).years.length > 0);
+    expect(capsules.length).toBeGreaterThan(10);
+    expect(schemas.length).toBeGreaterThan(8);
   });
 });
