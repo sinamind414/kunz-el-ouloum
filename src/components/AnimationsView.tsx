@@ -4,6 +4,7 @@
 import { motion } from 'motion/react';
 import { ArrowRight, Sparkles } from 'lucide-react';
 import { ANIMATION_CATALOG } from './ScienceAnimations';
+import ElectrophoresisSimulator from './ElectrophoresisSimulator';
 
 interface AnimationsViewProps {
   onBackToHome: () => void;
@@ -19,7 +20,7 @@ export default function AnimationsView({ onBackToHome }: AnimationsViewProps) {
           </div>
           <div className="text-right">
             <h1 className="text-2xl md:text-3xl font-black text-[#1f1c0b] dark:text-gray-100">الأنميشن العلمي</h1>
-            <p className="text-sm text-[#506072] dark:text-gray-400">محاكاة متحركة لآليات البكالوريا — تعمل دون أنترنت</p>
+            <p className="text-sm text-[#506072] dark:text-gray-400">محاكاة متحركة وتفاعلية لآليات البكالوريا — تعمل دون أنترنت</p>
           </div>
         </div>
         <button
@@ -29,6 +30,14 @@ export default function AnimationsView({ onBackToHome }: AnimationsViewProps) {
           <span>العودة</span>
           <ArrowRight className="w-4 h-4" />
         </button>
+      </div>
+
+      {/* Audit item 6 — seule brique INTERACTIVE : l'élève agit, il ne regarde pas. */}
+      <div className="mb-6 bg-white dark:bg-[#141916] rounded-3xl p-5 border-2 border-[#d9a400]/40 dark:border-[#d9a400]/25 shadow-sm">
+        <span className="inline-block mb-3 text-[11px] font-bold text-[#8a6a00] dark:text-[#d9a400] bg-[#fff7e0] dark:bg-black/20 px-2.5 py-1 rounded-lg">
+          محاكاة تفاعلية — الوحدة 2
+        </span>
+        <ElectrophoresisSimulator />
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">

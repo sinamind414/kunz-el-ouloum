@@ -33,6 +33,12 @@ module.exports = {
     '/node_modules/',
     '/\\.kilo/', // worktree git : copie du depot dans le dossier
     '/dist/',
+    // Controles post-build : ils portent sur le RESULTAT d'un build
+    // (dist/assets) et non sur le code source. Exclus de la suite unitaire
+    // vitest pour la meme raison (vite.config.ts, test.exclude) — sinon ils
+    // produisent des echecs permanents dans toute copie sans build.
+    // Ils se lancent par `npm run test:build`, apres le build.
+    '/src/build/',
     // vitest-only : vi.mock/doMock non hoistees par babel-plugin-jest-hoist.
     'LessonsViewActiveNav\\.test\\.tsx$',
     'LessonsViewPassiveNav\\.test\\.tsx$',

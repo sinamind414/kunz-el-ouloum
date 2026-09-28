@@ -3,6 +3,7 @@ import { motion } from 'motion/react';
 import { Volume2, Key, Star, Award, ChevronLeft, ArrowRight, HelpCircle, Layers, BookOpen, VolumeX, Sparkles, Eye, EyeOff } from 'lucide-react';
 import { Flashcard, Unit } from '../types';
 import { playFlipSound, playSuccessSound } from '../utils/audio';
+import MicroCapsulePanel from './MicroCapsulePanel';
 
 interface RevisionViewProps {
   units: Unit[];
@@ -150,6 +151,10 @@ export default function RevisionView({ units, flashcards, xp, streak, onRateCard
           </div>
         </div>
       )}
+
+      {/* Audit item 15 (sprint 11) — « فكرة في دقيقة » : le format le plus court,
+          placé là où l'élève vient déjà réviser, et aligné sur l'unité choisie. */}
+      {!isFocusMode && !isReaderMode && <MicroCapsulePanel unitId={selectedUnitId} />}
 
       {/* Selection Filter Tab Selector - Hidden in Focus Mode and Reader Mode */}
       {!isFocusMode && !isReaderMode && (

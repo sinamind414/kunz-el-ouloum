@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, lazy, Suspense } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import {
   Home,
@@ -16,12 +16,16 @@ import {
   Layers,
   Key,
   Compass,
-  Network
+  Network,
+  Search,
+  PenTool,
+  Dumbbell
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 
 import { Unit, UserProgress, Flashcard, QuizQuestion } from './types';
-import { INITIAL_UNITS, SVT_QUIZ_QUESTIONS, SVT_FLASHCARDS } from './data';
+import { INITIAL_UNITS } from './unitCatalog';
+import { loadCorpus, peekCorpus, prefetchCorpusWhenIdle } from './data/corpusLoader';
 import { FILL_BLANK_QUESTIONS } from './data/fillBlanks';
 
 /** Identité élève persistée entre les sessions (le JWT vit dans api.ts). */
@@ -46,26 +50,55 @@ import { MIFTAH_NAME_OFFICIAL_AR } from './data/miftahSpec';
 import { AR_LATN } from './utils/latinDigits';
 
 import SplashView from './components/SplashView';
+import ChunkErrorBoundary from './components/ChunkErrorBoundary';
+
+// ─────────────────────── Chargement différé des vues ───────────────────────
+// Sprint 30 : le bundle principal pesait 3,97 Mo (964 Ko gzip). Toutes les
+// vues étaient importées statiquement, donc téléchargées avant l'affichage du
+// tableau de bord — y compris le compilateur de méthodologie, le tableau de
+// bord enseignant ou les cartes mentales, que la plupart des élèves n'ouvrent
+// pas dans une session. Ces vues passent en import dynamique : leur code n'est
+// récupéré qu'au moment où l'onglet est ouvert.
+//
+// Restent chargées d'avance, parce qu'elles sont le chemin normal des
+// premières secondes : le splash, le tableau de bord, les leçons, la révision
+// et le quiz.
+const AnimationsView = lazy(() => import('./components/AnimationsView'));
+const SituationBankView = lazy(() => import('./components/SituationBankView'));
+const SchemaDrillView = lazy(() => import('./components/SchemaDrillView'));
+const RevisionPlanView = lazy(() => import('./components/RevisionPlanView'));
+const BacIdeasView = lazy(() => import('./components/BacIdeasView'));
+const MethodologyCompilerView = lazy(() => import('./components/MethodologyCompilerView'));
+const TeacherDashboardView = lazy(() => import('./components/TeacherDashboardView'));
+const CombatTrainerView = lazy(() => import('./components/CombatTrainerView'));
+const Bac2025ExamView = lazy(() => import('./components/Bac2025ExamView'));
+const BadgesView = lazy(() => import('./components/BadgesView'));
+const MindMapView = lazy(() => import('./components/MindMap/MindMapView'));
+const StatsView = lazy(() => import('./components/StatsView'));
+const AITutorView = lazy(() => import('./components/AITutorView'));
+const QuizView = lazy(() => import('./components/QuizView'));
+const RevisionView = lazy(() => import('./components/RevisionView'));
+const LessonsView = lazy(() => import('./components/LessonsView'));
+const LessonTwoView = lazy(() => import('./components/LessonTwoView'));
+const TrainingHubView = lazy(() => import('./components/TrainingHubView'));
+const CombatChallengePortal = lazy(() => import('./components/CombatChallengePortal'));
+const UnitIntroPortal = lazy(() => import('./components/UnitIntroPortal'));
+const StudentAuthView = lazy(() => import('./components/StudentAuthView'));
+
+
+/** Écran d'attente d'une vue différée — discret, en arabe, sans saut de page. */
+function VueEnChargement() {
+  return (
+    <div className="flex items-center justify-center py-16" dir="rtl" data-testid="vue-chargement">
+      <span className="text-sm font-bold text-[#506072] dark:text-gray-400">جارٍ التحميل…</span>
+    </div>
+  );
+}
+
 import DashboardView from './components/DashboardView';
-import QuizView from './components/QuizView';
-import AnimationsView from './components/AnimationsView';
-import RevisionView from './components/RevisionView';
-import StatsView from './components/StatsView';
-import AITutorView from './components/AITutorView';
 import StudyReminderModal from './components/StudyReminderModal';
-import MethodologyCompilerView from './components/MethodologyCompilerView';
-import StudentAuthView from './components/StudentAuthView';
 import StudentAccountBar from './components/StudentAccountBar';
 import { getApiToken } from './utils/api';
-import TeacherDashboardView from './components/TeacherDashboardView';
-import UnitIntroPortal from './components/UnitIntroPortal';
-import CombatTrainerView from './components/CombatTrainerView';
-import CombatChallengePortal from './components/CombatChallengePortal';
-import Bac2025ExamView from './components/Bac2025ExamView';
-import BadgesView from './components/BadgesView';
-import LessonTwoView from './components/LessonTwoView';
-import LessonsView from './components/LessonsView';
-import MindMapView from './components/MindMap/MindMapView';
 import { 
   startPirateMusic, 
   stopPirateMusic, 
@@ -82,7 +115,9 @@ export default function App() {
   });
 
   // Navigation tab state
-  const [currentTab, setCurrentTab] = useState<'splash' | 'home' | 'review' | 'stats' | 'chat' | 'methodology' | 'bootcamp' | 'badges' | 'lesson' | 'workshop' | 'mindmap' | 'teacher' | 'animations'>('splash');
+  // Exercice sur lequel ouvrir l'atelier quand on arrive depuis le plan.
+  const [bacIdeaFocus, setBacIdeaFocus] = useState<string | null>(null);
+  const [currentTab, setCurrentTab] = useState<'splash' | 'home' | 'review' | 'stats' | 'chat' | 'methodology' | 'bootcamp' | 'badges' | 'lesson' | 'workshop' | 'mindmap' | 'teacher' | 'animations' | 'situations' | 'schemas' | 'training' | 'plan' | 'bacideas'>('splash');
   const [activeMindMapUnitId, setActiveMindMapUnitId] = useState<number>(1);
   const [isAuthOpen, setIsAuthOpen] = useState(false);
   // Session élève persistée (correctif : la session était perdue à chaque F5).
@@ -166,7 +201,9 @@ export default function App() {
 
   // Core progression state (persisted to localStorage)
   const [units, setUnits] = useState<Unit[]>(INITIAL_UNITS);
-  const [flashcards, setFlashcards] = useState<Flashcard[]>(SVT_FLASHCARDS);
+  // Le corpus (549 QCM + flashcards) arrive en différé — voir data/corpusLoader.ts.
+  const [flashcards, setFlashcards] = useState<Flashcard[]>([]);
+  const [corpusQuestions, setCorpusQuestions] = useState<QuizQuestion[]>([]);
   // Seed 100 % honnête : premier lancement = zéro réel.
   // (plus aucune statistique de démonstration — tout s'écrit avec l'activité réelle)
   const [progress, setProgress] = useState<UserProgress>({
@@ -229,12 +266,18 @@ export default function App() {
     const healedFlashcards = savedFlashcards ? healSavedFlashcards(savedFlashcards) : null;
     if (healedFlashcards) {
       setFlashcards(healedFlashcards);
-    } else if (savedFlashcards) {
-      setFlashcards(SVT_FLASHCARDS);
-      try {
-        localStorage.setItem('svt_flashcards', JSON.stringify(SVT_FLASHCARDS));
-      } catch { /* quota — sera retenté au prochain save */ }
     }
+    // Le jeu de référence n'est chargé que si le stock local est absent ou
+    // corrompu : dans ce cas seulement, on attend le corpus.
+    if (!healedFlashcards) {
+      void loadCorpus().then(({ flashcards: reference }) => {
+        setFlashcards(reference);
+        try {
+          localStorage.setItem('svt_flashcards', JSON.stringify(reference));
+        } catch { /* quota — sera retenté au prochain save */ }
+      });
+    }
+    prefetchCorpusWhenIdle();
     if (savedProgress) {
       const parsed: UserProgress = savedProgress;
       const today = new Date().toISOString().split('T')[0];
@@ -348,6 +391,10 @@ export default function App() {
     setUnits(updatedUnits);
     saveToLocalStorage(updatedUnits, flashcards, progress);
     updateLastStudyTime();
+
+    // Le corpus peut ne pas être encore là (chargement différé) : on le
+    // demande AVANT d'ouvrir le quiz, et l'écran s'actualise dès son arrivée.
+    void loadCorpus().then(({ questions }) => setCorpusQuestions(questions));
 
     // Show portal for Unit 1 instead of launching quiz directly
     if (unitId === 1) {
@@ -536,8 +583,9 @@ export default function App() {
         kind: 'fillBlank',
         acceptedAnswers: q.microTest.acceptedAnswers,
       }));
+    const corpus = corpusQuestions.length > 0 ? corpusQuestions : (peekCorpus()?.questions ?? []);
     const questions = [
-      ...SVT_QUIZ_QUESTIONS.filter(q => q.unitId === activeQuizUnitId),
+      ...corpus.filter(q => q.unitId === activeQuizUnitId),
       ...fillBlankQuestions,
     ];
 
@@ -545,7 +593,7 @@ export default function App() {
       <QuizView 
         unitId={activeQuizUnitId}
         unitTitle={activeUnit ? activeUnit.title : ''}
-        questions={questions.length > 0 ? questions : SVT_QUIZ_QUESTIONS}
+        questions={questions.length > 0 ? questions : corpus}
         onClose={() => setActiveQuizUnitId(null)}
         onQuizComplete={handleQuizComplete}
       />
@@ -574,13 +622,14 @@ export default function App() {
     { tab: 'chat', label: 'المرشد', Icon: Compass },
     { tab: 'stats', label: 'تقدمي', Icon: Trophy },
   ];
+  // Sprint 13 — dette UI : 9 entrées secondaires devenaient un mur. Les cinq
+  // espaces d'entraînement (situations, schémas, bootcamp, atelier, animations)
+  // passent derrière une porte unique ; voir src/data/trainingHub.ts.
   const SECONDARY_NAV: { tab: typeof currentTab; label: string; Icon: LucideIcon }[] = [
-    { tab: 'workshop', label: 'الورشة التفاعلية', Icon: PlayCircle },
+    { tab: 'training', label: 'التمارين والتدريب', Icon: Dumbbell },
     { tab: 'mindmap', label: 'الخرائط الذهنية', Icon: Network },
     { tab: 'methodology', label: MIFTAH_NAME_OFFICIAL_AR, Icon: Key },
     { tab: 'badges', label: 'الأوسمة والإنجازات', Icon: Award },
-    { tab: 'bootcamp', label: 'تحدي البكالوريا', Icon: Swords },
-    { tab: 'animations', label: 'الأنميشن العلمي', Icon: Sparkles },
     { tab: 'teacher', label: 'لوحة المتابعة', Icon: GraduationCap },
   ];
 
@@ -650,6 +699,11 @@ export default function App() {
             currentTab === 'lesson' ? 'الدروس' :
             currentTab === 'workshop' ? 'الورشة التفاعلية' : 
            currentTab === 'animations' ? 'الأنميشن العلمي' :
+           currentTab === 'situations' ? 'تمارين بالوضعيات' :
+           currentTab === 'schemas' ? 'ارسم من الذاكرة' :
+           currentTab === 'training' ? 'التمارين والتدريب' :
+           currentTab === 'plan' ? 'خطة المراجعة النهائية' :
+           currentTab === 'bacideas' ? 'أفكار التمارين حسب الدورة' :
            currentTab === 'mindmap' ? 'الخرائط الذهنية (D3)' :
             currentTab === 'chat' ? 'المرشد الذكي' :
             currentTab === 'teacher' ? 'لوحة المتابعة' :
@@ -739,6 +793,10 @@ export default function App() {
               exit={{ opacity: 0, y: -10 }}
               transition={{ duration: 0.2 }}
             >
+              {/* Suspense enveloppe l'ensemble du canevas : une seule frontière
+                  suffit, puisqu'un seul onglet est monté à la fois. */}
+              <ChunkErrorBoundary>
+              <Suspense fallback={<VueEnChargement />}>
               {currentTab === 'home' && (
                 <DashboardView 
                   units={units}
@@ -815,8 +873,42 @@ export default function App() {
               )}
 
               {currentTab === 'animations' && (
-                <AnimationsView onBackToHome={() => setCurrentTab('home')} />
+                <AnimationsView onBackToHome={() => setCurrentTab('training')} />
               )}
+
+              {currentTab === 'training' && (
+                <TrainingHubView
+                  onOpen={(tab) => setCurrentTab(tab)}
+                  onBackToHome={() => setCurrentTab('home')}
+                />
+              )}
+
+              {currentTab === 'plan' && (
+                <RevisionPlanView
+                  onBackToHome={() => setCurrentTab('training')}
+                  onOpenRedaction={(ideaId) => {
+                    setBacIdeaFocus(ideaId);
+                    setCurrentTab('bacideas');
+                  }}
+                />
+              )}
+
+              {currentTab === 'bacideas' && (
+                <BacIdeasView
+                  onBackToHome={() => setCurrentTab('training')}
+                  focusIdeaId={bacIdeaFocus}
+                />
+              )}
+
+              {currentTab === 'situations' && (
+                <SituationBankView onBackToHome={() => setCurrentTab('training')} />
+              )}
+
+              {currentTab === 'schemas' && (
+                <SchemaDrillView onBackToHome={() => setCurrentTab('training')} />
+              )}
+              </Suspense>
+              </ChunkErrorBoundary>
             </motion.div>
           </AnimatePresence>
         </main>

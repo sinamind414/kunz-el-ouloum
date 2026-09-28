@@ -1,0 +1,406 @@
+{
+  "_meta": {
+    "generatedAt": "2026-09-26",
+    "basis": "Analyse croisée de 5 chaînes YouTube SVT BAC (@prof-ketfi.cherif-zina, @Profchaouch, @Prof_benotmane, @ikramscience8424, @MostafaBdd) + programme national + unitCatalog.ts",
+    "scoring": "tier 1 = blocage fort ET poids examen fort ; tier 2 = poids examen fort, blocage moyen ; tier 3 = aucune ressource existante",
+    "updatedAt": "2026-09-27",
+    "sources": [
+      "data/youtube_ketfi_catalog.json",
+      "data/youtube_ikram_catalog.json",
+      "data/youtube_multichaines_catalog.json",
+      "docs/analyse/ANALYSE_CHAINES_YT_COMPLEMENTAIRES.md"
+    ],
+    "demandeParUniteChaouchAZ": {
+      "note": "série « من الألف إلى الياء » : 1 vidéo par unité, même format ; vues/mois corrige le biais d'ancienneté",
+      "vuesParMoisK": {
+        "4": 162.5,
+        "1": 109.1,
+        "7": 106.8,
+        "5": 96.7,
+        "6": 63.8,
+        "2": 51.3,
+        "3": 41.2
+      }
+    },
+    "hierarchieDesSupports": {
+      "constat": "@MostafaBdd : à contenu égal, la carte mentale est vue 6 à 8 fois plus que le cours (U2 ×6,5, U3 ×7,7, U4 ×1,9) et les corrections d'exercices dépassent le cours dans les 3 unités mesurées",
+      "ordreCible": [
+        "carte mentale de l'unité",
+        "exercices corrigés indexés par situation",
+        "micro-capsule « comment faire » (1-2 min)",
+        "leçon/cours complet"
+      ]
+    }
+  },
+  "priorites": [
+    {
+      "tier": 1,
+      "sprint": 1,
+      "appUnitId": 4,
+      "lecon": "CMH + الزمر الدموية ABO/Rh",
+      "diagnostic": "trou de prérequis génétique 2AS",
+      "livrables": [
+        "module prérequis 2AS (15 min)",
+        "leçon CMH",
+        "QCM diagnostic"
+      ],
+      "preuve": "1,4M vues en 4 parties ; BAC 2015,2016,2020,2021",
+      "confirmationMultiChaines": "Benotmane : capsules dédiées CMH 12:04 (153K) et Rh 8:38 (119K) — granularité du module prérequis validée"
+    },
+    {
+      "tier": 1,
+      "sprint": 2,
+      "appUnitId": 4,
+      "lecon": "التعاون الخلوي (humorale ↔ cellulaire)",
+      "diagnostic": "acteurs connus, enchaînement non maîtrisé",
+      "livrables": [
+        "schéma-bilan interactif",
+        "3 exercices BAC (2019,2023,2023)"
+      ],
+      "preuve": "7h de vidéo ; unité = 24% du corpus d'examen",
+      "confirmationMultiChaines": "Chaouch : 4 parties « تحفيز الخلايا اللمفاوية » = 616K ; Benotmane : « مخطط شامل » 124K > chacune des phases d'exécution (75K/70K)"
+    },
+    {
+      "tier": 1,
+      "sprint": 3,
+      "appUnitId": 2,
+      "lecon": "سلوك الأحماض الأمينية / pHi",
+      "diagnostic": "prérequis de chimie (ionisation) manquant",
+      "livrables": [
+        "4 micro-fiches",
+        "simulateur pH → charge → migration",
+        "10 QCM"
+      ],
+      "preuve": "1,5M vues = vidéo la plus vue de la chaîne",
+      "confirmationMultiChaines": "@MostafaBdd : capsule « كيف نكتب صيغة الحمض الأميني بطريقة صحيحة ؟ » 12:30 = 151K vues, soit plus que le cours complet de l'unité 2 (87K) → la demande sur cette notion est démontrée, pas seulement déduite",
+      "statut": "livré — sprints 3 et 4 (2026-09-27)",
+      "livraison": {
+        "lecon": "amino_acid_behavior (tête de l’unité 2, 5 blocs dont écriture de la forme ionisée)",
+        "document": "amino_acid_electrophoresis (manuel_officiel_verifie, ch. 8)",
+        "qcm": "517-524",
+        "microRemediations": [
+          "mr_phi_charge_regle",
+          "mr_sens_migration_electrode"
+        ],
+        "verrou": "src/data/aminoAcidBehavior.lock.test.ts (14 tests)",
+        "resteAFaire": "item 6 : simulateur d’électrophorèse interactif"
+      }
+    },
+    {
+      "tier": 1,
+      "sprint": 4,
+      "appUnitId": 3,
+      "lecon": "المثبطات الإنزيمية (compétitif/non compétitif)",
+      "diagnostic": "confusion + lecture de graphes cinétiques",
+      "livrables": [
+        "comparatif visuel",
+        "atelier 6 courbes",
+        "BAC 2019 GO, BAC 2022 méthane"
+      ],
+      "preuve": "3h33 + FAQ dédiée ; 18% du corpus d'examen",
+      "confirmationMultiChaines": "U3 = demande la plus faible (41,2K vues/mois) mais difficulté élevée → micro-fiches ciblées, pas un cours complet",
+      "statut": "partiel — carte mentale U3 livrée au sprint 4 (2026-09-27)",
+      "livraison": {
+        "carteMentale": "MIND_MAPS_DATABASE[4] — 12 nœuds / 19 liens, dont compétitif vs non compétitif et lecture Vmax/Km",
+        "verrou": "src/data/enzymeMindMap.lock.test.ts (8 tests)",
+        "resteAFaire": "items 7 et 8 : leçon active inhibiteurs + atelier des 6 courbes"
+      },
+      "statutApp": "livré — sprints 4 et 5 : carte mentale U3 (12 nœuds), leçon active enzyme_inhibitors (5 blocs dont atelier des 6 courbes), 2 figures SVG, 2 micro-remédiations, QCM 525-529"
+    },
+    {
+      "tier": 1,
+      "sprint": 5,
+      "appUnitId": 6,
+      "lecon": "المرحلة الكيموضوئية",
+      "diagnostic": "surcharge cognitive ; aucune synthèse d'unité existante",
+      "livrables": [
+        "synthèse d'unité (inédite)",
+        "5 micro-fiches de 8 min",
+        "quiz de passage"
+      ],
+      "preuve": "indice de difficulté 83/100 ; décrochage -63%",
+      "confirmationMultiChaines": "U6 = point bas de la biologie (63,8K/mois) ; U7 remonte au 3e rang (106,8K/mois) une fois corrigé le biais d'ancienneté → élargir la synthèse d'unité à U7",
+      "statutApp": "livré — sprint 7 : leçon photochemical_chain (8 étapes + synthèse U6/U7), 2 figures, 3 micro-fiches, QCM 540-549"
+    },
+    {
+      "tier": 2,
+      "sprint": 6,
+      "appUnitId": 1,
+      "lecon": "الاستنساخ / الترجمة / الشفرة",
+      "diagnostic": "cours compris, exercices durs",
+      "livrables": [
+        "banque d'exercices 'antibiotiques' (2019,2020,2021,2022)"
+      ],
+      "preuve": "24% du corpus d'examen"
+    },
+    {
+      "tier": 2,
+      "sprint": 6,
+      "appUnitId": 5,
+      "lecon": "كمون الراحة / كمون العمل",
+      "diagnostic": "48% de l'unité, abordée trop tard dans l'année",
+      "livrables": [
+        "simulateur de tracé",
+        "exercices poisons (cyanure, GABA, botulique)"
+      ],
+      "preuve": "5h20 de cours ; 18% du corpus d'examen"
+    },
+    {
+      "tier": 3,
+      "sprint": 7,
+      "appUnitId": 7,
+      "lecon": "التنفس والتخمر",
+      "diagnostic": "unité sous-dotée partout",
+      "livrables": [
+        "5 leçons",
+        "banque d'exercices"
+      ],
+      "preuve": "3h40 vs 21h pour l'immunité"
+    },
+    {
+      "tier": 3,
+      "sprint": 8,
+      "appUnitId": 8,
+      "lecon": "الحصيلة الطاقوية (niveau supra-cellulaire)",
+      "diagnostic": "aucune ressource existante",
+      "livrables": [
+        "contenu intégral"
+      ],
+      "preuve": "0 vidéo sur la chaîne"
+    },
+    {
+      "tier": 3,
+      "sprint": 9,
+      "appUnitId": 9,
+      "lecon": "الجيولوجيا / التكتونية العامة (U9-U11)",
+      "diagnostic": "terrain vide",
+      "livrables": [
+        "contenu intégral 3 unités"
+      ],
+      "preuve": "0 vidéo BAC ; ~30% du programme national"
+    },
+    {
+      "tier": 1,
+      "sprint": "3 bis",
+      "appUnitId": 4,
+      "lecon": "فقدان المناعة المكتسبة (VIH/SIDA)",
+      "diagnostic": "chapitre complet chez 3 chaînes sur 4, absent de l'app : 19 QCM dispersés, 0 leçon active, 0 résumé, 0 micro-remédiation",
+      "livrables": [
+        "leçon immunity_hiv_aids (bnية du virus, cellules cibles, 3 phases)",
+        "lecture du graphe LT4 / charge virale",
+        "2 exercices type BAC",
+        "micro-remédiation « chute des LT4 ⇒ paralysie des deux réponses »"
+      ],
+      "preuve": "Chaouch 3 parties = 414K vues ; Benotmane 3 capsules 1h12 = 280K ; Ikram 1 vidéo ; chapitre 23 du livre",
+      "confirmationMultiChaines": "application directe de la coopération cellulaire livrée au sprint 2"
+    }
+  ],
+  "transversal": [
+    {
+      "competence": "النص العلمي",
+      "rang": 1,
+      "note": "le plus pénalisant à la correction",
+      "module": "src/correcteurV1.ts"
+    },
+    {
+      "competence": "الرسم التخطيطي التفسيري",
+      "rang": 2,
+      "note": "points faciles à sécuriser"
+    },
+    {
+      "competence": "المسعى / الاستدلال العلمي",
+      "rang": 3,
+      "note": "le plus discriminant"
+    },
+    {
+      "competence": "استرجاع المعلومات",
+      "rang": 4,
+      "note": "~5 pts, souvent perdus bêtement"
+    }
+  ],
+  "aNePasPrioriser": [
+    "البلعمة",
+    "نضج البروتين",
+    "بنية الريبوزوم",
+    "برنامج أناجين",
+    "الإدماج العصبي",
+    "ازدواجية التفاعلات",
+    "الصبغات اليخضورية"
+  ],
+  "backlogComplementaire": [
+    {
+      "id": 12,
+      "titre": "Banque « أفكار التمارين » indexée par session BAC 2019→2025",
+      "taille": "M",
+      "preuve": "Ikram : 4 vidéos, 214K vues ; grep des sessions dans src/ = 0 fichier",
+      "statut": "livré (sprint 16) — « أفكار التمارين حسب الدورة » : 35 exercices des sessions officielles 2019, 2021→2025 (idée, sndات, notion évaluée, verbes de consigne, unités), statistiques de pression par unité et par verbe, recherche plein texte ; session 2020 déclarée comme trou, jamais inventée"
+    },
+    {
+      "id": 14,
+      "titre": "Mode révision globale d'une unité en une session",
+      "taille": "M",
+      "preuve": "Chaouch U4 8h26 = 1,3M ; Benotmane révision 4h27 = 459K",
+      "statut": "livré (sprint 15) — « خطة المراجعة النهائية » : moteur déterministe qui répartit les 24 capsules, 17 schémas, 23 situations et 11 cartes mentales sur les jours restants (poids BAC × bonus de difficulté), 4 préréglages 30/14/7/3 jours, cases à cocher persistées et 2 derniers jours en consolidation"
+    },
+    {
+      "id": 15,
+      "titre": "Capsules « فكرة في دقيقة » : micro-fiches calibrées 1-2 min",
+      "taille": "S",
+      "preuve": "Benotmane, playlist de 8 micro-vidéos ; micro-remédiations actuelles = 2-4 min",
+      "statut": "livré (sprint 11) — 24 capsules « فكرة في دقيقة », 11/11 unités, panneau en tête de المراجعة"
+    },
+    {
+      "id": "5 bis",
+      "titre": "Bloc « écrire la forme ionisée du AA aux 3 pH » dans amino_acid_behavior",
+      "taille": "S",
+      "preuve": "@MostafaBdd, capsule 12:30 — 151K vues",
+      "statut": "livré — sprint 4"
+    },
+    {
+      "id": 16,
+      "titre": "Cartes mentales pour toutes les unités (3 sur 11 aujourd'hui ; U2 n'a que 8 nœuds)",
+      "taille": "L",
+      "preuve": "cartes mentales U2 568K / U3 565K / U4 710K contre 87K / 73K / 368K pour les cours",
+      "statut": "livré (sprints 9 et 14) — 11 cartes mentales, une par unité du programme"
+    },
+    {
+      "id": 17,
+      "titre": "Mode « reproduire le schéma de mémoire » (liste fermée par unité + autocorrection)",
+      "taille": "M",
+      "preuve": "« جميع الرسومات التخطيطية التي يجب حفظها » 58:58 — 76K",
+      "statut": "livré (sprint 12) — 17 schémas, onglet « ارسم من الذاكرة », image révélée après auto-évaluation"
+    },
+    {
+      "id": 18,
+      "titre": "Indexer les exercices par situation (antibiotique, progéria, cancer…) en plus de l'unité",
+      "taille": "S",
+      "preuve": "banque de 121 exercices nommés par situation — 350 075 vues",
+      "statut": "livré (sprint 10) — 23 situations, 11/11 unités, onglet « تمارين بالوضعيات »"
+    },
+    {
+      "id": 19,
+      "titre": "Carte « ماذا سندرس في هذه الوحدة ؟ » en ouverture d'unité",
+      "taille": "S",
+      "preuve": "15:44 — 79K",
+      "statut": "livré (sprint 13) — 11 cartes d'ouverture + portail réécrit (bug unité 1 partout corrigé)"
+    }
+  ],
+  "prioritesMesurees_2017_2026": {
+    "_meta": {
+      "source": "src/data/bacSessionIndex.ts — 59 exercices des sujets officiels ONEC, sessions 2017 à 2026 (10 sessions consécutives)",
+      "methode": "points attribués à l'unité qui MÈNE l'exercice ; les apparitions comptent aussi les unités secondaires",
+      "verrou": "src/data/prioritesMesurees.sync.test.ts — ces chiffres échouent s'ils divergent du code",
+      "aRetenir": "le classement initial (sprints 1-4) venait des vues YouTube et de la difficulté ressentie ; celui-ci vient de l'épreuve"
+    },
+    "unites": [
+      {
+        "unitId": 4,
+        "titre": "المناعة",
+        "pointsPrincipaux": 82,
+        "partPourcent": 20.8,
+        "poidsAnnonce": 13,
+        "apparitions": 13,
+        "sessions": 10
+      },
+      {
+        "unitId": 1,
+        "titre": "تركيب البروتين",
+        "pointsPrincipaux": 75,
+        "partPourcent": 19.0,
+        "poidsAnnonce": 10,
+        "apparitions": 17,
+        "sessions": 10
+      },
+      {
+        "unitId": 5,
+        "titre": "الاتصال العصبي",
+        "pointsPrincipaux": 74,
+        "partPourcent": 18.7,
+        "poidsAnnonce": 16,
+        "apparitions": 11,
+        "sessions": 10
+      },
+      {
+        "unitId": 3,
+        "titre": "النشاط الإنزيمي",
+        "pointsPrincipaux": 58,
+        "partPourcent": 14.7,
+        "poidsAnnonce": 13,
+        "apparitions": 15,
+        "sessions": 10
+      },
+      {
+        "unitId": 6,
+        "titre": "التركيب الضوئي",
+        "pointsPrincipaux": 51,
+        "partPourcent": 12.9,
+        "poidsAnnonce": 20,
+        "apparitions": 7,
+        "sessions": 6
+      },
+      {
+        "unitId": 2,
+        "titre": "بنية/وظيفة البروتين",
+        "pointsPrincipaux": 22,
+        "partPourcent": 5.6,
+        "poidsAnnonce": 9,
+        "apparitions": 13,
+        "sessions": 9
+      },
+      {
+        "unitId": 7,
+        "titre": "تحويل الطاقة",
+        "pointsPrincipaux": 13,
+        "partPourcent": 3.3,
+        "poidsAnnonce": 19,
+        "apparitions": 4,
+        "sessions": 4
+      },
+      {
+        "unitId": 8,
+        "titre": "ما فوق البنية الخلوية",
+        "pointsPrincipaux": 5,
+        "partPourcent": 1.3,
+        "poidsAnnonce": 5,
+        "apparitions": 5,
+        "sessions": 4
+      },
+      {
+        "unitId": 9,
+        "titre": "النشاط التكتوني",
+        "pointsPrincipaux": 5,
+        "partPourcent": 1.3,
+        "poidsAnnonce": 5,
+        "apparitions": 2,
+        "sessions": 1
+      },
+      {
+        "unitId": 10,
+        "titre": "بنية الكرة الأرضية",
+        "pointsPrincipaux": 5,
+        "partPourcent": 1.3,
+        "poidsAnnonce": 5,
+        "apparitions": 1,
+        "sessions": 1
+      },
+      {
+        "unitId": 11,
+        "titre": "البنيات الجيولوجية",
+        "pointsPrincipaux": 5,
+        "partPourcent": 1.3,
+        "poidsAnnonce": 5,
+        "apparitions": 1,
+        "sessions": 1
+      }
+    ],
+    "revisionDuClassementInitial": {
+      "confirme": [
+        "U4 المناعة : première au classement ressenti ET première à l'épreuve"
+      ],
+      "grandOubli": "U1 تركيب البروتين — absente des 5 priorités initiales, alors qu'elle mène 19 % des points et apparaît dans 17 exercices sur 59",
+      "secondOubli": "U5 الاتصال العصبي — absente aussi, 18,7 % des points, présente sur les 10 sessions",
+      "aRequalifier": "U2 (pHi, acides aminés) : 1re en difficulté ressentie mais 5,6 % des points en propre — à traiter comme compétence TRANSVERSALE (13 apparitions) et non comme unité vedette",
+      "surevalue": "U7 تحويل الطاقة : 19 % annoncés par le programme, 3,3 % constatés sur 10 sessions"
+    }
+  }
+}

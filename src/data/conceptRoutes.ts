@@ -74,6 +74,50 @@ export const CONCEPT_ROUTES: Record<string, ConceptRoute> = {
     documentExerciseId: 'mutation_protein_function',
     survivalCardId: 'sc_adn_proteine',
   },
+  // Prérequis 2AS de l'unité 4 : génétique de base (مورثة/أليل/نمط وراثي) —
+  // sans eux, CMH/HLA et ABO restent du par-cœur. Route vers la leçon de rappel.
+  genetique_prerequis: {
+    conceptId: 'genetique_prerequis',
+    unitId: 4,
+    lessonId: 'prerequis2AS_genetique',
+    documentExerciseId: 'cmh_transplant_compatibility',
+  },
+  // Synthèse de l'unité 4 : la coopération cellulaire (LT4 pivot).
+  immunity_cooperation: {
+    conceptId: 'immunity_cooperation',
+    unitId: 4,
+    lessonId: 'immunity_cooperation',
+    documentExerciseId: 'lt_target_cell_response',
+  },
+  // Audit items 9-11 : chaîne photochimique et synthèse U6/U7.
+  photochemical_chain: {
+    conceptId: 'photochemical_chain',
+    unitId: 6,
+    lessonId: 'photochemical_chain',
+    documentExerciseId: 'photochemical_chain_membrane',
+  },
+  // Audit item 3 bis : dossier VIH / SIDA (plus gros écart offre/demande).
+  immunity_hiv_aids: {
+    conceptId: 'immunity_hiv_aids',
+    unitId: 4,
+    lessonId: 'immunity_hiv_aids',
+    documentExerciseId: 'vih_evolution_courbes',
+  },
+  // Audit items 7-8 : inhibiteurs enzymatiques et lecture des courbes.
+  enzyme_inhibitors: {
+    conceptId: 'enzyme_inhibitors',
+    unitId: 3,
+    lessonId: 'enzyme_inhibitors',
+    documentExerciseId: 'michaelis_courbe',
+    survivalCardId: 'sc_enzymes',
+  },
+  // Audit item 5 : comportement des acides aminés (charge / pHi / migration).
+  amino_acid_behavior: {
+    conceptId: 'amino_acid_behavior',
+    unitId: 2,
+    lessonId: 'amino_acid_behavior',
+    documentExerciseId: 'amino_acid_electrophoresis',
+  },
   immunity_self_nonself: {
     conceptId: 'immunity_self_nonself',
     unitId: 4,

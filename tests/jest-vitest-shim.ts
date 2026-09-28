@@ -17,7 +17,8 @@
 //    (il ne reconnait que les appels jest.*) -> l'enregistrement du mock
 //    arrive apres les imports et n'a aucun effet. Les 4 fichiers concernes
 //    restent couverts par vitest.
-//  - vi.hoisted / vi.setSystemTime / snapshots vitest : non couverts ici.
+//  - vi.hoisted / snapshots vitest : non couverts ici.
+//  - Minuteries : couvertes par delegation a jest (voir vi plus bas).
 
 declare const jest: any;
 
@@ -82,6 +83,19 @@ export const vi = {
   resetAllMocks: jest.resetAllMocks,
   clearAllMocks: jest.clearAllMocks,
   restoreAllMocks: jest.restoreAllMocks,
+  // Minuteries virtuelles : delegation a l'implementation de jest
+  // (@sinonjs/fake-timers, le meme socle que vitest). Date est faussée des
+  // deux cotes par defaut, ce qui suffit aux tests qui melangent
+  // setSystemTime et advanceTimersByTime.
+  useFakeTimers: (config?: unknown) => jest.useFakeTimers(config),
+  useRealTimers: () => jest.useRealTimers(),
+  advanceTimersByTime: (ms: number) => jest.advanceTimersByTime(ms),
+  runAllTimers: () => jest.runAllTimers(),
+  runOnlyPendingTimers: () => jest.runOnlyPendingTimers(),
+  getTimerCount: () => jest.getTimerCount(),
+  clearAllTimers: () => jest.clearAllTimers(),
+  setSystemTime: (t?: number | Date) => jest.setSystemTime(t),
+  getRealSystemTime: () => jest.getRealSystemTime(),
   stubGlobal: (key: PropertyKey, value: any): void => {
     stubbedGlobals.push([key, g[key]]);
     g[key] = value;

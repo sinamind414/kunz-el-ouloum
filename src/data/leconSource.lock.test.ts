@@ -2,7 +2,7 @@
 // (src/data/bookIndex.ts : appariement leçons↔chapitres + traçabilité uniteId).
 // Les verrous de l'INDEX lui-même sont dans bookIndex.lock.test.ts.
 // Fige : la recette norm, la couverture uniteId 1-11 ↔ chapitres de l'index,
-// l'appariement leçons↔chapitres (42 mappés / 11 nulls DOCUMENTÉS, 3 ancres),
+// l'appariement leçons↔chapitres (45 mappés / 14 nulls DOCUMENTÉS, 6 ancres),
 // la propagation du flag ambigu, et le décalage programme/livre de la leçon
 // « الظواهر المرتبطة بالغوص » (séquence U9, chapitre C51 = U11).
 
@@ -84,29 +84,39 @@ describe('bookIndex — uniteId 1-11 ↔ chapitres de l index (traçabilité str
 describe('bookIndex — appariement leçons ↔ chapitres (mesure figée)', () => {
   const cles = toutesCles();
 
-  it('53 clés dans la séquence officielle ; 42 mappées, 11 nulls documentés', () => {
-    expect(cles).toHaveLength(53);
+  it('59 clés dans la séquence officielle ; 45 mappées, 14 nulls documentés', () => {
+    expect(cles).toHaveLength(59);
     const mappes = cles.filter((k) => sourceLivre(k, cleToTitre(k)) !== null);
-    expect(mappes).toHaveLength(42);
+    expect(mappes).toHaveLength(45);
     const nulls = cles.filter((k) => sourceLivre(k, cleToTitre(k)) === null);
     // LISTE FIGÉE — toute évolution doit être un choix relu, pas un effet de bord.
     expect(nulls).toEqual([
+      'amino_acid_behavior', // pHi : activité interne au ch. 8, sans en-tête TDM propre
       'd2-u6-l1-hill-ruben', // leçons expérimentales : démarche, pas de chapitre TDM dédié
       'd2-u6-l2-jagendorf',
       'd2-u6-l3-calvin',
       'd2-u7-l1-mitchell-racker',
       'd3-u9-l2-benioff',
+      'immunity_cooperation', // حوصلة الوحدة : synthèse inter-chapitres sans en-tête TDM
       'phase12_chapitres_23_24_2', // synthèse inter-chapitres sans en-tête dédié
       'phase15_chapitres_29_30_2', // culture générale — hors TDM (curriculumOfficial)
       'phase18_chapitres_35_36_2', // تيارات الحمل : 0 occurrence OCR
       'phase22_chapitres_43_44', // culture générale — hors TDM
       'phase22_chapitres_43_44_2', // culture générale — hors TDM
       'phase5_chapitres_9_10_2', // ABO/Rh : aucune preuve OCR dans U4
+      'prerequis2AS_genetique', // rappel des acquis 2AS : pas de chapitre TDM dédié
     ]);
   });
 
-  it('exactement 3 ancres documentées, chapitres existants + raison non vide', () => {
-    const ancres = ['phase1_chapitres_1_2_2', 'phase11_chapitres_21_22_2', 'phase12_chapitres_23_24'];
+  it('exactement 6 ancres documentées, chapitres existants + raison non vide', () => {
+    const ancres = [
+      'phase1_chapitres_1_2_2',
+      'phase11_chapitres_21_22_2',
+      'phase12_chapitres_23_24',
+      'enzyme_inhibitors',
+      'immunity_hiv_aids',
+      'photochemical_chain',
+    ];
     for (const k of ancres) {
       const s = sourceLivre(k, cleToTitre(k));
       expect(s?.mode, k).toBe('ancre-documentee');
@@ -116,6 +126,9 @@ describe('bookIndex — appariement leçons ↔ chapitres (mesure figée)', () =
     expect(sourceLivre('phase1_chapitres_1_2_2', '')?.chapitres.map((c) => c.chapter)).toEqual([4, 5]);
     expect(sourceLivre('phase11_chapitres_21_22_2', '')?.chapitres.map((c) => c.chapter)).toEqual([33]);
     expect(sourceLivre('phase12_chapitres_23_24', '')?.chapitres.map((c) => c.chapter)).toEqual([34]);
+    expect(sourceLivre('enzyme_inhibitors', '')?.chapitres.map((c) => c.chapter)).toEqual([10, 12]);
+    expect(sourceLivre('immunity_hiv_aids', '')?.chapitres.map((c) => c.chapter)).toEqual([22, 23]);
+    expect(sourceLivre('photochemical_chain', '')?.chapitres.map((c) => c.chapter)).toEqual([33]);
   });
 
   it('répartition des modes auto figée (aucun glissement silencieux du matcher)', () => {
@@ -128,7 +141,7 @@ describe('bookIndex — appariement leçons ↔ chapitres (mesure figée)', () =
       'auto-exact': 34,
       'auto-compose': 1,
       'auto-contenance': 4,
-      'ancre-documentee': 3,
+      'ancre-documentee': 6,
     });
   });
 

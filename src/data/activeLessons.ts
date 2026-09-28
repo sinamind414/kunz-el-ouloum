@@ -263,6 +263,12 @@ export const LESSON_PROGRESSION: Record<string, LessonProgression> = {
     recommendedReflexId: 'interpret',
     completionMessageAr: 'أحسنت! فهمت كيف تكشف الأمواج P و S عن بنية باطن الأرض.',
   },
+  'prerequis2AS_genetique': {
+    nextLessonId: 'immunity_self_nonself',
+    recommendedReflexId: 'compare',
+    completionMessageAr:
+      'استرجعت المكتسبات القبلية (مورثة، أليل، نمط وراثي، تساوي السيادة). الآن أنت جاهز لدرس الذات واللاذات.',
+  },
   'immunity_self_nonself': {
     nextLessonId: 'immunity_humoral_response',
     recommendedReflexId: 'interpret',
@@ -279,9 +285,20 @@ export const LESSON_PROGRESSION: Record<string, LessonProgression> = {
     completionMessageAr: 'أكملت الاستجابة الخلوية. الآن انتقل إلى الذاكرة المناعية.',
   },
   'immunity_memory_response': {
-    nextLessonId: undefined,
+    nextLessonId: 'immunity_cooperation',
     recommendedReflexId: 'interpret',
-    completionMessageAr: 'أحسنت! أكملت سلسلة المناعة: الذات واللاذات → خلطية → خلوية → ذاكرة.',
+    completionMessageAr: 'أحسنت! أكملت سلسلة المناعة: الذات واللاذات → خلطية → خلوية → ذاكرة. تبقى حوصلة التعاون الخلوي.',
+  },
+  'immunity_cooperation': {
+    nextLessonId: undefined,
+    recommendedReflexId: 'explain',
+    completionMessageAr: 'أتممت حوصلة وحدة المناعة: التعاون الخلوي من الخلية العارضة إلى المنفِّذات وخلايا الذاكرة.',
+  },
+  'amino_acid_behavior': {
+    nextLessonId: 'protein_structure_function',
+    recommendedReflexId: 'analyse',
+    completionMessageAr:
+      'أتقنت قاعدة pH / pHi واتجاه الهجرة. الخطوة الموالية : كيف تحدد بنية البروتين وظيفته.',
   },
   'd1-u1-l2-transcription': {
     nextLessonId: 'd1-u1-l3-traduction',
@@ -293,9 +310,28 @@ export const LESSON_PROGRESSION: Record<string, LessonProgression> = {
     recommendedReflexId: 'interpret',
     completionMessageAr: 'أكملت الترجمة. الآن حان دور فهم المنحنى الإنزيمي.',
   },
+  'enzyme_inhibitors': {
+    nextLessonId: undefined,
+    recommendedReflexId: 'interpret',
+    completionMessageAr:
+      'أتممت وحدة الإنزيمات : أصبحت تقرأ أي منحنى تثبيط بمقارنتين فقط، Vmax ثم Km.',
+  },
+  'immunity_hiv_aids': {
+    nextLessonId: 'immunity_cooperation',
+    recommendedReflexId: 'interpret',
+    completionMessageAr:
+      'أتقنت ملف السيدا. تبقى الحوصلة : كيف تتعاون خلايا المناعة فيما بينها ؟',
+  },
+  'photochemical_chain': {
+    nextLessonId: 'd2-u6-l3-calvin',
+    recommendedReflexId: 'explain',
+    completionMessageAr:
+      'أتقنت السلسلة الكيموضوئية. النواتج ATP و NADPH جاهزة الآن لحلقة كالفن.',
+  },
   'd1-u3-l1-enzyme': {
+    nextLessonId: 'enzyme_inhibitors',
     recommendedReflexId: 'hypothesize',
-    completionMessageAr: 'أحسنت! أكملت سلسلة الإنزيمات.',
+    completionMessageAr: 'أحسنت! أكملت المنحنى الإنزيمي. تبقى قراءة المثبطات : تنافسي أم لا تنافسي ؟',
   },
   'd2-u6-l1-hill-ruben': {
     nextLessonId: 'd2-u6-l2-jagendorf',
@@ -303,9 +339,9 @@ export const LESSON_PROGRESSION: Record<string, LessonProgression> = {
     completionMessageAr: 'أحسنت! أثبتت تجربتا هيل وروبن أن الأكسجين المنطلق مصدره الماء. الآن اكتشف دور الضوء الحقيقي في تركيب ATP.',
   },
   'd2-u6-l2-jagendorf': {
-    nextLessonId: 'd2-u6-l3-calvin',
+    nextLessonId: 'photochemical_chain',
     recommendedReflexId: 'interpret',
-    completionMessageAr: 'ممتاز! تجربة جاغندورف أثبتت أن تدرج البروتونات هو مصدر طاقة تركيب ATP. الآن تتبع مسار الكربون مع كالفن.',
+    completionMessageAr: 'ممتاز! تجربة جاغندورف أثبتت أن تدرج البروتونات هو مصدر طاقة تركيب ATP. الآن ركّب السلسلة الكيموضوئية كاملة.',
   },
   'd2-u6-l3-calvin': {
     nextLessonId: 'd2-u7-l1-mitchell-racker',
@@ -1948,4 +1984,1026 @@ export const ACTIVE_LESSONS: Record<string, ActiveLesson> = {
     ],
   },
   // ANCHOR_MIG_L2
+  // ─────────────────────────────────────────────────────────────────────────
+  // U4 — التعاون الخلوي (synthèse de l'unité مناعة) : schéma-bilan interactif
+  // + 3 exercices type BAC. Livre officiel, chapitres 21 (تحفيز LB و LT) et
+  // 22 (اختيار نمط الاستجابة المناعية).
+  // ─────────────────────────────────────────────────────────────────────────
+  immunity_cooperation: {
+    id: 'immunity_cooperation',
+    title: 'التعاون الخلوي في الاستجابة المناعية النوعية (حوصلة الوحدة)',
+    blocks: [
+      {
+        type: 'SEQUENCE_ORDER',
+        objective:
+          'بناء المخطط الحصيلي للتعاون الخلوي : من دخول المستضد إلى الخلايا المنفِّذة، وهو المخطط المطلوب في تمارين البكالوريا.',
+        promptAr:
+          'رتّب مراحل التعاون الخلوي بين الخلية العارضة واللمفاويات LT4 و LB و LT8 حسب التسلسل الزمني.',
+        assetSrc: '/assets/images/schemas/domaine1_proteines/schema_80_immunity_big_picture_modern.svg',
+        altAr: 'مخطط تركيبي يلخص مسار الاستجابة المناعية من التعرف إلى الخلايا المنفذة.',
+        secondaryAssetSrc: '/assets/images/schemas/domaine1_proteines/schema_74_immunological_synapse_specificity_modern.svg',
+        secondaryAltAr: 'وثيقة تبين المشبك المناعي بين الخلية العارضة واللمفاوية ونوعية التعرف.',
+        secondaryCaptionAr: 'التعرف يتم عبر مشبك مناعي : مستقبل اللمفاوية + المستضد المعروض مع CMH.',
+        steps: [
+          {
+            id: 'phagocytose',
+            labelAr: 'تبلعم المستضد من طرف البلعمية الكبيرة (الخلية العارضة CPA)',
+            expectedOrder: 1,
+          },
+          {
+            id: 'presentation',
+            labelAr: 'عرض محدد المستضد على سطح الخلية العارضة مرفقاً بجزيئة CMH-II',
+            expectedOrder: 2,
+          },
+          {
+            id: 'selection_lt4',
+            labelAr: 'انتقاء اللمفاوية LT4 ذات المستقبل النوعي وتنشيطها (المشبك المناعي)',
+            expectedOrder: 3,
+          },
+          {
+            id: 'interleukine',
+            labelAr: 'إفراز الإنترلوكين 2 من طرف LT4 المنشطة',
+            expectedOrder: 4,
+          },
+          {
+            id: 'proliferation',
+            labelAr: 'تكاثر نسيلي وتمايز للّمفاويات LB و LT8 المنتقاة',
+            expectedOrder: 5,
+          },
+          {
+            id: 'effecteurs',
+            labelAr: 'ظهور المنفِّذات : خلايا بلازمية (أجسام مضادة) و LTc + خلايا ذاكرة',
+            expectedOrder: 6,
+          },
+        ],
+        summaryPromptAr:
+          'لخّص في نص علمي مراحل التعاون الخلوي من دخول المستضد إلى ظهور المنفِّذات.',
+        summaryKeywords: ['العارضة', 'CMH', 'الإنترلوكين', 'التكاثر النسيلي', 'البلازمية'],
+        summaryAr:
+          'تبلعم المستضد ⇐ عرضه مع CMH-II على الخلية العارضة ⇐ انتقاء LT4 النوعية وتنشيطها ⇐ إفراز الإنترلوكين 2 ⇐ تكاثر نسيلي وتمايز LB و LT8 ⇐ خلايا بلازمية تفرز الأجسام المضادة + LTc قاتلة + خلايا ذاكرة. اللمفاوية LT4 هي محور التعاون : بدونها لا تنطلق أي استجابة نوعية.',
+      },
+      {
+        type: 'GUIDED_DOC_QA',
+        objective:
+          'التمرن على ثلاثة أسئلة بكالوريا كلاسيكية حول تجربة الزرع في الوسط الحر : دور LT4 والإنترلوكين.',
+        doc: {
+          assetSrc: '/assets/images/schemas/domaine1_proteines/schema_71_clonal_cd8_activation_modern.svg',
+          altAr: 'وثيقة تبين تنشيط وتكاثر نسيلي للّمفاويات CD8 بعد التعرف على المستضد.',
+          captionAr:
+            'تجربة زرع : الوسط 1 يحوي LB + مستضد فقط ⟵ لا أجسام مضادة. الوسط 2 يحوي LB + مستضد + LT4 ⟵ أجسام مضادة. الوسط 3 يحوي LB + مستضد + إنترلوكين 2 دون LT4 ⟵ أجسام مضادة.',
+          secondaryAssetSrc: '/assets/images/schemas/domaine1_proteines/schema_72_perforin_granzyme_lysis_modern.svg',
+          secondaryAltAr: 'وثيقة تبين حل الخلية المستهدفة بواسطة البرفورين المفرز من LTc.',
+          secondaryCaptionAr: 'الوجه الخلوي للاستجابة : LTc تُحدث الحل الخلوي بالبرفورين.',
+        },
+        questions: [
+          {
+            id: 'coop_analyse_milieux',
+            verbAr: 'حلل',
+            promptAr:
+              'حلل نتائج الأوساط الثلاثة : متى تُنتَج الأجسام المضادة ومتى تنعدم؟',
+            answerType: 'short_text',
+            validationMode: 'keywords',
+            requiredKeywords: ['الوسط 1|LB وحدها|دون LT4', 'أجسام مضادة', 'LT4|الإنترلوكين'],
+            successMessageAr: 'أحسنت : ربطت غياب الإنتاج بغياب LT4 أو الإنترلوكين.',
+            errorHintAr:
+              'قارن الأوساط اثنين اثنين : LB + مستضد وحدهما لا يكفيان ؛ إضافة LT4 أو الإنترلوكين تسمح بالإنتاج.',
+          },
+          {
+            id: 'coop_role_il2',
+            verbAr: 'استنتج',
+            promptAr:
+              'استنتج طبيعة العامل الذي تفرزه LT4 ودوره الدقيق على اللمفاوية LB.',
+            answerType: 'short_text',
+            validationMode: 'keywords',
+            requiredKeywords: ['الإنترلوكين', 'تكاثر|تكاثر نسيلي', 'تمايز|بلازمية'],
+            forbiddenKeywords: ['جسم مضاد يرتبط بالإنترلوكين'],
+            successMessageAr: 'ممتاز : الإنترلوكين بلّغ كيميائي يحفز التكاثر النسيلي والتمايز.',
+            errorHintAr:
+              'الإنترلوكين 2 ليس جسماً مضاداً : إنه بلّغ كيميائي يحفز تكاثر LB النسيلي وتمايزها إلى خلايا بلازمية.',
+          },
+          {
+            id: 'coop_synthese_bac',
+            verbAr: 'فسّر',
+            promptAr:
+              'فسّر لماذا يؤدي تخريب اللمفاويات LT4 (كما في السيدا) إلى انهيار المناعتين الخلطية والخلوية معاً.',
+            answerType: 'short_text',
+            validationMode: 'keywords',
+            requiredKeywords: ['LT4', 'الإنترلوكين', 'خلطية', 'خلوية'],
+            successMessageAr: 'جيد جداً : أثبتّ أن LT4 محور التعاون بين الاستجابتين.',
+            errorHintAr:
+              'بدون LT4 لا إنترلوكين ⇐ لا تكاثر لـ LB (لا أجسام مضادة) ولا لـ LT8 (لا LTc) ⇐ انهيار الاستجابتين معاً.',
+          },
+        ],
+        summaryAr:
+          'LB + مستضد لا يكفيان : لا بد من إشارة LT4. والإنترلوكين 2 يعوض LT4 في الوسط، فهو الوسيط الكيميائي للتعاون. تخريب LT4 يُسقط الاستجابتين الخلطية والخلوية في آن واحد.',
+      },
+      {
+        type: 'COMPARISON_TABLE',
+        objective:
+          'تثبيت الفرق بين وجهي الاستجابة النوعية بعد التعاون : الخلطية والخلوية — أكثر خلط مسجَّل في التصحيح.',
+        promptAr:
+          'قارن بين الاستجابة المناعية الخلطية والاستجابة المناعية الخلوية حسب المعايير الآتية.',
+        assetSrc: '/assets/images/schemas/domaine1_proteines/schema_synthese_immunite_U4.jpg',
+        altAr: 'لوحة تركيبية لوحدة المناعة تجمع الاستجابة الخلطية والاستجابة الخلوية.',
+        criteria: [
+          {
+            id: 'cible',
+            labelAr: 'طبيعة المستضد المستهدف',
+            leftExpected: ['مستضد حر', 'في السوائل', 'سموم'],
+            rightExpected: ['خلية مصابة', 'خلية غريبة', 'خلية سرطانية'],
+          },
+          {
+            id: 'lymphocyte',
+            labelAr: 'اللمفاوية المسؤولة',
+            leftExpected: ['LB', 'خلية بلازمية'],
+            rightExpected: ['LT8', 'LTc'],
+          },
+          {
+            id: 'effecteur',
+            labelAr: 'العنصر المنفِّذ',
+            leftExpected: ['الأجسام المضادة', 'المعقد المناعي'],
+            rightExpected: ['البرفورين', 'الحل الخلوي'],
+          },
+          {
+            id: 'transfert',
+            labelAr: 'نقل المناعة تجريبياً',
+            leftExpected: ['بالمصل', 'المصل'],
+            rightExpected: ['بالخلايا اللمفاوية', 'اللمفاويات'],
+          },
+        ],
+        conclusionPromptAr:
+          'استنتج المعيار العملي الذي يسمح في التمرين بالحكم على نمط الاستجابة انطلاقاً من تجربة نقل.',
+        conclusionKeywords: ['المصل', 'اللمفاويات', 'خلطية', 'خلوية'],
+        summaryAr:
+          'الخلطية : مستضد حر ⇐ LB ⇐ خلايا بلازمية ⇐ أجسام مضادة ⇐ تُنقل بالمصل. الخلوية : خلية مصابة ⇐ LT8 ⇐ LTc ⇐ برفورين وحل خلوي ⇐ تُنقل بالخلايا اللمفاوية. كلتاهما تحتاج إشارة LT4.',
+      },
+      {
+        type: 'TEXT_AND_PRODUCE',
+        objective:
+          'إنتاج النص العلمي المطلوب في البكالوريا : حوصلة التعاون الخلوي في بضعة أسطر.',
+        prompt:
+          'اكتب نصاً علمياً (4 إلى 6 أسطر) تشرح فيه التعاون الخلوي الذي يقود إلى القضاء على فيروس دخل الجسم لأول مرة.',
+        acceptedAnswers: ['العارضة', 'CMH', 'LT4', 'الإنترلوكين', 'التكاثر النسيلي', 'أجسام مضادة', 'LTc', 'ذاكرة'],
+        errorHint:
+          'الخطة المنتظرة : تبلعم وعرض مع CMH-II ⇐ انتقاء LT4 وتنشيطها ⇐ إفراز الإنترلوكين 2 ⇐ تكاثر نسيلي وتمايز LB و LT8 ⇐ أجسام مضادة + LTc ⇐ خلايا ذاكرة تضمن استجابة ثانوية أسرع.',
+      },
+    ],
+  },
+  // ─────────────────────────────────────────────────────────────────────────
+  // U4 — تذكير بالمكتسبات القبلية (جذع مشترك / السنة الثانية) قبل درس الذات
+  // واللاذات. المصدر : الكتاب الرسمي، الفصل 14 (الذات واللاذات) والفصل 23
+  // (زمر الدم، CMH/HLA، النمط الوراثي). مدة مستهدفة ≈ 15 دقيقة.
+  // ─────────────────────────────────────────────────────────────────────────
+  prerequis2AS_genetique: {
+    id: 'prerequis2AS_genetique',
+    title: 'تذكير بالمكتسبات القبلية : المورثة والأليل والنمط الوراثي (تمهيد للذات واللاذات)',
+    blocks: [
+      {
+        type: 'TEXT_AND_PRODUCE',
+        objective:
+          'استرجاع مفاهيم المورثة/الأليل/النمط الوراثي/النمط الظاهري الضرورية لفهم الزمر الدموية ونظام HLA في وحدة المناعة.',
+        content:
+          'المورثة قطعة من الـ ADN محمولة على [____] في موقع ثابت يسمى المَوقع. الأشكال المختلفة لنفس المورثة تسمى [____]. مجموع الأليلات التي يحملها الفرد تشكل [____] ، بينما الصفة التي تُلاحَظ أو تُكشَف مخبرياً تشكل [____]. في نظام ABO يكون الأليلان A و B [____] فيما بينهما وسائدين على الأليل O.',
+        popups: {
+          'المورثة': 'قطعة من ADN تحمل معلومة تركيب بروتين أو صفة، محمولة على صبغي في موقع ثابت.',
+          'الأليل': 'أحد الأشكال الممكنة لنفس المورثة في نفس الموقع (مثال : A، B، O لمورثة الزمرة الدموية).',
+          'النمط الوراثي': 'مجموع الأليلات التي يحملها الفرد (مثال : A//O)، يُكتب بين خطين مائلين.',
+          'النمط الظاهري': 'الصفة المعبَّر عنها فعلياً والمكشوفة بالملاحظة أو بالتفاعل المناعي، تُكتب بين [ ] مثل [A].',
+          'التساوي السيادة': 'حالة يُعبَّر فيها عن الأليلين معاً في النمط الظاهري (النمط الوراثي A//B ⇐ النمط الظاهري [AB]).',
+          'متماثل / مختلف اللواقح': 'متماثل : أليلان متطابقان (A//A). مختلف : أليلان مختلفان (A//O).',
+        },
+        microTest: {
+          prompt: 'شخص نمطه الوراثي A//B. ما نمطه الظاهري ولماذا؟ (كلمة مفتاحية واحدة تكفي)',
+          acceptedAnswers: ['AB', '[AB]', 'تساوي السيادة', 'التساوي في السيادة', 'تساوي سيادة', 'codominance'],
+          errorHint:
+            'الأليلان A و B متساويا السيادة : يُعبَّر عنهما معاً، فالنمط الظاهري هو [AB] وليس [A] ولا [B].',
+        },
+      },
+      {
+        type: 'COMPARISON_TABLE',
+        objective:
+          'التمييز بين نظام الزمر الدموية ABO ونظام التوافق النسيجي CMH/HLA — وهو التمييز الذي يُخطئ فيه أغلب المترشحين في تمارين نقل الدم والطعم.',
+        promptAr:
+          'قارن بين نظام ABO ونظام HLA (CMH) من حيث مقر المحددات، عدد الأليلات، نمط السيادة، والمجال الذي يُستعمل فيه في التمارين.',
+        criteria: [
+          {
+            id: 'mocqar',
+            labelAr: 'مقر المحددات (أين توجد؟)',
+            leftExpected: ['غشاء الكرية الحمراء', 'الكريات الحمراء', 'غشاء الكريات'],
+            rightExpected: ['غشاء كل الخلايا ذات نواة', 'كل الخلايا', 'الخلايا ذات نواة'],
+          },
+          {
+            id: 'alleles',
+            labelAr: 'عدد الأليلات (تعدد الأشكال)',
+            leftExpected: ['ثلاثة أليلات', '3 أليلات', 'A B O'],
+            rightExpected: ['عدد كبير من الأليلات', 'تعدد أليلي كبير', 'مئات الأليلات'],
+          },
+          {
+            id: 'siyada',
+            labelAr: 'نمط السيادة',
+            leftExpected: ['A و B متساويا السيادة', 'تساوي السيادة', 'O متنحي'],
+            rightExpected: ['كل الأليلات متساوية السيادة', 'تساوي السيادة', 'تعبير الأليلين معاً'],
+          },
+          {
+            id: 'usage',
+            labelAr: 'الاستعمال في التمارين',
+            leftExpected: ['نقل الدم', 'التحاقن', 'الأجسام المضادة الطبيعية'],
+            rightExpected: ['الطعم', 'زرع الأعضاء', 'رفض الطعم'],
+          },
+        ],
+        conclusionPromptAr:
+          'استنتج لماذا يمكن أن يتوافق شخصان في الزمرة الدموية ومع ذلك يُرفض الطعم بينهما.',
+        conclusionKeywords: ['HLA', 'التوافق النسيجي', 'الطعم', 'الزمرة الدموية'],
+        summaryAr:
+          'ABO : محددات على غشاء الكريات الحمراء، ثلاثة أليلات (A، B متساويا السيادة وسائدان على O) ⇐ نقل الدم. HLA/CMH : محددات على غشاء كل الخلايا ذات نواة، تعدد أليلي كبير وكل الأليلات متساوية السيادة ⇐ قبول أو رفض الطعم. التوافق في ABO لا يعني التوافق النسيجي.',
+      },
+      {
+        type: 'SEQUENCE_ORDER',
+        objective:
+          'بناء سلسلة الاستدلال الوراثي التي تُستعمل في تمارين الطعم : من الأليلات إلى النمط الظاهري الغشائي ثم إلى قبول الطعم أو رفضه.',
+        promptAr:
+          'رتّب خطوات الاستدلال المطلوبة للحكم على نجاح طعم بين شخصين انطلاقاً من معطيات وراثية.',
+        steps: [
+          {
+            id: 'alleles',
+            labelAr: 'تحديد أليلات المورثات HLA المحمولة على الصبغي 6 عند كل شخص',
+            expectedOrder: 1,
+          },
+          {
+            id: 'haplotype',
+            labelAr: 'تجميع أليلات كل صبغي في نمط فرداني (haplotype) : واحد من الأب وواحد من الأم',
+            expectedOrder: 2,
+          },
+          {
+            id: 'phenotype',
+            labelAr: 'استنتاج النمط الظاهري الغشائي : كل الأليلات معبَّر عنها لأنها متساوية السيادة',
+            expectedOrder: 3,
+          },
+          {
+            id: 'compare',
+            labelAr: 'مقارنة محددات المُعطي بمحددات المستقبل (ذات / لا ذات)',
+            expectedOrder: 4,
+          },
+          {
+            id: 'conclude',
+            labelAr: 'الاستنتاج : تشابه المحددات ⇐ قبول الطعم، اختلافها ⇐ رفض الطعم',
+            expectedOrder: 5,
+          },
+        ],
+        summaryPromptAr:
+          'اكتب في سطرين سلسلة الاستدلال : من الأليلات إلى قبول الطعم أو رفضه.',
+        summaryKeywords: ['أليلات', 'النمط الفرداني', 'متساوية السيادة', 'الطعم'],
+        summaryAr:
+          'أليلات HLA على الصبغي 6 ⇐ نمطان فردانيان (أب + أم) ⇐ كل الأليلات معبَّر عنها لتساوي السيادة ⇐ مقارنة محددات المُعطي والمستقبل ⇐ التشابه يعني ذاتاً فيُقبل الطعم، والاختلاف يعني لا ذاتاً فيُرفض.',
+      },
+      {
+        type: 'TEXT_AND_PRODUCE',
+        objective:
+          'توظيف المكتسبات القبلية في صياغة جواب بكالوريا قصير حول التوأمين الحقيقيين والإخوة.',
+        prompt:
+          'لماذا ينجح الطعم دائماً بين توأمين حقيقيين بينما قد يُرفض بين أخوين من نفس الأبوين؟ (جواب في سطرين)',
+        acceptedAnswers: ['نفس النمط الوراثي', 'نفس الأليلات', 'التوافق النسيجي', 'HLA', 'ذات'],
+        errorHint:
+          'التوأمان الحقيقيان لهما نفس النمط الوراثي ⇐ نفس محددات HLA ⇐ الطعم ذاتي يُقبل. أما الأخوان فيرثان نمطين فردانيين مختلفين ⇐ محددات مختلفة تُعتبر لا ذات ⇐ خطر الرفض.',
+      },
+    ],
+  },
+  // ─────────── SPRINT 7 (audit, items 9, 10 et 11) — U6 : المرحلة الكيموضوئية ───────────
+  // Notion n°1 du classement de difficulté (83 points) et cœur des 39 % que pèsent
+  // U6+U7. L'app avait Hill/Ruben, Jagendorf et Calvin — c'est-à-dire les PREUVES
+  // expérimentales — mais aucune leçon sur la CHAÎNE elle-même (item 11), ni la
+  // synthèse U6/U7 (item 9). Ancrage : ch. 33 « تفاعلات المرحلة الكيموضوئية » (PSII,
+  // enzyme de photolyse, chaîne de transporteurs, NADP⁺ + 2e⁻ + 2H⁺ → NADPH + H⁺,
+  // pompe T, Mitchell) et ch. 40 pour la comparaison avec la respiration.
+  photochemical_chain: {
+    id: 'photochemical_chain',
+    title: 'السلسلة الكيموضوئية : من الفوتون إلى ATP و NADPH',
+    blocks: [
+      {
+        type: 'GUIDED_DOC_QA',
+        objective:
+          'تتبع الإلكترون من تحلل الماء إلى NADPH، وفهم لماذا يُعوَّض الإلكترون المفقود من PSII بالماء.',
+        doc: {
+          assetSrc: '/assets/images/schemas/domaine2_energie/schema_93_photochemical_chain_z_scheme_ar.svg',
+          altAr:
+            'مخطط غشاء التيلاكويد : PSII، سلسلة النواقل والمضخة، PSI، الكرة المذنبة، مع مسار الإلكترونات وتدرج البروتونات بين الحشوة والتجويف.',
+          captionAr:
+            'الوثيقة : تنظيم المعقدات في غشاء التيلاكويد ومسار الإلكترونات والبروتونات أثناء المرحلة الكيموضوئية.',
+        },
+        questions: [
+          {
+            id: 'photo_origine_electrons',
+            verbAr: 'حدد',
+            promptAr: 'من أين يستعيد النظام الضوئي PSII الإلكترونات التي فقدها ؟ اكتب المعادلة.',
+            answerType: 'short_text',
+            validationMode: 'keywords',
+            requiredKeywords: ['الماء', 'التحلل الضوئي', 'O₂'],
+            successMessageAr:
+              'نعم : H₂O → 2H⁺ + 2e⁻ + ½O₂. الماء هو المانح الأول للإلكترونات، والأكسجين مجرد فضلة.',
+            errorHintAr:
+              'أكسدة اليخضور في PSII تترك نقصاً في الإلكترونات. إنزيم ضمن المعقد يحلل الماء : H₂O → 2H⁺ + 2e⁻ + ½O₂.',
+          },
+          {
+            id: 'photo_destination_electrons',
+            verbAr: 'حلل',
+            promptAr:
+              'تتبّع مسار الإلكترون من PSII إلى مستقبله النهائي، مع ذكر ما يحدث في PSI.',
+            answerType: 'short_text',
+            validationMode: 'keywords',
+            requiredKeywords: ['النواقل', 'PSI', 'NADP', 'NADPH'],
+            successMessageAr:
+              'ممتاز : PSII ⟵ سلسلة النواقل ⟵ PSI (تهيج ثانٍ) ⟵ NADP⁺ الذي يُرجَع إلى NADPH + H⁺.',
+            errorHintAr:
+              'الإلكترون لا يعود إلى PSII : ينتقل عبر سلسلة النواقل إلى PSI حيث يتهيج من جديد بفعل الضوء، ثم يُستقبل نهائياً من طرف NADP⁺.',
+          },
+          {
+            id: 'photo_role_gradient',
+            verbAr: 'فسر',
+            promptAr:
+              'فسّر كيف يتحول انتقال الإلكترونات إلى تركيب ATP، مع تحديد اتجاه حركة H⁺.',
+            answerType: 'short_text',
+            validationMode: 'keywords',
+            requiredKeywords: ['تدرج', 'H', 'التجويف', 'الكرة المذنبة'],
+            successMessageAr:
+              'نعم : الطاقة المحررة تضخ H⁺ من الحشوة إلى التجويف، وعودتها عبر الكرة المذنبة هي التي تركّب ATP.',
+            errorHintAr:
+              'الطاقة المحررة من انتقال الإلكترونات لا تركّب ATP مباشرة : تُستعمل أولاً لضخ H⁺ نحو التجويف، ثم عودة H⁺ عبر الكرة المذنبة تركّب ATP (النظرية الكيميواسموزية).',
+          },
+        ],
+        summaryAr:
+          'سلسلة واحدة، مانح أول (الماء) ومستقبل أخير (NADP⁺). بين الاثنين : تهيّجان ضوئيان (PSII ثم PSI)، سلسلة نواقل، وضخ H⁺ نحو التجويف. الضوء لا يصنع ATP مباشرة بل يصنع التدرج.',
+      },
+      {
+        type: 'SEQUENCE_ORDER',
+        objective: 'ترتيب أحداث المرحلة الكيموضوئية في سلسلة واحدة متصلة، وهي مطلوبة في سؤال الاسترجاع.',
+        promptAr: 'رتّب أحداث المرحلة الكيموضوئية بالترتيب الزمني الصحيح.',
+        assetSrc: '/assets/images/schemas/domaine2_energie/schema_93_photochemical_chain_z_scheme_ar.svg',
+        altAr: 'مخطط السلسلة الكيموضوئية في غشاء التيلاكويد.',
+        steps: [
+          { id: 'photo_s1_photon', labelAr: 'امتصاص فوتون من طرف أصبغة PSII وتهيّج اليخضور a في مركز التفاعل', expectedOrder: 1 },
+          { id: 'photo_s2_oxydation', labelAr: 'أكسدة اليخضور : فقدان إلكترونين غنيين بالطاقة', expectedOrder: 2 },
+          { id: 'photo_s3_photolyse', labelAr: 'التحلل الضوئي للماء يعوّض الإلكترونات المفقودة ويحرر H⁺ و ½O₂', expectedOrder: 3 },
+          { id: 'photo_s4_chaine', labelAr: 'انتقال الإلكترونات عبر سلسلة النواقل مع تحرر طاقة', expectedOrder: 4 },
+          { id: 'photo_s5_pompe', labelAr: 'استعمال هذه الطاقة لضخ H⁺ من الحشوة إلى تجويف الكييس', expectedOrder: 5 },
+          { id: 'photo_s6_psi', labelAr: 'وصول الإلكترونات إلى PSI وتهيّجها من جديد بفعل الضوء', expectedOrder: 6 },
+          { id: 'photo_s7_nadph', labelAr: 'إرجاع NADP⁺ : NADP⁺ + 2e⁻ + 2H⁺ → NADPH + H⁺', expectedOrder: 7 },
+          { id: 'photo_s8_atp', labelAr: 'عودة H⁺ نحو الحشوة عبر الكرة المذنبة وتركيب ATP', expectedOrder: 8 },
+        ],
+        summaryPromptAr: 'ما الحدثان اللذان يقعان في التجويف وحده ؟',
+        summaryKeywords: ['التحلل الضوئي', 'تراكم', 'H'],
+        summaryAr:
+          'في التجويف يقع حدثان : التحلل الضوئي للماء وتراكم البروتونات. أما إرجاع NADP⁺ وتركيب ATP فيقعان في الحشوة.',
+      },
+      {
+        // Item 10 — micro-fiche active : le bilan que l'élève doit pouvoir écrire seul.
+        type: 'TEXT_AND_PRODUCE',
+        objective: 'كتابة حصيلة المرحلة الكيموضوئية دون الخلط بين النواتج والفضلات.',
+        content:
+          'تستعمل المرحلة الكيموضوئية ثلاثة مدخلات : الطاقة الضوئية، الماء و[____]. وتعطي ناتجين يُستعملان في المرحلة الكيميوحيوية هما [____] و[____]، بينما يُطرح [____] كفضلة خارج الصانعة.',
+        popups: {
+          'NADP': 'NADP⁺ هو المستقبل النهائي للإلكترونات في هذه المرحلة ؛ إرجاعه يعطي NADPH + H⁺.',
+          'ATP': 'ATP يُركَّب على مستوى الكرة المذنبة بفضل عودة البروتونات، لا بفعل الضوء مباشرة.',
+          'NADPH': 'NADPH هو القوة المرجعة التي ستُستعمل في حلقة كالفن لإرجاع الكربون.',
+          'الأكسجين': 'الأكسجين ناتج عن تحلل الماء فقط، وليس عن CO₂ : هذا ما أثبتته تجربة روبن بالوسم.',
+        },
+        microTest: {
+          prompt: 'لماذا نقول إن الأكسجين المنطلق فضلة وليس هدفاً للمرحلة الكيموضوئية ؟',
+          acceptedAnswers: [
+            'لأنه ناتج جانبي عن التحلل الضوئي للماء، والهدف الحقيقي هو الحصول على الإلكترونات و NADPH و ATP',
+            'لأن هدف المرحلة هو تعويض إلكترونات PSII وإنتاج ATP و NADPH، والأكسجين مجرد ناتج عن تحلل الماء',
+          ],
+          errorHint:
+            'الماء يُحلَّل من أجل إلكتروناته وبروتوناته. الأكسجين هو ما يتبقى من هذا التحلل، ولا تستعمله الصانعة في المرحلة الموالية.',
+        },
+      },
+      {
+        // Item 9 — synthèse U6 + U7 : le même mécanisme dans deux organites.
+        type: 'COMPARISON_TABLE',
+        objective:
+          'ربط الوحدة 6 بالوحدة 7 : نفس الآلية الكيميواسموزية في الصانعة الخضراء وفي الميتوكوندري.',
+        promptAr:
+          'قارن بين الفسفرة الضوئية في الصانعة (يمين) والفسفرة التأكسدية في الميتوكوندري (يسار).',
+        assetSrc: '/assets/images/schemas/domaine2_energie/schema_94_photophosphorylation_vs_oxydative_ar.svg',
+        altAr: 'لوحتان متقابلتان : غشاء التيلاكويد وغشاء الميتوكوندري الداخلي، مع تدرج H⁺ وكرة مذنبة في كل منهما.',
+        criteria: [
+          {
+            id: 'photo_cmp_membrane',
+            labelAr: 'الغشاء الذي يحدث فيه التدرج',
+            leftExpected: ['الغشاء الداخلي', 'الأعراف'],
+            rightExpected: ['غشاء التيلاكويد', 'الكييس'],
+          },
+          {
+            id: 'photo_cmp_source',
+            labelAr: 'مصدر الإلكترونات',
+            leftExpected: ['NADH', 'FADH', 'المواد العضوية'],
+            rightExpected: ['الماء', 'التحلل الضوئي'],
+          },
+          {
+            id: 'photo_cmp_accepteur',
+            labelAr: 'المستقبل النهائي للإلكترونات',
+            leftExpected: ['الأكسجين', 'الماء'],
+            rightExpected: ['NADP', 'NADPH'],
+          },
+          {
+            id: 'photo_cmp_compartiment',
+            labelAr: 'الحيز الذي تتراكم فيه H⁺',
+            leftExpected: ['بين الغشاءين', 'الحيز بين الغشاءين'],
+            rightExpected: ['التجويف', 'تجويف الكييس'],
+          },
+          {
+            id: 'photo_cmp_enzyme',
+            labelAr: 'الإنزيم الذي يركب ATP',
+            leftExpected: ['الكرة المذنبة', 'ATP synthase'],
+            rightExpected: ['الكرة المذنبة', 'ATP synthase'],
+          },
+        ],
+        conclusionPromptAr:
+          'استنتج المبدأ المشترك بين العضيتين رغم اختلاف مصدر الإلكترونات.',
+        conclusionKeywords: ['تدرج', 'H', 'الكرة المذنبة', 'ATP'],
+        summaryAr:
+          'المشترك : تدرج في تركيز H⁺ عبر غشاء، وعودة البروتونات عبر الكرة المذنبة تركّب ATP (نظرية ميتشل الكيميواسموزية). المختلف : في الصانعة المانح هو الماء والمستقبل NADP⁺ ؛ في الميتوكوندري المانح هو المواد العضوية (NADH, FADH₂) والمستقبل الأكسجين.',
+      },
+      {
+        type: 'TEXT_AND_PRODUCE',
+        objective: 'إنتاج تعليل من مستوى البكالوريا حول شرط الضوء.',
+        prompt:
+          'أظهرت تجربة جاغندورف تركيب ATP في الظلام. بيّن في 4 أسطر لماذا لا يتناقض ذلك مع تسمية « المرحلة الكيموضوئية »، محدداً الدور الحقيقي للضوء.',
+        acceptedAnswers: [
+          'الضوء لا يركّب ATP مباشرة بل يحرك الإلكترونات فيتولد تدرج في تركيز H⁺، وجاغندورف أنشأ هذا التدرج صناعياً في الظلام فتركب ATP : الشرط هو التدرج لا الضوء',
+          'دور الضوء هو إنشاء تدرج البروتونات عبر غشاء التيلاكويد، وما دام التدرج موجوداً يتركب ATP حتى في الظلام',
+        ],
+        errorHint:
+          'افصل بين السبب المباشر والسبب البعيد : السبب المباشر لتركيب ATP هو عودة H⁺ عبر الكرة المذنبة، والضوء ليس إلا الوسيلة التي تُنشئ هذا التدرج عادة.',
+      },
+    ],
+  },
+  // ─────────── SPRINT 6 (audit, item 3 bis) — U4 : VIH / السيدا ───────────
+  // Plus gros écart offre/demande du corpus : ~700 K vues cumulées sur le VIH chez
+  // trois chaînes concurrentes contre 4 QCM réels dans l'app. Contenu ancré sur le
+  // ch. 23 du livre officiel (« سبب فقدان المناعة المكتسبة »), qui donne gp120/CD4,
+  // gp41, transcriptase inverse, ADN proviral, seuil des 200 LT4/mm³, ELISA +
+  // Western blot, PCR, multithérapie et échec vaccinal par mutations.
+  immunity_hiv_aids: {
+    id: 'immunity_hiv_aids',
+    title: 'فيروس VIH والسيدا : قراءة منحنيات التطور والتمييز بين موجب المصل والمريض',
+    blocks: [
+      {
+        type: 'GUIDED_DOC_QA',
+        objective:
+          'قراءة المنحنيات الثلاثة للإصابة (الحمولة الفيروسية، LT4، الأجسام المضادة) وربط كل مرحلة بحالة المصاب.',
+        doc: {
+          assetSrc: '/assets/images/schemas/domaine1_immunite/schema_89_vih_evolution_curves_ar.svg',
+          altAr:
+            'منحنيات تطور الحمولة الفيروسية واللمفاويات LT4 والأجسام المضادة عبر ثلاث مراحل : إصابة أولية، مرحلة بدون أعراض، ثم السيدا.',
+          captionAr:
+            'الوثيقة : تطور ثلاثة مؤشرات عند شخص مصاب بـ VIH دون علاج، من الإصابة إلى مرحلة السيدا.',
+        },
+        questions: [
+          {
+            id: 'vih_analyse_phases',
+            verbAr: 'حلل',
+            promptAr: 'حلل تطور الحمولة الفيروسية وعدد اللمفاويات LT4 خلال المراحل الثلاث.',
+            answerType: 'short_text',
+            validationMode: 'keywords',
+            requiredKeywords: ['الحمولة الفيروسية', 'LT4', 'تتناقص', 'ترتفع'],
+            successMessageAr:
+              'أحسنت : ذروة فيروسية أولى، ثم مرحلة طويلة شبه صامتة، ثم انقلاب نهائي (الفيروس يرتفع و LT4 تنهار).',
+            errorHintAr:
+              'صف كل منحنى على حدة : الحمولة الفيروسية تبلغ ذروة مبكرة ثم تنخفض ثم ترتفع من جديد ؛ اللمفاويات LT4 تتناقص تدريجياً حتى تنهار.',
+          },
+          {
+            id: 'vih_seroconversion',
+            verbAr: 'فسر',
+            promptAr:
+              'فسّر انخفاض الحمولة الفيروسية في نهاية المرحلة الأولى رغم بقاء الفيروس في العضوية.',
+            answerType: 'short_text',
+            validationMode: 'keywords',
+            requiredKeywords: ['الأجسام المضادة', 'الانقلاب المصلي', 'استجابة مناعية'],
+            successMessageAr:
+              'نعم : الانقلاب المصلي — الاستجابة المناعية تسيطر على الفيروس دون أن تقضي عليه.',
+            errorHintAr:
+              'ظهور الأجسام المضادة (الانقلاب المصلي) يعني أن الاستجابة المناعية النوعية انطلقت وكبحت التضاعف الفيروسي، لكنها لا تقضي على الفيروس المدمج.',
+          },
+          {
+            id: 'vih_effondrement_final',
+            verbAr: 'استنتج',
+            promptAr:
+              'استنتج سبب ظهور الأمراض الانتهازية في المرحلة الثالثة، مستعيناً بعتبة 200 خلية / ملم³.',
+            answerType: 'short_text',
+            validationMode: 'keywords',
+            requiredKeywords: ['LT4', '200', 'التعاون', 'انتهازية'],
+            successMessageAr:
+              'ممتاز : تحت 200 LT4/ملم³ ينهار التعاون الخلوي، فتعجز الاستجابتان الخلطية والخلوية معاً.',
+            errorHintAr:
+              'اللمفاويات LT4 هي محور التعاون المناعي (إفراز الأنترلوكين 2). تحت 200 خلية / ملم³ لا تُنشَّط لا LB ولا LTc، فتستغل الجراثيم الانتهازية هذا العجز.',
+          },
+        ],
+        summaryAr:
+          'ثلاث مراحل : إصابة أولية (ذروة فيروسية قبل الانقلاب المصلي)، مرحلة طويلة بدون أعراض (توازن هش : الفيروس يتضاعف و LT4 تتناقص ببطء)، ثم السيدا (انهيار LT4 تحت 200/ملم³، ارتفاع الحمولة الفيروسية، أمراض انتهازية وأورام).',
+      },
+      {
+        type: 'SEQUENCE_ORDER',
+        objective: 'ترتيب مراحل دورة الفيروس داخل اللمفاوية LT4، وهي مطلوبة حرفياً في أسئلة الاسترجاع.',
+        promptAr: 'رتّب مراحل دورة فيروس VIH داخل الخلية المستهدفة.',
+        assetSrc: '/assets/images/schemas/domaine1_immunite/schema_90_vih_cycle_lt4_ar.svg',
+        altAr: 'مخطط دورة فيروس VIH داخل اللمفاوية LT4 في ست خطوات مرقمة.',
+        steps: [
+          { id: 'vih_fixation', labelAr: 'تثبيت الفيروس بفضل gp120 على مستقبل CD4 للمفاوية LT4', expectedOrder: 1 },
+          { id: 'vih_fusion', labelAr: 'اندماج الغشاءين بفضل gp41 ودخول المحتوى الفيروسي', expectedOrder: 2 },
+          { id: 'vih_transcription_inverse', labelAr: 'النسخ العكسي : تحويل ARN الفيروسي إلى ADN بفضل إنزيم الاستنساخ العكسي', expectedOrder: 3 },
+          { id: 'vih_integration', labelAr: 'اندماج ADN الفيروسي في ADN نواة الخلية (ADN مدمج قد يبقى كامناً)', expectedOrder: 4 },
+          { id: 'vih_synthese', labelAr: 'استنساخ المورثات الفيروسية وترجمتها إلى بروتينات فيروسية', expectedOrder: 5 },
+          { id: 'vih_bourgeonnement', labelAr: 'التبرعم وتحرير فيروسات جديدة، مع تخريب الخلية المستهدفة', expectedOrder: 6 },
+        ],
+        summaryPromptAr: 'لماذا يُصنّف VIH ضمن الفيروسات القهقرية (الراجعة) ؟',
+        summaryKeywords: ['ARN', 'ADN', 'الاستنساخ العكسي'],
+        summaryAr:
+          'الفيروس القهقري يملك ARN ويحوّله إلى ADN بإنزيم الاستنساخ العكسي، عكس الاتجاه المعتاد ADN ⟵ ARN. هذا ما يسمح باندماجه في مورثات الخلية وبقائه كامناً.',
+      },
+      {
+        type: 'COMPARISON_TABLE',
+        objective: 'إزالة الخلط الأكثر شيوعاً في التصحيح : موجب المصل ليس بالضرورة مريضاً بالسيدا.',
+        promptAr: 'قارن بين شخص موجب المصل في المرحلة الصامتة (يمين) ومريض في مرحلة السيدا (يسار).',
+        assetSrc: '/assets/images/schemas/domaine1_immunite/schema_89_vih_evolution_curves_ar.svg',
+        altAr: 'منحنيات تطور الإصابة بفيروس VIH.',
+        criteria: [
+          {
+            id: 'vih_presence_ac',
+            labelAr: 'الأجسام المضادة ضد VIH',
+            leftExpected: ['موجودة', 'تتناقص'],
+            rightExpected: ['موجودة', 'مرتفعة'],
+          },
+          {
+            id: 'vih_taux_lt4',
+            labelAr: 'عدد اللمفاويات LT4',
+            leftExpected: ['أقل من 200', 'منهار', 'ضعيف جداً'],
+            rightExpected: ['شبه عادي', 'يتناقص ببطء'],
+          },
+          {
+            id: 'vih_charge_virale',
+            labelAr: 'الحمولة الفيروسية',
+            leftExpected: ['مرتفعة', 'ترتفع'],
+            rightExpected: ['منخفضة', 'مستقرة'],
+          },
+          {
+            id: 'vih_symptomes',
+            labelAr: 'الأعراض السريرية',
+            leftExpected: ['أمراض انتهازية', 'أورام', 'أعراض'],
+            rightExpected: ['بدون أعراض', 'لا أعراض'],
+          },
+          {
+            id: 'vih_contagion',
+            labelAr: 'إمكانية نقل العدوى',
+            leftExpected: ['ينقل العدوى', 'ناقل'],
+            rightExpected: ['ينقل العدوى', 'ناقل'],
+          },
+        ],
+        conclusionPromptAr:
+          'استنتج لماذا يكون الشخص موجب المصل ناقلاً للعدوى حتى في غياب أي عرض.',
+        conclusionKeywords: ['الفيروس', 'يتضاعف', 'بدون أعراض'],
+        summaryAr:
+          'موجب المصل = يحمل أجساماً مضادة ضد VIH، أي أنه مصاب وناقل للعدوى مدى الحياة. مريض السيدا = المرحلة الأخيرة، حيث ينهار عدد LT4 تحت 200/ملم³ وتظهر الأمراض الانتهازية. كل مريض بالسيدا موجب المصل، والعكس غير صحيح.',
+      },
+      {
+        type: 'GUIDED_DOC_QA',
+        objective:
+          'قراءة نتيجة تشخيص (ELISA ثم Western blot) والتمييز بين الكشف عن الأجسام المضادة والكشف عن الفيروس نفسه.',
+        doc: {
+          assetSrc: '/assets/images/schemas/domaine1_immunite/schema_90_vih_cycle_lt4_ar.svg',
+          altAr: 'مخطط دورة الفيروس داخل اللمفاوية LT4 : الهدف هنا هو تحديد ما يكشف عنه كل اختبار.',
+          captionAr:
+            'الوثيقة : دورة الفيروس. اختبارا ELISA و Western blot يكشفان عن الأجسام المضادة، بينما تكشف تقنية PCR عن ARN الفيروسي نفسه.',
+        },
+        questions: [
+          {
+            id: 'vih_diagnostic_principe',
+            verbAr: 'حدد',
+            promptAr: 'ماذا تكشف تقنية ELISA في مصل الشخص : الفيروس أم الأجسام المضادة ؟',
+            answerType: 'short_text',
+            validationMode: 'keywords',
+            requiredKeywords: ['الأجسام المضادة', 'المصل'],
+            successMessageAr: 'نعم : ELISA تبحث عن الأجسام المضادة ضد بروتينات الفيروس في المصل.',
+            errorHintAr:
+              'الاختبار الروتيني يبحث عن أجسام مضادة ضد بروتينات VIH في المصل، ويُؤكَّد بتقنية Western blot.',
+          },
+          {
+            id: 'vih_fenetre_serologique',
+            verbAr: 'فسر',
+            promptAr:
+              'شخص أصيب منذ أسبوع أعطى اختبار ELISA سالباً. فسّر هذه النتيجة دون أن تستنتج أنه سليم.',
+            answerType: 'short_text',
+            validationMode: 'keywords',
+            requiredKeywords: ['الأجسام المضادة', 'لم تتشكل', 'الانقلاب المصلي'],
+            successMessageAr:
+              'ممتاز : قبل الانقلاب المصلي لا توجد أجسام مضادة قابلة للكشف — نتيجة سالبة لا تعني السلامة.',
+            errorHintAr:
+              'الأجسام المضادة تظهر بعد أسابيع (الانقلاب المصلي). قبل ذلك يكون الشخص مصاباً وناقلاً رغم سلبية الاختبار : لهذا يُلجأ إلى PCR.',
+          },
+          {
+            id: 'vih_traitement_vaccin',
+            verbAr: 'علل',
+            promptAr:
+              'علّل فشل اللقاحات التجريبية ضد VIH، واذكر على ماذا يرتكز العلاج الحالي.',
+            answerType: 'short_text',
+            validationMode: 'keywords',
+            requiredKeywords: ['الطفرات', 'الاستنساخ العكسي', 'كبت'],
+            successMessageAr:
+              'نعم : تعدد الطفرات يُفقد الأجسام المضادة نجاعتها، والعلاج يكبت الإنزيمات الفيروسية دون استئصال الفيروس.',
+            errorHintAr:
+              'الفيروس شديد التحول : الطفرات تغير بروتيناته فتصبح الأجسام المضادة غير فعالة. العلاج متعدد يكبت إنزيم الاستنساخ العكسي والبروتياز.',
+          },
+        ],
+        summaryAr:
+          'ELISA و Western blot يكشفان عن الأجسام المضادة (دليل غير مباشر)، و PCR تكشف عن ARN الفيروسي (دليل مباشر). نتيجة سالبة قبل الانقلاب المصلي لا تنفي الإصابة، والعلاج الحالي يسيطر على التضاعف الفيروسي دون شفاء.',
+      },
+      {
+        type: 'TEXT_AND_PRODUCE',
+        objective: 'إنتاج فقرة تفسيرية تربط بين هدف الفيروس ودور LT4 في التعاون المناعي.',
+        prompt:
+          'بيّن في 4 إلى 5 أسطر لماذا يؤدي فيروس يهاجم اللمفاويات LT4 فقط إلى انهيار المناعتين الخلطية والخلوية معاً.',
+        acceptedAnswers: [
+          'اللمفاويات LT4 المساعدة تفرز الأنترلوكين 2 الذي ينشط LB و LTc، فإذا تناقص عددها ينهار التعاون المناعي وتعجز الاستجابتان الخلطية والخلوية معاً',
+          'لأن LT4 هي محور التعاون المناعي عن طريق الأنترلوكينات، فتخريبها يمنع تنشيط الخلايا البلازمية واللمفاويات السامة معاً',
+        ],
+        errorHint:
+          'الفكرة المحورية : LT4 ليست خلية منفذة بل خلية منشِّطة. عبر الأنترلوكين 2 تنشط LB (خلطية) و LTc (خلوية) ؛ إقصاؤها يقطع التنشيط في الفرعين معاً، وهذا هو سبب النقص المناعي المكتسب.',
+      },
+    ],
+  },
+  // ─────────── SPRINT 5 (audit, items 7 et 8) — U3 : المثبطات الإنزيمية ───────────
+  // Priorité n°1 du plan de renforcement : la matrice d'audit donnait pour cette
+  // notion « leçon ⚠️2, micro-remédiation ⚠️1, carte mentale ❌0, simulation ❌ ».
+  // La carte mentale a été livrée au sprint 4 ; voici la leçon active et l'atelier
+  // des 6 courbes (@MostafaBdd : « أفكار تمارين الإنزيمات » 148 K vues — l'entrée
+  // attendue sur cette unité est typologique, pas un cours de plus).
+  enzyme_inhibitors: {
+    id: 'enzyme_inhibitors',
+    title: 'المثبطات الإنزيمية : تنافسي أم لا تنافسي ؟ قراءة منحنيات V = f([S])',
+    blocks: [
+      {
+        type: 'GUIDED_DOC_QA',
+        objective:
+          'تحليل منحنيي تثبيط مقارنة بالشاهد، واستخراج المعيار الحاسم : ماذا يحدث للسرعة القصوى Vmax ؟',
+        doc: {
+          assetSrc: '/assets/images/schemas/domaine1_enzymes/schema_87_enzyme_inhibition_curves_ar.svg',
+          altAr: 'ثلاثة منحنيات V = f([S]) : الشاهد، المنحنى A بنفس Vmax مع Km أكبر، والمنحنى B بـ Vmax منخفضة.',
+          captionAr:
+            'الوثيقة : سرعة التفاعل الابتدائية بدلالة تركيز الركيزة، في غياب المثبط (الشاهد) وفي وجود المثبط A ثم المثبط B، مع نفس تركيز الإنزيم.',
+        },
+        questions: [
+          {
+            id: 'inhib_analyse_courbes',
+            verbAr: 'حلل',
+            promptAr: 'حلل تطور السرعة في المنحنيات الثلاثة مع ارتفاع تركيز الركيزة.',
+            answerType: 'short_text',
+            validationMode: 'keywords',
+            requiredKeywords: ['تزداد', 'تستقر', 'الشاهد'],
+            successMessageAr: 'أحسنت : وصف السلوك العام قبل أي تفسير — هذا هو التحليل.',
+            errorHintAr:
+              'صف ما تراه : في الحالات الثلاث تزداد السرعة مع تركيز الركيزة ثم تستقر، لكن عند مستويات مختلفة مقارنة بالشاهد.',
+          },
+          {
+            id: 'inhib_comparer_vmax',
+            verbAr: 'قارن',
+            promptAr: 'قارن السرعة القصوى Vmax وقيمة Km في المنحنيين A و B مع الشاهد.',
+            answerType: 'short_text',
+            validationMode: 'keywords',
+            requiredKeywords: ['Vmax', 'Km', 'نفس', 'تنخفض'],
+            successMessageAr:
+              'ممتاز : المنحنى A يبلغ نفس Vmax لكن بـ Km أكبر، والمنحنى B لا يبلغ Vmax الشاهد أبداً.',
+            errorHintAr:
+              'اقرأ المستقيم الأفقي لكل منحنى (Vmax)، ثم أسقط Vmax/2 على محور التراكيز (Km). A : نفس Vmax و Km أكبر ؛ B : Vmax تنخفض.',
+          },
+          {
+            id: 'inhib_identifier_type',
+            verbAr: 'استنتج',
+            promptAr: 'استنتج نوع كل مثبط، وعلل بمكان تثبيته على الإنزيم.',
+            answerType: 'short_text',
+            validationMode: 'keywords',
+            requiredKeywords: ['تنافسي', 'الموقع الفعال', 'لا تنافسي', 'آخر'],
+            successMessageAr:
+              'A مثبط تنافسي يحتل الموقع الفعال نفسه، و B مثبط لا تنافسي يتثبت على موقع آخر ويشوّه الموقع الفعال.',
+            errorHintAr:
+              'نفس Vmax ⟵ يمكن التغلب على المثبط بزيادة الركيزة ⟵ منافسة على الموقع الفعال. Vmax منخفضة ⟵ لا يمكن التغلب عليه ⟵ تثبيت على موقع آخر.',
+          },
+        ],
+        summaryAr:
+          'المعيار الحاسم في كل تمرين تثبيط هو Vmax : إذا بقيت كما هي فالمثبط تنافسي (يُزاح بزيادة الركيزة)، وإذا انخفضت فالمثبط لا تنافسي (تشوّه البنية الفراغية للموقع الفعال).',
+      },
+      {
+        type: 'COMPARISON_TABLE',
+        objective: 'تثبيت المقارنة بين المثبط التنافسي والمثبط اللاتنافسي على المعايير الخمسة المطلوبة في التصحيح.',
+        promptAr: 'قارن المثبط التنافسي (يمين) والمثبط اللاتنافسي (يسار) حسب كل معيار.',
+        assetSrc: '/assets/images/schemas/domaine1_enzymes/schema_87_enzyme_inhibition_curves_ar.svg',
+        altAr: 'منحنيات التثبيط الثلاثة.',
+        criteria: [
+          {
+            id: 'site_fixation',
+            labelAr: 'موقع تثبيت المثبط',
+            leftExpected: ['موقع آخر', 'موقع تنظيمي', 'خارج الموقع الفعال'],
+            rightExpected: ['الموقع الفعال', 'نفس الموقع'],
+          },
+          {
+            id: 'ressemblance',
+            labelAr: 'التشابه البنيوي مع الركيزة',
+            leftExpected: ['لا يشبه الركيزة', 'بنية مختلفة'],
+            rightExpected: ['يشبه الركيزة', 'تشابه بنيوي'],
+          },
+          {
+            id: 'effet_vmax',
+            labelAr: 'أثره على السرعة القصوى Vmax',
+            leftExpected: ['تنخفض', 'Vmax أقل'],
+            rightExpected: ['لا تتغير', 'نفس Vmax'],
+          },
+          {
+            id: 'effet_km',
+            labelAr: 'أثره على Km',
+            leftExpected: ['لا يتغير', 'نفس Km'],
+            rightExpected: ['يرتفع', 'Km أكبر'],
+          },
+          {
+            id: 'exces_substrat',
+            labelAr: 'ماذا يحدث عند رفع تركيز الركيزة ؟',
+            leftExpected: ['يبقى التثبيط', 'لا يزول'],
+            rightExpected: ['يزول التثبيط', 'يُزاح المثبط'],
+          },
+        ],
+        conclusionPromptAr:
+          'استنتج لماذا لا يمكن التغلب على المثبط اللاتنافسي بزيادة تركيز الركيزة.',
+        conclusionKeywords: ['موقع آخر', 'البنية', 'الموقع الفعال'],
+        summaryAr:
+          'المثبط التنافسي يشبه الركيزة ويحتل موقعها فتزيحه زيادة الركيزة : Vmax محفوظة و Km يرتفع. المثبط اللاتنافسي يتثبت على موقع آخر فيغير البنية الفراغية ويجعل الموقع الفعال غير مكمل : Vmax تنخفض ولا تنفع زيادة الركيزة.',
+      },
+      {
+        type: 'SEQUENCE_ORDER',
+        objective: 'بناء منهجية ثابتة في 5 خطوات لكل تمرين يعرض منحنى إنزيمياً مع مثبط.',
+        promptAr: 'رتّب خطوات قراءة وثيقة التثبيط كما تُصحَّح في البكالوريا.',
+        assetSrc: '/assets/images/schemas/domaine1_enzymes/schema_87_enzyme_inhibition_curves_ar.svg',
+        altAr: 'منحنيات V = f([S]) للشاهد ومثبطين.',
+        steps: [
+          { id: 'identifier_axes', labelAr: 'أحدد المتغيرين : ماذا على محور الفواصل وماذا على محور التراتيب ؟', expectedOrder: 1 },
+          { id: 'reperer_temoin', labelAr: 'أحدد منحنى الشاهد الذي تُقارن به بقية المنحنيات', expectedOrder: 2 },
+          { id: 'lire_vmax', labelAr: 'أقرأ Vmax لكل منحنى : هل بلغ نفس المستوى الأفقي للشاهد ؟', expectedOrder: 3 },
+          { id: 'lire_km', labelAr: 'أُسقط Vmax/2 على محور التراكيز لأقرأ Km وأقارنه بالشاهد', expectedOrder: 4 },
+          { id: 'conclure_type', labelAr: 'أستنتج نوع المثبط وأعلل بمكان تثبيته على الإنزيم', expectedOrder: 5 },
+        ],
+        summaryPromptAr: 'لخّص المنهجية : ما القراءتان اللتان تكفيان لتحديد نوع المثبط ؟',
+        summaryKeywords: ['Vmax', 'Km', 'الشاهد'],
+        summaryAr:
+          'قراءتان تكفيان : Vmax ثم Km، دائماً بالمقارنة مع الشاهد. لا يُستنتج نوع المثبط من شكل المنحنى وحده.',
+      },
+      {
+        // Item 8 de l'audit — atelier des 6 courbes.
+        type: 'GUIDED_DOC_QA',
+        objective:
+          'التمييز بين المنحنيات الستة الأكثر ورودا في الوحدة 3 قبل قراءة نص السؤال، لتفادي الخلط بين وثيقة وأخرى.',
+        doc: {
+          assetSrc: '/assets/images/schemas/domaine1_enzymes/schema_88_enzyme_six_curves_workshop_ar.svg',
+          altAr:
+            'ست منحنيات : تركيز الركيزة، درجة الحرارة، درجة الحموضة، مثبط تنافسي، مثبط لا تنافسي، وتراكم الناتج بدلالة الزمن.',
+          captionAr:
+            'ورشة : ستة منحنيات مرقمة من 1 إلى 6. لكل منحنى سؤال واحد : ما المتغير ؟ وماذا يعني شكل المنحنى ؟',
+        },
+        questions: [
+          {
+            id: 'atelier_courbe1_substrat',
+            verbAr: 'حلل',
+            promptAr: 'المنحنى 1 : لماذا تستقر السرعة عند مستوى ثابت رغم استمرار زيادة [S] ؟',
+            answerType: 'short_text',
+            validationMode: 'keywords',
+            requiredKeywords: ['التشبع', 'المواقع الفعالة', 'مشغولة'],
+            successMessageAr: 'نعم : تشبع المواقع الفعالة، لا نفاد الإنزيم.',
+            errorHintAr: 'الاستقرار = تشبع : كل المواقع الفعالة مشغولة. الإنزيم لا يُستهلك ولا ينفد.',
+          },
+          {
+            id: 'atelier_courbe2_temperature',
+            verbAr: 'فسر',
+            promptAr: 'المنحنى 2 : فسّر الجزء الصاعد ثم الانهيار السريع بعد الدرجة المثلى.',
+            answerType: 'short_text',
+            validationMode: 'keywords',
+            requiredKeywords: ['التصادم', 'المثلى', 'تخريب'],
+            successMessageAr: 'تفسيران مختلفان في منحنى واحد : تصادمات ثم تخريب البنية.',
+            errorHintAr:
+              'الصعود : ارتفاع الحرارة يزيد التصادمات بين الإنزيم والركيزة. النزول : تخريب البنية الفراغية للموقع الفعال.',
+          },
+          {
+            id: 'atelier_courbe3_ph',
+            verbAr: 'فسر',
+            promptAr: 'المنحنى 3 : لماذا ينخفض النشاط على جانبي pH الأمثل ؟',
+            answerType: 'short_text',
+            validationMode: 'keywords',
+            requiredKeywords: ['الشحنات', 'الموقع الفعال', 'الجذور'],
+            successMessageAr: 'ممتاز : تغير الحالة الأيونية للجذور يشوّه الموقع الفعال.',
+            errorHintAr:
+              'تغير pH يغير شحنات جذور الأحماض الأمينية، فتتفكك الروابط الشاردية ويتشوه الموقع الفعال (رابط مع الوحدة 2).',
+          },
+          {
+            id: 'atelier_courbe4_competitif',
+            verbAr: 'استنتج',
+            promptAr: 'المنحنى 4 : المنحنى المتقطع هو الشاهد. حدد نوع المثبط وعلل.',
+            answerType: 'short_text',
+            validationMode: 'keywords',
+            requiredKeywords: ['تنافسي', 'Vmax', 'Km'],
+            successMessageAr: 'نعم : نفس Vmax مع Km أكبر ⟵ مثبط تنافسي.',
+            errorHintAr: 'إذا بلغ المنحنى نفس Vmax لكن ببطء (Km أكبر) فالمثبط تنافسي.',
+          },
+          {
+            id: 'atelier_courbe5_non_competitif',
+            verbAr: 'استنتج',
+            promptAr: 'المنحنى 5 : حدد نوع المثبط، ثم قل هل تنفع زيادة الركيزة ؟',
+            answerType: 'short_text',
+            validationMode: 'keywords',
+            requiredKeywords: ['لا تنافسي', 'Vmax', 'لا تنفع'],
+            successMessageAr: 'نعم : Vmax منخفضة ⟵ لا تنافسي ⟵ زيادة الركيزة لا ترفع السرعة القصوى.',
+            errorHintAr: 'انخفاض Vmax يعني أن المثبط لا يُزاح : المنافسة مستحيلة لأنه ليس على الموقع الفعال.',
+          },
+          {
+            id: 'atelier_courbe6_produit_temps',
+            verbAr: 'حلل',
+            promptAr: 'المنحنى 6 : المتغير هو الزمن وليس [S]. لماذا يبلغ تراكم الناتج مستوى ثابتاً ؟',
+            answerType: 'short_text',
+            validationMode: 'keywords',
+            requiredKeywords: ['الركيزة', 'نفاد', 'الزمن'],
+            successMessageAr: 'انتبه للفرق : هنا الاستقرار سببه نفاد الركيزة، لا التشبع.',
+            errorHintAr:
+              'المحور الأفقي هو الزمن : المنحنى يستقر لأن الركيزة نفدت (تحولت كلها إلى ناتج)، وليس بسبب تشبع المواقع.',
+          },
+        ],
+        summaryAr:
+          'ستة منحنيات، ثلاثة أسباب مختلفة للاستقرار : تشبع المواقع (1 و 4 و 5)، وتخريب البنية (2 و 3)، ونفاد الركيزة (6). الخلط بين « تشبع » و « نفاد الركيزة » من أكثر الأخطاء كلفة في التصحيح.',
+      },
+      {
+        type: 'TEXT_AND_PRODUCE',
+        objective: 'إنتاج فقرة تعليل من مستوى البكالوريا انطلاقاً من وضعية دوائية.',
+        prompt:
+          'دواء يستعمل لخفض نشاط إنزيم معين. أظهرت الدراسة أن السرعة القصوى Vmax لم تتغير في وجود الدواء، وأن زيادة تركيز الركيزة تلغي أثره. حدد نوع هذا المثبط، واشرح آليته في 3 إلى 4 أسطر.',
+        acceptedAnswers: [
+          'مثبط تنافسي يشبه الركيزة ويتثبت على الموقع الفعال، وزيادة الركيزة تزيحه فتبقى Vmax كما هي مع ارتفاع Km',
+          'تنافسي لأن Vmax لم تتغير ويزول أثره بزيادة الركيزة، فهو ينافس الركيزة على الموقع الفعال',
+        ],
+        errorHint:
+          'المعطيان حاسمان : Vmax محفوظة + أثر يزول بزيادة الركيزة ⟵ مثبط تنافسي. اذكر في التعليل : التشابه البنيوي مع الركيزة، التثبيت على الموقع الفعال، والمنافسة التي تُحسم لصالح الأكثر تركيزاً.',
+      },
+    ],
+  },
+  // ─────────── SPRINT 3 (audit, item 5) — U2 : سلوك الأحماض الأمينية ───────────
+  // Trou n°1 de l'audit : le pHi n'apparaissait NULLE PART dans l'app alors que
+  // c'est la 2e notion la plus difficile du corpus (73 occurrences) et que le
+  // livre officiel lui consacre une activité entière (ch. 8, « سلوك الأحماض
+  // الأمينية في الوسط » : électrophorèse de Ala à pH 2, 6 et 12).
+  amino_acid_behavior: {
+    id: 'amino_acid_behavior',
+    title: 'سلوك الأحماض الأمينية في الوسط : الشحنة، نقطة التعادل الكهربائي (pHi) والهجرة',
+    blocks: [
+      {
+        type: 'GUIDED_DOC_QA',
+        objective:
+          'استغلال نتائج الهجرة الكهربائية للحمض الأميني ألانين Ala عند ثلاث قيم pH، واستنتاج قاعدة تحديد الشحنة.',
+        doc: {
+          assetSrc: '/assets/images/schemas/domaine1_proteines/schema_41_alanine_representations_modern.svg',
+          altAr: 'تمثيلات مختلفة للحمض الأميني ألانين : الصيغة العامة، المجموعة الأمينية والمجموعة الكربوكسيلية والجذر R.',
+          captionAr:
+            'الوثيقة 1 : الصيغة العامة للحمض الأميني — مجموعة أمينية (-NH₂) ومجموعة كربوكسيلية (-COOH) على نفس ذرة الكربون، مع الجذر R.',
+          secondaryAssetSrc: '/assets/images/schemas/domaine1_proteines/schema_66_gamma_globulin_electrophoresis_modern.svg',
+          secondaryAltAr: 'جهاز الهجرة الكهربائية : شريط فصل، محلول منظم ذو pH محدد، ومهبط ومصعد.',
+          secondaryCaptionAr:
+            'الوثيقة 2 : وُضعت قطرة من محلول Ala في منتصف شريط الهجرة الكهربائية عند pH = 2، ثم أُعيدت التجربة عند pH = 6 وعند pH = 12. النتيجة : هجرة نحو المهبط عند 2، لا هجرة عند 6، هجرة نحو المصعد عند 12.',
+        },
+        questions: [
+          {
+            id: 'phi_analyse_migration',
+            verbAr: 'حلل',
+            promptAr: 'حلل نتائج الهجرة الكهربائية للحمض الأميني Ala عند pH = 2 و pH = 6 و pH = 12.',
+            answerType: 'short_text',
+            validationMode: 'keywords',
+            requiredKeywords: ['المهبط', 'المصعد', 'لا يهاجر'],
+            successMessageAr: 'أحسنت : وصفت الاتجاهات الثلاثة دون أن تفسرها بعد — هذا هو التحليل.',
+            errorHintAr:
+              'اذكر الاتجاه في كل حالة : نحو المهبط (السالب) عند pH = 2، لا يهاجر عند pH = 6، نحو المصعد (الموجب) عند pH = 12.',
+          },
+          {
+            id: 'phi_deduire_charge',
+            verbAr: 'فسر',
+            promptAr:
+              'ماذا تستنتج عن شحنة Ala في كل وسط؟ (تذكّر : الجسيم المشحون ينجذب نحو القطب المعاكس لشحنته).',
+            answerType: 'short_text',
+            validationMode: 'keywords',
+            requiredKeywords: ['موجبة', 'متعادل', 'سالبة'],
+            successMessageAr: 'ممتاز : شحنة موجبة عند pH = 2، تعادل كهربائي عند 6، شحنة سالبة عند 12.',
+            errorHintAr:
+              'الهجرة نحو المهبط تعني شحنة موجبة، والهجرة نحو المصعد تعني شحنة سالبة، وانعدام الهجرة يعني التعادل الكهربائي.',
+          },
+          {
+            id: 'phi_regle_generale',
+            verbAr: 'استنتج',
+            promptAr:
+              'علماً أن pH = 6 يمثل نقطة التعادل الكهربائي (pHi) للألانين، استخرج القاعدة التي تسمح بتحديد شحنة أي حمض أميني بمقارنة pH الوسط مع pHi.',
+            answerType: 'short_text',
+            validationMode: 'keywords',
+            requiredKeywords: ['pHi', 'أقل', 'أعلى', 'الشحنة'],
+            successMessageAr:
+              'هذه هي القاعدة المطلوبة في البكالوريا : pH < pHi ⟵ شحنة موجبة ؛ pH = pHi ⟵ متعادل ؛ pH > pHi ⟵ شحنة سالبة.',
+            errorHintAr:
+              'صُغ القاعدة بمقارنة صريحة : إذا كان pH الوسط أقل من pHi تكون الشحنة موجبة، وإذا كان أعلى من pHi تكون الشحنة سالبة.',
+          },
+        ],
+        summaryAr:
+          'الحمض الأميني مركب أمفوتيري : يسلك سلوك حمض في الوسط القاعدي وسلوك قاعدة في الوسط الحمضي. تتغير شحنته حسب pH الوسط، وتسمى قيمة pH التي يكون عندها متعادلاً كهربائياً بنقطة التعادل الكهربائي pHi.',
+      },
+      {
+        type: 'SEQUENCE_ORDER',
+        objective:
+          'بناء منهجية ثابتة من 5 خطوات للإجابة على أي سؤال بكالوريا حول الهجرة الكهربائية للأحماض الأمينية أو الببتيدات.',
+        promptAr:
+          'رتّب خطوات المنهجية التي تقودك من معطيات التمرين إلى تحديد اتجاه الهجرة.',
+        assetSrc: '/assets/images/schemas/domaine1_proteines/schema_66_gamma_globulin_electrophoresis_modern.svg',
+        altAr: 'شريط الهجرة الكهربائية مع المهبط والمصعد والمحلول المنظم.',
+        steps: [
+          { id: 'lire_ph', labelAr: 'أقرأ pH المحلول المنظم المستعمل في جهاز الهجرة الكهربائية', expectedOrder: 1 },
+          { id: 'lire_phi', labelAr: 'أستخرج قيمة pHi الخاصة بالحمض الأميني من نص التمرين أو من الجدول', expectedOrder: 2 },
+          { id: 'comparer', labelAr: 'أقارن : هل pH الوسط أقل من pHi أم يساويه أم أعلى منه؟', expectedOrder: 3 },
+          { id: 'charge', labelAr: 'أستنتج الشحنة : موجبة إذا pH < pHi، متعادلة إذا pH = pHi، سالبة إذا pH > pHi', expectedOrder: 4 },
+          { id: 'sens', labelAr: 'أستنتج الاتجاه : الشحنة الموجبة تهاجر نحو المهبط، والسالبة نحو المصعد، والمتعادلة تبقى في مكان الوضع', expectedOrder: 5 },
+        ],
+        summaryPromptAr:
+          'لخّص المنهجية في جملة واحدة : ما هي المقارنة المحورية، وما الذي تستنتجه منها؟',
+        summaryKeywords: ['pHi', 'الشحنة', 'المهبط', 'المصعد'],
+        summaryAr:
+          'كل تمرين هجرة كهربائية يُحلّ بمقارنة واحدة : pH الوسط أمام pHi. منها تُستنتج الشحنة، ومن الشحنة يُستنتج القطب الذي يهاجر نحوه الحمض الأميني.',
+      },
+      {
+        type: 'COMPARISON_TABLE',
+        objective:
+          'تثبيت الفرق بين الوسط الحمضي (pH < pHi) والوسط القاعدي (pH > pHi) على أربعة معايير مطلوبة في التصحيح.',
+        promptAr: 'قارن سلوك الحمض الأميني في الحالتين : pH أقل من pHi، و pH أعلى من pHi.',
+        assetSrc: '/assets/images/schemas/domaine1_proteines/schema_41_alanine_representations_modern.svg',
+        altAr: 'صيغ الحمض الأميني حسب pH الوسط.',
+        criteria: [
+          {
+            id: 'charge_nette',
+            labelAr: 'الشحنة الإجمالية للحمض الأميني',
+            leftExpected: ['موجبة', 'شحنة موجبة'],
+            rightExpected: ['سالبة', 'شحنة سالبة'],
+          },
+          {
+            id: 'groupement',
+            labelAr: 'حالة المجموعتين الوظيفيتين',
+            leftExpected: ['NH3+', 'المجموعة الأمينية', 'تكتسب بروتون'],
+            rightExpected: ['COO-', 'المجموعة الكربوكسيلية', 'تحرر بروتون'],
+          },
+          {
+            id: 'sens_migration',
+            labelAr: 'اتجاه الهجرة الكهربائية',
+            leftExpected: ['المهبط', 'القطب السالب'],
+            rightExpected: ['المصعد', 'القطب الموجب'],
+          },
+          {
+            id: 'exemple_ala',
+            labelAr: 'مثال الألانين (pHi = 6)',
+            leftExpected: ['pH = 2', 'وسط حمضي'],
+            rightExpected: ['pH = 12', 'وسط قاعدي'],
+          },
+        ],
+        conclusionPromptAr:
+          'استنتج لماذا يوصف الحمض الأميني بأنه مركب أمفوتيري (حمامي).',
+        conclusionKeywords: ['أمفوتيري', 'حمض', 'قاعدة'],
+        summaryAr:
+          'في الوسط الحمضي (pH < pHi) يكتسب الحمض الأميني بروتونات فيصبح موجباً ويهاجر نحو المهبط ؛ وفي الوسط القاعدي (pH > pHi) يحرر بروتونات فيصبح سالباً ويهاجر نحو المصعد. هذا السلوك المزدوج هو معنى المركب الأمفوتيري.',
+      },
+      {
+        // Item 5 bis de l'audit (@MostafaBdd : « كيف نكتب صيغة الحمض الأميني بطريقة صحيحة ؟ »,
+        // 12:30 / 151 K vues) — écrire la FORME IONISÉE, et pas seulement en déduire la charge.
+        type: 'TEXT_AND_PRODUCE',
+        objective:
+          'كتابة الصيغة المفصلة للحمض الأميني في الأوساط الثلاثة : الشكل المشحون موجباً، الشكل ثنائي القطب، والشكل المشحون سالباً.',
+        content:
+          'في الوسط الحمضي (pH = 2) تكون المجموعة الأمينية على شكل [____] والمجموعة الكربوكسيلية على شكل [____] : الشحنة الإجمالية موجبة. عند نقطة التعادل الكهربائي (pH = pHi) نكتب الشكل [____] : المجموعة الأمينية NH₃⁺ والمجموعة الكربوكسيلية COO⁻ في آن واحد. في الوسط القاعدي (pH = 12) تفقد المجموعة الأمينية بروتونها فتصبح [____] وتبقى الكربوكسيلية COO⁻ : الشحنة الإجمالية سالبة.',
+        popups: {
+          'NH₃⁺': 'المجموعة الأمينية بعد اكتساب بروتون H⁺ — تحمل شحنة موجبة.',
+          'COOH': 'المجموعة الكربوكسيلية غير متأينة — لا تحمل شحنة، لأنها لم تحرر بروتونها في الوسط الحمضي.',
+          'ثنائي القطب': 'الشكل الأمفوتيري (Zwitterion) : شحنتان متساويتان ومتعاكستان في نفس الجزيء، فالمحصلة معدومة.',
+          'NH₂': 'المجموعة الأمينية بعد فقدان بروتونها في الوسط القاعدي — لا تحمل شحنة.',
+        },
+        microTest: {
+          prompt:
+            'عند pH يساوي pHi، اكتب حالة المجموعتين : المجموعة الأمينية ______ والمجموعة الكربوكسيلية ______.',
+          acceptedAnswers: ['NH3+ COO-', 'NH₃⁺ COO⁻', 'موجبة سالبة', 'ثنائي القطب'],
+          errorHint:
+            'عند pHi لا تختفي الشحنات : تبقى NH₃⁺ و COO⁻ معاً (الشكل ثنائي القطب)، ومحصلتهما معدومة. هذا هو الشكل المطلوب رسمه في التمارين.',
+        },
+      },
+      {
+        type: 'TEXT_AND_PRODUCE',
+        objective: 'إنتاج نص علمي قصير يوظف القاعدة في وضعية بكالوريا (فصل خليط من الأحماض الأمينية).',
+        prompt:
+          'خليط من ثلاثة أحماض أمينية : Glu (pHi = 3.2) و Ala (pHi = 6) و Lys (pHi = 9.7)، وُضع في منتصف شريط الهجرة الكهربائية عند pH = 6. حدد شحنة كل حمض أميني واتجاه هجرته، ثم علل في نص من 3 إلى 4 أسطر.',
+        acceptedAnswers: [
+          'Glu سالب يهاجر نحو المصعد لأن pH أعلى من pHi، Ala متعادل لا يهاجر لأن pH يساوي pHi، Lys موجب يهاجر نحو المهبط لأن pH أقل من pHi',
+          'الغلوتاميك سالب نحو المصعد، الألانين متعادل يبقى في مكانه، الليزين موجب نحو المهبط',
+        ],
+        errorHint:
+          'عالج كل حمض أميني على حدة بنفس المقارنة : pH = 6 أمام pHi الخاص به. عند Glu (3.2) الوسط أعلى ⟵ سالب ⟵ المصعد ؛ عند Ala (6) تساوٍ ⟵ لا هجرة ؛ عند Lys (9.7) الوسط أقل ⟵ موجب ⟵ المهبط.',
+      },
+    ],
+  },
 };

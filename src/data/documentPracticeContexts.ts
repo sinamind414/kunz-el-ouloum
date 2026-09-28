@@ -386,6 +386,146 @@ export const DOCUMENT_PRACTICE_CONTEXTS: DocumentPracticeContext[] = [
     },
   },
   {
+    // Audit item 5 — document vivant du pHi : électrophorèse de l'alanine
+    // (livre officiel, ch. 8 « سلوك الأحماض الأمينية في الوسط »).
+    exerciseId: 'amino_acid_electrophoresis',
+    questionId: 'amino_acid_electrophoresis_q1',
+    conceptId: 'amino_acid_behavior',
+    unitId: 2,
+    lessonId: 'amino_acid_behavior',
+    documentType: 'experiment',
+    reflexId: 'analyse',
+    domain: 'genetique',
+    sourceStatus: 'manuel_officiel_verifie',
+    documentTypeAr: 'تجربة هجرة كهربائية — حمض أميني عند ثلاث قيم pH',
+    goalAr: 'استخراج قاعدة تحديد شحنة الحمض الأميني واتجاه هجرته بمقارنة pH الوسط مع pHi.',
+    vocabulary: ['الهجرة الكهربائية', 'المحلول المنظم', 'نقطة التعادل الكهربائي', 'pHi', 'المهبط', 'المصعد', 'أمفوتيري'],
+    expectedEvidence: [
+      'هجرة نحو المهبط عند pH = 2',
+      'انعدام الهجرة عند pH = 6',
+      'هجرة نحو المصعد عند pH = 12',
+    ],
+    trapAr: 'انعدام الهجرة لا يعني غياب الحمض الأميني، بل تساوي pH الوسط مع pHi.',
+    assetSrc: '/assets/images/schemas/domaine1_proteines/schema_66_gamma_globulin_electrophoresis_modern.svg',
+    altAr: 'وثيقة تبين شريط الهجرة الكهربائية بين مهبط ومصعد مع مكان وضع العينة في المنتصف.',
+    gallery: [
+      {
+        assetSrc: '/assets/images/schemas/domaine1_proteines/schema_41_alanine_representations_modern.svg',
+        altAr: 'وثيقة تبين الصيغة العامة للحمض الأميني : مجموعة أمينية، مجموعة كربوكسيلية وجذر R.',
+        captionAr: 'المجموعتان الوظيفيتان هما أصل السلوك الأمفوتيري.',
+      },
+    ],
+    observationAr:
+      'قطرة من محلول الألانين وُضعت في منتصف الشريط : تهاجر نحو المهبط عند pH = 2، تبقى في مكانها عند pH = 6، وتهاجر نحو المصعد عند pH = 12.',
+    promptObserveAr: 'صف اتجاه هجرة البقعة في كل من الأوساط الثلاثة دون تفسير.',
+    promptProduceAr: 'استنتج شحنة الألانين في كل وسط، ثم استخرج القاعدة العامة بمقارنة pH مع pHi.',
+    hintsAr: [
+      'الجسيم المشحون ينجذب نحو القطب المعاكس لشحنته.',
+      'ما الذي يميز الوسط الذي لا تحدث فيه أي هجرة؟',
+    ],
+    correctionAr:
+      'عند pH = 2 (أقل من pHi = 6) يكتسب الألانين بروتونات فتكون شحنته موجبة ويهاجر نحو المهبط ؛ عند pH = 6 تتعادل الشحنات فلا يهاجر، وهي نقطة التعادل الكهربائي pHi ؛ عند pH = 12 (أعلى من pHi) يحرر بروتونات فتكون شحنته سالبة ويهاجر نحو المصعد. القاعدة : pH < pHi ⟵ موجب، pH > pHi ⟵ سالب.',
+    criteria: {
+      evidence: ['المهبط', 'المصعد', 'انعدام الهجرة'],
+      mechanism: ['اكتساب بروتونات', 'تحرير بروتونات', 'pHi'],
+      conclusion: ['الشحنة الموجبة', 'الشحنة السالبة'],
+    },
+  },
+  {
+    // Audit item 3 bis — document vivant du dossier VIH : les 3 courbes d'évolution
+    // (livre officiel, ch. 23 « سبب فقدان المناعة المكتسبة »).
+    exerciseId: 'vih_evolution_courbes',
+    questionId: 'vih_evolution_courbes_q1',
+    conceptId: 'immunity_hiv_aids',
+    unitId: 4,
+    lessonId: 'immunity_hiv_aids',
+    documentType: 'curve',
+    reflexId: 'analyse',
+    domain: 'immuno',
+    sourceStatus: 'manuel_officiel_verifie',
+    documentTypeAr: 'منحنيات — تطور الحمولة الفيروسية و LT4 والأجسام المضادة عبر ثلاث مراحل',
+    goalAr: 'ربط كل مرحلة من مراحل الإصابة بحالة المصاب، والتمييز بين موجب المصل ومريض السيدا.',
+    vocabulary: ['الحمولة الفيروسية', 'LT4', 'CD4', 'الانقلاب المصلي', 'موجب المصل', 'السيدا', 'الأمراض الانتهازية'],
+    expectedEvidence: [
+      'ذروة فيروسية في الأسابيع الأولى',
+      'ظهور الأجسام المضادة (الانقلاب المصلي)',
+      'تناقص تدريجي للمفاويات LT4',
+      'انهيار LT4 تحت 200 خلية / ملم³ مع ارتفاع الحمولة الفيروسية',
+    ],
+    trapAr: 'وجود أجسام مضادة لا يعني الشفاء : الشخص موجب المصل مصاب وناقل للعدوى مدى الحياة.',
+    assetSrc: '/assets/images/schemas/domaine1_immunite/schema_89_vih_evolution_curves_ar.svg',
+    altAr: 'منحنيات تطور الحمولة الفيروسية واللمفاويات LT4 والأجسام المضادة عبر ثلاث مراحل.',
+    gallery: [
+      {
+        assetSrc: '/assets/images/schemas/domaine1_immunite/schema_90_vih_cycle_lt4_ar.svg',
+        altAr: 'مخطط دورة فيروس VIH داخل اللمفاوية LT4 في ست خطوات.',
+        captionAr: 'الدورة الفيروسية تفسر لماذا يتناقص عدد اللمفاويات LT4.',
+      },
+    ],
+    observationAr:
+      'عند شخص مصاب بـ VIH دون علاج : ترتفع الحمولة الفيروسية بشدة في الأسابيع الأولى ثم تنخفض مع ظهور الأجسام المضادة، وتبقى منخفضة سنوات بينما يتناقص عدد اللمفاويات LT4 ببطء، ثم ترتفع من جديد في حين ينهار عدد LT4 تحت 200 خلية / ملم³.',
+    promptObserveAr: 'صف تطور كل من المؤشرات الثلاثة عبر المراحل الثلاث دون تفسير.',
+    promptProduceAr: 'فسّر العلاقة بين تناقص اللمفاويات LT4 وظهور الأمراض الانتهازية في المرحلة الأخيرة.',
+    hintsAr: [
+      'ما الذي يحدث للحمولة الفيروسية بالضبط عند ظهور الأجسام المضادة ؟',
+      'ما دور اللمفاويات LT4 في تنشيط بقية الخلايا المناعية ؟',
+    ],
+    correctionAr:
+      'المرحلة 1 : تضاعف فيروسي مكثف ثم انقلاب مصلي (ظهور الأجسام المضادة) يكبح الحمولة الفيروسية دون إزالة الفيروس المدمج. المرحلة 2 : توازن هش، بدون أعراض، مع تناقص بطيء ومستمر للمفاويات LT4. المرحلة 3 : عندما ينزل عدد LT4 تحت 200 خلية / ملم³ ينهار التعاون المناعي — لا تنشيط لـ LB ولا لـ LTc عبر الأنترلوكين 2 — فتظهر الأمراض الانتهازية والأورام : هذه هي مرحلة السيدا.',
+    criteria: {
+      evidence: ['ذروة الحمولة الفيروسية', 'ظهور الأجسام المضادة', 'تناقص LT4'],
+      mechanism: ['الانقلاب المصلي', 'تخريب LT4', 'انهيار التعاون المناعي'],
+      conclusion: ['الأمراض الانتهازية', 'مرحلة السيدا'],
+    },
+  },
+  {
+    // Audit item 11 — document vivant de la chaîne photochimique
+    // (livre officiel, ch. 33 « تفاعلات المرحلة الكيموضوئية »).
+    exerciseId: 'photochemical_chain_membrane',
+    questionId: 'photochemical_chain_membrane_q1',
+    conceptId: 'photochemical_chain',
+    unitId: 6,
+    lessonId: 'photochemical_chain',
+    documentType: 'schema',
+    reflexId: 'interpret',
+    domain: 'metabo',
+    sourceStatus: 'manuel_officiel_verifie',
+    documentTypeAr: 'مخطط وظيفي — تنظيم المعقدات في غشاء التيلاكويد',
+    goalAr: 'تتبع الإلكترون من الماء إلى NADP⁺ وربط انتقاله بتدرج البروتونات وتركيب ATP.',
+    vocabulary: ['PSII', 'PSI', 'التحلل الضوئي للماء', 'سلسلة النواقل', 'تدرج البروتونات', 'الكرة المذنبة', 'NADPH'],
+    expectedEvidence: [
+      'التحلل الضوئي للماء يعوض إلكترونات PSII',
+      'انتقال الإلكترونات عبر سلسلة النواقل',
+      'ضخ H⁺ من الحشوة نحو التجويف',
+      'إرجاع NADP⁺ إلى NADPH وتركيب ATP عبر الكرة المذنبة',
+    ],
+    trapAr: 'الضوء لا يركب ATP مباشرة : هو ينشئ تدرج H⁺، وعودة H⁺ عبر الكرة المذنبة هي التي تركب ATP.',
+    assetSrc: '/assets/images/schemas/domaine2_energie/schema_93_photochemical_chain_z_scheme_ar.svg',
+    altAr: 'مخطط غشاء التيلاكويد مع PSII وسلسلة النواقل و PSI والكرة المذنبة ومسار الإلكترونات والبروتونات.',
+    gallery: [
+      {
+        assetSrc: '/assets/images/schemas/domaine2_energie/schema_94_photophosphorylation_vs_oxydative_ar.svg',
+        altAr: 'مقارنة بين غشاء التيلاكويد والغشاء الداخلي للميتوكوندري.',
+        captionAr: 'نفس المبدأ الكيميواسموزي في العضيتين، باختلاف مصدر الإلكترونات ومستقبلها.',
+      },
+    ],
+    observationAr:
+      'يبين المخطط أربعة معقدات مغروسة في غشاء التيلاكويد : PSII، سلسلة نواقل تعمل كمضخة، PSI، والكرة المذنبة. الإلكترونات تنتقل من اليسار إلى اليمين، بينما تُضخ H⁺ من الحشوة نحو تجويف الكييس ثم تعود عبر الكرة المذنبة.',
+    promptObserveAr: 'صف مسار الإلكترونات ومسار البروتونات على المخطط دون تفسير.',
+    promptProduceAr: 'فسّر كيف تتحول الطاقة الضوئية إلى طاقة كيميائية في شكل ATP و NADPH.',
+    hintsAr: [
+      'من أين يأتي الإلكترون الأول ؟ وأين ينتهي ؟',
+      'ما الذي يستفيد من الطاقة المحررة أثناء انتقال الإلكترونات ؟',
+    ],
+    correctionAr:
+      'يمتص PSII فوتوناً فيفقد إلكترونين يُعوَّضان بالتحلل الضوئي للماء (H₂O → 2H⁺ + 2e⁻ + ½O₂). تنتقل الإلكترونات عبر سلسلة النواقل محررة طاقة تُستعمل لضخ H⁺ من الحشوة إلى التجويف، ثم تصل إلى PSI حيث تتهيج من جديد قبل أن يستقبلها NADP⁺ : NADP⁺ + 2e⁻ + 2H⁺ → NADPH + H⁺. عودة H⁺ نحو الحشوة عبر الكرة المذنبة تركّب ATP. فالضوء ينشئ التدرج، والتدرج يركّب ATP.',
+    criteria: {
+      evidence: ['التحلل الضوئي للماء', 'سلسلة النواقل', 'تدرج H⁺'],
+      mechanism: ['تهيج PSII و PSI', 'ضخ البروتونات', 'عودة H⁺ عبر الكرة المذنبة'],
+      conclusion: ['NADPH', 'ATP'],
+    },
+  },
+  {
     exerciseId: 'cmh_transplant_compatibility',
     questionId: 'cmh_transplant_compatibility_q1',
     conceptId: 'immunity_self_nonself',

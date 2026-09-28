@@ -1,0 +1,276 @@
+{
+ "_meta": {
+  "generatedAt": "2026-09-27",
+  "chaine": "@ikramscience8424 — Ikram science & إكرام للعلوم",
+  "methode": "relevé manuel des pages playlists YouTube (fetch_page) ; vues arrondies telles qu'affichées par YouTube ; durées exactes",
+  "limites": [
+   "les compteurs de vues sont arrondis par YouTube (156K = 155 500-156 499)",
+   "5 vidéos indisponibles/masquées dans la playlist 3AS sciences expérimentales, 3 dans la playlist maths, 1 dans la playlist bac 2026",
+   "aucune donnée de rétention réelle : les vues ne mesurent pas la compréhension"
+  ]
+ },
+ "playlists": {
+  "immunite_bac2026": {
+   "id": "PLSj4HABOrGq1dJauDiuF7JLWTk9S6mV5D",
+   "videos": 6,
+   "vuesPlaylist": 30726,
+   "maj": "2026-02-13"
+  },
+  "cours_exercices_bac2026": {
+   "id": "PLSj4HABOrGq0dDJQyM_sD9OBKp_CfKGCj",
+   "videos": 14,
+   "vuesPlaylist": 10030,
+   "maj": "2026-05-01"
+  },
+  "3as_sciences_exp": {
+   "id": "PLSj4HABOrGq1tsPh25aB6nj_8vxqz09AX",
+   "videos": 8,
+   "vuesPlaylist": 11003,
+   "maj": "2026-05-01"
+  },
+  "3as_maths": {
+   "id": "PLSj4HABOrGq0FCYd0nZq0QZQi_IAdNYFG",
+   "videos": 4,
+   "vuesPlaylist": 3928,
+   "maj": "2026-02-01"
+  }
+ },
+ "videos": [
+  {
+   "titre": "تركيب البروتين من الألف إلى الياء — باك 2026",
+   "duree": "48:59",
+   "dureeMin": 49.0,
+   "vuesK": 168,
+   "appUnitId": 1,
+   "playlist": "bac2026",
+   "genre": "cours"
+  },
+  {
+   "titre": "أفكار تمارين تركيب البروتين (كل البكالوريات السابقة)",
+   "duree": "1:04:30",
+   "dureeMin": 64.5,
+   "vuesK": 45,
+   "appUnitId": 1,
+   "playlist": "bac2026",
+   "genre": "annales"
+  },
+  {
+   "titre": "تمرين استدلال علمي — تركيب البروتين",
+   "duree": "32:28",
+   "dureeMin": 32.47,
+   "vuesK": 38,
+   "appUnitId": 1,
+   "playlist": "bac2026",
+   "genre": "exercice"
+  },
+  {
+   "titre": "تمرين تركيب البروتين بفكرة ممتازة",
+   "duree": "36:49",
+   "dureeMin": 36.82,
+   "vuesK": 97,
+   "appUnitId": 1,
+   "playlist": "bac2026",
+   "genre": "exercice"
+  },
+  {
+   "titre": "أفكار تمارين متقدمة — تركيب البروتين",
+   "duree": "28:18",
+   "dureeMin": 28.3,
+   "vuesK": 47,
+   "appUnitId": 1,
+   "playlist": "bac2026",
+   "genre": "annales"
+  },
+  {
+   "titre": "العلاقة بين بنية ووظيفة البروتين (الوحدة 2)",
+   "duree": "42:15",
+   "dureeMin": 42.25,
+   "vuesK": 89,
+   "appUnitId": 2,
+   "playlist": "bac2026",
+   "genre": "cours"
+  },
+  {
+   "titre": "جميع أفكار تمارين بنية/وظيفة البروتين (2019 → 2025)",
+   "duree": "50:06",
+   "dureeMin": 50.1,
+   "vuesK": 89,
+   "appUnitId": 2,
+   "playlist": "bac2026",
+   "genre": "annales"
+  },
+  {
+   "titre": "الإنزيمات — تخلص من شبح الإنزيمات",
+   "duree": "58:38",
+   "dureeMin": 58.63,
+   "vuesK": 84,
+   "appUnitId": 3,
+   "playlist": "bac2026",
+   "genre": "cours"
+  },
+  {
+   "titre": "ملخص الذات واللاذات — المناعة باك 2026",
+   "duree": "1:10:06",
+   "dureeMin": 70.1,
+   "vuesK": 156,
+   "appUnitId": 4,
+   "playlist": "immunite",
+   "genre": "cours"
+  },
+  {
+   "titre": "ملخص المناعة الخلطية",
+   "duree": "46:07",
+   "dureeMin": 46.12,
+   "vuesK": 87,
+   "appUnitId": 4,
+   "playlist": "immunite",
+   "genre": "cours"
+  },
+  {
+   "titre": "المناعة الخلوية من الألف إلى الياء",
+   "duree": "26:33",
+   "dureeMin": 26.55,
+   "vuesK": 60,
+   "appUnitId": 4,
+   "playlist": "immunite",
+   "genre": "cours"
+  },
+  {
+   "titre": "التعاون المناعي (Immune Cooperation) باك 2026",
+   "duree": "21:15",
+   "dureeMin": 21.25,
+   "vuesK": 40,
+   "appUnitId": 4,
+   "playlist": "immunite",
+   "genre": "cours"
+  },
+  {
+   "titre": "فيروس السيدا VIH / فقدان المناعة المكتسبة",
+   "duree": "17:57",
+   "dureeMin": 17.95,
+   "vuesK": 46,
+   "appUnitId": 4,
+   "playlist": "immunite",
+   "genre": "cours"
+  },
+  {
+   "titre": "أفكار تمارين المناعة — كل ما ورد منذ 2019",
+   "duree": "1:03:33",
+   "dureeMin": 63.55,
+   "vuesK": 33,
+   "appUnitId": 4,
+   "playlist": "immunite",
+   "genre": "annales"
+  },
+  {
+   "titre": "الاتصال العصبي من الألف إلى الياء (الوحدة 5)",
+   "duree": "1:16:53",
+   "dureeMin": 76.88,
+   "vuesK": 87,
+   "appUnitId": 5,
+   "playlist": "bac2026",
+   "genre": "cours"
+  },
+  {
+   "titre": "ملخص التركيب الضوئي — باك 2026",
+   "duree": "1:10:49",
+   "dureeMin": 70.82,
+   "vuesK": 56,
+   "appUnitId": 6,
+   "playlist": "bac2026",
+   "genre": "cours"
+  },
+  {
+   "titre": "التنفس الخلوي باك 2026 من الألف إلى الياء",
+   "duree": "1:15:57",
+   "dureeMin": 75.95,
+   "vuesK": 29,
+   "appUnitId": 7,
+   "playlist": "chaine",
+   "genre": "cours"
+  },
+  {
+   "titre": "الفرض الثاني ف1 (وحدة 1 + وحدة 2)",
+   "duree": "22:33",
+   "dureeMin": 22.55,
+   "vuesK": 13,
+   "appUnitId": 0,
+   "playlist": "bac2026",
+   "genre": "devoir"
+  },
+  {
+   "titre": "ليلة الرعد — مراجعة كل الدروس + تمارين في 40 دقيقة",
+   "duree": "42:54",
+   "dureeMin": 42.9,
+   "vuesK": 25,
+   "appUnitId": 0,
+   "playlist": "chaine",
+   "genre": "revision"
+  },
+  {
+   "titre": "المكتسبات القبلية + المنهجية — باك 2027",
+   "duree": "21:22",
+   "dureeMin": 21.37,
+   "vuesK": 6.8,
+   "appUnitId": 0,
+   "playlist": "chaine",
+   "genre": "prerequis"
+  }
+ ],
+ "parUnite": {
+  "1": {
+   "titreAr": "تركيب البروتين",
+   "minutes": 211.1,
+   "vuesK": 395,
+   "videos": 5,
+   "partVues": 31.6
+  },
+  "2": {
+   "titreAr": "بنية ووظيفة البروتين",
+   "minutes": 92.3,
+   "vuesK": 178,
+   "videos": 2,
+   "partVues": 14.2
+  },
+  "3": {
+   "titreAr": "النشاط الإنزيمي",
+   "minutes": 58.6,
+   "vuesK": 84,
+   "videos": 1,
+   "partVues": 6.7
+  },
+  "4": {
+   "titreAr": "المناعة",
+   "minutes": 245.5,
+   "vuesK": 422,
+   "videos": 6,
+   "partVues": 33.7
+  },
+  "5": {
+   "titreAr": "الاتصال العصبي",
+   "minutes": 76.9,
+   "vuesK": 87,
+   "videos": 1,
+   "partVues": 7.0
+  },
+  "6": {
+   "titreAr": "التركيب الضوئي",
+   "minutes": 70.8,
+   "vuesK": 56,
+   "videos": 1,
+   "partVues": 4.5
+  },
+  "7": {
+   "titreAr": "التنفس الخلوي",
+   "minutes": 76.0,
+   "vuesK": 29,
+   "videos": 1,
+   "partVues": 2.3
+  }
+ },
+ "totaux": {
+  "videos3AS": 17,
+  "minutes": 831.2,
+  "vuesK": 1251
+ }
+}
