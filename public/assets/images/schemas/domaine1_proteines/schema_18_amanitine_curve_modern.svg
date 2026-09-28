@@ -1,4 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 700">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 700" width="1200" height="700" role="img" aria-labelledby="amanitine-title amanitine-desc">
+  <title id="amanitine-title">تأثير ألفا-أمانيتين على اصطناع ARNm</title>
+  <desc id="amanitine-desc">منحنى بياني يوضح التثبيط التدريجي الحاد لاصطناع الحمض الريبي النووي الرسول مع تزايد تركيز ألفا-أمانيتين.</desc>
   <rect width="1200" height="700" fill="#fbfcff" rx="30"/>
   <text x="600" y="70" text-anchor="middle" font-size="40" font-weight="800" fill="#0f172a">تأثير ألفا-أمانيتين على اصطناع ARNm</text>
   <rect x="70" y="120" width="420" height="500" rx="26" fill="#ffffff" stroke="#d9e2e8" stroke-width="4"/>
@@ -9,15 +11,53 @@
   <text x="280" y="545" text-anchor="middle" font-size="24" fill="#334155">Amanita phalloides</text>
   <text x="280" y="580" text-anchor="middle" font-size="22" fill="#475467">مصدر α-أمانيتين المثبط لاصطناع ARNm</text>
   <rect x="560" y="120" width="570" height="500" rx="26" fill="#ffffff" stroke="#d9e2e8" stroke-width="4"/>
-  <g stroke="#98a2b3" stroke-width="3">
-    <line x1="640" y1="540" x2="1080" y2="540"/>
-    <line x1="680" y1="510" x2="680" y2="180"/>
+  
+  <!-- شبكة ومحاور بيانية نظامية متزايدة -->
+  <g stroke="#e2e8f0" stroke-width="1.5" stroke-dasharray="4 4">
+    <line x1="680" y1="200" x2="1080" y2="200"/>
+    <line x1="680" y1="280" x2="1080" y2="280"/>
+    <line x1="680" y1="360" x2="1080" y2="360"/>
+    <line x1="680" y1="440" x2="1080" y2="440"/>
   </g>
-  <path d="M690 190 C760 190 820 190 860 250 C900 310 870 430 760 500 C735 515 710 525 690 535" fill="none" stroke="#22c55e" stroke-width="10"/>
-  <rect x="820" y="210" width="110" height="220" fill="#22c55e" opacity="0.12"/>
-  <text x="880" y="460" text-anchor="middle" font-size="24" fill="#166534">انخفاض حاد</text>
-  <text x="880" y="490" text-anchor="middle" font-size="20" fill="#166534">في تشكل ARNm</text>
-  <text x="860" y="585" text-anchor="middle" font-size="24" fill="#334155">تركيز α-أمانيتين</text>
-  <text x="640" y="170" text-anchor="start" font-size="24" fill="#334155">نسبة تشكل ARNm</text>
-  <text x="845" y="635" text-anchor="middle" font-size="26" fill="#0f172a">كلما ارتفع تركيز المثبط انخفض تشكل ARNm</text>
+  <g stroke="#98a2b3" stroke-width="3">
+    <!-- محور الفواصل X (التركيز) -->
+    <line x1="680" y1="520" x2="1080" y2="520"/>
+    <!-- محور التراتيب Y (النسبة المئوية 0..100%) -->
+    <line x1="680" y1="520" x2="680" y2="180"/>
+    <!-- تدريجات X -->
+    <line x1="780" y1="520" x2="780" y2="528"/>
+    <line x1="880" y1="520" x2="880" y2="528"/>
+    <line x1="980" y1="520" x2="980" y2="528"/>
+    <line x1="1080" y1="520" x2="1080" y2="528"/>
+    <!-- تدريجات Y -->
+    <line x1="672" y1="200" x2="680" y2="200"/>
+    <line x1="672" y1="280" x2="680" y2="280"/>
+    <line x1="672" y1="360" x2="680" y2="360"/>
+    <line x1="672" y1="440" x2="680" y2="440"/>
+  </g>
+  <!-- أرقام وتدريجات Y -->
+  <g font-size="16" fill="#64748b" text-anchor="end">
+    <text x="668" y="205">100%</text>
+    <text x="668" y="285">75%</text>
+    <text x="668" y="365">50%</text>
+    <text x="668" y="445">25%</text>
+    <text x="668" y="525">0</text>
+  </g>
+  <!-- أرقام وتدريجات X تزايدية بدقة دون رجوع -->
+  <g font-size="16" fill="#64748b" text-anchor="middle">
+    <text x="780" y="545">0.01</text>
+    <text x="880" y="545">0.1</text>
+    <text x="980" y="545">1</text>
+    <text x="1080" y="545">10</text>
+  </g>
+  
+  <!-- منحنى بياني رياضي رتيب متناقص بدقة (x تزايدي strictly increasing) -->
+  <path d="M 680,200 C 740,200 780,210 830,270 C 880,340 920,490 980,508 L 1080,514" fill="none" stroke="#16a34a" stroke-width="8" stroke-linecap="round"/>
+  
+  <rect x="800" y="240" width="160" height="180" fill="#22c55e" opacity="0.08" rx="8"/>
+  <text x="880" y="310" text-anchor="middle" font-size="20" font-weight="700" fill="#166534">انخفاض حاد</text>
+  <text x="880" y="335" text-anchor="middle" font-size="17" fill="#166534">في تشكل ARNm</text>
+  <text x="880" y="585" text-anchor="middle" font-size="22" font-weight="700" fill="#334155">تركيز α-أمانيتين (µg/mL)</text>
+  <text x="680" y="155" text-anchor="middle" font-size="22" font-weight="700" fill="#334155">نسبة تشكل ARNm (%)</text>
+  <text x="880" y="640" text-anchor="middle" font-size="22" fill="#0f172a">كلما ارتفع تركيز المثبط انخفض تشكل ARNm إلى أن ينعدم تماماً</text>
 </svg>

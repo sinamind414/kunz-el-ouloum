@@ -1,4 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="760" viewBox="0 0 1200 760" font-family="Arial, sans-serif">
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="760" viewBox="0 0 1200 760" font-family="Arial, sans-serif" role="img" aria-labelledby="calvin-title calvin-desc">
+  <title id="calvin-title">تجربة كالفن : تتبع ¹⁴CO₂ بكروماتوغرافيا ثنائية الأبعاد</title>
+  <desc id="calvin-desc">تسلسل زمني لظهور نواتج تثبيت الكربون المشع: أول مركب يظهر هو 3-PGA ثم يختزل إلى سكريات ثلاثية مفسفرة G3P/PGAL ثم سكريات معقدة مع تجديد RuBP.</desc>
   <defs>
     <marker id="arr91" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
       <path d="M0,0 L9,3 L0,6 Z" fill="#0f172a"/>
@@ -63,14 +65,14 @@
 
   <text x="680" y="402" text-anchor="middle" font-size="12.5" fill="#b91c1c">حمض فوسفوغليسريك</text>
   <text x="680" y="420" text-anchor="middle" font-size="12.5" fill="#b91c1c">3-PGA</text>
-  <text x="870" y="402" text-anchor="middle" font-size="12.5" fill="#9a3412">+ APG (تريوزات فوسفاتية)</text>
+  <text x="870" y="402" text-anchor="middle" font-size="12.5" fill="#9a3412">+ تريوزات فوسفاتية (G3P / PGAL)</text>
   <text x="1060" y="402" text-anchor="middle" font-size="12.5" fill="#a16207">+ سكريات (غلوكوز...)</text>
 
   <text x="855" y="478" text-anchor="middle" font-size="14" fill="#78350f">الوسم يظهر أولاً في 3-PGA ثم يتوسع إلى بقية المركبات</text>
-  <text x="855" y="506" text-anchor="middle" font-size="13" fill="#92400e">الوقت القصير = كشف المركب الأول المتشكل</text>
+  <text x="855" y="506" text-anchor="middle" font-size="13" fill="#92400e">الوقت القصير = كشف أول مركب ثابت ناتج عن تثبيت CO₂</text>
 
   <!-- ======== شريط الحلقة ======== -->
   <rect x="60" y="586" width="1080" height="106" rx="16" fill="#ecfdf5" stroke="#10b981" stroke-width="3"/>
   <text x="600" y="626" text-anchor="middle" font-size="17" font-weight="bold" fill="#065f46">حلقة كالفن : تثبيت الكربون ⟶ اختزال ⟶ تجديد المستقبل</text>
-  <text x="600" y="662" text-anchor="middle" font-size="14.5" fill="#047857">CO₂ + مركب 5 كربون (RuBP) ⟶ 3-PGA ⟶ APG (بوساطة ATP و NADPH) ⟶ سكريات + تجديد RuBP</text>
+  <text x="600" y="662" text-anchor="middle" font-size="14.5" fill="#047857">CO₂ + مركب 5 كربون (RuBP) ⟶ 3-PGA ⟶ تريوزات فوسفاتية (بوساطة ATP و NADPH) ⟶ سكريات + تجديد RuBP</text>
 </svg>
