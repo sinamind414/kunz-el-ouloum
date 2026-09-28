@@ -2085,3 +2085,62 @@ pas la couleur**. Fichier restauré depuis la branche distante.
 
 Suite unitaire **1656 verts / 4 skipped / 0 échec** (129 fichiers) ; contrôles
 post-build **13 verts** (4 chunks + 4 budget + 5 hors ligne).
+
+---
+
+## Sprint 34 — la session 2018 entre dans la banque, et supprime le dernier isolat
+
+### Pourquoi 2018 méritait le détour
+
+La série couvrait 2019→2026. En remontant d'une année, on gagne six exercices,
+mais surtout **celui-ci** : sujet 1, exercice 2 — le récepteur du LDL et
+l'athérosclérose. Il fournit un tableau de **pHi par acide aminé** (Cys 5,
+Asp 2,77, Lys 9,74) et demande la **forme ionique** du même acide aminé à trois
+pH différents, avant de relier une mutation ponctuelle à une maladie.
+
+C'est mot pour mot la **leçon n°1 de la liste de priorités** qui a ouvert cet
+audit — « pHi / comportement des acides aminés », 73 au classement de
+difficulté. Jusqu'ici l'app l'enseignait ; elle peut maintenant montrer
+**l'exercice officiel qui la pose**.
+
+Les cinq autres : intégration nerveuse (U5) · mitochondries des spermatozoïdes
+et coenzyme Q10 (U7) · ABO et marqueurs du soi (U4) · lactase et intolérance au
+lactose (U3) · **origine de l'O₂ par les isotopes ¹⁸O** (U6).
+
+### Deux montages de plus, et plus aucun isolat
+
+Deux exercices de 2018 ont fait apparaître des récurrences jusque-là invisibles :
+
+- **« تتبّع الحصيلة الطاقوية »** (2018, 2022, 2025) : où l'ATP est produit, en
+  quelle quantité, et ce qui s'arrête quand un maillon saute. Piège consigné :
+  confondre l'ATP de la phosphorylation au niveau du substrat avec celui de
+  l'oxydation des transporteurs — la question distingue toujours les deux.
+- **« التتبّع بالنظائر المشعّة »** (2018, 2020, 2025) : ¹⁸O, thymidine/leucine
+  marquées, ¹⁴CO₂. Piège consigné : attribuer le marquage au produit final sans
+  vérifier son chemin — en 2018, l'O₂ porte la marque de **l'eau**, pas du
+  HCO₃⁻.
+
+Conséquence : **les 53 exercices sont désormais tous classés** (le solitaire de
+bioénergétique de 2025 a trouvé sa famille).
+
+### Le corpus après ce sprint
+
+| | Sprint 33 | **Sprint 34** |
+|---|---|---|
+| sessions | 8 (2019→2026) | **9 (2018→2026, continues)** |
+| exercices | 47 | **53** |
+| montages | 10 | **12** |
+| exercices non classés | 1 | **0** |
+
+Classement de pression recalculé : U4 **75 pts**, U5 67, U1 62, U3 58, U6 43,
+U2 22. U3 apparaît maintenant dans **14 exercices sur 53** sans en mener que 8 :
+le constat des sprints précédents se renforce encore.
+
+Le décodeur de consignes a gagné une entrée : **« استدل »** (2018) — conclure
+*en s'appuyant sur une preuve*, rattaché à la famille « استنتج » avec l'exigence
+supplémentaire d'adosser la conclusion à un résultat. Le classement reste total.
+
+### Vérifications
+
+Suite unitaire **1656 verts / 4 skipped / 0 échec** (129 fichiers) ; contrôles
+post-build **13 verts** (décompte vérifié, pas seulement la couleur).

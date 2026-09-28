@@ -185,7 +185,9 @@ export const VERB_FAMILIES: VerbFamily[] = [
     ],
     templateAr: 'نستنتج أن …',
     confusionAr: 'إعادة التحليل بالتفصيل: الاستنتاج تعميم، و طوله المعتاد سطر إلى سطرين.',
-    motifs: [/استنتج/, /استخرج/, /استخلص/, /أعطِ حلا/, /قدّم إجابة/],
+    // « استدل » (2018) : conclure EN S'APPUYANT sur une preuve — même geste,
+    // avec l'exigence d'adosser la conclusion à un résultat.
+    motifs: [/استنتج/, /استخرج/, /استخلص/, /استدل/, /أعطِ حلا/, /قدّم إجابة/],
   },
   {
     id: 'verb_justifier',

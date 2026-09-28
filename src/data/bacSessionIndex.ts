@@ -27,6 +27,8 @@
 // Trous assumés et documentés :
 //   · 2021, sujet 2, exercice 1 : non lisible dans la source → absent. Le
 //     total de ce sujet vaut donc 15 points et non 20 (`INCOMPLETE_SUJETS`).
+//   · sprint 34 : la session 2018 rejoint la banque — la série va de 2018 à
+//     2026 sans interruption.
 //   · sprint 17 : la session 2020 (session de septembre, COVID) manquait au
 //     sprint 16 ; elle a été récupérée et ajoutée, et la session 2026 avec
 //     elle. `MISSING_YEARS` est donc vide — mais reste en place pour qu'un
@@ -75,6 +77,7 @@ export interface BacExerciseIdea {
 
 /** Sujets officiels lus pour construire cette banque. */
 export const BAC_SESSION_SOURCES: { year: number; url: string }[] = [
+  { year: 2018, url: 'https://eddirasa.com/bac-science-2018-se/' },
   { year: 2019, url: 'https://eddirasa.com/bac-science-2019-se/' },
   { year: 2020, url: 'https://eddirasa.com/bac-science-2020-se/' },
   { year: 2021, url: 'https://eddirasa.com/bac-science-2021-se/' },
@@ -100,6 +103,134 @@ export const INCOMPLETE_SUJETS: { year: number; sujet: BacSujet; raison: string 
 ];
 
 export const BAC_IDEAS: BacExerciseIdea[] = [
+  // ───────────────────────────── 2018 ─────────────────────────────
+  // Ajoutée au sprint 34 : la série remonte à 2018 sans trou.
+  {
+    id: 'bac2018_s1_e1',
+    year: 2018,
+    sujet: 1,
+    exercice: 1,
+    points: 5,
+    titleAr: 'البروتينات الغشائية و دمج الرسائل العصبية',
+    ideaAr:
+      'ما الذي يحوّل عدة رسائل واردة إلى قرار واحد عند العصبون المحرك؟ بروتينات غشائية عالية التخصص.',
+    supportsAr: ['رسم تخطيطي وظيفي لانتقال الرسالة من خلية قبل مشبكية إلى خلية بعد مشبكية'],
+    notionAr:
+      'القنوات الفولطية، المضخات، المستقبلات القنوية؛ التكامل الزمني و المكاني على مستوى العصبون المحرك.',
+    verbsAr: ['اذكر', 'حدّد الدور', 'اكتب نصاً علمياً'],
+    unitIds: [5],
+    situationIds: ['seuil_integration', 'sarin_attaque'],
+    capsuleIds: ['cap_u5_quatre_potentiels', 'cap_u5_double_codage'],
+    drillIds: ['drill_synapse', 'drill_potentiel_action'],
+  },
+  {
+    id: 'bac2018_s1_e2',
+    year: 2018,
+    sujet: 1,
+    exercice: 2,
+    points: 7,
+    titleAr: 'مستقبل الـ LDL و تصلب الشرايين',
+    ideaAr:
+      'كيف تُفقد طفرة واحدة المستقبلَ الغشائي بنيته، فيتراكم الكولسترول في الدم و تتصلب الشرايين؟',
+    supportsAr: [
+      'آلية دخول الـ LDL إلى الخلية مع تكبير للمستقبل R',
+      'جدول جذور أحماض أمينية مع رقم تسلسلها و pHi الخاص بكل واحد (Cys 5، Asp 2,77، Lys 9,74)',
+      'جزء من الأليل R1 (سليم) و R2 (مصاب) مع جدول الشفرة الوراثية',
+    ],
+    notionAr:
+      'الصيغة الشاردية للحمض الأميني حسب pH الوسط، و دور الجذور في ثبات البنية الفراغية؛ من الطفرة إلى المرض.',
+    verbsAr: ['مثّل الصيغة الشاردية', 'حدّد الدور', 'استخرج المتتالية', 'ناقش العلاقة'],
+    unitIds: [2, 1],
+    situationIds: ['mixture_acides_amines', 'anemie_falciforme'],
+    capsuleIds: ['cap_u2_formule_aa', 'cap_u2_anode_cathode', 'cap_u1_types_mutations'],
+    drillIds: ['drill_niveaux_structure'],
+  },
+  {
+    id: 'bac2018_s1_e3',
+    year: 2018,
+    sujet: 1,
+    exercice: 3,
+    points: 8,
+    titleAr: 'عقم الرجل، النطاف و المرافق Q10',
+    ideaAr:
+      'لماذا تفقد النطاف حركتها؟ لأن سلسلة التنفس تتوقف عند ناقل واحد — و إعادته تعيد الحركة.',
+    supportsAr: [
+      'معلقان من الميتوكوندريات (شخص مصاب بالعقم و شخص سليم) و تغيّر نسبة O₂ بعد إضافة الناقل TH₂',
+      'تفاعلات تحلل الفراكتوز بمراحلها المرقمة',
+      'آلية أكسدة النواقل المرجعة على الغشاء الداخلي (NADH,H⁺، FADH₂، Coenzyme Q10)',
+    ],
+    notionAr:
+      'الهدم: التحلل السكري، حلقة كريبس، الفسفرة التأكسدية؛ حصيلة الـ ATP و مقر كل مرحلة.',
+    verbsAr: ['حلّل', 'قدّم فرضيات', 'استخرج', 'اشرح الآلية', 'استنتج الحصيلة', 'فسّر'],
+    unitIds: [7, 8],
+    situationIds: ['coureur_crampe'],
+    capsuleIds: ['cap_u7_ou_est_atp', 'cap_u7_fermentation', 'cap_u8_chloroplaste_mitochondrie'],
+    drillIds: ['drill_respiration'],
+  },
+  {
+    id: 'bac2018_s2_e1',
+    year: 2018,
+    sujet: 2,
+    exercice: 1,
+    points: 5,
+    titleAr: 'نظام ABO و الجزيئات المميزة للذات',
+    ideaAr: 'ما الذي يميّز زمرة دموية عن أخرى على مستوى الجزيئة الغشائية نفسها؟',
+    supportsAr: [
+      'وثيقة المؤشرات الغشائية في نظام ABO (سلسلة سكرية قاعدية، غلاكتوز، N-أستيل غلاكتوزامين)',
+      'معطيات حول الأليلات الثلاثة و علاقات السيادة',
+    ],
+    notionAr: 'الذات و اللاذات؛ النمط الظاهري الخلوي و علاقته بالنمط الوراثي في نظام ABO.',
+    verbsAr: ['قدّم تعريفاً', 'قارن', 'اكتب نصاً علمياً'],
+    unitIds: [4],
+    situationIds: ['greffe_rein', 'labo_ouchterlony'],
+    capsuleIds: ['cap_u4_cmh_vs_abo'],
+    drillIds: ['drill_cmh'],
+  },
+  {
+    id: 'bac2018_s2_e2',
+    year: 2018,
+    sujet: 2,
+    exercice: 2,
+    points: 7,
+    titleAr: 'اللاكتاز و عدم تحمّل اللاكتوز',
+    ideaAr:
+      'لماذا يعاني شخص من انتفاخ و إسهال بعد شرب الحليب، بينما يهضم شخص آخر نفس السكر دون أعراض؟',
+    supportsAr: [
+      'السرعة الابتدائية لنشاط اللاكتاز بدلالة pH و بدلالة درجة الحرارة',
+      'خمسة أوساط تجريبية مع/دون أنزيم و مع مادة شبيهة بالركيزة، و مدة التفاعل في كل وسط',
+      'وثيقة مقارنة بين هضم اللاكتوز عند شخص سليم و شخص مصاب',
+    ],
+    notionAr:
+      'التحفيز الأنزيمي: خفض طاقة التنشيط، النوعية، و أثر pH و الحرارة على البنية الفراغية.',
+    verbsAr: ['أنجز منحنى', 'فسّر', 'استنتج', 'نمذج العلاقة', 'اشرح'],
+    unitIds: [3],
+    situationIds: ['digestion_pepsine', 'detergent_enzymatique'],
+    capsuleIds: ['cap_u3_plateau_michaelis', 'cap_u3_inhibition_type'],
+    drillIds: ['drill_enzyme_site_actif', 'drill_courbes_inhibition'],
+  },
+  {
+    id: 'bac2018_s2_e3',
+    year: 2018,
+    sujet: 2,
+    exercice: 3,
+    points: 8,
+    titleAr: 'من أين يأتي الأكسجين المطروح؟ تجربة النظائر',
+    ideaAr:
+      'هل ينشأ O₂ المطروح من الماء أم من ثاني أكسيد الكربون؟ النظير ¹⁸O يحسم السؤال.',
+    supportsAr: [
+      'معايرة نسبة ¹⁸O/¹⁶O في O₂ المنطلق، مرة مع ماء مشع و مرة مع HCO₃⁻ مشع',
+      'تيلاكوئيدات في وسط خالٍ من HCO₃⁻ مع DCPIP: تطور تركيز O₂ و لون الوسط',
+      'مستخلص سيتوبلازمي بكتيري في الظلام مع ATP و RH₂، و مع تيلاكوئيدات معرّضة للضوء',
+    ],
+    notionAr:
+      'التحليل الضوئي للماء مصدر O₂ و الإلكترونات؛ استقلال المرحلة الكيميائية عن الضوء المباشر.',
+    verbsAr: ['اقترح فرضية', 'استدل', 'بيّن الآلية', 'استخرج', 'حلّل', 'وضّح في رسم تخطيطي وظيفي'],
+    unitIds: [6],
+    situationIds: ['jagendorf_chloroplaste', 'serre_agricole'],
+    capsuleIds: ['cap_u6_oxygene_eau', 'cap_u6_calvin'],
+    drillIds: ['drill_chaine_photochimique'],
+  },
+
   // ───────────────────────────── 2019 ─────────────────────────────
   {
     id: 'bac2019_s1_e1',

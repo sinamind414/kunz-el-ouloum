@@ -29,14 +29,15 @@ import { INITIAL_UNITS } from '../unitCatalog';
 import { SITUATION_INDEX } from './situationIndex';
 
 describe('banque أفكار التمارين — intégrité de la collecte', () => {
-  it('couvre les huit sessions dépouillées, la plus récente en tête', () => {
-    expect(YEARS_COVERED).toEqual([2026, 2025, 2024, 2023, 2022, 2021, 2020, 2019]);
+  it('couvre les neuf sessions dépouillées, la plus récente en tête', () => {
+    expect(YEARS_COVERED).toEqual([2026, 2025, 2024, 2023, 2022, 2021, 2020, 2019, 2018]);
   });
 
   it('ne déclare plus aucun trou de session, 2020 ayant été récupérée', () => {
     expect(MISSING_YEARS).toEqual([]);
     expect(BAC_IDEAS.filter((i) => i.year === 2020).length).toBe(6);
     expect(BAC_IDEAS.filter((i) => i.year === 2026).length).toBe(6);
+    expect(BAC_IDEAS.filter((i) => i.year === 2018).length).toBe(6);
   });
 
   it('couvre une série continue de sessions, sans saut silencieux', () => {
