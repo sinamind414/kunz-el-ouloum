@@ -95,11 +95,12 @@ describe('LessonsView — leçons passives par icônes', () => {
     expect(entree.textContent).toMatch(/الحصيلة المعرفية/);
     expect(entree.textContent).toMatch(/التكتونية العامة/);
     await user.click(entree);
-    // La حصيلة s'ouvre sur le domaine courant (D3), pas en domaine 1 par défaut.
-    expect(screen.getAllByTestId(/^okacha-unite-/)).toHaveLength(3);
+    // OkachaView est devenue lazy : la résolution du chunk passe par le Suspense
+    // (fallback « lessons-chargement ») — on attend la vue, jamais le fallback.
+    expect(await screen.findAllByTestId(/^okacha-unite-/)).toHaveLength(3);
     // Et avec les numéros des LEÇONS (الصفائح = وحدة 9, بنية الكرة = وحدة 10).
-    expect(screen.getByTestId('unite-numero-d3u2').textContent).toMatch(/وحدة 9/);
-    expect(screen.getByTestId('unite-numero-d3u1').textContent).toMatch(/وحدة 10/);
+    expect((await screen.findByTestId('unite-numero-d3u2')).textContent).toMatch(/وحدة 9/);
+    expect((await screen.findByTestId('unite-numero-d3u1')).textContent).toMatch(/وحدة 10/);
     // Retour → on revient à l'écran des unités du domaine (pas au menu principal).
     await user.click(screen.getByText('عودة'));
     expect(screen.getByTestId('unites-icones')).toBeTruthy();

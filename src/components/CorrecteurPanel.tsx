@@ -23,6 +23,8 @@ import { listeGroupesBac2025 } from '../data/dictionaries/attendusBac2025';
 import { noterExerciceCalibre, type NoteCalibree } from '../data/dictionaries/calibrationBac2025';
 import SectionObligatoire from './SectionObligatoire';
 import { evaluerSanctions } from '../data/dictionaries/sanctionsCorrecteur';
+import { structureVerdict } from '../data/answerStructureCheck';
+import { VERB_FAMILIES } from '../data/verbDemands';
 
 interface Props {
   text: string;
@@ -54,6 +56,11 @@ export default function CorrecteurPanel({
   const [uniteOverride, setUniteOverride] = useState<number | null>(null);
   const [baremeId, setBaremeId] = useState<string>(defaultBaremeQuestionId ?? '');
   const [groupeId, setGroupeId] = useState<string>('');
+  // Sprint 23 : contrôle de FORME selon la consigne. Le fond est jugé par le
+  // dictionnaire ; ici on vérifie seulement que la réponse a la structure que
+  // le verbe de consigne exige. L'élève choisit la consigne — la deviner à
+  // partir de la réponse serait une inférence de trop.
+  const [familleId, setFamilleId] = useState<string>('');
 
   const analyse = useMemo(() => {
     const inferee = inferreUnite(text);
@@ -69,6 +76,7 @@ export default function CorrecteurPanel({
       pistes: parUnite ? parUnite.pistesAmbigues : transversal.pistes,
       sanctions: evaluerSanctions(text),
       bareme: baremeId ? evaluerBareme(text, baremeId) : null,
+      structure: familleId ? structureVerdict(familleId, text) : null,
       obligatoire: (() => {
         const g = GROUPES_2025.find((x) => `${x.sujet}-${x.exercice}` === groupeId);
         if (!g) return null;
@@ -78,7 +86,7 @@ export default function CorrecteurPanel({
         return note;
       })(),
     };
-  }, [text, uniteOverride, baremeId, groupeId]);
+  }, [text, uniteOverride, baremeId, groupeId, familleId]);
 
   if (!text.trim()) return null;
 
@@ -172,6 +180,56 @@ export default function CorrecteurPanel({
               <span className="text-[10px] text-gray-400">لا مفاهيم مرجعية — راجع المفاهيم الأساسية للوحدة.</span>
             )}
           </div>
+        </div>
+
+        {/* 1 bis. Structure de la réponse selon la consigne (sprint 23) */}
+        <div data-testid="structure-consigne" className="pt-1">
+          <label className="flex items-center gap-1 text-[10px] font-bold text-gray-500 dark:text-gray-400">
+            التعليمة المطلوبة:
+            <select
+              data-testid="structure-famille"
+              value={familleId}
+              onChange={(e) => setFamilleId(e.target.value)}
+              className="px-1.5 py-1 rounded-lg bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 text-[10px] font-bold text-gray-700 dark:text-gray-300 max-w-60"
+            >
+              <option value="">بدون فحص الشكل</option>
+              {VERB_FAMILIES.map((f) => (
+                <option key={f.id} value={f.id}>
+                  {f.titleAr}
+                </option>
+              ))}
+            </select>
+          </label>
+
+          {analyse.structure && (
+            <div className="mt-2 space-y-1">
+              <p
+                data-testid="structure-score"
+                className="text-[10px] font-black text-indigo-900 dark:text-indigo-300"
+              >
+                شكل الجواب: {analyse.structure.satisfaits} / {analyse.structure.total} من المتطلبات
+              </p>
+              {analyse.structure.checks.map((c) => (
+                <p
+                  key={c.id}
+                  data-testid={`structure-check-${c.id}`}
+                  className={`text-[10px] leading-5 ${
+                    c.ok
+                      ? 'text-emerald-700 dark:text-emerald-400'
+                      : c.nature === 'vigilance'
+                        ? 'text-amber-800 dark:text-amber-300'
+                        : 'text-rose-700 dark:text-rose-400'
+                  }`}
+                >
+                  {c.ok ? '✓' : c.nature === 'vigilance' ? '⚠︎' : '✗'} {c.labelAr}
+                  {!c.ok && <span className="font-normal"> — {c.hintAr}</span>}
+                </p>
+              ))}
+              <p className="text-[9px] text-gray-400">
+                فحص شكلي فقط — المضمون العلمي يُقيَّم أعلاه، و الحكم النهائي للمصحّح.
+              </p>
+            </div>
+          )}
         </div>
 
         {/* 2. Entités manquantes (unité choisie) */}

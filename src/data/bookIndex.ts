@@ -134,6 +134,28 @@ const ANCRES_LECON: Record<string, { chapitres: number[]; raison: string }> = {
     chapitres: [34],
     raison: 'variante lexicale كيميوحيوية/كيموحيوية ; حلقة كالفن prouvée dans l OCR de C34',
   },
+  // Leçon active « المثبطات الإنزيمية » (audit 2026-09, items 7 et 8) : notion
+  // enseignée par C10 (النشاط الإنزيمي وعلاقته ببنية الإنزيم) et C12, dont l'OCR
+  // porte le corps exploitable (الموقع الفعال ×5, نشاط الإنزيم ×22, سرعة ×11).
+  // Leçon active « VIH / السيدا » (audit item 3 bis) : contenu porté par C22
+  // (choix du type de réponse immunitaire) et surtout C23 (سبب فقدان المناعة
+  // المكتسبة), dont l'OCR contient gp120/CD4, gp41, الاستنساخ العكسي, ELISA,
+  // Western blot, PCR et le seuil des 200 LT4/mm³.
+  // Leçon active « السلسلة الكيموضوئية » (audit items 9-11) : contenu porté par
+  // C33, dont l'OCR contient PSII/PSI, l'enzyme de photolyse, la chaîne de
+  // transporteurs, NADP⁺ → NADPH, la pompe à protons et Mitchell.
+  photochemical_chain: {
+    chapitres: [33],
+    raison: 'contenu = تفاعلات المرحلة الكيموضوئية (C33) : مصير إلكترونات PSII و PSI, تدرج البروتونات, الكرة المذنبة',
+  },
+  immunity_hiv_aids: {
+    chapitres: [22, 23],
+    raison: 'contenu = دورة الفيروس وتخريب LT4 (C23) + اختيار نمط الاستجابة المناعية (C22) ; le titre de la leçon ne recoupe aucune en-tête OCR',
+  },
+  enzyme_inhibitors: {
+    chapitres: [10, 12],
+    raison: 'contenu = الموقع الفعال et التكامل البنيوي (C10) + منحنيات نشاط الإنزيم (C12) ; aucune en-tête OCR dédiée aux مثبطات',
+  },
 };
 
 /**

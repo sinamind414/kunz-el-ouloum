@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { X, Timer, CheckCircle2, AlertCircle, ArrowLeft, ArrowRight, RotateCcw, Award, Check, BookOpen, GraduationCap, AlertOctagon, HelpCircle, Sparkles, Eye, EyeOff } from 'lucide-react';
 import { QuizQuestion } from '../types';
 import { playSuccessSound, playFailureSound } from '../utils/audio';
-import { MASCOT_URL } from '../data';
+import { MASCOT_URL } from '../data/brandAssets';
 import { getHintForIncorrectOption, getGeneralHint } from '../utils/hints';
 import { validateFillBlank } from '../utils/fillBlankValidate';
 

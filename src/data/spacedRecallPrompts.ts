@@ -61,6 +61,30 @@ export const SPACED_RECALL_PROMPTS: Record<string, SpacedRecallPrompt[]> = {
     { stage: 2, conceptId: 'protein_structure_function', questionAr: 'ما العلاقة بين البنية والوظيفة البروتينية؟', reflexId: 'interpret', acceptedEvidence: ['بنية', 'وظيفة', 'موقع نشط', 'تفاعل'], minEvidence: 3 },
     { stage: 3, conceptId: 'protein_structure_function', questionAr: 'اكتب جواب BAC قصير: كيف تؤدي الطفرة إلى تغير وظيفي؟', reflexId: 'validate', acceptedEvidence: ['طفرة', 'حمض أميني', 'بنية', 'وظيفة', 'مرض'], minEvidence: 3 },
   ],
+  photochemical_chain: [
+    { stage: 0, conceptId: 'photochemical_chain', questionAr: 'ما ناتجا المرحلة الكيموضوئية ؟ ومن أين يأتي الأكسجين المنطلق ؟', reflexId: 'explain', acceptedEvidence: ['ATP', 'NADPH', 'الماء'], minEvidence: 2 },
+    { stage: 1, conceptId: 'photochemical_chain', questionAr: 'تتبّع مسار الإلكترون من مصدره إلى مستقبله النهائي.', reflexId: 'analyse', acceptedEvidence: ['الماء', 'PSII', 'النواقل', 'PSI', 'NADP'], minEvidence: 4 },
+    { stage: 2, conceptId: 'photochemical_chain', questionAr: 'فسّر كيف يتحول انتقال الإلكترونات إلى تركيب ATP.', reflexId: 'interpret', acceptedEvidence: ['تدرج', 'التجويف', 'الكرة المذنبة', 'H'], minEvidence: 3 },
+    { stage: 3, conceptId: 'photochemical_chain', questionAr: 'اكتب إجابة BAC : ما المشترك بين الفسفرة الضوئية والفسفرة التأكسدية ؟', reflexId: 'validate', acceptedEvidence: ['تدرج', 'الكرة المذنبة', 'ATP', 'غشاء'], minEvidence: 3 },
+  ],
+  immunity_hiv_aids: [
+    { stage: 0, conceptId: 'immunity_hiv_aids', questionAr: 'ما الخلية المستهدفة الأساسية لفيروس VIH ؟ وبأي جزيئة يتثبت عليها ؟', reflexId: 'explain', acceptedEvidence: ['LT4', 'CD4', 'gp120'], minEvidence: 2 },
+    { stage: 1, conceptId: 'immunity_hiv_aids', questionAr: 'ما الفرق بين شخص موجب المصل ومريض بالسيدا ؟', reflexId: 'explain', acceptedEvidence: ['موجب المصل', 'السيدا', '200', 'أعراض'], minEvidence: 3 },
+    { stage: 2, conceptId: 'immunity_hiv_aids', questionAr: 'فسّر لماذا تنهار المناعتان الخلطية والخلوية معاً رغم أن الفيروس يهاجم LT4 فقط.', reflexId: 'interpret', acceptedEvidence: ['الأنترلوكين', 'التعاون', 'LB', 'LTc'], minEvidence: 3 },
+    { stage: 3, conceptId: 'immunity_hiv_aids', questionAr: 'اكتب إجابة BAC : كيف تستغل منحنيات التطور لتحديد مرحلة المصاب ؟', reflexId: 'validate', acceptedEvidence: ['الحمولة الفيروسية', 'LT4', 'الانقلاب المصلي', '200'], minEvidence: 3 },
+  ],
+  enzyme_inhibitors: [
+    { stage: 0, conceptId: 'enzyme_inhibitors', questionAr: 'ما المعيار الأول للتمييز بين نوعي المثبط ؟', reflexId: 'explain', acceptedEvidence: ['Vmax', 'الشاهد', 'مقارنة'], minEvidence: 2 },
+    { stage: 1, conceptId: 'enzyme_inhibitors', questionAr: 'مثبط رفع Km دون أن يغير Vmax : ما نوعه ولماذا ؟', reflexId: 'explain', acceptedEvidence: ['تنافسي', 'الموقع الفعال', 'الركيزة', 'Km'], minEvidence: 3 },
+    { stage: 2, conceptId: 'enzyme_inhibitors', questionAr: 'فسّر لماذا لا تلغي زيادة الركيزة أثر المثبط اللاتنافسي.', reflexId: 'interpret', acceptedEvidence: ['موقع آخر', 'البنية', 'Vmax', 'الموقع الفعال'], minEvidence: 3 },
+    { stage: 3, conceptId: 'enzyme_inhibitors', questionAr: 'اكتب إجابة BAC قصيرة : كيف تحدد نوع مثبط من وثيقة منحنيات ؟', reflexId: 'validate', acceptedEvidence: ['الشاهد', 'Vmax', 'Km', 'تنافسي', 'لا تنافسي'], minEvidence: 3 },
+  ],
+  amino_acid_behavior: [
+    { stage: 0, conceptId: 'amino_acid_behavior', questionAr: 'ماذا تعني نقطة التعادل الكهربائي pHi؟', reflexId: 'explain', acceptedEvidence: ['pHi', 'التعادل', 'الشحنة'], minEvidence: 2 },
+    { stage: 1, conceptId: 'amino_acid_behavior', questionAr: 'حمض أميني pHi = 6 في وسط pH = 2 : ما شحنته ولماذا؟', reflexId: 'explain', acceptedEvidence: ['موجبة', 'pHi', 'أقل', 'بروتونات'], minEvidence: 3 },
+    { stage: 2, conceptId: 'amino_acid_behavior', questionAr: 'فسّر بقاء بقعة حمض أميني في مكان الوضع بعد الفصل الكهربائي.', reflexId: 'interpret', acceptedEvidence: ['pHi', 'التعادل', 'لا يهاجر', 'الشحنة'], minEvidence: 3 },
+    { stage: 3, conceptId: 'amino_acid_behavior', questionAr: 'اكتب إجابة BAC قصيرة : كيف تحدد اتجاه هجرة حمض أميني انطلاقاً من pH الوسط؟', reflexId: 'validate', acceptedEvidence: ['pHi', 'الشحنة', 'المهبط', 'المصعد', 'مقارنة'], minEvidence: 3 },
+  ],
   immunity_self_nonself: [
     { stage: 0, conceptId: 'immunity_self_nonself', questionAr: 'ما المقصود بالذات واللاذات؟', reflexId: 'explain', acceptedEvidence: ['ذات', 'لاذات', 'CMH', 'خلايا'], minEvidence: 3 },
     { stage: 1, conceptId: 'immunity_self_nonself', questionAr: 'ما دور CMH في التعرف المناعي؟', reflexId: 'explain', acceptedEvidence: ['CMH', 'تعرف مناعي', 'ذات', 'لاذات'], minEvidence: 3 },

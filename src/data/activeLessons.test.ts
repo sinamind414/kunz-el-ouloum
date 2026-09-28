@@ -12,10 +12,18 @@ describe('LessonProgression (§3)', () => {
     expect(p!.completionMessageAr).toContain('الاستنساخ');
   });
 
-  it('d1-u3-l1-enzyme dernière sans suivante → pas de nextLessonId', () => {
+  // Sprint 5 (audit item 7) : l'unité 3 se termine désormais par la leçon des
+  // inhibiteurs, donc d1-u3-l1-enzyme y enchaîne au lieu de clore l'unité.
+  it('d1-u3-l1-enzyme → enzyme_inhibitors (clôture de l unité 3)', () => {
     const p = getLessonProgression('d1-u3-l1-enzyme');
-    expect(p!.nextLessonId).toBeUndefined();
+    expect(p!.nextLessonId).toBe('enzyme_inhibitors');
     expect(p!.recommendedReflexId).toBe('hypothesize');
+  });
+
+  it('enzyme_inhibitors est la dernière de l unité 3 → pas de nextLessonId', () => {
+    const p = getLessonProgression('enzyme_inhibitors');
+    expect(p!.nextLessonId).toBeUndefined();
+    expect(p!.recommendedReflexId).toBe('interpret');
   });
 
   it('d1-u1-l2-transcription → d1-u1-l3-traduction', () => {
