@@ -14,7 +14,13 @@ import { useEffect, useMemo, useState } from 'react';
 import { ArrowRight, CalendarDays, Check, Clock, ListChecks, Printer } from 'lucide-react';
 import { ARCHETYPE_BY_ID } from '../data/bacArchetypes';
 import { readPlanSettings, writePlanSettings } from '../data/planSettings';
+import { INITIAL_UNITS } from '../unitCatalog';
 import {
+  DIFFICULTY_BONUS,
+  declaredWeight,
+  observedWeight,
+  prioritizedUnitIds,
+  unitPriority,
   PRESETS,
   TASK_LABEL_AR,
   buildRevisionPlan,
@@ -63,6 +69,10 @@ export default function RevisionPlanView({ onBackToHome, onOpenRedaction }: Revi
   // Beaucoup d'élèves travaillent sur papier : la feuille du jour est
   // imprimable, avec les cases à cocher et les pièges des montages programmés.
   const [feuille, setFeuille] = useState(false);
+  // « Pourquoi cet ordre ? » — un plan qui ne s'explique pas est un plan qu'on
+  // n'applique pas, surtout quand il contredit la répartition officielle du
+  // programme (U7 annoncée à 19 %, constatée à 3,3 %).
+  const [explication, setExplication] = useState(false);
 
   const plan = useMemo(() => buildRevisionPlan({ daysLeft, minutesPerDay }), [daysLeft, minutesPerDay]);
   const parUnite = useMemo(() => minutesByUnit(plan), [plan]);
@@ -196,7 +206,48 @@ export default function RevisionPlanView({ onBackToHome, onOpenRedaction }: Revi
           الترتيب يتبع وزن الوحدة في الامتحان مصحّحاً بصعوبتها الملاحظة: أكثر الوقت للوحدة{' '}
           {Object.entries(parUnite).sort((a, b) => b[1] - a[1])[0]?.[0] ?? '—'}.
         </p>
+        <button
+          data-testid="basculer-explication"
+          onClick={() => setExplication((v) => !v)}
+          className="mt-2 text-[11px] font-bold px-3 py-1 rounded-xl bg-white dark:bg-[#141916] text-[#006d37] dark:text-[#2ecc71] cursor-pointer"
+        >
+          {explication ? 'إخفاء التفاصيل' : 'لماذا هذا الترتيب؟'}
+        </button>
       </section>
+
+      {explication && (
+        <section
+          data-testid="plan-explication"
+          className="rounded-3xl p-4 bg-white dark:bg-[#141916] border border-[#bbcbbb]/30 mb-4"
+        >
+          <p className="text-[12px] leading-6 text-[#506072] dark:text-gray-400 text-right mb-3">
+            لكل وحدة وزنان لا يتطابقان: الوزن المُعلن في توزيع البرنامج، و الضغط المُلاحظ فعلاً على
+            10 دورات رسمية (2017 إلى 2026). الخطة تأخذ المتوسط بينهما، ثم تضيف علاوة الصعوبة.
+          </p>
+          <div className="space-y-1">
+            {prioritizedUnitIds().map((unitId) => {
+              const titre = INITIAL_UNITS.find((u) => u.id === unitId)?.title ?? `وحدة ${unitId}`;
+              const minutes = parUnite[unitId] ?? 0;
+              return (
+                <p
+                  key={unitId}
+                  data-testid={`explication-unite-${unitId}`}
+                  className="text-[11px] leading-6 text-[#1f1c0b] dark:text-gray-200 text-right"
+                >
+                  <span className="font-black">{titre}</span> — معلن {declaredWeight(unitId)}٪ · ملاحظ{' '}
+                  {observedWeight(unitId)}٪ · علاوة الصعوبة {DIFFICULTY_BONUS[unitId] ?? 0} · الأولوية{' '}
+                  {Math.round(unitPriority(unitId) * 10) / 10}
+                  {minutes > 0 && <span className="text-[#006d37] dark:text-[#2ecc71]"> · {minutes} دقيقة في خطتك</span>}
+                </p>
+              );
+            })}
+          </div>
+          <p className="mt-3 text-[11px] leading-6 text-[#506072] dark:text-gray-400 text-right">
+            الفارق الأكبر: وحدة تحويل الطاقة مُعلنة بـ 19٪ و لم تتجاوز 3,3٪ في عشر دورات، بينما
+            تركيب البروتين مُعلن بـ 10٪ و يقود 19٪ من النقاط. الخطة لا تتبع أحدهما وحده.
+          </p>
+        </section>
+      )}
 
       <div className="flex flex-row-reverse gap-2 mb-3">
         <button

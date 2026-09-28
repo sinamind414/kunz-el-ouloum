@@ -2309,3 +2309,52 @@ classer. Elles gardent leur poids plancher dans le plan.
 ### Vérifications
 
 Suite unitaire **1665 verts / 4 skipped / 0 échec** (130 fichiers).
+
+---
+
+## Sprint 38 — le plan s'explique, parce qu'il contredit le programme
+
+### Le problème de crédibilité
+
+Depuis le sprint 18, le plan répartit le temps selon la **moyenne** du poids
+annoncé par le programme et de la pression constatée sur les sujets. Une
+conséquence visible : l'unité « تحويل الطاقة », annoncée à **19 %** dans la
+répartition officielle, reçoit peu de temps parce qu'elle n'a pesé que **3,3 %**
+sur dix sessions.
+
+Un élève — ou un professeur — qui voit ça sans explication conclut que
+l'application se trompe. Et il a raison de s'en méfier : un outil qui contredit
+le document officiel doit dire **pourquoi**, avec ses chiffres.
+
+### « لماذا هذا الترتيب؟ »
+
+Un bouton dans le bandeau de résumé déplie, pour **chaque unité** :
+
+- le **poids annoncé** par la répartition du programme ;
+- le **poids observé** sur les 10 sessions officielles (2017-2026) ;
+- le **bonus de difficulté** issu du dépouillement des chaînes ;
+- la **priorité résultante**, et les **minutes réellement allouées** dans le
+  plan courant de l'élève.
+
+Les unités sont listées dans l'ordre de priorité effectif — vérifié par test
+contre `prioritizedUnitIds()`, pour que l'affichage ne puisse pas raconter un
+ordre différent de celui qui produit le plan.
+
+Le bloc se termine par l'écart le plus parlant, écrit en toutes lettres :
+19 % annoncés contre 3,3 % constatés pour la bioénergétique, 10 % annoncés
+contre 19 % menés pour la synthèse des protéines — **et la mention que le plan
+ne suit ni l'un ni l'autre seul.**
+
+### Pourquoi ça compte plus qu'une fonctionnalité
+
+Les sprints 30-33 ont rendu l'app rapide et utilisable hors ligne ; les sprints
+16-37 lui ont donné des données solides. Ce sprint-ci ne fait ni l'un ni
+l'autre : il rend le raisonnement **inspectable**. Un plan de révision est une
+affirmation sur l'emploi du temps de quelqu'un à trois semaines de son
+baccalauréat ; il doit pouvoir être contesté sur pièces.
+
+### Vérifications
+
+Suite unitaire **1669 verts / 4 skipped / 0 échec** (130 fichiers), dont 4 tests
+neufs : repli par défaut, présence des deux poids pour les 11 unités, ordre
+identique à celui du moteur, mention de l'écart.

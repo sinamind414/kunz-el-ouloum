@@ -12,7 +12,13 @@ import { cleanup, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import RevisionPlanView from '../RevisionPlanView';
-import { buildRevisionPlan } from '../../data/revisionPlan';
+import {
+  buildRevisionPlan,
+  declaredWeight,
+  observedWeight,
+  prioritizedUnitIds,
+} from '../../data/revisionPlan';
+import { INITIAL_UNITS } from '../../unitCatalog';
 import { ARCHETYPE_BY_ID } from '../../data/bacArchetypes';
 
 afterEach(cleanup);
@@ -204,5 +210,43 @@ describe('plan de révision — feuille du jour imprimable (sprint 28)', () => {
     expect(screen.queryByTestId('feuille-impression')).toBeNull();
     expect(screen.getByTestId('plan-jour-1')).toBeTruthy();
     vi.unstubAllGlobals();
+  });
+});
+
+describe('plan de révision — « لماذا هذا الترتيب؟ » (sprint 38)', () => {
+  it('garde l’explication repliée par défaut', () => {
+    render(<RevisionPlanView />);
+    expect(screen.queryByTestId('plan-explication')).toBeNull();
+  });
+
+  it('montre pour chaque unité le poids annoncé, le poids observé et la difficulté', async () => {
+    const user = userEvent.setup();
+    render(<RevisionPlanView />);
+    await user.click(screen.getByTestId('basculer-explication'));
+    for (const u of INITIAL_UNITS) {
+      const ligne = screen.getByTestId(`explication-unite-${u.id}`);
+      expect(ligne.textContent, `unité ${u.id}`).toContain(String(declaredWeight(u.id)));
+      expect(ligne.textContent, `unité ${u.id}`).toContain(String(observedWeight(u.id)));
+    }
+  });
+
+  it('classe les unités de la plus prioritaire à la moins prioritaire', async () => {
+    const user = userEvent.setup();
+    render(<RevisionPlanView />);
+    await user.click(screen.getByTestId('basculer-explication'));
+    const bloc = screen.getByTestId('plan-explication');
+    const ordreAffiche = Array.from(bloc.querySelectorAll('[data-testid^="explication-unite-"]')).map(
+      (el) => Number(el.getAttribute('data-testid')!.replace('explication-unite-', '')),
+    );
+    expect(ordreAffiche).toEqual(prioritizedUnitIds());
+  });
+
+  it('nomme l’écart le plus fort entre le programme et l’épreuve', async () => {
+    const user = userEvent.setup();
+    render(<RevisionPlanView />);
+    await user.click(screen.getByTestId('basculer-explication'));
+    const texte = screen.getByTestId('plan-explication').textContent ?? '';
+    expect(texte).toContain('19');
+    expect(texte).toContain('3,3');
   });
 });
