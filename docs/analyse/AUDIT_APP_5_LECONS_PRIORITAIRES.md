@@ -1866,3 +1866,57 @@ seulement quand tout est fait, ouverture du plan au clic.
 
 Accueil → journée → plan → atelier, sans détour · suite unitaire
 **1643 verts / 4 skipped / 0 rouge** (127 fichiers).
+
+---
+
+## Sprint 30 — 3,97 Mo → 1,46 Mo : le premier écran arrête d'attendre toute l'application
+
+### Le problème, chiffré
+
+Le build annonçait depuis le début un bundle d'entrée de **3 968 Ko
+(964 Ko gzip)**, avec l'avertissement de Vite ignoré à chaque compilation.
+Toutes les vues étaient importées statiquement dans `App.tsx` : avant
+d'afficher le tableau de bord, le navigateur téléchargeait le compilateur de
+méthodologie, le tableau de bord enseignant, les cartes mentales, les
+statistiques, l'atelier de combat, les annales… Pour le public visé — des
+élèves algériens souvent en 3G — c'est la différence entre une app qui s'ouvre
+et une app qu'on désinstalle.
+
+### Ce qui a été fait
+
+Vingt-et-une vues passent en **import dynamique** (`React.lazy`), derrière une
+frontière `Suspense` unique posée autour du canevas — un seul onglet est monté
+à la fois, une frontière suffit. L'attente affiche « جارٍ التحميل… », sans saut
+de page.
+
+Restent chargées d'avance les vues du **chemin des premières secondes** :
+splash et tableau de bord.
+
+| Mesure | Avant | Après | Gain |
+|---|---|---|---|
+| `index-*.js` | 3 968 Ko | **1 456 Ko** | **−63 %** |
+| idem, gzip | 964 Ko | **336 Ko** | **−65 %** |
+
+Les vues lourdes deviennent des chunks à la demande : `LessonsView` 992 Ko,
+`StatsView` 460 Ko, `SectionObligatoire` 320 Ko, `MethodologyCompilerView`
+264 Ko. Un élève qui révise ses leçons ne télécharge plus le tableau de bord
+enseignant.
+
+### Le garde-fou
+
+`src/build/bundleBudget.test.ts` (exécuté par `npm run test:build`) fixe un
+**plafond de 1 900 Ko** pour le bundle d'entrée, vérifie que les trois vues les
+plus lourdes sont bien sorties, et qu'aucun chunk ne dépasse l'entrée. Si un
+`import` statique revient dans `App.tsx`, le test le dit **avec le chiffre**.
+C'est la différence entre une optimisation ponctuelle et une propriété tenue.
+
+### Vérifications
+
+Suite unitaire : **127 fichiers, 1643 verts, 4 skipped, 0 échec** — aucune
+régression malgré la conversion de 21 imports. Contrôles post-build : 7 verts
+(4 chunks de leçons + 3 de budget).
+
+### Compteurs après sprint 30
+
+Bundle d'entrée **−65 % en gzip** · budget verrouillé par test · suite
+unitaire 1643 verts.

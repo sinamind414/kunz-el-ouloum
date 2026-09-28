@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, lazy, Suspense } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import {
   Home,
@@ -49,31 +49,54 @@ import { MIFTAH_NAME_OFFICIAL_AR } from './data/miftahSpec';
 import { AR_LATN } from './utils/latinDigits';
 
 import SplashView from './components/SplashView';
+
+// ─────────────────────── Chargement différé des vues ───────────────────────
+// Sprint 30 : le bundle principal pesait 3,97 Mo (964 Ko gzip). Toutes les
+// vues étaient importées statiquement, donc téléchargées avant l'affichage du
+// tableau de bord — y compris le compilateur de méthodologie, le tableau de
+// bord enseignant ou les cartes mentales, que la plupart des élèves n'ouvrent
+// pas dans une session. Ces vues passent en import dynamique : leur code n'est
+// récupéré qu'au moment où l'onglet est ouvert.
+//
+// Restent chargées d'avance, parce qu'elles sont le chemin normal des
+// premières secondes : le splash, le tableau de bord, les leçons, la révision
+// et le quiz.
+const AnimationsView = lazy(() => import('./components/AnimationsView'));
+const SituationBankView = lazy(() => import('./components/SituationBankView'));
+const SchemaDrillView = lazy(() => import('./components/SchemaDrillView'));
+const RevisionPlanView = lazy(() => import('./components/RevisionPlanView'));
+const BacIdeasView = lazy(() => import('./components/BacIdeasView'));
+const MethodologyCompilerView = lazy(() => import('./components/MethodologyCompilerView'));
+const TeacherDashboardView = lazy(() => import('./components/TeacherDashboardView'));
+const CombatTrainerView = lazy(() => import('./components/CombatTrainerView'));
+const Bac2025ExamView = lazy(() => import('./components/Bac2025ExamView'));
+const BadgesView = lazy(() => import('./components/BadgesView'));
+const MindMapView = lazy(() => import('./components/MindMap/MindMapView'));
+const StatsView = lazy(() => import('./components/StatsView'));
+const AITutorView = lazy(() => import('./components/AITutorView'));
+const QuizView = lazy(() => import('./components/QuizView'));
+const RevisionView = lazy(() => import('./components/RevisionView'));
+const LessonsView = lazy(() => import('./components/LessonsView'));
+const LessonTwoView = lazy(() => import('./components/LessonTwoView'));
+const TrainingHubView = lazy(() => import('./components/TrainingHubView'));
+const CombatChallengePortal = lazy(() => import('./components/CombatChallengePortal'));
+const UnitIntroPortal = lazy(() => import('./components/UnitIntroPortal'));
+const StudentAuthView = lazy(() => import('./components/StudentAuthView'));
+
+
+/** Écran d'attente d'une vue différée — discret, en arabe, sans saut de page. */
+function VueEnChargement() {
+  return (
+    <div className="flex items-center justify-center py-16" dir="rtl" data-testid="vue-chargement">
+      <span className="text-sm font-bold text-[#506072] dark:text-gray-400">جارٍ التحميل…</span>
+    </div>
+  );
+}
+
 import DashboardView from './components/DashboardView';
-import QuizView from './components/QuizView';
-import AnimationsView from './components/AnimationsView';
-import SituationBankView from './components/SituationBankView';
-import SchemaDrillView from './components/SchemaDrillView';
-import TrainingHubView from './components/TrainingHubView';
-import RevisionPlanView from './components/RevisionPlanView';
-import BacIdeasView from './components/BacIdeasView';
-import RevisionView from './components/RevisionView';
-import StatsView from './components/StatsView';
-import AITutorView from './components/AITutorView';
 import StudyReminderModal from './components/StudyReminderModal';
-import MethodologyCompilerView from './components/MethodologyCompilerView';
-import StudentAuthView from './components/StudentAuthView';
 import StudentAccountBar from './components/StudentAccountBar';
 import { getApiToken } from './utils/api';
-import TeacherDashboardView from './components/TeacherDashboardView';
-import UnitIntroPortal from './components/UnitIntroPortal';
-import CombatTrainerView from './components/CombatTrainerView';
-import CombatChallengePortal from './components/CombatChallengePortal';
-import Bac2025ExamView from './components/Bac2025ExamView';
-import BadgesView from './components/BadgesView';
-import LessonTwoView from './components/LessonTwoView';
-import LessonsView from './components/LessonsView';
-import MindMapView from './components/MindMap/MindMapView';
 import { 
   startPirateMusic, 
   stopPirateMusic, 
@@ -755,6 +778,9 @@ export default function App() {
               exit={{ opacity: 0, y: -10 }}
               transition={{ duration: 0.2 }}
             >
+              {/* Suspense enveloppe l'ensemble du canevas : une seule frontière
+                  suffit, puisqu'un seul onglet est monté à la fois. */}
+              <Suspense fallback={<VueEnChargement />}>
               {currentTab === 'home' && (
                 <DashboardView 
                   units={units}
@@ -865,6 +891,7 @@ export default function App() {
               {currentTab === 'schemas' && (
                 <SchemaDrillView onBackToHome={() => setCurrentTab('training')} />
               )}
+              </Suspense>
             </motion.div>
           </AnimatePresence>
         </main>
