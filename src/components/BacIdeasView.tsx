@@ -36,6 +36,7 @@ import {
 } from '../data/verbDemands';
 import BacIdeaTrainer from './BacIdeaTrainer';
 import WritingReviewPanel from './WritingReviewPanel';
+import MockExamPanel from './MockExamPanel';
 import { draftedFamilies, writingStats } from '../data/writingProgress';
 import { INITIAL_UNITS } from '../unitCatalog';
 
@@ -145,6 +146,7 @@ export default function BacIdeasView({ onBackToHome, focusIdeaId = null }: BacId
   // Change à chaque fermeture d'atelier : force la relecture des brouillons.
   const [revision, setRevision] = useState(0);
   const [revueVisible, setRevueVisible] = useState(false);
+  const [sujetVisible, setSujetVisible] = useState(false);
 
   useEffect(() => {
     if (focusIdeaId && IDEA_BY_ID[focusIdeaId]) setEntrainement(IDEA_BY_ID[focusIdeaId]);
@@ -251,6 +253,18 @@ export default function BacIdeasView({ onBackToHome, focusIdeaId = null }: BacId
           }}
         />
       )}
+
+      <div className="flex flex-row-reverse mb-3">
+        <button
+          data-testid="basculer-sujet"
+          onClick={() => setSujetVisible((v) => !v)}
+          className="text-[11px] font-bold px-3 py-1.5 rounded-xl bg-[#1f1c0b] text-white cursor-pointer"
+        >
+          {sujetVisible ? 'إخفاء الموضوع التجريبي' : 'ركّب موضوعاً تجريبياً'}
+        </button>
+      </div>
+
+      {sujetVisible && <MockExamPanel onTrain={setEntrainement} />}
 
       <section
         data-testid="montages"

@@ -14,6 +14,7 @@ import BacIdeasView from '../BacIdeasView';
 import { YEARS_COVERED, ideasForYear } from '../../data/bacSessionIndex';
 import { archetypeRecurrence, archetypesForIdea, ideasOfArchetype } from '../../data/bacArchetypes';
 import { ideasForVerbFamily, verbFamilyStats } from '../../data/verbDemands';
+import { composeMockExam, numeroDuJour } from '../../data/mockExam';
 
 afterEach(cleanup);
 
@@ -248,5 +249,26 @@ describe('أفكار التمارين — relecture de la production (sprint 27)
     await user.click(screen.getByTestId('review-reprendre-bac2024_s1_e3-verb_analyser'));
     expect(screen.getByTestId('bac-trainer').textContent).toContain('البنزوبيران');
     localStorage.clear();
+  });
+});
+
+describe('أفكار التمارين — sujet blanc (sprint 41)', () => {
+  it('compose un sujet à la demande et le referme', async () => {
+    const user = userEvent.setup();
+    render(<BacIdeasView />);
+    expect(screen.queryByTestId('mock-exam')).toBeNull();
+    await user.click(screen.getByTestId('basculer-sujet'));
+    expect(screen.getByTestId('mock-exam')).toBeTruthy();
+    await user.click(screen.getByTestId('basculer-sujet'));
+    expect(screen.queryByTestId('mock-exam')).toBeNull();
+  });
+
+  it('ouvre l’atelier sur un exercice du sujet blanc', async () => {
+    const user = userEvent.setup();
+    render(<BacIdeasView />);
+    await user.click(screen.getByTestId('basculer-sujet'));
+    const premier = composeMockExam(numeroDuJour()).exercices[0];
+    await user.click(screen.getByTestId(`mock-ouvrir-${premier.id}`));
+    expect(screen.getByTestId('bac-trainer').textContent).toContain(premier.titleAr);
   });
 });

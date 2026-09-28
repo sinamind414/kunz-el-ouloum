@@ -2469,3 +2469,57 @@ supplémentaire vérifiant que le socle n'est pas *dupliqué* dans l'entrée.
 
 Suite unitaire **1679 verts / 4 skipped / 0 échec** (132 fichiers) ; contrôles
 post-build **14 verts** — décompte lu, pas seulement la couleur.
+
+---
+
+## Sprint 41 — des sujets blancs composés à partir de ce qui est tombé
+
+### L'idée
+
+L'app avait trois BAC blancs écrits à la main. Le corpus contient **59
+exercices réels** sur dix sessions : de quoi composer une infinité de sujets
+d'entraînement **sans inventer une ligne d'énoncé**. `composeMockExam(n)`
+sélectionne trois exercices existants et les présente dans l'ordre officiel.
+
+### Les règles de composition, toutes testées
+
+1. **barème officiel** : 5 / 7 / 8 points, total 20, durée 4 h 30 ;
+2. **trois unités porteuses distinctes** — un sujet ne teste jamais trois fois
+   la même unité ;
+3. **trois sessions distinctes** — on ne rejoue pas un sujet entier ;
+4. **tirage déterministe** : le sujet n° 12 est le même sur tous les appareils.
+   Un professeur peut dire « faites le sujet 12 », et un élève retrouve le sien
+   après avoir fermé l'app. Le numéro par défaut est celui **du jour** :
+   toute la classe travaille le même sans se concerter ;
+5. **pondéré par la pression mesurée**, mais sans exclusive : U4 et U1
+   reviennent plus souvent que la géologie — et la géologie tombe quand même,
+   parce qu'un sujet blanc qui ne la ferait jamais tomber **mentirait sur
+   l'épreuve**. Un test vérifie les deux moitiés de cette phrase.
+
+Repli explicite : si les contraintes ne laissent aucun candidat, on relâche
+d'abord la session, puis l'unité — plutôt que de rendre un sujet à deux
+exercices.
+
+### Dans l'écran
+
+Bouton « ركّب موضوعاً تجريبياً » dans les annales. Le sujet affiche, pour
+chaque exercice : barème, unité, idée, **supports réels**, **consignes
+réelles**, et un bouton qui ouvre l'atelier d'écriture sur cet exercice. La
+feuille s'imprime (les boutons disparaissent), et porte la mention que les
+énoncés sont **résumés pour l'entraînement** — l'original reste la session
+citée.
+
+### Vérifications
+
+`mockExam.test.ts` — 12 tests (barème, variété sur 40 sujets, déterminisme,
+numéros aberrants bornés, numéro du jour stable) ; `MockExamPanel.test.tsx` — 6 ;
+2 tests d'intégration côté annales.
+
+Suite unitaire **1699 verts / 4 skipped / 0 échec** (134 fichiers).
+
+### Le garde-fou du sprint 40 a servi dès ce sprint
+
+En début de session, `repoIntegrity.test.ts` a **échoué** : les deux fichiers
+de contrôle post-build avaient de nouveau disparu de la copie de travail. Cette
+fois, la perte a été signalée en quelques secondes au lieu de passer quatre
+sprints inaperçue — et restaurée avant tout commit.
