@@ -7,7 +7,7 @@
 //      la séquence expose la clé de base puis la clé `_2` — une leçon affichée
 //      à la fois (isolation par sliceLessonHtml).
 import { lazy, Suspense, useState } from 'react';
-import { BookOpen, ChevronLeft, Zap, MonitorPlay, Network, FlaskConical, Leaf, Globe2, GraduationCap, BookMarked, Grid3x3, Search } from 'lucide-react';
+import { BookOpen, ChevronLeft, Zap, MonitorPlay, Network, FlaskConical, Leaf, Globe2, GraduationCap, BookMarked, Grid3x3, Search, Compass } from 'lucide-react';
 import HtmlLessonViewer from './HtmlLessonViewer';
 import ActiveLessonView from './ActiveLessonView';
 import { INITIAL_UNITS } from '../unitCatalog';
@@ -102,6 +102,12 @@ export default function LessonsView({ onRateCard }: LessonsProps) {
   const [selectedPassiveUnitId, setSelectedPassiveUnitId] = useState<number | null>(null);
   /** Unité active ouverte (navigation par icônes : unité → leçons). */
   const [selectedActiveUnitId, setSelectedActiveUnitId] = useState<number | null>(null);
+  /**
+   * Domaine dont on consulte la الحصيلة المعرفية (déplacée depuis l'écran 1) :
+   * chaque domaine des leçons passives ouvre SA propre حصيلة.
+   * 'm' = الدليل العام للمنهجية, entré depuis l'écran des domaines.
+   */
+  const [okachaDomaine, setOkachaDomaine] = useState<1 | 2 | 3 | 'm'>(1);
 
   // R5 : ouverture d'une leçon depuis la recherche globale (deep-link).
   const openLessonFromSearch = (lessonKey: string, kind: 'html' | 'active', unitId: number) => {
@@ -178,13 +184,16 @@ export default function LessonsView({ onRateCard }: LessonsProps) {
   }
 
   // ----- Écran 0 ter : الحصيلة المعرفية (عكاشة, injection mécanique filtrée) -----
+  // Entrée unique : la carte en fin d'écran d'un domaine (leçons passives) —
+  // elle passe le domaine courant pour ouvrir la حصيلة DE CE domaine-là.
   if (mode === 'okacha') {
     return (
       <Suspense fallback={<VueEnChargement />}>
         <OkachaView
-          onBack={() => setMode(null)}
+          onBack={() => setMode('passive')}
           onRate={onRateCard}
           onOpenQcm={() => setMode('qcm')}
+          domaineInitial={okachaDomaine}
         />
       </Suspense>
     );
@@ -278,19 +287,9 @@ export default function LessonsView({ onRateCard }: LessonsProps) {
               3 اختبارات كاملة (20 نقطة) — تصحيح ذاتي بسلّم التنقيط
             </span>
           </button>
-          {/* الحصيلة المعرفية عكاشة */}
-          <button
-            onClick={() => setMode('okacha')}
-            className="group p-6 rounded-3xl border-2 border-blue-200 dark:border-blue-900/50 bg-gradient-to-b from-blue-50 to-white dark:from-blue-950/30 dark:to-[#161c18] hover:border-blue-500 hover:shadow-lg transition-all text-center space-y-3"
-          >
-            <span className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-[#1d4ed8] text-white shadow-md group-hover:scale-105 transition-transform">
-              <BookMarked className="w-8 h-8" />
-            </span>
-            <span className="block text-lg font-black text-gray-800 dark:text-gray-100">الحصيلة المعرفية</span>
-            <span className="block text-xs font-bold text-gray-500 dark:text-gray-400 leading-relaxed">
-              كل ما يجب حفظه — ملخصات مرقّمة لكل وحدة (عكاشة)
-            </span>
-          </button>
+          {/* الحصيلة معرفية عكاشة : DÉPLACÉE dans les leçons passives —
+              chaque domaine a désormais sa propre entrée, en fin de son écran
+              d'unités (cf. data-testid="okacha-entree-domaine"). */}
         </div>
       </div>
     );
@@ -490,6 +489,27 @@ export default function LessonsView({ onRateCard }: LessonsProps) {
             );
           })}
         </div>
+
+        {/* ── الدليل العام للمنهجية : sorti de la الحصيلة, il vit désormais sur
+            l'écran des domaines (il n'appartient à AUCUN domaine). ── */}
+        <button
+          onClick={() => { setOkachaDomaine('m'); setMode('okacha'); }}
+          data-testid="guide-entree"
+          className="group w-full flex items-center gap-4 p-5 rounded-3xl border-2 border-emerald-200 dark:border-emerald-900/50 bg-gradient-to-l from-emerald-50 to-white dark:from-emerald-950/30 dark:to-[#161c18] hover:border-emerald-500 hover:shadow-lg transition-all text-right"
+        >
+          <span className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-[#006d37] text-white shadow-md group-hover:scale-105 transition-transform shrink-0">
+            <Compass className="w-7 h-7" />
+          </span>
+          <span className="flex-1 min-w-0 space-y-1">
+            <span className="block text-base font-black text-gray-800 dark:text-gray-100">
+              🧭 الدليل العام للمنهجية
+            </span>
+            <span className="block text-xs font-bold text-gray-500 dark:text-gray-400 leading-relaxed">
+              منهجية الامتحان وتحليل الوثائق — خارج المجالات، لأنه يخصّ المادّة كلّها
+            </span>
+          </span>
+          <ChevronLeft className="w-5 h-5 text-gray-300 group-hover:text-emerald-500 transition-all shrink-0" />
+        </button>
       </div>
     );
   }
@@ -550,6 +570,29 @@ export default function LessonsView({ onRateCard }: LessonsProps) {
             );
           })}
         </div>
+
+        {/* ── الحصيلة المعرفية DE CE domaine — déplacée de l'écran principal :
+              chaque domaine des leçons passives a sa propre entrée, posée en
+              fin de l'écran de ses unités. Elle ouvre la حصيلة sur ce domaine. */}
+        <button
+          onClick={() => { setOkachaDomaine((domain?.id ?? 1) as 1 | 2 | 3); setMode('okacha'); }}
+          data-testid="okacha-entree-domaine"
+          className="group w-full flex items-center gap-4 p-5 rounded-3xl border-2 border-blue-200 dark:border-blue-900/50 bg-gradient-to-l from-blue-50 to-white dark:from-blue-950/30 dark:to-[#161c18] hover:border-blue-500 hover:shadow-lg transition-all text-right"
+        >
+          <span className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-[#1d4ed8] text-white shadow-md group-hover:scale-105 transition-transform shrink-0">
+            <BookMarked className="w-7 h-7" />
+          </span>
+          <span className="flex-1 min-w-0 space-y-1">
+            <span className="block text-base font-black text-gray-800 dark:text-gray-100">
+              📚 الحصيلة المعرفية — {domain?.titleAr}
+            </span>
+            <span className="block text-xs font-bold text-gray-500 dark:text-gray-400 leading-relaxed">
+              كل ما يجب حفظه في هذا المجال — ملخصات مرقّمة لكل وحدة (عكاشة)
+              + الدليل العام للمنهجية
+            </span>
+          </span>
+          <ChevronLeft className="w-5 h-5 text-gray-300 group-hover:text-blue-500 transition-all shrink-0" />
+        </button>
       </div>
     );
   }

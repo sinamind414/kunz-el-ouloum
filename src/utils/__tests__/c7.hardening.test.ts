@@ -73,22 +73,37 @@ describe('C4b — les inversions factuelles coûtent 0,5 n ; les vigilances rien
   const MEFTAH_EX3 = MEFTA_BAC_EXERCISES.find((e) => e.id === 'bac2025-ex3')!
     .questions.flatMap((q) => q.writeAr).join('\n');
 
+  // Ventilation par partie (E, 2026-09-27) : la note modèle Ex3 = 1,5 (P1) +
+  // 3,0×(4,5/3,5) (P2, item NE non crédité — voir plus bas) + 2,0 (P3) = 7,36.
+  // L'item NE (corr-2025-19) exige « النورادرينالين » mais le corrigé officiel
+  // écrit « NE » : la copie modèle elle-même ne le crédite pas (bug de formes
+  // ouvert pour F2 — docs/DIAGNOSTIC_EX3.md §3).
+  //
+  // F3 (2026-09-28) : l'item schéma (corr-2025-25) est devenu MANUEL — un
+  // schéma est une structure (flèches, deux branches), aucune signature keyword
+  // ne le distingue d'un récit (preuve : eleve_28, schéma absent noté 0/2 par
+  // le prof, créditait 0,5 via le prose de الربط). Sa part (0,5 registre → 1,0
+  // officiel) passe en réserve humaine : note auto max = 6,36, fourchette
+  // [6,36 ; 7,36] (+1,0 arbitré, et l'item NE non crédité plafonne à 7,36 sur
+  // l'échelle officielle complète).
+  const NOTE_MODELE_EX3 = 6.36;
+
   it('copie saine : aucune sanction forte, note intacte', () => {
     const n = noterExerciceCalibre(MEFTAH_EX3, 1, 3);
     expect(n.sanctionsForte).toHaveLength(0);
-    expect(n.points).toBe(7.5);
+    expect(n.points).toBe(NOTE_MODELE_EX3);
   });
 
   it('inversion AChE greffée → −0,5 n affichée avec sa raison', () => {
     const n = noterExerciceCalibre(MEFTAH_EX3 + '\nيتحرر الأستيل كولين استراز من الحويصلة المشبكية.', 1, 3);
     expect(n.sanctionsForte.map((s) => s.id)).toContain('acetylcholinesterase_liberee');
-    expect(n.points).toBe(7);
+    expect(n.points).toBe(NOTE_MODELE_EX3 - 0.5);
   });
 
   it('vigilance seule (مصفوفة + قالبية) → aucune pénalité', () => {
     const n = noterExerciceCalibre(MEFTAH_EX3 + '\nالمصفوفة تختلف عن السلسلة القالبية في التركيب.', 1, 3);
     expect(n.sanctionsForte).toHaveLength(0);
-    expect(n.points).toBe(7.5);
+    expect(n.points).toBe(NOTE_MODELE_EX3);
   });
 
   it('la pénalité ne descend jamais sous 0 (plancher)', () => {

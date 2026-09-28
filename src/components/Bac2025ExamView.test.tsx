@@ -2,7 +2,8 @@
 //
 // Contrat : l'élève soumet → il voit la note obligatoire /20 calculée UNIQUEMENT
 // sur les attendus officiels (registre), avec le détail par exercice.
-// Réponses modèle Meftah → ≈19/20 · copie vide → 0 · hors-sujet → 0/8.
+// Réponses modèle Meftah → ≈18/20 auto (Ex3 : 1,0 pt en réserve humaine pour le
+// schéma — F3) · copie vide → 0 · hors-sujet → 0/8.
 
 import { cleanup, fireEvent, render, screen } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
@@ -26,11 +27,11 @@ function remplirEtSoumettre(reponses: [string, string, string]) {
 }
 
 describe('Bac2025ExamView — la boucle élève (R6)', () => {
-  it('réponses modèle Meftah (S1) → affiche ≈19/20 + le détail des 3 exercices', () => {
+  it('réponses modèle Meftah (S1) → affiche ≈18/20 + le détail des 3 exercices', () => {
     remplirEtSoumettre([MODELE_S1[0], MODELE_S1[1], MODELE_S1[2]]);
     expect(screen.getAllByText(/النقطة الأولية الآلية/).length).toBeGreaterThan(0);
-    // total 19/20
-    expect(screen.getAllByText(/19/).length).toBeGreaterThan(0);
+    // total 18,36/20 auto (Ex3 = 6,36 + 1,0 de réserve schéma — F3)
+    expect(screen.getAllByText(/18/).length).toBeGreaterThan(0);
     expect(screen.getAllByText(/\/20/).length).toBeGreaterThan(0);
     // le détail obligatoire par exercice est rendu (3 sections + mention d'intro)
     expect(screen.getAllByText(/التنقيط الإلزامي/).length).toBeGreaterThanOrEqual(3);
@@ -47,15 +48,20 @@ describe('Bac2025ExamView — la boucle élève (R6)', () => {
       'المنعكس العضلي ثنائي المشبك يمر عبر النخاع الشوكي، واللوحة المحركة هي البنية النهائية، ' +
       'وآلية الإدماج الزمني والفضائي تحدد شدة الاستجابة، وقانون الكل أو لا شيء يحكم المحور الأسطواني.';
     remplirEtSoumettre([reflexe, reflexe, reflexe]);
-    // 3 sections dont au moins une à 0/8 (aucun attendu touché)
-    expect(screen.getAllByText(/0 \/ 8 ن/).length).toBeGreaterThanOrEqual(1);
+    // 3 sections dont Ex3 à 0/8 auto (aucun attendu touché) — F3 : Ex3 affiche
+    // la fourchette 0–1 / 8 car le schéma est un item manuel (1,0 officiel).
+    expect(screen.getAllByText(/0–1 \/ 8 ن/).length).toBeGreaterThanOrEqual(1);
   });
 
   it('la soumission archive la tentative : note affichée = note historisée', () => {
     remplirEtSoumettre([MODELE_S1[0], MODELE_S1[1], MODELE_S1[2]]);
     const all = getExamAttempts();
     expect(all).toHaveLength(1);
-    expect(all[0]!.total).toBe(19.5); // 5 + 7 + 7.5 — la même note que l'affichage
+    expect(all[0]!.total).toBe(18.36); // 5 + 7 + 6,36 — la même note que l'affichage
+    // Ex3 = 6,36 auto (+1,0 de réserve pour le schéma, item manuel F3) et non
+    // 7,36 : ventilation par partie E — la Partie 2 officielle pèse 4,5 et
+    // l'item NE n'est pas créditable (le corrigé écrit « NE », pas
+    // « النورادرينالين »). Voir c7.hardening + docs/DIAGNOSTIC_EX3.md.
     expect(all[0]!.sujet).toBe(1);
     expect(all[0]!.exercices).toHaveLength(3);
     // une seule tentative même après re-render (pas de doublon)
@@ -63,7 +69,7 @@ describe('Bac2025ExamView — la boucle élève (R6)', () => {
     expect(getExamAttempts()).toHaveLength(1);
     // l'entrée d'historique est visible dans le panneau
     expect(screen.getAllByText(/محاولة/).length).toBeGreaterThan(0);
-    expect(screen.getAllByText(/19/).length).toBeGreaterThan(1); // total + ligne d'historique
+    expect(screen.getAllByText(/18/).length).toBeGreaterThan(1); // total + ligne d'historique
   });
 
   it('historique vide → message honnête (pas un 0 inventé)', () => {

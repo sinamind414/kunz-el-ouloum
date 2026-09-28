@@ -62,6 +62,17 @@ export interface AttenduItem {
   source: 'build' | 'corrige-officiel-2025';
 }
 
+export interface PoidsPartie {
+  /** item.id → numéro de partie (1, 2, 3). */
+  partie: Record<string, 1 | 2 | 3>;
+  /** Points que le registre attribue à chaque partie (Σ = maxPts). */
+  registre: Record<1 | 2 | 3, number>;
+  /** Points officiels de chaque partie (Σ = maxPts). */
+  officiel: Record<1 | 2 | 3, number>;
+  /** Source documentaire de la ventilation (corrigé / RECAPITULATIF). */
+  source: string;
+}
+
 export interface AttendusExercice {
   sujet: SujetId;
   exercice: ExerciceId;
@@ -69,6 +80,16 @@ export interface AttendusExercice {
   /** L'énoncé/le verrou de l'exercice (détection de perroquet). */
   questionAr: string;
   items: AttenduItem[];
+  /**
+   * Ventilation officielle en parties (optionnelle).
+   *
+   * Quand la granularité des items (13 ici) dépasse celle du barème officiel
+   * (3 parties), la note est calculée par partie — crédit de la partie × poids
+   * officiel / poids registre — au lieu du modèle plat couverture × maxPts.
+   * Sans `poidsPartie`, ou si la map ne couvre pas tout item auto, on reste sur
+   * le modèle plat (sécurité). Référence : docs/DIAGNOSTIC_EX3.md (S1-Ex3).
+   */
+  poidsPartie?: PoidsPartie;
 }
 
 // ── Pont programmatique : Ex1 des deux sujets depuis le build prouvé fidèle ──
@@ -113,7 +134,7 @@ const OVERLAY_BUILD: Record<string, { composantes?: string[][]; formes?: string[
   // R4 (40 copies) : formes « arn/rip » = FP — toute mention d'ARN créditait
   // l'intro ET la conclusion sans qu'elles existent. Formes STRUCTURELLES.
   'bac2025_S1/S1-Ex1/Q2/intro': { formes: ['مشكل', 'تساؤل', 'ما دور', 'ما تأثير'] },
-  'bac2025_S1/S1-Ex1/Q2/concl': { formes: ['خاتمة', 'نستنتج', 'نتيجة', 'تشارك', 'ويمكن تعطيل'] }, // corrigé p.7 : « +2ADP+2Pi+2NAD+ » — C = Pi (phosphate inorganique)
+  'bac2025_S1/S1-Ex1/Q2/concl': { formes: ['خاتمة', 'نستنتج', 'نتيجة', 'يشارك', 'ويمكن تعطيل'] }, // F3 : « تشارك » = 1er mot de l'INTRO (FP double-crédit) → corrigé « يشارك » · p.7 : C = Pi
   // P2g (2026-09-19) — corrigé officiel 2025, verbatim : « عناصر من مجموع الخمسة
   // المسطرة في المعادلة؛ يُمنح 0.25 نقطة لكل عنصر » → l'équation vaut 1.25 pt
   // (le build encodait 0.75 — aucun « 0.75 » n'existe dans le corrigé). Les cinq
@@ -217,8 +238,21 @@ const S1_EX2: AttenduItem[] = [
     [['ca'], ['hco3']]),
   item(0.5, ['تراكم', 'الحشوه'],
     'الشكل(ب): عند الطبيعية تتراكم كمية CO2 في البيرنويدة؛ عند الطافرة تكون مرتفعة في الحشوة وقليلة في الهيولى'),
+  // F3 (2026-09-28) — trou de formes mesuré : « نفوذ » est absent des 40 copies
+  // (diagnostiquer-items-manques.ts : item manqué 40/40, jamais crédité). La
+  // formulation effectivement produite par 17 copies (« تدخل HCO3⁻ إلى
+  // التيلاكوئيد داخل البيروئيدة وخروج CO2 منها ») exprime le deuxième membre
+  // du corrigé (perméabilité sélectée) et EST créditée par le correcteur
+  // (ex. eleve_40 : prof 6,5/7, moteur 6,0 — seul l'item manquait).
+  // Composantes = les 2 moitiés du corrigé, chacune acceptant SOIT le terme
+  // officiel SOIT la forme observée ; crédit proportionnel (0,25 par moitié),
+  // ce qui rend aussi le « fig(C) ébauché » d'eleve_24/28 (تدخل seul).
   item(0.5, ['غير نفوذ', 'نفوذ'],
-    'الشكل(ج): الغشاء البروتيني للبيرنويدة نفوذ لـ HCO3⁻ وRuBP/APG وغير نفوذ لـ CO2 — فيُحجز CO2 داخل البيرنويدة'),
+    'الشكل(ج): الغشاء البروتيني للبيرنويدة نفوذ لـ HCO3⁻ وRuBP/APG وغير نفوذ لـ CO2 — فيُحجز CO2 داخل البيرنويدة',
+    [
+      ['تدخل', 'دخول', 'يدخل', 'نفوذ'], // entrée du HCO3⁻ (perméabilité)
+      ['خروج', 'يخرج', 'غير نفوذ', 'يحجز', 'حبس'], // devenir du CO2 (rétention)
+    ]),
   item(0.5, ['طاقه كيميائيه كامنه', 'سكر'],
     'الربط: تثبيت CO2 على RuBP فيتشكل APG يتحول جزئياً إلى سكر سداسي وتجديد RuBP — تحويل الطاقة الضوئية إلى كيميائية كامنة رغم انخفاض CO2'),
   item(0.5, ['التلوث المائي', 'O₂'],
@@ -254,9 +288,37 @@ const S1_EX3: AttenduItem[] = [
     'الحسم: يؤكد صحة الفرضية 1 — يرتبط Mtb بمستقبل الأدينوزين A1R'),
   item(0.5, ['الاعتدال', 'قبل النوم'],
     'النصيحتان: الاعتدال في الكمية اليومية + تجنب الشاي مساء/قبل النوم (اختلال النوم بفعل Mtb)'),
-  item(0.5, ['نعاس', 'يقظه'],
-    'المخطط: مسار Ado (تراكم → ارتباط A1R → نقص NE → نعاس) ومسار Mtb (احتلال A1R → عودة NE → يقظة)'),
+  // F2/F3 (2026-09-28) — le schéma est une STRUCTURE (flèches, deux branches),
+  // pas un énoncé keyword. Formes provables faux positifs : « نعاس »/« يقظه »
+  // apparaissent dans la phrase de الربط (ex. eleve_28 : « (لم أجد الوقت) » en
+  // Partie 3, schéma absent noté 0/2 par le prof, mais l'item créditait 0,5 via
+  // le prose → +1,0 après pondération par partie). normalizeAr détruit les
+  // flèches (→ hors jeu de caractères conservé) : aucune signature keyword ne
+  // distingue un schéma d'un récit. Règle F2 : un critère exigeant une
+  // interprétation humaine reste MANUEL → exclu du dénominateur auto, remonté au
+  // correcteur (fourchette F1).
+  item(0.5, [], 'المخطط: مسار Ado (تراكم → ارتباط A1R → نقص NE → نعاس) ومسار Mtb (احتلال A1R → عودة NE → يقظة)'),
 ];
+
+// Ventilation officielle de l'Ex3 (RECAPITULATIF + corrigé p.2-4) :
+//   Partie 1 = 1,5 (lecture des figures a/b + 2 conclusions + hypothèses)
+//   Partie 2 = 4,5 (mécanisme : NE, Go/Gi, canaux K⁺/Ca²⁺, vésicules)
+//   Partie 3 = 2,0 (conseils + schéma)
+// Le registre totalise 3,5 / 3,5 / 1,0 — la Partie 1 (items faciles : nommer
+// « المجموعة 1 » rapporte 0,5) pèse ×2,3 l'officiel. C'est la cause mesurée du
+// biais +1,20 (docs/DIAGNOSTIC_EX3.md) : la note est ventilée par partie.
+const S1_EX3_PARTIES: PoidsPartie = {
+  partie: {
+    'corr-2025-13': 1, 'corr-2025-14': 1, 'corr-2025-15': 1,
+    'corr-2025-16': 1, 'corr-2025-17': 1, 'corr-2025-18': 1,
+    'corr-2025-19': 2, 'corr-2025-20': 2, 'corr-2025-21': 2,
+    'corr-2025-22': 2, 'corr-2025-23': 2,
+    'corr-2025-24': 3, 'corr-2025-25': 3,
+  },
+  registre: { 1: 3.5, 2: 3.5, 3: 1.0 },
+  officiel: { 1: 1.5, 2: 4.5, 3: 2.0 },
+  source: 'RECAPITULATIF.txt (structure du sujet) + corrigé officiel p.2-4 — 2026-09-27',
+};
 
 // ── S2-Ex2 (7 ن) — SOD · الطفرة · EDA · Catalase (ALS) ───────────────────────
 const S2_EX2: AttenduItem[] = [
@@ -329,7 +391,7 @@ export const ATTENDUS_BAC2025: Record<SujetId, Record<ExerciceId, AttendusExerci
   1: {
     1: { sujet: 1, exercice: 1, maxPts: 5, questionAr: Q_S1[1], items: [...itemsDepuisBuild('bac2025_S1/S1-Ex1/')] },
     2: { sujet: 1, exercice: 2, maxPts: 7, questionAr: Q_S1[2], items: S1_EX2 },
-    3: { sujet: 1, exercice: 3, maxPts: 8, questionAr: Q_S1[3], items: S1_EX3 },
+    3: { sujet: 1, exercice: 3, maxPts: 8, questionAr: Q_S1[3], items: S1_EX3, poidsPartie: S1_EX3_PARTIES },
   },
   2: {
     1: { sujet: 2, exercice: 1, maxPts: 5, questionAr: Q_S2[1], items: [...itemsDepuisBuild('bac2025_S2/S2-Ex1/')] },

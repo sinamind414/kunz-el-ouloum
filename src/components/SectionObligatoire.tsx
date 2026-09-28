@@ -24,6 +24,10 @@ const LABEL_PLAFOND: Record<string, string> = {
 
 export default function SectionObligatoire({ note }: { note: NoteCalibree }) {
   const manuels = note.verdicts.filter((v) => !v.auto);
+  // F1 : réserve manuelle → la note machine est une BORNE, pas une note Bac.
+  // Tant qu'un seul item manuel reste à arbitrer : fourchette + bandeau.
+  const reserve = note.pointsManuelsAArbitrer;
+  const modeleVentilation = !!note.registre.poidsPartie;
   return (
     <div className="rounded-lg border-2 border-[#006d37]/30 dark:border-emerald-800/60 overflow-hidden">
       <div className="flex items-center justify-between px-2 py-1.5 bg-emerald-50 dark:bg-emerald-950/30">
@@ -31,14 +35,33 @@ export default function SectionObligatoire({ note }: { note: NoteCalibree }) {
           التنقيط الإلزامي على مقتضيات الإجابة الرسمية
         </span>
         <span className="text-[13px] font-black text-[#006d37] dark:text-emerald-300">
-          {fmtPoints(note.points)} / {fmtPoints(note.maxPts)} ن
+          {reserve > 0 ? (
+            <>
+              {fmtPoints(note.pointsAutoAcquis)}–{fmtPoints(note.pointsAutoAcquis + reserve)}
+              {' '}/ {fmtPoints(note.maxPts)} ن
+              <span className="text-[9px] align-top text-amber-600 dark:text-amber-400"> مبدئي</span>
+            </>
+          ) : (
+            <>{fmtPoints(note.points)} / {fmtPoints(note.maxPts)} ن</>
+          )}
         </span>
       </div>
+      {reserve > 0 && (
+        <div className="px-2 py-1.5 text-[9px] font-bold bg-amber-50 dark:bg-amber-950/30 border-b border-amber-200 dark:border-amber-900/50 text-amber-800 dark:text-amber-300 space-y-0.5">
+          <p>⚠ يتطلب تدخلاً بشرياً: {fmtPoints(reserve)} ن في بنود يدوية بانتظار تقدير المصحح.</p>
+          <p>
+            النقاط المؤكدة آلياً: {fmtPoints(note.pointsAutoAcquis)} ن · نطاق التقدير: [
+            {fmtPoints(note.pointsAutoAcquis)}، {fmtPoints(note.pointsAutoAcquis + reserve)}] ن
+          </p>
+        </div>
+      )}
       <div className="px-2 py-1.5 text-[9px] font-bold text-gray-500 dark:text-gray-400 bg-emerald-50/50 dark:bg-emerald-950/20 space-y-0.5">
         <p>
           التغطية: {Math.round(note.couverture * 100)}% من النقاط الآلية (
           {fmtPoints(note.pointsAttendusCredites)}/{fmtPoints(note.pointsAttendusAuto)}) —
-          {' '}المعادلة: التغطية × {fmtPoints(note.maxPts)}
+          {' '}{modeleVentilation
+            ? 'المعادلة: تنقيط كل جزء × وزنه الرسمي (تهوية الأجزاء)'
+            : `المعادلة: التغطية × ${fmtPoints(note.maxPts)}`}
         </p>
         {note.plafonds.length > 0 && (
           <p className="text-red-700 dark:text-red-300">

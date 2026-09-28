@@ -39,13 +39,21 @@ describe('registre — sommes = barèmes officiels', () => {
   });
 
   it('aucun item à points sans forme NI composantes (sinon manuel — build only)', () => {
+    // F3 (2026-09-28) : tolérance étendue aux items MANUELS encodés à la main et
+    // SOURCÉS — un critère exigeant une interprétation humaine (ex. un schéma =
+    // structure, pas des mots-clés) reste manuel par principe F2. La liste
+    // ci-dessous est close et chaque entrée porte sa preuve dans le registre.
+    const MANUELS_SOURCES: Set<string> = new Set(['1-3/corr-2025-25']); // schéma S1-Ex3
     for (const g of GROUPES) {
       for (const it of g.items) {
         const aComposantes = (it.composantes?.length ?? 0) > 0;
         if (it.points > 0 && it.formes.length === 0 && !aComposantes) {
-          // Toléré UNIQUEMENT pour les items build (remontés au prof) —
-          // tout item encodé à la main doit avoir ses formes.
-          expect(it.source, `${g.sujet}/${it.id}`).toBe('build');
+          // Toléré UNIQUEMENT pour les items build (remontés au prof) ou les
+          // items manuels sourcés — tout autre item encodé à la main doit avoir
+          // ses formes.
+          if (!MANUELS_SOURCES.has(`${g.sujet}-${g.exercice}/${it.id}`)) {
+            expect(it.source, `${g.sujet}/${it.id}`).toBe('build');
+          }
         }
         for (const f of it.formes) {
           expect(normalizeAr(f).length, `forme vide: ${it.id}`).toBeGreaterThan(0);
@@ -154,5 +162,64 @@ describe('P2g — équation glycolyse S2-Ex1 (corrigé officiel 0.25×5) + isole
     for (const it of attendusDeGroupe(1, 1).items.filter((x) => x.id.includes('/Q1/'))) {
       expect(it.composantes?.length, `${it.id}`).toBe(2);
     }
+  });
+});
+
+describe('F1 — enveloppe officielle : un seul débordement documenté', () => {
+  it('Σ points des items ≤ maxPts partout, sauf S2-Ex1 (overlay P2g 2026-09-19)', () => {
+    const debordees: string[] = [];
+    for (const sujet of [1, 2] as const) {
+      for (const exercice of [1, 2, 3] as const) {
+        const g = attendusDeGroupe(sujet, exercice);
+        const somme = g.items.reduce((s, i) => s + i.points, 0);
+        if (somme > g.maxPts + 1e-9) debordees.push(`S${sujet}-Ex${exercice}: ${somme} > ${g.maxPts}`);
+      }
+    }
+    // S2-Ex1 : corrigé officiel verbatim « 0.25 نقطة لكل عنصر » × 5 = 1.25 pour
+    // l'équation ; l'excédent est absorbé par le plafond maxPts (couverture ≤ 1
+    // → note ≤ 5). Ce test verrouille qu'AUCUN autre groupe ne déborde — un
+    // nouveau débordement doit être conscient et documenté ici.
+    expect(debordees).toEqual(['S2-Ex1: 5.5 > 5']);
+  });
+});
+
+// F3 (2026-09-28) — trous de formes mesurés sur le corpus 40 copies
+// (scripts/diagnostiquer-items-manques.ts) : des items auto n'étaient JAMAIS
+// crédités (40/40) bien que le correcteur humain valide la formulation produite.
+// Verrouille la reconnaissance de ces formes ET l'absence de faux positifs.
+describe('F3 — formes effectivement produites par les copies', () => {
+  // S1-Ex2 item « الشكل(ج) » (0.5 pt) : « نفوذ » est absent des 40 copies ;
+  // 17 copies écrivent « تدخل HCO3⁻ … وخروج CO2 منها » et le prof le crédite.
+  const FIG_C = 'ومن الشكل(ج): تدخل HCO3- إلى التيلاكوئيد داخل البيروئيدة وخروج CO2 منها.';
+  const FIG_C_EBAUCHE = 'ومن الشكل(ج): تدخل HCO3- إلى التيلاكوئيد داخل البيروئيدة.';
+  const SANS_FLUX = 'البيروئيدة مهمة في نمو الطحالب.';
+
+  it('S1-Ex2 الشكل(ج) : les deux flux (HCO3⁻ entrant, CO2 sortant) → 0.5 pt', () => {
+    const v = noterExerciceCalibre(FIG_C, 1, 2).verdicts.find((x) => x.texteAr.includes('الشكل(ج)'));
+    expect(v?.pointsCredites).toBe(0.5);
+  });
+
+  it('S1-Ex2 الشكل(ج) : un seul flux (« ébauché ») → 0.25 pt (crédit proportionnel)', () => {
+    const v = noterExerciceCalibre(FIG_C_EBAUCHE, 1, 2).verdicts.find((x) => x.texteAr.includes('الشكل(ج)'));
+    expect(v?.pointsCredites).toBe(0.25);
+  });
+
+  it('S1-Ex2 الشكل(ج) : la formulation officielle « نفوذ / غير نفوذ » reste reconnue', () => {
+    const OFFICIEL =
+      'الغشاء البروتيني للبيرنويدة نفوذ لـ HCO3⁻ وRuBP/APG وغير نفوذ لـ CO2 فيُحجز CO2 داخل البيرنويدة.';
+    const v = noterExerciceCalibre(OFFICIEL, 1, 2).verdicts.find((x) => x.texteAr.includes('الشكل(ج)'));
+    expect(v?.pointsCredites).toBe(0.5);
+  });
+
+  it('S1-Ex2 الشكل(ج) : mention de la pyrénoïde sans aucun flux → 0 pt (pas de faux positif)', () => {
+    const v = noterExerciceCalibre(SANS_FLUX, 1, 2).verdicts.find((x) => x.texteAr.includes('الشكل(ج)'));
+    expect(v?.pointsCredites).toBe(0);
+  });
+
+  it('S1-Ex2 : la forme observée ne crédite rien sur les copies qui ne traitent pas fig(C)', () => {
+    // eleve_01 (prof 0.5/7) cite la pyrénoïde sans décrire aucun flux : l'item
+    // reste à zéro — la similarité de surface ne vaut pas preuve (garde-fou F3).
+    const r = noterExerciceCalibre(SANS_FLUX, 1, 2);
+    expect(r.points).toBeLessThan(1.5);
   });
 });

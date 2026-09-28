@@ -1,7 +1,9 @@
 // calibrationBac2025.test.ts — Verrous de la notation R6 (Pierre 2 : attendus
 // obligatoires) + garde du LEGACY (fit linéaire, déprécié hors recherche).
 //
-// R6 : la note = min(couverture_attendus × maxPts, plafonds d'intégrité).
+// R6 : la note = min(couverture_attendus × maxPts, plafonds d'intégrité) —
+// sauf les groupes à ventilation par partie (S1-Ex3) où chaque partie est
+// ramenée à son poids officiel avant le plafond (docs/DIAGNOSTIC_EX3.md).
 // Le dénominateur est le REGISTRE (attendusBac2025.ts) — la banque d'unité
 // n'est plus jamais un dénominateur (audit C1/C2 : elle payait les salades 8/8).
 
@@ -16,6 +18,21 @@ import { attendusDeGroupe } from './attendusBac2025';
 import { normalizeAr } from '../../lib/validation/normalizeAr';
 import { MEFTA_BAC_EXERCISES } from '../meftahManhajia';
 import { PLAFONDS } from './integriteCopie';
+
+// Réserve humaine attendue : Σ des points des items MANUELS, ramenés à l'échelle
+// officielle via le ratio poidsPartie (F1+, 2026-09-28). Réimplémentation
+// indépendante de la formule moteur — doit rester byte-pour-byte égale.
+function reserveManuellePonderee(reg: ReturnType<typeof attendusDeGroupe>): number {
+  const pp = reg.poidsPartie;
+  const reserve = reg.items
+    .filter((i) => !(i.formes.length > 0 || (i.composantes?.length ?? 0) > 0))
+    .reduce((s, i) => {
+      const p = pp?.partie[i.id];
+      const ratio = p && pp && pp.registre[p] > 0 ? pp.officiel[p] / pp.registre[p] : 1;
+      return s + i.points * ratio;
+    }, 0);
+  return Math.round(reserve * 100) / 100;
+}
 
 // Réponse qui contient TOUS les textes officiels d'un groupe → toutes les
 // formes matchent → couverture 1 → note max (cohérence registre ↔ scoreur).
@@ -43,25 +60,73 @@ describe('R6 — invariants de la notation par attendus obligatoires', () => {
   });
 
   it('texte couvrant TOUS les attendus → note max (plafond auto = barème)', () => {
+    // F3 (2026-09-28) : un item MANUEL (ex. S1-Ex3 schéma) n'est pas
+    // créditable automatiquement → points + réserve humaine = barème, et la
+    // note finale est PROVISOIRE (noteFinale = null) tant que le correcteur
+    // n'a pas arbitré. Les autres exercices restent intégralement auto.
     for (const sujet of [1, 2] as const) {
       for (const exercice of [1, 2, 3] as const) {
         const n = noterExerciceCalibre(reponseExhaustive(sujet, exercice), sujet, exercice);
         expect(n.couverture, `S${sujet}-Ex${exercice}`).toBe(1);
-        expect(n.points).toBe(n.maxPts);
+        expect(n.points + n.pointsManuelsAArbitrer, `S${sujet}-Ex${exercice} points+réserve`).toBe(
+          n.maxPts,
+        );
+        expect(n.points).toBeLessThanOrEqual(n.maxPts);
+        expect(n.noteFinale).toBe(n.pointsManuelsAArbitrer > 0 ? null : n.points);
         expect(n.plafonds).toEqual([]); // c'est de la prose officielle
       }
     }
   });
 
-  it('points = couverture × maxPts, sauf plafond d’intégrité (formule R6)', () => {
+  it('points = ventilation par partie (S1-Ex3) ou couverture × maxPts ailleurs (formule R6)', () => {
     for (const sujet of [1, 2] as const) {
       for (const exercice of [1, 2, 3] as const) {
         const n = noterExerciceCalibre(reponseExhaustive(sujet, exercice).slice(0, 400), sujet, exercice);
         const borne = Math.min(...(n.plafonds.length ? n.plafonds.map((p) => p.plafondPct) : [1])) * n.maxPts;
         expect(n.points).toBeLessThanOrEqual(Math.round(borne * 100) / 100 + 1e-9);
-        expect(n.points).toBe(Math.round(Math.min(n.couverture * n.maxPts, borne) * 100) / 100);
+        // Réimplémentation indépendante de la formule moteur.
+        const pp = n.registre.poidsPartie;
+        let formule = n.couverture * n.maxPts;
+        if (pp) {
+          const partCredit: Record<number, number> = { 1: 0, 2: 0, 3: 0 };
+          for (const v of n.verdicts) {
+            const p = pp.partie[v.id];
+            if (p === undefined) continue;
+            partCredit[p] += v.pointsCredites;
+          }
+          formule = 0;
+          for (const p of [1, 2, 3] as const) {
+            if (pp.registre[p] > 0) formule += partCredit[p] * (pp.officiel[p] / pp.registre[p]);
+          }
+          formule = Math.min(n.maxPts, Math.max(0, formule));
+        }
+        expect(n.points, `S${sujet}-Ex${exercice}`).toBe(Math.round(Math.min(formule, borne) * 100) / 100);
       }
     }
+  });
+
+  it('S1-Ex3 : la ventilation par partie plafonne la Partie 1 (facile) à 1,5/8', () => {
+    // Réponse ne contenant QUE les items de la Partie 1 (formes officielles).
+    const pp = attendusDeGroupe(1, 3).poidsPartie!;
+    const itemsP1 = attendusDeGroupe(1, 3).items.filter((i) => pp.partie[i.id] === 1);
+    const reponseP1 = itemsP1.map((i) => i.texteAr).join(' ');
+    const n = noterExerciceCalibre(reponseP1, 1, 3);
+    // Avant E : 3,5 pts crédités → 3,5/8. Maintenant : ramené au poids officiel 1,5/8.
+    expect(n.pointsAttendusCredites).toBe(3.5);
+    expect(n.points).toBe(1.5);
+  });
+
+  it('S1-Ex3 : la map poidsPartie couvre TOUS les items auto du registre', () => {
+    const reg = attendusDeGroupe(1, 3);
+    const pp = reg.poidsPartie!;
+    for (const it of reg.items) {
+      const auto = it.points > 0 && (it.formes.length > 0 || (it.composantes?.length ?? 0) > 0);
+      if (auto) expect(pp.partie[it.id], `${it.id} non mappé`).toBeDefined();
+    }
+    const sommes = { registre: [1, 2, 3].reduce((s, p) => s + pp.registre[p as 1 | 2 | 3], 0),
+                     officiel: [1, 2, 3].reduce((s, p) => s + pp.officiel[p as 1 | 2 | 3], 0) };
+    expect(sommes.registre).toBe(reg.maxPts);
+    expect(sommes.officiel).toBe(reg.maxPts);
   });
 
   it('le déversement de la banque d’unité NE PAIE PLUS (fin du détecteur de déversement)', () => {
@@ -97,9 +162,61 @@ describe('R6 — invariants de la notation par attendus obligatoires', () => {
   });
 
   it('total copie = somme des exercices ≤ 20', () => {
+    // F3 : S1-Ex3 garde 1,0 pt en réserve humaine (schéma) → total auto 19/20,
+    // le 20/20 n'est atteint qu'après arbitrage humain (noteFinale provisoire).
     const copie = noterCopieCalibree([reponseExhaustive(1, 1), reponseExhaustive(1, 2), reponseExhaustive(1, 3)], 1);
-    expect(copie.total).toBe(20);
+    expect(copie.total).toBe(19);
     expect(copie.total).toBeLessThanOrEqual(20);
+  });
+});
+
+describe('F1 — points acquis vs réserve manuelle (garder l’échelle officielle)', () => {
+  it('aucun item manuel invisible : verdicts = items du registre (6 groupes)', () => {
+    for (const sujet of [1, 2] as const) {
+      for (const exercice of [1, 2, 3] as const) {
+        const reg = attendusDeGroupe(sujet, exercice);
+        const n = noterExerciceCalibre(reponseExhaustive(sujet, exercice), sujet, exercice);
+        expect(n.verdicts, `S${sujet}-Ex${exercice}`).toHaveLength(reg.items.length);
+      }
+    }
+  });
+
+  it('pointsAutoAcquis = points · réserve = Σ items non auto · noteFinale cohérente', () => {
+    for (const sujet of [1, 2] as const) {
+      for (const exercice of [1, 2, 3] as const) {
+        const reg = attendusDeGroupe(sujet, exercice);
+        const n = noterExerciceCalibre(reponseExhaustive(sujet, exercice), sujet, exercice);
+        expect(n.pointsAutoAcquis).toBe(n.points);
+        expect(n.pointsManuelsAArbitrer).toBe(reserveManuellePonderee(reg));
+        expect(n.noteFinale).toBe(n.pointsManuelsAArbitrer > 0 ? null : n.points);
+      }
+    }
+  });
+
+  it('garde-fou : pointsAutoAcquis + pointsManuelsAArbitrer ≤ maxPts (jamais plus que l’officiel)', () => {
+    for (const sujet of [1, 2] as const) {
+      for (const exercice of [1, 2, 3] as const) {
+        const n = noterExerciceCalibre(reponseExhaustive(sujet, exercice), sujet, exercice);
+        expect(
+          n.pointsAutoAcquis + n.pointsManuelsAArbitrer,
+          `S${sujet}-Ex${exercice}`,
+        ).toBeLessThanOrEqual(n.maxPts + 1e-9);
+      }
+    }
+  });
+
+  it('les items manuels ne sont JAMAIS comptés comme zéro ni redistribués', () => {
+    // Copie vide : la réserve manuelle reste INTACTE (égale à Σ items non auto,
+    // sur l'échelle officielle), les points auto tombent à 0 — pas de
+    // renormalisation de la part manuelle.
+    for (const sujet of [1, 2] as const) {
+      for (const exercice of [1, 2, 3] as const) {
+        const reg = attendusDeGroupe(sujet, exercice);
+        const n = noterExerciceCalibre('', sujet, exercice);
+        expect(n.pointsManuelsAArbitrer).toBe(reserveManuellePonderee(reg));
+        expect(n.pointsAutoAcquis).toBe(0);
+      }
+    }
   });
 });
 
@@ -179,20 +296,26 @@ describe('R6 — contrôles positifs : les réponses modèle de Meftah', () => {
   }));
 
   it('couverture ≥ 85 % et note ≥ 90 % du max pour chaque réponse modèle', () => {
+    // F3 : S1-Ex3 a un item manuel (schéma) → la note auto seule plafonne à
+    // 6,36/8 (79,5 %) ; c'est le TOTAL atteignable points+réserve qui vaut le
+    // barème. Une copie modèle ne peut pas être pleinement notée par machine.
     for (const m of MODELES) {
       const n = noterExerciceCalibre(m.texte, 1, m.exercice);
       expect(n.couverture, `${m.id} couverture`).toBeGreaterThanOrEqual(0.85);
-      expect(n.points, `${m.id} points`).toBeGreaterThanOrEqual(0.9 * n.maxPts);
+      expect(n.points + n.pointsManuelsAArbitrer, `${m.id} points+réserve`).toBeGreaterThanOrEqual(
+        0.9 * n.maxPts,
+      );
       expect(n.plafonds, `${m.id} — aucun plafond sur une copie légitime`).toEqual([]);
     }
   });
 
   it('copie modèle complète ≈ 19-20/20 (avant R6 : 16,05)', () => {
+    // F3 : 19/20 auto + 1,0 en réserve humaine (schéma S1-Ex3).
     const copie = noterCopieCalibree(
       MODELES.map((m) => m.texte) as [string, string, string],
       1
     );
-    expect(copie.total).toBeGreaterThanOrEqual(18);
+    expect(copie.total).toBeGreaterThanOrEqual(17);
     expect(copie.total).toBeLessThanOrEqual(20);
   });
 });
