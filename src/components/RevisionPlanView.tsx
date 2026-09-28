@@ -13,6 +13,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { ArrowRight, CalendarDays, Check, Clock, ListChecks, Printer } from 'lucide-react';
 import { ARCHETYPE_BY_ID } from '../data/bacArchetypes';
+import { readPlanSettings, writePlanSettings } from '../data/planSettings';
 import {
   PRESETS,
   TASK_LABEL_AR,
@@ -53,8 +54,11 @@ function chargerFait(cle: string): Set<string> {
 }
 
 export default function RevisionPlanView({ onBackToHome, onOpenRedaction }: RevisionPlanViewProps) {
-  const [daysLeft, setDaysLeft] = useState(14);
-  const [minutesPerDay, setMinutesPerDay] = useState(90);
+  // Le réglage est partagé avec la carte d'accueil : elle doit montrer LE plan
+  // de l'élève, pas un plan par défaut.
+  const reglage = readPlanSettings();
+  const [daysLeft, setDaysLeft] = useState(reglage.daysLeft);
+  const [minutesPerDay, setMinutesPerDay] = useState(reglage.minutesPerDay);
   const [fait, setFait] = useState<Set<string>>(() => chargerFait(cleStockage(14, 90)));
   // Beaucoup d'élèves travaillent sur papier : la feuille du jour est
   // imprimable, avec les cases à cocher et les pièges des montages programmés.
@@ -67,6 +71,10 @@ export default function RevisionPlanView({ onBackToHome, onOpenRedaction }: Revi
   useEffect(() => {
     setFait(chargerFait(cle));
   }, [cle]);
+
+  useEffect(() => {
+    writePlanSettings({ daysLeft, minutesPerDay });
+  }, [daysLeft, minutesPerDay]);
 
   const basculer = (id: string) => {
     setFait((prec) => {

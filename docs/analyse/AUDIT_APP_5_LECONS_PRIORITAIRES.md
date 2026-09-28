@@ -1823,3 +1823,46 @@ tout le reste de l'application. La feuille se referme sans quitter le plan.
 Feuille du jour imprimable · contrôles de build isolés · suite unitaire
 **1631 verts / 4 skipped / 0 rouge** (125 fichiers) · `npm run test:build`
 4 verts.
+
+---
+
+## Sprint 29 — le plan remonte sur l'accueil
+
+### Le défaut de placement
+
+Quatorze sprints de travail — plan, montages, consignes, atelier, relecture —
+vivaient **derrière deux clics** : التمارين والتدريب, puis la carte voulue. Or
+un élève qui ouvre l'app tombe sur son tableau de bord. S'il n'y voit pas sa
+journée, il ne la fera pas : la qualité d'un plan ne compense jamais son
+absence à l'écran d'accueil.
+
+### « برنامج اليوم »
+
+Une carte en tête du tableau de bord affiche : les jours restants, le temps du
+jour, la progression (« أنجزت 2 من 9 »), et **les trois premières tâches non
+encore cochées**, puis « و 4 مهام أخرى اليوم ». Un clic ouvre le plan complet.
+Quand tout est coché, la carte le dit et ne liste plus rien.
+
+La carte ne duplique aucune logique : le moteur du plan étant déterministe,
+elle reconstruit le même plan à partir du réglage de l'élève et lit les cases
+déjà cochées.
+
+### Le réglage devient une donnée partagée
+
+Jusqu'ici, « 14 jours × 90 minutes » n'existait que dans l'état local de la vue
+du plan : l'accueil aurait affiché le plan de quelqu'un d'autre.
+`src/data/planSettings.ts` en fait une donnée partagée, avec ce qu'il faut de
+prudence : bornes appliquées à la lecture **et** à l'écriture (1-60 jours,
+20-240 minutes), repli sur le défaut si le contenu est corrompu ou partiel,
+stockage refusé sans exception.
+
+### Tests
+
+`planSettings.test.ts` (5) et `TodayCard.test.tsx` (7) : réglage respecté,
+valeurs aberrantes bornées, tâche cochée retirée de la carte, félicitations
+seulement quand tout est fait, ouverture du plan au clic.
+
+### Compteurs après sprint 29
+
+Accueil → journée → plan → atelier, sans détour · suite unitaire
+**1643 verts / 4 skipped / 0 rouge** (127 fichiers).
