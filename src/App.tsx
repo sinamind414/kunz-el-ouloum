@@ -50,6 +50,7 @@ import { MIFTAH_NAME_OFFICIAL_AR } from './data/miftahSpec';
 import { AR_LATN } from './utils/latinDigits';
 
 import SplashView from './components/SplashView';
+import ChunkErrorBoundary from './components/ChunkErrorBoundary';
 
 // ─────────────────────── Chargement différé des vues ───────────────────────
 // Sprint 30 : le bundle principal pesait 3,97 Mo (964 Ko gzip). Toutes les
@@ -794,6 +795,7 @@ export default function App() {
             >
               {/* Suspense enveloppe l'ensemble du canevas : une seule frontière
                   suffit, puisqu'un seul onglet est monté à la fois. */}
+              <ChunkErrorBoundary>
               <Suspense fallback={<VueEnChargement />}>
               {currentTab === 'home' && (
                 <DashboardView 
@@ -906,6 +908,7 @@ export default function App() {
                 <SchemaDrillView onBackToHome={() => setCurrentTab('training')} />
               )}
               </Suspense>
+              </ChunkErrorBoundary>
             </motion.div>
           </AnimatePresence>
         </main>

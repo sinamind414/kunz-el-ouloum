@@ -2028,3 +2028,60 @@ couleur.**
 
 Suite unitaire **1649 verts / 4 skipped / 0 échec** (128 fichiers) ; contrôles
 post-build **8 verts** (4 chunks de leçons + 4 de budget).
+
+---
+
+## Sprint 33 — la régression hors ligne que le découpage avait créée
+
+### Le défaut, invisible tant qu'on teste avec du réseau
+
+L'application embarque un service worker soigné : shell précaché, leçons HTML,
+schémas en arrière-plan selon la qualité du réseau. Il découvrait les
+ressources du build **en lisant `index.html`**.
+
+Or depuis les sprints 30-32, `index.html` ne référence plus qu'**un seul**
+fichier : le bundle d'entrée. Tout le reste — leçons, annales, statistiques,
+bibliothèque, atelier — est chargé dynamiquement. Conséquence : ces vues
+n'étaient **plus précachées**. Un élève hors ligne qui ouvrait un onglet non
+encore visité tombait sur un **écran blanc permanent** : l'import échoue, et
+React laisse le `Suspense` en attente indéfiniment.
+
+Le gain de performance des trois sprints précédents avait donc un prix caché,
+payé exactement par le public le plus fragile : celui qui a une connexion
+intermittente.
+
+### Correction en trois points
+
+1. **Manifeste d'assets.** Un plugin Vite émet `dist/assets-manifest.json` :
+   la liste de tous les JS et CSS produits (88 fichiers). C'est la source de
+   vérité que `index.html` ne peut plus fournir.
+2. **Service worker.** Il lit ce manifeste et précache les chunks en
+   arrière-plan, après activation. Sur réseau contraint (2G, `saveData`), il
+   précache **les chunks de code quand même** et renonce seulement aux 8 Mo de
+   schémas : mieux vaut une app complète sans images qu'une app trouée.
+3. **Filet d'interface.** `ChunkErrorBoundary` transforme l'échec d'import en
+   message actionnable — « تعذّر تحميل هذا القسم … الأقسام التي فتحتها من قبل
+   تبقى متاحة دون اتصال » — avec un bouton « أعد المحاولة » qui remonte la vue
+   sans recharger la page. Les erreurs qui **ne** viennent pas d'un chargement
+   affichent leur vrai message : cette frontière n'est pas un cache-misère.
+
+### Tests
+
+- `ChunkErrorBoundary.test.tsx` (7) : reconnaissance des formulations d'échec
+  des différents navigateurs, non-confusion avec une erreur applicative,
+  réessai sans rechargement ;
+- `src/build/offlineAssets.test.ts` (5, post-build) : le manifeste existe,
+  **liste exactement** les fichiers émis, contient les vues absentes de
+  `index.html`, et le service worker le consomme réellement.
+
+### Incident de synchronisation (4ᵉ occurrence)
+
+`bundleBudget.test.ts` avait de nouveau disparu de la copie de travail :
+`npm run test:build` annonçait **9 tests au lieu de 13**, tout en étant vert.
+D'où la règle que j'applique désormais à chaque sprint : **lire le décompte,
+pas la couleur**. Fichier restauré depuis la branche distante.
+
+### Compteurs après sprint 33
+
+Suite unitaire **1656 verts / 4 skipped / 0 échec** (129 fichiers) ; contrôles
+post-build **13 verts** (4 chunks + 4 budget + 5 hors ligne).

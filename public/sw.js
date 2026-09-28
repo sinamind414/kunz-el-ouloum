@@ -54,6 +54,25 @@ async function collectBuildAssets() {
   }
 }
 
+/**
+ * Chunks JS/CSS du build, listés par `dist/assets-manifest.json` (plugin Vite).
+ *
+ * Depuis le découpage en imports dynamiques, `index.html` ne référence plus
+ * que le bundle d'entrée : sans cette liste, un élève hors ligne obtenait un
+ * écran de chargement infini dès qu'il ouvrait une vue non encore visitée.
+ */
+async function collectChunkAssets() {
+  try {
+    const response = await fetch('/assets-manifest.json', { cache: 'no-cache' });
+    if (!response.ok) return [];
+    const payload = await response.json();
+    if (!payload || !Array.isArray(payload.assets)) return [];
+    return payload.assets.filter((url) => typeof url === 'string' && url.startsWith('/assets/'));
+  } catch {
+    return [];
+  }
+}
+
 async function collectSchemaAssets() {
   try {
     const response = await fetch('/assets/images/schemas/manifest.json', { cache: 'no-cache' });
@@ -93,7 +112,7 @@ async function precacheShell() {
  * par staleWhileRevalidate au fil de l'utilisation.
  */
 async function lazySchemaPrecache() {
-  const assets = await collectSchemaAssets();
+  const assets = [...(await collectChunkAssets()), ...(await collectSchemaAssets())];
   if (assets.length === 0) return;
   const cache = await caches.open(SHELL_CACHE);
   const BATCH = 8;
@@ -180,7 +199,21 @@ self.addEventListener('activate', (event) => {
     try {
       const conn = navigator.connection;
       const fastEnough = !conn || (conn.effectiveType === '4g' || (conn.effectiveType === '3g' && !conn.saveData));
-      if (fastEnough) await lazySchemaPrecache();
+      if (fastEnough) {
+        await lazySchemaPrecache();
+      } else {
+        // Réseau contraint : on précache au moins les chunks de code (quelques
+        // centaines de Ko), sans les schémas (8 Mo) — sinon les vues chargées
+        // dynamiquement restent inaccessibles hors ligne.
+        const cache = await caches.open(SHELL_CACHE);
+        for (const url of await collectChunkAssets()) {
+          try {
+            if (!(await cache.match(url))) await cache.add(new Request(url, { cache: 'reload' }));
+          } catch {
+            // best effort
+          }
+        }
+      }
     } catch {
       // best effort
     }
