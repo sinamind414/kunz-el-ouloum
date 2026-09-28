@@ -1,55 +1,73 @@
-// bundleBudget.test.ts — budget de poids du bundle initial (sprint 30).
+// bundleBudget.test.ts — budget de poids du bundle initial (sprints 30-31).
 //
-// Contexte : avant ce sprint, `index-*.js` pesait 3,97 Mo (964 Ko gzip) parce
-// que toutes les vues étaient importées statiquement. Sur une connexion 3G —
-// le cas courant du public visé — c'est plusieurs dizaines de secondes avant
-// le premier écran. Le passage des vues secondaires en import dynamique l'a
-// ramené à ~1,46 Mo (336 Ko gzip).
+// Historique chiffré :
+//   · avant le sprint 30 : entrée = 3 968 Ko (964 Ko gzip), toutes les vues
+//     importées statiquement ;
+//   · sprint 30 (React.lazy sur 21 vues)        → 1 456 Ko ;
+//   · sprint 31 (corpus QCM en import différé)  →   908 Ko (247 Ko gzip).
 //
-// Ce test empêche la dérive : il ne juge pas la beauté du découpage, il fixe
-// un plafond. Si un `import` statique d'une grosse vue revient dans App.tsx,
-// le plafond saute et le test le dit, avec le chiffre.
-//
-// Il s'exécute UNIQUEMENT après un build (`npm run test:build`).
+// Ce test ne juge pas l'élégance du découpage : il fixe un plafond et nomme le
+// coupable quand il saute. L'entrée est lue dans `dist/index.html` et non
+// devinée par un motif de nom — depuis le sprint 31, plusieurs chunks
+// s'appellent `index-*.js` (celui de l'app et celui de `src/data/index.ts`),
+// et confondre les deux rendrait le test faux sans le rendre rouge.
 
-import { readdirSync, statSync } from 'node:fs';
+import { readFileSync, readdirSync, statSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { describe, expect, it } from 'vitest';
 
-const DIST_ASSETS = resolve(process.cwd(), 'dist', 'assets');
+const DIST = resolve(process.cwd(), 'dist');
+const DIST_ASSETS = resolve(DIST, 'assets');
 
-/** Plafond du bundle d'entrée, en kilo-octets. Mesuré à ~1 456 Ko. */
-const BUDGET_INDEX_KO = 1900;
+/** Plafond du bundle d'entrée, en kilo-octets (mesuré à ~908 Ko). */
+const BUDGET_ENTREE_KO = 1100;
+/** Plafond d'un chunk à la demande (mesuré : LessonsView ~996 Ko). */
+const BUDGET_CHUNK_KO = 1100;
 
-function tailleKo(fichier: string): number {
-  return Math.round(statSync(resolve(DIST_ASSETS, fichier)).size / 1024);
+function tailleKo(chemin: string): number {
+  return Math.round(statSync(chemin).size / 1024);
+}
+
+/** Fichier d'entrée réellement chargé par la page. */
+function fichierEntree(): string {
+  const html = readFileSync(resolve(DIST, 'index.html'), 'utf8');
+  const m = html.match(/src="[^"]*assets\/([^"]+\.js)"/);
+  expect(m, 'aucun script d’entrée trouvé dans dist/index.html').toBeTruthy();
+  return m![1];
 }
 
 describe('Budget du bundle initial', () => {
-  const fichiers = readdirSync(DIST_ASSETS);
-
-  it('garde le bundle d’entrée sous le plafond', () => {
-    const index = fichiers.find((f) => /^index-.*\.js$/.test(f));
-    expect(index, 'bundle index-*.js introuvable').toBeDefined();
-    const taille = tailleKo(index!);
-    expect(taille, `index-*.js pèse ${taille} Ko (plafond ${BUDGET_INDEX_KO} Ko)`).toBeLessThanOrEqual(
-      BUDGET_INDEX_KO,
+  it('garde l’entrée sous le plafond', () => {
+    const entree = fichierEntree();
+    const ko = tailleKo(resolve(DIST_ASSETS, entree));
+    expect(ko, `${entree} pèse ${ko} Ko (plafond ${BUDGET_ENTREE_KO} Ko)`).toBeLessThanOrEqual(
+      BUDGET_ENTREE_KO,
     );
   });
 
-  it('sort bien les vues lourdes du bundle d’entrée', () => {
+  it('sort les vues lourdes de l’entrée', () => {
+    const fichiers = readdirSync(DIST_ASSETS);
     for (const vue of ['MethodologyCompilerView', 'StatsView', 'LessonsView']) {
       const chunk = fichiers.find((f) => f.startsWith(`${vue}-`) && f.endsWith('.js'));
       expect(chunk, `${vue} devrait être un chunk séparé (import dynamique)`).toBeDefined();
     }
   });
 
-  it('ne laisse aucun chunk unique dépasser le bundle d’entrée', () => {
-    const index = fichiers.find((f) => /^index-.*\.js$/.test(f))!;
-    const plusGros = fichiers
+  it('ne charge pas le corpus QCM avec l’entrée', () => {
+    const entree = readFileSync(resolve(DIST_ASSETS, fichierEntree()), 'utf8');
+    // Marqueur présent dans les explications du corpus (quizCorpus.ts) et nulle
+    // part ailleurs dans le code d'amorçage.
+    expect(
+      entree.includes('ARN بوليميراز يفك التفاف'),
+      'le corpus QCM est reparti dans le bundle d’entrée',
+    ).toBe(false);
+  });
+
+  it('garde chaque chunk à la demande sous son plafond', () => {
+    const trop = readdirSync(DIST_ASSETS)
       .filter((f) => f.endsWith('.js'))
-      .map((f) => ({ f, ko: tailleKo(f) }))
-      .sort((a, b) => b.ko - a.ko)[0];
-    expect(plusGros.f, `${plusGros.f} (${plusGros.ko} Ko) dépasse le bundle d'entrée`).toBe(index);
+      .map((f) => ({ f, ko: tailleKo(resolve(DIST_ASSETS, f)) }))
+      .filter((x) => x.ko > BUDGET_CHUNK_KO);
+    expect(trop.map((x) => `${x.f} (${x.ko} Ko)`)).toEqual([]);
   });
 });

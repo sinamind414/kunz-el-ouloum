@@ -24,7 +24,8 @@ import {
 import type { LucideIcon } from 'lucide-react';
 
 import { Unit, UserProgress, Flashcard, QuizQuestion } from './types';
-import { INITIAL_UNITS, SVT_QUIZ_QUESTIONS, SVT_FLASHCARDS } from './data';
+import { INITIAL_UNITS } from './unitCatalog';
+import { loadCorpus, peekCorpus, prefetchCorpusWhenIdle } from './data/corpusLoader';
 import { FILL_BLANK_QUESTIONS } from './data/fillBlanks';
 
 /** Identité élève persistée entre les sessions (le JWT vit dans api.ts). */
@@ -199,7 +200,9 @@ export default function App() {
 
   // Core progression state (persisted to localStorage)
   const [units, setUnits] = useState<Unit[]>(INITIAL_UNITS);
-  const [flashcards, setFlashcards] = useState<Flashcard[]>(SVT_FLASHCARDS);
+  // Le corpus (549 QCM + flashcards) arrive en différé — voir data/corpusLoader.ts.
+  const [flashcards, setFlashcards] = useState<Flashcard[]>([]);
+  const [corpusQuestions, setCorpusQuestions] = useState<QuizQuestion[]>([]);
   // Seed 100 % honnête : premier lancement = zéro réel.
   // (plus aucune statistique de démonstration — tout s'écrit avec l'activité réelle)
   const [progress, setProgress] = useState<UserProgress>({
@@ -262,12 +265,18 @@ export default function App() {
     const healedFlashcards = savedFlashcards ? healSavedFlashcards(savedFlashcards) : null;
     if (healedFlashcards) {
       setFlashcards(healedFlashcards);
-    } else if (savedFlashcards) {
-      setFlashcards(SVT_FLASHCARDS);
-      try {
-        localStorage.setItem('svt_flashcards', JSON.stringify(SVT_FLASHCARDS));
-      } catch { /* quota — sera retenté au prochain save */ }
     }
+    // Le jeu de référence n'est chargé que si le stock local est absent ou
+    // corrompu : dans ce cas seulement, on attend le corpus.
+    if (!healedFlashcards) {
+      void loadCorpus().then(({ flashcards: reference }) => {
+        setFlashcards(reference);
+        try {
+          localStorage.setItem('svt_flashcards', JSON.stringify(reference));
+        } catch { /* quota — sera retenté au prochain save */ }
+      });
+    }
+    prefetchCorpusWhenIdle();
     if (savedProgress) {
       const parsed: UserProgress = savedProgress;
       const today = new Date().toISOString().split('T')[0];
@@ -381,6 +390,10 @@ export default function App() {
     setUnits(updatedUnits);
     saveToLocalStorage(updatedUnits, flashcards, progress);
     updateLastStudyTime();
+
+    // Le corpus peut ne pas être encore là (chargement différé) : on le
+    // demande AVANT d'ouvrir le quiz, et l'écran s'actualise dès son arrivée.
+    void loadCorpus().then(({ questions }) => setCorpusQuestions(questions));
 
     // Show portal for Unit 1 instead of launching quiz directly
     if (unitId === 1) {
@@ -569,8 +582,9 @@ export default function App() {
         kind: 'fillBlank',
         acceptedAnswers: q.microTest.acceptedAnswers,
       }));
+    const corpus = corpusQuestions.length > 0 ? corpusQuestions : (peekCorpus()?.questions ?? []);
     const questions = [
-      ...SVT_QUIZ_QUESTIONS.filter(q => q.unitId === activeQuizUnitId),
+      ...corpus.filter(q => q.unitId === activeQuizUnitId),
       ...fillBlankQuestions,
     ];
 
@@ -578,7 +592,7 @@ export default function App() {
       <QuizView 
         unitId={activeQuizUnitId}
         unitTitle={activeUnit ? activeUnit.title : ''}
-        questions={questions.length > 0 ? questions : SVT_QUIZ_QUESTIONS}
+        questions={questions.length > 0 ? questions : corpus}
         onClose={() => setActiveQuizUnitId(null)}
         onQuizComplete={handleQuizComplete}
       />

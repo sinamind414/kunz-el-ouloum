@@ -2,7 +2,7 @@ import React, { useState, useMemo } from 'react';
 import TodayCard from './TodayCard';
 import { Trophy, Flame, Play, Lock, ChevronRight, Compass, Target, Hourglass, AlertTriangle, Dices, HelpCircle, Moon, Share2, Network, Sparkles } from 'lucide-react';
 import { Unit, UserProgress, DailyGoalConfig } from '../types';
-import { LOGO_URL } from '../data';
+import { LOGO_URL } from '../data/brandAssets';
 // Nom officiel figé (docs/MARQUE.md §3) — source unique miftahSpec : zéro littéral rendu ici.
 import { MIFTAH_NAME_OFFICIAL_AR } from '../data/miftahSpec';
 import DailyGoalWidget from './DailyGoalWidget';

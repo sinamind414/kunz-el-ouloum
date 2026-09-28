@@ -1920,3 +1920,62 @@ régression malgré la conversion de 21 imports. Contrôles post-build : 7 verts
 
 Bundle d'entrée **−65 % en gzip** · budget verrouillé par test · suite
 unitaire 1643 verts.
+
+---
+
+## Sprint 31 — 908 Ko : une constante de six lettres tenait tout le corpus en otage
+
+### Suite directe du sprint 30
+
+Après le découpage des vues, l'entrée pesait encore 1 456 Ko. Une part
+importante venait d'un seul fichier : `src/quizCorpus.ts` — **596 Ko de
+source**, les 549 QCM avec leurs explications complètes. `App.tsx` l'importait
+statiquement pour initialiser un état : **tout élève téléchargeait les 549
+questions avant de voir son tableau de bord**, y compris celui qui venait lire
+une leçon.
+
+### Le corpus passe en chargement différé
+
+`src/data/corpusLoader.ts` isole l'accès derrière un import dynamique, avec un
+cache de module et une promesse partagée (deux composants qui le demandent en
+même temps ne déclenchent pas deux téléchargements). Trois règles :
+
+- les flashcards de référence ne sont chargées **que si** le stock local est
+  absent ou corrompu — sinon, aucun téléchargement ;
+- le quiz demande le corpus **avant** de s'ouvrir, et se peuple à son arrivée ;
+- un **préchargement au repos** (`requestIdleCallback`, repli sur un délai)
+  fait que l'élève qui ouvrira un quiz dans trente secondes n'attend pas.
+
+### Le détail qui annulait tout
+
+Premier build après ce travail : **aucun gain**. La cause valait d'être
+trouvée : `SplashView` et `DashboardView` importaient `LOGO_URL` depuis
+`data/index.ts`… qui importe `quizCorpus.ts`. **Une constante de six lettres
+suffisait à ramener 596 Ko dans le bundle d'entrée** et à annuler tout le
+chargement différé.
+
+Les URLs de marque vivent désormais dans `src/data/brandAssets.ts`, module sans
+aucune dépendance ; `data/index.ts` les ré-exporte pour ne rien casser ailleurs.
+
+### Résultat cumulé
+
+| Mesure | Sprint 29 | Sprint 30 | **Sprint 31** |
+|---|---|---|---|
+| entrée | 3 968 Ko | 1 456 Ko | **908 Ko** |
+| gzip | 964 Ko | 336 Ko | **247 Ko** |
+
+**−77 % en brut, −74 % en gzip** par rapport au point de départ.
+
+### Le garde-fou, renforcé
+
+Le test de budget lisait l'entrée par le motif `index-*.js`. Depuis ce sprint,
+**deux** chunks portent ce nom (celui de l'app et celui de `src/data/index.ts`) :
+le test aurait pu mesurer le mauvais fichier sans jamais rougir. Il lit
+maintenant l'entrée dans `dist/index.html`, et vérifie en plus qu'une chaîne
+propre au corpus **n'y figure pas** — si un import statique le ramène, le test
+le dit.
+
+### Vérifications
+
+Suite unitaire **1643 verts / 4 skipped / 0 échec** (127 fichiers) + 6 tests du
+chargeur ; contrôles post-build **8 verts**.
