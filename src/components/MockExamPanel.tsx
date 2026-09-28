@@ -14,6 +14,16 @@ import { Clock, Dices, FileText, Pause, Play, Printer, RotateCcw } from 'lucide-
 import type { BacExerciseIdea } from '../data/bacSessionIndex';
 import { composeMockExam, numeroDuJour } from '../data/mockExam';
 import {
+  changerSujet,
+  demarrer,
+  mettreEnPause,
+  minutesEcoulees,
+  readExamSession,
+  remettreAZero,
+  writeExamSession,
+  type ExamSession,
+} from '../data/examSession';
+import {
   budgetParExercice,
   exerciceAttendu,
   formatDuree,
@@ -37,22 +47,39 @@ const PHASE_LABEL: Record<string, string> = {
 };
 
 export default function MockExamPanel({ onTrain }: Props) {
-  const [numero, setNumero] = useState(() => numeroDuJour());
+  // La session (sujet + chronomètre) est persistée et lue sur l'horloge :
+  // une mise en arrière-plan ou un rechargement ne fausse plus le temps.
+  const [session, setSession] = useState<ExamSession>(() => {
+    const reprise = readExamSession();
+    return reprise.cumulMinutes > 0 || reprise.demarreeA
+      ? reprise
+      : { ...reprise, numero: numeroDuJour() };
+  });
+  const [, forcerRendu] = useState(0);
+
+  const majSession = (suivante: ExamSession) => {
+    writeExamSession(suivante);
+    setSession(suivante);
+  };
+
+  const numero = session.numero;
   const sujet = composeMockExam(numero);
 
   // Chronomètre d'épreuve : la perte de points la plus fréquente ne vient pas
   // des connaissances mais du temps — exercice 1 traité trop longuement,
   // exercice 3 (08 points) bâclé.
-  const [enMarche, setEnMarche] = useState(false);
-  const [ecoulee, setEcoulee] = useState(0);
+  const enMarche = session.demarreeA !== null;
+  const ecoulee = minutesEcoulees(session);
   const budgets = useMemo(
     () => budgetParExercice(sujet.exercices.map((e) => e.points), sujet.dureeMinutes),
     [sujet],
   );
 
+  // Le tick ne COMPTE pas le temps : il rafraîchit seulement l'affichage,
+  // que la valeur soit calculée depuis l'horloge.
   useEffect(() => {
     if (!enMarche) return undefined;
-    const id = setInterval(() => setEcoulee((m) => m + 1), 60_000);
+    const id = setInterval(() => forcerRendu((n) => n + 1), 15_000);
     return () => clearInterval(id);
   }, [enMarche]);
 
@@ -87,7 +114,7 @@ export default function MockExamPanel({ onTrain }: Props) {
         <div className="sans-impression flex flex-row-reverse gap-2">
           <button
             data-testid="mock-suivant"
-            onClick={() => setNumero((n) => n + 1)}
+            onClick={() => majSession(changerSujet(session, numero + 1))}
             className="flex flex-row-reverse items-center gap-1.5 px-3 py-1.5 rounded-2xl bg-[#006d37] text-white text-[11px] font-bold cursor-pointer"
           >
             <span>موضوع آخر</span>
@@ -125,7 +152,7 @@ export default function MockExamPanel({ onTrain }: Props) {
           <div className="flex flex-row-reverse gap-1.5">
             <button
               data-testid="chrono-basculer"
-              onClick={() => setEnMarche((v) => !v)}
+              onClick={() => majSession(enMarche ? mettreEnPause(session) : demarrer(session))}
               className="flex flex-row-reverse items-center gap-1 px-3 py-1 rounded-xl bg-[#006d37] text-white text-[11px] font-bold cursor-pointer"
             >
               {enMarche ? <Pause className="w-3.5 h-3.5" /> : <Play className="w-3.5 h-3.5" />}
@@ -133,10 +160,7 @@ export default function MockExamPanel({ onTrain }: Props) {
             </button>
             <button
               data-testid="chrono-remise"
-              onClick={() => {
-                setEnMarche(false);
-                setEcoulee(0);
-              }}
+              onClick={() => majSession(remettreAZero(session))}
               className="flex items-center px-2 py-1 rounded-xl bg-[#f3f4f5] dark:bg-[#1f2622] text-[#506072] dark:text-gray-300 cursor-pointer"
             >
               <RotateCcw className="w-3.5 h-3.5" />

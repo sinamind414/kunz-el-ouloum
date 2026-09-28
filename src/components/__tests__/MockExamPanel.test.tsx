@@ -2,12 +2,14 @@
 
 import { act, cleanup, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import MockExamPanel from '../MockExamPanel';
 import { composeMockExam, numeroDuJour } from '../../data/mockExam';
 import { budgetParExercice } from '../../data/examTimer';
 
 afterEach(cleanup);
+// La session d'épreuve est persistée (sprint 44) : chaque test repart à neuf.
+beforeEach(() => localStorage.clear());
 
 describe('panneau du sujet blanc', () => {
   it('ouvre sur le sujet du jour, identique pour toute la classe', () => {
@@ -127,6 +129,59 @@ describe('sujet blanc — chronomètre d’épreuve (sprint 43)', () => {
     expect(screen.getByTestId('chrono-temps').textContent).toBe('00:05');
     act(() => {
       screen.getByTestId('chrono-remise').click();
+    });
+    expect(screen.getByTestId('chrono-temps').textContent).toBe('00:00');
+    vi.useRealTimers();
+  });
+});
+
+
+describe('sujet blanc — la session survit (sprint 44)', () => {
+  it('reprend le chronomètre après un rechargement, temps compris', () => {
+    vi.useFakeTimers();
+    const { unmount } = render(<MockExamPanel onTrain={() => {}} />);
+    act(() => {
+      screen.getByTestId('chrono-basculer').click();
+    });
+    act(() => {
+      vi.advanceTimersByTime(40 * 60_000);
+    });
+    expect(screen.getByTestId('chrono-temps').textContent).toBe('00:40');
+    unmount();
+
+    // Rechargement : nouveau montage, même session.
+    render(<MockExamPanel onTrain={() => {}} />);
+    expect(screen.getByTestId('chrono-temps').textContent).toBe('00:40');
+    vi.useRealTimers();
+  });
+
+  it('compte le temps passé en arrière-plan, sans aucun tick', () => {
+    vi.useFakeTimers();
+    render(<MockExamPanel onTrain={() => {}} />);
+    act(() => {
+      screen.getByTestId('chrono-basculer').click();
+    });
+    // On avance l'horloge SANS laisser tourner les minuteurs : c'est ce que
+    // fait un navigateur mobile sur un onglet en arrière-plan.
+    act(() => {
+      vi.setSystemTime(Date.now() + 25 * 60_000);
+      vi.advanceTimersByTime(15_000);
+    });
+    expect(screen.getByTestId('chrono-temps').textContent).toBe('00:25');
+    vi.useRealTimers();
+  });
+
+  it('remet le chronomètre à zéro quand on change de sujet', () => {
+    vi.useFakeTimers();
+    render(<MockExamPanel onTrain={() => {}} />);
+    act(() => {
+      screen.getByTestId('chrono-basculer').click();
+    });
+    act(() => {
+      vi.advanceTimersByTime(30 * 60_000);
+    });
+    act(() => {
+      screen.getByTestId('mock-suivant').click();
     });
     expect(screen.getByTestId('chrono-temps').textContent).toBe('00:00');
     vi.useRealTimers();

@@ -2614,3 +2614,59 @@ durée réduite pour un devoir de 2 h, phases, retard, format `00:00`) ;
 par minute, changement de phase, retard affiché, pause et remise à zéro).
 
 Suite unitaire **1718 verts / 4 skipped / 0 échec** (135 fichiers).
+
+---
+
+## Sprint 44 — le chronomètre comptait les ticks : deux bugs corrigés
+
+### Le défaut, introduit au sprint précédent
+
+Le chronomètre du sprint 43 incrémentait un compteur à chaque `setInterval`.
+Deux conséquences, invisibles au développement et systématiques chez l'élève :
+
+1. **les navigateurs mobiles ralentissent les onglets en arrière-plan** —
+   souvent un tick par minute au mieux, parfois aucun. L'élève qui consulte
+   autre chose vingt minutes retrouvait un chronomètre **en retard**, donc un
+   budget faux et des alertes de retard silencieuses ;
+2. **un rechargement remettait tout à zéro**, au milieu d'une épreuve de 4 h 30.
+
+### Le correctif : on ne compte plus le temps, on le lit
+
+`src/data/examSession.ts` mémorise un **horodatage de départ** et un cumul ; le
+temps écoulé se déduit de l'horloge. Les ticks ne servent plus qu'à rafraîchir
+l'affichage (toutes les 15 secondes). La session est persistée : sujet en cours,
+cumul, instant de reprise.
+
+Décisions prises au passage :
+
+- **changer de sujet remet le chronomètre à zéro** — sinon le budget par
+  exercice ment sur un sujet qu'on vient d'ouvrir ;
+- **une horloge qui recule** (changement d'heure, correction NTP) ne produit
+  jamais de durée négative ;
+- double démarrage et double pause sont **idempotents** : un double-clic ne
+  crée pas de temps.
+
+### Les tests qui prouvent la correction
+
+Deux d'entre eux valaient à eux seuls le sprint :
+
+```
+it('compte le temps passé en arrière-plan, sans aucun tick', …)
+  → vi.setSystemTime(+25 min) puis un seul tick de 15 s ⇒ affiche 00:25
+
+it('reprend le chronomètre après un rechargement, temps compris', …)
+  → 40 minutes, unmount, remontage ⇒ affiche toujours 00:40
+```
+
+C'est exactement ce que l'ancienne implémentation ne pouvait pas faire, et ce
+qu'aucun test du sprint 43 ne vérifiait : mes tests avançaient les minuteurs,
+donc ils validaient un compteur qui, en vrai, ne tournait pas.
+
+### Vérifications
+
+`examSession.test.ts` — 12 tests (arrière-plan, pauses cumulées, idempotence,
+horloge qui recule, persistance, contenu corrompu, stockage refusé, remise à
+zéro, changement de sujet) ; `MockExamPanel.test.tsx` — 3 tests d'intégration
+supplémentaires.
+
+Suite unitaire **1733 verts / 4 skipped / 0 échec** (136 fichiers).
