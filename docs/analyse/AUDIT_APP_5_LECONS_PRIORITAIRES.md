@@ -2358,3 +2358,53 @@ baccalauréat ; il doit pouvoir être contesté sur pièces.
 Suite unitaire **1669 verts / 4 skipped / 0 échec** (130 fichiers), dont 4 tests
 neufs : repli par défaut, présence des deux poids pour les 11 unités, ordre
 identique à celui du moteur, mention de l'écart.
+
+---
+
+## Sprint 39 — « تقرير للأستاذ » : sortir la production de l'application
+
+### Le besoin, propre au contexte
+
+En Algérie, le professeur demande des **preuves de travail** — un cahier, des
+copies. Un élève qui révise avec une application n'a rien à montrer : des
+écrans ne se posent pas sur un bureau. Toute la production accumulée depuis le
+sprint 24 (réponses rédigées, profil d'erreurs) restait enfermée dans son
+téléphone.
+
+### Ce que la feuille contient
+
+Une page A4, imprimable depuis « ما كتبته أنا » :
+
+- **en-tête** : date, jours restants avant l'examen ;
+- **chiffres** : réponses rédigées, exercices couverts, mots écrits, exigences
+  de forme satisfaites ;
+- **unités travaillées**, avec le nombre de réponses par unité ;
+- **ce qui manque le plus souvent** (profil d'erreurs, en *échecs sur
+  occasions*) ;
+- **le détail de chaque réponse** : session officielle, consigne rédigée,
+  longueur, état de forme.
+
+### La ligne la plus importante de la feuille
+
+> ملاحظة للأستاذ(ة): هذا التقرير لا يحمل أي علامة. « الشكل » يعني احترام بنية
+> التعليمة… أما صحة المضمون العلمي فتبقى لتقديركم.
+
+Un document qui sort de l'app et arrive entre les mains d'un correcteur doit
+dire **ce qu'il ne mesure pas**. Le contrôle de forme vérifie qu'une analyse
+contient des chiffres, qu'une explication contient un connecteur causal — il ne
+dit rien de la justesse scientifique. Laisser croire l'inverse aurait été le
+défaut le plus grave possible pour cet outil.
+
+### Détails de mise en œuvre
+
+Les chiffres sont **recalculés à l'affichage**, jamais stockés : une feuille
+imprimée correspond toujours à l'état réel des brouillons. Les boutons
+d'action portent la classe `sans-impression` — ils disparaissent du papier.
+
+### Vérifications
+
+`WritingReportSheet.test.tsx` — 6 tests : exactitude des chiffres face à
+`writingReport()`, présence de chaque réponse, unités nommées, profil affiché,
+**mention de l'absence de note**, impression et fermeture.
+
+Suite unitaire **1675 verts / 4 skipped / 0 échec** (131 fichiers).

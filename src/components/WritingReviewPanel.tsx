@@ -9,13 +9,16 @@
 
 import { AlertTriangle, FileText, RotateCcw } from 'lucide-react';
 import type { BacExerciseIdea } from '../data/bacSessionIndex';
+import { useState } from 'react';
 import { reviewDrafts, writingReport } from '../data/writingReview';
+import WritingReportSheet from './WritingReportSheet';
 
 interface Props {
   onOpen: (idea: BacExerciseIdea) => void;
 }
 
 export default function WritingReviewPanel({ onOpen }: Props) {
+  const [rapportVisible, setRapportVisible] = useState(false);
   const rapport = writingReport();
   const revues = reviewDrafts();
   if (rapport.reponses === 0) return null;
@@ -26,10 +29,21 @@ export default function WritingReviewPanel({ onOpen }: Props) {
       dir="rtl"
       className="rounded-3xl p-4 bg-white dark:bg-[#141916] border border-[#006d37]/30 mb-4"
     >
-      <h2 className="flex flex-row-reverse items-center gap-2 text-sm font-black text-[#1f1c0b] dark:text-gray-100 mb-1">
-        <FileText className="w-4 h-4" />
-        ما كتبته أنا
-      </h2>
+      <div className="flex flex-row-reverse items-center justify-between gap-2 mb-1">
+        <h2 className="flex flex-row-reverse items-center gap-2 text-sm font-black text-[#1f1c0b] dark:text-gray-100">
+          <FileText className="w-4 h-4" />
+          ما كتبته أنا
+        </h2>
+        <button
+          data-testid="basculer-rapport"
+          onClick={() => setRapportVisible((v) => !v)}
+          className="text-[11px] font-bold px-3 py-1 rounded-xl bg-[#f3f4f5] dark:bg-[#1f2622] text-[#006d37] dark:text-[#2ecc71] cursor-pointer"
+        >
+          {rapportVisible ? 'إخفاء التقرير' : 'تقرير للأستاذ'}
+        </button>
+      </div>
+
+      {rapportVisible && <WritingReportSheet onClose={() => setRapportVisible(false)} />}
       <p data-testid="review-bilan" className="text-[12px] text-[#506072] dark:text-gray-400 text-right mb-3">
         {rapport.reponses} جواباً على {rapport.exercices} تمريناً · {rapport.motsEcrits} كلمة ·
         متطلبات الشكل المحقّقة: {rapport.satisfaits} / {rapport.total}
