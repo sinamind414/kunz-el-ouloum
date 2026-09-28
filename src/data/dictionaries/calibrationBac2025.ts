@@ -263,8 +263,21 @@ export function noterExerciceCalibre(
   // F1 : séparation points acquis / réserve manuelle. Les items sans détection
   // auto ne sont JAMAIS comptés comme zéro ni redistribués aux items auto :
   // ils forment la réserve à arbitrer par le correcteur (fourchette [A, A+U]).
+  //
+  // F1+ (2026-09-28) : sur les exercices à ventilation par partie, la réserve
+  // doit être exprimée sur l'ÉCHELLE OFFICIELLE (× officiel/registre de la
+  // partie de l'item), exactement comme la note — sinon la fourchette [A, A+U]
+  // sous-estime l'arbitrage humain (S1-Ex3 : le schéma vaut 0,5 registre mais
+  // 1,0 officiel, et la note plafonne à 6,36 sans que la fourchette n'affiche
+  // les 2,0 manquants).
   const reserveManuelle = Math.round(
-    verdicts.filter((v) => !v.auto).reduce((s, v) => s + v.points, 0) * 100,
+    verdicts
+      .filter((v) => !v.auto)
+      .reduce((s, v) => {
+        const p = pp?.partie[v.id];
+        const ratio = p && pp && pp.registre[p] > 0 ? pp.officiel[p] / pp.registre[p] : 1;
+        return s + v.points * ratio;
+      }, 0) * 100,
   ) / 100;
 
   // Diagnostic (pédagogique, jamais converti en points).

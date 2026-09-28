@@ -78,7 +78,7 @@ const ligne = (r: CopieResultat): string => {
     r.notesParExercice && r.attenduParExercice
       ? `  par Ex (moteur/attendu): ${r.notesParExercice.map((n, i) => `${n}/${r.attenduParExercice![i] ?? '?'}`).join(' · ')}`
       : '';
-  return `eleve_${String(r.numero).padStart(2, '0')}  ${ident.padEnd(8)} correcteur=${String(r.note).padStart(5)}  prof=${prof.padStart(5)}  écart=${ecart.padStart(5)}  couv=${r.couverture}${plaf}${flags ? '  ⛔' + flags : ''}${parEx}`;
+  return `eleve_${String(r.numero).padStart(2, '0')}  ${ident.padEnd(8)} correcteur=${String(r.note).padStart(5)} (réserve ${r.reserveManuelle ?? '—'})  prof=${prof.padStart(5)}  écart=${ecart.padStart(5)}  couv=${r.couverture}${plaf}${flags ? '  ⛔' + flags : ''}${parEx}`;
 };
 
 for (const r of resultats) console.log(ligne(r));
@@ -125,7 +125,15 @@ if (out) {
     ex: ([1, 2, 3] as const).map((e) => {
       const q = MEFTA_BAC_EXERCISES.find((x) => x.id === `bac2025-ex${e}`)!
         .questions.flatMap((x) => x.writeAr).join('\n');
-      return { e, note: Math.round(noterExerciceCalibre(q, s, e).points * 100) / 100 };
+      const n = noterExerciceCalibre(q, s, e);
+      // F3 : la note machine n'est qu'une BORNE — les items manuels (ex. schéma
+      // S1-Ex3) forment une réserve arbitrée par le correcteur. N'est plafonné
+      // STRUCTTURELLEMENT que ce que machine+humain ne peuvent pas atteindre.
+      return {
+        e,
+        note: Math.round(n.points * 100) / 100,
+        reserve: Math.round(n.pointsManuelsAArbitrer * 100) / 100,
+      };
     }),
   }));
   const md = [
@@ -142,10 +150,10 @@ if (out) {
     ``,
     `## Tableau des copies`,
     ``,
-    `| élève | groupe | correcteur | prof | écart | couverture | plafonds | sanctions fortes |`,
-    `|---|---|---|---|---|---|---|---|`,
+    `| élève | groupe | correcteur (auto) | réserve humaine | prof | écart | couverture | plafonds | sanctions fortes |`,
+    `|---|---|---|---|---|---|---|---|---|`,
     ...resultats.map((r) =>
-      `| ${r.numero} | ${r.mode === 'sujet-complet' ? `S${r.sujet} /20` : `S${r.sujet}-Ex${r.exercice}`} | ${r.note} | ${r.noteProf ?? '—'} | ${r.ecart ?? '—'} | ${r.couverture} | ${r.plafondsActifs.join(',') || '—'} | ${r.sanctionsForte.join(',') || '—'} |`
+      `| ${r.numero} | ${r.mode === 'sujet-complet' ? `S${r.sujet} /20` : `S${r.sujet}-Ex${r.exercice}`} | ${r.note} | ${r.reserveManuelle ?? '—'} | ${r.noteProf ?? '—'} | ${r.ecart ?? '—'} | ${r.couverture} | ${r.plafondsActifs.join(',') || '—'} | ${r.sanctionsForte.join(',') || '—'} |`
     ),
     ``,
     `## Fiabilité globale /20`,
@@ -183,22 +191,29 @@ if (out) {
     `> **Lecture du biais par tranche** : un biais positif sur les notes faibles`,
     `> et négatif sur les notes hautes = **compression de la plage** — le moteur`,
     `> surenote les copies faibles et sous-note les copies fortes. Sur les copies`,
-    `> fortes, l'écart vient principalement des **variantes de formulation non`,
-    `> reconnues** (levier F3) ; le plafond modèle ci-dessous montre si une cause`,
-    `> structurelle s'ajoute (levier F2).`,
+    `> fortes, l'écart vient (1) des **items manuels** dont le moteur délibérément`,
+    `> **ne crédite rien** et reporte la décision au correcteur (fourchette F1 —`,
+    `> depuis F3, 1,0 pt du S1-Ex3 = le schéma, structure non keyword) ; (2) des`,
+    `> **variantes de formulation non reconnues** (levier F3) ; (3) d'un plafond`,
+    `> structurel (levier F2, tableau ci-dessous). Les notes publiées ici sont les`,
+    `> notes AUTO seules : sur les copies fortes la fourchette [A ; A+U] couvre`,
+    `> l'essentiel de l'écart.`,
     ``,
     `## Plafond modèle (réponse modèle officielle)`,
     ``,
     `> Maximum que le moteur peut accorder sur une **réponse modèle parfaite**.`,
-    `> Un plafond inférieur au barème est une cause **structurelle** de sous-note :`,
-    `> aucun élève, même parfait, ne peut le dépasser.`,
+    `> « auto » = créditable par machine ; « réserve » = items manuels arbitrés par`,
+    `> le correcteur (fourchette [auto ; auto+réserve]). N'est un plafond`,
+    `> STRUCTUREL que si auto+réserve < barème : aucun élève, même parfait, ne`,
+    `> peut alors atteindre la note maximale.`,
     ``,
-    `| sujet | exercice | modèle | barème | plafond | sans plafond structurel |`,
-    `|---|---|---|---|---|---|`,
+    `| sujet | exercice | auto | réserve humaine | atteignable | barème | plafond structurel |`,
+    `|---|---|---|---|---|---|---|`,
     ...plafondModele.flatMap((p) =>
       p.ex.map((x) => {
         const max = [5, 7, 8][x.e - 1];
-        return `| ${p.sujet} | Ex${x.e} | ${x.note} | ${max} | ${Math.round((x.note / max) * 100)} % | ${ok(x.note >= max - 0.001)} |`;
+        const atteignable = Math.round((x.note + x.reserve) * 100) / 100;
+        return `| ${p.sujet} | Ex${x.e} | ${x.note} | ${x.reserve} | ${atteignable} | ${max} | ${ok(atteignable >= max - 0.001)} |`;
       }),
     ),
     ``,

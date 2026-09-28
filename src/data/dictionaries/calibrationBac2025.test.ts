@@ -19,6 +19,21 @@ import { normalizeAr } from '../../lib/validation/normalizeAr';
 import { MEFTA_BAC_EXERCISES } from '../meftahManhajia';
 import { PLAFONDS } from './integriteCopie';
 
+// Réserve humaine attendue : Σ des points des items MANUELS, ramenés à l'échelle
+// officielle via le ratio poidsPartie (F1+, 2026-09-28). Réimplémentation
+// indépendante de la formule moteur — doit rester byte-pour-byte égale.
+function reserveManuellePonderee(reg: ReturnType<typeof attendusDeGroupe>): number {
+  const pp = reg.poidsPartie;
+  const reserve = reg.items
+    .filter((i) => !(i.formes.length > 0 || (i.composantes?.length ?? 0) > 0))
+    .reduce((s, i) => {
+      const p = pp?.partie[i.id];
+      const ratio = p && pp && pp.registre[p] > 0 ? pp.officiel[p] / pp.registre[p] : 1;
+      return s + i.points * ratio;
+    }, 0);
+  return Math.round(reserve * 100) / 100;
+}
+
 // Réponse qui contient TOUS les textes officiels d'un groupe → toutes les
 // formes matchent → couverture 1 → note max (cohérence registre ↔ scoreur).
 // + les réponses modèle Meftah (S1) : les variantes arabes des composantes P5
@@ -45,11 +60,19 @@ describe('R6 — invariants de la notation par attendus obligatoires', () => {
   });
 
   it('texte couvrant TOUS les attendus → note max (plafond auto = barème)', () => {
+    // F3 (2026-09-28) : un item MANUEL (ex. S1-Ex3 schéma) n'est pas
+    // créditable automatiquement → points + réserve humaine = barème, et la
+    // note finale est PROVISOIRE (noteFinale = null) tant que le correcteur
+    // n'a pas arbitré. Les autres exercices restent intégralement auto.
     for (const sujet of [1, 2] as const) {
       for (const exercice of [1, 2, 3] as const) {
         const n = noterExerciceCalibre(reponseExhaustive(sujet, exercice), sujet, exercice);
         expect(n.couverture, `S${sujet}-Ex${exercice}`).toBe(1);
-        expect(n.points).toBe(n.maxPts);
+        expect(n.points + n.pointsManuelsAArbitrer, `S${sujet}-Ex${exercice} points+réserve`).toBe(
+          n.maxPts,
+        );
+        expect(n.points).toBeLessThanOrEqual(n.maxPts);
+        expect(n.noteFinale).toBe(n.pointsManuelsAArbitrer > 0 ? null : n.points);
         expect(n.plafonds).toEqual([]); // c'est de la prose officielle
       }
     }
@@ -139,8 +162,10 @@ describe('R6 — invariants de la notation par attendus obligatoires', () => {
   });
 
   it('total copie = somme des exercices ≤ 20', () => {
+    // F3 : S1-Ex3 garde 1,0 pt en réserve humaine (schéma) → total auto 19/20,
+    // le 20/20 n'est atteint qu'après arbitrage humain (noteFinale provisoire).
     const copie = noterCopieCalibree([reponseExhaustive(1, 1), reponseExhaustive(1, 2), reponseExhaustive(1, 3)], 1);
-    expect(copie.total).toBe(20);
+    expect(copie.total).toBe(19);
     expect(copie.total).toBeLessThanOrEqual(20);
   });
 });
@@ -162,11 +187,8 @@ describe('F1 — points acquis vs réserve manuelle (garder l’échelle officie
         const reg = attendusDeGroupe(sujet, exercice);
         const n = noterExerciceCalibre(reponseExhaustive(sujet, exercice), sujet, exercice);
         expect(n.pointsAutoAcquis).toBe(n.points);
-        const reserve = reg.items
-          .filter((i) => !(i.formes.length > 0 || (i.composantes?.length ?? 0) > 0))
-          .reduce((s, i) => s + i.points, 0);
-        expect(n.pointsManuelsAArbitrer).toBe(Math.round(reserve * 100) / 100);
-        expect(n.noteFinale).toBe(reserve > 0 ? null : n.points);
+        expect(n.pointsManuelsAArbitrer).toBe(reserveManuellePonderee(reg));
+        expect(n.noteFinale).toBe(n.pointsManuelsAArbitrer > 0 ? null : n.points);
       }
     }
   });
@@ -184,16 +206,14 @@ describe('F1 — points acquis vs réserve manuelle (garder l’échelle officie
   });
 
   it('les items manuels ne sont JAMAIS comptés comme zéro ni redistribués', () => {
-    // Copie vide : la réserve manuelle reste INTACTE (égale à Σ items non auto),
-    // les points auto tombent à 0 — pas de renormalisation de la part manuelle.
+    // Copie vide : la réserve manuelle reste INTACTE (égale à Σ items non auto,
+    // sur l'échelle officielle), les points auto tombent à 0 — pas de
+    // renormalisation de la part manuelle.
     for (const sujet of [1, 2] as const) {
       for (const exercice of [1, 2, 3] as const) {
         const reg = attendusDeGroupe(sujet, exercice);
         const n = noterExerciceCalibre('', sujet, exercice);
-        const reserve = reg.items
-          .filter((i) => !(i.formes.length > 0 || (i.composantes?.length ?? 0) > 0))
-          .reduce((s, i) => s + i.points, 0);
-        expect(n.pointsManuelsAArbitrer).toBe(Math.round(reserve * 100) / 100);
+        expect(n.pointsManuelsAArbitrer).toBe(reserveManuellePonderee(reg));
         expect(n.pointsAutoAcquis).toBe(0);
       }
     }
@@ -276,20 +296,26 @@ describe('R6 — contrôles positifs : les réponses modèle de Meftah', () => {
   }));
 
   it('couverture ≥ 85 % et note ≥ 90 % du max pour chaque réponse modèle', () => {
+    // F3 : S1-Ex3 a un item manuel (schéma) → la note auto seule plafonne à
+    // 6,36/8 (79,5 %) ; c'est le TOTAL atteignable points+réserve qui vaut le
+    // barème. Une copie modèle ne peut pas être pleinement notée par machine.
     for (const m of MODELES) {
       const n = noterExerciceCalibre(m.texte, 1, m.exercice);
       expect(n.couverture, `${m.id} couverture`).toBeGreaterThanOrEqual(0.85);
-      expect(n.points, `${m.id} points`).toBeGreaterThanOrEqual(0.9 * n.maxPts);
+      expect(n.points + n.pointsManuelsAArbitrer, `${m.id} points+réserve`).toBeGreaterThanOrEqual(
+        0.9 * n.maxPts,
+      );
       expect(n.plafonds, `${m.id} — aucun plafond sur une copie légitime`).toEqual([]);
     }
   });
 
   it('copie modèle complète ≈ 19-20/20 (avant R6 : 16,05)', () => {
+    // F3 : 19/20 auto + 1,0 en réserve humaine (schéma S1-Ex3).
     const copie = noterCopieCalibree(
       MODELES.map((m) => m.texte) as [string, string, string],
       1
     );
-    expect(copie.total).toBeGreaterThanOrEqual(18);
+    expect(copie.total).toBeGreaterThanOrEqual(17);
     expect(copie.total).toBeLessThanOrEqual(20);
   });
 });
