@@ -284,5 +284,123 @@
       "preuve": "15:44 — 79K",
       "statut": "livré (sprint 13) — 11 cartes d'ouverture + portail réécrit (bug unité 1 partout corrigé)"
     }
-  ]
+  ],
+  "prioritesMesurees_2017_2026": {
+    "_meta": {
+      "source": "src/data/bacSessionIndex.ts — 59 exercices des sujets officiels ONEC, sessions 2017 à 2026 (10 sessions consécutives)",
+      "methode": "points attribués à l'unité qui MÈNE l'exercice ; les apparitions comptent aussi les unités secondaires",
+      "verrou": "src/data/prioritesMesurees.sync.test.ts — ces chiffres échouent s'ils divergent du code",
+      "aRetenir": "le classement initial (sprints 1-4) venait des vues YouTube et de la difficulté ressentie ; celui-ci vient de l'épreuve"
+    },
+    "unites": [
+      {
+        "unitId": 4,
+        "titre": "المناعة",
+        "pointsPrincipaux": 82,
+        "partPourcent": 20.8,
+        "poidsAnnonce": 13,
+        "apparitions": 13,
+        "sessions": 10
+      },
+      {
+        "unitId": 1,
+        "titre": "تركيب البروتين",
+        "pointsPrincipaux": 75,
+        "partPourcent": 19.0,
+        "poidsAnnonce": 10,
+        "apparitions": 17,
+        "sessions": 10
+      },
+      {
+        "unitId": 5,
+        "titre": "الاتصال العصبي",
+        "pointsPrincipaux": 74,
+        "partPourcent": 18.7,
+        "poidsAnnonce": 16,
+        "apparitions": 11,
+        "sessions": 10
+      },
+      {
+        "unitId": 3,
+        "titre": "النشاط الإنزيمي",
+        "pointsPrincipaux": 58,
+        "partPourcent": 14.7,
+        "poidsAnnonce": 13,
+        "apparitions": 15,
+        "sessions": 10
+      },
+      {
+        "unitId": 6,
+        "titre": "التركيب الضوئي",
+        "pointsPrincipaux": 51,
+        "partPourcent": 12.9,
+        "poidsAnnonce": 20,
+        "apparitions": 7,
+        "sessions": 6
+      },
+      {
+        "unitId": 2,
+        "titre": "بنية/وظيفة البروتين",
+        "pointsPrincipaux": 22,
+        "partPourcent": 5.6,
+        "poidsAnnonce": 9,
+        "apparitions": 13,
+        "sessions": 9
+      },
+      {
+        "unitId": 7,
+        "titre": "تحويل الطاقة",
+        "pointsPrincipaux": 13,
+        "partPourcent": 3.3,
+        "poidsAnnonce": 19,
+        "apparitions": 4,
+        "sessions": 4
+      },
+      {
+        "unitId": 8,
+        "titre": "ما فوق البنية الخلوية",
+        "pointsPrincipaux": 5,
+        "partPourcent": 1.3,
+        "poidsAnnonce": 5,
+        "apparitions": 5,
+        "sessions": 4
+      },
+      {
+        "unitId": 9,
+        "titre": "النشاط التكتوني",
+        "pointsPrincipaux": 5,
+        "partPourcent": 1.3,
+        "poidsAnnonce": 5,
+        "apparitions": 2,
+        "sessions": 1
+      },
+      {
+        "unitId": 10,
+        "titre": "بنية الكرة الأرضية",
+        "pointsPrincipaux": 5,
+        "partPourcent": 1.3,
+        "poidsAnnonce": 5,
+        "apparitions": 1,
+        "sessions": 1
+      },
+      {
+        "unitId": 11,
+        "titre": "البنيات الجيولوجية",
+        "pointsPrincipaux": 5,
+        "partPourcent": 1.3,
+        "poidsAnnonce": 5,
+        "apparitions": 1,
+        "sessions": 1
+      }
+    ],
+    "revisionDuClassementInitial": {
+      "confirme": [
+        "U4 المناعة : première au classement ressenti ET première à l'épreuve"
+      ],
+      "grandOubli": "U1 تركيب البروتين — absente des 5 priorités initiales, alors qu'elle mène 19 % des points et apparaît dans 17 exercices sur 59",
+      "secondOubli": "U5 الاتصال العصبي — absente aussi, 18,7 % des points, présente sur les 10 sessions",
+      "aRequalifier": "U2 (pHi, acides aminés) : 1re en difficulté ressentie mais 5,6 % des points en propre — à traiter comme compétence TRANSVERSALE (13 apparitions) et non comme unité vedette",
+      "surevalue": "U7 تحويل الطاقة : 19 % annoncés par le programme, 3,3 % constatés sur 10 sessions"
+    }
+  }
 }

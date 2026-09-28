@@ -2238,3 +2238,74 @@ et donné à l'élève le mauvais canevas.
 Suite unitaire **1661 verts / 4 skipped / 0 échec** (129 fichiers). Correction
 au passage d'un import dupliqué (`SCHEMA_DRILLS`) que `tsc` signalait dans le
 test du sprint 35.
+
+---
+
+## Sprint 37 — retour à la question de départ, avec dix ans de preuves
+
+### Pourquoi rouvrir le classement
+
+La question qui a lancé tout ce travail était : **« quelles leçons dois-je
+travailler en premier ? »**. La réponse des sprints 1-4 venait des chaînes
+YouTube — vues, commentaires, durée des cours — c'est-à-dire de la **difficulté
+ressentie**. C'était la seule source disponible à l'époque. Depuis, le corpus
+compte **59 exercices officiels sur 10 sessions** : il est possible de répondre
+avec l'épreuve elle-même.
+
+Nouveau document : `docs/analyse/PRIORITES_REVISEES_10_SESSIONS.md`.
+
+### Ce que le réexamen change
+
+**Confirmé — U4 المناعة.** Première au ressenti, première à l'épreuve
+(82 points, 10 sessions sur 10). Le travail des sprints 5-15 était bien placé.
+
+**Le grand oubli — U1 تركيب البروتين.** Absente des cinq priorités initiales,
+elle mène **19 % des points** et apparaît dans **17 exercices sur 59** :
+l'unité la plus omniprésente du programme.
+
+L'explication de l'angle mort mérite d'être notée, car elle vaut pour d'autres
+matières : les classements initiaux mesuraient ce que les élèves **cherchent**.
+Or U1 n'est pas *ressentie* comme difficile — enseignée tôt, jugée mécanique.
+Personne ne cherche « شرح الترجمة » trois semaines avant l'examen. Elle tombe
+pourtant chaque année, seule ou en support d'un exercice d'immunologie, de
+pharmacologie ou de génétique. **Mesurer la difficulté ressentie, c'est mesurer
+ce qui inquiète, pas ce qui rapporte.**
+
+**Second oubli — U5** (18,7 %, 10 sessions sur 10), même mécanisme.
+
+**À requalifier — U2 (pHi).** Première en difficulté ressentie, elle ne mène que
+5,6 % des points **mais apparaît dans 13 exercices** : ce n'est pas une unité
+vedette, c'est une **compétence transversale**. Le simulateur pH → charge →
+migration garde sa valeur ; son cadrage change.
+
+**Surévaluée par le programme — U7** : 19 % annoncés, **3,3 %** constatés.
+
+**Irrégulière — U6** : 12,9 % des points mais **6 sessions sur 10**. Profil
+« tout ou rien » : à sécuriser, pas à sur-investir.
+
+### Les cinq priorités révisées
+
+U4 · **U1** · **U5** · U3 · U6 — et **U2 en transverse**, pas en cinquième
+place.
+
+### Le garde-fou contre la pourriture documentaire
+
+Un document chiffré vieillit mal : une session ajoutée, et les nombres publiés
+deviennent faux sans que rien ne casse. `data/priorites_pedagogiques.json`
+reçoit donc un bloc `prioritesMesurees_2017_2026`, et
+`src/data/prioritesMesurees.sync.test.ts` **recalcule chaque nombre depuis le
+corpus** : points menés, part, poids annoncé, apparitions, sessions, ordre du
+tri, et jusqu'à l'assiette annoncée dans les métadonnées (« 59 exercices »,
+« 2017 », « 2026 »). Le jour où une session s'ajoute, c'est le test qui
+prévient.
+
+### Limite assumée, écrite dans le document
+
+Dix sessions suffisent pour une tendance, pas pour une loi. U9, U10 et U11
+n'apparaissent que sur une ou deux sessions : leur 1,3 % ne signifie pas
+qu'elles ne tomberont pas cette année, mais que le corpus ne permet pas de les
+classer. Elles gardent leur poids plancher dans le plan.
+
+### Vérifications
+
+Suite unitaire **1665 verts / 4 skipped / 0 échec** (130 fichiers).
