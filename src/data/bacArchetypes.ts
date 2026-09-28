@@ -88,7 +88,7 @@ export const BAC_ARCHETYPES: BacArchetype[] = [
     ],
     trapAr:
       'الإجابة « يثبّط تركيب البروتين » دون تحديد المرحلة: التصحيح لا يمنح النقطة إلا على المستوى المحدَّد بدليل تجريبي.',
-    ideaIds: [
+    ideaIds: ['bac2017_s1_e1', 
       'bac2019_s2_e3',
       'bac2020_s2_e2',
       'bac2022_s1_e3',
@@ -116,7 +116,7 @@ export const BAC_ARCHETYPES: BacArchetype[] = [
     ],
     trapAr:
       'نسيان أن اتجاه دخول الشاردة يتوقّف على تدرّج التركيز لا على القناة وحدها — خطأ سنة 2020 مع شوارد الكلور عند المولود.',
-    ideaIds: ['bac2018_s1_e1', 
+    ideaIds: ['bac2017_s2_e2', 'bac2018_s1_e1', 
       'bac2019_s2_e2',
       'bac2020_s2_e3',
       'bac2021_s2_e3',
@@ -191,7 +191,7 @@ export const BAC_ARCHETYPES: BacArchetype[] = [
     ],
     trapAr:
       'اعتبار كل طفرة ضارة: طفرات 2019 على أحماض خارج الموقع الفعال أبقت النشاط شبه كامل، و طفرة 2022 كانت مفيدة علاجياً.',
-    ideaIds: ['bac2018_s1_e2', 
+    ideaIds: ['bac2017_s2_e3', 'bac2018_s1_e2', 
       'bac2019_s1_e2',
       'bac2021_s2_e2',
       'bac2022_s1_e3',
@@ -219,7 +219,7 @@ export const BAC_ARCHETYPES: BacArchetype[] = [
     ],
     trapAr:
       'الخلط بين توقف المرحلة الكيموضوئية و توقف حلقة كالفن: نقص NADPH و ATP يوقف الثانية بشكل غير مباشر.',
-    ideaIds: [
+    ideaIds: ['bac2017_s1_e3', 
       'bac2023_s2_e3',
       'bac2024_s2_e2',
       'bac2025_s1_e2',
@@ -272,7 +272,7 @@ export const BAC_ARCHETYPES: BacArchetype[] = [
     ],
     trapAr:
       'الخلط بين الـ ATP المنتَج مباشرة (الفسفرة على مستوى الركيزة) و الـ ATP الناتج عن أكسدة النواقل: السؤال يميّز بينهما دائماً.',
-    ideaIds: ['bac2018_s1_e3', 'bac2022_s2_e1', 'bac2025_s2_e1'],
+    ideaIds: ['bac2017_s2_e1', 'bac2018_s1_e3', 'bac2022_s2_e1', 'bac2025_s2_e1'],
   },
   {
     id: 'arch_tracage_isotopique',
@@ -292,7 +292,7 @@ export const BAC_ARCHETYPES: BacArchetype[] = [
     ],
     trapAr:
       'نسب الوسم إلى المنتوج النهائي دون التأكد من مساره: في تجربة 2018، الأكسجين المطروح يحمل وسم الماء لا وسم HCO₃⁻.',
-    ideaIds: ['bac2018_s2_e3', 'bac2020_s2_e2', 'bac2025_s1_e2'],
+    ideaIds: ['bac2017_s1_e3', 'bac2018_s2_e3', 'bac2020_s2_e2', 'bac2025_s1_e2'],
   },
   {
     id: 'arch_marqueurs_du_soi',
@@ -312,7 +312,7 @@ export const BAC_ARCHETYPES: BacArchetype[] = [
     ],
     trapAr:
       'الخلط بين محدّدات الزمر ABO (سكريات، أجسام مضادة طبيعية) و محدّدات CMH (بروتينات، تعرّف خلوي).',
-    ideaIds: ['bac2020_s2_e1', 'bac2022_s1_e1', 'bac2025_s2_e3', 'bac2019_s1_e3', 'bac2018_s2_e1'],
+    ideaIds: ['bac2017_s1_e2', 'bac2020_s2_e1', 'bac2022_s1_e1', 'bac2025_s2_e3', 'bac2019_s1_e3', 'bac2018_s2_e1'],
   },
   {
     id: 'arch_lecture_geologique',

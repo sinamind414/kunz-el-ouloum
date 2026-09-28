@@ -73,7 +73,8 @@ export const VERB_FAMILIES: VerbFamily[] = [
     templateAr: 'عنصر ← (فعل) ← عنصر ← (نتيجة) — مع عنوان للمخطط',
     confusionAr:
       'إعادة رسم مخطط الدرس المحفوظ بدل مخطط يدمج نتائج الوثائق المدروسة في التمرين.',
-    motifs: [/مخطط/, /رسم تخطيطي/],
+    // « مثّل بالرسم » (2017) : produire le tracé attendu, pas décrire.
+    motifs: [/مخطط/, /رسم تخطيطي/, /مثّل بالرسم/],
   },
   {
     id: 'verb_valider',
@@ -146,7 +147,19 @@ export const VERB_FAMILIES: VerbFamily[] = [
       'إعادة وصف المنحنى بكلمات أخرى: الوصف تحليل، و التفسير يبدأ حيث تُذكر الآلية.',
     // « بيّن » est ici, et non dans la restitution : il demande de MONTRER que
     // quelque chose est vrai, donc un raisonnement, pas un mot.
-    motifs: [/فسّر/, /فسر/, /اشرح/, /وضّح/, /علّل/, /بيّن/, /السبب/, /الآلية/, /الأهمية/, /الوظيفة/],
+    motifs: [
+      /فسّر/,
+      /فسر/,
+      /اشرح/,
+      /وضّح/,
+      /علّل/,
+      /بيّن/,
+      /السبب/,
+      /الآلية/,
+      /الأهمية/,
+      /الوظيفة/,
+      /الظاهرة/,
+    ],
   },
   {
     id: 'verb_comparer',
@@ -221,6 +234,14 @@ export const VERB_FAMILIES: VerbFamily[] = [
       /حدّد/,
       /^صف$/,
       /مثّل الصيغة/,
+      // Formulations de restitution vues en 2017 : nommer les données d'un
+      // schéma, écrire une équation connue, compter des unités.
+      /اكتب البيانات/,
+      /اكتب المعادلة/,
+      /أعطِ التتابع/,
+      /احسب/,
+      /صنّف/,
+      /ترجم/,
       /املأ/,
       /اختر/,
       /أنجز/,

@@ -2181,3 +2181,60 @@ attend d'être découvert par quelqu'un d'autre.*
 ### Vérifications
 
 Suite unitaire **1661 verts / 4 skipped / 0 échec** (129 fichiers).
+
+---
+
+## Sprint 36 — dix sessions consécutives : 2017 → 2026
+
+### Ce que 2017 apporte
+
+Six exercices de plus, et deux qui comblent des angles morts du corpus :
+
+- **sujet 1, exercice 2** — les cinq milieux gélatineux qui ne diffèrent que
+  par **une** lymphocyte : la démonstration expérimentale de la coopération
+  immunitaire, celle qui sépare pour de bon réponse humorale et réponse
+  cellulaire. C'est la leçon n°2 de la liste de priorités, en version
+  expérimentale ;
+- **sujet 2, exercice 3** — le xeroderma pigmentosum : une **délétion** décale
+  le cadre de lecture, produit un codon stop précoce, tronque l'enzyme de
+  réparation XPA, et le soleil devient cancérigène. Le premier exercice du
+  corpus où la mutation n'est pas une substitution.
+
+Les quatre autres : mécanismes de la synthèse protéique avec calcul (U1) ·
+chloroplaste, ATP/ADP et CO₂ marqué (U6) · cellule autotrophe contre
+hétérotrophe (U8/U7) · canaux ioniques derrière le potentiel d'action (U5).
+
+### Le corpus
+
+| | Sprint 34 | **Sprint 36** |
+|---|---|---|
+| sessions | 9 (2018→2026) | **10 (2017→2026)** |
+| exercices | 53 | **59** |
+| exercices non classés | 0 | **0** |
+
+Pression recalculée sur dix ans : **U4 82 pts**, U1 75, U5 74, U3 58, U6 51,
+U2 22. U1 apparaît maintenant dans **17 exercices sur 59** — c'est l'unité la
+plus omniprésente du programme, loin devant son poids annoncé de 10 %.
+
+Classement des montages : « سمّ أو مادة تعطّل قناة أيونية » 66 pts sur
+**9 sessions**, « من الطفرة إلى الظاهرة » 64 pts sur 8, « الجزيئة الشبيهة
+بالركيزة » 59 pts sur 6.
+
+### Trois consignes de plus dans le décodeur
+
+2017 a introduit des formulations absentes des sessions récentes :
+**« احسب »**, **« اكتب المعادلة »**, **« أعطِ التتابع »**, **« ترجم إلى
+منحنيات »**, **« مثّل بالرسم »**. Les quatre premières rejoignent la
+restitution ; la dernière rejoint le schéma-bilan, parce qu'elle demande de
+**produire un tracé**, pas de le décrire. Le classement reste total : 0
+formulation orpheline sur les 59 exercices.
+
+Détail utile : « فسّر الظاهرة » a obligé à ajouter le motif « الظاهرة » à la
+famille explicative — sans quoi la consigne aurait basculé dans la restitution
+et donné à l'élève le mauvais canevas.
+
+### Vérifications
+
+Suite unitaire **1661 verts / 4 skipped / 0 échec** (129 fichiers). Correction
+au passage d'un import dupliqué (`SCHEMA_DRILLS`) que `tsc` signalait dans le
+test du sprint 35.

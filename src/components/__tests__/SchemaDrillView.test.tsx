@@ -9,7 +9,6 @@ import { cleanup, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { afterEach, describe, expect, it } from 'vitest';
 import SchemaDrillView from '../SchemaDrillView';
-import { SCHEMA_DRILLS } from '../../data/schemaDrills';
 import { bacEchoForDrill } from '../../data/bacSessionIndex';
 import { SCHEMA_DRILLS, SCHEMA_DRILL_BY_ID, totalPoints } from '../../data/schemaDrills';
 

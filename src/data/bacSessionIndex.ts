@@ -27,6 +27,7 @@
 // Trous assumés et documentés :
 //   · 2021, sujet 2, exercice 1 : non lisible dans la source → absent. Le
 //     total de ce sujet vaut donc 15 points et non 20 (`INCOMPLETE_SUJETS`).
+//   · sprint 36 : la session 2017 rejoint la banque (série 2017→2026).
 //   · sprint 34 : la session 2018 rejoint la banque — la série va de 2018 à
 //     2026 sans interruption.
 //   · sprint 17 : la session 2020 (session de septembre, COVID) manquait au
@@ -77,6 +78,7 @@ export interface BacExerciseIdea {
 
 /** Sujets officiels lus pour construire cette banque. */
 export const BAC_SESSION_SOURCES: { year: number; url: string }[] = [
+  { year: 2017, url: 'https://eddirasa.com/bac-science-2017-se/' },
   { year: 2018, url: 'https://eddirasa.com/bac-science-2018-se/' },
   { year: 2019, url: 'https://eddirasa.com/bac-science-2019-se/' },
   { year: 2020, url: 'https://eddirasa.com/bac-science-2020-se/' },
@@ -103,6 +105,147 @@ export const INCOMPLETE_SUJETS: { year: number; sujet: BacSujet; raison: string 
 ];
 
 export const BAC_IDEAS: BacExerciseIdea[] = [
+  // ───────────────────────────── 2017 ─────────────────────────────
+  // Ajoutée au sprint 36 : la série couvre 2017→2026 sans trou.
+  {
+    id: 'bac2017_s1_e1',
+    year: 2017,
+    sujet: 1,
+    exercice: 1,
+    points: 5,
+    titleAr: 'مراحل تركيب البروتين عند حقيقيات النواة',
+    ideaAr:
+      'من المورثة إلى البروتين الوظيفي: تسمية العناصر، شروط كل مرحلة، و حساب عدد الأحماض الأمينية.',
+    supportsAr: [
+      'وثيقة تمثّل مراحل تركيب البروتين مع عناصر مرقّمة و مرحلتين (أ) و (ب)',
+      'معطى عددي: 327 نيكليوتيدة في العنصر 3',
+    ],
+    notionAr:
+      'الاستنساخ و الترجمة: العناصر الضرورية لكل مرحلة، و علاقة عدد النيكليوتيدات بعدد الأحماض الأمينية (÷3).',
+    verbsAr: ['اكتب البيانات', 'سمّ', 'حدّد في جدول', 'احسب', 'بيّن في نص علمي'],
+    unitIds: [1, 2],
+    situationIds: ['lecture_shifra', 'uracile_radioactif'],
+    capsuleIds: ['cap_u1_transcription_vs_traduction', 'cap_u1_lecture_code'],
+    drillIds: ['drill_transcription', 'drill_traduction'],
+  },
+  {
+    id: 'bac2017_s1_e2',
+    year: 2017,
+    sujet: 1,
+    exercice: 2,
+    points: 7,
+    titleAr: 'التعاون بين اللمفاويات: تجربة الأوساط الجيلاتينية',
+    ideaAr:
+      'خمسة أوساط تختلف بلمفاوية واحدة: ما الذي يفصل حقاً بين الاستجابة الخلطية و الاستجابة الخلوية؟',
+    supportsAr: [
+      'وثيقة لبعض مظاهر الرد المناعي (خليتان a و b، شكلان)',
+      'جدول خمسة أوساط زرع جيلاتينية: المستضد أو الخلايا السرطانية المثبّتة، اللمفاويات المضافة، ثم لمفاويات أخرى، و النتيجة',
+    ],
+    notionAr:
+      'الانتقاء النسيلي و التعاون: لا أجسام مضادة بلا LT4، و لا انحلال خلوي بلا LT4 محسّسة.',
+    verbsAr: [
+      'تعرّف',
+      'حدّد المرحلة',
+      'أنجز رسماً تخطيطياً',
+      'اشرح',
+      'قدّم تحليلاً مقارناً',
+      'استنتج',
+      'علّل',
+      'برّر',
+      'لخّص في نص علمي',
+    ],
+    unitIds: [4],
+    situationIds: ['cellules_cibles_lt', 'labo_ouchterlony', 'vaccination_rappel'],
+    capsuleIds: ['cap_u4_lt4_pivot', 'cap_u4_humorale_cellulaire'],
+    drillIds: ['drill_anticorps', 'drill_cmh'],
+  },
+  {
+    id: 'bac2017_s1_e3',
+    year: 2017,
+    sujet: 1,
+    exercice: 3,
+    points: 8,
+    titleAr: 'الصانعة الخضراء: من الضوء إلى المادة العضوية',
+    ideaAr:
+      'كيف تنتقل الطاقة الضوئية إلى جزيئات عضوية؟ الإضاءة تغيّر ATP و ADP و المستقبل المؤكسد و O₂ معاً.',
+    supportsAr: [
+      'تركيب تجريبي مع معلّق صانعات خضراء و إشعاع، و نتائجه',
+      'كمية CO₂ المثبَّتة عند الكلوريلا خلال إضاءة قوية ثم ظلام',
+      'تراكيز ATP و ADP و المركب R المؤكسد و O₂ حسب شدة الإضاءة',
+      'حشوة في الظلام مع كيسات في الضوء، أو مع ATP و ناقل مرجع، و CO₂ مشع',
+    ],
+    notionAr:
+      'المرحلتان الكيموضوئية و الكيميائية: الحشوة تحتاج ATP و النواقل المرجعة، لا الضوء مباشرة.',
+    verbsAr: ['استخرج', 'سمّ الظاهرة', 'اكتب المعادلة', 'حلّل', 'استنتج', 'أنجز رسماً تخطيطياً وظيفياً'],
+    unitIds: [6, 8],
+    situationIds: ['jagendorf_chloroplaste', 'feuille_jour_nuit', 'serre_agricole'],
+    capsuleIds: ['cap_u6_calvin', 'cap_u6_jagendorf', 'cap_u6_oxygene_eau'],
+    drillIds: ['drill_chaine_photochimique', 'drill_coupe_feuille'],
+  },
+  {
+    id: 'bac2017_s2_e1',
+    year: 2017,
+    sujet: 2,
+    exercice: 1,
+    points: 5,
+    titleAr: 'خلية ذاتية التغذية و خلية غير ذاتية التغذية',
+    ideaAr:
+      'ما الذي يربط ما يحدث في الصانعة الخضراء بما يحدث في الميتوكوندري؟ دورة مادة و دورة طاقة.',
+    supportsAr: ['وثيقة تقارن خليتين (أ) و (ب) مع العضيتين (س) و (ص) و التبادلات الغازية و ATP'],
+    notionAr:
+      'الترافق بين تحولات المادة و الطاقة: التركيب الضوئي و التنفس، و استعمالات ATP في الخلية.',
+    verbsAr: ['سمّ', 'صنّف', 'استخرج', 'اكتب نصاً علمياً'],
+    unitIds: [8, 7],
+    situationIds: ['feuille_jour_nuit', 'coureur_crampe'],
+    capsuleIds: ['cap_u8_chloroplaste_mitochondrie', 'cap_u7_ou_est_atp'],
+    drillIds: ['drill_respiration', 'drill_coupe_feuille'],
+  },
+  {
+    id: 'bac2017_s2_e2',
+    year: 2017,
+    sujet: 2,
+    exercice: 2,
+    points: 7,
+    titleAr: 'القنوات الأيونية خلف كمون العمل',
+    ideaAr:
+      'تسجيلان و جدول عدد القنوات المفتوحة: كل مرحلة من كمون العمل تقابلها قناة تفتح ثم تُغلق.',
+    supportsAr: [
+      'تركيب تجريبي بجهازين ج1 و ج2 و تسجيلان (أ) و (ب) إثر تنبيه فعال',
+      'جدول عدد القنوات المفتوحة من النمط 1 و النمط 2 لكل ميلي ثانية',
+      'تنبيهات متزايدة الشدة أو حقن كميات متزايدة من الأستيل كولين',
+    ],
+    notionAr:
+      'قناة Na⁺ ثم قناة K⁺ الفولطيتان؛ قانون الكل أو لا شيء على الليف، و التدرّج على المشبك.',
+    verbsAr: ['سمّ', 'حلّل', 'استنتج', 'ترجم إلى منحنيات', 'حدّد', 'مثّل بالرسم', 'برّر', 'وضّح'],
+    unitIds: [5],
+    situationIds: ['seuil_integration', 'curare_chirurgie'],
+    capsuleIds: ['cap_u5_quatre_potentiels', 'cap_u5_double_codage'],
+    drillIds: ['drill_potentiel_action', 'drill_synapse'],
+  },
+  {
+    id: 'bac2017_s2_e3',
+    year: 2017,
+    sujet: 2,
+    exercice: 3,
+    points: 8,
+    titleAr: 'جفاف الجلد المصطبغ و أنزيم الإصلاح XPA',
+    ideaAr:
+      'لماذا تتحوّل الشمس إلى خطر عند بعض الأشخاص؟ حذف نيكليوتيدة يعطّل الأنزيم الذي يصلح أخطاء الـ ADN.',
+    supportsAr: [
+      'جدول Anagène: تتابع الـ ADN و الأحماض الأمينية لـ XPA عند شخص سليم و شخص مريض',
+      'نص يذكّر بأخطاء التضاعف و بدور أنزيمات الإصلاح (XPA من 215 حمضاً أمينياً)',
+      'نسبة ثنائيات التايمين بعد التعرّض للـ UV عند خلايا سليمة و مريضة',
+      'آلية عمل أنزيم XPA',
+    ],
+    notionAr:
+      'الطفرة بالحذف تزيح إطار القراءة و تولّد رامزة توقف مبكرة: بروتين مبتور، إصلاح معطّل، سرطان جلدي.',
+    verbsAr: ['تعرّف على البرنامج', 'أعطِ التتابع', 'حلّل', 'استخرج الآلية', 'اقترح فرضية', 'تحقّق', 'بيّن في نص علمي'],
+    unitIds: [1, 3],
+    situationIds: ['anemie_falciforme', 'lecture_shifra'],
+    capsuleIds: ['cap_u1_types_mutations', 'cap_u1_lecture_code'],
+    drillIds: ['drill_transcription', 'drill_traduction'],
+  },
+
   // ───────────────────────────── 2018 ─────────────────────────────
   // Ajoutée au sprint 34 : la série remonte à 2018 sans trou.
   {
