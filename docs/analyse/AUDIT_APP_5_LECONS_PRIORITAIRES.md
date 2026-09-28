@@ -2568,3 +2568,49 @@ Suite unitaire **1703 verts / 4 skipped / 0 échec** (134 fichiers) ; contrôles
 post-build **14 verts**. Les fichiers de contrôle post-build, à nouveau absents
 de la copie de travail en début de sprint, ont été restaurés — `repoIntegrity`
 les signale désormais immédiatement.
+
+---
+
+## Sprint 43 — 4 h 30 : le chronomètre qui dit où l'on devrait en être
+
+### La cause de perte de points qui n'est pas une lacune
+
+Le dépouillement des chaînes (sprints 1-8) et les conseils de professeurs
+convergent sur un point qui n'a rien à voir avec les connaissances : **le
+temps**. L'élève soigne l'exercice 1 — 05 points, de la restitution — et arrive
+épuisé sur l'exercice 3, qui en vaut 08 et qui départage.
+
+### Le budget, calculé et affiché
+
+`src/data/examTimer.ts` répartit les 4 h 30 au prorata du barème, après **deux
+réserves explicites** : 15 minutes de lecture du sujet avant d'écrire la
+première ligne, 15 minutes de relecture finale. Sur un sujet 5/7/8, cela donne
+environ **60 / 84 / 96 minutes**.
+
+Deux décisions de calcul valent d'être notées :
+
+- le **reliquat d'arrondi va au dernier exercice** — celui qui pèse le plus,
+  donc celui qui doit absorber l'imprécision ;
+- les créneaux **s'enchaînent sans trou ni chevauchement**, vérifié par test :
+  un budget qui laisse des minutes orphelines n'est pas un budget.
+
+### Ce que l'élève voit
+
+Dans le sujet blanc : un chronomètre (démarrer / pause / remise à zéro), le
+temps écoulé sur 04:30, la **phase** en cours — قراءة الموضوع, التحرير,
+المراجعة النهائية, انتهى الوقت — et « يُفترض أن تكون في التمرين 2 ».
+
+Chaque exercice affiche son créneau (« de 00:15 à 01:15 »), et **passe au rouge
+avec le retard chiffré** dès que l'horloge l'a dépassé : « تأخّرت 10 دقائق عن
+هذا التمرين ». C'est l'information que personne ne donne pendant une épreuve
+blanche faite seul à la maison.
+
+### Tests
+
+`examTimer.test.ts` — 11 tests de logique pure (réserves respectées,
+progression du budget avec les points, enchaînement des créneaux, barème vide,
+durée réduite pour un devoir de 2 h, phases, retard, format `00:00`) ;
+`MockExamPanel.test.tsx` — 4 tests d'horloge avec temps simulé (avance minute
+par minute, changement de phase, retard affiché, pause et remise à zéro).
+
+Suite unitaire **1718 verts / 4 skipped / 0 échec** (135 fichiers).

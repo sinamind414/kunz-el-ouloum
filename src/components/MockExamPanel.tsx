@@ -9,10 +9,17 @@
 // Chaque exercice s'ouvre dans l'atelier d'écriture : l'élève y retrouve les
 // supports réels, les consignes réelles et le contrôle de forme.
 
-import { useState } from 'react';
-import { Clock, Dices, FileText, Printer } from 'lucide-react';
+import { useEffect, useMemo, useState } from 'react';
+import { Clock, Dices, FileText, Pause, Play, Printer, RotateCcw } from 'lucide-react';
 import type { BacExerciseIdea } from '../data/bacSessionIndex';
 import { composeMockExam, numeroDuJour } from '../data/mockExam';
+import {
+  budgetParExercice,
+  exerciceAttendu,
+  formatDuree,
+  phaseEpreuve,
+  retardSurBudget,
+} from '../data/examTimer';
 import { INITIAL_UNITS } from '../unitCatalog';
 
 interface Props {
@@ -22,9 +29,35 @@ interface Props {
 const titreUnite = (unitId: number) =>
   INITIAL_UNITS.find((u) => u.id === unitId)?.title ?? `وحدة ${unitId}`;
 
+const PHASE_LABEL: Record<string, string> = {
+  lecture: 'قراءة الموضوع',
+  redaction: 'التحرير',
+  relecture: 'المراجعة النهائية',
+  termine: 'انتهى الوقت',
+};
+
 export default function MockExamPanel({ onTrain }: Props) {
   const [numero, setNumero] = useState(() => numeroDuJour());
   const sujet = composeMockExam(numero);
+
+  // Chronomètre d'épreuve : la perte de points la plus fréquente ne vient pas
+  // des connaissances mais du temps — exercice 1 traité trop longuement,
+  // exercice 3 (08 points) bâclé.
+  const [enMarche, setEnMarche] = useState(false);
+  const [ecoulee, setEcoulee] = useState(0);
+  const budgets = useMemo(
+    () => budgetParExercice(sujet.exercices.map((e) => e.points), sujet.dureeMinutes),
+    [sujet],
+  );
+
+  useEffect(() => {
+    if (!enMarche) return undefined;
+    const id = setInterval(() => setEcoulee((m) => m + 1), 60_000);
+    return () => clearInterval(id);
+  }, [enMarche]);
+
+  const phase = phaseEpreuve(ecoulee, sujet.dureeMinutes);
+  const attendu = exerciceAttendu(budgets, ecoulee);
 
   return (
     <section
@@ -77,6 +110,48 @@ export default function MockExamPanel({ onTrain }: Props) {
         </div>
       </div>
 
+      <div
+        data-testid="mock-chrono"
+        className="sans-impression rounded-2xl p-3 mb-3 bg-[#f8fbfa] dark:bg-black/20 border border-[#bbcbbb]/30"
+      >
+        <div className="flex flex-row-reverse items-center justify-between gap-2">
+          <p className="text-[12px] font-black text-[#1f1c0b] dark:text-gray-100">
+            <span data-testid="chrono-temps">{formatDuree(ecoulee)}</span> / {formatDuree(sujet.dureeMinutes)} ·{' '}
+            <span data-testid="chrono-phase">{PHASE_LABEL[phase]}</span>
+            {attendu !== null && (
+              <span data-testid="chrono-attendu"> · يُفترض أن تكون في التمرين {attendu}</span>
+            )}
+          </p>
+          <div className="flex flex-row-reverse gap-1.5">
+            <button
+              data-testid="chrono-basculer"
+              onClick={() => setEnMarche((v) => !v)}
+              className="flex flex-row-reverse items-center gap-1 px-3 py-1 rounded-xl bg-[#006d37] text-white text-[11px] font-bold cursor-pointer"
+            >
+              {enMarche ? <Pause className="w-3.5 h-3.5" /> : <Play className="w-3.5 h-3.5" />}
+              <span>{enMarche ? 'إيقاف' : 'ابدأ'}</span>
+            </button>
+            <button
+              data-testid="chrono-remise"
+              onClick={() => {
+                setEnMarche(false);
+                setEcoulee(0);
+              }}
+              className="flex items-center px-2 py-1 rounded-xl bg-[#f3f4f5] dark:bg-[#1f2622] text-[#506072] dark:text-gray-300 cursor-pointer"
+            >
+              <RotateCcw className="w-3.5 h-3.5" />
+            </button>
+          </div>
+        </div>
+        <div className="mt-2 h-1.5 rounded-full bg-black/10 dark:bg-white/10 overflow-hidden">
+          <div
+            data-testid="chrono-barre"
+            className="h-full bg-[#006d37] transition-all"
+            style={{ width: `${Math.min(100, (ecoulee / sujet.dureeMinutes) * 100)}%` }}
+          />
+        </div>
+      </div>
+
       <ol className="space-y-3">
         {sujet.exercices.map((e, i) => (
           <li
@@ -100,6 +175,25 @@ export default function MockExamPanel({ onTrain }: Props) {
             <p className="text-[11px] text-[#8a6a00] dark:text-[#d9a400] text-right mb-2">
               التعليمات: {e.verbsAr.join(' · ')}
             </p>
+            {budgets[i] && (
+              <p
+                data-testid={`mock-budget-${i + 1}`}
+                className={`text-[11px] text-right mb-2 ${
+                  attendu !== null && attendu > i + 1
+                    ? 'text-rose-700 dark:text-rose-400 font-bold'
+                    : 'text-[#506072] dark:text-gray-400'
+                }`}
+              >
+                الوقت المخصص: {budgets[i].minutes} دقيقة (من {formatDuree(budgets[i].debutMinute)} إلى{' '}
+                {formatDuree(budgets[i].finMinute)})
+                {attendu !== null && attendu > i + 1 && (
+                  <span data-testid={`mock-retard-${i + 1}`}>
+                    {' '}
+                    — تأخّرت {retardSurBudget(budgets, i + 1, ecoulee)} دقيقة عن هذا التمرين
+                  </span>
+                )}
+              </p>
+            )}
             <button
               data-testid={`mock-ouvrir-${e.id}`}
               onClick={() => onTrain(e)}
