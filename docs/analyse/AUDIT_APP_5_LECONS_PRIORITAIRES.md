@@ -2408,3 +2408,64 @@ d'action portent la classe `sans-impression` — ils disparaissent du papier.
 **mention de l'absence de note**, impression et fermeture.
 
 Suite unitaire **1675 verts / 4 skipped / 0 échec** (131 fichiers).
+
+---
+
+## Sprint 40 — un garde-fou supprimé sans que rien ne rougisse, et le socle tiers isolé
+
+### 1. L'incident, et il est sérieux
+
+`src/build/bundleBudget.test.ts` et `src/build/offlineAssets.test.ts` **ont
+disparu du dépôt** entre les sprints 36 et 39. Pas d'un disque : du dépôt. La
+copie de travail les perdait épisodiquement (phénomène constaté quatre fois
+depuis le sprint 25), et mes `git add -A` ont fini par **committer leur
+suppression**.
+
+Pourquoi personne ne l'a vu :
+
+- ces contrôles sont **exclus de la suite unitaire** par conception
+  (ils lisent `dist/`), donc leur absence ne fait pas rougir `vitest run` ;
+- `npm run test:build` continuait d'afficher **vert**… avec 4 tests au lieu
+  de 13.
+
+C'est le scénario exact contre lequel j'avais écrit, au sprint 33 : « lire le
+décompte, pas la couleur ». Je l'ai écrit, puis je me suis fait prendre.
+
+**Correctif immédiat** : les deux fichiers sont restaurés depuis le commit
+`18d51db`, avec les évolutions des sprints 32 et 40 réappliquées.
+
+**Correctif durable** : `src/data/repoIntegrity.test.ts`, qui vit *dans* la
+suite unitaire et vérifie ce que la suite unitaire ne charge pas —
+existence des trois fichiers de contrôle post-build, du service worker, du
+manifeste, des configurations, des sources du corpus ; branchement réel de
+`test:build` sur sa configuration ; et **décompte minimal de 13 contrôles
+post-build**. Un garde-fou peut être supprimé sans qu'aucun garde-fou ne s'en
+aperçoive : celui-ci ferme la boucle.
+
+### 2. Le socle tiers sort du bundle applicatif
+
+React, React-DOM, la bibliothèque d'animation et les icônes sont désormais
+trois chunks séparés :
+
+| Chunk | Taille | gzip |
+|---|---|---|
+| entrée applicative | 599 Ko | 142 Ko |
+| `vendor-react` | 194 Ko | 61 Ko |
+| `vendor-motion` | 129 Ko | 42 Ko |
+| `vendor-icons` | 52 Ko | ~15 Ko |
+
+**Le compromis, chiffré honnêtement** : au *premier* chargement, le total gzip
+passe d'environ 247 Ko à 260 Ko (+13 Ko) — trois fichiers compressent moins
+bien qu'un seul. En revanche, à chaque *mise à jour* de l'application, l'élève
+ne re-télécharge que les **142 Ko** de l'entrée applicative au lieu de 247 Ko :
+le socle, qui ne change pas, reste dans le cache du navigateur et du service
+worker. Pour un public en 3G qui reçoit plusieurs mises à jour d'ici juin, le
+solde est largement positif.
+
+Plafond d'entrée resserré en conséquence : **1 100 → 700 Ko**, avec un test
+supplémentaire vérifiant que le socle n'est pas *dupliqué* dans l'entrée.
+
+### Vérifications
+
+Suite unitaire **1679 verts / 4 skipped / 0 échec** (132 fichiers) ; contrôles
+post-build **14 verts** — décompte lu, pas seulement la couleur.

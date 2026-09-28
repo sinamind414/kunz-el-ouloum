@@ -53,6 +53,19 @@ export default defineConfig(() => {
       rollupOptions: {
         output: {
           manualChunks(id) {
+            // Sprint 40 — socle tiers isolé du code applicatif.
+            // Motif : à chaque mise à jour de l'app, un élève en 3G
+            // re-téléchargeait React, React-DOM et la bibliothèque
+            // d'animation avec le reste, alors que ces paquets ne changent
+            // pratiquement jamais. Séparés, ils restent dans le cache du
+            // navigateur (et du service worker) d'une version à l'autre.
+            if (id.includes('node_modules')) {
+              if (id.includes('react-dom') || id.includes('/react/') || id.includes('scheduler')) {
+                return 'vendor-react';
+              }
+              if (id.includes('motion') || id.includes('framer')) return 'vendor-motion';
+              if (id.includes('lucide-react')) return 'vendor-icons';
+            }
             if (id.includes('tutorKnowledge') || id.includes('smartBotData')) {
               return 'tutor-knowledge-base';
             }
