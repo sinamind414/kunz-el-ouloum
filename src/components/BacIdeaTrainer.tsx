@@ -17,7 +17,7 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import { AlertTriangle, ArrowRight, ListChecks, PenLine } from 'lucide-react';
-import type { BacExerciseIdea } from '../data/bacSessionIndex';
+import { sourcesForYear, type BacExerciseIdea } from '../data/bacSessionIndex';
 import { archetypesForIdea } from '../data/bacArchetypes';
 import { VERB_FAMILY_BY_ID } from '../data/verbDemands';
 import { famillesDemandeesParIdee } from '../data/bacWriting';
@@ -88,6 +88,24 @@ export default function BacIdeaTrainer({ idea, onClose }: Props) {
           <ArrowRight className="w-4 h-4" />
         </button>
       </div>
+
+      {sourcesForYear(idea.year) && (
+        <p data-testid="trainer-sources" className="text-[11px] text-[#506072] dark:text-gray-400 text-right mb-2">
+          <a href={sourcesForYear(idea.year)!.url} target="_blank" rel="noreferrer" className="underline">
+            الموضوع الرسمي {idea.year}
+          </a>
+          {' · '}
+          <a
+            href={sourcesForYear(idea.year)!.correctionUrl}
+            target="_blank"
+            rel="noreferrer"
+            className="underline"
+          >
+            الإجابة النموذجية
+          </a>
+          {' — راجعها بعد أن تكتب، لا قبل.'}
+        </p>
+      )}
 
       <div className="rounded-2xl p-3 bg-[#f7f8f7] dark:bg-black/20 mb-3">
         <p className="text-[11px] font-black text-[#506072] dark:text-gray-400 mb-1">السندات المقدَّمة</p>

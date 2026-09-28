@@ -2523,3 +2523,48 @@ En début de session, `repoIntegrity.test.ts` a **échoué** : les deux fichiers
 de contrôle post-build avaient de nouveau disparu de la copie de travail. Cette
 fois, la perte a été signalée en quelques secondes au lieu de passer quatre
 sprints inaperçue — et restaurée avant tout commit.
+
+---
+
+## Sprint 42 — le corrigé officiel, à un clic mais après avoir écrit
+
+### Ce qui manquait à la chaîne
+
+L'élève lit l'idée d'un exercice, écrit sa réponse, reçoit un contrôle de
+forme… puis n'a **aucun moyen de vérifier le fond**. L'app ne publie pas de
+corrigé — ce serait reproduire un contenu qui ne lui appartient pas, et donner
+une réponse là où il faut un raisonnement. Mais elle peut envoyer à la source.
+
+### Les dix corrigés officiels, vérifiés un par un
+
+`BAC_SESSION_SOURCES` porte désormais, pour chaque session, **le sujet ET le
+corrigé**. Aucune URL n'a été devinée par motif : quatre ont été ouvertes
+directement pendant ce sprint (2022, 2023, 2024, 2025), les autres proviennent
+du lien « تصحيح الموضوع » lu dans la page du sujet. Détail qui justifie cette
+prudence : la session **2017 ne suit pas le motif des autres**
+(`correction-bac-se-science-2017` et non `correction-bac-science-2017-se`) — un
+lien construit par motif aurait été mort.
+
+Pour 2026, sujet et corrigé sont le **même PDF** chez DzExams : le test
+l'autorise explicitement pour cette seule année, et exige une URL distincte
+partout ailleurs.
+
+### Où le lien apparaît, et comment il est formulé
+
+Dans l'atelier d'écriture, sous le titre de l'exercice :
+
+> الموضوع الرسمي 2023 · الإجابة النموذجية — **راجعها بعد أن تكتب، لا قبل.**
+
+La dernière proposition est le cœur du sprint. Un corrigé accessible avant la
+rédaction détruit l'exercice ; le même corrigé, ouvert après, est la seule
+façon de vérifier le fond. Les liens s'ouvrent dans un **nouvel onglet**
+(vérifié par test) pour ne pas perdre le brouillon en cours.
+
+La ligne de barème des annales gagne le même couple de liens.
+
+### Vérifications
+
+Suite unitaire **1703 verts / 4 skipped / 0 échec** (134 fichiers) ; contrôles
+post-build **14 verts**. Les fichiers de contrôle post-build, à nouveau absents
+de la copie de travail en début de sprint, ont été restaurés — `repoIntegrity`
+les signale désormais immédiatement.

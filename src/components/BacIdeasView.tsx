@@ -434,6 +434,16 @@ export default function BacIdeasView({ onBackToHome, focusIdeaId = null }: BacId
               <a href={sourceAnnee.url} target="_blank" rel="noreferrer" className="underline">
                 الموضوع الرسمي
               </a>
+              {' · '}
+              <a
+                data-testid="lien-correction"
+                href={sourceAnnee.correctionUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="underline"
+              >
+                الإجابة النموذجية
+              </a>
             </>
           )}
         </p>

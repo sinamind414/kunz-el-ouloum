@@ -21,6 +21,7 @@ import {
   unitPressure,
   verbFrequency,
   bacEchoForSituation,
+  sourcesForYear,
   bacEchoForCapsule,
   bacEchoForDrill,
   observedUnitSharePercent,
@@ -57,6 +58,24 @@ describe('banque أفكار التمارين — intégrité de la collecte', ()
     const annees = BAC_SESSION_SOURCES.map((s) => s.year).sort((a, b) => b - a);
     expect(annees).toEqual(YEARS_COVERED);
     for (const s of BAC_SESSION_SOURCES) expect(s.url).toMatch(/^https:\/\//);
+  });
+
+  it('cite aussi le corrigé officiel de chaque session (sprint 42)', () => {
+    for (const s of BAC_SESSION_SOURCES) {
+      expect(s.correctionUrl, `corrigé ${s.year}`).toMatch(/^https:\/\//);
+      // 2026 mise à part : chez DzExams, sujet et corrigé sont un seul PDF.
+      if (s.year !== 2026) {
+        expect(s.correctionUrl, `corrigé ${s.year}`).not.toBe(s.url);
+        expect(s.correctionUrl).toContain('correction');
+      }
+    }
+  });
+
+  it('retrouve les deux sources d’une session, et rien pour une année absente', () => {
+    const s2018 = sourcesForYear(2018);
+    expect(s2018?.url).toContain('2018');
+    expect(s2018?.correctionUrl).toContain('2018');
+    expect(sourcesForYear(1999)).toBeNull();
   });
 
   it('n’a aucun identifiant dupliqué et respecte le format bacAAAA_sN_eN', () => {

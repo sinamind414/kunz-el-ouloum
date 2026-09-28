@@ -9,7 +9,7 @@ import { cleanup, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import BacIdeaTrainer, { famillesDemandees } from '../BacIdeaTrainer';
-import { IDEA_BY_ID } from '../../data/bacSessionIndex';
+import { IDEA_BY_ID, sourcesForYear } from '../../data/bacSessionIndex';
 import { VERB_FAMILY_BY_ID } from '../../data/verbDemands';
 
 afterEach(cleanup);
@@ -90,5 +90,26 @@ describe('atelier — mémoire et divulgation', () => {
     expect(screen.queryByTestId('trainer-notion-texte')).toBeNull();
     await user.click(screen.getByTestId('trainer-notion'));
     expect(screen.getByTestId('trainer-notion-texte').textContent).toBe(IDEE.notionAr);
+  });
+});
+
+
+describe('atelier — sources officielles (sprint 42)', () => {
+  it('donne le sujet et le corrigé de la session, avec le bon conseil d’usage', () => {
+    render(<BacIdeaTrainer idea={IDEE} onClose={() => {}} />);
+    const bloc = screen.getByTestId('trainer-sources');
+    const sources = sourcesForYear(IDEE.year)!;
+    const liens = Array.from(bloc.querySelectorAll('a')).map((a) => a.getAttribute('href'));
+    expect(liens).toContain(sources.url);
+    expect(liens).toContain(sources.correctionUrl);
+    expect(bloc.textContent).toContain('بعد أن تكتب');
+  });
+
+  it('ouvre les sources dans un nouvel onglet, sans perdre le brouillon', () => {
+    render(<BacIdeaTrainer idea={IDEE} onClose={() => {}} />);
+    for (const a of Array.from(screen.getByTestId('trainer-sources').querySelectorAll('a'))) {
+      expect(a.getAttribute('target')).toBe('_blank');
+      expect(a.getAttribute('rel')).toContain('noreferrer');
+    }
   });
 });

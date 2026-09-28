@@ -76,19 +76,77 @@ export interface BacExerciseIdea {
   drillIds: string[];
 }
 
-/** Sujets officiels lus pour construire cette banque. */
-export const BAC_SESSION_SOURCES: { year: number; url: string }[] = [
-  { year: 2017, url: 'https://eddirasa.com/bac-science-2017-se/' },
-  { year: 2018, url: 'https://eddirasa.com/bac-science-2018-se/' },
-  { year: 2019, url: 'https://eddirasa.com/bac-science-2019-se/' },
-  { year: 2020, url: 'https://eddirasa.com/bac-science-2020-se/' },
-  { year: 2021, url: 'https://eddirasa.com/bac-science-2021-se/' },
-  { year: 2022, url: 'https://eddirasa.com/bac-science-2022-se/' },
-  { year: 2023, url: 'https://eddirasa.com/bac-science-2023-se/' },
-  { year: 2024, url: 'https://eddirasa.com/bac-science-2024-se/' },
-  { year: 2025, url: 'https://eddirasa.com/bac-science-2025-se/' },
-  { year: 2026, url: 'https://www.dzexams.com/ar/annales/L0tWNjNjZ1pNQ1RmU3JUOUFUbFpTdz09' },
+/**
+ * Sujets officiels lus pour construire cette banque, avec le CORRIGÉ officiel
+ * correspondant (sprint 42).
+ *
+ * Pourquoi le corrigé compte : l'app décrit l'idée de chaque exercice et
+ * contrôle la forme des réponses, mais elle ne publie aucun corrigé — ce
+ * serait reproduire un contenu qui ne lui appartient pas, et donner une
+ * réponse là où il faut un raisonnement. Le lien envoie l'élève à la source
+ * officielle, qui reste l'autorité.
+ *
+ * Chaque URL de corrigé a été vérifiée : soit ouverte directement, soit lue
+ * dans le lien « تصحيح الموضوع » de la page du sujet. Pour 2026, le PDF de
+ * DzExams contient le sujet ET l'« الإجابة النموذجية » — même adresse.
+ */
+export const BAC_SESSION_SOURCES: { year: number; url: string; correctionUrl: string }[] = [
+  {
+    year: 2017,
+    url: 'https://eddirasa.com/bac-science-2017-se/',
+    correctionUrl: 'https://eddirasa.com/correction-bac-se-science-2017/',
+  },
+  {
+    year: 2018,
+    url: 'https://eddirasa.com/bac-science-2018-se/',
+    correctionUrl: 'https://eddirasa.com/correction-bac-science-2018-se/',
+  },
+  {
+    year: 2019,
+    url: 'https://eddirasa.com/bac-science-2019-se/',
+    correctionUrl: 'https://eddirasa.com/correction-bac-science-2019-se/',
+  },
+  {
+    year: 2020,
+    url: 'https://eddirasa.com/bac-science-2020-se/',
+    correctionUrl: 'https://eddirasa.com/correction-bac-science-2020-se/',
+  },
+  {
+    year: 2021,
+    url: 'https://eddirasa.com/bac-science-2021-se/',
+    correctionUrl: 'https://eddirasa.com/correction-bac-science-2021-se/',
+  },
+  {
+    year: 2022,
+    url: 'https://eddirasa.com/bac-science-2022-se/',
+    correctionUrl: 'https://eddirasa.com/correction-bac-science-2022-se/',
+  },
+  {
+    year: 2023,
+    url: 'https://eddirasa.com/bac-science-2023-se/',
+    correctionUrl: 'https://eddirasa.com/correction-bac-science-2023-se/',
+  },
+  {
+    year: 2024,
+    url: 'https://eddirasa.com/bac-science-2024-se/',
+    correctionUrl: 'https://eddirasa.com/correction-bac-science-2024-se/',
+  },
+  {
+    year: 2025,
+    url: 'https://eddirasa.com/bac-science-2025-se/',
+    correctionUrl: 'https://eddirasa.com/correction-bac-science-2025-se/',
+  },
+  {
+    year: 2026,
+    url: 'https://www.dzexams.com/ar/annales/L0tWNjNjZ1pNQ1RmU3JUOUFUbFpTdz09',
+    correctionUrl: 'https://www.dzexams.com/ar/annales/L0tWNjNjZ1pNQ1RmU3JUOUFUbFpTdz09',
+  },
 ];
+
+/** Sources officielles d'une session : sujet et corrigé. */
+export function sourcesForYear(year: number) {
+  return BAC_SESSION_SOURCES.find((s) => s.year === year) ?? null;
+}
 
 /**
  * Sessions non couvertes faute de source lisible.
