@@ -27,6 +27,8 @@ export interface CopieResultat {
   exercice?: 1 | 2 | 3;
   /** Note correcteur : total /20 (complet) ou note /maxPts (exercice). */
   note: number;
+  /** Réserve humaine (items manuels) : la note n'est qu'une borne inférieure. */
+  reserveManuelle?: number;
   /** Ambiguïté d'attribution S1/S2 (écart < 1 pt) — à trancher à la main. */
   attributionAmbigue?: boolean;
   couverture: number;
@@ -295,6 +297,7 @@ export function evaluerCopie(
     const couv = best!.ex.reduce((s, e) => s + e.couverture, 0) / 3;
     return {
       fichier, numero, mode: 'sujet-complet', sujet: best!.sujet, note: best!.total,
+      reserveManuelle: Math.round(best!.ex.reduce((s, e) => s + e.pointsManuelsAArbitrer, 0) * 100) / 100,
       attributionAmbigue: ambigue || undefined, couverture: Math.round(couv * 1000) / 1000,
       notesParExercice: best!.ex.map((e) => e.points),
       plafondsActifs: [...new Set(best!.ex.flatMap(fmtPlafonds))],
@@ -305,14 +308,14 @@ export function evaluerCopie(
     const n = noterExerciceCalibre(texte, opts.groupe.sujet, opts.groupe.exercice);
     return {
       fichier, numero, mode: 'exercice', sujet: opts.groupe.sujet, exercice: opts.groupe.exercice,
-      note: n.points, couverture: n.couverture, plafondsActifs: fmtPlafonds(n),
+      note: n.points, reserveManuelle: n.pointsManuelsAArbitrer, couverture: n.couverture, plafondsActifs: fmtPlafonds(n),
       sanctionsForte: n.sanctionsForte.map((s) => s.id),
     };
   }
   const auto = evaluerExerciceAuto(texte);
   return {
     fichier, numero, mode: 'exercice', sujet: auto.sujet, exercice: auto.exercice,
-    note: auto.note, couverture: auto.couverture, plafondsActifs: fmtPlafonds(auto.n),
+    note: auto.note, reserveManuelle: auto.n.pointsManuelsAArbitrer, couverture: auto.couverture, plafondsActifs: fmtPlafonds(auto.n),
     sanctionsForte: auto.n.sanctionsForte.map((s) => s.id),
   };
 }

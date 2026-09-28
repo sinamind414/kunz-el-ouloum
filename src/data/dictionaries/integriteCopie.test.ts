@@ -50,7 +50,12 @@ describe('C1 — les réponses modèles de Meftah : couvertes, non plafonnées',
       expect(n.signaux.ratioEcho ?? 0, 'pas un perroquet de l\'énoncé').toBeLessThanOrEqual(SEUIL_ECHO);
       expect(n.plafonds, 'AUCUN plafond sur une copie légitime').toEqual([]);
       expect(n.couverture, `${exId} couverture registre`).toBeGreaterThanOrEqual(0.85);
-      expect(n.points).toBeGreaterThanOrEqual(0.9 * MAX[`ex${exercice}` as 'ex1' | 'ex2' | 'ex3']);
+      // F3 : ex3 a un item manuel (schéma) → la machine plafonne à 6,36/8 ;
+      // c'est points+réserve qui atteint le barème officiel.
+      const reserve = n.pointsManuelsAArbitrer;
+      expect(n.points + reserve, `${exId} points+réserve`).toBeGreaterThanOrEqual(
+        0.9 * MAX[`ex${exercice}` as 'ex1' | 'ex2' | 'ex3'],
+      );
     });
   }
 

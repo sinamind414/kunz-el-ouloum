@@ -78,7 +78,15 @@ describe('C4b — les inversions factuelles coûtent 0,5 n ; les vigilances rien
   // L'item NE (corr-2025-19) exige « النورادرينالين » mais le corrigé officiel
   // écrit « NE » : la copie modèle elle-même ne le crédite pas (bug de formes
   // ouvert pour F2 — docs/DIAGNOSTIC_EX3.md §3).
-  const NOTE_MODELE_EX3 = 7.36;
+  //
+  // F3 (2026-09-28) : l'item schéma (corr-2025-25) est devenu MANUEL — un
+  // schéma est une structure (flèches, deux branches), aucune signature keyword
+  // ne le distingue d'un récit (preuve : eleve_28, schéma absent noté 0/2 par
+  // le prof, créditait 0,5 via le prose de الربط). Sa part (0,5 registre → 1,0
+  // officiel) passe en réserve humaine : note auto max = 6,36, fourchette
+  // [6,36 ; 7,36] (+1,0 arbitré, et l'item NE non crédité plafonne à 7,36 sur
+  // l'échelle officielle complète).
+  const NOTE_MODELE_EX3 = 6.36;
 
   it('copie saine : aucune sanction forte, note intacte', () => {
     const n = noterExerciceCalibre(MEFTAH_EX3, 1, 3);
