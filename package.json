@@ -21,7 +21,7 @@
     "db:migrate": "tsx server/migrate.ts",
     "verify:store": "tsx server/verify.ts",
     "migrate": "tsx server/migrate.ts",
-    "test:build": "vite build && REQUIRE_BUILD_SMOKE=1 vitest run --config vite.build-test.config.ts"
+    "test:build": "vite build && vitest run --config vite.build-test.config.ts"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.115.0",

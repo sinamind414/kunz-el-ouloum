@@ -8,6 +8,15 @@
 // Usage : `npm run test:build` (build puis exécution de ce fichier).
 import { defineConfig } from 'vite';
 
+// Portabilité du drapeau : `VAR=1 commande` est une syntaxe POSIX — sous
+// Windows (cmd/PowerShell) elle est lue comme un nom de programme et le script
+// s'arrête avant même de lancer les contrôles. On fixe donc le drapeau ici,
+// dans la seule configuration qui sert aux contrôles post-build, plutôt que
+// dans le script npm : même intention que l'originale (`REQUIRE_BUILD_SMOKE=1
+// vitest run ...`), sans dépendance cross-env et valable sous tous les OS.
+// Lancer cette configuration signifie « le build est censé exister ».
+process.env.REQUIRE_BUILD_SMOKE = process.env.REQUIRE_BUILD_SMOKE ?? '1';
+
 export default defineConfig({
   test: {
     environment: 'node',
