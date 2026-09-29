@@ -5,6 +5,8 @@
 // Fige : l'intégrité des données, la CHAÎNE de dérivation (verso = option
 // correcte + explication du corpus), et le désinfecteur de restauration.
 
+import { existsSync } from 'node:fs';
+import { resolve } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { SVT_FLASHCARDS } from './index';
 import { SVT_QUIZ_QUESTIONS } from '../quizCorpus';
@@ -84,5 +86,28 @@ describe('désinfecteur localStorage — un blob troué est rejeté en bloc', ()
     expect(healSavedFlashcards(null)).toBeNull();
     expect(healSavedFlashcards('x')).toBeNull();
     expect(healSavedFlashcards([{ id: 'x' }])).toBeNull();
+  });
+});
+
+describe('diagrammes — Phase 3 : chaque carte pointe un schéma ProFigure local', () => {
+  it('les 552 cartes ont un diagramUrl (aucun slot vide)', () => {
+    const sans = SVT_FLASHCARDS.filter((c) => !c.diagramUrl);
+    expect(sans.map((c) => c.id), 'cartes sans diagramUrl').toEqual([]);
+  });
+
+  it('toutes les cibles sont locales (aucune URL distante) et existent sur disque', () => {
+    for (const c of SVT_FLASHCARDS) {
+      const url = c.diagramUrl ?? '';
+      expect(/^https?:/.test(url), `${c.id} : URL distante ${url}`).toBe(false);
+      expect(url.startsWith('/assets/'), `${c.id} : chemin non local ${url}`).toBe(true);
+      const fichier = resolve(__dirname, '../../public' + url);
+      expect(existsSync(fichier), `${c.id} : asset fantôme ${url}`).toBe(true);
+    }
+  });
+
+  it('toutes les cibles sont des SVG ProFigure (hormis les médias historiques déjà présents)', () => {
+    const nonSvg = SVT_FLASHCARDS.filter((c) => !(c.diagramUrl ?? '').endsWith('.svg'));
+    // le corpus historique compte 1 visuel .jpg existant — tout le reste est SVG normalisé
+    expect(nonSvg.length).toBeLessThanOrEqual(1);
   });
 });

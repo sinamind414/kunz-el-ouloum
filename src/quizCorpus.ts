@@ -7118,6 +7118,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
   //    ACTIVE_LESSONS['prerequis2AS_genetique'].
   {
     "id": 509,
+    "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_69_rh_factor_genotype_phenotype_modern.svg",
     "unitId": 4,
     "questionText": "تشخيص المكتسبات القبلية: ما هو الأليل (Allèle)؟",
     "options": [
@@ -7131,6 +7132,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
   },
   {
     "id": 510,
+    "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_59_blood_group_determination_modern.svg",
     "unitId": 4,
     "questionText": "تشخيص المكتسبات القبلية: شخص نمطه الوراثي A//B. ما نمطه الظاهري؟",
     "options": [
@@ -7144,6 +7146,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
   },
   {
     "id": 511,
+    "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_58_hla_I_II_structure_modern.svg",
     "unitId": 4,
     "questionText": "تشخيص المكتسبات القبلية: أين توجد محددات نظام التوافق النسيجي HLA (CMH)؟",
     "options": [
@@ -7157,6 +7160,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
   },
   {
     "id": 512,
+    "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_59b_blood_group_analysis_modern.svg",
     "unitId": 4,
     "questionText": "تشخيص المكتسبات القبلية: شخصان لهما نفس الزمرة الدموية A+. هل ينجح الطعم بينهما بالضرورة؟",
     "options": [
@@ -7170,6 +7174,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
   },
   {
     "id": 513,
+    "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_58_hla_I_II_structure_modern.svg",
     "unitId": 4,
     "questionText": "تشخيص المكتسبات القبلية: ماذا يعني «النمط الفرداني» (Haplotype) في نظام HLA؟",
     "options": [
@@ -7183,6 +7188,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
   },
   {
     "id": 514,
+    "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_69_rh_factor_genotype_phenotype_modern.svg",
     "unitId": 4,
     "questionText": "تشخيص المكتسبات القبلية: لماذا ينجح الطعم دائماً بين توأمين حقيقيين؟",
     "options": [
@@ -7196,6 +7202,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
   },
   {
     "id": 515,
+    "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_69_rh_factor_genotype_phenotype_modern.svg",
     "unitId": 4,
     "questionText": "تشخيص المكتسبات القبلية: ما الفرق بين النمط الوراثي والنمط الظاهري؟",
     "options": [
@@ -7209,6 +7216,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
   },
   {
     "id": 516,
+    "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_59_blood_group_determination_modern.svg",
     "unitId": 4,
     "questionText": "تشخيص المكتسبات القبلية: شخص زمرته الدموية [O]. ماذا نستنتج عن نمطه الوراثي ومحدداته؟",
     "options": [
@@ -7222,6 +7230,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
   },
   {
     "id": 517,
+    "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_41_alanine_representations_modern.svg",
     "unitId": 2,
     "questionText": "حمض أميني نقطة تعادله الكهربائي pHi = 6. عند pH = 2 يحمل شحنة:",
     "options": [
@@ -7235,6 +7244,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
   },
   {
     "id": 518,
+    "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_66_gamma_globulin_electrophoresis_modern.svg",
     "unitId": 2,
     "questionText": "في جهاز الهجرة الكهربائية، الحمض الأميني السالب الشحنة يهاجر نحو:",
     "options": [
@@ -7248,6 +7258,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
   },
   {
     "id": 519,
+    "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_66_gamma_globulin_electrophoresis_modern.svg",
     "unitId": 2,
     "questionText": "بقعة حمض أميني بقيت في مكان الوضع بعد انتهاء الفصل الكهربائي. الاستنتاج الصحيح:",
     "options": [
@@ -7261,6 +7272,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
   },
   {
     "id": 520,
+    "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_41_alanine_representations_modern.svg",
     "unitId": 2,
     "questionText": "يوصف الحمض الأميني بأنه مركب أمفوتيري لأنه:",
     "options": [
@@ -7274,6 +7286,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
   },
   {
     "id": 521,
+    "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_66_gamma_globulin_electrophoresis_modern.svg",
     "unitId": 2,
     "questionText": "خليط من Glu (pHi = 3.2) و Lys (pHi = 9.7) وُضع في منتصف الشريط عند pH = 6. النتيجة المنتظرة:",
     "options": [
@@ -7287,6 +7300,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
   },
   {
     "id": 522,
+    "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_41_alanine_representations_modern.svg",
     "unitId": 2,
     "questionText": "عند pH يساوي pHi، الصيغة الغالبة للحمض الأميني تكون:",
     "options": [
@@ -7300,6 +7314,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
   },
   {
     "id": 523,
+    "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_66_gamma_globulin_electrophoresis_modern.svg",
     "unitId": 2,
     "questionText": "أي معطى لا غنى عنه للإجابة عن سؤال «حدد اتجاه هجرة الحمض الأميني»؟",
     "options": [
@@ -7313,6 +7328,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
   },
   {
     "id": 524,
+    "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_66_gamma_globulin_electrophoresis_modern.svg",
     "unitId": 2,
     "questionText": "ببتيد ثنائي Gly-Glu فُصل عند pH = 1. سلوكه المنتظر:",
     "options": [
@@ -7326,6 +7342,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
   },
   {
     "id": 525,
+    "diagramUrl": "/assets/images/schemas/domaine1_enzymes/schema_87_enzyme_inhibition_curves_ar.svg",
     "unitId": 3,
     "questionText": "منحنى V = f([S]) في وجود مثبط بلغ نفس Vmax للشاهد لكن بتراكيز ركيزة أكبر. المثبط:",
     "options": [
@@ -7339,6 +7356,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
   },
   {
     "id": 526,
+    "diagramUrl": "/assets/images/schemas/domaine1_enzymes/schema_87_enzyme_inhibition_curves_ar.svg",
     "unitId": 3,
     "questionText": "مثبط خفّض السرعة القصوى Vmax ولم تُجدِ زيادة تركيز الركيزة في رفعها. التفسير الصحيح:",
     "options": [
@@ -7352,6 +7370,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
   },
   {
     "id": 527,
+    "diagramUrl": "/assets/images/schemas/domaine1_enzymes/schema_87_enzyme_inhibition_curves_ar.svg",
     "unitId": 3,
     "questionText": "على منحنى V = f([S])، تُحدَّد قيمة Km بـ:",
     "options": [
@@ -7365,6 +7384,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
   },
   {
     "id": 528,
+    "diagramUrl": "/assets/images/schemas/domaine1_enzymes/schema_88_enzyme_six_curves_workshop_ar.svg",
     "unitId": 3,
     "questionText": "منحنى يمثل كمية الناتج بدلالة الزمن استقر عند مستوى ثابت. السبب الأرجح:",
     "options": [
@@ -7378,6 +7398,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
   },
   {
     "id": 529,
+    "diagramUrl": "/assets/images/schemas/domaine1_enzymes/schema_88_enzyme_six_curves_workshop_ar.svg",
     "unitId": 3,
     "questionText": "ينخفض النشاط الإنزيمي على جانبي درجة الحموضة المثلى لأن:",
     "options": [
@@ -7391,6 +7412,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
   },
   {
     "id": 530,
+    "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_22_immunite_vih.svg",
     "unitId": 4,
     "questionText": "يتثبت فيروس VIH على الخلية المستهدفة بفضل:",
     "options": [
@@ -7404,6 +7426,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
   },
   {
     "id": 531,
+    "diagramUrl": "/assets/images/schemas/domaine1_immunite/schema_90_vih_cycle_lt4_ar.svg",
     "unitId": 4,
     "questionText": "يُصنف VIH ضمن الفيروسات القهقرية (الراجعة) لأنه:",
     "options": [
@@ -7417,6 +7440,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
   },
   {
     "id": 532,
+    "diagramUrl": "/assets/images/schemas/domaine1_immunite/schema_90_vih_cycle_lt4_ar.svg",
     "unitId": 4,
     "questionText": "«الانقلاب المصلي» يعني:",
     "options": [
@@ -7430,6 +7454,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
   },
   {
     "id": 533,
+    "diagramUrl": "/assets/images/schemas/domaine1_immunite/schema_89_vih_evolution_curves_ar.svg",
     "unitId": 4,
     "questionText": "شخص موجب المصل، بدون أي عرض، عدد LT4 عنده قريب من العادي. العبارة الصحيحة:",
     "options": [
@@ -7443,6 +7468,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
   },
   {
     "id": 534,
+    "diagramUrl": "/assets/images/schemas/domaine1_immunite/schema_89_vih_evolution_curves_ar.svg",
     "unitId": 4,
     "questionText": "تُعلن مرحلة السيدا عند نزول عدد اللمفاويات LT4 تحت:",
     "options": [
@@ -7456,6 +7482,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
   },
   {
     "id": 535,
+    "diagramUrl": "/assets/images/schemas/domaine1_immunite/schema_90_vih_cycle_lt4_ar.svg",
     "unitId": 4,
     "questionText": "يؤدي تخريب اللمفاويات LT4 إلى انهيار المناعتين الخلطية والخلوية معاً لأن:",
     "options": [
@@ -7469,6 +7496,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
   },
   {
     "id": 536,
+    "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_63_antigen_antibody_complex_modern.svg",
     "unitId": 4,
     "questionText": "اختبار ELISA المستعمل في التشخيص الروتيني للإصابة بـ VIH يكشف عن:",
     "options": [
@@ -7482,6 +7510,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
   },
   {
     "id": 537,
+    "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_75_primary_secondary_response_curve_modern.svg",
     "unitId": 4,
     "questionText": "شخص أصيب منذ أسبوع أعطى اختبار ELISA سالباً. الاستنتاج الصحيح:",
     "options": [
@@ -7495,6 +7524,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
   },
   {
     "id": 538,
+    "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_28_anagene_mutation_compare_modern_ar.svg",
     "unitId": 4,
     "questionText": "فشل اللقاحات التجريبية المضادة لـ VIH يُعلَّل أساساً بـ:",
     "options": [
@@ -7508,6 +7538,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
   },
   {
     "id": 539,
+    "diagramUrl": "/assets/images/schemas/domaine1_immunite/schema_89_vih_evolution_curves_ar.svg",
     "unitId": 4,
     "questionText": "ترتكز المعالجة الحالية متعددة العلاجات ضد VIH على:",
     "options": [
@@ -7521,6 +7552,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
   },
   {
     "id": 540,
+    "diagramUrl": "/assets/images/schemas/domaine2_energie/schema_93_photochemical_chain_z_scheme_ar.svg",
     "unitId": 6,
     "questionText": "يستعيد النظام الضوئي PSII الإلكترونات التي فقدها من:",
     "options": [
@@ -7534,6 +7566,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
   },
   {
     "id": 541,
+    "diagramUrl": "/assets/images/schemas/domaine2_energie/schema_93_photochemical_chain_z_scheme_ar.svg",
     "unitId": 6,
     "questionText": "المستقبل النهائي للإلكترونات في المرحلة الكيموضوئية هو:",
     "options": [
@@ -7547,6 +7580,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
   },
   {
     "id": 542,
+    "diagramUrl": "/assets/images/schemas/domaine2_energie/schema_93_photochemical_chain_z_scheme_ar.svg",
     "unitId": 6,
     "questionText": "ترتيب مرور الإلكترون الصحيح هو:",
     "options": [
@@ -7560,6 +7594,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
   },
   {
     "id": 543,
+    "diagramUrl": "/assets/images/schemas/domaine2_energie/schema_93_photochemical_chain_z_scheme_ar.svg",
     "unitId": 6,
     "questionText": "تُضخ البروتونات H⁺ أثناء المرحلة الكيموضوئية:",
     "options": [
@@ -7573,6 +7608,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
   },
   {
     "id": 544,
+    "diagramUrl": "/assets/images/schemas/domaine2_energie/schema_94_photophosphorylation_vs_oxydative_ar.svg",
     "unitId": 6,
     "questionText": "يتركب ATP في الصانعة الخضراء بفعل:",
     "options": [
@@ -7586,6 +7622,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
   },
   {
     "id": 545,
+    "diagramUrl": "/assets/images/schemas/domaine2_energie/schema_90_jagendorf_acid_bath_modern_ar.svg",
     "unitId": 6,
     "questionText": "تجربة جاغندورف (تركيب ATP في الظلام) تُثبت أن:",
     "options": [
@@ -7599,6 +7636,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
   },
   {
     "id": 546,
+    "diagramUrl": "/assets/images/schemas/domaine2_energie/schema_09_photosynthese.svg",
     "unitId": 6,
     "questionText": "نواتج المرحلة الكيموضوئية المستعملة في المرحلة الكيميوحيوية هي:",
     "options": [
@@ -7612,6 +7650,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
   },
   {
     "id": 547,
+    "diagramUrl": "/assets/images/schemas/domaine2_energie/schema_10_respiration.svg",
     "unitId": 7,
     "questionText": "المستقبل النهائي للإلكترونات في الفسفرة التأكسدية داخل الميتوكوندري هو:",
     "options": [
@@ -7625,6 +7664,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
   },
   {
     "id": 548,
+    "diagramUrl": "/assets/images/schemas/domaine2_energie/schema_94_photophosphorylation_vs_oxydative_ar.svg",
     "unitId": 7,
     "questionText": "المبدأ المشترك بين الفسفرة الضوئية والفسفرة التأكسدية هو:",
     "options": [
@@ -7638,6 +7678,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
   },
   {
     "id": 549,
+    "diagramUrl": "/assets/images/schemas/domaine2_energie/schema_93_photochemical_chain_z_scheme_ar.svg",
     "unitId": 6,
     "questionText": "يتراكم البروتون H⁺ في الصانعة الخضراء داخل:",
     "options": [
