@@ -32,7 +32,14 @@ import {
   type KnowledgeCard as LegacyKnowledgeCard,
 } from './knowledgeCards';
 import { STUDY_GUIDE_CARDS, type StudyGuideCard } from './studyGuide';
-import { normalizeArabic, tokenizeArabic } from './utils/arabicNormalize';
+import { SYNONYM_GROUPS } from './lib/validation/synonyms';
+import { detecterStuffing } from './lib/validation/stuffingDetector';
+import {
+  normalizeArabic,
+  tokenizeArabic,
+  fuzzyTokenEquals,
+  tokenOverlapRatio,
+} from './utils/arabicNormalize';
 
 export { normalizeArabic, calculateKeywordScore, tokenizeArabic } from './utils/arabicNormalize';
 
@@ -238,7 +245,117 @@ const LESSON_CHUNKS: SearchChunk[] = LESSON_INDEX.map((c) => ({
 
 const ALL_CHUNKS: SearchChunk[] = [...GUIDE_CHUNKS, ...LEGACY_CHUNKS, ...BOOK_CHUNKS, ...OPUS_CHUNKS, ...LESSON_CHUNKS];
 
-function scoreChunk(norm: string, ch: SearchChunk, activeDomainId: number | null): number {
+/* -------------------------------------------------------------------------- *
+ * Détecteur « IN-DOMAINE » positif (R2 audit qualité Morchid 2026-09-29).    *
+ *                                                                            *
+ * Avant, le hors-sujet reposait sur une LISTE NOIRE figée (foot, cinéma…).   *
+ * Une question hors programme non listée traversait toute la cascade et      *
+ * renvoyait un extrait SVT peu pertinent (confiance 70) au lieu d'un franc   *
+ * « hors programme ». On calcule désormais un SIGNAL DE DOMAINE positif :    *
+ * la question doit partager du vocabulaire avec au moins une base.           *
+ *                                                                            *
+ *   - DOMAIN_VOCAB      : gros vocabulaire (tous les tokens ≥3 des titres,   *
+ *     alias et mots-clés de TOUTES les bases + titres de domaines).          *
+ *     → correspondance EXACTE (haute couverture, zéro faux signal).          *
+ *   - DOMAIN_CORE_VOCAB : vocabulaire identitaire CURÉ et restreint (titres  *
+ *     et alias de fiches + titres de domaines). → correspondance FLOUE, pour *
+ *     tolérer une faute de frappe sur un terme-clé sans sur-matcher.         *
+ *                                                                            *
+ * Un token exact du gros vocab OU un token flou du vocab curé = in-domaine.  *
+ * -------------------------------------------------------------------------- */
+function collectTokens(...phrases: string[]): string[] {
+  const out: string[] = [];
+  for (const p of phrases) out.push(...tokenizeArabic(p));
+  return out;
+}
+
+const DOMAIN_VOCAB: Set<string> = (() => {
+  const vocab = new Set<string>();
+  const add = (phrase: string | undefined) => {
+    if (!phrase) return;
+    for (const t of tokenizeArabic(phrase)) if (t.length >= 3) vocab.add(t);
+  };
+  for (const card of KNOWLEDGE_CARDS) {
+    add(card.title);
+    card.aliases.forEach(add);
+    card.keywords.forEach(add);
+  }
+  for (const ch of ALL_CHUNKS) {
+    add(ch.normTitle);
+    ch.normAliases.forEach((a) => add(a));
+    ch.normKeywords.forEach((k) => add(k));
+  }
+  for (const d of DOMAINS) add(d.title);
+  return vocab;
+})();
+
+/** Termes pédagogiques/commandes qui SONT dans le périmètre même s'ils ne
+ *  nomment pas un concept SVT (ex. clic sur un bouton « دليل الإجابة »). Évite
+ *  qu'une commande d'étude soit classée « hors programme ». */
+const PEDAGOGICAL_TERMS = [
+  'منهجيه', 'بروتوكول', 'دراسه', 'وحده', 'خطوات', 'دليل', 'الاجابه', 'اجابه',
+  'تجارب', 'تجربه', 'البكالوريا', 'بكالوريا', 'مراجعه', 'تلخيص', 'ملخص', 'تمرين',
+  'تمارين', 'سؤال', 'اسئله', 'شرح', 'تعريف', 'مقارنه', 'اختبار', 'تشخيصي', 'الدروس', 'درس',
+].map((t) => normalizeArabic(t)).filter((t) => t.length >= 3);
+for (const t of PEDAGOGICAL_TERMS) DOMAIN_VOCAB.add(t);
+
+const DOMAIN_CORE_VOCAB: string[] = (() => {
+  const core = new Set<string>();
+  for (const card of KNOWLEDGE_CARDS) {
+    for (const t of collectTokens(card.title, ...card.aliases)) if (t.length >= 4) core.add(t);
+  }
+  for (const d of DOMAINS) for (const t of tokenizeArabic(d.title)) if (t.length >= 4) core.add(t);
+  return Array.from(core);
+})();
+
+/** Mots vides / interrogatifs arabes : ils ne portent AUCUN signal de domaine.
+ *  Les retirer évite qu'un « كيف / متى / ماذا » suffise à faire passer une
+ *  question hors-sujet pour du programme. */
+const AR_STOPWORDS: Set<string> = new Set(
+  [
+    'ما', 'ماذا', 'من', 'هو', 'هي', 'هل', 'كيف', 'متى', 'اين', 'لماذا', 'كم', 'اي', 'ايهما',
+    'في', 'على', 'الى', 'عن', 'مع', 'بين', 'عند', 'هذا', 'هذه', 'ذلك', 'التي', 'الذي', 'الذين',
+    'كل', 'قد', 'ثم', 'او', 'مثل', 'ايضا', 'لكن', 'حتى', 'كذلك', 'يعني', 'اذا', 'عندما', 'شيء',
+    'يوجد', 'توجد', 'هناك', 'نعم', 'لا', 'ليس', 'كان', 'يكون', 'اريد', 'اعطني', 'قل', 'اخبرني',
+  ].map((w) => normalizeArabic(w)),
+);
+
+/** Vrai si la question partage un vocabulaire suffisant avec le programme SVT :
+ *  soit un token identique au vocabulaire global, soit un token proche (faute
+ *  de frappe) d'un terme identitaire curé. Sinon → hors programme. */
+function hasDomainSignal(inputTokens: string[]): boolean {
+  const content = inputTokens.filter((t) => t.length >= 3 && !AR_STOPWORDS.has(t));
+  if (content.length === 0) return false;
+  for (const t of content) if (DOMAIN_VOCAB.has(t)) return true;
+  for (const t of content) {
+    if (t.length < 4) continue;
+    if (DOMAIN_CORE_VOCAB.some((core) => fuzzyTokenEquals(t, core))) return true;
+  }
+  return false;
+}
+
+/** Réponse « hors programme » unique (utilisée par le garde-fou précoce ET par
+ *  le détecteur in-domaine positif en fin de cascade). */
+function outOfScopeResult(session: BotSession, label: string): EngineResult {
+  return {
+    session,
+    action: {
+      confidence: 0,
+      text: '❓ هذا السؤال خارج قاعدة علوم الطبيعة والحياة للبكالوريا. ركّز مراجعتك على المجالات الثلاثة: التخصص الوظيفي للبروتينات، التحولات الطاقوية، والتكتونية العامة.',
+      quickActions: session.activeDomainId
+        ? DOMAINS.find((d) => d.id === session.activeDomainId)?.quickActions || ['العودة للقائمة الرئيسية']
+        : DOMAINS.map((d) => d.title),
+      sources: [{ type: 'out_of_scope' as SourceType, title: label }],
+    },
+  };
+}
+
+function scoreChunk(
+  norm: string,
+  ch: SearchChunk,
+  activeDomainId: number | null,
+  inputTokens: string[],
+): number {
   if (norm.length < 3) return 0;
   let score = 0;
   if (ch.normTitle && ch.normTitle.length >= 3 && norm.includes(ch.normTitle)) score += 80;
@@ -246,7 +363,12 @@ function scoreChunk(norm: string, ch: SearchChunk, activeDomainId: number | null
     if (alias && alias.length >= 3 && norm.includes(alias)) score += 60;
   }
   for (const kw of ch.normKeywords) {
-    if (kw && kw.length >= 3 && norm.includes(kw)) score += 6;
+    if (kw && kw.length >= 3 && norm.includes(kw)) {
+      score += 6;
+    } else if (kw && kw.length >= 4 && !kw.includes(' ') && inputTokens.some((it) => fuzzyTokenEquals(it, kw))) {
+      // R1 : mot-clé mono-mot tapé avec une faute → demi-poids (recall sans bruit).
+      score += 3;
+    }
   }
   if (activeDomainId != null) {
     const range = DOMAIN_UNITS[activeDomainId];
@@ -302,7 +424,8 @@ function formatStudyGuideAnswer(card: StudyGuideCard): string {
 
 export function searchAllBases(norm: string, activeDomainId: number | null): SearchChunk[] {
   if (!norm || norm.length < 3) return [];
-  return ALL_CHUNKS.map((ch) => ({ ch, score: scoreChunk(norm, ch, activeDomainId) }))
+  const inputTokens = tokenizeArabic(norm);
+  return ALL_CHUNKS.map((ch) => ({ ch, score: scoreChunk(norm, ch, activeDomainId, inputTokens) }))
     .filter((x) => x.score >= 12)
     .sort((a, b) => b.score - a.score)
     .map((x) => x.ch);
@@ -362,7 +485,7 @@ function buildAnswer(norm: string, activeDomainId: number | null): TutorAction |
 
   if (scored) {
     const scienceCard = scored.card;
-    const confidence = confidenceFromCardScore(scored.score);
+    const confidence = confidenceFromCardScore(scored.score, scored.exact);
     const microHit = findMicroAnswer(scienceCard, norm);
     if (microHit) {
       return {
@@ -455,105 +578,168 @@ function includesAsWord(haystack: string, needle: string): boolean {
   }
 }
 
-export function findBestKnowledgeCard(input: string, activeDomainId: number | null): KnowledgeCard | null {
-  const norm = normalizeArabic(input);
-  if (!norm || norm.length < 2) return null;
-  const inputTokens = tokenizeArabic(norm);
-  let best: KnowledgeCard | null = null;
-  let bestRankingScore = 0;
-  let bestContentScore = 0;
+/* -------------------------------------------------------------------------- *
+ * Expansion par SYNONYMES (R3 audit 2026-09-29). Réutilise le dictionnaire    *
+ * curé `SYNONYM_GROUPS` (déjà maintenu pour ValidationEngine) au lieu de      *
+ * dupliquer des alias fiche par fiche : un élève qui écrit « acetylcholine », *
+ * « ACh » ou « أستيل كولين » active le même groupe que « الاستيل كولين ».     *
+ * -------------------------------------------------------------------------- */
+/** forme normalisée (normalizeArabic) → clés de groupes de synonymes. */
+const SYNONYM_FORM_INDEX: Map<string, string[]> = (() => {
+  const m = new Map<string, string[]>();
+  for (const g of SYNONYM_GROUPS) {
+    for (const form of g.forms) {
+      const nf = normalizeArabic(form);
+      if (!nf) continue;
+      const arr = m.get(nf) ?? [];
+      if (!arr.includes(g.key)) arr.push(g.key);
+      m.set(nf, arr);
+    }
+  }
+  return m;
+})();
 
-  for (const card of KNOWLEDGE_CARDS) {
-    let contentScore = 0;
-
-    for (const alias of card.aliases) {
-      const na = normalizeArabic(alias);
-      if (na && na.length >= 2 && includesAsWord(norm, na)) {
-        contentScore += 100 + na.length;
+/** Groupes de synonymes activés par la question (calculé UNE fois par requête). */
+function activeSynonymGroups(norm: string): Set<string> {
+  const active = new Set<string>();
+  for (const g of SYNONYM_GROUPS) {
+    for (const form of g.forms) {
+      const nf = normalizeArabic(form);
+      if (nf && nf.length >= 3 && (includesAsWord(norm, nf) || norm.includes(nf))) {
+        active.add(g.key);
+        break;
       }
     }
+  }
+  return active;
+}
 
-    const nt = normalizeArabic(card.title);
-    if (nt && nt.length >= 2 && includesAsWord(norm, nt)) contentScore += 50;
+/** Vrai si `nk` (mot-clé normalisé) appartient à un groupe activé par la question. */
+function keywordHitViaSynonym(nk: string, activeGroups: Set<string>): boolean {
+  if (activeGroups.size === 0) return false;
+  const groups = SYNONYM_FORM_INDEX.get(nk);
+  return !!groups && groups.some((k) => activeGroups.has(k));
+}
 
-    let keywordHits = 0;
-    for (const kw of card.keywords) {
-      const nk = normalizeArabic(kw);
-      if (nk.length < 2) continue;
-      if (inputTokens.includes(nk) || includesAsWord(norm, nk)) {
-        keywordHits += 1;
-      }
-    }
-    contentScore += keywordHits * 8;
+/**
+ * Score de contenu d'une fiche pour une question donnée (source unique — R1
+ * audit 2026-09-29 : `findBestKnowledgeCard` et sa variante scorée partagent
+ * désormais CE calcul, ce qui supprime la duplication à l'origine des dérives).
+ *
+ * Priorité EXACTE d'abord (précision), puis REPLI FLOU si l'exact échoue :
+ *   - alias : mot entier → 100+len ; sinon recouvrement ≥ 0,75 (multi-mots) ou
+ *     alias mono-mot tapé avec une faute → 60.
+ *   - titre : mot entier → 50 ; sinon recouvrement ≥ 0,60 → 25.
+ *   - mot-clé : présent (token/mot entier) OU tapé avec une faute → +8 chacun.
+ * Le flou n'intervient QUE pour les tokens ≥ 4 lettres, donc la précision sur
+ * les mots courts arabes reste intacte et l'exact garde toujours le dessus.
+ */
+interface CardScore {
+  score: number;
+  /** R5 : true si AU MOINS une preuve EXACTE (alias/titre mot-entier, ou mot-clé
+   *  présent tel quel). false quand le score ne vient QUE d'appariements inexacts
+   *  (faute de frappe, recouvrement partiel, synonyme) → confiance plafonnée. */
+  exact: boolean;
+}
 
-    const domainBonus = (activeDomainId != null && card.domainId === activeDomainId) ? 5 : 0;
-    const rankingScore = contentScore + domainBonus;
+function scoreCardContent(
+  norm: string,
+  inputTokens: string[],
+  card: KnowledgeCard,
+  activeGroups: Set<string>,
+): CardScore {
+  let contentScore = 0;
+  let exact = false;
 
-    if (rankingScore > bestRankingScore) {
-      bestRankingScore = rankingScore;
-      bestContentScore = contentScore;
-      best = card;
+  for (const alias of card.aliases) {
+    const na = normalizeArabic(alias);
+    if (!na || na.length < 2) continue;
+    if (includesAsWord(norm, na)) {
+      contentScore += 100 + na.length;
+      exact = true;
+    } else if (na.length >= 4 && tokenOverlapRatio(inputTokens, na) >= 0.75) {
+      contentScore += 60;
     }
   }
 
-  if (best && bestContentScore >= 8) return best;
-  return null;
+  const nt = normalizeArabic(card.title);
+  if (nt && nt.length >= 2) {
+    if (includesAsWord(norm, nt)) {
+      contentScore += 50;
+      exact = true;
+    } else if (nt.length >= 4 && tokenOverlapRatio(inputTokens, nt) >= 0.6) {
+      contentScore += 25;
+    }
+  }
+
+  let keywordHits = 0;
+  for (const kw of card.keywords) {
+    const nk = normalizeArabic(kw);
+    if (nk.length < 2) continue;
+    if (inputTokens.includes(nk) || includesAsWord(norm, nk)) {
+      keywordHits += 1;
+      exact = true;
+    } else if (nk.length >= 4 && inputTokens.some((it) => fuzzyTokenEquals(it, nk))) {
+      keywordHits += 1; // mot-clé mono-mot tapé avec une faute de frappe
+    } else if (keywordHitViaSynonym(nk, activeGroups)) {
+      keywordHits += 1; // R3 : forme synonyme du mot-clé présente dans la question
+    }
+  }
+  contentScore += keywordHits * 8;
+
+  return { score: contentScore, exact };
+}
+
+export function findBestKnowledgeCard(input: string, activeDomainId: number | null): KnowledgeCard | null {
+  return findBestKnowledgeCardScored(input, activeDomainId)?.card ?? null;
 }
 
 /** Variante scorée (R4 audit/G4) : permet d'alimenter `confidence` partout. */
 function findBestKnowledgeCardScored(
   input: string,
   activeDomainId: number | null,
-): { card: KnowledgeCard; score: number } | null {
+): { card: KnowledgeCard; score: number; exact: boolean } | null {
   const norm = normalizeArabic(input);
   if (!norm || norm.length < 2) return null;
   const inputTokens = tokenizeArabic(norm);
+  const activeGroups = activeSynonymGroups(norm);
   let best: KnowledgeCard | null = null;
   let bestRankingScore = 0;
   let bestContentScore = 0;
+  let bestExact = false;
 
   for (const card of KNOWLEDGE_CARDS) {
-    let contentScore = 0;
-
-    for (const alias of card.aliases) {
-      const na = normalizeArabic(alias);
-      if (na && na.length >= 2 && includesAsWord(norm, na)) {
-        contentScore += 100 + na.length;
-      }
-    }
-
-    const nt = normalizeArabic(card.title);
-    if (nt && nt.length >= 2 && includesAsWord(norm, nt)) contentScore += 50;
-
-    let keywordHits = 0;
-    for (const kw of card.keywords) {
-      const nk = normalizeArabic(kw);
-      if (nk.length < 2) continue;
-      if (inputTokens.includes(nk) || includesAsWord(norm, nk)) {
-        keywordHits += 1;
-      }
-    }
-    contentScore += keywordHits * 8;
-
+    const { score: contentScore, exact } = scoreCardContent(norm, inputTokens, card, activeGroups);
     const domainBonus = (activeDomainId != null && card.domainId === activeDomainId) ? 5 : 0;
     const rankingScore = contentScore + domainBonus;
 
     if (rankingScore > bestRankingScore) {
       bestRankingScore = rankingScore;
       bestContentScore = contentScore;
+      bestExact = exact;
       best = card;
     }
   }
 
-  if (best && bestContentScore >= 8) return { card: best, score: bestContentScore };
+  if (best && bestContentScore >= 8) return { card: best, score: bestContentScore, exact: bestExact };
   return null;
 }
 
-/** Confiance homogène (G4) : alias fort ≥ 100 → 90, titre/mots-clés → 80, sinon 70. */
-function confidenceFromCardScore(score: number): number {
-  if (score >= 100) return 90;
+/**
+ * Confiance calibrée (R5 audit 2026-09-29). Deux principes :
+ *   1. MONOTONE avec la force de la preuve : plus le score est élevé, plus la
+ *      confiance l'est (alias/titre exact > plusieurs mots-clés > un seul).
+ *   2. HONNÊTE sur la nature de la preuve : un match obtenu uniquement par
+ *      appariement INEXACT (faute de frappe, recouvrement partiel, synonyme)
+ *      est plafonné à 70 — on ne revendique jamais une haute confiance sur une
+ *      correspondance approximative. Aligne le plafond sur la recherche brute.
+ */
+function confidenceFromCardScore(score: number, exact: boolean): number {
+  if (!exact) return score >= 30 ? 70 : 65;
+  if (score >= 100) return 92;
+  if (score >= 50) return 85;
   if (score >= 30) return 80;
-  return 70;
+  return 75;
 }
 
 export function startDiagnostic(session: BotSession): EngineResult {
@@ -722,9 +908,15 @@ function gradeKeyPoints(answer: string, keyPoints: string[]): number {
     if (tokenAffirmed(normAnswer, t, nk)) hits += 1;
   }
   const coverage = hits / expected.size;
-  if (coverage >= 0.5) return 10;
-  if (coverage >= 0.2) return 5;
-  return 0;
+  const score = coverage >= 0.5 ? 10 : coverage >= 0.2 ? 5 : 0;
+
+  // R3 (audit 2026-09-29) : anti-bourrage lexical. La couverture de points-clés
+  // pouvait être « farmée » en répétant le même terme (ex. « أنزيم أنزيم أنزيم »).
+  // On réutilise le détecteur curé du projet : si la réponse est du bourrage,
+  // le score est annulé — on ne récompense pas une copie sans contenu réel.
+  if (score > 0 && detecterStuffing(answer).stuffing_detected) return 0;
+
+  return score;
 }
 
 function handleBossInput(session: BotSession, rawInput: string): EngineResult {
@@ -847,17 +1039,7 @@ export function processStudentInput(session: BotSession, rawInput: string): Engi
     const nk = n(k);
     return nk.length >= 3 && norm.includes(nk);
   }))) {
-    return {
-      session,
-      action: {
-        confidence: 0,
-        text: '❓ هذا السؤال خارج قاعدة علوم الطبيعة والحياة للبكالوريا. ركّز مراجعتك على المجالات الثلاثة: التخصص الوظيفي للبروتينات، التحولات الطاقوية، والتكتونية العامة.',
-        quickActions: session.activeDomainId
-          ? DOMAINS.find((d) => d.id === session.activeDomainId)?.quickActions || ['العودة للقائمة الرئيسية']
-          : DOMAINS.map((d) => d.title),
-        sources: [{ type: 'out_of_scope' as SourceType, title: rawInput || input }],
-      },
-    };
+    return outOfScopeResult(session, rawInput || input);
   }
 
   const studyGuideMatches = findBestStudyGuide(input);
@@ -931,7 +1113,7 @@ export function processStudentInput(session: BotSession, rawInput: string): Engi
 
   if (scoredCard) {
     const scienceCard = scoredCard.card;
-    const confidence = confidenceFromCardScore(scoredCard.score);
+    const confidence = confidenceFromCardScore(scoredCard.score, scoredCard.exact);
     const microHit = findMicroAnswer(scienceCard, norm);
     if (microHit) {
       return {
@@ -953,6 +1135,15 @@ export function processStudentInput(session: BotSession, rawInput: string): Engi
         sources: [{ type: 'internal_card' as SourceType, title: scienceCard.title }],
       },
     };
+  }
+
+  // R2 (audit qualité 2026-09-29) : détecteur IN-DOMAINE positif. On n'arrive
+  // ici QU'APRÈS l'échec de toutes les bases curées (guide/méthodo/livre/fiche).
+  // Si la question ne partage AUCUN vocabulaire avec le programme, c'est un
+  // hors-sujet non listé : on le déclare franchement au lieu de renvoyer un
+  // extrait vaguement lié (l'ancien fallback à confiance 70).
+  if (!hasDomainSignal(tokenizeArabic(norm))) {
+    return outOfScopeResult(session, rawInput || input);
   }
 
   const built = buildAnswer(norm, session.activeDomainId);

@@ -25,13 +25,13 @@ describe('index des leçons — intégration moteur', () => {
     expect(hits.some((h) => h.type === 'lesson' && h.id.startsWith('lha_'))).toBe(true);
 
     const action = answerTutorQuestion('اشرح تجربة هيل وروبن');
-    expect(action?.text || '').not.toContain('لم أجد إجابة');
+    expect(action?.text || '').not.toContain('هذا السؤال خارج قاعدة');
   });
 
   it('answerTutorQuestion expose la source type lesson pour un contenu propre aux leçons', () => {
     // Question ciblée sur un contenu de card HTML : le snippet doit être répondu.
     const action = answerTutorQuestion('ما هي مستويات البنية الفراغية للبروتين؟');
-    expect(action?.text || '').not.toContain('لم أجد إجابة');
+    expect(action?.text || '').not.toContain('هذا السؤال خارج قاعدة');
     expect(action?.sources?.length || 0).toBeGreaterThan(0);
   });
 
@@ -45,7 +45,7 @@ describe('index des leçons — intégration moteur', () => {
   it('hors-sujet toujours refusé malgré l index élargi', () => {
     for (const q of ['من هو ميسي؟', 'كيف أطبخ الكسكس؟', 'ما رأيك في السياسة؟']) {
       const action = answerTutorQuestion(q);
-      expect(action?.text || '', q).toContain('لم أجد إجابة');
+      expect(action?.text || '', q).toContain('هذا السؤال خارج قاعدة');
     }
   });
 });

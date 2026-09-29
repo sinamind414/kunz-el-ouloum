@@ -31,7 +31,7 @@ const PROBES: { q: string; shouldAnswer: boolean }[] = [
   { q: 'ما رأيك في السياسة؟', shouldAnswer: false },
 ];
 
-const NO_ANSWER_MARK = 'لم أجد إجابة';
+const NO_ANSWER_MARK = 'هذا السؤال خارج قاعدة';
 
 function probe(q: string): ProbeResult {
   const text = answerTutorQuestion(q)?.text || '';

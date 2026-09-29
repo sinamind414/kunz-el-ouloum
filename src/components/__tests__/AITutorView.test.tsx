@@ -283,7 +283,7 @@ describe('AITutorView — rendu riche du moteur (T2)', () => {
 
     await typeAndSubmit(user, 'من هو ميسي؟');
     await waitFor(() => {
-      expect(messagesText()).toContain('لم أجد إجابة دقيقة');
+      expect(messagesText()).toContain('هذا السؤال خارج قاعدة');
     });
   });
 });
