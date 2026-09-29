@@ -75,7 +75,7 @@ export default function DashboardView({
           </div>
         </div>
         
-        <div className="flex items-center gap-2">
+        <button type="button" className="w-full flex items-center gap-2">
           <button
             onClick={() => setShowWeeklyShareModal(true)}
             className="bg-amber-500/10 hover:bg-amber-500/20 text-amber-800 dark:text-amber-300 border border-amber-300/40 dark:border-amber-700/50 rounded-2xl py-1.5 px-3 flex items-center gap-1.5 shadow-2xs text-xs font-black transition-all cursor-pointer"
@@ -85,9 +85,9 @@ export default function DashboardView({
             <span className="hidden sm:inline">تقرير الأسبوع</span>
           </button>
 
-          <div 
+          <button type="button" 
             onClick={handleOpenStreakCelebration}
-            className="bg-[#fff9ed] dark:bg-gray-900 border border-[#e2dabf]/60 dark:border-gray-800 rounded-2xl py-1.5 px-3 flex items-center gap-3 shadow-sm text-sm font-bold text-[#1f1c0b] dark:text-gray-200 cursor-pointer hover:border-amber-400 transition-all hover:scale-102 active:scale-98"
+            className="w-full bg-[#fff9ed] dark:bg-gray-900 border border-[#e2dabf]/60 dark:border-gray-800 rounded-2xl py-1.5 px-3 flex items-center gap-3 shadow-sm text-sm font-bold text-[#1f1c0b] dark:text-gray-200 cursor-pointer hover:border-amber-400 transition-all hover:scale-102 active:scale-98"
             title="اضغط لعرض تفاصيل الـ Streak وسماع النغمة التفاعلية 🎵"
           >
             <div className="flex items-center gap-1 text-amber-600 dark:text-amber-400">
@@ -104,8 +104,8 @@ export default function DashboardView({
               <span className="text-xs text-gray-500 dark:text-gray-400">XP</span>
               <span>{progress.xp}</span>
             </div>
-          </div>
-        </div>
+          </button>
+        </button>
       </div>
 
       {/* SMART REMINDER CARD (التذكير الذكي للدروس غير المفتوحة منذ أكثر من 48 ساعة) */}
@@ -135,9 +135,10 @@ export default function DashboardView({
       />
 
       {/* Methodology Path Card */}
-      <div 
+      <button 
+        type="button"
         onClick={() => onNavigateToTab && onNavigateToTab('methodology')}
-        className="bg-gradient-to-r from-[#006d37]/10 to-[#10b981]/10 dark:from-emerald-950/40 dark:to-teal-950/40 rounded-3xl p-4 border border-[#006d37]/30 shadow-[0_2px_10px_rgba(0,109,55,0.05)] flex items-center justify-between cursor-pointer hover:bg-emerald-50/50 dark:hover:bg-emerald-900/20 transition-all active:scale-[0.99]"
+        className="w-full text-right bg-gradient-to-r from-[#006d37]/10 to-[#10b981]/10 dark:from-emerald-950/40 dark:to-teal-950/40 rounded-3xl p-4 border border-[#006d37]/30 shadow-[0_2px_10px_rgba(0,109,55,0.05)] flex items-center justify-between cursor-pointer hover:bg-emerald-50/50 dark:hover:bg-emerald-900/20 transition-all active:scale-[0.99]"
       >
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-2xl bg-[#006d37] text-white flex items-center justify-center font-black shadow-sm">
@@ -151,12 +152,13 @@ export default function DashboardView({
         <span className="text-xs font-black bg-[#006d37] hover:bg-[#005a2d] text-white px-3.5 py-2 rounded-xl shadow-sm">
           دخول
         </span>
-      </div>
+      </button>
 
       {/* D3 Interactive Mind Maps Card */}
-      <div 
+      <button 
+        type="button" 
         onClick={() => onNavigateToTab && onNavigateToTab('mindmap')}
-        className="bg-gradient-to-r from-emerald-600 to-teal-700 rounded-3xl p-4 text-white shadow-md flex items-center justify-between cursor-pointer hover:from-emerald-700 hover:to-teal-800 transition-all active:scale-[0.99] relative overflow-hidden"
+        className="w-full text-right bg-gradient-to-r from-emerald-600 to-teal-700 rounded-3xl p-4 text-white shadow-md flex items-center justify-between cursor-pointer hover:from-emerald-700 hover:to-teal-800 transition-all active:scale-[0.99] relative overflow-hidden"
       >
         <div className="absolute -left-6 -bottom-6 w-24 h-24 bg-white/10 rounded-full blur-xl pointer-events-none"></div>
         <div className="flex items-center gap-3 relative z-10">
@@ -174,12 +176,13 @@ export default function DashboardView({
         <span className="text-xs font-black bg-white text-emerald-800 hover:bg-emerald-50 px-3.5 py-2 rounded-xl shadow-sm relative z-10">
           استكشاف
         </span>
-      </div>
+      </button>
 
       {/* U4 (audit) : galerie d'animations de mécanismes — accès mobile. */}
-      <div
+      <button 
+        type="button"
         onClick={() => onNavigateToTab && onNavigateToTab('animations')}
-        className="bg-white dark:bg-gray-900 rounded-3xl p-4 border border-gray-100 dark:border-gray-800 shadow-[0_4px_15px_rgba(0,0,0,0.03)] flex items-center justify-between cursor-pointer hover:border-[#006d37]/30 transition-all active:scale-[0.99]"
+        className="w-full text-right bg-white dark:bg-gray-900 rounded-3xl p-4 border border-gray-100 dark:border-gray-800 shadow-[0_4px_15px_rgba(0,0,0,0.03)] flex items-center justify-between cursor-pointer hover:border-[#006d37]/30 transition-all active:scale-[0.99]"
       >
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-2xl bg-[#e8f5ee] dark:bg-emerald-900/30 flex items-center justify-center">
@@ -193,7 +196,7 @@ export default function DashboardView({
         <span className="text-xs font-black bg-[#006d37] text-white px-3.5 py-2 rounded-xl shadow-sm">
           عرض
         </span>
-      </div>
+      </button>
 
       {/* Stats Summary Card */}
       <div className="bg-white dark:bg-gray-900 rounded-3xl p-4 border border-gray-100 dark:border-gray-800 shadow-[0_4px_15px_rgba(0,0,0,0.03)] flex items-center justify-between">
@@ -255,9 +258,9 @@ export default function DashboardView({
       {/* Grid of smaller cards */}
       <div className="grid grid-cols-2 gap-4 mt-6">
          {/* Streak Card */}
-         <div
+         <button type="button"
             onClick={handleOpenStreakCelebration}
-            className="bg-white rounded-[28px] p-6 shadow-[0_8px_24px_rgba(0,0,0,0.04)] border border-gray-100 flex flex-col items-center text-center transition-transform hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
+            className="w-full bg-white rounded-[28px] p-6 shadow-[0_8px_24px_rgba(0,0,0,0.04)] border border-gray-100 flex flex-col items-center text-center transition-transform hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
          >
             <div className="w-20 h-20 bg-gradient-to-tr from-[#10b981] to-[#34d399] rounded-full flex items-center justify-center mb-4 shadow-[0_8px_16px_rgba(16,185,129,0.25)] relative">
                <div className="absolute inset-0 rounded-full border-4 border-white/20"></div>
@@ -265,12 +268,12 @@ export default function DashboardView({
             </div>
             <h4 className="font-black text-[17px] text-[#0f172a] mb-1">سلسلة الأيام</h4>
             <p className="text-[12px] text-gray-500 font-bold">ابدأ سلسلتك اليوم!</p>
-         </div>
+         </button>
 
          {/* 3 Min Challenge Card */}
-         <div
+         <button type="button"
             onClick={() => onNavigateToTab && onNavigateToTab('bootcamp')}
-            className="bg-white rounded-[28px] p-6 shadow-[0_8px_24px_rgba(0,0,0,0.04)] border border-gray-100 flex flex-col items-center text-center transition-transform hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
+            className="w-full bg-white rounded-[28px] p-6 shadow-[0_8px_24px_rgba(0,0,0,0.04)] border border-gray-100 flex flex-col items-center text-center transition-transform hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
          >
             <div className="w-20 h-20 bg-gradient-to-tr from-[#f97316] to-[#fb923c] rounded-full flex items-center justify-center mb-4 shadow-[0_8px_16px_rgba(249,115,22,0.25)] relative">
                <div className="absolute inset-0 rounded-full border-4 border-white/20"></div>
@@ -278,24 +281,24 @@ export default function DashboardView({
             </div>
             <h4 className="font-black text-[17px] text-[#0f172a] mb-1">تحدي 3 دقائق</h4>
             <p className="text-[12px] text-gray-500 font-bold">ابدأ التحدي — اختبر معرفتك بسرعة</p>
-         </div>
+         </button>
 
          {/* Warning Card */}
-         <div
+         <button type="button"
             onClick={() => gapUnit && onLaunchRevision(gapUnit.id)}
-            className={`bg-white rounded-[28px] p-6 shadow-[0_8px_24px_rgba(0,0,0,0.04)] border border-gray-100 flex flex-col items-center text-center transition-transform hover:scale-[1.02] active:scale-[0.98] ${gapUnit ? 'cursor-pointer' : ''}`}>
-            <div className="w-20 h-20 bg-gradient-to-tr from-[#ef4444] to-[#f87171] rounded-full flex items-center justify-center mb-4 shadow-[0_8px_16px_rgba(239,68,68,0.25)] relative">
+            className={`w-full bg-white rounded-[28px] p-6 shadow-[0_8px_24px_rgba(0,0,0,0.04)] border border-gray-100 flex flex-col items-center text-center transition-transform hover:scale-[1.02] active:scale-[0.98] ${gapUnit ? 'cursor-pointer' : ''}`}>
+            <div className="w-full w-20 h-20 bg-gradient-to-tr from-[#ef4444] to-[#f87171] rounded-full flex items-center justify-center mb-4 shadow-[0_8px_16px_rgba(239,68,68,0.25)] relative">
                <div className="absolute inset-0 rounded-full border-4 border-white/20"></div>
                <AlertTriangle className="w-10 h-10 text-white" />
             </div>
             <h4 className="font-black text-[17px] text-[#0f172a] mb-1">ثغرة خطيرة</h4>
             <p className="text-[12px] text-gray-500 font-bold">{gapUnit ? `« ${gapUnit.title} » تحتاج مراجعة!` : 'لا توجد ثغرة — ممتاز!'}</p>
-         </div>
+         </button>
 
          {/* BAC Timer Card */}
-         <div
+         <button type="button"
             onClick={() => onNavigateToTab && onNavigateToTab('stats')}
-            className="bg-white rounded-[28px] p-6 shadow-[0_8px_24px_rgba(0,0,0,0.04)] border border-gray-100 flex flex-col items-center text-center transition-transform hover:scale-[1.02] active:scale-[0.98] cursor-pointer">
+            className="w-full bg-white rounded-[28px] p-6 shadow-[0_8px_24px_rgba(0,0,0,0.04)] border border-gray-100 flex flex-col items-center text-center transition-transform hover:scale-[1.02] active:scale-[0.98] cursor-pointer">
             <div className="w-20 h-20 bg-gradient-to-tr from-[#3b82f6] to-[#60a5fa] rounded-full flex items-center justify-center mb-4 shadow-[0_8px_16px_rgba(59,130,246,0.25)] relative overflow-hidden">
                <Hourglass className="w-10 h-10 text-white relative z-10" />
                <div className="absolute -top-4 -right-4 w-12 h-12 bg-white/20 rounded-full"></div>
@@ -303,12 +306,12 @@ export default function DashboardView({
             </div>
             <h4 className="font-black text-[17px] text-[#0f172a] mb-1">عدّاد BAC</h4>
             <p className="text-[12px] text-gray-500 font-bold">{bacDays !== null ? `${bacDays} يوم الباقي — الوقت يمر` : 'التاريخ الرسمي قيد التأكيد'}</p>
-         </div>
+         </button>
 
          {/* Surprise Question Card */}
-         <div
+         <button type="button"
             onClick={openSurpriseQuiz}
-            className="bg-white rounded-[28px] p-6 shadow-[0_8px_24px_rgba(0,0,0,0.04)] border border-gray-100 flex flex-col items-center text-center transition-transform hover:scale-[1.02] active:scale-[0.98] cursor-pointer">
+            className="w-full bg-white rounded-[28px] p-6 shadow-[0_8px_24px_rgba(0,0,0,0.04)] border border-gray-100 flex flex-col items-center text-center transition-transform hover:scale-[1.02] active:scale-[0.98] cursor-pointer">
             <div className="w-20 h-20 bg-gradient-to-tr from-[#d946ef] to-[#e879f9] rounded-full flex items-center justify-center mb-4 shadow-[0_8px_16px_rgba(217,70,239,0.25)] relative">
                <div className="absolute inset-0 rounded-full border-4 border-white/20"></div>
                <Dices className="w-10 h-10 text-white" />
@@ -318,19 +321,19 @@ export default function DashboardView({
             </div>
             <h4 className="font-black text-[17px] text-[#0f172a] mb-1">سؤال مفاجئ</h4>
             <p className="text-[12px] text-gray-500 font-bold">اختبر معلوماتك — سؤال عشوائي</p>
-         </div>
+         </button>
 
          {/* Close to Achievement Card */}
-         <div
+         <button type="button"
             onClick={() => onNavigateToTab && onNavigateToTab('badges')}
-            className="bg-white rounded-[28px] p-6 shadow-[0_8px_24px_rgba(0,0,0,0.04)] border border-gray-100 flex flex-col items-center text-center transition-transform hover:scale-[1.02] active:scale-[0.98] cursor-pointer">
+            className="w-full bg-white rounded-[28px] p-6 shadow-[0_8px_24px_rgba(0,0,0,0.04)] border border-gray-100 flex flex-col items-center text-center transition-transform hover:scale-[1.02] active:scale-[0.98] cursor-pointer">
             <div className="w-20 h-20 bg-gradient-to-tr from-[#eab308] to-[#facc15] rounded-full flex items-center justify-center mb-4 shadow-[0_8px_16px_rgba(234,179,8,0.25)] relative">
                <div className="absolute inset-0 rounded-full border-4 border-white/20"></div>
                <Trophy className="w-10 h-10 text-white" />
             </div>
             <h4 className="font-black text-[17px] text-[#0f172a] mb-1">إنجاز قريب</h4>
             <p className="text-[12px] text-gray-500 font-bold">{achievementUnit ? `« ${achievementUnit.title} » ${Math.round(achievementUnit.progress ?? 0)}% — أكمل الوحدة!` : 'ابدأ وحدة لتقترب من إنجاز!'}</p>
-         </div>
+         </button>
       </div>
 
       {/* Shareable Weekly Visual Performance Card Modal */}

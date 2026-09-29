@@ -155,10 +155,15 @@ export default function RevisionPlanView({ onBackToHome, onOpenRedaction }: Revi
           ))}
         </div>
 
-        <label className="block text-xs font-bold text-[#506072] dark:text-gray-300 mb-1">
+        <label
+          htmlFor="plan-jours-slider"
+          className="block text-xs font-bold text-[#506072] dark:text-gray-300 mb-1"
+        >
           الأيام المتبقية: <span data-testid="plan-jours">{daysLeft}</span>
         </label>
         <input
+          id="plan-jours-slider"
+          aria-label="عدد الأيام المتبقية قبل الامتحان"
           data-testid="plan-jours-slider"
           type="range"
           min={1}
@@ -168,10 +173,15 @@ export default function RevisionPlanView({ onBackToHome, onOpenRedaction }: Revi
           className="w-full mb-3 accent-[#006d37]"
         />
 
-        <label className="block text-xs font-bold text-[#506072] dark:text-gray-300 mb-1">
+        <label
+          htmlFor="plan-minutes-slider"
+          className="block text-xs font-bold text-[#506072] dark:text-gray-300 mb-1"
+        >
           دقائق يومياً: <span data-testid="plan-minutes">{minutesPerDay}</span>
         </label>
         <input
+          id="plan-minutes-slider"
+          aria-label="عدد الدقائق المتاحة يومياً"
           data-testid="plan-minutes-slider"
           type="range"
           min={20}

@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useCompteARebours } from '../hooks/useWallClock';
 import { motion, AnimatePresence } from 'motion/react';
 import { X, Timer, CheckCircle2, AlertCircle, ArrowLeft, ArrowRight, RotateCcw, Award, Check, BookOpen, GraduationCap, AlertOctagon, HelpCircle, Sparkles, Eye, EyeOff } from 'lucide-react';
 import { QuizQuestion } from '../types';
@@ -19,7 +20,13 @@ export default function QuizView({ unitId, unitTitle, questions, onClose, onQuiz
   const [currentIndex, setCurrentIndex] = useState(0);
   const [selectedAnswers, setSelectedAnswers] = useState<{ [key: number]: number }>({});
   const [isAnswered, setIsAnswered] = useState<{ [key: number]: boolean }>({});
-  const [timeLeft, setTimeLeft] = useState(900); // 15 minutes in seconds (900s)
+  // Sprint 45 : le temps restant est LU sur l'horloge (useCompteARebours) et
+  // non décrémenté par des ticks — un onglet mis en arrière-plan ne prolonge
+  // plus le quiz.
+  const DUREE_QUIZ_SEC = 900; // 15 minutes
+  // Clé de relance : la changer redémarre le compte à rebours (le hook
+  // repositionne l'échéance quand la durée ou l'activité change).
+  const [essai, setEssai] = useState(0);
   const [quizFinished, setQuizFinished] = useState(false);
   const [score, setScore] = useState(0);
   const [showGeneralHint, setShowGeneralHint] = useState<boolean>(false);
@@ -30,14 +37,11 @@ export default function QuizView({ unitId, unitTitle, questions, onClose, onQuiz
 
   const currentQuestion = questions[currentIndex] || questions[0];
 
-  // Timer Effect
-  useEffect(() => {
-    if (timeLeft <= 0 || quizFinished) return;
-    const interval = setInterval(() => {
-      setTimeLeft((prev) => prev - 1);
-    }, 1000);
-    return () => clearInterval(interval);
-  }, [timeLeft, quizFinished]);
+  const timeLeft = useCompteARebours({
+    dureeSec: DUREE_QUIZ_SEC + essai * 0, // la dépendance utile est `actif`
+    actif: !quizFinished,
+    rafraichissementMs: 500,
+  });
 
   // Format Time
   const formatTime = (seconds: number) => {
@@ -104,7 +108,11 @@ export default function QuizView({ unitId, unitTitle, questions, onClose, onQuiz
   const scorePercentage = Math.round((score / questions.length) * 100);
 
   return (
-    <div className={`min-h-screen transition-all duration-500 flex flex-col items-center select-none font-sans selection:bg-[#2ecc71]/20 ${
+    // `dir` explicite (sprint 48) : l'écran héritait du `dir="rtl"` de la page,
+    // ce qui suffit aujourd'hui mais casse dès qu'il est rendu dans un
+    // conteneur LTR (aperçu, impression, intégration) — et l'ordre des
+    // nombres et de la ponctuation devient alors illisible.
+    <div dir="rtl" className={`min-h-screen transition-all duration-500 flex flex-col items-center select-none font-sans selection:bg-[#2ecc71]/20 ${
       isFocusMode 
         ? 'bg-gradient-to-b from-[#060a07] to-[#0e1411] text-gray-100' 
         : 'bg-[#f8f9fa] text-[#191c1d] dark:bg-[#0c0f0d] dark:text-gray-100'
@@ -546,7 +554,7 @@ export default function QuizView({ unitId, unitTitle, questions, onClose, onQuiz
                   setCurrentIndex(0);
                   setSelectedAnswers({});
                   setIsAnswered({});
-                  setTimeLeft(900);
+                  setEssai((n) => n + 1);
                   setScore(0);
                   setQuizFinished(false);
                 }}

@@ -1,4 +1,5 @@
 import { useState, useRef, useMemo } from 'react';
+import BackupPanel from './BackupPanel';
 import { motion, AnimatePresence } from 'motion/react';
 import { 
   ResponsiveContainer, 
@@ -234,9 +235,9 @@ export default function StatsView({ progress, units, onNavigate }: StatsViewProp
       {/* Grid Stats Highlights */}
       <section className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {/* Streak Item - Interactive with sound */}
-        <div 
+        <button type="button" 
           onClick={handleOpenStreakCelebration}
-          className="bg-[#ffffff] border border-[#e2dabf]/60 hover:border-amber-400 p-4 rounded-2xl shadow-sm flex items-center gap-3 cursor-pointer transition-all hover:scale-102 active:scale-98"
+          className="w-full text-right bg-[#ffffff] border border-[#e2dabf]/60 hover:border-amber-400 p-4 rounded-2xl shadow-sm flex items-center gap-3 cursor-pointer transition-all hover:scale-102 active:scale-98"
           title="اضغط للاستماع لنغمة الشعلة وعرض تفاصيل الـ Streak 🎵"
         >
           <div className="w-10 h-10 rounded-xl bg-[#ff9a4a]/10 text-[#ff9a4a] flex items-center justify-center">
@@ -249,12 +250,12 @@ export default function StatsView({ progress, units, onNavigate }: StatsViewProp
             </span>
             <span className="text-xl font-bold text-[#1f1c0b]">{progress.streak} يوم</span>
           </div>
-        </div>
+        </button>
 
         {/* XP Item - Interactive with coin sound */}
-        <div 
+        <button type="button" 
           onClick={() => playXPGainSound()}
-          className="bg-[#ffffff] border border-[#e2dabf]/60 hover:border-yellow-400 p-4 rounded-2xl shadow-sm flex items-center gap-3 cursor-pointer transition-all hover:scale-102 active:scale-98"
+          className="w-full text-right bg-[#ffffff] border border-[#e2dabf]/60 hover:border-yellow-400 p-4 rounded-2xl shadow-sm flex items-center gap-3 cursor-pointer transition-all hover:scale-102 active:scale-98"
           title="اضغط لسماع نغمة نقاط الخبرة 🎵"
         >
           <div className="w-10 h-10 rounded-xl bg-[#fed65b]/10 text-[#944a00] flex items-center justify-center">
@@ -267,7 +268,7 @@ export default function StatsView({ progress, units, onNavigate }: StatsViewProp
             </span>
             <span className="text-xl font-bold text-[#1f1c0b]">{progress.xp} XP</span>
           </div>
-        </div>
+        </button>
 
         {/* Study Time Item */}
         <div className="bg-[#ffffff] border border-[#e2dabf]/60 p-4 rounded-2xl shadow-sm flex items-center gap-3">
@@ -1289,6 +1290,10 @@ export default function StatsView({ progress, units, onNavigate }: StatsViewProp
         streakDays={progress.streak || 1}
         onOpenShareModal={() => setShowWeeklyShareModal(true)}
       />
+
+      {/* Sprint 46 : sauvegarde locale — changer de téléphone ne doit plus
+          effacer des semaines de travail. */}
+      <BackupPanel />
 
     </div>
   );

@@ -38,5 +38,70 @@ module.exports = class JsdomNodeEnvironment extends JsdomEnvironment {
     } catch {
       /* localStorage indisponible : on ignore */
     }
+
+    // Parite vitest : URL.createObjectURL / File.text.
+    // jsdom (jest) ne fournit pas URL.createObjectURL ; vitest (happy-dom)
+    // oui. Les tests BackupPanel (sprint 46) en dependent pour simuler
+    // l'export du fichier de sauvegarde.
+    try {
+      const U = this.global.URL;
+      if (U && typeof U.createObjectURL !== 'function') {
+        U.createObjectURL = () => 'blob:jest-test';
+      }
+      if (U && typeof U.revokeObjectURL !== 'function') {
+        U.revokeObjectURL = () => {};
+      }
+    } catch {
+      /* URL non patchable : on ignore */
+    }
+    // File/Blob.text : jsdom ancien ne remonte pas toujours le contenu des
+    // morceaux (parts) passes au constructeur. On reimplemente text() a
+    // partir des parts d'origine quand c'est possible.
+    try {
+      const { File, Blob } = this.global;
+      const patchText = (Ctor) => {
+        if (!Ctor || Ctor.prototype.__jestTextPatched) return;
+        const dorigine = Ctor;
+        const fabrique = function (...args) {
+          const inst = new dorigine(...args);
+          const parts = args[0];
+          if (Array.isArray(parts)) {
+            const texte = parts
+              .map((p) => (typeof p === 'string' ? p : ''))
+              .join('');
+            if (texte && typeof inst.text !== 'function') {
+              inst.text = async () => texte;
+            } else if (texte) {
+              const textOrigine = inst.text.bind(inst);
+              inst.text = async () => {
+                try {
+                  const v = await textOrigine();
+                  if (typeof v === 'string' && v.length > 0) return v;
+                } catch {
+                  /* repli sur les parts d'origine */
+                }
+                return texte;
+              };
+            }
+          }
+          return inst;
+        };
+        fabrique.prototype = dorigine.prototype;
+        Object.defineProperty(fabrique.prototype, '__jestTextPatched', {
+          value: true,
+        });
+        return fabrique;
+      };
+      if (File) {
+        const FileCorrige = patchText(File);
+        if (FileCorrige) this.global.File = FileCorrige;
+      }
+      if (Blob) {
+        const BlobCorrige = patchText(Blob);
+        if (BlobCorrige) this.global.Blob = BlobCorrige;
+      }
+    } catch {
+      /* File/Blob non patchables : on ignore */
+    }
   }
 };

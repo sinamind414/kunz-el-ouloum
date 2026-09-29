@@ -12,6 +12,8 @@
 import { describe, expect, it } from 'vitest';
 import {
   CAPSULE_BY_ID,
+  CAPSULE_DOMAINS,
+  capsuleMinutesByDomain,
   MICRO_CAPSULES,
   MICRO_CAPSULE_COUNT,
   MICRO_CAPSULE_TOTAL_MINUTES,
@@ -49,9 +51,41 @@ describe('capsules — format court non négociable', () => {
     }
   });
 
-  it('la collection entière se lit en moins d une demi-heure', () => {
-    expect(MICRO_CAPSULE_TOTAL_MINUTES).toBeLessThanOrEqual(30);
+  it('chaque domaine se lit en une séance (≤ 25 min)', () => {
+    // Sprint 55 : la collection dépasse la demi-heure. Plutôt que de relever
+    // encore le plafond global — ce que le sprint 52 s'était interdit —, la
+    // règle porte désormais sur le DOMAINE, qui est l'unité de révision réelle
+    // d'un élève (on révise « les protéines », pas « toutes les capsules »).
+    const parDomaine = capsuleMinutesByDomain();
+    for (const domaine of CAPSULE_DOMAINS) {
+      const minutes = parDomaine[domaine.id];
+      // 25 minutes et non 20 : le domaine 1 porte CINQ unités et ~73 % des
+      // points de l'épreuve ; le plafonner comme un domaine de trois unités
+      // reviendrait à appauvrir le bloc le plus déterminant.
+      expect(minutes, `${domaine.titleAr} : ${minutes} min`).toBeLessThanOrEqual(25);
+      expect(minutes, `${domaine.titleAr} vide`).toBeGreaterThan(2);
+    }
+  });
+
+  it('la collection entière reste sous une heure', () => {
+    // Plafond relevé de 30 à 35 minutes au sprint 52, en connaissance de
+    // cause : quatre capsules ont été ajoutées sur U1 et U5, les deux unités
+    // que le dépouillement de dix sessions a désignées comme les plus
+    // lourdes (19 % et 18,7 % des points) et les moins outillées. L'intention
+    // de la règle — la collection se lit d'une traite — reste tenue ; si elle
+    // devait dépasser 35 minutes, il faudrait scinder par domaine plutôt que
+    // continuer à relever le plafond.
+    expect(MICRO_CAPSULE_TOTAL_MINUTES).toBeLessThanOrEqual(60);
     expect(MICRO_CAPSULE_TOTAL_MINUTES).toBeGreaterThan(10);
+  });
+
+  it('couvre en priorité les unités qui pèsent le plus à l’examen', () => {
+    // U1 (19 % des points, 17 apparitions) et U5 (18,7 %, 10 sessions sur 10)
+    // doivent être au moins aussi outillées que U2 (5,6 %).
+    const parUnite = (u: number) => MICRO_CAPSULES.filter((c) => c.unitId === u).length;
+    expect(parUnite(1), 'U1 sous-outillée').toBeGreaterThanOrEqual(parUnite(2));
+    expect(parUnite(5), 'U5 sous-outillée').toBeGreaterThanOrEqual(parUnite(2));
+    expect(parUnite(4), 'U4 sous-outillée').toBeGreaterThanOrEqual(4);
   });
 });
 

@@ -2670,3 +2670,606 @@ zéro, changement de sujet) ; `MockExamPanel.test.tsx` — 3 tests d'intégratio
 supplémentaires.
 
 Suite unitaire **1733 verts / 4 skipped / 0 échec** (136 fichiers).
+
+---
+
+## Sprint 45 — audit des minuteurs : les quatre autres avaient le même défaut
+
+### De la correction ponctuelle à l'audit
+
+Le sprint 44 a corrigé le chronomètre d'épreuve, qui comptait les ticks au lieu
+de lire l'horloge. La question suivante s'imposait : **combien d'autres ?**
+Réponse : **quatre**, soit tous les autres minuteurs de l'application.
+
+| Minuteur | Effet du défaut |
+|---|---|
+| Quiz (15 min) | onglet en arrière-plan ⇒ **temps supplémentaire offert** |
+| Compilateur, étape 4 (3 min) | même chose, sur un exercice chronométré |
+| Compilateur, drill 60 s **noté** | **le score dépendait de l'attention du navigateur** |
+| Atelier de combat (sprint 45 min / mode coach) | temps faux dans les deux modes |
+
+Le cas du drill de 60 secondes est le plus sérieux : il est **noté et
+enregistré** (`recordDrillResult`). Un élève qui basculait d'onglet obtenait
+une minute « longue » et un meilleur score, sans tricher volontairement.
+
+### Le correctif, une fois pour toutes
+
+`src/hooks/useWallClock.ts` expose deux hooks :
+
+- `useCompteARebours({ dureeSec, actif, onFin })` — le restant est **calculé**
+  depuis une échéance, jamais décrémenté ; `onFin` ne se déclenche qu'une fois ;
+- `useChronometre(actif)` — l'écoulé est calculé depuis un horodatage de départ.
+
+Les deux **resynchronisent immédiatement au retour sur l'onglet**
+(`visibilitychange`), sans attendre le tick suivant : revenir après trois
+minutes affiche la bonne valeur tout de suite, ou la fin.
+
+Les quatre composants ont été convertis. Il ne reste **aucun `setInterval` qui
+compte du temps** dans `src/components` — le seul restant sert à rafraîchir un
+affichage.
+
+### Tests
+
+`useWallClock.test.tsx` — 8 tests, dont les deux qui décrivent le défaut
+d'origine : « rattrape le temps passé en arrière-plan dès le premier tick »
+(45 s d'horloge, un seul tick ⇒ 15 s restantes) et « ne prolonge pas un
+exercice noté » (5 min d'horloge ⇒ 0, pas un compteur qui traîne).
+
+Un test du sprint 41 a dû être corrigé au passage : il exigeait que deux sujets
+blancs voisins diffèrent **par leur premier exercice**, alors que les
+contraintes d'unité et de session peuvent légitimement le conserver. Le test
+vérifie désormais que **le sujet** diffère — l'assertion d'origine était plus
+stricte que la règle qu'elle prétendait protéger.
+
+### Vérifications
+
+Suite unitaire **1741 verts / 4 skipped / 0 échec** (137 fichiers).
+
+---
+
+## Sprint 46 — « نسخة احتياطية » : tout le travail tenait dans un seul navigateur
+
+### Le risque, concret pour ce public
+
+Progression, flashcards, plan de révision, **brouillons de l'atelier**, session
+d'épreuve : tout vit dans le `localStorage` d'un navigateur. Autrement dit,
+tout disparaît si l'élève :
+
+- change de téléphone — fréquent, surtout sur un appareil partagé dans une
+  fratrie ;
+- vide le cache « pour libérer de la place » — réflexe courant sur un appareil
+  saturé ;
+- passe du navigateur à l'application installée, qui peut ne pas partager le
+  même stockage.
+
+Des semaines de rédaction peuvent partir en une manipulation. Aucune
+fonctionnalité de l'app ne protégeait contre ça.
+
+### Ce qui a été fait
+
+`src/data/backup.ts` produit un **fichier JSON versionné** (`kunz.backup.v1`)
+contenant tout ce qui appartient à l'application, et sait le relire.
+
+Trois décisions de sécurité, toutes testées :
+
+1. **les jetons d'authentification ne sont jamais exportés**
+   (`boussole_token`, `boussole_teacher_token`) — une sauvegarde partagée par
+   messagerie ne doit pas donner accès à un compte ;
+2. **un schéma inconnu est refusé** plutôt qu'interprété : une sauvegarde
+   produite par une version future pourrait contenir des formats que ce code
+   lirait de travers ;
+3. **les clés étrangères présentes dans un fichier sont ignorées ET comptées**,
+   jamais écrites — un fichier bricolé ne peut pas injecter un jeton.
+
+Le stockage plein pendant une restauration renvoie une erreur explicite
+(« مساحة التخزين ممتلئة ») au lieu d'un succès partiel silencieux.
+
+### Dans l'écran
+
+Un panneau en bas de « تقدمي » : combien d'éléments seraient emportés, un
+bouton **« احفظ نسخة »** (téléchargement daté `kunz-sauvegarde-2026-04-12.json`)
+et un bouton **« استعد نسخة »**. Le texte ne parle jamais de `localStorage` :
+il parle d'un fichier qu'on enregistre et qu'on rouvre.
+
+### Vérifications
+
+`backup.test.ts` — 11 tests (périmètre, exclusion des jetons, aller-retour
+fidèle, fichier illisible, schéma étranger, clés ignorées, quota, stockage
+inaccessible) ; `BackupPanel.test.tsx` — 5 tests d'interface, dont le refus
+d'un fichier étranger **sans écraser la progression existante**.
+
+Suite unitaire **1757 verts / 4 skipped / 0 échec** (139 fichiers).
+
+---
+
+## Sprint 47 — accessibilité : trois défauts que l'œil ne voit pas
+
+### Portée assumée
+
+Ce sprint ne prétend pas à un audit complet (contraste, parcours clavier
+intégral, essais avec un lecteur d'écran réel). Il installe un **garde-fou
+mécanique** sur trois défauts fréquents, invisibles à l'œil, et qui rendent une
+interface inutilisable pour qui ne la voit pas :
+
+1. un **bouton sans nom accessible** — le cas typique du bouton à icône seule,
+   qu'un lecteur d'écran annonce simplement « bouton » ;
+2. un **champ sans étiquette** ni `aria-label` ;
+3. une **image sans `alt`**.
+
+S'y ajoute une vérification propre à cette application : chaque écran doit
+déclarer **`dir="rtl"`**, sans quoi la ponctuation arabe et les nombres
+s'affichent dans le désordre.
+
+Le test balaie les sept écrans produits depuis le sprint 15.
+
+### Ce qu'il a trouvé, dès la première exécution
+
+| Écran | Défaut |
+|---|---|
+| Sujet blanc | bouton **« remise à zéro du chronomètre »** : icône seule, aucun nom |
+| Plan de révision | les **deux curseurs** (jours, minutes) : `<label>` présent mais **non associé** à l'`<input>` |
+| Sauvegarde | le **champ de fichier** masqué, ouvert par un bouton : aucun nom |
+
+Le cas des curseurs mérite d'être souligné : le libellé était bien affiché à
+l'écran, et paraissait donc correct. Mais sans `htmlFor`/`id`, l'association
+n'existe pas pour la technologie d'assistance — un élève malvoyant entendait
+« curseur, 14 », sans savoir de quoi.
+
+Les trois sont corrigés (`aria-label` explicites en arabe, `htmlFor`/`id` sur
+les curseurs).
+
+### Pourquoi ce test restera utile
+
+Il ne fige pas un état : il s'exécute sur des écrans **rendus**, donc tout
+nouveau bouton à icône ajouté demain dans l'un des sept écrans le fera échouer,
+avec le `data-testid` du fautif dans le message. C'est le même principe que le
+budget de bundle ou l'atteignabilité du contenu : **une règle vérifiée en
+continu vaut mieux qu'une revue ponctuelle.**
+
+### Vérifications
+
+21 contrôles d'accessibilité verts ; suite unitaire **1778 verts / 4 skipped /
+0 échec** (140 fichiers).
+
+---
+
+## Sprint 48 — l'audit d'accessibilité s'étend aux écrans d'évaluation
+
+### Extension du garde-fou
+
+Le sprint 47 couvrait sept écrans récents. Ce sprint en ajoute **quatre**,
+choisis pour une raison précise : ce sont ceux où l'élève **produit** ou est
+**évalué** — l'atelier d'écriture, le rapport destiné au professeur, la
+micro-capsule et **le quiz**. Un défaut d'accessibilité y coûte plus cher
+qu'ailleurs : il empêche de composer une réponse ou de répondre à une question
+notée.
+
+Onze écrans sont désormais vérifiés à chaque exécution de la suite.
+
+### Ce que l'extension a trouvé
+
+Une seule violation — mais sur le quiz, l'écran le plus utilisé de
+l'application : **aucune déclaration `dir="rtl"`**.
+
+Le cas est intéressant parce qu'il ne se voyait pas : `index.html` porte
+`dir="rtl"` sur `<html>`, et l'héritage faisait le travail. Le défaut
+n'apparaît que lorsque l'écran est rendu **hors de ce contexte** — aperçu,
+feuille d'impression, intégration dans un conteneur LTR. Alors l'ordre des
+nombres, de la ponctuation et des unités (« 15:00 », « 80 % », « pH = 2 »)
+devient illisible.
+
+Correctif : `dir="rtl"` explicite sur la racine du quiz, avec le commentaire
+qui explique pourquoi la ceinture s'ajoute aux bretelles. Le test porte
+désormais la même justification, pour qu'un futur relecteur ne « simplifie »
+pas la règle en la supprimant.
+
+### Portée honnête, rappelée
+
+Ces 33 contrôles ne remplacent pas un essai avec lecteur d'écran, ni une
+mesure de contraste, ni un parcours clavier complet — ils ferment
+mécaniquement trois familles de défauts et le sens de lecture. C'est un
+plancher, pas une conformité.
+
+### Vérifications
+
+33 contrôles d'accessibilité verts ; suite unitaire **1790 verts / 4 skipped /
+0 échec** (140 fichiers).
+
+---
+
+## Sprint 49 — sept cartes de l'accueil étaient inaccessibles au clavier
+
+### Le défaut le plus répandu des interfaces « à cartes »
+
+Un `onClick` posé sur un `<div>` produit une cible **impossible à atteindre au
+clavier** : pas de focus, pas d'activation par Entrée ou Espace, rien
+d'annoncé par un lecteur d'écran. Visuellement, tout va bien — la carte
+réagit à la souris et au doigt. Pour un élève qui navigue au clavier, la
+fonction **n'existe pas**.
+
+Recensement au début du sprint : **18 occurrences** dans `src/components`.
+
+### Ce qui a été corrigé
+
+Les écrans d'entrée en priorité, parce qu'ils commandent tout le reste :
+
+| Écran | Cibles converties |
+|---|---|
+| Tableau de bord | **10** (méthodologie, cartes mentales, animations, série, défi 3 min, lacune, compte à rebours BAC, question surprise, badges, bandeau de série) |
+| Carte « برنامج اليوم » | 1 — de mon propre code du sprint 29 |
+
+Conversion en `<button type="button">` avec `w-full text-right`, ce qui
+préserve la mise en page en grille.
+
+> **Rectificatif (sprint 50)** : ce paragraphe annonçait « 11 des 18 cibles »
+> et « sept cibles subsistent ». Le compte était **inversé** : 7 cibles
+> converties, 11 restantes. Le décompte réel figure au sprint 50.
+
+### La dette restante est nommée, pas cachée
+
+Sept cibles subsistent dans six écrans anciens (`SplashView`, `StatsView`,
+`RevisionView`, `MeftahView`, `DailyGoalWidget`, `MethodologyCompilerView`) :
+leur conversion demande une reprise de mise en page qui dépasse ce sprint.
+
+Elles sont inscrites **nommément** dans une table `DETTE_CONNUE`, avec un test
+qui interdit de la dépasser : tout nouveau `<div onClick>` fait échouer la
+suite, et le total ne peut que descendre. Inscrire une dette n'est pas
+l'excuser — c'est l'empêcher de grandir.
+
+### Le test lit les sources, et c'est voulu
+
+Un gestionnaire de clic n'apparaît pas dans le DOM rendu : c'est l'**écriture**
+qu'il faut corriger, donc c'est l'écriture qu'on inspecte. Le test vérifie
+aussi son propre détecteur sur deux cas fabriqués (`<div onClick>` ⇒ 1,
+`<button onClick>` ⇒ 0), pour ne pas devenir un test qui passe parce qu'il ne
+voit plus rien.
+
+### Vérifications
+
+Suite unitaire **1794 verts / 4 skipped / 0 échec** (141 fichiers).
+
+---
+
+## Sprint 50 — la dette clavier tombe à zéro (et un rectificatif)
+
+### D'abord, l'erreur du sprint précédent
+
+Le compte-rendu du sprint 49 annonçait « 11 des 18 cibles converties, 7
+restantes ». C'était **l'inverse** : 7 converties, 11 restantes. L'erreur
+venait de moi, pas du test — lequel affichait bien la dette réelle. Le
+paragraphe fautif porte désormais un rectificatif : un journal d'audit qui se
+corrige vaut mieux qu'un journal flatteur.
+
+### Les 11 restantes, traitées
+
+| Écran | Cible | Traitement |
+|---|---|---|
+| `StatsView` | tuile de série, tuile XP | `<button>` |
+| `RevisionView` | **la carte qui se retourne** | `<button>` — c'est le geste central de la révision, il était à la souris seulement |
+| `DailyGoalWidget` | pastille d'objectif atteint | `<button disabled>` quand l'objectif n'est pas atteint : un élément inerte ne doit pas occuper l'ordre de tabulation |
+| `MeftahView` | deux en-têtes d'accordéon | `<button>` |
+| `MethodologyCompilerView` | en-tête de fiche de verbe, critère d'évaluation | `<button>` |
+| `SplashView` | fond de la fenêtre de confidentialité | **conservé en `div`**, avec équivalent clavier : touche **Échap** |
+
+Le dernier cas mérite son exception, écrite dans le code et dans le test :
+transformer le fond d'une fenêtre modale en bouton le placerait dans l'ordre
+de tabulation **avant** le contenu de cette fenêtre — l'accessibilité y
+perdrait. L'équivalent clavier correct est `Escape`, désormais branché et
+vérifié par test.
+
+Le second « défaut » de `SplashView` n'en était pas un : un `onClick` qui ne
+fait qu'appeler `stopPropagation` n'est pas une commande.
+
+### État final
+
+**Zéro** cible cliquable non accessible au clavier dans les écrans de travail.
+La table `DETTE_CONNUE` ne contient plus que les deux cas justifiés du splash,
+et le test interdit d'en ajouter.
+
+Un incident de parcours : un script de conversion automatique a cassé
+`MeftahView.tsx` (erreur de syntaxe) ; `tsc` l'a signalé immédiatement, le
+fichier a été restauré depuis la branche distante et converti par ancre
+explicite. C'est la raison d'avoir `npm run lint` (tsc) dans la boucle avant
+chaque exécution de tests.
+
+### Vérifications
+
+Suite unitaire **1795 verts / 4 skipped / 0 échec** (141 fichiers).
+
+---
+
+## Sprint 51 — atteindre une cible au clavier ne sert à rien si on ne la voit pas
+
+### Le corollaire oublié des sprints 49-50
+
+Rendre les cartes focalisables était nécessaire ; ce n'était pas suffisant. Un
+relevé du code montre **52 endroits** où l'application pose
+`focus:outline-none` — la pratique courante pour supprimer le contour bleu du
+navigateur, jugé « moche » — **sans rien mettre à la place**. Pour qui navigue
+au clavier, le curseur devient alors invisible : on tabule à l'aveugle.
+
+### Une parade globale plutôt que 52 retouches
+
+Une règle unique dans `src/index.css`, avec deux choix techniques qui font tout
+l'intérêt :
+
+1. **`:focus-visible` et non `:focus`** — l'indicateur n'apparaît qu'à la
+   navigation clavier, jamais après un clic souris. C'est ce qui permet de le
+   rendre franc sans gêner l'usage tactile, largement majoritaire ici. Un test
+   vérifie qu'aucune règle `:focus` globale ne subsiste ;
+2. **`box-shadow` plutôt que `outline`** — `outline-none` de Tailwind
+   neutralise `outline` mais laisse `box-shadow` intact. L'indicateur
+   réapparaît donc **y compris sur les 52 éléments qui l'avaient supprimé**,
+   sans toucher à leur code.
+
+S'y ajoutent un halo blanc (ou sombre) sous l'anneau vert pour rester lisible
+sur les deux thèmes, et un `z-index` pour que le focus ne soit pas rogné par un
+conteneur.
+
+### Le garde-fou
+
+`focusVisible.test.ts` — 5 contrôles : la règle existe, elle utilise
+`box-shadow`, elle ne se déclenche pas à la souris, elle est adaptée au thème
+sombre, et **le nombre d'endroits qui suppriment le contour ne peut
+qu'augmenter à la baisse** (plafond 52).
+
+### Vérifications
+
+Suite unitaire **1800 verts / 4 skipped / 0 échec** (142 fichiers) ; contrôles
+post-build **14 verts**.
+
+---
+
+## Sprint 52 — la banque de capsules était désalignée des priorités mesurées
+
+### Le constat, en une ligne de données
+
+Le sprint 37 a établi le classement réel des unités sur dix sessions. La
+répartition des 24 micro-capsules ne l'avait jamais suivi :
+
+| Unité | Part des points | Capsules avant | Capsules après |
+|---|---|---|---|
+| **U1 تركيب البروتين** | 19,0 % | 3 | **5** |
+| **U5 الاتصال العصبي** | 18,7 % | 2 | **4** |
+| U2 بنية/وظيفة | 5,6 % | 3 | 3 |
+
+Autrement dit : l'unité qui mène 19 % des points et apparaît dans 17 exercices
+sur 59 était **moins outillée** que celle qui en mène 5,6 %. Ce n'était pas une
+erreur de jugement — c'était l'héritage d'un classement fondé sur la difficulté
+ressentie, corrigé au sprint 37 sans que le contenu suive.
+
+### Les quatre capsules ajoutées
+
+**U1** · « كيف أحدّد بالضبط أين يتدخّل دواء على تركيب البروتين؟ » — le montage
+le plus fréquent du corpus (7 exercices), avec la règle de lecture des milieux
+et des marqueurs radioactifs · « كيف أنتقل من عدد النيكليوتيدات إلى عدد
+الأحماض الأمينية دون خطأ؟ » — le calcul tombé en 2017, et l'erreur de diviser
+par 3 un ADN double brin.
+
+**U5** · « كيف أفرّق بين قناة فولطية و قناة مرتبطة بربيطة؟ » — la confusion qui
+coûte l'intégralité des points d'une question de mécanisme · « متى يولّد
+العصبون المحرك كمون عمل؟ » — le seuil et la sommation, mis en cause dans les
+sujets 2017, 2022 et 2024.
+
+Chacune respecte le contrat d'écriture vérifié depuis le sprint 11 : une seule
+idée, un titre qui est une question, l'**erreur nommée**, et une
+auto-évaluation immédiate.
+
+### Une règle relevée, en connaissance de cause
+
+Le verrou exigeait que la collection se lise en **moins de 30 minutes**. Avec
+28 capsules, le total passe à 31. Plutôt que de raboter les durées jusqu'à
+faire rentrer le chiffre, j'ai relevé le plafond à **35 minutes** en écrivant
+pourquoi — et en fixant la limite suivante : au-delà, il faudra **scinder par
+domaine** plutôt que continuer à relever le plafond. Une règle qu'on déplace
+sans le dire n'est plus une règle.
+
+Un test nouveau empêche le désalignement de revenir : U1 et U5 doivent rester
+au moins aussi outillées que U2, et U4 garder ses quatre capsules.
+
+### Vérifications
+
+Suite unitaire **1801 verts / 4 skipped / 0 échec** (142 fichiers).
+
+---
+
+## Sprint 53 — le même alignement, appliqué aux schémas et à l'enzymologie
+
+### Le tableau complet, une fois posé
+
+Après le sprint 52, j'ai croisé **les trois banques** avec la pression mesurée :
+
+| Unité | Part des points | Capsules | Schémas | Situations |
+|---|---|---|---|---|
+| U4 | 20,8 % | 4 | 4 | 5 |
+| U1 | 19,0 % | 5 | 2 | 3 |
+| U5 | 18,7 % | 4 | 2 | 3 |
+| **U3** | **14,7 %** | **2** | 2 | 3 |
+| **U6** | **12,9 %** | 3 | **1** | 2 |
+| U2 | 5,6 % | 3 | 1 | 2 |
+
+Deux creux nets : **U3**, la « clé cachée » (15 exercices sur 59, mais deux
+capsules), et **U6**, un seul schéma alors que les sujets 2017, 2018 et 2026
+réclament explicitement un « رسم تخطيطي وظيفي » du bilan des deux phases.
+
+### Ce qui a été produit
+
+**Deux capsules U3**, toutes deux nées d'exercices réels :
+
+- « كل جزيء يلمس الأنزيم هل هو مثبّط؟ » — la réponse est **non**, et le sujet
+  2026 est bâti là-dessus : le resvératrol **augmente** l'activité de SIRT1, le
+  NAD⁺ en est le cofacteur obligatoire. Un élève entraîné à ne voir que des
+  inhibiteurs perd l'exercice entier ;
+- « كيف أستثمر نمذجة الموقع الفعال بدل أن أصفها؟ » — nommer les radicaux **avec
+  leurs numéros** (His215, Asp424…), la liaison, puis l'effet chiffré sur Vmax.
+
+**Un schéma U6** : le bilan des deux phases, avec la grille qui compte ce que
+le correcteur compte — les flèches. Pièges consignés : dessiner l'ATP dans les
+deux sens, oublier le retour d'ADP + Pi (le schéma cesse alors d'être
+fonctionnel), placer la fixation du CO₂ sur le thylakoïde.
+
+### Un détail qui a failli passer
+
+Mes deux capsules pointaient vers des `lessonId` inexistants
+(`active_site_relation`, `enzyme_inhibitors` — ce sont des identifiants
+d'**étapes**, pas de leçons). Le verrou du sprint 11 l'a vu immédiatement :
+« tout lessonId cité est une leçon active réelle ». Corrigé vers
+`d1-u3-l1-enzyme` et `d2-u6-l3-calvin`. Sans ce test, deux liens morts
+seraient partis en production.
+
+### Vérifications
+
+Suite unitaire **1801 verts / 4 skipped / 0 échec** (142 fichiers) — dont la
+contrainte d'atteignabilité : le nouveau schéma est bien programmé par le plan
+de révision.
+
+---
+
+## Sprint 54 — bilan des livrables demandés, et un écart assumé
+
+### Pourquoi faire ce point maintenant
+
+Cinquante sprints séparent la demande initiale — « auditer l'application pour
+faire sortir les manques selon *Les 5 leçons à travailler en premier* » — de
+l'état actuel. Un journal d'audit dit ce qui a été fait ; il ne dit pas ce qui
+**tient encore**. Nouveau document : `docs/analyse/ETAT_LIVRABLES_5_LECONS.md`,
+qui reprend chaque livrable prescrit et son état.
+
+### Le résultat
+
+| Leçon | Livrables demandés | État |
+|---|---|---|
+| pHi / acides aminés (U2) | micro-fiches, simulateur pH → charge → migration | ✅ complet, **plus** l'exercice officiel 2018 |
+| Coopération immunitaire (U4) | schéma-bilan, 3 exercices BAC | ✅ complet — **12** exercices U4 dans le corpus |
+| Inhibiteurs enzymatiques (U3) | comparatif, atelier 6 courbes | ✅ complet, renforcé au sprint 53 |
+| CMH / ABO + prérequis 2AS (U4) | module de 15 min | ✅ complet |
+| Phase photochimique (U6) | synthèse d'unité, **5 micro-fiches** | ⚠️ **3 sur 5** |
+
+**Un seul écart, et il est écrit** : trois micro-fiches U6 au lieu de cinq. Je
+ne l'ai pas comblé à la va-vite, et la raison est chiffrée : U6 pèse 12,9 % des
+points mais ne tombe que sur **6 sessions sur 10**, quand U1 (19 %) et U5
+(18,7 %) tombent sur les dix. Les capsules des sprints 52-53 sont donc allées
+à U1, U5 et U3 d'abord. L'écart reste ouvert et inscrit dans le document.
+
+### Le document ne peut pas devenir faux en silence
+
+`src/data/livrablesPrioritaires.test.ts` — 12 contrôles qui vérifient
+l'existence réelle de chaque pièce citée : les quatre étapes du parcours pHi,
+les trois de la coopération, **les six** courbes de l'atelier d'inhibition, les
+capsules CMH/ABO, les deux schémas U6, une carte mentale par unité. Si un
+refactoring supprime l'atelier des courbes, c'est le test qui le dit — pas un
+lecteur du document six mois plus tard.
+
+Détail technique : les identifiants d'étapes ne vivent pas au premier niveau
+des leçons actives (ils sont dans `choices[]`, `steps[]`, ou plus bas). Plutôt
+que de suivre chaque forme — et de casser au prochain type de bloc — le test
+parcourt l'objet **en profondeur** et collecte toute propriété `id`.
+
+### Vérifications
+
+Suite unitaire **1813 verts / 4 skipped / 0 échec** (143 fichiers).
+
+---
+
+## Sprint 55 — le dernier livrable manquant, et une règle tenue
+
+### Les deux micro-fiches U6
+
+L'audit initial en prescrivait cinq ; il y en avait trois. Les deux dernières
+traitent les erreurs que les sujets sanctionnent réellement :
+
+- **« لماذا يتوقف تثبيت CO₂ في الظلام رغم وجود الأنزيم؟ »** — l'élève conclut
+  que l'obscurité « abîme » la Rubisco. La manipulation classique le
+  contredit : ajouter de l'ATP et un transporteur réduit **relance la fixation
+  dans le noir**. S'y ajoute la cause découverte en 2024 (CA1P qui occupe le
+  site actif) ;
+- **« أي مؤشر يقيس أي مرحلة؟ »** — O₂, DCPIP et fluorescence mesurent la phase
+  photochimique ; CO₂, matière organique et activité Rubisco mesurent la phase
+  chimique. Et la fluorescence est de l'énergie **non convertie** : elle monte
+  quand la chaîne est coupée.
+
+**Les cinq livrables des cinq leçons prioritaires sont désormais tous
+couverts** (`ETAT_LIVRABLES_5_LECONS.md` mis à jour, et le test exige
+maintenant 5 capsules U6 — le nombre est la commande, pas une estimation).
+
+### La règle du sprint 52, tenue plutôt que contournée
+
+Au sprint 52 j'avais relevé le plafond de lecture de 30 à 35 minutes **en
+écrivant la limite suivante** : « au-delà, il faudra scinder par domaine
+plutôt que continuer à relever le plafond ». Avec 32 capsules, la collection
+atteint 35,5 minutes.
+
+La règle a donc changé de nature au lieu de changer de valeur : le verrou
+porte désormais sur le **domaine**, qui est l'unité de révision réelle d'un
+élève — on révise « les protéines », pas « toutes les capsules ». Plafond
+25 minutes par domaine, et un garde-fou global à une heure.
+
+Pourquoi 25 et non 20 : le domaine 1 porte **cinq unités et ~73 % des points**
+de l'épreuve ; le plafonner comme un domaine de trois unités reviendrait à
+appauvrir le bloc le plus déterminant. La justification est écrite dans le
+test, à côté du chiffre.
+
+### Vérifications
+
+Suite unitaire **1814 verts / 4 skipped / 0 échec** (143 fichiers).
+
+---
+
+## Sprint 56 — la session 2016, et la découverte que le barème n'est pas éternel
+
+### Onze sessions consécutives : 2016 → 2026
+
+Six exercices de plus, et un corpus qui passe à **65 exercices**. La session
+2016 apporte deux pièces que le corpus n'avait pas :
+
+- **l'ATP synthase disséquée en cinq milieux** (sujet 2) : milieu acide/basique,
+  retrait de la tête (س), FAL sur le site de fixation de l'ADP, DCCD sur le
+  canal (ع). C'est la démonstration expérimentale complète du couplage
+  chimiosmotique — jusqu'ici le corpus n'avait que des exercices de bilan ;
+- **le benzodiazépine sur le réflexe myotatique** (sujet 2) : un médicament qui
+  ne remplace pas le GABA mais **augmente sa fixation** sur le canal. Le même
+  piège conceptuel que SIRT1 en 2026, dix ans plus tôt, côté nerveux.
+
+S'y ajoutent Anagène sur quatre gènes (U1), IL2 et souris mutées CMH II (U4),
+l'amylase avec Trp58/Asp197 et le Glucobay (U3), et la comparaison
+thylakoïde / mitochondrie (U7).
+
+### Le fait que le dépouillement a révélé
+
+**Le barème 5 / 7 / 8 n'est pas éternel.** En 2016, le sujet 1 valait
+**6 / 5 / 9** et le sujet 2 **6 / 7 / 7**. Le format actuel s'est stabilisé à
+partir de 2017.
+
+Mon verrou exigeait « 5/7/8 pour tout exercice ». Deux options : fausser un
+barème officiel pour faire passer un test, ou corriger le test. La règle porte
+désormais sur **les sessions ≥ 2017**, et les sessions antérieures sont
+vérifiées sur ce qui, lui, n'a pas bougé : **un sujet vaut 20 points**. Le
+barème du 3ᵉ exercice de 2016 (09 points) est déduit par complément — son
+en-tête est illisible dans la source, et le code le dit.
+
+### Le test de synchronisation a fait son travail
+
+Ajouter 2016 a immédiatement fait échouer
+`prioritesMesurees.sync.test.ts` : « points U4 : attendu 82, obtenu 87 ». Le
+document de priorités a donc été mis à jour **parce qu'un test l'a exigé**, pas
+parce que j'y ai pensé. C'était exactement sa raison d'être (sprint 37).
+
+### Classement recalculé sur onze sessions
+
+| Unité | Points menés | Part | Annoncé | Apparitions |
+|---|---|---|---|---|
+| U4 | 87 | 20,0 % | 13 % | 14 |
+| U1 | 81 | 18,6 % | 10 % | **18** |
+| U5 | 81 | 18,6 % | 16 % | 12 |
+| U3 | 64 | 14,7 % | 13 % | 16 |
+| U6 | 51 | 11,7 % | 20 % | 9 |
+| **U7** | **29** | **6,7 %** | 19 % | 6 |
+| U2 | 22 | 5,1 % | 9 % | 14 |
+
+**U7 double** (3,3 % → 6,7 %) grâce aux deux exercices d'énergétique de 2016 —
+et reste malgré tout à un tiers de son poids annoncé, sur 5 sessions sur 11.
+Le tableau de tête, lui, ne bouge pas.
+
+### Vérifications
+
+Suite unitaire **1815 verts / 4 skipped / 0 échec** (143 fichiers).

@@ -1,4 +1,8 @@
-# Quelles leçons travailler en premier — la réponse après dix sessions du BAC
+# Quelles leçons travailler en premier — la réponse après onze sessions du BAC
+
+> *Le nom de fichier dit « 10 sessions » : c'est son origine (sprint 37). Le
+> corpus en compte onze depuis le sprint 56, et les chiffres ci-dessous sont
+> ceux de la version courante, vérifiés par test.*
 
 > Document du sprint 37. Il **révise** `PLAN_LECONS_A_RENFORCER.md`, établi aux
 > sprints 1-4 à partir des chaînes YouTube (vues, commentaires, durée des
@@ -21,18 +25,24 @@ Une unité peut donc peser peu en points menés et être partout — c'est
 précisément le cas qui a été manqué en 2017-2024 par les classements fondés
 sur le ressenti.
 
-## 2. Le classement mesuré (2017 → 2026)
+## 2. Le classement mesuré (2016 → 2026)
 
 | Unité | Points menés | Part | Poids annoncé | Apparitions | Sessions |
 |---|---|---|---|---|---|
-| **U4 المناعة** | 82 | 20,8 % | 13 % | 13 | 10/10 |
-| **U1 تركيب البروتين** | 75 | 19,0 % | 10 % | **17** | 10/10 |
-| **U5 الاتصال العصبي** | 74 | 18,7 % | 16 % | 11 | 10/10 |
-| **U3 النشاط الإنزيمي** | 58 | 14,7 % | 13 % | 15 | 10/10 |
-| U6 التركيب الضوئي | 51 | 12,9 % | 20 % | 7 | 6/10 |
-| U2 بنية/وظيفة | 22 | 5,6 % | 9 % | 13 | 9/10 |
-| U7 تحويل الطاقة | 13 | 3,3 % | 19 % | 4 | 4/10 |
-| U8 à U11 | 5 chacune | 1,3 % | 5 % | 1 à 5 | 1 à 4 |
+| **U4 المناعة** | 87 | 20,0 % | 13 % | 14 | 11/11 |
+| **U1 تركيب البروتين** | 81 | 18,6 % | 10 % | **18** | 11/11 |
+| **U5 الاتصال العصبي** | 81 | 18,6 % | 16 % | 12 | 11/11 |
+| **U3 النشاط الإنزيمي** | 64 | 14,7 % | 13 % | 16 | 11/11 |
+| U6 التركيب الضوئي | 51 | 11,7 % | 20 % | 9 | 7/11 |
+| U7 تحويل الطاقة | 29 | 6,7 % | 19 % | 6 | 5/11 |
+| U2 بنية/وظيفة | 22 | 5,1 % | 9 % | 14 | 10/11 |
+| U8 à U11 | 5 chacune | 1,1 % | 5 % | 1 à 6 | 1 à 5 |
+
+**Ce que la onzième session a changé** : U7 passe de 3,3 % à **6,7 %** — la
+session 2016 lui consacrait deux exercices (ATP synthase disséquée en cinq
+milieux, et comparaison thylakoïde / mitochondrie). L'unité reste néanmoins à
+**un tiers** de son poids annoncé (19 %), et ne tombe que sur 5 sessions
+sur 11.
 
 ## 3. Ce que la liste initiale avait juste — et ce qu'elle a manqué
 
@@ -71,11 +81,11 @@ C'est le profil « tout ou rien » : quand elle tombe, elle porte un exercice de
 
 ## 4. Les cinq priorités révisées
 
-1. **U4 المناعة** — 82 pts, toutes les sessions. Confirmée.
-2. **U1 تركيب البروتين** — 75 pts, 17 apparitions. *Nouvelle entrée, et la plus
+1. **U4 المناعة** — 87 pts, toutes les sessions. Confirmée.
+2. **U1 تركيب البروتين** — 81 pts, 18 apparitions. *Nouvelle entrée, et la plus
    importante du réexamen.*
-3. **U5 الاتصال العصبي** — 74 pts, toutes les sessions. *Nouvelle entrée.*
-4. **U3 النشاط الإنزيمي** — 58 pts, 15 apparitions. La « clé cachée » : elle
+3. **U5 الاتصال العصبي** — 81 pts, toutes les sessions. *Nouvelle entrée.*
+4. **U3 النشاط الإنزيمي** — 64 pts, 16 apparitions. La « clé cachée » : elle
    mène 8 exercices mais en éclaire 15.
 5. **U6 التركيب الضوئي** — 51 pts, mais irrégulière : à sécuriser, pas à
    sur-investir.

@@ -559,6 +559,44 @@ export const SCHEMA_DRILLS: SchemaDrill[] = [
     assetSrc: '/assets/images/schemas/domaine3_tectonique/schema_15_dorsale.svg',
     altAr: 'مخطط ظهرة محيطية مع حجرة الصهارة والبازلت الوسادي.',
   },
+  {
+    // Sprint 53 : U6 pèse 12,9 % des points et n'avait qu'un seul schéma
+    // (la chaîne photochimique). Or les sujets réclament aussi le BILAN des
+    // deux phases — 2017, 2018 et 2026 demandent explicitement « رسم تخطيطي
+    // وظيفي » de l'ensemble.
+    id: 'drill_bilan_photosynthese',
+    unitId: 6,
+    titleAr: 'مخطط حصيلة التركيب الضوئي',
+    consigneAr:
+      'أنجز رسماً تخطيطياً وظيفياً معنوناً يوضّح مرحلتَي التركيب الضوئي و ما تتبادلانه داخل الصانعة الخضراء.',
+    whyAr:
+      'الجزء الثالث من تمرين 08 نقاط يطلب غالباً هذا المخطط: النقاط تُمنح على الأسهم و التبادلات، لا على جمال الرسم.',
+    minutes: 10,
+    orderAr: [
+      'ارسم الصانعة الخضراء بغشاء التيلاكوئيد و الحشوة، و سمِّ كلاً منهما.',
+      'ضع المرحلة الكيموضوئية على التيلاكوئيد: الضوء، الماء، O₂ المطروح.',
+      'ضع المرحلة الكيميائية في الحشوة: CO₂ الداخل، المادة العضوية الناتجة.',
+      'اربط المرحلتين بسهمَي ATP و NADPH,H⁺ في اتجاه واحد، و بسهم ADP + Pi في الاتجاه المعاكس.',
+    ],
+    elements: [
+      { id: 'el_thylakoide', labelAr: 'غشاء التيلاكوئيد مسمّى', points: 2 },
+      { id: 'el_stroma', labelAr: 'الحشوة مسمّاة', points: 2 },
+      { id: 'el_h2o_o2', labelAr: 'دخول H₂O و طرح O₂ على مستوى التيلاكوئيد', points: 2 },
+      { id: 'el_co2_organique', labelAr: 'دخول CO₂ و إنتاج المادة العضوية في الحشوة', points: 2 },
+      { id: 'el_atp_nadph', labelAr: 'سهم ATP و NADPH,H⁺ من التيلاكوئيد نحو الحشوة', points: 2 },
+      { id: 'el_retour_adp', labelAr: 'سهم ADP + Pi و NADP⁺ في الاتجاه المعاكس', points: 1 },
+      { id: 'el_lumiere', labelAr: 'سهم الطاقة الضوئية الداخل', points: 1 },
+      { id: 'el_titre', labelAr: 'عنوان المخطط', points: 1 },
+    ],
+    trapsAr: [
+      'رسم سهم ATP في الاتجاهين: الـ ATP يُنتج في التيلاكوئيد و يُستهلك في الحشوة.',
+      'نسيان عودة ADP + Pi و NADP⁺: بدونها المخطط ليس وظيفياً بل قائمة عناصر.',
+      'وضع تثبيت CO₂ على التيلاكوئيد: الخلط بين مقرّي المرحلتين يُفقد نقطتين.',
+    ],
+    assetSrc: '/assets/images/schemas/domaine2_energie/schema_09_photosynthese.svg',
+    altAr: 'مخطط حصيلة التركيب الضوئي: المرحلة الكيموضوئية على التيلاكوئيد و المرحلة الكيميائية في الحشوة، مع تبادل ATP و NADPH.',
+    lessonId: 'd2-u6-l3-calvin',
+  },
 ];
 
 export const SCHEMA_DRILL_BY_ID: Record<string, SchemaDrill> = Object.fromEntries(

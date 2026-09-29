@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useChronometre, useCompteARebours } from '../hooks/useWallClock';
 import { motion, AnimatePresence } from 'motion/react';
 import { X, Crosshair, CheckCircle2, AlertTriangle, Timer, ShieldAlert, FileText, ChevronLeft, Zap, Share2, BrainCircuit } from 'lucide-react';
 
@@ -11,7 +12,9 @@ interface CombatChallengePortalProps {
 
 export default function CombatChallengePortal({ challengeId, challengeTitle, mode, onClose }: CombatChallengePortalProps) {
   const [phase, setPhase] = useState<1 | 2 | 3 | 4>(1);
-  const [timeLeft, setTimeLeft] = useState(mode === 'sprint' ? 45 * 60 : 0); // 45 mins for sprint, count up for coach
+  // Sprint 45 : horloge réelle des deux côtés — en sprint, un onglet en
+  // arrière-plan ne rend plus du temps ; en mode coach, le temps passé compte.
+  const SPRINT_SEC = 45 * 60;
   const [score, setScore] = useState(0);
 
   // Phase 1: Hotspots
@@ -35,13 +38,9 @@ export default function CombatChallengePortal({ challengeId, challengeTitle, mod
   const [synthDev, setSynthDev] = useState('');
   const [synthConcl, setSynthConcl] = useState('');
 
-  // Timer effect
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setTimeLeft((prev) => mode === 'sprint' ? (prev > 0 ? prev - 1 : 0) : prev + 1);
-    }, 1000);
-    return () => clearInterval(timer);
-  }, [mode]);
+  const restantSprint = useCompteARebours({ dureeSec: SPRINT_SEC, actif: mode === 'sprint' });
+  const ecouleCoach = useChronometre(mode !== 'sprint');
+  const timeLeft = mode === 'sprint' ? restantSprint : ecouleCoach;
 
   const formatTime = (seconds: number) => {
     const m = Math.floor(seconds / 60);

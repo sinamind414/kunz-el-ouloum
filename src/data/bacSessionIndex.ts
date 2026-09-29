@@ -27,6 +27,9 @@
 // Trous assumés et documentés :
 //   · 2021, sujet 2, exercice 1 : non lisible dans la source → absent. Le
 //     total de ce sujet vaut donc 15 points et non 20 (`INCOMPLETE_SUJETS`).
+//   · sprint 56 : la session 2016 rejoint la banque (série 2016→2026). Son
+//     barème n'est pas 5/7/8 mais 6/5/9 et 6/7/7 : le format actuel s'est
+//     stabilisé à partir de 2017 — un fait que le verrou consigne désormais.
 //   · sprint 36 : la session 2017 rejoint la banque (série 2017→2026).
 //   · sprint 34 : la session 2018 rejoint la banque — la série va de 2018 à
 //     2026 sans interruption.
@@ -91,6 +94,11 @@ export interface BacExerciseIdea {
  * DzExams contient le sujet ET l'« الإجابة النموذجية » — même adresse.
  */
 export const BAC_SESSION_SOURCES: { year: number; url: string; correctionUrl: string }[] = [
+  {
+    year: 2016,
+    url: 'https://eddirasa.com/bac-science-2016-se/',
+    correctionUrl: 'https://eddirasa.com/correction-bac-se-science-2016/',
+  },
   {
     year: 2017,
     url: 'https://eddirasa.com/bac-science-2017-se/',
@@ -163,6 +171,145 @@ export const INCOMPLETE_SUJETS: { year: number; sujet: BacSujet; raison: string 
 ];
 
 export const BAC_IDEAS: BacExerciseIdea[] = [
+  // ───────────────────────────── 2016 ─────────────────────────────
+  // Ajoutée au sprint 56. ATTENTION : le barème de 2016 n'est PAS 5/7/8 —
+  // c'est 6/5/9 (sujet 1) et 6/7/7 (sujet 2). Le format s'est stabilisé à
+  // partir de 2017. Le barème du 3e exercice du sujet 1 est déduit par
+  // complément à 20 : son en-tête est illisible dans la source.
+  {
+    id: 'bac2016_s1_e1',
+    year: 2016,
+    sujet: 1,
+    exercice: 1,
+    points: 6,
+    titleAr: 'من المورثة إلى البروتين: أربع مورثات تحت Anagène',
+    ideaAr:
+      'كيف نثبت أن الشفرة الوراثية موحّدة و ثلاثية، و أن لكل مورثة ناتجاً وظيفياً خاصاً؟',
+    supportsAr: [
+      'صورة بالمجهر الإلكتروني لوحدة تحوّل اللغة النووية إلى لغة بروتينية، و نموذج ثلاثي الأبعاد لأحد عناصر الترجمة',
+      'نتائج برنامج Anagène لأربع مورثات: تتابع ARNm و تتابع الأحماض الأمينية الموافق',
+    ],
+    notionAr:
+      'وحدة الشفرة الوراثية و خصائصها (ثلاثية، غير متداخلة، شاملة)، و حساب عدد الوحدات البنائية.',
+    verbsAr: ['قدّم عنواناً', 'اكتب البيانات', 'وضّح العلاقة', 'حدّد', 'احسب', 'برّر', 'أنجز رسماً تخطيطياً'],
+    unitIds: [1],
+    situationIds: ['lecture_shifra', 'uracile_radioactif'],
+    capsuleIds: ['cap_u1_lecture_code', 'cap_u1_calcul_longueurs'],
+    drillIds: ['drill_traduction', 'drill_transcription'],
+  },
+  {
+    id: 'bac2016_s1_e2',
+    year: 2016,
+    sujet: 1,
+    exercice: 2,
+    points: 5,
+    titleAr: 'اللمفاوية (س) و دور الأنترلوكين 2',
+    ideaAr:
+      'ما الخلية التي تقتل الخلية المصابة، و ما الذي يجعلها قادرة على ذلك؟ فئران طافرة تجيب.',
+    supportsAr: [
+      'رسم تخطيطي لنشاط الخلية اللمفاوية (س) بعد دخول فيروس، و مظهر غشاء الخلية المصابة',
+      'تطور أعداد LB و LT8 و LT4 و الخلية (س) في العقدة اللمفاوية',
+      'عدد LT8 في طحال فأر طبيعي و فئران طافرة على مورثة CMH II، مع أو دون حقن IL2',
+      'نسبة تخريب الخلايا المصابة عند الفأر الطبيعي و الفأر الطافر',
+    ],
+    notionAr:
+      'الاستجابة المناعية الخلوية: دور CMH II في انتقاء LT4، و IL2 كوسيط لتكاثر LT8.',
+    verbsAr: ['تعرّف', 'أنجز رسماً تخطيطياً', 'اشرح', 'فسّر', 'استخلص المعلومات', 'اكتب نصاً علمياً'],
+    unitIds: [4],
+    situationIds: ['cellules_cibles_lt', 'sida_vih'],
+    capsuleIds: ['cap_u4_lt4_pivot', 'cap_u4_humorale_cellulaire'],
+    drillIds: ['drill_cmh'],
+  },
+  {
+    id: 'bac2016_s1_e3',
+    year: 2016,
+    sujet: 1,
+    exercice: 3,
+    points: 9,
+    titleAr: 'تركيب الـ ATP في عضيتين: تيلاكوئيد و ميتوكوندري',
+    ideaAr:
+      'العضيتان مختلفتان و الآلية واحدة: تدرّج بروتونات عبر غشاء، و أكسدة–إرجاع تغذّيه.',
+    supportsAr: [
+      'صور بالمجهر الإلكتروني: جزء من تيلاكوئيد و جزء من الغشاء الداخلي للميتوكوندري',
+      'مخطط تفاعلات الأكسدة و الإرجاع مع كمونات بالفولط (+0,82 V و −0,32 V)',
+      'تيلاكوئيدات معزولة في الظلام مع ADP و Pi: كمية ATP المتشكّلة بدلالة الزمن',
+    ],
+    notionAr:
+      'التناضح الكيميائي (Mitchell): التدرّج البروتوني مصدر تركيب ATP في الصانعة كما في الميتوكوندري.',
+    verbsAr: ['حدّد', 'ترجم إلى رسم تخطيطي', 'تعرّف', 'علّل', 'حلّل', 'استنتج', 'قارن في جدول'],
+    unitIds: [7, 6, 8],
+    situationIds: ['jagendorf_chloroplaste', 'coureur_crampe'],
+    capsuleIds: ['cap_u7_ou_est_atp', 'cap_u6_jagendorf', 'cap_u8_chloroplaste_mitochondrie'],
+    drillIds: ['drill_respiration', 'drill_chaine_photochimique'],
+  },
+  {
+    id: 'bac2016_s2_e1',
+    year: 2016,
+    sujet: 2,
+    exercice: 1,
+    points: 6,
+    titleAr: 'الأميلاز و دواء الـ Glucobay',
+    ideaAr:
+      'كيف يكتسب الأنزيم تخصّصه الوظيفي، و كيف يستغل دواء هذا التخصص لخفض سكر الدم؟',
+    supportsAr: [
+      'البنية الفراغية لأنزيم الأميلاز من مبرمج Rastop مع جزء مؤطَّر (س)',
+      'أربع سلالات: أميلاز طبيعي و ثلاث سلالات طافرة (Trp58، Asp197…) مع تثبيت الركيزة و إماهتها',
+      'سرعة نشاط أنزيم α-glucosidase بدلالة تركيز السكريات، مع و دون Glucobay',
+    ],
+    notionAr:
+      'الموقع الفعال: أحماض التثبيت و أحماض التحفيز ليست نفسها؛ و التثبيط التنافسي يُرفع بزيادة الركيزة.',
+    verbsAr: ['علّل', 'تعرّف', 'اذكر الروابط', 'فسّر', 'استخلص', 'حلّل', 'بيّن'],
+    unitIds: [3, 2],
+    situationIds: ['digestion_pepsine', 'diabete_januvia'],
+    capsuleIds: ['cap_u3_inhibition_type', 'cap_u3_lire_nmodelisation'],
+    drillIds: ['drill_enzyme_site_actif', 'drill_courbes_inhibition'],
+  },
+  {
+    id: 'bac2016_s2_e2',
+    year: 2016,
+    sujet: 2,
+    exercice: 2,
+    points: 7,
+    titleAr: 'كرة ATP سنتاز مفكّكة قطعة قطعة',
+    ideaAr:
+      'خمسة أوساط تجريبية تعزل كل شرط لتركيب ATP: التدرّج، الجزء (س)، الجزء (ع).',
+    supportsAr: [
+      'ما فوق البنية الخلوية للعضية مقر التحويل الطاقوي، مع عناصر مرقمة',
+      'جدول خمس مراحل: وسط حامضي/قاعدي، نزع الجزء (س)، مادة FAL على موقع تثبيت ADP، مادة DCCD على الجزء (ع)',
+      'أنزيم (E) يتدخل في المرحلة الموالية: ركيزته و ناتجه',
+    ],
+    notionAr:
+      'ATP سنتاز: القناة البروتونية و الرأس التحفيزي؛ التجربة تفصل بين تدفّق H⁺ و تركيب ATP.',
+    verbsAr: ['تعرّف', 'اكتب البيانات', 'حدّد', 'علّل', 'استخلص المعلومات', 'وضّح برسم تخطيطي'],
+    unitIds: [7, 6],
+    situationIds: ['jagendorf_chloroplaste'],
+    capsuleIds: ['cap_u7_ou_est_atp', 'cap_u6_jagendorf'],
+    drillIds: ['drill_respiration'],
+  },
+  {
+    id: 'bac2016_s2_e3',
+    year: 2016,
+    sujet: 2,
+    exercice: 3,
+    points: 7,
+    titleAr: 'المنعكس العضلي و دواء البنزوديازيبين',
+    ideaAr:
+      'كيف يهدّئ دواء تشنّجاً عضلياً؟ لا بإغلاق مشبك، بل برفع فعالية مشبك مثبّط موجود أصلاً.',
+    supportsAr: [
+      'رسم تخطيطي للعصبونات المتدخلة في المنعكس العضلي، مع تفاصيل المشبك بين العصبون الجامع و العصبون المحرك',
+      'تسجيلات على راسمَي اهتزاز: تنبيه فعال، حقن أستيل كولين، حقن GABA',
+      'عدد القنوات الغشائية المفتوحة مع GABA وحده، مع BZD وحده، و مع الاثنين',
+      'نسبة تثبيت GABA على القنوات بدلالة تركيز BZD',
+    ],
+    notionAr:
+      'المشبك المثبّط: GABA يفتح قنوات Cl⁻؛ و BZD مُعدِّل يرفع تثبيت GABA دون أن يحلّ محلّه.',
+    verbsAr: ['حدّد النوع', 'اشرح', 'اقترح فرضية', 'علّل', 'بيّن برسم تخطيطي وظيفي'],
+    unitIds: [5],
+    situationIds: ['seuil_integration', 'curare_chirurgie'],
+    capsuleIds: ['cap_u5_double_codage', 'cap_u5_canaux_types', 'cap_u5_ppse_ppsi'],
+    drillIds: ['drill_synapse'],
+  },
+
   // ───────────────────────────── 2017 ─────────────────────────────
   // Ajoutée au sprint 36 : la série couvre 2017→2026 sans trou.
   {

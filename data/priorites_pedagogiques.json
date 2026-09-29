@@ -285,91 +285,92 @@
       "statut": "livré (sprint 13) — 11 cartes d'ouverture + portail réécrit (bug unité 1 partout corrigé)"
     }
   ],
-  "prioritesMesurees_2017_2026": {
+  "prioritesMesurees_2016_2026": {
     "_meta": {
-      "source": "src/data/bacSessionIndex.ts — 59 exercices des sujets officiels ONEC, sessions 2017 à 2026 (10 sessions consécutives)",
+      "source": "src/data/bacSessionIndex.ts — 65 exercices des sujets officiels ONEC, sessions 2016 à 2026 (11 sessions consécutives)",
       "methode": "points attribués à l'unité qui MÈNE l'exercice ; les apparitions comptent aussi les unités secondaires",
       "verrou": "src/data/prioritesMesurees.sync.test.ts — ces chiffres échouent s'ils divergent du code",
+      "note_bareme": "2016 ne suit pas le format 5/7/8 (6/5/9 et 6/7/7) ; le format actuel est stable depuis 2017",
       "aRetenir": "le classement initial (sprints 1-4) venait des vues YouTube et de la difficulté ressentie ; celui-ci vient de l'épreuve"
     },
     "unites": [
       {
         "unitId": 4,
         "titre": "المناعة",
-        "pointsPrincipaux": 82,
-        "partPourcent": 20.8,
+        "pointsPrincipaux": 87,
+        "partPourcent": 20.0,
         "poidsAnnonce": 13,
-        "apparitions": 13,
-        "sessions": 10
+        "apparitions": 14,
+        "sessions": 11
       },
       {
         "unitId": 1,
         "titre": "تركيب البروتين",
-        "pointsPrincipaux": 75,
-        "partPourcent": 19.0,
+        "pointsPrincipaux": 81,
+        "partPourcent": 18.6,
         "poidsAnnonce": 10,
-        "apparitions": 17,
-        "sessions": 10
+        "apparitions": 18,
+        "sessions": 11
       },
       {
         "unitId": 5,
         "titre": "الاتصال العصبي",
-        "pointsPrincipaux": 74,
-        "partPourcent": 18.7,
+        "pointsPrincipaux": 81,
+        "partPourcent": 18.6,
         "poidsAnnonce": 16,
-        "apparitions": 11,
-        "sessions": 10
+        "apparitions": 12,
+        "sessions": 11
       },
       {
         "unitId": 3,
         "titre": "النشاط الإنزيمي",
-        "pointsPrincipaux": 58,
+        "pointsPrincipaux": 64,
         "partPourcent": 14.7,
         "poidsAnnonce": 13,
-        "apparitions": 15,
-        "sessions": 10
+        "apparitions": 16,
+        "sessions": 11
       },
       {
         "unitId": 6,
         "titre": "التركيب الضوئي",
         "pointsPrincipaux": 51,
-        "partPourcent": 12.9,
+        "partPourcent": 11.7,
         "poidsAnnonce": 20,
-        "apparitions": 7,
-        "sessions": 6
+        "apparitions": 9,
+        "sessions": 7
+      },
+      {
+        "unitId": 7,
+        "titre": "تحويل الطاقة",
+        "pointsPrincipaux": 29,
+        "partPourcent": 6.7,
+        "poidsAnnonce": 19,
+        "apparitions": 6,
+        "sessions": 5
       },
       {
         "unitId": 2,
         "titre": "بنية/وظيفة البروتين",
         "pointsPrincipaux": 22,
-        "partPourcent": 5.6,
+        "partPourcent": 5.1,
         "poidsAnnonce": 9,
-        "apparitions": 13,
-        "sessions": 9
-      },
-      {
-        "unitId": 7,
-        "titre": "تحويل الطاقة",
-        "pointsPrincipaux": 13,
-        "partPourcent": 3.3,
-        "poidsAnnonce": 19,
-        "apparitions": 4,
-        "sessions": 4
+        "apparitions": 14,
+        "sessions": 10
       },
       {
         "unitId": 8,
         "titre": "ما فوق البنية الخلوية",
         "pointsPrincipaux": 5,
-        "partPourcent": 1.3,
+        "partPourcent": 1.1,
         "poidsAnnonce": 5,
-        "apparitions": 5,
-        "sessions": 4
+        "apparitions": 6,
+        "sessions": 5
       },
       {
         "unitId": 9,
         "titre": "النشاط التكتوني",
         "pointsPrincipaux": 5,
-        "partPourcent": 1.3,
+        "partPourcent": 1.1,
         "poidsAnnonce": 5,
         "apparitions": 2,
         "sessions": 1
@@ -378,7 +379,7 @@
         "unitId": 10,
         "titre": "بنية الكرة الأرضية",
         "pointsPrincipaux": 5,
-        "partPourcent": 1.3,
+        "partPourcent": 1.1,
         "poidsAnnonce": 5,
         "apparitions": 1,
         "sessions": 1
@@ -387,7 +388,7 @@
         "unitId": 11,
         "titre": "البنيات الجيولوجية",
         "pointsPrincipaux": 5,
-        "partPourcent": 1.3,
+        "partPourcent": 1.1,
         "poidsAnnonce": 5,
         "apparitions": 1,
         "sessions": 1
@@ -400,7 +401,8 @@
       "grandOubli": "U1 تركيب البروتين — absente des 5 priorités initiales, alors qu'elle mène 19 % des points et apparaît dans 17 exercices sur 59",
       "secondOubli": "U5 الاتصال العصبي — absente aussi, 18,7 % des points, présente sur les 10 sessions",
       "aRequalifier": "U2 (pHi, acides aminés) : 1re en difficulté ressentie mais 5,6 % des points en propre — à traiter comme compétence TRANSVERSALE (13 apparitions) et non comme unité vedette",
-      "surevalue": "U7 تحويل الطاقة : 19 % annoncés par le programme, 3,3 % constatés sur 10 sessions"
+      "surevalue": "U7 تحويل الطاقة : 19 % annoncés par le programme, 3,3 % constatés sur 10 sessions",
+      "miseAJour_sprint56": "onzième session ajoutée (2016) : U7 remonte de 3,3 % à 6,7 % — deux exercices d'ATP synthase en 2016 — mais reste très loin des 19 % annoncés par le programme"
     }
   }
 }

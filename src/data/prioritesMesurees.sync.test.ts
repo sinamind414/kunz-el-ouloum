@@ -28,13 +28,13 @@ interface LignePubliee {
 
 const publie = JSON.parse(
   readFileSync(resolve(process.cwd(), 'data/priorites_pedagogiques.json'), 'utf8'),
-) as { prioritesMesurees_2017_2026?: { unites: LignePubliee[]; _meta: Record<string, string> } };
+) as { prioritesMesurees_2016_2026?: { unites: LignePubliee[]; _meta: Record<string, string> } };
 
 describe('priorités mesurées — le document reste synchronisé avec le corpus', () => {
-  const bloc = publie.prioritesMesurees_2017_2026;
+  const bloc = publie.prioritesMesurees_2016_2026;
 
   it('publie un classement pour chaque unité du programme', () => {
-    expect(bloc, 'bloc prioritesMesurees_2017_2026 absent').toBeDefined();
+    expect(bloc, 'bloc prioritesMesurees_2016_2026 absent').toBeDefined();
     expect(bloc!.unites.map((u) => u.unitId).sort((a, b) => a - b)).toEqual(
       INITIAL_UNITS.map((u) => u.id).sort((a, b) => a - b),
     );
@@ -59,11 +59,11 @@ describe('priorités mesurées — le document reste synchronisé avec le corpus
     expect(points).toEqual([...points].sort((a, b) => b - a));
   });
 
-  it('décrit la bonne assiette : 10 sessions, 59 exercices', () => {
-    expect(YEARS_COVERED.length).toBe(10);
-    expect(BAC_IDEAS.length).toBe(59);
+  it('décrit la bonne assiette : 11 sessions, 65 exercices', () => {
+    expect(YEARS_COVERED.length).toBe(11);
+    expect(BAC_IDEAS.length).toBe(65);
     expect(bloc!._meta.source).toContain(String(BAC_IDEAS.length));
-    expect(bloc!._meta.source).toContain('2017');
+    expect(bloc!._meta.source).toContain('2016');
     expect(bloc!._meta.source).toContain('2026');
   });
 });
