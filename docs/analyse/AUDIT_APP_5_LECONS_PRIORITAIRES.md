@@ -3273,3 +3273,163 @@ Le tableau de tête, lui, ne bouge pas.
 ### Vérifications
 
 Suite unitaire **1815 verts / 4 skipped / 0 échec** (143 fichiers).
+
+---
+
+## Sprint 57 — plus aucun exercice hors montage, et la règle devient stricte
+
+### Ce que l'ajout de 2016 avait laissé derrière
+
+Les six exercices de 2016 étaient entrés dans le corpus sans être rattachés
+aux montages récurrents. Le test tolérait jusqu'à 10 % de non-classés ; on
+était à **9,2 %** — donc vert, donc silencieux. Un seuil qu'on frôle est un
+seuil qui ne protège plus.
+
+### Un treizième montage, révélé par 2016
+
+Cinq exercices partagent un geste que le corpus n'avait pas encore nommé :
+**« قراءة الشفرة الوراثية بأداة »** — on donne un tableau de code ou une
+fenêtre Anagène, et il faut *exploiter* le tétabus, pas le décrire.
+Sessions concernées : 2016, 2017, 2021, 2022, 2024.
+
+Piège consigné, celui qui ruine l'exercice dès la première triplette : **lire
+la séquence non transcrite comme si c'était l'ARNm** — les lettres se
+ressemblent (sauf T/U) et tout ce qui suit est faux.
+
+Les cinq autres exercices de 2016 ont rejoint des montages existants :
+l'amylase et le Glucobay chez « la molécule sosie », l'ATP synthase et la
+comparaison thylakoïde/mitochondrie chez « suivre le bilan énergétique », le
+benzodiazépine chez « la substance qui détourne un canal », l'IL2 et les
+souris CMH II chez « les marqueurs du soi ».
+
+### La tolérance disparaît
+
+`unclassifiedIdeaIds()` renvoie désormais une liste **vide**, et le test
+l'exige : `toEqual([])`. La marge de 10 % avait un sens tant que des isolats
+subsistaient (la bioénergétique 2025, puis 2016) ; ils ont tous trouvé leur
+famille.
+
+Conséquence assumée : **ajouter une session obligera désormais à dire à quel
+montage appartient chaque exercice**. C'est exactement l'effort qu'il faut
+imposer — sans lui, le corpus grossit et la grille de lecture se dilue.
+
+### État
+
+13 montages · 65 exercices · 11 sessions · **0 exercice non classé**.
+Suite unitaire **1815 verts / 4 skipped / 0 échec** (143 fichiers).
+
+---
+
+## Sprint 58 — j'ai lancé l'application, et elle refusait de démarrer
+
+### Ce que 57 sprints de tests verts ne disaient pas
+
+Tout ce travail avait été validé par la suite de tests. **Je n'avais jamais
+lancé le serveur.** Première tentative :
+
+```
+REFUS DE DÉMARRAGE : JWT_SECRET manquant.
+```
+puis, une fois la variable définie :
+```
+Error: Could not locate the bindings file  (better-sqlite3)
+    … 40 lignes de trace Node …
+```
+
+Le binaire natif de `better-sqlite3` n'est pas compilé sur cette machine — ce
+qui arrive sur **toute machine sans chaîne de compilation C++**, et chez tout
+développeur qui installe avec `--ignore-scripts`. Résultat : l'application
+entière est inaccessible.
+
+### Pourquoi c'est un vrai défaut, pas une contrariété d'environnement
+
+Le cœur de l'application — leçons, corpus BAC, atelier, plan, sujets blancs —
+est **100 % local au navigateur** et n'utilise pas la base. La base sert aux
+comptes élèves et au tableau de bord enseignant, c'est-à-dire à
+**l'accessoire**. Refuser de démarrer pour l'accessoire, c'est priver l'élève
+de tout pour protéger une fonctionnalité qu'il n'utilise peut-être jamais.
+
+### Le mode dégradé
+
+`server/store.degraded.ts` implémente le même contrat sans rien persister :
+lectures vides, écritures refusées avec un **503 explicite**, export CSV en
+flux vide plutôt qu'un téléchargement interrompu. `openStoreOrDegrade()`
+attrape l'échec d'ouverture et journalise un message qui dit **ce qui marche
+encore** :
+
+```
+[store] DÉMARRAGE EN MODE DÉGRADÉ — Could not locate the bindings file…
+[store] Les comptes élèves et le tableau de bord enseignant sont désactivés.
+[store] L'application (leçons, BAC, atelier, plan) fonctionne normalement :
+        elle est locale au navigateur.
+[store] Pour réactiver : npm rebuild better-sqlite3, ou définir DATABASE_URL.
+```
+
+L'application démarre désormais et répond : page 200, module d'entrée 200,
+manifeste 200.
+
+### Le trou de couverture derrière le trou
+
+La suite n'incluait que `src/**` : **aucun test ne couvrait `server/`** — donc
+rien ne couvrait le démarrage, là où un échec bloque tout le monde.
+`vite.config.ts` inclut maintenant `server/**/*.test.ts`, et six tests
+vérifient le mode dégradé (lectures vides sans exception, écritures en 503,
+message qui cite la solution, flux d'export vide).
+
+### Vérifications
+
+Suite unitaire **1821 verts / 4 skipped / 0 échec** (144 fichiers), serveur
+lancé et servant l'application.
+
+---
+
+## Sprint 59 — le second refus de démarrage : le secret des jetons
+
+### Le même défaut, à l'étage au-dessus
+
+Le sprint 58 a réparé le crash SQLite. Restait le **premier** obstacle
+rencontré, que j'avais contourné à la main en écrivant un `.env` :
+
+```
+REFUS DE DÉMARRAGE : JWT_SECRET manquant.
+```
+
+L'intention est juste : un secret par défaut rend tous les jetons forgeables,
+donc tous les comptes usurpables. Mais appliquée sans distinction, la règle
+bloque aussi celui qui clone le dépôt pour **regarder l'application tourner** —
+alors que celle-ci n'a besoin d'aucun compte pour fonctionner.
+
+### Le compromis, et pourquoi il ne fragilise rien
+
+`server/secret.ts` :
+
+- **en production, rien ne change** — absence de secret = refus, sans appel ;
+- **en développement**, un secret **éphémère** est tiré au hasard à chaque
+  démarrage, avec un avertissement en trois lignes.
+
+Le caractère éphémère est le cœur de la décision, et un test le verrouille :
+deux démarrages donnent deux secrets **différents**. Un secret de repli
+*stable* serait vite considéré comme acceptable et finirait par migrer en
+production ; un secret qui invalide les sessions à chaque redémarrage ne peut
+pas se faire passer pour une solution.
+
+S'y ajoute un avertissement — sans blocage — quand le secret fourni fait moins
+de 32 caractères.
+
+### Vérifié dans les deux sens
+
+Sans `.env`, en développement : le serveur démarre, journalise le secret
+éphémère et sert l'application. Avec `NODE_ENV=production` : refus, message
+inchangé.
+
+### Un rappel du garde-fou du sprint 40
+
+Pendant ce sprint, `repoIntegrity.test.ts` a de nouveau signalé la disparition
+de `bundleBudget.test.ts` et `offlineAssets.test.ts` de la copie de travail.
+Restaurés avant commit. C'est la cinquième fois ; sans ce test, la suite serait
+depuis longtemps verte et trouée.
+
+### Vérifications
+
+Suite unitaire **1828 verts / 4 skipped / 0 échec** (145 fichiers), serveur en
+ligne et servant l'application.

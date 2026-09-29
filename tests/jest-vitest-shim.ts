@@ -65,6 +65,38 @@ function expectVitest(actual: any, _message?: string): any {
 Object.keys(g.expect as object).forEach((k) => {
   (expectVitest as any)[k] = (g.expect as any)[k];
 });
+
+// --- Matchers vitest-absents-de-jest -------------------------------------
+// jest n'a que toHaveBeenCalledTimes / toHaveBeenCalledWith ; vitest ajoute
+// les formes "exactly once" (utilisees par server/store.degraded.test.ts,
+// sprint 58). On les enregistre dans jest : les chaines d'assertion des
+// fichiers important 'vitest' les recoivent donc aussi (expectVitest delegue
+// a g.expect). Garde global : extend() n'est appele qu'une fois par worker.
+const MATCHERS_INSTALLES = '__kunzMatchersVitestInstalles';
+if (!g[MATCHERS_INSTALLES] && typeof g.expect?.extend === 'function') {
+  g[MATCHERS_INSTALLES] = true;
+  g.expect.extend({
+    toHaveBeenCalledOnce(this: any, recu: any) {
+      const nb = recu?.mock?.calls?.length ?? 0;
+      return {
+        pass: nb === 1,
+        message: () =>
+          `attendu : mock appele exactement 1 fois — recu : ${nb} fois`,
+      };
+    },
+    toHaveBeenCalledExactlyOnceWith(this: any, recu: any, ...attendus: any[]) {
+      const appels = recu?.mock?.calls ?? [];
+      const pass = appels.length === 1 && this.equals(attendus, appels[0]);
+      return {
+        pass,
+        message: () =>
+          `attendu : mock appele 1 fois avec ${JSON.stringify(attendus)} — ` +
+          `recus : ${JSON.stringify(appels)}`,
+      };
+    },
+  });
+}
+
 export const expect = expectVitest;
 
 // Filet memoire des globals remplacees par stubGlobal (jest n'a pas
