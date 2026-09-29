@@ -1,6 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 820" role="img" aria-labelledby="title desc">
-  <title id="title">صورة افتتاحية: خيط العنكبوت</title>
-  <desc id="desc">لوحة أكثر كثافة تربط بين خيط العنكبوت كمنتج بروتيني والسؤال حول دقة التركيب داخل الخلية.</desc>
+<svg aria-label="صورة افتتاحية: خيط العنكبوت" class="pfe-figure" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 820" role="img" aria-labelledby="title desc">
+  <title id="pf-title">صورة افتتاحية: خيط العنكبوت</title>
+  <desc id="pf-desc">لوحة أكثر كثافة تربط بين خيط العنكبوت كمنتج بروتيني والسؤال حول دقة التركيب داخل الخلية.</desc>
   <rect width="1400" height="820" fill="#f7fbf7" rx="36"/>
   <g stroke="#9ec5aa" stroke-width="4" opacity="0.9">
     <line x1="170" y1="100" x2="700" y2="395"/>

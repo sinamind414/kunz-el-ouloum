@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 650" width="800" height="650">
+<svg aria-label="التركيب الضوئي" role="img" class="pfe-figure" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 650" width="800" height="650">
 <defs><style>text{font-family:'Noto Kufi Arabic','Segoe UI',system-ui,sans-serif;}
 .title,.t{font-size:21px;font-weight:800;fill:#0F2A1D;}
 .subtitle{font-size:13px;fill:#6B7280;}
@@ -7,33 +7,33 @@
 .label-fr{font-size:12px;fill:#6B7280;}
 .label-small,.ls{font-size:11px;fill:#6B7280;}
 .label-white,.lw{font-size:12px;font-weight:700;fill:#FFFFFF;}</style>
-<linearGradient id="chloro"><stop offset="0%" stop-color="#E8F5E9"/><stop offset="100%" stop-color="#C8E6C9"/></linearGradient>
-<linearGradient id="thylak"><stop offset="0%" stop-color="#2ECC71"/><stop offset="100%" stop-color="#1B5E20"/></linearGradient>
-<linearGradient id="kunzBg" x1="0" y1="0" x2="0" y2="1">
+<linearGradient id="pf-chloro"><stop offset="0%" stop-color="#E8F5E9"/><stop offset="100%" stop-color="#C8E6C9"/></linearGradient>
+<linearGradient id="pf-thylak"><stop offset="0%" stop-color="#2ECC71"/><stop offset="100%" stop-color="#1B5E20"/></linearGradient>
+<linearGradient id="pf-kunzBg" x1="0" y1="0" x2="0" y2="1">
    <stop offset="0%" stop-color="#F7FAF8"/>
    <stop offset="100%" stop-color="#EFF4F1"/>
   </linearGradient>
-  <filter id="kunzShadow" x="-5%" y="-5%" width="110%" height="110%">
+  <filter id="pf-kunzShadow" x="-5%" y="-5%" width="110%" height="110%">
    <feDropShadow dx="0" dy="3" stdDeviation="6" flood-color="#006d37" flood-opacity="0.06"/>
   </filter>
  </defs>
-<rect width="800" height="650" fill="url(#kunzBg)"/>
- <rect x="8" y="8" width="784" height="634" rx="20" fill="none" stroke="#E3EAE6" stroke-width="2" filter="url(#kunzShadow)"/>
+<rect width="800" height="650" fill="url(#pf-kunzBg)"/>
+ <rect x="8" y="8" width="784" height="634" rx="20" fill="none" stroke="#E3EAE6" stroke-width="2" filter="url(#pf-kunzShadow)"/>
 <text x="400" y="30" text-anchor="middle" class="t">التركيب الضوئي</text>
 <text x="400" y="50" text-anchor="middle" class="ls">آليات تحويل الطاقة الضوئية إلى طاقة كيميائية</text>
 
 <!-- Chloroplast structure -->
 <g transform="translate(400, 310)">
  <!-- Outer membrane -->
- <ellipse cx="0" cy="0" rx="230" ry="180" fill="url(#chloro)" stroke="#2E7D32" stroke-width="3"/>
+ <ellipse cx="0" cy="0" rx="230" ry="180" fill="url(#pf-chloro)" stroke="#2E7D32" stroke-width="3"/>
  <text x="0" y="-185" text-anchor="middle" class="la" fill="#2E7D32">الصانعة الخضراء</text>
 
  <!-- Thylakoid stacks (grana) -->
- <ellipse cx="-80" cy="-60" rx="30" ry="50" fill="url(#thylak)" opacity="0.7"/>
- <ellipse cx="60" cy="-80" rx="25" ry="40" fill="url(#thylak)" opacity="0.7"/>
- <ellipse cx="100" cy="-20" rx="20" ry="35" fill="url(#thylak)" opacity="0.7"/>
- <ellipse cx="-40" cy="40" rx="35" ry="45" fill="url(#thylak)" opacity="0.7"/>
- <ellipse cx="80" cy="60" rx="20" ry="30" fill="url(#thylak)" opacity="0.7"/>
+ <ellipse cx="-80" cy="-60" rx="30" ry="50" fill="url(#pf-thylak)" opacity="0.7"/>
+ <ellipse cx="60" cy="-80" rx="25" ry="40" fill="url(#pf-thylak)" opacity="0.7"/>
+ <ellipse cx="100" cy="-20" rx="20" ry="35" fill="url(#pf-thylak)" opacity="0.7"/>
+ <ellipse cx="-40" cy="40" rx="35" ry="45" fill="url(#pf-thylak)" opacity="0.7"/>
+ <ellipse cx="80" cy="60" rx="20" ry="30" fill="url(#pf-thylak)" opacity="0.7"/>
 
  <!-- Stroma label -->
  <text x="140" y="-110" class="la" fill="#2E7D32" font-size="11">السدى</text>

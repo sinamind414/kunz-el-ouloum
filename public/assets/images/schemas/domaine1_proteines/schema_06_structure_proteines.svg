@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 700" width="800" height="700">
+<svg aria-label="مستويات البنية الفراغية للبروتين — 4 niveaux de structure" role="img" class="pfe-figure" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 700" width="800" height="700">
   <defs>
     <style>text{font-family:'Noto Kufi Arabic','Segoe UI',system-ui,sans-serif;}
 .title,.t{font-size:21px;font-weight:800;fill:#0F2A1D;}
@@ -8,21 +8,21 @@
 .label-fr{font-size:12px;fill:#6B7280;}
 .label-small,.ls{font-size:11px;fill:#6B7280;}
 .label-white,.lw{font-size:12px;font-weight:700;fill:#FFFFFF;}</style>
-    <filter id="sh"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-opacity="0.1"/></filter>
-  <linearGradient id="kunzBg" x1="0" y1="0" x2="0" y2="1">
+    <filter id="pf-sh"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-opacity="0.1"/></filter>
+  <linearGradient id="pf-kunzBg" x1="0" y1="0" x2="0" y2="1">
       <stop offset="0%" stop-color="#F7FAF8"/>
       <stop offset="100%" stop-color="#EFF4F1"/>
     </linearGradient>
-    <filter id="kunzShadow" x="-5%" y="-5%" width="110%" height="110%">
+    <filter id="pf-kunzShadow" x="-5%" y="-5%" width="110%" height="110%">
       <feDropShadow dx="0" dy="3" stdDeviation="6" flood-color="#006d37" flood-opacity="0.06"/>
     </filter>
   </defs>
-  <rect width="800" height="700" fill="url(#kunzBg)"/>
-  <rect x="8" y="8" width="784" height="684" rx="20" fill="none" stroke="#E3EAE6" stroke-width="2" filter="url(#kunzShadow)"/>
+  <rect width="800" height="700" fill="url(#pf-kunzBg)"/>
+  <rect x="8" y="8" width="784" height="684" rx="20" fill="none" stroke="#E3EAE6" stroke-width="2" filter="url(#pf-kunzShadow)"/>
   <text x="400" y="30" text-anchor="middle" class="t">مستويات البنية الفراغية للبروتين — 4 niveaux de structure</text>
 
   <!-- LEVEL 1: Primary -->
-  <g transform="translate(10, 55)" filter="url(#sh)">
+  <g transform="translate(10, 55)" filter="url(#pf-sh)">
     <rect x="0" y="0" width="780" height="140" rx="12" fill="#FFF" stroke="#2ECC71" stroke-width="1.5"/>
     <text x="390" y="22" text-anchor="middle" class="la" fill="#2ECC71">① البنية الأولية (Structure primaire)</text>
     <text x="390" y="40" text-anchor="middle" class="ls">تسلسل خطي للأحماض الأمينية — روابط ببتيدية</text>
@@ -51,7 +51,7 @@
   </g>
 
   <!-- LEVEL 2: Secondary -->
-  <g transform="translate(10, 205)" filter="url(#sh)">
+  <g transform="translate(10, 205)" filter="url(#pf-sh)">
     <rect x="0" y="0" width="380" height="150" rx="12" fill="#FFF" stroke="#3498DB" stroke-width="1.5"/>
     <text x="190" y="22" text-anchor="middle" class="la" fill="#3498DB">② البنية الثانوية</text>
     <!-- Alpha helix -->
@@ -68,7 +68,7 @@
   </g>
 
   <!-- LEVEL 2 (right): Secondary continued -->
-  <g transform="translate(400, 205)" filter="url(#sh)">
+  <g transform="translate(400, 205)" filter="url(#pf-sh)">
     <rect x="0" y="0" width="390" height="150" rx="12" fill="#FFF" stroke="#3498DB" stroke-width="1.5"/>
     <text x="195" y="22" text-anchor="middle" class="la" fill="#3498DB">الروابط: هيدروجينية بين CO و NH</text>
     <g transform="translate(20, 40)">
@@ -82,7 +82,7 @@
   </g>
 
   <!-- LEVEL 3: Tertiary -->
-  <g transform="translate(10, 365)" filter="url(#sh)">
+  <g transform="translate(10, 365)" filter="url(#pf-sh)">
     <rect x="0" y="0" width="380" height="150" rx="12" fill="#FFF" stroke="#E67E22" stroke-width="1.5"/>
     <text x="190" y="22" text-anchor="middle" class="la" fill="#E67E22">③ البنية الثالثية (Structure tertiaire)</text>
     <!-- Globular 3D shape -->
@@ -97,7 +97,7 @@
   </g>
 
   <!-- LEVEL 4: Quaternary -->
-  <g transform="translate(400, 365)" filter="url(#sh)">
+  <g transform="translate(400, 365)" filter="url(#pf-sh)">
     <rect x="0" y="0" width="390" height="150" rx="12" fill="#FFF" stroke="#9C27B0" stroke-width="1.5"/>
     <text x="195" y="22" text-anchor="middle" class="la" fill="#9C27B0">④ البنية الرباعية (Structure quaternaire)</text>
     <!-- 4 subunits -->

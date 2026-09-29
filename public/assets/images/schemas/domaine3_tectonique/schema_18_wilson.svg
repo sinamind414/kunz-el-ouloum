@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 650" width="800" height="650">
+<svg aria-label="دورة ويلسون — Cycle de Wilson (6 مراحل)" role="img" class="pfe-figure" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 650" width="800" height="650"><defs><marker id="pf-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse" fill="context-stroke"><path d="M 1 1 L 9 5 L 1 9 z"/></marker></defs>
 <defs><style>text{font-family:'Noto Kufi Arabic','Segoe UI',system-ui,sans-serif;}
 .title,.t{font-size:21px;font-weight:800;fill:#0F2A1D;}
 .subtitle{font-size:13px;fill:#6B7280;}
 .label-ar,.la{font-size:14px;font-weight:700;fill:#1A2A3A;}
 .label-fr{font-size:12px;fill:#6B7280;}
 .label-small,.ls{font-size:11px;fill:#6B7280;}
-.label-white,.lw{font-size:12px;font-weight:700;fill:#FFFFFF;}</style><linearGradient id="kunzBg" x1="0" y1="0" x2="0" y2="1">
+.label-white,.lw{font-size:12px;font-weight:700;fill:#FFFFFF;}</style><linearGradient id="pf-kunzBg" x1="0" y1="0" x2="0" y2="1">
       <stop offset="0%" stop-color="#F7FAF8"/>
       <stop offset="100%" stop-color="#EFF4F1"/>
     </linearGradient>
-    <filter id="kunzShadow" x="-5%" y="-5%" width="110%" height="110%">
+    <filter id="pf-kunzShadow" x="-5%" y="-5%" width="110%" height="110%">
       <feDropShadow dx="0" dy="3" stdDeviation="6" flood-color="#006d37" flood-opacity="0.06"/>
     </filter>
   </defs>
-<rect width="800" height="650" fill="url(#kunzBg)"/>
-  <rect x="8" y="8" width="784" height="634" rx="20" fill="none" stroke="#E3EAE6" stroke-width="2" filter="url(#kunzShadow)"/>
+<rect width="800" height="650" fill="url(#pf-kunzBg)"/>
+  <rect x="8" y="8" width="784" height="634" rx="20" fill="none" stroke="#E3EAE6" stroke-width="2" filter="url(#pf-kunzShadow)"/>
 <text x="400" y="22" text-anchor="middle" class="t">دورة ويلسون — Cycle de Wilson (6 مراحل)</text>
 <text x="400" y="40" text-anchor="middle" class="ls">فتح وإغلاق محيط ← بناء سلسلة جبلية</text>
 
@@ -106,7 +106,7 @@
 <g transform="translate(400, 490)">
   <path d="M 0,-60 C 200,-60 280,-20 200,30 C 120,80 -120,80 -200,30 C -280,-20 -200,-60 0,-60" fill="none" stroke="#1A2A3A" stroke-width="2" stroke-dasharray="8,4"/>
   <text x="0" y="-70" text-anchor="middle" class="la" fill="#1A2A3A" font-size="12">دورة ويلسون الكاملة (~250 مليون سنة)</text>
-  <path d="M 180,50 L 200,40" fill="none" stroke="#1A2A3A" stroke-width="2" marker-end="url(#arrow)"/>
+  <path d="M 180,50 L 200,40" fill="none" stroke="#1A2A3A" stroke-width="2" marker-end="url(#pf-arrow)"/>
 </g>
 
 <!-- Examples -->

@@ -1,8 +1,8 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="760" viewBox="0 0 1200 760" font-family="Arial, sans-serif" role="img" aria-labelledby="calvin-title calvin-desc">
-  <title id="calvin-title">تجربة كالفن : تتبع ¹⁴CO₂ بكروماتوغرافيا ثنائية الأبعاد</title>
-  <desc id="calvin-desc">تسلسل زمني لظهور نواتج تثبيت الكربون المشع: أول مركب يظهر هو 3-PGA ثم يختزل إلى سكريات ثلاثية مفسفرة G3P/PGAL ثم سكريات معقدة مع تجديد RuBP.</desc>
+<svg aria-label="تجربة كالفن : تتبع ¹⁴CO₂ بكروماتوغرافيا ثنائية الأبعاد" class="pfe-figure" xmlns="http://www.w3.org/2000/svg" width="1200" height="760" viewBox="0 0 1200 760" font-family="Arial, sans-serif" role="img" aria-labelledby="calvin-title calvin-desc">
+  <title id="pf-calvin-title">تجربة كالفن : تتبع ¹⁴CO₂ بكروماتوغرافيا ثنائية الأبعاد</title>
+  <desc id="pf-calvin-desc">تسلسل زمني لظهور نواتج تثبيت الكربون المشع: أول مركب يظهر هو 3-PGA ثم يختزل إلى سكريات ثلاثية مفسفرة G3P/PGAL ثم سكريات معقدة مع تجديد RuBP.</desc>
   <defs>
-    <marker id="arr91" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+    <marker id="pf-arr91" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
       <path d="M0,0 L9,3 L0,6 Z" fill="#0f172a"/>
     </marker>
   </defs>
@@ -25,11 +25,11 @@
   </g>
   <text x="88" y="286" text-anchor="middle" font-size="12" fill="#b45309">ضوء</text>
 
-  <path d="M230 230 L300 260" stroke="#0f172a" stroke-width="3" marker-end="url(#arr91)"/>
+  <path d="M230 230 L300 260" stroke="#0f172a" stroke-width="3" marker-end="url(#pf-arr91)"/>
   <text x="262" y="222" text-anchor="middle" font-size="13" fill="#0f172a">عيّنة عند t</text>
 
-  <path d="M330 260 L402 300" stroke="#dc2626" stroke-width="3" marker-end="url(#arr91)"/>
-  <path d="M330 300 L402 340" stroke="#dc2626" stroke-width="3" marker-end="url(#arr91)"/>
+  <path d="M330 260 L402 300" stroke="#dc2626" stroke-width="3" marker-end="url(#pf-arr91)"/>
+  <path d="M330 300 L402 340" stroke="#dc2626" stroke-width="3" marker-end="url(#pf-arr91)"/>
   <text x="366" y="292" text-anchor="middle" font-size="13" fill="#b91c1c">حقن في</text>
   <text x="366" y="326" text-anchor="middle" font-size="13" fill="#b91c1c">ميثانول مغلي</text>
 

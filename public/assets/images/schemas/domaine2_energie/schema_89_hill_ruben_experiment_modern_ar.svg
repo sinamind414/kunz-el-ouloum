@@ -1,6 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="760" viewBox="0 0 1200 760" font-family="Arial, sans-serif">
+<svg aria-label="تجربة هيل (1937) وتجربة روبن (1941) : ما مصدر الأكسجين المنطلق؟" role="img" class="pfe-figure" xmlns="http://www.w3.org/2000/svg" width="1200" height="760" viewBox="0 0 1200 760" font-family="Arial, sans-serif">
   <defs>
-    <marker id="arr89" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+    <marker id="pf-arr89" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
       <path d="M0,0 L9,3 L0,6 Z" fill="#0f172a"/>
     </marker>
   </defs>
@@ -33,7 +33,7 @@
     <circle cx="292" cy="262" r="6"/><circle cx="308" cy="244" r="5"/>
     <circle cx="420" cy="256" r="6"/><circle cx="432" cy="238" r="5"/>
   </g>
-  <path d="M470 306 L536 306" stroke="#0f172a" stroke-width="3" marker-end="url(#arr89)"/>
+  <path d="M470 306 L536 306" stroke="#0f172a" stroke-width="3" marker-end="url(#pf-arr89)"/>
   <text x="503" y="292" text-anchor="middle" font-size="13" fill="#0f172a">انطلاق</text>
   <text x="534" y="342" text-anchor="middle" font-size="16" font-weight="bold" fill="#0284c7">O₂ + Fe²⁺</text>
 

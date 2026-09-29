@@ -1,22 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 550" width="800" height="550">
+<svg aria-label="منطقة الغوص — حدود متقاربة" role="img" class="pfe-figure" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 550" width="800" height="550">
 <defs><style>text{font-family:'Noto Kufi Arabic','Segoe UI',system-ui,sans-serif;}
 .title,.t{font-size:21px;font-weight:800;fill:#0F2A1D;}
 .subtitle{font-size:13px;fill:#6B7280;}
 .label-ar,.la{font-size:14px;font-weight:700;fill:#1A2A3A;}
 .label-fr{font-size:12px;fill:#6B7280;}
 .label-small,.ls{font-size:11px;fill:#6B7280;}
-.label-white,.lw{font-size:12px;font-weight:700;fill:#FFFFFF;}</style><linearGradient id="kunzBg" x1="0" y1="0" x2="0" y2="1">
+.label-white,.lw{font-size:12px;font-weight:700;fill:#FFFFFF;}</style><linearGradient id="pf-kunzBg" x1="0" y1="0" x2="0" y2="1">
    <stop offset="0%" stop-color="#F7FAF8"/>
    <stop offset="100%" stop-color="#EFF4F1"/>
   </linearGradient>
-  <filter id="kunzShadow" x="-5%" y="-5%" width="110%" height="110%">
+  <filter id="pf-kunzShadow" x="-5%" y="-5%" width="110%" height="110%">
    <feDropShadow dx="0" dy="3" stdDeviation="6" flood-color="#006d37" flood-opacity="0.06"/>
   </filter>
- <radialGradient id="magma"><stop offset="0%" stop-color="#FF8A65"/><stop offset="100%" stop-color="#C62828"/></radialGradient>
+ <radialGradient id="pf-magma"><stop offset="0%" stop-color="#FF8A65"/><stop offset="100%" stop-color="#C62828"/></radialGradient>
  </defs>
-<rect width="800" height="550" fill="url(#kunzBg)"/>
- <rect x="8" y="8" width="784" height="534" rx="20" fill="none" stroke="#E3EAE6" stroke-width="2" filter="url(#kunzShadow)"/>
+<rect width="800" height="550" fill="url(#pf-kunzBg)"/>
+ <rect x="8" y="8" width="784" height="534" rx="20" fill="none" stroke="#E3EAE6" stroke-width="2" filter="url(#pf-kunzShadow)"/>
 <text x="400" y="25" text-anchor="middle" class="t">منطقة الغوص — حدود متقاربة</text>
 
 <g transform="translate(400, 330)">
@@ -43,7 +43,7 @@
  <text x="60" y="-20" text-anchor="middle" class="ls" fill="#E65100" font-size="8">زلازل</text>
 
  <!-- Magma generation -->
- <ellipse cx="70" cy="50" rx="25" ry="15" fill="url(#magma)" opacity="0.5"/>
+ <ellipse cx="70" cy="50" rx="25" ry="15" fill="url(#pf-magma)" opacity="0.5"/>
  <path d="M 70,35 L 90,-10 L 120,-40 L 160,-60" fill="none" stroke="#FF6D00" stroke-width="4" opacity="0.6"/>
  <text x="70" y="75" text-anchor="middle" class="ls" fill="#C62828" font-size="9">انصهار</text>
 

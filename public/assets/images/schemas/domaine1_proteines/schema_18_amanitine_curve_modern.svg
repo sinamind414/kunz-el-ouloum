@@ -1,6 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 700" width="1200" height="700" role="img" aria-labelledby="amanitine-title amanitine-desc">
-  <title id="amanitine-title">تأثير ألفا-أمانيتين على اصطناع ARNm</title>
-  <desc id="amanitine-desc">منحنى بياني يوضح التثبيط التدريجي الحاد لاصطناع الحمض الريبي النووي الرسول مع تزايد تركيز ألفا-أمانيتين.</desc>
+<svg aria-label="تأثير ألفا-أمانيتين على اصطناع ARNm" class="pfe-figure" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 700" width="1200" height="700" role="img" aria-labelledby="amanitine-title amanitine-desc">
+  <title id="pf-amanitine-title">تأثير ألفا-أمانيتين على اصطناع ARNm</title>
+  <desc id="pf-amanitine-desc">منحنى بياني يوضح التثبيط التدريجي الحاد لاصطناع الحمض الريبي النووي الرسول مع تزايد تركيز ألفا-أمانيتين.</desc>
   <rect width="1200" height="700" fill="#fbfcff" rx="30"/>
   <text x="600" y="70" text-anchor="middle" font-size="40" font-weight="800" fill="#0f172a">تأثير ألفا-أمانيتين على اصطناع ARNm</text>
   <rect x="70" y="120" width="420" height="500" rx="26" fill="#ffffff" stroke="#d9e2e8" stroke-width="4"/>

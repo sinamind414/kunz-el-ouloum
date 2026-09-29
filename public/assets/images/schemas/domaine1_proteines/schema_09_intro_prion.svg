@@ -1,13 +1,13 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 820" role="img" aria-labelledby="title desc">
-  <title id="title">وضعية انطلاق: البريون</title>
-  <desc id="desc">لوحة افتتاحية أكثر كثافة تربط بين بروتين طبيعي وبريون مرضي وأثره على النسيج العصبي.</desc>
+<svg aria-label="وضعية انطلاق: البريون" class="pfe-figure" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 820" role="img" aria-labelledby="title desc">
+  <title id="pf-title">وضعية انطلاق: البريون</title>
+  <desc id="pf-desc">لوحة افتتاحية أكثر كثافة تربط بين بروتين طبيعي وبريون مرضي وأثره على النسيج العصبي.</desc>
   <defs>
-    <linearGradient id="bg" x1="0" x2="1" y1="0" y2="1">
+    <linearGradient id="pf-bg" x1="0" x2="1" y1="0" y2="1">
       <stop offset="0%" stop-color="#f3fff6"/>
       <stop offset="100%" stop-color="#eef7ff"/>
     </linearGradient>
   </defs>
-  <rect width="1400" height="820" fill="url(#bg)" rx="36"/>
+  <rect width="1400" height="820" fill="url(#pf-bg)" rx="36"/>
   <text x="700" y="68" text-anchor="middle" font-size="42" font-weight="800" fill="#0f172a">من بروتين عادي إلى مرض عصبي : ما الذي تغيّر؟</text>
 
   <rect x="70" y="120" width="360" height="250" rx="28" fill="#ffffff" stroke="#d8eadf" stroke-width="4"/>

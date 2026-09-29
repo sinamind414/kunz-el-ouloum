@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 650" width="800" height="650">
+<svg aria-label="التنفس الخلوي" role="img" class="pfe-figure" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 650" width="800" height="650">
 <defs><style>text{font-family:'Noto Kufi Arabic','Segoe UI',system-ui,sans-serif;}
 .title,.t{font-size:21px;font-weight:800;fill:#0F2A1D;}
 .subtitle{font-size:13px;fill:#6B7280;}
@@ -7,22 +7,22 @@
 .label-fr{font-size:12px;fill:#6B7280;}
 .label-small,.ls{font-size:11px;fill:#6B7280;}
 .label-white,.lw{font-size:12px;font-weight:700;fill:#FFFFFF;}</style>
-<linearGradient id="mito"><stop offset="0%" stop-color="#FCE4EC"/><stop offset="100%" stop-color="#F8BBD0"/></linearGradient><linearGradient id="kunzBg" x1="0" y1="0" x2="0" y2="1">
+<linearGradient id="pf-mito"><stop offset="0%" stop-color="#FCE4EC"/><stop offset="100%" stop-color="#F8BBD0"/></linearGradient><linearGradient id="pf-kunzBg" x1="0" y1="0" x2="0" y2="1">
    <stop offset="0%" stop-color="#F7FAF8"/>
    <stop offset="100%" stop-color="#EFF4F1"/>
   </linearGradient>
-  <filter id="kunzShadow" x="-5%" y="-5%" width="110%" height="110%">
+  <filter id="pf-kunzShadow" x="-5%" y="-5%" width="110%" height="110%">
    <feDropShadow dx="0" dy="3" stdDeviation="6" flood-color="#006d37" flood-opacity="0.06"/>
   </filter>
  </defs>
-<rect width="800" height="650" fill="url(#kunzBg)"/>
- <rect x="8" y="8" width="784" height="634" rx="20" fill="none" stroke="#E3EAE6" stroke-width="2" filter="url(#kunzShadow)"/>
+<rect width="800" height="650" fill="url(#pf-kunzBg)"/>
+ <rect x="8" y="8" width="784" height="634" rx="20" fill="none" stroke="#E3EAE6" stroke-width="2" filter="url(#pf-kunzShadow)"/>
 <text x="400" y="30" text-anchor="middle" class="t">التنفس الخلوي</text>
 <text x="400" y="50" text-anchor="middle" class="ls">تحويل الطاقة الكيميائية المختزنة في الغلوكوز إلى ATP</text>
 
 <!-- Mitochondrion -->
 <g transform="translate(400, 310)">
- <ellipse cx="0" cy="0" rx="200" ry="140" fill="url(#mito)" stroke="#C62828" stroke-width="3"/>
+ <ellipse cx="0" cy="0" rx="200" ry="140" fill="url(#pf-mito)" stroke="#C62828" stroke-width="3"/>
  <ellipse cx="0" cy="0" rx="200" ry="140" fill="none" stroke="#C62828" stroke-width="1.5" stroke-dasharray="8,4"/>
  <text x="0" y="-150" text-anchor="middle" class="la" fill="#C62828">الميتوكندري</text>
  <!-- Inner membrane folds -->

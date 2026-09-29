@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 550" width="800" height="550">
+<svg aria-label="الحصيلة الطاقوية العامة" role="img" class="pfe-figure" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 550" width="800" height="550"><defs><marker id="pf-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse" fill="context-stroke"><path d="M 1 1 L 9 5 L 1 9 z"/></marker></defs>
 <defs><style>text{font-family:'Noto Kufi Arabic','Segoe UI',system-ui,sans-serif;}
 .title,.t{font-size:21px;font-weight:800;fill:#0F2A1D;}
 .subtitle{font-size:13px;fill:#6B7280;}
 .label-ar,.la{font-size:14px;font-weight:700;fill:#1A2A3A;}
 .label-fr{font-size:12px;fill:#6B7280;}
 .label-small,.ls{font-size:11px;fill:#6B7280;}
-.label-white,.lw{font-size:12px;font-weight:700;fill:#FFFFFF;}</style><linearGradient id="kunzBg" x1="0" y1="0" x2="0" y2="1">
+.label-white,.lw{font-size:12px;font-weight:700;fill:#FFFFFF;}</style><linearGradient id="pf-kunzBg" x1="0" y1="0" x2="0" y2="1">
    <stop offset="0%" stop-color="#F7FAF8"/>
    <stop offset="100%" stop-color="#EFF4F1"/>
   </linearGradient>
-  <filter id="kunzShadow" x="-5%" y="-5%" width="110%" height="110%">
+  <filter id="pf-kunzShadow" x="-5%" y="-5%" width="110%" height="110%">
    <feDropShadow dx="0" dy="3" stdDeviation="6" flood-color="#006d37" flood-opacity="0.06"/>
   </filter>
  </defs>
-<rect width="800" height="550" fill="url(#kunzBg)"/>
- <rect x="8" y="8" width="784" height="534" rx="20" fill="none" stroke="#E3EAE6" stroke-width="2" filter="url(#kunzShadow)"/>
+<rect width="800" height="550" fill="url(#pf-kunzBg)"/>
+ <rect x="8" y="8" width="784" height="534" rx="20" fill="none" stroke="#E3EAE6" stroke-width="2" filter="url(#pf-kunzShadow)"/>
 <text x="400" y="25" text-anchor="middle" class="t">الحصيلة الطاقوية العامة</text>
 
 <!-- Central ATP
@@ -44,8 +44,8 @@
 </g>
 
 <!-- Arrows -->
-<path d="M -40,-20 C -30,-40 -20,-50 -10,-50" fill="none" stroke="#2ECC71" stroke-width="2" marker-end="url(#arrow)"/>
-<path d="M 40,-20 C 30,-40 20,-50 10,-50" fill="none" stroke="#C62828" stroke-width="2" marker-end="url(#arrow)"/>
+<path d="M -40,-20 C -30,-40 -20,-50 -10,-50" fill="none" stroke="#2ECC71" stroke-width="2" marker-end="url(#pf-arrow)"/>
+<path d="M 40,-20 C 30,-40 20,-50 10,-50" fill="none" stroke="#C62828" stroke-width="2" marker-end="url(#pf-arrow)"/>
 
 <!-- BOTTOM: Uses -->
 <g transform="translate(0, 120)">

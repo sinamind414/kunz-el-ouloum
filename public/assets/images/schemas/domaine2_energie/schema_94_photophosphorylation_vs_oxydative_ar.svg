@@ -1,7 +1,7 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 560" width="960" height="560" role="img">
+<svg aria-label="نفس المبدأ الكيميواسموزي في عضيتين : الصانعة الخضراء والميتوكوندري" class="pfe-figure" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 560" width="960" height="560" role="img">
 <rect width="960" height="560" fill="#ffffff"/>
 <text x="480.0" y="32" text-anchor="middle" font-size="21" font-weight="700" fill="#006d37" font-family="Noto Naskh Arabic, Amiri, serif">نفس المبدأ الكيميواسموزي في عضيتين : الصانعة الخضراء والميتوكوندري</text>
-<defs><marker id="b1" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto"><polygon points="0,0 10,4 0,8" fill="#2563eb"/></marker><marker id="b2" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto"><polygon points="0,0 10,4 0,8" fill="#dc2626"/></marker></defs>
+<defs><marker id="pf-b1" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto"><polygon points="0,0 10,4 0,8" fill="#2563eb"/></marker><marker id="pf-b2" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto"><polygon points="0,0 10,4 0,8" fill="#dc2626"/></marker></defs>
 <rect x="40" y="70" width="400" height="410" rx="14" fill="#ffffff" stroke="#15803d" stroke-width="2.5"/>
 <text x="240.0" y="100" text-anchor="middle" font-size="17" font-weight="700" fill="#15803d" font-family="Noto Naskh Arabic, Amiri, serif">الصانعة الخضراء — الفسفرة الضوئية</text>
 <text x="240.0" y="122" text-anchor="middle" font-size="13" fill="#475569" font-family="Noto Naskh Arabic, Amiri, serif">غشاء التيلاكويد</text>
@@ -15,9 +15,9 @@
 <text x="162" y="267.5" text-anchor="middle" font-size="12.5" fill="#fff" font-family="Noto Naskh Arabic, Amiri, serif">سلسلة النواقل</text>
 <rect x="285" y="230" width="95" height="65" rx="8" fill="#7c3aed"/>
 <text x="332" y="267.5" text-anchor="middle" font-size="12.5" fill="#fff">ATP synthase</text>
-<line x1="162" y1="216" x2="162" y2="313" stroke="#2563eb" stroke-width="2.4" marker-end="url(#b1)"/>
+<line x1="162" y1="216" x2="162" y2="313" stroke="#2563eb" stroke-width="2.4" marker-end="url(#pf-b1)"/>
 <text x="176" y="214" font-size="12.5" fill="#2563eb">H⁺</text>
-<line x1="332" y1="313" x2="332" y2="216" stroke="#2563eb" stroke-width="2.4" marker-end="url(#b1)"/>
+<line x1="332" y1="313" x2="332" y2="216" stroke="#2563eb" stroke-width="2.4" marker-end="url(#pf-b1)"/>
 <text x="346" y="311" font-size="12.5" fill="#2563eb">H⁺</text>
 <text x="332" y="208" text-anchor="middle" font-size="13" font-weight="700" fill="#6d28d9">ATP</text>
 <text x="60" y="430" font-size="13.5" fill="#0f172a" font-family="Noto Naskh Arabic, Amiri, serif">مصدر الإلكترونات : الماء (تحلل ضوئي)</text>
@@ -36,9 +36,9 @@
 <text x="642" y="267.5" text-anchor="middle" font-size="12.5" fill="#fff" font-family="Noto Naskh Arabic, Amiri, serif">سلسلة النواقل</text>
 <rect x="765" y="230" width="95" height="65" rx="8" fill="#7c3aed"/>
 <text x="812" y="267.5" text-anchor="middle" font-size="12.5" fill="#fff">ATP synthase</text>
-<line x1="642" y1="216" x2="642" y2="313" stroke="#2563eb" stroke-width="2.4" marker-end="url(#b1)"/>
+<line x1="642" y1="216" x2="642" y2="313" stroke="#2563eb" stroke-width="2.4" marker-end="url(#pf-b1)"/>
 <text x="656" y="214" font-size="12.5" fill="#2563eb">H⁺</text>
-<line x1="812" y1="313" x2="812" y2="216" stroke="#2563eb" stroke-width="2.4" marker-end="url(#b1)"/>
+<line x1="812" y1="313" x2="812" y2="216" stroke="#2563eb" stroke-width="2.4" marker-end="url(#pf-b1)"/>
 <text x="826" y="311" font-size="12.5" fill="#2563eb">H⁺</text>
 <text x="812" y="208" text-anchor="middle" font-size="13" font-weight="700" fill="#6d28d9">ATP</text>
 <text x="540" y="430" font-size="13.5" fill="#0f172a" font-family="Noto Naskh Arabic, Amiri, serif">مصدر الإلكترونات : المواد العضوية (NADH, FADH₂)</text>
