@@ -5,7 +5,7 @@
 // Fige : l'intégrité des données, la CHAÎNE de dérivation (verso = option
 // correcte + explication du corpus), et le désinfecteur de restauration.
 
-import { existsSync, readFileSync } from 'node:fs';
+import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { SVT_FLASHCARDS } from './index';
@@ -124,3 +124,66 @@ describe('diagrammes — Phase 3 : chaque carte pointe un schéma ProFigure loca
     }
   });
 });
+
+describe('diagrammes — Phase 5 : cartes re-pointées sur les figures dédiées (verrou)', () => {
+  const table = JSON.parse(
+    readFileSync(resolve(__dirname, '../../scripts/profigure/flashcardDiagramMap.json'), 'utf8'),
+  ) as { prefixe: string; entries: { concept: string; figure: string }[] };
+
+  it('la table d appariement est versionnée, non vide, sans concept dupliqué (34 concepts → 37 cartes)', () => {
+    expect(table.entries.length).toBe(34);
+    const concepts = table.entries.map((e) => e.concept);
+    expect(new Set(concepts).size, 'concepts dupliqués').toBe(concepts.length);
+  });
+
+  it('CHAQUE carte portant « concept » pointe la figure dédiée (aucune ne retombe sur une figure générique)', () => {
+    let cartes = 0;
+    for (const e of table.entries) {
+      const cibles = SVT_FLASHCARDS.filter((c) => c.question.includes(`«${e.concept}»`));
+      expect(cibles.length, `aucune carte pour « ${e.concept} »`).toBeGreaterThan(0);
+      for (const c of cibles) {
+        expect(c.diagramUrl, `${c.id} « ${e.concept} »`).toBe(table.prefixe + e.figure);
+        cartes++;
+      }
+    }
+    expect(cartes, 'cartes couvertes par la table').toBe(37);
+  });
+
+  it('les 7 cartes du potentiel d action ne reposent plus sur la figure de synapse neuro-musculaire', () => {
+    const neuro = SVT_FLASHCARDS.filter((c) =>
+      /«(كمون العمل|عتبة التنبيه|الكل أو لا شيء|زوال الاستقطاب|إعادة الاستقطاب|فرط الاستقطاب|فترة الجموح)»/.test(
+        c.question,
+      ),
+    );
+    expect(neuro.length).toBe(7);
+    for (const c of neuro) {
+      expect(c.diagramUrl, c.id).toBe('/assets/images/schemas/domaine1_regulations/schema_83_potentiel_action_modern_ar.svg');
+    }
+  });
+
+  it('la réutilisation des 4 plus gros clusters a baissé (55/47/45/40 → 48/43/39/31)', () => {
+    const compte = (suffixe: string) => SVT_FLASHCARDS.filter((c) => (c.diagramUrl ?? '').endsWith(suffixe)).length;
+    expect(compte('domaine1_proteines/schema_08_synapse.svg')).toBeLessThanOrEqual(48);
+    expect(compte('domaine2_energie/schema_09_photosynthese.svg')).toBeLessThanOrEqual(43);
+    expect(compte('domaine1_proteines/schema_07_enzyme.svg')).toBeLessThanOrEqual(39);
+    expect(compte('domaine1_proteines/schema_06_structure_proteines.svg')).toBeLessThanOrEqual(31);
+  });
+
+  it('44 → 57 cibles distinctes, et 66 → 53 figures du dossier jamais utilisées', () => {
+    const cibles = new Set(SVT_FLASHCARDS.map((c) => c.diagramUrl as string));
+    expect(cibles.size).toBe(57);
+    const lister = (dir: string): string[] =>
+      readdirSync(dir, { withFileTypes: true }).flatMap((e) =>
+        e.isDirectory()
+          ? lister(resolve(dir, e.name))
+          : e.name.endsWith('.svg')
+            ? [resolve(dir, e.name)]
+            : [],
+      );
+    const tous = lister(resolve(__dirname, '../../public/assets/images/schemas'));
+    const utilisees = new Set(SVT_FLASHCARDS.map((c) => resolve(__dirname, '../../public' + c.diagramUrl)));
+    const libres = tous.filter((f) => !utilisees.has(f));
+    expect(libres.length, `figures libres : ${libres.length}/${tous.length}`).toBe(53);
+  });
+});
+

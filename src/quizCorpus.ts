@@ -167,7 +167,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     "correctAnswerIndex": 3,
     "explanation": "الشفرة الوراثية نظام التقابل بين الرامزات والأحماض الأمينية: كل ثلاث قواعد متتالية في ARNm تحدد حمضاً أمينياً واحداً. الرامزة على ARNm لا على البروتين. في البكالوريا: الشفرة ثلاثية، شاملة ومترادفة وغير متراكبة. تنبيه: الخيار «يستعمل T بدل U في ARNm الناضج.» فخ شائع في البكالوريا — انبه إلى الفرق الدقيق بينه وبين الجواب الصحيح.",
-    "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_01_adn.svg"
+    "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_23_genetic_code_table_modern.svg"
   },
   {
     "id": 5,
@@ -209,7 +209,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     "correctAnswerIndex": 1,
     "explanation": "ترادف الشفرة يعني أن الحمض الأميني الواحد قد توافقه عدة رامزات مختلفة، لأن 64 رامزة تشفر 20 حمضاً أمينياً. لا يعني العكس: رامزة واحدة لا تشفر حمضين. في البكالوريا: مترادفة لا ملتبسة.",
-    "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_01_adn.svg"
+    "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_23_genetic_code_table_modern.svg"
   },
   {
     "id": 8,
@@ -517,7 +517,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     "correctAnswerIndex": 1,
     "explanation": "البولي ريبوزوم عدة ريبوزومات تترجم في الوقت نفسه خيط ARNm واحداً، ما يضاعف إنتاج البروتين نفسه بسرعة. ليست ترجمة لعدة ARNm مختلفة. في البكالوريا: اربطه بمردود التركيب لا بتنوعه. تنبيه: الخيار «ريبوزوم واحد يترجم عدة جزيئات ARNm في آن واحد» فخ شائع في البكالوريا — انبه إلى الفرق الدقيق بينه وبين الجواب الصحيح.",
-    "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_06_structure_proteines.svg"
+    "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_24_polysome_translation_modern.svg"
   },
   {
     "id": 30,
@@ -531,7 +531,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     "correctAnswerIndex": 2,
     "explanation": "نضج ARNm اقتطاع الإنترونات ولحم الإكسونات داخل النواة، فينتج ARNm ناضج أقصر قابل للترجمة. خاص بحقيقيات النوى. في البكالوريا: يفسر اختلاف طول المورثة عن طول ARNm الناضج. تنبيه: الخيار «كل رامزة من ثلاث قواعد في ARNm تحدد حمضاً أمينياً» فخ شائع في البكالوريا — انبه إلى الفرق الدقيق بينه وبين الجواب الصحيح.",
-    "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_06_structure_proteines.svg"
+    "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_20_splicing_exons_introns_modern.svg"
   },
   {
     "id": 31,
@@ -545,7 +545,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     "correctAnswerIndex": 0,
     "explanation": "الإكسون جزء مشفر من المورثة يبقى في ARNm الناضج ويُترجم فعلاً إلى أحماض أمينية. عكسه الإنترون المقتطع. في البكالوريا: عدد الإكسونات يحدد طول السلسلة الببتيدية النهائية.",
-    "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_06_structure_proteines.svg"
+    "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_20_splicing_exons_introns_modern.svg"
   },
   {
     "id": 32,
@@ -559,7 +559,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     "correctAnswerIndex": 0,
     "explanation": "الإنترون جزء غير مشفر يُستنسخ ثم يُقتطع أثناء النضج فلا يظهر في ARNm الناضج. وجوده في ADN لا يعني ترجمته. في البكالوريا: ميّز مورثة حقيقيات النوى بوجود الإنترونات. تنبيه: الخيار «جزء مشفر يترجم دائماً إلى أحماض أمينية في البروتين ا…» فخ شائع في البكالوريا — انبه إلى الفرق الدقيق بينه وبين الجواب الصحيح.",
-    "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_06_structure_proteines.svg"
+    "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_20_splicing_exons_introns_modern.svg"
   },
   {
     "id": 33,
@@ -587,7 +587,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     "correctAnswerIndex": 0,
     "explanation": "جهاز غولجي يستقبل البروتينات من الشبكة، يعدّلها كيميائياً ثم يفرزها في حويصلات نحو وجهتها. لا يركّب البروتين بل يعالجه ويوجهه. في البكالوريا: اذكره في مسار الإفراز بعد الشبكة الخشنة. تنبيه: الخيار «قطعة من ADN تحمل معلومة تركيب سلسلة ببتيدية أو بروتي…» فخ شائع في البكالوريا — انبه إلى الفرق الدقيق بينه وبين الجواب الصحيح.",
-    "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_06_structure_proteines.svg"
+    "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_24_secretory_pathway_pancreas_modern_ar.svg"
   },
   {
     "id": 35,
@@ -601,7 +601,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     "correctAnswerIndex": 0,
     "explanation": "الشبكة الإندوبلازمية الخشنة تحمل ريبوزومات على سطحها، وتُركَّب عليها البروتينات الموجهة للإفراز أو للأغشية. البروتينات الهيولية تُركَّب على ريبوزومات حرة. في البكالوريا: مصير البروتين يحدد مكان تركيبه. تنبيه: الخيار «شبكة ملساء تصنع الدسم ولا تحمل ريبوزومات» فخ شائع في البكالوريا — انبه إلى الفرق الدقيق بينه وبين الجواب الصحيح.",
-    "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_06_structure_proteines.svg"
+    "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_24_secretory_pathway_pancreas_modern_ar.svg"
   },
   {
     "id": 36,
@@ -1035,7 +1035,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     "correctAnswerIndex": 2,
     "explanation": "الجسم المضاد بروتين ذو بنية رابعية على شكل Y، يرتبط بالمستضد عبر باراتوباته المتغيرة. مثال على بروتين وظيفته دفاعية ترتبط بشكله. في البكالوريا: اربط شكل Y بموقعي الارتباط. تنبيه: الخيار «مستضد نوعي ترتبط به اللمفاويات عبر الحاتمة» فخ شائع في البكالوريا — انبه إلى الفرق الدقيق بينه وبين الجواب الصحيح.",
-    "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_06_structure_proteines.svg"
+    "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_65_antibody_structure_hl_modern.svg"
   },
   {
     "id": 67,
@@ -1049,7 +1049,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     "correctAnswerIndex": 2,
     "explanation": "الباراتوب الموقع المتغير من الجسم المضاد الذي يتكامل بنيوياً مع الحاتمة، وهو مصدر نوعية الارتباط. يوجد على الجسم المضاد لا على المستضد. في البكالوريا: باراتوب/حاتمة كالمفتاح والقفل. تنبيه: الخيار «جزء من المستضد يتكامل مع موقع الجسم المضاد» فخ شائع في البكالوريا — انبه إلى الفرق الدقيق بينه وبين الجواب الصحيح.",
-    "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_06_structure_proteines.svg"
+    "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_65_antibody_structure_hl_modern.svg"
   },
   {
     "id": 68,
@@ -1063,7 +1063,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     "correctAnswerIndex": 3,
     "explanation": "الحاتمة الجزء المحدد من المستضد الذي يتعرف عليه الجسم المضاد ويرتبط به. المستضد الواحد قد يحمل عدة حاتمات مختلفة. في البكالوريا: ميّزها عن الباراتوب المحمول على الجسم المضاد. تنبيه: الخيار «جزء من الجسم المضاد يتعرف على المستضد» فخ شائع في البكالوريا — انبه إلى الفرق الدقيق بينه وبين الجواب الصحيح.",
-    "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_06_structure_proteines.svg"
+    "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_65_antibody_structure_hl_modern.svg"
   },
   {
     "id": 69,
@@ -1497,7 +1497,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     "correctAnswerIndex": 1,
     "explanation": "منحنى النشاط بدلالة pH جرسي الشكل: يرتفع نحو قمة عند pH الأمثل ثم ينخفض على الجانبين. لكل إنزيم قمته الخاصة. في البكالوريا: صف الشكل الجرسي وحدد القمة. تنبيه: الخيار «إنزيم لا يقبل إلا ركيزة محددة جداً» فخ شائع في البكالوريا — انبه إلى الفرق الدقيق بينه وبين الجواب الصحيح.",
-    "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_07_enzyme.svg"
+    "diagramUrl": "/assets/images/schemas/domaine1_enzymes/schema_88_enzyme_six_curves_workshop_ar.svg"
   },
   {
     "id": 100,
@@ -1567,7 +1567,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     "correctAnswerIndex": 0,
     "explanation": "Vmax السرعة القصوى التي يبلغها التفاعل عندما تكون كل المواقع الفعالة مشغولة تقريباً بالركيزة. لا تُتجاوز إلا بزيادة كمية الإنزيم. في البكالوريا: اربط ثبات Vmax بالإشباع. تنبيه: الخيار «درجة تحقق أكبر نشاط قبل بداية التمسخ» فخ شائع في البكالوريا — انبه إلى الفرق الدقيق بينه وبين الجواب الصحيح.",
-    "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_07_enzyme.svg"
+    "diagramUrl": "/assets/images/schemas/domaine1_enzymes/schema_87_enzyme_inhibition_curves_ar.svg"
   },
   {
     "id": 105,
@@ -1581,7 +1581,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     "correctAnswerIndex": 1,
     "explanation": "Km هو تركيز الركيزة الموافق لنصف Vmax، وهو مؤشر على ألفة الإنزيم للركيزة. لا تخلطه بـVmax التي تقيس السرعة. في البكالوريا: Km منخفض يعني ألفة عالية.",
-    "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_07_enzyme.svg"
+    "diagramUrl": "/assets/images/schemas/domaine1_enzymes/schema_87_enzyme_inhibition_curves_ar.svg"
   },
   {
     "id": 106,
@@ -1595,7 +1595,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     "correctAnswerIndex": 2,
     "explanation": "الإشباع الإنزيمي حالة تكون فيها معظم المواقع الفعالة مشغولة، فلا ترفع زيادة الركيزة السرعة أكثر. المحدِّد حينها هو عدد جزيئات الإنزيم. في البكالوريا: علّل الجزء الأفقي من المنحنى. تنبيه: الخيار «حالة يتوقف فيها التفاعل نهائياً لنفاد الإنزيم» فخ شائع في البكالوريا — انبه إلى الفرق الدقيق بينه وبين الجواب الصحيح.",
-    "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_07_enzyme.svg"
+    "diagramUrl": "/assets/images/schemas/domaine1_enzymes/schema_87_enzyme_inhibition_curves_ar.svg"
   },
   {
     "id": 107,
@@ -1609,7 +1609,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     "correctAnswerIndex": 0,
     "explanation": "المثبط التنافسي جزيء يشبه الركيزة بنيوياً فينافسها على الموقع الفعال نفسه، ويقلل السرعة دون أن يفسد الإنزيم. لا يثبت خارج الموقع. في البكالوريا: تشابه بنيوي مع الركيزة. تنبيه: الخيار «يرتبط خارج الموقع الفعال ويغير شكله» فخ شائع في البكالوريا — انبه إلى الفرق الدقيق بينه وبين الجواب الصحيح.",
-    "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_07_enzyme.svg"
+    "diagramUrl": "/assets/images/schemas/domaine1_enzymes/schema_87_enzyme_inhibition_curves_ar.svg"
   },
   {
     "id": 108,
@@ -1637,7 +1637,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     "correctAnswerIndex": 2,
     "explanation": "المثبط غير التنافسي يثبت غالباً خارج الموقع الفعال فيغير البنية الفراغية للإنزيم ويخفض نشاطه. لا ترفع زيادة الركيزة أثره لأنه لا ينافسها. في البكالوريا: التمييز يقوم على أثر زيادة الركيزة. تنبيه: الخيار «ينافس الركيزة مباشرة على الموقع الفعال» فخ شائع في البكالوريا — انبه إلى الفرق الدقيق بينه وبين الجواب الصحيح.",
-    "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_07_enzyme.svg"
+    "diagramUrl": "/assets/images/schemas/domaine1_enzymes/schema_87_enzyme_inhibition_curves_ar.svg"
   },
   {
     "id": 110,
@@ -1791,7 +1791,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     "correctAnswerIndex": 3,
     "explanation": "الحاتمة هي المنطقة الصغيرة المحددة من المستضد التي يرتبط بها الباراتوب أو مستقبل اللمفاوية، وهي أساس نوعية التعرف. لا تخلط: الحاتمة على المستضد، والباراتوب على الجسم المضاد. في البكالوريا: التكامل البنيوي حاتمة/باراتوب يفسر النوعية.",
-    "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_19_immunite_cmh.svg"
+    "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_65_antibody_structure_hl_modern.svg"
   },
   {
     "id": 121,
@@ -1833,7 +1833,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     "correctAnswerIndex": 2,
     "explanation": "الباراتوب هو موقع الارتباط المتغير على الجسم المضاد أو على مستقبل LB، وهو الذي يتكامل بنيوياً مع الحاتمة. لا تخلط بينه وبين الحاتمة: الباراتوب على الجسم المضاد، الحاتمة على المستضد. في البكالوريا: التكامل باراتوب/حاتمة يفسر نوعية الارتباط.",
-    "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_19_immunite_cmh.svg"
+    "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_65_antibody_structure_hl_modern.svg"
   },
   {
     "id": 124,
@@ -2029,7 +2029,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     "correctAnswerIndex": 3,
     "explanation": "الجسم المضاد بروتين من نوع الغلوبيولين المناعي تفرزه البلازميات، يرتبط بحاتمة نوعية بفضل موقعه المتغير. لا تخلط بينه وبين المتممة: الجسم المضاد نوعي، المتممة ليست كذلك. في البكالوريا: بنية Y بموقعين للارتباط.",
-    "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_20_immunite_humorale.svg"
+    "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_65_antibody_structure_hl_modern.svg"
   },
   {
     "id": 138,
@@ -2071,7 +2071,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     "correctAnswerIndex": 0,
     "explanation": "الذاكرة المناعية وجود خلايا ذاكرة طويلة العمر ناتجة عن الاستجابة الأولى، فتكون الاستجابة الثانية أسرع وأقوى وأطول. هي أساس التلقيح. لا تخلط بينها وبين الانتقاء النسيلي الذي يسبقها. في البكالوريا: اربطها بمنحنى الاستجابة الثانوية.",
-    "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_20_immunite_humorale.svg"
+    "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_76_memory_cell_fate_modern.svg"
   },
   {
     "id": 141,
@@ -2239,7 +2239,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     "correctAnswerIndex": 1,
     "explanation": "خلايا الذاكرة التائية تبقى سنوات بعد الاستجابة الأولى، فتضمن استجابة خلوية أسرع وأقوى عند لقاء ثانٍ بالمستضد نفسه. مقابلها في الخلطية خلايا الذاكرة البائية. في البكالوريا: الذاكرة موجودة في النمطين. تنبيه: الخيار «اتحاد نوعي بين جسم مضاد ومستضد» فخ شائع في البكالوريا — انبه إلى الفرق الدقيق بينه وبين الجواب الصحيح.",
-    "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_21_immunite_cellulaire.svg"
+    "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_76_memory_cell_fate_modern.svg"
   },
   {
     "id": 153,
@@ -2645,7 +2645,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     "correctAnswerIndex": 3,
     "explanation": "عتبة التنبيه هي الشدة الدنيا التي يجب بلوغها لفتح القنوات الفولطية وتوليد كمون عمل؛ دونها لا يظهر إلا استجابة موضعية. لا تخلط العتبة بسعة الكمون. في البكالوريا: تحت العتبة لا كمون عمل.",
-    "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_08_synapse.svg"
+    "diagramUrl": "/assets/images/schemas/domaine1_regulations/schema_83_potentiel_action_modern_ar.svg"
   },
   {
     "id": 182,
@@ -2687,7 +2687,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     "correctAnswerIndex": 2,
     "explanation": "كمون العمل انعكاس عابر وسريع لكمون الغشاء يظهر فقط بعد بلوغ العتبة، ويتكون من زوال استقطاب ثم إعادة استقطاب. عابر ونمطي لا متدرج. في البكالوريا: صف مراحله على المنحنى. تنبيه: الخيار «تغير تدريجي متدرج في الكمون تحت العتبة» فخ شائع في البكالوريا — انبه إلى الفرق الدقيق بينه وبين الجواب الصحيح.",
-    "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_08_synapse.svg"
+    "diagramUrl": "/assets/images/schemas/domaine1_regulations/schema_83_potentiel_action_modern_ar.svg"
   },
   {
     "id": 185,
@@ -2701,7 +2701,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     "correctAnswerIndex": 1,
     "explanation": "قانون الكل أو لا شيء يعني أن كمون العمل، بمجرد بلوغ العتبة، يظهر بسعة ثابتة مهما زادت شدة التنبيه. الزيادة تُترجم بالتواتر لا بالسعة. في البكالوريا: لا يتدرج الكمون بل يتدرج التواتر. تنبيه: الخيار «يعني أن سعة كمون العمل تزداد بزيادة شدة التنبيه» فخ شائع في البكالوريا — انبه إلى الفرق الدقيق بينه وبين الجواب الصحيح.",
-    "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_08_synapse.svg"
+    "diagramUrl": "/assets/images/schemas/domaine1_regulations/schema_83_potentiel_action_modern_ar.svg"
   },
   {
     "id": 186,
@@ -2715,7 +2715,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     "correctAnswerIndex": 0,
     "explanation": "زوال الاستقطاب ينتج أساساً عن الدخول المكثف لأيونات الصوديوم عبر قنواتها الفولطية المنفتحة، فينقلب الكمون نحو القيم الموجبة. ليس خروج K+ سببه. في البكالوريا: صعود المنحنى = دخول Na+. تنبيه: الخيار «ينتج أساساً عن خروج K+ من الخلية» فخ شائع في البكالوريا — انبه إلى الفرق الدقيق بينه وبين الجواب الصحيح.",
-    "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_08_synapse.svg"
+    "diagramUrl": "/assets/images/schemas/domaine1_regulations/schema_83_potentiel_action_modern_ar.svg"
   },
   {
     "id": 187,
@@ -2729,7 +2729,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     "correctAnswerIndex": 0,
     "explanation": "إعادة الاستقطاب تنتج أساساً عن انغلاق قنوات الصوديوم وخروج البوتاسيوم عبر قنواته الفولطية، فيعود الكمون نحو قيمة الراحة. لا تنسبها للمضخة التي تتدخل لاحقاً. في البكالوريا: نزول المنحنى = خروج K+.",
-    "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_08_synapse.svg"
+    "diagramUrl": "/assets/images/schemas/domaine1_regulations/schema_83_potentiel_action_modern_ar.svg"
   },
   {
     "id": 188,
@@ -2743,7 +2743,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     "correctAnswerIndex": 1,
     "explanation": "فرط الاستقطاب انخفاض الكمون تحت قيمة الراحة، وقد يحدث لاستمرار خروج البوتاسيوم لحظة قصيرة قبل انغلاق قنواته. حالة عابرة تعقب كمون العمل. في البكالوريا: اربطه بتأخر انغلاق قنوات K+. تنبيه: الخيار «يحدث بسبب دخول مكثف لأيونات Na+» فخ شائع في البكالوريا — انبه إلى الفرق الدقيق بينه وبين الجواب الصحيح.",
-    "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_08_synapse.svg"
+    "diagramUrl": "/assets/images/schemas/domaine1_regulations/schema_83_potentiel_action_modern_ar.svg"
   },
   {
     "id": 189,
@@ -2757,7 +2757,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     "correctAnswerIndex": 2,
     "explanation": "فترة الجموح مدة قصيرة يكون فيها الليف غير قابل للاستجابة لتنبيه جديد، لأن قنوات الصوديوم معطلة، وهي التي تمنع رجوع السيالة للخلف وتحدد التواتر الأقصى. في البكالوريا: الجموح يفسر أحادية الاتجاه. تنبيه: الخيار «تراكم كمونات متتالية من نفس المشبك» فخ شائع في البكالوريا — انبه إلى الفرق الدقيق بينه وبين الجواب الصحيح.",
-    "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_08_synapse.svg"
+    "diagramUrl": "/assets/images/schemas/domaine1_regulations/schema_83_potentiel_action_modern_ar.svg"
   },
   {
     "id": 190,
@@ -3331,7 +3331,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     "correctAnswerIndex": 1,
     "explanation": "التحلل الضوئي للماء يفكك الماء بفعل الطاقة الضوئية فيعطي إلكترونات تعوض نقص النظام الضوئي II وبروتونات تغذي التدرج وO2 يُطرح. لا تنسب O2 إلى CO2. في البكالوريا: الماء = مانح الإلكترونات الأول.",
-    "diagramUrl": "/assets/images/schemas/domaine2_energie/schema_09_photosynthese.svg"
+    "diagramUrl": "/assets/images/schemas/domaine2_energie/schema_89_hill_ruben_experiment_modern_ar.svg"
   },
   {
     "id": 231,
@@ -3429,7 +3429,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     "correctAnswerIndex": 1,
     "explanation": "O2 المطروح مصدره الماء لا CO2، وقد أُثبت ذلك بتجربة الماء الموسوم بالأكسجين 18. هذا خطأ شائع يُعاقب عليه. في البكالوريا: استعمل التوسيم كحجة تجريبية لا كمجرد معلومة محفوظة. تنبيه: الخيار «مصدره CO2 الممتص من الهواء» فخ شائع في البكالوريا — انبه إلى الفرق الدقيق بينه وبين الجواب الصحيح.",
-    "diagramUrl": "/assets/images/schemas/domaine2_energie/schema_09_photosynthese.svg"
+    "diagramUrl": "/assets/images/schemas/domaine2_energie/schema_89_hill_ruben_experiment_modern_ar.svg"
   },
   {
     "id": 238,
@@ -3471,7 +3471,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     "correctAnswerIndex": 2,
     "explanation": "حلقة كالفن تثبت CO2 في الستروما وتختزله باستعمال ATP وNADPH القادمين من المرحلة الضوئية لإنتاج مركبات ثلاثية الكربون. لا تسمها مرحلة مظلمة مطلقة. في البكالوريا: قاتمة لا تعني مستقلة عن الضوء. تنبيه: الخيار «مقر إنتاج الطاقة الكيميائية المؤقتة» فخ شائع في البكالوريا — انبه إلى الفرق الدقيق بينه وبين الجواب الصحيح.",
-    "diagramUrl": "/assets/images/schemas/domaine2_energie/schema_09_photosynthese.svg"
+    "diagramUrl": "/assets/images/schemas/domaine2_energie/schema_91_calvin_2d_chromatography_modern_ar.svg"
   },
   {
     "id": 241,
@@ -3653,7 +3653,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     "correctAnswerIndex": 2,
     "explanation": "شدة الإضاءة ترفع سرعة التركيب الضوئي حتى بلوغ الإشباع الضوئي، ثم يستقر المنحنى لأن عاملاً آخر يصبح محدداً. لا تتوقع ارتفاعاً لا نهائياً. في البكالوريا: الاستقرار يعني تدخل عامل محدد جديد. تنبيه: الخيار «ترفع التركيب الضوئي بلا حدود دون إشباع» فخ شائع في البكالوريا — انبه إلى الفرق الدقيق بينه وبين الجواب الصحيح.",
-    "diagramUrl": "/assets/images/schemas/domaine2_energie/schema_09_photosynthese.svg"
+    "diagramUrl": "/assets/images/schemas/domaine2_energie/schema_86_photosynthese_intensite_lumiere_modern_ar.svg"
   },
   {
     "id": 254,
@@ -4269,7 +4269,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     "correctAnswerIndex": 3,
     "explanation": "الكيميواسموز هي الآلية التي يُستعمل فيها تدرج البروتونات عبر غشاء غير نفوذ لتركيب ATP، وهي مشتركة بين الميتوكندري والصانعة. في البكالوريا: نفس المبدأ في التنفس والتركيب الضوئي. تنبيه: الخيار «يستعمل عودة H+ لتركيب ATP» فخ شائع في البكالوريا — انبه إلى الفرق الدقيق بينه وبين الجواب الصحيح.",
-    "diagramUrl": "/assets/images/schemas/domaine2_energie/schema_10_respiration.svg"
+    "diagramUrl": "/assets/images/schemas/domaine2_energie/schema_92_racker_bacteriorhodopsin_modern_ar.svg"
   },
   {
     "id": 298,
@@ -6481,7 +6481,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     "correctAnswerIndex": 0,
     "explanation": "تتدرّج البؤر الزلزالية في العمق من الخندق نحو القارة على مستوى مائل قد يبلغ 700 كلم، وهذا الاصطفاف يرسم مسار اللوح الغائص ويسمح بقياس زاوية الغوص. دليل زلزالي على بنية عميقة غير مرئية. في البكالوريا: استنتج زاوية الغوص من توزّع البؤر. تنبيه: الخيار «رواسب ثم بازلت وسائدي ثم دوليريت ثم غابرو ثم بيريدوتيت» فخ شائع في البكالوريا — انبه إلى الفرق الدقيق بينه وبين الجواب الصحيح.",
-    "diagramUrl": "/assets/images/schemas/domaine3_tectonique/schema_16_subduction.svg"
+    "diagramUrl": "/assets/images/schemas/domaine3_tectonique/schema_93_benioff_plan_modern_ar.svg"
   },
   {
     "id": 456,
@@ -6621,7 +6621,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     "correctAnswerIndex": 1,
     "explanation": "الغوص يستهلك القاع المحيطي حتى يختفي كلياً، فتلتقي الكتلتان القاريتان الخفيفتان اللتان لا تغوصان، فتتشوّهان وترتفعان مكوّنتين سلسلة تصادمية. التصادم مرحلة تالية للغوص لا بديلة عنه. في البكالوريا: رتّب غوص ← غلق ← تصادم. تنبيه: الخيار «مثال محيط ناضج يتسع» فخ شائع في البكالوريا — انبه إلى الفرق الدقيق بينه وبين الجواب الصحيح.",
-    "diagramUrl": "/assets/images/schemas/domaine3_tectonique/schema_17_collision.svg"
+    "diagramUrl": "/assets/images/schemas/domaine3_tectonique/schema_88_collision_continentale_modern_ar.svg"
   },
   {
     "id": 466,
@@ -6677,7 +6677,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     "correctAnswerIndex": 2,
     "explanation": "تراكب الوحدات بالطيّات والدسور يضاعف سماكة القشرة القارية حتى نحو 70 كلم، وبفعل التوازن الأيزوستازي ترتفع التضاريس ويغوص الجذر عميقاً. الارتفاع نتيجة التثخّن لا سببه. في البكالوريا: اذكر التوازن الأيزوستازي صراحة. تنبيه: الخيار «يخفض ارتفاع السلاسل الجبلية بالتعرية» فخ شائع في البكالوريا — انبه إلى الفرق الدقيق بينه وبين الجواب الصحيح.",
-    "diagramUrl": "/assets/images/schemas/domaine3_tectonique/schema_17_collision.svg"
+    "diagramUrl": "/assets/images/schemas/domaine3_tectonique/schema_94_migmatite_crustal_thickening_modern_ar.svg"
   },
   {
     "id": 470,
