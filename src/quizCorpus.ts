@@ -111,7 +111,7 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     "correctAnswerIndex": 0,
     "explanation": "استبدال حمض أميني محب للماء (Glu) بآخر كاره للماء (Val) يغير سطح الجزيء فتتبلمر جزيئات الهيموغلوبين وتتشوه الكرية الحمراء فتصبح منجلية. السبب بنيوي فراغي لا نقص في كمية Hb. في البكالوريا: علّل بتغير الطي لا بالكمية. تنبيه: الخيار «غياب الحديد في الدم.» فخ شائع في البكالوريا — انبه إلى الفرق الدقيق بينه وبين الجواب الصحيح.",
-    "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_28_anagene_mutation_compare_modern.jpg"
+    "diagramUrl": "/assets/images/schemas/domaine1_proteines/schema_28_anagene_mutation_compare_modern_ar.svg"
   },
   {
     "id": 1,

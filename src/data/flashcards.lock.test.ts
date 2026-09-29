@@ -5,7 +5,7 @@
 // Fige : l'intégrité des données, la CHAÎNE de dérivation (verso = option
 // correcte + explication du corpus), et le désinfecteur de restauration.
 
-import { existsSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { SVT_FLASHCARDS } from './index';
@@ -105,9 +105,22 @@ describe('diagrammes — Phase 3 : chaque carte pointe un schéma ProFigure loca
     }
   });
 
-  it('toutes les cibles sont des SVG ProFigure (hormis les médias historiques déjà présents)', () => {
+  it('toutes les cibles sont des SVG ProFigure (552/552, 0 raster)', () => {
     const nonSvg = SVT_FLASHCARDS.filter((c) => !(c.diagramUrl ?? '').endsWith('.svg'));
-    // le corpus historique compte 1 visuel .jpg existant — tout le reste est SVG normalisé
-    expect(nonSvg.length).toBeLessThanOrEqual(1);
+    // le dernier visuel .jpg (carte 508, anagène) a basculé sur son jumeau _ar.svg
+    expect(nonSvg.map((c) => `${c.id} → ${c.diagramUrl}`), 'cibles non-SVG').toEqual([]);
+  });
+
+  it('chaque cible est un SVG ProFigure : pfe-figure + role=img + viewBox + aria-label', () => {
+    const cibles = [...new Set(SVT_FLASHCARDS.map((c) => c.diagramUrl as string))];
+    expect(cibles.length, 'cibles distinctes').toBeGreaterThan(0);
+    for (const url of cibles) {
+      const svg = readFileSync(resolve(__dirname, '../../public' + url), 'utf8');
+      const root = svg.match(/<svg\b[^>]*>/)?.[0] ?? '';
+      expect(/\bpfe-figure\b/.test(root), `${url} : classe pfe-figure`).toBe(true);
+      expect(/\srole="img"/.test(root), `${url} : role img`).toBe(true);
+      expect(/\sviewBox="/.test(root), `${url} : viewBox`).toBe(true);
+      expect((root.match(/\saria-label="([^"]+)"/)?.[1] ?? '').trim().length, `${url} : aria-label`).toBeGreaterThanOrEqual(1);
+    }
   });
 });
