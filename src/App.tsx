@@ -19,7 +19,8 @@ import {
   Network,
   Search,
   PenTool,
-  Dumbbell
+  Dumbbell,
+  Timer
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 
@@ -84,6 +85,11 @@ const TrainingHubView = lazy(() => import('./components/TrainingHubView'));
 const CombatChallengePortal = lazy(() => import('./components/CombatChallengePortal'));
 const UnitIntroPortal = lazy(() => import('./components/UnitIntroPortal'));
 const StudentAuthView = lazy(() => import('./components/StudentAuthView'));
+// Brique MOTIVATION (docs/INTEGRATION_FOCUS_MOTIVATION.md) — la dernière
+// famille de processus (SE MOTIVER) : le déclic pour démarrer, le minuteur
+// pour tenir. 100 % hors-ligne, chargés seulement à l'ouverture de l'onglet.
+const FocusTimer = lazy(() => import('./components/FocusTimer'));
+const MotivationDeclic = lazy(() => import('./components/MotivationDeclic'));
 
 
 /** Écran d'attente d'une vue différée — discret, en arabe, sans saut de page. */
@@ -117,7 +123,7 @@ export default function App() {
   // Navigation tab state
   // Exercice sur lequel ouvrir l'atelier quand on arrive depuis le plan.
   const [bacIdeaFocus, setBacIdeaFocus] = useState<string | null>(null);
-  const [currentTab, setCurrentTab] = useState<'splash' | 'home' | 'review' | 'stats' | 'chat' | 'methodology' | 'bootcamp' | 'badges' | 'lesson' | 'workshop' | 'mindmap' | 'teacher' | 'animations' | 'situations' | 'schemas' | 'training' | 'plan' | 'bacideas'>('splash');
+  const [currentTab, setCurrentTab] = useState<'splash' | 'home' | 'review' | 'stats' | 'chat' | 'methodology' | 'bootcamp' | 'badges' | 'lesson' | 'workshop' | 'mindmap' | 'teacher' | 'animations' | 'situations' | 'schemas' | 'training' | 'plan' | 'bacideas' | 'focus'>('splash');
   const [activeMindMapUnitId, setActiveMindMapUnitId] = useState<number>(1);
   const [isAuthOpen, setIsAuthOpen] = useState(false);
   // Session élève persistée (correctif : la session était perdue à chaque F5).
@@ -323,6 +329,76 @@ export default function App() {
     };
     setProgress(updatedProgress);
     saveToLocalStorage(units, flashcards, updatedProgress);
+  };
+
+  // Crédite les minutes d'une phase de focus terminée (FocusTimer) dans
+  // l'objectif quotidien + le temps d'étude global, exactement comme
+  // handleRateCard le fait pour les cartes. Sert la brique MOTIVATION
+  // (docs/INTEGRATION_FOCUS_MOTIVATION.md §1c).
+  // NB : FocusTimer joue déjà son propre son de fin de phase — on n'en
+  // rejoue aucun ici pour éviter le double.
+  const addStudyMinutes = (min: number) => {
+    if (!min || min <= 0) return;
+
+    const today = new Date().toISOString().split('T')[0];
+    const currentDaily = progress.dailyGoals || {
+      type: 'minutes' as const,
+      targetMinutes: 25,
+      targetQuestions: 20,
+      lastActiveDate: today,
+      todayMinutes: 0,
+      todayQuestions: 0,
+      streakDays: 1,
+      completedToday: false
+    };
+
+    const newTodayMinutes = (currentDaily.todayMinutes || 0) + min;
+    const isCompleted = currentDaily.type === 'minutes'
+      ? newTodayMinutes >= currentDaily.targetMinutes
+      : currentDaily.completedToday;
+
+    const updatedProgress: UserProgress = {
+      ...progress,
+      studyMinutes: progress.studyMinutes + min,
+      dailyGoals: {
+        ...currentDaily,
+        todayMinutes: newTodayMinutes,
+        completedToday: isCompleted
+      }
+    };
+
+    setProgress(updatedProgress);
+    saveToLocalStorage(units, flashcards, updatedProgress);
+    updateLastStudyTime();
+  };
+
+  // Déclic de motivation affiché UNE fois par jour au tableau de bord, avant
+  // la première session (recommandation §2 du doc d'intégration). La clé
+  // datée empêche toute ré-ouverture dans la même journée.
+  const DECLIC_SHOWN_KEY = 'kunz_declic_shown_v1';
+  const [isDeclicOverlayOpen, setIsDeclicOverlayOpen] = useState(false);
+
+  useEffect(() => {
+    if (currentTab !== 'home') return;
+    const today = new Date().toISOString().split('T')[0];
+    try {
+      if (localStorage.getItem(DECLIC_SHOWN_KEY) !== today) {
+        setIsDeclicOverlayOpen(true);
+      }
+    } catch {
+      /* lecture indisponible → on tente l'affichage quand même */
+      setIsDeclicOverlayOpen(true);
+    }
+  }, [currentTab, DECLIC_SHOWN_KEY]);
+
+  const closeDeclicOverlay = () => {
+    const today = new Date().toISOString().split('T')[0];
+    try {
+      localStorage.setItem(DECLIC_SHOWN_KEY, today);
+    } catch {
+      /* quota dépassé — l'oubli de la clé est sans gravité */
+    }
+    setIsDeclicOverlayOpen(false);
   };
 
   // SM-2 Spaced Repetition flashcard rating callback
@@ -626,6 +702,7 @@ export default function App() {
   // espaces d'entraînement (situations, schémas, bootcamp, atelier, animations)
   // passent derrière une porte unique ; voir src/data/trainingHub.ts.
   const SECONDARY_NAV: { tab: typeof currentTab; label: string; Icon: LucideIcon }[] = [
+    { tab: 'focus', label: 'المؤقّت (تركيز)', Icon: Timer },
     { tab: 'training', label: 'التمارين والتدريب', Icon: Dumbbell },
     { tab: 'mindmap', label: 'الخرائط الذهنية', Icon: Network },
     { tab: 'methodology', label: MIFTAH_NAME_OFFICIAL_AR, Icon: Key },
@@ -704,6 +781,7 @@ export default function App() {
            currentTab === 'training' ? 'التمارين والتدريب' :
            currentTab === 'plan' ? 'خطة المراجعة النهائية' :
            currentTab === 'bacideas' ? 'أفكار التمارين حسب الدورة' :
+           currentTab === 'focus' ? 'المؤقّت (بومودورو)' :
            currentTab === 'mindmap' ? 'الخرائط الذهنية (D3)' :
             currentTab === 'chat' ? 'المرشد الذكي' :
             currentTab === 'teacher' ? 'لوحة المتابعة' :
@@ -907,12 +985,56 @@ export default function App() {
               {currentTab === 'schemas' && (
                 <SchemaDrillView onBackToHome={() => setCurrentTab('training')} />
               )}
+
+              {currentTab === 'focus' && (
+                <FocusTimer isDarkMode={isDarkMode} onFocusComplete={addStudyMinutes} />
+              )}
               </Suspense>
               </ChunkErrorBoundary>
             </motion.div>
           </AnimatePresence>
         </main>
       </div>
+
+      {/* Déclic de motivation — une fois par jour, par-dessus le tableau de
+          bord. Enchaînement visé : Déclic (déclencher) → Focus (tenir) →
+          Révision (agir). cf. docs/INTEGRATION_FOCUS_MOTIVATION.md §2. */}
+      {isDeclicOverlayOpen && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
+          role="dialog"
+          aria-modal="true"
+          data-testid="declic-overlay"
+          onClick={closeDeclicOverlay}
+        >
+          <div className="w-full max-w-xl" onClick={(e) => e.stopPropagation()}>
+            <Suspense fallback={<VueEnChargement />}>
+              <MotivationDeclic
+                isDarkMode={isDarkMode}
+                streakDays={progress.dailyGoals?.streakDays ?? 0}
+                onStart={() => {
+                  closeDeclicOverlay();
+                  updateLastStudyTime();
+                  setCurrentTab('review');
+                }}
+                onStartFocus={() => {
+                  closeDeclicOverlay();
+                  setCurrentTab('focus');
+                }}
+              />
+            </Suspense>
+            <div className="mt-3 flex justify-center">
+              <button
+                type="button"
+                onClick={closeDeclicOverlay}
+                className="text-sm font-bold text-white/80 hover:text-white underline-offset-2 cursor-pointer"
+              >
+                ليس الآن
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* U1 : barre mobile consolidée à 5 onglets (audit — 12 → 5). */}
       {!isFocusMode && (
