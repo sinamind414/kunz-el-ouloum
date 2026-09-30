@@ -12,17 +12,25 @@
 //     les pools à 40–73 formes, soit +55 % d'exigence, réintroduisant le bug de
 //     seuil inatteignable corrigé le 2026-09-16).
 //
-// SEUIL : candidat PROVISOIRE — « ≥ la moitié des atomes, minimum 1 »
-// (docs/tadwin_decisions.md §8). Il ne sera figé qu'après calibration sur
-// fiches-modèles (patron calibrationBac2025). Le seuil 0.6 supposé jouable est
-// réfuté (§7) : 12/33 clés ont exactement 2 atomes, et > 0,5 leur donne
-// 0 tolérance.
+// SEUIL : FIGÉ PAR CALIBRATION (2026-09-30) — « ≥ la moitié des atomes, minimum 1 »
+// (docs/tadwin_decisions.md §8). Mesuré sur 33 fiches-modèles
+// (src/data/tadwinCalibration.ts) : les fiches d'excellence concises exigent
+// 1/2, 2/3 ou 3/5 atomes selon les clés ; tout seuil > 0,5 casse au moins une
+// fiche excellente (test de gel dans tadwinCalibration.test.ts). Le seuil 0,6
+// supposé jouable à l'origine est réfuté (§7) : 12/33 clés ont exactement 2
+// atomes, et > 0,5 leur donne 0 tolérance.
 
 import { normalizeAr, motPresentDans } from './normalizeAr';
 import { clesDeUnite, type CleTadwin } from '../../data/tadwinCles';
 
-/** Seuil candidat §8 — PROVISOIRE tant que la calibration n'est pas faite. */
-export const SEUIL_C2_CANDIDAT = 0.5;
+/**
+ * Seuil C2 figé par calibration : une clé est couverte si la réponse contient
+ * au moins la moitié de SES atomes (minimum 1). Voir tadwinCalibration.ts.
+ */
+export const SEUIL_C2 = 0.5;
+
+/** Alias historique du candidat — garder SEUIL_C2 dans le nouveau code. */
+export const SEUIL_C2_CANDIDAT = SEUIL_C2;
 
 /** Levé quand le choix des clés viole un lock §6.1/§6.2 (choix invalide). */
 export class ChoixClesInvalide extends Error {}
@@ -55,7 +63,7 @@ export interface ResultatC2 {
  * `max(1, ceil(nbAtoms × seuil))`. Le `max(1, …)` est le « minimum 1 » —
  * sans lui, une clé mono-atome couverte ne vaudrait jamais rien.
  */
-export function seuilCouvertureCle(nbAtoms: number, seuil = SEUIL_C2_CANDIDAT): number {
+export function seuilCouvertureCle(nbAtoms: number, seuil = SEUIL_C2): number {
   return Math.max(1, Math.ceil(nbAtoms * seuil));
 }
 
@@ -73,7 +81,7 @@ function atomePresent(normReponse: string, atome: string): boolean {
 export function evaluerCle(
   reponse: string,
   cle: CleTadwin,
-  seuil = SEUIL_C2_CANDIDAT,
+  seuil = SEUIL_C2,
 ): ResultatCle {
   const norm = normalizeAr(reponse || '').toLowerCase();
   const atomsPresents: string[] = [];
@@ -101,7 +109,7 @@ export function evaluerCle(
 export function evaluerC2(
   reponse: string,
   choix: ChoixCles,
-  seuil = SEUIL_C2_CANDIDAT,
+  seuil = SEUIL_C2,
 ): ResultatC2 {
   const prescrites = clesDeUnite(choix.uniteId);
   if (!prescrites) {
