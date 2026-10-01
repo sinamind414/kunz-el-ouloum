@@ -7,6 +7,7 @@ import {
   recordQuizAnswer,
   startBossFightSession,
   startBossStep,
+  recordBossProgress,
   finishBossFight,
   completeDailyMission,
   type BotSession,
@@ -88,6 +89,22 @@ export interface EngineResult {
 const OUT_OF_PROGRAM = [
   'كرة القدم', 'كره القدم', 'كرة قدم', 'مباراة', 'فيلم سينما', 'موسيقى', 'سيارة', 'سياره', 'اغنية',
   'اخبار اليوم', 'أخبار اليوم', 'اخبار', 'أخبار', 'سينما', 'فيلم',
+];
+
+/**
+ * KEO-201 (bilan de vérité 2026-10-01) : lexique de la DÉTRESSE de l'élève —
+ * arabe standard ET darija algérienne. DÉTECTION uniquement (comprendre
+ * l'élève) : aucune de ces formes n'est jamais reproduite dans une SORTIE du
+ * tuteur, qui reste en فصحى (AGENTS.md règle 5). Testé AVANT isGibberishInput
+ * et OUT_OF_PROGRAM : « راني خايف من الباك » doit recevoir la réponse de
+ * soutien, pas le refus « hors programme ».
+ */
+const AFFECT_LEXICON = [
+  // فصحى — peur, fatigue, découragement
+  'خائف', 'خايف', 'خائفة', 'تعبت', 'مرهق', 'قلق', 'يائس', 'فاشل', 'ضائع', 'محبط',
+  // darija algérienne — détection seulement, jamais en production
+  'ضايع', 'ضعت', 'ما نقدرش', 'ماقدرش', 'حبست', 'ما فهمتش', 'مافهمتش',
+  'ماععلاباليش', 'ماعلاباليش', 'صعيب علي', 'كرهت البكالوريا', 'كرهت الدراسة',
 ];
 
 /** Détection des entrées absurdes, rires répétitifs, ou blabla non scientifique. */
@@ -350,6 +367,36 @@ function outOfScopeResult(session: BotSession, label: string): EngineResult {
   };
 }
 
+/**
+ * KEO-201 (bilan de vérité 2026-10-01 — SpecKit #23) : la détresse n'est jamais
+ * hors programme. Réponse de soutien en trois temps, ≤ 6 lignes : écoute (sans
+ * conseil) → réduction de charge (un seul sujet, 10 minutes) → UNE action fondée
+ * sur la dernière erreur réelle de l'élève.
+ * Interdits dans cette réponse : note/évaluation, liste de domaines, proverbe
+ * ou discours motivationnel générique, et toute darija — la SORTIE reste
+ * strictement en فصحى (AGENTS.md règle 5) ; la darija n'est qu'un signal
+ * d'entrée.
+ */
+function supportResult(session: BotSession): EngineResult {
+  const lastMistakeId = session.mistakes.length > 0 ? session.mistakes[session.mistakes.length - 1] : null;
+  const card = lastMistakeId ? getCardById(lastMistakeId) : null;
+  const action = card
+    ? `آخر خطأ مسجّل لديك كان في: **${card.title}**. ابدأ به الآن — بطاقة واحدة وسؤال تثبيت واحد، عشر دقائق ثمّ نتوقّف.`
+    : 'افتح المجال الذي تجده أصعب عليك، واقرأ بطاقته الأولى فقط. عشر دقائق ثمّ نتوقّف.';
+  const text =
+    'سمعتك. القلق قبل البكالوريا طبيعي — ومعناه أنّك تهتمّ لأمر دراستك، لا أنّك عاجز.\n\n' +
+    'لن نراجع كلّ شيء اليوم: سنراجع موضوعاً واحداً فقط، لمدّة **10 دقائق**، ثمّ نتوقّف.\n\n' +
+    `👉 ${action}\n\nأنا هنا بعد العشر دقائق.`;
+  return {
+    session,
+    action: {
+      text,
+      quickActions: ['راجع أخطائي السابقة', 'العودة للقائمة الرئيسية'],
+      sources: [],
+    },
+  };
+}
+
 function scoreChunk(
   norm: string,
   ch: SearchChunk,
@@ -363,7 +410,10 @@ function scoreChunk(
     if (alias && alias.length >= 3 && norm.includes(alias)) score += 60;
   }
   for (const kw of ch.normKeywords) {
-    if (kw && kw.length >= 3 && norm.includes(kw)) {
+    // N1 (bilan de vérité 2026-10-01) : mot ENTIER pour un mot-clé mono-mot —
+    // même garde-fou que le matching des fiches (B3). Une sous-chaîne arabe
+    // («لب» dans «الباك») ne doit pas marquer le chunk RAG.
+    if (kw && kw.length >= 3 && (kw.includes(' ') ? norm.includes(kw) : includesAsWord(norm, kw))) {
       score += 6;
     } else if (kw && kw.length >= 4 && !kw.includes(' ') && inputTokens.some((it) => fuzzyTokenEquals(it, kw))) {
       // R1 : mot-clé mono-mot tapé avec une faute → demi-poids (recall sans bruit).
@@ -397,7 +447,11 @@ function findBestStudyGuide(query: string): { card: StudyGuideCard; score: numbe
     }
     for (const keyword of card.keywords) {
       const nk = normalizeArabic(keyword);
-      if (nk.length >= 3 && norm.includes(nk)) score += 8;
+      // N1 (bilan de vérité 2026-10-01) : mot ENTIER pour un mot-clé mono-mot —
+      // même règle que le matching des fiches (correctif B3, includesAsWord).
+      // Une sous-chaîne arabe («لب» dans «الباك») ne doit pas rapporter de
+      // score au guide d'étude, plus qu'aux fiches.
+      if (nk.length >= 3 && (nk.includes(' ') ? norm.includes(nk) : includesAsWord(norm, nk))) score += 8;
     }
     for (const section of card.sections) {
       const ns = normalizeArabic(section.heading);
@@ -890,10 +944,17 @@ function tokenAffirmed(normAnswer: string, token: string, normKp: string): boole
   return false;
 }
 
-function gradeKeyPoints(answer: string, keyPoints: string[]): number {
+/**
+ * KEO-107 / N5 (bilan de vérité 2026-10-01) : notation détaillée d'une réponse
+ * ouverte. En plus du score, on rapporte les points-clés « mentionnés mais
+ * niés/inversés » — l'élève qui écrit « ليس صحيحاً أن… » en recopiant les
+ * mots-clés doit savoir QUE sa réponse contredisait l'attendu, pas seulement
+ * qu'il a eu 0. `gradeKeyPoints` (ci-dessous) garde le même barème exact.
+ */
+function gradeKeyPointsDetail(answer: string, keyPoints: string[]): { score: number; inverted: string[] } {
   const normAnswer = normalizeArabic(answer);
   const tokens = new Set(tokenizeArabic(normAnswer).filter((t) => t.length >= 3));
-  if (tokens.size === 0) return 0;
+  if (tokens.size === 0) return { score: 0, inverted: [] };
   // token -> point-clé normalisé qui l'a produit (pour la comparaison de polarité)
   const expected = new Map<string, string>();
   for (const kp of keyPoints) {
@@ -902,45 +963,115 @@ function gradeKeyPoints(answer: string, keyPoints: string[]): number {
       if (t.length >= 3 && !expected.has(t)) expected.set(t, nk);
     }
   }
-  if (expected.size === 0) return 0;
+  if (expected.size === 0) return { score: 0, inverted: [] };
   let hits = 0;
+  const invertedNorms = new Set<string>();
   for (const [t, nk] of expected) {
     if (tokenAffirmed(normAnswer, t, nk)) hits += 1;
+    else if (normAnswer.includes(t)) invertedNorms.add(nk); // mentionné, jamais affirmé
   }
   const coverage = hits / expected.size;
-  const score = coverage >= 0.5 ? 10 : coverage >= 0.2 ? 5 : 0;
+  let score = coverage >= 0.5 ? 10 : coverage >= 0.2 ? 5 : 0;
 
   // R3 (audit 2026-09-29) : anti-bourrage lexical. La couverture de points-clés
   // pouvait être « farmée » en répétant le même terme (ex. « أنزيم أنزيم أنزيم »).
   // On réutilise le détecteur curé du projet : si la réponse est du bourrage,
   // le score est annulé — on ne récompense pas une copie sans contenu réel.
-  if (score > 0 && detecterStuffing(answer).stuffing_detected) return 0;
+  if (score > 0 && detecterStuffing(answer).stuffing_detected) score = 0;
 
-  return score;
+  // On ne rapporte que les points-clés réellement présents dans la réponse
+  // mais jamais affirmés : la cause exacte du zéro, pas une liste générique.
+  const inverted = keyPoints.filter((kp) => invertedNorms.has(normalizeArabic(kp)));
+  return { score, inverted };
 }
 
-function handleBossInput(session: BotSession, rawInput: string): EngineResult {
-  const boss = session.boss;
-  if (!boss) return { session, action: { text: 'لا يوجد تحدي BAC جارٍ.', quickActions: ['العودة للقائمة الرئيسية'] } };
-  const scenario = getBossScenarioById(boss.scenarioId);
-  if (!scenario) {
-    const finished = finishBossFight(session);
-    return { session: finished, action: { text: 'انتهى التحدي.', quickActions: ['العودة للقائمة الرئيسية'] } };
+function gradeKeyPoints(answer: string, keyPoints: string[]): number {
+  return gradeKeyPointsDetail(answer, keyPoints).score;
+}
+
+/* -------------------------------------------------------------------------- *
+ * KEO-101/102 (bilan de vérité 2026-10-01 — SpecKit #10/#11) : le défi BAC ne
+ * délivre plus la correction modèle au premier clic, ni à la première saisie.
+ * Contrat du moteur (la règle d'or imprimée par studyGuide.ts — « لا تفتح الحل
+ * النموذجي قبل محاولة كتابية حقيقية » — devient une contrainte du code) :
+ *   — « لا أعرف » → l'indice suivant (3 max), JAMAIS la correction avant le
+ *     3ᵉ indice consommé (score alors plafonné à 3/10) ;
+ *   — aucun indice avant 90 s sans tentative écrite ;
+ *   — une saisie < 15 caractères utiles n'est pas une tentative ;
+ *   — 2 tentatives réelles débloquent la correction avec score plein.
+ * -------------------------------------------------------------------------- */
+const MIN_ATTEMPT_CHARS = 15;
+const MIN_ELAPSED_BEFORE_HINT_MS = 90_000;
+const MAX_HINTS = 3;
+/** Score plafonné quand la correction est débloquée par la voie des indices. */
+const HINT_PATH_CAP = 3;
+
+/** Caractères « utiles » d'une saisie : lettres et chiffres, sans espaces ni
+ *  ponctuation — « نعم !!! » ne fait pas une tentative. */
+function usefulChars(raw: string): number {
+  return (raw.match(/[\p{L}\p{N}]/gu) || []).length;
+}
+
+/** Masque ~2/3 de chaque mot d'un point-clé : l'élève voit la structure de la
+ *  réponse attendue, pas son contenu (indice 3/3). */
+function maskKeyPoint(kp: string): string {
+  return kp
+    .split(/\s+/)
+    .map((w) => (w.length <= 3 ? w : w.slice(0, Math.max(2, Math.ceil(w.length / 3))) + '……'))
+    .join(' ');
+}
+
+type BossScenarioT = NonNullable<ReturnType<typeof getBossScenarioById>>;
+
+/** Les trois indices progressifs : I1 verbe de consigne, I2 squelette de
+ *  phrase, I3 premier point-clé partiellement masqué. */
+function bossHint(scenario: BossScenarioT, level: 1 | 2 | 3): string {
+  if (level === 1) {
+    return (
+      '🔑 **مفتاح 1/3:** عد إلى التعليمة وحدّد الفعل المطلوب — استخراج، تحليل، أم تفسير؟\n' +
+      'الفعل يحدّد شكل الجواب: «استخرج» = معطى من الوثيقة فقط، «فسّر» = رابط بـ «لأنّ».\n\n' +
+      '✍️ اكتب جملة واحدة تناسب الفعل، ولو كانت ناقصة.'
+    );
   }
-  // La phase « eval » (auto-note) n'existe plus : TOUTE saisie est notée
-  // automatiquement — y compris les sessions héritées restées en 'eval'.
-  const n = normalizeArabic(rawInput);
-  const giveUp = n.includes(normalizeArabic('لا أعرف')) || n.includes(normalizeArabic('لم أجب'));
-  const points = giveUp ? 0 : gradeKeyPoints(rawInput, scenario.keyPoints);
-  const correctionText =
+  if (level === 2) {
+    return (
+      '🔑 **مفتاح 2/3:** أكمل الجملة التالية بمعطيات الوثيقة فقط:\n' +
+      '« انطلاقًا من الوثيقة، نلاحظ أنّ ……… »\n\n' +
+      '✍️ جملة واحدة تكفي — التفسير يأتي بعدها.'
+    );
+  }
+  return (
+    '🔑 **مفتاح 3/3 (الأخير):** النقطة الأساسية الأولى تبدأ هكذا:\n' +
+    `« ${maskKeyPoint(scenario.keyPoints[0] ?? '')} »\n\n` +
+    '✍️ أكملها بأسلوبك — أو اطلب التصحيح ولن تتجاوز 3/10.'
+  );
+}
+
+/** Livre la correction DÉBLOQUÉE (2 tentatives ou 3 indices) et enchaîne sur
+ *  la question suivante ou le bilan final. Inclut le feedback d'inversion
+ *  KEO-107 : un zéro causé par une réponse qui nie l'attendu est nommé. */
+function deliverBossCorrection(
+  session: BotSession,
+  scenario: BossScenarioT,
+  lastAnswer: string,
+  capPoints: boolean
+): EngineResult {
+  const boss = session.boss!;
+  const graded = gradeKeyPointsDetail(lastAnswer, scenario.keyPoints);
+  const points = capPoints ? Math.min(graded.score, HINT_PATH_CAP) : graded.score;
+  let correctionText =
     `✅ **التصحيح النموذجي**\n\n${scenario.correction}\n\n🔑 **النقاط الأساسية:**\n${scenario.keyPoints.map((p) => `- ${p}`).join('\n')}` +
     `\n\n🎯 نقاطك لهذه الوضعية: ${points}/10`;
+  if (graded.inverted.length > 0) {
+    correctionText +=
+      `\n\n⚠️ **انتبه:** إجابتك ذكرت النقطة التالية لكنّها نَفَتْها بدل أن تُثبتها:\n« ${graded.inverted[0]} »\nالمنتظَر هو الإثبات لا النفي — الكلمة المفتاحية وحدها لا تكسب النقطة.`;
+  }
   const scenarios = getBossScenariosForDomain(session.activeDomainId);
   const idx = scenarios.findIndex((s) => s.id === boss.scenarioId);
   const next = idx >= 0 ? scenarios[idx + 1] : undefined;
   if (next) {
     const newSession = startBossStep(session, points, next.id, boss.questionIndex + 1);
-    const text = `${correctionText}\n\n➡️ **السؤال التالي (${boss.questionIndex + 2}/${boss.totalQuestions})**\n\n${next.situation}\n\n📝 اكتب إجابتك أو اختر «لا أعرف» لعرض التصحيح.`;
+    const text = `${correctionText}\n\n➡️ **السؤال التالي (${boss.questionIndex + 2}/${boss.totalQuestions})**\n\n${next.situation}\n\n📝 اكتب إجابتك — لن أعرض التصحيح قبل محاولتين حقيقيتين («لا أعرف» يعطيك مفتاحاً، لا حلّاً).`;
     return { session: newSession, action: { text, quickActions: ['لا أعرف'], sources: [{ type: 'domain' as SourceType, title: 'تحدي BAC' }] } };
   }
   const total = boss.score + points;
@@ -970,6 +1101,110 @@ function handleBossInput(session: BotSession, rawInput: string): EngineResult {
       sources: [{ type: 'domain' as SourceType, title: 'تحدي BAC' }],
     },
   };
+}
+
+function handleBossInput(session: BotSession, rawInput: string): EngineResult {
+  const boss = session.boss;
+  if (!boss) return { session, action: { text: 'لا يوجد تحدي BAC جارٍ.', quickActions: ['العودة للقائمة الرئيسية'] } };
+  const scenario = getBossScenarioById(boss.scenarioId);
+  if (!scenario) {
+    const finished = finishBossFight(session);
+    return { session: finished, action: { text: 'انتهى التحدي.', quickActions: ['العودة للقائمة الرئيسية'] } };
+  }
+  // La phase « eval » (auto-note) n'existe plus : TOUTE saisie passe par la
+  // machine KEO-101 ci-dessous — y compris les sessions héritées restées en
+  // 'eval' ou sans compteurs (compteurs absents = comportement aménagé).
+  const n = normalizeArabic(rawInput);
+  const giveUp = n.includes(normalizeArabic('لا أعرف')) || n.includes(normalizeArabic('لم أجب'));
+  const hintLevel = boss.hintLevel ?? 0;
+  const attempts = boss.attempts ?? 0;
+  // Compatibilité : une session antérieure à KEO-101 n'a pas d'horodatage — on
+  // ne bloque pas l'élève sur un chrono qui n'a jamais démarré.
+  const elapsedMs = boss.openedAt ? Date.now() - boss.openedAt : Number.POSITIVE_INFINITY;
+
+  // 1) «لا أعرف» trop tôt et sans AUCUNE tentative → refus + temps restant
+  //    (KEO-102) : la règle d'or des 20-25 min devient un chrono moteur de 90 s.
+  if (giveUp && attempts === 0 && hintLevel === 0 && elapsedMs < MIN_ELAPSED_BEFORE_HINT_MS) {
+    const restant = Math.max(1, Math.ceil((MIN_ELAPSED_BEFORE_HINT_MS - elapsedMs) / 1000));
+    return {
+      session,
+      action: {
+        text:
+          '⏱️ لن أعطيك التصحيح الآن — قاعدتي هي قاعدتك: محاولة كتابية حقيقية قبل الحل.\n\n' +
+          '✍️ اكتب جملة واحدة، ولو كانت ناقصة أو خاطئة: جوابُك أنت خيرٌ لك من جوابي.\n' +
+          `(بعد نحو ${restant} ثانية من التفكير أستطيع أن أعطيك المفتاح الأول.)`,
+        quickActions: ['لا أعرف'],
+        sources: [{ type: 'domain' as SourceType, title: 'تحدي BAC' }],
+      },
+    };
+  }
+
+  // 2) «لا أعرف» (après le délai, ou suite à une tentative) → indice suivant,
+  //    jamais la correction tant que les 3 indices ne sont pas consommés.
+  if (giveUp) {
+    const nextLevel = hintLevel + 1;
+    if (nextLevel <= MAX_HINTS) {
+      const newSession = recordBossProgress(session, { hintLevel: nextLevel });
+      return {
+        session: newSession,
+        action: {
+          text: bossHint(scenario, nextLevel as 1 | 2 | 3),
+          quickActions: ['لا أعرف'],
+          sources: [{ type: 'domain' as SourceType, title: 'تحدي BAC' }],
+        },
+      };
+    }
+    // 3 indices consommés : la correction se débloque — score plafonné (KEO-101).
+    return deliverBossCorrection(session, scenario, rawInput, true);
+  }
+
+  // 3) Saisie trop courte pour être une tentative réelle (KEO-101) : «نعم»,
+  //    «لا أدري» ou trois lettres ne débloquent rien.
+  if (usefulChars(rawInput) < MIN_ATTEMPT_CHARS) {
+    return {
+      session,
+      action: {
+        text:
+          `✍️ جوابك قصير جداً ليُعدّ محاولة (${MIN_ATTEMPT_CHARS} حرفاً مفيداً على الأقل).\n` +
+          'اكتب جملة كاملة ولو كانت ناقصة — سأوجّهك منها دون أن أحلّ مكانك.',
+        quickActions: ['لا أعرف'],
+        sources: [{ type: 'domain' as SourceType, title: 'تحدي BAC' }],
+      },
+    };
+  }
+
+  // 4) Première tentative réelle : enregistrée, PAS de correction (KEO-101).
+  //    L'élève relit, améliore, réessaie — la correction arrive à la 2ᵉ.
+  if (attempts + 1 < 2) {
+    const newSession = recordBossProgress(session, { attempts: attempts + 1 });
+    return {
+      session: newSession,
+      action: {
+        text:
+          '📝 **سُجّلت محاولتك الأولى — لن أعرض التصحيح بعد.**\n\n' +
+          'راجع ما كتبت: هل ذكرت معطيات الوثيقة؟ هل وضعت الرابط المنطقي؟\n' +
+          '✍️ حسّن إجابتك واكتب المحاولة الثانية — عندها أصحّح وأناقش ما كتبت.\n' +
+          '(أو اطلب «لا أعرف» فأعطيك مفتاحاً لا حلّاً.)',
+        quickActions: ['لا أعرف'],
+        sources: [{ type: 'domain' as SourceType, title: 'تحدي BAC' }],
+      },
+    };
+  }
+
+  // 5) Deuxième tentative réelle : correction + score plein via gradeKeyPoints.
+  return deliverBossCorrection(session, scenario, rawInput, false);
+}
+
+/** N4 (bilan de vérité 2026-10-01) : première carte du domaine disposant d'au
+ *  moins un QCM — pour proposer une alternative TESTABLE quand le sujet demandé
+ *  n'en a pas. Jamais une fiche de cours en substitution d'un test. */
+function findTestableCard(domainId: number, excludeId: string): KnowledgeCard | null {
+  const pool = getQuestionsForDomain(domainId);
+  return (
+    KNOWLEDGE_CARDS.find(
+      (c) => c.domainId === domainId && c.id !== excludeId && pool.some((q) => q.topicId === c.id)
+    ) ?? null
+  );
 }
 
 export function processStudentInput(session: BotSession, rawInput: string): EngineResult {
@@ -1009,15 +1244,26 @@ export function processStudentInput(session: BotSession, rawInput: string): Engi
   if (session.mode === 'bac_challenge' && session.boss) return handleBossInput(session, input);
   if (session.currentQuiz && (session.mode === 'quiz' || session.mode === 'diagnostic')) return gradeQuizAnswer(session, input);
 
+  // KEO-201 (bilan de vérité 2026-10-01) : la détresse court-circuite TOUT —
+  // avant l'intention « اختبرني », avant isGibberishInput et avant le filtre
+  // OUT_OF_PROGRAM. Un élève qui écrit son angoisse (فصحى ou darija) reçoit la
+  // réponse de soutien, jamais le refus « hors programme » ; le filtre anti-bruit
+  // (كرة القدم…) reste intact car son vocabulaire ne figure pas dans AFFECT_LEXICON.
+  if (norm.length >= 3 && AFFECT_LEXICON.some((k) => norm.includes(n(k)))) {
+    return supportResult(session);
+  }
+
   // B7 (audit Morchid 2026-09-25) : « اختبرني (في X) » doit LANCER UN QCM sur le
   // sujet ciblé. Jusqu'ici l'intention tombait sur la recherche sémantique et
   // renvoyait une carte de cours : le bouton promettait un test, pas un cours.
+  // N4 (bilan de vérité 2026-10-01) : fin des substitutions silencieuses —
+  // sujet non identifié → clarification ; sujet sans QCM → indisponibilité dite
+  // + alternative TESTABLE du même domaine. Jamais une fiche à la place d'un
+  // test, jamais la première carte du domaine par défaut.
   if (norm.includes(n('اختبرني'))) {
     const scored = findBestKnowledgeCardScored(norm, session.activeDomainId);
-    const card = scored?.card ?? (session.activeDomainId != null
-      ? KNOWLEDGE_CARDS.find((c) => c.domainId === session.activeDomainId) ?? null
-      : null);
-    if (card) {
+    if (scored) {
+      const card = scored.card;
       const pool = getQuestionsForDomain(card.domainId).filter((q) => q.topicId === card.id);
       if (pool.length > 0) {
         const picked = pool[Math.floor(Math.random() * pool.length)];
@@ -1032,7 +1278,27 @@ export function processStudentInput(session: BotSession, rawInput: string): Engi
           },
         };
       }
+      const alternative = findTestableCard(card.domainId, card.id);
+      return {
+        session,
+        action: {
+          text:
+            `🧪 لا يوجد اختبار جاهز في «${card.title}» بعد — ولن أعوّضه بدرسٍ تقرؤه بدل اختبارٍ تؤدّيه.` +
+            (alternative
+              ? `\nأستطيع اختبارك الآن في **${alternative.title}** من المجال نفسه. أيّهما تختار؟`
+              : '\nجرّب موضوعاً آخر من المجال نفسه.'),
+          quickActions: alternative ? [`اختبرني في ${alternative.title}`] : ['العودة للقائمة الرئيسية'],
+          sources: [{ type: 'internal_card' as SourceType, title: card.title }],
+        },
+      };
     }
+    return {
+      session,
+      action: {
+        text: 'لم أحدّد الموضوع الذي تريد اختبارك فيه. اكتبه صراحةً، مثال: «اختبرني في الغوص» أو «اختبرني في الاستنساخ».',
+        quickActions: ['اختبرني في الغوص', 'اختبرني في الاستنساخ'],
+      },
+    };
   }
 
   if (isGibberishInput(rawInput || input) || (norm.length >= 3 && OUT_OF_PROGRAM.some((k) => {

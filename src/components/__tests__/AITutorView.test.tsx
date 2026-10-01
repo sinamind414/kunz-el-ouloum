@@ -224,17 +224,35 @@ describe('AITutorView — rendu riche du moteur (T2)', () => {
       expect(messagesText()).toContain('وضعية مشكلة');
     });
 
-    // « لا أعرف » (quickAction du boss) → correction + 0 نقطة + question suivante
-    // (rec #3 : l'auto-évaluation +10/+5/0 est remplacée par la notation moteur).
+    // KEO-101/102 (bilan de vérité 2026-10-01) : « لا أعرف » immédiat, sans
+    // tentative → REFUS + chrono, PAS de correction (l'ancien comportement
+    // affichait le corrigé modèle au premier clic).
     await user.click(screen.getByText('لا أعرف'));
+    await waitFor(() => {
+      expect(messagesText()).toMatch(/لن أعطيك التصحيح الآن/);
+    });
+    expect(messagesText()).not.toContain('التصحيح النموذجي');
+
+    // 1ʳᵉ tentative réelle → enregistrée, sans correction.
+    await typeAndSubmit(user, 'محاولة أولى غير كافية عن الوضعية الأولى');
+    await waitFor(() => {
+      expect(messagesText()).toMatch(/سُجّلت محاولتك الأولى/);
+    });
+    expect(messagesText()).not.toContain('التصحيح النموذجي');
+
+    // 2ᵉ tentative réelle → correction + question suivante (KEO-101).
+    await typeAndSubmit(user, 'محاولة ثانية محسّنة عن الوضعية الأولى');
     await waitFor(() => {
       expect(messagesText()).toContain('التصحيح النموذجي');
       expect(messagesText()).toMatch(/نقاطك لهذه الوضعية/);
       expect(messagesText()).toMatch(/السؤال التالي|انتهى تحدي BAC/);
     });
 
-    // 2e scénario : une réponse libre est notée automatiquement puis le défi se clôt.
-    await typeAndSubmit(user, 'إجابة قصيرة غير كافية');
+    // 2e scénario : deux tentatives → correction puis le défi se clôt.
+    // (pas de waitFor intermédiaire : le message de coaching est identique au
+    // précédent ; les submits sont séquentiels et le moteur est synchrone.)
+    await typeAndSubmit(user, 'محاولة أولى في الوضعية الثانية');
+    await typeAndSubmit(user, 'محاولة ثانية في الوضعية الثانية');
     await waitFor(() => {
       expect(messagesText()).toContain('انتهى تحدي BAC');
     });

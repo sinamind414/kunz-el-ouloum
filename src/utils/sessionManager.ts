@@ -18,6 +18,15 @@ export interface BossState {
   totalQuestions: number;
   score: number;
   phase: 'answer' | 'eval';
+  /** KEO-101 (audit 2026-10-01) : indices déjà consommés sur la situation
+   *  courante (0→3). « لا أعرف » délivre l'indice suivant, jamais la correction. */
+  hintLevel?: number;
+  /** KEO-101 : tentatives écrites RÉELLES (≥ 15 caractères utiles) sur la
+   *  situation courante. Deux tentatives débloquent la correction (score plein). */
+  attempts?: number;
+  /** KEO-102 : horodatage (ms) d'ouverture de la situation courante — la
+   *  correction/indices sont refusés avant 90 s sans tentative. */
+  openedAt?: number;
 }
 
 export interface BotSession {
@@ -191,9 +200,35 @@ export function startBossFightSession(
       totalQuestions,
       score: 0,
       phase: 'answer',
+      // KEO-101/102 : remise à zéro des compteurs de la 1ʳᵉ situation.
+      hintLevel: 0,
+      attempts: 0,
+      openedAt: Date.now(),
     },
   };
 
+  saveSession(newSession);
+  return newSession;
+}
+
+/**
+ * KEO-101 (audit 2026-10-01) : met à jour l'état de progression de la situation
+ * BAC courante (indices consommés, tentatives réelles) sans changer de question.
+ * Remplace l'ancien pattern « la moitié de la correction dans le moteur » :
+ * la progression d'une même situation vit ici, dans l'état de session.
+ */
+export function recordBossProgress(
+  session: BotSession,
+  patch: Partial<Pick<BossState, 'hintLevel' | 'attempts'>>
+): BotSession {
+  if (!session.boss) return session;
+  const newSession: BotSession = {
+    ...session,
+    boss: {
+      ...session.boss,
+      ...patch,
+    },
+  };
   saveSession(newSession);
   return newSession;
 }
@@ -214,6 +249,11 @@ export function startBossStep(
       questionIndex: nextIndex,
       score: session.boss.score + points,
       phase: 'answer',
+      // KEO-101/102 : chaque nouvelle situation repart de zéro (indices,
+      // tentatives, chrono) — les compteurs ne fuient pas d'une question à l'autre.
+      hintLevel: 0,
+      attempts: 0,
+      openedAt: Date.now(),
     },
   };
 

@@ -12,11 +12,13 @@ const boss = (id = 'boss1_q1'): BotSession => ({
 });
 const note = (t: string) => { const m = t.match(/نقاطك لهذه الوضعية: (\d+)\/10/); return m ? Number(m[1]) : null; };
 const sc = getBossScenarioById('boss1_q1')!;
-const nie = processStudentInput(boss(), sc.keyPoints.map((k) => 'لا، ليس صحيحاً أن ' + k).join('؛ '));
+// KEO-101 (2026-10-01) : deux tentatives reelles debloquent la correction.
+const deux = (ans: string) => processStudentInput(processStudentInput(boss(), ans).session, ans);
+const nie = deux(sc.keyPoints.map((k) => 'لا، ليس صحيحاً أن ' + k).join('؛ '));
 ok(note(nie.action.text) === 0, `reponse niant tout -> ${note(nie.action.text)}/10 (attendu 0)`);
-const bon = processStudentInput(boss(), sc.keyPoints.join('؛ '));
+const bon = deux(sc.keyPoints.join('؛ '));
 ok(note(bon.action.text) === 10, `reponse correcte -> ${note(bon.action.text)}/10 (attendu 10)`);
-const mixte = processStudentInput(boss(), 'لا، ' + sc.keyPoints[0] + '، لكن ' + sc.keyPoints.slice(1).join('، '));
+const mixte = deux('لا، ' + sc.keyPoints[0] + '، لكن ' + sc.keyPoints.slice(1).join('، '));
 ok(note(mixte.action.text) === 10, `1 point nie sur 4 + 3 affirmes -> ${note(mixte.action.text)}/10 (attendu 10)`);
 
 // ---------- B3 : plus de matching par sous-chaine ----------

@@ -31,14 +31,18 @@ describe('R3-B — anti-bourrage dans la notation ouverte (boss BAC)', () => {
   });
   const sc = getBossScenarioById('boss1_q1')!;
 
+  // KEO-101 (bilan de vérité 2026-10-01) : deux tentatives réelles débloquent
+  // la correction — on rejoue la réponse deux fois.
+  const reponse = (ans: string) =>
+    processStudentInput(processStudentInput(boss(), ans).session, ans);
+
   it('réponse complète (non bourrée) → 10/10 (non régressif)', () => {
-    const bon = processStudentInput(boss(), sc.keyPoints.join('؛ '));
+    const bon = reponse(sc.keyPoints.join('؛ '));
     expect(note(bon.action.text)).toBe(10);
   });
 
   it('même réponse noyée dans un mot répété (bourrage) → 0/10', () => {
-    const stuffed = processStudentInput(
-      boss(),
+    const stuffed = reponse(
       sc.keyPoints.join(' ') + ' ' + 'حشو '.repeat(120),
     );
     expect(note(stuffed.action.text)).toBe(0);
