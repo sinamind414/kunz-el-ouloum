@@ -787,4 +787,20 @@ Les tickets des Épics 0, 2 (restants), 3 et 4 sont indépendants des lots et pe
 
 > ⚠️ Le token d'automatisation ne pouvant pas appliquer de labels ni modifier les issues : la priorité et l'épic figurent dans le tableau d'en-tête de chaque ticket (et l'ID encode l'épic : `KEO-0xx` = E0, `KEO-1xx` = E1, `KEO-2xx` = E2, `KEO-3xx` = E3, `KEO-4xx` = E4). Les labels `prio-critique` / `prio-haute` / `prio-moyenne`, `epic-*` et `speckit` sont déjà créés sur le dépôt : appliquez-les en masse depuis GitHub (sélection des 30 issues → « apply label ») ou via `gh issue edit <n> --add-label …` avec un compte possédant les droits.
 
+### État d'implémentation — LOT 1 livré le 2026-10-01 (commit `0f4d1e0`)
+
+| Ticket | Issue | État | Livré |
+|---|---|---|---|
+| KEO-101 — Escalier de 3 indices | [#10](https://github.com/sinamind414/kunz-el-ouloum/issues/10) | ✅ **Fait + verrouillé** | `BossState.hintLevel/attempts/openedAt` · I1 verbe / I2 squelette / I3 point-clé masqué · correction = 3 indices (≤ 3/10) ou 2 tentatives (plein) |
+| KEO-102 — Chrono 90 s | [#11](https://github.com/sinamind414/kunz-el-ouloum/issues/11) | ✅ **Fait + verrouillé** | refus + temps restant avant 90 s sans tentative ; compatibilité sessions héritées |
+| KEO-107 — Feedback d'inversion | [#16](https://github.com/sinamind414/kunz-el-ouloum/issues/16) | ✅ **Fait + verrouillé** (volet feedback/N5) | `gradeKeyPointsDetail` : « إجابتك ذكرت النقطة لكنّها نَفَتْها… » (le score B2 était déjà corrigé) |
+| KEO-108 — اختبرني sans substitution | [#17](https://github.com/sinamind414/kunz-el-ouloum/issues/17) | ✅ **Fait + verrouillé** (N4) | branche « pool vide » → indisponibilité dite + alternative testable ; sujet non identifié → clarification |
+| KEO-112 — Matching mot entier | [#21](https://github.com/sinamind414/kunz-el-ouloum/issues/21) | ✅ **Fait + verrouillé** (N1) | `findBestStudyGuide` + `scoreChunk` (RAG) + `OUT_OF_PROGRAM` passés à `includesAsWord` |
+| KEO-201 — Détresse jamais rejetée | [#23](https://github.com/sinamind414/kunz-el-ouloum/issues/23) | ✅ **Fait + verrouillé** | `AFFECT_LEXICON` (فصحى + darija en détection) avant gibberish/OUT_OF_PROGRAM → `supportResult` (écoute / 10 min / 1 action) ; sortie فصحى |
+| KEO-205 — Une seule voix | [#27](https://github.com/sinamind414/kunz-el-ouloum/issues/27) | ✅ **Fait** (accueil) | `WELCOME_TEXT` réécrit sans lexique marin ; le ton des autres messages suit au fil des lots |
+
+**Verrous de non-régression :** `src/utils/__tests__/morchidGardeFou.test.ts` (13 tests : chrono, escalier ×4, tentatives, détresse darija/فصحى, GS-16, N1, N4, KEO-205) + `morchidCorrectifs.test.ts` (B2 passé au contrat « 2 tentatives », +1 test feedback d'inversion) + `synonymAndStuffing.test.ts` + `AITutorView.test.tsx` (parcours UI complet du nouveau défi). **Vérifications : tsc ✓ · vitest 162 fichiers / 1997 tests ✓ · jest ciblé 44/44 ✓ · build ✓.**
+
+**Non couverts par ce lot** (ordres suivants) : KEO-104 (bilan CAUSE/ACTION/PORTE — LOT 3), KEO-103/105/106 (probe socratique, triade, verbe de consigne — LOT 2), KEO-111 (champ `source` de provenance — les 7 erreurs scientifiques étaient déjà purgées et verrouillées avant ce lot), KEO-002 (la date officielle BAC 2027 doit être fournie par l'owner — le garde-fou d'affichage existe déjà dans `DashboardView`).
+
 
