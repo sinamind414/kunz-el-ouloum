@@ -13,7 +13,9 @@ const boss = (id = 'boss1_q1'): BotSession => ({
 const note = (t: string) => { const m = t.match(/نقاطك لهذه الوضعية: (\d+)\/10/); return m ? Number(m[1]) : null; };
 const sc = getBossScenarioById('boss1_q1')!;
 // KEO-101 (2026-10-01) : deux tentatives reelles debloquent la correction.
-const deux = (ans: string) => processStudentInput(processStudentInput(boss(), ans).session, ans);
+// KEO-106 : connecteur causal pour la conformité au verbe «بيّن».
+const CAUSAL = '، مما يؤدي إلى استجابة مناعية';
+const deux = (ans: string) => processStudentInput(processStudentInput(boss(), ans + CAUSAL).session, ans + CAUSAL);
 const nie = deux(sc.keyPoints.map((k) => 'لا، ليس صحيحاً أن ' + k).join('؛ '));
 ok(note(nie.action.text) === 0, `reponse niant tout -> ${note(nie.action.text)}/10 (attendu 0)`);
 const bon = deux(sc.keyPoints.join('؛ '));

@@ -46,8 +46,11 @@ describe('B2 — négation non créditée (audit Morchid)', () => {
   // KEO-101 (bilan de vérité 2026-10-01) : la correction n'apparaît plus à la
   // première saisie — deux tentatives réelles la débloquent. On rejoue donc
   // la même réponse deux fois pour atteindre la correction.
+  // KEO-106 (LOT 2) : la situation demande «بيّن» → connecteur causal ajouté
+  // pour la conformité au contrat du verbe.
+  const CAUSAL = '، مما يؤدي إلى استجابة مناعية';
   const reponse = (ans: string) =>
-    processStudentInput(processStudentInput(boss(), ans).session, ans);
+    processStudentInput(processStudentInput(boss(), ans + CAUSAL).session, ans + CAUSAL);
 
   it('réponse niant tous les points-clés → 0/10', () => {
     const nie = reponse(sc.keyPoints.map((k) => 'لا، ليس صحيحاً أن ' + k).join('؛ '));

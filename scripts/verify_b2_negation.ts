@@ -22,9 +22,11 @@ if (sc) {
   line(`keyPoints du scenario : ${JSON.stringify(sc.keyPoints)}`);
   // KEO-101 (2026-10-01) : la correction n'apparait qu'apres 2 tentatives
   // reelles — on rejoue donc chaque reponse deux fois.
+  // KEO-106 : la situation demande «بيّن» → connecteur causal pour la conformité.
+  const CAUSAL = '، مما يؤدي إلى استجابة مناعية';
   const deux = (ans: string) => {
-    const first = processStudentInput(sessionBoss('boss1_q1', 2), ans);
-    return processStudentInput(first.session, ans);
+    const first = processStudentInput(sessionBoss('boss1_q1', 2), ans + CAUSAL);
+    return processStudentInput(first.session, ans + CAUSAL);
   };
   // 1) reponse qui nie EXPLICITEMENT chaque point-cle en reprenant ses mots
   const nieTout = sc.keyPoints.map((kp) => 'لا، ليس صحيحاً أن ' + kp).join('؛ ');

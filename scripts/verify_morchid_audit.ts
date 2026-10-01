@@ -38,7 +38,9 @@ const sessionBoss: BotSession = {
 };
 // reponse niant toute la correction mais contenant les memes mots-cles
 // KEO-101 (2026-10-01) : la correction n'apparait qu'apres 2 tentatives reelles.
-const negation = 'لا، البروتين لا يتكون من أحماض أمينية، لا يوجد نسخ ولا ترجمة، الريبوزوم لا يركب أي شيء، الكودون AUG ليس كودون بداية';
+// KEO-106 : connecteur causal pour la conformité au verbe «بيّن».
+const CAUSAL = '، مما يؤدي إلى استجابة مناعية';
+const negation = 'لا، البروتين لا يتكون من أحماض أمينية، لا يوجد نسخ ولا ترجمة، الريبوزوم لا يركب أي شيء، الكودون AUG ليس كودون بداية' + CAUSAL;
 const firstShot = processStudentInput(sessionBoss, negation);
 const resBoss = processStudentInput(firstShot.session, negation);
 const m = resBoss.action.text.match(/نقاطك لهذه الوضعية: (\d+)\/10/);

@@ -87,7 +87,10 @@ describe('KEO-101 — escalier d’indices et correction verrouillée', () => {
 
   it('première tentative réelle → enregistrée SANS correction', () => {
     const sc = getBossScenarioById('boss1_q1')!;
-    const r = processStudentInput(bossAt(null), sc.keyPoints.join('؛ '));
+    // KEO-106 : la situation demande «بيّن» → la réponse doit contenir un
+    // connecteur causal pour être conforme au contrat du verbe.
+    const ans = sc.keyPoints.join('؛ ') + '، مما يؤدي إلى استجابة مناعية';
+    const r = processStudentInput(bossAt(null), ans);
     expect(r.action.text).toContain('سُجّلت محاولتك الأولى');
     expect(r.action.text).not.toContain('التصحيح النموذجي');
     expect(r.session.boss?.attempts).toBe(1);
@@ -95,8 +98,9 @@ describe('KEO-101 — escalier d’indices et correction verrouillée', () => {
 
   it('deux tentatives réelles → correction avec score PLEIN (10/10)', () => {
     const sc = getBossScenarioById('boss1_q1')!;
-    const first = processStudentInput(bossAt(null), sc.keyPoints.join('؛ '));
-    const second = processStudentInput(first.session, sc.keyPoints.join('؛ '));
+    const ans = sc.keyPoints.join('؛ ') + '، مما يؤدي إلى استجابة مناعية';
+    const first = processStudentInput(bossAt(null), ans);
+    const second = processStudentInput(first.session, ans);
     expect(second.action.text).toContain('التصحيح النموذجي');
     expect(note(second.action.text)).toBe(10);
     // compteurs remis à zéro pour la situation suivante

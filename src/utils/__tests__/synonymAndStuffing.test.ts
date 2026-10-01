@@ -33,8 +33,10 @@ describe('R3-B — anti-bourrage dans la notation ouverte (boss BAC)', () => {
 
   // KEO-101 (bilan de vérité 2026-10-01) : deux tentatives réelles débloquent
   // la correction — on rejoue la réponse deux fois.
+  // KEO-106 (LOT 2) : la situation demande «بيّن» → connecteur causal ajouté.
+  const CAUSAL = '، مما يؤدي إلى استجابة مناعية';
   const reponse = (ans: string) =>
-    processStudentInput(processStudentInput(boss(), ans).session, ans);
+    processStudentInput(processStudentInput(boss(), ans + CAUSAL).session, ans + CAUSAL);
 
   it('réponse complète (non bourrée) → 10/10 (non régressif)', () => {
     const bon = reponse(sc.keyPoints.join('؛ '));

@@ -27,6 +27,14 @@ export interface BossState {
   /** KEO-102 : horodatage (ms) d'ouverture de la situation courante — la
    *  correction/indices sont refusés avant 90 s sans tentative. */
   openedAt?: number;
+  /** KEO-106 (SpecKit 2026-10-01) : nombre d'avertissements « contrat du
+   *  verbe de consigne » déjà donnés sur la situation courante. Le premier
+   *  écart est corrigé sans compter la tentative ; au deuxième, on avance
+   *  (trappe anti-frustration). Remis à zéro à chaque situation. */
+  verbWarnings?: number;
+  /** KEO-104 : points-clés manqués, accumulés sur TOUT le défi (pas remis à
+   *  zéro entre les situations) — nourrit le bilan final CAUSE/ACTION/PORTE. */
+  missedKeyPoints?: string[];
 }
 
 export interface BotSession {
@@ -42,6 +50,16 @@ export interface BotSession {
   lastMissionTopic: string | null;
   lastCardId: string | null;
   lastInteraction: number;
+  /** KEO-103 (SpecKit 2026-10-01) : carte dont la question de sondage
+   *  (probe) est EN ATTENTE — la prochaine saisie de l'élève est traitée
+   *  comme sa tentative, puis le contenu ciblé est livré. */
+  pendingProbeCardId?: string | null;
+  /** KEO-103 : cartes dont le probe a été contourné par deux demandes
+   *  explicites « اشرح لي » (trappe anti-frustration, journalisée). */
+  probeBypassed?: string[];
+  /** KEO-105 (SpecKit 2026-10-01) : triade en cours (ألاحظ → أستنتج → أخلص)
+   *  sur une question d'analyse posée en dialogue libre. */
+  triadeStep?: 1 | 2 | 3 | null;
 }
 
 const STORAGE_KEY = 'smart_tutor_session';
@@ -204,6 +222,10 @@ export function startBossFightSession(
       hintLevel: 0,
       attempts: 0,
       openedAt: Date.now(),
+      // KEO-104/106 : compteurs du défi — erreurs de verbe par situation,
+      // points-clés manqués accumulés sur tout le défi.
+      verbWarnings: 0,
+      missedKeyPoints: [],
     },
   };
 
@@ -219,7 +241,7 @@ export function startBossFightSession(
  */
 export function recordBossProgress(
   session: BotSession,
-  patch: Partial<Pick<BossState, 'hintLevel' | 'attempts'>>
+  patch: Partial<Pick<BossState, 'hintLevel' | 'attempts' | 'verbWarnings' | 'missedKeyPoints'>>
 ): BotSession {
   if (!session.boss) return session;
   const newSession: BotSession = {
@@ -254,6 +276,9 @@ export function startBossStep(
       hintLevel: 0,
       attempts: 0,
       openedAt: Date.now(),
+      // KEO-106 : l'avertissement verbe est par-situation ; KEO-104 : les
+      // points manqués s'accumulent au fil du défi (ne PAS remettre à zéro).
+      verbWarnings: 0,
     },
   };
 

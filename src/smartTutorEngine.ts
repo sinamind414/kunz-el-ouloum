@@ -397,6 +397,55 @@ function supportResult(session: BotSession): EngineResult {
   };
 }
 
+/* -------------------------------------------------------------------------- *
+ * KEO-103 (LOT 2) : mode socratique — une question de sondage (probe) avant
+ * tout contenu de fiche. Le chemin « fiche » livrait shortAnswer dès la
+ * première question (réponse prémâchée, ~80 % des réponses du moteur) ;
+ * désormais l'élève tente, puis le contenu arrive ciblé sur son écart.
+ * -------------------------------------------------------------------------- */
+/** Marqueurs d'une demande d'EXPLICATION (les quick actions «راجع …» et les
+ *  titres seuls ne sondent pas : c'est une intention de révision explicite). */
+const EXPLAIN_MARKERS = [
+  'ما هو', 'ماهو', 'ما هي', 'ماهي', 'ماذا', 'كيف', 'لماذا', 'اشرح', 'وضح', 'عرف',
+];
+
+function isExplainQuestion(norm: string): boolean {
+  return EXPLAIN_MARKERS.some((m) => norm.includes(normalizeArabic(m)));
+}
+
+/** Action renvoyée pour la question de sondage : la probe seule, zéro contenu. */
+function probeQuestionAction(card: KnowledgeCard): TutorAction {
+  return {
+    confidence: 90,
+    text:
+      `🧭 **سؤال قبل الشرح — إجابتك ستحدّد ما سأشرحه:**\n\n${card.probe!.question}\n\n` +
+      '(لن أعطيك الشرح قبل محاولتك. إن أردته رغم ذلك اكتب «اشرح لي» — سأعطيه لك وهذا مسجّل.)',
+    quickActions: filterQuickActions(card.relatedQuestions, ''),
+    sources: [{ type: 'internal_card' as SourceType, title: card.title }],
+  };
+}
+
+/** Verdict en UNE ligne sur la tentative de l'élève, puis le contenu complet —
+ *  l'accroche du contenu dépend de la justesse de la tentative. Les formes
+ *  attendues très courtes (≤ 2 lettres : «لا»، «LB») sont comparées par mot
+ *  entier pour éviter les faux positifs de sous-chaîne. */
+function probeVerdictThenContent(card: KnowledgeCard, rawAnswer: string): TutorAction {
+  const normAns = normalizeArabic(rawAnswer);
+  const hit = card.probe!.expect.some((e) => {
+    const ne = normalizeArabic(e);
+    return ne.length <= 2 ? includesAsWord(normAns, ne) : normAns.includes(ne);
+  });
+  const verdict = hit
+    ? '✅ **إجابتك في محلّها.** إليك الشرح — وابدأ منه حيث أصبت:'
+    : `📌 **إجابتك غير موفقة** — الجواب المنتظر: ${card.probe!.expect.join(' / ')}. اقرأ الشرح بعناية خاصة لبدايته:`;
+  return {
+    confidence: 95,
+    text: `${verdict}\n\n🧩 **${card.title}**\n\n${card.shortAnswer}\n\n🔑 كلمات مفتاحية: ${card.keywords.join(' • ')}`,
+    quickActions: filterQuickActions(card.relatedQuestions, normAns),
+    sources: [{ type: 'internal_card' as SourceType, title: card.title }],
+  };
+}
+
 function scoreChunk(
   norm: string,
   ch: SearchChunk,
@@ -888,9 +937,14 @@ export function startBossFight(session: BotSession): EngineResult {
   const first = scenarios[0];
   const newSession = startBossFightSession(session, first.id, scenarios.length);
   const replay = session.completedBac.includes(String(domainId));
+  // KEO-106 : le contrat du verbe de consigne s'affiche AVANT que l'élève
+  // écrive — ce que le verbe paie, ce qu'il interdit.
+  const firstContract = detectConsigneVerb(normalizeArabic(first.situation));
   const text = `⚔️ **تحدي BAC** — مجال ${domain.title}\n` +
     (replay ? '🏆 سبق إتمامك هذا التحدي — إعادة بدون XP إضافي.\n' : '') +
-    `ستُطرح عليك ${scenarios.length} وضعيات مشكلة. اكتب إجابتك وسيقوّمها المرشد آلياً وفق النقاط الأساسية.\n\n${first.situation}\n\n📝 اكتب إجابتك، أو اختر «لا أعرف» لعرض التصحيح.`;
+    `ستُطرح عليك ${scenarios.length} وضعيات مشكلة. اكتب إجابتك وسيقوّمها المرشد آلياً وفق النقاط الأساسية.\n\n${first.situation}\n\n` +
+    (firstContract ? `${verbContractLine(firstContract)}\n\n` : '') +
+    '📝 اكتب إجابتك — لن أعرض التصحيح قبل محاولتين حقيقيتين («لا أعرف» يعطيك مفتاحاً، لا حلّاً).';
   return { session: newSession, action: { text, quickActions: ['لا أعرف'], sources: [{ type: 'domain' as SourceType, title: 'تحدي BAC' }] } };
 }
 
@@ -951,10 +1005,10 @@ function tokenAffirmed(normAnswer: string, token: string, normKp: string): boole
  * mots-clés doit savoir QUE sa réponse contredisait l'attendu, pas seulement
  * qu'il a eu 0. `gradeKeyPoints` (ci-dessous) garde le même barème exact.
  */
-function gradeKeyPointsDetail(answer: string, keyPoints: string[]): { score: number; inverted: string[] } {
+function gradeKeyPointsDetail(answer: string, keyPoints: string[]): { score: number; inverted: string[]; missed: string[] } {
   const normAnswer = normalizeArabic(answer);
   const tokens = new Set(tokenizeArabic(normAnswer).filter((t) => t.length >= 3));
-  if (tokens.size === 0) return { score: 0, inverted: [] };
+  if (tokens.size === 0) return { score: 0, inverted: [], missed: [...keyPoints] };
   // token -> point-clé normalisé qui l'a produit (pour la comparaison de polarité)
   const expected = new Map<string, string>();
   for (const kp of keyPoints) {
@@ -963,7 +1017,7 @@ function gradeKeyPointsDetail(answer: string, keyPoints: string[]): { score: num
       if (t.length >= 3 && !expected.has(t)) expected.set(t, nk);
     }
   }
-  if (expected.size === 0) return { score: 0, inverted: [] };
+  if (expected.size === 0) return { score: 0, inverted: [], missed: [] };
   let hits = 0;
   const invertedNorms = new Set<string>();
   for (const [t, nk] of expected) {
@@ -982,7 +1036,14 @@ function gradeKeyPointsDetail(answer: string, keyPoints: string[]): { score: num
   // On ne rapporte que les points-clés réellement présents dans la réponse
   // mais jamais affirmés : la cause exacte du zéro, pas une liste générique.
   const inverted = keyPoints.filter((kp) => invertedNorms.has(normalizeArabic(kp)));
-  return { score, inverted };
+  // KEO-104 : point-clé NON couvert (aucun de ses tokens affirmé) — nourrit
+  // le bilan final CAUSE/ACTION/PORTE du défi.
+  const missed = keyPoints.filter((kp) => {
+    const nk = normalizeArabic(kp);
+    const kpTokens = tokenizeArabic(nk).filter((t) => t.length >= 3);
+    return kpTokens.length > 0 && !kpTokens.some((t) => tokenAffirmed(normAnswer, t, nk));
+  });
+  return { score, inverted, missed };
 }
 
 function gradeKeyPoints(answer: string, keyPoints: string[]): number {
@@ -1021,6 +1082,83 @@ function maskKeyPoint(kp: string): string {
     .join(' ');
 }
 
+/* -------------------------------------------------------------------------- *
+ * KEO-106 (SpecKit 2026-10-01) : contrat du VERBE DE CONSIGNE. La regex de
+ * causalité existait (answerStructureCheck.ts) mais n'était pas branchée sur
+ * le tuteur. Ici : détection du verbe dans l'énoncé, contrat affiché AVANT
+ * que l'élève écrive, puis conformité vérifiée sur la réponse.
+ * -------------------------------------------------------------------------- */
+/** Connecteurs causaux — formes NORMALISÉES (normalizeArabic retire la
+ *  tashkeel : «لأنّ» → «لان»). Alignés sur la regex CAUSALITE du correcteur. */
+// NORMALISÉS via normalizeArabic (ؤ→و : «مما يؤدي» → «مما يودي», ة→ه…) pour
+// matcher le texte de l'élève déjà normalisé.
+const CAUSAL_CONNECTORS = [
+  'لأنّ', 'بسبب', 'يعود ذلك', 'يرجع ذلك', 'نتيجة ل', 'مما يؤدي', 'يفسّر ذلك', 'وذلك ل',
+].map(normalizeArabic);
+
+interface VerbContract {
+  /** forme normalisée cherchée dans l'énoncé (normalizeArabic). */
+  verb: string;
+  /** forme vocalisée affichée à l'élève. */
+  labelAr: string;
+  /** contrat en 2 lignes : ce que le verbe paie / ce qu'il interdit. */
+  contractAr: string;
+  causal: 'required' | 'forbidden' | null;
+}
+
+/** Ordre = priorité de détection (فسّر avant استنتج avant بيّن : «بين» est
+ *  aussi une préposition — on ne le retient qu'en dernier recours). */
+const VERB_CONTRACTS: VerbContract[] = [
+  { verb: 'فسر', labelAr: 'فسّر', contractAr: 'يُطلب: رابط سببي إجباري («لأنّ» / «بسبب» / «يعود ذلك إلى»)\nيُمنع: البقاء في الوصف', causal: 'required' },
+  { verb: 'علل', labelAr: 'علّل', contractAr: 'يُطلب: تعليل بمعرفة من الدرس («يعود ذلك إلى…»)\nيُمنع: الوصف المجرد', causal: 'required' },
+  { verb: 'برر', labelAr: 'برّر', contractAr: 'يُطلب: حجّة علمية من الدرس\nيُمنع: التأكيد دون سبب', causal: 'required' },
+  { verb: 'حلل', labelAr: 'حلّل', contractAr: 'يُطلب: وصف + مقارنة + تغيّرات بالأرقام\nيُمنع: التعليل («لأنّ») — التحليل لا يفسّر', causal: 'forbidden' },
+  { verb: 'استخرج', labelAr: 'استخرج', contractAr: 'يُطلب: معطى من الوثيقة كما هو\nيُمنع: كل تفسير أو تعليل', causal: 'forbidden' },
+  { verb: 'قارن', labelAr: 'قارن', contractAr: 'يُطلب: طرفان + عناصر مقارنة + فرق صريح\nيُمنع: وصف طرف واحد', causal: null },
+  { verb: 'اقترح', labelAr: 'اقترح', contractAr: 'يُطلب: فرضية قابلة للدحض + اختبار ممكن\nيُمنع: تأكيد غير قابل للاختبار', causal: null },
+  { verb: 'استنتج', labelAr: 'استنتج', contractAr: 'يُطلب: علاقة أو آلية في جملة واحدة\nيُمنع: إعادة وصف المعطيات', causal: null },
+  { verb: 'صف', labelAr: 'صِف', contractAr: 'يُطلب: وصف مباشر لما تُظهره الوثيقة\nيُمنع: التفسير («لأنّ»)', causal: 'forbidden' },
+  { verb: 'بين', labelAr: 'بيّن', contractAr: 'يُطلب: شرح الآلية بمراحلها وربط منطقي («مما يؤدي» / «وذلك لـ»)\nيُمنع: الاكتفاء بالوصف', causal: 'required' },
+];
+
+function detectConsigneVerb(normSituation: string): VerbContract | null {
+  for (const c of VERB_CONTRACTS) {
+    if (normSituation.includes(c.verb)) return c;
+  }
+  return null;
+}
+
+function hasCausalConnector(normAnswer: string): boolean {
+  return CAUSAL_CONNECTORS.some((c) => normAnswer.includes(c));
+}
+
+function verbContractLine(c: VerbContract): string {
+  return `📜 **عقد الفعل «${c.labelAr}»:**\n${c.contractAr}`;
+}
+
+/** KEO-104 (SpecKit 2026-10-01) : porte vers la leçon exacte. Recherche dans
+ *  LESSON_INDEX par recouvrement de tokens (titre + alias + mots-clés) du
+ *  point-clé manqué. Aucun lien inventé : si rien ne recoupe, on le dit. */
+function findLessonForKeyPoint(kp: string): { lessonKey: string; title: string } | null {
+  const nk = normalizeArabic(kp);
+  const tokens = tokenizeArabic(nk).filter((t) => t.length >= 4);
+  if (tokens.length === 0) return null;
+  let best: { lessonKey: string; title: string; score: number } | null = null;
+  for (const entry of LESSON_INDEX) {
+    const hay = normalizeArabic(
+      entry.title + ' ' + (entry.aliases ?? []).join(' ') + ' ' + (entry.keywords ?? []).join(' '),
+    );
+    let score = 0;
+    for (const t of tokens) {
+      if (hay.includes(t)) score += 1;
+    }
+    if (score > 0 && (!best || score > best.score)) {
+      best = { lessonKey: entry.lessonKey, title: entry.title, score };
+    }
+  }
+  return best ? { lessonKey: best.lessonKey, title: best.title } : null;
+}
+
 type BossScenarioT = NonNullable<ReturnType<typeof getBossScenarioById>>;
 
 /** Les trois indices progressifs : I1 verbe de consigne, I2 squelette de
@@ -1049,7 +1187,9 @@ function bossHint(scenario: BossScenarioT, level: 1 | 2 | 3): string {
 
 /** Livre la correction DÉBLOQUÉE (2 tentatives ou 3 indices) et enchaîne sur
  *  la question suivante ou le bilan final. Inclut le feedback d'inversion
- *  KEO-107 : un zéro causé par une réponse qui nie l'attendu est nommé. */
+ *  KEO-107 (un zéro causé par une réponse qui nie l'attendu est nommé) et,
+ *  depuis le LOT 2, le bilan CAUSE/ACTION/PORTE de KEO-104 : aucune note
+ *  sans cause nommée, action ≤ 15 minutes et porte vers la leçon exacte. */
 function deliverBossCorrection(
   session: BotSession,
   scenario: BossScenarioT,
@@ -1070,14 +1210,50 @@ function deliverBossCorrection(
   const idx = scenarios.findIndex((s) => s.id === boss.scenarioId);
   const next = idx >= 0 ? scenarios[idx + 1] : undefined;
   if (next) {
-    const newSession = startBossStep(session, points, next.id, boss.questionIndex + 1);
-    const text = `${correctionText}\n\n➡️ **السؤال التالي (${boss.questionIndex + 2}/${boss.totalQuestions})**\n\n${next.situation}\n\n📝 اكتب إجابتك — لن أعرض التصحيح قبل محاولتين حقيقيتين («لا أعرف» يعطيك مفتاحاً، لا حلّاً).`;
+    // KEO-104 : les points manqués s'accumulent sur TOUT le défi.
+    const withMissed: BotSession = {
+      ...session,
+      boss: { ...boss, missedKeyPoints: [...(boss.missedKeyPoints ?? []), ...graded.missed] },
+    };
+    const newSession = startBossStep(withMissed, points, next.id, boss.questionIndex + 1);
+    // KEO-106 : le contrat du verbe de la situation SUIVANTE s'affiche avant
+    // que l'élève écrive.
+    const nextContract = detectConsigneVerb(normalizeArabic(next.situation));
+    const text =
+      `${correctionText}\n\n➡️ **السؤال التالي (${boss.questionIndex + 2}/${boss.totalQuestions})**\n\n${next.situation}\n\n` +
+      (nextContract ? `${verbContractLine(nextContract)}\n\n` : '') +
+      '📝 اكتب إجابتك — لن أعرض التصحيح قبل محاولتين حقيقيتين («لا أعرف» يعطيك مفتاحاً، لا حلّاً).';
     return { session: newSession, action: { text, quickActions: ['لا أعرف'], sources: [{ type: 'domain' as SourceType, title: 'تحدي BAC' }] } };
   }
   const total = boss.score + points;
   const max = boss.totalQuestions * 10;
   const pct = max > 0 ? Math.round((total / max) * 100) : 0;
   const appreciation = pct >= 80 ? 'ممتاز 🏆' : pct >= 50 ? 'جيد 👍' : 'يحتاج مراجعة 📖';
+  // ── KEO-104 : bilan CAUSE / ACTION / PORTE ────────────────────────────────
+  const missedAll = [...(boss.missedKeyPoints ?? []), ...graded.missed];
+  const freq = new Map<string, number>();
+  for (const m of missedAll) freq.set(m, (freq.get(m) ?? 0) + 1);
+  let topMissed: string | null = null;
+  let topCount = 0;
+  for (const [m, c] of freq) {
+    if (c > topCount) {
+      topMissed = m;
+      topCount = c;
+    }
+  }
+  const causeBlock = topMissed
+    ? `🔍 **السبب المسمّى:** في ${topCount} وضعيات، غابت عن إجابتك النقطة:\n« ${topMissed} »`
+    : '🔍 **السبب المسمّى:** لم تغب أيّ نقطة أساسية عن إجاباتك — عمل متقن.';
+  const actionBlock = topMissed
+    ? `🎯 **عملك الآن (10 دقائق):** أعد كتابة الوضعية ${boss.questionIndex + 1} وأضف سطراً واحداً يبدأ بـ «ومنه نستنتج أنّ…» يغطّي النقطة الغائبة.`
+    : '🎯 **عملك الآن:** انتقل إلى تحدّي المجال الموالي للحفاظ على هذا المستوى.';
+  const lesson = topMissed ? findLessonForKeyPoint(topMissed) : null;
+  const porteBlock = topMissed
+    ? lesson
+      ? `📖 **الدرس المعني:** ${lesson.title} — مفتاح الدرس: \`${lesson.lessonKey}\``
+      : '📖 **الدرس المعني:** لا يوجد درس مطابق في فهرسي — لن أخترع لك رابطاً.'
+    : '';
+  // ──────────────────────────────────────────────────────────────────────────
   // Anti-farm (recommandation audit #4) : l'XP du défi n'est accordé qu'à la
   // PREMIÈRE complétion du domaine — completedBac, jusqu'ici jamais rempli,
   // devient le garde-fou de rejouabilité.
@@ -1091,7 +1267,9 @@ function deliverBossCorrection(
   const domain = DOMAINS.find((d) => d.id === session.activeDomainId);
   const text =
     `🏁 **انتهى تحدي BAC!**\nنتيجتك: ${total}/${max} نقطة (${pct}%).\nالتقدير: ${appreciation}.` +
-    (firstTime ? '' : '\n🏆 سبق إتمامك هذا التحدي — إعادة بدون XP إضافي.');
+    `\n\n${causeBlock}\n${actionBlock}` +
+    (porteBlock ? `\n${porteBlock}` : '') +
+    (firstTime ? '' : '\n\n🏆 سبق إتمامك هذا التحدي — إعادة بدون XP إضافي.');
   return {
     session: newSession,
     action: {
@@ -1173,8 +1351,36 @@ function handleBossInput(session: BotSession, rawInput: string): EngineResult {
     };
   }
 
+  // 3-bis) KEO-106 : conformité au CONTRAT DU VERBE de consigne. Un premier
+  //  écart est corrigé sans consommer la tentative (l'élève réécrit) ; au
+  //  deuxième on avance — trappe anti-frustration, personne ne reste bloqué.
+  const contract = detectConsigneVerb(normalizeArabic(scenario.situation));
+  if (contract && contract.causal) {
+    const causal = hasCausalConnector(n);
+    const violating = contract.causal === 'required' ? !causal : causal;
+    if (violating && (boss.verbWarnings ?? 0) < 1) {
+      const ecart =
+        contract.causal === 'required'
+          ? 'إجابتك بلا رابط سببي — أنت وصفتَ ولم تُبيّن'
+          : 'إجابتك تحتوي «لأنّ» — أنت علّلتَ ولم تنفّذ الفعل المطلوب';
+      const newSession = recordBossProgress(session, { verbWarnings: (boss.verbWarnings ?? 0) + 1 });
+      return {
+        session: newSession,
+        action: {
+          text:
+            `⚠️ **توقّف عند الفعل.**\nالسؤال يقول «${contract.labelAr}»، و${ecart}.\n\n` +
+            `${verbContractLine(contract)}\n\n` +
+            '👉 أعد كتابة إجابتك وفق العقد — لن أعدّ هذا التحذير محاولة.',
+          quickActions: ['لا أعرف'],
+          sources: [{ type: 'domain' as SourceType, title: 'تحدي BAC' }],
+        },
+      };
+    }
+  }
+
   // 4) Première tentative réelle : enregistrée, PAS de correction (KEO-101).
   //    L'élève relit, améliore, réessaie — la correction arrive à la 2ᵉ.
+  //    KEO-105 : le coaching impose la triade ألاحظ → أستنتج → أخلص.
   if (attempts + 1 < 2) {
     const newSession = recordBossProgress(session, { attempts: attempts + 1 });
     return {
@@ -1182,6 +1388,9 @@ function handleBossInput(session: BotSession, rawInput: string): EngineResult {
       action: {
         text:
           '📝 **سُجّلت محاولتك الأولى — لن أعرض التصحيح بعد.**\n\n' +
+          (contract
+            ? 'هيكل الجواب وفق التثليث: **① ألاحظ** (المعطيات بالأرقام) ← **② أستنتج** (الربط بـ «لأنّ») ← **③ أخلص** («ومنه نستنتج أنّ…»).\n\n'
+            : '') +
           'راجع ما كتبت: هل ذكرت معطيات الوثيقة؟ هل وضعت الرابط المنطقي؟\n' +
           '✍️ حسّن إجابتك واكتب المحاولة الثانية — عندها أصحّح وأناقش ما كتبت.\n' +
           '(أو اطلب «لا أعرف» فأعطيك مفتاحاً لا حلّاً.)',
@@ -1253,6 +1462,124 @@ export function processStudentInput(session: BotSession, rawInput: string): Engi
     return supportResult(session);
   }
 
+  // KEO-103 (LOT 2) : probe socratique EN ATTENTE — la saisie courante est la
+  // tentative de l'élève. Une intention forte (menu, test, défi, révision)
+  // libère le probe sans bloquer personne.
+  if (session.pendingProbeCardId) {
+    const probeCard = getCardById(session.pendingProbeCardId);
+    const strongIntent =
+      norm.includes(n('القائمة الرئيسية')) || norm.includes(n('اختبرني')) || norm.includes(n('راجع أخطائي')) ||
+      norm.startsWith(n('راجع')) || norm.includes(n('تحدي bac')) || norm.includes(n('تحدي البكالوريا'));
+    if (probeCard?.probe && !strongIntent && usefulChars(rawInput) >= 2) {
+      // Trappe anti-frustration (R2) : « اشرح لي » explicite → contenu complet,
+      // journalisé dans probeBypassed (la carte ne re-probera plus).
+      const explicitExplain = norm.includes(n('اشرح')) || norm.includes(n('وضّح')) || norm.includes(n('وضح'));
+      if (explicitExplain) {
+        const bypassed = [...(session.probeBypassed ?? [])];
+        if (!bypassed.includes(probeCard.id)) bypassed.push(probeCard.id);
+        const s2: BotSession = { ...session, pendingProbeCardId: null, probeBypassed: bypassed };
+        saveSession(s2);
+        return {
+          session: s2,
+          action: {
+            confidence: 95,
+            text:
+              '⏩ فتحتُ لك الشرح الكامل بطلبٍ صريح — مسجّل، ولن أعيد سؤال التحقيق في هذه البطاقة.\n\n' +
+              `🧩 **${probeCard.title}**\n\n${probeCard.shortAnswer}\n\n🔑 كلمات مفتاحية: ${probeCard.keywords.join(' • ')}`,
+            quickActions: filterQuickActions(probeCard.relatedQuestions, norm),
+            sources: [{ type: 'internal_card' as SourceType, title: probeCard.title }],
+          },
+        };
+      }
+      // Tentative de l'élève → verdict en UNE ligne, puis contenu ciblé.
+      const s2: BotSession = { ...session, pendingProbeCardId: null };
+      saveSession(s2);
+      return { session: s2, action: probeVerdictThenContent(probeCard, rawInput) };
+    }
+    // Intention forte ou saisie vide : libérer le probe, poursuivre le flux.
+    const s2: BotSession = { ...session, pendingProbeCardId: null };
+    saveSession(s2);
+    session = s2;
+  }
+
+  // KEO-105 (LOT 2) : triade en cours — ألاحظ → أستنتج → أخلص. Morchid ne
+  // rédige JAMAIS les trois blocs : l'élève produit chaque maillon.
+  if (session.triadeStep) {
+    const menuIntent = norm.includes(n('القائمة الرئيسية')) || norm.includes(n('اختبرني'));
+    const giveUpTriade = norm.includes(n('لا أعرف'));
+    if (!menuIntent && (usefulChars(rawInput) >= 10 || giveUpTriade)) {
+      const step = session.triadeStep;
+      const triadeSources = [{ type: 'methodology' as SourceType, title: 'التثليث العلمي' }];
+      if (step === 1) {
+        if (hasCausalConnector(norm)) {
+          return {
+            session,
+            action: {
+              text:
+                '⏸️ ليس بعد — أنت في خطوة **الملاحظة** (ألاحظ).\n«لأنّ» مكانها في الخطوة الموالية.\n\n' +
+                '👉 عد إلى المعطى: ما الرقم أو الشكل الذي رأيته في الوثيقة؟ صفه في جملة واحدة دون تعليل.',
+              quickActions: [],
+              sources: triadeSources,
+            },
+          };
+        }
+        const s2: BotSession = { ...session, triadeStep: 2 };
+        saveSession(s2);
+        return {
+          session: s2,
+          action: {
+            text:
+              '✅ ملاحظة مسجّلة.\n\n**الخطوة 2 · أستنتج / أفسّر:**\nاربط ما لاحظته بمعرفتك العلمية: لماذا حدث ذلك؟\nاكتب جملة واحدة تستعمل «لأنّ» أو «يعود ذلك إلى».',
+            quickActions: [],
+            sources: triadeSources,
+          },
+        };
+      }
+      if (step === 2) {
+        if (!hasCausalConnector(norm)) {
+          return {
+            session,
+            action: {
+              text:
+                '⏸️ التفسير يحتاج رابطاً سببياً — أين «لأنّ» / «بسبب»؟\n\n' +
+                '👉 اكتب السبب العلمي في جملة واحدة: «يعود ذلك إلى…».',
+              quickActions: [],
+              sources: triadeSources,
+            },
+          };
+        }
+        const s2: BotSession = { ...session, triadeStep: 3 };
+        saveSession(s2);
+        return {
+          session: s2,
+          action: {
+            text:
+              '✅ تفسير مقبول.\n\n**الخطوة 3 · أخلص:**\nاكتب الجواب النهائي في جملة واحدة تبدأ بـ «ومنه نستنتج أنّ…» — دون تكرار الأرقام ولا السبب.',
+            quickActions: [],
+            sources: triadeSources,
+          },
+        };
+      }
+      // step 3 → triade complète.
+      const s2: BotSession = { ...session, triadeStep: null };
+      saveSession(s2);
+      return {
+        session: s2,
+        action: {
+          text:
+            '🏁 **أكملتَ التثليث كاملاً: ملاحظة ← تفسير ← خلاصة.**\nهذا بالضبط ما تدفع فيه سلّم التنقيط الرسمي.\n\n' +
+            '✍️ **تحقّق سريع (30 ثانية):** أعد صياغة الخلاصة بأسلوبك في جملة واحدة — ثم انتقل للاختبار.',
+          quickActions: ['اختبرني في الغوص', 'اختبرني في الاستنساخ', 'العودة للقائمة الرئيسية'],
+          sources: triadeSources,
+        },
+      };
+    }
+    // Intention de menu : libérer la triade, poursuivre le flux.
+    const s2: BotSession = { ...session, triadeStep: null };
+    saveSession(s2);
+    session = s2;
+  }
+
   // B7 (audit Morchid 2026-09-25) : « اختبرني (في X) » doit LANCER UN QCM sur le
   // sujet ciblé. Jusqu'ici l'intention tombait sur la recherche sémantique et
   // renvoyait une carte de cours : le bouton promettait un test, pas un cours.
@@ -1297,6 +1624,31 @@ export function processStudentInput(session: BotSession, rawInput: string): Engi
       action: {
         text: 'لم أحدّد الموضوع الذي تريد اختبارك فيه. اكتبه صراحةً، مثال: «اختبرني في الغوص» أو «اختبرني في الاستنساخ».',
         quickActions: ['اختبرني في الغوص', 'اختبرني في الاستنساخ'],
+      },
+    };
+  }
+
+  // KEO-105 (LOT 2) : question d'analyse libre (فسّر/حلّل/استنتج + document)
+  // → Morchid ne rédige pas la conclusion à la place de l'élève : il impose la
+  // triade, un bloc à la fois. Les questions de MÉTHODE («كيف أحلل…») restent
+  // servies par le banco méthodologique — elles ne parlent pas d'un document.
+  const analysisVerb = norm.includes(n('فسر')) || norm.includes(n('حلل')) || norm.includes(n('استنتج'));
+  const documentContext =
+    norm.includes(n('وثيق')) || norm.includes(n('تجرب')) || norm.includes(n('منحن')) ||
+    norm.includes(n('جدول')) || norm.includes(n('النتائج'));
+  const methodQuestion = norm.includes(n('كيف')) || norm.includes(n('منهج')) || norm.includes(n('قالب'));
+  if (analysisVerb && documentContext && !methodQuestion && !session.pendingProbeCardId) {
+    const s1: BotSession = { ...session, triadeStep: 1, pendingProbeCardId: null };
+    saveSession(s1);
+    return {
+      session: s1,
+      action: {
+        text:
+          '🔬 **لن أكتب الخلاصة مكانك — الملاحظة أولاً.**\n\n' +
+          '**الخطوة 1 · ألاحظ:**\nصف ما تُظهره الوثيقة في جملة واحدة بالأرقام (القيمة في البداية، القيمة في النهاية، طبيعة التغيّر).\n\n' +
+          '⛔ لا تستعمل «لأنّ» في هذه الخطوة — التفسير يأتي في الخطوة الموالية.',
+        quickActions: [],
+        sources: [{ type: 'methodology' as SourceType, title: 'التثليث العلمي' }],
       },
     };
   }
@@ -1392,6 +1744,20 @@ export function processStudentInput(session: BotSession, rawInput: string): Engi
         },
       };
     }
+    // KEO-103 (LOT 2) : question d'EXPLICATION (ما هو/كيف/لماذا/اشرح…) sur une
+    // fiche → une question de sondage AVANT le contenu. Les quick actions
+    // «راجع …» (intention de révision explicite) et les cartes déjà
+    // contournées livrent le contenu directement. Le contenu ne vient qu'après
+    // la tentative de l'élève — ou après « اشرح لي » (journalisé).
+    if (
+      scienceCard.probe &&
+      !(session.probeBypassed ?? []).includes(scienceCard.id) &&
+      isExplainQuestion(norm)
+    ) {
+      const withProbe: BotSession = { ...session, pendingProbeCardId: scienceCard.id, triadeStep: null };
+      saveSession(withProbe);
+      return { session: withProbe, action: probeQuestionAction(scienceCard) };
+    }
     return {
       session,
       action: {
@@ -1423,7 +1789,16 @@ export function processStudentInput(session: BotSession, rawInput: string): Engi
 }
 
 export function answerTutorQuestion(rawInput: string): TutorAction {
-  return processStudentInput(getDefaultSession(), rawInput || '').action;
+  // API sans session (tests / intégrations legacy). La probe socratique
+  // (KEO-103) est un flux À ÉTAT : elle pose sa question via
+  // pendingProbeCardId puis attend la réponse de l'élève. Sans session
+  // persistante pour héberger cet aller-retour, on livre le contenu
+  // directement (contournement explicite, journalisé comme « اشرح لي »).
+  const session: BotSession = {
+    ...getDefaultSession(),
+    probeBypassed: KNOWLEDGE_CARDS.filter((c) => c.probe).map((c) => c.id),
+  };
+  return processStudentInput(session, rawInput || '').action;
 }
 
 /** F10 (audit Morchid 2026-09-26) : XP promis par la mission quotidienne.

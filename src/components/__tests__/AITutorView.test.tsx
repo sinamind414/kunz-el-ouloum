@@ -234,14 +234,14 @@ describe('AITutorView — rendu riche du moteur (T2)', () => {
     expect(messagesText()).not.toContain('التصحيح النموذجي');
 
     // 1ʳᵉ tentative réelle → enregistrée, sans correction.
-    await typeAndSubmit(user, 'محاولة أولى غير كافية عن الوضعية الأولى');
+    await typeAndSubmit(user, 'محاولة أولى غير كافية لأن الوثيقة تبين التهاباً موضعياً');
     await waitFor(() => {
       expect(messagesText()).toMatch(/سُجّلت محاولتك الأولى/);
     });
     expect(messagesText()).not.toContain('التصحيح النموذجي');
 
     // 2ᵉ tentative réelle → correction + question suivante (KEO-101).
-    await typeAndSubmit(user, 'محاولة ثانية محسّنة عن الوضعية الأولى');
+    await typeAndSubmit(user, 'محاولة ثانية محسّنة مما يؤدي إلى شفاء دون مضادات حيوية');
     await waitFor(() => {
       expect(messagesText()).toContain('التصحيح النموذجي');
       expect(messagesText()).toMatch(/نقاطك لهذه الوضعية/);
@@ -251,8 +251,8 @@ describe('AITutorView — rendu riche du moteur (T2)', () => {
     // 2e scénario : deux tentatives → correction puis le défi se clôt.
     // (pas de waitFor intermédiaire : le message de coaching est identique au
     // précédent ; les submits sont séquentiels et le moteur est synchrone.)
-    await typeAndSubmit(user, 'محاولة أولى في الوضعية الثانية');
-    await typeAndSubmit(user, 'محاولة ثانية في الوضعية الثانية');
+    await typeAndSubmit(user, 'محاولة أولى في الوضعية الثانية لأن المناعة خلطية');
+    await typeAndSubmit(user, 'محاولة ثانية في الوضعية الثانية مما يؤدي إلى إنتاج أجسام مضادة');
     await waitFor(() => {
       expect(messagesText()).toContain('انتهى تحدي BAC');
     });
