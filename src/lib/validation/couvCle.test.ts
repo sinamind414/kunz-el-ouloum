@@ -153,7 +153,41 @@ describe('couvCle — union interdite (§4)', () => {
 });
 
 // ──────────────────────────────────────────────────────────────────────────────
-// 4. Seuil candidat §8 — « ≥ la moitié des atomes, minimum 1 »
+// 4. C4 négation — un atome nié ou réfuté n'est jamais crédité
+// ──────────────────────────────────────────────────────────────────────────────
+
+describe('couvCle — C4 négation (negationAr.ts)', () => {
+  it('un atome précédé de « لا » n\'est pas crédité', () => {
+    expect(evaluerCle('الإنزيم لا يستنسخ المعلومة', cleSynth('k', 'يستنسخ')).couvert).toBe(false);
+  });
+
+  it('un atome dans une clause de réfutation (« ليس صحيحاً أن… ») n\'est pas crédité', () => {
+    // B2 (audit Morchid 2026-09-25) : nier chaque point-clé valait 10/10.
+    expect(
+      evaluerCle('ليس صحيحاً أن النواة هي مكان الترجمة', cleSynth('k', 'النواة')).couvert,
+    ).toBe(false);
+  });
+
+  it('un atome affirmé dans une AUTRE clause est crédité — un seul atome nié ne bloque pas toute la clé', () => {
+    // La réfutation porte sur استنساخ ; النواة est affirmée ailleurs.
+    expect(
+      evaluerCle('ليس صحيحاً أن الاستنساخ يتم في الهيولى، بل يتم داخل النواة', cleSynth('k', 'النواة')).couvert,
+    ).toBe(true);
+  });
+
+  it('conserve la polarité : un atome nié dans l\'attendu ET dans la réponse reste couvert', () => {
+    // Attendu « لا ينتقل » : répondre « لا ينتقل » reste juste (B2).
+    expect(evaluerCle('الجزيئة لا تنتقل عبر الغشاء', cleSynth('k', 'لا تنتقل')).couvert).toBe(true);
+  });
+
+  it('C4 ne casse pas la calibration : la réponse modèle u1 reste intégralement couverte', () => {
+    const r = evaluerC2(REPONSE_MODELE_U1, { uniteId: 1, clesChoisies: U1 });
+    expect(r.c2).toBe(1);
+  });
+});
+
+// ──────────────────────────────────────────────────────────────────────────────
+// 5. Seuil candidat §8 — « ≥ la moitié des atomes, minimum 1 »
 // ──────────────────────────────────────────────────────────────────────────────
 
 describe('couvCle — seuil candidat §8 (PROVISOIRE, calibration en attente)', () => {

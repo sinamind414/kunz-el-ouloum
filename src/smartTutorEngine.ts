@@ -35,6 +35,11 @@ import { STUDY_GUIDE_CARDS, type StudyGuideCard } from './studyGuide';
 import { SYNONYM_GROUPS } from './lib/validation/synonyms';
 import { detecterStuffing } from './lib/validation/stuffingDetector';
 import {
+  adjacentNegation,
+  clauseIsDenial,
+  tokenAffirme,
+} from './lib/validation/negationAr';
+import {
   normalizeArabic,
   tokenizeArabic,
   fuzzyTokenEquals,
@@ -846,48 +851,17 @@ export function startBossFight(session: BotSession): EngineResult {
  * que l'élève se donnait lui-même — l'XP n'est plus fermable au clic.
  * Barème : ≥ 50 % des mots-clés couverts = 10 pts · ≥ 20 % = 5 pts · sinon 0.
  */
-const NEGATION_PARTICLES = ['لا', 'لم', 'لن', 'ليس', 'غير'];
-const DENIAL_STARTERS = ['ليس', 'ليست', 'غير صحيح', 'مستحيل', 'يستحيل', 'انفي', 'ارفض'];
-
-/** Vrai si `token` est précédé (à un séparateur près) d'une particule de
- *  négation atomique dans `text` — ex. « لا ينتقل ». */
-function adjacentNegation(text: string, token: string): boolean {
-  let from = 0;
-  while (true) {
-    const idx = text.indexOf(token, from);
-    if (idx < 0) return false;
-    const before = text.slice(Math.max(0, idx - 12), idx);
-    for (const p of NEGATION_PARTICLES) {
-      const at = before.lastIndexOf(p);
-      if (at < 0) continue;
-      const okBefore = at === 0 || /[\s،,؛;.\-]/.test(before[at - 1]);
-      const okAfter = /^[\s،,؛;.\-]*$/.test(before.slice(at + p.length));
-      if (okBefore && okAfter) return true;
-    }
-    from = idx + 1;
-  }
-}
-
 /** B2 (audit Morchid 2026-09-25) : une clause qui s'ouvre par une forme de
  *  réfutation (« ليس صحيحاً أن… », « أرفض… », « مستحيل… ») nie tout point-clé
- *  qu'elle reprend. Une réponse niant chaque point-clé obtenait 10/10. */
-function clauseIsDenial(clause: string): boolean {
-  const c = clause.trim();
-  return DENIAL_STARTERS.some((s) => c.startsWith(s));
-}
+ *  qu'elle reprend. Une réponse niant chaque point-clé obtenait 10/10.
+ *  Primitives extraites dans lib/validation/negationAr.ts (partagées avec le
+ *  scorer C2 de Tadwin). */
 
 /** Un point-clé est couvert s'il apparaît dans une clause NON réfutée, et sans
  *  inversion de polarité par rapport au point-clé attendu (si l'attendu dit
  *  « لا تنتقل », une réponse « لا تنتقل » reste juste). */
 function tokenAffirmed(normAnswer: string, token: string, normKp: string): boolean {
-  const clauses = normAnswer.split(/[،,؛;.]+/);
-  for (const clause of clauses) {
-    if (!clause.includes(token)) continue;
-    const denies = clauseIsDenial(clause) && !clauseIsDenial(normKp);
-    const inverted = adjacentNegation(clause, token) && !adjacentNegation(normKp, token);
-    if (!denies && !inverted) return true;
-  }
-  return false;
+  return tokenAffirme(normAnswer, token, normKp);
 }
 
 function gradeKeyPoints(answer: string, keyPoints: string[]): number {

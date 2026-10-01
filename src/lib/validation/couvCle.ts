@@ -12,6 +12,10 @@
 //     les pools à 40–73 formes, soit +55 % d'exigence, réintroduisant le bug de
 //     seuil inatteignable corrigé le 2026-09-16).
 //
+// C4 (exactitude) : un atome nié ou réfuté n'est pas crédité. La négation est
+// partagée avec smartTutorEngine via lib/validation/negationAr.ts, mais sur le
+// normaliseur normalizeAr (NFKC : « Ca²⁺ »), pas normalizeArabic.
+//
 // SEUIL : FIGÉ PAR CALIBRATION (2026-09-30) — « ≥ la moitié des atomes, minimum 1 »
 // (docs/tadwin_decisions.md §8). Mesuré sur 33 fiches-modèles
 // (src/data/tadwinCalibration.ts) : les fiches d'excellence concises exigent
@@ -21,6 +25,7 @@
 // atomes, et > 0,5 leur donne 0 tolérance.
 
 import { normalizeAr, motPresentDans } from './normalizeAr';
+import { tokenAffirme } from './negationAr';
 import { clesDeUnite, type CleTadwin } from '../../data/tadwinCles';
 
 /**
@@ -67,10 +72,17 @@ export function seuilCouvertureCle(nbAtoms: number, seuil = SEUIL_C2): number {
   return Math.max(1, Math.ceil(nbAtoms * seuil));
 }
 
-/** Un atome est prouvé s'il apparaît dans la réponse aux frontières de mots. */
+/** Un atome est prouvé s'il apparaît dans la réponse aux frontières de mots,
+ *  dans une clause NON réfutée (C4 : « ليس صحيحاً أن… النواة » ne crédite pas
+ *  l'atome — négation partagée avec smartTutorEngine via negationAr.ts).
+ *  Double garde : frontières de mot (motPresentDans) ET affirmation (C4). */
 function atomePresent(normReponse: string, atome: string): boolean {
   const nAtome = normalizeAr(atome).toLowerCase();
-  return !!nAtome && motPresentDans(normReponse, nAtome);
+  return (
+    !!nAtome &&
+    motPresentDans(normReponse, nAtome) &&
+    tokenAffirme(normReponse, nAtome, nAtome)
+  );
 }
 
 /**

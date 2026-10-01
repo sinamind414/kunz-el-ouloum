@@ -151,7 +151,7 @@ clé `kunz_learning_errors_v1`, trimming sur `resolvedAt`).
 |---|---|---|
 | Boucle conversationnelle | `BotMode` + `smartTutorEngine.processStudentInput` | existe |
 | Texte libre (hors C2) | `gradeKeyPoints` (`smartTutorEngine`) | existe |
-| Anti-négation (C4) | `tokenAffirmed` / `clauseIsDenial` | existe |
+| Anti-négation (C4) | `lib/validation/negationAr.ts` (`tokenAffirme`) | existe — extrait de `smartTutorEngine` (source unique) |
 | Anti-bourrage (C3) | `lib/validation/stuffingDetector.ts` | existe |
 | Synonymes | `lib/validation/synonyms.ts` (`SYNONYM_GROUPS`) | existe |
 | Rappel espacé | `data/store.ts` stages J+1/J+3/J+7/J+14 | existe |
@@ -160,4 +160,5 @@ clé `kunz_learning_errors_v1`, trimming sur `resolvedAt`).
 | **Scorer C2 par-clé** | `lib/validation/couvCle.ts` (`SEUIL_C2` figé) | **fait** |
 | **`atoms[]` des 33 clés** | `src/data/tadwinCles.ts` | **fait** |
 | **Fiches-modèles de calibration** | `src/data/tadwinCalibration.ts` (33) | **fait** |
-| **Câblage runtime** (BotMode 'tadwin', paliers, J+14) | à faire | **V1** |
+| **Moteur runtime V1** | `lib/tadwin/tadwinEngine.ts` (paliers, verdict, carnet, J+14) | **fait — non câblé UI** |
+| **Câblage UI** (`BotMode 'tadwin'` dans `App.tsx`) | `src/App.tsx` (protégé) | **à faire — déverrouillage requis** |
