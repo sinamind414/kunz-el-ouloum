@@ -50,6 +50,23 @@ l'autre lignée est intégré.**
 - build ✓ · `verify_b2` (0/10 · 10/10 · 5/10) ✓ · `verify_morchid_fixes` ✓ ·
   `verify_morchid_audit` ✓
 
+## Suite : SpecKit 002 (master `81984de`, même jour)
+
+`origin/master` a avancé vers `81984de` « SpecKit 002 — S-01 probes, S-03
+triade C3, S-04 typage R/A, S-05 recall, S-06 lessonKey, S-10 protocole »
+(enfant normal de `3e970d2`). Fusionné dans la foulée — 3-way avec base
+`3e970d2`, 2 conflits (moteur, sessionManager), même règle d'arbitrage :
+
+| Item 002 | Arbitrage |
+|---|---|
+| S-01 probes sur les cartes | **KEO-103 gardé** : leurs 11 `probe: string` retirées au profit de mes 11 `probe { question, expect }` (verdict ✅/📌). Leur test d'assertion de build **adapté et conservé** (`speckitS01Probes.test.ts`) : chaque fiche porte une probe courte (≤ 120 car.) qui ne fuit pas le shortAnswer — 4 probes raccourcies pour satisfaire le seuil |
+| S-03 triade C3 | **KEO-105 gardé** (déclencheur plus fin : exclusions كيف/منهج/قالب, libération par intention menu ; verrouillé par 4 tests). `speckitS03S04.test.ts` **retiré** : il encode leur modèle d'état (`session.triad { step, verb, closedFamily }`, exports `detectTriadVerb`) incompatible — couverture équivalente assurée par `morchidSocratique.test.ts`. **Suit à documenter** : la nuance « famille fermée » (حلّل/استخرج → causal interdit aussi à l'étape 2 de la triade) mérite d'être intégrée à KEO-105 |
+| S-04 typage R/A | **Intégré** : `classifyError` + `errorTypeLine` greffés — le bilan final type l'erreur (استرجاع/تحليل) en première ligne, avant CAUSE/ACTION/PORTE |
+| S-05 rappel actif | **Intégré** : `buildRecallQuestion` — toute explication livrée (4 chemins, y compris après probe) se termine par une tâche صح/خطأ sur le premier mot-clé |
+| S-06 lessonKey | **KEO-104 gardé** : leur résolution prenait le PREMIER chunk du domaine (`LESSON_INDEX.find(unitId === domain.id)`) ; la mienne matche les tokens du point manqué contre titres/alias/mots-clés des 548 chunks, avec «لن أخترع لك رابطاً» sinon |
+| S-10 protocole imposé | **Intégré (variante fonctionnelle)** : score < 50 % → le quickAction en tête est «كيف أدرس العلوم؟» — porte RÉELLEMENT gérée par le moteur (source `guide`), contrairement à leur chip sans handler |
+| Tests adaptés à leur moteur | `lessonIndex.search.r5.test.ts` et `tutorAudit.harness.test.ts` : **versions KEO conservées** (leurs deltas attendaient leur comportement probe-first sur l'API stateless, que KEO-103 contourne explicitement) |
+
 ## Reste à décider (owner)
 
 1. **Date officielle BAC 2027** : remplacer la valeur provisoire `2027-06-08`

@@ -420,6 +420,23 @@ function isExplainQuestion(norm: string): boolean {
 }
 
 /** Action renvoyée pour la question de sondage : la probe seule, zéro contenu. */
+/**
+ * S-05 (SpecKit 002, master 81984de — fusion 2026-10-01) : rappel actif.
+ * Toute explication livrée se termine par UNE tâche de rappel — la séance
+ * n'est pas close tant que cette tâche n'a pas de réponse. Le discriminateur
+ * est pris sur le PREMIER mot-clé de la fiche (le concept le plus central).
+ */
+function buildRecallQuestion(card: KnowledgeCard): string {
+  const kw = card.keywords.filter((k) => k.length >= 3);
+  const discriminator = kw[0] ?? card.title;
+  const second = kw[1] ?? discriminator;
+  return (
+    `\n\n🧠 **قبل أن ننتقل:** سؤال واحد يقفل الحصّة.\n` +
+    `صح أم خطأ: **${discriminator}** مرتبط مباشرةً بـ **${second}** في هذا الدرس.\n` +
+    `أجب بكلمة واحدة — إن أخطأت، نعيد الجملة لا الدرس.`
+  );
+}
+
 function probeQuestionAction(card: KnowledgeCard): TutorAction {
   return {
     confidence: 90,
@@ -446,7 +463,7 @@ function probeVerdictThenContent(card: KnowledgeCard, rawAnswer: string): TutorA
     : `📌 **إجابتك غير موفقة** — الجواب المنتظر: ${card.probe!.expect.join(' / ')}. اقرأ الشرح بعناية خاصة لبدايته:`;
   return {
     confidence: 95,
-    text: `${verdict}\n\n🧩 **${card.title}**\n\n${card.shortAnswer}\n\n🔑 كلمات مفتاحية: ${card.keywords.join(' • ')}`,
+    text: `${verdict}\n\n🧩 **${card.title}**\n\n${card.shortAnswer}\n\n🔑 كلمات مفتاحية: ${card.keywords.join(' • ')}${buildRecallQuestion(card)}`,
     quickActions: filterQuickActions(card.relatedQuestions, normAns),
     sources: [{ type: 'internal_card' as SourceType, title: card.title }],
   };
@@ -606,7 +623,7 @@ function buildAnswer(norm: string, activeDomainId: number | null): TutorAction |
     }
     return {
       confidence,
-      text: `🧩 **${scienceCard.title}**\n\n${scienceCard.shortAnswer}\n\n🔑 كلمات مفتاحية: ${scienceCard.keywords.join(' • ')}`,
+      text: `🧩 **${scienceCard.title}**\n\n${scienceCard.shortAnswer}\n\n🔑 كلمات مفتاحية: ${scienceCard.keywords.join(' • ')}${buildRecallQuestion(scienceCard)}`,
       quickActions: filterQuickActions(scienceCard.relatedQuestions, norm),
       sources: [{ type: 'internal_card' as SourceType, title: scienceCard.title }],
     };
@@ -1068,6 +1085,41 @@ function maskKeyPoint(kp: string): string {
     .join(' ');
 }
 
+/**
+ * S-04 (SpecKit 002, master 81984de — fusion 2026-10-01) : type d'erreur.
+ * « يحتاج مراجعة » est un adjectif qui ne dit pas quoi soigner.
+ * Type R (استرجاع / restitution) : le terme, le lieu ou l'acteur est faux ou
+ * absent, et AUCUN document n'était en jeu — le remède est de revoir la fiche.
+ * Type A (تحليل / analyse) : un document/courbe/tableau est en jeu, ou la
+ * consigne porte un verbe d'exploitation — le remède est une question sur le
+ * fait visible. Si les deux sont présents, A l'emporte : le BAC paie
+ * l'analyse avant la restitution.
+ */
+export type ErrorType = 'R' | 'A';
+
+const VERBES_ANALYSE = ['حلل', 'استخرج', 'استنتج', 'قارن', 'علل', 'اقترح', 'فسر'];
+const SIGNAUX_DOCUMENT = ['الوثيقه', 'المنحنى', 'الجدول', 'المخطط', 'الرسم', 'بكتروفور', 'هجره', 'وثيق'];
+
+export function classifyError(
+  rawInput: string,
+  scenario: { keyPoints: string[]; situation?: string } | null,
+): ErrorType {
+  const norm = normalizeArabic(rawInput);
+  const contexte = normalizeArabic(scenario?.situation ?? '');
+  const consigne = norm + ' ' + contexte;
+  const aDocument = SIGNAUX_DOCUMENT.some((sg) => consigne.includes(normalizeArabic(sg)));
+  const aVerbe = VERBES_ANALYSE.some((v) => norm.includes(normalizeArabic(v)));
+  if (aDocument || aVerbe) return 'A';
+  return 'R';
+}
+
+/** S-04 : le message de typage, une ligne, avant tout contenu. */
+export function errorTypeLine(t: ErrorType): string {
+  return t === 'A'
+    ? '🩺 **النوع:** خطأ في **التحليل**، لا في الاسترجاع — معارفك حاضرة، والمشكلة في قراءة الوثيقة أو ربط السبب بالنتيجة.'
+    : '🩺 **النوع:** خطأ في **الاسترجاع**، لا في التحليل — المصطلح أو المكان غير مثبّت بعد.';
+}
+
 /* -------------------------------------------------------------------------- *
  * KEO-106 (SpecKit 2026-10-01) : contrat du VERBE DE CONSIGNE. La regex de
  * causalité existait (answerStructureCheck.ts) mais n'était pas branchée sur
@@ -1251,8 +1303,14 @@ function deliverBossCorrection(
     : finished;
   saveSession(newSession);
   const domain = DOMAINS.find((d) => d.id === session.activeDomainId);
+  // S-04 : le type d'erreur (استرجاع/تحليل) est écrit en premier — avant la
+  // cause, l'action et la porte. S-10 : si score < 50 %, le protocole d'étude
+  // S'IMPOSE en tête des actions — l'élève qui vient d'échouer en a besoin.
+  const errLine = errorTypeLine(classifyError('', scenario));
+  const weak = pct < 50;
   const text =
     `🏁 **انتهى تحدي BAC!**\nنتيجتك: ${total}/${max} نقطة (${pct}%).\nالتقدير: ${appreciation}.` +
+    `\n${errLine}` +
     `\n\n${causeBlock}\n${actionBlock}` +
     (porteBlock ? `\n${porteBlock}` : '') +
     (firstTime ? '' : '\n\n🏆 سبق إتمامك هذا التحدي — إعادة بدون XP إضافي.');
@@ -1260,7 +1318,9 @@ function deliverBossCorrection(
     session: newSession,
     action: {
       text,
-      quickActions: ['راجع أخطائي السابقة', 'العودة للقائمة الرئيسية'],
+      quickActions: weak
+        ? ['كيف أدرس العلوم؟', 'راجع أخطائي السابقة', 'العودة للقائمة الرئيسية']
+        : ['راجع أخطائي السابقة', 'العودة للقائمة الرئيسية'],
       reward: { xpGained: firstTime ? total : 0, score: total, total: max, kind: 'mission', domain: domain?.title ?? '' },
       sources: [{ type: 'domain' as SourceType, title: 'تحدي BAC' }],
     },
@@ -1479,7 +1539,7 @@ export function processStudentInput(session: BotSession, rawInput: string): Engi
             confidence: 95,
             text:
               '⏩ فتحتُ لك الشرح الكامل بطلبٍ صريح — مسجّل، ولن أعيد سؤال التحقيق في هذه البطاقة.\n\n' +
-              `🧩 **${probeCard.title}**\n\n${probeCard.shortAnswer}\n\n🔑 كلمات مفتاحية: ${probeCard.keywords.join(' • ')}`,
+              `🧩 **${probeCard.title}**\n\n${probeCard.shortAnswer}\n\n🔑 كلمات مفتاحية: ${probeCard.keywords.join(' • ')}${buildRecallQuestion(probeCard)}`,
             quickActions: filterQuickActions(probeCard.relatedQuestions, norm),
             sources: [{ type: 'internal_card' as SourceType, title: probeCard.title }],
           },
@@ -1756,7 +1816,7 @@ export function processStudentInput(session: BotSession, rawInput: string): Engi
       session,
       action: {
         confidence,
-        text: `🧩 **${scienceCard.title}**\n\n${scienceCard.shortAnswer}\n\n🔑 كلمات مفتاحية: ${scienceCard.keywords.join(' • ')}`,
+        text: `🧩 **${scienceCard.title}**\n\n${scienceCard.shortAnswer}\n\n🔑 كلمات مفتاحية: ${scienceCard.keywords.join(' • ')}${buildRecallQuestion(scienceCard)}`,
         quickActions: filterQuickActions(scienceCard.relatedQuestions, norm),
         sources: [{ type: 'internal_card' as SourceType, title: scienceCard.title }],
       },

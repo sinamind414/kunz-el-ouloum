@@ -163,6 +163,24 @@ describe('KEO-106 — contrat du verbe de consigne', () => {
 });
 
 // ---------------------------------------------------------------------------
+// S-05 / S-04 / S-10 (SpecKit 002, master 81984de — fusion 2026-10-01).
+// ---------------------------------------------------------------------------
+describe('S-05 — rappel actif en fin d’explication', () => {
+  it('toute fiche livrée se termine par une tâche de rappel (صح أم خطأ)', () => {
+    const r = processStudentInput(getDefaultSession(), 'راجع الغوص');
+    expect(r.action.text).toContain('قبل أن ننتقل');
+    expect(r.action.text).toContain('صح أم خطأ');
+  });
+
+  it('le contenu servi après la probe porte AUSSI la tâche de rappel', () => {
+    const probe = processStudentInput(getDefaultSession(), 'ما هو الاستنساخ؟');
+    const r = processStudentInput(probe.session, 'في النواة');
+    expect(r.action.text).toContain('كلمات مفتاحية');
+    expect(r.action.text).toContain('صح أم خطأ');
+  });
+});
+
+// ---------------------------------------------------------------------------
 // KEO-104 — bilan final CAUSE / ACTION / PORTE (GS-08).
 // ---------------------------------------------------------------------------
 describe('KEO-104 — aucun bilan sans cause, action et porte', () => {
@@ -186,6 +204,22 @@ describe('KEO-104 — aucun bilan sans cause, action et porte', () => {
     expect(text).toContain('ومنه نستنتج أنّ');
     expect(text).toContain('الدرس المعني');
     expect(text).toContain('مفتاح الدرس'); // lessonKey explicite, jamais inventé
+  });
+
+  it('S-04 : le bilan final TYPE l’erreur (استرجاع/تحليل) en première ligne', () => {
+    const text = runChallenge();
+    expect(text).toContain('النوع:');
+    // Les situations du domaine 1 portent des verbes d'exploitation → type A.
+    expect(text).toContain('التحليل');
+  });
+
+  it('S-10 : score < 50 % → le protocole d’étude s’impose en tête des actions', () => {
+    let s = processStudentInput({ ...getDefaultSession(), activeDomainId: 1 }, 'تحدي BAC').session;
+    let r = processStudentInput(s, 'محاولة أولى ضعيفة مما يؤدي إلى شيء عام');
+    r = processStudentInput(r.session, 'محاولة ثانية ضعيفة مما يؤدي إلى شيء عام');
+    r = processStudentInput(r.session, 'محاولة أولى في الوضعية الثانية لأن المناعة خلطية');
+    r = processStudentInput(r.session, 'محاولة ثانية في الوضعية الثانية لأن المناعة خلطية');
+    expect(r.action.quickActions?.[0]).toBe('كيف أدرس العلوم؟');
   });
 
   it('la correction intermédiaire affiche le contrat de la situation SUIVANTE', () => {
