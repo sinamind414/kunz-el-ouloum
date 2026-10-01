@@ -105,16 +105,32 @@ Note : le lock `|A| ≥ 3` (proposé puis rétracté) était un **lock de donné
 ne contraignait pas le `|A|` de runtime — 31/80 sacrés mono-atome permettent une
 fiche 2-clés à `|A|=2`. La par-clé dissout le problème en ne notant plus l'union.
 
-## 8. Calibration avant le seuil — jamais supposé
+## 8. Calibration du seuil — FAITE (2026-09-30), figée par mesure
 
-Le seuil de couverture par-clé **n'est pas fixé**. Procédure (patron
-`calibrationBac2025`) : écrire 2–3 fiches-modèles **excellentes** par unité
-(فصحى, main), mesurer la couverture par-clé, **puis** figer le seuil.
+Procédure (patron `calibrationBac2025`) appliquée : 3 fiches-modèles par unité
+(فصحى, main, prose naturelle — jamais des listes de mots-clés) dans
+`src/data/tadwinCalibration.ts` :
 
-Repère déjà mesuré pour la calibration : 12/33 clés ont exactement 2 atomes ;
-un seuil > 0.5 leur donne **0 tolérance** (mini-version du problème initial).
-Candidat à valider sur fiches-modèles : `couvert ⟺ ≥ la moitié des atomes,
-minimum 1`.
+- **`complete`** — excellence de référence, couvre les 65 atomes. Lock : C2 = 1
+  au seuil 1.0, donc la prose atteint *réellement* chaque atome déclaré.
+- **`concise`** — excellence **économique** (le bon élève cite l'essentiel).
+  Borne le seuil **par le bas**.
+- **`fragile`** — réponse insuffisante/vague. Borne le seuil **par le haut** :
+  jamais C2 = 1.
+
+**Seuil figé : `couvert ⟺ ≥ la moitié des atomes, minimum 1` (`SEUIL_C2 = 0.5`).**
+
+Mesure (test de gel dans `tadwinCalibration.test.ts`) : les fiches `concise`
+exigent 1/2 (7 clés), 2/3 (3 clés) et 3/5 (1 clé) des atomes. À **0.51**, au
+moins une `concise` casse → 0.5 est le **maximum** tolérable. Le seuil 0.6
+supposé jadis est définitivement réfuté. Limite assumée : calibration sur
+fiches authored, **pas** sur copies réelles (AGENTS.md R2) — un écart publié
+reste un plancher.
+
+Pièges de matcher révélés par la mesure (à respecter dans toute fiche future) :
+`وظيفة` ne matche pas `وظيفته` (suffixe = lettre après le needle) ; un atome
+doit être **contigu** (`اللب الخارجي سائل` ne contient pas `لب خارجي سائل` :
+le `ال` interne n'est pas consommable par le préfixe).
 
 ## 9. Périmètre
 
@@ -135,11 +151,14 @@ clé `kunz_learning_errors_v1`, trimming sur `resolvedAt`).
 |---|---|---|
 | Boucle conversationnelle | `BotMode` + `smartTutorEngine.processStudentInput` | existe |
 | Texte libre (hors C2) | `gradeKeyPoints` (`smartTutorEngine`) | existe |
-| Anti-négation (C4) | `tokenAffirmed` / `clauseIsDenial` | existe |
+| Anti-négation (C4) | `lib/validation/negationAr.ts` (`tokenAffirme`) | existe — extrait de `smartTutorEngine` (source unique) |
 | Anti-bourrage (C3) | `lib/validation/stuffingDetector.ts` | existe |
 | Synonymes | `lib/validation/synonyms.ts` (`SYNONYM_GROUPS`) | existe |
 | Rappel espacé | `data/store.ts` stages J+1/J+3/J+7/J+14 | existe |
 | Minuteur doux | `components/FocusTimer.tsx` | câblé (`9c79d05`) |
 | Texte source leçon (C1, V1.5) | `data/lessonIndex.ts` (`text`, `keywords`) | existe |
-| **Scorer C2 par-clé** | à écrire (enveloppe le matcher d'atomes) | **neuf** |
-| **`atoms[]` des 33 clés** | JSON à éditer (déclaration auteur) | **neuf** |
+| **Scorer C2 par-clé** | `lib/validation/couvCle.ts` (`SEUIL_C2` figé) | **fait** |
+| **`atoms[]` des 33 clés** | `src/data/tadwinCles.ts` | **fait** |
+| **Fiches-modèles de calibration** | `src/data/tadwinCalibration.ts` (33) | **fait** |
+| **Moteur runtime V1** | `lib/tadwin/tadwinEngine.ts` (paliers, verdict, carnet, J+14) | **fait — non câblé UI** |
+| **Câblage UI** (`BotMode 'tadwin'` dans `App.tsx`) | `src/App.tsx` (protégé) | **à faire — déverrouillage requis** |

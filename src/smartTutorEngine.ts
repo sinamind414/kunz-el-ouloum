@@ -28,6 +28,12 @@ import { TUTOR_KNOWLEDGE, type TutorKnowledgeChunk } from './tutorKnowledge';
 import { BOOK_TUTOR_QA, findBestBookQA, type BookTutorQA } from './bookTutorQA';
 import { findBestMethodologyQA } from './methodologyKnowledge';
 import { LESSON_INDEX } from './data/lessonIndex';
+// Fusion master 3e970d2 (2026-10-01) : R6 pondère les erreurs par le poids
+// BAC des unités (unitOpenings) ; R8 affiche le compte à rebours BAC.
+import { UNIT_OPENINGS } from './data/unitOpenings';
+import { BAC_EXAM_DATE, bacDaysLeft } from './utils/dashboardActions';
+// Négation/réfutation : primitives partagées avec le scorer C2 de Tadwin.
+import { tokenAffirme } from './lib/validation/negationAr';
 import {
   KNOWLEDGE_CARDS as LEGACY_KNOWLEDGE_CARDS,
   type KnowledgeCard as LegacyKnowledgeCard,
@@ -915,7 +921,22 @@ export function gradeQuizAnswer(session: BotSession, rawAnswer: string): EngineR
       // à l'ACHÈVEMENT, pas à la réussite, exactement comme l'affiche le
       // message « المكافأة: +15 XP ». lastMissionDate verrouille le lendemain.
       newSession = completeDailyMission(newSession, missionTopicId);
-      text += `\n\n🎯 **مهمة اليوم مكتملة!** كسبت ${MISSION_XP} XP. عُد غداً لمهمة جديدة. ⚡`;
+
+      // ── R10 (audit Morchid 2026-10-01, master 3e970d2) : on célèbre le
+      // GAIN, pas la présence. On nomme le point-clé maîtrisé (ou, en cas
+      // d'échec, le point-clé à reprendre demain) : le cerveau retient ce
+      // qu'on nomme, pas ce qu'on félicite.
+      const missionCard = getCardById(missionTopicId);
+      const masteredKeyPoint = missionCard?.keywords?.[0] ?? missionCard?.title ?? '';
+      if (correctCount > 0) {
+        text += `\n\n🎯 **مهمة اليوم مكتملة!** كسبت ${MISSION_XP} XP. ⚡\n`;
+        text += `✅ لقد ثبّتت الآن نقطة مفتاحية واحدة: **${masteredKeyPoint}**.\n`;
+        text += `غداً سنبني عليها نقطة جديدة. عُد كل يوم لتثبيت نقطة واحدة. 📈`;
+      } else {
+        text += `\n\n🎯 **مهمة اليوم مكتملة** (كسبت ${MISSION_XP} XP). ⚡\n`;
+        text += `⚠️ النقطة المفتاحية **${masteredKeyPoint}** لم تثبّت بعد.\n`;
+        text += `لا بأس — غداً سنعيد التثبيت عليها بطريقة أبسط. التقدّم ليس خطاً مستقيماً. 📈`;
+      }
     }
   }
   const quickActions = quiz === undefined ? ['راجع أخطائي السابقة', 'اعاده الاختبار التشخيصي', 'العودة للقائمة الرئيسية'] : [];
@@ -954,48 +975,13 @@ export function startBossFight(session: BotSession): EngineResult {
  * que l'élève se donnait lui-même — l'XP n'est plus fermable au clic.
  * Barème : ≥ 50 % des mots-clés couverts = 10 pts · ≥ 20 % = 5 pts · sinon 0.
  */
-const NEGATION_PARTICLES = ['لا', 'لم', 'لن', 'ليس', 'غير'];
-const DENIAL_STARTERS = ['ليس', 'ليست', 'غير صحيح', 'مستحيل', 'يستحيل', 'انفي', 'ارفض'];
-
-/** Vrai si `token` est précédé (à un séparateur près) d'une particule de
- *  négation atomique dans `text` — ex. « لا ينتقل ». */
-function adjacentNegation(text: string, token: string): boolean {
-  let from = 0;
-  while (true) {
-    const idx = text.indexOf(token, from);
-    if (idx < 0) return false;
-    const before = text.slice(Math.max(0, idx - 12), idx);
-    for (const p of NEGATION_PARTICLES) {
-      const at = before.lastIndexOf(p);
-      if (at < 0) continue;
-      const okBefore = at === 0 || /[\s،,؛;.\-]/.test(before[at - 1]);
-      const okAfter = /^[\s،,؛;.\-]*$/.test(before.slice(at + p.length));
-      if (okBefore && okAfter) return true;
-    }
-    from = idx + 1;
-  }
-}
-
-/** B2 (audit Morchid 2026-09-25) : une clause qui s'ouvre par une forme de
- *  réfutation (« ليس صحيحاً أن… », « أرفض… », « مستحيل… ») nie tout point-clé
- *  qu'elle reprend. Une réponse niant chaque point-clé obtenait 10/10. */
-function clauseIsDenial(clause: string): boolean {
-  const c = clause.trim();
-  return DENIAL_STARTERS.some((s) => c.startsWith(s));
-}
-
 /** Un point-clé est couvert s'il apparaît dans une clause NON réfutée, et sans
  *  inversion de polarité par rapport au point-clé attendu (si l'attendu dit
- *  « لا تنتقل », une réponse « لا تنتقل » reste juste). */
+ *  « لا تنتقل », une réponse « لا تنتقل » reste juste).
+ *  Implémentation : lib/validation/negationAr.ts (fusion master 3e970d2 —
+ *  primitives partagées avec le scorer C2 de Tadwin). */
 function tokenAffirmed(normAnswer: string, token: string, normKp: string): boolean {
-  const clauses = normAnswer.split(/[،,؛;.]+/);
-  for (const clause of clauses) {
-    if (!clause.includes(token)) continue;
-    const denies = clauseIsDenial(clause) && !clauseIsDenial(normKp);
-    const inverted = adjacentNegation(clause, token) && !adjacentNegation(normKp, token);
-    if (!denies && !inverted) return true;
-  }
-  return false;
+  return tokenAffirme(normAnswer, token, normKp);
 }
 
 /**
@@ -1383,11 +1369,19 @@ function handleBossInput(session: BotSession, rawInput: string): EngineResult {
   //    KEO-105 : le coaching impose la triade ألاحظ → أستنتج → أخلص.
   if (attempts + 1 < 2) {
     const newSession = recordBossProgress(session, { attempts: attempts + 1 });
+    // R1 (master 3e970d2) : la 1ʳᵉ tentative NOMME ce qui manque — sans
+    // livrer la correction ni le score. L'élève sait où corriger sa copie.
+    const graded = gradeKeyPointsDetail(rawInput, scenario.keyPoints);
+    const missedLine =
+      graded.missed.length > 0
+        ? `🔍 أهم ما نقص من جوابك: **${graded.missed[0]}** — أضِفه في محاولتك الثانية.\n\n`
+        : '';
     return {
       session: newSession,
       action: {
         text:
           '📝 **سُجّلت محاولتك الأولى — لن أعرض التصحيح بعد.**\n\n' +
+          missedLine +
           (contract
             ? 'هيكل الجواب وفق التثليث: **① ألاحظ** (المعطيات بالأرقام) ← **② أستنتج** (الربط بـ «لأنّ») ← **③ أخلص** («ومنه نستنتج أنّ…»).\n\n'
             : '') +
@@ -1812,6 +1806,80 @@ function pickRandomQuizForTopic(domainId: number, topicId: string): QuizQuestion
   return candidates[Math.floor(Math.random() * candidates.length)];
 }
 
+/**
+ * R6 (audit Morchid 2026-10-01, master 3e970d2) : priorisation réelle, pas
+ * index zéro. getDailyMission prenait mistakes[0] — la PREMIÈRE erreur
+ * chronologique — indépendamment de sa fréquence ou du poids BAC de l'unité.
+ * Nouveau score = fréquence (occurrences) × poids BAC de l'unité × oubli.
+ */
+const UNIT_BAC_WEIGHT: Map<number, number> = (() => {
+  const map = new Map<number, number>();
+  for (const o of UNIT_OPENINGS) {
+    if (o.bacWeightPercent != null) map.set(o.unitId, o.bacWeightPercent);
+  }
+  return map;
+})();
+
+/**
+ * Associe un topic (carte) à son unité pédagogique pour récupérer son poids
+ * BAC. KnowledgeCard.domainId est le domaine (1-3), pas l'unité — on se
+ * replie sur le poids moyen du domaine quand l'unité précise est inconnue.
+ */
+function weightForTopic(topicId: string, domainId: number | null): number {
+  // Poids moyens mesurés par domaine (unitOpenings) : protéines ~12,
+  // énergétique ~13, tectonique ~10. Sans unité précise, on prend la moyenne.
+  const domainAverage: Record<number, number> = { 1: 12, 2: 13, 3: 10 };
+  const card = getCardById(topicId);
+  if (card) {
+    const unitId = domainToUnit(card.domainId, topicId);
+    const w = unitId != null ? UNIT_BAC_WEIGHT.get(unitId) : undefined;
+    if (w != null) return w;
+    return domainAverage[card.domainId] ?? 10;
+  }
+  return domainId != null ? domainAverage[domainId] ?? 10 : 10;
+}
+
+/**
+ * R6 : approximation du mapping topic → unité. Les cartes du domaine 1
+ * couvrent les unités 1-5, le domaine 2 les unités 6-8, le domaine 3 les
+ * unités 9-11. On retourne l'unité la plus probable d'après le rang de la
+ * carte dans son domaine — approximation honnête : elle ne sert qu'à
+ * pondérer la priorité, pas à afficher un contenu.
+ */
+function domainToUnit(domainId: number, topicId: string): number | null {
+  const cards = KNOWLEDGE_CARDS.filter((c) => c.domainId === domainId);
+  const idx = cards.findIndex((c) => c.id === topicId);
+  if (idx < 0) return null;
+  const ranges: Record<number, [number, number]> = { 1: [1, 5], 2: [6, 8], 3: [9, 11] };
+  const range = ranges[domainId];
+  if (!range) return null;
+  const span = range[1] - range[0] + 1;
+  return range[0] + Math.floor((idx / Math.max(1, cards.length)) * span);
+}
+
+/**
+ * R6 : classe les erreurs par score = fréquence × poids BAC × oubli. Les
+ * doublons comptent comme la fréquence ; l'ancienneté relative (rang dans le
+ * tableau) tient lieu d'oubli — pas d'horodateur par erreur (session légère).
+ */
+function rankMistakes(mistakes: string[], lastSeenAt: number): string[] {
+  const freq = new Map<string, number>();
+  for (const m of mistakes) freq.set(m, (freq.get(m) ?? 0) + 1);
+
+  const scored = Array.from(freq.entries()).map(([topicId, count]) => {
+    const card = getCardById(topicId);
+    const weight = weightForTopic(topicId, card?.domainId ?? null);
+    // Oubli : plus tôt apparu dans la liste, plus oublié.
+    const orderIdx = mistakes.indexOf(topicId);
+    const daysSince = Math.max(1, Math.floor((mistakes.length - orderIdx) / 2));
+    const oubli = Math.min(daysSince, 14) / 14;
+    return { topicId, score: count * weight * (0.5 + oubli) };
+  });
+
+  scored.sort((a, b) => b.score - a.score);
+  return scored.map((x) => x.topicId);
+}
+
 export function getDailyMission(session: BotSession): EngineResult {
   const today = new Date().toISOString().split('T')[0];
   if (session.lastMissionDate === today) {
@@ -1822,7 +1890,10 @@ export function getDailyMission(session: BotSession): EngineResult {
   let targetDomainId: number | null = session.activeDomainId;
 
   if (session.mistakes.length > 0) {
-    targetTopicId = session.mistakes[0];
+    // R6 : mistakes[0] → rankMistakes (fréquence × poids BAC × oubli).
+    targetTopicId = rankMistakes(session.mistakes, session.lastInteraction)[0] ?? null;
+    const card0 = targetTopicId ? getCardById(targetTopicId) : null;
+    if (card0) targetDomainId = card0.domainId;
   } else if (session.activeDomainId) {
     const cards = KNOWLEDGE_CARDS.filter((c) => c.domainId === session.activeDomainId);
     if (cards.length > 0) targetTopicId = cards[0].id;
@@ -1842,7 +1913,25 @@ export function getDailyMission(session: BotSession): EngineResult {
 
   const domain = DOMAINS.find((d) => d.id === (targetDomainId ?? card.domainId));
   const quiz = pickRandomQuizForTopic(card.domainId, card.id);
-  const text = `🎯 **مهمة اليوم (3 دقائق):**\nالمجال: **${domain?.title || ''}**\n\nركّز على: **${card.title}**\n\n1. اقرأ بطاقة المعرفة أدناه.\n2. اجب على سؤال التثبيت.\n\nالمكافأة: +15 XP وتعبئة الرادار! ⚡\n\n---\n🧩 **${card.title}**\n\n${card.shortAnswer}\n\n🔑 ${card.keywords.join(' • ')}`;
+  // ── R8 (audit Morchid 2026-10-01, master 3e970d2) : BAC_EXAM_DATE était
+  // vide → le compte à rebours affichait « — ». La date (provisoire, voir
+  // dashboardActions) est désormais visible dans la mission.
+  const bacLeft = bacDaysLeft(new Date(), BAC_EXAM_DATE);
+  const bacLine =
+    bacLeft != null && bacLeft > 0
+      ? `\n⏳ **بقي ${bacLeft} يوماً على البكالوريا.** كل يوم تثبّت فيه نقطة واحدة = نقطة مضمونة.\n`
+      : '';
+
+  // ── R7 : le guide ne se cache plus derrière une phrase magique. Quand
+  // l'élève enchaîne les erreurs sur ce sujet (≥ 3), le protocole d'étude
+  // se PROPOSE dans la mission — au lieu d'attendre « كيف ادرس العلوم ».
+  const freq = session.mistakes.filter((m) => m === targetTopicId).length;
+  const guideLine =
+    freq >= 3
+      ? `\n💡 لقد أخطأت ${freq} مرات في هذا الدرس. قبل السؤال، خذ 90 ثانية لقراءة بروتوكول الدراسة: «كيف أدرس العلوم؟» — ستجده في قسم الإرشاد.\n`
+      : '';
+
+  const text = `🎯 **مهمة اليوم (3 دقائق):**\nالمجال: **${domain?.title || ''}**\n\nركّز على: **${card.title}**\n${bacLine}${guideLine}\n1. اقرأ بطاقة المعرفة أدناه.\n2. اجب على سؤال التثبيت.\n\nالمكافأة: +15 XP وتعبئة الرادار! ⚡\n\n---\n🧩 **${card.title}**\n\n${card.shortAnswer}\n\n🔑 ${card.keywords.join(' • ')}`;
 
   // F10 : sans session.currentQuiz positionnée, l'élève voyait bien la question
   // mais sa réponse tombait sur « لا يوجد اختبار جارٍ حالياً » (gradeQuizAnswer

@@ -816,7 +816,11 @@ Les tickets des Épics 0, 2 (restants), 3 et 4 sont indépendants des lots et pe
 
 **Note d'environnement :** le bac local de travail a été reconstruit en cours de session (commits du LOT 1 absents du clone) ; continuité rétablie via `git fetch` de la branche distante — l'historique 43dbe79 → 0f4d1e0 → 9e35fae est intact et le LOT 2 se committe proprement par-dessus. Par ailleurs `origin/master` a été remplacé entre-temps par une lignée sans ancêtre commun (3e970d2 « feat(morchid): R1→R10 ») : la fusion éventuelle de cette branche vers le nouveau master reste une décision de l'owner.
 
-**Reste ensuite :** KEO-002 (date officielle BAC 2027 à fournir par l'owner — le garde-fou d'affichage existe déjà), et le passage du reste des messages du tuteur à la voix unifiée (KEO-205, entamé à l'accueil).
+**Reste ensuite :** le passage du reste des messages du tuteur à la voix unifiée (KEO-205, entamé à l'accueil).
+
+### Fusion master 3e970d2 (même jour)
+
+`origin/master` ayant été remplacé par une lignée parallèle (R1→R10 + Tadwin + ProFigures + TrainingHub), la branche a fusionné master avec la règle « le plus complet et verrouillé gagne » — voir **`docs/FUSION_MASTER_3e970d2_2026-10-01.md`** pour la table de réconciliation complète. Points notables : **KEO-002 est résolu à titre provisoire** par leur R8 (`BAC_EXAM_DATE = '2027-06-08'` + drapeau provisoire dans `src/utils/dashboardActions.ts` — un seul endroit à modifier à la parution de l'arrêté officiel) ; R6/R7/R10 de master sont intégrés (priorisation réelle des erreurs, protocole proposé, gain nommé). Preuves après fusion : tsc ✓ · vitest 168 fichiers / 2115 tests ✓ · jest 162 suites / 2078 ✓ · build ✓.
 
 
 

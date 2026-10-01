@@ -134,9 +134,15 @@ describe('surpriseUnitId — سؤال مفاجئ', () => {
 });
 
 describe('bacDaysLeft — عدّاد BAC', () => {
-  it('date non tranchée → null (jamais de chiffre inventé)', () => {
-    expect(BAC_EXAM_DATE).toBe('');
-    expect(bacDaysLeft(new Date(2026, 8, 15))).toBeNull();
+  it('date tranchée (R8) : le moteur a désormais un horizon', () => {
+    // R8 (audit Morchid 2026-10-01) : la date n'est plus vide — provisoire
+    // jusqu'à l'arrêté officiel, mais suffisante pour donner un horizon.
+    expect(BAC_EXAM_DATE).toBe('2027-06-08');
+    expect(bacDaysLeft(new Date(2027, 5, 1))).toBe(7);
+  });
+
+  it('date invalide ou vide → null (jamais de chiffre inventé)', () => {
+    expect(bacDaysLeft(new Date(2026, 8, 15), '')).toBeNull();
     expect(bacDaysLeft(new Date(2026, 8, 15), '   ')).toBeNull();
     expect(bacDaysLeft(new Date(2026, 8, 15), 'juin 2027')).toBeNull();
   });
