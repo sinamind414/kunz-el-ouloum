@@ -11,8 +11,11 @@ coverage/
 data/students.db*
 data/teachers.json
 
-# copies d'eleves bac2025 (donnees personnelles � jamais commit�es)
+# copies d'eleves bac2025 (donnees personnelles — jamais commitées)
 docs/copies-bac2025/
+# corpus de calibration local : copies anonymisées (RGPD — option B, hors git)
+eleve_*.txt
+RECAPITULATIF.txt
 __pycache__/
 
 # config locale opencode (contient clé API — jamais commitée)
