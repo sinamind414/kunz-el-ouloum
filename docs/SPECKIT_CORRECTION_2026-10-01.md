@@ -821,6 +821,7 @@ Les tickets des Épics 0, 2 (restants), 3 et 4 sont indépendants des lots et pe
 ### Suites livrées après la PR #35 (même jour)
 
 - **KEO-105+ — famille fermée (S-03 de master)** : champ `triadeClosed` en session ; une triade ouverte par «حلّل/استخرج» interdit «لأنّ» à l'étape 2 AUSSI («التحليل لا يفسّر» — on décrit, on n'explique pas), une triade ouverte par «فسّر/استنتج» continue d'exiger le causal. Contraste verrouillé par 3 nouveaux tests (`morchidSocratique.test.ts`, 24 tests au total).
+- **KEO-002 — décision owner (2026-10-01)** : la date provisoire `2027-06-08` est conservée (drapeau provisoire actif) ; à l'arrêté officiel, un seul endroit à modifier : `src/utils/dashboardActions.ts`.
 - **KEO-205 — audit d'achèvement** : moteur + AITutorView audités → zéro lexique pirate, la voix du tuteur est unifiée (فصحى). Le lexique marin restant (`boussoleData.ts` : rangs «قبطان»… ; `SplashView.tsx` : 🏴‍☠️ du bouton musique) est l'identité produit «كنز العلوم», hors voix du tuteur — décision owner documentée dans `docs/FUSION_MASTER_3e970d2_2026-10-01.md`.
 
 ### Fusion master 3e970d2 (même jour)

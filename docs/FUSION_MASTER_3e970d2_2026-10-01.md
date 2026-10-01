@@ -69,6 +69,8 @@ triade C3, S-04 typage R/A, S-05 recall, S-06 lessonKey, S-10 protocole »
 
 ## Reste à décider (owner)
 
-1. **Date officielle BAC 2027** : remplacer la valeur provisoire `2027-06-08`
-   dans `src/utils/dashboardActions.ts` dès parution de l'arrêté.
+1. **Date officielle BAC 2027** : décision owner du 2026-10-01 — **on garde
+   la valeur provisoire `2027-06-08`** (drapeau `BAC_EXAM_DATE_IS_PROVISIONAL
+   = true`). À l'arrêté officiel : modifier la constante et retirer le drapeau
+   dans `src/utils/dashboardActions.ts` — c'est le seul endroit.
 2. Les textes d'accueil des autres vues (voix unifiée KEO-205, entamée).
