@@ -11,7 +11,7 @@
 // qu'aucune entrée ne pointe vers un onglet inexistant.
 
 /** Onglets de l'application atteignables depuis le hub. */
-export type TrainingTab = 'plan' | 'bacideas' | 'situations' | 'schemas' | 'animations' | 'bootcamp' | 'workshop';
+export type TrainingTab = 'plan' | 'bacideas' | 'situations' | 'schemas' | 'animations' | 'bootcamp' | 'workshop' | 'tadwin';
 
 export interface TrainingEntry {
   tab: TrainingTab;
@@ -77,6 +77,13 @@ export const TRAINING_ENTRIES: TrainingEntry[] = [
     descriptionAr: 'محاكاة متحركة وتفاعلية للآليات، منها محاكي الترحيل الكهربائي.',
     gestureAr: 'أشاهد آلية',
     icon: 'sparkles',
+  },
+  {
+    tab: 'tadwin',
+    titleAr: 'التدوين الشامل',
+    descriptionAr: 'استخرج زبدة الدرس في مفاتيح قليلة بأسلوبك، ثم ثبّتها بالاسترجاع المتباعد.',
+    gestureAr: 'أدوّن الزبدة',
+    icon: 'penTool',
   },
 ];
 

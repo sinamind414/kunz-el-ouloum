@@ -18,6 +18,24 @@ export interface BossState {
   totalQuestions: number;
   score: number;
   phase: 'answer' | 'eval';
+  /**
+   * R1 (audit Morchid R1 2026-10-01) : la correction modèle n'est plus servie
+   * au premier « لا أعرف ». On grimpe un escalier d'indices.
+   * hintLevel = nombre d'indices déjà consommés (0..3). À 3, la correction
+   * se débloque mais le score est plafonné à 3/10.
+   */
+  hintLevel?: number;
+  /**
+   * R1 : tentatives écrites réelles (≥ 15 caractères utiles) sur la situation
+   * courante. Deux tentatives débloquent la correction ET le score plein.
+   */
+  attempts?: number;
+  /**
+   * R3 : horodateur de l'affichage de la situation courante. La règle d'or de
+   * studyGuide.ts (« pas de correction avant 20-25 min de tentative ») devient
+   * une contrainte : la correction est refusée avant 90 s sans tentative.
+   */
+  openedAt?: number;
 }
 
 export interface BotSession {
@@ -32,6 +50,13 @@ export interface BotSession {
   lastMissionDate: string | null;
   lastMissionTopic: string | null;
   lastCardId: string | null;
+  /**
+   * R2 (audit Morchid 2026-10-01) : id de la fiche dont la probe socratique
+   * vient d'être posée. L'élève répond → on sert shortAnswer. Un changement
+   * de sujet (autre fiche) réarme la probe. Jamais deux probes pour la même
+   * carte d'affilée : un second « اشرح لي X » sert le contenu directement.
+   */
+  lastProbeCard: string | null;
   lastInteraction: number;
 }
 
@@ -49,11 +74,12 @@ const defaultSession: BotSession = {
   lastMissionDate: null,
   lastMissionTopic: null,
   lastCardId: null,
+  lastProbeCard: null,
   lastInteraction: Date.now(),
 };
 
 export function getDefaultSession(): BotSession {
-  return { ...defaultSession, mistakes: [], currentQuiz: null, boss: null, lastInteraction: Date.now() };
+  return { ...defaultSession, mistakes: [], currentQuiz: null, boss: null, lastProbeCard: null, lastInteraction: Date.now() };
 }
 
 /**
@@ -191,6 +217,9 @@ export function startBossFightSession(
       totalQuestions,
       score: 0,
       phase: 'answer',
+      hintLevel: 0,
+      attempts: 0,
+      openedAt: Date.now(),
     },
   };
 
@@ -214,6 +243,10 @@ export function startBossStep(
       questionIndex: nextIndex,
       score: session.boss.score + points,
       phase: 'answer',
+      // R1/R3 : l'escalier d'indices et le chrono se réinitialisent par situation.
+      hintLevel: 0,
+      attempts: 0,
+      openedAt: Date.now(),
     },
   };
 

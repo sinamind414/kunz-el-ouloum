@@ -224,17 +224,45 @@ describe('AITutorView — rendu riche du moteur (T2)', () => {
       expect(messagesText()).toContain('وضعية مشكلة');
     });
 
-    // « لا أعرف » (quickAction du boss) → correction + 0 نقطة + question suivante
-    // (rec #3 : l'auto-évaluation +10/+5/0 est remplacée par la notation moteur).
-    await user.click(screen.getByText('لا أعرف'));
+    // R1 (audit Morchid 2026-10-01) : « لا أعرف » ne donne plus la correction —
+    // il ouvre l'escalier d'indices. Il faut 3 indices pour débloquer la
+    // correction (score plafonné 3/10), ou 2 tentatives écrites pour l'avoir
+    // au score plein. On consomme donc les 3 indices.
+    // NB : les quickActions des bulles précédentes restent rendues, on cible
+    // donc le DERNIER groupe (celui de la bulle active).
+    const idontknow = (): HTMLElement => {
+      const btns = screen.getAllByTestId(/^quick-action-\d+$/);
+      const last = btns[btns.length - 1];
+      if (last.textContent === 'لا أعرف') return last;
+      const match = btns.find((b) => b.textContent === 'لا أعرف');
+      if (match) return match;
+      throw new Error('Aucun bouton « لا أعرف » trouvé');
+    };
+    // R3 : la correction est refusée avant 90 s SANS tentative écrite. On écrit
+    // donc une vraie tentative d'abord, puis on consomme les indices.
+    await typeAndSubmit(user, 'محاولة مبدئية للوضعية الأولى قبل طلب المساعدة');
+    await waitFor(() => {
+      expect(messagesText()).toContain('محاولتك الأولى');
+    });
+    for (let i = 0; i < 2; i++) {
+      await user.click(idontknow());
+      await waitFor(() => {
+        expect(messagesText()).toContain('مفتاح');
+      });
+    }
+    // 3e indice → correction débloquée + question suivante.
+    await user.click(idontknow());
     await waitFor(() => {
       expect(messagesText()).toContain('التصحيح النموذجي');
       expect(messagesText()).toMatch(/نقاطك لهذه الوضعية/);
       expect(messagesText()).toMatch(/السؤال التالي|انتهى تحدي BAC/);
     });
 
-    // 2e scénario : une réponse libre est notée automatiquement puis le défi se clôt.
-    await typeAndSubmit(user, 'إجابة قصيرة غير كافية');
+    // 2e scénario : R3 exige une tentative écrite (≥15 caractères arabes) avant
+    // d'accepter la correction. On en écrit deux pour débloquer le score plein
+    // et clôturer le défi (2 questions × correction = fin).
+    await typeAndSubmit(user, 'محاولة أولى للوضعية الثانية غير مكتملة بعد');
+    await typeAndSubmit(user, 'محاولة ثانية للوضعية الثانية لإكمال النقاط الأساسية');
     await waitFor(() => {
       expect(messagesText()).toContain('انتهى تحدي BAC');
     });

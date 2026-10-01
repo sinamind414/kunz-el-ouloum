@@ -18,7 +18,18 @@ import { Unit, UserProgress } from '../types';
  * Laissée vide = date non tranchée : la tuile affiche alors l'attente explicite
  * (« التاريخ الرسمي قيد التأكيد ») plutôt qu'un chiffre inventé.
  */
-export const BAC_EXAM_DATE = '';
+/**
+ * R8 (audit Morchid 2026-10-01) : la date était vide → le compte à rebours
+ * affichait « — » et AUCUN cycle de révision n'était possible. La mission
+ * quotidienne n'avait ni urgence ni horizon.
+ *
+ * Le BAC algérien se tient chaque année en juin (première quinzaine). En
+ * attendant l'arrêté officiel de la session 2027, on fixe une date
+ * PROVISOIRE pour que le moteur ait un horizon — l'élève voit « بقي N يوماً ».
+ * Dès que la date officielle est confirmée, un seul endroit à modifier.
+ */
+export const BAC_EXAM_DATE = '2027-06-08';
+export const BAC_EXAM_DATE_IS_PROVISIONAL = true;
 
 const MS_PER_DAY = 86_400_000;
 

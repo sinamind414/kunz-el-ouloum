@@ -77,6 +77,7 @@ const BadgesView = lazy(() => import('./components/BadgesView'));
 const MindMapView = lazy(() => import('./components/MindMap/MindMapView'));
 const StatsView = lazy(() => import('./components/StatsView'));
 const AITutorView = lazy(() => import('./components/AITutorView'));
+const TadwinView = lazy(() => import('./components/TadwinView'));
 const QuizView = lazy(() => import('./components/QuizView'));
 const RevisionView = lazy(() => import('./components/RevisionView'));
 const LessonsView = lazy(() => import('./components/LessonsView'));
@@ -123,7 +124,7 @@ export default function App() {
   // Navigation tab state
   // Exercice sur lequel ouvrir l'atelier quand on arrive depuis le plan.
   const [bacIdeaFocus, setBacIdeaFocus] = useState<string | null>(null);
-  const [currentTab, setCurrentTab] = useState<'splash' | 'home' | 'review' | 'stats' | 'chat' | 'methodology' | 'bootcamp' | 'badges' | 'lesson' | 'workshop' | 'mindmap' | 'teacher' | 'animations' | 'situations' | 'schemas' | 'training' | 'plan' | 'bacideas' | 'focus'>('splash');
+  const [currentTab, setCurrentTab] = useState<'splash' | 'home' | 'review' | 'stats' | 'chat' | 'methodology' | 'bootcamp' | 'badges' | 'lesson' | 'workshop' | 'mindmap' | 'teacher' | 'animations' | 'situations' | 'schemas' | 'training' | 'plan' | 'bacideas' | 'focus' | 'tadwin'>('splash');
   const [activeMindMapUnitId, setActiveMindMapUnitId] = useState<number>(1);
   const [isAuthOpen, setIsAuthOpen] = useState(false);
   // Session élève persistée (correctif : la session était perdue à chaque F5).
@@ -782,6 +783,7 @@ export default function App() {
            currentTab === 'plan' ? 'خطة المراجعة النهائية' :
            currentTab === 'bacideas' ? 'أفكار التمارين حسب الدورة' :
            currentTab === 'focus' ? 'المؤقّت (بومودورو)' :
+           currentTab === 'tadwin' ? 'التدوين الشامل' :
            currentTab === 'mindmap' ? 'الخرائط الذهنية (D3)' :
             currentTab === 'chat' ? 'المرشد الذكي' :
             currentTab === 'teacher' ? 'لوحة المتابعة' :
@@ -913,6 +915,10 @@ export default function App() {
                   onBackToDashboard={() => setCurrentTab('home')}
                   onXPGained={handleTutorXPGained}
                 />
+              )}
+
+              {currentTab === 'tadwin' && (
+                <TadwinView onBackToHome={() => setCurrentTab('home')} />
               )}
 
               {currentTab === 'methodology' && (

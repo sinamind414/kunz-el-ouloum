@@ -320,6 +320,24 @@ describe('tadwinEngine — carnet + rappel espacé', () => {
     expect(fichesDuees(T0 + 2 * JOUR)).toHaveLength(1);
     expect(fichesDuees(T0 + 10 * JOUR)).toHaveLength(2);
   });
+
+  it('enregistrerRappel persiste la fiche mise à jour dans le carnet', () => {
+    const fiche = enregistrerFiche(REPONSE_MODELE_U1_PARTIELLE, U1_CHOIX, T0);
+    enregistrerRappel(fiche, true, T0 + JOUR);
+    const lues = lireFiches();
+    expect(lues).toHaveLength(1);
+    expect(lues[0].rappelStage).toBe(1);
+    expect(lues[0].prochainRappelAt).toBe(T0 + 3 * JOUR);
+  });
+
+  it('enregistrerRappel persiste aussi l\'échec (cadence J+1 depuis la tentative)', () => {
+    const fiche = enregistrerFiche(REPONSE_MODELE_U1_PARTIELLE, U1_CHOIX, T0);
+    enregistrerRappel(fiche, false, T0 + JOUR);
+    const lues = lireFiches();
+    expect(lues).toHaveLength(1);
+    expect(lues[0].rappelStage).toBe(0);
+    expect(lues[0].prochainRappelAt).toBe(T0 + 2 * JOUR);
+  });
 });
 
 // ──────────────────────────────────────────────────────────────────────────────

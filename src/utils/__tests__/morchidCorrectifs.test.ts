@@ -34,7 +34,19 @@ const boss = (): BotSession => ({
   ...getDefaultSession(),
   activeDomainId: 1,
   mode: 'bac_challenge',
-  boss: { scenarioId: 'boss1_q1', questionIndex: 0, totalQuestions: 2, score: 0, phase: 'answer' },
+  boss: {
+    scenarioId: 'boss1_q1',
+    questionIndex: 0,
+    totalQuestions: 2,
+    score: 0,
+    phase: 'answer',
+    // R1 (audit Morchid 2026-10-01) : la note n'est plus livrée au 1er essai —
+    // on démarre ces tests de notation avec une tentative déjà consommée pour
+    // que la correction notée se déclenche.
+    attempts: 1,
+    hintLevel: 0,
+    openedAt: Date.now() - 120_000,
+  },
 });
 
 // ---------------------------------------------------------------------------

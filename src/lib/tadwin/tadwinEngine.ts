@@ -313,6 +313,12 @@ export function enregistrerFiche(
 // Rappel espacé (palier 4) — stages J+1/3/7/14 de store.ts
 // ──────────────────────────────────────────────────────────────────────────────
 
+/** Remplace (ou ajoute) une fiche dans le carnet persisté. */
+function remplacerFiche(fiche: FicheTadwin): void {
+  const sans = lireFiches().filter((f) => f.id !== fiche.id);
+  ecrireFiches([...sans, fiche]);
+}
+
 export function ficheDue(fiche: FicheTadwin, maintenant: number = Date.now()): boolean {
   return fiche.prochainRappelAt != null && maintenant >= fiche.prochainRappelAt;
 }
@@ -329,7 +335,7 @@ export function enregistrerRappel(
   maintenant: number = Date.now(),
 ): FicheTadwin {
   if (!reussi) {
-    return {
+    const echec: FicheTadwin = {
       ...fiche,
       rappelStage: 0,
       dernierRappelAt: maintenant,
@@ -337,19 +343,23 @@ export function enregistrerRappel(
       prochainRappelAt: computeNextReviewAt(maintenant, 0, maintenant),
       maitrise: 'en_cours',
     };
+    remplacerFiche(echec);
+    return echec;
   }
 
   if (!ficheDue(fiche, maintenant)) return fiche;
 
   const stage = Math.min(fiche.rappelStage + 1, REVIEW_INTERVALS_DAYS.length - 1);
   const termine = stage >= REVIEW_INTERVALS_DAYS.length - 1;
-  return {
+  const reussite: FicheTadwin = {
     ...fiche,
     rappelStage: stage,
     dernierRappelAt: maintenant,
     prochainRappelAt: computeNextReviewAt(fiche.creeLe, stage, maintenant),
     maitrise: termine ? 'maitrise' : 'en_cours',
   };
+  remplacerFiche(reussite);
+  return reussite;
 }
 
 /** Fiches du carnet dont le rappel est dû (palier 4). */

@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8" />
+<title>مخطط تحصيلي — آلية النقل العصبي عبر المشبك الكيميائي</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: #0b0e20;
+    color: #e8eef5;
+    font-family: 'Segoe UI', 'Noto Sans Arabic', Arial, sans-serif;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+  }
+  .app { width: 100%; max-width: 1200px; }
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+  }
+  .header h1 { font-size: 20px; font-weight: 700; color: #fff; }
+  .header h1 span.gold { color: #ffc300; }
+  .header .sub { font-size: 11px; color: #8a94b0; margin-top: 4px; }
+  .buttons { display: flex; gap: 8px; }
+  .btn {
+    padding: 8px 14px;
+    border-radius: 10px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    border: 1px solid rgba(255,255,255,0.14);
+    background: rgba(255,255,255,0.06);
+    color: #e8eef5;
+    transition: all 0.2s;
+  }
+  .btn:hover { transform: translateY(-1px); }
+  .btn.primary { background: #00c9c9; color: #0a0f1f; border-color: #00c9c9; }
+  .btn.gold { background: #ffc300; color: #221a00; border-color: #ffc300; }
+  .btn.red { background: #ff4d6d; color: #fff; border-color: #ff4d6d; }
+  .stage {
+    background: linear-gradient(160deg, #0e1225 0%, #182040 100%);
+    border-radius: 16px;
+    border: 1px solid rgba(255,255,255,0.07);
+    padding: 12px;
+    min-height: 500px;
+  }
+  .stage svg { width: 100%; height: auto; display: block; }
+  .bottom {
+    margin-top: 16px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+  }
+  .card {
+    background: #fbf6ec;
+    color: #1c1408;
+    border-radius: 12px;
+    padding: 14px 16px;
+    border-left: 4px solid #ffc300;
+  }
+  .card .num { font-size: 10px; color: #8a7a1a; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; }
+  .card h3 { font-size: 18px; font-weight: 800; color: #0a0c18; margin-bottom: 8px; }
+  .card p { font-size: 14px; line-height: 1.7; color: #3a2f1a; font-family: 'Noto Naskh Arabic', serif; }
+  .card .explain { margin-top: 10px; padding-top: 10px; border-top: 1px dashed #d4c9a0; font-size: 13px; color: #5a4828; }
+  .card .explain b { color: #a83a00; }
+  .legend {
+    background: rgba(255,255,255,0.94);
+    border-radius: 12px;
+    padding: 14px 16px;
+  }
+  .legend h4 { font-size: 12px; font-weight: 700; color: #7a6a2a; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 1px; }
+  .legend-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4px 10px; font-size: 11px; }
+  .legend-item { display: flex; gap: 6px; align-items: center; }
+  .swatch { width: 12px; height: 12px; border-radius: 50%; flex: none; border: 1px solid rgba(0,0,0,0.2); }
+  .legend-item .lbl { color: #2a2208; line-height: 1.4; }
+  .steps-nav {
+    margin-top: 14px;
+    display: flex;
+    gap: 4px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .dot {
+    width: 30px; height: 30px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.06);
+    border: 2px solid rgba(255,255,255,0.12);
+    color: #8a94b0;
+    font-size: 11px;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.2s;
+  }
+  .dot:hover { transform: scale(1.1); }
+  .dot.active { background: #ffc300; color: #1a1400; border-color: #ffc300; transform: scale(1.1); box-shadow: 0 0 16px rgba(255,195,0,0.4); }
+  .dot.done { background: #00c9c9; color: #0a0f1f; border-color: #00c9c9; }
+  .nav-center { display: flex; gap: 4px; margin-left: 8px; }
+  .nav-center .btn-step {
+    background: rgba(255,255,255,0.07);
+    border: 1px solid rgba(255,255,255,0.12);
+    color: #c8d0e0;
+    padding: 6px 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 11px;
+    font-weight: 600;
+    transition: all 0.2s;
+  }
+  .nav-center .btn-step:hover { background: rgba(255,255,255,0.12); }
+  .nav-center .btn-step.primary { background: #00c9c9; color: #0a0f1f; border-color: #00c9c9; }
+  .nav-center .btn-step.gold { background: #ffc300; color: #221a00; border-color: #ffc300; }
+  .progress { margin-top: 10px; height: 4px; background: rgba(255,255,255,0.06); border-radius: 3px; overflow: hidden; }
+  .progress-bar { height: 100%; width: 0%; background: linear-gradient(90deg, #00c9c9, #ffc300); transition: width 0.3s; }
+  .hint { margin-top: 8px; font-size: 10px; color: #5a6488; text-align: center; }
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="header">
+    <div>
+      <h1>📘 <span class="gold">مخطط تحصيلي</span> — آلية النقل العصبي عبر المشبك الكيميائي</h1>
+      <div class="sub">علوم الطبيعة — Bac 3ASH · على려가 인지적 165</div>
+    </div>
+    <div class="buttons">
+      <button class="btn primary" id="playBtn">▶ عرض كامل</button>
+      <button class="btn" id="ttsBtn">🔊 صوت</button>
+      <button class="btn gold" id="resetBtn">⟲ إعادة</button>
+    </div>
+  </div>
+
+  <div class="stage" id="stage">
+    <svg viewBox="0 0 1000 550" preserveAspectRatio="xMidYMid meet" id="stageSvg"></svg>
+  </div>
+
+  <div class="bottom" id="bottom">
+    <div class="card" id="card">
+      <div class="num" id="stepNum">الخطوة 1/10</div>
+      <h3 id="stepTitle">عنوان الخطوة</h3>
+      <p id="stepBody">نص الخطوة</p>
+      <div class="explain" id="stepExplain">شرح إضافي...</div>
+    </div>
+    <div class="legend">
+      <h4>🔑 مرجع لوني</h4>
+      <div class="legend-grid" id="legendGrid"></div>
+    </div>
+  </div>
+
+  <div class="steps-nav" id="stepsNav"></div>
+  <div class="progress"><div class="progress-bar" id="progressBar"></div></div>
+  <div class="hint">← → للتنقل · 1-9 · 0 للخطوة 10</div>
+</div>
+
+<script>
+// ════════ LES 10 ÉTAPES ════════
+const STEPS = [
+  {
+    title: "اتجاه كمون العمل نحو النهاية العصبية",
+    body: "يصل نبض كهربائي (كمون عمل) ينتقل عبر المحور العصبي إلى النهاية العصبية للخلية قبل المشبكية.",
+    explain: "نقطة البدء: الإشارة الكهربائية تصل. بدون هذا الوصول، لا يحدث أي إطلاق للناقل."
+  },
+  {
+    title: "وصول موجة زوال استقطاب → انفتاح قنوات Ca++",
+    body: "عند وصول موجة زوال الاستقطاب، تفتح القنوات الكالسيومية (تعتمد على الجهد) في الغشاء قبل المشبكي.",
+    explain: "موجة زوال الاستقطاب تغير الجهد الكهربائي للغشاء → قنوات Ca++ الحساسة للجهد تفتح."
+  },
+  {
+    title: "تدفق أيونات Ca++ عبر الفتحات",
+    body: "تدفق أيونات الكالسيوم من خارج الخلية إلى داخل النهاية العصبية عبر القنوات المفتوحة.",
+    explain: "زيادة تركيز Ca++ داخل الخلية هي الإشارة المباشرة التي تسبب اندماج الحويصلات. الكالسيوم = «مفاتيح التشغيل»."
+  },
+  {
+    title: "اندماج غشاء الحويصلات المشبكية مع الغشاء قبل المشبكي",
+    body: "تندمج أغشية الحويصلات المشبكية (التي تحتوي على الناقل) مع الغشاء قبل المشبكي بفضل تأثير Ca++.",
+    explain: "الفيوز (fusion) بين أغشية الحويصلات والغشاء الخلوي. خطوة حاسمة — بدونها لا يخرج الناقل."
+  },
+  {
+    title: "تحرير الناقل العصبي بالإفراز الخارجي في الشق المشبكي",
+    body: "يتم إطلاق الناقل العصبي من الحويصلات في الشق المشبكي عبر الإفراز الخارجي (exocytose). ينتشر الناقل في الشق.",
+    explain: "الإفراز الخارجي يحرر الناقل في الفجوة بين الخليتين. الناقل ينتشر في الشق المشبكي."
+  },
+  {
+    title: "تخزين الناقل العصبي في حوصلات مشبكية",
+    body: "يتم تصنيع الناقل وتخزينه في حوصلات مشبكية داخل النهاية العصبية قبل المشبكية (مرحلة ما قبل الإطلاق).",
+    explain: "هذه المرحلة تصف التخزين السابق: الحويصلات محملة بالناقل وتنتظر الإشارة الكهربائية."
+  },
+  {
+    title: "يرتبط الناقل العصبي بالمستقبلات الغشائية",
+    body: "يرتبط الناقل المُفرَز بمستقبلات غشائية محددة على الغشاء بعد المشبكي. هذه علاقة خاصة (يد지속가능/مفكة).",
+    explain: "الناقل يرتبط بمستقبلات معينة — هناك خصوصية بين الناقل والمستقبل. هذا الربط يفعّل الخلية بعد المشبكية."
+  },
+  {
+    title: "انفتاح القنوات الكيميائية للصوديوم (Na+)",
+    body: "بعد ارتباط الناقل، تفتح القنوات الكيميائية (chemo-gated) لصوديوم (Na+) على الغشاء بعد المشبكي.",
+    explain: "الناقل (رسالة كيميائية) → يغير شكل المستقبل → يفتح قنوات Na+ → دخول صوديوم = تحويل كيميائي إلى أيوني."
+  },
+  {
+    title: "تيارات دخول Na+ تولد كمون عمل في الغشاء بعد المشبكي",
+    body: "تيارات الأيونات الناتجة عن دخول صوديوم تولّد كمون عمل جديد في الغشاء بعد المشبكي، مستمرة بذلك عملية النقل.",
+    explain: "النتيجة النهائية: الإشارة الكهربائية تُعاد إنتاجها في الخلية بعد المشبكية. الدورة كاملة: كهربائي → كيميائي → كهربائي."
+  },
+  {
+    title: "استرجاع غشاء الحويصلات من الغشاء الخلوي (إعادة التدوير)",
+    body: "بعد الإفراز، يعاد استرجاع غشاء الحويصلات من الغشاء الخلوي عبر الإدخال الخلوي (endocytose) لإعادة تدوير الحويصلات.",
+    explain: "الخلية لا تفقد أغشيتها — تعيد تدوير أغشية الحويصلات عبر endocytosis. هذا يحافظ على قدرة الخلية على الاستجابة لنبضات متتالية."
+  }
+];
+
+const LEGEND = [
+  { c: "#7b2d8e", l: "<b>غشاء قبل مشبكي</b>" },
+  { c: "#c24b3c", l: "<b>غشاء بعد مشبكي</b>" },
+  { c: "#5a9fd4", l: "<b>شق مشبكي</b>" },
+  { c: "#ff7f2a", l: "<b>حويصلات مشبكية</b>" },
+  { c: "#ff2d55", l: "<b>أيونات Ca++</b>" },
+  { c: "#26c485", l: "<b>أيونات Na+</b>" },
+  { c: "#ffc300", l: "<b>مستقبلات غشائية</b>" },
+  { c: "#4da6ff", l: "<b>قنوات أيونية</b>" },
+  { c: "#9d65ff", l: "<b>موجة كهربائية</b>" },
+  { c: "#8899aa", l: "<b>ميتوكران</b>" },
+];
+
+const svg = document.getElementById('stageSvg');
+const SVG_NS = "http://www.w3.org/2000/svg";
+
+function buildSVG() {
+  let c = "";
+
+  // Defs
+  c += `<defs>
+    <radialGradient id="bg" cx="50%" cy="50%" r="70%">
+      <stop offset="0%" stop-color="#1a2545"/>
+      <stop offset="100%" stop-color="#0a0e1c"/>
+    </radialGradient>
+    <radialGradient id="gCa" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ff5a5a" stop-opacity="0.9"/>
+      <stop offset="100%" stop-color="#ff5a5a" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="gNa" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#4dffb8" stop-opacity="0.9"/>
+      <stop offset="100%" stop-color="#4dffb8" stop-opacity="0"/>
+    </radialGradient>
+    <marker id="aGold" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6" fill="#ffc300"/>
+    </marker>
+    <marker id="aRed" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6" fill="#ff4d6d"/>
+    </marker>
+    <marker id="aGreen" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6" fill="#00e985"/>
+    </marker>
+  </defs>`;
+  c += `<rect width="1000" height="550" fill="url(#bg)"/>`;
+
+  // Étiquettes
+  c += `<text x="60" y="40" fill="#aab4d0" font-size="12" font-weight="600" opacity="0.7">النهاية العصبية قبل المشبكية</text>`;
+  c += `<text x="500" y="40" fill="#aab4d0" font-size="12" font-weight="600" opacity="0.7">الشق المشبكي</text>`;
+  c += `<text x="820" y="40" fill="#aab4d0" font-size="12" font-weight="600" opacity="0.7">الخلية بعد المشبكية</text>`;
+  c += `<text id="curStepTitle" x="500" y="520" text-anchor="middle" fill="#ffc300" font-size="18" font-weight="700" opacity="0.9">الاتجاه: ← كمون العمل →</text>`;
+
+  const preX = 200, preY = 270, preR = 130;
+  const postX = 810, postY = 270, postR = 120;
+  const fenteStart = preX + preR + 10;
+  const fenteEnd = postX - postR - 10;
+
+  // Globale
+  c += `<circle id="preCell" cx="${preX}" cy="${preY}" r="${preR}" fill="#3a1a5c" stroke="#7b2d8e" stroke-width="2.5" opacity="0.95"/>`;
+  c += `<circle cx="${preX}" cy="${preY}" r="${preR}" fill="none" stroke="#7b2d8e" stroke-width="1.5" stroke-dasharray="4 4" opacity="0.4" id="preMembrane"/>`;
+  c += `<circle cx="${preX}" cy="${preY}" r="${preR-8}" fill="none" stroke="#5a3a8a" stroke-width="1" opacity="0.3"/>`;
+
+  // Réticulum + mito
+  for (let i = 0; i < 3; i++) {
+    const rx = preX - 70 + i * 70;
+    c += `<ellipse cx="${rx}" cy="${preY-35}" rx="${25}" ry="15" fill="none" stroke="#6a3a8a" stroke-width="2" opacity="0.6"/>`;
+    c += `<ellipse cx="${rx+5}" cy="${preY-25}" rx="${18}" ry="10" fill="none" stroke="#6a3a8a" stroke-width="2" opacity="0.5"/>`;
+  }
+  c += `<ellipse cx="${preX-55}" cy="${preY-80}" rx="16" ry="9" fill="#3a4a6a" stroke="#5a6a8a" stroke-width="1.5"/>`;
+  c += `<ellipse cx="${preX-42}" cy="${preY-85}" rx="12" ry="7" fill="#3a4a6a" stroke="#5a6a8a" stroke-width="1.5"/>`;
+
+  // Membrane قبل المشبكي (الجانب الأيمن)
+  c += `<line x1="${fenteStart-10}" y1="${preY-50}" x2="${fenteStart+6}" y2="${preY-50}" stroke="#7b2d8e" stroke-width="5" opacity="0.9"/>`;
+  c += `<line x1="${fenteStart-10}" y1="${preY-25}" x2="${fenteStart+6}" y2="${preY-25}" stroke="#7b2d8e" stroke-width="5" opacity="0.9"/>`;
+  c += `<line x1="${fenteStart-10}" y1="${preY}" x2="${fenteStart+6}" y2="${preY}" stroke="#7b2d8e" stroke-width="5" opacity="0.9"/>`;
+  c += `<line x1="${fenteStart-10}" y1="${preY+25}" x2="${fenteStart+6}" y2="${preY+25}" stroke="#7b2d8e" stroke-width="5" opacity="0.9"/>`;
+  c += `<line x1="${fenteStart-10}" y1="${preY+50}" x2="${fenteStart+6}" y2="${preY+50}" stroke="#7b2d8e" stroke-width="5" opacity="0.9"/>`;
+
+  // الشق المشبكي
+  c += `<rect x="${fenteStart}" y="${preY-55}" width="${fenteEnd-fenteStart}" height="110" fill="#1a3050" opacity="0.35"/>`;
+  c += `<rect x="${fenteStart}" y="${preY-55}" width="${fenteEnd-fenteStart}" height="110" fill="none" stroke="#3a6a9a" stroke-width="1" stroke-dasharray="3 6" opacity="0.5"/>`;
+  c += `<text x="${(fenteStart+fenteEnd)/2}" y="${preY-85}" text-anchor="middle" fill="#5a9fd4" font-size="10" font-weight="600" opacity="0.6">الشق المشبكي</text>`;
+
+  // الخلية بعد المشبكية
+  c += `<circle id="postCell" cx="${postX}" cy="${postY}" r="${postR}" fill="#4a2520" stroke="#c24b3c" stroke-width="2.5" opacity="0.95"/>`;
+  c += `<circle cx="${postX}" cy="${postY}" r="${postR}" fill="none" stroke="#c24b3c" stroke-width="1.5" stroke-dasharray="4 4" opacity="0.4" id="postMembrane"/>`;
+  c += `<circle cx="${postX}" cy="${postY}" r="${postR-8}" fill="none" stroke="#8a3a2a" stroke-width="1" opacity="0.3"/>`;
+
+  // Récepteurs (ستظهر في الخطوات 7-?)
+  c += `<g id="receptors" style="opacity:0.8; transition: opacity 0.4s;">
+    ${[ 'x="'+ (postX-125) +'" y="'+ (postY-65) +'" width="6" height="20"',
+        'x="'+ (postX-113) +'" y="'+ (postY-55) +'" width="6" height="24"',
+        'x="'+ (postX-103) +'" y="'+ (postY-70) +'" width="6" height="18"',
+        'x="'+ (postX-93) +'" y="'+ (postY-50) +'" width="6" height="26"',
+        'x="'+ (postX-83) +'" y="'+ (postY-75) +'" width="6" height="16"',
+        'x="'+ (postX-73) +'" y="'+ (postY-60) +'" width="6" height="20"',
+        'x="'+ (postX-63) +'" y="'+ (postY-45) +'" width="6" height="28"'
+    ].map((p,i) => `<rect ${p} rx="3" fill="#ffc300" opacity="0.75"/>`).join('')}
+  </g>`;
+  c += `<text x="` + (postX-95) + `" y="` + (postY+80) + `" text-anchor="middle" fill="#ffc300" font-size="10" font-weight="600" opacity="0.7">مستقبلات غشائية</text>`;
+
+  // Canaux Na+ (chemo-gated) — ستظهر مع الخطوة 8
+  c += `<g id="channelsNa" style="opacity:0.6; transition: opacity 0.4s;">
+    ${[ 'x="'+ (postX-120) +'" y="'+ (postY-30) +'" width="8" height="16"',
+        'x="'+ (postX-108) +'" y="'+ (postY-30) +'" width="8" height="16"',
+        'x="'+ (postX-96) +'" y="'+ (postY-28) +'" width="8" height="16"',
+        'x="'+ (postX-84) +'" y="'+ (postY-30) +'" width="8" height="16"',
+        'x="'+ (postX-72) +'" y="'+ (postY-28) +'" width="8" height="16"'
+    ].map((p,i) => `<rect ${p} rx="4" fill="#4da6ff" opacity="0.8"/>`).join('')}
+  </g>`;
+  c += `<text id="lCanauxNa" x="` + (postX-95) + `" y="` + (postY+100) + `" text-anchor="middle" fill="#4da6ff" font-size="10" font-weight="600" opacity="0.7">قنوات Na+</text>`;
+
+  // Canaux Ca++ على الغشاء قبل المشبكي
+  c += `<g id="channelsCa" style="opacity:0.5; transition: opacity 0.4s;">
+    ${[ 'x="'+ (fenteStart-4) +'" y="'+ (preY-48) +'" width="6" height="12"',
+        'x="'+ (fenteStart-4) +'" y="'+ (preY-28) +'" width="6" height="12"',
+        'x="'+ (fenteStart-4) +'" y="'+ (preY-8) +'" width="6" height="12"',
+        'x="'+ (fenteStart-4) +'" y="'+ (preY+12) +'" width="6" height="12"',
+        'x="'+ (fenteStart-4) +'" y="'+ (preY+32) +'" width="6" height="12"',
+        'x="'+ (fenteStart-4) +'" y="'+ (preY+52) +'" width="6" height="12"'
+    ].map((p,i) => `<rect ${p} rx="3" fill="#4da6ff" opacity="0.85"/>`).join('')}
+  </g>`;
+  c += `<text id="lCanauxCa" x="` + (fenteStart+25) + `" y="` + (preY-65) + `" fill="#4da6ff" font-size="10" font-weight="600" opacity="0.7">قنوات Ca++</text>`;
+
+  // الحويصلات المشبكية
+  c += `<g id="vesicles" style="transition: opacity 0.4s;">
+    ${[ ['x="'+ (preX-65) +'" y="'+ (preY-15) +'" r="12"', 'x="'+ (preX-45) +'" y="'+ (preY+10) +'" r="11",'x="'+ (preX-25) +'" y="'+ (preY-5) +'" r="12"', 'x="'+ (preX-5) +'" y="'+ (preY+15) +'" r="10"', 'x="'+ (preX+15) +'" y="'+ (preY-10) +'" r="11"', 'x="'+ (preX+35) +'" y="'+ (preY+5) +'" r="10"'].map((p,i) => {
+      const parts = p.split(',').map(x => x.trim());
+      return parts.map(s => '<circle ' + s + ' fill="#d4602a" stroke="#ff7f2a" stroke-width="1.5"/>').join('');
+    }).join('')}
+  </g>`;
+  c += `<text x="` + (preX-40) + `" y="` + (preY-50) + `" fill="#ff7f2a" font-size="10" font-weight="600" opacity="0.75">حويصلات مشبكية</text>`;
+
+  // أيونات Ca++
+  c += `<g id="ionsCa" style="opacity:0; transition: opacity 0.4s;">
+    ${[[30,-40],[50,-20],[40,10],[60,30],[35,50]].map(([dx,dy],i) => {
+      const cx = fenteStart + dx;
+      const cy = preY + dy;
+      return `<circle cx="${cx}" cy="${cy}" r="5" fill="#ff2d55">
+        <animate attributeName="cx" values="${cx};${preX-20}" dur="${1.6 + i*0.2}s" repeatCount="indefinite"/>
+      </circle>`;
+    }).join('')}
+    <circle cx="${fenteStart+40}" cy="${preY+5}" r="22" fill="url(#gCa)" opacity="0.3"/>
+  </g>`;
+  c += `<text id="lIonsCa" x="` + (fenteStart+10) + `" y="` + (preY+70) + `" fill="#ff2d55" font-size="10" font-weight="600" opacity="0.7">Ca++</text>`;
+
+  // أيونات Na+
+  c += `<g id="ionsNa" style="opacity:0; transition: opacity 0.4s;">
+    ${[[-140,-40],[-130,-15],[-145,10],[-125,35],[-135,55]].map(([dx,dy],i) => {
+      const cx = postX + dx;
+      const cy = preY + dy;
+      return `<circle cx="${cx}" cy="${cy}" r="5" fill="#26c485">
+        <animate attributeName="cx" values="${cx};${postX+60}" dur="${1.6 + i*0.2}s" repeatCount="indefinite"/>
+      </circle>`;
+    }).join('')}
+    <circle cx="${postX-100}" cy="${preY+10}" r="20" fill="url(#gNa)" opacity="0.25"/>
+  </g>`;
+  c += `<text id="lIonsNa" x="` + (postX-100) + `" y="` + (preY+95) + `" fill="#26c485" font-size="10" font-weight="600" opacity="0.7">Na+</text>`;
+
+  // الناقل العصبي
+  c += `<g id="neurotransmitter" style="opacity:0; transition: opacity 0.4s;">
+    ${['20,-25','40,5','60,-15','80,15','100,-20','120,10'].map(([dx,dy],i) => {
+      const cx = fenteStart + dx;
+      const cy = preY + dy;
+      const targetX = postX - 120 - i*10;
+      const targetY = preY - 50 - i*5;
+      return `<circle cx="${cx}" cy="${cy}" r="6" fill="#7aa5ff" opacity="0.8">
+        <animateMotion path="M${cx},${cy} L${targetX},${targetY}" dur="${2 + i*0.2}s" repeatCount="indefinite"/>
+      </circle>`;
+    }).join('')}
+  </g>`;
+  c += `<text id="lNeuro" x="` + (fenteStart+80) + `" y="` + (preY-65) + `" text-anchor="middle" fill="#7aa5ff" font-size="10" font-weight="600" opacity="0.7">الناقل العصبي</text>`;
+
+  // Flèches
+  c += `<g id="arrowAp" style="opacity:0.9; transition: opacity 0.3s;">
+    <path d="M-10,${preY-10} L${preX-140},${preY-10}" stroke="#9d65ff" stroke-width="2.5" marker-end="url(#aGold)" opacity="0.7" stroke-dasharray="6 4"/>
+    <text x="${preX-80}" y="${preY-28}" fill="#9d65ff" font-size="12" font-weight="700" opacity="0.85">كمون العمل</text>
+  </g>`;
+
+  c += `<g id="arrowDepol" style="opacity:0; transition: opacity 0.3s;">
+    <path d="M${preX-70},${preY-55} L${preX+50},${preY-55}" stroke="#ff4d6d" stroke-width="2" marker-end="url(#aRed)" opacity="0.8" stroke-dasharray="5 5"/>
+    <text x="${preX-10}" y="${preY-72}" fill="#ff4d6d" font-size="11" font-weight="600" opacity="0.85">موجة زوال استقطاب</text>
+  </g>`;
+
+  c += `<g id="arrowCaFlow" style="opacity:0; transition: opacity 0.3s;>
+    ${[ -48,-28,-8,12,32,52].map(dy => {
+      const mid = dy < 0 ? preY-35 : preY+5;
+      return `<path d="M${fenteStart+15},${preY+dy} L${fenteStart+15},${mid}" stroke="#ff4d6d" stroke-width="2.5" marker-end="url(#aRed)" opacity="0.9"/>`;
+    }).join('')}
+  </g>`;
+
+  c += `<g id="arrowVesFusion" style="opacity:0; transition: opacity 0.3s;">
+    <path d="M${preX+60},${preY+5} Q${fenteStart-10},${preY+20} ${fenteStart-5},${preY+25}" stroke="#ff7f2a" stroke-width="2.5" marker-end="url(#aGold)" opacity="0.85" stroke-dasharray="6 4"/>
+  </g>`;
+
+  c += `<g id="arrowExocytose" style="opacity:0; transition: opacity 0.3s;">
+    <path d="M${fenteStart-5},${preY+10} L${fenteStart+10},${preY+10}" stroke="#ff9a4a" stroke-width="2.5" marker-end="url(#aGold)" opacity="0.85"/>
+  </g>`;
+
+  c += `<g id="arrowReceptor" style="opacity:0; transition: opacity 0.3s;">
+    ${[ -30,-10,10,30,50].map(dy => {
+      return `<path d="M${fenteEnd-50},${preY+dy} L${postX-120},${preY-55+dy}" stroke="#7aa5ff" stroke-width="2.5" marker-end="url(#aGold)" opacity="0.85" stroke-dasharray="5 5"/>`;
+    }).join('')}
+  </g>`;
+
+  c += `<g id="arrowNaFlow" style="opacity:0; transition: opacity 0.3s;">
+    ${[-30,-10,10,30].map(dy => {
+      return `<path d="M${postX-120+dy},${preY-35+dy} L${postX-120+dy},${preY-20+dy}" stroke="#00e985" stroke-width="2.5" marker-end="url(#aGreen)" opacity="0.9"/>`;
+    }).join('')}
+  </g>`;
+
+  c += `<g id="arrowRecycling" style="opacity:0; transition: opacity 0.3s;">
+    <path d="M${fenteStart-10},${preY+10} L${fenteStart-30},${preY+10}" stroke="#00e985" stroke-width="2.5" marker-end="url(#aGreen)" opacity="0.85"/>
+    <text x="${preX-40}" y="${preY+40}" fill="#00e985" font-size="11" font-weight="600" opacity="0.85">إعادة تدوير</text>
+  </g>`;
+
+  // موجة كمون العمل
+  c += `<g id="wave" style="opacity:0.9; transition: opacity 0.3s;">
+    <polyline points="5,270 25,270 35,250 45,230 50,220 55,230 60,250 65,270 80,270 95,250 110,230 115,220 120,230 125,250 135,270 155,270"
+      fill="none" stroke="#9d65ff" stroke-width="3" opacity="0.85"/>
+    <text x="80" y="210" fill="#9d65ff" font-size="10" font-weight="600" text-anchor="middle" opacity="0.8">موجة كمون العمل</text>
+    <text x="5" y="295" fill="#6a7aaa" font-size="8" opacity="0.6">-70mV</text>
+    <text x="50" y="245" fill="#9d65ff" font-size="8" opacity="0.7">+40 mV</text>
+  </g>`;
+
+  svg.innerHTML = c;
+}
+buildSVG();
+
+// ═══════════ LÉGENDE ═══════════
+document.getElementById('legendGrid').innerHTML = LEGEND.map(l => `
+  <div class="legend-item">
+    <div class="swatch" style="background:${l.c}"></div>
+    <div class="lbl">${l.l}</div>
+  </div>
+`).join('');
+
+// ═══════════ LOGIQUE ═══════════
+let currentStep = 1;
+let isPlaying = false;
+let playInterval = null;
+const stage = document.getElementById('stage');
+const card = document.getElementById('card');
+const stepNum = document.getElementById('stepNum');
+const stepTitle = document.getElementById('stepTitle');
+const stepBody = document.getElementById('stepBody');
+const stepExplain = document.getElementById('stepExplain');
+const stepsNav = document.getElementById('stepsNav');
+const progressBar = document.getElementById('progressBar');
+const playBtn = document.getElementById('playBtn');
+const ttsBtn = document.getElementById('ttsBtn');
+const resetBtn = document.getElementById('resetBtn');
+const curStepTitle = document.getElementById('curStepTitle');
+
+let ttsEnabled = false;
+
+function updateUI() {
+  const s = STEPS[currentStep - 1];
+  stepNum.textContent = `الخطوة ${s.n}/10`;
+  stepTitle.textContent = s.title;
+  stepBody.textContent = s.body;
+  stepExplain.innerHTML = s.explain;
+  card.style.borderLeftColor = currentStep === 10 ? '#00e985' : '#ffc300';
+  document.querySelectorAll('.dot').forEach(d => {
+    const n = parseInt(d.dataset.step);
+    d.className = `dot ${n === currentStep ? 'active' : (n < currentStep ? 'done' : '')}`;
+  });
+  progressBar.style.width = `${((currentStep - 1) / 9 * 100)}%`;
+  curStepTitle.textContent = s.title;
+}
+
+function goToStep(n) {
+  n = Math.max(1, Math.min(10, n));
+  currentStep = n;
+  updateUI();
+  applyStepToSVG(n);
+  if (ttsEnabled) speakCurrent();
+}
+
+function applyStepToSVG(n) {
+  const ap = document.getElementById('arrowAp');
+  const depol = document.getElementById('arrowDepol');
+  const caFlow = document.getElementById('arrowCaFlow');
+  const vesFusion = document.getElementById('arrowVesFusion');
+  const exocytose = document.getElementById('arrowExocytose');
+  const receptor = document.getElementById('arrowReceptor');
+  const naFlow = document.getElementById('arrowNaFlow');
+  const recycling = document.getElementById('arrowRecycling');
+  const wave = document.getElementById('wave');
+
+  const ionsCa = document.getElementById('ionsCa');
+  const ionsNa = document.getElementById('ionsNa');
+  const nt = document.getElementById('neurotransmitter');
+  const chCa = document.getElementById('channelsCa');
+  const chNa = document.getElementById('channelsNa');
+
+  const lCanauxCa = document.getElementById('lCanauxCa');
+  const lIonsCa = document.getElementById('lIonsCa');
+  const lCanauxNa = document.getElementById('lCanauxNa');
+  const lIonsNa = document.getElementById('lIonsNa');
+  const lNeuro = document.getElementById('lNeuro');
+
+  // Reset
+  ap.style.opacity = '0.9';
+  depol.style.opacity = '0';
+  caFlow.style.opacity = '0';
+  vesFusion.style.opacity = '0';
+  exocytose.style.opacity = '0';
+  receptor.style.opacity = '0';
+  naFlow.style.opacity = '0';
+  recycling.style.opacity = '0';
+  wave.style.opacity = '0.9';
+  ionsCa.style.opacity = '0';
+  ionsNa.style.opacity = '0';
+  nt.style.opacity = '0';
+  chCa.style.opacity = '0.5';
+  chNa.style.opacity = '0.5';
+  lCanauxCa.style.opacity = '0';
+  lIonsCa.style.opacity = '0';
+  lCanauxNa.style.opacity = '0';
+  lIonsNa.style.opacity = '0';
+  lNeuro.style.opacity = '0';
+
+  if (n === 1) {
+    ap.style.opacity = '0.95';
+    wave.style.opacity = '0.95';
+  }
+  else if (n === 2) {
+    depol.style.opacity = '0.95';
+    chCa.style.opacity = '1';
+    lCanauxCa.style.opacity = '0.95';
+    chCa.querySelectorAll('rect').forEach(r => { r.setAttribute('fill', '#5ab0ff'); r.setAttribute('opacity', '1'); });
+  }
+  else if (n === 3) {
+    ionsCa.style.opacity = '1';
+    lIonsCa.style.opacity = '0.95';
+    caFlow.style.opacity = '0.95';
+    chCa.querySelectorAll('rect').forEach(r => { r.setAttribute('fill', '#ff5a5a'); });
+  }
+  else if (n === 4) {
+    vesFusion.style.opacity = '0.95';
+    ionsCa.style.opacity = '0.7';
+  }
+  else if (n === 5) {
+    exocytose.style.opacity = '0.95';
+    nt.style.opacity = '1';
+    lNeuro.style.opacity = '0.95';
+  }
+  else if (n === 6) {
+    document.querySelectorAll('#vesicles circle').forEach(c => { c.setAttribute('fill', '#ff9a4a'); });
+  }
+  else if (n === 7) {
+    receptor.style.opacity = '0.95';
+    nt.style.opacity = '1';
+    lNeuro.style.opacity = '0.95';
+    document.querySelectorAll('#receptors rect').forEach(r => { r.setAttribute('fill', '#ffd94d'); r.setAttribute('opacity', '1'); });
+    document.getElementById('receptors').style.opacity = '1';
+  }
+  else if (n === 8) {
+    chNa.style.opacity = '1';
+    lCanauxNa.style.opacity = '0.95';
+    chNa.querySelectorAll('rect').forEach(r => { r.setAttribute('fill', '#5ab0ff'); r.setAttribute('opacity', '1'); });
+    receptor.style.opacity = '0.9';
+  }
+  else if (n === 9) {
+    ionsNa.style.opacity = '1';
+    lIonsNa.style.opacity = '0.95';
+    naFlow.style.opacity = '0.95';
+    chNa.querySelectorAll('rect').forEach(r => { r.setAttribute('fill', '#4dffb8'); });
+    document.querySelector('#postCell').setAttribute('stroke', '#ff7f2a');
+    document.querySelector('#postCell').setAttribute('stroke-width', '4');
+    wave.style.opacity = '0.7';
+    nt.style.opacity = '1';
+  }
+  else if (n === 10) {
+    recycling.style.opacity = '0.95';
+    ionsCa.style.opacity = '0.5';
+    nt.style.opacity = '0.7';
+    lNeuro.style.opacity = '0.7';
+    document.querySelector('#postCell').setAttribute('stroke', '#c24b3c');
+    document.querySelector('#postCell').setAttribute('stroke-width', '2.5');
+    document.querySelector('#postCell').setAttribute('stroke-dasharray', '0');
+    recycling.style.opacity = '0.95';
+  }
+}
+
+function goToNext() { goToStep(Math.min(10, currentStep + 1)); }
+function goToPrevious() { goToStep(Math.max(1, currentStep - 1)); }
+
+function speakCurrent() {
+  const s = STEPS[currentStep - 1];
+  const text = `الخطوة ${s.n}. ${s.title}. ${s.body}`;
+  if (!window.speechSynthesis) return;
+  if (window.speechSynthesis.speaking) return;
+  const utter = new SpeechSynthesisUtterance(text);
+  utter.lang = 'ar-SA';
+  utter.rate = 0.88;
+  utter.pitch = 1.05;
+  window.speechSynthesis.speak(utter);
+}
+
+function toggleTTS() {
+  ttsEnabled = !ttsEnabled;
+  ttsBtn.textContent = ttsEnabled ? '🔊 الصوت: مفعل' : '🔊 صوت';
+  ttsBtn.className = ttsEnabled ? 'btn gold' : 'btn';
+}
+
+function resetAnimation() {
+  stopAutoPlay();
+  goToStep(1);
+}
+
+function startAutoPlay() {
+  if (isPlaying) { stopAutoPlay(); return; }
+  isPlaying = true;
+  playBtn.textContent = '⏹ إيقاف';
+  playBtn.className = 'btn red';
+  goToStep(currentStep);
+  let stepIdx = currentStep;
+  playInterval = setInterval(() => {
+    if (ttsEnabled) speakCurrent();
+    stepIdx++;
+    if (stepIdx > 10) { stopAutoPlay(); stepIdx = 10; goToStep(10); return; }
+    goToStep(stepIdx);
+  }, 4500);
+}
+
+function stopAutoPlay() {
+  isPlaying = false;
+  if (playInterval) { clearInterval(playInterval); playInterval = null; }
+  playBtn.textContent = '▶ عرض كامل';
+  playBtn.className = 'btn primary';
+}
+
+// ── 초기 설정 ──
+// Générer les dots nav
+stepsNav.innerHTML = STEPS.map(s => `
+  <button class="dot" data-step="${s.n}">${s.n}</button>
+`).join('') + `
+  <div class="nav-center">
+    <button class="btn-step" id="prevBtn">◀</button>
+    <button class="btn-step primary" id="ttsBtn2">🔊</button>
+    <button class="btn-step gold" id="nextBtn">▶</button>
+  </div>
+`;
+
+document.querySelectorAll('.dot').forEach(dot => {
+  dot.addEventListener('click', () => goToStep(parseInt(dot.dataset.step)));
+});
+document.getElementById('prevBtn').addEventListener('click', goToPrevious);
+document.getElementById('nextBtn').addEventListener('click', goToNext);
+document.getElementById('ttsBtn2').addEventListener('click', speakCurrent);
+
+playBtn.addEventListener('click', startAutoPlay);
+ttsBtn.addEventListener('click', toggleTTS);
+resetBtn.addEventListener('click', resetAnimation);
+
+updateUI();
+goToStep(1);
+
+// Clavier
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); goToNext(); if (ttsEnabled) speakCurrent(); }
+  else if (e.key === 'ArrowLeft') { e.preventDefault(); goToPrevious(); }
+  else if (e.key === 'Enter') { e.preventDefault(); if (ttsEnabled) speakCurrent(); }
+  else if (e.key === 'r' || e.key === 'R') { resetAnimation(); }
+  else if (e.key >= '1' && e.key <= '9') { goToStep(parseInt(e.key)); }
+  else if (e.key === '0') { goToStep(10); }
+});
+</script>
+</body>
+</html>

@@ -22,11 +22,14 @@ import {
   getBossScenarioById,
   type KnowledgeCard,
   type QuizQuestion,
+  type BossFightScenario,
 } from './data/smartBotData';
 import { TUTOR_KNOWLEDGE, type TutorKnowledgeChunk } from './tutorKnowledge';
 import { BOOK_TUTOR_QA, findBestBookQA, type BookTutorQA } from './bookTutorQA';
 import { findBestMethodologyQA } from './methodologyKnowledge';
 import { LESSON_INDEX } from './data/lessonIndex';
+import { UNIT_OPENINGS } from './data/unitOpenings';
+import { BAC_EXAM_DATE, bacDaysLeft } from './utils/dashboardActions';
 import {
   KNOWLEDGE_CARDS as LEGACY_KNOWLEDGE_CARDS,
   type KnowledgeCard as LegacyKnowledgeCard,
@@ -507,7 +510,6 @@ function buildAnswer(norm: string, activeDomainId: number | null): TutorAction |
       sources: [{ type: 'internal_card' as SourceType, title: scienceCard.title }],
     };
   }
-
   const hits = searchAllBases(norm, activeDomainId);
   if (hits.length === 0) return null;
 
@@ -817,7 +819,24 @@ export function gradeQuizAnswer(session: BotSession, rawAnswer: string): EngineR
       // à l'ACHÈVEMENT, pas à la réussite, exactement comme l'affiche le
       // message « المكافأة: +15 XP ». lastMissionDate verrouille le lendemain.
       newSession = completeDailyMission(newSession, missionTopicId);
-      text += `\n\n🎯 **مهمة اليوم مكتملة!** كسبت ${MISSION_XP} XP. عُد غداً لمهمة جديدة. ⚡`;
+
+      // ── R10 (audit Morchid 2026-10-01) : on célèbre le GAIN, pas la
+      // présence. Avant, le message était « مهمة اليوم مكتملة! كسبت 15 XP » —
+      // de la dopamine pure, vide : l'élève ne savait PAS ce qu'il avait
+      // appris. Désormais on nomme le point-clé maîtrisé (ou, en cas
+      // d'échec, le point-clé à reprendre demain) : le cerveau retient ce
+      // qu'on nomme, pas ce qu'on félicite.
+      const missionCard = getCardById(missionTopicId);
+      const masteredKeyPoint = missionCard?.keywords?.[0] ?? missionCard?.title ?? '';
+      if (correctCount > 0) {
+        text += `\n\n🎯 **مهمة اليوم مكتملة!** كسبت ${MISSION_XP} XP. ⚡\n`;
+        text += `✅ لقد ثبّتت الآن نقطة مفتاحية واحدة: **${masteredKeyPoint}**.\n`;
+        text += `غداً سنبني عليها نقطة جديدة. عُد كل يوم لتثبيت نقطة واحدة. 📈`;
+      } else {
+        text += `\n\n🎯 **مهمة اليوم مكتملة** (كسبت ${MISSION_XP} XP). ⚡\n`;
+        text += `⚠️ النقطة المفتاحية **${masteredKeyPoint}** لم تثبّت بعد.\n`;
+        text += `لا بأس — غداً سنعيد التثبيت عليها بطريقة أبسط. التقدّم ليس خطاً مستقيماً. 📈`;
+      }
     }
   }
   const quickActions = quiz === undefined ? ['راجع أخطائي السابقة', 'اعاده الاختبار التشخيصي', 'العودة للقائمة الرئيسية'] : [];
@@ -841,8 +860,91 @@ export function startBossFight(session: BotSession): EngineResult {
   const replay = session.completedBac.includes(String(domainId));
   const text = `⚔️ **تحدي BAC** — مجال ${domain.title}\n` +
     (replay ? '🏆 سبق إتمامك هذا التحدي — إعادة بدون XP إضافي.\n' : '') +
-    `ستُطرح عليك ${scenarios.length} وضعيات مشكلة. اكتب إجابتك وسيقوّمها المرشد آلياً وفق النقاط الأساسية.\n\n${first.situation}\n\n📝 اكتب إجابتك، أو اختر «لا أعرف» لعرض التصحيح.`;
+    `ستُطرح عليك ${scenarios.length} وضعية مشكلة. اكتب إجابتك وسيقوّمها المرشد آلياً وفق النقاط الأساسية.\n\n${first.situation}\n\n📝 اكتب إجابتك، أو اختر «لا أعرف» لطلب فكرة.`;
   return { session: newSession, action: { text, quickActions: ['لا أعرف'], sources: [{ type: 'domain' as SourceType, title: 'تحدي BAC' }] } };
+}
+
+/**
+ * B2 (audit Morchid 2026-09-25) : une clause qui s'ouvre par une forme de
+ *  réfutation (« ليس صحيحاً أن… », « أرفض… », « مستحيل… ») nie tout point-clé
+ *  qu'elle reprend. Une réponse niant chaque point-clé obtenait 10/10.
+ *  Primitives extraites dans lib/validation/negationAr.ts (partagées avec le
+ *  scorer C2 de Tadwin).
+ */
+
+/**
+ * R5 (audit Morchid 2026-10-01) : la détresse n'est jamais hors programme.
+ * Avant, un élève qui écrivait « راني خايف من الباك » ne touchait AUCUN token
+ * de DOMAIN_VOCAB → hasDomainSignal renvoyait false → outOfScopeResult. Le
+ * moment où l'élève avait le plus besoin d'un humain était exactement celui où
+ * Morchid le rejetait (« هذا السؤال خارج قاعدة علوم الطبيعة »).
+ *
+ * Le lexique d'affect (arabe standard + darija algérien) est testé AVANT tout
+ * autre traitement et déclenche une réponse de soutien : écoute en une ligne,
+ * réduction de charge (une seule action, 10 minutes), jamais un refus.
+ */
+const AFFECT_LEXICON: string[] = [
+  // Peur / angoisse
+  'خايف', 'خايفة', 'خائف', 'خائفة', 'أخاف', 'أخافني', 'فزع', 'فزعت', 'مرعوب',
+  // Épuisement
+  'تعبت', 'متعب', 'متعة', 'مرهق', 'مرهقة', 'لا أستطيع', 'ما نقدرش', 'ما قدرتش',
+  // Découragement
+  'محبط', 'محبطة', 'احباط', 'فاشل', 'فاشلة', 'فشلت', 'ضايع', 'ضائع', 'تائه',
+  // Blocage
+  'حابس', 'محشور', 'حائر', 'حيرة', 'مرتبك', 'مرتبكة',
+  // Pression / urgence (légitimes seuls en question de cours, mais utiles en
+  // combinaison avec un mot d'affect)
+  'الباك', 'البكالوريا', 'الامتحان', 'الامتحانات', 'الموعد', 'الوقت',
+].map((w) => normalizeArabic(w)).filter((w) => w.length >= 3);
+
+/** Détresse = un terme d'ÉMOTION (peur/épuisement/échec/blocage). Les termes
+ *  d'épreuve (« الباك ») seuls ne suffisent pas — ils sont légitimes dans une
+ *  question de cours : il faut un mot d'affect pour déclencher. */
+const AFFECT_CORE: string[] = AFFECT_LEXICON.filter((w) =>
+  [
+    'خايف', 'خائف', 'أخاف', 'فزع', 'مرعوب', 'تعبت', 'متعب', 'مرهق',
+    'ما نقدرش', 'لا أستطيع', 'محبط', 'احباط', 'فاشل', 'فشلت',
+    'ضايع', 'ضائع', 'تائه', 'حابس', 'محشور', 'حائر', 'مرتبك',
+  ].includes(w),
+);
+
+function hasAffectSignal(inputTokens: string[]): boolean {
+  const normSet = new Set(inputTokens);
+  return AFFECT_CORE.some((w) => normSet.has(w) || inputTokens.some((t) => fuzzyTokenEquals(t, w)));
+}
+
+/**
+ * R5 : réponse de soutien. Structure imposée par l'audit — écoute brève (1
+ * ligne), reconnaissance (le stress signifie qu'on se soucie, pas qu'on est
+ * incapable), réduction de charge (UNE action de 10 minutes, pas tout le
+ * programme), puis l'élève garde la main.
+ */
+function supportResult(session: BotSession): EngineResult {
+  const lastMistakeId = session.mistakes[session.mistakes.length - 1] ?? null;
+  const lastCard = lastMistakeId ? getCardById(lastMistakeId) : null;
+  const action = lastCard ? `**${lastCard.title}**` : 'درساً واحداً';
+  return {
+    session,
+    action: {
+      confidence: 100,
+      text:
+        `سمعتك. الخوف قبل البكالوريا طبيعي — ومعناه أنّك تهتم، لا أنّك عاجز.\n\n` +
+        `لن نراجع كل شيء اليوم. سنراجع **شيئاً واحداً**، لمدة **10 دقائق**، ثم تتوقف.\n\n` +
+        (lastCard
+          ? `آخر خطأ لك كان في: ${action}.\nابدأ به. 10 دقائق فقط. أنا هنا بعدها.\n\n🎯 بعد العشر دقائق، اختر: «راجع أخطائي السابقة» أو «مهمة اليوم».`
+          : `اختر درساً واحداً فقط — الأقصر أو الأكثر ألفة — واكتب سطراً واحداً عنه.\n10 دقائق فقط. أنا هنا بعدها.\n\n🎯 بعد العشر دقائق، اختر: «مهمة اليوم» أو «العودة للقائمة الرئيسية».`),
+      quickActions: lastCard
+        ? [`راجع ${lastCard.title}`, 'راجع أخطائي السابقة', 'العودة للقائمة الرئيسية']
+        : ['مهمة اليوم', 'العودة للقائمة الرئيسية'],
+      sources: [{ type: 'out_of_scope' as SourceType, title: 'دعم نفسي' }],
+    },
+  };
+}
+/** Un point-clé est couvert s'il apparaît dans une clause NON réfutée, et sans
+ *  inversion de polarité par rapport au point-clé attendu (si l'attendu dit
+ *  « لا تنتقل », une réponse « لا تنتقل » reste juste). */
+function tokenAffirmed(normAnswer: string, token: string, normKp: string): boolean {
+  return tokenAffirme(normAnswer, token, normKp);
 }
 
 /**
@@ -851,19 +953,6 @@ export function startBossFight(session: BotSession): EngineResult {
  * que l'élève se donnait lui-même — l'XP n'est plus fermable au clic.
  * Barème : ≥ 50 % des mots-clés couverts = 10 pts · ≥ 20 % = 5 pts · sinon 0.
  */
-/** B2 (audit Morchid 2026-09-25) : une clause qui s'ouvre par une forme de
- *  réfutation (« ليس صحيحاً أن… », « أرفض… », « مستحيل… ») nie tout point-clé
- *  qu'elle reprend. Une réponse niant chaque point-clé obtenait 10/10.
- *  Primitives extraites dans lib/validation/negationAr.ts (partagées avec le
- *  scorer C2 de Tadwin). */
-
-/** Un point-clé est couvert s'il apparaît dans une clause NON réfutée, et sans
- *  inversion de polarité par rapport au point-clé attendu (si l'attendu dit
- *  « لا تنتقل », une réponse « لا تنتقل » reste juste). */
-function tokenAffirmed(normAnswer: string, token: string, normKp: string): boolean {
-  return tokenAffirme(normAnswer, token, normKp);
-}
-
 function gradeKeyPoints(answer: string, keyPoints: string[]): number {
   const normAnswer = normalizeArabic(answer);
   const tokens = new Set(tokenizeArabic(normAnswer).filter((t) => t.length >= 3));
@@ -905,7 +994,148 @@ function handleBossInput(session: BotSession, rawInput: string): EngineResult {
   // automatiquement — y compris les sessions héritées restées en 'eval'.
   const n = normalizeArabic(rawInput);
   const giveUp = n.includes(normalizeArabic('لا أعرف')) || n.includes(normalizeArabic('لم أجب'));
-  const points = giveUp ? 0 : gradeKeyPoints(rawInput, scenario.keyPoints);
+
+  // ── R1 (audit Morchid 2026-10-01) : la correction n'est plus un bouton. ──
+  // Avant, « لا أعرف » affichait la correction modèle ET tous les points-clés
+  // en un clic — zéro tentative, zéro indice. Cela vidait toute l'ingénierie
+  // anti-triche de son sens pédagogique (règle d'or de studyGuide.ts : « لا
+  // تفتح الحل النموذجي قبل محاولة كتابية حقيقية لمدة 20 إلى 25 دقيقة »).
+  //
+  // Nouveau contrat :
+  //   - « لا أعرف » donne un INDICE (escalier de 3), pas la correction.
+  //   - 2 tentatives écrites réelles (≥ 15 car.) débloquent la correction.
+  //   - 3 indices consommés la débloquent aussi, mais score plafonné à 3/10.
+  // ── R3 : la correction est refusée avant 90 s sans tentative écrite — la
+  // règle d'or devient une contrainte du moteur, pas un texte décoratif.
+  const openedAt = boss.openedAt ?? Date.now();
+  const hintLevel = boss.hintLevel ?? 0;
+  const attempts = boss.attempts ?? 0;
+  const TENTATIVE_MIN = 15;
+  const DELAI_MIN_MS = 90_000;
+
+  const hintActions = ['لا أعرف'];
+  const correctionActions = ['راجع أخطائي السابقة', 'العودة للقائمة الرئيسية'];
+
+  // Une « vraie » tentative : texte suffisamment long et qui n'est pas un
+  // abandon déguisé (« لا أعرف », « لم أجب »).
+  const isRealAttempt = !giveUp && n.replace(/[^؀-ۿ]/g, '').length >= TENTATIVE_MIN;
+
+  // Cas 1 — abandon : on monte d'un cran dans l'escalier d'indices.
+  if (giveUp) {
+    const nextHintLevel = hintLevel + 1;
+    if (nextHintLevel < 3) {
+      const hint = nextBossHint(scenario, nextHintLevel);
+      const newSession: BotSession = {
+        ...session,
+        boss: { ...boss, hintLevel: nextHintLevel },
+      };
+      saveSession(newSession);
+      const hintCount = 3 - nextHintLevel;
+      return {
+        session: newSession,
+        action: {
+          text:
+            `${hint}\n\n💡 لا تزال أمامك ${hintCount} فرصة لتحاول بنفسك — أكتب جملة واحدة، ولو بسيطة.\n` +
+            `📝 أو اختر «لا أعرف» مرة أخرى لعرض فكرة جديدة.`,
+          quickActions: hintActions,
+          sources: [{ type: 'domain' as SourceType, title: 'تحدي BAC' }],
+        },
+      };
+    }
+    // 3 indices consommés : la correction se débloque, score plafonné.
+    const points = 3;
+    return finishBossStepWithCorrection(session, scenario, points, openedAt, attempts, DELAI_MIN_MS, hintActions);
+  }
+
+  // Cas 2 — tentative écrite : on compte, on note, puis on décide.
+  const nextAttempts = attempts + (isRealAttempt ? 1 : 0);
+
+  if (nextAttempts >= 2) {
+    // R1 : 2 tentatives réelles → correction ET score plein.
+    const points = isRealAttempt ? gradeKeyPoints(rawInput, scenario.keyPoints) : 0;
+    return finishBossStepWithCorrection(session, scenario, points, openedAt, nextAttempts, DELAI_MIN_MS, hintActions);
+  }
+
+  // Cas 3 — première tentative (insuffisante pour débloquer) : feedback ciblé
+  // qui nomme CE qui manque, sans jamais afficher la correction complète.
+  if (isRealAttempt) {
+    const points = gradeKeyPoints(rawInput, scenario.keyPoints);
+    const missed = missedKeyPoints(rawInput, scenario.keyPoints);
+    const newSession: BotSession = {
+      ...session,
+      boss: { ...boss, attempts: nextAttempts, hintLevel: Math.max(hintLevel, 1) },
+    };
+    saveSession(newSession);
+    const hint = nextBossHint(scenario, Math.max(hintLevel, 1));
+    return {
+      session: newSession,
+      action: {
+        text:
+          `🔍 محاولتك الأولى مُسجَّلة (${points}/10).\n\n` +
+          (missed.length > 0
+            ? `نقص واضح: **${missed[0]}** — الفكرة غائبة من جوابك.\n\n`
+            : '') +
+          `${hint}\n\n` +
+          `📝 اكتب محاولة ثانية تتضمّن ما نَقص، وستُفتح لك التصحيح النموذجي بكامله.`,
+        quickActions: hintActions,
+        sources: [{ type: 'domain' as SourceType, title: 'تحدي BAC' }],
+      },
+    };
+  }
+
+  // Cas 4 — saisie trop courte / non arabe : on demande une vraie tentative.
+  const newSession: BotSession = { ...session, boss: { ...boss } };
+  saveSession(newSession);
+  return {
+    session: newSession,
+    action: {
+      text:
+        `✏️ محاولة قصيرة جداً. اكتب جملة واحدة على الأقل (15 حرفاً) عن الوضعية.\n` +
+        `💡 أو اختر «لا أعرف» للحصول على فكرة تمهيدية.`,
+      quickActions: hintActions,
+      sources: [{ type: 'domain' as SourceType, title: 'تحدي BAC' }],
+    },
+  };
+}
+
+/**
+ * R3 (audit Morchid) : la règle d'or « pas de correction avant 20-25 min »
+ * devient une contrainte du moteur. Avant 90 s sans AUCUNE tentative écrite,
+ * la correction est refusée — l'élève doit au moins avoir essayé.
+ * Cette fonction gère le dénouement commun : correction affichée (ou refusée
+ * si trop tôt) puis passage à la suite ou fin du défi.
+ */
+function finishBossStepWithCorrection(
+  session: BotSession,
+  scenario: BossFightScenario,
+  points: number,
+  openedAt: number,
+  attempts: number,
+  delaiMinMs: number,
+  hintActions: string[],
+): EngineResult {
+  const boss = session.boss;
+  if (!boss) return { session, action: { text: 'انتهى التحدي.', quickActions: ['العودة للقائمة الرئيسية'] } };
+
+  // R3 : refus de la correction si l'élève n'a pas attendu 90 s SANS tentative.
+  // S'il a écrit (attempts ≥ 1), il a prouvé son effort : pas de délai.
+  const tropTot = attempts === 0 && Date.now() - openedAt < delaiMinMs;
+  if (tropTot) {
+    const restant = Math.max(1, Math.ceil((delaiMinMs - (Date.now() - openedAt)) / 1000));
+    const newSession: BotSession = { ...session, boss: { ...boss } };
+    saveSession(newSession);
+    return {
+      session: newSession,
+      action: {
+        text:
+          `⏱️ قبل التصحيح، جرب ولو جملة واحدة. حاول أن تكتب خلال 90 ثانية.\n` +
+          `بقي لك حوالي ${restant} ثانية — اكتب ما فهمته من الوثيقة، ولو كان ناقصاً.`,
+        quickActions: hintActions,
+        sources: [{ type: 'domain' as SourceType, title: 'تحدي BAC' }],
+      },
+    };
+  }
+
   const correctionText =
     `✅ **التصحيح النموذجي**\n\n${scenario.correction}\n\n🔑 **النقاط الأساسية:**\n${scenario.keyPoints.map((p) => `- ${p}`).join('\n')}` +
     `\n\n🎯 نقاطك لهذه الوضعية: ${points}/10`;
@@ -914,16 +1144,17 @@ function handleBossInput(session: BotSession, rawInput: string): EngineResult {
   const next = idx >= 0 ? scenarios[idx + 1] : undefined;
   if (next) {
     const newSession = startBossStep(session, points, next.id, boss.questionIndex + 1);
-    const text = `${correctionText}\n\n➡️ **السؤال التالي (${boss.questionIndex + 2}/${boss.totalQuestions})**\n\n${next.situation}\n\n📝 اكتب إجابتك أو اختر «لا أعرف» لعرض التصحيح.`;
+    const text = `${correctionText}\n\n➡️ **السؤال التالي (${boss.questionIndex + 2}/${boss.totalQuestions})**\n\n${next.situation}\n\n📝 اكتب إجابتك، أو اختر «لا أعرف» لطلب فكرة.`;
     return { session: newSession, action: { text, quickActions: ['لا أعرف'], sources: [{ type: 'domain' as SourceType, title: 'تحدي BAC' }] } };
   }
+
+  // ── R4 (audit Morchid) : un score n'est plus un adjectif. Tout bilan de
+  // défi contient OBLIGATOIREMENT : la cause exacte (quels points-clés ont
+  // manqué), une action de moins de 15 minutes, et un lien vers la leçon.
   const total = boss.score + points;
   const max = boss.totalQuestions * 10;
   const pct = max > 0 ? Math.round((total / max) * 100) : 0;
-  const appreciation = pct >= 80 ? 'ممتاز 🏆' : pct >= 50 ? 'جيد 👍' : 'يحتاج مراجعة 📖';
-  // Anti-farm (recommandation audit #4) : l'XP du défi n'est accordé qu'à la
-  // PREMIÈRE complétion du domaine — completedBac, jusqu'ici jamais rempli,
-  // devient le garde-fou de rejouabilité.
+  // Anti-farm : l'XP n'est accordé qu'à la PREMIÈRE complétion du domaine.
   const domainKey = String(session.activeDomainId ?? '');
   const firstTime = domainKey !== '' && !session.completedBac.includes(domainKey);
   const finished = finishBossFight(session);
@@ -932,8 +1163,12 @@ function handleBossInput(session: BotSession, rawInput: string): EngineResult {
     : finished;
   saveSession(newSession);
   const domain = DOMAINS.find((d) => d.id === session.activeDomainId);
+
+  const bilan = buildBossBilan(scenario, domain?.title ?? '', pct, total, max);
+
   const text =
-    `🏁 **انتهى تحدي BAC!**\nنتيجتك: ${total}/${max} نقطة (${pct}%).\nالتقدير: ${appreciation}.` +
+    `🏁 **انتهى تحدي BAC!**\nنتيجتك: ${total}/${max} نقطة (${pct}%).\n` +
+    bilan +
     (firstTime ? '' : '\n🏆 سبق إتمامك هذا التحدي — إعادة بدون XP إضافي.');
   return {
     session: newSession,
@@ -944,6 +1179,54 @@ function handleBossInput(session: BotSession, rawInput: string): EngineResult {
       sources: [{ type: 'domain' as SourceType, title: 'تحدي BAC' }],
     },
   };
+}
+
+/**
+ * R4 : construit le bilan de fin de défi — cause, action, porte. L'adjectif
+ * seul (« يحتاج مراجعة ») est interdit : un verdict sans cause suivie d'une
+ * action est une sanction déguisée.
+ */
+function buildBossBilan(scenario: BossFightScenario, domainTitle: string, pct: number, total: number, max: number): string {
+  if (pct >= 80) {
+    return `\n**الخلاصة:** إتقان واضح للنقاط الأساسية. ${total}/${max}.\n` +
+      `🎯 الخطوة التالية: انتقل إلى وضعيات النقل (تحديات أعمق) في نفس المجال.`;
+  }
+  if (pct >= 50) {
+    return `\n**الخلاصة:** أساس جيد، لكن توجد ثغرات.\n` +
+      `🎯 الخطوة التالية: راجع النقاط الناقصة في الدرس المرتبط، ثم أعد المحاولة.`;
+  }
+  return `\n**الخلل ليس في معرفتك — هو في خطوة واحدة.**\n` +
+    `🎯 **عملك الآن (12 دقيقة):** أعد قراءة التصحيح النموذجي، ثم أعد كتابة المحاولة بإضافة سطر يبدأ بـ « ومنه نستنتج أنّ… ».\n` +
+    `📖 الدرس المعني: ${domainTitle} — ابدأ من الوحدة الأولى للمجال.`;
+}
+
+/**
+ * R1 : escalier d'indices. Chaque palier donne moins que la correction et plus
+ * que le néant : on oriente l'élève SANS faire le travail à sa place.
+ */
+function nextBossHint(scenario: BossFightScenario, level: number): string {
+  const first = scenario.keyPoints[0] ?? '';
+  const second = scenario.keyPoints[1] ?? first;
+  if (level === 1) {
+    return `🔑 **مفتاح 1/3:** الوثيقة تقارن حالتين. ابدأ بجملة واحدة فقط:\n« انطلاقًا من الوثيقة، نلاحظ أنّ… »`;
+  }
+  if (level === 2) {
+    return `🔑 **مفتاح 2/3:** الفكرة المركزية في هذه الوضعية هي:\n**${first}**\nحاول أن تربطها بجوابك.`;
+  }
+  return `🔑 **مفتاح 3/3:** النقطة الثانية المطلوبة:\n**${second}**\nالآن، اكتب جملتين تربطان هاتين الفكرتين.`;
+}
+
+/** R4 : liste les points-clés MANQUANTS dans la réponse de l'élève. */
+function missedKeyPoints(answer: string, keyPoints: string[]): string[] {
+  const normAnswer = normalizeArabic(answer);
+  const missed: string[] = [];
+  for (const kp of keyPoints) {
+    const nk = normalizeArabic(kp);
+    const tokens = tokenizeArabic(nk).filter((t) => t.length >= 3);
+    const covered = tokens.some((t) => tokenAffirmed(normAnswer, t, nk));
+    if (!covered) missed.push(kp);
+  }
+  return missed;
 }
 
 export function processStudentInput(session: BotSession, rawInput: string): EngineResult {
@@ -1007,6 +1290,15 @@ export function processStudentInput(session: BotSession, rawInput: string): Engi
         };
       }
     }
+  }
+
+  // ── R5 (audit Morchid 2026-10-01) : la détresse est testée AVANT le
+  // hors-programme. « راني خايف من الباك » ne contient aucun token SVT →
+  // l'ancien hasDomainSignal le classait hors programme et le rejetait au
+  // pire moment. Le lexique d'affect court-circuite tout et déclenche le
+  // soutien (une action de 10 minutes, jamais un refus).
+  if (hasAffectSignal(tokenizeArabic(norm))) {
+    return supportResult(session);
   }
 
   if (isGibberishInput(rawInput || input) || (norm.length >= 3 && OUT_OF_PROGRAM.some((k) => {
@@ -1089,9 +1381,37 @@ export function processStudentInput(session: BotSession, rawInput: string): Engi
     const scienceCard = scoredCard.card;
     const confidence = confidenceFromCardScore(scoredCard.score, scoredCard.exact);
     const microHit = findMicroAnswer(scienceCard, norm);
+
+    // ── R2 (audit Morchid 2026-10-01) : mode socratique. La fiche ne répond
+    // plus par shortAnswer au premier message — elle pose D'ABORD une question
+    // de vérification à réponse courte (probe). Le contenu n'arrive qu'après la
+    // tentative de l'élève. Un élève qui demande deux fois la même chose (ou qui
+    // répond à la probe) obtient le contenu complet : la probe n'est pas un
+    // mur, c'est un palier.
+    if (scienceCard.probe && session.lastProbeCard !== scienceCard.id) {
+      const newSession: BotSession = { ...session, lastProbeCard: scienceCard.id, lastCardId: scienceCard.id };
+      saveSession(newSession);
+      return {
+        session: newSession,
+        action: {
+          confidence,
+          text:
+            `🧩 **${scienceCard.title}**\n\n` +
+            `قبل أن أجيب، سؤال واحد لك:\n**${scienceCard.probe}**\n` +
+            `أجب بكلمة واحدة أو جملة قصيرة — ثم سأعطيك التفسير كاملاً.`,
+          quickActions: filterQuickActions(scienceCard.relatedQuestions, norm),
+          sources: [{ type: 'internal_card' as SourceType, title: scienceCard.title }],
+        },
+      };
+    }
+
+    // Soit la fiche n'a pas de probe, soit l'élève vient de répondre à la
+    // probe, soit il a redemandé la même fiche : on sert le contenu.
+    const newSession: BotSession = { ...session, lastProbeCard: null, lastCardId: scienceCard.id };
+    saveSession(newSession);
     if (microHit) {
       return {
-        session,
+        session: newSession,
         action: {
           confidence,
           text: `🎯 **${scienceCard.title}**\n\n${microHit}`,
@@ -1101,7 +1421,7 @@ export function processStudentInput(session: BotSession, rawInput: string): Engi
       };
     }
     return {
-      session,
+      session: newSession,
       action: {
         confidence,
         text: `🧩 **${scienceCard.title}**\n\n${scienceCard.shortAnswer}\n\n🔑 كلمات مفتاحية: ${scienceCard.keywords.join(' • ')}`,
@@ -1145,6 +1465,90 @@ function pickRandomQuizForTopic(domainId: number, topicId: string): QuizQuestion
   return candidates[Math.floor(Math.random() * candidates.length)];
 }
 
+/**
+ * R6 (audit Morchid 2026-10-01) : priorisation réelle, pas index zéro.
+ * getDailyMission prenait mistakes[0] — la PREMIÈRE erreur chronologique —
+ * indépendamment de sa fréquence ou du poids BAC de l'unité. Un élève avec 9
+ * erreurs en immunologie et 1 vieille erreur en tectonique était renvoyé vers
+ * la tectonique : le moteur apprenait à l'élève que sa première erreur est sa
+ * priorité éternelle.
+ *
+ * Nouveau score = fréquence (occurrences) × poids BAC de l'unité × oubli
+ * (jours écoulés depuis la dernière erreur). Le sommet du classement devient
+ * la mission du jour.
+ */
+const UNIT_BAC_WEIGHT: Map<number, number> = (() => {
+  const map = new Map<number, number>();
+  for (const o of UNIT_OPENINGS) {
+    if (o.bacWeightPercent != null) map.set(o.unitId, o.bacWeightPercent);
+  }
+  return map;
+})();
+
+/**
+ * Associe un topic (carte) à son unité pédagogique pour récupérer son poids
+ * BAC. KnowledgeCard.domainId est le domaine (1-3), pas l'unité — on se
+ * replie sur le poids moyen du domaine quand l'unité précise est inconnue.
+ */
+function weightForTopic(topicId: string, domainId: number | null): number {
+  // Poids moyens mesurés par domaine (unitOpenings) : protéines ~12,
+  // énergétique ~13, tectonique ~10. Sans unité précise, on prend la moyenne.
+  const domainAverage: Record<number, number> = { 1: 12, 2: 13, 3: 10 };
+  const card = getCardById(topicId);
+  if (card) {
+    const unitId = domainToUnit(card.domainId, topicId);
+    const w = unitId != null ? UNIT_BAC_WEIGHT.get(unitId) : undefined;
+    if (w != null) return w;
+    return domainAverage[card.domainId] ?? 10;
+  }
+  return domainId != null ? domainAverage[domainId] ?? 10 : 10;
+}
+
+/**
+ * R6 : approximation du mapping topic → unité. Les cartes du domaine 1
+ * couvrent les unités 1-5, le domaine 2 les unités 6-8, le domaine 3 les
+ * unités 9-11 (cf. DOMAIN_UNITS). On retourne l'unité la plus probable
+ * d'après le rang de la carte dans son domaine — approximation honnête :
+ * elle ne sert qu'à pondérer la priorité, pas à afficher un contenu.
+ */
+function domainToUnit(domainId: number, topicId: string): number | null {
+  const cards = KNOWLEDGE_CARDS.filter((c) => c.domainId === domainId);
+  const idx = cards.findIndex((c) => c.id === topicId);
+  if (idx < 0) return null;
+  const ranges: Record<number, [number, number]> = { 1: [1, 5], 2: [6, 8], 3: [9, 11] };
+  const range = ranges[domainId];
+  if (!range) return null;
+  const span = range[1] - range[0] + 1;
+  return range[0] + Math.floor((idx / Math.max(1, cards.length)) * span);
+}
+
+/**
+ * R6 : classe les erreurs par score = fréquence × poids BAC × oubli.
+ * @param mistakes ids de cartes (peuvent contenener des doublons : on les
+ * compte comme la fréquence, contrairement à l'ancien mistakes[0] qui ne
+ * regardait que le premier).
+ * @param lastSeenAt horodateur de la dernière interaction (pour l'oubli).
+ */
+function rankMistakes(mistakes: string[], lastSeenAt: number): string[] {
+  const freq = new Map<string, number>();
+  for (const m of mistakes) freq.set(m, (freq.get(m) ?? 0) + 1);
+
+  const scored = Array.from(freq.entries()).map(([topicId, count]) => {
+    const card = getCardById(topicId);
+    const weight = weightForTopic(topicId, card?.domainId ?? null);
+    // Oubli : jours depuis la dernière fois que ce sujet a été touché. On ne
+    // stocke pas d'horodateur par erreur (session légère) — l'ancienneté
+    // relative vient du rang dans le tableau : plus tôt apparu, plus oublié.
+    const orderIdx = mistakes.indexOf(topicId);
+    const daysSince = Math.max(1, Math.floor((mistakes.length - orderIdx) / 2));
+    const oubli = Math.min(daysSince, 14) / 14;
+    return { topicId, score: count * weight * (0.5 + oubli) };
+  });
+
+  scored.sort((a, b) => b.score - a.score);
+  return scored.map((s) => s.topicId);
+}
+
 export function getDailyMission(session: BotSession): EngineResult {
   const today = new Date().toISOString().split('T')[0];
   if (session.lastMissionDate === today) {
@@ -1155,7 +1559,10 @@ export function getDailyMission(session: BotSession): EngineResult {
   let targetDomainId: number | null = session.activeDomainId;
 
   if (session.mistakes.length > 0) {
-    targetTopicId = session.mistakes[0];
+    // R6 : mistakes[0] → rankMistakes (fréquence × poids BAC × oubli).
+    targetTopicId = rankMistakes(session.mistakes, session.lastInteraction)[0] ?? null;
+    const card0 = targetTopicId ? getCardById(targetTopicId) : null;
+    if (card0) targetDomainId = card0.domainId;
   } else if (session.activeDomainId) {
     const cards = KNOWLEDGE_CARDS.filter((c) => c.domainId === session.activeDomainId);
     if (cards.length > 0) targetTopicId = cards[0].id;
@@ -1175,7 +1582,27 @@ export function getDailyMission(session: BotSession): EngineResult {
 
   const domain = DOMAINS.find((d) => d.id === (targetDomainId ?? card.domainId));
   const quiz = pickRandomQuizForTopic(card.domainId, card.id);
-  const text = `🎯 **مهمة اليوم (3 دقائق):**\nالمجال: **${domain?.title || ''}**\n\nركّز على: **${card.title}**\n\n1. اقرأ بطاقة المعرفة أدناه.\n2. اجب على سؤال التثبيت.\n\nالمكافأة: +15 XP وتعبئة الرادار! ⚡\n\n---\n🧩 **${card.title}**\n\n${card.shortAnswer}\n\n🔑 ${card.keywords.join(' • ')}`;
+
+  // ── R8 (audit Morchid 2026-10-01) : BAC_EXAM_DATE était vide → le
+  // compte à rebours affichait « — » et aucun cycle de révision n'était
+  // possible. La! date est désormais injectée et visible dans la mission.
+  const bacLeft = bacDaysLeft(new Date(), BAC_EXAM_DATE);
+  const bacLine =
+    bacLeft != null && bacLeft > 0
+      ? `\n⏳ **بقي ${bacLeft} يوماً على البكالوريا.** كل يوم تثبّت فيه نقطة واحدة = نقطة مضمونة.\n`
+      : '';
+
+  // ── R7 (audit Morchid 2026-10-01) : le guide ne se cache plus derrière une
+  // phrase magique. Quand l'élève enchaîne les erreurs sur ce sujet (≥ 3), le
+  // protocole d'étude se PROPOSE dans la mission — au lieu d'attendre qu'il
+  // tape « كيف ادرس العلوم » (score ≥ 18, invisible en pratique).
+  const freq = session.mistakes.filter((m) => m === targetTopicId).length;
+  const guideLine =
+    freq >= 3
+      ? `\n💡 لقد أخطأت ${freq} مرات في هذا الدرس. قبل السؤال، خذ 90 ثانية لقراءة بروتوكول الدراسة: «كيف أدرس العلوم؟» — ستجده في قسم الإرشاد.\n`
+      : '';
+
+  const text = `🎯 **مهمة اليوم (3 دقائق):**\nالمجال: **${domain?.title || ''}**\n\nركّز على: **${card.title}**\n${bacLine}${guideLine}\n1. اقرأ بطاقة المعرفة أدناه.\n2. اجب على سؤال التثبيت.\n\nالمكافأة: +15 XP وتعبئة الرادار! ⚡\n\n---\n🧩 **${card.title}**\n\n${card.shortAnswer}\n\n🔑 ${card.keywords.join(' • ')}`;
 
   // F10 : sans session.currentQuiz positionnée, l'élève voyait bien la question
   // mais sa réponse tombait sur « لا يوجد اختبار جارٍ حالياً » (gradeQuizAnswer

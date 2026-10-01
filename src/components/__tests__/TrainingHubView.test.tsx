@@ -23,8 +23,11 @@ describe('hub d entraînement — contenu', () => {
     }
   });
 
-  it('reste lisible : au plus 7 cartes', () => {
-    expect(TRAINING_ENTRY_COUNT).toBeLessThanOrEqual(7);
+  it('reste lisible : au plus 8 cartes (grille, pas menu linéaire)', () => {
+    // SECONDARY_NAV est un menu LINÉAIRE (plafond 6 par test dédié) ; le hub
+    // est une GRILLE de cartes où 2 colonnes × 4 lignes restent scannables.
+    // tadwin (sprint 42) y rejoint les autres espaces d'entraînement.
+    expect(TRAINING_ENTRY_COUNT).toBeLessThanOrEqual(8);
     expect(TRAINING_ENTRY_COUNT).toBeGreaterThanOrEqual(4);
   });
 

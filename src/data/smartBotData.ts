@@ -21,6 +21,13 @@ export interface KnowledgeCard {
  keywords: string[];
  relatedQuestions: string[];
  microAnswers?: MicroAnswer[];
+ /**
+  * R2 (audit Morchid 2026-10-01) : question de vérification court|..|
+  * posée AVANT le contenu. Une fiche qui répond par shortAnswer dès le
+  * premier message fait le travail à la place de l'élève ; la probe force
+  * une tentative (réponse courte attendue), puis le contenu arrive.
+  */
+ probe?: string;
 }
 
 export interface QuizQuestion {

@@ -23,11 +23,25 @@ describe('R3-B — anti-bourrage dans la notation ouverte (boss BAC)', () => {
     const m = t.match(/نقاطك لهذه الوضعية: (\d+)\/10/);
     return m ? Number(m[1]) : null;
   };
-  const boss = (): BotSession => ({
+  const boss = (overrides: Partial<NonNullable<BotSession['boss']>> = {}): BotSession => ({
     ...getDefaultSession(),
     activeDomainId: 1,
     mode: 'bac_challenge',
-    boss: { scenarioId: 'boss1_q1', questionIndex: 0, totalQuestions: 2, score: 0, phase: 'answer' },
+    boss: {
+      scenarioId: 'boss1_q1',
+      questionIndex: 0,
+      totalQuestions: 2,
+      score: 0,
+      phase: 'answer',
+      // R1 (audit Morchid 2026-10-01) : la correction et la note ne sont
+      // délivrées qu'après 2 tentatives écrites (ou 3 indices). Les tests
+      // ci-dessous simulent donc le 2e essai — le 1er essai est désormais un
+      // feedback d'orientation, pas un verdict noté.
+      attempts: 1,
+      hintLevel: 0,
+      openedAt: Date.now() - 120_000,
+      ...overrides,
+    },
   });
   const sc = getBossScenarioById('boss1_q1')!;
 
@@ -42,5 +56,31 @@ describe('R3-B — anti-bourrage dans la notation ouverte (boss BAC)', () => {
       sc.keyPoints.join(' ') + ' ' + 'حشو '.repeat(120),
     );
     expect(note(stuffed.action.text)).toBe(0);
+  });
+
+  it('R1 — au 1er essai, la correction n’est PAS dévoilée', () => {
+    const first = processStudentInput(boss({ attempts: 0 }), sc.keyPoints.join('؛ '));
+    // Pas de CORRECTION MODÈLE au 1er essai : seul son INTITULÉ est mentionné
+    // (« elle s'ouvrira au 2e essai »), jamais son contenu.
+    expect(first.action.text).not.toContain(sc.correction);
+    expect(first.session.boss!.attempts).toBe(1);
+    // La tentative est orientée : indice de niveau 1 servi.
+    expect(first.action.text).toContain('مفتاح');
+  });
+
+  it('R1 — « لا أعرف » donne un indice, jamais la correction', () => {
+    const res = processStudentInput(boss(), 'لا أعرف');
+    expect(res.action.text).not.toContain('التصحيح النموذجي');
+    expect(res.action.text).toContain('مفتاح');
+    expect(res.session.boss!.hintLevel).toBe(1);
+  });
+
+  it('R1 — 3 indices consommés → correction débloquée, score plafonné à 3/10', () => {
+    const res = processStudentInput(
+      boss({ hintLevel: 2, attempts: 0, openedAt: Date.now() - 200_000 }),
+      'لا أعرف',
+    );
+    expect(res.action.text).toContain('التصحيح النموذجي');
+    expect(note(res.action.text)).toBe(3);
   });
 });
