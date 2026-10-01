@@ -60,6 +60,12 @@ export interface BotSession {
   /** KEO-105 (SpecKit 2026-10-01) : triade en cours (ألاحظ → أستنتج → أخلص)
    *  sur une question d'analyse posée en dialogue libre. */
   triadeStep?: 1 | 2 | 3 | null;
+  /**
+   * KEO-105 / S-03 (SpecKit 002) : famille du verbe qui a ouvert la triade.
+   * Fermée (حلّل، استخرج) = décrire sans expliquer — «لأنّ» interdit à
+   * l'étape 2 aussi. Ouverte (فسّر، علّل، استنتج) = le causal y est requis.
+   */
+  triadeClosed?: boolean;
 }
 
 const STORAGE_KEY = 'smart_tutor_session';

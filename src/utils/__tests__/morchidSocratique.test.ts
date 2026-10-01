@@ -116,6 +116,41 @@ describe('KEO-105 — triade ألاحظ → أستنتج → أخلص', () => {
     expect(r.action.sources?.[0]?.type).toBe('methodology');
     expect(r.session.triadeStep).toBeFalsy();
   });
+
+  // S-03 (SpecKit 002, fusion master) : famille FERMÉE — حلّل/استخرج = on
+  // décrit, on n'explique pas. «لأنّ» est refusé à l'étape 2 AUSSI.
+  it('famille fermée (حلّل) : «لأنّ» REFUSÉ à l’étape 2, relation acceptée', () => {
+    const open = processStudentInput(getDefaultSession(), 'حلّل نتائج هذه التجربة');
+    expect(open.session.triadeClosed).toBe(true);
+    const obs = processStudentInput(open.session, 'نلاحظ أن استهلاك الأكسجين يرتفع من الدقيقة صفر إلى الدقيقة عشرة');
+    expect(obs.action.text).toContain('عائلة مغلقة');
+    // «لأنّ» à l'étape 2 → refus, on reste bloqué.
+    const refus = processStudentInput(obs.session, 'لأن الميتوكوندري تستهلك الأكسجين');
+    expect(refus.action.text).toContain('العائلة المغلقة');
+    expect(refus.session.triadeStep).toBe(2);
+    // L'interaction sans causal → acceptée, on passe à la conclusion.
+    const ok = processStudentInput(obs.session, 'شدة استهلاك الأكسجين تتناسب مع نشاط الميتوكوندري');
+    expect(ok.session.triadeStep).toBe(3);
+  });
+
+  it('famille fermée : la triade se referme proprement (drapeau remis à zéro)', () => {
+    let s = processStudentInput(getDefaultSession(), 'حلّل نتائج هذه التجربة').session;
+    s = processStudentInput(s, 'نلاحظ ارتفاع الاستهلاك من صفر إلى عشرة').session;
+    s = processStudentInput(s, 'الاستهلاك يتناسب مع نشاط الخلية').session;
+    const done = processStudentInput(s, 'ومنه نستنتج أن الخلايا نشيطة');
+    expect(done.action.text).toContain('أكملتَ التثليث');
+    expect(done.session.triadeStep).toBeFalsy();
+    expect(done.session.triadeClosed).toBe(false);
+  });
+
+  it('famille OUVERTE (فسّر) : le causal reste EXIGÉ à l’étape 2 (contraste)', () => {
+    const open = processStudentInput(getDefaultSession(), 'فسّر نتائج هذه التجربة');
+    expect(open.session.triadeClosed).toBe(false);
+    const obs = processStudentInput(open.session, 'نلاحظ ارتفاع الاستهلاك من صفر إلى عشرة');
+    const sansCausal = processStudentInput(obs.session, 'الميتوكوندري نشيطة في هذه المرحلة');
+    expect(sansCausal.action.text).toContain('رابطاً سببياً');
+    expect(sansCausal.session.triadeStep).toBe(2);
+  });
 });
 
 // ---------------------------------------------------------------------------

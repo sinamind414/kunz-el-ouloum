@@ -1582,15 +1582,31 @@ export function processStudentInput(session: BotSession, rawInput: string): Engi
         return {
           session: s2,
           action: {
-            text:
-              '✅ ملاحظة مسجّلة.\n\n**الخطوة 2 · أستنتج / أفسّر:**\nاربط ما لاحظته بمعرفتك العلمية: لماذا حدث ذلك؟\nاكتب جملة واحدة تستعمل «لأنّ» أو «يعود ذلك إلى».',
+            text: session.triadeClosed
+              ? '✅ ملاحظة مسجّلة.\n\n**الخطوة 2 · أستنتج (عائلة مغلقة):**\nاربط ما لاحظته بمعرفتك العلمية — ولكن بدون تعليل.\n⚠️ الفعل في التعليمة هو «حلّل/استخرج»: لا تكتب «لأنّ» — اذكر العلاقة أو الخاصية فقط في جملة واحدة.'
+              : '✅ ملاحظة مسجّلة.\n\n**الخطوة 2 · أستنتج / أفسّر:**\nاربط ما لاحظته بمعرفتك العلمية: لماذا حدث ذلك؟\nاكتب جملة واحدة تستعمل «لأنّ» أو «يعود ذلك إلى».',
             quickActions: [],
             sources: triadeSources,
           },
         };
       }
       if (step === 2) {
-        if (!hasCausalConnector(norm)) {
+        // S-03 (SpecKit 002, fusion master) : famille FERMÉE (حلّل/استخرج) —
+        // on décrit, on n'explique pas. «لأنّ» y est refusé exactement comme
+        // à l'étape 1 : le BAC paie la lecture du document avant le cours.
+        if (session.triadeClosed && hasCausalConnector(norm)) {
+          return {
+            session,
+            action: {
+              text:
+                '⏸️ ليس هنا — التعليمة من **العائلة المغلقة** (حلّل/استخرج): التحليل لا يفسّر.\n«لأنّ» ليس مكانها في هذا التمرين.\n\n' +
+                '👉 اذكر العلاقة أو الخاصية العلمية في جملة واحدة، دون تعليل: «يظهر أنّ…» / «تتناسب… مع…».',
+              quickActions: [],
+              sources: triadeSources,
+            },
+          };
+        }
+        if (!session.triadeClosed && !hasCausalConnector(norm)) {
           return {
             session,
             action: {
@@ -1615,7 +1631,7 @@ export function processStudentInput(session: BotSession, rawInput: string): Engi
         };
       }
       // step 3 → triade complète.
-      const s2: BotSession = { ...session, triadeStep: null };
+      const s2: BotSession = { ...session, triadeStep: null, triadeClosed: false };
       saveSession(s2);
       return {
         session: s2,
@@ -1629,7 +1645,7 @@ export function processStudentInput(session: BotSession, rawInput: string): Engi
       };
     }
     // Intention de menu : libérer la triade, poursuivre le flux.
-    const s2: BotSession = { ...session, triadeStep: null };
+    const s2: BotSession = { ...session, triadeStep: null, triadeClosed: false };
     saveSession(s2);
     session = s2;
   }
@@ -1692,7 +1708,10 @@ export function processStudentInput(session: BotSession, rawInput: string): Engi
     norm.includes(n('جدول')) || norm.includes(n('النتائج'));
   const methodQuestion = norm.includes(n('كيف')) || norm.includes(n('منهج')) || norm.includes(n('قالب'));
   if (analysisVerb && documentContext && !methodQuestion && !session.pendingProbeCardId) {
-    const s1: BotSession = { ...session, triadeStep: 1, pendingProbeCardId: null };
+    // S-03 : حلّل/استخرج = famille fermée (décrire) ; فسّر/استنتج = ouverte
+    // (expliquer). Le drapeau porte le contrat de l'étape 2.
+    const triadeClosed = norm.includes(n('حلل')) || norm.includes(n('استخرج'));
+    const s1: BotSession = { ...session, triadeStep: 1, triadeClosed, pendingProbeCardId: null };
     saveSession(s1);
     return {
       session: s1,
@@ -1808,7 +1827,7 @@ export function processStudentInput(session: BotSession, rawInput: string): Engi
       !(session.probeBypassed ?? []).includes(scienceCard.id) &&
       isExplainQuestion(norm)
     ) {
-      const withProbe: BotSession = { ...session, pendingProbeCardId: scienceCard.id, triadeStep: null };
+      const withProbe: BotSession = { ...session, pendingProbeCardId: scienceCard.id, triadeStep: null, triadeClosed: false };
       saveSession(withProbe);
       return { session: withProbe, action: probeQuestionAction(scienceCard) };
     }

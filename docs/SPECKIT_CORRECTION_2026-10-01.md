@@ -818,6 +818,11 @@ Les tickets des Épics 0, 2 (restants), 3 et 4 sont indépendants des lots et pe
 
 **Reste ensuite :** le passage du reste des messages du tuteur à la voix unifiée (KEO-205, entamé à l'accueil).
 
+### Suites livrées après la PR #35 (même jour)
+
+- **KEO-105+ — famille fermée (S-03 de master)** : champ `triadeClosed` en session ; une triade ouverte par «حلّل/استخرج» interdit «لأنّ» à l'étape 2 AUSSI («التحليل لا يفسّر» — on décrit, on n'explique pas), une triade ouverte par «فسّر/استنتج» continue d'exiger le causal. Contraste verrouillé par 3 nouveaux tests (`morchidSocratique.test.ts`, 24 tests au total).
+- **KEO-205 — audit d'achèvement** : moteur + AITutorView audités → zéro lexique pirate, la voix du tuteur est unifiée (فصحى). Le lexique marin restant (`boussoleData.ts` : rangs «قبطان»… ; `SplashView.tsx` : 🏴‍☠️ du bouton musique) est l'identité produit «كنز العلوم», hors voix du tuteur — décision owner documentée dans `docs/FUSION_MASTER_3e970d2_2026-10-01.md`.
+
 ### Fusion master 3e970d2 (même jour)
 
 `origin/master` ayant été remplacé par une lignée parallèle (R1→R10 + Tadwin + ProFigures + TrainingHub), la branche a fusionné master avec la règle « le plus complet et verrouillé gagne » — voir **`docs/FUSION_MASTER_3e970d2_2026-10-01.md`** pour la table de réconciliation complète. Points notables : **KEO-002 est résolu à titre provisoire** par leur R8 (`BAC_EXAM_DATE = '2027-06-08'` + drapeau provisoire dans `src/utils/dashboardActions.ts` — un seul endroit à modifier à la parution de l'arrêté officiel) ; R6/R7/R10 de master sont intégrés (priorisation réelle des erreurs, protocole proposé, gain nommé). Preuves après fusion : tsc ✓ · vitest 168 fichiers / 2115 tests ✓ · jest 162 suites / 2078 ✓ · build ✓.
