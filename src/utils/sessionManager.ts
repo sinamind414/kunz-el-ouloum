@@ -57,7 +57,26 @@ export interface BotSession {
    * carte d'affilée : un second « اشرح لي X » sert le contenu directement.
    */
   lastProbeCard: string | null;
+  /**
+   * S-03 (SpecKit 002) : triade scientifique C3. Quand la consigne porte un
+   * verbe méthodique (حلّل/فسّر/استنتج/قارن/علّل/اقترح/استخرج), Morchid ne
+   * livre aucune conclusion avant que l'élève parcoure les trois cases, une à
+   * une : ألاحظ (observation, interdit de لأنّ) → أفسّر (interprétation) →
+   * أخلص (conclusion). `null` = triade inactive.
+   */
+  triad: TriadState | null;
   lastInteraction: number;
+}
+
+export type TriadStep = 'observation' | 'interpretation' | 'conclusion';
+
+export interface TriadState {
+  verb: string;
+  step: TriadStep;
+  /** Verbe à famille fermée (حلّل/استخرج) → « لأنّ » interdit dans أفسّر. */
+  closedFamily: boolean;
+  /** Verbe à famille ouverte (فسّر/علّل) → « لأنّ » autorisé. */
+  topic: string;
 }
 
 const STORAGE_KEY = 'smart_tutor_session';
@@ -75,11 +94,12 @@ const defaultSession: BotSession = {
   lastMissionTopic: null,
   lastCardId: null,
   lastProbeCard: null,
+  triad: null,
   lastInteraction: Date.now(),
 };
 
 export function getDefaultSession(): BotSession {
-  return { ...defaultSession, mistakes: [], currentQuiz: null, boss: null, lastProbeCard: null, lastInteraction: Date.now() };
+  return { ...defaultSession, mistakes: [], currentQuiz: null, boss: null, lastProbeCard: null, triad: null, lastInteraction: Date.now() };
 }
 
 /**

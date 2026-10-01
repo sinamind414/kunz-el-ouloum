@@ -505,7 +505,7 @@ function buildAnswer(norm: string, activeDomainId: number | null): TutorAction |
     }
     return {
       confidence,
-      text: `🧩 **${scienceCard.title}**\n\n${scienceCard.shortAnswer}\n\n🔑 كلمات مفتاحية: ${scienceCard.keywords.join(' • ')}`,
+      text: `🧩 **${scienceCard.title}**\n\n${scienceCard.shortAnswer}\n\n🔑 كلمات مفتاحية: ${scienceCard.keywords.join(' • ')}${buildRecallQuestion(scienceCard)}`,
       quickActions: filterQuickActions(scienceCard.relatedQuestions, norm),
       sources: [{ type: 'internal_card' as SourceType, title: scienceCard.title }],
     };
@@ -1164,17 +1164,34 @@ function finishBossStepWithCorrection(
   saveSession(newSession);
   const domain = DOMAINS.find((d) => d.id === session.activeDomainId);
 
-  const bilan = buildBossBilan(scenario, domain?.title ?? '', pct, total, max);
+  const bilan = buildBossBilan(scenario, domain?.title ?? '', pct, total, max, classifyError('', scenario));
+
+  // S-06 : résolution de la porte lessonKey vers la leçon exacte du domaine.
+  const lessonEntry = domain
+    ? LESSON_INDEX.find((c) => c.unitId === domain.id) ?? null
+    : null;
+  const lessonKeyResolved = lessonEntry?.lessonKey ?? null;
+
+  // S-10 : si score < 50 %, le protocole d'étude de l'unité S'IMPOSE en tête
+  // des actions — avant le menu. L'élève qui vient d'échouer est celui qui en
+  // a besoin. Au-dessus de 50 %, on ne l'impose pas.
+  const weak = pct < 50;
+  const protocolAction = weak
+    ? `📋 بروتوكول دراسة الوحدة: ${domain?.title ?? ''}`
+    : null;
+  const baseActions = ['راجع أخطائي السابقة', 'العودة للقائمة الرئيسية'];
+  const quickActions = protocolAction ? [protocolAction, ...baseActions] : baseActions;
 
   const text =
     `🏁 **انتهى تحدي BAC!**\nنتيجتك: ${total}/${max} نقطة (${pct}%).\n` +
     bilan +
+    (lessonKeyResolved ? `\n📚 **باب المراجعة:** ${lessonEntry!.title}` : '') +
     (firstTime ? '' : '\n🏆 سبق إتمامك هذا التحدي — إعادة بدون XP إضافي.');
   return {
     session: newSession,
     action: {
       text,
-      quickActions: ['راجع أخطائي السابقة', 'العودة للقائمة الرئيسية'],
+      quickActions,
       reward: { xpGained: firstTime ? total : 0, score: total, total: max, kind: 'mission', domain: domain?.title ?? '' },
       sources: [{ type: 'domain' as SourceType, title: 'تحدي BAC' }],
     },
@@ -1182,22 +1199,45 @@ function finishBossStepWithCorrection(
 }
 
 /**
- * R4 : construit le bilan de fin de défi — cause, action, porte. L'adjectif
- * seul (« يحتاج مراجعة ») est interdit : un verdict sans cause suivie d'une
- * action est une sanction déguisée.
+ * R4/S-06 : construit le bilan de fin de défi — type, cause, action, porte.
+ * L'adjectif seul (« يحتاج مراجعة ») est interdit : un verdict sans cause
+ * suivie d'une action est une sanction déguisée.
+ *
+ * S-04 : le type d'erreur (R = استرجاع / A = تحليل) est écrit en premier.
+ * S-06 : la cause chiffrée, le geste < 12 min, et la porte lessonKey.
  */
-function buildBossBilan(scenario: BossFightScenario, domainTitle: string, pct: number, total: number, max: number): string {
+function buildBossBilan(
+  scenario: BossFightScenario,
+  domainTitle: string,
+  pct: number,
+  total: number,
+  max: number,
+  errorType?: ErrorType,
+): string {
+  const typeLigne = errorType
+    ? `\n**النوع:** ${errorType === 'A' ? 'تحليل (قراءة الوثيقة والربط)' : 'استرجاع (المصطلح والمكان)'}.\n`
+    : '';
+
   if (pct >= 80) {
-    return `\n**الخلاصة:** إتقان واضح للنقاط الأساسية. ${total}/${max}.\n` +
-      `🎯 الخطوة التالية: انتقل إلى وضعيات النقل (تحديات أعمق) في نفس المجال.`;
+    return (
+      `${typeLigne}` +
+      `**الخلاصة:** إتقان واضح للنقاط الأساسية. ${total}/${max}.\n` +
+      `🎯 الخطوة التالية (نقل): حلّ وضعية جديدة في نفس المجال، وحدّد بنفسك نوع الخطأ فيها — استرجاع أم تحليل.`
+    );
   }
   if (pct >= 50) {
-    return `\n**الخلاصة:** أساس جيد، لكن توجد ثغرات.\n` +
-      `🎯 الخطوة التالية: راجع النقاط الناقصة في الدرس المرتبط، ثم أعد المحاولة.`;
+    return (
+      `${typeLigne}` +
+      `**الخلاصة:** أساس جيد، لكن توجد ثغرات.\n` +
+      `🎯 الخطوة التالية: راجع النقاط الناقصة في الدرس المرتبط، ثم أعد المحاولة.`
+    );
   }
-  return `\n**الخلل ليس في معرفتك — هو في خطوة واحدة.**\n` +
+  return (
+    `${typeLigne}` +
+    `**الخلل ليس في معرفتك — هو في خطوة واحدة.**\n` +
     `🎯 **عملك الآن (12 دقيقة):** أعد قراءة التصحيح النموذجي، ثم أعد كتابة المحاولة بإضافة سطر يبدأ بـ « ومنه نستنتج أنّ… ».\n` +
-    `📖 الدرس المعني: ${domainTitle} — ابدأ من الوحدة الأولى للمجال.`;
+    `📖 الدرس المعني: ${domainTitle} — ابدأ من الوحدة الأولى للمجال.`
+  );
 }
 
 /**
@@ -1216,7 +1256,25 @@ function nextBossHint(scenario: BossFightScenario, level: number): string {
   return `🔑 **مفتاح 3/3:** النقطة الثانية المطلوبة:\n**${second}**\nالآن، اكتب جملتين تربطان هاتين الفكرتين.`;
 }
 
-/** R4 : liste les points-clés MANQUANTS dans la réponse de l'élève. */
+/**
+ * S-05 (SpecKit 002) : rappel actif. Toute explication livrée se termine par
+ * UNE tâche de rappel — Vrai/Faux si le piège est une inversion, reformulation
+ * si c'est une causalité, sinon QCM à 2 options. La séance n'est pas close tant
+ * que cette tâche n'a pas de réponse.
+ *
+ * Le discriminateur est pris sur le PREMIER mot-clé de la fiche (le concept le
+ * plus central) — jamais sur un point voisin.
+ */
+function buildRecallQuestion(card: KnowledgeCard): string {
+  const kw = card.keywords.filter((k) => k.length >= 3);
+  const discriminator = kw[0] ?? card.title;
+  const second = kw[1] ?? discriminator;
+  return (
+    `\n\n🧠 **قبل أن ننتظر:** سؤال واحد يقفل الحصّة.\n` +
+    `صح أم خطأ: **${discriminator}** مرتبط مباشرةً بـ **${second}** في هذا الدرس.\n` +
+    `أجب بكلمة واحدة — إن أخطأت، نعيد الجملة لا الدرس.`
+  );
+}
 function missedKeyPoints(answer: string, keyPoints: string[]): string[] {
   const normAnswer = normalizeArabic(answer);
   const missed: string[] = [];
@@ -1229,10 +1287,197 @@ function missedKeyPoints(answer: string, keyPoints: string[]): string[] {
   return missed;
 }
 
+/**
+ * S-04 (SpecKit 002) : type d'erreur. Avant toute correction, Morchid
+ * classifie — « يحتاج مراجعة » est un adjectif qui ne dit pas quoi soigner.
+ *
+ * Type R (استرجاع / restitution) : le terme, le lieu ou l'acteur est faux ou
+ * absent, et AUCUN document n'était en jeu. Le remède est de revoir la fiche.
+ *
+ * Type A (تحليل / analyse) : un document, une courbe, un tableau, un
+ * électrophorogramme est en jeu, ou la consigne porte un verbe d'exploitation
+ * (حلّل، استخرج، استنتج، قارن، علّل). Le remède est une question sur le fait
+ * visible, pas un paragraphe de cours.
+ *
+ * Règle du ticket : si les deux sont présents, A l'emporte — le BAC paie
+ * l'analyse avant la restitution.
+ */
+export type ErrorType = 'R' | 'A';
+
+const VERBES_ANALYSE = ['حلل', 'حلّل', 'استخرج', 'استنتج', 'قارن', 'علل', 'علّل', 'اقترح', 'فسر', 'فسّر'];
+const SIGNAUX_DOCUMENT = ['الوثيقة', 'المنحنى', 'الجدول', 'المخطط', 'الرسم', 'مخطط', 'بكتروفور', 'هجرة', 'وثيقة'];
+
+export function classifyError(
+  rawInput: string,
+  scenario: { keyPoints: string[]; situation?: string } | null,
+): ErrorType {
+  const norm = normalizeArabic(rawInput);
+  const contexte = normalizeArabic(scenario?.situation ?? '');
+  const consigne = norm + ' ' + contexte;
+
+  // A : document explicite dans la situation ou la consigne.
+  const aDocument = SIGNAUX_DOCUMENT.some((s) => consigne.includes(normalizeArabic(s)));
+  // A : verbe d'exploitation dans la consigne.
+  const aVerbe = VERBES_ANALYSE.some((v) => norm.includes(normalizeArabic(v)));
+  if (aDocument || aVerbe) return 'A';
+
+  // R : terme faux/absent sans document — restitution pure.
+  return 'R';
+}
+
+/** S-04 : le message de typage, une ligne, avant tout contenu. */
+export function errorTypeLine(t: ErrorType): string {
+  return t === 'A'
+    ? 'هذا خطأ في **التحليل**، لا في الاسترجاع. معارفك حاضرة — المشكلة في قراءة الوثيقة أو ربط السبب بالنتيجة.'
+    : 'هذا خطأ في **الاسترجاع**، لا في التحليل. المصطلح أو المكان غير مثبّت بعد.';
+}
+
+/**
+ * S-03 (SpecKit 002) : triade scientifique C3. Jamais de conclusion brute.
+ *
+ * Dès qu'une consigne porte un verbe méthodique, Morchid fait parcourir les
+ * trois cases une à une : ألاحظ → أفسّر → أخلص. Refus de passer à la case
+ * suivante si la précédente est vide, ou si l'élève met une interprétation
+ * dans la case observation (« لأنّ », « إذن », « نستنتج »).
+ *
+ * Famille fermée (حلّل، استخرج) : « لأنّ » INTERDIT — on décrit, on n'explique pas.
+ * Famille ouverte (فسّر، علّل) : « لأنّ » autorisé dans أفسّر.
+ */
+const TRIAD_VERBS: Record<string, { closed: boolean }> = {
+  حلل: { closed: true }, حلّل: { closed: true },
+  استخرج: { closed: true },
+  فسر: { closed: false }, فسّر: { closed: false },
+  علل: { closed: false }, علّل: { closed: false },
+  استنتج: { closed: false },
+  قارن: { closed: false },
+  اقترح: { closed: false },
+};
+
+const INTERPRETATION_TOKENS = ['لأن', 'لأنّ', 'إذن', 'نستنتج', 'بسبب', 'يعود', 'مما'];
+
+/** Détecte le verbe de consigne dans la saisie. Retourne null si aucun. */
+export function detectTriadVerb(input: string): string | null {
+  const norm = normalizeArabic(input);
+  for (const v of Object.keys(TRIAD_VERBS)) {
+    if (norm.includes(normalizeArabic(v))) return v;
+  }
+  return null;
+}
+
+/** La réponse contient-elle un marqueur d'interprétation ? */
+function hasInterpretationMarker(input: string): boolean {
+  const norm = normalizeArabic(input);
+  return INTERPRETATION_TOKENS.some((t) => norm.includes(normalizeArabic(t)));
+}
+
+/**
+ * Tente de traiter l'entrée dans le cadre de la triade. Retourne null si la
+ * triade n'est pas active pour cette saisie (chaine normale au moteur).
+ */
+function handleTriad(session: BotSession, rawInput: string): EngineResult | null {
+  if (!session.triad) return null;
+  const t = session.triad;
+  const norm = normalizeArabic(rawInput);
+  const newSession = { ...session, triad: { ...t } };
+
+  // Changement de sujet ou demande hors triade → on rend la main.
+  if (!norm.trim() || norm.length < 3) return null;
+
+  const refuse = (why: string, ask: string): EngineResult => ({
+    session: newSession,
+    action: { confidence: 92, text: `${why}\n\n${ask}`, quickActions: [], sources: [] },
+  });
+
+  if (t.step === 'observation') {
+    // Case 1 — ألاحظ : faits chiffrés ou visibles seulement. Interdit : لأنّ، إذن…
+    if (hasInterpretationMarker(rawInput)) {
+      return refuse(
+        'هذه ليست ملاحظة. هذه تفسير.\nالملاحظة = ما تراه أو تقرأه فقط (رقم، شكل، اتجاه) — بدون «لأنّ» وبدون «إذن».',
+        'عد إلى المعطى. ما الرقم أو الشكل الذي رأيته؟ اكتب الحقيقة فقط، سطر واحد.',
+      );
+    }
+    newSession.triad.step = 'interpretation';
+    return {
+      session: newSession,
+      action: {
+        confidence: 92,
+        text:
+          '✅ أحسنت في الملاحظة — هذا معطى صحيح، لم تخلط فيه برأيك.\n\n' +
+          'الخطوة 2 — **أفسّر**: لماذا حدث ذلك؟\n' +
+          (t.closedFamily
+            ? '⚠️ الفعل في التعليمة هو «' + t.verb + '» (عائلة مغلقة): لا تكتب «لأنّ». اذكر العلاقة أو الخاصية فقط.'
+            : 'اكتب السبب في جملة واحدة تبدأ بـ «لأنّ…» أو «مما يؤدي إلى…».'),
+        quickActions: [],
+        sources: [],
+      },
+    };
+  }
+
+  if (t.step === 'interpretation') {
+    // Case 2 — أفسّر : une cause, reliée à un fait de la case 1.
+    if (t.closedFamily && hasInterpretationMarker(rawInput)) {
+      return refuse(
+        'الفعل «' + t.verb + '» من العائلة المغلقة: لا مكان لـ «لأنّ» هنا.\nالتحليل هنا يذكر الخاصية أو العلاقة، لا السبب.',
+        'أعد الصياغة: ما العلاقة بين المعطى والنتيجة؟ جملة واحدة بلا «لأنّ».',
+      );
+    }
+    newSession.triad.step = 'conclusion';
+    return {
+      session: newSession,
+      action: {
+        confidence: 92,
+        text:
+          '✅ التفسير سليم.\n\n' +
+          'الخطوة 3 — **أخلص**: الخلاصة الآن.\n' +
+          'جملة واحدة لا تكرر فيها الرقم ولا السبب، بل تكتب العلاقة أو الآلية.\n' +
+          'ابدأ بـ: « ومنه نستنتج أنّ… »',
+        quickActions: [],
+        sources: [],
+      },
+    };
+  }
+
+  // Case 3 — أخلص : triade terminée, on rend la main au moteur normal.
+  const done: BotSession = { ...newSession, triad: null };
+  saveSession(done);
+  return null;
+}
+
 export function processStudentInput(session: BotSession, rawInput: string): EngineResult {
   const input = (rawInput || '').trim();
   const norm = normalizeArabic(input);
   const n = (s: string) => normalizeArabic(s);
+
+  // S-03 : si une triade est en cours, l'élève répond à la case courante.
+  // On ne sert aucun cours tant que les trois cases ne sont pas parcourues.
+  const triadResult = handleTriad(session, input);
+  if (triadResult) return triadResult;
+
+  // S-03 : détection du verbe méthodique → on OUVRE la triade avant tout cours.
+  const triadVerb = detectTriadVerb(input);
+  if (triadVerb && !session.triad) {
+    const closed = TRIAD_VERBS[triadVerb].closed;
+    const newSession: BotSession = {
+      ...session,
+      triad: { verb: triadVerb, step: 'observation', closedFamily: closed, topic: input },
+      lastInteraction: Date.now(),
+    };
+    saveSession(newSession);
+    return {
+      session: newSession,
+      action: {
+        confidence: 95,
+        text:
+          `التعليمة تحتوي على فعل منهجي: **${triadVerb}**.\n` +
+          'لا أكتب الخلاصة معك — الخلاصة تأتي في النهاية، خطوة بخطوة.\n\n' +
+          'الخطوة 1 — **ألاحظ** فقط.\n' +
+          'ما الرقم أو الشكل أو الاتجاه الذي تراه في المعطى؟\n' +
+          'سطر واحد. ممنوع «لأنّ» و«إذن» — هذه ليست ملاحظة.',
+        quickActions: [],
+        sources: [],
+      },
+    };
+  }
 
   if (norm.includes(n('القائمة الرئيسية')) || norm.includes(n('العودة للقائمة')) || norm.includes(n('رجوع للقائمة'))) {
     // B5 (audit Morchid 2026-09-25) : l'accueil réinitialise la NAVIGATION mais
@@ -1424,7 +1669,7 @@ export function processStudentInput(session: BotSession, rawInput: string): Engi
       session: newSession,
       action: {
         confidence,
-        text: `🧩 **${scienceCard.title}**\n\n${scienceCard.shortAnswer}\n\n🔑 كلمات مفتاحية: ${scienceCard.keywords.join(' • ')}`,
+        text: `🧩 **${scienceCard.title}**\n\n${scienceCard.shortAnswer}\n\n🔑 كلمات مفتاحية: ${scienceCard.keywords.join(' • ')}${buildRecallQuestion(scienceCard)}`,
         quickActions: filterQuickActions(scienceCard.relatedQuestions, norm),
         sources: [{ type: 'internal_card' as SourceType, title: scienceCard.title }],
       },

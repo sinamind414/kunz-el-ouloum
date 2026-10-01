@@ -68,8 +68,15 @@ describe('AUDIT المرشد الذكي — couverture réelle', () => {
   });
 
   it('LACUNE : الحموض النووية (échec de matching rapporté par l\'audit)', () => {
-    const text = answerTutorQuestion('ما هي الحموض النووية؟')?.text || '';
-    process.stdout.write('\nTEST CIBLE الحموض النووية:\n' + text.slice(0, 300).replace(/\n/g, ' ¶ ') + '\n');
-    expect(text).toContain('حمض');
+    // S-01/R2 : le 1er message sert la PROBE socratique, pas le contenu.
+    // answerTutorQuestion est stateless : on vérifie que la probe est posée,
+    // ce qui garantit que la fiche est trouvée et que le contenu suivra au
+    // 2e tour (testé dans speckitS01Probes.test.ts).
+    const action = answerTutorQuestion('ما هي الحموض النووية؟');
+    expect(action).not.toBeNull();
+    const text = action!.text || '';
+    expect(text).toContain('قبل أن أجيب');
+    // La probe identifie bien la fiche ciblée (acides nucléiques).
+    expect(text).not.toContain('خارج قاعدة');
   });
 });
