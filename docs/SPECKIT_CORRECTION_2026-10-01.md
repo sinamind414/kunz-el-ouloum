@@ -765,4 +765,26 @@ Les tickets des Épics 0, 2 (restants), 3 et 4 sont indépendants des lots et pe
 - Chaque ID est stable (`KEO-xxx`) : utilisable comme clé de branche (`fix/KEO-107-polarite`) et de commit.
 - Recommandation de workflow par lot (§8) : un lot = un sprint, la gate du lot = critère de sortie du sprint.
 
+### Tickets GitHub créés (2026-10-01) — 30 issues #5 → #34
+
+| Ticket | Issue · Ticket | Issue |
+|---|---|---|
+| [KEO-001](https://github.com/sinamind414/kunz-el-ouloum/issues/5) | [KEO-002](https://github.com/sinamind414/kunz-el-ouloum/issues/6) |
+| [KEO-003](https://github.com/sinamind414/kunz-el-ouloum/issues/7) | [KEO-004](https://github.com/sinamind414/kunz-el-ouloum/issues/8) |
+| [KEO-005](https://github.com/sinamind414/kunz-el-ouloum/issues/9) | [KEO-101](https://github.com/sinamind414/kunz-el-ouloum/issues/10) |
+| [KEO-102](https://github.com/sinamind414/kunz-el-ouloum/issues/11) | [KEO-103](https://github.com/sinamind414/kunz-el-ouloum/issues/12) |
+| [KEO-104](https://github.com/sinamind414/kunz-el-ouloum/issues/13) | [KEO-105](https://github.com/sinamind414/kunz-el-ouloum/issues/14) |
+| [KEO-106](https://github.com/sinamind414/kunz-el-ouloum/issues/15) | [KEO-107](https://github.com/sinamind414/kunz-el-ouloum/issues/16) |
+| [KEO-108](https://github.com/sinamind414/kunz-el-ouloum/issues/17) | [KEO-109](https://github.com/sinamind414/kunz-el-ouloum/issues/18) |
+| [KEO-110](https://github.com/sinamind414/kunz-el-ouloum/issues/19) | [KEO-111](https://github.com/sinamind414/kunz-el-ouloum/issues/20) |
+| [KEO-112](https://github.com/sinamind414/kunz-el-ouloum/issues/21) | [KEO-113](https://github.com/sinamind414/kunz-el-ouloum/issues/22) |
+| [KEO-201](https://github.com/sinamind414/kunz-el-ouloum/issues/23) | [KEO-202](https://github.com/sinamind414/kunz-el-ouloum/issues/24) |
+| [KEO-203](https://github.com/sinamind414/kunz-el-ouloum/issues/25) | [KEO-204](https://github.com/sinamind414/kunz-el-ouloum/issues/26) |
+| [KEO-205](https://github.com/sinamind414/kunz-el-ouloum/issues/27) | [KEO-301](https://github.com/sinamind414/kunz-el-ouloum/issues/28) |
+| [KEO-302](https://github.com/sinamind414/kunz-el-ouloum/issues/29) | [KEO-303](https://github.com/sinamind414/kunz-el-ouloum/issues/30) |
+| [KEO-304](https://github.com/sinamind414/kunz-el-ouloum/issues/31) | [KEO-305](https://github.com/sinamind414/kunz-el-ouloum/issues/32) |
+| [KEO-306](https://github.com/sinamind414/kunz-el-ouloum/issues/33) | [KEO-401](https://github.com/sinamind414/kunz-el-ouloum/issues/34) |
+
+> ⚠️ Le token d'automatisation ne pouvant pas appliquer de labels ni modifier les issues : la priorité et l'épic figurent dans le tableau d'en-tête de chaque ticket (et l'ID encode l'épic : `KEO-0xx` = E0, `KEO-1xx` = E1, `KEO-2xx` = E2, `KEO-3xx` = E3, `KEO-4xx` = E4). Les labels `prio-critique` / `prio-haute` / `prio-moyenne`, `epic-*` et `speckit` sont déjà créés sur le dépôt : appliquez-les en masse depuis GitHub (sélection des 30 issues → « apply label ») ou via `gh issue edit <n> --add-label …` avec un compte possédant les droits.
+
 
