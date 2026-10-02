@@ -111,6 +111,19 @@ export function markDone(itemId: string, score?: number, total?: number): void {
   });
 }
 
+/**
+ * Annule la validation d'un item — le volet « تراجع » du même contrôle qui
+ * sert à « علّم كمحفوظة » (convention déjà en place dans OkachaView :
+ * « محفوظة — اضغط للتراجع »).
+ * Ne touche qu'à cet item ; les autres restent intacts.
+ */
+export function markUndone(itemId: string): void {
+  mutate((s) => {
+    delete s.done[itemId];
+    delete s.reviews[itemId];
+  });
+}
+
 export function resetParcours(): void {
   saveParcours(etatParDefaut());
 }

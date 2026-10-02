@@ -29,7 +29,9 @@ import {
   domainProgress,
   itemStatus,
   loadParcours,
+  markDone,
   markStarted,
+  markUndone,
   parcoursProgress,
   resetParcours,
   todaysCompletions,
@@ -42,6 +44,7 @@ import {
   formatCourtAr,
   imageDomaine,
   metaUniteOfficielle,
+  scoreQcmUnite,
   titreFrDomaine,
   titreFrUnite,
 } from '../lib/parcours/parcoursMeta';
@@ -185,7 +188,9 @@ function metaDe(
     return item.kind === 'lesson' ? m + type : m;
   }
   if (status === 'current') return item.kind === 'lesson' ? `بدأتها ولم تُتمّها${type}` : 'بدأتها ولم تُتمّها';
-  if (status === 'available') return 'مهمّتك الحالية';
+  // Seule une rangée porte ce libellé à la fois (déverrouillage séquentiel) :
+  // c'est elle qui indique où appuyer pour faire avancer le chemin.
+  if (status === 'available') return 'مهمّتك الحالية · اضغط الدائرة';
   return item.kind === 'jalon' ? 'بعد آخر درس' : `بعد الدرس السابق${type}`;
 }
 
@@ -312,11 +317,13 @@ function UnitCard({
   state,
   onOpenLesson,
   onOpenQcm,
+  refresh,
 }: {
   unit: (typeof PARCOURS_DOMAINS)[number]['units'][number];
   state: ReturnType<typeof loadParcours>;
   onOpenLesson: ParcoursProps['onOpenLesson'];
   onOpenQcm: ParcoursProps['onOpenQcm'];
+  refresh: () => void;
 }) {
   const { done, total } = unitProgress(state, unit.unitId);
   const meta = metaUniteOfficielle(unit.unitId);
@@ -356,6 +363,7 @@ function UnitCard({
             state={state}
             onOpenLesson={onOpenLesson}
             onOpenQcm={onOpenQcm}
+            refresh={refresh}
           />
         ))}
       </ol>
@@ -369,12 +377,15 @@ function ItemRow({
   state,
   onOpenLesson,
   onOpenQcm,
+  refresh,
 }: {
   item: ParcoursItem;
   index: number;
   state: ReturnType<typeof loadParcours>;
   onOpenLesson: ParcoursProps['onOpenLesson'];
   onOpenQcm: ParcoursProps['onOpenQcm'];
+  /** Relecture du store après علّم كمحفوظة / تراجع (écriture synchrone). */
+  refresh: () => void;
 }) {
   const status = itemStatus(state, item.id);
   const record = state.done[item.id];
@@ -400,12 +411,37 @@ function ItemRow({
   const libelle = item.kind === 'jalon' ? 'الجسر' : `الدرس ${index + 1}`;
   const ligneEtat = metaDe(item, status, record, state.reviews[item.id]);
 
-  // Contenu partagé : la rangée cliquable est un vrai <button> (focus + Entrée
-  // + Espace natifs) ; la rangée verrouillée reste un conteneur inerte
-  // `aria-disabled` SANS <button> (dette clavier stable : 2 connues).
-  const interieur = (
+  // ── Contrôle d'état : le cercle de statut EST le bouton ────────────────
+  // « علّم كمحفوظة » / « تراجع » — la convention déjà en place dans
+  // OkachaView (« محفوظة — اضغط للتراجع »). Zéro élément visuel ajouté aux
+  // photos : c'est le cercle que l'élève regarde déjà.
+  //
+  // Le bouton est placé APRÈS le bouton d'ouverture dans le DOM (contrainte
+  // de ParcoursView.test.tsx : le premier <button> de la rangée ouvre
+  // l'item) mais en PREMIER visuellement via `order-first` — en RTL il se
+  // retrouve donc à droite, exactement où était le cercle.
+  const libelleBascule = status === 'done' ? 'تراجع عن الإتمام' : 'علّم كمحفوظة';
+
+  const basculer = () => {
+    if (status === 'done') {
+      markUndone(item.id);
+    } else if (item.kind === 'jalon') {
+      // Score RÉEL du QCM d'unité s'il existe. Sinon on ne passe AUCUNE
+      // note : la ligne affichera « مثبّتة » sans fraction (voir
+      // scoreQcmUnite — U2/U3/U8 n'ont aucune question de QCM).
+      const q = scoreQcmUnite(item.unitId);
+      markDone(item.id, q ? q.score / q.total : undefined, q?.total);
+    } else {
+      markDone(item.id);
+    }
+    refresh();
+  };
+
+  // Le contenu vit dans le bouton d'ouverture ; la rangée verrouillée reste
+  // un conteneur inerte `aria-disabled` SANS <button> (dette clavier
+  // stable : 2 connues).
+  const contenu = (
     <>
-      <StatusCircle status={status} fragile={fragile} />
       <div className="min-w-0 flex-1">
         <p className="text-[10px] font-black leading-4 text-[#944a00] dark:text-amber-300">
           {libelle}
@@ -422,19 +458,34 @@ function ItemRow({
   return (
     <li data-testid={testId} className="list-none">
       {clickable ? (
-        <button
-          type="button"
-          onClick={ouvrir}
-          className={`flex w-full items-center gap-3 rounded-2xl border px-3 py-2.5 text-right transition-all hover:-translate-y-px ${tone.card}`}
+        <div
+          className={`flex w-full items-center gap-3 rounded-2xl border px-3 py-2.5 transition-all hover:-translate-y-px ${tone.card}`}
         >
-          {interieur}
-        </button>
+          <button
+            type="button"
+            onClick={ouvrir}
+            className="flex min-w-0 flex-1 items-center gap-3 text-right"
+          >
+            {contenu}
+          </button>
+          <button
+            type="button"
+            onClick={basculer}
+            title={libelleBascule}
+            aria-label={libelleBascule}
+            data-testid={`${testId}-toggle`}
+            className="order-first shrink-0 cursor-pointer rounded-full transition-transform hover:scale-110"
+          >
+            <StatusCircle status={status} fragile={fragile} />
+          </button>
+        </div>
       ) : (
         <div
           aria-disabled="true"
           className={`flex w-full cursor-default items-center gap-3 rounded-2xl border px-3 py-2.5 ${tone.card}`}
         >
-          {interieur}
+          <StatusCircle status={status} fragile={fragile} />
+          {contenu}
         </div>
       )}
     </li>
@@ -505,6 +556,7 @@ export default function ParcoursView({ onOpenLesson, onOpenQcm }: ParcoursProps)
                 state={state}
                 onOpenLesson={onOpenLesson}
                 onOpenQcm={onOpenQcm}
+                refresh={relire}
               />
             ))}
           </div>

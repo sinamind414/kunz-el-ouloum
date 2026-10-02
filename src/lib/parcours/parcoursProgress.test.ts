@@ -15,6 +15,7 @@ import {
   loadParcours,
   markDone,
   markStarted,
+  markUndone,
   parcoursProgress,
   resetParcours,
   saveParcours,
@@ -188,5 +189,38 @@ describe('parcoursProgress — compteurs', () => {
     markDone(PARCOURS_FLAT[0].id);
     resetParcours();
     expect(loadParcours()).toEqual(etatParDefaut());
+  });
+});
+
+// Décision produit du 2026-10-02 : le signal d'avancement est le contrôle
+// « علّم كمحفوظة » / « تراجع » de مساري (convention déjà en place dans
+// OkachaView). markUndone en est la moitié « تراجع ».
+describe('parcoursProgress — markUndone (تراجع)', () => {
+  it('retire l item et son rappel sans toucher aux autres', () => {
+    markDone(PARCOURS_FLAT[0].id, 1, 10);
+    markDone(PARCOURS_FLAT[1].id);
+
+    markUndone(PARCOURS_FLAT[0].id);
+
+    const s = loadParcours();
+    expect(s.done[PARCOURS_FLAT[0].id]).toBeUndefined();
+    expect(s.reviews[PARCOURS_FLAT[0].id]).toBeUndefined();
+    // Le reste du chemin est intact.
+    expect(s.done[PARCOURS_FLAT[1].id]).toBeTruthy();
+  });
+
+  it('rend l item de nouveau disponible et reverrouille le suivant', () => {
+    markDone(PARCOURS_FLAT[0].id);
+    expect(itemStatus(loadParcours(), PARCOURS_FLAT[1].id)).not.toBe('locked');
+
+    markUndone(PARCOURS_FLAT[0].id);
+    const s = loadParcours();
+    expect(itemStatus(s, PARCOURS_FLAT[0].id)).toBe('available');
+    expect(itemStatus(s, PARCOURS_FLAT[1].id)).toBe('locked');
+  });
+
+  it('est neutre sur un item jamais validé', () => {
+    markUndone(PARCOURS_FLAT[0].id);
+    expect(loadParcours().done[PARCOURS_FLAT[0].id]).toBeUndefined();
   });
 });

@@ -114,3 +114,49 @@ export function formatCourtAr(iso: string): string {
   if (!mois) return iso;
   return `${Number(m[3])} ${mois}`;
 }
+
+// ---------------------------------------------------------------------------
+// Score de QCM « si dispo » — décision produit du 2026-10-02
+// ---------------------------------------------------------------------------
+//
+// Source : `UserProgress.quizScoreHistory`, que App.tsx enrichit À LA FIN de
+// chaque QCM d'unité avec `{ date, score, total, unitTitle }` (l.571-579) et
+// persiste sous la clé `svt_progress` (l.342). Lecture en lecture seule, sans
+// passer par App.tsx (fichier protégé) et SANS recopier la donnée.
+//
+// C'est un score MESURÉ : si l'unité n'a jamais été passée, on renvoie null
+// et le جسار s'affiche « مثبّتة » sans fraction — aucune note fabriquée.
+// (La banque « اختبار الكتاب » ne couvre que 41 questions pour 70 items :
+//  U2/U3/U8 n'ont AUCUNE question et U9 une seule — elle ne peut donc pas
+//  être le signal d'avancement du chemin. Décision validée : signal manuel
+//  pour les leçons, score réel ICI pour le جسار quand il existe.)
+const CLE_PROGRESSION = 'svt_progress';
+
+export function scoreQcmUnite(uniteId: number): { score: number; total: number } | null {
+  try {
+    const brut = localStorage.getItem(CLE_PROGRESSION);
+    if (!brut) return null;
+    const p: unknown = JSON.parse(brut);
+    if (!p || typeof p !== 'object') return null;
+    const historique = (p as { quizScoreHistory?: unknown }).quizScoreHistory;
+    if (!Array.isArray(historique)) return null;
+
+    const titre = INITIAL_UNITS[uniteId - 1]?.title;
+    if (!titre) return null;
+
+    // Dernière entrée de l'unité (on garde la plus récente).
+    let dernier: { score: number; total: number } | null = null;
+    for (const brutEntree of historique) {
+      if (!brutEntree || typeof brutEntree !== 'object') continue;
+      const e = brutEntree as { unitTitle?: unknown; score?: unknown; total?: unknown };
+      if (e.unitTitle !== titre) continue;
+      if (typeof e.total !== 'number' || !(e.total > 0)) continue;
+      if (typeof e.score !== 'number') continue;
+      dernier = { score: e.score, total: e.total };
+    }
+    return dernier;
+  } catch {
+    // Stockage corrompu / mode privé → on n'affiche rien plutôt qu'une note.
+    return null;
+  }
+}
