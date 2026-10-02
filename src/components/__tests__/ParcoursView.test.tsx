@@ -115,6 +115,7 @@ describe('ParcoursView — verrous et ouverture', () => {
     renderParcours();
     cliquer('parcours-jalon-1');
     expect(onOpenQcm).toHaveBeenCalledTimes(1);
+    expect(onOpenQcm.mock.calls[0][0]).toBe(1);
     expect(onOpenLesson).not.toHaveBeenCalled();
   });
 

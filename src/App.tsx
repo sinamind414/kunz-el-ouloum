@@ -129,14 +129,15 @@ export default function App() {
   const [currentTab, setCurrentTab] = useState<'splash' | 'home' | 'review' | 'stats' | 'chat' | 'methodology' | 'bootcamp' | 'badges' | 'lesson' | 'workshop' | 'mindmap' | 'teacher' | 'animations' | 'situations' | 'schemas' | 'training' | 'plan' | 'bacideas' | 'focus' | 'tadwin' | 'parcours'>('splash');
   // Deep-link المسار : ouverture d'une leçon précise depuis le chemin (ParcoursView).
   const [parcoursLesson, setParcoursLesson] = useState<{ key: string; kind: 'html' | 'active'; unitId: number } | null>(null);
-  const [parcoursQcm, setParcoursQcm] = useState<boolean>(false);
+  // Deep-link المسار : ouverture du QCM d'une unité précise (ligne جسر).
+  const [parcoursQcm, setParcoursQcm] = useState<number | null>(null);
   const ouvrirLeçonDepuisParcours = (key: string, kind: 'html' | 'active', unitId: number) => {
     setParcoursLesson({ key, kind, unitId });
-    setParcoursQcm(false);
+    setParcoursQcm(null);
     setCurrentTab('lesson');
   };
-  const ouvrirQcmDepuisParcours = () => {
-    setParcoursQcm(true);
+  const ouvrirQcmDepuisParcours = (unitId: number) => {
+    setParcoursQcm(unitId);
     setParcoursLesson(null);
     setCurrentTab('lesson');
   };
@@ -959,8 +960,8 @@ export default function App() {
                 <LessonsView
                   onRateCard={handleRateCard}
                   initialLesson={parcoursLesson ?? undefined}
-                  initialQcm={parcoursQcm}
-                  onDeepLinkConsumed={() => { setParcoursLesson(null); setParcoursQcm(false); }}
+                  initialQcm={parcoursQcm ?? undefined}
+                  onDeepLinkConsumed={() => { setParcoursLesson(null); setParcoursQcm(null); }}
                 />
               )}
 

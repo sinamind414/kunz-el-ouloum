@@ -53,8 +53,8 @@ interface LessonsProps {
   onRateCard?: (cardId: string, rating: 'again' | 'hard' | 'good' | 'easy') => void;
   /** Deep-link depuis المسار : ouvrir une leçon précise au montage. */
   initialLesson?: { key: string; kind: 'html' | 'active'; unitId: number };
-  /** Deep-link depuis المسار : ouvrir le QCM du livre officiel au montage. */
-  initialQcm?: boolean;
+  /** Deep-link depuis المسار : ouvrir le QCM d'une unité précise au montage. */
+  initialQcm?: number;
   /** Appelé après consommation du deep-link (pour vider l'état du parent). */
   onDeepLinkConsumed?: () => void;
 }
@@ -109,7 +109,12 @@ export default function LessonsView({ onRateCard, initialLesson, initialQcm, onD
   /** Unité active ouverte (navigation par icônes : unité → leçons). */
   const [selectedActiveUnitId, setSelectedActiveUnitId] = useState<number | null>(null);
 
-  // R-deep-link (مسار) : ouverture à UNE reprise au montage, puis on vide l'état
+  // Capture à UNE reprise des deep-links (مسار) : le parent vide son état juste
+  // après (onDeepLinkConsumed), mais la vue conserve l'unité demandée pour tout
+  // le séjour — sinon le filtre جسر disparaîtrait au re-render.
+  const [qcmUniteInitiale] = useState<number | undefined>(initialQcm);
+
+  // Deep-link (مسار) : ouverture à UNE reprise au montage, puis on vide l'état
   // du parent pour qu'un retour sur l'onglet ne rejoue pas le deep-link.
   useEffect(() => {
     if (initialLesson) {
@@ -122,7 +127,7 @@ export default function LessonsView({ onRateCard, initialLesson, initialQcm, onD
         setSelectedPassiveLesson(initialLesson.key);
       }
       setMode(null);
-    } else if (initialQcm) {
+    } else if (initialQcm !== undefined) {
       setMode('qcm');
     }
     onDeepLinkConsumed?.();
@@ -186,7 +191,7 @@ export default function LessonsView({ onRateCard, initialLesson, initialQcm, onD
   if (mode === 'qcm') {
     return (
       <Suspense fallback={<VueEnChargement />}>
-        <QcmLivreView onBack={() => setMode(null)} />
+        <QcmLivreView onBack={() => setMode(null)} uniteInitiale={qcmUniteInitiale} />
       </Suspense>
     );
   }

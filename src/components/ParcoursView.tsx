@@ -30,8 +30,8 @@ import { nbaEyebrow, nextBestAction } from '../lib/parcours/nbaEngine';
 interface ParcoursProps {
   /** Ouvre une leçon (clé + nature + unité) — câblé sur LessonsView. */
   onOpenLesson: (lessonKey: string, kind: LessonKind, unitId: number) => void;
-  /** Ouvre les QCM du livre officiel — câblé sur l'onglet leçon (mode qcm). */
-  onOpenQcm: () => void;
+  /** Ouvre les QCM du livre officiel d'une unité — câblé sur l'onglet leçon (mode qcm). */
+  onOpenQcm: (unitId: number) => void;
 }
 
 // ---------- Tons des statuts (charte de l'app, mode sombre inclus) ----------
@@ -146,7 +146,7 @@ function NbaCard({ onOpenLesson, onOpenQcm }: ParcoursProps) {
   const unit = PARCOURS_DOMAINS.flatMap((d) => d.units).find((u) => u.unitId === item.unitId);
   const ouvrir = () => {
     if (item.kind === 'jalon') {
-      onOpenQcm();
+      onOpenQcm(item.unitId);
     } else if (item.lessonKey) {
       onOpenLesson(item.lessonKey, item.lessonKind ?? 'html', item.unitId);
     }
@@ -294,7 +294,7 @@ function ItemRow({
   const ouvrir = () => {
     if (status !== 'done') markStarted(item.id);
     if (item.kind === 'jalon') {
-      onOpenQcm();
+      onOpenQcm(item.unitId);
     } else if (item.lessonKey) {
       onOpenLesson(item.lessonKey, item.lessonKind ?? 'html', item.unitId);
     }

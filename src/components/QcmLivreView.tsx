@@ -11,14 +11,18 @@ import { CHAPITRES } from '../data/bookIndex';
 
 interface Props {
   onBack: () => void;
+  /** Deep-link depuis المسار : ne montrer que les chapitres de cette unité. */
+  uniteInitiale?: number;
 }
 
 const titreChapitre = (n: number) => CHAPITRES[n - 1]?.titreAr ?? `الفصل ${n}`;
 
-export default function QcmLivreView({ onBack }: Props) {
+export default function QcmLivreView({ onBack, uniteInitiale }: Props) {
   const [selectedChapter, setSelectedChapter] = useState<number | null>(null);
   const [bilan, setBilan] = useState(false);
   const [answers, setAnswers] = useState<Record<number, number>>({});
+  // Filtre actif : soit le deep-link (جسر d'une unité), soit « tout voir ».
+  const [filtreUnite, setFiltreUnite] = useState<number | null>(uniteInitiale ?? null);
 
   const parUnite = useMemo(() => {
     const map = new Map<number, { chapter: number; titreAr: string; nb: number }[]>();
@@ -34,6 +38,8 @@ export default function QcmLivreView({ onBack }: Props) {
     }
     return [...map.entries()].sort((a, b) => a[0] - b[0]);
   }, []);
+
+  const unitesAffichees = filtreUnite !== null ? parUnite.filter(([u]) => u === filtreUnite) : parUnite;
 
   const questions = selectedChapter ? QCM_CHAPITRES.filter((q) => q.chapitre === selectedChapter) : [];
   const repondu = Object.keys(answers).length;
@@ -70,29 +76,51 @@ export default function QcmLivreView({ onBack }: Props) {
         <p className="text-xs font-bold text-gray-500 dark:text-gray-400">
           {QCM_CHAPITRES.length} سؤالا يغطي {new Set(QCM_CHAPITRES.map((q) => q.chapitre)).size} فصلا من الكتاب الرسمي — كل سؤال مع مخططه وتفسيره
         </p>
-        {parUnite.map(([unite, chapitres]) => (
-          <section key={unite} className="rounded-3xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-[#161c18] overflow-hidden">
-            <header className="bg-gradient-to-l from-[#006d37]/10 to-[#10b981]/10 dark:from-emerald-950/40 px-4 py-3 border-b border-gray-200 dark:border-gray-800">
-              <h3 className="text-sm font-black text-[#006d37] dark:text-emerald-300">الوحدة {unite}</h3>
-            </header>
-            <div className="p-4 grid grid-cols-1 md:grid-cols-2 gap-3">
-              {chapitres.map((ch) => (
-                <button
-                  key={ch.chapter}
-                  onClick={() => { setSelectedChapter(ch.chapter); setAnswers({}); }}
-                  className="group p-4 rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-[#161c18] hover:border-emerald-400 hover:shadow-md transition-all text-right flex items-center gap-3"
-                >
-                  <span className="shrink-0 w-9 h-9 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 text-[#006d37] dark:text-emerald-300 font-black flex items-center justify-center text-sm">
-                    {ch.chapter}
-                  </span>
-                  <span className="flex-1 text-sm font-bold text-gray-800 dark:text-gray-100 leading-snug">{ch.titreAr}</span>
-                  <span className="text-[10px] font-black text-emerald-600 dark:text-emerald-400">{ch.nb} أسئلة</span>
-                  <ChevronLeft className="w-4 h-4 text-gray-300 group-hover:text-emerald-500" />
-                </button>
-              ))}
-            </div>
-          </section>
-        ))}
+        {filtreUnite !== null && (
+          <div className="flex items-center gap-2">
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-[#006d37]/10 px-3 py-1 text-[11px] font-black text-[#006d37] dark:bg-emerald-400/15 dark:text-emerald-300">
+              جسر الوحدة {filtreUnite}
+            </span>
+            <button
+              onClick={() => setFiltreUnite(null)}
+              className="text-[11px] font-bold text-gray-500 underline-offset-2 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+            >
+              عرض كل الوحدات
+            </button>
+          </div>
+        )}
+        {unitesAffichees.length === 0 ? (
+          <p
+            data-testid={`qcm-unite-${filtreUnite}`}
+            className="rounded-3xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-[#161c18] p-6 text-center text-sm font-bold text-gray-500 dark:text-gray-400"
+          >
+            لا توجد أسئلة من الكتاب الرسمي لهذه الوحدة بعد — راجع الدروس أولاً.
+          </p>
+        ) : (
+          unitesAffichees.map(([unite, chapitres]) => (
+            <section key={unite} data-testid={`qcm-unite-${unite}`} className="rounded-3xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-[#161c18] overflow-hidden">
+              <header className="bg-gradient-to-l from-[#006d37]/10 to-[#10b981]/10 dark:from-emerald-950/40 px-4 py-3 border-b border-gray-200 dark:border-gray-800">
+                <h3 className="text-sm font-black text-[#006d37] dark:text-emerald-300">الوحدة {unite}</h3>
+              </header>
+              <div className="p-4 grid grid-cols-1 md:grid-cols-2 gap-3">
+                {chapitres.map((ch) => (
+                  <button
+                    key={ch.chapter}
+                    onClick={() => { setSelectedChapter(ch.chapter); setAnswers({}); }}
+                    className="group p-4 rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-[#161c18] hover:border-emerald-400 hover:shadow-md transition-all text-right flex items-center gap-3"
+                  >
+                    <span className="shrink-0 w-9 h-9 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 text-[#006d37] dark:text-emerald-300 font-black flex items-center justify-center text-sm">
+                      {ch.chapter}
+                    </span>
+                    <span className="flex-1 text-sm font-bold text-gray-800 dark:text-gray-100 leading-snug">{ch.titreAr}</span>
+                    <span className="text-[10px] font-black text-emerald-600 dark:text-emerald-400">{ch.nb} أسئلة</span>
+                    <ChevronLeft className="w-4 h-4 text-gray-300 group-hover:text-emerald-500" />
+                  </button>
+                ))}
+              </div>
+            </section>
+          ))
+        )}
       </div>
     );
   }
