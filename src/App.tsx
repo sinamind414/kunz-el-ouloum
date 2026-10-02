@@ -927,6 +927,8 @@ export default function App() {
                   onNavigateToTab={setCurrentTab}
                   onUpdateDailyGoals={handleUpdateDailyGoals}
                   isDarkMode={isDarkMode}
+                  onOpenLesson={ouvrirLeçonDepuisParcours}
+                  onOpenQcm={ouvrirQcmDepuisParcours}
                 />
               )}
 

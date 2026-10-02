@@ -7,6 +7,10 @@ import { LOGO_URL } from '../data/brandAssets';
 import { MIFTAH_NAME_OFFICIAL_AR } from '../data/miftahSpec';
 import DailyGoalWidget from './DailyGoalWidget';
 import SmartReminderCard from './SmartReminderCard';
+// Carte « tâche du jour » (NBA) partagée avec مساري — incrément 5 : l'élève
+// voit la tâche du jour SANS ouvrir le chemin.
+import NbaCard from './NbaCard';
+import type { LessonKind } from '../lib/parcours/parcoursPath';
 import WeeklyReportShareModal from './WeeklyReportShareModal';
 import StreakCelebrationModal from './StreakCelebrationModal';
 import { playStreakMilestoneSound } from '../utils/audio';
@@ -27,6 +31,11 @@ interface DashboardViewProps {
   onNavigateToTab?: (tab: any) => void;
   onUpdateDailyGoals?: (config: DailyGoalConfig) => void;
   isDarkMode?: boolean;
+  /** Câblage NBA (incrément 5) : si les deux sont fournis, la carte de la
+   *  tâche du jour est rendue en tête d'accueil. Absents → pas de carte
+   *  (aucun état orphelin : le reste de l'accueil est inchangé). */
+  onOpenLesson?: (lessonKey: string, kind: LessonKind, unitId: number) => void;
+  onOpenQcm?: (unitId: number) => void;
 }
 
 export default function DashboardView({ 
@@ -36,7 +45,9 @@ export default function DashboardView({
   onLaunchRevision, 
   onNavigateToTab,
   onUpdateDailyGoals,
-  isDarkMode = false 
+  isDarkMode = false,
+  onOpenLesson,
+  onOpenQcm,
 }: DashboardViewProps) {
   const [showWeeklyShareModal, setShowWeeklyShareModal] = useState<boolean>(false);
   const [showStreakModal, setShowStreakModal] = useState<boolean>(false);
@@ -107,6 +118,14 @@ export default function DashboardView({
           </button>
         </button>
       </div>
+
+      {/* TÂCHE DU JOUR — NBA (incrément 5) : la décision vient de
+          nbaEngine.nextBestAction (REPRISE > RAPPEL > QUOTA > NOUVEAU > REPOS),
+          la même source que مساري. Testid `home-nba` pour ne pas entrer en
+          collision avec `parcours-nba`. */}
+      {onOpenLesson && onOpenQcm && (
+        <NbaCard onOpenLesson={onOpenLesson} onOpenQcm={onOpenQcm} testId="home-nba" />
+      )}
 
       {/* SMART REMINDER CARD (التذكير الذكي للدروس غير المفتوحة منذ أكثر من 48 ساعة) */}
       <SmartReminderCard

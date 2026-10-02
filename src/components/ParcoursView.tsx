@@ -18,14 +18,14 @@
 // Une rangée verrouillée ne contient JAMAIS de <button> (dette clavier stable).
 
 import { useCallback, useState } from 'react';
-import { Check, Lock, Route as RouteIcon, Sparkles } from 'lucide-react';
+import { Check, Lock, Route as RouteIcon } from 'lucide-react';
+import NbaCard from './NbaCard';
 import {
   PARCOURS_DOMAINS,
   type LessonKind,
   type ParcoursItem,
 } from '../lib/parcours/parcoursPath';
 import {
-  allowance,
   domainProgress,
   itemStatus,
   loadParcours,
@@ -34,12 +34,10 @@ import {
   markUndone,
   parcoursProgress,
   resetParcours,
-  todaysCompletions,
   unitProgress,
   type ParcoursItemStatus,
   type ParcoursRecord,
 } from '../lib/parcours/parcoursProgress';
-import { nbaEyebrow, nextBestAction } from '../lib/parcours/nbaEngine';
 import {
   formatCourtAr,
   imageDomaine,
@@ -192,68 +190,6 @@ function metaDe(
   // c'est elle qui indique où appuyer pour faire avancer le chemin.
   if (status === 'available') return 'مهمّتك الحالية · اضغط الدائرة';
   return item.kind === 'jalon' ? 'بعد آخر درس' : `بعد الدرس السابق${type}`;
-}
-
-// ---------- Carte NBA (tâche du jour) ----------
-function NbaCard({ onOpenLesson, onOpenQcm }: ParcoursProps) {
-  const state = loadParcours();
-  const action = nextBestAction(state);
-
-  if (action.type === 'rest') {
-    return (
-      <section
-        data-testid="parcours-nba"
-        className="rounded-[24px] border border-[#e2dabf] dark:border-gray-800 bg-gradient-to-l from-[#006d37] to-[#0a8f47] p-5 text-white shadow-sm"
-      >
-        <p className="text-[11px] font-bold text-emerald-100/90">{nbaEyebrow(action)}</p>
-        <h2 className="mt-1.5 text-lg font-black leading-relaxed">
-          {action.reason === 'quota'
-            ? 'أنجزت مهمة اليوم. عُد غداً للمتابعة — التكرار أهم من الكمية.'
-            : 'أتممت كل المسار. هذا إنجاز حقيقي.'}
-        </h2>
-        <p className="mt-2 text-xs leading-6 text-emerald-50/90">
-          {todaysCompletions(state)} / {allowance(state)} مهمة اليوم
-        </p>
-      </section>
-    );
-  }
-
-  const { item } = action;
-  const unit = PARCOURS_DOMAINS.flatMap((d) => d.units).find((u) => u.unitId === item.unitId);
-  const ouvrir = () => {
-    if (item.kind === 'jalon') {
-      onOpenQcm(item.unitId);
-    } else if (item.lessonKey) {
-      onOpenLesson(item.lessonKey, item.lessonKind ?? 'html', item.unitId);
-    }
-  };
-
-  return (
-    <section
-      data-testid="parcours-nba"
-      className="rounded-[24px] border border-[#e2dabf] dark:border-gray-800 bg-gradient-to-l from-[#006d37] to-[#0a8f47] p-5 text-white shadow-sm"
-    >
-      <div className="flex items-center justify-between gap-3">
-        <p className="text-[11px] font-bold text-emerald-100/90">{nbaEyebrow(action)}</p>
-        <Sparkles className="h-4 w-4 text-amber-200" />
-      </div>
-      <p className="mt-1 text-[11px] font-semibold text-emerald-100/80">
-        {unit ? unit.title : ''}
-      </p>
-      <h2 className="mt-1 text-lg font-black leading-relaxed">{item.title}</h2>
-      <button
-        type="button"
-        onClick={ouvrir}
-        data-testid="parcours-nba-start"
-        className="mt-4 w-full rounded-full bg-white px-5 py-2.5 text-sm font-black text-[#006d37] shadow-sm transition-transform active:scale-[0.98]"
-      >
-        {action.type === 'resume' ? 'استئناف' : action.type === 'review' ? 'راجِع الآن' : 'ابدأ الآن'}
-      </button>
-      <p className="mt-3 text-[11px] leading-6 text-emerald-50/80">
-        {todaysCompletions(state)} / {allowance(state)} مهمة اليوم
-      </p>
-    </section>
-  );
 }
 
 // ---------- Bandeau de domaine : image texture + dégradé + FR + AR ----------
