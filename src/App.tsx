@@ -21,7 +21,9 @@ import {
   PenTool,
   Dumbbell,
   Timer,
-  Route
+  Route,
+  Sprout,
+  LayoutDashboard
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 
@@ -83,6 +85,10 @@ const QuizView = lazy(() => import('./components/QuizView'));
 const RevisionView = lazy(() => import('./components/RevisionView'));
 const LessonsView = lazy(() => import('./components/LessonsView'));
 const ParcoursView = lazy(() => import('./components/ParcoursView'));
+// Deux piliers du design OPUS 5.5 (photos « أنا » et « البكالوريا ») :
+// ouverts aussi peu que les autres onglets secondaires → import différé.
+const MoiView = lazy(() => import('./components/MoiView'));
+const BacView = lazy(() => import('./components/BacView'));
 const LessonTwoView = lazy(() => import('./components/LessonTwoView'));
 const TrainingHubView = lazy(() => import('./components/TrainingHubView'));
 const CombatChallengePortal = lazy(() => import('./components/CombatChallengePortal'));
@@ -126,7 +132,7 @@ export default function App() {
   // Navigation tab state
   // Exercice sur lequel ouvrir l'atelier quand on arrive depuis le plan.
   const [bacIdeaFocus, setBacIdeaFocus] = useState<string | null>(null);
-  const [currentTab, setCurrentTab] = useState<'splash' | 'home' | 'review' | 'stats' | 'chat' | 'methodology' | 'bootcamp' | 'badges' | 'lesson' | 'workshop' | 'mindmap' | 'teacher' | 'animations' | 'situations' | 'schemas' | 'training' | 'plan' | 'bacideas' | 'focus' | 'tadwin' | 'parcours'>('splash');
+  const [currentTab, setCurrentTab] = useState<'splash' | 'home' | 'review' | 'stats' | 'chat' | 'methodology' | 'bootcamp' | 'badges' | 'lesson' | 'workshop' | 'mindmap' | 'teacher' | 'animations' | 'situations' | 'schemas' | 'training' | 'plan' | 'bacideas' | 'focus' | 'tadwin' | 'parcours' | 'moi' | 'bac'>('splash');
   // Deep-link المسار : ouverture d'une leçon précise depuis le chemin (ParcoursView).
   const [parcoursLesson, setParcoursLesson] = useState<{ key: string; kind: 'html' | 'active'; unitId: number } | null>(null);
   // Deep-link المسار : ouverture du QCM d'une unité précise (ligne جسر).
@@ -708,13 +714,20 @@ export default function App() {
   // U1 (audits Opus 5.5 / Gemini 3.8) : navigation principale consolidée 12 → 5.
   // Les vues secondaires restent accessibles à un clic (groupe « المزيد »)
   // et par les cartes du tableau de bord (onNavigateToTab).
-  const PRIMARY_NAV: { tab: typeof currentTab; label: string; Icon: LucideIcon }[] = [
-    { tab: 'home', label: 'الرئيسية', Icon: Home },
-    { tab: 'lesson', label: 'الدروس', Icon: BookOpen },
-    { tab: 'parcours', label: 'المسار', Icon: Route },
-    { tab: 'review', label: 'المراجعة', Icon: Layers },
-    { tab: 'chat', label: 'المرشد', Icon: Compass },
-    { tab: 'stats', label: 'تقدمي', Icon: Trophy },
+  //
+  // Port des 4 piliers OPUS 5.5 (photo « barre basse ») SANS rien perdre :
+  // on AJOUTE « البكالوريا » et « أنا » aux entrées existantes, et chaque
+  // entrée porte son label FR (comme dans le zip). Ordre repris des photos :
+  // ... مساري → البكالوريا ... et أنا en dernier.
+  const PRIMARY_NAV: { tab: typeof currentTab; label: string; fr: string; Icon: LucideIcon }[] = [
+    { tab: 'home', label: 'الرئيسية', fr: 'Accueil', Icon: Home },
+    { tab: 'lesson', label: 'الدروس', fr: 'Leçons', Icon: BookOpen },
+    { tab: 'parcours', label: 'المسار', fr: 'Parcours', Icon: Route },
+    { tab: 'bac', label: 'البكالوريا', fr: 'Bac', Icon: GraduationCap },
+    { tab: 'review', label: 'المراجعة', fr: 'Révision', Icon: Layers },
+    { tab: 'chat', label: 'المرشد', fr: 'Guide', Icon: Compass },
+    { tab: 'stats', label: 'تقدمي', fr: 'Progrès', Icon: Trophy },
+    { tab: 'moi', label: 'أنا', fr: 'Moi', Icon: Sprout },
   ];
   // Sprint 13 — dette UI : 9 entrées secondaires devenaient un mur. Les cinq
   // espaces d'entraînement (situations, schémas, bootcamp, atelier, animations)
@@ -725,7 +738,9 @@ export default function App() {
     { tab: 'mindmap', label: 'الخرائط الذهنية', Icon: Network },
     { tab: 'methodology', label: MIFTAH_NAME_OFFICIAL_AR, Icon: Key },
     { tab: 'badges', label: 'الأوسمة والإنجازات', Icon: Award },
-    { tab: 'teacher', label: 'لوحة المتابعة', Icon: GraduationCap },
+    // Icône changée (GraduationCap) : le casque est désormais le pilier
+    // « البكالوريا » de la barre principale — deux casques = onglets confondus.
+    { tab: 'teacher', label: 'لوحة المتابعة', Icon: LayoutDashboard },
   ];
 
   return (
@@ -844,19 +859,28 @@ export default function App() {
           <aside className="hidden md:flex shrink-0 w-64 bg-[#ffffff] dark:bg-[#141916] border-l border-[#e2dabf]/50 dark:border-[#2ecc71]/10 flex-col py-6 px-4 gap-2 select-none h-full overflow-y-auto">
           <div className="text-[10px] font-black tracking-widest text-[#506072] uppercase px-4 mb-4">القائمة الرئيسية</div>
 
-          {/* U1 (audit Opus/Gemini) : navigation principale consolidée — 5 onglets. */}
-          {PRIMARY_NAV.map(({ tab, label, Icon }) => (
+          {/* U1 (audit Opus/Gemini) : navigation principale consolidée — 8 onglets. */}
+          {PRIMARY_NAV.map(({ tab, label, fr, Icon }) => (
             <button
               key={tab}
               onClick={() => handleTabChange(tab)}
-              className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-2xl text-sm font-bold transition-all cursor-pointer ${
+              title={`${label} · ${fr}`}
+              className={`w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-bold transition-all cursor-pointer ${
                 currentTab === tab
-                  ? 'bg-[#2ecc71]/15 text-[#006d37]'
-                  : 'text-[#504441] hover:bg-[#fff9ed] hover:text-[#006d37]'
+                  ? 'bg-[#e5f6ed] text-[#006d37] dark:bg-[#2ecc71]/15 dark:text-[#2ecc71]'
+                  : 'text-[#504441] hover:bg-[#fff9ed] hover:text-[#006d37] dark:text-gray-300 dark:hover:bg-[#1d2620]'
               }`}
             >
-              <Icon className="w-5 h-5" />
-              <span>{label}</span>
+              <Icon className="w-5 h-5 shrink-0" />
+              <span className="min-w-0 flex-1 text-start leading-tight">{label}</span>
+              <span
+                dir="ltr"
+                className={`shrink-0 text-[9px] font-semibold uppercase tracking-wide ${
+                  currentTab === tab ? 'text-[#006d37]/70' : 'text-[#64748b]/70'
+                }`}
+              >
+                {fr}
+              </span>
             </button>
           ))}
 
@@ -972,6 +996,17 @@ export default function App() {
                 />
               )}
 
+              {currentTab === 'moi' && (
+                <MoiView nomEleve={studentName} courriel={studentEmail} />
+              )}
+
+              {currentTab === 'bac' && (
+                <BacView
+                  onOpenLesson={ouvrirLeçonDepuisParcours}
+                  onOpenQcm={ouvrirQcmDepuisParcours}
+                />
+              )}
+
               {currentTab === 'workshop' && (
                 <LessonTwoView />
               )}
@@ -1071,23 +1106,35 @@ export default function App() {
         </div>
       )}
 
-      {/* U1 : barre mobile consolidée à 5 onglets (audit — 12 → 5). */}
+      {/* Barre mobile : les 4 piliers OPUS 5.5 + nos accès (8 au total).
+          Style repris des photos : icône + label AR + label FR, pastille
+          active vert pâle. `min-w-0` + `truncate` : 8 colonnes doivent tenir
+          dans 360px sans déborder. */}
       {!isFocusMode && (
-        <nav className="md:hidden bg-[#f8fbfa] shadow-[0_-5px_15px_rgba(0,0,0,0.05)] shrink-0 h-[80px] z-40 flex items-center justify-around px-1 pb-2 rounded-t-[24px] select-none border-t border-[#e2e8e0]/50" dir="rtl">
+        <nav className="md:hidden bg-[#f8fbfa] dark:bg-[#141916] shadow-[0_-5px_15px_rgba(0,0,0,0.05)] shrink-0 h-[80px] z-40 flex items-center gap-0.5 px-0.5 pb-2 rounded-t-[24px] select-none border-t border-[#e2e8e0]/50 dark:border-[#2ecc71]/10" dir="rtl">
 
-        {PRIMARY_NAV.map(({ tab, label, Icon }) => (
+        {PRIMARY_NAV.map(({ tab, label, fr, Icon }) => (
           <button
             key={tab}
             onClick={() => handleTabChange(tab)}
-            className={`relative flex flex-col items-center justify-center p-2 rounded-2xl transition-all flex-1 max-w-[76px] h-[64px] cursor-pointer ${
+            title={`${label} · ${fr}`}
+            className={`relative flex min-w-0 flex-1 flex-col items-center justify-center gap-0.5 rounded-2xl px-0 transition-all h-[64px] cursor-pointer ${
               currentTab === tab
-                ? 'bg-[#e5f6ed] text-[#006d37]'
-                : 'text-[#64748b] hover:text-[#006d37]'
+                ? 'bg-[#e5f6ed] text-[#006d37] dark:bg-[#2ecc71]/15 dark:text-[#2ecc71]'
+                : 'text-[#64748b] hover:text-[#006d37] dark:text-gray-400'
             }`}
           >
-            <Icon className="w-6 h-6 mb-1" />
-            <span className="text-[11px] font-bold">{label}</span>
-            {currentTab === tab && <div className="absolute -bottom-1 w-1.5 h-1.5 rounded-full bg-[#006d37]"></div>}
+            <Icon className="w-5 h-5 shrink-0" />
+            <span className="w-full truncate text-center text-[9px] font-bold leading-tight">
+              {label}
+            </span>
+            <span
+              dir="ltr"
+              className="w-full truncate text-center text-[7.5px] font-semibold leading-none opacity-70"
+            >
+              {fr}
+            </span>
+            {currentTab === tab && <div className="absolute -bottom-1 w-1.5 h-1.5 rounded-full bg-[#006d37] dark:bg-[#2ecc71]"></div>}
           </button>
         ))}
 

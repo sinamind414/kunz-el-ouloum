@@ -46,9 +46,11 @@ export interface ParcoursDomainGroup {
   units: ParcoursUnitGroup[];
 }
 
-/** Titre du جسر (pont de fin d'unité) — label de navigation, pas du contenu. */
+/** Titre du جسر (pont de fin d'unité) — label de navigation, pas du contenu.
+ *  Formule reprise du design OPUS 5.5 (photo « مساري » : libellé « الجسر » +
+ *  titre « حصيلة الوحدة 1 »). */
 export function jalonTitle(unitId: number): string {
-  return `جسر الوحدة ${unitId}`;
+  return `حصيلة الوحدة ${unitId}`;
 }
 
 function buildParcours(): ParcoursDomainGroup[] {

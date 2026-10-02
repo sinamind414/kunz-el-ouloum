@@ -1,13 +1,24 @@
 // src/components/ParcoursView.tsx
 // مسار تعلمك — vue du chemin linéaire + tâche du jour (NBA).
 //
-// Design porté de la proposition OPUS 5.5 (carte NBA en tête, bandeaux de
-// domaine → cartes d'unité → rangées d'items avec pips de phase), mappé sur la
-// charte de l'app : palette #006d37 / #fff9ed / #e2dabf, police Noto Kufi
-// Arabic, support du mode sombre. Les icônes de rubriques viennent de lucide.
+// Design recopié du zip OPUS 5.5 (photos « مساري ») :
+//   - bandeau de domaine : image texture + dégradé + titre FR (dir ltr) puis
+//     titre AR, barre de progression ;
+//   - carte d'unité : en-tête « الوحدة N · H سا في القسم · fenêtre » + titre AR
+//     + sous-titre FR ;
+//   - rangées = CARTES SÉPARÉES arrondies (rounded-2xl), libellé or
+//     « الدرس N » / « الجسر », ligne d'état, et PIPS SUR LES LEÇONS
+//     (le جسار n'en a pas — contrairement à l'incrément 1).
+// Mappé sur la charte de l'app : #006d37 / #00562b / #944a00 / #e2dabf,
+// police Noto Kufi Arabic, mode sombre conservé.
+//
+// Testids stables (couverts par ParcoursView.test.tsx) :
+//   parcours-header, parcours-nba(-start), parcours-banner-N,
+//   parcours-unit-N, parcours-row-KEY, parcours-jalon-N.
+// Une rangée verrouillée ne contient JAMAIS de <button> (dette clavier stable).
 
 import { useCallback, useState } from 'react';
-import { Check, Lock, NotebookPen, Route as RouteIcon, Sparkles } from 'lucide-react';
+import { Check, Lock, Route as RouteIcon, Sparkles } from 'lucide-react';
 import {
   PARCOURS_DOMAINS,
   type LessonKind,
@@ -24,91 +35,123 @@ import {
   todaysCompletions,
   unitProgress,
   type ParcoursItemStatus,
+  type ParcoursRecord,
 } from '../lib/parcours/parcoursProgress';
 import { nbaEyebrow, nextBestAction } from '../lib/parcours/nbaEngine';
+import {
+  formatCourtAr,
+  imageDomaine,
+  metaUniteOfficielle,
+  titreFrDomaine,
+  titreFrUnite,
+} from '../lib/parcours/parcoursMeta';
 
 interface ParcoursProps {
   /** Ouvre une leçon (clé + nature + unité) — câblé sur LessonsView. */
   onOpenLesson: (lessonKey: string, kind: LessonKind, unitId: number) => void;
-  /** Ouvre les QCM du livre officiel d'une unité — câblé sur l'onglet leçon (mode qcm). */
+  /** Ouvre les QCM du livre officiel d'une unité — ligne جسار. */
   onOpenQcm: (unitId: number) => void;
 }
 
-// ---------- Tons des statuts (charte de l'app, mode sombre inclus) ----------
-const TONE: Record<
-  ParcoursItemStatus,
-  { row: string; circle: string; text: string; label: string }
-> = {
+// ---------- Tons des rangées (charte de l'app, mode sombre inclus) ----------
+// `fragile` est un sous-état de `done` : leçon validée mais note < seuil.
+type ToneKey = ParcoursItemStatus | 'fragile';
+
+const TONE: Record<ToneKey, { card: string; circle: string; text: string }> = {
   done: {
-    row: 'bg-emerald-50/70 dark:bg-emerald-950/20 border-emerald-200/70 dark:border-emerald-900/50',
-    circle: 'bg-[#006d37] text-white',
-    text: 'text-gray-800 dark:text-gray-200',
-    label: 'تم',
+    card: 'bg-[#edf7f1] border-[#006d37]/25 dark:bg-[#0f2b1e]/70 dark:border-[#2ecc71]/25',
+    circle: 'bg-[#006d37] text-white dark:bg-[#006d37] dark:text-white',
+    text: 'text-gray-900 dark:text-gray-50',
+  },
+  fragile: {
+    card: 'bg-[#fdf6ea] border-[#944a00]/45 dark:bg-[#2b1f10]/70 dark:border-amber-400/35',
+    circle: 'bg-[#944a00] text-white dark:bg-amber-500 dark:text-[#1c1914]',
+    text: 'text-gray-900 dark:text-gray-50',
   },
   current: {
-    row: 'bg-white dark:bg-[#1a211c] border-[#006d37] ring-1 ring-[#006d37]/40',
-    circle: 'border-2 border-[#006d37] text-[#006d37] dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/40',
-    text: 'text-gray-900 dark:text-gray-100 font-bold',
-    label: 'حالياً',
+    card: 'bg-white border-[#006d37] ring-1 ring-[#006d37]/35 dark:bg-[#161c18] dark:border-[#2ecc71] dark:ring-[#2ecc71]/35',
+    circle: 'bg-[#006d37] text-white dark:bg-[#006d37] dark:text-white',
+    text: 'text-gray-900 dark:text-gray-50 font-bold',
   },
   available: {
-    row: 'bg-white dark:bg-[#1a211c] border-[#e2dabf] dark:border-gray-800',
-    circle: 'border-2 border-[#c9b98f] dark:border-gray-600 text-[#944a00] dark:text-amber-300 bg-[#fff9ed] dark:bg-[#241d10]',
+    card: 'bg-white border-[#e2dabf] dark:bg-[#161c18] dark:border-gray-800',
+    circle:
+      'bg-[#fdf1e0] text-[#944a00] border border-[#944a00]/40 dark:bg-amber-500/15 dark:text-amber-300 dark:border-amber-400/40',
     text: 'text-gray-800 dark:text-gray-200',
-    label: '',
   },
   locked: {
-    row: 'bg-gray-50/60 dark:bg-gray-900/20 border-gray-200/70 dark:border-gray-800/60',
-    circle: 'bg-gray-200 dark:bg-gray-800 text-gray-400 dark:text-gray-600',
-    text: 'text-gray-400 dark:text-gray-600',
-    label: '',
+    card: 'bg-[#faf8f2] border-[#eee5cf] dark:bg-gray-900/30 dark:border-gray-800/70',
+    circle: 'bg-white text-gray-400 dark:bg-[#121714] dark:text-gray-600',
+    text: 'text-gray-400 dark:text-gray-500',
   },
 };
 
-function StatusCircle({ status, index }: { status: ParcoursItemStatus; index: number }) {
+function StatusCircle({
+  status,
+  fragile,
+}: {
+  status: ParcoursItemStatus;
+  fragile: boolean;
+}) {
+  const key: ToneKey = status === 'done' && fragile ? 'fragile' : status;
+  const tone = TONE[key];
   if (status === 'done') {
     return (
-      <span className={`grid h-7 w-7 shrink-0 place-items-center rounded-full ${TONE.done.circle}`}>
+      <span
+        className={`grid h-7 w-7 shrink-0 place-items-center rounded-full ${tone.circle}`}
+      >
         <Check className="h-4 w-4" strokeWidth={3} />
       </span>
     );
   }
   if (status === 'locked') {
     return (
-      <span className={`grid h-7 w-7 shrink-0 place-items-center rounded-full ${TONE.locked.circle}`}>
-        <Lock className="h-3.5 w-3.5" />
+      <span className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-white ring-1 ring-[#eee5cf] dark:bg-[#121714] dark:ring-gray-800">
+        <Lock className="h-3.5 w-3.5 text-gray-400 dark:text-gray-600" />
       </span>
     );
   }
   if (status === 'current') {
     return (
-      <span className={`grid h-7 w-7 shrink-0 place-items-center rounded-full ${TONE.current.circle}`}>
-        <span className="h-2.5 w-2.5 rounded-full bg-[#006d37] dark:bg-emerald-300" />
+      <span className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-[#006d37] text-white dark:bg-[#006d37]">
+        <span className="h-2.5 w-2.5 rounded-full bg-white" />
       </span>
     );
   }
   return (
-    <span className={`grid h-7 w-7 shrink-0 place-items-center rounded-full text-xs font-black ${TONE.available.circle}`}>
-      {index}
+    <span className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-[#fdf1e0] ring-1 ring-[#944a00]/40 dark:bg-amber-500/15 dark:ring-amber-400/40">
+      <span className="h-2.5 w-2.5 rounded-full bg-[#944a00] dark:bg-amber-300" />
     </span>
   );
 }
 
-// ---------- Pips de phase (4 segments, comme OPUS 5.5) ----------
-function Pips({ done, current }: { done: boolean; current: boolean }) {
+// ---------- Pips : 4 segments — EXCLUSIVEMENT sur les leçons (photos 2/4) ----------
+function Pips({ status, fragile }: { status: ParcoursItemStatus; fragile: boolean }) {
+  const quart =
+    status === 'done'
+      ? fragile
+        ? 4
+        : 4
+      : status === 'current'
+      ? 2
+      : status === 'available'
+      ? 1
+      : 0;
   return (
     <span className="flex shrink-0 items-end gap-[3px]" aria-hidden>
       {[0, 1, 2, 3].map((k) => {
-        const filled = done || (current && k === 0);
+        const filled = k < quart;
         return (
           <span
             key={k}
             className={`w-[3px] rounded-full transition-colors ${
               filled
-                ? 'bg-[#006d37] dark:bg-emerald-400'
-                : current
-                ? 'bg-[#944a00]/50 dark:bg-amber-400/40'
-                : 'bg-gray-300 dark:bg-gray-700'
+                ? status === 'done' && fragile
+                  ? 'bg-[#944a00] dark:bg-amber-400'
+                  : 'bg-[#006d37] dark:bg-[#2ecc71]'
+                : status === 'current' || status === 'available'
+                ? 'bg-[#e2dabf] dark:bg-gray-700'
+                : 'bg-[#eee5cf] dark:bg-gray-800'
             }`}
             style={{ height: `${8 + k * 3}px` }}
           />
@@ -116,6 +159,34 @@ function Pips({ done, current }: { done: boolean; current: boolean }) {
       })}
     </span>
   );
+}
+
+// ---------- Ligne d'état (libellé + titre + méta) ----------
+function metaDe(
+  item: ParcoursItem,
+  status: ParcoursItemStatus,
+  record: ParcoursRecord | undefined,
+  reviewDate: string | undefined,
+): string {
+  const type = item.kind === 'lesson' && item.lessonKind === 'active' ? ' · درس تفاعلي' : '';
+
+  if (status === 'done') {
+    if (record?.fragile) {
+      return reviewDate ? `هشّة · تعود ${formatCourtAr(reviewDate)}` : 'هشّة · تحتاج مراجعة';
+    }
+    let m = 'مثبّتة';
+    if (typeof record?.score === 'number') {
+      m +=
+        typeof record.total === 'number' && record.total > 0
+          ? ` · ${Math.round(record.score * record.total)} / ${record.total}`
+          : ` · ${Math.round(record.score * 100)}%`;
+    }
+    if (reviewDate) m += ` · مراجعة ${formatCourtAr(reviewDate)}`;
+    return item.kind === 'lesson' ? m + type : m;
+  }
+  if (status === 'current') return item.kind === 'lesson' ? `بدأتها ولم تُتمّها${type}` : 'بدأتها ولم تُتمّها';
+  if (status === 'available') return 'مهمّتك الحالية';
+  return item.kind === 'jalon' ? 'بعد آخر درس' : `بعد الدرس السابق${type}`;
 }
 
 // ---------- Carte NBA (tâche du jour) ----------
@@ -180,7 +251,7 @@ function NbaCard({ onOpenLesson, onOpenQcm }: ParcoursProps) {
   );
 }
 
-// ---------- Bandeau de domaine ----------
+// ---------- Bandeau de domaine : image texture + dégradé + FR + AR ----------
 function DomainBanner({
   domainId,
   title,
@@ -193,25 +264,43 @@ function DomainBanner({
   total: number;
 }) {
   const pct = total > 0 ? Math.round((done / total) * 100) : 0;
+  const image = imageDomaine(domainId);
+  const titreFr = titreFrDomaine(domainId);
   return (
     <div
       data-testid={`parcours-banner-${domainId}`}
-      className="relative overflow-hidden rounded-[24px] bg-gradient-to-l from-[#00562b] via-[#006d37] to-[#0a8f47] p-4 text-white shadow-sm"
+      className="relative overflow-hidden rounded-[24px] shadow-sm"
     >
-      <div className="flex items-end justify-between gap-3">
-        <div>
-          <p className="text-[11px] font-bold text-emerald-100/80">المجال {domainId}</p>
-          <h2 className="mt-0.5 text-base font-black leading-relaxed">{title}</h2>
-        </div>
-        <p className="shrink-0 text-xs font-bold text-emerald-50" dir="ltr">
-          {done}/{total}
-        </p>
-      </div>
-      <div className="mt-3 h-1.5 w-full overflow-hidden rounded-full bg-emerald-950/30">
-        <div
-          className="h-full rounded-full bg-amber-300 transition-all"
-          style={{ width: `${pct}%` }}
+      {image ? (
+        <img
+          src={image}
+          alt=""
+          aria-hidden="true"
+          className="absolute inset-0 h-full w-full object-cover opacity-35"
         />
+      ) : null}
+      <div className="absolute inset-0 bg-gradient-to-l from-[#00562b]/95 via-[#006d37]/90 to-[#0a8f47]/75" />
+      <div className="relative flex flex-col justify-end p-4 text-white">
+        {titreFr ? (
+          <p
+            dir="ltr"
+            className="text-end text-[10px] font-semibold tracking-wide text-[#f3dfae] dark:text-amber-200"
+          >
+            {titreFr}
+          </p>
+        ) : null}
+        <h2 className="mt-0.5 text-base font-black leading-relaxed">{title}</h2>
+        <div className="mt-3 flex items-center gap-3">
+          <p className="shrink-0 text-[11px] font-bold text-white/90" dir="ltr">
+            {done}/{total}
+          </p>
+          <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-black/25">
+            <div
+              className="h-full rounded-full bg-[#f3dfae] transition-all"
+              style={{ width: `${pct}%` }}
+            />
+          </div>
+        </div>
       </div>
     </div>
   );
@@ -230,34 +319,35 @@ function UnitCard({
   onOpenQcm: ParcoursProps['onOpenQcm'];
 }) {
   const { done, total } = unitProgress(state, unit.unitId);
-  const pct = total > 0 ? Math.round((done / total) * 100) : 0;
+  const meta = metaUniteOfficielle(unit.unitId);
+  const fr = titreFrUnite(unit.unitId);
 
   return (
     <section
       data-testid={`parcours-unit-${unit.unitId}`}
-      className="overflow-hidden rounded-[24px] border border-[#e2dabf] bg-white dark:border-gray-800 dark:bg-[#161c18]"
+      className="rounded-[24px] border border-[#e2dabf] bg-white p-4 shadow-sm dark:border-gray-800 dark:bg-[#161c18] md:p-5"
     >
-      <div className="border-b border-[#eee5cf] px-4 py-3 dark:border-gray-800">
-        <div className="flex items-center justify-between gap-3">
-          <h3 className="text-sm font-black text-[#006d37] dark:text-emerald-300">
+      <header className="flex items-start justify-between gap-3">
+        <div className="min-w-0">
+          <p className="text-[11px] font-semibold text-[#006d37] dark:text-emerald-300">
             الوحدة {unit.unitId}
-          </h3>
-          <p className="text-[11px] font-bold text-gray-400 dark:text-gray-500" dir="ltr">
-            {done}/{total}
+            {meta ? ` · ${meta.heures} سا في القسم · ${meta.fenetre}` : ''}
           </p>
+          <h3 className="mt-0.5 truncate text-[15px] font-black leading-7 text-gray-900 dark:text-gray-50">
+            {unit.title}
+          </h3>
+          {fr ? (
+            <p dir="ltr" className="mt-0.5 truncate text-end text-[11px] text-gray-500 dark:text-gray-400">
+              {fr}
+            </p>
+          ) : null}
         </div>
-        <p className="mt-0.5 text-xs font-semibold leading-6 text-gray-700 dark:text-gray-300">
-          {unit.title}
+        <p className="shrink-0 text-[11px] font-bold text-gray-400 dark:text-gray-500" dir="ltr">
+          {done}/{total}
         </p>
-        <div className="mt-2 h-1 w-full overflow-hidden rounded-full bg-gray-100 dark:bg-gray-800">
-          <div
-            className="h-full rounded-full bg-[#006d37] dark:bg-emerald-400 transition-all"
-            style={{ width: `${pct}%` }}
-          />
-        </div>
-      </div>
+      </header>
 
-      <ul className="divide-y divide-[#f0e8d4] dark:divide-gray-800/70">
+      <ol className="mt-3 space-y-2">
         {unit.items.map((item, index) => (
           <ItemRow
             key={item.id}
@@ -268,7 +358,7 @@ function UnitCard({
             onOpenQcm={onOpenQcm}
           />
         ))}
-      </ul>
+      </ol>
     </section>
   );
 }
@@ -287,9 +377,11 @@ function ItemRow({
   onOpenQcm: ParcoursProps['onOpenQcm'];
 }) {
   const status = itemStatus(state, item.id);
-  const tone = TONE[status];
-  const clickable = status === 'available' || status === 'current' || status === 'done';
   const record = state.done[item.id];
+  const fragile = Boolean(record?.fragile);
+  const toneKey: ToneKey = status === 'done' && fragile ? 'fragile' : status;
+  const tone = TONE[toneKey];
+  const clickable = status === 'available' || status === 'current' || status === 'done';
 
   const ouvrir = () => {
     if (status !== 'done') markStarted(item.id);
@@ -305,59 +397,45 @@ function ItemRow({
       ? `parcours-jalon-${item.unitId}`
       : `parcours-row-${item.lessonKey ?? index}`;
 
-  const accent =
-    item.kind === 'jalon'
-      ? 'border-l-[#944a00]'
-      : status === 'current'
-      ? 'border-l-[#006d37]'
-      : 'border-l-transparent';
+  const libelle = item.kind === 'jalon' ? 'الجسر' : `الدرس ${index + 1}`;
+  const ligneEtat = metaDe(item, status, record, state.reviews[item.id]);
 
   // Contenu partagé : la rangée cliquable est un vrai <button> (focus + Entrée
-  // + Espace natifs) ; la rangée verrouillée reste un simple conteneur inerte.
+  // + Espace natifs) ; la rangée verrouillée reste un conteneur inerte
+  // `aria-disabled` SANS <button> (dette clavier stable : 2 connues).
   const interieur = (
     <>
-      {item.kind === 'jalon' ? (
-        <span className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-[#944a00]/10 text-[#944a00] dark:bg-amber-400/15 dark:text-amber-300">
-          <NotebookPen className="h-4 w-4" />
-        </span>
-      ) : (
-        <StatusCircle status={status} index={index + 1} />
-      )}
+      <StatusCircle status={status} fragile={fragile} />
       <div className="min-w-0 flex-1">
-        <p className={`truncate text-sm leading-6 ${tone.text}`}>{item.title}</p>
-        <p className="mt-0.5 text-[10px] font-semibold text-gray-400 dark:text-gray-600">
-          {item.kind === 'jalon'
-            ? 'الجسر — اختبار الوحدة'
-            : item.lessonKind === 'active'
-            ? 'درس تفاعلي'
-            : 'درس'}
-          {record?.fragile ? ' · يحتاج مراجعة' : ''}
+        <p className="text-[10px] font-black leading-4 text-[#944a00] dark:text-amber-300">
+          {libelle}
+        </p>
+        <p className={`mt-1 truncate text-sm leading-6 ${tone.text}`}>{item.title}</p>
+        <p className="mt-0.5 truncate text-[10px] leading-4 text-gray-500 dark:text-gray-400">
+          {ligneEtat}
         </p>
       </div>
-      {item.kind === 'jalon' && (
-        <Pips done={status === 'done'} current={status === 'current'} />
-      )}
-      {status === 'locked' && (
-        <Lock className="h-3.5 w-3.5 shrink-0 text-gray-300 dark:text-gray-700" />
-      )}
+      {item.kind === 'lesson' && <Pips status={status} fragile={fragile} />}
     </>
   );
 
   return (
-    <li
-      data-testid={testId}
-      className={`flex border-l-4 px-4 ${tone.row} ${accent}`}
-    >
+    <li data-testid={testId} className="list-none">
       {clickable ? (
         <button
           type="button"
           onClick={ouvrir}
-          className="flex w-full items-center gap-3 py-3 transition-colors hover:bg-[#fff9ed] dark:hover:bg-[#1d2620]"
+          className={`flex w-full items-center gap-3 rounded-2xl border px-3 py-2.5 text-right transition-all hover:-translate-y-px ${tone.card}`}
         >
           {interieur}
         </button>
       ) : (
-        <div className="flex w-full cursor-default items-center gap-3 py-3">{interieur}</div>
+        <div
+          aria-disabled="true"
+          className={`flex w-full cursor-default items-center gap-3 rounded-2xl border px-3 py-2.5 ${tone.card}`}
+        >
+          {interieur}
+        </div>
       )}
     </li>
   );
@@ -371,15 +449,6 @@ export default function ParcoursView({ onOpenLesson, onOpenQcm }: ParcoursProps)
   const global = parcoursProgress(state);
 
   const relire = useCallback(() => setTick((n) => n + 1), []);
-
-  // Surcouche : on marque "vu" au retour sur la vue (la validation réelle se
-  // fait dans la leçon / le QCM via les moteurs existants — le chemin écoute).
-  const marquerEtOuvrir = useCallback(
-    (lessonKey: string, kind: LessonKind, unitId: number) => {
-      onOpenLesson(lessonKey, kind, unitId);
-    },
-    [onOpenLesson],
-  );
 
   return (
     <div dir="rtl" className="mx-auto max-w-3xl space-y-5 p-4 pb-10">
@@ -417,7 +486,7 @@ export default function ParcoursView({ onOpenLesson, onOpenQcm }: ParcoursProps)
         </button>
       </header>
 
-      <NbaCard onOpenLesson={marquerEtOuvrir} onOpenQcm={onOpenQcm} />
+      <NbaCard onOpenLesson={onOpenLesson} onOpenQcm={onOpenQcm} />
 
       {PARCOURS_DOMAINS.map((domain) => {
         const dp = domainProgress(state, domain.domainId);
@@ -434,7 +503,7 @@ export default function ParcoursView({ onOpenLesson, onOpenQcm }: ParcoursProps)
                 key={unit.unitId}
                 unit={unit}
                 state={state}
-                onOpenLesson={marquerEtOuvrir}
+                onOpenLesson={onOpenLesson}
                 onOpenQcm={onOpenQcm}
               />
             ))}

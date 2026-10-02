@@ -24,6 +24,9 @@ export interface ParcoursRecord {
   at: string;
   /** Score 0..1 si l'item est noté (جسر), sinon undefined. */
   score?: number;
+  /** Dénominateur du score si connu (nombre de questions) → affiche « 8/10 ».
+   *  Champ optionnel et rétrocompatible : absent dans les anciens stores. */
+  total?: number;
   /** Échec ou fragilité enregistrée → l'item redevient prioritaire au rappel. */
   fragile: boolean;
 }
@@ -90,14 +93,17 @@ export function markStarted(itemId: string): void {
   });
 }
 
-/** Valide un item. `score` en 0..1 pour le جسر (rendu noté), undefined sinon. */
-export function markDone(itemId: string, score?: number): void {
+/** Valide un item. `score` en 0..1 pour le جسر (rendu noté), undefined sinon.
+ *  `total` = nombre de questions (optionnel) pour afficher « 8/10 » plutôt
+ *  qu'un pourcentage. */
+export function markDone(itemId: string, score?: number, total?: number): void {
   mutate((s) => {
     const today = todayKey();
     const previous = s.done[itemId];
     s.done[itemId] = {
       at: previous?.at ?? today,
       score,
+      total: typeof total === 'number' ? total : previous?.total,
       fragile: typeof score === 'number' && score < SEUIL_FRAGILE,
     };
     if (s.current === itemId) s.current = undefined;
