@@ -20,7 +20,8 @@ import {
   Search,
   PenTool,
   Dumbbell,
-  Timer
+  Timer,
+  Route
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 
@@ -81,6 +82,7 @@ const TadwinView = lazy(() => import('./components/TadwinView'));
 const QuizView = lazy(() => import('./components/QuizView'));
 const RevisionView = lazy(() => import('./components/RevisionView'));
 const LessonsView = lazy(() => import('./components/LessonsView'));
+const ParcoursView = lazy(() => import('./components/ParcoursView'));
 const LessonTwoView = lazy(() => import('./components/LessonTwoView'));
 const TrainingHubView = lazy(() => import('./components/TrainingHubView'));
 const CombatChallengePortal = lazy(() => import('./components/CombatChallengePortal'));
@@ -124,7 +126,20 @@ export default function App() {
   // Navigation tab state
   // Exercice sur lequel ouvrir l'atelier quand on arrive depuis le plan.
   const [bacIdeaFocus, setBacIdeaFocus] = useState<string | null>(null);
-  const [currentTab, setCurrentTab] = useState<'splash' | 'home' | 'review' | 'stats' | 'chat' | 'methodology' | 'bootcamp' | 'badges' | 'lesson' | 'workshop' | 'mindmap' | 'teacher' | 'animations' | 'situations' | 'schemas' | 'training' | 'plan' | 'bacideas' | 'focus' | 'tadwin'>('splash');
+  const [currentTab, setCurrentTab] = useState<'splash' | 'home' | 'review' | 'stats' | 'chat' | 'methodology' | 'bootcamp' | 'badges' | 'lesson' | 'workshop' | 'mindmap' | 'teacher' | 'animations' | 'situations' | 'schemas' | 'training' | 'plan' | 'bacideas' | 'focus' | 'tadwin' | 'parcours'>('splash');
+  // Deep-link المسار : ouverture d'une leçon précise depuis le chemin (ParcoursView).
+  const [parcoursLesson, setParcoursLesson] = useState<{ key: string; kind: 'html' | 'active'; unitId: number } | null>(null);
+  const [parcoursQcm, setParcoursQcm] = useState<boolean>(false);
+  const ouvrirLeçonDepuisParcours = (key: string, kind: 'html' | 'active', unitId: number) => {
+    setParcoursLesson({ key, kind, unitId });
+    setParcoursQcm(false);
+    setCurrentTab('lesson');
+  };
+  const ouvrirQcmDepuisParcours = () => {
+    setParcoursQcm(true);
+    setParcoursLesson(null);
+    setCurrentTab('lesson');
+  };
   const [activeMindMapUnitId, setActiveMindMapUnitId] = useState<number>(1);
   const [isAuthOpen, setIsAuthOpen] = useState(false);
   // Session élève persistée (correctif : la session était perdue à chaque F5).
@@ -695,6 +710,7 @@ export default function App() {
   const PRIMARY_NAV: { tab: typeof currentTab; label: string; Icon: LucideIcon }[] = [
     { tab: 'home', label: 'الرئيسية', Icon: Home },
     { tab: 'lesson', label: 'الدروس', Icon: BookOpen },
+    { tab: 'parcours', label: 'المسار', Icon: Route },
     { tab: 'review', label: 'المراجعة', Icon: Layers },
     { tab: 'chat', label: 'المرشد', Icon: Compass },
     { tab: 'stats', label: 'تقدمي', Icon: Trophy },
@@ -940,7 +956,19 @@ export default function App() {
               )}
 
               {currentTab === 'lesson' && (
-                <LessonsView onRateCard={handleRateCard} />
+                <LessonsView
+                  onRateCard={handleRateCard}
+                  initialLesson={parcoursLesson ?? undefined}
+                  initialQcm={parcoursQcm}
+                  onDeepLinkConsumed={() => { setParcoursLesson(null); setParcoursQcm(false); }}
+                />
+              )}
+
+              {currentTab === 'parcours' && (
+                <ParcoursView
+                  onOpenLesson={ouvrirLeçonDepuisParcours}
+                  onOpenQcm={ouvrirQcmDepuisParcours}
+                />
               )}
 
               {currentTab === 'workshop' && (

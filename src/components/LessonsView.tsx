@@ -6,7 +6,7 @@
 //      OFFICIAL_PROGRAM_SEQUENCE). Chaque fichier de phase portant 2 leçons,
 //      la séquence expose la clé de base puis la clé `_2` — une leçon affichée
 //      à la fois (isolation par sliceLessonHtml).
-import { lazy, Suspense, useState } from 'react';
+import { lazy, Suspense, useEffect, useState } from 'react';
 import { BookOpen, ChevronLeft, Zap, MonitorPlay, Network, FlaskConical, Leaf, Globe2, GraduationCap, BookMarked, Grid3x3, Search, Compass } from 'lucide-react';
 import HtmlLessonViewer from './HtmlLessonViewer';
 import ActiveLessonView from './ActiveLessonView';
@@ -51,6 +51,12 @@ const DOMAIN_ICONS = [FlaskConical, Leaf, Globe2];
  *  est transmis au الحصيلة المعرفية pour créditer XP + flashcardStats (SM-2). */
 interface LessonsProps {
   onRateCard?: (cardId: string, rating: 'again' | 'hard' | 'good' | 'easy') => void;
+  /** Deep-link depuis المسار : ouvrir une leçon précise au montage. */
+  initialLesson?: { key: string; kind: 'html' | 'active'; unitId: number };
+  /** Deep-link depuis المسار : ouvrir le QCM du livre officiel au montage. */
+  initialQcm?: boolean;
+  /** Appelé après consommation du deep-link (pour vider l'état du parent). */
+  onDeepLinkConsumed?: () => void;
 }
 
 
@@ -92,7 +98,7 @@ const firstActiveLessonOfNextUnit = (unitId: number): { unitId: number; key: str
 const unitOfActiveLesson = (key: string): number =>
   INITIAL_UNITS.find((u) => getActiveLessonKeysForUnit(u.id).includes(key))?.id ?? 1;
 
-export default function LessonsView({ onRateCard }: LessonsProps) {
+export default function LessonsView({ onRateCard, initialLesson, initialQcm, onDeepLinkConsumed }: LessonsProps) {
   const [mode, setMode] = useState<LessonMode | 'qcm' | 'bac' | 'okacha' | 'search' | null>(null);
   const [selectedUnit, setSelectedUnit] = useState<number>(1);
   const [selectedDomain, setSelectedDomain] = useState<number | null>(null);
@@ -102,6 +108,26 @@ export default function LessonsView({ onRateCard }: LessonsProps) {
   const [selectedPassiveUnitId, setSelectedPassiveUnitId] = useState<number | null>(null);
   /** Unité active ouverte (navigation par icônes : unité → leçons). */
   const [selectedActiveUnitId, setSelectedActiveUnitId] = useState<number | null>(null);
+
+  // R-deep-link (مسار) : ouverture à UNE reprise au montage, puis on vide l'état
+  // du parent pour qu'un retour sur l'onglet ne rejoue pas le deep-link.
+  useEffect(() => {
+    if (initialLesson) {
+      setSelectedUnit(initialLesson.unitId);
+      if (initialLesson.kind === 'active') {
+        setSelectedActiveUnitId(initialLesson.unitId);
+        setSelectedActiveLesson(initialLesson.key);
+      } else {
+        setSelectedPassiveUnitId(initialLesson.unitId);
+        setSelectedPassiveLesson(initialLesson.key);
+      }
+      setMode(null);
+    } else if (initialQcm) {
+      setMode('qcm');
+    }
+    onDeepLinkConsumed?.();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   /**
    * Domaine dont on consulte la الحصيلة المعرفية (déplacée depuis l'écran 1) :
    * chaque domaine des leçons passives ouvre SA propre حصيلة.
