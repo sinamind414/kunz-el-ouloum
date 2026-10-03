@@ -137,6 +137,47 @@ export function gestureMastered(state: GestureRecallState, id: GestureId): boole
   return gestureStage(state, id) >= SPACED_RECALL_INTERVALS.length - 1;
 }
 
+// --- jonction idée 4 (matrice Geste × Chapitre) ---
+// Quand un geste est dû, on le rejoue dans un AUTRE chapitre que celui de la
+// première acquisition : c'est le transfert. Sans matrice, le rappel rejouait
+// l'exercice d'origine — de la répétition, pas du transfert.
+import { GESTURE_CHAPTER_MATRIX, nextTransferForGesture } from '../../data/gestureChapterMatrix';
+
+export interface DueGestureWithTransfer {
+  id: GestureId;
+  /** Unité du chapitre dans lequel rejouer le geste (transfert). */
+  transferUnitId: number | null;
+  /** Ancrage concret dans ce chapitre. */
+  bacPromptAr: string | null;
+  supportAr: string | null;
+}
+
+/**
+ * Le geste dû, enrichi de son ancrage de transfert dans un autre chapitre.
+ * Renvoie null si aucun geste n'est échu.
+ */
+export function nextDueGestureWithTransfer(
+  state: GestureRecallState = loadGestureRecall(),
+): DueGestureWithTransfer | null {
+  const id = nextDueGesture(state);
+  if (id === null) return null;
+  const cell = nextTransferForGesture(id, 1);
+  return {
+    id,
+    transferUnitId: cell ? cell.unitId : null,
+    bacPromptAr: cell ? cell.anchor.bacPromptAr : null,
+    supportAr: cell ? cell.anchor.supportAr : null,
+  };
+}
+
+/**
+ * Le geste couvre-t-il au moins deux chapitres (transfert possible) ?
+ * Sert à signaler à l'élève que le geste est transversal, pas propriété d'un cours.
+ */
+export function gestureIsTransversal(state: GestureRecallState, id: GestureId): boolean {
+  return GESTURE_CHAPTER_MATRIX.filter((c) => c.gestureId === id).length >= 2;
+}
+
 // --- utilitaires (doublons volontaires et minimes de parcoursProgress pour
 //     garder ce module autonome — pas d'import cyclique vers le parcours) ---
 
