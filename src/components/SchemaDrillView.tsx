@@ -47,7 +47,7 @@ function Exercice({ drill, onQuitter }: { drill: SchemaDrill; onQuitter: () => v
 
   return (
     <div data-testid="drill-exercice" dir="rtl" className="space-y-4">
-      <div className="flex flex-row-reverse items-start justify-between gap-3">
+      <div className="flex items-start justify-between gap-3">
         <div className="text-right">
           <h2 className="text-xl font-black text-[#1f1c0b] dark:text-gray-100">{drill.titleAr}</h2>
           <p className="text-[13px] text-[#506072] dark:text-gray-400">الوحدة {drill.unitId}</p>
@@ -77,7 +77,7 @@ function Exercice({ drill, onQuitter }: { drill: SchemaDrill; onQuitter: () => v
             <p data-testid="drill-consigne" className="text-[15px] leading-8 font-bold text-[#1f1c0b] dark:text-gray-100">
               {drill.consigneAr}
             </p>
-            <p className="mt-2 flex flex-row-reverse items-center gap-1.5 text-[13px] text-[#506072] dark:text-gray-400">
+            <p className="mt-2 flex items-center gap-1.5 text-[13px] text-[#506072] dark:text-gray-400">
               <Timer className="w-4 h-4" />
               خذ ورقة بيضاء — {drill.minutes} دقائق، دون النظر إلى أي سند.
             </p>
@@ -87,7 +87,7 @@ function Exercice({ drill, onQuitter }: { drill: SchemaDrill; onQuitter: () => v
             <p className="text-sm font-black text-[#006d37] dark:text-[#2ecc71] mb-2">ترتيب الرسم</p>
             <ol data-testid="drill-ordre" className="space-y-1.5">
               {drill.orderAr.map((etape, i) => (
-                <li key={etape} className="flex flex-row-reverse items-start gap-2 text-sm leading-7 text-[#1f1c0b] dark:text-gray-200">
+                <li key={etape} className="flex items-start gap-2 text-sm leading-7 text-[#1f1c0b] dark:text-gray-200">
                   <span className="shrink-0 w-5 h-5 mt-0.5 rounded-lg bg-[#e8f5ee] dark:bg-black/20 text-[11px] font-bold text-[#006d37] dark:text-[#2ecc71] flex items-center justify-center">
                     {i + 1}
                   </span>
@@ -123,7 +123,7 @@ function Exercice({ drill, onQuitter }: { drill: SchemaDrill; onQuitter: () => v
                     data-testid={`element-${el.id}`}
                     onClick={() => basculer(el.id)}
                     aria-pressed={actif}
-                    className={`w-full text-right flex flex-row-reverse items-center gap-2 px-3 py-2.5 rounded-2xl border transition-all cursor-pointer ${
+                    className={`w-full text-right flex items-center gap-2 px-3 py-2.5 rounded-2xl border transition-all cursor-pointer ${
                       actif
                         ? 'bg-[#e8f5ee] dark:bg-emerald-500/10 border-[#006d37]/40'
                         : 'bg-white dark:bg-[#141916] border-[#bbcbbb]/30'
@@ -207,7 +207,7 @@ function Exercice({ drill, onQuitter }: { drill: SchemaDrill; onQuitter: () => v
               setCoches([]);
               setPhase('dessin');
             }}
-            className="w-full flex flex-row-reverse items-center justify-center gap-2 px-4 py-3 rounded-2xl bg-[#f3f4f5] dark:bg-[#1f2622] text-sm font-bold text-[#006d37] dark:text-[#2ecc71] cursor-pointer"
+            className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-2xl bg-[#f3f4f5] dark:bg-[#1f2622] text-sm font-bold text-[#006d37] dark:text-[#2ecc71] cursor-pointer"
           >
             <RefreshCw className="w-4 h-4" />
             <span>أعد الرسم من الذاكرة</span>
@@ -235,8 +235,8 @@ export default function SchemaDrillView({ onBackToHome }: SchemaDrillViewProps) 
 
   return (
     <div className="min-h-screen p-4 md:p-8 max-w-5xl mx-auto" dir="rtl" data-testid="drill-liste">
-      <div className="flex flex-row-reverse items-center justify-between gap-4 mb-5">
-        <div className="flex flex-row-reverse items-center gap-3">
+      <div className="flex items-center justify-between gap-4 mb-5">
+        <div className="flex items-center gap-3">
           <span className="w-12 h-12 rounded-2xl bg-gradient-to-l from-[#d9a400] to-amber-600 flex items-center justify-center shadow-md">
             <PenTool className="w-6 h-6 text-white" />
           </span>
@@ -258,7 +258,7 @@ export default function SchemaDrillView({ onBackToHome }: SchemaDrillViewProps) 
         )}
       </div>
 
-      <div className="flex flex-row-reverse flex-wrap gap-2 mb-5">
+      <div className="flex flex-wrap gap-2 mb-5">
         <button
           data-testid="drill-unite-tous"
           onClick={() => setUnite(undefined)}
@@ -296,7 +296,7 @@ export default function SchemaDrillView({ onBackToHome }: SchemaDrillViewProps) 
           >
             <h3 className="text-base font-black text-[#1f1c0b] dark:text-gray-100 mb-1">{d.titleAr}</h3>
             <p className="text-[13px] text-[#506072] dark:text-gray-400 mb-2">{d.consigneAr}</p>
-            <div className="flex flex-row-reverse flex-wrap gap-1.5">
+            <div className="flex flex-wrap gap-1.5">
               <span className="text-[10px] font-bold px-2 py-0.5 rounded-lg bg-[#e8f5ee] text-[#006d37] dark:bg-black/20 dark:text-[#2ecc71]">
                 الوحدة {d.unitId}
               </span>

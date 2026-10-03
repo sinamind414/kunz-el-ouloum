@@ -1239,7 +1239,7 @@ export default function StatsView({ progress, units, onNavigate }: StatsViewProp
                   </div>
 
                   {/* Validation Seal and Signature row */}
-                  <div className="flex flex-row-reverse justify-between items-center pt-4 border-t border-dashed border-[#006d37]/20">
+                  <div className="flex justify-between items-center pt-4 border-t border-dashed border-[#006d37]/20">
                     {/* Stamp */}
                     <div className="relative w-20 h-20 flex items-center justify-center border-2 border-dashed border-[#006d37]/30 rounded-full bg-white text-[9px] text-[#006d37]/80 text-center flex-col font-bold leading-tight p-2 shadow-inner">
                       <CheckCircle2 className="w-4 h-4 mb-0.5 text-[#2ecc71] fill-[#2ecc71]/10" />

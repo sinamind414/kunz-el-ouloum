@@ -54,7 +54,7 @@ export default function BackupPanel() {
       dir="rtl"
       className="rounded-3xl p-4 bg-white dark:bg-[#141916] border border-[#bbcbbb]/30"
     >
-      <h3 className="flex flex-row-reverse items-center gap-2 text-sm font-black text-[#1f1c0b] dark:text-gray-100 mb-1">
+      <h3 className="flex items-center gap-2 text-sm font-black text-[#1f1c0b] dark:text-gray-100 mb-1">
         <Save className="w-4 h-4" />
         نسخة احتياطية من تقدّمك
       </h3>
@@ -63,11 +63,11 @@ export default function BackupPanel() {
         المحرَّرة). إن غيّرت الهاتف أو مسحت ذاكرة المتصفح، يضيع كل شيء. احفظ ملفاً و استعده متى شئت.
       </p>
 
-      <div className="flex flex-row-reverse flex-wrap gap-2">
+      <div className="flex flex-wrap gap-2">
         <button
           data-testid="backup-exporter"
           onClick={exporter}
-          className="flex flex-row-reverse items-center gap-2 px-4 py-2 rounded-2xl bg-[#006d37] text-white text-xs font-bold cursor-pointer"
+          className="flex items-center gap-2 px-4 py-2 rounded-2xl bg-[#006d37] text-white text-xs font-bold cursor-pointer"
         >
           <Download className="w-4 h-4" />
           <span>احفظ نسخة</span>
@@ -75,7 +75,7 @@ export default function BackupPanel() {
         <button
           data-testid="backup-importer"
           onClick={() => champFichier.current?.click()}
-          className="flex flex-row-reverse items-center gap-2 px-4 py-2 rounded-2xl bg-[#f3f4f5] dark:bg-[#1f2622] text-[#006d37] dark:text-[#2ecc71] text-xs font-bold cursor-pointer"
+          className="flex items-center gap-2 px-4 py-2 rounded-2xl bg-[#f3f4f5] dark:bg-[#1f2622] text-[#006d37] dark:text-[#2ecc71] text-xs font-bold cursor-pointer"
         >
           <Upload className="w-4 h-4" />
           <span>استعد نسخة</span>

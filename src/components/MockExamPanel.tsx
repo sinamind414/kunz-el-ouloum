@@ -99,19 +99,19 @@ export default function MockExamPanel({ onTrain }: Props) {
         .sans-impression { display: none !important; }
       }`}</style>
 
-      <div className="flex flex-row-reverse items-start justify-between gap-3 mb-3">
+      <div className="flex items-start justify-between gap-3 mb-3">
         <div className="text-right">
-          <h2 className="flex flex-row-reverse items-center gap-2 text-base font-black text-[#1f1c0b] dark:text-gray-100">
+          <h2 className="flex items-center gap-2 text-base font-black text-[#1f1c0b] dark:text-gray-100">
             <FileText className="w-4 h-4" />
             موضوع تجريبي رقم {sujet.numero}
           </h2>
-          <p data-testid="mock-entete" className="flex flex-row-reverse items-center gap-2 text-[11px] text-[#506072] dark:text-gray-400">
+          <p data-testid="mock-entete" className="flex items-center gap-2 text-[11px] text-[#506072] dark:text-gray-400">
             <Clock className="w-3.5 h-3.5" />
             {Math.floor(sujet.dureeMinutes / 60)} سا و {sujet.dureeMinutes % 60} د ·{' '}
             {sujet.totalPoints} نقطة · ثلاثة تمارين من دورات {sujet.sessions.join(' · ')}
           </p>
         </div>
-        <div className="sans-impression flex flex-row-reverse gap-2">
+        <div className="sans-impression flex gap-2">
           <button
             data-testid="mock-suivant"
             onClick={() => majSession(changerSujet(session, numero + 1))}
@@ -141,7 +141,7 @@ export default function MockExamPanel({ onTrain }: Props) {
         data-testid="mock-chrono"
         className="sans-impression rounded-2xl p-3 mb-3 bg-[#f8fbfa] dark:bg-black/20 border border-[#bbcbbb]/30"
       >
-        <div className="flex flex-row-reverse items-center justify-between gap-2">
+        <div className="flex items-center justify-between gap-2">
           <p className="text-[12px] font-black text-[#1f1c0b] dark:text-gray-100">
             <span data-testid="chrono-temps">{formatDuree(ecoulee)}</span> / {formatDuree(sujet.dureeMinutes)} ·{' '}
             <span data-testid="chrono-phase">{PHASE_LABEL[phase]}</span>
@@ -149,11 +149,11 @@ export default function MockExamPanel({ onTrain }: Props) {
               <span data-testid="chrono-attendu"> · يُفترض أن تكون في التمرين {attendu}</span>
             )}
           </p>
-          <div className="flex flex-row-reverse gap-1.5">
+          <div className="flex gap-1.5">
             <button
               data-testid="chrono-basculer"
               onClick={() => majSession(enMarche ? mettreEnPause(session) : demarrer(session))}
-              className="flex flex-row-reverse items-center gap-1 px-3 py-1 rounded-xl bg-[#006d37] text-white text-[11px] font-bold cursor-pointer"
+              className="flex items-center gap-1 px-3 py-1 rounded-xl bg-[#006d37] text-white text-[11px] font-bold cursor-pointer"
             >
               {enMarche ? <Pause className="w-3.5 h-3.5" /> : <Play className="w-3.5 h-3.5" />}
               <span>{enMarche ? 'إيقاف' : 'ابدأ'}</span>

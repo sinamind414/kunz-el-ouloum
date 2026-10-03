@@ -109,8 +109,8 @@ export default function RevisionPlanView({ onBackToHome, onOpenRedaction }: Revi
 
   return (
     <div className="min-h-screen p-4 md:p-8 max-w-4xl mx-auto" dir="rtl" data-testid="revision-plan">
-      <div className="flex flex-row-reverse items-center justify-between gap-4 mb-5">
-        <div className="flex flex-row-reverse items-center gap-3">
+      <div className="flex items-center justify-between gap-4 mb-5">
+        <div className="flex items-center gap-3">
           <span className="w-12 h-12 rounded-2xl bg-gradient-to-l from-[#006d37] to-emerald-600 flex items-center justify-center shadow-md">
             <CalendarDays className="w-6 h-6 text-white" />
           </span>
@@ -135,7 +135,7 @@ export default function RevisionPlanView({ onBackToHome, onOpenRedaction }: Revi
 
       <section className="rounded-3xl p-4 bg-white dark:bg-[#141916] border border-[#bbcbbb]/30 mb-4">
         <p className="text-sm font-black text-[#1f1c0b] dark:text-gray-100 mb-2">كم بقي لك من الوقت؟</p>
-        <div className="flex flex-row-reverse flex-wrap gap-2 mb-4">
+        <div className="flex flex-wrap gap-2 mb-4">
           {PRESETS.map((p) => (
             <button
               key={p.labelAr}
@@ -197,12 +197,12 @@ export default function RevisionPlanView({ onBackToHome, onOpenRedaction }: Revi
         data-testid="plan-resume"
         className="rounded-3xl p-4 bg-[#fff9ed] dark:bg-black/20 border border-[#d9a400]/30 mb-4"
       >
-        <div className="flex flex-row-reverse flex-wrap items-center gap-x-5 gap-y-1 text-sm text-[#1f1c0b] dark:text-gray-200">
-          <span className="flex flex-row-reverse items-center gap-1.5">
+        <div className="flex flex-wrap items-center gap-x-5 gap-y-1 text-sm text-[#1f1c0b] dark:text-gray-200">
+          <span className="flex items-center gap-1.5">
             <ListChecks className="w-4 h-4" />
             {plan.totalTasks} مهمة
           </span>
-          <span className="flex flex-row-reverse items-center gap-1.5">
+          <span className="flex items-center gap-1.5">
             <Clock className="w-4 h-4" />
             {Math.round(plan.totalMinutes / 60)} ساعة إجمالاً
           </span>
@@ -259,7 +259,7 @@ export default function RevisionPlanView({ onBackToHome, onOpenRedaction }: Revi
         </section>
       )}
 
-      <div className="flex flex-row-reverse gap-2 mb-3">
+      <div className="flex gap-2 mb-3">
         <button
           data-testid="imprimer-jour"
           onClick={() => {
@@ -310,7 +310,7 @@ export default function RevisionPlanView({ onBackToHome, onOpenRedaction }: Revi
               <li
                 key={`feuille-${t.kind}-${t.refId}`}
                 data-testid={`feuille-tache-${t.kind}:${t.refId}`}
-                className="flex flex-row-reverse items-start gap-2 text-right"
+                className="flex items-start gap-2 text-right"
               >
                 <span className="shrink-0 w-4 h-4 mt-0.5 border-2 border-[#1f1c0b]/50 rounded" />
                 <span>
@@ -354,7 +354,7 @@ export default function RevisionPlanView({ onBackToHome, onOpenRedaction }: Revi
             data-testid={`plan-jour-${jour.day}`}
             className="rounded-3xl p-4 bg-white dark:bg-[#141916] border border-[#bbcbbb]/30"
           >
-            <div className="flex flex-row-reverse items-center justify-between mb-2">
+            <div className="flex items-center justify-between mb-2">
               <h2 className="text-sm font-black text-[#1f1c0b] dark:text-gray-100">
                 اليوم {jour.day}
                 {jour.consolidationOnly && (
@@ -381,7 +381,7 @@ export default function RevisionPlanView({ onBackToHome, onOpenRedaction }: Revi
                       data-testid={`tache-${id}`}
                       onClick={() => basculer(id)}
                       aria-pressed={actif}
-                      className={`w-full text-right flex flex-row-reverse items-start gap-2 px-3 py-2.5 rounded-2xl border transition-all cursor-pointer ${
+                      className={`w-full text-right flex items-start gap-2 px-3 py-2.5 rounded-2xl border transition-all cursor-pointer ${
                         actif
                           ? 'bg-[#e8f5ee] dark:bg-emerald-500/10 border-[#006d37]/40'
                           : 'bg-[#f8fbfa] dark:bg-black/20 border-[#bbcbbb]/30'

@@ -149,7 +149,7 @@ export default function QuizView({ unitId, unitTitle, questions, onClose, onQuiz
 
       {/* Focus Mode Header Overlay */}
       {isFocusMode && !quizFinished && (
-        <div className="w-full max-w-2xl px-4 md:px-0 mt-6 flex flex-row-reverse items-center justify-between bg-black/40 backdrop-blur-md rounded-2xl border border-white/10 px-4 py-3 text-white shadow-lg animate-fadeIn text-right">
+        <div className="w-full max-w-2xl px-4 md:px-0 mt-6 flex items-center justify-between bg-black/40 backdrop-blur-md rounded-2xl border border-white/10 px-4 py-3 text-white shadow-lg animate-fadeIn text-right">
           <div className="flex items-center gap-2">
             <span className="w-2.5 h-2.5 rounded-full bg-[#2ecc71] animate-ping" />
             <span className="text-xs font-bold text-gray-200">وضع التركيز نشط</span>
@@ -232,7 +232,7 @@ export default function QuizView({ unitId, unitTitle, questions, onClose, onQuiz
 
                 {/* Question Text & General Hint Trigger */}
                 <div className="flex flex-col gap-2">
-                  <div className="flex flex-row-reverse justify-between items-start gap-4 text-right">
+                  <div className="flex justify-between items-start gap-4 text-right">
                     <h2 className={`text-xl font-bold leading-relaxed flex-1 ${isFocusMode ? 'text-gray-100' : 'text-[#1f1c0b] dark:text-gray-100'}`}>
                       {currentQuestion.questionText}
                     </h2>
@@ -260,7 +260,7 @@ export default function QuizView({ unitId, unitTitle, questions, onClose, onQuiz
                         initial={{ opacity: 0, height: 0 }}
                         animate={{ opacity: 1, height: 'auto' }}
                         exit={{ opacity: 0, height: 0 }}
-                        className={`border rounded-2xl p-3.5 text-xs leading-relaxed flex flex-row-reverse gap-2 items-start overflow-hidden mt-1 text-right ${
+                        className={`border rounded-2xl p-3.5 text-xs leading-relaxed flex gap-2 items-start overflow-hidden mt-1 text-right ${
                           isFocusMode 
                             ? 'bg-black/30 border-[#006d37]/20 text-gray-200' 
                             : 'bg-[#fff9ed] dark:bg-[#1a221d] border-[#fed65b]/40 dark:border-[#2ecc71]/20 text-[#504441] dark:text-gray-200'
@@ -280,7 +280,7 @@ export default function QuizView({ unitId, unitTitle, questions, onClose, onQuiz
                 {/* QCM (par défaut) ou question à trou (S-C4) selon le type */}
                 {currentQuestion.kind === 'fillBlank' ? (
                   <div className="flex flex-col gap-3">
-                    <div className={`flex flex-row-reverse items-center gap-2 rounded-2xl p-2 border ${
+                    <div className={`flex items-center gap-2 rounded-2xl p-2 border ${
                       isFocusMode ? 'bg-black/30 border-[#006d37]/20' : 'bg-[#f3f4f5] dark:bg-black/20 border-[#bbcbbb]/30 dark:border-[#2ecc71]/10'
                     }`}>
                       <input
@@ -306,7 +306,7 @@ export default function QuizView({ unitId, unitTitle, questions, onClose, onQuiz
                       )}
                     </div>
                     {isAnswered[currentIndex] && (
-                      <span className={`text-sm font-bold flex flex-row-reverse items-center gap-2 ${fbResult[currentIndex] ? 'text-[#006d37] dark:text-[#2ecc71]' : 'text-[#ba1a1a]'}`}>
+                      <span className={`text-sm font-bold flex items-center gap-2 ${fbResult[currentIndex] ? 'text-[#006d37] dark:text-[#2ecc71]' : 'text-[#ba1a1a]'}`}>
                         {fbResult[currentIndex] ? <Check className="w-5 h-5" /> : <AlertCircle className="w-5 h-5" />}
                         {fbResult[currentIndex] ? 'إجابة صحيحة' : 'إجابة غير مكتملة — راجع التصحيح أدناه'}
                       </span>
@@ -391,7 +391,7 @@ export default function QuizView({ unitId, unitTitle, questions, onClose, onQuiz
                           : 'bg-[#fff9ed] dark:bg-[#1a221d] border-[#fed65b]/50 dark:border-[#2ecc71]/20 text-[#504441] dark:text-gray-200'
                       }`}
                     >
-                      <div className={`flex flex-row-reverse items-center gap-2 font-bold ${
+                      <div className={`flex items-center gap-2 font-bold ${
                         isFocusMode ? 'text-[#2ecc71]' : 'text-[#944a00] dark:text-[#2ecc71]'
                       }`}>
                         <BookOpen className="w-4 h-4" />
@@ -419,7 +419,7 @@ export default function QuizView({ unitId, unitTitle, questions, onClose, onQuiz
                               : 'bg-red-50/10 border border-red-200/50 dark:bg-red-950/10 dark:border-red-900/30'
                           }`}
                         >
-                          <div className="flex flex-row-reverse items-start gap-3">
+                          <div className="flex items-start gap-3">
                             {/* Mascot Avatar */}
                             <div className="w-12 h-12 rounded-full border border-[#006d37]/20 overflow-hidden shrink-0 bg-white/80 flex items-center justify-center p-0.5 shadow-sm">
                               <img 
@@ -432,7 +432,7 @@ export default function QuizView({ unitId, unitTitle, questions, onClose, onQuiz
 
                             {/* Content Balloon */}
                             <div className="space-y-1.5 flex-1">
-                              <div className="flex flex-row-reverse justify-between items-center">
+                              <div className="flex justify-between items-center">
                                 <div className="flex items-center gap-1.5 text-red-700 font-extrabold dark:text-red-400">
                                   <HelpCircle className="w-4 h-4 text-red-600 dark:text-red-400" />
                                   <span>مساعد التلميحات • تحليل الخطأ الشائع</span>

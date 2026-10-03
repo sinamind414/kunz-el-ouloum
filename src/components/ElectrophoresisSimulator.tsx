@@ -110,7 +110,7 @@ export const ElectrophoresisSimulator: FC = () => {
       </header>
 
       {/* Choix de la molécule */}
-      <div className="mb-3 flex flex-row-reverse flex-wrap gap-2">
+      <div className="mb-3 flex flex-wrap gap-2">
         {MOLECULES_ELECTROPHORESE.map((m) => (
           <button
             key={m.id}
@@ -133,7 +133,7 @@ export const ElectrophoresisSimulator: FC = () => {
       </div>
 
       {/* Réglage du pH */}
-      <div className="mb-4 flex flex-row-reverse items-center gap-3">
+      <div className="mb-4 flex items-center gap-3">
         <label htmlFor="ph-slider" className="text-sm font-bold text-[#1f1c0b] dark:text-gray-100">
           pH الوسط
         </label>
@@ -180,7 +180,7 @@ export const ElectrophoresisSimulator: FC = () => {
       </svg>
 
       {/* Prédiction */}
-      <div className="mt-3 flex flex-row-reverse flex-wrap items-center gap-2">
+      <div className="mt-3 flex flex-wrap items-center gap-2">
         <span className="text-xs font-bold text-[#506072] dark:text-gray-400">توقّعك :</span>
         {(['cathode', 'anode', 'immobile'] as const).map((s) => (
           <button
@@ -233,7 +233,7 @@ export const ElectrophoresisSimulator: FC = () => {
               {attendu === 'cathode' ? 'نحو المهبط (القطب السالب)' : 'نحو المصعد (القطب الموجب)'}.
             </span>
           )}
-          <div className="mt-2 flex flex-row-reverse items-center justify-between">
+          <div className="mt-2 flex items-center justify-between">
             <span className="text-xs font-bold" data-testid="score">
               النتيجة : {score.justes} / {score.total}
             </span>

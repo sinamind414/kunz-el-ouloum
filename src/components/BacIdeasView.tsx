@@ -57,7 +57,7 @@ function Fiche({ idea, onTrain }: { idea: BacExerciseIdea; onTrain: (idea: BacEx
       data-testid={`idee-${idea.id}`}
       className="rounded-3xl p-4 bg-white dark:bg-[#141916] border border-[#bbcbbb]/30"
     >
-      <div className="flex flex-row-reverse items-start justify-between gap-3 mb-2">
+      <div className="flex items-start justify-between gap-3 mb-2">
         <h3 className="text-sm font-black text-[#1f1c0b] dark:text-gray-100 text-right">
           {idea.titleAr}
         </h3>
@@ -84,7 +84,7 @@ function Fiche({ idea, onTrain }: { idea: BacExerciseIdea; onTrain: (idea: BacEx
         {idea.notionAr}
       </p>
 
-      <div className="flex flex-row-reverse flex-wrap gap-1.5 mb-2">
+      <div className="flex flex-wrap gap-1.5 mb-2">
         {idea.verbsAr.map((v) => (
           <span
             key={v}
@@ -95,7 +95,7 @@ function Fiche({ idea, onTrain }: { idea: BacExerciseIdea; onTrain: (idea: BacEx
         ))}
       </div>
 
-      <div className="flex flex-row-reverse flex-wrap gap-1.5 mb-2">
+      <div className="flex flex-wrap gap-1.5 mb-2">
         {archetypesForIdea(idea.id).map((a) => (
           <span
             key={a.id}
@@ -123,7 +123,7 @@ function Fiche({ idea, onTrain }: { idea: BacExerciseIdea; onTrain: (idea: BacEx
         </span>
       )}
 
-      <div className="flex flex-row-reverse flex-wrap gap-1.5 text-[11px] text-[#506072] dark:text-gray-400">
+      <div className="flex flex-wrap gap-1.5 text-[11px] text-[#506072] dark:text-gray-400">
         {idea.unitIds.map((u) => (
           <span key={u} className="px-2 py-0.5 rounded-lg bg-[#e8f5ee] dark:bg-black/20">
             {UNIT_TITLE[u] ?? `وحدة ${u}`}
@@ -172,8 +172,8 @@ export default function BacIdeasView({ onBackToHome, focusIdeaId = null }: BacId
 
   return (
     <div className="min-h-screen p-4 md:p-8 max-w-4xl mx-auto" dir="rtl" data-testid="bac-ideas">
-      <div className="flex flex-row-reverse items-center justify-between gap-4 mb-5">
-        <div className="flex flex-row-reverse items-center gap-3">
+      <div className="flex items-center justify-between gap-4 mb-5">
+        <div className="flex items-center gap-3">
           <span className="w-12 h-12 rounded-2xl bg-gradient-to-l from-[#006d37] to-emerald-600 flex items-center justify-center shadow-md">
             <FileText className="w-6 h-6 text-white" />
           </span>
@@ -202,11 +202,11 @@ export default function BacIdeasView({ onBackToHome, focusIdeaId = null }: BacId
         data-testid="idees-pression"
         className="rounded-3xl p-4 bg-[#fff9ed] dark:bg-black/20 border border-[#d9a400]/30 mb-4"
       >
-        <p className="flex flex-row-reverse items-center gap-2 text-sm font-black text-[#1f1c0b] dark:text-gray-100 mb-2">
+        <p className="flex items-center gap-2 text-sm font-black text-[#1f1c0b] dark:text-gray-100 mb-2">
           <TrendingUp className="w-4 h-4" />
           ما الذي يتكرّر؟ (حسب النقاط، على {YEARS_COVERED.length} دورات مقروءة)
         </p>
-        <div className="flex flex-row-reverse flex-wrap gap-2 mb-3">
+        <div className="flex flex-wrap gap-2 mb-3">
           {pression.map((p) => (
             <span
               key={p.unitId}
@@ -217,7 +217,7 @@ export default function BacIdeasView({ onBackToHome, focusIdeaId = null }: BacId
             </span>
           ))}
         </div>
-        <div className="flex flex-row-reverse flex-wrap gap-1.5">
+        <div className="flex flex-wrap gap-1.5">
           {familles.map((f) => (
             <button
               key={f.familyId}
@@ -254,7 +254,7 @@ export default function BacIdeasView({ onBackToHome, focusIdeaId = null }: BacId
         />
       )}
 
-      <div className="flex flex-row-reverse mb-3">
+      <div className="flex mb-3">
         <button
           data-testid="basculer-sujet"
           onClick={() => setSujetVisible((v) => !v)}
@@ -270,14 +270,14 @@ export default function BacIdeasView({ onBackToHome, focusIdeaId = null }: BacId
         data-testid="montages"
         className="rounded-3xl p-4 bg-white dark:bg-[#141916] border border-[#bbcbbb]/30 mb-4"
       >
-        <p className="flex flex-row-reverse items-center gap-2 text-sm font-black text-[#1f1c0b] dark:text-gray-100 mb-1">
+        <p className="flex items-center gap-2 text-sm font-black text-[#1f1c0b] dark:text-gray-100 mb-1">
           <Repeat className="w-4 h-4" />
           التركيبات التي تتكرّر — راجع الشكل لا الجزيئة
         </p>
         <p className="text-[12px] leading-6 text-[#506072] dark:text-gray-400 mb-3 text-right">
           الوزارة لا تخترع الامتحان كل سنة: تُعيد عدداً قليلاً من التركيبات بجزيئة و مرض مختلفين.
         </p>
-        <div className="flex flex-row-reverse flex-wrap gap-2">
+        <div className="flex flex-wrap gap-2">
           {montages.map((m) => (
             <button
               key={m.archetypeId}
@@ -324,7 +324,7 @@ export default function BacIdeasView({ onBackToHome, focusIdeaId = null }: BacId
             ))}
           </ol>
 
-          <p className="flex flex-row-reverse items-start gap-2 text-[12px] leading-6 text-rose-700 dark:text-rose-400 text-right">
+          <p className="flex items-start gap-2 text-[12px] leading-6 text-rose-700 dark:text-rose-400 text-right">
             <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5" />
             <span>
               <span className="font-black">الفخّ: </span>
@@ -361,7 +361,7 @@ export default function BacIdeasView({ onBackToHome, focusIdeaId = null }: BacId
             {familleActive.templateAr}
           </p>
 
-          <p className="flex flex-row-reverse items-start gap-2 text-[12px] leading-6 text-rose-700 dark:text-rose-400 text-right">
+          <p className="flex items-start gap-2 text-[12px] leading-6 text-rose-700 dark:text-rose-400 text-right">
             <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5" />
             <span>
               <span className="font-black">الخلط الشائع: </span>
@@ -371,7 +371,7 @@ export default function BacIdeasView({ onBackToHome, focusIdeaId = null }: BacId
         </section>
       )}
 
-      <div className="flex flex-row-reverse flex-wrap items-center gap-2 mb-4">
+      <div className="flex flex-wrap items-center gap-2 mb-4">
         {YEARS_COVERED.map((y) => (
           <button
             key={y}
@@ -450,7 +450,7 @@ export default function BacIdeasView({ onBackToHome, focusIdeaId = null }: BacId
       )}
 
       {redige.exercices > 0 && (
-        <div className="mb-2 flex flex-row-reverse items-center justify-between gap-2">
+        <div className="mb-2 flex items-center justify-between gap-2">
           <p data-testid="idees-redige" className="text-[12px] font-bold text-[#006d37] dark:text-[#2ecc71] text-right">
             حرّرت {redige.reponses} جواباً على {redige.exercices} تمريناً.
           </p>

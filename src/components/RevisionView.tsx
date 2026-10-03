@@ -119,7 +119,7 @@ export default function RevisionView({ units, flashcards, xp, streak, onRateCard
       
       {/* Focus / Reader Mode Header Bar */}
       {(isFocusMode || isReaderMode) && (
-        <div className="flex flex-row-reverse items-center justify-between w-full bg-black/40 backdrop-blur-md rounded-2xl border border-white/10 px-4 py-3 text-white shadow-lg text-right">
+        <div className="flex items-center justify-between w-full bg-black/40 backdrop-blur-md rounded-2xl border border-white/10 px-4 py-3 text-white shadow-lg text-right">
           <div className="flex items-center gap-2">
             <span className="w-2.5 h-2.5 rounded-full bg-[#2ecc71] animate-ping" />
             <span className="text-xs font-bold text-gray-200">

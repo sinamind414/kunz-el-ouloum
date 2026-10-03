@@ -81,7 +81,7 @@ export default function UnitIntroPortal({
                 data-testid="portal-promesse"
                 className="rounded-3xl p-4 bg-white dark:bg-[#141916] border border-[#006d37]/25"
               >
-                <p className="flex flex-row-reverse items-center gap-1.5 text-sm font-black text-[#006d37] dark:text-[#2ecc71] mb-1">
+                <p className="flex items-center gap-1.5 text-sm font-black text-[#006d37] dark:text-[#2ecc71] mb-1">
                   <Target className="w-4 h-4" />
                   <span>في نهاية الوحدة ستكون قادراً على</span>
                 </p>
@@ -89,7 +89,7 @@ export default function UnitIntroPortal({
               </section>
 
               <section className="rounded-3xl p-4 bg-white dark:bg-[#141916] border border-[#bbcbbb]/30">
-                <p className="flex flex-row-reverse items-center gap-1.5 text-sm font-black text-[#1f1c0b] dark:text-gray-100 mb-2">
+                <p className="flex items-center gap-1.5 text-sm font-black text-[#1f1c0b] dark:text-gray-100 mb-2">
                   <ListOrdered className="w-4 h-4" />
                   <span>الطريق ({opening.roadmapAr.length} محطات)</span>
                 </p>
@@ -97,7 +97,7 @@ export default function UnitIntroPortal({
                   {opening.roadmapAr.map((etape, i) => (
                     <li
                       key={etape}
-                      className="flex flex-row-reverse items-start gap-2 text-sm leading-7 text-[#1f1c0b] dark:text-gray-200"
+                      className="flex items-start gap-2 text-sm leading-7 text-[#1f1c0b] dark:text-gray-200"
                     >
                       <span className="shrink-0 w-5 h-5 mt-0.5 rounded-lg bg-[#e8f5ee] dark:bg-black/20 text-[11px] font-bold text-[#006d37] dark:text-[#2ecc71] flex items-center justify-center">
                         {i + 1}
@@ -120,7 +120,7 @@ export default function UnitIntroPortal({
               </section>
 
               <section className="rounded-3xl p-4 bg-rose-50/60 dark:bg-rose-500/10 border border-rose-200/60">
-                <p className="flex flex-row-reverse items-center gap-1.5 text-sm font-black text-rose-700 dark:text-rose-400 mb-2">
+                <p className="flex items-center gap-1.5 text-sm font-black text-rose-700 dark:text-rose-400 mb-2">
                   <AlertTriangle className="w-4 h-4" />
                   <span>الأخطاء التي تتكرّر في هذه الوحدة</span>
                 </p>
@@ -144,7 +144,7 @@ export default function UnitIntroPortal({
                 data-testid="portal-premiere-action"
                 className="rounded-3xl p-4 bg-[#fff9ed] dark:bg-black/20 border border-[#d9a400]/40"
               >
-                <p className="flex flex-row-reverse items-center gap-1.5 text-sm font-black text-[#8a6a00] dark:text-[#d9a400] mb-1">
+                <p className="flex items-center gap-1.5 text-sm font-black text-[#8a6a00] dark:text-[#d9a400] mb-1">
                   <Flag className="w-4 h-4" />
                   <span>ابدأ بهذا</span>
                 </p>

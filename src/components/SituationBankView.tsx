@@ -66,7 +66,7 @@ function FicheSituation({ card, onClose }: { card: SituationCard; onClose: () =>
       className="bg-white dark:bg-[#141916] rounded-3xl p-5 border border-[#bbcbbb]/40 dark:border-[#2ecc71]/10 shadow-sm"
       dir="rtl"
     >
-      <div className="flex flex-row-reverse items-start justify-between gap-3 mb-4">
+      <div className="flex items-start justify-between gap-3 mb-4">
         <div className="text-right">
           <h2 className="text-xl font-black text-[#1f1c0b] dark:text-gray-100">{card.titleAr}</h2>
           <p className="text-sm text-[#506072] dark:text-gray-400">{card.subtitleAr}</p>
@@ -81,7 +81,7 @@ function FicheSituation({ card, onClose }: { card: SituationCard; onClose: () =>
         </button>
       </div>
 
-      <div className="flex flex-row-reverse flex-wrap gap-2 mb-4">
+      <div className="flex flex-wrap gap-2 mb-4">
         {card.unitIds.map((u) => (
           <span
             key={u}
@@ -135,7 +135,7 @@ function FicheSituation({ card, onClose }: { card: SituationCard; onClose: () =>
                   <p className="mt-2 text-sm font-bold text-[#006d37] dark:text-[#2ecc71]">{c.promptProduceAr}</p>
                 )}
                 {c.hintsAr && (
-                  <p className="mt-2 flex flex-row-reverse items-start gap-1.5 text-[13px] text-[#8a6a00] dark:text-[#d9a400]">
+                  <p className="mt-2 flex items-start gap-1.5 text-[13px] text-[#8a6a00] dark:text-[#d9a400]">
                     <Lightbulb className="w-4 h-4 shrink-0 mt-0.5" />
                     <span>
                       {c.hintsAr[0]} {c.hintsAr[1]}
@@ -188,7 +188,7 @@ function FicheSituation({ card, onClose }: { card: SituationCard; onClose: () =>
       )}
 
       <section className="mb-4 rounded-2xl p-4 bg-[#f3f4f5] dark:bg-black/20">
-        <h3 className="flex flex-row-reverse items-center gap-1.5 text-sm font-black text-[#1f1c0b] dark:text-gray-100 mb-1">
+        <h3 className="flex items-center gap-1.5 text-sm font-black text-[#1f1c0b] dark:text-gray-100 mb-1">
           <Target className="w-4 h-4" />
           <span>ما الذي يُقيَّم فعلاً</span>
         </h3>
@@ -201,7 +201,7 @@ function FicheSituation({ card, onClose }: { card: SituationCard; onClose: () =>
       <button
         data-testid="basculer-correction"
         onClick={() => setCorrectionVisible((v) => !v)}
-        className="flex flex-row-reverse items-center gap-2 px-4 py-2.5 rounded-2xl bg-[#006d37] hover:bg-[#00592d] text-white text-sm font-bold cursor-pointer transition-colors"
+        className="flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-[#006d37] hover:bg-[#00592d] text-white text-sm font-bold cursor-pointer transition-colors"
       >
         {correctionVisible ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
         <span>{correctionVisible ? 'إخفاء التصحيح' : 'أظهر عناصر التصحيح'}</span>
@@ -270,7 +270,7 @@ export default function SituationBankView({ onBackToHome }: SituationBankViewPro
 
   return (
     <div className="min-h-screen p-4 md:p-8 max-w-5xl mx-auto" dir="rtl" data-testid="situation-bank">
-      <div className="flex flex-row-reverse items-center justify-between gap-4 mb-6">
+      <div className="flex items-center justify-between gap-4 mb-6">
         <div className="text-right">
           <h1 className="text-2xl md:text-3xl font-black text-[#1f1c0b] dark:text-gray-100">تمارين بالوضعيات</h1>
           <p className="text-sm text-[#506072] dark:text-gray-400">
@@ -299,7 +299,7 @@ export default function SituationBankView({ onBackToHome }: SituationBankViewPro
         />
       </div>
 
-      <div className="flex flex-row-reverse flex-wrap gap-2 mb-3">
+      <div className="flex flex-wrap gap-2 mb-3">
         <button
           data-testid="filtre-unite-tous"
           onClick={() => setUnitId(undefined)}
@@ -323,7 +323,7 @@ export default function SituationBankView({ onBackToHome }: SituationBankViewPro
         ))}
       </div>
 
-      <div className="flex flex-row-reverse flex-wrap gap-2 mb-5">
+      <div className="flex flex-wrap gap-2 mb-5">
         {([1, 2, 3] as SituationDifficulty[]).map((d) => (
           <button
             key={d}
@@ -343,11 +343,11 @@ export default function SituationBankView({ onBackToHome }: SituationBankViewPro
           aucune situation, aucun exercice — ils ouvrent une porte d'entrée sur
           l'existant (l'élève qui veut « s'entraîner aux tableaux » n'en avait
           aucune). Les compteurs viennent de documentTypology.ts. */}
-      <div className="flex flex-row-reverse items-center gap-1.5 mb-2 mt-5 text-[11px] font-black text-[#006d37] dark:text-[#2ecc71]">
+      <div className="flex items-center gap-1.5 mb-2 mt-5 text-[11px] font-black text-[#006d37] dark:text-[#2ecc71]">
         <Layers className="w-3.5 h-3.5" />
         <span data-testid="typologie-titre">حسب نوع الوثيقة</span>
       </div>
-      <div className="flex flex-row-reverse flex-wrap gap-2 mb-2">
+      <div className="flex flex-wrap gap-2 mb-2">
         <button
           data-testid="filtre-forme-tous"
           onClick={() => setForme(undefined)}
@@ -375,11 +375,11 @@ export default function SituationBankView({ onBackToHome }: SituationBankViewPro
         ))}
       </div>
 
-      <div className="flex flex-row-reverse flex-wrap gap-2 mb-5">
+      <div className="flex flex-wrap gap-2 mb-5">
         <button
           data-testid="filtre-chiffre"
           onClick={() => setChiffre((v) => !v)}
-          className={`flex flex-row-reverse items-center gap-1.5 text-xs font-bold px-3 py-1.5 rounded-xl cursor-pointer ${
+          className={`flex items-center gap-1.5 text-xs font-bold px-3 py-1.5 rounded-xl cursor-pointer ${
             chiffre
               ? 'bg-[#8a6a00] text-white'
               : 'bg-[#f3f4f5] dark:bg-[#1f2622] text-[#506072] dark:text-gray-300'
@@ -412,14 +412,14 @@ export default function SituationBankView({ onBackToHome }: SituationBankViewPro
               onClick={() => setOuverte(s)}
               className="text-right bg-white dark:bg-[#141916] rounded-3xl p-4 border border-[#bbcbbb]/30 dark:border-[#2ecc71]/10 shadow-sm hover:shadow-md hover:border-[#006d37]/40 transition-all cursor-pointer"
             >
-              <div className="flex flex-row-reverse items-start justify-between gap-2 mb-1">
+              <div className="flex items-start justify-between gap-2 mb-1">
                 <h3 className="text-base font-black text-[#1f1c0b] dark:text-gray-100">{s.titleAr}</h3>
                 <span className={`text-[10px] font-bold px-2 py-0.5 rounded-lg shrink-0 ${DIFFICULTE_CLASS[s.difficulty]}`}>
                   {DIFFICULTE_LABEL[s.difficulty]}
                 </span>
               </div>
               <p className="text-[13px] text-[#506072] dark:text-gray-400 mb-2">{s.subtitleAr}</p>
-              <div className="flex flex-row-reverse flex-wrap gap-1.5">
+              <div className="flex flex-wrap gap-1.5">
                 {s.unitIds.map((u) => (
                   <span
                     key={u}

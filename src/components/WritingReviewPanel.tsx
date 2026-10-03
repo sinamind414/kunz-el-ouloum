@@ -29,8 +29,8 @@ export default function WritingReviewPanel({ onOpen }: Props) {
       dir="rtl"
       className="rounded-3xl p-4 bg-white dark:bg-[#141916] border border-[#006d37]/30 mb-4"
     >
-      <div className="flex flex-row-reverse items-center justify-between gap-2 mb-1">
-        <h2 className="flex flex-row-reverse items-center gap-2 text-sm font-black text-[#1f1c0b] dark:text-gray-100">
+      <div className="flex items-center justify-between gap-2 mb-1">
+        <h2 className="flex items-center gap-2 text-sm font-black text-[#1f1c0b] dark:text-gray-100">
           <FileText className="w-4 h-4" />
           ما كتبته أنا
         </h2>
@@ -51,7 +51,7 @@ export default function WritingReviewPanel({ onOpen }: Props) {
 
       {rapport.points.length > 0 && (
         <div data-testid="review-profil" className="rounded-2xl p-3 bg-[#fff9ed] dark:bg-black/20 mb-3">
-          <p className="flex flex-row-reverse items-center gap-2 text-[11px] font-black text-[#8a6a00] dark:text-[#d9a400] mb-1">
+          <p className="flex items-center gap-2 text-[11px] font-black text-[#8a6a00] dark:text-[#d9a400] mb-1">
             <AlertTriangle className="w-4 h-4" />
             ما تنساه غالباً
           </p>
@@ -77,7 +77,7 @@ export default function WritingReviewPanel({ onOpen }: Props) {
             data-testid={`review-draft-${r.ideaId}-${r.familyId}`}
             className="rounded-2xl p-3 bg-[#f8fbfa] dark:bg-black/20 border border-[#bbcbbb]/30"
           >
-            <div className="flex flex-row-reverse items-start justify-between gap-2 mb-1">
+            <div className="flex items-start justify-between gap-2 mb-1">
               <p className="text-[12px] font-black text-[#1f1c0b] dark:text-gray-100 text-right">
                 {r.idea ? `${r.idea.year} · ${r.idea.titleAr}` : r.ideaId} — {r.familleAr}
               </p>

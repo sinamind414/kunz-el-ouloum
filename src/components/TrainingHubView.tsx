@@ -26,8 +26,12 @@ const ICONS: Record<string, LucideIcon> = {
 export default function TrainingHubView({ onOpen, onBackToHome }: TrainingHubViewProps) {
   return (
     <div className="min-h-screen p-4 md:p-8 max-w-5xl mx-auto" dir="rtl" data-testid="training-hub">
-      <div className="flex flex-row-reverse items-center justify-between gap-4 mb-6">
-        <div className="flex flex-row-reverse items-center gap-3">
+      {/* RTL : le conteneur est en dir="rtl", donc `flex-row` place le PREMIER
+          enfant à droite (début de lecture). Un `flex-row-reverse` ici produirait
+          exactement une disposition LTR — c'était le bug du 2026-10-03 :
+          titre + icône à gauche dans une app arabe. */}
+      <div className="flex items-center justify-between gap-4 mb-6">
+        <div className="flex items-center gap-3">
           <span className="w-12 h-12 rounded-2xl bg-gradient-to-l from-[#006d37] to-emerald-600 flex items-center justify-center shadow-md">
             <Dumbbell className="w-6 h-6 text-white" />
           </span>
@@ -58,7 +62,9 @@ export default function TrainingHubView({ onOpen, onBackToHome }: TrainingHubVie
               onClick={() => onOpen(e.tab)}
               className="text-right bg-white dark:bg-[#141916] rounded-3xl p-5 border border-[#bbcbbb]/30 dark:border-[#2ecc71]/10 shadow-sm hover:shadow-md hover:border-[#006d37]/40 transition-all cursor-pointer"
             >
-              <div className="flex flex-row-reverse items-start gap-3">
+              {/* dir="rtl" + flex-row → icône à DROITE du texte, comme dans le
+                  menu latéral. `row-reverse` mettait l'icône à gauche. */}
+              <div className="flex items-start gap-3">
                 <span className="shrink-0 w-10 h-10 rounded-2xl bg-[#e8f5ee] dark:bg-black/20 flex items-center justify-center">
                   <Icon className="w-5 h-5 text-[#006d37] dark:text-[#2ecc71]" />
                 </span>

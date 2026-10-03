@@ -13,8 +13,8 @@ interface AnimationsViewProps {
 export default function AnimationsView({ onBackToHome }: AnimationsViewProps) {
   return (
     <div className="min-h-screen p-4 md:p-8 max-w-5xl mx-auto" dir="rtl">
-      <div className="flex flex-row-reverse items-center justify-between gap-4 mb-8">
-        <div className="flex flex-row-reverse items-center gap-3">
+      <div className="flex items-center justify-between gap-4 mb-8">
+        <div className="flex items-center gap-3">
           <div className="w-12 h-12 rounded-2xl bg-gradient-to-l from-emerald-500 to-teal-600 flex items-center justify-center shadow-md">
             <Sparkles className="w-6 h-6 text-white" />
           </div>

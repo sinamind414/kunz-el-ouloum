@@ -246,7 +246,7 @@ const [showIntroSplash, setShowIntroSplash] = useState<boolean>(true);
             </div>
 
             {/* Top Header Row */}
-            <header className="relative z-10 flex flex-row-reverse justify-between items-center w-full max-w-4xl mx-auto pt-4 md:pt-0">
+            <header className="relative z-10 flex justify-between items-center w-full max-w-4xl mx-auto pt-4 md:pt-0">
               <div className="flex items-center gap-2 bg-[#ffffff]/80 backdrop-blur-md px-3.5 py-2 rounded-full border border-[#e2dabf]/50 shadow-sm text-xs md:text-sm text-[#735c00] font-bold">
                 <Trophy className="w-4 h-4 text-[#fed65b] fill-[#fed65b]" />
                 <span>منصة التحضير الأفضل لبكالوريا الجزائر</span>

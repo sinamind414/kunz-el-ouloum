@@ -61,8 +61,8 @@ export default function MicroCapsulePanel({ unitId, dayKey }: MicroCapsulePanelP
       dir="rtl"
       className="bg-white dark:bg-[#141916] border border-[#d9a400]/40 dark:border-[#d9a400]/20 p-4 rounded-3xl shadow-sm"
     >
-      <div className="flex flex-row-reverse items-center justify-between gap-2 mb-3">
-        <div className="flex flex-row-reverse items-center gap-2">
+      <div className="flex items-center justify-between gap-2 mb-3">
+        <div className="flex items-center gap-2">
           <span className="flex items-center justify-center w-8 h-8 rounded-xl bg-[#fff7e0] dark:bg-black/20">
             <Zap className="w-4 h-4 text-[#d9a400]" />
           </span>
@@ -75,7 +75,7 @@ export default function MicroCapsulePanel({ unitId, dayKey }: MicroCapsulePanelP
         </div>
         <span
           data-testid="capsule-duree"
-          className="flex flex-row-reverse items-center gap-1 text-[11px] font-bold text-[#506072] dark:text-gray-400 bg-[#f3f4f5] dark:bg-black/20 px-2.5 py-1 rounded-lg"
+          className="flex items-center gap-1 text-[11px] font-bold text-[#506072] dark:text-gray-400 bg-[#f3f4f5] dark:bg-black/20 px-2.5 py-1 rounded-lg"
         >
           <Timer className="w-3.5 h-3.5" />
           {capsule.durationSec} ثانية
@@ -101,7 +101,7 @@ export default function MicroCapsulePanel({ unitId, dayKey }: MicroCapsulePanelP
 
       <ol data-testid="capsule-etapes" className="mb-3 space-y-1.5">
         {capsule.stepsAr.map((s, i) => (
-          <li key={s} className="flex flex-row-reverse items-start gap-2 text-sm leading-7 text-[#1f1c0b] dark:text-gray-200">
+          <li key={s} className="flex items-start gap-2 text-sm leading-7 text-[#1f1c0b] dark:text-gray-200">
             <span className="shrink-0 w-5 h-5 mt-0.5 rounded-lg bg-[#e8f5ee] dark:bg-black/20 text-[11px] font-bold text-[#006d37] dark:text-[#2ecc71] flex items-center justify-center">
               {i + 1}
             </span>
@@ -136,11 +136,11 @@ export default function MicroCapsulePanel({ unitId, dayKey }: MicroCapsulePanelP
         )}
       </div>
 
-      <div className="flex flex-row-reverse items-center justify-between">
+      <div className="flex items-center justify-between">
         <button
           data-testid="capsule-precedente"
           onClick={() => aller(-1)}
-          className="flex flex-row-reverse items-center gap-1 text-xs font-bold px-3 py-1.5 rounded-xl bg-[#f3f4f5] dark:bg-[#1f2622] text-[#006d37] dark:text-[#2ecc71] cursor-pointer"
+          className="flex items-center gap-1 text-xs font-bold px-3 py-1.5 rounded-xl bg-[#f3f4f5] dark:bg-[#1f2622] text-[#006d37] dark:text-[#2ecc71] cursor-pointer"
         >
           <ChevronRight className="w-4 h-4" />
           <span>السابقة</span>

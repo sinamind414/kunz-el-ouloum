@@ -57,9 +57,9 @@ export default function WritingReportSheet({ onClose }: Props) {
         .sans-impression { display: none !important; }
       }`}</style>
 
-      <div className="flex flex-row-reverse items-start justify-between gap-3 mb-3">
+      <div className="flex items-start justify-between gap-3 mb-3">
         <div className="text-right">
-          <h2 className="flex flex-row-reverse items-center gap-2 text-base font-black text-[#1f1c0b] dark:text-gray-100">
+          <h2 className="flex items-center gap-2 text-base font-black text-[#1f1c0b] dark:text-gray-100">
             <FileText className="w-4 h-4" />
             تقرير العمل الكتابي
           </h2>
@@ -67,7 +67,7 @@ export default function WritingReportSheet({ onClose }: Props) {
             {dateDuJour()} · {daysLeft} يوماً قبل الامتحان · أجوبة محرَّرة على مواضيع بكالوريا رسمية
           </p>
         </div>
-        <div className="sans-impression flex flex-row-reverse gap-2">
+        <div className="sans-impression flex gap-2">
           <button
             data-testid="rapport-imprimer"
             onClick={() => {

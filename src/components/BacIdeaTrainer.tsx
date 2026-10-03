@@ -69,9 +69,9 @@ export default function BacIdeaTrainer({ idea, onClose }: Props) {
       dir="rtl"
       className="rounded-3xl p-4 bg-white dark:bg-[#141916] border-2 border-[#006d37]/40 mb-4"
     >
-      <div className="flex flex-row-reverse items-start justify-between gap-3 mb-3">
+      <div className="flex items-start justify-between gap-3 mb-3">
         <div className="text-right">
-          <h2 className="flex flex-row-reverse items-center gap-2 text-base font-black text-[#1f1c0b] dark:text-gray-100">
+          <h2 className="flex items-center gap-2 text-base font-black text-[#1f1c0b] dark:text-gray-100">
             <PenLine className="w-4 h-4" />
             تدرّب على: {idea.titleAr}
           </h2>
@@ -126,14 +126,14 @@ export default function BacIdeaTrainer({ idea, onClose }: Props) {
               <li key={m}>{m}</li>
             ))}
           </ol>
-          <p className="mt-2 flex flex-row-reverse items-start gap-2 text-[12px] leading-6 text-rose-700 dark:text-rose-400 text-right">
+          <p className="mt-2 flex items-start gap-2 text-[12px] leading-6 text-rose-700 dark:text-rose-400 text-right">
             <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5" />
             <span>{montages[0].trapAr}</span>
           </p>
         </div>
       )}
 
-      <div className="flex flex-row-reverse flex-wrap gap-2 mb-2">
+      <div className="flex flex-wrap gap-2 mb-2">
         {familles.map((id) => (
           <button
             key={id}
@@ -168,7 +168,7 @@ export default function BacIdeaTrainer({ idea, onClose }: Props) {
 
       {verdict && texte.trim() !== '' && (
         <div data-testid="trainer-verdict" className="mt-3 rounded-2xl p-3 bg-[#f3f4f5] dark:bg-black/20">
-          <p className="flex flex-row-reverse items-center gap-2 text-[12px] font-black text-[#1f1c0b] dark:text-gray-100 mb-1">
+          <p className="flex items-center gap-2 text-[12px] font-black text-[#1f1c0b] dark:text-gray-100 mb-1">
             <ListChecks className="w-4 h-4" />
             شكل الجواب: {verdict.satisfaits} / {verdict.total}
           </p>
