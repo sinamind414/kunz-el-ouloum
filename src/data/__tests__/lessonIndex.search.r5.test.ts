@@ -35,14 +35,11 @@ describe('R5-G1 : lessonKey sur les chunks de leçon', () => {
 
 describe('R5-G6 : trous de retrieval bouchés', () => {
   it('الفسفرة التأكسدية → carte respiration (définition ATP-سينتاز)', () => {
-    // S-01/R2 : le 1er message sert la PROBE socratique, pas le contenu.
-    // On vérifie que la fiche est trouvée (titre + probe) — le contenu
-    // complet arrive au 2e tour (couvert par speckitS01Probes.test.ts).
     const action = answerTutorQuestion('ما هي الفسفرة التأكسدية؟');
     expect(action).not.toBeNull();
     const text = action!.text || '';
-    expect(text).toContain('قبل أن أجيب');
-    expect(text).toContain('التنفس الخلوي');
+    expect(text).toContain('الفسفرة التأكسدية');
+    expect(text).toContain('ATP');
     expect(text.toLowerCase()).not.toContain('لم أجد');
   });
 

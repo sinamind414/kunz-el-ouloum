@@ -37,12 +37,19 @@ const sessionBoss: BotSession = {
   boss: { scenarioId: 'boss1_q1', questionIndex: 0, totalQuestions: 2, score: 0, phase: 'answer' },
 };
 // reponse niant toute la correction mais contenant les memes mots-cles
-const resBoss = processStudentInput(sessionBoss, 'لا، البروتين لا يتكون من أحماض أمينية، لا يوجد نسخ ولا ترجمة، الريبوزوم لا يركب أي شيء، الكودون AUG ليس كودون بداية');
+// KEO-101 (2026-10-01) : la correction n'apparait qu'apres 2 tentatives reelles.
+// KEO-106 : connecteur causal pour la conformité au verbe «بيّن».
+const CAUSAL = '، مما يؤدي إلى استجابة مناعية';
+const negation = 'لا، البروتين لا يتكون من أحماض أمينية، لا يوجد نسخ ولا ترجمة، الريبوزوم لا يركب أي شيء، الكودون AUG ليس كودون بداية' + CAUSAL;
+const firstShot = processStudentInput(sessionBoss, negation);
+const resBoss = processStudentInput(firstShot.session, negation);
 const m = resBoss.action.text.match(/نقاطك لهذه الوضعية: (\d+)\/10/);
 line(`reponse NEGATIVE totale -> note = ${m ? m[1] : '?'}/10  (attendu si bug : 10)`);
+// KEO-101 : « لا أعرف » ne donne plus la correction — refus chrono avant
+// 90 s sans tentative, puis des indices.
 const resBoss2 = processStudentInput(sessionBoss, 'لا أعرف');
 const m2 = resBoss2.action.text.match(/نقاطك لهذه الوضعية: (\d+)\/10/);
-line(`« لا أعرف » -> note = ${m2 ? m2[1] : '?'}/10 (attendu : 0)`);
+line(`« لا أعرف » immediat -> note = ${m2 ? m2[1] : '(absente)'} | refus chrono = ${resBoss2.action.text.includes('لن أعطيك التصحيح')}`);
 
 // ---------- B3 : « الباك » renvoie-t-il la carte du noyau terrestre ? ----------
 line('\n===== B3 : « الباك » -> carte du noyau ? =====');

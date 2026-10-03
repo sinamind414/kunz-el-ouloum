@@ -20,16 +20,24 @@ line('===== B2 : la negation fausse-t-elle la notation ? =====');
 const sc = getBossScenarioById('boss1_q1');
 if (sc) {
   line(`keyPoints du scenario : ${JSON.stringify(sc.keyPoints)}`);
+  // KEO-101 (2026-10-01) : la correction n'apparait qu'apres 2 tentatives
+  // reelles — on rejoue donc chaque reponse deux fois.
+  // KEO-106 : la situation demande «بيّن» → connecteur causal pour la conformité.
+  const CAUSAL = '، مما يؤدي إلى استجابة مناعية';
+  const deux = (ans: string) => {
+    const first = processStudentInput(sessionBoss('boss1_q1', 2), ans + CAUSAL);
+    return processStudentInput(first.session, ans + CAUSAL);
+  };
   // 1) reponse qui nie EXPLICITEMENT chaque point-cle en reprenant ses mots
   const nieTout = sc.keyPoints.map((kp) => 'لا، ليس صحيحاً أن ' + kp).join('؛ ');
-  const r1 = processStudentInput(sessionBoss('boss1_q1', 2), nieTout);
+  const r1 = deux(nieTout);
   line(`A) negation de TOUS les points-cles -> note = ${note(r1.action.text)}`);
   // 2) reponse qui reprend les points-cles tels quels (temoin positif)
-  const r2 = processStudentInput(sessionBoss('boss1_q1', 2), sc.keyPoints.join('؛ '));
+  const r2 = deux(sc.keyPoints.join('؛ '));
   line(`B) reprise exacte des points-cles -> note = ${note(r2.action.text)}`);
   // 3) reponse partiellement negative (50% des mots)
   const nieMoitie = sc.keyPoints.slice(0, 2).map((kp) => 'أرفض أن ' + kp).join('؛ ') + '؛ ' + sc.keyPoints.slice(2).join('؛ ');
-  const r3 = processStudentInput(sessionBoss('boss1_q1', 2), nieMoitie);
+  const r3 = deux(nieMoitie);
   line(`C) moitie niee, moitie reprise    -> note = ${note(r3.action.text)}`);
 }
 

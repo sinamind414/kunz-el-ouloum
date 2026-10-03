@@ -18,24 +18,23 @@ export interface BossState {
   totalQuestions: number;
   score: number;
   phase: 'answer' | 'eval';
-  /**
-   * R1 (audit Morchid R1 2026-10-01) : la correction modèle n'est plus servie
-   * au premier « لا أعرف ». On grimpe un escalier d'indices.
-   * hintLevel = nombre d'indices déjà consommés (0..3). À 3, la correction
-   * se débloque mais le score est plafonné à 3/10.
-   */
+  /** KEO-101 (audit 2026-10-01) : indices déjà consommés sur la situation
+   *  courante (0→3). « لا أعرف » délivre l'indice suivant, jamais la correction. */
   hintLevel?: number;
-  /**
-   * R1 : tentatives écrites réelles (≥ 15 caractères utiles) sur la situation
-   * courante. Deux tentatives débloquent la correction ET le score plein.
-   */
+  /** KEO-101 : tentatives écrites RÉELLES (≥ 15 caractères utiles) sur la
+   *  situation courante. Deux tentatives débloquent la correction (score plein). */
   attempts?: number;
-  /**
-   * R3 : horodateur de l'affichage de la situation courante. La règle d'or de
-   * studyGuide.ts (« pas de correction avant 20-25 min de tentative ») devient
-   * une contrainte : la correction est refusée avant 90 s sans tentative.
-   */
+  /** KEO-102 : horodatage (ms) d'ouverture de la situation courante — la
+   *  correction/indices sont refusés avant 90 s sans tentative. */
   openedAt?: number;
+  /** KEO-106 (SpecKit 2026-10-01) : nombre d'avertissements « contrat du
+   *  verbe de consigne » déjà donnés sur la situation courante. Le premier
+   *  écart est corrigé sans compter la tentative ; au deuxième, on avance
+   *  (trappe anti-frustration). Remis à zéro à chaque situation. */
+  verbWarnings?: number;
+  /** KEO-104 : points-clés manqués, accumulés sur TOUT le défi (pas remis à
+   *  zéro entre les situations) — nourrit le bilan final CAUSE/ACTION/PORTE. */
+  missedKeyPoints?: string[];
 }
 
 export interface BotSession {
@@ -50,33 +49,23 @@ export interface BotSession {
   lastMissionDate: string | null;
   lastMissionTopic: string | null;
   lastCardId: string | null;
-  /**
-   * R2 (audit Morchid 2026-10-01) : id de la fiche dont la probe socratique
-   * vient d'être posée. L'élève répond → on sert shortAnswer. Un changement
-   * de sujet (autre fiche) réarme la probe. Jamais deux probes pour la même
-   * carte d'affilée : un second « اشرح لي X » sert le contenu directement.
-   */
-  lastProbeCard: string | null;
-  /**
-   * S-03 (SpecKit 002) : triade scientifique C3. Quand la consigne porte un
-   * verbe méthodique (حلّل/فسّر/استنتج/قارن/علّل/اقترح/استخرج), Morchid ne
-   * livre aucune conclusion avant que l'élève parcoure les trois cases, une à
-   * une : ألاحظ (observation, interdit de لأنّ) → أفسّر (interprétation) →
-   * أخلص (conclusion). `null` = triade inactive.
-   */
-  triad: TriadState | null;
   lastInteraction: number;
-}
-
-export type TriadStep = 'observation' | 'interpretation' | 'conclusion';
-
-export interface TriadState {
-  verb: string;
-  step: TriadStep;
-  /** Verbe à famille fermée (حلّل/استخرج) → « لأنّ » interdit dans أفسّر. */
-  closedFamily: boolean;
-  /** Verbe à famille ouverte (فسّر/علّل) → « لأنّ » autorisé. */
-  topic: string;
+  /** KEO-103 (SpecKit 2026-10-01) : carte dont la question de sondage
+   *  (probe) est EN ATTENTE — la prochaine saisie de l'élève est traitée
+   *  comme sa tentative, puis le contenu ciblé est livré. */
+  pendingProbeCardId?: string | null;
+  /** KEO-103 : cartes dont le probe a été contourné par deux demandes
+   *  explicites « اشرح لي » (trappe anti-frustration, journalisée). */
+  probeBypassed?: string[];
+  /** KEO-105 (SpecKit 2026-10-01) : triade en cours (ألاحظ → أستنتج → أخلص)
+   *  sur une question d'analyse posée en dialogue libre. */
+  triadeStep?: 1 | 2 | 3 | null;
+  /**
+   * KEO-105 / S-03 (SpecKit 002) : famille du verbe qui a ouvert la triade.
+   * Fermée (حلّل، استخرج) = décrire sans expliquer — «لأنّ» interdit à
+   * l'étape 2 aussi. Ouverte (فسّر، علّل، استنتج) = le causal y est requis.
+   */
+  triadeClosed?: boolean;
 }
 
 const STORAGE_KEY = 'smart_tutor_session';
@@ -93,13 +82,11 @@ const defaultSession: BotSession = {
   lastMissionDate: null,
   lastMissionTopic: null,
   lastCardId: null,
-  lastProbeCard: null,
-  triad: null,
   lastInteraction: Date.now(),
 };
 
 export function getDefaultSession(): BotSession {
-  return { ...defaultSession, mistakes: [], currentQuiz: null, boss: null, lastProbeCard: null, triad: null, lastInteraction: Date.now() };
+  return { ...defaultSession, mistakes: [], currentQuiz: null, boss: null, lastInteraction: Date.now() };
 }
 
 /**
@@ -237,12 +224,39 @@ export function startBossFightSession(
       totalQuestions,
       score: 0,
       phase: 'answer',
+      // KEO-101/102 : remise à zéro des compteurs de la 1ʳᵉ situation.
       hintLevel: 0,
       attempts: 0,
       openedAt: Date.now(),
+      // KEO-104/106 : compteurs du défi — erreurs de verbe par situation,
+      // points-clés manqués accumulés sur tout le défi.
+      verbWarnings: 0,
+      missedKeyPoints: [],
     },
   };
 
+  saveSession(newSession);
+  return newSession;
+}
+
+/**
+ * KEO-101 (audit 2026-10-01) : met à jour l'état de progression de la situation
+ * BAC courante (indices consommés, tentatives réelles) sans changer de question.
+ * Remplace l'ancien pattern « la moitié de la correction dans le moteur » :
+ * la progression d'une même situation vit ici, dans l'état de session.
+ */
+export function recordBossProgress(
+  session: BotSession,
+  patch: Partial<Pick<BossState, 'hintLevel' | 'attempts' | 'verbWarnings' | 'missedKeyPoints'>>
+): BotSession {
+  if (!session.boss) return session;
+  const newSession: BotSession = {
+    ...session,
+    boss: {
+      ...session.boss,
+      ...patch,
+    },
+  };
   saveSession(newSession);
   return newSession;
 }
@@ -263,10 +277,14 @@ export function startBossStep(
       questionIndex: nextIndex,
       score: session.boss.score + points,
       phase: 'answer',
-      // R1/R3 : l'escalier d'indices et le chrono se réinitialisent par situation.
+      // KEO-101/102 : chaque nouvelle situation repart de zéro (indices,
+      // tentatives, chrono) — les compteurs ne fuient pas d'une question à l'autre.
       hintLevel: 0,
       attempts: 0,
       openedAt: Date.now(),
+      // KEO-106 : l'avertissement verbe est par-situation ; KEO-104 : les
+      // points manqués s'accumulent au fil du défi (ne PAS remettre à zéro).
+      verbWarnings: 0,
     },
   };
 

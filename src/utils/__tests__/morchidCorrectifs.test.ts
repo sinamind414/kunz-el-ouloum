@@ -34,19 +34,7 @@ const boss = (): BotSession => ({
   ...getDefaultSession(),
   activeDomainId: 1,
   mode: 'bac_challenge',
-  boss: {
-    scenarioId: 'boss1_q1',
-    questionIndex: 0,
-    totalQuestions: 2,
-    score: 0,
-    phase: 'answer',
-    // R1 (audit Morchid 2026-10-01) : la note n'est plus livrée au 1er essai —
-    // on démarre ces tests de notation avec une tentative déjà consommée pour
-    // que la correction notée se déclenche.
-    attempts: 1,
-    hintLevel: 0,
-    openedAt: Date.now() - 120_000,
-  },
+  boss: { scenarioId: 'boss1_q1', questionIndex: 0, totalQuestions: 2, score: 0, phase: 'answer' },
 });
 
 // ---------------------------------------------------------------------------
@@ -55,33 +43,41 @@ const boss = (): BotSession => ({
 
 describe('B2 — négation non créditée (audit Morchid)', () => {
   const sc = getBossScenarioById('boss1_q1')!;
+  // KEO-101 (bilan de vérité 2026-10-01) : la correction n'apparaît plus à la
+  // première saisie — deux tentatives réelles la débloquent. On rejoue donc
+  // la même réponse deux fois pour atteindre la correction.
+  // KEO-106 (LOT 2) : la situation demande «بيّن» → connecteur causal ajouté
+  // pour la conformité au contrat du verbe.
+  const CAUSAL = '، مما يؤدي إلى استجابة مناعية';
+  const reponse = (ans: string) =>
+    processStudentInput(processStudentInput(boss(), ans + CAUSAL).session, ans + CAUSAL);
 
   it('réponse niant tous les points-clés → 0/10', () => {
-    const nie = processStudentInput(
-      boss(),
-      sc.keyPoints.map((k) => 'لا، ليس صحيحاً أن ' + k).join('؛ '),
-    );
+    const nie = reponse(sc.keyPoints.map((k) => 'لا، ليس صحيحاً أن ' + k).join('؛ '));
     expect(note(nie.action.text)).toBe(0);
   });
 
   it('réponse reprenant les points-clés → 10/10 (non régressif)', () => {
-    const bon = processStudentInput(boss(), sc.keyPoints.join('؛ '));
+    const bon = reponse(sc.keyPoints.join('؛ '));
     expect(note(bon.action.text)).toBe(10);
   });
 
   it('1 point nié + 3 affirmés → les 3 affirmés restent crédités (10/10)', () => {
-    const mixte = processStudentInput(
-      boss(),
-      'لا، ' + sc.keyPoints[0] + '، لكن ' + sc.keyPoints.slice(1).join('، '),
-    );
+    const mixte = reponse('لا، ' + sc.keyPoints[0] + '، لكن ' + sc.keyPoints.slice(1).join('، '));
     expect(note(mixte.action.text)).toBe(10);
   });
 
   it('inversion de polarité sur un point positif → non crédité (« لا » adjacent)', () => {
     // keyPoint positif « CMH/HLA يعرض المستضادات… » ; l'élève l'inverse.
     expect(sc.keyPoints[0]).toContain('يعرض');
-    const inv = processStudentInput(boss(), 'لا، ' + sc.keyPoints[0].replace('يعرض', 'لا يعرض'));
+    const inv = reponse('لا، ' + sc.keyPoints[0].replace('يعرض', 'لا يعرض'));
     expect(note(inv.action.text)).toBeLessThan(10);
+  });
+
+  it('KEO-107 : un zéro causé par une négation est NOMMÉ à l’élève (feedback d’inversion)', () => {
+    const inv = reponse('لا، ' + sc.keyPoints[0].replace('يعرض', 'لا يعرض'));
+    expect(inv.action.text).toContain('نَفَتْها');
+    expect(inv.action.text).toContain('المنتظَر هو الإثبات');
   });
 });
 
