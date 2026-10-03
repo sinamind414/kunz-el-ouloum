@@ -1553,7 +1553,14 @@
     }, true);
 
     bind(document, 'pointerout', function (e) {
-        if (!badgeFig || badge.contains(e.target)) { return; }
+        if (!badgeFig) { return; }
+        if (badge && badge.contains(e.target)) { return; }
+        /* La pastille est montée dans document.body, JAMAIS dans la figure :
+           en passant de la figure à la pastille, relatedTarget vaut la pastille,
+           figureFrom() remonte jusqu'au <html> et renvoie null, ce qui masquait
+           la pastille au moment exact où l'on visait le clic. Elle est donc
+           traitée comme l'intérieur de la figure. */
+        if (badge && badge.contains(e.relatedTarget)) { return; }
         if (figureFrom(e.relatedTarget) !== badgeFig) { hideBadge(); }
     }, true);
 

@@ -123,6 +123,7 @@ const [showIntroSplash, setShowIntroSplash] = useState<boolean>(true);
                 transition={{ duration: 10, repeat: Infinity, repeatType: "reverse" }}
                 src={LOGO_URL} 
                 alt="Kunz El Ouloum Watermark" 
+                data-no-zoom
                 className="w-full h-full object-cover opacity-25 filter brightness-50 mix-blend-overlay"
                 referrerPolicy="no-referrer"
               />
@@ -203,6 +204,7 @@ const [showIntroSplash, setShowIntroSplash] = useState<boolean>(true);
                   <img 
                     src={LOGO_URL} 
                     alt="Kunz El Ouloum" 
+                    data-no-zoom
                     className="w-56 h-56 md:w-72 md:h-72 object-contain filter drop-shadow-[0_12px_24px_rgba(254,214,91,0.35)]"
                     referrerPolicy="no-referrer"
                   />
@@ -276,6 +278,7 @@ const [showIntroSplash, setShowIntroSplash] = useState<boolean>(true);
                     transition={{ repeat: Infinity, duration: 5, ease: "easeInOut" }}
                     src={LOGO_URL} 
                     alt="Kunz El Ouloum" 
+                    data-no-zoom
                     className="w-40 h-40 md:w-52 md:h-52 object-contain"
                     referrerPolicy="no-referrer"
                   />
