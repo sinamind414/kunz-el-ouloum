@@ -149,7 +149,7 @@ function BlocView({
     const lignes = b.lignes ?? [];
     return (
       <div className="my-3 overflow-x-auto rounded-2xl border border-gray-200 dark:border-gray-700">
-        <table dir="ltr" className="w-full border-collapse text-left" data-testid={`tableau-${cle}`}>
+        <table className="w-full border-collapse text-start" data-testid={`tableau-${cle}`}>
           <thead>
             <tr className="bg-gray-50 dark:bg-gray-900/70">
               {entetes.map((h, i) => (

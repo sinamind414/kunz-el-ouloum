@@ -295,7 +295,7 @@ export default function DailyGoalWidget({
                     onChange={(e) => setCustomTargetMinutes(Number(e.target.value))}
                     className="w-full accent-[#006d37]"
                   />
-                  <span className="text-xs font-black text-[#006d37] dark:text-emerald-400 min-w-[50px] text-left">
+                  <span className="text-xs font-black text-[#006d37] dark:text-emerald-400 min-w-[50px] text-start">
                     {customTargetMinutes} د
                   </span>
                 </div>
@@ -332,7 +332,7 @@ export default function DailyGoalWidget({
                     onChange={(e) => setCustomTargetQuestions(Number(e.target.value))}
                     className="w-full accent-[#006d37]"
                   />
-                  <span className="text-xs font-black text-[#006d37] dark:text-emerald-400 min-w-[50px] text-left">
+                  <span className="text-xs font-black text-[#006d37] dark:text-emerald-400 min-w-[50px] text-start">
                     {customTargetQuestions} س
                   </span>
                 </div>

@@ -405,20 +405,20 @@ export default function TeacherDashboardView({ onBack }: Props) {
                   className={`w-2.5 h-2.5 rounded-full shrink-0 ${student.actif7j ? 'bg-emerald-500' : student.actif30j ? 'bg-amber-400' : 'bg-gray-300 dark:bg-gray-700'}`}
                   title={student.lastActivity ? `آخر نشاط: ${fmtDateTimeLatn(new Date(student.lastActivity))}` : 'لا نشاط مسجل'}
                 />
-                <div className="text-left">
+                <div className="text-start">
                   <div className="text-[10px] text-gray-500 font-bold">ICM moyen</div>
                   <div className="text-sm font-black text-gray-900 dark:text-white">{student.avgIcm}%</div>
                 </div>
-                <div className="text-left">
+                <div className="text-start">
                   <div className="text-[10px] text-gray-500 font-bold">Productions</div>
                   <div className="text-sm font-black text-gray-900 dark:text-white">{student.productions}</div>
                 </div>
-                <div className="text-left">
+                <div className="text-start">
                   <div className="text-[10px] text-gray-500 font-bold">اختبارات / مهام</div>
                   <div className="text-sm font-black text-gray-900 dark:text-white">{student.quizCount} / {student.missionCount}</div>
                 </div>
                 {student.avgQuizPercent !== null && (
-                  <div className="text-left">
+                  <div className="text-start">
                     <div className="text-[10px] text-gray-500 font-bold">متوسط الاختبارات</div>
                     <div className="text-sm font-black text-gray-900 dark:text-white">{student.avgQuizPercent}%</div>
                   </div>

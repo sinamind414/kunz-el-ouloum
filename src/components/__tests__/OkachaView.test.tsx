@@ -181,6 +181,21 @@ describe('OkachaView — الحصيلة المعرفية modernisée', () => {
     expect(screen.getAllByTestId(/^tableau-/).length).toBeGreaterThan(0);
   });
 
+  it('tableaux du guide : sens RTL garanti (ni dir="ltr" ni alignement à gauche)', async () => {
+    const user = userEvent.setup();
+    render(<OkachaView onBack={vi.fn()} domaineInitial="m" />);
+    await user.click(screen.getAllByTestId(/^aller-s\d$/)[1]);
+    const tables = screen.getAllByTestId(/^tableau-/);
+    expect(tables.length).toBeGreaterThan(0);
+    for (const t of tables) {
+      // Le préfixe de tableau ne doit plus forcer un sens occidental.
+      expect(t.getAttribute('dir')).toBeNull();
+      expect(t.className).not.toContain('text-left');
+      // text-start → se résout à droite sous dir="rtl".
+      expect(t.className).toContain('text-start');
+    }
+  });
+
   it('bouton « اختبار الكتاب » appelle onOpenQcm (lien vers le QCM du livre)', async () => {
     const user = userEvent.setup();
     const onOpenQcm = vi.fn();

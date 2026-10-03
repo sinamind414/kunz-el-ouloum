@@ -108,7 +108,7 @@ function VerbFamily({ title, cards }: { title: string; cards: VerbCardV2[] }) {
           {cards.map(c => (
             <tr key={c.id} className="border-b border-dotted border-gray-400">
               <td className="font-bold py-0.5">{c.verbAr}</td>
-              <td className="py-0.5 text-left">{pathAr(c)}</td>
+              <td className="py-0.5 text-start">{pathAr(c)}</td>
               <td className="py-0.5 text-[11px] opacity-80">
                 {c.step3Mode === 'confront' && 'الخطوة 3 بـ«بينما»'}
                 {c.step3Mode === 'hypothesis' && 'تُكتب 3 وحدها'}
