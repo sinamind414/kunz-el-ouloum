@@ -72,7 +72,11 @@ const AUTOMATION_THRESHOLD = 90;
 const icmLabel = (icm: number | null): string => icm === null ? '' : icm < 60 ? 'ضعيف' : icm < 90 ? 'متوسط' : 'ممتاز';
 const icmLabelFr = (icm: number | null): string => icm === null ? '' : icm < 60 ? 'faible' : icm < 90 ? 'moyen' : 'fort';
 
-const REVIEW_GAPS = [1, 3, 7, 16, 30];
+// Référentiel unique des intervalles (audit 03102026, idée 2).
+// AVANT : [1, 3, 7, 16, 30] en dur ici, en conflit avec le J+14 de nbaEngine.
+// APRÈS : on s'aligne sur la source canonique J+1 → J+3 → J+7 → J+14.
+import { SPACED_RECALL_INTERVALS } from '../data/spacedRecallIntervals';
+const REVIEW_GAPS = [...SPACED_RECALL_INTERVALS];
 
 interface MethodologyProps {
   onBackToHome?: () => void;
