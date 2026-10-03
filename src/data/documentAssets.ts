@@ -307,10 +307,30 @@ export const DOCUMENT_ASSETS: Record<string, DocumentAssetEntry> = {
   enzyme_ph_temp: { status: 'ready', asset: enzymePhTempTable },
   rifamycine: { status: 'ready', asset: rifamycineDocument },
   translation: { status: 'unavailable' },
-  ouchterlony: { status: 'unavailable' },
+  // Ouchterlony : l'image EXISTE déjà dans le dépôt (schéma_67) et servait
+  // déjà aux leçons et aux contextes de pratique, mais jamais à cet exercice.
+  // altAr repris verbatim de `documentPracticeContexts.ts` (ouchterlony_arcs),
+  // captionAr verbatim de `doc.descriptionAr` dans `documentAnalysisExercises.ts`.
+  ouchterlony: {
+    status: 'ready',
+    asset: {
+      kind: 'schema',
+      src: '/assets/images/schemas/domaine1_proteines/schema_67_immunodiffusion_precipitin_lines_modern.svg',
+      altAr: 'وثيقة أقواس ترسيب بين حفر أضداد ومستضدات.',
+      captionAr: 'هالات أوشترلوني لكشف العلاقة بين مستضدات.',
+    },
+  },
   electro_hb: { status: 'unavailable' },
   glycemie_januvia: { status: 'ready', asset: glycemieJanuviaDocument },
-  membrane_hla: { status: 'unavailable' },
+  membrane_hla: {
+    status: 'ready',
+    asset: {
+      kind: 'schema',
+      src: '/assets/images/schemas/domaine1_proteines/schema_58_hla_I_II_structure_modern.svg',
+      altAr: 'مخطط يبين معقد HLA على الغشاء وهو يعرض المستضد للخلايا التائية.',
+      captionAr: 'تخطيط غشاء خلية عارضة مع معقد HLA.',
+    },
+  },
   photosynth: { status: 'ready', asset: photosynthCurve },
   h1_h2_generic: { status: 'unavailable' },
   respiration_bilan: { status: 'ready', asset: respirationBilanTable },

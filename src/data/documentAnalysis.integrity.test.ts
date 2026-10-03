@@ -110,10 +110,13 @@ describe('exercices d analyse documentaire — intégrité', () => {
     expect(DOCUMENT_ANALYSIS_EXERCISES).toHaveLength(19);
     // 13 exploitables (9 après le lot 3, +4 tableaux du lot 4 issus des tableaux
     // de synthèse du livre officiel : pages 206, 228, 259-286, 287-330).
-    // Les 6 restants affichent « هذه الوثيقة غير جاهزة بعد. » car ils exigent une
-    // VRAIE image (schéma, immunodiffusion, électrophorèse) qu'on ne peut inventer.
+    // Puis 15 au lot 5 (incrément 6, 2026-10-02) : `ouchterlony` et
+    // `membrane_hla` ont été raccordés à des images QUI EXISTAIENT DÉJÀ dans
+    // le dépôt et servaient déjà aux leçons/contextes, mais jamais à ces
+    // exercices. Restent 4 sans image (exigent un document réel qu'on ne peut
+    // pas fabriquer) : ppse_ppsi, translation, electro_hb, h1_h2_generic.
     // Faire monter ces chiffres est un progrès : mettre à jour sciemment.
-    expect(reachable).toHaveLength(13);
+    expect(reachable).toHaveLength(15);
   });
 
   it('couvre les 11 unités du programme, aucune unité sans document', () => {

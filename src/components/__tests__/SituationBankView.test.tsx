@@ -16,6 +16,11 @@ import SituationBankView from '../SituationBankView';
 import { bacEchoForSituation } from '../../data/bacSessionIndex';
 import { SITUATION_INDEX, analysisExercisesForSituation } from '../../data/situationIndex';
 import { SITUATION_COUNT, searchSituations } from '../../data/situationIndex';
+import {
+  groupesParForme,
+  situationIdsParForme,
+  situationIdsQuantitatives,
+} from '../../data/documentTypology';
 
 afterEach(cleanup);
 
@@ -168,5 +173,72 @@ describe('banque de situations — exercices « élite » rendus (sprint 21)', (
     expect(screen.getByTestId(`correction-elite-${exercice.id}`).textContent).toBe(
       exercice.correctionAr,
     );
+  });
+});
+
+describe('banque de situations — index BILAN §5 (typologie + chiffré)', () => {
+  it('affiche une pastille par forme de document, avec son compteur', () => {
+    render(<SituationBankView />);
+    expect(screen.getByTestId('typologie-titre')).toBeTruthy();
+    for (const g of groupesParForme()) {
+      const pastille = screen.getByTestId(`filtre-forme-${g.forme}`);
+      expect(pastille.textContent, g.forme).toContain(g.labelAr);
+      expect(pastille.textContent, g.forme).toContain(String(g.total));
+    }
+    expect(screen.getByTestId('filtre-forme-tous')).toBeTruthy();
+    expect(screen.getByTestId('filtre-chiffre')).toBeTruthy();
+  });
+
+  it('la forme par défaut laisse la banque complète (filtre inactif)', () => {
+    render(<SituationBankView />);
+    expect(screen.getByTestId('situation-count').textContent).toContain(
+      String(searchSituations('').length),
+    );
+  });
+
+  it('choisir une forme croise la grille sans inventer de situation', async () => {
+    const user = userEvent.setup();
+    render(<SituationBankView />);
+    await user.click(screen.getByTestId('filtre-forme-tableau'));
+    const attendues = searchSituations('').filter((s) =>
+      situationIdsParForme('tableau').has(s.id),
+    );
+    expect(attendues.length).toBeGreaterThan(0);
+    expect(screen.getByTestId('situation-count').textContent).toContain(String(attendues.length));
+    for (const s of attendues) expect(screen.getByTestId(`situation-${s.id}`)).toBeTruthy();
+  });
+
+  it('le second clic désactive la forme et rend la banque complète', async () => {
+    const user = userEvent.setup();
+    render(<SituationBankView />);
+    await user.click(screen.getByTestId('filtre-forme-ouchterlony'));
+    await user.click(screen.getByTestId('filtre-forme-ouchterlony'));
+    expect(screen.getByTestId('situation-count').textContent).toContain(
+      String(searchSituations('').length),
+    );
+  });
+
+  it('le filtre chiffré croise la grille et s annule', async () => {
+    const user = userEvent.setup();
+    render(<SituationBankView />);
+    await user.click(screen.getByTestId('filtre-chiffre'));
+    const attendues = searchSituations('').filter((s) => situationIdsQuantitatives().has(s.id));
+    expect(screen.getByTestId('situation-count').textContent).toContain(
+      String(attendues.length),
+    );
+    await user.click(screen.getByTestId('filtre-chiffre'));
+    expect(screen.getByTestId('situation-count').textContent).toContain(
+      String(searchSituations('').length),
+    );
+  });
+
+  it('les deux axes se cumulent avec la recherche', async () => {
+    const user = userEvent.setup();
+    render(<SituationBankView />);
+    await user.click(screen.getByTestId('filtre-forme-courbe'));
+    const sansRecherche = screen.getByTestId('situation-count').textContent?.match(/\d+/)?.[0];
+    await user.type(screen.getByTestId('situation-search'), 'السكري');
+    const apres = Number(screen.getByTestId('situation-count').textContent?.match(/\d+/)?.[0]);
+    expect(apres).toBeLessThanOrEqual(Number(sansRecherche));
   });
 });

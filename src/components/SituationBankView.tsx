@@ -10,8 +10,9 @@
 // documentPracticeContexts.ts.
 
 import { useMemo, useState } from 'react';
-import { ArrowRight, Eye, EyeOff, Lightbulb, Search, Target } from 'lucide-react';
+import { ArrowRight, Eye, EyeOff, Hash, Layers, Lightbulb, Search, Target } from 'lucide-react';
 import { bacEchoForSituation } from '../data/bacSessionIndex';
+import DocumentFigure from './DocumentFigure';
 import {
   SITUATION_COUNT,
   coveredUnitIds,
@@ -21,6 +22,15 @@ import {
   type SituationCard,
   type SituationDifficulty,
 } from '../data/situationIndex';
+// Index secondaire (BILAN §5) : regroupement par FORME de document (trou 3)
+// et par nature quantitative (trou 1). Aucun contenu n'y est écrit.
+import {
+  exercicesQuantitatifs,
+  pastillesForme,
+  situationIdsParForme,
+  situationIdsQuantitatives,
+  type DocumentForme,
+} from '../data/documentTypology';
 import { INITIAL_UNITS } from '../data/index';
 
 interface SituationBankViewProps {
@@ -153,6 +163,9 @@ function FicheSituation({ card, onClose }: { card: SituationCard; onClose: () =>
                 <p className="text-[13px] font-bold text-[#506072] dark:text-gray-300 mb-2">
                   {e.doc.descriptionAr}
                 </p>
+                {/* Le document AVANT les questions : une consigne du type
+                    « حلل شكل الهالتين » est inexploitable sans la figure. */}
+                <DocumentFigure assetKey={e.doc.assetKey} />
                 <ol className="list-decimal pr-4 space-y-2">
                   {e.questions.map((q) => (
                     <li key={q.id} className="text-sm leading-7 text-[#1f1c0b] dark:text-gray-200">
@@ -228,10 +241,24 @@ export default function SituationBankView({ onBackToHome }: SituationBankViewPro
   const [query, setQuery] = useState('');
   const [unitId, setUnitId] = useState<number | undefined>(undefined);
   const [difficulty, setDifficulty] = useState<SituationDifficulty | undefined>(undefined);
+  // Index BILAN §5 : forme de document (trou 3) et nature quantitative (trou 1).
+  const [forme, setForme] = useState<DocumentForme | undefined>(undefined);
+  const [chiffre, setChiffre] = useState(false);
   const [ouverte, setOuverte] = useState<SituationCard | null>(null);
 
-  const resultats = useMemo(() => searchSituations(query, { unitId, difficulty }), [query, unitId, difficulty]);
+  const resultats = useMemo(() => {
+    const base = searchSituations(query, { unitId, difficulty });
+    // Les deux axes sont des INTERSECTIONS avec la recherche : ils ajoutent une
+    // porte d'entrée sans jamais créer de situation.
+    const idsForme = forme ? situationIdsParForme(forme) : null;
+    const idsChiffre = chiffre ? situationIdsQuantitatives() : null;
+    return base.filter(
+      (s) => (!idsForme || idsForme.has(s.id)) && (!idsChiffre || idsChiffre.has(s.id)),
+    );
+  }, [query, unitId, difficulty, forme, chiffre]);
   const unites = coveredUnitIds();
+  const pastilles = pastillesForme();
+  const nbChiffre = situationIdsQuantitatives().size;
 
   if (ouverte) {
     return (
@@ -309,6 +336,63 @@ export default function SituationBankView({ onBackToHome }: SituationBankViewPro
             {DIFFICULTE_LABEL[d]}
           </button>
         ))}
+      </div>
+
+      {/* INDEX BILAN §5 — TROU 3 : typologie des documents, et TROU 1 :
+          exploitation chiffrée. Ce sont des FILTRES CROISÉS : ils n'ajoutent
+          aucune situation, aucun exercice — ils ouvrent une porte d'entrée sur
+          l'existant (l'élève qui veut « s'entraîner aux tableaux » n'en avait
+          aucune). Les compteurs viennent de documentTypology.ts. */}
+      <div className="flex flex-row-reverse items-center gap-1.5 mb-2 mt-5 text-[11px] font-black text-[#006d37] dark:text-[#2ecc71]">
+        <Layers className="w-3.5 h-3.5" />
+        <span data-testid="typologie-titre">حسب نوع الوثيقة</span>
+      </div>
+      <div className="flex flex-row-reverse flex-wrap gap-2 mb-2">
+        <button
+          data-testid="filtre-forme-tous"
+          onClick={() => setForme(undefined)}
+          className={`text-xs font-bold px-3 py-1.5 rounded-xl cursor-pointer ${
+            forme === undefined
+              ? 'bg-[#006d37] text-white'
+              : 'bg-[#f3f4f5] dark:bg-[#1f2622] text-[#506072] dark:text-gray-300'
+          }`}
+        >
+          كل الأنواع
+        </button>
+        {pastilles.map((p) => (
+          <button
+            key={p.forme}
+            data-testid={`filtre-forme-${p.forme}`}
+            onClick={() => setForme(forme === p.forme ? undefined : p.forme)}
+            className={`text-xs font-bold px-3 py-1.5 rounded-xl cursor-pointer ${
+              forme === p.forme
+                ? 'bg-[#006d37] text-white'
+                : 'bg-[#f3f4f5] dark:bg-[#1f2622] text-[#506072] dark:text-gray-300'
+            }`}
+          >
+            {p.labelAr} ({p.total})
+          </button>
+        ))}
+      </div>
+
+      <div className="flex flex-row-reverse flex-wrap gap-2 mb-5">
+        <button
+          data-testid="filtre-chiffre"
+          onClick={() => setChiffre((v) => !v)}
+          className={`flex flex-row-reverse items-center gap-1.5 text-xs font-bold px-3 py-1.5 rounded-xl cursor-pointer ${
+            chiffre
+              ? 'bg-[#8a6a00] text-white'
+              : 'bg-[#f3f4f5] dark:bg-[#1f2622] text-[#506072] dark:text-gray-300'
+          }`}
+        >
+          <Hash className="w-3.5 h-3.5" />
+          <span data-testid="chiffre-libelle">معطيات عددية ({nbChiffre})</span>
+        </button>
+        {exercicesQuantitatifs().length > 0 && (
+          <span className="flex items-center text-[11px] font-bold text-[#506072]/80 dark:text-gray-500">
+            {exercicesQuantitatifs().length} تمارين تُقرأ بالأرقام
+          </span>
+        )}
       </div>
 
       <p data-testid="situation-count" className="text-sm font-bold text-[#506072] dark:text-gray-400 mb-3">
