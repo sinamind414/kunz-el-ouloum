@@ -287,7 +287,11 @@ export default function LessonsView({ onRateCard, initialLesson, initialQcm, onD
             <span className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-[#0e6b6b] text-white shadow-md group-hover:scale-105 transition-transform">
               <MonitorPlay className="w-8 h-8" />
             </span>
-            <span className="block text-lg font-black text-gray-800 dark:text-gray-100">الدرس السلبي</span>
+            {/* Libellé public : « leçon officielle » (décision 2026-10-03).
+                Le sous-titre ci-dessous annonce déjà les « leçons officielles » ;
+                seul le titre affirmait « leçon passive » (درس سلبي),
+                compris « négatif » par l'utilisateur. */}
+            <span className="block text-lg font-black text-gray-800 dark:text-gray-100">الدرس الرسمي</span>
             <span className="block text-xs font-bold text-gray-500 dark:text-gray-400 leading-relaxed">
               الدروس المقروءة الرسمية ({HTML_LESSON_ORDER.length} درساً) — ثلاثة مجالات، كل مجال بوحداته وفصوله
             </span>
@@ -474,7 +478,7 @@ export default function LessonsView({ onRateCard, initialLesson, initialQcm, onD
           </button>
           <h2 className="text-xl font-black flex items-center gap-2">
             <MonitorPlay className="w-5 h-5 text-[#0e6b6b]" />
-            الدرس السلبي — اختر المجال
+            الدرس الرسمي — اختر المجال
           </h2>
         </div>
 

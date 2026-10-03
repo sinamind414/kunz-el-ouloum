@@ -2,7 +2,7 @@
 //
 // Décision propriétaire 2026-09-22, étendue le même jour aux 3 rubriques :
 //   • الدرس النشيط (leçons actives TS)  : icônes d'unités → icônes de leçons ;
-//   • الدرس السلبي (leçons passives HTML): icônes d'unités → icônes de chapitres ;
+//   • الدرس الرسمي (leçons passives HTML, ancien libellé « الدرس السلبي ») : icônes d'unités → icônes de chapitres ;
 //   • بنك الحفظ (عكاشة)                  : icônes de domaines → icônes d'unités.
 // Principe : une icône = une entrée ; on avance icône après icône, sur TOUTES
 // les unités (actives : 4 unités / 6 leçons · passives : 11 unités / 47 chapitres

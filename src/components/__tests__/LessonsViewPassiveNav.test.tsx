@@ -17,11 +17,11 @@ vi.mock('../HtmlLessonViewer', () => ({
 
 afterEach(cleanup);
 
-/** Ouvre l'écran « درس سلبي » puis le domaine demandé. */
+/** Ouvre l'écran « الدرس الرسمي » (ancien libellé « درس سلبي ») puis le domaine demandé. */
 async function ouvrirDomaine(domaine: 1 | 2 | 3) {
   const user = userEvent.setup();
   render(<LessonsView />);
-  await user.click(screen.getByText('الدرس السلبي'));
+  await user.click(screen.getByText('الدرس الرسمي'));
   await user.click(screen.getByTestId(`domaine-${domaine}`));
   return user;
 }
@@ -83,7 +83,7 @@ describe('LessonsView — leçons passives par icônes', () => {
     expect(screen.queryByText('الحصيلة المعرفية')).toBeNull();
     expect(screen.queryByTestId('okacha-entree-domaine')).toBeNull();
     // Les 4 autres rubriques sont toujours là.
-    expect(screen.getByText('الدرس السلبي')).toBeTruthy();
+    expect(screen.getByText('الدرس الرسمي')).toBeTruthy();
     expect(screen.getByText('اختبار الكتاب')).toBeTruthy();
     expect(screen.getByText('اختبار بكالوريا')).toBeTruthy();
   });
@@ -109,7 +109,7 @@ describe('LessonsView — leçons passives par icônes', () => {
   it('الدليل العام للمنهجية : carte sur l’écran des domaines, hors des حصائل', async () => {
     const user = userEvent.setup();
     render(<LessonsView />);
-    await user.click(screen.getByText('الدرس السلبي'));
+    await user.click(screen.getByText('الدرس الرسمي'));
     // Écran des domaines : les 3 domaines + le guide (qui n'appartient à aucun).
     const guide = screen.getByTestId('guide-entree');
     expect(guide.textContent).toMatch(/الدليل العام للمنهجية/);
