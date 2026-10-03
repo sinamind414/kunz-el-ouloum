@@ -11,7 +11,6 @@ import {
   Sun,
   Moon,
   Swords,
-  Award,
   PlayCircle,
   Layers,
   Key,
@@ -22,8 +21,7 @@ import {
   Dumbbell,
   Timer,
   Route,
-  Sprout,
-  LayoutDashboard
+  Sprout
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 
@@ -732,15 +730,15 @@ export default function App() {
   // Sprint 13 — dette UI : 9 entrées secondaires devenaient un mur. Les cinq
   // espaces d'entraînement (situations, schémas, bootcamp, atelier, animations)
   // passent derrière une porte unique ; voir src/data/trainingHub.ts.
+  // 2026-10-03 — les rubriques « الأوسمة والإنجازات » et « لوحة المتابعة » ont
+  // quitté CE menu pour devenir deux icônes au bas de la page « أنا », sous
+  // l'avancement de l'élève (voir src/data/moiRaccourcis.ts). Déplacement, pas
+  // doublon : un test de MoiView relit ce bloc et casse si elles réapparaissent.
   const SECONDARY_NAV: { tab: typeof currentTab; label: string; Icon: LucideIcon }[] = [
     { tab: 'focus', label: 'المؤقّت (تركيز)', Icon: Timer },
     { tab: 'training', label: 'التمارين والتدريب', Icon: Dumbbell },
     { tab: 'mindmap', label: 'الخرائط الذهنية', Icon: Network },
     { tab: 'methodology', label: MIFTAH_NAME_OFFICIAL_AR, Icon: Key },
-    { tab: 'badges', label: 'الأوسمة والإنجازات', Icon: Award },
-    // Icône changée (GraduationCap) : le casque est désormais le pilier
-    // « البكالوريا » de la barre principale — deux casques = onglets confondus.
-    { tab: 'teacher', label: 'لوحة المتابعة', Icon: LayoutDashboard },
   ];
 
   return (
@@ -999,7 +997,11 @@ export default function App() {
               )}
 
               {currentTab === 'moi' && (
-                <MoiView nomEleve={studentName} courriel={studentEmail} />
+                <MoiView
+                  nomEleve={studentName}
+                  courriel={studentEmail}
+                  onOuvrir={(onglet) => handleTabChange(onglet)}
+                />
               )}
 
               {currentTab === 'bac' && (

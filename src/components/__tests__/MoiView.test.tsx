@@ -10,11 +10,15 @@
 //   - شجرتك : 3 domaines, 11 unités, une feuille PAR LEÇON (59) + 11 points
 //     de جسار, et la légende 4 entrées ;
 //   - feuille verte après مسارات fait, feuille or après échec, pâle sinon ;
-//   - أرقامك بالكلếmات reflète le store (0 / 59 au départ).
+//   - أرقامك بالكلếmات reflète le store (0 / 59 au départ) ;
+//   - المزيد : les deux rubriques déplacées du menu latéral (2026-10-03)
+//     finissent en DERNIER bloc, une icône chacune, et un test relit App.tsx
+//     pour prouver qu'elles ont bien été RETIRÉES de SECONDARY_NAV.
 
-import { cleanup, render, screen } from '@testing-library/react';
-import { afterEach, beforeEach, describe, expect, it } from 'vitest';
+import { cleanup, fireEvent, render, screen } from '@testing-library/react';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import MoiView from '../MoiView';
+import { MOI_RACCOURCI_COUNT, MOI_RACCOURCIS } from '../../data/moiRaccourcis';
 import { PARCOURS_DOMAINS, PARCOURS_FLAT } from '../../lib/parcours/parcoursPath';
 import { markDone } from '../../lib/parcours/parcoursProgress';
 
@@ -25,6 +29,11 @@ const NB_JALONS = PARCOURS_FLAT.filter((i) => i.kind === 'jalon').length;
 
 function rendre(nomEleve: string | null = null, courriel: string | null = null) {
   return render(<MoiView nomEleve={nomEleve} courriel={courriel} />);
+}
+
+/** Variante câblée : c'est dans cet état que App.tsx monte la page. */
+function rendreAvecRaccourcis(onOuvrir: (onglet: 'badges' | 'teacher') => void = vi.fn()) {
+  return render(<MoiView nomEleve={null} courriel={null} onOuvrir={onOuvrir} />);
 }
 
 /** Feuilles lucide : <svg aria-label="titre du leçon"> — arbre SEUL (la
@@ -140,6 +149,74 @@ describe('MoiView — أرقامك بالكلمات', () => {
     markDone(PARCOURS_FLAT[0].id, 1);
     const { container } = rendre();
     expect(container.textContent).toContain(`1 / ${NB_LECONS}`);
+  });
+});
+
+describe('MoiView — المزيد : rubriques déplacées du menu latéral', () => {
+  // Décision 2026-10-03 : « الأوسمة والإنجازات » et « لوحة المتابعة » quittent
+  // le menu « المزيد » de App.tsx pour finir SOUS l'avancement, en icônes.
+
+  it('se place en DERNIER bloc, donc bien sous l avancement', () => {
+    const { container } = rendreAvecRaccourcis();
+    const blocs = [...container.querySelectorAll('section[data-testid]')].map((s) =>
+      s.getAttribute('data-testid'),
+    );
+    expect(blocs).toEqual(['moi-tree', 'moi-nums', 'moi-raccourcis']);
+  });
+
+  it('affiche exactement une icône par rubrique déplacée, avec son libellé', () => {
+    rendreAvecRaccourcis();
+    expect(screen.getByTestId('moi-raccourcis')).toBeTruthy();
+    for (const r of MOI_RACCOURCIS) {
+      const bouton = screen.getByTestId(`moi-raccourci-${r.tab}`);
+      expect(bouton.textContent, r.tab).toContain(r.labelAr);
+      // Bouton = icône (svg) + étiquette, jamais un simple texte.
+      expect(bouton.querySelector('svg'), r.tab).toBeTruthy();
+      expect(bouton.getAttribute('aria-label')).toBe(r.labelAr);
+      // Libellé arabe : aucune lettre latine importée du libellé FR.
+      expect(/[A-Za-z]/.test(r.labelAr), r.tab).toBe(false);
+    }
+    expect(screen.getAllByTestId(/^moi-raccourci-/)).toHaveLength(MOI_RACCOURCI_COUNT);
+  });
+
+  it('un clic ouvre le détail de CETTE rubrique (pas une autre)', () => {
+    const onOuvrir = vi.fn();
+    rendreAvecRaccourcis(onOuvrir);
+    for (const r of MOI_RACCOURCIS) {
+      onOuvrir.mockClear();
+      fireEvent.click(screen.getByTestId(`moi-raccourci-${r.tab}`));
+      expect(onOuvrir, r.tab).toHaveBeenCalledTimes(1);
+      expect(onOuvrir, r.tab).toHaveBeenCalledWith(r.tab);
+    }
+  });
+
+  it('sans callback, le bloc n est PAS rendu : aucun bouton inerte', () => {
+    const { container } = rendre();
+    expect(screen.queryByTestId('moi-raccourcis')).toBeNull();
+    expect(container.querySelector('[data-testid^="moi-raccourci-"]')).toBeNull();
+  });
+
+  it('a bien RETIRÉ les deux rubriques de SECONDARY_NAV (déplacement, pas doublon)', async () => {
+    const { readFileSync } = await import('node:fs');
+    const { resolve } = await import('node:path');
+    const src = readFileSync(resolve(__dirname, '../../App.tsx'), 'utf8');
+    const debut = src.indexOf('const SECONDARY_NAV');
+    expect(debut).toBeGreaterThan(0);
+    const bloc = src.slice(debut, debut + 1600);
+    const menu = bloc.slice(0, bloc.indexOf('];'));
+    const entrees = (menu.match(/\{ tab: '/g) ?? []).length;
+    // Le menu reste un menu (plafond 6 imposé par TrainingHubView.test.tsx).
+    expect(entrees).toBeGreaterThan(0);
+    expect(entrees).toBeLessThanOrEqual(6);
+    // Preuve du déplacement : aucune des deux n y est encore référencée.
+    for (const r of MOI_RACCOURCIS) {
+      expect(menu, `${r.tab} est toujours dans le menu latéral`).not.toContain(
+        `tab: '${r.tab}'`,
+      );
+    }
+    // …et les icônes n'y sont plus importées pour elles.
+    expect(src).not.toMatch(/Icon: Award/);
+    expect(src).not.toMatch(/Icon: LayoutDashboard/);
   });
 });
 

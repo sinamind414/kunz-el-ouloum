@@ -11,8 +11,14 @@
 //
 // Rangées NON cliquables (fidèle à OPUS : l'arbre est un état des lieux,
 // pas un menu) → aucun `onClick` sur balise inerte.
+//
+// 2026-10-03 — déplacement demandé : « الأوسمة والإنجازات » et
+// « لوحة المتابعة » ont quitté le menu latéral « المزيد » pour finir la page,
+// SOUS l'avancement, sous forme d'icônes. Un clic sur l'icône ouvre le détail.
+// Le bloc n'est rendu que si `onOuvrir` est fourni : jamais de bouton inerte.
 
-import { Leaf } from 'lucide-react';
+import { Award, LayoutDashboard, Leaf, type LucideIcon } from 'lucide-react';
+import { MOI_RACCOURCIS, type MoiRaccourciTab } from '../data/moiRaccourcis';
 import { PARCOURS_DOMAINS } from '../lib/parcours/parcoursPath';
 import {
   allowance,
@@ -26,7 +32,20 @@ interface MoiProps {
   nomEleve: string | null;
   /** Adresse du compte connecté (null = aucune session). */
   courriel: string | null;
+  /**
+   * Ouvre l'onglet du détail derrière une icône de « المزيد ».
+   * OPTIONNEL : sans ce prop, la rangée d'icônes n'est pas rendue — on ne
+   * laisse jamais un bouton cliquable sans effet (cf. règle « aucune balise
+   * inerte » en tête de fichier).
+   */
+  onOuvrir?: (onglet: MoiRaccourciTab) => void;
 }
+
+/** Icône de chaque raccourci — mappée ici, jamais dans la donnée. */
+const ICONES_RACCOURCI: Record<MoiRaccourciTab, LucideIcon> = {
+  badges: Award,
+  teacher: LayoutDashboard,
+};
 
 // Tons des feuilles (OPUS : fill-forest / fill-gold-soft / text-line).
 const FEUILLE = {
@@ -45,7 +64,7 @@ function Feuille({ titre, etat }: { titre: string; etat: 'faite' | 'fragile' | '
   );
 }
 
-export default function MoiView({ nomEleve, courriel }: MoiProps) {
+export default function MoiView({ nomEleve, courriel, onOuvrir }: MoiProps) {
   const state = loadParcours();
 
   const items = PARCOURS_DOMAINS.flatMap((d) => d.units.flatMap((u) => u.items));
@@ -222,6 +241,45 @@ export default function MoiView({ nomEleve, courriel }: MoiProps) {
             : 'ابدأ من «مساري» — أول درس يفتح الباب لما بعده.'}
         </p>
       </section>
+
+      {/* ---------- المزيد : les rubriques déplacées du menu latéral ---------- */}
+      {/* Élément demandé le 2026-10-03 : sous l'avancement de l'élève, sous
+          forme d'icônes ; le clic ouvre le détail. Les étiquettes viennent de
+          moiRaccourcis.ts (déplacées verbatim depuis SECONDARY_NAV) — si le
+          prop n'est pas fourni, la section n'est PAS rendue : aucun bouton
+          cliquable sans effet. */}
+      {onOuvrir && (
+        <section
+          data-testid="moi-raccourcis"
+          className="rounded-[24px] border border-[#e2dabf] bg-white p-5 shadow-sm dark:border-gray-800 dark:bg-[#161c18]"
+        >
+          <h2 className="text-base font-black text-gray-900 dark:text-gray-50">المزيد</h2>
+          <div className="mt-3 flex flex-wrap gap-3">
+            {MOI_RACCOURCIS.map(({ tab, labelAr }) => {
+              const Icone = ICONES_RACCOURCI[tab];
+              return (
+                <button
+                  key={tab}
+                  type="button"
+                  data-testid={`moi-raccourci-${tab}`}
+                  aria-label={labelAr}
+                  onClick={() => onOuvrir(tab)}
+                  className="flex min-w-[8.5rem] flex-1 cursor-pointer flex-col items-center gap-2 rounded-2xl border border-[#e2dabf] bg-[#f8fbfa] px-4 py-4 text-center transition-all hover:border-[#006d37] hover:bg-[#e5f6ed] focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#006d37] dark:border-gray-700 dark:bg-[#161c18] dark:hover:border-[#2ecc71] dark:hover:bg-[#2ecc71]/10"
+                >
+                  <Icone
+                    aria-hidden="true"
+                    className="h-6 w-6 text-[#006d37] dark:text-[#2ecc71]"
+                    strokeWidth={1.8}
+                  />
+                  <span className="text-xs font-bold leading-5 text-gray-800 dark:text-gray-100">
+                    {labelAr}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+        </section>
+      )}
     </div>
   );
 }
