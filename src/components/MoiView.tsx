@@ -12,12 +12,13 @@
 // Rangées NON cliquables (fidèle à OPUS : l'arbre est un état des lieux,
 // pas un menu) → aucun `onClick` sur balise inerte.
 //
-// 2026-10-03 — déplacement demandé : « الأوسمة والإنجازات » et
-// « لوحة المتابعة » ont quitté le menu latéral « المزيد » pour finir la page,
-// SOUS l'avancement, sous forme d'icônes. Un clic sur l'icône ouvre le détail.
+// 2026-10-03 — déplacements demandés : « الأوسمة والإنجازات » et
+// « لوحة المتابعة » ont quitté le menu latéral « المزيد », puis « تقدمي » a
+// quitté la barre principale du bas (8 → 7 onglets) : les trois finissent
+// SOUS l'avancement, sous forme d'icônes. Un clic ouvre le détail.
 // Le bloc n'est rendu que si `onOuvrir` est fourni : jamais de bouton inerte.
 
-import { Award, LayoutDashboard, Leaf, type LucideIcon } from 'lucide-react';
+import { Award, LayoutDashboard, Leaf, Trophy, type LucideIcon } from 'lucide-react';
 import { MOI_RACCOURCIS, type MoiRaccourciTab } from '../data/moiRaccourcis';
 import { PARCOURS_DOMAINS } from '../lib/parcours/parcoursPath';
 import {
@@ -45,6 +46,7 @@ interface MoiProps {
 const ICONES_RACCOURCI: Record<MoiRaccourciTab, LucideIcon> = {
   badges: Award,
   teacher: LayoutDashboard,
+  stats: Trophy,
 };
 
 // Tons des feuilles (OPUS : fill-forest / fill-gold-soft / text-line).

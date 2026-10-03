@@ -13,12 +13,13 @@
 //   - أرقامك بالكلếmات reflète le store (0 / 59 au départ) ;
 //   - المزيد : les deux rubriques déplacées du menu latéral (2026-10-03)
 //     finissent en DERNIER bloc, une icône chacune, et un test relit App.tsx
-//     pour prouver qu'elles ont bien été RETIRÉES de SECONDARY_NAV.
+//     pour prouver qu'elles ont bien été RETIRÉES (menu latéral pour les deux
+//     premières, barre principale pour تقدمي) — déplacement, jamais doublon.
 
 import { cleanup, fireEvent, render, screen } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import MoiView from '../MoiView';
-import { MOI_RACCOURCI_COUNT, MOI_RACCOURCIS } from '../../data/moiRaccourcis';
+import { MOI_RACCOURCI_COUNT, MOI_RACCOURCIS, type MoiRaccourciTab } from '../../data/moiRaccourcis';
 import { PARCOURS_DOMAINS, PARCOURS_FLAT } from '../../lib/parcours/parcoursPath';
 import { markDone } from '../../lib/parcours/parcoursProgress';
 
@@ -32,7 +33,7 @@ function rendre(nomEleve: string | null = null, courriel: string | null = null) 
 }
 
 /** Variante câblée : c'est dans cet état que App.tsx monte la page. */
-function rendreAvecRaccourcis(onOuvrir: (onglet: 'badges' | 'teacher') => void = vi.fn()) {
+function rendreAvecRaccourcis(onOuvrir: (onglet: MoiRaccourciTab) => void = vi.fn()) {
   return render(<MoiView nomEleve={null} courriel={null} onOuvrir={onOuvrir} />);
 }
 
@@ -179,6 +180,18 @@ describe('MoiView — المزيد : rubriques déplacées du menu latéral', ()
     expect(screen.getAllByTestId(/^moi-raccourci-/)).toHaveLength(MOI_RACCOURCI_COUNT);
   });
 
+  it('ordonne les icônes : تقدمي d abord, puis الأوسمة, لوحة المتابعة en dernier', () => {
+    rendreAvecRaccourcis();
+    // L'ordre du DOM doit être EXACTEMENT l'ordre de la donnée source.
+    const rangs = screen.getAllByTestId(/^moi-raccourci-/).map((b) => b.getAttribute('data-testid'));
+    expect(rangs).toEqual(['moi-raccourci-stats', 'moi-raccourci-badges', 'moi-raccourci-teacher']);
+    expect(MOI_RACCOURCIS.map((r) => r.tab)).toEqual(['stats', 'badges', 'teacher']);
+    // …et l'ordre RTL se lit de la droite : تقدمي en tête de ligne.
+    const rangs2 = screen.getAllByTestId(/^moi-raccourci-/).map((b) => b.textContent);
+    expect(rangs2[0]).toContain('تقدمي');
+    expect(rangs2[rangs2.length - 1]).toContain('لوحة المتابعة');
+  });
+
   it('un clic ouvre le détail de CETTE rubrique (pas une autre)', () => {
     const onOuvrir = vi.fn();
     rendreAvecRaccourcis(onOuvrir);
@@ -196,27 +209,48 @@ describe('MoiView — المزيد : rubriques déplacées du menu latéral', ()
     expect(container.querySelector('[data-testid^="moi-raccourci-"]')).toBeNull();
   });
 
-  it('a bien RETIRÉ les deux rubriques de SECONDARY_NAV (déplacement, pas doublon)', async () => {
+  it('a bien RETIRÉ les rubriques de leurs anciens menus (déplacement, pas doublon)', async () => {
     const { readFileSync } = await import('node:fs');
     const { resolve } = await import('node:path');
     const src = readFileSync(resolve(__dirname, '../../App.tsx'), 'utf8');
-    const debut = src.indexOf('const SECONDARY_NAV');
-    expect(debut).toBeGreaterThan(0);
-    const bloc = src.slice(debut, debut + 1600);
-    const menu = bloc.slice(0, bloc.indexOf('];'));
-    const entrees = (menu.match(/\{ tab: '/g) ?? []).length;
-    // Le menu reste un menu (plafond 6 imposé par TrainingHubView.test.tsx).
-    expect(entrees).toBeGreaterThan(0);
-    expect(entrees).toBeLessThanOrEqual(6);
-    // Preuve du déplacement : aucune des deux n y est encore référencée.
-    for (const r of MOI_RACCOURCIS) {
-      expect(menu, `${r.tab} est toujours dans le menu latéral`).not.toContain(
-        `tab: '${r.tab}'`,
+
+    const lire = (nom: string): string => {
+      const i = src.indexOf(`const ${nom}`);
+      expect(i, `${nom} introuvable dans App.tsx`).toBeGreaterThan(0);
+      const suite = src.slice(i, i + 2400);
+      return suite.slice(0, suite.indexOf('];'));
+    };
+    const menuSecondaire = lire('SECONDARY_NAV');
+    const menuPrincipal = lire('PRIMARY_NAV');
+
+    // 1. Menu latéral « المزيد » : les deux premières rubriques sont parties.
+    const entreesSecondaires = (menuSecondaire.match(/\{ tab: '/g) ?? []).length;
+    expect(entreesSecondaires).toBeGreaterThan(0);
+    expect(entreesSecondaires).toBeLessThanOrEqual(6);
+    for (const tab of ['badges', 'teacher']) {
+      expect(menuSecondaire, `${tab} est toujours dans le menu latéral`).not.toContain(
+        `tab: '${tab}'`,
       );
     }
-    // …et les icônes n'y sont plus importées pour elles.
+    // …et leurs icônes n'y sont plus référencées.
     expect(src).not.toMatch(/Icon: Award/);
     expect(src).not.toMatch(/Icon: LayoutDashboard/);
+
+    // 2. Barre principale : تقدمي est partie, et « أنا » ferme la barre.
+    const entreesPrincipales = (menuPrincipal.match(/\{ tab: '/g) ?? []).length;
+    expect(entreesPrincipales).toBe(7);
+    expect(menuPrincipal, 'تقدمي est toujours dans la barre principale').not.toContain(
+      "tab: 'stats'",
+    );
+    const onglets = [...menuPrincipal.matchAll(/\{ tab: '([a-z]+)'/g)].map((m) => m[1]);
+    expect(onglets[onglets.length - 1]).toBe('moi');
+
+    // 3. Aucune des trois rubriques n'a survécu dans un ancien menu.
+    expect(MOI_RACCOURCI_COUNT).toBe(3);
+    for (const r of MOI_RACCOURCIS) {
+      expect(menuSecondaire, `${r.tab} (latéral)`).not.toContain(`tab: '${r.tab}'`);
+      expect(menuPrincipal, `${r.tab} (barre)`).not.toContain(`tab: '${r.tab}'`);
+    }
   });
 });
 

@@ -724,7 +724,10 @@ export default function App() {
     { tab: 'bac', label: 'البكالوريا', fr: 'Bac', Icon: GraduationCap },
     { tab: 'review', label: 'المراجعة', fr: 'Révision', Icon: Layers },
     { tab: 'chat', label: 'المرشد', fr: 'Guide', Icon: Compass },
-    { tab: 'stats', label: 'تقدمي', fr: 'Progrès', Icon: Trophy },
+    // 2026-10-03 — « تقدمي » a quitté CETTE barre pour devenir la 3e icône du
+    // bloc « المزيد » de la page « أنا » (voir src/data/moiRaccourcis.ts).
+    // Déplacement, pas doublon : un test de MoiView relit ce bloc et casse si
+    // elle y réapparaît. La carte « stats » du tableau de bord reste active.
     { tab: 'moi', label: 'أنا', fr: 'Moi', Icon: Sprout },
   ];
   // Sprint 13 — dette UI : 9 entrées secondaires devenaient un mur. Les cinq
