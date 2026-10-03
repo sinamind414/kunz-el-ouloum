@@ -2479,10 +2479,6 @@ export const GUIDE_SECTIONS: SectionGuide[] = [
             "3"
           ]
         ]
-      },
-      {
-        "kind": "texte",
-        "texte": "تم إعداد هذا الدليل من خلال دمج وتحليل مصدرَين مرجعيَين في منهجية الإجابة لمادة علوم الطبيعة والحياة الباكالوريا في الجزائر. يُدمج في تطبيق كونز العلم لاستغلال تعليمي. بصياغة فريق مشروع عكاشة للطالب المتميز. الأستاذة كتفي شريف زينة — بالتعاون مع فريق عكاشة"
       }
     ]
   }
@@ -2490,7 +2486,7 @@ export const GUIDE_SECTIONS: SectionGuide[] = [
 
 export const GUIDE_STATS = {
   sections: 11,
-  blocs: 370,
+  blocs: 369,
   tableaux: 20,
   entrees: 209,
 };

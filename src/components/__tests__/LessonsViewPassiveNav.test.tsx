@@ -84,7 +84,7 @@ describe('LessonsView — leçons passives par icônes', () => {
     expect(screen.queryByTestId('okacha-entree-domaine')).toBeNull();
     // Les 4 autres rubriques sont toujours là.
     expect(screen.getByText('الدرس الرسمي')).toBeTruthy();
-    expect(screen.getByText('اختبار الكتاب')).toBeTruthy();
+    expect(screen.getByText('اختبار الفصول')).toBeTruthy();
     expect(screen.getByText('اختبار بكالوريا')).toBeTruthy();
   });
 

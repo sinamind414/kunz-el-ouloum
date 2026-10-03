@@ -107,7 +107,7 @@ const BASE_LEVEL: MeftahLevel = {
     {
       id: 'tooth3',
       badge: '3',
-      title: 'علاقة — وصفة حلّل كما في الكتاب',
+      title: 'علاقة — وصفة حلّل',
       bullets: [
         '1) تعريف الوثيقة',
         '2) تفكيك بقيم',

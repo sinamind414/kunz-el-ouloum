@@ -123,10 +123,11 @@ describe('sanctions — P2f, sources دليل الأستاذ (errata + attendus)
     ).not.toContain('phase_obscure_nuit');
   });
 
-  it('ATP 38 : la correction cite désormais le guide (non-régression texte)', () => {
+  it('ATP 38 : la correction reste ferme sans citer de source (non-régression texte)', () => {
     const s = evaluerSanctions('الحصيلة الكلية هي 36 ATP لكل غلوكوز.');
     const r = s.find((x) => x.id === 'atp_bilan_respiration')!;
-    expect(r.correctionAr).toContain('دليل الأستاذ');
-    expect(r.correctionAr).toContain('38 جزيئة');
+    expect(r.correctionAr).toContain('38 ATP');
+    expect(r.correctionAr).toContain('حصيلة التنفس');
+    expect(r.correctionAr).not.toContain('دليل الأستاذ');
   });
 });

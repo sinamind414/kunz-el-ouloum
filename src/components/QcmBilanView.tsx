@@ -66,7 +66,7 @@ export default function QcmBilanView({ onBack }: Props) {
           <p className="text-sm font-bold text-gray-700 dark:text-gray-200 leading-relaxed">
             <b>15 سؤالا</b> من مجموع بنك الأسئلة الكامل (81 سؤالا) : <b>5 في كل مجال</b> من
             المجالات الثلاثة، مرتّبة كامنة عن الطلبة. جواب فوري مع تفسير، ثم تشخيص نقاط
-            ضعفك مع إحالة مراجعة لكل خطأ (فصل الكتاب أو الدرس).
+            ضعفك مع إحالة مراجعة لكل خطأ (فصل أو الدرس).
           </p>
           <button
             onClick={demarrer}

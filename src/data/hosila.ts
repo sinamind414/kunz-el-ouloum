@@ -61,7 +61,7 @@ export const HOSILA_UNITE_PAR_ID: Readonly<Record<string, UniteOkachaEnrichie>> 
     id: "d1u2",
     uniteAr: "العلاقة بين بنية ووظيفة البروتين",
     domaine: 1,
-    sourceRange: "الحصيلة الرسمية · ص 51-53",
+    sourceRange: "الحصيلة الرسمية",
     nbPoints: 3,
     blocs: [
       { kind: "note", texte: "معلومات مفيدة (برنامج Rastop)" },
@@ -112,7 +112,7 @@ export const HOSILA_UNITE_PAR_ID: Readonly<Record<string, UniteOkachaEnrichie>> 
     id: "d1u3",
     uniteAr: "النشاط الإنزيمي للبروتينات",
     domaine: 1,
-    sourceRange: "الحصيلة الرسمية · ص 68",
+    sourceRange: "الحصيلة الرسمية",
     nbPoints: 4,
     blocs: [
       { kind: "titre", texte: "الحصيلة المعرفية" },
@@ -136,7 +136,7 @@ export const HOSILA_UNITE_PAR_ID: Readonly<Record<string, UniteOkachaEnrichie>> 
     id: "d1u4",
     uniteAr: "دور البروتينات في الدفاع عن الذات",
     domaine: 1,
-    sourceRange: "الحصيلة الرسمية · ص 111-116",
+    sourceRange: "الحصيلة الرسمية",
     nbPoints: 12,
     blocs: [
       { kind: "titre", texte: "الحصيلة المعرفية" },
@@ -224,7 +224,7 @@ export const HOSILA_UNITE_PAR_ID: Readonly<Record<string, UniteOkachaEnrichie>> 
     id: "d1u5",
     uniteAr: "الاتصال العصبي",
     domaine: 1,
-    sourceRange: "الحصيلة الرسمية · ص 158-164",
+    sourceRange: "الحصيلة الرسمية",
     nbPoints: 6,
     blocs: [
       { kind: "titre", texte: "الحصيلة المعرفية" },
@@ -305,7 +305,7 @@ export const HOSILA_UNITE_PAR_ID: Readonly<Record<string, UniteOkachaEnrichie>> 
     id: "d2u1",
     uniteAr: "تحويل الطاقة الضوئية إلى طاقة كيميائية كامنة",
     domaine: 2,
-    sourceRange: "الحصيلة الرسمية · ص 197-201",
+    sourceRange: "الحصيلة الرسمية",
     nbPoints: 4,
     blocs: [
       { kind: "titre", texte: "الحصيلة المعرفية" },
@@ -362,7 +362,7 @@ export const HOSILA_UNITE_PAR_ID: Readonly<Record<string, UniteOkachaEnrichie>> 
     id: "d2u2",
     uniteAr: "تحويل الطاقة الكيميائية الكامنة إلى طاقة قابلة للاستعمال",
     domaine: 2,
-    sourceRange: "الحصيلة الرسمية · ص 219-231",
+    sourceRange: "الحصيلة الرسمية",
     nbPoints: 14,
     blocs: [
       { kind: "titre", texte: "الحصيلة المعرفية" },
@@ -441,7 +441,7 @@ export const HOSILA_UNITE_PAR_ID: Readonly<Record<string, UniteOkachaEnrichie>> 
     id: "d3u1",
     uniteAr: "بنية الكرة الأرضية",
     domaine: 3,
-    sourceRange: "الحصيلة الرسمية · ص 280-281",
+    sourceRange: "الحصيلة الرسمية",
     nbPoints: 5,
     blocs: [
       { kind: "titre", texte: "الحصيلة المعرفية" },
@@ -552,7 +552,7 @@ export const HOSILA_UNITE_PAR_ID: Readonly<Record<string, UniteOkachaEnrichie>> 
     id: "d3u3",
     uniteAr: "الظواهر المرتبطة بالنشاط التكتوني",
     domaine: 3,
-    sourceRange: "الحصيلة الرسمية · ص 326",
+    sourceRange: "الحصيلة الرسمية",
     nbPoints: 6,
     blocs: [
       { kind: "titre", texte: "الحصيلة المعرفية" },

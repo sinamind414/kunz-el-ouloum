@@ -73,7 +73,7 @@ describe('transformations documentées du générateur (T1/T2/T3)', () => {
   it('T3 : chaque test porte la notice « données simulées »', () => {
     for (const t of BAC_TESTS) {
       expect(norm(t.notice).includes(norm('مُحاكاة')), t.id).toBe(true);
-      expect(norm(t.notice).includes(norm('الكتاب المدرسي الرسمي')), t.id).toBe(true);
+      expect(t.notice.includes('الكتاب'), t.id).toBe(false); // aucune source de livre citée
     }
   });
 });

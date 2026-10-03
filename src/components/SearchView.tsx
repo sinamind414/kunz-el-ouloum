@@ -32,7 +32,7 @@ const MAX_RESULTS = 10;
 
 const TYPE_META: Record<GroupedResult['type'], { badge: string; cls: string }> = {
   lesson: { badge: 'درس', cls: 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-300' },
-  book: { badge: 'سؤال من الكتاب', cls: 'bg-amber-50 text-amber-700 dark:bg-amber-950/40 dark:text-amber-300' },
+  book: { badge: 'تمرين', cls: 'bg-amber-50 text-amber-700 dark:bg-amber-950/40 dark:text-amber-300' },
   card: { badge: 'بطاقة معرفية', cls: 'bg-sky-50 text-sky-700 dark:bg-sky-950/40 dark:text-sky-300' },
   guide: { badge: 'دليل منهجي', cls: 'bg-violet-50 text-violet-700 dark:bg-violet-950/40 dark:text-violet-300' },
   opus: { badge: 'موسوعة', cls: 'bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-300' },

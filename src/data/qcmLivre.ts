@@ -349,7 +349,7 @@ export const QCM_CHAPITRES: QcmChapitre[] = [
     ],
     correct: 1,
     schema: `${S}/domaine3_tectonique/schema_15_dorsale.svg`,
-    explication: 'النص (l.5941) : الترتيب حرفي من الكتاب — البيريدوتيت من المعادن الثقيلة غير المنصهرة، والغابرو نسيجه محبب بتبرد بطيء.',
+    explication: 'الترتيب حرفي : البيريدوتيت من المعادن الثقيلة غير المنصهرة، والغابرو نسيجه محبب بتبرد بطيء.',
   },
   {
     chapitre: 50,

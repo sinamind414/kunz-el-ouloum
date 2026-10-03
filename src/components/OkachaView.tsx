@@ -456,7 +456,7 @@ export default function OkachaView({ onBack, onRate, onOpenQcm, domaineInitial }
               className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-black bg-[#b45309] text-white hover:bg-amber-700"
             >
               <BookOpen className="w-3.5 h-3.5" />
-              اختبار الكتاب
+              اختبار الفصول
             </button>
           )}
         </div>
@@ -481,9 +481,9 @@ export default function OkachaView({ onBack, onRate, onOpenQcm, domaineInitial }
 
       {/* ── Bandeau notice + progression ── */}
       <div className="p-3 rounded-2xl bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-900 text-xs font-bold text-blue-900 dark:text-blue-200 leading-relaxed print:break-inside-avoid">
-        الحصيلة المعرفية الرسمية من الكتاب المدرسي ({HOSILA_STATS.unites} وحدات)
+        الحصيلة المعرفية ({HOSILA_STATS.unites} وحدات)
         + الدليل العام للمنهجية ({GUIDE_SECTIONS.length} أقسام)
-        — اقرأ، فعّل « وضع الحفظ » لتختبر نفسك، ثم اختبر في « اختبار الكتاب ».
+        — اقرأ، فعّل « وضع الحفظ » لتختبر نفسك، ثم اختبر في « اختبار الفصول ».
         <div className="mt-2 flex items-center gap-2 flex-wrap">
           <span className="inline-flex items-center gap-1 text-[10px] font-black text-blue-700 dark:text-blue-300">
             📚 {HOSILA_STATS.points} نقطة · {HOSILA_STATS.unites} وحدات · {index.length} سجلاً قابلاً للبحث

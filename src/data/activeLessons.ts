@@ -374,7 +374,7 @@ export const ACTIVE_LESSONS: Record<string, ActiveLesson> = {
     blocks: [
       {
         type: 'MISSION_CHOICE',
-        objective: 'الدخول إلى المجال من وضعية مشكلة حقيقية كما في الكتاب.',
+        objective: 'الدخول إلى المجال من وضعية مشكلة حقيقية.',
         heroTitle: 'كيف يمكن لتغير في بنية بروتين أن يؤدي إلى مرض خطير؟',
         heroText: 'ننطلق من حالة البريون ومرض جنون البقر لنفهم لماذا ليست البروتينات مجرد تعريفات تُحفظ، بل جزيئات يؤدي تغير بنيتها إلى آثار خطيرة.',
         imageSrc: '/assets/images/schemas/domaine1_proteines/schema_09_intro_prion.svg',
@@ -1976,7 +1976,7 @@ export const ACTIVE_LESSONS: Record<string, ActiveLesson> = {
       },
       {
         type: 'TEXT_AND_PRODUCE',
-        objective: 'إنتاج النص العلمي المطلوب في الكتاب : مراحل تشكل المغماتيت.',
+        objective: 'إنتاج النص العلمي : مراحل تشكل المغماتيت.',
         prompt: 'لخّص في نص علمي مراحل تشكل صخر المغماتيت.',
         acceptedAnswers: ['التقلص', 'التضاعف القشري', 'الانصهار الجزئي', 'الغرانيت'],
         errorHint: 'الجواب : التصادم ⇐ التقلص ⇐ التضاعف القشري ⇐ الانصهار الجزئي للغرانيت ⇐ المغماتيت.',

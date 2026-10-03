@@ -205,8 +205,8 @@ const unitesGenerees = UNITES.map((conf) => {
   return { conf, ref, blocs, nbPoints };
 });
 
-/** Portée affichée sur la carte : marque officielle + pages du livre. */
-const portee = (p: string) => (p.startsWith('ص') ? `الحصيلة الرسمية · ${p}` : 'الحصيلة الرسمية');
+/** Portée affichée sur la carte : marque officielle uniquement — aucune référence de source. */
+const portee = () => 'الحصيلة الرسمية';
 
 const stats = {
   unites: unitesGenerees.length,
@@ -224,7 +224,7 @@ const corps = unitesGenerees
     id: ${JSON.stringify(u.conf.id)},
     uniteAr: ${JSON.stringify(u.ref.uniteAr)},
     domaine: ${JSON.stringify(u.ref.domaine)},
-    sourceRange: ${JSON.stringify(portee(u.conf.pages))},
+    sourceRange: ${JSON.stringify(portee())},
     nbPoints: ${u.nbPoints},
     blocs: [
 ${lb}

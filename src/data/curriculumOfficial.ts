@@ -36,9 +36,9 @@ export const NON_EXIGIBLES: ReadonlyArray<{
   terme: string;
   raison: string;
 }> = [
-  { terme: 'المتمم', raison: 'ورد في الكتاب المدرسي ولم يرد في المنهاج' },
-  { terme: 'مبدأ الأسيلوسكوب', raison: 'ورد في الكتاب المدرسي ولم يرد في المنهاج' },
-  { terme: 'نضج الـ ARNm', raison: 'ورد في الكتاب المدرسي ولم يرد في المنهاج' },
+  { terme: 'المتمم', raison: 'خارج المنهاج المعتمد' },
+  { terme: 'مبدأ الأسيلوسكوب', raison: 'خارج المنهاج المعتمد' },
+  { terme: 'نضج الـ ARNm', raison: 'خارج المنهاج المعتمد' },
 ];
 
 /**

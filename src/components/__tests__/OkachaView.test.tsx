@@ -27,7 +27,7 @@ describe('OkachaView — الحصيلة المعرفية modernisée', () => {
     // Bandeau statistiques (HOSILA_STATS : 71 points · 10 unités).
     expect(screen.getByText(/نقطة · 10 وحدات/)).toBeTruthy();
     // La source affichée est la حصيلة الرسمية, pas l'OCR عكاشة seul.
-    expect(screen.getByText(/الحصيلة المعرفية الرسمية/)).toBeTruthy();
+    expect(screen.getByText(/الحصيلة المعرفية \(/)).toBeTruthy();
   });
 
   it('contenu officiel (hosila) : d1u1 rend les ancrages livre pages 32-34', async () => {
@@ -185,7 +185,7 @@ describe('OkachaView — الحصيلة المعرفية modernisée', () => {
     const user = userEvent.setup();
     const onOpenQcm = vi.fn();
     render(<OkachaView onBack={vi.fn()} onOpenQcm={onOpenQcm} />);
-    await user.click(screen.getByText('اختبار الكتاب'));
+    await user.click(screen.getByText('اختبار الفصول'));
     expect(onOpenQcm).toHaveBeenCalledTimes(1);
   });
 

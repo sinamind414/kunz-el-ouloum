@@ -304,9 +304,9 @@ export default function LessonsView({ onRateCard, initialLesson, initialQcm, onD
             <span className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-[#b45309] text-white shadow-md group-hover:scale-105 transition-transform">
               <BookOpen className="w-8 h-8" />
             </span>
-            <span className="block text-lg font-black text-gray-800 dark:text-gray-100">اختبار الكتاب</span>
+            <span className="block text-lg font-black text-gray-800 dark:text-gray-100">اختبار الفصول</span>
             <span className="block text-xs font-bold text-gray-500 dark:text-gray-400 leading-relaxed">
-              أسئلة حسب فصول الكتاب الرسمي — مع مخططات وتفسيرات فورية
+              أسئلة حسب الفصول — مع مخططات وتفسيرات فورية
             </span>
           </button>
           {/* Tests bac */}
@@ -622,7 +622,7 @@ export default function LessonsView({ onRateCard, initialLesson, initialQcm, onD
               📚 الحصيلة المعرفية — {domain?.titleAr}
             </span>
             <span className="block text-xs font-bold text-gray-500 dark:text-gray-400 leading-relaxed">
-              كل ما يجب حفظه في هذا المجال — ملخصات مرقّمة لكل وحدة (عكاشة)
+              كل ما يجب حفظه في هذا المجال — ملخصات مرقّمة لكل وحدة
               + الدليل العام للمنهجية
             </span>
           </span>

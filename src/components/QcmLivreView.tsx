@@ -64,7 +64,7 @@ export default function QcmLivreView({ onBack, uniteInitiale }: Props) {
           </button>
           <h2 className="text-xl font-black flex items-center gap-2">
             <BookOpen className="w-5 h-5 text-[#006d37]" />
-            اختبار الكتاب — حسب الفصول
+            اختبار الفصول
           </h2>
           <button
             onClick={() => setBilan(true)}
@@ -74,7 +74,7 @@ export default function QcmLivreView({ onBack, uniteInitiale }: Props) {
           </button>
         </div>
         <p className="text-xs font-bold text-gray-500 dark:text-gray-400">
-          {QCM_CHAPITRES.length} سؤالا يغطي {new Set(QCM_CHAPITRES.map((q) => q.chapitre)).size} فصلا من الكتاب الرسمي — كل سؤال مع مخططه وتفسيره
+          {QCM_CHAPITRES.length} سؤالا يغطي {new Set(QCM_CHAPITRES.map((q) => q.chapitre)).size} فصلا — كل سؤال مع مخططه وتفسيره
         </p>
         {filtreUnite !== null && (
           <div className="flex items-center gap-2">
@@ -94,7 +94,7 @@ export default function QcmLivreView({ onBack, uniteInitiale }: Props) {
             data-testid={`qcm-unite-${filtreUnite}`}
             className="rounded-3xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-[#161c18] p-6 text-center text-sm font-bold text-gray-500 dark:text-gray-400"
           >
-            لا توجد أسئلة من الكتاب الرسمي لهذه الوحدة بعد — راجع الدروس أولاً.
+            لا توجد أسئلة لهذه الوحدة بعد — راجع الدروس أولاً.
           </p>
         ) : (
           unitesAffichees.map(([unite, chapitres]) => (
