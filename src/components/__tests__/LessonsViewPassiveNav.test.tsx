@@ -37,6 +37,21 @@ describe('LessonsView — leçons passives par icônes', () => {
     expect(screen.queryByTestId('chapitres-icones')).toBeNull();
   });
 
+  it('bannière du principe : leçon suggérée + compteur X / Y sur الدرس الرسمي', async () => {
+    const user = userEvent.setup();
+    render(<LessonsView />);
+    // La rubrique « مسار تعلمك » a quitté le menu (2026-10-03) : son principe
+    // « séquence ordonnée » vit désormais en tête de l'écran des domaines.
+    await user.click(screen.getByText('الدرس الرسمي'));
+    const bandeau = screen.getByTestId('bandeau-sequence');
+    expect(bandeau).toBeTruthy();
+    expect(screen.getByText('الدرس المقترح التالي')).toBeTruthy();
+    // Compteur « X / Y » (état vierge → 0 sur le total du chemin).
+    expect(bandeau.textContent).toMatch(/\d+\s*\/\s*\d+/);
+    // La leçon suggérée est ouvrable en un geste.
+    expect(screen.getByTestId('bandeau-sequence-ouvrir')).toBeTruthy();
+  });
+
   it('icône d’unité → icônes des chapitres (U4 المناعة = 6 icônes)', async () => {
     const user = await ouvrirDomaine(1);
     await user.click(screen.getByTestId('unite-4'));

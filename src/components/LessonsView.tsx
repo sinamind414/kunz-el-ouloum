@@ -14,6 +14,7 @@ import { INITIAL_UNITS } from '../unitCatalog';
 import { getUnitLessonSequence } from '../data/unitLessonSequences';
 import { HTML_LESSON_ORDER } from '../data/htmlLessonProgression';
 import { sourceLivre, badgeSource, sourceAmbigue } from '../data/bookIndex';
+import { loadParcours, currentItem, parcoursProgress } from '../lib/parcours/parcoursProgress';
 import Icone from './Icone';
 
 // Sprint 32 : ces quatre vues (QCM du livre, sujets BAC, bibliothèque Okacha,
@@ -466,6 +467,18 @@ export default function LessonsView({ onRateCard, initialLesson, initialQcm, onD
 
   // ----- Écran 2b : Leçon Passive — trois icônes de domaines -----
   if (mode === 'passive' && selectedDomain === null) {
+    // Le principe « séquence ordonnée » survit à la suppression de la rubrique
+    // « مسار تعلمك » du menu : compteur et leçon suggérée sont affichés ici,
+    // le moteur reste inchangé dans src/lib/parcours/ (verrou, quota, J+14).
+    const etatParcours = loadParcours();
+    const leconSuggeree = currentItem(etatParcours);
+    const avancement = parcoursProgress(etatParcours);
+    const pourcentage = avancement.total > 0
+      ? Math.round((avancement.done / avancement.total) * 100)
+      : 0;
+    const cleLecon = leconSuggeree?.lessonKey ?? null;
+    const kindLecon = leconSuggeree?.lessonKind ?? 'html';
+    const uniteLecon = leconSuggeree?.unitId ?? 0;
     return (
       <div dir="rtl" className="space-y-5">
         <div className="flex items-center gap-3">
@@ -480,6 +493,44 @@ export default function LessonsView({ onRateCard, initialLesson, initialQcm, onD
             <MonitorPlay className="w-5 h-5 text-[#0e6b6b]" />
             الدرس الرسمي — اختر المجال
           </h2>
+        </div>
+
+        {/* Bandeau « séquence ordonnée » — la rubrique « مسار تعلمك » a quitté le
+            menu (2026-10-03) ; son principe vit ici : leçon suggérée + compteur. */}
+        <div
+          data-testid="bandeau-sequence"
+          className="flex flex-wrap items-center gap-4 rounded-3xl border-2 border-teal-200 dark:border-teal-900/50 bg-gradient-to-l from-teal-50 to-white dark:from-teal-950/30 dark:to-[#161c18] p-5"
+        >
+          <span className="inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-[#0e6b6b] text-white shadow-md">
+            <span aria-hidden="true" className="text-xl">🧭</span>
+          </span>
+          <span className="min-w-0 flex-1 space-y-1.5">
+            <span className="block text-[11px] font-black text-[#944a00] dark:text-amber-300">
+              الدرس المقترح التالي
+            </span>
+            <span className="block truncate text-base font-black text-gray-800 dark:text-gray-100">
+              {leconSuggeree?.title ?? 'أنجزت كل الدروس — واصل المراجعة'}
+            </span>
+            <span className="block h-2 w-full max-w-[14rem] rounded-full bg-gray-200 dark:bg-gray-700">
+              <span
+                className="block h-2 rounded-full bg-[#0e6b6b]"
+                style={{ width: `${pourcentage}%` }}
+              />
+            </span>
+          </span>
+          <span className="shrink-0 text-sm font-black tabular-nums text-gray-700 dark:text-gray-200">
+            {avancement.done} / {avancement.total}
+          </span>
+          {cleLecon && (
+            <button
+              type="button"
+              data-testid="bandeau-sequence-ouvrir"
+              onClick={() => openLessonFromSearch(cleLecon, kindLecon, uniteLecon)}
+              className="shrink-0 rounded-xl bg-[#0e6b6b] px-4 py-2 text-sm font-black text-white shadow-md transition-all hover:bg-[#0b5757]"
+            >
+              افتح الدرس
+            </button>
+          )}
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -540,7 +591,7 @@ export default function LessonsView({ onRateCard, initialLesson, initialQcm, onD
               🧭 الدليل العام للمنهجية
             </span>
             <span className="block text-xs font-bold text-gray-500 dark:text-gray-400 leading-relaxed">
-              منهجية الامتحان وتحليل الوثائق — خارج المجالات، لأنه يخصّ المادّة كلّها
+              منهجية الامتحان وتحليل الوثائق والمراجعة — خارج المجالات الثلاثة، لأنها تشمل مادة علوم الطبيعة والحياة كلّها
             </span>
           </span>
           <ChevronLeft className="w-5 h-5 text-gray-300 group-hover:text-emerald-500 transition-all shrink-0" />

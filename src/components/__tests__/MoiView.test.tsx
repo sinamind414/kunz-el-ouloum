@@ -236,12 +236,18 @@ describe('MoiView — المزيد : rubriques déplacées du menu latéral', ()
     expect(src).not.toMatch(/Icon: Award/);
     expect(src).not.toMatch(/Icon: LayoutDashboard/);
 
-    // 2. Barre principale : تقدمي est partie, et « أنا » ferme la barre.
+    // 2. Barre principale : تقدمي est partie, « أنا » ferme la barre, et
+    //    « مسار تعلمك » a quitté la barre le 2026-10-03 (rubrique supprimée,
+    //    principe conservé : compteur + leçon suggérée dans « الدرس الرسمي »).
     const entreesPrincipales = (menuPrincipal.match(/\{ tab: '/g) ?? []).length;
-    expect(entreesPrincipales).toBe(7);
+    expect(entreesPrincipales).toBe(6);
     expect(menuPrincipal, 'تقدمي est toujours dans la barre principale').not.toContain(
       "tab: 'stats'",
     );
+    expect(menuPrincipal, 'المسار est toujours dans la barre principale').not.toContain(
+      "tab: 'parcours'",
+    );
+    expect(src, 'ParcoursView est toujours monté').not.toContain('<ParcoursView');
     const onglets = [...menuPrincipal.matchAll(/\{ tab: '([a-z]+)'/g)].map((m) => m[1]);
     expect(onglets[onglets.length - 1]).toBe('moi');
 

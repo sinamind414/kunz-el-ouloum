@@ -20,7 +20,6 @@ import {
   PenTool,
   Dumbbell,
   Timer,
-  Route,
   Sprout
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
@@ -82,7 +81,6 @@ const TadwinView = lazy(() => import('./components/TadwinView'));
 const QuizView = lazy(() => import('./components/QuizView'));
 const RevisionView = lazy(() => import('./components/RevisionView'));
 const LessonsView = lazy(() => import('./components/LessonsView'));
-const ParcoursView = lazy(() => import('./components/ParcoursView'));
 // Deux piliers du design OPUS 5.5 (photos « أنا » et « البكالوريا ») :
 // ouverts aussi peu que les autres onglets secondaires → import différé.
 const MoiView = lazy(() => import('./components/MoiView'));
@@ -130,10 +128,10 @@ export default function App() {
   // Navigation tab state
   // Exercice sur lequel ouvrir l'atelier quand on arrive depuis le plan.
   const [bacIdeaFocus, setBacIdeaFocus] = useState<string | null>(null);
-  const [currentTab, setCurrentTab] = useState<'splash' | 'home' | 'review' | 'stats' | 'chat' | 'methodology' | 'bootcamp' | 'badges' | 'lesson' | 'workshop' | 'mindmap' | 'teacher' | 'animations' | 'situations' | 'schemas' | 'training' | 'plan' | 'bacideas' | 'focus' | 'tadwin' | 'parcours' | 'moi' | 'bac'>('splash');
-  // Deep-link المسار : ouverture d'une leçon précise depuis le chemin (ParcoursView).
+  const [currentTab, setCurrentTab] = useState<'splash' | 'home' | 'review' | 'stats' | 'chat' | 'methodology' | 'bootcamp' | 'badges' | 'lesson' | 'workshop' | 'mindmap' | 'teacher' | 'animations' | 'situations' | 'schemas' | 'training' | 'plan' | 'bacideas' | 'focus' | 'tadwin' | 'moi' | 'bac'>('splash');
+  // Deep-link : ouverture d'une leçon précise depuis un raccourci (الدروس, أنا…).
   const [parcoursLesson, setParcoursLesson] = useState<{ key: string; kind: 'html' | 'active'; unitId: number } | null>(null);
-  // Deep-link المسار : ouverture du QCM d'une unité précise (ligne جسر).
+  // Deep-link : ouverture du QCM d'une unité précise (raccourci).
   const [parcoursQcm, setParcoursQcm] = useState<number | null>(null);
   const ouvrirLeçonDepuisParcours = (key: string, kind: 'html' | 'active', unitId: number) => {
     setParcoursLesson({ key, kind, unitId });
@@ -716,11 +714,14 @@ export default function App() {
   // Port des 4 piliers OPUS 5.5 (photo « barre basse ») SANS rien perdre :
   // on AJOUTE « البكالوريا » et « أنا » aux entrées existantes, et chaque
   // entrée porte son label FR (comme dans le zip). Ordre repris des photos :
-  // ... مساري → البكالوريا ... et أنا en dernier.
+  // ... الدروس → البكالوريا ... et أنا en dernier.
+  // 2026-10-03 — « مسار تعلمك » a quitté CETTE barre (rubrique supprimée, principe
+  // conservé : le moteur src/lib/parcours/ est intact, le compteur et la leçon
+  // suggérée sont affichés en tête de « الدرس الرسمي », la tâche du jour reste
+  // sur « الرئيسية » via NbaCard, et la revue J+14 reste dans التدوين).
   const PRIMARY_NAV: { tab: typeof currentTab; label: string; fr: string; Icon: LucideIcon }[] = [
     { tab: 'home', label: 'الرئيسية', fr: 'Accueil', Icon: Home },
     { tab: 'lesson', label: 'الدروس', fr: 'Leçons', Icon: BookOpen },
-    { tab: 'parcours', label: 'المسار', fr: 'Parcours', Icon: Route },
     { tab: 'bac', label: 'البكالوريا', fr: 'Bac', Icon: GraduationCap },
     { tab: 'review', label: 'المراجعة', fr: 'Révision', Icon: Layers },
     { tab: 'chat', label: 'المرشد', fr: 'Guide', Icon: Compass },
@@ -989,13 +990,6 @@ export default function App() {
                   initialLesson={parcoursLesson ?? undefined}
                   initialQcm={parcoursQcm ?? undefined}
                   onDeepLinkConsumed={() => { setParcoursLesson(null); setParcoursQcm(null); }}
-                />
-              )}
-
-              {currentTab === 'parcours' && (
-                <ParcoursView
-                  onOpenLesson={ouvrirLeçonDepuisParcours}
-                  onOpenQcm={ouvrirQcmDepuisParcours}
                 />
               )}
 
