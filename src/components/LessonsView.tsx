@@ -15,6 +15,7 @@ import { getUnitLessonSequence } from '../data/unitLessonSequences';
 import { HTML_LESSON_ORDER } from '../data/htmlLessonProgression';
 import { sourceLivre, badgeSource, sourceAmbigue } from '../data/bookIndex';
 import { loadParcours, currentItem, parcoursProgress } from '../lib/parcours/parcoursProgress';
+import { LESSON_GOLD_SUMMARIES } from '../data/lessonGoldSummaries';
 import Icone from './Icone';
 
 // Sprint 32 : ces quatre vues (QCM du livre, sujets BAC, bibliothèque Okacha,
@@ -479,6 +480,11 @@ export default function LessonsView({ onRateCard, initialLesson, initialQcm, onD
     const cleLecon = leconSuggeree?.lessonKey ?? null;
     const kindLecon = leconSuggeree?.lessonKind ?? 'html';
     const uniteLecon = leconSuggeree?.unitId ?? 0;
+    // Résumé d'or de la leçon suggérée. Couverture honnête et partielle
+    // (12/42 leçons du parcours) : on affiche le résumé quand il existe,
+    // jamais de contenu synthétique pour combler les trous. Donnée validée
+    // par les lock tests de lessonGoldSummaries.
+    const resumeOr = cleLecon ? LESSON_GOLD_SUMMARIES[cleLecon] : undefined;
     return (
       <div dir="rtl" className="space-y-5">
         <div className="flex items-center gap-3">
@@ -532,6 +538,91 @@ export default function LessonsView({ onRateCard, initialLesson, initialQcm, onD
             </button>
           )}
         </div>
+
+        {/* Résumé d'or — la substantifique de la leçon avant même de l'ouvrir.
+            Donnée réelle validée par les lock tests de lessonGoldSummaries.
+            Couverture partielle assumée (12/42) : rien n'est synthétisé. */}
+        {resumeOr && (
+          <div
+            data-testid="resume-or"
+            className="space-y-4 rounded-3xl border-2 border-amber-200 dark:border-amber-900/50 bg-gradient-to-l from-amber-50 to-white dark:from-amber-950/30 dark:to-[#161c18] p-5"
+          >
+            <div className="flex items-center justify-between gap-3">
+              <h3 className="flex items-center gap-2 text-sm font-black text-amber-700 dark:text-amber-300">
+                <span aria-hidden="true">🧬</span>
+                الملخص الذهبي للدرس
+              </h3>
+              <span className="rounded-full bg-amber-100 dark:bg-amber-900/40 px-3 py-1 text-[11px] font-black text-amber-700 dark:text-amber-300">
+                {resumeOr.review?.reviewed ? 'مراجعة أستاذ' : 'شرح Kunz'}
+              </span>
+            </div>
+
+            <div className="space-y-1.5">
+              <span className="block text-[11px] font-black text-[#944a00] dark:text-amber-300">
+                المهمة
+              </span>
+              <p className="text-sm font-bold leading-relaxed text-gray-800 dark:text-gray-100">
+                {resumeOr.missionAr}
+              </p>
+            </div>
+
+            <div className="space-y-1.5">
+              <span className="block text-[11px] font-black text-[#944a00] dark:text-amber-300">
+                سلسلة الأسباب والنتائج
+              </span>
+              <ol className="list-decimal space-y-1 pr-5 text-sm leading-relaxed text-gray-700 dark:text-gray-200">
+                {resumeOr.mechanismAr.map((etape, i) => (
+                  <li key={i}>{etape}</li>
+                ))}
+              </ol>
+            </div>
+
+            <div className="space-y-1.5">
+              <span className="block text-[11px] font-black text-[#944a00] dark:text-amber-300">
+                مفردات مفتاحية
+              </span>
+              <div className="flex flex-wrap gap-1.5">
+                {resumeOr.vocabulary.map((terme, i) => (
+                  <span
+                    key={i}
+                    className="rounded-lg border border-amber-200 bg-white px-2.5 py-1 text-xs font-bold text-gray-700 dark:border-amber-900/40 dark:bg-gray-800 dark:text-gray-200"
+                  >
+                    {terme}
+                  </span>
+                ))}
+              </div>
+            </div>
+
+            {resumeOr.bacSentenceFrameAr && (
+              <div className="space-y-1.5">
+                <span className="block text-[11px] font-black text-[#944a00] dark:text-amber-300">
+                  هيكل الجواب — بكالوريا
+                </span>
+                <p className="rounded-xl bg-white/70 dark:bg-gray-800/70 p-3 text-sm leading-relaxed text-gray-700 dark:text-gray-200">
+                  {resumeOr.bacSentenceFrameAr}
+                </p>
+              </div>
+            )}
+
+            <div className="space-y-1.5">
+              <span className="block text-[11px] font-black text-red-600 dark:text-red-400">
+                ⚠️ خطأ شائع
+              </span>
+              <p className="text-sm leading-relaxed text-gray-700 dark:text-gray-200">
+                {resumeOr.commonErrorAr}
+              </p>
+            </div>
+
+            <div className="space-y-1.5">
+              <span className="block text-[11px] font-black text-[#944a00] dark:text-amber-300">
+                سؤال المراجعة
+              </span>
+              <p className="text-sm font-bold leading-relaxed text-gray-800 dark:text-gray-100">
+                {resumeOr.recallQuestionAr}
+              </p>
+            </div>
+          </div>
+        )}
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {PASSIVE_DOMAINS.map((d, i) => {
