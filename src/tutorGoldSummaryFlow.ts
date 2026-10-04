@@ -299,12 +299,16 @@ export function formatGoldSummary(lesson: GoldSummaryLesson): SummaryFlowResult 
   return {
     text:
       `📜 **الملخص الذهبي**\n**${lesson.title}**\n\n` +
+      // Lecture active (système d'activation) : la question de révision est lue
+      // AVANT le contenu — elle oriente l'attention vers l'objectif de la leçon.
+      // Elle se retrouve à la fin comme invite de rappel (réponse sans regarder).
+      `🧠 **سؤال المراجعة — هدفك قبل القراءة:**\n${s.recallQuestionAr}\n_(بعد قراءة الملخص، حاول الإجابة عن هذا السؤال دون النظر إليه)_\n\n` +
       `🎯 **المهمة:**\n${s.missionAr}\n\n` +
       `🔗 **خطوات الفهم:**\n${steps}\n\n` +
       `🔍 **الدليل الذي يجب التعرّف عليه:**\n${s.evidenceAr}\n\n` +
       `🔑 **المفاهيم الأساسية:** ${s.vocabulary.join(' • ')}\n\n` +
       `⚠️ **خطأ شائع يجب تجنّبه:**\n${s.commonErrorAr}\n\n` +
-      `🧠 **سؤال المراجعة:** ${s.recallQuestionAr}\n\n` +
+      `🧠 **سؤال المراجعة — أجب الآن دون النظر إلى الملخص:** ${s.recallQuestionAr}\n\n` +
       (s.bacSentenceFrameAr
         ? `📝 **قالب جاهز للإجابة:** ${s.bacSentenceFrameAr}\n\n`
         : '') +

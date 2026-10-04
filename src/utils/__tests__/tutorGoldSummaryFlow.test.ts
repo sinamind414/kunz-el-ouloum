@@ -100,6 +100,9 @@ describe('Flow الملخصات الذهبية — navigation unité → leçon'
     expect(r!.text).toContain(gold.commonErrorAr);
     expect(r!.text).toContain(gold.recallQuestionAr);
     expect(r!.text).toContain(gold.bacSentenceFrameAr ?? '');
+    // Lecture active : la question de révision précède la mission — elle est lue
+    // avant le contenu pour orienter l'attention (système d'activation).
+    expect(r!.text.indexOf(gold.recallQuestionAr)).toBeLessThan(r!.text.indexOf(gold.missionAr));
     expect(r!.quickActions).toContain('ملخصات الوحدة 4');
     expect(r!.quickActions).toContain('قائمة الوحدات');
   });

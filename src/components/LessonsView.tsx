@@ -556,6 +556,21 @@ export default function LessonsView({ onRateCard, initialLesson, initialQcm, onD
               </span>
             </div>
 
+            {/* Lecture active (système d'activation) : la question de révision est
+                lue AVANT le contenu — elle oriente l'attention vers l'objectif.
+                Elle se retrouve à la fin comme invite de rappel (sans regarder). */}
+            <div className="space-y-1.5 rounded-2xl border-2 border-teal-300 bg-teal-50 p-3 dark:border-teal-800 dark:bg-teal-950/30">
+              <span className="block text-[11px] font-black text-teal-700 dark:text-teal-300">
+                🧠 سؤال المراجعة — هدفك قبل القراءة
+              </span>
+              <p className="text-sm font-bold leading-relaxed text-gray-800 dark:text-gray-100">
+                {resumeOr.recallQuestionAr}
+              </p>
+              <p className="text-[11px] font-semibold text-gray-500 dark:text-gray-400">
+                اقرأ الملخص بإمعان ثم أجب عن هذا السؤال دون النظر إليه.
+              </p>
+            </div>
+
             <div className="space-y-1.5">
               <span className="block text-[11px] font-black text-[#944a00] dark:text-amber-300">
                 المهمة
@@ -614,7 +629,7 @@ export default function LessonsView({ onRateCard, initialLesson, initialQcm, onD
 
             <div className="space-y-1.5">
               <span className="block text-[11px] font-black text-[#944a00] dark:text-amber-300">
-                سؤال المراجعة
+                سؤال المراجعة — أجب الآن دون النظر إلى الملخص
               </span>
               <p className="text-sm font-bold leading-relaxed text-gray-800 dark:text-gray-100">
                 {resumeOr.recallQuestionAr}

@@ -92,6 +92,11 @@ describe('LessonsView — résumé d’or de la leçon suggérée', () => {
     // L'erreur courante et la question de rappel.
     expect(resume.textContent).toContain(or.commonErrorAr);
     expect(resume.textContent).toContain(or.recallQuestionAr);
+    // Lecture active : la question de rappel précède la mission — elle est lue
+    // avant le contenu pour orienter l'attention (système d'activation).
+    expect(resume.textContent!.indexOf(or.recallQuestionAr)).toBeLessThan(
+      resume.textContent!.indexOf(or.missionAr),
+    );
     // Statut éditorial honnête : non relu → « شرح Kunz ».
     expect(resume.textContent).toContain('شرح Kunz');
   });
