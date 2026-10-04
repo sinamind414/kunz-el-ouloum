@@ -40,6 +40,27 @@ describe('OkachaView — الحصيلة المعرفية modernisée', () => {
     expect(screen.getByText(/النشاط ➎/)).toBeTruthy();
   });
 
+  it('titres النشاط : couleur de domaine distincte + chiffre encerclé préservé', async () => {
+    const user = userEvent.setup();
+    render(<OkachaView onBack={vi.fn()} />);
+    await user.click(screen.getByTestId('okacha-unite-d1u1'));
+    // Titre d'activité (domaine 1 → bleu) : couleur de domaine, ET
+    // font-synthesis:none — sans quoi le gras synthétique remplit le chiffre
+    // blanc du glyphe encerclé (➊) et le numéro disparaît à l'écran.
+    const activite = screen.getByText(/^النشاط \S+ : مقر تركيب البروتين$/);
+    expect(activite.className).toContain('text-blue-700');
+    expect(activite.className).toContain('[font-synthesis:none]');
+    // Le texte source reste intact : « النشاط <jeton> : … » (aucune réécriture).
+    expect(activite.textContent).toMatch(/^النشاط \S+\s*:/);
+    // Le titre « الحصيلة المعرفية » de l'unité reste noir → bien distinct.
+    const titres = [...document.querySelectorAll('span')].filter(
+      (el) => el.children.length === 0 && el.textContent?.trim() === 'الحصيلة المعرفية',
+    );
+    expect(titres.length).toBeGreaterThan(0);
+    expect(titres.every((el) => el.className.includes('text-gray-900'))).toBe(true);
+    expect(titres.some((el) => el.className.includes('text-blue-700'))).toBe(false);
+  });
+
   it('recherche arabe normalisée : filtre tout le corpus et affiche les résultats', async () => {
     const user = userEvent.setup();
     render(<OkachaView onBack={vi.fn()} />);
@@ -53,6 +74,13 @@ describe('OkachaView — الحصيلة المعرفية modernisée', () => {
     // le testid lu-d1u1 n'existe que dans l'en-tête d'unité — les extraits
     // de résultats peuvent contenir « تركيب البروتين » en contexte, d'où le testid.
     expect(screen.queryByTestId('lu-d1u1')).toBeNull();
+    // Les extraits rendent aussi les titres النشاط : le gras ne doit pas
+    // effacer le chiffre des glyphes encerclés → font-synthesis:none.
+    const extraits = [...panneau.querySelectorAll('span')].filter((el) =>
+      el.className.includes('font-bold'),
+    );
+    expect(extraits.length).toBeGreaterThan(0);
+    expect(extraits.every((el) => el.className.includes('[font-synthesis:none]'))).toBe(true);
   });
 
   it('mode حفظ : masquer → révéler → auto-évaluation notifiée à onRate', async () => {

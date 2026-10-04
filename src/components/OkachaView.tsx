@@ -72,10 +72,10 @@ const NOM_DOMAINE: Record<number, string> = {
 
 /** Design system par domaine (icônes miroir de LessonsView : D1/D2/D3). */
 const THEME = {
-  1: { icone: FlaskConical, actif: 'bg-[#1d4ed8] text-white', dormand: 'bg-blue-50 dark:bg-blue-950/30 text-blue-800 dark:text-blue-300 hover:bg-blue-100', bar: 'bg-blue-600', bord: 'border-blue-200 dark:border-blue-900/60', grad: 'from-blue-500/10 dark:from-blue-950/40', num: 'bg-blue-100 dark:bg-blue-950/60 text-blue-800 dark:text-blue-300' },
-  2: { icone: Leaf, actif: 'bg-[#b45309] text-white', dormand: 'bg-amber-50 dark:bg-amber-950/30 text-amber-800 dark:text-amber-300 hover:bg-amber-100', bar: 'bg-amber-600', bord: 'border-amber-200 dark:border-amber-900/60', grad: 'from-amber-500/10 dark:from-amber-950/40', num: 'bg-amber-100 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300' },
-  3: { icone: Globe2, actif: 'bg-violet-700 text-white', dormand: 'bg-violet-50 dark:bg-violet-950/30 text-violet-800 dark:text-violet-300 hover:bg-violet-100', bar: 'bg-violet-600', bord: 'border-violet-200 dark:border-violet-900/60', grad: 'from-violet-500/10 dark:from-violet-950/40', num: 'bg-violet-100 dark:bg-violet-950/60 text-violet-800 dark:text-violet-300' },
-  m: { icone: Compass, actif: 'bg-[#006d37] text-white', dormand: 'bg-emerald-50 dark:bg-emerald-950/30 text-emerald-800 dark:text-emerald-300 hover:bg-emerald-100', bar: 'bg-emerald-600', bord: 'border-emerald-200 dark:border-emerald-900/60', grad: 'from-emerald-500/10 dark:from-emerald-950/40', num: 'bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300' },
+  1: { icone: FlaskConical, actif: 'bg-[#1d4ed8] text-white', dormand: 'bg-blue-50 dark:bg-blue-950/30 text-blue-800 dark:text-blue-300 hover:bg-blue-100', bar: 'bg-blue-600', bord: 'border-blue-200 dark:border-blue-900/60', grad: 'from-blue-500/10 dark:from-blue-950/40', num: 'bg-blue-100 dark:bg-blue-950/60 text-blue-800 dark:text-blue-300', titre: 'text-blue-700 dark:text-blue-300' },
+  2: { icone: Leaf, actif: 'bg-[#b45309] text-white', dormand: 'bg-amber-50 dark:bg-amber-950/30 text-amber-800 dark:text-amber-300 hover:bg-amber-100', bar: 'bg-amber-600', bord: 'border-amber-200 dark:border-amber-900/60', grad: 'from-amber-500/10 dark:from-amber-950/40', num: 'bg-amber-100 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300', titre: 'text-amber-700 dark:text-amber-300' },
+  3: { icone: Globe2, actif: 'bg-violet-700 text-white', dormand: 'bg-violet-50 dark:bg-violet-950/30 text-violet-800 dark:text-violet-300 hover:bg-violet-100', bar: 'bg-violet-600', bord: 'border-violet-200 dark:border-violet-900/60', grad: 'from-violet-500/10 dark:from-violet-950/40', num: 'bg-violet-100 dark:bg-violet-950/60 text-violet-800 dark:text-violet-300', titre: 'text-violet-700 dark:text-violet-300' },
+  m: { icone: Compass, actif: 'bg-[#006d37] text-white', dormand: 'bg-emerald-50 dark:bg-emerald-950/30 text-emerald-800 dark:text-emerald-300 hover:bg-emerald-100', bar: 'bg-emerald-600', bord: 'border-emerald-200 dark:border-emerald-900/60', grad: 'from-emerald-500/10 dark:from-emerald-950/40', num: 'bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300', titre: 'text-emerald-700 dark:text-emerald-300' },
 } as const;
 
 type ThemeCle = keyof typeof THEME;
@@ -183,11 +183,23 @@ function BlocView({
 
   if (b.kind === 'titre') {
     const profond = b.niveau === 3;
+    // Titres d'activité (« النشاط ➊ : … ») : couleur de domaine pour les
+    // distinguer du titre « الحصيلة المعرفية » (noir), et
+    // font-synthesis:none — sans quoi le gras synthétique (font-black) remplit
+    // le chiffre blanc du glyphe encerclé et il disparaît (mesuré : 0.18 de
+    // pixels clairs → 0.27 avec la synthèse coupée).
+    const activite = /^النشاط\s/.test(b.texte);
+    const graisse = profond ? 'font-extrabold' : 'font-black';
+    const couleur = activite
+      ? th.titre
+      : profond
+        ? 'text-gray-700 dark:text-gray-200'
+        : 'text-gray-900 dark:text-gray-50';
     return (
       <div className={`mt-5 mb-2 first:mt-0 flex items-center gap-2 ${profond ? 'pr-3' : ''}`}>
         <span className={`w-1.5 ${profond ? 'h-4 opacity-70' : 'h-5'} rounded-full ${th.bar}`} />
         <span
-          className={`${taille} ${profond ? 'font-extrabold text-gray-700 dark:text-gray-200' : 'font-black text-gray-900 dark:text-gray-50'}`}
+          className={`${taille} ${graisse} ${couleur} ${activite ? '[font-synthesis:none]' : ''}`}
         >
           <Surligne texte={b.texte} q={q} />
         </span>
@@ -528,7 +540,9 @@ export default function OkachaView({ onBack, onRate, onOpenQcm, domaineInitial }
                 <span className="block text-[10px] font-black text-gray-400 dark:text-gray-500 mb-1">
                   📖 {r.libelleParent}
                 </span>
-                <span className={`${taille} font-bold text-gray-800 dark:text-gray-100 leading-relaxed`}>
+                {/* font-synthesis:none : sans quoi le gras remplit le chiffre
+                    blanc des glyphes encerclés (➊…) des titres النشاط. */}
+                <span className={`${taille} font-bold [font-synthesis:none] text-gray-800 dark:text-gray-100 leading-relaxed`}>
                   <Surligne
                     texte={r.b.kind === 'tableau' ? `${r.b.texte.slice(0, 220)}${r.b.texte.length > 220 ? '…' : ''}` : r.b.texte}
                     q={q}
