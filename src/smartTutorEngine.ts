@@ -39,6 +39,7 @@ import {
   type KnowledgeCard as LegacyKnowledgeCard,
 } from './knowledgeCards';
 import { STUDY_GUIDE_CARDS, type StudyGuideCard } from './studyGuide';
+import { handleSummaryFlow } from './tutorGoldSummaryFlow';
 import { SYNONYM_GROUPS } from './lib/validation/synonyms';
 import { detecterStuffing } from './lib/validation/stuffingDetector';
 import {
@@ -1722,6 +1723,33 @@ export function processStudentInput(session: BotSession, rawInput: string): Engi
           '⛔ لا تستعمل «لأنّ» في هذه الخطوة — التفسير يأتي في الخطوة الموالية.',
         quickActions: [],
         sources: [{ type: 'methodology' as SourceType, title: 'التثليث العلمي' }],
+      },
+    };
+  }
+
+  // KEO-RSUM (flow الملخصات الذهبية, 2026-10-04) : « الملخص » → liste des
+  // unités → leçons de l'unité → résumé d'or complet (mission, خطوات الفهم,
+  // دليل, مفاهيم, خطأ شائع, سؤال المراجعة). En navigation, un clic sur un
+  // titre de leçon est intercepté ICI, avant la recherche de cours, pour
+  // afficher le résumé demandé. Hors navigation, seuls « الملخص » (liste) et
+  // « ملخص <عنوان الدرس> » (accès direct) sont reconnus — le reste tombe dans
+  // la cascade normale.
+  const summaryFlow = handleSummaryFlow(norm, session.pendingSummaryUnit);
+  if (summaryFlow) {
+    const sumSession: BotSession = {
+      ...session,
+      pendingSummaryUnit: summaryFlow.nextPendingUnit,
+    };
+    saveSession(sumSession);
+    return {
+      session: sumSession,
+      action: {
+        confidence: 90,
+        text: summaryFlow.text,
+        quickActions: summaryFlow.quickActions,
+        sources: summaryFlow.lessonKey
+          ? [{ type: 'lesson' as SourceType, title: summaryFlow.lessonTitle ?? summaryFlow.lessonKey }]
+          : [{ type: 'guide' as SourceType, title: 'الملخصات الذهبية' }],
       },
     };
   }

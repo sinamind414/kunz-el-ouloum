@@ -480,10 +480,9 @@ export default function LessonsView({ onRateCard, initialLesson, initialQcm, onD
     const cleLecon = leconSuggeree?.lessonKey ?? null;
     const kindLecon = leconSuggeree?.lessonKind ?? 'html';
     const uniteLecon = leconSuggeree?.unitId ?? 0;
-    // Résumé d'or de la leçon suggérée. Couverture honnête et partielle
-    // (12/42 leçons du parcours) : on affiche le résumé quand il existe,
-    // jamais de contenu synthétique pour combler les trous. Donnée validée
-    // par les lock tests de lessonGoldSummaries.
+    // Résumé d'or de la leçon suggérée. Couverture complète (59/59 leçons du
+    // parcours) : le bloc s'affiche pour chaque leçon suggérée. Donnée
+    // validée par les lock tests de lessonGoldSummaries.
     const resumeOr = cleLecon ? LESSON_GOLD_SUMMARIES[cleLecon] : undefined;
     return (
       <div dir="rtl" className="space-y-5">
@@ -541,7 +540,7 @@ export default function LessonsView({ onRateCard, initialLesson, initialQcm, onD
 
         {/* Résumé d'or — la substantifique de la leçon avant même de l'ouvrir.
             Donnée réelle validée par les lock tests de lessonGoldSummaries.
-            Couverture partielle assumée (12/42) : rien n'est synthétisé. */}
+            Couverture complète (59/59 leçons) : rien n'est synthétisé. */}
         {resumeOr && (
           <div
             data-testid="resume-or"

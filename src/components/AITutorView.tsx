@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Send, Sparkles, AlertCircle, Trash2, BrainCircuit, Target, Stethoscope, Swords, ClipboardList, Globe2 } from 'lucide-react';
+import { Send, Sparkles, AlertCircle, Trash2, BrainCircuit, Target, Stethoscope, Swords, ClipboardList, Globe2, BookOpen } from 'lucide-react';
 import { ChatMessage } from '../types';
 import { MORCHID_LOGO_URL } from '../data/brandAssets';
 
@@ -20,10 +20,11 @@ const JOURNEY_BUTTONS = [
   { label: 'اختبار تشخيصي', icon: Stethoscope, testId: 'journey-diagnostic' },
   { label: 'تحدي BAC', icon: Swords, testId: 'journey-boss-fight' },
   { label: 'راجع أخطائي السابقة', icon: ClipboardList, testId: 'journey-review-mistakes' },
+  { label: 'الملخصات الذهبية', icon: BookOpen, testId: 'journey-gold-summaries' },
   { label: 'القائمة الرئيسية', icon: Globe2, testId: 'journey-home' },
 ];
 
-export const WELCOME_TEXT = "مرحباً بك! أنا **المرشد الذكي** لمراجعة علوم الطبيعة والحياة — بكالوريا، شعبة علوم تجريبية.\n\nأساعدك خطوة بخطوة: اسألني عن درس، أو اكتب «اختبرني في …» لتقيس مستواك، أو ابدأ تحدي BAC لوضعيات مشكلة تُقوَّم آلياً.\n\nالمجالات: التخصص الوظيفي للبروتينات · التحولات الطاقوية · التكتونية العامة.\n\nاختر مجالاً أو أحد أزرار الرحلة أدناه للبدء:";
+export const WELCOME_TEXT = "مرحباً بك! أنا **المرشد الذكي** لمراجعة علوم الطبيعة والحياة — بكالوريا، شعبة علوم تجريبية.\n\nأساعدك خطوة بخطوة: اسألني عن درس، أو اكتب «اختبرني في …» لتقيس مستواك، أو ابدأ تحدي BAC لوضعيات مشكلة تُقوَّم آلياً.\n\nالمجالات: التخصص الوظيفي للبروتينات · التحولات الطاقوية · التكتونية العامة.\n\n📚 جرّب زر «الملخصات الذهبية» (أو اكتب «الملخص») لاستعراض ملخصات جميع دروس المنهاج.\n\nاختر مجالاً أو أحد أزرار الرحلة أدناه للبدء:";
 
 /** B8 (audit) : un seul accueil — init et « مسح المحادثة » utilisent la même factory. */
 function buildWelcomeMessage(): ChatMessage {

@@ -1,10 +1,13 @@
 // src/components/__tests__/LessonsViewGoldSummary.test.tsx
 // Contrat du bloc « الملخص الذهبي للدرس » greffé sur la leçon suggérée
 // (bandeau-sequence de l'écran des domaines, 2026-10-04) :
-//   · leçon suggérée SANS résumé d'or → bloc absent (jamais de synthèse);
-//   · leçon suggérée AVEC résumé d'or  → mission, mécanisme, vocabulaire,
-//     erreur courante et question de rappel affichés, plus le badge de
-//     statut éditorial honnête (« شرح Kunz » tant que non relu).
+//   · les 59 leçons du parcours possèdent toutes un résumé d'or (couverture
+//     complète) → le bloc est toujours présent sur la leçon suggérée ;
+//   · contenu affiché : mission, mécanisme, vocabulaire, erreur courante et
+//     question de rappel, plus le badge de statut éditorial honnête
+//     (« شرح Kunz » tant que non relu) ;
+//   · le bloc suit la leçon suggérée : son contenu bascule quand on valide
+//     la leçon précédente.
 //
 // Convention repo : pas de @testing-library/jest-dom -> .toBeTruthy() /
 // .toBeNull(). cleanup() + resetParcours() explicites (l'état persiste en
@@ -49,12 +52,17 @@ function validerPremiers(n: number): void {
 }
 
 describe('LessonsView — résumé d’or de la leçon suggérée', () => {
-  it('état vierge : la 1re leçon (phase1) n’a pas de résumé → bloc absent', async () => {
+  it('état vierge : la 1re leçon (phase1) possède son résumé → bloc présent', async () => {
     await ouvrirEcranDomaines();
     expect(screen.getByTestId('bandeau-sequence')).toBeTruthy();
-    // phase1_chapitres_1_2 n'a pas de résumé d'or : on n'affiche rien plutôt
-    // que du contenu synthétique. C'est la discipline qui manquait au prototype e2.
-    expect(screen.queryByTestId('resume-or')).toBeNull();
+    // Couverture complète : les 59 leçons du parcours ont un résumé d'or, le
+    // bloc s'affiche donc dès la première leçon suggérée (phase1_chapitres_1_2).
+    const premiere = PARCOURS_FLAT[0];
+    const or = premiere.lessonKey ? LESSON_GOLD_SUMMARIES[premiere.lessonKey] : undefined;
+    expect(or).toBeTruthy();
+    const resume = screen.getByTestId('resume-or');
+    expect(resume).toBeTruthy();
+    expect(resume.textContent).toContain(or!.missionAr);
   });
 
   it('leçon suggérée avec résumé : le bloc affiche la substance réelle', async () => {
@@ -88,15 +96,31 @@ describe('LessonsView — résumé d’or de la leçon suggérée', () => {
     expect(resume.textContent).toContain('شرح Kunz');
   });
 
-  it('le résumé disparaît dès que la leçon suggérée change vers une leçon sans résumé', async () => {
-    // U1 validée -> amino_acid_behavior (avec résumé), puis on la valide à son
-    // tour : la suivante (lecon_representation) n'en a pas.
+  it('le résumé suit la leçon suggérée quand on valide la leçon précédente', async () => {
+    // Toutes les leçons ont un résumé : le bloc reste présent mais son
+    // contenu bascule sur la nouvelle leçon suggérée dès qu'on valide la
+    // précédente.
     const cible = PARCOURS_FLAT.findIndex(
       (i) => i.lessonKey !== undefined && LESSON_GOLD_SUMMARIES[i.lessonKey] !== undefined,
     );
-    validerPremiers(cible + 1);
+    const suivante = PARCOURS_FLAT.slice(cible + 1).find(
+      (i) => i.lessonKey !== undefined && LESSON_GOLD_SUMMARIES[i.lessonKey] !== undefined,
+    );
+    expect(suivante).toBeTruthy();
+    const idxSuivante = PARCOURS_FLAT.indexOf(suivante!);
+
+    validerPremiers(idxSuivante);
     await ouvrirEcranDomaines();
-    expect(screen.queryByTestId('resume-or')).toBeNull();
-    expect(screen.getByTestId('bandeau-sequence')).toBeTruthy();
+    const resume = screen.getByTestId('resume-or');
+    expect(resume).toBeTruthy();
+
+    const orSuivant = suivante!.lessonKey ? LESSON_GOLD_SUMMARIES[suivante!.lessonKey] : undefined;
+    expect(orSuivant).toBeTruthy();
+    expect(resume.textContent).toContain(orSuivant!.missionAr);
+
+    // Le résumé de la leçon précédente n'est plus affiché.
+    const orCible = LESSON_GOLD_SUMMARIES[PARCOURS_FLAT[cible].lessonKey!];
+    expect(orCible).toBeTruthy();
+    expect(resume.textContent).not.toContain(orCible!.missionAr);
   });
 });

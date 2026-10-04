@@ -66,6 +66,11 @@ export interface BotSession {
    * l'étape 2 aussi. Ouverte (فسّر، علّل، استنتج) = le causal y est requis.
    */
   triadeClosed?: boolean;
+  /** KEO-RSUM (flow الملخصات الذهبية, 2026-10-04) : état de navigation dans
+   *  la liste des résumés — null = liste des unités, number = leçons de
+   *  l'unité N, absent = on n'est pas dans le flow. Remis à zéro par
+   *  getDefaultSession() (retour à l'accueil / مسح المحادثة). */
+  pendingSummaryUnit?: number | null;
 }
 
 const STORAGE_KEY = 'smart_tutor_session';
