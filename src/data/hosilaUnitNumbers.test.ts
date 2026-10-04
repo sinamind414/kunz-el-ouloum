@@ -10,7 +10,7 @@ import { HOSILA_IDS } from './hosila';
 import { HOSILA_VERS_UNITE, domaineDeNumero, numeroUniteHosila } from './hosilaUnitNumbers';
 
 describe('hosilaUnitNumbers — jointure حصيلة ↔ numéros de leçons', () => {
-  it('couvre exactement les 10 unités de الحصيلة (aucun id orphelin)', () => {
+  it('couvre exactement les 11 unités de الحصيلة (aucun id orphelin)', () => {
     expect(Object.keys(HOSILA_VERS_UNITE).sort()).toEqual([...HOSILA_IDS].sort());
     for (const id of HOSILA_IDS) {
       expect(numeroUniteHosila(id), `id sans numéro : ${id}`).not.toBeNull();
@@ -27,10 +27,10 @@ describe('hosilaUnitNumbers — jointure حصيلة ↔ numéros de leçons', ()
       expect(n).toBeGreaterThanOrEqual(1);
       expect(n).toBeLessThanOrEqual(11);
     }
-    // Le domaine 2 n’a que 2 unités côté حصيلة : وحدة 8 (بلا حصيلة) est
-    // volontairement ABSENTE — l’inverse prouverait une numérotation inventée.
-    expect(nums).not.toContain(8);
-    expect(nums).toHaveLength(10);
+    // Domaine 2 : 3 unités côté حصيلة comme côté leçons — وحدة 8 est portée
+    // par d2u3 (synthèse p.229-231). 1..11 couverts sans doublon.
+    expect(nums).toContain(8);
+    expect(nums).toHaveLength(11);
   });
 
   it('le domaine de l’id (d1/d2/d3) coïncide avec le domaine du numéro', () => {
@@ -55,8 +55,9 @@ describe('hosilaUnitNumbers — jointure حصيلة ↔ numéros de leçons', ()
     expect(numeroUniteHosila('d3u3')).toBe(11); // الظواهر المرتبطة بالنشاط التكتوني
     // Domaine 1 : les deux corpus concordent déjà.
     for (let n = 1; n <= 5; n++) expect(numeroUniteHosila(`d1u${n}`)).toBe(n);
-    // Domaine 2 : 6 et 7 (la 8 n’a pas de حصيلة).
+    // Domaine 2 : 6, 7 et 8 (d2u3 = الوحدة 8, synthèse de fin de domaine).
     expect(numeroUniteHosila('d2u1')).toBe(6);
     expect(numeroUniteHosila('d2u2')).toBe(7);
+    expect(numeroUniteHosila('d2u3')).toBe(8);
   });
 });

@@ -9,9 +9,9 @@
 //    des leçons (« الوحدة 1 : النشاط التكتوني للصفائح ») les classent dans
 //    l'ordre inverse. La formule « 8 + N » (lessonData.ts,
 //    inferGlobalUnitIdFromBreadcrumb) croiserait donc les unités 9 et 10.
-//  · Domaine 2 incomplet : 2 unités côté حصيلة contre 3 côté leçons —
-//    وحدة 8 (تحويل الطاقة على المستوى ما فوق البنية الخلوية) n'a aucune
-//    حصيلة officielle. Elle n'est donc présente dans aucune des deux clés.
+//  · Domaine 2 : 3 unités côté حصيلة (d2u1, d2u2, d2u3) pour 3 côté leçons —
+//    d2u3 = وحدة 8 « تحويل الطاقة على المستوى ما فوق البنية الخلوية », dont
+//    la حصيلة officielle est la synthèse de fin de domaine (p.229-231).
 //
 // Conséquence à l'affichage : les badges passent de « u1/u2/u3 » (numéro
 // local remis à zéro à chaque domaine) à « وحدة N » — le MÊME numéro que
@@ -25,9 +25,10 @@ export const HOSILA_VERS_UNITE: Readonly<Record<string, number>> = {
   d1u3: 3,
   d1u4: 4,
   d1u5: 5,
-  // المجال 2 — التحولات الطاقوية (unités 6, 7 — la 8 n'a pas de حصيلة)
+  // المجال 2 — التحولات الطاقوية (unités 6, 7, 8)
   d2u1: 6,
   d2u2: 7,
+  d2u3: 8, // تحويل الطاقة على المستوى ما فوق البنية الخلوية (synthèse p.229-231)
   // المجال 3 — التكتونية العامة : ordre du livre ≠ ordre des ids hosila.
   d3u2: 9, // الصفائح التكتونية
   d3u1: 10, // بنية الكرة الأرضية

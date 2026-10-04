@@ -1,12 +1,12 @@
 // src/data/hosila.lock.test.ts — VERROU de src/data/hosila.ts (GÉNÉRÉ).
 // Garantit l'intégrité du نص «الحصيلة المعرفية» OFFICIEL (photos du livre) :
-// couverture des 10 unités, ancrages page-par-page, propreté (aucun reste
+// couverture des 11 unités, ancrages page-par-page, propreté (aucun reste
 // d'extraction ni de LaTeX), blocs mémorisables. Réexécuter le générateur
 // (npx tsx scripts/build_hosila.ts) en cas d'échec — jamais de patch à la main.
 import { describe, it, expect } from 'vitest';
 import { HOSILA_OFFICIELLES, HOSILA_IDS, HOSILA_STATS } from './hosila';
 
-const IDSAttendUS = ['d1u1', 'd1u2', 'd1u3', 'd1u4', 'd1u5', 'd2u1', 'd2u2', 'd3u1', 'd3u2', 'd3u3'];
+const IDSAttendUS = ['d1u1', 'd1u2', 'd1u3', 'd1u4', 'd1u5', 'd2u1', 'd2u2', 'd2u3', 'd3u1', 'd3u2', 'd3u3'];
 
 /** Ancrages vérifiés page par page sur les photos du livre. */
 const ANCRES: Record<string, string[]> = {
@@ -17,17 +17,19 @@ const ANCRES: Record<string, string[]> = {
   d1u5: ['رانفيي', 'الادماج العصبي'], // corps « 2. الادماج… » (L421 source) — l'en-tête hamza est exclue
   d2u1: ['RuDP', 'كالفن'],
   d2u2: ['38 ATP', 'التخمر الكحولي', 'Acetyl-CoA'],
+  // Synthèse de fin de domaine (p.229-231) : pas de النشاط, texte continu.
+  d2u3: ['التركيب الضوئي', 'التنفس الخلوي', 'النقل الفعال'],
   d3u1: ['الموجات الزلزالية', 'الليتوسفير'],
   d3u2: ['الصفائح التكتونية', 'الطاقة الداخلية'],
   d3u3: ['الأفيوليت', 'مناطق التصادم'],
 };
 
 describe('hosila.ts — حصيلة معرفية رسمية (livre)', () => {
-  it('couvre exactement les 10 unités, ids uniques et ordonnés', () => {
+  it('couvre exactement les 11 unités, ids uniques et ordonnés', () => {
     expect(HOSILA_IDS).toEqual(IDSAttendUS);
-    expect(new Set(HOSILA_IDS).size).toBe(10);
+    expect(new Set(HOSILA_IDS).size).toBe(11);
     expect(HOSILA_OFFICIELLES.map((u) => u.id)).toEqual(IDSAttendUS);
-    expect(HOSILA_STATS.unites).toBe(10);
+    expect(HOSILA_STATS.unites).toBe(11);
     expect(HOSILA_OFFICIELLES.length).toBe(HOSILA_STATS.unites);
   });
 
@@ -88,7 +90,11 @@ describe('hosila.ts — حصيلة معرفية رسمية (livre)', () => {
   it('chaque unité contient au moins ses titres d’activités (النشاط) du livre', () => {
     for (const u of HOSILA_OFFICIELLES) {
       const titres = u.blocs.filter((b) => b.kind === 'titre');
-      expect(titres.length, `${u.id}: titres`).toBeGreaterThanOrEqual(3);
+      // Les unités à activités (النشاط) ont ≥ 3 titres (titre + activités) ;
+      // d2u3 est une synthèse de fin de domaine SANS activité → 1 seul titre
+      // (le titre « الحصيلة المعرفية ») est légitime, ce n'est pas un défaut.
+      const aDesActivites = u.blocs.some((b) => b.kind === 'titre' && b.texte.includes('النشاط'));
+      expect(titres.length, `${u.id}: titres`).toBeGreaterThanOrEqual(aDesActivites ? 3 : 1);
       expect(titres.some((t) => t.texte.includes('الحصيلة')), `${u.id}: titre الحصيلة`).toBe(true);
     }
   });

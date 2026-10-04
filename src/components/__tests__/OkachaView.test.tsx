@@ -24,8 +24,8 @@ describe('OkachaView — الحصيلة المعرفية modernisée', () => {
     expect(screen.getByRole('heading', { name: /الحصيلة المعرفية/ })).toBeTruthy();
     // « تركيب البروتين » : en-tête d'unité + titre dans le corps ouvert → au moins 1.
     expect(screen.getAllByText(/تركيب البروتين/).length).toBeGreaterThan(0);
-    // Bandeau statistiques (HOSILA_STATS : 71 points · 10 unités).
-    expect(screen.getByText(/نقطة · 10 وحدات/)).toBeTruthy();
+    // Bandeau statistiques (HOSILA_STATS : 72 points · 11 unités).
+    expect(screen.getByText(/نقطة · 11 وحدات/)).toBeTruthy();
     // La source affichée est la حصيلة الرسمية, pas l'OCR عكاشة seul.
     expect(screen.getByText(/الحصيلة المعرفية \(/)).toBeTruthy();
   });
@@ -125,7 +125,9 @@ describe('OkachaView — الحصيلة المعرفية modernisée', () => {
     cleanup();
     render(<OkachaView onBack={vi.fn()} domaineInitial={2} />);
     expect(screen.getByTestId('okacha-unites-icones')).toBeTruthy();
-    expect(screen.getAllByTestId(/^okacha-unite-/)).toHaveLength(2);
+    // D2 = 3 unités (6, 7, 8) : d2u3 est la synthèse de l'وحدة 8 (p.229-231).
+    expect(screen.getAllByTestId(/^okacha-unite-/)).toHaveLength(3);
+    expect(screen.getByTestId('unite-numero-d2u3').textContent).toMatch(/وحدة 8/);
     expect(screen.getByTestId('okacha-contexte').textContent).toMatch(/التحولات الطاقوية/);
     cleanup();
     render(<OkachaView onBack={vi.fn()} domaineInitial={3} />);
@@ -259,11 +261,12 @@ describe('OkachaView — الحصيلة المعرفية modernisée', () => {
     expect(screen.getByTestId('unite-numero-d3u1').textContent).toMatch(/وحدة 10/);
   });
 
-  it('domaineInitial : ouvre la حصيلة sur le domaine demandé (D2 = 2 unités)', () => {
+  it('domaineInitial : ouvre la حصيلة sur le domaine demandé (D2 = 3 unités)', () => {
     render(<OkachaView onBack={vi.fn()} domaineInitial={2} />);
     expect(screen.getByTestId('okacha-unites-icones')).toBeTruthy();
-    expect(screen.getAllByTestId(/^okacha-unite-/)).toHaveLength(2);
+    expect(screen.getAllByTestId(/^okacha-unite-/)).toHaveLength(3);
     expect(screen.queryByTestId('okacha-unite-d1u1')).toBeNull();
     expect(screen.getByTestId('unite-numero-d2u1').textContent).toMatch(/وحدة 6/);
+    expect(screen.getByTestId('unite-numero-d2u3').textContent).toMatch(/وحدة 8/);
   });
 });

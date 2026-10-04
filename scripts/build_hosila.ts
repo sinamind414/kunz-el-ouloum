@@ -23,12 +23,16 @@ interface ConfUnite { id: string; pages: string; segs: Seg[]; ancres: string[] }
 
 const UNITES: ConfUnite[] = [
   { id: 'd1u1', pages: 'الحصيلة المعرفية', ancres: ['مقر تركيب البروتين', 'الترجمة', 'الريبوزوم'], segs: [{ debut: 5, fin: 44, ancre: 'الحصيلة المعرفية' }] },
-  { id: 'd1u2', pages: 'ص 51-53', ancres: ['Rastop', 'البنية الفراغية', 'الأحماض الأمينية'], segs: [{ debut: 49, fin: 96, ancre: 'معلومات مفيدة' }] },
+  { id: 'd1u2', pages: 'ص 52-53', ancres: ['Rastop', 'البنية الفراغية', 'الأحماض الأمينية'], segs: [{ debut: 68, fin: 96, ancre: 'الحصيلة المعرفية' }] },
   { id: 'd1u3', pages: 'ص 68', ancres: ['الإنزيم', 'درجة الحرارة', 'pH'], segs: [{ debut: 158, fin: 178, ancre: 'الحصيلة المعرفية' }] },
   { id: 'd1u4', pages: 'ص 111-116', ancres: ['HLA', 'الريزوس', 'المعقد المناعي'], segs: [{ debut: 184, fin: 316, ancre: 'الذات واللاذات' }] },
   { id: 'd1u5', pages: 'ص 158-164', ancres: ['المشبك', 'النقل المشبكي', 'المخدرات'], segs: [{ debut: 321, fin: 435, ancre: 'الصفحة 158' }] },
   { id: 'd2u1', pages: 'ص 197-201', ancres: ['RuDP', 'حلقة كالفن', 'المرحلة الكيموضوئية'], segs: [{ debut: 442, fin: 515, ancre: 'الحصيلة المعرفية' }] },
-  { id: 'd2u2', pages: 'ص 219-231', ancres: ['38 ATP', 'التحلل السكري', 'التخمر', 'حلقة كريبس'], segs: [{ debut: 517, fin: 608, ancre: 'التنفس' }] },
+  { id: 'd2u2', pages: 'ص 219-231', ancres: ['38 ATP', 'التحلل السكري', 'التخمر', 'حلقة كريبس'], segs: [{ debut: 517, fin: 591, ancre: 'التنفس' }] },
+  // d2u3 = الوحدة 8 « تحويل الطاقة على المستوى ما فوق البنية الخلوية » : la
+  // synthèse de fin de domaine (p.229-231) — PAS de النشاط, c'est un texte
+  // de synthèse. Hors corpus عكاشة → métadonnées via REF_DIRECT ci-dessous.
+  { id: 'd2u3', pages: 'ص 229-231', ancres: ['التركيب الضوئي', 'التنفس الخلوي', 'النقل الفعال'], segs: [{ debut: 593, fin: 607, ancre: 'الحصيلة المعرفية' }] },
   { id: 'd3u1', pages: 'ص 280-281', ancres: ['الموجات الزلزالية', 'البرنس', 'سيال'], segs: [{ debut: 2313, fin: 2360, ancre: 'الموجات الزلزالية' }] },
   { id: 'd3u2', pages: 'الحصيلة المعرفية', ancres: ['الصفائح التكتونية', 'الطاقة الداخلية', 'الغوص'], segs: [
     { debut: 2245, fin: 2308, ancre: 'تحديد الصفائح' },
@@ -36,6 +40,15 @@ const UNITES: ConfUnite[] = [
   ] },
   { id: 'd3u3', pages: 'ص 326', ancres: ['الأفيوليت', 'التصادم', 'الحركة البانية'], segs: [{ debut: 2446, fin: 2491, ancre: 'مناطق التصادم' }] },
 ];
+
+/**
+ * Unités de الحصيلة SANS équivalent dans le corpus عكاشة (okachaEnriched) :
+ * domaine + titre officiel pioché dans src/unitCatalog.ts (numérotation des
+ * leçons). Aucune métadonnée inventée — d2u3 = الوحدة 8 officielle.
+ */
+const REF_DIRECT: Record<string, { domaine: 1 | 2 | 3; uniteAr: string }> = {
+  d2u3: { domaine: 2, uniteAr: 'تحويل الطاقة على المستوى ما فوق البنية الخلوية' },
+};
 
 /* ── LaTeX → Unicode (l'app n'a pas de renderer math) ─────────────────── */
 const SUB: Record<string, string> = { '0': '₀', '1': '₁', '2': '₂', '3': '₃', '4': '₄', '5': '₅', '6': '₆', '7': '₇', '8': '₈', '9': '₉', a: 'ₐ', e: 'ₑ', o: 'ₒ', x: 'ₓ', h: 'ₕ', k: 'ₖ', l: 'ₗ', m: 'ₘ', n: 'ₙ', p: 'ₚ', s: 'ₛ', t: 'ₜ' };
@@ -169,8 +182,9 @@ const unitesGenerees = UNITES.map((conf) => {
   for (const a of conf.ancres) {
     if (!tout.includes(a)) throw new Error(`${conf.id} : ancre unité « ${a} » absente du contenu généré`);
   }
-  const ref = OKACHA_UNITES_ENRICHIES.find((u) => u.id === conf.id);
-  if (!ref) throw new Error(`${conf.id} : introuvable dans okachaEnriched (domaine/uniteAr)`);
+  const ref = OKACHA_UNITES_ENRICHIES.find((u) => u.id === conf.id)
+    ?? REF_DIRECT[conf.id];
+  if (!ref) throw new Error(`${conf.id} : introuvable dans okachaEnriched ni REF_DIRECT (domaine/uniteAr)`);
   // Titre de section du livre garanti (contrat du verrou hosila.lock.test.ts).
   if (!blocs.some((b) => b.kind === 'titre' && b.texte.includes('الحصيلة'))) {
     blocs.unshift({ kind: 'titre', texte: 'الحصيلة المعرفية' });
@@ -271,9 +285,19 @@ export const HOSILA_STATS = {
 /**
  * Fusion : contenu officiel prioritaire ; repli sur le récap عكاشة
  * (okachaEnriched) si une unité n'est pas encore couverte.
+ *
+ * Hosila pilote la liste et l'ordre (elle seule porte d2u3, unité hors corpus
+ * عكاشة). Les unités عكاشة non couvertes par la حصيلة officielle sont
+ * ajoutées en repli, dans leur ordre d'origine. L'écran re-trie ensuite par
+ * numéro d'unité officiel (OkachaView), l'ordre du tableau n'est donc qu'un
+ * ordre de repli sûr.
  */
 export function unitesAffichees(repli: readonly UniteOkachaEnrichie[]): UniteOkachaEnrichie[] {
-  return repli.map((u) => HOSILA_UNITE_PAR_ID[u.id] ?? u);
+  const couverts = new Set<string>(HOSILA_IDS);
+  return [
+    ...HOSILA_IDS.map((id) => HOSILA_UNITE_PAR_ID[id]!),
+    ...repli.filter((u) => !couverts.has(u.id)),
+  ];
 }
 `;
 
