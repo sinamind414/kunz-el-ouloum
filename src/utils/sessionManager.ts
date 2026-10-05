@@ -5,6 +5,9 @@ export interface QuizState {
   questionIndex: number;
   totalQuestions: number;
   correctAnswers: number;
+  /** Ordre exact du quiz. Sans cette liste, un quiz ciblé continuait dans la
+   * banque entière du domaine et pouvait changer de chapitre. */
+  questionIds?: string[];
   /** F10 (audit Morchid 2026-09-26) : si ce QCM est la question de
    *  consolidation de la mission quotidienne, identifiant de la carte
    *  ciblée. Permet de verser les +15 XP promis et de clôturer la mission
@@ -37,6 +40,13 @@ export interface BossState {
   missedKeyPoints?: string[];
 }
 
+export interface TopicLearningStat {
+  wrongCount: number;
+  correctCount: number;
+  lastWrongAt: number | null;
+  lastCorrectAt: number | null;
+}
+
 export interface BotSession {
   activeDomainId: number | null;
   activeUnitId: number | null;
@@ -45,6 +55,9 @@ export interface BotSession {
   currentQuiz: QuizState | null;
   boss: BossState | null;
   mistakes: string[];
+  /** Statistiques non dédupliquées nécessaires à une vraie remédiation :
+   * fréquence et dates par sujet. `mistakes` reste la liste des lacunes actives. */
+  topicStats: Record<string, TopicLearningStat>;
   completedBac: string[];
   lastMissionDate: string | null;
   lastMissionTopic: string | null;
@@ -83,6 +96,7 @@ const defaultSession: BotSession = {
   currentQuiz: null,
   boss: null,
   mistakes: [],
+  topicStats: {},
   completedBac: [],
   lastMissionDate: null,
   lastMissionTopic: null,
@@ -91,7 +105,14 @@ const defaultSession: BotSession = {
 };
 
 export function getDefaultSession(): BotSession {
-  return { ...defaultSession, mistakes: [], currentQuiz: null, boss: null, lastInteraction: Date.now() };
+  return {
+    ...defaultSession,
+    mistakes: [],
+    topicStats: {},
+    currentQuiz: null,
+    boss: null,
+    lastInteraction: Date.now(),
+  };
 }
 
 /**
@@ -112,7 +133,12 @@ export function loadSession(): BotSession {
     const stored = window.localStorage.getItem(STORAGE_KEY);
     if (stored) {
       const parsed = JSON.parse(stored) as Partial<BotSession>;
-      return { ...getDefaultSession(), ...parsed };
+      return {
+        ...getDefaultSession(),
+        ...parsed,
+        mistakes: Array.isArray(parsed.mistakes) ? parsed.mistakes : [],
+        topicStats: parsed.topicStats ?? {},
+      };
     }
   } catch (error) {
     console.error('Erreur de chargement de session:', error);
@@ -132,12 +158,17 @@ export function saveSession(session: BotSession): void {
   }
 }
 
-export function startDomainSession(domainId: number, currentMistakes: string[] = []): BotSession {
+export function startDomainSession(
+  domainId: number,
+  currentMistakes: string[] = [],
+  currentTopicStats: Record<string, TopicLearningStat> = {},
+): BotSession {
   const newSession: BotSession = {
     ...getDefaultSession(),
     activeDomainId: domainId,
     mode: 'domain_menu',
     mistakes: [...currentMistakes],
+    topicStats: { ...currentTopicStats },
   };
 
   saveSession(newSession);
@@ -149,7 +180,8 @@ export function startQuiz(
   totalQuestions: number,
   firstQuestionId: string,
   mode: BotMode = 'quiz',
-  missionTopicId?: string
+  missionTopicId?: string,
+  questionIds?: string[],
 ): BotSession {
   const newSession: BotSession = {
     ...session,
@@ -159,6 +191,7 @@ export function startQuiz(
       questionIndex: 0,
       totalQuestions,
       correctAnswers: 0,
+      questionIds: questionIds ? [...questionIds] : undefined,
       missionTopicId,
     },
   };
@@ -187,6 +220,20 @@ export function recordQuizAnswer(
     if (at >= 0) updatedMistakes.splice(at, 1);
   }
 
+  const topicStats = { ...(session.topicStats ?? {}) };
+  if (topicIdForMistake) {
+    const previous = topicStats[topicIdForMistake] ?? {
+      wrongCount: 0,
+      correctCount: 0,
+      lastWrongAt: null,
+      lastCorrectAt: null,
+    };
+    const now = Date.now();
+    topicStats[topicIdForMistake] = isCorrect
+      ? { ...previous, correctCount: previous.correctCount + 1, lastCorrectAt: now }
+      : { ...previous, wrongCount: previous.wrongCount + 1, lastWrongAt: now };
+  }
+
   const correctAnswers = session.currentQuiz.correctAnswers + (isCorrect ? 1 : 0);
   const nextIndex = session.currentQuiz.questionIndex + 1;
   const isLastQuestion = nextIndex >= session.currentQuiz.totalQuestions;
@@ -194,6 +241,7 @@ export function recordQuizAnswer(
   const newSession: BotSession = {
     ...session,
     mistakes: updatedMistakes,
+    topicStats,
     currentQuiz: isLastQuestion || !nextQuestionId
       ? null
       : {
@@ -308,8 +356,13 @@ export function finishBossFight(session: BotSession): BotSession {
   return newSession;
 }
 
+/** Jour civil algérien (UTC+1 toute l'année, sans heure d'été). */
+export function algeriaDateKey(date: Date = new Date()): string {
+  return new Date(date.getTime() + 60 * 60 * 1000).toISOString().split('T')[0];
+}
+
 export function completeDailyMission(session: BotSession, topicId: string): BotSession {
-  const today = new Date().toISOString().split('T')[0];
+  const today = algeriaDateKey();
   const newSession: BotSession = {
     ...session,
     lastMissionDate: today,
