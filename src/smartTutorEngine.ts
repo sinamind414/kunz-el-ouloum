@@ -10,7 +10,9 @@ import {
   recordBossProgress,
   finishBossFight,
   completeDailyMission,
+  algeriaDateKey,
   type BotSession,
+  type TopicLearningStat,
 } from './utils/sessionManager';
 import {
   DOMAINS,
@@ -31,6 +33,7 @@ import { LESSON_INDEX } from './data/lessonIndex';
 // Fusion master 3e970d2 (2026-10-01) : R6 pondère les erreurs par le poids
 // BAC des unités (unitOpenings) ; R8 affiche le compte à rebours BAC.
 import { UNIT_OPENINGS } from './data/unitOpenings';
+import { NON_EXIGIBLES } from './data/curriculumOfficial';
 import { BAC_EXAM_DATE, bacDaysLeft } from './utils/dashboardActions';
 // Négation/réfutation : primitives partagées avec le scorer C2 de Tadwin.
 import { tokenAffirme } from './lib/validation/negationAr';
@@ -95,7 +98,7 @@ export interface EngineResult {
 
 const OUT_OF_PROGRAM = [
   'كرة القدم', 'كره القدم', 'كرة قدم', 'مباراة', 'فيلم سينما', 'موسيقى', 'سيارة', 'سياره', 'اغنية',
-  'اخبار اليوم', 'أخبار اليوم', 'اخبار', 'أخبار', 'سينما', 'فيلم',
+  'اخبار اليوم', 'أخبار اليوم', 'اخبار', 'أخبار', 'سينما', 'فيلم', 'طبخ', 'اطبخ', 'أطبخ',
 ];
 
 /**
@@ -356,6 +359,86 @@ function hasDomainSignal(inputTokens: string[]): boolean {
     if (DOMAIN_CORE_VOCAB.some((core) => fuzzyTokenEquals(t, core))) return true;
   }
   return false;
+}
+
+function findNonExigible(norm: string): { terme: string; raison: string } | null {
+  // « متمم إنزيمي » = cofacteur enzymatique, à ne pas confondre avec le
+  // système immunitaire du complément explicitement non exigible.
+  const enzymeCofactor =
+    (includesAsWord(norm, normalizeArabic('متمم')) || includesAsWord(norm, normalizeArabic('المتمم'))) &&
+    (norm.includes(normalizeArabic('إنزيمي')) || norm.includes(normalizeArabic('انزيمي')));
+  if (!enzymeCofactor && includesAsWord(norm, normalizeArabic('المتمم'))) {
+    return NON_EXIGIBLES.find((x) => x.terme === 'المتمم') ?? null;
+  }
+  if (norm.includes(normalizeArabic('أسيلوسكوب')) || norm.includes(normalizeArabic('اسيلوسكوب'))) {
+    return NON_EXIGIBLES.find((x) => x.terme.includes('الأسيلوسكوب')) ?? null;
+  }
+  if (norm.includes(normalizeArabic('نضج')) && norm.includes('arnm')) {
+    return NON_EXIGIBLES.find((x) => x.terme.includes('ARNm')) ?? null;
+  }
+  return null;
+}
+
+function nonExigibleResult(session: BotSession, item: { terme: string; raison: string }): EngineResult {
+  return {
+    session,
+    action: {
+      confidence: 100,
+      text:
+        `ℹ️ **${item.terme} غير مطلوب في بكالوريا 3AS حسب التدرج الرسمي.**\n\n` +
+        `قد تجده في الكتاب أو كمعلومة إثرائية، لكن لا تجعله أولوية في الحفظ أو المراجعة. ` +
+        `المرجع: التدرج السنوي للتعلمات 2017، الصفحة 6 — ${item.raison}.`,
+      quickActions: ['العودة للقائمة الرئيسية'],
+      sources: [{ type: 'guide' as SourceType, title: 'التدرج الرسمي 2017 — ص. 6' }],
+    },
+  };
+}
+
+/** Réponses directes aux misconceptions critiques : le routeur lexical ne doit
+ * pas éluder une proposition fausse derrière une fiche générique. */
+function misconceptionResult(session: BotSession, norm: string): EngineResult | null {
+  const has = (s: string) => norm.includes(normalizeArabic(s));
+  const negated = has('لا ينتج') || has('ليس') || has('لا يعطي');
+
+  if (has('تنفس') && norm.includes('atp') && (has('كم') || has('عدد') || has('حصيلة') || has('ينتج') || negated)) {
+    return {
+      session,
+      action: {
+        confidence: 100,
+        text:
+          `${negated ? '❌ **العبارة خاطئة:** التنفس ينتج ATP.\n\n' : ''}` +
+          'وفق الحصيلة المعتمدة في برنامج 3AS الجزائري، ينتج التنفس الهوائي الكامل **38 ATP** لكل جزيئة غلوكوز، مقابل **2 ATP** فقط في التخمر.',
+        quickActions: ['ما الفرق بين التنفس والتخمر؟'],
+        sources: [{ type: 'book' as SourceType, title: 'دليل الأستاذ 3AS — حصيلة التنفس' }],
+      },
+    };
+  }
+
+  if ((has('انزيم') || has('أنزيم') || has('إنزيم')) && has('بروتين') && has('ليس')) {
+    return {
+      session,
+      action: {
+        confidence: 95,
+        text: '❌ **العبارة خاطئة حسب البرنامج:** الإنزيم بروتين ذو بنية فراغية وموقع فعّال، يسرّع تفاعلاً نوعياً دون أن يُستهلك.',
+        quickActions: ['ما هو الموقع الفعال؟'],
+        sources: [{ type: 'internal_card' as SourceType, title: 'النشاط الإنزيمي' }],
+      },
+    };
+  }
+
+  if (has('غوص') && has('صعود')) {
+    return {
+      session,
+      action: {
+        confidence: 95,
+        text: '❌ **لا.** الغوص هو اندساس صفيحة محيطية كثيفة تحت صفيحة أخرى عند حدود التقارب؛ أمّا الصعود فيخص الصهارة المتولدة جزئياً فوق الصفيحة الغائصة.',
+        quickActions: ['اشرح الغوص'],
+        sources: [{ type: 'internal_card' as SourceType, title: 'الغوص (Subduction)' }],
+      },
+    };
+  }
+
+  return null;
 }
 
 /** Réponse « hors programme » unique (utilisée par le garde-fou précoce ET par
@@ -666,7 +749,7 @@ export function handleDomainClick(session: BotSession, domainId: number): Engine
   if (!domain) {
     return { session: resetSession(), action: { text: 'مجال غير معروف. اختر مجالاً من القائمة.', quickActions: DOMAINS.map((d) => d.title) } };
   }
-  const newSession = startDomainSession(domainId, session.mistakes);
+  const newSession = startDomainSession(domainId, session.mistakes, session.topicStats);
   const cards = KNOWLEDGE_CARDS.filter((c) => c.domainId === domainId);
   const text = `📚 اخترت مجال: **${domain.title}**\n${domain.subtitle}\n\n` +
     `المواضيع المتاحة للمراجعة:\n` +
@@ -880,7 +963,8 @@ export function startDiagnostic(session: BotSession): EngineResult {
     return { session, action: { text: 'لا توجد أسئلة لهذا المجال بعد.', quickActions: ['العودة للقائمة الرئيسية'] } };
   }
   const first = questions[0];
-  const newSession = startQuiz(session, questions.length, first.id, 'diagnostic');
+  const questionIds = questions.map((q) => q.id);
+  const newSession = startQuiz(session, questionIds.length, first.id, 'diagnostic', undefined, questionIds);
   const text = `🩺 بدأ التشخيص في مجال **${domain.title}**.\n` + `أجب عن ${questions.length} سؤالاً واحداً تلو الآخر. اختر A أو B أو C أو D.`;
   return { session: newSession, action: { text, quiz: toQuizPrompt(first), quickActions: [] } };
 }
@@ -913,10 +997,17 @@ export function gradeQuizAnswer(session: BotSession, rawAnswer: string): EngineR
     text = `❌ إجابة خاطئة.\nالإجابة الصحيحة هي: ${view.options[view.correctIndex]}\n\n${question.explanation}`;
     if (mistake) text += `\n\n⚠️ خطأ شائع: ${mistake.mistake}\n✅ التصحيح: ${mistake.correction}`;
   }
-  const questions = getQuestionsForDomain(question.domainId);
-  const idx = questions.findIndex((q) => q.id === question.id);
-  const nextQ = idx >= 0 ? questions[idx + 1] : undefined;
-  const nextId = nextQ ? nextQ.id : null;
+  // La séquence appartient à l'état du quiz. Le fallback sur la banque du
+  // domaine ne sert qu'aux anciennes sessions persistées sans `questionIds`.
+  const orderedIds = current.questionIds;
+  const nextId = orderedIds
+    ? orderedIds[current.questionIndex + 1] ?? null
+    : (() => {
+        const legacyQuestions = getQuestionsForDomain(question.domainId);
+        const legacyIndex = legacyQuestions.findIndex((q) => q.id === question.id);
+        return legacyIndex >= 0 ? legacyQuestions[legacyIndex + 1]?.id ?? null : null;
+      })();
+  const nextQ = nextId ? getQuestionById(nextId) : undefined;
   const correctCount = current.correctAnswers + (isCorrect ? 1 : 0);
   const total = current.totalQuestions;
   // F10 (audit Morchid 2026-09-26) : la mission quotidienne promet +15 XP mais
@@ -1484,6 +1575,7 @@ export function processStudentInput(session: BotSession, rawInput: string): Engi
     const back: BotSession = {
       ...getDefaultSession(),
       mistakes: [...session.mistakes],
+      topicStats: { ...(session.topicStats ?? {}) },
       completedBac: [...session.completedBac],
       lastMissionDate: session.lastMissionDate,
     };
@@ -1664,13 +1756,16 @@ export function processStudentInput(session: BotSession, rawInput: string): Engi
       const card = scored.card;
       const pool = getQuestionsForDomain(card.domainId).filter((q) => q.topicId === card.id);
       if (pool.length > 0) {
-        const picked = pool[Math.floor(Math.random() * pool.length)];
-        const newSession = startQuiz(session, pool.length, picked.id, 'quiz');
+        // Ordre explicite et déterministe : la suite reste dans CE pool au lieu
+        // de continuer accidentellement dans toute la banque du domaine.
+        const questionIds = pool.map((q) => q.id);
+        const first = pool[0];
+        const newSession = startQuiz(session, questionIds.length, first.id, 'quiz', undefined, questionIds);
         return {
           session: newSession,
           action: {
             text: `🧪 اختبار سريع في **${card.title}** — ${pool.length} أسئلة. اكتب الحرف A أو B أو C أو D (أو 1 2 3 4) لكل سؤال.`,
-            quiz: toQuizPrompt(picked),
+            quiz: toQuizPrompt(first),
             quickActions: [],
             sources: [{ type: 'internal_card' as SourceType, title: card.title }],
           },
@@ -1753,6 +1848,12 @@ export function processStudentInput(session: BotSession, rawInput: string): Engi
       },
     };
   }
+
+  const nonExigible = findNonExigible(norm);
+  if (nonExigible) return nonExigibleResult(session, nonExigible);
+
+  const misconception = misconceptionResult(session, norm);
+  if (misconception) return misconception;
 
   if (isGibberishInput(rawInput || input) || (norm.length >= 3 && OUT_OF_PROGRAM.some((k) => {
     const nk = n(k);
@@ -1906,11 +2007,13 @@ export function answerTutorQuestion(rawInput: string): TutorAction {
  *  Doit rester en phase avec le texte affiché (« المكافأة: +15 XP »). */
 const MISSION_XP = 15;
 
-function pickRandomQuizForTopic(domainId: number, topicId: string): QuizQuestion | undefined {
+function pickDailyQuizForTopic(domainId: number, topicId: string, dayKey: string): QuizQuestion | undefined {
   const questions = getQuestionsForDomain(domainId);
   const candidates = questions.filter((q) => q.topicId === topicId);
   if (candidates.length === 0) return undefined;
-  return candidates[Math.floor(Math.random() * candidates.length)];
+  // Même sujet + même jour algérien = même question, donc reproduction exacte.
+  const index = hashSeed(`${dayKey}:${domainId}:${topicId}`) % candidates.length;
+  return candidates[index];
 }
 
 /**
@@ -1964,31 +2067,29 @@ function domainToUnit(domainId: number, topicId: string): number | null {
   return range[0] + Math.floor((idx / Math.max(1, cards.length)) * span);
 }
 
-/**
- * R6 : classe les erreurs par score = fréquence × poids BAC × oubli. Les
- * doublons comptent comme la fréquence ; l'ancienneté relative (rang dans le
- * tableau) tient lieu d'oubli — pas d'horodateur par erreur (session légère).
- */
-function rankMistakes(mistakes: string[], lastSeenAt: number): string[] {
-  const freq = new Map<string, number>();
-  for (const m of mistakes) freq.set(m, (freq.get(m) ?? 0) + 1);
-
-  const scored = Array.from(freq.entries()).map(([topicId, count]) => {
+/** Classe les lacunes actives par fréquence réelle × poids BAC × oubli réel. */
+function rankMistakes(
+  mistakes: string[],
+  topicStats: Record<string, TopicLearningStat>,
+  now: number = Date.now(),
+): string[] {
+  const scored = mistakes.map((topicId, stableIndex) => {
     const card = getCardById(topicId);
     const weight = weightForTopic(topicId, card?.domainId ?? null);
-    // Oubli : plus tôt apparu dans la liste, plus oublié.
-    const orderIdx = mistakes.indexOf(topicId);
-    const daysSince = Math.max(1, Math.floor((mistakes.length - orderIdx) / 2));
+    const stat = topicStats[topicId];
+    const wrongCount = Math.max(1, stat?.wrongCount ?? 1);
+    const referenceTime = stat?.lastWrongAt ?? now;
+    const daysSince = Math.max(0, (now - referenceTime) / 86_400_000);
     const oubli = Math.min(daysSince, 14) / 14;
-    return { topicId, score: count * weight * (0.5 + oubli) };
+    return { topicId, stableIndex, score: wrongCount * weight * (0.5 + oubli) };
   });
 
-  scored.sort((a, b) => b.score - a.score);
+  scored.sort((a, b) => (b.score - a.score) || (a.stableIndex - b.stableIndex) || a.topicId.localeCompare(b.topicId));
   return scored.map((x) => x.topicId);
 }
 
 export function getDailyMission(session: BotSession): EngineResult {
-  const today = new Date().toISOString().split('T')[0];
+  const today = algeriaDateKey();
   if (session.lastMissionDate === today) {
     return { session, action: { text: '✅ لقد أنجزت مهمة اليوم بنجاح! عُد غداً لمهمة جديدة، أو تابع مراجعتك بحرية.', quickActions: ['اختبار تشخيصي', 'العودة للقائمة الرئيسية'] } };
   }
@@ -1998,7 +2099,7 @@ export function getDailyMission(session: BotSession): EngineResult {
 
   if (session.mistakes.length > 0) {
     // R6 : mistakes[0] → rankMistakes (fréquence × poids BAC × oubli).
-    targetTopicId = rankMistakes(session.mistakes, session.lastInteraction)[0] ?? null;
+    targetTopicId = rankMistakes(session.mistakes, session.topicStats ?? {})[0] ?? null;
     const card0 = targetTopicId ? getCardById(targetTopicId) : null;
     if (card0) targetDomainId = card0.domainId;
   } else if (session.activeDomainId) {
@@ -2019,7 +2120,7 @@ export function getDailyMission(session: BotSession): EngineResult {
   if (!card) return { session, action: { text: 'خطأ في تحميل المهمة.', quickActions: ['العودة للقائمة الرئيسية'] } };
 
   const domain = DOMAINS.find((d) => d.id === (targetDomainId ?? card.domainId));
-  const quiz = pickRandomQuizForTopic(card.domainId, card.id);
+  const quiz = pickDailyQuizForTopic(card.domainId, card.id, today);
   // ── R8 (audit Morchid 2026-10-01, master 3e970d2) : BAC_EXAM_DATE était
   // vide → le compte à rebours affichait « — ». La date (provisoire, voir
   // dashboardActions) est désormais visible dans la mission.
@@ -2032,7 +2133,7 @@ export function getDailyMission(session: BotSession): EngineResult {
   // ── R7 : le guide ne se cache plus derrière une phrase magique. Quand
   // l'élève enchaîne les erreurs sur ce sujet (≥ 3), le protocole d'étude
   // se PROPOSE dans la mission — au lieu d'attendre « كيف ادرس العلوم ».
-  const freq = session.mistakes.filter((m) => m === targetTopicId).length;
+  const freq = session.topicStats?.[targetTopicId]?.wrongCount ?? 0;
   const guideLine =
     freq >= 3
       ? `\n💡 لقد أخطأت ${freq} مرات في هذا الدرس. قبل السؤال، خذ 90 ثانية لقراءة بروتوكول الدراسة: «كيف أدرس العلوم؟» — ستجده في قسم الإرشاد.\n`
@@ -2045,7 +2146,7 @@ export function getDailyMission(session: BotSession): EngineResult {
   // n'était jamais atteint) → +15 XP promis n'était jamais versé, et la
   // mission n'était jamais clôturée (rejouable à l'infini, XP non compté).
   if (quiz) {
-    const missionSession = startQuiz(session, 1, quiz.id, 'quiz', card.id);
+    const missionSession = startQuiz(session, 1, quiz.id, 'quiz', card.id, [quiz.id]);
     return { session: missionSession, action: { text, quiz: toQuizPrompt(quiz), quickActions: [], sources: [{ type: 'internal_card' as SourceType, title: card.title }] } };
   }
 

@@ -17,10 +17,13 @@ import {
 import {
   getDefaultSession,
   startDomainSession,
+  recordQuizAnswer,
+  algeriaDateKey,
   type BotSession,
 } from '../../utils/sessionManager';
 import {
   getQuestionsForDomain,
+  getQuestionById,
   getBossScenarioById,
   DOMAINS,
 } from '../../data/smartBotData';
@@ -167,12 +170,29 @@ describe('B7 — « اختبرني » lance un QCM (audit Morchid)', () => {
     expect(!!out.session.currentQuiz).toBe(true);
   });
 
-  it('« اختبرني في الاستنساخ » lance un quiz', () => {
-    const out = processStudentInput(
+  it('« اختبرني في الاستنساخ » reste dans le pool ciblé jusqu’au bout', () => {
+    let out = processStudentInput(
       { ...getDefaultSession(), activeDomainId: 1 },
       'اختبرني في الاستنساخ',
     );
-    expect(!!out.action.quiz).toBe(true);
+    const planned = out.session.currentQuiz?.questionIds ?? [];
+    const visited: string[] = [];
+    while (out.session.currentQuiz) {
+      visited.push(out.session.currentQuiz.questionId);
+      out = processStudentInput(out.session, 'A');
+    }
+
+    expect(planned.length).toBeGreaterThan(1);
+    expect(visited).toEqual(planned);
+    expect(visited.every((id) => getQuestionById(id)?.topicId === 'protein_synthesis')).toBe(true);
+    expect(out.action.reward?.total).toBe(visited.length);
+  });
+
+  it('la même commande démarre toujours sur la même question', () => {
+    const ids = Array.from({ length: 20 }, () =>
+      processStudentInput(getDefaultSession(), 'اختبرني في الغوص').action.quiz?.id,
+    );
+    expect(new Set(ids).size).toBe(1);
   });
 });
 
@@ -192,6 +212,56 @@ describe('B7b — boucle de remédiation (audit Morchid)', () => {
     const vue = shuffledView(getQuestionsForDomain(3).find((x) => x.id === 'tect_q11')!);
     const r = gradeQuizAnswer(avecErr, ['A', 'B', 'C', 'D'][vue.correctIndex]);
     expect(r.session.mistakes).not.toContain('subduction');
+  });
+
+  it('compte réellement les échecs répétés et déclenche la remédiation à 3', () => {
+    let session = getDefaultSession();
+    for (let i = 0; i < 3; i += 1) {
+      session = recordQuizAnswer({
+        ...session,
+        mode: 'quiz',
+        currentQuiz: { questionId: 'tect_q11', questionIndex: 0, totalQuestions: 1, correctAnswers: 0 },
+      }, false, 'subduction', null);
+    }
+    expect(session.topicStats.subduction.wrongCount).toBe(3);
+    expect(session.mistakes).toEqual(['subduction']);
+    expect(getDailyMission(session).action.text).toContain('أخطأت 3 مرات');
+  });
+});
+
+describe('programme officiel et jour algérien', () => {
+  it.each(['هل المتمم ضمن البرنامج؟', 'نضج ARNm', 'مبدأ الأسيلوسكوب'])(
+    '%s est signalé non exigible avant le routage lexical',
+    (query) => {
+      const action = processStudentInput(getDefaultSession(), query).action;
+      expect(action.text).toContain('غير مطلوب');
+      expect(action.sources?.[0]?.title).toContain('ص. 6');
+    },
+  );
+
+  it('ne confond pas le complément immunitaire avec le cofacteur enzymatique', () => {
+    const action = processStudentInput(getDefaultSession(), 'ما هو المتمم الإنزيمي؟').action;
+    expect(action.text).not.toContain('غير مطلوب');
+    expect(action.sources?.[0]?.type).not.toBe('guide');
+  });
+
+  it('bascule de jour à minuit en Algérie, pas à minuit UTC', () => {
+    expect(algeriaDateKey(new Date('2026-10-04T22:59:59Z'))).toBe('2026-10-04');
+    expect(algeriaDateKey(new Date('2026-10-04T23:00:00Z'))).toBe('2026-10-05');
+  });
+
+  it('répond directement 38 ATP à la question de bilan énergétique', () => {
+    const action = processStudentInput(getDefaultSession(), 'كم ينتج التنفس من ATP؟').action;
+    expect(action.text).toContain('38 ATP');
+    expect(action.text).toContain('2 ATP');
+  });
+
+  it.each([
+    ['التنفس لا ينتج ATP', 'العبارة خاطئة'],
+    ['الانزيم ليس بروتينا', 'العبارة خاطئة'],
+    ['هل الغوص صعود؟', 'لا.'],
+  ])('corrige explicitement la misconception « %s »', (query, expected) => {
+    expect(processStudentInput(getDefaultSession(), query).action.text).toContain(expected);
   });
 });
 
@@ -220,8 +290,9 @@ describe('S1–S8 — corrections scientifiques du corpus', () => {
     expect(data).toContain('منطقة الظل (103°–143°)');
   });
 
-  it('S3 : vitesse des ondes = rigidité + densité', () => {
-    expect(data).toContain('بازدياد صلابة وكثافة');
+  it('S3 : la densité seule ne détermine pas la vitesse des ondes', () => {
+    expect(data).toContain('لا تكفي الكثافة وحدها للتنبؤ');
+    expect(data).not.toContain('تزداد بازدياد الصلابة والكثافة');
   });
 
   it('S6 : divergence = تباعد', () => {
@@ -271,7 +342,7 @@ describe('F10 — mission quotidienne : QCM démarré, 15 XP versés, mission cl
     // «ا» n'est pas la bonne réponse : le barème mission ne dépend pas du
     // succès, il est branché sur l'ACHÈVEMENT, comme l'affiche le texte.
     const r = processStudentInput(m.session, 'ا');
-    const today = new Date().toISOString().split('T')[0];
+    const today = algeriaDateKey();
 
     expect(r.action.reward?.xpGained).toBe(15);
     expect(r.action.reward?.kind).toBe('mission');
