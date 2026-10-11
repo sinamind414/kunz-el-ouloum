@@ -99,6 +99,36 @@ describe('cartes réelles — rendu dans RevisionView', () => {
     expect(await screen.findByText(cartes[1].question, {}, { timeout: 2000 })).toBeTruthy();
   });
 
+  it('SM-2 réel : la carte notée « جيد » est persistée (+1 j) et passe après les neuves', async () => {
+    const cartes = SVT_FLASHCARDS.filter((c) => c.unitId === 1).slice(0, 3);
+    renderView(cartes, 1);
+    fireEvent.click(screen.getByText(cartes[0].question));
+    fireEvent.click(screen.getByText('جيد'));
+    expect(await screen.findByText(cartes[1].question, {}, { timeout: 2000 })).toBeTruthy();
+    // État SM-2 persisté pour la carte notée, pas pour les autres.
+    const { getSrsState, resetAllSrs } = await import('../../utils/flashcardsSrs');
+    const s = getSrsState(cartes[0].id);
+    expect(s).not.toBeNull();
+    expect(s!.intervalDays).toBe(1);
+    expect(s!.dueAt).toBeGreaterThan(Date.now());
+    expect(getSrsState(cartes[1].id)).toBeNull();
+    resetAllSrs();
+  });
+
+  it('SM-2 réel : note « إعادة » re-présente la carte en fin de séance, pas en tête', async () => {
+    const cartes = SVT_FLASHCARDS.filter((c) => c.unitId === 1).slice(0, 2);
+    renderView(cartes, 1);
+    fireEvent.click(screen.getByText(cartes[0].question));
+    fireEvent.click(screen.getByText('إعادة'));
+    expect(await screen.findByText(cartes[1].question, {}, { timeout: 2000 })).toBeTruthy();
+    // carte 1 non notée → la boucle y reste ; la carte 0 n'est jamais représentée
+    // immédiatement après son « إعادة » (repoussée en fin de deck).
+    fireEvent.click(screen.getByText('إعادة'));
+    expect(await screen.findByText(cartes[0].question, {}, { timeout: 2000 })).toBeTruthy();
+    const { resetAllSrs } = await import('../../utils/flashcardsSrs');
+    resetAllSrs();
+  });
+
   it('changer d unité affiche une carte de cette unité (jamais un slot vide)', () => {
     for (const u of UNITS) {
       cleanup();

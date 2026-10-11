@@ -1,8 +1,9 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { motion } from 'motion/react';
 import { Volume2, Key, Star, Award, ChevronLeft, ArrowRight, HelpCircle, Layers, BookOpen, VolumeX, Sparkles, Eye, EyeOff } from 'lucide-react';
 import { Flashcard, Unit } from '../types';
 import { playFlipSound, playSuccessSound } from '../utils/audio';
+import { getSrsState, rateCard, sortByDue, previewIntervalDays, formatIntervalLabel } from '../utils/flashcardsSrs';
 import MicroCapsulePanel from './MicroCapsulePanel';
 
 interface RevisionViewProps {
@@ -19,7 +20,9 @@ interface RevisionViewProps {
 
 export default function RevisionView({ units, flashcards, xp, streak, onRateCard, isFocusMode, setIsFocusMode, initialUnitId = 1 }: RevisionViewProps) {
   const [selectedUnitId, setSelectedUnitId] = useState<number>(initialUnitId);
-  const [currentCardIndex, setCurrentCardIndex] = useState(0);
+  // Deck trié par le SM-2 local (cartes dues d'abord) ; currentCardId est la
+  // carte en main, « null » = tête de deck (nouvelle séance, changement d'unité).
+  const [currentCardId, setCurrentCardId] = useState<string | null>(null);
   const [isFlipped, setIsFlipped] = useState(false);
   const [isPlayingAudio, setIsPlayingAudio] = useState(false);
   const [isReaderMode, setIsReaderMode] = useState(false);
@@ -33,7 +36,7 @@ export default function RevisionView({ units, flashcards, xp, streak, onRateCard
 
   const handleUnitChange = (unitId: number) => {
     setSelectedUnitId(unitId);
-    setCurrentCardIndex(0);
+    setCurrentCardId(null);
     setIsFlipped(false);
     stopAudio();
   };
@@ -45,11 +48,18 @@ export default function RevisionView({ units, flashcards, xp, streak, onRateCard
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [initialUnitId]);
 
-  // Filter cards by selected unit
-  const activeCards = flashcards.filter(c => c.unitId === selectedUnitId);
-  // Clamp : un index hors bornes (unité changée sous les pieds de l'index) ne doit
-  // jamais produire currentCard === undefined (crash « carte blanche »).
-  const currentCard = activeCards[Math.min(currentCardIndex, Math.max(activeCards.length - 1, 0))];
+  // Deck SM-2 : cartes dues/nouvelles d'abord, puis programmées par date.
+  const [srsVersion, setSrsVersion] = useState(0);
+  const activeCards = useMemo(
+    () => flashcards.filter(c => c.unitId === selectedUnitId),
+    [flashcards, selectedUnitId],
+  );
+  const deck = useMemo(
+    () => sortByDue(activeCards),
+    [activeCards, srsVersion],
+  );
+  const currentCard = deck.find(c => c.id === currentCardId) ?? deck[0];
+  const deckPosition = currentCard ? deck.findIndex(c => c.id === currentCard.id) + 1 : 0;
 
   const handleFlip = () => {
     playFlipSound();
@@ -69,16 +79,21 @@ export default function RevisionView({ units, flashcards, xp, streak, onRateCard
     // Send the rating to the parent app state to reward XP, update count
     onRateCard(currentCard.id, rating);
 
-    // Fade and transition to the next card or loop
+    // Persistance SM-2 réelle : intervalle/ease/nextReview de CETTE carte.
+    rateCard(currentCard.id, rating);
+    const upcoming = sortByDue(
+      activeCards,
+      Date.now(),
+      rating === 'again' ? currentCard.id : undefined,
+    );
+    const next = upcoming.find(c => c.id !== currentCard.id);
+
+    // Fade and transition to the next due card
     setIsFlipped(false);
     stopAudio();
     setTimeout(() => {
-      if (currentCardIndex < activeCards.length - 1) {
-        setCurrentCardIndex(prev => prev + 1);
-      } else {
-        // Wrap around to repeat or complete
-        setCurrentCardIndex(0);
-      }
+      setSrsVersion(prev => prev + 1);
+      setCurrentCardId(next ? next.id : null);
     }, 300);
   };
 
@@ -134,7 +149,7 @@ export default function RevisionView({ units, flashcards, xp, streak, onRateCard
           <div className="flex items-center gap-2.5">
             {/* Card Progress Badge */}
             <div className="text-xs font-bold bg-white/10 px-2.5 py-1 rounded-lg">
-              {currentCardIndex + 1} / {activeCards.length}
+              {deckPosition} / {deck.length}
             </div>
 
             <button
@@ -216,7 +231,7 @@ export default function RevisionView({ units, flashcards, xp, streak, onRateCard
             {/* Remaining Badge */}
             <div className="flex items-center gap-1.5 bg-[#ffffff] dark:bg-[#141916] text-[#504441] dark:text-gray-100 border border-[#e2dabf]/60 dark:border-[#2ecc71]/10 px-3.5 py-1.5 rounded-xl shadow-sm text-sm font-bold">
               <Layers className="w-4 h-4 text-[#006d37] dark:text-[#2ecc71]" />
-              <span>{activeCards.length > 0 ? `${currentCardIndex + 1} / ${activeCards.length}` : '0 / 0'}</span>
+              <span>{deck.length > 0 ? `${deckPosition} / ${deck.length}` : '0 / 0'}</span>
             </div>
           </div>
         </section>
@@ -363,7 +378,7 @@ export default function RevisionView({ units, flashcards, xp, streak, onRateCard
                 className="flex flex-col items-center justify-center py-3.5 rounded-2xl bg-[#ffdad6] dark:bg-red-950/20 text-[#ba1a1a] dark:text-red-400 hover:bg-[#ffdad6]/80 dark:hover:bg-red-950/40 active:scale-95 transition-all shadow-sm border border-[#ba1a1a]/10 dark:border-red-900/30 cursor-pointer"
               >
                 <span className="font-extrabold text-sm mb-1">إعادة</span>
-                <span className="text-[9px] font-bold opacity-80">&lt; 1 دقيقة</span>
+                <span className="text-[9px] font-bold opacity-80">{formatIntervalLabel(previewIntervalDays(currentCard ? getSrsState(currentCard.id) : null, 'again'))}</span>
               </button>
 
               {/* Hard Button */}
@@ -372,7 +387,7 @@ export default function RevisionView({ units, flashcards, xp, streak, onRateCard
                 className="flex flex-col items-center justify-center py-3.5 rounded-2xl bg-[#f3f4f5] dark:bg-zinc-800/40 text-[#1f1c0b] dark:text-zinc-200 hover:bg-[#e7e8e9] dark:hover:bg-zinc-800/60 active:scale-95 transition-all shadow-sm border border-[#bbcbbb]/40 dark:border-zinc-700/30 cursor-pointer"
               >
                 <span className="font-extrabold text-sm mb-1">صعب</span>
-                <span className="text-[9px] font-bold opacity-80">6 دقائق</span>
+                <span className="text-[9px] font-bold opacity-80">{formatIntervalLabel(previewIntervalDays(currentCard ? getSrsState(currentCard.id) : null, 'hard'))}</span>
               </button>
 
               {/* Good Button */}
@@ -381,7 +396,7 @@ export default function RevisionView({ units, flashcards, xp, streak, onRateCard
                 className="flex flex-col items-center justify-center py-3.5 rounded-2xl bg-[#006d37] hover:bg-[#00562b] text-[#ffffff] active:scale-95 transition-all shadow-md cursor-pointer"
               >
                 <span className="font-extrabold text-sm mb-1 text-[#fed65b]">جيد</span>
-                <span className="text-[9px] font-bold opacity-90">1 يوم</span>
+                <span className="text-[9px] font-bold opacity-90">{formatIntervalLabel(previewIntervalDays(currentCard ? getSrsState(currentCard.id) : null, 'good'))}</span>
               </button>
 
               {/* Easy Button */}
@@ -390,7 +405,7 @@ export default function RevisionView({ units, flashcards, xp, streak, onRateCard
                 className="flex flex-col items-center justify-center py-3.5 rounded-2xl bg-[#2ecc71]/15 text-[#005027] dark:text-[#2ecc71] hover:bg-[#2ecc71]/25 active:scale-95 transition-all shadow-sm border border-[#2ecc71]/20 dark:border-[#2ecc71]/10 cursor-pointer"
               >
                 <span className="font-extrabold text-sm mb-1">سهل</span>
-                <span className="text-[9px] font-bold opacity-80">4 أيام</span>
+                <span className="text-[9px] font-bold opacity-80">{formatIntervalLabel(previewIntervalDays(currentCard ? getSrsState(currentCard.id) : null, 'easy'))}</span>
               </button>
             </div>
           </section>
