@@ -10,7 +10,10 @@
 
 import { ACTIVE_LESSONS } from './activeLessons';
 import { LESSON_LIBRARY } from '../lessonData';
-import { INITIAL_UNITS } from './index';
+// Import direct : passer par './index' (barrel ré-exportant quizCorpus, 596 Ko)
+// faisait remonter tout le corpus QCM dans le bundle d'entrée via
+// DashboardView → parcoursPath → lessonModes (budget 700 Ko, verrou post-build).
+import { INITIAL_UNITS } from '../unitCatalog';
 import { getUnitLessonSequence } from './unitLessonSequences';
 import { PASSIVE_TITLE_OVERRIDES } from './passiveTitleOverrides';
 
