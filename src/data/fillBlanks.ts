@@ -20,7 +20,7 @@ export interface FillBlankQuestion {
   microTest: FillBlankMicroTest;
 }
 
-export const FILL_BLANK_QUESTIONS: FillBlankQuestion[] = [
+const RAW_FILL_BLANK_QUESTIONS: FillBlankQuestion[] = [
   {
     id: 'fb_1_1',
     unitId: 1,
@@ -1795,5 +1795,26 @@ export const FILL_BLANK_QUESTIONS: FillBlankQuestion[] = [
   },
 ];
 
-// Total: 121 enrichis (QCM) + 40 d'origine = 161 micro-tests.
+/**
+ * Un énoncé de texte à trou est exploitable seulement s'il porte une amorce
+ * AVANT le trou. Les 40 micro-tests « d'origine Flutter » (conservés tels quels)
+ * avaient un `prompt` réduit à `أكمل: _______` — aucune phrase à compléter, donc
+ * une consigne incompréhensible exposée telle quelle à l'élève (App.tsx injecte
+ * `questionText: q.microTest.prompt`). On NE PEUT PAS les réparer sans inventer
+ * un énoncé (règle d'or « aucun contenu inventé »), on les retire donc du corpus.
+ */
+function hasUsableStatement(q: FillBlankQuestion): boolean {
+  const stripped = (q.microTest.prompt || '')
+    .replace(/أكمل:/g, '')
+    .replace(/_{3,}/g, '')
+    .trim();
+  return stripped.length > 0;
+}
+
+export const FILL_BLANK_QUESTIONS: FillBlankQuestion[] = RAW_FILL_BLANK_QUESTIONS.filter(
+  hasUsableStatement,
+);
+
+// Total brut: 121 enrichis (QCM) + 40 d'origine = 161 micro-tests.
+// Exporté: 121 (les 40 à énoncé vide sont filtrés ci-dessus — voir hasUsableStatement).
 // QCM sans reference "محور": 85 (lessonId repli sur la 1re lecon de l'unite).

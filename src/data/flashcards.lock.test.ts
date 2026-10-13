@@ -12,9 +12,9 @@ import { SVT_FLASHCARDS } from './index';
 import { SVT_QUIZ_QUESTIONS } from '../quizCorpus';
 import { carteSaine, healSavedFlashcards } from '../utils/flashcardsSanitize';
 
-describe('données flashcards — aucun verso vide dans la banque (552 cartes)', () => {
-  it('552 cartes = 549 dérivées du QCM + 3 collège ; ids uniques', () => {
-    expect(SVT_FLASHCARDS.length).toBe(552);
+describe('données flashcards — aucun verso vide dans la banque (553 cartes)', () => {
+  it('553 cartes = 550 dérivées du QCM + 3 collège ; ids uniques', () => {
+    expect(SVT_FLASHCARDS.length).toBe(553);
     expect(new Set(SVT_FLASHCARDS.map((c) => c.id)).size).toBe(SVT_FLASHCARDS.length);
   });
 
@@ -35,10 +35,10 @@ describe('données flashcards — aucun verso vide dans la banque (552 cartes)',
 });
 
 describe('chaîne de dérivation — le verso contient la réponse du QCM source', () => {
-  it('les 549 cartes fc_q_* : verso = option correcte du corpus + explication', () => {
+  it('les 550 cartes fc_q_* : verso = option correcte du corpus + explication', () => {
     const parId = new Map(SVT_QUIZ_QUESTIONS.map((q) => [`fc_q_${q.id}`, q]));
     const derivees = SVT_FLASHCARDS.filter((c) => c.id.startsWith('fc_q_'));
-    expect(derivees.length).toBe(549);
+    expect(derivees.length).toBe(550);
     for (const c of derivees) {
       const q = parId.get(c.id);
       expect(q, `${c.id} sans source`).toBeDefined();
@@ -57,10 +57,10 @@ describe('chaîne de dérivation — le verso contient la réponse du QCM source
 describe('désinfecteur localStorage — un blob troué est rejeté en bloc', () => {
   const saine = SVT_FLASHCARDS[0];
 
-  it('blob propre (les 552 réelles) → restitué tel quel', () => {
+  it('blob propre (les 553 réelles) → restitué tel quel', () => {
     const out = healSavedFlashcards(JSON.parse(JSON.stringify(SVT_FLASHCARDS)));
     expect(out).not.toBeNull();
-    expect(out!.length).toBe(552);
+    expect(out!.length).toBe(553);
   });
 
   it('UNE carte au verso vide ⇒ blob rejeté (null) — le cas exact du bug rapporté', () => {

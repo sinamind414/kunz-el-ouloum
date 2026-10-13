@@ -10,9 +10,9 @@ describe('chargement différé du corpus', () => {
     expect(peekCorpus()).toBeNull();
   });
 
-  it('charge les 549 QCM et les flashcards à la demande', async () => {
+  it('charge les 550 QCM et les flashcards à la demande', async () => {
     const corpus = await loadCorpus();
-    expect(corpus.questions.length).toBe(549);
+    expect(corpus.questions.length).toBe(550);
     expect(corpus.flashcards.length).toBeGreaterThan(100);
     expect(peekCorpus()).toBe(corpus);
   });
