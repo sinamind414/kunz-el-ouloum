@@ -27,11 +27,11 @@ function remplirEtSoumettre(reponses: [string, string, string]) {
 }
 
 describe('Bac2025ExamView — la boucle élève (R6)', () => {
-  it('réponses modèle Meftah (S1) → affiche ≈18/20 + le détail des 3 exercices', () => {
+  it('réponses modèle Meftah (S1) → affiche 19/20 + le détail des 3 exercices', () => {
     remplirEtSoumettre([MODELE_S1[0], MODELE_S1[1], MODELE_S1[2]]);
     expect(screen.getAllByText(/النقطة الأولية الآلية/).length).toBeGreaterThan(0);
-    // total 18,36/20 auto (Ex3 = 6,36 + 1,0 de réserve schéma — F3)
-    expect(screen.getAllByText(/18/).length).toBeGreaterThan(0);
+    // total 19/20 auto (Ex3 = 7,00 — 2026-10-12, levée du plafond de l'item « NE »)
+    expect(screen.getAllByText(/19/).length).toBeGreaterThan(0);
     expect(screen.getAllByText(/\/20/).length).toBeGreaterThan(0);
     // le détail obligatoire par exercice est rendu (3 sections + mention d'intro)
     expect(screen.getAllByText(/التنقيط الإلزامي/).length).toBeGreaterThanOrEqual(3);
@@ -57,7 +57,7 @@ describe('Bac2025ExamView — la boucle élève (R6)', () => {
     remplirEtSoumettre([MODELE_S1[0], MODELE_S1[1], MODELE_S1[2]]);
     const all = getExamAttempts();
     expect(all).toHaveLength(1);
-    expect(all[0]!.total).toBe(18.36); // 5 + 7 + 6,36 — la même note que l'affichage
+    expect(all[0]!.total).toBe(19); // 5 + 7 + 7 — 2026-10-12 : l'item « NE » n'a plus de plafond (18,36 → 19)
     // Ex3 = 6,36 auto (+1,0 de réserve pour le schéma, item manuel F3) et non
     // 7,36 : ventilation par partie E — la Partie 2 officielle pèse 4,5 et
     // l'item NE n'est pas créditable (le corrigé écrit « NE », pas
@@ -69,7 +69,7 @@ describe('Bac2025ExamView — la boucle élève (R6)', () => {
     expect(getExamAttempts()).toHaveLength(1);
     // l'entrée d'historique est visible dans le panneau
     expect(screen.getAllByText(/محاولة/).length).toBeGreaterThan(0);
-    expect(screen.getAllByText(/18/).length).toBeGreaterThan(1); // total + ligne d'historique
+    expect(screen.getAllByText(/19/).length).toBeGreaterThan(1); // total + ligne d'historique (2026-10-12 : 18,36 → 19)
   });
 
   it('historique vide → message honnête (pas un 0 inventé)', () => {

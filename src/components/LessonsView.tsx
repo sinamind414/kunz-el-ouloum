@@ -57,6 +57,15 @@ interface LessonsProps {
   initialLesson?: { key: string; kind: 'html' | 'active'; unitId: number };
   /** Deep-link depuis المسار : ouvrir le QCM d'une unité précise au montage. */
   initialQcm?: number;
+  /** 2026-10-12 — examen à ouvrir directement au montage ('qcm' | 'bac').
+   *  Les examens vivaient dans l'écran 1 de الدروس : ils mélangeaient
+   *  apprentissage et entraînement. Ils sont désormais dans le hub
+   *  « التمارين والتدريب » (src/data/trainingHub.ts, entrée `examens`). */
+  initialMode?: 'qcm' | 'bac';
+  /** 2026-10-12 — ouverture d'un onglet de l'app depuis une carte de l'écran
+   *  principal (ex. « الخرائط الذهنية » → onglet mindmap). Évite de dupliquer
+   *  une vue ici : la carte est une PORTE, pas une copie. */
+  onOpenTab?: (tab: string) => void;
   /** Appelé après consommation du deep-link (pour vider l'état du parent). */
   onDeepLinkConsumed?: () => void;
 }
@@ -100,7 +109,7 @@ const firstActiveLessonOfNextUnit = (unitId: number): { unitId: number; key: str
 const unitOfActiveLesson = (key: string): number =>
   INITIAL_UNITS.find((u) => getActiveLessonKeysForUnit(u.id).includes(key))?.id ?? 1;
 
-export default function LessonsView({ onRateCard, initialLesson, initialQcm, onDeepLinkConsumed }: LessonsProps) {
+export default function LessonsView({ onRateCard, initialLesson, initialQcm, initialMode, onOpenTab, onDeepLinkConsumed }: LessonsProps) {
   const [mode, setMode] = useState<LessonMode | 'qcm' | 'bac' | 'okacha' | 'search' | null>(null);
   const [selectedUnit, setSelectedUnit] = useState<number>(1);
   const [selectedDomain, setSelectedDomain] = useState<number | null>(null);
@@ -131,6 +140,11 @@ export default function LessonsView({ onRateCard, initialLesson, initialQcm, onD
       setMode(null);
     } else if (initialQcm !== undefined) {
       setMode('qcm');
+    } else if (initialMode) {
+      // 2026-10-12 — les examens (QCM du livre, tests bac) ont quitté l'écran 1
+      // de الدروس pour le hub « التمارين والتدريب » : ce n'est plus de
+      // l'apprentissage, c'est de l'entraînement. On y arrive par deep-link.
+      setMode(initialMode);
     }
     onDeepLinkConsumed?.();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -190,11 +204,15 @@ export default function LessonsView({ onRateCard, initialLesson, initialQcm, onD
   }
 
   // ----- Écran 0 : QCM du livre officiel (par chapitre) -----
+  // Ouvert depuis le hub S'entraîner (entrée `examens`, 2026-10-12) ET depuis
+  // le raccourci d'une unité. data-testid : verrou du deep-link.
   if (mode === 'qcm') {
     return (
-      <Suspense fallback={<VueEnChargement />}>
-        <QcmLivreView onBack={() => setMode(null)} uniteInitiale={qcmUniteInitiale} />
-      </Suspense>
+      <div data-testid="qcm-livre">
+        <Suspense fallback={<VueEnChargement />}>
+          <QcmLivreView onBack={() => setMode(null)} uniteInitiale={qcmUniteInitiale} />
+        </Suspense>
+      </div>
     );
   }
 
@@ -210,9 +228,11 @@ export default function LessonsView({ onRateCard, initialLesson, initialQcm, onD
   // ----- Écran 0 bis : tests bac (PROGRAMME NATIONAL, injection vérifiée) -----
   if (mode === 'bac') {
     return (
-      <Suspense fallback={<VueEnChargement />}>
-        <BacExamView onBack={() => setMode(null)} />
-      </Suspense>
+      <div data-testid="bac-exam">
+        <Suspense fallback={<VueEnChargement />}>
+          <BacExamView onBack={() => setMode(null)} />
+        </Suspense>
+      </div>
     );
   }
 
@@ -241,9 +261,9 @@ export default function LessonsView({ onRateCard, initialLesson, initialQcm, onD
             <BookOpen className="w-3.5 h-3.5" />
             <span>دروس السنة الثالثة ثانوي — علوم الطبيعة والحياة</span>
           </div>
-          <h1 className="text-2xl md:text-3xl font-black">📚 قائمة الدروس</h1>
+          <h1 className="text-2xl md:text-3xl font-black">مساحة التعلّم</h1>
           <p className="text-white/90 text-sm mt-1 font-medium">
-            اختر نوع الدرس : نشيط (تفاعلي خطوة بخطوة) أو سلبي (الدروس المقروءة)
+            افهم الدرس أولاً، ثم انتقل إلى الاختبارات عندما تصبح جاهزاً
           </p>
         </div>
 
@@ -266,7 +286,12 @@ export default function LessonsView({ onRateCard, initialLesson, initialQcm, onD
           <ChevronLeft className="w-5 h-5 text-emerald-600 dark:text-emerald-400 shrink-0" />
         </button>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
+        <section className="space-y-3" aria-labelledby="lesson-choice-title">
+          <div>
+            <h2 id="lesson-choice-title" className="text-lg font-black text-gray-900 dark:text-white">اختر طريقة التعلّم</h2>
+            <p className="text-xs font-bold text-gray-500 dark:text-gray-400">شرح تفاعلي أو درس رسمي مقروء</p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {/* Leçon Active */}
           <button
             onClick={() => { setMode('active'); setSelectedDomain(null); setSelectedActiveUnitId(null); }}
@@ -298,36 +323,36 @@ export default function LessonsView({ onRateCard, initialLesson, initialQcm, onD
               الدروس المقروءة الرسمية ({HTML_LESSON_ORDER.length} درساً) — ثلاثة مجالات، كل مجال بوحداته وفصوله
             </span>
           </button>
-          {/* QCM du livre */}
+
+          {/* 2026-10-12 — « الخرائط الذهنية » quitte le menu « المزيد » pour
+              rejoindre CET écran : une carte mentale est une SYNTHÈSE de ce
+              qu'on vient de comprendre, c'est donc de l'apprentissage.
+              Déplacement, pas doublon : la carte ouvre l'onglet existant
+              (mindmap) via onOpenTab, elle ne réimplémente rien.
+              En conséquence, le raccourci du tableau de bord a été retiré
+              (une fonctionnalité = une seule porte principale). */}
           <button
-            onClick={() => setMode('qcm')}
-            className="group p-6 rounded-3xl border-2 border-amber-200 dark:border-amber-900/50 bg-gradient-to-b from-amber-50 to-white dark:from-amber-950/30 dark:to-[#161c18] hover:border-amber-500 hover:shadow-lg transition-all text-center space-y-3"
+            onClick={() => onOpenTab?.('mindmap')}
+            data-testid="lecons-mindmap"
+            className="group p-6 rounded-3xl border-2 border-indigo-200 dark:border-indigo-900/50 bg-gradient-to-b from-indigo-50 to-white dark:from-indigo-950/30 dark:to-[#161c18] hover:border-indigo-500 hover:shadow-lg transition-all text-center space-y-3"
           >
-            <span className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-[#b45309] text-white shadow-md group-hover:scale-105 transition-transform">
-              <BookOpen className="w-8 h-8" />
+            <span className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-[#4338ca] text-white shadow-md group-hover:scale-105 transition-transform">
+              <Network className="w-8 h-8" />
             </span>
-            <span className="block text-lg font-black text-gray-800 dark:text-gray-100">اختبار الفصول</span>
+            <span className="block text-lg font-black text-gray-800 dark:text-gray-100">الخرائط الذهنية التفاعلية</span>
             <span className="block text-xs font-bold text-gray-500 dark:text-gray-400 leading-relaxed">
-              أسئلة حسب الفصول — مع مخططات وتفسيرات فورية
+              اربط مفاهيم الوحدة في خريطة واحدة — اعرضها، وسّعها، ثم اختبر نفسك منها
             </span>
           </button>
-          {/* Tests bac */}
-          <button
-            onClick={() => setMode('bac')}
-            className="group p-6 rounded-3xl border-2 border-violet-200 dark:border-violet-900/50 bg-gradient-to-b from-violet-50 to-white dark:from-violet-950/30 dark:to-[#161c18] hover:border-violet-500 hover:shadow-lg transition-all text-center space-y-3"
-          >
-            <span className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-[#6d28d9] text-white shadow-md group-hover:scale-105 transition-transform">
-              <GraduationCap className="w-8 h-8" />
-            </span>
-            <span className="block text-lg font-black text-gray-800 dark:text-gray-100">اختبار بكالوريا</span>
-            <span className="block text-xs font-bold text-gray-500 dark:text-gray-400 leading-relaxed">
-              3 اختبارات كاملة (20 نقطة) — تصحيح ذاتي بسلّم التنقيط
-            </span>
-          </button>
-          {/* الحصيلة معرفية عكاشة : DÉPLACÉE dans les leçons passives —
-              chaque domaine a désormais sa propre entrée, en fin de son écran
-              d'unités (cf. data-testid="okacha-entree-domaine"). */}
-        </div>
+          </div>
+        </section>
+
+        {/* 2026-10-12 — les examens de CET écran (« اختبار الفصول » et
+            « اختبار بكالوريا ») ont quitté الدروس pour rejoindre le hub
+            « التمارين والتدريب » (src/data/trainingHub.ts, entrée `examens`).
+            Déplacement, pas doublon : produire une réponse, c'est S'ENTRAÎNER,
+            pas apprendre. Leur mode reste ouvert par deep-link (`initialMode`),
+            donc rien n'est perdu pour l'élève. */}
       </div>
     );
   }

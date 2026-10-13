@@ -56,6 +56,37 @@ const FEUILLE = {
   'a faire': 'text-[#e2dabf] dark:text-gray-700',
 } as const;
 
+/** Barre de progression + pourcentage sous une ligne de chiffres.
+ *  Les chiffres restent la source de vérité (demande du 2026-10-12) : la barre
+ *  les rend lisibles d'un coup d'œil, elle ne les remplace pas.
+ *  `max` = 0 (rien à faire encore) → 0 %, jamais de division par zéro. */
+function BarreProgression({
+  valeur,
+  max,
+  ton,
+  testId,
+}: {
+  valeur: number;
+  max: number;
+  ton: string;
+  testId: string;
+}) {
+  const pct = max > 0 ? Math.round((valeur / max) * 100) : 0;
+  return (
+    <div className="mt-1.5" data-testid={testId}>
+      <div className="h-1.5 w-full overflow-hidden rounded-full bg-[#f0e8d4] dark:bg-gray-800">
+        <div
+          className={`h-full rounded-full transition-all ${ton}`}
+          style={{ width: `${pct}%` }}
+        />
+      </div>
+      <span className="mt-1 block text-[10px] font-bold text-gray-400 dark:text-gray-500">
+        {pct}%
+      </span>
+    </div>
+  );
+}
+
 function Feuille({ titre, etat }: { titre: string; etat: 'faite' | 'fragile' | 'a faire' }) {
   return (
     <Leaf
@@ -195,46 +226,80 @@ export default function MoiView({ nomEleve, courriel, onOuvrir }: MoiProps) {
           أرقامك بالكلمات
         </h2>
         <p className="mt-1 text-xs leading-6 text-gray-500 dark:text-gray-400">
-          لا نسب مئوية ولا رتبة أمام غيرك — أرقامك أنت وحدها.
+          نسبك أنت وحدها، ولا مقارنة مع أحد — الأرقام هي الحقيقة، والقرص يقرّبها للعين.
         </p>
         <dl className="mt-3 divide-y divide-[#f0e8d4] dark:divide-gray-800/70">
-          <div className="flex items-baseline justify-between gap-3 py-2.5">
-            <dt className="text-sm text-gray-700 dark:text-gray-300">دروس مُنجزة</dt>
-            <dd
-              dir="ltr"
-              className="text-sm font-black text-[#006d37] dark:text-emerald-300"
-            >
-              {leconsFaites.length} / {lecons.length}
-            </dd>
+          <div className="py-2.5">
+            <div className="flex items-baseline justify-between gap-3">
+              <dt className="text-sm text-gray-700 dark:text-gray-300">دروس مُنجزة</dt>
+              <dd
+                dir="ltr"
+                className="text-sm font-black text-[#006d37] dark:text-emerald-300"
+              >
+                {leconsFaites.length} / {lecons.length}
+              </dd>
+            </div>
+            <BarreProgression
+              valeur={leconsFaites.length}
+              max={lecons.length}
+              ton="bg-[#006d37] dark:bg-emerald-400"
+              testId="progression-lecons"
+            />
           </div>
-          <div className="flex items-baseline justify-between gap-3 py-2.5">
-            <dt className="text-sm text-gray-700 dark:text-gray-300">
-              دروس هشّة تحتاج مراجعة
-            </dt>
-            <dd
-              dir="ltr"
-              className="text-sm font-black text-[#944a00] dark:text-amber-300"
-            >
-              {leconsFragiles.length}
-            </dd>
+          <div className="py-2.5">
+            <div className="flex items-baseline justify-between gap-3">
+              <dt className="text-sm text-gray-700 dark:text-gray-300">
+                دروس هشّة تحتاج مراجعة
+              </dt>
+              <dd
+                dir="ltr"
+                className="text-sm font-black text-[#944a00] dark:text-amber-300"
+              >
+                {leconsFragiles.length}
+              </dd>
+            </div>
+            {/* Pas de total ici : le dénominateur est ce que TU as déjà fait.
+                Plus la barre est pleine, plus ton travail a besoin d'être revu. */}
+            <BarreProgression
+              valeur={leconsFragiles.length}
+              max={leconsFaites.length}
+              ton="bg-[#944a00] dark:bg-amber-400"
+              testId="progression-fragiles"
+            />
           </div>
-          <div className="flex items-baseline justify-between gap-3 py-2.5">
-            <dt className="text-sm text-gray-700 dark:text-gray-300">جسور مفتوحة</dt>
-            <dd
-              dir="ltr"
-              className="text-sm font-black text-[#006d37] dark:text-emerald-300"
-            >
-              {jalonsFaits.length} / {jalons.length}
-            </dd>
+          <div className="py-2.5">
+            <div className="flex items-baseline justify-between gap-3">
+              <dt className="text-sm text-gray-700 dark:text-gray-300">جسور مفتوحة</dt>
+              <dd
+                dir="ltr"
+                className="text-sm font-black text-[#006d37] dark:text-emerald-300"
+              >
+                {jalonsFaits.length} / {jalons.length}
+              </dd>
+            </div>
+            <BarreProgression
+              valeur={jalonsFaits.length}
+              max={jalons.length}
+              ton="bg-[#006d37] dark:bg-emerald-400"
+              testId="progression-jalons"
+            />
           </div>
-          <div className="flex items-baseline justify-between gap-3 py-2.5">
-            <dt className="text-sm text-gray-700 dark:text-gray-300">حصّة اليوم</dt>
-            <dd
-              dir="ltr"
-              className="text-sm font-black text-gray-900 dark:text-gray-100"
-            >
-              {todaysCompletions(state)} / {allowance(state)}
-            </dd>
+          <div className="py-2.5">
+            <div className="flex items-baseline justify-between gap-3">
+              <dt className="text-sm text-gray-700 dark:text-gray-300">حصّة اليوم</dt>
+              <dd
+                dir="ltr"
+                className="text-sm font-black text-gray-900 dark:text-gray-100"
+              >
+                {todaysCompletions(state)} / {allowance(state)}
+              </dd>
+            </div>
+            <BarreProgression
+              valeur={todaysCompletions(state)}
+              max={allowance(state)}
+              ton="bg-gray-900 dark:bg-gray-100"
+              testId="progression-jour"
+            />
           </div>
         </dl>
         <p className="mt-3 text-[11px] leading-6 text-gray-500 dark:text-gray-400">

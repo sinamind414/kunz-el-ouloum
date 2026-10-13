@@ -13,7 +13,11 @@ import { buildRevisionPlan, TASK_LABEL_AR } from '../data/revisionPlan';
 import { readPlanSettings } from '../data/planSettings';
 
 interface Props {
-  onOpenPlan: () => void;
+  /** 2026-10-12 — OPTIONNEL. La carte affiche le programme du jour ; ouvrir le
+   *  plan complet (`plan`) est une autre fonctionnalité, qui a désormais une
+   *  porte principale unique : le hub « المراجعة ». Sans ce prop, la carte
+   *  reste informative — aucune balise cliquable sans effet. */
+  onOpenPlan?: () => void;
 }
 
 function cochees(daysLeft: number, minutesPerDay: number): Set<string> {
@@ -35,17 +39,8 @@ export default function TodayCard({ onOpenPlan }: Props) {
   const restantes = jour.tasks.filter((t) => !fait.has(`1:${t.kind}:${t.refId}`));
   const terminees = jour.tasks.length - restantes.length;
 
-  return (
-    // Sprint 49 : bouton, et non div cliquable — une carte pilotée par
-    // `onClick` sur un `div` est invisible au clavier et aux technologies
-    // d'assistance.
-    <button
-      type="button"
-      data-testid="today-card"
-      onClick={onOpenPlan}
-      dir="rtl"
-      className="w-full text-right rounded-3xl p-4 bg-gradient-to-l from-[#006d37]/10 to-[#10b981]/10 dark:from-emerald-950/40 dark:to-teal-950/40 border border-[#006d37]/30 cursor-pointer hover:bg-emerald-50/50 dark:hover:bg-emerald-900/20 transition-all active:scale-[0.99]"
-    >
+  const contenu = (
+    <>
       <div className="flex items-center justify-between gap-3 mb-2">
         <div className="flex items-center gap-3">
           <span className="w-10 h-10 rounded-2xl bg-[#006d37] text-white flex items-center justify-center shadow-sm">
@@ -59,7 +54,9 @@ export default function TodayCard({ onOpenPlan }: Props) {
             </p>
           </div>
         </div>
-        <span className="text-[11px] font-bold text-[#006d37] dark:text-[#2ecc71]">افتح الخطة</span>
+        {onOpenPlan && (
+          <span className="text-[11px] font-bold text-[#006d37] dark:text-[#2ecc71]">افتح الخطة</span>
+        )}
       </div>
 
       {restantes.length === 0 ? (
@@ -92,6 +89,32 @@ export default function TodayCard({ onOpenPlan }: Props) {
           )}
         </ul>
       )}
+    </>
+  );
+
+  const style = 'w-full text-right rounded-3xl p-4 bg-gradient-to-l from-[#006d37]/10 to-[#10b981]/10 dark:from-emerald-950/40 dark:to-teal-950/40 border border-[#006d37]/30';
+
+  // Sprint 49 : si la carte déclenche une action, c'est un VRAI bouton — focus
+  // clavier, Entrée/Espace, annoncé par les lecteurs d'écran. Sans navigation,
+  // c'est un simple conteneur : jamais de balise cliquable sans effet, et
+  // surtout pas d'`onClick` posé sur un `<div>` (clavier.test.ts le refuse).
+  if (!onOpenPlan) {
+    return (
+      <div data-testid="today-card" dir="rtl" className={style}>
+        {contenu}
+      </div>
+    );
+  }
+
+  return (
+    <button
+      type="button"
+      data-testid="today-card"
+      onClick={onOpenPlan}
+      dir="rtl"
+      className={`${style} cursor-pointer hover:bg-emerald-50/50 dark:hover:bg-emerald-900/20 transition-all active:scale-[0.99]`}
+    >
+      {contenu}
     </button>
   );
 }

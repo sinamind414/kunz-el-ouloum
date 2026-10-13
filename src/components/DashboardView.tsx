@@ -1,20 +1,26 @@
-import React, { useState, useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
+import {
+  AlertTriangle,
+  BookOpen,
+  ChevronDown,
+  Dices,
+  Dumbbell,
+  Flame,
+  HelpCircle,
+  Layers,
+  Share2,
+  Trophy,
+} from 'lucide-react';
 import TodayCard from './TodayCard';
-import { Trophy, Flame, Play, Lock, ChevronRight, Compass, Target, Hourglass, AlertTriangle, Dices, HelpCircle, Moon, Share2, Network, Sparkles } from 'lucide-react';
-import { Unit, UserProgress, DailyGoalConfig } from '../types';
-import { LOGO_URL } from '../data/brandAssets';
-// Nom officiel figé (docs/MARQUE.md §3) — source unique miftahSpec : zéro littéral rendu ici.
-import { MIFTAH_NAME_OFFICIAL_AR } from '../data/miftahSpec';
 import DailyGoalWidget from './DailyGoalWidget';
 import SmartReminderCard from './SmartReminderCard';
-// Carte « tâche du jour » (NBA) partagée avec مساري — incrément 5 : l'élève
-// voit la tâche du jour SANS ouvrir le chemin.
 import NbaCard from './NbaCard';
-import type { LessonKind } from '../lib/parcours/parcoursPath';
 import WeeklyReportShareModal from './WeeklyReportShareModal';
 import StreakCelebrationModal from './StreakCelebrationModal';
+import { Unit, UserProgress, DailyGoalConfig } from '../types';
+import { LOGO_URL } from '../data/brandAssets';
+import type { LessonKind } from '../lib/parcours/parcoursPath';
 import { playStreakMilestoneSound } from '../utils/audio';
-// Cibles réelles des tuiles (owner 2026-09-15) — les 7 tuiles étaient inertes : aucun onClick.
 import {
   bacDaysLeft,
   biggestGapUnit,
@@ -31,40 +37,34 @@ interface DashboardViewProps {
   onNavigateToTab?: (tab: any) => void;
   onUpdateDailyGoals?: (config: DailyGoalConfig) => void;
   isDarkMode?: boolean;
-  /** Câblage NBA (incrément 5) : si les deux sont fournis, la carte de la
-   *  tâche du jour est rendue en tête d'accueil. Absents → pas de carte
-   *  (aucun état orphelin : le reste de l'accueil est inchangé). */
   onOpenLesson?: (lessonKey: string, kind: LessonKind, unitId: number) => void;
   onOpenQcm?: (unitId: number) => void;
 }
 
-export default function DashboardView({ 
-  units, 
-  progress, 
-  onLaunchQuiz, 
-  onLaunchRevision, 
+export default function DashboardView({
+  units,
+  progress,
+  onLaunchQuiz,
+  onLaunchRevision,
   onNavigateToTab,
   onUpdateDailyGoals,
   isDarkMode = false,
   onOpenLesson,
   onOpenQcm,
 }: DashboardViewProps) {
-  const [showWeeklyShareModal, setShowWeeklyShareModal] = useState<boolean>(false);
-  const [showStreakModal, setShowStreakModal] = useState<boolean>(false);
+  const [showWeeklyShareModal, setShowWeeklyShareModal] = useState(false);
+  const [showStreakModal, setShowStreakModal] = useState(false);
+  const [showMoreTools, setShowMoreTools] = useState(false);
+
+  const missionUnit = useMemo(() => continueUnit(units, progress), [units, progress]);
+  const gapUnit = useMemo(() => biggestGapUnit(units), [units]);
+  const achievementUnit = useMemo(() => closestAchievementUnit(units), [units]);
+  const bacDays = useMemo(() => bacDaysLeft(new Date()), []);
 
   const handleOpenStreakCelebration = () => {
     playStreakMilestoneSound(progress.streak || 1);
     setShowStreakModal(true);
   };
-
-  // ── Tuiles d'action (owner 2026-09-15) ──────────────────────────────────────
-  // Chaque tuile vise une cible RÉELLE recalculée depuis units/progress : la
-  // maquette affichait « 325 يوم الباقي » et « 0% » figés, sans aucun handler.
-  const missionUnit = useMemo(() => continueUnit(units, progress), [units, progress]);
-  const gapUnit = useMemo(() => biggestGapUnit(units), [units]);
-  const achievementUnit = useMemo(() => closestAchievementUnit(units), [units]);
-  // `null` tant que la date officielle n'est pas tranchée (util/dashboardActions BAC_EXAM_DATE).
-  const bacDays = useMemo(() => bacDaysLeft(new Date()), []);
 
   const openSurpriseQuiz = () => {
     const unitId = surpriseUnitId(units, progress);
@@ -72,290 +72,215 @@ export default function DashboardView({
   };
 
   return (
-    <div className="space-y-5 pb-24 px-4 pt-6 bg-[#f8fbfa] dark:bg-gray-950 min-h-full" dir="rtl">
-      
-      {/* Header */}
-      <div className="flex justify-between items-center mb-4">
-        <div className="flex items-center gap-3">
-          <div className="w-12 h-12 bg-white dark:bg-[#141916] rounded-2xl flex items-center justify-center shadow-sm border border-[#006d37]/15 overflow-hidden">
-             <img src={LOGO_URL} alt="كنز العلوم" className="w-11 h-11 object-contain" />
+    <div className="min-h-full space-y-5 bg-[#f8fbfa] px-4 pb-24 pt-5 dark:bg-gray-950" dir="rtl">
+      <header className="flex items-center justify-between gap-3">
+        <div className="flex min-w-0 items-center gap-3">
+          <div className="flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-2xl border border-[#006d37]/15 bg-white shadow-sm dark:bg-[#141916]">
+            <img src={LOGO_URL} alt="كنز العلوم" className="h-11 w-11 object-contain" />
           </div>
-          <div>
-            <h1 className="text-2xl font-black text-[#006d37] dark:text-emerald-400">مساري</h1>
-            <p className="text-xs text-gray-500 dark:text-gray-400 font-bold">رحلة التفوق في العلوم الطبيعية</p>
+          <div className="min-w-0">
+            <p className="text-[11px] font-bold text-[#506072] dark:text-gray-400">لوحة البداية</p>
+            <h1 className="truncate text-2xl font-black text-[#006d37] dark:text-emerald-400">ماذا أدرس الآن؟</h1>
           </div>
         </div>
-        
-        <button type="button" className="w-full flex items-center gap-2">
-          <button
-            onClick={() => setShowWeeklyShareModal(true)}
-            className="bg-amber-500/10 hover:bg-amber-500/20 text-amber-800 dark:text-amber-300 border border-amber-300/40 dark:border-amber-700/50 rounded-2xl py-1.5 px-3 flex items-center gap-1.5 shadow-2xs text-xs font-black transition-all cursor-pointer"
-            title="توليد ومشاركة بطاقة التقرير الأسبوعي"
-          >
-            <Share2 className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />
-            <span className="hidden sm:inline">تقرير الأسبوع</span>
-          </button>
 
-          <button type="button" 
-            onClick={handleOpenStreakCelebration}
-            className="w-full bg-[#fff9ed] dark:bg-gray-900 border border-[#e2dabf]/60 dark:border-gray-800 rounded-2xl py-1.5 px-3 flex items-center gap-3 shadow-sm text-sm font-bold text-[#1f1c0b] dark:text-gray-200 cursor-pointer hover:border-amber-400 transition-all hover:scale-102 active:scale-98"
-            title="اضغط لعرض تفاصيل الـ Streak وسماع النغمة التفاعلية 🎵"
-          >
-            <div className="flex items-center gap-1 text-amber-600 dark:text-amber-400">
-              <Flame className="w-4 h-4 text-[#ff9a4a] animate-pulse" fill="currentColor" />
-              <span>{progress.streak}</span>
-            </div>
-            <div className="w-px h-4 bg-[#e2dabf] dark:bg-gray-700"></div>
-            <div className="flex items-center gap-1">
-              <Trophy className="w-4 h-4 text-[#d4af37]" fill="currentColor" />
-              <span>{progress.completedUnits.length}</span>
-            </div>
-            <div className="w-px h-4 bg-[#e2dabf] dark:bg-gray-700"></div>
-            <div className="flex items-center gap-1">
-              <span className="text-xs text-gray-500 dark:text-gray-400">XP</span>
-              <span>{progress.xp}</span>
-            </div>
-          </button>
+        <button
+          type="button"
+          onClick={handleOpenStreakCelebration}
+          className="flex shrink-0 items-center gap-2 rounded-2xl border border-[#e2dabf]/70 bg-[#fff9ed] px-3 py-2 text-xs font-black text-[#1f1c0b] shadow-sm transition hover:border-amber-400 dark:border-gray-800 dark:bg-gray-900 dark:text-gray-100"
+          aria-label="عرض تقدمي اليوم"
+        >
+          <Flame className="h-4 w-4 text-[#ff9a4a]" fill="currentColor" />
+          <span>{progress.streak}</span>
+          <span className="text-[#e2dabf]">|</span>
+          <span>{progress.xp} XP</span>
         </button>
-      </div>
+      </header>
 
-      {/* TÂCHE DU JOUR — NBA (incrément 5) : la décision vient de
-          nbaEngine.nextBestAction (REPRISE > RAPPEL > QUOTA > NOUVEAU > REPOS),
-          la même source que مساري. Testid `home-nba` pour ne pas entrer en
-          collision avec `parcours-nba`. */}
-      {onOpenLesson && onOpenQcm && (
-        <NbaCard onOpenLesson={onOpenLesson} onOpenQcm={onOpenQcm} testId="home-nba" />
-      )}
-
-      {/* SMART REMINDER CARD (التذكير الذكي للدروس غير المفتوحة منذ أكثر من 48 ساعة) */}
-      <SmartReminderCard
-        units={units}
-        onContinueLesson={(unitId) => onLaunchQuiz(unitId)}
-        onLaunchRevision={(unitId) => onLaunchRevision(unitId)}
-        isDarkMode={isDarkMode}
-      />
-
-      {/* PROGRAMME DU JOUR (sprint 29) — le plan de révision remonte sur
-          l'accueil : derrière deux clics, il n'était pas suivi. */}
-      {onNavigateToTab && <TodayCard onOpenPlan={() => onNavigateToTab('plan')} />}
-
-      {/* DAILY GOAL WIDGET (الأهداف اليومية) */}
-      <DailyGoalWidget 
-        dailyGoals={progress.dailyGoals}
-        onOpenStreakModal={handleOpenStreakCelebration}
-        onUpdateGoalConfig={(newConfig) => {
-          if (onUpdateDailyGoals) {
-            onUpdateDailyGoals(newConfig);
-          }
-        }}
-        onQuickStartQuiz={() => onLaunchQuiz(1)}
-        onQuickStartRevision={() => onLaunchRevision(1)}
-        isDarkMode={isDarkMode}
-      />
-
-      {/* Methodology Path Card */}
-      <button 
-        type="button"
-        onClick={() => onNavigateToTab && onNavigateToTab('methodology')}
-        className="w-full text-right bg-gradient-to-r from-[#006d37]/10 to-[#10b981]/10 dark:from-emerald-950/40 dark:to-teal-950/40 rounded-3xl p-4 border border-[#006d37]/30 shadow-[0_2px_10px_rgba(0,109,55,0.05)] flex items-center justify-between cursor-pointer hover:bg-emerald-50/50 dark:hover:bg-emerald-900/20 transition-all active:scale-[0.99]"
-      >
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-2xl bg-[#006d37] text-white flex items-center justify-center font-black shadow-sm">
-            <Compass className="w-5 h-5" />
-          </div>
+      <section aria-labelledby="daily-priority-title" className="space-y-2">
+        <div className="flex items-end justify-between gap-3 px-1">
           <div>
-            <h3 className="font-black text-[#006d37] dark:text-emerald-400 text-[15px]">🔑 {MIFTAH_NAME_OFFICIAL_AR} (ICM + 4 مراحل)</h3>
-            <p className="text-xs text-[#006d37]/80 dark:text-emerald-300/80 font-medium">ابدأ التدريب على الأفعال الـ 8 واختبار مسودة 90 ثانية</p>
+            <p className="text-[11px] font-black uppercase tracking-[0.16em] text-[#944a00]">الأولوية</p>
+            <h2 id="daily-priority-title" className="text-lg font-black text-[#1f1c0b] dark:text-white">خطوتك التالية</h2>
           </div>
+          <span className="text-[11px] font-bold text-[#506072] dark:text-gray-400">مهمة واحدة، ثم اختر الباقي</span>
         </div>
-        <span className="text-xs font-black bg-[#006d37] hover:bg-[#005a2d] text-white px-3.5 py-2 rounded-xl shadow-sm">
-          دخول
-        </span>
-      </button>
 
-      {/* D3 Interactive Mind Maps Card */}
-      <button 
-        type="button" 
-        onClick={() => onNavigateToTab && onNavigateToTab('mindmap')}
-        className="w-full text-right bg-gradient-to-r from-emerald-600 to-teal-700 rounded-3xl p-4 text-white shadow-md flex items-center justify-between cursor-pointer hover:from-emerald-700 hover:to-teal-800 transition-all active:scale-[0.99] relative overflow-hidden"
-      >
-        <div className="absolute -left-6 -bottom-6 w-24 h-24 bg-white/10 rounded-full blur-xl pointer-events-none"></div>
-        <div className="flex items-center gap-3 relative z-10">
-          <div className="w-10 h-10 rounded-2xl bg-white/20 backdrop-blur-sm text-white flex items-center justify-center font-black shadow-sm">
-            <Network className="w-5 h-5 text-white animate-pulse" />
+        {onOpenLesson && onOpenQcm ? (
+          <NbaCard onOpenLesson={onOpenLesson} onOpenQcm={onOpenQcm} testId="home-nba" />
+        ) : (
+          <button
+            type="button"
+            onClick={() => missionUnit && onLaunchQuiz(missionUnit.id)}
+            disabled={!missionUnit}
+            className="flex w-full items-center justify-between gap-4 rounded-3xl bg-gradient-to-l from-[#006d37] to-[#10b981] p-5 text-right text-white shadow-[0_10px_28px_rgba(0,109,55,0.2)] disabled:opacity-60"
+          >
+            <span>
+              <span className="block text-xs font-bold text-white/75">مهمة قصيرة</span>
+              <span className="mt-1 block text-lg font-black">{missionUnit?.title ?? 'لا توجد مهمة متاحة'}</span>
+            </span>
+            <span className="rounded-xl bg-white px-4 py-2 text-xs font-black text-[#006d37]">ابدأ</span>
+          </button>
+        )}
+      </section>
+
+      <section aria-labelledby="paths-title" className="space-y-3">
+        <div className="px-1">
+          <h2 id="paths-title" className="text-lg font-black text-[#1f1c0b] dark:text-white">ماذا تريد أن تفعل؟</h2>
+          <p className="text-xs font-bold text-[#506072] dark:text-gray-400">ثلاثة اختيارات واضحة حسب هدفك الآن</p>
+        </div>
+
+        <div className="grid grid-cols-3 gap-2.5">
+          <button
+            type="button"
+            onClick={() => onNavigateToTab?.('lesson')}
+            className="group flex min-h-28 flex-col items-center justify-center gap-2 rounded-3xl border border-emerald-200 bg-white px-2 py-4 text-center shadow-sm transition hover:-translate-y-0.5 hover:border-emerald-500 dark:border-emerald-900/50 dark:bg-gray-900"
+          >
+            <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-emerald-50 text-[#006d37] group-hover:bg-[#006d37] group-hover:text-white dark:bg-emerald-950/40 dark:text-emerald-300">
+              <BookOpen className="h-5 w-5" />
+            </span>
+            <span className="text-sm font-black text-[#1f1c0b] dark:text-white">أتعلّم</span>
+            <span className="text-[10px] font-bold text-[#506072] dark:text-gray-400">درس وشرح</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => onNavigateToTab?.('training')}
+            className="group flex min-h-28 flex-col items-center justify-center gap-2 rounded-3xl border border-amber-200 bg-white px-2 py-4 text-center shadow-sm transition hover:-translate-y-0.5 hover:border-amber-500 dark:border-amber-900/50 dark:bg-gray-900"
+          >
+            <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-amber-50 text-[#944a00] group-hover:bg-[#944a00] group-hover:text-white dark:bg-amber-950/40 dark:text-amber-300">
+              <Dumbbell className="h-5 w-5" />
+            </span>
+            <span className="text-sm font-black text-[#1f1c0b] dark:text-white">أتدرّب</span>
+            <span className="text-[10px] font-bold text-[#506072] dark:text-gray-400">تمرين وBAC</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => (gapUnit ?? missionUnit) && onLaunchRevision((gapUnit ?? missionUnit)!.id)}
+            disabled={!gapUnit && !missionUnit}
+            className="group flex min-h-28 flex-col items-center justify-center gap-2 rounded-3xl border border-sky-200 bg-white px-2 py-4 text-center shadow-sm transition hover:-translate-y-0.5 hover:border-sky-500 disabled:opacity-60 dark:border-sky-900/50 dark:bg-gray-900"
+          >
+            <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-sky-50 text-sky-700 group-hover:bg-sky-700 group-hover:text-white dark:bg-sky-950/40 dark:text-sky-300">
+              <Layers className="h-5 w-5" />
+            </span>
+            <span className="text-sm font-black text-[#1f1c0b] dark:text-white">أراجع</span>
+            <span className="text-[10px] font-bold text-[#506072] dark:text-gray-400">بطاقات وأخطاء</span>
+          </button>
+        </div>
+      </section>
+
+      <section className="overflow-hidden rounded-3xl border border-[#e2dabf]/70 bg-white shadow-sm dark:border-gray-800 dark:bg-gray-900">
+        <button
+          type="button"
+          onClick={() => setShowMoreTools((value) => !value)}
+          aria-expanded={showMoreTools}
+          aria-controls="dashboard-more-tools"
+          className="flex w-full items-center justify-between gap-4 px-5 py-4 text-right transition hover:bg-[#fff9ed]/70 dark:hover:bg-gray-800"
+        >
+          <span>
+            <span className="block text-base font-black text-[#1f1c0b] dark:text-white">المزيد من الأدوات</span>
+            <span className="block text-xs font-bold text-[#506072] dark:text-gray-400">الخطة، التذكير، المنهجية، الخرائط والتقدم</span>
+          </span>
+          <ChevronDown className={`h-5 w-5 shrink-0 text-[#006d37] transition-transform ${showMoreTools ? 'rotate-180' : ''}`} />
+        </button>
+
+        {showMoreTools && (
+          <div id="dashboard-more-tools" className="space-y-4 border-t border-[#e2dabf]/50 p-4 dark:border-gray-800">
+            <SmartReminderCard
+              units={units}
+              onContinueLesson={onLaunchQuiz}
+              onLaunchRevision={onLaunchRevision}
+              isDarkMode={isDarkMode}
+            />
+
+            {/* 2026-10-12 — la carte affiche le programme du jour sans ouvrir
+                `plan` : cette page a désormais une porte principale unique
+                (hub « المراجعة »). La carte reste informative. */}
+            <TodayCard />
+
+            <DailyGoalWidget
+              dailyGoals={progress.dailyGoals}
+              onOpenStreakModal={handleOpenStreakCelebration}
+              onUpdateGoalConfig={(newConfig) => onUpdateDailyGoals?.(newConfig)}
+              onQuickStartQuiz={() => onLaunchQuiz(1)}
+              onQuickStartRevision={() => onLaunchRevision(1)}
+              isDarkMode={isDarkMode}
+            />
+
+            <div>
+              {/* 2026-10-12 — ce bloc ne contenait que des DOUBLONS : « مفتاح
+                  المنهجية », « الأنميشن » et les examens ont tous un
+                  emplacement principal unique (hub التمارين والتدريب). Un accès
+                  en double fait croire à deux outils différents. Il ne reste que
+                  ce qui n'a PAS d'autre porte : le المرشد, aidé à la demande. */}
+              <h3 className="mb-2 px-1 text-sm font-black text-[#1f1c0b] dark:text-white">تحتاج مساعدة؟</h3>
+              <div className="grid gap-2 sm:grid-cols-2">
+                {/* Porte EXPLICITE vers le المرشد depuis l'accueil
+                    (demande : « depuis l'accueil, question libre »). Le bouton
+                    flottant existe déjà partout, mais il est petit : ici la
+                    question libre a une entrée visible. */}
+                <button type="button" onClick={() => onNavigateToTab?.('chat')} className="flex items-center gap-3 rounded-2xl border border-emerald-200 p-3 text-right dark:border-emerald-900/50">
+                  <HelpCircle className="h-5 w-5 shrink-0 text-[#006d37]" />
+                  <span><span className="block text-xs font-black dark:text-white">المرشد الذكي</span><span className="text-[10px] font-bold text-[#506072]">اطرح أي سؤال</span></span>
+                </button>
+                {/* Renvoi vers le hub, pas vers un outil : l'accueil ne remplace
+                    pas la rubrique, il indique où aller. */}
+                <button type="button" onClick={() => onNavigateToTab?.('training')} className="flex items-center gap-3 rounded-2xl border border-emerald-200 p-3 text-right dark:border-emerald-900/50">
+                  <Dumbbell className="h-5 w-5 shrink-0 text-[#006d37]" />
+                  <span><span className="block text-xs font-black dark:text-white">كل أدوات التدريب</span><span className="text-[10px] font-bold text-[#506072]">ثمانية فضاءات في مكان واحد</span></span>
+                </button>
+              </div>
+            </div>
+
+            <div>
+              {/* 2026-10-12 — « تحدي 3 دقائق » (bootcamp) est parti : il a son
+                  emplacement principal unique dans le hub « التمارين والتدريب ».
+                  Deux portes pour le même outil font croire à deux outils. Il ne
+                  reste que l'ACTION, qui n'existe nulle part ailleurs. */}
+              <h3 className="mb-2 px-1 text-sm font-black text-[#1f1c0b] dark:text-white">اختبر نفسك الآن</h3>
+              <div className="grid grid-cols-1 gap-2">
+                <button type="button" onClick={openSurpriseQuiz} className="flex items-center gap-3 rounded-2xl border border-fuchsia-200 p-3 text-right dark:border-fuchsia-900/50">
+                  <Dices className="h-5 w-5 shrink-0 text-fuchsia-600" />
+                  <span><span className="block text-xs font-black dark:text-white">سؤال مفاجئ</span><span className="text-[10px] font-bold text-[#506072]">سؤال واحد، فوري، دون تحضير</span></span>
+                </button>
+              </div>
+            </div>
+
+            <div className="rounded-2xl bg-[#f8fbfa] p-3 dark:bg-gray-950">
+              <div className="grid grid-cols-3 divide-x-reverse divide-x divide-[#e2dabf]/60 text-center dark:divide-gray-800">
+                {/* 2026-10-12 — « تقدمي » (stats) et « الإنجازات » (badges) ont
+                    quitté CE bloc pour « أنا » (leur porte principale, cf.
+                    moiRaccourcis.ts). Les CHIFFRES restent — c'est une
+                    information, pas une porte. Leur navigation en double
+                    disparaît : plus de bouton qui ouvre la même page ailleurs.
+                    D'où des <span> et non des <button> : rien d'inerte. */}
+                <div className="px-2">
+                  <span className="block text-base font-black text-sky-700">{bacDays ?? '—'}</span>
+                  <span className="text-[10px] font-bold text-[#506072]">يوماً للـ BAC</span>
+                </div>
+                <div className="px-2">
+                  <Trophy className="mx-auto mb-1 h-4 w-4 text-amber-500" />
+                  <span className="block truncate text-[10px] font-bold text-[#506072]">{achievementUnit?.title ?? 'الإنجازات'}</span>
+                </div>
+                <button type="button" onClick={() => setShowWeeklyShareModal(true)} className="px-2 cursor-pointer">
+                  <Share2 className="mx-auto mb-1 h-4 w-4 text-[#006d37]" />
+                  <span className="text-[10px] font-bold text-[#506072]">تقرير الأسبوع</span>
+                </button>
+              </div>
+            </div>
+
+            {gapUnit && (
+              <button type="button" onClick={() => onLaunchRevision(gapUnit.id)} className="flex w-full items-center gap-3 rounded-2xl border border-red-200 bg-red-50/50 p-3 text-right dark:border-red-900/50 dark:bg-red-950/20">
+                <AlertTriangle className="h-5 w-5 shrink-0 text-red-600" />
+                <span className="flex-1"><span className="block text-xs font-black text-red-800 dark:text-red-300">نقطة تحتاج مراجعة</span><span className="text-[10px] font-bold text-red-700/75 dark:text-red-300/75">{gapUnit.title}</span></span>
+                <HelpCircle className="h-4 w-4 text-red-500" />
+              </button>
+            )}
           </div>
-          <div>
-            <div className="flex items-center gap-1.5">
-              <h3 className="font-black text-white text-[15px]">الخرائط الذهنية التفاعلية D3</h3>
-              <span className="text-[10px] bg-white/25 px-2 py-0.5 rounded-full font-black text-white">جديد</span>
-            </div>
-            <p className="text-xs text-white/85 font-medium">استكشف شبكة الروابط والمفاهيم العلمية بقوة فيزياء D3 Force Graph</p>
-          </div>
-        </div>
-        <span className="text-xs font-black bg-white text-emerald-800 hover:bg-emerald-50 px-3.5 py-2 rounded-xl shadow-sm relative z-10">
-          استكشاف
-        </span>
-      </button>
+        )}
+      </section>
 
-      {/* U4 (audit) : galerie d'animations de mécanismes — accès mobile. */}
-      <button 
-        type="button"
-        onClick={() => onNavigateToTab && onNavigateToTab('animations')}
-        className="w-full text-right bg-white dark:bg-gray-900 rounded-3xl p-4 border border-gray-100 dark:border-gray-800 shadow-[0_4px_15px_rgba(0,0,0,0.03)] flex items-center justify-between cursor-pointer hover:border-[#006d37]/30 transition-all active:scale-[0.99]"
-      >
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-2xl bg-[#e8f5ee] dark:bg-emerald-900/30 flex items-center justify-center">
-            <Sparkles className="w-5 h-5 text-[#006d37] dark:text-emerald-400 animate-pulse" />
-          </div>
-          <div>
-            <h3 className="font-black text-[#006d37] dark:text-emerald-400 text-[15px]">الأنميشن العلمي</h3>
-            <p className="text-xs text-[#506072] dark:text-gray-400 font-medium">محاكاة متحركة لآليات البكالوريا (السيالة العصبية، الصفائح، تركيب البروتين)</p>
-          </div>
-        </div>
-        <span className="text-xs font-black bg-[#006d37] text-white px-3.5 py-2 rounded-xl shadow-sm">
-          عرض
-        </span>
-      </button>
-
-      {/* Stats Summary Card */}
-      <div className="bg-white dark:bg-gray-900 rounded-3xl p-4 border border-gray-100 dark:border-gray-800 shadow-[0_4px_15px_rgba(0,0,0,0.03)] flex items-center justify-between">
-        <div className="flex flex-col items-center flex-1">
-           <span className="font-bold text-[15px] text-[#1f1c0b] dark:text-white">المستوى 1</span>
-           <span className="text-[11px] font-bold text-[#006d37] dark:text-emerald-400">طالب بكالوريا ممتاز</span>
-        </div>
-        
-        <div className="w-px h-10 bg-gray-100 dark:bg-gray-800"></div>
-        
-        <div className="flex flex-col items-center flex-1">
-           <span className="font-bold text-[18px] text-[#ff9a4a]">{progress.streak}</span>
-           <div className="flex items-center gap-1 text-[#ff9a4a] font-bold text-[13px]">
-              <span>يوم متواصل</span>
-              <Flame className="w-4 h-4" fill="currentColor" />
-           </div>
-        </div>
-
-        <div className="w-px h-10 bg-gray-100 dark:bg-gray-800"></div>
-        
-        <div className="flex flex-col items-center flex-1">
-           <span className="font-bold text-[18px] text-[#a0522d] dark:text-amber-400">{progress.xp}</span>
-           <div className="flex items-center gap-1 text-[#a0522d] dark:text-amber-400 font-bold text-[13px]">
-              <span>XP</span>
-              <Trophy className="w-4 h-4" fill="currentColor" />
-           </div>
-        </div>
-      </div>
-
-      {/* Big Action Card */}
-      <div className="bg-gradient-to-r from-[#ff8c42] to-[#ffaa62] rounded-3xl p-5 shadow-[0_8px_20px_rgba(255,140,66,0.3)] text-white relative overflow-hidden">
-         <div className="absolute top-1/2 -translate-y-1/2 right-4 opacity-20">
-            <Target className="w-24 h-24" />
-         </div>
-         
-         <div className="flex justify-between items-center relative z-10">
-            <div className="flex items-center gap-4">
-               <div className="bg-white/20 p-3 rounded-2xl">
-                  <Target className="w-10 h-10 text-white" />
-               </div>
-               <div className="text-right">
-                  <h3 className="font-black text-2xl text-white">مهمة 3</h3>
-                  <h3 className="font-black text-2xl text-white">دقائق +15 XP</h3>
-                  <p className="text-white/90 text-[13px] mt-1 font-bold">
-                     {missionUnit ? `« ${missionUnit.title} »` : 'لا توجد وحدة متاحة حالياً'}
-                  </p>
-               </div>
-            </div>
-            <button
-              onClick={() => missionUnit && onLaunchQuiz(missionUnit.id)}
-              disabled={!missionUnit}
-              className="bg-white text-[#ff8c42] font-bold px-5 py-2.5 rounded-2xl shadow-md hover:bg-gray-50 transition-colors text-sm cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
-            >
-              ابدأ الآن!
-            </button>
-         </div>
-      </div>
-
-      {/* Grid of smaller cards */}
-      <div className="grid grid-cols-2 gap-4 mt-6">
-         {/* Streak Card */}
-         <button type="button"
-            onClick={handleOpenStreakCelebration}
-            className="w-full bg-white rounded-[28px] p-6 shadow-[0_8px_24px_rgba(0,0,0,0.04)] border border-gray-100 flex flex-col items-center text-center transition-transform hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
-         >
-            <div className="w-20 h-20 bg-gradient-to-tr from-[#10b981] to-[#34d399] rounded-full flex items-center justify-center mb-4 shadow-[0_8px_16px_rgba(16,185,129,0.25)] relative">
-               <div className="absolute inset-0 rounded-full border-4 border-white/20"></div>
-               <Flame className="w-10 h-10 text-white" fill="currentColor" />
-            </div>
-            <h4 className="font-black text-[17px] text-[#0f172a] mb-1">سلسلة الأيام</h4>
-            <p className="text-[12px] text-gray-500 font-bold">ابدأ سلسلتك اليوم!</p>
-         </button>
-
-         {/* 3 Min Challenge Card */}
-         <button type="button"
-            onClick={() => onNavigateToTab && onNavigateToTab('bootcamp')}
-            className="w-full bg-white rounded-[28px] p-6 shadow-[0_8px_24px_rgba(0,0,0,0.04)] border border-gray-100 flex flex-col items-center text-center transition-transform hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
-         >
-            <div className="w-20 h-20 bg-gradient-to-tr from-[#f97316] to-[#fb923c] rounded-full flex items-center justify-center mb-4 shadow-[0_8px_16px_rgba(249,115,22,0.25)] relative">
-               <div className="absolute inset-0 rounded-full border-4 border-white/20"></div>
-               <Target className="w-10 h-10 text-white" />
-            </div>
-            <h4 className="font-black text-[17px] text-[#0f172a] mb-1">تحدي 3 دقائق</h4>
-            <p className="text-[12px] text-gray-500 font-bold">ابدأ التحدي — اختبر معرفتك بسرعة</p>
-         </button>
-
-         {/* Warning Card */}
-         <button type="button"
-            onClick={() => gapUnit && onLaunchRevision(gapUnit.id)}
-            className={`w-full bg-white rounded-[28px] p-6 shadow-[0_8px_24px_rgba(0,0,0,0.04)] border border-gray-100 flex flex-col items-center text-center transition-transform hover:scale-[1.02] active:scale-[0.98] ${gapUnit ? 'cursor-pointer' : ''}`}>
-            <div className="w-full w-20 h-20 bg-gradient-to-tr from-[#ef4444] to-[#f87171] rounded-full flex items-center justify-center mb-4 shadow-[0_8px_16px_rgba(239,68,68,0.25)] relative">
-               <div className="absolute inset-0 rounded-full border-4 border-white/20"></div>
-               <AlertTriangle className="w-10 h-10 text-white" />
-            </div>
-            <h4 className="font-black text-[17px] text-[#0f172a] mb-1">ثغرة خطيرة</h4>
-            <p className="text-[12px] text-gray-500 font-bold">{gapUnit ? `« ${gapUnit.title} » تحتاج مراجعة!` : 'لا توجد ثغرة — ممتاز!'}</p>
-         </button>
-
-         {/* BAC Timer Card */}
-         <button type="button"
-            onClick={() => onNavigateToTab && onNavigateToTab('stats')}
-            className="w-full bg-white rounded-[28px] p-6 shadow-[0_8px_24px_rgba(0,0,0,0.04)] border border-gray-100 flex flex-col items-center text-center transition-transform hover:scale-[1.02] active:scale-[0.98] cursor-pointer">
-            <div className="w-20 h-20 bg-gradient-to-tr from-[#3b82f6] to-[#60a5fa] rounded-full flex items-center justify-center mb-4 shadow-[0_8px_16px_rgba(59,130,246,0.25)] relative overflow-hidden">
-               <Hourglass className="w-10 h-10 text-white relative z-10" />
-               <div className="absolute -top-4 -right-4 w-12 h-12 bg-white/20 rounded-full"></div>
-               <div className="absolute inset-0 rounded-full border-4 border-white/20"></div>
-            </div>
-            <h4 className="font-black text-[17px] text-[#0f172a] mb-1">عدّاد BAC</h4>
-            <p className="text-[12px] text-gray-500 font-bold">{bacDays !== null ? `${bacDays} يوم الباقي — الوقت يمر` : 'التاريخ الرسمي قيد التأكيد'}</p>
-         </button>
-
-         {/* Surprise Question Card */}
-         <button type="button"
-            onClick={openSurpriseQuiz}
-            className="w-full bg-white rounded-[28px] p-6 shadow-[0_8px_24px_rgba(0,0,0,0.04)] border border-gray-100 flex flex-col items-center text-center transition-transform hover:scale-[1.02] active:scale-[0.98] cursor-pointer">
-            <div className="w-20 h-20 bg-gradient-to-tr from-[#d946ef] to-[#e879f9] rounded-full flex items-center justify-center mb-4 shadow-[0_8px_16px_rgba(217,70,239,0.25)] relative">
-               <div className="absolute inset-0 rounded-full border-4 border-white/20"></div>
-               <Dices className="w-10 h-10 text-white" />
-               <div className="absolute -top-1 -left-1 bg-white rounded-full p-0.5 shadow-sm border border-gray-100">
-                 <HelpCircle className="w-5 h-5 text-[#d946ef]" />
-               </div>
-            </div>
-            <h4 className="font-black text-[17px] text-[#0f172a] mb-1">سؤال مفاجئ</h4>
-            <p className="text-[12px] text-gray-500 font-bold">اختبر معلوماتك — سؤال عشوائي</p>
-         </button>
-
-         {/* Close to Achievement Card */}
-         <button type="button"
-            onClick={() => onNavigateToTab && onNavigateToTab('badges')}
-            className="w-full bg-white rounded-[28px] p-6 shadow-[0_8px_24px_rgba(0,0,0,0.04)] border border-gray-100 flex flex-col items-center text-center transition-transform hover:scale-[1.02] active:scale-[0.98] cursor-pointer">
-            <div className="w-20 h-20 bg-gradient-to-tr from-[#eab308] to-[#facc15] rounded-full flex items-center justify-center mb-4 shadow-[0_8px_16px_rgba(234,179,8,0.25)] relative">
-               <div className="absolute inset-0 rounded-full border-4 border-white/20"></div>
-               <Trophy className="w-10 h-10 text-white" />
-            </div>
-            <h4 className="font-black text-[17px] text-[#0f172a] mb-1">إنجاز قريب</h4>
-            <p className="text-[12px] text-gray-500 font-bold">{achievementUnit ? `« ${achievementUnit.title} » ${Math.round(achievementUnit.progress ?? 0)}% — أكمل الوحدة!` : 'ابدأ وحدة لتقترب من إنجاز!'}</p>
-         </button>
-      </div>
-
-      {/* Shareable Weekly Visual Performance Card Modal */}
       <WeeklyReportShareModal
         isOpen={showWeeklyShareModal}
         onClose={() => setShowWeeklyShareModal(false)}
@@ -363,14 +288,12 @@ export default function DashboardView({
         units={units}
       />
 
-      {/* Streak Milestone Celebration Modal with Interactive Audio */}
       <StreakCelebrationModal
         isOpen={showStreakModal}
         onClose={() => setShowStreakModal(false)}
         streakDays={progress.streak || 1}
         onOpenShareModal={() => setShowWeeklyShareModal(true)}
       />
-
     </div>
   );
 }

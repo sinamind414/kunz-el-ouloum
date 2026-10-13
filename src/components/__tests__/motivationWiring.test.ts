@@ -21,8 +21,17 @@ describe('App.tsx — câblage de la brique motivation', () => {
     expect(APP).toContain("import('./components/MotivationDeclic')");
   });
 
-  it('expose l\'onglet focus dans la navigation secondaire', () => {
-    expect(APP).toContain("tab: 'focus'");
+  it('le minuteur reste câblé, mais n est PLUS une rubrique de menu (2026-10-12)', () => {
+    // « وقت التركيز » quitte la navigation secondaire : c'est un outil
+    // transversal, pas un contenu à apprendre ni à réviser. Il reste ouvert par
+    // le Déclic, au moment où l'élève s'engage à travailler.
+    expect(APP).not.toContain("tab: 'focus'");
+    expect(APP).not.toContain("tab: 'mindmap'");
+    // …mais la vue reste montée et le Déclic l'ouvre toujours.
+    expect(APP).toContain('<FocusTimer');
+    expect(APP).toMatch(/setCurrentTab\('focus'\)/);
+    // « الخرائط الذهنية » a rejoint « الدروس » (Apprendre) : la carte existe.
+    expect(APP).not.toContain('tab: \'mindmap\'');
   });
 
   it('crédite les minutes de focus dans l\'objectif quotidien', () => {

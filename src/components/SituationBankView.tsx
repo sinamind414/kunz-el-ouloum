@@ -13,6 +13,7 @@ import { useMemo, useState } from 'react';
 import { ArrowRight, Eye, EyeOff, Hash, Layers, Lightbulb, Search, Target } from 'lucide-react';
 import { bacEchoForSituation } from '../data/bacSessionIndex';
 import DocumentFigure from './DocumentFigure';
+import BoutonMorchid from './BoutonMorchid';
 import {
   SITUATION_COUNT,
   coveredUnitIds,
@@ -197,6 +198,17 @@ function FicheSituation({ card, onClose }: { card: SituationCard; onClose: () =>
           ⚠️ {card.piegeAr}
         </p>
       </section>
+
+      {/* Assistant contextuel : l'élève bute sur la situation AVANT d'ouvrir la
+          correction. Question ancrée sur la notion évaluée (mots-clés réels du
+          moteur) plutôt que sur l'énoncé complet, qui diluerait le matching. */}
+      <div className="mb-4 flex justify-start">
+        <BoutonMorchid
+          origine="situation"
+          label="أحتاج تلميحاً من المرشد قبل التصحيح"
+          question={`اشرح ${card.notionAr}`}
+        />
+      </div>
 
       <button
         data-testid="basculer-correction"

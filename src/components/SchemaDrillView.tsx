@@ -10,6 +10,7 @@
 import { useMemo, useState } from 'react';
 import { bacEchoForDrill } from '../data/bacSessionIndex';
 import { ArrowRight, Check, PenTool, RefreshCw, Timer } from 'lucide-react';
+import BoutonMorchid from './BoutonMorchid';
 import {
   SCHEMA_DRILLS,
   drillUnitIds,
@@ -99,6 +100,18 @@ function Exercice({ drill, onQuitter }: { drill: SchemaDrill; onQuitter: () => v
 
           <p className="text-[13px] text-[#506072] dark:text-gray-400">{drill.whyAr}</p>
 
+          {/* Assistant contextuel : le drill est fait SANS aucun support — c'est
+              précisément le moment où l'élève peut rester bloqué sur une feuille
+              blanche. Il appelle le المرشد plutôt que d'abandonner.
+              Question ancrée sur le titre du drill (mots-clés du moteur). */}
+          <div className="flex justify-start">
+            <BoutonMorchid
+              origine="schema-rappel"
+              label="أنا محاصر في الورقة البيضاء — ساعدني"
+              question={`اشرح ${drill.titleAr}`}
+            />
+          </div>
+
           <button
             data-testid="drill-fini"
             onClick={() => setPhase('evaluation')}
@@ -180,6 +193,17 @@ function Exercice({ drill, onQuitter }: { drill: SchemaDrill; onQuitter: () => v
               </ul>
             </div>
           )}
+
+          {/* Après comparaison : l'élève voit ce qu'il a oublié. Plutôt que de
+              relancer le drill les yeux fermés, il peut faire expliciter l'élément
+              manqué par le المرشد. */}
+          <div className="flex justify-start">
+            <BoutonMorchid
+              origine="schema-oublis"
+              label="لماذا نسيت هذه العناصر؟ اسأل المرشد"
+              question={`اشرح ${drill.titleAr}`}
+            />
+          </div>
 
           <div className="rounded-3xl p-4 bg-[#fff9ed] dark:bg-black/20 border border-[#d9a400]/30">
             <p className="text-sm font-black text-[#8a6a00] dark:text-[#d9a400] mb-2">الأخطاء التي تُفقد النقاط</p>

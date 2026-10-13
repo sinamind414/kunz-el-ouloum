@@ -176,6 +176,8 @@ describe('C3 — analyserSignaux / plafonds (unités)', () => {
       estProse: false,
       negations: Array(SEUIL_NEGATIONS).fill('لا يوجد'),
       ratioEcho: null,
+      abandonDeclare: false,
+      marqueurAbandon: null,
     };
     const plafonds = calculerPlafonds(signaux);
     expect(plafonds.map((p) => p.type)).toEqual(expect.arrayContaining(['non_prose', 'negation']));

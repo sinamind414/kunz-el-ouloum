@@ -83,10 +83,14 @@ describe('C4b — les inversions factuelles coûtent 0,5 n ; les vigilances rien
   // schéma est une structure (flèches, deux branches), aucune signature keyword
   // ne le distingue d'un récit (preuve : eleve_28, schéma absent noté 0/2 par
   // le prof, créditait 0,5 via le prose de الربط). Sa part (0,5 registre → 1,0
-  // officiel) passe en réserve humaine : note auto max = 6,36, fourchette
-  // [6,36 ; 7,36] (+1,0 arbitré, et l'item NE non crédité plafonne à 7,36 sur
-  // l'échelle officielle complète).
-  const NOTE_MODELE_EX3 = 6.36;
+  // officiel) passe en réserve humaine.
+  // 2026-10-12 — NOTE_MODELE_EX3 passe de 6,36 à 7,00 : l'item « النورادرينالين /
+  // NE » (corr-2025-19) échouait sur 40/40 copies faute de la forme courte « ne »
+  // (les copies écrivent le sigle, jamais le mot) et bug de casse dans
+  // formePresente. La réponse modèle officielle atteignait donc 6,36/8 alors
+  // qu'elle couvre l'attendu chiffré du corrigé. Après correctif : 7,00/8
+  // (= plafond auto réel), fourchette [7,00 ; 8,00] avec l'item manuel arbitré.
+  const NOTE_MODELE_EX3 = 7.0;
 
   it('copie saine : aucune sanction forte, note intacte', () => {
     const n = noterExerciceCalibre(MEFTAH_EX3, 1, 3);

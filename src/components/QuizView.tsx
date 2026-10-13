@@ -7,6 +7,7 @@ import { playSuccessSound, playFailureSound } from '../utils/audio';
 import { MASCOT_URL } from '../data/brandAssets';
 import { getHintForIncorrectOption, getGeneralHint } from '../utils/hints';
 import { validateFillBlank } from '../utils/fillBlankValidate';
+import BoutonMorchid from './BoutonMorchid';
 
 interface QuizViewProps {
   unitId: number;
@@ -276,6 +277,23 @@ export default function QuizView({ unitId, unitTitle, questions, onClose, onQuiz
                   </AnimatePresence>
                 </div>
 
+                {/* Assistant contextuel — moteur LOCAL (smartTutorEngine), pas de
+                    LLM. La question est ancrée sur le TITRE DE L'UNITÉ : c'est ce
+                    qui score le plus fort dans le moteur (+80 si le titre est
+                    inclus, +3/+6 par keyword). Reproduire tout l'énoncé diluerait
+                    le matching et provoquerait un refus hors-sujet.
+                    Effet réel pour l'élève : il obtient l'explication de la notion
+                    AVANT de répondre — l'indice le plus utile ici. */}
+                {!isAnswered[currentIndex] && (
+                  <div className="flex justify-start">
+                    <BoutonMorchid
+                      origine="quiz-indice"
+                      label="اسأل المرشد عن الوحدة قبل الإجابة"
+                      question={`اشرح ${unitTitle}`}
+                    />
+                  </div>
+                )}
+
                 {/* Question à trou (S-C4) : input + validation tolérante */}
                 {/* QCM (par défaut) ou question à trou (S-C4) selon le type */}
                 {currentQuestion.kind === 'fillBlank' ? (
@@ -401,6 +419,18 @@ export default function QuizView({ unitId, unitTitle, questions, onClose, onQuiz
                         {currentQuestion.explanation}
                       </p>
                     </motion.div>
+
+                    {/* Après l'explication : l'élève veut souvent CREUSER. Le
+                        moteur local ne peut pas analyser son erreur précise (pas
+                        de LLM) — il réexplique la notion ratée, ce qui reste
+                        l'aide la plus utile disponible ici. */}
+                    <div className="flex justify-start">
+                      <BoutonMorchid
+                        origine="quiz-erreur"
+                        label="لماذا إجابتي خاطئة؟ اسأل المرشد"
+                        question={`اشرح ${unitTitle}`}
+                      />
+                    </div>
 
                     {/* Smart Hint Assistant (Analyzing incorrect answers) */}
                     {(() => {

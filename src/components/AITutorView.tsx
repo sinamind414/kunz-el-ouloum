@@ -4,19 +4,30 @@ import { Send, Sparkles, AlertCircle, Trash2, BrainCircuit, Target, Stethoscope,
 import { ChatMessage } from '../types';
 import { MORCHID_LOGO_URL } from '../data/brandAssets';
 
-import { processStudentInput, getDailyMission, type TutorRewardDetails, type EngineResult } from '../smartTutorEngine';
+import { processStudentInput, getDailyMission, diagnosticCoach, type TutorRewardDetails, type EngineResult } from '../smartTutorEngine';
 import { DOMAINS } from '../data/smartBotData';
 import { loadSession, saveSession, resetSession, clearPendingInteractions, type BotSession } from '../utils/sessionManager';
 
 interface AITutorViewProps {
   onBackToDashboard?: () => void;
   /** Propagation des XP gagnés dans le tutor vers le UserProgress global de l'App.
-   *  details (3e param) porte la fin d'activité → journalisation serveur (rec #2 de l'audit). */
+   *  details (3e paramètre) porte la fin d'activité → journalisation serveur (rec #2 de l'audit). */
   onXPGained?: (xpGained: number, questionsAnswered: number, details?: TutorRewardDetails) => void;
+  /** Point d'entrée contextuel (2026-10-11) : question formulée par la vue d'où
+   *  vient l'élève — « اشرح لي هذه الوحدة » dans un cours, « لماذا إجابتي خاطئة؟ »
+   *  après une erreur. Elle pré-remplit le champ SANS être envoyée : l'élève la
+   *  relit, l'ajuste, puis valide. */
+  questionInitiale?: string | null;
+  /** Appelé une fois la question pré-remplie consommée (App remet à null). */
+  onQuestionInitialeConsumed?: () => void;
 }
 
 const JOURNEY_BUTTONS = [
   { label: 'مهمة اليوم', icon: Target, testId: 'journey-daily-mission' },
+  // 2026-10-12 — le COACH : « où j'en suis, unité par unité ». Volontairement
+  // distinct de « اختبار تشخيصي », qui LANCE un test : ce bouton ne fait rien
+  // passer, il lit l'état existant et prescrit la prochaine action.
+  { label: 'تشخيص مستواي', icon: Stethoscope, testId: 'journey-coach-diagnostic' },
   { label: 'اختبار تشخيصي', icon: Stethoscope, testId: 'journey-diagnostic' },
   { label: 'تحدي BAC', icon: Swords, testId: 'journey-boss-fight' },
   { label: 'راجع أخطائي السابقة', icon: ClipboardList, testId: 'journey-review-mistakes' },
@@ -24,7 +35,7 @@ const JOURNEY_BUTTONS = [
   { label: 'القائمة الرئيسية', icon: Globe2, testId: 'journey-home' },
 ];
 
-export const WELCOME_TEXT = "مرحباً بك! أنا **المرشد الذكي** لمراجعة علوم الطبيعة والحياة — بكالوريا، شعبة علوم تجريبية.\n\nأساعدك خطوة بخطوة: اسألني عن درس، أو اكتب «اختبرني في …» لتقيس مستواك، أو ابدأ تحدي BAC لوضعيات مشكلة تُقوَّم آلياً.\n\nالمجالات: التخصص الوظيفي للبروتينات · التحولات الطاقوية · التكتونية العامة.\n\n📚 جرّب زر «الملخصات الذهبية» (أو اكتب «الملخص») لاستعراض ملخصات جميع دروس المنهاج.\n\nاختر مجالاً أو أحد أزرار الرحلة أدناه للبدء:";
+export const WELCOME_TEXT = "مرحباً بك! أنا **المرشد الذكي** لمادة علوم الطبيعة والحياة.\n\nاسألني عن مفهوم لم تفهمه، أو اطلب شرح وثيقة، أو اكتب «أعطني تلميحاً» عندما تتوقف في تمرين. سأجيب من محتوى المنهاج وأذكر مصدر الإجابة.\n\nاختر مجالاً للبدء، أو اكتب سؤالك مباشرةً:";
 
 /** B8 (audit) : un seul accueil — init et « مسح المحادثة » utilisent la même factory. */
 function buildWelcomeMessage(): ChatMessage {
@@ -37,7 +48,7 @@ function buildWelcomeMessage(): ChatMessage {
   };
 }
 
-export default function AITutorView({ onBackToDashboard, onXPGained }: AITutorViewProps) {
+export default function AITutorView({ onBackToDashboard, onXPGained, questionInitiale, onQuestionInitialeConsumed }: AITutorViewProps) {
   const [session, setSession] = useState<BotSession>(() => loadSession());
   const [messages, setMessages] = useState<ChatMessage[]>(() => [buildWelcomeMessage()]);
   const [input, setInput] = useState('');
@@ -80,6 +91,17 @@ export default function AITutorView({ onBackToDashboard, onXPGained }: AITutorVi
     }]);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  // Point d'entrée contextuel (2026-10-11) : l'élève a appelé le المرشد depuis
+  // l'endroit où il bloque (cours, exercice, correction). La question
+  // pré-remplit le champ — elle n'est JAMAIS envoyée à sa place : il la relit,
+  // l'ajuste, puis valide.
+  useEffect(() => {
+    if (!questionInitiale || !questionInitiale.trim()) return;
+    setInput(questionInitiale.trim());
+    onQuestionInitialeConsumed?.();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [questionInitiale]);
 
   const runEngine = (result: EngineResult) => {
     setSession(result.session);
@@ -179,6 +201,26 @@ export default function AITutorView({ onBackToDashboard, onXPGained }: AITutorVi
       return;
     }
 
+    // 2026-10-12 — COACH : même chemin que la mission (réponse du moteur, session
+    // conservée), mais le bouton dit ce qu'il fait. Pas de nouveau store : le
+    // diagnostic lit le parcours de l'élève.
+    if (label === 'تشخيص مستواي') {
+      setIsLoading(true);
+      try {
+        const userMsg: ChatMessage = {
+          id: nextId('user'),
+          sender: 'user',
+          text: label,
+          timestamp: new Date().toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' }),
+        };
+        setMessages((prev) => [...prev, userMsg]);
+        runEngine(diagnosticCoach(session));
+      } finally {
+        setIsLoading(false);
+      }
+      return;
+    }
+
     // Les autres entrées du parcours passent par le moteur standard :
     // « اختبار تشخيصي » / « تحدي BAC » / « راجع أخطائي السابقة » sont
     // des commandes nativement reconnues par processStudentInput.
@@ -224,10 +266,10 @@ export default function AITutorView({ onBackToDashboard, onXPGained }: AITutorVi
           </div>
           <div>
             <h3 className="font-extrabold text-base text-[#006d37] flex items-center gap-1.5">
-              <span>المرشد الذكي (الأستاذ كنز العلوم)</span>
+              <span>مرشدك لفهم الدرس</span>
               <BrainCircuit className="w-4 h-4 text-[#944a00]" />
             </h3>
-            <span className="text-[10px] text-[#506072] font-semibold block">مرشد تفاعلي محلي موجه لمنهج البكالوريا — يعمل دون اتصال بالإنترنت</span>
+            <span className="text-[10px] text-[#506072] font-semibold block">شرح وتلميحات من منهاج البكالوريا — يعمل دون اتصال</span>
           </div>
         </div>
 
@@ -414,7 +456,7 @@ export default function AITutorView({ onBackToDashboard, onXPGained }: AITutorVi
         <div className="p-4 shrink-0 bg-[#fff9ed]/40 border-t border-[#e2dabf]/30">
           <span className="text-xs text-[#506072] font-bold block mb-2.5 flex items-center gap-1">
             <Sparkles className="w-3.5 h-3.5 text-[#944a00]" />
-            <span>مواضيع مقترحة للمراجعة السريعة:</span>
+            <span>أسئلة يمكنك طرحها مباشرةً:</span>
           </span>
           <div className="flex flex-wrap gap-2">
             {suggestions.map((sug, sIdx) => (
@@ -430,20 +472,29 @@ export default function AITutorView({ onBackToDashboard, onXPGained }: AITutorVi
         </div>
       )}
 
-      {/* Journey Bar — parcours guidé (audit T2) */}
-      <div className="px-4 py-2.5 shrink-0 bg-[#fff9ed]/60 border-t border-[#e2dabf]/40 flex items-center gap-2 overflow-x-auto">
-        {JOURNEY_BUTTONS.map(({ label, icon: Icon, testId }) => (
-          <button
-            key={label}
-            onClick={() => handleJourneyClick(label)}
-            className="flex items-center gap-1.5 shrink-0 text-[11px] font-extrabold px-2.5 py-1.5 rounded-xl bg-[#ffffff] hover:bg-[#fed65b]/30 border border-[#e2dabf] text-[#006d37] cursor-pointer transition-colors"
-            data-testid={testId}
-          >
-            <Icon className="w-3.5 h-3.5" />
-            <span>{label}</span>
-          </button>
-        ))}
-      </div>
+      <details className="group shrink-0 border-t border-[#e2dabf]/40 bg-[#fff9ed]/45">
+        <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-4 py-2.5 text-xs font-extrabold text-[#006d37] marker:hidden">
+          <span className="flex items-center gap-2">
+            <BookOpen className="h-4 w-4" />
+            <span>أدوات تدريب إضافية</span>
+          </span>
+          <span className="text-[10px] font-bold text-[#506072] group-open:hidden">إظهار</span>
+          <span className="hidden text-[10px] font-bold text-[#506072] group-open:inline">إخفاء</span>
+        </summary>
+        <div className="grid grid-cols-2 gap-2 border-t border-[#e2dabf]/30 px-4 py-3 sm:grid-cols-3">
+          {JOURNEY_BUTTONS.map(({ label, icon: Icon, testId }) => (
+            <button
+              key={label}
+              onClick={() => handleJourneyClick(label)}
+              className="flex items-center gap-1.5 rounded-xl border border-[#e2dabf] bg-[#ffffff] px-2.5 py-2 text-right text-[11px] font-extrabold text-[#006d37] transition-colors hover:bg-[#fed65b]/30"
+              data-testid={testId}
+            >
+              <Icon className="h-3.5 w-3.5 shrink-0" />
+              <span>{label}</span>
+            </button>
+          ))}
+        </div>
+      </details>
 
       {/* Input Form Footer */}
       <div className="p-4 border-t border-[#e2dabf]/60 shrink-0 bg-[#ffffff]">

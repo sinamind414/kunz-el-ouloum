@@ -93,14 +93,38 @@ describe('LessonsView — leçons passives par icônes', () => {
   });
 
   // ── الحصيلة المعرفية déplacée dans les leçons passives ─────────────────
-  it('l’écran principal n’a plus de carte « الحصيلة المعرفية » autonome', () => {
+  // ── Examens déplacés dans le hub « التمارين والتدريب » (2026-10-12) ────
+  // Produire une réponse = s'entraîner, pas apprendre. Les deux examens ont
+  // donc quitté cet écran pour le hub (entrée `examens`, sous-écran dédié).
+  it('l’écran principal n’a plus ni carte « الحصيلة المعرفية » ni examens', () => {
     render(<LessonsView />);
     expect(screen.queryByText('الحصيلة المعرفية')).toBeNull();
     expect(screen.queryByTestId('okacha-entree-domaine')).toBeNull();
-    // Les 4 autres rubriques sont toujours là.
+    // Les examens ont quitté « الدروس » — déplacement, pas perte : la porte est
+    // l'entrée `examens` du hub S'entraîner (verrouillé par son propre test).
+    expect(screen.queryByText('اختبار الفصول')).toBeNull();
+    expect(screen.queryByText('اختبار بكالوريا')).toBeNull();
+    // Ce qui reste : ce qui sert à COMPRENDRE.
     expect(screen.getByText('الدرس الرسمي')).toBeTruthy();
-    expect(screen.getByText('اختبار الفصول')).toBeTruthy();
-    expect(screen.getByText('اختبار بكالوريا')).toBeTruthy();
+    expect(screen.getByText('الدرس النشيط')).toBeTruthy();
+  });
+
+  // Le lien de remplacement existe vraiment : les examens restent ouvrables en
+  // un clic depuis le hub, par deep-link dans LessonsView. QcmLivreView et
+  // BacExamView sont `lazy` : on attend la résolution du chunk, jamais le
+  // fallback de chargement. Les deep-links étant consommés au MONTAGE, chaque
+  // cas est un rendu neuf (un rerender ne rejouerait pas l'effet).
+  it('les examens restent atteignables en un clic depuis le hub via initialMode', async () => {
+    const premier = render(<LessonsView />);
+    expect(screen.queryByTestId('qcm-livre')).toBeNull();
+    premier.unmount();
+
+    render(<LessonsView initialMode="qcm" />);
+    expect(await screen.findByTestId('qcm-livre')).toBeTruthy();
+    cleanup();
+
+    render(<LessonsView initialMode="bac" />);
+    expect(await screen.findByTestId('bac-exam')).toBeTruthy();
   });
 
   it('chaque domaine a SA الحصيلة : entrée en fin d’écran, ouverte sur ce domaine', async () => {

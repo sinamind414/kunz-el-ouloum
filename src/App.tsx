@@ -7,19 +7,15 @@ import {
   Flame,
   Trophy,
   Sparkles,
-  GraduationCap,
   Sun,
   Moon,
   Swords,
   PlayCircle,
   Layers,
-  Key,
   Compass,
-  Network,
   Search,
   PenTool,
   Dumbbell,
-  Timer,
   Sprout
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
@@ -81,12 +77,15 @@ const TadwinView = lazy(() => import('./components/TadwinView'));
 const QuizView = lazy(() => import('./components/QuizView'));
 const RevisionView = lazy(() => import('./components/RevisionView'));
 const LessonsView = lazy(() => import('./components/LessonsView'));
-// Deux piliers du design OPUS 5.5 (photos « أنا » et « البكالوريا ») :
-// ouverts aussi peu que les autres onglets secondaires → import différé.
+// Un pilier du design OPUS 5.5 (photo « أنا ») :
+// ouvert aussi peu que les autres onglets secondaires → import différé.
 const MoiView = lazy(() => import('./components/MoiView'));
-const BacView = lazy(() => import('./components/BacView'));
 const LessonTwoView = lazy(() => import('./components/LessonTwoView'));
 const TrainingHubView = lazy(() => import('./components/TrainingHubView'));
+// Hub « الاختبارات » — sous-écran du hub S'entraîner (2026-10-12).
+const ExamensHubView = lazy(() => import('./components/ExamensHubView'));
+// Hub « المراجعة » — miroir du hub d'entraînement, côté consolidation.
+const ReviewHubView = lazy(() => import('./components/ReviewHubView'));
 const CombatChallengePortal = lazy(() => import('./components/CombatChallengePortal'));
 const UnitIntroPortal = lazy(() => import('./components/UnitIntroPortal'));
 const StudentAuthView = lazy(() => import('./components/StudentAuthView'));
@@ -110,6 +109,7 @@ import DashboardView from './components/DashboardView';
 import StudyReminderModal from './components/StudyReminderModal';
 import StudentAccountBar from './components/StudentAccountBar';
 import { getApiToken } from './utils/api';
+import { MORCHID_ASK_EVENT, type MorchidAskDetail } from './lib/morchidBridge';
 import { 
   startPirateMusic, 
   stopPirateMusic, 
@@ -128,11 +128,15 @@ export default function App() {
   // Navigation tab state
   // Exercice sur lequel ouvrir l'atelier quand on arrive depuis le plan.
   const [bacIdeaFocus, setBacIdeaFocus] = useState<string | null>(null);
-  const [currentTab, setCurrentTab] = useState<'splash' | 'home' | 'review' | 'stats' | 'chat' | 'methodology' | 'bootcamp' | 'badges' | 'lesson' | 'workshop' | 'mindmap' | 'teacher' | 'animations' | 'situations' | 'schemas' | 'training' | 'plan' | 'bacideas' | 'focus' | 'tadwin' | 'moi' | 'bac'>('splash');
+  const [currentTab, setCurrentTab] = useState<'splash' | 'home' | 'review' | 'stats' | 'chat' | 'methodology' | 'bootcamp' | 'badges' | 'lesson' | 'workshop' | 'mindmap' | 'teacher' | 'animations' | 'situations' | 'schemas' | 'training' | 'plan' | 'bacideas' | 'focus' | 'tadwin' | 'moi' | 'reviser' | 'examens'>('splash');
   // Deep-link : ouverture d'une leçon précise depuis un raccourci (الدروس, أنا…).
   const [parcoursLesson, setParcoursLesson] = useState<{ key: string; kind: 'html' | 'active'; unitId: number } | null>(null);
   // Deep-link : ouverture du QCM d'une unité précise (raccourci).
   const [parcoursQcm, setParcoursQcm] = useState<number | null>(null);
+  // Deep-link : examen à ouvrir dans LessonsView ('qcm' = QCM du livre,
+  // 'bac' = tests bac complets). Les examens ont quitté « الدروس » le
+  // 2026-10-12 pour le hub S'entraîner (src/data/trainingHub.ts, `examens`).
+  const [parcoursMode, setParcoursMode] = useState<'qcm' | 'bac' | null>(null);
   const ouvrirLeçonDepuisParcours = (key: string, kind: 'html' | 'active', unitId: number) => {
     setParcoursLesson({ key, kind, unitId });
     setParcoursQcm(null);
@@ -143,7 +147,30 @@ export default function App() {
     setParcoursLesson(null);
     setCurrentTab('lesson');
   };
+  // Examen choisi dans le hub S'entraîner → LessonsView l'ouvre en mode examen.
+  const ouvrirExamen = (mode: 'qcm' | 'bac') => {
+    setParcoursMode(mode);
+    setParcoursQcm(null);
+    setParcoursLesson(null);
+    setCurrentTab('lesson');
+  };
   const [activeMindMapUnitId, setActiveMindMapUnitId] = useState<number>(1);
+  // Assistant contextuel « المرشد » (2026-10-11) : question apportée par une
+  // vue via src/lib/morchidBridge.ts. Transmise à AITutorView, qui pré-remplit
+  // le champ sans envoyer à la place de l'élève.
+  const [morchidSeed, setMorchidSeed] = useState<string | null>(null);
+  // Écoute globale : n'importe quelle vue peut appeler le المرشد sans qu'un
+  // callback traverse toute l'arborescence.
+  useEffect(() => {
+    const onMorchidAsk = (e: Event) => {
+      const detail = (e as CustomEvent<MorchidAskDetail>).detail;
+      if (!detail?.question) return;
+      setMorchidSeed(detail.question);
+      setCurrentTab('chat');
+    };
+    window.addEventListener(MORCHID_ASK_EVENT, onMorchidAsk);
+    return () => window.removeEventListener(MORCHID_ASK_EVENT, onMorchidAsk);
+  }, []);
   const [isAuthOpen, setIsAuthOpen] = useState(false);
   // Session élève persistée (correctif : la session était perdue à chaque F5).
   // On ne réaffiche un compte que s'il reste AVEC un jeton valide.
@@ -711,39 +738,38 @@ export default function App() {
   // Les vues secondaires restent accessibles à un clic (groupe « المزيد »)
   // et par les cartes du tableau de bord (onNavigateToTab).
   //
-  // Port des 4 piliers OPUS 5.5 (photo « barre basse ») SANS rien perdre :
-  // on AJOUTE « البكالوريا » et « أنا » aux entrées existantes, et chaque
-  // entrée porte son label FR (comme dans le zip). Ordre repris des photos :
-  // ... الدروس → البكالوريا ... et أنا en dernier.
-  // 2026-10-03 — « مسار تعلمك » a quitté CETTE barre (rubrique supprimée, principe
-  // conservé : le moteur src/lib/parcours/ est intact, le compteur et la leçon
-  // suggérée sont affichés en tête de « الدرس الرسمي », la tâche du jour reste
-  // sur « الرئيسية » via NbaCard, et la revue J+14 reste dans التدوين).
+  // 2026-10-11 — restructuration en 5 rubriques principales, UNE par objectif :
+  //   الرئيسية (que faire maintenant ?) → الدروس (comprendre) →
+  //   التمارين والتدريب (produire une réponse) → المراجعة (consolider) → أنا
+  //   (suivre). Chaque rubrique porte ses espaces dans un hub dédié
+  //   (src/data/trainingHub.ts, src/data/revisionHub.ts) : plus de menu
+  //   « المزيد » fourre-tout, et un seul emplacement principal par fonction.
+  //   « المرشد » quitte CETTE barre : il devient un assistant contextuel
+  //   accessible depuis n'importe quelle rubrique via le bouton flottant
+  //   « fab-morchid » — une rubrique ne peut pas contenir à la fois la
+  //   mission, le diagnostic, le défi et les résumés.
+  //   Rappel des départs précédents (principes conservés, jamais supprimés) :
+  //   « البكالوريا » (2026-10-09), « مسار تعلمك » (moteur parcours intact,
+  //   compteur + leçon suggérée en tête de « الدرس الرسمي »), « تقدمي » et les
+  //   raccourcis « أنا » (voir src/data/moiRaccourcis.ts).
   const PRIMARY_NAV: { tab: typeof currentTab; label: string; fr: string; Icon: LucideIcon }[] = [
     { tab: 'home', label: 'الرئيسية', fr: 'Accueil', Icon: Home },
-    { tab: 'lesson', label: 'الدروس', fr: 'Leçons', Icon: BookOpen },
-    { tab: 'bac', label: 'البكالوريا', fr: 'Bac', Icon: GraduationCap },
-    { tab: 'review', label: 'المراجعة', fr: 'Révision', Icon: Layers },
-    { tab: 'chat', label: 'المرشد', fr: 'Guide', Icon: Compass },
-    // 2026-10-03 — « تقدمي » a quitté CETTE barre pour devenir la 3e icône du
-    // bloc « المزيد » de la page « أنا » (voir src/data/moiRaccourcis.ts).
-    // Déplacement, pas doublon : un test de MoiView relit ce bloc et casse si
-    // elle y réapparaît. La carte « stats » du tableau de bord reste active.
+    { tab: 'lesson', label: 'الدروس', fr: 'Apprendre', Icon: BookOpen },
+    { tab: 'training', label: 'التمارين والتدريب', fr: "S'entraîner", Icon: Dumbbell },
+    { tab: 'reviser', label: 'المراجعة', fr: 'Réviser', Icon: Layers },
     { tab: 'moi', label: 'أنا', fr: 'Moi', Icon: Sprout },
   ];
-  // Sprint 13 — dette UI : 9 entrées secondaires devenaient un mur. Les cinq
-  // espaces d'entraînement (situations, schémas, bootcamp, atelier, animations)
-  // passent derrière une porte unique ; voir src/data/trainingHub.ts.
-  // 2026-10-03 — les rubriques « الأوسمة والإنجازات » et « لوحة المتابعة » ont
-  // quitté CE menu pour devenir deux icônes au bas de la page « أنا », sous
-  // l'avancement de l'élève (voir src/data/moiRaccourcis.ts). Déplacement, pas
-  // doublon : un test de MoiView relit ce bloc et casse si elles réapparaissent.
-  const SECONDARY_NAV: { tab: typeof currentTab; label: string; Icon: LucideIcon }[] = [
-    { tab: 'focus', label: 'المؤقّت (تركيز)', Icon: Timer },
-    { tab: 'training', label: 'التمارين والتدريب', Icon: Dumbbell },
-    { tab: 'mindmap', label: 'الخرائط الذهنية', Icon: Network },
-    { tab: 'methodology', label: MIFTAH_NAME_OFFICIAL_AR, Icon: Key },
-  ];
+  // « المزيد » — VIDE depuis le 2026-10-12 : les deux derniers outils qu'il
+  // portait ont rejoint leur rubrique d'objectif.
+  //   • « المؤقّت (تركيز) » : outil transversal, pas un contenu à apprendre ni
+  //     à réviser → plus une rubrique du tout. Il reste ouvert par le Déclic
+  //     ( MotivationDeclic → setCurrentTab('focus') ), autrement dit au moment
+  //     où l'élève s'engage à travailler — pas en errant dans un menu.
+  //   • « الخرائط الذهنية » : outil de SYNTHÈSE → déplacé dans « الدروس »
+  //     (Apprendre), cf. LessonsView, carte data-testid="lecons-mindmap".
+  // Le tableau est gardé (structure inchangée) mais vide : le bloc « المزيد »
+  // n'est plus rendu tant qu'aucun outil secondaire n'y revient.
+  const SECONDARY_NAV: { tab: typeof currentTab; label: string; Icon: LucideIcon }[] = [];
 
   return (
     <div className={`h-[100dvh] w-full overflow-hidden relative transition-all duration-500 flex flex-col ${
@@ -803,7 +829,8 @@ export default function App() {
 
         {/* Center Title Brand Name */}
         <div className="font-extrabold text-xl md:text-2xl text-[#006d37] font-display select-none">
-          {currentTab === 'review' ? 'المراجعة الذكية' : 
+          {currentTab === 'reviser' ? 'المراجعة' :
+           currentTab === 'review' ? 'المراجعة الذكية' :
            currentTab === 'stats' ? 'لوحة الإحصائيات' : 
            currentTab === 'badges' ? 'الأوسمة والإنجازات' : 
            currentTab === 'methodology' ? MIFTAH_NAME_OFFICIAL_AR : 
@@ -814,6 +841,7 @@ export default function App() {
            currentTab === 'situations' ? 'تمارين بالوضعيات' :
            currentTab === 'schemas' ? 'ارسم من الذاكرة' :
            currentTab === 'training' ? 'التمارين والتدريب' :
+           currentTab === 'examens' ? 'الاختبارات' :
            currentTab === 'plan' ? 'خطة المراجعة النهائية' :
            currentTab === 'bacideas' ? 'أفكار التمارين حسب الدورة' :
            currentTab === 'focus' ? 'المؤقّت (بومودورو)' :
@@ -886,23 +914,28 @@ export default function App() {
             </button>
           ))}
 
-          <div className="text-[10px] font-black tracking-widest text-[#506072] uppercase px-4 mt-5 mb-3">المزيد</div>
+          {/* Groupe « المزيد » — n'est rendu que s'il porte au moins une entrée.
+              Vide depuis le 2026-10-12 (focus → Déclic, mindmap → الدرس). */}
+          {SECONDARY_NAV.length > 0 && (
+            <>
+              <div className="text-[10px] font-black tracking-widest text-[#506072] uppercase px-4 mt-5 mb-3">المزيد</div>
 
-          {/* U1 : outils avancés — groupe secondaire compact, à un clic. */}
-          {SECONDARY_NAV.map(({ tab, label, Icon }) => (
-            <button
-              key={tab}
-              onClick={() => handleTabChange(tab)}
-              className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-2xl text-[13px] font-semibold transition-all cursor-pointer ${
-                currentTab === tab
-                  ? 'bg-[#2ecc71]/15 text-[#006d37]'
-                  : 'text-[#504441]/80 hover:bg-[#fff9ed] hover:text-[#006d37]'
-              }`}
-            >
-              <Icon className="w-4 h-4" />
-              <span>{label}</span>
-            </button>
-          ))}
+              {SECONDARY_NAV.map(({ tab, label, Icon }) => (
+                <button
+                  key={tab}
+                  onClick={() => handleTabChange(tab)}
+                  className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-2xl text-[13px] font-semibold transition-all cursor-pointer ${
+                    currentTab === tab
+                      ? 'bg-[#2ecc71]/15 text-[#006d37]'
+                      : 'text-[#504441]/80 hover:bg-[#fff9ed] hover:text-[#006d37]'
+                  }`}
+                >
+                  <Icon className="w-4 h-4" />
+                  <span>{label}</span>
+                </button>
+              ))}
+            </>
+          )}
         </aside>
         )}
 
@@ -934,8 +967,27 @@ export default function App() {
                 />
               )}
 
+              {/* Hub « الاختبارات » — sous-écran de S'entraîner. Les examens
+                  proprement dits restent dans LessonsView (données et UI
+                  existantes) : on les ouvre par deep-link, on ne les duplique pas. */}
+              {currentTab === 'examens' && (
+                <ExamensHubView
+                  onOpen={(mode) => ouvrirExamen(mode)}
+                  onBack={() => setCurrentTab('training')}
+                />
+              )}
+
+              {/* Hub « المراجعة » — la rubrique principale. Les trois espaces
+                  de consolidation sont déclarés dans src/data/revisionHub.ts. */}
+              {currentTab === 'reviser' && (
+                <ReviewHubView
+                  onOpen={(tab) => setCurrentTab(tab)}
+                  onBackToHome={() => setCurrentTab('home')}
+                />
+              )}
+
               {currentTab === 'review' && (
-                <RevisionView 
+                <RevisionView
                   units={units}
                   flashcards={flashcards}
                   xp={progress.xp}
@@ -959,6 +1011,8 @@ export default function App() {
                 <AITutorView
                   onBackToDashboard={() => setCurrentTab('home')}
                   onXPGained={handleTutorXPGained}
+                  questionInitiale={morchidSeed}
+                  onQuestionInitialeConsumed={() => setMorchidSeed(null)}
                 />
               )}
 
@@ -989,7 +1043,9 @@ export default function App() {
                   onRateCard={handleRateCard}
                   initialLesson={parcoursLesson ?? undefined}
                   initialQcm={parcoursQcm ?? undefined}
-                  onDeepLinkConsumed={() => { setParcoursLesson(null); setParcoursQcm(null); }}
+                  initialMode={parcoursMode ?? undefined}
+                  onDeepLinkConsumed={() => { setParcoursLesson(null); setParcoursQcm(null); setParcoursMode(null); }}
+                  onOpenTab={(tab) => setCurrentTab(tab as typeof currentTab)}
                 />
               )}
 
@@ -998,13 +1054,6 @@ export default function App() {
                   nomEleve={studentName}
                   courriel={studentEmail}
                   onOuvrir={(onglet) => handleTabChange(onglet)}
-                />
-              )}
-
-              {currentTab === 'bac' && (
-                <BacView
-                  onOpenLesson={ouvrirLeçonDepuisParcours}
-                  onOpenQcm={ouvrirQcmDepuisParcours}
                 />
               )}
 
@@ -1140,6 +1189,24 @@ export default function App() {
         ))}
 
       </nav>
+      )}
+
+      {/* Assistant contextuel « المرشد الذكي ». Depuis la restructuration du
+          2026-10-11 il n'est plus une rubrique de la barre : un bouton
+          flottant l'ouvre depuis N'IMPORTE quelle rubrique — cours
+          (« explique-moi cette notion »), exercice, correction, accueil.
+          Masqué dans la vue elle-même, sur le splash et en mode focus. */}
+      {!isFocusMode && currentTab !== 'chat' && (
+        <button
+          type="button"
+          data-testid="fab-morchid"
+          onClick={() => setCurrentTab('chat')}
+          title="المرشد الذكي"
+          aria-label="المرشد الذكي"
+          className="fixed bottom-24 left-4 z-40 md:bottom-8 flex h-14 w-14 items-center justify-center rounded-full bg-[#006d37] text-white shadow-lg shadow-[#006d37]/30 transition-transform hover:scale-105 active:scale-95 cursor-pointer"
+        >
+          <Compass className="w-6 h-6" />
+        </button>
       )}
     </div>
   );

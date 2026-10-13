@@ -271,14 +271,45 @@ const S1_EX3: AttenduItem[] = [
     'الشكل(ب): في غياب Mtb شدة الارتباط Ado-A1R ~100؛ مع Mtb تتناقص حتى الانعدام (~20 pmol/L)'),
   item(0.5, ['يعيق', 'ارتباط الادينوزين'],
     'الاستنتاج: يعيق Mtb ارتباط الأدينوزين بمستقبله A1R'),
+  // 2026-10-12 — TENTATIVE DE CORRECTION PUIS REVENUE ARRIÈRE (mesure à l'appui).
+  // Cet item valait 1,0 pt et se payait du seul mot « فرضيه » (crédité 39/40
+  // copies). Ajouter des composantes a AGGRAVÉ la situation : MAE Ex3 0,99 → 1,37,
+  // biais Ex3 +0,71 → +1,11, κ Ex3 0,83 → 0,70. Cause : mon groupe
+  // ['يرتبط', 'ado', 'الادينوزين'] contient « يرتبط », verbe courant — une copie
+  // qui se contente d'ÉNONCER l'observation (« يرتبط Ado بمستقبله A1R ») prenait
+  // alors les DEUX groupes, donc l'item entier. Le « correctif » ÉLARGISSAIT la
+  // détection au lieu de la restreindre.
+  // LEÇON retenue, pour la prochaine passe : il faut distinguer l'observation
+  // (« يرتبط Ado ») de l'hypothèse (« يرتبط Mtb »), donc filtrer Mtb
+  // explicitement — pas ajouter des synonymes larges. À refaire sur preuve.
   item(1.0, ['فرضيه', 'يرتبط mtb'],
     // Corrigé p.3 : « الربط واقتراح الفرضيتين — 1.0 ».
     'الربط واقتراح الفرضيتين: (ف1) يرتبط Mtb بمستقبل الأدينوزين A1R · (ف2) يرتبط Mtb بالأدينوزين'),
-  item(0.5, ['النورادرينالين', 'نورادرينالين', 'norepinephrine', 'noradrenaline'],
-    'الجزء 2-الشكل(أ): كلما ارتفعت نسبة المعقدات Ado-A1R نقص تركيز NE/النورأدرينالين (من ~8 إلى ~2 nmol/L)'),
+
+  // 2026-10-12 — deux correctifs MESURÉS sur les 40 copies (scripts/evaluer-
+  // copies.ts, sonder-ex3.ts) :
+  //  1. FORME AJOUTÉE « ne ». Aucune des 40 copies n'écrit « النورادرينالين »
+  //     ni « norepinephrine » : elles écrivent le sigle « NE » (38/40 copies,
+  //     161 occurrences). Sans cette forme, l'item échouait sur 40/40 copies et
+  //     plafonnait toute copie ≥ 15/20 à 6,36/8 (biais −1,19 sur cette tranche).
+  //  2. COMPOSANTE AJOUTÉE (mécanisme P5). Le sigle SEUL n'est pas la preuve :
+  //     eleve_03/04/05 mentionnent « NE » une fois dans la conclusion recopiée
+  //     (« يرتبط Ado بمستقبله فيقلل إفراز NE ») sans le mécanisme ni les valeurs,
+  //     et le prof ne leur accorde pas le point (2/8 contre 2,79–3,57 pour le
+  //     moteur). L'attendu officiel exige la relation CHIFFRÉE du corrigé
+  //     (de ~8 à ~2 nmol/L) : on crédite donc NE ∩ unité nmol.
+  //     Contrôle : eleve_35 (10 occurrences + « من 9 الي 2nmol l ») garde le point.
+  item(0.5, ['النورادرينالين', 'نورادرينالين', 'norepinephrine', 'noradrenaline', 'ne'],
+    'الجزء 2-الشكل(أ): كلما ارتفعت نسبة المعقدات Ado-A1R نقص تركيز NE/النورأدرينالين (من ~8 إلى ~2 nmol/L)',
+    [['النورادرينالين', 'نورادرينالين', 'norepinephrine', 'noradrenaline', 'ne'], ['nmol', 'نانو', 'نانومول']]),
   item(0.5, ['يقلل افراز'],
     'الاستنتاج: ارتباط Ado بـ A1R يقلل إفراز NE من الخلايا قبل المشبكية',
     [['افراز ne', 'يقلل افراز', 'ينخفض افراز', 'منع افراز']]),
+  // 2026-10-12 — TENTATIVE DE CORRECTION PUIS REVENUE ARRIÈRE (même mesure que
+  // l'item 18 : MAE Ex3 0,99 → 1,37). Mes groupes ['قنوات','go','gi','k'] /
+  // ['افراز','حويصلات','ne'] contenaient 'ne' — présent dans 38/40 copies — donc
+  // la seconde condition était quasi toujours satisfaite. Le fractionnement n'a
+  // rien resserré et a dégradé l'accord global. Dette conservée telle quelle.
   item(1.0, ['قنوات', 'الحويصلات'],
     'الشكل(ب) غياب Mtb: ارتباط Ado → تفعيل Go/Gi → تنشيط قنوات K⁺ وتثبيط قنوات Ca²⁺ → لا اندفاع Ca²⁺ → عدم إفراز NE من الحويصلات'),
   item(1.0, ['يتثبت', 'يعود'],

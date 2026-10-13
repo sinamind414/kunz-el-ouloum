@@ -40,6 +40,18 @@ export interface SignauxCopie {
    * (0..1) — « perroquet » si élevée. Null si aucun énoncé fourni.
    */
   ratioEcho: number | null;
+  /**
+   * L'élève DÉCLARE abandonner une partie (2026-10-12). Ce n'est pas un motif de
+   * pénalité : 6 copies sur 40 le font, et le moteur ne crédite déjà rien pour
+   * les items absents. C'est un drapeau de RÉSERVE HUMAINE — la note auto peut
+   * être juste au barème et pourtant très au-dessus de ce que le prof accorde
+   * (cas mesuré eleve_18 : moteur 6,36/8 contre 4,00 au prof), parce qu'une
+   * partie entière non traitée change la lecture de la copie. On remonte le
+   * signal, on ne note pas à la place du correcteur.
+   */
+  abandonDeclare: boolean;
+  /** Le marqueur trouvé (forme normalisée), pour l'afficher tel quel. */
+  marqueurAbandon: string | null;
 }
 
 /** Marqueurs de relation/analyse (meftahLaw ANALYSIS_PATTERNS + scorer). */
@@ -117,11 +129,17 @@ export function analyserSignaux(reponse: string, question?: string): SignauxCopi
     }
   }
 
+  // Abandon DÉCLARÉ par l'élève (« لم أتم », « لا أعرف », « دون إجابة »). Formes
+  // normalisées : normalizeAr retire la ponctuation et uniformise les diacritiques.
+  const marqueurAbandon = MARQUEURS_ABANDON.find((m) => norm.includes(m)) ?? null;
+
   return {
     nbMots: mots.length,
     estProse: estDeLaProse(brut, norm),
     negations,
     ratioEcho,
+    abandonDeclare: marqueurAbandon !== null,
+    marqueurAbandon,
   };
 }
 
@@ -146,6 +164,22 @@ export const PLAFONDS: Record<PlafondType, number> = {
 export const SEUIL_NEGATIONS = 3;
 /** Écho lexical avec l'énoncé au-delà duquel la copie est un perroquet. */
 export const SEUIL_ECHO = 0.6;
+
+/**
+ * Marqueurs d'abandon DÉCLARÉ (formes normalisées). Mesuré sur les 40 copies :
+ * 6 copies en contiennent un. Ce n'est PAS un plafond — voir `abandonDeclare`.
+ * Volontairement court et explicite : une fausse détection enverrait une copie
+ * légitime en réserve humaine, ce qui coûterait du temps au correcteur.
+ */
+export const MARQUEURS_ABANDON = [
+  'لم اتم',
+  'لم اجب',
+  'لا اعرف',
+  'لا اعلم',
+  'دون اجابه',
+  'تركت هذا',
+  'لم يعمل',
+];
 
 export function calculerPlafonds(signaux: SignauxCopie): PlafondApplique[] {
   const out: PlafondApplique[] = [];

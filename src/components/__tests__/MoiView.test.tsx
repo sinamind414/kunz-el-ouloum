@@ -151,6 +151,34 @@ describe('MoiView — أرقامك بالكلمات', () => {
     const { container } = rendre();
     expect(container.textContent).toContain(`1 / ${NB_LECONS}`);
   });
+
+  // 2026-10-12 — barre de progression + pourcentage demandés, SANS perdre les
+  // chiffres : les deux doivent vivre ensemble.
+  it('chaque ligne porte une barre de progression', () => {
+    rendre();
+    expect(screen.getByTestId('progression-lecons')).toBeTruthy();
+    expect(screen.getByTestId('progression-fragiles')).toBeTruthy();
+    expect(screen.getByTestId('progression-jalons')).toBeTruthy();
+    expect(screen.getByTestId('progression-jour')).toBeTruthy();
+  });
+
+  it('le pourcentage accompagne les chiffres, il ne les remplace pas', () => {
+    const { container } = rendre();
+    // Les chiffres sont toujours là…
+    expect(container.textContent).toContain(`0 / ${NB_LECONS}`);
+    expect(container.textContent).toContain(`0 / ${NB_JALONS}`);
+    // …et le pourcentage aussi (0 % au démarrage, pas de division par zéro).
+    expect(container.textContent).toContain('0%');
+  });
+
+  it('après une leçon faite, le pourcentage suit le chiffre', () => {
+    cleanup();
+    markDone(PARCOURS_FLAT[0].id, 1);
+    const { container } = rendre();
+    const attendu = Math.round((1 / NB_LECONS) * 100);
+    expect(container.textContent).toContain(`1 / ${NB_LECONS}`);
+    expect(container.textContent).toContain(`${attendu}%`);
+  });
 });
 
 describe('MoiView — المزيد : rubriques déplacées du menu latéral', () => {
@@ -224,10 +252,12 @@ describe('MoiView — المزيد : rubriques déplacées du menu latéral', ()
     const menuPrincipal = lire('PRIMARY_NAV');
 
     // 1. Menu latéral « المزيد » : les deux premières rubriques sont parties.
+    //    Le 2026-10-12 le menu est VIDE (focus → Déclic, mindmap → الدرس) :
+    //    zéro entrée est désormais une valeur normale, plus un échec.
     const entreesSecondaires = (menuSecondaire.match(/\{ tab: '/g) ?? []).length;
-    expect(entreesSecondaires).toBeGreaterThan(0);
+    expect(entreesSecondaires).toBeGreaterThanOrEqual(0);
     expect(entreesSecondaires).toBeLessThanOrEqual(6);
-    for (const tab of ['badges', 'teacher']) {
+    for (const tab of ['badges', 'teacher', 'focus', 'mindmap']) {
       expect(menuSecondaire, `${tab} est toujours dans le menu latéral`).not.toContain(
         `tab: '${tab}'`,
       );
@@ -236,18 +266,23 @@ describe('MoiView — المزيد : rubriques déplacées du menu latéral', ()
     expect(src).not.toMatch(/Icon: Award/);
     expect(src).not.toMatch(/Icon: LayoutDashboard/);
 
-    // 2. Barre principale : تقدمي est partie, « أنا » ferme la barre, et
-    //    « مسار تعلمك » a quitté la barre le 2026-10-03 (rubrique supprimée,
-    //    principe conservé : compteur + leçon suggérée dans « الدرس الرسمي »).
+    // 2. Barre principale : تقدمي et « البكالوريا » sont parties, « أنا »
+    //    ferme la barre, et « مسار تعلمك » a quitté la barre le 2026-10-03
+    //    (rubrique supprimée, principe conservé : compteur + leçon suggérée
+    //    dans « الدرس الرسمي »).
     const entreesPrincipales = (menuPrincipal.match(/\{ tab: '/g) ?? []).length;
-    expect(entreesPrincipales).toBe(6);
+    expect(entreesPrincipales).toBe(5);
     expect(menuPrincipal, 'تقدمي est toujours dans la barre principale').not.toContain(
       "tab: 'stats'",
     );
     expect(menuPrincipal, 'المسار est toujours dans la barre principale').not.toContain(
       "tab: 'parcours'",
     );
-    expect(src, 'ParcoursView est toujours monté').not.toContain('<ParcoursView');
+    expect(menuPrincipal, 'البكالوريا est toujours dans la barre principale').not.toContain(
+      "tab: 'bac'",
+    );
+    expect(src, 'BacView est toujours monté').not.toContain('<BacView');
+    expect(src, 'GraduationCap est toujours importé').not.toMatch(/GraduationCap/);
     const onglets = [...menuPrincipal.matchAll(/\{ tab: '([a-z]+)'/g)].map((m) => m[1]);
     expect(onglets[onglets.length - 1]).toBe('moi');
 

@@ -1,7 +1,24 @@
-const VERSION = new URL(self.location.href).searchParams.get('v') || 'dev';
+const VERSION = new URL(self.location.href).searchParams.get('v') || 'v3';
 const CACHE_PREFIX = 'kunz-offline-web';
 const SHELL_CACHE = `${CACHE_PREFIX}-shell-${VERSION}`;
 const RUNTIME_CACHE = `${CACHE_PREFIX}-runtime-${VERSION}`;
+
+/**
+ * CHEMINS DE DÉVELOPPEMENT — jamais mis en cache (correctif 2026-10-13).
+ *
+ * Un Service Worker enregistré sur cette origine lors d'une session PROD reste
+ * actif en développement. `staleWhileRevalidate` s'appliquait alors aux modules
+ * du serveur dev (`/src/*.tsx`) et les servait depuis le cache : l'utilisateur
+ * voyait l'ANCIENNE interface alors que le serveur était à jour. `no-cache` n'y
+ * change rien — le SW court-circuite l'en-tête.
+ *
+ * Ces préfixes repartent donc toujours sur le réseau.
+ */
+const DEV_PREFIXES = ['/src/', '/@vite/', '/@react-refresh/', '/@id/', '/node_modules/', '/@fs/'];
+
+function isDevAsset(pathname) {
+  return DEV_PREFIXES.some((p) => pathname.startsWith(p));
+}
 
 const CORE_URLS = [
   '/',

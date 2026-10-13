@@ -23,3 +23,33 @@ if ('serviceWorker' in navigator && import.meta.env.PROD) {
       .catch((err) => console.warn('Service worker non enregistré:', err));
   });
 }
+
+// DÉSENREGISTREMENT EN DÉVELOPPEMENT (correctif 2026-10-13).
+//
+// BUG RÉEL, diagnostic long : un Service Worker enregistré sur cette origine
+// (lors d'une session `npm start`, qui sert dist/ en mode PROD) RESTE actif en
+// développement. `import.meta.env.PROD` ne commande que l'enregistrement, jamais
+// la désinscription. Le SW interceptait alors les requêtes du serveur dev et,
+// via `staleWhileRevalidate` (public/sw.js:242), servait `/src/*.tsx` — donc
+// l'ANCIENNE interface — malgré un serveur à jour.
+//
+// Pourquoi c'est resté invisible côté outillage : toute vérification hors
+// navigateur (curl, Invoke-WebRequest, Node) ne traverse pas le Service Worker
+// et voyait donc toujours le code frais. Seul le navigateur était trompé.
+//
+// Correctif : en DEV on désenregistre tout SW résiduel ET on purge ses caches,
+// pour que la prochaine charge reparte du réseau.
+if ('serviceWorker' in navigator && !import.meta.env.PROD) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.getRegistrations().then((regs) => {
+      for (const reg of regs) void reg.unregister();
+    });
+    if ('caches' in window) {
+      caches.keys().then((keys) => {
+        for (const key of keys) {
+          if (key.startsWith('kunz-offline-web')) void caches.delete(key);
+        }
+      });
+    }
+  });
+}

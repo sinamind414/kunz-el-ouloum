@@ -414,7 +414,7 @@ describe('AITutorView — finition B1/B6/B8/B9/B10 (audit 2026-09-22, phase par 
     await waitFor(() => expect(messagesText()).toContain('بطاقة معرفة'));
     await user.click(screen.getByTitle('مسح المحادثة'));
     await waitFor(() => {
-      expect(messagesText()).toContain('اختر مجالاً أو أحد أزرار الرحلة أدناه للبدء');
+      expect(messagesText()).toContain('اختر مجالاً للبدء، أو اكتب سؤالك مباشرةً');
     });
     expect(messagesText()).not.toContain('مرحباً بك مجدداً');
     confirmSpy.mockRestore();
@@ -422,11 +422,52 @@ describe('AITutorView — finition B1/B6/B8/B9/B10 (audit 2026-09-22, phase par 
 
   it('B9+B10 : étiquette honnête (moteur local), alt parlants, champ et options labellisés', () => {
     render(<AITutorView />);
-    expect(screen.getByText(/مرشد تفاعلي محلي موجه لمنهج البكالوريا/)).toBeTruthy();
+    expect(screen.getByText(/شرح وتلميحات من منهاج البكالوريا/)).toBeTruthy();
     expect(screen.queryByText(/مساعد ذكاء اصطناعي/)).toBeNull();
     expect(screen.getAllByAltText('شعار المرشد الذكي').length).toBeGreaterThanOrEqual(1); // avatar du message IA (le 2e n'apparaît qu'au chargement)
     expect(screen.getByLabelText('حقل السؤال إلى المرشد الذكي')).toBeTruthy();
     const welcome = screen.getByTestId('tutor-messages');
     expect(welcome).toBeTruthy();
+  });
+});
+
+describe('AITutorView — point d entrée contextuel (restructuration 2026-10-11)', () => {
+  // Le المرشد n'est plus une rubrique : il est appelé DEPUIS un cours ou un
+  // exercice, avec la question déjà formulée (src/lib/morchidBridge.ts).
+  it('une questionInitiale pré-remplit le champ SANS être envoyée', async () => {
+    const consumed = vi.fn();
+    render(
+      <AITutorView
+        questionInitiale="اشرح تركيب البروتين"
+        onQuestionInitialeConsumed={consumed}
+      />,
+    );
+
+    const input = screen.getByLabelText('حقل السؤال إلى المرشد الذكي') as HTMLInputElement;
+    // 1. la question apparaît dans le champ…
+    expect(input.value).toBe('اشرح تركيب البروتين');
+    // 2. …mais AUCUN message élève n'est créé : on ne répond pas à sa place.
+    expect(messagesText()).not.toContain('اشرح تركيب البروتين');
+    // 3. le parent est prévenu pour remettre la prop à null (usage unique).
+    expect(consumed).toHaveBeenCalledTimes(1);
+  });
+
+  it('sans questionInitiale, le champ reste vide', () => {
+    render(<AITutorView />);
+    const input = screen.getByLabelText('حقل السؤال إلى المرشد الذكي') as HTMLInputElement;
+    expect(input.value).toBe('');
+  });
+
+  it('une questionInitiale vide ou blanche ne pré-remplit rien', () => {
+    const consumed = vi.fn();
+    const { rerender } = render(
+      <AITutorView questionInitiale="   " onQuestionInitialeConsumed={consumed} />,
+    );
+    const input = screen.getByLabelText('حقل السؤال إلى المرشد الذكي') as HTMLInputElement;
+    expect(input.value).toBe('');
+    expect(consumed).not.toHaveBeenCalled();
+
+    rerender(<AITutorView questionInitiale={null} onQuestionInitialeConsumed={consumed} />);
+    expect(input.value).toBe('');
   });
 });

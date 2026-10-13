@@ -133,6 +133,14 @@ export interface NoteCalibree extends ResultatNotation {
   sanctionsForte: { id: string; titreAr: string; penalite: number }[];
   /** Signaux de surface ayant alimenté les plafonds (transparence). */
   signaux: SignauxCopie;
+  /**
+   * 2026-10-12 — l'élève déclare abandonner une partie (« لم أتم »). Signal
+   * INFORMATIF : il ne change pas la note (mesuré — pénaliser dégraderait
+   * l'accord sans preuve), il déclenche une demande de regard humain.
+   */
+  abandonDeclare: boolean;
+  /** Phrase arabe à afficher quand une réserve humaine est conseillée, sinon null. */
+  motifReserveHumaine: string | null;
   /** Le registre d'attendus utilisé (traçabilité). */
   registre: AttendusExercice;
   /**
@@ -308,6 +316,15 @@ export function noterExerciceCalibre(
     pointsAutoAcquis: Math.round(points * 100) / 100,
     pointsManuelsAArbitrer: reserveManuelle,
     noteFinale: reserveManuelle > 0 ? null : Math.round(points * 100) / 100,
+    // 2026-10-12 — abandon DÉCLARÉ par l'élève (« لم أتم » / « لا أعرف »).
+    // La note auto reste STRICTEMENT inchangée : le moteur ne crédite déjà rien
+    // pour les absents, et pénaliser ici fausserait la mesure sans preuve. Le
+    // signal sert à demander un regard humain — cas réel mesuré : eleve_18
+    // déclare abandonner la partie 3, le moteur donne 6,36/8, le prof met 4,00.
+    abandonDeclare: signaux.abandonDeclare,
+    motifReserveHumaine: signaux.abandonDeclare
+      ? 'التلميذ أعلن عدم إتمام جزء من السؤال — يلزم تحقّق المصحّح قبل اعتماد النقطة الآلية.'
+      : null,
   };
 }
 

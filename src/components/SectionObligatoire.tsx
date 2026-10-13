@@ -83,6 +83,16 @@ export default function SectionObligatoire({ note }: { note: NoteCalibree }) {
             {' '}خارج النقاط الآلية، تقديرها للمصحح.
           </p>
         )}
+        {/* 2026-10-12 — l'élève a DÉCLARÉ abandonner une partie (« لم أتم »).
+            Ce n'est pas une pénalité et la note auto ne bouge pas : c'est une
+            demande de regard humain, parce qu'une partie entière non traitée
+            change la lecture de la copie (cas mesuré : moteur 6,36/8 contre
+            4,00 au professeur). */}
+        {note.abandonDeclare && (
+          <p className="text-sky-700 dark:text-sky-300">
+            {note.motifReserveHumaine ?? 'أعلن التلميذ عدم إتمام جزء من السؤال.'}
+          </p>
+        )}
       </div>
       <ul className="divide-y divide-gray-100 dark:divide-gray-800/60">
         {note.verdicts.map((v) => (

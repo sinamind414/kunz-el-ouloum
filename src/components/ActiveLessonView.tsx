@@ -17,6 +17,7 @@ import {
   saveLessonSnapshot,
   clearLessonSnapshot,
 } from '../lib/lesson/sessionSnapshotService';
+import BoutonMorchid from './BoutonMorchid';
 
 interface Props {
   lessonKey: string;
@@ -779,6 +780,27 @@ export default function ActiveLessonView({ lessonKey, onBack, onNext, nextTitleA
           </div>
           <span className="text-xs font-black">{validatedCount}/{total}</span>
         </div>
+      </div>
+
+      {/* Assistant contextuel : l'élève bloque DANS la leçon → il appelle le
+          المرشد depuis ici. Formulation courte et ancrée sur le TITRE de la
+          leçon : le moteur local (smartTutorEngine) score par mots-clés — un
+          titre exact vaut +80, une keyword +3/+6. Une phrase longue diluerait
+          le score et déclencherait un refus hors-sujet. */}
+      <div className="flex flex-wrap items-center gap-2">
+        <BoutonMorchid
+          origine="lecon-active"
+          label="اشرح لي هذه الوحدة"
+          question={`اشرح ${lesson.title}`}
+        />
+        {/* 2026-10-12 — le COACH, au niveau de la leçon : « suis-je faible ou
+            fort dans ce cours ? ». L'unité est nommée, donc le moteur répond
+            pour CETTE unité (diagnosticCoach ciblé), pas une vue d'ensemble. */}
+        <BoutonMorchid
+          origine="lecon-niveau"
+          label="قيّم مستواي في هذا الدرس"
+          question={`ما مستواي في ${lesson.title}`}
+        />
       </div>
 
       {session.state === 'MISSION_VISIBLE' && (

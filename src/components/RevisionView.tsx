@@ -5,6 +5,7 @@ import { Flashcard, Unit } from '../types';
 import { playFlipSound, playSuccessSound } from '../utils/audio';
 import { getSrsState, rateCard, sortByDue, previewIntervalDays, formatIntervalLabel } from '../utils/flashcardsSrs';
 import MicroCapsulePanel from './MicroCapsulePanel';
+import BoutonMorchid from './BoutonMorchid';
 
 interface RevisionViewProps {
   units: Unit[];
@@ -370,6 +371,17 @@ export default function RevisionView({ units, flashcards, xp, streak, onRateCard
               <Sparkles className="w-3.5 h-3.5 text-[#fed65b] fill-[#fed65b]" />
               <span>ما مدى صعوبة استرجاع هذه الإجابة وتذكرها؟</span>
             </p>
+
+            {/* Assistant contextuel : l'élève bloque sur la carte AVANT de se
+                noter. Il appelle le المرشد avec la question déjà formulée plutôt
+                que de se noter « إعادة » sans comprendre. */}
+            <div className="flex justify-center">
+              <BoutonMorchid
+                origine="flashcard"
+                label="لم أتذكر هذه البطاقة — اسأل المرشد"
+                question={`اشرح ${currentCard?.question ?? ''}`}
+              />
+            </div>
             
             <div className="grid grid-cols-4 gap-2 w-full">
               {/* Again Button */}

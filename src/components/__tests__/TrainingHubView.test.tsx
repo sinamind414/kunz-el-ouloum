@@ -46,10 +46,27 @@ describe('hub d entraînement — contenu', () => {
     expect(new Set(tabs).size).toBe(tabs.length);
   });
 
-  it('les espaces livrés aux sprints 10 et 12 sont bien dans le hub', () => {
+  it('reflète la restructuration du 2026-10-12 : examens entrés, apprentissage sorti', () => {
     const tabs = TRAINING_ENTRIES.map((e) => e.tab);
+    // Les examens ont quitté l'écran 1 de « الدروس » (QCM du livre + tests bac) :
+    // produire une réponse = s'entraîner. Porte UNIQUE, les modes restent dans
+    // LessonsView (sous-écran examens).
+    expect(tabs).toContain('examens');
+    expect(tabs).not.toContain('qcm');
+    expect(tabs).not.toContain('bac');
+  });
+
+  it('reflète la restructuration du 2026-10-11 : consolidation sortie, méthodologie entrée', () => {
+    const tabs = TRAINING_ENTRIES.map((e) => e.tab);
+    // Ce qui PRODUIT une réponse reste ici.
     expect(tabs).toContain('situations');
-    expect(tabs).toContain('schemas');
+    expect(tabs).toContain('bootcamp');
+    // « مفتاح المنهجية » rejoint le hub (geste de production/correction).
+    expect(tabs).toContain('methodology');
+    // Ce qui CONSOLIDE est parti dans le hub « المراجعة » (revisionHub.ts) :
+    // une seule porte par objectif, jamais deux.
+    expect(tabs).not.toContain('schemas');
+    expect(tabs).not.toContain('plan');
   });
 });
 
@@ -59,8 +76,8 @@ describe('hub d entraînement — navigation', () => {
     const onOpen = vi.fn();
     render(<TrainingHubView onOpen={onOpen} />);
 
-    await user.click(screen.getByTestId('hub-schemas'));
-    expect(onOpen).toHaveBeenCalledWith('schemas');
+    await user.click(screen.getByTestId('hub-bacideas'));
+    expect(onOpen).toHaveBeenCalledWith('bacideas');
 
     await user.click(screen.getByTestId('hub-situations'));
     expect(onOpen).toHaveBeenLastCalledWith('situations');
@@ -89,13 +106,16 @@ describe('hub d entraînement — navigation', () => {
 describe('hub d entraînement — le menu a bien été allégé', () => {
   // Garde-fou anti-régression : App.tsx ne doit plus câbler les espaces
   // regroupés dans SECONDARY_NAV, sinon le hub n'a rien allégé du tout.
-  it('la navigation secondaire d App.tsx compte au plus 6 entrées', async () => {
+  it('la navigation secondaire d App.tsx ne recense AUCUNE entrée du hub', async () => {
     const { readFileSync } = await import('node:fs');
     const { resolve } = await import('node:path');
     const src = readFileSync(resolve(__dirname, '../../App.tsx'), 'utf8');
     const bloc = src.slice(src.indexOf('const SECONDARY_NAV'), src.indexOf('const SECONDARY_NAV') + 1200);
     const entrees = (bloc.slice(0, bloc.indexOf('];')).match(/\{ tab: '/g) ?? []).length;
-    expect(entrees).toBeGreaterThan(0);
+    // 2026-10-12 : le menu « المزيد » est VIDE (focus → Déclic, mindmap →
+    // الدرس). Zéro entrée est donc une valeur normale, plus un échec — le
+    // garde-fou qui compte vraiment est la boucle ci-dessous.
+    expect(entrees).toBeGreaterThanOrEqual(0);
     expect(entrees).toBeLessThanOrEqual(6);
     for (const tab of TRAINING_ENTRIES.map((e) => e.tab)) {
       expect(bloc.slice(0, bloc.indexOf('];')), `${tab} encore dans le menu`).not.toContain(`tab: '${tab}'`);

@@ -34,6 +34,14 @@ import { UNIT_OPENINGS } from './data/unitOpenings';
 import { BAC_EXAM_DATE, bacDaysLeft } from './utils/dashboardActions';
 // Négation/réfutation : primitives partagées avec le scorer C2 de Tadwin.
 import { tokenAffirme } from './lib/validation/negationAr';
+import { PARCOURS_DOMAINS } from './lib/parcours/parcoursPath';
+import { loadParcours } from './lib/parcours/parcoursProgress';
+import {
+  diagnostiquerParcours,
+  classerParUrgence,
+  ligneCoach,
+  type DiagnosticUnite,
+} from './lib/coach/diagnostic';
 import {
   KNOWLEDGE_CARDS as LEGACY_KNOWLEDGE_CARDS,
   type KnowledgeCard as LegacyKnowledgeCard,
@@ -896,6 +904,87 @@ export function reviewMistakes(session: BotSession): EngineResult {
   return { session, action: { text, quickActions } };
 }
 
+/**
+ * COACH (2026-10-12) — « un vrai coach SVT BAC » : dire à l'élève où il en est,
+ * sans détour, et quoi faire ensuite.
+ *
+ * Si l'élève nomme une unité (« ما مستواي في تركيب البروتين »), le coach répond
+ * pour CETTE unité — c'est la demande « dites-moi si je suis faible ou fort dans
+ * CE cours ». Sinon, vue d'ensemble avec les trois unités à travailler d'abord
+ * (classées par poids au BAC).
+ *
+ * Aucune note inventée : tout est dérivé du store du parcours
+ * (src/lib/coach/diagnostic.ts). On ne félicite pas et on ne dramatise pas :
+ * verdict brut + action concrète. Une unité dont les leçons sont lues mais dont
+ * le جسر n'est pas passé ne peut pas être « forte » — la lecture n'est pas la
+ * preuve.
+ */
+export function diagnosticCoach(session: BotSession, rawInput?: string): EngineResult {
+  const state = loadParcours();
+  const groupes = PARCOURS_DOMAINS.flatMap((d) => d.units);
+
+  // Unité explicitement nommée par l'élève (match sur le titre normalisé).
+  // Les titres du parcours sont numérotés (« 1. تركيب البروتين ») : on retire le
+  // préfixe, sinon « ما مستواي في تركيب البروتين » ne matcherait jamais.
+  const normQ = rawInput ? normalizeArabic(rawInput).toLowerCase() : '';
+  const titreNu = (t: string) =>
+    normalizeArabic(t).toLowerCase().replace(/^\s*\d+\.?\s*/, '').trim();
+  const ciblee = normQ
+    ? groupes.find((u) => {
+        const t = titreNu(u.title);
+        return t.length >= 6 && normQ.includes(t);
+      })
+    : undefined;
+
+  const diags = classerParUrgence(
+    diagnostiquerParcours(groupes, state),
+    (unitId) => UNIT_BAC_WEIGHT.get(unitId) ?? 1,
+  );
+
+  if (ciblee) {
+    const d = diags.find((x) => x.unitId === ciblee.unitId)!;
+    const text =
+      `🎓 **تشخيص الوحدة: ${d.titre}**\n\n${ligneCoach(d)}\n\n` +
+      (d.score === null
+        ? 'لا توجد نتيجة مسجّلة بعد في هذه الوحدة — اقرأ الدروس ثم اجتز اختبار الحصيلة.'
+        : '');
+    return {
+      session,
+      action: {
+        text,
+        quickActions: [`اشرح ${d.titre}`, 'حدّث تشخيصي', 'المهمة اليومية', 'العودة للقائمة الرئيسية'],
+      },
+    };
+  }
+
+  const compte = (v: string) => diags.filter((d) => d.verdict === v).length;
+  const entete =
+    `🎓 **تشخيص مستواك** — ${diags.length} وحدة\n` +
+    `قوي: ${compte('fort')} · متوسط: ${compte('moyen')} · ضعيف: ${compte('faible')} · لم تبدأ: ${compte('non_commence')}`;
+
+  const priorite = diags.slice(0, 3).filter((d) => d.verdict !== 'fort');
+  const lignes = priorite.map((d) => ligneCoach(d)).join('\n\n');
+
+  const conseil = priorite.length === 0
+    ? '🎉 كل وحدة بدأتها على مستوى قوي. احتفظ بالإيقاع: مراجعة خفيفة كل يوم أفضل من حصص طويلة متباعدة.'
+    : `📌 ابدأ بهذه الوحدات بالترتيب — لها أكبر أثر على معدلك.\n\n${lignes}`;
+
+  const text = `${entete}\n\n${conseil}`;
+
+  const quickActions = [
+    ...priorite.map((d) => `اشرح ${d.titre}`),
+    'حدّث تشخيصي',
+    'المهمة اليومية',
+    'العودة للقائمة الرئيسية',
+  ];
+
+  return {
+    session,
+    action: { text, quickActions },
+  };
+}
+
+
 export function gradeQuizAnswer(session: BotSession, rawAnswer: string): EngineResult {
   const current = session.currentQuiz;
   if (!current) return { session, action: { text: 'لا يوجد اختبار جارٍ حالياً.', quickActions: ['العودة للقائمة الرئيسية'] } };
@@ -1489,6 +1578,21 @@ export function processStudentInput(session: BotSession, rawInput: string): Engi
     };
     saveSession(back);
     return { session: back, action: { text: '↩️ رجعنا إلى القائمة الرئيسية. اختر مجالاً لبدء جلسة مراجعة:', quickActions: DOMAINS.map((d) => d.title) } };
+  }
+
+  // COACH (2026-10-12) : « Quel est mon niveau dans cette unité ? »
+  // Volontairement DISTINCT de « اختبار تشخيصي », qui LANCE un test : ici on ne
+  // fait rien passer à l'élève, on lit l'état déjà existant.
+  // PIÈGE MESURÉ : « مستوي » seul interceptait « مستويات البنية الفراغية » (une
+  // vraie question de cours). On exige donc la forme possessive « مستواي » ou un
+  // déclencheur explicite — jamais le radical nu.
+  if (
+    norm.includes(n('مستواي')) ||
+    norm.includes(n('نقط ضعفي')) || norm.includes(n('نقط ضعف')) ||
+    norm.includes(n('هل انا قوي')) || norm.includes(n('هل انا ضعيف')) ||
+    norm.includes(n('وضحي مستواي')) || norm.includes(n('قيم مستواي'))
+  ) {
+    return diagnosticCoach(session, input);
   }
 
   if (norm.includes(n('راجع أخطائي'))) return reviewMistakes(session);
