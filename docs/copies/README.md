@@ -24,3 +24,20 @@
 ## Rapport de supervision
 - Généré par `npx tsx scripts/evaluer-copies.ts --dir "." --out docs/SUPERVISION_ACTUEL.md`
 - Métriques publiées : Pearson r global et par exercice, écart moyen, |écart| moyen — voir `docs/SUPERVISION_ACTUEL.md`.
+
+## Rejouer les vérifications sans le corpus (CI)
+
+Le corpus n'étant pas versionné (dépôt public), les deux tests de
+`src/data/dictionaries/correctionGenerosite.test.ts` qui le lisent se déclarent
+**ignorés** quand il est absent — jamais verts en silence. Ils s'exécutent dès
+que le fichier est présent :
+
+```bash
+KUNZ_CORPUS_ELEVE_18=/chemin/vers/eleve_18.txt npx vitest run \
+  src/data/dictionaries/correctionGenerosite.test.ts
+```
+
+Un verrou permanent sur **copie synthétique** (même fichier de test) rejoue la
+règle en CI : la déclaration d'abandon (« لا أعرف », « لم أتم ») doit laisser
+note et plafonds strictement identiques. Décision du 2026-10-14 (H1) : un test
+qui dépend d'un fichier absent doit le **dire**, pas rougir ni disparaître.
