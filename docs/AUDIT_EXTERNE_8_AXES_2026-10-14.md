@@ -203,8 +203,12 @@ Le correctif lui-même ne supprime **aucun** test. Il rend l'exigence explicite 
 
 *Ce que ça ne prouve pas :* les 4 tests SQLite de `src/__tests__/serverDashboard.test.ts` ont été ignorés
 dans ma reproduction (le greffon natif `better-sqlite3` ne se compile pas ici : `node-gyp` a besoin des
-en-têtes Node sur `nodejs.org`, hors du réseau autorisé). Sur GitHub Actions il se compile : le run réel
-de la CI sur la branche est l'arbitre. **Statut GitHub Actions : voir l'onglet *Checks* de la branche.**
+en-têtes Node sur `nodejs.org`, hors du réseau autorisé).
+
+**Verdict de la CI réelle (le seul juge, il compile `better-sqlite3` et tourne sur l'environnement cible) :**
+run GitHub Actions **38538233956**, PR **#37** — les **trois jobs sont `success`** (`check:v2`,
+`test` harnais natif, `test:vitest`) en 2 min 46 s, sur un checkout neuf et **sans** `eleve_18.txt`.
+H1 est donc **clos sur preuve exécutée**, et non sur ma seule reproduction locale.
 
 ### 10.2 H3 — Série de jours : le défaut était réel, il est mesuré et verrouillé
 
@@ -293,10 +297,10 @@ mesure avant/après »*. Ce point relève donc de H4 (constituer un corpus), pas
 
 ### 10.4 Ce qui reste à vérifier, et comment
 
-1. **Statut GitHub Actions** sur la branche : c'est le seul juge qui compilera `better-sqlite3` (donc les
-   4 tests SQLite ignorés ici) et qui exécutera les 3 jobs dans l'environnement cible.
-2. **H1 ne sera définitivement clos** que lorsque le retour de la CI sur la branche sera vert — l'ignoré
-   explicite évite le rouge, il ne remplace pas la mesure sur corpus réel (H4).
+1. ~~Statut GitHub Actions~~ → **fait** : 3 jobs `success` (run 38538233956, PR #37), §10.1.
+2. **H1 reste « vert par construction », pas « complet »** : l'ignoré explicite évite le rouge, il ne
+   remplace pas la mesure sur corpus réel (H4). La CI passe désormais **avant** de savoir si les 2 tests
+   de corpus passent — c'est le prix assumé du retrait RGPD.
 3. **Poids du bundle après H5/M1/M7** : re-mesurer, et cette fois avec le test branché sur la CI.
 4. **Rien de ce §10 n'a été validé sur un appareil réel** : les mesures sont logicielles. Le poste
    « smartphone bas de gamme, connexion réelle » reste **non vérifiable** par moi.
