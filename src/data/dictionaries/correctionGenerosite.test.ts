@@ -27,6 +27,44 @@ import { attendusDeGroupe, type AttenduItem } from './attendusBac2025';
 import { analyserSignaux } from './integriteCopie';
 import { noterExerciceCalibre, noterCopieCalibree } from './calibrationBac2025';
 
+// ─── Corpus d'élève : pourquoi il se cherche, et pourquoi la CI reste verte ───
+// `eleve_18.txt` est une copie d'élève anonymisée, servie d'étalon de mesure
+// (docs/PROTOCOLE_PREUVE.md, docs/copies/README.md). Elle n'est PAS versionnée :
+// ce dépôt est public et le corpus porte le travail de tiers. Les deux tests qui
+// la lisaient par chemin relatif tombaient donc en ENOENT sur toute machine
+// propre — la CI était rouge par construction (constat H1, audit du 2026-10-14).
+//
+// Le correctif ne consiste PAS à supprimer les tests : une preuve qui disparaît
+// est pire qu'une preuve rouge. Il consiste à rendre l'exigence explicite :
+//   · le corpus est cherché dans KUNZ_CORPUS_ELEVE_18, puis aux emplacements
+//     historiques (racine du dépôt, cwd) ;
+//   · présent → les tests de corpus s'exécutent, comme avant ;
+//   · absent → ils sont rapportés « ignorés » (jamais « verts en silence ») et
+//     un verrou sur copie SYNTHÉTIQUE prend le relais pour qu'aucune règle ne
+//     se perde en CI.
+function chargerCorpusEleve(): { texte: string; origine: string } | null {
+  const pistes = [
+    process.env.KUNZ_CORPUS_ELEVE_18,
+    resolve(__dirname, '../../../eleve_18.txt'),
+    resolve(process.cwd(), 'eleve_18.txt'),
+  ].filter((x): x is string => Boolean(x));
+
+  for (const piste of pistes) {
+    try {
+      const brut = readFileSync(piste, 'utf-8');
+      const i = brut.toLowerCase().indexOf('score attendu');
+      // Le corrigé type est collé après la copie : on ne garde que la réponse.
+      return { texte: i > 0 ? brut.slice(0, i) : brut, origine: piste };
+    } catch {
+      // chemin suivant
+    }
+  }
+  return null;
+}
+
+const CORPUS_ELEVE = chargerCorpusEleve();
+const CORPUS_PRESENT = CORPUS_ELEVE !== null;
+
 const GROUPES: [1 | 2, 1 | 2 | 3][] = [
   [1, 1],
   [1, 2],
@@ -107,10 +145,10 @@ describe('correcteur — abandon déclaré (signal, PAS une pénalité)', () => 
     expect(analyserSignaux('لم يتم بعد ربط المستقبل').abandonDeclare).toBe(false);
   });
 
-  it('le signal ne change PAS la note auto (vérifié sur le corpus)', () => {
-    const brut = readFileSync('eleve_18.txt', 'utf-8');
-    const i = brut.toLowerCase().indexOf('score attendu');
-    const reponse = i > 0 ? brut.slice(0, i) : brut;
+  // Exige la copie d'élève réelle : rapporté « ignoré » si elle est absente,
+  // jamais vert par accident (cf. le chargeur en tête de fichier).
+  it.skipIf(!CORPUS_PRESENT)('le signal ne change PAS la note auto (vérifié sur le corpus)', () => {
+    const reponse = CORPUS_ELEVE!.texte;
     const note = noterExerciceCalibre(reponse, 1, 3);
     expect(note.abandonDeclare).toBe(true);
     expect(note.motifReserveHumaine).toContain('تحقّق');
@@ -126,14 +164,52 @@ describe('correcteur — abandon déclaré (signal, PAS une pénalité)', () => 
     expect(src).toContain('note.motifReserveHumaine');
   });
 
-  it('le signal survit à l agrégation des 3 exercices (copie complète)', () => {
+  it.skipIf(!CORPUS_PRESENT)('le signal survit à l agrégation des 3 exercices (copie complète)', () => {
     // `Bac2025ExamView` note via `noterCopieCalibee` puis rend SectionObligatoire
     // par exercice : si l'agrégation recomposait les objets, le signal se perdait.
-    const brut = readFileSync(resolve(__dirname, '../../../eleve_18.txt'), 'utf-8');
-    const i = brut.toLowerCase().indexOf('score attendu');
-    const reponse = i > 0 ? brut.slice(0, i) : brut;
+    const reponse = CORPUS_ELEVE!.texte;
     // Même texte sur les 3 exercices : le signal doit apparaître sur chacun.
     const copie = noterCopieCalibree([reponse, reponse, reponse], 1);
+    const avecSignal = copie.exercices.filter((e: { abandonDeclare: boolean }) => e.abandonDeclare);
+    expect(avecSignal.length).toBe(3);
+    expect((avecSignal[0] as { motifReserveHumaine: string }).motifReserveHumaine).toContain('تحقّق');
+  });
+});
+
+// ─── Verrou de CI : les mêmes invariants, sans dépendre du corpus ─────────────
+// Ces tests ne remplacent pas la mesure sur les 40 copies (elle seule donne r,
+// MAE et biais) : ils garantissent que la RÈGLE « l'abandon déclaré est un
+// signal, pas une pénalité » reste vérifiée sur une machine sans corpus.
+describe('correcteur — signaux de copie, verrou permanent (copie synthétique)', () => {
+  /**
+   * Réponse rédigée normale — témoin. Deux phrases pleines : le détecteur
+   * `estProse` (integriteCopie.ts) exige DEUX phrases d'au moins 4 mots pour
+   * reconnaître de la prose sans marqueur de relation ; un témoin d'une seule
+   * phrase déclencherait le plafond `non_prose` (0,3) et fausserait la
+   * comparaison, qui doit isoler l'effet du SEUL signal d'abandon.
+   */
+  const PROSE =
+    'البروتين يتكون من أحماض أمينية مرتبطة بروابط ببتيدية. ويحدد تتابع هذه الأحماض بنية البروتين ووظيفته.';
+  /** LA MÊME réponse, plus la déclaration d'abandon à la fin. */
+  const PROSE_ABANDON = `${PROSE} لا أعرف بقية الجواب.`;
+
+  it('la déclaration d abandon ne PÉNALISE pas : note et plafonds identiques au témoin', () => {
+    // C'est la règle exacte du corpus, mesurable sans lui : ne comparer que le
+    // texte AVEC et SANS la déclaration isole l'effet du signal. (Une copie
+    // entièrement vide, elle, déclenche un plafond « non_prose » qui n'a rien à
+    // voir : c'est pourquoi le témoin est une prose, et non du vide.)
+    const avec = noterExerciceCalibre(PROSE_ABANDON, 1, 3);
+    const sans = noterExerciceCalibre(PROSE, 1, 3);
+
+    expect(avec.abandonDeclare).toBe(true);
+    expect(sans.abandonDeclare).toBe(false);
+    expect(avec.motifReserveHumaine).toContain('تحقّق');
+    expect(avec.plafonds).toEqual(sans.plafonds);
+    expect(avec.noteFinale).toBe(sans.noteFinale);
+  });
+
+  it('le signal survit à l agrégation des 3 exercices', () => {
+    const copie = noterCopieCalibree([PROSE_ABANDON, PROSE_ABANDON, PROSE_ABANDON], 1);
     const avecSignal = copie.exercices.filter((e: { abandonDeclare: boolean }) => e.abandonDeclare);
     expect(avecSignal.length).toBe(3);
     expect((avecSignal[0] as { motifReserveHumaine: string }).motifReserveHumaine).toContain('تحقّق');
