@@ -41,6 +41,16 @@ function loadStoredStudent(): { name: string; email: string } | null {
   return null;
 }
 import { healSavedFlashcards } from './utils/flashcardsSanitize';
+// H3 (audit 8 axes, 2026-10-14) : le jour se calcule en HEURE LOCALE (voir
+// utils/dayKey.ts) et l'activité quotidienne — objectif + série de jours — se
+// crédite par une seule porte testée (utils/activiteQuotidienne.ts).
+import { jourLocal } from './utils/dayKey';
+import {
+  appliquerActiviteQuotidienne,
+  estimationMinutesQuiz,
+  OBJECTIF_QUOTIDIEN_DEFAUT,
+  serieAfficheeDepuisDaily,
+} from './utils/activiteQuotidienne';
 // Nomenclature figée (docs/MARQUE.md §3) — la rubrique porte le nom officiel de la source
 // unique miftahSpec : aucun littéral dans ce fichier (garde-fou check:miftah §13, 2026-09-15).
 import { MIFTAH_NAME_OFFICIAL_AR } from './data/miftahSpec';
@@ -264,16 +274,10 @@ export default function App() {
     completedUnits: [],
     completedQuestionsCount: 0,
     studyMinutes: 0,
-    dailyGoals: {
-      type: 'minutes',
-      targetMinutes: 25,
-      targetQuestions: 20,
-      lastActiveDate: new Date().toISOString().split('T')[0],
-      todayMinutes: 0,
-      todayQuestions: 0,
-      streakDays: 0,
-      completedToday: false,
-    },
+    // H3 : dernier jour d'activité d'abord VIDE. Rempli par une activité réelle
+    // (voir appliquerActiviteQuotidienne) — jamais par le simple lancement de
+    // l'application, sans quoi la série se construirait sur les ouvertures.
+    dailyGoals: { ...OBJECTIF_QUOTIDIEN_DEFAUT },
     flashcardStats: {
       again: 0,
       hard: 0,
@@ -332,22 +336,19 @@ export default function App() {
     prefetchCorpusWhenIdle();
     if (savedProgress) {
       const parsed: UserProgress = savedProgress;
-      const today = new Date().toISOString().split('T')[0];
-      
+      // H3 : jour LOCAL (l'élève est à Alger, pas à Greenwich). En UTC, la remise
+      // à zéro des compteurs se faisait à 01 h 00 du matin.
+      const today = jourLocal();
+
       // Ensure daily goals exist and date is synchronized
       if (!parsed.dailyGoals) {
-        parsed.dailyGoals = {
-          type: 'minutes',
-          targetMinutes: 25,
-          targetQuestions: 20,
-          lastActiveDate: today,
-          todayMinutes: 0,
-          todayQuestions: 0,
-          streakDays: 1,
-          completedToday: false,
-        };
+        parsed.dailyGoals = { ...OBJECTIF_QUOTIDIEN_DEFAUT, lastActiveDate: today };
       } else if (parsed.dailyGoals.lastActiveDate !== today) {
         // Date changed: reset today's counters
+        // NB (H3) : on ne touche PAS à `streakDays` ni à `serieDernierJour` ici.
+        // La série se juge sur les jours TRAVAILLÉS, pas sur les jours où
+        // l'application a été ouverte : la réinitialiser à l'ouverture ferait
+        // perdre une série à un élève qui ouvre l'app le matin sans étudier.
         parsed.dailyGoals.lastActiveDate = today;
         parsed.dailyGoals.todayMinutes = 0;
         parsed.dailyGoals.todayQuestions = 0;
@@ -386,36 +387,17 @@ export default function App() {
   const addStudyMinutes = (min: number) => {
     if (!min || min <= 0) return;
 
-    const today = new Date().toISOString().split('T')[0];
-    const currentDaily = progress.dailyGoals || {
-      type: 'minutes' as const,
-      targetMinutes: 25,
-      targetQuestions: 20,
-      lastActiveDate: today,
-      todayMinutes: 0,
-      todayQuestions: 0,
-      streakDays: 1,
-      completedToday: false
-    };
-
-    const newTodayMinutes = (currentDaily.todayMinutes || 0) + min;
-    const isCompleted = currentDaily.type === 'minutes'
-      ? newTodayMinutes >= currentDaily.targetMinutes
-      : currentDaily.completedToday;
-
+    // H3 : une seule porte pour créditer l'activité (compteurs + série).
+    const r = appliquerActiviteQuotidienne(progress, { minutes: min });
     const updatedProgress: UserProgress = {
-      ...progress,
+      ...r.progress,
       studyMinutes: progress.studyMinutes + min,
-      dailyGoals: {
-        ...currentDaily,
-        todayMinutes: newTodayMinutes,
-        completedToday: isCompleted
-      }
     };
 
     setProgress(updatedProgress);
     saveToLocalStorage(units, flashcards, updatedProgress);
     updateLastStudyTime();
+    if (r.palier) playStreakMilestoneSound(r.palier);
   };
 
   // Déclic de motivation affiché UNE fois par jour au tableau de bord, avant
@@ -426,7 +408,7 @@ export default function App() {
 
   useEffect(() => {
     if (currentTab !== 'home') return;
-    const today = new Date().toISOString().split('T')[0];
+    const today = jourLocal();
     try {
       if (localStorage.getItem(DECLIC_SHOWN_KEY) !== today) {
         setIsDeclicOverlayOpen(true);
@@ -438,7 +420,9 @@ export default function App() {
   }, [currentTab, DECLIC_SHOWN_KEY]);
 
   const closeDeclicOverlay = () => {
-    const today = new Date().toISOString().split('T')[0];
+    // Jour LOCAL, comme la lecture ci-dessus : sinon, entre 00 h et 01 h, la clé
+    // écrite (UTC) ne correspondrait pas à la clé lue (donc re-déclic).
+    const today = jourLocal();
     try {
       localStorage.setItem(DECLIC_SHOWN_KEY, today);
     } catch {
@@ -458,37 +442,13 @@ export default function App() {
     // Advance study minutes
     const addedMinutes = Math.floor(Math.random() * 3) + 2; // 2-4 minutes
 
-    // Update Daily Goals
-    const today = new Date().toISOString().split('T')[0];
-    const currentDaily = progress.dailyGoals || {
-      type: 'minutes' as const,
-      targetMinutes: 25,
-      targetQuestions: 20,
-      lastActiveDate: today,
-      todayMinutes: 0,
-      todayQuestions: 0,
-      streakDays: 1,
-      completedToday: false
-    };
-
-    const newTodayMinutes = (currentDaily.todayMinutes || 0) + addedMinutes;
-    const newTodayQuestions = (currentDaily.todayQuestions || 0) + 1;
-    const isCompleted = currentDaily.type === 'minutes' 
-      ? newTodayMinutes >= currentDaily.targetMinutes 
-      : newTodayQuestions >= currentDaily.targetQuestions;
-
-    const updatedDaily = {
-      ...currentDaily,
-      todayMinutes: newTodayMinutes,
-      todayQuestions: newTodayQuestions,
-      completedToday: isCompleted
-    };
-
+    // H3 : objectif du jour + série, par la porte unique.
+    const objectifAtteintAvant = progress.dailyGoals?.completedToday === true;
+    const r = appliquerActiviteQuotidienne(progress, { minutes: addedMinutes, questions: 1 });
     const updatedProgress: UserProgress = {
-      ...progress,
+      ...r.progress,
       xp: progress.xp + pointsAwarded,
       studyMinutes: progress.studyMinutes + addedMinutes,
-      dailyGoals: updatedDaily,
       flashcardStats: updatedStats
     };
 
@@ -496,7 +456,8 @@ export default function App() {
     saveToLocalStorage(units, flashcards, updatedProgress);
     updateLastStudyTime();
 
-    if (isCompleted && !currentDaily.completedToday) {
+    if (r.palier) playStreakMilestoneSound(r.palier);
+    if (r.progress.dailyGoals!.completedToday && !objectifAtteintAvant) {
       playDailyGoalCelebrationSound();
     } else {
       playXPGainSound();
@@ -545,13 +506,21 @@ export default function App() {
     questionsAnswered: number,
     details?: { kind?: 'quiz' | 'mission'; score?: number; total?: number; domain?: string }
   ) => {
+    // H3 : le travail du tutor compte désormais dans l'objectif du jour et dans
+    // la série. Avant, un élève pouvait passer une heure dans المرشد الذكي —
+    // mission quotidienne comprise — et lire « 0 دقيقة » sur son tableau de bord.
+    const r = appliquerActiviteQuotidienne(progress, {
+      questions: questionsAnswered,
+      minutes: estimationMinutesQuiz(questionsAnswered),
+    });
     const updatedProgress: UserProgress = {
-      ...progress,
+      ...r.progress,
       xp: progress.xp + xpGained,
       completedQuestionsCount: progress.completedQuestionsCount + questionsAnswered,
     };
     setProgress(updatedProgress);
     saveToLocalStorage(units, flashcards, updatedProgress);
+    if (r.palier) playStreakMilestoneSound(r.palier);
     playXPGainSound();
 
     // Rec #2 de l'audit المرشد : le travail du tutor part AUSSI dans la file
@@ -601,39 +570,17 @@ export default function App() {
       }
     ];
 
-    // Update Daily Goals
-    const today = new Date().toISOString().split('T')[0];
-    const currentDaily = progress.dailyGoals || {
-      type: 'minutes' as const,
-      targetMinutes: 25,
-      targetQuestions: 20,
-      lastActiveDate: today,
-      todayMinutes: 0,
-      todayQuestions: 0,
-      streakDays: 1,
-      completedToday: false
-    };
-
-    const quizMinutesEstimated = Math.max(3, Math.round(total * 1.5));
-    const newTodayMinutes = (currentDaily.todayMinutes || 0) + quizMinutesEstimated;
-    const newTodayQuestions = (currentDaily.todayQuestions || 0) + total;
-    const isCompleted = currentDaily.type === 'minutes' 
-      ? newTodayMinutes >= currentDaily.targetMinutes 
-      : newTodayQuestions >= currentDaily.targetQuestions;
-
-    const updatedDaily = {
-      ...currentDaily,
-      todayMinutes: newTodayMinutes,
-      todayQuestions: newTodayQuestions,
-      completedToday: isCompleted
-    };
+    // H3 : objectif du jour + série, par la porte unique. La durée d'un quiz
+    // reste une ESTIMATION (1,5 min/question) — la même que celle du tuteur.
+    const objectifAtteintAvant = progress.dailyGoals?.completedToday === true;
+    const quizMinutesEstimated = estimationMinutesQuiz(total);
+    const r = appliquerActiviteQuotidienne(progress, { minutes: quizMinutesEstimated, questions: total });
 
     const updatedProgress: UserProgress = {
-      ...progress,
+      ...r.progress,
       xp: progress.xp + xpRewarded,
       studyMinutes: progress.studyMinutes + quizMinutesEstimated,
       completedQuestionsCount: progress.completedQuestionsCount + total,
-      dailyGoals: updatedDaily,
       quizScoreHistory: updatedHistory,
       completedUnits: percent >= 80 ? [...new Set([...progress.completedUnits, activeUnit.id])] : progress.completedUnits
     };
@@ -651,7 +598,8 @@ export default function App() {
       });
     }
 
-    if (isCompleted && !currentDaily.completedToday) {
+    if (r.palier) playStreakMilestoneSound(r.palier);
+    if (r.progress.dailyGoals!.completedToday && !objectifAtteintAvant) {
       playDailyGoalCelebrationSound();
     } else {
       playXPGainSound();
@@ -1131,7 +1079,7 @@ export default function App() {
             <Suspense fallback={<VueEnChargement />}>
               <MotivationDeclic
                 isDarkMode={isDarkMode}
-                streakDays={progress.dailyGoals?.streakDays ?? 0}
+                streakDays={serieAfficheeDepuisDaily(progress.dailyGoals)}
                 onStart={() => {
                   closeDeclicOverlay();
                   updateLastStudyTime();

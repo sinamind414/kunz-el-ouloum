@@ -50,6 +50,9 @@ import StreakCelebrationModal from './StreakCelebrationModal';
 import { playStreakMilestoneSound, playXPGainSound } from '../utils/audio';
 import { AR_LATN, fmtDateLatn, toLatinDigits } from '../utils/latinDigits';
 
+// H3 : plus aucune série morte à l'écran (« 1 يوم » pour zéro activité).
+import { serieAfficheeDepuisDaily } from '../utils/activiteQuotidienne';
+
 interface StatsViewProps {
   progress: UserProgress;
   units: Unit[];
@@ -66,7 +69,8 @@ export default function StatsView({ progress, units, onNavigate }: StatsViewProp
   const reportRef = useRef<HTMLDivElement>(null);
 
   const handleOpenStreakCelebration = () => {
-    playStreakMilestoneSound(progress.streak || 1);
+    const serie = serieAfficheeDepuisDaily(progress.dailyGoals);
+    if (serie > 0) playStreakMilestoneSound(serie);
     setShowStreakModal(true);
   };
   
@@ -248,7 +252,7 @@ export default function StatsView({ progress, units, onNavigate }: StatsViewProp
               <span>اليوم المتتالي</span>
               <span className="text-[9px] text-amber-600 font-bold">🎵</span>
             </span>
-            <span className="text-xl font-bold text-[#1f1c0b]">{progress.streak} يوم</span>
+            <span className="text-xl font-bold text-[#1f1c0b]">{serieAfficheeDepuisDaily(progress.dailyGoals)} يوم</span>
           </div>
         </button>
 
@@ -602,7 +606,7 @@ export default function StatsView({ progress, units, onNavigate }: StatsViewProp
           
           <div className="flex items-center gap-2 shrink-0">
             <span className="text-[11px] font-black text-emerald-800 bg-white/90 px-2.5 py-1 rounded-xl shadow-2xs">
-              {progress.streak} أيام مستمرة 🔥
+              {serieAfficheeDepuisDaily(progress.dailyGoals)} أيام مستمرة 🔥
             </span>
             <button
               onClick={() => setShowWeeklyShareModal(true)}
@@ -989,7 +993,7 @@ export default function StatsView({ progress, units, onNavigate }: StatsViewProp
 
                           const metrics = [
                             { label: 'النقاط التراكمية', val: `${progress.xp} XP` },
-                            { label: 'الاستمرارية والمواظبة', val: `${progress.streak} أيام` },
+                            { label: 'الاستمرارية والمواظبة', val: `${serieAfficheeDepuisDaily(progress.dailyGoals)} أيام` },
                             { label: 'الأسئلة والتمارين', val: `${progress.completedQuestionsCount} سؤال` },
                             { label: 'زمن التحصيل العلمي', val: `${progress.studyMinutes} دقيقة` }
                           ];
@@ -1170,7 +1174,7 @@ export default function StatsView({ progress, units, onNavigate }: StatsViewProp
                     </div>
                     <div className="bg-white border border-[#e2dabf]/50 p-3 rounded-xl text-center shadow-sm">
                       <span className="text-[10px] text-gray-400 block font-bold">المواظبة والاستمرارية</span>
-                      <span className="text-lg font-black text-[#ff9a4a]">{progress.streak} أيام متتالية</span>
+                      <span className="text-lg font-black text-[#ff9a4a]">{serieAfficheeDepuisDaily(progress.dailyGoals)} أيام متتالية</span>
                     </div>
                     <div className="bg-white border border-[#e2dabf]/50 p-3 rounded-xl text-center shadow-sm">
                       <span className="text-[10px] text-gray-400 block font-bold">الأسئلة والتمارين</span>
@@ -1287,7 +1291,7 @@ export default function StatsView({ progress, units, onNavigate }: StatsViewProp
       <StreakCelebrationModal
         isOpen={showStreakModal}
         onClose={() => setShowStreakModal(false)}
-        streakDays={progress.streak || 1}
+        streakDays={serieAfficheeDepuisDaily(progress.dailyGoals)}
         onOpenShareModal={() => setShowWeeklyShareModal(true)}
       />
 

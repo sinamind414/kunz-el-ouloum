@@ -16,12 +16,14 @@ import { FileText, Printer } from 'lucide-react';
 import { reviewDrafts, writingReport } from '../data/writingReview';
 import { readPlanSettings } from '../data/planSettings';
 import { INITIAL_UNITS } from '../unitCatalog';
+import { jourLocal } from '../utils/dayKey';
 
 interface Props {
   onClose: () => void;
 }
 
-const dateDuJour = () => new Date().toISOString().slice(0, 10);
+// H3 : jour LOCAL (le `toISOString` daté d'avant donnait la veille entre 00 h et 01 h).
+const dateDuJour = () => jourLocal();
 
 export default function WritingReportSheet({ onClose }: Props) {
   const rapport = useMemo(() => writingReport(), []);

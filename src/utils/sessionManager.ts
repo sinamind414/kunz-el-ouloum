@@ -1,3 +1,5 @@
+import { jourLocal } from './dayKey';
+
 export type BotMode = 'idle' | 'domain_menu' | 'diagnostic' | 'lesson' | 'quiz' | 'bac_challenge' | 'review';
 
 export interface QuizState {
@@ -309,7 +311,8 @@ export function finishBossFight(session: BotSession): BotSession {
 }
 
 export function completeDailyMission(session: BotSession, topicId: string): BotSession {
-  const today = new Date().toISOString().split('T')[0];
+  // H3 : même définition du jour que getDailyMission (miroir, jour LOCAL).
+  const today = jourLocal();
   const newSession: BotSession = {
     ...session,
     lastMissionDate: today,

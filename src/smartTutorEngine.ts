@@ -32,6 +32,7 @@ import { LESSON_INDEX } from './data/lessonIndex';
 // BAC des unités (unitOpenings) ; R8 affiche le compte à rebours BAC.
 import { UNIT_OPENINGS } from './data/unitOpenings';
 import { BAC_EXAM_DATE, bacDaysLeft } from './utils/dashboardActions';
+import { jourLocal } from './utils/dayKey';
 // Négation/réfutation : primitives partagées avec le scorer C2 de Tadwin.
 import { tokenAffirme } from './lib/validation/negationAr';
 import { PARCOURS_DOMAINS } from './lib/parcours/parcoursPath';
@@ -2092,7 +2093,9 @@ function rankMistakes(mistakes: string[], lastSeenAt: number): string[] {
 }
 
 export function getDailyMission(session: BotSession): EngineResult {
-  const today = new Date().toISOString().split('T')[0];
+  // H3 : jour LOCAL. En UTC (Alger = UTC+1), la « mission du jour » restait
+  // celle de la veille jusqu'à 01 h du matin — donc rejouable une fois de plus.
+  const today = jourLocal();
   if (session.lastMissionDate === today) {
     return { session, action: { text: '✅ لقد أنجزت مهمة اليوم بنجاح! عُد غداً لمهمة جديدة، أو تابع مراجعتك بحرية.', quickActions: ['اختبار تشخيصي', 'العودة للقائمة الرئيسية'] } };
   }

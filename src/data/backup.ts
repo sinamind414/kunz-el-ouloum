@@ -1,3 +1,5 @@
+import { jourLocal } from '../utils/dayKey';
+
 // backup.ts — emporter sa progression ailleurs (sprint 46).
 //
 // Tout ce que l'élève produit vit dans le `localStorage` du navigateur :
@@ -68,7 +70,8 @@ export function serialiserBackup(backup = creerBackup()): string {
 
 /** Nom de fichier proposé : lisible et trié par date. */
 export function nomFichierBackup(maintenant = new Date()): string {
-  return `kunz-sauvegarde-${maintenant.toISOString().slice(0, 10)}.json`;
+  // H3 : jour LOCAL — une sauvegarde faite à 00 h 30 portait la date de la veille.
+  return `kunz-sauvegarde-${jourLocal(maintenant)}.json`;
 }
 
 export interface ResultatRestauration {
