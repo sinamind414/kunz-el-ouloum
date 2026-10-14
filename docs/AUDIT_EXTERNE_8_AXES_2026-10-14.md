@@ -271,6 +271,64 @@ n'est téléchargée (0 `@font-face`, les systèmes sont utilisés) : c'est un b
 **Aggravant :** ce test n'est branché sur **aucun** des 3 jobs de la CI (`vite.config.ts` l'exclut
 volontairement de la suite unitaire ; `npm run test:build` n'est appelé nulle part dans `ci.yml`). Un
 garde-fou qui ne garde rien explique qu'un dépassement de 34 % ait pu s'installer sans être vu.
+
+**Constat connexe :** aucun job de la CI ne **compilait** l'application. Un `vite build` cassé (import
+dynamique mal résolu, asset manquant) atteignait donc `master` au vert, alors que `dist/` est le seul
+artefact réellement servi aux élèves.
+
+`scripts/poids-entree.mjs` (ajouté) mesure et **publie** le poids du premier affichage — tableau par
+ressource, total gzip, écart à la cible de 700 Ko — dans le résumé du job GitHub. Il est volontairement
+**non bloquant** : relever un plafond pour rendre un test vert serait maquiller le problème, et faire
+échouer la CI sur un plafond déjà dépassé empêcherait toute fusion.
+
+⚠️ **Le branchement à la CI reste à faire par le mainteneur**, et c'est une limite de l'agent : mon jeton
+GitHub n'a pas la permission `workflows`, le push d'une modification de `.github/workflows/ci.yml` est
+refusé par GitHub. Il suffit d'ajouter ce job (4ᵉ job, indépendant des trois autres) :
+
+```yaml
+  build:
+    name: "build (dist déployable) + poids du premier affichage"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - name: Vérifier les artefacts déployables
+        run: test -f dist/index.html && test -f dist/sw.js && test -f dist/manifest.json && test -f dist/server.cjs
+      - name: Mesurer le poids du premier affichage
+        run: node scripts/poids-entree.mjs
+```
+
+La décision M7 reste donc entière, mais elle se prendra désormais devant un chiffre affiché.
+
+**Diagnostic de ce qui pèse (mesuré sur la sourcemap de l'entrée, 52 modules) :** **70,5 % de l'entrée est
+de la DONNÉE, pas du code d'interface.**
+
+| Module | Poids dans l'entrée | Part |
+|---|---:|---:|
+| `src/data/activeLessons.ts` | 164 Ko | 17,5 % |
+| `src/lessonData.ts` | 122 Ko | 13,0 % |
+| `src/data/mindMapData.ts` | 109 Ko | 11,6 % |
+| `src/data/documentPracticeContexts.ts` | 82 Ko | 8,8 % |
+| `src/data/bacSessionIndex.ts` | 68 Ko | 7,2 % |
+| `src/data/fillBlanks.ts` | 50 Ko | 5,4 % |
+| `src/data/microCapsules.ts` | 41 Ko | 4,4 % |
+| 5 autres modules de données | 112 Ko | 12,0 % |
+| **Total données** | **661 Ko** | **70,5 %** |
+
+Trois chaînes d'import statique suffisent à tout tirer dans l'entrée :
+`App.tsx` → `data/fillBlanks` (50 Ko) ; `parcoursPath.ts` (moteur « prochaine meilleure action ») →
+`lessonModes` + `unitLessonSequences` → `activeLessons` + `lessonData` (**286 Ko**) ; `TodayCard` →
+`revisionPlan` → `mindMapData` + `bacSessionIndex` + `bacArchetypes` + `unitOpenings` (**≈ 250 Ko**, dont
+`bacSessionIndex` entraîne `schemaDrills`, `situationIndex`, `documentPracticeContexts`,
+`documentAnalysisExercises`, `microCapsules`). Autrement dit : **l'élève télécharge toute la banque
+d'exercices et tous les contenus de leçons avant même de voir l'écran d'accueil.** Différer ces trois
+chaînes ramènerait l'entrée à ≈ 250–300 Ko — c'est le contenu de M7, et c'est un travail de fond, pas un
+réglage.
 **Recommandation M7 (nouvelle) :** décider — soit ramener l'entrée sous 700 Ko (l'`index-*` de 938 Ko
 embarque des données, pas seulement du code : voir M1 sur le double embarquement des leçons), soit
 **relever le budget à la réalité et le brancher sur la CI**. Les deux se défendent ; l'inaction non.
