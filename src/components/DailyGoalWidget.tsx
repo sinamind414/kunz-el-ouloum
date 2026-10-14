@@ -16,6 +16,10 @@ import {
   Volume2
 } from 'lucide-react';
 import { DailyGoalConfig } from '../types';
+// H3 (2026-10-14) : jour local unique + série affichée seulement si elle est
+// encore vivante. Voir utils/dayKey.ts et utils/serie.ts.
+import { jourLocal } from '../utils/dayKey';
+import { serieAfficheeDepuisDaily } from '../utils/activiteQuotidienne';
 import { 
   playDailyGoalCelebrationSound, 
   playStreakMilestoneSound, 
@@ -31,27 +35,28 @@ interface DailyGoalWidgetProps {
   isDarkMode?: boolean;
 }
 
-export const getTodayDateKey = () => {
-  const d = new Date();
-  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
-};
+/** Conservé pour les appelants existants — délègue à la source unique (H3). */
+export const getTodayDateKey = () => jourLocal();
 
+/**
+ * Repli quand `dailyGoals` est absent : ZÉROS RÉELS (H3).
+ *
+ * Avant, ce repli fabriquait 12 minutes, 14 questions, une série de 3 jours et
+ * cinq jours d'historique datés d'août 2026 — des valeurs figées, affichées à un
+ * élève qui n'avait rien fait, et présentées comme réelles (le dépôt interdit
+ * pourtant partout ailleurs les statistiques de démonstration). Une seule
+ * journée est désormais fabriquée : AUCUNE.
+ */
 export const getDefaultDailyGoals = (): DailyGoalConfig => ({
   type: 'minutes',
   targetMinutes: 25,
   targetQuestions: 20,
-  lastActiveDate: getTodayDateKey(),
-  todayMinutes: 12,
-  todayQuestions: 14,
-  streakDays: 3,
+  lastActiveDate: '',
+  todayMinutes: 0,
+  todayQuestions: 0,
+  streakDays: 0,
   completedToday: false,
-  history: [
-    { date: '2026-08-28', target: 20, achieved: 25, type: 'minutes', completed: true },
-    { date: '2026-08-29', target: 25, achieved: 30, type: 'minutes', completed: true },
-    { date: '2026-08-30', target: 25, achieved: 28, type: 'minutes', completed: true },
-    { date: '2026-08-31', target: 25, achieved: 15, type: 'minutes', completed: false },
-    { date: getTodayDateKey(), target: 25, achieved: 12, type: 'minutes', completed: false }
-  ]
+  history: [],
 });
 
 export default function DailyGoalWidget({
@@ -121,7 +126,10 @@ export default function DailyGoalWidget({
   };
 
   const handleStreakClick = () => {
-    playStreakMilestoneSound(currentGoals.streakDays || 1);
+    // H3 : plus de `|| 1`. On n'annonce pas une série de 1 jour à un élève qui
+    // n'a rien fait, et on ne joue pas une fanfare de palier pour 0 jour.
+    const serie = serieAfficheeDepuisDaily(currentGoals);
+    if (serie > 0) playStreakMilestoneSound(serie);
     if (onOpenStreakModal) {
       onOpenStreakModal();
     }
@@ -195,7 +203,7 @@ export default function DailyGoalWidget({
             title="اضغط للاستماع لنغمة المواظبة وعرض الأوسمة"
           >
             <Flame className="w-3.5 h-3.5 fill-current text-amber-500 animate-pulse" />
-            <span>{currentGoals.streakDays || 1} أيام 🔥</span>
+            <span>{serieAfficheeDepuisDaily(currentGoals)} أيام 🔥</span>
           </button>
 
           <button

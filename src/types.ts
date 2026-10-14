@@ -37,11 +37,27 @@ export interface DailyGoalConfig {
   type: 'minutes' | 'questions';
   targetMinutes: number;
   targetQuestions: number;
+  /** Jour des compteurs affichés (AAAA-MM-JJ local) — pilote la remise à zéro. */
   lastActiveDate: string;
   todayMinutes: number;
   todayQuestions: number;
   streakDays: number;
   completedToday: boolean;
+  /**
+   * Dernier jour où une ACTIVITÉ a été enregistrée (AAAA-MM-JJ local) — pilote
+   * la série de jours (H3, 2026-10-14).
+   *
+   * Champ distinct de `lastActiveDate` À DESSEIN : `lastActiveDate` est remis à
+   * aujourd'hui dès l'OUVERTURE de l'app (sans aucun travail). L'utiliser comme
+   * référence de série ferait qu'un élève qui ouvre l'app sans travailler
+   * verrait sa série gelée, et qu'une série pourrait se construire sur des
+   * ouvertures d'app au lieu de jours de travail.
+   *
+   * Optionnel pour la compatibilité des données déjà stockées sur les
+   * téléphones : une progression sans ce champ redémarre sa série au premier
+   * jour réellement travaillé après la mise à jour.
+   */
+  serieDernierJour?: string;
   history?: {
     date: string;
     target: number;

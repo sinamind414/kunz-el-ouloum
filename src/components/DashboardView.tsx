@@ -21,6 +21,9 @@ import { Unit, UserProgress, DailyGoalConfig } from '../types';
 import { LOGO_URL } from '../data/brandAssets';
 import type { LessonKind } from '../lib/parcours/parcoursPath';
 import { playStreakMilestoneSound } from '../utils/audio';
+// H3 : la série affichée est celle qui est encore vivante (0 si un jour a été manqué).
+import { serieAfficheeDepuisDaily } from '../utils/activiteQuotidienne';
+
 import {
   bacDaysLeft,
   biggestGapUnit,
@@ -62,7 +65,8 @@ export default function DashboardView({
   const bacDays = useMemo(() => bacDaysLeft(new Date()), []);
 
   const handleOpenStreakCelebration = () => {
-    playStreakMilestoneSound(progress.streak || 1);
+    const serie = serieAfficheeDepuisDaily(progress.dailyGoals);
+    if (serie > 0) playStreakMilestoneSound(serie);
     setShowStreakModal(true);
   };
 
@@ -91,7 +95,7 @@ export default function DashboardView({
           aria-label="عرض تقدمي اليوم"
         >
           <Flame className="h-4 w-4 text-[#ff9a4a]" fill="currentColor" />
-          <span>{progress.streak}</span>
+          <span>{serieAfficheeDepuisDaily(progress.dailyGoals)}</span>
           <span className="text-[#e2dabf]">|</span>
           <span>{progress.xp} XP</span>
         </button>
@@ -291,7 +295,7 @@ export default function DashboardView({
       <StreakCelebrationModal
         isOpen={showStreakModal}
         onClose={() => setShowStreakModal(false)}
-        streakDays={progress.streak || 1}
+        streakDays={serieAfficheeDepuisDaily(progress.dailyGoals)}
         onOpenShareModal={() => setShowWeeklyShareModal(true)}
       />
     </div>

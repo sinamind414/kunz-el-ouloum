@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { motion } from 'motion/react';
 import { Play, Pause, RotateCcw, SkipForward, Coffee, Brain, Settings2, Check } from 'lucide-react';
 import { playDailyGoalCelebrationSound, playXPGainSound } from '../utils/audio';
+import { jourLocal } from '../utils/dayKey';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // FocusTimer — minuteur de concentration type « Pomodoro » (المؤقّت / بومودورو).
@@ -37,8 +38,9 @@ interface FocusStore {
 }
 
 function todayKey(): string {
-  const d = new Date();
-  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+  // H3 : jour LOCAL unique (utils/dayKey.ts) — une session de 00 h 30 ne peut
+  // plus être imputée à la veille.
+  return jourLocal();
 }
 
 function loadStore(): FocusStore {

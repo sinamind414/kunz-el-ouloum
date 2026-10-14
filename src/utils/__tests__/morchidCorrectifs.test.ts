@@ -3,6 +3,7 @@
 // confirmé (B2, B3, B5, B6, B7, B7b) et chaque correction scientifique (S1–S8)
 // ne puisse plus revenir silencieusement.
 import { describe, expect, it } from 'vitest';
+import { jourLocal } from '../dayKey';
 import { readFileSync } from 'fs';
 import {
   processStudentInput,
@@ -271,7 +272,11 @@ describe('F10 — mission quotidienne : QCM démarré, 15 XP versés, mission cl
     // «ا» n'est pas la bonne réponse : le barème mission ne dépend pas du
     // succès, il est branché sur l'ACHÈVEMENT, comme l'affiche le texte.
     const r = processStudentInput(m.session, 'ا');
-    const today = new Date().toISOString().split('T')[0];
+    // H3 (2026-10-14) : la mission du jour se date en HEURE LOCALE. Ce test
+    // attendait auparavant la date UTC (`toISOString`) — c'est-à-dire le
+    // comportement corrigé : à Alger, la mission restait celle de la veille
+    // jusqu'à 01 h du matin, donc rejouable une fois de plus.
+    const today = jourLocal();
 
     expect(r.action.reward?.xpGained).toBe(15);
     expect(r.action.reward?.kind).toBe('mission');

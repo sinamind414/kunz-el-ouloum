@@ -1,3 +1,5 @@
+import { jourLocal } from '../utils/dayKey';
+
 // microCapsules.ts — « فكرة في دقيقة » (audit item 15, sprint 11).
 //
 // Pourquoi ce format
@@ -676,10 +678,16 @@ export function capsuleOfTheDay(dayKey: string, pool: MicroCapsule[] = MICRO_CAP
   return pool[hash % pool.length];
 }
 
-/** Clé du jour local au format YYYY-MM-DD. */
+/**
+ * Clé du jour local au format YYYY-MM-DD.
+ *
+ * H3 (2026-10-14) — DÉLÉGUÉ À `jourLocal`. Cette fonction était une quatrième
+ * copie de la même règle (les trois autres, dans App.tsx, passaient par
+ * `toISOString()`, donc par le jour UTC). Quatre copies = quatre occasions de
+ * se contredire sur ce qu'est « aujourd'hui » ; il n'en reste qu'une.
+ */
 export function todayKey(now: Date = new Date()): string {
-  const p = (n: number) => String(n).padStart(2, '0');
-  return `${now.getFullYear()}-${p(now.getMonth() + 1)}-${p(now.getDate())}`;
+  return jourLocal(now);
 }
 
 export const MICRO_CAPSULE_COUNT = MICRO_CAPSULES.length;

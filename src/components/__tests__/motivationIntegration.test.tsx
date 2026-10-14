@@ -11,6 +11,7 @@
 import { cleanup, render, screen, fireEvent, act } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import App from '../../App';
+import { jourLocal } from '../../utils/dayKey';
 
 afterEach(() => {
   cleanup();
@@ -45,8 +46,10 @@ describe('App — chaîne motivation (déclic → focus → objectif)', () => {
     fireEvent.click(screen.getByText('ليس الآن'));
     expect(screen.queryByTestId('declic-overlay')).toBeNull();
     // Le déclic ne réapparaît plus dans la même journée.
-    const today = new Date().toISOString().split('T')[0];
-    expect(localStorage.getItem('kunz_declic_shown_v1')).toBe(today);
+    // H3 : la clé « déclic déjà montré » est datée en HEURE LOCALE (le
+    // `toISOString` d'avant écrivait la date UTC : entre 00 h et 01 h, la clé
+    // écrite ne correspondait pas à la clé lue, et le déclic réapparaissait).
+    expect(localStorage.getItem('kunz_declic_shown_v1')).toBe(jourLocal());
   });
 
   it('« جلسة تركيز » depuis le déclic ouvre le minuteur', async () => {
