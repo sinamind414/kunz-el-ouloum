@@ -44,7 +44,13 @@ async function demarrerEtFermerDeclic() {
 async function terminerSessionFocus(): Promise<UserProgress> {
   fireEvent.click(screen.getByText('جلسة تركيز'));
   await screen.findByText('ابدأ', {}, { timeout: 4000 });
-  vi.useFakeTimers();
+  // Ancre à midi du jour local : l'avance simulée de 25 min reste dans le même
+  // jour, quoi qu'il soit. Sans ancre, tout lancement entre 23 h 35 et 00 h 00
+  // (heure locale, UTC+1) faisait traverser minuit à l'horloge simulée —
+  // l'app écrivait le lendemain pendant que les assertions comparaient au jour
+  // présent (rouge transient observé le 15/10 à 23 h 35+, sans aucun changement
+  // de production ; reproduit sur HEAD nu par remise/stash).
+  vi.useFakeTimers({ now: new Date(`${jourLocal()}T12:00:00`) });
   fireEvent.click(screen.getByText('ابدأ'));
   act(() => { vi.advanceTimersByTime(25 * 60 * 1000); });
   act(() => { vi.advanceTimersByTime(1000); });

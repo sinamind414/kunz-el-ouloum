@@ -111,6 +111,11 @@ export interface EngineResult {
 const OUT_OF_PROGRAM = [
   'كرة القدم', 'كره القدم', 'كرة قدم', 'مباراة', 'فيلم سينما', 'موسيقى', 'سيارة', 'سياره', 'اغنية',
   'اخبار اليوم', 'أخبار اليوم', 'اخبار', 'أخبار', 'سينما', 'فيلم',
+  // Audit v4b (15/10/2026, détournement mesuré) : un mot du corpus ne fait pas
+  // un sujet du programme. « من فاز بكأس افريقيا؟ » couchait la leçon Atlantique
+  // à 55 % (token « إفريقيا »), « كأس العالم » la leçon tectonique, et
+  // « راسي كبير » la lithosphère (« راسي » ≈ « رأسي »).
+  'كأس افريقيا', 'كأس العالم', 'راسي كبير',
 ];
 
 /**

@@ -48,4 +48,16 @@ describe('index des leçons — intégration moteur', () => {
       expect(action?.text || '', q).toContain('هذا السؤال خارج قاعدة');
     }
   });
+
+  it('détournement mesuré (audit v4b) : un mot du corpus ne fait pas un sujet du programme', () => {
+    // Mesuré en exécution avant correctif : « من فاز بكأس افريقيا؟ » recevait
+    // la leçon Atlantique à 55 % (le token « إفريقيا » matchait le titre), et
+    // « كأس العالم » la leçon tectonique. Vous avez bien lu : une question de
+    // football recevait du programme. « راسي كبير » recevait la lithosphère
+    // (« راسي » ≈ « رأسي »).
+    for (const q of ['من فاز بكأس افريقيا؟', 'كأس افريقيا', 'كأس العالم', 'راسي كبير']) {
+      const action = answerTutorQuestion(q);
+      expect(action?.text || '', q).toContain('هذا السؤال خارج قاعدة');
+    }
+  });
 });

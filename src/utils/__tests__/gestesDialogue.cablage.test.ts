@@ -36,6 +36,7 @@ describe('un geste humain n’est jamais déclaré hors programme', () => {
     'لا أعرف من أين أبدأ',
     'بسلامة',
     'مع السلامة',
+    'لا أعرف',
     'أنا خايف من الباك',
   ];
 
@@ -71,6 +72,23 @@ describe('fatigue ≠ anxiété — le corps n’est pas la panique', () => {
     const r = processStudentInput(session(), 'أنا خايف من الباك');
     expect(r.action.text).toContain('القلق قبل البكالوريا');
   });
+});
+
+// Morchid v4b (15/10/2026, « partiel ») : « لا أعرف » écrit À FROID — premier
+// message d'un élève perdu, sans sonde en attente — recevait « خارج قاعدة ».
+// En dialogue (sonde active) l'aveu est honoré ; à froid il doit guider vers
+// un point de départ, jamais refuser.
+describe('aveu à froid — l’élève perdu n’est jamais déclaré hors programme', () => {
+  const AVEUX_FROIDS = ['لا أعرف', 'ماعرفتش', 'لا ادري'];
+
+  for (const saisie of AVEUX_FROIDS) {
+    it(`« ${saisie} » (premier message) → un point de départ, pas un refus`, () => {
+      const r = processStudentInput(getDefaultSession(), saisie);
+      expect(r.action.text, `「${saisie}」 → ${r.action.text.slice(0, 90)}`)
+        .not.toContain('خارج قاعدة');
+      expect(r.action.text).toContain('ابدأ');
+    });
+  }
 });
 
 describe('le geste est traité comme un geste, pas comme du contenu', () => {  it('« مافهمت والو » demande où est l’obstacle', () => {

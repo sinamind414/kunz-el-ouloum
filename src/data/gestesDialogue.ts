@@ -39,6 +39,12 @@ export const GESTES_DIALOGUE: GesteDialogue[] = [
       'لا اعرف من اين ابدا', 'لا أعرف من أين أبدأ', 'ما نعرفش منين نبدا',
       'من اين نبدا', 'كيف ابدأ', 'كيف أبدأ', 'كيفاش ندير', 'كيفاه ندير',
       'كيف ندير', 'واش ندير', 'كيفاش نبدا',
+      // Morchid v4b (15/10/2026, « partiel ») : un aveu d'ignorance À FROID —
+      // premier message, aucune sonde en attente — recevait « خارج قاعدة ».
+      // L'aveu isolé guide vers un point de départ, il ne se refuse pas.
+      // (Le cas « sonde active » est traité plus tôt dans la cascade via
+      // RAPPEL_INCERTAIN et reste inchangé.)
+      'لا اعرف', 'ماعرفتش', 'ما عرفتش', 'لا ادري', 'لا اعلم',
     ],
     reponseAr:
       'ابدأ من موضع واحد فقط، لا من البرنامج كلّه.\n\n' +
