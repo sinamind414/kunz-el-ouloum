@@ -28,6 +28,12 @@ const CORE_URLS = [
   '/assets/svt/d1_u1_l2_transcription_met.svg',
   '/assets/svt/d1_u1_l3_traduction_ribosome.svg',
   '/lessons/lecon_transcription.html',
+  // 2026-10-14 — ces deux leçons étaient ABSENTES du précache alors qu’elles
+  // sont servies par l’application (LESSON_HTML_GETTERS les charge en `?raw`).
+  // Un élève qui les ouvre pour la première fois hors ligne tombait sur un
+  // écran vide : précisément le public visé (zones mal couvertes).
+  '/lessons/lecon_representation.html',
+  '/lessons/lecon_activite_structure.html',
   '/lessons/phase1_chapitres_1_2.html',
   '/lessons/phase2_chapitres_3_4.html',
   '/lessons/phase3_chapitres_5_6.html',

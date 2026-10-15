@@ -73,8 +73,14 @@ describe('المرشد — points d entrée contextuels', () => {
   it('le bouton flottant existe partout, sauf où il serait redondant', () => {
     const app = source('../App.tsx');
     expect(app).toContain('fab-morchid');
-    // Masqué dans la vue elle-même et en mode focus (piloté par RevisionView).
-    expect(app).toContain("!isFocusMode && currentTab !== 'chat'");
+    // Trois raisons de le masquer, chacune ajoutée pour un motif distinct :
+    //   · `!isFocusMode` — mode focus (piloté par RevisionView) et vue du
+    //     tuteur lui-même ;
+    //   · `!epreuveEnCours` — ajouté le 14/10/2026 : pendant « موضوع تجريبي »,
+    //     une épreuve chronométrée, l'élève pouvait interroger l'assistant. Une
+    //     épreuve pendant laquelle on peut demander la réponse n'en est plus une ;
+    //   · `currentTab !== 'chat'` — on n'ouvre pas le tuteur depuis le tuteur.
+    expect(app).toContain("!isFocusMode && !epreuveEnCours && currentTab !== 'chat'");
   });
 
   it('aucune vue n ouvre le المرشد autrement que par le pont', () => {

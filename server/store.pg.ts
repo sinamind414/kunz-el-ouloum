@@ -394,16 +394,18 @@ export class PostgresStore {
   /** Même contrat que SqliteStore.dashboardRows() (mêmes agrégats). */
   async dashboardRows(maintenant: number = Date.now()): Promise<DashboardStudentRow[]> {
     const stats = await this.pool.query(`
-      SELECT s.id, s.name, s.email,
+      SELECT s.id, s.name, s.email, s.created_at,
         COALESCE(e.productions, 0)::int AS productions,
         COALESCE(e.avg_icm, 0) AS avg_icm,
         e.last_production,
+        e.first_production,
         COALESCE(a.quiz_count, 0)::int AS quiz_count,
         COALESCE(a.mission_count, 0)::int AS mission_count,
         a.avg_quiz_percent
       FROM students s
       LEFT JOIN (
-        SELECT student_id, COUNT(*)::int AS productions, AVG(icm) AS avg_icm, MAX(created_at) AS last_production
+        SELECT student_id, COUNT(*)::int AS productions, AVG(icm) AS avg_icm,
+               MAX(created_at) AS last_production, MIN(created_at) AS first_production
         FROM entries GROUP BY student_id
       ) e ON e.student_id = s.id
       LEFT JOIN (
@@ -555,6 +557,8 @@ export function assembleDashboard(
       id: String(s.id),
       name: String(s.name),
       email: String(s.email),
+      createdAt: s.created_at ? iso(s.created_at) : '',
+      premiereProduction: s.first_production ? iso(s.first_production) : null,
       productions: Number(s.productions),
       avgIcm: Math.round(Number(s.avg_icm)),
       dominantErrors: (errorsByStudent.get(String(s.id)) || [])

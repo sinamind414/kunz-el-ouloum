@@ -17,6 +17,7 @@ import { reviewDrafts, writingReport } from '../data/writingReview';
 import { readPlanSettings } from '../data/planSettings';
 import { INITIAL_UNITS } from '../unitCatalog';
 import { jourLocal } from '../utils/dayKey';
+import MarqueDocument from './MarqueDocument';
 
 interface Props {
   onClose: () => void;
@@ -145,6 +146,8 @@ export default function WritingReportSheet({ onClose }: Props) {
         ملاحظة للأستاذ(ة): هذا التقرير لا يحمل أي علامة. « الشكل » يعني احترام بنية التعليمة
         (تحليل بالأرقام، أداة ربط سببية، مقدمة و خاتمة…)؛ أما صحة المضمون العلمي فتبقى لتقديركم.
       </p>
+      {/* Pied de page de traçabilité — VISIBLE À L'IMPRESSION SEULEMENT (A3). */}
+      <MarqueDocument document="ورقة تقييم الكتابة" />
     </section>
   );
 }

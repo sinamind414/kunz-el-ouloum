@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState, lazy, Suspense } from 'react';
 import {
   AlertTriangle,
   BookOpen,
@@ -10,11 +10,36 @@ import {
   Layers,
   Share2,
   Trophy,
+  UserPlus,
 } from 'lucide-react';
-import TodayCard from './TodayCard';
 import DailyGoalWidget from './DailyGoalWidget';
 import SmartReminderCard from './SmartReminderCard';
-import NbaCard from './NbaCard';
+// 2026-10-14 (M7) — `TodayCard` et `NbaCard` ne sont plus importées
+// statiquement : à elles deux, elles tiraient dans le bundle d'entrée tout le
+// plan de révision et tout le chemin pédagogique (plan, cartes mentales, index
+// des sessions BAC, banque de situations, contenus des leçons) — 536 Ko mesurés
+// sur 938, soit 57 % de ce que l'élève téléchargeait AVANT de voir l'accueil
+// (docs/AUDIT_EXTERNE_8_AXES_2026-10-14.md §10.3.1). Elles arrivent maintenant
+// après le premier rendu, chacune avec son propre morceau.
+const TodayCard = lazy(() => import('./TodayCard'));
+const NbaCard = lazy(() => import('./NbaCard'));
+
+/**
+ * Placeholder de même hauteur que les cartes différées : sans lui, l'accueil
+ * « sauterait » au moment où elles se posent (décalage de mise en page au
+ * premier écran, le pire moment). Volontairement sans animation : il ne doit
+ * attirer l'œil ni sur un réseau rapide (où il ne se voit pas), ni sur un
+ * appareil lent (où l'animation coûterait plus que la carte à venir).
+ */
+function CarteDiffereeFallback({ hauteur = 'h-[104px]' }: { hauteur?: string }) {
+  return (
+    <div
+      data-testid="carte-differee"
+      aria-hidden="true"
+      className={`w-full ${hauteur} rounded-3xl border border-[#e2dabf]/60 bg-[#fff9ed]/60 dark:border-gray-800 dark:bg-gray-900/40`}
+    />
+  );
+}
 import WeeklyReportShareModal from './WeeklyReportShareModal';
 import StreakCelebrationModal from './StreakCelebrationModal';
 import { Unit, UserProgress, DailyGoalConfig } from '../types';
@@ -22,7 +47,18 @@ import { LOGO_URL } from '../data/brandAssets';
 import type { LessonKind } from '../lib/parcours/parcoursPath';
 import { playStreakMilestoneSound } from '../utils/audio';
 // H3 : la série affichée est celle qui est encore vivante (0 si un jour a été manqué).
-import { serieAfficheeDepuisDaily } from '../utils/activiteQuotidienne';
+import { cumulJoursDepuisDaily, serieAfficheeDepuisDaily } from '../utils/activiteQuotidienne';
+// Correctif 14/10/2026 : le travail fait en invité n'est PLUS attribué d'office
+// au compte qui se connecte sur le même appareil (téléphone partagé entre
+// frères et sœurs, ou simple oubli de connexion). C'est l'élève qui tranche.
+import {
+  compterActivitesInvite,
+  compterRefusSync,
+  detaillerRefusSync,
+  effacerActivitesInvite,
+  effacerRefusSync,
+  importerActivitesInvite,
+} from '../utils/activityLog';
 
 import {
   bacDaysLeft,
@@ -42,6 +78,10 @@ interface DashboardViewProps {
   isDarkMode?: boolean;
   onOpenLesson?: (lessonKey: string, kind: LessonKind, unitId: number) => void;
   onOpenQcm?: (unitId: number) => void;
+  /** Ouvre la fenêtre de création de compte (sans e-mail). */
+  onOpenAuth?: () => void;
+  /** Vrai quand une session élève existe déjà : la carte disparaît. */
+  connecte?: boolean;
 }
 
 export default function DashboardView({
@@ -54,15 +94,66 @@ export default function DashboardView({
   isDarkMode = false,
   onOpenLesson,
   onOpenQcm,
+  onOpenAuth,
+  connecte = false,
 }: DashboardViewProps) {
   const [showWeeklyShareModal, setShowWeeklyShareModal] = useState(false);
+  // Activités de cet appareil produites AVANT toute connexion, à confirmer.
+  const [activitesInvite, setActivitesInvite] = useState(0);
+  // Refus de synchronisation (A2, 14/10/2026) : éléments que le serveur n'a pas
+  // acceptés parce qu'ils sortaient du barème. Ce n'est PAS un cas normal — le
+  // client calcule des notes entre 0 et 100 — donc le voir signalé ici a de la
+  // valeur : cela indique un défaut ou une manipulation.
+  const [refusSync, setRefusSync] = useState(0);
+  const [raisonsRefus, setRaisonsRefus] = useState<Record<string, number>>({});
+  const [importEnCours, setImportEnCours] = useState(false);
   const [showStreakModal, setShowStreakModal] = useState(false);
   const [showMoreTools, setShowMoreTools] = useState(false);
+
+  // Le compteur n'est lu qu'une fois les données chargées et à chaque montage.
+  // Pas d'intervalle : ce n'est pas un indicateur temps réel, et interroger
+  // localStorage en boucle coûte plus qu'il n'apporte sur un téléphone lent.
+  useEffect(() => {
+    if (!connecte) {
+      setActivitesInvite(0);
+      return;
+    }
+    setActivitesInvite(compterActivitesInvite());
+    // A2 : le serveur a refusé des éléments hors barème. L'élève l'apprend ICI
+    // plutôt que de croire son travail arrivé chez le professeur.
+    setRefusSync(compterRefusSync());
+    setRaisonsRefus(detaillerRefusSync().raisons);
+  }, [connecte]);
+
+  const rattacherActivites = useCallback(async () => {
+    setImportEnCours(true);
+    try {
+      await importerActivitesInvite();
+      setActivitesInvite(compterActivitesInvite());
+    } catch {
+      /* réseau : la file reste, l'import repartira au prochain flush */
+    } finally {
+      setImportEnCours(false);
+    }
+  }, []);
+
+  const refuserActivites = useCallback(() => {
+    effacerActivitesInvite();
+    setActivitesInvite(0);
+  }, []);
 
   const missionUnit = useMemo(() => continueUnit(units, progress), [units, progress]);
   const gapUnit = useMemo(() => biggestGapUnit(units), [units]);
   const achievementUnit = useMemo(() => closestAchievementUnit(units), [units]);
   const bacDays = useMemo(() => bacDaysLeft(new Date()), []);
+
+  /**
+   * Ce que le compteur affiche : la SÉRIE tant qu'elle vit, le CUMUL sinon.
+   * Jamais 0 quand du travail a été fait — c'est tout l'objet de la correction.
+   */
+  const serie = serieAfficheeDepuisDaily(progress.dailyGoals);
+  const cumul = cumulJoursDepuisDaily(progress.dailyGoals);
+  const cumulSerie = serie > 0 ? serie : cumul;
 
   const handleOpenStreakCelebration = () => {
     const serie = serieAfficheeDepuisDaily(progress.dailyGoals);
@@ -95,11 +186,142 @@ export default function DashboardView({
           aria-label="عرض تقدمي اليوم"
         >
           <Flame className="h-4 w-4 text-[#ff9a4a]" fill="currentColor" />
-          <span>{serieAfficheeDepuisDaily(progress.dailyGoals)}</span>
+          {/*
+            LE COMPTEUR DIT LE TRAVAIL ACQUIS, PAS SEULEMENT LA SÉRIE DU MOMENT.
+            Avant : `{serieAfficheeDepuisDaily(...)}` — après un jour manqué, un
+            élève avec 42 jours derrière lui lisait « 0 ». Le compteur le plus
+            visible de l'accueil lui annonçait donc que son travail n'existait
+            plus, au moment précis où il risquait d'abandonner (« L'effet
+            cumulé » : un jour manqué n'efface rien). Désormais la série reste
+            affichée quand elle vit, et le CUMUL prend sa place quand elle est
+            retombée.
+          */}
+          {cumulSerie > 0 ? (
+            <span>{cumulSerie}</span>
+          ) : (
+            <span>{serieAfficheeDepuisDaily(progress.dailyGoals)}</span>
+          )}
           <span className="text-[#e2dabf]">|</span>
           <span>{progress.xp} XP</span>
         </button>
       </header>
+
+
+      {/*
+        Invitation à créer un compte SANS adresse e-mail.
+        Avant : le seul chemin vers l'inscription était l'avatar de l'en-tête,
+        et le formulaire demandait une adresse « eleve@ecole.dz » que presque
+        aucun élève n'a → les élèves ne s'inscrivaient pas (signalement du
+        14/10/2026). La carte explique qu'il n'y a ni e-mail ni mot de passe à
+        inventer, et rappelle que le mode invité reste possible.
+      */}
+      {!connecte && onOpenAuth && (
+        <section
+          data-testid="carte-compte-sans-email"
+          aria-labelledby="sans-email-title"
+          className="rounded-3xl border border-[#006d37]/20 bg-gradient-to-l from-[#eaf7ef] to-white p-4 shadow-sm dark:border-emerald-900/40 dark:from-emerald-950/30 dark:to-gray-900"
+        >
+          <div className="flex items-start gap-3">
+            <span className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-2xl bg-[#006d37]/10 text-[#006d37] dark:text-emerald-400">
+              <UserPlus className="h-4 w-4" />
+            </span>
+            <div className="min-w-0 flex-1">
+              <h2 id="sans-email-title" className="text-sm font-black text-[#1f1c0b] dark:text-white">
+                أنشئ حسابك بدون بريد إلكتروني
+              </h2>
+              <p className="mt-1 text-[11px] leading-relaxed text-[#506072] dark:text-gray-400">
+                لا بريد ولا كلمة مرور تحفظها: تكتب اسمك، وتختار رمزًا سريًا من 6 أرقام،
+                فيمنحك التطبيق رمز دخول قصيرًا. يحفظ أستاذك نتائجك ويتابع تقدمك.
+              </p>
+              <button
+                type="button"
+                onClick={onOpenAuth}
+                className="mt-3 rounded-xl bg-[#006d37] px-4 py-2 text-xs font-black text-white shadow-sm transition hover:bg-[#00562b]"
+              >
+                إنشاء حساب في دقيقة
+              </button>
+              <span className="ms-2 align-middle text-[10px] font-bold text-[#506072] dark:text-gray-500">
+                أو تابع كزائر — كل الدروس متاحة
+              </span>
+            </div>
+          </div>
+        </section>
+      )}
+
+
+      {connecte && refusSync > 0 && (
+        <section
+          data-testid="bandeau-refus-sync"
+          aria-labelledby="refus-sync-title"
+          className="rounded-3xl border border-red-300/70 bg-red-50 p-4 shadow-sm dark:border-red-900/50 dark:bg-red-950/30"
+        >
+          <h2 id="refus-sync-title" className="text-sm font-black text-[#8a1d1d] dark:text-red-200">
+            لم تُسجَّل {refusSync} عناصر عند أستاذك
+          </h2>
+          <p className="mt-1 text-[11px] leading-relaxed text-[#8a1d1d]/90 dark:text-red-200/80">
+            رفض الخادم هذه العناصر لأنها خارجة عن الشروط (علامة بين 0 و100، خطوة بين 1 و4، نص بطول معقول).
+            عملُك محفوظ في هاتفك، لكنه لم يصل إلى متابعة أستاذك. إن تكرّر الأمر، أبلغنا.
+          </p>
+          <ul className="mt-2 list-inside list-disc text-[10px] text-[#8a1d1d]/80 dark:text-red-200/70">
+            {Object.entries(raisonsRefus).map(([raison, n]) => (
+              <li key={raison}>{raison} : {n}</li>
+            ))}
+          </ul>
+          <div className="mt-3">
+            <button
+              type="button"
+              onClick={() => {
+                effacerRefusSync();
+                setRefusSync(0);
+                setRaisonsRefus({});
+              }}
+              className="rounded-xl border border-[#8a1d1d]/30 px-4 py-2 text-xs font-bold text-[#8a1d1d] dark:text-red-200"
+            >
+              حسناً، فهمت
+            </button>
+          </div>
+        </section>
+      )}
+
+      {/*
+        Travail fait sur cet appareil AVANT la connexion. Sur un téléphone
+        partagé (le cas courant), ces activités ne sont pas forcément celles de
+        l'élève connecté : il doit le dire. Avant le 14/10/2026 elles partaient
+        silencieusement sous son nom dans le tableau de bord du professeur.
+      */}
+      {connecte && refusSync === 0 && activitesInvite > 0 && (
+        <section
+          data-testid="bandeau-activites-invite"
+          aria-labelledby="activites-invite-title"
+          className="rounded-3xl border border-amber-300/70 bg-amber-50 p-4 shadow-sm dark:border-amber-900/50 dark:bg-amber-950/30"
+        >
+          <h2 id="activites-invite-title" className="text-sm font-black text-[#7a4a00] dark:text-amber-200">
+            نشاطات مسجَّلة في هذا الهاتف قبل إنشاء الحساب
+          </h2>
+          <p className="mt-1 text-[11px] leading-relaxed text-[#7a4a00]/90 dark:text-amber-200/80">
+            وجدنا <b>{activitesInvite}</b> نشاطًا (اختبارات، تدريبات، إنتاجات) سُجّلت قبل الاتصال.
+            إن كانت أنشطتك أنت، اربطها بحسابك ليظهر تقدّمك لأستاذك. وإن كان هذا الهاتف مشتركًا مع
+            أخيك أو أختك، اختر «ليست لي».
+          </p>
+          <div className="mt-3 flex flex-wrap gap-2">
+            <button
+              type="button"
+              onClick={rattacherActivites}
+              disabled={importEnCours}
+              className="rounded-xl bg-[#006d37] px-4 py-2 text-xs font-black text-white shadow-sm transition hover:bg-[#00562b] disabled:opacity-60"
+            >
+              {importEnCours ? 'جاري الربط...' : 'نعم، اربطها بحسابي'}
+            </button>
+            <button
+              type="button"
+              onClick={refuserActivites}
+              className="rounded-xl border border-[#7a4a00]/30 px-4 py-2 text-xs font-bold text-[#7a4a00] dark:text-amber-200"
+            >
+              لا، ليست لي
+            </button>
+          </div>
+        </section>
+      )}
 
       <section aria-labelledby="daily-priority-title" className="space-y-2">
         <div className="flex items-end justify-between gap-3 px-1">
@@ -111,7 +333,9 @@ export default function DashboardView({
         </div>
 
         {onOpenLesson && onOpenQcm ? (
-          <NbaCard onOpenLesson={onOpenLesson} onOpenQcm={onOpenQcm} testId="home-nba" />
+          <Suspense fallback={<CarteDiffereeFallback hauteur="h-[132px]" />}>
+            <NbaCard onOpenLesson={onOpenLesson} onOpenQcm={onOpenQcm} testId="home-nba" />
+          </Suspense>
         ) : (
           <button
             type="button"
@@ -200,8 +424,12 @@ export default function DashboardView({
 
             {/* 2026-10-12 — la carte affiche le programme du jour sans ouvrir
                 `plan` : cette page a désormais une porte principale unique
-                (hub « المراجعة »). La carte reste informative. */}
-            <TodayCard />
+                (hub « المراجعة »). La carte reste informative.
+                M7 — chargée après le premier rendu (elle tirait le plan de
+                révision et ses données dans le bundle d'entrée). */}
+            <Suspense fallback={<CarteDiffereeFallback />}>
+              <TodayCard />
+            </Suspense>
 
             <DailyGoalWidget
               dailyGoals={progress.dailyGoals}
@@ -218,7 +446,13 @@ export default function DashboardView({
                   emplacement principal unique (hub التمارين والتدريب). Un accès
                   en double fait croire à deux outils différents. Il ne reste que
                   ce qui n'a PAS d'autre porte : le المرشد, aidé à la demande. */}
-              <h3 className="mb-2 px-1 text-sm font-black text-[#1f1c0b] dark:text-white">تحتاج مساعدة؟</h3>
+              {/* 2026-10-14 — « تحتاج مساعدة؟ » était un tiroir d'assistance,
+                  pas une rubrique : y ranger le capitaine revenait à dire
+                  « appelle-le quand tu es perdu ». Or un guide se consulte même
+                  quand tout va bien (pour choisir quoi travailler). L'entrée est
+                  donc présentée pour ce qu'elle est : un accompagnement continu,
+                  en tête du bloc, avec son nom. */}
+              <h3 className="mb-2 px-1 text-sm font-black text-[#1f1c0b] dark:text-white">القبطان</h3>
               <div className="grid gap-2 sm:grid-cols-2">
                 {/* Porte EXPLICITE vers le المرشد depuis l'accueil
                     (demande : « depuis l'accueil, question libre »). Le bouton
@@ -226,7 +460,7 @@ export default function DashboardView({
                     question libre a une entrée visible. */}
                 <button type="button" onClick={() => onNavigateToTab?.('chat')} className="flex items-center gap-3 rounded-2xl border border-emerald-200 p-3 text-right dark:border-emerald-900/50">
                   <HelpCircle className="h-5 w-5 shrink-0 text-[#006d37]" />
-                  <span><span className="block text-xs font-black dark:text-white">المرشد الذكي</span><span className="text-[10px] font-bold text-[#506072]">اطرح أي سؤال</span></span>
+                  <span><span className="block text-xs font-black dark:text-white">اسأل القبطان</span><span className="text-[10px] font-bold text-[#506072]">من أول سؤال إلى ليلة البكالوريا</span></span>
                 </button>
                 {/* Renvoi vers le hub, pas vers un outil : l'accueil ne remplace
                     pas la rubrique, il indique où aller. */}

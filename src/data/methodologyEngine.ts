@@ -1,3 +1,10 @@
+// Ré-exports : la taxonomie des erreurs vit désormais dans un module léger
+// (voir `errorTaxonomy.ts` pour la raison — 105 Ko tirés dans l'entrée du
+// bundle pour une trentaine de libellés). Aucun consommateur n'a à changer.
+export { ERROR_TAXONOMY } from './errorTaxonomy';
+export type { ErrorStep, ErrorTaxonomyItem, StepId } from './errorTaxonomy';
+import type { StepId } from './errorTaxonomy';
+
 export interface VerbCriteriaItem {
   id: string;
   order: number;
@@ -38,22 +45,6 @@ export interface TrainingExercise {
   stage3: { recommendedTimeSec: number; hints: string[] };
   stage4: { timeLimitSec: number; passIcmThreshold: number };
 }
-export type ErrorStep = StepId | 'switch';
-export interface ErrorTaxonomyItem {
-  code: string; nameAr: string; nameFr: string; descriptionAr: string;
-  example: string; counterActionAr: string; step: ErrorStep;
-}
-export const ERROR_TAXONOMY: Record<string, ErrorTaxonomyItem> = {
-  missing_unit: { code:'missing_unit', nameAr:'غياب الوحدة القياسية', nameFr:'Unité absente', descriptionAr:'ذكر أرقام مجردة دون إرفاقها بوحدتها القياسية الفيزيائية أو الحيوية.', example:'كتابة "تصل القيمة إلى 1.8" بدلاً من "1.8 غ/ل".', counterActionAr:'أعد كتابة كل قيمة عددية متبوعة بوحدتها (غ/ل، %، دقيقة، وحدة اعتبارية).', step:2 },
-  missing_reference: { code:'missing_reference', nameAr:'غياب ذكر السند (الوثيقة / المنحنى / الجدول)', nameFr:'Support non nommé', descriptionAr:'الانطلاق في الوصف دون تسمية الوثيقة أو نوعها أو المجال المدروس.', example:'قول "تتزايد الأجسام المضادة" دون ذكر "انطلاقاً من الوثيقة 1".', counterActionAr:'ابدأ دائماً بـ "انطلاقاً من الوثيقة (س)" أو "تمثل الوثيقة... حيث نلاحظ".', step:2 },
-  premature_interpretation: { code:'premature_interpretation', nameAr:'تفسير مبكر أثناء التحليل', nameFr:'Interprétation prématurée', descriptionAr:'استعمال الروابط السببية (لأن، راجع إلى، بسبب) داخل مهمة التحليل الوصفي.', example:'قول "تتناقص النسبة لأن الإنزيم تخرب" في سؤال "حلل المنحنى".', counterActionAr:'احذف أي تفسير واكتفِ بوصف ما تراه العين بدقة، واختم بالاستنتاج فقط.', step:'switch' },
-  conditional_hypothesis: { code:'conditional_hypothesis', nameAr:'صياغة الفرضية بصيغة الشك', nameFr:'Hypothèse non assertive', descriptionAr:'استخدام كلمات التردد أو التعطيل في الفرضية التفسيرية (ربما، لعل).', example:'قول "ربما يؤثر الدواء على الريبوزوم".', counterActionAr:'صغ الفرضية بجملة إخبارية جازمة قابلة للاختبار التجريبي.', step:3 },
-  missing_conclusion: { code:'missing_conclusion', nameAr:'غياب الجملة الختامية', nameFr:'Absence de phrase-bilan', descriptionAr:'التوقف عند تفكيك المعطيات دون تقديم خلاصة تجيب صراحة عن المشكل.', example:'إنهاء التحليل عند آخر نقطة في المنحنى دون سطر استنتاجي.', counterActionAr:'اختم دائماً بـ "الاستنتاج: [إعادة صياغة الهدف من الوثيقة كحقيقة علمية]".', step:4 },
-  verb_confusion: { code:'verb_confusion', nameAr:'الخلط بين أفعال الأداء', nameFr:'Confusion entre verbes', descriptionAr:'تقديم تفسير لسؤال تحليل، أو الاكتفاء بالوصف في سؤال تفسير.', example:'تقديم آلية بيولوجية لسؤال "حلل"، أو وصف سطحي لسؤال "فسر".', counterActionAr:'افحص الفعل في بداية التعليمة جيداً والتزم بهيكل الفيشة المخصص له.', step:1 },
-  comparison_without_criteria: { code:'comparison_without_criteria', nameAr:'مقارنة عشوائية دون معايير', nameFr:'Comparaison sans critères', descriptionAr:'سرد حالة الشاهد ثم سرد حالة التجربة في فقرتين منفصلتين.', example:'وصف الفأر 1 في 5 أسطر ثم وصف الفأر 2 في 5 أسطر دون تقاطع.', counterActionAr:'قارن وجهاً لوجه حسب المعيار مستعملاً "بينما / في حين".', step:2 },
-  unbalanced_comparison: { code:'unbalanced_comparison', nameAr:'مقارنة غير متوازنة', nameFr:'Comparaison non équilibrée', descriptionAr:'معالجة معيار لعنصر وإهمال العنصر المقابل لنفس المعيار.', example:'ذكر سرعة التفاعل عند 37° دون مقارنتها بسرعة التفاعل عند 0°.', counterActionAr:'تأكد من معالجة كلا العنصرين في كل معيار مقارنة.', step:3 },
-  unsupported_claim: { code:'unsupported_claim', nameAr:'ربط بلا سند (تأكيد دون «لأنّ»)', nameFr:'Affirmation sans lien causal', descriptionAr:'في سؤال تفسيري: إطلاق تأكيد دون ربطه بسببه أو بآليته أو بالفرضية المقابلة.', example:'قول "الفرضية الأولى صحيحة" دون "لأنّ الوثيقة تُظهر أنّ…".', counterActionAr:'أضف الرابط: «وهذا لأنّ … وبالتالي …» — أو احذف التأكيد الذي لا سند له.', step:3 }
-};
 export const UNIVERSAL_GRAMMAR_RULES = [
   { ruleNumber:1, titleAr:'الإجابة تكون لفعل الأداء، لا للموضوع العام', summaryAr:'لا تجب "في المناعة"، بل أجب عن تعليمة "حَلِّل" أو "فَسِّر".', badge:'القاعدة الذهبية' },
   { ruleNumber:2, titleAr:'الاستناد الإلزامي إلى سند صريح', summaryAr:'كل تأكيد علمي يجب أن يرتبط بوثيقة مسماة، أو قيمة عددية دقيقة مع وحدتها.', badge:'دقة الاستدلال' },
@@ -251,7 +242,6 @@ export const TRAINING_EXERCISES: TrainingExercise[] = [
 export { MIFTAH_VERSION, MIFTAH_NAME_AR, MIFTAH_NAME_OFFICIAL_AR, MIFTAH_TAGLINE_AR, MIFTAH_NOMENCLATURE, STEP0, ASNAN, READY_SENTENCES, SYNTHESIS, SPECIAL_FORMS, CONCLUSION_CHECK, RESCUE_SENTENCE, DRILL, LEVELS, FIVE_COSTLY_ERRORS, RECTO_ERRORS, VERSO_ERRORS, FOOTER_RECTO_AR, FOOTER_VERSO_AR, NARRATIVE_AR, POSITIONING_AR, MIFTAH_ANNEXE_AR, ANNEXE, FOOTER_ANNEXE_AR } from './miftahSpec';
 import { STEP0 as MIFTAH_STEP0 } from './miftahSpec';
 
-export type StepId = 1 | 2 | 3 | 4;
 export type MiftahStepId = 0 | 1 | 2 | 3 | 4;
 // Update 2026-09-22 (docs/MARQUE.md §14) — chaque dent porte le nom du GESTE v6 :
 // 🔍 فعل · 🔑 دليل · 🔄 علاقة · 🔓 جواب — فحص = ceinture (SELF_CHECKS), pas une dent (option α §14).

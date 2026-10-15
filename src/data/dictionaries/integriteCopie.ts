@@ -99,7 +99,28 @@ function estDeLaProse(brut: string, norm: string): boolean {
     if (seg.split(/\s+/).filter((w) => w.length >= 2).length >= 4) phrases++;
   }
   if (phrases >= 2) return true;
+  // ─── DETTE MESURÉE, NON CORRIGÉE (2026-10-14) : à instruire AVEC UN CORPUS ───
+  // Le 14/10/2026, un correctif a été tenté ici : supprimer l'exigence de
+  // marqueur de relation pour laisser le seul test morphologique décider. Motif
+  // du correctif : une réponse d'UNE phrase, juste et complète, mais sans
+  // « نستنتج » / « نلاحظ », était classée non-prose et plafonnée à 30 % du
+  // barème — le correcteur punissait une rédaction, pas une faute.
+  //
+  // Le correctif a été REVENU EN ARRIÈRE le jour même, sur preuve exécutée : le
+  // banc `src/supervision/evaluerCopies.test.ts` construit une salade à partir
+  // de TOUTES les formes d'attendus du groupe ; avec le correctif, elle passait
+  // de 6/20 (plafonnée) à 16,5/20, et le mode exercice rendait 8/8 au lieu de
+  // 2,4/8. Mesures de séparation tentées ensuite : densité de clitiques —
+  // phrase juste 63 %, salade 43 % (ne sépare pas) ; densité de mots-outils —
+  // copie correcte 8 %, salade 11 % (sépare encore moins).
+  //
+  // Conclusion honnête : sans corpus de copies réelles, AUCUN critère disponible
+  // ne distingue une phrase rédigée d'une énumération de termes du cours. La
+  // dette reste donc ouverte, elle est figée par
+  // `src/data/dictionaries/plafondNonProse.test.ts`, et sa résolution relève de
+  // H4 (constituer un corpus, mesurer avant/après) — pas d'une intuition.
   if (phrases < 1 || !RELATION_RE.test(norm)) return false;
+
   // AUDIT qualité correcteur (2026-09-26) : une salade de mots-clés contenant
   // une forme attendue qui EST un marqueur de relation (ex. « نستنتج ») passait
   // pour de la prose et désactivait le plafond non_prose → 66 % pour du

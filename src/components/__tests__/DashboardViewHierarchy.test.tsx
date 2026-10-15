@@ -63,8 +63,10 @@ describe('DashboardView — hiérarchie progressive', () => {
     for (const doublon of ['الخرائط الذهنية', 'المنهجية', 'الأنميشن', 'تحدي 3 دقائق']) {
       expect(screen.queryByText(doublon), `${doublon} encore sur l accueil`).toBeNull();
     }
-    // Le المرشد a une porte EXPLICITE ici (question libre depuis l'accueil).
-    expect(screen.getByText('المرشد الذكي')).toBeTruthy();
+    // Le tuteur a une porte EXPLICITE ici (question libre depuis l'accueil).
+    // 14/10/2026 — il s'appelle القبطان ; l'intention du test (une porte
+    // explicite vers le tuteur depuis l'accueil) est inchangée.
+    expect(screen.getByText('اسأل القبطان')).toBeTruthy();
     // Et le rapport hebdo, qui est une action (modal), pas une rubrique.
     expect(screen.getByText('تقرير الأسبوع')).toBeTruthy();
   });

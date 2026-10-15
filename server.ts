@@ -10,7 +10,33 @@ import { DegradedStore, openStoreOrDegrade } from "./server/store.degraded";
 import { resoudreSecret } from "./server/secret";
 import { PostgresStore, migrateJsonFilesToPostgres } from "./server/store.pg";
 import { resumeActivite, calculeActivite } from "./server/activite";
+import { mesurerPilotage } from "./src/server/mesurePilotage";
+// Marque de traçabilité : MÊME fonction que celle apposée dans les documents
+// exportés (images, PDF imprimés). C'est ce qui permet au professeur de
+// remonter d'un document qui circule jusqu'à l'élève — colonne `marque` du CSV.
+import { marqueDepuisIdentite } from "./src/utils/marque";
+// Assainissement des entrées élève (A2, 14/10/2026). Avant : le serveur stockait
+// `icm`, `stage` et `createdAt` EXACTEMENT tels que l'appareil les envoyait —
+// une note de 9999 sur une échelle de 0 à 100 entrait dans la moyenne du
+// professeur, et une date de 2030 rendait un élève « actif » pour toujours.
+import { assainirEntrees, assainirActivites, fusionnerRefus } from "./src/server/assainirEntrees";
 import { makeRateLimiter } from "./server/rateLimit";
+// H2 (2026-10-14) — pages publiques exigées par une publication en magasin :
+// politique de confidentialité lisible sans JavaScript, et Digital Asset Links
+// pour l'application Android (TWA).
+import { rendrePolitiqueHtml } from "./src/server/politiqueHtml";
+import { verifierAssetLinks } from "./src/server/assetLinks";
+// H2 bis (2026-10-14) — INSCRIPTION SANS ADRESSE E-MAIL : l'élève reçoit un code
+// de connexion court + un code secret à 6 chiffres. Voir src/server/codeEleve.ts
+// pour le raisonnement complet et les limites de sécurité assumées.
+import { codeDepuisIdentifiant, resoudreIdentifiant } from "./src/server/codeEleve";
+import {
+  connecterParIdentifiant,
+  donneesPubliques,
+  inscrireSansEmail,
+  validerNouveauSecret,
+} from "./src/server/inscriptionSansEmail";
+import { readFileSync } from "node:fs";
 import { makeStudentAuth, makeTeacherAuth } from "./server/auth";
 import type { ProductionEntry, ActivityEntry, DashboardStudentRow, Student, Teacher } from "./server/store";
 
@@ -29,6 +55,14 @@ try {
   console.error(e instanceof Error ? e.message : String(e));
   process.exit(1);
 }
+
+/**
+ * Clé de quota de connexion : identifiant interne (`<code>@eleve.local`) pour
+ * un code de connexion, e-mail en minuscules sinon. Deux formes de saisie
+ * d'un même code doivent compter sur le même quota — sinon on peut deviner
+ * un code secret à 6 chiffres en variant les tirets et la casse.
+ */
+const cleQuotaConnexion = (raw: unknown): string => resoudreIdentifiant(raw) || "?";
 
 /** Email canonique : trim + minuscules — évite test@x ≠ Test@x (2 comptes). */
 const normalizeEmail = (raw: unknown): string =>
@@ -140,9 +174,35 @@ async function startServer() {
   // CSP bloque ici : TOUT domaine externe non listé (exfiltration de
   // données, scripts/feuilles externes injectés). Google Fonts est
   // explicitement autorisé (police arabe Noto Kufi).
+  //
+  // CADRAGE (aperçu, 14/10/2026) — par défaut l'application REFUSE d'être
+  // affichée dans un cadre (X-Frame-Options: DENY + frame-ancestors 'none') :
+  // c'est la protection anti-clickjacking, et elle ne bouge pas en production.
+  // Mais l'environnement d'APERÇU sert justement l'application DANS UNE IFRAME :
+  // un refus de cadrage y produit un écran blanc, sans aucun message d'erreur
+  // visible côté élève. Le mode est donc EXPLICITE et jamais implicite — il faut
+  // poser FRAME_ANCESTORS pour ouvrir le cadre, et on n'ouvre QUE pour les
+  // ancêtres nommés (jamais « * ») :
+  //   FRAME_ANCESTORS='https://<sous-domaines>.e2b.app' npm start
+  // (Le sous-domaine est écrit ici sans joker À DESSEIN : deux barres obliques
+  //  suivies d'une étoile dans un commentaire font croire aux nettoyeurs de
+  //  commentaires du dépôt — les tests de câblage en ont un — qu'un commentaire
+  //  de bloc s'ouvre : ils avalent alors le code qui suit. Le joker reste dans la
+  //  COMMANDE, jamais dans le code ni dans les commentaires.)
+  const ancetresCadre = (process.env.FRAME_ANCESTORS || "").trim();
+  // Journalisé UNE fois au démarrage, pas à chaque requête : un log par requête
+  // noie la sortie du serveur et ne dit rien de plus.
+  if (ancetresCadre) {
+    console.log(`[cadrage] iframe autorisée pour : ${ancetresCadre}`);
+  } else {
+    console.log("[cadrage] refus du cadrage — mode par défaut (production).");
+  }
+
   app.use((req: Request, res: Response, next: express.NextFunction) => {
     res.setHeader("X-Content-Type-Options", "nosniff");
-    res.setHeader("X-Frame-Options", "DENY");
+    if (!ancetresCadre) {
+      res.setHeader("X-Frame-Options", "DENY");
+    }
     res.setHeader("X-XSS-Protection", "1; mode=block");
     res.setHeader("Referrer-Policy", "strict-origin-when-cross-origin");
     res.setHeader(
@@ -155,12 +215,19 @@ async function startServer() {
         "img-src 'self' data: blob:",
         "connect-src 'self'",
         "frame-src 'self'",
-        "frame-ancestors 'none'",
+        ancetresCadre ? `frame-ancestors ${ancetresCadre}` : "frame-ancestors 'none'",
         "base-uri 'self'",
         "form-action 'self'",
         "object-src 'none'",
       ].join("; "),
     );
+    if (ancetresCadre) {
+      // Aucun X-Frame-Options n'est émis dans ce mode : l'en-tête ne sait pas
+      // exprimer une liste d'origines (« ALLOW-FROM » est abandonné partout), et
+      // le laisser à DENY annulerait l'autorisation dans les navigateurs qui
+      // l'honorent encore. `frame-ancestors` seul dit exactement la même chose,
+      // en mieux.
+    }
     // HSTS : UNIQUEMENT si la requête arrive chiffrée (HTTPS direct, ou
     // X-Forwarded-Proto: https via trust proxy). Ne JAMAIS l'émettre sur
     // HTTP simple — le navigateur pinnerait HTTPS pour max-age et refuserait
@@ -173,6 +240,45 @@ async function startServer() {
 
   app.get("/api/health", (_req: Request, res: Response) => {
     res.json({ status: "ok", mode: process.env.NODE_ENV || "development", offlineMode: true });
+
+
+  });
+
+  /**
+   * Inscription SANS adresse e-mail : nom + code secret à 6 chiffres.
+   * Le serveur attribue un CODE DE CONNEXION court (affiché une fois à l'élève,
+   * jamais transmis par e-mail — il n'y en a pas). Réponse 201 :
+   * `{ token, code: "XXXX-XXXX", student: { id, name } }`.
+   *
+   * Pourquoi ce chemin existe : exiger une adresse e-mail bloquait la majorité
+   * des élèves (cf. src/server/codeEleve.ts). Le mode invité reste possible —
+   * ce chemin ajoute la synchronisation et la visibilité pour le professeur,
+   * sans rien imposer.
+   */
+  /** Dépendances réelles (bcrypt + JWT) injectées dans le module testable. */
+  const outilsAuth = {
+    hacher: (mdp: string) => bcrypt.hash(mdp, 10),
+    verifier: (mdp: string, hash: string) => bcrypt.compare(mdp, hash),
+    signer: (eleve: { studentId: string; email: string }) =>
+      jwt.sign(eleve, JWT_SECRET, { expiresIn: "7d" }),
+  };
+
+  app.post("/api/auth/register-code", async (req: Request, res: Response) => {
+    try {
+      if (!ipLimiter.hit(req.ip || "unknown")) return res.status(429).json({ error: "too_many_attempts" });
+      const r = await inscrireSansEmail(store, req.body ?? {}, outilsAuth);
+      if (!r.ok) return res.status(r.statut).json({ error: r.erreur });
+      invalidateDashboard();
+      res.status(r.statut).json({ token: r.token, code: r.eleve.code, student: r.eleve });
+    } catch (e) {
+      // Course entre deux inscriptions simultanées : la contrainte UNIQUE a
+      // parlé en dernier — c'est un conflit, pas une panne serveur.
+      const statut = (e as { statusCode?: number }).statusCode;
+      if (statut === 409) return res.status(409).json({ error: "code_taken" });
+      console.error("[auth] register-code:", e);
+      if (storeEstDegrade(store)) return res.status(503).json({ error: "storage_unavailable" });
+      res.status(500).json({ error: "server_error" });
+    }
   });
 
   app.post("/api/auth/register", async (req: Request, res: Response) => {
@@ -212,19 +318,20 @@ async function startServer() {
 
   app.post("/api/auth/login", async (req: Request, res: Response) => {
     try {
-      const { password } = req.body;
-      const email = normalizeEmail(req.body.email);
-      if (!ipLimiter.hit(req.ip || "unknown") || !loginAccountLimiter.hit(String(email || ""))) {
+      // Deux populations, une seule porte : l'élève saisit son CODE DE
+      // CONNEXION (comptes sans e-mail) ou son adresse e-mail (comptes
+      // existants). `resoudreIdentifiant` normalise l'un et l'autre.
+      const cle = cleQuotaConnexion(req.body?.identifiant ?? req.body?.email);
+      if (!ipLimiter.hit(req.ip || "unknown") || !loginAccountLimiter.hit(cle)) {
         return res.status(429).json({ error: "too_many_attempts" });
       }
-      const student = await store.findStudentByEmail(email);
-      if (!student || !(await bcrypt.compare(password, student.passwordHash))) {
-        return res.status(401).json({ error: "invalid_credentials" });
-      }
-      loginAccountLimiter.reset(String(email)); // succès → compteur remis à zéro
-      const token = jwt.sign({ studentId: student.id, email: student.email }, JWT_SECRET, { expiresIn: "7d" });
-      res.json({ token, student: { id: student.id, email: student.email, name: student.name } });
-    } catch {
+      const r = await connecterParIdentifiant(store, req.body ?? {}, outilsAuth);
+      if (!r.ok) return res.status(r.statut).json({ error: r.erreur });
+      loginAccountLimiter.reset(cle); // succès → compteur remis à zéro
+      res.json({ token: r.token, student: r.eleve });
+    } catch (e) {
+      console.error("[auth] login:", e);
+      if (storeEstDegrade(store)) return res.status(503).json({ error: "storage_unavailable" });
       res.status(500).json({ error: "server_error" });
     }
   });
@@ -234,7 +341,10 @@ async function startServer() {
   app.get("/api/auth/me", studentAuth, asyncHandler(async (req: Request, res: Response) => {
     const student = await store.findStudentById((req as any).studentId);
     if (!student) return res.status(404).json({ error: "not_found" });
-    res.json({ student: { id: student.id, email: student.email, name: student.name } });
+    // Compte créé sans adresse e-mail : `email` vaut `null` (jamais
+    // `<code>@eleve.local`) et le code affichable prend sa place. Compte
+    // classique : e-mail normal, pas de code.
+    res.json({ student: donneesPubliques(student) });
   }));
 
   app.post("/api/student/sync", studentAuth, async (req: Request, res: Response) => {
@@ -246,12 +356,32 @@ async function startServer() {
       if ((!Array.isArray(entries) || entries.length === 0) && (!Array.isArray(events) || events.length === 0)) {
         return res.status(400).json({ error: "invalid_payload" });
       }
+      // ── LE SERVEUR DÉFINIT LE BARÈME ET L'HORLOGE (A2) ─────────────────────
+      // Ce qui est hors barème est REFUSÉ (note hors 0-100, étape hors 1-4,
+      // texte démesuré) ; une date future est ramenée à l'heure du serveur ;
+      // un lot trop gros est tronqué ET compté. Rien n'est écarté en silence :
+      // le client reçoit le détail des refus, et le journal serveur les garde.
+      const rapportEntrees = assainirEntrees(entries);
+      const rapportActivites = assainirActivites(events);
+      const refuses = fusionnerRefus(rapportEntrees.refus, rapportActivites.refus);
+      if (Object.keys(refuses).length > 0) {
+        console.warn(`[sync] refus pour ${studentId} :`, JSON.stringify(refuses));
+      }
+
       // ⚡ UNE transaction SQL pour tout le lot (upsert « si absent » — idempotent).
-      const addedEntries = await store.addEntriesIfNew(studentId, entries);
-      const addedEvents = await store.addActivitiesIfNew(studentId, events);
+      const addedEntries = await store.addEntriesIfNew(studentId, rapportEntrees.acceptees);
+      const addedEvents = await store.addActivitiesIfNew(studentId, rapportActivites.acceptees);
       const synced = addedEntries + addedEvents;
       if (synced > 0) invalidateDashboard();
-      res.json({ ok: true, synced, total: await store.countEntries(studentId), totalEvents: await store.countActivities(studentId) });
+      res.json({
+        ok: true,
+        synced,
+        // Un élève dont tout le lot est refusé doit le VOIR : un succès muet lui
+        // ferait croire que son travail est enregistré côté professeur.
+        refuses,
+        total: await store.countEntries(studentId),
+        totalEvents: await store.countActivities(studentId),
+      });
     } catch {
       res.status(500).json({ error: "server_error" });
     }
@@ -287,7 +417,23 @@ async function startServer() {
     // resume = activité RÉELLE (7j/30j). NB : comptabilise les INSCRITS only —
     // un invité n'envoie rien (offline by design) et reste donc invisible ici.
     const students = await dashboardRows(store);
-    res.json({ students, resume: resumeActivite(students) });
+    // Compte créé SANS adresse e-mail (14/10/2026) : son `email` est
+    // l'identifiant technique `<code>@eleve.local`. Le professeur doit voir le
+    // code de connexion de l'élève — jamais cette adresse, qui ne veut rien
+    // dire pour lui et n'est pas une adresse joignable.
+    const visibles = students.map((s) => ({
+      ...s,
+      code: codeDepuisIdentifiant(s.email),
+      email: codeDepuisIdentifiant(s.email) ? null : s.email,
+    }));
+    // Pilotage : ce que le serveur sait DÉJÀ (inscriptions, inscrits jamais
+    // revenus, délai médian jusqu'à la première trace). Agrégats calculés sur
+    // les lignes existantes — aucune donnée nouvelle n'est collectée.
+    res.json({
+      students: visibles,
+      resume: resumeActivite(students),
+      pilotage: mesurerPilotage(students),
+    });
   }));
 
   app.get("/api/teacher/entries", teacherAuth, asyncHandler(async (req: Request, res: Response) => {
@@ -330,6 +476,12 @@ async function startServer() {
       }
       const student = await store.findStudentById(resetCode.studentId);
       if (!student) return res.status(404).json({ error: "student_not_found" });
+      // Un compte SANS adresse e-mail doit garder un secret à 6 chiffres :
+      // sinon il devient impossible à saisir depuis l'écran « بالرمز » (pas
+      // d'adresse de secours) — verrouillage définitif de l'élève.
+      // Refus AVANT markResetUsed : le code du professeur n'est pas brûlé.
+      const secret = validerNouveauSecret(student, password);
+      if (!secret.ok) return res.status(secret.statut).json({ error: secret.erreur });
       const passwordHash = await bcrypt.hash(password, 10);
       await store.updateStudentPassword(student.id, passwordHash);
       await store.markResetUsed(code);
@@ -366,7 +518,9 @@ async function startServer() {
     res.setHeader("Content-Type", "text/csv; charset=utf-8");
     res.setHeader("Content-Disposition", `attachment; filename="boussole-export-${safeId || "all"}.csv"`);
     res.write("\uFEFF"); // BOM → Excel ouvre l'arabe correctement
-    res.write(["student_id", "name", "email", "productions", "avg_icm", "last_production", "top_errors", "last_activity", "actif_7j", "actif_30j"].join(";") + "\n");
+    // Colonne « code » et non « email » : une part croissante des élèves
+    // n'a pas d'adresse — ce qui les identifie, c'est leur code de connexion.
+    res.write(["student_id", "name", "code", "marque", "productions", "avg_icm", "last_production", "top_errors", "last_activity", "actif_7j", "actif_30j"].join(";") + "\n");
     if (studentId) {
       // Un seul élève : même forme de ligne (petit volume).
       const entries = await store.listEntries(studentId);
@@ -386,11 +540,11 @@ async function startServer() {
       // Vraie dernière production (listEntries est trié created_at DESC) —
       // l'ancienne valeur = date d'inscription contredisait le dashboard.
       const lastProduction = entries[0]?.createdAt || "";
-      res.write([csvCell(cellId), csvCell(student?.name || ""), csvCell(student?.email || ""), String(entries.length), String(avgIcm), csvCell(lastProduction), csvCell(topErrors), csvCell(act.lastActivity || ""), act.actif7j ? "1" : "0", act.actif30j ? "1" : "0"].join(";") + "\n");
+      res.write([csvCell(cellId), csvCell(student?.name || ""), csvCell((codeDepuisIdentifiant(student?.email || "") ?? student?.email) || ""), csvCell(marqueDepuisIdentite(studentId) || ""), String(entries.length), String(avgIcm), csvCell(lastProduction), csvCell(topErrors), csvCell(act.lastActivity || ""), act.actif7j ? "1" : "0", act.actif30j ? "1" : "0"].join(";") + "\n");
     } else {
       // Streaming : itérateur SQL — 300 000 lignes sans jamais tout charger en RAM.
       for await (const row of store.iterateExportRows()) {
-        res.write([csvCell(row.id), csvCell(row.name), csvCell(row.email), String(row.productions), String(row.avgIcm), csvCell(row.lastProduction || ""), csvCell(row.topErrors), csvCell(row.lastActivity || ""), row.actif7j ? "1" : "0", row.actif30j ? "1" : "0"].join(";") + "\n");
+        res.write([csvCell(row.id), csvCell(row.name), csvCell(codeDepuisIdentifiant(row.email) ?? row.email), csvCell(marqueDepuisIdentite(row.id) || ""), String(row.productions), String(row.avgIcm), csvCell(row.lastProduction || ""), csvCell(row.topErrors), csvCell(row.lastActivity || ""), row.actif7j ? "1" : "0", row.actif30j ? "1" : "0"].join(";") + "\n");
       }
     }
     res.end();
@@ -405,6 +559,39 @@ async function startServer() {
     await store.createTeacher(email, hash, email.split("@")[0]);
   }
 
+  // ── Politique de confidentialité : page HTML AUTONOME (aucun JavaScript) ──
+  // Google Play exige une URL publique. Rendue depuis `src/data/politiqueConfidentialite.ts`
+  // (source unique, déjà verrouillée par test) : pas de deuxième texte à maintenir.
+  // Sans JavaScript et dans les deux langues, parce qu'un relecteur non arabophone
+  // doit pouvoir la vérifier — c'est un motif classique de rejet sinon.
+  app.get("/privacy", (req: Request, res: Response) => {
+    const hote = req.get("host") ?? "";
+    const protocole = req.protocol === "https" ? "https" : "http";
+    res.setHeader("Content-Type", "text/html; charset=utf-8");
+    res.setHeader("Cache-Control", "public, max-age=3600");
+    res.send(rendrePolitiqueHtml({ urlPublique: hote ? `${protocole}://${hote}/privacy` : "" }));
+  });
+
+  // ── Digital Asset Links : ce qui efface la barre d'adresse de la TWA ──
+  // Règle : un gabarit non renseigné n'est PAS servi (404 + journal). Servir un
+  // placeholder ferait échouer la vérification Android sans que personne ne
+  // comprenne pourquoi — mieux vaut une erreur explicite qu'un fichier inutile.
+  app.get("/.well-known/assetlinks.json", (_req: Request, res: Response) => {
+    let contenu: string | null = null;
+    try {
+      contenu = readFileSync(path.join(process.cwd(), "store", "assetlinks.json"), "utf-8");
+    } catch {
+      contenu = null;
+    }
+    const verdict = verifierAssetLinks(contenu);
+    if (verdict.statut !== "valide") {
+      console.warn(`[assetlinks] non servi (${verdict.statut}) : ${verdict.message}`);
+      return res.status(404).json({ error: "assetlinks_unavailable", raison: verdict.statut });
+    }
+    res.setHeader("Content-Type", "application/json; charset=utf-8");
+    res.send(JSON.stringify(verdict.json));
+  });
+
   if (process.env.NODE_ENV !== "production") {
     const vite = await createViteServer({
       server: { middlewareMode: true },
@@ -413,7 +600,29 @@ async function startServer() {
     app.use(vite.middlewares);
   } else {
     const distPath = path.join(process.cwd(), "dist");
-    app.use(express.static(distPath));
+    /**
+     * GARDE-FOU DE PUBLICATION (trouvé le 14/10/2026, vérifié par requête HTTP).
+     *
+     * `express.static(distPath)` servait TOUT `dist/`, y compris le bundle
+     * serveur ET sa source map : `GET /server.cjs.map` répondait 200 avec
+     * 202 Ko de JSON contenant le TypeScript d'origine (auth, limiteurs,
+     * génération des codes, commentaires de sécurité inclus). N'importe qui
+     * pouvait donc lire le code du serveur en une commande.
+     *
+     * Les fichiers serveur n'ont aucune raison d'être téléchargeables : le
+     * client n'en a besoin d'aucun. On les refuse explicitement, AVANT le
+     * statique, avec un journal clair plutôt qu'un silence.
+     */
+    const INTERDITS = /(^|\/)(server\.(c?js|mjs|ts)|.*\.map|package(-lock)?\.json|tsconfig.*\.json|\.env.*|\.git.*)$/i;
+    app.use((req: Request, res: Response, next: express.NextFunction) => {
+      const chemin = decodeURIComponent(req.path).replace(/\\/g, "/");
+      if (chemin.includes("..") || INTERDITS.test(chemin)) {
+        console.warn(`[static] bloqué (fichier serveur/internes) : ${chemin}`);
+        return res.status(404).json({ error: "not_found" });
+      }
+      next();
+    });
+    app.use(express.static(distPath, { index: false, dotfiles: "deny" }));
     app.get("*", (_req: Request, res: Response) => {
       res.sendFile(path.join(distPath, "index.html"));
     });

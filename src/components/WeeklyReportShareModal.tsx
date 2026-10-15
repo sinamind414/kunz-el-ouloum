@@ -21,6 +21,11 @@ import {
 } from 'lucide-react';
 import { UserProgress, Unit } from '../types';
 import { fmtDateLatn } from '../utils/latinDigits';
+// MARQUE DE TRAÇABILITÉ (A3, 14/10/2026) : cette image est partagée par
+// WhatsApp. La marque ne contient aucun identifiant (ni nom, ni e-mail, ni code
+// de connexion) — voir utils/marque.ts pour les limites assumées.
+import { apposerMarqueCanvas } from '../utils/marque';
+import { identiteCourante } from '../utils/activityLog';
 
 interface WeeklyReportShareModalProps {
   isOpen: boolean;
@@ -383,6 +388,16 @@ export default function WeeklyReportShareModal({
     ctx.fillText('معتمد', 140, footerY - 5);
     ctx.fillText('كنز العلوم', 140, footerY + 8);
     ctx.fillText('BAC DZ', 140, footerY + 21);
+
+    // MARQUE DE TRAÇABILITÉ (A3, 14/10/2026). Cette image est le vecteur de
+    // fuite réel : un élève la partage sur WhatsApp et elle devient publique.
+    // La marque est courte, discrète, et ne contient aucun identifiant
+    // (ni nom, ni e-mail, ni code de connexion) — voir utils/marque.ts.
+    apposerMarqueCanvas(ctx, identiteCourante(), {
+      largeur: canvas.width,
+      hauteur: canvas.height,
+      taillePolice: 16,
+    });
 
     return canvas;
   };

@@ -18,7 +18,7 @@
 
 import type { DailyGoalConfig, UserProgress } from '../types';
 import { jourLocal } from './dayKey';
-import { enregistrerJourActif, etatSerie, serieAffichee, type ProgressionJour } from './serie';
+import { cumulJours, enregistrerJourActif, etatSerie, serieAffichee, type ProgressionJour } from './serie';
 
 export const OBJECTIF_QUOTIDIEN_DEFAUT: DailyGoalConfig = {
   type: 'minutes',
@@ -99,7 +99,7 @@ export function appliquerActiviteQuotidienne(
   //    l'ouverture de l'app, sans travail : l'utiliser gèlerait la série d'un
   //    élève qui ouvre l'application sans étudier).
   const progression: ProgressionJour = enregistrerJourActif(
-    etatSerie(minute.serieDernierJour, minute.streakDays),
+    etatSerie(minute.serieDernierJour, minute.streakDays, minute.joursActifsTotal),
     aujourdhui,
   );
 
@@ -130,6 +130,9 @@ export function appliquerActiviteQuotidienne(
         history,
         streakDays: progression.etat.jours,
         serieDernierJour: progression.etat.dernierJour ?? aujourdhui,
+        // Le cumul suit la même règle que la série (une seule fois par jour),
+        // mais il ne redescend jamais.
+        joursActifsTotal: progression.etat.joursTotal,
       },
     },
     compteursReinitialises: nouveauJour,
@@ -152,4 +155,15 @@ export function streakAAfficher(progress: UserProgress, now: Date = new Date()):
 /** Même calcul, à partir du seul bloc d'objectifs (utilisé par les widgets). */
 export function serieAfficheeDepuisDaily(daily: DailyGoalConfig | undefined, now: Date = new Date()): number {
   return serieAffichee(etatSerie(daily?.serieDernierJour, daily?.streakDays), jourLocal(now));
+}
+
+/**
+ * CUMUL de jours travaillés à AFFICHER — jamais 0 à cause d'une rupture.
+ *
+ * Les six écrans qui affichaient `serieAfficheeDepuisDaily` disaient « 0 » à un
+ * élève qui venait de manquer un jour, effaçant à ses yeux des semaines de
+ * travail. C'est ce cumul qu'il faut leur donner dès que la série est retombée.
+ */
+export function cumulJoursDepuisDaily(daily: DailyGoalConfig | undefined): number {
+  return cumulJours(etatSerie(daily?.serieDernierJour, daily?.streakDays, daily?.joursActifsTotal));
 }

@@ -64,6 +64,10 @@ export interface DashboardStudentRow {
   id: string;
   name: string;
   email: string;
+  /** Date de création du compte (pilotage : inscriptions récentes, anciens inactifs). */
+  createdAt: string;
+  /** Première production horodatée (null si l'élève n'en a jamais envoyé). */
+  premiereProduction: string | null;
   productions: number;
   avgIcm: number;
   dominantErrors: { tag: string; count: number }[];
@@ -374,16 +378,18 @@ export class SqliteStore {
   dashboardRows(maintenant: number = Date.now()): DashboardStudentRow[] {
     // UNE passe par table (GROUP BY) — plus de 7 sous-requêtes corrélées × n élèves.
     const stats = this.db.prepare(`
-      SELECT s.id, s.name, s.email,
+      SELECT s.id, s.name, s.email, s.created_at,
         COALESCE(e.productions, 0) AS productions,
         COALESCE(e.avg_icm, 0) AS avg_icm,
         e.last_production,
+        e.first_production,
         COALESCE(a.quiz_count, 0) AS quiz_count,
         COALESCE(a.mission_count, 0) AS mission_count,
         a.avg_quiz_percent
       FROM students s
       LEFT JOIN (
-        SELECT student_id, COUNT(*) AS productions, AVG(icm) AS avg_icm, MAX(created_at) AS last_production
+        SELECT student_id, COUNT(*) AS productions, AVG(icm) AS avg_icm,
+               MAX(created_at) AS last_production, MIN(created_at) AS first_production
         FROM entries GROUP BY student_id
       ) e ON e.student_id = s.id
       LEFT JOIN (
@@ -393,8 +399,8 @@ export class SqliteStore {
           AVG(CASE WHEN type = 'quiz' THEN CAST(json_extract(payload_json, '$.percent') AS REAL) END) AS avg_quiz_percent
         FROM activities GROUP BY student_id
       ) a ON a.student_id = s.id`).all() as {
-      id: string; name: string; email: string; productions: number; avg_icm: number;
-      last_production: string | null; quiz_count: number; mission_count: number; avg_quiz_percent: number | null;
+      id: string; name: string; email: string; created_at: string; productions: number; avg_icm: number;
+      last_production: string | null; first_production: string | null; quiz_count: number; mission_count: number; avg_quiz_percent: number | null;
     }[];
 
     // Erreurs dominantes (top 5) par élève — table normalisée, index-only.
@@ -433,6 +439,8 @@ export class SqliteStore {
         id: s.id,
         name: s.name,
         email: s.email,
+        createdAt: s.created_at || '',
+        premiereProduction: s.first_production || null,
         productions: Number(s.productions),
         avgIcm: Math.round(Number(s.avg_icm)),
         dominantErrors: (errorsByStudent.get(s.id) || [])

@@ -38,6 +38,7 @@ import Icone from './Icone';
 import { HOSILA_STATS, unitesAffichees } from '../data/hosila';
 import { numeroUniteHosila } from '../data/hosilaUnitNumbers';
 import { okachaUniteIcone } from '../data/lessonIcons';
+import MarqueDocument from './MarqueDocument';
 import {
   loadOkachaProgress,
   toggleUniteLue,
@@ -820,6 +821,8 @@ export default function OkachaView({ onBack, onRate, onOpenQcm, domaineInitial }
           </section>
         </>
       )}
+      {/* Pied de page de traçabilité — VISIBLE À L'IMPRESSION SEULEMENT (A3). */}
+      <MarqueDocument document="العكاشة" />
     </div>
   );
 }

@@ -59,6 +59,19 @@ export interface BotSession {
   /** KEO-103 : cartes dont le probe a été contourné par deux demandes
    *  explicites « اشرح لي » (trappe anti-frustration, journalisée). */
   probeBypassed?: string[];
+  /**
+   * S-05 (corrigé le 14/10/2026) : carte dont la QUESTION DE RAPPEL de fin de
+   * fiche est en attente — « صح أم خطأ: X مرتبط بـ Y », ou la tâche de
+   * production équivalente.
+   *
+   * POURQUOI CE CHAMP EXISTE. Le moteur posait cette question depuis octobre et
+   * ne gardait AUCUNE trace de l'avoir posée. L'élève répondait « صح » — deux
+   * lettres — et la saisie traversait toute la cascade pour finir en
+   * « هذا السؤال خارج قاعدة علوم الطبيعة والحياة » avec 0 % de confiance :
+   * le tuteur déclarait hors programme sa propre question. Sans état, aucune
+   * réponse n'est reconnaissable ; c'est le même défaut que `pendingProbeCardId`
+   * corrige pour la question de sondage. */
+  pendingRecallCardId?: string | null;
   /** KEO-105 (SpecKit 2026-10-01) : triade en cours (ألاحظ → أستنتج → أخلص)
    *  sur une question d'analyse posée en dialogue libre. */
   triadeStep?: 1 | 2 | 3 | null;

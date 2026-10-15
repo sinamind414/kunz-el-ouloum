@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useCompteARebours } from '../hooks/useWallClock';
 import { motion, AnimatePresence } from 'motion/react';
 import { X, Timer, CheckCircle2, AlertCircle, ArrowLeft, ArrowRight, RotateCcw, Award, Check, BookOpen, GraduationCap, AlertOctagon, HelpCircle, Sparkles, Eye, EyeOff } from 'lucide-react';
@@ -8,6 +8,19 @@ import { MASCOT_URL } from '../data/brandAssets';
 import { getHintForIncorrectOption, getGeneralHint } from '../utils/hints';
 import { validateFillBlank } from '../utils/fillBlankValidate';
 import BoutonMorchid from './BoutonMorchid';
+// Anti-triche par clé volée (14/10/2026) : les propositions changent de place à
+// chaque session. `grep -o 'correctAnswerIndex:[0-9]*'` extrait encore les clés
+// du paquet livré, mais « la réponse est la 2ᵉ » n'est plus vrai que pendant la
+// session où la clé a été volée. `origineDe` garde justes les aides indexées par
+// position (voir plus bas) : sans elle, l'explication désignerait une autre
+// proposition que celle choisie par l'élève.
+import { graineSession, melangerQuestions, origineDe } from '../utils/melangeOptions';
+// PRODUCTEUR DE MÉMOIRE (14/10/2026, point A de l'analyse LITE) : ce QCM devient
+// la source des erreurs de l'élève. Sans lui, `profilErreurs` n'était alimenté
+// que par l'atelier méthodologique — un élève qui n'y va jamais gardait une
+// mémoire vide à vie, et le capitaine n'avait rien à lui dire.
+import { CAUSES_QCM, doitDemanderCause, QUESTION_CAUSE_AR, REMERCIEMENT_CAUSE_AR, causeParId } from '../data/diagnosticQuiz';
+import { enregistrerErreurs } from '../utils/profilErreurs';
 
 interface QuizViewProps {
   unitId: number;
@@ -35,8 +48,29 @@ export default function QuizView({ unitId, unitTitle, questions, onClose, onQuiz
   // État des questions à trou (kind === 'fillBlank') — S-C4.
   const [fbInput, setFbInput] = useState<{ [key: number]: string }>({});
   const [fbResult, setFbResult] = useState<{ [key: number]: boolean }>({});
+  // Déclaration de la cause d'erreur : UNE seule question par séance, à la fin.
+  const [causeDeclaree, setCauseDeclaree] = useState<string | null>(null);
+  const [causeDemandee, setCauseDemandee] = useState(false);
 
-  const currentQuestion = questions[currentIndex] || questions[0];
+  /**
+   * Graine de la session : stable tant que l'onglet/la session vit, neuve à la
+   * session suivante. Mémoïsée pour que les propositions ne se réordonnent pas
+   * à chaque rendu.
+   */
+  const graine = useMemo(() => graineSession(), []);
+
+  /**
+   * Les questions telles que l'élève les VOIT : mêmes propositions, autre
+   * ordre, clé recalculée. Le reste du composant ne connaît que cette liste —
+   * c'est volontaire : une seule source d'affichage, donc aucun risque de
+   * comparer une position affichée à une clé d'origine.
+   */
+  const vues = useMemo(
+    () => melangerQuestions(questions, 'correctAnswerIndex', graine),
+    [questions, graine],
+  );
+
+  const currentQuestion = vues[currentIndex] || vues[0];
 
   const timeLeft = useCompteARebours({
     dureeSec: DUREE_QUIZ_SEC + essai * 0, // la dépendance utile est `actif`
@@ -107,6 +141,24 @@ export default function QuizView({ unitId, unitTitle, questions, onClose, onQuiz
 
   // Overall Score Stats
   const scorePercentage = Math.round((score / questions.length) * 100);
+
+  /** Nombre d'erreurs de la séance — la matière première de la déclaration. */
+  const erreursQuiz = Math.max(0, questions.length - score);
+
+  /**
+   * L'élève déclare d'où vient son erreur. On enregistre ce qu'il DIT, jamais ce
+   * qu'on suppose : le code vient de sa réponse, et « سبب آخر » n'enregistre
+   * rien du tout. Le thème transmis est le titre de l'unité, pour que le guide
+   * puisse plus tard nommer l'endroit — pas seulement le type.
+   */
+  const declarerCause = (id: string) => {
+    const cause = causeParId(id);
+    setCauseDeclaree(id);
+    setCauseDemandee(true);
+    if (cause?.code) {
+      enregistrerErreurs([cause.code], { theme: unitTitle });
+    }
+  };
 
   return (
     // `dir` explicite (sprint 48) : l'écran héritait du `dir="rtl"` de la page,
@@ -479,7 +531,17 @@ export default function QuizView({ unitId, unitTitle, questions, onClose, onQuiz
                               <div className={`p-3 rounded-xl border text-xs font-medium leading-relaxed shadow-inner ${
                                 isFocusMode ? 'bg-black/30 border-red-900/20 text-gray-200' : 'bg-white/60 dark:bg-black/20 border-red-100/40 text-[#1f1c0b] dark:text-gray-200'
                               }`}>
-                                {getHintForIncorrectOption(currentQuestion.id, selectedOptionIdx)}
+                                {/*
+                                  Table position affichée → position d'origine :
+                                  les aides sont indexées par position dans les
+                                  DONNÉES, pas à l'écran. Sans cette traduction,
+                                  l'aide expliquerait une autre proposition que
+                                  celle réellement choisie.
+                                */}
+                                {getHintForIncorrectOption(
+                                  currentQuestion.id,
+                                  origineDe(currentQuestion.optionOrigins, selectedOptionIdx),
+                                )}
                               </div>
                             </div>
                           </div>
@@ -569,6 +631,45 @@ export default function QuizView({ unitId, unitTitle, questions, onClose, onQuiz
                 </div>
               )}
             </div>
+
+            {/* D'OÙ VIENT L'ERREUR — une seule fois, à la fin de la séance.
+                Le LITE posait cette question en fin de leçon ; ici elle vit à la
+                fin du QCM, qui est l'exercice le plus fréquent de l'application.
+                Elle n'apparaît QUE s'il y a eu au moins une erreur : demander
+                « pourquoi as-tu échoué ? » à un élève qui a tout juste est une
+                faute de pédagogie, pas une collecte de données. */}
+            {doitDemanderCause(erreursQuiz, causeDemandee) && (
+              <div className="max-w-md mx-auto w-full rounded-2xl border border-[#006d37]/25 bg-[#f8fbfa] p-4 text-right dark:bg-[#121614]" dir="rtl">
+                <p className="text-sm font-black text-[#006d37] dark:text-emerald-300">{QUESTION_CAUSE_AR}</p>
+                <p className="mt-1 text-[11px] leading-relaxed text-[#506072] dark:text-gray-400">
+                  سؤال واحد فقط، ولن يتكرّر في هذه الجلسة. الجواب يُحفظ على هاتفك وحدك.
+                </p>
+                <div className="mt-3 space-y-2">
+                  {CAUSES_QCM.map((cause) => (
+                    <button
+                      key={cause.id}
+                      type="button"
+                      data-testid={`cause-${cause.id}`}
+                      onClick={() => declarerCause(cause.id)}
+                      className="w-full rounded-xl border border-[#e2dabf] bg-white p-3 text-right transition-colors hover:border-[#006d37] cursor-pointer dark:border-gray-800 dark:bg-[#1a1f1c]"
+                    >
+                      <span className="block text-xs font-black text-[#1f2b24] dark:text-gray-100">{cause.libelleAr}</span>
+                      <span className="mt-0.5 block text-[10px] leading-relaxed text-[#506072] dark:text-gray-400">{cause.precisionAr}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {causeDemandee && causeDeclaree && (
+              <p
+                data-testid="cause-enregistree"
+                className="max-w-md mx-auto text-xs font-bold text-[#006d37] dark:text-emerald-300"
+                dir="rtl"
+              >
+                {causeParId(causeDeclaree)?.code ? REMERCIEMENT_CAUSE_AR : 'لم نسجّل شيئًا. لم يُخترع سبب لم تعرفه.'}
+              </p>
+            )}
 
             {/* Action Buttons */}
             <div className="flex flex-col gap-3 max-w-xs mx-auto">

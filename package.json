@@ -21,7 +21,7 @@
     "db:migrate": "tsx server/migrate.ts",
     "verify:store": "tsx server/verify.ts",
     "migrate": "tsx server/migrate.ts",
-    "test:build": "vite build && vitest run --config vite.build-test.config.ts"
+    "test:build": "npm run build && vitest run --config vite.build-test.config.ts"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.115.0",
@@ -69,5 +69,9 @@
     "typescript": "~5.8.2",
     "vite": "^6.2.3",
     "vitest": "^5.0.0"
+  },
+  "overrides": {
+    "proxy-addr": "^2.0.8",
+    "source-map-js": "^1.2.2"
   }
 }

@@ -1,4 +1,5 @@
 {
+  "id": "/",
   "name": "Kunz El Ouloum - كنز العلوم",
   "short_name": "كنز العلوم",
   "description": "منصة كنز العلوم التفاعلية لمراجعة علوم الطبيعة والحياة BAC DZ - مرشد ذكي offline 100%",
@@ -28,5 +29,10 @@
       "type": "image/png",
       "purpose": "maskable"
     }
-  ]
+  ],
+  "scope": "/",
+  "categories": [
+    "education"
+  ],
+  "prefer_related_applications": false
 }

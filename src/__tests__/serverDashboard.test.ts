@@ -13,6 +13,7 @@ import { describe, expect, it } from 'vitest';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { resumeActivite, calculeActivite } from '../../server/activite';
+import { mesurerPilotage } from '../server/mesurePilotage';
 import type { SqliteStore as TSqliteStore } from '../../server/store';
 
 // Détection SANS faire échouer le chargement du fichier de test.
@@ -160,5 +161,68 @@ describe('activité réelle — logique pure + contrat serveur (tournent PARTOUT
     expect(src).toContain('resume: resumeActivite(students)');
     expect(src).toContain('"last_activity", "actif_7j", "actif_30j"');
     expect(src).toContain('calculeActivite'); // branche CSV mono-élève
+  });
+
+  it('la route expose aussi le bloc de pilotage (agrégats des données existantes)', () => {
+    const src = readFileSync(join(process.cwd(), 'server.ts'), 'utf-8');
+    expect(src).toContain('pilotage: mesurerPilotage(students)');
+    // Le bloc part de `students` : aucune requête ni collecte supplémentaire.
+    expect(src).not.toContain('mesurerPilotage(await');
+  });
+
+  it('les DEUX stores exposent createdAt et la première production', () => {
+    // Sans ces deux colonnes, le délai médian d'accrochage resterait incalculable.
+    for (const fichier of ['server/store.ts', 'server/store.pg.ts']) {
+      const src = readFileSync(join(process.cwd(), fichier), 'utf-8');
+      expect(src, `${fichier} : created_at manquant`).toContain('s.created_at');
+      expect(src, `${fichier} : MIN(created_at) manquant`).toContain('MIN(created_at) AS first_production');
+    }
+  });
+});
+
+// ── Intégration SQLite (sautée si les bindings natifs ne sont pas compilés) ──
+describe.skipIf(!sqliteDispo)('dashboardRows — colonnes de pilotage', () => {
+  /** Store neuf + un élève inscrit, une production et un quiz. */
+  function baseAvecUnEleve() {
+    const st = creerStore!();
+    st.createStudent('stu_p', 'pilotage@test.dz', 'hash', 'تلميذ');
+    st.addEntriesIfNew('stu_p', [
+      {
+        id: 'e1',
+        verbId: 'v1',
+        verbAr: 'حلّل',
+        theme: 't',
+        stage: 1,
+        text: 'نص',
+        icm: 80,
+        criteriaSummary: [],
+        errorTags: [],
+        createdAt: '2026-10-01T08:00:00.000Z',
+      },
+    ] as never);
+    return st;
+  }
+
+  it('expose la date d’inscription et la PREMIÈRE production', () => {
+    const st = baseAvecUnEleve();
+    const rows = st.dashboardRows();
+    expect(rows.length).toBe(1);
+    expect(rows[0].createdAt).toBeTruthy();
+    expect(rows[0].premiereProduction).toBe('2026-10-01T08:00:00.000Z');
+    // Cohérence avec le module de mesure : un élève qui a une trace n'est pas
+    // classé « jamais actif ».
+    const mesure = mesurerPilotage(rows, Date.parse('2026-10-14T12:00:00.000Z'));
+    expect(mesure.inscrits).toBe(1);
+    expect(mesure.jamaisActifs).toBe(0);
+    expect(mesure.retardPremiereTraceH).not.toBeNull();
+  });
+
+  it('un élève inscrit sans rien envoyer est compté comme jamais actif', () => {
+    const st = creerStore!();
+    st.createStudent('stu_vide', 'vide@test.dz', 'hash', 'فارغ');
+    const mesure = mesurerPilotage(st.dashboardRows(), Date.parse('2026-10-14T12:00:00.000Z'));
+    expect(mesure.inscrits).toBe(1);
+    expect(mesure.jamaisActifs).toBe(1);
+    expect(mesure.retardPremiereTraceH).toBeNull();
   });
 });

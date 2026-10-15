@@ -58,6 +58,20 @@ export interface DailyGoalConfig {
    * jour réellement travaillé après la mise à jour.
    */
   serieDernierJour?: string;
+  /**
+   * CUMUL des jours d'étude depuis le premier jour — jamais remis à zéro
+   * (14/10/2026, « L'effet cumulé » de Darren Hardy).
+   *
+   * Champ distinct de `streakDays` À DESSEIN : `streakDays` est la série
+   * consécutive, qui retombe à 0 dès qu'un jour est manqué (c'est son rôle). Un
+   * élève qui avait travaillé 42 jours et rate une journée voyait alors « 0 »
+   * partout — son travail semblait effacé. Ce champ-là ne redescend jamais.
+   *
+   * Optionnel : les progressions déjà stockées n'ont pas ce compteur. Elles
+   * repartent de 0 (on n'invente pas un cumul rétroactif) et le compteur se
+   * remplit à partir de la première activité suivante.
+   */
+  joursActifsTotal?: number;
   history?: {
     date: string;
     target: number;

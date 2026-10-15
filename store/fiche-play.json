@@ -1,0 +1,21 @@
+{
+  "_commentaire": "Textes de la fiche Play Store — SOURCE UNIQUE (ar + fr). Les limites de caractères de Google sont vérifiées par src/store/fichePlay.test.ts. Règle d'honnêteté : ne rien promettre que le code ne fasse (aucune mention d'IA : le tuteur « Morchid » est un moteur local déterministe, vérifié dans l'audit §4.4).",
+  "package_name_suggere": "dz.kunzelouloum.app",
+  "categorie": "Éducation / التعليم",
+  "url_confidentialite": "https://<domaine>/privacy",
+  "contact": "kunzelouloum@gmail.com",
+  "locales": {
+    "ar": {
+      "titre": "كنز العلوم — SVT باك",
+      "description_courte": "مراجعة علوم الطبيعة والحياة للسنة الثالثة ثانوي، دون اتصال ودون إعلانات.",
+      "description_complete": "كنز العلوم تطبيق مراجعة مادة علوم الطبيعة والحياة لشهادة البكالوريا (شعبة علوم تجريبية).\n\n■ المحتوى\n• 11 وحدة مطابقة للتدرج السنوي الرسمي، مع الدرس الكامل، الملخص الذهبي، والخرائط الذهنية.\n• 550 سؤال متعدد الخيارات مع الشرح، و553 بطاقة مراجعة، وتمرينات تحليل الوثائق ورسوم بيانية (بيانية/مقارنة).\n• مواضيع البكالوريا مع سلّم التنقيط، ونماذج امتحانات كاملة بالتوقيت.\n\n■ التصحيح\n• تصحيح الأجوبة المفتوحة اعتمادًا على معايير التنقيط الرسمية، لا على كلمات مفتاحية معزولة.\n• تصحيح مواضع الخطأ مع الإشارة إلى ما ينقص في الجواب، دون تشجيع الحفظ الأعمى.\n\n■ المرافقة\n• مرشد ذكي يعمل داخل التطبيق، دون الحاجة إلى اتصال بالإنترنت.\n• برنامج يومي، تذكير بالمراجعة، وتتبع التقدم عبر الإحصائيات.\n\n■ عملي في الجزائر\n• يعمل دون اتصال: بعد أول تحميل، المحتوى الرئيسي متاح بدون شبكة (مناسب للشبكات الضعيفة).\n• خفيف على الهواتف المتوسطة والبسيطة.\n• مجاني تمامًا: لا إعلانات، ولا مشتريات داخلية، ولا تتبع خارجي.\n• لا يطلب رقم الهاتف ولا أي معلومة حساسة.\n\nملاحظة صريحة: هذا التطبيق أداة تدريب، وليس بديلًا عن الأستاذ ولا عن الكتاب المدرسي. النصوص العربية للملخصات مستخرجة من الوثائق الرسمية، والأخطاء المطبعية للكتاب المدرسي مصحّحة وفق دليل الأستاذ.",
+      "nouveautes": "• تصحيح أيام الدراسة المتتالية (السلسلة) كان لا يعمل: صار يعمل الآن فعليًا.\n• تخفيف التطبيق: التنقل والفتح أسرع على الشبكات الضعيفة.\n• إصلاح محتوى كان لا يظهر دون اتصال.\n• تحديثات أمنية للخادم."
+    },
+    "fr": {
+      "titre": "Kunz El Ouloum — SVT Bac",
+      "description_courte": "Réviser les SVT du Bac algérien : hors ligne, gratuit, sans publicité.",
+      "description_complete": "Kunz El Ouloum est une application de révision de Sciences de la nature et de la vie pour le Baccalauréat algérien (filière sciences expérimentales).\n\n■ CONTENU\n• 11 unités conformes à la progression annuelle officielle : cours, résumés, cartes mentales.\n• 550 QCM corrigés et expliqués, 553 cartes de révision, exercices d'analyse de documents et de schémas.\n• Sujets du Bac avec barème officiel, et sujets blancs complets en temps limité.\n\n■ CORRECTION\n• Les réponses ouvertes sont notées sur les attendus officiels, question par question, et non sur une liste de mots-clés.\n• La correction indique ce qui manque, plutôt que de sanctionner sans expliquer.\n\n■ ACCOMPAGNEMENT\n• Un tuteur intégré qui fonctionne sur l'appareil, sans connexion réseau.\n• Programme du jour, rappels de révision, suivi de progression.\n\n■ PENSÉ POUR L'ALGÉRIE\n• Fonctionne hors ligne : après un premier chargement, l'essentiel est disponible sans réseau (réseaux faibles, zones rurales).\n• Léger, pour les téléphones d'entrée et de milieu de gamme.\n• Entièrement gratuit : aucune publicité, aucun achat intégré, aucun traceur externe.\n• Ne demande ni numéro de téléphone ni donnée sensible.\n\nHonnêteté sur ce que c'est : un outil d'entraînement complémentaire, pas un remplacement du professeur ni du manuel. Certaines parties du programme sont en cours d'enrichissement (immunité innée, une partie de la géologie) : c'est indiqué dans l'application plutôt que passé sous silence.",
+      "nouveautes": "• Correction de la série de jours d'étude, qui ne se comptait pas.\n• Application allégée : ouverture plus rapide sur réseau lent.\n• Correction de contenus indisponibles hors ligne.\n• Mises à jour de sécurité du serveur."
+    }
+  }
+}

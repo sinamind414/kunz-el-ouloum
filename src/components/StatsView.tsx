@@ -1,4 +1,8 @@
 import { useState, useRef, useMemo } from 'react';
+// MARQUE DE TRAÇABILITÉ (A3) : la fiche de résultats exportée en PNG est le
+// document qui circule le plus par WhatsApp (voir utils/marque.ts).
+import { apposerMarqueCanvas } from '../utils/marque';
+import { identiteCourante } from '../utils/activityLog';
 import BackupPanel from './BackupPanel';
 import { motion, AnimatePresence } from 'motion/react';
 import { 
@@ -1105,10 +1109,21 @@ export default function StatsView({ progress, units, onNavigate }: StatsViewProp
                           // AI signature
                           ctx.fillStyle = '#506072';
                           ctx.font = 'italic bold 12px Arial, sans-serif';
-                          ctx.fillText('المرشد الذكي للبكالوريا', canvas.width - 150, footerY - 10);
+                          ctx.fillText('القبطان', canvas.width - 150, footerY - 10);
                           
                           ctx.font = '10px Arial, sans-serif';
                           ctx.fillText(`تاريخ الإصدار: ${fmtDateLatn(new Date())}`, canvas.width - 150, footerY + 15);
+
+                          // MARQUE DE TRAÇABILITÉ (A3, 14/10/2026) : la fiche de
+                          // résultats exportée en PNG circule par WhatsApp. La
+                          // marque ne contient aucun identifiant — le professeur
+                          // retrouve la correspondance dans son export CSV.
+                          apposerMarqueCanvas(ctx, identiteCourante(), {
+                            largeur: canvas.width,
+                            hauteur: canvas.height,
+                            taillePolice: 16,
+                            couleur: 'rgba(80,96,114,0.75)',
+                          });
 
                           // Trigger image download
                           const dataUrl = canvas.toDataURL('image/png');
@@ -1254,7 +1269,7 @@ export default function StatsView({ progress, units, onNavigate }: StatsViewProp
                     {/* Signature */}
                     <div className="text-right space-y-1">
                       <span className="text-[10px] text-gray-400 block font-bold">توقيع ومصادقة:</span>
-                      <span className="text-xs font-extrabold text-[#506072] block">المرشد الذكي للبكالوريا</span>
+                      <span className="text-xs font-extrabold text-[#506072] block">القبطان</span>
                       <span className="text-[10px] font-mono text-gray-400 block">تاريخ الإصدار: {fmtDateLatn(new Date(), { year: 'numeric', month: 'long', day: 'numeric' })}</span>
                     </div>
                   </div>

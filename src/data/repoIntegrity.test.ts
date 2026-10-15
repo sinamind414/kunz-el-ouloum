@@ -44,8 +44,19 @@ describe('intégrité du dépôt', () => {
     const pkg = JSON.parse(readFileSync(resolve(RACINE, 'package.json'), 'utf8')) as {
       scripts?: Record<string, string>;
     };
-    expect(pkg.scripts?.['test:build']).toContain('vite.build-test.config.ts');
-    expect(pkg.scripts?.['test:build']).toContain('vite build');
+    const script = pkg.scripts?.['test:build'] ?? '';
+    expect(script, 'les contrôles post-build doivent utiliser la config dédiée').toContain(
+      'vite.build-test.config.ts',
+    );
+    // L'exigence réelle est « compiler PUIS contrôler l'artefact ».
+    // 2026-10-14 : le script appelait `vite build` seul, qui VIDE dist/ sans
+    // réémettre `dist/server.cjs` (esbuild est dans `npm run build`) — après un
+    // `test:build`, le dossier servable était incomplet et le serveur
+    // introuvable. Il appelle donc désormais `npm run build`, qui contient
+    // `vite build`. On accepte les deux formes, on exige la compilation.
+    const compileAvantDeControler = script.includes('vite build') || script.includes('npm run build');
+    expect(script, `le script doit compiler avant de contrôler : « ${script} »`).toContain('&&');
+    expect(compileAvantDeControler, `aucune compilation dans : « ${script} »`).toBe(true);
   });
 
   it('exclut src/build de la suite unitaire, comme prévu', () => {

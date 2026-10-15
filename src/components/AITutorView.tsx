@@ -35,7 +35,20 @@ const JOURNEY_BUTTONS = [
   { label: 'القائمة الرئيسية', icon: Globe2, testId: 'journey-home' },
 ];
 
-export const WELCOME_TEXT = "مرحباً بك! أنا **المرشد الذكي** لمادة علوم الطبيعة والحياة.\n\nاسألني عن مفهوم لم تفهمه، أو اطلب شرح وثيقة، أو اكتب «أعطني تلميحاً» عندما تتوقف في تمرين. سأجيب من محتوى المنهاج وأذكر مصدر الإجابة.\n\nاختر مجالاً للبدء، أو اكتب سؤالك مباشرةً:";
+/**
+ * L'accueil du CAPITAINE.
+ *
+ * Ce n'est pas un texte de bienvenue : c'est la première leçon de méthode. Un
+ * élève qui débarque n'a pas besoin qu'on lui vante l'outil, il a besoin de
+ * savoir quoi faire DANS LA MINUTE. D'où les trois phrases : qui je suis, ce que
+ * je ne ferai pas (donner la réponse), et le premier pas minuscule — la règle des
+ * 2 minutes d'Atomic Habits appliquée à l'ouverture du chatbot.
+ *
+ * La règle pédagogique non négociable vient du §4 du cahier des charges :
+ * pas de preuve visuelle → pas de validation complète. Le capitaine le dit
+ * d'entrée, pour que l'élève ne s'attende pas à une machine à réponses.
+ */
+export const WELCOME_TEXT = "أنا **القبطان**، مُرشدك في علوم الطبيعة والحياة — من أول سؤال إلى ليلة البكالوريا.\n\nلن أعطيك الجواب جاهزًا: سأسألك، وأشير إلى الوثيقة التي تنظر إليها، وأنتظر **دليلك**. وإذا لم تأتِ بدليل، لن أُغلق لك التمرين.\n\nلا نبدأ بالمنهج كله. ابدأ بأصغر خطوة: اختر مجالاً، أو اكتب مفهومًا واحدًا لم تفهمه.";
 
 /** B8 (audit) : un seul accueil — init et « مسح المحادثة » utilisent la même factory. */
 function buildWelcomeMessage(): ChatMessage {
@@ -166,7 +179,7 @@ export default function AITutorView({ onBackToDashboard, onXPGained, questionIni
       runEngine(result);
     } catch (err: any) {
       console.error(err);
-      setError(err.message || "تعذر الحصول على إجابة من المرشد الذكي. يرجى إعادة المحاولة.");
+      setError(err.message || "تعذر الحصول على إجابة من القبطان. يرجى إعادة المحاولة.");
     } finally {
       setIsLoading(false);
     }
@@ -298,7 +311,7 @@ export default function AITutorView({ onBackToDashboard, onXPGained, questionIni
                 <div className="shrink-0">
                   <img
                     src={MORCHID_LOGO_URL}
-                    alt="شعار المرشد الذكي"
+                    alt="شعار القبطان"
                     className="w-8 h-8 rounded-full border border-[#e2dabf]/50 p-0.5 bg-[#ffffff] object-contain"
                     referrerPolicy="no-referrer"
                   />
@@ -429,7 +442,7 @@ export default function AITutorView({ onBackToDashboard, onXPGained, questionIni
             <div className="shrink-0">
               <img
                 src={MORCHID_LOGO_URL}
-                alt="شعار المرشد الذكي"
+                alt="شعار القبطان"
                 className="w-8 h-8 rounded-full border border-[#e2dabf]/50 p-0.5 bg-[#ffffff] object-contain"
                 referrerPolicy="no-referrer"
               />
@@ -509,8 +522,8 @@ export default function AITutorView({ onBackToDashboard, onXPGained, questionIni
             type="text"
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            placeholder="اسأل المرشد الذكي عن أي سؤال في مادة العلوم..."
-            aria-label="حقل السؤال إلى المرشد الذكي"
+            placeholder="اكتب سؤالك للقبطان في علوم الطبيعة والحياة..."
+            aria-label="حقل السؤال إلى القبطان"
             className="flex-1 px-4 h-12 rounded-xl bg-[#f3f4f5] border border-transparent focus:border-[#006d37] focus:bg-[#ffffff] text-sm focus:outline-none transition-all placeholder:text-[#506072]/60"
             disabled={isLoading}
           />

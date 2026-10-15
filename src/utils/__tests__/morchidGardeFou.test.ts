@@ -172,9 +172,19 @@ describe('N4 — intention « اختبرني » sans substitution', () => {
 // KEO-205 : une seule voix — l'accueil du tuteur abandonne le lexique marin.
 // ---------------------------------------------------------------------------
 describe('KEO-205 — accueil sans lexique marin (charte Boussole v2)', () => {
-  it('WELCOME_TEXT ne contient ni «بحار» ni drapeau pirate, et nomme le المرشد الذكي', () => {
+  it('WELCOME_TEXT ne contient ni «بحار» ni drapeau pirate, et NOMME le tuteur', () => {
     expect(WELCOME_TEXT).not.toContain('بحار');
     expect(WELCOME_TEXT).not.toContain('🏴');
-    expect(WELCOME_TEXT).toContain('المرشد الذكي');
+    // 14/10/2026 — le tuteur s'appelle désormais « القبطان » (demande explicite
+    // de l'utilisateur : « le capitaine est le chatbot de l'application »).
+    // L'intention de KEO-205 est intacte : le tuteur est nommé, sans drapeau
+    // pirate ni lexique « بحار ».
+    //
+    // TENSION À SIGNALER (non tranchée) : « القبطان » est un terme de marine. La
+    // charte Boussole v2 avait justement retiré le lexique marin de l'accueil.
+    // Le nom est donc en contradiction avec la charte de vocabulaire — c'est
+    // assumé ici parce que la demande la plus récente est explicite, mais le
+    // choix mérite d'être tranché par l'utilisateur, pas contourné en silence.
+    expect(WELCOME_TEXT).toContain('القبطان');
   });
 });

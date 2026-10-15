@@ -8,6 +8,8 @@ import { BookOpen, ChevronLeft } from 'lucide-react';
 import { QCM_CHAPITRES } from '../data/qcmLivre';
 import QcmBilanView from './QcmBilanView';
 import { CHAPITRES } from '../data/bookIndex';
+// Anti-triche par clé volée : les propositions changent de place par session.
+import { graineSession, melangerQuestions } from '../utils/melangeOptions';
 
 interface Props {
   onBack: () => void;
@@ -41,7 +43,25 @@ export default function QcmLivreView({ onBack, uniteInitiale }: Props) {
 
   const unitesAffichees = filtreUnite !== null ? parUnite.filter(([u]) => u === filtreUnite) : parUnite;
 
-  const questions = selectedChapter ? QCM_CHAPITRES.filter((q) => q.chapitre === selectedChapter) : [];
+  const graine = useMemo(() => graineSession(), []);
+  /**
+   * Mêmes questions, propositions réordonnées et clé recalculée. `answers` est
+   * indexé par POSITION : il faut donc que l'ordre reste strictement stable
+   * pendant que l'élève répond — c'est le cas, la graine ne change pas de la
+   * session, et la mémoïsation ne dépend que du chapitre choisi.
+   */
+  const questions = useMemo(
+    () =>
+      selectedChapter
+        ? melangerQuestions(
+            QCM_CHAPITRES.filter((q) => q.chapitre === selectedChapter),
+            'correct',
+            graine,
+            (q, i) => `${q.chapitre}-${i}`,
+          )
+        : [],
+    [selectedChapter, graine],
+  );
   const repondu = Object.keys(answers).length;
   const score = questions.filter((q, i) => answers[i] === q.correct).length;
   const termine = selectedChapter !== null && repondu === questions.length && questions.length > 0;

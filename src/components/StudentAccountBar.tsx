@@ -12,7 +12,14 @@ interface Props {
 type Mode = 'menu' | 'forgot' | 'reset';
 
 export default function StudentAccountBar({ onOpenTeacher, onLogout }: Props) {
-  const [student, setStudent] = useState<{ id: string; name: string; email: string } | null>(null);
+  // `email` vaut `null` pour un compte créé sans adresse e-mail : dans ce cas
+  // c'est `code` (XXXX-XXXX) qui identifie l'élève à l'écran.
+  const [student, setStudent] = useState<{
+    id: string;
+    name: string;
+    email: string | null;
+    code?: string | null;
+  } | null>(null);
   const [online, setOnline] = useState<boolean>(navigator.onLine);
   const [open, setOpen] = useState(false);
   const [mode, setMode] = useState<Mode>('menu');
@@ -88,7 +95,18 @@ export default function StudentAccountBar({ onOpenTeacher, onLogout }: Props) {
       setNewPassword('');
       setMode('menu');
     } catch (err: any) {
-      setError(err?.message || 'رمز غير صالح أو منتهي.');
+      const raison = err?.message;
+      setError(
+        raison === 'weak_pin'
+          ? 'حسابك بدون بريد إلكتروني: اختر رمزًا سريًا من 6 أرقام (وليس كلمة).'
+          : raison === 'weak_password'
+            ? 'كلمة المرور قصيرة جدًا — 6 أحرف على الأقل.'
+            : raison === 'expired_code'
+              ? 'انتهت صلاحية الرمز. اطلب من أستاذك رمزًا جديدًا.'
+              : raison === 'invalid_or_used_code'
+                ? 'رمز غير صالح أو مستعمل من قبل.'
+                : 'رمز غير صالح أو منتهي.',
+      );
     }
   };
 
@@ -106,7 +124,7 @@ export default function StudentAccountBar({ onOpenTeacher, onLogout }: Props) {
             {student?.name || 'ضيف'}
           </div>
           <div className="text-[10px] text-gray-500 dark:text-gray-400 leading-none mt-0.5">
-            {student?.email || 'بدون حساب'}
+            {student?.email || (student?.code ? `رمز: ${student.code}` : 'بدون حساب')}
           </div>
         </div>
         <ChevronDown className="w-3.5 h-3.5 text-gray-400" />

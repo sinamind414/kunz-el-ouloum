@@ -18,3 +18,15 @@ export const LOGO_URL = '/logo_site.png';
 
 /** Logo dédié au المرشد الذكي (en-tête + avatars de la conversation). */
 export const MORCHID_LOGO_URL = '/logo_morchid.png';
+
+/**
+ * VISAGE DU CAPITAINE — le personnage seul, recadré (14/10/2026).
+ *
+ * Pourquoi un second fichier au lieu de réutiliser `MORCHID_LOGO_URL` : l'image
+ * d'origine (424×588) contient le personnage ET le mot-symbole « كنز العلوم »
+ * en bas. Dans un bouton rond de 56 px, ce texte était réduit à des taches
+ * dorées illisibles — et sans aucun sens, puisqu'un bouton n'a pas à répéter le
+ * nom du site. Ce fichier est le MÊME visuel, recadré sur le personnage
+ * (280×280 centré sur le buste), sans retouche ni couleur ajoutée.
+ */
+export const CAPITAINE_VISAGE_URL = '/logo_capitaine_avatar.png';

@@ -5,6 +5,8 @@
 import { useMemo, useState } from 'react';
 import { Target } from 'lucide-react';
 import { tirageBilan, type QcmBilanItem } from '../data/qcmBilan';
+// Anti-triche par clé volée : les propositions changent de place par session.
+import { graineSession, melangerQuestions } from '../utils/melangeOptions';
 
 interface Props {
   onBack: () => void;
@@ -24,7 +26,15 @@ export default function QcmBilanView({ onBack }: Props) {
   const [idx, setIdx] = useState(0);
   const [choix, setChoix] = useState<number[]>([]); // option choisie par question (-1 = sautée)
 
-  const tirage = useMemo(() => (seed ? tirageBilan(seed) : []), [seed]);
+  const graine = useMemo(() => graineSession(), []);
+  const tirageBrut = useMemo(() => (seed ? tirageBilan(seed) : []), [seed]);
+  // Même tirage, propositions réordonnées et clé recalculée. Le reste du
+  // composant ne voit que cette version : score, corrigé et renvois de
+  // révision restent donc cohérents avec ce qui est affiché.
+  const tirage = useMemo(
+    () => melangerQuestions(tirageBrut, 'correct', graine, (q, i) => `${i}-${q.chapitre ?? ''}`),
+    [tirageBrut, graine],
+  );
 
   const demarrer = () => {
     setSeed(Date.now() % 2147483647 || 1); // graine par session — reproductible si notée

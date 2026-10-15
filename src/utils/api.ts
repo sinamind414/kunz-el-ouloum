@@ -32,10 +32,33 @@ export async function registerStudent(email: string, password: string, name: str
   });
 }
 
-export async function loginStudent(email: string, password: string) {
+/**
+ * Connexion : accepte le CODE DE CONNEXION (comptes sans e-mail) ou une
+ * adresse e-mail (comptes existants). Le serveur tranche — l'interface n'a
+ * pas à deviner ce que l'élève a tapé, et ne lui impose pas de choisir.
+ */
+export async function loginStudent(identifiant: string, password: string) {
+  const valeur = (identifiant || '').trim();
+  const estEmail = valeur.includes('@');
   return request('/api/auth/login', {
     method: 'POST',
-    body: JSON.stringify({ email: normalizeEmail(email), password }),
+    body: JSON.stringify(
+      estEmail ? { email: normalizeEmail(valeur), password } : { identifiant: valeur, password },
+    ),
+  });
+}
+
+/**
+ * Inscription SANS adresse e-mail — le chemin par défaut, parce que la
+ * majorité des élèves n'ont pas d'adresse (et n'en veulent pas).
+ * Le serveur renvoie `{ token, code: "XXXX-XXXX", student }` : le code est
+ * affiché UNE SEULE FOIS, c'est la clé de connexion de l'élève.
+ * `codeSecret` = 6 chiffres (et non un mot de passe à inventer puis oublier).
+ */
+export async function registerStudentCode(name: string, codeSecret: string) {
+  return request('/api/auth/register-code', {
+    method: 'POST',
+    body: JSON.stringify({ name: (name || '').trim(), pin: (codeSecret || '').trim() }),
   });
 }
 
@@ -47,7 +70,9 @@ export async function loginStudent(email: string, password: string) {
  *   l'appelant puisse couper la session — un échec réseau/5xx ne la détruit pas
  *   (l'app est offline-first).
  */
-export async function fetchMe(): Promise<{ student: { id: string; email: string; name: string } }> {
+export async function fetchMe(): Promise<{
+  student: { id: string; name: string; email: string | null; code?: string | null };
+}> {
   const token = getApiToken();
   const res = await fetch(`${API_BASE}/api/auth/me`, {
     headers: {

@@ -12,6 +12,7 @@ import {
   completeDailyMission,
   type BotSession,
 } from './utils/sessionManager';
+import { graineSession } from './utils/melangeOptions';
 import {
   DOMAINS,
   KNOWLEDGE_CARDS,
@@ -36,6 +37,8 @@ import { jourLocal } from './utils/dayKey';
 // Négation/réfutation : primitives partagées avec le scorer C2 de Tadwin.
 import { tokenAffirme } from './lib/validation/negationAr';
 import { PARCOURS_DOMAINS } from './lib/parcours/parcoursPath';
+import { construireVocabulaire, domaineProbable, domaineDeUnite } from './lib/routageDomaine';
+import { gesteDuMessage } from './lib/gesteDialogue';
 import { loadParcours } from './lib/parcours/parcoursProgress';
 import {
   diagnostiquerParcours,
@@ -56,6 +59,7 @@ import {
   tokenizeArabic,
   fuzzyTokenEquals,
   tokenOverlapRatio,
+  includesAsWord,
 } from './utils/arabicNormalize';
 
 export { normalizeArabic, calculateKeywordScore, tokenizeArabic } from './utils/arabicNormalize';
@@ -119,7 +123,17 @@ const AFFECT_LEXICON = [
   // فصحى — peur, fatigue, découragement
   'خائف', 'خايف', 'خائفة', 'تعبت', 'مرهق', 'قلق', 'يائس', 'فاشل', 'ضائع', 'محبط',
   // darija algérienne — détection seulement, jamais en production
-  'ضايع', 'ضعت', 'ما نقدرش', 'ماقدرش', 'حبست', 'ما فهمتش', 'مافهمتش',
+  // ATTENTION : « ما فهمتش » (je n'ai pas compris) N'EST PAS ici, et c'est
+  // volontaire (14/10/2026). La détresse est l'émotion ; l'incompréhension est
+  // une DEMANDE, à laquelle un professeur répond « quoi exactement ? ». Les
+  // confondre donnait à l'élève bloqué un discours d'encouragement à la place
+  // du triage. Ces formes sont traitées par `gestesDialogue.ts` (famille
+  // `incomprehension`), qui demande où est l'obstacle.
+  'ضايع', 'ضعت', 'ما نقدرش', 'ماقدرش', 'حبست',
+  // TROUS MESURÉS le 14/10/2026 : la couche existait, ces formes manquaient.
+  // « أنا تعبان » recevait « hors programme » alors que « تعبت » était déjà
+  // reconnu — une seule lettre de différence, un élève rejeté.
+  'تعبان', 'تعبانه', 'عيان', 'عيانه', 'مانيش مركز', 'ما نركزش', 'راسي يوجعني',
   'ماععلاباليش', 'ماعلاباليش', 'صعيب علي', 'كرهت البكالوريا', 'كرهت الدراسة',
 ];
 
@@ -148,8 +162,17 @@ function hashSeed(id: string): number {
   return h >>> 0;
 }
 
+/**
+ * Le mélange dépend désormais de DEUX choses : l'identifiant de la question et
+ * la graine de SESSION (melangeOptions.graineSession()).
+ *
+ * Avant le 14/10/2026, il ne dépendait que de l'identifiant : l'ordre était donc
+ * le même à chaque session, pour toujours. Une clé relevée une fois (« la réponse
+ * est la 3ᵉ ») restait vraie indéfiniment. Avec la graine de session, elle ne
+ * vaut plus que pour la session où elle a été relevée.
+ */
 export function shuffledView(q: QuizQuestion): QuizQuestion {
-  let s = hashSeed(q.id);
+  let s = hashSeed(`${q.id}|${graineSession()}`);
   const rnd = () => {
     s = (Math.imul(s, 1664525) + 1013904223) >>> 0;
     return s / 4294967296;
@@ -278,6 +301,19 @@ const LESSON_CHUNKS: SearchChunk[] = LESSON_INDEX.map((c) => ({
 
 const ALL_CHUNKS: SearchChunk[] = [...GUIDE_CHUNKS, ...LEGACY_CHUNKS, ...BOOK_CHUNKS, ...OPUS_CHUNKS, ...LESSON_CHUNKS];
 
+/**
+ * Vocabulaire de chaque domaine, construit sur les titres et mots-clés des
+ * extraits déjà indexés : rien à écrire à la main, et rien à maintenir quand une
+ * leçon s'ajoute. Sert à savoir DE QUOI PARLE la question avant de choisir un
+ * extrait (`routageDomaine.ts`).
+ */
+const VOCAB_DOMAINE = construireVocabulaire(
+  ALL_CHUNKS.map((ch) => ({
+    domaine: domaineDeUnite(ch.unitId, DOMAIN_UNITS),
+    tokens: [...tokenizeArabic(ch.normTitle), ...ch.normKeywords],
+  })),
+);
+
 /* -------------------------------------------------------------------------- *
  * Détecteur « IN-DOMAINE » positif (R2 audit qualité Morchid 2026-09-29).    *
  *                                                                            *
@@ -329,6 +365,15 @@ const PEDAGOGICAL_TERMS = [
   'منهجيه', 'بروتوكول', 'دراسه', 'وحده', 'خطوات', 'دليل', 'الاجابه', 'اجابه',
   'تجارب', 'تجربه', 'البكالوريا', 'بكالوريا', 'مراجعه', 'تلخيص', 'ملخص', 'تمرين',
   'تمارين', 'سؤال', 'اسئله', 'شرح', 'تعريف', 'مقارنه', 'اختبار', 'تشخيصي', 'الدروس', 'درس',
+  // DÉFAUT MESURÉ (audit §5.6) : « كيف أحضر للباك؟ » recevait « هذا السؤال خارج
+  // قاعدة علوم الطبيعة والحياة ». Or c'est la question la plus posée par un
+  // élève de 3AS, et elle porte sur la MÉTHODE. Ces verbes désignent une
+  // intention de travail, jamais un contenu de chapitre : les déclarer
+  // pédagogiques ouvre la branche de méthode sans rien voler aux cours (aucun
+  // titre de leçon ne dit « كيف أحضّر »).
+  'أحضر', 'احضر', 'أراجع', 'اراجع', 'أنظم', 'انظم', 'أخطط', 'اخطط', 'أبدأ',
+  'أبدا', 'ابدأ', 'ألخص', 'الخص', 'أفهم', 'افهم', 'أحفظ', 'احفظ', 'أنجز',
+  'أركز', 'اركز', 'أتدرّب', 'اتدرب', 'أنجح', 'انجح', 'أتحضّر', 'اتحضر',
 ].map((t) => normalizeArabic(t)).filter((t) => t.length >= 3);
 for (const t of PEDAGOGICAL_TERMS) DOMAIN_VOCAB.add(t);
 
@@ -436,15 +481,172 @@ function isExplainQuestion(norm: string): boolean {
  * n'est pas close tant que cette tâche n'a pas de réponse. Le discriminateur
  * est pris sur le PREMIER mot-clé de la fiche (le concept le plus central).
  */
+/**
+ * LA PHRASE DE LA FICHE QUI RELIE LES DEUX MOTS-CLÉS — ou `null`.
+ *
+ * Sert à DEUX choses, et la première est une garantie d'honnêteté :
+ *
+ *  1. vérifier que la question « صح أم خطأ » a une réponse VÉRIFIABLE dans la
+ *     fiche. Sans cette vérification, la phrase « X مرتبط بـ Y » est toujours
+ *     vraie par construction (les deux mots viennent de la même fiche) et la
+ *     question est un faux exercice : le tuteur ne peut ni corriger ni expliquer.
+ *  2. fournir la phrase à montrer après la réponse de l'élève — c'est la fiche
+ *     qui parle, pas le moteur. Utilisée par `reponseAuRappel`.
+ */
+function phraseRelation(card: KnowledgeCard): string | null {
+  const phrases = card.shortAnswer
+    .split(/[.!?؟\n؛]+/)
+    .map((p) => p.trim())
+    .filter((p) => p.length > 0);
+  const kw = card.keywords.filter((k) => k.length >= 3);
+  const d = normalizeArabic(kw[0] ?? '');
+  const s2 = normalizeArabic(kw[1] ?? '');
+  if (!d || phrases.length === 0) return null;
+  const deuxMots = phrases.find((p) => {
+    const np = normalizeArabic(p);
+    return np.includes(d) && (!s2 || np.includes(s2));
+  });
+  if (deuxMots) return deuxMots;
+  return phrases.find((p) => normalizeArabic(p).includes(d)) ?? null;
+}
+
 function buildRecallQuestion(card: KnowledgeCard): string {
   const kw = card.keywords.filter((k) => k.length >= 3);
   const discriminator = kw[0] ?? card.title;
   const second = kw[1] ?? discriminator;
+  // Question VÉRIFIABLE → la forme à un mot (la plus rapide, et conforme à la
+  // règle des 2 minutes). Sinon → tâche de production, dont la réponse est la
+  // phrase de la fiche : on ne pose jamais une question qu'on ne peut pas juger.
+  if (phraseRelation(card) === null || second === discriminator) {
+    return (
+      `\n\n🧠 **قبل أن ننتقل:** سؤال واحد يقفل الحصّة.\n` +
+      `اكتب في سطر واحد: ما العلاقة بين **${discriminator}** و **${second}** في هذا الدرس؟\n` +
+      `أرسل جملتك — ثم أقارنها بجملة البطاقة.`
+    );
+  }
   return (
     `\n\n🧠 **قبل أن ننتقل:** سؤال واحد يقفل الحصّة.\n` +
     `صح أم خطأ: **${discriminator}** مرتبط مباشرةً بـ **${second}** في هذا الدرس.\n` +
     `أجب بكلمة واحدة — إن أخطأت، نعيد الجملة لا الدرس.`
   );
+}
+
+/**
+ * INTENTIONS QUI ABANDONNENT UNE QUESTION POSÉE — menu, test, révision, défi.
+ *
+ * Elles sont traitées PARFOIS PLUS HAUT dans la cascade que le bloc d'écoute du
+ * rappel (« راجع أخطائي السابقة » l'est). Sans un nettoyage placé EN TÊTE de
+ * `processStudentInput`, l'état resterait armé après que l'élève a quitté la
+ * question : la saisie SUIVANTE serait notée comme la réponse à une question à
+ * laquelle il ne répond plus. C'est la même famille de défaut que le bug corrigé
+ * ici — un état qui survit à son contexte.
+ */
+function estIntentionForte(norm: string): boolean {
+  const n = (s: string) => normalizeArabic(s);
+  return (
+    norm.includes(n('القائمة الرئيسية')) ||
+    norm.includes(n('العودة للقائمة')) ||
+    norm.includes(n('رجوع للقائمة')) ||
+    norm.includes(n('اختبرني')) ||
+    norm.includes(n('راجع أخطائي')) ||
+    norm.startsWith(n('راجع')) ||
+    norm.includes(n('تحدي bac')) ||
+    norm.includes(n('تحدي البكالوريا'))
+  );
+}
+
+/**
+ * PREMIERS MOTS QUI ANNONCENT UNE QUESTION, pas une réponse.
+ * « اشرح لي », « ما هو الاستنساخ؟ » : l'élève DEMANDE quelque chose. Les prendre
+ * pour la réponse au rappel était le défaut mesuré au test KEO-102 (la carte
+ * contournée ne doit plus jamais re-sonder) — et c'est plus grave que le bug
+ * d'origine : on aurait répondu à côté à une vraie question.
+ */
+// Volontairement ÉTROITE : « من » est aussi une préposition (« من النواة إلى… »)
+// et « ايه » veut dire OUI en dialecte. Rejeter une réponse qui commence par
+// « من » aurait recréé le bug : une vraie réponse jetée hors de la conversation.
+const MOTS_INTERROGATIFS = [
+  'ما', 'ماذا', 'كيف', 'لماذا', 'اين', 'متي', 'هل', 'اشرح', 'فسر', 'علل',
+  'اذكر', 'قارن', 'وضح', 'اعطني', 'صحح', 'اكتب',
+];
+
+/** Découpe une saisie normalisée en mots, sans le seuil de 3 lettres de
+ *  `tokenizeArabic` — « صح » et « لا » font 2 lettres et sont des réponses. */
+function motsSaisie(norm: string): string[] {
+  return norm.replace(/[؟?،؛.!:,]/g, ' ').trim().split(/\s+/).filter(Boolean);
+}
+
+/**
+ * La saisie POURRAIT-elle être une prise de position sur la question posée ?
+ * Une question n'est jamais une réponse : ni « ؟ », ni un mot interrogatif en
+ * tête. Le reste — une phrase, une ligne, un paragraphe — est recevable : on ne
+ * refuse jamais à un élève le droit de répondre longuement.
+ */
+function estReponseAuRappel(input: string, norm: string): boolean {
+  if (/[?؟]/.test(input)) return false;
+  const mots = motsSaisie(norm);
+  if (mots.length === 0) return false;
+  return !MOTS_INTERROGATIFS.includes(mots[0]);
+}
+
+/**
+ * Saisie nue qui est un VERDICT sans question : « صح », « خطأ », « نعم »…
+ * Sans question en attente, ce n'est pas un hors-sujet — c'est une réponse
+ * orpheline. On demande à quoi elle répond au lieu d'accuser l'élève.
+ */
+function estMotReponseSeul(norm: string): boolean {
+  const mots = motsSaisie(norm);
+  if (mots.length === 0 || mots.length > 2) return false;
+  const connus = [...RAPPEL_VRAI, ...RAPPEL_FAUX].map((m) => normalizeArabic(m));
+  return mots.every((m) => connus.some((c) => includesAsWord(m, c)));
+}
+
+/** « Je ne sais pas » n'est ni vrai ni faux : c'est une demande d'aide. */
+const RAPPEL_INCERTAIN = ['لا اعرف', 'لا ادري', 'لا اعلم', 'ماعرفتش', 'ما عرفتش', 'لا اتذكر'];
+
+/** Mots qui valent « vrai » / « faux » à la question de rappel. Comparés par MOT
+ *  ENTIER : « لا » doit être un mot, pas les deux lettres de « سلام ». */
+const RAPPEL_VRAI = ['صح', 'صحيح', 'نعم', 'أجل', 'اجل', 'true', 'vrai'];
+const RAPPEL_FAUX = ['خطأ', 'خطا', 'لا', 'غير صحيح', 'false', 'faux'];
+
+/**
+ * LA RÉPONSE AU RAPPEL — le chaînon qui manquait.
+ *
+ * Elle ne prétend RIEN que la fiche ne dise pas : le verdict n'existe que si
+ * `phraseRelation` a trouvé la phrase qui relie les deux mots-clés. Le tuteur
+ * cite la fiche — il n'explique pas à sa place, et il ne termine pas par une
+ * question de plus (une question sans réponse possible est exactement le défaut
+ * que ce correctif répare).
+ */
+function reponseAuRappel(card: KnowledgeCard, rawInput: string): TutorAction {
+  const phrase = phraseRelation(card);
+  const norm = normalizeArabic(rawInput);
+  const ditVrai = RAPPEL_VRAI.some((m) => includesAsWord(norm, normalizeArabic(m)));
+  const ditFaux = RAPPEL_FAUX.some((m) => includesAsWord(norm, normalizeArabic(m)));
+  // AVANT le verdict : « لا أعرف » contient le mot « لا ». Le lire comme « faux »
+  // serait la faute typique du correcteur automatique — répondre à la place de
+  // l'élève au lieu de l'aider. L'incertitude est une réponse honnête.
+  const ditIncertain = RAPPEL_INCERTAIN.some((m) => includesAsWord(norm, normalizeArabic(m)));
+
+  let entete: string;
+  if (ditIncertain) {
+    entete = '🤝 لا بأس — «لا أعرف» جواب صادق. وهذه هي الجملة التي تحمل العلاقة، اقرأها ثم أعد السؤال:';
+  } else if (phrase && ditVrai) {
+    entete = '✅ صحيح — والبطاقة تقولها بعبارة واحدة:';
+  } else if (phrase && ditFaux) {
+    entete = '↺ في هذا الدرس هما مرتبطان فعلًا — وهذه هي الجملة التي تثبت ذلك:';
+  } else {
+    entete = '📝 وصلني جوابك. هذه جملة البطاقة التي تحمل العلاقة — قارن بها:';
+  }
+  const corps = phrase ? `\n\n> «${phrase}»` : `\n\n${card.shortAnswer}`;
+  return {
+    confidence: 90,
+    text:
+      `${entete}${corps}\n\n` +
+      'إن طابقت صياغتك هذه الجملة، فالمعلومة مثبّتة. وإن اختلفت، فالفرق بين الصياغتين هو بالضبط ما تكتبه على ورقتك.',
+    quickActions: filterQuickActions(card.relatedQuestions, norm),
+    sources: [{ type: 'internal_card' as SourceType, title: card.title }],
+  };
 }
 
 function probeQuestionAction(card: KnowledgeCard): TutorAction {
@@ -558,13 +760,99 @@ function formatStudyGuideAnswer(card: StudyGuideCard): string {
   return `🧭 **${card.title}**\n${card.subtitle}\n\n${sections}\n\n🔑 **كلمات مفتاحية:** ${card.keywords.join(' • ')}`;
 }
 
-export function searchAllBases(norm: string, activeDomainId: number | null): SearchChunk[] {
+/** Un extrait avec son score de pertinence. Le score est la SEULE mesure dont on
+ *  dispose pour savoir si le moteur sait répondre : il doit donc être visible,
+ *  pas jeté après le tri. */
+export interface ScoredChunk {
+  ch: SearchChunk;
+  score: number;
+}
+
+/**
+ * DEUX BARÈMES, PARCE QUE LA MESURE L'EXIGE (R6, 14/10/2026).
+ *
+ * Pourquoi 12 ne suffisait pas : `scoreChunk` accorde +10 dès que l'extrait
+ * appartient au domaine ACTIF (celui de la session, pas celui de la question) et
+ * +6 par mot-clé reconnu. Un seul mot courant plus ce bonus atteignait donc 16,
+ * et le moteur servait l'extrait avec une confiance de 70 affichée à l'élève.
+ * C'est ce mécanisme qui répondait « البنيات الثانوية » (protéines) à une
+ * question sur les **بنيات جيولوجية**.
+ *
+ * Population mesurée sur 26 questions :
+ *   réponses justes mais faibles : 16, 19, 25, 28   ← à NE PAS casser
+ *   réponses fausses             : 13, 16, 19, 19   ← à refuser
+ *
+ * Les deux se recouvrent : un seuil unique ne peut pas les séparer. Ce qui les
+ * sépare, c'est la cohérence de DOMAINE entre la question et l'extrait servi.
+ * D'où deux barèmes :
+ *   · domaine de la question établi → 12 : on peut vérifier la cohérence, donc on
+ *     accepte une correspondance faible — l'extrait est dans le bon chapitre.
+ *   · domaine non établi → 28 : sans moyen de vérifier, il faut une preuve
+ *     lexicale forte (trois mots-clés, ou un titre partiel). En dessous de 28,
+ *     refuser coûte moins cher à l'élève que se tromper de chapitre.
+ */
+export const SEUIL_SANS_DOMAINE = 28;
+export const SEUIL_AVEC_DOMAINE = 12;
+
+export function searchAllBasesScores(norm: string, activeDomainId: number | null): ScoredChunk[] {
   if (!norm || norm.length < 3) return [];
   const inputTokens = tokenizeArabic(norm);
   return ALL_CHUNKS.map((ch) => ({ ch, score: scoreChunk(norm, ch, activeDomainId, inputTokens) }))
+    .filter((x) => x.score > 0)
+    .sort((a, b) => b.score - a.score);
+}
+
+export function searchAllBases(norm: string, activeDomainId: number | null): SearchChunk[] {
+  return searchAllBasesScores(norm, activeDomainId)
     .filter((x) => x.score >= 12)
-    .sort((a, b) => b.score - a.score)
     .map((x) => x.ch);
+}
+
+/**
+ * L'extrait qu'on peut honnêtement servir — ou `null`.
+ *
+ * Trois étapes, dans cet ordre :
+ *   1. À quel domaine du programme appartient la QUESTION ? (routage par
+ *      vocabulaire, `routageDomaine.ts`)
+ *   2. Le bonus de domaine est accordé à CE domaine — jamais à celui de la
+ *      session : c'est la question de l'élève qui décide de ce qui est pertinent,
+ *      et non l'onglet où il se trouve.
+ *   3. Si le domaine est établi, on ne sert QUE des extraits de ce domaine (ou
+ *      transverses : fiches de méthode, guide, livre).
+ *
+ * La confiance affichée DÉCOULE du score : elle ne peut plus valoir 70 sur une
+ * correspondance qui vaut 16.
+ */
+export function meilleurExtrait(
+  norm: string,
+  activeDomainId: number | null,
+): { extrait: ScoredChunk; domaine: number | null } | null {
+  const domaine = domaineProbable(tokenizeArabic(norm), VOCAB_DOMAINE);
+  const bonus = domaine ?? activeDomainId;
+  const seuil = domaine == null ? SEUIL_SANS_DOMAINE : SEUIL_AVEC_DOMAINE;
+
+  const hits = searchAllBasesScores(norm, bonus).filter((h) => h.score >= seuil);
+  if (hits.length === 0) return null;
+
+  const dansLeDomaine =
+    domaine == null
+      ? hits
+      : hits.filter((h) => {
+          const d = domaineDeUnite(h.ch.unitId, DOMAIN_UNITS);
+          // `d == null` = extrait transverse (méthode, guide, livre) : il
+          // n'appartient à aucun domaine, donc il ne le contredit pas.
+          return d == null || d === domaine;
+        });
+  if (dansLeDomaine.length === 0) return null;
+  return { extrait: dansLeDomaine[0], domaine };
+}
+
+/** Confiance dérivée du score : 28 → 55 %, 60 → 70 %, 120 et plus → 85 %. */
+export function confianceDepuisScore(score: number): number {
+  if (score >= 120) return 85;
+  if (score >= 60) return 70;
+  if (score >= 40) return 62;
+  return 55;
 }
 
 function filterQuickActions(actions: string[], currentInputNorm: string): string[] {
@@ -615,7 +903,15 @@ export function couperExtrait(texte: string, max = SNIPPET_MAX): { text: string;
   return { text, truncated: true };
 }
 
-function buildAnswer(norm: string, activeDomainId: number | null): TutorAction | null {
+/** Ce que `buildAnswer` renvoie : l'action, ET la fiche dont la question de
+ *  rappel reste en attente (pour que l'appelant puisse l'enregistrer). */
+interface ReponseAvecRappel {
+  action: TutorAction;
+  /** Fiche dont la question de rappel est désormais en attente, ou `null`. */
+  recallCardId: string | null;
+}
+
+function buildAnswer(norm: string, activeDomainId: number | null): ReponseAvecRappel | null {
   if (!norm || norm.length < 3) return null;
   const scored = findBestKnowledgeCardScored(norm, activeDomainId);
 
@@ -625,24 +921,35 @@ function buildAnswer(norm: string, activeDomainId: number | null): TutorAction |
     const microHit = findMicroAnswer(scienceCard, norm);
     if (microHit) {
       return {
-        confidence,
-        text: `🎯 **${scienceCard.title}**\n\n${microHit}`,
-        quickActions: filterQuickActions(scienceCard.relatedQuestions, norm),
-        sources: [{ type: 'internal_card' as SourceType, title: scienceCard.title }],
+        // Réponse ciblée : le contenu entier n'a pas été servi, donc aucune
+        // question de rappel n'a été posée — rien à écouter ensuite.
+        action: {
+          confidence,
+          text: `🎯 **${scienceCard.title}**\n\n${microHit}`,
+          quickActions: filterQuickActions(scienceCard.relatedQuestions, norm),
+          sources: [{ type: 'internal_card' as SourceType, title: scienceCard.title }],
+        },
+        recallCardId: null,
       };
     }
     return {
-      confidence,
-      text: `🧩 **${scienceCard.title}**\n\n${scienceCard.shortAnswer}\n\n🔑 كلمات مفتاحية: ${scienceCard.keywords.join(' • ')}${buildRecallQuestion(scienceCard)}`,
-      quickActions: filterQuickActions(scienceCard.relatedQuestions, norm),
-      sources: [{ type: 'internal_card' as SourceType, title: scienceCard.title }],
+      action: {
+        confidence,
+        text: `🧩 **${scienceCard.title}**\n\n${scienceCard.shortAnswer}\n\n🔑 كلمات مفتاحية: ${scienceCard.keywords.join(' • ')}${buildRecallQuestion(scienceCard)}`,
+        quickActions: filterQuickActions(scienceCard.relatedQuestions, norm),
+        sources: [{ type: 'internal_card' as SourceType, title: scienceCard.title }],
+      },
+      recallCardId: scienceCard.id,
     };
   }
 
-  const hits = searchAllBases(norm, activeDomainId);
-  if (hits.length === 0) return null;
+  // R6 (14/10/2026) : le repli de recherche ne sert plus « le moins mauvais »
+  // extrait. Sans preuve suffisante, il rend la main — et la cascade répond
+  // honnêtement qu'elle ne sait pas, au lieu d'un cours d'un autre chapitre.
+  const trouve = meilleurExtrait(norm, activeDomainId);
+  if (!trouve) return null;
 
-  const best = hits[0];
+  const best = trouve.extrait.ch;
   const extrait = couperExtrait(best.text);
   let sourceType: SourceType = 'opus';
   if (best.type === 'book') sourceType = 'book';
@@ -651,12 +958,18 @@ function buildAnswer(norm: string, activeDomainId: number | null): TutorAction |
   else if (best.type === 'lesson') sourceType = 'lesson';
 
   return {
-    // R5 : la recherche brute (fallback) est moins fiable qu'une carte
-    // curatée — confiance plafonnée à 70.
-    confidence: 70,
-    text: `📚 **${best.title}**\n\n${extrait.text}${extrait.truncated ? ' …' : ''}`,
-    quickActions: best.followUp ? filterQuickActions([best.followUp], norm) : [],
-    sources: [{ type: sourceType, title: best.title }],
+    action: {
+      // R5 : la recherche brute (fallback) est moins fiable qu'une carte
+      // curatée. R6 : la confiance DÉCOULE désormais du score obtenu — 70 était
+      // une valeur de façade, identique pour une correspondance forte et pour
+      // une coïncidence de vocabulaire.
+      confidence: confianceDepuisScore(trouve.extrait.score),
+      text: `📚 **${best.title}**\n\n${extrait.text}${extrait.truncated ? ' …' : ''}`,
+      quickActions: best.followUp ? filterQuickActions([best.followUp], norm) : [],
+      sources: [{ type: sourceType, title: best.title }],
+    },
+    // Extrait de recherche brute : aucune question de rappel n'est posée.
+    recallCardId: null,
   };
 }
 
@@ -692,28 +1005,6 @@ export function handleDomainClick(session: BotSession, domainId: number): Engine
  * avec l'article défini « ال ». Les needles multi-mots (espaces) retombent sur
  * un `includes` simple (ils ne peuvent pas être engulfés dans un mot).
  */
-function includesAsWord(haystack: string, needle: string): boolean {
-  if (!needle) return false;
-  if (needle.includes(' ')) return haystack.includes(needle);
-  // Lettres/chiffres « de mot » : on EXCLUT la ponctuation arabe (؟ ، ؛) qui
-  // appartient pourtant au bloc U+0600–U+06FF, sinon « الغوص؟ » ne vaudrait
-  // jamais « الغوص ».
-  const isWordChar = (ch: string | undefined) =>
-    typeof ch === 'string' && /[\u0621-\u063A\u0641-\u064A\u0660-\u0669A-Za-z0-9]/.test(ch);
-  let from = 0;
-  while (true) {
-    const idx = haystack.indexOf(needle, from);
-    if (idx < 0) return false;
-    let s = idx;
-    while (s > 0 && isWordChar(haystack[s - 1])) s -= 1;
-    let e = idx + needle.length;
-    while (e < haystack.length && isWordChar(haystack[e])) e += 1;
-    const word = haystack.slice(s, e);
-    if (word === needle || word === `ال${needle}`) return true;
-    from = idx + 1;
-  }
-}
-
 /* -------------------------------------------------------------------------- *
  * Expansion par SYNONYMES (R3 audit 2026-09-29). Réutilise le dictionnaire    *
  * curé `SYNONYM_GROUPS` (déjà maintenu pour ValidationEngine) au lieu de      *
@@ -1566,6 +1857,15 @@ export function processStudentInput(session: BotSession, rawInput: string): Engi
   const norm = normalizeArabic(input);
   const n = (s: string) => normalizeArabic(s);
 
+  // S-05 (14/10/2026) : une intention forte ABANDONNE la question en attente.
+  // Placé en tête À DESSEIN — plusieurs intentions sont traitées plus haut dans
+  // la cascade que le bloc qui écoute la réponse, donc un nettoyage placé plus
+  // bas ne s'exécuterait jamais pour elles.
+  if ((session.pendingRecallCardId || session.pendingProbeCardId) && estIntentionForte(norm)) {
+    session = { ...session, pendingRecallCardId: null, pendingProbeCardId: null };
+    saveSession(session);
+  }
+
   if (norm.includes(n('القائمة الرئيسية')) || norm.includes(n('العودة للقائمة')) || norm.includes(n('رجوع للقائمة'))) {
     // B5 (audit Morchid 2026-09-25) : l'accueil réinitialise la NAVIGATION mais
     // préserve le SUIVI — erreurs, défis BAC déjà complétés (garde-fou anti-farm)
@@ -1637,7 +1937,13 @@ export function processStudentInput(session: BotSession, rawInput: string): Engi
       if (explicitExplain) {
         const bypassed = [...(session.probeBypassed ?? [])];
         if (!bypassed.includes(probeCard.id)) bypassed.push(probeCard.id);
-        const s2: BotSession = { ...session, pendingProbeCardId: null, probeBypassed: bypassed };
+        const s2: BotSession = {
+          ...session,
+          pendingProbeCardId: null,
+          probeBypassed: bypassed,
+          // Le contenu complet est servi, ET la question de rappel avec lui.
+          pendingRecallCardId: probeCard.id,
+        };
         saveSession(s2);
         return {
           session: s2,
@@ -1652,12 +1958,52 @@ export function processStudentInput(session: BotSession, rawInput: string): Engi
         };
       }
       // Tentative de l'élève → verdict en UNE ligne, puis contenu ciblé.
-      const s2: BotSession = { ...session, pendingProbeCardId: null };
+      const s2: BotSession = { ...session, pendingProbeCardId: null, pendingRecallCardId: probeCard.id };
       saveSession(s2);
       return { session: s2, action: probeVerdictThenContent(probeCard, rawInput) };
     }
     // Intention forte ou saisie vide : libérer le probe, poursuivre le flux.
     const s2: BotSession = { ...session, pendingProbeCardId: null };
+    saveSession(s2);
+    session = s2;
+  }
+
+  // ══════════════════════════════════════════════════════════════════════════
+  // S-05 (CORRIGÉ le 14/10/2026) : LA QUESTION DE RAPPEL EST ENFIN ÉCOUTÉE.
+  //
+  // LE DÉFAUT, tel qu'un élève l'a vécu : le tuteur terminait sa fiche par
+  // « صح أم خطأ: نسخ مرتبط مباشرةً بترجمة في هذا الدرس », l'élève répondait
+  // « صح » — et recevait « ❓ هذا السؤال خارج قاعدة علوم الطبيعة والحياة
+  // للبكالوريا » avec 0 % de confiance. Le tuteur déclarait hors programme sa
+  // PROPRE question, en deux lettres. Deux causes : aucun état ne retenait
+  // qu'une question venait d'être posée, et « صح » (2 caractères) ne partage
+  // aucun mot avec le programme, ce qui suffisait au détecteur de hors-sujet.
+  //
+  // C'est le défaut « un signal que personne n'écoute » appliqué au pire
+  // endroit : le moment où l'élève fait l'effort de répondre.
+  // ══════════════════════════════════════════════════════════════════════════
+  if (session.pendingRecallCardId) {
+    const recallCard = getCardById(session.pendingRecallCardId);
+    // Une intention FORTE libère le rappel sans bloquer personne (même règle que
+    // la question de sondage) : l'élève qui veut changer d'activité le peut.
+    const intentionForte = estIntentionForte(norm);
+    // Même seuil que la question de sondage (2 caractères utiles) : « صح », « لا »
+    // et « نعم » sont des réponses recevables — ce sont MÊME les réponses
+    // attendues à la forme « صح أم خطأ ».
+    if (
+      recallCard &&
+      !intentionForte &&
+      usefulChars(rawInput) >= 2 &&
+      // Une QUESTION ne vaut pas réponse : sans ce filtre, la question suivante
+      // de l'élève (« ما هو الاستنساخ؟ ») recevait le verdict du rappel.
+      estReponseAuRappel(input, norm)
+    ) {
+      const s2: BotSession = { ...session, pendingRecallCardId: null };
+      saveSession(s2);
+      return { session: s2, action: reponseAuRappel(recallCard, rawInput) };
+    }
+    // Saisie vide, trop courte ou intention forte : on libère et on continue.
+    const s2: BotSession = { ...session, pendingRecallCardId: null };
     saveSession(s2);
     session = s2;
   }
@@ -1859,6 +2205,37 @@ export function processStudentInput(session: BotSession, rawInput: string): Engi
     };
   }
 
+  // ══════════════════════════════════════════════════════════════════════════
+  // GESTES DE DIALOGUE (R6, 14/10/2026) — « un geste humain n'est jamais du
+  // hors-programme ».
+  //
+  // PLACEMENT : après TOUT le contenu (fiches, leçons, méthode, triade, rappel,
+  // résumés) et AVANT le refus. Un élève qui dit « السلام عليكم », « مافهمت
+  // والو » ou « أعد من فضلك » recevait « ❓ هذا السؤال خارج قاعدة علوم الطبيعة
+  // والحياة » — le tuteur reprochait un hors-sujet à un élève qui parlait de lui.
+  // Le refus « hors programme » reste réservé aux questions HORS DISCIPLINE
+  // (football, cuisine, politique), et c'est le seul usage légitime de ce texte.
+  // ══════════════════════════════════════════════════════════════════════════
+  const geste = gesteDuMessage(
+    norm,
+    (n2) => domaineProbable(tokenizeArabic(n2), VOCAB_DOMAINE) != null,
+  );
+  if (geste) {
+    const actionsDomaine = session.activeDomainId
+      ? DOMAINS.find((d) => d.id === session.activeDomainId)?.quickActions || ['العودة للقائمة الرئيسية']
+      : DOMAINS.map((d) => d.title);
+    return {
+      session,
+      action: {
+        // Comme la réponse de soutien (KEO-201) : pas de « confiance » affichée
+        // sur un geste humain — ce n'est pas une performance du moteur.
+        text: geste.reponseAr,
+        quickActions: geste.actionsAr.length > 0 ? geste.actionsAr : actionsDomaine,
+        sources: [],
+      },
+    };
+  }
+
   if (isGibberishInput(rawInput || input) || (norm.length >= 3 && OUT_OF_PROGRAM.some((k) => {
     const nk = n(k);
     return nk.length >= 3 && norm.includes(nk);
@@ -1964,8 +2341,10 @@ export function processStudentInput(session: BotSession, rawInput: string): Engi
       saveSession(withProbe);
       return { session: withProbe, action: probeQuestionAction(scienceCard) };
     }
+    const avecRappel: BotSession = { ...session, pendingRecallCardId: scienceCard.id };
+    saveSession(avecRappel);
     return {
-      session,
+      session: avecRappel,
       action: {
         confidence,
         text: `🧩 **${scienceCard.title}**\n\n${scienceCard.shortAnswer}\n\n🔑 كلمات مفتاحية: ${scienceCard.keywords.join(' • ')}${buildRecallQuestion(scienceCard)}`,
@@ -1980,18 +2359,74 @@ export function processStudentInput(session: BotSession, rawInput: string): Engi
   // Si la question ne partage AUCUN vocabulaire avec le programme, c'est un
   // hors-sujet non listé : on le déclare franchement au lieu de renvoyer un
   // extrait vaguement lié (l'ancien fallback à confiance 70).
+  // S-05 (14/10/2026) : une saisie TROP COURTE n'est pas un hors-sujet.
+  //
+  // « صح », « نعم », « لا » ne sont pas des questions : ce sont des RÉPONSES — à
+  // une question que le tuteur n'a pas posée, ou plus. Déclarer « hors programme
+  // du Bac SVT » devant deux lettres était un non-sens, et surtout un aveu : le
+  // vrai problème est qu'on ne sait pas à quoi l'élève répond. On le dit, au lieu
+  // de lui reprocher un hors-sujet qu'il n'a pas commis.
+  //
+  // Ce garde-fou ne peut pas masquer un vrai hors-sujet : la liste OUT_OF_PROGRAM
+  // et le test de charabia passent AVANT, et les mots-clés du programme (5 lettres
+  // et moins, comme « الغوص ») sont déjà résolus par les bases de fiches plus haut.
+  if (estMotReponseSeul(norm)) {
+    return {
+      session,
+      action: {
+        confidence: 60,
+        text: `🤔 وصلتني « ${input} » وحدها، ولا أعرف علامَ تجيب. اكتب سؤالك كاملًا، أو اختر من الاقتراحات.`,
+        quickActions: session.activeDomainId
+          ? DOMAINS.find((d) => d.id === session.activeDomainId)?.quickActions || ['العودة للقائمة الرئيسية']
+          : DOMAINS.map((d) => d.title),
+        sources: [{ type: 'guide' as SourceType, title: 'طلب توضيح' }],
+      },
+    };
+  }
+
   if (!hasDomainSignal(tokenizeArabic(norm))) {
     return outOfScopeResult(session, rawInput || input);
   }
 
   const built = buildAnswer(norm, session.activeDomainId);
-  if (built) return { session, action: built };
+  if (built) {
+    // La fiche servie pose une question de rappel : on la MÉMORISE, sans quoi la
+    // réponse de l'élève (« صح », deux lettres) ressortirait en « hors programme ».
+    const avecRappel: BotSession = { ...session, pendingRecallCardId: built.recallCardId };
+    if (built.recallCardId) saveSession(avecRappel);
+    return { session: avecRappel, action: built.action };
+  }
 
-  const fallbackActions = session.activeDomainId
-    ? DOMAINS.find((d) => d.id === session.activeDomainId)?.quickActions || ['العودة للقائمة الرئيسية']
+  // ── Aveu d'ignorance (R6, 14/10/2026) ─────────────────────────────────────
+  // Un professeur qui ne sait pas le dit, et oriente. Cette branche n'est plus
+  // un « je n'ai rien trouvé » anonyme : quand le domaine de la question est
+  // établi, elle le NOMME et propose les boutons de ce domaine — l'élève sait
+  // au moins de quoi il parle, et où chercher.
+  const domaineQuestion = domaineProbable(tokenizeArabic(norm), VOCAB_DOMAINE);
+  const domaineAffiche = domaineQuestion ?? session.activeDomainId ?? null;
+  const domaineTitre = DOMAINS.find((d) => d.id === domaineAffiche)?.title;
+  const fallbackActions = domaineAffiche
+    ? DOMAINS.find((d) => d.id === domaineAffiche)?.quickActions || ['العودة للقائمة الرئيسية']
     : DOMAINS.map((d) => d.title);
 
-  return { session, action: { text: 'لم أجد إجابة دقيقة في قاعدتي المحلية. جرّب اختيار مجال، أو اطرح سؤالاً حول: التخصص الوظيفي للبروتينات، التحولات الطاقوية، أو التكتونية العامة.\n\n💡 أسئلة منهجية مقترحة:\n' + METHODOLOGY_SUGGESTIONS.map((s) => `• ${s}`).join('\n'), quickActions: fallbackActions } };
+  const tete = domaineTitre
+    ? `🤔 سؤالك في مجال **${domaineTitre}**، لكنّي لم أجد في دروسي نصًّا يجيب عنه بدقّة.`
+    : '🤔 لم أجد في دروسي نصًّا يجيب عن سؤالك بدقّة.';
+
+  return {
+    session,
+    action: {
+      // Ignorance assumée : on ne peut pas prétendre à la certitude d'une fiche.
+      confidence: 20,
+      text:
+        `${tete}\n\n` +
+        'جرّب صيغة أخرى: اسم وحدة، أو مصطلح من الدرس (مثال: «تركيب البروتين»، «حلقة كالفن»، «الغوص»).\n\n' +
+        '💡 أسئلة منهجية مقترحة:\n' +
+        METHODOLOGY_SUGGESTIONS.map((s) => `• ${s}`).join('\n'),
+      quickActions: fallbackActions,
+      sources: [{ type: 'guide' as SourceType, title: 'لا يوجد نصّ مطابق' }],
+    },
+  };
 }
 
 export function answerTutorQuestion(rawInput: string): TutorAction {

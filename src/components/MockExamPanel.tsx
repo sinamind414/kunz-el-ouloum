@@ -31,6 +31,12 @@ import {
   retardSurBudget,
 } from '../data/examTimer';
 import { INITIAL_UNITS } from '../unitCatalog';
+import MarqueDocument from './MarqueDocument';
+// Le guide se tait pendant l'épreuve (défaut corrigé le 14/10/2026) : le bouton
+// flottant du المرشد restait accessible pendant l'examen chronométré, ce qui
+// permettait de demander la réponse en pleine épreuve.
+import { declarerExamen } from '../lib/examenEnCours';
+import { MESSAGES_CAPITAINE } from '../data/capitaine';
 
 interface Props {
   onTrain: (idea: BacExerciseIdea) => void;
@@ -56,6 +62,15 @@ export default function MockExamPanel({ onTrain }: Props) {
       : { ...reprise, numero: numeroDuJour() };
   });
   const [, forcerRendu] = useState(0);
+
+  // L'épreuve est déclarée du MONTAGE au DÉMONTAGE, et pas seulement quand le
+  // chronomètre tourne : dès que le sujet est affiché, demander la réponse à
+  // l'assistant n'est plus une simulation d'examen. `declarerExamen` est
+  // idempotent, donc les rendus multiples de React ne changent rien.
+  useEffect(() => {
+    declarerExamen(true);
+    return () => declarerExamen(false);
+  }, []);
 
   const majSession = (suivante: ExamSession) => {
     writeExamSession(suivante);
@@ -235,6 +250,22 @@ export default function MockExamPanel({ onTrain }: Props) {
         المصدر: مواضيع بكالوريا رسمية (2017-2026). النصوص هنا ملخّصة للتدريب على البنية و التعليمات؛
         للاطلاع على الموضوع الأصلي كاملاً ارجع إلى الدورة المذكورة.
       </p>
+      {/* Pied de page de traçabilité — VISIBLE À L'IMPRESSION SEULEMENT (A3). */}
+      {/*
+        AVIS DE SILENCE (14/10/2026). Le bouton flottant du guide disparaît
+        pendant l'épreuve — c'est voulu, mais une disparition sans explication
+        passe pour une panne. Cette ligne dit l'intention, et rappelle l'étape
+        suivante : l'analyse de la copie après la remise.
+      */}
+      <p
+        data-testid="mock-guide-silencieux"
+        dir="rtl"
+        className="sans-impression mt-4 rounded-2xl border border-[#006d37]/20 bg-[#e8f5ee] px-3 py-2 text-[11px] font-bold text-[#00562b] dark:border-emerald-400/20 dark:bg-emerald-500/10 dark:text-emerald-300"
+      >
+        {MESSAGES_CAPITAINE.examenEnCours.ar} {MESSAGES_CAPITAINE.examenEnCours.attenduAr}
+      </p>
+
+      <MarqueDocument document="موضوع تجريبي" />
     </section>
   );
 }

@@ -242,7 +242,7 @@ export default function SearchView({ onBack, onOpenLesson }: SearchViewProps) {
             <div className="bg-white dark:bg-[#161c18] border border-gray-100 dark:border-gray-800 rounded-2xl p-6 text-center space-y-2">
               <Sparkles className="w-8 h-8 text-gray-300 dark:text-gray-700 mx-auto" />
               <p className="text-sm font-bold text-gray-600 dark:text-gray-300">
-                جرّب كلمة أخرى، أو اسأل المرشد الذكي مباشرةً
+                جرّب كلمة أخرى، أو اسأل القبطان مباشرةً
               </p>
               <p className="text-[11px] font-bold text-gray-400">
                 كلمات مفتاحية مقترحة: الفسفرة التأكسدية · التركيب الضوئي · الغوص · المناعة · الكود الوراثي

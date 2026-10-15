@@ -12,7 +12,6 @@ import {
   Swords,
   PlayCircle,
   Layers,
-  Compass,
   Search,
   PenTool,
   Dumbbell,
@@ -23,7 +22,16 @@ import type { LucideIcon } from 'lucide-react';
 import { Unit, UserProgress, Flashcard, QuizQuestion } from './types';
 import { INITIAL_UNITS } from './unitCatalog';
 import { loadCorpus, peekCorpus, prefetchCorpusWhenIdle } from './data/corpusLoader';
-import { FILL_BLANK_QUESTIONS } from './data/fillBlanks';
+// M7 (2026-10-14) — les questions « à trous » (~50 Ko) ne sont plus dans le
+// bundle d'entrée : elles ne servent qu'au quiz. Même motif que le corpus QCM
+// ci-dessus (import dynamique + cache + préchargement au repos).
+import {
+  chargerFillBlanks,
+  peekFillBlanks,
+  prefetchFillBlanksWhenIdle,
+  versQuizQuestions,
+  type QuestionATrous,
+} from './data/fillBlanksLoader';
 
 /** Identité élève persistée entre les sessions (le JWT vit dans api.ts). */
 const STUDENT_STORE_KEY = 'boussole_student';
@@ -120,6 +128,20 @@ import StudyReminderModal from './components/StudyReminderModal';
 import StudentAccountBar from './components/StudentAccountBar';
 import { getApiToken } from './utils/api';
 import { MORCHID_ASK_EVENT, type MorchidAskDetail } from './lib/morchidBridge';
+// Silence du guide pendant l'épreuve (défaut corrigé le 14/10/2026) : le bouton
+// flottant restait accessible pendant « موضوع تجريبي », une épreuve chronométrée.
+import { abonnerExamen, examenActif } from './lib/examenEnCours';
+// La bulle du capitaine : elle parle au bon moment (4 lois d'Atomic Habits),
+// et se tait le reste du temps. Voir lib/invitationCapitaine.ts.
+import { useInvitationCapitaine } from './hooks/useInvitationCapitaine';
+// Import LÉGER : le nom seul, sans le contenu du guide (voir capitaineIdentite.ts).
+import { CAPITAINE_IDENTITE_AR } from './data/capitaineIdentite';
+import { CAPITAINE_VISAGE_URL } from './data/brandAssets';
+// Le guide en entrée de rubrique : il accueille à la PREMIÈRE visite, puis se
+// tait (voir data/conseilsRubrique.ts pour la raison).
+import BandeauConseilRubrique from './components/BandeauConseilRubrique';
+import { conseilDeRubrique, type ConseilRubrique } from './data/conseilsRubrique';
+import { doitParlerRubrique, marquerRubriqueVue, rubriquesVues } from './lib/conseilRubrique';
 import { 
   startPirateMusic, 
   stopPirateMusic, 
@@ -169,6 +191,8 @@ export default function App() {
   // vue via src/lib/morchidBridge.ts. Transmise à AITutorView, qui pré-remplit
   // le champ sans envoyer à la place de l'élève.
   const [morchidSeed, setMorchidSeed] = useState<string | null>(null);
+  // Une épreuve est-elle en cours ? Si oui, le guide se tait.
+  const [epreuveEnCours, setEpreuveEnCours] = useState<boolean>(() => examenActif());
   // Écoute globale : n'importe quelle vue peut appeler le المرشد sans qu'un
   // callback traverse toute l'arborescence.
   useEffect(() => {
@@ -181,6 +205,11 @@ export default function App() {
     window.addEventListener(MORCHID_ASK_EVENT, onMorchidAsk);
     return () => window.removeEventListener(MORCHID_ASK_EVENT, onMorchidAsk);
   }, []);
+
+  // Abonnement au signal d'épreuve : un seul point d'écoute, dans App, plutôt
+  // qu'une condition recopiée dans chaque vue qui pourrait afficher le bouton.
+  useEffect(() => abonnerExamen(setEpreuveEnCours), []);
+
   const [isAuthOpen, setIsAuthOpen] = useState(false);
   // Session élève persistée (correctif : la session était perdue à chaque F5).
   // On ne réaffiche un compte que s'il reste AVEC un jeton valide.
@@ -287,6 +316,44 @@ export default function App() {
     quizScoreHistory: []
   });
 
+  /**
+   * La bulle du capitaine. `signalTravail` monte quand l'élève produit du
+   * travail : la bulle se recalcule alors (et se tait, puisque l'élève vient
+   * de travailler — c'est voulu).
+   */
+  const { invitation, ignorer } = useInvitationCapitaine({
+    daily: progress.dailyGoals,
+    derniereUnite: units[0]?.title ?? null,
+    epreuveEnCours,
+    signalTravail: units.length,
+  });
+
+  /**
+   * Le conseil d'entrée de rubrique.
+   *
+   * `ouvertureAuto` distingue les deux façons d'afficher le même bandeau :
+   *  · ouvert automatiquement, une seule fois, à la première visite ;
+   *  · rouvert par l'élève via le « ؟ » de l'en-tête, autant de fois qu'il veut.
+   * Sans cette distinction, le bandeau se fermerait puis se rouvrirait tout seul
+   * au changement d'onglet — le comportement le plus agaçant possible.
+   */
+  const [conseilFerme, setConseilFerme] = useState(true);
+  const conseilCourant: ConseilRubrique | null = conseilDeRubrique(currentTab);
+  useEffect(() => {
+    if (!conseilCourant) {
+      setConseilFerme(true);
+      return;
+    }
+    if (doitParlerRubrique(currentTab, rubriquesVues(), true)) {
+      // On mémorise À L'AFFICHAGE, pas à la fermeture : un élève qui change
+      // d'onglet sans lire ne doit pas revoir le même discours indéfiniment.
+      marquerRubriqueVue(currentTab);
+      setConseilFerme(false);
+    } else {
+      setConseilFerme(true);
+    }
+  }, [currentTab, conseilCourant]);
+
   // Apply dark mode theme class to document element
   useEffect(() => {
     if (isDarkMode) {
@@ -334,6 +401,7 @@ export default function App() {
       });
     }
     prefetchCorpusWhenIdle();
+    prefetchFillBlanksWhenIdle();
     if (savedProgress) {
       const parsed: UserProgress = savedProgress;
       // H3 : jour LOCAL (l'élève est à Alger, pas à Greenwich). En UTC, la remise
@@ -467,6 +535,34 @@ export default function App() {
   const [activeUnitPortalId, setActiveUnitPortalId] = useState<number | null>(null);
   const [activeCombatChallenge, setActiveCombatChallenge] = useState<{id: string, title: string, mode: 'coach'|'sprint'} | null>(null);
 
+  // Questions « à trous » : chargées hors du bundle d'entrée (M7).
+  const [questionsATrous, setQuestionsATrous] = useState<QuestionATrous[] | null>(() => peekFillBlanks());
+
+  /**
+   * Ouvre le quiz en s'assurant que les questions à trous sont là.
+   *
+   * Pourquoi ATTENDRE plutôt qu'ouvrir tout de suite : si le quiz s'ouvrait sans
+   * elles puis les recevait une seconde plus tard, la liste de questions
+   * changerait SOUS les yeux de l'élève (nombre de questions, progression). Le
+   * préchargement au repos fait que, en pratique, ce chemin est synchrone.
+   * Et si le morceau est injoignable (hors ligne), le quiz s'ouvre QUAND MÊME,
+   * avec le seul corpus QCM : jamais un bouton sans effet.
+   */
+  const ouvrirQuiz = (unitId: number) => {
+    const deja = peekFillBlanks();
+    if (deja) {
+      setQuestionsATrous(deja);
+      setActiveQuizUnitId(unitId);
+      return;
+    }
+    chargerFillBlanks()
+      .then(setQuestionsATrous)
+      .catch(() => {
+        /* hors ligne : on ouvre le quiz avec le corpus seul */
+      })
+      .finally(() => setActiveQuizUnitId(unitId));
+  };
+
   // Launching and finishing Quiz callback
   const handleLaunchQuiz = (unitId: number) => {
     // Update last studied timestamp on the unit
@@ -483,7 +579,7 @@ export default function App() {
     if (unitId === 1) {
       setActiveUnitPortalId(unitId);
     } else {
-      setActiveQuizUnitId(unitId);
+      ouvrirQuiz(unitId);
     }
   };
 
@@ -630,7 +726,7 @@ export default function App() {
         unitTitle={activeUnit ? activeUnit.title : ''}
         onClose={() => setActiveUnitPortalId(null)}
         onStartLesson={() => {
-          setActiveQuizUnitId(activeUnitPortalId);
+          ouvrirQuiz(activeUnitPortalId);
           setActiveUnitPortalId(null);
         }}
       />
@@ -641,18 +737,8 @@ export default function App() {
     const activeUnit = units.find(u => u.id === activeQuizUnitId);
     // S-C4 : on réintègre les micro-tests « remplir le trou » (161 questions
     // à trous d'origine Flutter, jusqu'ici définies mais jamais câblées).
-    const fillBlankQuestions: QuizQuestion[] = FILL_BLANK_QUESTIONS
-      .filter(q => q.unitId === activeQuizUnitId)
-      .map((q, i) => ({
-        id: 9_000_000 + i,
-        unitId: q.unitId,
-        questionText: q.microTest.prompt,
-        options: [],
-        correctAnswerIndex: -1,
-        explanation: q.microTest.errorHint,
-        kind: 'fillBlank',
-        acceptedAnswers: q.microTest.acceptedAnswers,
-      }));
+    // M7 : elles arrivent du chargeur différé, pas du bundle d'entrée.
+    const fillBlankQuestions: QuizQuestion[] = versQuizQuestions(questionsATrous ?? [], activeQuizUnitId);
     const corpus = corpusQuestions.length > 0 ? corpusQuestions : (peekCorpus()?.questions ?? []);
     const questions = [
       ...corpus.filter(q => q.unitId === activeQuizUnitId),
@@ -739,11 +825,14 @@ export default function App() {
       <StudentAuthView
         isOpen={isAuthOpen}
         onClose={() => setIsAuthOpen(false)}
-        onLogin={(name, email) => {
+        onLogin={(name, identifiant) => {
+          // `identifiant` est le code de connexion (XXXX-XXXX) pour un compte
+          // sans adresse e-mail, ou l'adresse elle-même : dans les deux cas
+          // c'est ce qui identifie l'élève à l'écran.
           setStudentName(name);
-          setStudentEmail(email);
+          setStudentEmail(identifiant);
           try {
-            localStorage.setItem(STUDENT_STORE_KEY, JSON.stringify({ name, email }));
+            localStorage.setItem(STUDENT_STORE_KEY, JSON.stringify({ name, email: identifiant }));
           } catch {
             /* stockage indisponible */
           }
@@ -795,9 +884,27 @@ export default function App() {
            currentTab === 'focus' ? 'المؤقّت (بومودورو)' :
            currentTab === 'tadwin' ? 'التدوين الشامل' :
            currentTab === 'mindmap' ? 'الخرائط الذهنية (D3)' :
-            currentTab === 'chat' ? 'المرشد الذكي' :
+            currentTab === 'chat' ? CAPITAINE_IDENTITE_AR :
             currentTab === 'teacher' ? 'لوحة المتابعة' :
             'كنز العلوم'}
+          {/*
+            Le rappel est DISPONIBLE sans être imposé : c'est la différence entre
+            un professeur qu'on peut réinterroger et un bandeau publicitaire.
+            Le bouton n'existe que pour les rubriques qui ont réellement un
+            conseil — ailleurs, il n'y a rien à rouvrir.
+          */}
+          {conseilCourant && (
+            <button
+              type="button"
+              data-testid="conseil-rubrique-ouvrir"
+              onClick={() => setConseilFerme((f) => !f)}
+              title="نصيحة القبطان في هذه الصفحة"
+              aria-label="نصيحة القبطان في هذه الصفحة"
+              className="ms-2 inline-flex h-5 w-5 items-center justify-center rounded-full border border-[#006d37]/40 align-middle text-[11px] font-black text-[#006d37] transition-colors hover:bg-[#006d37] hover:text-white cursor-pointer dark:border-emerald-400/40 dark:text-emerald-300"
+            >
+              ؟
+            </button>
+          )}
         </div>
 
         {/* Right Side Block with Streak & Dark Mode Toggle */}
@@ -901,6 +1008,12 @@ export default function App() {
                   suffit, puisqu'un seul onglet est monté à la fois. */}
               <ChunkErrorBoundary>
               <Suspense fallback={<VueEnChargement />}>
+              {/* Hors du Suspense de l'onglet À DESSEIN : le conseil ne doit pas
+                  attendre le chargement du morceau de la rubrique pour apparaître,
+                  sinon il surgirait après coup, sur une page déjà commencée. */}
+              {conseilCourant && !conseilFerme && !epreuveEnCours && (
+                <BandeauConseilRubrique conseil={conseilCourant} onFermer={() => setConseilFerme(true)} />
+              )}
               {currentTab === 'home' && (
                 <DashboardView 
                   units={units}
@@ -912,6 +1025,8 @@ export default function App() {
                   isDarkMode={isDarkMode}
                   onOpenLesson={ouvrirLeçonDepuisParcours}
                   onOpenQcm={ouvrirQcmDepuisParcours}
+                  onOpenAuth={() => setIsAuthOpen(true)}
+                  connecte={Boolean(studentName || studentEmail)}
                 />
               )}
 
@@ -1144,17 +1259,81 @@ export default function App() {
           flottant l'ouvre depuis N'IMPORTE quelle rubrique — cours
           (« explique-moi cette notion »), exercice, correction, accueil.
           Masqué dans la vue elle-même, sur le splash et en mode focus. */}
-      {!isFocusMode && currentTab !== 'chat' && (
-        <button
-          type="button"
-          data-testid="fab-morchid"
-          onClick={() => setCurrentTab('chat')}
-          title="المرشد الذكي"
-          aria-label="المرشد الذكي"
-          className="fixed bottom-24 left-4 z-40 md:bottom-8 flex h-14 w-14 items-center justify-center rounded-full bg-[#006d37] text-white shadow-lg shadow-[#006d37]/30 transition-transform hover:scale-105 active:scale-95 cursor-pointer"
-        >
-          <Compass className="w-6 h-6" />
-        </button>
+      {/*
+        LE GUIDE SE TAIT PENDANT L'ÉPREUVE. Sans `!epreuveEnCours`, l'élève
+        pouvait ouvrir le المرشد au milieu d'une épreuve chronométrée de 4 h 30
+        et lui demander la réponse — ce qui annule la simulation. L'épreuve
+        affiche sa propre explication de ce silence (MockExamPanel).
+      */}
+      {!isFocusMode && !epreuveEnCours && currentTab !== 'chat' && (
+        <div className="fixed bottom-24 left-4 z-40 md:bottom-8 flex flex-col items-start gap-2">
+          {/*
+            LA BULLE PARLE AU BON MOMENT, PAS EN PERMANENCE (loi 1). Un signal
+            toujours présent n'est plus un signal : c'est le mur du fond qui
+            disparaît. Quand il n'y a rien à dire, la bulle n'existe pas — il
+            reste le bouton, qu'un clic ouvre.
+          */}
+          {invitation && (
+            <div
+              data-testid="bulle-capitaine"
+              dir="rtl"
+              className="max-w-[17rem] rounded-2xl rounded-bl-sm border border-[#006d37]/25 bg-white p-3 shadow-lg dark:border-emerald-400/25 dark:bg-[#121614]"
+            >
+              <p className="text-[11px] font-black text-[#006d37] dark:text-emerald-300">{CAPITAINE_IDENTITE_AR}</p>
+              <p className="mt-1 text-[12px] font-bold leading-relaxed text-[#1f2b24] dark:text-gray-100">
+                {invitation.messageAr}
+              </p>
+              <p className="mt-1 text-[11px] leading-relaxed text-[#506072] dark:text-gray-300">{invitation.actionAr}</p>
+              {/* Loi 4 : la récompense immédiate est nommée, jamais différée. */}
+              <p className="mt-1 text-[10px] font-bold text-[#006d37] dark:text-emerald-400">{invitation.gainImmediatAr}</p>
+              <div className="mt-2 flex items-center gap-2">
+                <button
+                  type="button"
+                  data-testid="bulle-capitaine-agir"
+                  onClick={() => setCurrentTab(invitation.cible)}
+                  className="rounded-xl bg-[#006d37] px-3 py-1.5 text-[11px] font-black text-white cursor-pointer"
+                >
+                  {invitation.actionAr}
+                </button>
+                <button
+                  type="button"
+                  data-testid="bulle-capitaine-fermer"
+                  onClick={ignorer}
+                  aria-label="إغلاق"
+                  className="rounded-xl border border-black/10 px-2.5 py-1.5 text-[11px] font-bold text-[#506072] dark:border-white/10 dark:text-gray-300 cursor-pointer"
+                >
+                  لاحقًا
+                </button>
+              </div>
+            </div>
+          )}
+          {/*
+            LE BOUTON RESTE ROND — c'est le repère (14/10/2026, demande
+            explicite). Ce qui change : la boussole cède la place au VISAGE du
+            personnage, qui devient ainsi reconnaissable dans toute
+            l'application et pas seulement dans sa rubrique.
+
+            Fond crème et anneau vert plutôt que le vert plein d'avant : mesuré
+            à l'écran, le chapeau marron du personnage se confondait avec le vert
+            sombre, et le visage perdait sa lisibilité à 56 px. Le crème
+            (#fff9ed) est déjà une couleur de la charte.
+          */}
+          <button
+            type="button"
+            data-testid="fab-morchid"
+            onClick={() => setCurrentTab('chat')}
+            title={CAPITAINE_IDENTITE_AR}
+            aria-label={CAPITAINE_IDENTITE_AR}
+            className="flex h-14 w-14 items-center justify-center overflow-hidden rounded-full border-2 border-[#006d37] bg-[#fff9ed] shadow-lg shadow-[#006d37]/30 transition-transform hover:scale-105 active:scale-95 cursor-pointer dark:bg-[#121614]"
+          >
+            <img
+              src={CAPITAINE_VISAGE_URL}
+              alt=""
+              aria-hidden="true"
+              className="h-full w-full object-cover"
+            />
+          </button>
+        </div>
       )}
     </div>
   );

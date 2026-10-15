@@ -27,7 +27,16 @@ export function calculateKeywordScore(normalizedInput: string, keywords: string[
 
 export function tokenizeArabic(input: string): string[] {
   const normalized = normalizeArabic(input);
-  return Array.from(new Set(normalized.match(/[\u0600-\u06ffA-Za-z0-9+]{3,}/g) || []));
+  // PONCTUATION ARABE EXCLUE (14/10/2026). « ؟ » (U+061F), « ، » (U+060C) et
+  // « ؛ » (U+061B) appartiennent au bloc U+0600–U+06FF qu'on prenait en entier :
+  // le dernier mot de CHAQUE question interrogative ressortait collé à son point
+  // d'interrogation — « الجبال؟ », « الضوئي؟ », « atp؟ » — et ne correspondait
+  // donc jamais à « الجبال » dans un titre, un mot-clé ou un vocabulaire. Le
+  // rappel de recherche perdait toujours son dernier mot, sans que rien ne le
+  // signale. `includesAsWord` avait déjà ce garde-fou ; le tokenizer ne l'avait
+  // pas. On garde les lettres, les chiffres arabes-indiens et les chiffres.
+  const MOT = /[\u0621-\u063A\u0641-\u064A\u0660-\u0669A-Za-z0-9+]{3,}/g;
+  return Array.from(new Set(normalized.match(MOT) || []));
 }
 
 /* -------------------------------------------------------------------------- *
@@ -105,4 +114,34 @@ export function tokenOverlapRatio(inputTokens: string[], target: string): number
     if (inputTokens.some((it) => fuzzyTokenEquals(it, gt))) hits += 1;
   }
   return hits / targetTokens.length;
+}
+
+/**
+ * Vrai si `needle` apparaît dans `haystack` EN TANT QUE MOT (ou mot précédé de
+ * l'article défini « ال »). La ponctuation arabe (؟ ، ؛) est exclue des lettres
+ * de mot — elle appartient pourtant au bloc U+0600–U+06FF : sans ce garde-fou,
+ * « الغوص؟ » ne vaudrait jamais « الغوص ».
+ *
+ * DÉPLACÉ ICI le 14/10/2026 (il vivait dans `smartTutorEngine.ts`) : la couche
+ * de dialogue, qui est un module pur, a besoin du même matching par mot entier.
+ * Deux implémentations concurrentes auraient divergé — c'est déjà ce qui s'était
+ * produit entre ce garde-fou et `tokenizeArabic`.
+ */
+export function includesAsWord(haystack: string, needle: string): boolean {
+  if (!needle) return false;
+  if (needle.includes(' ')) return haystack.includes(needle);
+  const isWordChar = (ch: string | undefined) =>
+    typeof ch === 'string' && /[\u0621-\u063A\u0641-\u064A\u0660-\u0669A-Za-z0-9]/.test(ch);
+  let from = 0;
+  while (true) {
+    const idx = haystack.indexOf(needle, from);
+    if (idx < 0) return false;
+    let s = idx;
+    while (s > 0 && isWordChar(haystack[s - 1])) s -= 1;
+    let e = idx + needle.length;
+    while (e < haystack.length && isWordChar(haystack[e])) e += 1;
+    const word = haystack.slice(s, e);
+    if (word === needle || word === `ال${needle}`) return true;
+    from = idx + 1;
+  }
 }

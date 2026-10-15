@@ -3,7 +3,7 @@
 import { cleanup, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
-import AITutorView from '../AITutorView';
+import AITutorView, { WELCOME_TEXT } from '../AITutorView';
 import { getQuestionById } from '../../data/smartBotData';
 
 // jsdom n'implémente ni scrollIntoView ni scrollTo — polyfill + espion (test B1).
@@ -25,7 +25,7 @@ function messagesText(): string {
 }
 
 async function typeAndSubmit(user: ReturnType<typeof userEvent.setup>, text: string) {
-  const input = screen.getByPlaceholderText('اسأل المرشد الذكي عن أي سؤال في مادة العلوم...');
+  const input = screen.getByPlaceholderText('اكتب سؤالك للقبطان في علوم الطبيعة والحياة...');
   await user.type(input, `${text}{Enter}`);
 }
 
@@ -86,7 +86,7 @@ describe('AITutorView — rendu riche du moteur (T2)', () => {
     // Retour au menu entre chaque domaine : le routeur ne s'applique qu' hors domaine actif.
     const domainTitles = ['التخصص الوظيفي للبروتينات', 'التحولات الطاقوية', 'التكتونية العامة'];
     for (const title of domainTitles) {
-      const input = screen.getByPlaceholderText('اسأل المرشد الذكي عن أي سؤال في مادة العلوم...');
+      const input = screen.getByPlaceholderText('اكتب سؤالك للقبطان في علوم الطبيعة والحياة...');
       await user.type(input, `${title}{Enter}`);
       await waitFor(() => {
         // NB : le markdown ** est consommé par renderBoldText → textContent sans astérisques.
@@ -413,8 +413,18 @@ describe('AITutorView — finition B1/B6/B8/B9/B10 (audit 2026-09-22, phase par 
     await typeAndSubmit(user, 'ما هو الغوص؟');
     await waitFor(() => expect(messagesText()).toContain('بطاقة معرفة'));
     await user.click(screen.getByTitle('مسح المحادثة'));
+    // L'intention du test est la FACTORY UNIQUE : le message restauré doit être
+    // exactement l'accueil du jour, pas une copie figée qui divergerait du
+    // composant au premier changement de texte.
+    // Le rendu markdown retire les `**` et découpe les `\n\n` en paragraphes :
+    // on compare donc la forme NORMALISÉE, sans quoi le test porterait sur des
+    // sauts de ligne plutôt que sur le contenu.
+    // Le rendu markdown retire les `**` ET colle les paragraphes sans séparateur :
+    // on compare donc sans aucun espace. Le test porte ainsi sur le CONTENU de
+    // l'accueil (factory unique), pas sur son découpage en blocs.
+    const sansEspaces = (t: string) => t.replace(/\*\*/g, '').replace(/\s+/g, '');
     await waitFor(() => {
-      expect(messagesText()).toContain('اختر مجالاً للبدء، أو اكتب سؤالك مباشرةً');
+      expect(sansEspaces(messagesText())).toContain(sansEspaces(WELCOME_TEXT));
     });
     expect(messagesText()).not.toContain('مرحباً بك مجدداً');
     confirmSpy.mockRestore();
@@ -424,8 +434,8 @@ describe('AITutorView — finition B1/B6/B8/B9/B10 (audit 2026-09-22, phase par 
     render(<AITutorView />);
     expect(screen.getByText(/شرح وتلميحات من منهاج البكالوريا/)).toBeTruthy();
     expect(screen.queryByText(/مساعد ذكاء اصطناعي/)).toBeNull();
-    expect(screen.getAllByAltText('شعار المرشد الذكي').length).toBeGreaterThanOrEqual(1); // avatar du message IA (le 2e n'apparaît qu'au chargement)
-    expect(screen.getByLabelText('حقل السؤال إلى المرشد الذكي')).toBeTruthy();
+    expect(screen.getAllByAltText('شعار القبطان').length).toBeGreaterThanOrEqual(1); // avatar du message IA (le 2e n'apparaît qu'au chargement)
+    expect(screen.getByLabelText('حقل السؤال إلى القبطان')).toBeTruthy();
     const welcome = screen.getByTestId('tutor-messages');
     expect(welcome).toBeTruthy();
   });
@@ -443,7 +453,7 @@ describe('AITutorView — point d entrée contextuel (restructuration 2026-10-11
       />,
     );
 
-    const input = screen.getByLabelText('حقل السؤال إلى المرشد الذكي') as HTMLInputElement;
+    const input = screen.getByLabelText('حقل السؤال إلى القبطان') as HTMLInputElement;
     // 1. la question apparaît dans le champ…
     expect(input.value).toBe('اشرح تركيب البروتين');
     // 2. …mais AUCUN message élève n'est créé : on ne répond pas à sa place.
@@ -454,7 +464,7 @@ describe('AITutorView — point d entrée contextuel (restructuration 2026-10-11
 
   it('sans questionInitiale, le champ reste vide', () => {
     render(<AITutorView />);
-    const input = screen.getByLabelText('حقل السؤال إلى المرشد الذكي') as HTMLInputElement;
+    const input = screen.getByLabelText('حقل السؤال إلى القبطان') as HTMLInputElement;
     expect(input.value).toBe('');
   });
 
@@ -463,7 +473,7 @@ describe('AITutorView — point d entrée contextuel (restructuration 2026-10-11
     const { rerender } = render(
       <AITutorView questionInitiale="   " onQuestionInitialeConsumed={consumed} />,
     );
-    const input = screen.getByLabelText('حقل السؤال إلى المرشد الذكي') as HTMLInputElement;
+    const input = screen.getByLabelText('حقل السؤال إلى القبطان') as HTMLInputElement;
     expect(input.value).toBe('');
     expect(consumed).not.toHaveBeenCalled();
 

@@ -15,6 +15,7 @@ import { ArrowRight, CalendarDays, Check, Clock, ListChecks, Printer } from 'luc
 import { ARCHETYPE_BY_ID } from '../data/bacArchetypes';
 import { readPlanSettings, writePlanSettings } from '../data/planSettings';
 import { INITIAL_UNITS } from '../unitCatalog';
+import MarqueDocument from './MarqueDocument';
 import {
   DIFFICULTY_BONUS,
   declaredWeight,
@@ -420,6 +421,8 @@ export default function RevisionPlanView({ onBackToHome, onOpenRedaction }: Revi
           </section>
         ))}
       </div>
+      {/* Pied de page de traçabilité — VISIBLE À L'IMPRESSION SEULEMENT (A3). */}
+      <MarqueDocument document="خطة المراجعة" />
     </div>
   );
 }

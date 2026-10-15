@@ -76,6 +76,9 @@ const icmLabelFr = (icm: number | null): string => icm === null ? '' : icm < 60 
 // AVANT : [1, 3, 7, 16, 30] en dur ici, en conflit avec le J+14 de nbaEngine.
 // APRÈS : on s'aligne sur la source canonique J+1 → J+3 → J+7 → J+14.
 import { SPACED_RECALL_INTERVALS } from '../data/spacedRecallIntervals';
+import MarqueDocument from './MarqueDocument';
+import { enregistrerErreurs, profilPourLeGuide, resumeProfilAr } from '../utils/profilErreurs';
+import { CAPITAINE_IDENTITE_AR, messageCapitaine } from '../data/capitaine';
 const REVIEW_GAPS = [...SPACED_RECALL_INTERVALS];
 
 interface MethodologyProps {
@@ -351,6 +354,13 @@ const handleSelectStage = (stage: 1 | 2 | 3 | 4) => {
         });
         return nextCounters;
       });
+      // MÉMOIRE DU GUIDE (14/10/2026) : ce compteur-ci est un état local, il
+      // disparaissait au rechargement. On enregistre les mêmes codes dans le
+      // profil persistant (localStorage, jamais envoyé) pour que le guide
+      // puisse, plus tard, nommer l'erreur récurrente de CET élève.
+      enregistrerErreurs(rep.detectedErrors.map(e => e.tag), {
+        theme: currentExercise?.theme,
+      });
     }
   };
 
@@ -441,6 +451,13 @@ const handleSelectStage = (stage: 1 | 2 | 3 | 4) => {
           nextCounters[err.tag] = (nextCounters[err.tag] || 0) + 1;
         });
         return nextCounters;
+      });
+      // MÉMOIRE DU GUIDE (14/10/2026) : ce compteur-ci est un état local, il
+      // disparaissait au rechargement. On enregistre les mêmes codes dans le
+      // profil persistant (localStorage, jamais envoyé) pour que le guide
+      // puisse, plus tard, nommer l'erreur récurrente de CET élève.
+      enregistrerErreurs(rep.detectedErrors.map(e => e.tag), {
+        theme: currentExercise?.theme,
       });
     }
   };
@@ -2105,6 +2122,38 @@ const handleSelectStage = (stage: 1 | 2 | 3 | 4) => {
                 <span className="text-xs font-bold text-gray-400">توجيه الجهد نحو الخلل السائد</span>
               </div>
 
+              {/*
+                LA VOIX DU GUIDE (14/10/2026). Le personnage ne se contente plus
+                d'être un logo : il nomme l'erreur dominante DE CET ÉLÈVE et la
+                contre-mesure publiée par la taxonomie. Le message vient de
+                `capitaine.ts` (source unique) et le profil de `profilErreurs.ts`
+                (localStorage, jamais envoyé). S'il n'y a rien à dire, la ligne
+                n'existe pas : un guide qui parle pour ne rien dire devient du
+                bruit et l'élève cesse de le lire.
+              */}
+              {(() => {
+                const message = messageCapitaine('erreur', profilPourLeGuide());
+                const detail = resumeProfilAr();
+                if (!detail) return null;
+                return (
+                  <div
+                    data-testid="capitaine-profil-erreurs"
+                    dir="rtl"
+                    className="mb-3 rounded-2xl border border-[#006d37]/25 bg-[#e8f5ee] px-3.5 py-3 dark:border-emerald-400/20 dark:bg-emerald-500/10"
+                  >
+                    <p className="text-xs font-black text-[#00562b] dark:text-emerald-300">
+                      {CAPITAINE_IDENTITE_AR}
+                    </p>
+                    <p className="mt-1 text-[12px] font-bold leading-relaxed text-[#1f2b24] dark:text-emerald-100">
+                      {message.ar}
+                    </p>
+                    <p className="mt-1 text-[11px] leading-relaxed text-[#506072] dark:text-emerald-200/80">
+                      {detail}
+                    </p>
+                  </div>
+                );
+              })()}
+
               <div className="space-y-3">
                 {Object.keys(weeklyErrorCounters).length === 0 ? (
                   <p className="text-xs text-gray-500 dark:text-gray-400 font-bold text-center py-4">
@@ -2362,6 +2411,10 @@ const handleSelectStage = (stage: 1 | 2 | 3 | 4) => {
       {activeTab === 'tahlil_wall' && (
         <TahlilWall onBack={() => setActiveTab('meftah')} />
       )}
+
+      {/* Pied de page de traçabilité — VISIBLE À L'IMPRESSION SEULEMENT (A3). */}
+
+      <MarqueDocument document="المنهجية" />
 
     </div>
   );

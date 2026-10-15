@@ -19,7 +19,10 @@ interface Props {
 type StudentAgg = {
   id: string;
   name: string;
-  email: string;
+  /** `null` pour un compte sans adresse e-mail : c'est `code` qui identifie. */
+  email: string | null;
+  /** Code de connexion (XXXX-XXXX) des comptes créés sans e-mail. */
+  code?: string | null;
   productions: number;
   avgIcm: number;
   dominantErrors: Array<{ tag: string; count: number }>;
@@ -33,6 +36,23 @@ type StudentAgg = {
 };
 
 type Resume = { inscrits: number; actifs7j: number; actifs30j: number };
+
+/**
+ * Mesures de pilotage — calculées côté serveur sur les données DÉJÀ stockées
+ * (aucune télémétrie, aucun envoi supplémentaire depuis les appareils).
+ * Le mode invité reste invisible : c'est écrit sous le tableau, pour que
+ * personne ne prenne « 0 abandon » pour une vérité sur toute la classe.
+ */
+type Pilotage = {
+  inscrits: number;
+  inscriptions7j: number;
+  jamaisActifs: number;
+  anciensSansTrace: number;
+  actifs7j: number;
+  actifs30j: number;
+  retardPremiereTraceH: number | null;
+  echantillonRetard: number;
+};
 
 type Entry = {
   id: string;
@@ -48,6 +68,7 @@ type Entry = {
 export default function TeacherDashboardView({ onBack }: Props) {
   const [students, setStudents] = useState<StudentAgg[]>([]);
   const [resume, setResume] = useState<Resume | null>(null);
+  const [pilotage, setPilotage] = useState<Pilotage | null>(null);
   const [loading, setLoading] = useState(true);
   const [selectedStudentId, setSelectedStudentId] = useState<string | null>(null);
   const [entries, setEntries] = useState<Entry[]>([]);
@@ -84,6 +105,7 @@ export default function TeacherDashboardView({ onBack }: Props) {
         });
         setStudents(enriched);
         setResume((data as { resume?: Resume }).resume ?? null);
+        setPilotage((data as { pilotage?: Pilotage }).pilotage ?? null);
       })
       .catch((err) => {
         if (isAuthFailure(err)) setTeacherApiToken(null);
@@ -276,7 +298,9 @@ export default function TeacherDashboardView({ onBack }: Props) {
         </button>
         <div className="bg-white dark:bg-[#141916] rounded-2xl border border-gray-200 dark:border-gray-800 p-5 shadow-sm">
           <h3 className="font-black text-base text-gray-900 dark:text-white mb-1">{student?.name}</h3>
-          <p className="text-xs text-gray-500 dark:text-gray-400 mb-4">{student?.email}</p>
+          <p className="text-xs text-gray-500 dark:text-gray-400 mb-4">
+            {student?.email || (student?.code ? `رمز الدخول: ${student.code}` : '')}
+          </p>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             <div className="rounded-xl bg-gray-50 dark:bg-[#1b221e] p-3 border border-gray-200 dark:border-gray-700">
               <div className="text-[11px] text-gray-500 dark:text-gray-400 font-bold">الproductions</div>
@@ -387,6 +411,55 @@ export default function TeacherDashboardView({ onBack }: Props) {
           </span>
         </div>
       )}
+
+      {pilotage && (
+        <div className="mb-3 rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-[#141916] p-3">
+          <div className="mb-2 flex items-center justify-between gap-2">
+            <h3 className="text-xs font-black text-gray-900 dark:text-white">مؤشرات المتابعة</h3>
+            <span className="text-[10px] font-bold text-gray-400 dark:text-gray-500">
+              محسوبة من البيانات المخزَّنة — دون جمع أي بيانات جديدة
+            </span>
+          </div>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+            <div className="rounded-xl bg-gray-50 dark:bg-[#1b221e] p-2.5">
+              <div className="text-[10px] font-bold text-gray-500 dark:text-gray-400">سجّلوا هذا الأسبوع</div>
+              <div className="text-lg font-black text-gray-900 dark:text-white">{pilotage.inscriptions7j}</div>
+            </div>
+            <div className="rounded-xl bg-amber-50 dark:bg-amber-950/30 p-2.5">
+              <div className="text-[10px] font-bold text-amber-800 dark:text-amber-300">لم يرسلوا أي نشاط قط</div>
+              <div className="text-lg font-black text-amber-900 dark:text-amber-200">{pilotage.jamaisActifs}</div>
+              <div className="text-[10px] text-amber-700 dark:text-amber-400">
+                منهم {pilotage.anciensSansTrace} مسجَّل منذ أكثر من أسبوع
+              </div>
+            </div>
+            <div className="rounded-xl bg-gray-50 dark:bg-[#1b221e] p-2.5">
+              <div className="text-[10px] font-bold text-gray-500 dark:text-gray-400">المدة الوسيطة حتى أول نشاط</div>
+              <div className="text-lg font-black text-gray-900 dark:text-white">
+                {pilotage.retardPremiereTraceH === null
+                  ? '—'
+                  : `${pilotage.retardPremiereTraceH} سا`}
+              </div>
+              <div className="text-[10px] text-gray-500 dark:text-gray-400">
+                {pilotage.echantillonRetard > 0
+                  ? `على ${pilotage.echantillonRetard} تلميذًا`
+                  : 'لا عيّنة بعد'}
+              </div>
+            </div>
+            <div className="rounded-xl bg-emerald-50 dark:bg-emerald-950/40 p-2.5">
+              <div className="text-[10px] font-bold text-emerald-800 dark:text-emerald-300">نسبة من لم يبدأ بعد</div>
+              <div className="text-lg font-black text-emerald-900 dark:text-emerald-200">
+                {pilotage.inscrits > 0
+                  ? `${Math.round((pilotage.jamaisActifs / pilotage.inscrits) * 100)}%`
+                  : '—'}
+              </div>
+              <div className="text-[10px] text-emerald-700 dark:text-emerald-400">
+                من {pilotage.inscrits} مسجلًا
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       <div className="grid grid-cols-1 gap-3">
         {students.length === 0 && <p className="text-xs text-gray-500">لا تلاميذ مسجلين بعد.</p>}
         {students.map((student) => (
@@ -398,7 +471,9 @@ export default function TeacherDashboardView({ onBack }: Props) {
             <div className="flex items-center justify-between">
               <div>
                 <div className="text-sm font-black text-gray-900 dark:text-white">{student.name}</div>
-                <div className="text-[11px] text-gray-500 dark:text-gray-400">{student.email}</div>
+                <div className="text-[11px] text-gray-500 dark:text-gray-400" dir="ltr">
+                  {student.email || student.code || ''}
+                </div>
               </div>
               <div className="flex items-center gap-3">
                 <span
