@@ -19,7 +19,13 @@ createRoot(document.getElementById('root')!).render(
 if ('serviceWorker' in navigator && import.meta.env.PROD) {
   window.addEventListener('load', () => {
     navigator.serviceWorker
-      .register(`/sw.js?v=${Date.now()}`)
+      // Pas de cache-buster (`?v=${Date.now()}`) : il contourne la comparaison
+      // d'octets du SW, forçait une réinstallation à CHAQUE visite et
+      // re-téléchargeait l'ensemble des caches (~15 Mo). Le versionnage est
+      // désormais injecté dans le fichier lui-même (voir public/sw.js,
+      // R2 audit externe 2026-10-15) : sw.js ne change d'octets qu'au
+      // déploiement d'un build réellement différent.
+      .register('/sw.js')
       .catch((err) => console.warn('Service worker non enregistré:', err));
   });
 }

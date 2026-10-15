@@ -1,5 +1,7 @@
 import tailwindcss from '@tailwindcss/vite';
 import react from '@vitejs/plugin-react';
+import { createHash } from 'crypto';
+import { existsSync, readdirSync, readFileSync, statSync, writeFileSync } from 'fs';
 import path from 'path';
 import {defineConfig, type Plugin} from 'vite';
 
@@ -31,9 +33,67 @@ function assetsManifestPlugin(): Plugin {
   };
 }
 
+/**
+ * R2 audit externe 2026-10-15 — injecte un identifiant de build dans
+ * `dist/sw.js` (remplace `__BUILD_ID__`).
+ *
+ * L'identifiant est le hash du contenu de TOUS les fichiers émis (sw.js
+ *excepté, qui porte le placeholder) : déterministe, il ne change que si la
+ * production du build change réellement — leçons et schémas compris. Entre
+ * deux visites sans déploiement, les octets de sw.js sont identiques, donc le
+ * navigateur ne réinstalle PAS le worker et les caches (shell, runtime,
+ * schémas) sont conservés. À chaque déploiement, l'identifiant neuf renomme
+ * les caches et `cleanupOldCaches()` (public/sw.js) purge les périmés.
+ *
+ * Jusqu'ici, l'enregistrement `/sw.js?v=${Date.now()}` forçait les deux à
+ * chaque visite : re-téléchargement complet de ~15 Mo par ouverture.
+ */
+function swBuildIdPlugin(): Plugin {
+  return {
+    name: 'kunz-sw-build-id',
+    apply: 'build',
+    closeBundle() {
+      const distDir = path.resolve(__dirname, 'dist');
+      const swPath = path.resolve(distDir, 'sw.js');
+      if (!existsSync(swPath)) {
+        this.warn('dist/sw.js introuvable : identifiant de build non injecté');
+        return;
+      }
+      if (!existsSync(path.resolve(distDir, 'index.html'))) {
+        this.warn('dist/ incomplet : identifiant de build non injecté');
+        return;
+      }
+      // Hash du contenu de tous les fichiers de dist/ (chemins triés pour la
+      // stabilité de l'ordre), sw.js exclu : il porte le placeholder.
+      const hash = createHash('sha256');
+      const parcourir = (dir: string, prefixe = ''): void => {
+        for (const entree of readdirSync(dir).sort()) {
+          const absolu = path.resolve(dir, entree);
+          const relatif = prefixe + entree;
+          if (relatif === 'sw.js') continue;
+          if (statSync(absolu).isDirectory()) {
+            parcourir(absolu, relatif + '/');
+          } else {
+            hash.update(relatif);
+            hash.update(readFileSync(absolu));
+          }
+        }
+      };
+      parcourir(distDir);
+      const buildId = hash.digest('hex').slice(0, 12);
+      const sw = readFileSync(swPath, 'utf8');
+      if (!sw.includes('__BUILD_ID__')) {
+        this.warn('placeholder __BUILD_ID__ absent de public/sw.js : rien à injecter');
+        return;
+      }
+      writeFileSync(swPath, sw.replaceAll('__BUILD_ID__', buildId), 'utf8');
+    },
+  };
+}
+
 export default defineConfig(() => {
   return {
-    plugins: [react(), tailwindcss(), assetsManifestPlugin()],
+    plugins: [react(), tailwindcss(), assetsManifestPlugin(), swBuildIdPlugin()],
     resolve: {
       alias: {
         '@': path.resolve(__dirname, '.'),

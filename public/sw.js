@@ -1,4 +1,12 @@
-const VERSION = new URL(self.location.href).searchParams.get('v') || 'v3';
+// R2 audit externe 2026-10-15 — le versionnage vit DANS ce fichier : le plugin
+// Vite « kunz-sw-build-id » remplace __BUILD_ID__ par un hash du contenu émis
+// (vite.config.ts). Un même build garde donc les MÊMES noms de caches d'une
+// visite à l'autre ; un nouveau build obtient des identifiants neufs, et
+// cleanupOldCaches() purge les anciens à l'activation. Jusqu'ici VERSION
+// venait du paramètre d'URL `?v=`, ce qui renommait les caches à chaque
+// visite et re-téléchargeait shell + leçons + assets (~15 Mo).
+const BUILD_ID = '__BUILD_ID__';
+const VERSION = new URL(self.location.href).searchParams.get('v') || BUILD_ID || 'v3';
 const CACHE_PREFIX = 'kunz-offline-web';
 const SHELL_CACHE = `${CACHE_PREFIX}-shell-${VERSION}`;
 const RUNTIME_CACHE = `${CACHE_PREFIX}-runtime-${VERSION}`;

@@ -48,6 +48,17 @@ describe('Disponibilité hors ligne des chunks', () => {
     expect(sw).toContain('collectChunkAssets');
   });
 
+  it('n’a plus le placeholder __BUILD_ID__ : l’identifiant du build est injecté', () => {
+    // 2026-10-15 — R2 audit externe. Si le placeholder survit dans dist/sw.js,
+    // la constante BUILD_ID devient la même chaîne littérale à chaque build :
+    // les caches ne changent plus de nom, cleanupOldCaches() ne purge jamais
+    // rien, et un déploiement corrigé n'atteint jamais les appareils installés.
+    // (Attrapé en pratique : String.replace ne remplaçait que la première
+    // occurrence, celle du commentaire.)
+    const sw = readFileSync(resolve(DIST, 'sw.js'), 'utf8');
+    expect(sw.includes('__BUILD_ID__'), 'placeholder non injecté dans dist/sw.js').toBe(false);
+  });
+
   it('précache les chunks même sur réseau contraint (les schémas, non)', () => {
     const sw = readFileSync(resolve(DIST, 'sw.js'), 'utf8');
     const activation = sw.slice(sw.indexOf("addEventListener('activate'"));
