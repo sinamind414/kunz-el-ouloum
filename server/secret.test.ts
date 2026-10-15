@@ -1,7 +1,7 @@
 // secret.test.ts — le secret des jetons (sprint 59).
 
 import { describe, expect, it } from 'vitest';
-import { SecretManquantError, resoudreSecret } from './secret';
+import { SecretManquantError, SecretParDefautError, resoudreSecret } from './secret';
 
 describe('secret fourni', () => {
   it('est utilisé tel quel', () => {
@@ -46,5 +46,32 @@ describe('secret absent', () => {
 
   it('traite l’absence de NODE_ENV comme du développement', () => {
     expect(resoudreSecret({}).ephemere).toBe(true);
+  });
+});
+
+describe('secret par défaut du template (audit externe R-composé, 15/10/2026)', () => {
+  // docker-compose.yml a embarqué `JWT_SECRET: change-moi-64-caracteres-aleatoires`
+  // : 36 caractères, donc AU-DESSUS du seuil de 32 — le garde-fou de longueur
+  // laissait passer la valeur littérale du template, et les jetons étaient
+  // forgeables par quiconque lisait le dépôt.
+  it('refuse la valeur du template docker-compose en production', () => {
+    expect(() =>
+      resoudreSecret({
+        JWT_SECRET: 'change-moi-64-caracteres-aleatoires',
+        NODE_ENV: 'production',
+      }),
+    ).toThrow(SecretParDefautError);
+    expect(() =>
+      resoudreSecret({ JWT_SECRET: 'change-moi-64-caracteres-aleatoires', NODE_ENV: 'production' }),
+    ).toThrow(/REFUS DE DÉMARRAGE/);
+  });
+
+  it('accepte la même valeur en développement, avec un avertissement explicite', () => {
+    const r = resoudreSecret({
+      JWT_SECRET: 'change-moi-64-caracteres-aleatoires',
+      NODE_ENV: 'development',
+    });
+    expect(r.ephemere).toBe(false);
+    expect(r.avertissement).toContain('MODÈLE');
   });
 });

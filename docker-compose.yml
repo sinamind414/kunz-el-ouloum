@@ -14,7 +14,11 @@ services:
     restart: unless-stopped
     environment:
       POSTGRES_USER: boussole
-      POSTGRES_PASSWORD: change-me-strong
+      # Audit externe 15/10/2026 — plus AUCUN secret modèle en clair dans ce
+      # dépôt public. Définissez les variables dans un fichier .env à la
+      # racine (copiez .env.example ; il est ignoré par git). Sans variable,
+      # le compose REFUSE de démarrer (syntaxe ${VAR:?message}).
+      POSTGRES_PASSWORD: "${POSTGRES_PASSWORD:?Definissez POSTGRES_PASSWORD dans .env (copiez .env.example)}"
       POSTGRES_DB: boussole
     volumes:
       - pgdata:/var/lib/postgresql/data
@@ -28,17 +32,26 @@ services:
     build: .
     restart: unless-stopped
     ports:
-      - '3000:3000'
+      # Bind boucle-locale OBLIGATOIRE : l'application tourne avec
+      # TRUST_PROXY=1 (nécessaire derrière nginx pour les limiteurs d'IP),
+      # donc req.ip vient de X-Forwarded-For. Si le port était exposé
+      # directement, un client forgerait cet en-tête à chaque requête et
+      # contournait tous les limiteurs (login, réinitialisation).
+      # Seul le proxy de l'hôte (qui écrase l'en-tête) parle au conteneur.
+      - '127.0.0.1:3000:3000'
     environment:
       NODE_ENV: production
       PORT: 3000
-      DATABASE_URL: postgres://boussole:change-me-strong@db:5432/boussole
-      # ⚠️ À CHANGER en production (sinon les JWT sont forgeables) :
-      JWT_SECRET: change-moi-64-caracteres-aleatoires
+      DATABASE_URL: "postgres://boussole:${POSTGRES_PASSWORD}@db:5432/boussole"
+      # Forgeable si c'est une valeur de modèle : le serveur REFUSE de
+      # démarrer dessus en production (server/secret.ts), et exige 32+ caractères.
+      JWT_SECRET: "${JWT_SECRET:?Generez-le : openssl rand -hex 32 (dans .env)}"
       # Compte enseignant amorcé au premier démarrage (PUIS MODIFIER !) :
-      ADMIN_EMAIL: maitre@ecole.dz
-      ADMIN_PASSWORD: change-moi-strong-123
-      # Derrière nginx : l'IP réelle des élèves (limiteur par compte) :
+      ADMIN_EMAIL: "${ADMIN_EMAIL:-maitre@ecole.dz}"
+      ADMIN_PASSWORD: "${ADMIN_PASSWORD:?Choisissez-en un dans .env}"
+      # Derrière nginx : l'IP réelle des élèves (limiteur par compte).
+      # Le bind 127.0.0.1 ci-dessus rend la forge de X-Forwarded-For
+      # impossible depuis l'extérieur.
       TRUST_PROXY: '1'
     depends_on:
       db:

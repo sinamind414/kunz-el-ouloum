@@ -16,6 +16,19 @@
 
 import { randomBytes } from 'node:crypto';
 
+/**
+ * Valeurs de template du dépôt (docker-compose.yml, README, anciens exemples).
+ * En production, les utiliser comme JWT_SECRET rend les jetons forgeables par
+ * quiconque a lu ce dépôt public — elles sont donc refusées, quelle que soit
+ * leur longueur (36 caractères pour la valeur compose : elle passait le seuil
+ * de 32).
+ */
+const SECRETS_PAR_DEFAUT_INTERDITS: readonly string[] = [
+  'change-moi-64-caracteres-aleatoires',
+  'change-me-strong',
+  'change-moi-strong-123',
+];
+
 export interface ResolutionSecret {
   secret: string;
   /** Vrai si le secret a été tiré au hasard pour cette session. */
@@ -34,22 +47,41 @@ export class SecretManquantError extends Error {
   }
 }
 
+export class SecretParDefautError extends Error {
+  constructor() {
+    super(
+      'REFUS DE DÉMARRAGE : JWT_SECRET vaut une valeur de TEMPLATE de ce dépôt ' +
+        '(publique — les jetons seraient forgeables). ' +
+        'Générez-en un : openssl rand -hex 32.',
+    );
+    this.name = 'SecretParDefautError';
+  }
+}
+
 /**
  * Résout le secret de signature des jetons.
  * @throws SecretManquantError en production quand le secret est absent.
+ * @throws SecretParDefautError en production quand le secret vaut une valeur de template.
  */
 export function resoudreSecret(
   env: { JWT_SECRET?: string; NODE_ENV?: string } = process.env,
 ): ResolutionSecret {
   const fourni = (env.JWT_SECRET ?? '').trim();
   if (fourni) {
+    const production = env.NODE_ENV === 'production';
+    if (production && SECRETS_PAR_DEFAUT_INTERDITS.includes(fourni)) {
+      throw new SecretParDefautError();
+    }
     const faible = fourni.length < 32;
+    const modele = SECRETS_PAR_DEFAUT_INTERDITS.includes(fourni);
     return {
       secret: fourni,
       ephemere: false,
       avertissement: faible
         ? `[auth] JWT_SECRET court (${fourni.length} caractères) : 32 au minimum sont recommandés.`
-        : null,
+        : modele
+          ? "[auth] JWT_SECRET vaut une valeur de MODÈLE du dépôt : acceptable en développement, refusé en production, à remplacer avant tout déploiement."
+          : null,
     };
   }
 

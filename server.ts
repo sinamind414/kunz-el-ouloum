@@ -8,6 +8,7 @@ import { randomBytes } from "node:crypto";
 import { openStore, SqliteStore } from "./server/store";
 import { DegradedStore, openStoreOrDegrade } from "./server/store.degraded";
 import { resoudreSecret } from "./server/secret";
+import { avertissementProxy } from "./server/proxyConfiance";
 import { PostgresStore, migrateJsonFilesToPostgres } from "./server/store.pg";
 import { resumeActivite, calculeActivite } from "./server/activite";
 import { mesurerPilotage } from "./src/server/mesurePilotage";
@@ -159,7 +160,15 @@ async function startServer() {
   const PORT = process.env.PORT || 3000;
 
   // Derrière nginx/Caddy : TRUST_PROXY=1 → req.ip = IP réelle de l'élève.
-  if (process.env.TRUST_PROXY === "1") app.set("trust proxy", 1);
+  if (process.env.TRUST_PROXY === "1") {
+    app.set("trust proxy", 1);
+    // Journalisé une fois au démarrage : sans proxy réel devant, X-Forwarded-For
+    // est forgeable et les limiteurs d'IP sont contournables (audit externe
+    // 15/10/2026). Le compose officiel lie le port sur 127.0.0.1 pour rendre
+    // cette forge impossible par construction.
+    const alerteProxy = avertissementProxy();
+    if (alerteProxy) console.log(alerteProxy);
+  }
 
   const store = await selectStore();
 
