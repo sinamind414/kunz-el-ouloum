@@ -76,6 +76,13 @@ export const METHODOLOGY_QA: MethodologyQA[] = [
     category: 'bac',
     sourceBook: 'LIVRE MANHADJIYA.md',
     template: 'تمثل الوثيقة ... بدلالة ... حيث نلاحظ ... ومنه نستنتج ...',
+    // Audit externe v4 (15/10/2026) : « كيف أجيب على سؤال حلل الوثيقة؟ » et
+    // « كيفاش نحلل الوثيقة » tombaient en repli « لم أجد » — la formulation
+    // d'élève ne touchait jamais cette entrée. Formulations mesurées au moteur.
+    triggers: [
+      'حلل الوثيقة', 'حلل الوثائق', 'نحلل الوثيقة', 'كيفاش نحلل',
+      'تحليل الوثيقة', 'تحليل وثيقة', 'منهجية حلل وثيقة', 'أحلل الوثيقة',
+    ],
   },
   {
     id: 'meth_8',
@@ -163,7 +170,13 @@ export const METHODOLOGY_QA: MethodologyQA[] = [
     keywords: ['حلل', 'فسر', 'استنتج', 'وصف المعطيات', 'سبب علمي', 'خلاصة', 'مكتسبات'],
     category: 'verb',
     sourceBook: 'LIVRE MANHADJIYA.md',
-    triggers: ['الفرق بين التحليل والتفسير', 'متى احلل ومتى افسر', 'حلل ولا فسر'],
+    triggers: ['الفرق بين التحليل والتفسير', 'متى احلل ومتى افسر', 'حلل ولا فسر',
+      // Audit externe v4 (15/10/2026) : « واش نكتب في الاستنتاج » recevait la
+      // carte « تركيب البروتين » à conf 70 (le vocabulaire « الاستنتاج »
+      // matchait la recherche de contenu). Les formulations « écrire la
+      // conclusion » routent vers CETTE entrée : elle définit précisément ce
+      // qu'attend le correcteur d'un استنتاج, sans inventer de contenu.
+      'نكتب في الاستنتاج', 'كيف اكتب الاستنتاج', 'ماذا نكتب في الاستنتاج', 'صياغة الاستنتاج'],
   },
   {
     id: 'meth_18',
