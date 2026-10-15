@@ -22,6 +22,7 @@ import { describe, expect, it } from 'vitest';
 import { processStudentInput } from '../../smartTutorEngine';
 import { getDefaultSession } from '../sessionManager';
 import { LESSON_INDEX } from '../../data/lessonIndex';
+import { KNOWLEDGE_CARDS } from '../../data/smartBotData';
 
 /** Unités → domaines du programme (1 : protéines/génétique, 2 : énergétique, 3 : géologie). */
 const DOMAINES: Record<number, [number, number]> = { 1: [1, 5], 2: [6, 8], 3: [9, 11] };
@@ -51,6 +52,22 @@ function juger(question: string, domaineAttendu: number): Verdict {
 
   if (texte.includes('خارج قاعدة')) return { statut: 'hors-programme', source: String(source?.title), debut };
   if (texte.includes('لم أجد في دروسي')) return { statut: 'ignorance', source: String(source?.title), debut };
+
+  // Morchid v3, M1 (15/10/2026) : une carte interne n'est pas « transverse ».
+  // Le verrou initial ne jugeait le domaine que pour source.type === 'lesson' ;
+  // or 18 réponses sur 23 du banc viennent de cartes internes qui passaient
+  // sans contrôle — un verrou qui ne verrouille pas ce que le moteur fait le
+  // plus souvent. KnowledgeCard porte déjà domainId : on l'exige.
+  if (source?.type === 'internal_card') {
+    const card = KNOWLEDGE_CARDS.find((c) => c.title === source.title);
+    if (card) {
+      return {
+        statut: card.domainId === domaineAttendu ? 'domaine-ok' : 'hors-domaine',
+        source: String(source.title),
+        debut,
+      };
+    }
+  }
 
   const domaine = source?.type === 'lesson' ? domaineDeLExtrait(String(source.title)) : null;
   if (domaine == null) return { statut: 'transverse-ok', source: String(source?.title), debut };

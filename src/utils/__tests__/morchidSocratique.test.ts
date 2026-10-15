@@ -53,6 +53,19 @@ describe('KEO-103 — probe socratique avant tout contenu', () => {
     expect(r.action.text).toContain('كلمات مفتاحية');
   });
 
+  it('« لا أعرف » est un AVEU d’ignorance, pas une réponse fausse (Morchid v3, M3)', () => {
+    // Re-vérification du 15/10/2026 : « لا أعرف » et « zzz » recevaient
+    // textuellement la même réponse — « 📌 إجابتك غير موفقة — الجواب المنتظر: … ».
+    // Un élève qui avoue qu'il ne sait pas ne doit pas être noté « non concluant »
+    // comme un élève qui affirme le contraire de la vérité : l'aveu ouvre le
+    // contenu par la base, sans fausse accusation.
+    const probe = processStudentInput(getDefaultSession(), 'ما هو الاستنساخ؟');
+    const r = processStudentInput(probe.session, 'لا أعرف');
+    expect(r.action.text).toContain('الاعتراف');
+    expect(r.action.text, `→ ${r.action.text.slice(0, 120)}`).not.toContain('إجابتك غير موفقة');
+    expect(r.action.text).toContain('كلمات مفتاحية'); // le contenu est bien livré
+  });
+
   it('« اشرح لي » explicite → contenu complet, contournement journalisé (R2)', () => {
     const probe = processStudentInput(getDefaultSession(), 'ما هو الاستنساخ؟');
     const r = processStudentInput(probe.session, 'اشرح لي');

@@ -41,6 +41,13 @@ describe('chaque geste mesuré est reconnu', () => {
     ['من أين أبدأ', 'ou_commencer'],
     ['بسلامة', 'adieu'],
     ['إلى اللقاء', 'adieu'],
+    ['مع السلامة', 'adieu'],
+    ['أنا تعبان', 'fatigue'],
+    ['راني عيان', 'fatigue'],
+    ['مانيش مركز', 'fatigue'],
+    ['راسي يوجعني', 'fatigue'],
+    ['تعبت', 'fatigue'],
+    ['مرهق', 'fatigue'],
   ];
 
   for (const [saisie, attendu] of CAS) {

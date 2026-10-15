@@ -35,6 +35,7 @@ describe('un geste humain n’est jamais déclaré hors programme', () => {
     'كيفاش ندير',
     'لا أعرف من أين أبدأ',
     'بسلامة',
+    'مع السلامة',
     'أنا خايف من الباك',
   ];
 
@@ -47,8 +48,32 @@ describe('un geste humain n’est jamais déclaré hors programme', () => {
   }
 });
 
-describe('le geste est traité comme un geste, pas comme du contenu', () => {
-  it('« مافهمت والو » demande où est l’obstacle', () => {
+// Re-vérification Morchid v3 (15/10/2026, M5) : la FATIGUE n'est pas de
+// l'ANXIÉTÉ. « أنا تعبان », « راني عيان », « راسي يوجعني » recevaient le message
+// sur le trac du Bac (« القلق قبل البكالوريا طبيعي »). Un élève fatigué a besoin
+// d'une action (finir la carte en cours, s'arrêter) — pas d'un discours sur la
+// peur. Les formes de fatigue vivent désormais dans gestesDialogue.ts (module
+// testable), plus dans le lexique interne du moteur.
+describe('fatigue ≠ anxiété — le corps n’est pas la panique', () => {
+  const FATIGUES = ['أنا تعبان', 'راني عيان', 'راسي يوجعني', 'مانيش مركز', 'تعبت'];
+
+  for (const saisie of FATIGUES) {
+    it(`« ${saisie} » → réponse de fatigue, pas le discours d’anxiété`, () => {
+      const r = processStudentInput(session(), saisie);
+      expect(r.action.text, `「${saisie}」 → ${r.action.text.slice(0, 90)}`)
+        .not.toContain('القلق قبل البكالوريا');
+      expect(r.action.text).toContain('التعب');
+      expect(r.action.text).toContain('👉');
+    });
+  }
+
+  it('et la peur, elle, reçoit toujours la réponse d’anxiété', () => {
+    const r = processStudentInput(session(), 'أنا خايف من الباك');
+    expect(r.action.text).toContain('القلق قبل البكالوريا');
+  });
+});
+
+describe('le geste est traité comme un geste, pas comme du contenu', () => {  it('« مافهمت والو » demande où est l’obstacle', () => {
     const r = processStudentInput(session(), 'مافهمت والو');
     expect(r.action.text).toContain('موضع العقدة');
   });

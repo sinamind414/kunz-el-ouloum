@@ -38,7 +38,7 @@ import { jourLocal } from './utils/dayKey';
 import { tokenAffirme } from './lib/validation/negationAr';
 import { PARCOURS_DOMAINS } from './lib/parcours/parcoursPath';
 import { construireVocabulaire, domaineProbable, domaineDeUnite } from './lib/routageDomaine';
-import { gesteDuMessage } from './lib/gesteDialogue';
+import { gesteDuMessage, gesteFatigueDuMessage, type GesteDialogue } from './lib/gesteDialogue';
 import { noterRappel, phraseEcheance } from './lib/rappelAdaptatif';
 import { qualiteDepuisAutoEvaluation, qualiteDepuisPreuves } from './lib/sm2';
 import { loadParcours } from './lib/parcours/parcoursProgress';
@@ -122,8 +122,11 @@ const OUT_OF_PROGRAM = [
  * soutien, pas le refus « hors programme ».
  */
 const AFFECT_LEXICON = [
-  // فصحى — peur, fatigue, découragement
-  'خائف', 'خايف', 'خائفة', 'تعبت', 'مرهق', 'قلق', 'يائس', 'فاشل', 'ضائع', 'محبط',
+  // فصحى et darija — PEUR, DÉCOURAGEMENT, ANXIÉTÉ seulement. La FATIGUE
+  // (« تعبت », « أنا تعبان », « راسي يوجعني »…) n'est PAS ici : Morchid v3, M5
+  // (15/10/2026) a mesuré qu'un mal de tête recevait le discours sur le trac.
+  // Les formes de fatigue vivent dans `gestesDialogue.ts` (geste `fatigue`).
+  'خائف', 'خايف', 'خائفة', 'قلق', 'يائس', 'فاشل', 'ضائع', 'محبط',
   // darija algérienne — détection seulement, jamais en production
   // ATTENTION : « ما فهمتش » (je n'ai pas compris) N'EST PAS ici, et c'est
   // volontaire (14/10/2026). La détresse est l'émotion ; l'incompréhension est
@@ -133,11 +136,26 @@ const AFFECT_LEXICON = [
   // `incomprehension`), qui demande où est l'obstacle.
   'ضايع', 'ضعت', 'ما نقدرش', 'ماقدرش', 'حبست',
   // TROUS MESURÉS le 14/10/2026 : la couche existait, ces formes manquaient.
-  // « أنا تعبان » recevait « hors programme » alors que « تعبت » était déjà
-  // reconnu — une seule lettre de différence, un élève rejeté.
-  'تعبان', 'تعبانه', 'عيان', 'عيانه', 'مانيش مركز', 'ما نركزش', 'راسي يوجعني',
+  // Les formes de fatigue mesurées ce jour-là (« أنا تعبان »…) ont migré vers
+  // le geste `fatigue` de `gestesDialogue.ts` (Morchid v3, M5).
   'ماععلاباليش', 'ماعلاباليش', 'صعيب علي', 'كرهت البكالوريا', 'كرهت الدراسة',
 ];
+
+/** Rendu d'un geste humain : la réponse du module, sans « confiance » affichée
+ *  (comme le soutien KEO-201 — un geste n'est pas une performance du moteur). */
+function resultatDuGeste(session: BotSession, geste: GesteDialogue): EngineResult {
+  const actionsDomaine = session.activeDomainId
+    ? DOMAINS.find((d) => d.id === session.activeDomainId)?.quickActions || ['العودة للقائمة الرئيسية']
+    : DOMAINS.map((d) => d.title);
+  return {
+    session,
+    action: {
+      text: geste.reponseAr,
+      quickActions: geste.actionsAr.length > 0 ? geste.actionsAr : actionsDomaine,
+      sources: [],
+    },
+  };
+}
 
 /** Détection des entrées absurdes, rires répétitifs, ou blabla non scientifique. */
 function isGibberishInput(raw: string): boolean {
@@ -715,13 +733,19 @@ function probeQuestionAction(card: KnowledgeCard): TutorAction {
  *  entier pour éviter les faux positifs de sous-chaîne. */
 function probeVerdictThenContent(card: KnowledgeCard, rawAnswer: string): TutorAction {
   const normAns = normalizeArabic(rawAnswer);
+  // Morchid v3, M3 (15/10/2026) : « لا أعرف » est un AVEU d'ignorance, pas une
+  // réponse fausse. Avant : texte identique à « zzz » (« 📌 إجابتك غير موفقة »).
+  // Un élève qui avoue ouvre le contenu par la base, sans fausse accusation.
+  const aveu = RAPPEL_INCERTAIN.some((m) => includesAsWord(normAns, normalizeArabic(m)));
   const hit = card.probe!.expect.some((e) => {
     const ne = normalizeArabic(e);
     return ne.length <= 2 ? includesAsWord(normAns, ne) : normAns.includes(ne);
   });
-  const verdict = hit
-    ? '✅ **إجابتك في محلّها.** إليك الشرح — وابدأ منه حيث أصبت:'
-    : `📌 **إجابتك غير موفقة** — الجواب المنتظر: ${card.probe!.expect.join(' / ')}. اقرأ الشرح بعناية خاصة لبدايته:`;
+  const verdict = aveu
+    ? '👍 **الاعتراف بالجهل أول خطوات التعلّم الصادق.** إليك الشرح من الأساس — ثمّ أعِد المحاولة بكلماتك:'
+    : hit
+      ? '✅ **إجابتك في محلّها.** إليك الشرح — وابدأ منه حيث أصبت:'
+      : `📌 **إجابتك غير موفقة** — الجواب المنتظر: ${card.probe!.expect.join(' / ')}. اقرأ الشرح بعناية خاصة لبدايته:`;
   return {
     confidence: 95,
     text: `${verdict}\n\n🧩 **${card.title}**\n\n${card.shortAnswer}\n\n🔑 كلمات مفتاحية: ${card.keywords.join(' • ')}${buildRecallQuestion(card)}`,
@@ -1967,6 +1991,11 @@ export function processStudentInput(session: BotSession, rawInput: string): Engi
   // OUT_OF_PROGRAM. Un élève qui écrit son angoisse (فصحى ou darija) reçoit la
   // réponse de soutien, jamais le refus « hors programme » ; le filtre anti-bruit
   // (كرة القدم…) reste intact car son vocabulaire ne figure pas dans AFFECT_LEXICON.
+  // Morchid v3, M5 (15/10/2026) : la FATIGUE court-circuite pareillement —
+  // « راسي يوجعني » était pris par la recherche de contenu (« راسي » ≈ « رأسي »
+  // dans une leçon de géologie) et recevait un cours au lieu d'une pause.
+  const gesteFatigue = norm.length >= 3 ? gesteFatigueDuMessage(norm) : null;
+  if (gesteFatigue) return resultatDuGeste(session, gesteFatigue);
   if (norm.length >= 3 && AFFECT_LEXICON.some((k) => norm.includes(n(k)))) {
     return supportResult(session);
   }
@@ -2273,21 +2302,7 @@ export function processStudentInput(session: BotSession, rawInput: string): Engi
     norm,
     (n2) => domaineProbable(tokenizeArabic(n2), VOCAB_DOMAINE) != null,
   );
-  if (geste) {
-    const actionsDomaine = session.activeDomainId
-      ? DOMAINS.find((d) => d.id === session.activeDomainId)?.quickActions || ['العودة للقائمة الرئيسية']
-      : DOMAINS.map((d) => d.title);
-    return {
-      session,
-      action: {
-        // Comme la réponse de soutien (KEO-201) : pas de « confiance » affichée
-        // sur un geste humain — ce n'est pas une performance du moteur.
-        text: geste.reponseAr,
-        quickActions: geste.actionsAr.length > 0 ? geste.actionsAr : actionsDomaine,
-        sources: [],
-      },
-    };
-  }
+  if (geste) return resultatDuGeste(session, geste);
 
   if (isGibberishInput(rawInput || input) || (norm.length >= 3 && OUT_OF_PROGRAM.some((k) => {
     const nk = n(k);

@@ -16,6 +16,10 @@
 import { includesAsWord, normalizeArabic } from '../utils/arabicNormalize';
 import { GESTES_DIALOGUE, type GesteDialogue } from '../data/gestesDialogue';
 
+// Le moteur rend les gestes via `resultatDuGeste(session, geste)` : le type
+// doit être consommable depuis la lib (frontière unique de reconnaissance).
+export type { GesteDialogue };
+
 /** Nombre de mots au-delà duquel on cesse d'y voir un geste social. */
 const MOTS_MAX_GESTE = 6;
 
@@ -23,8 +27,7 @@ function compteMots(norm: string): number {
   return norm.replace(/[؟?،؛.!:,]/g, ' ').trim().split(/\s+/).filter(Boolean).length;
 }
 
-/**
- * Le geste reconnu, ou `null`.
+/** Le geste reconnu, ou `null`.
  *
  * `nommeUnSujet` : prédicat injecté par le moteur — vrai si la saisie désigne un
  * sujet du programme (son domaine a pu être identifié). Inutile d'importer le
@@ -60,6 +63,27 @@ export function gesteDuMessage(
       if (!nd) continue;
       if (includesAsWord(norm, nd)) return geste;
     }
+  }
+  return null;
+}
+
+/**
+ * Morchid v3, M5 (15/10/2026) : la FATIGUE est une détresse du corps, elle
+ * court-circuite comme la détresse morale — et pour une raison mesurée :
+ * « راسي يوجعني » était intercepté par la recherche de contenu (le token
+ * « راسي » matchait « رأسي » dans une leçon de géologie), et l'élève au mal de
+ * tête recevait le cours sur le lithosphère. Contrairement à `gesteDuMessage`,
+ * aucune porte de longueur ni de sujet : trois mots de fatigue ne doivent
+ * jamais devenir une leçon.
+ */
+export function gesteFatigueDuMessage(norm: string): GesteDialogue | null {
+  if (!norm || norm.trim().length < 3) return null;
+  const geste = GESTES_DIALOGUE.find((g) => g.id === 'fatigue');
+  if (!geste) return null;
+  for (const d of geste.declencheurs) {
+    const nd = normalizeArabic(d);
+    if (!nd) continue;
+    if (includesAsWord(norm, nd)) return geste;
   }
   return null;
 }

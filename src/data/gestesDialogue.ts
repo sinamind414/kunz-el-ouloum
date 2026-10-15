@@ -127,10 +127,27 @@ export const GESTES_DIALOGUE: GesteDialogue[] = [
     actionsAr: ['راجع أخطائي السابقة', 'العودة للقائمة الرئيسية'],
   },
   {
+    id: 'fatigue',
+    // Morchid v3, M5 (15/10/2026) : la fatigue n'est pas de l'anxiété.
+    // « أنا تعبان », « راني عيان », « راسي يوجعني » recevaient le message sur
+    // le trac du Bac — un mal de tête n'est pas une peur. Ces formes vivaient
+    // en dur dans smartTutorEngine.ts (AFFECT_LEXICON) : elles sont ici, dans
+    // le module testable, et le moteur ne les connaît plus.
+    declencheurs: [
+      'تعبان', 'تعبانه', 'تعبت', 'تعبتي', 'عيان', 'عيانه', 'مانيش مركز',
+      'ما نركزش', 'راسي يوجعني', 'راسك يوجعك', 'متعوب', 'متعبة', 'مرهق',
+    ],
+    reponseAr:
+      'التعب إشارةٌ إلى الحاجة إلى وقفة، لا دليلٌ على الفشل.\n\n' +
+      '👉 أنهِ البطاقة التي بدأتَها الآن، ثمّ توقّف اليوم — العودةُ غداً برأسٍ صافٍ أنجزُ من المُصرّ المُتعَب.',
+    actionsAr: ['العودة للقائمة الرئيسية'],
+  },
+  {
     id: 'adieu',
     declencheurs: [
-      'بسلامة', 'بسلامه', 'وداعا', 'وداعاً', 'الى اللقاء', 'إلى اللقاء',
-      'راني نمشي', 'نشوفك', 'سلام عليكم ورحمة الله وبركاته',
+      'بسلامة', 'بسلامه', 'مع السلامة', 'مع السلامه', 'وداعا', 'وداعاً',
+      'الى اللقاء', 'إلى اللقاء', 'راني نمشي', 'نشوفك',
+      'سلام عليكم ورحمة الله وبركاته',
     ],
     reponseAr:
       'في أمان الله.\n\n' +
