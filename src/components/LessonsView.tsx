@@ -799,8 +799,9 @@ export default function LessonsView({ onRateCard, initialLesson, initialQcm, ini
             <BookMarked className="w-7 h-7" />
           </span>
           <span className="flex-1 min-w-0 space-y-1">
-            <span className="block text-base font-black text-gray-800 dark:text-gray-100">
-              📚 الحصيلة المعرفية — {domain?.titleAr}
+            <span className="block text-base font-black text-gray-800 dark:text-gray-100 flex items-center gap-2">
+              <BookMarked className="w-4 h-4 shrink-0" aria-hidden="true" />
+              الحصيلة المعرفية — {domain?.titleAr}
             </span>
             <span className="block text-xs font-bold text-gray-500 dark:text-gray-400 leading-relaxed">
               كل ما يجب حفظه في هذا المجال — ملخصات مرقّمة لكل وحدة

@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useCompteARebours } from '../hooks/useWallClock';
 import { motion, AnimatePresence } from 'motion/react';
-import { 
-  Target, Sparkles, BookOpen, Layers, CheckCircle2, AlertTriangle, 
-  Clock, ShieldAlert, ArrowLeft, ArrowRight, RotateCcw, 
-  HelpCircle, Check, X, Award, ChevronDown, ChevronUp, Cpu, 
-  Calendar, FileText, CheckSquare, Zap, Eye, Lightbulb, Compass, Key, Printer
+import {
+  Target, Sparkles, BookOpen, Layers, CheckCircle2, AlertTriangle,
+  Clock, ShieldAlert, ArrowLeft, ArrowRight, RotateCcw,
+  HelpCircle, Check, X, Award, ChevronDown, ChevronUp, Cpu,
+  Calendar, FileText, CheckSquare, Zap, Eye, Lightbulb, Compass, Key, Printer,
+  GraduationCap, DoorOpen, Inbox, Cog, Lock, Brain, Camera, Film, Hammer, PenLine
 } from 'lucide-react';
 import {
   VERB_CARDS, UNIVERSAL_GRAMMAR_RULES, TRAINING_EXERCISES,
@@ -626,7 +627,7 @@ const handleSelectStage = (stage: 1 | 2 | 3 | 4) => {
                      const isMemory = v.id === 'verb_define_v1' || v.id === 'verb_list_v1';
                      const locked = isMemory && !extensionUnlocked;
                      return (
-                     <option key={v.id} value={v.id} disabled={locked}>{v.verbAr}{locked ? ' — 🔒 بعد إتقان 3 أنواع أسئلة' : ''}</option>
+                      <option key={v.id} value={v.id} disabled={locked}>{v.verbAr}{locked ? ' — بعد إتقان 3 أنواع أسئلة' : ''}</option>
                      );
                   })}
                 </select>
@@ -694,7 +695,7 @@ const handleSelectStage = (stage: 1 | 2 | 3 | 4) => {
                 }}
                 className={`px-3 py-1.5 rounded-xl text-[11px] font-black border transition-all ${examMode ? 'bg-slate-800 text-white border-slate-700 ring-2 ring-slate-500/30' : 'bg-gray-50 dark:bg-gray-800/40 border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300'}`}
               >
-                🎓 وضع الامتحان — 60د · بلا إعادة · النتيجة هي الحكم
+                <span className="flex items-center gap-1.5"><GraduationCap className="w-3.5 h-3.5 shrink-0" aria-hidden="true" />وضع الامتحان — 60د · بلا إعادة · النتيجة هي الحكم</span>
               </button>
               <button
                 onClick={() => setFreeReview(f => !f)}
@@ -762,45 +763,45 @@ const handleSelectStage = (stage: 1 | 2 | 3 | 4) => {
             return (
               <div className="bg-gradient-to-r from-emerald-50 to-amber-50 dark:from-emerald-950/30 dark:to-amber-950/20 p-4 rounded-2xl border border-emerald-200 dark:border-emerald-900/40 space-y-3">
                 <div className="flex items-center justify-between">
-                  <div className="font-black text-sm">🚪 Phase 0 — افتح الباب <span className="text-xs font-bold text-gray-500">({p0Index + 1}/6)</span></div>
+                  <div className="font-black text-sm flex items-center gap-1.5"><DoorOpen className="w-4 h-4 shrink-0 text-emerald-600" aria-hidden="true" />Phase 0 — افتح الباب <span className="text-xs font-bold text-gray-500">({p0Index + 1}/6)</span></div>
                   <button onClick={()=>{resetPhase0(); setP0Index(0); setP0Pick({}); setP0Shown(false);}} className="text-[11px] text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 underline">إعادة</button>
                 </div>
                 <div className="bg-white dark:bg-[#161c18] p-3 rounded-xl border border-gray-200 dark:border-gray-700 text-sm font-bold">{item.consigne}</div>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                   <div>
-                    <div className="text-[11px] font-bold text-gray-500 mb-1">🚪 البوابة 1 — قفل؟</div>
-                    <div className="flex gap-1">
-                      {([['lock','🔒 قفل'],['no_lock','🧠 لا قفل']] as const).map(([v,l])=>(
-                        <button key={v} disabled={p0Shown} onClick={()=> setP0Pick(pk=>({...pk, g1: v}))} className={`px-2 py-1.5 rounded-lg text-xs font-bold border ${btnCls(p0Pick.g1===v, p0Shown && v===item.existence, 'emerald')}`}>{l}</button>
-                      ))}
-                    </div>
+                     <div className="text-[11px] font-bold text-gray-500 mb-1 flex items-center gap-1"><DoorOpen className="w-3 h-3 shrink-0" aria-hidden="true" />البوابة 1 — قفل؟</div>
+                     <div className="flex gap-1">
+                       {([['lock','قفل',<Lock key="i" className="w-3.5 h-3.5 shrink-0" aria-hidden="true" />],['no_lock','لا قفل',<Brain key="i" className="w-3.5 h-3.5 shrink-0" aria-hidden="true" />]] as const).map(([v,label,Icon])=>(
+                         <button key={v} disabled={p0Shown} onClick={()=> setP0Pick(pk=>({...pk, g1: v}))} className={`px-2 py-1.5 rounded-lg text-xs font-bold border inline-flex items-center gap-1 ${btnCls(p0Pick.g1===v, p0Shown && v===item.existence, 'emerald')}`}>{Icon}{label}</button>
+                       ))}
+                     </div>
                   </div>
                   {p0Pick.g1 === 'lock' && (
                     <div>
-                      <div className="text-[11px] font-bold text-gray-500 mb-1">📥 البوابة 2 — المصدر؟</div>
-                      <div className="flex gap-1">
-                        {([['document','📄 وثيقة'],['mixed','📄+🧠 مختلط']] as const).map(([v,l])=>(
-                          <button key={v} disabled={p0Shown} onClick={()=> setP0Pick(pk=>({...pk, g2: v}))} className={`px-2 py-1.5 rounded-lg text-xs font-bold border ${btnCls(p0Pick.g2===v, p0Shown && v===item.source, 'sky')}`}>{l}</button>
-                        ))}
-                      </div>
+                       <div className="text-[11px] font-bold text-gray-500 mb-1 flex items-center gap-1"><Inbox className="w-3 h-3 shrink-0" aria-hidden="true" />البوابة 2 — المصدر؟</div>
+                       <div className="flex gap-1">
+                         {([['document','وثيقة',<FileText key="i" className="w-3.5 h-3.5 shrink-0" aria-hidden="true" />],['mixed','مختلط',<span key="i" className="inline-flex items-center gap-0.5 shrink-0"><FileText className="w-3.5 h-3.5" aria-hidden="true" /><Brain className="w-3.5 h-3.5" aria-hidden="true" /></span>]] as const).map(([v,label,Icon])=>(
+                           <button key={v} disabled={p0Shown} onClick={()=> setP0Pick(pk=>({...pk, g2: v}))} className={`px-2 py-1.5 rounded-lg text-xs font-bold border inline-flex items-center gap-1 ${btnCls(p0Pick.g2===v, p0Shown && v===item.source, 'sky')}`}>{Icon}{label}</button>
+                         ))}
+                       </div>
                     </div>
                   )}
                   {p0Pick.g1 === 'lock' && p0Pick.g2 && (
                     <div>
-                      <div className="text-[11px] font-bold text-gray-500 mb-1">⚙️ البوابة 3 — الحركة؟</div>
-                      <div className="flex gap-1">
-                        {([['photo','📷'],['film','🎬'],['smith','🔨']] as const).map(([v,l])=>(
-                          <button key={v} disabled={p0Shown} onClick={()=> setP0Pick(pk=>({...pk, g3: v}))} className={`px-2 py-1.5 rounded-lg text-xs font-bold border ${btnCls(p0Pick.g3===v, p0Shown && v===item.movement, 'violet')}`}>{l}</button>
-                        ))}
-                      </div>
+                       <div className="text-[11px] font-bold text-gray-500 mb-1 flex items-center gap-1"><Cog className="w-3 h-3 shrink-0" aria-hidden="true" />البوابة 3 — الحركة؟</div>
+                       <div className="flex gap-1">
+                         {([['photo','',<Camera key="i" className="w-3.5 h-3.5 shrink-0" aria-hidden="true" />],['film','',<Film key="i" className="w-3.5 h-3.5 shrink-0" aria-hidden="true" />],['smith','',<Hammer key="i" className="w-3.5 h-3.5 shrink-0" aria-hidden="true" />]] as const).map(([v,label,Icon])=>(
+                           <button key={v} disabled={p0Shown} onClick={()=> setP0Pick(pk=>({...pk, g3: v}))} className={`px-2 py-1.5 rounded-lg text-xs font-bold border inline-flex items-center gap-1 ${btnCls(p0Pick.g3===v, p0Shown && v===item.movement, 'violet')}`}>{Icon}{label}</button>
+                         ))}
+                       </div>
                     </div>
                   )}
                 </div>
                 {p0Shown ? (
                   <div className="space-y-1.5">
-                    <div className={`text-xs font-bold ${allOk ? 'text-emerald-600' : 'text-amber-600'}`}>{allOk ? '✅ صحيح — القفل فُتح' : '✗ الإجابة الصحيحة مظللة أعلاه'}</div>
+                    <div className={`text-xs font-bold flex items-center gap-1 ${allOk ? 'text-emerald-600' : 'text-amber-600'}`}>{allOk ? <><CheckCircle2 className="w-3.5 h-3.5 shrink-0" aria-hidden="true" />صحيح — القفل فُتح</> : '✗ الإجابة الصحيحة مظللة أعلاه'}</div>
                     <div className="text-[11px] text-gray-600 dark:text-gray-400">{demo.whyAr}</div>
-                    <button onClick={()=>{ if (p0Index + 1 >= PHASE0_DEMOS.length) { completePhase0(); setPhase0Done(true); } else { setP0Index(i=>i+1); setP0Pick({}); setP0Shown(false); } }} className="px-4 py-1.5 bg-[#006d37] text-white rounded-xl font-bold text-xs">{p0Index + 1 >= PHASE0_DEMOS.length ? '✅ إنهاء Phase 0 — المصفاة مفتوحة' : 'التالي'}</button>
+                    <button onClick={()=>{ if (p0Index + 1 >= PHASE0_DEMOS.length) { completePhase0(); setPhase0Done(true); } else { setP0Index(i=>i+1); setP0Pick({}); setP0Shown(false); } }} className="px-4 py-1.5 bg-[#006d37] text-white rounded-xl font-bold text-xs inline-flex items-center gap-1">{p0Index + 1 >= PHASE0_DEMOS.length ? <><CheckCircle2 className="w-3.5 h-3.5 shrink-0" aria-hidden="true" />إنهاء Phase 0 — المصفاة مفتوحة</> : 'التالي'}</button>
                   </div>
                 ) : (
                   <button disabled={!answered} onClick={()=> setP0Shown(true)} className={`px-4 py-1.5 rounded-xl font-bold text-xs ${answered ? 'bg-amber-600 text-white' : 'bg-gray-200 dark:bg-gray-800 text-gray-400 cursor-not-allowed'}`}>تأكيد</button>
@@ -812,12 +813,12 @@ const handleSelectStage = (stage: 1 | 2 | 3 | 4) => {
           {/* V3.1 مصفاة التعليمات — 60s 12 consignes (débloque verso) */}
           <div className="bg-gradient-to-r from-amber-50 to-sky-50 dark:from-amber-950/20 dark:to-sky-950/20 p-4 rounded-2xl border border-amber-200 dark:border-amber-900/40 flex flex-col md:flex-row items-start md:items-center justify-between gap-3">
             <div>
-              <div className="font-black text-sm flex items-center gap-2">🧠 مصفاة التعليمات — 60 ث <span className="text-xs bg-white dark:bg-black/20 px-2 py-0.5 rounded-full border">3 أيام × 12/12 → شارة «حامل المفتاح» + المرحلة 2</span></div>
-              <div className="text-xs text-gray-600 dark:text-gray-400">ورقة أم رأس؟ 🚪 قفل؟ 📥 من أين؟ ⚙️ أي حركة؟ {drillStatus.met ? '✅ ' + drillStatus.badgeAr : `أيام ناجحة: ${drillStatus.perfectDays} / ${drillStatus.goal}`} — الإخفاق لا يصفّر: يؤجل اليوم التالي فقط · الورقة الخلفية: {masteryStatus.met ? '✅ ' + masteryStatus.badgeAr : `إتقان ${masteryStatus.types.length} / ${masteryStatus.goal} أنواع`}</div>
+              <div className="font-black text-sm flex items-center gap-2"><Brain className="w-4 h-4 shrink-0" aria-hidden="true" />مصفاة التعليمات — 60 ث <span className="text-xs bg-white dark:bg-black/20 px-2 py-0.5 rounded-full border">3 أيام × 12/12 → شارة «حامل المفتاح» + المرحلة 2</span></div>
+              <div className="text-xs text-gray-600 dark:text-gray-400">ورقة أم رأس؟ قفل؟ من أين؟ أي حركة؟ {drillStatus.met ? drillStatus.badgeAr : `أيام ناجحة: ${drillStatus.perfectDays} / ${drillStatus.goal}`} — الإخفاق لا يصفّر: يؤجل اليوم التالي فقط · الورقة الخلفية: {masteryStatus.met ? masteryStatus.badgeAr : `إتقان ${masteryStatus.types.length} / ${masteryStatus.goal} أنواع`}</div>
               <div className="text-[11px] text-gray-500 dark:text-gray-400">تتبدل التعليمات كل يوم (بنك 69) — القاعدة واحدة: احفظ القاعدة لا العناصر</div>
             </div>
             {!drillActive ? (
-              <button disabled={!phase0Done} onClick={()=>{setDrillAnswers({}); setDrillGrade(null); setDrillSec(60); setDrillActive(true);}} className={`px-4 py-2 rounded-xl font-bold text-xs shadow ${phase0Done ? 'bg-[#006d37] text-white' : 'bg-gray-300 dark:bg-gray-700 text-gray-500 dark:text-gray-400 cursor-not-allowed'}`}>{phase0Done ? (drillStatus.met ? 'إعادة المصفاة' : 'ابدأ المصفاة') : '🔒 أكمل Phase 0 أولا'}</button>
+              <button disabled={!phase0Done} onClick={()=>{setDrillAnswers({}); setDrillGrade(null); setDrillSec(60); setDrillActive(true);}} className={`px-4 py-2 rounded-xl font-bold text-xs inline-flex items-center gap-1 shadow ${phase0Done ? 'bg-[#006d37] text-white' : 'bg-gray-300 dark:bg-gray-700 text-gray-500 dark:text-gray-400 cursor-not-allowed'}`}>{phase0Done ? (drillStatus.met ? 'إعادة المصفاة' : 'ابدأ المصفاة') : <><Lock className="w-3.5 h-3.5 shrink-0" aria-hidden="true" />أكمل Phase 0 أولا</>}</button>
             ) : (
               <div className="font-mono font-black text-lg bg-black/10 px-3 py-1 rounded-xl">{drillSec} ث</div>
             )}
@@ -829,22 +830,22 @@ const handleSelectStage = (stage: 1 | 2 | 3 | 4) => {
                   <div key={c.id} className="p-2 rounded-xl border bg-gray-50 dark:bg-black/20 space-y-1">
                     <span className="text-xs font-bold leading-tight">{i + 1}. {c.consigne}</span>
                     <div className="flex flex-wrap items-center gap-1">
-                      {([['lock','🔒 قفل'],['no_lock','🧠 لا قفل']] as const).map(([v,l])=> (
-                        <button key={v} onClick={()=> setDrillAnswers(a=> ({...a, [c.id]: {...a[c.id], g1: v}}))} className={`px-2 py-1 rounded-lg text-[11px] font-bold border ${drillAnswers[c.id]?.g1===v ? 'bg-emerald-600 text-white border-emerald-600' : 'bg-white dark:bg-[#1b221e] border-gray-300'}`}>{l}</button>
+                      {([['lock','قفل',<Lock key="i" className="w-3.5 h-3.5 shrink-0" aria-hidden="true" />],['no_lock','لا قفل',<Brain key="i" className="w-3.5 h-3.5 shrink-0" aria-hidden="true" />]] as const).map(([v,label,Icon])=> (
+                        <button key={v} onClick={()=> setDrillAnswers(a=> ({...a, [c.id]: {...a[c.id], g1: v}}))} className={`px-2 py-1 rounded-lg text-[11px] font-bold border inline-flex items-center gap-1 ${drillAnswers[c.id]?.g1===v ? 'bg-emerald-600 text-white border-emerald-600' : 'bg-white dark:bg-[#1b221e] border-gray-300'}`}>{Icon}{label}</button>
                       ))}
                       {drillAnswers[c.id]?.g1 === 'lock' && (
                         <>
                           <span className="w-1 shrink-0" />
-                          {([['document','📄 وثيقة'],['mixed','📄+🧠 مختلط']] as const).map(([v,l])=> (
-                            <button key={v} onClick={()=> setDrillAnswers(a=> ({...a, [c.id]: {...a[c.id], g2: v}}))} className={`px-2 py-1 rounded-lg text-[11px] font-bold border ${drillAnswers[c.id]?.g2===v ? 'bg-sky-600 text-white border-sky-600' : 'bg-white dark:bg-[#1b221e] border-gray-300'}`}>{l}</button>
+                          {([['document','وثيقة',<FileText key="i" className="w-3.5 h-3.5 shrink-0" aria-hidden="true" />],['mixed','مختلط',<span key="i" className="inline-flex items-center gap-0.5 shrink-0"><FileText className="w-3.5 h-3.5" aria-hidden="true" /><Brain className="w-3.5 h-3.5" aria-hidden="true" /></span>]] as const).map(([v,label,Icon])=> (
+                            <button key={v} onClick={()=> setDrillAnswers(a=> ({...a, [c.id]: {...a[c.id], g2: v}}))} className={`px-2 py-1 rounded-lg text-[11px] font-bold border inline-flex items-center gap-1 ${drillAnswers[c.id]?.g2===v ? 'bg-sky-600 text-white border-sky-600' : 'bg-white dark:bg-[#1b221e] border-gray-300'}`}>{Icon}{label}</button>
                           ))}
                         </>
                       )}
                       {drillAnswers[c.id]?.g1 === 'lock' && drillAnswers[c.id]?.g2 && (
                         <>
                           <span className="w-1 shrink-0" />
-                          {([['photo','📷'],['film','🎬'],['smith','🔨']] as const).map(([v,l])=> (
-                            <button key={v} onClick={()=> setDrillAnswers(a=> ({...a, [c.id]: {...a[c.id], g3: v}}))} className={`px-2 py-1 rounded-lg text-[11px] font-bold border ${drillAnswers[c.id]?.g3===v ? 'bg-violet-600 text-white border-violet-600' : 'bg-white dark:bg-[#1b221e] border-gray-300'}`}>{l}</button>
+                          {([['photo','',<Camera key="i" className="w-3.5 h-3.5 shrink-0" aria-hidden="true" />],['film','',<Film key="i" className="w-3.5 h-3.5 shrink-0" aria-hidden="true" />],['smith','',<Hammer key="i" className="w-3.5 h-3.5 shrink-0" aria-hidden="true" />]] as const).map(([v,label,Icon])=> (
+                            <button key={v} onClick={()=> setDrillAnswers(a=> ({...a, [c.id]: {...a[c.id], g3: v}}))} className={`px-2 py-1 rounded-lg text-[11px] font-bold border inline-flex items-center gap-1 ${drillAnswers[c.id]?.g3===v ? 'bg-violet-600 text-white border-violet-600' : 'bg-white dark:bg-[#1b221e] border-gray-300'}`}>{Icon}{label}</button>
                           ))}
                         </>
                       )}
@@ -868,7 +869,7 @@ const handleSelectStage = (stage: 1 | 2 | 3 | 4) => {
             <div className="bg-white dark:bg-[#161c18] p-4 rounded-2xl border border-gray-200 dark:border-gray-800 shadow-sm space-y-2">
               <div className="font-black text-sm flex items-center justify-between">
                 <span>نتيجة اليوم — {drillGrade.score}/12</span>
-                <span className="text-xs text-gray-500">{drillStatus.met ? '✅ ' + drillStatus.badgeAr : `أيام ناجحة: ${drillStatus.perfectDays} / ${drillStatus.goal}`}</span>
+                <span className="text-xs text-gray-500 inline-flex items-center gap-1">{drillStatus.met ? <><CheckCircle2 className="w-3.5 h-3.5 shrink-0" aria-hidden="true" />{drillStatus.badgeAr}</> : `أيام ناجحة: ${drillStatus.perfectDays} / ${drillStatus.goal}`}</span>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-1">
                 {drillGrade.results.map(r=> (
@@ -947,22 +948,22 @@ const handleSelectStage = (stage: 1 | 2 | 3 | 4) => {
               <div className="bg-white dark:bg-[#161c18] p-5 md:p-6 rounded-2xl border-2 border-amber-300 dark:border-amber-800 shadow-sm space-y-4">
                 <div className="flex items-center gap-2 font-bold text-sm">
                   <Key className="w-5 h-5 text-amber-500" />
-                  <span>🚪 البوابة 1 — قفل أصلا؟</span>
+                  <span>البوابة 1 — قفل أصلا؟</span>
                 </div>
-                <p className="text-xs text-gray-600 dark:text-gray-400">هل تستند المعطيات إلى وثيقة / شكل / جدول / منحنى / رسم؟ لا ⇒ 🧠 الدُرج مباشرة · نعم ⇒ البوابة 2</p>
+                <p className="text-xs text-gray-600 dark:text-gray-400">هل تستند المعطيات إلى وثيقة / شكل / جدول / منحنى / رسم؟ لا ⇒ الدُرج مباشرة · نعم ⇒ البوابة 2</p>
                 <div className="grid grid-cols-2 gap-3">
                   <button
                     onClick={() => { setSourceGate('paper'); setShowSourceGate(false); setShowGate2(true); setSwitchChoice(null); }}
                     className="p-4 rounded-xl border-2 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:border-gray-500 dark:hover:border-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800/40 transition-all font-bold text-center"
                   >
-                    <div>🔒 قفل</div>
+                    <div className="flex items-center justify-center gap-1.5"><Lock className="w-4 h-4 shrink-0" aria-hidden="true" />قفل</div>
                     <div className="text-[11px] font-normal">وثيقة / شكل — هناك ما يُفتَح</div>
                   </button>
                   <button
                     onClick={() => { setSourceGate('memory'); setShowSourceGate(false); setShowGate2(false); setShowSwitchGate(false); setIsDual(false); setSwitchChoice(null); setGate2Choice(null); setGate3Choice(null); }}
                     className="p-4 rounded-xl border-2 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:border-gray-500 dark:hover:border-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800/40 transition-all font-bold text-center"
                   >
-                    <div>🧠 لا قفل</div>
+                    <div className="flex items-center justify-center gap-1.5"><Brain className="w-4 h-4 shrink-0" aria-hidden="true" />لا قفل</div>
                     <div className="text-[11px] font-normal">دُرج المعرفة — من فعل إلى جواب</div>
                   </button>
                 </div>
@@ -974,7 +975,7 @@ const handleSelectStage = (stage: 1 | 2 | 3 | 4) => {
               <div className="bg-white dark:bg-[#161c18] p-5 md:p-6 rounded-2xl border-2 border-sky-300 dark:border-sky-800 shadow-sm space-y-4">
                 <div className="flex items-center gap-2 font-bold text-sm">
                   <Key className="w-5 h-5 text-sky-500" />
-                  <span>📥 البوابة 2 — من أين آتي بمادة الإدخال؟</span>
+                  <span>البوابة 2 — من أين آتي بمادة الإدخال؟</span>
                 </div>
                 <p className="text-xs text-gray-600 dark:text-gray-400">«ومعلوماتك / ومكتسباتك» مذكورة في السؤال ⇒ مختلط (عمودان) · غير ذلك ⇒ وثيقة فقط</p>
                 <div className="grid grid-cols-2 gap-3">
@@ -982,14 +983,14 @@ const handleSelectStage = (stage: 1 | 2 | 3 | 4) => {
                     onClick={() => { setIsDual(false); setGate2Choice('document'); setShowGate2(false); setShowSwitchGate(true); }}
                     className="p-4 rounded-xl border-2 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:border-gray-500 dark:hover:border-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800/40 transition-all font-bold text-center"
                   >
-                    <div>📄 وثيقة فقط</div>
+                    <div className="flex items-center justify-center gap-1.5"><FileText className="w-4 h-4 shrink-0" aria-hidden="true" />وثيقة فقط</div>
                     <div className="text-[11px] font-normal">عمود واحد في المسودة</div>
                   </button>
                   <button
                     onClick={() => { setIsDual(true); setGate2Choice('mixed'); setShowGate2(false); setShowSwitchGate(true); }}
                     className="p-4 rounded-xl border-2 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:border-gray-500 dark:hover:border-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800/40 transition-all font-bold text-center"
                   >
-                    <div>📄+🧠 مختلط</div>
+                    <div className="flex items-center justify-center gap-1.5"><FileText className="w-4 h-4 shrink-0" aria-hidden="true" /><Brain className="w-4 h-4 shrink-0" aria-hidden="true" />مختلط</div>
                     <div className="text-[11px] font-normal">عمودان: [من الوثيقة | من معلوماتي]</div>
                   </button>
                 </div>
@@ -1002,15 +1003,15 @@ const handleSelectStage = (stage: 1 | 2 | 3 | 4) => {
               <div className="bg-white dark:bg-[#161c18] p-5 md:p-6 rounded-2xl border-2 border-violet-300 dark:border-violet-800 shadow-sm space-y-4">
                 <div className="flex items-center gap-2 font-bold text-sm">
                   <Key className="w-5 h-5 text-violet-500" />
-                  <span>⚙️ البوابة 3 — أي حركة يطلب هذا القفل؟</span>
+                  <span>البوابة 3 — أي حركة يطلب هذا القفل؟</span>
                 </div>
-                <p className="text-xs text-gray-600 dark:text-gray-400">📷 وصف واستخراج · 🎬 تفسير ورابط «لأنّ» · 🔨 تصنيع: فرضية / اقتراح / توصية (لا جواب واحد صحيح)</p>
+                <p className="text-xs text-gray-600 dark:text-gray-400"><span className="inline-flex items-center gap-1"><Camera className="w-3 h-3" aria-hidden="true" />وصف واستخراج</span> · <span className="inline-flex items-center gap-1"><Film className="w-3 h-3" aria-hidden="true" />تفسير ورابط «لأنّ»</span> · <span className="inline-flex items-center gap-1"><Hammer className="w-3 h-3" aria-hidden="true" />تصنيع: فرضية / اقتراح / توصية</span> (لا جواب واحد صحيح)</p>
                 <div className="grid grid-cols-3 gap-3">
                   <button
                     onClick={() => { setGate3Choice('photo'); setSwitchChoice('closed'); setShowSwitchGate(false); }}
                     className="p-4 rounded-xl border-2 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:border-gray-500 dark:hover:border-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800/40 transition-all font-bold text-center"
                   >
-                    <div className="text-2xl">📷</div>
+                    <div className="flex justify-center"><Camera className="w-6 h-6" aria-hidden="true" /></div>
                     <div className="text-sm">الصورة</div>
                     <div className="text-[10px] font-normal text-gray-400">حلل · قارن · استخرج</div>
                   </button>
@@ -1018,7 +1019,7 @@ const handleSelectStage = (stage: 1 | 2 | 3 | 4) => {
                     onClick={() => { setGate3Choice('film'); setSwitchChoice('open'); setShowSwitchGate(false); }}
                     className="p-4 rounded-xl border-2 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:border-gray-500 dark:hover:border-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800/40 transition-all font-bold text-center"
                   >
-                    <div className="text-2xl">🎬</div>
+                    <div className="flex justify-center"><Film className="w-6 h-6" aria-hidden="true" /></div>
                     <div className="text-sm">الفيلم</div>
                     <div className="text-[10px] font-normal text-gray-400">اشرح · فسر · استنتج</div>
                   </button>
@@ -1026,7 +1027,7 @@ const handleSelectStage = (stage: 1 | 2 | 3 | 4) => {
                     onClick={() => { setGate3Choice('smith'); setSwitchChoice('open'); setShowSwitchGate(false); }}
                     className="p-4 rounded-xl border-2 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:border-gray-500 dark:hover:border-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800/40 transition-all font-bold text-center"
                   >
-                    <div className="text-2xl">🔨</div>
+                    <div className="flex justify-center"><Hammer className="w-6 h-6" aria-hidden="true" /></div>
                     <div className="text-sm">الحدّاد</div>
                     <div className="text-[10px] font-normal text-gray-400">اقترح · برر · ناقض</div>
                   </button>
@@ -1494,7 +1495,7 @@ const handleSelectStage = (stage: 1 | 2 | 3 | 4) => {
                   <ul className="space-y-1.5 text-xs font-bold text-gray-700 dark:text-gray-300">
                     <li className="flex items-start gap-2"><span>⏳</span><span>{TIME_RULES.quart}</span></li>
                     <li className="flex items-start gap-2"><span>✍️</span><span>{TIME_RULES.half}</span></li>
-                    <li className="flex items-start gap-2"><span>✅</span><span>{TIME_RULES.quarter}</span></li>
+                    <li className="flex items-start gap-2"><CheckCircle2 className="w-3.5 h-3.5 mt-0.5 shrink-0 text-emerald-600" aria-hidden="true" /><span>{TIME_RULES.quarter}</span></li>
                   </ul>
                 </div>
               )}
@@ -1570,7 +1571,7 @@ const handleSelectStage = (stage: 1 | 2 | 3 | 4) => {
                 const passed = steps.filter(l => l.passed).length;
                 return (
                   <div className="p-4 rounded-2xl bg-slate-900 dark:bg-black/70 border border-slate-700 text-white space-y-1.5">
-                    <div className="flex items-center gap-2 font-black text-sm">📝 ورقة الامتحان — النتيجة الآلية</div>
+                    <div className="flex items-center gap-2 font-black text-sm"><FileText className="w-4 h-4 shrink-0" aria-hidden="true" />ورقة الامتحان — النتيجة الآلية</div>
                     <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs font-bold">
                       <span>ICM الشكل: {scoreReport.icm}/100</span>
                       <span>الخطوات: {passed}/{steps.length}</span>
@@ -2367,8 +2368,8 @@ const handleSelectStage = (stage: 1 | 2 | 3 | 4) => {
                     <CorrecteurPanel text={item.text} />
                     {item.status === 'pending' ? (
                       <div className="flex flex-wrap items-center gap-2 mt-3">
-                        <button onClick={()=>{ markCorrection(item.id, 'approved'); setCorrectionVersion(v=>v+1); }} className="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-bold text-xs">✅ المضمون سليم</button>
-                        <button onClick={()=>{ markCorrection(item.id, 'corrections'); setCorrectionVersion(v=>v+1); }} className="px-3 py-1.5 bg-red-600 hover:bg-red-700 text-white rounded-xl font-bold text-xs">✏️ تحتاج تصحيحاً</button>
+                        <button onClick={()=>{ markCorrection(item.id, 'approved'); setCorrectionVersion(v=>v+1); }} className="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-bold text-xs inline-flex items-center gap-1"><CheckCircle2 className="w-3.5 h-3.5 shrink-0" aria-hidden="true" />المضمون سليم</button>
+                        <button onClick={()=>{ markCorrection(item.id, 'corrections'); setCorrectionVersion(v=>v+1); }} className="px-3 py-1.5 bg-red-600 hover:bg-red-700 text-white rounded-xl font-bold text-xs inline-flex items-center gap-1"><PenLine className="w-3.5 h-3.5 shrink-0" aria-hidden="true" />تحتاج تصحيحاً</button>
                       </div>
                     ) : item.noteAr ? (
                       <div className="mt-2 text-xs text-gray-500 dark:text-gray-400">ملاحظة المصحح: {item.noteAr}</div>

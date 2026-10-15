@@ -182,6 +182,36 @@ header, aside, nav, section, button {
   transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
 }
 
+/* 2026-10-15 — curseur : le preflight Tailwind v4 ne met PAS `cursor: pointer`
+   sur <button> (il ne traite que les spinners Safari). 364 des 431 boutons de
+   l'app n'avaient donc pas `cursor-pointer` et gardaient la flèche par défaut.
+   Règle globale, comme le bloc :focus-visible juste en dessous. */
+button,
+[role="button"],
+label[for],
+select,
+summary {
+  cursor: pointer;
+}
+button:disabled,
+[role="button"][aria-disabled="true"] {
+  cursor: not-allowed;
+}
+
+/* 2026-10-15 — mouvement réduit. L'app utilise framer-motion et des @keyframes ;
+   sans ce garde-fou, un élève sensible au mouvement n'avait AUCUN repli.
+   Motion respecte aussi `data-motion` si on veut le désactiver par contexte. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
 /* Custom transitions and scrollbars */
 ::-webkit-scrollbar {
   width: 6px;

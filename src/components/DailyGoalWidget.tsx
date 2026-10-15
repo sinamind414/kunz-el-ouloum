@@ -203,7 +203,7 @@ export default function DailyGoalWidget({
             title="اضغط للاستماع لنغمة المواظبة وعرض الأوسمة"
           >
             <Flame className="w-3.5 h-3.5 fill-current text-amber-500 animate-pulse" />
-            <span>{serieAfficheeDepuisDaily(currentGoals)} أيام 🔥</span>
+            <span>{serieAfficheeDepuisDaily(currentGoals)} أيام</span>
           </button>
 
           <button

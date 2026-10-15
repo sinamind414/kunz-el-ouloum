@@ -349,7 +349,10 @@ export default function LessonTwoView() {
                 )}
               </div>
               {!w1Validated && (
-                <button onClick={validateW1} className="bg-[#2ecc71] hover:bg-[#27ae60] text-white px-6 py-2 rounded-xl font-bold text-sm transition-all shadow-sm">
+                // 2026-10-15 — contraste corrigé : blanc sur #2ecc71 = 2,10:1
+                // (échec WCAG mesuré). Fond #006d37 → 6,48:1, déjà validé
+                // partout ailleurs dans l'app.
+                <button onClick={validateW1} className="bg-[#006d37] hover:bg-[#00562b] text-white px-6 py-2 rounded-xl font-bold text-sm transition-all shadow-sm">
                   تحقق
                 </button>
               )}

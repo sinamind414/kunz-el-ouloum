@@ -16,15 +16,19 @@ const STEP_BAR_MARK = /الفعل يطلب الوصف/;      // ligne de justifi
 const CRITERIA_MARK = /توجيه قبلي وتأكيد بالإثبات/; // sidebar critères stade 3
 // Update 2026-09-21 (règle app « chiffres latins ») — les libellés des portes
 // portent désormais des chiffres 0-9 (miftahSpec.bawaba1-3 + vue compilateur).
-const GATE1_MARK = '🚪 البوابة 1 — قفل أصلا؟';
-const GATE2_MARK = '📥 البوابة 2 — من أين آتي بمادة الإدخال؟';
-const GATE3_MARK = '⚙️ البوابة 3 — أي حركة يطلب هذا القفل؟';
+// 2026-10-15 — les titres des portes n'ont plus d'emoji (règle « pas d'emoji
+// comme icône structurelle ») : les marqueurs suivent.
+const GATE1_MARK = 'البوابة 1 — قفل أصلا؟';
+const GATE2_MARK = 'البوابة 2 — من أين آتي بمادة الإدخال؟';
+const GATE3_MARK = 'البوابة 3 — أي حركة يطلب هذا القفل؟';
 
 const gotoStage3 = () => {
   fireEvent.click(screen.getAllByText('إنتاج موجه (Guidée)')[0]);
 };
 
-// Un élève au stade 3 a déjà fait la Phase 0 — sinon sa bannière dédouble « 🔒 قفل ».
+// 2026-10-15 — les libellés des portes n'ont plus d'emoji (icônes Lucide).
+// Les boutons se ciblent désormais par leur TEXTE (l'icône est décorative).
+// Un élève au stade 3 a déjà fait la Phase 0 — sinon sa bannière dédouble « قفل ».
 beforeEach(() => { completePhase0(); });
 afterEach(() => { resetPhase0(); });
 
@@ -44,7 +48,7 @@ describe('cascade des 3 portes au stade 3', () => {
   it('🔒 قفل ⇒ porte 2 apparaît (et seulement elle) ; le StepBar reste masqué', () => {
     render(<MethodologyCompilerView />);
     gotoStage3();
-    fireEvent.click(screen.getByText('🔒 قفل').closest('button')!);
+    fireEvent.click(screen.getByText('قفل', { exact: true }).closest('button')!);
     expect(screen.queryByText(GATE1_MARK)).toBeNull();
     expect(screen.getByText(GATE2_MARK)).toBeTruthy();
     expect(screen.queryByText(GATE3_MARK)).toBeNull();
@@ -54,14 +58,14 @@ describe('cascade des 3 portes au stade 3', () => {
   it('📄 وثيقة فقط ⇒ porte 3 (3 issues) apparaît ; puis le choix ouvre l\'éditeur', () => {
     render(<MethodologyCompilerView />);
     gotoStage3();
-    fireEvent.click(screen.getByText('🔒 قفل').closest('button')!);
-    fireEvent.click(screen.getByText('📄 وثيقة فقط').closest('button')!);
+    fireEvent.click(screen.getByText('قفل', { exact: true }).closest('button')!);
+    fireEvent.click(screen.getByText('وثيقة فقط', { exact: true }).closest('button')!);
     expect(screen.getByText(GATE3_MARK)).toBeTruthy();
     // la porte 3 a exactement 3 issues
-    expect(screen.getByText('📷').closest('button')).toBeTruthy();
-    expect(screen.getByText('🎬').closest('button')).toBeTruthy();
-    expect(screen.getByText('🔨').closest('button')).toBeTruthy();
-    fireEvent.click(screen.getByText('📷').closest('button')!);
+    expect(screen.getByText('الصورة', { exact: true }).closest('button')).toBeTruthy();
+    expect(screen.getByText('الفيلم', { exact: true }).closest('button')).toBeTruthy();
+    expect(screen.getByText('الحدّاد', { exact: true }).closest('button')).toBeTruthy();
+    fireEvent.click(screen.getByText('الصورة', { exact: true }).closest('button')!);
     expect(screen.queryByText(GATE3_MARK)).toBeNull();
     expect(screen.getByText(STEP_BAR_MARK)).toBeTruthy();
     expect(screen.getByText(CRITERIA_MARK)).toBeTruthy();
@@ -70,7 +74,7 @@ describe('cascade des 3 portes au stade 3', () => {
   it('🧠 لا قفل ⇒ دُرج : toutes les portes ferment d\'un coup, écriture directe', () => {
     render(<MethodologyCompilerView />);
     gotoStage3();
-    fireEvent.click(screen.getByText('🧠 لا قفل').closest('button')!);
+    fireEvent.click(screen.getByText('لا قفل', { exact: true }).closest('button')!);
     expect(screen.queryByText(GATE1_MARK)).toBeNull();
     expect(screen.queryByText(GATE2_MARK)).toBeNull();
     expect(screen.queryByText(GATE3_MARK)).toBeNull();
@@ -80,8 +84,8 @@ describe('cascade des 3 portes au stade 3', () => {
   it('les boutons des portes sont neutres : aucune classe rouge/verte au survol', () => {
     render(<MethodologyCompilerView />);
     gotoStage3();
-    const btnLock = screen.getByText('🔒 قفل').closest('button')!;
-    const btnNoLock = screen.getByText('🧠 لا قفل').closest('button')!;
+    const btnLock = screen.getByText('قفل', { exact: true }).closest('button')!;
+    const btnNoLock = screen.getByText('لا قفل', { exact: true }).closest('button')!;
     expect(btnLock.className).not.toMatch(/red|emerald/);
     expect(btnNoLock.className).not.toMatch(/red|emerald/);
   });

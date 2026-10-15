@@ -4,7 +4,7 @@
 // chaque production (mots-clés / réponses acceptées / moteur ValidationEngine),
 // sauvegarde un snapshot (sessionSnapshotService) pour reprendre où on s'est arrêté.
 import { useEffect, useMemo, useReducer, useState } from 'react';
-import { CheckCircle2, XCircle, ChevronLeft, Lightbulb, Info } from 'lucide-react';
+import { CheckCircle2, XCircle, ChevronLeft, Lightbulb, Info, Target, Rocket } from 'lucide-react';
 import { ACTIVE_LESSONS, getLessonProgression } from '../data/activeLessons';
 import { resumePourActif } from '../data/resumesLecons';
 import type { Block } from '../data/activeLessons';
@@ -315,7 +315,10 @@ export default function ActiveLessonView({ lessonKey, onBack, onNext, nextTitleA
                 )}
               </div>
             )}
-            <p className="text-xs font-bold text-[#506072]">🎯 {b.hotspot.prompt}</p>
+            <p className="text-xs font-bold text-[#506072] flex items-center gap-1.5">
+              <Target className="w-3.5 h-3.5 shrink-0" aria-hidden="true" />
+              {b.hotspot.prompt}
+            </p>
 
             <div className="bg-amber-50/60 dark:bg-amber-950/20 rounded-2xl p-4 border border-amber-200 dark:border-amber-900/40">
               <p className="text-sm font-black text-amber-800 dark:text-amber-300 mb-1 flex items-center gap-1.5"><Lightbulb className="w-4 h-4" /> المنهجية</p>
@@ -805,7 +808,7 @@ export default function ActiveLessonView({ lessonKey, onBack, onNext, nextTitleA
 
       {session.state === 'MISSION_VISIBLE' && (
         <div className="bg-white dark:bg-[#161c18] rounded-3xl p-6 border border-gray-200 dark:border-gray-800 text-center space-y-4">
-          <p className="text-4xl">🚀</p>
+          <Rocket className="w-10 h-10 mx-auto text-[#006d37]" aria-hidden="true" />
           <h3 className="text-lg font-black">مهمة الدرس</h3>
           <ul className="text-sm text-gray-600 dark:text-gray-300 space-y-1 text-right max-w-md mx-auto">
             {blocks.map((b, i) => (
@@ -842,7 +845,10 @@ export default function ActiveLessonView({ lessonKey, onBack, onNext, nextTitleA
               </span>
             ))}
           </div>
-          <p className="text-xs font-black text-[#506072]">🎯 {block.objective}</p>
+          <p className="text-xs font-black text-[#506072] flex items-center gap-1.5">
+            <Target className="w-3.5 h-3.5 shrink-0" aria-hidden="true" />
+            {block.objective}
+          </p>
           {renderBlock(block, idx)}
           {session.state === 'SESSION_SUSPENDED' && (
             <button
@@ -914,8 +920,11 @@ export default function ActiveLessonView({ lessonKey, onBack, onNext, nextTitleA
         if (!resume) return null;
         return (
           <div dir="rtl" className="mt-6 rounded-3xl p-5 border-2 border-emerald-300/60 dark:border-emerald-800/60 bg-emerald-50/60 dark:bg-emerald-950/20">
-            <p className="text-sm font-black text-emerald-800 dark:text-emerald-300 mb-2">📝 خلاصة الدرس</p>
-            <p className="text-xs font-bold leading-relaxed mb-3 text-gray-800 dark:text-gray-200">🎯 {resume.objectif}</p>
+            <p className="text-sm font-black text-emerald-800 dark:text-emerald-300 mb-2">خلاصة الدرس</p>
+            <p className="text-xs font-bold leading-relaxed mb-3 text-gray-800 dark:text-gray-200 flex items-center gap-1.5">
+              <Target className="w-3.5 h-3.5 shrink-0" aria-hidden="true" />
+              {resume.objectif}
+            </p>
             <ol className="list-decimal pr-5 space-y-1.5 text-xs leading-relaxed text-gray-700 dark:text-gray-300">
               {resume.points.map((pt, i) => (<li key={i}>{pt}</li>))}
             </ol>
