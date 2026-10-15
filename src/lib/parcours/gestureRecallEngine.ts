@@ -14,16 +14,25 @@
 //   les gestes eux-mêmes. Il s'additionne au parcours existant sans le toucher
 //   (src/lib/parcours/nbaEngine.ts et parcoursPath.ts restent intacts).
 //
-// Choix de conception (aligné sur spacedRecallPrompts.ts) :
-//   - intervalles progressifs J+1 → J+3 → J+7 → J+14 (plus J+14 entretenu),
-//     NON plus le J+14 fixe du parcours : un geste s'installe en plusieurs
-//     passages rapprochés, sinon c'est du bachotage.
+// Choix de conception (RÉVISÉ le 15/10/2026) :
+//   - l'espacement n'est PLUS une échelle fixe J+1 → J+3 → J+7 → J+14. Il est
+//     calculé par l'algorithme SM-2 canonique (`src/lib/sm2.ts`), à partir du
+//     signal de réussite ET de l'historique d'échecs du geste. Un geste qui a
+//     raté trois fois ne revient pas au même rythme qu'un geste réussi du premier
+//     coup : c'est le facteur de facilité qui porte cette différence.
+//     Un geste s'installe toujours par passages rapprochés — la différence est
+//     que l'algorithme décide À QUEL POINT ils se rapprochent.
+//
+//     LIMITE DITE FRANCHEMENT : le signal ici est BINAIRE (réussi / échoué), donc
+//     la qualité vaut 4 ou 2, jamais 3 ou 5. L'adaptation passe par l'accumulation
+//     des échecs (ease, lapses), pas par une notation fine. Les concepts, eux,
+//     sont notés sur les preuves du texte (`spacedRecallPrompts`).
 //   - un geste se rejoue TANT QUE son stage n'a pas atteint le palier final ;
 //     une fois au palier, il reste dans la rotation d'entretien.
 //   - hors quota journalier du parcours (les gestes sont courts, ≤ 3 min) : on
 //     ne vole pas la place de la leçon, on occupe les interstices.
 
-import { SPACED_RECALL_INTERVALS, intervalForStage, nextStage } from '../../data/spacedRecallIntervals';
+import { prochainEtatSm2, type EtatSm2 } from '../sm2';
 
 /** Clé de stockage dédiée aux gestes (nomspacing → pas de collision avec le parcours). */
 export const GESTURE_RECALL_KEY = 'kunz-gesture-recall-v1';
@@ -33,16 +42,33 @@ export const GESTURE_IDS = ['step0_comprendre', 'verb_agir', 'verb_prouver', 've
 export type GestureId = (typeof GESTURE_IDS)[number];
 
 export interface GestureRecallState {
-  /** stage de rappel atteint par geste (0 = J+1 … 3 = J+14 entretenu). */
+  /** SOURCE DE VÉRITÉ : l'état SM-2 de chaque geste (facilité, intervalle, échéance). */
+  etat: Record<string, EtatSm2>;
+  /** Nombre de rappels réussis consécutifs — DÉRIVÉ de `etat`, gardé pour l'affichage. */
   stage: Record<string, number>;
-  /** prochaine échéance au format todayKey() (YYYY-MM-DD). */
+  /** Prochaine échéance au format todayKey() (YYYY-MM-DD) — DÉRIVÉE de `etat`. */
   due: Record<string, string>;
   /** dateISO du dernier rappel réussi. */
   lastOk: Record<string, string>;
 }
 
+/**
+ * Palier au-delà duquel un geste est tenu pour installé (entretien).
+ * AVANT : c'était le fait d'avoir atteint le stage 3 de l'échelle fixe.
+ * Désormais c'est l'INTERVALLE RÉEL qui le dit : un geste espacé de deux
+ * semaines est installé, quelle que soit la façon dont il y est parvenu.
+ */
+export const SEUIL_ENTRETIEN_JOURS = 14;
+
+/**
+ * Paliers de l'ANCIENNE échelle, conservés UNIQUEMENT pour relire les mémoires
+ * écrites avant le 15/10/2026. Ils ne servent plus à ordonnancer quoi que ce soit :
+ * un `stage` relu est converti en état SM-2 au premier chargement, puis oublié.
+ */
+const PALIERS_LEGACY: readonly number[] = [1, 3, 7, 14];
+
 export function etatGestesParDefaut(): GestureRecallState {
-  return { stage: {}, due: {}, lastOk: {} };
+  return { etat: {}, stage: {}, due: {}, lastOk: {} };
 }
 
 /** --- Persistance (même patron que loadParcours/saveParcours) --- */
@@ -52,11 +78,36 @@ export function loadGestureRecall(): GestureRecallState {
     const raw = window.localStorage.getItem(GESTURE_RECALL_KEY);
     const j = raw ? JSON.parse(raw) : null;
     if (!j || typeof j !== 'object') return etatGestesParDefaut();
-    return {
-      stage: j.stage && typeof j.stage === 'object' ? j.stage : {},
-      due: j.due && typeof j.due === 'object' ? j.due : {},
-      lastOk: j.lastOk && typeof j.lastOk === 'object' ? j.lastOk : {},
-    };
+    const etat: Record<string, EtatSm2> = {};
+    if (j.etat && typeof j.etat === 'object') {
+      for (const [id, v] of Object.entries(j.etat as Record<string, Partial<EtatSm2>>)) {
+        if (v && typeof v.ease === 'number' && typeof v.dueAt === 'number') {
+          etat[id] = {
+            ease: v.ease,
+            intervalDays: typeof v.intervalDays === 'number' ? v.intervalDays : 1,
+            dueAt: v.dueAt,
+            reps: typeof v.reps === 'number' ? v.reps : 0,
+            lapses: typeof v.lapses === 'number' ? v.lapses : 0,
+          };
+        }
+      }
+    }
+    const stage: Record<string, number> = j.stage && typeof j.stage === 'object' ? j.stage : {};
+    const due: Record<string, string> = j.due && typeof j.due === 'object' ? j.due : {};
+
+    // MIGRATION des mémoires antérieures au 15/10/2026 : elles ne portaient
+    // qu'un stage et une date. On reconstruit l'état SM-2 correspondant pour
+    // que ces gestes continuent d'être proposés au bon moment, sans repartir
+    // de zéro (ce qui aurait fait tout réviser d'un coup).
+    for (const [id, stade] of Object.entries(stage)) {
+      if (etat[id]) continue;
+      const jours = PALIERS_LEGACY[Math.max(0, Math.min(stade, PALIERS_LEGACY.length - 1))] ?? 1;
+      const dateDue = due[id] ? new Date(`${due[id]}T00:00:00`) : new Date();
+      const dueAt = Number.isNaN(dateDue.getTime()) ? Date.now() : dateDue.getTime();
+      etat[id] = { ease: 2.5, intervalDays: jours, dueAt, reps: stade, lapses: 0 };
+    }
+
+    return { etat, stage, due, lastOk: j.lastOk && typeof j.lastOk === 'object' ? j.lastOk : {} };
   } catch {
     return etatGestesParDefaut();
   }
@@ -102,16 +153,18 @@ export function nextDueGesture(state: GestureRecallState = loadGestureRecall()):
 }
 
 /**
- * Enregistre un rappel de geste réussi et planifie la prochaine échéance
- * au prochain intervalle de la séquence canonique.
+ * Enregistre un rappel de geste RÉUSSI et planifie la prochaine échéance par
+ * SM-2. La qualité vaut 4 : le geste a été rejoué correctement, sans que
+ * l'interface permette de dire « facile » ou « difficile » (voir la limite
+ * annoncée dans l'en-tête — le signal des gestes est binaire).
  */
-export function markGestureRecallOk(id: GestureId): void {
+export function markGestureRecallOk(id: GestureId, now: number = Date.now()): void {
   mutate((s) => {
-    const current = s.stage[id] ?? 0;
-    const stage = nextStage(current);
-    s.stage[id] = stage;
-    s.lastOk[id] = todayKey();
-    s.due[id] = addDays(todayKey(), intervalForStage(stage));
+    const suivant = prochainEtatSm2(s.etat[id] ?? null, 4, now, { apresEchec: 'lendemain' });
+    s.etat[id] = suivant;
+    s.stage[id] = suivant.reps;
+    s.due[id] = todayKey(new Date(suivant.dueAt));
+    s.lastOk[id] = todayKey(new Date(now));
   });
 }
 
@@ -120,21 +173,29 @@ export function markGestureRecallOk(id: GestureId): void {
  * la pédagogie de la boucle espacée : un échec réinitialise le cycle.
  * Miroir de 'fragile' côté parcours (SEUIL_FRAGILE) mais par geste.
  */
-export function markGestureRecallFailed(id: GestureId): void {
+export function markGestureRecallFailed(id: GestureId, now: number = Date.now()): void {
   mutate((s) => {
-    s.stage[id] = 0;
-    s.due[id] = addDays(todayKey(), SPACED_RECALL_INTERVALS[0]);
+    const suivant = prochainEtatSm2(s.etat[id] ?? null, 2, now, { apresEchec: 'lendemain' });
+    s.etat[id] = suivant;
+    s.stage[id] = suivant.reps; // 0
+    s.due[id] = todayKey(new Date(suivant.dueAt));
   });
 }
 
 /** Stage d'un geste, pour afficher la progression (ceinture) à l'élève. */
 export function gestureStage(state: GestureRecallState, id: GestureId): number {
-  return state.stage[id] ?? 0;
+  return state.etat?.[id]?.reps ?? state.stage[id] ?? 0;
 }
 
-/** Le geste est-il arrivé au palier final (rappel entretenu) ? */
+/** Le geste est-il installé (rappel entretenu) ? C'est l'INTERVALLE qui répond. */
 export function gestureMastered(state: GestureRecallState, id: GestureId): boolean {
-  return gestureStage(state, id) >= SPACED_RECALL_INTERVALS.length - 1;
+  const intervalle = state.etat?.[id]?.intervalDays ?? 0;
+  return intervalle >= SEUIL_ENTRETIEN_JOURS;
+}
+
+/** Intervalle courant d'un geste, en jours (0 s'il n'a jamais été révisé). */
+export function gestureIntervalleJours(state: GestureRecallState, id: GestureId): number {
+  return state.etat?.[id]?.intervalDays ?? 0;
 }
 
 // --- jonction idée 4 (matrice Geste × Chapitre) ---
@@ -188,9 +249,5 @@ function todayKey(now: Date = new Date()): string {
   return `${y}-${m}-${d}`;
 }
 
-function addDays(key: string, days: number): string {
-  const [y, m, d] = key.split('-').map(Number);
-  const date = new Date(y, m - 1, d);
-  date.setDate(date.getDate() + days);
-  return todayKey(date);
-}
+// `addDays` a disparu le 15/10/2026 : c'est SM-2 qui calcule les échéances, en
+// millisecondes (`dueAt`), et plus une échelle de jours ajoutée à une date.

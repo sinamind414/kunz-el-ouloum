@@ -140,8 +140,11 @@ import { CAPITAINE_VISAGE_URL } from './data/brandAssets';
 // Le guide en entrée de rubrique : il accueille à la PREMIÈRE visite, puis se
 // tait (voir data/conseilsRubrique.ts pour la raison).
 import BandeauConseilRubrique from './components/BandeauConseilRubrique';
+// Étape 5 (§5.D) : le relais humain. Une carte, deux questions, aucune sortie de
+// l'appareil — voir `lib/relais.ts` pour la règle complète.
+import RelaisCapitaine from './components/RelaisCapitaine';
 import { conseilDeRubrique, type ConseilRubrique } from './data/conseilsRubrique';
-import { doitParlerRubrique, marquerRubriqueVue, rubriquesVues } from './lib/conseilRubrique';
+import { marquerRubriqueVue } from './lib/conseilRubrique';
 import { 
   startPirateMusic, 
   stopPirateMusic, 
@@ -321,11 +324,21 @@ export default function App() {
    * travail : la bulle se recalcule alors (et se tait, puisque l'élève vient
    * de travailler — c'est voulu).
    */
-  const { invitation, ignorer } = useInvitationCapitaine({
+  /**
+   * La rubrique ouverte fait partie de l'ÉTAT DE L'ÉLÈVE (famille « contexte »),
+   * donc elle est connue AVANT l'appel : c'est ce qui permet à la bulle et au
+   * bandeau de conseil de lire le même état au lieu de relire chacun sa tranche.
+   * `conseilDeRubrique` est pur et bon marché — le contenu, lui, ne bouge pas.
+   */
+  const conseilCourant: ConseilRubrique | null = conseilDeRubrique(currentTab);
+
+  const { invitation, relais, etat, ignorer, accepter, rafraichir } = useInvitationCapitaine({
     daily: progress.dailyGoals,
     derniereUnite: units[0]?.title ?? null,
     epreuveEnCours,
     signalTravail: units.length,
+    rubrique: currentTab,
+    rubriqueAUnConseil: Boolean(conseilCourant),
   });
 
   /**
@@ -338,13 +351,21 @@ export default function App() {
    * au changement d'onglet — le comportement le plus agaçant possible.
    */
   const [conseilFerme, setConseilFerme] = useState(true);
-  const conseilCourant: ConseilRubrique | null = conseilDeRubrique(currentTab);
+  /**
+   * L'état est délibérément HORS des dépendances de cet effet, et ce n'est pas un
+   * oubli : l'effet doit se déclencher quand l'élève CHANGE DE RUBRIQUE, pas
+   * quand l'état se recalcule. Sans cela, `marquerRubriqueVue` — juste en dessous
+   * — rendrait `conseilRubriqueAPrendre` faux au recalcul suivant, et l'effet
+   * refermerait le bandeau que l'élève est en train de lire.
+   */
   useEffect(() => {
     if (!conseilCourant) {
       setConseilFerme(true);
       return;
     }
-    if (doitParlerRubrique(currentTab, rubriquesVues(), true)) {
+    // La famille « contexte » de l'état unique : la liste des rubriques déjà vues
+    // n'est plus relue ici, et la décision de parler n'est plus prise deux fois.
+    if (etat.contexte.conseilRubriqueAPrendre) {
       // On mémorise À L'AFFICHAGE, pas à la fermeture : un élève qui change
       // d'onglet sans lire ne doit pas revoir le même discours indéfiniment.
       marquerRubriqueVue(currentTab);
@@ -1290,7 +1311,15 @@ export default function App() {
                 <button
                   type="button"
                   data-testid="bulle-capitaine-agir"
-                  onClick={() => setCurrentTab(invitation.cible)}
+                  onClick={() => {
+                    // L'intention est mémorisée AVANT d'aller à l'écran : c'est
+                    // elle qui distingue, dans la boucle du coach, « il n'a pas
+                    // vu » de « il a vu et n'a pas pu ». Le travail, lui, ne
+                    // sera crédité que s'il a réellement lieu (et c'est
+                    // `activiteQuotidienne` qui en décide, pas ce clic).
+                    accepter();
+                    setCurrentTab(invitation.cible);
+                  }}
                   className="rounded-xl bg-[#006d37] px-3 py-1.5 text-[11px] font-black text-white cursor-pointer"
                 >
                   {invitation.actionAr}
@@ -1307,6 +1336,13 @@ export default function App() {
               </div>
             </div>
           )}
+          {/*
+            LE RELAIS HUMAIN (§5.D, étape 5). Il n'est pas une invitation de plus :
+            quand il parle, la bulle se tait (`invitationDuMoment` rend `null`), donc
+            une seule voix s'adresse à l'élève. Rien ne sort de l'appareil — le nom
+            est écrit en local, et il s'efface d'un geste.
+          */}
+          <RelaisCapitaine question={relais} onFait={rafraichir} />
           {/*
             LE BOUTON RESTE ROND — c'est le repère (14/10/2026, demande
             explicite). Ce qui change : la boussole cède la place au VISAGE du

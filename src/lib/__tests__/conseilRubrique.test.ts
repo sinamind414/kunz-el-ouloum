@@ -162,9 +162,15 @@ describe('le branchement dans App.tsx', () => {
   it('le conseil est mémorisé À L’AFFICHAGE, pas à la fermeture', () => {
     // Sinon un élève qui change d'onglet sans lire revoit le même discours à
     // l'infini — et l'application devient un perroquet.
-    const bloc = app.slice(app.indexOf('doitParlerRubrique(currentTab'));
+    const bloc = app.slice(app.indexOf('etat.contexte.conseilRubriqueAPrendre'));
     expect(bloc.slice(0, 400)).toContain('marquerRubriqueVue(currentTab)');
     expect(app).toContain('setConseilFerme(false)');
+    // Et la famille « contexte » n'est plus relue ici : depuis l'état unique
+    // (15/10/2026 soir), `App.tsx` consomme ce que `lib/etatEleve.ts` a assemblé
+    // une fois. Relire `rubriquesVues()` ici rouvrirait le défaut réparé.
+    expect(app, 'App.tsx relit la famille que l’état lui fournit').not.toContain('rubriquesVues()');
+    const etatSrc = readFileSync(resolve(process.cwd(), 'src/lib/etatEleve.ts'), 'utf8');
+    expect(etatSrc, 'plus personne ne lit les rubriques vues').toContain('rubriquesVues()');
   });
 
   it('le bandeau est fermable par l’élève', () => {

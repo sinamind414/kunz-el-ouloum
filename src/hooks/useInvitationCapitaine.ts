@@ -5,6 +5,38 @@
 // fait le travail inverse et sale : lire l'état réel de l'élève, mémoriser les
 // messages ignorés, et ne rien calculer de plus.
 //
+// ─────────────────────────────────────────────────────────────────────────────
+// CE QUE CE HOOK A APPRIS À FAIRE LE 15/10/2026 — LA BOUCLE.
+//
+// Avant : la bulle s'affichait, et le seul retour retenu était « il a fermé ».
+// Après : chaque parole devient une PRESCRIPTION TRACÉE (`lib/prescriptions.ts`),
+// avec une issue. Trois gestes, trois significations :
+//
+//   · l'invitation est AFFICHÉE      → `emettrePrescription`  (en attente)
+//   · l'élève clique « agir »        → `accepter`   (intention, pas travail)
+//   · l'élève ferme la bulle         → `ignorer`    (la demande n'a pas passé)
+//   · du TRAVAIL MESURÉ a lieu       → `marquerSuivie`, appelé par
+//                                      `activiteQuotidienne` — pas ici, parce que
+//                                      c'est le seul endroit qui atteste d'un
+//                                      travail réel plutôt que d'un clic.
+//
+// Et une conséquence déjà active : un motif qui a échoué trois fois est RETIRÉ
+// (`motifsRetires`), donc le capitaine se tait sur ce motif au lieu de le répéter.
+//
+// ─────────────────────────────────────────────────────────────────────────────
+// CE QUE CE HOOK A APPRIS LE 15/10/2026 (SOIR) — L'ÉTAT UNIQUE.
+//
+// Il construisait son contexte à la main, en piochant lui-même dans quatre
+// sources : la série, le cumul, le registre, la mémoire du silence. `App.tsx`
+// relisait la rubrique de son côté. Chaque consommateur lisait sa tranche.
+//
+// Depuis, l'assemblage est fait UNE fois par `lib/etatEleve.ts` (étape 2 du §9 du
+// document de vision), et ce hook ne fait plus que deux choses : demander l'état,
+// et le traduire en contexte pour le module pur `invitationCapitaine`. Les deux
+// fonctions de lecture qui vivaient ici (`joursSansTravail`,
+// `derniereInvitationIgnoreeMs`) sont parties avec la famille qu'elles servent ;
+// elles restent réexportées pour ne casser aucun appelant.
+//
 // POURQUOI LA LECTURE EST FAITE UNE FOIS, PAS EN BOUCLE :
 // l'application vise des téléphones d'entrée de gamme. Interroger le stockage en
 // boucle coûte plus qu'il n'apporte. La bulle se recalcule sur les évènements qui
@@ -15,57 +47,50 @@
 // module reste pur et testable, le hook ne décide de rien.
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { invitationDuMoment, type ContexteCapitaine, type Invitation } from '../lib/invitationCapitaine';
-import { cumulJoursDepuisDaily, serieAfficheeDepuisDaily } from '../utils/activiteQuotidienne';
-import { jourLocal, ecartEnJours } from '../utils/dayKey';
+import { invitationDuMoment, relaisDuMoment, type Invitation } from '../lib/invitationCapitaine';
+import type { QuestionRelais } from '../lib/relais';
+import { emettrePrescription, marquerAcceptee, marquerIgnoree } from '../lib/prescriptions';
+import {
+  contexteCapitaine,
+  derniereInvitationIgnoreeMs,
+  joursSansTravail,
+  lireEtatEleve,
+  marquerInvitationIgnoree,
+  type EtatEleve,
+  type FamilleErreurs,
+} from '../lib/etatEleve';
 import type { DailyGoalConfig } from '../types';
 
-const CLE_IGNOREE = 'boussole_capitaine_invitation_ignoree';
-
-/** Horodatage du dernier message ignoré (0 si jamais). */
-export function derniereInvitationIgnoreeMs(): number {
-  try {
-    const brut = localStorage.getItem(CLE_IGNOREE);
-    if (!brut) return 0;
-    const n = Number.parseInt(brut, 10);
-    return Number.isFinite(n) && n > 0 ? n : 0;
-  } catch {
-    return 0;
-  }
-}
-
-/** L'élève a fermé la bulle : on se tait un moment (loi 1, version inverse). */
-export function marquerInvitationIgnoree(maintenantMs: number = Date.now()): void {
-  try {
-    localStorage.setItem(CLE_IGNOREE, String(maintenantMs));
-  } catch {
-    /* stockage indisponible : au pire, la bulle reparle plus tôt */
-  }
-}
-
-/**
- * Jours écoulés depuis le dernier jour RÉELLEMENT travaillé.
- *
- * `null` = jamais rien produit (et c'est un fait, pas une inconnue).
- * La source est `serieDernierJour`, le champ que H3 (2026-10-14) a introduit
- * précisément parce que `lastActiveDate` est remis à aujourd'hui dès l'OUVERTURE
- * de l'application, sans aucun travail. Compter avec ce dernier ferait dire au
- * capitaine « tu as travaillé aujourd'hui » à un élève qui a seulement ouvert
- * l'app — exactement le genre de mensonge qu'on veut éviter.
- */
-export function joursSansTravail(daily: DailyGoalConfig | undefined, maintenant: Date = new Date()): number | null {
-  const dernier = daily?.serieDernierJour;
-  if (typeof dernier !== 'string' || dernier.length === 0) return null;
-  const ecart = ecartEnJours(dernier, jourLocal(maintenant));
-  if (!Number.isFinite(ecart) || ecart < 0) return null;
-  return ecart;
-}
+// Réexport : ces trois fonctions vivaient ici avant l'état unique (elles servent
+// la famille « temps » et « relation », désormais assemblées dans `etatEleve`).
+// Les garder au même endroit évite de casser un appelant qui les importerait.
+export { derniereInvitationIgnoreeMs, joursSansTravail, marquerInvitationIgnoree };
 
 export interface EtatCapitaine {
   /** Invitation du moment, ou `null` si le capitaine se tait. */
   invitation: Invitation | null;
+  /**
+   * L'état de l'élève, assemblé UNE fois par `lib/etatEleve.ts`.
+   *
+   * Exposé parce que d'autres écrans lisent les mêmes familles : `App.tsx` s'en
+   * sert pour le conseil d'entrée de rubrique, qui relisait `rubriquesVues()` de
+   * son côté. Un seul assemblage, plusieurs consommateurs — c'est exactement
+   * l'étape 2, et l'exposer est ce qui la rend réelle.
+   */
+  etat: EtatEleve;
+  /**
+   * LA QUESTION DU RELAIS HUMAIN, ou `null` (§5.D, 4ᵉ tentative — étape 5).
+   *
+   * Elle n'est pas une `Invitation` : elle ne devient pas une prescription, elle
+   * ne compte pas comme un échec, et elle n'est affichée que quand le capitaine
+   * peut parler. Quand elle existe, `invitation` vaut `null` — le relais est
+   * seul à parler.
+   */
+  relais: QuestionRelais | null;
   /** L'élève ferme la bulle : elle se tait pour un temps. */
   ignorer: () => void;
+  /** L'élève clique « agir » : intention mémorisée, pas travail. */
+  accepter: () => void;
   /** Recalcule immédiatement (après un travail terminé). */
   rafraichir: () => void;
 }
@@ -76,12 +101,21 @@ export function useInvitationCapitaine(options: {
   epreuveEnCours: boolean;
   /** Change de valeur quand l'élève travaille : force le recalcul. */
   signalTravail: number;
+  /** Rubrique ouverte — famille « contexte », pour le conseil d'entrée. */
+  rubrique?: string | null;
+  /** Cette rubrique a-t-elle un conseil ? (le contenu reste chez l'appelant) */
+  rubriqueAUnConseil?: boolean;
 }): EtatCapitaine {
-  const { daily, derniereUnite, epreuveEnCours, signalTravail } = options;
+  const { daily, derniereUnite, epreuveEnCours, signalTravail, rubrique, rubriqueAUnConseil } = options;
   const [version, setVersion] = useState(0);
   const [ignoreeMs, setIgnoreeMs] = useState<number>(() => derniereInvitationIgnoreeMs());
   const [maintenant, setMaintenant] = useState<Date>(() => new Date());
-  const [erreurs, setErreurs] = useState(0);
+  /**
+   * La famille « erreurs », une fois sa source chargée — ou `null` tant qu'elle
+   * ne l'est pas. « Pas encore connue » se traduit par `chargee: false` dans
+   * l'état, jamais par un chiffre inventé.
+   */
+  const [familleErreurs, setFamilleErreurs] = useState<Omit<FamilleErreurs, 'chargee'> | null>(null);
 
   /**
    * LE COMPTEUR D'ERREURS ARRIVE EN DIFFÉRÉ — et ce n'est pas un détail.
@@ -101,7 +135,13 @@ export function useInvitationCapitaine(options: {
     let vivant = true;
     import('../utils/profilErreurs')
       .then((m) => {
-        if (vivant) setErreurs(m.totalErreurs());
+        if (!vivant) return;
+        const dominante = m.erreurDominante();
+        setFamilleErreurs({
+          total: m.totalErreurs(),
+          dominante: dominante ? { code: dominante.code, occurrences: dominante.occurrences } : null,
+          capital: m.capitalErreurs(),
+        });
       })
       .catch(() => {
         // Échec de chargement : on reste à 0. La bulle se tait sur ce motif,
@@ -119,28 +159,82 @@ export function useInvitationCapitaine(options: {
     setIgnoreeMs(derniereInvitationIgnoreeMs());
   }, [signalTravail, version]);
 
-  const invitation = useMemo(() => {
-    const contexte: ContexteCapitaine = {
-      heure: maintenant.getHours(),
-      joursSansTravail: joursSansTravail(daily, maintenant),
-      serie: serieAfficheeDepuisDaily(daily, maintenant),
-      joursAccumules: cumulJoursDepuisDaily(daily),
-      erreursAReprendre: erreurs,
-      derniereUnite: derniereUnite ?? null,
-      derniereInvitationIgnoreeMs: ignoreeMs > 0 ? ignoreeMs : null,
-      maintenantMs: maintenant.getTime(),
-      epreuveEnCours,
-    };
-    return invitationDuMoment(contexte);
-  }, [daily, derniereUnite, epreuveEnCours, ignoreeMs, maintenant, erreurs]);
+  /**
+   * L'ÉTAT DE L'ÉLÈVE — assemblé UNE fois, ici, par le module qui en a la charge.
+   *
+   * Ce bloc remplace la construction manuelle du contexte : le hook piochait
+   * lui-même dans quatre sources (série, cumul, registre, silence), et chacun de
+   * ses voisins faisait pareil de son côté. Il ne reste ici qu'un appel.
+   */
+  const etat = useMemo(
+    () =>
+      lireEtatEleve({
+        daily,
+        maintenant,
+        derniereUnite: derniereUnite ?? null,
+        epreuveEnCours,
+        rubrique: rubrique ?? null,
+        rubriqueAUnConseil,
+        erreurs: familleErreurs,
+      }),
+    [daily, maintenant, derniereUnite, epreuveEnCours, rubrique, rubriqueAUnConseil, familleErreurs, ignoreeMs],
+  );
 
+  /**
+   * LES DEUX VOIX, ET UNE SEULE QUI PARLE.
+   *
+   * L'arbitrage n'est pas ici : `invitationDuMoment` rend `null` dès que le
+   * relais humain a quelque chose à demander (`relaisDuMoment`), et c'est le
+   * module pur qui en décide. Ce bloc se contente de demander les deux — dans
+   * cet ordre, pour qu'on lise la règle dans le sens où elle s'applique.
+   */
+  const { invitation, relais } = useMemo(() => {
+    const contexte = contexteCapitaine(etat, derniereUnite ?? null);
+    const question = relaisDuMoment(contexte);
+    const duMoment = invitationDuMoment(contexte);
+    if (duMoment) {
+      // La parole affichée est une prescription TRACÉE. Sans cette ligne, le
+      // capitaine reparlerait demain exactement pareil — c'était le défaut.
+      // `emettrePrescription` refuse un doublon encore en attente, donc un rendu
+      // rejoué (React StrictMode) ne fabrique pas deux prescriptions.
+      //
+      // Le relais, lui, n'entre JAMAIS ici : `QuestionRelais` n'est pas une
+      // `Invitation`, et le compilateur l'interdit. Une conversation entre deux
+      // personnes ne doit pas devenir un compteur d'échecs.
+      emettrePrescription(duMoment, { erreurCode: etat.erreurs.dominante?.code }, etat.temps.maintenantMs);
+    }
+    return { invitation: duMoment, relais: question };
+  }, [etat, derniereUnite]);
+
+  /**
+   * L'élève ferme la bulle.
+   *
+   * Deux écritures, et elles ne disent pas la même chose :
+   *   · `marquerInvitationIgnoree` — le silence de 6 h (comportement historique) ;
+   *   · `marquerIgnoree`           — l'ISSUE de la prescription : cette demande
+   *     n'a pas passé. C'est ce compteur qui, au troisième échec, retire le motif.
+   */
   const ignorer = useCallback(() => {
     const t = Date.now();
     marquerInvitationIgnoree(t);
+    marquerIgnoree(t);
     setIgnoreeMs(t);
+  }, []);
+
+  /**
+   * L'élève clique « agir » : il l'a lue et il a voulu.
+   *
+   * Ce n'est PAS un travail — c'est une intention, et elle est mémorisée comme
+   * telle (`accepteMs`). La distinction compte : un motif qui n'est jamais
+   * accepté n'a pas été vu ; un motif souvent accepté mais jamais suivi a un
+   * problème de format, pas de message. Sans cette séparation, on ne saurait pas
+   * laquelle des deux corrections apporter.
+   */
+  const accepter = useCallback(() => {
+    marquerAcceptee(Date.now());
   }, []);
 
   const rafraichir = useCallback(() => setVersion((v) => v + 1), []);
 
-  return { invitation, ignorer, rafraichir };
+  return { invitation, relais, etat, ignorer, accepter, rafraichir };
 }

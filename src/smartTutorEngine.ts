@@ -39,6 +39,8 @@ import { tokenAffirme } from './lib/validation/negationAr';
 import { PARCOURS_DOMAINS } from './lib/parcours/parcoursPath';
 import { construireVocabulaire, domaineProbable, domaineDeUnite } from './lib/routageDomaine';
 import { gesteDuMessage } from './lib/gesteDialogue';
+import { noterRappel, phraseEcheance } from './lib/rappelAdaptatif';
+import { qualiteDepuisAutoEvaluation, qualiteDepuisPreuves } from './lib/sm2';
 import { loadParcours } from './lib/parcours/parcoursProgress';
 import {
   diagnostiquerParcours,
@@ -604,6 +606,55 @@ function estMotReponseSeul(norm: string): boolean {
 /** « Je ne sais pas » n'est ni vrai ni faux : c'est une demande d'aide. */
 const RAPPEL_INCERTAIN = ['لا اعرف', 'لا ادري', 'لا اعلم', 'ماعرفتش', 'ما عرفتش', 'لا اتذكر'];
 
+/**
+ * Le verdict que l'élève porte sur sa propre restitution — ou null s'il n'a rien
+ * déclaré (il a rédigé une réponse, ou il parle d'autre chose).
+ *
+ * PRÉCÉDENCE : « لا أعرف » passe avant « vrai » et « faux », parce que
+ * l'incertitude CONTIENT le mot « لا ». Lire « لا أعرف » comme « خطأ » serait la
+ * faute typique du correcteur automatique : répondre à la place de l'élève au
+ * lieu de l'aider. L'ordre est donc incertain > vrai > faux, et il est testé.
+ */
+function verdictAutoEvaluation(norm: string): 'vrai' | 'faux' | 'incertain' | null {
+  if (RAPPEL_INCERTAIN.some((m) => includesAsWord(norm, normalizeArabic(m)))) return 'incertain';
+  if (RAPPEL_VRAI.some((m) => includesAsWord(norm, normalizeArabic(m)))) return 'vrai';
+  if (RAPPEL_FAUX.some((m) => includesAsWord(norm, normalizeArabic(m)))) return 'faux';
+  return null;
+}
+
+/**
+ * PROGRAMME LE RAPPEL APRÈS LA RÉPONSE — et dit à l'élève quand il reviendra.
+ *
+ * LE DÉFAUT RÉPARÉ (15/10/2026). `reponseAuRappel` produisait un verdict, puis
+ * ce verdict n'était enregistré NULLE PART. Conséquence : l'élève qui répondait
+ * parfaitement et celui qui répondait « لا أعرف » étaient reprogrammés à
+ * l'identique — c'est-à-dire jamais, puisque rien ne les reprogrammait.
+ *
+ * La qualité vient de deux sources, dans cet ordre :
+ *   1. le verdict déclaré (« صح » / « خطأ » / « لا أعرف ») — c'est ainsi que
+ *      fonctionnent toutes les applications de cartes, et l'élève est honnête
+ *      sur sa propre restitution ;
+ *   2. sinon, la réponse RÉDIGÉE est notée sur les mots-clés de la fiche :
+ *      c'est la même mesure que le corpus des concepts applique à ses preuves,
+ *      avec ici `minEvidence = 1` — une fiche est un rappel court, exiger trois
+ *      mots-clés reviendrait à refuser presque toutes les bonnes réponses.
+ *
+ * L'échéance est ensuite calculée par l'algorithme SM-2 canonique, à partir de
+ * l'historique de CETTE fiche — pas d'une échelle fixe.
+ */
+function avecEcheanceRappel(
+  action: TutorAction,
+  card: KnowledgeCard,
+  rawInput: string,
+): TutorAction {
+  const verdict = verdictAutoEvaluation(normalizeArabic(rawInput));
+  const qualite = verdict
+    ? qualiteDepuisAutoEvaluation(verdict)
+    : qualiteDepuisPreuves(rawInput, { acceptedEvidence: card.keywords, minEvidence: 1 });
+  const etat = noterRappel(card.id, qualite);
+  return { ...action, text: `${action.text}\n\n⏱️ ${phraseEcheance(etat.intervalDays)}` };
+}
+
 /** Mots qui valent « vrai » / « faux » à la question de rappel. Comparés par MOT
  *  ENTIER : « لا » doit être un mot, pas les deux lettres de « سلام ». */
 const RAPPEL_VRAI = ['صح', 'صحيح', 'نعم', 'أجل', 'اجل', 'true', 'vrai'];
@@ -621,12 +672,10 @@ const RAPPEL_FAUX = ['خطأ', 'خطا', 'لا', 'غير صحيح', 'false', 'fa
 function reponseAuRappel(card: KnowledgeCard, rawInput: string): TutorAction {
   const phrase = phraseRelation(card);
   const norm = normalizeArabic(rawInput);
-  const ditVrai = RAPPEL_VRAI.some((m) => includesAsWord(norm, normalizeArabic(m)));
-  const ditFaux = RAPPEL_FAUX.some((m) => includesAsWord(norm, normalizeArabic(m)));
-  // AVANT le verdict : « لا أعرف » contient le mot « لا ». Le lire comme « faux »
-  // serait la faute typique du correcteur automatique — répondre à la place de
-  // l'élève au lieu de l'aider. L'incertitude est une réponse honnête.
-  const ditIncertain = RAPPEL_INCERTAIN.some((m) => includesAsWord(norm, normalizeArabic(m)));
+  const verdict = verdictAutoEvaluation(norm);
+  const ditVrai = verdict === 'vrai';
+  const ditFaux = verdict === 'faux';
+  const ditIncertain = verdict === 'incertain';
 
   let entete: string;
   if (ditIncertain) {
@@ -2000,7 +2049,11 @@ export function processStudentInput(session: BotSession, rawInput: string): Engi
     ) {
       const s2: BotSession = { ...session, pendingRecallCardId: null };
       saveSession(s2);
-      return { session: s2, action: reponseAuRappel(recallCard, rawInput) };
+      // Le verdict était calculé puis jeté : il programme désormais le rappel.
+      return {
+        session: s2,
+        action: avecEcheanceRappel(reponseAuRappel(recallCard, rawInput), recallCard, rawInput),
+      };
     }
     // Saisie vide, trop courte ou intention forte : on libère et on continue.
     const s2: BotSession = { ...session, pendingRecallCardId: null };

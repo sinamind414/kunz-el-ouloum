@@ -47,6 +47,25 @@ import type { ProfilPourLeGuide } from '../data/capitaine';
 
 const CLE = 'boussole_profil_erreurs';
 
+/**
+ * REGISTRE DES ERREURS FERMÉES — le capital, en dur dans le téléphone.
+ *
+ * Séparé du profil (qui contient les erreurs OUVERTES) parce qu'il ne joue pas
+ * le même rôle : le profil dit « voilà ce qui ne va pas », le registre dit
+ * « voilà ce qui est réglé ». Ouvrir le second pour lire le premier effacerait
+ * la seule trace qui ne se remet jamais à zéro.
+ *
+ * POURQUOI IL EXISTE (15/10/2026). `oublierErreur()` existait déjà — et n'était
+ * appelée nulle part sauf dans son propre test. Or c'est l'événement le plus
+ * précieux du produit : le seul capital qui monte même quand la série casse,
+ * celui qui se comporte vraiment comme des intérêts composés. Sans registre, on
+ * ne peut ni le compter, ni le montrer à l'élève, ni féliciter honnêtement.
+ */
+const CLE_FERMEES = 'boussole_erreurs_fermees';
+
+/** Borne du registre : un téléphone d'entrée de gamme, pas un entrepôt. */
+const MAX_FERMEES = 40;
+
 /** Nombre de types d'erreur suivis — on ne garde pas un historique sans fin. */
 const MAX_TYPES = 24;
 /** Nombre de thèmes mémorisés par type d'erreur. */
@@ -62,6 +81,57 @@ export interface CompteurErreur {
 }
 
 export type ProfilErreurs = Record<string, CompteurErreur>;
+
+/** Comment une erreur a été fermée. */
+export type OrigineFermeture = 'production_propre' | 'reprise_manuelle';
+
+export interface ErreurFermee {
+  code: string;
+  /** Thème (ou unité) où l'erreur a été fermée — pour la nommer, pas seulement la compter. */
+  theme?: string;
+  /** Horodatage de la fermeture. */
+  fermeMs: number;
+  par: OrigineFermeture;
+  /**
+   * Horodatage de la RÉOUVERTURE éventuelle. Une erreur « fermée » qui revient
+   * est le révélateur le plus honnête de ce produit : elle dit que le diagnostic
+   * était faux. On la garde au lieu de l'effacer — c'est une information, pas une
+   * honte, et c'est le seul moyen de mesurer si la fermeture valait quelque chose.
+   */
+  reouverteMs?: number;
+}
+
+function lireFermees(): ErreurFermee[] {
+  try {
+    const brut = localStorage.getItem(CLE_FERMEES);
+    if (!brut) return [];
+    const j = JSON.parse(brut) as unknown;
+    if (!Array.isArray(j)) return [];
+    return j
+      .filter((e): e is ErreurFermee => {
+        const x = e as Partial<ErreurFermee> | null;
+        return Boolean(
+          x &&
+            typeof x.code === 'string' &&
+            x.code.length > 0 &&
+            x.code.length <= 64 &&
+            typeof x.fermeMs === 'number' &&
+            Number.isFinite(x.fermeMs),
+        );
+      })
+      .slice(0, MAX_FERMEES);
+  } catch {
+    return [];
+  }
+}
+
+function ecrireFermees(entrees: ErreurFermee[]): void {
+  try {
+    localStorage.setItem(CLE_FERMEES, JSON.stringify(entrees.slice(0, MAX_FERMEES)));
+  } catch {
+    /* stockage plein : on perd le registre, jamais le travail de l'élève */
+  }
+}
 
 function lire(): ProfilErreurs {
   try {
@@ -128,8 +198,27 @@ export function enregistrerErreurs(
     profil[code] = { n: courant.n + 1, dernier: quand, themes };
     enregistrees += 1;
   }
-  if (enregistrees > 0) ecrire(profil);
+  if (enregistrees > 0) {
+    ecrire(profil);
+    // RÉOUVERTURE : une erreur qu'on croyait fermée vient de réapparaître.
+    // C'est l'information la plus honnête du produit — elle dit que la fermeture
+    // précédente ne valait rien. On la marque, on ne l'efface pas.
+    marquerReouvertes(Object.keys(profil).filter((c) => codes.includes(c)), quand);
+  }
   return enregistrees;
+}
+
+/** Marque comme RÉOUVERTE toute erreur fermée qui réapparaît dans une production. */
+function marquerReouvertes(codes: string[], quand: string): void {
+  if (codes.length === 0) return;
+  const fermees = lireFermees();
+  let change = false;
+  const maj = fermees.map((e) => {
+    if (e.reouverteMs || !codes.includes(e.code)) return e;
+    change = true;
+    return { ...e, reouverteMs: Date.parse(quand) || Date.now() };
+  });
+  if (change) ecrireFermees(maj);
 }
 
 /** Profil brut — pour l'affichage détaillé et les tests. */
@@ -197,10 +286,135 @@ export function oublierErreur(code: string): void {
   ecrire(profil);
 }
 
+/**
+ * FERME UNE ERREUR — et l'inscrit au registre, ce qu'`oublierErreur` ne fait pas.
+ *
+ * La différence entre les deux est volontaire et vaut d'être dite :
+ *   · `oublierErreur` EFFACE. C'est une remise à zéro, on ne saura pas qu'elle a
+ *     eu lieu. Utile pour un bouton « repartir de zéro ».
+ *   · `fermerErreur` EFFACE **et CONSIGNE**. C'est un ÉVÉNEMENT : quelque chose
+ *     qui ne va plus mal. C'est cette trace-là qui permet de dire à l'élève
+ *     « une erreur est sortie de ton carnet », et de compter un capital qui ne
+ *     se remet jamais à zéro.
+ *
+ * Renvoie `false` si le code n'était pas dans le profil (rien à fermer) — on
+ * n'inscrit pas au registre une erreur qui n'a jamais été ouverte, sinon le
+ * capital serait gonflé par des évènements qui n'ont pas eu lieu.
+ */
+export function fermerErreur(
+  code: string,
+  contexte: { theme?: string; quand?: Date; par?: OrigineFermeture } = {},
+): boolean {
+  const profil = lire();
+  if (!(code in profil)) return false;
+  delete profil[code];
+  ecrire(profil);
+
+  const fermees = lireFermees();
+  // Une seule entrée par code : si l'erreur avait déjà été fermée puis rouverte,
+  // la nouvelle fermeture remplace l'ancienne (c'est la plus récente qui compte)
+  // et la réouverture est abandonnée — elle est de nouveau fermée.
+  const sansCeCode = fermees.filter((e) => e.code !== code);
+  const entree: ErreurFermee = {
+    code,
+    theme: typeof contexte.theme === 'string' ? contexte.theme.slice(0, 120) : undefined,
+    fermeMs: (contexte.quand ?? new Date()).getTime(),
+    par: contexte.par ?? 'production_propre',
+  };
+  ecrireFermees([entree, ...sansCeCode]);
+  return true;
+}
+
+/** Le registre, du plus récent au plus ancien. `includeReouvertes` les inclut. */
+export function erreursFermees(includeReouvertes = true): ErreurFermee[] {
+  const toutes = lireFermees();
+  return includeReouvertes ? toutes : toutes.filter((e) => !e.reouverteMs);
+}
+
+/**
+ * LE CAPITAL : deux chiffres, et le second juge le premier.
+ *   `fermees`    — erreurs réellement réglées (jamais revenues).
+ *   `rouvertes`  — erreurs « réglées » qui sont revenues : le diagnostic était faux.
+ *
+ * C'est le seul couple d'indicateurs de ce produit qui NE SE REMET PAS À ZÉRO,
+ * et c'est pour cela qu'il doit être montré à l'élève quand sa série casse.
+ */
+export function capitalErreurs(): { fermees: number; rouvertes: number; total: number } {
+  const toutes = lireFermees();
+  const rouvertes = toutes.filter((e) => Boolean(e.reouverteMs)).length;
+  return { fermees: toutes.length - rouvertes, rouvertes, total: toutes.length };
+}
+
+/**
+ * LE PONT AVEC LA BOUCLE DU COACH — ferme les erreurs prescrites qui ont disparu.
+ *
+ * RÈGLE, ET SA LIMITE, dites franchement :
+ *   · on ferme une erreur prescrite quand une production CORRIGÉE ne la contient
+ *     plus. C'est la seule preuve dont dispose l'application, et c'est une vraie
+ *     preuve : l'élève a été relancé sur cette erreur précise, il a produit, elle
+ *     n'y est pas.
+ *   · LIMITE : si la production portait sur un thème sans rapport, l'absence ne
+ *     démontre rien. Quand le thème de la prescription est connu ET que la
+ *     production porte sur un thème différent, on ne ferme donc pas. Quand aucun
+ *     thème n'est connu d'un côté ou de l'autre, on ferme — sinon le registre ne
+ *     se remplirait jamais, et une boucle qui ne ferme rien ne sert à rien.
+ *
+ * Renvoie ce qui a été fermé, pour que l'appelant puisse le DIRE à l'élève.
+ */
+export function cloreErreursAbsentes(
+  codesDetectes: readonly string[],
+  contexte: {
+    theme?: string;
+    prescrites: ReadonlyArray<{ code: string; theme?: string }>;
+    quand?: Date;
+  },
+): ErreurFermee[] {
+  const detectes = new Set(codesDetectes);
+  const fermees: ErreurFermee[] = [];
+  for (const prescrite of contexte.prescrites) {
+    if (detectes.has(prescrite.code)) continue;
+    // Thèmes connus des deux côtés et différents → aucune conclusion possible.
+    if (prescrite.theme && contexte.theme && prescrite.theme !== contexte.theme) continue;
+    const theme = contexte.theme ?? prescrite.theme;
+    const ok = fermerErreur(prescrite.code, { theme, quand: contexte.quand, par: 'production_propre' });
+    if (ok) {
+      fermees.push({
+        code: prescrite.code,
+        theme,
+        fermeMs: (contexte.quand ?? new Date()).getTime(),
+        par: 'production_propre',
+      });
+    }
+  }
+  return fermees;
+}
+
+/**
+ * La phrase que l'élève lit quand une erreur SORT de son carnet.
+ *
+ * C'est la seule félicitation du produit qui vaut quelque chose : elle est
+ * MESURÉE, elle nomme un fait, et elle ne récompense pas l'assiduité mais le
+ * progrès. Le livre dit de coller une récompense immédiate sur une récompense
+ * différée (le Bac est loin) : celle-ci est immédiate ET vraie.
+ *
+ * N'est jamais produite quand on ne sait rien : `nomAr` vient de la taxonomie,
+ * jamais d'une invention.
+ */
+export function phraseErreurFermeeAr(code: string, theme?: string): string {
+  const item = ERROR_TAXONOMY[code];
+  const nom = item ? item.nameAr : null;
+  const tete = nom
+    ? `✅ **${nom}** — خرج من دفترك اليوم.`
+    : '✅ خطأ واحد خرج من دفترك اليوم.';
+  const ou = theme ? ` (${theme})` : '';
+  return `${tete}${ou}\n\nهذا لا يُلغيه أيّ يوم تفوتك: الخطأ المُغلق يبقى مُغلقًا.`;
+}
+
 /** Remise à zéro complète (bouton « repartir de zéro » côté élève). */
 export function effacerProfilErreurs(): void {
   try {
     localStorage.removeItem(CLE);
+    localStorage.removeItem(CLE_FERMEES);
   } catch {
     /* ignore */
   }

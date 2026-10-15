@@ -1,21 +1,31 @@
-// SM-2 (Wojniak 1987) — répétition espacée RÉELLE par carte, persistée en
+// SM-2 (Wozniak 1987) — répétition espacée RÉELLE par carte, persistée en
 // localStorage. RevisionView interroge cet état pour l'ordre du deck et les
 // intervalles affichés sur les boutons ; App.tsx/handleRateCard ne fait que
 // créditer l'XP (statuts 'again'|'hard'|'good'|'easy' mappés q=1/3/4/5).
+//
+// REFONTE DU 15/10/2026 — la formule n'est PLUS écrite ici.
+// Elle vivait dans ce fichier en double exemplaire avec quatre autres
+// ordonnanceurs figés (voir `src/lib/sm2.ts`, qui raconte le tout). Elle est
+// désormais importée depuis ce module canonique. Ce fichier ne garde que ce qui
+// lui est propre : le vocabulaire des quatre boutons, la persistance, l'ordre
+// du deck et les libellés.
+//
+// Les deux variantes qui appartiennent en propre aux cartes y sont déclarées :
+//   · `apresEchec: 'intra-seance'` — une carte ratée se reprÉSENTE dans la
+//     séance (on ne renvoie pas l'élève au lendemain pour une carte) ;
+//   · `ajustement: 'anki'` — les boutons « difficile » et « facile » modulent
+//     l'intervalle, sans quoi ils mentiraient.
+// Aucun de ces deux choix n'est appliqué aux concepts ni aux gestes.
+
+import { prochainEtatSm2, type EtatSm2, type QualiteSm2 } from '../lib/sm2';
 
 export type SrsRating = 'again' | 'hard' | 'good' | 'easy';
 
-export interface SrsCardState {
-  ease: number;        // facteur de facilité (≥ 1,3)
-  intervalDays: number; // intervalle courant en jours (0 = intra-séance)
-  dueAt: number;       // timestamp ms de la prochaine révision
-  reps: number;        // répétitions consécutives réussies
-  lapses: number;      // nombre de « encore » (remises à zéro)
-}
+/** L'état d'une carte EST l'état SM-2 canonique — un seul type, pas deux. */
+export type SrsCardState = EtatSm2;
 
 const STORAGE_KEY = 'kunz_flashcard_srs_v1';
 const DAY_MS = 86_400_000;
-const MIN_EASE = 1.3;
 
 function loadAll(): Record<string, SrsCardState> {
   try {
@@ -48,7 +58,7 @@ export function resetAllSrs(): void {
   }
 }
 
-const QUALITY: Record<SrsRating, number> = { again: 1, hard: 3, good: 4, easy: 5 };
+const QUALITY: Record<SrsRating, QualiteSm2> = { again: 1, hard: 3, good: 4, easy: 5 };
 
 /** Transition SM-2 pure : renvoie le nouvel état sans le persister. */
 export function nextSrsState(
@@ -56,29 +66,10 @@ export function nextSrsState(
   rating: SrsRating,
   now: number,
 ): SrsCardState {
-  const s: SrsCardState = previous ?? {
-    ease: 2.5,
-    intervalDays: 0,
-    dueAt: now,
-    reps: 0,
-    lapses: 0,
-  };
-  const q = QUALITY[rating];
-  const ease = Math.max(MIN_EASE, s.ease + (0.1 - (5 - q) * (0.08 + (5 - q) * 0.02)));
-
-  if (q < 3) {
-    // « encore » : cycle de répétition remis à zéro, carte re-présentée
-    // dans la séance courante (dueAt = maintenant, poussée en fin de deck).
-    return { ease, intervalDays: 0, dueAt: now, reps: 0, lapses: s.lapses + 1 };
-  }
-
-  const reps = s.reps + 1;
-  let intervalDays =
-    reps === 1 ? 1 : reps === 2 ? 6 : Math.max(1, Math.round(s.intervalDays * ease));
-  if (rating === 'hard') intervalDays = Math.max(1, Math.round(intervalDays * 0.8));
-  if (rating === 'easy') intervalDays = Math.max(4, Math.round(intervalDays * 1.3));
-
-  return { ease, intervalDays, dueAt: now + intervalDays * DAY_MS, reps, lapses: s.lapses };
+  return prochainEtatSm2(previous, QUALITY[rating], now, {
+    apresEchec: 'intra-seance',
+    ajustement: 'anki',
+  });
 }
 
 /** Note une carte et persiste son état SM-2. */

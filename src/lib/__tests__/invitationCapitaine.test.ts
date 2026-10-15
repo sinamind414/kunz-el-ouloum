@@ -9,12 +9,16 @@
 import { describe, expect, it } from 'vitest';
 import {
   HEURE_DEBUT,
+  motifDeInvitation,
   HEURE_PROTECTION_SERIE,
   HEURE_SILENCE_NOCTURNE,
   invitationDuMoment,
+  relaisDuMoment,
   SILENCE_APRES_IGNORANCE_MS,
   type ContexteCapitaine,
 } from '../invitationCapitaine';
+import { QUESTION_RELAIS_AR, RELAIS_VIDE } from '../relais';
+import { conseilDeRubrique } from '../../data/conseilsRubrique';
 
 const MAINTENANT = Date.parse('2026-10-14T18:00:00.000Z');
 
@@ -290,5 +294,184 @@ describe('effet cumulé — le capitaine nomme l’acquis, pas la faute', () => 
     // reparler. Un élève au travail aujourd'hui n'est pas relancé, même avec
     // 300 jours au compteur.
     expect(invitationDuMoment(ctx({ joursSansTravail: 0, serie: 12, joursAccumules: 300 }))).toBeNull();
+  });
+});
+
+// ════════════════════════════════════════════════════════════════════════════
+// ÉTAPE 3 — LA DATE DU BAC DÉCIDE (15/10/2026, soir).
+//
+// Avant ce bloc, la date du BAC était AFFICHÉE dans l'application depuis
+// toujours et ne décidait de RIEN : `CibleInvitation` acceptait `examens`, aucune
+// branche ne l'utilisait. C'est ce trou que ces tests ferment — et ils le
+// ferment en vérifiant aussi ce qui NE change PAS, parce que l'ordre du §5.C est
+// absolu : un jour manqué garde la priorité sur l'épreuve chronométrée.
+// ════════════════════════════════════════════════════════════════════════════
+describe('Le sprint (phase 5) — la date du BAC entre dans la décision', () => {
+  const EN_SPRINT = 21;
+
+  function ctxSprint(over: Partial<ContexteCapitaine> = {}): ContexteCapitaine {
+    return {
+      heure: 10,
+      joursSansTravail: 1,
+      serie: 6,
+      erreursAReprendre: 0,
+      derniereUnite: 'المناعة',
+      joursAccumules: 30,
+      derniereInvitationIgnoreeMs: null,
+      maintenantMs: MAINTENANT,
+      epreuveEnCours: false,
+      sprint: true,
+      joursAvantBac: EN_SPRINT,
+      ...over,
+    };
+  }
+
+  it('la proposition devient une PRODUCTION CHRONOMÉTRÉE, vers `examens`', () => {
+    const inv = invitationDuMoment(ctxSprint())!;
+    expect(inv.cible).toBe('examens');
+  });
+
+  it('les textes sont ceux du DÉPÔT, repris verbatim — rien n’est inventé', () => {
+    // Le contrôle porte sur l'identité des chaînes, pas sur leur allure : si
+    // quelqu'un réécrit le conseil de la rubrique « examens » sans toucher à la
+    // bulle, ce test tombe et dit où regarder.
+    const livre = conseilDeRubrique('examens')!;
+    const inv = invitationDuMoment(ctxSprint())!;
+    expect(inv.messageAr).toBe(livre.conseilAr);
+    expect(inv.actionAr).toBe(livre.gesteAr);
+  });
+
+  it('le gain nomme le décompte RÉEL, et rien d’autre', () => {
+    const inv = invitationDuMoment(ctxSprint({ joursAvantBac: 21 }))!;
+    expect(inv.gainImmediatAr).toContain('21');
+  });
+
+  it('un décompte inexploitable ne produit jamais un chiffre faux', () => {
+    for (const mauvais of [null, undefined, Number.NaN, Number.POSITIVE_INFINITY]) {
+      const inv = invitationDuMoment(ctxSprint({ joursAvantBac: mauvais }))!;
+      expect(inv.gainImmediatAr, String(mauvais)).not.toContain('NaN');
+      expect(inv.gainImmediatAr).not.toContain('بقي');
+    }
+  });
+
+  it('la fenêtre horaire s’élargit : un sprint se commence le matin', () => {
+    // La protection de série n'a de sens qu'en soirée ; une simulation, non.
+    expect(invitationDuMoment(ctxSprint({ heure: 9 }))).not.toBeNull();
+    // Sans sprint, la même situation reste silencieuse avant 17 h : c'est le
+    // comportement historique, et il ne doit pas bouger.
+    expect(invitationDuMoment(ctxSprint({ heure: 9, sprint: false }))).toBeNull();
+  });
+
+  it('le motif est DISTINCT de celui de la protection de série', () => {
+    // Sinon trois échecs sur « protéger ta série » retireraient aussi la
+    // proposition d'épreuve chronométrée : deux demandes différentes doivent
+    // échouer séparément pour être retirées séparément.
+    const sprint = motifDeInvitation(invitationDuMoment(ctxSprint())!);
+    const ordinaire = motifDeInvitation(
+      invitationDuMoment(ctxSprint({ sprint: false, heure: 18 }))!,
+    );
+    expect(sprint).toBe('reprise:examens');
+    expect(ordinaire).toBe('reprise:training');
+  });
+
+  it('UN JOUR MANQUÉ GARDE LA PRIORITÉ — l’ordre du §5.C est absolu', () => {
+    // Deux jours sans rien : la plus petite action possible, pas une épreuve.
+    const inv = invitationDuMoment(ctxSprint({ joursSansTravail: 2 }))!;
+    expect(inv.cible).toBe('reviser');
+    expect(inv.cible).not.toBe('examens');
+  });
+
+  it('et les silences restent des silences, en sprint comme ailleurs', () => {
+    expect(invitationDuMoment(ctxSprint({ joursSansTravail: 0 })), 'travail déjà fait').toBeNull();
+    expect(invitationDuMoment(ctxSprint({ epreuveEnCours: true })), 'pendant l’épreuve').toBeNull();
+    expect(invitationDuMoment(ctxSprint({ heure: 23 })), 'la nuit').toBeNull();
+    expect(
+      invitationDuMoment(ctxSprint({ derniereInvitationIgnoreeMs: MAINTENANT - 60_000 })),
+      'message ignoré il y a une minute',
+    ).toBeNull();
+    expect(
+      invitationDuMoment(ctxSprint({ serie: 0, joursSansTravail: 5, erreursAReprendre: 0 })),
+      'rien à proposer',
+    ).toBeNull();
+  });
+
+  it('un sprint non déclaré ne change RIEN au comportement historique', () => {
+    // Le verrou de non-régression : sans `sprint`, la même situation produit
+    // exactement ce qu'elle produisait avant l'étape 3.
+    const avant = invitationDuMoment(ctxSprint({ sprint: undefined, heure: 18 }));
+    expect(avant!.cible).toBe('training');
+    expect(avant!.actionAr).toContain('دقيقتان');
+  });
+});
+
+describe('Étape 5 — LE RELAIS HUMAIN PARLE SEUL (une voix à la fois, jamais deux)', () => {
+  /**
+   * La situation : série morte, erreurs en mémoire — le capitaine a quelque
+   * chose à dire (`راجع خطأً واحدًا من دفترك`, motif `erreur:methodology`).
+   *
+   * LE MOTIF RETIRÉ EST DÉLIBÉRÉMENT UN AUTRE (`reprise:reviser`). S'il était
+   * celui de la situation, le silence viendrait du retrait lui-même et le test ne
+   * prouverait rien : vérifié en retirant l'arbitrage, le test restait vert. Ici,
+   * le silence ne peut venir que de l'arbitrage — la mutation le fait tomber.
+   */
+  const situation = { joursSansTravail: 5, serie: 0, erreursAReprendre: 3 };
+  const motifRetire: Partial<ContexteCapitaine> = { ...situation, motifsRetires: ['reprise:reviser'] };
+
+  it('sans motif retiré, il n’existe pas : la quatrième tentative ne vient qu’après trois', () => {
+    expect(
+      relaisDuMoment(ctx(situation)),
+      'le relais s’est invité avant que le capitaine ait renoncé',
+    ).toBeNull();
+  });
+
+  it('un motif retiré : la nomination est posée, exactement telle qu’elle a été arrêtée', () => {
+    expect(relaisDuMoment(ctx(motifRetire))).toEqual({ genre: 'nomination', questionAr: QUESTION_RELAIS_AR });
+  });
+
+  it('et alors LA BULLE SE TAIT — le relais n’est pas une deuxième voix', () => {
+    // Le même contexte, SANS le relais : le capitaine parle de l'erreur à reprendre.
+    expect(invitationDuMoment(ctx(situation))).not.toBeNull();
+    // Avec : plus un mot. Une seule voix s'adresse à l'élève.
+    expect(invitationDuMoment(ctx(motifRetire))).toBeNull();
+  });
+
+  it('les portes du silence sont les MÊMES pour lui — une seule définition', () => {
+    const base = ctx(motifRetire);
+    expect(relaisDuMoment({ ...base, epreuveEnCours: true }), 'épreuve').toBeNull();
+    expect(relaisDuMoment({ ...base, heure: 23 }), 'nuit').toBeNull();
+    expect(relaisDuMoment({ ...base, heure: 5 }), 'petit matin').toBeNull();
+    expect(relaisDuMoment({ ...base, joursSansTravail: 0 }), 'a travaillé aujourd’hui').toBeNull();
+    expect(
+      relaisDuMoment({ ...base, derniereInvitationIgnoreeMs: MAINTENANT - 60_000 }),
+      'vient de fermer la bulle',
+    ).toBeNull();
+    // Et la même chose vaut pour sa présence : aucune question n'est « consommée »
+    // dans un moment où rien ne s'affiche.
+    expect(invitationDuMoment({ ...base, epreuveEnCours: true })).toBeNull();
+  });
+
+  it('une nomination qui attend sa réponse laisse la bulle silencieuse', () => {
+    const enAttente = ctx({ ...motifRetire, relais: { ...RELAIS_VIDE, demandeMs: MAINTENANT - 86_400_000 } });
+    expect(relaisDuMoment(enAttente)).not.toBeNull();
+    expect(invitationDuMoment(enAttente)).toBeNull();
+  });
+
+  it('après un refus : la question ne revient pas, et le guide continue de parler', () => {
+    const refuse = ctx({ ...motifRetire, relais: { ...RELAIS_VIDE, demandeMs: MAINTENANT - 86_400_000, refusMs: MAINTENANT } });
+    expect(relaisDuMoment(refuse), 'la question est revenue après un refus').toBeNull();
+    // Refuser le relais ne coupe PAS le guide : le motif retiré reste muet (c'est
+    // la porte de l'étape 1), mais la situation garde son conseil. Un refus qui
+    // ferait taire le capitaine serait une punition — et personne ne confierait
+    // un nom s'il y avait une punition.
+    expect(invitationDuMoment(refuse), 'refuser le relais a fait taire le guide').not.toBeNull();
+    // Sur un motif réellement retiré, la parole reste coupée : le refus du relais
+    // n'a rien changé à la porte des trois échecs.
+    const surLeMotifRetire = ctx({
+      joursSansTravail: 2,
+      serie: 3,
+      motifsRetires: ['reprise:reviser'],
+      relais: { ...RELAIS_VIDE, refusMs: MAINTENANT },
+    });
+    expect(invitationDuMoment(surLeMotifRetire)).toBeNull();
   });
 });

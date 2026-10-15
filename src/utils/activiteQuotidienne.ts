@@ -19,6 +19,7 @@
 import type { DailyGoalConfig, UserProgress } from '../types';
 import { jourLocal } from './dayKey';
 import { cumulJours, enregistrerJourActif, etatSerie, serieAffichee, type ProgressionJour } from './serie';
+import { marquerSuivie } from '../lib/prescriptions';
 
 export const OBJECTIF_QUOTIDIEN_DEFAUT: DailyGoalConfig = {
   type: 'minutes',
@@ -117,6 +118,25 @@ export function appliquerActiviteQuotidienne(
       completed: completedToday,
     },
   ];
+
+  // 5. LA BOUCLE DU COACH — et c'est ICI, pas dans un écran.
+  //
+  // `appliquerActiviteQuotidienne` est le SEUL endroit de l'application qui
+  // atteste d'un travail réel : le compteur de minutes ou de questions monte,
+  // c'est-à-dire que l'élève a produit quelque chose de mesurable. Un clic sur
+  // « agir » ou un changement d'onglet ne prouvent rien ; ceci, si.
+  //
+  // On a donc la seule définition honnête de « prescription suivie » : le
+  // capitaine a demandé quelque chose, et du travail a effectivement eu lieu
+  // avant l'expiration. À défaut de savoir si l'élève a fait *exactement* ce qui
+  // était demandé, on sait qu'il a fait quelque chose — et c'est la différence
+  // entre un coach qui parle et un coach qui suit.
+  //
+  // Placé APRÈS le cumul (donc jamais sur un delta nul) : appeler la fonction
+  // sans travail réel ne doit pas créditer une prescription.
+  if ((delta.minutes ?? 0) > 0 || (delta.questions ?? 0) > 0) {
+    marquerSuivie(now.getTime());
+  }
 
   return {
     progress: {

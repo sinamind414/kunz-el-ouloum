@@ -76,11 +76,28 @@ const icmLabelFr = (icm: number | null): string => icm === null ? '' : icm < 60 
 // Référentiel unique des intervalles (audit 03102026, idée 2).
 // AVANT : [1, 3, 7, 16, 30] en dur ici, en conflit avec le J+14 de nbaEngine.
 // APRÈS : on s'aligne sur la source canonique J+1 → J+3 → J+7 → J+14.
-import { SPACED_RECALL_INTERVALS } from '../data/spacedRecallIntervals';
+import { echelleNominaleSm2 } from '../lib/sm2';
 import MarqueDocument from './MarqueDocument';
-import { enregistrerErreurs, profilPourLeGuide, resumeProfilAr } from '../utils/profilErreurs';
+import {
+  cloreErreursAbsentes,
+  enregistrerErreurs,
+  phraseErreurFermeeAr,
+  profilPourLeGuide,
+  resumeProfilAr,
+} from '../utils/profilErreurs';
+import { erreursPrescritesEnAttente } from '../lib/prescriptions';
 import { CAPITAINE_IDENTITE_AR, messageCapitaine } from '../data/capitaine';
-const REVIEW_GAPS = [...SPACED_RECALL_INTERVALS];
+// LES ESPACEMENTS AFFICHÉS ICI NE SONT PAS LE CALENDRIER DE L'ÉLÈVE (15/10/2026).
+//
+// Cette liste était `[...SPACED_RECALL_INTERVALS]` = [1, 3, 7, 14]. Elle est
+// désormais prise dans l'algorithme SM-2, comme un ORDRE DE GRANDEUR : une suite
+// de réponses parfaites espacerait ainsi. Le calendrier réel de l'élève, lui,
+// dépend de la qualité de chacune de ses réponses — c'est le principe même de
+// SM-2, et deux écrans ne doivent plus annoncer deux calendriers différents
+// (défaut corrigé le 14/10).
+//
+// Chiffres ronds : `echelleNominaleSm2` renvoie des intervalles SM-2 exacts.
+const REVIEW_GAPS = echelleNominaleSm2(4);
 
 interface MethodologyProps {
   onBackToHome?: () => void;
@@ -91,6 +108,16 @@ export default function MethodologyCompilerView({ onBackToHome }: MethodologyPro
   const [activeTab, setActiveTab] = useState<AtelierId>('simulator');
   // File de correction (Phase 3) — bump pour rafraîchir l'onglet + le badge
   const [correctionVersion, setCorrectionVersion] = useState(0);
+  /**
+   * LA SEULE FÉLICITATION MESURÉE DU PRODUIT.
+   *
+   * Elle n'est pas allumée par l'assiduité, ni par un score, ni par un clic —
+   * seulement quand une erreur PRÉCÉDEMMENT PRESCRITE PAR LE CAPITAINE a
+   * réellement disparu d'une production corrigée. Le livre dit de coller une
+   * récompense immédiate sur une récompense différée (le BAC est loin) :
+   * celle-ci est immédiate ET vraie, ce qui est la seule combinaison qui tienne.
+   */
+  const [creditFermeture, setCreditFermeture] = useState<string | null>(null);
   // Grille de lettres (portage TS) — verdict officiel calculé au submit
   const [letterReport, setLetterReport] = useState<MethodologyLetterReport | null>(null);
   const [refCardOpen, setRefCardOpen] = useState(false); // carte-référence en stage 4
@@ -363,6 +390,35 @@ const handleSelectStage = (stage: 1 | 2 | 3 | 4) => {
         theme: currentExercise?.theme,
       });
     }
+    // Hors du `if` : une erreur prescrite se ferme quand elle DISPARAÎT.
+    bouclerApresCorrection(
+      rep.detectedErrors.map(e => e.tag),
+      currentExercise?.theme,
+    );
+  };
+
+  /**
+   * ══════════════════════════════════════════════════════════════════════════
+   * FERMER LA BOUCLE APRÈS UNE CORRECTION (15/10/2026).
+   * ══════════════════════════════════════════════════════════════════════════
+   * Appelée après CHAQUE production corrigée, y compris — et surtout — quand
+   * AUCUNE erreur n'a été détectée. C'est le point qu'il est facile de rater :
+   * une erreur prescrite se ferme précisément quand elle N'APPARAÎT PLUS. Placer
+   * cet appel dans le `if (detectedErrors.length > 0)` aurait rendu la fermeture
+   * impossible dans le seul cas où elle est vraie.
+   *
+   * Le crédit n'est affiché QUE si quelque chose a réellement été fermé, et il
+   * nomme l'erreur par son nom publié (taxonomie) — jamais un encouragement
+   * générique. Voir `cloreErreursAbsentes` pour la règle et sa limite assumée.
+   */
+  const bouclerApresCorrection = (codesDetectes: string[], theme?: string) => {
+    const fermees = cloreErreursAbsentes(codesDetectes, {
+      theme,
+      prescrites: erreursPrescritesEnAttente(),
+    });
+    if (fermees.length === 0) return;
+    const premiere = fermees[0]!;
+    setCreditFermeture(phraseErreurFermeeAr(premiere.code, premiere.theme));
   };
 
   // Submit Stage 3 or 4
@@ -461,6 +517,11 @@ const handleSelectStage = (stage: 1 | 2 | 3 | 4) => {
         theme: currentExercise?.theme,
       });
     }
+    // Hors du `if` : une erreur prescrite se ferme quand elle DISPARAÎT.
+    bouclerApresCorrection(
+      rep.detectedErrors.map(e => e.tag),
+      currentExercise?.theme,
+    );
   };
 
   // Reprendre un brouillon archivé (diagnostic → simulateur)
@@ -2132,6 +2193,23 @@ const handleSelectStage = (stage: 1 | 2 | 3 | 4) => {
                 n'existe pas : un guide qui parle pour ne rien dire devient du
                 bruit et l'élève cesse de le lire.
               */}
+                {/*
+                  LE CRÉDIT — mesuré, nommé, immédiat. Il apparaît au-dessus de la
+                  carte du guide parce que c'est une BONNE nouvelle et qu'elle doit
+                  se lire avant le rappel des erreurs qui restent.
+                */}
+                {creditFermeture && (
+                  <div
+                    data-testid="credit-erreur-fermee"
+                    dir="rtl"
+                    className="mb-3 rounded-2xl border border-emerald-500/35 bg-emerald-50 px-3.5 py-3 dark:border-emerald-400/30 dark:bg-emerald-500/10"
+                  >
+                    <p className="whitespace-pre-line text-[12px] font-bold leading-relaxed text-[#00562b] dark:text-emerald-200">
+                      {creditFermeture}
+                    </p>
+                  </div>
+                )}
+
               {(() => {
                 const message = messageCapitaine('erreur', profilPourLeGuide());
                 const detail = resumeProfilAr();
@@ -2191,6 +2269,12 @@ const handleSelectStage = (stage: 1 | 2 | 3 | 4) => {
                 </h3>
                 <span className="text-xs font-bold text-emerald-600">5 دقائق استرجاع كتابي</span>
               </div>
+              {/* Note de vérité : ces écarts sont un ORDRE DE GRANDEUR. Le vrai
+                  intervalle de chaque fiche dépend de la qualité de la réponse
+                  de l'élève (SM-2), donc il diffère d'un élève à l'autre. */}
+              <p className="text-[11px] leading-relaxed text-gray-500 dark:text-gray-400 font-bold">
+                هذه الفواصل ترتيبٌ تقريبي: كلّما كانت إجابتك أدقّ، تباعدت المراجعة أكثر. الجدول الحقيقي يُحسب من جوابك، لا من العدد وحده.
+              </p>
 
               <div className="space-y-2.5">
                 {reviewSchedule.length === 0 ? (

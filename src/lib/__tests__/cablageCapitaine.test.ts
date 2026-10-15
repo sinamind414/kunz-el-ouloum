@@ -10,6 +10,8 @@ import { resolve } from 'node:path';
 
 const app = readFileSync(resolve(process.cwd(), 'src/App.tsx'), 'utf8');
 const hook = readFileSync(resolve(process.cwd(), 'src/hooks/useInvitationCapitaine.ts'), 'utf8');
+/** L'état de l'élève, assemblé une fois pour tous les consommateurs (étape 2). */
+const etatEleve = readFileSync(resolve(process.cwd(), 'src/lib/etatEleve.ts'), 'utf8');
 
 /** Identifiants d'onglet réellement gérés par App.tsx (relevés à la main). */
 const ONGLETS_REELS = new Set([
@@ -34,14 +36,27 @@ describe('la bulle est réellement branchée dans App.tsx', () => {
   it('« لاحقًا » appelle bien l’oubli temporisé, pas une fermeture définitive', () => {
     const bloc = app.slice(app.indexOf('bulle-capitaine-fermer'));
     expect(bloc.slice(0, 300)).toContain('onClick={ignorer}');
-    // Et l'oubli est TEMPORAIRE côté hook : il écrit un horodatage, pas un
-    // drapeau « ne plus jamais afficher ».
-    expect(hook).toContain("localStorage.setItem(CLE_IGNOREE, String(maintenantMs))");
-    expect(hook).not.toContain("'1')");
+    // Et l'oubli est TEMPORAIRE : il écrit un horodatage, pas un drapeau
+    // « ne plus jamais afficher ».
+    //
+    // L'écriture a déménagé le 15/10/2026 (soir) avec la famille « relation »
+    // qu'elle sert : elle vit dans `lib/etatEleve.ts`, qui est désormais le seul
+    // module à connaître cet horodatage. L'exigence, elle, ne bouge pas — et le
+    // test la vérifie LÀ OÙ ELLE EST, plus le fait que le hook y passe.
+    expect(etatEleve).toContain('localStorage.setItem(CLE_IGNOREE, String(maintenantMs))');
+    expect(etatEleve).not.toContain("'1')");
+    expect(hook).toContain('marquerInvitationIgnoree(t)');
   });
 
   it('l’action navigue vers l’onglet de l’invitation, en un clic', () => {
-    expect(app).toContain('onClick={() => setCurrentTab(invitation.cible)}');
+    // La destination reste la même — c'est le contrat de la loi 3 (un clic, une
+    // destination réelle, jamais une impasse). Depuis le 15/10/2026 le gestionnaire
+    // fait une chose de plus AVANT de naviguer : il note l'intention de l'élève
+    // (`accepter`), ce qui distingue dans la boucle du coach « il n'a pas vu » de
+    // « il a vu et n'a pas pu ». On vérifie les deux, séparément.
+    expect(app).toContain('setCurrentTab(invitation.cible)');
+    const bloc = app.slice(app.indexOf('bulle-capitaine-agir'));
+    expect(bloc.slice(0, 900)).toContain('accepter()');
   });
 
   it('la bulle n’est pas non plus affichée pendant l’épreuve', () => {

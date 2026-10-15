@@ -89,7 +89,15 @@ describe('deux QCM ratés avec la même cause déclarée font parler le capitain
 describe('le message est réellement AFFICHÉ quelque part', () => {
   it('l’atelier méthodologique rend la ligne du capitaine', () => {
     const vue = lire('src/components/MethodologyCompilerView.tsx');
-    expect(vue).toContain("import { enregistrerErreurs, profilPourLeGuide, resumeProfilAr }");
+    // On vérifie l'INTENTION — les trois fonctions du profil sont bien importées
+    // par l'atelier — et non la mise en forme de la ligne d'import : depuis le
+    // 15/10/2026 cette ligne est multiligne (elle porte aussi la fermeture des
+    // erreurs), et un test qui épelle une ligne exacte casse à chaque ajout
+    // légitime au lieu de garder ce qui compte.
+    for (const fn of ['enregistrerErreurs', 'profilPourLeGuide', 'resumeProfilAr']) {
+      expect(vue, `l'atelier n'importe plus ${fn} du profil d'erreurs`).toContain(fn);
+    }
+    expect(vue).toMatch(/from '\.\.\/utils\/profilErreurs'/);
     expect(vue).toContain('data-testid="capitaine-profil-erreurs"');
     expect(vue).toContain("messageCapitaine('erreur', profilPourLeGuide())");
   });

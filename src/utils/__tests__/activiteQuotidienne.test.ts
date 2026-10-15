@@ -5,6 +5,7 @@
 // focus, notation de flashcard, fin de quiz, question du tuteur.
 
 import { describe, expect, it } from 'vitest';
+import { emettrePrescription, lireRegistre } from '../../lib/prescriptions';
 import type { DailyGoalConfig, UserProgress } from '../../types';
 import {
   appliquerActiviteQuotidienne,
@@ -202,5 +203,42 @@ describe('jourChange — lecture seule du changement de jour', () => {
     expect(jourChange({ ...OBJECTIF_QUOTIDIEN_DEFAUT, lastActiveDate: '2026-10-13' }, LE_14)).toBe(true);
     expect(jourChange({ ...OBJECTIF_QUOTIDIEN_DEFAUT, lastActiveDate: '2026-10-14' }, LE_14)).toBe(false);
     expect(jourChange(undefined, LE_14)).toBe(true);
+  });
+});
+
+// 15/10/2026 — LA GARDE DU TRAVAIL MESURÉ (phase 1 de la vision du coach).
+//
+// La boucle du coach a besoin de savoir si une prescription a été HONORÉE. Le
+// critère retenu est le plus dur possible : du travail réellement mesuré — des
+// minutes ou des questions — et non un clic, un changement d'onglet ou l'ouverture
+// d'un écran. C'est ce qui empêche le registre de créditer une intention.
+//
+// Si quelqu'un retire un jour le garde-fou en croyant simplifier, ces deux tests
+// tombent : la suite vaut mieux qu'un commentaire.
+describe('la prescription n’est honorée que par du travail MESURÉ', () => {
+  it('un delta VIDE (0 minute, 0 question) ne crédite rien', () => {
+    localStorage.clear();
+    const p = progression({}, { lastActiveDate: '2026-10-14', todayMinutes: 10, todayQuestions: 3 });
+    // Rien n'a été fait : l'appel existe (l'écran s'est affiché), le crédit non.
+    appliquerActiviteQuotidienne(p, { minutes: 0, questions: 0 }, LE_14);
+    expect(localStorage.getItem('boussole_prescriptions_v1')).toBeNull();
+  });
+
+  it('une minute de travail réel suffit à honorer la prescription EN ATTENTE', () => {
+    localStorage.clear();
+    // Le capitaine a parlé : il y a une prescription en attente.
+    emettrePrescription({ situation: 'reprise', cible: 'methodology' }, {}, LE_14.getTime());
+    const p = progression({}, { lastActiveDate: '2026-10-14', todayMinutes: 10, todayQuestions: 3 });
+    appliquerActiviteQuotidienne(p, { minutes: 1 }, LE_14);
+    expect(lireRegistre(LE_14.getTime()).prescriptions[0]!.issue).toBe('suivie');
+  });
+
+  it('sans prescription en attente, le travail ne fabrique pas de registre', () => {
+    // Créditer dans le vide gonflerait le taux de suivi : le chiffre qui doit
+    // dire si le coach sert deviendrait flatteur et faux.
+    localStorage.clear();
+    const p = progression({}, { lastActiveDate: '2026-10-14', todayMinutes: 10, todayQuestions: 3 });
+    appliquerActiviteQuotidienne(p, { minutes: 30 }, LE_14);
+    expect(localStorage.getItem('boussole_prescriptions_v1')).toBeNull();
   });
 });

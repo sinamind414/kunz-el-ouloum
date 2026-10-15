@@ -56,7 +56,12 @@ describe('le cumul est AFFICHÉ là où l’élève regarde', () => {
 describe('le capitaine peut nommer l’acquis', () => {
   it('le contexte porte le cumul et le hook le fournit', () => {
     expect(lire('src/lib/invitationCapitaine.ts')).toContain('joursAccumules?: number;');
-    expect(lire('src/hooks/useInvitationCapitaine.ts')).toContain('joursAccumules: cumulJoursDepuisDaily(daily)');
+    // Le cumul est calculé UNE fois, avec le reste de la famille « assiduité »,
+    // puis transmis par l'adaptateur. Le 15/10/2026 (soir), cette ligne a quitté
+    // le hook pour `lib/etatEleve.ts` — l'exigence, elle, est la même : le contexte
+    // du capitaine porte le cumul, et le hook y passe.
+    expect(lire('src/lib/etatEleve.ts')).toMatch(/joursAccumules:\s*etat\.assiduite\.cumulJours/);
+    expect(lire('src/hooks/useInvitationCapitaine.ts')).toContain('contexteCapitaine(etat');
   });
 
   it('le message de reprise parle du cumul, jamais d’un chiffre inventé', () => {
