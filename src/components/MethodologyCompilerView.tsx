@@ -86,6 +86,12 @@ import {
   resumeProfilAr,
 } from '../utils/profilErreurs';
 import { erreursPrescritesEnAttente } from '../lib/prescriptions';
+// H1 (audit externe 16/10) : la micro-reprise correspondant à une erreur
+// détectée devient VISIBLE, et l'intention `schedule_recall` du corpus devient
+// un rappel SM-2 réellement programmé. Voir `planificationRappels.ts`.
+import { planifierRappelsPourErreurs, remediationPour } from '../lib/planificationRappels';
+import type { MicroRemediation } from '../data/microRemediations';
+import CarteMicroRemediation from './CarteMicroRemediation';
 import { CAPITAINE_IDENTITE_AR, messageCapitaine } from '../data/capitaine';
 // LES ESPACEMENTS AFFICHÉS ICI NE SONT PAS LE CALENDRIER DE L'ÉLÈVE (15/10/2026).
 //
@@ -118,6 +124,12 @@ export default function MethodologyCompilerView({ onBackToHome }: MethodologyPro
    * celle-ci est immédiate ET vraie, ce qui est la seule combinaison qui tienne.
    */
   const [creditFermeture, setCreditFermeture] = useState<string | null>(null);
+  /**
+   * H1 (audit 16/10) : la micro-reprise à afficher après une correction, ou
+   * `null`. Réinitialisée à CHAQUE correction sans erreur — une carte qui
+   * survivrait à sa cause serait du bruit, pas du tutorat.
+   */
+  const [carteRemediation, setCarteRemediation] = useState<MicroRemediation | null>(null);
   // Grille de lettres (portage TS) — verdict officiel calculé au submit
   const [letterReport, setLetterReport] = useState<MethodologyLetterReport | null>(null);
   const [refCardOpen, setRefCardOpen] = useState(false); // carte-référence en stage 4
@@ -395,6 +407,9 @@ const handleSelectStage = (stage: 1 | 2 | 3 | 4) => {
       rep.detectedErrors.map(e => e.tag),
       currentExercise?.theme,
     );
+    // H1 — Hors du `if`, même raison : la carte suit CHAQUE correction.
+    // Elle s'affiche si une micro-reprise existe, elle SE VIDE sinon.
+    remedierApresDetection(rep.detectedErrors.map(e => e.tag));
   };
 
   /**
@@ -419,6 +434,35 @@ const handleSelectStage = (stage: 1 | 2 | 3 | 4) => {
     if (fermees.length === 0) return;
     const premiere = fermees[0]!;
     setCreditFermeture(phraseErreurFermeeAr(premiere.code, premiere.theme));
+  };
+
+  /**
+   * ══════════════════════════════════════════════════════════════════════════
+   * H1 — LA MICRO-REPRISE APRÈS UNE ERREUR DÉTECTÉE (audit externe 16/10/2026).
+   * ══════════════════════════════════════════════════════════════════════════
+   * Deux effets, dans l'ordre des plans — celui du corpus, puis celui du carnet :
+   *
+   *   1. `planifierRappelsPourErreurs` — pour toute micro-reprise qui déclare
+   *      `nextAction: 'schedule_recall'`, le concept entre dans l'ordonnanceur
+   *      SM-2 : il REVIENDRA, au lieu de sombrer avec la séance. Idempotent :
+   *      refaire la même faute ne réinitialise pas un espacement en cours.
+   *   2. la PREMIÈRE micro-reprise correspondante est affichée (titre +
+   *      explication + question active, verbatim du corpus) — et le carton se
+   *      vide si AUCUNE erreur n'est détectée : pas de remédiation sans faute.
+   *
+   * Comme la fermeture ci-dessus, appelé HORS du « si erreur détectée » : la
+   * réinitialisation doit suivre chaque correction, pas seulement les ratées.
+   */
+  const remedierApresDetection = (codesDetectes: readonly string[]) => {
+    planifierRappelsPourErreurs(codesDetectes);
+    for (const code of codesDetectes) {
+      const remede = remediationPour(code);
+      if (remede) {
+        setCarteRemediation(remede);
+        return;
+      }
+    }
+    setCarteRemediation(null);
   };
 
   // Submit Stage 3 or 4
@@ -522,6 +566,9 @@ const handleSelectStage = (stage: 1 | 2 | 3 | 4) => {
       rep.detectedErrors.map(e => e.tag),
       currentExercise?.theme,
     );
+    // H1 — Hors du `if`, même raison : la carte suit CHAQUE correction.
+    // Elle s'affiche si une micro-reprise existe, elle SE VIDE sinon.
+    remedierApresDetection(rep.detectedErrors.map(e => e.tag));
   };
 
   // Reprendre un brouillon archivé (diagnostic → simulateur)
@@ -2209,6 +2256,15 @@ const handleSelectStage = (stage: 1 | 2 | 3 | 4) => {
                     </p>
                   </div>
                 )}
+
+                {/*
+                  H1 (audit 16/10) — la micro-reprise, sous la bonne nouvelle et
+                  avant le rappel des erreurs qui restent : corriger d'abord ce
+                  qui vient d'être raté. Contenu 100 % corpus (verbatim), la
+                  durée affichée pour que « c'est court » se lise AVANT de
+                  commencer. Réinitialisée à chaque correction sans erreur.
+                */}
+                {carteRemediation && <CarteMicroRemediation remediation={carteRemediation} />}
 
               {(() => {
                 const message = messageCapitaine('erreur', profilPourLeGuide());

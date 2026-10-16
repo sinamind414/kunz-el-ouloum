@@ -21,6 +21,7 @@ import { graineSession, melangerQuestions, origineDe } from '../utils/melangeOpt
 // mémoire vide à vie, et le capitaine n'avait rien à lui dire.
 import { CAUSES_QCM, doitDemanderCause, QUESTION_CAUSE_AR, REMERCIEMENT_CAUSE_AR, causeParId } from '../data/diagnosticQuiz';
 import { enregistrerErreurs } from '../utils/profilErreurs';
+import { planifierRappelsPourErreurs } from '../lib/planificationRappels';
 
 interface QuizViewProps {
   unitId: number;
@@ -157,6 +158,11 @@ export default function QuizView({ unitId, unitTitle, questions, onClose, onQuiz
     setCauseDemandee(true);
     if (cause?.code) {
       enregistrerErreurs([cause.code], { theme: unitTitle });
+      // H1 (audit 16/10) : même pont que l'atelier. Les trois codes déclarables
+      // ici n'ont pas encore de micro-reprise dans le corpus — l'appel est
+      // prêt pour le jour où le corpus en couvre un, et il coûte un simple
+      // lookup. Ne PAS le brancher serait recréer l'orphelin `planifierRappel`.
+      planifierRappelsPourErreurs([cause.code]);
     }
   };
 

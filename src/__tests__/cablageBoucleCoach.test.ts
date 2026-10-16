@@ -135,3 +135,50 @@ describe('le crédit ne doit jamais devenir un encouragement gratuit', () => {
     expect(bloc.slice(0, 900)).toContain('fermees.length === 0');
   });
 });
+
+// ─────────────────────────────────────────────────────────────────────────────
+// H1 (audit externe 16/10/2026) — la MICRO-REPRISE est branchée.
+//
+// Le même défaut qu'`oublierErreur` a failli se reproduire une quatrième fois :
+// `planifierRappel()` écrite pour honorer `nextAction: 'schedule_recall'`,
+// testée dans son propre module, et JAMAIS appelée hors de lui ; le corpus
+// `MICRO_REMEDIATIONS` affiché par aucune vue. La couverture COMPORTEMENTALE
+// du pont vit dans `lib/__tests__/planificationRappels.test.ts` (effet SM-2
+// observé, rouge par mutation). Ici on garde les POINTS DE CONNEXION, car un
+// refactor peut débrancher un appel sans qu'aucun test unitaire ne s'en aperçoive.
+// ─────────────────────────────────────────────────────────────────────────────
+describe('H1 — la micro-reprise après une erreur détectée', () => {
+  it('l’atelier PLANIFIE le rappel et AFFICHE la carte aux DEUX sites de correction', () => {
+    expect(ATELIER, 'le pont n’est plus importé').toMatch(
+      /from '\.\.\/lib\/planificationRappels'/,
+    );
+    expect(ATELIER, 'la carte du corpus n’est plus rendue').toContain('<CarteMicroRemediation');
+    // Les DEUX corrections (stage 2 et stage 3/4) doivent remédier, comme elles
+    // doivent TOUTES DEUX boucler — c'est le même piège de placement.
+    const appels = ATELIER.split('remedierApresDetection(').length - 1;
+    // La définition ne compte pas : elle s'écrit `remedierApresDetection = (`.
+    expect(appels, 'les deux corrections doivent remédier, pas une seule').toBe(2);
+    const carteAffichee = ATELIER.split('setCarteRemediation').length - 1;
+    expect(carteAffichee, 'afficher ET réinitialiser : la carte doit avoir les deux gestes')
+      .toBeGreaterThanOrEqual(3); // set initial + affichage + reset
+  });
+
+  it('le QCM planifie aussi — le second flux réel de détection', () => {
+    const quiz = lire('src/components/QuizView.tsx');
+    expect(quiz, 'le pont n’est plus importé côté QCM').toMatch(
+      /from '\.\.\/lib\/planificationRappels'/,
+    );
+    expect(quiz, 'la déclaration de cause ne planifie plus').toContain(
+      'planifierRappelsPourErreurs([cause.code])',
+    );
+  });
+
+  it('le pont HONORE l’intention du corpus — schedule_recall seul agit sur SM-2', () => {
+    const pont = lire('src/lib/planificationRappels.ts');
+    expect(pont, 'le résolveur unique a disparu').toContain('export function remediationPour');
+    expect(pont, 'nextAction n’est plus lu — l’intention du corpus redevient inerte').toContain(
+      "remediation.nextAction !== 'schedule_recall'",
+    );
+    expect(pont, 'l’ordonnanceur n’est plus appelé par le pont').toContain('planifierRappel(');
+  });
+});

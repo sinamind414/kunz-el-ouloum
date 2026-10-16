@@ -8,6 +8,14 @@ export interface MicroRemediation {
   id: string;
   conceptId: string;
   triggerCodes: string[];
+  /**
+   * Les codes de `ERROR_TAXONOMY` qui décrivent LA MÊME faute que cette
+   * micro-reprise — le pont vers l'espace de codes réellement produit par le
+   * correcteur (voir `lib/planificationRappels.ts`). Chaque lien est justifié
+   * par les deux textes, au sein de l'entrée. Absent = aucun code de la
+   * taxonomie ne déclenche cette remédiation (on ne force pas un lien).
+   */
+  taxonomyCodes?: string[];
   titleAr: string;
   estimatedMinutes: number; // 2 à 4
   explanationAr: string;
@@ -167,6 +175,12 @@ export const MICRO_REMEDIATIONS: Record<string, MicroRemediation> = {
     id: 'mr_method_analysis_interp',
     conceptId: 'enzymes',
     triggerCodes: ['err_analysis_interp'],
+    // PONT TAXONOMIE — les textes décrivent LA MÊME faute :
+    //  · verb_confusion : « تقديم تفسير لسؤال تحليل، أو الاكتفاء بالوصف في سؤال تفسير »
+    //  · premature_interpretation : « استعمال الروابط السببية (لأن، راجع إلى، بسبب) داخل مهمة التحليل الوصفي »
+    //  · cette remédiation : « حلّل = ملاحظة، فسّر = سبب » — séparer la
+    //    description de la cause scientifique est exactement la faute opposée.
+    taxonomyCodes: ['verb_confusion', 'premature_interpretation'],
     titleAr: 'حلّل = ملاحظة، فسّر = سبب',
     estimatedMinutes: 3,
     explanationAr: 'في التحليل نصف ما نراه في الوثيقة: تزايد، تناقص، ثبات، علاقة. في التفسير نربط الملاحظة بسببها العلمي باستعمال لأن أو يعود ذلك إلى.',
@@ -180,6 +194,11 @@ export const MICRO_REMEDIATIONS: Record<string, MicroRemediation> = {
     id: 'mr_method_hypothesis_rubama',
     conceptId: 'transcription',
     triggerCodes: ['err_hypothesis_maybe'],
+    // PONT TAXONOMIE — même faute :
+    //  · conditional_hypothesis : « استخدام كلمات التردد أو التعطيل في الفرضية (ربما، لعل) »
+    //  · cette remédiation : la formule assertive « نفترض أن ... مما يؤدي إلى »
+    //    est la contre-mesure directe de la formulation dubitative.
+    taxonomyCodes: ['conditional_hypothesis'],
     titleAr: 'الفرضية الدقيقة تبدأ بـ «نفترض أن»',
     estimatedMinutes: 3,
     explanationAr: 'الفرضية العلمية ليست تخميناً غامضاً. اربطها بدليل من الوثيقة، ثم صغها بعبارة محددة وقابلة للاختبار: نفترض أن ... مما يؤدي إلى ....',
