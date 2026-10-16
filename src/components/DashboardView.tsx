@@ -8,6 +8,7 @@ import {
   Flame,
   HelpCircle,
   Layers,
+  Route as RouteIcon,
   Share2,
   Trophy,
   UserPlus,
@@ -351,6 +352,29 @@ export default function DashboardView({
           </button>
         )}
       </section>
+
+      {/* « مساري » — la colonne vertébrale verrouillée (Phase 2, GO 2026-10-16).
+          Le moteur existed depuis longtemps (parcoursProgress : états
+          locked/available/current/done, jalons, rappels J+14) et son écran
+          ParcoursView était construit mais jamais branché. Plainte expert :
+          « je dois verrouiller des rubriques pour déverrouiller d'autres,
+          chapitre par chapitre » — la porte devient VISIBLE et unique. */}
+      <button
+        type="button"
+        data-testid="btn-masari"
+        onClick={() => onNavigateToTab?.('parcours')}
+        className="group flex w-full items-center gap-3 rounded-3xl border border-[#006d37]/30 bg-gradient-to-l from-emerald-700 to-[#006d37] px-4 py-3.5 text-right text-white shadow-md transition hover:-translate-y-0.5 hover:shadow-lg cursor-pointer"
+      >
+        <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-white/15 text-white">
+          <RouteIcon className="h-5 w-5" />
+        </span>
+        <span className="min-w-0 flex-1">
+          <span className="block text-sm font-black">مساري</span>
+          <span className="block text-[11px] font-bold leading-relaxed text-emerald-50/90 dark:text-emerald-100/80">
+            مهمّة اليوم أولًا — الفصل يفتح فصلًا، والتمارين مع مجالها
+          </span>
+        </span>
+      </button>
 
       <section aria-labelledby="paths-title" className="space-y-3">
         <div className="px-1">

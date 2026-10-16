@@ -60,12 +60,17 @@ describe('une seule porte par fonctionnalité', () => {
 
   it('l accueil ne garde que ce qui n a pas d autre porte', () => {
     const ciblesAccueil = cibles(DASHBOARD);
-    // Portes légitimes : les deux rubriques principales et le المرشد.
+    // Portes légitimes : les deux rubriques principales, le المرشد, et —
+    // depuis le Commit A de la Phase 2 (GO 2026-10-16) — « مساري » : le
+    // parcours verrouillé n'avait AUCUNE porte (zombie documenté par
+    // integriteVues.lock.test.ts). Ce n'est donc PAS une porte dupliquée,
+    // c'est la première — verrou masariBranche.test.tsx prouve l'unicité.
     expect(ciblesAccueil).toContain('lesson');
     expect(ciblesAccueil).toContain('training');
     expect(ciblesAccueil).toContain('chat');
+    expect(ciblesAccueil).toContain('parcours');
     // Rien d'autre.
-    expect(ciblesAccueil.filter((t) => !['lesson', 'training', 'chat'].includes(t))).toEqual([]);
+    expect(ciblesAccueil.filter((t) => !['lesson', 'training', 'chat', 'parcours'].includes(t))).toEqual([]);
   });
 
   it('« الخرائط الذهنية » vit dans « الدروس », pas ailleurs', () => {

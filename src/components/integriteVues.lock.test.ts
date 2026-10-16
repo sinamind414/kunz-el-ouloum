@@ -57,12 +57,13 @@ const PRODUCTION = fichiersProduction().map((p) => ({
 }));
 
 describe('verrou anti-zombie : chaque composant vit dans le graphe de production', () => {
-  // Exception EN ATTENTE DE DÉCISION éditoriale (2026-10-16) : ParcoursView
-  // (18 Ko + test 10 Ko, chemin linéaire + NBA, testids `parcours-*`) est
-  // complet mais jamais branché — NbaCard (la tâche du jour) vit lui sur le
-  // tableau de bord (DashboardView). Supprimer = perte d'une feature
-  // récupérable via git ; brancher = décision de navigation (App.tsx protégé).
-  const EXCEPTIONS_EN_ATTENTE = ['ParcoursView'];
+  // EXCEPTION RÉSOLUE (2026-10-16, Commit A Phase 2, GO utilisateur) :
+  // ParcoursView (18 Ko + test 10 Ko, chemin linéaire + NBA, testids
+  // `parcours-*`) était complète mais jamais branchée. Elle est maintenant
+  // rendue par App.tsx (`currentTab === 'parcours'`, porte « مساري » sur le
+  // tableau de bord, verrou masariBranche.test.tsx) — l'exception est vide :
+  // tout composant orphelin doit de nouveau faire échouer ce verrou.
+  const EXCEPTIONS_EN_ATTENTE: string[] = [];
 
   it('aucun composant orphelin (non importé par un fichier de production)', () => {
     const dir = join(RACINE, 'src', 'components');

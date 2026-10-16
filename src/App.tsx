@@ -104,6 +104,10 @@ const TrainingHubView = lazy(() => import('./components/TrainingHubView'));
 const ExamensHubView = lazy(() => import('./components/ExamensHubView'));
 // Hub « المراجعة » — miroir du hub d'entraînement, côté consolidation.
 const ReviewHubView = lazy(() => import('./components/ReviewHubView'));
+// « مساري » — le parcours verrouillé (Phase 2, GO 2026-10-16). Le zombie
+// documenté par integriteVues.lock.test.ts redevient vivant : l'écran existait
+// (17 tests verts) mais n'était jamais rendu par l'application.
+const ParcoursView = lazy(() => import('./components/ParcoursView'));
 const CombatChallengePortal = lazy(() => import('./components/CombatChallengePortal'));
 const UnitIntroPortal = lazy(() => import('./components/UnitIntroPortal'));
 const StudentAuthView = lazy(() => import('./components/StudentAuthView'));
@@ -163,7 +167,7 @@ export default function App() {
   // Navigation tab state
   // Exercice sur lequel ouvrir l'atelier quand on arrive depuis le plan.
   const [bacIdeaFocus, setBacIdeaFocus] = useState<string | null>(null);
-  const [currentTab, setCurrentTab] = useState<'splash' | 'home' | 'review' | 'stats' | 'chat' | 'methodology' | 'bootcamp' | 'badges' | 'lesson' | 'workshop' | 'mindmap' | 'teacher' | 'animations' | 'situations' | 'schemas' | 'training' | 'plan' | 'bacideas' | 'focus' | 'tadwin' | 'moi' | 'reviser' | 'examens'>('splash');
+  const [currentTab, setCurrentTab] = useState<'splash' | 'home' | 'review' | 'stats' | 'chat' | 'methodology' | 'bootcamp' | 'badges' | 'lesson' | 'workshop' | 'mindmap' | 'teacher' | 'animations' | 'situations' | 'schemas' | 'training' | 'plan' | 'bacideas' | 'focus' | 'tadwin' | 'moi' | 'reviser' | 'examens' | 'parcours'>('splash');
   // Deep-link : ouverture d'une leçon précise depuis un raccourci (الدروس, أنا…).
   const [parcoursLesson, setParcoursLesson] = useState<{ key: string; kind: 'html' | 'active'; unitId: number } | null>(null);
   // Deep-link : ouverture du QCM d'une unité précise (raccourci).
@@ -888,6 +892,7 @@ export default function App() {
         {/* Center Title Brand Name */}
         <div className="font-extrabold text-xl md:text-2xl text-[#006d37] font-display select-none">
           {currentTab === 'reviser' ? 'المراجعة' :
+           currentTab === 'parcours' ? 'مساري' :
            currentTab === 'review' ? 'المراجعة الذكية' :
            currentTab === 'stats' ? 'لوحة الإحصائيات' : 
            currentTab === 'badges' ? 'الأوسمة والإنجازات' : 
@@ -1048,6 +1053,19 @@ export default function App() {
                   onOpenQcm={ouvrirQcmDepuisParcours}
                   onOpenAuth={() => setIsAuthOpen(true)}
                   connecte={Boolean(studentName || studentEmail)}
+                />
+              )}
+
+              {/* « مساري » — l'écran du parcours verrouillé (Commit A, Phase 2).
+                  Les handlers existants (ouvrirLeçonDepuisParcours /
+                  ouvrirQcmDepuisParcours) sont exactement les props de
+                  ParcoursView : leçon par leçon, exercices liés au مجال.
+                  Le retour passe par la nav permanente (sidebar / barre mobile),
+                  comme pour le tableau de bord. */}
+              {currentTab === 'parcours' && (
+                <ParcoursView
+                  onOpenLesson={ouvrirLeçonDepuisParcours}
+                  onOpenQcm={ouvrirQcmDepuisParcours}
                 />
               )}
 
