@@ -43,9 +43,15 @@ beforeEach(() => {
 });
 afterEach(cleanup); cleanup();
 
-/** Monte l'atelier, passe en complétion (stage 2), corrige — le chemin réel. */
+/** Monte l'atelier, passe en complétion (stage 2), corrige — le chemin réel.
+ *  Phase 1 (2026-10-16) : la page s'ouvre sur المفتاح par défaut (verrou
+ *  porteMethode) — le simulateur الخطوات الأربع est atteint en un clic. */
 function corrigerUneCompletion(): void {
   render(<MethodologyCompilerView />);
+  const ateliers = screen.getAllByRole('button');
+  const simulator = ateliers.find((b) => b.textContent?.includes('الخطوات الأربع'));
+  expect(simulator, 'l atelier « الخطوات الأربع » est introuvable').toBeTruthy();
+  fireEvent.click(simulator!);
   // La pastille de stage (grille des 4 étapes) — texte publié de l'atelier.
   const pastilles = screen.getAllByRole('button');
   const stage2 = pastilles.find((b) => b.textContent?.includes('Complétion'));

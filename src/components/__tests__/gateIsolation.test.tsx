@@ -23,6 +23,13 @@ const GATE2_MARK = 'البوابة 2 — من أين آتي بمادة الإد�
 const GATE3_MARK = 'البوابة 3 — أي حركة يطلب هذا القفل؟';
 
 const gotoStage3 = () => {
+  // Phase 1 (2026-10-16) : la page s'ouvre sur المفتاح (verrou porteMethode) —
+  // l'atelier الخطوات الأربع est atteint en un clic avant le stade 3.
+  const atelier = screen
+    .getAllByRole('button')
+    .find((b) => b.textContent?.includes('الخطوات الأربع'));
+  expect(atelier, 'l atelier « الخطوات الأربع » est introuvable').toBeTruthy();
+  fireEvent.click(atelier!);
   fireEvent.click(screen.getAllByText('إنتاج موجه (Guidée)')[0]);
 };
 

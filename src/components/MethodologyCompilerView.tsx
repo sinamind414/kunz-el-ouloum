@@ -111,7 +111,7 @@ interface MethodologyProps {
 
 export default function MethodologyCompilerView({ onBackToHome }: MethodologyProps) {
   // Navigation Tabs: 'engine_rules' (Couche 0) | 'verbs_ref' (Fiches) | 'simulator' (4 Stades) | 'mastery_matrix' (Analytics & Erreurs)
-  const [activeTab, setActiveTab] = useState<AtelierId>('simulator');
+  const [activeTab, setActiveTab] = useState<AtelierId>('meftah');
   // File de correction (Phase 3) — bump pour rafraîchir l'onglet + le badge
   const [correctionVersion, setCorrectionVersion] = useState(0);
   /**
@@ -698,7 +698,9 @@ const handleSelectStage = (stage: 1 | 2 | 3 | 4) => {
             })}
           </div>
 
-          {/* Fiche المفتاح imprimable — accès secondaire (le bouton طبع vit dans cette vue) */}
+          {/* Fiche المفتاح imprimable — accès secondaire (le bouton طبع vit dans cette vue).
+              Phase 1 (plainte élève) : nom DISTINCT de la page/atelier المفتاح —
+              c'est la CARTE imprimable (MiftahCard), pas une autre porte المفتاح. */}
           <button
             onClick={() => setActiveTab('boussole_card')}
             className={`mt-2 inline-flex items-center gap-2 rounded-xl px-3 py-1.5 text-[11px] font-bold transition-all cursor-pointer ${
@@ -708,7 +710,7 @@ const handleSelectStage = (stage: 1 | 2 | 3 | 4) => {
             }`}
           >
             <Printer className="w-3.5 h-3.5" />
-            <span> {MIFTAH_NOMENCLATURE.miftah} — للطباعة</span>
+            <span>بطاقة المفتاح — للطباعة</span>
           </button>
         </div>
       </header>
