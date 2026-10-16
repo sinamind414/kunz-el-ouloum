@@ -20,6 +20,7 @@ import {
   type MeftahBacExercise,
   type MeftahBacQuestion,
 } from '../data/meftahManhajia';
+import Dictaphone from './Dictaphone';
 import { normalizeArabic } from '../utils/arabicNormalize';
 // Nom officiel figé (docs/MARQUE.md §3) — source unique miftahSpec : zéro littéral rendu ici.
 import { MIFTAH_NAME_OFFICIAL_AR } from '../data/miftahSpec';
@@ -71,7 +72,7 @@ function BackButton({ onClick, label }: { onClick: () => void; label: string }) 
   );
 }
 
-function SearchBar({ query, setQuery }: { query: string; setQuery: (q: string) => void }) {
+function SearchBar({ query, setQuery }: { query: string; setQuery: (q: string | ((prev: string) => string)) => void }) {
   return (
     <div className="flex-1 min-w-[180px]">
       <div className="flex items-center gap-2 bg-white dark:bg-[#141916] border border-gray-200 dark:border-gray-800 rounded-2xl px-4 py-2.5 shadow-sm">
@@ -81,6 +82,12 @@ function SearchBar({ query, setQuery }: { query: string; setQuery: (q: string) =
           onChange={(e) => setQuery(e.target.value)}
           placeholder="ابحث في المفتاح..."
           className="flex-1 bg-transparent outline-none text-sm text-gray-800 dark:text-gray-200 placeholder:text-gray-400 font-medium"
+        />
+        {/* Micro-dictée (complément 2026-10-16) : dicter ce qu'on cherche —
+            mise à jour fonctionnelle = requête toujours fraîche. */}
+        <Dictaphone
+          zone="meftah-recherche"
+          onTranscript={(t) => setQuery((v) => (v ? `${v} ${t}` : t))}
         />
         {query && (
           <button onClick={() => setQuery('')} className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 cursor-pointer">

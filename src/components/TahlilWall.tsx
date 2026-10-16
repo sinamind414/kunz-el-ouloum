@@ -14,6 +14,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { BrickWall, RotateCcw, Lock, CheckCircle2, XCircle, Lightbulb, ArrowLeft } from 'lucide-react';
 import { WALL_SERIES_A, WallItem, lintWallBank } from '../data/tahlilWallBank';
 import { detectDisplacedCausal, ANALYSIS_PATTERNS } from '../data/meftahLaw';
+import Dictaphone from './Dictaphone';
 import {
   recordWallSet, getWallGateStatus, completeWallRemediation,
   WallAttemptDetail, WALL_RETRY_COOLDOWN_MS,
@@ -344,6 +345,13 @@ export default function TahlilWall({ onBack }: Props) {
               rows={2}
               className="w-full rounded-xl border border-gray-200 dark:border-gray-700 bg-transparent px-3 py-2 text-sm disabled:opacity-50"
               data-testid="prod-cause"
+            />
+            {/* Micro-dictée (complément 2026-10-16) : on dicte volontiers une
+                cause / آلية à l'oral — même contrat de collage que partout. */}
+            <Dictaphone
+              zone="tahlil-cause"
+              disabled={!analysisValid || !!displacedInAnalysis}
+              onTranscript={(t) => setProdCause((v) => (v ? `${v} ${t}` : t))}
             />
           </div>
 

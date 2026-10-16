@@ -1175,7 +1175,13 @@ const handleSelectStage = (stage: 1 | 2 | 3 | 4) => {
                   placeholder={STEP0_TEMPLATE_AR.replace('_____','……')}
                   className="w-full bg-white dark:bg-[#0f1a1f] border border-sky-200 dark:border-sky-800 rounded-lg p-2 text-sm text-gray-900 dark:text-white placeholder-gray-400 focus:ring-2 focus:ring-sky-500 outline-none"
                 />
-                <span className="text-[11px] text-sky-600 dark:text-sky-400">اكتب هدفك في سطر واحد — لا يُصحَّح، لكنه يوجّه قراءتك</span>
+                <div className="flex items-center gap-2 mt-1.5">
+                  <Dictaphone
+                    zone="methode-objectif0"
+                    onTranscript={(t) => setStep0Text((v) => (v ? `${v} ${t}` : t))}
+                  />
+                  <span className="text-[11px] text-sky-600 dark:text-sky-400">اكتب هدفك في سطر واحد — لا يُصحَّح، لكنه يوجّه قراءتك</span>
+                </div>
               </div>
               <p className="text-sm md:text-base text-gray-700 dark:text-gray-300 font-medium leading-relaxed">
                 <strong className="text-gray-900 dark:text-white">السياق العلمي: </strong>
