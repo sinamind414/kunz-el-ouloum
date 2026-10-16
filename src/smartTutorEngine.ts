@@ -28,7 +28,7 @@ import {
 import { TUTOR_KNOWLEDGE, type TutorKnowledgeChunk } from './tutorKnowledge';
 import { BOOK_TUTOR_QA, findBestBookQA, type BookTutorQA } from './bookTutorQA';
 import { findBestMethodologyQA } from './methodologyKnowledge';
-import { LESSON_INDEX } from './data/lessonIndex';
+import { lessonIndexSiChargee } from './data/lessonIndexRuntime';
 // Fusion master 3e970d2 (2026-10-01) : R6 pondère les erreurs par le poids
 // BAC des unités (unitOpenings) ; R8 affiche le compte à rebours BAC.
 import { UNIT_OPENINGS } from './data/unitOpenings';
@@ -305,8 +305,19 @@ const GUIDE_CHUNKS: SearchChunk[] = STUDY_GUIDE_CARDS.map((card: StudyGuideCard)
   ].map((k) => normalizeArabic(k)),
 }));
 
-/** Index des leçons (47 HTML + 20 actives) — lot « index leçons » 2026-09-24. */
-const LESSON_CHUNKS: SearchChunk[] = LESSON_INDEX.map((c) => ({
+/** Index des leçons (47 HTML + 20 actives) — lot « index leçons » 2026-09-24.
+ *  Phase A découpage bundle (2026-10-16) : l'index (786 Ko) ne voyage plus en
+ *  JavaScript, il arrive par fetch (src/data/lessonIndexRuntime.ts). Cache
+ *  paresseux : construit à la première recherche APRÈS chargement ; retourne
+ *  [] tant que les données ne sont pas là — dégradation honnête (« لم أجد »),
+ *  jamais d'invention. Verrou : src/build/tutorLeconsJson.lock.test.ts. */
+let chunksLeconsCache: SearchChunk[] | null = null;
+
+function chunksLecons(): SearchChunk[] {
+  if (chunksLeconsCache) return chunksLeconsCache;
+  const indexActif = lessonIndexSiChargee();
+  if (!indexActif) return [];
+  chunksLeconsCache = indexActif.map((c) => ({
   id: c.id,
   type: 'lesson' as const,
   title: c.title,
@@ -322,9 +333,22 @@ const LESSON_CHUNKS: SearchChunk[] = LESSON_INDEX.map((c) => ({
   normTitle: normalizeArabic(c.title.replace(/\s*\(\d+\/\d+\)\s*$/, '')),
   normAliases: c.aliases.map((a) => normalizeArabic(a)),
   normKeywords: c.keywords.map((k) => normalizeArabic(k)),
-}));
+  }));
+  return chunksLeconsCache;
+}
 
-const ALL_CHUNKS: SearchChunk[] = [...GUIDE_CHUNKS, ...LEGACY_CHUNKS, ...BOOK_CHUNKS, ...OPUS_CHUNKS, ...LESSON_CHUNKS];
+/** Fusion des bases de recherche — cache invalidé automatiquement quand les
+ *  chunks de leçons arrivent (avant : tableau au niveau module, figé au chargement). */
+let tousChunksCache: SearchChunk[] | null = null;
+let tousChunksAvecLecons = false;
+
+function tousLesChunks(): SearchChunk[] {
+  const avecLecons = chunksLecons().length > 0;
+  if (tousChunksCache && tousChunksAvecLecons === avecLecons) return tousChunksCache;
+  tousChunksCache = [...GUIDE_CHUNKS, ...LEGACY_CHUNKS, ...BOOK_CHUNKS, ...OPUS_CHUNKS, ...chunksLecons()];
+  tousChunksAvecLecons = avecLecons;
+  return tousChunksCache;
+}
 
 /**
  * Vocabulaire de chaque domaine, construit sur les titres et mots-clés des
@@ -332,12 +356,22 @@ const ALL_CHUNKS: SearchChunk[] = [...GUIDE_CHUNKS, ...LEGACY_CHUNKS, ...BOOK_CH
  * leçon s'ajoute. Sert à savoir DE QUOI PARLE la question avant de choisir un
  * extrait (`routageDomaine.ts`).
  */
-const VOCAB_DOMAINE = construireVocabulaire(
-  ALL_CHUNKS.map((ch) => ({
-    domaine: domaineDeUnite(ch.unitId, DOMAIN_UNITS),
-    tokens: [...tokenizeArabic(ch.normTitle), ...ch.normKeywords],
-  })),
-);
+let vocabDomaineCache: ReturnType<typeof construireVocabulaire> | null = null;
+let vocabDomaineAvecLecons = false;
+
+function vocabDomaine(): ReturnType<typeof construireVocabulaire> {
+  const avecLecons = chunksLecons().length > 0;
+  if (!vocabDomaineCache || vocabDomaineAvecLecons !== avecLecons) {
+    vocabDomaineCache = construireVocabulaire(
+      tousLesChunks().map((ch) => ({
+        domaine: domaineDeUnite(ch.unitId, DOMAIN_UNITS),
+        tokens: [...tokenizeArabic(ch.normTitle), ...ch.normKeywords],
+      })),
+    );
+    vocabDomaineAvecLecons = avecLecons;
+  }
+  return vocabDomaineCache;
+}
 
 /* -------------------------------------------------------------------------- *
  * Détecteur « IN-DOMAINE » positif (R2 audit qualité Morchid 2026-09-29).    *
@@ -348,7 +382,7 @@ const VOCAB_DOMAINE = construireVocabulaire(
  * « hors programme ». On calcule désormais un SIGNAL DE DOMAINE positif :    *
  * la question doit partager du vocabulaire avec au moins une base.           *
  *                                                                            *
- *   - DOMAIN_VOCAB      : gros vocabulaire (tous les tokens ≥3 des titres,   *
+ *   - domaineVocab()     : gros vocabulaire (tous les tokens ≥3 des titres,   *
  *     alias et mots-clés de TOUTES les bases + titres de domaines).          *
  *     → correspondance EXACTE (haute couverture, zéro faux signal).          *
  *   - DOMAIN_CORE_VOCAB : vocabulaire identitaire CURÉ et restreint (titres  *
@@ -363,25 +397,36 @@ function collectTokens(...phrases: string[]): string[] {
   return out;
 }
 
-const DOMAIN_VOCAB: Set<string> = (() => {
-  const vocab = new Set<string>();
-  const add = (phrase: string | undefined) => {
-    if (!phrase) return;
-    for (const t of tokenizeArabic(phrase)) if (t.length >= 3) vocab.add(t);
-  };
-  for (const card of KNOWLEDGE_CARDS) {
-    add(card.title);
-    card.aliases.forEach(add);
-    card.keywords.forEach(add);
+let domaineVocabCache: Set<string> | null = null;
+let domaineVocabAvecLecons = false;
+
+/** Gros vocabulaire du programme, reconstruit quand les chunks de leçons
+ *  arrivent (avant : Set figé au chargement du module sur l'index statique). */
+function domaineVocab(): Set<string> {
+  const avecLecons = chunksLecons().length > 0;
+  if (!domaineVocabCache || domaineVocabAvecLecons !== avecLecons) {
+    const vocab = new Set<string>();
+    const add = (phrase: string | undefined) => {
+      if (!phrase) return;
+      for (const t of tokenizeArabic(phrase)) if (t.length >= 3) vocab.add(t);
+    };
+    for (const card of KNOWLEDGE_CARDS) {
+      add(card.title);
+      card.aliases.forEach(add);
+      card.keywords.forEach(add);
+    }
+    for (const ch of tousLesChunks()) {
+      add(ch.normTitle);
+      ch.normAliases.forEach((a) => add(a));
+      ch.normKeywords.forEach((k) => add(k));
+    }
+    for (const d of DOMAINS) add(d.title);
+    for (const t of PEDAGOGICAL_TERMS) vocab.add(t);
+    domaineVocabCache = vocab;
+    domaineVocabAvecLecons = avecLecons;
   }
-  for (const ch of ALL_CHUNKS) {
-    add(ch.normTitle);
-    ch.normAliases.forEach((a) => add(a));
-    ch.normKeywords.forEach((k) => add(k));
-  }
-  for (const d of DOMAINS) add(d.title);
-  return vocab;
-})();
+  return domaineVocabCache;
+}
 
 /** Termes pédagogiques/commandes qui SONT dans le périmètre même s'ils ne
  *  nomment pas un concept SVT (ex. clic sur un bouton « دليل الإجابة »). Évite
@@ -400,7 +445,6 @@ const PEDAGOGICAL_TERMS = [
   'أبدا', 'ابدأ', 'ألخص', 'الخص', 'أفهم', 'افهم', 'أحفظ', 'احفظ', 'أنجز',
   'أركز', 'اركز', 'أتدرّب', 'اتدرب', 'أنجح', 'انجح', 'أتحضّر', 'اتحضر',
 ].map((t) => normalizeArabic(t)).filter((t) => t.length >= 3);
-for (const t of PEDAGOGICAL_TERMS) DOMAIN_VOCAB.add(t);
 
 const DOMAIN_CORE_VOCAB: string[] = (() => {
   const core = new Set<string>();
@@ -429,7 +473,7 @@ const AR_STOPWORDS: Set<string> = new Set(
 function hasDomainSignal(inputTokens: string[]): boolean {
   const content = inputTokens.filter((t) => t.length >= 3 && !AR_STOPWORDS.has(t));
   if (content.length === 0) return false;
-  for (const t of content) if (DOMAIN_VOCAB.has(t)) return true;
+  for (const t of content) if (domaineVocab().has(t)) return true;
   for (const t of content) {
     if (t.length < 4) continue;
     if (DOMAIN_CORE_VOCAB.some((core) => fuzzyTokenEquals(t, core))) return true;
@@ -875,7 +919,7 @@ export const SEUIL_AVEC_DOMAINE = 12;
 export function searchAllBasesScores(norm: string, activeDomainId: number | null): ScoredChunk[] {
   if (!norm || norm.length < 3) return [];
   const inputTokens = tokenizeArabic(norm);
-  return ALL_CHUNKS.map((ch) => ({ ch, score: scoreChunk(norm, ch, activeDomainId, inputTokens) }))
+  return tousLesChunks().map((ch) => ({ ch, score: scoreChunk(norm, ch, activeDomainId, inputTokens) }))
     .filter((x) => x.score > 0)
     .sort((a, b) => b.score - a.score);
 }
@@ -905,7 +949,7 @@ export function meilleurExtrait(
   norm: string,
   activeDomainId: number | null,
 ): { extrait: ScoredChunk; domaine: number | null } | null {
-  const domaine = domaineProbable(tokenizeArabic(norm), VOCAB_DOMAINE);
+  const domaine = domaineProbable(tokenizeArabic(norm), vocabDomaine());
   const bonus = domaine ?? activeDomainId;
   const seuil = domaine == null ? SEUIL_SANS_DOMAINE : SEUIL_AVEC_DOMAINE;
 
@@ -1656,14 +1700,17 @@ function verbContractLine(c: VerbContract): string {
 }
 
 /** KEO-104 (SpecKit 2026-10-01) : porte vers la leçon exacte. Recherche dans
- *  LESSON_INDEX par recouvrement de tokens (titre + alias + mots-clés) du
- *  point-clé manqué. Aucun lien inventé : si rien ne recoupe, on le dit. */
+ *  l'index des leçons (lessonIndexRuntime — Phase A bundle) par recouvrement
+ *  de tokens (titre + alias + mots-clés) du point-clé manqué. Aucun lien
+ *  inventé : index pas encore chargé ou rien ne recoupe → null, on le dit. */
 function findLessonForKeyPoint(kp: string): { lessonKey: string; title: string } | null {
   const nk = normalizeArabic(kp);
   const tokens = tokenizeArabic(nk).filter((t) => t.length >= 4);
   if (tokens.length === 0) return null;
+  const indexActif = lessonIndexSiChargee();
+  if (!indexActif) return null;
   let best: { lessonKey: string; title: string; score: number } | null = null;
-  for (const entry of LESSON_INDEX) {
+  for (const entry of indexActif) {
     const hay = normalizeArabic(
       entry.title + ' ' + (entry.aliases ?? []).join(' ') + ' ' + (entry.keywords ?? []).join(' '),
     );
@@ -2329,7 +2376,7 @@ export function processStudentInput(session: BotSession, rawInput: string): Engi
   // ══════════════════════════════════════════════════════════════════════════
   const geste = gesteDuMessage(
     norm,
-    (n2) => domaineProbable(tokenizeArabic(n2), VOCAB_DOMAINE) != null,
+    (n2) => domaineProbable(tokenizeArabic(n2), vocabDomaine()) != null,
   );
   if (geste) return resultatDuGeste(session, geste);
 
@@ -2499,7 +2546,7 @@ export function processStudentInput(session: BotSession, rawInput: string): Engi
   // un « je n'ai rien trouvé » anonyme : quand le domaine de la question est
   // établi, elle le NOMME et propose les boutons de ce domaine — l'élève sait
   // au moins de quoi il parle, et où chercher.
-  const domaineQuestion = domaineProbable(tokenizeArabic(norm), VOCAB_DOMAINE);
+  const domaineQuestion = domaineProbable(tokenizeArabic(norm), vocabDomaine());
   const domaineAffiche = domaineQuestion ?? session.activeDomainId ?? null;
   const domaineTitre = DOMAINS.find((d) => d.id === domaineAffiche)?.title;
   const fallbackActions = domaineAffiche

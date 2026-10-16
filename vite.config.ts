@@ -1,9 +1,64 @@
 import tailwindcss from '@tailwindcss/vite';
 import react from '@vitejs/plugin-react';
+import { build as esbuildBuild } from 'esbuild';
 import { createHash } from 'crypto';
-import { existsSync, readdirSync, readFileSync, statSync, writeFileSync } from 'fs';
+import { existsSync, mkdirSync, readdirSync, readFileSync, statSync, writeFileSync } from 'fs';
 import path from 'path';
-import {defineConfig, type Plugin} from 'vite';
+import { pathToFileURL } from 'url';
+import { defineConfig, type Plugin } from 'vite';
+
+/**
+ * Phase A découpage bundle (2026-10-16) — émet `dist/tutor/lesson-index.json`.
+ *
+ * L'index des leçons du tuteur (`src/data/lessonIndex.ts`, 786 Ko) n'a plus le
+ * droit de voyager en JavaScript : il est sérialisé en JSON par ce plugin
+ * (émetteur : scripts/emit_lesson_index_json.ts, bundle esbuild temporaire) et
+ * récupéré par fetch par `src/data/lessonIndexRuntime.ts` au premier montage
+ * d'une vue du tuteur. Verrou post-build : src/build/tutorLeconsJson.lock.test.ts.
+ *
+ * En dev (`vite serve`), le JSON n'existe pas sur disque : un middleware le
+ * génère à la demande pour que le tuteur reste complet hors build.
+ */
+function tutorLessonJsonPlugin(): Plugin {
+  let jsonEnMemoire: string | null = null;
+  const generer = async (): Promise<string> => {
+    if (jsonEnMemoire) return jsonEnMemoire;
+    const cacheDir = path.resolve(__dirname, 'node_modules', '.cache');
+    const temporaire = path.join(cacheDir, 'kunz-emit-lesson-json.mjs');
+    mkdirSync(cacheDir, { recursive: true });
+    await esbuildBuild({
+      entryPoints: [path.resolve(__dirname, 'scripts', 'emit_lesson_index_json.ts')],
+      bundle: true,
+      platform: 'node',
+      format: 'esm',
+      outfile: temporaire,
+      logLevel: 'silent',
+    });
+    const moduleEmis = await import(pathToFileURL(temporaire).href);
+    jsonEnMemoire = JSON.stringify(moduleEmis.donnees);
+    return jsonEnMemoire;
+  };
+  return {
+    name: 'kunz-tutor-lesson-json',
+    async generateBundle() {
+      this.emitFile({
+        type: 'asset',
+        fileName: 'tutor/lesson-index.json',
+        source: await generer(),
+      });
+    },
+    configureServer(server) {
+      server.middlewares.use('/tutor/lesson-index.json', (_req, res, next) => {
+        generer()
+          .then((json) => {
+            res.setHeader('Content-Type', 'application/json; charset=utf-8');
+            res.end(json);
+          })
+          .catch(() => next());
+      });
+    },
+  };
+}
 
 /**
  * Émet `dist/assets-manifest.json` : la liste de TOUS les fichiers produits par
@@ -20,8 +75,16 @@ function assetsManifestPlugin(): Plugin {
     name: 'kunz-assets-manifest',
     apply: 'build',
     generateBundle(_options, bundle) {
+      // `tutor/lesson-index.json` (Phase A découpage bundle) est émis en
+      // amont par kunz-tutor-lesson-json : il doit être précaché en
+      // hors-ligne comme n'importe quel chunk.
       const fichiers = Object.keys(bundle)
-        .filter((f) => f.endsWith('.js') || f.endsWith('.css'))
+        .filter(
+          (f) =>
+            f.endsWith('.js') ||
+            f.endsWith('.css') ||
+            f === 'tutor/lesson-index.json',
+        )
         .map((f) => `/${f}`)
         .sort();
       this.emitFile({
@@ -93,7 +156,7 @@ function swBuildIdPlugin(): Plugin {
 
 export default defineConfig(() => {
   return {
-    plugins: [react(), tailwindcss(), assetsManifestPlugin(), swBuildIdPlugin()],
+    plugins: [react(), tailwindcss(), tutorLessonJsonPlugin(), assetsManifestPlugin(), swBuildIdPlugin()],
     resolve: {
       alias: {
         '@': path.resolve(__dirname, '.'),
@@ -105,6 +168,11 @@ export default defineConfig(() => {
       // absent, si bien qu'aucun test ne couvrait le démarrage du serveur —
       // c'est précisément là qu'un échec bloque TOUT le monde.
       include: ['src/**/*.test.{ts,tsx}', 'server/**/*.test.ts'],
+      // Phase A découpage bundle : le moteur lit l'index des leçons par
+      // injection (lessonIndexRuntime) au lieu d'un import statique — le
+      // préchargement des tests passe par ce fichier (import direct du
+      // module TS, sans fetch). Rejoué par fichier de test (isolation).
+      setupFiles: ['src/test-setup/prechargerLecons.ts'],
       // Les contrôles de `src/build/` portent sur le RÉSULTAT d'un build
       // (dist/assets) et non sur le code source : ils n'ont rien à faire dans
       // la suite unitaire, où ils produisaient des échecs permanents dans

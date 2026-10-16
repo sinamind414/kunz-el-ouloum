@@ -5,6 +5,7 @@ import { ChatMessage } from '../types';
 import { MORCHID_LOGO_URL } from '../data/brandAssets';
 
 import { processStudentInput, getDailyMission, diagnosticCoach, type TutorRewardDetails, type EngineResult } from '../smartTutorEngine';
+import { useLeconsPrechargees } from '../data/useLeconsPrechargees';
 import { DOMAINS } from '../data/smartBotData';
 import { loadSession, saveSession, resetSession, clearPendingInteractions, type BotSession } from '../utils/sessionManager';
 
@@ -67,6 +68,10 @@ export default function AITutorView({ onBackToDashboard, onXPGained, questionIni
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  // Phase A bundle : précharge l'index des leçons (fetch) au montage — le
+  // re-rendu à l'arrivée des données ré-active la recherche dans les leçons
+  // et la porte KEO-104 sans toucher au flux du chat.
+  useLeconsPrechargees();
 
   const listRef = useRef<HTMLDivElement>(null);
 

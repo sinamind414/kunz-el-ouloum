@@ -11,11 +11,11 @@
 // Le module est PUR : il retourne null quand la saisie ne le concerne pas, et
 // le moteur (processStudentInput) poursuit alors sa cascade habituelle.
 
-import { LESSON_INDEX } from './data/lessonIndex';
 import {
   LESSON_GOLD_SUMMARIES,
   type LessonGoldSummary,
 } from './data/lessonGoldSummaries';
+import { lessonIndexSiChargee } from './data/lessonIndexRuntime';
 import { INITIAL_UNITS } from './unitCatalog';
 import {
   normalizeArabic,
@@ -32,33 +32,42 @@ export interface GoldSummaryLesson {
 const n = (s: string) => normalizeArabic(s);
 
 /**
- * Registre ordonné des leçons ayant un résumé d'or. Construit depuis
- * LESSON_INDEX : premier chunk de chaque lessonKey → titre complet de la
- * leçon (lessonTitle). L'ordre est celui du livre (U1 → U11), stable.
+ * Registre ordonné des leçons ayant un résumé d'or. Construit depuis l'index
+ * des leçons (lessonIndexRuntime — Phase A découpage bundle : l'index arrive
+ * par fetch, le registre est construit paresseusement à la première demande
+ * et reste [] tant que les données ne sont pas là, sans jamais mentir).
+ * L'ordre est celui du livre (U1 → U11), stable.
  */
-const LESSONS_WITH_SUMMARY: GoldSummaryLesson[] = (() => {
+let registreLeconsCache: GoldSummaryLesson[] | null = null;
+let registreAvantChargement = true;
+
+function registreLecons(): GoldSummaryLesson[] {
+  const avantChargement = lessonIndexSiChargee() === null;
+  if (registreLeconsCache && registreAvantChargement === avantChargement) return registreLeconsCache;
   const seen = new Set<string>();
   const out: GoldSummaryLesson[] = [];
-  for (const c of LESSON_INDEX) {
+  for (const c of lessonIndexSiChargee() ?? []) {
     if (seen.has(c.lessonKey)) continue;
     if (!LESSON_GOLD_SUMMARIES[c.lessonKey]) continue;
     seen.add(c.lessonKey);
     const title = (c.lessonTitle ?? c.title).trim();
     out.push({ key: c.lessonKey, unitId: c.unitId, title });
   }
-  return out;
-})();
+  registreLeconsCache = out;
+  registreAvantChargement = avantChargement;
+  return registreLeconsCache;
+}
 
 export function lessonsForUnit(unitId: number): GoldSummaryLesson[] {
-  return LESSONS_WITH_SUMMARY.filter((l) => l.unitId === unitId);
+  return registreLecons().filter((l) => l.unitId === unitId);
 }
 
 export function unitIdsWithSummaries(): number[] {
-  return [...new Set(LESSONS_WITH_SUMMARY.map((l) => l.unitId))].sort((a, b) => a - b);
+  return [...new Set(registreLecons().map((l) => l.unitId))].sort((a, b) => a - b);
 }
 
 export function totalSummaries(): number {
-  return LESSONS_WITH_SUMMARY.length;
+  return registreLecons().length;
 }
 
 function unitTitleOf(unitId: number): string {
@@ -188,7 +197,7 @@ export function matchLessonWhileBrowsing(
     const hit = matchIn(norm, lessonsForUnit(pendingUnit));
     if (hit) return hit;
   }
-  return matchIn(norm, LESSONS_WITH_SUMMARY);
+  return matchIn(norm, registreLecons());
 }
 
 /** Accès direct hors navigation : « ملخص <titre> » / « لخص <titre> ». */
@@ -204,7 +213,7 @@ export function matchDirectSummaryRequest(norm: string): GoldSummaryLesson | nul
   if (!rest || rest.length < 5) return null;
   // « ملخصات » / « ملخصات الدروس » doivent tomber sur la LISTE, pas sur une
   // pseudo-leçon : un reste trop court ou non significatif est refusé.
-  return matchIn(rest, LESSONS_WITH_SUMMARY);
+  return matchIn(rest, registreLecons());
 }
 
 /* --------------------------------- formatage --------------------------------- */
