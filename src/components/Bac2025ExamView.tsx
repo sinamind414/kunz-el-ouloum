@@ -10,6 +10,7 @@ import { ClipboardList, FileText, History, RotateCcw, Send, ShieldCheck, Trash2 
 import { listeGroupesBac2025, attendusDeGroupe } from '../data/dictionaries/attendusBac2025';
 import { noterCopieCalibree } from '../data/dictionaries/calibrationBac2025';
 import SectionObligatoire from './SectionObligatoire';
+import Dictaphone from './Dictaphone';
 import { logExamAttempt, getExamAttempts, getExamStats, clearExamLog, type ExamAttempt } from '../utils/examLog';
 import { fmtDateLatn } from '../utils/latinDigits';
 
@@ -189,6 +190,14 @@ export default function Bac2025ExamView({ onClose }: { onClose: () => void }) {
                   rows={ex === 1 ? 4 : 6}
                   className="w-full px-3 py-2 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-black/20 text-xs leading-relaxed text-gray-800 dark:text-gray-200 outline-none focus:ring-2 focus:ring-emerald-500 disabled:opacity-60"
                 />
+                {/* Micro-dictée (demande 2026-10-16) — désactivé après la remise. */}
+                <div className="mt-1">
+                  <Dictaphone
+                    zone={`examen-ex${ex}`}
+                    disabled={soumis}
+                    onTranscript={(t) => setReponses((r) => ({ ...r, [ex]: r[ex] ? `${r[ex]} ${t}` : t }))}
+                  />
+                </div>
               </div>
             </div>
           );

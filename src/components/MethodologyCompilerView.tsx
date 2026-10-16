@@ -26,6 +26,7 @@ import ProductionEvolutionPanel from './ProductionEvolutionPanel';
 import BoussoleCard from './BoussoleCard';
 import MiftahCard from './MiftahCard';
 import MeftahView from './MeftahView';
+import Dictaphone from './Dictaphone';
 import TahlilWall from './TahlilWall';
 import CorrecteurPanel from './CorrecteurPanel';
 import { TIME_RULES, getStepData } from '../data/boussoleData';
@@ -1488,6 +1489,18 @@ const handleSelectStage = (stage: 1 | 2 | 3 | 4) => {
                     placeholder={editorPlaceholder}
                     className="w-full bg-gray-50 dark:bg-[#121614] border border-gray-200 dark:border-gray-700 rounded-xl p-4 text-sm md:text-base text-gray-900 dark:text-white font-medium leading-relaxed focus:ring-2 focus:ring-emerald-500 outline-none"
                   />
+
+                  {/* Micro-dictée (demande 2026-10-16) : le texte FINAL rejoint la fin
+                      de la rédaction — setStudentText fonctionnel = valeur fraîche. */}
+                  <div className="flex items-center gap-2">
+                    <Dictaphone
+                      zone="methode-redaction"
+                      onTranscript={(t) => setStudentText((v) => (v ? `${v} ${t}` : t))}
+                    />
+                    <span className="text-[11px] font-bold text-gray-400">
+                      اضغط الميكروفون وامُل — تُلحق كلماتك بنهاية نصّك
+                    </span>
+                  </div>
 
                    {/* Phase 4 — auto-évaluation /20 AVANT le verdict (calibration) */}
                    {currentStage === 4 && (

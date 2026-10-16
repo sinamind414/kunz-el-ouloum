@@ -20,6 +20,7 @@ import {
   Trophy,
 } from 'lucide-react';
 import { TADWIN_UNITES, clesDeUnite } from '../data/tadwinCles';
+import Dictaphone from './Dictaphone';
 import {
   PALIERS,
   PALIER_MAX,
@@ -275,6 +276,14 @@ export default function TadwinView({ onBackToHome }: { onBackToHome: () => void 
               rows={6}
               className="w-full p-4 rounded-2xl border border-[#e2dabf] bg-[#fffdf6] text-sm leading-relaxed resize-y focus:outline-none focus:ring-2 focus:ring-[#006d37]/30"
             />
+            {/* Micro-dictée (demande 2026-10-16) : dicter le restituer — la mémoire
+                se mobilise mieux à l'oral quand l'écriture freine. */}
+            <div className="mt-1">
+              <Dictaphone
+                zone="tadwin-restitution"
+                onTranscript={(t) => setRestitution((v) => (v ? `${v} ${t}` : t))}
+              />
+            </div>
             <button
               data-testid="tadwin-restitution-envoyer"
               onClick={terminerRestitution}
@@ -318,6 +327,12 @@ export default function TadwinView({ onBackToHome }: { onBackToHome: () => void 
                 rows={4}
                 className="w-full p-4 rounded-2xl border border-[#e2dabf] bg-[#fffdf6] text-sm leading-relaxed resize-y focus:outline-none focus:ring-2 focus:ring-[#006d37]/30"
               />
+              <div className="mt-1">
+                <Dictaphone
+                  zone="tadwin-cle1"
+                  onTranscript={(t) => setCle1((v) => (v ? `${v} ${t}` : t))}
+                />
+              </div>
               <button
                 data-testid="tadwin-cle1-envoyer"
                 onClick={terminerCle1}
@@ -344,6 +359,12 @@ export default function TadwinView({ onBackToHome }: { onBackToHome: () => void 
               rows={6}
               className="w-full p-4 rounded-2xl border border-[#e2dabf] bg-[#fffdf6] text-sm leading-relaxed resize-y focus:outline-none focus:ring-2 focus:ring-[#006d37]/30"
             />
+            <div className="mt-1">
+              <Dictaphone
+                zone="tadwin-assistee"
+                onTranscript={(t) => setAssistee((v) => (v ? `${v} ${t}` : t))}
+              />
+            </div>
             {alerteLive?.alerteAr && (
               <div className="bg-[#ba1a1a]/10 border border-[#ba1a1a]/30 rounded-xl p-3 text-sm font-bold text-[#ba1a1a]">
                 {alerteLive.alerteAr}
@@ -447,6 +468,12 @@ export default function TadwinView({ onBackToHome }: { onBackToHome: () => void 
               rows={8}
               className="w-full p-4 rounded-2xl border border-[#e2dabf] bg-[#fffdf6] text-sm leading-relaxed resize-y focus:outline-none focus:ring-2 focus:ring-[#006d37]/30"
             />
+            <div className="mt-1">
+              <Dictaphone
+                zone="tadwin-reponse"
+                onTranscript={(t) => setReponse((v) => (v ? `${v} ${t}` : t))}
+              />
+            </div>
             <p className="text-xs text-[#8a8570] font-semibold">عدد الكلمات: {compterMots(reponse)}</p>
             <button
               data-testid="tadwin-evaluer"

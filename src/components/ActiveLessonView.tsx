@@ -18,6 +18,7 @@ import {
   clearLessonSnapshot,
 } from '../lib/lesson/sessionSnapshotService';
 import BoutonMorchid from './BoutonMorchid';
+import Dictaphone from './Dictaphone';
 
 interface Props {
   lessonKey: string;
@@ -133,6 +134,19 @@ export default function ActiveLessonView({ lessonKey, onBack, onNext, nextTitleA
 
   const setAnswer = (blockIdx: number, fieldId: string, value: string) => {
     setAnswers((prev) => ({ ...prev, [blockIdx]: { ...(prev[blockIdx] ?? {}), [fieldId]: value } }));
+  };
+
+  /** Micro-dictée (demande 2026-10-16) : colle le texte FINAL à la fin du
+   *  champ — via setAnswers fonctionnel, donc sur la valeur la plus fraîche
+   *  même en dictée répétée ou après retouche manuelle entre deux dictées. */
+  const dicter = (blockIdx: number, fieldId: string) => (texte: string) => {
+    setAnswers((prev) => {
+      const ancien = prev[blockIdx]?.[fieldId] ?? '';
+      return {
+        ...prev,
+        [blockIdx]: { ...(prev[blockIdx] ?? {}), [fieldId]: ancien ? `${ancien} ${texte}` : texte },
+      };
+    });
   };
 
   const passBlock = (outcome: BlockOutcome) => {
@@ -267,6 +281,11 @@ export default function ActiveLessonView({ lessonKey, onBack, onNext, nextTitleA
                   className="flex-1 min-w-48 border border-gray-300 dark:border-gray-700 rounded-xl px-3 py-2 text-sm bg-white dark:bg-[#161c18] focus:border-emerald-500 focus:outline-none"
                   aria-label="إجابة الاختبار المصغّر"
                 />
+                <Dictaphone
+                  zone={`lecon-${blockIdx}-text`}
+                  onTranscript={dicter(blockIdx, 'text')}
+                  disabled={session.validatedBlocks[blockIdx]}
+                />
                 <button
                   onClick={() => passBlock(validateAccepted(answer, b.acceptedAnswers))}
                   disabled={session.validatedBlocks[blockIdx]}
@@ -335,6 +354,13 @@ export default function ActiveLessonView({ lessonKey, onBack, onNext, nextTitleA
                       rows={2}
                       className="w-full border border-gray-300 dark:border-gray-700 rounded-xl px-3 py-2 text-xs bg-white dark:bg-[#161c18] focus:border-emerald-500 focus:outline-none resize-y"
                     />
+                    <div className="mt-1">
+                      <Dictaphone
+                        zone={`lecon-${blockIdx}-step${si}`}
+                        onTranscript={dicter(blockIdx, `step_${si}`)}
+                        disabled={!!hotspotDone}
+                      />
+                    </div>
                   </div>
                 ))}
               </div>
@@ -393,6 +419,13 @@ export default function ActiveLessonView({ lessonKey, onBack, onNext, nextTitleA
                   className="mt-2 w-full border border-gray-300 dark:border-gray-700 rounded-xl px-3 py-2 text-sm bg-white dark:bg-[#161c18] focus:border-emerald-500 focus:outline-none resize-y"
                   aria-label={q.promptAr}
                 />
+                <div className="mt-1">
+                  <Dictaphone
+                    zone={`lecon-${blockIdx}-q${qi}`}
+                    onTranscript={dicter(blockIdx, `q_${qi}`)}
+                    disabled={session.validatedBlocks[blockIdx]}
+                  />
+                </div>
               </div>
             ))}
             <button
@@ -451,6 +484,11 @@ export default function ActiveLessonView({ lessonKey, onBack, onNext, nextTitleA
                   rows={2}
                   className="w-full border border-gray-300 dark:border-gray-700 rounded-xl px-3 py-2 text-sm bg-white dark:bg-[#161c18] focus:border-emerald-500 focus:outline-none resize-y"
                 />
+                <Dictaphone
+                  zone={`lecon-${blockIdx}-extract`}
+                  onTranscript={dicter(blockIdx, 'extract')}
+                  disabled={session.validatedBlocks[blockIdx]}
+                />
               </div>
               <div>
                 <label className="block text-xs font-black mb-1">2) {b.justificationPromptAr}</label>
@@ -460,6 +498,11 @@ export default function ActiveLessonView({ lessonKey, onBack, onNext, nextTitleA
                   disabled={session.validatedBlocks[blockIdx]}
                   rows={2}
                   className="w-full border border-gray-300 dark:border-gray-700 rounded-xl px-3 py-2 text-sm bg-white dark:bg-[#161c18] focus:border-emerald-500 focus:outline-none resize-y"
+                />
+                <Dictaphone
+                  zone={`lecon-${blockIdx}-justify`}
+                  onTranscript={dicter(blockIdx, 'justify')}
+                  disabled={session.validatedBlocks[blockIdx]}
                 />
               </div>
             </div>
@@ -509,6 +552,11 @@ export default function ActiveLessonView({ lessonKey, onBack, onNext, nextTitleA
                   disabled={session.validatedBlocks[blockIdx]}
                   rows={2}
                   className="w-full border border-gray-300 dark:border-gray-700 rounded-xl px-3 py-2 text-sm bg-white dark:bg-[#161c18] focus:border-emerald-500 focus:outline-none resize-y"
+                />
+                <Dictaphone
+                  zone={`lecon-${blockIdx}-${id}`}
+                  onTranscript={dicter(blockIdx, id)}
+                  disabled={session.validatedBlocks[blockIdx]}
                 />
               </div>
             ))}
@@ -591,6 +639,11 @@ export default function ActiveLessonView({ lessonKey, onBack, onNext, nextTitleA
                 disabled={session.validatedBlocks[blockIdx]}
                 rows={2}
                 className="w-full border border-gray-300 dark:border-gray-700 rounded-xl px-3 py-2 text-sm bg-white dark:bg-[#161c18] focus:border-emerald-500 focus:outline-none resize-y"
+              />
+              <Dictaphone
+                zone={`lecon-${blockIdx}-conclusion`}
+                onTranscript={dicter(blockIdx, 'conclusion')}
+                disabled={session.validatedBlocks[blockIdx]}
               />
             </div>
             <button
@@ -682,6 +735,11 @@ export default function ActiveLessonView({ lessonKey, onBack, onNext, nextTitleA
                 rows={2}
                 className="w-full border border-gray-300 dark:border-gray-700 rounded-xl px-3 py-2 text-sm bg-white dark:bg-[#161c18] focus:border-emerald-500 focus:outline-none resize-y"
               />
+              <Dictaphone
+                zone={`lecon-${blockIdx}-summary`}
+                onTranscript={dicter(blockIdx, 'summary')}
+                disabled={session.validatedBlocks[blockIdx]}
+              />
             </div>
             {result && (
               <p className={`text-xs font-bold ${result.passed ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-600 dark:text-red-400'}`}>{result.feedbackAr}</p>
@@ -728,6 +786,11 @@ export default function ActiveLessonView({ lessonKey, onBack, onNext, nextTitleA
                 disabled={session.validatedBlocks[blockIdx]}
                 rows={2}
                 className="w-full border border-gray-300 dark:border-gray-700 rounded-xl px-3 py-2 text-sm bg-white dark:bg-[#161c18] focus:border-emerald-500 focus:outline-none resize-y"
+              />
+              <Dictaphone
+                zone={`lecon-${blockIdx}-rationale`}
+                onTranscript={dicter(blockIdx, 'rationale')}
+                disabled={session.validatedBlocks[blockIdx]}
               />
             </div>
             <button
