@@ -167,6 +167,26 @@ export const LESSON_TRANSFER_CHALLENGES: Record<string, LessonTransferChallenge>
     correctionAr:
       'الضوء يحرك مضخة البكتيريورودوبسين فيضخ H⁺ داخل الحويصلة فيتكون تدرج بروتوني، وعودة H⁺ عبر الكرية المذنبة تترجم طاقة التدرج في تركيب ATP، وفي الظلام لا تضخ ولا ATP. إذن تدرج H⁺ وحده مع الكرية المذنبة كاف لتركيب ATP: برهان على النظرية الكيمياؤسموزية لميتشل.',
   },
+  'd2-u7-l2-demarche-respiration': {
+    id: 'lt_demarche_respiration',
+    lessonId: 'd2-u7-l2-demarche-respiration',
+    conceptId: 'respiration_demarche',
+    reflexId: 'interpret',
+    titleAr: 'تحدي BAC — ميتوكوندريات معزولة وحمض البيروفيك',
+    contextAr:
+      'وُضع معلق من ميتوكوندريات معزولة في وسط غني بالأكسجين ثم حُقنت كمية من حمض البيروفيك: سُجل انخفاض تركيز الأكسجين وتزايد ثاني أكسيد الكربون عبر الزمن.',
+    questionAr:
+      'فسّر تطور القيمتين، وبيّن موقع هذه التفاعلات داخل الميتوكوندري وما يحتاجه ذلك من الوسط.',
+    validation: {
+      docType: 'qualitative',
+      actionVerb: 'interpret',
+      domain: 'metabo',
+      isNeuromuscular: false,
+      expectedTargets: ['المادة الأساسية', 'الأكسدة', 'ثاني أكسيد الكربون', 'الأكسجين'],
+    },
+    correctionAr:
+      'حقن حمض البيروفيك لميتوكوندريات معزولة في وسط غني بالأكسجين يحرّض أكسدته في المادة الأساسية: استهلاك الأكسجين وانطلاق ثاني أكسيد الكربون شاهدان على سلسلة تفاعلات الأكسدة التي تمهد لاستقبال أستيل مرافق الإنزيم أ ثم حلقة كريبس.',
+  },
   'd3-u9-l2-benioff': {
     id: 'lt_benioff_plan',
     lessonId: 'd3-u9-l2-benioff',

@@ -178,7 +178,7 @@ describe('coach — ordre de travail', () => {
     const diags = diagnostiquerParcours(groupes, etatParDefaut());
     expect(diags).toHaveLength(groupes.length);
     for (const d of diags) expect(d.verdict).toBe('non_commence');
-    // 59 leçons + 11 jalons = 70 items au total.
-    expect(PARCOURS_FLAT).toHaveLength(70);
+    // 60 leçons + 11 jalons = 71 items au total.
+    expect(PARCOURS_FLAT).toHaveLength(71);
   });
 });

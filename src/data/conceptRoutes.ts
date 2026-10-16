@@ -175,6 +175,12 @@ export const CONCEPT_ROUTES: Record<string, ConceptRoute> = {
     lessonId: 'd2-u7-l1-mitchell-racker',
     documentExerciseId: 'photosynthese_cycle',
   },
+  respiration_demarche: {
+    conceptId: 'respiration_demarche',
+    unitId: 7,
+    lessonId: 'd2-u7-l2-demarche-respiration',
+    documentExerciseId: 'respiration_bilan',
+  },
   benioff_plan_earthquakes: {
     conceptId: 'benioff_plan_earthquakes',
     unitId: 9,

@@ -43,7 +43,7 @@ export const OFFICIAL_PROGRAM_SEQUENCE: Record<number, string[]> = {
   // consomme les produits.
   6: ['phase10_chapitres_19_20_2', 'phase11_chapitres_21_22', 'phase12_chapitres_23_24', 'd2-u6-l1-hill-ruben', 'd2-u6-l2-jagendorf', 'photochemical_chain', 'd2-u6-l3-calvin'],
   // U7 — respiration (TDM p.205) : phases 13,14 + leçon expérimentale (Mitchell/Racker)
-  7: ['phase13_chapitres_25_26', 'phase14_chapitres_27_28', 'd2-u7-l1-mitchell-racker'],
+  7: ['phase13_chapitres_25_26', 'phase14_chapitres_27_28', 'd2-u7-l2-demarche-respiration', 'd2-u7-l1-mitchell-racker'],
   // U8 — bilan énergie (TDM p.227) : phase15
   8: ['phase15_chapitres_29_30'],
   // U9 — plaques (TDM p.237) : phases 16,17(base),18 + leçon expérimentale (Benioff)

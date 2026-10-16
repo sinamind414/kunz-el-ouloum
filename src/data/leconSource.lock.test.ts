@@ -84,8 +84,8 @@ describe('bookIndex — uniteId 1-11 ↔ chapitres de l index (traçabilité str
 describe('bookIndex — appariement leçons ↔ chapitres (mesure figée)', () => {
   const cles = toutesCles();
 
-  it('59 clés dans la séquence officielle ; 45 mappées, 14 nulls documentés', () => {
-    expect(cles).toHaveLength(59);
+  it('60 clés dans la séquence officielle ; 45 mappées, 15 nulls documentés', () => {
+    expect(cles).toHaveLength(60);
     const mappes = cles.filter((k) => sourceLivre(k, cleToTitre(k)) !== null);
     expect(mappes).toHaveLength(45);
     const nulls = cles.filter((k) => sourceLivre(k, cleToTitre(k)) === null);
@@ -96,6 +96,7 @@ describe('bookIndex — appariement leçons ↔ chapitres (mesure figée)', () =
       'd2-u6-l2-jagendorf',
       'd2-u6-l3-calvin',
       'd2-u7-l1-mitchell-racker',
+      'd2-u7-l2-demarche-respiration', // المسار التجريبي : démarche cumulée ch. 36-38, sans en-tête TDM unique
       'd3-u9-l2-benioff',
       'immunity_cooperation', // حوصلة الوحدة : synthèse inter-chapitres sans en-tête TDM
       'phase12_chapitres_23_24_2', // synthèse inter-chapitres sans en-tête dédié

@@ -7,10 +7,10 @@
 // Ce qui est vérifié :
 //   - en-tête : eyebrow « أنا », nom de session ou mention « مسار تجريبي »
 //     (aucun code de suivi fabriqué) ;
-//   - شجرتك : 3 domaines, 11 unités, une feuille PAR LEÇON (59) + 11 points
+//   - شجرتك : 3 domaines, 11 unités, une feuille PAR LEÇON (60) + 11 points
 //     de جسار, et la légende 4 entrées ;
 //   - feuille verte après مسارات fait, feuille or après échec, pâle sinon ;
-//   - أرقامك بالكلếmات reflète le store (0 / 59 au départ) ;
+//   - أرقامك بالكلếmات reflète le store (0 / 60 au départ) ;
 //   - المزيد : les deux rubriques déplacées du menu latéral (2026-10-03)
 //     finissent en DERNIER bloc, une icône chacune, et un test relit App.tsx
 //     pour prouver qu'elles ont bien été RETIRÉES (menu latéral pour les deux
@@ -80,7 +80,7 @@ describe('MoiView — شجرتك (arbre)', () => {
 
     // Une feuille PAR LEÇON (les جسار sont des points, pas des feuilles).
     expect(feuilles(container)).toHaveLength(NB_LECONS);
-    expect(NB_LECONS + NB_JALONS).toBe(70);
+    expect(NB_LECONS + NB_JALONS).toBe(71);
   });
 
   it('colore la feuille selon l état : pâle → verte (fait) → or (fragile)', () => {
