@@ -1199,12 +1199,33 @@ export function findBestKnowledgeCard(input: string, activeDomainId: number | nu
   return findBestKnowledgeCardScored(input, activeDomainId)?.card ?? null;
 }
 
+/**
+ * SEGMENTATION DES PRÉFIXES INTERROGATIFS COLLÉS (sonde audit « Opus 5 High »,
+ * 16/10/2026 — reproduction locale : sonde 32 cas, verrou tuteurMahoSegmentation).
+ *
+ * « ماهو » collé (orthographe clavier ultra-courante) produisait un token de
+ * 4 lettres que la tolérance aux fautes rapprochait de l'alias « موهو »
+ * (discontinuité de Moho, fiche géologie) : Levenshtein(ماهو→موهو)=1 ≤ budget
+ * d'un token de 4 lettres → alias-overlap 1,00 → +60 pts → 9 notions sur 16
+ * recevaient بنية الكرة الأرضية à 70 % de confiance — y compris quand
+ * l'orthographe propre « ما هو » donnait la bonne carte. Le mot interrogatif
+ * choisissait une carte À LA PLACE de l'élève.
+ *
+ * La segmentation rend le préfixe à des mots-outils (ما/هو، ما/هي) que
+ * AR_STOPWORDS filtre ensuite ; l'alias « موهو » reste atteignable par les
+ * vraies questions tectoniques, et le garde-fou B3 (« ماهو اللب » → fiche du
+ * noyau) est préservé car « اللب » matche toujours mot-entier.
+ */
+export function segmenterPrefixesInterrogatifs(norm: string): string {
+  return norm.replace(/(^|\s)ماهو/g, '$1ما هو').replace(/(^|\s)ماهي/g, '$1ما هي');
+}
+
 /** Variante scorée (R4 audit/G4) : permet d'alimenter `confidence` partout. */
 function findBestKnowledgeCardScored(
   input: string,
   activeDomainId: number | null,
 ): { card: KnowledgeCard; score: number; exact: boolean } | null {
-  const norm = normalizeArabic(input);
+  const norm = segmenterPrefixesInterrogatifs(normalizeArabic(input));
   if (!norm || norm.length < 2) return null;
   const inputTokens = tokenizeArabic(norm);
   const activeGroups = activeSynonymGroups(norm);
@@ -1932,7 +1953,10 @@ function findTestableCard(domainId: number, excludeId: string): KnowledgeCard | 
 
 export function processStudentInput(session: BotSession, rawInput: string): EngineResult {
   const input = (rawInput || '').trim();
-  const norm = normalizeArabic(input);
+  // Sonde audit « Opus 5 High » (16/10/2026) : segmentation DES L'ENTRÉE, avant
+  // toute intention/matching — « ماهو كمون العمل » ne doit plus nourrir le
+  // moteur d'un token fantôme qui vote géologie. Voir segmenterPrefixesInterrogatifs.
+  const norm = segmenterPrefixesInterrogatifs(normalizeArabic(input));
   const n = (s: string) => normalizeArabic(s);
 
   // S-05 (14/10/2026) : une intention forte ABANDONNE la question en attente.
