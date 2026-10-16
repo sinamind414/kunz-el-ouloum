@@ -92,14 +92,29 @@ describe('verifierAssetLinks — les quatre états du fichier', () => {
   });
 });
 
-describe('le gabarit du dépôt est bien un gabarit', () => {
-  it('store/assetlinks.json est refusé par le serveur tant qu’il n’est pas renseigné', async () => {
-    // Garantie de non-publication accidentelle : tant que l'empreinte n'est pas
-    // réelle, la route renvoie 404 (et le journal dit pourquoi).
+describe('le fichier du dépôt est REMPLI (H2, état réel depuis 70e7d09)', () => {
+  it('store/assetlinks.json est VALIDE et porte le paquet + une empreinte réelle', async () => {
+    // Inverse du verrou précédent (« est encore un gabarit », valable au 14/10) :
+    // depuis le trousseau généré hors dépôt, le fichier porte des données
+    // réelles. Le garde-fou demeure dans LES DEUX sens : si quelqu'un remet un
+    // marqueur REMPLACER, verifierAssetLinks renverra 'placeholder' et ce test
+    // échouera — impossible de publier un gabarit.
     const { readFileSync } = await import('node:fs');
     const { resolve } = await import('node:path');
     const contenu = readFileSync(resolve(__dirname, '../../store/assetlinks.json'), 'utf-8');
     const v = verifierAssetLinks(contenu);
-    expect(['placeholder', 'invalide'], `gabarit servi comme valide : ${v.statut}`).toContain(v.statut);
+    expect(v.statut, `fichier du dépôt refusé : ${v.message}`).toBe('valide');
+    const parsed = JSON.parse(contenu) as {
+      target: { package_name: string; sha256_cert_fingerprints: string[] };
+    }[];
+    expect(parsed.length).toBeGreaterThan(0);
+    expect(parsed[0].target.package_name).toBe('com.kunzelouloum.app');
+    expect(parsed[0].target.sha256_cert_fingerprints.length).toBeGreaterThan(0);
+    for (const fp of parsed[0].target.sha256_cert_fingerprints) {
+      // Empreinte réelle SHA-256 = 32 octets hexadécimaux majuscules séparés
+      // par « : » — jamais un marqueur REMPLACER.
+      expect(fp).not.toContain('REMPLACER');
+      expect(fp).toMatch(/^([0-9A-F]{2}:){31}[0-9A-F]{2}$/);
+    }
   });
 });

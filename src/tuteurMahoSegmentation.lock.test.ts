@@ -58,6 +58,20 @@ describe('Verrou sonde audit Opus 5 — préfixe interrogatif « ماهو » col
     }
   });
 
+  it('« كمون العمل » est COUVERT et ne tombe plus dans l\'échec déclaré', () => {
+    // Audit Opus 5 — cas de repro ① (« ماهو كمون العمل »). Après segmentation,
+    // la question doit RÉUSSIR, pas seulement éviter la géologie : le livre
+    // scanné (data/bookContent.index.json, chapitre 27, unité 5, l. 142) titre
+    // une section « كمون العمل » dans le chapitre « النقل المشبكي » — l'alias
+    // est donc du verbatim de la source, ajouté à la carte الاتصال العصبي.
+    for (const q of ['ما هو كمون العمل', 'ماهو كمون العمل']) {
+      const r = answerTutorQuestion(q);
+      expect(r.text).not.toContain('لم أجد');
+      expect(r.text).not.toContain('بنية الكرة');
+      expect(r.text).not.toContain('hors');
+    }
+  });
+
   it('garde-fou B3 intact : « ماهو اللب » sert toujours la fiche du noyau terrestre', () => {
     const r = answerTutorQuestion('ماهو اللب');
     expect(r.text).toContain('بنية الكرة');

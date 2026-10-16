@@ -216,7 +216,13 @@ export const KNOWLEDGE_CARDS: KnowledgeCard[] = [
  id: 'nervous_communication',
  domainId: 1,
  title: 'الاتصال العصبي',
- aliases: ['الاتصال العصبي', 'الرسالة العصبية', 'nervous', 'المشبك', 'السينابس', 'العصبون', 'الناقل العصبي'],
+ // Sonde audit « Opus 5 High » (16/10/2026) : « كمون العمل » (16 cas de la
+ // sonde) restait hors de couverture. Alias VERBATIM du livre scanné —
+ // data/bookContent.index.json, chapitre 27 (unité 5, domaine 1, évidence
+ // l. 142 « كمون العمل »), dans le chapitre « النقل المشبكي (الكمون الغشائي) »
+ // (chap. 24). Les synonymes « التمثيل الضوئي », « الرباط العصبي »,
+ // « الحرق الخلوي » n'existent dans AUCUNE source du dépôt → non ajoutés.
+ aliases: ['الاتصال العصبي', 'الرسالة العصبية', 'nervous', 'المشبك', 'السينابس', 'العصبون', 'الناقل العصبي', 'كمون العمل'],
  shortAnswer:
  'تنتقل الرسالة العصبية على شكل جهد فعل ذو خاصية الكل أو لا شيء. عند المشبك يطلق العصبون قبل المشبكي الناقل العصبي (مثل الأسيتيل كولين) الذي يرتبط بالمستقبلات، ثم تتكفل الأسيتيل كولين إستيراز بتحليله لإنهاء الإشارة.',
  keywords: ['عصبون', 'مشبك', 'سينابس', 'جهد فعل', 'كل أو لا شيء', 'ناقل عصبي', 'الناقل العصبي', 'أسيتيل كولين', 'إستيراز'],
