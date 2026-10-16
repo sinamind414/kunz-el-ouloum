@@ -5,7 +5,7 @@
 import { useMemo, useState } from 'react';
 import { ArrowRight, BookOpen, Search, Sparkles, Star, X } from 'lucide-react';
 import { normalizeArabic, searchAllBases } from '../smartTutorEngine';
-import { useLeconsPrechargees } from '../data/useLeconsPrechargees';
+import { useBasesTuteurPrechargees } from '../data/useBasesTuteur';
 import {
   getFavorites,
   getRecentSearches,
@@ -83,9 +83,10 @@ interface SearchViewProps {
 export default function SearchView({ onBack, onOpenLesson }: SearchViewProps) {
   const [query, setQuery] = useState('');
   const [favoritesTick, setFavoritesTick] = useState(0);
-  // Phase A bundle : l'index des leçons arrive par fetch — re-calcul des
-  // résultats dès qu'il est là (avant : import statique, figé au chargement).
-  const leconsPretes = useLeconsPrechargees();
+  // Phases A+B bundle : les bases du tuteur (index des leçons, opuscules)
+  // arrivent par fetch — re-calcul des résultats dès qu'elles sont là (avant :
+  // imports statiques, figés au chargement).
+  const leconsPretes = useBasesTuteurPrechargees();
   const favorites = useMemo(() => getFavorites(), [favoritesTick]);
   const recents = useMemo(() => getRecentSearches(), [favoritesTick]);
 

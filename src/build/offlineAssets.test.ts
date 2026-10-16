@@ -28,12 +28,15 @@ describe('Disponibilité hors ligne des chunks', () => {
     const emis = readdirSync(resolve(DIST, 'assets'))
       .filter((f) => f.endsWith('.js') || f.endsWith('.css'))
       .map((f) => `/assets/${f}`);
-    // Phase A découpage bundle (2026-10-16) : l'index des leçons (786 Ko)
-    // n'est plus un chunk JS mais un JSON émis par kunz-tutor-lesson-json —
-    // il doit non seulement être dans le manifeste, mais exister sur disque.
+    // Phases A+B découpage bundle (2026-10-16) : l'index des leçons (786 Ko)
+    // et la base des opuscules (472 Ko) ne sont plus des chunks JS mais des
+    // JSON émis par kunz-tutor-bases-json — ils doivent non seulement être
+    // dans le manifeste, mais exister sur disque.
     emis.push('/tutor/lesson-index.json');
+    emis.push('/tutor/knowledge.json');
     emis.sort();
     expect(existsSync(resolve(DIST, 'tutor', 'lesson-index.json')), 'dist/tutor/lesson-index.json manquant').toBe(true);
+    expect(existsSync(resolve(DIST, 'tutor', 'knowledge.json')), 'dist/tutor/knowledge.json manquant').toBe(true);
     expect(assetsDuManifeste().sort()).toEqual(emis);
   });
 

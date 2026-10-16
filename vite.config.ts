@@ -8,21 +8,26 @@ import { pathToFileURL } from 'url';
 import { defineConfig, type Plugin } from 'vite';
 
 /**
- * Phase A découpage bundle (2026-10-16) — émet `dist/tutor/lesson-index.json`.
+ * Phase A+B découpage bundle (2026-10-16) — émet les JSON du tuteur :
+ * `dist/tutor/lesson-index.json` (547 chunks, 786 Ko) et
+ * `dist/tutor/knowledge.json` (428 chunks opuscules, 472 Ko).
  *
- * L'index des leçons du tuteur (`src/data/lessonIndex.ts`, 786 Ko) n'a plus le
- * droit de voyager en JavaScript : il est sérialisé en JSON par ce plugin
- * (émetteur : scripts/emit_lesson_index_json.ts, bundle esbuild temporaire) et
- * récupéré par fetch par `src/data/lessonIndexRuntime.ts` au premier montage
- * d'une vue du tuteur. Verrou post-build : src/build/tutorLeconsJson.lock.test.ts.
+ * Ces deux bases n'ont plus le droit de voyager en JavaScript : elles sont
+ * sérialisées en JSON par ce plugin (émetteur : scripts/emit_lesson_index_json.ts,
+ * bundle esbuild temporaire) et récupérées par fetch par les modules
+ * `lessonIndexRuntime` / `tutorKnowledgeRuntime` au premier montage d'une vue
+ * du tuteur. Verrou post-build : src/build/tutorLeconsJson.lock.test.ts.
  *
- * En dev (`vite serve`), le JSON n'existe pas sur disque : un middleware le
+ * En dev (`vite serve`), les JSON n'existent pas sur disque : un middleware les
  * génère à la demande pour que le tuteur reste complet hors build.
  */
-function tutorLessonJsonPlugin(): Plugin {
+function tutorBasesJsonPlugin(): Plugin {
   let jsonEnMemoire: string | null = null;
-  const generer = async (): Promise<string> => {
-    if (jsonEnMemoire) return jsonEnMemoire;
+  const generer = async (): Promise<{ lecons: string; opus: string }> => {
+    if (jsonEnMemoire) {
+      const enCache = JSON.parse(jsonEnMemoire) as { lecons: string; opus: string };
+      return enCache;
+    }
     const cacheDir = path.resolve(__dirname, 'node_modules', '.cache');
     const temporaire = path.join(cacheDir, 'kunz-emit-lesson-json.mjs');
     mkdirSync(cacheDir, { recursive: true });
@@ -35,27 +40,29 @@ function tutorLessonJsonPlugin(): Plugin {
       logLevel: 'silent',
     });
     const moduleEmis = await import(pathToFileURL(temporaire).href);
-    jsonEnMemoire = JSON.stringify(moduleEmis.donnees);
-    return jsonEnMemoire;
+    const resultat = { lecons: JSON.stringify(moduleEmis.donnees), opus: JSON.stringify(moduleEmis.donneesOpus) };
+    jsonEnMemoire = JSON.stringify(resultat);
+    return resultat;
   };
   return {
-    name: 'kunz-tutor-lesson-json',
+    name: 'kunz-tutor-bases-json',
     async generateBundle() {
-      this.emitFile({
-        type: 'asset',
-        fileName: 'tutor/lesson-index.json',
-        source: await generer(),
-      });
+      const bases = await generer();
+      this.emitFile({ type: 'asset', fileName: 'tutor/lesson-index.json', source: bases.lecons });
+      this.emitFile({ type: 'asset', fileName: 'tutor/knowledge.json', source: bases.opus });
     },
     configureServer(server) {
-      server.middlewares.use('/tutor/lesson-index.json', (_req, res, next) => {
-        generer()
-          .then((json) => {
-            res.setHeader('Content-Type', 'application/json; charset=utf-8');
-            res.end(json);
-          })
-          .catch(() => next());
-      });
+      const servir = (suffixe: string, champ: 'lecons' | 'opus') =>
+        server.middlewares.use(suffixe, (_req, res, next) => {
+          generer()
+            .then((bases) => {
+              res.setHeader('Content-Type', 'application/json; charset=utf-8');
+              res.end(bases[champ]);
+            })
+            .catch(() => next());
+        });
+      servir('/tutor/lesson-index.json', 'lecons');
+      servir('/tutor/knowledge.json', 'opus');
     },
   };
 }
@@ -75,15 +82,16 @@ function assetsManifestPlugin(): Plugin {
     name: 'kunz-assets-manifest',
     apply: 'build',
     generateBundle(_options, bundle) {
-      // `tutor/lesson-index.json` (Phase A découpage bundle) est émis en
-      // amont par kunz-tutor-lesson-json : il doit être précaché en
-      // hors-ligne comme n'importe quel chunk.
+      // `tutor/lesson-index.json` et `tutor/knowledge.json` (Phases A+B du
+      // découpage bundle) sont émis en amont par kunz-tutor-bases-json : ils
+      // doivent être précachés en hors-ligne comme n'importe quel chunk.
       const fichiers = Object.keys(bundle)
         .filter(
           (f) =>
             f.endsWith('.js') ||
             f.endsWith('.css') ||
-            f === 'tutor/lesson-index.json',
+            f === 'tutor/lesson-index.json' ||
+            f === 'tutor/knowledge.json',
         )
         .map((f) => `/${f}`)
         .sort();
@@ -156,7 +164,7 @@ function swBuildIdPlugin(): Plugin {
 
 export default defineConfig(() => {
   return {
-    plugins: [react(), tailwindcss(), tutorLessonJsonPlugin(), assetsManifestPlugin(), swBuildIdPlugin()],
+    plugins: [react(), tailwindcss(), tutorBasesJsonPlugin(), assetsManifestPlugin(), swBuildIdPlugin()],
     resolve: {
       alias: {
         '@': path.resolve(__dirname, '.'),
@@ -168,11 +176,12 @@ export default defineConfig(() => {
       // absent, si bien qu'aucun test ne couvrait le démarrage du serveur —
       // c'est précisément là qu'un échec bloque TOUT le monde.
       include: ['src/**/*.test.{ts,tsx}', 'server/**/*.test.ts'],
-      // Phase A découpage bundle : le moteur lit l'index des leçons par
-      // injection (lessonIndexRuntime) au lieu d'un import statique — le
-      // préchargement des tests passe par ce fichier (import direct du
-      // module TS, sans fetch). Rejoué par fichier de test (isolation).
-      setupFiles: ['src/test-setup/prechargerLecons.ts'],
+      // Phases A+B découpage bundle : le moteur lit les bases dynamiques
+      // (index des leçons, opuscules) par injection (runtimes) au lieu
+      // d'imports statiques — le préchargement des tests passe par ce fichier
+      // (import direct des modules TS, sans fetch). Rejoué par fichier de
+      // test (isolation).
+      setupFiles: ['src/test-setup/prechargerBasesTuteur.ts'],
       // Les contrôles de `src/build/` portent sur le RÉSULTAT d'un build
       // (dist/assets) et non sur le code source : ils n'ont rien à faire dans
       // la suite unitaire, où ils produisaient des échecs permanents dans

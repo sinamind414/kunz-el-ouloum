@@ -25,7 +25,8 @@ import {
   type KnowledgeCard,
   type QuizQuestion,
 } from './data/smartBotData';
-import { TUTOR_KNOWLEDGE, type TutorKnowledgeChunk } from './tutorKnowledge';
+import type { TutorKnowledgeChunk } from './tutorKnowledge';
+import { tutorKnowledgeSiChargee } from './data/tutorKnowledgeRuntime';
 import { BOOK_TUTOR_QA, findBestBookQA, type BookTutorQA } from './bookTutorQA';
 import { findBestMethodologyQA } from './methodologyKnowledge';
 import { lessonIndexSiChargee } from './data/lessonIndexRuntime';
@@ -276,17 +277,27 @@ const BOOK_CHUNKS: SearchChunk[] = BOOK_TUTOR_QA.map((q: BookTutorQA) => ({
   normKeywords: q.keywords.map((k) => normalizeArabic(k)),
 }));
 
-const OPUS_CHUNKS: SearchChunk[] = TUTOR_KNOWLEDGE.map((c: TutorKnowledgeChunk) => ({
-  id: c.id,
-  type: 'opus' as const,
-  title: c.title,
-  unitId: c.unitId,
-  unitTitle: c.unitTitle,
-  text: c.content,
-  normTitle: normalizeArabic(c.title),
-  normAliases: [],
-  normKeywords: c.keywords.map((k) => normalizeArabic(k)),
-}));
+let chunksOpusCache: SearchChunk[] | null = null;
+
+/** Chunks opuscules (tutorKnowledge, 428 × content) — Phase B bundle : cache
+ *  paresseux, [] tant que le JSON n'est pas arrivé (dégradation honnête). */
+function chunksOpus(): SearchChunk[] {
+  if (chunksOpusCache) return chunksOpusCache;
+  const donnees = tutorKnowledgeSiChargee();
+  if (!donnees) return [];
+  chunksOpusCache = donnees.map((c: TutorKnowledgeChunk) => ({
+    id: c.id,
+    type: 'opus' as const,
+    title: c.title,
+    unitId: c.unitId,
+    unitTitle: c.unitTitle,
+    text: c.content,
+    normTitle: normalizeArabic(c.title),
+    normAliases: [],
+    normKeywords: c.keywords.map((k) => normalizeArabic(k)),
+  }));
+  return chunksOpusCache;
+}
 
 const GUIDE_CHUNKS: SearchChunk[] = STUDY_GUIDE_CARDS.map((card: StudyGuideCard) => ({
   id: card.id,
@@ -337,16 +348,22 @@ function chunksLecons(): SearchChunk[] {
   return chunksLeconsCache;
 }
 
-/** Fusion des bases de recherche — cache invalidé automatiquement quand les
- *  chunks de leçons arrivent (avant : tableau au niveau module, figé au chargement). */
+/** Fusion des bases de recherche — cache invalidé dès qu'une base dynamique
+ *  (leçons Phase A, opuscules Phase B) arrive (avant : tableaux figés au
+ *  chargement du module sur les imports statiques). */
 let tousChunksCache: SearchChunk[] | null = null;
-let tousChunksAvecLecons = false;
+let tousChunksCle = '';
+
+/** Clé d'invalidation commune des caches dérivés de la fusion. */
+function cleBasesChargees(): string {
+  return `${chunksLecons().length > 0 ? 'L' : ''}|${chunksOpus().length > 0 ? 'O' : ''}`;
+}
 
 function tousLesChunks(): SearchChunk[] {
-  const avecLecons = chunksLecons().length > 0;
-  if (tousChunksCache && tousChunksAvecLecons === avecLecons) return tousChunksCache;
-  tousChunksCache = [...GUIDE_CHUNKS, ...LEGACY_CHUNKS, ...BOOK_CHUNKS, ...OPUS_CHUNKS, ...chunksLecons()];
-  tousChunksAvecLecons = avecLecons;
+  const cle = cleBasesChargees();
+  if (tousChunksCache && tousChunksCle === cle) return tousChunksCache;
+  tousChunksCache = [...GUIDE_CHUNKS, ...LEGACY_CHUNKS, ...BOOK_CHUNKS, ...chunksOpus(), ...chunksLecons()];
+  tousChunksCle = cle;
   return tousChunksCache;
 }
 
@@ -357,18 +374,18 @@ function tousLesChunks(): SearchChunk[] {
  * extrait (`routageDomaine.ts`).
  */
 let vocabDomaineCache: ReturnType<typeof construireVocabulaire> | null = null;
-let vocabDomaineAvecLecons = false;
+let vocabDomaineCle = '';
 
 function vocabDomaine(): ReturnType<typeof construireVocabulaire> {
-  const avecLecons = chunksLecons().length > 0;
-  if (!vocabDomaineCache || vocabDomaineAvecLecons !== avecLecons) {
+  const cle = cleBasesChargees();
+  if (!vocabDomaineCache || vocabDomaineCle !== cle) {
     vocabDomaineCache = construireVocabulaire(
       tousLesChunks().map((ch) => ({
         domaine: domaineDeUnite(ch.unitId, DOMAIN_UNITS),
         tokens: [...tokenizeArabic(ch.normTitle), ...ch.normKeywords],
       })),
     );
-    vocabDomaineAvecLecons = avecLecons;
+    vocabDomaineCle = cle;
   }
   return vocabDomaineCache;
 }
@@ -398,13 +415,14 @@ function collectTokens(...phrases: string[]): string[] {
 }
 
 let domaineVocabCache: Set<string> | null = null;
-let domaineVocabAvecLecons = false;
+let domaineVocabCle = '';
 
-/** Gros vocabulaire du programme, reconstruit quand les chunks de leçons
- *  arrivent (avant : Set figé au chargement du module sur l'index statique). */
+/** Gros vocabulaire du programme, reconstruit dès qu'une base dynamique
+ *  (leçons Phase A, opuscules Phase B) arrive (avant : Set figé au chargement
+ *  du module sur les imports statiques). */
 function domaineVocab(): Set<string> {
-  const avecLecons = chunksLecons().length > 0;
-  if (!domaineVocabCache || domaineVocabAvecLecons !== avecLecons) {
+  const cle = cleBasesChargees();
+  if (!domaineVocabCache || domaineVocabCle !== cle) {
     const vocab = new Set<string>();
     const add = (phrase: string | undefined) => {
       if (!phrase) return;
@@ -423,7 +441,7 @@ function domaineVocab(): Set<string> {
     for (const d of DOMAINS) add(d.title);
     for (const t of PEDAGOGICAL_TERMS) vocab.add(t);
     domaineVocabCache = vocab;
-    domaineVocabAvecLecons = avecLecons;
+    domaineVocabCle = cle;
   }
   return domaineVocabCache;
 }

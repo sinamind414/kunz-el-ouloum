@@ -33,6 +33,16 @@ describe('lesson-index du tuteur : émis en JSON, hors des chunks JS', () => {
     expect(typeof donnees[0]?.id).toBe('string');
   });
 
+  it('(a2) dist/tutor/knowledge.json existe et contient les 428 chunks opuscules', () => {
+    // Phase B découpage bundle (2026-10-16) : tutorKnowledge.ts (472 Ko,
+    // 428 chunks — comptés à HEAD) subit le même traitement que l'index.
+    const cheminOpus = resolve(DIST, 'tutor', 'knowledge.json');
+    expect(existsSync(cheminOpus)).toBe(true);
+    const donnees = JSON.parse(readFileSync(cheminOpus, 'utf8')) as Array<{ id: string }>;
+    expect(Array.isArray(donnees)).toBe(true);
+    expect(donnees).toHaveLength(428);
+  });
+
   it('(b) aucun chunk JS de dist/assets ne contient plus l’index en dur', () => {
     const assets = resolve(DIST, 'assets');
     expect(existsSync(assets)).toBe(true);
@@ -40,15 +50,16 @@ describe('lesson-index du tuteur : émis en JSON, hors des chunks JS', () => {
     for (const f of readdirSync(assets)) {
       if (!f.endsWith('.js')) continue;
       const contenu = readFileSync(resolve(assets, f), 'utf8');
-      if (contenu.includes('lhx_')) coupables.push(f);
+      if (contenu.includes('lhx_') || contenu.includes('"chunk_1"')) coupables.push(f);
     }
     expect(coupables).toEqual([]);
   });
 
-  it('(c) le JSON est annoncé dans assets-manifest.json (précachage hors-ligne)', () => {
+  it('(c) les deux JSON sont annoncés dans assets-manifest.json (précachage hors-ligne)', () => {
     const manifestPath = resolve(DIST, 'assets-manifest.json');
     expect(existsSync(manifestPath)).toBe(true);
     const manifest = JSON.parse(readFileSync(manifestPath, 'utf8')) as { assets: string[] };
     expect(manifest.assets).toContain('/tutor/lesson-index.json');
+    expect(manifest.assets).toContain('/tutor/knowledge.json');
   });
 });
