@@ -83,16 +83,12 @@ export const TRAINING_ENTRIES: TrainingEntry[] = [
     gestureAr: 'أدوّن الزبدة',
     icon: 'penTool',
   },
-  {
-    // 2026-10-11 — « مفتاح المنهجية » rejoint CE hub : corriger sa copie et
-    // travailler la méthode (ICM + 4 مراحل) sont des gestes de production,
-    // pas de consolidation. Sa porte principale est ici, plus dans « المزيد ».
-    tab: 'methodology',
-    titleAr: 'مفتاح المنهجية',
-    descriptionAr: 'المنهجية الكاملة: ICM + 4 مراحل، سند وحكم وتركيب، وقوالب النص العلمي المقبولة في التصحيح.',
-    gestureAr: 'أتقن منهجية الإجابة',
-    icon: 'key',
-  },
+  // 2026-10-16 — « مفتاح المنهجية » a QUITTÉ ce hub : PROMU 6ᵉ portail visible
+  // de la barre principale (Commit C, Phase 2, GO utilisateur ; plainte
+  // expert : l'élève « ne se retrouvait plus, surtout مفتاح المنهجية »). Le
+  // verrou PortesUniques interdit la double porte hub + barre ; la porte
+  // barre est unique, et la Phase 1 (2026-10-16) garantit qu'elle ouvre
+  // l'atelier المفتاح (pas la grille d'ateliers).
   {
     // 2026-10-12 — les examens quittent l'écran 1 de « الدروس » (ils mélangeaient
     // apprentissage et entraînement). Porte unique : QCM du livre officiel +

@@ -15,6 +15,7 @@ import {
   Search,
   PenTool,
   Dumbbell,
+  Key,
   Sprout
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
@@ -815,6 +816,12 @@ export default function App() {
     { tab: 'home', label: 'الرئيسية', fr: 'Accueil', Icon: Home },
     { tab: 'lesson', label: 'الدروس', fr: 'Apprendre', Icon: BookOpen },
     { tab: 'training', label: 'التمارين والتدريب', fr: "S'entraîner", Icon: Dumbbell },
+    // Phase 2, Commit C (GO 2026-10-16) : « مفتاح المنهجية » reçoit sa PROPRE
+    // porte visible. La plainte expert : l'élève « ne se retrouvait plus,
+    // surtout مفتاح المنهجية ». Après la Phase 1 (la porte ouvre l'atelier
+    // المفتاح) et la sortie du hub التمارين — pour rester à UNE seule porte
+    // (verrou PortesUniques) — le 6ᵉ portail rend l'outil permanent.
+    { tab: 'methodology', label: 'المنهجية', fr: 'Méthode', Icon: Key },
     { tab: 'reviser', label: 'المراجعة', fr: 'Réviser', Icon: Layers },
     { tab: 'moi', label: 'أنا', fr: 'Moi', Icon: Sprout },
   ];

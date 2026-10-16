@@ -65,7 +65,10 @@ describe('Commit B — « تحدي البكالوريا » se débloque par la p
   it('les outils transversaux restent LIBRES dès le premier jour', () => {
     const onOpen = vi.fn();
     render(<TrainingHubView onOpen={onOpen} />);
-    for (const tab of ['methodology', 'examens', 'bacideas', 'workshop', 'situations', 'animations', 'tadwin']) {
+    // NB : « مفتاح المنهجية » a quitté le hub le 2026-10-16 (Commit C) —
+    // 6ᵉ portail visible de la barre, toujours libre d'accès (outils
+    // transversaux OUVERTS tôt, GO des recommandations).
+    for (const tab of ['examens', 'bacideas', 'workshop', 'situations', 'animations', 'tadwin']) {
       fireEvent.click(screen.getByTestId(`hub-${tab}`));
       expect(onOpen).toHaveBeenCalledWith(tab);
     }

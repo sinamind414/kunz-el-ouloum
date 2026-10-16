@@ -10,6 +10,8 @@
 import { cleanup, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { afterEach, describe, expect, it, vi } from 'vitest';
+import { readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
 import TrainingHubView from '../TrainingHubView';
 import { TRAINING_ENTRIES, TRAINING_ENTRY_COUNT } from '../../data/trainingHub';
 import { resetParcours, markDone } from '../../lib/parcours/parcoursProgress';
@@ -73,17 +75,27 @@ describe('hub d entraînement — contenu', () => {
     expect(tabs).not.toContain('bac');
   });
 
-  it('reflète la restructuration du 2026-10-11 : consolidation sortie, méthodologie entrée', () => {
+  it('reflète le 2026-10-16 : « مفتاح المنهجية » PROMU 6ᵉ portail visible', () => {
     const tabs = TRAINING_ENTRIES.map((e) => e.tab);
     // Ce qui PRODUIT une réponse reste ici.
     expect(tabs).toContain('situations');
     expect(tabs).toContain('bootcamp');
-    // « مفتاح المنهجية » rejoint le hub (geste de production/correction).
-    expect(tabs).toContain('methodology');
-    // Ce qui CONSOLIDE est parti dans le hub « المراجعة » (revisionHub.ts) :
-    // une seule porte par objectif, jamais deux.
+    // Phase 2, Commit C (GO utilisateur) : la méthode N'EST PLUS une carte du
+    // hub — elle a sa PROPRE porte visible dans la barre principale (plainte
+    // expert : l'élève ne retrouvait pas مفتاح المنهجية). La règle « une seule
+    // porte par fonctionnalité » (PortesUniques) l'exige : hub + barre = 2
+    // portes interdites.
+    expect(tabs).not.toContain('methodology');
     expect(tabs).not.toContain('schemas');
     expect(tabs).not.toContain('plan');
+    // La porte barre existe, entre التمارين et المراجعة, et « أنا » ferme la barre.
+    const src = readFileSync(resolve(__dirname, '../../App.tsx'), 'utf8');
+    const i = src.indexOf('const PRIMARY_NAV');
+    const bloc = src.slice(i, src.indexOf('];', i));
+    const onglets = [...bloc.matchAll(/\{ tab: '([a-z]+)'/g)].map((m) => m[1]);
+    expect(onglets).toEqual(['home', 'lesson', 'training', 'methodology', 'reviser', 'moi']);
+    // Et la vue reste bien montée pour son onglet (inchangé).
+    expect(src).toContain("currentTab === 'methodology'");
   });
 });
 

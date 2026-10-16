@@ -271,7 +271,10 @@ describe('MoiView — المزيد : rubriques déplacées du menu latéral', ()
     //    (rubrique supprimée, principe conservé : compteur + leçon suggérée
     //    dans « الدرس الرسمي »).
     const entreesPrincipales = (menuPrincipal.match(/\{ tab: '/g) ?? []).length;
-    expect(entreesPrincipales).toBe(5);
+    // 2026-10-16 (Commit C, Phase 2, GO) : la barre passe de 5 à 6 portails —
+    // « المنهجية » rejoint la barre (plainte : l'élève ne retrouvait pas
+    // مفتاح المنهجية), sortie du hub التمارين pour rester à UNE porte.
+    expect(entreesPrincipales).toBe(6);
     expect(menuPrincipal, 'تقدمي est toujours dans la barre principale').not.toContain(
       "tab: 'stats'",
     );
