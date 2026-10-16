@@ -22,6 +22,12 @@ export interface TrainingEntry {
   gestureAr: string;
   /** Icône lucide (nom), résolue par la vue. */
   icon: 'search' | 'penTool' | 'sparkles' | 'swords' | 'playCircle' | 'calendar' | 'fileText' | 'key';
+  /** Phase 2 (GO 2026-10-16) — progression verrouillée : nombre d'UNITÉS
+   *  COMPLÈTES (leçons + جسر) requises avant que la carte s'ouvre. Absent =
+   *  outil transversal, libre dès le premier jour (مفتاح, ورشة, examens…).
+   *  Lu depuis la progression RÉELLE du parcours (unitesCompletes), jamais
+   *  estimée. Verrou : cadenasHubs.test.tsx. */
+  deverrouApresUnites?: number;
 }
 
 export const TRAINING_ENTRIES: TrainingEntry[] = [
@@ -52,6 +58,9 @@ export const TRAINING_ENTRIES: TrainingEntry[] = [
     descriptionAr: 'اختبارات في نمط الامتحان لقياس الأداء تحت ضغط الوقت.',
     gestureAr: 'أختبر نفسي',
     icon: 'swords',
+    // Phase 2 (GO 2026-10-16) : simulation d'examen → méritée par la
+    // progression réelle. Seuil éditorial : 2 unités complètes.
+    deverrouApresUnites: 2,
   },
   {
     tab: 'workshop',

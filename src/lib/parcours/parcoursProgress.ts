@@ -183,3 +183,11 @@ export function parcoursProgress(state: ParcoursState): ProgressCompteur {
     total: PARCOURS_FLAT.length,
   };
 }
+
+/** Nombre d'unités RÉELLEMENT complètes (leçons + جسر) — moteur des cadenas
+ *  de la Phase 2 (GO 2026-10-16) : تحدي البكالوريا se débloque domaine par
+ *  domaine, en lisant la progression réelle du parcours, jamais sur parole. */
+export function unitesCompletes(state: ParcoursState): number {
+  const units = PARCOURS_DOMAINS.flatMap((d) => d.units);
+  return units.filter((u) => u.items.length > 0 && u.items.every((i) => state.done[i.id])).length;
+}

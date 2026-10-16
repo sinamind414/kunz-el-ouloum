@@ -4,9 +4,10 @@
 // travaillé (« أحلّل سنداً », « أرسم وأقيّم »…) plutôt que le nom de l'outil :
 // l'élève choisit ce qu'il veut exercer, pas une marque interne.
 
-import { ArrowRight, CalendarDays, Dumbbell, FileText, Key, PenTool, PlayCircle, Search, Sparkles, Swords } from 'lucide-react';
+import { ArrowRight, CalendarDays, Dumbbell, FileText, Key, Lock, PenTool, PlayCircle, Search, Sparkles, Swords } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import { TRAINING_ENTRIES, type TrainingTab } from '../data/trainingHub';
+import { loadParcours, unitesCompletes } from '../lib/parcours/parcoursProgress';
 
 interface TrainingHubViewProps {
   onOpen: (tab: TrainingTab) => void;
@@ -25,6 +26,9 @@ const ICONS: Record<string, LucideIcon> = {
 };
 
 export default function TrainingHubView({ onOpen, onBackToHome }: TrainingHubViewProps) {
+  // Phase 2 (GO 2026-10-16) : le cadenas lit la progression RÉELLE du
+  // parcours — une unité complète = toutes ses leçons + son جسر.
+  const unites = unitesCompletes(loadParcours());
   return (
     <div className="min-h-screen p-4 md:p-8 max-w-5xl mx-auto" dir="rtl" data-testid="training-hub">
       {/* RTL : le conteneur est en dir="rtl", donc `flex-row` place le PREMIER
@@ -56,12 +60,22 @@ export default function TrainingHubView({ onOpen, onBackToHome }: TrainingHubVie
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {TRAINING_ENTRIES.map((e) => {
           const Icon = ICONS[e.icon] ?? Dumbbell;
+          // Cadenas Phase 2 : la carte n'ouvre rien tant que la progression
+          // réelle ne l'a pas méritée. Étiquette avec la CONDITION, jamais
+          // silencieuse (un cadenas muet n'est qu'un bug déguisé).
+          const requis = e.deverrouApresUnites;
+          const verrouille = requis != null && unites < requis;
           return (
             <button
               key={e.tab}
               data-testid={`hub-${e.tab}`}
-              onClick={() => onOpen(e.tab)}
-              className="text-right bg-white dark:bg-[#141916] rounded-3xl p-5 border border-[#bbcbbb]/30 dark:border-[#2ecc71]/10 shadow-sm hover:shadow-md hover:border-[#006d37]/40 transition-all cursor-pointer"
+              onClick={verrouille ? undefined : () => onOpen(e.tab)}
+              aria-disabled={verrouille || undefined}
+              className={`text-right bg-white dark:bg-[#141916] rounded-3xl p-5 border shadow-sm transition-all ${
+                verrouille
+                  ? 'border-[#bbcbbb]/30 dark:border-[#2ecc71]/10 opacity-70 cursor-not-allowed'
+                  : 'border-[#bbcbbb]/30 dark:border-[#2ecc71]/10 hover:shadow-md hover:border-[#006d37]/40 cursor-pointer'
+              }`}
             >
               {/* dir="rtl" + flex-row → icône à DROITE du texte, comme dans le
                   menu latéral. `row-reverse` mettait l'icône à gauche. */}
@@ -72,9 +86,19 @@ export default function TrainingHubView({ onOpen, onBackToHome }: TrainingHubVie
                 <div className="flex-1">
                   <h2 className="text-base font-black text-[#1f1c0b] dark:text-gray-100 mb-1">{e.titleAr}</h2>
                   <p className="text-[13px] leading-6 text-[#506072] dark:text-gray-400 mb-2">{e.descriptionAr}</p>
-                  <span className="inline-block text-[11px] font-bold px-2.5 py-1 rounded-lg bg-[#fff9ed] dark:bg-black/20 text-[#8a6a00] dark:text-[#d9a400]">
-                    {e.gestureAr}
-                  </span>
+                  {verrouille ? (
+                    <span
+                      data-testid={`verrou-${e.tab}`}
+                      className="inline-flex items-center gap-1.5 text-[11px] font-bold px-2.5 py-1 rounded-lg bg-[#fff9ed] dark:bg-black/20 text-[#8a6a00] dark:text-[#d9a400]"
+                    >
+                      <Lock className="w-3 h-3" />
+                      تُفْتَح بعد إتمام {requis} {requis === 1 ? 'وحدة' : requis === 2 ? 'وحدتين' : `وحدات (${requis})`} — وحدة = دروسها والجسر كاملة
+                    </span>
+                  ) : (
+                    <span className="inline-block text-[11px] font-bold px-2.5 py-1 rounded-lg bg-[#fff9ed] dark:bg-black/20 text-[#8a6a00] dark:text-[#d9a400]">
+                      {e.gestureAr}
+                    </span>
+                  )}
                 </div>
               </div>
             </button>

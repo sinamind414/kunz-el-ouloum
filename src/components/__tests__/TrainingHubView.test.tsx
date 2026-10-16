@@ -12,8 +12,24 @@ import userEvent from '@testing-library/user-event';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import TrainingHubView from '../TrainingHubView';
 import { TRAINING_ENTRIES, TRAINING_ENTRY_COUNT } from '../../data/trainingHub';
+import { resetParcours, markDone } from '../../lib/parcours/parcoursProgress';
+import { PARCOURS_FLAT } from '../../lib/parcours/parcoursPath';
 
 afterEach(cleanup);
+
+/** Phase 2 (GO 2026-10-16) : تحدي البكالوريا est cadenassée tant que 2 unités
+ *  complètes n'existent pas. Les verrous « gesture/onglet » parcourent TOUTES
+ *  les cartes : ils valident donc d'abord 2 unités RÉELLES (leçons + جسر)
+ *  pour que chaque carte soit ouverte — le cadenas en rituel, lui, est
+ *  prouvé par cadenasHubs.test.tsx. */
+function ouvrirToutesLesCartes(): void {
+  localStorage.clear();
+  resetParcours();
+  const unitIds = [...new Set(PARCOURS_FLAT.map((i) => i.unitId))].sort((a, b) => a - b);
+  for (const uid of unitIds.slice(0, 2)) {
+    for (const item of PARCOURS_FLAT.filter((i) => i.unitId === uid)) markDone(item.id);
+  }
+}
 
 describe('hub d entraînement — contenu', () => {
   it('affiche une carte par espace regroupé', () => {
@@ -32,6 +48,7 @@ describe('hub d entraînement — contenu', () => {
   });
 
   it('chaque carte annonce un geste et une description utile', () => {
+    ouvrirToutesLesCartes();
     render(<TrainingHubView onOpen={() => {}} />);
     for (const e of TRAINING_ENTRIES) {
       const carte = screen.getByTestId(`hub-${e.tab}`);
@@ -86,6 +103,7 @@ describe('hub d entraînement — navigation', () => {
 
   it('chaque carte transmet exactement son propre onglet', async () => {
     const user = userEvent.setup();
+    ouvrirToutesLesCartes();
     for (const e of TRAINING_ENTRIES) {
       const onOpen = vi.fn();
       render(<TrainingHubView onOpen={onOpen} />);
