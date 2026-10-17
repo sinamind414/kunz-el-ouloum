@@ -1,0 +1,300 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bilan final de mission — Al Miftah</title>
+<style>
+  :root{
+    --ink:#11201c; --muted:#5d6f69; --line:#dfe6e3; --bg:#f6f8f7;
+    --accent:#0f6b52; --accent2:#c08a2e; --warn:#a33a28; --card:#fff;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font:15px/1.55 "Segoe UI",system-ui,-apple-system,Roboto,sans-serif}
+  .wrap{max-width:980px;margin:0 auto;padding:32px 24px 72px}
+  header{border-bottom:3px solid var(--accent);padding-bottom:18px;margin-bottom:28px}
+  h1{margin:0 0 6px;font-size:28px;letter-spacing:-.3px}
+  .sub{color:var(--muted);font-size:14px}
+  h2{font-size:19px;margin:38px 0 14px;padding-bottom:7px;border-bottom:1px solid var(--line)}
+  h2 .n{display:inline-block;width:25px;height:25px;line-height:25px;text-align:center;
+    background:var(--accent);color:#fff;border-radius:50%;font-size:13px;margin-right:9px}
+  h3{font-size:15px;margin:22px 0 10px;color:var(--accent)}
+  p{margin:10px 0}
+  .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin:22px 0}
+  .kpi{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px 16px}
+  .kpi b{display:block;font-size:25px;color:var(--accent);line-height:1.1}
+  .kpi span{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.4px}
+  table{width:100%;border-collapse:collapse;background:var(--card);margin:14px 0;
+    border:1px solid var(--line);border-radius:8px;overflow:hidden;font-size:14px}
+  th{background:#eef3f1;text-align:left;padding:9px 11px;font-size:12px;
+    text-transform:uppercase;letter-spacing:.4px;color:var(--muted)}
+  td{padding:9px 11px;border-top:1px solid var(--line)}
+  td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
+  tr.hi td{background:#f2f8f5;font-weight:600}
+  .bar{position:relative;background:#e9efec;border-radius:3px;height:16px;min-width:60px}
+  .bar i{position:absolute;inset:0 auto 0 0;background:var(--accent);border-radius:3px;display:block}
+  .bar i.alt{background:var(--accent2)}
+  .bar i.warn{background:var(--warn)}
+  .note{background:#fff;border-left:4px solid var(--accent2);padding:12px 16px;margin:16px 0;
+    border-radius:0 8px 8px 0;font-size:14px}
+  .note b{color:var(--accent2)}
+  .cols{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+  ul{margin:8px 0;padding-left:20px} li{margin:5px 0}
+  .tag{display:inline-block;padding:1px 8px;border-radius:20px;font-size:11px;font-weight:700}
+  .ok{background:#e0f0e8;color:#0f6b52}
+  .wip{background:#fdf1dc;color:#8a6118}
+  .risk{background:#fae8e4;color:#a33a28}
+  .ar{font-family:"Segoe UI","Noto Naskh Arabic",serif;direction:rtl;unicode-bidi:isolate}
+  footer{margin-top:42px;padding-top:16px;border-top:1px solid var(--line);
+    color:var(--muted);font-size:12.5px}
+  @media print{body{background:#fff}.wrap{padding:0;max-width:100%}
+    h2{page-break-after:avoid}table{page-break-inside:avoid}}
+  @media (max-width:720px){.cols{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <h1>Bilan final de mission — Al Miftah / Kunz el Ouloum</h1>
+  <div class="sub">
+    Analyse de l'audience YouTube SVT BAC Algérie → leçons critiques → audit applicatif →
+    comblement des manques → mesure de l'apprentissage.<br>
+    Sprints 1 → 63 · branche <code>arena/01a0df17-kunz-el-ouloum</code> · 17 octobre 2026
+  </div>
+</header>
+
+<div class="kpis">
+  <div class="kpi"><b>207</b><span>commits</span></div>
+  <div class="kpi"><b>+30 167</b><span>lignes ajoutées</span></div>
+  <div class="kpi"><b>1 853</b><span>tests verts · 0 échec</span></div>
+  <div class="kpi"><b>≈ 1 070</b><span>vidéos analysées</span></div>
+  <div class="kpi"><b>≈ 27 M</b><span>vues dépouillées</span></div>
+  <div class="kpi"><b>65</b><span>exercices BAC indexés</span></div>
+</div>
+
+<h2><span class="n">1</span>Corpus YouTube analysé</h2>
+
+<table>
+  <tr><th>Chaîne</th><th>Rôle dans l'analyse</th><th class="num">Vidéos</th><th class="num">Audience</th></tr>
+  <tr class="hi"><td>@prof-ketfi.cherif-zina</td><td>référence principale (~1 M abonnés)</td><td class="num">649</td><td class="num">19,1 M</td></tr>
+  <tr><td>@Profchaouch</td><td>série A→Z : 1 vidéo/unité, format constant</td><td class="num">204</td><td class="num">4,86 M</td></tr>
+  <tr><td>@MostafaBdd</td><td>exercices (121 vidéos) + cartes mentales</td><td class="num">184</td><td class="num">1,50 M</td></tr>
+  <tr><td>@ikramscience8424</td><td>« أفكار التمارين » par session 2019→2025</td><td class="num">17</td><td class="num">1,25 M</td></tr>
+  <tr><td>@Prof_benotmane</td><td>granularité fine sur l'immunité</td><td class="num">15</td><td class="num">0,80 M</td></tr>
+  <tr class="hi"><td colspan="2">Total — 5 chaînes</td><td class="num">≈ 1 070</td><td class="num">≈ 27 M</td></tr>
+</table>
+
+<p class="sub">Méthode : relevé public des pages <code>/playlists</code> (sans clé API), vues telles
+qu'affichées par YouTube — donc arrondies et non additives entre playlists.
+Données brutes : <code>data/youtube_*_catalog.json</code>.</p>
+
+<h3>Demande par unité — vues <em>par vidéo</em> (chaîne Ketfi, 3AS)</h3>
+<table>
+  <tr><th>Unité</th><th class="num">Vidéos</th><th class="num">Vues</th><th class="num">Vues / vidéo</th><th>Intensité</th></tr>
+  <tr class="hi"><td>U1 تركيب البروتين</td><td class="num">48</td><td class="num">5 554 350</td><td class="num">115 716</td><td><span class="bar"><i style="width:100%"></i></span></td></tr>
+  <tr class="hi"><td>U2 بنية ↔ وظيفة البروتين</td><td class="num">25</td><td class="num">2 118 109</td><td class="num">84 724</td><td><span class="bar"><i class="alt" style="width:73%"></i></span></td></tr>
+  <tr><td>U4 المناعة</td><td class="num">61</td><td class="num">4 429 930</td><td class="num">72 622</td><td><span class="bar"><i style="width:63%"></i></span></td></tr>
+  <tr><td>U3 الإنزيمات</td><td class="num">32</td><td class="num">2 192 465</td><td class="num">68 515</td><td><span class="bar"><i style="width:59%"></i></span></td></tr>
+  <tr><td>U6 التركيب الضوئي</td><td class="num">39</td><td class="num">2 019 360</td><td class="num">51 778</td><td><span class="bar"><i style="width:45%"></i></span></td></tr>
+  <tr><td>U5 الاتصال العصبي</td><td class="num">44</td><td class="num">2 174 772</td><td class="num">49 427</td><td><span class="bar"><i style="width:43%"></i></span></td></tr>
+  <tr><td>U7 التنفس والتخمر</td><td class="num">8</td><td class="num">291 531</td><td class="num">36 441</td><td><span class="bar"><i style="width:31%"></i></span></td></tr>
+  <tr><td>Géologie U8–U11</td><td class="num">1</td><td class="num">16 192</td><td class="num">16 192</td><td><span class="bar"><i style="width:14%"></i></span></td></tr>
+</table>
+
+<div class="note"><b>Lecture décisive.</b> U2 n'a que 25 vidéos mais <b>84 724 vues par vidéo</b> —
+deuxième rang. Une unité peu couverte et très regardée est la signature d'une difficulté non
+traitée. C'est ce croisement, et non le volume brut, qui fonde la liste des 5 leçons prioritaires.</div>
+
+<h3>Corroboration par le temps d'exposition (Chaouch, format constant)</h3>
+<table>
+  <tr><th>Unité</th><th class="num">Durée du cours A→Z</th><th>Temps accordé</th><th class="num">Vues</th></tr>
+  <tr class="hi"><td>U4 المناعة</td><td class="num">8 h 26</td><td><span class="bar"><i style="width:100%"></i></span></td><td class="num">1,30 M</td></tr>
+  <tr><td>U5</td><td class="num">3 h 39</td><td><span class="bar"><i style="width:43%"></i></span></td><td class="num">580 K</td></tr>
+  <tr><td>U1</td><td class="num">3 h 18</td><td><span class="bar"><i style="width:39%"></i></span></td><td class="num">1,20 M</td></tr>
+  <tr><td>U6</td><td class="num">3 h 09</td><td><span class="bar"><i style="width:37%"></i></span></td><td class="num">319 K</td></tr>
+  <tr><td>U7</td><td class="num">3 h 02</td><td><span class="bar"><i style="width:36%"></i></span></td><td class="num">427 K</td></tr>
+  <tr><td>U2</td><td class="num">2 h 18</td><td><span class="bar"><i style="width:27%"></i></span></td><td class="num">513 K</td></tr>
+  <tr><td>U3</td><td class="num">1 h 49</td><td><span class="bar"><i style="width:22%"></i></span></td><td class="num">371 K</td></tr>
+</table>
+<p>Un professeur qui consacre <b>8 h 26</b> à l'immunité contre 1 h 49 aux enzymes publie un jugement
+de difficulté. Sa playlist U4 2019 (31 vidéos, <b>4,06 M vues</b>) se décompose en :
+خلوي 815 K · coopération 616 K · VIH 414 K · ذات/لاذات 328 K · خلطي 264 K.</p>
+
+<h3>Difficulté ressentie — agrégat multi-chaînes (indice 0–100)</h3>
+<table>
+  <tr><th class="num">#</th><th>Notion</th><th class="num">Indice</th><th></th></tr>
+  <tr class="hi"><td class="num">1</td><td><span class="ar">المرحلة الكيموضوئية</span> — phase photochimique (U6)</td><td class="num">83</td><td><span class="bar"><i class="warn" style="width:83%"></i></span></td></tr>
+  <tr class="hi"><td class="num">2</td><td><span class="ar">سلوك الأحماض الأمينية</span> — pHi (U2)</td><td class="num">73</td><td><span class="bar"><i class="warn" style="width:73%"></i></span></td></tr>
+  <tr><td class="num">3</td><td><span class="ar">المناعة الخلطية</span> (U4)</td><td class="num">69</td><td><span class="bar"><i class="alt" style="width:69%"></i></span></td></tr>
+  <tr><td class="num">4</td><td><span class="ar">الذات واللاذات</span> (U4)</td><td class="num">65</td><td><span class="bar"><i class="alt" style="width:65%"></i></span></td></tr>
+  <tr><td class="num">5</td><td><span class="ar">المناعة الخلوية</span> (U4)</td><td class="num">65</td><td><span class="bar"><i class="alt" style="width:65%"></i></span></td></tr>
+</table>
+
+<h2><span class="n">2</span>Pression réelle à l'examen — 11 sessions officielles 2016 → 2026</h2>
+<p>Dépouillement intégral de <b>65 exercices</b> sur 11 sessions consécutives, sujet
+<em>et</em> corrigé officiels liés (<code>src/data/bacSessionIndex.ts</code>, 1 720 lignes).</p>
+
+<table>
+  <tr><th>Unité</th><th class="num">Points</th><th class="num">Part</th><th>Part observée</th><th class="num">Apparitions</th><th class="num">Poids annoncé</th><th class="num">Écart</th></tr>
+  <tr class="hi"><td>U4 المناعة</td><td class="num">87</td><td class="num">20,0 %</td><td><span class="bar"><i style="width:100%"></i></span></td><td class="num">14</td><td class="num">13</td><td class="num">+7,0</td></tr>
+  <tr class="hi"><td>U1 تركيب البروتين</td><td class="num">81</td><td class="num">18,6 %</td><td><span class="bar"><i style="width:93%"></i></span></td><td class="num">18</td><td class="num">10</td><td class="num">+8,6</td></tr>
+  <tr><td>U5 الاتصال العصبي</td><td class="num">81</td><td class="num">18,6 %</td><td><span class="bar"><i style="width:93%"></i></span></td><td class="num">12</td><td class="num">16</td><td class="num">+2,6</td></tr>
+  <tr><td>U3 الإنزيمات</td><td class="num">64</td><td class="num">14,7 %</td><td><span class="bar"><i style="width:74%"></i></span></td><td class="num">16</td><td class="num">13</td><td class="num">+1,7</td></tr>
+  <tr><td>U6 التركيب الضوئي</td><td class="num">51</td><td class="num">11,7 %</td><td><span class="bar"><i style="width:59%"></i></span></td><td class="num">9</td><td class="num">20</td><td class="num">−8,3</td></tr>
+  <tr><td>U7 التنفس والتخمر</td><td class="num">29</td><td class="num">6,7 %</td><td><span class="bar"><i class="warn" style="width:33%"></i></span></td><td class="num">6</td><td class="num">19</td><td class="num">−12,3</td></tr>
+  <tr><td>U2 بنية ↔ وظيفة</td><td class="num">22</td><td class="num">5,1 %</td><td><span class="bar"><i class="warn" style="width:26%"></i></span></td><td class="num">14</td><td class="num">9</td><td class="num">−3,9</td></tr>
+  <tr><td>U8–U11 géologie</td><td class="num">5</td><td class="num">1,1 %</td><td><span class="bar"><i class="warn" style="width:6%"></i></span></td><td class="num">—</td><td class="num">5</td><td class="num">−3,9</td></tr>
+</table>
+
+<div class="note">
+<b>Trois conclusions contre-intuitives.</b>
+<ul>
+<li><b>U1 est l'unité la plus sous-estimée</b> : 18 apparitions sur 11 sessions, 18,6 % des points,
+pour un poids annoncé de 10.</li>
+<li><b>U7 est surévaluée de 12,3 points</b> : 19 annoncés contre 6,7 % observés. Y investir comme
+le programme le suggère est une erreur d'allocation.</li>
+<li><b>U2 est un piège de fréquence</b> : 14 apparitions mais 5,1 % des points. Elle doit être
+<em>sue</em>, pas <em>travaillée longuement</em> — l'inverse de ce que son audience laisse croire.</li>
+</ul>
+</div>
+
+<p>L'application n'arbitre pas : <code>revisionPlan.unitWeight()</code> prend la <b>moyenne</b> du poids
+annoncé et du poids observé, et expose les deux séparément. Les chiffres sont verrouillés par un test
+de synchronisation — toute dérive entre la documentation et le code casse la CI.</p>
+
+<p class="sub"><b>Structure de l'épreuve :</b> coefficient 6 · 2 sujets au choix ·
+exercice 1 = 05 pts de restitution · barème 5/7/8 stable depuis 2017 (2016 : 6/5/9 et 6/7/7) ·
+invariant : 20 points.</p>
+
+<h2><span class="n">3</span>Les 5 leçons prioritaires — couverture</h2>
+<table>
+  <tr><th>Leçon</th><th>Justification croisée</th><th>Livrables</th><th>État</th></tr>
+  <tr><td>pHi / acides aminés (U2)</td><td>difficulté 73 + 84 724 vues/vidéo</td><td>micro-fiches + simulateur pH→charge→migration</td><td><span class="tag ok">livré</span></td></tr>
+  <tr><td>Coopération immunitaire (U4)</td><td>616 K vues + 20,0 % des points</td><td>schéma-bilan interactif + 3 exercices BAC</td><td><span class="tag ok">livré</span></td></tr>
+  <tr><td>Inhibiteurs enzymatiques (U3)</td><td>16 apparitions / 11 sessions</td><td>comparatif + atelier 6 courbes</td><td><span class="tag ok">livré</span></td></tr>
+  <tr><td>CMH / ABO-Rh + prérequis 2AS (U4)</td><td>trou de prérequis vu sur 3 chaînes</td><td>module de rattrapage 15 min</td><td><span class="tag ok">livré</span></td></tr>
+  <tr><td>Phase photochimique (U6)</td><td>difficulté 83 — rang 1</td><td>synthèse d'unité + 5 micro-fiches</td><td><span class="tag ok">livré</span></td></tr>
+</table>
+<p><b>Backlog d'audit vide depuis le sprint 16</b>, vérifié automatiquement par
+<code>livrablesPrioritaires.test.ts</code>.</p>
+
+<h2><span class="n">4</span>Ce qui a été construit</h2>
+<div class="cols">
+<div>
+<h3>Contenu pédagogique</h3>
+<table>
+  <tr><td>Capsules de cours (≤ 25 min)</td><td class="num">32</td></tr>
+  <tr><td>Schémas interactifs</td><td class="num">18</td></tr>
+  <tr><td>Situations-problèmes</td><td class="num">23</td></tr>
+  <tr><td>Cartes mentales</td><td class="num">11</td></tr>
+  <tr><td>QCM</td><td class="num">549</td></tr>
+  <tr><td>Exercices BAC indexés</td><td class="num">65</td></tr>
+  <tr><td>Montages d'exercices typés</td><td class="num">13</td></tr>
+  <tr><td>Familles de consignes</td><td class="num">12</td></tr>
+</table>
+</div>
+<div>
+<h3>Performance</h3>
+<table>
+  <tr><th>Indicateur</th><th class="num">Avant</th><th class="num">Après</th></tr>
+  <tr class="hi"><td>Bundle d'entrée</td><td class="num">3 968 Ko</td><td class="num">599 Ko</td></tr>
+  <tr><td>Chunk des leçons</td><td class="num">996 Ko</td><td class="num">448 Ko</td></tr>
+  <tr><td>Vues en chargement différé</td><td class="num">0</td><td class="num">21</td></tr>
+</table>
+<p class="sub"><b>−85 % à l'entrée.</b> Plafonds appliqués en CI : 700 Ko à l'entrée,
+800 Ko par chunk. Mode hors ligne via <code>assets-manifest.json</code> + service worker,
+avec reprise après déploiement.</p>
+</div>
+</div>
+
+<h3>Moteurs</h3>
+<ul>
+<li><b>Banque BAC</b> — chaque capsule affiche « cette notion est tombée en 2019, 2022, 2024 »
+avec le lien du sujet <em>et</em> du corrigé officiel.</li>
+<li><b>Plan de révision</b> — 6 gestes, 2 passages max par unité et par tour, mode consolidation.</li>
+<li><b>BAC blanc</b> déterministe au barème 5/7/8, 3 unités et 3 sessions distinctes garanties.</li>
+<li><b>Chronométrage d'examen</b> lu sur l'horloge système (et non sur des ticks), persistant
+à la fermeture de l'onglet ; réserves 15 + 15 min.</li>
+<li><b>Contrôle de forme des rédactions</b> — chiffres, unités, connecteur causal, structure
+attendue par famille de consigne.</li>
+<li><b>Sauvegarde / restauration</b> <code>kunz.backup.v1</code>, jetons exclus.</li>
+<li><b>Résilience serveur</b> — démarre sans <code>JWT_SECRET</code> et sans binaire natif
+<code>better-sqlite3</code> (mode dégradé explicite) : deux pannes réelles corrigées.</li>
+<li><b>Accessibilité</b> — trois suites dédiées (lecteur d'écran, clavier, focus visible).</li>
+</ul>
+
+<h2><span class="n">5</span>Mesure de l'apprentissage</h2>
+<table>
+  <tr><th>Signal</th><th>Ce qu'il prouve</th><th>Force</th></tr>
+  <tr><td>XP, séries, minutes</td><td>régularité seulement</td><td><span class="bar"><i style="width:12%"></i></span></td></tr>
+  <tr><td>Tâches du plan cochées</td><td>programme suivi</td><td><span class="bar"><i style="width:28%"></i></span></td></tr>
+  <tr><td>Score des QCM</td><td>reconnaissance</td><td><span class="bar"><i style="width:45%"></i></span></td></tr>
+  <tr><td>Schéma refait de mémoire (/16)</td><td>restitution active</td><td><span class="bar"><i style="width:62%"></i></span></td></tr>
+  <tr><td>Réponse rédigée</td><td>production</td><td><span class="bar"><i style="width:80%"></i></span></td></tr>
+  <tr class="hi"><td>Tendance de la forme dans le temps</td><td><b>apprentissage</b></td><td><span class="bar"><i style="width:100%"></i></span></td></tr>
+</table>
+<p>Le verdict compare le taux d'exigences de forme satisfaites entre la <b>première</b> et la
+<b>seconde moitié</b> des réponses rédigées, par famille de consigne. L'application <b>refuse de
+conclure</b> sous 6 rédactions (<span class="ar">أي حكم يكون تخميناً</span>) et ignore les variations
+inférieures à 5 points. Le bloc figure sur la feuille imprimable
+<span class="ar">تقرير للأستاذ</span>, qui porte la mention
+<span class="ar">هذا التقرير لا يحمل أي علامة</span>.</p>
+
+<h2><span class="n">6</span>État des tâches</h2>
+<div class="cols">
+<div>
+<h3><span class="tag ok">terminé</span></h3>
+<ul>
+<li>Analyse des 5 chaînes et des 4 bilans demandés</li>
+<li>Audit applicatif et <b>intégralité</b> des livrables des 5 leçons</li>
+<li>Dépouillement des 11 sessions officielles</li>
+<li>13 montages et 12 familles de consignes — classement total</li>
+<li>BAC blanc, chronométrage, sauvegarde, mode hors ligne</li>
+<li>Optimisation −85 %, audits d'accessibilité, mode dégradé serveur</li>
+<li>Chaîne complète de mesure de l'apprentissage</li>
+</ul>
+</div>
+<div>
+<h3><span class="tag wip">en cours</span></h3>
+<p>Aucune tâche ouverte. Le sprint 63 est clos et poussé. Backlog d'audit vide. Suite verte.</p>
+<h3><span class="tag risk">réserves techniques</span></h3>
+<ul>
+<li><code>better-sqlite3</code> sans binaire natif dans cet environnement : serveur en mode
+dégradé. Un <code>npm rebuild</code> sur une machine équipée lève la limite — aucun code à changer.</li>
+<li>Vues YouTube arrondies par la plateforme : ordres de grandeur fiables, unités non.</li>
+<li>Vidéos masquées dans certaines playlists (9 chez Chaouch U4, 5 chez Ikram) : les totaux
+sont des planchers.</li>
+</ul>
+</div>
+</div>
+
+<h2><span class="n">7</span>Conclusion</h2>
+<p>La mission partait d'une question d'audience — <em>quelles vidéos sont les plus vues</em> — et
+s'achève sur une question d'efficacité — <em>comment prouver qu'un élève progresse</em>. Trois
+résultats structurent le produit :</p>
+<ol>
+<li><b>Le volume de vues ne désigne pas les priorités.</b> Le bon indicateur est le croisement
+vues/vidéo × temps d'exposition professeur × points réellement distribués au BAC. Il désigne
+U1 et U4 — pas U7, malgré son poids annoncé de 19.</li>
+<li><b>L'application ne tranche pas entre programme officiel et réalité statistique</b> : elle
+moyenne les deux et expose les deux. C'est défendable devant un inspecteur comme devant un élève.</li>
+<li><b>La mesure de l'apprentissage est volontairement sévère</b> : pas de félicitation sous
+6 rédactions, pas de tendance sous 5 points d'écart, aucune note, aucun jugement sur le fond
+scientifique. Un tableau de bord qui félicite tout le monde ne sert personne ; c'est cette
+retenue qui rend le verdict « <span class="ar">تقدّم واضح</span> » exploitable quand il apparaît.</li>
+</ol>
+
+<footer>
+Version Markdown : <code>docs/analyse/BILAN_FINAL_MISSION.md</code> ·
+données brutes : <code>data/youtube_ketfi_catalog.json</code>,
+<code>data/youtube_multichaines_catalog.json</code>,
+<code>data/youtube_ikram_catalog.json</code> ·
+corpus BAC : <code>src/data/bacSessionIndex.ts</code>.<br>
+Relevés YouTube des 26 et 27 septembre 2026 · 11 documents d'analyse dans <code>docs/analyse/</code>.
+</footer>
+
+</div>
+</body>
+</html>
