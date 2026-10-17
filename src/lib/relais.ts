@@ -109,6 +109,18 @@ export const LIBELLE_RELAIS_OUI_AR = 'نعم';
 export const LIBELLE_RELAIS_NON_AR = 'لا';
 export const LIBELLE_RELAIS_EFFACER_AR = 'امسح الاسم';
 
+/**
+ * Audit Capitaine 2026-10-17 (§7) : LA PROMESSE EST DITE, PAS SOUS-ENTENDUE.
+ * Le silence du module (aucun contact, aucun serveur) est garanti par sa
+ * construction — mais confier un nom sans avoir lu que rien ne sort de
+ * l'appareil n'est pas un consentement. Deux divulgations affichées, une par
+ * carte, à côté de la question.
+ */
+export const DIVULGATION_NOMINATION_AR =
+  'يبقى الاسم في هاتفك وحده: لا نُبلّغ أحدًا ولا نرسل شيئًا إلى أحد. أنت من يطلب الشرح بنفسك.';
+export const DIVULGATION_RELANCE_AR =
+  'إجابتك تبقى في جهازك: لا نُبلّغ أحدًا، ولا تدخل في أي حساب.';
+
 /** La relance, telle qu'elle a été arrêtée — le nom, et rien d'autre. */
 export function phraseRelanceAr(nom: string): string {
   return `هل تحدثت إلى ${nom} ؟`;

@@ -102,3 +102,24 @@ describe('la carte du relais — la relance', () => {
     expect(lireRelais().refusMs).not.toBeNull();
   });
 });
+
+// ── Audit Capitaine 2026-10-17 (§7, P2) : LA PROMESSE EST DITE, PAS SOUS-
+// ENTENDUE. Le module garantit par construction qu'aucun tiers n'est contacté,
+// mais l'élève, lui, ne lit pas les commentaires : confier un nom sans savoir
+// que rien ne sortira de l'appareil n'est pas un consentement. Les deux cartes
+// affichent donc la règle, en toutes lettres.
+describe('la carte DIT que personne n\'est prévenu (audit §7)', () => {
+  it('nomination : « personne n\'est averti, le nom reste dans votre téléphone » est affiché', () => {
+    render(<RelaisCapitaine question={NOMINATION} />);
+    const texte = screen.getByTestId('relais-capitaine').textContent ?? '';
+    expect(texte).toContain('لا نُبلّغ أحدًا');
+    expect(texte).toContain('في هاتفك');
+  });
+
+  it('relance : « ta réponse n\'est transmise à personne et n\'entre dans aucun compte » est affiché', () => {
+    render(<RelaisCapitaine question={RELANCE} />);
+    const texte = screen.getByTestId('relais-capitaine').textContent ?? '';
+    expect(texte).toContain('لا نُبلّغ أحدًا');
+    expect(texte).toContain('في جهازك');
+  });
+});

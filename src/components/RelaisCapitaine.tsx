@@ -19,6 +19,8 @@
 import { useEffect, useState } from 'react';
 import { CAPITAINE_IDENTITE_AR } from '../data/capitaineIdentite';
 import {
+  DIVULGATION_NOMINATION_AR,
+  DIVULGATION_RELANCE_AR,
   INDICE_RELAIS_AR,
   LIBELLE_RELAIS_EFFACER_AR,
   LIBELLE_RELAIS_NON_AR,
@@ -81,6 +83,11 @@ export default function RelaisCapitaine({
           {question.questionAr}
         </p>
         <p className="mt-1 text-[10px] leading-relaxed text-[#506072] dark:text-gray-300">{INDICE_RELAIS_AR}</p>
+        {/* Audit Capitaine §7 : la promesse de silence est ÉCRITE sous la question,
+            pas enfouie dans un commentaire — confier un nom doit être éclairé. */}
+        <p className="mt-1 text-[10px] leading-relaxed text-[#506072] dark:text-gray-300" data-testid="relais-divulgation">
+          {DIVULGATION_NOMINATION_AR}
+        </p>
         <form
           className="mt-2 flex items-center gap-2"
           onSubmit={(e) => {
@@ -125,6 +132,11 @@ export default function RelaisCapitaine({
       <p className="text-[11px] font-black text-[#006d37] dark:text-emerald-300">{CAPITAINE_IDENTITE_AR}</p>
       <p className="mt-1 text-[12px] font-bold leading-relaxed text-[#1f2b24] dark:text-gray-100">
         {question.questionAr}
+      </p>
+      {/* Audit Capitaine §7 : la réponse honorée reste hors de tout compteur —
+          c'est dit sur la carte, pour que le « نعم » reste une vérité. */}
+      <p className="mt-1 text-[10px] leading-relaxed text-[#506072] dark:text-gray-300" data-testid="relais-divulgation">
+        {DIVULGATION_RELANCE_AR}
       </p>
       <div className="mt-2 flex items-center gap-2">
         <button
