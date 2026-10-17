@@ -26,6 +26,11 @@ import TrainingHubView from '../TrainingHubView';
 import BacIdeaTrainer from '../BacIdeaTrainer';
 import WritingReportSheet from '../WritingReportSheet';
 import MicroCapsulePanel from '../MicroCapsulePanel';
+import RecallCard from '../RecallCard';
+import ProgressionPanel from '../ProgressionPanel';
+import ActiveLessonView from '../ActiveLessonView';
+import { recordWriting } from '../../data/learningLog';
+import { recordDrill } from '../../data/drillLog';
 import QuizView from '../QuizView';
 import { IDEA_BY_ID } from '../../data/bacSessionIndex';
 import { SVT_QUIZ_QUESTIONS } from '../../data';
@@ -63,6 +68,39 @@ const ECRANS: { nom: string; rendre: () => HTMLElement }[] = [
     },
   },
   { nom: 'فكرة في دقيقة', rendre: () => render(<MicroCapsulePanel unitId={4} />).container },
+  // Sprints 64 → 67 : les écrans de la boucle « produire → mesurer → revenir ».
+  // La carte de rappel est la plus exposée : elle vit sur l'accueil, donc sur
+  // le premier écran que rencontre un lecteur d'écran.
+  {
+    nom: 'ما يجب أن تعيده اليوم',
+    rendre: () => {
+      recordWriting({
+        date: new Date().toISOString().slice(0, 10),
+        ideaId: 'bac2023_s2_e3',
+        familyId: 'verb_analyser',
+        satisfaits: 1,
+        total: 4,
+        mots: 40,
+      });
+      recordDrill({
+        date: new Date().toISOString().slice(0, 10),
+        drillId: 'drill_synapse',
+        unitId: 5,
+        score: 2,
+        total: 16,
+        oublisEssentiels: 2,
+      });
+      return render(
+        <RecallCard onOpenRedaction={() => {}} onOpenDrill={() => {}} />,
+      ).container;
+    },
+  },
+  { nom: 'هل أتقدّم فعلاً؟', rendre: () => render(<ProgressionPanel />).container },
+  {
+    nom: 'الدرس النشيط',
+    rendre: () =>
+      render(<ActiveLessonView lessonKey="amino_acid_behavior" onBack={() => {}} />).container,
+  },
   {
     nom: 'الاختبار',
     rendre: () =>
