@@ -10,11 +10,15 @@ import { clearLearningLog, type LearningEntry } from './learningLog';
 import {
   PALIERS,
   RAPPELS_MAX,
+  RAPPELS_SCHEMAS_MAX,
+  rappelsSchemas,
   SEUIL_MAITRISE,
   messageAucunRappel,
   rappelsDuJour,
 } from './spacedRecall';
 import { IDEA_BY_ID } from './bacSessionIndex';
+import { SCHEMA_DRILLS } from './schemaDrills';
+import type { DrillEntry } from './drillLog';
 
 const AUJOURD_HUI = '2026-05-20';
 
@@ -120,5 +124,55 @@ describe('rappel espacé — absence de rappel', () => {
   it('distingue « tu n’as rien écrit » de « rien n’est dû »', () => {
     expect(messageAucunRappel([])).toContain('لم تكتب');
     expect(messageAucunRappel([entree({ date: '2026-05-18', ideaId: 'a' })])).toContain('لا شيء');
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Sprint 67 — les schémas entrent dans le rappel espacé.
+// ---------------------------------------------------------------------------
+
+describe('rappel espacé — schémas refaits de mémoire', () => {
+  const schema = (p: Partial<DrillEntry> & { date: string; drillId: string }): DrillEntry => ({
+    unitId: 5,
+    score: 4,
+    total: 16,
+    oublisEssentiels: 2,
+    ...p,
+  });
+
+  it('remonte un schéma fragile dès le lendemain', () => {
+    const r = rappelsSchemas(AUJOURD_HUI, [schema({ date: '2026-05-19', drillId: 'd1' })]);
+    expect(r).toHaveLength(1);
+    expect(r[0].raisonAr).toContain('عنصراً أساسياً');
+  });
+
+  it('laisse respirer une semaine un schéma déjà su', () => {
+    const su = { score: 16, total: 16, oublisEssentiels: 0 };
+    expect(rappelsSchemas(AUJOURD_HUI, [schema({ date: '2026-05-19', drillId: 'd1', ...su })])).toEqual([]);
+    expect(rappelsSchemas(AUJOURD_HUI, [schema({ date: '2026-05-17', drillId: 'd1', ...su })])).toEqual([]);
+    expect(rappelsSchemas(AUJOURD_HUI, [schema({ date: '2026-05-13', drillId: 'd1', ...su })])).toHaveLength(1);
+  });
+
+  it('ne propose jamais plus de deux schémas par jour', () => {
+    const journal = Array.from({ length: 6 }, (_, i) =>
+      schema({ date: '2026-05-19', drillId: `d${i}` }),
+    );
+    expect(rappelsSchemas(AUJOURD_HUI, journal)).toHaveLength(RAPPELS_SCHEMAS_MAX);
+  });
+
+  it('résout le titre du schéma depuis la banque', () => {
+    const vrai = SCHEMA_DRILLS[0].id;
+    const r = rappelsSchemas(AUJOURD_HUI, [schema({ date: '2026-05-19', drillId: vrai })]);
+    expect(r[0].titleAr).toBe(SCHEMA_DRILLS[0].titleAr);
+  });
+
+  it('ne compte que le dernier passage d’un même schéma', () => {
+    const journal = [
+      schema({ date: '2026-05-13', drillId: 'd1' }),
+      schema({ date: '2026-05-19', drillId: 'd1' }),
+    ];
+    const r = rappelsSchemas(AUJOURD_HUI, journal);
+    expect(r).toHaveLength(1);
+    expect(r[0].jours).toBe(1);
   });
 });

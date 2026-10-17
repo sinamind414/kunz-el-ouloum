@@ -28,6 +28,8 @@ interface DashboardViewProps {
   onNavigateToTab?: (tab: any) => void;
   /** Ouvre l'atelier de rédaction sur un exercice précis (rappel espacé). */
   onOpenRedaction?: (ideaId: string) => void;
+  /** Ouvre « ارسم من الذاكرة » sur un schéma précis (rappel espacé). */
+  onOpenDrill?: (drillId: string) => void;
   onUpdateDailyGoals?: (config: DailyGoalConfig) => void;
   isDarkMode?: boolean;
 }
@@ -39,6 +41,7 @@ export default function DashboardView({
   onLaunchRevision, 
   onNavigateToTab,
   onOpenRedaction,
+  onOpenDrill,
   onUpdateDailyGoals,
   isDarkMode = false 
 }: DashboardViewProps) {
@@ -127,7 +130,7 @@ export default function DashboardView({
       {/* RAPPEL ESPACÉ (sprint 65) — ce que l'élève a écrit lui revient à
           1, 3, 7 puis 16 jours. Sans cela, la rédaction, qui est l'effort le
           plus coûteux de l'application, n'est jamais capitalisée. */}
-      {onOpenRedaction && <RecallCard onOpenRedaction={onOpenRedaction} />}
+      {onOpenRedaction && <RecallCard onOpenRedaction={onOpenRedaction} onOpenDrill={onOpenDrill} />}
 
       {/* DAILY GOAL WIDGET (الأهداف اليومية) */}
       <DailyGoalWidget 

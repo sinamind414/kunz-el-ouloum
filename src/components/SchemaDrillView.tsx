@@ -14,6 +14,7 @@ import { bacEchoForDrill } from '../data/bacSessionIndex';
 import { ArrowRight, Check, PenTool, RefreshCw, Timer } from 'lucide-react';
 import {
   SCHEMA_DRILLS,
+  SCHEMA_DRILL_BY_ID,
   drillUnitIds,
   drillsForUnit,
   missingEssentials,
@@ -25,6 +26,8 @@ import {
 
 interface SchemaDrillViewProps {
   onBackToHome?: () => void;
+  /** Ouvre directement ce schéma (appel depuis le rappel espacé, sprint 67). */
+  focusDrillId?: string | null;
 }
 
 type Phase = 'dessin' | 'evaluation' | 'comparaison';
@@ -250,9 +253,11 @@ function Exercice({ drill, onQuitter }: { drill: SchemaDrill; onQuitter: () => v
   );
 }
 
-export default function SchemaDrillView({ onBackToHome }: SchemaDrillViewProps) {
+export default function SchemaDrillView({ onBackToHome, focusDrillId }: SchemaDrillViewProps) {
   const [unite, setUnite] = useState<number | undefined>(undefined);
-  const [ouvert, setOuvert] = useState<SchemaDrill | null>(null);
+  const [ouvert, setOuvert] = useState<SchemaDrill | null>(
+    focusDrillId ? (SCHEMA_DRILL_BY_ID[focusDrillId] ?? null) : null,
+  );
 
   const liste = useMemo(() => (unite === undefined ? SCHEMA_DRILLS : drillsForUnit(unite)), [unite]);
   const unites = drillUnitIds();

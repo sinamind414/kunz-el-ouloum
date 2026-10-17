@@ -117,6 +117,8 @@ export default function App() {
   // Navigation tab state
   // Exercice sur lequel ouvrir l'atelier quand on arrive depuis le plan.
   const [bacIdeaFocus, setBacIdeaFocus] = useState<string | null>(null);
+  // Sprint 67 : le rappel espacé peut aussi pointer un schéma à refaire.
+  const [drillFocus, setDrillFocus] = useState<string | null>(null);
   const [currentTab, setCurrentTab] = useState<'splash' | 'home' | 'review' | 'stats' | 'chat' | 'methodology' | 'bootcamp' | 'badges' | 'lesson' | 'workshop' | 'mindmap' | 'teacher' | 'animations' | 'situations' | 'schemas' | 'training' | 'plan' | 'bacideas'>('splash');
   const [activeMindMapUnitId, setActiveMindMapUnitId] = useState<number>(1);
   const [isAuthOpen, setIsAuthOpen] = useState(false);
@@ -808,6 +810,10 @@ export default function App() {
                     setBacIdeaFocus(ideaId);
                     setCurrentTab('bacideas');
                   }}
+                  onOpenDrill={(drillId) => {
+                    setDrillFocus(drillId);
+                    setCurrentTab('schemas');
+                  }}
                   onUpdateDailyGoals={handleUpdateDailyGoals}
                   isDarkMode={isDarkMode}
                 />
@@ -909,7 +915,10 @@ export default function App() {
               )}
 
               {currentTab === 'schemas' && (
-                <SchemaDrillView onBackToHome={() => setCurrentTab('training')} />
+                <SchemaDrillView
+                  onBackToHome={() => setCurrentTab('training')}
+                  focusDrillId={drillFocus}
+                />
               )}
               </Suspense>
               </ChunkErrorBoundary>

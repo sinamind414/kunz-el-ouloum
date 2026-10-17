@@ -35,7 +35,9 @@
 //     devient une dette et l'élève cesse de l'ouvrir.
 
 import { readLearningLog, aujourdHui, type LearningEntry } from './learningLog';
+import { readDrillLog, SEUIL_SCHEMA_SU, type DrillEntry } from './drillLog';
 import { IDEA_BY_ID } from './bacSessionIndex';
+import { SCHEMA_DRILL_BY_ID } from './schemaDrills';
 import { VERB_FAMILY_BY_ID } from './verbDemands';
 
 /** Paliers d'espacement, en jours écoulés depuis la rédaction. */
@@ -43,6 +45,13 @@ export const PALIERS = [1, 3, 7, 16] as const;
 
 /** Au-delà, un rappel de plus ne sera pas fait : il décourage. */
 export const RAPPELS_MAX = 3;
+
+/**
+ * Les schémas sont plafonnés plus bas que les rédactions : refaire un schéma
+ * coûte 10 à 15 minutes, et la carte d'accueil doit rester tenable en une
+ * séance. Deux maximum.
+ */
+export const RAPPELS_SCHEMAS_MAX = 2;
 
 /** Taux d'exigences satisfaites à partir duquel le palier 1 est sauté. */
 export const SEUIL_MAITRISE = 0.8;
@@ -133,4 +142,67 @@ export function messageAucunRappel(journal: LearningEntry[] = readLearningLog())
     return 'لا توجد مراجعة مبرمجة اليوم: لم تكتب أي جواب بعد. المراجعة المتباعدة تبدأ من أول نص تكتبه.';
   }
   return 'لا شيء يستحق الإعادة اليوم. المراجعة المتباعدة تعود بعد يوم، ثلاثة، سبعة ثم ستة عشر يوماً من كل جواب.';
+}
+
+// ---------------------------------------------------------------------------
+// Schémas (sprint 67)
+// ---------------------------------------------------------------------------
+//
+// Depuis le sprint 66, « ارسم من الذاكرة » laisse une trace. Le même principe
+// d'espacement s'y applique, avec une différence assumée : un schéma déjà SU
+// (taux suffisant et aucun élément essentiel manquant) ne revient qu'au
+// palier 7 et au-delà. Le redemander dès le lendemain ferait de la carte une
+// corvée, et c'est exactement ce qui fait abandonner un outil de révision.
+
+export interface RappelSchema {
+  drillId: string;
+  /** Titre du schéma, vide si l'identifiant n'est plus dans la banque. */
+  titleAr: string;
+  unitId: number;
+  jours: number;
+  palier: Palier;
+  taux: number;
+  /** Éléments essentiels absents lors du dernier passage. */
+  oublis: number;
+  raisonAr: string;
+}
+
+/** Schémas à refaire de mémoire aujourd'hui, le plus fragile d'abord. */
+export function rappelsSchemas(
+  date: string = aujourdHui(),
+  journal: DrillEntry[] = readDrillLog(),
+): RappelSchema[] {
+  const derniere = new Map<string, DrillEntry>();
+  for (const e of journal) {
+    const connue = derniere.get(e.drillId);
+    if (!connue || e.date > connue.date) derniere.set(e.drillId, e);
+  }
+
+  const rappels: RappelSchema[] = [];
+  for (const e of derniere.values()) {
+    const jours = joursEntre(e.date, date);
+    if (!PALIERS.includes(jours as Palier)) continue;
+
+    const taux = e.score / e.total;
+    const su = taux >= SEUIL_SCHEMA_SU && e.oublisEssentiels === 0;
+    // Un schéma su ne revient pas avant une semaine.
+    if (su && jours < 7) continue;
+
+    rappels.push({
+      drillId: e.drillId,
+      titleAr: SCHEMA_DRILL_BY_ID[e.drillId]?.titleAr ?? '',
+      unitId: e.unitId,
+      jours,
+      palier: jours as Palier,
+      taux,
+      oublis: e.oublisEssentiels,
+      raisonAr:
+        e.oublisEssentiels > 0
+          ? `غاب عن رسمك ${e.oublisEssentiels} عنصراً أساسياً قبل ${jours} ${jours === 1 ? 'يوم' : 'أيام'} — أعد الرسم على ورقة بيضاء.`
+          : `مرّت ${jours} ${jours === 1 ? 'يوم' : 'أيام'}: أعد رسمه دون النظر للتأكد من ثباته.`,
+    });
+  }
+
+  rappels.sort((a, b) => a.taux - b.taux || b.jours - a.jours);
+  return rappels.slice(0, RAPPELS_SCHEMAS_MAX);
 }

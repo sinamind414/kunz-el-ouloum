@@ -10,11 +10,14 @@ import userEvent from '@testing-library/user-event';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import RecallCard from '../RecallCard';
 import { aujourdHui, clearLearningLog, recordWriting } from '../../data/learningLog';
+import { clearDrillLog, recordDrill } from '../../data/drillLog';
+import { SCHEMA_DRILLS } from '../../data/schemaDrills';
 
 afterEach(cleanup);
 beforeEach(() => {
   localStorage.clear();
   clearLearningLog();
+  clearDrillLog();
 });
 
 /** Date ISO d'il y a `n` jours — les paliers sont relatifs à aujourd'hui. */
@@ -61,5 +64,32 @@ describe('carte de rappel — contenu', () => {
     }
     render(<RecallCard onOpenRedaction={() => {}} />);
     expect(screen.getAllByRole('button')).toHaveLength(3);
+  });
+});
+
+describe('carte de rappel — schémas (sprint 67)', () => {
+  it('propose un schéma fragile et ouvre l’atelier de dessin', async () => {
+    const user = userEvent.setup();
+    const onDrill = vi.fn();
+    const id = SCHEMA_DRILLS[0].id;
+    recordDrill({ date: ilYa(3), drillId: id, unitId: SCHEMA_DRILLS[0].unitId, score: 2, total: 16, oublisEssentiels: 2 });
+    render(<RecallCard onOpenRedaction={() => {}} onOpenDrill={onDrill} />);
+    await user.click(screen.getByTestId(`recall-schema-${id}`));
+    expect(onDrill).toHaveBeenCalledWith(id);
+  });
+
+  it('n’affiche aucun schéma quand la vue ne sait pas les ouvrir', () => {
+    const id = SCHEMA_DRILLS[0].id;
+    recordDrill({ date: ilYa(3), drillId: id, unitId: SCHEMA_DRILLS[0].unitId, score: 2, total: 16, oublisEssentiels: 2 });
+    render(<RecallCard onOpenRedaction={() => {}} />);
+    expect(screen.queryByTestId('recall-schemas')).toBeNull();
+  });
+
+  it('reste visible pour un élève qui ne fait que dessiner', () => {
+    const id = SCHEMA_DRILLS[0].id;
+    recordDrill({ date: ilYa(2), drillId: id, unitId: SCHEMA_DRILLS[0].unitId, score: 2, total: 16, oublisEssentiels: 2 });
+    render(<RecallCard onOpenRedaction={() => {}} onOpenDrill={() => {}} />);
+    expect(screen.getByTestId('recall-card')).toBeTruthy();
+    expect(screen.getByTestId('recall-vide')).toBeTruthy();
   });
 });

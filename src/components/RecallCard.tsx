@@ -10,19 +10,25 @@
 // commencé à écrire : l'absence de rappel est alors une information.
 
 import { RotateCcw } from 'lucide-react';
-import { messageAucunRappel, rappelsDuJour } from '../data/spacedRecall';
+import { messageAucunRappel, rappelsDuJour, rappelsSchemas } from '../data/spacedRecall';
 import { readLearningLog } from '../data/learningLog';
+import { readDrillLog } from '../data/drillLog';
 
 interface Props {
   /** Ouvre l'atelier de rédaction sur cet exercice. */
   onOpenRedaction: (ideaId: string) => void;
+  /** Ouvre « ارسم من الذاكرة » sur ce schéma (sprint 67). */
+  onOpenDrill?: (drillId: string) => void;
 }
 
-export default function RecallCard({ onOpenRedaction }: Props) {
+export default function RecallCard({ onOpenRedaction, onOpenDrill }: Props) {
   const journal = readLearningLog();
+  const journalSchemas = readDrillLog();
   const rappels = rappelsDuJour(undefined, journal);
+  const schemas = onOpenDrill ? rappelsSchemas(undefined, journalSchemas) : [];
+  const rien = rappels.length === 0 && schemas.length === 0;
 
-  if (rappels.length === 0 && journal.length === 0) return null;
+  if (rien && journal.length === 0 && journalSchemas.length === 0) return null;
 
   return (
     <section
@@ -42,7 +48,7 @@ export default function RecallCard({ onOpenRedaction }: Props) {
         </div>
       </div>
 
-      {rappels.length === 0 ? (
+      {rien ? (
         <p data-testid="recall-vide" className="text-[12px] leading-6 text-[#506072] dark:text-gray-400">
           {messageAucunRappel(journal)}
         </p>
@@ -62,6 +68,28 @@ export default function RecallCard({ onOpenRedaction }: Props) {
                 <span className="block text-[11px] text-[#506072] dark:text-gray-400 mt-0.5">
                   {r.familleAr ? `${r.familleAr} · ` : ''}
                   {r.raisonAr}
+                </span>
+              </button>
+            </li>
+          ))}
+        </ul>
+      )}
+
+      {schemas.length > 0 && onOpenDrill && (
+        <ul data-testid="recall-schemas" className="space-y-2 mt-2">
+          {schemas.map((s) => (
+            <li key={s.drillId}>
+              <button
+                type="button"
+                data-testid={`recall-schema-${s.drillId}`}
+                onClick={() => onOpenDrill(s.drillId)}
+                className="w-full text-right rounded-2xl px-3 py-2 bg-white dark:bg-[#161c18] border border-amber-200/70 dark:border-amber-900/40 hover:border-amber-400 transition-all cursor-pointer"
+              >
+                <span className="block text-[13px] font-black text-[#1f1c0b] dark:text-gray-100">
+                  ✏️ {s.titleAr || s.drillId}
+                </span>
+                <span className="block text-[11px] text-[#506072] dark:text-gray-400 mt-0.5">
+                  {s.raisonAr}
                 </span>
               </button>
             </li>

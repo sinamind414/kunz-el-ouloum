@@ -226,3 +226,16 @@ describe('SchemaDrillView — trace de la restitution (sprint 66)', () => {
     expect(screen.getByTestId('drill-evolution').textContent).toContain('تحسّن');
   });
 });
+
+describe('SchemaDrillView — ouverture ciblée (sprint 67)', () => {
+  it('ouvre directement le schéma demandé par le rappel espacé', () => {
+    render(<SchemaDrillView focusDrillId="drill_synapse" />);
+    expect(screen.getByTestId('drill-exercice')).toBeTruthy();
+    expect(screen.queryByTestId('drill-liste')).toBeNull();
+  });
+
+  it('retombe sur la liste si l’identifiant n’existe plus', () => {
+    render(<SchemaDrillView focusDrillId="schema_supprime" />);
+    expect(screen.getByTestId('drill-liste')).toBeTruthy();
+  });
+});
