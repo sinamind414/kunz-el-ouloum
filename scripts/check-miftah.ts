@@ -1,5 +1,6 @@
 // scripts/check-miftah.ts
-// Garde-fou MARQUE — prouve la cohérence fiche ↔ spec ↔ carte React ↔ vue compilateur.
+// Garde-fou MARQUE — vérifie les contrats de vocabulaire, de contenu et d’intégration.
+// La fiche HTML v6 et la carte React sont des variantes distinctes, pas des copies conformes.
 // Référence : docs/MARQUE.md (document de décision). Exécution : npm run check:miftah
 //
 // Ce que le script protège :
@@ -7,9 +8,8 @@
 //                            variantes latines et « مفتاح الكنز » bannies de l'UI
 //   §4 règle de placement  : les deux noms jamais ensemble hors en-tête de la fiche
 //   §10 bugs corrigés      : السنّ 0 → القفل, erreurs 1-3 sur le recto, garde-fou A4
-//   §13 (2026-09-15)       : le nom officiel n'existe qu'une fois dans le code
-//                            (miftahSpec.MIFTAH_NAME_OFFICIAL_AR) — les 4 vues UI
-//                            l'importent et n'en écrivent jamais le littéral
+//   §13 (2026-09-15)       : le nom officiel vient de miftahSpec.MIFTAH_NAME_OFFICIAL_AR
+//                            pour l'en-tête et les vues dédiées ; la navigation reste courte.
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -65,7 +65,7 @@ console.log('\n§ Spec — source unique (miftahSpec.ts)');
 must(spec, "MIFTAH_NAME_OFFICIAL_AR = 'مفتاح المنهجية'", 'nom officiel figé');
 must(spec, "MIFTAH_NAME_AR = 'المفتاح'", "nom d'usage figé");
 must(spec, "NARRATIVE_AR = 'كنز العلوم يُفتح بمفتاح المنهجية'", 'phrase-récit figée');
-must(spec, "POSITIONING_AR = 'المقرر موجود عندك. المفتاح يحوّله إلى نقاط.'", 'positionnement figé');
+must(spec, "POSITIONING_AR = 'المقرر موجود عندك. المفتاح يساعدك على تنظيم الإجابة.'", 'positionnement sans promesse de note');
 must(spec, "qafal: 'القفل'", 'nomenclature : القفل');
 must(spec, 'FOOTER_RECTO_AR', 'constante footer recto');
 must(spec, 'FOOTER_VERSO_AR', 'constante footer verso');
@@ -119,7 +119,7 @@ must(html, 'size:210mm 297mm', 'print : format A4 (210 × 297 mm, @page)');
 must(html, 'page-break-before:always', 'verso : saut de page forcé (.break)');
 must(html, '@media print', 'print : bloc @media print présent');
 
-console.log('\n§ Carte React (MiftahCard.tsx) — parité avec la fiche');
+console.log('\n§ Carte React (MiftahCard.tsx) — variante distincte de la fiche HTML v6');
 mustNot(card, '>MIFTAH', 'latin « MIFTAH » banni de la carte');
 mustNot(card, 'MIFTAH v', 'latin « MIFTAH v…» banni des footers');
 mustNot(card, 'MIFTAH+', 'latin « MIFTAH+ » banni');
@@ -127,6 +127,9 @@ mustNot(card, 'مفتاح الكنز', 'variante « مفتاح الكنز » ban
 mustNot(card, 'السنّ 0', '« السنّ 0 » banni');
 must(card, '{MIFTAH_NAME_AR}', 'h1 rendu depuis la constante');
 must(card, '{MIFTAH_NAME_OFFICIAL_AR}', 'sous-titre rendu depuis la constante');
+must(card, 'لا تمثل سلمًا وزاريًا عامًا', 'la carte qualifie ses repères comme non universels');
+mustNot(card, 'إجابة بلا رقم أو تحت رقم خاطئ =', 'pas de pénalité universelle zéro pour une réponse non numérotée');
+mustNot(card, 'خاتمة لا تحوي كلمات السؤال', 'pas de règle universelle « non lue »');
 must(card, '<footer>{FOOTER_RECTO_AR}</footer>', 'footer recto rendu depuis la constante');
 must(card, '{FOOTER_VERSO_AR}', 'footer verso rendu depuis la constante');
 must(card, 'RECTO_ERRORS.map', 'erreurs 1-3 rendues depuis la spec');
@@ -138,13 +141,20 @@ console.log('\n§ Vue compilateur (MethodologyCompilerView.tsx)');
 mustNot(compiler, 'مفتاح الكنز', 'variante « مفتاح الكنز » bannie');
 mustNot(compiler, '(MIFTAH)', 'latin « (MIFTAH) » banni des onglets');
 must(compiler, '{MIFTAH_NAME_OFFICIAL_AR} v{MIFTAH_VERSION}', 'h1 : nom officiel (la marque se présente)');
+mustNot(compiler, 'مطابقة 100%', 'la vue ne promet pas une parité HTML/React non tenue');
+must(compiler, 'لا ندّعي التطابق', 'la vue signale les deux variantes distinctes');
 
-console.log('\n§ Version — cohérence spec ↔ fiche');
+console.log('\n§ Versions — carte React et fiche HTML, variantes suivies séparément');
 const m = spec.match(/MIFTAH_VERSION = '([\d.]+)'/);
 if (m) {
-  const v = m[1];
-  must(html, `v${v}`, `fiche : version v${v} (header)`);
-  must(card, 'MIFTAH_VERSION', 'carte : version importée de la spec');
+  const reactVersion = m[1];
+  must(card, 'MIFTAH_VERSION', 'carte React : version importée de la spec');
+  must(compiler, 'MIFTAH_VERSION', 'compilateur : version React importée de la spec');
+  const htmlVersion = html.match(/v([\d.]+) · fiche élève/)?.[1];
+  if (htmlVersion === '6.0') ok('fiche HTML autonome : version indépendante v6.0');
+  else fail(`fiche HTML autonome : version ${htmlVersion ?? 'absente'} (attendu v6.0)`);
+  if (reactVersion === '6.1') ok('carte React : version v6.1 (mise à jour de ses repères)');
+  else fail(`carte React : version ${reactVersion} (attendu v6.1)`);
 } else {
   fail('MIFTAH_VERSION introuvable dans la spec');
 }
@@ -205,8 +215,8 @@ must(recto, 'علوم الطبيعة والحياة', 'fiche recto : matière no
 mustNot(card, 'علوم الطبيعة والحياة', 'carte : nom de série ≠ matière banni');
 must(spec, "hamad: {", 'spec : SPECIAL_FORMS + الحدّاد (drapeau mort — parité carte)');
 must(spec, "countAr: '≈ 21'", 'spec : LEVELS amritat ≈ 21 (drapeau mort — parité carte)');
-console.log('\n§ v3.3 → v5.0 → v6.0 (docs/MARQUE.md §13bis / §14) — dictionnaire v3.3 déprécié : les 5 mouvements remplacent les 11 cases');
-must(spec, "MIFTAH_VERSION = '6.0'", 'spec : version fiche = 6.0 (§14)');
+console.log('\n§ v3.3 → v5.0 → v6.0 → v6.1 React (docs/MARQUE.md §§13bis-15) — dictionnaire v3.3 déprécié : les 5 mouvements remplacent les 11 cases');
+must(spec, "MIFTAH_VERSION = '6.1'", 'spec : version carte React = 6.1 (suivi post-audit)');
 must(spec, 'TOOTH3_ROUTE_AR', 'spec : route dent 3 (drapeau mort — carte app inchangée)');
 must(spec, 'GOLDEN_FORMULA_AR', 'spec : formule dorée (drapeau mort — carte app inchangée)');
 mustNot(html, 'معطى ← مقارنة ← علاقة ← تفسير', 'fiche v5.0 : route dent 3 (ز) dépréciée (arbitrage 1)');
@@ -237,7 +247,9 @@ mustNot(dashboard, OFFICIAL_NAME, 'DashboardView : aucun littéral du nom offici
 mustNot(dashboard, "onNavigateToTab?.('methodology')", 'DashboardView : pas de deuxième porte vers l’atelier (PortesUniques)');
 must(meftah, 'MIFTAH_NAME_OFFICIAL_AR', 'MeftahView : importe la source unique');
 mustNot(meftah, OFFICIAL_NAME, 'MeftahView : aucun littéral du nom officiel');
-must(meftah, '{MIFTAH_NAME_OFFICIAL_AR} · 4', 'sous-titre Meftah : libellé depuis la constante');
+must(meftah, '{MIFTAH_NAME_OFFICIAL_AR} · 3 قرارات قبل الكتابة · 4 حركات · فحص ختامي', 'sous-titre Meftah : 3 décisions, 4 gestes et vérification');
+must(meftah, 'لم يُتحقق هنا من مطابقته لنسخة وزارية أصلية', 'exemples BAC : provenance explicitement non vérifiée');
+must(meftah, 'توزيع مرجعي:', 'exemples BAC : ventilation qualifiée de référence');
 must(compiler, 'MIFTAH_NAME_OFFICIAL_AR', 'compilateur : importe la source unique');
 mustNot(compiler, OFFICIAL_NAME, 'compilateur : aucun littéral du nom officiel');
 must(compiler, '🔑 {MIFTAH_NAME_OFFICIAL_AR} v{MIFTAH_VERSION}', 'header compilateur : libellé depuis la constante');
@@ -250,11 +262,11 @@ if (appUses === 2 && app.includes("? MIFTAH_NAME_OFFICIAL_AR :")) {
 }
 
 console.log('\n§ Versions (M3 — une constante par artefact, zéro littéral dérivé)');
-must(spec, "MIFTAH_VERSION = '6.0'", 'spec : version fiche = 6.0 (constante unique)');
-if (MIFTAH_MANHAJIA_VERSION !== '4.3') fail(`manhajia : MIFTAH_MANHAJIA_VERSION = ${MIFTAH_MANHAJIA_VERSION} (attendu 4.3)`);
-else ok('manhajia : MIFTAH_MANHAJIA_VERSION = 4.3 (constante unique)');
-must(manhajia, "MIFTAH_MANHAJIA_VERSION = '4.3'", 'meftahManhajia : la constante est déclarée');
-mustNot(manhajia, 'V4.3', 'meftahManhajia : aucun littéral V4.3 (commentaires compris)');
+must(spec, "MIFTAH_VERSION = '6.1'", 'spec : version carte React = 6.1 (constante unique)');
+if (MIFTAH_MANHAJIA_VERSION !== '4.4') fail(`manhajia : MIFTAH_MANHAJIA_VERSION = ${MIFTAH_MANHAJIA_VERSION} (attendu 4.4)`);
+else ok('manhajia : MIFTAH_MANHAJIA_VERSION = 4.4 (constante unique)');
+must(manhajia, "MIFTAH_MANHAJIA_VERSION = '4.4'", 'meftahManhajia : la constante est déclarée');
+mustNot(manhajia, 'V4.4', 'meftahManhajia : aucun littéral V4.4 (commentaires compris)');
 // §14 — anciens libellés de dents bannis (MeftahView / extension)
 mustNot(manhajia, 'تبصر —', 'manhajia : dent 1 §12 « تبصر » → « فعل » (§14)');
 mustNot(manhajia, 'تبصّر —', 'manhajia : dent 1 §12 « تبصّر » → « فعل » (§14)');
@@ -267,8 +279,8 @@ must(manhajia, "title: 'فعل — ماذا تريد", 'manhajia : section 1 = �
 must(manhajia, "title: 'دليل — لا آخذ", 'manhajia : section 2 = دليل (§14)');
 must(manhajia, "title: 'علاقة — وصفة", 'manhajia : section 3 = علاقة (§14)');
 must(manhajia, "title: 'جواب — الاستنتاج", 'manhajia : section 4 = جواب (§14)');
-mustNot(meftah, 'V4.3', 'MeftahView : aucun littéral V4.3');
-mustNot(compiler, 'V4.3', 'compilateur : aucun littéral V4.3 (ancienne appellation onglet)');
+mustNot(meftah, 'V4.4', 'MeftahView : aucun littéral V4.4');
+mustNot(compiler, 'V4.4', 'compilateur : aucun littéral V4.4 (ancienne appellation onglet)');
 mustNot(compiler, 'الأوجه الستة', 'compilateur : appellation « الأوجه الستة » bannie (V5)');
 mustNot(compiler, "meftah_v43", "compilateur : id onglet meftah_v43 banni");
 // Verrous multi-pages : l'appellation V6/nom officiel doit tenir partout
@@ -276,11 +288,11 @@ mustNot(app, 'الأوجه الستة', 'App.tsx : aucune ancienne appellation o
 mustNot(dashboard, 'الأوجه الستة', 'DashboardView : aucune ancienne appellation onglet');
 mustNot(meftah, 'الأوجه الستة', 'MeftahView : aucune ancienne appellation onglet');
 mustNot(app, 'meftah_v43', 'App.tsx : aucun id onglet v43');
-mustNot(app, 'V4.3', 'App.tsx : aucun littéral V4.3');
-mustNot(dashboard, 'V4.3', 'DashboardView : aucun littéral V4.3');
+mustNot(app, 'V4.4', 'App.tsx : aucun littéral V4.4');
+mustNot(dashboard, 'V4.4', 'DashboardView : aucun littéral V4.4');
 mustNot(spec, 'الأوجه الستة', 'spec : aucune ancienne appellation');
 mustNot(miftahDoc, 'الأوجه الستة', 'PROTOCOLE_PREUVE : ancienne appellation bannie');
-mustNot(miftahDoc, 'المفتاح V4.3', 'PROTOCOLE_PREUVE : hint V4.3 banni');
+mustNot(miftahDoc, 'المفتاح V4.4', 'PROTOCOLE_PREUVE : hint V4.4 banni');
 mustNot(miftahDoc, 'v5.0 (onglet', 'PROTOCOLE_PREUVE : version figée v5.0 dépassée (étalon MIFTAH_VERSION)');
 
 console.log('\n§ Assertions pédagogiques (M4 — audit 2026-09-19)');
@@ -296,9 +308,10 @@ const totalMeftah = Math.round(MEFTA_BAC_EXERCISES.reduce((s, ex) => s + pts(ex.
 if (totalMeftah === 20) ok('Meftah : total copie = 20 ن');
 else fail(`Meftah : total copie = ${totalMeftah} ≠ 20`);
 
-// 2. Registre des attendus : 6 groupes, Σ items = maxPts (+ débordements SOURCÉS
-// au corrigé, absorbés par le plafond maxPts), 100 % auto, énoncés présents.
-// P2g : S2-Ex1 2025 — équation officielle 0.25×5 = 1.25 (Σ جزئيات = 5.5 > 5).
+// 2. Registre des attendus : six groupes ; cohérence des totaux encodés,
+// écarts documentés, item manuel déclaré et énoncés présents. Ce test vérifie
+// l'encodage du dépôt, pas la provenance institutionnelle du document consulté.
+// S2-Ex1 : le corpus de référence encodé totalise 5,5 pour une enveloppe de 5.
 const DEPASSEMENTS: Record<string, number> = { '2-1': 0.5 };
 const sujets: SujetId[] = [1, 2];
 const exercices: ExerciceId[] = [1, 2, 3];
@@ -323,12 +336,12 @@ for (const s of sujets) {
         .reduce((acc, i) => acc + i.points, 0) * 100,
     ) / 100;
     const depassement = DEPASSEMENTS[`${s}-${e}`] ?? 0;
-    if (somme !== g.maxPts + depassement) fail(`registre S${s}-Ex${e} : Σ items ${somme} ≠ maxPts ${g.maxPts} (+${depassement} sourcé)`);
+    if (somme !== g.maxPts + depassement) fail(`registre S${s}-Ex${e} : Σ items ${somme} ≠ maxPts ${g.maxPts} (+${depassement} documenté)`);
     else if (auto + manuel !== somme) fail(`registre S${s}-Ex${e} : plafond auto ${auto} + manuel déclaré ${manuel} ≠ Σ ${somme}`);
     else if (manuel > g.maxPts / 2) fail(`registre S${s}-Ex${e} : résidu manuel ${manuel} presque la moitié de l'exercice (le correcteur auto ne mesure plus rien)`);
     else if (g.questionAr.length < 20) fail(`registre S${s}-Ex${e} : énoncé absent`);
     else ok(depassement > 0
-      ? `registre S${s}-Ex${e} : Σ = plafond auto = ${somme} (maxPts ${g.maxPts} + débordement sourcé ${depassement}) · énoncé présent`
+      ? `registre S${s}-Ex${e} : Σ = plafond auto = ${somme} (maxPts ${g.maxPts} + écart encodé ${depassement}) · énoncé présent`
       : manuel > 0
         ? `registre S${s}-Ex${e} : plafond auto ${auto} + résidu manuel déclaré ${manuel} = Σ ${somme} (F2) · énoncé présent`
         : `registre S${s}-Ex${e} : Σ = plafond auto = ${g.maxPts} · énoncé présent`);
@@ -338,27 +351,25 @@ for (const s of sujets) {
 }
 if (totalRegistre === 40) ok('registre : 2 sujets × 20 = 40 ن');
 
-// 3. Parité dictionnaire ↔ Meftah (M2) : S1-Ex1 ventilation officielle.
+// 3. Cohérence dictionnaire ↔ Meftah : S1-Ex1, ventilation de référence encodée, sans attestation ministérielle.
 const g11 = ATTENDUS_BAC2025[1][1];
 const q1 = Math.round(g11.items.filter((i) => i.id.includes('/Q1/')).reduce((s, i) => s + i.points, 0) * 100) / 100;
 const q2 = Math.round(g11.items.filter((i) => i.id.includes('/Q2/')).reduce((s, i) => s + i.points, 0) * 100) / 100;
-if (q1 === 1.25 && q2 === 3.75) ok('parité S1-Ex1 : Q1 = 1.25 · Q2 = 3.75 (corrigé officiel)');
+if (q1 === 1.25 && q2 === 3.75) ok('cohérence S1-Ex1 : Q1 = 1.25 · Q2 = 3.75 (corpus de référence encodé)');
 else fail(`parité S1-Ex1 : Q1 = ${q1} · Q2 = ${q2} (attendu 1.25 / 3.75)`);
 
 // ── §12quater(E) — audit مفتاح E1/E2 (GO « go all », 2026-10-17) ─────────────
-// Les "lois de barème" catégoriques (('=' 0 / نصف النقطة / دائما / لا تُقرأ))
-// présentaient des déductions fixes INVENTÉES comme des règles officielles.
-// Le barème 2025 réel = éléments + tolérances ; la numérotation = règle de
-// PRESENTATION, pas de notation (§12quater(E).3). Interdits dans les 3 APPUIS
-// (carte React, spec, compilateur) ; l'élève lit des tendances honnêtes.
+// Les anciennes formulations attribuaient des déductions fixes sans provenance
+// institutionnelle vérifiée. Ces assertions protègent un ton non universel ; elles
+// ne certifient pas le barème consulté ni une règle de notation ministérielle.
 console.log('\n§ 12quater(E) — ton 📝 : tendances du correcteur, plus de fausses lois');
 mustNot(card, '= <b>0</b>', 'carte : la loi « b numéro = 0 » (présentation ≠ notation) est retirée');
 mustNot(card, 'بلا رقم أو تحت رقم خاطئ', 'carte : ancienne loi de numérotation notative bannie');
 mustNot(spec, 'دائما', 'spec : plus d\'absolu « دائما » dans les correctorsAr');
 mustNot(compiler, 'مطابقة 100%', 'compilateur : la promesse invérifiable « مطابقة 100% » est retirée');
 mustNot(compiler, 'مطابقة 100', 'compilateur : aucune variante du 100% déclaré');
-if (card.includes('قاعدة عرض') || spec.includes('قاعدة عرض')) ok('ton 📝 : la numérotation est dite règle de PRÉSENTATION');
-else fail('ton 📝 : le redoage présentation-vs-notation est absent (carte/spec)');
+if (card.includes('لا أعمّم أثر غياب الرقم على النقطة') || spec.includes('لا أعمّم أثر غياب الرقم على النقطة')) ok('ton 📝 : pas de pénalité de numérotation généralisée');
+else fail('ton 📝 : avertissement contre la généralisation des pénalités absent (carte/spec)');
 
 if (failures > 0) {
   console.error(`\n✗ ${failures} échec(s) — réaligner fiche/spec/carte sur docs/MARQUE.md`);

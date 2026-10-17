@@ -45,9 +45,9 @@ const switchTone = (s: SwitchLine): ToneKey =>
   : 'emerald';
 const swAr = (s: Switch): string => (s === 'open' ? 'مفتوح' : 'مغلق');
 
-// ─── Ateliers du  — nom officiel via MIFTAH_NAME_OFFICIAL_AR — owner 2026-09-15 ────────────────────────
-// La barre d'onglets défilante est remplacée par une grille d'icônes : les 7
-// ateliers demandés sont visibles d'un coup, sans scroll horizontal.
+// ─── Ateliers du مفتاح — une entrée d'apprentissage, un simulateur, des références ────────────────────
+// Les outils de suivi et les références restent accessibles, mais sont repliés
+// pour ne pas concurrencer le premier parcours élève.
 type AtelierId =
   | 'simulator' | 'verbs_ref' | 'mastery_matrix' | 'correction'
   | 'engine_rules' | 'boussole_card' | 'meftah' | 'tahlil_wall';
@@ -60,14 +60,16 @@ interface AtelierDef {
 }
 
 const ATELIERS: AtelierDef[] = [
-  { id: 'simulator',      label: 'الخطوات الأربع',                 hint: 'المحاكي · 4 مراحل',      icon: Zap },
-  { id: 'verbs_ref',      label: 'فهرس الأفعال الثمانية والنماذج', hint: 'بطاقات الأفعال + نماذج', icon: BookOpen },
-  { id: 'mastery_matrix', label: 'مصفوفة الإتقان',                 hint: 'الخلايا وتحليل الأخطاء', icon: Layers },
-  { id: 'correction',     label: 'المصححة',                        hint: 'ملف التصحيح',            icon: FileText },
-  { id: 'engine_rules',   label: 'قواعد الإجابة الـ 4 (الطبقة 0)', hint: 'الطبقة 0 · البوابات',    icon: Compass },
-  { id: 'meftah',         label: `${MIFTAH_NAME_OFFICIAL_AR} + BAC 2025`, hint: `v${MIFTAH_VERSION} · 3 وجوه + تطبيق`, icon: Key },
-  { id: 'tahlil_wall',    label: 'جدار حلّل — التدريب',            hint: 'تحليل أم تفسير؟',        icon: ShieldAlert },
+  { id: 'meftah',         label: 'ابدأ بالمفتاح',                  hint: 'النواة · 3 قرارات + 4 حركات', icon: Key },
+  { id: 'simulator',      label: 'الخطوات الأربع',                 hint: 'تدريب موجّه · 4 مراحل',       icon: Zap },
+  { id: 'verbs_ref',      label: 'فهرس الأفعال والنماذج',           hint: 'مرجع سريع',                   icon: BookOpen },
+  { id: 'engine_rules',   label: 'قواعد الإجابة',                  hint: 'الطبقة 0 · مرجع',             icon: Compass },
+  { id: 'tahlil_wall',    label: 'جدار حلّل — التدريب',            hint: 'تدريب مستهدف',                icon: ShieldAlert },
+  { id: 'mastery_matrix', label: 'مصفوفة الإتقان',                 hint: 'متابعة التقدم والأخطاء',      icon: Layers },
+  { id: 'correction',     label: 'المصححة',                        hint: 'مراجعة التصحيحات',            icon: FileText },
 ];
+
+const PRIMARY_ATELIER_IDS: AtelierId[] = ['meftah', 'simulator'];
 
 // m2 · seuil d'automatisation unique (code + texte d'aide)
 const AUTOMATION_THRESHOLD = 90;
@@ -113,6 +115,35 @@ interface MethodologyProps {
 export default function MethodologyCompilerView({ onBackToHome }: MethodologyProps) {
   // Navigation Tabs: 'engine_rules' (Couche 0) | 'verbs_ref' (Fiches) | 'simulator' (4 Stades) | 'mastery_matrix' (Analytics & Erreurs)
   const [activeTab, setActiveTab] = useState<AtelierId>('meftah');
+  const isReferenceTab = !PRIMARY_ATELIER_IDS.includes(activeTab);
+  const renderAtelierCard = (a: AtelierDef) => {
+    const Icon = a.icon;
+    const isActive = activeTab === a.id;
+    const pending = a.id === 'correction' ? correctionStats().pending : 0;
+    return (
+      <button
+        key={a.id}
+        type="button"
+        aria-pressed={isActive}
+        data-testid={`methodology-atelier-${a.id}`}
+        onClick={() => setActiveTab(a.id)}
+        className={`relative flex flex-col items-start gap-1 p-3 rounded-2xl text-right transition-all min-h-[76px] cursor-pointer ${
+          isActive
+            ? 'bg-white text-[#006d37] shadow-md ring-2 ring-[#fed65b]'
+            : 'bg-white/15 text-white hover:bg-white/25'
+        }`}
+      >
+        <span className="flex items-center gap-2 w-full">
+          <Icon className="w-4 h-4 shrink-0" />
+          <span className="text-[11px] md:text-xs font-black leading-tight flex-1">{a.label}</span>
+          {pending > 0 && (
+            <span className="bg-[#ff8c42] text-white text-[10px] font-black px-1.5 rounded-full shrink-0">{pending}</span>
+          )}
+        </span>
+        <span className={`text-[10px] font-bold leading-tight ${isActive ? 'text-[#006d37]/70' : 'text-white/70'}`}>{a.hint}</span>
+      </button>
+    );
+  };
   // File de correction (Phase 3) — bump pour rafraîchir l'onglet + le badge
   const [correctionVersion, setCorrectionVersion] = useState(0);
   /**
@@ -649,70 +680,53 @@ const handleSelectStage = (stage: 1 | 2 | 3 | 4) => {
             </div>
             <h1 className="text-2xl md:text-3xl font-black tracking-tight">🔑 {MIFTAH_NAME_OFFICIAL_AR} v{MIFTAH_VERSION}</h1>
             <p className="text-white/90 text-sm md:text-base mt-1 max-w-2xl font-medium">
-              4 أسنان · 3 بوابات · إجابة تفتح النقطة — {MIFTAH_TAGLINE_AR}
+              4 حركات · 3 بوابات قبل الكتابة · إجابة واضحة ومسنَدة — {MIFTAH_TAGLINE_AR}
             </p>
           </div>
 
-          {/* Quick Metrics Badge */}
-          <div className="flex items-center gap-3 bg-black/20 backdrop-blur-md p-3 rounded-2xl border border-white/15">
-            <div className="text-center px-3 border-l border-white/20">
-              <span className="block text-[11px] text-white/80 font-bold">مؤشر ICM الحالي</span>
-              <span className="text-xl md:text-2xl font-black text-[#fed65b]">{lastIcm === null ? '—' : `${lastIcm}%`}</span>
-              {lastIcm !== null && <span className="block text-[10px] font-black leading-none mt-0.5 text-white">{icmLabel(lastIcm)} <span className="opacity-70 font-normal latin">({icmLabelFr(lastIcm)})</span></span>}
+          <details className="bg-black/20 backdrop-blur-md rounded-2xl border border-white/15 px-3 py-2">
+            <summary className="text-[11px] font-bold text-white/90 cursor-pointer">عرض مؤشرات التقدم</summary>
+            <div className="flex items-center gap-3 p-2 mt-2">
+              <div className="text-center px-3 border-l border-white/20">
+                <span className="block text-[11px] text-white/80 font-bold">مؤشر ICM الحالي</span>
+                <span className="text-xl md:text-2xl font-black text-[#fed65b]">{lastIcm === null ? '—' : `${lastIcm}%`}</span>
+                {lastIcm !== null && <span className="block text-[10px] font-black leading-none mt-0.5 text-white">{icmLabel(lastIcm)} <span className="opacity-70 font-normal latin">({icmLabelFr(lastIcm)})</span></span>}
+              </div>
+              <div className="text-center px-3">
+                <span className="block text-[11px] text-white/80 font-bold">المرحلة النشطة</span>
+                <span className="text-sm md:text-base font-black text-white">المستوى {currentStage} / 4</span>
+              </div>
             </div>
-            <div className="text-center px-3">
-              <span className="block text-[11px] text-white/80 font-bold">المرحلة النشطة</span>
-              <span className="text-sm md:text-base font-black text-white">المستوى {currentStage} / 4</span>
-            </div>
-          </div>
+          </details>
         </div>
 
-        {/* Global Navigation Tabs */}
-        {/* Grille d'ateliers — les 7 vues du المفتاح visibles d'un coup (remplace la barre défilante) */}
         <div className="pt-5 mt-4 border-t border-white/20">
-          <span className="block text-[11px] font-bold text-white/80 mb-2">اختر الورشة التي تريد العمل بها</span>
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2">
-            {ATELIERS.map(a => {
-              const Icon = a.icon;
-              const isActive = activeTab === a.id;
-              const pending = a.id === 'correction' ? correctionStats().pending : 0;
-              return (
-                <button
-                  key={a.id}
-                  onClick={() => setActiveTab(a.id)}
-                  className={`relative flex flex-col items-start gap-1 p-3 rounded-2xl text-right transition-all min-h-[76px] cursor-pointer ${
-                    isActive
-                      ? 'bg-white text-[#006d37] shadow-md ring-2 ring-[#fed65b]'
-                      : 'bg-white/15 text-white hover:bg-white/25'
-                  }`}
-                >
-                  <span className="flex items-center gap-2 w-full">
-                    <Icon className="w-4 h-4 shrink-0" />
-                    <span className="text-[11px] md:text-xs font-black leading-tight flex-1">{a.label}</span>
-                    {pending > 0 && (
-                      <span className="bg-[#ff8c42] text-white text-[10px] font-black px-1.5 rounded-full shrink-0">{pending}</span>
-                    )}
-                  </span>
-                  <span className={`text-[10px] font-bold leading-tight ${isActive ? 'text-[#006d37]/70' : 'text-white/70'}`}>{a.hint}</span>
-                </button>
-              );
-            })}
+          <span className="block text-[11px] font-bold text-white/90 mb-2">ابدأ بالنواة، ثم تدرّب. المراجع وأدوات المتابعة اختيارية.</span>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+            {ATELIERS.filter((a) => PRIMARY_ATELIER_IDS.includes(a.id)).map(renderAtelierCard)}
           </div>
 
-          {/* Fiche المفتاح imprimable — accès secondaire (le bouton طبع vit dans cette vue).
-              Phase 1 (plainte élève) : nom DISTINCT de la page/atelier المفتاح —
-              c'est la CARTE imprimable (MiftahCard), pas une autre porte المفتاح. */}
-          <button
-            onClick={() => setActiveTab('boussole_card')}
-            className={`mt-2 inline-flex items-center gap-2 rounded-xl px-3 py-1.5 text-[11px] font-bold transition-all cursor-pointer ${
-              activeTab === 'boussole_card'
-                ? 'bg-white text-[#006d37] shadow-md'
-                : 'bg-white/15 text-white hover:bg-white/25'
-            }`}
-          >
-            <Printer className="w-3.5 h-3.5" />
-            <span>بطاقة المفتاح — للطباعة</span>
-          </button>
+          <details open={isReferenceTab} data-testid="methodology-more-tools" className="mt-2 rounded-2xl border border-white/15 bg-white/10 p-3">
+            <summary data-testid="methodology-more-tools-summary" className="cursor-pointer text-[11px] font-black text-white">
+              مراجع وأدوات متابعة (5) — افتح عند الحاجة
+            </summary>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 mt-3">
+              {ATELIERS.filter((a) => !PRIMARY_ATELIER_IDS.includes(a.id)).map(renderAtelierCard)}
+            </div>
+            <button
+              type="button"
+              onClick={() => setActiveTab('boussole_card')}
+              data-testid="methodology-print-card"
+              className={`mt-2 inline-flex items-center gap-2 rounded-xl px-3 py-2 text-[11px] font-bold transition-all cursor-pointer ${
+                activeTab === 'boussole_card'
+                  ? 'bg-white text-[#006d37] shadow-md'
+                  : 'bg-white/15 text-white hover:bg-white/25'
+              }`}
+            >
+              <Printer className="w-3.5 h-3.5" />
+              <span>بطاقة المفتاح — للطباعة</span>
+            </button>
+          </details>
         </div>
       </header>
 
@@ -2547,7 +2561,7 @@ const handleSelectStage = (stage: 1 | 2 | 3 | 4) => {
         <section className="space-y-4">
           <div className="flex flex-wrap items-center justify-between gap-3 print:hidden">
             <p className="text-xs font-bold text-gray-500 dark:text-gray-400">
-              بطاقة {MIFTAH_NOMENCLATURE.miftah} v{MIFTAH_VERSION} — تصيير React للبطاقة المنهجية، غير مطابق بنيويًّا لِـHTML المستقل <span className="latin">/miftah.html</span>: ذاك وجهان للطباعة (A4 recto/verso)، وهذه تعرض المنهجية مع ملحقها — فلا تُوصف بأنها «البطاقة نفسها»
+              بطاقة {MIFTAH_NAME_OFFICIAL_AR} — تصيير React v{MIFTAH_VERSION} (4 أسنان، بابان + عائلة، وملحق PRO؛ 3 صفحات). تختلف بنيويًّا عن HTML المستقل <span className="latin">/miftah.html</span> (5 حركات، 3 عائلات، ووجهان A4)؛ ليست البطاقة نفسها، ولا ندّعي التطابق بينهما أو تطابق المحتوى.
             </p>
             <div className="flex gap-2">
               <a href="/miftah.html" target="_blank" rel="noopener" className="px-4 py-2 bg-white border border-gray-200 rounded-xl font-bold text-xs">فتح HTML المستقل</a>
@@ -2566,7 +2580,10 @@ const handleSelectStage = (stage: 1 | 2 | 3 | 4) => {
 
       {/* TAB 6: المفتاح v{MIFTAH_VERSION} — 3 visages méthode + BAC 2025 — la loi lisible */}
       {activeTab === 'meftah' && (
-        <MeftahView onOpenVerb={() => setActiveTab('verbs_ref')} />
+        <MeftahView
+          onOpenVerb={() => setActiveTab('verbs_ref')}
+          onOpenSimulator={() => setActiveTab('simulator')}
+        />
       )}
 
       {/* TAB 7: جدار حلّل — couche 1 Trainer : le geste, gate v2 (audits 1-2) */}

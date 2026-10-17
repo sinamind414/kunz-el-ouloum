@@ -24,10 +24,11 @@ série B/C + couches 2-3 est RÉORIENTÉ vers la production pure — pas continu
 | Groupe | n | Intervention |
 |---|---|---|
 | **A — Trainer** | 10-15 | 8 séances × 15 min sur 2 semaines (mur + production contrainte, onglet جدار حلّل) |
-| **B — Contrôle négatif** | 10-15 | Lecture seule de la carte المفتاح v6.0 (onglet مفتاح المنهجية + BAC 2025), même durée totale |
+| **B — Contrôle négatif** | 10-15 | Lecture seule du module المفتاح (données de méthode 4.4, entrée progressive) et de la carte React v6.1 ; BAC 2025 dans la bibliothèque repliée, même durée totale |
 
 - Élèves 3AS sciences expérimentales, randomisation par tirage au sort (classe entière, alternance).
 - **Aucune PII collectée** : pseudonyme local (export code 8 caractères), copies papier identifiées par numéro d'ordre.
+- Le coordinateur note si le groupe B ouvre la bibliothèque ou les exercices BAC : ils sont facultatifs et repliés par défaut ; ne pas supposer qu'ils ont été consultés.
 
 ---
 

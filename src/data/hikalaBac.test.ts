@@ -4,7 +4,7 @@
 // Statut de la source : fiche pédagogique (dzexams, أستاذ زكرياء) libellée
 // « شعبة الرياضيات » — CORROBORATION de structure, pas autorité ministérielle.
 // Ce que ces tests verrouillent : la cohérence INTERNE du repo avec la fiche,
-// et la visibilité permanente de la dette (verbes officiels non entraînés).
+// et la visibilité permanente des actions recensées mais non entraînées dans la fiche.
 
 import { describe, expect, it } from 'vitest';
 import {
@@ -47,9 +47,9 @@ describe('hikala ↔ Meftah (bac-structure conforme à la fiche)', () => {
     expect(labels).toEqual(['5 ن', '7 ن', '8 ن']);
   });
 
-  it('CORRIGÉ OFFICIEL (M2 clos) : la somme des questions de chaque exercice = son barème', () => {
-    // Avant correction : Ex2 sommait à 7.5 ≠ 7 ; Ex1 ventilait 0.5/4.5.
-    // Corrigé le 2026-09-19 sur الإجابة النموذجية الرسمية (eddirasa).
+  it('la somme des questions de chaque exercice égale le total de référence affiché', () => {
+    // Contrôle de cohérence interne ; la source consultée n'a pas été vérifiée
+    // comme document ministériel original.
     for (const ex of MEFTA_BAC_EXERCISES) {
       const total = ex.pointsLabel.replace(/[^\d]/g, '');
       const somme = ex.questions.reduce(
@@ -60,28 +60,31 @@ describe('hikala ↔ Meftah (bac-structure conforme à la fiche)', () => {
     }
   });
 
-  it('parité Meftah ↔ dictionnaire : les points Meftah = la somme des items officiels du build', () => {
-    // La source de vérité encodée : dictionnaire_final.json via ATTENDUS_BAREME.
-    // bac2025 S1 : Ex1/Q1 = 5×0.25 = 1.25 · Ex1/Q2 = 3.75 (RIP 1.25, annonce 0).
+  it('parité Meftah ↔ dictionnaire : les points affichés égalent les items de référence encodés', () => {
+    // Contrôle de cohérence avec le corpus ATTENDUS_BAREME du dépôt,
+    // sans prétendre que sa ventilation reproduit un barème ministériel original.
+    // bac2025 S1 : Ex1/Q1 = 5×0.25 = 1.25 · Ex1/Q2 = 3.75.
     const sommeItems = (prefix: string) =>
       Object.entries(ATTENDUS_BAREME)
         .filter(([k]) => k.startsWith(prefix))
         .reduce((s, [, v]) => s + (typeof v.points === 'number' ? v.points : 0), 0);
 
-    const q1Officiel = Number(sommeItems('bac2025_S1/S1-Ex1/Q1/').toFixed(4));
-    const q2Officiel = Number(sommeItems('bac2025_S1/S1-Ex1/Q2/').toFixed(4));
-    expect(q1Officiel).toBe(1.25); // 0.25 × 5 — corrigé officiel p.1
-    expect(q2Officiel).toBe(3.75); // RIP 1.25 + 0.5×4 + annonce 0
+    const q1Reference = Number(sommeItems('bac2025_S1/S1-Ex1/Q1/').toFixed(4));
+    const q2Reference = Number(sommeItems('bac2025_S1/S1-Ex1/Q2/').toFixed(4));
+    expect(q1Reference).toBe(1.25); // somme des items encodés dans la référence
+    expect(q2Reference).toBe(3.75); // somme des items encodés dans la référence
 
     const ex1 = MEFTA_BAC_EXERCISES.find((e) => e.id === 'bac2025-ex1')!;
-    expect(ex1.questions[0]!.pointsLabel.replace(/[^\d.]/g, '')).toBe(String(q1Officiel));
-    expect(ex1.questions[1]!.pointsLabel.replace(/[^\d.]/g, '')).toBe(String(q2Officiel));
+    expect(ex1.questions[0]!.pointsLabel.replace(/[^\d.]/g, '')).toBe(String(q1Reference));
+    expect(ex1.questions[1]!.pointsLabel.replace(/[^\d.]/g, '')).toBe(String(q2Reference));
   });
 
-  it('le « فخ » RIP de Meftah (1.25 نقطة) reste cohérent avec le barème officiel', () => {
+  it('le rappel RIP ne promet pas une pénalité universelle en points', () => {
     const ex1 = MEFTA_BAC_EXERCISES.find((e) => e.id === 'bac2025-ex1')!;
     const q2 = ex1.questions.find((q) => q.id === 'bac2025-ex1-q2')!;
-    expect(q2.trapAr).toContain('1.25'); // RIP = 1.25 pt — inchangé et correct
+    expect(q2.trapAr).toContain('RIP');
+    expect(q2.trapAr).not.toMatch(/\d/);
+    expect(q2.pointsLabel).toBe('3.75 ن'); // répartition indicative affichée pour l'exercice
   });
 
   it('Meftah décrit T1/T2/T3 exactement comme la colonne « قياس التعليمة »', () => {
@@ -94,7 +97,7 @@ describe('hikala ↔ Meftah (bac-structure conforme à la fiche)', () => {
   });
 });
 
-describe('hikala ↔ scoreur (couverture des أفعال officiels)', () => {
+describe('hikala ↔ scoreur (couverture des actions recensées dans la fiche)', () => {
   it('chaque couvertPar pointe vers une carte qui existe (anti-drift d\'ids)', () => {
     const ids = new Set(VERB_CARDS.map((c) => c.id));
     for (const ex of HIKALA_FORMAT_A.exercices) {

@@ -1,5 +1,7 @@
 # AUDIT — « Rôle du manuel dans l'application » (texte collé vs dépôt réel)
 
+> **Mise à jour de provenance (2026-10-17)** — le constat technique (le correcteur ne compare pas aux pages du manuel) reste valide ; en revanche, la provenance du registre comme « corrigé ministériel 2025 » n'a pas été confirmée par un original exploitable et est **Non vérifiable**. Les valeurs codées sont des repères de correction consultée, pas une attestation ministérielle. Voir `docs/AUDIT_MIFTAH_MANHAJIA_2026-10-17.md` §7.
+
 **Date** : 2026-09-20 · **Objet** : vérifier, réclamation par réclamation, la description
 du rôle du « manuel SVT corrigé » (`book_tdm_clean.md` / `svth_bac_3as.json`) fournie
 par le propriétaire (texte d'origine LLM, style promotionnel).

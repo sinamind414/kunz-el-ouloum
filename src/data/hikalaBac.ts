@@ -1,4 +1,4 @@
-// hikalaBac.ts — هيكلة موضوع البكالوريا (structure officielle du sujet SVT).
+// hikalaBac.ts — هيكلة نوعية لتمرين SVT, transcrite depuis une fiche pédagogique.
 //
 // SOURCE : fiche « هيكلة موضوع البكالوريا – شعبة الرياضيات — أستاذ زكرياء »
 // (dzexams) — fiche de synthèse PÉDAGOGIQUE, PAS une circulaire ministérielle.
@@ -16,9 +16,9 @@
 //   · « اقترح فرضية » figure dans les أفعال du T2 (استدلال) sur cette fiche,
 //     « صادق على صحة الفرضية » dans ceux du T3 (مسعى) — le sujet réel bac2025-S1
 //     a mis les DEUX dans le T3. Les verbes migrent entre exercices : cette
-//     table est la famille D'ORIGINE officielle, pas une cage ;
+//     table reprend la famille d'actions de la fiche pédagogique, sans en faire une règle immuable ;
 //   · couverture scoreur mesurée (2026-09-19) : ~40 % des occurrences de
-//     verbes officiels ont une carte ; T1 est le moins couvert en ratio
+//     verbes recensés dans la fiche ont une carte ; T1 est le moins couvert en ratio
 //     (35,7 %) mais la dette des exercices NOTÉS lourdement (T2+T3, 15 pts)
 //     compte 17+ occurrences (ناقش، علّل، برّر، أثبت، استخرج، برهن…) —
 //     verrouillée par test pour rester visible jusqu'à traitement.
@@ -36,7 +36,7 @@ export interface ExerciceHikala {
   /** Nombre minimal d'أشكال dans le سند (fiche : 2 / 4 / 5). */
   minAshkal: number;
   /**
-   * الأفعال الإدائية officiels de la fiche, chacun avec sa couverture par une
+   * الأفعال الإدائية relevés dans la fiche, chacun avec sa couverture par une
    * carte du scoreur (verb_* de methodologyEngine) — null = NON ENTRAÎNÉ/NON
    * SCORÉ (dette, audit §C7 : voir test — le T3 est le moins couvert alors
    * qu'il pèse 8 points).
@@ -130,7 +130,7 @@ export function totalFormatA(): number {
   return HIKALA_FORMAT_A.exercices.reduce((s, e) => s + e.points, 0);
 }
 
-/** Verbes officiels sans carte de scoreur — la dette d'entraînement (audit C7). */
+/** Verbes relevés dans la fiche pédagogique sans carte de scoreur — dette d'entraînement. */
 export function afalNonCouverts(): { exercice: ExerciceHikala['id']; verbe: string }[] {
   const out: { exercice: ExerciceHikala['id']; verbe: string }[] = [];
   for (const ex of HIKALA_FORMAT_A.exercices) {

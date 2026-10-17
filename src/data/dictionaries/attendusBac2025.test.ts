@@ -1,7 +1,7 @@
 // attendusBac2025.test.ts — Verrous du REGISTRE des attendus obligatoires (Pierre 2).
 //
 // Le registre est la source unique du dénominateur de la note (R6). Ces tests
-// garantissent : les sommes = les barèmes officiels (5/7/8), la parité avec le
+// garantissent : cohérence des totaux de référence (5/7/8), parité avec le
 // build prouvé fidèle (Ex1), la complétude des formes de reconnaissance, et la
 // traçabilité des sources.
 
@@ -21,15 +21,15 @@ const GROUPES: AttendusExercice[] = (
   [1, 2] as const
 ).flatMap((s) => ([1, 2, 3] as const).map((e) => attendusDeGroupe(s, e)));
 
-// Dérogations sourcées au corrigé ministériel (somme جزئيات > enveloppe) —
-// vide sauf preuve verbatim. S2-Ex1 2025 : l'équation officielle vaut 0.25×5=1.25
+// Écart documenté dans le corpus consulté (somme جزئيات > enveloppe) —
+// S2-Ex1 2025 : la transcription consultée donne 0.25×5=1.25
 // (« عناصر من مجموع الخمسة المسطرة في المعادلة؛ يُمنح 0.25 نقطة لكل عنصر ») et non
 // 0.75 : Σ = 5.5. L'excédent est absorbé par le plafond maxPts (couverture ≤ 1),
-// exactement comme le correcteur officiel qui plafonne l'exercice à 5.
+// le correcteur du produit plafonne l'exercice à 5.
 const DEPASSEMENTS_SOURCES: Record<string, number> = { '2-1': 0.5 };
 
-describe('registre — sommes = barèmes officiels', () => {
-  it('chaque groupe somme à son barème (5/7/8), dérogations sourcées incluses', () => {
+describe('registre — sommes = totaux de référence', () => {
+  it('chaque groupe respecte son total encodé (5/7/8), écart documenté inclus', () => {
     for (const g of GROUPES) {
       const somme = Math.round(g.items.reduce((a, i) => a + i.points, 0) * 100) / 100;
       const depassement = DEPASSEMENTS_SOURCES[`${g.sujet}-${g.exercice}`] ?? 0;
@@ -75,7 +75,7 @@ describe('registre — sommes = barèmes officiels', () => {
     const rip = g.items.find((x) => x.id.endsWith('/RIP'))!;
     expect(rip.composantes?.length).toBe(2);
     expect(rip.composantes![1].some((f) => ['ادنين', 'adenine'].includes(f))).toBe(true);
-    // Pi (S2-Ex1) : la forme ajoutée à la main (équation officielle « +2Pi+ »).
+    // Pi (S2-Ex1) : forme ajoutée à la main depuis l'équation consultée « +2Pi+ ».
     const pi = attendusDeGroupe(2, 1).items.find((x) => x.id.endsWith('Q1/item3'))!;
     expect(pi.formes).toContain('pi');
   });
@@ -99,8 +99,8 @@ describe('registre ↔ build (parité sur les Ex1 — sources verrouillées)', (
     expect(g.items.map((i) => i.id)).toEqual(buildKeys);
     const q1 = g.items.filter((i) => i.id.includes('/Q1/')).reduce((s, i) => s + i.points, 0);
     const q2 = g.items.filter((i) => i.id.includes('/Q2/')).reduce((s, i) => s + i.points, 0);
-    expect(Math.round(q1 * 100) / 100).toBe(1.25); // 0.25 × 5 — corrigé officiel p.1
-    expect(Math.round(q2 * 100) / 100).toBe(3.75); // RIP 1.25 — corrigé officiel
+    expect(Math.round(q1 * 100) / 100).toBe(1.25); // 0.25 × 5 — correction consultée p.1
+    expect(Math.round(q2 * 100) / 100).toBe(3.75); // RIP 1.25 — corpus de référence encodé
   });
 
   it('S2-Ex1 : pont complet sur le build (glycolyse)', () => {
@@ -109,16 +109,16 @@ describe('registre ↔ build (parité sur les Ex1 — sources verrouillées)', (
     expect(g.items.map((i) => i.id)).toEqual(buildKeys);
   });
 
-  it('les items encodés à la main portent la source corrigé-officiel-2025', () => {
+  it('les items encodés à la main portent une source de correction consultée', () => {
     for (const [s, e] of [[1, 2], [1, 3], [2, 2], [2, 3]] as const) {
       const g = ATTENDUS_BAC2025[s][e];
-      expect(g.items.every((i) => i.source === 'corrige-officiel-2025'), `S${s}-Ex${e}`).toBe(true);
+      expect(g.items.every((i) => i.source === 'corrige-consulte-2025'), `S${s}-Ex${e}`).toBe(true);
     }
   });
 });
 
 
-describe('P2g — équation glycolyse S2-Ex1 (corrigé officiel 0.25×5) + isolement d’année des overlays', () => {
+describe('P2g — équation glycolyse S2-Ex1 (correction consultée : 0.25×5) + isolement d’année des overlays', () => {
   const verdictEquation = (reponse: string) => {
     const n = noterExerciceCalibre(reponse, 2, 1);
     const v = n.verdicts.find((x) => x.id.endsWith('Q2/equation'))!;
@@ -126,7 +126,7 @@ describe('P2g — équation glycolyse S2-Ex1 (corrigé officiel 0.25×5) + isole
   };
   const PLEINE = 'المعادلة الاجمالية: C6H12O6 + 2ADP + 2Pi + 2NAD+ ← 2(C3H4O3) + 2ATP + 2NADH,H+';
 
-  it('équation complète → 1.25 pt (5 éléments × 0.25, valeur officielle)', () => {
+  it('équation complète → 1.25 pt selon la valeur encodée (5 éléments × 0.25)', () => {
     expect(verdictEquation(PLEINE)).toBe(1.25);
   });
 
@@ -138,7 +138,7 @@ describe('P2g — équation glycolyse S2-Ex1 (corrigé officiel 0.25×5) + isole
     expect(verdictEquation('C6H12O6 + 2ADP + 2Pi + 2NADH,H+ ← 2 pyruvates + 2ATP')).toBe(1);
   });
 
-  it('Σ S2-Ex1 = 5.5 (débordement officiel) MAIS plafond note = maxPts 5', () => {
+  it('Σ S2-Ex1 = 5.5 dans le corpus, avec plafond produit maxPts 5', () => {
     const g = attendusDeGroupe(2, 1);
     expect(plafondAutoDe(g)).toBe(5.5);
     expect(g.maxPts).toBe(5);
@@ -165,7 +165,7 @@ describe('P2g — équation glycolyse S2-Ex1 (corrigé officiel 0.25×5) + isole
   });
 });
 
-describe('F1 — enveloppe officielle : un seul débordement documenté', () => {
+describe('F1 — enveloppe encodée : un seul débordement documenté', () => {
   it('Σ points des items ≤ maxPts partout, sauf S2-Ex1 (overlay P2g 2026-09-19)', () => {
     const debordees: string[] = [];
     for (const sujet of [1, 2] as const) {
@@ -175,7 +175,7 @@ describe('F1 — enveloppe officielle : un seul débordement documenté', () => 
         if (somme > g.maxPts + 1e-9) debordees.push(`S${sujet}-Ex${exercice}: ${somme} > ${g.maxPts}`);
       }
     }
-    // S2-Ex1 : corrigé officiel verbatim « 0.25 نقطة لكل عنصر » × 5 = 1.25 pour
+    // S2-Ex1 : la correction consultée indique « 0.25 نقطة لكل عنصر » × 5 = 1.25 pour
     // l'équation ; l'excédent est absorbé par le plafond maxPts (couverture ≤ 1
     // → note ≤ 5). Ce test verrouille qu'AUCUN autre groupe ne déborde — un
     // nouveau débordement doit être conscient et documenté ici.
@@ -204,10 +204,10 @@ describe('F3 — formes effectivement produites par les copies', () => {
     expect(v?.pointsCredites).toBe(0.25);
   });
 
-  it('S1-Ex2 الشكل(ج) : la formulation officielle « نفوذ / غير نفوذ » reste reconnue', () => {
-    const OFFICIEL =
+  it('S1-Ex2 الشكل(ج) : une formulation de référence « نفوذ / غير نفوذ » est reconnue', () => {
+    const FORMULATION_REFERENCE =
       'الغشاء البروتيني للبيرنويدة نفوذ لـ HCO3⁻ وRuBP/APG وغير نفوذ لـ CO2 فيُحجز CO2 داخل البيرنويدة.';
-    const v = noterExerciceCalibre(OFFICIEL, 1, 2).verdicts.find((x) => x.texteAr.includes('الشكل(ج)'));
+    const v = noterExerciceCalibre(FORMULATION_REFERENCE, 1, 2).verdicts.find((x) => x.texteAr.includes('الشكل(ج)'));
     expect(v?.pointsCredites).toBe(0.5);
   });
 

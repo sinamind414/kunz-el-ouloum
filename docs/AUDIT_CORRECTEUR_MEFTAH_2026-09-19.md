@@ -3,6 +3,8 @@
 >
 > **Libellés §14 (2026-09-22)** — document **historique** : les noms « تَبَصَّر / أدخل / أدر / افتح » y sont conservés comme trace d'arbitrage. L'app et la fiche utilisent désormais les gestes « فعل / دليل · علاقة · جواب » (voir `docs/MARQUE.md` §14).
 >
+> **Mise à jour de provenance (2026-10-17)** — les passages ci-dessous qui qualifient le PDF de correction consulté de « corrigé ministériel/officiel » reflètent une conclusion antérieure qui n'a pas été confirmée par un document original exploitable. Ce statut est désormais **Non vérifiable** ; les valeurs restent des repères internes, pas une validation ministérielle. Voir `docs/AUDIT_MIFTAH_MANHAJIA_2026-10-17.md` §7.
+>
 
 **Date :** 2026-09-19 · **Commit :** `724e137`
 **Méthode :** lecture intégrale des 6 couches du correcteur et des 4 fichiers Meftah + **probes adversariales exécutées** (les notes citées ci-dessous sont des sorties réelles du code, pas des hypothèses). Toutes les suites passent : 127 tests correcteur/dictionnaires, 130 tests Meftah/scorer/utils, 138 invariants harnais.
@@ -211,7 +213,7 @@ officiels (`src/data/dictionaries/attendusBac2025.ts`), sources tracées.*
 
 1. **Registre des attendus (6 groupes)** : SujetId × ExerciceId → {énoncé, maxPts (5/7/8), items}.
    - Ex1 (les deux sujets) : pont **programmatique** sur `ATTENDUS_BAREME` (le build prouvé fidèle) — parité testée key-par-key ; les formes de reconnaissance = entités du dictionnaire + sigles scientifiques du texte officiel de l'item (ARNm, RIP, ATP, 2-DG…).
-   - S1-Ex2, S1-Ex3, S2-Ex2, S2-Ex3 : encodés **item par item depuis le corrigé ministériel** (`correction-bac-sci-sciences-2025.pdf`, lu intégralement), source marquée `corrige-officiel-2025`, ventilation officielle respectée (S2-Ex2 : 0,5×13 dont تبرير 1,0 ; S2-Ex3 : ventilation complète incluant chromatographie 326/221/529 et الفقرة العلمية 1,0).
+   - S1-Ex2, S1-Ex3, S2-Ex2, S2-Ex3 : encodés **item par item depuis le PDF de correction consulté** (`correction-bac-sci-sciences-2025.pdf`, lu intégralement). Le rapport de 2026-09 les avait marqués `corrige-officiel-2025` ; cette provenance ministérielle n'est pas vérifiée (statut **Non vérifiable**, mise à jour 2026-10-17) et le champ de code est maintenant `corrige-consulte-2025`. Les ventilations restent des valeurs transcrites, pas des barèmes attestés.
    - Invariants testés : Σ items = maxPts **exactement** sur les 6 groupes (le test a attrapé 5 items morts — formes non verbatim — corrigés) ; aucun item à points sans formes sauf `source: build` (→ remonté au prof) ; Σ auto ≥ 70 % du barème partout (S1-Ex1 5/5, S2-Ex1 4,75/5).
 2. **Moteur R6** (`calibrationBac2025.ts`) : `noterExerciceCalibre(réponse, sujet, ex)` =
    couverture = Σ auto crédité / Σ auto (formes OR, sous-chaîne normalisée) →

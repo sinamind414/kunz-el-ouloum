@@ -3,7 +3,7 @@
 //
 // R6 : la note = min(couverture_attendus × maxPts, plafonds d'intégrité) —
 // sauf les groupes à ventilation par partie (S1-Ex3) où chaque partie est
-// ramenée à son poids officiel avant le plafond (docs/DIAGNOSTIC_EX3.md).
+// ramenée à son poids de référence avant le plafond (docs/DIAGNOSTIC_EX3.md).
 // Le dénominateur est le REGISTRE (attendusBac2025.ts) — la banque d'unité
 // n'est plus jamais un dénominateur (audit C1/C2 : elle payait les salades 8/8).
 
@@ -20,7 +20,7 @@ import { MEFTA_BAC_EXERCISES } from '../meftahManhajia';
 import { PLAFONDS } from './integriteCopie';
 
 // Réserve humaine attendue : Σ des points des items MANUELS, ramenés à l'échelle
-// officielle via le ratio poidsPartie (F1+, 2026-09-28). Réimplémentation
+// de référence via le ratio poidsPartie (F1+, 2026-09-28). Réimplémentation
 // indépendante de la formule moteur — doit rester byte-pour-byte égale.
 function reserveManuellePonderee(reg: ReturnType<typeof attendusDeGroupe>): number {
   const pp = reg.poidsPartie;
@@ -28,16 +28,16 @@ function reserveManuellePonderee(reg: ReturnType<typeof attendusDeGroupe>): numb
     .filter((i) => !(i.formes.length > 0 || (i.composantes?.length ?? 0) > 0))
     .reduce((s, i) => {
       const p = pp?.partie[i.id];
-      const ratio = p && pp && pp.registre[p] > 0 ? pp.officiel[p] / pp.registre[p] : 1;
+      const ratio = p && pp && pp.registre[p] > 0 ? pp.reference[p] / pp.registre[p] : 1;
       return s + i.points * ratio;
     }, 0);
   return Math.round(reserve * 100) / 100;
 }
 
-// Réponse qui contient TOUS les textes officiels d'un groupe → toutes les
+// Réponse qui contient TOUS les textes de référence d'un groupe → toutes les
 // formes matchent → couverture 1 → note max (cohérence registre ↔ scoreur).
 // + les réponses modèle Meftah (S1) : les variantes arabes des composantes P5
-//   n'existent que dans la formulation élève officielle.
+//   n'existent que dans la formulation élève de référence.
 // + glossaire S2-Ex1 : « فوسفات » (l'item C = Pi n'emporte pas le mot arabe).
 function reponseExhaustive(sujet: 1 | 2, exercice: 1 | 2 | 3): string {
   const textes = attendusDeGroupe(sujet, exercice).items.map((i) => i.texteAr).join(' ');
@@ -73,7 +73,7 @@ describe('R6 — invariants de la notation par attendus obligatoires', () => {
         );
         expect(n.points).toBeLessThanOrEqual(n.maxPts);
         expect(n.noteFinale).toBe(n.pointsManuelsAArbitrer > 0 ? null : n.points);
-        expect(n.plafonds).toEqual([]); // c'est de la prose officielle
+        expect(n.plafonds).toEqual([]); // ce sont les textes de référence
       }
     }
   });
@@ -96,7 +96,7 @@ describe('R6 — invariants de la notation par attendus obligatoires', () => {
           }
           formule = 0;
           for (const p of [1, 2, 3] as const) {
-            if (pp.registre[p] > 0) formule += partCredit[p] * (pp.officiel[p] / pp.registre[p]);
+            if (pp.registre[p] > 0) formule += partCredit[p] * (pp.reference[p] / pp.registre[p]);
           }
           formule = Math.min(n.maxPts, Math.max(0, formule));
         }
@@ -106,12 +106,12 @@ describe('R6 — invariants de la notation par attendus obligatoires', () => {
   });
 
   it('S1-Ex3 : la ventilation par partie plafonne la Partie 1 (facile) à 1,5/8', () => {
-    // Réponse ne contenant QUE les items de la Partie 1 (formes officielles).
+    // Réponse ne contenant QUE les items de la Partie 1 (formes de référence).
     const pp = attendusDeGroupe(1, 3).poidsPartie!;
     const itemsP1 = attendusDeGroupe(1, 3).items.filter((i) => pp.partie[i.id] === 1);
     const reponseP1 = itemsP1.map((i) => i.texteAr).join(' ');
     const n = noterExerciceCalibre(reponseP1, 1, 3);
-    // Avant E : 3,5 pts crédités → 3,5/8. Maintenant : ramené au poids officiel 1,5/8.
+    // Avant E : 3,5 pts crédités → 3,5/8. Maintenant : ramené au poids de référence 1,5/8.
     expect(n.pointsAttendusCredites).toBe(3.5);
     expect(n.points).toBe(1.5);
   });
@@ -124,14 +124,14 @@ describe('R6 — invariants de la notation par attendus obligatoires', () => {
       if (auto) expect(pp.partie[it.id], `${it.id} non mappé`).toBeDefined();
     }
     const sommes = { registre: [1, 2, 3].reduce((s, p) => s + pp.registre[p as 1 | 2 | 3], 0),
-                     officiel: [1, 2, 3].reduce((s, p) => s + pp.officiel[p as 1 | 2 | 3], 0) };
+                     reference: [1, 2, 3].reduce((s, p) => s + pp.reference[p as 1 | 2 | 3], 0) };
     expect(sommes.registre).toBe(reg.maxPts);
-    expect(sommes.officiel).toBe(reg.maxPts);
+    expect(sommes.reference).toBe(reg.maxPts);
   });
 
   it('le déversement de la banque d’unité NE PAIE PLUS (fin du détecteur de déversement)', () => {
     // Texte « immunité » (banque U4) sur S2-Ex3 (transfusion) : avant R6 il
-    // saturait 8/8 ; il ne touche presque aucun attendu officiel du groupe.
+    // saturait 8/8 ; il ne touche presque aucun attendu encodé du groupe.
     const immunité =
       'المستضد أجسام مضادة خلايا بلازمية معقد مناعي بلعمة المتمم الانتقاء النسيلي خلايا ذاكرة ' +
       'الاستجابة الأولية الاستجابة الثانوية اللقاح LTc البرفورين الغرانزيمات TCR LT4 الإنترلوكين GP120 CD4';
@@ -170,7 +170,7 @@ describe('R6 — invariants de la notation par attendus obligatoires', () => {
   });
 });
 
-describe('F1 — points acquis vs réserve manuelle (garder l’échelle officielle)', () => {
+describe('F1 — points acquis vs réserve manuelle (garder l’échelle de référence)', () => {
   it('aucun item manuel invisible : verdicts = items du registre (6 groupes)', () => {
     for (const sujet of [1, 2] as const) {
       for (const exercice of [1, 2, 3] as const) {
@@ -193,7 +193,7 @@ describe('F1 — points acquis vs réserve manuelle (garder l’échelle officie
     }
   });
 
-  it('garde-fou : pointsAutoAcquis + pointsManuelsAArbitrer ≤ maxPts (jamais plus que l’officiel)', () => {
+  it('garde-fou : pointsAutoAcquis + pointsManuelsAArbitrer ≤ maxPts (jamais plus que l’enveloppe encodée)', () => {
     for (const sujet of [1, 2] as const) {
       for (const exercice of [1, 2, 3] as const) {
         const n = noterExerciceCalibre(reponseExhaustive(sujet, exercice), sujet, exercice);
@@ -207,7 +207,7 @@ describe('F1 — points acquis vs réserve manuelle (garder l’échelle officie
 
   it('les items manuels ne sont JAMAIS comptés comme zéro ni redistribués', () => {
     // Copie vide : la réserve manuelle reste INTACTE (égale à Σ items non auto,
-    // sur l'échelle officielle), les points auto tombent à 0 — pas de
+    // sur l'échelle de référence), les points auto tombent à 0 — pas de
     // renormalisation de la part manuelle.
     for (const sujet of [1, 2] as const) {
       for (const exercice of [1, 2, 3] as const) {
@@ -287,7 +287,7 @@ describe('P5 — granularité par composantes : fin du « un mot = un item entie
 });
 
 describe('R6 — contrôles positifs : les réponses modèle de Meftah', () => {
-  // Les visages BAC sont écrits depuis les عناصر الإجابة officiels → ils
+  // Les visages BAC sont écrits depuis les éléments de réponse de référence → ils
   // doivent couvrir ~tout le registre. Avant R6 : 16,05/20 (Ex3 à 5,18/8).
   const MODELES = MEFTA_BAC_EXERCISES.map((ex) => ({
     id: ex.id,

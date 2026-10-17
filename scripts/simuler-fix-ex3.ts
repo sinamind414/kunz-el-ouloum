@@ -56,7 +56,7 @@ const mae = (f: (r: Run) => number) =>
 const biais = (f: (r: Run) => number) =>
   runs.reduce((s, r) => s + (f(r) - r.prof), 0) / runs.length;
 
-console.log(`n=${runs.length}  (maxPts=${reg.maxPts}, parties registre=${JSON.stringify(pp.registre)} officiel=${JSON.stringify(pp.officiel)})`);
+console.log(`n=${runs.length}  (maxPts=${reg.maxPts}, parties registre=${JSON.stringify(pp.registre)} référence=${JSON.stringify(pp.reference)})`);
 for (const [nom, f] of [
   ['plat   ', (r: Run) => r.plat],
   ['engine ', (r: Run) => r.engine],
