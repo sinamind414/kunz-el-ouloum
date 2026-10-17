@@ -785,6 +785,16 @@ export default function ActiveLessonView({ lessonKey, onBack, onNext, nextTitleA
         <div className="bg-white dark:bg-[#161c18] rounded-3xl p-6 border border-gray-200 dark:border-gray-800 text-center space-y-4">
           <p className="text-4xl">🚀</p>
           <h3 className="text-lg font-black">مهمة الدرس</h3>
+          {/* Sprint 64 — le contrat est annoncé AVANT de commencer : l'élève doit
+              savoir qu'il ne s'agit pas d'une lecture. Un cours qu'on fait défiler
+              donne l'illusion de la maîtrise ; ici rien n'avance sans réponse. */}
+          <p
+            data-testid="lecon-contrat"
+            className="mx-auto max-w-md text-[13px] leading-6 font-bold text-amber-800 dark:text-amber-300 bg-amber-50 dark:bg-amber-900/20 border border-amber-300/60 dark:border-amber-700/40 rounded-2xl px-4 py-3"
+          >
+            ⚠️ هذا الدرس لا يتقدّم قبل أن تجيب: {total} مراحل، كل مرحلة تُفتح بعد
+            إنجاز التي قبلها. لا توجد قراءة سلبية هنا.
+          </p>
           <ul className="text-sm text-gray-600 dark:text-gray-300 space-y-1 text-right max-w-md mx-auto">
             {blocks.map((b, i) => (
               <li key={i} className="flex items-start gap-2">
