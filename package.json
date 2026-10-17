@@ -1,5 +1,5 @@
 {
-  "name": "react-example",
+  "name": "kunz-el-ouloum",
   "private": true,
   "version": "1.0.0-rc.1",
   "description": "كنز العلوم — révision SVT (sciences de la nature et de la vie) pour le Baccalauréat algérien 3AS · 100 % arabe RTL · hors ligne · gratuite",
@@ -43,7 +43,6 @@
     "react": "^19.0.1",
     "react-dom": "^19.0.1",
     "recharts": "^3.9.2",
-    "vite": "^6.2.3",
     "zod": "^4.5.4"
   },
   "devDependencies": {

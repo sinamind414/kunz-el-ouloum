@@ -250,9 +250,24 @@ const SPLIT_LESSON_ENTRIES = Object.entries(EXPERIMENTAL_LESSONS).flatMap(([key,
   splitIntoLessons(key, lesson)
 );
 
+// B5 (audit « ligne par ligne », 2026-10-17) : l'AFFECTATION OFFICIELLE prime
+// sur l'heuristique du fil d'Ariane, qui se trompait sur 5 leçons jumelles
+// scindées (phase2_2 en U1 au lieu de U2, etc.) — le séquenceur officiel
+// (programSequence.ts) est la source de vérité, l'heuristique ne sert qu'aux
+// leçons hors séquence. Verrou croisé : src/data/lessonIndexParity.test.ts.
+import { OFFICIAL_PROGRAM_SEQUENCE } from './data/programSequence';
+
+const PROPRIETAIRE_OFFICIEL: Map<string, number> = (() => {
+  const owner = new Map<string, number>();
+  for (const [uid, keys] of Object.entries(OFFICIAL_PROGRAM_SEQUENCE)) {
+    for (const k of keys as string[]) if (!owner.has(k)) owner.set(k, Number(uid));
+  }
+  return owner;
+})();
+
 export const LESSON_LIBRARY: LessonLibraryItem[] = SPLIT_LESSON_ENTRIES.map(({ key, lesson }) => ({
   key,
-  unitId: inferGlobalUnitIdFromBreadcrumb(lesson.breadcrumb),
+  unitId: PROPRIETAIRE_OFFICIEL.get(key) ?? inferGlobalUnitIdFromBreadcrumb(lesson.breadcrumb),
   ...lesson
 }));
 

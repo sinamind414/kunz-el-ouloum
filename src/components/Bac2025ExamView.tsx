@@ -4,17 +4,70 @@
 // la note = couverture des ATTENDUS OBLIGATOIRES × max, par exercice (5/7/8)
 // puis total /20 — plafonnée par l'intégrité (salade/négations/perroquet).
 // Aucun dénominateur caché : le registre est la seule source (attendusBac2025).
+//
+// B3 (audit « ligne par ligne », 2026-10-17) : le sujet 2025 était UNE ENTRÉE
+// DE PLUS dans l'app sans chrono ni mention des documents. Ajouts :
+//   1. chronomètre officiel 4 h 30 (270 min), persistant, lu sur l'horloge
+//      (même logique que MockExamPanel : examSession/examTimer, on ne compte
+//      plus le temps, on le LIT) — avec sa propre clé de stockage pour ne pas
+//      écraser la session du simulateur de sujets blancs ;
+//   2. avis honnête : les textes et documents officiels du sujet ne sont pas
+//      inclus dans l'app — l'élève les lit sur le sujet imprimé (ONEC).
+//   3. l'épreuve est déclarée à `declarerExamen` pendant toute la vue (le
+//      guide se tait, comme pendant le simulateur).
 
-import { useState } from 'react';
-import { ClipboardList, FileText, History, RotateCcw, Send, ShieldCheck, Trash2 } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { ClipboardList, Clock, FileText, History, Pause, Play, RotateCcw, Send, ShieldCheck, Trash2 } from 'lucide-react';
 import { listeGroupesBac2025, attendusDeGroupe } from '../data/dictionaries/attendusBac2025';
 import { noterCopieCalibree } from '../data/dictionaries/calibrationBac2025';
+import { demarrer, mettreEnPause, minutesEcoulees, remettreAZero, type ExamSession } from '../data/examSession';
+import { formatDuree, phaseEpreuve } from '../data/examTimer';
+import { DUREE_EPREUVE_MINUTES } from '../data/mockExam';
+import { declarerExamen } from '../lib/examenEnCours';
 import SectionObligatoire from './SectionObligatoire';
 import Dictaphone from './Dictaphone';
 import { logExamAttempt, getExamAttempts, getExamStats, clearExamLog, type ExamAttempt } from '../utils/examLog';
 import { fmtDateLatn } from '../utils/latinDigits';
 
 const GROUPES = listeGroupesBac2025();
+
+// Session 2025 DISTINCTE de la session du simulateur (kunz.examSession) :
+// les deux épreuves doivent pouvoir vivre sans s'écraser leur chronomètre.
+const EXAM2025_KEY = 'kunz.exam2025Session';
+const SESSION2025_VIDE: ExamSession = { numero: 1, cumulMinutes: 0, demarreeA: null };
+
+function lireSession2025(): ExamSession {
+  try {
+    const brut = localStorage.getItem(EXAM2025_KEY);
+    if (!brut) return SESSION2025_VIDE;
+    const p = JSON.parse(brut) as Partial<ExamSession>;
+    return {
+      numero: 1,
+      cumulMinutes:
+        typeof p.cumulMinutes === 'number' && Number.isFinite(p.cumulMinutes) && p.cumulMinutes >= 0
+          ? p.cumulMinutes
+          : 0,
+      demarreeA: typeof p.demarreeA === 'number' && Number.isFinite(p.demarreeA) && p.demarreeA > 0 ? p.demarreeA : null,
+    };
+  } catch {
+    return SESSION2025_VIDE;
+  }
+}
+
+function ecrireSession2025(session: ExamSession): void {
+  try {
+    localStorage.setItem(EXAM2025_KEY, JSON.stringify(session));
+  } catch {
+    /* stockage indisponible : le chrono reste utilisable, sans mémoire */
+  }
+}
+
+const PHASE_LABEL_2025: Record<string, string> = {
+  lecture: 'قراءة الموضوع',
+  redaction: 'التحرير',
+  relecture: 'المراجعة النهائية',
+  termine: 'انتهى الوقت',
+};
 
 export default function Bac2025ExamView({ onClose }: { onClose: () => void }) {
   const [sujet, setSujet] = useState<1 | 2>(1);
@@ -24,11 +77,35 @@ export default function Bac2025ExamView({ onClose }: { onClose: () => void }) {
   const [historiqueOuvert, setHistoriqueOuvert] = useState(false);
   const [historique, setHistorique] = useState<ExamAttempt[]>(() => getExamAttempts());
 
+  // B3 : chronomètre persistant, lu sur l'horloge (jamais compté par les ticks).
+  const [session, setSession] = useState<ExamSession>(() => lireSession2025());
+  const [, forcerRendu] = useState(0);
+
+  // Pendant la vraie épreuve, le guide (المرشد) se tait — au MONTAGE comme au
+  // DÉMONTAGE de la vue (declarerExamen est idempotent).
+  useEffect(() => {
+    declarerExamen(true);
+    return () => declarerExamen(false);
+  }, []);
+
+  // Le tick ne COMPTE pas le temps : il rafraîchit seulement l'affichage.
+  useEffect(() => {
+    if (session.demarreeA === null) return undefined;
+    const id = setInterval(() => forcerRendu((n) => n + 1), 15_000);
+    return () => clearInterval(id);
+  }, [session.demarreeA]);
+
+  const majSession = (suivante: ExamSession) => {
+    ecrireSession2025(suivante);
+    setSession(suivante);
+  };
+
   const reset = (nouveauSujet?: 1 | 2) => {
     setSoumis(false);
     setCopie(null);
     setReponses({ 1: '', 2: '', 3: '' });
     if (nouveauSujet) setSujet(nouveauSujet);
+    majSession(remettreAZero(session));
   };
 
   // Soumission : note calculée UNE fois, archivée (historique + dashboard si compte).
@@ -36,6 +113,8 @@ export default function Bac2025ExamView({ onClose }: { onClose: () => void }) {
     const c = noterCopieCalibree([reponses[1], reponses[2], reponses[3]], sujet);
     setCopie(c);
     setSoumis(true);
+    // B3 : la remise fige le chrono (consolidation de la période en cours).
+    majSession(mettreEnPause(session));
     logExamAttempt({
       sujet,
       total: c.total,
@@ -49,6 +128,11 @@ export default function Bac2025ExamView({ onClose }: { onClose: () => void }) {
     });
     setHistorique(getExamAttempts());
   };
+
+  // B3 : valeurs LUES sur l'horloge à chaque rendu — pause/rechargement inclus.
+  const enMarche = session.demarreeA !== null;
+  const ecoulee = minutesEcoulees(session);
+  const phase = phaseEpreuve(ecoulee, DUREE_EPREUVE_MINUTES);
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-950" dir="rtl">
@@ -164,6 +248,51 @@ export default function Bac2025ExamView({ onClose }: { onClose: () => void }) {
             )}
           </div>
         )}
+
+        {/* B3 — chrono officiel 4 h 30 (persistant, lu sur l'horloge) */}
+        <div
+          data-testid="bac2025-chrono"
+          className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 px-4 py-3 flex items-center justify-between gap-3"
+        >
+          <div className="flex items-center gap-2 min-w-0">
+            <Clock className="w-4 h-4 text-emerald-600 shrink-0" />
+            <div className="min-w-0">
+              <p className="text-[11px] font-black text-gray-700 dark:text-gray-300">
+                المدة الرسمية : 4 سا و 30 د —{' '}
+                <span aria-label="الزمن المنقضي">{formatDuree(ecoulee)}</span> /{' '}
+                {formatDuree(DUREE_EPREUVE_MINUTES)}
+              </p>
+              <p className="text-[10px] font-bold text-gray-400">{PHASE_LABEL_2025[phase]}</p>
+            </div>
+          </div>
+          <div className="flex items-center gap-1.5 shrink-0">
+            <button
+              data-testid="bac2025-chrono-toggle"
+              onClick={() => majSession(enMarche ? mettreEnPause(session) : demarrer(session))}
+              className="px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 text-white text-[11px] font-black flex items-center gap-1"
+            >
+              {enMarche ? <Pause className="w-3 h-3" /> : <Play className="w-3 h-3" />}
+              <span>{enMarche ? 'إيقاف مؤقت' : 'بدء الزمن'}</span>
+            </button>
+            <button
+              onClick={() => majSession(remettreAZero(session))}
+              aria-label="تصفير الزمن"
+              className="px-2.5 py-1.5 rounded-xl bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 text-gray-600 dark:text-gray-300 text-[11px] font-black"
+            >
+              تصفير
+            </button>
+          </div>
+        </div>
+
+        {/* B3 — avis honnête : les documents officiels ne sont pas dans l'app */}
+        <div
+          data-testid="bac2025-avis-documents"
+          className="p-3 rounded-2xl bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-900 text-[11px] font-bold text-amber-900 dark:text-amber-200 leading-relaxed"
+        >
+          تنبيه : نصوص الموضوعين الرسميين ومستنداتهما (الرسوم والجداول) غير مُضمَّنة في التطبيق.
+          اقرأ الموضوع الأصلي في ورقة الامتحان أو في أرشيف ONEC، ثم حرِّر إجاباتك هنا؛ فالتقويم
+          يجري على مقتضيات الإجابة الرسمية لا على إعادة طباعة الموضوع.
+        </div>
 
         {/* Les 3 exercices */}
         {([1, 2, 3] as const).map((ex) => {

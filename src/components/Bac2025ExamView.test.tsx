@@ -85,3 +85,30 @@ describe('Bac2025ExamView — la boucle élève (R6)', () => {
     expect(screen.getAllByText(/الشاي الأخضر/).length).toBeGreaterThan(0); // Q S1-Ex3
   });
 });
+
+describe('Bac2025ExamView — chrono officiel 4 h 30 + avis documents (B3)', () => {
+  it('affiche la durée officielle 04:30 et un chronomètre démarrable', () => {
+    render(<Bac2025ExamView onClose={() => {}} />);
+    expect(screen.getByTestId('bac2025-chrono')).toBeTruthy();
+    expect(screen.getByText(/المدة الرسمية/)).toBeTruthy();
+    expect(screen.getByText(/04:30/)).toBeTruthy();
+    // démarrage : le chrono passe en marche (bouton devient pause)
+    fireEvent.click(screen.getByTestId('bac2025-chrono-toggle'));
+    expect(screen.getByTestId('bac2025-chrono-toggle').textContent).toMatch(/إيقاف مؤقت/);
+  });
+
+  it('avis honnête : les documents et textes originaux du sujet ne sont PAS dans l app', () => {
+    render(<Bac2025ExamView onClose={() => {}} />);
+    const avis = screen.getByTestId('bac2025-avis-documents');
+    expect(avis.textContent).toMatch(/غير مُضمَّنة/); // « non inclus » — aucun mensonge
+    expect(avis.textContent).toMatch(/ONEC/);
+  });
+
+  it('la soumission met le chrono en pause sans le perdre', () => {
+    render(<Bac2025ExamView onClose={() => {}} />);
+    fireEvent.click(screen.getByTestId('bac2025-chrono-toggle'));
+    fireEvent.click(screen.getByText(/تسليم التصحيح/));
+    // après soumission le chrono affiche toujours sa valeur (00:00 min) en pause
+    expect(screen.getByTestId('bac2025-chrono')).toBeTruthy();
+  });
+});

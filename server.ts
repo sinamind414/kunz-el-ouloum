@@ -181,8 +181,12 @@ async function startServer() {
   // CSP modérée : 'unsafe-inline' est OBLIGATOIRE (les 25 leçons HTML
   // statiques utilisent ~514 handlers on* + <script> inline). Ce que la
   // CSP bloque ici : TOUT domaine externe non listé (exfiltration de
-  // données, scripts/feuilles externes injectés). Google Fonts est
-  // explicitement autorisé (police arabe Noto Kufi).
+  // données, scripts/feuilles externes injectés).
+  // B8 (2026-10-17) : Google Fonts RETIRÉ de la CSP — les polices (Noto
+  // Kufi Arabic, Work Sans, licence OFL) sont auto-hébergées dans
+  // public/fonts/ et servies depuis 'self' (src/index.css : @font-face
+  // locaux, zéro requête sortante). La promesse « aucune requête ne quitte
+  // le téléphone » redevient conforme à la configuration réelle.
   //
   // CADRAGE (aperçu, 14/10/2026) — par défaut l'application REFUSE d'être
   // affichée dans un cadre (X-Frame-Options: DENY + frame-ancestors 'none') :
@@ -219,8 +223,8 @@ async function startServer() {
       [
         "default-src 'self'",
         "script-src 'self' 'unsafe-inline'",
-        "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
-        "font-src 'self' https://fonts.gstatic.com data:",
+        "style-src 'self' 'unsafe-inline'",
+        "font-src 'self' data:",
         "img-src 'self' data: blob:",
         "connect-src 'self'",
         "frame-src 'self'",

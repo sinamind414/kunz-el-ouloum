@@ -17020,7 +17020,7 @@
      }
     },
     "contexte_bac": "décompte ATP jamais demandé aux BAC 2023-2025",
-    "regle_moteur": "accepter 38 ET 30-32 ; tagger la source ; ne jamais invalider l'une"
+    "regle_moteur": "DÉCISION CORRECTEUR 2026-09-14 : la valeur retenue est 38 (référentiel livre) ; une copie qui pose 30/32/30-32/36/37 est taguée CONFLIT_REF avec rappel du barème — le tag informé remplace la coexistence « 38 ET 30-32 » écrite ci-dessus avant la décision (audit B11 : les deux fichiers ne doivent plus se contredire)"
    },
    "nadh_rendement_atp": {
     "statut": "conflit_actif",

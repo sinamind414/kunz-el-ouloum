@@ -16,7 +16,7 @@
 //
 // Usage : node scripts/poids-entree.mjs   (après `npm run build`)
 
-import { readFileSync, existsSync } from 'node:fs';
+import { readFileSync, existsSync, readdirSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { gzipSync } from 'node:zlib';
 
@@ -56,7 +56,25 @@ for (const c of styles) lignes.push(['CSS ' + c.split('/').pop(), poids(dansDist
 
 const totBrut = lignes.reduce((s, [, v]) => s + v.brut, 0);
 const totGzip = lignes.reduce((s, [, v]) => s + v.gzip, 0);
-const entreeKo = ko(lignes[1][1].brut);
+
+// m2 (audit « ligne par ligne », 2026-10-17) : l'entrée réelle n'est pas UN
+// fichier. Vite éclate le point d'entrée en plusieurs `index-*.js` (chunks
+// statiques du shell, dont certains sans modulepreload) ; mesurer le seul
+// chunk référencé par <script> SOUS-ESTIME le premier affichage. On cumule
+// donc TOUS les index-*.js de dist/assets — aucune ressource ne se cache.
+const ACTIFS = resolve(DIST, 'assets');
+const chunksIndex = existsSync(ACTIFS)
+  ? readdirSync(ACTIFS).filter((f) => /^index-.+\.js$/.test(f)).sort()
+  : [];
+const cumulIndex = chunksIndex.reduce(
+  (s, f) => {
+    const p = poids(resolve(ACTIFS, f));
+    return { brut: s.brut + p.brut, gzip: s.gzip + p.gzip };
+  },
+  { brut: 0, gzip: 0 },
+);
+
+const entreeKo = ko(cumulIndex.brut);
 const ecart = Math.round((100 * entreeKo) / CIBLE_KO - 100);
 
 const rapport = [
@@ -65,9 +83,11 @@ const rapport = [
   '| Ressource | Brut | gzip |',
   '|---|---:|---:|',
   ...lignes.map(([n, v]) => `| \`${n}\` | ${ko(v.brut)} Ko | ${ko(v.gzip)} Ko |`),
-  `| **TOTAL** | **${ko(totBrut)} Ko** | **${ko(totGzip)} Ko** |`,
+  `| **TOTAL (index.html + script d entrée + preloads + CSS)** | **${ko(totBrut)} Ko** | **${ko(totGzip)} Ko** |`,
   '',
-  `Entrée : **${entreeKo} Ko** pour une cible de **${CIBLE_KO} Ko** (${ecart > 0 ? '+' : ''}${ecart} %).`,
+  `Entrée réelle (m2 : AVANT le fix, seul le chunk référencé par <script> était compté) :`,
+  `**${entreeKo} Ko brut / ${ko(cumulIndex.gzip)} Ko gzip** pour ${chunksIndex.length} fichier(s) \`index-*.js\`, cible ${CIBLE_KO} Ko (${ecart > 0 ? '+' : ''}${ecart} %).`,
+  chunksIndex.map((f) => '- `' + f + '`').join('\n'),
   '',
   '> Mesure indicative, non bloquante (le ratchet fait foi : src/build/bundleBudget.test.ts).',
   '> Repères 3G : ~40–60 Ko/s utiles ⇒ le total gzip ci-dessus est le coût incompressible avant interaction.',

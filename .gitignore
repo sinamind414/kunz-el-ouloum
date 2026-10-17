@@ -20,6 +20,8 @@ __pycache__/
 
 # config locale opencode (contient clé API — jamais commitée)
 opencode.json
+# skills marketing installés (2026-10-17) — outillage, pas du code d'app
+.opencode/
 _vitest_final.txt
 _lint_final.txt
 
