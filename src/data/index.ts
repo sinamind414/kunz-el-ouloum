@@ -21,7 +21,12 @@ export { DIAGRAM_FLASHCARD_URL, DIAGRAM_QUIZ_URL, LOGO_URL, MASCOT_URL, MORCHID_
 export const INITIAL_UNITS: Unit[] = CATALOG_UNITS;
 export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = CORPUS_QUIZ_QUESTIONS;
 
-// Flashcards réelles : dérivées du corpus QCM (508) + les 3 cartes « college » historiques.
+// Flashcards : dérivées du corpus QCM (550 — en réalité un réexport de SVT_FLASHCARDS de
+// quizCorpus) + les 3 cartes « college » historiques = 553.
+// AVERTISSEMENT H6 (audit ligne par ligne, 2026-10-17) : ce SONT les mêmes
+// 550 QCM reformatés (question, options et bonne réponse recopiées) — le
+// chiffre 553 ne désigne pas 553 connaissances distinctes. L'ancien
+// commentaire « 508 + 3 » dérivait depuis 42 unités.
 // Avant, seules les 3 cartes ci-dessous étaient montées — le mapping de quizCorpus
 // était du code mort (audit D3).
 export const SVT_FLASHCARDS: Flashcard[] = [

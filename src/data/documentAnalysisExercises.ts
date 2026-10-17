@@ -1,5 +1,6 @@
 // documentAnalysisExercises.ts
-// 15 DocumentAnalysisExercise « elite » offline (Speckit §6, G5).
+// 19 DocumentAnalysisExercise « elite » offline (Speckit §6, G5).
+// (Corrigé 2026-10-17 : l'en-tête annonçait 15 — audit m3.)
 // Branchement exclusif sur ValidationEngine (aucun 2ᵉ correcteur keywords).
 
 import type { ValidationContext } from '../lib/validation/ValidationEngine';

@@ -43,8 +43,10 @@ le comptage du fichier brut, 121 celui servi. D'où l'étalon.
 ## Fiabilité
 
 - TypeScript strict : `npm run lint` (tsc --noEmit).
-- Suite complète : `npx vitest run` — 266 fichiers / 3 325 tests au moment de ce README,
-  aucun échec toléré (`test:jest` existe en second runner).
+- Suite complète : `npx vitest run` - 285 fichiers / 3 440 tests au 17/10/2026,
+  aucun échec toléré (`test:jest` existe en second runner). 8 tests `skipIf`
+  (SQLite, fixtures locales) ne s'exécutent qu'avec leurs prerequisites
+  présents — dans une CI sans ces assets, ils sont ignorés, pas verts.
 - Budget de bundle : `src/build/bundleBudget.test.ts` + `node scripts/poids-entree.mjs`.
 - Limites assumées et documentées : le corpus des 40 copies `eleve_*.txt` a servi à
   calibrer le correcteur — tout écart publié sur lui est un plancher, pas une validation
@@ -52,8 +54,7 @@ le comptage du fichier brut, 121 celui servi. D'où l'étalon.
 
 ## Lancer en local
 
-Prérequis : **Node.js ≥ 20 minimum fonctionnel, 22.14+ recommandé** (voir `engines` ;
-le moteur serveur et la suite de tests sont développés et vérifiés sur Node 24).
+Prérequis : **Node.js ≥ 22.14** (`engines`, dur) ; développé et vérifié sur Node 24.
 
 ```bash
 npm install
