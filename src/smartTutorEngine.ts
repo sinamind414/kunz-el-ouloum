@@ -42,7 +42,7 @@ import { construireVocabulaire, domaineProbable, domaineDeUnite } from './lib/ro
 import { gesteDuMessage, gesteFatigueDuMessage, type GesteDialogue } from './lib/gesteDialogue';
 import { noterRappel, noterReponseLibre, phraseEcheance, etatRappel } from './lib/rappelAdaptatif';
 import { prochainRappelDu, promptPour } from './lib/rappelConcepts';
-import { qualiteDepuisAutoEvaluation, qualiteDepuisPreuves } from './lib/sm2';
+import { JOUR_MS, qualiteDepuisAutoEvaluation, qualiteDepuisPreuves } from './lib/sm2';
 import { loadParcours } from './lib/parcours/parcoursProgress';
 import { scoreLivreUnite } from './lib/parcours/parcoursMeta';
 import {
@@ -1130,7 +1130,7 @@ export function handleDomainClick(session: BotSession, domainId: number): Engine
   if (!domain) {
     return { session: resetSession(), action: { text: 'مجال غير معروف. اختر مجالاً من القائمة.', quickActions: DOMAINS.map((d) => d.title) } };
   }
-  const newSession = startDomainSession(domainId, session.mistakes);
+  const newSession = startDomainSession(domainId, session.mistakes, session.mistakeStats);
   const cards = KNOWLEDGE_CARDS.filter((c) => c.domainId === domainId);
   const text = `📚 اخترت مجال: **${domain.title}**\n${domain.subtitle}\n\n` +
     `المواضيع المتاحة للمراجعة:\n` +
@@ -2772,26 +2772,84 @@ function domainToUnit(domainId: number, topicId: string): number | null {
 }
 
 /**
- * R6 : classe les erreurs par score = fréquence × poids BAC × oubli. Les
- * doublons comptent comme la fréquence ; l'ancienneté relative (rang dans le
- * tableau) tient lieu d'oubli — pas d'horodateur par erreur (session légère).
+ * R6 : classe les erreurs par score = fréquence × poids BAC × oubli.
+ *
+ * Audit Capitaine §5.2 (2026-10-17) : la fréquence comptait des doublons que
+ * `recordQuizAnswer` n'écrit jamais (liste dédoublonnée) — tout valait 1 — et
+ * l'oubli était déduit du RANG dans le tableau, pas d'une date. Depuis :
+ * `session.mistakeStats` porte le compte réel et `lastSeenAt`. Sans stats
+ * (vieille session persistée, AB-test, tests), l'heuristique d'ordre reste le
+ * repli — le classement ne plante jamais sur des données anciennes.
  */
-function rankMistakes(mistakes: string[], lastSeenAt: number): string[] {
+function rankMistakes(
+  mistakes: string[],
+  lastSeenAt: number,
+  stats?: BotSession['mistakeStats'],
+): string[] {
   const freq = new Map<string, number>();
-  for (const m of mistakes) freq.set(m, (freq.get(m) ?? 0) + 1);
+  for (const m of mistakes) {
+    // Fréquence mesurée (occurrences réelles) ; 1 minimum = l'entrée de la liste.
+    freq.set(m, Math.max(1, stats?.[m]?.count ?? 1));
+  }
 
   const scored = Array.from(freq.entries()).map(([topicId, count]) => {
     const card = getCardById(topicId);
     const weight = weightForTopic(topicId, card?.domainId ?? null);
-    // Oubli : plus tôt apparu dans la liste, plus oublié.
-    const orderIdx = mistakes.indexOf(topicId);
-    const daysSince = Math.max(1, Math.floor((mistakes.length - orderIdx) / 2));
+    // Oubli : avec une date réelle, jours écoulés depuis le dernier échec ;
+    // sinon repli historique sur le rang dans la liste.
+    const horodatage = stats?.[topicId]?.lastSeenAt;
+    const daysSince = horodatage
+      ? Math.max(1, Math.floor((lastSeenAt - horodatage) / JOUR_MS))
+      : Math.max(1, Math.floor((mistakes.length - mistakes.indexOf(topicId)) / 2));
     const oubli = Math.min(daysSince, 14) / 14;
     return { topicId, score: count * weight * (0.5 + oubli) };
   });
 
   scored.sort((a, b) => b.score - a.score);
   return scored.map((x) => x.topicId);
+}
+
+/**
+ * Audit Capitaine §5.1 (2026-10-17) : le SÉLECTEUR de sujet de mission,
+ * extrait pour être testé sans QCM. lastMissionTopic — écrit depuis toujours
+ * par completeDailyMission — était jamais lu : la mission répétait son
+ * premier sujet à l'infini. Ordre conservé : lacunes classées par rankMistakes
+ * > domaine actif dans l'ordre du catalogue ; dans chaque cas, la mission
+ * d'hier laisse sa place (rotation circulaire, un seul sujet = il reste).
+ */
+export function choisirSujetMission(session: BotSession): {
+  topicId: string | null;
+  domainId: number | null;
+} {
+  let targetTopicId: string | null = null;
+  let targetDomainId: number | null = session.activeDomainId;
+
+  if (session.mistakes.length > 0) {
+    // R6 : rankMistakes (fréquence réelle × poids BAC × oubli daté).
+    const ranked = rankMistakes(session.mistakes, session.lastInteraction, session.mistakeStats);
+    targetTopicId = ranked.find((id) => id !== session.lastMissionTopic) ?? ranked[0] ?? null;
+    const card0 = targetTopicId ? getCardById(targetTopicId) : null;
+    if (card0) targetDomainId = card0.domainId;
+  } else if (session.activeDomainId) {
+    targetTopicId = carteSuivante(
+      KNOWLEDGE_CARDS.filter((c) => c.domainId === session.activeDomainId),
+      session.lastMissionTopic,
+    );
+  } else if (KNOWLEDGE_CARDS.length > 0) {
+    targetTopicId = carteSuivante(KNOWLEDGE_CARDS, session.lastMissionTopic);
+    const card = targetTopicId ? getCardById(targetTopicId) : null;
+    if (card) targetDomainId = card.domainId;
+  }
+
+  return { topicId: targetTopicId, domainId: targetDomainId };
+}
+
+/** La carte suivant `dernier` dans `cards` (rotation circulaire) ; sans
+ *  repère, la première. La mission PROGRESSE au lieu de repliquer cards[0]. */
+function carteSuivante(cards: KnowledgeCard[], dernier: string | null): string | null {
+  if (cards.length === 0) return null;
+  const idx = dernier ? cards.findIndex((c) => c.id === dernier) : -1;
+  return idx >= 0 ? cards[(idx + 1) % cards.length].id : cards[0].id;
 }
 
 export function getDailyMission(session: BotSession): EngineResult {
@@ -2802,23 +2860,11 @@ export function getDailyMission(session: BotSession): EngineResult {
     return { session, action: { text: '✅ لقد أنجزت مهمة اليوم بنجاح! عُد غداً لمهمة جديدة، أو تابع مراجعتك بحرية.', quickActions: ['اختبار تشخيصي', 'العودة للقائمة الرئيسية'] } };
   }
 
-  let targetTopicId: string | null = null;
-  let targetDomainId: number | null = session.activeDomainId;
+  // Audit Capitaine §5.1 : le sélecteur vit désormais dans choisirSujetMission
+  // (testé sans QCM) — lacunes classées > domaine actif > catalogue, et la
+  // mission d'hier (lastMissionTopic) laisse sa place par rotation circulaire.
+  const { topicId: targetTopicId, domainId: targetDomainId } = choisirSujetMission(session);
 
-  if (session.mistakes.length > 0) {
-    // R6 : mistakes[0] → rankMistakes (fréquence × poids BAC × oubli).
-    targetTopicId = rankMistakes(session.mistakes, session.lastInteraction)[0] ?? null;
-    const card0 = targetTopicId ? getCardById(targetTopicId) : null;
-    if (card0) targetDomainId = card0.domainId;
-  } else if (session.activeDomainId) {
-    const cards = KNOWLEDGE_CARDS.filter((c) => c.domainId === session.activeDomainId);
-    if (cards.length > 0) targetTopicId = cards[0].id;
-  } else {
-    if (KNOWLEDGE_CARDS.length > 0) {
-      targetTopicId = KNOWLEDGE_CARDS[0].id;
-      targetDomainId = KNOWLEDGE_CARDS[0].domainId;
-    }
-  }
 
   // ════════════════════════════════════════════════════════════════════════
   // Audit Capitaine §4.1 (2026-10-17) — LA FILE DE RAPPELS DE CONCEPTS EST
@@ -2867,7 +2913,11 @@ export function getDailyMission(session: BotSession): EngineResult {
   // ── R7 : le guide ne se cache plus derrière une phrase magique. Quand
   // l'élève enchaîne les erreurs sur ce sujet (≥ 3), le protocole d'étude
   // se PROPOSE dans la mission — au lieu d'attendre « كيف ادرس العلوم ».
-  const freq = session.mistakes.filter((m) => m === targetTopicId).length;
+  // R7 + audit Capitaine §5.2 : le déclencheur du protocole est la fréquence
+  // RÉELLE des échecs (mistakeStats.count) — compter les doublons de
+  // `mistakes` (liste dédoublonnée) donnait toujours ≤ 1 : la ligne d'aide
+  // était inatteignable.
+  const freq = session.mistakeStats?.[targetTopicId]?.count ?? 0;
   const guideLine =
     freq >= 3
       ? `\n💡 لقد أخطأت ${freq} مرات في هذا الدرس. قبل السؤال، خذ 90 ثانية لقراءة بروتوكول الدراسة: «كيف أدرس العلوم؟» — ستجده في قسم الإرشاد.\n`

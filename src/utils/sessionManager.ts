@@ -47,6 +47,14 @@ export interface BotSession {
   currentQuiz: QuizState | null;
   boss: BossState | null;
   mistakes: string[];
+  /**
+   * Audit Capitaine §5.2 (2026-10-17) : occurrences RÉELLES + dernière date
+   * par sujet raté. `mistakes` reste dédoublonné (B7 peut retirer un sujet),
+   * donc sa longueur ne dit rien de la fréquence ; rankMistakes comptait des
+   * doublons impossibles et devinait l'oubli d'après le rang. Ici : source
+   * mesurée (count + lastSeenAt), mise à jour par recordQuizAnswer.
+   */
+  mistakeStats?: Record<string, { count: number; lastSeenAt: number }>;
   completedBac: string[];
   lastMissionDate: string | null;
   lastMissionTopic: string | null;
@@ -105,6 +113,7 @@ const defaultSession: BotSession = {
   currentQuiz: null,
   boss: null,
   mistakes: [],
+  mistakeStats: {},
   completedBac: [],
   lastMissionDate: null,
   lastMissionTopic: null,
@@ -154,12 +163,19 @@ export function saveSession(session: BotSession): void {
   }
 }
 
-export function startDomainSession(domainId: number, currentMistakes: string[] = []): BotSession {
+export function startDomainSession(
+  domainId: number,
+  currentMistakes: string[] = [],
+  currentStats?: BotSession['mistakeStats']
+): BotSession {
   const newSession: BotSession = {
     ...getDefaultSession(),
     activeDomainId: domainId,
     mode: 'domain_menu',
     mistakes: [...currentMistakes],
+    // Audit Capitaine §5.2 : la mesure des lacunes survit au changement de
+    // domaine (mistakes seule ne suffit pas : stats = fréquence + dates).
+    mistakeStats: currentStats ? { ...currentStats } : {},
   };
 
   saveSession(newSession);
@@ -198,8 +214,16 @@ export function recordQuizAnswer(
   if (!session.currentQuiz) return session;
 
   const updatedMistakes = [...session.mistakes];
-  if (!isCorrect && topicIdForMistake && !updatedMistakes.includes(topicIdForMistake)) {
-    updatedMistakes.push(topicIdForMistake);
+  // Audit Capitaine §5.2 : la MESURE des lacunes vit ici. Chaque échec incrémente
+  // le compteur réel du sujet et date la dernière occurrence (mistakes, lui,
+  // reste une liste dédoublonnée pour reviewMistakes).
+  const updatedStats: NonNullable<BotSession['mistakeStats']> = { ...(session.mistakeStats ?? {}) };
+  if (!isCorrect && topicIdForMistake) {
+    const prev = updatedStats[topicIdForMistake] ?? { count: 0, lastSeenAt: 0 };
+    updatedStats[topicIdForMistake] = { count: prev.count + 1, lastSeenAt: Date.now() };
+    if (!updatedMistakes.includes(topicIdForMistake)) {
+      updatedMistakes.push(topicIdForMistake);
+    }
   }
   // B7 (audit Morchid 2026-09-25) : boucle de remédiation — une réponse JUSTE sur
   // un sujet précédemment raté le retire des lacunes. Sans cela, les erreurs
@@ -216,6 +240,7 @@ export function recordQuizAnswer(
   const newSession: BotSession = {
     ...session,
     mistakes: updatedMistakes,
+    mistakeStats: updatedStats,
     currentQuiz: isLastQuestion || !nextQuestionId
       ? null
       : {
