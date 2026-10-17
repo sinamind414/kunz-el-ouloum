@@ -62,9 +62,21 @@ describe('contrat pédagogique — prédire avant de voir', () => {
     const user = userEvent.setup();
     render(<ElectrophoresisSimulator />);
     const bouton = screen.getByTestId('lancer-migration') as HTMLButtonElement;
-    expect(bouton.disabled).toBe(true);
+    expect(bouton.getAttribute('aria-disabled')).toBe('true');
     await user.click(screen.getByTestId('prediction-cathode'));
-    expect((screen.getByTestId('lancer-migration') as HTMLButtonElement).disabled).toBe(false);
+    expect(screen.getByTestId('lancer-migration').getAttribute('aria-disabled')).toBe('false');
+  });
+
+  it('un clic sans prédiction N EST PLUS un mur muet : le message dit quoi faire (retour utilisateur 2026-10-17 « il ne fonctionne pas »)', async () => {
+    const user = userEvent.setup();
+    render(<ElectrophoresisSimulator />);
+    expect(screen.queryByTestId('run-hint')).toBeNull();
+    await user.click(screen.getByTestId('lancer-migration'));
+    const indice = screen.getByTestId('run-hint');
+    expect(indice.textContent).toContain('توقّع');
+    // dès qu'une prédiction est choisie, le message disparaît
+    await user.click(screen.getByTestId('prediction-anode'));
+    expect(screen.queryByTestId('run-hint')).toBeNull();
   });
 
   it('prédiction juste (Ala à pH 2 → cathode) : verdict positif et score 1/1', async () => {
@@ -95,7 +107,7 @@ describe('contrat pédagogique — prédire avant de voir', () => {
     expect(screen.queryByTestId('verdict')).not.toBeNull();
     await user.click(screen.getByTestId('molecule-lys'));
     expect(screen.queryByTestId('verdict')).toBeNull();
-    expect((screen.getByTestId('lancer-migration') as HTMLButtonElement).disabled).toBe(true);
+    expect(screen.getByTestId('lancer-migration').getAttribute('aria-disabled')).toBe('true');
   });
 
   it('les 4 molécules du programme sont proposées avec leur pHi affiché', () => {

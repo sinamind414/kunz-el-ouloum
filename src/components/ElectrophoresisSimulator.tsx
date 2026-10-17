@@ -72,6 +72,7 @@ export const ElectrophoresisSimulator: FC = () => {
   const [pH, setPH] = useState<number>(2);
   const [prediction, setPrediction] = useState<SensMigration | null>(null);
   const [migre, setMigre] = useState(false);
+  const [indice, setIndice] = useState(false);
   const [score, setScore] = useState({ justes: 0, total: 0 });
 
   const molecule = useMemo(
@@ -86,10 +87,18 @@ export const ElectrophoresisSimulator: FC = () => {
   const reinitialiser = () => {
     setPrediction(null);
     setMigre(false);
+    setIndice(false);
   };
 
   const lancer = () => {
-    if (!prediction) return;
+    // Retour utilisateur 2026-10-17 (« il ne fonctionne pas ») : un lanceur
+    // silencieusement désactivé est un mur muet — on EXPLIQUE le verrou au clic.
+    if (!prediction) {
+      setIndice(true);
+      return;
+    }
+    if (migre) return;
+    setIndice(false);
     setMigre(true);
     setScore((s) => ({
       justes: s.justes + (prediction === attendu ? 1 : 0),
@@ -189,7 +198,10 @@ export const ElectrophoresisSimulator: FC = () => {
             data-testid={`prediction-${s}`}
             aria-pressed={prediction === s}
             disabled={migre}
-            onClick={() => setPrediction(s)}
+            onClick={() => {
+              setPrediction(s);
+              setIndice(false);
+            }}
             className={`rounded-xl px-3 py-2 text-xs font-bold transition-all disabled:opacity-50 ${
               prediction === s
                 ? 'bg-[#d9a400] text-white'
@@ -202,13 +214,27 @@ export const ElectrophoresisSimulator: FC = () => {
         <button
           type="button"
           data-testid="lancer-migration"
-          disabled={!prediction || migre}
+          aria-disabled={!prediction || migre}
+          disabled={migre}
           onClick={lancer}
-          className="rounded-xl bg-[#006d37] px-4 py-2 text-xs font-bold text-white transition-all disabled:cursor-not-allowed disabled:opacity-40"
+          className={`rounded-xl bg-[#006d37] px-4 py-2 text-xs font-bold text-white transition-all ${
+            !prediction || migre ? 'cursor-not-allowed opacity-40' : ''
+          }`}
         >
           شغّل الهجرة
         </button>
       </div>
+
+      {/* Verrou expliqué — jamais un bouton muet (retour utilisateur 2026-10-17). */}
+      {indice && !prediction && (
+        <p
+          data-testid="run-hint"
+          role="status"
+          className="mt-2 rounded-xl border border-amber-300 bg-amber-50 px-3 py-2 text-xs font-bold text-amber-900 dark:border-amber-500/40 dark:bg-amber-500/10 dark:text-amber-200"
+        >
+          اختر توقّعًا أولًا : قارن pH الوسط بـ pHi ({molecule.pHi})، ثم انقر الاتجاه المتوقع قبل شغّل الهجرة.
+        </p>
+      )}
 
       {/* Verdict */}
       {migre && (
