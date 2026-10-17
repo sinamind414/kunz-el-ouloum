@@ -205,15 +205,23 @@ describe('fix #8 — CSV : formules neutralisées + vraie last_production', () =
   });
 });
 
-describe('fix #9 — CI : 3 gates (check:v2 + test + vitest), sans build ni lint', () => {
-  it('ci.yml exécute exactement les 3 gates — pas de npm run build / lint (ci.yml = LOCAL-ONLY)', () => {
+describe('fix #9 — CI : gates du noyau + produit réel (audit 2026-10-17 P2.9)', () => {
+  it('ci.yml garde les 3 gates du noyau ET est désormais bloquant sur le produit (lint + build + test:build)', () => {
+    // HISTORIQUE : ce verrou interdisait autrefois build/lint en CI
+    // (« ci.yml = LOCAL-ONLY », verrou de session antérieur). Décision
+    // RENVERSÉE par l'audit externe 2026-10-17 (§5 P2.9 — l'absence de
+    // build/lint en CI était listée comme faiblesse prioritaire) avec le GO
+    // explicite du propriétaire (« go all ») du même jour : une régression
+    // de build ne doit plus pouvoir atteindre la production.
     const ci = fs.readFileSync(path.resolve(process.cwd(), '.github', 'workflows', 'ci.yml'), 'utf-8');
+    // 1) les 3 gates historiques restent intangibles…
     expect(ci).toContain('npm run check:v2');
     expect(ci).toContain('npm test');
     expect(ci).toContain('npm run test:vitest');
-    // Verrou de session : le build n'appartient qu'au job local — jamais en CI.
-    expect(ci).not.toContain('npm run build');
-    expect(ci).not.toContain('npm run lint');
+    // 2) …et le produit réel est désormais couvert.
+    expect(ci).toContain('npm run lint');
+    expect(ci).toContain('npm run build');
+    expect(ci).toContain('npm run test:build');
   });
 
   it('tsconfig.json inclut server.ts et server/ (sinon « lint » ne les couvre pas)', () => {
