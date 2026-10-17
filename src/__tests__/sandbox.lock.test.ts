@@ -36,3 +36,17 @@ describe('M10/M11 — l iframe des leçons est confinée', () => {
     void iframe;
   });
 });
+
+describe('m11 — la hauteur de la leçon suit le contenu (postMessage, pas contentDocument)', () => {
+  it('le mesureur de hauteur est injecté dans la leçon (srcDoc) et envoie pfe-lecon-hauteur', () => {
+    expect(SOURCE).toMatch(/SCRIPT_MESURE_HAUTEUR/);
+    expect(SOURCE).toMatch(/pfe-lecon-hauteur/);
+    // compatible origine opaque : on n'accède JAMAIS à contentDocument
+    expect(SOURCE).not.toMatch(/contentDocument/);
+  });
+
+  it('repli 78vh conservé avant la première mesure, hauteur bornée après', () => {
+    expect(SOURCE).toMatch(/hauteurPx \?\? '78vh'/);
+    expect(SOURCE).toMatch(/h >= 200 && h <= 80000/);
+  });
+});
