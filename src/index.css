@@ -212,6 +212,14 @@ button:disabled,
   }
 }
 
+/* M5 (2026-10-17) — 3 crans de taille de texte. Toute la typo de l'app est en
+   rem Tailwind : monter la racine agrandit tout, sans toucher un composant.
+   Crans : 100 % (défaut) / 112,5 % / 125 % — l'équivalent de « Grand texte »
+   des OS, pensé pour la projection en classe et la basse vision. */
+html[data-taille-texte='1'] { font-size: 100%; }
+html[data-taille-texte='2'] { font-size: 112.5%; }
+html[data-taille-texte='3'] { font-size: 125%; }
+
 /* Custom transitions and scrollbars */
 ::-webkit-scrollbar {
   width: 6px;

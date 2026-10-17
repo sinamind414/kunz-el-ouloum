@@ -457,7 +457,9 @@ export default function QuizView({ unitId, unitTitle, questions, onClose, onQuiz
 
                 {/* Explanation Card (Pedagogical Feedback) */}
                 {isAnswered[currentIndex] && (
-                  <div className="space-y-4">
+                  // M5 (2026-10-17) : le feedback est ANNONCÉ — un lecteur
+                  // d'écran ne devine pas qu'un bloc est apparu.
+                  <div className="space-y-4" aria-live="polite">
                     <motion.div 
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
@@ -618,8 +620,8 @@ export default function QuizView({ unitId, unitTitle, questions, onClose, onQuiz
               </div>
             </div>
 
-            {/* Student Feedback Title */}
-            <div className="max-w-md mx-auto text-sm text-[#504441] leading-relaxed">
+            {/* Student Feedback Title — M5 : annoncé aussi (fin de séance) */}
+            <div className="max-w-md mx-auto text-sm text-[#504441] leading-relaxed" aria-live="polite">
               {scorePercentage >= 80 ? (
                 <div className="text-[#006d37] font-bold flex items-center justify-center gap-1.5 bg-[#2ecc71]/10 p-3 rounded-xl border border-[#2ecc71]/20">
                   <CheckCircle2 className="w-4 h-4 fill-current text-white" />

@@ -139,6 +139,7 @@ import { abonnerExamen, examenActif } from './lib/examenEnCours';
 // La bulle du capitaine : elle parle au bon moment (4 lois d'Atomic Habits),
 // et se tait le reste du temps. Voir lib/invitationCapitaine.ts.
 import { useInvitationCapitaine } from './hooks/useInvitationCapitaine';
+import { useTailleTexte } from './hooks/useTailleTexte';
 // Import LÉGER : le nom seul, sans le contenu du guide (voir capitaineIdentite.ts).
 import { CAPITAINE_IDENTITE_AR } from './data/capitaineIdentite';
 import { CAPITAINE_VISAGE_URL } from './data/brandAssets';
@@ -342,6 +343,9 @@ export default function App() {
   // réel (QCM d'unité, chapitre du livre) — pas `units.length`, constant, qui ne
   // recalculait jamais la bulle.
   const [signalBulle, setSignalBulle] = useState(0);
+
+  // M5 (audit 8 axes) : 3 crans de taille de texte (cycle sur <html data-…>).
+  const tailleTexte = useTailleTexte();
 
   const { invitation, relais, etat, ignorer, accepter, rafraichir } = useInvitationCapitaine({
     daily: progress.dailyGoals,
@@ -884,7 +888,18 @@ export default function App() {
         ? 'bg-gradient-to-b from-[#060a07] to-[#0e1411] text-gray-100' 
         : 'bg-[#f8fbfa] text-[#191c1d] dark:bg-[#0c0f0d] dark:text-gray-100'
     }`}>
-      
+
+      {/* M5 (audit 8 axes): LIEN D'ÉVITEMENT — premier élément focalisable.
+          Invisible au regard, annoncé au clavier/lecteur d'écran : un appui
+          de Tab puis Entrée saute l'en-tête, la barre latérale et la barre
+          mobile pour tomber sur #zone-principale. */}
+      <a
+        href="#zone-principale"
+        className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:right-2 focus:z-[100] focus:rounded-xl focus:bg-[#006d37] focus:px-4 focus:py-2 focus:text-white focus:shadow-lg"
+      >
+        تجاوز إلى المحتوى الرئيسي
+      </a>
+
       {/* Reminder Modal */}
       <StudyReminderModal 
         isOpen={isReminderModalOpen} 
@@ -997,6 +1012,20 @@ export default function App() {
             )}
           </button>
 
+          {/* M5 (audit 8 axes) : bouton des 3 crans de taille de texte —
+              cycle Grand texte 1 → 2 → 3 → 1, à côté du mode sombre. */}
+          <button
+            onClick={tailleTexte.agrandir}
+            data-testid="taille-texte-btn"
+            aria-label="حجم النص"
+            className={`p-2 md:p-2.5 rounded-full bg-[#f3f4f5] dark:bg-[#1f2622] hover:bg-[#fff9ed] dark:hover:bg-[#141916] border border-[#e2dabf]/50 dark:border-[#2ecc71]/10 hover:border-[#006d37]/40 text-[#506072] dark:text-zinc-300 hover:text-[#006d37] dark:hover:text-[#2ecc71] transition-all cursor-pointer shadow-sm flex items-center justify-center font-black ${
+              tailleTexte.cran >= 3 ? 'text-base' : tailleTexte.cran >= 2 ? 'text-sm' : 'text-xs'
+            }`}
+            title={`حجم النص: ${tailleTexte.cran} من 3 — انقر للتكبير`}
+          >
+            أ{tailleTexte.cran >= 2 ? '+' : ''}
+          </button>
+
           {/* Streak & XP Badge */}
           <div className="flex items-center gap-1 bg-[#fff9ed] border border-[#e2dabf]/80 px-2.5 md:px-3 py-1.5 rounded-full font-bold text-[11px] md:text-xs text-[#1f1c0b] shadow-sm">
             <Flame className="w-4 h-4 text-[#ff9a4a] fill-[#ff9a4a] animate-pulse" />
@@ -1072,8 +1101,8 @@ export default function App() {
         </aside>
         )}
 
-        {/* Dynamic Display Canvas */}
-        <main className={`flex-1 overflow-y-auto overflow-x-hidden relative ${isFocusMode ? 'flex items-center justify-center' : ''}`}>
+        {/* Dynamic Display Canvas — M5 : cible du lien d'évitement */}
+        <main id="zone-principale" className={`flex-1 overflow-y-auto overflow-x-hidden relative ${isFocusMode ? 'flex items-center justify-center' : ''}`}>
           <AnimatePresence mode="wait">
             <motion.div
               key={currentTab}
