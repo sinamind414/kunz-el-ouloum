@@ -2,9 +2,9 @@
 
 **Périmètre** : analyse de l'audience YouTube SVT BAC Algérie → identification des leçons
 critiques → audit de l'application → comblement des manques → mesure de l'apprentissage.
-**Période** : sprints 1 → 63. **Branche** : `arena/01a0df17-kunz-el-ouloum`.
-**Volume de code** : **207 commits**, **164 fichiers**, **+30 167 / −558 lignes**.
-**État de la suite de tests** : **1 853 verts / 4 skipped / 0 échec** sur **147 fichiers**.
+**Période** : sprints 1 → 68. **Branche** : `arena/01a0df17-kunz-el-ouloum`.
+**Volume de code** : **215 commits**, **174 fichiers**, **+31 870 / −558 lignes**.
+**État de la suite de tests** : **1 901 verts / 4 skipped / 0 échec** sur **151 fichiers**.
 
 ---
 
@@ -239,9 +239,23 @@ d'examen · sauvegarde-restauration · mode hors ligne · optimisation −85 % �
 d'accessibilité · mode dégradé serveur · chaîne de mesure de l'apprentissage.
 **Backlog d'audit vide. Suite verte. Tout est poussé.**
 
+### Ajouté après le bilan (sprints 64 → 68) ✅
+
+| Sprint | Apport |
+|---|---|
+| 64 | la leçon active **annonce son contrat** avant de commencer : « لا يتقدّم قبل أن تجيب » |
+| 65 | **rappel espacé** de ce que l'élève a écrit (paliers 1/3/7/16, plafond 3/jour) |
+| 66 | le **schéma refait de mémoire laisse une trace** : journal, écart avec la tentative précédente, bloc « الاسترجاع » distinct de la production |
+| 67 | le rappel espacé **couvre aussi les schémas** (plafond 2/jour, repos de 7 jours quand c'est su) |
+| 68 | verrou de non-régression : les **deux journaux entrent dans la sauvegarde** ; documentation remise à jour |
+
+Ces cinq sprints répondent au même constat : l'application mesurait bien la
+production écrite mais laissait s'évaporer le deuxième geste le plus coûteux
+(le dessin de mémoire), et ne faisait jamais revenir ce qui avait été produit.
+
 ### En cours 🟡
 
-Rien. Le sprint 63 est clos et poussé (`bf15c46`).
+Rien. Le sprint 68 est clos et poussé.
 
 ### Réserves techniques connues ⚠️
 

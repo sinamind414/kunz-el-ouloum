@@ -1,8 +1,8 @@
 # Comment savoir, **dans l'application**, qu'un élève apprend
 
-> Sprint 63. Guide pratique : où regarder, quel chiffre lire, ce qu'il prouve,
-> et ce qu'il faut faire ensuite. Chaque signal cité existe dans le code et est
-> couvert par la suite de tests.
+> Sprints 63 → 68. Guide pratique : où regarder, quel chiffre lire, ce qu'il
+> prouve, et ce qu'il faut faire ensuite. Chaque signal cité existe dans le code
+> et est couvert par la suite de tests.
 
 ---
 
@@ -13,12 +13,25 @@
 | 1 | XP, série de jours, minutes | تقدمي (haut) | de la régularité | rien sur l'apprentissage |
 | 2 | Tâches du plan cochées | خطة المراجعة | que le programme est suivi | que quelque chose est retenu |
 | 3 | Score des QCM | fin de quiz | de la **reconnaissance** | qu'il saura rédiger |
-| 4 | Schémas refaits de mémoire | ارسم من الذاكرة (score /16) | de la **restitution active** | qu'il saura l'exploiter |
+| 4 | Schémas refaits de mémoire | ارسم من الذاكرة (score /16), **suivi dans le temps** depuis le sprint 66 | de la **restitution active** | qu'il saura l'exploiter |
 | 5 | **Réponses rédigées** | ما كتبته أنا | de la **production** — rare et coûteuse | que le fond est juste |
 | 6 | **Évolution de la forme dans le temps** | هل أتقدّم فعلاً؟ | **l'apprentissage lui-même** | le niveau scientifique |
 
 **Le seul signal qui réponde vraiment à la question est le n° 6.** Les cinq
 autres sont des conditions, pas des preuves.
+
+Depuis le sprint 66, les signaux **4** et **5** laissent chacun une trace
+persistante — deux journaux séparés, jamais moyennés :
+
+| Journal | Clé | Ce qu'il mesure |
+|---|---|---|
+| `learningLog` | `kunz.learningLog.v1` | la **production** écrite |
+| `drillLog` | `kunz.drillLog.v1` | la **restitution** graphique |
+
+Les fusionner donnerait un « score global » flatteur qui masquerait le cas le
+plus courant : savoir dessiner sans savoir rédiger. Les deux journaux partent
+dans la sauvegarde (`kunz.backup.v1`) — un changement de téléphone ne détruit
+pas la preuve de progression.
 
 ---
 
@@ -51,6 +64,55 @@ Pour chaque famille de consigne (حلّل, فسّر, اكتب في نص علمي
 Ces seuils sont dans le code et testés. L'application **refuse de féliciter**
 tant qu'ils ne sont pas atteints — c'est délibéré : un tableau de bord qui
 félicite tout le monde ne sert personne.
+
+---
+
+## Le signal n° 4 : « الاسترجاع — الرسم من الذاكرة »
+
+Même écran, juste sous le verdict de rédaction.
+
+Un schéma n'est compté comme **su** que s'il réunit **deux** conditions :
+le taux atteint **75 %** *et* **aucun élément essentiel ne manque**. Un schéma
+de synapse à 80 % sans les vésicules n'est pas un schéma su : c'est un schéma
+faux qui ramasse des points partiels.
+
+Comme pour la rédaction, l'application **refuse de conclure sous trois
+schémas** ; elle écrit simplement *« أنجز ثلاثة على الأقل قبل الحكم على
+استرجاعك »*. Les schémas encore fragiles sont **nommés**, pas agrégés.
+
+À la fin de chaque auto-évaluation, l'écart avec la tentative précédente est
+affiché : *« تحسّن: +31 نقطة مئوية عن آخر محاولة »*.
+
+---
+
+## Ce qui revient tout seul : le rappel espacé
+
+Carte **« ما يجب أن تعيده اليوم »**, sur l'accueil (sprints 65 et 67).
+
+Elle ne part pas du programme — c'est le rôle de `برنامج اليوم` — mais de ce
+que l'élève a **réellement produit**. Chaque trace lui revient à **1, 3, 7 puis
+16 jours**, avec la consigne de refaire sans regarder.
+
+| | Réponse rédigée | Schéma |
+|---|---|---|
+| Plafond par jour | 3 | **2** |
+| Si c'était réussi | saute le palier 1 | **ne revient pas avant 7 jours** |
+
+Les plafonds ne sont pas techniques : refaire un schéma coûte 10 à 15 minutes.
+Une carte qui proposerait 3 rédactions et 5 schémas deviendrait une corvée
+d'une heure, et une carte de révision qu'on n'ouvre plus ne révise personne.
+
+La carte reste **invisible** tant que rien n'a été produit, et s'affiche avec
+une explication — jamais vide — dès que l'élève a commencé.
+
+### Sur la « courbe de l'oubli »
+
+Les paliers sont **fixes et assumés**. Le « 67 % en 24 h » d'Ebbinghaus, cité
+partout, provient d'une expérience qu'il a menée **sur lui-même** avec des
+**syllabes sans signification** : il ne décrit pas l'oubli d'un mécanisme de
+SVT compris. Ce qui est solide, c'est **l'effet d'espacement** — pas le
+pronostic. Aucun « algorithme adaptatif » n'a donc été implémenté : il serait
+une mise en scène, pas une mesure.
 
 ---
 

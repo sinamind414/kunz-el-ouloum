@@ -1,6 +1,8 @@
 // backup.test.ts — sauvegarde et restauration de la progression (sprint 46).
 
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { LEARNING_LOG_KEY, readLearningLog, recordWriting } from './learningLog';
+import { DRILL_LOG_KEY, readDrillLog, recordDrill } from './drillLog';
 import {
   BACKUP_SCHEMA,
   creerBackup,
@@ -104,5 +106,30 @@ describe('aller-retour complet', () => {
     localStorage.setItem('svt_progress', '{}');
     expect(() => creerBackup()).not.toThrow();
     spy.mockRestore();
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Sprint 68 — non-régression : chaque journal d'apprentissage ajouté depuis le
+// sprint 62 doit entrer dans la sauvegarde. Un élève qui change de téléphone
+// ne doit pas perdre la seule trace qui prouve qu'il progresse. Ce test
+// échouera si un futur journal est créé hors du préfixe « kunz. ».
+// ---------------------------------------------------------------------------
+
+describe('les journaux d’apprentissage sont sauvegardés', () => {
+  it('emporte la rédaction et les schémas refaits de mémoire', () => {
+    recordWriting({ date: '2026-05-10', ideaId: 'bac2023_s2_e3', familyId: 'verb_analyser', satisfaits: 3, total: 4, mots: 70 });
+    recordDrill({ date: '2026-05-10', drillId: 'drill_synapse', unitId: 5, score: 12, total: 16, oublisEssentiels: 0 });
+
+    const sauvegarde = creerBackup();
+    expect(Object.keys(sauvegarde.donnees)).toEqual(
+      expect.arrayContaining([LEARNING_LOG_KEY, DRILL_LOG_KEY]),
+    );
+
+    localStorage.clear();
+    const r = restaurerBackup(serialiserBackup(sauvegarde));
+    expect(r.ok).toBe(true);
+    expect(readLearningLog()).toHaveLength(1);
+    expect(readDrillLog()).toHaveLength(1);
   });
 });
