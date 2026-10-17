@@ -49,7 +49,7 @@ function loadStoredStudent(): { name: string; email: string } | null {
   }
   return null;
 }
-import { healSavedFlashcards } from './utils/flashcardsSanitize';
+import { healSavedFlashcards, synchroniseDeck } from './utils/flashcardsSanitize';
 // H3 (audit 8 axes, 2026-10-14) : le jour se calcule en HEURE LOCALE (voir
 // utils/dayKey.ts) et l'activité quotidienne — objectif + série de jours — se
 // crédite par une seule porte testée (utils/activiteQuotidienne.ts).
@@ -435,6 +435,24 @@ export default function App() {
         try {
           localStorage.setItem('svt_flashcards', JSON.stringify(reference));
         } catch { /* quota — sera retenté au prochain save */ }
+      });
+    } else {
+      // Migration incrémentale (Vague 2 — action 9) : un blob LOCAL sain peut
+      // dater d'avant l'ajout de nouvelles cartes (ex. cartes hosila) ou d'un
+      // correctif de contenu. Le dépôt fait autorité sur le contenu ; la
+      // progression SM-2 vit à part (kunz_flashcard_srs_v1, indexée par id) —
+      // aucune perte d'apprentissage. Le `prefetchCorpusWhenIdle` ci-dessous
+      // charge déjà le corpus au repos : la fusion ne paie aucun téléchargement
+      // supplémentaire.
+      void loadCorpus().then(({ flashcards: reference }) => {
+        const aJour = synchroniseDeck(healedFlashcards, reference);
+        if (!aJour) return;
+        setFlashcards(aJour);
+        try {
+          localStorage.setItem('svt_flashcards', JSON.stringify(aJour));
+        } catch { /* quota — sera retenté au prochain save */ }
+      }).catch(() => {
+        /* hors ligne : le blob local (sain) reste utilisé */
       });
     }
     prefetchCorpusWhenIdle();

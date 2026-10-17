@@ -22,7 +22,9 @@ describe('B6 — les flashcards ne sont plus des QCM habillés', () => {
   });
 
   it('toutes les cartes restent un couple question → verso réel (pas de carte creuse)', () => {
-    expect(SVT_FLASHCARDS.length).toBe(553); // 550 dérivées QCM + 3 collège — inchangées
+    // Vague 2 action 9 : 588 = 35 cartes hosila (vraies cartes, livres) + 550
+    // dérivées QCM + 3 collège — la part non dérivée croîtra tranche après tranche.
+    expect(SVT_FLASHCARDS.length).toBe(588);
     for (const c of SVT_FLASHCARDS) {
       expect(c.question.trim().length).toBeGreaterThanOrEqual(8);
       expect(c.answerBullets.length).toBeGreaterThan(0);

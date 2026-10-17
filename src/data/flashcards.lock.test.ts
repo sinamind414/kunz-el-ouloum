@@ -9,12 +9,20 @@ import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { SVT_FLASHCARDS } from './index';
+import { CARTES_HOSILA as CARTES_HOSILA_LOCK } from './cartesHosila';
 import { SVT_QUIZ_QUESTIONS } from '../quizCorpus';
 import { carteSaine, healSavedFlashcards } from '../utils/flashcardsSanitize';
 
-describe('données flashcards — aucun verso vide dans la banque (553 cartes)', () => {
-  it('553 cartes = 550 dérivées du QCM + 3 collège ; ids uniques', () => {
-    expect(SVT_FLASHCARDS.length).toBe(553);
+// Rescopage (Vague 2 — action 9) : l'obligation de schéma ne s'applique PLUS
+// aux cartes hosila. Une carte-cloze du livre est textuelle PAR CONCEPTION —
+// lui coller un SVG quelconque serait l'habillage dénoncé par l'audit (M5 :
+// « 56 SVG pour 550 questions »). Les verrous diagrammes portent donc sur les
+// 553 cartes QCM-dérivées + collège ; les fc_h_* n'en ont volontairement AUCUNE.
+const CARTES_DIAGRAMME = SVT_FLASHCARDS.filter((c) => !c.id.startsWith('fc_h_'));
+
+describe('données flashcards — aucun verso vide dans la banque (588 cartes)', () => {
+  it('588 cartes = 35 cartes hosila (livre officiel) + 550 dérivées du QCM + 3 collège ; ids uniques', () => {
+    expect(SVT_FLASHCARDS.length).toBe(588);
     expect(new Set(SVT_FLASHCARDS.map((c) => c.id)).size).toBe(SVT_FLASHCARDS.length);
   });
 
@@ -57,10 +65,10 @@ describe('chaîne de dérivation — le verso contient la réponse du QCM source
 describe('désinfecteur localStorage — un blob troué est rejeté en bloc', () => {
   const saine = SVT_FLASHCARDS[0];
 
-  it('blob propre (les 553 réelles) → restitué tel quel', () => {
+  it('blob propre (les 588 réelles) → restitué tel quel', () => {
     const out = healSavedFlashcards(JSON.parse(JSON.stringify(SVT_FLASHCARDS)));
     expect(out).not.toBeNull();
-    expect(out!.length).toBe(553);
+    expect(out!.length).toBe(588);
   });
 
   it('UNE carte au verso vide ⇒ blob rejeté (null) — le cas exact du bug rapporté', () => {
@@ -89,14 +97,21 @@ describe('désinfecteur localStorage — un blob troué est rejeté en bloc', ()
   });
 });
 
-describe('diagrammes — Phase 3 : chaque carte pointe un schéma ProFigure local', () => {
-  it('les 552 cartes ont un diagramUrl (aucun slot vide)', () => {
-    const sans = SVT_FLASHCARDS.filter((c) => !c.diagramUrl);
+describe('diagrammes — Phase 3 : les cartes dérivées du QCM pointent un schéma ProFigure local', () => {
+  // Rescopage (Vague 2 — action 9) : l'obligation de schéma ne s'applique PLUS
+  // aux cartes hosila — voir la constante CARTES_DIAGRAMME (portée module).
+  it('les 553 cartes QCM-dérivées/collège ont un diagramUrl (aucun slot vide)', () => {
+    const sans = CARTES_DIAGRAMME.filter((c) => !c.diagramUrl);
     expect(sans.map((c) => c.id), 'cartes sans diagramUrl').toEqual([]);
   });
 
+  it('les cartes hosila sont textuelles par conception (0 diagramUrl d habillage)', () => {
+    const avec = CARTES_HOSILA_LOCK.filter((c) => c.diagramUrl);
+    expect(avec.map((c) => c.id)).toEqual([]);
+  });
+
   it('toutes les cibles sont locales (aucune URL distante) et existent sur disque', () => {
-    for (const c of SVT_FLASHCARDS) {
+    for (const c of CARTES_DIAGRAMME) {
       const url = c.diagramUrl ?? '';
       expect(/^https?:/.test(url), `${c.id} : URL distante ${url}`).toBe(false);
       expect(url.startsWith('/assets/'), `${c.id} : chemin non local ${url}`).toBe(true);
@@ -105,14 +120,14 @@ describe('diagrammes — Phase 3 : chaque carte pointe un schéma ProFigure loca
     }
   });
 
-  it('toutes les cibles sont des SVG ProFigure (552/552, 0 raster)', () => {
-    const nonSvg = SVT_FLASHCARDS.filter((c) => !(c.diagramUrl ?? '').endsWith('.svg'));
+  it('toutes les cibles sont des SVG ProFigure (553/553, 0 raster)', () => {
+    const nonSvg = CARTES_DIAGRAMME.filter((c) => !(c.diagramUrl ?? '').endsWith('.svg'));
     // le dernier visuel .jpg (carte 508, anagène) a basculé sur son jumeau _ar.svg
     expect(nonSvg.map((c) => `${c.id} → ${c.diagramUrl}`), 'cibles non-SVG').toEqual([]);
   });
 
   it('chaque cible est un SVG ProFigure : pfe-figure + role=img + viewBox + aria-label', () => {
-    const cibles = [...new Set(SVT_FLASHCARDS.map((c) => c.diagramUrl as string))];
+    const cibles = [...new Set(CARTES_DIAGRAMME.map((c) => c.diagramUrl as string))];
     expect(cibles.length, 'cibles distinctes').toBeGreaterThan(0);
     for (const url of cibles) {
       const svg = readFileSync(resolve(__dirname, '../../public' + url), 'utf8');
@@ -170,7 +185,7 @@ describe('diagrammes — Phase 5 : cartes re-pointées sur les figures dédiées
   });
 
   it('44 → 57 cibles distinctes, et 66 → 53 figures du dossier jamais utilisées', () => {
-    const cibles = new Set(SVT_FLASHCARDS.map((c) => c.diagramUrl as string));
+    const cibles = new Set(CARTES_DIAGRAMME.map((c) => c.diagramUrl as string));
     expect(cibles.size).toBe(57);
     const lister = (dir: string): string[] =>
       readdirSync(dir, { withFileTypes: true }).flatMap((e) =>
@@ -181,7 +196,7 @@ describe('diagrammes — Phase 5 : cartes re-pointées sur les figures dédiées
             : [],
       );
     const tous = lister(resolve(__dirname, '../../public/assets/images/schemas'));
-    const utilisees = new Set(SVT_FLASHCARDS.map((c) => resolve(__dirname, '../../public' + c.diagramUrl)));
+    const utilisees = new Set(CARTES_DIAGRAMME.map((c) => resolve(__dirname, '../../public' + c.diagramUrl)));
     const libres = tous.filter((f) => !utilisees.has(f));
     expect(libres.length, `figures libres : ${libres.length}/${tous.length}`).toBe(53);
   });

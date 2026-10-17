@@ -38,3 +38,27 @@ export function healSavedFlashcards(raw: unknown): Flashcard[] | null {
   if (ids.size !== ok.length) return null;
   return ok;
 }
+
+/**
+ * Synchronise le deck stocké avec celui du dépôt (Vague 2 — action 9).
+ *
+ * LE DÉFAUT CORRIGÉ : le blob `svt_flashcards` n'était JAMAIS mis à jour une
+ * fois sain — tout appareil ayant déjà ouvert la révision restait figé sur le
+ * deck d'alors, pour toujours (les M cartes ajoutées par le dépôt — ex. les
+ * cartes hosila, et tout correctif de contenu — n'apparaissaient jamais).
+ *
+ * Le dépôt fait AUTORITÉ sur le CONTENU : la progression SM-2 vit à part
+ * (`kunz_flashcard_srs_v1`, indexée par id de carte) — réadopter la référence
+ * ne perd donc AUCUN état d'apprentissage.
+ *
+ * Retourne le deck de référence s'il apporte quelque chose de nouveau
+ * (cartes ajoutées OU contenu corrigé sur un id existant), sinon `null`
+ * (rien à faire — pas de réécriture inutile du stock local).
+ */
+export function synchroniseDeck(stocke: Flashcard[], reference: Flashcard[]): Flashcard[] | null {
+  if (stocke.length === reference.length && stocke.every((c, i) => {
+    const ref = reference[i];
+    return ref.id === c.id && ref.question === c.question && ref.answerBullets.length === c.answerBullets.length;
+  })) return null;
+  return reference;
+}

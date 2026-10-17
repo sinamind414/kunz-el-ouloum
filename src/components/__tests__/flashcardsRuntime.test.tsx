@@ -62,12 +62,14 @@ describe('cartes réelles — rendu dans RevisionView', () => {
       const recto = screen.getByText(c.question);
       expect(recto, `${c.id} : question absente`).toBeTruthy();
       fireEvent.click(recto);
-      // Le verso contient la première puce de réponse (markdown ** inclus).
+      // Le verso contient la première puce de réponse (label markdown ** pour
+      // les fc_q_*, phrase entière pour les cartes hosila) — correspondance
+      // partielle pour couvrir les deux formats de verso.
       const premierMorceau = c.answerBullets[0].split('**')[1] ?? c.answerBullets[0].slice(0, 20);
       expect(
-        screen.getByText(premierMorceau),
+        screen.getAllByText(premierMorceau, { exact: false }).length,
         `${c.id} (unité ${c.unitId}) : verso vide au retournement`,
-      ).toBeTruthy();
+      ).toBeGreaterThan(0);
     }
   });
 

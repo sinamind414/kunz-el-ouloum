@@ -36,7 +36,9 @@ describe('exhaustif — les 552 cartes se retournent avec un verso', () => {
       fireEvent.click(screen.getByText(c.question));
       const segments = c.answerBullets[0].split('**');
       const cible = (segments[1] ?? segments[0]).trim().slice(0, 30);
-      if (screen.queryByText(cible) === null) echecs.push(`${c.id} (u${c.unitId})`);
+      // correspondance partielle : les versos hosila sont des PHRASES sans
+      // label markdown (le fragment n'est pas un nœud de texte à lui seul).
+      if (screen.queryAllByText(cible, { exact: false }).length === 0) echecs.push(`${c.id} (u${c.unitId})`);
     }
     expect(echecs, `cartes au verso vide : ${echecs.join(', ')}`).toEqual([]);
   }, 60000);

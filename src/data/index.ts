@@ -1,6 +1,10 @@
 import { QuizQuestion, Unit, Flashcard } from '../types';
 import { INITIAL_UNITS as CATALOG_UNITS } from '../unitCatalog';
 import { SVT_QUIZ_QUESTIONS as CORPUS_QUIZ_QUESTIONS, SVT_FLASHCARDS as CORPUS_FLASHCARDS } from '../quizCorpus';
+// Vague 2 - action 9 (audit externe 2026-10-17) : de VRAIES cartes de rappel,
+// non dérivées des QCM — extraites du texte officiel du livre (hosila) par
+// scripts/build_cartes_hosila.ts, format « إكمال » (cloze), sans options.
+import { CARTES_HOSILA } from './cartesHosila';
 // Les URLs de marque vivent dans un module sans dépendance (sprint 31) : les
 // importer d'ici entraînait tout le corpus QCM dans le bundle d'entrée.
 import {
@@ -21,15 +25,18 @@ export { DIAGRAM_FLASHCARD_URL, DIAGRAM_QUIZ_URL, LOGO_URL, MASCOT_URL, MORCHID_
 export const INITIAL_UNITS: Unit[] = CATALOG_UNITS;
 export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = CORPUS_QUIZ_QUESTIONS;
 
-// Flashcards : dérivées du corpus QCM (550 — en réalité un réexport de SVT_FLASHCARDS de
-// quizCorpus) + les 3 cartes « college » historiques = 553.
-// AVERTISSEMENT H6 (audit ligne par ligne, 2026-10-17) : ce SONT les mêmes
-// 550 QCM reformatés (question, options et bonne réponse recopiées) — le
-// chiffre 553 ne désigne pas 553 connaissances distinctes. L'ancien
-// commentaire « 508 + 3 » dérivait depuis 42 unités.
-// Avant, seules les 3 cartes ci-dessous étaient montées — le mapping de quizCorpus
-// était du code mort (audit D3).
+// Flashcards = 2 couches aux natures opposées (Vague 2 — action 9, audit 2026-10-17) :
+//   1. CARTES_HOSILA — de vraies cartes de rappel actif : phrases OFFICIELLES
+//      du livre scolaire en cloze (« إكمال »), verso = phrase complète + source.
+//      Tranche U1-U3 : 35 cartes, sans options, non dérivées des QCM.
+//   2. CORPUS_FLASHCARDS — réexport des QCM (550) + les 3 cartes « college »
+//      historiques = 553.
+// AVERTISSEMENT H6 (audit ligne par ligne) : la couche 2 SONT les mêmes
+// 550 QCM reformatés — le total 588 ne désigne pas 588 connaissances distinctes ;
+// il se lit « 35 cartes du livre + 553 équivalents-QCM ». La couche 1 s'étendra
+// unité par unité (scripts/build_cartes_hosila.ts → relancer le script).
 export const SVT_FLASHCARDS: Flashcard[] = [
+  ...CARTES_HOSILA,
   ...CORPUS_FLASHCARDS,
   {
     id: "fc_1",
