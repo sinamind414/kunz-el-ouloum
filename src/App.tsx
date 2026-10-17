@@ -804,6 +804,10 @@ export default function App() {
                   onLaunchQuiz={handleLaunchQuiz}
                   onLaunchRevision={handleLaunchRevision}
                   onNavigateToTab={setCurrentTab}
+                  onOpenRedaction={(ideaId) => {
+                    setBacIdeaFocus(ideaId);
+                    setCurrentTab('bacideas');
+                  }}
                   onUpdateDailyGoals={handleUpdateDailyGoals}
                   isDarkMode={isDarkMode}
                 />

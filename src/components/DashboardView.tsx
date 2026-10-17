@@ -1,5 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import TodayCard from './TodayCard';
+import RecallCard from './RecallCard';
 import { Trophy, Flame, Play, Lock, ChevronRight, Compass, Target, Hourglass, AlertTriangle, Dices, HelpCircle, Moon, Share2, Network, Sparkles } from 'lucide-react';
 import { Unit, UserProgress, DailyGoalConfig } from '../types';
 import { LOGO_URL } from '../data/brandAssets';
@@ -25,6 +26,8 @@ interface DashboardViewProps {
   onLaunchQuiz: (unitId: number) => void;
   onLaunchRevision: (unitId: number) => void;
   onNavigateToTab?: (tab: any) => void;
+  /** Ouvre l'atelier de rédaction sur un exercice précis (rappel espacé). */
+  onOpenRedaction?: (ideaId: string) => void;
   onUpdateDailyGoals?: (config: DailyGoalConfig) => void;
   isDarkMode?: boolean;
 }
@@ -35,6 +38,7 @@ export default function DashboardView({
   onLaunchQuiz, 
   onLaunchRevision, 
   onNavigateToTab,
+  onOpenRedaction,
   onUpdateDailyGoals,
   isDarkMode = false 
 }: DashboardViewProps) {
@@ -119,6 +123,11 @@ export default function DashboardView({
       {/* PROGRAMME DU JOUR (sprint 29) — le plan de révision remonte sur
           l'accueil : derrière deux clics, il n'était pas suivi. */}
       {onNavigateToTab && <TodayCard onOpenPlan={() => onNavigateToTab('plan')} />}
+
+      {/* RAPPEL ESPACÉ (sprint 65) — ce que l'élève a écrit lui revient à
+          1, 3, 7 puis 16 jours. Sans cela, la rédaction, qui est l'effort le
+          plus coûteux de l'application, n'est jamais capitalisée. */}
+      {onOpenRedaction && <RecallCard onOpenRedaction={onOpenRedaction} />}
 
       {/* DAILY GOAL WIDGET (الأهداف اليومية) */}
       <DailyGoalWidget 
