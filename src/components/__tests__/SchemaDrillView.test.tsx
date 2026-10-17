@@ -7,10 +7,11 @@
 
 import { cleanup, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { afterEach, describe, expect, it } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import SchemaDrillView from '../SchemaDrillView';
 import { bacEchoForDrill } from '../../data/bacSessionIndex';
 import { SCHEMA_DRILLS, SCHEMA_DRILL_BY_ID, totalPoints } from '../../data/schemaDrills';
+import { clearDrillLog, readDrillLog, recordDrill } from '../../data/drillLog';
 
 afterEach(cleanup);
 
@@ -169,5 +170,59 @@ describe('schéma — écho BAC (sprint 35)', () => {
     for (const annee of bacEchoForDrill(avecEcho.id).years) {
       expect(badge.textContent).toContain(String(annee));
     }
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Sprint 66 — la trace. Jusqu'ici le score s'affichait puis disparaissait :
+// impossible de savoir si un schéma raté en avril est su en mai.
+// ---------------------------------------------------------------------------
+
+describe('SchemaDrillView — trace de la restitution (sprint 66)', () => {
+  beforeEach(() => {
+    localStorage.clear();
+    clearDrillLog();
+  });
+
+  it('enregistre la tentative au moment où l’élève assume son auto-évaluation', async () => {
+    const user = userEvent.setup();
+    render(<SchemaDrillView />);
+    await user.click(screen.getByTestId('drill-drill_synapse'));
+    await user.click(screen.getByTestId('drill-fini'));
+    expect(readDrillLog()).toHaveLength(0); // rien tant que la grille n'est pas validée
+    await user.click(screen.getByTestId('drill-valider'));
+
+    const journal = readDrillLog();
+    expect(journal).toHaveLength(1);
+    expect(journal[0].drillId).toBe('drill_synapse');
+    expect(journal[0].total).toBe(totalPoints(SCHEMA_DRILL_BY_ID.drill_synapse));
+    expect(journal[0].oublisEssentiels).toBeGreaterThan(0);
+  });
+
+  it('ne compare à rien lors du tout premier passage', async () => {
+    const user = userEvent.setup();
+    render(<SchemaDrillView />);
+    await user.click(screen.getByTestId('drill-drill_synapse'));
+    await user.click(screen.getByTestId('drill-fini'));
+    await user.click(screen.getByTestId('drill-valider'));
+    expect(screen.queryByTestId('drill-evolution')).toBeNull();
+  });
+
+  it('annonce le progrès par rapport au passage précédent', async () => {
+    recordDrill({
+      date: '2026-01-01',
+      drillId: 'drill_synapse',
+      unitId: SCHEMA_DRILL_BY_ID.drill_synapse.unitId,
+      score: 0,
+      total: totalPoints(SCHEMA_DRILL_BY_ID.drill_synapse),
+      oublisEssentiels: 3,
+    });
+    const user = userEvent.setup();
+    render(<SchemaDrillView />);
+    await user.click(screen.getByTestId('drill-drill_synapse'));
+    await user.click(screen.getByTestId('drill-fini'));
+    await user.click(screen.getByTestId('element-fente'));
+    await user.click(screen.getByTestId('drill-valider'));
+    expect(screen.getByTestId('drill-evolution').textContent).toContain('تحسّن');
   });
 });

@@ -8,6 +8,8 @@
 //   3. المقارنة — score, éléments essentiels oubliés, pièges, PUIS l'image.
 
 import { useMemo, useState } from 'react';
+import { aujourdHui } from '../data/learningLog';
+import { etatDesSchemas, recordDrill } from '../data/drillLog';
 import { bacEchoForDrill } from '../data/bacSessionIndex';
 import { ArrowRight, Check, PenTool, RefreshCw, Timer } from 'lucide-react';
 import {
@@ -36,6 +38,9 @@ const VERDICT_TEXT = {
 function Exercice({ drill, onQuitter }: { drill: SchemaDrill; onQuitter: () => void }) {
   const [phase, setPhase] = useState<Phase>('dessin');
   const [coches, setCoches] = useState<string[]>([]);
+  // Sprint 66 : taux du passage PRÉCÉDENT, lu juste avant d'enregistrer
+  // celui-ci — c'est la seule façon de dire « mieux qu'avant » sans mentir.
+  const [precedent, setPrecedent] = useState<number | null>(null);
 
   const total = totalPoints(drill);
   const score = scoreFromChecked(drill, coches);
@@ -147,7 +152,21 @@ function Exercice({ drill, onQuitter }: { drill: SchemaDrill; onQuitter: () => v
           </ul>
           <button
             data-testid="drill-valider"
-            onClick={() => setPhase('comparaison')}
+            onClick={() => {
+              // La trace est écrite ici, au moment où l'élève assume son
+              // auto-évaluation — pas à l'ouverture du schéma.
+              const avant = etatDesSchemas().find((e) => e.drillId === drill.id);
+              setPrecedent(avant ? avant.dernierTaux : null);
+              recordDrill({
+                date: aujourdHui(),
+                drillId: drill.id,
+                unitId: drill.unitId,
+                score,
+                total,
+                oublisEssentiels: oublis.length,
+              });
+              setPhase('comparaison');
+            }}
             className="w-full px-4 py-3 rounded-2xl bg-[#006d37] hover:bg-[#00592d] text-white text-sm font-bold cursor-pointer transition-colors"
           >
             أظهر النتيجة والرسم الرسمي
@@ -164,6 +183,19 @@ function Exercice({ drill, onQuitter }: { drill: SchemaDrill; onQuitter: () => v
             <p data-testid="drill-verdict" className={`text-sm font-bold mt-1 ${verdict.cls}`}>
               {verdict.label}
             </p>
+            {precedent !== null && (
+              <p
+                data-testid="drill-evolution"
+                className="text-[12px] font-bold mt-1 text-[#506072] dark:text-gray-400"
+              >
+                {(() => {
+                  const ecart = Math.round((score / total - precedent) * 100);
+                  if (ecart >= 5) return `تحسّن: +${ecart} نقطة مئوية عن آخر محاولة.`;
+                  if (ecart <= -5) return `تراجع بـ ${Math.abs(ecart)} نقطة مئوية عن آخر محاولة.`;
+                  return 'نفس مستوى آخر محاولة تقريباً.';
+                })()}
+              </p>
+            )}
           </div>
 
           {oublis.length > 0 && (

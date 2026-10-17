@@ -8,6 +8,8 @@
 // stable. Un tableau de bord qui félicite tout le monde ne sert personne.
 
 import { Activity, AlertTriangle, TrendingDown, TrendingUp } from 'lucide-react';
+import { bilanSchemas } from '../data/drillLog';
+import { SCHEMA_DRILL_BY_ID as DRILL_BY_ID } from '../data/schemaDrills';
 import {
   couvertureParUnite,
   progressionParFamille,
@@ -30,6 +32,11 @@ const CLASSE = {
 
 export default function ProgressionPanel() {
   const verdict = verdictProgression();
+  // Sprint 66 : la restitution (schémas refaits de mémoire) est un signal
+  // distinct de la production écrite. On les affiche côte à côte sans jamais
+  // les moyenner — une moyenne masquerait qu'on sait dessiner sans savoir
+  // rédiger, ou l'inverse.
+  const schemas = bilanSchemas();
   const familles = progressionParFamille();
   const couverture = couvertureParUnite().filter((c) => c.partExamen >= 5);
 
@@ -48,6 +55,29 @@ export default function ProgressionPanel() {
       <p className="text-[11px] text-[#506072] dark:text-gray-400 text-right mb-3">
         {verdict.redactions} جواباً محرَّراً · {verdict.joursActifs} يوماً فعلياً
       </p>
+
+      <div data-testid="progression-restitution" className="mb-3">
+        <p className="text-[11px] font-black text-[#506072] dark:text-gray-400 mb-1">
+          الاسترجاع — الرسم من الذاكرة
+        </p>
+        <p className="text-[12px] leading-6 text-right text-[#1f1c0b] dark:text-gray-200">
+          {schemas.messageAr}
+        </p>
+        {schemas.fragiles.length > 0 && (
+          <ul className="mt-1 space-y-0.5">
+            {schemas.fragiles.slice(0, 3).map((f) => (
+              <li
+                key={f.drillId}
+                data-testid={`progression-schema-${f.drillId}`}
+                className="text-[11px] text-right text-[#506072] dark:text-gray-400"
+              >
+                {DRILL_BY_ID[f.drillId]?.titleAr ?? f.drillId} — {Math.round(f.dernierTaux * 100)}٪
+                {f.derniersOublis > 0 ? ` · ${f.derniersOublis} عنصراً أساسياً غائباً` : ''}
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
 
       {verdict.angleMort && (
         <p

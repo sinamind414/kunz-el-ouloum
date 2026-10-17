@@ -2,6 +2,8 @@
 
 import { cleanup, render, screen } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
+import { clearDrillLog, recordDrill } from '../../data/drillLog';
+import { SCHEMA_DRILLS } from '../../data/schemaDrills';
 import ProgressionPanel from '../ProgressionPanel';
 import { clearLearningLog, recordWriting } from '../../data/learningLog';
 
@@ -50,6 +52,35 @@ describe('panneau de progression', () => {
     render(<ProgressionPanel />);
     expect(screen.getByTestId('progression-panel').textContent).toContain(
       'المضمون العلمي لا يُقيَّم آلياً',
+    );
+  });
+});
+
+describe('panneau de progression — restitution (sprint 66)', () => {
+  beforeEach(() => clearDrillLog());
+
+  it('affiche l’absence de trace de dessin sans la maquiller', () => {
+    render(<ProgressionPanel />);
+    expect(screen.getByTestId('progression-restitution').textContent).toContain('لم ترسم');
+  });
+
+  it('nomme les schémas encore fragiles au lieu d’un score global', () => {
+    const id = SCHEMA_DRILLS[0].id;
+    for (const [i, d] of ['2026-05-01', '2026-05-02', '2026-05-03'].entries()) {
+      recordDrill({
+        date: d,
+        drillId: i === 0 ? id : `${id}_${i}`,
+        unitId: 4,
+        score: i === 0 ? 2 : 16,
+        total: 16,
+        oublisEssentiels: i === 0 ? 2 : 0,
+      });
+    }
+    render(<ProgressionPanel />);
+    const bloc = screen.getByTestId('progression-restitution');
+    expect(bloc.textContent).toContain('2');
+    expect(screen.getByTestId(`progression-schema-${id}`).textContent).toContain(
+      SCHEMA_DRILLS[0].titleAr,
     );
   });
 });
