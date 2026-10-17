@@ -1,15 +1,33 @@
 // Parcours automatisé de rendu — les 47 clés du viewer passent par le VRAI
-// pipeline (getter ?raw → sliceLessonHtml) et le HTML produit pour l iframe
+// pipeline (getter fetch → sliceLessonHtml) et le HTML produit pour l iframe
 // srcdoc est contrôlé structurellement. Objectif : attraper la classe de bugs
 // « ça ne s affiche pas sur l application » AVANT l élève (rendu app ≠ fichier brut).
-import { describe, expect, it } from 'vitest';
+// M1 (2026-10-17) : les getters fetchent /lessons/<fichier> (source unique,
+// précachée SW) — le stub ci-dessous sert ici le DISQUE, pour que ce test
+// continue de prouver le pipeline complet hors serveur.
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { LESSON_HTML_GETTERS } from './lessonHtmlGetters';
 import { sliceLessonHtml, countLessonChapters, getBaseLessonKey } from './lessonChapterSplit';
-import { existsSync, readdirSync } from 'node:fs';
+import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 
 const PUBLIC = resolve(__dirname, '../../public');
 const KEYS = Object.keys(LESSON_HTML_GETTERS);
+
+beforeEach(() => {
+  vi.stubGlobal(
+    'fetch',
+    vi.fn((url: string) => {
+      const fichier = String(url).replace(/^.*\/lessons\//, '');
+      const texte = readFileSync(resolve(PUBLIC, 'lessons', decodeURIComponent(fichier)), 'utf8');
+      return Promise.resolve(new Response(texte, { status: 200 }));
+    }),
+  );
+});
+
+afterEach(() => {
+  vi.unstubAllGlobals();
+});
 
 describe('parcours de rendu — invariants du HTML effectivement rendu dans le viewer', () => {
   it('le catalogue couvre exactement les fichiers de leçons sur disque (0 trou, 0 orphelin)', () => {
