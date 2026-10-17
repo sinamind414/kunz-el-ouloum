@@ -171,6 +171,26 @@ export function currentItem(state: ParcoursState) {
   return PARCOURS_FLAT.find((i) => itemStatus(state, i.id) === 'available') ?? null;
 }
 
+/**
+ * Le TITRE de la dernière unité vraiment touchée — audit Capitaine 2026-10-17
+ * (§6.2) : la bulle recevait `units[0]?.title` (INITIAL_UNITS[0]) et disait
+ * « reprends <la première leçon du catalogue> » à tout le monde. Le témoin
+ * honnête est le parcours : l'item `current`, sinon la validation la plus
+ * récente. Faute de témoin : `null` — on ne devine pas un souvenir.
+ */
+export function derniereUniteTouchee(): string | null {
+  const state = loadParcours();
+  const courant = state.current;
+  const itemId =
+    courant ??
+    Object.entries(state.done)
+      .sort((a, b) => (b[1].at > a[1].at ? 1 : b[1].at < a[1].at ? -1 : 0))[0]?.[0];
+  if (!itemId) return null;
+  const item = PARCOURS_FLAT.find((i) => i.id === itemId);
+  if (!item) return null;
+  return PARCOURS_DOMAINS.flatMap((d) => d.units).find((u) => u.unitId === item.unitId)?.title ?? null;
+}
+
 export function todaysCompletions(state: ParcoursState): number {
   const today = todayKey();
   return Object.values(state.done).filter((r) => r.at === today).length;

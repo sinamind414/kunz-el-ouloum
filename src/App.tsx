@@ -338,11 +338,17 @@ export default function App() {
    */
   const conseilCourant: ConseilRubrique | null = conseilDeRubrique(currentTab);
 
+  // Audit Capitaine §6.2 : signalTravail est un COMPTEUR d'évènements de travail
+  // réel (QCM d'unité, chapitre du livre) — pas `units.length`, constant, qui ne
+  // recalculait jamais la bulle.
+  const [signalBulle, setSignalBulle] = useState(0);
+
   const { invitation, relais, etat, ignorer, accepter, rafraichir } = useInvitationCapitaine({
     daily: progress.dailyGoals,
-    derniereUnite: units[0]?.title ?? null,
+    // §6.2 : plus de `units[0]?.title` (le premier titre du catalogue, offert à
+    // tout le monde) — faute de prop, le hook lit le témoin réel du parcours.
     epreuveEnCours,
-    signalTravail: units.length,
+    signalTravail: signalBulle,
     rubrique: currentTab,
     rubriqueAUnConseil: Boolean(conseilCourant),
   });
@@ -712,6 +718,8 @@ export default function App() {
     setProgress(updatedProgress);
     saveToLocalStorage(updatedUnits, flashcards, updatedProgress);
     updateLastStudyTime();
+    // Audit Capitaine §6.2 : la bulle se recalcule après un travail réel mesuré.
+    setSignalBulle((s) => s + 1);
 
     // Lot 0022: log quiz activity for teacher dashboard
     const unit = units.find((u) => u.id === activeQuizUnitId);
@@ -759,6 +767,8 @@ export default function App() {
     // l'échéance repart à J+14 et le drapeau fragile suit la mesure
     // (échec < seuil → re-priorisé). Un score absent ne clôt rien.
     replanifierRevue(`parcours:u${res.unitId}:jalon`, res.total > 0 && res.score / res.total < SEUIL_FRAGILE);
+    // §6.2 : la bulle se recalcule après un travail réel mesuré.
+    setSignalBulle((s) => s + 1);
   };
   if (activeCombatChallenge) {
     // Épreuve officielle bac2025 : la boucle élève de bout en bout (Pierre 2).

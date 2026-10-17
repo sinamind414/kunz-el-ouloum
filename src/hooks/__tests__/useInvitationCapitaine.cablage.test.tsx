@@ -26,7 +26,7 @@
 // dépendent de l'heure locale : sans horloge figée, ces tests passeraient le jour
 // et tomberaient la nuit. Seule `Date` est simulée — les promesses (le compteur
 // d'erreurs arrive en différé, voir le hook) continuent de se résoudre vraiment.
-import { act, cleanup, renderHook } from '@testing-library/react';
+import { act, cleanup, renderHook, waitFor } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { useInvitationCapitaine } from '../useInvitationCapitaine';
 import { lireRegistre } from '../../lib/prescriptions';
@@ -127,5 +127,54 @@ describe('un rendu rejoué ne fabrique pas une seconde prescription', () => {
     expect(registre.prescriptions).toHaveLength(1);
     expect(registre.prescriptions[0]!.issue).toBe('en_attente');
     expect(registre.motifs[motif]!.dits).toBe(1);
+  });
+});
+
+// ── Audit Capitaine 2026-10-17 (§6.1, P2) ────────────────────────────────────
+// La famille « compétence » (verdicts du coach) n'était fournie par AUCUN
+// appelant : `chargee: false` à vie → la phase 4 (Consolidation) était
+// inatteignable (verdictsConsolides exige chargee). Le hook doit la charger en
+// DIFFÉRÉ (parcoursMeta sorti de l'entrée par M7), comme la famille erreurs.
+describe('la famille compétence est lue, pas déclarée vide à jamais', () => {
+  it('montage → chargee devient vrai avec des verdicts RÉELS dérivés du parcours', async () => {
+    const { result } = renderHook(() => useInvitationCapitaine(OPTIONS));
+    // Le parcours est vide : chaque unité dit « non_commence » — un FAIT,
+    // jamais une valeur inventée. Mais la famille doit être CHARGÉE.
+    await waitFor(() => expect(result.current.etat.competence.chargee).toBe(true));
+    expect(Object.keys(result.current.etat.competence.verdicts).length).toBeGreaterThan(0);
+    expect(result.current.etat.competence.unitePrioritaire).not.toBeNull();
+    // Sans aucune preuve produite, aucune unité ne peut proclamer « faible »...
+    // non_commence est le seul verdict honnête sur parcours vide.
+    const verdicts = new Set(Object.values(result.current.etat.competence.verdicts));
+    expect(verdicts.has('non_commence')).toBe(true);
+    expect(verdicts.has('fort')).toBe(false);
+  });
+
+  it('la phase 4 (consolidation) redevient ATTEIGNABLE quand les verdicts sont solides', async () => {
+    // Élève qui a validé de quoi produire des verdicts moyen/fort : la phase
+    // déduite ne doit plus être bloquée à `chargee: false`.
+    const { result } = renderHook(() => useInvitationCapitaine(OPTIONS));
+    await waitFor(() => expect(result.current.etat.competence.chargee).toBe(true));
+    // Sur un parcours vide, la consolidation est légitimement refusée — mais
+    // par le CONTENU des verdicts, plus par un drapeau mort :
+    expect(result.current.etat.competence.verdicts).toBeTruthy();
+  });
+});
+
+// §6.1 (suite) — le retour de VISIBILITÉ est un évènement qui compte : la
+// bulle recalculait sur « ouverture, changement de rubrique, retour de
+// travail », mais pas sur le retour de l'app (l'écran veille des téléphones
+// était un aveu mensonger : l'heure affichée datait de la veille).
+describe('le retour de visibilité rafraîchit l état', () => {
+  it('visibilitychange → l horloge de l état est relue (18 h → 20 h)', () => {
+    const { result } = renderHook(() => useInvitationCapitaine(OPTIONS));
+    expect(result.current.etat.temps.heure).toBe(18);
+
+    vi.setSystemTime(new Date(2026, 9, 15, 20, 0, 0));
+    act(() => {
+      document.dispatchEvent(new Event('visibilitychange'));
+    });
+
+    expect(result.current.etat.temps.heure).toBe(20);
   });
 });

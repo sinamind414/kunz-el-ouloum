@@ -50,6 +50,12 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { invitationDuMoment, relaisDuMoment, type Invitation } from '../lib/invitationCapitaine';
 import type { QuestionRelais } from '../lib/relais';
 import { emettrePrescription, marquerAcceptee, marquerIgnoree } from '../lib/prescriptions';
+import { classerParUrgence, diagnostiquerParcours } from '../lib/coach/diagnostic';
+import { PARCOURS_DOMAINS } from '../lib/parcours/parcoursPath';
+import {
+  derniereUniteTouchee,
+  loadParcours,
+} from '../lib/parcours/parcoursProgress';
 import {
   contexteCapitaine,
   derniereInvitationIgnoreeMs,
@@ -57,6 +63,7 @@ import {
   lireEtatEleve,
   marquerInvitationIgnoree,
   type EtatEleve,
+  type FamilleCompetence,
   type FamilleErreurs,
 } from '../lib/etatEleve';
 import type { DailyGoalConfig } from '../types';
@@ -118,6 +125,45 @@ export function useInvitationCapitaine(options: {
   const [familleErreurs, setFamilleErreurs] = useState<Omit<FamilleErreurs, 'chargee'> | null>(null);
 
   /**
+   * AUDIT CAPITAINE §6.1 (2026-10-17) : LA FAMILLE « COMPÉTENCE » EST LUE ICI.
+   * Elle n'avait AUCUN fournisseur : `chargee: false` à vie, la phase 4
+   * (Consolidation) était inatteignable — `verdictsConsolides` exige une
+   * famille chargée. Même discipline que la famille erreurs : le diagnostic
+   * du parcours (`parcoursMeta`, séquences de leçons — 286 Ko, sortis de
+   * l'entrée par M7) entre par import DYNAMIQUE. Le module du verdict
+   * (`coach/diagnostic`) est léger : statique. Un parcours vide produit des
+   * verdicts « non_commence » — un fait, pas une valeur inventée.
+   */
+  const [familleCompetence, setFamilleCompetence] = useState<Omit<FamilleCompetence, 'chargee'> | null>(null);
+
+  useEffect(() => {
+    let vivant = true;
+    import('../lib/parcours/parcoursMeta')
+      .then((meta) => {
+        if (!vivant) return;
+        const diags = diagnostiquerParcours(
+          PARCOURS_DOMAINS.flatMap((d) => d.units),
+          loadParcours(),
+          meta.scoreLivreUnite,
+        );
+        const ordre = classerParUrgence(diags);
+        setFamilleCompetence({
+          verdicts: Object.fromEntries(ordre.map((d) => [d.titre, d.verdict])),
+          faibles: ordre
+            .filter((d) => d.verdict === 'faible' || d.verdict === 'non_commence')
+            .map((d) => d.titre),
+          unitePrioritaire: ordre[0]?.titre ?? null,
+        });
+      })
+      .catch(() => {
+        // Échec de chargement : la famille reste silencieuse, elle ne prétend rien.
+      });
+    return () => {
+      vivant = false;
+    };
+  }, [signalTravail, version]);
+
+  /**
    * LE COMPTEUR D'ERREURS ARRIVE EN DIFFÉRÉ — et ce n'est pas un détail.
    *
    * `utils/profilErreurs` lit la taxonomie des erreurs ; un import STATIQUE ici
@@ -159,6 +205,32 @@ export function useInvitationCapitaine(options: {
     setIgnoreeMs(derniereInvitationIgnoreeMs());
   }, [signalTravail, version]);
 
+  // Audit Capitaine §6.1 (suite) : le RETOUR DE VISIBILITÉ est un évènement qui
+  // compte — l'écran veille des téléphones laissait la bulle sur l'heure de la
+  // veille, un aveu mensonger. L'horloge, le silence et les familles différées
+  // (erreurs, compétence) sont relus en revenant.
+  useEffect(() => {
+    const auRetour = () => {
+      if (document.visibilityState !== 'visible') return;
+      setVersion((v) => v + 1);
+    };
+    document.addEventListener('visibilitychange', auRetour);
+    return () => document.removeEventListener('visibilitychange', auRetour);
+  }, []);
+
+  /**
+   * Audit Capitaine §6.2 : l'unité « dernière » réelle. L'appelant fournissait
+   * `units[0]?.title` — le PREMIER titre du catalogue, à tout le monde. Faute
+   * de prop, le témoin honnête est le parcours (`derniereUniteTouchee`), relu
+   * aux mêmes évènements que le reste de l'état.
+   */
+  const [derniereUniteResolue, setDerniereUniteResolue] = useState<string | null>(() =>
+    derniereUnite === undefined ? derniereUniteTouchee() : (derniereUnite ?? null),
+  );
+  useEffect(() => {
+    setDerniereUniteResolue(derniereUnite === undefined ? derniereUniteTouchee() : (derniereUnite ?? null));
+  }, [derniereUnite, signalTravail, version]);
+
   /**
    * L'ÉTAT DE L'ÉLÈVE — assemblé UNE fois, ici, par le module qui en a la charge.
    *
@@ -171,13 +243,14 @@ export function useInvitationCapitaine(options: {
       lireEtatEleve({
         daily,
         maintenant,
-        derniereUnite: derniereUnite ?? null,
+        derniereUnite: derniereUniteResolue,
         epreuveEnCours,
         rubrique: rubrique ?? null,
         rubriqueAUnConseil,
         erreurs: familleErreurs,
+        competence: familleCompetence,
       }),
-    [daily, maintenant, derniereUnite, epreuveEnCours, rubrique, rubriqueAUnConseil, familleErreurs, ignoreeMs],
+    [daily, maintenant, derniereUniteResolue, epreuveEnCours, rubrique, rubriqueAUnConseil, familleErreurs, familleCompetence, ignoreeMs],
   );
 
   /**
@@ -189,7 +262,7 @@ export function useInvitationCapitaine(options: {
    * cet ordre, pour qu'on lise la règle dans le sens où elle s'applique.
    */
   const { invitation, relais } = useMemo(() => {
-    const contexte = contexteCapitaine(etat, derniereUnite ?? null);
+    const contexte = contexteCapitaine(etat, derniereUniteResolue);
     const question = relaisDuMoment(contexte);
     const duMoment = invitationDuMoment(contexte);
     if (duMoment) {
@@ -204,7 +277,7 @@ export function useInvitationCapitaine(options: {
       emettrePrescription(duMoment, { erreurCode: etat.erreurs.dominante?.code }, etat.temps.maintenantMs);
     }
     return { invitation: duMoment, relais: question };
-  }, [etat, derniereUnite]);
+  }, [etat, derniereUniteResolue]);
 
   /**
    * L'élève ferme la bulle.
