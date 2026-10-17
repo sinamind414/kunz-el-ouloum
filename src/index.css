@@ -222,3 +222,45 @@ header, aside, nav, section, button {
   .boussole-card { page-break-inside: avoid; font-size: 11.5px; }
   @page { size: A4; margin: 10mm; }
 }
+
+/* ─────────────────────────────────────────────────────────────────────────
+   Visibilité du focus clavier (sprint 51).
+
+   Les sprints 49-50 ont rendu toutes les cartes cliquables atteignables au
+   clavier. Restait le corollaire : une cible que l'on peut atteindre mais
+   dont on ne voit pas qu'elle est atteinte est toujours inutilisable. Or
+   52 endroits du code posent `focus:outline-none` — la pratique courante
+   pour supprimer le contour bleu du navigateur — sans rien mettre à la
+   place.
+
+   La règle ci-dessous rétablit un indicateur pour la navigation clavier
+   UNIQUEMENT (`:focus-visible`, donc pas au clic souris). Elle s'appuie sur
+   `box-shadow` et non sur `outline` : `outline-none` de Tailwind neutralise
+   `outline`, mais laisse `box-shadow` intact — l'indicateur réapparaît donc
+   partout, y compris sur les éléments qui l'avaient supprimé.
+
+   Couleur : le vert de la marque, avec un halo clair dessous pour rester
+   visible sur fond sombre comme sur fond clair.
+   ───────────────────────────────────────────────────────────────────────── */
+:focus-visible {
+  outline: 2px solid var(--primary-color, #006d37);
+  outline-offset: 2px;
+  box-shadow:
+    0 0 0 2px #ffffff,
+    0 0 0 5px rgba(0, 109, 55, 0.55);
+  border-radius: inherit;
+}
+
+@media (prefers-color-scheme: dark) {
+  :focus-visible {
+    box-shadow:
+      0 0 0 2px #0c0f0d,
+      0 0 0 5px rgba(46, 204, 113, 0.65);
+  }
+}
+
+/* Le focus ne doit jamais être masqué par un dépassement de conteneur. */
+:focus-visible:not(body) {
+  position: relative;
+  z-index: 1;
+}

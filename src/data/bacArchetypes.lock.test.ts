@@ -43,11 +43,15 @@ describe('archétypes — adossement aux sujets réels', () => {
     }
   });
 
-  it('classe la quasi-totalité du corpus, et assume le reste', () => {
-    const restants = unclassifiedIdeaIds();
-    expect(restants.length / BAC_IDEAS.length).toBeLessThan(0.1);
-    // Le seul isolat attendu : l'unique exercice de bioénergétique du corpus.
-    for (const id of restants) expect(IDEA_BY_ID[id]).toBeTruthy();
+  it('classe la TOTALITÉ du corpus', () => {
+    // Sprint 57 : plus aucun exercice hors montage. La tolérance de 10 %
+    // existait tant que des isolats subsistaient (bioénergétique 2025, puis
+    // les six exercices de 2016) ; ils ont tous trouvé leur famille, la règle
+    // devient donc stricte. Un nouvel exercice non classé fera échouer ce
+    // test — c'est voulu : ajouter une session oblige à dire à quel montage
+    // chaque exercice appartient.
+    expect(unclassifiedIdeaIds()).toEqual([]);
+    expect(BAC_IDEAS.length).toBeGreaterThanOrEqual(65);
   });
 });
 
@@ -62,7 +66,7 @@ describe('archétypes — utilité pédagogique', () => {
   });
 
   it('couvre les grands gestes attendus : enzyme, nerf, immunité, photosynthèse, génétique', () => {
-    expect(ARCHETYPE_COUNT).toBeGreaterThanOrEqual(8);
+    expect(ARCHETYPE_COUNT).toBeGreaterThanOrEqual(13);
     const ids = BAC_ARCHETYPES.map((a) => a.id);
     expect(ids).toContain('arch_inhibiteur_sosie');
     expect(ids).toContain('arch_canal_detourne');

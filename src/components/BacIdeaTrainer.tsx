@@ -22,6 +22,7 @@ import { archetypesForIdea } from '../data/bacArchetypes';
 import { VERB_FAMILY_BY_ID } from '../data/verbDemands';
 import { famillesDemandeesParIdee } from '../data/bacWriting';
 import { structureVerdict } from '../data/answerStructureCheck';
+import { aujourdHui, recordWriting } from '../data/learningLog';
 
 interface Props {
   idea: BacExerciseIdea;
@@ -56,6 +57,19 @@ export default function BacIdeaTrainer({ idea, onClose }: Props) {
       localStorage.setItem(cle, valeur);
     } catch {
       /* stockage indisponible : la session reste utilisable */
+    }
+    // Sprint 62 : trace de progression (une par jour, exercice et consigne).
+    // Elle ne contient pas le texte — seulement l'état de forme.
+    const v = familleId ? structureVerdict(familleId, valeur) : null;
+    if (v && v.total > 0 && valeur.trim().length > 0) {
+      recordWriting({
+        date: aujourdHui(),
+        ideaId: idea.id,
+        familyId: familleId,
+        satisfaits: v.satisfaits,
+        total: v.total,
+        mots: valeur.trim().split(/\s+/).filter(Boolean).length,
+      });
     }
   };
 

@@ -38,10 +38,14 @@ describe('panneau du sujet blanc', () => {
   it('change de sujet à la demande', async () => {
     const user = userEvent.setup();
     render(<MockExamPanel onTrain={() => {}} />);
-    const avant = screen.getByTestId('mock-exercice-1').textContent;
+    const avant = [1, 2, 3].map((i) => screen.getByTestId(`mock-exercice-${i}`).textContent).join('|');
     await user.click(screen.getByTestId('mock-suivant'));
     expect(screen.getByTestId('mock-exam').textContent).toContain(String(numeroDuJour() + 1));
-    expect(screen.getByTestId('mock-exercice-1').textContent).not.toBe(avant);
+    // Deux numéros voisins peuvent partager un exercice (les contraintes
+    // d'unité et de session limitent le choix) : c'est le SUJET qui doit
+    // différer, pas nécessairement chacun de ses exercices.
+    const apres = [1, 2, 3].map((i) => screen.getByTestId(`mock-exercice-${i}`).textContent).join('|');
+    expect(apres).not.toBe(avant);
   });
 
   it('envoie l’exercice choisi vers l’atelier', async () => {

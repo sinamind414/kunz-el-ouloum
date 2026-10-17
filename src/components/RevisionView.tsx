@@ -234,7 +234,7 @@ export default function RevisionView({ units, flashcards, xp, streak, onRateCard
         <div className="flex flex-col gap-6">
           
           {/* Card Flip Interface */}
-          <div className="perspective-1000 w-full min-h-[360px] cursor-pointer" onClick={handleFlip}>
+          <button type="button" className="w-full perspective-1000 w-full min-h-[360px] cursor-pointer" onClick={handleFlip}>
             <motion.div
               animate={{ rotateY: isFlipped ? 180 : 0 }}
               transition={{ duration: 0.6, ease: "easeInOut" }}
@@ -242,7 +242,7 @@ export default function RevisionView({ units, flashcards, xp, streak, onRateCard
             >
               
               {/* FRONT SIDE */}
-              <div className={`backface-hidden border rounded-3xl p-6 md:p-8 w-full h-full min-h-[360px] flex flex-col justify-between transition-colors duration-300 ${
+              <div className={`w-full backface-hidden border rounded-3xl p-6 md:p-8 w-full h-full min-h-[360px] flex flex-col justify-between transition-colors duration-300 ${
                 isFocusMode 
                   ? 'bg-[#121714] border-[#006d37]/30 shadow-[0_8px_32px_rgba(0,0,0,0.5)] text-white' 
                   : 'bg-[#ffffff] dark:bg-[#141916] border-[#e2dabf]/80 dark:border-[#2ecc71]/10 shadow-[0_4px_16px_rgba(68,42,34,0.05)] text-[#1f1c0b] dark:text-gray-100'
@@ -341,7 +341,7 @@ export default function RevisionView({ units, flashcards, xp, streak, onRateCard
               </div>
 
             </motion.div>
-          </div>
+          </button>
 
           {/* SM-2 Spaced Repetition Feedback Controller */}
           <section className={`border rounded-3xl p-5 shadow-sm space-y-4 transition-colors duration-300 ${

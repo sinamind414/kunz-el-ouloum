@@ -14,6 +14,7 @@
 import { useMemo } from 'react';
 import { FileText, Printer } from 'lucide-react';
 import { reviewDrafts, writingReport } from '../data/writingReview';
+import { progressionParFamille, verdictProgression } from '../data/learningProgress';
 import { readPlanSettings } from '../data/planSettings';
 import { INITIAL_UNITS } from '../unitCatalog';
 
@@ -27,6 +28,13 @@ export default function WritingReportSheet({ onClose }: Props) {
   const rapport = useMemo(() => writingReport(), []);
   const revues = useMemo(() => reviewDrafts(), []);
   const { daysLeft } = readPlanSettings();
+  // Sprint 63 : la feuille ne dit plus seulement CE QUI a été écrit, mais si
+  // la forme s'améliore — la seule question que pose un professeur.
+  const verdict = useMemo(() => verdictProgression(), []);
+  const tendances = useMemo(
+    () => progressionParFamille().filter((f) => f.tendance !== 'insuffisant'),
+    [],
+  );
 
   /** Unités touchées par les réponses écrites, les plus travaillées d'abord. */
   const unites = useMemo(() => {
@@ -96,6 +104,30 @@ export default function WritingReportSheet({ onClose }: Props) {
         {rapport.reponses} جواباً محرَّراً على {rapport.exercices} تمريناً · {rapport.motsEcrits} كلمة ·
         متطلبات الشكل المحقّقة {rapport.satisfaits} من {rapport.total}
       </p>
+
+      <div data-testid="rapport-progression" className="rounded-2xl p-3 mb-3 bg-[#f8fbfa] dark:bg-black/20 border border-[#bbcbbb]/30">
+        <p className="text-[12px] font-black text-[#1f1c0b] dark:text-gray-100 text-right mb-1">
+          هل تتحسّن بنية أجوبته؟
+        </p>
+        <p className="text-[12px] leading-6 text-right text-[#1f1c0b] dark:text-gray-200">
+          {verdict.messageAr}
+        </p>
+        {tendances.length > 0 && (
+          <ul className="mt-1 space-y-0.5">
+            {tendances.map((f) => (
+              <li
+                key={f.familyId}
+                data-testid={`rapport-tendance-${f.familyId}`}
+                className="text-[11px] leading-6 text-right text-[#506072] dark:text-gray-300"
+              >
+                {f.titreAr} — {f.redactions} جواباً ·{' '}
+                {f.deltaPourcent > 0 ? '+' : ''}
+                {f.deltaPourcent} نقطة مئوية
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
 
       {unites.length > 0 && (
         <p data-testid="rapport-unites" className="text-[12px] leading-6 text-right mb-3 text-[#506072] dark:text-gray-300">

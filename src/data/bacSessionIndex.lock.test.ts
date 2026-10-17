@@ -30,9 +30,9 @@ import { INITIAL_UNITS } from '../unitCatalog';
 import { SITUATION_INDEX } from './situationIndex';
 
 describe('banque أفكار التمارين — intégrité de la collecte', () => {
-  it('couvre les dix sessions dépouillées, la plus récente en tête', () => {
+  it('couvre les onze sessions dépouillées, la plus récente en tête', () => {
     expect(YEARS_COVERED).toEqual([
-      2026, 2025, 2024, 2023, 2022, 2021, 2020, 2019, 2018, 2017,
+      2026, 2025, 2024, 2023, 2022, 2021, 2020, 2019, 2018, 2017, 2016,
     ]);
   });
 
@@ -42,6 +42,7 @@ describe('banque أفكار التمارين — intégrité de la collecte', ()
     expect(BAC_IDEAS.filter((i) => i.year === 2026).length).toBe(6);
     expect(BAC_IDEAS.filter((i) => i.year === 2018).length).toBe(6);
     expect(BAC_IDEAS.filter((i) => i.year === 2017).length).toBe(6);
+    expect(BAC_IDEAS.filter((i) => i.year === 2016).length).toBe(6);
   });
 
   it('couvre une série continue de sessions, sans saut silencieux', () => {
@@ -89,11 +90,24 @@ describe('banque أفكار التمارين — intégrité de la collecte', ()
 });
 
 describe('banque أفكار التمارين — conformité à la structure officielle', () => {
-  it('respecte le barème officiel 5 / 7 / 8 selon le rang de l’exercice', () => {
+  it('respecte le barème 5 / 7 / 8 — mais seulement depuis 2017', () => {
+    // Fait établi au sprint 56 en dépouillant 2016 : le format actuel n'est
+    // pas éternel. Cette session-là valait 6/5/9 (sujet 1) et 6/7/7
+    // (sujet 2). Figer « 5/7/8 » pour tout le corpus aurait obligé à fausser
+    // des barèmes officiels pour faire passer un test.
     const attendu: Record<number, number> = { 1: 5, 2: 7, 3: 8 };
-    for (const idea of BAC_IDEAS) {
-      expect(idea.points).toBe(attendu[idea.exercice]);
+    for (const idea of BAC_IDEAS.filter((i) => i.year >= 2017)) {
+      expect(idea.points, `${idea.id}`).toBe(attendu[idea.exercice]);
     }
+  });
+
+  it('accepte les barèmes plus anciens, à condition qu’ils fassent 20', () => {
+    for (const idea of BAC_IDEAS.filter((i) => i.year < 2017)) {
+      expect([5, 6, 7, 8, 9], `${idea.id} : ${idea.points} points`).toContain(idea.points);
+    }
+    // La règle qui, elle, ne bouge pas : un sujet vaut 20 points.
+    expect(pointsOfSujet(2016, 1)).toBe(20);
+    expect(pointsOfSujet(2016, 2)).toBe(20);
   });
 
   it('donne 20 points par sujet, sauf le sujet explicitement incomplet', () => {

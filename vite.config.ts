@@ -41,7 +41,10 @@ export default defineConfig(() => {
     },
     test: {
       environment: 'jsdom',
-      include: ['src/**/*.test.{ts,tsx}'],
+      // Sprint 58 : le dossier `server/` entre dans la suite. Il en était
+      // absent, si bien qu'aucun test ne couvrait le démarrage du serveur —
+      // c'est précisément là qu'un échec bloque TOUT le monde.
+      include: ['src/**/*.test.{ts,tsx}', 'server/**/*.test.ts'],
       // Les contrôles de `src/build/` portent sur le RÉSULTAT d'un build
       // (dist/assets) et non sur le code source : ils n'ont rien à faire dans
       // la suite unitaire, où ils produisaient des échecs permanents dans

@@ -10,9 +10,13 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import WritingReportSheet from '../WritingReportSheet';
 import { TRAINER_PREFIX } from '../../data/writingProgress';
 import { writingReport } from '../../data/writingReview';
+import { clearLearningLog, recordWriting } from '../../data/learningLog';
 
 afterEach(cleanup);
-beforeEach(() => localStorage.clear());
+beforeEach(() => {
+  localStorage.clear();
+  clearLearningLog();
+});
 
 const ecrire = (ideaId: string, familyId: string, texte: string) =>
   localStorage.setItem(`${TRAINER_PREFIX}${ideaId}.${familyId}`, texte);
@@ -69,5 +73,28 @@ describe('feuille de rapport', () => {
     await user.click(screen.getByTestId('rapport-fermer'));
     expect(fermer).toHaveBeenCalled();
     vi.unstubAllGlobals();
+  });
+});
+
+describe('feuille de rapport — progression (sprint 63)', () => {
+  it('dit au professeur si la forme s’améliore, pas seulement ce qui a été écrit', () => {
+    for (let i = 1; i <= 4; i += 1) {
+      recordWriting({ date: `2026-04-0${i}`, ideaId: `idee${i}`, familyId: 'verb_analyser', satisfaits: 1, total: 4, mots: 50 });
+    }
+    for (let i = 5; i <= 8; i += 1) {
+      recordWriting({ date: `2026-04-0${i}`, ideaId: `idee${i}`, familyId: 'verb_analyser', satisfaits: 4, total: 4, mots: 70 });
+    }
+    ecrire('bac2023_s2_e3', 'verb_analyser', ANALYSE);
+    render(<WritingReportSheet onClose={() => {}} />);
+    const bloc = screen.getByTestId('rapport-progression');
+    expect(bloc.textContent).toContain('تقدّم');
+    expect(screen.getByTestId('rapport-tendance-verb_analyser').textContent).toContain('نقطة مئوية');
+  });
+
+  it('annonce honnêtement qu’il est trop tôt pour conclure', () => {
+    recordWriting({ date: '2026-04-01', ideaId: 'bac2023_s2_e3', familyId: 'verb_analyser', satisfaits: 2, total: 4, mots: 40 });
+    ecrire('bac2023_s2_e3', 'verb_analyser', ANALYSE);
+    render(<WritingReportSheet onClose={() => {}} />);
+    expect(screen.getByTestId('rapport-progression').textContent).toContain('تخميناً');
   });
 });

@@ -148,7 +148,13 @@ export default function DailyGoalWidget({
         isDarkMode ? 'border-gray-800 bg-gray-900/50' : 'border-emerald-50 bg-gradient-to-r from-emerald-50/70 via-teal-50/40 to-amber-50/40'
       }`}>
         <div className="flex items-center gap-3">
-          <div 
+          {/* Sprint 50 : bouton quand l'objectif est atteint (donc cliquable),
+              simple pastille sinon — un élément inerte ne doit pas être un
+              bouton vide dans l'ordre de tabulation. */}
+          <button
+            type="button"
+            disabled={!isGoalCompleted}
+            aria-label={isGoalCompleted ? 'احتفل بإنجاز هدف اليوم' : undefined}
             onClick={isGoalCompleted ? handleCelebrationClick : undefined}
             className={`w-10 h-10 rounded-2xl flex items-center justify-center font-black shadow-sm ${
               isGoalCompleted 
@@ -158,7 +164,7 @@ export default function DailyGoalWidget({
             title={isGoalCompleted ? 'اضغط لسماع نغمة الانتصار 🎵' : 'الهدف اليومي'}
           >
             {isGoalCompleted ? <Trophy className="w-5 h-5" /> : <Target className="w-5 h-5" />}
-          </div>
+          </button>
           <div>
             <div className="flex items-center gap-2">
               <h3 className="font-black text-[16px] text-[#006d37] dark:text-emerald-400">

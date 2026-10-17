@@ -100,8 +100,8 @@ function SectionCard({ section, onOpenVerb }: { section: MeftahSection; onOpenVe
       animate={{ opacity: 1, y: 0 }}
       className="bg-white dark:bg-[#1a201c] rounded-2xl border border-gray-200 dark:border-gray-800 shadow-sm overflow-hidden"
     >
-      <div
-        className="p-4 md:p-5 cursor-pointer flex items-center justify-between gap-3 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors"
+      <button type="button"
+        className="w-full text-right p-4 md:p-5 cursor-pointer flex items-center justify-between gap-3 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors"
         onClick={() => setOpen((p) => !p)}
       >
         <div className="flex items-center gap-3 min-w-0">
@@ -114,7 +114,7 @@ function SectionCard({ section, onOpenVerb }: { section: MeftahSection; onOpenVe
           </div>
         </div>
         <ChevronRight className={`w-5 h-5 text-gray-400 shrink-0 transition-transform ${open ? 'rotate-180' : ''}`} />
-      </div>
+      </button>
 
       {open && (
         <div className="px-4 md:px-5 pb-4 md:pb-5 pt-1 space-y-3">
@@ -214,9 +214,9 @@ function BacQuestionCard({ question, onOpenVerb }: { question: MeftahBacQuestion
       className="bg-white dark:bg-[#1a201c] rounded-2xl border border-gray-200 dark:border-gray-800 shadow-sm overflow-hidden"
       data-testid={`meftah-bac-question-${question.id}`}
     >
-      <div
+      <button type="button"
         data-testid={`${question.id}-header`}
-        className="p-4 md:p-5 cursor-pointer flex items-start justify-between gap-3 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors"
+        className="w-full text-right p-4 md:p-5 cursor-pointer flex items-start justify-between gap-3 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors"
         onClick={() => setOpen((p) => !p)}
       >
         <div className="min-w-0">
@@ -229,7 +229,7 @@ function BacQuestionCard({ question, onOpenVerb }: { question: MeftahBacQuestion
           <h4 className="font-black text-gray-900 dark:text-white text-sm md:text-base leading-7">{question.instructionAr}</h4>
         </div>
         <ChevronRight className={`w-5 h-5 text-gray-400 shrink-0 mt-1 transition-transform ${open ? 'rotate-180' : ''}`} />
-      </div>
+      </button>
 
       {open && (
         <div className="px-4 md:px-5 pb-4 md:pb-5 space-y-3">

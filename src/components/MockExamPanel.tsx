@@ -160,6 +160,8 @@ export default function MockExamPanel({ onTrain }: Props) {
             </button>
             <button
               data-testid="chrono-remise"
+              aria-label="إعادة ضبط المؤقّت إلى الصفر"
+              title="إعادة ضبط المؤقّت"
               onClick={() => majSession(remettreAZero(session))}
               className="flex items-center px-2 py-1 rounded-xl bg-[#f3f4f5] dark:bg-[#1f2622] text-[#506072] dark:text-gray-300 cursor-pointer"
             >

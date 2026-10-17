@@ -6,6 +6,8 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { randomBytes } from "node:crypto";
 import { openStore, SqliteStore } from "./server/store";
+import { DegradedStore, openStoreOrDegrade } from "./server/store.degraded";
+import { resoudreSecret } from "./server/secret";
 import { PostgresStore, migrateJsonFilesToPostgres } from "./server/store.pg";
 import { resumeActivite, calculeActivite } from "./server/activite";
 import { makeRateLimiter } from "./server/rateLimit";
@@ -15,12 +17,18 @@ import type { ProductionEntry, ActivityEntry, DashboardStudentRow, Student, Teac
 dotenv.config();
 
 const DB_FILE = process.env.KUNZ_DB_FILE || path.join(process.cwd(), "data", "students.db");
-// Sécurité : pas de secret par défaut. Le serveur refuse de démarrer sans JWT_SECRET explicite.
-if (!process.env.JWT_SECRET) {
-  console.error("REFUS DE DÉMARRAGE : JWT_SECRET manquant. Définissez-le dans .env (ex. openssl rand -hex 32).");
+// Sécurité : en production, pas de secret ⇒ refus de démarrer (un secret par
+// défaut rendrait tous les jetons forgeables). En développement, un secret
+// éphémère est tiré au hasard — voir server/secret.ts (sprint 59).
+let JWT_SECRET: string;
+try {
+  const resolution = resoudreSecret(process.env);
+  JWT_SECRET = resolution.secret;
+  if (resolution.avertissement) console.warn(resolution.avertissement);
+} catch (e) {
+  console.error(e instanceof Error ? e.message : String(e));
   process.exit(1);
 }
-const JWT_SECRET = process.env.JWT_SECRET;
 
 /** Email canonique : trim + minuscules — évite test@x ≠ Test@x (2 comptes). */
 const normalizeEmail = (raw: unknown): string =>
@@ -82,7 +90,14 @@ async function dashboardRows(store: Store): Promise<DashboardStudentRow[]> {
 function invalidateDashboard(): void { dashCache = null; }
 
 // ── Backend de persistance : PostgreSQL si DATABASE_URL, sinon SQLite ──
-export type Store = SqliteStore | PostgresStore;
+// `DegradedStore` (sprint 58) fait partie du type : le serveur doit pouvoir
+// démarrer sans persistance plutôt que de refuser de servir l'application.
+export type Store = SqliteStore | PostgresStore | DegradedStore;
+
+/** Vrai quand la persistance est indisponible (comptes désactivés). */
+export function storeEstDegrade(store: Store): store is DegradedStore {
+  return (store as DegradedStore).degraded === true;
+}
 
 /** Ouvre le backend ; migre les JSON hérités (v1) si le backend est vide. */
 async function selectStore(): Promise<Store> {
@@ -100,7 +115,9 @@ async function selectStore(): Promise<Store> {
     return pg;
   }
   console.log("[store] backend SQLite (aucune DATABASE_URL)");
-  return openStore(process.env.KUNZ_DB_FILE);
+  // Sprint 58 : un binaire natif manquant ne doit plus empêcher l'application
+  // de démarrer — voir server/store.degraded.ts.
+  return openStoreOrDegrade(() => openStore(process.env.KUNZ_DB_FILE));
 }
 
 async function startServer() {

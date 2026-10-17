@@ -11,6 +11,19 @@ interface SplashViewProps {
 
 export default function SplashView({ onStart }: SplashViewProps) {
     const [showPrivacy, setShowPrivacy] = useState(false);
+
+    // Sprint 50 — équivalent clavier du clic sur le fond : la fenêtre
+    // « سياسة الخصوصية » se ferme aussi avec Échap. Le fond reste un `div`
+    // (en faire un bouton le placerait dans l'ordre de tabulation devant le
+    // contenu de la fenêtre).
+    useEffect(() => {
+        if (!showPrivacy) return undefined;
+        const surTouche = (e: KeyboardEvent) => {
+            if (e.key === 'Escape') setShowPrivacy(false);
+        };
+        document.addEventListener('keydown', surTouche);
+        return () => document.removeEventListener('keydown', surTouche);
+    }, [showPrivacy]);
 const [showIntroSplash, setShowIntroSplash] = useState<boolean>(true);
   const [isMusicMuted, setIsMusicMuted] = useState<boolean>(false);
   

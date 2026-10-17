@@ -36,11 +36,15 @@ export default function TodayCard({ onOpenPlan }: Props) {
   const terminees = jour.tasks.length - restantes.length;
 
   return (
-    <div
+    // Sprint 49 : bouton, et non div cliquable — une carte pilotée par
+    // `onClick` sur un `div` est invisible au clavier et aux technologies
+    // d'assistance.
+    <button
+      type="button"
       data-testid="today-card"
       onClick={onOpenPlan}
       dir="rtl"
-      className="rounded-3xl p-4 bg-gradient-to-l from-[#006d37]/10 to-[#10b981]/10 dark:from-emerald-950/40 dark:to-teal-950/40 border border-[#006d37]/30 cursor-pointer hover:bg-emerald-50/50 dark:hover:bg-emerald-900/20 transition-all active:scale-[0.99]"
+      className="w-full text-right rounded-3xl p-4 bg-gradient-to-l from-[#006d37]/10 to-[#10b981]/10 dark:from-emerald-950/40 dark:to-teal-950/40 border border-[#006d37]/30 cursor-pointer hover:bg-emerald-50/50 dark:hover:bg-emerald-900/20 transition-all active:scale-[0.99]"
     >
       <div className="flex flex-row-reverse items-center justify-between gap-3 mb-2">
         <div className="flex flex-row-reverse items-center gap-3">
@@ -88,6 +92,6 @@ export default function TodayCard({ onOpenPlan }: Props) {
           )}
         </ul>
       )}
-    </div>
+    </button>
   );
 }

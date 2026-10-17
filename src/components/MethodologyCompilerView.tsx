@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import { useCompteARebours } from '../hooks/useWallClock';
 import { motion, AnimatePresence } from 'motion/react';
 import { 
   Target, Sparkles, BookOpen, Layers, CheckCircle2, AlertTriangle, 
@@ -235,18 +236,18 @@ export default function MethodologyCompilerView({ onBackToHome }: MethodologyPro
     return `اكتب صياغتك المنهجية الكاملة هنا...\n${parts.join('\n')}`;
   }, [selectedVerbId, sourceGate, isDual]);
 
-  // Timer Effect for Stage 4
+  // Sprint 45 : minuteurs adossés à l'horloge. Le drill de 60 s est NOTÉ —
+  // le prolonger en passant l'onglet en arrière-plan faussait le résultat.
+  const dureeEtape4 = useRef(timerSeconds);
+  if (!isTimerRunning) dureeEtape4.current = timerSeconds;
+  const resteEtape4 = useCompteARebours({
+    dureeSec: dureeEtape4.current,
+    actif: isTimerRunning,
+    onFin: () => setIsTimerRunning(false),
+  });
   useEffect(() => {
-    let interval: any = null;
-    if (isTimerRunning && timerSeconds > 0) {
-      interval = setInterval(() => {
-        setTimerSeconds(prev => prev - 1);
-      }, 1000);
-    } else if (timerSeconds === 0) {
-      setIsTimerRunning(false);
-    }
-    return () => clearInterval(interval);
-  }, [isTimerRunning, timerSeconds]);
+    if (isTimerRunning) setTimerSeconds(resteEtape4);
+  }, [isTimerRunning, resteEtape4]);
 
   // V3.1 drill timer 60s
   useEffect(() => {
@@ -260,9 +261,12 @@ export default function MethodologyCompilerView({ onBackToHome }: MethodologyPro
       setExtensionUnlocked(isExtensionUnlocked());
       return;
     }
-    const id = setInterval(()=> setDrillSec(s=> s-1), 1000);
-    return ()=> clearInterval(id);
   }, [drillActive, drillSec]);
+
+  const resteDrill = useCompteARebours({ dureeSec: 60, actif: drillActive });
+  useEffect(() => {
+    if (drillActive) setDrillSec(resteDrill);
+  }, [drillActive, resteDrill]);
 
   // Handle stage change
 const handleSelectStage = (stage: 1 | 2 | 3 | 4) => {
@@ -1422,7 +1426,7 @@ const handleSelectStage = (stage: 1 | 2 | 3 | 4) => {
                     {currentVerb.criteria.map((cr, idx) => {
                       const isChecked = selectedEvidenceForCriterion[cr.id];
                       return (
-                        <div
+                        <button type="button"
                           key={cr.id}
                           onClick={() => {
                             setSelectedEvidenceForCriterion(prev => ({
@@ -1450,7 +1454,7 @@ const handleSelectStage = (stage: 1 | 2 | 3 | 4) => {
                               </div>
                             </div>
                           </div>
-                        </div>
+                        </button>
                       );
                     })}
                   </div>
@@ -1832,9 +1836,9 @@ const handleSelectStage = (stage: 1 | 2 | 3 | 4) => {
                   key={verbCard.id}
                   className="bg-white dark:bg-[#161c18] rounded-2xl border border-gray-200 dark:border-gray-800 shadow-sm overflow-hidden"
                 >
-                  <div 
+                  <button type="button" 
                     onClick={() => setExpandedVerbCardId(isExpanded ? null : verbCard.id)}
-                    className="p-5 cursor-pointer flex items-center justify-between hover:bg-gray-50 dark:hover:bg-white/5 transition-all"
+                    className="w-full text-right p-5 cursor-pointer flex items-center justify-between hover:bg-gray-50 dark:hover:bg-white/5 transition-all"
                   >
                     <div className="flex items-center gap-3">
                       <div className="w-10 h-10 rounded-xl bg-emerald-600 text-white font-black flex items-center justify-center text-sm shadow-sm">
@@ -1865,7 +1869,7 @@ const handleSelectStage = (stage: 1 | 2 | 3 | 4) => {
 
                       {isExpanded ? <ChevronUp className="w-5 h-5 text-gray-400" /> : <ChevronDown className="w-5 h-5 text-gray-400" />}
                     </div>
-                  </div>
+                  </button>
 
                   {/* Expanded Verb Details */}
                   {isExpanded && (
