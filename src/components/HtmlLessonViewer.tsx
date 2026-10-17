@@ -65,9 +65,15 @@ export default function HtmlLessonViewer({ lessonKey, onBack, onNext, nextTitleA
 
       {html !== null && (
         <div className="rounded-2xl overflow-hidden border border-gray-200 dark:border-gray-800 shadow-sm bg-white">
+          {/* M10/M11 (2026-10-17) : sandbox SANS allow-same-origin — origine
+              opaque, le JS inline des leçons ne peut plus toucher au
+              localStorage/JWT de l'app. Mesuré : aucune leçon n'utilise le
+              stockage ni le réseau ; allow-scripts seul suffit (verrou
+              src/__tests__/sandbox.lock.test.ts). */}
           <iframe
             title={`lesson-${lessonKey}`}
             srcDoc={html}
+            sandbox="allow-scripts"
             className="w-full"
             style={{ height: '78vh', border: 'none', display: 'block' }}
           />

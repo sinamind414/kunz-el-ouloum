@@ -7710,8 +7710,10 @@ export const SVT_FLASHCARDS: Flashcard[] = SVT_QUIZ_QUESTIONS.map((question) => 
   id: `fc_q_${question.id}`,
   unitId: question.unitId,
   question: question.questionText,
-  options: question.options,
-  correctOptionIndex: question.correctAnswerIndex,
+  // B6 (2026-10-17) : les champs `options`/`correctOptionIndex` du QCM source
+  // ne sont PLUS recopiés — une carte est un couple question → réponse.
+  // (Avant : donnée morte transportée sur les 550 cartes, et sémantiquement
+  // trompeuse — des QCM habillés plutôt que des cartes de rappel actif.)
   answerBullets: [
     `**الإجابة الصحيحة:** ${question.options[question.correctAnswerIndex]}`,
     question.explanation
