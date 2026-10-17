@@ -1,5 +1,7 @@
 # BILAN D'ÉTAT — Correcteur & Meftah (au 2026-09-19, fin de session)
 
+> **Mise à jour de provenance (2026-10-17)** — ce bilan est un instantané historique. Les passages qui qualifient la correction consultée de « ministérielle/officielle » n'ont pas été confirmés par un document original exploitable ; ce statut est **Non vérifiable**. Les totaux et ventilations cités sont des références internes, pas une validation ministérielle. Voir `docs/AUDIT_MIFTAH_MANHAJIA_2026-10-17.md` §7.
+
 **Santé globale : 692/692 tests vitest · 138/138 harnais · check:v2 OK · build production OK.**
 **Documents de référence :** `AUDIT_CORRECTEUR_MEFTAH_2026-09-19.md` (audit + Pierre 1) · `VERIF_HIKALA_BAC.md` (fiche هيكلة) · `AUDIT_ARCHITECTURE_2026-09-19.md` (repo global).
 

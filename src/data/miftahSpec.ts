@@ -1,10 +1,10 @@
 // src/data/miftahSpec.ts
-// Spécification MIFTAH — source unique du HTML, du moteur et des cartes React (version = MIFTAH_VERSION)
-// Pro : centralise la nomenclature, les couleurs, les gabarits et les erreurs coûteuses
-// Marque : docs/MARQUE.md est le document de décision (noms, phrase-récit, placement).
-//         Le garde-fou `npm run check:miftah` prouve la cohérence fiche ↔ spec ↔ carte.
+// Spécification de la carte React et du moteur (version = MIFTAH_VERSION).
+// Le HTML autonome public/miftah.html est une fiche v6.0 distincte, pas un rendu généré de cette source.
+// La spec centralise la nomenclature, les couleurs, les gabarits et les repères de rédaction.
+// Marque : docs/MARQUE.md est le document de décision ; check:miftah vérifie les contrats partagés.
 
-export const MIFTAH_VERSION = '6.0' as const;
+export const MIFTAH_VERSION = '6.1' as const;
 // Nom d'usage (UI, bouche de l'élève) — jamais autre chose
 export const MIFTAH_NAME_AR = 'المفتاح';
 // Nom officiel (documents légaux/CGU, argumentaire, titre de la rubrique depuis le 2026-09-15) — jamais abrégé
@@ -21,7 +21,7 @@ export const MIFTAH_BRAND_AR = 'كنز العلوم';
 // Phrase-récit — UNE seule version, partout où la marque se présente (docs/MARQUE.md §2)
 export const NARRATIVE_AR = 'كنز العلوم يُفتح بمفتاح المنهجية';
 // Positionnement — la cible : l'élève qui connaît le cours mais perd les points
-export const POSITIONING_AR = 'المقرر موجود عندك. المفتاح يحوّله إلى نقاط.';
+export const POSITIONING_AR = 'المقرر موجود عندك. المفتاح يساعدك على تنظيم الإجابة.';
 
 export const MIFTAH_COLORS = {
   gold: '#c8962e', goldL: '#fbf3e2', goldD: '#8a6116',
@@ -72,10 +72,10 @@ export const STEP0 = {
 // Les 4 dents — Update 2026-09-22 (MARQUE §14) : chaque dent porte le nom du GESTE v6 (فعْل · دليل · علاقة · جواب).
 // Ids et contenu pédagogique (actionAr/correctorAr) inchangés — seul le libellé change (owner 2026-09-22).
 export const ASNAN = [
-  { id: 1 as const, nameAr: 'فعل', iconAr: '🔍', actionAr: 'أطوّق الفعل · أسطّر الكلمات المفتاحية · أرقّم إجابتي برقم السؤال', correctorAr: 'إجابة بلا رقم أو تحت رقم خاطئ = 0. الفعل الخاطئ = تفقد نقطة الفعل كاملة.' },
-  { id: 2 as const, nameAr: 'دليل', iconAr: '🔑', actionAr: 'أستخرج من الوثيقة أرقاما + وحدات + اتجاه التغيّر', correctorAr: 'نقطة الاستخراج للرقم مع وحدته. «يرتفع» وحدها = نصف نقطة. رقم بلا وحدة = خطأ.' },
-  { id: 3 as const, nameAr: 'علاقة', iconAr: '🔄', noteAr: 'إن سمح الفعل', actionAr: 'أربط المعطى بالسبب/الآلية من الدرس: «لأنّ…»', correctorAr: 'ربط بلا معطى = نصف النقطة. معطى بلا ربط والفعل يطلبه = نصف النقطة.' },
-  { id: 4 as const, nameAr: 'جواب', iconAr: '🔓', actionAr: 'جملة واحدة تجيب حرفيا على الكلمات التي سطّرتُها في السنّ 1', correctorAr: 'خاتمة غائبة = نقطة ضائعة. خاتمة لا تحوي كلمات السؤال = لا تُقرأ.' },
+  { id: 1 as const, nameAr: 'فعل', iconAr: '🔍', actionAr: 'أطوّق الفعل · أسطّر الكلمات المفتاحية · أرقّم إجابتي برقم السؤال', correctorAr: 'ترقيم الإجابة بوضوح يساعد على ربطها بالسؤال. أتبع تعليمات الموضوع؛ لا أعمّم أثر غياب الرقم على النقطة. أراجع الفعل قبل الكتابة.' },
+  { id: 2 as const, nameAr: 'دليل', iconAr: '🔑', actionAr: 'أستخرج من الوثيقة أرقاما + وحدات + اتجاه التغيّر', correctorAr: 'أذكر الوحدة إذا كانت ضرورية لفهم القيمة أو طلبتها التعليمة. أختار قيمة تسند الإجابة؛ تفاصيل التقييم يحددها سلم السؤال.' },
+  { id: 3 as const, nameAr: 'علاقة', iconAr: '🔄', noteAr: 'إن سمح الفعل', actionAr: 'أربط المعطى بالسبب/الآلية من الدرس: «لأنّ…»', correctorAr: 'أبني العلاقة على معطى محدد. أضيف السبب أو الآلية عندما تطلب التعليمة تفسيرًا وتسمح الأدلة بذلك.' },
+  { id: 4 as const, nameAr: 'جواب', iconAr: '🔓', actionAr: 'جملة واحدة تجيب حرفيا على الكلمات التي سطّرتُها في السنّ 1', correctorAr: 'أختم بجملة مباشرة تجيب السؤال وتستعمل مفرداته الأساسية لتكون واضحة عند التصحيح.' },
 ] as const;
 
 // Les 3 phrases prêtes (d)
@@ -89,7 +89,7 @@ export const READY_SENTENCES = {
 export const SYNTHESIS = {
   chain: ['القفل · اِفهم', 'جزء I · 1 2 3 4', 'جزء II · 1 2 3 4', 'جزء III · 1 2 3 4', 'التركيب = يُجيب «اِفهم»'],
   templateAr: 'من الجزء I نعلم أنّ … ، ومن الجزء II أنّ … ، ومن الجزء III أنّ … ؛ ومنه [الإجابة على سطر «الهدف العام»].',
-  correctorAr: 'تركيب بلا «ومنه» يفقد نصف النقطة عادة. معلومة من الدرس لم تظهر في الأجزاء: تلك المعلومة لا تُحتسب.',
+  correctorAr: 'أربط النتائج المتاحة بهدف التمرين في جملة تركيب واضحة؛ لا أضيف معلومة لا تسندها الأجزاء.',
 } as const;
 
 // ح : صيغتان خاصتان
@@ -99,20 +99,20 @@ export const SPECIAL_FORMS = {
     cueAr: 'احسب…',
     teethAr: '2 = القانون بالحروف · 3 = التعويض خطوة خطوة · 4 = النتيجة بوحدتها',
     exampleAr: 'Chargaff : %A = %T …',
-    correctorAr: 'القانون بالحروف = نقطة مستقلة حتى لو أخطأتَ في الحساب. نتيجة بلا خطوات تُنقَّط جزئيًّا غالبًا، والوحدة المفقودة قد تُخصم.',
+    correctorAr: 'أعرض القانون، التعويض، والنتيجة بوحدتها عند الحاجة. ما يُحتسب من كل خطوة يتبع سلم التصحيح الخاص بالموضوع.',
   },
   pedigree: {
     labelAr: 'شجرة النسب',
     cueAr: 'حدّد نمط الوراثة',
     teethAr: '2 = حدثان حاسمان: ① أبوان سليمان ← طفل مصاب (السيادة) ② بنت مصابة من أب سليم / ابن سليم من أم مصابة (الموقع) · 3 = لماذا يستبعد · 4 = الحكمان (متنحٍّ/سائد + جسمي/مرتبط بـ X) ثم الأنماط',
-    correctorAr: 'نمط بلا الحكم الثاني يُنقَّط جزئيًّا غالبًا. بلا حدث حاسم للموقع: «على الأرجح جسمي لأنّ …» + مبرر = كاملة.',
+    correctorAr: 'أستعمل قرائن النسب لتبرير حكمي السيادة والموقع إن أمكن؛ إذا لم تكفِ القرائن، أذكر حدود الاستنتاج وأبرر درجة اليقين.',
   },
   // حدّاد — 3e forme spéciale (09-07, MARQUE §12bis) : parité avec la ligne verso de la fiche
   hamad: {
     labelAr: 'الحدّاد',
     cueAr: 'اقترح / برّر / ناقض / قدّم حلا',
     teethAr: '2 = البيانات: كل المعطيات اللازمة (الوثيقة + معلوماتي)، لا نسخ شامل · 3 = المعالجة: مقارنة، علاقة، تفسير أو مناقشة · 4 = المنتج: حسب التعليمة (فرضية / تبرير / توصية / مخطط)',
-    correctorAr: 'إعادة الملاحظة بدل التصنيع تسقط في شبه الصفر. فرضية بلا آلية تُنقَّط جزئيًّا غالبًا.',
+    correctorAr: 'أقدّم منتجًا جديدًا ومبرّرًا بدل تكرار الملاحظة. تحدد التعليمة وسلم الموضوع عناصر التقييم.'
   },
 } as const;
 
@@ -122,13 +122,13 @@ export const CONCLUSION_CHECK = {
   genericAr: 'عام («الإنزيم نوعي تجاه مادة التفاعل»)',
   specificAr: 'خاص («الغليكوكيناز نوعي تجاه الغلوكوز»)',
   ruleAr: 'إن طُلب الهدف العام → العام أولا، الخاص بين قوسين. إن طُلبت الوثيقة بعينها → العكس.',
-  correctorAr: 'خاص مكان عام يُقرأ «لم يعمّم»، وعام مكان خاص يُقرأ «لم يستعمل الوثيقة» — في كلتا الحالتين نصف النقطة غالبًا.',
+  correctorAr: 'أجعل الخاتمة خاصة أو عامة بحسب ما تطلبه التعليمة، وأبيّن صلتها بالدليل.',
 } as const;
 
 // ي : جملة النجاة
 export const RESCUE_SENTENCE = {
-  describeInsteadOfExplain: 'وتفسير ذلك أنّ …… ثم الآلية. لا شطب.',
-  explainInsteadOfDescribe: 'لا حيلة سوى الشطب — لهذا تُفحص البوابة قبل الكتابة.',
+  describeInsteadOfExplain: 'إذا كانت الإضافة تخدم التعليمة، افصلها عن الوصف؛ وإلا فاحتفظ بما يجيب المطلوب مباشرة.',
+  explainInsteadOfDescribe: 'راجع فعل التعليمة وأعد صياغة الجواب وفق المطلوب؛ افصل السبب عن الملاحظة عند الحاجة.',
 } as const;
 
 // ك : شحذ
@@ -165,13 +165,13 @@ export const LEVELS = [
   { labelAr: 'يستهدف الامتياز', cardAr: 'المفتاح+ + الملحق (ذ، ر، س) — لا شيء يُستدعى في آن واحد', countAr: '≈ 21' },
 ] as const;
 
-// 📝 خمسة أخطاء تكلّف أكثر من الجهل
+// 📝 خمس مراجعات قبل التسليم — conseils méthodologiques, pas un barème universel.
 export const FIVE_COSTLY_ERRORS = [
-  'إجابة بلا رقم سؤال — أكثر النقاط ضياعا عبثا.',
-  'رقم بلا وحدة — يُعدّ خطأ لا نسيانا.',
-  'خاتمة غائبة — الاستنتاج له نقطته المستقلة في كل سؤال «فيلم».',
-  'شجرة نسب بحكم واحد — نصف النقطة مضمون الضياع.',
-  'تركيب يعيد الأجزاء دون «ومنه» — الجملة الأغلى في الورقة.',
+  'إجابة بلا رقم السؤال — رقّم الإجابة بوضوح لتسهيل ربطها بالتعليمة.',
+  'قيمة بلا وحدة لازمة — أضف الوحدة عندما تحتاج القيمة إليها أو تطلبها التعليمة.',
+  'خاتمة لا تجيب المطلوب — اكتب جملة أخيرة تربط النتيجة بهدف السؤال.',
+  'حكم وراثي غير مكتمل — بيّن القرائن التي تسند الحكم وحدود ما تسمح به.',
+  'تركيب يسرد الأجزاء فقط — اربط النتائج بالهدف ولا تضف ما لا تسنده المعطيات.',
 ] as const;
 
 // Fiche — partition recto/verso : les erreurs 1-3 (base) voyagent sur le recto avec
@@ -180,14 +180,14 @@ export const FIVE_COSTLY_ERRORS = [
 export const RECTO_ERRORS = FIVE_COSTLY_ERRORS.slice(0, 3) as string[];
 export const VERSO_ERRORS = FIVE_COSTLY_ERRORS.slice(3) as string[];
 
-// Footer des deux faces — la même chaîne dans /miftah.html et MiftahCard (garde-fou check:miftah)
+// Footers propres à la carte React ; le HTML autonome v6.0 a ses propres footers.
 export const FOOTER_RECTO_AR = 'مفتاح المنهجية · كنز العلوم · الوجه الأول — المفتاح (11 عنصرًا) · يكفي وحده للأغلبية';
 export const FOOTER_VERSO_AR = 'مفتاح المنهجية · كنز العلوم · الوجه الثاني — المفتاح+ · لا يحتاجه أحد في اليوم الأول';
 
 // Annexe PRO — الملحق (page 3 de la fiche, décision 2026-09-07, docs/MARQUE.md §12ter)
 // Profils « يستهدف الامتياز » uniquement, distribuée sur demande. Trois outils récupérés
 // de la dérivée interne « المفتاح PRO » (10 pages, auditée : zéro barème, nom de matière
-// erroné) — réécrits sous la marque et reliés au barème (cases 📝 المصحح).
+// erroné) — réécrits sous la marque et accompagnés de repères de correction (non universels).
 export const MIFTAH_ANNEXE_AR = 'المفتاح PRO';
 export const ANNEXE = {
   ruleAr: 'لا أبحث عن جواب فقط؛ بل أبني جوابًا تُظهر فيه الأدلة كيف وصلتُ إلى النتيجة.',
@@ -200,7 +200,7 @@ export const ANNEXE = {
     ['اختبار فرضية', '«تُدعَم / تُرفض الفرضية وفق النتائج والشروط»'],
   ],
   causalAr: 'لا أكتب «X يسبب Y» لمجرد أن X وY تغيّرا معًا — السببية تحتاج تصميمًا تجريبيًا (شاهد + شروط مضبوطة). الارتباط وحده = علاقة لا سبب.',
-  forceCorrectorAr: 'مبالغة الخاتمة (سبب بلا تصميم تجريبي) = نقطة الفهم تضيع ولو كانت الخاتمة علمية صحيحة. «تُظهر الوثيقة» بلا رقم محدد = استخراج ناقص.',
+  forceCorrectorAr: 'لا أستنتج السببية من تزامن متغيرين وحده؛ أبحث عن تصميم تجريبي مناسب. وأذكر قيمة أو شرطًا محددًا عندما أستند إلى الوثيقة.',
   experimentQuestionsAr: [
     ['🧪 ماذا غيّرنا؟', 'المتغيّر المُختبَر'],
     ['📏 ماذا قِسنا؟', 'المتغيّر المُقاس'],
@@ -208,7 +208,7 @@ export const ANNEXE = {
     ['🔒 ماذا أبقينا ثابتًا؟', 'الشروط المضبوطة'],
   ],
   experimentFormulaAr: 'تغيير واحد + قياس واحد + شاهد + شروط ثابتة = تجربة صالحة',
-  experimentCorrectorAr: 'سؤال تجربة بلا المتغيّر المُختبَر + الشاهد = نصف النقطة. وصف البروتوكول بلا النتيجة المتوقعة = لا يُحتسب تحليلًا.',
+  experimentCorrectorAr: 'يقوى تحليل التجربة بتحديد المتغيّر المختبَر والمقاس والشاهد والشروط المضبوطة، ثم ربط البروتوكول بالنتيجة المتوقعة.',
   hypothesisTitleAr: 'الفرضية — تصنيع يُختبَر (حدّاد 3 ← 4)',
   hypothesisTemplateAr: 'نقترح أن …… لأن ……، ويمكن اختبارها بدراسة أثر …… على …… مع اعتماد …… كشاهد.',
   hypothesisChecksAr: [
@@ -217,7 +217,7 @@ export const ANNEXE = {
     'هل يمكن استبعاد تفسير بديل معقول؟',
     'هل الأدلة كافية للحكم المطلوب؟',
   ],
-  hypothesisCorrectorAr: 'فرضية بلا آلية («لأنّ» فارغة) تُنقَّط جزئيًّا غالبًا. فرضية بلا تجربة قابلة (بلا شاهد/أثر) تسقط في شبه الصفر — التصنيع ليس أمنية (الحدّاد، الوجه الثاني).',
+  hypothesisCorrectorAr: 'أصوغ توقعًا محددًا قابلًا للاختبار، وأبيّن الدليل أو المقارنة التي تسمح بفحصه.',
 } as const;
 // V4.1 asset #2 (audit 09-07) — le pont document ↔ leçon : rendu dans le verso (ز)
 export const TOOTH3_ROUTE_AR = 'معطى ← مقارنة ← علاقة ← تفسير';

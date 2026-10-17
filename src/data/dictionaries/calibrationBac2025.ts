@@ -7,9 +7,9 @@
 // a/b survivent en archives du fit seulement.
 //
 // RÈGLE MOTEUR ACTUELLE (Pierre 2 — audit §5.1) :
-//   · la note se calcule EXCLUSIVEMENT contre les attendus officiels de la
-//     question (attendusBac2025.ts — sources : build prouvé fidèle + corrigé
-//     ministériel 2025) : plus JAMAIS la banque d'unité en dénominateur ;
+//   · la note se calcule EXCLUSIVEMENT contre les attendus encodés de la
+//     question (`attendusBac2025.ts`, sources build + correction consultée ;
+//     statut ministériel Non vérifiable) : plus JAMAIS la banque d'unité en dénominateur ;
 //   · item auto = une forme reconnue dans la réponse → ses points ;
 //   · couverture = Σ auto crédité / Σ auto (les items manuels sont exclus du
 //     dénominateur et remontés au correcteur humain) ;
@@ -82,7 +82,7 @@ export interface ResultatNotation {
 
 
 
-/** Questions du barème officiel bac2025 (Ex1 uniquement — build). */
+/** Questions du barème de référence encodé bac2025 (Ex1 — build). */
 const QUESTIONS_EX1_BAC2025: Record<1 | 2, string[]> = {
   1: ['bac2025_S1/S1-Ex1/Q1', 'bac2025_S1/S1-Ex1/Q2'],
   2: ['bac2025_S2/S2-Ex1/Q1', 'bac2025_S2/S2-Ex1/Q2'],
@@ -119,7 +119,7 @@ export interface NoteCalibree extends ResultatNotation {
   pointsAttendusAuto: number;
   /** Détail par attendu (le prof voit tout, y compris les items manuels). */
   verdicts: VerdictAttendu[];
-  /** Couche DICTIONNAIRE : entités officiel+verifie reconnues (pédagogique). */
+  /** Couche DICTIONNAIRE : entités de référence + vérification (pédagogique). */
   entitesReconnues: EntiteDetectee[];
   /** Diagnostic mots-clés de l'unité (pédagogique — JAMAIS la note). */
   diagnosticMotsCles: { trouves: string[]; manquants: string[]; passe: boolean };
@@ -144,7 +144,7 @@ export interface NoteCalibree extends ResultatNotation {
   /** Le registre d'attendus utilisé (traçabilité). */
   registre: AttendusExercice;
   /**
-   * F1 — points acquis AUTOMATIQUEMENT sur l'échelle officielle (= `points`).
+   * F1 — points acquis AUTOMATIQUEMENT sur l'échelle de référence (= `points`).
    * Ce sont les seuls points réellement attribués par la machine.
    */
   pointsAutoAcquis: number;
@@ -167,9 +167,9 @@ export interface NoteCalibree extends ResultatNotation {
  * RÈGLE MOTEUR : `points` dépend de la couverture des attendus, soit directement
  * (couverture × maxPts), soit par ventilation par partie quand le registre
  * déclare `poidsPartie` (S1-Ex3 : chaque partie est ramenée à son poids
- * officiel — docs/DIAGNOSTIC_EX3.md) ; PUIS le tout est plafonné par les
+ * de référence — docs/DIAGNOSTIC_EX3.md) ; PUIS le tout est plafonné par les
  * signaux d'intégrité (salade / perroquet / négations — integriteCopie.ts) ;
- * le crédit du barème officiel reste affiché en diagnostic (jamais additionné).
+ * le crédit du barème de référence reste affiché en diagnostic (jamais additionné).
  */
 // formePresente vit dans lib/validation (partagée avec le diagnostic barème —
 // P2 : aucun matching par substring nu dans le produit).
@@ -234,8 +234,8 @@ export function noterExerciceCalibre(
   const plafonds = calculerPlafonds(signaux);
   let brut = couverture * registre.maxPts;
   // E (2026-09-27) : ventilation par partie quand la granularité des items
-  // dépasse le barème officiel (S1-Ex3). Chaque partie est ramenée à son poids
-  // officiel : crédit_partie × officiel / registre. Sans map, ou si la map
+  // dépasse le total encodé (S1-Ex3). Chaque partie est ramenée à son poids
+  // de référence : crédit_partie × poids de référence / registre. Sans map, ou si la map
   // oublie un item auto, on retombe sur le modèle plat (sécurité).
   const pp = registre.poidsPartie;
   if (pp) {
@@ -249,7 +249,7 @@ export function noterExerciceCalibre(
     if (mapCouvre) {
       brut = 0;
       for (const p of [1, 2, 3] as const) {
-        if (pp.registre[p] > 0) brut += partCredit[p] * (pp.officiel[p] / pp.registre[p]);
+        if (pp.registre[p] > 0) brut += partCredit[p] * (pp.reference[p] / pp.registre[p]);
       }
       brut = Math.min(registre.maxPts, Math.max(0, brut));
     }
@@ -273,17 +273,17 @@ export function noterExerciceCalibre(
   // ils forment la réserve à arbitrer par le correcteur (fourchette [A, A+U]).
   //
   // F1+ (2026-09-28) : sur les exercices à ventilation par partie, la réserve
-  // doit être exprimée sur l'ÉCHELLE OFFICIELLE (× officiel/registre de la
+  // doit être exprimée sur l'échelle de référence (× poids de référence / registre de la
   // partie de l'item), exactement comme la note — sinon la fourchette [A, A+U]
   // sous-estime l'arbitrage humain (S1-Ex3 : le schéma vaut 0,5 registre mais
-  // 1,0 officiel, et la note plafonne à 6,36 sans que la fourchette n'affiche
+  // 1,0 pt de référence, et la note plafonne à 6,36 sans que la fourchette n'affiche
   // les 2,0 manquants).
   const reserveManuelle = Math.round(
     verdicts
       .filter((v) => !v.auto)
       .reduce((s, v) => {
         const p = pp?.partie[v.id];
-        const ratio = p && pp && pp.registre[p] > 0 ? pp.officiel[p] / pp.registre[p] : 1;
+        const ratio = p && pp && pp.registre[p] > 0 ? pp.reference[p] / pp.registre[p] : 1;
         return s + v.points * ratio;
       }, 0) * 100,
   ) / 100;

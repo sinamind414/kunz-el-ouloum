@@ -2,8 +2,9 @@
 // « المفتاح » — مفتاح المنهجية (3 visages méthode + 3 visages application BAC 2025).
 // Version de CETTE extension : MIFTAH_MANHAJIA_VERSION ci-dessous (source unique) —
 // parente de MIFTAH_VERSION (fiche méthode, miftahSpec.ts).
-// Source : carte « المفتاح » (métadonnées conformes au barème officiel BAC 2025 —
-// les réponses modèles des visages 4-6 reprennent les عناصر الإجابة officiels).
+// Source : carte « المفتاح » et sujets BAC 2025 ; les réponses modèles s'appuient sur
+// un corrigé de référence consulté. La ventilation des points n'a pas été vérifiée
+// sur un barème ministériel original : l'interface le signale à l'élève.
 // Contrat : contenu affiché dans MeftahView ; les أفعال détaillés renvoient vers
 // methodologyVerbs.tsx (aucune duplication des 6 réflexes canoniques).
 
@@ -56,21 +57,21 @@ const BASE_LEVEL: MeftahLevel = {
   id: 'base',
   order: 1,
   title: 'المفتاح',
-  subtitle: '4 حركات تفتح كل إجابة',
-  fr: 'La clé — 4 gestes, 2 portes',
+  subtitle: '4 حركات لبناء جواب واضح + فحص ختامي',
+  fr: 'La clé — 4 gestes, 3 décisions',
   prerequisiteAr: 'للجميع، من اليوم الأول',
   tenSecondsAr:
-    'ما الهدف؟ → ماذا يريد الفعل؟ → أين دليله؟ → ما العلاقة دون تفسير؟ → ماذا أستنتج للهدف؟',
+    'الهدف؟ → هل يوجد سند؟ → ما مصدره؟ → ما الحركة المطلوبة؟ → فعل، دليل، علاقة عند الطلب، جواب؛ ثم فحص.',
   sections: [
     {
       id: 'teeth',
       badge: 'حركات',
       title: 'الحركات الأربع',
       bullets: [
-        '1) فعل — اقرأ المطلوب + الهدف',
-        '2) دليل — انتقِ الدليل',
-        '3) علاقة — حلّل ثم اربط',
-        '4) جواب — استنتج هدف السياق',
+        '1) فعل — اقرأ التعليمة كاملة وحدّد المنتج المطلوب',
+        '2) دليل — انتقِ المعطيات الضرورية مع وحداتها عند الحاجة',
+        '3) علاقة — اربط بالدليل إذا طلبت التعليمة ذلك',
+        '4) جواب — أجب مباشرة عن هدف السؤال',
       ],
       goldAr: 'لا أحفظ 4 وصفات؛ أتعلم 4 حركات. التفسير يأتي بعد التحليل، لا داخله.',
     },
@@ -109,13 +110,13 @@ const BASE_LEVEL: MeftahLevel = {
       badge: '3',
       title: 'علاقة — وصفة حلّل',
       bullets: [
-        '1) تعريف الوثيقة',
-        '2) تفكيك بقيم',
-        '3) علاقة كلما',
-        '4) استنتاج الهدف',
+        '1) حدّد ما تمثّله الوثيقة',
+        '2) اختر القيم والاتجاهات المرتبطة بالتعليمة',
+        '3) صِف العلاقة التي تسندها المعطيات (كلما / بينما / مقارنة)',
+        '4) لا تحوّل العلاقة إلى سبب إلا إذا طلبت التعليمة تفسيرًا أو دعمت التجربة ذلك',
       ],
       warnAr:
-        'فاصل إلزامي: في «حلّل» ممنوع: هذا يدل، يفسَّر بـ، راجع إلى، لأن. هذه كلمات التفسير — أضفها فقط إذا طلب فسّر / علّق / اشرح.',
+        'في «حلّل» ابدأ بوصف المعطيات والعلاقات التي تسندها الوثيقة. عبارات «لأنّ / راجع إلى» تدخل سببًا؛ استعملها عندما تطلب التعليمة تفسيرًا أو عندما تسمح الأدلة بذلك.',
       linkedVerbId: 'analyse',
     },
     {
@@ -128,10 +129,13 @@ const BASE_LEVEL: MeftahLevel = {
     {
       id: 'gates',
       badge: 'أ',
-      title: 'البابان',
+      title: '3 قرارات قبل الكتابة — في التطبيق',
+      introAr:
+        'في المحاكي تمرّ القرارات الثلاثة بالتتابع. في البطاقة المطبوعة يظهر بابان ثم سطر للتعرّف على العائلة؛ ليس سطر العائلة بوابة إضافية في تلك البطاقة.',
       bullets: [
-        'الباب 1 — من الوثيقة؟ وثيقة / جدول / منحنى / تجربة → أبدأ بالدليل ثم التحليل',
-        'الباب 2 — من المكتسبات؟ تمرين 1 غالبا: سم، عرّف، اذكر، صف، نص علمي، مخطط',
+        '1) الوجود — هل تعتمد التعليمة على وثيقة أو جدول أو منحنى أو تجربة؟ إن لم يوجد سند، أبدأ من المكتسبات.',
+        '2) المصدر — وثيقة فقط أم وثيقة + معلومات مكتسبة؟ أستعمل ما طلبته التعليمة ولا أضيف مصدرًا بلا حاجة.',
+        '3) الحركة — الصورة (وصف/تحليل)، الفيلم (تفسير)، أم الحدّاد (اقتراح/فرضية)؟ أختارها من التعليمة كاملة، لا من الفعل وحده.',
       ],
     },
   ],
@@ -219,7 +223,7 @@ const PLUS_LEVEL: MeftahLevel = {
         'مشكل علمي → فرضية قابلة للاختبار → اختبار → نتائج → مصادقة أو نفي',
       ],
       goldAr:
-        'قواعد الفرضية: ممنوعة كلمة «ربما». إذا طلب فرضيتين: واحدة صحيحة على الأقل. إذا طلب واحدة: أقرأ التمرين كاملا لأقترح الصحيحة. قالب: «سبب ... هو ... وبالتالي ...»',
+        'الفرضية الواضحة قابلة للاختبار: صُغ سببًا محددًا واربطه بنتيجة متوقعة. إذا طلبت التعليمة فرضيتين، اكتب فرضيتين مستقلتين. قالب ممكن: «نفترض أن ... مما يؤدي إلى ... ويمكن التحقق من ذلك بـ ...».',
       linkedVerbId: 'hypothesize',
     },
     {
@@ -266,7 +270,7 @@ const PLUSPLUS_LEVEL: MeftahLevel = {
   id: 'plusplus',
   order: 3,
   title: 'المفتاح++',
-  subtitle: 'طبقة الكتابة — كيف تأخذ النقطة',
+  subtitle: 'طبقة الكتابة — كيف أنظّم إجابتي',
   fr: 'Couche écriture',
   prerequisiteAr: 'بعد إتقان التحليل دون تفسير',
   tenSecondsAr:
@@ -295,7 +299,7 @@ const PLUSPLUS_LEVEL: MeftahLevel = {
         { verbAr: 'رسم بنية', moveAr: 'غالبا وصف أو استخراج لا تحليل متغيرات. من العام إلى الخاص.', mistakeAr: 'تفكيك متغيرات على رسم بنية' },
       ],
       warnAr:
-        'لغة التحليل فقط: نلاحظ / نسجل · تزايد، تناقص، ثبات، انعدام، قيمة قصوى. ممنوع داخل حلل: هذا يدل، يفسَّر، راجع إلى، لأن.',
+        'في التحليل: أصف ما تُظهره المعطيات وأذكر العلاقة المدعومة. عبارات «هذا يدل / يفسَّر / لأن» تُدخل استنتاجًا سببيًا؛ أستعملها عندما تطلب التعليمة تفسيرًا وتسمح الأدلة بذلك.',
     },
     {
       id: 'analyse-interpret-split',
@@ -370,18 +374,19 @@ const PLUSPLUS_LEVEL: MeftahLevel = {
 };
 
 // ─── Visages 4-6 : تطبيق BAC 2025 (سؤال بسؤال، ما أفكر / ما أكتب / فخ) ────────
-// NOTE barèmes (2026-09-19) : labels alignés sur الإجابة النموذجية الرسمية
-// (correction-bac-sci-sciences-2025.pdf — eddirasa) :
+// NOTE barèmes (2026-09-19) : répartition transcrite depuis une correction consultée
+// (eddirasa, correction-bac-sci-sciences-2025.pdf). Son statut de corrigé ministériel
+// original n'a pas été vérifié ; l'interface le signale et les nombres restent indicatifs.
 //   Ex1 : Q1 = 0.25×5 = 1.25 · Q2 = 3.75 (RIP 1.25, intro 0.5, ARNm/t/r 0.5,
-//         خاتمة 0.5, annonce 0) → 5 ✓  [vérifié item par item]
-//   Ex2 : Q1 = 1.5 · Q2 = 2.5 (explicite) · Q3 = 2.5 · تبرير = 0.5 → 7 ✓
-//         [Q1/Q3 par contrainte de somme, Q2 explicite]
-//   Ex3 : 2.5 / 4.5 / 0.5 / 0.5 → 8 ✓ [découpage non contredit par le corrigé ;
+//         خاتمة 0.5, annonce 0) → 5 ✓  [cohérence interne des items encodés]
+//   Ex2 : Q1 = 1.5 · Q2 = 2.5 (indiqué) · Q3 = 2.5 · تبرير = 0.5 → 7 ✓
+//         [Q1/Q3 par contrainte de somme, Q2 indiqué dans la correction consultée]
+//   Ex3 : 2.5 / 4.5 / 0.5 / 0.5 → 8 ✓ [découpage non contredit par la correction ;
 //         ventilation fine à confirmer sur le scan — l'OCR est bruité]
-// Verrouillé par test : src/data/hikalaBac.test.ts (sommes + parité dictionnaire).
+// Verrouillé par test : src/data/hikalaBac.test.ts (totaux et cohérence interne).
 
-/** Version de l'extension manhajia (fiche + BAC 2025) — parente de MIFTAH_VERSION (miftahSpec). */
-export const MIFTAH_MANHAJIA_VERSION = '4.3' as const;
+/** Version de la fiche méthode + des exemples BAC ; distincte de la version de la carte React. */
+export const MIFTAH_MANHAJIA_VERSION = '4.4' as const;
 
 export interface MeftahBacQuestion {
   id: string;
@@ -418,10 +423,10 @@ export const MEFTA_BAC_EXERCISES: MeftahBacExercise[] = [
       {
         id: 'bac2025-ex1-q1',
         instructionAr: 'اذكر مختلف أنواع ال ARN المتواجدة في الهيولى خلال وخارج فترة تركيب البروتين',
-        // CORRIGÉ 2026-09-19 : 0.5 → 1.25 (5 items × 0.25) — الإجابة النموذجية
-        // الرسمية (eddirasa, correction-bac-sci-sciences-2025.pdf, ص 1) :
-        // « 0.25 × 5 » — concordant item par item avec dictionnaire_final.json
-        // (bac2025_S1/S1-Ex1/Q1/item1..5). L'ancien label 0.5 était FAUX (audit M2).
+        // CORRECTION DE RÉFÉRENCE 2026-09-19 : 0.5 → 1.25 (5 items × 0.25),
+        // d'après la correction consultée (eddirasa, p. 1) et le corpus encodé
+        // dictionnaire_final.json (bac2025_S1/S1-Ex1/Q1/item1..5). Source ministérielle
+        // originale non vérifiée ; l'ancien label ne concordait pas avec ces références.
         pointsLabel: '1.25 ن',
         tags: ['سنّ 1', 'فعل بسيط'],
         thinkAr: 'الفعل «اذكر» = قائمة من المكتسبات. الشرط المخفي: خلال / خارج فترة التركيب. لا أحلل الوثيقة.',
@@ -434,9 +439,9 @@ export const MEFTA_BAC_EXERCISES: MeftahBacExercise[] = [
       {
         id: 'bac2025-ex1-q2',
         instructionAr: 'اشرح في نص علمي دور مختلف أنواع ال ARN في تركيب البروتين مبرزا تأثير ال RIP في علاج بعض الأورام السرطانية',
-        // CORRIGÉ 2026-09-19 : 4.5 → 3.75 (مقدمة 0.5 + ARNm 0.5 + ARNt 0.5 +
-        // ARNr 0.5 + RIP 1.25 + خاتمة 0.5) — même source officielle ;
-        // concordant avec les items du dictionnaire (RIP=1.25, annonce=0).
+        // CORRECTION DE RÉFÉRENCE 2026-09-19 : 4.5 → 3.75 (مقدمة 0.5 + ARNm 0.5 +
+        // ARNt 0.5 + ARNr 0.5 + RIP 1.25 + خاتمة 0.5), selon la correction consultée ;
+        // cohérent avec les items encodés du dictionnaire (RIP=1.25, annonce=0).
         pointsLabel: '3.75 ن',
         tags: ['نص علمي', 'مقدمة · عرض · خاتمة', 'قيد «مبرزا»'],
         thinkAr: 'ليس استغلال وثيقة — هو درس مهيكل. كلمة «مبرزا» = RIP إجباري داخل العرض لا في الخاتمة فقط.',
@@ -448,7 +453,7 @@ export const MEFTA_BAC_EXERCISES: MeftahBacExercise[] = [
           'عرض — تأثير RIP: تكسر الرابطة بين الأدنين وسكر الريبوز فيفقد ARN بنيته ووظيفته، فيتوقف تركيب البروتين ومنه تكاثر الخلايا السرطانية',
           'خاتمة: تشارك الأنواع الثلاثة في تركيب البروتين وتفقد بنيتها ووظيفتها بوجود مواد معطلة مثل RIP',
         ],
-        trapAr: 'فخ: نص جميل عن ARN دون RIP = ضياع 1.25 نقطة.',
+        trapAr: 'فخ: شرح ARN من دون توضيح دور RIP قد يترك جزءًا مهمًا من المطلوب بلا إجابة؛ راجع عناصر التعليمة.',
         linkedVerbId: 'explain',
       },
     ],
@@ -464,11 +469,11 @@ export const MEFTA_BAC_EXERCISES: MeftahBacExercise[] = [
       {
         id: 'bac2025-ex2-q1',
         instructionAr: 'حلّل نتائج الشكل(أ) من الوثيقة 1',
-        // CORRIGÉ 2026-09-19 : 1 → 1.5 — الإجابة النموذجية (تحليل + استنتاج
-        // مُنقّطان) ; contrainte de somme : 7 = 1.5 + 2.5 + 2.5 + 0.5.
+        // CORRECTION DE RÉFÉRENCE 2026-09-19 : 1 → 1.5, d’après la correction
+        // consultée (analyse + conclusion ventilées) ; total interne : 7 = 1.5 + 2.5 + 2.5 + 0.5.
         pointsLabel: '1.5 ن',
         tags: ['سنّ 2 حلّل', 'تحليل مقارن'],
-        thinkAr: 'الفعل حلّل فقط. مقارن: طبيعي / طافر × تركيز منخفض / مرتفع. أكتب قيما. ممنوع هذا يدل / لأن.',
+        thinkAr: 'الفعل حلّل. أقارن الطبيعي والطافر عند تركيزين، وأكتب القيم. أبدأ بوصف العلاقة؛ أضيف تفسيرًا فقط إذا طلبته التعليمة.',
         writeAr: [
           'تمثل الوثيقة 1(أ) تغيرات نسبة نمو طحالب T.P الطبيعية والطافرة بدلالة تركيز HCO₃⁻ في الوسط',
           'عند التركيز المنخفض (~2 µM): نسبة نمو الطبيعية أعظمية تصل إلى حوالي 90% أما الطافرة فلا تتعدى حوالي 20%',
@@ -481,8 +486,8 @@ export const MEFTA_BAC_EXERCISES: MeftahBacExercise[] = [
       {
         id: 'bac2025-ex2-q2',
         instructionAr: 'أبرز أثر الخصائص البنيوية للصانعات الخضراء على النمو عند الطبيعية والطافرة باستغلال الشكل(ب) والمعلومة المستخلصة من الشكل(أ)',
-        // CORRIGÉ 2026-09-19 : 1.5 → 2.5 (تشابه 0.5 + بيرنويدة 1.5 + ربط 0.5)
-        // — valeur « 2.5 » explicite sur le corrigé officiel, à la question 2.
+        // CORRECTION DE RÉFÉRENCE 2026-09-19 : 1.5 → 2.5 (تشابه 0.5 + بيرنويدة 1.5 + ربط 0.5)
+        // — valeur « 2.5 » indiquée dans la correction consultée, à la question 2.
         pointsLabel: '2.5 ن',
         tags: ['تعليمة مفتوحة', 'عرّف → حلّل → فسّر → اربط'],
         thinkAr: '«أبرز + باستغلال» = السلسلة كاملة. الشكل(ب) للبنية + معلومة (أ) للنمو. أقارن متوازيا: مشترك ثم مختلف.',
@@ -496,8 +501,8 @@ export const MEFTA_BAC_EXERCISES: MeftahBacExercise[] = [
       {
         id: 'bac2025-ex2-q3',
         instructionAr: 'استغلال أشكال الوثيقة 2 ثم ربط الآلية',
-        // CORRIGÉ 2026-09-19 : 4.5 → 2.5 — contrainte de somme (7) avec les
-        // valeurs explicites du corrigé (Q2=2.5, تبرير=0.5, Q1=1.5).
+        // CORRECTION DE RÉFÉRENCE 2026-09-19 : 4.5 → 2.5 — contrainte de somme (7) avec les
+        // valeurs indiquées dans la correction consultée (Q2=2.5, تبرير=0.5, Q1=1.5).
         pointsLabel: '2.5 ن',
         tags: ['3 سندات ثم تركيب'],
         thinkAr: 'لكل شكل: عرّف → حلّل بقيم → استنتج خاص. بعد الثلاثة: ربط عام = الآلية. لا أبدأ بالنظرية.',
@@ -590,9 +595,9 @@ export const MEFTAH_LEVELS: MeftahLevel[] = [BASE_LEVEL, PLUS_LEVEL, PLUSPLUS_LE
 
 /** Rituel 30 secondes avant tout exercice (affiché en tête des visages BAC). */
 export const MEFTAH_THINK_ROW: { title: string; desc: string }[] = [
-  { title: '1. القفل', desc: 'ماذا يريد التمرين أن أفهم؟ أسطر الجملة الأخيرة من التمهيد.' },
-  { title: '2. الفعل', desc: 'أضع دائرة على الفعل: اذكر / حلّل / أبرز / اقترح / برّر...' },
-  { title: '3. السنّ', desc: 'الفعل يفتح سنا واحدا أو السلسلة كلها إن كانت التعليمة مفتوحة.' },
+  { title: '1. الهدف', desc: 'ماذا يريد التمرين أن أفهم؟ ألتقط الهدف من السياق.' },
+  { title: '2. الفعل والمصدر', desc: 'أقرأ التعليمة كاملة، أحدد الفعل، وأعرف هل أستند إلى وثيقة أو إلى المكتسبات أو إليهما.' },
+  { title: '3. الحركة', desc: 'أختار الوصف أو التفسير أو بناء حكم/اقتراح من المطلوب كاملًا؛ الفعل وحده لا يكفي دائمًا.' },
 ];
 
 /** Révision 10 secondes après chaque exercice. */

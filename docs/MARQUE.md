@@ -433,16 +433,36 @@ Le nom officiel de la matière est **`علوم الطبيعة والحياة`** 
 
 **فحص — option α (ceinture)** : le 5ᵉ geste v6 n'a **pas** de dent. Il vit (i) sur la fiche v6 (« فحص 10 ثوانٍ »), (ii) dans `SELF_CHECKS` (4 questions de la boussole), (iii) comme réflexe `validate`. Pas de 5ᵉ dent visuelle (option β réservée, UI seule).
 
-**Touch points (libellés uniquement)** — un seul vocabulaire public, app + fiche :
+**Touch points (libellés uniquement)** — les noms des gestes sont alignés ; cela ne signifie pas que la carte React et la fiche HTML sont structurellement identiques :
 - `miftahSpec.ts` : `NOMENCLATURE.s1–s4`, `KEY_MNEMONIC_AR`, `ASNAN[].nameAr`, **`MIFTAH_VERSION '5.0' → '6.0'`**
 - `methodologyEngine.ts` : `STEP_NAMES_AR`, `MIFTAH_STEP_NAMES_AR`
 - `boussoleData.ts` : `BOUSSOLE_STEPS[].ar`, `BOUSSOLE_CAPS[].ar`, `TIME_RULE_AR`, `TIME_RULES`, `errorAddressAr()`
 - `MiftahCard.tsx` (dents, tableau, phrase « دُرج المعرفة ») · `MethodologyCompilerView.tsx` · `drillBank.ts` (m01)
 - **Fiche `public/miftah.html` remplacée par la v6.0** (source `origin/master:al_miftah_final_v6.html` @ `d19d93b` + marqueur `<!-- VERSO -->` + `@page{size:210mm 297mm}` ajouté)
-- Garde-fou `check:miftah` : sections recto/verso/A4 réalignées v6.0 ; asserts carte `🔍 فعل` + `mustNot` ancien libellé (anti-régression) ; versions `6.0` ×2
+- Garde-fou `check:miftah` à cette date : sections recto/verso/A4 réalignées v6.0 ; asserts carte `🔍 فعل` + `mustNot` ancien libellé (anti-régression) ; versions `6.0` ×2 (historique, suivi séparé depuis §15)
 
 **Inchangé** : `MIFTAH_MANHAJIA_VERSION = '4.3'` · `SELF_CHECKS` · spaced recall · portes · `FIVE_COSTLY_ERRORS` · drill 12/12×3 · badges · tous les ids/numérotations.
 
 **Arbre (§7)** : (1) **ce rename d'abord** — l'app et la fiche parlent le même vocabulaire (5 gestes) ; (2) sprints/jeux de la proposition MIFTah OS ensuite, **sans réécrire le moteur** — voir `BILAN_PROPOSITION_MIFTAH_OS_VS_CONTRAT_REEL.md` (option B/C rename).
 
 **Historique** : §12 (2026-09-06, dents v3) → §13bis (2026-09-21, fiche v5.0 sans dents) → **§14 (2026-09-22, libellés = gestes, fiche v6.0, version 6.0)**. Les §12–§13bis restent valables pour le moteur et les portes ; **sur les seuls libellés des dents, §14 les remplace.**
+
+## §15 — Suite à l’audit de مفتاح المنهجية (GO, 2026-10-17)
+
+### Parcours élève et navigation
+
+- L’accueil de `MeftahView` met la méthode de base au premier plan. Les niveaux avancés et les exercices BAC restent disponibles dans une bibliothèque repliée ; ils ne sont pas supprimés.
+- Le modèle de réponse d’un exercice BAC n’est révélé qu’après une tentative déclarée par l’élève. Le simulateur reste accessible depuis l’accueil et la méthode de base.
+- Dans `MethodologyCompilerView`, le مفتاح et le simulateur sont les voies principales. Les références, outils de suivi et la carte imprimable restent dans un volet secondaire ; les métriques sont repliées par défaut.
+
+### Variantes et versions — ne pas confondre les supports
+
+- `MIFTAH_VERSION = '6.1'` suit la carte **React** et ses repères rédactionnels. La fiche autonome `public/miftah.html` conserve sa version propre `v6.0` ; elle n’est pas générée depuis `miftahSpec.ts`.
+- `MIFTAH_MANHAJIA_VERSION = '4.4'` suit les données de la méthode et les exemples BAC de `meftahManhajia.ts`.
+- Les deux cartes ne sont pas des copies conformes : la carte React présente 4 dents, 2 portes et une famille ; la fiche HTML autonome présente 5 mouvements et 3 familles sur deux faces. Aucun claim de « parité 100 % » n’est permis. Les différences doivent être décrites précisément si l’un des supports est cité.
+
+### Statut des points et preuves
+
+- Les ventilations partielles montrées dans les exemples BAC sont des **repères de correction issus de documents consultés**, pas un barème ministériel vérifié. Le statut du document consulté comme original ministériel est **Non vérifiable** ; utiliser la mention visible dans l’interface et ne pas transformer une ventilation indicative en règle universelle.
+- Le test de cohérence du registre distingue maintenant les totaux internes, l’écart documenté S2-Ex1 et l’item manuel S1-Ex3. Ces tests vérifient l’encodage du dépôt ; ils ne certifient pas la source institutionnelle.
+- L’efficacité en classe reste **Non vérifiable** avant le pilote décrit dans `docs/PROTOCOLE_PREUVE.md` ; aucun résultat d’apprentissage n’est revendiqué par ce changement.

@@ -12,6 +12,8 @@ Reproduction : `npx tsx scripts/diagnostiquer-ex3.ts` puis `npx tsx scripts/simu
 > dans `noterExerciceCalibre` (`calibrationBac2025.ts`). La section 5 consigne
 > la décision et ses limites. La correction E n'est **pas validée** sur copies
 > indépendantes (§5 point 4) : elle est mesurée, pas acquise.
+>
+> **Mise à jour de provenance (2026-10-17)** — ce diagnostic est historique. Le PDF de correction consulté n’a pas été authentifié comme un original ministériel exploitable : son origine ministérielle est **Non vérifiable**. Les poids 1,5/4,5/2 sont des repères encodés, transcrits de ce document consulté ; leur ventilation en trois parties est une lecture de travail, pas un barème officiel publié. Le code utilise maintenant `PoidsPartie.reference`, sans certification ministérielle. Voir `docs/AUDIT_MIFTAH_MANHAJIA_2026-10-17.md` §7.
 
 ---
 
@@ -30,14 +32,12 @@ couverture → note**.
 
 ## 2. Cause A — le registre sur-pondère la Partie 1 (cause principale)
 
-Précision de provenance (2026-10-17) : la ventilation en trois parties
-ci-dessous n'est pas un « barème officiel » publié — c'est une lecture de
-travail qui regroupe les points du corrigé (RECAPITULATIF + corrigé p.2-4)
-par partie. « Officiel » dans le tableau = les points du corrigé rattachés
-à chaque partie après regroupement : les chiffres viennent bien du corrigé,
-c'est le regroupement qui n'a pas de statut officiel.
+Les poids de référence encodés ci-dessous ont été transcrits du RECAPITULATIF
+et d’une correction consultée (p. 2–4). Cette source n’est pas authentifiée comme
+version ministérielle originale ; la ventilation en trois parties est une lecture
+de travail, pas un barème officiel publié :
 
-| Partie | Officiel | Registre `S1_EX3` | Écart |
+| Partie | Référence | Registre `S1_EX3` | Écart |
 |---|---|---|---|
 | Partie 1 (lecture figures a/b, 2 conclusions, hypothèses) | **1,5** | 3,5 | ×2,3 |
 | Partie 2 (mécanisme : NE, Go/Gi, canaux, vésicules) | **4,5** | 3,5 | ×0,78 |
@@ -45,27 +45,25 @@ c'est le regroupement qui n'a pas de statut officiel.
 
 La Partie 1 est la partie **facile** : il suffit de nommer « المجموعة 1 » et
 « النشاط العصبي » pour décrocher 0,5 pt. Le moteur lui accorde 3,5 pts
-maximum alors que l'officiel n'en donne que 1,5. C'est mécaniquement la source
+maximum alors que le repère de référence en donne 1,5. C'est mécaniquement la source
 du biais +1,20 : 40 copies sur 40 sont surnotées par construction.
 
-**Correction E (0 paramètre ajusté)** : re-pondérer chaque partie sur les
-points du corrigé regroupés par partie. Mesurée sur le moteur réel, **puis
-livrée** :
+**Correction E (0 paramètre ajusté)** : re-pondérer chaque partie sur le poids
+de référence encodé. Mesurée sur le moteur réel, **puis livrée** :
 
 | Variante | MAE | biais | Statut |
 |---|---|---|---|
 | actuel (modèle plat `couverture × maxPts`) | 1,30 | +1,20 | ancien moteur |
-| **E (points du corrigé regroupés par partie)** | **0,96** | **+0,66** | **livré 2026-09-27** |
+| **E (pondération de référence par partie)** | **0,96** | **+0,66** | **livré 2026-09-27** |
 | régression linéaire fitée (0,82·c−0,15) | 0,66 | — | rejetée (P2/R6) |
 
 La régression fitée donne un meilleur MAE mais **elle est rejetée** : c'est
 exactement le modèle `a·cov+b` que la règle P2/R6 interdit (fit sur les notes
-plutôt que sur les attendus). La correction E n'utilise **que** les
-chiffres du corrigé officiel regroupés par partie — aucun paramètre libre —
-et passe la porte F5.
+plutôt que sur les attendus encodés). La correction E n'utilise **que** les
+poids de référence — aucun paramètre libre — et passe la porte F5.
 
 **Formule livrée** (`calibrationBac2025.ts`) : pour chaque partie `p`,
-`note = Σₚ crédit(p) × officiel(p) / registre(p)`, clampée à `[0, maxPts]`, puis
+`note = Σₚ crédit(p) × reference(p) / registre(p)`, clampée à `[0, maxPts]`, puis
 soumise aux plafonds d'intégrité. Sans `poidsPartie` — ou si la map oublie un
 item auto — le moteur retombe sur le modèle plat (sécurité, testée). Une copie
 ne couvrant que la Partie 1 obtient 1,5/8 (et non 3,5/8).
@@ -74,14 +72,14 @@ ne couvrant que la Partie 1 obtient 1,5/8 (et non 3,5/8).
 
 L'item vaut 0,5 pt et exige la forme `النورادرينالين` (ou
 `norepinephrine`/`noradrenaline`). **Les 40 élèves écrivent « NE »** en lettres
-latines (label du corrigé lui-même). Aucun n'écrit le nom complet arabe.
+latines (label de la correction consultée). Aucun n'écrit le nom complet arabe.
 
 Résultat : 0/40 crédités, 20 pts accumulés non distribués. Avec E, les 5
 meilleures copies plafonnent à **7,36/8** (1,5 + 3,0×(4,5/3,5) + 2,0) au lieu
-de 8 — et la **copie modèle officielle elle-même** (`bac2025-ex3` dans
-`MEFTA_BAC_EXERCISES`) plafonne à 7,36/8 pour la même raison : le corrigé
+de 8 — et la **copie modèle stockée** (`bac2025-ex3` dans
+`MEFTA_BAC_EXERCISES`) plafonne à 7,36/8 pour la même raison : la correction consultée
 écrit « NE », jamais `النورادرينالين`. L'item rejette donc la réponse
-officielle : bug de formes avéré, pas un défaut des élèves (les notes modèles
+de référence : bug de formes avéré, pas un défaut des élèves (les notes modèles
 7,36 sont verrouillées dans `src/utils/__tests__/c7.hardening.test.ts` et
 `src/components/Bac2025ExamView.test.tsx`).
 
@@ -116,25 +114,28 @@ crédités sont les moins exigeants :
 | corr-2025-21 (قنوات + حويصلات) | 1,0 | 22 | mécanisme |
 | corr-2025-25 (نعاس + يقظة) | 0,5 | 21 | schéma |
 
-Le prof crédite peu une réponse qui énumère des termes sans la chaîne causale.
-Ce résiduel est le **défaut F2/C6** des audits : `cᵢ` reste une présence de
-forme, pas un critère observable (donnée / mécanisme / relation / conclusion).
-Aucune pondération ne le corrige — seule la réécriture en rubrique le peut.
+Dans les annotations de référence de ce corpus, les réponses qui énumèrent des
+termes sans chaîne causale semblent moins créditées ; ce constat reste à
+confirmer par une double correction indépendante. Ce résiduel est le **défaut
+F2/C6** des audits : `cᵢ` reste une présence de forme, pas un critère
+observable (donnée / mécanisme / relation / conclusion). La pondération seule
+ne suffit pas à évaluer ce raisonnement ; une rubrique fondée sur des critères
+observables est une piste à tester.
 
 ## 5. Décision
 
 **E est appliquée** depuis le 2026-09-27 (commit à venir) :
 
-1. **E (appliquée)** : les parties de `S1_EX3` sont ventilées sur le barème
-   officiel (P1 1,5 · P2 4,5 · P3 2) via le champ `poidsPartie`. Effet mesuré :
+1. **E (appliquée)** : les parties de `S1_EX3` sont ventilées selon les poids
+   de référence encodés (P1 1,5 · P2 4,5 · P3 2) via le champ `poidsPartie`. Effet mesuré :
    MAE 1,30 → **0,96** (porte F5 franchie), biais +1,20 → **+0,66**, r Ex3
    0,882 → 0,904, r global 0,967 → 0,972. Zéro paramètre fité, traçable au
-   corrigé. 1207/1207 tests verts, `tsc --noEmit` propre.
+   document consulté. 1207/1207 tests verts, `tsc --noEmit` propre.
 2. **Item 19 : ne PAS ajouter la forme `ne`** (mesuré : 1,72 en forme simple,
    1,38 en composantes — aggravation dans les deux cas).
 3. **Réécrire l'item 19** en critères observables lors du chantier F2, avec
    re-lecture par 2 enseignants. En attendant, le plafond 7,36/8 est assumé et
-   documenté (§3) : la copie modèle officielle le subit aussi, ce qui rend le
+   documenté (§3) : la copie modèle stockée le subit aussi, ce qui rend le
    bug évident plutôt que masqué.
 4. **Valider E sur des copies indépendantes** (protocole F5 : 300 copies,
    double correction aveugle, 20 % arbitrées) avant de le considérer acquis.

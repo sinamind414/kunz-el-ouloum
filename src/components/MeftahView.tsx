@@ -1,8 +1,8 @@
 // MeftahView.tsx
-// « المفتاح » (nom officiel : MIFTAH_NAME_OFFICIAL_AR) : 3 visages méthode + 3 visages application BAC 2025.
-// Version : MIFTAH_MANHAJIA_VERSION (meftahManhajia) — plus aucun littéral de version ici.
-// Navigation 3 niveaux : grille des visages → visage (sections) → question BAC.
-// Les أفعال détaillés renvoient au composant parent via onOpenVerb (methodologyVerbs.tsx).
+// المفتاح : parcours de méthode et bibliothèque d’exercices BAC 2025.
+// Version des données : MIFTAH_MANHAJIA_VERSION (meftahManhajia).
+// Navigation progressive : noyau guidé → entraînement → références et BAC.
+// Les أفعال détaillés renvoient au parent via onOpenVerb ; le simulateur via onOpenSimulator.
 
 import { useMemo, useState } from 'react';
 import { motion } from 'motion/react';
@@ -28,6 +28,8 @@ import { MIFTAH_NAME_OFFICIAL_AR } from '../data/miftahSpec';
 interface Props {
   /** Ouvre le détail d'un réflexe canonique (فعل) dans la méthodologie existante. */
   onOpenVerb?: (verbId: string) => void;
+  /** Envoie l'élève vers le simulateur guidé, sans qu'il doive chercher l'atelier. */
+  onOpenSimulator?: () => void;
 }
 
 type View =
@@ -214,12 +216,12 @@ function SectionCard({ section, onOpenVerb }: { section: MeftahSection; onOpenVe
 
 function BacQuestionCard({ question, onOpenVerb }: { question: MeftahBacQuestion; onOpenVerb?: (verbId: string) => void }) {
   const [open, setOpen] = useState(false);
-  // Relevé du 2026-10-17 : le modèle officiel (« ما أكتب ») se dévoile
-  // seulement après une tentative DÉCLARÉE de l'élève. Lire le modèle avant
-  // d'avoir écrit apprend l'illusion de savoir, pas la méthode — copier le
-  // corrigé n'est pas s'entraîner. L'app ne lit pas le papier : le bouton
-  // déclare la tentative (pattern honnête, comme la clôture par preuve).
-  const [devoile, setDevoile] = useState(false);
+  // Auto-attestation uniquement : l’application ne lit ni la copie ni le papier.
+  // Le modèle et le guidage restent fermés jusqu’à une tentative déclarée et un clic.
+  const [attempted, setAttempted] = useState(false);
+  const [showFeedback, setShowFeedback] = useState(false);
+  const feedbackId = `${question.id}-feedback`;
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 12 }}
@@ -229,12 +231,14 @@ function BacQuestionCard({ question, onOpenVerb }: { question: MeftahBacQuestion
     >
       <button type="button"
         data-testid={`${question.id}-header`}
+        aria-expanded={open}
+        aria-controls={feedbackId}
         className="w-full text-right p-4 md:p-5 cursor-pointer flex items-start justify-between gap-3 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors"
         onClick={() => setOpen((p) => !p)}
       >
         <div className="min-w-0">
           <div className="flex flex-wrap items-center gap-1.5 mb-1">
-            <span className="px-2 py-0.5 rounded-full bg-[#c08a1f] text-white text-[9px] font-black">{question.pointsLabel}</span>
+            <span className="px-2 py-0.5 rounded-full bg-[#c08a1f] text-white text-[9px] font-black">توزيع مرجعي: {question.pointsLabel}</span>
             {question.tags.map((t) => (
               <span key={t} className="px-2 py-0.5 rounded-full bg-[#0e6b6b]/10 text-[#0e6b6b] dark:text-[#5eead4] text-[9px] font-black border border-[#0e6b6b]/20">{t}</span>
             ))}
@@ -245,53 +249,67 @@ function BacQuestionCard({ question, onOpenVerb }: { question: MeftahBacQuestion
       </button>
 
       {open && (
-        <div className="px-4 md:px-5 pb-4 md:pb-5 space-y-3">
-          <div className="rounded-xl bg-gray-50 dark:bg-black/20 border border-gray-100 dark:border-gray-800 p-3">
-            <div className="text-[10px] font-black text-gray-500 dark:text-gray-400 mb-1">ما أفكر (30 ثانية صامتة)</div>
-            <p className="text-xs md:text-sm text-gray-700 dark:text-gray-300 font-medium leading-7">{question.thinkAr}</p>
-          </div>
-
-          {devoile ? (
-            <div data-testid={`${question.id}-modele`} className="rounded-xl border-r-4 border-[#0e6b6b] bg-[#eaf5f4]/60 dark:bg-[#0e6b6b]/10 p-3">
-              <div className="text-[10px] font-black text-[#0e6b6b] dark:text-[#5eead4] mb-1">ما أكتب — قارن مع ورقتك</div>
-              <ul className="space-y-2">
-                {question.writeAr.map((w, i) => (
-                  <li key={i} className="text-xs md:text-sm text-gray-800 dark:text-gray-200 font-medium leading-7">• {w}</li>
-                ))}
-              </ul>
-            </div>
-          ) : (
-            <div className="rounded-xl border-2 border-dashed border-[#c08a1f]/40 bg-[#fff9ed]/60 dark:bg-[#c08a1f]/5 p-3 text-center">
-              <p className="text-xs md:text-sm text-[#765108] dark:text-[#ffd27a] font-bold leading-7 mb-2">
-                حرّر إجابتك على الورقة أولاً كأنك في الامتحان — ثم قارنها بالعناصر الرسمية.
+        <div id={feedbackId} className="px-4 md:px-5 pb-4 md:pb-5 space-y-3">
+          {!showFeedback ? (
+            <fieldset className="rounded-xl bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-gray-800 p-3 space-y-3">
+              <legend className="px-1 text-xs font-black text-gray-800 dark:text-gray-200">حاول قبل أن تفتح التصحيح</legend>
+              <p className="text-xs md:text-sm text-gray-700 dark:text-gray-300 font-medium leading-7">
+                اكتب مسودة قصيرة على الورقة، أو حدّد ذهنيًا: الفعل المطلوب، دليلًا واحدًا، وجملة تجيب السؤال. لا حاجة إلى إدخال إجابة طويلة هنا.
               </p>
+              <label className="flex items-start gap-2 text-xs font-bold text-gray-700 dark:text-gray-200 cursor-pointer">
+                <input
+                  type="checkbox"
+                  data-testid={`${question.id}-attempted`}
+                  checked={attempted}
+                  onChange={(event) => setAttempted(event.target.checked)}
+                  className="mt-0.5 accent-[#006d37]"
+                />
+                <span>أنجزت محاولة قصيرة على الورقة أو في ذهني.</span>
+              </label>
               <button
                 type="button"
-                data-testid={`${question.id}-devoiler`}
-                onClick={() => setDevoile(true)}
-                className="px-4 py-2 rounded-xl bg-[#c08a1f] text-white text-xs font-black cursor-pointer hover:bg-[#a97416] transition-colors"
+                data-testid={`${question.id}-show-feedback`}
+                disabled={!attempted}
+                onClick={() => setShowFeedback(true)}
+                className="px-4 py-2 rounded-xl bg-[#006d37] text-white text-xs font-black enabled:hover:bg-[#00562b] disabled:cursor-not-allowed disabled:opacity-50 transition-colors"
               >
-                حاولتُ على الورق — أظهر عناصر الإجابة
+                اعرض النموذج للمقارنة
               </button>
-            </div>
-          )}
-
-          {question.trapAr && (
-            <div className="rounded-xl border border-rose-200 dark:border-rose-900/40 bg-rose-50 dark:bg-rose-950/20 p-3">
-              <div className="text-[10px] font-black text-rose-600 dark:text-rose-400 mb-1 flex items-center gap-1">
-                <AlertTriangle className="w-3.5 h-3.5" /> الفخ
+            </fieldset>
+          ) : (
+            <div data-testid={`${question.id}-feedback`} className="space-y-3">
+              <div className="rounded-xl bg-gray-50 dark:bg-black/20 border border-gray-100 dark:border-gray-800 p-3">
+                <div className="text-[10px] font-black text-gray-500 dark:text-gray-400 mb-1">ما أفكر</div>
+                <p className="text-xs md:text-sm text-gray-700 dark:text-gray-300 font-medium leading-7">{question.thinkAr}</p>
               </div>
-              <p className="text-xs md:text-sm text-rose-800 dark:text-rose-200 font-medium leading-7">{question.trapAr}</p>
-            </div>
-          )}
 
-          {question.linkedVerbId && onOpenVerb && (
-            <button
-              onClick={() => onOpenVerb(question.linkedVerbId!)}
-              className="px-4 py-2 rounded-xl bg-[#006d37] text-white text-xs font-black cursor-pointer hover:bg-[#00562b] transition-colors"
-            >
-              تدرب على الفعل المناسب ←
-            </button>
+              <div data-testid={`${question.id}-modele`} className="rounded-xl border-r-4 border-[#0e6b6b] bg-[#eaf5f4]/60 dark:bg-[#0e6b6b]/10 p-3">
+                <div className="text-[10px] font-black text-[#0e6b6b] dark:text-[#5eead4] mb-1">نموذج للتدريب — ما أكتب</div>
+                <ul className="space-y-2">
+                  {question.writeAr.map((w, i) => (
+                    <li key={i} className="text-xs md:text-sm text-gray-800 dark:text-gray-200 font-medium leading-7">• {w}</li>
+                  ))}
+                </ul>
+              </div>
+
+              {question.trapAr && (
+                <div className="rounded-xl border border-rose-200 dark:border-rose-900/40 bg-rose-50 dark:bg-rose-950/20 p-3">
+                  <div className="text-[10px] font-black text-rose-600 dark:text-rose-400 mb-1 flex items-center gap-1">
+                    <AlertTriangle className="w-3.5 h-3.5" /> نقطة انتباه
+                  </div>
+                  <p className="text-xs md:text-sm text-rose-800 dark:text-rose-200 font-medium leading-7">{question.trapAr}</p>
+                </div>
+              )}
+
+              {question.linkedVerbId && onOpenVerb && (
+                <button
+                  onClick={() => onOpenVerb(question.linkedVerbId!)}
+                  className="px-4 py-2 rounded-xl bg-[#006d37] text-white text-xs font-black cursor-pointer hover:bg-[#00562b] transition-colors"
+                >
+                  تدرب على الفعل المناسب ←
+                </button>
+              )}
+            </div>
           )}
         </div>
       )}
@@ -325,6 +343,10 @@ function BacExerciseView({ exercise, onOpenVerb, onBack }: {
         </div>
       </div>
 
+      <div role="note" data-testid="meftah-bac-rubric-note" className="rounded-xl border border-amber-200 dark:border-amber-900/40 bg-amber-50 dark:bg-amber-950/20 p-3 text-xs text-amber-900 dark:text-amber-100 leading-6">
+        تنبيه: هذه إجابات نموذجية للتدريب. توزيع النقاط الجزئي مأخوذ من مرجع تصحيح تم الرجوع إليه، ولم يُتحقق هنا من مطابقته لنسخة وزارية أصلية. عند التصحيح، يُعتمد سلم الموضوع الرسمي إن توفر.
+      </div>
+
       <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
         {MEFTAH_THINK_ROW.map((step) => (
           <div key={step.title} className="rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-[#141916] p-3">
@@ -352,7 +374,7 @@ function BacExerciseView({ exercise, onOpenVerb, onBack }: {
   );
 }
 
-export default function MeftahView({ onOpenVerb }: Props) {
+export default function MeftahView({ onOpenVerb, onOpenSimulator }: Props) {
   const [view, setView] = useState<View>({ kind: 'home' });
   const [query, setQuery] = useState('');
 
@@ -394,7 +416,7 @@ export default function MeftahView({ onOpenVerb }: Props) {
           <div>
             <h1 className="text-2xl md:text-3xl font-black text-gray-900 dark:text-white">المفتاح</h1>
             <p className="text-gray-600 dark:text-gray-400 text-sm font-medium mt-0.5">
-              {MIFTAH_NAME_OFFICIAL_AR} · 4 حركات · بابان · تحليل دون تفسير
+              {MIFTAH_NAME_OFFICIAL_AR} · 3 قرارات قبل الكتابة · 4 حركات · فحص ختامي
             </p>
           </div>
         </div>
@@ -410,71 +432,102 @@ export default function MeftahView({ onOpenVerb }: Props) {
         </div>
       )}
 
-      {/* ═══ Accueil : 3 visages méthode + 1 application BAC ═══ */}
+      {/* ═══ Accueil progressif : une seule entrée principale, puis les références ═══ */}
       {view.kind === 'home' && (
         <div className="space-y-5" data-testid="meftah-home">
           <div className="rounded-2xl border border-[#ebd6a0] bg-[#fff8e8] dark:bg-[#3a2c14]/20 dark:border-[#c08a1f]/30 p-4">
             <p className="text-sm font-medium text-[#765108] dark:text-[#ffd27a] leading-7">
-              لا تحفظ 4 وصفات؛ أتعلم 4 حركات. ابدأ بالوجه الأول من اليوم الأول، ثم تدرّج.
+              ابدأ بالنواة: 3 قرارات قبل الكتابة، 4 حركات لبناء الجواب، ثم فحص ختامي. لا تحتاج إلى حفظ الوجوه المتقدمة الآن.
             </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-            {filteredLevels.map((lvl, idx) => (
+            <div className="flex flex-col sm:flex-row gap-3 mt-4">
               <motion.button
-                key={lvl.id}
-                initial={{ opacity: 0, y: 12 }}
+                initial={{ opacity: 0, y: 8 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: idx * 0.05 }}
-                onClick={() => { setView({ kind: 'level', levelId: lvl.id }); setQuery(''); }}
-                className="text-right rounded-3xl bg-white dark:bg-[#141916] border border-gray-200 dark:border-gray-800 p-5 shadow-sm hover:shadow-md hover:-translate-y-0.5 active:scale-[0.98] transition-all cursor-pointer"
-                style={{ borderTop: `4px solid ${GOLD}` }}
-                data-testid={`meftah-level-${lvl.id}`}
+                onClick={() => { setView({ kind: 'level', levelId: 'base' }); setQuery(''); }}
+                className="flex-1 text-right rounded-2xl bg-white dark:bg-[#141916] border-2 border-[#c08a1f]/60 p-4 shadow-sm hover:shadow-md active:scale-[0.99] transition-all cursor-pointer"
+                data-testid="meftah-level-base"
               >
-                <div className="w-14 h-14 rounded-2xl text-white flex items-center justify-center shadow-sm mb-3" style={{ background: `linear-gradient(135deg, ${GOLD}, ${GOLD_D})` }}>
-                  {LEVEL_ICONS[lvl.id]}
-                </div>
-                <div className="text-lg font-black text-gray-900 dark:text-white">{lvl.title}</div>
-                <div className="text-[11px] font-bold text-[#c08a1f] dark:text-[#ffd27a] mt-1">{lvl.prerequisiteAr}</div>
-                <p className="text-xs text-gray-600 dark:text-gray-300 font-medium leading-6 mt-2">{lvl.subtitle}</p>
-                <span className="text-[10px] text-gray-400 mt-2 block">{lvl.fr}</span>
-                <span className="inline-flex items-center gap-1 text-xs font-extrabold mt-3" style={{ color: GOLD }}>
-                  افتح الوجه <ArrowLeft className="w-3.5 h-3.5" />
+                <span className="inline-flex items-center gap-2 text-lg font-black text-gray-900 dark:text-white">
+                  <KeyRound className="w-5 h-5" style={{ color: GOLD }} /> ابدأ من هنا — المفتاح
+                </span>
+                <span className="block text-xs text-gray-600 dark:text-gray-300 leading-6 mt-1">النواة الأساسية · للجميع، من اليوم الأول</span>
+                <span className="inline-flex items-center gap-1 text-xs font-extrabold mt-2" style={{ color: GOLD }}>
+                  افتح الدرس الأول <ArrowLeft className="w-3.5 h-3.5" />
                 </span>
               </motion.button>
-            ))}
-
-            {/* Carte application BAC 2025 */}
-            <motion.button
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: filteredLevels.length * 0.05 }}
-              onClick={() => { setView({ kind: 'bac' }); setQuery(''); }}
-              className="md:col-span-3 text-right rounded-3xl bg-gradient-to-br from-[#fff8e8] via-white to-white dark:from-[#3a2c14]/20 dark:via-[#141916] dark:to-[#141916] border-2 border-[#c08a1f]/50 dark:border-[#c08a1f]/30 p-5 shadow-sm hover:shadow-md hover:-translate-y-0.5 active:scale-[0.98] transition-all cursor-pointer ring-1 ring-[#c08a1f]/20"
-              data-testid="meftah-level-bac"
-            >
-              <div className="flex items-center justify-between gap-3 flex-wrap">
-                <div className="flex items-center gap-3">
-                  <div className="w-14 h-14 rounded-2xl text-white flex items-center justify-center shadow-sm" style={{ background: `linear-gradient(135deg, ${GOLD}, ${GOLD_D})` }}>
-                    {LEVEL_ICONS.bac}
-                  </div>
-                  <div>
-                    <div className="inline-flex items-center rounded-full bg-[#c08a1f]/10 text-[#765108] dark:text-[#ffd27a] px-2.5 py-1 text-[10px] font-black mb-1 border border-[#c08a1f]/20">
-                      تطبيق على موضوع رسمي
-                    </div>
-                    <div className="text-lg font-black text-gray-900 dark:text-white">المفتاح · تطبيق BAC 2025</div>
-                    <div className="text-[11px] font-bold text-[#c08a1f] dark:text-[#ffd27a] mt-0.5">التمارين الثلاثة · 5 + 7 + 8 ن</div>
-                  </div>
-                </div>
-                <span className="inline-flex items-center gap-1 text-sm font-extrabold" style={{ color: GOLD }}>
-                  كيف يستعمل التلميذ الأسنان على ورقة الامتحان <ArrowLeft className="w-4 h-4" />
-                </span>
-              </div>
-              <p className="text-xs text-gray-600 dark:text-gray-300 font-medium leading-6 mt-3">
-                لكل تعليمة: ما أفكر (السن المناسب) → ما أكتب (الجواب وفق عناصر الإجابة الرسمية) → الفخ الذي يضيّع النقاط.
-              </p>
-            </motion.button>
+              {onOpenSimulator && (
+                <button
+                  type="button"
+                  onClick={onOpenSimulator}
+                  className="sm:max-w-[16rem] text-right rounded-2xl bg-[#006d37] text-white p-4 shadow-sm hover:bg-[#00562b] active:scale-[0.99] transition-all cursor-pointer"
+                  data-testid="meftah-open-simulator"
+                >
+                  <span className="inline-flex items-center gap-2 text-sm font-black"><Zap className="w-4 h-4" /> تدرّب في المحاكي</span>
+                  <span className="block text-[11px] text-white/80 leading-5 mt-1">4 مراحل، من المثال إلى المحاولة المستقلة</span>
+                </button>
+              )}
+            </div>
           </div>
+
+          <details data-testid="meftah-library" className="rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-[#141916] p-4">
+            <summary data-testid="meftah-library-summary" className="flex items-center justify-between gap-3 cursor-pointer list-none">
+              <span>
+                <span className="block text-sm font-black text-gray-900 dark:text-white">أريد التعمّق أو تطبيق الطريقة على BAC 2025</span>
+                <span className="block text-xs text-gray-500 dark:text-gray-400 mt-1">المفتاح+، المفتاح++، والتمارين الكاملة — موارد اختيارية</span>
+              </span>
+              <ChevronRight className="w-5 h-5 text-gray-400 shrink-0" />
+            </summary>
+            <div className="mt-4 space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                {filteredLevels.filter((lvl) => lvl.id !== 'base').map((lvl, idx) => (
+                  <motion.button
+                    key={lvl.id}
+                    initial={{ opacity: 0, y: 8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: idx * 0.04 }}
+                    onClick={() => { setView({ kind: 'level', levelId: lvl.id }); setQuery(''); }}
+                    className="text-right rounded-2xl bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-gray-800 p-4 hover:shadow-sm transition-all cursor-pointer"
+                    data-testid={`meftah-level-${lvl.id}`}
+                  >
+                    <span className="inline-flex items-center gap-2 text-base font-black text-gray-900 dark:text-white">
+                      {LEVEL_ICONS[lvl.id]} {lvl.title}
+                    </span>
+                    <span className="block text-[11px] font-bold text-[#c08a1f] dark:text-[#ffd27a] mt-1">{lvl.prerequisiteAr}</span>
+                    <span className="block text-xs text-gray-600 dark:text-gray-300 leading-6 mt-2">{lvl.subtitle}</span>
+                    <span className="inline-flex items-center gap-1 text-xs font-extrabold mt-2" style={{ color: GOLD }}>
+                      افتح المرجع <ArrowLeft className="w-3.5 h-3.5" />
+                    </span>
+                  </motion.button>
+                ))}
+              </div>
+
+              <motion.button
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                onClick={() => { setView({ kind: 'bac' }); setQuery(''); }}
+                className="w-full text-right rounded-2xl bg-gradient-to-br from-[#fff8e8] via-white to-white dark:from-[#3a2c14]/20 dark:via-[#141916] dark:to-[#141916] border border-[#c08a1f]/50 dark:border-[#c08a1f]/30 p-4 shadow-sm hover:shadow-md transition-all cursor-pointer"
+                data-testid="meftah-level-bac"
+              >
+                <div className="flex items-center justify-between gap-3 flex-wrap">
+                  <div className="flex items-center gap-3">
+                    <span className="w-11 h-11 rounded-xl text-white flex items-center justify-center" style={{ background: `linear-gradient(135deg, ${GOLD}, ${GOLD_D})` }}>
+                      {LEVEL_ICONS.bac}
+                    </span>
+                    <span>
+                      <span className="block text-sm font-black text-gray-900 dark:text-white">تطبيق تدريبي — بكالوريا 2025</span>
+                      <span className="block text-[11px] font-bold text-[#c08a1f] dark:text-[#ffd27a] mt-0.5">3 تمارين · 5 + 7 + 8 ن</span>
+                    </span>
+                  </div>
+                  <span className="inline-flex items-center gap-1 text-xs font-extrabold" style={{ color: GOLD }}>
+                    افتح التمارين <ArrowLeft className="w-4 h-4" />
+                  </span>
+                </div>
+                <p className="text-xs text-gray-600 dark:text-gray-300 font-medium leading-6 mt-3">
+                  حاول قبل فتح النموذج. أرقام النقاط الجزئية من مرجع تصحيح لم يُتحقق هنا من مطابقته لنسخة وزارية أصلية.
+                </p>
+              </motion.button>
+            </div>
+          </details>
 
           {(query && filteredLevels.length === 0 && filteredExercises.length === 0) && (
             <p className="text-sm text-gray-400 font-medium text-center p-4">لا توجد نتائج مطابقة في المفتاح.</p>
@@ -496,6 +549,22 @@ export default function MeftahView({ onOpenVerb }: Props) {
               </div>
             </div>
           </div>
+
+          {activeLevel.id === 'base' && onOpenSimulator && (
+            <div className="rounded-2xl border border-emerald-200 dark:border-emerald-900/40 bg-emerald-50 dark:bg-emerald-950/20 p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <p className="text-xs text-emerald-900 dark:text-emerald-100 leading-6">
+                بعد قراءة النواة، جرّب مثالًا موجّهًا ثم اكتب إجابتك بنفسك في المحاكي.
+              </p>
+              <button
+                type="button"
+                onClick={onOpenSimulator}
+                data-testid="meftah-level-open-simulator"
+                className="shrink-0 inline-flex items-center justify-center gap-2 rounded-xl bg-[#006d37] text-white px-4 py-2 text-xs font-black hover:bg-[#00562b] transition-colors cursor-pointer"
+              >
+                <Zap className="w-4 h-4" /> انتقل إلى التدريب
+              </button>
+            </div>
+          )}
 
           {(() => {
             const sections = activeLevel.sections.filter((s) =>

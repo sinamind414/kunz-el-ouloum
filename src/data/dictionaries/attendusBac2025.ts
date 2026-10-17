@@ -7,18 +7,16 @@
 //
 // SOURCES PAR GROUPE (bac2025, 6 groupes notés) :
 //   · S1-Ex1, S2-Ex1 : pont programmatique vers ATTENDUS_BAREME
-//     (dictionnaire_final.json) — validé item par item contre le corrigé
-//     officiel le 2026-09-19 (Q1=0.25×5, Q2=3.75, RIP=1.25, annonce=0) ;
-//     formes de reconnaissance = entités scorées du build détectées dans le
-//     texte officiel de l'item (mécanisme signatureDe du barème).
-//   · S1-Ex2, S1-Ex3 : encodés depuis le corrigé officiel
-//     (correction-bac-sci-sciences-2025.pdf, p.2-4, lisible) ; les `formes`
-//     sont des SOUS-CHAÎNES VERBATIM du texte officiel de chaque élément
-//     (traçables par construction). Ventilation fine par contrainte de somme
-//     quand l'OCR atténue un point (commenté par item).
-//   · S2-Ex2, S2-Ex3 : encodés depuis le même corrigé (p.8-11, partiellement
-//     bruité) — mêmes règles ; les valeurs clés (21→13 µmol/L, 326/221/529,
-//     250/500 mL) servent de formes et sont fidèles au scan.
+//     (dictionnaire_final.json) — cohérence vérifiée avec une correction
+//     consultée le 2026-09-19 ; le statut de document ministériel original est
+//     Non vérifiable ici. Les formes proviennent des éléments du build.
+//   · S1-Ex2, S1-Ex3 : encodés depuis le PDF de correction consulté
+//     (correction-bac-sci-sciences-2025.pdf, p.2-4) ; les `formes` en sont des
+//     extraits transcrits, sans certification de l'origine ministérielle.
+//     Ventilation fine par contrainte de somme quand l'OCR atténue un point.
+//   · S2-Ex2, S2-Ex3 : encodés depuis le même PDF consulté (p.8-11,
+//     partiellement bruité) — valeurs clés (21→13 µmol/L, 326/221/529,
+//     250/500 mL) transcrites selon le scan.
 //
 // SÉMANTIQUE DE LA NOTE (R6) :
 //   · item « auto » = a au moins une forme → crédité si une forme figure
@@ -49,7 +47,7 @@ export type ExerciceId = 1 | 2 | 3;
 
 export interface AttenduItem {
   id: string;
-  /** Texte officiel de l'élément (affichage + traçabilité). */
+  /** Texte de référence de l'élément (affichage + traçabilité). */
   texteAr: string;
   points: number;
   /** Sous-chaînes normalisées de reconnaissance (synonymes : OU) — vides = item manuel. */
@@ -59,7 +57,7 @@ export interface AttenduItem {
    * Présentes → remplacent `formes` pour le crédit (proportionnel).
    */
   composantes?: string[][];
-  source: 'build' | 'corrige-officiel-2025';
+  source: 'build' | 'corrige-consulte-2025';
 }
 
 export interface PoidsPartie {
@@ -67,8 +65,8 @@ export interface PoidsPartie {
   partie: Record<string, 1 | 2 | 3>;
   /** Points que le registre attribue à chaque partie (Σ = maxPts). */
   registre: Record<1 | 2 | 3, number>;
-  /** Points officiels de chaque partie (Σ = maxPts). */
-  officiel: Record<1 | 2 | 3, number>;
+  /** Poids de référence pour chaque partie (Σ = maxPts). */
+  reference: Record<1 | 2 | 3, number>;
   /** Source documentaire de la ventilation (corrigé / RECAPITULATIF). */
   source: string;
 }
@@ -81,11 +79,11 @@ export interface AttendusExercice {
   questionAr: string;
   items: AttenduItem[];
   /**
-   * Ventilation officielle en parties (optionnelle).
+   * Ventilation de référence en parties (optionnelle).
    *
-   * Quand la granularité des items (13 ici) dépasse celle du barème officiel
+   * Quand la granularité des items (13 ici) dépasse celle du barème de référence
    * (3 parties), la note est calculée par partie — crédit de la partie × poids
-   * officiel / poids registre — au lieu du modèle plat couverture × maxPts.
+   * de référence / poids du registre — au lieu du modèle plat couverture × maxPts.
    * Sans `poidsPartie`, ou si la map ne couvre pas tout item auto, on reste sur
    * le modèle plat (sécurité). Référence : docs/DIAGNOSTIC_EX3.md (S1-Ex3).
    */
@@ -95,10 +93,10 @@ export interface AttendusExercice {
 // ── Pont programmatique : Ex1 des deux sujets depuis le build prouvé fidèle ──
 
 /**
- * Sigles scientifiques d'un texte officiel : tokens latins avec >=2 majuscules
+ * Sigles scientifiques d'un énoncé : tokens latins avec >=2 majuscules
  * consecutives (ARNm, RIP, ATP, NADH) ou contenant un chiffre (H2O, CO2, 2-DG).
  * Le texte `ar` des items build est parfois en francais : les entites arabes y
- * manquent, les sigles restent fiables (sources = texte officiel de l'item).
+ * manquent, les sigles restent fiables (sources = texte de l'item dans le build).
  */
 function siglesDeTexte(texte: string): string[] {
   const out: string[] = [];
@@ -118,8 +116,8 @@ const PEND_SYNTH = ['pendant synthese', 'خلال فترة تركيب', 'اثن�
  * (P5) — clé = suffixe d'id dans le groupe. + formes manquantes ajoutées à la
  * main quand le sigle échappe au détecteur (Pi : 1 majuscule seulement).
  */
-// Dérogations sourcées au build. `points` n'est utilisé QUE sur preuve verbatim du
-// corrigé ministériel — voir l'entrée « S2-Ex1/Q2/equation » (P2g, 2026-09-19).
+// Dérogations sourcées au build. `points` n'est utilisé QUE sur preuve verbatim
+// dans la correction consultée — voir l'entrée « S2-Ex1/Q2/equation » (P2g, 2026-09-19).
 const OVERLAY_BUILD: Record<string, { composantes?: string[][]; formes?: string[]; points?: number }> = {
   'bac2025_S1/S1-Ex1/Q1/item1': { composantes: [HORS_SYNTH, ['arnr']] },
   'bac2025_S1/S1-Ex1/Q1/item2': { composantes: [HORS_SYNTH, ['arnt']] },
@@ -135,13 +133,13 @@ const OVERLAY_BUILD: Record<string, { composantes?: string[][]; formes?: string[
   // l'intro ET la conclusion sans qu'elles existent. Formes STRUCTURELLES.
   'bac2025_S1/S1-Ex1/Q2/intro': { formes: ['مشكل', 'تساؤل', 'ما دور', 'ما تأثير'] },
   'bac2025_S1/S1-Ex1/Q2/concl': { formes: ['خاتمة', 'نستنتج', 'نتيجة', 'يشارك', 'ويمكن تعطيل'] }, // F3 : « تشارك » = 1er mot de l'INTRO (FP double-crédit) → corrigé « يشارك » · p.7 : C = Pi
-  // P2g (2026-09-19) — corrigé officiel 2025, verbatim : « عناصر من مجموع الخمسة
+  // P2g (2026-09-19) — correction consultée pour 2025, extrait : « عناصر من مجموع الخمسة
   // المسطرة في المعادلة؛ يُمنح 0.25 نقطة لكل عنصر » → l'équation vaut 1.25 pt
-  // (le build encodait 0.75 — aucun « 0.75 » n'existe dans le corrigé). Les cinq
+  // (le build encodait 0.75 — la valeur diffère du document consulté). Les cinq
   // éléments soulignés = les composés A,B,C,D,D' de la Q1 (ATP, ADP, Pi, NAD+,
-  // NADH,H+), reportés dans l'équation. Conséquence assumée : Σ جزئيات officielles
+  // NADH,H+), reportés dans l'équation. Conséquence assumée : Σ جزئيات encodées
   // du groupe = 5.5 > enveloppe 5.0 — l'excédent est absorbé par le plafond
-  // maxPts (couverture ≤ 1 → note ≤ 5.0, comportement du correcteur officiel qui
+  // maxPts (couverture ≤ 1 → note ≤ 5.0, comportement du correcteur qui
   // plafonne aussi). Redondance Q1/Q2 VOLONTAIRE : 0.25 identifier + 0.25 placer,
   // comme le corrigé. Garde anti-croisement : 'nad' ≠ 'nadh' (lookarounds
   // formePresente) — écrire NADH seul ne crédite pas la case NAD+.
@@ -184,7 +182,7 @@ export function itemsDepuisBuild(prefix: string): AttenduItem[] {
   return items;
 }
 
-// ── Aides d'encodage (S1-Ex2/Ex3, S2-Ex2/Ex3 depuis le corrigé officiel) ─────
+// ── Aides d'encodage (S1-Ex2/Ex3, S2-Ex2/Ex3 depuis la correction consultée) ─────
 
 let seq = 0;
 function item(points: number, formes: string[], texteAr: string, composantes?: string[][]): AttenduItem {
@@ -197,7 +195,7 @@ function item(points: number, formes: string[], texteAr: string, composantes?: s
     ...(composantes?.length
       ? { composantes: composantes.map((g) => g.map((f) => normalizeAr(f).toLowerCase())) }
       : {}),
-    source: 'corrige-officiel-2025',
+    source: 'corrige-consulte-2025',
   };
 }
 
@@ -245,7 +243,7 @@ const S1_EX2: AttenduItem[] = [
   // du corrigé (perméabilité sélectée) et EST créditée par le correcteur
   // (ex. eleve_40 : prof 6,5/7, moteur 6,0 — seul l'item manquait).
   // Composantes = les 2 moitiés du corrigé, chacune acceptant SOIT le terme
-  // officiel SOIT la forme observée ; crédit proportionnel (0,25 par moitié),
+  // terme du document SOIT la forme observée ; crédit proportionnel (0,25 par moitié),
   // ce qui rend aussi le « fig(C) ébauché » d'eleve_24/28 (تدخل seul).
   item(0.5, ['غير نفوذ', 'نفوذ'],
     'الشكل(ج): الغشاء البروتيني للبيرنويدة نفوذ لـ HCO3⁻ وRuBP/APG وغير نفوذ لـ CO2 — فيُحجز CO2 داخل البيرنويدة',
@@ -296,7 +294,7 @@ const S1_EX3: AttenduItem[] = [
   //     eleve_03/04/05 mentionnent « NE » une fois dans la conclusion recopiée
   //     (« يرتبط Ado بمستقبله فيقلل إفراز NE ») sans le mécanisme ni les valeurs,
   //     et le prof ne leur accorde pas le point (2/8 contre 2,79–3,57 pour le
-  //     moteur). L'attendu officiel exige la relation CHIFFRÉE du corrigé
+  //     moteur). L'attendu encodé retient la relation CHIFFRÉE de la correction consultée
   //     (de ~8 à ~2 nmol/L) : on crédite donc NE ∩ unité nmol.
   //     Contrôle : eleve_35 (10 occurrences + « من 9 الي 2nmol l ») garde le point.
   item(0.5, ['النورادرينالين', 'نورادرينالين', 'norepinephrine', 'noradrenaline', 'ne'],
@@ -331,12 +329,12 @@ const S1_EX3: AttenduItem[] = [
   item(0.5, [], 'المخطط: مسار Ado (تراكم → ارتباط A1R → نقص NE → نعاس) ومسار Mtb (احتلال A1R → عودة NE → يقظة)'),
 ];
 
-// Ventilation officielle de l'Ex3 (RECAPITULATIF + corrigé p.2-4) :
+// Ventilation de référence de l'Ex3 (RECAPITULATIF + correction consultée p.2-4) :
 //   Partie 1 = 1,5 (lecture des figures a/b + 2 conclusions + hypothèses)
 //   Partie 2 = 4,5 (mécanisme : NE, Go/Gi, canaux K⁺/Ca²⁺, vésicules)
 //   Partie 3 = 2,0 (conseils + schéma)
 // Le registre totalise 3,5 / 3,5 / 1,0 — la Partie 1 (items faciles : nommer
-// « المجموعة 1 » rapporte 0,5) pèse ×2,3 l'officiel. C'est la cause mesurée du
+// « المجموعة 1 » rapporte 0,5) pèse ×2,3 la valeur de référence. C'est la cause mesurée du
 // biais +1,20 (docs/DIAGNOSTIC_EX3.md) : la note est ventilée par partie.
 const S1_EX3_PARTIES: PoidsPartie = {
   partie: {
@@ -347,8 +345,8 @@ const S1_EX3_PARTIES: PoidsPartie = {
     'corr-2025-24': 3, 'corr-2025-25': 3,
   },
   registre: { 1: 3.5, 2: 3.5, 3: 1.0 },
-  officiel: { 1: 1.5, 2: 4.5, 3: 2.0 },
-  source: 'RECAPITULATIF.txt (structure du sujet) + corrigé officiel p.2-4 — 2026-09-27',
+  reference: { 1: 1.5, 2: 4.5, 3: 2.0 },
+  source: 'RECAPITULATIF.txt (structure du sujet) + correction consultée p.2-4 — 2026-09-27',
 };
 
 // ── S2-Ex2 (7 ن) — SOD · الطفرة · EDA · Catalase (ALS) ───────────────────────
@@ -358,7 +356,7 @@ const S2_EX2: AttenduItem[] = [
   item(0.5, ['catalase'],
     'بوجود Catalase: ينخفض بيروكسيد الهيدروجين تدريجياً (~18→انعدام) ويستمر تزايد O2'),
   // Confirmé le 2026-09-19 par re-lecture du corrigé (p.7-8) : la ventilation
-  // officielle force parties 1+2 = 3.5 pts dont 3.0 lisibles (SOD/Catalase/
+  // source de référence documente les parties 1+2 = 3.5 pts dont 3.0 lisibles (SOD/Catalase/
   // استنتاج + EDA×3) — le 0.5 manquant est le شاهد (tube témoin sans enzyme).
   item(0.5, ['في غياب الانزيم', 'شاهد'],
     'في غياب الأنزيم (شاهد): ثبات تراكيز الأوكسيد الفائق والمنتجات مع الزمن'),
@@ -434,7 +432,7 @@ export const ATTENDUS_BAC2025: Record<SujetId, Record<ExerciceId, AttendusExerci
 /** Registre OBLIGATOIRE — lève si un groupe n'a pas d'attendus (jamais le cas). */
 export function attendusDeGroupe(sujet: SujetId, exercice: ExerciceId): AttendusExercice {
   const g = ATTENDUS_BAC2025[sujet]?.[exercice];
-  if (!g) throw new Error(`[attendus] aucun attendu officiel pour S${sujet}-Ex${exercice} — la notation sans attendus est interdite (Pierre 2)`);
+  if (!g) throw new Error(`[attendus] aucun attendu de référence pour S${sujet}-Ex${exercice} — la notation sans attendus est interdite (Pierre 2)`);
   return g;
 }
 
