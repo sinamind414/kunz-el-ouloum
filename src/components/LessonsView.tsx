@@ -68,6 +68,14 @@ interface LessonsProps {
   onOpenTab?: (tab: string) => void;
   /** Appelé après consommation du deep-link (pour vider l'état du parent). */
   onDeepLinkConsumed?: () => void;
+  /** Audit Capitaine §2 (2026-10-17) : relais du score d'un chapitre de
+   *  اختبار الكتاب terminé vers App (quizScoreHistory, source: 'livre'). */
+  onScoreLivre?: (resultat: {
+    unitId: number;
+    score: number;
+    total: number;
+    chapitre: number;
+  }) => void;
 }
 
 
@@ -109,7 +117,7 @@ const firstActiveLessonOfNextUnit = (unitId: number): { unitId: number; key: str
 const unitOfActiveLesson = (key: string): number =>
   INITIAL_UNITS.find((u) => getActiveLessonKeysForUnit(u.id).includes(key))?.id ?? 1;
 
-export default function LessonsView({ onRateCard, initialLesson, initialQcm, initialMode, onOpenTab, onDeepLinkConsumed }: LessonsProps) {
+export default function LessonsView({ onRateCard, initialLesson, initialQcm, initialMode, onOpenTab, onDeepLinkConsumed, onScoreLivre }: LessonsProps) {
   const [mode, setMode] = useState<LessonMode | 'qcm' | 'bac' | 'okacha' | 'search' | null>(null);
   const [selectedUnit, setSelectedUnit] = useState<number>(1);
   const [selectedDomain, setSelectedDomain] = useState<number | null>(null);
@@ -210,7 +218,7 @@ export default function LessonsView({ onRateCard, initialLesson, initialQcm, ini
     return (
       <div data-testid="qcm-livre">
         <Suspense fallback={<VueEnChargement />}>
-          <QcmLivreView onBack={() => setMode(null)} uniteInitiale={qcmUniteInitiale} />
+          <QcmLivreView onBack={() => setMode(null)} uniteInitiale={qcmUniteInitiale} onQuizTermine={onScoreLivre} />
         </Suspense>
       </div>
     );

@@ -43,6 +43,7 @@ import { gesteDuMessage, gesteFatigueDuMessage, type GesteDialogue } from './lib
 import { noterRappel, phraseEcheance } from './lib/rappelAdaptatif';
 import { qualiteDepuisAutoEvaluation, qualiteDepuisPreuves } from './lib/sm2';
 import { loadParcours } from './lib/parcours/parcoursProgress';
+import { scoreLivreUnite } from './lib/parcours/parcoursMeta';
 import {
   diagnostiquerParcours,
   classerParUrgence,
@@ -1435,7 +1436,10 @@ export function diagnosticCoach(session: BotSession, rawInput?: string): EngineR
     : undefined;
 
   const diags = classerParUrgence(
-    diagnostiquerParcours(groupes, state),
+    // Audit Capitaine §2 : le diagnostic consulte l'agrégat اختبار الكتاب
+    // (scoreLivreUnite) — une unité dont le livre est réussi n'est plus
+    // affichée « حصيلة الوحدة: — » ; le جسر garde la priorité (côté coach).
+    diagnostiquerParcours(groupes, state, scoreLivreUnite),
     (unitId) => UNIT_BAC_WEIGHT.get(unitId) ?? 1,
   );
 

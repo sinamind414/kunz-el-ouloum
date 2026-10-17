@@ -39,6 +39,8 @@ export interface DiagnosticUnite {
   fragiles: number;
   /** Items du chemin restant à faire. */
   restants: number;
+  /** Vrai quand la mesure affichée vient de اختبار الكتاب (jalon sans note). */
+  sourceLivre?: boolean;
   action: { type: TypeAction; libelleAr: string };
 }
 
@@ -49,6 +51,26 @@ export const LIBELLE_VERDICT: Record<VerdictUnite, string> = {
   moyen: 'مستوى متوسط',
   fort: 'مستوى قوي',
 };
+
+/**
+ * Source de la mesureaffichée — audit Capitaine 2026-10-17 (§2) :
+ * « distinguer absent de maîtrisé ». Quand le جسر n'a pas de note mais que
+ * اختبار الكتاب en a une (mesure réelle écrite par App), le coach l'utilise
+ * et LE DIT — au lieu d'afficher « حصيلة الوحدة: — ».
+ */
+export const LIBELLE_SOURCE_LIVRE = 'اختبار الكتاب';
+/** Libellé de la mesure par défaut (جسر / اختبار الحصيلة de l'unité). */
+export const LIBELLE_SOURCE_JALON = 'اختبار الحصيلة';
+
+/** Question minimale pour qu'un agrégat livre soit une MESURE et pas un dé.
+ *  U9 n'a qu'UNE question de livre : 100 % là-dessus ne prouve rien. */
+export const TOTAL_LIVRE_MIN = 3;
+
+/** Options du diagnostic — toutes facultatives (comportement historique intact). */
+export interface OptionsDiagnostic {
+  /** Score agrégé de اختبار الكتاب pour l'unité (scoreLivreUnite), si mesuré. */
+  scoreLivre?: { score: number; total: number } | null;
+}
 
 /**
  * Diagnostic d'UNE unité. `items` = les items du chemin de cette unité
@@ -62,6 +84,7 @@ export function diagnostiquerUnite(
   unite: Pick<ParcoursUnitGroup, 'unitId' | 'title'>,
   items: ParcoursItem[],
   state: ParcoursState,
+  options: OptionsDiagnostic = {},
 ): DiagnosticUnite {
   const rec = (it: ParcoursItem): ParcoursRecord | undefined => state.done[it.id];
 
@@ -72,7 +95,19 @@ export function diagnostiquerUnite(
     .map(rec)
     .filter((r): r is ParcoursRecord => Boolean(r) && typeof r!.score === 'number')
     .map((r) => r!.score as number);
-  const score = scores.length > 0 ? scores.reduce((a, b) => a + b, 0) / scores.length : null;
+  let score = scores.length > 0 ? scores.reduce((a, b) => a + b, 0) / scores.length : null;
+  // Le جسر PRÉCÈDE toujours le livre (décision 2026-10-02). Le livre ne crée
+  // une mesure que s'il n'existe AUCUNE note de جسر, et si son agrégat unité
+  // porte sur assez de questions pour être une mesure (< 3 = pas de verdict).
+  let sourceLivre = false;
+  if (
+    score === null &&
+    options.scoreLivre &&
+    options.scoreLivre.total >= TOTAL_LIVRE_MIN
+  ) {
+    score = options.scoreLivre.score / options.scoreLivre.total;
+    sourceLivre = true;
+  }
 
   const fragiles = items.filter((i) => rec(i)?.fragile).length;
   const restants = items.filter((i) => !rec(i)).length;
@@ -80,21 +115,29 @@ export function diagnostiquerUnite(
     items.some((i) => i.id === id),
   );
 
-  const verdict: VerdictUnite = !commence
-    ? 'non_commence'
-    : score === null
-      ? fragiles > 0
-        ? 'faible'
-        : leconsFaites < lecons.length
-          ? 'moyen'
+  const verdict: VerdictUnite =
+    // Audit §2 : une mesure réelle (جسر ou livre) sort l'unité de
+    // « non_commence » — l'absence de leçons lues n'efface pas une note mesurée.
+    !commence && score === null
+      ? 'non_commence'
+      : score === null
+        ? fragiles > 0
+          ? 'faible'
           : 'moyen'
-      : fragiles > 0 && score < SEUIL_FRAGILE
-        ? 'faible'
-        : score >= 0.8 && fragiles === 0
-          ? 'fort'
-          : score >= SEUIL_FRAGILE
+        : sourceLivre && leconsFaites < lecons.length
+          ? // Plafond : اختبار الكتاب ne remplace pas le cours. Une note de
+            // livre sans leçons terminées ne peut pas déclarer « fort » —
+            // la prescription reste « termine le cours, puis passe le جسر ».
+            score >= SEUIL_FRAGILE
             ? 'moyen'
-            : 'faible';
+            : 'faible'
+          : fragiles > 0 && score < SEUIL_FRAGILE
+            ? 'faible'
+            : score >= 0.8 && fragiles === 0
+              ? 'fort'
+              : score >= SEUIL_FRAGILE
+                ? 'moyen'
+                : 'faible';
 
   const action: { type: TypeAction; libelleAr: string } =
     verdict === 'non_commence'
@@ -114,16 +157,23 @@ export function diagnostiquerUnite(
     totalLecons: lecons.length,
     fragiles,
     restants,
+    ...(sourceLivre ? { sourceLivre: true } : {}),
     action,
   };
 }
 
-/** Diagnostic de tout le parcours, groupé par unité. */
+/** Diagnostic de tout le parcours, groupé par unité.
+ *  `livreParUnite` (facultatif) fournit l'agrégat اختبار الكتاب de chaque
+ *  unité — le coach ne remonte JAMAIS chercher la donnée lui-même, l'appelant
+ *  décide (moteur : scoreLivreUnite de parcoursMeta). */
 export function diagnostiquerParcours(
   groupes: ParcoursUnitGroup[],
   state: ParcoursState,
+  livreParUnite?: (unitId: number) => { score: number; total: number } | null,
 ): DiagnosticUnite[] {
-  return groupes.map((u) => diagnostiquerUnite(u, u.items, state));
+  return groupes.map((u) =>
+    diagnostiquerUnite(u, u.items, state, livreParUnite ? { scoreLivre: livreParUnite(u.unitId) } : {}),
+  );
 }
 
 /**
@@ -149,10 +199,14 @@ export function classerParUrgence(
   });
 }
 
-/** Ligne d'affichage du coach (arabe فصحى, sans mélange). */
+/** Ligne d'affichage du coach (arabe فصحى, sans mélange). La source de la
+ *  mesure est nommée : l'élève sait si la note vient du جسر de l'unité
+ *  (اختبار الحصيلة) ou des QCM du livre (اختبار الكتاب) — audit §2 :
+ *  un « — » (absent) et une vraie note ne doivent plus se ressembler. */
 export function ligneCoach(d: DiagnosticUnite): string {
   const score = d.score === null ? '—' : `${Math.round(d.score * 100)}%`;
+  const source = d.sourceLivre ? LIBELLE_SOURCE_LIVRE : LIBELLE_SOURCE_JALON;
   const tete = `${LIBELLE_VERDICT[d.verdict]} في «${d.titre}»`;
-  const detail = `حصيلة الوحدة: ${score} · دروس مقروءة ${d.leconsFaites}/${d.totalLecons} · عناصر هشّة ${d.fragiles} · متبقٍّ ${d.restants}`;
+  const detail = `حصيلة الوحدة (${source}): ${score} · دروس مقروءة ${d.leconsFaites}/${d.totalLecons} · عناصر هشّة ${d.fragiles} · متبقٍّ ${d.restants}`;
   return `${tete}\n${detail}\n➡️ ${d.action.libelleAr}`;
 }

@@ -99,6 +99,11 @@ export interface UserProgress {
     score: number;
     total: number;
     unitTitle: string;
+    /** Audit Capitaine §2 : provenance de la note — 'jalon' (QCM d'unité,
+     *  défaut historique) ou 'livre' (chapitre de اختبار الكتاب). */
+    source?: 'jalon' | 'livre';
+    /** Uniquement source='livre' : chapitre du livre évalué. */
+    chapitre?: number;
   }[];
 }
 

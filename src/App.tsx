@@ -728,6 +728,32 @@ export default function App() {
     }
   };
 
+  // Audit Capitaine §2 (2026-10-17) : le résultat de اختبار الكتاب (QCM du
+  // livre, ouvert depuis le جسر du parcours) est PERSISTÉ avec `source: 'livre'`
+  // + `chapitre`. scoreQcmUnite (جسر) ne les lit pas (aucun score d'un autre
+  // quiz réutilisé silencieusement comme note de l'unité) ; scoreLivreUnite
+  // (parcoursMeta) agrège par unité et alimente le diagnostic du coach.
+  const enregistrerScoreLivre = (res: { unitId: number; score: number; total: number; chapitre: number }) => {
+    const unite = INITIAL_UNITS[res.unitId - 1];
+    if (!unite) return;
+    const updatedProgress: UserProgress = {
+      ...progress,
+      quizScoreHistory: [
+        ...progress.quizScoreHistory,
+        {
+          date: new Date().toLocaleDateString(AR_LATN),
+          score: res.score,
+          total: res.total,
+          unitTitle: unite.title,
+          source: 'livre',
+          chapitre: res.chapitre,
+        },
+      ],
+    };
+    setProgress(updatedProgress);
+    saveToLocalStorage(units, flashcards, updatedProgress);
+  };
+
   // If in quiz mode, override full interface to focus purely on scientific learning
   if (activeCombatChallenge) {
     // Épreuve officielle bac2025 : la boucle élève de bout en bout (Pierre 2).
@@ -1158,6 +1184,9 @@ export default function App() {
                   initialMode={parcoursMode ?? undefined}
                   onDeepLinkConsumed={() => { setParcoursLesson(null); setParcoursQcm(null); setParcoursMode(null); }}
                   onOpenTab={(tab) => setCurrentTab(tab as typeof currentTab)}
+                  /* Audit Capitaine §2 : le score de اختبار الكتاب atteint
+                     enfin quizScoreHistory (source: 'livre', par chapitre). */
+                  onScoreLivre={enregistrerScoreLivre}
                 />
               )}
 

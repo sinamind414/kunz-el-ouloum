@@ -3,7 +3,7 @@
 // chapitres sans quiz de leçons — complément direct des leçons passives.
 // Chaque question affiche le schéma du livre (SVG) et l'explication après réponse.
 
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { BookOpen, ChevronLeft } from 'lucide-react';
 import { QCM_CHAPITRES } from '../data/qcmLivre';
 import QcmBilanView from './QcmBilanView';
@@ -15,11 +15,28 @@ interface Props {
   onBack: () => void;
   /** Deep-link depuis المسار : ne montrer que les chapitres de cette unité. */
   uniteInitiale?: number;
+  /** Audit Capitaine §2 (2026-10-17) : le score du chapitre terminé part vers
+   *  App (quizScoreHistory, `source: 'livre'`) au lieu de mourir dans l'état
+   *  local — sinon le diagnostic reste « حصيلة الوحدة: — » après un travail
+   *  réel de l'élève. */
+  onQuizTermine?: (resultat: {
+    unitId: number;
+    score: number;
+    total: number;
+    chapitre: number;
+  }) => void;
 }
 
 const titreChapitre = (n: number) => CHAPITRES[n - 1]?.titreAr ?? `الفصل ${n}`;
 
-export default function QcmLivreView({ onBack, uniteInitiale }: Props) {
+/** Unité globale 1-11 d'un chapitre (D1 = 1-5, D2 = 6-8, D3 = 9-11). */
+const uniteDeChapitre = (n: number): number | undefined => {
+  const c = CHAPITRES[n - 1];
+  if (!c) return undefined;
+  return c.unit + (c.domain === 1 ? 0 : c.domain === 2 ? 5 : 8);
+};
+
+export default function QcmLivreView({ onBack, uniteInitiale, onQuizTermine }: Props) {
   const [selectedChapter, setSelectedChapter] = useState<number | null>(null);
   const [bilan, setBilan] = useState(false);
   const [answers, setAnswers] = useState<Record<number, number>>({});
@@ -31,7 +48,7 @@ export default function QcmLivreView({ onBack, uniteInitiale }: Props) {
     for (const q of QCM_CHAPITRES) {
       const c = CHAPITRES[q.chapitre - 1];
       // uniteId global 1-11 : D1 = 1-5, D2 = 6-8, D3 = 9-11 (miroir de cleUnite)
-      const uniteGlobale = c ? c.unit + (c.domain === 1 ? 0 : c.domain === 2 ? 5 : 8) : q.chapitre;
+      const uniteGlobale = c ? uniteDeChapitre(q.chapitre)! : q.chapitre;
       if (!map.has(uniteGlobale)) map.set(uniteGlobale, []);
       map.get(uniteGlobale)!.push({ chapter: q.chapitre, titreAr: titreChapitre(q.chapitre), nb: 0 });
     }
@@ -65,6 +82,21 @@ export default function QcmLivreView({ onBack, uniteInitiale }: Props) {
   const repondu = Object.keys(answers).length;
   const score = questions.filter((q, i) => answers[i] === q.correct).length;
   const termine = selectedChapter !== null && repondu === questions.length && questions.length > 0;
+
+  // Audit Capitaine §2 : une seule émission par chapitre terminé (answers est
+  // gelé une fois `termine` atteint — les options se désactivent après clic).
+  // Une reprise (retour puis re-clic) réinitialise answers → nouvelle entrée.
+  const unitIdDuChapitre = selectedChapter !== null ? uniteDeChapitre(selectedChapter) : undefined;
+  useEffect(() => {
+    if (!termine || unitIdDuChapitre === undefined || !onQuizTermine) return;
+    onQuizTermine({
+      unitId: unitIdDuChapitre,
+      score,
+      total: questions.length,
+      chapitre: selectedChapter as number,
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [termine, selectedChapter]);
 
   if (bilan) {
     return <QcmBilanView onBack={() => setBilan(false)} />;

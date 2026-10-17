@@ -144,12 +144,17 @@ export function scoreQcmUnite(uniteId: number): { score: number; total: number }
     const titre = INITIAL_UNITS[uniteId - 1]?.title;
     if (!titre) return null;
 
-    // Dernière entrée de l'unité (on garde la plus récente).
+    // Dernière entrée de l'unité (on garde la plus récente). Audit Capitaine
+    // §2 : les entrées `source: 'livre'` (اختبار الكتاب) ne qualifient JAMAIS
+    // le جسر — un score d'un autre quiz n'est pas réutilisé silencieusement.
     let dernier: { score: number; total: number } | null = null;
     for (const brutEntree of historique) {
       if (!brutEntree || typeof brutEntree !== 'object') continue;
-      const e = brutEntree as { unitTitle?: unknown; score?: unknown; total?: unknown };
+      const e = brutEntree as {
+        unitTitle?: unknown; score?: unknown; total?: unknown; source?: unknown;
+      };
       if (e.unitTitle !== titre) continue;
+      if (e.source !== undefined && e.source !== 'jalon') continue;
       if (typeof e.total !== 'number' || !(e.total > 0)) continue;
       if (typeof e.score !== 'number') continue;
       dernier = { score: e.score, total: e.total };
@@ -157,6 +162,56 @@ export function scoreQcmUnite(uniteId: number): { score: number; total: number }
     return dernier;
   } catch {
     // Stockage corrompu / mode privé → on n'affiche rien plutôt qu'une note.
+    return null;
+  }
+}
+
+/**
+ * Score agrégé de اختبار الكتاب pour une unité — audit Capitaine 2026-10-17
+ * (§2) : le résultat du QCM du livre, une fois écrit par App dans
+ * `quizScoreHistory` (`source: 'livre'`, `chapitre: N`), doit remonter au
+ * diagnostic au lieu de disparaître. Une unité compte 2 à 5 chapitres de ≤ 2
+ * questions : l'agrégat = somme des DERNIÈRES tentatives de chaque chapitre
+ * (une reprise remplace la tentative du même chapitre, jamais les autres).
+ * Renvoie null si aucune mesure — jamais de note fabriquée.
+ */
+export function scoreLivreUnite(uniteId: number): { score: number; total: number } | null {
+  try {
+    const brut = localStorage.getItem(CLE_PROGRESSION);
+    if (!brut) return null;
+    const p: unknown = JSON.parse(brut);
+    if (!p || typeof p !== 'object') return null;
+    const historique = (p as { quizScoreHistory?: unknown }).quizScoreHistory;
+    if (!Array.isArray(historique)) return null;
+
+    const titre = INITIAL_UNITS[uniteId - 1]?.title;
+    if (!titre) return null;
+
+    // Dernière tentative VALIDE par chapitre (ordre du tableau = chronologie).
+    const parChapitre = new Map<number, { score: number; total: number }>();
+    for (const brutEntree of historique) {
+      if (!brutEntree || typeof brutEntree !== 'object') continue;
+      const e = brutEntree as {
+        unitTitle?: unknown; score?: unknown; total?: unknown;
+        source?: unknown; chapitre?: unknown;
+      };
+      if (e.unitTitle !== titre) continue;
+      if (e.source !== 'livre') continue;
+      if (typeof e.chapitre !== 'number' || !Number.isFinite(e.chapitre)) continue;
+      if (typeof e.total !== 'number' || !(e.total > 0)) continue;
+      if (typeof e.score !== 'number') continue;
+      parChapitre.set(e.chapitre, { score: e.score, total: e.total });
+    }
+    if (parChapitre.size === 0) return null;
+
+    let score = 0;
+    let total = 0;
+    for (const tentative of parChapitre.values()) {
+      score += tentative.score;
+      total += tentative.total;
+    }
+    return { score, total };
+  } catch {
     return null;
   }
 }
