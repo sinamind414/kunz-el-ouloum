@@ -42,7 +42,13 @@ export default function SectionObligatoire({ note }: { note: NoteCalibree }) {
               <span className="text-[9px] align-top text-amber-600 dark:text-amber-400"> مبدئي</span>
             </>
           ) : (
-            <>{fmtPoints(note.points)} / {fmtPoints(note.maxPts)} ن</>
+            <>
+              {fmtPoints(note.points)} / {fmtPoints(note.maxPts)} ن
+              {/* H4 (2026-10-17) : la note machine est une ESTIMATION de ce
+                  qu'un correcteur donnerait — calibrée sur le corpus de
+                  calibration, jamais une note définitive. */}
+              <span className="text-[9px] align-top text-gray-500 dark:text-gray-400"> تقديري</span>
+            </>
           )}
         </span>
       </div>
@@ -56,6 +62,7 @@ export default function SectionObligatoire({ note }: { note: NoteCalibree }) {
         </div>
       )}
       <div className="px-2 py-1.5 text-[9px] font-bold text-gray-500 dark:text-gray-400 bg-emerald-50/50 dark:bg-emerald-950/20 space-y-0.5">
+        <p>نقطة تقديرية آلية تقارب تنقيط مصحح — التصحيح البشري هو المرجع النهائي.</p>
         <p>
           التغطية: {Math.round(note.couverture * 100)}% من النقاط الآلية (
           {fmtPoints(note.pointsAttendusCredites)}/{fmtPoints(note.pointsAttendusAuto)}) —
