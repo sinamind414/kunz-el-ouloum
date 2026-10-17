@@ -3491,3 +3491,80 @@ est honnête sur sa portée — la phrase est affichée en bas du panneau :
 
 23 tests neufs (17 sur les données, 6 sur le panneau). Suite unitaire
 **1851 verts / 4 skipped / 0 échec** (147 fichiers).
+
+---
+
+## Sprints 63 → 69 — de la mesure à la boucle fermée
+
+Les sprints précédents savaient dire *« écrit-il mieux ? »*. Ceux-ci répondent
+aux trois questions qui restaient ouvertes : **qui le lit**, **ce qui n'était
+pas mesuré**, et **ce qui revient tout seul**.
+
+### Sprint 63 — le verdict sort de l'écran de statistiques
+
+La feuille imprimable **تقرير للأستاذ** reçoit le bloc « هل تتحسّن بنية
+أجوبته؟ ». Un professeur ou un parent lit la progression sans ouvrir
+l'application, sur une A4 qui porte toujours la mention
+« هذا التقرير لا يحمل أي علامة ».
+
+### Sprint 64 — la leçon active annonce son contrat
+
+Le mécanisme existait (rien ne s'ouvre sans réponse validée), il n'était pas
+annoncé. Un blocage non annoncé est une friction ; annoncé d'avance, c'est la
+promesse du produit : « هذا الدرس لا يتقدّم قبل أن تجيب — لا توجد قراءة سلبية
+هنا ». Un test parcourt les **six leçons injectées** des 5 priorités et vérifie
+que chacune le porte.
+
+### Sprint 65 — le rappel espacé
+
+`spacedRecall.ts` : ce que l'élève a écrit lui revient à **1, 3, 7 et 16
+jours**, plafonné à 3 rappels par jour, le plus fragile d'abord. Le palier 1
+est sauté quand la forme était déjà maîtrisée (≥ 80 %).
+
+Le module **assume sa limite par écrit** : le « 67 % en 24 h » d'Ebbinghaus
+vient de syllabes sans signification apprises par lui-même. On retient l'effet
+d'espacement, pas le pronostic — et aucun « algorithme adaptatif », qui serait
+une mise en scène.
+
+### Sprint 66 — le schéma refait de mémoire laisse une trace
+
+Le score de « ارسم من الذاكرة » s'affichait puis disparaissait : le deuxième
+geste le plus coûteux de l'application n'était pas capitalisé.
+`drillLog.ts` l'enregistre, affiche l'écart avec la tentative précédente, et
+alimente un bloc **« الاسترجاع »** distinct de la production écrite.
+
+Deux décisions : un schéma n'est « su » qu'avec **≥ 75 % ET zéro élément
+essentiel manquant** (un schéma de synapse sans vésicules n'est pas su) ; les
+deux journaux ne sont **jamais moyennés** — une moyenne masquerait le cas le
+plus courant, savoir dessiner sans savoir rédiger.
+
+### Sprint 67 — le rappel espacé couvre les schémas
+
+Mêmes paliers, réglages différents et assumés : plafond de **2** par jour
+(refaire un schéma coûte 10 à 15 min) et **repos de 7 jours** quand le schéma
+est su. Ouverture directe du schéma concerné, avec repli sur la liste si
+l'identifiant a disparu de la banque.
+
+### Sprint 68 — verrou de sauvegarde et documentation
+
+Test de non-régression : les **deux journaux** entrent dans la sauvegarde et
+survivent à un aller-retour. Il échouera si un futur journal naît hors du
+préfixe `kunz.`. Documentation remise à jour.
+
+### Sprint 69 — la restitution sur la feuille du professeur
+
+Le rapport imprimable portait la progression écrite mais ignorait le dessin.
+Il reçoit « هل يستطيع إعادة المخططات من الذاكرة؟ », avec les schémas fragiles
+**nommés**. Au BAC, le schéma est une question à part entière : un dossier qui
+n'en parle pas est à moitié vide.
+
+### Bilan de la séquence
+
+| | Avant le sprint 63 | Après le sprint 69 |
+|---|---|---|
+| Production écrite | mesurée | mesurée **et** rappelée |
+| Restitution graphique | éphémère | enregistrée, suivie, rappelée |
+| Lecture par un adulte | écran seulement | feuille A4 complète |
+| Survie des données | implicite | verrouillée par test |
+
+Suite unitaire : **1 903 verts / 4 skipped / 0 échec** (151 fichiers).

@@ -15,6 +15,8 @@ import { useMemo } from 'react';
 import { FileText, Printer } from 'lucide-react';
 import { reviewDrafts, writingReport } from '../data/writingReview';
 import { progressionParFamille, verdictProgression } from '../data/learningProgress';
+import { bilanSchemas } from '../data/drillLog';
+import { SCHEMA_DRILL_BY_ID } from '../data/schemaDrills';
 import { readPlanSettings } from '../data/planSettings';
 import { INITIAL_UNITS } from '../unitCatalog';
 
@@ -31,6 +33,7 @@ export default function WritingReportSheet({ onClose }: Props) {
   // Sprint 63 : la feuille ne dit plus seulement CE QUI a été écrit, mais si
   // la forme s'améliore — la seule question que pose un professeur.
   const verdict = useMemo(() => verdictProgression(), []);
+  const schemas = useMemo(() => bilanSchemas(), []);
   const tendances = useMemo(
     () => progressionParFamille().filter((f) => f.tendance !== 'insuffisant'),
     [],
@@ -123,6 +126,34 @@ export default function WritingReportSheet({ onClose }: Props) {
                 {f.titreAr} — {f.redactions} جواباً ·{' '}
                 {f.deltaPourcent > 0 ? '+' : ''}
                 {f.deltaPourcent} نقطة مئوية
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
+
+      {/* Sprint 69 — la restitution graphique sur la même feuille. Un
+          professeur qui lit « il écrit mieux » sans savoir s'il sait refaire
+          les schémas n'a qu'une moitié du dossier : au BAC, le schéma est
+          une question à part entière. */}
+      <div data-testid="rapport-restitution" className="rounded-2xl p-3 mb-3 bg-[#fffdf7] dark:bg-black/20 border border-[#d9a400]/30">
+        <p className="text-[12px] font-black text-[#1f1c0b] dark:text-gray-100 text-right mb-1">
+          هل يستطيع إعادة المخططات من الذاكرة؟
+        </p>
+        <p className="text-[12px] leading-6 text-right text-[#1f1c0b] dark:text-gray-200">
+          {schemas.messageAr}
+        </p>
+        {schemas.fragiles.length > 0 && (
+          <ul className="mt-1 space-y-0.5">
+            {schemas.fragiles.slice(0, 4).map((f) => (
+              <li
+                key={f.drillId}
+                data-testid={`rapport-schema-${f.drillId}`}
+                className="text-[11px] leading-6 text-right text-[#506072] dark:text-gray-300"
+              >
+                {SCHEMA_DRILL_BY_ID[f.drillId]?.titleAr ?? f.drillId} —{' '}
+                {Math.round(f.dernierTaux * 100)}٪
+                {f.derniersOublis > 0 ? ` · ${f.derniersOublis} عنصراً أساسياً غائباً` : ''}
               </li>
             ))}
           </ul>

@@ -11,11 +11,14 @@ import WritingReportSheet from '../WritingReportSheet';
 import { TRAINER_PREFIX } from '../../data/writingProgress';
 import { writingReport } from '../../data/writingReview';
 import { clearLearningLog, recordWriting } from '../../data/learningLog';
+import { clearDrillLog, recordDrill } from '../../data/drillLog';
+import { SCHEMA_DRILLS } from '../../data/schemaDrills';
 
 afterEach(cleanup);
 beforeEach(() => {
   localStorage.clear();
   clearLearningLog();
+  clearDrillLog();
 });
 
 const ecrire = (ideaId: string, familyId: string, texte: string) =>
@@ -96,5 +99,28 @@ describe('feuille de rapport — progression (sprint 63)', () => {
     ecrire('bac2023_s2_e3', 'verb_analyser', ANALYSE);
     render(<WritingReportSheet onClose={() => {}} />);
     expect(screen.getByTestId('rapport-progression').textContent).toContain('تخميناً');
+  });
+});
+
+describe('feuille de rapport — restitution graphique (sprint 69)', () => {
+  beforeEach(() => clearDrillLog());
+
+  it('dit au professeur que le dessin de mémoire n’a pas été travaillé', () => {
+    ecrire('bac2023_s2_e3', 'verb_analyser', ANALYSE);
+    render(<WritingReportSheet onClose={() => {}} />);
+    expect(screen.getByTestId('rapport-restitution').textContent).toContain('لم ترسم');
+  });
+
+  it('nomme les schémas encore fragiles plutôt qu’une moyenne', () => {
+    const id = SCHEMA_DRILLS[0].id;
+    recordDrill({ date: '2026-05-01', drillId: id, unitId: 4, score: 3, total: 16, oublisEssentiels: 2 });
+    recordDrill({ date: '2026-05-01', drillId: `${id}_b`, unitId: 4, score: 16, total: 16, oublisEssentiels: 0 });
+    recordDrill({ date: '2026-05-01', drillId: `${id}_c`, unitId: 4, score: 16, total: 16, oublisEssentiels: 0 });
+    ecrire('bac2023_s2_e3', 'verb_analyser', ANALYSE);
+    render(<WritingReportSheet onClose={() => {}} />);
+    expect(screen.getByTestId(`rapport-schema-${id}`).textContent).toContain(
+      SCHEMA_DRILLS[0].titleAr,
+    );
+    expect(screen.getByTestId('rapport-restitution').textContent).toContain('2');
   });
 });
