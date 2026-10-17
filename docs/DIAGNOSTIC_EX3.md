@@ -30,8 +30,12 @@ couverture → note**.
 
 ## 2. Cause A — le registre sur-pondère la Partie 1 (cause principale)
 
-Le barème officiel de l'exercice (RECAPITULATIF + corrigé p.2-4) ventilé en
-trois parties :
+Précision de provenance (2026-10-17) : la ventilation en trois parties
+ci-dessous n'est pas un « barème officiel » publié — c'est une lecture de
+travail qui regroupe les points du corrigé (RECAPITULATIF + corrigé p.2-4)
+par partie. « Officiel » dans le tableau = les points du corrigé rattachés
+à chaque partie après regroupement : les chiffres viennent bien du corrigé,
+c'est le regroupement qui n'a pas de statut officiel.
 
 | Partie | Officiel | Registre `S1_EX3` | Écart |
 |---|---|---|---|
@@ -44,19 +48,21 @@ La Partie 1 est la partie **facile** : il suffit de nommer « المجموعة 1
 maximum alors que l'officiel n'en donne que 1,5. C'est mécaniquement la source
 du biais +1,20 : 40 copies sur 40 sont surnotées par construction.
 
-**Correction E (0 paramètre ajusté)** : re-pondérer chaque partie sur le barème
-officiel. Mesurée sur le moteur réel, **puis livrée** :
+**Correction E (0 paramètre ajusté)** : re-pondérer chaque partie sur les
+points du corrigé regroupés par partie. Mesurée sur le moteur réel, **puis
+livrée** :
 
 | Variante | MAE | biais | Statut |
 |---|---|---|---|
 | actuel (modèle plat `couverture × maxPts`) | 1,30 | +1,20 | ancien moteur |
-| **E (barème officiel des parties)** | **0,96** | **+0,66** | **livré 2026-09-27** |
+| **E (points du corrigé regroupés par partie)** | **0,96** | **+0,66** | **livré 2026-09-27** |
 | régression linéaire fitée (0,82·c−0,15) | 0,66 | — | rejetée (P2/R6) |
 
 La régression fitée donne un meilleur MAE mais **elle est rejetée** : c'est
 exactement le modèle `a·cov+b` que la règle P2/R6 interdit (fit sur les notes
-plutôt que sur les attendus officiels). La correction E n'utilise **que** les
-chiffres du barème officiel — aucun paramètre libre — et passe la porte F5.
+plutôt que sur les attendus). La correction E n'utilise **que** les
+chiffres du corrigé officiel regroupés par partie — aucun paramètre libre —
+et passe la porte F5.
 
 **Formule livrée** (`calibrationBac2025.ts`) : pour chaque partie `p`,
 `note = Σₚ crédit(p) × officiel(p) / registre(p)`, clampée à `[0, maxPts]`, puis

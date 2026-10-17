@@ -65,6 +65,27 @@ describe('MeftahView — application BAC 2025', () => {
       expect(screen.getByText(/ممنوع هذا يدل \/ لأن/)).toBeTruthy();
     });
   });
+
+  it('demande une tentative DÉCLARÉE avant de dévoiler le modèle « ما أكتب »', async () => {
+    const user = userEvent.setup();
+    render(<MeftahView />);
+    await user.click(screen.getByTestId('meftah-level-bac'));
+    await user.click(screen.getByTestId('meftah-bac-exercise-bac2025-ex1'));
+    await user.click(screen.getByTestId('bac2025-ex1-q2-header'));
+
+    // Le modèle officiel n'existe PAS dans le DOM avant la tentative déclarée :
+    // lire le modèle AVANT d'avoir écrit apprend l'illusion de savoir.
+    expect(screen.queryByTestId('bac2025-ex1-q2-modele')).toBeNull();
+
+    // L'élève déclare sa tentative (l'app ne lit pas le papier — honnêteté),
+    // alors seulement le modèle se dévoile, pour comparaison avec la copie.
+    await user.click(screen.getByTestId('bac2025-ex1-q2-devoiler'));
+    await waitFor(() => {
+      expect(screen.getByTestId('bac2025-ex1-q2-modele')).toBeTruthy();
+    });
+    // Le dévoilement tient après re-render (pas de re-masquage accidentel).
+    expect(screen.getByTestId('bac2025-ex1-q2-modele')).toBeTruthy();
+  });
 });
 
 describe('MeftahView — liens croisés vers les réflexes', () => {

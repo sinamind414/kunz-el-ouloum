@@ -2547,7 +2547,7 @@ const handleSelectStage = (stage: 1 | 2 | 3 | 4) => {
         <section className="space-y-4">
           <div className="flex flex-wrap items-center justify-between gap-3 print:hidden">
             <p className="text-xs font-bold text-gray-500 dark:text-gray-400">
-              بطاقة {MIFTAH_NOMENCLATURE.miftah} v{MIFTAH_VERSION} — تصيير React لنفس بطاقة الـHTML المستقل <span className="latin">/miftah.html</span> — تُطبع A4 recto/verso
+              بطاقة {MIFTAH_NOMENCLATURE.miftah} v{MIFTAH_VERSION} — تصيير React للبطاقة المنهجية، غير مطابق بنيويًّا لِـHTML المستقل <span className="latin">/miftah.html</span>: ذاك وجهان للطباعة (A4 recto/verso)، وهذه تعرض المنهجية مع ملحقها — فلا تُوصف بأنها «البطاقة نفسها»
             </p>
             <div className="flex gap-2">
               <a href="/miftah.html" target="_blank" rel="noopener" className="px-4 py-2 bg-white border border-gray-200 rounded-xl font-bold text-xs">فتح HTML المستقل</a>

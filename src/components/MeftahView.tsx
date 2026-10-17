@@ -214,6 +214,12 @@ function SectionCard({ section, onOpenVerb }: { section: MeftahSection; onOpenVe
 
 function BacQuestionCard({ question, onOpenVerb }: { question: MeftahBacQuestion; onOpenVerb?: (verbId: string) => void }) {
   const [open, setOpen] = useState(false);
+  // Relevé du 2026-10-17 : le modèle officiel (« ما أكتب ») se dévoile
+  // seulement après une tentative DÉCLARÉE de l'élève. Lire le modèle avant
+  // d'avoir écrit apprend l'illusion de savoir, pas la méthode — copier le
+  // corrigé n'est pas s'entraîner. L'app ne lit pas le papier : le bouton
+  // déclare la tentative (pattern honnête, comme la clôture par preuve).
+  const [devoile, setDevoile] = useState(false);
   return (
     <motion.div
       initial={{ opacity: 0, y: 12 }}
@@ -245,14 +251,30 @@ function BacQuestionCard({ question, onOpenVerb }: { question: MeftahBacQuestion
             <p className="text-xs md:text-sm text-gray-700 dark:text-gray-300 font-medium leading-7">{question.thinkAr}</p>
           </div>
 
-          <div className="rounded-xl border-r-4 border-[#0e6b6b] bg-[#eaf5f4]/60 dark:bg-[#0e6b6b]/10 p-3">
-            <div className="text-[10px] font-black text-[#0e6b6b] dark:text-[#5eead4] mb-1">ما أكتب</div>
-            <ul className="space-y-2">
-              {question.writeAr.map((w, i) => (
-                <li key={i} className="text-xs md:text-sm text-gray-800 dark:text-gray-200 font-medium leading-7">• {w}</li>
-              ))}
-            </ul>
-          </div>
+          {devoile ? (
+            <div data-testid={`${question.id}-modele`} className="rounded-xl border-r-4 border-[#0e6b6b] bg-[#eaf5f4]/60 dark:bg-[#0e6b6b]/10 p-3">
+              <div className="text-[10px] font-black text-[#0e6b6b] dark:text-[#5eead4] mb-1">ما أكتب — قارن مع ورقتك</div>
+              <ul className="space-y-2">
+                {question.writeAr.map((w, i) => (
+                  <li key={i} className="text-xs md:text-sm text-gray-800 dark:text-gray-200 font-medium leading-7">• {w}</li>
+                ))}
+              </ul>
+            </div>
+          ) : (
+            <div className="rounded-xl border-2 border-dashed border-[#c08a1f]/40 bg-[#fff9ed]/60 dark:bg-[#c08a1f]/5 p-3 text-center">
+              <p className="text-xs md:text-sm text-[#765108] dark:text-[#ffd27a] font-bold leading-7 mb-2">
+                حرّر إجابتك على الورقة أولاً كأنك في الامتحان — ثم قارنها بالعناصر الرسمية.
+              </p>
+              <button
+                type="button"
+                data-testid={`${question.id}-devoiler`}
+                onClick={() => setDevoile(true)}
+                className="px-4 py-2 rounded-xl bg-[#c08a1f] text-white text-xs font-black cursor-pointer hover:bg-[#a97416] transition-colors"
+              >
+                حاولتُ على الورق — أظهر عناصر الإجابة
+              </button>
+            </div>
+          )}
 
           {question.trapAr && (
             <div className="rounded-xl border border-rose-200 dark:border-rose-900/40 bg-rose-50 dark:bg-rose-950/20 p-3">
