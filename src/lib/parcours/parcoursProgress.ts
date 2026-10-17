@@ -124,6 +124,33 @@ export function markUndone(itemId: string): void {
   });
 }
 
+/**
+ * CLOT la revue J+14 d'un item AVEC PREUVE — audit Capitaine 2026-10-17
+ * (§4.2) : l'échéance reached ne devait jamais se vider toute seule ; le
+ * même rappel restait prioritaire indéfiniment (le bouton de statut d'un
+ * item fait ne peut que « تراجع », jamais « revu »).
+ *
+ *   · replanifie `reviews[itemId]` à J+14 (la revue faite n'est plus due) ;
+ *   · `fragilePreuve` (optionnel, venant d'une restitution MESURÉE — score
+ *     de re-prise du QCM de l'unité) : undefined = preuve non mesurée, on
+ *     garde le drapeau ; false = revue réussie, l'item soigne son drapeau
+ *     fragile ; true = revue ratée, l'item re-priorisé côté coach et NBA ;
+ *   · renvoie false pour un item non terminé : on ne programme pas du vide.
+ */
+export function replanifierRevue(itemId: string, fragilePreuve?: boolean): boolean {
+  let clos = false;
+  mutate((s) => {
+    const record = s.done[itemId];
+    if (!record) return;
+    s.reviews[itemId] = addDays(todayKey(), REVIEW_DELAY_DAYS);
+    if (typeof fragilePreuve === 'boolean') {
+      s.done[itemId] = { ...record, fragile: fragilePreuve };
+    }
+    clos = true;
+  });
+  return clos;
+}
+
 export function resetParcours(): void {
   saveParcours(etatParDefaut());
 }

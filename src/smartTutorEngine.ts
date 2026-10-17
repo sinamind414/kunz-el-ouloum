@@ -40,7 +40,8 @@ import { tokenAffirme } from './lib/validation/negationAr';
 import { PARCOURS_DOMAINS } from './lib/parcours/parcoursPath';
 import { construireVocabulaire, domaineProbable, domaineDeUnite } from './lib/routageDomaine';
 import { gesteDuMessage, gesteFatigueDuMessage, type GesteDialogue } from './lib/gesteDialogue';
-import { noterRappel, phraseEcheance } from './lib/rappelAdaptatif';
+import { noterRappel, noterReponseLibre, phraseEcheance, etatRappel } from './lib/rappelAdaptatif';
+import { prochainRappelDu, promptPour } from './lib/rappelConcepts';
 import { qualiteDepuisAutoEvaluation, qualiteDepuisPreuves } from './lib/sm2';
 import { loadParcours } from './lib/parcours/parcoursProgress';
 import { scoreLivreUnite } from './lib/parcours/parcoursMeta';
@@ -2208,6 +2209,56 @@ export function processStudentInput(session: BotSession, rawInput: string): Engi
   // C'est le défaut « un signal que personne n'écoute » appliqué au pire
   // endroit : le moment où l'élève fait l'effort de répondre.
   // ══════════════════════════════════════════════════════════════════════════
+  // ════════════════════════════════════════════════════════════════════════
+  // Audit Capitaine §4.1 (suite) : LA RÉPONSE LIBRE AU RAPPEL DE CONCEPT EST
+  // ÉCOUTÉE ET NOTÉE SM-2. La mission a posé la question du corpus
+  // (pendingCorpusRecallId) ; la saisie de l'élève est mesurée sur les
+  // preuves déclarées par le corpus (noterReponseLibre) — verdict honnête,
+  // espacement SM-2 réel, mission clôturée par cette restitution.
+  // ════════════════════════════════════════════════════════════════════════
+  if (session.pendingCorpusRecallId) {
+    const conceptId = session.pendingCorpusRecallId;
+    const prompt = promptPour(conceptId, etatRappel(conceptId));
+    const intentionForte = estIntentionForte(norm);
+    if (prompt && !intentionForte && usefulChars(rawInput) >= 2 && estReponseAuRappel(input, norm)) {
+      const { etat, qualite } = noterReponseLibre(conceptId, rawInput, {
+        acceptedEvidence: prompt.acceptedEvidence,
+        minEvidence: prompt.minEvidence,
+      });
+      // Mission clôturée par la restitution (quelle que soit la qualité —
+      // la qualité, elle, pilote l'espacement ; c'est le travail du SM-2).
+      const cloturee = { ...session, pendingCorpusRecallId: null };
+      const s2 = completeDailyMission(cloturee, `rappel-corpus:${conceptId}`);
+      saveSession(s2);
+      const reussi = qualite >= 3;
+      const verdict = reussi
+        ? `✅ صَح — استرجاع صحيح. ${phraseEcheance(etat.intervalDays)}\n`
+        : '⚪ لم تكتمل الإجابة — سأعيد السؤال قريباً (الذاكرة تحتاج محاولات).\n';
+      // Indices : les éléments attendus absents de la réponse (affichage
+      // d'aide, pas un verdict — le verdict vient du SM-2 ci-dessus).
+      const preuvesManquantes = prompt.acceptedEvidence.filter(
+        (p) => !norm.includes(normalizeArabic(p)),
+      );
+      const reconstruction = reussi
+        ? ''
+        : `\n🔓 عناصر كان المطلوب إظهارها في الإجابة: ${preuvesManquantes.join(' • ')}\n\nتابع شرح المفهوم في درسه أو «الملخصات الذهبية»، وسأعيد سؤالك.`;
+      return {
+        session: s2,
+        action: {
+          confidence: 90,
+          text: `${verdict}${reconstruction}\n🗓️ التقييم محفوظ في منظم المراجعات (SM-2).`,
+          quickActions: ['العودة للقائمة الرئيسية'],
+        },
+      };
+    }
+    // Intention forte ou saisie non éligible : libérer sans juger.
+    if (intentionForte) {
+      const s2: BotSession = { ...session, pendingCorpusRecallId: null };
+      saveSession(s2);
+      session = s2;
+    }
+  }
+
   if (session.pendingRecallCardId) {
     const recallCard = getCardById(session.pendingRecallCardId);
     // Une intention FORTE libère le rappel sans bloquer personne (même règle que
@@ -2767,6 +2818,32 @@ export function getDailyMission(session: BotSession): EngineResult {
       targetTopicId = KNOWLEDGE_CARDS[0].id;
       targetDomainId = KNOWLEDGE_CARDS[0].domainId;
     }
+  }
+
+  // ════════════════════════════════════════════════════════════════════════
+  // Audit Capitaine §4.1 (2026-10-17) — LA FILE DE RAPPELS DE CONCEPTS EST
+  // ENFIN CONSULTÉE. `prochainRappelDu` (SM-2 sur le corpus de rappels
+  // espacés, alimenté par planifierRappelsPourErreurs après chaque erreur
+  // reliée) existait sans aucun consommateur : le moteur-programmeur devient
+  // enfin moteur-lecteur. Une revue dûe devient LA mission :
+  // restitution courte exigée (réponse libre notée par les preuves du
+  // corpus), pas une lecture passive.
+  // ════════════════════════════════════════════════════════════════════════
+  const rappel = prochainRappelDu();
+  if (rappel?.prompt) {
+    const retard = rappel.retardJours;
+    const titreRetard =
+      retard > 0
+        ? ` — متأخرة ${retard} ${retard === 1 ? 'يوم' : 'أيام'}`
+        : '';
+    const text =
+      `🔁 **مراجعة موعدة${titreRetard}**\n\n` +
+      `**${rappel.prompt.questionAr}**\n\n` +
+      'أجب بكلماتك القصيرة — سأقيس إجابتك على معايير النموذج ثم أمهّل استرجاعاً بعدُ.\n' +
+      'إن اختفت الإجابة، قل «لا أعرف» — أعيد البناء معك دون عتاب.';
+    const s2: BotSession = { ...session, pendingCorpusRecallId: rappel.itemId };
+    saveSession(s2);
+    return { session: s2, action: { text, quickActions: ['العودة للقائمة الرئيسية'] } };
   }
 
   if (!targetTopicId) {

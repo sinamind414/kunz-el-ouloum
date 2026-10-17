@@ -30,12 +30,17 @@ export interface NbaCardProps {
   onOpenQcm: (unitId: number) => void;
   /** Préfixe des testids. défaut « parcours-nba » ; l'accueil passe « home-nba ». */
   testId?: string;
+  /** Audit Capitaine §4.2 : clôture EXPLICITE d'une revue J+14 (leçons —
+   *  pas de mesure locale : l'élève déclare sa revue, l'échéance repart à
+   *  J+14 ; prévu absent si l'appelant ne peut pas rafraîchir sa vue). */
+  onRevueFaite?: (itemId: string) => void;
 }
 
 export default function NbaCard({
   onOpenLesson,
   onOpenQcm,
   testId = 'parcours-nba',
+  onRevueFaite,
 }: NbaCardProps) {
   const state = loadParcours();
   const action = nextBestAction(state);
@@ -90,6 +95,16 @@ export default function NbaCard({
       >
         {action.type === 'resume' ? 'استئناف' : action.type === 'review' ? 'راجِع الآن' : 'ابدأ الآن'}
       </button>
+      {action.type === 'review' && onRevueFaite && (
+        <button
+          type="button"
+          onClick={() => onRevueFaite(item.id)}
+          data-testid={`${testId}-revu`}
+          className="mt-2 w-full rounded-full border border-emerald-100/60 px-5 py-2 text-xs font-black text-emerald-50 transition-transform active:scale-[0.98]"
+        >
+          ✍️ راجعتُه فعلاً — أخّر الموعد ١٤ يوماً
+        </button>
+      )}
       <p className="mt-3 text-[11px] leading-6 text-emerald-50/80">
         {todaysCompletions(state)} / {allowance(state)} مهمة اليوم
       </p>

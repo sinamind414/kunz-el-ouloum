@@ -72,6 +72,13 @@ export interface BotSession {
    * réponse n'est reconnaissable ; c'est le même défaut que `pendingProbeCardId`
    * corrige pour la question de sondage. */
   pendingRecallCardId?: string | null;
+  /**
+   * Audit Capitaine §4.1 (2026-10-17) : concept du corpus de rappels
+   * (spacedRecallPrompts) dont la QUESTION DE RÉVISION est posée par la
+   * mission du jour et attend une réponse libre. L'état évite de rejouer le
+   * défaut S-05 : le moteur pose une question qui personne n'écoute plus.
+   */
+  pendingCorpusRecallId?: string | null;
   /** KEO-105 (SpecKit 2026-10-01) : triade en cours (ألاحظ → أستنتج → أخلص)
    *  sur une question d'analyse posée en dialogue libre. */
   triadeStep?: 1 | 2 | 3 | null;

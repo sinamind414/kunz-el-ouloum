@@ -15,6 +15,7 @@ import { PARCOURS_FLAT } from '../../lib/parcours/parcoursPath';
 import {
   loadParcours,
   markDone,
+  replanifierRevue,
   resetParcours,
   saveParcours,
 } from '../../lib/parcours/parcoursProgress';
@@ -107,5 +108,39 @@ describe('NbaCard — état REPOS', () => {
     expect(screen.queryByTestId('parcours-nba-start')).toBeNull();
     expect(onOpenLesson).not.toHaveBeenCalled();
     expect(onOpenQcm).not.toHaveBeenCalled();
+  });
+});
+
+// Audit Capitaine §4.2 — la revue J+14 due peut être CLOSE explicitement
+// (« راجعتُه فعلاً ») : l'échéance est réellement replanifiée, plus jamais
+// « prioritaire indéfiniment ».
+describe('NbaCard — clôture explicite de la revue due', () => {
+  it('rappel échu → bouton Revu → replanifierRevue décale l échéance', () => {
+    const item = PARCOURS_FLAT.find((i) => i.kind === 'lesson')!;
+    validerDansLePasse([item.id]);
+    // Rend l'échéance passée : reviews[item.id] = hier.
+    const st = loadParcours();
+    const hier = new Date();
+    hier.setDate(hier.getDate() - 1);
+    const iso = `${hier.getFullYear()}-${String(hier.getMonth() + 1).padStart(2, '0')}-${String(hier.getDate()).padStart(2, '0')}`;
+    st.reviews[item.id] = iso;
+    saveParcours(st);
+
+    const onRevueFaite = vi.fn((id: string) => {
+      // Même câblage que ParcoursView (le composant ne décide de rien).
+      replanifierRevue(id);
+    });
+    render(
+      <NbaCard onOpenLesson={onOpenLesson} onOpenQcm={onOpenQcm} onRevueFaite={onRevueFaite} />,
+    );
+    expect(screen.getByTestId('parcours-nba-revu')).toBeTruthy();
+    fireEvent.click(screen.getByTestId('parcours-nba-revu'));
+
+    expect(onRevueFaite).toHaveBeenCalledTimes(1);
+    expect(onRevueFaite.mock.calls[0][0]).toBe(item.id);
+    // La clôture est EFFECTIVE : la revue n'est plus échue dans l'état.
+    const apres = loadParcours();
+    const due = apres.reviews[item.id]!;
+    expect(due > iso).toBe(true);
   });
 });

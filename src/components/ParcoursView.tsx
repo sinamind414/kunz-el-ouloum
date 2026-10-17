@@ -33,6 +33,7 @@ import {
   markStarted,
   markUndone,
   parcoursProgress,
+  replanifierRevue,
   resetParcours,
   unitProgress,
   type ParcoursItemStatus,
@@ -473,7 +474,14 @@ export default function ParcoursView({ onOpenLesson, onOpenQcm }: ParcoursProps)
         </button>
       </header>
 
-      <NbaCard onOpenLesson={onOpenLesson} onOpenQcm={onOpenQcm} />
+      <NbaCard
+        onOpenLesson={onOpenLesson}
+        onOpenQcm={onOpenQcm}
+        onRevueFaite={(id) => {
+          replanifierRevue(id);
+          relire();
+        }}
+      />
 
       {PARCOURS_DOMAINS.map((domain) => {
         const dp = domainProgress(state, domain.domainId);

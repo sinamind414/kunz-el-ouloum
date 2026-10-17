@@ -150,6 +150,7 @@ import BandeauConseilRubrique from './components/BandeauConseilRubrique';
 import RelaisCapitaine from './components/RelaisCapitaine';
 import { conseilDeRubrique, type ConseilRubrique } from './data/conseilsRubrique';
 import { marquerRubriqueVue } from './lib/conseilRubrique';
+import { replanifierRevue, SEUIL_FRAGILE } from './lib/parcours/parcoursProgress';
 import { 
   startPirateMusic, 
   stopPirateMusic, 
@@ -752,9 +753,13 @@ export default function App() {
     };
     setProgress(updatedProgress);
     saveToLocalStorage(units, flashcards, updatedProgress);
-  };
 
-  // If in quiz mode, override full interface to focus purely on scientific learning
+    // Audit Capitaine §4.2 : une restitution MESURÉE pour cette unité (le
+    // score du livre) clôt la revue J+14 éventuellement échue du جسر —
+    // l'échéance repart à J+14 et le drapeau fragile suit la mesure
+    // (échec < seuil → re-priorisé). Un score absent ne clôt rien.
+    replanifierRevue(`parcours:u${res.unitId}:jalon`, res.total > 0 && res.score / res.total < SEUIL_FRAGILE);
+  };
   if (activeCombatChallenge) {
     // Épreuve officielle bac2025 : la boucle élève de bout en bout (Pierre 2).
     if (activeCombatChallenge.id === 'bac-2025-sujets') {
