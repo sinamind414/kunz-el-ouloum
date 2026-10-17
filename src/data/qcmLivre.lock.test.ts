@@ -133,3 +133,89 @@ describe('hygiène de la banque qcmLivre (mêmes règles que l audit)', () => {
     }
   });
 });
+
+// ═══════════════════════════════════════════════════════════════════════════
+// VERROU SÉMANTIQUE — audit externe 2026-10-17 (§6) : 19/41 clés pointaient
+// un distracteur, produisant une correction INVERSÉE à l'écran. Les 19 items
+// ont été revalidés un à un (option ↔ explication affichée ↔ science du
+// programme 3AS) avant toute modification de clé. Ce verrou fige :
+//   1. l'attendu (index) de chaque item corrigé ;
+//   2. la cohérence clé↔explication via un jeton arabe partagé entre la
+//      bonne option et l'explication affichée (même normalisation que l'app).
+// Toute régénération future de la banque qui décale une clé repart en rouge.
+// NB : l'audit recommande une relecture complémentaire par un enseignant de
+// SVT avant communication large — la table ci-dessous est la trace de travail.
+// ═══════════════════════════════════════════════════════════════════════════
+
+interface CorrectionCle {
+  chap: number;
+  /** Extrait unique (normalisé) de la question — retrouve l'item sans index figé. */
+  q: string;
+  /** Index attendu APRÈS correction. */
+  a: number;
+  /** Jeton (normalisé) qui doit figurer dans la BONNE option. */
+  opt?: string;
+  /** Jeton (normalisé) qui doit figurer dans l'explication affichée. */
+  exp?: string;
+}
+
+const CORRECTIONS_CLES_AUDIT_2026_10_17: CorrectionCle[] = [
+  { chap: 1,  q: 'تتواجد جزيئة الـ ADN',            a: 2, opt: 'النواة',            exp: 'النواة' },
+  { chap: 13, q: 'رفض الطعم',                       a: 1, opt: 'اللاذات',           exp: 'اللاذات' },
+  { chap: 17, q: 'الهجرة الكهربائية لمصل',           a: 2, opt: 'غلوبولينات',        exp: 'غلوبولينات' },
+  { chap: 17, q: 'خلية بلازمية مفرزة',              a: 1, opt: 'اللمفاوية',         exp: 'بلازموسيت' },
+  { chap: 18, q: 'التعرف على الخلية المصابة',        a: 2, opt: 'عرض مفتاح المستضد', exp: 'المستضد' },
+  { chap: 20, q: 'استئصال الغدة التيموسية',          a: 1, opt: 'اللمفاوية',         exp: 'التيموس' },
+  { chap: 22, q: 'المكورات الرئوية',                a: 2, opt: 'تعاون',             exp: 'تعاون' },
+  { chap: 22, q: 'نمط الاستجابة',                   a: 1, opt: 'طبيعة الجسم الغريب' },
+  { chap: 23, q: 'فقدان المناعة المكتسبة',           a: 2, opt: 'المناعي',           exp: 'المناعي' },
+  { chap: 24, q: 'العناصر التشريحية',               a: 1, opt: 'ناقل',              exp: 'الناقل' },
+  { chap: 25, q: 'تحت العتبة',                      a: 2, opt: 'متدرج',             exp: 'التدرج' },
+  { chap: 26, q: 'تمركز الإشعاع',                   a: 1, opt: 'المشبكي',           exp: 'المشبكي' },
+  { chap: 31, q: 'ينتج جهاز التسجيل',               a: 2, opt: 'تنبيه' },
+  { chap: 35, q: 'المعادلة الإجمالية',              a: 1, opt: 'غلوكوز',            exp: 'غلوكوز' },
+  { chap: 36, q: 'بنية الميتوكندري',                 a: 2, opt: 'أعراف',             exp: 'أعراف' },
+  { chap: 49, q: 'الفوالق العادية الموازية',         a: 1, opt: 'توسيع',             exp: 'توسع' },
+  { chap: 50, q: 'اللوح المحيطي من الأسفل',          a: 2, opt: 'بيريدوتيت',         exp: 'بيريدوتيت' },
+  { chap: 50, q: 'نسيجاً حبيبياً',                   a: 1, opt: 'ببطء',              exp: 'البطء' },
+  { chap: 54, q: 'قوى الانفغاط',                    a: 2, opt: 'طيات',              exp: 'الطيات' },
+];
+
+describe('verrou sémantique — les 19 clés corrigées (audit 2026-10-17) restent justes', () => {
+  it('la table de correction retrouve exactement 19 items DISTINCTS de la banque', () => {
+    expect(CORRECTIONS_CLES_AUDIT_2026_10_17).toHaveLength(19);
+    const retrouves = new Set<number>();
+    for (const c of CORRECTIONS_CLES_AUDIT_2026_10_17) {
+      const items = QCM_CHAPITRES.filter(
+        (q) => q.chapitre === c.chap && norm(q.question).includes(norm(c.q)),
+      );
+      expect(items.length, `C${c.chap} : extrait « ${c.q} » introuvable ou ambigu`).toBe(1);
+      retrouves.add(QCM_CHAPITRES.indexOf(items[0]));
+    }
+    expect(retrouves.size, 'deux lignes de la table pointent le même item').toBe(19);
+  });
+
+  it.each(CORRECTIONS_CLES_AUDIT_2026_10_17.map((c) => [c, c] as const))(
+    'C%s — clé cohérente : %s',
+    (labelUnused, c) => {
+      void labelUnused;
+      const q = QCM_CHAPITRES.find(
+        (x) => x.chapitre === c.chap && norm(x.question).includes(norm(c.q)),
+      )!;
+      const label = `C${c.chap} « ${c.q} »`;
+      expect(q.correct, `${label} : la clé désigne un distracteur`).toBe(c.a);
+      if (c.opt) {
+        expect(
+          norm(q.options[q.correct]).includes(norm(c.opt)),
+          `${label} : la bonne option ne contient pas « ${c.opt} »`,
+        ).toBe(true);
+      }
+      if (c.exp) {
+        expect(
+          norm(q.explication).includes(norm(c.exp)),
+          `${label} : l explication n appuie pas la clé (jeton « ${c.exp} » absent)`,
+        ).toBe(true);
+      }
+    },
+  );
+});
