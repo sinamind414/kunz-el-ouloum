@@ -90,7 +90,7 @@ export default function StudyReminderModal({ isOpen, onClose, onSchedule }: Stud
                 </button>
               </div>
               <p className="text-[10px] text-gray-400 text-center px-4 font-medium">
-                سنقوم بجدولة إشعار لتذكيرك بعد المدة المحددة (يتطلب السماح بالإشعارات).
+                سيظهر لك هذا التذكير عند عودتك إلى التطبيق بعد المدة المحددة — دون إشعار في الخلفية.
               </p>
             </div>
           </div>
