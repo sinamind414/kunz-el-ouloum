@@ -39,7 +39,7 @@ export const TRAINING_ENTRIES: TrainingEntry[] = [
     // derrière le plan — c'est ce que l'élève cherche avant de réviser.
     tab: 'bacideas',
     titleAr: 'أفكار التمارين حسب الدورة',
-    descriptionAr: 'ما الذي سقط في بكالوريا 2016 إلى 2026 (11 دورة، 65 تمريناً): فكرة كل تمرين، سنداته، الفعل الإدائي، والوحدة المستهدفة، مع الموضوع والتصحيح الرسميين.',
+    descriptionAr: 'ما الذي سقط في بكالوريا 2017 إلى 2026 (10 دورات، 59 تمريناً): فكرة كل تمرين، سنداته، الفعل الإدائي، والوحدة المستهدفة، مع الموضوع والتصحيح الرسميين.',
     gestureAr: 'أقرأ الامتحان',
     icon: 'fileText',
   },

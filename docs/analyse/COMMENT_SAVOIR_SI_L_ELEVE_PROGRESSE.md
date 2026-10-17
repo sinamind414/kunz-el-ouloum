@@ -151,7 +151,7 @@ Et une ligne qui évite tout malentendu :
   forme (chiffres, unités, connecteur causal, structure) ;
 - quelle **note** il aurait — aucun barème automatique n'est appliqué ;
 - s'il **réussira** le BAC — la pression mesurée est une tendance sur
-  11 sessions, pas une prédiction.
+  10 sessions, pas une prédiction.
 
 Ces limites sont affichées dans l'application elle-même
 (« فحص شكلي فقط », « لا يحمل أي علامة »), et c'est ce qui rend le reste

@@ -72,29 +72,29 @@ décompose en : خلطي 264 K · خلوي 815 K · coopération **616 K** · VI
 | 4 | الذات واللاذات (U4) | 65 |
 | 5 | المناعة الخلوية (U4) | 65 |
 
-### 1.5 Pression réelle à l'examen — 11 sessions officielles 2016 → 2026
+### 1.5 Pression réelle à l'examen — 10 sessions officielles 2017 → 2026
 
-Dépouillement intégral de **65 exercices** sur **11 sessions consécutives**
-(`src/data/bacSessionIndex.ts`, 1 720 lignes, sujet **et** corrigé officiels liés) :
+Dépouillement intégral de **59 exercices** sur **10 sessions consécutives**
+(`src/data/bacSessionIndex.ts`, sujet **et** corrigé officiels liés) :
 
 | Unité | Points | Part | Apparitions | Poids annoncé | Écart |
 |---|---|---|---|---|---|
-| **U4** | 87 | **20,0 %** | 14 | 13 | +7,0 |
-| **U1** | 81 | 18,6 % | **18** | 10 | **+8,6** |
-| **U5** | 81 | 18,6 % | 12 | 16 | +2,6 |
-| **U3** | 64 | 14,7 % | 16 | 13 | +1,7 |
-| **U6** | 51 | 11,7 % | 9 | 20 | **−8,3** |
-| U7 | 29 | 6,7 % | 6 | 19 | **−12,3** |
-| **U2** | 22 | 5,1 % | **14** | 9 | −3,9 |
-| U8–U11 | 5 | 1,1 % | — | 5 | −3,9 |
+| **U4** | 82 | **20,8 %** | 13 | 13 | +7,8 |
+| **U1** | 75 | 19,0 % | **17** | 10 | **+9,0** |
+| **U5** | 74 | 18,7 % | 11 | 16 | +2,7 |
+| **U3** | 58 | 14,7 % | 15 | 13 | +1,7 |
+| **U6** | 51 | 12,9 % | 7 | 20 | **−7,1** |
+| **U2** | 22 | 5,6 % | **13** | 9 | −3,4 |
+| U7 | 13 | 3,3 % | 4 | 19 | **−15,7** |
+| U8–U11 | 5 | 1,3 % | 1 à 5 | 5 | −3,7 |
 
 **Trois conclusions contre-intuitives, chiffrées :**
 
-1. **U1 tombe à 18 sessions sur 11** (plusieurs exercices par session) pour un poids
-   annoncé de 10 — c'est l'unité la plus sous-estimée du programme.
-2. **U7 est surévaluée de 12,3 points** : 19 annoncés, 6,7 % observés. Y investir
+1. **U1 compte 17 apparitions sur 10 sessions** (plusieurs exercices par session) pour
+   un poids annoncé de 10 — c'est l'unité la plus sous-estimée du programme.
+2. **U7 est surévaluée de 15,7 points** : 19 annoncés, 3,3 % observés. Y investir
    comme le programme le suggère est une erreur d'allocation.
-3. **U2 est un piège de fréquence** : 14 apparitions mais seulement 5,1 % des points.
+3. **U2 est un piège de fréquence** : 13 apparitions mais seulement 5,6 % des points.
    Elle doit être *sue*, pas *travaillée longuement* — exactement l'inverse de ce que
    son taux de vues/vidéo laisse croire.
 
@@ -107,7 +107,7 @@ dérive entre la doc et le code casse la CI.
 ### 1.6 Données structurelles de l'épreuve
 
 Coefficient **6** · 2 sujets au choix · exercice 1 = **05 pts de restitution** ·
-barème **5/7/8 stable depuis 2017** (2016 : 6/5/9 et 6/7/7) · invariant : 20 points.
+barème **5/7/8**, uniforme sur tout le corpus · invariant : 20 points.
 
 ---
 
@@ -116,8 +116,8 @@ barème **5/7/8 stable depuis 2017** (2016 : 6/5/9 et 6/7/7) · invariant : 20 p
 | # | Leçon | Justification croisée | Livrables prescrits | État |
 |---|---|---|---|---|
 | 1 | **pHi / acides aminés** (U2) | difficulté 73 + 84 724 vues/vidéo | micro-fiches + simulateur pH→charge→migration | ✅ |
-| 2 | **Coopération immunitaire** (U4) | 616 K vues + 20,0 % des points | schéma-bilan interactif + 3 exercices BAC | ✅ |
-| 3 | **Inhibiteurs enzymatiques** (U3) | 16 apparitions / 11 sessions | comparatif + atelier 6 courbes | ✅ |
+| 2 | **Coopération immunitaire** (U4) | 616 K vues + 20,8 % des points | schéma-bilan interactif + 3 exercices BAC | ✅ |
+| 3 | **Inhibiteurs enzymatiques** (U3) | 15 apparitions / 10 sessions | comparatif + atelier 6 courbes | ✅ |
 | 4 | **CMH / ABO-Rh + prérequis 2AS** (U4) | trou de prérequis identifié chez 3 chaînes | module de rattrapage 15 min | ✅ |
 | 5 | **Phase photochimique** (U6) | difficulté **83** — rang 1 | synthèse d'unité + 5 micro-fiches | ✅ |
 
@@ -137,7 +137,7 @@ barème **5/7/8 stable depuis 2017** (2016 : 6/5/9 et 6/7/7) · invariant : 20 p
 | Situations-problèmes | **23** |
 | Cartes mentales | **11** |
 | QCM | **549** |
-| Exercices BAC indexés | **65** (11 sessions) |
+| Exercices BAC indexés | **65** (10 sessions) |
 | Montages d'exercices typés | **13** (0 exercice non classé) |
 | Familles de consignes | **12** (classement total) |
 
@@ -219,7 +219,7 @@ Guide complet : `COMMENT_SAVOIR_SI_L_ELEVE_PROGRESSE.md`.
 | `BILAN_DETAILLE_BAC_SVT.md` | bilan étendu de l'épreuve |
 | `PLAN_LECONS_A_RENFORCER.md` | les 5 leçons et leurs livrables |
 | `AUDIT_APP_5_LECONS_PRIORITAIRES.md` | journal d'audit, sprints 1 → 62 |
-| `PRIORITES_REVISEES_10_SESSIONS.md` | chiffres des 11 sessions (verrouillés par test) |
+| `PRIORITES_REVISEES_10_SESSIONS.md` | chiffres des 10 sessions (verrouillés par test) |
 | `ETAT_LIVRABLES_5_LECONS.md` | couverture livrable par livrable |
 | `VISION_MARKETING.md` | positionnement produit |
 | `ACCROCHE_ELEVE_LEVIERS.md` | leviers d'engagement |
@@ -233,7 +233,7 @@ Guide complet : `COMMENT_SAVOIR_SI_L_ELEVE_PROGRESSE.md`.
 
 Analyse des 5 chaînes · bilan des leçons difficiles · bilan détaillé de l'épreuve ·
 plan des leçons à renforcer · audit de l'application · **les 5 leçons prioritaires et
-l'intégralité de leurs livrables** · dépouillement des 11 sessions officielles ·
+l'intégralité de leurs livrables** · dépouillement des 10 sessions officielles ·
 13 montages et 12 familles de consignes (classement total) · BAC blanc · chronométrage
 d'examen · sauvegarde-restauration · mode hors ligne · optimisation −85 % · audits
 d'accessibilité · mode dégradé serveur · chaîne de mesure de l'apprentissage.

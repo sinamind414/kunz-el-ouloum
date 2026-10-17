@@ -34,7 +34,7 @@ Un élève algérien de 3AS a, gratuitement, des milliers d'heures de cours. Il 
 pourtant trois problèmes que la vidéo ne traite pas :
 
 1. **Il ne sait pas quoi travailler en premier.** YouTube classe par vues, pas
-   par poids à l'examen. Notre dépouillement de 11 sessions montre l'écart :
+   par poids à l'examen. Notre dépouillement de 10 sessions montre l'écart :
    l'unité « تركيب البروتين » mène **18,6 %** des points et apparaît dans
    **18 exercices sur 65** — alors que personne ne cherche « شرح الترجمة » trois
    semaines avant l'épreuve, parce qu'elle *paraît* facile.
@@ -49,7 +49,7 @@ pourtant trois problèmes que la vidéo ne traite pas :
 ## 3. Positionnement — une phrase
 
 > **« كنز العلوم » n'explique pas le cours : il organise l'examen.**
-> 65 exercices officiels de 11 sessions, 13 montages qui reviennent, 12 formes
+> 59 exercices officiels de 10 sessions, 13 montages qui reviennent, 12 formes
 > de consignes, et un retour immédiat sur ce que tu écris — hors ligne, sur ton
 > téléphone.
 
@@ -106,7 +106,7 @@ professeur la montre à la classe.
 Une promesse marketing tient si elle est chiffrée et vérifiable. Celles-ci le
 sont, par la suite de tests :
 
-- **65 exercices officiels**, sessions **2016 → 2026**, sujet *et* corrigé
+- **59 exercices officiels**, sessions **2017 → 2026**, sujet *et* corrigé
   officiels liés ;
 - **13 montages récurrents** — « la molécule sosie » couvre à elle seule
   8 exercices sur 6 sessions ;
@@ -188,7 +188,7 @@ C'est la partie la plus importante du document.
 
 - ❌ **« corrigé automatique »** — l'app ne note pas le fond ;
 - ❌ **« sujets probables »** — la pression mesurée est une tendance sur
-  11 sessions, pas une prédiction ; le corpus le dit (U9-U11 ne sont pas
+  10 sessions, pas une prédiction ; le corpus le dit (U9-U11 ne sont pas
   déclassées, elles sont **non classables**) ;
 - ❌ **« conforme au programme officiel »** sans nuance — l'app **contredit**
   volontairement la répartition officielle là où l'épreuve la contredit

@@ -14,11 +14,11 @@ Les chaînes ne disent pas seulement *ce que* l'élève regarde. Elles disent
 
 | Ce que l'élève tape / clique | Preuve mesurée | Ce que l'app propose, **sous le même nom** |
 |---|---|---|
-| **أفكار التمارين** | 4 vidéos = 214 K vues (@ikramscience8424) | « أفكار التمارين حسب الدورة » — 65 exercices, 11 sessions |
+| **أفكار التمارين** | 4 vidéos = 214 K vues (@ikramscience8424) | « أفكار التمارين حسب الدورة » — 59 exercices, 10 sessions |
 | **فكرة في دقيقة** | playlist entière (@Prof_benotmane) | « فكرة في دقيقة » — 32 micro-capsules |
 | **خريطة ذهنية** | la carte dépasse le cours (@MostafaBdd) | 11 cartes mentales, 139 nœuds |
 | **تمارين بالوضعيات** | 121 vidéos / 350 K vues, indexées par situation | « تمارين بالوضعيات » — 23 situations |
-| **حسب الدورة** | indexation par session (@MostafaBdd) | onglets par session 2016 → 2026 |
+| **حسب الدورة** | indexation par session (@MostafaBdd) | onglets par session 2017 → 2026 |
 
 **C'est le levier marketing n° 1, et il est déjà en place** : l'application
 nomme ses fonctions avec le vocabulaire exact de la demande. Aucun effort de
@@ -31,13 +31,13 @@ capture d'écran suffit à faire comprendre le produit.
 
 Deux classements coexistent, et ils ne se ressemblent pas :
 
-| Unité | Difficulté **ressentie** (recherches, vues) | Poids **réel** (11 sessions) |
+| Unité | Difficulté **ressentie** (recherches, vues) | Poids **réel** (10 sessions) |
 |---|---|---|
 | U6 المرحلة الكيموضوئية | **83** — la plus redoutée | 11,7 %, et seulement 7 sessions sur 11 |
 | U2 سلوك الأحماض الأمينية | 73 | **5,1 %** en propre |
 | U4 المناعة | 65-69 | **20,0 %** — première |
 | **U1 تركيب البروتين** | *absente du top* | **18,6 %**, dans **18 exercices sur 65** |
-| **U5 الاتصال العصبي** | *absente du top* | **18,6 %**, 11 sessions sur 11 |
+| **U5 الاتصال العصبي** | *absente du top* | **18,6 %**, 10 sessions sur 11 |
 
 Formulé pour une vidéo de 20 secondes :
 

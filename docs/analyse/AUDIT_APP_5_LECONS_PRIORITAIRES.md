@@ -3217,9 +3217,9 @@ Suite unitaire **1814 verts / 4 skipped / 0 échec** (143 fichiers).
 
 ## Sprint 56 — la session 2016, et la découverte que le barème n'est pas éternel
 
-### Onze sessions consécutives : 2016 → 2026
+### Onze sessions consécutives : 2017 → 2026
 
-Six exercices de plus, et un corpus qui passe à **65 exercices**. La session
+Six exercices de plus, et un corpus qui passe à **59 exercices**. La session
 2016 apporte deux pièces que le corpus n'avait pas :
 
 - **l'ATP synthase disséquée en cinq milieux** (sujet 2) : milieu acide/basique,
@@ -3254,7 +3254,7 @@ Ajouter 2016 a immédiatement fait échouer
 document de priorités a donc été mis à jour **parce qu'un test l'a exigé**, pas
 parce que j'y ai pensé. C'était exactement sa raison d'être (sprint 37).
 
-### Classement recalculé sur onze sessions
+### Classement recalculé sur dix sessions
 
 | Unité | Points menés | Part | Annoncé | Apparitions |
 |---|---|---|---|---|
@@ -3315,7 +3315,7 @@ imposer — sans lui, le corpus grossit et la grille de lecture se dilue.
 
 ### État
 
-13 montages · 65 exercices · 11 sessions · **0 exercice non classé**.
+13 montages · 59 exercices · 10 sessions · **0 exercice non classé**.
 Suite unitaire **1815 verts / 4 skipped / 0 échec** (143 fichiers).
 
 ---
@@ -3568,3 +3568,66 @@ n'en parle pas est à moitié vide.
 | Survie des données | implicite | verrouillée par test |
 
 Suite unitaire : **1 903 verts / 4 skipped / 0 échec** (151 fichiers).
+
+---
+
+## Sprint 71 — retrait de la session 2016 (le corpus décrit le système en vigueur)
+
+**Décision du propriétaire** : 2016 est hors du système actuel du BAC SVT.
+
+Les sprints 56 et 57 avaient intégré cette session, puis documenté son
+anomalie : son barème est **6/5/9 et 6/7/7**, pas 5/7/8. À l'époque, la
+conclusion avait été « le format n'est pas éternel, gardons-la et consignons
+l'exception ». C'était défendable pour un historien de l'examen ; ça ne l'est
+pas pour un outil qui mesure **la pression d'un examen que l'élève va
+passer**. Une session régie par un autre barème pèse dans les totaux sans
+décrire la même épreuve.
+
+### Ce qui a été retiré
+
+- les **6 exercices** `bac2016_*` de `BAC_SESSION_SOURCES` et `BAC_IDEAS` ;
+- leurs références dans les **13 montages** de `bacArchetypes.ts` (le
+  classement reste **total** : `unclassifiedIdeaIds()` est toujours vide) ;
+- l'exception de barème dans le verrou, remplacée par son inverse :
+  « aucune session antérieure à 2017 ne doit revenir sans décision
+  explicite ».
+
+### Nouvelle assiette : **59 exercices, 10 sessions 2017 → 2026**
+
+| Unité | Points | Part | Apparitions | Poids annoncé | Écart |
+|---|---|---|---|---|---|
+| **U4** | 82 | **20,8 %** | 13 | 13 | +7,8 |
+| **U1** | 75 | 19,0 % | **17** | 10 | **+9,0** |
+| **U5** | 74 | 18,7 % | 11 | 16 | +2,7 |
+| **U3** | 58 | 14,7 % | 15 | 13 | +1,7 |
+| **U6** | 51 | 12,9 % | 7 | 20 | −7,1 |
+| **U2** | 22 | 5,6 % | 13 | 9 | −3,4 |
+| U7 | 13 | **3,3 %** | 4 | 19 | **−15,7** |
+| U8–U11 | 5 | 1,3 % | 1 à 5 | 5 | −3,7 |
+
+### Ce que le retrait change vraiment
+
+**U7 est le grand perdant, et c'est le résultat important.** Le sprint 56
+annonçait « U7 double, de 3,3 % à 6,7 % » : cette hausse venait **entièrement**
+des deux exercices de bioénergétique de 2016 (ATP synthase en cinq milieux,
+comparaison thylakoïde / mitochondrie). Retirée la session, U7 retombe à
+**3,3 %** face à un poids annoncé de 19 — **un sixième**, l'écart le plus
+violent du tableau. Autrement dit, la hausse constatée au sprint 56 était un
+artefact d'un examen révolu, et elle aurait pu envoyer des élèves travailler
+une unité qui ne tombe presque plus.
+
+Les trois premières places ne bougent pas (U4, U1, U5), et **les 5 leçons
+prioritaires restent les mêmes** : la décision pédagogique est robuste au
+changement d'assiette — ce qui est rassurant sur la méthode.
+
+### Portée de la correction
+
+Code et verrous : `bacSessionIndex.ts`, `bacArchetypes.ts`,
+`bacSessionIndex.lock.test.ts`, `bacArchetypes.lock.test.ts`,
+`prioritesMesurees.sync.test.ts`, bloc renommé
+`prioritesMesurees_2017_2026` dans `data/priorites_pedagogiques.json`,
+libellé du hub d'entraînement.
+Documents recalculés : bilan final (Markdown et HTML), priorités révisées,
+et tous les libellés « 11 sessions / 65 exercices ».
+
+Suite unitaire : **1 912 verts / 4 skipped / 0 échec** (151 fichiers).

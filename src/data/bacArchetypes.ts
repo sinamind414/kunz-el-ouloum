@@ -60,7 +60,7 @@ export const BAC_ARCHETYPES: BacArchetype[] = [
     ],
     trapAr:
       'الخلط بين « يشبه الركيزة » و « يخرّب الأنزيم »: المثبّط التنافسي لا يغيّر بنية الأنزيم، و رفع تركيز الركيزة يلغي أثره.',
-    ideaIds: ['bac2016_s2_e1', 'bac2018_s2_e2', 
+    ideaIds: ['bac2018_s2_e2', 
       'bac2020_s1_e2',
       'bac2022_s2_e3',
       'bac2023_s1_e2',
@@ -116,7 +116,7 @@ export const BAC_ARCHETYPES: BacArchetype[] = [
     ],
     trapAr:
       'نسيان أن اتجاه دخول الشاردة يتوقّف على تدرّج التركيز لا على القناة وحدها — خطأ سنة 2020 مع شوارد الكلور عند المولود.',
-    ideaIds: ['bac2016_s2_e3', 'bac2017_s2_e2', 'bac2018_s1_e1', 
+    ideaIds: ['bac2017_s2_e2', 'bac2018_s1_e1', 
       'bac2019_s2_e2',
       'bac2020_s2_e3',
       'bac2021_s2_e3',
@@ -245,7 +245,7 @@ export const BAC_ARCHETYPES: BacArchetype[] = [
     ],
     trapAr:
       'القول إن الأنزيم « مات »: البنية الأولية تبقى سليمة، و التخريب يصيب البنية الفراغية وحدها.',
-    ideaIds: ['bac2016_s2_e1', 'bac2018_s1_e2', 
+    ideaIds: ['bac2018_s1_e2', 
       'bac2019_s1_e2',
       'bac2021_s1_e1',
       'bac2021_s1_e2',
@@ -272,7 +272,7 @@ export const BAC_ARCHETYPES: BacArchetype[] = [
     ],
     trapAr:
       'الخلط بين الـ ATP المنتَج مباشرة (الفسفرة على مستوى الركيزة) و الـ ATP الناتج عن أكسدة النواقل: السؤال يميّز بينهما دائماً.',
-    ideaIds: ['bac2016_s2_e2', 'bac2016_s1_e3', 'bac2017_s2_e1', 'bac2018_s1_e3', 'bac2022_s2_e1', 'bac2025_s2_e1'],
+    ideaIds: ['bac2017_s2_e1', 'bac2018_s1_e3', 'bac2022_s2_e1', 'bac2025_s2_e1'],
   },
   {
     id: 'arch_tracage_isotopique',
@@ -313,7 +313,6 @@ export const BAC_ARCHETYPES: BacArchetype[] = [
     trapAr:
       'قراءة السلسلة غير المستنسخة كأنها ARNm: الحروف تتشابه (عدا T/U) و النتيجة تصبح خاطئة كلياً منذ الرامزة الأولى.',
     ideaIds: [
-      'bac2016_s1_e1',
       'bac2017_s2_e3',
       'bac2021_s2_e2',
       'bac2022_s1_e3',
@@ -338,7 +337,7 @@ export const BAC_ARCHETYPES: BacArchetype[] = [
     ],
     trapAr:
       'الخلط بين محدّدات الزمر ABO (سكريات، أجسام مضادة طبيعية) و محدّدات CMH (بروتينات، تعرّف خلوي).',
-    ideaIds: ['bac2016_s1_e2', 'bac2017_s1_e2', 'bac2020_s2_e1', 'bac2022_s1_e1', 'bac2025_s2_e3', 'bac2019_s1_e3', 'bac2018_s2_e1'],
+    ideaIds: ['bac2017_s1_e2', 'bac2020_s2_e1', 'bac2022_s1_e1', 'bac2025_s2_e3', 'bac2019_s1_e3', 'bac2018_s2_e1'],
   },
   {
     id: 'arch_lecture_geologique',

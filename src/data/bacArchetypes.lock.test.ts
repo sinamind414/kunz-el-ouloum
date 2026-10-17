@@ -44,14 +44,13 @@ describe('archétypes — adossement aux sujets réels', () => {
   });
 
   it('classe la TOTALITÉ du corpus', () => {
-    // Sprint 57 : plus aucun exercice hors montage. La tolérance de 10 %
-    // existait tant que des isolats subsistaient (bioénergétique 2025, puis
-    // les six exercices de 2016) ; ils ont tous trouvé leur famille, la règle
-    // devient donc stricte. Un nouvel exercice non classé fera échouer ce
-    // test — c'est voulu : ajouter une session oblige à dire à quel montage
-    // chaque exercice appartient.
+    // Sprint 57 : plus aucun exercice hors montage. Un nouvel exercice non
+    // classé fera échouer ce test — c'est voulu : ajouter une session oblige
+    // à dire à quel montage chaque exercice appartient.
+    // Sprint 71 : le retrait de 2016 ramène l'assiette à 59 exercices sur
+    // 10 sessions ; le classement reste total.
     expect(unclassifiedIdeaIds()).toEqual([]);
-    expect(BAC_IDEAS.length).toBeGreaterThanOrEqual(65);
+    expect(BAC_IDEAS.length).toBeGreaterThanOrEqual(59);
   });
 });
 
