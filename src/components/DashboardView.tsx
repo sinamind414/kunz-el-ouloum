@@ -376,6 +376,12 @@ export default function DashboardView({
         </span>
       </button>
 
+      {/* §13 MARQUE — PAS de carte مفتاح ici : « une fonctionnalité = une seule
+          porte » (PortesUniques, 2026-10-11). L'atelier a sa propre rubrique
+          du menu (Phase 2, GO 2026-10-16) — c'est LUI sa porte, rendue depuis
+          la constante unique. La carte d'accueil avait été retirée le
+          2026-10-12 pour cette même raison. */}
+
       <section aria-labelledby="paths-title" className="space-y-3">
         <div className="px-1">
           <h2 id="paths-title" className="text-lg font-black text-[#1f1c0b] dark:text-white">ماذا تريد أن تفعل؟</h2>

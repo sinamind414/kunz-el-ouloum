@@ -228,9 +228,13 @@ mustNot(app, OFFICIAL_NAME, 'App.tsx : aucun littéral du nom officiel');
 must(app, "currentTab === 'methodology' ? MIFTAH_NAME_OFFICIAL_AR", 'en-tête : libellé depuis la constante');
 must(app, '<span>{MIFTAH_NAME_OFFICIAL_AR}</span>', 'menu latéral : libellé depuis la constante');
 must(app, 'text-center">{MIFTAH_NAME_OFFICIAL_AR}</span>', 'barre mobile : libellé depuis la constante');
-must(dashboard, 'MIFTAH_NAME_OFFICIAL_AR', 'DashboardView : importe la source unique');
+// 2026-10-12 (retrait de la carte accueil) + PortesUniques (2026-10-11) :
+// une fonctionnalité = UNE seule porte. L'atelier المفتاح a sa propre rubrique
+// du menu (Phase 2, GO 2026-10-16) — c'est LUI sa porte, et son libellé vient
+// de la constante (assertions App.tsx ci-dessus). L'accueil ne porte donc
+// NI le nom officiel, NI une deuxième porte vers l'atelier.
 mustNot(dashboard, OFFICIAL_NAME, 'DashboardView : aucun littéral du nom officiel');
-must(dashboard, '🔑 {MIFTAH_NAME_OFFICIAL_AR} (ICM', 'carte dashboard : libellé depuis la constante');
+mustNot(dashboard, "onNavigateToTab?.('methodology')", 'DashboardView : pas de deuxième porte vers l’atelier (PortesUniques)');
 must(meftah, 'MIFTAH_NAME_OFFICIAL_AR', 'MeftahView : importe la source unique');
 mustNot(meftah, OFFICIAL_NAME, 'MeftahView : aucun littéral du nom officiel');
 must(meftah, '{MIFTAH_NAME_OFFICIAL_AR} · 4', 'sous-titre Meftah : libellé depuis la constante');
@@ -306,15 +310,28 @@ for (const s of sujets) {
     totalSujet += g.maxPts;
     const somme = Math.round(g.items.reduce((a, i) => a + i.points, 0) * 100) / 100;
     const auto = plafondAutoDe(g);
+    // F2 (2026-09-28, docs/DIAGNOSTIC_EX3.md + règle AGENTS n°4) : un critère
+    // dont la reconnaissance exigerait une interprétation humaine (le schéma
+    // S1-Ex3 : flèches + deux branches — continue détruites par normalizeAr)
+    // reste MANUEL : formes vides, résidu déclaré, fourchette de correcteur.
+    // Les tentatives de le forcer en keywords ont été MESURÉES et revenues
+    // arrière (MAE Ex3 0,99 → 1,37). Le verrou exige donc l'égalité
+    // EXACTE plafond auto + résidu manuel déclaré = Σ — un résidu qui
+    // apparaît sans être déclaré, ou qui grossit, fait toujours échouer.
+    const manuel = Math.round(
+      g.items.filter((i) => i.points > 0 && i.formes.length === 0 && (i.composantes?.length ?? 0) === 0)
+        .reduce((acc, i) => acc + i.points, 0) * 100,
+    ) / 100;
     const depassement = DEPASSEMENTS[`${s}-${e}`] ?? 0;
-    const toutAuto = g.items.every((i) => i.points <= 0 || i.formes.length > 0 || (i.composantes?.length ?? 0) > 0);
     if (somme !== g.maxPts + depassement) fail(`registre S${s}-Ex${e} : Σ items ${somme} ≠ maxPts ${g.maxPts} (+${depassement} sourcé)`);
-    else if (auto !== somme) fail(`registre S${s}-Ex${e} : plafond auto ${auto} ≠ Σ ${somme} (item manuel résiduel)`);
-    else if (!toutAuto) fail(`registre S${s}-Ex${e} : item à points sans formes ni composantes`);
+    else if (auto + manuel !== somme) fail(`registre S${s}-Ex${e} : plafond auto ${auto} + manuel déclaré ${manuel} ≠ Σ ${somme}`);
+    else if (manuel > g.maxPts / 2) fail(`registre S${s}-Ex${e} : résidu manuel ${manuel} presque la moitié de l'exercice (le correcteur auto ne mesure plus rien)`);
     else if (g.questionAr.length < 20) fail(`registre S${s}-Ex${e} : énoncé absent`);
     else ok(depassement > 0
       ? `registre S${s}-Ex${e} : Σ = plafond auto = ${somme} (maxPts ${g.maxPts} + débordement sourcé ${depassement}) · énoncé présent`
-      : `registre S${s}-Ex${e} : Σ = plafond auto = ${g.maxPts} · énoncé présent`);
+      : manuel > 0
+        ? `registre S${s}-Ex${e} : plafond auto ${auto} + résidu manuel déclaré ${manuel} = Σ ${somme} (F2) · énoncé présent`
+        : `registre S${s}-Ex${e} : Σ = plafond auto = ${g.maxPts} · énoncé présent`);
   }
   if (totalSujet !== 20) fail(`registre S${s} : total ${totalSujet} ≠ 20`);
   totalRegistre += totalSujet;
@@ -327,6 +344,21 @@ const q1 = Math.round(g11.items.filter((i) => i.id.includes('/Q1/')).reduce((s, 
 const q2 = Math.round(g11.items.filter((i) => i.id.includes('/Q2/')).reduce((s, i) => s + i.points, 0) * 100) / 100;
 if (q1 === 1.25 && q2 === 3.75) ok('parité S1-Ex1 : Q1 = 1.25 · Q2 = 3.75 (corrigé officiel)');
 else fail(`parité S1-Ex1 : Q1 = ${q1} · Q2 = ${q2} (attendu 1.25 / 3.75)`);
+
+// ── §12quater(E) — audit مفتاح E1/E2 (GO « go all », 2026-10-17) ─────────────
+// Les "lois de barème" catégoriques (('=' 0 / نصف النقطة / دائما / لا تُقرأ))
+// présentaient des déductions fixes INVENTÉES comme des règles officielles.
+// Le barème 2025 réel = éléments + tolérances ; la numérotation = règle de
+// PRESENTATION, pas de notation (§12quater(E).3). Interdits dans les 3 APPUIS
+// (carte React, spec, compilateur) ; l'élève lit des tendances honnêtes.
+console.log('\n§ 12quater(E) — ton 📝 : tendances du correcteur, plus de fausses lois');
+mustNot(card, '= <b>0</b>', 'carte : la loi « b numéro = 0 » (présentation ≠ notation) est retirée');
+mustNot(card, 'بلا رقم أو تحت رقم خاطئ', 'carte : ancienne loi de numérotation notative bannie');
+mustNot(spec, 'دائما', 'spec : plus d\'absolu « دائما » dans les correctorsAr');
+mustNot(compiler, 'مطابقة 100%', 'compilateur : la promesse invérifiable « مطابقة 100% » est retirée');
+mustNot(compiler, 'مطابقة 100', 'compilateur : aucune variante du 100% déclaré');
+if (card.includes('قاعدة عرض') || spec.includes('قاعدة عرض')) ok('ton 📝 : la numérotation est dite règle de PRÉSENTATION');
+else fail('ton 📝 : le redoage présentation-vs-notation est absent (carte/spec)');
 
 if (failures > 0) {
   console.error(`\n✗ ${failures} échec(s) — réaligner fiche/spec/carte sur docs/MARQUE.md`);

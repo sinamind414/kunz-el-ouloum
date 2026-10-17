@@ -857,11 +857,11 @@ export default function App() {
     { tab: 'home', label: 'الرئيسية', fr: 'Accueil', Icon: Home },
     { tab: 'lesson', label: 'الدروس', fr: 'Apprendre', Icon: BookOpen },
     { tab: 'training', label: 'التمارين والتدريب', fr: "S'entraîner", Icon: Dumbbell },
-    // Phase 2, Commit C (GO 2026-10-16) : « مفتاح المنهجية » reçoit sa PROPRE
-    // porte visible. La plainte expert : l'élève « ne se retrouvait plus,
-    // surtout مفتاح المنهجية ». Après la Phase 1 (la porte ouvre l'atelier
-    // المفتاح) et la sortie du hub التمارين — pour rester à UNE seule porte
-    // (verrou PortesUniques) — le 6ᵉ portail rend l'outil permanent.
+    // Phase 2, Commit C (GO 2026-10-16) : المفتاح reçoit sa PROPRE
+    // porte visible. La plainte expert : l'élève « ne se retrouvait plus ».
+    // Après la Phase 1 (la porte ouvre l'atelier المفتاح) et la sortie du hub
+    // التمارين — pour rester à UNE seule porte (verrou PortesUniques) — le 6ᵉ
+    // portail rend l'outil permanent. Nom officiel : constante unique §13.
     { tab: 'methodology', label: 'المنهجية', fr: 'Méthode', Icon: Key },
     { tab: 'reviser', label: 'المراجعة', fr: 'Réviser', Icon: Layers },
     { tab: 'moi', label: 'أنا', fr: 'Moi', Icon: Sprout },
@@ -1031,7 +1031,11 @@ export default function App() {
               }`}
             >
               <Icon className="w-5 h-5 shrink-0" />
-              <span className="min-w-0 flex-1 text-start leading-tight">{label}</span>
+              {/* §13 MARQUE : le nom officiel de l'atelier est rendu depuis la
+                  source unique — zéro littéral dans les vues UI. */}
+              <span className="min-w-0 flex-1 text-start leading-tight">
+                {tab === 'methodology' ? <span>{MIFTAH_NAME_OFFICIAL_AR}</span> : label}
+              </span>
               <span
                 dir="ltr"
                 className={`shrink-0 text-[9px] font-semibold uppercase tracking-wide ${
@@ -1331,8 +1335,9 @@ export default function App() {
             }`}
           >
             <Icon className="w-5 h-5 shrink-0" />
+            {/* §13 MARQUE : nom officiel rendu depuis la source unique. */}
             <span className="w-full truncate text-center text-[9px] font-bold leading-tight">
-              {label}
+              {tab === 'methodology' ? <span className="truncate text-center">{MIFTAH_NAME_OFFICIAL_AR}</span> : label}
             </span>
             <span
               dir="ltr"
