@@ -4,7 +4,16 @@ import { Send, Sparkles, AlertCircle, Trash2, BrainCircuit, Target, Stethoscope,
 import { ChatMessage } from '../types';
 import { MORCHID_LOGO_URL } from '../data/brandAssets';
 
-import { processStudentInput, getDailyMission, diagnosticCoach, type TutorRewardDetails, type EngineResult } from '../smartTutorEngine';
+import {
+  processStudentInput,
+  getDailyMission,
+  diagnosticCoach,
+  ACTIONS_COACH,
+  uniteParTitre,
+  premiereLeconDeUnite,
+  type TutorRewardDetails,
+  type EngineResult,
+} from '../smartTutorEngine';
 import { useBasesTuteurPrechargees } from '../data/useBasesTuteur';
 import { DOMAINS } from '../data/smartBotData';
 import { loadSession, saveSession, resetSession, clearPendingInteractions, type BotSession } from '../utils/sessionManager';
@@ -21,6 +30,10 @@ interface AITutorViewProps {
   questionInitiale?: string | null;
   /** Appelé une fois la question pré-remplie consommée (App remet à null). */
   onQuestionInitialeConsumed?: () => void;
+  /** Audit Capitaine 2026-10-17 (§1) : le raccourci « اشرح <unité> » du
+   *  diagnostic ouvre la 1re leçon de l'unité visée via App (mêmes handlers que
+   *  مساري), au lieu d'obtenir une réponse libre générique. */
+  onOuvrirLeconDuCoach?: (lessonKey: string, kind: 'html' | 'active', unitId: number) => void;
 }
 
 const JOURNEY_BUTTONS = [
@@ -62,7 +75,7 @@ function buildWelcomeMessage(): ChatMessage {
   };
 }
 
-export default function AITutorView({ onBackToDashboard, onXPGained, questionInitiale, onQuestionInitialeConsumed }: AITutorViewProps) {
+export default function AITutorView({ onBackToDashboard, onXPGained, questionInitiale, onQuestionInitialeConsumed, onOuvrirLeconDuCoach }: AITutorViewProps) {
   const [session, setSession] = useState<BotSession>(() => loadSession());
   const [messages, setMessages] = useState<ChatMessage[]>(() => [buildWelcomeMessage()]);
   const [input, setInput] = useState('');
@@ -201,7 +214,10 @@ export default function AITutorView({ onBackToDashboard, onXPGained, questionIni
       return;
     }
 
-    if (label === 'مهمة اليوم') {
+    // Audit Capitaine §1 (2026-10-17) : « المهمة اليومية » (raccourci du
+    // diagnostic) rejoint la MÊME route que « مهمة اليوم » — libellés émis et
+    // routés via ACTIONS_COACH, plus jamais de texte libre générique.
+    if (label === 'مهمة اليوم' || label === ACTIONS_COACH.missionQuotidienne) {
       setIsLoading(true);
       try {
         const userMsg: ChatMessage = {
@@ -222,7 +238,7 @@ export default function AITutorView({ onBackToDashboard, onXPGained, questionIni
     // 2026-10-12 — COACH : même chemin que la mission (réponse du moteur, session
     // conservée), mais le bouton dit ce qu'il fait. Pas de nouveau store : le
     // diagnostic lit le parcours de l'élève.
-    if (label === 'تشخيص مستواي') {
+    if (label === 'تشخيص مستواي' || label === ACTIONS_COACH.actualiserDiagnostic) {
       setIsLoading(true);
       try {
         const userMsg: ChatMessage = {
@@ -237,6 +253,38 @@ export default function AITutorView({ onBackToDashboard, onXPGained, questionIni
         setIsLoading(false);
       }
       return;
+    }
+
+    // Audit Capitaine §1 (2026-10-17) : « اشرح <unité> » ne demande PAS un
+    // chat générique — il ouvre la 1re leçon de l'unité visée (mêmes handlers
+    // que مساري). Le titre est résolu côté moteur (uniteParTitre, même règle
+    // que diagnosticCoach) ; à défaut de leçon résoluble → texte libre (ancien
+    // comportement, au pire identique à avant).
+    if (label.startsWith(ACTIONS_COACH.expliquerUnite) && onOuvrirLeconDuCoach) {
+      const unite = uniteParTitre(label);
+      const lecon = unite ? premiereLeconDeUnite(unite.unitId) : null;
+      if (unite && lecon) {
+        setIsLoading(true);
+        try {
+          const userMsg: ChatMessage = {
+            id: nextId('user'),
+            sender: 'user',
+            text: label,
+            timestamp: new Date().toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' }),
+          };
+          const ackMsg: ChatMessage = {
+            id: nextId('ai'),
+            sender: 'ai',
+            text: `📖 فتحتُ لك الدرس الأول من الوحدة: ${unite.titre}. اقرأ الشرح فيه، ثم عد إليّ لنتحقق من فهمك بأسئلة سريعة.`,
+            timestamp: new Date().toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' }),
+          };
+          setMessages((prev) => [...prev, userMsg, ackMsg]);
+          onOuvrirLeconDuCoach(lecon.lessonKey, lecon.lessonKind, lecon.unitId);
+        } finally {
+          setIsLoading(false);
+        }
+        return;
+      }
     }
 
     // Les autres entrées du parcours passent par le moteur standard :
@@ -413,13 +461,15 @@ export default function AITutorView({ onBackToDashboard, onXPGained, questionIni
                   </div>
                 </div>
 
-                {/* Quick actions cliquables du moteur */}
+                {/* Quick actions cliquables du moteur — audit Capitaine §1
+                    (2026-10-17) : routées comme les boutons du parcours
+                    (handleJourneyClick), plus jamais en texte libre muet. */}
                 {msg.sender === 'ai' && msg.action?.quickActions && msg.action.quickActions.length > 0 && (
                   <div className="flex flex-wrap gap-1.5 mt-1" data-testid="tutor-quick-actions">
                     {msg.action.quickActions.map((qa, qIdx) => (
                       <button
                         key={qIdx}
-                        onClick={() => handleSend(qa)}
+                        onClick={() => handleJourneyClick(qa)}
                         className="text-[11px] font-bold px-2.5 py-1 rounded-lg bg-[#fff9ed] hover:bg-[#fed65b]/40 border border-[#e2dabf]/70 text-[#006d37] cursor-pointer transition-colors"
                         data-testid={`quick-action-${qIdx}`}
                       >

@@ -1122,6 +1122,9 @@ export default function App() {
                   onXPGained={handleTutorXPGained}
                   questionInitiale={morchidSeed}
                   onQuestionInitialeConsumed={() => setMorchidSeed(null)}
+                  /* Audit Capitaine §1 (2026-10-17) : « اشرح <unité> » ouvre
+                     la leçon réelle (mêmes handlers que مساري). */
+                  onOuvrirLeconDuCoach={ouvrirLeçonDepuisParcours}
                 />
               )}
 

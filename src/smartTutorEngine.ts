@@ -1372,6 +1372,51 @@ export function reviewMistakes(session: BotSession): EngineResult {
  * le جسر n'est pas passé ne peut pas être « forte » — la lecture n'est pas la
  * preuve.
  */
+/**
+ * Audit Capitaine 2026-10-17 (§1, P0) : un seul endroit décide des libellés des
+ * raccourcis du coach — le moteur les ÉMET depuis ces constantes, la vue les
+ * ROUTE sur les mêmes constantes. Avant : libellés retapés à la main dans
+ * AITutorView ; « حدّث تشخيصي » et « المهمة اليومية » partaient en texte libre
+ * générique (« خارج قاعدة البيانات ») au lieu d'exécuter leur promesse.
+ */
+export const ACTIONS_COACH = {
+  /** Préfixe suivi du titre d'unité : `اشرح 2. تركيب البروتين`. */
+  expliquerUnite: 'اشرح ',
+  actualiserDiagnostic: 'حدّث تشخيصي',
+  missionQuotidienne: 'المهمة اليومية',
+} as const;
+
+/**
+ * Résout l'unité du parcours dont le titre (normalisé, sans numéro) figure
+ * dans le texte — même règle de match que diagnosticCoach (l.1382-1390).
+ * Sert à router le raccourci « اشرح <unité> » vers le vrai contenu.
+ */
+export function uniteParTitre(texte: string): { unitId: number; titre: string } | null {
+  const q = normalizeArabic(texte).toLowerCase();
+  const titreNu = (t: string) =>
+    normalizeArabic(t).toLowerCase().replace(/^\s*\d+\.?\s*/, '').trim();
+  const unite = PARCOURS_DOMAINS.flatMap((d) => d.units).find((u) => {
+    const t = titreNu(u.title);
+    return t.length >= 6 && q.includes(t);
+  });
+  return unite ? { unitId: unite.unitId, titre: unite.title } : null;
+}
+
+/**
+ * Première leçon d'une unité du parcours (les jalons sont exclus : « اشرح »
+ * vise le contenu du cours, pas l'évaluation de fin d'unité).
+ */
+export function premiereLeconDeUnite(
+  unitId: number,
+): { lessonKey: string; lessonKind: 'html' | 'active'; unitId: number } | null {
+  const unite = PARCOURS_DOMAINS.flatMap((d) => d.units).find((u) => u.unitId === unitId);
+  if (!unite) return null;
+  const lecon = unite.items.find((it) => it.kind === 'lesson' && it.lessonKey && it.lessonKind);
+  return lecon && lecon.lessonKey && lecon.lessonKind
+    ? { lessonKey: lecon.lessonKey, lessonKind: lecon.lessonKind, unitId }
+    : null;
+}
+
 export function diagnosticCoach(session: BotSession, rawInput?: string): EngineResult {
   const state = loadParcours();
   const groupes = PARCOURS_DOMAINS.flatMap((d) => d.units);
@@ -1405,7 +1450,12 @@ export function diagnosticCoach(session: BotSession, rawInput?: string): EngineR
       session,
       action: {
         text,
-        quickActions: [`اشرح ${d.titre}`, 'حدّث تشخيصي', 'المهمة اليومية', 'العودة للقائمة الرئيسية'],
+        quickActions: [
+          `${ACTIONS_COACH.expliquerUnite}${d.titre}`,
+          ACTIONS_COACH.actualiserDiagnostic,
+          ACTIONS_COACH.missionQuotidienne,
+          'العودة للقائمة الرئيسية',
+        ],
       },
     };
   }
@@ -1425,9 +1475,9 @@ export function diagnosticCoach(session: BotSession, rawInput?: string): EngineR
   const text = `${entete}\n\n${conseil}`;
 
   const quickActions = [
-    ...priorite.map((d) => `اشرح ${d.titre}`),
-    'حدّث تشخيصي',
-    'المهمة اليومية',
+    ...priorite.map((d) => `${ACTIONS_COACH.expliquerUnite}${d.titre}`),
+    ACTIONS_COACH.actualiserDiagnostic,
+    ACTIONS_COACH.missionQuotidienne,
     'العودة للقائمة الرئيسية',
   ];
 
