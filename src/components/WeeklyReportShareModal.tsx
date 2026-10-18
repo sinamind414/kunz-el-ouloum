@@ -195,7 +195,7 @@ export default function WeeklyReportShareModal({
     ctx.fillStyle = currentTheme.gold;
     ctx.font = 'bold 16px sans-serif';
     ctx.textAlign = 'center';
-    ctx.fillText('⭐ الجمهورية الجزائرية الديمقراطية الشعبية — بكالوريا 2026 ⭐', canvas.width / 2, 85);
+    ctx.fillText('⭐ الجمهورية الجزائرية الديمقراطية الشعبية ⭐', canvas.width / 2, 85);
 
     ctx.fillStyle = '#ffffff';
     ctx.font = '900 32px sans-serif';
@@ -363,7 +363,7 @@ export default function WeeklyReportShareModal({
     ctx.fillStyle = 'rgba(255, 255, 255, 0.6)';
     ctx.font = '13px sans-serif';
     ctx.textAlign = 'center';
-    ctx.fillText('رُصدت الإحصائيات آلياً عبر خوارزمية التكرار المتباعد • SVT BAC 2026', canvas.width / 2, footerY);
+    ctx.fillText('رُصدت الإحصائيات آلياً عبر خوارزمية التكرار المتباعد • SVT BAC', canvas.width / 2, footerY);
 
     const now = new Date();
     const dateStr = fmtDateLatn(now, { year: 'numeric', month: 'long', day: 'numeric' });
@@ -555,7 +555,7 @@ export default function WeeklyReportShareModal({
                           منصة كنز العلوم • SVT BAC DZ
                         </span>
                         <span className="text-[10px] text-emerald-200/80 block">
-                          تقرير الأداء الأسبوعي • بكالوريا 2026
+                          تقرير الأداء الأسبوعي • بكالوريا
                         </span>
                       </div>
                     </div>

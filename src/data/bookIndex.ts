@@ -208,13 +208,14 @@ export function sourceLivre(cleLecon: string, titreAffiche: string): SourceLivre
   return null;
 }
 
-/** Badge lisible : « الفصل 19 (l.1797–1849) » — pour l'affichage viewer. */
+/** Badge lisible pour l'affichage viewer.
+ * M4 (audit v2 18/10/2026) : les références de LIGNES OCR (développeur) ne sont
+ * plus montrées à l'élève — le badge ne cite que le/les chapitres du livre.
+ * Les plages ligneDebut/ligneFin restent dans l'index et vérifiées par le verrou. */
 export function badgeSource(s: SourceLivre): string {
   const nums = s.chapitres.map((c) => c.chapter);
-  const debut = Math.min(...s.chapitres.map((c) => c.ligneDebut));
-  const fin = Math.max(...s.chapitres.map((c) => c.ligneFin));
-  const ops = nums.length === 1 ? `${nums[0]}` : `${nums[0]}–${nums[nums.length - 1]}`;
-  return `الفصل ${ops} · أسطر ${debut}–${fin}`;
+  const ops = nums.length === 1 ? `${nums[0]}` : `${nums[0]}-${nums[nums.length - 1]}`;
+  return `الفصل ${ops}`;
 }
 
 /** true si au moins un chapitre de la source est ambigu (en-tête OCR reconstruit). */

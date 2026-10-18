@@ -10,7 +10,6 @@ import { describe, expect, it } from 'vitest';
 import {
   CHAPITRES,
   chapitresDeUnite,
-  chapitreGlobal,
   badgeSource,
   norm,
   sourceLivre,
@@ -166,15 +165,14 @@ describe('bookIndex — appariement leçons ↔ chapitres (mesure figée)', () =
     expect(s2?.chapitres[0]?.chapter).toBe(52);
   });
 
-  it('badge : chapitre unique = « الفصل N · أسطر a–b » ; paire = intervalle de chapitres', () => {
+  it('badge sans références de lignes (M4) : chapitre unique = « الفصل N » ; paire = intervalle', () => {
     const s1 = sourceLivre('phase8_chapitres_15_16', cleToTitre('phase8_chapitres_15_16'))!;
-    expect(badgeSource(s1)).toBe(`الفصل 27 · أسطر ${chapitreGlobal(27).ligneDebut}–${chapitreGlobal(27).ligneFin}`);
+    expect(badgeSource(s1)).toBe('الفصل 27');
     const s2 = sourceLivre('phase1_chapitres_1_2', cleToTitre('phase1_chapitres_1_2'))!;
-    expect(badgeSource(s2)).toMatch(/^الفصل 1–2 · أسطر \d+–\d+$/);
-    // cohérence : la plage badge est bien celle de l'index (min début, max fin)
-    const debut = Math.min(...s2.chapitres.map((c) => c.ligneDebut));
-    const fin = Math.max(...s2.chapitres.map((c) => c.ligneFin));
-    expect(badgeSource(s2)).toBe(`الفصل 1–2 · أسطر ${debut}–${fin}`);
+    expect(badgeSource(s2)).toMatch(/^الفصل 1-2$/);
+    // l'index garde la vérité des plages (vérifiées séparément ci-dessous),
+    // mais le badge élève n'expose plus les lignes OCR internes.
+    expect(badgeSource(s1)).not.toContain('أسطر');
   });
 
   it('les plages affichées viennent TOUJOURS de l index (aucune ligne fabriquée ici)', () => {

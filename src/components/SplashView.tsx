@@ -158,7 +158,7 @@ const [showIntroSplash, setShowIntroSplash] = useState<boolean>(true);
             <div className="relative z-10 text-center pt-8 flex flex-col items-center gap-1">
               <span className="text-[10px] uppercase tracking-[0.25em] font-extrabold text-[#fed65b]/80 flex items-center gap-1.5">
                 <Anchor className="w-3.5 h-3.5 text-[#fed65b]" />
-                <span>التحضير الأقوى لبكالوريا 2026</span>
+                <span>التحضير الأقوى لبكالوريا</span>
               </span>
               <div className="h-[2px] w-12 bg-gradient-to-r from-transparent via-[#fed65b] to-transparent mt-1" />
             </div>
@@ -255,7 +255,7 @@ const [showIntroSplash, setShowIntroSplash] = useState<boolean>(true);
               </div>
               <div className="text-xs text-[#735c00] font-bold opacity-80 flex items-center gap-1 pr-12">
                 <Sparkles className="w-3.5 h-3.5 text-[#fed65b]" />
-                <span>إصدار 2026 ذكي</span>
+                <span>إصدار ذكي</span>
               </div>
             </header>
 
