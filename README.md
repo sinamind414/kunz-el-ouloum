@@ -67,6 +67,16 @@ le comptage du fichier brut, 121 celui servi. D'où l'étalon.
   présents — dans une CI sans ces assets, ils sont ignorés, pas verts.
 - Build : après `npm run build`, la suite post-build `npm run test:build`
   vérifie dist/ (budgets, JSON tuteur : 562 chunks, précache).
+- Bundle (M16, deux volets) : volet 1 — le corpus SVT est un chunk dédié
+  (fini la duplication dans les chunks des vues) ; volet 2 — les 550 QCM
+  sont éclatés en segments par domaine dans `src/quizCorpus/` (déplacement
+  littéral, ordre global = concaténation vérifiée par le script). Au build
+  du 18/10/2026 : noyau `svt-corpus` 154,4 Ko + 6 segments `svt-qcm-N`
+  (237,1 / 123,1 / 151,8 / 27,4 / 7,7 / 1,4 Ko) au lieu d'un monolithe de
+  702,5 Ko — un re-déploiement touchant un domaine ne re-télécharge plus
+  les octets des autres. Plafond assumé : le téléchargement PREMIER reste
+  le corpus entier (le deck au démarrage vit dans `App.tsx`, fichier
+  protégé) ; c'est le revenant de cache entre déploiements qui est éliminé.
 - Budget de bundle : `src/build/bundleBudget.test.ts` + `node scripts/poids-entree.mjs`.
 - Limites assumées et documentées : le corpus des 40 copies `eleve_*.txt` a servi à
   calibrer le correcteur — tout écart publié sur lui est un plancher, pas une validation

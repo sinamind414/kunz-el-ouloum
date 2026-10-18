@@ -212,17 +212,20 @@ export default defineConfig(() => {
             if (id.includes('bookTutorQA') || id.includes('methodologyKnowledge')) {
               return 'tutor-qa-base';
             }
-            // M16 (audit externe v2, 2026-10-18) — données officielles SVT dans
-            // un chunk DÉDIÉ et cache-stable. quizCorpus (550 énoncés réels + 553
-            // cartes dérivées), hosila (texte intégral du livre, généré) et
-            // cartesHosila étaient fusionnés dans le chunk d'entrée (588 Ko) et
-            // hosila était même dupliqué dans les chunks des vues
-            // (LessonsView + OkachaView, mesuré : phrase signante dans 2 chunks).
-            // En chunk séparé : les données du livre (rarement modifiées) restent
-            // dans le cache HTTP/service-worker d'un déploiement à l'autre, et la
-            // duplication des vues disparaît. Aucune donnée « de plus » n'est
-            // téléchargée à la première visite — c'est la RÉ-VISITE qui devient
-            // quasi gratuite sur ces octets.
+            // M16 (audit externe v2, 2026-10-18) — données officielles SVT.
+            // Volet 1 : chunk DÉDIÉ (fini la fusion dans le bundle d'entrée et
+            // la duplication dans les chunks des vues).
+            // Volet 2 : le corpus QCM est éclaté par domaine (6 segments de
+            // domaines purs dans src/quizCorpus/). Chaque segment devient son
+            // propre chunk cache-stable : corriger une leçon d'un domaine
+            // n'invalide plus les octets des autres. Le noyau (dérivation des
+            // flashcards + hosila + cartesHosila) reste dans « svt-corpus ».
+            // Aucune donnée « de plus » n'est téléchargée à la première visite
+            // (le corpus entier est requis par le deck) ; ce sont les
+            // RE-DÉPLOIEMENTS qui ne re-téléchargent plus que le segment modifié.
+            if (/[\\/]src[\\/]quizCorpus[\\/]qcm\d+-d\d\w*\.ts$/.test(id)) {
+              return 'svt-qcm-' + id.match(/qcm(\d+)-/)[1];
+            }
             if (id.includes('/quizCorpus') || /[\\/]src[\\/]data[\\/](hosila|cartesHosila)(\.|$|\?)/.test(id)) {
               return 'svt-corpus';
             }

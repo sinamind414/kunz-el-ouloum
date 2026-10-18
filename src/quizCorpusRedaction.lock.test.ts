@@ -24,13 +24,21 @@
 // verrouillé ici — seul le faux de référence d'une question doit être faux
 // POUR LE TERME demandé.
 
-import { readFileSync } from 'node:fs';
+import { readFileSync, readdirSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { SVT_QUIZ_QUESTIONS } from './quizCorpus';
 
 const RACINE = process.cwd();
-const BRUT = readFileSync(resolve(RACINE, 'src/quizCorpus.ts'), 'utf-8');
+// M16 volet 2 : le corpus monotithe d'origine est éclaté par domaine dans
+// src/quizCorpus/. Le verrou rédactionnel lit la TOTALITÉ des segments
+// (le texte des 550 QCM y est déplacé octet pour octet) — la garantie est
+// inchangée, seul le contenant a changé.
+const BRUT = readdirSync(resolve(RACINE, 'src/quizCorpus'))
+  .filter((f) => f.endsWith('.ts'))
+  .sort()
+  .map((f) => readFileSync(resolve(RACINE, 'src/quizCorpus', f), 'utf-8'))
+  .join('\n');
 
 /** Le texte cité comme « الخيار «X» فخ شائع » dans une explication. */
 function piegeCite(explanation: string): string | null {
