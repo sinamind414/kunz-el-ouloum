@@ -43,7 +43,7 @@ le comptage du fichier brut, 121 celui servi. D'où l'étalon.
 ## Fiabilité
 
 - TypeScript strict : `npm run lint` (tsc --noEmit).
-- Suite complète : `npx vitest run` - 285 fichiers / 3 440 tests au 17/10/2026,
+- Suite complète : `npx vitest run` - 293 fichiers / 3 461 tests au 18/10/2026,
   aucun échec toléré (`test:jest` existe en second runner). 8 tests `skipIf`
   (SQLite, fixtures locales) ne s'exécutent qu'avec leurs prerequisites
   présents — dans une CI sans ces assets, ils sont ignorés, pas verts.

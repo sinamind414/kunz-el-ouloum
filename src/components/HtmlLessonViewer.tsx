@@ -4,6 +4,7 @@
 import { useEffect, useState } from 'react';
 import { LESSON_HTML_GETTERS } from '../data/lessonHtmlGetters';
 import { sliceLessonHtml } from '../data/lessonChapterSplit';
+import { injectFigureZoom } from '../utils/figureZoomRuntime';
 
 interface Props {
   lessonKey: string;
@@ -27,6 +28,21 @@ function injecteMesureHauteur(html: string): string {
   return `${html}${SCRIPT_MESURE_HAUTEUR}`;
 }
 
+/**
+ * M8 (audit 2026-10-18) : les modules ?raw des leçons sont épurés du bloc
+ * runtime de zoom au build (plugin vite.config leconRuntimeDedupPlugin — les
+ * fichiers sur disque restent complets pour les verrous). Ici on ré-injecte
+ * le bloc canonique via injectFigureZoom() : idempotent, et capable de mettre
+ * à niveau un bloc obsolète s'il était présent — même sémantique que
+ * `npm run figures:zoom`, mais au rendu. S'il s'agit d'une tranche de
+ * chapitre sans </body>, on ferme le document pour permettre l'injection.
+ */
+function compileLecon(html: string): string {
+  const base = html.includes('</body>') ? html : `${html}</body>`;
+  const injection = injectFigureZoom(base);
+  return injecteMesureHauteur(injection.html);
+}
+
 export default function HtmlLessonViewer({ lessonKey, onBack, onNext, nextTitleAr }: Props) {
   const [html, setHtml] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -44,7 +60,7 @@ export default function HtmlLessonViewer({ lessonKey, onBack, onNext, nextTitleA
       return;
     }
     getter()
-      .then((m) => { if (alive) setHtml(sliceLessonHtml(m.default, lessonKey)); })
+      .then((m) => { if (alive) setHtml(compileLecon(sliceLessonHtml(m.default, lessonKey))); })
       .catch(() => { if (alive) setError('تعذّر تحميل الدرس.'); });
     return () => { alive = false; };
   }, [lessonKey]);
