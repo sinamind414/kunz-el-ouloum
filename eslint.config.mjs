@@ -120,10 +120,11 @@ export default tseslint.config(
     },
   },
   {
-    ignores: [
-      // débris racine en attente du chantier B9 (nettoyage de la racine) :
-      '*.js',
-      '*.mjs',
-    ],
+    // B9 exécuté (2026-10-18) : les 10 débris one-shot de la racine
+    // (fix_lesson_data.js + famille tools-*.mjs, 0 référence, 21 Ko) sont
+    // supprimés. Reste à la racine : eslint.config.mjs lui-même, linté par
+    // la config principale. Pattern conservé par prudence pour tout futur
+    // script one-shot : remonter un vrai utilitaire dans scripts/.
+    ignores: ['*.js'],
   },
 );
