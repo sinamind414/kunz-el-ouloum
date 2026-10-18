@@ -54,8 +54,10 @@ le comptage du fichier brut, 121 celui servi. D'où l'étalon.
   `QUESTIONS_EX1_BAC2025` (barème officiel conservé tel quel). Périmètre
   exclu : `public/` (leçons verrouillées), fichiers générés (hosila, okacha,
   lessonIndex, cartesHosila - corriger le générateur), bibliothèques vendor
-  (d3, flamegraph), travail concurrent (Python/, CREATION MONTRE XWATCH/),
-  débris racine en attente du chantier B9. `scripts/gen-phase26-append.mjs`
+  (d3, flamegraph), travail concurrent (Python/, CREATION MONTRE XWATCH/).
+  B9 exécuté le 18/10/2026 : les 10 débris racine `.js`/`.mjs` supprimés
+  (0 référence vérifiée, 21 Ko) — la racine ne conserve plus que
+  `eslint.config.mjs` lui-même. `scripts/gen-phase26-append.mjs`
   a été supprimé (générateur one-shot, contenu déjà fusionné et verrouillé).
 - Suite complète : `npm test` (= `vitest run` + boussole) - 294 fichiers / 3 465 tests
   au 18/10/2026, aucun échec toléré. Second runner : `test:jest` - 286 suites /
