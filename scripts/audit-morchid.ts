@@ -43,7 +43,7 @@ const QUESTIONS: Array<{ q: string; expect: 'hit' | 'refus' | 'any' }> = [
   { q: 'أخبار اليوم', expect: 'refus' },
 ];
 
-let hits = 0, honestRefus = 0, softFallback = 0, missed = 0;
+let hits = 0, honestRefus = 0, softFallback = 0;
 const sourceCounts: Record<string, number> = {};
 const failures: string[] = [];
 

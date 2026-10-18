@@ -7,7 +7,7 @@ const lines = src.split(/\r?\n/);
 const keys = [];
 const closers = [];
 lines.forEach((l, i) => {
-  const m = l.match(/^  "([^"]+)": \{$/);
+  const m = l.match(/^ {2}"([^"]+)": \{$/);
   if (m) keys.push({ line: i + 1, key: m[1] });
   if (/^\};$/.test(l) || /^export /.test(l)) closers.push({ line: i + 1, txt: l.slice(0, 80) });
 });

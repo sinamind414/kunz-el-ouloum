@@ -109,7 +109,7 @@ export default function StatsView({ progress, units, onNavigate }: StatsViewProp
 
     return dayNames.map((day, idx) => {
       const real = realDays[idx];
-      let xpEarned = real.xp;
+      const xpEarned = real.xp;
       let completionRate = Math.min(130, Math.round((xpEarned / targetDailyXP) * 100));
       let studyMins = 0;
 

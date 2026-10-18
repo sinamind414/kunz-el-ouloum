@@ -112,7 +112,7 @@ describe('KEO-105 — triade ألاحظ → أستنتج → أخلص', () => {
   });
 
   it('parcours complet : observation → interprétation → conclusion', () => {
-    let s = processStudentInput(getDefaultSession(), 'فسّر نتائج هذه التجربة').session;
+    const s = processStudentInput(getDefaultSession(), 'فسّر نتائج هذه التجربة').session;
     const obs = processStudentInput(s, 'نلاحظ أن استهلاك الأكسجين يرتفع من الدقيقة صفر إلى الدقيقة عشرة');
     expect(obs.action.text).toContain('الخطوة 2');
     expect(obs.session.triadeStep).toBe(2);
@@ -233,7 +233,7 @@ describe('S-05 — rappel actif en fin d’explication', () => {
 // ---------------------------------------------------------------------------
 describe('KEO-104 — aucun bilan sans cause, action et porte', () => {
   const runChallenge = (): string => {
-    let s = processStudentInput({ ...getDefaultSession(), activeDomainId: 1 }, 'تحدي BAC').session;
+    const s = processStudentInput({ ...getDefaultSession(), activeDomainId: 1 }, 'تحدي BAC').session;
     // Situation 1 : deux tentatives faibles (avec causal : conformes au verbe).
     let r = processStudentInput(s, 'محاولة أولى ضعيفة مما يؤدي إلى شيء عام');
     r = processStudentInput(r.session, 'محاولة ثانية ضعيفة مما يؤدي إلى شيء عام');
@@ -262,7 +262,7 @@ describe('KEO-104 — aucun bilan sans cause, action et porte', () => {
   });
 
   it('S-10 : score < 50 % → le protocole d’étude s’impose en tête des actions', () => {
-    let s = processStudentInput({ ...getDefaultSession(), activeDomainId: 1 }, 'تحدي BAC').session;
+    const s = processStudentInput({ ...getDefaultSession(), activeDomainId: 1 }, 'تحدي BAC').session;
     let r = processStudentInput(s, 'محاولة أولى ضعيفة مما يؤدي إلى شيء عام');
     r = processStudentInput(r.session, 'محاولة ثانية ضعيفة مما يؤدي إلى شيء عام');
     r = processStudentInput(r.session, 'محاولة أولى في الوضعية الثانية لأن المناعة خلطية');
@@ -271,7 +271,7 @@ describe('KEO-104 — aucun bilan sans cause, action et porte', () => {
   });
 
   it('la correction intermédiaire affiche le contrat de la situation SUIVANTE', () => {
-    let s = processStudentInput({ ...getDefaultSession(), activeDomainId: 1 }, 'تحدي BAC').session;
+    const s = processStudentInput({ ...getDefaultSession(), activeDomainId: 1 }, 'تحدي BAC').session;
     let r = processStudentInput(s, 'محاولة أولى مما يؤدي إلى شيء');
     r = processStudentInput(r.session, 'محاولة ثانية مما يؤدي إلى شيء');
     expect(r.action.text).toContain('السؤال التالي');

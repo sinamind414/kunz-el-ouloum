@@ -114,7 +114,7 @@ function nettoyer(raw: string): string | null {
 const sansGras = (s: string): string => s.replace(/\*\*/g, '').trim();
 
 function analyser(ligne: string): BlocOkacha {
-  let t = ligne.trim().replace(/^#{1,6}\s*/, '');
+  const t = ligne.trim().replace(/^#{1,6}\s*/, '');
   const nu = sansGras(t);
   const mAct = /^(النشاط\s+[➊-➟⓫-⓴①-⑳0-9]{1,3}\s*[:：].*)$/.exec(nu);
   if (mAct) return { kind: 'titre', texte: mAct[1] };

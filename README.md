@@ -43,6 +43,15 @@ le comptage du fichier brut, 121 celui servi. D'où l'étalon.
 ## Fiabilité
 
 - TypeScript strict : `npm run lint` (tsc --noEmit).
+- ESLint 9 (M12, ajouté le 18/10/2026) : `npm run lint:eslint` - configuration
+  flat dans `eslint.config.mjs`. **0 erreur exigée** (exit code respecté).
+  Deux classes de warnings sont une dette assumée, rattrapage dédié M12-bis :
+  145 `@typescript-eslint/no-unused-vars` (variables mortes, dont 14 dans le
+  fichier protégé App.tsx) et 13 `react-hooks/exhaustive-deps`. Périmètre
+  exclu : `public/` (leçons verrouillées), fichiers générés (hosila, okacha,
+  lessonIndex, cartesHosila - corriger le générateur), bibliothèques vendor
+  (d3, flamegraph), travail concurrent (Python/, CREATION MONTRE XWATCH/),
+  débris racine en attente du chantier B9.
 - Suite complète : `npm test` (= `vitest run` + boussole) - 294 fichiers / 3 465 tests
   au 18/10/2026, aucun échec toléré. Second runner : `test:jest` - 286 suites /
   3 408 tests verts au 18/10/2026 (parité tuteur via prechargerBasesTuteur.jest,

@@ -120,7 +120,6 @@ export default function AITutorView({ onBackToDashboard, onXPGained, questionIni
       timestamp: new Date().toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' }),
       action: { quickActions: DOMAINS.map((d) => d.title) },
     }]);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Point d'entrée contextuel (2026-10-11) : l'élève a appelé le المرشد depuis

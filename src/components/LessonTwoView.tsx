@@ -65,7 +65,7 @@ export default function LessonTwoView() {
   const [isRecording, setIsRecording] = useState<string | null>(null);
 
   const toggleRecording = (inputId: string, setter: (val: string) => void) => {
-    // @ts-ignore
+    // @ts-expect-error : webkitSpeechRecognition est hors typings du DOM standard
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     if (!SpeechRecognition) {
       alert("المتصفح الخاص بك لا يدعم ميزة التعرف على الصوت. يرجى استخدام متصفح كروم أو إيدج.");

@@ -75,7 +75,7 @@ describe('V3.1 Preservation — وضع الحفظ', () => {
 describe('V3.1 dual — معلوماتك + وثيقة', () => {
   it('Step3Mode dual existe', async () => {
     const mod = await import('../../data/methodologyEngine');
-    // @ts-ignore
+    // VERB_V2_META est versionné à la main dans le moteur (index dynamique assumé)
     expect(mod.VERB_V2_META['verb_explain_v1']).toBeDefined();
     // au moins un verbe ou le type doit supporter dual
     const hasDualType = JSON.stringify(mod).includes('dual');
