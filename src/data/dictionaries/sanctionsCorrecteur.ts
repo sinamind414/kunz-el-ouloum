@@ -121,6 +121,18 @@ const RE_POTASSIUM = /البوتاسيوم/;
 const RE_POMPE_3K = /(3|ثلاث) [^\n]{0,12}البوتاسيوم/;
 const RE_POMPE_2NA = /2 [^\n]{0,12}الصوديوم/;
 
+// H4 (audit externe v2 18/10/2026 — bac 2025 S1-Ex1) : RIP (البروتين المثبط
+// للريبوسوم) DÉSACTIVE la traduction (dépurination — extraire الأدنين du
+// الريبوز de l'ARNr 28S). La présenter comme ACTIVATRICE (« RIP active le
+// ribosome ») est l'inversion factuelle du corrigé officiel. Fenêtres sur une
+// MÊME LIGNE (80 car.) pour rester silencieux devant l'anti-sens légitime du
+// même exercice (« عامل البدء ينشط الترجمة (...) و RIP يثبط (...) ») et devant
+// « غير نشط » (le verbe السجل « ينشط » ne sous-chaîne pas « نشط »).
+const RE_RIP_INVERSION = new RegExp(
+  `rip[^\\n]{0,80}(?:ينشط|تنشيط|تفعيل)[^\\n]{0,80}(?:الترجمه|ريبوزوم)` +
+  `|(?:ينشط|تنشيط|تفعيل)[^\\n]{0,80}rip[^\\n]{0,80}(?:الترجمه|ريبوزوم)`
+);
+
 /**
  * Analyse les sanctions pédagogiques d'une réponse.
  * forte = confusion sanctionnable / conflit de référence ; vigilance = simple
@@ -510,6 +522,18 @@ export function evaluerSanctions(reponse: string): Sanction[] {
       titreAr: '«3 أنواع من ARNt» — خطأ مكرر',
       constatAr: 'الإجابة تذكر 3 أنواع من ARNt (سياق الشواضر/الطرد المركزي).',
       correctionAr: 'دليل الأستاذ يصحح هنا خطأ بكالوريا 1999: الصحيح 3 أنواع من ARNr بأوزان جزيئية مختلفة (الشواضر 1 و2 و3). أنواع ARNt كثيرة وتتجمع في شوكة واحدة لتماثل أوزانها الجزيئية.',
+    });
+  }
+
+  // ── H4 (audit externe v2) — inversion factuelle du bac 2025 S1-Ex1 ──
+  if (RE_RIP_INVERSION.test(norm)) {
+    out.push({
+      type: 'FAUX_AMI',
+      id: 'rip_active_traduction',
+      gravite: 'forte',
+      titreAr: 'RIP (مُثبِّط الريبوزوم) وُصف بأنه مُنشِّط',
+      constatAr: 'الإجابة تجعل بروتين RIP (البروتين المثبط للريبوسوم) مُنشِّطاً لعملية الترجمة أو للريبوزوم.',
+      correctionAr: 'العكس هو الصحيح (سند Bac 2025): RIP يعطّل الترجمة — يفكك الرابطة الغليكوزيدية ويزيل الأدنين من الريبوز في ARNr 28S، فيتعطل الريبوزوم ويتوقف تركيب البروتين. تثبيط، لا تنشيط.',
     });
   }
 

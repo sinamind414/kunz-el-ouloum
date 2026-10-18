@@ -1,8 +1,9 @@
-// flashcardsExhaustif.test.tsx — parcours des 552 cartes réelles : on retourne
+// flashcardsExhaustif.test.tsx — parcours des cartes réelles (569 depuis le
+// filtre T3a : 531 QCM dérivées + 35 hosila + 3 collège) : on retourne
 // CHACUNE et on vérifie que son verso affiche sa première puce de réponse.
 // C'est la garantie exhaustive « aucune carte ne montre un verso vide ».
 //
-// Court (552 retournements en lot) : on ne render qu'une carte à la fois et on
+// Court (569 retournements en lot) : on ne render qu'une carte à la fois et on
 // ne cherche que le segment identifiant de la première puce.
 
 import { cleanup, render, screen, fireEvent } from '@testing-library/react';
@@ -16,8 +17,8 @@ afterEach(() => {
   localStorage.clear();
 });
 
-describe('exhaustif — les 552 cartes se retournent avec un verso', () => {
-  // 552 retournements : on laisse 60 s (le délai par défaut de 5 s est dépassé).
+describe('exhaustif — les 569 cartes se retournent avec un verso', () => {
+  // 569 retournements : on laisse 75 s (60 s dépassait à 60,9 s mesurés — T3a).
   it('chaque carte affiche sa première puce de réponse au retournement', () => {    const echecs: string[] = [];
     for (const c of SVT_FLASHCARDS) {
       cleanup();
@@ -41,5 +42,5 @@ describe('exhaustif — les 552 cartes se retournent avec un verso', () => {
       if (screen.queryAllByText(cible, { exact: false }).length === 0) echecs.push(`${c.id} (u${c.unitId})`);
     }
     expect(echecs, `cartes au verso vide : ${echecs.join(', ')}`).toEqual([]);
-  }, 60000);
+  }, 75000);
 });

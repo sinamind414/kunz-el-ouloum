@@ -17,12 +17,13 @@ import { carteSaine, healSavedFlashcards } from '../utils/flashcardsSanitize';
 // aux cartes hosila. Une carte-cloze du livre est textuelle PAR CONCEPTION —
 // lui coller un SVG quelconque serait l'habillage dénoncé par l'audit (M5 :
 // « 56 SVG pour 550 questions »). Les verrous diagrammes portent donc sur les
-// 553 cartes QCM-dérivées + collège ; les fc_h_* n'en ont volontairement AUCUNE.
+// 534 cartes QCM-dérivées + collège (T3a : 531 dérivées depuis le filtre
+// QCM_HORS_PERIMETRE) ; les fc_h_* n'en ont volontairement AUCUNE.
 const CARTES_DIAGRAMME = SVT_FLASHCARDS.filter((c) => !c.id.startsWith('fc_h_'));
 
-describe('données flashcards — aucun verso vide dans la banque (588 cartes)', () => {
-  it('588 cartes = 35 cartes hosila (livre officiel) + 550 dérivées du QCM + 3 collège ; ids uniques', () => {
-    expect(SVT_FLASHCARDS.length).toBe(588);
+describe('données flashcards — aucun verso vide dans la banque (569 cartes)', () => {
+  it('569 cartes = 35 cartes hosila (livre officiel) + 531 dérivées du QCM (550 − 19 hors périmètre T3a) + 3 collège ; ids uniques', () => {
+    expect(SVT_FLASHCARDS.length).toBe(569);
     expect(new Set(SVT_FLASHCARDS.map((c) => c.id)).size).toBe(SVT_FLASHCARDS.length);
   });
 
@@ -43,10 +44,10 @@ describe('données flashcards — aucun verso vide dans la banque (588 cartes)',
 });
 
 describe('chaîne de dérivation — le verso contient la réponse du QCM source', () => {
-  it('les 550 cartes fc_q_* : verso = option correcte du corpus + explication', () => {
+  it('les 531 cartes fc_q_* : verso = option correcte du corpus + explication', () => {
     const parId = new Map(SVT_QUIZ_QUESTIONS.map((q) => [`fc_q_${q.id}`, q]));
     const derivees = SVT_FLASHCARDS.filter((c) => c.id.startsWith('fc_q_'));
-    expect(derivees.length).toBe(550);
+    expect(derivees.length).toBe(531);
     for (const c of derivees) {
       const q = parId.get(c.id);
       expect(q, `${c.id} sans source`).toBeDefined();
@@ -63,10 +64,10 @@ describe('chaîne de dérivation — le verso contient la réponse du QCM source
 });
 
 describe('désinfecteur localStorage — un blob troué est rejeté en bloc', () => {
-  it('blob propre (les 588 réelles) → restitué tel quel', () => {
+  it('blob propre (les 569 réelles) → restitué tel quel', () => {
     const out = healSavedFlashcards(JSON.parse(JSON.stringify(SVT_FLASHCARDS)));
     expect(out).not.toBeNull();
-    expect(out!.length).toBe(588);
+    expect(out!.length).toBe(569);
   });
 
   it('UNE carte au verso vide ⇒ blob rejeté (null) — le cas exact du bug rapporté', () => {
@@ -98,7 +99,7 @@ describe('désinfecteur localStorage — un blob troué est rejeté en bloc', ()
 describe('diagrammes — Phase 3 : les cartes dérivées du QCM pointent un schéma ProFigure local', () => {
   // Rescopage (Vague 2 — action 9) : l'obligation de schéma ne s'applique PLUS
   // aux cartes hosila — voir la constante CARTES_DIAGRAMME (portée module).
-  it('les 553 cartes QCM-dérivées/collège ont un diagramUrl (aucun slot vide)', () => {
+  it('les 534 cartes QCM-dérivées/collège ont un diagramUrl (aucun slot vide)', () => {
     const sans = CARTES_DIAGRAMME.filter((c) => !c.diagramUrl);
     expect(sans.map((c) => c.id), 'cartes sans diagramUrl').toEqual([]);
   });
@@ -118,7 +119,7 @@ describe('diagrammes — Phase 3 : les cartes dérivées du QCM pointent un sch�
     }
   });
 
-  it('toutes les cibles sont des SVG ProFigure (553/553, 0 raster)', () => {
+  it('toutes les cibles sont des SVG ProFigure (534/534, 0 raster)', () => {
     const nonSvg = CARTES_DIAGRAMME.filter((c) => !(c.diagramUrl ?? '').endsWith('.svg'));
     // le dernier visuel .jpg (carte 508, anagène) a basculé sur son jumeau _ar.svg
     expect(nonSvg.map((c) => `${c.id} → ${c.diagramUrl}`), 'cibles non-SVG').toEqual([]);
@@ -143,23 +144,32 @@ describe('diagrammes — Phase 5 : cartes re-pointées sur les figures dédiées
     readFileSync(resolve(__dirname, '../../scripts/profigure/flashcardDiagramMap.json'), 'utf8'),
   ) as { prefixe: string; entries: { concept: string; figure: string }[] };
 
-  it('la table d appariement est versionnée, non vide, sans concept dupliqué (34 concepts → 37 cartes)', () => {
+  it('la table d appariement est versionnée, non vide, sans concept dupliqué (34 concepts → 34 cartes servies)', () => {
     expect(table.entries.length).toBe(34);
     const concepts = table.entries.map((e) => e.concept);
     expect(new Set(concepts).size, 'concepts dupliqués').toBe(concepts.length);
   });
 
-  it('CHAQUE carte portant « concept » pointe la figure dédiée (aucune ne retombe sur une figure générique)', () => {
+  it('CHAQUE carte portant « concept » pointe la figure dédiée — exceptions T3a : 3 concepts ARNm hors périmètre', () => {
+    // T3a (18/10/2026) : 6 QCM de maturation de l'ARNm (extrusion introns/exons,
+    // NON_EXIGIBLES) ne sont plus servis → les concepts « نضج ARNm », « الإكسون »
+    // et « الإنترون » (figure splicing) n'ont plus de carte. Exception documentée,
+    // réversible avec QCM_HORS_PERIMETRE ; les 31 autres concepts restent couverts.
+    const horsPerimetre = new Set(['نضج ARNm', 'الإكسون', 'الإنترون']);
     let cartes = 0;
     for (const e of table.entries) {
       const cibles = SVT_FLASHCARDS.filter((c) => c.question.includes(`«${e.concept}»`));
+      if (horsPerimetre.has(e.concept)) {
+        expect(cibles.length, `« ${e.concept} » : T3a prévoit 0 carte servie`).toBe(0);
+        continue;
+      }
       expect(cibles.length, `aucune carte pour « ${e.concept} »`).toBeGreaterThan(0);
       for (const c of cibles) {
         expect(c.diagramUrl, `${c.id} « ${e.concept} »`).toBe(table.prefixe + e.figure);
         cartes++;
       }
     }
-    expect(cartes, 'cartes couvertes par la table').toBe(37);
+    expect(cartes, 'cartes couvertes par la table').toBe(34);
   });
 
   it('les 7 cartes du potentiel d action ne reposent plus sur la figure de synapse neuro-musculaire', () => {
@@ -182,9 +192,9 @@ describe('diagrammes — Phase 5 : cartes re-pointées sur les figures dédiées
     expect(compte('domaine1_proteines/schema_06_structure_proteines.svg')).toBeLessThanOrEqual(31);
   });
 
-  it('44 → 57 cibles distinctes, et 66 → 53 figures du dossier jamais utilisées', () => {
+  it('57 → 56 cibles distinctes (T3a : 1 figure splicing libérée), 53 → 54 figures jamais utilisées', () => {
     const cibles = new Set(CARTES_DIAGRAMME.map((c) => c.diagramUrl as string));
-    expect(cibles.size).toBe(57);
+    expect(cibles.size).toBe(56);
     const lister = (dir: string): string[] =>
       readdirSync(dir, { withFileTypes: true }).flatMap((e) =>
         e.isDirectory()
@@ -196,7 +206,7 @@ describe('diagrammes — Phase 5 : cartes re-pointées sur les figures dédiées
     const tous = lister(resolve(__dirname, '../../public/assets/images/schemas'));
     const utilisees = new Set(CARTES_DIAGRAMME.map((c) => resolve(__dirname, '../../public' + c.diagramUrl)));
     const libres = tous.filter((f) => !utilisees.has(f));
-    expect(libres.length, `figures libres : ${libres.length}/${tous.length}`).toBe(53);
+    expect(libres.length, `figures libres : ${libres.length}/${tous.length}`).toBe(54);
   });
 });
 

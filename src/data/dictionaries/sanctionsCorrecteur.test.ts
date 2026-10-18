@@ -47,6 +47,33 @@ describe('sanctions — extension C6 (2026-09-19)', () => {
   });
 });
 
+describe('sanctions — H4 (audit externe v2 18/10/2026) : inversion RIP du bac 2025 S1-Ex1', () => {
+  it('« RIP ينشط عملية الترجمة » → forte', () => {
+    const s = evaluerSanctions('البروتين RIP ينشط عملية الترجمة في الخلية.');
+    expect(s.map((x) => x.id)).toContain('rip_active_traduction');
+    expect(s.find((x) => x.id === 'rip_active_traduction')!.gravite).toBe('forte');
+  });
+
+  it('ordre inversé du verbe («ينشط البروتين RIP الترجمة») → forte aussi', () => {
+    expect(
+      evaluerSanctions('وإنما ينشط البروتين RIP عملية الترجمة.').map((x) => x.id),
+    ).toContain('rip_active_traduction');
+  });
+
+  it('les formulations correctes (يثبط / يعطّل / يزيل الأدنين / غير نشط) → jamais forte', () => {
+    for (const legitime of [
+      'RIP يعطّل الترجمة: يزيل الأدنين من الريبوز في ARNr 28S فيتعطل الريبوزوم.',
+      'البروتين RIP يفكك الرابطة الغليكوزيدية ويزيل الأدنين، فيصبح الريبوزوم غير نشط.',
+      'عامل البدء ينشط عملية الترجمة على الريبوزوم، بينما RIP يثبط هذا التركيب.',
+    ]) {
+      expect(
+        evaluerSanctions(legitime).filter((x) => x.gravite === 'forte'),
+        legitime,
+      ).toHaveLength(0);
+    }
+  });
+});
+
 describe('sanctions — P2f, sources دليل الأستاذ (errata + attendus)', () => {
   it('O2 : « مصدر الأكسجين المنطلق هو CO2 » → forte ; « الماء وليس CO2 » (réponse du guide) → rien', () => {
     const s = evaluerSanctions('مصدر الأكسجين المنطلق في التركيب الضوئي هو CO2.');

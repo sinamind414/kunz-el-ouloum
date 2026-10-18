@@ -342,3 +342,34 @@ describe('R6 — traçabilité', () => {
     expect(normalizeAr(n.registre.questionAr).length).toBeGreaterThan(10);
   });
 });
+
+// H4 (audit externe v2, 18/10/2026 — non-régression des 6 cas contradictoires) :
+// une copie FAUSSE (relation inversée : « RIP ينشط الترجمة ») doit scorer
+// STRICTEMENT SOUS une copie juste mais courte contenant le MÊME credit
+// attendus — l'inversion factuelle (sanction forte −0,5) doit inverser
+// l'ordre précédemment mesuré (D ≈ E les deux 2,9/5 dans l'audit).
+describe('H4 — copie fausse < copie juste courte (S1-Ex1 2025)', () => {
+  // E — copie JUSTE mais COURTE : la seule relation attendue du Q2/RIP,
+  // formulée avec les composantes officielles (rip + الأدنين + الريبوز).
+  const COPIE_JUSTE_COURTE =
+    'بروتين RIP يعطّل الترجمة: إنه يفكك الرابطة الغليكوزيدية ويزيل الأدنين من الريبوز، فيتعطل الريبوزوم ويتوقف تركيب البروتين.';
+  // D — copie FAUSSE : E + inversion factuelle → mêmes crédits (sur-ensemble
+  // lexical), + sanction forte « rip_active_traduction » (−0,5).
+  const COPIE_FAUSSE =
+    COPIE_JUSTE_COURTE + ' وإنما ينشط البروتين RIP عملية الترجمة في الريبوزوم.';
+
+  it('la copie fausse porte la sanction forte ; la juste courte aucune', () => {
+    const juste = noterExerciceCalibre(COPIE_JUSTE_COURTE, 1, 1);
+    const fausse = noterExerciceCalibre(COPIE_FAUSSE, 1, 1);
+    expect(fausse.sanctionsForte.map((s) => s.id)).toContain('rip_active_traduction');
+    expect(juste.sanctionsForte.filter((s) => s.id === 'rip_active_traduction')).toHaveLength(0);
+  });
+
+  it('note (copie fausse) < note (copie juste courte) — l inversion doit coûter', () => {
+    const juste = noterExerciceCalibre(COPIE_JUSTE_COURTE, 1, 1);
+    const fausse = noterExerciceCalibre(COPIE_FAUSSE, 1, 1);
+    // les deux copies créditent le même(s) item(s) attendus (D ⊇ E) —
+    // la seule différence de note doit être la sanction d'inversion.
+    expect(fausse.points).toBeLessThan(juste.points);
+  });
+});

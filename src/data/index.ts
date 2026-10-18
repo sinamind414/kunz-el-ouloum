@@ -29,11 +29,11 @@ export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = CORPUS_QUIZ_QUESTIONS;
 //   1. CARTES_HOSILA — de vraies cartes de rappel actif : phrases OFFICIELLES
 //      du livre scolaire en cloze (« إكمال »), verso = phrase complète + source.
 //      Tranche U1-U3 : 35 cartes, sans options, non dérivées des QCM.
-//   2. CORPUS_FLASHCARDS — réexport des QCM (550) + les 3 cartes « college »
-//      historiques = 553.
+//   2. CORPUS_FLASHCARDS — réexport des QCM servis (531, T3a : 550 − 19 hors
+//      périmètre) + les 3 cartes « college » historiques = 534.
 // AVERTISSEMENT H6 (audit ligne par ligne) : la couche 2 SONT les mêmes
-// 550 QCM reformatés — le total 588 ne désigne pas 588 connaissances distinctes ;
-// il se lit « 35 cartes du livre + 553 équivalents-QCM ». La couche 1 s'étendra
+// QCM reformatés — le total 569 ne désigne pas 569 connaissances distinctes ;
+// il se lit « 35 cartes du livre + 534 équivalents-QCM ». La couche 1 s'étendra
 // unité par unité (scripts/build_cartes_hosila.ts → relancer le script).
 export const SVT_FLASHCARDS: Flashcard[] = [
   ...CARTES_HOSILA,
