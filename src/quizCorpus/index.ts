@@ -45,14 +45,35 @@ export const QCM_HORS_PERIMETRE: ReadonlySet<number> = new Set([
   320, 323, 324, 337, 338, 339, 340, 341, 342, 343, 344, 345, 346,
 ]);
 
-export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = [
-  ...QUESTIONS_D1A,
-  ...QUESTIONS_D2A,
-  ...QUESTIONS_D3,
-  ...QUESTIONS_D1B,
-  ...QUESTIONS_D2B,
-  ...QUESTIONS_D1C,
-].filter((q) => !QCM_HORS_PERIMETRE.has(q.id));
+// M3 (audit v2 18/10/2026, axe 3 : « Aucun étiquetage de difficulté sur les QCM »)
+// — la difficulté d'apprentissage existe DÉJÀ dans la structure du dépôt : chaque
+// segment porte son palier dans son nom (d1a/d1b/d1c = أساسي, d2a/d2b = متوسط,
+// d3 = متقدم). Le barrel l'estampe CENTRALEMENT au moment de la composition :
+// aucune donnée unitaire n'est ajoutée aux segments (déplacement littéral
+// préservé), et le verrou difficulteQcm.lock teste la cohérence segment↔id.
+// Rééquilibrage vers la cible D1≈75 % / D2≈20 % / D3≈5 % : par AJOUT de QCM
+// D1/D2 (contenu pédagogique → ressortit à un enseignant), jamais par
+// requalification d'items existants.
+export type PalierDifficulte = 1 | 2 | 3;
+const PALIER_PAR_SEGMENT: { qs: QuizQuestion[]; difficulte: PalierDifficulte }[] = [
+  { qs: QUESTIONS_D1A, difficulte: 1 },
+  { qs: QUESTIONS_D2A, difficulte: 2 },
+  { qs: QUESTIONS_D3, difficulte: 3 },
+  { qs: QUESTIONS_D1B, difficulte: 1 },
+  { qs: QUESTIONS_D2B, difficulte: 2 },
+  { qs: QUESTIONS_D1C, difficulte: 1 },
+];
+
+export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = PALIER_PAR_SEGMENT.flatMap(({ qs, difficulte }) =>
+  qs.map((q) => ({ ...q, difficulte })),
+).filter((q) => !QCM_HORS_PERIMETRE.has(q.id));
+
+/** Libellés d'affichage (فصحى) associés aux paliers — source unique du badge UI. */
+export const LIBELLES_DIFFICULTE: Record<PalierDifficulte, string> = {
+  1: 'أساسي',
+  2: 'متوسط',
+  3: 'متقدم',
+};
 
 
 export const SVT_FLASHCARDS: Flashcard[] = SVT_QUIZ_QUESTIONS.map((question) => ({

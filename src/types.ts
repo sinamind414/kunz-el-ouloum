@@ -10,6 +10,13 @@ export interface QuizQuestion {
   kind?: 'qcm' | 'fillBlank';
   /** Réponses acceptées (forme normale) quand kind === 'fillBlank'. */
   acceptedAnswers?: string[];
+  /**
+   * M3 (audit 8 axes 14/10/2026, « aucun étiquetage de difficulté ») : difficulté
+   * d'apprentissage du QCM, dérivée de l'ORIGINE du segment (D1/D2/D3) au moment
+   * de la composition du barrel — aucune donnée unitaire ajoutée dans les segments.
+   * 1 = أساسي · 2 = متوسط · 3 = متقدم.
+   */
+  difficulte?: 1 | 2 | 3;
 }
 
 export interface Unit {

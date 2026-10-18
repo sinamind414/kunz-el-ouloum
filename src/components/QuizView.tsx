@@ -3,6 +3,7 @@ import { useCompteARebours } from '../hooks/useWallClock';
 import { motion, AnimatePresence } from 'motion/react';
 import { X, Timer, CheckCircle2, AlertCircle, ArrowLeft, ArrowRight, RotateCcw, Award, Check, BookOpen, GraduationCap, AlertOctagon, HelpCircle, Sparkles, Eye, EyeOff } from 'lucide-react';
 import { QuizQuestion } from '../types';
+import { LIBELLES_DIFFICULTE } from '../quizCorpus';
 import { playSuccessSound, playFailureSound } from '../utils/audio';
 import { MASCOT_URL } from '../data/brandAssets';
 import { getHintForIncorrectOption, getGeneralHint } from '../utils/hints';
@@ -291,6 +292,31 @@ export default function QuizView({ unitTitle, questions, onClose, onQuizComplete
 
                 {/* Question Text & General Hint Trigger */}
                 <div className="flex flex-col gap-2">
+                  {/* M3 (audit 8 axes) — étiquetage de difficulté : chaque QCM
+                      affiche désormais son palier (donnée dérivée des segments
+                      D1/D2/D3, jamais inventée). Les fillBlank n'en ont pas. */}
+                  {currentQuestion.difficulte && (
+                    <div className="flex">
+                      <span
+                        title="مستوى صعوبة السؤال"
+                        className={`text-[10px] font-bold px-2 py-0.5 rounded-lg border ${
+                          currentQuestion.difficulte === 1
+                            ? (isFocusMode
+                                ? 'bg-white/5 text-gray-300 border-white/10'
+                                : 'bg-[#f3f4f5] text-[#506072] border-[#bbcbbb]/40')
+                            : currentQuestion.difficulte === 2
+                              ? (isFocusMode
+                                  ? 'bg-[#006d37]/20 text-[#2ecc71] border-[#006d37]/30'
+                                  : 'bg-[#fff9ed] text-[#006d37] border-[#006d37]/40')
+                              : (isFocusMode
+                                  ? 'bg-[#ba1a1a]/20 text-[#ff8a80] border-[#ba1a1a]/30'
+                                  : 'bg-[#fdecec] text-[#ba1a1a] border-[#ba1a1a]/40')
+                        }`}
+                      >
+                        صعوبة: {LIBELLES_DIFFICULTE[currentQuestion.difficulte]}
+                      </span>
+                    </div>
+                  )}
                   <div className="flex justify-between items-start gap-4 text-right">
                     <h2 className={`text-xl font-bold leading-relaxed flex-1 ${isFocusMode ? 'text-gray-100' : 'text-[#1f1c0b] dark:text-gray-100'}`}>
                       {currentQuestion.questionText}
