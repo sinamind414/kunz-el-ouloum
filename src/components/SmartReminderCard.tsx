@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { 
+import {
   BellRing, 
   Clock, 
   ChevronLeft, 
@@ -7,12 +7,8 @@ import {
   Sparkles, 
   X, 
   RotateCcw, 
-  Flame, 
   Play, 
-  CheckCircle2, 
-  AlertCircle,
-  TrendingUp,
-  HelpCircle
+  CheckCircle2
 } from 'lucide-react';
 import { Unit } from '../types';
 
@@ -31,7 +27,7 @@ export default function SmartReminderCard({
 }: SmartReminderCardProps) {
   const [isDismissed, setIsDismissed] = useState<boolean>(false);
   const [snoozeUntil, setSnoozeUntil] = useState<number | null>(null);
-  const [simulatedTimeHours, setSimulatedTimeHours] = useState<number | null>(null);
+  const [simulatedTimeHours] = useState<number | null>(null);
 
   // Find candidate units that haven't been studied in >= 48 hours and aren't 100% finished
   const staleUnitCandidate = useMemo(() => {

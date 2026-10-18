@@ -4,14 +4,10 @@ import { MindMapNode, MindMapData } from '../../data/mindMapData';
 import { 
   X, 
   Sparkles, 
-  HelpCircle, 
   Lightbulb, 
   Layers, 
   ArrowLeft, 
-  CheckCircle2, 
   BookOpen,
-  ArrowRight,
-  Zap,
   Target
 } from 'lucide-react';
 import { playXPGainSound } from '../../utils/audio';
@@ -157,7 +153,7 @@ export default function MindMapNodeDetails({
           </h4>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-            {relatedNodes.map(({ node: relNode, relation, isSource }) => (
+            {relatedNodes.map(({ node: relNode, relation }) => (
               <button
                 key={relNode.id}
                 onClick={() => {

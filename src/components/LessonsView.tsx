@@ -7,7 +7,7 @@
 //      la séquence expose la clé de base puis la clé `_2` — une leçon affichée
 //      à la fois (isolation par sliceLessonHtml).
 import { lazy, Suspense, useEffect, useState } from 'react';
-import { BookOpen, ChevronLeft, Zap, MonitorPlay, Network, FlaskConical, Leaf, Globe2, GraduationCap, BookMarked, Grid3x3, Search, Compass } from 'lucide-react';
+import { BookOpen, ChevronLeft, Zap, MonitorPlay, Network, FlaskConical, Leaf, Globe2, BookMarked, Grid3x3, Search, Compass } from 'lucide-react';
 import HtmlLessonViewer from './HtmlLessonViewer';
 import ActiveLessonView from './ActiveLessonView';
 import { INITIAL_UNITS } from '../unitCatalog';
@@ -869,7 +869,7 @@ export default function LessonsView({ onRateCard, initialLesson, initialQcm, ini
             لا يوجد نشاط في هذه الوحدة بعد.
           </p>
         )}
-        {chapitres.map((key, i) => {
+        {chapitres.map((key) => {
           const titre = getPassiveLessonTitle(key, selectedPassiveUnitId);
           return (
             <button

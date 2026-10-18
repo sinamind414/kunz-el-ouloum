@@ -398,10 +398,10 @@ export function stopPirateMusic() {
       setTimeout(() => {
         try {
           nodeToDisconnect.disconnect();
-        } catch (e) {}
+        } catch { /* déjà déconnecté */ }
       }, 350);
       pirateGainNode = null;
-    } catch (e) {
+    } catch {
       pirateGainNode = null;
     }
   }

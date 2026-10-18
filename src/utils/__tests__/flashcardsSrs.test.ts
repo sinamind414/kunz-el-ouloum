@@ -67,7 +67,7 @@ describe('nextSrsState — transitions SM-2', () => {
 describe('rateCard — persistance localStorage', () => {
   it('écrit puis relit l\'état par carte ; JSON corrompu = état neutre', () => {
     expect(getSrsState('c1')).toBeNull();
-    const s = rateCard('c1', 'good');
+    rateCard('c1', 'good');
     expect(getSrsState('c1')?.intervalDays).toBe(1);
     localStorage.setItem('kunz_flashcard_srs_v1', '{corrompu');
     expect(getSrsState('c1')).toBeNull();

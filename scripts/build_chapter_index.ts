@@ -34,7 +34,6 @@ const livre = JSON.parse(readFileSync(join(process.cwd(), 'data', 'bookContent.j
 const tdmBrut = readFileSync(join(process.cwd(), 'book_tdm_clean.md'), 'utf-8');
 const lignes: string[] = livre.book.full_text;
 const nLignes = lignes.map(norm);
-const nTexte = nLignes.join('\n');
 
 // ── les 55 titres propres depuis la TDM du dépôt ────────────────────────────
 const lignesTdm = (tdmBrut.match(/^\d+\.\s*(.+)$/gm) ?? []).map((l) =>
@@ -125,7 +124,6 @@ interface Entree {
 }
 const chapitres: Entree[] = [];
 let precedent = finTdm;
-let echecs = 0;
 for (let i = 0; i < 55; i++) {
   const t = titres[i];
   const g = grille[i];
@@ -191,7 +189,6 @@ for (let i = 0; i < 55; i++) {
   }
 
   if (!choisi) {
-    echecs++;
     const candsProches = cands.slice(0, 4).map((o) => `${o.ligne}:${lignes[o.ligne].trim().slice(0, 40)}`);
     console.error(`✗ chapitre global ${i + 1} non localisé : ${t.ar} | candidats bruts: ${candsProches.join(' · ') || 'aucun'}`);
     continue;

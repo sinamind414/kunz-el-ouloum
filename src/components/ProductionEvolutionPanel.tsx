@@ -28,6 +28,9 @@ function DeltaBadge({ delta }: { delta: number | null }) {
 }
 
 export default function ProductionEvolutionPanel({ stats, onResume, onRefresh }: Props) {
+  // Ticker volontaire : stats/onRefresh ne sont pas lus, ils invalident le
+  // cache quand le carnet de bord change (re-lecture de getProductionLogs()).
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const drafts = useMemo(() => getProductionLogs().reverse().slice(0, 8), [stats, onRefresh]);
 
   const totalAttempts = stats.reduce((a, s) => a + s.attempts, 0);

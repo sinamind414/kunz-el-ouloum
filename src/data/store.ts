@@ -215,7 +215,7 @@ export function readRaw(key: string): unknown {
     
     try {
       return JSON.parse(raw);
-    } catch (parseError) {
+    } catch {
       console.warn(`[Storage] Corrupted data in ${key}, attempting backup recovery...`);
       // Fallback to backup if main file is corrupted
       const backup = localStorage.getItem(`${key}:backup`);

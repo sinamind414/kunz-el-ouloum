@@ -1,6 +1,6 @@
 // dbg_cover.ts — diagnostique la couverture d'une ligne source dans le بنك الحفظ
 // enrichi (verrou okachaEnriched.lock.test.ts). Usage : npx tsx scripts/dbg_cover.ts
-import { OKACHA_UNITES, OKACHA_METHODO } from '../src/data/okacha';
+import { OKACHA_UNITES } from '../src/data/okacha';
 import {
   OKACHA_UNITES_ENRICHIES,
   OKACHA_METHODO_SECTIONS,

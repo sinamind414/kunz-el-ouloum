@@ -1,6 +1,6 @@
 import { processStudentInput, getDailyMission, handleDomainClick, startDiagnostic, gradeQuizAnswer, findBestKnowledgeCard, shuffledView } from '../src/smartTutorEngine';
 import { getDefaultSession, startDomainSession, type BotSession } from '../src/utils/sessionManager';
-import { KNOWLEDGE_CARDS, getQuestionsForDomain, getCardById, DOMAIN_QUESTION_BANKS, DOMAINS } from '../src/data/smartBotData';
+import { KNOWLEDGE_CARDS, getQuestionsForDomain, DOMAIN_QUESTION_BANKS, DOMAINS } from '../src/data/smartBotData';
 
 const line = (s: string) => console.log(s);
 

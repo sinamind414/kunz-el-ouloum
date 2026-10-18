@@ -128,8 +128,6 @@ describe('la position change selon la SESSION', () => {
 
   it('deux questions différentes ne reçoivent pas la même permutation', () => {
     const graine = 777;
-    const a = melangerQuestion(question({ id: 1 }), 'correctAnswerIndex', graine, 1);
-    const b = melangerQuestion(question({ id: 2 }), 'correctAnswerIndex', graine, 2);
     // Elles PEUVENT coïncider par hasard, mais pas systématiquement : sur 20
     // identifiants distincts, on doit voir plusieurs ordres.
     const ordres = new Set(

@@ -1,5 +1,4 @@
 import React, { useState, useMemo } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
 import { 
   MIND_MAPS_DATABASE, 
   MindMapData, 
@@ -11,16 +10,10 @@ import {
   Network, 
   Search, 
   Layers, 
-  Sparkles, 
-  BookOpen, 
   ArrowLeft, 
   Maximize2, 
-  Minimize2, 
-  RotateCcw,
-  Zap,
-  HelpCircle,
-  Share2,
-  ChevronDown
+  Minimize2,
+  Zap
 } from 'lucide-react';
 import { playXPGainSound } from '../../utils/audio';
 

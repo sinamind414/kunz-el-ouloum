@@ -11,13 +11,13 @@
 
 import { useMemo, useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { BrickWall, RotateCcw, Lock, CheckCircle2, XCircle, Lightbulb, ArrowLeft } from 'lucide-react';
+import { BrickWall, RotateCcw, CheckCircle2, XCircle, Lightbulb, ArrowLeft } from 'lucide-react';
 import { WALL_SERIES_A, WallItem, lintWallBank } from '../data/tahlilWallBank';
 import { detectDisplacedCausal, ANALYSIS_PATTERNS } from '../data/meftahLaw';
 import Dictaphone from './Dictaphone';
 import {
   recordWallSet, getWallGateStatus, completeWallRemediation,
-  WallAttemptDetail, WALL_RETRY_COOLDOWN_MS,
+  WallAttemptDetail,
 } from '../data/v3Progress';
 
 const SET_SIZE = 12;
@@ -120,7 +120,6 @@ export default function TahlilWall({ onBack }: Props) {
   };
 
   const errCount = attempts.filter((a) => !a.correct).length;
-  const retryMinutes = Math.ceil(gate.retryInMs / 60000);
 
   return (
     <div className="max-w-2xl mx-auto p-4 md:p-6 space-y-5" dir="rtl" data-testid="tahlil-wall">

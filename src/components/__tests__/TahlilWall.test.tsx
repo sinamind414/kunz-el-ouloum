@@ -19,29 +19,6 @@ beforeEach(() => {
   resetWallGate();
 });
 
-/** Joue un set complet en répondant correctement (via les labels du pool). */
-async function playPerfectSet(user: ReturnType<typeof userEvent.setup>) {
-  for (let i = 0; i < 12; i++) {
-    await waitFor(() => expect(screen.getByTestId(/^wall-item-\d+$/)).toBeTruthy());
-    const itemEl = screen.getByTestId(/^wall-item-\d+$/);
-    const sentence = itemEl.textContent || '';
-    const item = WALL_SERIES_A.find((w) => w.sentence === sentence);
-    expect(item).toBeDefined();
-    const correct = item!.label === 'tahlil' ? 'tahlil' : 'tafsir';
-    await user.click(correct === 'tahlil' ? screen.getByTestId('wall-btn-tahlil') : screen.getByTestId('wall-btn-tafir'));
-    await waitFor(() => expect(screen.getByTestId('wall-feedback')).toBeTruthy());
-    await user.click(screen.getByTestId('wall-next'));
-  }
-  // Phase production
-  await waitFor(() => expect(screen.getByTestId('wall-produce')).toBeTruthy());
-  await user.type(screen.getByTestId('prod-phenomenon'), 'تركيز NE');
-  await user.selectOptions(screen.getByTestId('prod-direction'), 'نقص');
-  await user.type(screen.getByTestId('prod-from'), '8');
-  await user.type(screen.getByTestId('prod-to'), '2');
-  await user.type(screen.getByTestId('prod-cause'), 'وهذا راجع إلى ارتباط Ado بالمستقبل A1R');
-  await user.click(screen.getByTestId('wall-finish'));
-}
-
 describe('TahlilWall — pool & loi (unit)', () => {
   it('le pool passe le linter anti-heuristique (audits 1-2)', () => {
     expect(lintWallBank(WALL_SERIES_A)).toEqual([]);

@@ -118,8 +118,6 @@ function unitIdForActiveLesson(key: string): number {
 
 // ── Nettoyage HTML ──────────────────────────────────────────────────────────
 
-const CARD_OPEN_RE = /<section class="card(?:\s|")[^>]*>/;
-
 /** Texte visible d'un fragment HTML : tags retirés, entités décodées UNE fois,
  *  espaces normalisés. Ordre de décodage : sous-entités d'abord, `&amp;` EN DERNIER
  *  (sinon « &amp;lt; » est double-décodé en « < »). */

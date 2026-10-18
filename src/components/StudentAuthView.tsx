@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { X, UserPlus, LogIn, AlertTriangle, Copy, Check, KeyRound, Mail, ShieldCheck } from 'lucide-react';
+import { X, AlertTriangle, Copy, Check, KeyRound, Mail, ShieldCheck } from 'lucide-react';
 import { registerStudent, registerStudentCode, loginStudent, setApiToken } from '../utils/api';
 
 interface Props {

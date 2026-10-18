@@ -5,7 +5,7 @@
 // promesse retirée, pas API fantôme. Le rappel apparaît À LA RÉOUVERTURE de
 // l'app — le texte doit le dire TEL QUEL.
 
-import { cleanup, render, screen } from '@testing-library/react';
+import { cleanup, render } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import StudyReminderModal from '../StudyReminderModal';
 

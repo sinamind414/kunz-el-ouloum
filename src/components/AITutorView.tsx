@@ -75,7 +75,7 @@ function buildWelcomeMessage(): ChatMessage {
   };
 }
 
-export default function AITutorView({ onBackToDashboard, onXPGained, questionInitiale, onQuestionInitialeConsumed, onOuvrirLeconDuCoach }: AITutorViewProps) {
+export default function AITutorView({ onXPGained, questionInitiale, onQuestionInitialeConsumed, onOuvrirLeconDuCoach }: AITutorViewProps) {
   const [session, setSession] = useState<BotSession>(() => loadSession());
   const [messages, setMessages] = useState<ChatMessage[]>(() => [buildWelcomeMessage()]);
   const [input, setInput] = useState('');

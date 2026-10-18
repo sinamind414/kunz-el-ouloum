@@ -3,7 +3,7 @@
 // Un assainissement qui existe mais que la route n'appelle pas est un fichier
 // mort : le serveur continuerait d'accepter `icm: 9999`. Ces tests vérifient le
 // câblage réel — route, réponse au client, et affichage côté élève.
-import { describe, expect, it, beforeEach, afterEach } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import fs from 'node:fs';
 import path from 'node:path';
 import {

@@ -4,7 +4,7 @@
 // chaque production (mots-clés / réponses acceptées / moteur ValidationEngine),
 // sauvegarde un snapshot (sessionSnapshotService) pour reprendre où on s'est arrêté.
 import { useEffect, useMemo, useReducer, useState } from 'react';
-import { CheckCircle2, XCircle, ChevronLeft, Lightbulb, Info, Target, Rocket } from 'lucide-react';
+import { CheckCircle2, XCircle, Lightbulb, Info, Target, Rocket } from 'lucide-react';
 import { ACTIVE_LESSONS, getLessonProgression } from '../data/activeLessons';
 import { resumePourActif } from '../data/resumesLecons';
 import type { Block } from '../data/activeLessons';

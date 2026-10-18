@@ -49,7 +49,6 @@ import {
   diagnostiquerParcours,
   classerParUrgence,
   ligneCoach,
-  type DiagnosticUnite,
 } from './lib/coach/diagnostic';
 import {
   KNOWLEDGE_CARDS as LEGACY_KNOWLEDGE_CARDS,
@@ -1645,10 +1644,6 @@ function gradeKeyPointsDetail(answer: string, keyPoints: string[]): { score: num
     return kpTokens.length > 0 && !kpTokens.some((t) => tokenAffirmed(normAnswer, t, nk));
   });
   return { score, inverted, missed };
-}
-
-function gradeKeyPoints(answer: string, keyPoints: string[]): number {
-  return gradeKeyPointsDetail(answer, keyPoints).score;
 }
 
 /* -------------------------------------------------------------------------- *

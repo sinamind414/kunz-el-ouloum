@@ -1,18 +1,18 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useCompteARebours } from '../hooks/useWallClock';
-import { motion, AnimatePresence } from 'motion/react';
+import { motion } from 'motion/react';
 import {
-  Target, Sparkles, BookOpen, Layers, CheckCircle2, AlertTriangle,
-  Clock, ShieldAlert, ArrowLeft, ArrowRight, RotateCcw,
-  HelpCircle, Check, X, Award, ChevronDown, ChevronUp, Cpu,
-  Calendar, FileText, CheckSquare, Zap, Eye, Lightbulb, Compass, Key, Printer,
+  Sparkles, BookOpen, Layers, CheckCircle2, AlertTriangle,
+  Clock, ShieldAlert, ArrowLeft, RotateCcw,
+  Check, X, Award, ChevronDown, ChevronUp, Cpu,
+  Calendar, FileText, CheckSquare, Zap, Eye, Compass, Key, Printer,
   GraduationCap, DoorOpen, Inbox, Cog, Lock, Brain, Camera, Film, Hammer, PenLine
 } from 'lucide-react';
 import {
   VERB_CARDS, UNIVERSAL_GRAMMAR_RULES, TRAINING_EXERCISES,
-  ERROR_TAXONOMY, TrainingExercise, Switch, StepId, STEP_NAMES_AR, STEP_TEMPLATES, VERB_CARDS_V2, getVerbCardV2,
-  detectSourceGate, isDualSource, detectExistenceGate, detectSourceKind, SourceGate, ExistenceGate, SourceKind, Movement, MEMORY_TEMPLATES, STEP0_TEMPLATE_AR, classifyConclusion,
-  MIFTAH_VERSION, MIFTAH_NAME_OFFICIAL_AR, MIFTAH_TAGLINE_AR, MIFTAH_NOMENCLATURE, READY_SENTENCES, SYNTHESIS, SPECIAL_FORMS
+  ERROR_TAXONOMY, Switch, StepId, STEP_NAMES_AR, STEP_TEMPLATES, VERB_CARDS_V2, getVerbCardV2,
+  detectSourceGate, isDualSource, detectExistenceGate, detectSourceKind, SourceGate, SourceKind, Movement, MEMORY_TEMPLATES, STEP0_TEMPLATE_AR, classifyConclusion,
+  MIFTAH_VERSION, MIFTAH_NAME_OFFICIAL_AR, MIFTAH_TAGLINE_AR, MIFTAH_NOMENCLATURE
 } from '../data/methodologyEngine';
 import { isExtensionUnlocked, recordDrillResult, getDrillStatus, getMasteryStatus, recordTypeMastery, todayISO } from '../data/v3Progress';
 import { DRILL_BANK, drawDailyConsignes, gradeDrill, PHASE0_DEMOS, isPhase0Done, completePhase0, resetPhase0, DrillAnswer, DrillConsigne, DrillGrade, DRILL_LABELS } from '../data/drillBank';
@@ -110,11 +110,12 @@ interface MethodologyProps {
   onBackToHome?: () => void;
 }
 
-export default function MethodologyCompilerView({ onBackToHome }: MethodologyProps) {
+export default function MethodologyCompilerView(_props: MethodologyProps) {
   // Navigation Tabs: 'engine_rules' (Couche 0) | 'verbs_ref' (Fiches) | 'simulator' (4 Stades) | 'mastery_matrix' (Analytics & Erreurs)
   const [activeTab, setActiveTab] = useState<AtelierId>('meftah');
   // File de correction (Phase 3) — bump pour rafraîchir l'onglet + le badge
-  const [correctionVersion, setCorrectionVersion] = useState(0);
+  // (valeur non lue : le état sert seulement à déclencher le re-rendu)
+  const [, setCorrectionVersion] = useState(0);
   /**
    * LA SEULE FÉLICITATION MESURÉE DU PRODUIT.
    *
@@ -211,8 +212,10 @@ export default function MethodologyCompilerView({ onBackToHome }: MethodologyPro
   const currentExercise = TRAINING_EXERCISES.find(e => e.id === selectedExerciseId) || null;
 
   // Diagnostic d'évolution : statistiques par verbe depuis le carnet de bord
+  // (evolutionVersion = ticker d'invalidation volontaire, cf. setCorrectionVersion)
   const evolutionStats: VerbEvolutionStats[] = React.useMemo(
     () => VERB_CARDS.map(v => getVerbEvolution(v.id)).filter((s): s is VerbEvolutionStats => s !== null),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [evolutionVersion]
   );
   const currentVerbStats = getVerbEvolution(selectedVerbId);
@@ -232,9 +235,11 @@ export default function MethodologyCompilerView({ onBackToHome }: MethodologyPro
   }, [evolutionVersion]);
 
   // m1 · header = dernier ICM du carnet, ou « — » si aucune production
+  // (evolutionVersion = ticker d'invalidation volontaire)
   const lastIcm: number | null = React.useMemo(() => {
     const logs = getProductionLogs();
     return logs.length ? logs[logs.length - 1].icm : null;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [evolutionVersion]);
 
   // m1 · calendrier calculé depuis le carnet : prochaine révision par verbe (J+1/3/7/16/30)
@@ -259,6 +264,7 @@ export default function MethodologyCompilerView({ onBackToHome }: MethodologyPro
       items.push({ verbAr: last.verbAr, gap, nextDate, due: daysLeft <= 0, daysLeft: Math.max(0, daysLeft) });
     });
     return items.sort((a, b) => a.nextDate.getTime() - b.nextDate.getTime());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [evolutionVersion]);
 
   // Mineur · placeholder de l'éditeur dérivé des moules du verbe (filtré par card.path)
@@ -309,6 +315,9 @@ export default function MethodologyCompilerView({ onBackToHome }: MethodologyPro
       setExtensionUnlocked(isExtensionUnlocked());
       return;
     }
+    // Snapshot voulu : la note est figée au moment du timeout avec les valeurs
+    // présentes à cet instant (semantic de fermeture voulue, pas un oubli).
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [drillActive, drillSec]);
 
   const resteDrill = useCompteARebours({ dureeSec: 60, actif: drillActive });
@@ -1574,7 +1583,7 @@ const handleSelectStage = (stage: 1 | 2 | 3 | 4) => {
 
                   {/* Single Column Checklist (Constraint: Une seule colonne) */}
                   <div className="space-y-3">
-                    {currentVerb.criteria.map((cr, idx) => {
+                    {currentVerb.criteria.map((cr) => {
                       const isChecked = selectedEvidenceForCriterion[cr.id];
                       return (
                         <button type="button"

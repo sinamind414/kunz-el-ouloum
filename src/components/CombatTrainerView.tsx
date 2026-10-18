@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
-import { Swords, ShieldAlert, Target, Lock, PlayCircle, Trophy, Clock, CheckCircle2, Zap, BrainCircuit } from 'lucide-react';
+import { motion } from 'motion/react';
+import { Swords, Lock, PlayCircle, Trophy, Clock, CheckCircle2, Zap, BrainCircuit } from 'lucide-react';
 
 interface CombatTrainerViewProps {
   onStartChallenge: (id: string, title: string, mode: 'coach' | 'sprint') => void;

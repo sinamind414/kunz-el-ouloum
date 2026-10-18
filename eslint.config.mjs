@@ -94,6 +94,17 @@ export default tseslint.config(
     },
   },
   {
+    files: ['src/App.tsx'],
+    rules: {
+      // Fichier PROTÉGÉ (AGENTS.md - « à ne jamais modifier ») : nettoyage des
+      // 7 variables mortes et du tableau de dépendances différé au jour où ce
+      // fichier retombe en maintenance normale. Éteint ici plutôt que polluer
+      // la base de warnings.
+      '@typescript-eslint/no-unused-vars': 'off',
+      'react-hooks/exhaustive-deps': 'off',
+    },
+  },
+  {
     files: ['**/*.cjs', 'scripts/**'],
     rules: {
       // CommonJS contractuel (jest env, outils ponctuels) :

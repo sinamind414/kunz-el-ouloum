@@ -18,7 +18,7 @@ import {
 } from '../rappelAdaptatif';
 // Le pont vers le corpus est un module distinct : le moteur du tuteur importe
 // l'ordonnanceur sans embarquer les 60 questions.
-import { conceptsDus, conceptsSuivis, prochainRappelDu, promptPour } from '../rappelConcepts';
+import { conceptsSuivis, prochainRappelDu, promptPour } from '../rappelConcepts';
 import { SPACED_RECALL_PROMPTS } from '../../data/spacedRecallPrompts';
 import { JOUR_MS } from '../sm2';
 

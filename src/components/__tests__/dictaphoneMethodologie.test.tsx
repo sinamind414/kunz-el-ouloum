@@ -17,7 +17,7 @@ import { cleanup, render, screen, fireEvent } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import Dictaphone from '../Dictaphone';
 import MeftahView from '../MeftahView';
-import TahlilWall from '../TahlilWall';
+
 
 // jsdom n'a pas Web Speech : les boutons se rendent (désactivés) mais l'état
 // de support n'est pas ce que ces verrous prouvent — testid = la garantie.

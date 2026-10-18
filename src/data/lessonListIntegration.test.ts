@@ -57,7 +57,6 @@ describe('Liste des leçons passives — cohérence', () => {
   });
 
   it('la liste ne référence que des leçons canoniques existantes', () => {
-    const listed = new Set(listedLessons().map((l) => l.key));
     const unknown = listedLessons()
       .map((l) => l.key)
       .filter((k) => !HTML_LESSON_ORDER.includes(k));

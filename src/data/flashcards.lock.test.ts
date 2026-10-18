@@ -63,8 +63,6 @@ describe('chaîne de dérivation — le verso contient la réponse du QCM source
 });
 
 describe('désinfecteur localStorage — un blob troué est rejeté en bloc', () => {
-  const saine = SVT_FLASHCARDS[0];
-
   it('blob propre (les 588 réelles) → restitué tel quel', () => {
     const out = healSavedFlashcards(JSON.parse(JSON.stringify(SVT_FLASHCARDS)));
     expect(out).not.toBeNull();

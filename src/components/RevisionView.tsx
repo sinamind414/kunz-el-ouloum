@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
 import { motion } from 'motion/react';
-import { Volume2, Key, Star, Award, ChevronLeft, ArrowRight, HelpCircle, Layers, BookOpen, VolumeX, Sparkles, Eye, EyeOff } from 'lucide-react';
+import { Volume2, Key, HelpCircle, Layers, BookOpen, VolumeX, Sparkles, Eye, EyeOff } from 'lucide-react';
 import { Flashcard, Unit } from '../types';
 import { playFlipSound, playSuccessSound } from '../utils/audio';
 import { getSrsState, rateCard, sortByDue, previewIntervalDays, formatIntervalLabel } from '../utils/flashcardsSrs';
@@ -19,7 +19,7 @@ interface RevisionViewProps {
   initialUnitId?: number;
 }
 
-export default function RevisionView({ units, flashcards, xp, streak, onRateCard, isFocusMode, setIsFocusMode, initialUnitId = 1 }: RevisionViewProps) {
+export default function RevisionView({ units, flashcards, onRateCard, isFocusMode, setIsFocusMode, initialUnitId = 1 }: RevisionViewProps) {
   const [selectedUnitId, setSelectedUnitId] = useState<number>(initialUnitId);
   // Deck trié par le SM-2 local (cartes dues d'abord) ; currentCardId est la
   // carte en main, « null » = tête de deck (nouvelle séance, changement d'unité).
@@ -57,6 +57,7 @@ export default function RevisionView({ units, flashcards, xp, streak, onRateCard
   );
   const deck = useMemo(
     () => sortByDue(activeCards),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [activeCards, srsVersion],
   );
   const currentCard = deck.find(c => c.id === currentCardId) ?? deck[0];

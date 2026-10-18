@@ -89,7 +89,7 @@ export default function StudentAccountBar({ onOpenTeacher, onLogout }: Props) {
     setError(null);
     setMessage(null);
     try {
-      const res = await requestPasswordReset(code, newPassword);
+      await requestPasswordReset(code, newPassword);
       setMessage('تم تغيير كلمة السر بنجاح.');
       setCode('');
       setNewPassword('');

@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { 
   Share2, 
@@ -11,11 +11,7 @@ import {
   BookOpen, 
   Flame, 
   Sparkles, 
-  Award, 
-  Zap, 
-  Calendar,
   CheckCircle2,
-  Palette,
   Send,
   Eye
 } from 'lucide-react';
@@ -47,7 +43,6 @@ export default function WeeklyReportShareModal({
   const [cardTheme, setCardTheme] = useState<'emerald' | 'gold' | 'night'>('emerald');
   const [isCopied, setIsCopied] = useState<boolean>(false);
   const [isGeneratingImage, setIsGeneratingImage] = useState<boolean>(false);
-  const canvasRef = useRef<HTMLCanvasElement>(null);
 
   // Completed & in-progress units calculation
   const completedUnits = units.filter(u => u.progress >= 100);
@@ -102,7 +97,7 @@ export default function WeeklyReportShareModal({
           text: shareText,
           url: window.location.href
         });
-      } catch (err) {
+      } catch {
         // User cancelled or share failed, fallback to copy
         handleCopyText();
       }

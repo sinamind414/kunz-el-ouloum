@@ -250,6 +250,9 @@ export function useInvitationCapitaine(options: {
         erreurs: familleErreurs,
         competence: familleCompetence,
       }),
+    // ignoreeMs = ticker d'invalidation volontaire (le timer « ignoré » ne
+    // change pas la valeur affichée, seulement l'offre du capitaine).
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [daily, maintenant, derniereUniteResolue, epreuveEnCours, rubrique, rubriqueAUnConseil, familleErreurs, familleCompetence, ignoreeMs],
   );
 

@@ -11,8 +11,7 @@ import {
   Award, 
   Calendar, 
   CheckCircle2,
-  Share2,
-  ChevronLeft
+  Share2
 } from 'lucide-react';
 import { 
   playStreakMilestoneSound, 

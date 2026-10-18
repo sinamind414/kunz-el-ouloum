@@ -41,7 +41,7 @@ export default function AnimationsView({ onBackToHome }: AnimationsViewProps) {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-        {ANIMATION_CATALOG.map(({ id, titleAr, unitAr, Component }, i) => (
+        {ANIMATION_CATALOG.map(({ id, unitAr, Component }, i) => (
           <motion.div
             key={id}
             initial={{ opacity: 0, y: 12 }}

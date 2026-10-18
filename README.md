@@ -44,14 +44,19 @@ le comptage du fichier brut, 121 celui servi. D'où l'étalon.
 
 - TypeScript strict : `npm run lint` (tsc --noEmit).
 - ESLint 9 (M12, ajouté le 18/10/2026) : `npm run lint:eslint` - configuration
-  flat dans `eslint.config.mjs`. **0 erreur exigée** (exit code respecté).
-  Deux classes de warnings sont une dette assumée, rattrapage dédié M12-bis :
-  145 `@typescript-eslint/no-unused-vars` (variables mortes, dont 14 dans le
-  fichier protégé App.tsx) et 13 `react-hooks/exhaustive-deps`. Périmètre
+  flat dans `eslint.config.mjs`. **0 erreur ET 0 warning exigés** depuis le
+  rattrapage M12-bis (18/10/2026) : 131 variables/imports morts supprimés,
+  13 tableaux de dépendances revus au cas par cas (tickers d'invalidation
+  volontaires documentés par directive in situ, fetch au montage préservé),
+  compteur d'audit non lu désormais affiché (`audit-morchid.ts`). Deux
+  exemptions résiduelles, toutes deux décisionnées et commentées dans la
+  config : `src/App.tsx` (fichier protégé AGENTS.md - nettoyage différé) et
+  `QUESTIONS_EX1_BAC2025` (barème officiel conservé tel quel). Périmètre
   exclu : `public/` (leçons verrouillées), fichiers générés (hosila, okacha,
   lessonIndex, cartesHosila - corriger le générateur), bibliothèques vendor
   (d3, flamegraph), travail concurrent (Python/, CREATION MONTRE XWATCH/),
-  débris racine en attente du chantier B9.
+  débris racine en attente du chantier B9. `scripts/gen-phase26-append.mjs`
+  a été supprimé (générateur one-shot, contenu déjà fusionné et verrouillé).
 - Suite complète : `npm test` (= `vitest run` + boussole) - 294 fichiers / 3 465 tests
   au 18/10/2026, aucun échec toléré. Second runner : `test:jest` - 286 suites /
   3 408 tests verts au 18/10/2026 (parité tuteur via prechargerBasesTuteur.jest,

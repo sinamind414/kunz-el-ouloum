@@ -17,7 +17,6 @@ import {
 import { attendusDeGroupe } from './attendusBac2025';
 import { normalizeAr } from '../../lib/validation/normalizeAr';
 import { MEFTA_BAC_EXERCISES } from '../meftahManhajia';
-import { PLAFONDS } from './integriteCopie';
 
 // Réserve humaine attendue : Σ des points des items MANUELS, ramenés à l'échelle
 // officielle via le ratio poidsPartie (F1+, 2026-09-28). Réimplémentation

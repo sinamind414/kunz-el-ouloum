@@ -7,7 +7,6 @@ import { logProduction, clearProductionLog, getProductionLogs } from '../methodo
 import { flushActivityQueue, logActivityLocally } from '../activityLog';
 
 const QUEUE_KEY = 'boussole_activity_queue';
-const LOG_KEY = 'kunz_methodology_production_log_v1';
 
 const mkProd = (over: Partial<Parameters<typeof logProduction>[0]> = {}) =>
   logProduction({

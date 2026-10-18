@@ -87,13 +87,18 @@ export default function SearchView({ onBack, onOpenLesson }: SearchViewProps) {
   // arrivent par fetch — re-calcul des résultats dès qu'elles sont là (avant :
   // imports statiques, figés au chargement).
   const leconsPretes = useBasesTuteurPrechargees();
+  // favoritesTick = ticker d'invalidation volontaire (favoris/récents).
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const favorites = useMemo(() => getFavorites(), [favoritesTick]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const recents = useMemo(() => getRecentSearches(), [favoritesTick]);
 
   const results = useMemo<GroupedResult[]>(() => {
     const q = query.trim();
     if (q.length < 2) return [];
     return groupResults(searchAllBases(normalizeArabic(q), null)).slice(0, MAX_RESULTS);
+    // leconsPretes = ticker d'invalidation volontaire (bases tuteur préchargées)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [query, leconsPretes]);
 
   const hasQuery = query.trim().length >= 2;

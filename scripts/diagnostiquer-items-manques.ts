@@ -8,7 +8,7 @@
 //
 //   npx tsx scripts/diagnostiquer-items-manques.ts [--dir "."] [--top 15]
 
-import { readdirSync, readFileSync, existsSync } from 'node:fs';
+import { readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import {
   splitSections,

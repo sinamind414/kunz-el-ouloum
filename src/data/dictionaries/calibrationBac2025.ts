@@ -18,7 +18,6 @@
 //   · couverture 0 (aucun attendu touché) → 0 pt ;
 //   · le diagnostic (entités, seuils mots-clés) reste pédagogique, hors note.
 
-import { evaluerBareme } from './baremeCorrecteur';
 import { evaluerEntites, type EntiteDetectee } from './dictionnaireCorrecteur';
 import { evaluerReponseKeywords } from '../../correcteurV1';
 import { evaluerSanctions } from './sanctionsCorrecteur';
@@ -83,6 +82,7 @@ export interface ResultatNotation {
 
 
 /** Questions du barème officiel bac2025 (Ex1 uniquement — build). */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars -- barème officiel conservé tel quel (décision produit, pas du code mort ordinaire)
 const QUESTIONS_EX1_BAC2025: Record<1 | 2, string[]> = {
   1: ['bac2025_S1/S1-Ex1/Q1', 'bac2025_S1/S1-Ex1/Q2'],
   2: ['bac2025_S2/S2-Ex1/Q1', 'bac2025_S2/S2-Ex1/Q2'],

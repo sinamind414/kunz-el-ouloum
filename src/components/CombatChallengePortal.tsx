@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useChronometre, useCompteARebours } from '../hooks/useWallClock';
 import { motion, AnimatePresence } from 'motion/react';
 import { X, Crosshair, CheckCircle2, AlertTriangle, Timer, ShieldAlert, FileText, ChevronLeft, Zap, Share2, BrainCircuit } from 'lucide-react';
@@ -10,7 +10,7 @@ interface CombatChallengePortalProps {
   onClose: () => void;
 }
 
-export default function CombatChallengePortal({ challengeId, challengeTitle, mode, onClose }: CombatChallengePortalProps) {
+export default function CombatChallengePortal({ challengeTitle, mode, onClose }: CombatChallengePortalProps) {
   const [phase, setPhase] = useState<1 | 2 | 3 | 4>(1);
   // Sprint 45 : horloge réelle des deux côtés — en sprint, un onglet en
   // arrière-plan ne rend plus du temps ; en mode coach, le temps passé compte.

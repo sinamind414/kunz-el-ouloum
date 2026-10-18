@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { SECTIONS_CONFIDENTIALITE, DERNIERE_MISE_A_JOUR } from '../data/politiqueConfidentialite';
-import { Rocket, ChevronLeft, ShieldCheck, Trophy, Sparkles, Volume2, VolumeX, Key, Music, Anchor } from 'lucide-react';
+import { Rocket, ChevronLeft, ShieldCheck, Trophy, Sparkles, Volume2, VolumeX, Key, Anchor } from 'lucide-react';
 import { LOGO_URL } from '../data/brandAssets';
 import { startPirateMusic, stopPirateMusic } from '../utils/audio';
 

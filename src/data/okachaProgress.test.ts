@@ -56,7 +56,7 @@ describe('okachaProgress — progression du بنك الحفظ', () => {
     let p = loadOkachaProgress();
     p = noterPoint(p, 'd1u4', 12, 'good');
     p = noterPoint(p, 'd1u4', 12, 'good');
-    p = noterPoint(p, 'd1u4', 12, 'again');
+    noterPoint(p, 'd1u4', 12, 'again');
     const reloaded = loadOkachaProgress();
     expect(reloaded.evals['d1u4#12']).toEqual({ again: 1, hard: 0, good: 2, easy: 0 });
     expect(totalNotations(reloaded)).toBe(3);

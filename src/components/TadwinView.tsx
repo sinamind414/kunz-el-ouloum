@@ -97,7 +97,6 @@ export default function TadwinView({ onBackToHome }: { onBackToHome: () => void 
     };
   }, [etat.palier, etape]);
 
-  const unite = TADWIN_UNITES.find((u) => u.uniteId === etat.uniteId);
   const cles = clesDeUnite(etat.uniteId);
   const config = configPalier(etat.palier);
   const alerteLive = etat.palier === 2 ? retourDirect(assistee) : null;

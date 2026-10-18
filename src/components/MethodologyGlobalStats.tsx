@@ -1,5 +1,5 @@
 import React from 'react';
-import { TrendingUp, AlertCircle, CheckCircle2, BarChart3, ChevronDown, ChevronUp } from 'lucide-react';
+import { AlertCircle, CheckCircle2, BarChart3, ChevronDown, ChevronUp } from 'lucide-react';
 import { BOUSSOLE_STEPS, REGLE_D_OR_AR } from '../data/boussoleData';
 import { getProductionLogs, VerbEvolutionStats } from '../utils/methodologyLog';
 
@@ -8,7 +8,7 @@ interface Props {
   onNavigate?: (tab: string) => void;
 }
 
-export default function MethodologyGlobalStats({ evolution }: Props) {
+export default function MethodologyGlobalStats(_props: Props) {
   const logs = getProductionLogs();
   const [open, setOpen] = React.useState(true);
 
@@ -23,7 +23,6 @@ export default function MethodologyGlobalStats({ evolution }: Props) {
     if (step) errorByStep[step] = (errorByStep[step] || 0) + 1;
   }));
 
-  const totalErrors = Object.values(errorByStep).reduce((a, b) => a + b, 0);
   const topErrorStep = Object.entries(errorByStep).reduce(
     (max, curr) => curr[1] > max.count ? { step: Number(curr[0]), count: curr[1] } : max,
     { step: 1, count: 0 }

@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { motion } from 'motion/react';
 import { ArrowLeft, Loader2, LogIn } from 'lucide-react';
 import {
   fetchTeacherDashboard,
@@ -131,7 +130,10 @@ export default function TeacherDashboardView({ onBack }: Props) {
       setLoading(false);
       return;
     }
+    // Fetch au montage UNIQUEMENT : recharger en boucle à chaque rotation de
+    // la closure loadDashboard déclencherait des fetchs infinis.
     loadDashboard();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleTeacherLogin = async (e: React.FormEvent) => {

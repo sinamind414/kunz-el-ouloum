@@ -39,11 +39,9 @@ import {
 } from "./src/server/inscriptionSansEmail";
 import { readFileSync } from "node:fs";
 import { makeStudentAuth, makeTeacherAuth } from "./server/auth";
-import type { ProductionEntry, ActivityEntry, DashboardStudentRow, Student, Teacher } from "./server/store";
+import type { ProductionEntry, ActivityEntry, DashboardStudentRow } from "./server/store";
 
 dotenv.config();
-
-const DB_FILE = process.env.KUNZ_DB_FILE || path.join(process.cwd(), "data", "students.db");
 // Sécurité : en production, pas de secret ⇒ refus de démarrer (un secret par
 // défaut rendrait tous les jetons forgeables). En développement, un secret
 // éphémère est tiré au hasard — voir server/secret.ts (sprint 59).

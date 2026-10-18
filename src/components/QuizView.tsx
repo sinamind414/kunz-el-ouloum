@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import { useCompteARebours } from '../hooks/useWallClock';
 import { motion, AnimatePresence } from 'motion/react';
 import { X, Timer, CheckCircle2, AlertCircle, ArrowLeft, ArrowRight, RotateCcw, Award, Check, BookOpen, GraduationCap, AlertOctagon, HelpCircle, Sparkles, Eye, EyeOff } from 'lucide-react';
@@ -31,7 +31,7 @@ interface QuizViewProps {
   onQuizComplete: (score: number, total: number) => void;
 }
 
-export default function QuizView({ unitId, unitTitle, questions, onClose, onQuizComplete }: QuizViewProps) {
+export default function QuizView({ unitTitle, questions, onClose, onQuizComplete }: QuizViewProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [selectedAnswers, setSelectedAnswers] = useState<{ [key: number]: number }>({});
   const [isAnswered, setIsAnswered] = useState<{ [key: number]: boolean }>({});

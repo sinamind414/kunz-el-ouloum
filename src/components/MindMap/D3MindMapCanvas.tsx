@@ -6,13 +6,7 @@ import {
   ZoomIn, 
   ZoomOut, 
   RotateCcw, 
-  Maximize2, 
-  Sparkles, 
-  Layers, 
-  Move,
-  Search,
-  Eye,
-  CheckCircle2
+  Move
 } from 'lucide-react';
 
 interface D3MindMapCanvasProps {
@@ -311,6 +305,10 @@ export default function D3MindMapCanvas({
     return () => {
       simulation.stop();
     };
+    // Handlers de sélection capturés volontairement à la construction du graphe
+    // : les temps réels de sélection/hover/surbrillance sont gérés par un
+    // useEffect séparé (couche highlight) — pas de rebuild D3 par sélection.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data, layoutMode, dimensions, isDarkMode]);
 
   // Update Visual Highlights when selection, hover, or search query changes

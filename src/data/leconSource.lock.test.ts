@@ -17,7 +17,7 @@ import {
   sourceAmbigue,
 } from './bookIndex';
 import { getUnitLessonSequence } from './unitLessonSequences';
-import { getActiveLessonTitle, getPassiveLessonTitle } from './lessonModes';
+import { getPassiveLessonTitle } from './lessonModes';
 import { ACTIVE_LESSONS } from './activeLessons';
 import { CORRECTEUR_V1_UNITES } from '../correcteurV1';
 import { CALIBRATION_BAC2025, uniteDeGroupe } from './dictionaries/calibrationBac2025';

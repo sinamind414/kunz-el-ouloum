@@ -18,7 +18,7 @@
 
 import { useEffect, useState } from 'react';
 import { ClipboardList, Clock, FileText, History, Pause, Play, RotateCcw, Send, ShieldCheck, Trash2 } from 'lucide-react';
-import { listeGroupesBac2025, attendusDeGroupe } from '../data/dictionaries/attendusBac2025';
+import { attendusDeGroupe } from '../data/dictionaries/attendusBac2025';
 import { noterCopieCalibree } from '../data/dictionaries/calibrationBac2025';
 import { demarrer, mettreEnPause, minutesEcoulees, remettreAZero, type ExamSession } from '../data/examSession';
 import { formatDuree, phaseEpreuve } from '../data/examTimer';
@@ -26,10 +26,8 @@ import { DUREE_EPREUVE_MINUTES } from '../data/mockExam';
 import { declarerExamen } from '../lib/examenEnCours';
 import SectionObligatoire from './SectionObligatoire';
 import Dictaphone from './Dictaphone';
-import { logExamAttempt, getExamAttempts, getExamStats, clearExamLog, type ExamAttempt } from '../utils/examLog';
+import { logExamAttempt, getExamAttempts, clearExamLog, type ExamAttempt } from '../utils/examLog';
 import { fmtDateLatn } from '../utils/latinDigits';
-
-const GROUPES = listeGroupesBac2025();
 
 // Session 2025 DISTINCTE de la session du simulateur (kunz.examSession) :
 // les deux épreuves doivent pouvoir vivre sans s'écraser leur chronomètre.

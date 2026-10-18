@@ -129,7 +129,7 @@ describe('la relance — le lendemain, et pas avant huit heures', () => {
   });
 
   it('une réponse — oui ou non — ferme la question pour toujours', () => {
-    const relais = nomme(J15_23H50);
+    nomme(J15_23H50);
     marquerRelancePosee(J16_09H);
     repondreAuRelais('non');
     expect(lireRelais().reponse).toBe('non');

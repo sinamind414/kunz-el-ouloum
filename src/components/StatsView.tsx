@@ -33,18 +33,15 @@ import {
   Activity, 
   Sparkles, 
   Award, 
-  Lock, 
   CheckCircle2, 
   TrendingUp, 
   Printer, 
   Download, 
   X, 
   FileText, 
-  Check,
   Zap,
   Target,
   BarChart2,
-  TrendingDown,
   Share2
 } from 'lucide-react';
 import { UserProgress, Unit } from '../types';
@@ -170,7 +167,7 @@ export default function StatsView({ progress, units, onNavigate }: StatsViewProp
   const hasCardData = cardData.length > 0;
 
   // 2. Format quiz history data
-  const quizHistory = progress.quizScoreHistory.map((item, idx) => ({
+  const quizHistory = progress.quizScoreHistory.map((item) => ({
     name: item.unitTitle.substring(0, 15) + '...',
     'النتيجة %': Math.round((item.score / item.total) * 100),
     scoreText: `${item.score} / ${item.total}`
@@ -190,13 +187,6 @@ export default function StatsView({ progress, units, onNavigate }: StatsViewProp
 
   // Total lessons completed
   const completedUnitsCount = progress.completedUnits.length;
-
-  // Spaced repetition stats total
-  const totalCardsRated = 
-    (progress.flashcardStats?.again || 0) + 
-    (progress.flashcardStats?.hard || 0) + 
-    (progress.flashcardStats?.good || 0) + 
-    (progress.flashcardStats?.easy || 0);
 
   // 4. Niveau d'atteinte réel de chaque unité (progression sauvegardée localement)
   const unitMastery = units.map(u => ({

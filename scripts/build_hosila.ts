@@ -12,7 +12,7 @@
 import { readFileSync, writeFileSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { OKACHA_UNITES_ENRICHIES, type BlocOkacha, type UniteOkachaEnrichie } from '../src/data/okachaEnriched';
+import { OKACHA_UNITES_ENRICHIES, type BlocOkacha } from '../src/data/okachaEnriched';
 
 const racine = join(dirname(fileURLToPath(import.meta.url)), '..');
 export const CHEMIN_SOURCE = 'uploads_externes/hosila_officielle_3as.txt';

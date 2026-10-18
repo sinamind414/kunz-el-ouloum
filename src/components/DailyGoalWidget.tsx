@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { 
+import {
   Target, 
   Clock, 
   CheckCircle2, 
@@ -7,13 +7,9 @@ import {
   Settings2, 
   Sparkles, 
   Trophy, 
-  HelpCircle, 
   Plus, 
-  ArrowLeft, 
   Zap,
-  TrendingUp,
-  Award,
-  Volume2
+  Award
 } from 'lucide-react';
 import { DailyGoalConfig } from '../types';
 // H3 (2026-10-14) : jour local unique + série affichée seulement si elle est

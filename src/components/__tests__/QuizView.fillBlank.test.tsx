@@ -3,7 +3,7 @@
 // via within(...). Matchers .toBeTruthy()/.toBeNull() (jest-dom non câblé).
 
 import { describe, expect, it, vi } from 'vitest';
-import { render, screen, fireEvent, within } from '@testing-library/react';
+import { render, fireEvent, within } from '@testing-library/react';
 import QuizView from '../QuizView';
 import type { QuizQuestion } from '../../types';
 

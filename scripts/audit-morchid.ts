@@ -4,7 +4,6 @@ import { answerTutorQuestion, processStudentInput } from '../src/smartTutorEngin
 import { getDefaultSession } from '../src/utils/sessionManager';
 import { TUTOR_KNOWLEDGE } from '../src/tutorKnowledge';
 import { BOOK_TUTOR_QA } from '../src/bookTutorQA';
-import { findBestMethodologyQA } from '../src/methodologyKnowledge';
 import { STUDY_GUIDE_CARDS } from '../src/studyGuide';
 import { KNOWLEDGE_CARDS as LEGACY_CARDS } from '../src/knowledgeCards';
 import { KNOWLEDGE_CARDS, DOMAINS, getQuestionsForDomain, getBossScenariosForDomain } from '../src/data/smartBotData';
@@ -76,8 +75,9 @@ for (const { q, expect } of QUESTIONS) {
 }
 
 console.log('\n══ RÉSULTATS ══');
-const total = QUESTIONS.length;
 console.log(`Hits directs : ${hits}`);
+console.log(`Refus honnêtes : ${honestRefus}`);
+console.log(`Repli doux : ${softFallback}`);
 console.log(`Répartition sources : ${JSON.stringify(sourceCounts)}`);
 console.log(`Échecs vs attente (${failures.length}) :`);
 for (const f of failures) console.log('  ' + f);

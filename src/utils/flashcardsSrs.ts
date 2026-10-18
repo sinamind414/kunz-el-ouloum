@@ -25,7 +25,6 @@ export type SrsRating = 'again' | 'hard' | 'good' | 'easy';
 export type SrsCardState = EtatSm2;
 
 const STORAGE_KEY = 'kunz_flashcard_srs_v1';
-const DAY_MS = 86_400_000;
 
 function loadAll(): Record<string, SrsCardState> {
   try {

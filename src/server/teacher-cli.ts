@@ -12,7 +12,7 @@ import dotenv from "dotenv";
 import { pathToFileURL } from "node:url";
 import { openStore } from "../../server/store";
 import { PostgresStore } from "../../server/store.pg";
-import type { Student, Teacher } from "../../server/store";
+import type { Teacher } from "../../server/store";
 
 dotenv.config();
 
