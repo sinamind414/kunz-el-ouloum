@@ -1,14 +1,14 @@
 // tutorLeconsJson.lock.test.ts — verrou « Phase A découpage bundle » (2026-10-16).
 //
 // L'index des leçons du tuteur (src/data/lessonIndex.ts, 786 Ko sur disque,
-// 558 chunks) n'a plus le droit de voyager en JavaScript. Il est émis par le
+// 562 chunks) n'a plus le droit de voyager en JavaScript. Il est émis par le
 // build en `dist/tutor/lesson-index.json` et récupéré par fetch au premier
 // montage d'une vue du tuteur (AITutorView, SearchView).
 //
 // Ce contrôle vit avec les autres contrôles post-build (`npm run test:build`)
 // car il lit `dist/`, pas le code source :
 //   (a) le JSON émis existe, est le contenu EXACT de l'index généré
-//       (558 chunks — rescencés dans lessonIndex.ts `chunksTotal` ; l'ancien
+//       (562 chunks — rescencés dans lessonIndex.ts `chunksTotal` ; l'ancien
 //       verrou 547 datait d'avant l'ajout des 11 leçons — audit 2026-10-17) ;
 //   (b) aucun chunk JS de dist/assets ne contient plus l'index en dur
 //       (marqueur : préfixe d'identifiant « lhx_ », uniquement présent dans
@@ -26,11 +26,11 @@ const DIST = resolve(process.cwd(), 'dist');
 describe('lesson-index du tuteur : émis en JSON, hors des chunks JS', () => {
   const cheminJson = resolve(DIST, 'tutor', 'lesson-index.json');
 
-  it('(a) dist/tutor/lesson-index.json existe et contient les 558 chunks', () => {
+  it('(a) dist/tutor/lesson-index.json existe et contient les 562 chunks', () => {
     expect(existsSync(cheminJson)).toBe(true);
     const donnees = JSON.parse(readFileSync(cheminJson, 'utf8')) as Array<{ id: string }>;
     expect(Array.isArray(donnees)).toBe(true);
-    expect(donnees).toHaveLength(558);
+    expect(donnees).toHaveLength(562);
     expect(typeof donnees[0]?.id).toBe('string');
   });
 

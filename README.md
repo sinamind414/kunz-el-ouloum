@@ -43,10 +43,14 @@ le comptage du fichier brut, 121 celui servi. D'où l'étalon.
 ## Fiabilité
 
 - TypeScript strict : `npm run lint` (tsc --noEmit).
-- Suite complète : `npx vitest run` - 293 fichiers / 3 461 tests au 18/10/2026,
-  aucun échec toléré (`test:jest` existe en second runner). 8 tests `skipIf`
+- Suite complète : `npm test` (= `vitest run` + boussole) - 294 fichiers / 3 465 tests
+  au 18/10/2026, aucun échec toléré. `test:jest` : second runner **en rattrapage**
+  (9 suites / 20 échecs au 18/10/2026 — suites divergentes du runner principal) ;
+  vitest fait foi tant que le rattrapage jest n'est pas fait. 8 tests `skipIf`
   (SQLite, fixtures locales) ne s'exécutent qu'avec leurs prerequisites
   présents — dans une CI sans ces assets, ils sont ignorés, pas verts.
+- Build : après `npm run build`, la suite post-build `npm run test:build`
+  vérifie dist/ (budgets, JSON tuteur : 562 chunks, précache).
 - Budget de bundle : `src/build/bundleBudget.test.ts` + `node scripts/poids-entree.mjs`.
 - Limites assumées et documentées : le corpus des 40 copies `eleve_*.txt` a servi à
   calibrer le correcteur — tout écart publié sur lui est un plancher, pas une validation

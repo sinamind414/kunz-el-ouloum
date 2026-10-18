@@ -212,6 +212,20 @@ export default defineConfig(() => {
             if (id.includes('bookTutorQA') || id.includes('methodologyKnowledge')) {
               return 'tutor-qa-base';
             }
+            // M16 (audit externe v2, 2026-10-18) — données officielles SVT dans
+            // un chunk DÉDIÉ et cache-stable. quizCorpus (550 énoncés réels + 553
+            // cartes dérivées), hosila (texte intégral du livre, généré) et
+            // cartesHosila étaient fusionnés dans le chunk d'entrée (588 Ko) et
+            // hosila était même dupliqué dans les chunks des vues
+            // (LessonsView + OkachaView, mesuré : phrase signante dans 2 chunks).
+            // En chunk séparé : les données du livre (rarement modifiées) restent
+            // dans le cache HTTP/service-worker d'un déploiement à l'autre, et la
+            // duplication des vues disparaît. Aucune donnée « de plus » n'est
+            // téléchargée à la première visite — c'est la RÉ-VISITE qui devient
+            // quasi gratuite sur ces octets.
+            if (id.includes('/quizCorpus') || /[\\/]src[\\/]data[\\/](hosila|cartesHosila)(\.|$|\?)/.test(id)) {
+              return 'svt-corpus';
+            }
             if (id.includes('lessonIndex')) {
               return 'tutor-lesson-index';
             }
