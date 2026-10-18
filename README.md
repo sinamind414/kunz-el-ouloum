@@ -44,9 +44,11 @@ le comptage du fichier brut, 121 celui servi. D'où l'étalon.
 
 - TypeScript strict : `npm run lint` (tsc --noEmit).
 - Suite complète : `npm test` (= `vitest run` + boussole) - 294 fichiers / 3 465 tests
-  au 18/10/2026, aucun échec toléré. `test:jest` : second runner **en rattrapage**
-  (9 suites / 20 échecs au 18/10/2026 — suites divergentes du runner principal) ;
-  vitest fait foi tant que le rattrapage jest n'est pas fait. 8 tests `skipIf`
+  au 18/10/2026, aucun échec toléré. Second runner : `test:jest` - 286 suites /
+  3 408 tests verts au 18/10/2026 (parité tuteur via prechargerBasesTuteur.jest,
+  shim it.skipIf, maxWorkers 50 % contre les timeouts sous charge) ; 8 suites y
+  restent volontairement exclues (vi.mock non hoisté, top-level await) et
+  continuent d'être couvertes par vitest. 8 tests `skipIf`
   (SQLite, fixtures locales) ne s'exécutent qu'avec leurs prerequisites
   présents — dans une CI sans ces assets, ils sont ignorés, pas verts.
 - Build : après `npm run build`, la suite post-build `npm run test:build`

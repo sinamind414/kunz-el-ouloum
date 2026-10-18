@@ -16,6 +16,17 @@ module.exports = {
   // jsdom + globales Node (fetch/Response/Request) + localStorage inscriptible.
   // cf tests/jest-jsdom-node-env.cjs — parite avec l'environnement vitest.
   testEnvironment: '<rootDir>/tests/jest-jsdom-node-env.cjs',
+  // Parité avec vitest (vite.config.ts, test.setupFiles) : les bases dynamiques
+  // du tuteur (index leçons + opuscules) n'arrivent pas par fetch en test.
+  // Version jest du setup : top-level await interdit (CJS) → injection en
+  // beforeAll asynchrone, avant chaque fichier de test.
+  setupFilesAfterEnv: ['<rootDir>/src/test-setup/prechargerBasesTuteur.jest.ts'],
+  // AITutorView est lourd (53 s solo) : en parallélisme maximal, les files
+  // d'attente CPU font dépasser 25 s à un test et déborder des rendus
+  // asynchrones sur le test suivant (mesuré 2 échecs intermittents le
+  // 18/10/2026, non reproduits en solo). On borne le parallélisme — la suite
+  // reste 3-4x plus rapide que séquentielle.
+  maxWorkers: '50%',
   // Emule le suffixe ?raw de Vite : on retire le suffixe (l'extension .html
   // est alors convertie en chaine par tests/jest-raw-transformer.cjs).
   moduleNameMapper: {
@@ -49,5 +60,9 @@ module.exports = {
     // vitest-only : top-level `await` (ESM) — non transformable en CJS par
     // babel. Test d'integration serveur (better-sqlite3) couvert par vitest.
     'serverDashboard\\.test\\.ts$',
+    // vitest-only : vi.mock (non hoistee par babel-plugin-jest-hoist,
+    // cf. LIMITES en tête) — StudentAuthView (api), atelierFlux (flux).
+    'StudentAuthView\\.test\\.tsx$',
+    'atelierFlux\\.test\\.tsx$',
   ],
 };

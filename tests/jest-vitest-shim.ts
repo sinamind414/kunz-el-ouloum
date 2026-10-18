@@ -45,7 +45,12 @@ function wrapTest(t: any) {
     return t(name, ...args);
   };
   // reporte .each / .skip / .only / .todo / .concurrent
-  return Object.assign(wrapper, t);
+  // + it.skipIf(cond) / test.skipIf(cond) : API vitest des tests « honnêtes »
+  // (rapportés ignorés sans leurs prérequis, ex. correctionGenerosite
+  // exigeant/copie d'élève réelle). Equivalent jest : it.skip.
+  Object.assign(wrapper, t);
+  wrapper.skipIf = (cond: boolean) => (cond ? t.skip : wrapper);
+  return wrapper;
 }
 export const it = wrapTest(g.it);
 export const test = wrapTest(g.test);
