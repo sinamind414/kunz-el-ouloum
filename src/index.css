@@ -77,6 +77,12 @@
 
 @import "tailwindcss";
 
+/* M1 (audit v2 18/10/2026) — le bouton de l'application posait html.dark mais la
+   variante Tailwind v4 suivait prefers-color-scheme : 93-96 % des fonds restaient
+   clairs. Ce custom-variant refonde dark: sur la classe manuelle — les deux
+   déclencheurs (bouton ET système, via .dark posé par le listener système) fonctionnent. */
+@custom-variant dark (&:where(.dark, .dark *));
+
 :root {
   --primary-color: #006d37;
   --primary-hover-color: #00562b;
