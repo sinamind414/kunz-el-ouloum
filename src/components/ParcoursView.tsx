@@ -176,6 +176,14 @@ function metaDe(
     if (record?.fragile) {
       return reviewDate ? `هشّة · تعود ${formatCourtAr(reviewDate)}` : 'هشّة · تحتاج مراجعة';
     }
+    // Audit architecture 2026-10-19 (H2) : un جسر validé SANS preuve mesurée
+    // (pas de score — le cas U2/U3/U8 : 0 question, ou une dernière tentative
+    // trop courte, voir PREUVE_QCM_MIN dans parcoursMeta) ne peut pas
+    // s'afficher « مثبّتة ». Il est « مقروءة » : lu, pas prouvé. Les leçons
+    // gardent la convention OKacha (décision produit du 2026-10-02).
+    if (item.kind === 'jalon' && typeof record?.score !== 'number') {
+      return reviewDate ? `مقروءة · مراجعة ${formatCourtAr(reviewDate)}` : 'مقروءة · لم يُختبَر';
+    }
     let m = 'مثبّتة';
     if (typeof record?.score === 'number') {
       m +=

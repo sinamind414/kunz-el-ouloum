@@ -132,6 +132,17 @@ export function formatCourtAr(iso: string): string {
 //  pour les leçons, score réel ICI pour le جسار quand il existe.)
 const CLE_PROGRESSION = 'svt_progress';
 
+/**
+ * Audit architecture 2026-10-19 (H2) : une preuve a une TAILLE minimale.
+ * 1 bonne réponse sur 1 question (U9 n'a qu'UNE question dans la banque du
+ * جسر) ne prouve pas la maîtrise d'une unité de 70 items. En dessous de
+ * PREUVE_QCM_MIN questions à la DERNIÈRE tentative, il n'y a pas de preuve :
+ * scoreQcmUnite renvoie null et le جسر reste « مقروءة » (voir metaDe dans
+ * ParcoursView). Le seuil de réussite (0.6) reste SEUIL_FRAGILE côté
+ * parcoursProgress — l'audit H2 : مثبّتة = ≥ 60 % sur ≥ 5 QCM.
+ */
+export const PREUVE_QCM_MIN = 5;
+
 export function scoreQcmUnite(uniteId: number): { score: number; total: number } | null {
   try {
     const brut = localStorage.getItem(CLE_PROGRESSION);
@@ -159,6 +170,10 @@ export function scoreQcmUnite(uniteId: number): { score: number; total: number }
       if (typeof e.score !== 'number') continue;
       dernier = { score: e.score, total: e.total };
     }
+    // H2 (audit architecture 2026-10-19) : la DERNIÈRE tentative gouverne —
+    // si elle est trop courte pour prouver quoi que ce soit, pas de preuve
+    // (on ne ressort jamais une vieille note pour fabriquer un label).
+    if (!dernier || dernier.total < PREUVE_QCM_MIN) return null;
     return dernier;
   } catch {
     // Stockage corrompu / mode privé → on n'affiche rien plutôt qu'une note.

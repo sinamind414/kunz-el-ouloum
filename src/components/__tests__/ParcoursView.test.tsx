@@ -239,8 +239,12 @@ describe('ParcoursView — علّم كمحفوظة / تراجع (cercle de statu
     expect(record!.score).toBeUndefined();
     expect(record!.total).toBeUndefined();
     expect(record!.fragile).toBe(false);
-    // « مثبّتة » sans fraction — le cas U2/U3/U8 (0 question de QCM).
-    expect(screen.getByTestId('parcours-jalon-1').textContent).not.toContain('/ 6');
+    // H2 (audit architecture 19/10) : sans preuve le جسر est « مقروءة »,
+    // JAMAIS « مثبّتة » — le cas U2/U3/U8 (0 question de QCM).
+    const texte = screen.getByTestId('parcours-jalon-1').textContent ?? '';
+    expect(texte).toContain('مقروءة');
+    expect(texte).not.toContain('مثبّتة');
+    expect(texte).not.toContain('/ 6');
   });
 
   it('un score de QCM bas rend le جسار fragil (seuil 0.6)', () => {
