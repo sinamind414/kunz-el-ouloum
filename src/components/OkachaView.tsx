@@ -50,6 +50,7 @@ import {
   type NoteHafiz,
   type OkachaProgress,
 } from '../data/okachaProgress';
+import { noterAffichageEffort } from '../utils/effortMesure';
 
 interface Props {
   onBack: () => void;
@@ -663,7 +664,7 @@ export default function OkachaView({ onBack, onRate, onOpenQcm, domaineInitial }
                           domaine="m"
                           cache={modeHafiz && b.kind === 'point' && !b.cible && !revelves.has(cle)}
                           revele={revelves.has(cle)}
-                          onReveler={() => setRevelves((prev) => new Set(prev).add(cle))}
+                          onReveler={() => { noterAffichageEffort(cle); setRevelves((prev) => new Set(prev).add(cle)); }}
                           onNoter={(n) => noter(cle, n)}
                           onAller={allerSection}
                           notes={prog.evals[cle]}
@@ -809,7 +810,7 @@ export default function OkachaView({ onBack, onRate, onOpenQcm, domaineInitial }
                     domaine={uniteCourante.domaine as ThemeCle}
                     cache={modeHafiz && b.kind === 'point' && !revelves.has(cle)}
                     revele={revelves.has(cle)}
-                    onReveler={() => setRevelves((prev) => new Set(prev).add(cle))}
+                    onReveler={() => { noterAffichageEffort(cle); setRevelves((prev) => new Set(prev).add(cle)); }}
                     onNoter={(n) => noter(cle, n)}
                     notes={prog.evals[cle]}
                     taille={taille}

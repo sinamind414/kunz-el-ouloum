@@ -4,6 +4,7 @@ import { Volume2, Key, HelpCircle, Layers, BookOpen, VolumeX, Sparkles, Eye, Eye
 import { Flashcard, Unit } from '../types';
 import { playFlipSound, playSuccessSound } from '../utils/audio';
 import { getSrsState, rateCard, sortByDue, previewIntervalDays, formatIntervalLabel } from '../utils/flashcardsSrs';
+import { noterAffichageEffort } from '../utils/effortMesure';
 import MicroCapsulePanel from './MicroCapsulePanel';
 import BoutonMorchid from './BoutonMorchid';
 
@@ -62,6 +63,13 @@ export default function RevisionView({ units, flashcards, onRateCard, isFocusMod
   );
   const currentCard = deck.find(c => c.id === currentCardId) ?? deck[0];
   const deckPosition = currentCard ? deck.findIndex(c => c.id === currentCard.id) + 1 : 0;
+
+  // H5 « effort mesuré » (audit 19/10) : chaque carte affichée démarre la
+  // mesure du temps réel ; la notation créditera minutesReelMesurees().
+  useEffect(() => {
+    if (currentCard) noterAffichageEffort(currentCard.id);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentCard?.id]);
 
   const handleFlip = () => {
     playFlipSound();

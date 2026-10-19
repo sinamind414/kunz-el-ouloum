@@ -50,6 +50,7 @@ function loadStoredStudent(): { name: string; email: string } | null {
   return null;
 }
 import { healSavedFlashcards, synchroniseDeck } from './utils/flashcardsSanitize';
+import { POINTS_PAR_NOTATION, minutesReelMesurees } from './utils/effortMesure';
 // H3 (audit 8 axes, 2026-10-14) : le jour se calcule en HEURE LOCALE (voir
 // utils/dayKey.ts) et l'activité quotidienne — objectif + série de jours — se
 // crédite par une seule porte testée (utils/activiteQuotidienne.ts).
@@ -528,14 +529,18 @@ export default function App() {
 
   // SM-2 Spaced Repetition flashcard rating callback
   const handleRateCard = (cardId: string, rating: 'again' | 'hard' | 'good' | 'easy') => {
-    // Reward points based on effort rating
-    const pointsAwarded = rating === 'easy' ? 15 : rating === 'good' ? 10 : rating === 'hard' ? 5 : 2;
-    
+    // H5 (audit architecture 19/10) : XP par notation — « again » (échec de
+    // rappel) ne crédite plus RIEN ; la vue enregistre le temps réel passé
+    // (utils/effortMesure.ts), plafonné par carte. Fini le hasard 2-4 min.
+    const pointsAwarded = POINTS_PAR_NOTATION[rating];
+
     const updatedStats = { ...progress.flashcardStats };
     updatedStats[rating] += 1;
 
-    // Advance study minutes
-    const addedMinutes = Math.floor(Math.random() * 3) + 2; // 2-4 minutes
+    // H5 : minutes MESURÉES (temps réel écoulé depuis l'affichage de la
+    // carte, plafond 2 min/carte) — remplace floor(random*3)+2 qui créditait
+    // 236 min pour 75 notations à 0,5 s (sonde p5 de l'auditeur).
+    const addedMinutes = minutesReelMesurees();
 
     // H3 : objectif du jour + série, par la porte unique.
     const objectifAtteintAvant = progress.dailyGoals?.completedToday === true;
