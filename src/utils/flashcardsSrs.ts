@@ -16,8 +16,24 @@
 //   · `ajustement: 'anki'` — les boutons « difficile » et « facile » modulent
 //     l'intervalle, sans quoi ils mentiraient.
 // Aucun de ces deux choix n'est appliqué aux concepts ni aux gestes.
+//
+// BORNE (TC5, audit architecture 2026-10-19, H3) : la transition canonique ne
+// plafonne rien — le chemin 1 → 6 → ×ease mène, après quelques mois de
+// réussites, à des échéances à 6-12 mois, au-delà du BAC : la carte se
+// programme hors de portée de l'élève et ne revient jamais. Même règle que la
+// mémoire par question (memoireQuestions.INTERVALLE_MAX_JOURS = 21) :
+//   · l'intervalle ne dépasse jamais le plafond ;
+//   · atteindre le plafond par une réussite = SORTIE de la boucle (dueAt = 0) :
+//     la carte est consolidée, elle est reléguée en fin de deck au lieu de se
+//     reformuler calendrier pendant des mois ;
+//   · un échec rouvre TOUT, même une carte sortie (dueAt = maintenant) ;
+//   · noter une carte déjà sortie ne la fait JAMAIS rentrer (pas de ré-entrée
+//     dans la boucle sans échec).
+// Le plafond est IMPORTÉ et non recopié : la duplication d'échelles est ce
+// qui avait produit cinq ordonnanceurs concurrents (voir en-tête de sm2.ts).
 
 import { prochainEtatSm2, type EtatSm2, type QualiteSm2 } from '../lib/sm2';
+import { INTERVALLE_MAX_JOURS } from '../lib/memoireQuestions';
 
 export type SrsRating = 'again' | 'hard' | 'good' | 'easy';
 
@@ -59,16 +75,28 @@ export function resetAllSrs(): void {
 
 const QUALITY: Record<SrsRating, QualiteSm2> = { again: 1, hard: 3, good: 4, easy: 5 };
 
-/** Transition SM-2 pure : renvoie le nouvel état sans le persister. */
+/** Transition SM-2 pure + borne H3 : renvoie le nouvel état sans le persister. */
 export function nextSrsState(
   previous: SrsCardState | null,
   rating: SrsRating,
   now: number,
 ): SrsCardState {
-  return prochainEtatSm2(previous, QUALITY[rating], now, {
+  const brut = prochainEtatSm2(previous, QUALITY[rating], now, {
     apresEchec: 'intra-seance',
     ajustement: 'anki',
   });
+  // Échec (re-présentation intra-séance) : rien à borner.
+  if (brut.intervalDays === 0) return brut;
+  // Carte déjà sortie : une réussite ne la fait JAMAIS rentrer dans la
+  // boucle (noter ≠ prouver — cf. réussite hors échéance côté TC3).
+  if (previous?.dueAt === 0) {
+    return { ...brut, intervalDays: INTERVALLE_MAX_JOURS, dueAt: 0 };
+  }
+  // Atteindre le plafond par une réussite = sortie de la boucle.
+  if (brut.intervalDays >= INTERVALLE_MAX_JOURS) {
+    return { ...brut, intervalDays: INTERVALLE_MAX_JOURS, dueAt: 0 };
+  }
+  return brut;
 }
 
 /** Note une carte et persiste son état SM-2. */
@@ -93,13 +121,15 @@ export function sortByDue<T extends { id: string }>(
   const states = loadAll();
   const dues: T[] = [];
   const schedulees: Array<{ card: T; dueAt: number }> = [];
+  const graduees: T[] = []; // dueAt = 0 : sortie de la boucle (borne H3, TC5)
   for (const card of cards) {
     const st = states[card.id];
-    if (!st || st.dueAt <= now) dues.push(card);
+    if (!st || (st.dueAt > 0 && st.dueAt <= now)) dues.push(card);
+    else if (st.dueAt === 0) graduees.push(card);
     else schedulees.push({ card, dueAt: st.dueAt });
   }
   schedulees.sort((a, b) => a.dueAt - b.dueAt);
-  const ordered = [...dues, ...schedulees.map((x) => x.card)];
+  const ordered = [...dues, ...schedulees.map((x) => x.card), ...graduees];
   if (backId) {
     const idx = ordered.findIndex((c) => c.id === backId);
     if (idx >= 0 && idx !== ordered.length - 1) {
