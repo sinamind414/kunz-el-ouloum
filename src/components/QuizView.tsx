@@ -1,21 +1,17 @@
 import { useState, useMemo } from 'react';
 import { useCompteARebours } from '../hooks/useWallClock';
 import { motion, AnimatePresence } from 'motion/react';
-import { X, Timer, CheckCircle2, AlertCircle, ArrowLeft, ArrowRight, RotateCcw, Award, Check, BookOpen, GraduationCap, AlertOctagon, HelpCircle, Sparkles, Eye, EyeOff } from 'lucide-react';
+import { X, Timer, CheckCircle2, AlertCircle, ArrowLeft, ArrowRight, RotateCcw, Award, Check, BookOpen, GraduationCap, AlertOctagon, HelpCircle, Eye, EyeOff } from 'lucide-react';
 import { QuizQuestion } from '../types';
 import { LIBELLES_DIFFICULTE } from '../quizCorpus';
 import { playSuccessSound, playFailureSound } from '../utils/audio';
-import { MASCOT_URL } from '../data/brandAssets';
-import { getHintForIncorrectOption, getGeneralHint } from '../utils/hints';
 import { validateFillBlank } from '../utils/fillBlankValidate';
-import BoutonMorchid from './BoutonMorchid';
 // Anti-triche par clé volée (14/10/2026) : les propositions changent de place à
 // chaque session. `grep -o 'correctAnswerIndex:[0-9]*'` extrait encore les clés
 // du paquet livré, mais « la réponse est la 2ᵉ » n'est plus vrai que pendant la
-// session où la clé a été volée. `origineDe` garde justes les aides indexées par
-// position (voir plus bas) : sans elle, l'explication désignerait une autre
-// proposition que celle choisie par l'élève.
-import { graineSession, melangerQuestions, origineDe } from '../utils/melangeOptions';
+// session où la clé a été volée. `origineDe` garde l'affichage des options
+// cohérent avec l'ordre d'origine des données.
+import { graineSession, melangerQuestions } from '../utils/melangeOptions';
 // PRODUCTEUR DE MÉMOIRE (14/10/2026, point A de l'analyse LITE) : ce QCM devient
 // la source des erreurs de l'élève. Sans lui, `profilErreurs` n'était alimenté
 // que par l'atelier méthodologique — un élève qui n'y va jamais gardait une
@@ -45,7 +41,6 @@ export default function QuizView({ unitTitle, questions, onClose, onQuizComplete
   const [essai, setEssai] = useState(0);
   const [quizFinished, setQuizFinished] = useState(false);
   const [score, setScore] = useState(0);
-  const [showGeneralHint, setShowGeneralHint] = useState<boolean>(false);
   const [isFocusMode, setIsFocusMode] = useState<boolean>(false);
   // État des questions à trou (kind === 'fillBlank') — S-C4.
   const [fbInput, setFbInput] = useState<{ [key: number]: string }>({});
@@ -121,7 +116,6 @@ export default function QuizView({ unitTitle, questions, onClose, onQuizComplete
   };
 
   const handleNext = () => {
-    setShowGeneralHint(false);
     if (currentIndex < questions.length - 1) {
       setCurrentIndex((prev) => prev + 1);
     } else {
@@ -132,7 +126,6 @@ export default function QuizView({ unitTitle, questions, onClose, onQuizComplete
   };
 
   const handlePrev = () => {
-    setShowGeneralHint(false);
     if (currentIndex > 0) {
       setCurrentIndex((prev) => prev - 1);
     }
@@ -321,62 +314,27 @@ export default function QuizView({ unitTitle, questions, onClose, onQuizComplete
                     <h2 className={`text-xl font-bold leading-relaxed flex-1 ${isFocusMode ? 'text-gray-100' : 'text-[#1f1c0b] dark:text-gray-100'}`}>
                       {currentQuestion.questionText}
                     </h2>
-                    
-                    {!isAnswered[currentIndex] && (
-                      <button
-                        onClick={() => setShowGeneralHint(!showGeneralHint)}
-                        className={`shrink-0 flex items-center gap-1 text-xs font-bold px-3 py-1.5 rounded-full border transition-all cursor-pointer ${
-                          showGeneralHint 
-                            ? (isFocusMode ? 'bg-[#006d37]/30 text-[#2ecc71] border-[#006d37]/40 shadow-sm' : 'bg-[#fff9ed] text-[#006d37] border-[#006d37]/40 shadow-sm') 
-                            : (isFocusMode ? 'bg-white/5 text-gray-300 border-white/10 hover:bg-white/10' : 'bg-[#fcfcfc] dark:bg-zinc-800 text-[#506072] dark:text-zinc-300 border-[#e2dabf] dark:border-zinc-700 hover:border-[#006d37]/30 hover:text-[#006d37]')
-                        }`}
-                        id={`general-hint-btn-${currentQuestion.id}`}
-                      >
-                        <Sparkles className={`w-3.5 h-3.5 ${showGeneralHint ? 'text-[#006d37] animate-bounce' : 'text-[#506072]'}`} />
-                        <span>طلب تلميح</span>
-                      </button>
-                    )}
                   </div>
 
-                  {/* General Hint Bubble */}
-                  <AnimatePresence>
-                    {showGeneralHint && !isAnswered[currentIndex] && (
-                      <motion.div
-                        initial={{ opacity: 0, height: 0 }}
-                        animate={{ opacity: 1, height: 'auto' }}
-                        exit={{ opacity: 0, height: 0 }}
-                        className={`border rounded-2xl p-3.5 text-xs leading-relaxed flex gap-2 items-start overflow-hidden mt-1 text-right ${
-                          isFocusMode 
-                            ? 'bg-black/30 border-[#006d37]/20 text-gray-200' 
-                            : 'bg-[#fff9ed] dark:bg-[#1a221d] border-[#fed65b]/40 dark:border-[#2ecc71]/20 text-[#504441] dark:text-gray-200'
-                        }`}
-                      >
-                        <span className="text-base shrink-0">💡</span>
-                        <div className="space-y-1 flex-1">
-                          <span className={`font-extrabold block ${isFocusMode ? 'text-[#2ecc71]' : 'text-[#944a00] dark:text-[#2ecc71]'}`}>إرشاد مساعد التلميحات:</span>
-                          <p>{getGeneralHint(currentQuestion.id)}</p>
-                        </div>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
+                  {/* H2 (audit coach 18/10/2026) : le faux confort « طلب تلميح »
+                      est supprimé. La bulle générique (« اقرأ السؤال بتأنٍ… »)
+                      s'affichait pour 544 questions sur 531 servies : du rempli-
+                      sage qui ressemblait à de l'aide. L'aide réelle de CE
+                      panneau est l'explication de la question courante —
+                      affichée intégralement après la réponse, et toujours
+                      disponible via l'écran du المرشد. */}
                 </div>
 
-                {/* Assistant contextuel — moteur LOCAL (smartTutorEngine), pas de
-                    LLM. La question est ancrée sur le TITRE DE L'UNITÉ : c'est ce
-                    qui score le plus fort dans le moteur (+80 si le titre est
-                    inclus, +3/+6 par keyword). Reproduire tout l'énoncé diluerait
-                    le matching et provoquerait un refus hors-sujet.
-                    Effet réel pour l'élève : il obtient l'explication de la notion
-                    AVANT de répondre — l'indice le plus utile ici. */}
-                {!isAnswered[currentIndex] && (
-                  <div className="flex justify-start">
-                    <BoutonMorchid
-                      origine="quiz-indice"
-                      label="اسأل المرشد عن الوحدة قبل الإجابة"
-                      question={`اشرح ${unitTitle}`}
-                    />
-                  </div>
-                )}
+                {/* H2 (audit coach 18/10/2026) : les DEUX boutons « المرشد » du
+                    quiz sont retirés. Mesure de l'audit (s_quiz, s_quiz_indice) :
+                    ils ouvraient l'onglet chat EN ARRIÈRE-PLAN — App rend le
+                    quiz en priorité, donc RIEN n'apparaissait, et la question
+                    pré-remplie attendait la fin du quiz. Le bouton « لماذا
+                    إجابتي خاطئة؟ » est doublé par l'explication affichée
+                    en ligne juste après la réponse (H2 : « afficher à sa place
+                    l'explication de cette question, sans quitter le quiz »).
+                    Les points d'entrée hors-quiz du maillage contextuel
+                    (leçons, flashcards, situations, schémas) ne sont pas touchés. */}
 
                 {/* Question à trou (S-C4) : input + validation tolérante */}
                 {/* QCM (par défaut) ou question à trou (S-C4) selon le type */}
@@ -506,79 +464,35 @@ export default function QuizView({ unitTitle, questions, onClose, onQuizComplete
                       </p>
                     </motion.div>
 
-                    {/* Après l'explication : l'élève veut souvent CREUSER. Le
-                        moteur local ne peut pas analyser son erreur précise (pas
-                        de LLM) — il réexplique la notion ratée, ce qui reste
-                        l'aide la plus utile disponible ici. */}
-                    <div className="flex justify-start">
-                      <BoutonMorchid
-                        origine="quiz-erreur"
-                        label="لماذا إجابتي خاطئة؟ اسأل المرشد"
-                        question={`اشرح ${unitTitle}`}
-                      />
-                    </div>
-
-                    {/* Smart Hint Assistant (Analyzing incorrect answers) */}
+                    {/* H2 (audit coach 18/10/2026) : le faux panneau « تحليل
+                        الخطأ الشائع » (rempli à 99,2 % d'une phrase générique,
+                        ses aides indexées sur d'anciens ids 1-6 désormais
+                        désalignés du corpus) est supprimé. Remplacé par le
+                        rappel honest de l'option choisie — l'ANALYSE réelle
+                        est l'explication scientifique de CETTE question,
+                        affichée ci-dessus (elle existe pour 531/531 QCM). */}
                     {(() => {
                       const selectedOptionIdx = selectedAnswers[currentIndex];
                       const isWrong = currentQuestion.kind !== 'fillBlank' && selectedOptionIdx !== undefined && selectedOptionIdx !== currentQuestion.correctAnswerIndex;
                       if (!isWrong) return null;
-
                       return (
-                        <motion.div 
+                        <motion.div
                           initial={{ opacity: 0, y: 10 }}
                           animate={{ opacity: 1, y: 0 }}
                           transition={{ delay: 0.1 }}
-                          className={`border rounded-2xl p-4 text-sm space-y-3 text-right ${
-                            isFocusMode 
-                              ? 'bg-black/40 border-red-900/30 text-gray-200' 
-                              : 'bg-red-50/10 border border-red-200/50 dark:bg-red-950/10 dark:border-red-900/30'
+                          className={`border rounded-2xl p-3.5 text-sm text-right ${
+                            isFocusMode
+                              ? 'bg-black/40 border-[#ba1a1a]/30 text-gray-200'
+                              : 'bg-red-50/10 border border-[#ba1a1a]/25 dark:bg-red-950/10'
                           }`}
                         >
-                          <div className="flex items-start gap-3">
-                            {/* Mascot Avatar */}
-                            <div className="w-12 h-12 rounded-full border border-[#006d37]/20 overflow-hidden shrink-0 bg-white/80 flex items-center justify-center p-0.5 shadow-sm">
-                              <img 
-                                src={MASCOT_URL} 
-                                alt="Mascot Avatar" 
-                                className="w-full h-full object-contain"
-                                referrerPolicy="no-referrer"
-                              />
-                            </div>
-
-                            {/* Content Balloon */}
-                            <div className="space-y-1.5 flex-1">
-                              <div className="flex justify-between items-center">
-                                <div className="flex items-center gap-1.5 text-red-700 font-extrabold dark:text-red-400">
-                                  <HelpCircle className="w-4 h-4 text-red-600 dark:text-red-400" />
-                                  <span>مساعد التلميحات • تحليل الخطأ الشائع</span>
-                                </div>
-                                <span className="text-[10px] bg-red-100 text-red-800 px-2 py-0.5 rounded-full font-bold dark:bg-red-900/40 dark:text-red-300">
-                                  مراجعة المفاهيم
-                                </span>
-                              </div>
-                              
-                              <p className={`text-xs leading-relaxed ${isFocusMode ? 'text-gray-300' : 'text-[#506072] dark:text-gray-300'}`}>
-                                لقد اخترت الخيار <span className="font-bold text-[#ba1a1a] dark:text-red-400">({optionLetters[selectedOptionIdx]})</span>: <span className="italic">"{currentQuestion.options[selectedOptionIdx]}"</span>. دعنا نفهم لماذا هذا الخيار غير دقيق:
-                              </p>
-                              
-                              <div className={`p-3 rounded-xl border text-xs font-medium leading-relaxed shadow-inner ${
-                                isFocusMode ? 'bg-black/30 border-red-900/20 text-gray-200' : 'bg-white/60 dark:bg-black/20 border-red-100/40 text-[#1f1c0b] dark:text-gray-200'
-                              }`}>
-                                {/*
-                                  Table position affichée → position d'origine :
-                                  les aides sont indexées par position dans les
-                                  DONNÉES, pas à l'écran. Sans cette traduction,
-                                  l'aide expliquerait une autre proposition que
-                                  celle réellement choisie.
-                                */}
-                                {getHintForIncorrectOption(
-                                  currentQuestion.id,
-                                  origineDe(currentQuestion.optionOrigins, selectedOptionIdx),
-                                )}
-                              </div>
-                            </div>
-                          </div>
+                          <p className={`text-xs leading-relaxed font-bold ${isFocusMode ? 'text-gray-300' : 'text-[#506072] dark:text-gray-300'}`}>
+                            إجابتك في هذا السؤال كان الاختيار{' '}
+                            <span className="text-[#ba1a1a] dark:text-red-400">
+                              ({optionLetters[selectedOptionIdx]}) « {currentQuestion.options[selectedOptionIdx]} »
+                            </span>{' '}
+                            — الشرح العلمي أعلاه يوضّح المفهوم المرتبط بهذا الخطأ، ويمكنك إعادة سؤال الوحدة لاحقاً لتثبيته.
+                          </p>
                         </motion.div>
                       );
                     })()}
@@ -627,9 +541,15 @@ export default function QuizView({ unitTitle, questions, onClose, onQuizComplete
             </div>
 
             <div className="space-y-3">
-              <h2 className="text-2xl md:text-3xl font-black text-[#006d37]">مبارك إتمام التدريب!</h2>
+              {/* H7 (audit coach 18/10/2026) : l'écran de fin ne peut plus
+                  féliciter un score nul (« مبارك… بنجاح » s'affichait même à
+                  0/50). Titre NEUTRE ; la appréciation est la seule ligne
+                  évaluative, et elle reste scrupuleusement dans les limites
+                  de la donnée (aucune promesse de « جاهز للبكالوريا » dérivée
+                  d'une seule séance de QCM). */}
+              <h2 className="text-2xl md:text-3xl font-black text-[#006d37]">انتهاء تمرين الوحدة</h2>
               <p className="text-[#504441] text-sm max-w-sm mx-auto leading-relaxed">
-                لقد أنجزت تمرين وحدة <span className="font-bold text-[#006d37]">{unitTitle}</span> بنجاح. إليك تفاصيل نتيجتك العلمية:
+                أنجزت تمرين وحدة <span className="font-bold text-[#006d37]">{unitTitle}</span> — نتيجتك في هذه الجلسة:
               </p>
             </div>
 
@@ -651,7 +571,7 @@ export default function QuizView({ unitTitle, questions, onClose, onQuizComplete
               {scorePercentage >= 80 ? (
                 <div className="text-[#006d37] font-bold flex items-center justify-center gap-1.5 bg-[#2ecc71]/10 p-3 rounded-xl border border-[#2ecc71]/20">
                   <CheckCircle2 className="w-4 h-4 fill-current text-white" />
-                  <span>مستوى ممتاز! أنت جاهز تماماً للبكالوريا في هذه الوحدة.</span>
+                  <span>مستوى ممتاز في هذه الجلسة. ثبّته بإعادة حل الوحدة في مراجعة قادمة.</span>
                 </div>
               ) : scorePercentage >= 50 ? (
                 <div className="text-[#944a00] font-bold flex items-center justify-center gap-1.5 bg-[#fed65b]/20 p-3 rounded-xl border border-[#fed65b]/30">

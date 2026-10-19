@@ -32,12 +32,21 @@ describe('المرشد — points d entrée contextuels', () => {
     expect(src).toContain('ما مستواي في ${lesson.title}');
   });
 
-  it('QCM : un indice AVANT de répondre, et une explicitation APRÈS', () => {
+  it('QCM : l explication de la question EST le service en ligne (audit coach 18/10/2026, H2)', () => {
+    // TC1 : les deux boutons « المرشد » du quiz sont RETIRÉS — mesurés comme
+    // invisibles (App rend le quiz en priorité) et le panneau « تحليل الخطأ
+    // الشائع » était du remplissage générique (531 questions n'avaient pas
+    // d'indice spécifique). La promesse d'origine (« l'explication arrive »)
+    // reste tenue PAR LE CONTENU RÉEL : currentQuestion.explanation est
+    // affiché en ligne après la réponse, sans quitter le quiz.
     const src = source('QuizView.tsx');
-    expect(src).toContain('origine="quiz-indice"');
-    expect(src).toContain('origine="quiz-erreur"');
-    // Ancrage sur le titre de l unité : ce qui score le plus fort.
-    expect(src).toContain('اشرح ${unitTitle}');
+    expect(src).toContain('الشرح والمبرر العلمي');
+    expect(src).toContain('{currentQuestion.explanation}');
+    // Anti-régression du défaut mesuré :
+    expect(src).not.toContain('مساعد التلميحات');
+    expect(src).not.toContain('getHintForIncorrectOption');
+    expect(src).not.toContain('origine="quiz-indice"');
+    expect(src).not.toContain('origine="quiz-erreur"');
   });
 
   it('flashcards : avant de se noter « إعادة », on peut demander pourquoi', () => {

@@ -547,6 +547,44 @@ function supportResult(session: BotSession): EngineResult {
 }
 
 /* -------------------------------------------------------------------------- *
+ * H6 (audit coach 18/10/2026, §5.2) : DÉTRESSE GRAVE — idées suicidaires,
+ * violence subie, honte extrême. Constat mesuré : « أريد أن أنتحر إذا رسبت في
+ * الباك » recevait « ❓ هذا السؤال خارج قاعدة… ». La détresse n'est jamais
+ * hors programme. Réponse sobre en فصحى : écouter, inviter à parler à un
+ * adulte de confiance ou au conseiller du lycée, ramener humainement.
+ * PAS DE NUMÉRO D'ÉCOUTE : aucun numéro officiel n'a pu être vérifié
+ * (annexe F de l'audit) — il sera ajouté SEULEMENT après validation par un
+ * psychologue scolaire. La darija est un signal d'ENTRÉE ; la sortie reste فصحى.
+ * -------------------------------------------------------------------------- */
+const MARKERS_DETRESSE = [
+  'انتحر', 'أريد أن أموت', 'نحب نموت', 'ابغى اموت', 'بدي اموت',
+  'ما عاد عندي رغبة في الحياة', 'رغبة في الحياة', 'كرهت حياتي', 'أكره حياتي',
+  'تعبت من الحياة', 'متعبت من الحياة', 'سيضربني', 'يضربني', 'ضربني أبي',
+  'ضربني ابوي',
+].map(normalizeArabic);
+
+/** Exporté pour le verrou coachVerite (TC1) — purement fonctionnel. */
+export function detecterDetresse(normInput: string): boolean {
+  return MARKERS_DETRESSE.some((m) => normInput.includes(m));
+}
+
+function detresseResult(session: BotSession): EngineResult {
+  const text =
+    'أنا أسمعك الآن، وأخُذ كلامك بجدية تامة. ما كتبته يستحق أن يُسمع من شخص حقيقي، لا من شاشة.\n\n' +
+    '1) تحدّث اليوم بشأن ما تشعر به مع شخص تثق به: أب أو أم، قريب كبير، صديق وثيق، أو المرشد التربوي في ثانويتك. لا تحمل هذا وحدك.\n\n' +
+    '2) دروس البكالوريا لا تقيس قيمتك ولا تُنصِف حياتك — النتيجة تُصحَّح وتُعاد، ولا يعوّض إنساناً شيئاً.\n\n' +
+    'سأبقى معك في الدروس خطوة بخطوة عندما تريد العودة. أنت أهمّ من أي امتحان.';
+  return {
+    session,
+    action: {
+      text,
+      quickActions: ['العودة للقائمة الرئيسية'],
+      sources: [],
+    },
+  };
+}
+
+/* -------------------------------------------------------------------------- *
  * KEO-103 (LOT 2) : mode socratique — une question de sondage (probe) avant
  * tout contenu de fiche. Le chemin « fiche » livrait shortAnswer dès la
  * première question (réponse prémâchée, ~80 % des réponses du moteur) ;
@@ -1574,7 +1612,7 @@ export function startBossFight(session: BotSession): EngineResult {
   const replay = session.completedBac.includes(String(domainId));
   // KEO-106 : le contrat du verbe de consigne s'affiche AVANT que l'élève
   // écrive — ce que le verbe paie, ce qu'il interdit.
-  const firstContract = detectConsigneVerb(normalizeArabic(first.situation));
+  const firstContract = detectConsigneVerb(first.situation);
   const text = `⚔️ **تحدي BAC** — مجال ${domain.title}\n` +
     (replay ? '🏆 سبق إتمامك هذا التحدي — إعادة بدون XP إضافي.\n' : '') +
     `ستُطرح عليك ${scenarios.length} وضعيات مشكلة. اكتب إجابتك وسيقوّمها المرشد آلياً وفق النقاط الأساسية.\n\n${first.situation}\n\n` +
@@ -1752,15 +1790,60 @@ const VERB_CONTRACTS: VerbContract[] = [
   { verb: 'بين', labelAr: 'بيّن', contractAr: 'يُطلب: شرح الآلية بمراحلها وربط منطقي («مما يؤدي» / «وذلك لـ»)\nيُمنع: الاكتفاء بالوصف', causal: 'required' },
 ];
 
-function detectConsigneVerb(normSituation: string): VerbContract | null {
-  for (const c of VERB_CONTRACTS) {
-    if (normSituation.includes(c.verb)) return c;
+/** TC1 (audit coach 18/10/2026, H1b) : le contrat ne naît que du verbe
+ *  d'impératif qui OUVRE une phrase (début du texte ou après une ponctuation
+ *  forte), jamais d'un mot au milieu de la phrase. Défauts mesurés corrigés : «اشرح العلاقة بين بنيته» et «اربط بين المرحلتين»
+ *  héritaient du contrat « بيّن » («بين» est une préposition) ; «…ما دور
+ *  الحمل الحراري…» héritait de « صِف » («صف» ⊂ «صفيحة») — et une bonne réponse
+ *  explicative était rejetée au nom d'un contrat que la question n'a jamais
+ *  posé. Si le premier mot n'est pas dans la liste fermée → pas de contrat
+ *  (le défaut est dans le sens cléément : rien n'est affiché, rien n'est
+ *  interdit). Les préfixes «و»/«ف» d'union sont retirés. */
+export function detectConsigneVerb(situationBrute: string): VerbContract | null {
+  // Entrée = texte BRUT (jamais normalisé) : la ponctuation, détruite par
+  // normalizeArabic, est la seule frontière de phrase fiable. Chaque jeton est
+  // normalisé À L'UNITÉ pour toucher la liste fermée.
+  const jetons = situationBrute.split(/\s+/).filter(Boolean);
+  for (let i = 0; i < jetons.length; i += 1) {
+    const brut = jetons[i];
+    // « وقارن » → « قارن » par retrait de l'union « و » ; mais « فسّر »
+    // commence par un ف RADICAL — le jeton est testé tel quel et dé-préfixé.
+    const forme1 = normalizeArabic(brut);
+    const forme2 = normalizeArabic(brut.replace(/^[وف]/, ''));
+    const candidat = VERB_CONTRACTS.find(
+      (c) => c.verb === forme1 || (forme2 && c.verb === forme2),
+    );
+    if (!candidat) continue;
+    // Le verbe de consigne OUVRE une phrase impérative : début du texte, ou
+    // jeton précédent fini par une ponctuation forte. Sans cette barrière, la
+    // préposition « بين » collée à « اربط/العلاقة » (boss1_q2, boss3_q3) ou le
+    // « صف » intérieur de « صفيحة » héritaient d'un contrat que la question
+    // n'a jamais posé — et une bonne réponse explicative était rejetée.
+    if (i === 0 || /[.،؛:؟!\)\]…]$/.test(jetons[i - 1])) return candidat;
   }
   return null;
 }
 
+/** TC1 (audit coach 18/10/2026, H1a) : correspondance par MOT arabe entier,
+ *  pas par sous-chaîne. « لان » (forme normalisée de «لأنّ») est une sous-chaîne
+ *  de «الانزيم», «الانسولين», «الانقسام», «الانتشار»… : 7 phrases descriptives
+ *  sur 8 étaient prises pour causales. Bornes = tout caractère non-lettre
+ *  arabe (début/fin de chaîne comptent comme bornes). */
+const AR_LETTER_RE = /[\u0621-\u064A]/;
+export function contientMotArabe(normHaystack: string, normNeedle: string): boolean {
+  if (!normNeedle) return false;
+  let idx = normHaystack.indexOf(normNeedle);
+  while (idx !== -1) {
+    const avant = idx === 0 ? ' ' : normHaystack[idx - 1];
+    const apres = idx + normNeedle.length >= normHaystack.length ? ' ' : normHaystack[idx + normNeedle.length];
+    if (!AR_LETTER_RE.test(avant) && !AR_LETTER_RE.test(apres)) return true;
+    idx = normHaystack.indexOf(normNeedle, idx + 1);
+  }
+  return false;
+}
+
 function hasCausalConnector(normAnswer: string): boolean {
-  return CAUSAL_CONNECTORS.some((c) => normAnswer.includes(c));
+  return CAUSAL_CONNECTORS.some((c) => contientMotArabe(normAnswer, c));
 }
 
 function verbContractLine(c: VerbContract): string {
@@ -1835,7 +1918,9 @@ function deliverBossCorrection(
   const points = capPoints ? Math.min(graded.score, HINT_PATH_CAP) : graded.score;
   let correctionText =
     `✅ **التصحيح النموذجي**\n\n${scenario.correction}\n\n🔑 **النقاط الأساسية:**\n${scenario.keyPoints.map((p) => `- ${p}`).join('\n')}` +
-    `\n\n🎯 نقاطك لهذه الوضعية: ${points}/10`;
+    // H1d (audit coach 18/10/2026) : la note par couverture de mots-clés n'est
+    // pas un barème officiel — elle est AFFICHÉE comme telle.
+    `\n\n🎯 نقاطك لهذه الوضعية: ${points}/10 (تقديرُ استرشادي ذاتي، وليس تصحيحاً رسمياً للبكالوريا)`;
   if (graded.inverted.length > 0) {
     correctionText +=
       `\n\n⚠️ **انتبه:** إجابتك ذكرت النقطة التالية لكنّها نَفَتْها بدل أن تُثبتها:\n« ${graded.inverted[0]} »\nالمنتظَر هو الإثبات لا النفي — الكلمة المفتاحية وحدها لا تكسب النقطة.`;
@@ -1852,7 +1937,7 @@ function deliverBossCorrection(
     const newSession = startBossStep(withMissed, points, next.id, boss.questionIndex + 1);
     // KEO-106 : le contrat du verbe de la situation SUIVANTE s'affiche avant
     // que l'élève écrive.
-    const nextContract = detectConsigneVerb(normalizeArabic(next.situation));
+    const nextContract = detectConsigneVerb(next.situation);
     const text =
       `${correctionText}\n\n➡️ **السؤال التالي (${boss.questionIndex + 2}/${boss.totalQuestions})**\n\n${next.situation}\n\n` +
       (nextContract ? `${verbContractLine(nextContract)}\n\n` : '') +
@@ -1891,6 +1976,10 @@ function deliverBossCorrection(
   // Anti-farm (recommandation audit #4) : l'XP du défi n'est accordé qu'à la
   // PREMIÈRE complétion du domaine — completedBac, jusqu'ici jamais rempli,
   // devient le garde-fou de rejouabilité.
+  // H1d (audit coach 18/10/2026) : l'XP est DÉSOCIALISÉ de la note — avant, il
+  // valait `total` (score quasi systématiquement 20/20 pour des copies fausses),
+  // récompensant la copie inexacte. Constante fixe, notée comme choix produit.
+  const XP_DEFI_PREMIERE_COMPLETION = 10;
   const domainKey = String(session.activeDomainId ?? '');
   const firstTime = domainKey !== '' && !session.completedBac.includes(domainKey);
   const finished = finishBossFight(session);
@@ -1917,7 +2006,7 @@ function deliverBossCorrection(
       quickActions: weak
         ? ['كيف أدرس العلوم؟', 'راجع أخطائي السابقة', 'العودة للقائمة الرئيسية']
         : ['راجع أخطائي السابقة', 'العودة للقائمة الرئيسية'],
-      reward: { xpGained: firstTime ? total : 0, score: total, total: max, kind: 'mission', domain: domain?.title ?? '' },
+      reward: { xpGained: firstTime ? XP_DEFI_PREMIERE_COMPLETION : 0, score: total, total: max, kind: 'mission', domain: domain?.title ?? '' },
       sources: [{ type: 'domain' as SourceType, title: 'تحدي BAC' }],
     },
   };
@@ -1996,7 +2085,7 @@ function handleBossInput(session: BotSession, rawInput: string): EngineResult {
   // 3-bis) KEO-106 : conformité au CONTRAT DU VERBE de consigne. Un premier
   //  écart est corrigé sans consommer la tentative (l'élève réécrit) ; au
   //  deuxième on avance — trappe anti-frustration, personne ne reste bloqué.
-  const contract = detectConsigneVerb(normalizeArabic(scenario.situation));
+  const contract = detectConsigneVerb(scenario.situation);
   if (contract && contract.causal) {
     const causal = hasCausalConnector(n);
     const violating = contract.causal === 'required' ? !causal : causal;
@@ -2073,6 +2162,11 @@ export function processStudentInput(session: BotSession, rawInput: string): Engi
   // moteur d'un token fantôme qui vote géologie. Voir segmenterPrefixesInterrogatifs.
   const norm = segmenterPrefixesInterrogatifs(normalizeArabic(input));
   const n = (s: string) => normalizeArabic(s);
+
+  // H6 (audit coach 18/10/2026) : la détresse grave est interceptée AVANT
+  // toute autre intention (jamais « hors programme », jamais une fiche de
+  // cours en réponse à une souffrance).
+  if (detecterDetresse(norm)) return detresseResult(session);
 
   // S-05 (14/10/2026) : une intention forte ABANDONNE la question en attente.
   // Placé en tête À DESSEIN — plusieurs intentions sont traitées plus haut dans

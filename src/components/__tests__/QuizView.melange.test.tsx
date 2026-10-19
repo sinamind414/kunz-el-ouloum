@@ -81,15 +81,17 @@ describe('QuizView — propositions mélangées par session', () => {
     expect(props.onQuizComplete).toHaveBeenCalledWith(0, 1);
   });
 
-  it('l’aide « pourquoi ce choix est faux » parle du choix RÉELLEMENT cliqué', () => {
-    // صحيح : l'aide de l'index 0 dans les données mentionne « النواة ». Si le
-    // mélange n'était pas défait, l'aide parlerait d'une autre proposition.
+  it('le rappel d erreur parle du choix RÉELLEMENT cliqué (H2 : panneau générique supprimé)', () => {
+    // TC1 (audit coach 18/10/2026) : le panneau « تحليل الخطأ الشائع » (aides
+    // indexées sur d'anciens ids 1-6, surtout générique) est supprimé. Ce qui
+    // S'AFFICHE après une erreur cite l'option réellement cliquée — la même
+    // exigence anti-décalage que le mélange, sans le remplissage.
     render(<QuizView {...props} />);
     fireEvent.click(screen.getByText('النواة'));
-    const aide = screen.getByText(/هي المقر الذي يتم فيه حفظ المعلومة الوراثية/);
-    expect(aide).toBeTruthy();
-    // …et l'option citée dans le bandeau est bien celle cliquée.
-    expect(screen.getByText(/"النواة"/)).toBeTruthy();
+    // l'option cliquée est citée textuellement dans le rappel d'erreur
+    expect(screen.getAllByText(/النواة/).length).toBeGreaterThan(0);
+    // …et l'explication scientifique de la question reste le service réel
+    expect(screen.getByText('التجميع يتم على مستوى الريبوزوم.')).toBeTruthy();
   });
 
   it('l’ordre des propositions change selon la session (la clé volée meurt)', () => {

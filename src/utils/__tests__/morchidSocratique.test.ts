@@ -203,10 +203,14 @@ describe('KEO-106 — contrat du verbe de consigne', () => {
     expect(r.session.boss?.verbWarnings ?? 0).toBe(0);
   });
 
-  it('verbe interdisant le causal («صف») : «لأنّ» dans la réponse → écart nommé', () => {
+  it('consigne SANS verbe de la liste fermée (اربط/ما دور) : aucun contrat fantôme (TC1/H1b)', () => {
+    // boss3_q3 : « اربط بين العمليتين... ما دور الحمل الحراري... » — l'ancien
+    // moteur y héritait du contrat « صف » (صف ⊂ صفيحة) et INTERDISAIT le
+    // causal sur une consigne qui ne le demande jamais.
     const r = processStudentInput(bossAt('boss3_q3'), 'الظاهرة تتغير لأن السبب كذا وهذا تفسير');
-    expect(r.action.text).toContain('توقّف عند الفعل');
-    expect(r.session.boss?.attempts ?? 0).toBe(0);
+    expect(r.action.text).not.toContain('توقّف عند الفعل');
+    expect(r.session.boss?.attempts ?? 0).toBe(1);
+    expect(r.session.boss?.verbWarnings ?? 0).toBe(0);
   });
 });
 
@@ -270,11 +274,15 @@ describe('KEO-104 — aucun bilan sans cause, action et porte', () => {
     expect(r.action.quickActions?.[0]).toBe('كيف أدرس العلوم؟');
   });
 
-  it('la correction intermédiaire affiche le contrat de la situation SUIVANTE', () => {
+  it('la correction intermédiaire annonce la suite SANS contrat fantôme (TC1/H1b)', () => {
+    // boss1_q2 commence par « اشرح العلاقة بين… » : l'ancien moteur y
+    // héritait du contrat « بيّن » par la préposition « بين ». La consigne
+    // « اشرح » n'est pas dans la liste fermée → AUCUN contrat affiché
+    // (sens cléément), conformément à l'audit coach H1b.
     const s = processStudentInput({ ...getDefaultSession(), activeDomainId: 1 }, 'تحدي BAC').session;
     let r = processStudentInput(s, 'محاولة أولى مما يؤدي إلى شيء');
     r = processStudentInput(r.session, 'محاولة ثانية مما يؤدي إلى شيء');
     expect(r.action.text).toContain('السؤال التالي');
-    expect(r.action.text).toContain('عقد الفعل'); // contrat de la situation suivante
+    expect(r.action.text).not.toContain('عقد الفعل'); // pas de contrat inventé
   });
 });

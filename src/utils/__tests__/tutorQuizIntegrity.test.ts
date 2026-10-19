@@ -87,10 +87,13 @@ describe('REC #3/#4 — défi BAC auto-évalué, XP anti-farm', () => {
     return { xp, text };
   }
 
-  it('répondre le contenu des corrections → 2 scénarios × 10 pts = 20 XP à la 1re complétion', () => {
+  it('1re complétion → XP FIXE 10, découplé de la note (TC1/H1d : plus d XP indexé sur la note)', () => {
+    // TC1 (audit coach 18/10/2026) : avant, xpGained = total (20 pour une copie
+    // parfaite — obtenable avec des mots-clés recopiés). L'XP récompense la
+    // PREMIÈRE complétion du défi, jamais la note auto-évaluée.
     localStorage.clear();
     const first = runBoss(getDefaultSession());
-    expect(first.xp).toBe(20);
+    expect(first.xp).toBe(10);
   });
 
   it('rejouer le même défi → 0 XP + mention « بدون XP إضافي » (completedBac rempli)', () => {

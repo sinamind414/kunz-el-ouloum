@@ -52,18 +52,16 @@ export default function SmartReminderCard({
     return fallbackUnit || units[0] || null;
   }, [units]);
 
-  // Calculate elapsed time
+  // H7 (audit coach 18/10/2026) : les durées INVENTÉES sont supprimées.
+  // Avant : une durée de démonstration codée en dur et un écrêtage à 48 h
+  // minimum — un élève ayant ouvert l'unité il y a UNE heure lisait « لم
+  // يُفتح منذ 48 ساعة ». La durée affichée est désormais la durée RÉELLE de
+  // la donnée, et le fallback (unité sans horodatage) n'affiche AUCUNE durée.
   const now = Date.now();
-  const rawElapsedMs = staleUnitCandidate?.lastStudiedTimestamp 
-    ? (now - staleUnitCandidate.lastStudiedTimestamp) 
-    : (54 * 3600 * 1000); // 54 hours default for demonstration
-
-  const elapsedHours = simulatedTimeHours !== null 
-    ? simulatedTimeHours 
-    : Math.max(48, Math.round(rawElapsedMs / (1000 * 60 * 60)));
-
-  const elapsedDays = Math.floor(elapsedHours / 24);
-  const remainingHoursInDay = elapsedHours % 24;
+  const elapsedHoursRaw: number | null = staleUnitCandidate?.lastStudiedTimestamp
+    ? Math.max(0, Math.round((now - staleUnitCandidate.lastStudiedTimestamp) / (1000 * 60 * 60)))
+    : null;
+  const elapsedHours = simulatedTimeHours !== null ? simulatedTimeHours : elapsedHoursRaw!;
 
   const isSnoozed = snoozeUntil !== null && Date.now() < snoozeUntil;
 
@@ -95,7 +93,10 @@ export default function SmartReminderCard({
     setSnoozeUntil(Date.now() + 24 * 60 * 60 * 1000);
   };
 
-  const lessonName = staleUnitCandidate.lastLessonTitle || "آليات الاستنساخ والترجمة وتنشيط الأحماض";
+  // H7 (18/10/2026) : la « leçon suggérée » n'était qu'une phrase fixe de
+  // démonstration affichée pour TOUTES les unités sans titre mémorisé. La
+  // ligne disparaît quand la donnée réelle n'existe pas.
+  const lessonName = staleUnitCandidate.lastLessonTitle || null;
 
   return (
     <div 
@@ -134,10 +135,12 @@ export default function SmartReminderCard({
 
         {/* Elapsed Time Badge & Dismiss */}
         <div className="flex items-center gap-2">
-          <span className="bg-amber-500/15 border border-amber-500/30 text-amber-700 dark:text-amber-300 text-[11px] font-black px-2.5 py-1 rounded-xl flex items-center gap-1.5 shadow-2xs">
-            <Clock className="w-3 h-3 text-amber-600 dark:text-amber-400" />
-            <span>لم يُفتح منذ {elapsedHours} ساعة {elapsedDays >= 2 ? `(يومان و${remainingHoursInDay} س)` : ''}</span>
-          </span>
+          {elapsedHoursRaw !== null && (
+            <span className="bg-amber-500/15 border border-amber-500/30 text-amber-700 dark:text-amber-300 text-[11px] font-black px-2.5 py-1 rounded-xl flex items-center gap-1.5 shadow-2xs">
+              <Clock className="w-3 h-3 text-amber-600 dark:text-amber-400" />
+              <span>لم يُفتح منذ {elapsedHours} ساعة {elapsedHours >= 48 ? `(${Math.floor(elapsedHours / 24)} يوم تقريباً)` : ''}</span>
+            </span>
+          )}
 
           <button
             onClick={() => setIsDismissed(true)}
@@ -162,10 +165,12 @@ export default function SmartReminderCard({
               </h4>
             </div>
 
-            <p className="text-xs text-gray-600 dark:text-gray-300 font-medium flex items-center gap-1.5">
-              <span className="font-bold text-amber-700 dark:text-amber-400">الدرس المقترح:</span>
-              <span className="text-gray-800 dark:text-gray-200 font-bold">{lessonName}</span>
-            </p>
+            {lessonName && (
+              <p className="text-xs text-gray-600 dark:text-gray-300 font-medium flex items-center gap-1.5">
+                <span className="font-bold text-amber-700 dark:text-amber-400">الدرس المقترح:</span>
+                <span className="text-gray-800 dark:text-gray-200 font-bold">{lessonName}</span>
+              </p>
+            )}
           </div>
 
           {/* Mini Progress Indicator */}
@@ -188,16 +193,19 @@ export default function SmartReminderCard({
           </div>
         </div>
 
-        {/* Cognitive Science Hint Box */}
+        {/* Encart pédagogique — H7 (18/10/2026) : les chiffres « 60 % / 95 % »
+            sont retirés. Ils étaient attribués à Ebbinghaus sans y figurer dans
+            cette forme ; le « 95 % » n'a AUCUNE source traçable dans le dépôt.
+            Rien qu'un principe, aucun chiffre. */}
         <div className="bg-white/90 dark:bg-gray-800/90 rounded-2xl p-3 border border-amber-200/60 dark:border-gray-700/80 flex items-start gap-2.5 text-xs">
           <div className="w-6 h-6 rounded-lg bg-amber-500/15 text-amber-700 dark:text-amber-400 flex items-center justify-center shrink-0 mt-0.5 font-black">
             <Sparkles className="w-3.5 h-3.5" />
           </div>
           <div className="flex-1 text-gray-600 dark:text-gray-300 leading-relaxed font-medium">
             <span className="font-bold text-amber-800 dark:text-amber-300 ml-1">
-              منحنى إبينغهاوس (Ebbinghaus):
+              التكرار المتباعد:
             </span>
-            التوقف لأكثر من 48 ساعة دون مراجعة يؤدي لنسيان 60% من المفاهيم. جلسة سريعة لمدة 5 دقائق الآن تستعيد 95% من قوة الذاكرة الدائمة!
+            الاسترجاع بعد فترة توقف يرسّخ المفهوم أكثر من إعادة القراءة المتلاحقة — جلسة قصيرة الآن أنفع من قراءة طويلة لاحقاً.
           </div>
         </div>
 
@@ -208,7 +216,8 @@ export default function SmartReminderCard({
             className="flex-1 min-w-[200px] py-2.5 px-4 bg-gradient-to-r from-[#006d37] via-[#008040] to-[#10b981] hover:opacity-95 text-white rounded-2xl font-black text-xs shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-98"
           >
             <Play className="w-4 h-4 fill-current" />
-            <span>متابعة إكمال هذا الدرس الآن (+25 XP)</span>
+            {/* H7 : la promesse d'XP fantôme (sans mécanisme branché ici) est retirée. */}
+            <span>متابعة إكمال هذا الدرس الآن</span>
             <ChevronLeft className="w-4 h-4" />
           </button>
 
