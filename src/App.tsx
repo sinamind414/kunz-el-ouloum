@@ -129,7 +129,12 @@ function VueEnChargement() {
 }
 
 import DashboardView from './components/DashboardView';
-import StudyReminderModal from './components/StudyReminderModal';
+// H5 (audit coach 18/10/2026) : « Study Reminder Modal » supprimé (fichier
+// retiré du dépôt, plus aucun consommateur) — doublon du capitaine, qui
+// part des jours RÉELS de travail et non d'un lastStudyTime écrit à la
+// simple ouverture, et il demandait une permission de Notification sans
+// jamais en envoyer. Le seul rappel hors-app réel reste le Web Push serveur
+// (décision/infra, non débloqué).
 import StudentAccountBar from './components/StudentAccountBar';
 import { getApiToken } from './utils/api';
 import { MORCHID_ASK_EVENT, type MorchidAskDetail } from './lib/morchidBridge';
@@ -257,44 +262,11 @@ export default function App() {
     setIsFocusMode(false);
   }, [currentTab]);
 
-  // Reminder Modal State
-  const [isReminderModalOpen, setIsReminderModalOpen] = useState<boolean>(false);
-
-  // Check Reminder Logic
-  useEffect(() => {
-    if (currentTab === 'splash') return;
-
-    const lastStudyTime = localStorage.getItem('lastStudyTime');
-    const scheduledReminderTime = localStorage.getItem('scheduledReminderTime');
-    const now = Date.now();
-
-    if (scheduledReminderTime && now >= Number(scheduledReminderTime)) {
-      setIsReminderModalOpen(true);
-      localStorage.removeItem('scheduledReminderTime');
-      return;
-    }
-
-    if (lastStudyTime && !scheduledReminderTime) {
-      const msSinceLastStudy = now - Number(lastStudyTime);
-      if (msSinceLastStudy > 24 * 60 * 60 * 1000) {
-        setIsReminderModalOpen(true);
-      }
-    } else if (!lastStudyTime) {
-      // First time using app or missing data, just set it to now
-      localStorage.setItem('lastStudyTime', now.toString());
-    }
-  }, [currentTab]);
-
-  const handleScheduleReminder = (hours: number) => {
-    const scheduledTime = Date.now() + hours * 60 * 60 * 1000;
-    localStorage.setItem('scheduledReminderTime', scheduledTime.toString());
-    
-    if ('Notification' in window) {
-      Notification.requestPermission();
-    }
-    
-    setIsReminderModalOpen(false);
-  };
+  // H5 (audit coach 18/10/2026) : le « Reminder Modal » et sa logique sont
+  // supprimés — double du capitaine (données réelles vs lastStudyTime écrit
+  // à l'ouverture) et requestPermission sans aucune notification envoyée.
+  // updateLastStudyTime est conservé : il écrit un fait (dernière activité),
+  // consommé par aucun écran aujourd'hui.
 
   const updateLastStudyTime = () => {
     localStorage.setItem('lastStudyTime', Date.now().toString());
@@ -918,15 +890,13 @@ export default function App() {
         تجاوز إلى المحتوى الرئيسي
       </a>
 
-      {/* Reminder Modal */}
-      <StudyReminderModal 
-        isOpen={isReminderModalOpen} 
-        onClose={() => {
-          setIsReminderModalOpen(false);
-          updateLastStudyTime();
-        }} 
-        onSchedule={handleScheduleReminder} 
-      />
+      {/* H5 (audit coach 18/10/2026) : le sous-système « Study Reminder Modal »
+          est supprimé — il doublait la bulle du capitaine (qui, elle, part des
+          jours RÉELS de travail, pas d'un lastStudyTime écrit à l'ouverture),
+          demandait une permission de Notification sans jamais envoyer de
+          notification, et promettait un rappel à heures fixées sans
+          mécanisme : le seul rappel hors-app réel reste le Web Push serveur
+          (bloqué décision/infra). Une seule voix de rappel : le capitaine. */}
 
       <StudentAuthView
         isOpen={isAuthOpen}
@@ -1410,7 +1380,11 @@ export default function App() {
         et lui demander la réponse — ce qui annule la simulation. L'épreuve
         affiche sa propre explication de ce silence (MockExamPanel).
       */}
-      {!isFocusMode && !epreuveEnCours && currentTab !== 'chat' && (
+      {/* M3 (audit coach 18/10/2026, arbitrage d'écran) : la bulle se tait
+          AUSSI quand une vue plein écran a le clavier — quiz (activeQuizUnitId)
+          et défi (activeCombatChallenge). Mesure s_quiz : elle couvrait la
+          barre de navigation du quiz. */}
+      {!isFocusMode && !epreuveEnCours && currentTab !== 'chat' && activeQuizUnitId === null && activeCombatChallenge === null && (
         <div className="fixed bottom-24 left-4 z-40 md:bottom-8 flex flex-col items-start gap-2">
           {/*
             LA BULLE PARLE AU BON MOMENT, PAS EN PERMANENCE (loi 1). Un signal
@@ -1422,6 +1396,11 @@ export default function App() {
             <div
               data-testid="bulle-capitaine"
               dir="rtl"
+              // M3 (audit coach 18/10/2026) : la parole du capitaine est
+              // ANNONCÉE aux lecteurs d'écran — une bulle qui apparaît sans
+              // être énoncée est inexistante pour un élève non-voyant.
+              role="status"
+              aria-live="polite"
               className="max-w-[17rem] rounded-2xl rounded-bl-sm border border-[#006d37]/25 bg-white p-3 shadow-lg dark:border-emerald-400/25 dark:bg-[#121614]"
             >
               <p className="text-[11px] font-black text-[#006d37] dark:text-emerald-300">{CAPITAINE_IDENTITE_AR}</p>

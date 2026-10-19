@@ -63,7 +63,14 @@ describe('la bulle est réellement branchée dans App.tsx', () => {
     // Le module renvoie déjà `null` pendant l'épreuve, mais la ceinture ET les
     // bretelles : si une refonte du module oubliait cette règle, l'interface
     // doit continuer à se taire.
-    const garde = app.match(/\{!isFocusMode && !epreuveEnCours && currentTab !== 'chat' && \(/);
+    //
+    // VERROU MIS À JOUR CONSCIEMMENT (TC2/M3, audit coach 18/10/2026) : la garde
+    // se TAIT AUSSI pendant le quiz (activeQuizUnitId) et un défi ouvert
+    // (activeCombatChallenge) — la bulle ne doit couvrir aucun bouton. Le
+    // silence épreuve/focus/chat, lui, ne bouge pas.
+    const garde = app.match(
+      /\{!isFocusMode && !epreuveEnCours && currentTab !== 'chat' && activeQuizUnitId === null && activeCombatChallenge === null && \(/,
+    );
     expect(garde, 'la condition d’affichage a changé de forme').not.toBeNull();
   });
 });

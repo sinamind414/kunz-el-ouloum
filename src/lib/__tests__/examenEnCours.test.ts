@@ -114,7 +114,13 @@ describe('le câblage : un signal que personne n’écoute ne corrige rien', () 
       // Le bloc gardé contient désormais la BULLE puis le bouton (le bouton a
       // été enveloppé avec la bulle du capitaine) : la fenêtre doit couvrir les
       // deux sans dépasser la fin du bloc conditionnel.
-      const bloc = src.slice(c.index!, c.index! + 4000);
+      //
+      // VERROU MIS À JOUR CONSCIEMMENT (TC2/M3, audit coach 18/10/2026) : la
+      // fenêtre passe de 4 000 à 6 000 caractères — la bulle porte désormais un
+      // commentaire ARIA (role="status"/aria-live) qui allonge le bloc entre la
+      // condition et le bouton. Aucune exigence n'a bougé : bouton + bulle
+      // gardés par la même condition, et « !epreuveEnCours » reste dedans.
+      const bloc = src.slice(c.index!, c.index! + 6000);
       expect(bloc, 'le bouton doit être gardé par cette condition').toContain('fab-morchid');
       expect(bloc, 'la bulle aussi : elle se tait pendant l’épreuve').toContain('bulle-capitaine');
       expect(c[0], 'la raison « épreuve » doit être dans la condition').toContain('!epreuveEnCours');

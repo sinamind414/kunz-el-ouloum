@@ -8,6 +8,7 @@
 // comme dans la donnée réelle (`serieDernierJour`).
 import { describe, expect, it } from 'vitest';
 import {
+  ACTION_UNE_QUESTION_AR,
   HEURE_DEBUT,
   motifDeInvitation,
   HEURE_PROTECTION_SERIE,
@@ -228,18 +229,63 @@ describe('robustesse : aucune entrée ne doit produire un message faux', () => {
     ).toBeNull();
   });
 
-  it('une seule erreur en mémoire ne déclenche RIEN (une fois, c’est le hasard)', () => {
-    const une = ctx({ joursSansTravail: 4, erreursAReprendre: 1 });
-    expect(invitationDuMoment(une)).toBeNull();
+  it('une seule erreur en mémoire : la parole parle de REPRISE, pas d’erreur (H5a, audit coach 18/10/2026)', () => {
+    // VERROU MIS À JOUR CONSCIEMMENT (18/10/2026) : avant, silence total — le
+    // motif « erreur » exigeait ≥ 2 erreurs et AUCUN autre motif ne répondait à
+    // l'absence. Un élève absent 4 jours avec une seule erreur restait sans
+    // voix : l'audit l'a mesuré (H5a). L'absence réelle mérite une reprise
+    // réelle — mais pas un sermon d'erreurs pour un seul accident.
+    const inv = invitationDuMoment(ctx({ joursSansTravail: 4, erreursAReprendre: 1 }))!;
+    expect(inv.situation).toBe('reprise');
+    expect(inv.cible).toBe('reviser');
   });
 
-  it('une série morte sans erreur connue et sans historique produit le silence', () => {
-    expect(invitationDuMoment(ctx({ joursSansTravail: 9, serie: 0, erreursAReprendre: 0 }))).toBeNull();
+  it('une série morte sans erreur connue et sans historique reçoit une REPRISE minuscule (H5a)', () => {
+    // VERROU MIS À JOUR CONSCIEMMENT (18/10/2026) : « rien à proposer » vendait
+    // le défaut mesuré par l'audit — l'absence ≥ 3 jours sans erreurs restait
+    // sans réponse. La reprise part de la dernière unité touchée (un fait),
+    // jamais d'une obligation générale ; sans cumul, elle ne prétend rien.
+    const inv = invitationDuMoment(ctx({ joursSansTravail: 9, serie: 0, erreursAReprendre: 0 }))!;
+    expect(inv.situation).toBe('reprise');
+    expect(inv.loi).toBe(3);
+    expect(inv.gainImmediatAr).not.toContain('0');
   });
 
   it('le résultat est DÉTERMINISTE (mêmes entrées → même invitation)', () => {
     const c = ctx({ joursSansTravail: 1, serie: 4 });
     expect(invitationDuMoment(c)).toEqual(invitationDuMoment(c));
+  });
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
+// H5(a) — AUDIT COACH MORCHID 18/10/2026 — L'ABSENCE PARLE, MÊME SANS ERREURS.
+//
+// Constat mesuré : le capitaine n'avait qu'UN motif d'absence (« erreurs ≥ 2 »).
+// Un élève absent ≥ 3 jours dont les QCM récents étaient justes ne recevait
+// JAMAIS de parole : la réussite même le rendait invisible. Le livre est sans
+// ambiguïté : l'absence est le signal premier — on repart de la plus petite
+// action, ancrée sur le DERNIER fait réel (la dernière unité touchée).
+// ─────────────────────────────────────────────────────────────────────────────
+describe('H5a — l’absence ≥ 3 jours sans erreurs mérite une reprise réelle', () => {
+  const situation = { joursSansTravail: 3, serie: 0, erreursAReprendre: 0 };
+
+  it('avec une dernière unité connue, la reprise part de CE fait — pas d’une consigne générale', () => {
+    // ctx() pose `derniereUnite: 'التركيب الضوئي'` par défaut : le message doit
+    // la nommer (le fait), et pointer la relecture (reviser), pas ailleurs.
+    const inv = invitationDuMoment(ctx(situation))!;
+    expect(inv.situation).toBe('reprise');
+    expect(inv.messageAr).toContain('التركيب الضوئي');
+    expect(inv.actionAr).toContain('التركيب الضوئي');
+    expect(inv.cible).toBe('reviser');
+  });
+
+  it('sans dernière unité connue : la plus petite action possible, et la cible reste honnête (training)', () => {
+    // Pas d'unité touchée → on ne fabrique PAS un ancrage inventé : c'est la
+    // forme « une question » (déjà livrée, constante partagée avec l'escalade).
+    const inv = invitationDuMoment(ctx({ ...situation, derniereUnite: null }))!;
+    expect(inv.situation).toBe('reprise');
+    expect(inv.actionAr).toBe(ACTION_UNE_QUESTION_AR);
+    expect(inv.cible).toBe('training');
   });
 });
 
@@ -381,7 +427,7 @@ describe('Le sprint (phase 5) — la date du BAC entre dans la décision', () =>
     expect(inv.cible).not.toBe('examens');
   });
 
-  it('et les silences restent des silences, en sprint comme ailleurs', () => {
+  it('et les silences principaux restent des silences, en sprint comme ailleurs', () => {
     expect(invitationDuMoment(ctxSprint({ joursSansTravail: 0 })), 'travail déjà fait').toBeNull();
     expect(invitationDuMoment(ctxSprint({ epreuveEnCours: true })), 'pendant l’épreuve').toBeNull();
     expect(invitationDuMoment(ctxSprint({ heure: 23 })), 'la nuit').toBeNull();
@@ -389,10 +435,14 @@ describe('Le sprint (phase 5) — la date du BAC entre dans la décision', () =>
       invitationDuMoment(ctxSprint({ derniereInvitationIgnoreeMs: MAINTENANT - 60_000 })),
       'message ignoré il y a une minute',
     ).toBeNull();
+    // 18/10/2026 (H5a) : le dernier silence de cette liste — « rien à proposer »
+    // pour 5 jours d'absence sans erreurs — a été retiré CONSCIEMMENT. Ce
+    // silence vendait le défaut mesuré par l'audit ; l'absence parle désormais
+    // (branch H5a — la même reprise minuscule qu'en dehors du sprint).
     expect(
       invitationDuMoment(ctxSprint({ serie: 0, joursSansTravail: 5, erreursAReprendre: 0 })),
-      'rien à proposer',
-    ).toBeNull();
+      'l’absence ≥ 3 jours parle désormais (H5a)',
+    ).not.toBeNull();
   });
 
   it('un sprint non déclaré ne change RIEN au comportement historique', () => {

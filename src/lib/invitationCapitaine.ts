@@ -516,6 +516,30 @@ export function invitationDuMoment(ctx: ContexteCapitaine): Invitation | null {
     });
   }
 
+  // ── H5(a) (audit coach 18/10/2026) : série morte SANS erreurs enregistrées. ──
+  // Constat mesuré : un élève absent ≥ 3 jours avec 0 erreur en mémoire ne
+  // recevait AUCUNE parole — le capitaine n'avait que le motif « erreurs »,
+  // et un QCM réussi laissait l'absence sans réponse. Une absence réelle
+  // mérite une reprise réelle : on repart de DERNIÈRE unité touchée (fait),
+  // par la plus petite action (loi 3), jamais d'une obligation générale.
+  if (j !== null && j >= 3 && ctx.erreursAReprendre < 2) {
+    return parler({
+      situation: 'reprise',
+      messageAr: ctx.derniereUnite
+        ? `توقّفت عند «${ctx.derniereUnite}». العودة تبدأ بخطوة واحدة.`
+        : 'العودة تبدأ بخطوة واحدة، لا بالمنهج كله.',
+      actionAr: ctx.derniereUnite
+        ? `اقرأ فقرة واحدة من «${ctx.derniereUnite}»، ثم تفتح تمرينًا.`
+        : ACTION_UNE_QUESTION_AR,
+      gainImmediatAr:
+        cumul > 0
+          ? `${cumul} ${cumul > 1 ? 'أيام' : 'يوم'} في رصيدك — اليوم يُضيف واحدًا.`
+          : 'يوم اليوم يُضاف إلى رصيدك.',
+      cible: ctx.derniereUnite ? 'reviser' : 'training',
+      loi: 3,
+    });
+  }
+
   // ── Loi 3 : jamais rien fait → la règle des 2 minutes, littéralement. ────
   if (j === null && ctx.serie === 0) {
     return parler({

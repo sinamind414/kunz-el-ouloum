@@ -77,7 +77,7 @@ export default function RelaisCapitaine({
 
   if (question.genre === 'nomination') {
     return (
-      <div data-testid="relais-capitaine" dir="rtl" className={CARTE}>
+      <div data-testid="relais-capitaine" dir="rtl" role="status" aria-live="polite" className={CARTE}>
         <p className="text-[11px] font-black text-[#006d37] dark:text-emerald-300">{CAPITAINE_IDENTITE_AR}</p>
         <p className="mt-1 text-[12px] font-bold leading-relaxed text-[#1f2b24] dark:text-gray-100">
           {question.questionAr}

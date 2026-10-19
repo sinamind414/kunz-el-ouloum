@@ -37,6 +37,10 @@ import { BAC_EXAM_DATE, bacDaysLeft } from './utils/dashboardActions';
 import { jourLocal } from './utils/dayKey';
 // Négation/réfutation : primitives partagées avec le scorer C2 de Tadwin.
 import { tokenAffirme } from './lib/validation/negationAr';
+// TC2/H4 (audit coach 18/10/2026) : « راجع أخطائي » / « ما مستواي » lisent
+// désormais l'état élève déposé par le capitaine (un seul assemblage — voir
+// lib/etatEleveRuntime.ts pour pourquoi un pointeur et pas un import lourd).
+import { etatEleveSiChargee } from './lib/etatEleveRuntime';
 import { PARCOURS_DOMAINS } from './lib/parcours/parcoursPath';
 import { construireVocabulaire, domaineProbable, domaineDeUnite } from './lib/routageDomaine';
 import { gesteDuMessage, gesteFatigueDuMessage, type GesteDialogue } from './lib/gesteDialogue';
@@ -1387,6 +1391,30 @@ export function startDiagnostic(session: BotSession): EngineResult {
 
 export function reviewMistakes(session: BotSession): EngineResult {
   if (session.mistakes.length === 0) {
+    // ── TC2/H4 (audit coach 18/10/2026) ──
+    // Le message initial (« لا توجد أخطاء مسجلة لديك ») affirmait une absence
+    // GÉNÉRALE d'erreurs alors qu'il ne décrivait que la SESSION courante du
+    // chat — pendant que le دفتر الأخطاء (QCM, mémoire croisée) pouvait porter
+    // des dizaines d'erreurs. Deux cerveaux, deux vérités contradictoires.
+    // Désormais : quand l'état élève (déposé par le capitaine) connaît des
+    // erreurs réelles, on les dit — vrai chiffre, vrai motif dominant — et on
+    // renvoie au دفتر où leur libellé complet vit. Si l'état n'est pas là,
+    // le message d'origine reste (il dit « ...بعد » — pas encore).
+    const etat = etatEleveSiChargee();
+    if (etat && etat.erreurs.chargee && etat.erreurs.total > 0) {
+      const motifDominant = etat.erreurs.dominante
+        ? ` — النمط الأكثر تكرارًا: «${etat.erreurs.dominante.code}» (تكرار ${etat.erreurs.dominante.occurrences})`
+        : '';
+      return {
+        session,
+        action: {
+          text:
+            `✅ هذه الجلسة بلا أخطاء مسجّلة. غير أن **دفتر أخطائك** يسجّل ${etat.erreurs.total} خطأً${motifDominant}.\n\n` +
+            'افتح «دفتر الأخطاء» من المفتاح: عالِج نمطًا واحدًا في كل مرة، ثم أعد المحاولة.',
+          quickActions: [ACTIONS_COACH.actualiserDiagnostic, ACTIONS_COACH.missionQuotidienne, 'العودة للقائمة الرئيسية'],
+        },
+      };
+    }
     return { session, action: { text: '✅ لا توجد أخطاء مسجلة لديك بعد. واصل التدريب لتسجيل نقاط ضعفك ومعالجتها!', quickActions: ['العودة للقائمة الرئيسية'] } };
   }
   const cards = session.mistakes.map((id) => getCardById(id)).filter((c): c is KnowledgeCard => Boolean(c));
@@ -1514,7 +1542,22 @@ export function diagnosticCoach(session: BotSession, rawInput?: string): EngineR
     ? '🎉 كل وحدة بدأتها على مستوى قوي. احتفظ بالإيقاع: مراجعة خفيفة كل يوم أفضل من حصص طويلة متباعدة.'
     : `📌 ابدأ بهذه الوحدات بالترتيب — لها أكبر أثر على معدلك.\n\n${lignes}`;
 
-  const text = `${entete}\n\n${conseil}`;
+  // ── TC2/H4 (audit coach 18/10/2026) : le diagnostic voit la mémoire QCM. ──
+  // Avant : le تشخيص ne décrivait que le parcours (leçons/جسر/اختبار الكتاب) ;
+  // les erreurs du دفتر الأخطاء restaient invisibles au chat. Désormais, quand
+  // l'état élève porté par le capitaine connaît des erreurs réelles, la vue
+  // d'ensemble les dit — vrai total, vrai motif dominant — jamais inventés.
+  const etatEleve = etatEleveSiChargee();
+  const ligneErreursQcm =
+    etatEleve && etatEleve.erreurs.chargee && etatEleve.erreurs.total > 0
+      ? `\n\n📒 دفتر أخطائك يسجّل ${etatEleve.erreurs.total} خطأً${
+          etatEleve.erreurs.dominante
+            ? ` — النمط الأكثر تكرارًا: «${etatEleve.erreurs.dominante.code}» (تكرار ${etatEleve.erreurs.dominante.occurrences})`
+            : ''
+        }`
+      : '';
+
+  const text = `${entete}${ligneErreursQcm}\n\n${conseil}`;
 
   const quickActions = [
     ...priorite.map((d) => `${ACTIONS_COACH.expliquerUnite}${d.titre}`),

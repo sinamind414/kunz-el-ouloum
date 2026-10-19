@@ -66,6 +66,7 @@ import {
   type FamilleCompetence,
   type FamilleErreurs,
 } from '../lib/etatEleve';
+import { fournirEtatEleve } from '../lib/etatEleveRuntime';
 import type { DailyGoalConfig } from '../types';
 
 // Réexport : ces trois fonctions vivaient ici avant l'état unique (elles servent
@@ -255,6 +256,17 @@ export function useInvitationCapitaine(options: {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [daily, maintenant, derniereUniteResolue, epreuveEnCours, rubrique, rubriqueAUnConseil, familleErreurs, familleCompetence, ignoreeMs],
   );
+
+  /**
+   * TC2/H4 (audit coach 18/10/2026) : l'état assemblé UNE fois ici est DÉPOSÉ
+   * pour le tuteur (`lib/etatEleveRuntime`). C'est la fin du « deux cerveaux » :
+   * « راجع أخطائي » et « ما مستواي » dans le chat lisent le même assemblage que
+   * la bulle — sans double lecture de stockage et sans importer `profilErreurs`
+   * dans l'entrée du bundle (le pointeur coûte un setState, pas des kilo-octets).
+   */
+  useEffect(() => {
+    fournirEtatEleve(etat);
+  }, [etat]);
 
   /**
    * LES DEUX VOIX, ET UNE SEULE QUI PARLE.
