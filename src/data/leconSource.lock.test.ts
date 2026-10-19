@@ -83,14 +83,16 @@ describe('bookIndex — uniteId 1-11 ↔ chapitres de l index (traçabilité str
 describe('bookIndex — appariement leçons ↔ chapitres (mesure figée)', () => {
   const cles = toutesCles();
 
-  it('60 clés dans la séquence officielle ; 45 mappées, 15 nulls documentés', () => {
-    expect(cles).toHaveLength(60);
+  it('72 clés dans la séquence officielle ; 55 mappées, 17 nulls documentés', () => {
+    expect(cles).toHaveLength(72); // TC6 : 60 + 12 leçons actives orphelines câblées
     const mappes = cles.filter((k) => sourceLivre(k, cleToTitre(k)) !== null);
-    expect(mappes).toHaveLength(45);
+    expect(mappes).toHaveLength(55);
     const nulls = cles.filter((k) => sourceLivre(k, cleToTitre(k)) === null);
     // LISTE FIGÉE — toute évolution doit être un choix relu, pas un effet de bord.
     expect(nulls).toEqual([
       'amino_acid_behavior', // pHi : activité interne au ch. 8, sans en-tête TDM propre
+      'd1-u1-l1-expression-genique', // TC6 : leçon d'ouverture d'unité (titre = الوحدة 1), sans chapitre dédié
+      'd1-u3-l1-enzyme', // TC6 : « الإنزيمات والحفز » fondement de l'unité, sans en-tête TDM unique (même nature qu'amino_acid_behavior)
       'd2-u6-l1-hill-ruben', // leçons expérimentales : démarche, pas de chapitre TDM dédié
       'd2-u6-l2-jagendorf',
       'd2-u6-l3-calvin',
@@ -138,9 +140,12 @@ describe('bookIndex — appariement leçons ↔ chapitres (mesure figée)', () =
       if (s) comptes[s.mode] = (comptes[s.mode] ?? 0) + 1;
     }
     expect(comptes).toEqual({
-      'auto-exact': 34,
-      'auto-compose': 1,
-      'auto-contenance': 4,
+      // TC6 : +8 auto-exact (l2/l3, immunity 14/16/18/20, protein C8, synapse
+      // C26), +1 auto-compose (subduction C42,C43), +1 auto-contenance
+      // (seismic_waves C45) — mesuré par sonde, figé ici après relecture.
+      'auto-exact': 42,
+      'auto-compose': 2,
+      'auto-contenance': 5,
       'ancre-documentee': 6,
     });
   });

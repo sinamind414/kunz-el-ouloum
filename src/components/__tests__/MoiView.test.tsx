@@ -80,7 +80,8 @@ describe('MoiView — شجرتك (arbre)', () => {
 
     // Une feuille PAR LEÇON (les جسار sont des points, pas des feuilles).
     expect(feuilles(container)).toHaveLength(NB_LECONS);
-    expect(NB_LECONS + NB_JALONS).toBe(71);
+    // TC6 : 72 leçons (60 + 12 orphelines câblées) + 11 jalons = 83.
+    expect(NB_LECONS + NB_JALONS).toBe(83);
   });
 
   it('colore la feuille selon l état : pâle → verte (fait) → or (fragile)', () => {

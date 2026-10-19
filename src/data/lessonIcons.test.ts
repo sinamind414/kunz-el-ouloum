@@ -147,7 +147,11 @@ describe('lessonIcons — leçons actives', () => {
         total++;
       }
     }
-    expect(total).toBe(13); // U2 سلوك الأحماض الأمينية (pHi), U4 prérequis 2AS + coopération, U6×3 (hill/jagendorf/calvin), U7×2 (démarche + racker), U9 benioff, U11 migmatite
+    // TC6 : 13 + 12 orphelines câblées = 25 actives servies
+    // (U1×3 l1/l2/l3, U2 protein, U3 d1-u3-l1, U4×4 immunité, U5 synapse,
+    // U10 seismic, U11 subduction) — icônes par mots-clés du titre ou repli
+    // licite sur l'icône de l'unité.
+    expect(total).toBe(25);
   });
 
   it('sémantique des 6 leçons actives actuelles', () => {

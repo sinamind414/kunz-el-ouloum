@@ -24,14 +24,16 @@ async function ouvrirEspaceActif() {
 }
 
 describe('LessonsView — leçons actives par icônes', () => {
-  it('écran d’entrée : les 4 unités actives en icônes (U6, U7, U9, U11)', async () => {
+  it('écran d’entrée : les 10 unités actives en icônes (TC6 : U1-U5 et U10 gagnent leurs actives)', async () => {
     await ouvrirEspaceActif();
     expect(screen.getByTestId('unites-actives-icones')).toBeTruthy();
-    for (const uid of [6, 7, 9, 11]) {
+    // TC6 (audit architecture §6/W7) : U1, U2, U3, U4, U5 et U10 ont désormais
+    // chacune au moins une leçon active câblée — l'écran icônes les liste toutes.
+    for (const uid of [1, 2, 3, 4, 5, 6, 7, 9, 10, 11]) {
       expect(screen.getByTestId(`unite-active-${uid}`)).toBeTruthy();
     }
-    // Aucune unité sans leçon active (U1-U5 et U8 restent en leçons passives).
-    expect(screen.queryByTestId('unite-active-1')).toBeNull();
+    // U8 reste la seule unité sans leçon active (leçons passives uniquement).
+    expect(screen.queryByTestId('unite-active-8')).toBeNull();
     expect(screen.queryByTestId('lecons-actives-icones')).toBeNull();
   });
 
@@ -48,7 +50,8 @@ describe('LessonsView — leçons actives par icônes', () => {
     await user.click(screen.getByTestId('unite-active-6'));
     expect(screen.getAllByTestId(/^lecon-active-/)).toHaveLength(4);
     await user.click(screen.getByTestId('bande-unite-active-11'));
-    expect(screen.getAllByTestId(/^lecon-active-/)).toHaveLength(1);
+    // TC6 : subduction (الفصل 43-44) rejoint migmatite dans U11 → 2 leçons.
+    expect(screen.getAllByTestId(/^lecon-active-/)).toHaveLength(2);
     expect(screen.getByText(/شواهد التقلص/)).toBeTruthy();
     // Retour aux unités actives.
     await user.click(screen.getByText('عودة إلى وحدات الدروس النشيطة'));

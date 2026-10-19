@@ -12,6 +12,7 @@
 // Rappel : tout item validé planifie une révision à J+14 (cf. docs/tadwin_decisions.md).
 
 import { PARCOURS_DOMAINS, PARCOURS_FLAT } from './parcoursPath';
+import { migrerIdsParcours, versionMigrationTC6 } from './parcoursIdMigration';
 
 const STORAGE_KEY = 'kunz_parcours_v1';
 export const REVIEW_DELAY_DAYS = 14;
@@ -37,6 +38,8 @@ export interface ParcoursState {
   /** itemId -> date d'échéance du rappel (J+14). */
   reviews: Record<string, string>;
   extraAllowance: number;
+  /** Marque de migration des ids positionnels (parcoursIdMigration.ts). */
+  mig?: number;
 }
 
 export function todayKey(now: Date = new Date()): string {
@@ -52,7 +55,7 @@ function addDays(iso: string, days: number): string {
 }
 
 export function etatParDefaut(): ParcoursState {
-  return { done: {}, reviews: {}, extraAllowance: 0 };
+  return { done: {}, reviews: {}, extraAllowance: 0, mig: versionMigrationTC6() };
 }
 
 export function loadParcours(): ParcoursState {
@@ -60,11 +63,21 @@ export function loadParcours(): ParcoursState {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) return etatParDefaut();
     const j = JSON.parse(raw) as Partial<ParcoursState>;
-    return {
+    // Migration TC6 : 3 ids positionnels décalés (u3:l3→l4, u4:l4→l8,
+    // u4:l5→l9 — parcoursIdMigration.ts) — une seule fois, marqué.
+    const m = migrerIdsParcours({
       done: j.done && typeof j.done === 'object' ? j.done : {},
       current: typeof j.current === 'string' ? j.current : undefined,
       reviews: j.reviews && typeof j.reviews === 'object' ? j.reviews : {},
       extraAllowance: typeof j.extraAllowance === 'number' ? j.extraAllowance : 0,
+      mig: typeof j.mig === 'number' ? j.mig : undefined,
+    });
+    return {
+      done: m.done as ParcoursState['done'],
+      current: m.current,
+      reviews: m.reviews as ParcoursState['reviews'],
+      extraAllowance: m.extraAllowance,
+      mig: m.mig,
     };
   } catch {
     return etatParDefaut();
