@@ -24,6 +24,30 @@ describe('périmètre de la sauvegarde', () => {
     expect(estCleApplicative('boussole_teacher_token')).toBe(false);
   });
 
+  // H8 (audit « architecture » 19/10/2026) : les familles oubliées par
+  // l'ancienne liste — capitaine, tirets, tuteur, taille du texte.
+  it('couvre les clés du capitaine, du tuteur et des préférences (H8)', () => {
+    for (const cle of [
+      'boussole_profil_erreurs',
+      'boussole_relais_v1',
+      'boussole_prescriptions_v1',
+      'boussole_activity_queue',
+      'boussole_student',
+      'kunz-rappel-adaptatif-v1',
+      'kunz-gesture-recall-v1',
+      'bonz_taille_texte',
+      'smart_tutor_session',
+      'kunz_v3:drill_days',
+      'kunz_qcm_memoire_v1',
+    ]) {
+      expect(estCleApplicative(cle), cle).toBe(true);
+    }
+  });
+
+  it('ne reconnaît plus la clé morte scheduledReminderTime', () => {
+    expect(estCleApplicative('scheduledReminderTime')).toBe(false);
+  });
+
   it('ignore les clés d’autres sites ou extensions', () => {
     expect(estCleApplicative('ga_session')).toBe(false);
     expect(estCleApplicative('debug')).toBe(false);
@@ -32,14 +56,17 @@ describe('périmètre de la sauvegarde', () => {
   it('n’emporte que ce qui appartient à l’app', () => {
     localStorage.setItem('svt_progress', '{"xp":120}');
     localStorage.setItem('kunz.bacTrainer.bac2023_s2_e3.verb_analyser', 'نص');
+    // H8 : la mémoire du capitaine voyage avec le reste.
+    localStorage.setItem('boussole_profil_erreurs', '{"erreurs":3}');
     localStorage.setItem('boussole_token', 'secret');
     localStorage.setItem('autre_site', 'x');
     const backup = creerBackup();
     expect(Object.keys(backup.donnees).sort()).toEqual([
+      'boussole_profil_erreurs',
       'kunz.bacTrainer.bac2023_s2_e3.verb_analyser',
       'svt_progress',
     ]);
-    expect(backup.nbCles).toBe(2);
+    expect(backup.nbCles).toBe(3);
     expect(backup.schema).toBe(BACKUP_SCHEMA);
   });
 

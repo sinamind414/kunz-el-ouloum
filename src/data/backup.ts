@@ -16,9 +16,33 @@ import { jourLocal } from '../utils/dayKey';
 
 export const BACKUP_SCHEMA = 'kunz.backup.v1';
 
-/** Préfixes et clés produits par l'application. */
-const PREFIXES = ['kunz.', 'kunz_', 'svt_'];
-const CLES_SIMPLES = ['lastStudyTime', 'scheduledReminderTime', 'theme'];
+/**
+ * Préfixes et clés produits par l'application.
+ *
+ * TC3/H8 (audit « architecture » 19/10/2026) : l'ancienne liste laissait de
+ * côté des familles entières de clés — le capitaine (`boussole_*` : profil
+ * d'erreurs, prescriptions, relais, favoris…), les clés à tiret (`kunz-*` :
+ * rappel adaptatif, geste de rappel), la taille du texte (`bonz_`) et la
+ * session du tuteur (`smart_tutor_session`). Une sauvegarde restaurée sur un
+ * nouveau téléphone perdait le profil d'erreurs et les prescriptions —
+ * l'essentiel de la boucle « erreur → reprise ».
+ *
+ * Couverture des familles (inventaire exhaustif au 19/10, rejoué par le
+ * registre du verrou TC3) :
+ *   · kunz.  — plans de révision, séances d'épreuve, atelier Bac ;
+ *   · kunz_  — flashcards SRS, parcours, mémoire QCM (TC3), journaux, et les
+ *              clés à deux-points `kunz_v2:*` / `kunz_v3:*` / `kunz_review_v2:*` ;
+ *   · kunz-  — rappel adaptatif, geste de rappel (« kunz-…-v1 ») ;
+ *   · bonz_  — taille du texte (M5) ;
+ *   · svt_   — unités, progression, flashcards de référence ;
+ *   · boussole_ — profil d'erreurs, prescriptions, relais, favoris, filet
+ *                 d'activité… SAUF les deux jetons (EXCLUS ci-dessous).
+ *
+ * `scheduledReminderTime` est retirée des clés simples : plus aucun code
+ * n'écrit cette clé (verrouillé par tc2Brancher.lock).
+ */
+const PREFIXES = ['kunz.', 'kunz_', 'kunz-', 'bonz_', 'svt_', 'boussole_'];
+const CLES_SIMPLES = ['lastStudyTime', 'theme', 'smart_tutor_session'];
 
 /** Jamais sauvegardés : jetons d'authentification (sécurité). */
 const EXCLUS = ['boussole_token', 'boussole_teacher_token'];

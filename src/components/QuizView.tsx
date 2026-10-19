@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useRef } from 'react';
 import { useCompteARebours } from '../hooks/useWallClock';
 import { motion, AnimatePresence } from 'motion/react';
 import { X, Timer, CheckCircle2, AlertCircle, ArrowLeft, ArrowRight, RotateCcw, Award, Check, BookOpen, GraduationCap, AlertOctagon, HelpCircle, Eye, EyeOff } from 'lucide-react';
@@ -19,6 +19,11 @@ import { graineSession, melangerQuestions } from '../utils/melangeOptions';
 import { CAUSES_QCM, doitDemanderCause, QUESTION_CAUSE_AR, REMERCIEMENT_CAUSE_AR, causeParId } from '../data/diagnosticQuiz';
 import { enregistrerErreurs } from '../utils/profilErreurs';
 import { planifierRappelsPourErreurs } from '../lib/planificationRappels';
+// TC3/H1 (audit « architecture » 19/10/2026) : chaque réponse tourne la boucle
+// « erreur → reprise » — un échec rend la question due sous 24 h, et la séance
+// s'ouvre sur ce qui est dû. La règle (SM-2 borné, sans intervalle inventé)
+// vit ENTIRÈREMENT dans lib/memoireQuestions.ts — ici, on ne fait qu'appeler.
+import { enregistrerReponseQcm, ordonnerParDues } from '../lib/memoireQuestions';
 
 interface QuizViewProps {
   unitId: number;
@@ -49,6 +54,19 @@ export default function QuizView({ unitTitle, questions, onClose, onQuizComplete
   const [causeDeclaree, setCauseDeclaree] = useState<string | null>(null);
   const [causeDemandee, setCauseDemandee] = useState(false);
 
+  // ── TC3/H1 : LES QUESTIONS ACTIVES DE CETTE SÉANCE. ─────────────────────
+  // À l'ouverture : les dues de la mémoire passent en tête (reprise de
+  // l'échec), le reste suit. Au clic « أعد أخطائي فقط » : SEULES les ratées
+  // de la séance sont rejouées. `null` tant qu'aucune reprise n'a été demandée.
+  const [actives, setActives] = useState<QuizQuestion[]>(() => ordonnerParDues(questions));
+  // Le crédit de progression (XP, minutes, score d'unité) ne se paie qu'UNE
+  // fois : la reprise des ratées est du travail supplémentaire, pas une
+  // seconde note qui écraserait la première.
+  const dejaCrediteRef = useRef(false);
+  // Les questions ratées de la séance qui vient de se terminer — la matière
+  // de la liste de fin et du bouton de reprise.
+  const [rateesSeance, setRateesSeance] = useState<QuizQuestion[]>([]);
+
   /**
    * Graine de la session : stable tant que l'onglet/la session vit, neuve à la
    * session suivante. Mémoïsée pour que les propositions ne se réordonnent pas
@@ -63,11 +81,20 @@ export default function QuizView({ unitTitle, questions, onClose, onQuizComplete
    * comparer une position affichée à une clé d'origine.
    */
   const vues = useMemo(
-    () => melangerQuestions(questions, 'correctAnswerIndex', graine),
-    [questions, graine],
+    () => melangerQuestions(actives, 'correctAnswerIndex', graine),
+    [actives, graine],
   );
 
   const currentQuestion = vues[currentIndex] || vues[0];
+
+  /** La réponse garde-t-elle la question fermée ? (vues et actives même index) */
+  const estCorrecteReponse = (index: number): boolean => {
+    const q = vues[index];
+    if (!q) return false;
+    return q.kind === 'fillBlank'
+      ? fbResult[index] === true
+      : selectedAnswers[index] === q.correctAnswerIndex;
+  };
 
   const timeLeft = useCompteARebours({
     dureeSec: DUREE_QUIZ_SEC + essai * 0, // la dépendance utile est `actif`
@@ -116,12 +143,27 @@ export default function QuizView({ unitTitle, questions, onClose, onQuizComplete
   };
 
   const handleNext = () => {
-    if (currentIndex < questions.length - 1) {
+    if (currentIndex < actives.length - 1) {
       setCurrentIndex((prev) => prev + 1);
     } else {
+      // Fin de séance — TC3/H1 : CHAQUE réponse tourne la boucle mémoire
+      // (échec → due sous 24 h ; réussite à l'échéance → intervalle allongé).
+      // Un seul lieu d'écriture : ici, sur la séance complète, jamais dans les
+      // handlers de clic (une réponse modifiable jusqu'au verrouillage ne
+      // deviendrait un fait qu'à la fin).
+      for (let i = 0; i < actives.length; i += 1) {
+        const question = actives[i];
+        enregistrerReponseQcm(question.id, question.unitId, estCorrecteReponse(i));
+      }
+      setRateesSeance(actives.filter((_, i) => !estCorrecteReponse(i)));
       // Finished quiz!
       setQuizFinished(true);
-      onQuizComplete(score, questions.length);
+      // Le crédit (XP, minutes, score d'unité) ne se paie qu'à la PREMIÈRE
+      // fin : une reprise des ratées n'est pas une seconde note.
+      if (!dejaCrediteRef.current) {
+        dejaCrediteRef.current = true;
+        onQuizComplete(score, actives.length);
+      }
     }
   };
 
@@ -135,10 +177,10 @@ export default function QuizView({ unitTitle, questions, onClose, onQuizComplete
   const optionLetters = ['أ', 'ب', 'ج', 'د'];
 
   // Overall Score Stats
-  const scorePercentage = Math.round((score / questions.length) * 100);
+  const scorePercentage = Math.round((score / actives.length) * 100);
 
   /** Nombre d'erreurs de la séance — la matière première de la déclaration. */
-  const erreursQuiz = Math.max(0, questions.length - score);
+  const erreursQuiz = Math.max(0, actives.length - score);
 
   /**
    * L'élève déclare d'où vient son erreur. On enregistre ce qu'il DIT, jamais ce
@@ -232,7 +274,7 @@ export default function QuizView({ unitTitle, questions, onClose, onQuizComplete
             <section className="flex flex-col gap-3">
               <div className="flex justify-between items-center">
                 <span className="font-bold text-sm text-[#506072]">
-                  السؤال {currentIndex + 1} من {questions.length}
+                  السؤال {currentIndex + 1} من {actives.length}
                 </span>
                 
                 {/* Timer Badge */}
@@ -246,7 +288,7 @@ export default function QuizView({ unitTitle, questions, onClose, onQuizComplete
               <div className="w-full bg-[#e1e3e4] h-2.5 rounded-full overflow-hidden border border-[#bbcbbb]/10">
                 <div 
                   className="bg-[#006d37] h-full rounded-full transition-all duration-300" 
-                  style={{ width: `${((currentIndex + 1) / questions.length) * 100}%` }}
+                  style={{ width: `${((currentIndex + 1) / actives.length) * 100}%` }}
                 />
               </div>
             </section>
@@ -521,7 +563,7 @@ export default function QuizView({ unitTitle, questions, onClose, onQuizComplete
                 onClick={handleNext}
                 className="flex-[2] bg-[#006d37] text-[#ffffff] font-bold h-14 rounded-2xl flex items-center justify-center gap-2 shadow-md hover:bg-[#00562b] active:scale-95 transition-all disabled:opacity-40 cursor-pointer"
               >
-                <span>{currentIndex === questions.length - 1 ? 'إنهاء وحساب النتيجة' : 'التالي'}</span>
+                <span>{currentIndex === actives.length - 1 ? 'إنهاء وحساب النتيجة' : 'التالي'}</span>
                 <ArrowLeft className="w-4 h-4" />
               </button>
             </section>
@@ -562,7 +604,7 @@ export default function QuizView({ unitTitle, questions, onClose, onQuizComplete
               <div className="w-[1px] bg-[#e2dabf]" />
               <div className="text-center">
                 <span className="text-xs text-[#504441] block">النتيجة الإجمالية</span>
-                <span className="text-4xl font-black text-[#944a00]">{score} / {questions.length}</span>
+                <span className="text-4xl font-black text-[#944a00]">{score} / {actives.length}</span>
               </div>
             </div>
 
@@ -625,20 +667,73 @@ export default function QuizView({ unitTitle, questions, onClose, onQuizComplete
               </p>
             )}
 
+            {/* TC3/H1 — CE QUI RESTE OUVERT : la liste des ratées de la séance,
+                nommées une à une. Avant cette tranche, une question ratée
+                disparaissait à jamais (« إعادة المحاولة » rejouait tout, dans
+                le même ordre). Ces questions sont DÛES demain : elles ouvriront
+                la prochaine séance de l'unité. */}
+            {rateesSeance.length > 0 && (
+              <div
+                data-testid="quiz-erreurs-seance"
+                dir="rtl"
+                className="max-w-md mx-auto w-full rounded-2xl border border-[#ba1a1a]/25 bg-[#ffdad6]/20 p-4 text-right"
+              >
+                <p className="text-sm font-black text-[#ba1a1a]">
+                  أخطاء هذه الجلسة — ستعود في مقدمتك القادمة: {rateesSeance.length}
+                </p>
+                <ul className="mt-2 max-h-48 space-y-1.5 overflow-y-auto pl-1">
+                  {rateesSeance.map((q) => (
+                    <li key={q.id} className="text-[11px] leading-relaxed text-[#504441]">
+                      <span>•</span>{' '}
+                      <span className="texte-question-ratee">{q.questionText}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
             {/* Action Buttons */}
             <div className="flex flex-col gap-3 max-w-xs mx-auto">
-              <button 
+              <button
                 onClick={onClose}
                 className="w-full h-12 bg-[#006d37] hover:bg-[#00562b] text-[#ffffff] font-bold rounded-xl flex items-center justify-center gap-2 cursor-pointer transition-colors"
               >
                 <span>العودة للرئيسية</span>
               </button>
-              
-              <button 
+
+              {/* TC3/H1 — LA REPRISE CIBLÉE : rejouer SEULEMENT les ratées, pas
+                  les 50 questions. Crédit : aucun (déjà payé à la première fin),
+                  la mémoire, elle, tourne normalement. */}
+              {rateesSeance.length > 0 && (
+                <button
+                  type="button"
+                  data-testid="quiz-reprise-erreurs"
+                  onClick={() => {
+                    setActives(rateesSeance);
+                    setCurrentIndex(0);
+                    setSelectedAnswers({});
+                    setIsAnswered({});
+                    setFbInput({});
+                    setFbResult({});
+                    setEssai((n) => n + 1);
+                    setScore(0);
+                    setQuizFinished(false);
+                  }}
+                  className="w-full h-12 bg-[#fff9ed] hover:bg-[#fed65b]/10 text-[#006d37] border border-[#e2dabf] font-bold rounded-xl flex items-center justify-center gap-2 cursor-pointer transition-colors"
+                >
+                  <RotateCcw className="w-4 h-4" />
+                  <span>أعد أخطائي فقط ({rateesSeance.length})</span>
+                </button>
+              )}
+
+              <button
                 onClick={() => {
+                  setActives(questions);
                   setCurrentIndex(0);
                   setSelectedAnswers({});
                   setIsAnswered({});
+                  setFbInput({});
+                  setFbResult({});
                   setEssai((n) => n + 1);
                   setScore(0);
                   setQuizFinished(false);
