@@ -44,8 +44,15 @@
 import { normalizeAr } from '../../lib/validation/normalizeAr';
 import { ATTENDUS_BAREME, entitesDansTexte } from './dictionnaireCorrecteur';
 import { ATTENDUS_SUJET_BLANC_1 } from './attendusSujetBlanc1';
+import { ATTENDUS_SUJET_BLANC_2 } from './attendusSujetBlanc2';
 
-export type SujetId = 1 | 2 | 'blanc1';
+/** Les registres des sujets blancs originaux (H4a/H4b) — même contrat que 2025. */
+const ATTENDUS_SUJETS_BLANCS: Record<Exclude<SujetId, 1 | 2>, Record<ExerciceId, AttendusExercice>> = {
+  blanc1: ATTENDUS_SUJET_BLANC_1,
+  blanc2: ATTENDUS_SUJET_BLANC_2,
+};
+
+export type SujetId = 1 | 2 | 'blanc1' | 'blanc2';
 export type ExerciceId = 1 | 2 | 3;
 
 export interface AttenduItem {
@@ -419,7 +426,7 @@ const S2_EX3: AttenduItem[] = [
 
 // ── Assemblage du registre ───────────────────────────────────────────────────
 
-export const ATTENDUS_BAC2025: Record<Exclude<SujetId, 'blanc1'>, Record<ExerciceId, AttendusExercice>> = {
+export const ATTENDUS_BAC2025: Record<Exclude<SujetId, 'blanc1' | 'blanc2'>, Record<ExerciceId, AttendusExercice>> = {
   1: {
     1: { sujet: 1, exercice: 1, maxPts: 5, questionAr: Q_S1[1], items: [...itemsDepuisBuild('bac2025_S1/S1-Ex1/')] },
     2: { sujet: 1, exercice: 2, maxPts: 7, questionAr: Q_S1[2], items: S1_EX2 },
@@ -434,11 +441,12 @@ export const ATTENDUS_BAC2025: Record<Exclude<SujetId, 'blanc1'>, Record<Exercic
 
 /** Registre OBLIGATOIRE — lève si un groupe n'a pas d'attendus (jamais le cas). */
 export function attendusDeGroupe(sujet: SujetId, exercice: ExerciceId): AttendusExercice {
-  // H4a : le sujet blanc original a SON registre (attendusSujetBlanc1.ts) —
-  // même contrat : aucun attendu = interdiction de noter (Pierre 2).
-  if (sujet === 'blanc1') {
-    const gb = ATTENDUS_SUJET_BLANC_1[exercice];
-    if (!gb) throw new Error(`[attendus] aucun attendu pour le sujet blanc — Ex${exercice} (Pierre 2)`);
+  // H4a/H4b : les sujets blancs originaux ont LEURS registres (attendus-
+  // SujetBlanc{1,2}.ts) — même contrat : aucun attendu = interdiction de
+  // noter (Pierre 2).
+  if (typeof sujet === 'string') {
+    const gb = ATTENDUS_SUJETS_BLANCS[sujet]?.[exercice];
+    if (!gb) throw new Error(`[attendus] aucun attendu pour le sujet blanc ${sujet} — Ex${exercice} (Pierre 2)`);
     return gb;
   }
   const g = ATTENDUS_BAC2025[sujet]?.[exercice];
@@ -453,7 +461,7 @@ export function plafondAutoDe(g: AttendusExercice): number {
 }
 
 /** Étiquette lisible d'un groupe (sélecteur produit). */
-export const ETIQUETTES_GROUPES: Record<Exclude<SujetId, 'blanc1'>, Record<ExerciceId, string>> = {
+export const ETIQUETTES_GROUPES: Record<Exclude<SujetId, 'blanc1' | 'blanc2'>, Record<ExerciceId, string>> = {
   1: {
     1: 'الموضوع الأول · التمرين 1 (الخلايا المفترزة · 5 نقاط)',
     2: 'الموضوع الأول · التمرين 2 (البيرنويدة · 7 نقاط)',
@@ -469,7 +477,7 @@ export const ETIQUETTES_GROUPES: Record<Exclude<SujetId, 'blanc1'>, Record<Exerc
 /** Les 6 groupes exposés au produit (sélecteur « attendus obligatoires »). */
 export function listeGroupesBac2025(): { sujet: SujetId; exercice: ExerciceId; labelAr: string }[] {
   const out: { sujet: SujetId; exercice: ExerciceId; labelAr: string }[] = [];
-  for (const sujet of [1, 2] as Exclude<SujetId, 'blanc1'>[])
+  for (const sujet of [1, 2] as Exclude<SujetId, 'blanc1' | 'blanc2'>[])
     for (const exercice of [1, 2, 3] as ExerciceId[])
       out.push({ sujet, exercice, labelAr: ETIQUETTES_GROUPES[sujet][exercice] });
   return out;

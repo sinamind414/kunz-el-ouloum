@@ -184,9 +184,10 @@ export function noterExerciceCalibre(
   options?: OptionsNotation
 ): NoteCalibree {
   const registre = attendusDeGroupe(sujet, exercice); // OBLIGATOIRE — throw si absent
-  // H4a : le sujet blanc n'a pas de correspondance d'unité du correcteur 2025
-  // (ni fit, ni diagnostic d'unité — g === null est le chemin déjà prévu).
-  const g = sujet === 'blanc1' ? null : uniteDeGroupe(sujet, exercice);
+  // H4a/H4b : les sujets blancs n'ont pas de correspondance d'unité du
+  // correcteur 2025 (ni fit, ni diagnostic d'unité — g === null est le chemin
+  // déjà prévu).
+  const g = typeof sujet === 'string' ? null : uniteDeGroupe(sujet, exercice);
 
   // R6 : la couverture vient des ATTENDUS (jamais de la banque d'unité).
   const norm = normalizeAr(reponse || '').toLowerCase();

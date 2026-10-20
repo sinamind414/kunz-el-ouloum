@@ -19,7 +19,15 @@
 import { useEffect, useState } from 'react';
 import { ClipboardList, Clock, FileText, History, Pause, Play, RotateCcw, Send, ShieldCheck, Trash2 } from 'lucide-react';
 import { attendusDeGroupe, type SujetId } from '../data/dictionaries/attendusBac2025';
-import { SUJET_BLANC_1 } from '../data/sujetsBlancs/sujetBlanc1';
+import { SUJET_BLANC_1, type SujetBlanc } from '../data/sujetsBlancs/sujetBlanc1';
+import { SUJET_BLANC_2 } from '../data/sujetsBlancs/sujetBlanc2';
+
+/** Le sujet blanc actif, s'il y en a un (H4a/H4b). */
+function sujetBlancActif(sujet: SujetId): SujetBlanc | null {
+  if (sujet === 'blanc1') return SUJET_BLANC_1;
+  if (sujet === 'blanc2') return SUJET_BLANC_2;
+  return null;
+}
 import { noterCopieCalibree } from '../data/dictionaries/calibrationBac2025';
 import { demarrer, mettreEnPause, minutesEcoulees, remettreAZero, type ExamSession } from '../data/examSession';
 import { formatDuree, phaseEpreuve } from '../data/examTimer';
@@ -143,7 +151,11 @@ export default function Bac2025ExamView({ onClose }: { onClose: () => void }) {
             <div className="flex items-center justify-between mb-2">
               <h1 className="text-xl md:text-2xl font-black flex items-center gap-2">
                 <ClipboardList className="w-6 h-6 text-emerald-400" />
-                {sujet === 'blanc1' ? 'الوضعية المقترحة — الموضوع الأصلي الأول' : 'الإطار الرسمي — بكالوريا 2025'}
+                {sujet === 'blanc1'
+                  ? 'الوضعية المقترحة — الموضوع الأصلي الأول'
+                  : sujet === 'blanc2'
+                    ? 'الوضعية المقترحة — الموضوع الأصلي الثاني'
+                    : 'الإطار الرسمي — بكالوريا 2025'}
               </h1>
               <div className="flex items-center gap-2">
                 <button
@@ -192,7 +204,7 @@ export default function Bac2025ExamView({ onClose }: { onClose: () => void }) {
             data-testid="sujet-blanc-1"
             disabled={soumis}
             onClick={() => reset('blanc1')}
-            className={`col-span-2 p-3 rounded-2xl border-2 text-right font-black text-sm transition-all ${
+            className={`p-3 rounded-2xl border-2 text-right font-black text-sm transition-all ${
               sujet === 'blanc1'
                 ? 'border-emerald-500 bg-emerald-50 dark:bg-emerald-950/30 text-emerald-800 dark:text-emerald-300'
                 : 'border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 text-gray-500 hover:border-gray-300'
@@ -201,6 +213,21 @@ export default function Bac2025ExamView({ onClose }: { onClose: () => void }) {
             الموضوع المقترح الأول (أصلي)
             <span className="block text-[10px] font-bold text-gray-400 mt-1">
               المنعكس العصبي · تلقين الكزاز · التكتونية — 20 نقطة
+            </span>
+          </button>
+          <button
+            data-testid="sujet-blanc-2"
+            disabled={soumis}
+            onClick={() => reset('blanc2')}
+            className={`p-3 rounded-2xl border-2 text-right font-black text-sm transition-all ${
+              sujet === 'blanc2'
+                ? 'border-emerald-500 bg-emerald-50 dark:bg-emerald-950/30 text-emerald-800 dark:text-emerald-300'
+                : 'border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 text-gray-500 hover:border-gray-300'
+            } ${soumis && sujet !== 'blanc2' ? 'opacity-40' : ''}`}
+          >
+            الموضوع المقترح الثاني (أصلي)
+            <span className="block text-[10px] font-bold text-gray-400 mt-1">
+              تنظيم سكري · تنفس بذور · فقر منجلي — 20 نقطة
             </span>
           </button>
         </div>
@@ -301,14 +328,16 @@ export default function Bac2025ExamView({ onClose }: { onClose: () => void }) {
         {/* B3 — avis honnête : les documents officiels ne sont pas dans l'app.
             H4a — le sujet blanc original, lui, est INTÉGRALEMENT dans l'app :
             son énoncé (documents et questions) est affiché ci-dessous. */}
-        {sujet === 'blanc1' ? (
+        {(() => {
+          const blanc = sujetBlancActif(sujet);
+          return blanc ? (
           <div
             data-testid="sujet-blanc-enonce"
             className="rounded-2xl bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 p-4 space-y-3"
           >
-            <p className="text-sm font-black text-gray-800 dark:text-gray-100">{SUJET_BLANC_1.titreAr}</p>
-            <p className="text-[11px] font-bold text-gray-500">{SUJET_BLANC_1.sousTitreAr}</p>
-            {SUJET_BLANC_1.exercices.map((exercice) => (
+            <p className="text-sm font-black text-gray-800 dark:text-gray-100">{blanc.titreAr}</p>
+            <p className="text-[11px] font-bold text-gray-500">{blanc.sousTitreAr}</p>
+            {blanc.exercices.map((exercice) => (
               <div key={exercice.numero} className="space-y-2 border-t border-gray-100 dark:border-gray-800/60 pt-2">
                 <p className="text-xs font-black text-gray-700 dark:text-gray-200">{exercice.titreAr}</p>
                 <p className="text-[11px] font-bold text-gray-600 dark:text-gray-300 leading-relaxed">{exercice.texteAr}</p>
@@ -337,7 +366,8 @@ export default function Bac2025ExamView({ onClose }: { onClose: () => void }) {
             اقرأ الموضوع الأصلي في ورقة الامتحان أو في أرشيف ONEC، ثم حرِّر إجاباتك هنا؛ فالتقويم
             يجري على مقتضيات الإجابة الرسمية لا على إعادة طباعة الموضوع.
           </div>
-        )}
+          );
+        })()}
 
         {/* Les 3 exercices */}
         {([1, 2, 3] as const).map((ex) => {
@@ -393,7 +423,7 @@ export default function Bac2025ExamView({ onClose }: { onClose: () => void }) {
               <div>
                 <p className="text-xs font-black text-emerald-800 dark:text-emerald-300 flex items-center gap-1">
                   <ShieldCheck className="w-4 h-4" />
-                  النقطة الأولية الآلية — {sujet === 'blanc1' ? 'الموضوع المقترح' : `الموضوع ${sujet === 1 ? 'الأول' : 'الثاني'}`}
+                  النقطة الأولية الآلية — {sujet === 'blanc1' || sujet === 'blanc2' ? 'الموضوع المقترح' : `الموضوع ${sujet === 1 ? 'الأول' : 'الثاني'}`}
                 </p>
                 <p className="text-[10px] font-bold text-gray-500 mt-0.5">
                   على مقتضيات الإجابة الرسمية فقط · سقوف النزاهة مطبقة · القرار النهائي للمصحح

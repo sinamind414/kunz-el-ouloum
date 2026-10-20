@@ -10,7 +10,15 @@
 
 import { logActivityLocally } from './activityLog';
 
-export type ExamSujetId = 1 | 2 | 'blanc1';
+export type ExamSujetId = 1 | 2 | 'blanc1' | 'blanc2';
+
+/** Libellés de l'historique par sujet (partagé avec Bac2025ExamView). */
+const LIBELLES_SUJET: Record<ExamSujetId, string> = {
+  1: 'الإطار الرسمي 2025 — الموضوع الأول',
+  2: 'الإطار الرسمي 2025 — الموضوع الثاني',
+  blanc1: 'الموضوع المقترح الأول — إطار كامل',
+  blanc2: 'الموضوع المقترح الثاني — إطار كامل',
+};
 
 export interface ExamExerciceResult {
   sujet: ExamSujetId;
@@ -76,10 +84,7 @@ export function logExamAttempt(entry: Omit<ExamAttempt, 'id' | 'dateISO'>): Exam
     studentId: 'local',
     type: 'quiz',
     payload: {
-      title:
-        entry.sujet === 'blanc1'
-          ? 'الموضوع المقترح الأول — إطار كامل'
-          : `الإطار الرسمي 2025 — الموضوع ${entry.sujet === 1 ? 'الأول' : 'الثاني'}`,
+      title: LIBELLES_SUJET[entry.sujet],
       score: Math.round(entry.total * 100) / 100,
       total: 20,
       percent: Math.round((entry.total / 20) * 100),
