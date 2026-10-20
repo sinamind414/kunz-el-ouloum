@@ -77,7 +77,7 @@
       <line x1="0" y1="50" x2="160" y2="50" stroke="#3498DB" stroke-width="2"/>
       <line x1="0" y1="70" x2="160" y2="70" stroke="#E74C3C" stroke-width="2" stroke-dasharray="5,3"/>
       <text x="200" y="20" text-anchor="middle" class="ls">سلسلة بيبتيدية</text>
-      <text x="200" y="60" text-anchor="middle" class="ls" fill="#E74C3C">⚠️ رابطة هيدروجينية</text>
+      <text x="200" y="60" text-anchor="middle" class="ls" fill="#E74C3C">رابطة هيدروجينية</text>
     </g>
   </g>
 

@@ -38,27 +38,35 @@
  <!-- Stroma label -->
  <text x="140" y="-110" class="la" fill="#2E7D32" font-size="11">السدى</text>
  <text x="140" y="-98" class="la" fill="#2E7D32" font-size="11"></text>
- <text x="140" y="-82" class="ls" font-size="9">دورة كالفن</text>
+ <text x="140" y="-82" class="ls" font-size="11">دورة كالفن</text>
 
  <!-- Thylakoid label -->
  <text x="-130" y="-110" class="la" fill="#1B5E20" font-size="11">ثايلاكويد</text>
  <text x="-130" y="-98" class="la" fill="#1B5E20" font-size="11"></text>
- <text x="-130" y="-82" class="ls" font-size="9">تفاعلات ضوئية</text>
+ <text x="-130" y="-82" class="ls" font-size="11">تفاعلات ضوئية</text>
 </g>
 
 <!-- Inputs/Outputs -->
 <g transform="translate(30, 60)">
+ <!-- Vector markers replace platform-dependent emoji; text carries the full meaning. -->
+ <g fill="none" stroke="#F59E0B" stroke-width="1.5" stroke-linecap="round"><circle cx="-12" cy="16" r="4"/><path d="M-12 8v3m0 10v3m-8-8h3m10 0h3m-14-6 2 2m8 8 2 2m0-12-2 2m-8 8-2 2"/></g>
+ <path d="M-12 25 C-18 33 -16 37 -12 37 C-8 37 -6 33 -12 25Z" fill="#38BDF8"/>
+ <g fill="#64748B"><circle cx="-14" cy="52" r="2.5"/><circle cx="-8" cy="52" r="2.5"/><circle cx="-11" cy="57" r="2.5"/></g>
  <text x="0" y="0" class="la" fill="#2ECC71">المدخلات:</text>
- <text x="0" y="20" class="ls">☀️ طاقة ضوئية</text>
- <text x="0" y="38" class="ls">💧 H₂O (ماء)</text>
- <text x="0" y="56" class="ls">🌬️ CO₂ (ثاني أكسيد الكربون)</text>
+ <text x="0" y="20" class="ls">طاقة ضوئية</text>
+ <text x="0" y="38" class="ls">H₂O (ماء)</text>
+ <text x="0" y="56" class="ls">CO₂ (ثاني أكسيد الكربون)</text>
 </g>
 
 <g transform="translate(580, 60)">
+ <!-- Compact vector markers remain consistent in browsers and print. -->
+ <path d="M-16 12 L-12 8 L-8 12 L-12 16Z" fill="#22C55E"/>
+ <g fill="none" stroke="#0EA5E9" stroke-width="1.5"><circle cx="-14" cy="34" r="3"/><circle cx="-8" cy="34" r="3"/><path d="M-11 34h-1"/></g>
+ <path d="M-12 47l-4 7h4l-2 6 6-8h-4l2-5Z" fill="#F59E0B"/>
  <text x="0" y="0" class="la" fill="#E74C3C">النواتج:</text>
- <text x="0" y="20" class="ls">🍬 C₆H₁₂O₆ (غلوكوز)</text>
- <text x="0" y="38" class="ls">🌬️ O₂ (أكسجين ناتج عن تفكك الماء)</text>
- <text x="0" y="56" class="ls">⚡ ATP + NADPH (طاقة ونواقل مرجعة)</text>
+ <text x="0" y="20" class="ls">C₆H₁₂O₆ (غلوكوز)</text>
+ <text x="0" y="38" class="ls">O₂ (أكسجين ناتج عن تفكك الماء)</text>
+ <text x="0" y="56" class="ls">ATP + NADPH (طاقة ونواقل مرجعة)</text>
 </g>
 
 <!-- Equation -->
@@ -70,8 +78,8 @@
 
 <g transform="translate(30, 510)">
  <text x="0" y="0" class="la" font-size="11">مراحل التركيب الضوئي:</text>
- <text x="0" y="18" class="ls" font-size="9">1. التفاعل الضوئي: في غشاء الثايلاكويد ← ATP + NADPH + O₂</text>
- <text x="0" y="34" class="ls" font-size="9">2. دورة كالفن: في السدى ← تثبيت CO₂ ← غلوكوز</text>
+ <text x="0" y="18" class="ls" font-size="11">1. التفاعل الضوئي: في غشاء الثايلاكويد ← ATP + NADPH + O₂</text>
+ <text x="0" y="34" class="ls" font-size="11">2. دورة كالفن: في السدى ← تثبيت CO₂ ← غلوكوز</text>
 </g>
 
 <text x="400" y="640" text-anchor="middle" class="ls">كنز العلوم — علوم الطبيعة والحياة 3AS</text>

@@ -55,12 +55,12 @@
     <!-- UA -->
     <rect x="125" y="0" width="40" height="27" fill="#F39C12" opacity="0.08"/><text x="145" y="17" class="ls">UAU</text>
     <rect x="125" y="27" width="40" height="27" fill="#F39C12" opacity="0.08"/><text x="145" y="44" class="ls">UAC</text>
-    <rect x="125" y="54" width="40" height="27" fill="#FF0000" opacity="0.15"/><text x="145" y="71" class="ls" fill="#C00">UAA ★</text>
-    <rect x="125" y="81" width="40" height="27" fill="#FF0000" opacity="0.15"/><text x="145" y="98" class="ls" fill="#C00">UAG ★</text>
+    <rect x="125" y="54" width="40" height="27" fill="#FF0000" opacity="0.15"/><text x="145" y="71" class="ls" fill="#C00">UAA *</text>
+    <rect x="125" y="81" width="40" height="27" fill="#FF0000" opacity="0.15"/><text x="145" y="98" class="ls" fill="#C00">UAG *</text>
     <!-- UG -->
     <rect x="165" y="0" width="40" height="27" fill="#2ECC71" opacity="0.08"/><text x="185" y="17" class="ls">UGU</text>
     <rect x="165" y="27" width="40" height="27" fill="#2ECC71" opacity="0.08"/><text x="185" y="44" class="ls">UGC</text>
-    <rect x="165" y="54" width="40" height="27" fill="#FF0000" opacity="0.15"/><text x="185" y="71" class="ls" fill="#C00">UGA ★</text>
+    <rect x="165" y="54" width="40" height="27" fill="#FF0000" opacity="0.15"/><text x="185" y="71" class="ls" fill="#C00">UGA *</text>
     <rect x="165" y="81" width="40" height="27" fill="#2ECC71" opacity="0.08"/><text x="185" y="98" class="ls">UGG</text>
 
     <!-- 3rd base -->
@@ -75,7 +75,7 @@
     <text x="230" y="44" class="ls" fill="#E74C3C">Phe</text>
     <text x="230" y="71" class="ls" fill="#E74C3C">Leu (لوسين)</text>
     <text x="230" y="98" class="ls" fill="#E74C3C">Leu</text>
-    <text x="230" y="125" class="ls" fill="#C00">★ STOP (إيقاف)</text>
+    <text x="230" y="125" class="ls" fill="#C00">* STOP (إيقاف)</text>
   </g>
 
   <!-- Row 2: C -->
@@ -90,12 +90,12 @@
     <text x="22" y="25" class="la" fill="#F39C12">A</text>
     <!-- START codon highlighted -->
     <rect x="125" y="54" width="40" height="27" fill="#2ECC71" opacity="0.4"/><text x="145" y="71" class="ls" fill="#006600">AUG ▶</text>
-    <text x="230" y="71" class="ls" fill="#006600">★ Met (ميتيونين) = بدء</text>
+    <text x="230" y="71" class="ls" fill="#006600">* Met (ميتيونين) = بدء</text>
   </g>
 
   <!-- Legend -->
   <g transform="translate(470, 55)">
-    <text x="0" y="0" class="la">🔑 الرموز:</text>
+    <text x="0" y="0" class="la">الرموز:</text>
     <rect x="0" y="12" width="16" height="12" rx="3" fill="#E74C3C" opacity="0.4"/><text x="22" y="23" class="ls">U (يوراسيل)</text>
     <rect x="0" y="30" width="16" height="12" rx="3" fill="#3498DB" opacity="0.4"/><text x="22" y="41" class="ls">C (سيتوزين)</text>
     <rect x="0" y="48" width="16" height="12" rx="3" fill="#F39C12" opacity="0.4"/><text x="22" y="59" class="ls">A (أدينين)</text>

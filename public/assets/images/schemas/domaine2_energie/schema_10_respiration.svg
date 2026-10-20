@@ -45,21 +45,21 @@
  <text x="120" y="20" text-anchor="middle" class="la" font-size="11" fill="#E65100">① التحلل السكري</text>
  <text x="120" y="38" text-anchor="middle" class="ls" font-size="9">غلوكوز ⟶ 2 بيروفات</text>
  <text x="120" y="54" text-anchor="middle" class="ls" font-size="9">2 ATP (طاقة قابلة للاستعمال) + 2 NADH</text>
- <text x="120" y="70" text-anchor="middle" class="ls" font-size="9">📍 الهيولى</text>
+ <text x="120" y="70" text-anchor="middle" class="ls" font-size="11">الهيولى</text>
 </g>
 <g transform="translate(280, 480)">
  <rect x="0" y="0" width="240" height="80" rx="10" fill="#C8E6C9" stroke="#2E7D32" stroke-width="1.5"/>
  <text x="120" y="20" text-anchor="middle" class="la" font-size="11" fill="#2E7D32">② دورة كريبس</text>
  <text x="120" y="38" text-anchor="middle" class="ls" font-size="9">بيروفات ⟶ CO₂</text>
  <text x="120" y="54" text-anchor="middle" class="ls" font-size="9">2 ATP (طاقة قابلة للاستعمال) + 6 NADH + 2 FADH₂</text>
- <text x="120" y="70" text-anchor="middle" class="ls" font-size="9">📍 مصفوفة الميتوكندري</text>
+ <text x="120" y="70" text-anchor="middle" class="ls" font-size="11">مصفوفة الميتوكندري</text>
 </g>
 <g transform="translate(530, 480)">
  <rect x="0" y="0" width="240" height="80" rx="10" fill="#BBDEFB" stroke="#1565C0" stroke-width="1.5"/>
  <text x="120" y="20" text-anchor="middle" class="la" font-size="11" fill="#1565C0">③ سلسلة التنفس</text>
  <text x="120" y="38" text-anchor="middle" class="ls" font-size="9">أكسدة NADH و FADH₂ ⟶ ATP (طاقة قابلة للاستعمال)</text>
  <text x="120" y="54" text-anchor="middle" class="ls" font-size="9">~34 ATP (طاقة قابلة للاستعمال)</text>
- <text x="120" y="70" text-anchor="middle" class="ls" font-size="9">📍 الغشاء الداخلي</text>
+ <text x="120" y="70" text-anchor="middle" class="ls" font-size="11">الغشاء الداخلي</text>
 </g>
 
 <!-- Equation -->
