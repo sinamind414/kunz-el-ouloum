@@ -10,8 +10,10 @@
 
 import { logActivityLocally } from './activityLog';
 
+export type ExamSujetId = 1 | 2 | 'blanc1';
+
 export interface ExamExerciceResult {
-  sujet: 1 | 2;
+  sujet: ExamSujetId;
   exercice: 1 | 2 | 3;
   points: number;
   maxPts: number;
@@ -21,7 +23,7 @@ export interface ExamExerciceResult {
 export interface ExamAttempt {
   id: string;
   dateISO: string;
-  sujet: 1 | 2;
+  sujet: ExamSujetId;
   total: number; // /20
   exercices: ExamExerciceResult[];
 }
@@ -74,7 +76,10 @@ export function logExamAttempt(entry: Omit<ExamAttempt, 'id' | 'dateISO'>): Exam
     studentId: 'local',
     type: 'quiz',
     payload: {
-      title: `الإطار الرسمي 2025 — الموضوع ${entry.sujet === 1 ? 'الأول' : 'الثاني'}`,
+      title:
+        entry.sujet === 'blanc1'
+          ? 'الموضوع المقترح الأول — إطار كامل'
+          : `الإطار الرسمي 2025 — الموضوع ${entry.sujet === 1 ? 'الأول' : 'الثاني'}`,
       score: Math.round(entry.total * 100) / 100,
       total: 20,
       percent: Math.round((entry.total / 20) * 100),

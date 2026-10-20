@@ -18,7 +18,8 @@
 
 import { useEffect, useState } from 'react';
 import { ClipboardList, Clock, FileText, History, Pause, Play, RotateCcw, Send, ShieldCheck, Trash2 } from 'lucide-react';
-import { attendusDeGroupe } from '../data/dictionaries/attendusBac2025';
+import { attendusDeGroupe, type SujetId } from '../data/dictionaries/attendusBac2025';
+import { SUJET_BLANC_1 } from '../data/sujetsBlancs/sujetBlanc1';
 import { noterCopieCalibree } from '../data/dictionaries/calibrationBac2025';
 import { demarrer, mettreEnPause, minutesEcoulees, remettreAZero, type ExamSession } from '../data/examSession';
 import { formatDuree, phaseEpreuve } from '../data/examTimer';
@@ -68,7 +69,7 @@ const PHASE_LABEL_2025: Record<string, string> = {
 };
 
 export default function Bac2025ExamView({ onClose }: { onClose: () => void }) {
-  const [sujet, setSujet] = useState<1 | 2>(1);
+  const [sujet, setSujet] = useState<SujetId>(1);
   const [reponses, setReponses] = useState<Record<1 | 2 | 3, string>>({ 1: '', 2: '', 3: '' });
   const [soumis, setSoumis] = useState(false);
   const [copie, setCopie] = useState<ReturnType<typeof noterCopieCalibree> | null>(null);
@@ -98,7 +99,7 @@ export default function Bac2025ExamView({ onClose }: { onClose: () => void }) {
     setSession(suivante);
   };
 
-  const reset = (nouveauSujet?: 1 | 2) => {
+  const reset = (nouveauSujet?: SujetId) => {
     setSoumis(false);
     setCopie(null);
     setReponses({ 1: '', 2: '', 3: '' });
@@ -142,7 +143,7 @@ export default function Bac2025ExamView({ onClose }: { onClose: () => void }) {
             <div className="flex items-center justify-between mb-2">
               <h1 className="text-xl md:text-2xl font-black flex items-center gap-2">
                 <ClipboardList className="w-6 h-6 text-emerald-400" />
-                الإطار الرسمي — بكالوريا 2025
+                {sujet === 'blanc1' ? 'الوضعية المقترحة — الموضوع الأصلي الأول' : 'الإطار الرسمي — بكالوريا 2025'}
               </h1>
               <div className="flex items-center gap-2">
                 <button
@@ -168,7 +169,7 @@ export default function Bac2025ExamView({ onClose }: { onClose: () => void }) {
           </div>
         </div>
 
-        {/* Choix du sujet */}
+        {/* Choix du sujet (2025 : les deux officiels · H4a : le sujet blanc original) */}
         <div className="grid grid-cols-2 gap-3">
           {([1, 2] as const).map((s) => (
             <button
@@ -187,6 +188,21 @@ export default function Bac2025ExamView({ onClose }: { onClose: () => void }) {
               </span>
             </button>
           ))}
+          <button
+            data-testid="sujet-blanc-1"
+            disabled={soumis}
+            onClick={() => reset('blanc1')}
+            className={`col-span-2 p-3 rounded-2xl border-2 text-right font-black text-sm transition-all ${
+              sujet === 'blanc1'
+                ? 'border-emerald-500 bg-emerald-50 dark:bg-emerald-950/30 text-emerald-800 dark:text-emerald-300'
+                : 'border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 text-gray-500 hover:border-gray-300'
+            } ${soumis && sujet !== 'blanc1' ? 'opacity-40' : ''}`}
+          >
+            الموضوع المقترح الأول (أصلي)
+            <span className="block text-[10px] font-bold text-gray-400 mt-1">
+              المنعكس العصبي · تلقين الكزاز · التكتونية — 20 نقطة
+            </span>
+          </button>
         </div>
 
         {/* Historique des notes (décision propriétaire : historique de notes) */}
@@ -282,15 +298,46 @@ export default function Bac2025ExamView({ onClose }: { onClose: () => void }) {
           </div>
         </div>
 
-        {/* B3 — avis honnête : les documents officiels ne sont pas dans l'app */}
-        <div
-          data-testid="bac2025-avis-documents"
-          className="p-3 rounded-2xl bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-900 text-[11px] font-bold text-amber-900 dark:text-amber-200 leading-relaxed"
-        >
-          تنبيه : نصوص الموضوعين الرسميين ومستنداتهما (الرسوم والجداول) غير مُضمَّنة في التطبيق.
-          اقرأ الموضوع الأصلي في ورقة الامتحان أو في أرشيف ONEC، ثم حرِّر إجاباتك هنا؛ فالتقويم
-          يجري على مقتضيات الإجابة الرسمية لا على إعادة طباعة الموضوع.
-        </div>
+        {/* B3 — avis honnête : les documents officiels ne sont pas dans l'app.
+            H4a — le sujet blanc original, lui, est INTÉGRALEMENT dans l'app :
+            son énoncé (documents et questions) est affiché ci-dessous. */}
+        {sujet === 'blanc1' ? (
+          <div
+            data-testid="sujet-blanc-enonce"
+            className="rounded-2xl bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 p-4 space-y-3"
+          >
+            <p className="text-sm font-black text-gray-800 dark:text-gray-100">{SUJET_BLANC_1.titreAr}</p>
+            <p className="text-[11px] font-bold text-gray-500">{SUJET_BLANC_1.sousTitreAr}</p>
+            {SUJET_BLANC_1.exercices.map((exercice) => (
+              <div key={exercice.numero} className="space-y-2 border-t border-gray-100 dark:border-gray-800/60 pt-2">
+                <p className="text-xs font-black text-gray-700 dark:text-gray-200">{exercice.titreAr}</p>
+                <p className="text-[11px] font-bold text-gray-600 dark:text-gray-300 leading-relaxed">{exercice.texteAr}</p>
+                {exercice.documents.map((doc) => (
+                  <div key={doc.id} className="rounded-xl bg-gray-50 dark:bg-black/20 p-2.5">
+                    <p className="text-[10px] font-black text-emerald-700 dark:text-emerald-400">{doc.titreAr}</p>
+                    <pre className="mt-1 text-[10px] font-bold text-gray-600 dark:text-gray-300 leading-relaxed whitespace-pre-wrap" dir="ltr" style={{ textAlign: 'left' }}>{doc.corpsAr}</pre>
+                  </div>
+                ))}
+                <ul className="space-y-1">
+                  {exercice.questions.map((q) => (
+                    <li key={q.id} className="text-[11px] font-bold text-gray-600 dark:text-gray-300">
+                      · {q.texteAr} <span className="text-gray-400">({q.points} ن)</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div
+            data-testid="bac2025-avis-documents"
+            className="p-3 rounded-2xl bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-900 text-[11px] font-bold text-amber-900 dark:text-amber-200 leading-relaxed"
+          >
+            تنبيه : نصوص الموضوعين الرسميين ومستنداتهما (الرسوم والجداول) غير مُضمَّنة في التطبيق.
+            اقرأ الموضوع الأصلي في ورقة الامتحان أو في أرشيف ONEC، ثم حرِّر إجاباتك هنا؛ فالتقويم
+            يجري على مقتضيات الإجابة الرسمية لا على إعادة طباعة الموضوع.
+          </div>
+        )}
 
         {/* Les 3 exercices */}
         {([1, 2, 3] as const).map((ex) => {
@@ -346,7 +393,7 @@ export default function Bac2025ExamView({ onClose }: { onClose: () => void }) {
               <div>
                 <p className="text-xs font-black text-emerald-800 dark:text-emerald-300 flex items-center gap-1">
                   <ShieldCheck className="w-4 h-4" />
-                  النقطة الأولية الآلية — الموضوع {sujet === 1 ? 'الأول' : 'الثاني'}
+                  النقطة الأولية الآلية — {sujet === 'blanc1' ? 'الموضوع المقترح' : `الموضوع ${sujet === 1 ? 'الأول' : 'الثاني'}`}
                 </p>
                 <p className="text-[10px] font-bold text-gray-500 mt-0.5">
                   على مقتضيات الإجابة الرسمية فقط · سقوف النزاهة مطبقة · القرار النهائي للمصحح

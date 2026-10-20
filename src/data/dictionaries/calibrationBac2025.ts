@@ -26,6 +26,7 @@ import {
   plafondAutoDe,
   type AttendusExercice,
   type AttenduItem,
+  type SujetId,
 } from './attendusBac2025';
 import {
   analyserSignaux,
@@ -110,7 +111,7 @@ export interface VerdictAttendu {
 }
 
 export interface NoteCalibree extends ResultatNotation {
-  sujet: 1 | 2;
+  sujet: SujetId;
   exercice: 1 | 2 | 3;
   /** Couverture des attendus AUTO crédités (0..1). */
   couverture: number;
@@ -178,12 +179,14 @@ export { formePresente };
 
 export function noterExerciceCalibre(
   reponse: string,
-  sujet: 1 | 2,
+  sujet: SujetId,
   exercice: 1 | 2 | 3,
   options?: OptionsNotation
 ): NoteCalibree {
   const registre = attendusDeGroupe(sujet, exercice); // OBLIGATOIRE — throw si absent
-  const g = uniteDeGroupe(sujet, exercice);
+  // H4a : le sujet blanc n'a pas de correspondance d'unité du correcteur 2025
+  // (ni fit, ni diagnostic d'unité — g === null est le chemin déjà prévu).
+  const g = sujet === 'blanc1' ? null : uniteDeGroupe(sujet, exercice);
 
   // R6 : la couverture vient des ATTENDUS (jamais de la banque d'unité).
   const norm = normalizeAr(reponse || '').toLowerCase();
@@ -331,7 +334,7 @@ export function noterExerciceCalibre(
 /** Note une copie complète (3 exercices) → total /20 + détail par exercice. */
 export function noterCopieCalibree(
   sections: readonly [string, string, string],
-  sujet: 1 | 2,
+  sujet: SujetId,
   options?: readonly (OptionsNotation | undefined)[]
 ): { total: number; exercices: NoteCalibree[] } {
   const exercices = ([1, 2, 3] as const).map((ex, i) =>
