@@ -56,7 +56,7 @@ export interface ExerciceSujet {
 }
 
 export interface SujetBlanc {
-  id: 'blanc1' | 'blanc2';
+  id: 'blanc1' | 'blanc2' | 'blanc3';
   titreAr: string;
   sousTitreAr: string;
   /** Durée officielle de l'épreuve. */

@@ -21,11 +21,13 @@ import { ClipboardList, Clock, FileText, History, Pause, Play, RotateCcw, Send, 
 import { attendusDeGroupe, type SujetId } from '../data/dictionaries/attendusBac2025';
 import { SUJET_BLANC_1, type SujetBlanc } from '../data/sujetsBlancs/sujetBlanc1';
 import { SUJET_BLANC_2 } from '../data/sujetsBlancs/sujetBlanc2';
+import { SUJET_BLANC_3 } from '../data/sujetsBlancs/sujetBlanc3';
 
-/** Le sujet blanc actif, s'il y en a un (H4a/H4b). */
+/** Le sujet blanc actif, s'il y en a un (H4a/H4b/H4c). */
 function sujetBlancActif(sujet: SujetId): SujetBlanc | null {
   if (sujet === 'blanc1') return SUJET_BLANC_1;
   if (sujet === 'blanc2') return SUJET_BLANC_2;
+  if (sujet === 'blanc3') return SUJET_BLANC_3;
   return null;
 }
 import { noterCopieCalibree } from '../data/dictionaries/calibrationBac2025';
@@ -230,6 +232,21 @@ export default function Bac2025ExamView({ onClose }: { onClose: () => void }) {
               تنظيم سكري · تنفس بذور · فقر منجلي — 20 نقطة
             </span>
           </button>
+          <button
+            data-testid="sujet-blanc-3"
+            disabled={soumis}
+            onClick={() => reset('blanc3')}
+            className={`p-3 rounded-2xl border-2 text-right font-black text-sm transition-all ${
+              sujet === 'blanc3'
+                ? 'border-emerald-500 bg-emerald-50 dark:bg-emerald-950/30 text-emerald-800 dark:text-emerald-300'
+                : 'border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 text-gray-500 hover:border-gray-300'
+            } ${soumis && sujet !== 'blanc3' ? 'opacity-40' : ''}`}
+          >
+            الموضوع المقترح الثالث (أصلي)
+            <span className="block text-[10px] font-bold text-gray-400 mt-1">
+              بروتينات · تخليق ضوئي · دورة الخلية — 20 نقطة
+            </span>
+          </button>
         </div>
 
         {/* Historique des notes (décision propriétaire : historique de notes) */}
@@ -423,7 +440,7 @@ export default function Bac2025ExamView({ onClose }: { onClose: () => void }) {
               <div>
                 <p className="text-xs font-black text-emerald-800 dark:text-emerald-300 flex items-center gap-1">
                   <ShieldCheck className="w-4 h-4" />
-                  النقطة الأولية الآلية — {sujet === 'blanc1' || sujet === 'blanc2' ? 'الموضوع المقترح' : `الموضوع ${sujet === 1 ? 'الأول' : 'الثاني'}`}
+                  النقطة الأولية الآلية — {typeof sujet === 'string' ? 'الموضوع المقترح' : `الموضوع ${sujet === 1 ? 'الأول' : 'الثاني'}`}
                 </p>
                 <p className="text-[10px] font-bold text-gray-500 mt-0.5">
                   على مقتضيات الإجابة الرسمية فقط · سقوف النزاهة مطبقة · القرار النهائي للمصحح
