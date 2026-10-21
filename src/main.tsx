@@ -16,7 +16,15 @@ createRoot(document.getElementById('root')!).render(
   </StrictMode>,
 );
 
-if ('serviceWorker' in navigator && import.meta.env.PROD) {
+// H1 APK (2026-10-21) : dans l'APK Capacitor, tout le contenu est DÉJÀ embarqué
+// (android/app/src/main/assets/public/) — le Service Worker y serait un
+// double-cache redondant (arbitrage A3, CHIFFRAGE_APK_2026-10-20.md). On le
+// neutralise côté natif SANS toucher au web, en détectant le bridge Capacitor
+// injecté par la WebView (window.Capacitor, absent sur un navigateur classique).
+// Aucun import de @capacitor/core : zéro octet ajouté au bundle web.
+const estApkCapacitor = typeof (window as { Capacitor?: unknown }).Capacitor !== 'undefined';
+
+if ('serviceWorker' in navigator && import.meta.env.PROD && !estApkCapacitor) {
   window.addEventListener('load', () => {
     navigator.serviceWorker
       // Pas de cache-buster (`?v=${Date.now()}`) : il contourne la comparaison

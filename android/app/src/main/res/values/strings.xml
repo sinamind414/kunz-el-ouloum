@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">كنز العلوم</string>
+    <string name="title_activity_main">كنز العلوم</string>
+    <string name="package_name">com.sinamind414.kunzelouloum</string>
+    <string name="custom_url_scheme">com.sinamind414.kunzelouloum</string>
+</resources>
