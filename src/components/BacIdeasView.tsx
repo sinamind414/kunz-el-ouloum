@@ -8,6 +8,11 @@
 //
 // Aucun énoncé n'est reproduit : ce n'est pas une annale de plus, c'est la
 // carte de ce que l'examen demande.
+//
+// Rubrique « sujet BAC » complète (2026-10-21) : chaque session ouverte est
+// résumée par une بطاقة الدورة (barème, exercices, unités) ; les sessions
+// 2013-2015, jamais lues dans une source vérifiable, restent affichées comme
+// قيد الإثراء — déclarées, jamais comblées par du contenu reconstruit.
 
 import { useEffect, useMemo, useState } from 'react';
 import { ArrowRight, AlertTriangle, BookOpen, FileText, Repeat, Search, TrendingUp } from 'lucide-react';
@@ -15,7 +20,9 @@ import {
   BAC_IDEAS,
   BAC_SESSION_SOURCES,
   IDEA_BY_ID,
+  INCOMPLETE_SUJETS,
   MISSING_YEARS,
+  PENDING_YEARS,
   YEARS_COVERED,
   ideasForYear,
   pointsOfSujet,
@@ -407,6 +414,17 @@ export default function BacIdeasView({ onBackToHome, focusIdeaId = null }: BacId
         >
           كل الدورات
         </button>
+        {PENDING_YEARS.map((p) => (
+          <button
+            key={p.year}
+            data-testid={`annee-pending-${p.year}`}
+            disabled
+            title={p.raisonAr}
+            className="text-xs font-bold px-3 py-1.5 rounded-xl bg-[#f9faf9] dark:bg-[#141916] text-[#7c8a7e] dark:text-gray-600 border border-dashed border-[#bbcbbb]/40 cursor-not-allowed"
+          >
+            {p.year} · قيد الإثراء
+          </button>
+        ))}
       </div>
 
       <div className="relative mb-4">
@@ -423,6 +441,52 @@ export default function BacIdeasView({ onBackToHome, focusIdeaId = null }: BacId
           className="w-full rounded-2xl py-2.5 pr-10 pl-3 text-sm bg-white dark:bg-[#141916] border border-[#bbcbbb]/30 text-right text-[#1f1c0b] dark:text-gray-100"
         />
       </div>
+
+      {!requete && !montage && !famille && annee !== 'all' && (
+        <section
+          data-testid="session-carte"
+          className="rounded-3xl p-4 bg-white dark:bg-[#141916] border border-[#bbcbbb]/30 mb-4"
+        >
+          <p className="text-sm font-black text-[#1f1c0b] dark:text-gray-100 mb-2 text-right">
+            بطاقة الدورة {annee}
+          </p>
+          {([1, 2] as const).map((sujet) => {
+            const duSujet = ideasForYear(annee).filter((i) => i.sujet === sujet);
+            if (duSujet.length === 0) return null;
+            const incomplet = INCOMPLETE_SUJETS.some(
+              (x) => x.year === annee && x.sujet === sujet,
+            );
+            return (
+              <div key={sujet} data-testid={`carte-sujet-${sujet}`} className="mb-2 last:mb-0">
+                <p className="text-[12px] font-black text-[#006d37] dark:text-[#2ecc71] text-right mb-1">
+                  الموضوع {sujet === 1 ? 'الأول' : 'الثاني'} — {pointsOfSujet(annee, sujet)} نقطة
+                  {incomplet && (
+                    <span
+                      data-testid={`carte-incomplet-${sujet}`}
+                      className="text-[11px] font-bold text-rose-700 dark:text-rose-400"
+                    >
+                      {' '}
+                      · (ناقص في المصدر)
+                    </span>
+                  )}
+                </p>
+                <div className="flex flex-wrap gap-1.5">
+                  {duSujet.map((i) => (
+                    <span
+                      key={i.id}
+                      data-testid={`carte-${i.id}`}
+                      className="text-[11px] font-bold px-2.5 py-1 rounded-xl bg-[#fff9ed] dark:bg-black/20 border border-[#d9a400]/25 text-[#1f1c0b] dark:text-gray-200"
+                    >
+                      التمرين {i.exercice} ({i.points} ن) —{' '}
+                      {i.unitIds.map((u) => UNIT_TITLE[u] ?? `وحدة ${u}`).join('، ')}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            );
+          })}
+        </section>
+      )}
 
       {!requete && !montage && !famille && annee !== 'all' && (
         <p data-testid="idees-bareme" className="mb-3 text-[12px] text-[#506072] dark:text-gray-400 text-right">

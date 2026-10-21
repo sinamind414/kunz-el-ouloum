@@ -165,6 +165,19 @@ export function sourcesForYear(year: number) {
  */
 export const MISSING_YEARS: number[] = [];
 
+/**
+ * Sessions ANTÉRIEURES à la couverture (2013-2015). Aucun exercice n'y est
+ * décrit tant que le sujet officiel correspondant n'a pas été lu dans une
+ * source vérifiable — règle de vérité du fichier. L'UI les affiche comme
+ * « قيد الإثراء » : visibles, jamais comblées par du contenu reconstruit
+ * (leçon de l'analyse MIFTAH : « reconstructed » n'est pas une source).
+ */
+export const PENDING_YEARS: { year: number; raisonAr: string }[] = [
+  { year: 2013, raisonAr: 'موضوع هذه الدورة لم يُقرأ بعد من مصدر موثوق.' },
+  { year: 2014, raisonAr: 'موضوع هذه الدورة لم يُقرأ بعد من مصدر موثوق.' },
+  { year: 2015, raisonAr: 'موضوع هذه الدورة لم يُقرأ بعد من مصدر موثوق.' },
+];
+
 /** Sujets dont un exercice manque dans la source (total < 20 points). */
 export const INCOMPLETE_SUJETS: { year: number; sujet: BacSujet; raison: string }[] = [
   { year: 2021, sujet: 2, raison: "exercice 1 non lisible dans la source consultée" },

@@ -11,7 +11,7 @@ import { cleanup, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { afterEach, describe, expect, it } from 'vitest';
 import BacIdeasView from '../BacIdeasView';
-import { YEARS_COVERED, ideasForYear } from '../../data/bacSessionIndex';
+import { YEARS_COVERED, PENDING_YEARS, INCOMPLETE_SUJETS, ideasForYear } from '../../data/bacSessionIndex';
 import { archetypeRecurrence, archetypesForIdea, ideasOfArchetype } from '../../data/bacArchetypes';
 import { ideasForVerbFamily, verbFamilyStats } from '../../data/verbDemands';
 import { composeMockExam, numeroDuJour } from '../../data/mockExam';
@@ -270,5 +270,55 @@ describe('أفكار التمارين — sujet blanc (sprint 41)', () => {
     const premier = composeMockExam(numeroDuJour()).exercices[0];
     await user.click(screen.getByTestId(`mock-ouvrir-${premier.id}`));
     expect(screen.getByTestId('bac-trainer').textContent).toContain(premier.titleAr);
+  });
+});
+
+describe('بطاقة الدورة و الدورات قيد الإثراء (rubrique sujet BAC)', () => {
+  it('affiche les sessions 2013-2015 comme en attente, jamais cliquables', () => {
+    render(<BacIdeasView />);
+    for (const p of PENDING_YEARS) {
+      const chip = screen.getByTestId(`annee-pending-${p.year}`) as HTMLButtonElement;
+      expect(chip).toBeTruthy();
+      expect(chip.disabled).toBe(true);
+      expect(chip.textContent).toContain('قيد الإثراء');
+    }
+    // ces années ne figurent jamais parmi les sessions dépouillées
+    for (const p of PENDING_YEARS) {
+      expect(YEARS_COVERED).not.toContain(p.year);
+    }
+  });
+
+  it('résume la session ouverte : barème, exercices et unités de chaque sujet', async () => {
+    const user = userEvent.setup();
+    render(<BacIdeasView />);
+    await user.click(screen.getByTestId('annee-2019'));
+    const carte = screen.getByTestId('session-carte');
+    expect(carte.textContent).toContain('بطاقة الدورة 2019');
+    for (const idea of ideasForYear(2019)) {
+      const puce = screen.getByTestId(`carte-${idea.id}`);
+      expect(puce.textContent).toContain(String(idea.points));
+      expect(screen.getByTestId(`carte-sujet-${idea.sujet}`)).toBeTruthy();
+    }
+  });
+
+  it('cache la carte quand toutes les sessions sont affichées', async () => {
+    const user = userEvent.setup();
+    render(<BacIdeasView />);
+    expect(screen.getByTestId('session-carte')).toBeTruthy();
+    await user.click(screen.getByTestId('annee-all'));
+    expect(screen.queryByTestId('session-carte')).toBeNull();
+  });
+
+  it('signale le sujet incomplet de 2021 comme trou, jamais comblé', async () => {
+    const user = userEvent.setup();
+    render(<BacIdeasView />);
+    await user.click(screen.getByTestId('annee-2021'));
+    expect(screen.getByTestId('carte-incomplet-2')).toBeTruthy();
+    expect(screen.queryByTestId('carte-incomplet-1')).toBeNull();
+    // le total affiché reste celui réellement lu, pas un 20 arrondi
+    const s2 = ideasForYear(2021).filter((i) => i.sujet === 2);
+    const somme = s2.reduce((acc, i) => acc + i.points, 0);
+    expect(somme).toBeLessThan(20);
+    expect(INCOMPLETE_SUJETS).toContainEqual({ year: 2021, sujet: 2, raison: expect.any(String) });
   });
 });
