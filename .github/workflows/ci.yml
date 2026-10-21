@@ -52,9 +52,12 @@ jobs:
           --exclude "src/data/leconRuntimeZoomRendu.lock.test.ts"
 
   # M1 (audit 8 axes 20/10/2026) : jest était absent de la CI alors qu'il est
-  # un runner officiel du projet. Mêmes 2 exceptions figureZoom* documentées.
+  # un runner officiel du projet. Config dédiée tests/jest.ci.config.cjs :
+  # elle ÉTEND la liste d'exclusions canonique de jest.config.cjs (le CLI
+  # --testPathIgnorePatterns la REMPLACE et démasquait 8 suites vitest-only
+  # vi.mock — run 241 rouge) avec les 2 suites figureZoom* documentées.
   jest:
-    name: "test:jest (3510 tests, 2e runner)"
+    name: "test:jest (config CI dédiée, suites vi.mock respectées)"
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -63,10 +66,7 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
-      - run: >-
-          npx jest
-          --testPathIgnorePatterns "/figureZoomRuntime.test.ts"
-          "/leconRuntimeZoomRendu.lock.test.ts"
+      - run: npx jest --config tests/jest.ci.config.cjs
 
   # Audit 2026-10-17 (§5 P2.9) : la CI ne buildait jamais — une régression de
   # bundling ou de lint pouvait passer inaperçue. Ce job traite le PRODUIT :
