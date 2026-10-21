@@ -22,7 +22,14 @@
 //      autres — un sujet blanc qui ne ferait jamais tomber la géologie
 //      mentirait sur l'épreuve.
 
-import { BAC_IDEAS, unitPressure, type BacExerciseIdea } from './bacSessionIndex';
+import {
+  BAC_IDEAS,
+  ideasForYear,
+  pointsOfSujet,
+  unitPressure,
+  type BacExerciseIdea,
+  type BacSujet,
+} from './bacSessionIndex';
 
 export interface MockExam {
   /** Numéro du sujet : même numéro ⇒ même sujet. */
@@ -132,4 +139,53 @@ export function composeMockExam(numero: number): MockExam {
 export function numeroDuJour(date = new Date()): number {
   const jours = Math.floor(date.getTime() / 86_400_000);
   return (jours % 200) + 1;
+}
+
+// ── Mode « دورة حقيقية » (rubrique sujet BAC, tranche R2) ───────────────────
+//
+// Composer un sujet entier d'une session RÉELLEMENT dépouillée : le sujet 2
+// de 2019 est LE sujet 2 de 2019 (les exercices réellement tombés), pas un
+// tirage. L'encodage du numéro (≥ 100 000) laisse la session persistante
+// (examSession, un seul champ `numero`) distinguer un tirage d'une session
+// réelle — aucune nouvelle clé de stockage, aucune migration.
+
+/** Frontière d'encodage : les tirages simples restent < 200 (numeroDuJour). */
+export const SESSION_EXAM_OFFSET = 100_000;
+
+/** Numéro encodé d'une session réelle : 100000 + année × 2 + (sujet − 1). */
+export function numeroSessionExam(year: number, sujet: number): number {
+  const y = Math.max(2013, Math.round(year));
+  const s: BacSujet = sujet === 2 ? 2 : 1;
+  return SESSION_EXAM_OFFSET + y * 2 + (s - 1);
+}
+
+/** Décode un numéro de session ; null pour un numéro de tirage simple. */
+export function decodageSessionExam(
+  numero: number,
+): { year: number; sujet: BacSujet } | null {
+  if (!Number.isFinite(numero) || numero < SESSION_EXAM_OFFSET) return null;
+  const reste = Math.round(numero) - SESSION_EXAM_OFFSET;
+  const year = Math.floor(reste / 2);
+  if (year < 2013 || year > 2100) return null;
+  const sujet: BacSujet = reste % 2 === 1 ? 2 : 1;
+  return { year, sujet };
+}
+
+/**
+ * Le sujet complet d'une session dépouillée — zéro tirage, zéro invention.
+ * totalPoints reflète ce qui a été réellement lu (2021-S2 est incomplet dans
+ * la source : l'app l'affiche comme tel, jamais arrondi à 20).
+ */
+export function composeSessionExam(year: number, sujet: BacSujet): MockExam {
+  const exercices = ideasForYear(year)
+    .filter((i) => i.sujet === sujet)
+    .sort((a, b) => a.exercice - b.exercice);
+  return {
+    numero: numeroSessionExam(year, sujet),
+    exercices,
+    totalPoints: pointsOfSujet(year, sujet),
+    dureeMinutes: DUREE_EPREUVE_MINUTES,
+    unitesPortees: exercices.map((i) => i.unitIds[0]),
+    sessions: [year],
+  };
 }

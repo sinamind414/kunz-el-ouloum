@@ -191,3 +191,38 @@ describe('sujet blanc — la session survit (sprint 44)', () => {
     vi.useRealTimers();
   });
 });
+
+describe('mode session reelle (rubrique sujet BAC R2)', () => {
+  it(' joue LE sujet reel d une session : exercices et total de la session', async () => {
+    const user = userEvent.setup();
+    render(<MockExamPanel onTrain={() => {}} />);
+    await user.click(screen.getByTestId('mock-annee-2019'));
+    await user.click(screen.getByTestId('mock-sujet-2'));
+    await user.click(screen.getByTestId('mock-session-demer'));
+    expect(screen.getByTestId('mock-mode-session').textContent).toContain('2019');
+    expect(screen.queryByTestId('mock-mode-tirage')).toBeNull();
+    // les exercices affiches sont ceux de la session (idees bac2019_s2_e*)
+    expect(screen.getByTestId('mock-ouvrir-bac2019_s2_e1')).toBeTruthy();
+    expect(screen.getByTestId('mock-ouvrir-bac2019_s2_e3')).toBeTruthy();
+  });
+
+  it('signale honnetement le sujet incomplet de 2021-S2 (jamais arrondi a 20)', async () => {
+    const user = userEvent.setup();
+    render(<MockExamPanel onTrain={() => {}} />);
+    await user.click(screen.getByTestId('mock-annee-2021'));
+    await user.click(screen.getByTestId('mock-sujet-2'));
+    await user.click(screen.getByTestId('mock-session-demer'));
+    expect(screen.getByTestId('mock-incomplet')).toBeTruthy();
+  });
+
+  it('retourne au tirage compose depuis une session reelle', async () => {
+    const user = userEvent.setup();
+    render(<MockExamPanel onTrain={() => {}} />);
+    await user.click(screen.getByTestId('mock-annee-2019'));
+    await user.click(screen.getByTestId('mock-session-demer'));
+    expect(screen.getByTestId('mock-mode-session')).toBeTruthy();
+    await user.click(screen.getByTestId('mock-suivant'));
+    expect(screen.getByTestId('mock-mode-tirage')).toBeTruthy();
+    expect(screen.queryByTestId('mock-mode-session')).toBeNull();
+  });
+});

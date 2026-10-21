@@ -11,8 +11,15 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import { Clock, Dices, FileText, Pause, Play, Printer, RotateCcw } from 'lucide-react';
-import type { BacExerciseIdea } from '../data/bacSessionIndex';
-import { composeMockExam, numeroDuJour } from '../data/mockExam';
+import type { BacExerciseIdea, BacSujet } from '../data/bacSessionIndex';
+import { YEARS_COVERED } from '../data/bacSessionIndex';
+import {
+  composeMockExam,
+  composeSessionExam,
+  decodageSessionExam,
+  numeroDuJour,
+  numeroSessionExam,
+} from '../data/mockExam';
 import {
   changerSujet,
   demarrer,
@@ -78,7 +85,14 @@ export default function MockExamPanel({ onTrain }: Props) {
   };
 
   const numero = session.numero;
-  const sujet = composeMockExam(numero);
+  // Tirage simple OU session réelle : le numéro encodé décide (R2) —
+  // le sujet 2 de 2019 reste LE sujet 2 de 2019, au rechargement comme au jour J.
+  const sessionReelle = decodageSessionExam(numero);
+  const sujet = sessionReelle
+    ? composeSessionExam(sessionReelle.year, sessionReelle.sujet)
+    : composeMockExam(numero);
+  const [anneeSession, setAnneeSession] = useState<number>(YEARS_COVERED[0]);
+  const [sujetSession, setSujetSession] = useState<BacSujet>(2);
 
   // Chronomètre d'épreuve : la perte de points la plus fréquente ne vient pas
   // des connaissances mais du temps — exercice 1 traité trop longuement,
@@ -118,21 +132,37 @@ export default function MockExamPanel({ onTrain }: Props) {
         <div className="text-right">
           <h2 className="flex items-center gap-2 text-base font-black text-[#1f1c0b] dark:text-gray-100">
             <FileText className="w-4 h-4" />
-            موضوع تجريبي رقم {sujet.numero}
+            {sessionReelle ? (
+              <span data-testid="mock-mode-session">
+                موضوع دورة {sessionReelle.year} — الموضوع {sessionReelle.sujet === 1 ? 'الأول' : 'الثاني'}
+              </span>
+            ) : (
+              <span data-testid="mock-mode-tirage">موضوع تجريبي رقم {sujet.numero}</span>
+            )}
           </h2>
           <p data-testid="mock-entete" className="flex items-center gap-2 text-[11px] text-[#506072] dark:text-gray-400">
             <Clock className="w-3.5 h-3.5" />
             {Math.floor(sujet.dureeMinutes / 60)} سا و {sujet.dureeMinutes % 60} د ·{' '}
-            {sujet.totalPoints} نقطة · ثلاثة تمارين من دورات {sujet.sessions.join(' · ')}
+            {sujet.totalPoints} نقطة ·{' '}
+            {sessionReelle
+              ? `التمارين الحقيقية لدورة ${sujet.sessions[0]}`
+              : `ثلاثة تمارين من دورات ${sujet.sessions.join(' · ')}`}
           </p>
+          {sessionReelle && sujet.totalPoints < 20 && (
+            <p data-testid="mock-incomplet" className="text-[10px] font-bold text-rose-700 dark:text-rose-400">
+              موضوع غير مكتمَل في المصدر ({sujet.totalPoints} نقطة مقروءة من أصل 20) — تدرَّب على الموجود.
+            </p>
+          )}
         </div>
         <div className="sans-impression flex gap-2">
           <button
             data-testid="mock-suivant"
-            onClick={() => majSession(changerSujet(session, numero + 1))}
+            onClick={() =>
+              majSession(changerSujet(session, sessionReelle ? numeroDuJour() : numero + 1))
+            }
             className="flex flex-row-reverse items-center gap-1.5 px-3 py-1.5 rounded-2xl bg-[#006d37] text-white text-[11px] font-bold cursor-pointer"
           >
-            <span>موضوع آخر</span>
+            <span>{sessionReelle ? 'موضوع تجريبي' : 'موضوع آخر'}</span>
             <Dices className="w-3.5 h-3.5" />
           </button>
           <button
@@ -148,6 +178,55 @@ export default function MockExamPanel({ onTrain }: Props) {
           >
             <span>اطبع</span>
             <Printer className="w-3.5 h-3.5" />
+          </button>
+        </div>
+      </div>
+
+      <div
+        data-testid="mock-session-controle"
+        className="sans-impression rounded-2xl p-3 mb-3 bg-[#fff9ed] dark:bg-black/20 border border-[#d9a400]/30"
+      >
+        <p className="text-[11px] font-black text-[#1f1c0b] dark:text-gray-100 mb-2 text-right">
+          درَّب على دورة حقيقية : انطلق في وضع الاختبار على التمارين التي سقطت فعلاً في سنة معيَّنة
+        </p>
+        <div className="flex flex-wrap items-center gap-1.5">
+          {YEARS_COVERED.map((y) => (
+            <button
+              key={y}
+              data-testid={`mock-annee-${y}`}
+              onClick={() => setAnneeSession(y)}
+              className={`text-[11px] font-bold px-2.5 py-1 rounded-xl cursor-pointer ${
+                anneeSession === y
+                  ? 'bg-[#006d37] text-white'
+                  : 'bg-[#f3f4f5] dark:bg-[#1f2622] text-[#506072] dark:text-gray-300'
+              }`}
+            >
+              {y}
+            </button>
+          ))}
+          <span className="text-[11px] font-bold text-[#506072] dark:text-gray-400">الموضوع:</span>
+          {([1, 2] as const).map((s) => (
+            <button
+              key={s}
+              data-testid={`mock-sujet-${s}`}
+              onClick={() => setSujetSession(s)}
+              className={`text-[11px] font-bold px-2.5 py-1 rounded-xl cursor-pointer ${
+                sujetSession === s
+                  ? 'bg-[#1f1c0b] text-white dark:bg-gray-100 dark:text-[#1f1c0b]'
+                  : 'bg-[#f3f4f5] dark:bg-[#1f2622] text-[#506072] dark:text-gray-300'
+              }`}
+            >
+              {s === 1 ? 'الأول' : 'الثاني'}
+            </button>
+          ))}
+          <button
+            data-testid="mock-session-demer"
+            onClick={() =>
+              majSession(changerSujet(session, numeroSessionExam(anneeSession, sujetSession)))
+            }
+            className="text-[11px] font-black px-3 py-1 rounded-xl bg-[#8a6a00] text-white cursor-pointer"
+          >
+            ابدأ موضوع الدورة
           </button>
         </div>
       </div>

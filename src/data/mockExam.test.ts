@@ -1,8 +1,17 @@
-// mockExam.test.ts — composition des sujets blancs (sprint 41).
+// mockExam.test.ts — composition des sujets blancs (sprint 41)
+// + mode « دورة حقيقية » (rubrique sujet BAC, R2).
 
 import { describe, expect, it } from 'vitest';
-import { DUREE_EPREUVE_MINUTES, composeMockExam, numeroDuJour } from './mockExam';
-import { BAC_IDEAS, IDEA_BY_ID } from './bacSessionIndex';
+import {
+  DUREE_EPREUVE_MINUTES,
+  SESSION_EXAM_OFFSET,
+  composeMockExam,
+  composeSessionExam,
+  decodageSessionExam,
+  numeroDuJour,
+  numeroSessionExam,
+} from './mockExam';
+import { BAC_IDEAS, IDEA_BY_ID, ideasForYear, pointsOfSujet } from './bacSessionIndex';
 
 const NUMEROS = Array.from({ length: 40 }, (_, i) => i + 1);
 
@@ -91,6 +100,59 @@ describe('sujet blanc — assiette', () => {
   it('reste possible tant que le corpus fournit les trois barèmes', () => {
     for (const points of [5, 7, 8]) {
       expect(BAC_IDEAS.filter((i) => i.points === points).length).toBeGreaterThan(5);
+    }
+  });
+});
+
+describe('mode session reelle - rubrique sujet BAC (R2)', () => {
+  it('2019-S2 : les trois exercices reellement tombes, dans l ordre du sujet', () => {
+    const sujet = composeSessionExam(2019, 2);
+    const attendus = ideasForYear(2019)
+      .filter((i) => i.sujet === 2)
+      .sort((a, b) => a.exercice - b.exercice);
+    expect(sujet.exercices.map((e) => e.id)).toEqual(attendus.map((e) => e.id));
+    expect(sujet.sessions).toEqual([2019]);
+    expect(sujet.totalPoints).toBe(pointsOfSujet(2019, 2));
+    expect(sujet.dureeMinutes).toBe(DUREE_EPREUVE_MINUTES);
+  });
+
+  it('2016-S1 : bareme reel 6/5/9 affiche tel quel (jamais arrondi a 5/7/8)', () => {
+    const sujet = composeSessionExam(2016, 1);
+    expect(sujet.exercices.map((e) => e.points)).toEqual([6, 5, 9]);
+    expect(sujet.totalPoints).toBe(20);
+  });
+
+  it('2021-S2 : incomplet dans la source, le total reste celui lu (< 20)', () => {
+    const sujet = composeSessionExam(2021, 2);
+    const somme = sujet.exercices.reduce((s, e) => s + e.points, 0);
+    expect(sujet.totalPoints).toBe(somme);
+    expect(sujet.totalPoints).toBeLessThan(20);
+  });
+
+  it('encodage : aller-retour numero <-> (annee, sujet) sans collision avec le tirage', () => {
+    expect(numeroSessionExam(2019, 2)).toBe(SESSION_EXAM_OFFSET + 2019 * 2 + 1);
+    expect(decodageSessionExam(numeroSessionExam(2019, 1))).toEqual({ year: 2019, sujet: 1 });
+    expect(decodageSessionExam(numeroSessionExam(2016, 2))).toEqual({ year: 2016, sujet: 2 });
+    const limite = SESSION_EXAM_OFFSET + 2050 * 2;
+    for (let n = 1; n <= limite; n += 1) {
+      const d = decodageSessionExam(n);
+      if (d !== null) {
+        expect(d.year).toBeGreaterThanOrEqual(2013);
+        expect(d.sujet === 1 || d.sujet === 2).toBe(true);
+      }
+    }
+    // numeroDuJour (1..200) ne retombe jamais dans une session reelle
+    expect(decodageSessionExam(numeroDuJour())).toBeNull();
+  });
+
+  it('aucune idee inventee : tout exercice de session existe dans le corpus lu', () => {
+    for (const s of [1, 2] as const) {
+      for (const y of [2016, 2019, 2022, 2025]) {
+        for (const e of composeSessionExam(y, s).exercices) {
+          expect(IDEA_BY_ID[e.id], e.id).toBeDefined();
+          expect(BAC_IDEAS.some((i) => i.id === e.id)).toBe(true);
+        }
+      }
     }
   });
 });
