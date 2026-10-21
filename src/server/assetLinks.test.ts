@@ -92,29 +92,35 @@ describe('verifierAssetLinks — les quatre états du fichier', () => {
   });
 });
 
-describe('le fichier du dépôt est REMPLI (H2, état réel depuis 70e7d09)', () => {
-  it('store/assetlinks.json est VALIDE et porte le paquet + une empreinte réelle', async () => {
-    // Inverse du verrou précédent (« est encore un gabarit », valable au 14/10) :
-    // depuis le trousseau généré hors dépôt, le fichier porte des données
-    // réelles. Le garde-fou demeure dans LES DEUX sens : si quelqu'un remet un
-    // marqueur REMPLACER, verifierAssetLinks renverra 'placeholder' et ce test
-    // échouera — impossible de publier un gabarit.
+describe('le fichier du dépôt est ALIGNÉ-GABARIT (audit n°2, 2026-10-21)', () => {
+  it('store/assetlinks.json porte le paquet FIGÉ mais reste un gabarit refusé (empreinte A4 non connue)', async () => {
+    // Histoire des verrous : « est un gabarit » (14/10) → « est VALIDE » (H2,
+    // empreinte d'un trousseau bubblewrap généré hors dépôt) → état présent
+    // (audit n°2, voie Capacitor retenue, tranche H1) : le paquet est FIGÉ
+    // (com.sinamind414.kunzelouloum, décision utilisateur irréversible) mais
+    // L'EMPREINTE du keystore de publication n'existe pas encore (jalon A4).
+    // Servir un fichier « valide » avec une empreinte qui ne correspondra pas
+    // au vrai certificat reproduit exactement le piège documenté dans
+    // assetLinks.ts (échec silencieux de la vérification Android). Le
+    // garde-fou serveur doit donc REFUSER ce fichier — et ce test verrouille
+    // l'état : quelle que soit la future empreinte, on remplacera REMPLACER
+    // uniquement au moment de la signature, jamais avant.
     const { readFileSync } = await import('node:fs');
     const { resolve } = await import('node:path');
     const contenu = readFileSync(resolve(__dirname, '../../store/assetlinks.json'), 'utf-8');
     const v = verifierAssetLinks(contenu);
-    expect(v.statut, `fichier du dépôt refusé : ${v.message}`).toBe('valide');
+    expect(v.statut, `fichier du dépôt accepté à tort : ${v.message}`).toBe('placeholder');
     const parsed = JSON.parse(contenu) as {
       target: { package_name: string; sha256_cert_fingerprints: string[] };
     }[];
     expect(parsed.length).toBeGreaterThan(0);
-    expect(parsed[0].target.package_name).toBe('com.kunzelouloum.app');
+    // Identité Android FIGÉE (décision utilisateur 2026-10-21) — doit rester
+    // alignée avec capacitor.config.ts et android/app/build.gradle.
+    expect(parsed[0].target.package_name).toBe('com.sinamind414.kunzelouloum');
+    // Gabarit assumé : l'empreinte porte le marqueur — le serveur la REFUSE.
     expect(parsed[0].target.sha256_cert_fingerprints.length).toBeGreaterThan(0);
     for (const fp of parsed[0].target.sha256_cert_fingerprints) {
-      // Empreinte réelle SHA-256 = 32 octets hexadécimaux majuscules séparés
-      // par « : » — jamais un marqueur REMPLACER.
-      expect(fp).not.toContain('REMPLACER');
-      expect(fp).toMatch(/^([0-9A-F]{2}:){31}[0-9A-F]{2}$/);
+      expect(fp).toContain('REMPLACER');
     }
   });
 });

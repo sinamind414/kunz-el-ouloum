@@ -22,7 +22,7 @@ l'ordre, avec la commande exacte.
 | Icône adaptative (masque) | ✅ présente | `public/icons/icon-512-maskable.png` |
 | Manifeste PWA complet (`id`, `scope`, `start_url`, `display`) | ✅ | `public/manifest.json` |
 | Politique de confidentialité **publique, sans JavaScript, ar + fr** | ✅ route servie | `GET /privacy` (`src/server/politiqueHtml.ts`) |
-| Digital Asset Links (TWA) | ⚠️ gabarit **non renseigné** (volontaire) | `store/assetlinks.json` |
+| Digital Asset Links (TWA) | ⚠️ paquet **aligné** `com.sinamind414.kunzelouloum`, empreinte **gabarit assumé** (remplacer au moment de la signature, voir §3) | `store/assetlinks.json` |
 | Textes de fiche (titre, descriptions, nouveautés) ar + fr | ✅ | `store/fiche-play.json` |
 | Brouillon « Sécurité des données » | ✅ | `store/data-safety.md` |
 | Captures d'écran | ❌ **à produire sur un appareil** | voir §4 |
@@ -37,39 +37,37 @@ fonctionnalité inexistante, et un `assetlinks.json` servi en gabarit.
 
 ## 1. Choisir le nom de paquet et le figer maintenant
 
-Suggéré : `dz.kunzelouloum.app`. **Un nom de paquet ne se change plus** après la première publication
-(seule une nouvelle application peut en porter un autre) : le figer avant tout envoi, et l'inscrire
-dans `store/assetlinks.json` **et** dans le projet Android.
+**DÉCISION FIGÉE (2026-10-21, décision utilisateur) : `com.sinamind414.kunzelouloum`.**
+Déjà câblé dans `capacitor.config.ts` et `android/app/build.gradle` (tranche H1), et aligné
+dans `store/fiche-play.json` + `store/assetlinks.json`. **Un nom de paquet ne se change plus**
+après la première publication : toute évolution du projet natif DOIT conserver cet identifiant.
 
-## 2. Produire le binaire (deux voies ; la première est la plus légère)
+## 2. Produire le binaire (voie B — Capacitor — RETENUE et déjà exécutée à 80 %)
 
-### Voie A — TWA (Trusted Web Activity) : l'application affiche le site existant
+### Voie A — TWA (Trusted Web Activity) : ABANDONNÉE (2026-10-21)
+La voie Capacitor (B) est retenue : le contenu est **embarqué** dans l'APK (offline garanti
+dès l'installation, sans dépendre d'un domaine de première visite). Les éléments TWA restants
+(`assetlinks.json`) ne servent que d'éventuels App Links futurs ; le serveur refusera de les
+servir tant que l'empreinte n'est pas remplacée (état « gabarit » assumé).
 
-```bash
-# Hors de ce dépôt (Node 18+ requis) :
-npm i -g @bubblewrap/cli
-bubblewrap init --manifest https://<votre-domaine>/manifest.json
-bubblewrap build            # produit app-release-signed.apk + .aab et le keystore
-```
-
-- À l'initialisation, Bubblewrap demande **le nom de paquet** (§1) et crée un keystore : **sauvegardez-le
-  et sa phrase de passe hors du dépôt** — perdre la clé d'upload complique toutes les mises à jour.
-- Le `dist/` produit par `npm run build` doit être déployé sur un domaine **HTTPS** avant de builder :
-  une TWA pointe vers une URL, elle n'embarque pas le contenu.
-
-### Voie B — Capacitor : embarquer les fichiers dans l'APK
+### Voie B — Capacitor : embarquer les fichiers dans l'APK ✅ CHOISIE
 
 ```bash
-npm i @capacitor/core @capacitor/cli @capacitor/android
-npx cap init "Kunz El Ouloum" dz.kunzelouloum.app --web-dir=dist
-npm run build && npx cap add android && npx cap sync android
-cd android && ./gradlew bundleRelease
+# DÉJÀ FAIT (tranche H1, commit 51dba89) :
+#   deps exactes @capacitor/core+android 8.5.3 (+ cli en dev)
+#   npx cap init "كنز العلوم" com.sinamind414.kunzelouloum --web-dir dist
+#   capacitor.config.ts (scheme https, debugging off) + npx cap add android
+#   android/variables.gradle : minSdk 24 / targetSdk 36 / compileSdk 36 (déjà conforme)
+#   garde SW native (src/main.tsx : pas de service worker dans la WebView)
+
+# RESTE à faire (jalons A2 fin + A4) :
+npm run build && npx cap sync android     # à RELANCER à chaque build (assets embarqués)
+cd android && ./gradlew bundleRelease     # nécessite un keystore de publication (A4)
 ```
 
-Plus lourd (le contenu est dupliqué dans l'APK), mais l'application ne dépend plus du réseau au premier
-lancement. **Recommandation :** voie A pour la première publication (l'application est déjà conçue
-hors ligne avec service worker), voie B en second temps si les retours montrent que le premier
-chargement est un obstacle réel.
+Le contenu est dupliqué dans l'APK (~5 Mo dist réel / ~16-20 Mo APK attendu), mais
+l'application ne dépend plus du réseau au premier lancement — condition clé pour les
+réseaux faibles visés.
 
 ## 3. Digital Asset Links — l'étape que tout le monde oublie
 
@@ -150,5 +148,5 @@ Ces points ne bloquent pas une publication, mais ils changent ce que l'élève v
 | Compte développeur Play (25 $ une fois) + fiche | **vous seul** |
 | Keystore, nom de paquet, publication | **vous seul** |
 | Captures d'écran sur appareil réel | **vous seul** (ou votre entourage avec un téléphone) |
-| `store/assetlinks.json` renseigné | vous, après création du keystore |
-| Décision : TWA ou Capacitor | vous (recommandation : TWA d'abord) |
+| `store/assetlinks.json` renseigné | vous, après création du keystore (empreinte `keytool -list -v` à la place du gabarit, voir §3) |
+| Décision : TWA ou Capacitor | **TRANCHÉE (2026-10-21) : Capacitor** — voir §2 |

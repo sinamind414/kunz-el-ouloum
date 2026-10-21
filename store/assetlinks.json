@@ -1,1 +1,1 @@
-[{"relation": ["delegate_permission/common.handle_all_urls"], "target": {"namespace": "android_app", "package_name": "com.kunzelouloum.app", "sha256_cert_fingerprints": ["30:05:2D:C3:96:3E:7F:56:27:25:7A:E7:95:7B:DE:B6:B3:CE:EF:56:54:CB:03:7B:BD:31:5A:65:61:B9:D3:A3"]}}]
+[{"relation": ["delegate_permission/common.handle_all_urls"], "target": {"namespace": "android_app", "package_name": "com.sinamind414.kunzelouloum", "sha256_cert_fingerprints": ["REMPLACER:PAR:EMPREINTE:SHA256:DU:KEYSTORE:DE:PUBLICATION:A4:VIA:KEYTOOL:LIST:V"]}}]

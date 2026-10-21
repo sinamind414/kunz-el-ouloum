@@ -1,10 +1,13 @@
 // SearchView.tsx — R5 : RECHERCHE GLOBALE dans les cours (Morchid).
-// Réutilise le moteur de retrieval du tuteur (searchAllBases) qui indexe déjà
-// 450 chunks : 47 leçons HTML + 20 leçons actives + bases de connaissances.
+// Réutilise le moteur de retrieval du tuteur (searchAllBases) qui indexe les
+// leçons + bases de connaissances. Le compteur affiché est DÉRIVÉ de
+// LESSON_INDEX_STATS (généré, verrouillé par lessonIndex.lock.test.ts) —
+// plus jamais de littéral en dur : zéro divergence fiche/produit (audit n°2).
 // Avant : la recherche n'existait que dans les cartes mentales.
 import { useMemo, useState } from 'react';
 import { ArrowRight, BookOpen, Search, Sparkles, Star, X } from 'lucide-react';
 import { normalizeArabic, searchAllBases } from '../smartTutorEngine';
+import { LESSON_INDEX_STATS } from '../data/lessonIndex';
 import { useBasesTuteurPrechargees } from '../data/useBasesTuteur';
 import {
   getFavorites,
@@ -28,6 +31,9 @@ interface GroupedResult {
   lessonKind?: 'html' | 'active';
   bestScore: number;
 }
+
+/** Chiffres en chiffres arabo-indiens (٠…٩) — cohérent avec l'interface RTL. */
+const nAr = (n: number) => String(n).replace(/\d/g, (d) => '٠١٢٣٤٥٦٧٨٩'[Number(d)]);
 
 const MAX_RESULTS = 10;
 
@@ -165,7 +171,7 @@ export default function SearchView({ onBack, onOpenLesson }: SearchViewProps) {
         </div>
         {!hasQuery && (
           <p className="text-white/80 text-[11px] font-bold mt-2">
-            يبحث في ٤٥٠ مقطعاً: ٤٧ درساً رسمياً + ٢٠ درساً نشيطاً + بنك الأسئلة — يعمل دون اتصال
+            يبحث في {nAr(LESSON_INDEX_STATS.chunksTotal)} مقطعاً: {nAr(LESSON_INDEX_STATS.lessonsHtml)} درساً رسمياً + {nAr(LESSON_INDEX_STATS.lessonsActive)} درساً نشيطاً + بنك الأسئلة — يعمل دون اتصال
           </p>
         )}
       </div>

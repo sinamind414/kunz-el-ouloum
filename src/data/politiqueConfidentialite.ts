@@ -19,7 +19,7 @@ export const SECTIONS_CONFIDENTIALITE: SectionConfidentialite[] = [
   {
     titre: '١. ما نجمعه',
     paragraphes: [
-      'عند إنشاء حساب: الاسم الظاهر، البريد الإلكتروني، وكلمة المرور.',
+      'عند إنشاء حساب: الاسم الظاهر، ثم — حسب الخيار الذي تختاره — إما بريد إلكتروني وكلمة مرور، أو حساب بدون بريد إلكتروني: رمز سرّ من 6 أرقام يختاره التلميذ، ورمز دخول شخصي يُنسب إليه.',
       'أثناء الاستعمال: إنتاجاتك الكتابية (نص الأجوبة، درجة التوافق ICM، الأخطاء المصنفة)، وأحداث النشاط (الاختبارات والمهام) مع تواريخها.',
       'لا نجمع أبدا: رقم الهاتف، العنوان، الصور الشخصية، ولا أي معلومة حساسة أخرى.',
     ],
@@ -34,7 +34,7 @@ export const SECTIONS_CONFIDENTIALITE: SectionConfidentialite[] = [
   {
     titre: '٣. كيف نحميها',
     paragraphes: [
-      'كلمة المرور لا تُخزن أبدا كنص صريح: تُشفَّر (bcrypt) قبل الحفظ، ولا يستطيع أحد — ولا نحن — قراءتها.',
+      'كلمة المرور لا تُخزن أبدا كنص صريح: تُجزَّأ (bcrypt) قبل الحفظ، فلا يمكن استرجاعها ولا قراءتها — ولا حتى من عندنا.',
       'الاتصال بالخادم محمي، والوصول إلى بياناتك يتم برموز دخول شخصية (JWT) تنتهي صلاحيتها تلقائيا.',
       'في وضع الزائر (دون حساب): لا يغادر أي شيء هاتفك إطلاقا — ملفاتك تبقى محلية.',
     ],
@@ -86,7 +86,7 @@ export const SECTIONS_CONFIDENTIALITE_FR: SectionConfidentialite[] = [
   {
     titre: '1. Ce que nous collectons',
     paragraphes: [
-      'À la création d’un compte : le nom d’affichage, l’adresse e-mail et le mot de passe.',
+      'À la création d’un compte : le nom d’affichage, puis — selon l’option choisie — soit une adresse e-mail et un mot de passe, soit un compte sans e-mail : un code secret à 6 chiffres choisi par l’élève et un code de connexion personnel attribué (aucun e-mail demandé).',
       'Pendant l’utilisation : vos productions écrites (texte des réponses, score de conformité ICM, erreurs classées) et les événements d’activité (tests et tâches) avec leurs dates.',
       'Nous ne collectons jamais : numéro de téléphone, adresse, photos personnelles, ni aucune autre donnée sensible.',
     ],
@@ -101,7 +101,7 @@ export const SECTIONS_CONFIDENTIALITE_FR: SectionConfidentialite[] = [
   {
     titre: '3. Comment nous les protégeons',
     paragraphes: [
-      'Le mot de passe n’est jamais stocké en clair : il est chiffré (bcrypt) avant enregistrement, et personne — pas même nous — ne peut le lire.',
+      'Le mot de passe n’est jamais stocké en clair : il est haché (bcrypt) avant enregistrement, il est donc irréversible et illisible pour quiconque — nous compris.',
       'La communication avec le serveur est protégée, et l’accès à vos données se fait par jetons de session personnels (JWT) à expiration automatique.',
       'En mode invité (sans compte) : rien ne quitte votre téléphone, vos fichiers restent locaux.',
     ],
