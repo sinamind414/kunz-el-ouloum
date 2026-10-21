@@ -10,7 +10,7 @@
 
 import { logActivityLocally } from './activityLog';
 
-export type ExamSujetId = 1 | 2 | 'blanc1' | 'blanc2' | 'blanc3';
+export type ExamSujetId = 1 | 2 | 'blanc1' | 'blanc2' | 'blanc3' | 'blanc4';
 
 /** Libellés de l'historique par sujet (partagé avec Bac2025ExamView). */
 const LIBELLES_SUJET: Record<ExamSujetId, string> = {
@@ -19,6 +19,7 @@ const LIBELLES_SUJET: Record<ExamSujetId, string> = {
   blanc1: 'الموضوع المقترح الأول — إطار كامل',
   blanc2: 'الموضوع المقترح الثاني — إطار كامل',
   blanc3: 'الموضوع المقترح الثالث — إطار كامل',
+  blanc4: 'الموضوع المقترح الرابع — إطار كامل',
 };
 
 export interface ExamExerciceResult {

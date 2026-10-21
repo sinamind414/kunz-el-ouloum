@@ -112,3 +112,23 @@ describe('Bac2025ExamView — chrono officiel 4 h 30 + avis documents (B3)', () 
     expect(screen.getByTestId('bac2025-chrono')).toBeTruthy();
   });
 });
+
+describe('grille MIFTAH dans l énoncé (sujet blanc 4)', () => {
+  it('affiche la grille اقرأ/اجمع/اربط/اختُم sur les 3 exercices du blanc 4', () => {
+    render(<Bac2025ExamView onClose={() => {}} />);
+    fireEvent.click(screen.getByTestId('sujet-blanc-4'));
+    for (const n of [1, 2, 3]) {
+      const grille = screen.getByTestId(`miftah-grille-${n}`);
+      expect(grille.textContent).toContain('اقرأ');
+      expect(grille.textContent).toContain('اجمع');
+      expect(grille.textContent).toContain('اربط');
+      expect(grille.textContent).toContain('اختُم');
+    }
+  });
+
+  it('ne montre PAS la grille sur les blancs sans méthode (blanc 1)', () => {
+    render(<Bac2025ExamView onClose={() => {}} />);
+    fireEvent.click(screen.getByTestId('sujet-blanc-1'));
+    expect(screen.queryByTestId('miftah-grille-1')).toBeNull();
+  });
+});

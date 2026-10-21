@@ -13,13 +13,13 @@ beforeEach(() => localStorage.clear());
 afterEach(cleanup);
 
 describe('H4d — écran dédié des sujets blancs', () => {
-  it('deux sections dédiées : officiels (2) + blancs originaux (3)', () => {
+  it('deux sections dédiées : officiels (2) + blancs originaux (4)', () => {
     render(<Bac2025ExamView onClose={() => {}} />);
     expect(screen.getByTestId('sujets-officiels-hub')).toBeTruthy();
     const hub = screen.getByTestId('sujets-blancs-hub');
     expect(hub).toBeTruthy();
-    // les 3 cartes blanches vivent DANS la section dédiée
-    for (const id of ['sujet-blanc-1', 'sujet-blanc-2', 'sujet-blanc-3']) {
+    // les 4 cartes blanches vivent DANS la section dédiée
+    for (const id of ['sujet-blanc-1', 'sujet-blanc-2', 'sujet-blanc-3', 'sujet-blanc-4']) {
       expect(hub.querySelector(`[data-testid="${id}"]`)).toBeTruthy();
     }
     const officiel = screen.getByTestId('sujets-officiels-hub');

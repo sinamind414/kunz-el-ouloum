@@ -22,12 +22,14 @@ import { attendusDeGroupe, type SujetId } from '../data/dictionaries/attendusBac
 import { SUJET_BLANC_1, type SujetBlanc } from '../data/sujetsBlancs/sujetBlanc1';
 import { SUJET_BLANC_2 } from '../data/sujetsBlancs/sujetBlanc2';
 import { SUJET_BLANC_3 } from '../data/sujetsBlancs/sujetBlanc3';
+import { SUJET_BLANC_4 } from '../data/sujetsBlancs/sujetBlanc4';
 
 /** Le sujet blanc actif, s'il y en a un (H4a/H4b/H4c). */
 function sujetBlancActif(sujet: SujetId): SujetBlanc | null {
   if (sujet === 'blanc1') return SUJET_BLANC_1;
   if (sujet === 'blanc2') return SUJET_BLANC_2;
   if (sujet === 'blanc3') return SUJET_BLANC_3;
+  if (sujet === 'blanc4') return SUJET_BLANC_4;
   return null;
 }
 import { noterCopieCalibree } from '../data/dictionaries/calibrationBac2025';
@@ -159,7 +161,9 @@ export default function Bac2025ExamView({ onClose }: { onClose: () => void }) {
                     ? 'الوضعية المقترحة — الموضوع الأصلي الثاني'
                     : sujet === 'blanc3'
                       ? 'الوضعية المقترحة — الموضوع الأصلي الثالث'
-                      : 'الإطار الرسمي — بكالوريا 2025'}
+                      : sujet === 'blanc4'
+                        ? 'الوضعية المقترحة — الموضوع الأصلي الرابع'
+                        : 'الإطار الرسمي — بكالوريا 2025'}
               </h1>
               <div className="flex items-center gap-2">
                 <button
@@ -222,7 +226,7 @@ export default function Bac2025ExamView({ onClose }: { onClose: () => void }) {
           >
             <p className="text-xs font-black text-emerald-800 dark:text-emerald-300 flex items-center gap-1">
               <FileText className="w-3.5 h-3.5" />
-              المواضيع المقترحة الأصلية — ثلاثة مواضيع كاملة
+              المواضيع المقترحة الأصلية — أربعة مواضيع كاملة
             </p>
             <p className="text-[10px] font-bold text-gray-500 dark:text-gray-400 mt-0.5">
               نصوص ومستندات كل موضوع داخل التطبيق، وتصحيح آلي على مقتضياته (سقوف النزاهة مطبقة) — تمرينات على نمط البكالوريا، محتوى أصلي بالفصحى.
@@ -271,6 +275,21 @@ export default function Bac2025ExamView({ onClose }: { onClose: () => void }) {
             الموضوع المقترح الثالث (أصلي)
             <span className="block text-[10px] font-bold text-gray-400 mt-1">
               بروتينات · تخليق ضوئي · دورة الخلية — 20 نقطة
+            </span>
+          </button>
+          <button
+            data-testid="sujet-blanc-4"
+            disabled={soumis}
+            onClick={() => reset('blanc4')}
+            className={`p-3 rounded-2xl border-2 text-right font-black text-sm transition-all ${
+              sujet === 'blanc4'
+                ? 'border-emerald-500 bg-emerald-50 dark:bg-emerald-950/30 text-emerald-800 dark:text-emerald-300'
+                : 'border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 text-gray-500 hover:border-gray-300'
+            } ${soumis && sujet !== 'blanc4' ? 'opacity-40' : ''}`}
+          >
+            الموضوع المقترح الرابع (أصلي)
+            <span className="block text-[10px] font-bold text-gray-400 mt-1">
+              جهود العصبون · مورثة→بروتين · اندساس وتصادم — 20 نقطة
             </span>
           </button>
             </div>
@@ -386,6 +405,22 @@ export default function Bac2025ExamView({ onClose }: { onClose: () => void }) {
               <div key={exercice.numero} className="space-y-2 border-t border-gray-100 dark:border-gray-800/60 pt-2">
                 <p className="text-xs font-black text-gray-700 dark:text-gray-200">{exercice.titreAr}</p>
                 <p className="text-[11px] font-bold text-gray-600 dark:text-gray-300 leading-relaxed">{exercice.texteAr}</p>
+                {exercice.methodeMiftahAr && (
+                  <div
+                    data-testid={`miftah-grille-${exercice.numero}`}
+                    className="rounded-xl bg-emerald-50/70 dark:bg-emerald-950/20 border border-emerald-100 dark:border-emerald-900/40 p-2.5"
+                  >
+                    <p className="text-[10px] font-black text-emerald-800 dark:text-emerald-300 mb-1">
+                      التحليل المنهجي — مفتاح في أربع خطوات
+                    </p>
+                    <ol className="list-decimal pr-4 space-y-0.5 text-[10px] font-bold text-gray-600 dark:text-gray-300 leading-relaxed">
+                      <li>{exercice.methodeMiftahAr.oqraAr}</li>
+                      <li>{exercice.methodeMiftahAr.jameAr}</li>
+                      <li>{exercice.methodeMiftahAr.rabtAr}</li>
+                      <li>{exercice.methodeMiftahAr.khatmAr}</li>
+                    </ol>
+                  </div>
+                )}
                 {exercice.documents.map((doc) => (
                   <div key={doc.id} className="rounded-xl bg-gray-50 dark:bg-black/20 p-2.5">
                     <p className="text-[10px] font-black text-emerald-700 dark:text-emerald-400">{doc.titreAr}</p>

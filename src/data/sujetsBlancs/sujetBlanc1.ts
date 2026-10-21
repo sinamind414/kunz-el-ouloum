@@ -53,10 +53,22 @@ export interface ExerciceSujet {
   texteAr: string;
   documents: DocumentSujet[];
   questions: QuestionSujet[];
+  /**
+   * Grille méthodologique MIFTAH en quatre étapes (اقرأ/اجمع/اربط/اختُم),
+   * dérivée de la grille N/S/E/W du projet مفتاح الكنز (CC BY-NC-SA 4.0,
+   * attribution → voir sujetBlanc4.ts). Optionnelle : les blancs 1-3
+   * n'en portent pas encore ; elle guide la méthode, elle ne note RIEN.
+   */
+  methodeMiftahAr?: {
+    oqraAr: string;
+    jameAr: string;
+    rabtAr: string;
+    khatmAr: string;
+  };
 }
 
 export interface SujetBlanc {
-  id: 'blanc1' | 'blanc2' | 'blanc3';
+  id: 'blanc1' | 'blanc2' | 'blanc3' | 'blanc4';
   titreAr: string;
   sousTitreAr: string;
   /** Durée officielle de l'épreuve. */
