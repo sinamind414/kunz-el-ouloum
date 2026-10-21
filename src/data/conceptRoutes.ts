@@ -194,6 +194,20 @@ export const CONCEPT_ROUTES: Record<string, ConceptRoute> = {
     lessonId: 'd3-u11-l1-migmatite',
     documentExerciseId: 'subduction_water_melting',
   },
+  // H2 (2026-10-21) : routes des 2 nouvelles leçons actives U11 — document D3
+  // existant réutilisé (aucun contenu inventé).
+  wilson_cycle_stages: {
+    conceptId: 'wilson_cycle_stages',
+    unitId: 11,
+    lessonId: 'd3-u11-l2-wilson',
+    documentExerciseId: 'subduction_water_melting',
+  },
+  ophiolite_collision_evidence: {
+    conceptId: 'ophiolite_collision_evidence',
+    unitId: 11,
+    lessonId: 'd3-u11-l3-ophiolites',
+    documentExerciseId: 'subduction_water_melting',
+  },
 };
 
 export function getConceptRoute(conceptId: string): ConceptRoute | undefined {

@@ -51,7 +51,12 @@ export const CULTURE_GENERALE: ReadonlyArray<{
   chapitre: string;
   raison: string;
 }> = [
-  { lessonKey: 'phase22_chapitres_43_44', chapitre: 'دورة الصخور في الطبيعة', raison: 'غير واردة في TDM المجال 3 ولا في موارد U11' },
+  // H2 (2026-10-21) : phase22_chapitres_43_44 (دورة الصخور في الطبيعة) est
+  // DÉPLACÉE vers le cœur de programme U11 — elle couvre la ressource
+  // « الحوادث التي تعقب الغوص » (PROGRESSION_OFFICIELLE[11].ressourcesCiblees[2])
+  // et chapeaute logiquement les 2 nouvelles leçons actives d3-u11-l2/l3.
+  // Restent hors exigible : les hydrocarbures (phase22_2) et la version élargie
+  // U8 du cycle énergie-matière (phase15_2).
   { lessonKey: 'phase22_chapitres_43_44_2', chapitre: 'الموارد البترولية والطاقوية في الجزائر', raison: 'غير واردة في TDM المجال 3 ولا في موارد U11' },
   { lessonKey: 'phase15_chapitres_29_30_2', chapitre: 'دورة الطاقة والمادة في المحيط الحيوي', raison: 'U8 exige le niveau cellulaire uniquement (مخطط تحصيلي خلوي)' },
 ];

@@ -151,7 +151,8 @@ describe('lessonIcons — leçons actives', () => {
     // (U1×3 l1/l2/l3, U2 protein, U3 d1-u3-l1, U4×4 immunité, U5 synapse,
     // U10 seismic, U11 subduction) — icônes par mots-clés du titre ou repli
     // licite sur l'icône de l'unité.
-    expect(total).toBe(25);
+    // H2 (2026-10-21) : +2 leçons actives U11 (wilson, ophiolites) = 27.
+    expect(total).toBe(27);
   });
 
   it('sémantique des 6 leçons actives actuelles', () => {

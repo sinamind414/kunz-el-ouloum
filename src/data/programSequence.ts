@@ -92,9 +92,19 @@ export const OFFICIAL_PROGRAM_SEQUENCE: Record<number, string[]> = {
   // après le passif des mêmes chapitres (phase20), append sans décalage d'ids.
   10: ['phase19_chapitres_37_38', 'phase20_chapitres_39_40', 'seismic_waves'],
   // U11 — structures géo (TDM p.287) : phase17_2 + phase20_2 + phases 21,22
-  // (phase26 placeholder exclue — hors-programme ; ch collision/tقلص/ophiolites à reconstruire)
+  // H2 (2026-10-21) : le trou « ch collision/تقلص/ophiolites à reconstruire »
+  // (relevé ligne 95 en 2026-10-20) est COMBLÉ par 2 leçons actives dédiées :
+  // d3-u11-l2-wilson (cycle en 6 étapes, ancré schema_18_wilson.svg) et
+  // d3-u11-l3-ophiolites (الأوفيوليت datés : الهيمالايا ≈ 50 Ma / الألب ≈ 40 Ma,
+  // ancré schema_17_collision.svg). phase22_chapitres_43_44 (دورة الصخور) est
+  // retirée de CULTURE_GENERALE : requise au titre des ressources U11
+  // (الحوادث التي تعقب الغوص). Mapping ressources → COMPETENCES_OFFICIELLES[3]
+  // : les 2 nouvelles leçons mobilisent la ressource 3 de l'unité.
   // + leçon active U11 §7 (migmatite / تضاعف قشري : contenu 0 dans HTML, 5× dans MAN).
   // TC6 (§6/W7) : subduction (الفصل 43-44) était orpheline — rattachée après
   // le passif des mêmes chapitres (phase22), append sans décalage d'ids.
-  11: ['d3-u11-l1-migmatite', 'phase17_chapitres_33_34_2', 'phase20_chapitres_39_40_2', 'phase21_chapitres_41_42', 'phase22_chapitres_43_44', 'subduction'],
+  // H2 : les 2 nouvelles leçons sont APPEND-PURES en clôture (verrou TC6
+  // « préfixe inchangé ») ; la navigation migmatite→wilson→ophiolites passe
+  // par LESSON_PROGRESSION.nextLessonId, pas par l'ordre du tableau.
+  11: ['d3-u11-l1-migmatite', 'phase17_chapitres_33_34_2', 'phase20_chapitres_39_40_2', 'phase21_chapitres_41_42', 'phase22_chapitres_43_44', 'subduction', 'd3-u11-l2-wilson', 'd3-u11-l3-ophiolites'],
 };

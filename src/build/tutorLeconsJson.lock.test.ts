@@ -1,15 +1,17 @@
 // tutorLeconsJson.lock.test.ts — verrou « Phase A découpage bundle » (2026-10-16).
 //
-// L'index des leçons du tuteur (src/data/lessonIndex.ts, 786 Ko sur disque,
-// 562 chunks) n'a plus le droit de voyager en JavaScript. Il est émis par le
+// L'index des leçons du tuteur (src/data/lessonIndex.ts, ≈ 833 Ko sur disque,
+// 578 chunks) n'a plus le droit de voyager en JavaScript. Il est émis par le
 // build en `dist/tutor/lesson-index.json` et récupéré par fetch au premier
 // montage d'une vue du tuteur (AITutorView, SearchView).
 //
 // Ce contrôle vit avec les autres contrôles post-build (`npm run test:build`)
 // car il lit `dist/`, pas le code source :
 //   (a) le JSON émis existe, est le contenu EXACT de l'index généré
-//       (562 chunks — rescencés dans lessonIndex.ts `chunksTotal` ; l'ancien
-//       verrou 547 datait d'avant l'ajout des 11 leçons — audit 2026-10-17) ;
+//       (578 chunks — H2 2026-10-21 : +16 chunks pour les 2 leçons actives U11
+//       dédiées d3-u11-l2-wilson et d3-u11-l3-ophiolites ; l'ancien verrou 562
+//       datait d'avant H2 — l'ancien verrou 547 datait d'avant l'ajout des 11
+//       leçons — audit 2026-10-17) ;
 //   (b) aucun chunk JS de dist/assets ne contient plus l'index en dur
 //       (marqueur : préfixe d'identifiant « lhx_ », uniquement présent dans
 //       l'index des leçons).
@@ -26,11 +28,11 @@ const DIST = resolve(process.cwd(), 'dist');
 describe('lesson-index du tuteur : émis en JSON, hors des chunks JS', () => {
   const cheminJson = resolve(DIST, 'tutor', 'lesson-index.json');
 
-  it('(a) dist/tutor/lesson-index.json existe et contient les 562 chunks', () => {
+  it('(a) dist/tutor/lesson-index.json existe et contient les 578 chunks', () => {
     expect(existsSync(cheminJson)).toBe(true);
     const donnees = JSON.parse(readFileSync(cheminJson, 'utf8')) as Array<{ id: string }>;
     expect(Array.isArray(donnees)).toBe(true);
-    expect(donnees).toHaveLength(562);
+    expect(donnees).toHaveLength(578);
     expect(typeof donnees[0]?.id).toBe('string');
   });
 

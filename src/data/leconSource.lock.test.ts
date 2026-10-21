@@ -83,8 +83,8 @@ describe('bookIndex — uniteId 1-11 ↔ chapitres de l index (traçabilité str
 describe('bookIndex — appariement leçons ↔ chapitres (mesure figée)', () => {
   const cles = toutesCles();
 
-  it('72 clés dans la séquence officielle ; 55 mappées, 17 nulls documentés', () => {
-    expect(cles).toHaveLength(72); // TC6 : 60 + 12 leçons actives orphelines câblées
+  it('74 clés dans la séquence officielle ; 55 mappées, 19 nulls documentés', () => {
+    expect(cles).toHaveLength(74); // TC6 : 60 + 12 leçons actives orphelines câblées ; H2 (2026-10-21) : +2 leçons actives U11
     const mappes = cles.filter((k) => sourceLivre(k, cleToTitre(k)) !== null);
     expect(mappes).toHaveLength(55);
     const nulls = cles.filter((k) => sourceLivre(k, cleToTitre(k)) === null);
@@ -98,12 +98,14 @@ describe('bookIndex — appariement leçons ↔ chapitres (mesure figée)', () =
       'd2-u6-l3-calvin',
       'd2-u7-l1-mitchell-racker',
       'd2-u7-l2-demarche-respiration', // المسار التجريبي : démarche cumulée ch. 36-38, sans en-tête TDM unique
+      'd3-u11-l2-wilson', // H2 : leçon active ancrée schema_18_wilson.svg, sans en-tête TDM (comme migmatite/benioff)
+      'd3-u11-l3-ophiolites', // H2 : leçon active ancrée schema_17_collision.svg, sans en-tête TDM (comme migmatite)
       'd3-u9-l2-benioff',
       'immunity_cooperation', // حوصلة الوحدة : synthèse inter-chapitres sans en-tête TDM
       'phase12_chapitres_23_24_2', // synthèse inter-chapitres sans en-tête dédié
       'phase15_chapitres_29_30_2', // culture générale — hors TDM (curriculumOfficial)
       'phase18_chapitres_35_36_2', // تيارات الحمل : 0 occurrence OCR
-      'phase22_chapitres_43_44', // culture générale — hors TDM
+      'phase22_chapitres_43_44', // H2 : requise U11, mais 0 occurrence OCR de دورة الصخور dans le TDM
       'phase22_chapitres_43_44_2', // culture générale — hors TDM
       'phase5_chapitres_9_10_2', // ABO/Rh : aucune preuve OCR dans U4
       'prerequis2AS_genetique', // rappel des acquis 2AS : pas de chapitre TDM dédié

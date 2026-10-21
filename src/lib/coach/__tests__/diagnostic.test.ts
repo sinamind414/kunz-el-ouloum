@@ -178,7 +178,8 @@ describe('coach — ordre de travail', () => {
     const diags = diagnostiquerParcours(groupes, etatParDefaut());
     expect(diags).toHaveLength(groupes.length);
     for (const d of diags) expect(d.verdict).toBe('non_commence');
-    // TC6 : 72 leçons (60 + 12 orphelines câblées) + 11 jalons = 83 items.
-    expect(PARCOURS_FLAT).toHaveLength(83);
+    // TC6 : 72 leçons (60 + 12 orphelines câblées) + 11 jalons = 83 items ;
+    // H2 (2026-10-21) : +2 leçons actives U11 (wilson, ophiolites) = 85.
+    expect(PARCOURS_FLAT).toHaveLength(85);
   });
 });

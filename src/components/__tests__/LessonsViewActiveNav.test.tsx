@@ -50,9 +50,12 @@ describe('LessonsView — leçons actives par icônes', () => {
     await user.click(screen.getByTestId('unite-active-6'));
     expect(screen.getAllByTestId(/^lecon-active-/)).toHaveLength(4);
     await user.click(screen.getByTestId('bande-unite-active-11'));
-    // TC6 : subduction (الفصل 43-44) rejoint migmatite dans U11 → 2 leçons.
-    expect(screen.getAllByTestId(/^lecon-active-/)).toHaveLength(2);
+    // TC6 : subduction rejoint migmatite (2). H2 (2026-10-21) : wilson et
+    // ophiolites s'ajoutent → 4 leçons actives en U11.
+    expect(screen.getAllByTestId(/^lecon-active-/)).toHaveLength(4);
     expect(screen.getByText(/شواهد التقلص/)).toBeTruthy();
+    expect(screen.getByText(/دورة ويلسون/)).toBeTruthy();
+    expect(screen.getByText(/الأوفيوليت/)).toBeTruthy();
     // Retour aux unités actives.
     await user.click(screen.getByText('عودة إلى وحدات الدروس النشيطة'));
     expect(screen.getByTestId('unites-actives-icones')).toBeTruthy();

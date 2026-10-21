@@ -17,9 +17,9 @@ import { getDefaultSession } from '../sessionManager';
 const n = (s: string) => handleSummaryFlow(s.trim(), undefined);
 
 describe('Flow الملخصات الذهبية — couverture', () => {
-  it('couvre les 11 unités et les 72 résumés', () => {
+  it('couvre les 11 unités et les 74 résumés', () => {
     expect(unitIdsWithSummaries()).toEqual([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]);
-    expect(totalSummaries()).toBe(72);
+    expect(totalSummaries()).toBe(74); // H2 (2026-10-21) : +2 leçons actives U11
     const sumLessonKeys = new Set<string>();
     for (const id of unitIdsWithSummaries()) {
       expect(lessonsForUnit(id).length).toBeGreaterThan(0);
