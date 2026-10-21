@@ -37,7 +37,7 @@ import { DUREE_EPREUVE_MINUTES } from '../data/mockExam';
 import { declarerExamen } from '../lib/examenEnCours';
 import SectionObligatoire from './SectionObligatoire';
 import Dictaphone from './Dictaphone';
-import { logExamAttempt, getExamAttempts, clearExamLog, type ExamAttempt } from '../utils/examLog';
+import { logExamAttempt, getExamAttempts, clearExamLog, libelleSujetExam, type ExamAttempt } from '../utils/examLog';
 import { fmtDateLatn } from '../utils/latinDigits';
 
 // Session 2025 DISTINCTE de la session du simulateur (kunz.examSession) :
@@ -157,7 +157,9 @@ export default function Bac2025ExamView({ onClose }: { onClose: () => void }) {
                   ? 'الوضعية المقترحة — الموضوع الأصلي الأول'
                   : sujet === 'blanc2'
                     ? 'الوضعية المقترحة — الموضوع الأصلي الثاني'
-                    : 'الإطار الرسمي — بكالوريا 2025'}
+                    : sujet === 'blanc3'
+                      ? 'الوضعية المقترحة — الموضوع الأصلي الثالث'
+                      : 'الإطار الرسمي — بكالوريا 2025'}
               </h1>
               <div className="flex items-center gap-2">
                 <button
@@ -183,8 +185,18 @@ export default function Bac2025ExamView({ onClose }: { onClose: () => void }) {
           </div>
         </div>
 
-        {/* Choix du sujet (2025 : les deux officiels · H4a : le sujet blanc original) */}
-        <div className="grid grid-cols-2 gap-3">
+        {/* Choix du sujet — H4d : deux sections DÉDIÉES. Les sujets blancs
+            originaux (H4a/H4b/H4c) ne sont plus noyés parmi les officiels. */}
+        <div className="space-y-3">
+          <section
+            data-testid="sujets-officiels-hub"
+            className="rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-3"
+          >
+            <p className="text-xs font-black text-gray-800 dark:text-gray-100">الموضوعان الرسميان — بكالوريا 2025</p>
+            <p className="text-[10px] font-bold text-gray-400 mt-0.5">
+              النصوص الرسمية والمستندات خارج التطبيق (ورقة الامتحان / أرشيف ONEC) — التنقيط على مقتضيات الإجابة الرسمية.
+            </p>
+            <div className="grid grid-cols-2 gap-3 mt-2">
           {([1, 2] as const).map((s) => (
             <button
               key={s}
@@ -202,6 +214,20 @@ export default function Bac2025ExamView({ onClose }: { onClose: () => void }) {
               </span>
             </button>
           ))}
+            </div>
+          </section>
+          <section
+            data-testid="sujets-blancs-hub"
+            className="rounded-2xl border border-emerald-200 dark:border-emerald-900/60 bg-emerald-50/40 dark:bg-emerald-950/10 p-3"
+          >
+            <p className="text-xs font-black text-emerald-800 dark:text-emerald-300 flex items-center gap-1">
+              <FileText className="w-3.5 h-3.5" />
+              المواضيع المقترحة الأصلية — ثلاثة مواضيع كاملة
+            </p>
+            <p className="text-[10px] font-bold text-gray-500 dark:text-gray-400 mt-0.5">
+              نصوص ومستندات كل موضوع داخل التطبيق، وتصحيح آلي على مقتضياته (سقوف النزاهة مطبقة) — تمرينات على نمط البكالوريا، محتوى أصلي بالفصحى.
+            </p>
+            <div className="grid grid-cols-2 gap-3 mt-2">
           <button
             data-testid="sujet-blanc-1"
             disabled={soumis}
@@ -247,6 +273,8 @@ export default function Bac2025ExamView({ onClose }: { onClose: () => void }) {
               بروتينات · تخليق ضوئي · دورة الخلية — 20 نقطة
             </span>
           </button>
+            </div>
+          </section>
         </div>
 
         {/* Historique des notes (décision propriétaire : historique de notes) */}
@@ -285,7 +313,7 @@ export default function Bac2025ExamView({ onClose }: { onClose: () => void }) {
                     </span>
                     <div className="min-w-0 flex-1">
                       <p className="text-[11px] font-black text-gray-700 dark:text-gray-300">
-                        الموضوع {a.sujet === 1 ? 'الأول' : 'الثاني'}
+                        {libelleSujetExam(a.sujet)}
                         <span className="font-bold text-gray-400"> · {fmtDateLatn(new Date(a.dateISO))}</span>
                       </p>
                       <div className="flex gap-1 mt-1" aria-label={`التمارين: ${a.exercices.map((e) => e.points + '/' + e.maxPts).join(' · ')}`}>

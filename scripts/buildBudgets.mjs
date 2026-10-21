@@ -44,19 +44,26 @@ const fichiers = readdirSync(DIST).map((nom) => ({
 let echec = false;
 
 for (const [motif, plafond, libelle] of BUDGETS) {
-  const f = fichiers.find((x) => motif.test(x.nom));
-  if (!f) {
+  // H4d (21/10) : un même motif peut matcher PLUSIEURS fichiers (vite nomme
+  // aussi des lazy chunks « index-*.js » — sorti du build 22 s : un 2e index
+  // de 5 Ko doublait l'entry de 606 Ko et le 1er match attrapait le petit).
+  // Un BUDGET porte sur la famille entière : chaque match doit tenir sous
+  // le plafond, sinon c'est un faux vert.
+  const matches = fichiers.filter((x) => motif.test(x.nom));
+  if (!matches.length) {
     console.error(`[budgets] ÉCHEC — aucun fichier pour « ${libelle} » (le découpage a changé ?)`);
     echec = true;
     continue;
   }
-  const ko = (f.taille / 1024).toFixed(1);
   const plafondKo = Math.round(plafond / 1024);
-  if (f.taille > plafond) {
-    console.error(`[budgets] ÉCHEC — ${libelle} : ${ko} Ko > plafond ${plafondKo} Ko`);
-    echec = true;
-  } else {
-    console.log(`[budgets] OK — ${libelle} : ${ko} Ko ≤ ${plafondKo} Ko`);
+  for (const f of matches) {
+    const ko = (f.taille / 1024).toFixed(1);
+    if (f.taille > plafond) {
+      console.error(`[budgets] ÉCHEC — ${libelle} (${f.nom}) : ${ko} Ko > plafond ${plafondKo} Ko`);
+      echec = true;
+    } else {
+      console.log(`[budgets] OK — ${libelle} (${f.nom}) : ${ko} Ko ≤ ${plafondKo} Ko`);
+    }
   }
 }
 

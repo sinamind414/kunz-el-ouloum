@@ -37,6 +37,12 @@ export interface ExamAttempt {
   exercices: ExamExerciceResult[];
 }
 
+/** Libellé complet d'un sujet (historique + en-tête de la vue bac2025) —
+    H4d : les 5 sujets (2 officiels + 3 blancs) ont enfin LEUR libellé. */
+export function libelleSujetExam(sujet: ExamSujetId): string {
+  return LIBELLES_SUJET[sujet];
+}
+
 export interface ExamStats {
   attempts: number;
   last: number | null;
