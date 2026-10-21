@@ -1,5 +1,7 @@
 # كنز العلوم (Kunz El Ouloum)
 
+[![CI](https://github.com/sinamind414/kunz-el-ouloum/actions/workflows/ci.yml/badge.svg)](https://github.com/sinamind414/kunz-el-ouloum/actions/workflows/ci.yml)
+
 Application de révision SVT — sciences de la nature et de la vie — pour le Baccalauréat
 algérien, filière **علوم تجريبية** (3AS). 100 % arabe, droite-à-gauche, utilisable
 **hors ligne**, 100 % gratuite : pas de publicité, pas de traqueur tiers, aucun compte
