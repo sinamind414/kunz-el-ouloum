@@ -301,6 +301,18 @@ describe('بطاقة الدورة و الدورات قيد الإثراء (rubri
     }
   });
 
+  it('propose le PDF officiel en telechargement pour chaque sujet de la carte', async () => {
+    const user = userEvent.setup();
+    render(<BacIdeasView />);
+    await user.click(screen.getByTestId('annee-2019'));
+    for (const sujet of [1, 2] as const) {
+      const bouton = screen.getByTestId(`carte-pdf-${sujet}`) as HTMLAnchorElement;
+      expect(bouton.getAttribute('href')).toBe(`/bac-sujets/2019/sujet-${sujet}.pdf`);
+      expect(bouton.hasAttribute('download')).toBe(true);
+      expect(bouton.textContent).toContain('حمّل الموضوع الأصلي');
+    }
+  });
+
   it('cache la carte quand toutes les sessions sont affichées', async () => {
     const user = userEvent.setup();
     render(<BacIdeasView />);

@@ -27,3 +27,10 @@ _lint_final.txt
 
 # ouvrage tiers (droits d'auteur ONPS) - jamais commité
 *.pdf
+# EXCEPTION — sujets BAC officiels piste SE (autorisation propriétaire
+# 2026-10-22, droits ONEC déclarés résolus) : embarqués sciemment dans
+# public/bac-sujets/ pour le téléchargement élève (28 fichiers, 2013-2026,
+# piste sciences expérimentales uniquement). Index verrouillé par
+# src/__tests__/bacPdf.lock.test.ts (aucune entrée sans fichier réel).
+!public/bac-sujets/
+!public/bac-sujets/**

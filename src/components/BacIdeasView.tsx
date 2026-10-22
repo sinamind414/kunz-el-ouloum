@@ -30,6 +30,7 @@ import {
   unitPressure,
   type BacExerciseIdea,
 } from '../data/bacSessionIndex';
+import { cheminPdfBac, pdfBacDisponible } from '../data/bacPdfIndex';
 import {
   ARCHETYPE_BY_ID,
   archetypeRecurrence,
@@ -482,6 +483,16 @@ export default function BacIdeasView({ onBackToHome, focusIdeaId = null }: BacId
                     </span>
                   ))}
                 </div>
+                {pdfBacDisponible(annee, sujet) && (
+                  <a
+                    data-testid={`carte-pdf-${sujet}`}
+                    href={cheminPdfBac(annee, sujet) ?? undefined}
+                    download
+                    className="inline-flex items-center gap-1 mt-1.5 text-[11px] font-black px-2.5 py-1 rounded-xl bg-[#006d37] text-white cursor-pointer hover:bg-[#0a8a49]"
+                  >
+                    حمّل الموضوع الأصلي (PDF)
+                  </a>
+                )}
               </div>
             );
           })}
