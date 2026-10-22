@@ -93,6 +93,10 @@ export default function MockExamPanel({ onTrain }: Props) {
     : composeMockExam(numero);
   const [anneeSession, setAnneeSession] = useState<number>(YEARS_COVERED[0]);
   const [sujetSession, setSujetSession] = useState<BacSujet>(2);
+  // Clarité élève (retour propriétaire 2026-10-22) : une fois la session
+  // lancée, le sélecteur se replie en résumé ; « تغيير الدورة » le rouvre.
+  const [controleManuel, setControleManuel] = useState<boolean>(false);
+  const controleOuvert = sessionReelle === null || controleManuel;
 
   // Chronomètre d'épreuve : la perte de points la plus fréquente ne vient pas
   // des connaissances mais du temps — exercice 1 traité trop longuement,
@@ -186,49 +190,81 @@ export default function MockExamPanel({ onTrain }: Props) {
         data-testid="mock-session-controle"
         className="sans-impression rounded-2xl p-3 mb-3 bg-[#fff9ed] dark:bg-black/20 border border-[#d9a400]/30"
       >
-        <p className="text-[11px] font-black text-[#1f1c0b] dark:text-gray-100 mb-2 text-right">
-          درَّب على دورة حقيقية : انطلق في وضع الاختبار على التمارين التي سقطت فعلاً في سنة معيَّنة
-        </p>
-        <div className="flex flex-wrap items-center gap-1.5">
-          {YEARS_COVERED.map((y) => (
+        <div className="flex items-center justify-between gap-2 mb-2">
+          <p className="text-[11px] font-black text-[#1f1c0b] dark:text-gray-100 text-right">
+            درَّب على دورة حقيقية — التمارين التي سقطت فعلاً في بكالوريا سابقة
+          </p>
+          {sessionReelle && (
             <button
-              key={y}
-              data-testid={`mock-annee-${y}`}
-              onClick={() => setAnneeSession(y)}
-              className={`text-[11px] font-bold px-2.5 py-1 rounded-xl cursor-pointer ${
-                anneeSession === y
-                  ? 'bg-[#006d37] text-white'
-                  : 'bg-[#f3f4f5] dark:bg-[#1f2622] text-[#506072] dark:text-gray-300'
-              }`}
+              data-testid="mock-session-toggle"
+              onClick={() => setControleManuel((o) => !o)}
+              className="text-[10px] font-bold px-2.5 py-1 rounded-xl bg-[#f3f4f5] dark:bg-[#1f2622] text-[#506072] dark:text-gray-300 cursor-pointer"
             >
-              {y}
+              {controleManuel ? 'إخفاء الاختيار' : 'تغيير الدورة'}
             </button>
-          ))}
-          <span className="text-[11px] font-bold text-[#506072] dark:text-gray-400">الموضوع:</span>
-          {([1, 2] as const).map((s) => (
-            <button
-              key={s}
-              data-testid={`mock-sujet-${s}`}
-              onClick={() => setSujetSession(s)}
-              className={`text-[11px] font-bold px-2.5 py-1 rounded-xl cursor-pointer ${
-                sujetSession === s
-                  ? 'bg-[#1f1c0b] text-white dark:bg-gray-100 dark:text-[#1f1c0b]'
-                  : 'bg-[#f3f4f5] dark:bg-[#1f2622] text-[#506072] dark:text-gray-300'
-              }`}
-            >
-              {s === 1 ? 'الأول' : 'الثاني'}
-            </button>
-          ))}
-          <button
-            data-testid="mock-session-demer"
-            onClick={() =>
-              majSession(changerSujet(session, numeroSessionExam(anneeSession, sujetSession)))
-            }
-            className="text-[11px] font-black px-3 py-1 rounded-xl bg-[#8a6a00] text-white cursor-pointer"
-          >
-            ابدأ موضوع الدورة
-          </button>
+          )}
         </div>
+        {controleOuvert ? (
+          <div className="space-y-2">
+            <div>
+              <p className="text-[10px] font-black text-[#506072] dark:text-gray-400 mb-1">
+                ① اختر السنة
+              </p>
+              <div className="flex flex-wrap gap-1.5">
+                {YEARS_COVERED.map((y) => (
+                  <button
+                    key={y}
+                    data-testid={`mock-annee-${y}`}
+                    onClick={() => setAnneeSession(y)}
+                    className={`text-[11px] font-bold px-2.5 py-1 rounded-xl cursor-pointer ${
+                      anneeSession === y
+                        ? 'bg-[#006d37] text-white'
+                        : 'bg-[#f3f4f5] dark:bg-[#1f2622] text-[#506072] dark:text-gray-300'
+                    }`}
+                  >
+                    {y}
+                  </button>
+                ))}
+              </div>
+            </div>
+            <div>
+              <p className="text-[10px] font-black text-[#506072] dark:text-gray-400 mb-1">
+                ② اختر الموضوع
+              </p>
+              <div className="flex gap-1.5">
+                {([1, 2] as const).map((s) => (
+                  <button
+                    key={s}
+                    data-testid={`mock-sujet-${s}`}
+                    onClick={() => setSujetSession(s)}
+                    className={`text-[12px] font-black px-4 py-1.5 rounded-xl cursor-pointer ${
+                      sujetSession === s
+                        ? 'bg-[#1f1c0b] text-white dark:bg-gray-100 dark:text-[#1f1c0b]'
+                        : 'bg-[#f3f4f5] dark:bg-[#1f2622] text-[#506072] dark:text-gray-300'
+                    }`}
+                  >
+                    الموضوع {s === 1 ? 'الأول' : 'الثاني'}
+                  </button>
+                ))}
+              </div>
+            </div>
+            <button
+              data-testid="mock-session-demer"
+              onClick={() =>
+                majSession(changerSujet(session, numeroSessionExam(anneeSession, sujetSession)))
+              }
+              className="w-full text-[12px] font-black px-3 py-2 rounded-xl bg-[#8a6a00] text-white cursor-pointer text-center"
+            >
+              ③ ابدأ موضوع دورة {anneeSession} — الموضوع{' '}
+              {sujetSession === 1 ? 'الأول' : 'الثاني'}
+            </button>
+          </div>
+        ) : (
+          <p className="text-[11px] font-bold text-[#506072] dark:text-gray-400 text-right">
+            تدرَّب حالياً على دورة {sessionReelle?.year} — الموضوع{' '}
+            {sessionReelle?.sujet === 1 ? 'الأول' : 'الثاني'} · للتبديل اضغط « تغيير الدورة ».
+          </p>
+        )}
       </div>
 
       <div

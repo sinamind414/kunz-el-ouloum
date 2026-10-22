@@ -225,4 +225,18 @@ describe('mode session reelle (rubrique sujet BAC R2)', () => {
     expect(screen.getByTestId('mock-mode-tirage')).toBeTruthy();
     expect(screen.queryByTestId('mock-mode-session')).toBeNull();
   });
+
+  it('une session lancee replie le selecteur en resume ; le bouton le rouvre', async () => {
+    const user = userEvent.setup();
+    render(<MockExamPanel onTrain={() => {}} />);
+    await user.click(screen.getByTestId('mock-annee-2019'));
+    await user.click(screen.getByTestId('mock-session-demer'));
+    // sessions active : le selecteur n ecranne plus la vue d epreuve
+    expect(screen.queryByTestId('mock-annee-2019')).toBeNull();
+    expect(screen.getByTestId('mock-session-controle').textContent).toContain('2019');
+    // le bouton de changement rouvre les deux etapes
+    await user.click(screen.getByTestId('mock-session-toggle'));
+    expect(screen.getByTestId('mock-annee-2019')).toBeTruthy();
+    expect(screen.getByTestId('mock-sujet-1')).toBeTruthy();
+  });
 });
