@@ -319,8 +319,8 @@ export default function AITutorView({ onXPGained, questionInitiale, onQuestionIn
 
       {/* Chat Title bar */}
       <div className="bg-[#fff9ed] border-b border-[#e2dabf]/60 px-5 py-4 flex justify-between items-center shrink-0">
-        <div className="flex items-center gap-3">
-          <div className="relative">
+        <div className="flex items-center gap-3 min-w-0 flex-1">
+          <div className="relative shrink-0">
             <div className="absolute inset-0 bg-[#006d37]/10 rounded-full blur-sm" />
             <img
               src={MORCHID_LOGO_URL}
@@ -329,18 +329,18 @@ export default function AITutorView({ onXPGained, questionInitiale, onQuestionIn
               referrerPolicy="no-referrer"
             />
           </div>
-          <div>
-            <h3 className="font-extrabold text-base text-[#006d37] flex items-center gap-1.5">
-              <span>مرشدك لفهم الدرس</span>
-              <BrainCircuit className="w-4 h-4 text-[#944a00]" />
+          <div className="min-w-0">
+            <h3 className="font-extrabold text-base text-[#006d37] flex items-center gap-1.5 leading-tight">
+              <span className="truncate">مرشدك لفهم الدرس</span>
+              <BrainCircuit className="w-4 h-4 text-[#944a00] shrink-0" />
             </h3>
-            <span className="text-[10px] text-[#506072] font-semibold block">شرح وتلميحات من منهاج البكالوريا — يعمل دون اتصال</span>
+            <span className="text-[10px] text-[#506072] font-semibold block truncate leading-snug">شرح وتلميحات من منهاج البكالوريا — يعمل دون اتصال</span>
           </div>
         </div>
 
         <button
           onClick={handleClear}
-          className="p-2.5 rounded-xl hover:bg-[#ba1a1a]/10 text-[#ba1a1a] transition-all cursor-pointer"
+          className="p-2.5 shrink-0 rounded-xl hover:bg-[#ba1a1a]/10 text-[#ba1a1a] transition-all cursor-pointer"
           title="مسح المحادثة"
         >
           <Trash2 className="w-4 h-4" />

@@ -302,6 +302,19 @@ html[data-taille-texte='1'] { font-size: 100%; }
 html[data-taille-texte='2'] { font-size: 112.5%; }
 html[data-taille-texte='3'] { font-size: 125%; }
 
+/* UX mobile (23/10/2026, audit ARTEMIS) — titre de la barre d'app.
+   La barre a une hauteur FIXE (h-16/md:h-20) mais son titre central
+   (« مُرشِد كنز العلوم », « الدروس »…) n'a ni nowrap ni min-w-0 :
+   aux crans 2-3 de taille de texte il repassait à la ligne sur 2-3
+   lignes, débordait de la barre et venait chevaucher les badges XP
+   et l'écran dessous. On force une seule ligne avec suspension. */
+header .font-display {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+}
+
 /* Custom transitions and scrollbars */
 ::-webkit-scrollbar {
   width: 6px;

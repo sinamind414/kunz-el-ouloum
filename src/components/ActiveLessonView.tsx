@@ -838,10 +838,14 @@ export default function ActiveLessonView({ lessonKey, onBack, onNext, nextTitleA
         )}
       </div>
 
-      <div className="bg-gradient-to-l from-[#006d37] via-[#008744] to-[#10b981] text-white p-5 rounded-3xl shadow-lg">
-        <h2 className="text-xl md:text-2xl font-black">{lesson.title}</h2>
-        <div className="mt-2 flex items-center gap-2">
-          <div className="flex-1 h-2 bg-white/25 rounded-full overflow-hidden">
+      {/* UX mobile (audit ARTEMIS 23/10/2026) : le héros était si large
+          (padding p-5 + titre sur 2-3 lignes) qu'il mangeait le tiers de
+          l'écran avant le premier contenu. Padding réduit, titre borné à
+          2 lignes, progression resserrée. */}
+      <div className="bg-gradient-to-l from-[#006d37] via-[#008744] to-[#10b981] text-white px-4 py-3 md:p-5 rounded-3xl shadow-lg">
+        <h2 className="text-lg md:text-2xl font-black leading-snug line-clamp-2">{lesson.title}</h2>
+        <div className="mt-1.5 flex items-center gap-2">
+          <div className="flex-1 h-1.5 bg-white/25 rounded-full overflow-hidden">
             <div className="h-full bg-white rounded-full transition-all" style={{ width: `${(validatedCount / Math.max(total, 1)) * 100}%` }} />
           </div>
           <span className="text-xs font-black">{validatedCount}/{total}</span>
