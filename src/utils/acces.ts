@@ -32,11 +32,9 @@ const CLE_ACCES = 'kunz_acces';
 const CLE_APPAREIL = 'kunz_appareil';
 
 /**
- * Empreinte d'appareil : UUID tiré du CSPRNG au premier lancement, gardé
- * dans le stockage local. C'est le maximum qu'une application web puisse
- * faire SANS empaquetage natif — quand l'app deviendra un APK (phase
- * activée par le propriétaire), cette fonction sera remplacée par
- * l'identifiant natif Android (ANDROID_ID via plugin Capacitor).
+ * Empreinte d'appareil — socle WEB : UUID tiré du CSPRNG au premier
+ * lancement, gardé dans le stockage local. Sur Android (APK), c'est
+ * `identiteAppareilAsync()` qui prend le relais avec l'ANDROID_ID natif.
  * L'empreinte NE quitte PAS l'appareil : elle ne sert qu'à lier la licence.
  */
 export function identiteAppareil(): string {
@@ -48,6 +46,40 @@ export function identiteAppareil(): string {
     localStorage.setItem(CLE_APPAREIL, id);
   }
   return id;
+}
+
+/** Empreinte résolue une seule fois par session de l'app. */
+let empreinteResolue: Promise<string> | null = null;
+
+/**
+ * Empreinte d'appareil ASYNC — la vraie dans l'APK :
+ * sur Android natif, l'ANDROID_ID du système (@capacitor/device) est
+ * utilisé — il SURVIT à la désinstallation/réinstallation de l'app, donc
+ * l'élève qui réinstalle ne perd PAS son abonnement (moins de support
+ * WhatsApp). Sur le web (et en cas d'échec natif), repli sur l'UUID
+ * CSPRNG du socle web. Les modules Capacitor sont importés dynamiquement :
+ * en web pur ils ne sont jamais chargés.
+ */
+export function identiteAppareilAsync(): Promise<string> {
+  if (!empreinteResolue) {
+    empreinteResolue = (async () => {
+      try {
+        const { Capacitor } = await import('@capacitor/core');
+        if (Capacitor.isNativePlatform()) {
+          const { Device } = await import('@capacitor/device');
+          const info = await Device.getId();
+          if (typeof info.identifier === 'string' && info.identifier.length >= 8) {
+            localStorage.setItem(CLE_APPAREIL, info.identifier);
+            return info.identifier;
+          }
+        }
+      } catch {
+        // Web pur / plugin absent : le repli CSPRNG est correct ici.
+      }
+      return identiteAppareil();
+    })();
+  }
+  return empreinteResolue;
 }
 
 function lireCache(): EtatAccesClient | null {
@@ -136,11 +168,12 @@ export async function rafraichirAcces(): Promise<EtatAccesClient> {
     return { statut: 'invite', expireLe: null };
   }
   try {
+    const empreinte = await identiteAppareilAsync();
     const res = await fetch('/api/billing/entitlement', {
       headers: {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${token}`,
-        'x-appareil-id': identiteAppareil(),
+        'x-appareil-id': empreinte,
       },
     });
     if (res.status === 401) {
@@ -173,10 +206,11 @@ export async function activerCode(code: string): Promise<ResultatActivationClien
   const token = getApiToken();
   if (!token) return { ok: false, erreur: 'not_connected' };
   try {
+    const empreinte = await identiteAppareilAsync();
     const res = await fetch('/api/billing/activer', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-      body: JSON.stringify({ code, appareilId: identiteAppareil() }),
+      body: JSON.stringify({ code, appareilId: empreinte }),
     });
     const data = (await res.json().catch(() => ({}))) as { error?: string; expireLe?: string };
     if (!res.ok || !data.expireLe) {

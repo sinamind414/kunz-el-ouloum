@@ -734,9 +734,37 @@ async function startServer() {
 
   await ensureTeacher();
 
-  app.listen(Number(PORT), "0.0.0.0", () => {
-    console.log(`[Kunz El Ouloum Server] Running on http://localhost:${PORT} (Offline Mode)`);
+  // Vercel (24/10/2026) : en serverless, la plateforme pilote le handler
+  // elle-même — JAMAIS de listen ; en local/serveur dédié, on démarre
+  // comme avant et on résout l'app une fois la porte ouverte.
+  if (process.env.VERCEL) {
+    return app;
+  }
+  return new Promise<express.Express>((resolve) => {
+    app.listen(Number(PORT), "0.0.0.0", () => {
+      console.log(`[Kunz El Ouloum Server] Running on http://localhost:${PORT} (Offline Mode)`);
+      resolve(app);
+    });
   });
 }
 
-startServer();
+// ── Serverless (Vercel) ─────────────────────────────────────────────
+// L'app est créée UNE fois par instance froide puis réutilisée à chaud ;
+// l'entrée `api/index.mjs` exporte ce handler tel quel.
+let cacheAppVercel: Promise<express.Express> | null = null;
+export function handlerVercel(req: express.Request, res: express.Response): void {
+  if (!cacheAppVercel) cacheAppVercel = startServer();
+  cacheAppVercel
+    .then((app) => {
+      app(req, res);
+    })
+    .catch((e) => {
+      console.error("[vercel] erreur handler:", e);
+      if (!res.headersSent) res.status(500).json({ error: "server_error" });
+    });
+}
+
+startServer().catch((e) => {
+  console.error("[server] démarrage impossible:", e);
+  process.exit(1);
+});
