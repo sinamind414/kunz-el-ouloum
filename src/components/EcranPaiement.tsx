@@ -44,9 +44,13 @@ interface Props {
   contexteAr?: string;
   /** Rejoué après un changement d'état (le parent rafraîchit son rendu). */
   onAccesChange?: () => void;
+  /** Retour in-app (23/10/2026) : avant, un élève qui tombait sur le
+      paywall était piégé — aucun bouton عودة et le retour matériel
+      quittait l'app. Le parent fournit sa flèche « عودة » ici. */
+  onRetour?: () => void;
 }
 
-export default function EcranPaiement({ contexteAr, onAccesChange }: Props) {
+export default function EcranPaiement({ contexteAr, onAccesChange, onRetour }: Props) {
   const [code, setCode] = useState('');
   const [erreur, setErreur] = useState<string | null>(null);
   const [succes, setSucces] = useState<string | null>(null);
@@ -78,6 +82,16 @@ export default function EcranPaiement({ contexteAr, onAccesChange }: Props) {
       className="rounded-3xl p-5 bg-white dark:bg-[#141916] border border-[#bbcbbb]/30 text-right"
       dir="rtl"
     >
+      {onRetour && (
+        <button
+          type="button"
+          onClick={onRetour}
+          className="mb-3 inline-flex items-center gap-1.5 rounded-xl bg-[#f1f5f0] dark:bg-[#1b221e] px-3 py-1.5 text-xs font-black text-[#1f1c0b] dark:text-gray-200 hover:bg-[#e5ebe4] dark:hover:bg-[#232b26]"
+        >
+          <span aria-hidden>→</span>
+          <span>عودة إلى قائمة الدروس</span>
+        </button>
+      )}
       <div className="flex items-center gap-2 mb-3">
         <Lock className="w-5 h-5 text-[#006d37]" aria-hidden />
         <h2 className="text-base font-black text-[#1f1c0b] dark:text-gray-100">

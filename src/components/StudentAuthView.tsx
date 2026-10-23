@@ -155,7 +155,7 @@ export default function StudentAuthView({ isOpen, onClose, onLogin }: Props) {
               <h3 className="font-black text-base text-gray-900 dark:text-white">
                 {codeAttribue ? 'رمزك جاهز' : mode === 'register' ? 'إنشاء حساب بدون بريد' : 'دخول التلميذ'}
               </h3>
-              <button onClick={handleClose} className="p-1.5 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800">
+              <button onClick={handleClose} aria-label="إغلاق" className="p-1.5 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800">
                 <X className="w-4 h-4 text-gray-500" />
               </button>
             </div>

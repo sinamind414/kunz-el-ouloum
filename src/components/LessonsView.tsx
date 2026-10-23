@@ -192,6 +192,13 @@ export default function LessonsView({ onRateCard, initialLesson, initialQcm, ini
           <EcranPaiement
             contexteAr="الدرس النشيط — الوحدة المطلوبة"
             onAccesChange={relancerApresPaiement}
+            // 23/10/2026 — le paywall ne piège plus : flèche عودة vers
+            // la liste des unités (le retour matériel la pilote aussi
+            // via le câblage backButton de main.tsx).
+            onRetour={() => {
+              setSelectedActiveLesson(null);
+              setSelectedUnit(unitOfActiveLesson(selectedActiveLesson));
+            }}
             key={`paywall-active-${majAcces}`}
           />
         </div>
