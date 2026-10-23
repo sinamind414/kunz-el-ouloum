@@ -18,6 +18,7 @@
 // le nom de l'élève qui se connectait, dans le tableau de bord du professeur.
 // ============================================================
 import type { ProductionLogEntry } from './methodologyLog';
+import { API_BASE } from './api';
 
 export type ActivityKind = 'quiz' | 'mission' | 'drill' | 'production';
 
@@ -185,7 +186,7 @@ async function doFlush(): Promise<void> {
     let status = 0;
     let ok = false;
     try {
-      const res = await fetch('/api/student/sync', {
+      const res = await fetch(`${API_BASE}/api/student/sync`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

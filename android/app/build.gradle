@@ -1,5 +1,14 @@
 apply plugin: 'com.android.application'
 
+// Signature release (24/10/2026) : keystore HORS du dépôt git, décrit par
+// un fichier de propriétés absolu (alias/storepass/keypass). Si le fichier
+// est absent (machine de CI sans clé), release retombe en non signé.
+def keystorePropsFile = file("C:/Users/zakaria/Documents/kunz-keystore/kunz-keystore.properties")
+def keystoreProps = new Properties()
+if (keystorePropsFile.exists()) {
+    keystorePropsFile.withInputStream { keystoreProps.load(it) }
+}
+
 android {
     namespace = "com.sinamind414.kunzelouloum"
     compileSdk = rootProject.ext.compileSdkVersion
@@ -20,6 +29,14 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            if (keystorePropsFile.exists()) {
+                signingConfig signingConfigs.create("kunzRelease") {
+                    storeFile file("C:/Users/zakaria/Documents/kunz-keystore/kunz-release.keystore")
+                    storePassword keystoreProps.getProperty("storepass")
+                    keyAlias keystoreProps.getProperty("alias")
+                    keyPassword keystoreProps.getProperty("keypass")
+                }
+            }
         }
     }
 }

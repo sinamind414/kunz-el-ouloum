@@ -15,7 +15,7 @@
 // côté serveur.
 // ============================================================
 
-import { getApiToken } from './api';
+import { getApiToken, API_BASE } from './api';
 
 export const UNITE_GRATUITE = 1;
 export const PRIX_SAISON_DA = 1200;
@@ -169,7 +169,7 @@ export async function rafraichirAcces(): Promise<EtatAccesClient> {
   }
   try {
     const empreinte = await identiteAppareilAsync();
-    const res = await fetch('/api/billing/entitlement', {
+    const res = await fetch(`${API_BASE}/api/billing/entitlement`, {
       headers: {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${token}`,
@@ -207,7 +207,7 @@ export async function activerCode(code: string): Promise<ResultatActivationClien
   if (!token) return { ok: false, erreur: 'not_connected' };
   try {
     const empreinte = await identiteAppareilAsync();
-    const res = await fetch('/api/billing/activer', {
+    const res = await fetch(`${API_BASE}/api/billing/activer`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
       body: JSON.stringify({ code, appareilId: empreinte }),

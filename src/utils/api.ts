@@ -1,4 +1,6 @@
-const API_BASE = (import.meta.env.VITE_API_URL as string | undefined) || '';
+/** Base API : vide par défaut (même origine, Vercel+APK web), ou
+ *  VITE_API_URL (APK release : URL serveur en dur, ex. https://…vercel.app). */
+export const API_BASE = (import.meta.env.VITE_API_URL as string | undefined) || '';
 
 /** Email normalisé (trim + minuscules) — miroir de la règle serveur. */
 const normalizeEmail = (email: string) => (email || '').trim().toLowerCase();
