@@ -34,4 +34,8 @@ _lint_final.txt
 # src/__tests__/bacPdf.lock.test.ts (aucune entrée sans fichier réel).
 !public/bac-sujets/
 !public/bac-sujets/**
+# APK de distribution (88 Mo, signé) : embarqué dans le déploiement Vercel
+# via public/apk/ mais JAMAIS commité (le keystore est hors git ; le binaire
+# se reconstruit par assembleRelease).
+public/apk/
 .vercel
