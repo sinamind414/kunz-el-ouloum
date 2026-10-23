@@ -187,6 +187,38 @@ async function startServer() {
   // du flush). 2 marge : lot max << 2 Mo, et le client coupe sur 413 (file d'A.).
   app.use(express.json({ limit: "2mb" }));
 
+  // ── CORS ciblé pour l'APK Capacitor (2026-10-23) ────────────────
+  // L'APK Android exécute l'app depuis l'origine Capacitor « https://localhost »
+  // (androidScheme: 'https'). Sans en-tête Access-Control-Allow-Origin, le
+  // WebView (Chromium, mode CORS strict) refuse TOUTES les réponses d'API :
+  // l'inscription depuis le téléphone échouait systématiquement avec le
+  // message générique « تعذّر إنشاء الحساب », alors que la même requête en
+  // curl (sans enforcement CORS) recevait 201. On reflète UNIQUEMENT une
+  // liste fermée d'origines installées — jamais « * » (les requêtes auth
+  // portent des jetons ; les navigateurs web sur la même machine restent
+  // soumis à la CSP du site servi par ce même serveur, origine 'self').
+  const originesApk = new Set([
+    "https://localhost", // Capacitor Android (androidScheme: https)
+    "http://localhost", // Capacitor Android (schéma http, anciens builds)
+    "capacitor://localhost", // Capacitor iOS
+    "ionic://localhost", // Ionic WebView (antériorité)
+  ]);
+  app.use((req: Request, res: Response, next: express.NextFunction) => {
+    const origine = req.headers.origin;
+    if (typeof origine === "string" && originesApk.has(origine)) {
+      res.setHeader("Access-Control-Allow-Origin", origine);
+      res.setHeader("Vary", "Origin");
+      res.setHeader("Access-Control-Allow-Methods", "GET,POST,PUT,PATCH,DELETE,OPTIONS");
+      res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization, X-Requested-With");
+      // Preflight : réponse courte immédiate, sans passer par les routes.
+      if (req.method === "OPTIONS") {
+        res.status(204).end();
+        return;
+      }
+    }
+    next();
+  });
+
   // ── En-têtes de sécurité ────────────────────────────────────────
   // CSP modérée : 'unsafe-inline' est OBLIGATOIRE (les 25 leçons HTML
   // statiques utilisent ~514 handlers on* + <script> inline). Ce que la

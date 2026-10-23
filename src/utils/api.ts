@@ -1,6 +1,10 @@
 /** Base API : vide par défaut (même origine, Vercel+APK web), ou
- *  VITE_API_URL (APK release : URL serveur en dur, ex. https://…vercel.app). */
-export const API_BASE = (import.meta.env.VITE_API_URL as string | undefined) || '';
+ *  VITE_API_URL (APK release : URL serveur en dur, ex. https://…vercel.app).
+ *  23/10/2026 : accès DÉFENSIF à import.meta.env — le bundle CJS serveur
+ *  (esbuild --format=cjs) matérialise import.meta.env comme undefined ;
+ *  « import.meta.env.VITE_API_URL » plantait alors au CHARGEMENT de
+ *  dist/server.cjs (500 sur toute l'API, cf. logs Vercel). */
+export const API_BASE = ((import.meta as { env?: { VITE_API_URL?: string } }).env?.VITE_API_URL) || '';
 
 /** Email normalisé (trim + minuscules) — miroir de la règle serveur. */
 const normalizeEmail = (email: string) => (email || '').trim().toLowerCase();
