@@ -1,4 +1,6 @@
 import React, { useState, useMemo } from 'react';
+import EcranPaiement from '../EcranPaiement';
+import { uniteOuverte } from '../../utils/acces';
 import { 
   MIND_MAPS_DATABASE, 
   MindMapData, 
@@ -67,6 +69,21 @@ export default function MindMapView({
     { id: 10, title: 'الوحدة 10: بنية الكرة الأرضية', badge: '12 مفهوماً زلزالياً' },
     { id: 11, title: 'الوحدة 11: البنيات الجيولوجية', badge: '12 مفهوماً جيولوجياً' }
   ];
+
+  // ── Freemium (24/10/2026) ──────────────────────────────────────
+  // Carte mentale d'une unité payante verrouillée hors essai/abonnement
+  // (l'unité 1 reste ouverte à vie). Placé APRÈS tous les hooks.
+  const [majAcces, setMajAcces] = useState(0);
+  if (!uniteOuverte(activeUnitId)) {
+    return (
+      <div dir="rtl" className="p-4 space-y-4">
+        <EcranPaiement
+          onAccesChange={() => setMajAcces((t) => t + 1)}
+          key={`paywall-mindmap-${activeUnitId}-${majAcces}`}
+        />
+      </div>
+    );
+  }
 
   return (
     <div className={`space-y-4 pb-20 px-3 sm:px-5 pt-4 bg-[#f8fbfa] dark:bg-gray-950 min-h-full ${

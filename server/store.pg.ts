@@ -19,6 +19,7 @@ import { Pool, PoolClient } from 'pg';
 import fs from 'node:fs';
 import type { Student, ProductionEntry, ActivityEntry, ResetCode, Teacher, DashboardStudentRow } from './store';
 import { calculeActivite } from './activite';
+import { MAX_APPAREILS_PAR_CODE as MAX_APPAREILS } from '../src/server/facturation';
 
 const SCHEMA = `
 CREATE TABLE IF NOT EXISTS students (
@@ -71,6 +72,16 @@ CREATE TABLE IF NOT EXISTS reset_codes (
   expires_at timestamptz NOT NULL,
   used       boolean NOT NULL DEFAULT false
 );
+CREATE TABLE IF NOT EXISTS licences (
+  code        text PRIMARY KEY,
+  cree_le     timestamptz NOT NULL,
+  note        text,
+  utilise_par text,
+  utilise_le  timestamptz,
+  expire_le   date,
+  appareils   jsonb NOT NULL DEFAULT '[]'::jsonb
+);
+ALTER TABLE students ADD COLUMN IF NOT EXISTS abonnement_expire_le date;
 `;
 
 /** Mappe un JSONB renvoyé par pg (objet) ou une chaîne (parité SQLite). */
@@ -150,7 +161,78 @@ export class PostgresStore {
   }
 
   private mapStudent(r: Record<string, unknown>): Student {
-    return { id: String(r.id), email: String(r.email), passwordHash: String(r.password_hash), name: String(r.name), createdAt: iso(r.created_at) };
+    return {
+      id: String(r.id), email: String(r.email), passwordHash: String(r.password_hash), name: String(r.name), createdAt: iso(r.created_at),
+      abonnementExpireLe: r.abonnement_expire_le != null ? String(r.abonnement_expire_le).slice(0, 10) : null,
+    };
+  }
+
+  // ── Facturation (chapelle src/server/facturation.ts) ─────
+  async creerLicences(codes: string[], note: string, maintenant: string): Promise<number> {
+    let creees = 0;
+    for (const code of codes) {
+      const r = await this.pool.query(
+        'INSERT INTO licences (code, cree_le, note) VALUES ($1,$2,$3) ON CONFLICT (code) DO NOTHING',
+        [code, maintenant, note],
+      );
+      creees += r.rowCount ?? 0;
+    }
+    return creees;
+  }
+
+  async trouverLicence(code: string): Promise<{ code: string; utilisePar: string | null; expireLe: string | null; appareils: string[] } | undefined> {
+    const r = await this.pool.query('SELECT code, utilise_par, expire_le, appareils FROM licences WHERE code = $1', [code]);
+    const row = r.rows[0];
+    if (!row) return undefined;
+    return {
+      code: String(row.code),
+      utilisePar: row.utilise_par != null ? String(row.utilise_par) : null,
+      expireLe: row.expire_le != null ? String(row.expire_le).slice(0, 10) : null,
+      appareils: fromJson<string[]>(row.appareils ?? []),
+    };
+  }
+
+  async licenceDe(studentId: string): Promise<{ code: string; appareils: string[] } | undefined> {
+    const r = await this.pool.query('SELECT code, appareils FROM licences WHERE utilise_par = $1', [studentId]);
+    const row = r.rows[0];
+    if (!row) return undefined;
+    return { code: String(row.code), appareils: fromJson<string[]>(row.appareils ?? []) };
+  }
+
+  /**
+   * UNE instruction atomique : ajoute l'appareil si (a) la licence appartient
+   * à cet élève, (b) l'appareil y est déjà, ou (c) il reste une place.
+   * Renvoie true s'il est présent à la fin, false sinon.
+   */
+  async ajouterAppareilSiPlace(code: string, eleveId: string, appareilId: string): Promise<boolean> {
+    const r = await this.pool.query(
+      `UPDATE licences
+       SET appareils = appareils || $1::jsonb
+       WHERE code = $2
+         AND utilise_par = $3
+         AND (appareils @> $1::jsonb OR jsonb_array_length(appareils) < $4)
+       RETURNING code`,
+      [JSON.stringify([appareilId]), code, eleveId, MAX_APPAREILS],
+    );
+    return (r.rowCount ?? 0) > 0;
+  }
+
+  async marquerLicenceUtilisee(code: string, studentId: string, expireLe: string): Promise<boolean> {
+    const r = await this.pool.query(
+      'UPDATE licences SET utilise_par = $1, utilise_le = now(), expire_le = $2 WHERE code = $3 AND (utilise_par IS NULL OR utilise_par = $1)',
+      [studentId, expireLe, code],
+    );
+    return (r.rowCount ?? 0) > 0;
+  }
+
+  async definirAbonnement(studentId: string, expireLe: string): Promise<void> {
+    await this.pool.query('UPDATE students SET abonnement_expire_le = $1 WHERE id = $2', [expireLe, studentId]);
+  }
+
+  async abonnementDe(studentId: string): Promise<string | null> {
+    const r = await this.pool.query('SELECT abonnement_expire_le FROM students WHERE id = $1', [studentId]);
+    const v = r.rows[0]?.abonnement_expire_le;
+    return v != null ? String(v).slice(0, 10) : null;
   }
 
   // ── Enseignants ──────────────────────────────────────────

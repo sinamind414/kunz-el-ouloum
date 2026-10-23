@@ -7,6 +7,8 @@ import { getSrsState, rateCard, sortByDue, previewIntervalDays, formatIntervalLa
 import { noterAffichageEffort } from '../utils/effortMesure';
 import MicroCapsulePanel from './MicroCapsulePanel';
 import BoutonMorchid from './BoutonMorchid';
+import EcranPaiement from './EcranPaiement';
+import { uniteOuverte } from '../utils/acces';
 
 interface RevisionViewProps {
   units: Unit[];
@@ -138,6 +140,22 @@ export default function RevisionView({ units, flashcards, onRateCard, isFocusMod
     const unit = units.find(u => u.id === selectedUnitId);
     return unit ? unit.title : '';
   };
+
+  // ── Freemium (24/10/2026) ──────────────────────────────────────
+  // Cartes d'une unité payante verrouillées hors essai/abonnement
+  // (l'unité 1 reste ouverte à vie). Placé APRÈS tous les hooks ;
+  // le changement d'état d'accès relance le rendu via la clé.
+  const [majAcces, setMajAcces] = useState(0);
+  if (!uniteOuverte(selectedUnitId)) {
+    return (
+      <div dir="rtl" className="p-4 space-y-4">
+        <EcranPaiement
+          onAccesChange={() => setMajAcces((t) => t + 1)}
+          key={`paywall-revision-${selectedUnitId}-${majAcces}`}
+        />
+      </div>
+    );
+  }
 
   return (
     <div className={`space-y-6 pb-24 select-none font-sans w-full ${isFocusMode || isReaderMode ? 'max-w-2xl mx-auto' : ''}`}>

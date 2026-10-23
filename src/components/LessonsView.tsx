@@ -17,6 +17,8 @@ import { sourceLivre, badgeSource, sourceAmbigue } from '../data/bookIndex';
 import { loadParcours, currentItem, parcoursProgress } from '../lib/parcours/parcoursProgress';
 import { LESSON_GOLD_SUMMARIES } from '../data/lessonGoldSummaries';
 import Icone from './Icone';
+import EcranPaiement from './EcranPaiement';
+import { rubriquePayanteOuverte, uniteOuverte } from '../utils/acces';
 
 // Sprint 32 : ces quatre vues (QCM du livre, sujets BAC, bibliothèque Okacha,
 // recherche) embarquaient à elles seules plusieurs centaines de kilo-octets de
@@ -164,6 +166,11 @@ export default function LessonsView({ onRateCard, initialLesson, initialQcm, ini
    */
   const [okachaDomaine, setOkachaDomaine] = useState<1 | 2 | 3 | 'm'>(1);
 
+  // Freemium (24/10/2026) : compteur de re-render après un changement d'accès
+  // (essai démarré, code activé) — les prédicats relisent le cache local.
+  const [majAcces, setMajAcces] = useState(0);
+  const relancerApresPaiement = () => setMajAcces((t) => t + 1);
+
   // R5 : ouverture d'une leçon depuis la recherche globale (deep-link).
   const openLessonFromSearch = (lessonKey: string, kind: 'html' | 'active', unitId: number) => {
     setSelectedUnit(unitId);
@@ -179,6 +186,17 @@ export default function LessonsView({ onRateCard, initialLesson, initialQcm, ini
 
   // ----- Rendu d'une leçon ouverte -----
   if (selectedActiveLesson) {
+    if (!uniteOuverte(unitOfActiveLesson(selectedActiveLesson))) {
+      return (
+        <div dir="rtl" className="space-y-4">
+          <EcranPaiement
+            contexteAr="الدرس النشيط — الوحدة المطلوبة"
+            onAccesChange={relancerApresPaiement}
+            key={`paywall-active-${majAcces}`}
+          />
+        </div>
+      );
+    }
     const inUnitNext = nextActiveInUnit(selectedUnit, selectedActiveLesson);
     const crossUnitNext = firstActiveLessonOfNextUnit(selectedUnit);
     const nextKey = inUnitNext ?? crossUnitNext?.key;
@@ -200,6 +218,17 @@ export default function LessonsView({ onRateCard, initialLesson, initialQcm, ini
   }
 
   if (selectedPassiveLesson) {
+    if (!uniteOuverte(selectedUnit)) {
+      return (
+        <div dir="rtl" className="space-y-4">
+          <EcranPaiement
+            contexteAr={`الدرس السلبي — ${getUnitTitle(selectedUnit)}`}
+            onAccesChange={relancerApresPaiement}
+            key={`paywall-passive-${majAcces}`}
+          />
+        </div>
+      );
+    }
     const nextKey = nextPassiveInUnit(selectedUnit, selectedPassiveLesson);
     return (
       <HtmlLessonViewer
@@ -215,6 +244,13 @@ export default function LessonsView({ onRateCard, initialLesson, initialQcm, ini
   // Ouvert depuis le hub S'entraîner (entrée `examens`, 2026-10-12) ET depuis
   // le raccourci d'une unité. data-testid : verrou du deep-link.
   if (mode === 'qcm') {
+    if (!rubriquePayanteOuverte()) {
+      return (
+        <div dir="rtl" className="space-y-4">
+          <EcranPaiement contexteAr="اختبار الكتاب" onAccesChange={relancerApresPaiement} key={`paywall-qcm-${majAcces}`} />
+        </div>
+      );
+    }
     return (
       <div data-testid="qcm-livre">
         <Suspense fallback={<VueEnChargement />}>
@@ -235,6 +271,13 @@ export default function LessonsView({ onRateCard, initialLesson, initialQcm, ini
 
   // ----- Écran 0 bis : tests bac (PROGRAMME NATIONAL, injection vérifiée) -----
   if (mode === 'bac') {
+    if (!rubriquePayanteOuverte()) {
+      return (
+        <div dir="rtl" className="space-y-4">
+          <EcranPaiement contexteAr="اختبارات البكالوريا" onAccesChange={relancerApresPaiement} key={`paywall-bac-${majAcces}`} />
+        </div>
+      );
+    }
     return (
       <div data-testid="bac-exam">
         <Suspense fallback={<VueEnChargement />}>
@@ -248,6 +291,13 @@ export default function LessonsView({ onRateCard, initialLesson, initialQcm, ini
   // Entrée unique : la carte en fin d'écran d'un domaine (leçons passives) —
   // elle passe le domaine courant pour ouvrir la حصيلة DE CE domaine-là.
   if (mode === 'okacha') {
+    if (!rubriquePayanteOuverte()) {
+      return (
+        <div dir="rtl" className="space-y-4">
+          <EcranPaiement contexteAr="الحصيلة المعرفية" onAccesChange={relancerApresPaiement} key={`paywall-okacha-${majAcces}`} />
+        </div>
+      );
+    }
     return (
       <Suspense fallback={<VueEnChargement />}>
         <OkachaView

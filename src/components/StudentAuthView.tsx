@@ -20,7 +20,7 @@ const MESSAGES: Record<string, string> = {
   invalid_credentials: 'الرمز أو الرمز السري غير صحيح. تحقق من الرمز المكوّن من 8 خانات.',
   code_taken: 'وقع تعارض نادر. أعد المحاولة، سيُمنح لك رمز آخر.',
   storage_unavailable:
-    'خدمة الحسابات متوقفة مؤقتًا على هذا الخادم. يمكنك المتابعة كزائر — كل الدروس تعمل.',
+    'خدمة الحسابات متوقفة مؤقتًا على هذا الخادم. يمكنك المتابعة كزائر — الوحدة الأولى تعمل كاملة.',
   too_many_attempts: 'محاولات كثيرة. انتظر دقيقة ثم أعد المحاولة.',
   email_exists: 'هذا البريد مسجل بالفعل. ادخل به أو استعمل رمزًا جديدًا.',
   weak_password: 'كلمة المرور قصيرة جدًا — 6 أحرف على الأقل.',
@@ -329,7 +329,7 @@ export default function StudentAuthView({ isOpen, onClose, onLogin }: Props) {
                   onClick={handleClose}
                   className="w-full text-[11px] font-bold text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
                 >
-                  المتابعة كزائر — كل الدروس متاحة بدون حساب
+                  المتابعة كزائر — الوحدة الأولى متاحة مجاناً بدون حساب
                 </button>
               </form>
             )}

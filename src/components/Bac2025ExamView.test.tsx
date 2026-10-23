@@ -10,8 +10,12 @@ import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import Bac2025ExamView from './Bac2025ExamView';
 import { MEFTA_BAC_EXERCISES } from '../data/meftahManhajia';
 import { getExamAttempts } from '../utils/examLog';
+import { semerEssai } from '../test-setup/semisEssai';
 
-beforeEach(() => localStorage.clear());
+beforeEach(() => {
+  localStorage.clear();
+  semerEssai();
+});
 
 afterEach(cleanup);
 

@@ -15,6 +15,7 @@ import Database from 'better-sqlite3';
 import fs from 'node:fs';
 import path from 'node:path';
 import { calculeActivite } from './activite';
+import { MAX_APPAREILS_PAR_CODE as MAX_APPAREILS } from '../src/server/facturation';
 
 // ── Types du contrat HTTP (miroir de server.ts) ──────────────
 export interface Student {
@@ -23,6 +24,12 @@ export interface Student {
   passwordHash: string;
   name: string;
   createdAt: string;
+  /**
+   * Facturation (24/10/2026) : fin de l'abonnement « saison », date
+   * seule UTC ou null. L'essai, lui, est DÉRIVÉ de created_at (voir
+   * src/server/facturation.ts) — aucune colonne pour lui.
+   */
+  abonnementExpireLe?: string | null;
 }
 
 export interface ProductionEntry {
@@ -131,6 +138,15 @@ CREATE TABLE IF NOT EXISTS reset_codes (
   expires_at TEXT NOT NULL,
   used       INTEGER NOT NULL DEFAULT 0
 );
+CREATE TABLE IF NOT EXISTS licences (
+  code        TEXT PRIMARY KEY,
+  cree_le     TEXT NOT NULL,
+  note        TEXT,
+  utilise_par TEXT,
+  utilise_le  TEXT,
+  expire_le   TEXT,
+  appareils_json TEXT NOT NULL DEFAULT '[]'
+);
 `;
 
 /**
@@ -187,6 +203,16 @@ export class SqliteStore {
     // Migration légère : anciennes bases sans la colonne percent.
     const actCols = this.db.prepare('PRAGMA table_info(activities)').all() as { name: string }[];
     if (!actCols.some(c => c.name === 'percent')) this.db.exec('ALTER TABLE activities ADD COLUMN percent REAL');
+    // Facturation (24/10/2026) : échéance de l'abonnement « saison ».
+    const stuCols = this.db.prepare('PRAGMA table_info(students)').all() as { name: string }[];
+    if (!stuCols.some(c => c.name === 'abonnement_expire_le')) {
+      this.db.exec('ALTER TABLE students ADD COLUMN abonnement_expire_le TEXT');
+    }
+    // Facturation (24/10/2026) : empreintes d'appareils attachées aux licences.
+    const licCols = this.db.prepare('PRAGMA table_info(licences)').all() as { name: string }[];
+    if (licCols.length > 0 && !licCols.some(c => c.name === 'appareils_json')) {
+      this.db.exec("ALTER TABLE licences ADD COLUMN appareils_json TEXT NOT NULL DEFAULT '[]'");
+    }
   }
 
   close(): void {
@@ -218,7 +244,91 @@ export class SqliteStore {
   }
 
   private mapStudent(r: Record<string, unknown>): Student {
-    return { id: String(r.id), email: String(r.email), passwordHash: String(r.password_hash), name: String(r.name), createdAt: String(r.created_at) };
+    return {
+      id: String(r.id), email: String(r.email), passwordHash: String(r.password_hash), name: String(r.name), createdAt: String(r.created_at),
+      abonnementExpireLe: r.abonnement_expire_le != null ? String(r.abonnement_expire_le) : null,
+    };
+  }
+
+  // ── Facturation (chapelle src/server/facturation.ts) ─────
+  /** Crée des codes d'activation (idempotent : un code existant est inchangé). */
+  creerLicences(codes: string[], note: string, maintenant: string): number {
+    const ins = this.db.prepare('INSERT OR IGNORE INTO licences (code, cree_le, note) VALUES (?,?,?)');
+    let creees = 0;
+    const tx = this.db.transaction((liste: string[]) => {
+      for (const code of liste) creees += ins.run(code, maintenant, note).changes;
+    });
+    tx(codes);
+    return creees;
+  }
+
+  trouverLicence(code: string): { code: string; utilisePar: string | null; expireLe: string | null; appareils: string[] } | undefined {
+    const r = this.db.prepare('SELECT code, utilise_par, expire_le, appareils_json FROM licences WHERE code = ?').get(code) as
+      | { code: string; utilise_par: string | null; expire_le: string | null; appareils_json: string | null }
+      | undefined;
+    if (!r) return undefined;
+    let appareils: string[] = [];
+    try {
+      appareils = r.appareils_json ? (JSON.parse(r.appareils_json) as string[]) : [];
+    } catch {
+      appareils = [];
+    }
+    return { code: r.code, utilisePar: r.utilise_par, expireLe: r.expire_le, appareils };
+  }
+
+  /** La licence portée par cet élève (vérification d'appareil au démarrage). */
+  licenceDe(studentId: string): { code: string; appareils: string[] } | undefined {
+    const r = this.db.prepare('SELECT code, appareils_json FROM licences WHERE utilise_par = ?').get(studentId) as
+      | { code: string; appareils_json: string | null }
+      | undefined;
+    if (!r) return undefined;
+    let appareils: string[] = [];
+    try {
+      appareils = r.appareils_json ? (JSON.parse(r.appareils_json) as string[]) : [];
+    } catch {
+      appareils = [];
+    }
+    return { code: r.code, appareils };
+  }
+
+  ajouterAppareilSiPlace(code: string, eleveId: string, appareilId: string): boolean {
+    // better-sqlite3 est synchrone et mono-connexion : la séquence
+    // lecture→écriture ci-dessous est ATOMIQUE dans le processus du serveur.
+    const row = this.db.prepare('SELECT utilise_par, appareils_json FROM licences WHERE code = ?').get(code) as
+      | { utilise_par: string | null; appareils_json: string | null }
+      | undefined;
+    if (!row || row.utilise_par !== eleveId) return false;
+    let appareils: string[] = [];
+    try {
+      appareils = row.appareils_json ? (JSON.parse(row.appareils_json) as string[]) : [];
+    } catch {
+      appareils = [];
+    }
+    if (appareils.includes(appareilId)) return true;
+    if (appareils.length >= MAX_APPAREILS) return false;
+    appareils.push(appareilId);
+    this.db.prepare('UPDATE licences SET appareils_json = ? WHERE code = ? AND utilise_par = ?')
+      .run(JSON.stringify(appareils), code, eleveId);
+    return true;
+  }
+
+  /** Ne marque QUE si le code est encore vierge ou déjà à ce même élève. */
+  marquerLicenceUtilisee(code: string, studentId: string, expireLe: string): boolean {
+    const r = this.db.prepare(
+      'UPDATE licences SET utilise_par = ?, utilise_le = ?, expire_le = ? WHERE code = ? AND (utilise_par IS NULL OR utilise_par = ?)',
+    ).run(studentId, new Date().toISOString(), expireLe, code, studentId);
+    return r.changes > 0;
+  }
+
+  definirAbonnement(studentId: string, expireLe: string): void {
+    this.db.prepare('UPDATE students SET abonnement_expire_le = ? WHERE id = ?').run(expireLe, studentId);
+  }
+
+  abonnementDe(studentId: string): string | null {
+    const r = this.db.prepare('SELECT abonnement_expire_le FROM students WHERE id = ?').get(studentId) as
+      | { abonnement_expire_le: string | null }
+      | undefined;
+    return r?.abonnement_expire_le ?? null;
   }
 
   countStudents(): number {

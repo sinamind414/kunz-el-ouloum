@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import EcranPaiement from './EcranPaiement';
+import { rubriquePayanteOuverte } from '../utils/acces';
 import { motion } from 'motion/react';
 import { Swords, Lock, PlayCircle, Trophy, Clock, CheckCircle2, Zap, BrainCircuit } from 'lucide-react';
 
@@ -49,7 +51,7 @@ const CHALLENGES = [
   }
 ];
 
-export default function CombatTrainerView({ onStartChallenge }: CombatTrainerViewProps) {
+function CombatTrainerViewInterne({ onStartChallenge }: CombatTrainerViewProps) {
   const [mode, setMode] = useState<'coach' | 'sprint'>('coach');
 
   return (
@@ -185,4 +187,18 @@ export default function CombatTrainerView({ onStartChallenge }: CombatTrainerVie
       
     </div>
   );
+}
+
+// Freemium (24/10/2026) - rubrique payante. Le wrapper NE contient AUCUN
+// hook : la vue interne garde les siens, les regles des hooks restent entieres.
+// Un essai actif ou un abonnement saison ouvre la rubrique ; sinon ecran-code.
+export default function CombatTrainerView(props: CombatTrainerViewProps) {
+  if (!rubriquePayanteOuverte()) {
+    return (
+      <div dir="rtl" className="p-4 space-y-4">
+        <EcranPaiement />
+      </div>
+    );
+  }
+  return <CombatTrainerViewInterne {...props} />;
 }

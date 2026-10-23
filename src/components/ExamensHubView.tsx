@@ -1,4 +1,6 @@
 // ExamensHubView.tsx — sous-écran du hub « التمارين والتدريب » (2026-10-12).
+import EcranPaiement from './EcranPaiement';
+import { rubriquePayanteOuverte } from '../utils/acces';
 //
 // Pourquoi un sous-écran plutôt que deux cartes de plus dans le hub : le hub
 // plafonne à 8 cartes (limite de lisibilité verrouillée par test). « QCM du
@@ -36,7 +38,7 @@ const EXAMENS = [
   },
 ];
 
-export default function ExamensHubView({ onOpen, onBack }: ExamensHubViewProps) {
+function ExamensHubViewInterne({ onOpen, onBack }: ExamensHubViewProps) {
   return (
     <div className="min-h-screen p-4 md:p-8 max-w-5xl mx-auto" dir="rtl" data-testid="examens-hub">
       <div className="flex items-center justify-between gap-4 mb-6">
@@ -86,4 +88,18 @@ export default function ExamensHubView({ onOpen, onBack }: ExamensHubViewProps) 
       </div>
     </div>
   );
+}
+
+// Freemium (24/10/2026) - rubrique payante. Le wrapper NE contient AUCUN
+// hook : la vue interne garde les siens, les regles des hooks restent entieres.
+// Un essai actif ou un abonnement saison ouvre la rubrique ; sinon ecran-code.
+export default function ExamensHubView(props: ExamensHubViewProps) {
+  if (!rubriquePayanteOuverte()) {
+    return (
+      <div dir="rtl" className="p-4 space-y-4">
+        <EcranPaiement />
+      </div>
+    );
+  }
+  return <ExamensHubViewInterne {...props} />;
 }

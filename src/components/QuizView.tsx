@@ -19,6 +19,8 @@ import { graineSession, melangerQuestions } from '../utils/melangeOptions';
 import { CAUSES_QCM, doitDemanderCause, QUESTION_CAUSE_AR, REMERCIEMENT_CAUSE_AR, causeParId } from '../data/diagnosticQuiz';
 import { enregistrerErreurs } from '../utils/profilErreurs';
 import { planifierRappelsPourErreurs } from '../lib/planificationRappels';
+import EcranPaiement from './EcranPaiement';
+import { uniteOuverte } from '../utils/acces';
 // TC3/H1 (audit « architecture » 19/10/2026) : chaque réponse tourne la boucle
 // « erreur → reprise » — un échec rend la question due sous 24 h, et la séance
 // s'ouvre sur ce qui est dû. La règle (SM-2 borné, sans intervalle inventé)
@@ -33,7 +35,7 @@ interface QuizViewProps {
   onQuizComplete: (score: number, total: number) => void;
 }
 
-export default function QuizView({ unitTitle, questions, onClose, onQuizComplete }: QuizViewProps) {
+export default function QuizView({ unitId, unitTitle, questions, onClose, onQuizComplete }: QuizViewProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [selectedAnswers, setSelectedAnswers] = useState<{ [key: number]: number }>({});
   const [isAnswered, setIsAnswered] = useState<{ [key: number]: boolean }>({});
@@ -101,6 +103,24 @@ export default function QuizView({ unitTitle, questions, onClose, onQuizComplete
     actif: !quizFinished,
     rafraichissementMs: 500,
   });
+
+  // ── Freemium (24/10/2026) ─────────────────────────────────────────
+  // L'unité 1 est ouverte à vie (invité compris) ; les autres unités
+  // exigent un essai actif ou un abonnement saison. Le verrou se pose
+  // APRÈS tous les hooks (règle React), juste avant le premier rendu ;
+  // majAcces (clé du composant) force la relecture après un paiement.
+  const [majAcces, setMajAcces] = useState(0);
+  if (!uniteOuverte(unitId)) {
+    return (
+      <div dir="rtl" className="p-4 space-y-4">
+        <EcranPaiement
+          contexteAr={`اختبار الوحدة — ${unitTitle}`}
+          onAccesChange={() => setMajAcces((t) => t + 1)}
+          key={`paywall-quiz-${unitId}-${majAcces}`}
+        />
+      </div>
+    );
+  }
 
   // Format Time
   const formatTime = (seconds: number) => {

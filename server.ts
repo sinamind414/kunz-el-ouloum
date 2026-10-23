@@ -21,6 +21,14 @@ import { marqueDepuisIdentite } from "./src/utils/marque";
 // une note de 9999 sur une échelle de 0 à 100 entrait dans la moyenne du
 // professeur, et une date de 2030 rendait un élève « actif » pour toujours.
 import { assainirEntrees, assainirActivites, fusionnerRefus } from "./src/server/assainirEntrees";
+import {
+  PRIX_SAISON_DA,
+  UNITE_GRATUITE,
+  activerAbonnement,
+  analyserAcces,
+  appareilAutorise,
+  type StoreFacturation,
+} from "./src/server/facturation";
 import { makeRateLimiter } from "./server/rateLimit";
 // H2 (2026-10-14) — pages publiques exigées par une publication en magasin :
 // politique de confidentialité lisible sans JavaScript, et Digital Asset Links
@@ -101,6 +109,10 @@ const loginAccountLimiter = makeRateLimiter(ACCOUNT_LIMIT, WINDOW_MS);
 // Reset mot de passe : 10 essais / 15 min / IP — la force brute d'un code
 // à 8 symboles (32^8 ≈ 1,1e12) devient hors d'atteinte.
 const resetCodeLimiter = makeRateLimiter(10, WINDOW_MS);
+// Activation de licence : 10 essais / 15 min / compte — un élève qui se
+// trompe cinq fois de code a le temps de le relire ; les tentatives en
+// rafale (« essayer tous les codes ») sont coupées tôt.
+const activationLimiter = makeRateLimiter(10, WINDOW_MS);
 
 // ── Code de réinitialisation : CSPRNG (Math.random était prévisible) ──
 const RESET_ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"; // 32 symboles, sans O/0/I/1
@@ -401,6 +413,75 @@ async function startServer() {
   app.get("/api/student/entries", studentAuth, asyncHandler(async (req: Request, res: Response) => {
     res.json({ entries: await store.listEntries((req as any).studentId) });
   }));
+
+  // ── Facturation (modèle propriétaire 24/10/2026, voir src/server/facturation.ts) ──
+  /** Date de mise en service du paywall : aucun essai ne démarre avant elle. */
+  const LANCEMENT_PAYWALL = (process.env.KUNZ_PAYWALL_LANCEMENT || "2026-10-23").trim();
+  /** Le store dégradé ne sait pas facturer : réponse explicite, jamais un crash. */
+  function storeFacturation(store_ : typeof store): StoreFacturation | null {
+    if (storeEstDegrade(store_)) return null;
+    return store_ as unknown as StoreFacturation;
+  }
+
+  app.get("/api/billing/entitlement", studentAuth, asyncHandler(async (req: Request, res: Response) => {
+    const studentId = (req as any).studentId;
+    const student = await store.findStudentById(studentId);
+    if (!student) return res.status(404).json({ error: "not_found" });
+    const etat = analyserAcces({
+      createdAt: student.createdAt,
+      lancement: LANCEMENT_PAYWALL,
+      abonnementExpireLe: student.abonnementExpireLe ?? null,
+      maintenant: new Date(),
+    });
+    // Liaison appareil (24/10/2026) : un abonnement actif ne vaut que sur les
+    // appareils auxquels la licence est attachée (2 max). Un abonnement sans
+    // licence liée (achat antérieur) n'est pas puni.
+    if (etat.statut === "abonnement") {
+      const appareilId = req.header("x-appareil-id") || null;
+      const acc = storeFacturation(store);
+      if (acc && appareilId) {
+        const licence = await acc.licenceDe(studentId);
+        if (licence && !appareilAutorise(licence, appareilId)) {
+          return res.json({
+            statut: "gratuit",
+            expireLe: null,
+            joursRestants: 0,
+            raison: "appareil_non_licencie",
+            uniteGratuite: UNITE_GRATUITE,
+            prixSaisonDA: PRIX_SAISON_DA,
+          });
+        }
+      }
+    }
+    res.json({
+      ...etat,
+      uniteGratuite: UNITE_GRATUITE,
+      prixSaisonDA: PRIX_SAISON_DA,
+    });
+  }));
+
+  app.post("/api/billing/activer", studentAuth, async (req: Request, res: Response) => {
+    try {
+      const studentId = (req as any).studentId;
+      if (!ipLimiter.hit(req.ip || "unknown") || !activationLimiter.hit(studentId)) {
+        return res.status(429).json({ error: "too_many_attempts" });
+      }
+      const acc = storeFacturation(store);
+      if (!acc) return res.status(503).json({ error: "storage_unavailable" });
+      const r = await activerAbonnement(acc, {
+        eleveId: studentId,
+        code: req.body?.code,
+        appareilId: req.body?.appareilId,
+        maintenant: new Date(),
+      });
+      if (!r.ok) return res.status(r.statut).json({ error: r.erreur });
+      res.json({ ok: true, statut: r.statut, expireLe: r.expireLe });
+    } catch (e) {
+      console.error("[billing] activer:", e);
+      if (storeEstDegrade(store)) return res.status(503).json({ error: "storage_unavailable" });
+      res.status(500).json({ error: "server_error" });
+    }
+  });
 
   const teacherAuth = makeTeacherAuth(JWT_SECRET);
 

@@ -12,7 +12,7 @@
 // stockage local.
 
 import { cleanup, render, screen, fireEvent, act } from '@testing-library/react';
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import App from '../../App';
 import { ajouterJours, jourLocal } from '../../utils/dayKey';
 import type { UserProgress } from '../../types';
@@ -21,6 +21,14 @@ afterEach(() => {
   cleanup();
   localStorage.clear();
   vi.useRealTimers();
+});
+
+// Freemium (24/10/2026) : ce test pilote l'app comme un INVITÉ (flux intro →
+// tableau de bord → session de focus), avant toute connexion. Le hook global
+// du setup sème un état « essai » avant chaque test ; on l'annule ici pour
+// retrouver l'état invité que ce contrat prouve.
+beforeEach(() => {
+  localStorage.clear();
 });
 
 /** Ouvre le coffre et démarre : le déclic du jour est affiché. */

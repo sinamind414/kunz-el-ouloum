@@ -1,4 +1,6 @@
 // Bac2025ExamView.tsx — LA BOUCLE ÉLÈVE DE BOUT EN BOUT (Pierre 2, R6).
+import EcranPaiement from './EcranPaiement';
+import { rubriquePayanteOuverte } from '../utils/acces';
 //
 // L'élève choisit un sujet officiel 2025, répond aux 3 exercices, soumet :
 // la note = couverture des ATTENDUS OBLIGATOIRES × max, par exercice (5/7/8)
@@ -80,7 +82,7 @@ const PHASE_LABEL_2025: Record<string, string> = {
   termine: 'انتهى الوقت',
 };
 
-export default function Bac2025ExamView({ onClose }: { onClose: () => void }) {
+function Bac2025ExamViewInterne({ onClose }: { onClose: () => void }) {
   const [sujet, setSujet] = useState<SujetId>(1);
   const [reponses, setReponses] = useState<Record<1 | 2 | 3, string>>({ 1: '', 2: '', 3: '' });
   const [soumis, setSoumis] = useState(false);
@@ -531,4 +533,18 @@ export default function Bac2025ExamView({ onClose }: { onClose: () => void }) {
       </div>
     </div>
   );
+}
+
+// Freemium (24/10/2026) - rubrique payante. Le wrapper NE contient AUCUN
+// hook : la vue interne garde les siens, les regles des hooks restent entieres.
+// Un essai actif ou un abonnement saison ouvre la rubrique ; sinon ecran-code.
+export default function Bac2025ExamView(props: { onClose: () => void }) {
+  if (!rubriquePayanteOuverte()) {
+    return (
+      <div dir="rtl" className="p-4 space-y-4">
+        <EcranPaiement />
+      </div>
+    );
+  }
+  return <Bac2025ExamViewInterne {...props} />;
 }

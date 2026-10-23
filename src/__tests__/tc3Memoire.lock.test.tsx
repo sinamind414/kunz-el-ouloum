@@ -13,6 +13,7 @@
 //        explicitement.
 
 import { cleanup, fireEvent, render, screen } from '@testing-library/react';
+import { semerEssai } from '../test-setup/semisEssai';
 import { readFileSync, readdirSync, statSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
@@ -47,6 +48,7 @@ const QCM = (id: number, juste: string, fausse: string): QuizQuestion => ({
 
 beforeEach(() => {
   localStorage.clear();
+  semerEssai();
   reinitialiserMemoireQuestions();
 });
 afterEach(() => cleanup());

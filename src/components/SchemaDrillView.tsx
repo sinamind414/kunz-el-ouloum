@@ -1,4 +1,6 @@
 // SchemaDrillView.tsx — « ارسم من الذاكرة » (audit item 17, sprint 12).
+import EcranPaiement from './EcranPaiement';
+import { rubriquePayanteOuverte } from '../utils/acces';
 //
 // Le principe est une INVERSION : l'app savait montrer 134 schémas ; ici
 // l'image est cachée tant que l'élève n'a pas dessiné et ne s'est pas
@@ -242,7 +244,7 @@ function Exercice({ drill, onQuitter }: { drill: SchemaDrill; onQuitter: () => v
   );
 }
 
-export default function SchemaDrillView({ onBackToHome }: SchemaDrillViewProps) {
+function SchemaDrillViewInterne({ onBackToHome }: SchemaDrillViewProps) {
   const [unite, setUnite] = useState<number | undefined>(undefined);
   const [ouvert, setOuvert] = useState<SchemaDrill | null>(null);
 
@@ -333,4 +335,18 @@ export default function SchemaDrillView({ onBackToHome }: SchemaDrillViewProps) 
       </div>
     </div>
   );
+}
+
+// Freemium (24/10/2026) - rubrique payante. Le wrapper NE contient AUCUN
+// hook : la vue interne garde les siens, les regles des hooks restent entieres.
+// Un essai actif ou un abonnement saison ouvre la rubrique ; sinon ecran-code.
+export default function SchemaDrillView(props: SchemaDrillViewProps) {
+  if (!rubriquePayanteOuverte()) {
+    return (
+      <div dir="rtl" className="p-4 space-y-4">
+        <EcranPaiement />
+      </div>
+    );
+  }
+  return <SchemaDrillViewInterne {...props} />;
 }

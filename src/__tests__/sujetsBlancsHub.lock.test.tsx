@@ -8,8 +8,12 @@ import { cleanup, fireEvent, render, screen } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import Bac2025ExamView from '../components/Bac2025ExamView';
 import { getExamAttempts } from '../utils/examLog';
+import { semerEssai } from '../test-setup/semisEssai';
 
-beforeEach(() => localStorage.clear());
+beforeEach(() => {
+  localStorage.clear();
+  semerEssai();
+});
 afterEach(cleanup);
 
 describe('H4d — écran dédié des sujets blancs', () => {

@@ -1,4 +1,6 @@
 // SituationBankView.tsx — « تمارين بالوضعيات » (audit item 18, sprint 10).
+import EcranPaiement from './EcranPaiement';
+import { rubriquePayanteOuverte } from '../utils/acces';
 //
 // Porte d'entrée par SITUATION CONCRÈTE sur la banque documentaire existante :
 // l'élève cherche « المضاد الحيوي » ou « مريض السكري », pas « tableau à double
@@ -249,7 +251,7 @@ function FicheSituation({ card, onClose }: { card: SituationCard; onClose: () =>
   );
 }
 
-export default function SituationBankView({ onBackToHome }: SituationBankViewProps) {
+function SituationBankViewInterne({ onBackToHome }: SituationBankViewProps) {
   const [query, setQuery] = useState('');
   const [unitId, setUnitId] = useState<number | undefined>(undefined);
   const [difficulty, setDifficulty] = useState<SituationDifficulty | undefined>(undefined);
@@ -461,4 +463,18 @@ export default function SituationBankView({ onBackToHome }: SituationBankViewPro
       )}
     </div>
   );
+}
+
+// Freemium (24/10/2026) - rubrique payante. Le wrapper NE contient AUCUN
+// hook : la vue interne garde les siens, les regles des hooks restent entieres.
+// Un essai actif ou un abonnement saison ouvre la rubrique ; sinon ecran-code.
+export default function SituationBankView(props: SituationBankViewProps) {
+  if (!rubriquePayanteOuverte()) {
+    return (
+      <div dir="rtl" className="p-4 space-y-4">
+        <EcranPaiement />
+      </div>
+    );
+  }
+  return <SituationBankViewInterne {...props} />;
 }

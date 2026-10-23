@@ -6,14 +6,17 @@
 import { cleanup, render, screen, waitFor } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import LessonsView from '../LessonsView';
+import { semerEssai } from '../../test-setup/semisEssai';
 
 beforeEach(() => {
   localStorage.clear();
+  semerEssai();
 });
 
 afterEach(() => {
   cleanup();
   localStorage.clear();
+  semerEssai();
 });
 
 describe('LessonsView — deep-link المسار', () => {

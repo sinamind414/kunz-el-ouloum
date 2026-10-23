@@ -1,4 +1,6 @@
 // BacIdeasView.tsx — « أفكار التمارين » par session du BAC (audit item 12, sprint 16).
+import EcranPaiement from './EcranPaiement';
+import { rubriquePayanteOuverte } from '../utils/acces';
 //
 // La question que l'élève pose en avril n'est pas « qu'est-ce qu'une enzyme ? »
 // mais « qu'est-ce qui est tombé, et sous quelle forme ? ». Cet écran répond
@@ -142,7 +144,7 @@ function Fiche({ idea, onTrain }: { idea: BacExerciseIdea; onTrain: (idea: BacEx
   );
 }
 
-export default function BacIdeasView({ onBackToHome, focusIdeaId = null }: BacIdeasViewProps) {
+function BacIdeasViewInterne({ onBackToHome, focusIdeaId = null }: BacIdeasViewProps) {
   const [annee, setAnnee] = useState<number | 'all'>(YEARS_COVERED[0]);
   const [requete, setRequete] = useState('');
   const [montage, setMontage] = useState<string | null>(null);
@@ -563,4 +565,18 @@ export default function BacIdeasView({ onBackToHome, focusIdeaId = null }: BacId
       </div>
     </div>
   );
+}
+
+// Freemium (24/10/2026) - rubrique payante. Le wrapper NE contient AUCUN
+// hook : la vue interne garde les siens, les regles des hooks restent entieres.
+// Un essai actif ou un abonnement saison ouvre la rubrique ; sinon ecran-code.
+export default function BacIdeasView(props: BacIdeasViewProps) {
+  if (!rubriquePayanteOuverte()) {
+    return (
+      <div dir="rtl" className="p-4 space-y-4">
+        <EcranPaiement />
+      </div>
+    );
+  }
+  return <BacIdeasViewInterne {...props} />;
 }
