@@ -20,6 +20,11 @@ import fs from 'node:fs';
 import type { Student, ProductionEntry, ActivityEntry, ResetCode, Teacher, DashboardStudentRow } from './store';
 import { calculeActivite } from './activite';
 import { MAX_APPAREILS_PAR_CODE as MAX_APPAREILS } from '../src/server/facturation';
+import { isoleDate, iso, fromJson } from './dates.pg';
+
+/** Verrou consultatif du schéma : sérialise la création de tables entre
+ *  instances froides serverless (arbitraire mais fixe, réservé à ce rôle). */
+const SCHEMA_LOCK_ID = 918273645;
 
 const SCHEMA = `
 CREATE TABLE IF NOT EXISTS students (
@@ -84,15 +89,7 @@ CREATE TABLE IF NOT EXISTS licences (
 ALTER TABLE students ADD COLUMN IF NOT EXISTS abonnement_expire_le date;
 `;
 
-/** Mappe un JSONB renvoyé par pg (objet) ou une chaîne (parité SQLite). */
-function fromJson<T>(v: unknown): T {
-  return (typeof v === 'string' ? JSON.parse(v) : v) as T;
-}
-
-/** ISO string depuis un timestamptz pg (Date). */
-function iso(v: unknown): string {
-  return v instanceof Date ? v.toISOString() : String(v ?? '');
-}
+// isoleDate / iso / fromJson vivent dans ./dates.pg (testables sans pg).
 
 /** Comptage d'occurrences par tag dans un errorTags (doublons comptés). */
 function tagCounts(tags: string[]): { tag: string; k: number }[] {
@@ -118,7 +115,31 @@ export class PostgresStore {
   }
 
   private async init(): Promise<void> {
-    await this.pool.query(SCHEMA);
+    // Course d'instances froides (serverless) : deux instances peuvent
+    // démarrer simultanément et CREATE TABLE en même temps → doublon
+    // pg_type (23505). On sérialise via un verrou consultatif pris sur
+    // une connexion dédiée, puis en dernier recours on rejoue le schéma
+    // (IF NOT EXISTS idempotent) si la course a quand même parlé.
+    const client = await this.pool.connect();
+    try {
+      await client.query("SELECT pg_advisory_lock($1)", [SCHEMA_LOCK_ID]);
+      try {
+        await client.query(SCHEMA);
+      } finally {
+        await client.query("SELECT pg_advisory_unlock($1)", [SCHEMA_LOCK_ID]).catch(() => undefined);
+      }
+    } catch (e) {
+      const err = e as { code?: string };
+      if (err?.code === '23505' || err?.code === '42P07') {
+        // L'autre instance a créé la table entre-temps : rejoue pour
+        // confirmer l'état stable (idempotent).
+        await this.pool.query(SCHEMA);
+        return;
+      }
+      throw e;
+    } finally {
+      client.release();
+    }
   }
 
   async ensureReady(): Promise<void> {
@@ -163,7 +184,7 @@ export class PostgresStore {
   private mapStudent(r: Record<string, unknown>): Student {
     return {
       id: String(r.id), email: String(r.email), passwordHash: String(r.password_hash), name: String(r.name), createdAt: iso(r.created_at),
-      abonnementExpireLe: r.abonnement_expire_le != null ? String(r.abonnement_expire_le).slice(0, 10) : null,
+      abonnementExpireLe: isoleDate(r.abonnement_expire_le),
     };
   }
 
@@ -187,7 +208,7 @@ export class PostgresStore {
     return {
       code: String(row.code),
       utilisePar: row.utilise_par != null ? String(row.utilise_par) : null,
-      expireLe: row.expire_le != null ? String(row.expire_le).slice(0, 10) : null,
+      expireLe: isoleDate(row.expire_le),
       appareils: fromJson<string[]>(row.appareils ?? []),
     };
   }
@@ -232,7 +253,7 @@ export class PostgresStore {
   async abonnementDe(studentId: string): Promise<string | null> {
     const r = await this.pool.query('SELECT abonnement_expire_le FROM students WHERE id = $1', [studentId]);
     const v = r.rows[0]?.abonnement_expire_le;
-    return v != null ? String(v).slice(0, 10) : null;
+    return isoleDate(v);
   }
 
   // ── Enseignants ──────────────────────────────────────────

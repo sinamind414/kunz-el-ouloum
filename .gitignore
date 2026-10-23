@@ -34,3 +34,4 @@ _lint_final.txt
 # src/__tests__/bacPdf.lock.test.ts (aucune entrée sans fichier réel).
 !public/bac-sujets/
 !public/bac-sujets/**
+.vercel
