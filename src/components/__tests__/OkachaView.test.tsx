@@ -8,9 +8,17 @@ import userEvent from '@testing-library/user-event';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import OkachaView from '../OkachaView';
 import { GUIDE_SECTIONS } from '../../data/guideManhajia';
+import { semerEssai } from '../../test-setup/semisEssai';
 
 afterEach(cleanup);
-beforeEach(() => window.localStorage.clear());
+// Contrat contenu (convention semisEssai) : ces tests prouvent le CONTENU
+// (structure, recherche, حفظ…) → ils tournent comme un élève en ESSAI.
+// L'accès lui-même est prouvé dans le describe « accès invité » en bas,
+// qui re-videra le stockage après ce hook.
+beforeEach(() => {
+  window.localStorage.clear();
+  semerEssai();
+});
 
 // jsdom n'implémente ni scrollIntoView (ancrage du sommaire du guide).
 Element.prototype.scrollIntoView = () => {};
@@ -296,5 +304,41 @@ describe('OkachaView — الحصيلة المعرفية modernisée', () => {
     expect(screen.queryByTestId('okacha-unite-d1u1')).toBeNull();
     expect(screen.getByTestId('unite-numero-d2u1').textContent).toMatch(/وحدة 6/);
     expect(screen.getByTestId('unite-numero-d2u3').textContent).toMatch(/وحدة 8/);
+  });
+
+  // ── RÈGLE FREEMIUM (24/10/2026) : l'ACCÈS lui-même ─────────────────────
+  // Ce describe re-videra le stockage APRÈS le hook global → statut INVITÉ
+  // (convention semisEssai : les tests d'accès restent maîtres de leur état).
+  describe('accès invité (stockage vidé après le semis essai)', () => {
+    beforeEach(() => {
+      window.localStorage.clear();
+    });
+
+    it('invité : المجال 1 reste GRATUIT — unités rendues, aucun paywall', () => {
+      render(<OkachaView onBack={vi.fn()} />);
+      expect(screen.getByTestId('okacha-unites-icones')).toBeTruthy();
+      expect(screen.queryByTestId('ecran-paiement')).toBeNull();
+    });
+
+    it('invité : الدليل المنهجية ("m") reste GRATUIT', () => {
+      render(<OkachaView onBack={vi.fn()} domaineInitial="m" />);
+      expect(screen.getByTestId('guide-titre')).toBeTruthy();
+      expect(screen.queryByTestId('ecran-paiement')).toBeNull();
+    });
+
+    it('invité + domaineInitial={2} : PAYWALL (verrou par domaine, pas de contenu)', () => {
+      render(<OkachaView onBack={vi.fn()} domaineInitial={2} />);
+      expect(screen.getByTestId('ecran-paiement')).toBeTruthy();
+      expect(screen.queryByTestId('okacha-unites-icones')).toBeNull();
+    });
+
+    it('le retour du paywall déverrouille un chemin gratuit (pas de piège) : D3 → D1', async () => {
+      const user = userEvent.setup();
+      render(<OkachaView onBack={vi.fn()} domaineInitial={3} />);
+      expect(screen.getByTestId('ecran-paiement')).toBeTruthy();
+      await user.click(screen.getByText('العودة إلى مجال البروتينات المجاني'));
+      expect(screen.getByTestId('okacha-unites-icones')).toBeTruthy();
+      expect(screen.queryByTestId('ecran-paiement')).toBeNull();
+    });
   });
 });

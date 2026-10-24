@@ -48,9 +48,13 @@ interface Props {
       paywall était piégé — aucun bouton عودة et le retour matériel
       quittait l'app. Le parent fournit sa flèche « عودة » ici. */
   onRetour?: () => void;
+  /** Libellé du bouton retour (défaut : « عودة إلى قائمة الدروس » ;
+      personnalisable quand le verrou ne vit pas dans les leçons,
+      ex. الحصيلة المعرفية d'un domaine payant). */
+  libelleRetourAr?: string;
 }
 
-export default function EcranPaiement({ contexteAr, onAccesChange, onRetour }: Props) {
+export default function EcranPaiement({ contexteAr, onAccesChange, onRetour, libelleRetourAr }: Props) {
   const [code, setCode] = useState('');
   const [erreur, setErreur] = useState<string | null>(null);
   const [succes, setSucces] = useState<string | null>(null);
@@ -89,7 +93,7 @@ export default function EcranPaiement({ contexteAr, onAccesChange, onRetour }: P
           className="mb-3 inline-flex items-center gap-1.5 rounded-xl bg-[#f1f5f0] dark:bg-[#1b221e] px-3 py-1.5 text-xs font-black text-[#1f1c0b] dark:text-gray-200 hover:bg-[#e5ebe4] dark:hover:bg-[#232b26]"
         >
           <span aria-hidden>→</span>
-          <span>عودة إلى قائمة الدروس</span>
+          <span>{libelleRetourAr ?? 'عودة إلى قائمة الدروس'}</span>
         </button>
       )}
       <div className="flex items-center gap-2 mb-3">

@@ -297,14 +297,11 @@ export default function LessonsView({ onRateCard, initialLesson, initialQcm, ini
   // ----- Écran 0 ter : الحصيلة المعرفية (عكاشة, injection mécanique filtrée) -----
   // Entrée unique : la carte en fin d'écran d'un domaine (leçons passives) —
   // elle passe le domaine courant pour ouvrir la حصيلة DE CE domaine-là.
+  // RÈGLE FREEMIUM (24/10/2026) : le verrou a DESCENDU dans OkachaView —
+  // invité : المجال 1 + guide GRATUITS, المجالان 2/3 payés sur place. Le
+  // verrou global qui était ici bloquait aussi le المجال 1 (règle « مجال 1
+  // complet gratuit »), il est donc supprimé.
   if (mode === 'okacha') {
-    if (!rubriquePayanteOuverte()) {
-      return (
-        <div dir="rtl" className="space-y-4">
-          <EcranPaiement contexteAr="الحصيلة المعرفية" onAccesChange={relancerApresPaiement} key={`paywall-okacha-${majAcces}`} />
-        </div>
-      );
-    }
     return (
       <Suspense fallback={<VueEnChargement />}>
         <OkachaView

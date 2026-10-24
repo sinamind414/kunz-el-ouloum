@@ -35,6 +35,8 @@ import {
 import { GUIDE_SECTIONS, GUIDE_TITRE } from '../data/guideManhajia';
 import { assainirTexte, estDechetOCR } from '../data/okachaQuality';
 import Icone from './Icone';
+import EcranPaiement from './EcranPaiement';
+import { rubriquePayanteOuverte } from '../utils/acces';
 import { HOSILA_STATS, unitesAffichees } from '../data/hosila';
 import { numeroUniteHosila } from '../data/hosilaUnitNumbers';
 import { okachaUniteIcone } from '../data/lessonIcons';
@@ -71,6 +73,15 @@ const NOM_DOMAINE: Record<number, string> = {
   2: 'المجال 2 — التحولات الطاقوية',
   3: 'المجال 3 — التكتونية العامة',
 };
+
+/** RÈGLE FREEMIUM (24/10/2026, décision propriétaire) :
+ *  المجال 1 ET le الدليل العام للمنهجية ('m') = GRATUITS (invité compris) ;
+ *  المجالان 2 et 3 = PAYANTS, miroir exact des leçons du même domaine
+ *  (uniteOuverte) : la حصيلة d'un domaine suit le régime de SES leçons.
+ *  Le verrou vit ICI (et non plus dans LessonsView, qui laissait passer
+ *  la حصيلة du المجال 1 gratuite) : montage en domaine 2/3, navigation
+ *  interne depuis les résultats de recherche, tout est couvert. */
+const ongletPayant = (o: 1 | 2 | 3 | 'm'): o is 2 | 3 => o === 2 || o === 3;
 
 /** Design system par domaine (icônes miroir de LessonsView : D1/D2/D3). */
 const THEME = {
@@ -338,6 +349,8 @@ export default function OkachaView({ onBack, onRate, onOpenQcm, domaineInitial }
   const [grand, setGrand] = useState(false);
   const [revelves, setRevelves] = useState<Set<string>>(new Set());
   const [prog, setProg] = useState<OkachaProgress>(() => loadOkachaProgress());
+  /** Rejoue le rendu après une activation de code (paiement → contenu). */
+  const [majAcces, setMajAcces] = useState(0);
 
   // Quitter le mode حفظ → tout re-masqué à la prochaine activation.
   useEffect(() => {
@@ -423,6 +436,26 @@ export default function OkachaView({ onBack, onRate, onOpenQcm, domaineInitial }
   // الدليل العام للمنهجية a lui aussi quitté cette barre pour cet écran.
   const thContexte = THEME[onglet];
   const IconeContexte = thContexte.icone;
+
+  // ── Verrou freemium (APRÈS tous les hooks : l'ordre des hooks reste stable) ──
+  if (ongletPayant(onglet) && !rubriquePayanteOuverte()) {
+    return (
+      <div dir="rtl" className="space-y-4">
+        <EcranPaiement
+          contexteAr={NOM_DOMAINE[onglet]}
+          onAccesChange={() => setMajAcces((v) => v + 1)}
+          // Pas de piège : sortie vers le domaine GRATUIT (1) du même écran.
+          onRetour={() => {
+            setOnglet(1);
+            setOuverte(null);
+            setQ('');
+          }}
+          libelleRetourAr="العودة إلى مجال البروتينات المجاني"
+          key={`paywall-okacha-${onglet}-${majAcces}`}
+        />
+      </div>
+    );
+  }
 
   return (
     <div dir="rtl" className="space-y-4">
