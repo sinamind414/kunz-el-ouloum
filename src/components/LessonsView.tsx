@@ -831,13 +831,13 @@ export default function LessonsView({ onRateCard, initialLesson, initialQcm, ini
                   <Icone cle={uniteIcone(uid)} className="w-7 h-7" />
                 </span>
                 <span className="flex-1 min-w-0 space-y-1">
-                  <span className="flex items-center gap-2">
+                  <span className="flex items-center gap-2 flex-wrap">
                     <span className="inline-flex items-center justify-center h-6 px-2 rounded-lg bg-teal-50 dark:bg-teal-950/40 text-[#0e6b6b] dark:text-teal-300 text-[11px] font-black shrink-0">
                       وحدة {uid}
                     </span>
-                    <span className="text-sm font-black text-gray-800 dark:text-gray-100">{unit?.title}</span>
+                    <span className="flex-1 min-w-0 text-sm font-black text-gray-800 dark:text-gray-100 break-words">{unit?.title}</span>
                   </span>
-                  <span className="block text-[11px] font-bold text-gray-500 dark:text-gray-400">{unit?.description}</span>
+                  <span className="block text-[11px] font-bold text-gray-500 dark:text-gray-400 break-words">{unit?.description}</span>
                   <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg bg-emerald-50 dark:bg-emerald-950/30 text-[10px] font-black text-emerald-700 dark:text-emerald-300">
                     <Grid3x3 className="w-3 h-3" />
                     {chapters.length} فصول
@@ -889,9 +889,9 @@ export default function LessonsView({ onRateCard, initialLesson, initialQcm, ini
           <span>→</span>
           <span>عودة إلى وحدات المجال</span>
         </button>
-        <h2 className="text-xl font-black flex items-center gap-2">
-          <Icone cle={uniteIcone(selectedPassiveUnitId)} className="w-5 h-5 text-[#0e6b6b]" />
-          {unitCourante?.title}
+        <h2 className="text-xl font-black flex items-center gap-2 min-w-0 max-w-full">
+          <Icone cle={uniteIcone(selectedPassiveUnitId)} className="w-5 h-5 text-[#0e6b6b] shrink-0" />
+          <span className="flex-1 min-w-0 break-words">{unitCourante?.title}</span>
         </h2>
       </div>
 
@@ -915,7 +915,7 @@ export default function LessonsView({ onRateCard, initialLesson, initialQcm, ini
         ))}
       </div>
 
-      <p className="text-[11px] font-bold text-gray-500 dark:text-gray-400">{unitCourante?.description}</p>
+      <p className="text-[11px] font-bold text-gray-500 dark:text-gray-400 break-words">{unitCourante?.description}</p>
 
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3" data-testid="chapitres-icones">
         {chapitres.length === 0 && (
