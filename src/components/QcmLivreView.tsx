@@ -4,9 +4,11 @@
 // Chaque question affiche le schéma du livre (SVG) et l'explication après réponse.
 
 import { useEffect, useMemo, useState } from 'react';
-import { BookOpen, ChevronLeft } from 'lucide-react';
+import { BookOpen, ChevronLeft, Lock } from 'lucide-react';
 import { QCM_CHAPITRES } from '../data/qcmLivre';
 import QcmBilanView from './QcmBilanView';
+import EcranPaiement from './EcranPaiement';
+import { uniteOuverte } from '../utils/acces';
 import { CHAPITRES } from '../data/bookIndex';
 // Anti-triche par clé volée : les propositions changent de place par session.
 import { graineSession, melangerQuestions } from '../utils/melangeOptions';
@@ -42,6 +44,13 @@ export default function QcmLivreView({ onBack, uniteInitiale, onQuizTermine }: P
   const [answers, setAnswers] = useState<Record<number, number>>({});
   // Filtre actif : soit le deep-link (جسر d'une unité), soit « tout voir ».
   const [filtreUnite, setFiltreUnite] = useState<number | null>(uniteInitiale ?? null);
+  // Freemium 25/10/2026 : le verrou est PAR CHAPITRE (unité 1→5 = المجال 1
+  // gratuit). Un chapitre d'unité payante affiche l'écran d'accès.
+  const [majAcces, setMajAcces] = useState(0);
+  const chapitreOuvert = (n: number): boolean => {
+    const u = uniteDeChapitre(n);
+    return u !== undefined && uniteOuverte(u);
+  };
 
   const parUnite = useMemo(() => {
     const map = new Map<number, { chapter: number; titreAr: string; nb: number }[]>();
@@ -102,6 +111,19 @@ export default function QcmLivreView({ onBack, uniteInitiale, onQuizTermine }: P
     return <QcmBilanView onBack={() => setBilan(false)} />;
   }
 
+  // —— Garde freemium (double sécurité) : chapitre d'unité payante ——
+  if (selectedChapter !== null && !chapitreOuvert(selectedChapter)) {
+    return (
+      <div dir="rtl" className="p-4 space-y-4">
+        <EcranPaiement
+          contexteAr={`اختبار الكتاب — ${titreChapitre(selectedChapter)}`}
+          onAccesChange={() => setMajAcces((t) => t + 1)}
+          key={`paywall-qcm-chapitre-${selectedChapter}-${majAcces}`}
+        />
+      </div>
+    );
+  }
+
   // ----- Écran 1 : unités → chapitres disponibles -----
   if (selectedChapter === null) {
     return (
@@ -155,20 +177,32 @@ export default function QcmLivreView({ onBack, uniteInitiale, onQuizTermine }: P
                 <h3 className="text-sm font-black text-[#006d37] dark:text-emerald-300">الوحدة {unite}</h3>
               </header>
               <div className="p-4 grid grid-cols-1 md:grid-cols-2 gap-3">
-                {chapitres.map((ch) => (
-                  <button
-                    key={ch.chapter}
-                    onClick={() => { setSelectedChapter(ch.chapter); setAnswers({}); }}
-                    className="group p-4 rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-[#161c18] hover:border-emerald-400 hover:shadow-md transition-all text-right flex items-center gap-3"
-                  >
-                    <span className="shrink-0 w-9 h-9 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 text-[#006d37] dark:text-emerald-300 font-black flex items-center justify-center text-sm">
-                      {ch.chapter}
-                    </span>
-                    <span className="flex-1 text-sm font-bold text-gray-800 dark:text-gray-100 leading-snug">{ch.titreAr}</span>
-                    <span className="text-[10px] font-black text-emerald-600 dark:text-emerald-400">{ch.nb} أسئلة</span>
-                    <ChevronLeft className="w-4 h-4 text-gray-300 group-hover:text-emerald-500" />
-                  </button>
-                ))}
+                {chapitres.map((ch) => {
+                  const ouvert = chapitreOuvert(ch.chapter);
+                  return (
+                    <button
+                      key={ch.chapter}
+                      onClick={() => { if (ouvert) { setSelectedChapter(ch.chapter); setAnswers({}); } }}
+                      className={`group p-4 rounded-2xl border bg-white dark:bg-[#161c18] text-right flex items-center gap-3 transition-all ${
+                        ouvert
+                          ? 'border-gray-200 dark:border-gray-800 hover:border-emerald-400 hover:shadow-md'
+                          : 'border-dashed border-gray-300 dark:border-gray-700 opacity-70 cursor-not-allowed'
+                      }`}
+                    >
+                      <span className={`shrink-0 w-9 h-9 rounded-xl font-black flex items-center justify-center text-sm ${
+                        ouvert ? 'bg-emerald-50 dark:bg-emerald-950/40 text-[#006d37] dark:text-emerald-300' : 'bg-gray-100 dark:bg-gray-800 text-gray-400 dark:text-gray-500'
+                      }`}>
+                        {ouvert ? ch.chapter : <Lock className="w-4 h-4" aria-hidden />}
+                      </span>
+                      <span className="flex-1 text-sm font-bold text-gray-800 dark:text-gray-100 leading-snug">
+                        {ch.titreAr}
+                        {!ouvert && <span className="block text-[10px] font-black text-gray-400 dark:text-gray-500">مقفل — يتطلب اشتراكاً (الوحدة {uniteDeChapitre(ch.chapter)})</span>}
+                      </span>
+                      <span className="text-[10px] font-black text-emerald-600 dark:text-emerald-400">{ch.nb} أسئلة</span>
+                      {ouvert && <ChevronLeft className="w-4 h-4 text-gray-300 group-hover:text-emerald-500" />}
+                    </button>
+                  );
+                })}
               </div>
             </section>
           ))

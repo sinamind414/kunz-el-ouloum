@@ -250,14 +250,10 @@ export default function LessonsView({ onRateCard, initialLesson, initialQcm, ini
   // ----- Écran 0 : QCM du livre officiel (par chapitre) -----
   // Ouvert depuis le hub S'entraîner (entrée `examens`, 2026-10-12) ET depuis
   // le raccourci d'une unité. data-testid : verrou du deep-link.
+  // 25/10/2026 — le mur monolithique rubriquePayanteOuverte() est retiré ici :
+  // le المجال 1 (unités 1→5) est gratuit, donc le verrou vit DANS QcmLivreView,
+  // chapitre par chapitre (uniteOuverte(uniteDeChapitre(ch))).
   if (mode === 'qcm') {
-    if (!rubriquePayanteOuverte()) {
-      return (
-        <div dir="rtl" className="space-y-4">
-          <EcranPaiement contexteAr="اختبار الكتاب" onAccesChange={relancerApresPaiement} key={`paywall-qcm-${majAcces}`} />
-        </div>
-      );
-    }
     return (
       <div data-testid="qcm-livre">
         <Suspense fallback={<VueEnChargement />}>
