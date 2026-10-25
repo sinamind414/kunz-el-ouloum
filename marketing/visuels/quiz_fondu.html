@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@500;700;900&display=swap" rel="stylesheet">
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html,body { width:1080px; height:1350px; overflow:hidden; }
+  body {
+    font-family:'Cairo', 'Segoe UI', Tahoma, sans-serif;
+    background:#ffffff; color:#0f172a;
+    display:flex; flex-direction:column; padding:64px 72px;
+  }
+  .top { display:flex; align-items:center; justify-content:space-between; }
+  .brand { font-size:40px; font-weight:900; color:#0d9488; }
+  .brand span { color:#0f172a; }
+  .badge {
+    font-size:30px; font-weight:700; color:#0d9488;
+    border:3px solid #0d9488; border-radius:999px; padding:8px 28px;
+  }
+  .hook { margin-top:44px; font-size:42px; font-weight:700; color:#0f172a; }
+  .hook b { color:#dc2626; }
+  .qcard {
+    margin-top:26px; background:#f8fafc; border:3px solid #0d9488;
+    border-radius:28px; padding:40px 44px;
+  }
+  .qcard .q { font-size:47px; font-weight:900; line-height:1.75; }
+  .qcard .q .en { font-family:'Cairo', sans-serif; direction:ltr; unicode-bidi:embed; }
+  .opts { margin-top:34px; display:flex; flex-direction:column; gap:22px; }
+  .opt {
+    display:flex; align-items:center; gap:24px;
+    border:2px solid #cbd5e1; border-radius:20px; padding:20px 28px;
+    background:#ffffff;
+  }
+  .opt .letter {
+    flex:0 0 64px; height:64px; border-radius:16px; background:#f1f5f9;
+    color:#334155; font-size:34px; font-weight:900;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .opt .txt { font-size:34px; font-weight:700; color:#0f172a; line-height:1.6; }
+  .bottom { margin-top:auto; text-align:center; }
+  .cta {
+    display:inline-block; background:#0d9488; color:#ffffff;
+    font-size:38px; font-weight:900; border-radius:999px; padding:18px 56px;
+  }
+  .sub { margin-top:20px; font-size:30px; font-weight:700; color:#475569; }
+</style>
+</head>
+<body>
+  <div class="top">
+    <div class="brand">كنز <span>العلوم</span></div>
+    <div class="badge">سؤال فاصل</div>
+  </div>
+
+  <div class="hook">سؤال تُفقد فيه النقطة غالباً في الباك… <b>وأنت؟</b></div>
+
+  <div class="qcard">
+    <div class="q">حمض أميني نقطة تعادله الكهربائي <span class="en">pHi = 6</span>. عند <span class="en">pH = 2</span> يحمل شحنة:</div>
+    <div class="opts">
+      <div class="opt"><div class="letter">أ</div><div class="txt">موجبة، لأن pH الوسط أقل من pHi فيكتسب بروتونات.</div></div>
+      <div class="opt"><div class="letter">ب</div><div class="txt">سالبة، لأن الوسط حمضي.</div></div>
+      <div class="opt"><div class="letter">ج</div><div class="txt">معدومة، لأن الحمض الأميني أمفوتيري دائماً.</div></div>
+      <div class="opt"><div class="letter">د</div><div class="txt">تتعلق بطول السلسلة الجانبية R فقط.</div></div>
+    </div>
+  </div>
+
+  <div class="bottom">
+    <div class="cta">اكتب جوابك في التعليقات</div>
+    <div class="sub">الجواب غداً مع التصحيح الكامل · التطبيق في الرابط بالبايو</div>
+  </div>
+</body>
+</html>

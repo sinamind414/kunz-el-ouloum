@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@500;700;900&display=swap" rel="stylesheet">
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html,body { width:1080px; height:1350px; overflow:hidden; }
+  body {
+    font-family:'Cairo', 'Segoe UI', Tahoma, sans-serif;
+    background:#ffffff; color:#0f172a;
+    display:flex; flex-direction:column; padding:44px 64px;
+  }
+  .top { display:flex; align-items:center; justify-content:space-between; }
+  .brand { font-size:36px; font-weight:900; color:#0d9488; }
+  .brand span { color:#0f172a; }
+  .badge {
+    font-size:26px; font-weight:700; color:#ffffff;
+    background:#16a34a; border-radius:999px; padding:6px 24px;
+  }
+  .qcard {
+    margin-top:28px; background:#f8fafc; border:3px solid #cbd5e1;
+    border-radius:24px; padding:24px 34px;
+  }
+  .qcard .q { font-size:33px; font-weight:900; line-height:1.7; color:#334155; }
+  .qcard .q .en { direction:ltr; unicode-bidi:embed; }
+  .opts { margin-top:22px; display:flex; flex-direction:column; gap:16px; }
+  .opt {
+    display:flex; align-items:center; gap:20px;
+    border:2px solid #cbd5e1; border-radius:18px; padding:13px 22px;
+    background:#ffffff;
+  }
+  .opt .letter {
+    flex:0 0 52px; height:52px; border-radius:14px; background:#f1f5f9;
+    color:#334155; font-size:27px; font-weight:900;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .opt .txt { font-size:26px; font-weight:700; color:#0f172a; line-height:1.55; }
+  .opt.win {
+    border:4px solid #16a34a; background:#f0fdf4;
+  }
+  .opt.win .letter { background:#16a34a; color:#ffffff; }
+  .opt.win .txt { color:#14532d; font-weight:900; }
+  .opt.win .check { margin-right:auto; font-size:38px; font-weight:900; color:#16a34a; }
+  .expl {
+    margin-top:24px; border-right:10px solid #16a34a;
+    background:#f0fdf4; border-radius:18px; padding:24px 32px;
+  }
+  .expl .t { font-size:26px; font-weight:900; color:#16a34a; margin-bottom:10px; }
+  .expl .c { font-size:26px; font-weight:700; line-height:1.75; color:#14532d; }
+  .expl .c .en { direction:ltr; unicode-bidi:embed; }
+  .bottom { margin-top:24px; text-align:center; }
+  .cta {
+    display:inline-block; background:#0d9488; color:#ffffff;
+    font-size:34px; font-weight:900; border-radius:999px; padding:14px 48px;
+  }
+  .sub { margin-top:14px; font-size:26px; font-weight:700; color:#475569; }
+</style>
+</head>
+<body>
+  <div class="top">
+    <div class="brand">كنز <span>العلوم</span></div>
+    <div class="badge">تصحيح سؤال الأمس</div>
+  </div>
+
+  <div class="qcard">
+    <div class="q">حمض أميني نقطة تعادله الكهربائي <span class="en">pHi = 6</span>. عند <span class="en">pH = 2</span> يحمل شحنة:</div>
+    <div class="opts">
+      <div class="opt win"><div class="letter">أ</div><div class="txt">موجبة، لأن pH الوسط أقل من pHi فيكتسب بروتونات.</div><div class="check">✓</div></div>
+      <div class="opt"><div class="letter">ب</div><div class="txt">سالبة، لأن الوسط حمضي.</div></div>
+      <div class="opt"><div class="letter">ج</div><div class="txt">معدومة، لأن الحمض الأميني أمفوتيري دائماً.</div></div>
+      <div class="opt"><div class="letter">د</div><div class="txt">تتعلق بطول السلسلة الجانبية R فقط.</div></div>
+    </div>
+  </div>
+
+  <div class="expl">
+    <div class="t">التصحيح</div>
+    <div class="c">القاعدة الوحيدة المطلوبة: <span class="en">pH &lt; pHi</span> ⟵ شحنة موجبة. في الوسط الحمضي تكتسب المجموعة الأمينية بروتوناً (<span class="en">NH3+</span>) فتصبح الشحنة الإجمالية موجبة. في البكالوريا تُفقد النقطة غالباً بعكس هذه المقارنة.</div>
+  </div>
+
+  <div class="bottom">
+    <div class="cta">كل الأسئلة المفتاحية في التطبيق</div>
+    <div class="sub">كنز العلوم · الرابط في البايو</div>
+  </div>
+</body>
+</html>

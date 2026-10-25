@@ -1,0 +1,6 @@
+# Ne jamais téléverser vers Vercel (builds natifs locaux, artefacts, temporaires)
+android/
+dist/
+tmp_*
+*.log
+*.apk.sig
