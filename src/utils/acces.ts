@@ -18,6 +18,14 @@
 import { getApiToken, API_BASE } from './api';
 
 export const UNITE_GRATUITE = 1;
+
+/**
+ * Décision propriétaire 2026-10-25 : tout le المجال 1 est gratuit (pas
+ * seulement l'unité 1). Le المجال 1 regroupe les unités 1→5 (PASSIVE_DOMAINS
+ * dans src/data/lessonModes.ts — le test acces.test.ts vérifie la cohérence :
+ * si le découpage officiel change, ce tableau doit suivre).
+ */
+export const UNITES_GRATUITES: readonly number[] = [1, 2, 3, 4, 5];
 export const PRIX_SAISON_DA = 1200;
 
 export type StatutAcces = 'invite' | 'essai' | 'abonnement' | 'gratuit';
@@ -133,7 +141,7 @@ function accesEffectif(): EtatAccesClient {
  * Unité 1 : TOUJOURS (invité compris) — c'est la promesse gratuite.
  */
 export function uniteOuverte(unitId: number | undefined | null): boolean {
-  if (unitId === UNITE_GRATUITE) return true;
+  if (unitId != null && UNITES_GRATUITES.includes(unitId)) return true;
   const { statut } = accesEffectif();
   return statut === 'essai' || statut === 'abonnement';
 }

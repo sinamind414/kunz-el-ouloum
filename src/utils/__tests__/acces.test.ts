@@ -3,6 +3,7 @@
 // exigera essai ou abonnement ; une échéance passée verrouille localement.
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import {
+  UNITES_GRATUITES,
   UNITE_GRATUITE,
   PRIX_SAISON_DA,
   activerCode,
@@ -13,6 +14,7 @@ import {
   rubriquePayanteOuverte,
   uniteOuverte,
 } from '../acces';
+import { PASSIVE_DOMAINS } from '../../data/lessonModes';
 import { setApiToken } from '../api';
 
 const CLE_ACCES = 'kunz_acces';
@@ -41,14 +43,26 @@ describe('identité d’appareil', () => {
 });
 
 describe('invité (sans compte)', () => {
-  it('unité 1 ouverte à vie, le reste et les rubriques sont fermés', () => {
+  it('les unités du المجال 1 (1→5) ouvertes à vie, le reste et les rubriques sont fermés', () => {
     const etat = accesActuel();
     expect(etat.statut).toBe('invite');
     expect(UNITE_GRATUITE).toBe(1);
+    // Décision 2026-10-25 : tout le المجال 1 (unités 1→5) est gratuit.
     expect(uniteOuverte(1)).toBe(true);
-    expect(uniteOuverte(2)).toBe(false);
+    expect(uniteOuverte(2)).toBe(true);
+    expect(uniteOuverte(3)).toBe(true);
+    expect(uniteOuverte(5)).toBe(true);
+    expect(uniteOuverte(6)).toBe(false);
     expect(uniteOuverte(11)).toBe(false);
     expect(rubriquePayanteOuverte()).toBe(false);
+  });
+
+  it('cohérence : UNITES_GRATUITES = exactement les unités du المجال 1', () => {
+    // Si le découpage officiel des domaines change (lessonModes.ts),
+    // cet échantillon gratuit doit être revu explicitement — verrou.
+    const domaine1 = PASSIVE_DOMAINS.find((d) => d.id === 1);
+    expect(domaine1).toBeTruthy();
+    expect([...UNITES_GRATUITES]).toEqual([...(domaine1?.unitIds ?? [])]);
   });
 });
 
@@ -64,7 +78,8 @@ describe('essai et abonnement (cache)', () => {
     setApiToken('jwt.de.test');
     cacheAvec('essai', '2001-01-01');
     expect(uniteOuverte(1)).toBe(true); // la promesse gratuite survit
-    expect(uniteOuverte(3)).toBe(false);
+    expect(uniteOuverte(3)).toBe(true); // le المجال 1 entier survit aussi
+    expect(uniteOuverte(6)).toBe(false);
     expect(rubriquePayanteOuverte()).toBe(false);
   });
 

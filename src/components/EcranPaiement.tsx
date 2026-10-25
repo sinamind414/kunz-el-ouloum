@@ -19,7 +19,6 @@ import {
 } from 'lucide-react';
 import {
   PRIX_SAISON_DA,
-  UNITE_GRATUITE,
   activerCode,
   accesActuel,
   joursRestants,
@@ -118,7 +117,7 @@ export default function EcranPaiement({ contexteAr, onAccesChange, onRetour, lib
       )}
 
       <p className="text-sm text-[#1f1c0b] dark:text-gray-200 mb-2 leading-relaxed">
-        الوحدة {UNITE_GRATUITE} وتمارينها <span className="font-black">مجانية دائماً</span> حتى بدون حساب.
+        حصيلة المجال الأول (الوحدات من 1 إلى 5) وتمارينها <span className="font-black">مجانية دائماً</span> حتى بدون حساب.
         باقي الوحدات والمواضيع تُفتح باشتراك موسم كامل:
       </p>
 

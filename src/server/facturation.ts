@@ -32,7 +32,10 @@
 /** Prix de la saison en dinars (décision propriétaire : 1200 DA). */
 export const PRIX_SAISON_DA = 1200;
 
-/** L'unité gratuite à vie (unitId entier, catalogue 1..11). */
+/** L'unité-échantillon de la promesse gratuite (unitId entier, catalogue 1..11).
+ *  Depuis le 2026-10-25, la promesse s'élargit : tout le المجال 1 (unités 1→5)
+ *  est gratuit côté client (UNITES_GRATUITES dans src/utils/acces.ts). Ce
+ *  constant serveur reste l'unité d'ancrage renvoyée dans l'entitlement. */
 export const UNITE_GRATUITE = 1;
 
 /** Durée de l'essai complet, en jours. */
