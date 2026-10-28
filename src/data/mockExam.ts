@@ -43,7 +43,14 @@ export interface MockExam {
   sessions: number[];
 }
 
-/** Durée officielle : 4 h 30. */
+/**
+ * Durée officielle : 4 h 30 (270 min).
+ * PREUVE PRIMAIRE : en-tête de chaque sujet officiel ONEC embarqué —
+ * « المدة: 04 سا ونصف » (public/bac-sujets/{2014..2026}/sujet-1.pdf),
+ * vérifiée par extraction le 28/10/2026 sur 9 sessions.
+ * Un audit externe du 28/10/2026 affirmait à tort 3 h 30 ; ce verrou
+ * (mockExam.test.ts) fige la valeur sourcée.
+ */
 export const DUREE_EPREUVE_MINUTES = 270;
 
 /** Générateur pseudo-aléatoire déterministe (xorshift 32 bits). */
