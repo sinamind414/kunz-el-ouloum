@@ -2,19 +2,41 @@
 //
 // Séparé de `rappelAdaptatif.ts` pour une raison de poids : le moteur du tuteur a
 // besoin de programmer des rappels (donc d'`rappelAdaptatif`), mais il n'a pas à
-// embarquer les 60 questions du corpus. Ce module-ci est le seul à lire
-// `spacedRecallPrompts.ts`, et seuls les écrans qui POSENT ces questions
-// l'importent.
+// embarquer les questions du corpus. Ce module-ci est le seul à lire
+// `spacedRecallPrompts.ts` + `spacedRecallPromptsAuto.ts`, et seuls les écrans qui
+// POSENT ces questions l'importent.
 //
-// CE QU'IL RÉPARE. `spacedRecallPrompts.ts` contient 15 concepts × 4 questions,
+// CE QU'IL RÉPARE. `spacedRecallPrompts.ts` contient 16 concepts × 4 questions,
 // chacune avec les preuves attendues dans la réponse de l'élève. Vérifié le
 // 15/10/2026 : ses cinq seuls importateurs étaient des fichiers de test, et
 // `getSpacedRecallPrompt` n'était appelé nulle part. Ce corpus n'avait jamais
 // été montré à un élève. Ici, il devient sélectionnable et notable.
+//
+// P1-2 (28/10/2026 — branchement (c) « agenda d'ouverture ») : le corpus AUTO
+// (63 concepts générés depuis les leçons gold, clavés par lessonId) est fusionné
+// ICI, sans modifier le record manuel — les verrous `volumeCorpus.lock.test.ts`
+// (16 clés) et `CONCEPT_ROUTES` ne portent que sur SPACED_RECALL_PROMPTS et
+// restent inchangés.
 
 import { SPACED_RECALL_PROMPTS, type SpacedRecallPrompt } from '../data/spacedRecallPrompts';
+import { SPACED_RECALL_PROMPTS_AUTO } from '../data/spacedRecallPromptsAuto';
 import { chargeBanque, elementsDus, type BanqueRappels } from './rappelAdaptatif';
 import type { EtatSm2 } from './sm2';
+
+/**
+ * Les prompts d'un concept, corpus manuel d'abord puis corpus auto.
+ * Un identifiant ne peut appartenir qu'à l'un des deux (exclusion dynamique
+ * garantie par le générateur) — l'union est une précaution de lecture, pas un
+ * double comptage.
+ */
+export function promptsDeConcept(conceptId: string): SpacedRecallPrompt[] {
+  return SPACED_RECALL_PROMPTS[conceptId] ?? SPACED_RECALL_PROMPTS_AUTO[conceptId] ?? [];
+}
+
+/** Le concept appartient-il au corpus de rappels (manuel ou auto) ? */
+export function estConceptRappel(conceptId: string): boolean {
+  return promptsDeConcept(conceptId).length > 0;
+}
 
 /** Nombre de questions disponibles par concept dans le corpus. */
 export const PROMPTS_PAR_CONCEPT = 4;
@@ -33,7 +55,7 @@ export const PROMPTS_PAR_CONCEPT = 4;
  * définition.
  */
 export function promptPour(conceptId: string, etat: EtatSm2 | null): SpacedRecallPrompt | null {
-  const prompts = SPACED_RECALL_PROMPTS[conceptId];
+  const prompts = promptsDeConcept(conceptId);
   if (!prompts || prompts.length === 0) return null;
   const rang = etat?.reps ?? 0;
   const index = Math.min(rang, Math.min(PROMPTS_PAR_CONCEPT, prompts.length) - 1);
@@ -42,7 +64,7 @@ export function promptPour(conceptId: string, etat: EtatSm2 | null): SpacedRecal
 
 /** Concepts du corpus dont le rappel est échu. */
 export function conceptsDus(now: number = Date.now(), banque: BanqueRappels = chargeBanque()): string[] {
-  return elementsDus(now, banque).filter((id) => Boolean(SPACED_RECALL_PROMPTS[id]));
+  return elementsDus(now, banque).filter((id) => estConceptRappel(id));
 }
 
 export interface RappelDu {
@@ -75,5 +97,5 @@ export function prochainRappelDu(
 
 /** Nombre de concepts du corpus qui portent une mémoire de rappel. */
 export function conceptsSuivis(banque: BanqueRappels = chargeBanque()): number {
-  return Object.keys(banque).filter((id) => Boolean(SPACED_RECALL_PROMPTS[id])).length;
+  return Object.keys(banque).filter((id) => estConceptRappel(id)).length;
 }

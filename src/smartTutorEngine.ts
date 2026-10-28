@@ -46,6 +46,7 @@ import { construireVocabulaire, domaineProbable, domaineDeUnite } from './lib/ro
 import { gesteDuMessage, gesteFatigueDuMessage, type GesteDialogue } from './lib/gesteDialogue';
 import { noterRappel, noterReponseLibre, phraseEcheance, etatRappel } from './lib/rappelAdaptatif';
 import { prochainRappelDu, promptPour } from './lib/rappelConcepts';
+import { planifierRappelPourLecon } from './lib/planificationRappels';
 import { JOUR_MS, qualiteDepuisAutoEvaluation, qualiteDepuisPreuves } from './lib/sm2';
 import { loadParcours } from './lib/parcours/parcoursProgress';
 import { scoreLivreUnite } from './lib/parcours/parcoursMeta';
@@ -2600,6 +2601,10 @@ export function processStudentInput(session: BotSession, rawInput: string): Engi
   // la cascade normale.
   const summaryFlow = handleSummaryFlow(norm, session.pendingSummaryUnit);
   if (summaryFlow) {
+    // P1-2 — agenda d'ouverture : ouvrir le résumé d'or d'une leçon rend son
+    // concept éligible au rappel espacé SM-2 (idempotent : un espacement en
+    // cours n'est jamais écrasé ; une leçon hors corpus n'entre jamais).
+    if (summaryFlow.lessonKey) planifierRappelPourLecon(summaryFlow.lessonKey);
     const sumSession: BotSession = {
       ...session,
       pendingSummaryUnit: summaryFlow.nextPendingUnit,
