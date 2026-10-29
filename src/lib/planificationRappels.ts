@@ -40,7 +40,8 @@ import {
   getMicroRemediationByCode,
   type MicroRemediation,
 } from '../data/microRemediations';
-import { planifierRappel } from './rappelAdaptatif';
+import { planifierRappel, chargeBanque } from './rappelAdaptatif';
+import { estConceptRappel } from './rappelConcepts';
 
 /**
  * La micro-reprise pour un code d'erreur détecté — le résolveur unique.
@@ -94,4 +95,39 @@ export function planifierRappelsPourErreurs(
     }
   }
   return programmes;
+}
+
+/**
+ * P1-2 (28/10/2026) — LE SECOND POINT D'ENTRÉE DE LA BANQUE : l'agenda
+ * d'ouverture (branchement (c) validé par le propriétaire).
+ *
+ * Contrairement au pont erreur→concept ci-dessus (16 concepts manuels clavés
+ * par nomenclature d'erreurs), celui-ci programme le rappel de la leçon gold
+ * elle-même (identifiant = lessonId de LESSON_GOLD_SUMMARIES, couvert par le
+ * corpus AUTO de `spacedRecallPromptsAuto.ts` — 63 concepts générés).
+ *
+ * Pédagogie : d'abord étudié, ensuite rappelé. Ouvrir le résumé d'or d'une
+ * leçon rend son concept éligible à la répétition espacée SM-2.
+ *
+ * SÛRETÉS :
+ *   · le concept doit appartenir au corpus (manuel OU auto) — une leçon sans
+ *     prompts n'entre jamais dans la banque (pas d'entrée morte) ;
+ *   · l'idempotence de `planifierRappel` est héritée telle quelle : un
+ *     espacement déjà construit n'est JAMAIS écrasé (relire une leçon déjà
+ *     planifiée ne réinitialise rien) ;
+ *   · MODULE LOCAL uniquement (localStorage) — la promesse « rien ne quitte le
+ *     téléphone » tient.
+ *
+ * Renvoie le concept programmé, ou null (leçon hors corpus / déjà planifiée
+ * avec un espacement en cours).
+ */
+export function planifierRappelPourLecon(
+  lessonId: string,
+  now: number = Date.now(),
+): string | null {
+  if (typeof lessonId !== 'string' || lessonId.length === 0) return null;
+  if (!estConceptRappel(lessonId)) return null;
+  const dejaEnBanque = chargeBanque()[lessonId];
+  planifierRappel(lessonId, now);
+  return dejaEnBanque ? null : lessonId;
 }

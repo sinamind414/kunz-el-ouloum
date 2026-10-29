@@ -4,8 +4,10 @@
 
 Application de révision SVT — sciences de la nature et de la vie — pour le Baccalauréat
 algérien, filière **علوم تجريبية** (3AS). 100 % arabe, droite-à-gauche, utilisable
-**hors ligne**, 100 % gratuite : pas de publicité, pas de traqueur tiers, aucun compte
-obligatoire (mode invité local).
+**hors ligne**. Freemium assumé : le **المجال 1 (unités 1-5) est gratuit, sans publicité**
+; l'accès complet (unités 6-11, banque BAC, examens) s'ouvre par **abonnement saison
+de 1 200 DA**. Pas de publicité, pas de traqueur tiers, aucun compte obligatoire
+(mode invité local).
 
 ## Ce que l'application couvre
 

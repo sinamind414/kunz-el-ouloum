@@ -24,7 +24,7 @@ describe('sujet blanc — structure officielle', () => {
     }
   });
 
-  it('annonce la durée officielle de l’épreuve', () => {
+  it('annonce la durée officielle de l’épreuve (4 h 30 — preuve : sujets ONEC « المدة: 04 سا ونصف »)', () => {
     expect(composeMockExam(1).dureeMinutes).toBe(DUREE_EPREUVE_MINUTES);
     expect(DUREE_EPREUVE_MINUTES).toBe(270);
   });
