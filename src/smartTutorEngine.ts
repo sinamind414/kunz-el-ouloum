@@ -14,6 +14,19 @@ import {
 } from './utils/sessionManager';
 import { graineSession } from './utils/melangeOptions';
 import {
+  POSITIONNEMENT_QUESTIONS,
+  TAILLE_TEST_POSITIONNEMENT,
+  UNITE_PAR_ID,
+} from './data/positionnementBanque';
+import {
+  chargerPositionnement,
+  enregistrerResultat,
+  enregistrerObjectifNote,
+  libellePalier,
+  OBJECTIF_MAX,
+  OBJECTIF_MIN,
+} from './utils/positionnement';
+import {
   DOMAINS,
   KNOWLEDGE_CARDS,
   getQuestionsForDomain,
@@ -1390,6 +1403,152 @@ export function startDiagnostic(session: BotSession): EngineResult {
   return { session: newSession, action: { text, quiz: toQuizPrompt(first), quickActions: [] } };
 }
 
+// ════════════════════════════════════════════════════════════════════════════
+// TRANCHE P0-3 (plan audit 20/10, demandé par 8/9 audits élèves) : LE TEST DE
+// POSITIONNEMENT « اختبار تحديد المستوى » + L'OBJECTIF DE NOTE.
+//
+// Distinction assumée avec le diagnostic existant :
+//   · « اختبار تشخيصي » (startDiagnostic) = test SÉQUENTIEL D'UN SEUL domaine
+//     actif, adossé à la banque du domaine ;
+//   · « اختبار تحديد المستوى » = test CROSS-DOMAINE de 18 items (cible plan
+//     15-22) piochés dans les 11 unités du programme (banque déterministe),
+//     suivi d'une SYNTHÈSE par unité + note estimée /20 + fixation d'un
+//     objectif de note (store kunz_positionnement_v1).
+//
+// HONNÊTÉ : une réponse juste/mauvaise au positionnement ne touche PAS au
+// دفتر الأخطاء (mistakes/mistakeStats) — c'est une MESURE, pas un
+// entraînement ; la remédiation reste l'affaire des quiz de domaine.
+// ════════════════════════════════════════════════════════════════════════════
+
+export function startPositionnement(session: BotSession): EngineResult {
+  const banque = POSITIONNEMENT_QUESTIONS;
+  if (banque.length === 0) {
+    return { session, action: { text: 'لا يوجد اختبار تحديد مستوى بعد.', quickActions: ['العودة للقائمة الرئيسية'] } };
+  }
+  // Reprise : un test en cours n'est jamais recommencé à zéro (même contrat
+  // anti-écrasement que l'agenda SM-2 : l'état existant prime).
+  if (session.mode === 'positionnement' && session.currentQuiz) {
+    const idx = banque.findIndex((q) => q.id === session.currentQuiz?.questionId);
+    const courante = banque[idx >= 0 ? idx : 0];
+    const text =
+      `🧭 **اختبار تحديد المستوى** قائم — السؤال ${Math.max(0, idx) + 1} من ${banque.length}.\n` +
+      'أجب بـ A أو B أو C أو D (أو 1، 2، 3، 4).';
+    return { session, action: { text, quiz: toQuizPrompt(courante), quickActions: [] } };
+  }
+  const first = banque[0];
+  const newSession = startQuiz(session, banque.length, first.id, 'positionnement');
+  const text =
+    `🧭 **اختبار تحديد المستوى** — ${banque.length} سؤالاً تغطي الوحدات 1-11 (اختيار صامت يمثّل وزن كل وحدة في البكالوريا).\n` +
+    'أجب عنها واحداً تلو الآخر. في النهاية سأقدّر مستواك معك /20 (تقدير أولي) وحدّد معك هدفك للبكالوريا.';
+  return { session: newSession, action: { text, quiz: toQuizPrompt(first), quickActions: [] } };
+}
+
+export function gradePositionnementAnswer(session: BotSession, rawAnswer: string): EngineResult {
+  const current = session.currentQuiz;
+  if (!current || session.mode !== 'positionnement') {
+    return { session, action: { text: 'لا يوجد اختبار تحديد مستوى قائم حالياً.', quickActions: ['اختبار تحديد المستوى', 'العودة للقائمة الرئيسية'] } };
+  }
+  const banque = POSITIONNEMENT_QUESTIONS;
+  // Garde honnête : l'état persistant doit toujours pointer vers la banque
+  // figée actuelle ; sinon on le dit au lieu de noter le mauvais item.
+  if (!banque.some((q) => q.id === current.questionId)) {
+    const rattrapee = { ...session, mode: 'idle' as const, currentQuiz: null };
+    saveSession(rattrapee);
+    return {
+      session: rattrapee,
+      action: { text: 'انتهت صلاحية اختبار سابق (تغيّر بنك الأسئلة). أعد المحاولة من البداية.', quickActions: ['اختبار تحديد المستوى'] },
+    };
+  }
+  const question = banque.find((q) => q.id === current.questionId)!;
+  const view = shuffledView(question);
+  const selected = parseAnswer(rawAnswer);
+  if (selected === null) {
+    return { session, action: { text: '⚠️ الرجاء اختيار إجابة بكتابة A أو B أو C أو D (أو 1، 2، 3، 4).', quiz: toQuizPrompt(question), quickActions: [] } };
+  }
+  const isCorrect = selected === view.correctIndex;
+  let text: string;
+  if (isCorrect) {
+    text = `✅ إجابة صحيحة!\n\n${question.explanation}`;
+  } else {
+    text = `❌ إجابة خاطئة.\nالإجابة الصحيحة هي: ${view.options[view.correctIndex]}\n\n${question.explanation}`;
+  }
+  const correctCount = current.correctAnswers + (isCorrect ? 1 : 0);
+  const trace: boolean[] = [...(current.resultatsParQuestion ?? [])];
+  trace[current.questionIndex] = isCorrect;
+  const nextIndex = current.questionIndex + 1;
+  const isLast = nextIndex >= banque.length;
+  let newSession: BotSession;
+  let quiz: QuizPrompt | undefined;
+  if (isLast) {
+    // Fin de test : résultat persistant + synthèse par unité + objectif.
+    const resultat = enregistrerResultat(correctCount, banque.length);
+    newSession = { ...session, mode: 'idle', currentQuiz: null, lastInteraction: Date.now() };
+    saveSession(newSession);
+    // Synthèse par unité : les unités où au moins un item a raté — c'est la
+    // prescription de départ (mêmes libellés honnêtes que le coach).
+    const unitesRatees = [...new Set(
+      trace
+        .map((ok, i) => (ok ? null : UNITE_PAR_ID[banque[i]?.id]))
+        .filter((u): u is number => u != null),
+    )].sort((a, b) => a - b);
+    const pct = resultat.percent;
+    text += `\n\n📊 نتيجة تحديد المستوى: ${correctCount}/${banque.length} (${pct}%).`;
+    text += `\n📌 تقدير أولي لمستواك: **${resultat.noteEstimee}/20** — ${libellePalier(pct)}.`;
+    if (unitesRatees.length > 0) {
+      text += `\n⚠️ وحدات ظهرت فيها إجابات خاطئة: ${unitesRatees.map((u) => `الوحدة ${u}`).join('، ')} — سنبدأ منها.`;
+    }
+    text += `\n\n🎯 حدّد هدفك الآن للبكالوريا (من ${OBJECTIF_MIN} إلى ${OBJECTIF_MAX})، وسأوجّه المراجعة نحوه.`;
+    quiz = undefined;
+  } else {
+    newSession = {
+      ...session,
+      currentQuiz: {
+        ...current,
+        questionId: banque[nextIndex].id,
+        questionIndex: nextIndex,
+        correctAnswers: correctCount,
+        resultatsParQuestion: trace,
+      },
+      lastInteraction: Date.now(),
+    };
+    saveSession(newSession);
+    quiz = toQuizPrompt(banque[nextIndex]);
+  }
+  const quickActions = quiz === undefined
+    ? ['هدف 12', 'هدف 14', 'هدف 16', 'هدف 18', 'العودة للقائمة الرئيسية']
+    : [];
+  const reward = quiz === undefined
+    ? { xpGained: correctCount * 10, score: correctCount, total: banque.length, kind: 'quiz' as const, domain: 'تحديد المستوى' }
+    : undefined;
+  return { session: newSession, action: { text, quiz, quickActions, reward } };
+}
+
+export function definirObjectifNote(session: BotSession, norm: string): EngineResult {
+  // Chiffres arabes orientaux (٠-٩) acceptés → convertis en ASCII avant analyse.
+  const ascii = norm.replace(/[٠-٩]/g, (d) => String('٠١٢٣٤٥٦٧٨٩'.indexOf(d)));
+  const m = ascii.match(/(?:^|\s)هدف(?:ي)?\s*(\d{1,2})\s*(?:\/\s*20)?$/);
+  if (!m) {
+    return { session, action: { text: 'اكتب هدفك هكذا: «هدف 14» (من 5 إلى 20).', quickActions: ['هدف 12', 'هدف 14', 'هدف 16', 'هدف 18'] } };
+  }
+  const valeur = Number(m[1]);
+  if (!enregistrerObjectifNote(valeur)) {
+    return { session, action: { text: `الهدف يجب أن يكون عدداً صحيحاً من ${OBJECTIF_MIN} إلى ${OBJECTIF_MAX}.`, quickActions: ['هدف 12', 'هدف 18'] } };
+  }
+  const etat = chargerPositionnement();
+  let text = `🎯 تم تسجيل هدفك: **${valeur}/20**.`;
+  if (etat.resultat) {
+    const ecart = valeur - etat.resultat.noteEstimee;
+    if (ecart > 0) {
+      text += `\nآخر تقدير أولي كان ${etat.resultat.noteEstimee}/20 — الفجوة ${ecart} نقطة. سنعمل عليها وحدة بوحدة، بدءاً بالوحدات الأكبر وزناً في البكالوريا.`;
+    } else {
+      text += `\nحسب آخر تقدير (${etat.resultat.noteEstimee}/20) أنت على الهدف — المطلوب الآن الحفاظ عليه بالمراجعة المتباعدة.`;
+    }
+  } else {
+    text += `\nابدأ بـ « اختبار تحديد المستوى » لأعرف نقطة انطلاقك الحقيقية.`;
+  }
+  return { session, action: { text, quickActions: ['اختبار تحديد المستوى', 'مهمة اليوم', 'العودة للقائمة الرئيسية'] } };
+}
+
 export function reviewMistakes(session: BotSession): EngineResult {
   if (session.mistakes.length === 0) {
     // ── TC2/H4 (audit coach 18/10/2026) ──
@@ -2235,6 +2394,15 @@ export function processStudentInput(session: BotSession, rawInput: string): Engi
     saveSession(back);
     return { session: back, action: { text: '↩️ رجعنا إلى القائمة الرئيسية. اختر مجالاً لبدء جلسة مراجعة:', quickActions: DOMAINS.map((d) => d.title) } };
   }
+
+  // ── TRANCHE P0-3 : TEST DE POSITIONNEMENT ──
+  // Ordre : (1) le déclencheur exact relance/reprend (même pendant un test
+  // actif — reprise anti-écrasement), (2) sinon toute saisie d'un test en
+  // cours est notée comme réponse, (3) objectif de note. Jamais le radical
+  // « مستوى » nu : ne pas capter les vraies questions de cours.
+  if (norm.includes(n('تحديد المستوى'))) return startPositionnement(session);
+  if (session.mode === 'positionnement' && session.currentQuiz) return gradePositionnementAnswer(session, input);
+  if (/(?:^|\s)هدف(?:ي)?\s*[٠-٩0-9]{1,2}\s*(?:\/\s*20)?$/.test(norm)) return definirObjectifNote(session, norm);
 
   // COACH (2026-10-12) : « Quel est mon niveau dans cette unité ? »
   // Volontairement DISTINCT de « اختبار تشخيصي », qui LANCE un test : ici on ne
