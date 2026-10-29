@@ -33,6 +33,7 @@ import {
   type BacExerciseIdea,
 } from '../data/bacSessionIndex';
 import { cheminPdfBac, pdfBacDisponible } from '../data/bacPdfIndex';
+import { corrigesTypeJuryPour } from '../data/dictionaries/corrigesTypeJury';
 import {
   ARCHETYPE_BY_ID,
   archetypeRecurrence,
@@ -157,6 +158,9 @@ function BacIdeasViewInterne({ onBackToHome, focusIdeaId = null }: BacIdeasViewP
   const [revision, setRevision] = useState(0);
   const [revueVisible, setRevueVisible] = useState(false);
   const [sujetVisible, setSujetVisible] = useState(false);
+  // TRANCHE P1-1 : panneau « corrigé type jury » ouvert (clé annee-sujet).
+  // Vide tant que l'année n'est pas encodée — aucune grille fabriquée.
+  const [corrigeOuvert, setCorrigeOuvert] = useState<string | null>(null);
 
   useEffect(() => {
     if (focusIdeaId && IDEA_BY_ID[focusIdeaId]) setEntrainement(IDEA_BY_ID[focusIdeaId]);
@@ -495,6 +499,53 @@ function BacIdeasViewInterne({ onBackToHome, focusIdeaId = null }: BacIdeasViewP
                     حمّل الموضوع الأصلي (PDF)
                   </a>
                 )}
+                {/* TRANCHE P1-1 : corrigé type jury — grilles manuelles, sans
+                    notation automatique. Affiché seulement quand l'année est
+                    encodée (2024 à ce stade) ; les autres années restent
+                    telles quelles, sans contenu reconstruit. */}
+                {(() => {
+                  const corriges = corrigesTypeJuryPour(annee as number, sujet);
+                  if (corriges.length === 0) return null;
+                  const cle = `${annee}-${sujet}`;
+                  return (
+                    <div className="mt-2">
+                      <button
+                        data-testid={`bouton-corrigetype-${sujet}`}
+                        onClick={() => setCorrigeOuvert((o) => (o === cle ? null : cle))}
+                        className="inline-flex items-center gap-1 text-[11px] font-black px-2.5 py-1 rounded-xl bg-[#0e6b6b] text-white cursor-pointer hover:bg-[#128a8a]"
+                      >
+                        {corrigeOuvert === cle ? '▲ إخفاء التصحيح النموذجي' : '▼ التصحيح النموذجي (نوع المحكّم)'}
+                      </button>
+                      {corrigeOuvert === cle && (
+                        <div className="mt-2 space-y-2" data-testid={`corrigetype-${sujet}`}>
+                          {corriges.map((c) => (
+                            <div
+                              key={c.exercice}
+                              data-testid={`corrigetype-${sujet}-ex${c.exercice}`}
+                              className="rounded-xl border border-[#0e6b6b]/25 bg-white dark:bg-black/20 p-2.5"
+                            >
+                              <p className="text-[11px] font-black text-[#0e6b6b] dark:text-teal-300 text-right">
+                                التمرين {c.exercice === 1 ? 'الأول' : c.exercice === 2 ? 'الثاني' : 'الثالث'} ({c.maxPts} نقاط) — {c.themeAr}
+                              </p>
+                              <div className="mt-1.5 space-y-1.5">
+                                {c.elements.map((e) => (
+                                  <div key={e.id} className="text-right">
+                                    <p className="text-[11px] font-bold text-[#1f1c0b] dark:text-gray-200 leading-snug">
+                                      مطلوب: {e.consigneAr}
+                                    </p>
+                                    <p className="text-[11px] text-[#506072] dark:text-gray-400 leading-snug">
+                                      المتوقَّع: {e.attenduAr}
+                                    </p>
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  );
+                })()}
               </div>
             );
           })}
