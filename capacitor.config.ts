@@ -1,7 +1,7 @@
 import type { CapacitorConfig } from '@capacitor/cli';
 
 /**
- * Capacitor 8.5.3 — H1 APK (CHIFFRAGE_APK_2026-10-20.md, jalons A1-A2).
+ * Capacitor 8.5.3 — H1 APK (docs/rapports/CHIFFRAGE_APK_2026-10-20.md, jalons A1-A2).
  * Dérogation package.json accordée par l'utilisateur (2026-10-21) + appId
  * confirmé : com.sinamind414.kunzelouloum (IRRÉVERSIBLE une fois publié).
  *

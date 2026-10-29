@@ -26,6 +26,8 @@ export default tseslint.config(
       'scripts/tools/**',
       '.kilo/**',
       'coverage/**',
+      // archives hors produit (réorganisation 2026-10-26, cf. docs/agents/CARTE_DU_DEPOT.md) :
+      'archive/**',
       // travail concurrent NON SIGNÉ (jamais linté, jamais commité) :
       'CREATION MONTRE XWATCH/**',
       'Python/**',

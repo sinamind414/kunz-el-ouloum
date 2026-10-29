@@ -24,7 +24,7 @@ const d = JSON.parse(brut) as {
 };
 const lignes: string[] = d.book.full_text;
 const texte = lignes.join('\n');
-const tdm = readFileSync(join(process.cwd(), 'book_tdm_clean.md'), 'utf-8');
+const tdm = readFileSync(join(process.cwd(), 'uploads_externes', 'book_tdm_clean.md'), 'utf-8');
 
 function norm(s: string): string {
   // toLowerCase AVANT le filtre : sinon les majuscules latines (ADN, pH, LT…)

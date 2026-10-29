@@ -4,3 +4,5 @@ dist/
 tmp_*
 *.log
 *.apk.sig
+# Archives hors produit (réorganisation 2026-10-26) : jamais déployées
+archive/

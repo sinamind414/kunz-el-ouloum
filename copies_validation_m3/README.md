@@ -1,7 +1,7 @@
 # copies_validation_m3 — LOT DE COLLECTE M3
 
 Dossier de travail local pour la validation correcteur (30 copies
-indépendantes — voir `../M3_PROTOCOLE_VALIDATION_30_COPIES_2026-10-21.md`).
+indépendantes — voir `../docs/rapports/M3_PROTOCOLE_VALIDATION_30_COPIES_2026-10-21.md`).
 
 ## Format attendu (identique au corpus racine, numérotation à partir de 101)
 

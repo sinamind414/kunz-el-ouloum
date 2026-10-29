@@ -29,8 +29,8 @@ const reToken = /[\u0621-\u064A]{3,}/g;
 const MIN = 3;
 
 const refs = [
-  'الكتاب_المصحح_v1.0.md',
-  'المكتبة_الكاملة_SVT.md',
+  'uploads_externes/الكتاب_المصحح_v1.0.md',
+  'uploads_externes/المكتبة_الكاملة_SVT.md',
 ];
 
 const formesRef = new Set<string>();
