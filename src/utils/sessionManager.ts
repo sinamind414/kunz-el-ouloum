@@ -1,12 +1,19 @@
 import { jourLocal } from './dayKey';
 
-export type BotMode = 'idle' | 'domain_menu' | 'diagnostic' | 'lesson' | 'quiz' | 'bac_challenge' | 'review';
+export type BotMode = 'idle' | 'domain_menu' | 'diagnostic' | 'lesson' | 'quiz' | 'bac_challenge' | 'review' | 'positionnement';
 
 export interface QuizState {
   questionId: string;
   questionIndex: number;
   totalQuestions: number;
   correctAnswers: number;
+  /**
+   * TRANCHE P0-3 : trace booléenne des réponses DU positionnement (index =
+   * questionIndex). Nécessaire à la synthèse finale par unité (quelles
+   * unités ont raté). Additive/optionnelle : les autres quiz ne s'en servent
+   * pas, et la fusion de session tolère les champs absents.
+   */
+  resultatsParQuestion?: boolean[];
   /** F10 (audit Morchid 2026-09-26) : si ce QCM est la question de
    *  consolidation de la mission quotidienne, identifiant de la carte
    *  ciblée. Permet de verser les +15 XP promis et de clôturer la mission

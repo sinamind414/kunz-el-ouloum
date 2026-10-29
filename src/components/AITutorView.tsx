@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Send, Sparkles, AlertCircle, Trash2, BrainCircuit, Target, Stethoscope, Swords, ClipboardList, Globe2, BookOpen } from 'lucide-react';
+import { Send, Sparkles, AlertCircle, Trash2, BrainCircuit, Target, Stethoscope, Swords, Compass, ClipboardList, Globe2, BookOpen } from 'lucide-react';
 import { ChatMessage } from '../types';
 import { MORCHID_LOGO_URL } from '../data/brandAssets';
 
@@ -43,6 +43,10 @@ const JOURNEY_BUTTONS = [
   // passer, il lit l'état existant et prescrit la prochaine action.
   { label: 'تشخيص مستواي', icon: Stethoscope, testId: 'journey-coach-diagnostic' },
   { label: 'اختبار تشخيصي', icon: Stethoscope, testId: 'journey-diagnostic' },
+  // TRANCHE P0-3 (29/10/2026) : le test de positionnement CROSS-domaine (18
+  // items, 11 unités) → note estimée /20 + objectif de note. Distinct du
+  // « اختبار تشخيصي » mono-domaine : le libellé route vers le moteur.
+  { label: 'اختبار تحديد المستوى', icon: Compass, testId: 'journey-positionnement' },
   { label: 'تحدي BAC', icon: Swords, testId: 'journey-boss-fight' },
   { label: 'راجع أخطائي السابقة', icon: ClipboardList, testId: 'journey-review-mistakes' },
   { label: 'الملخصات الذهبية', icon: BookOpen, testId: 'journey-gold-summaries' },

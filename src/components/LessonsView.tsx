@@ -37,6 +37,7 @@ function VueEnChargement() {
   );
 }
 import { chapitreIcone, uniteIcone } from '../data/lessonIcons';
+import RappelBadge from './RappelBadge';
 import {
   PASSIVE_DOMAINS,
   hasHtmlFile,
@@ -538,6 +539,8 @@ export default function LessonsView({ onRateCard, initialLesson, initialQcm, ini
                   <span className="flex-1 text-sm font-bold text-gray-800 dark:text-gray-100 leading-snug">
                     {titre}
                     <SourceBadge cle={key} titre={titre} />
+                    {/* P1-2 : badge 🔴🟡🟢 du rappel SM-2 (invisible sans mémoire réelle). */}
+                    <RappelBadge lessonKey={key} testId={`badge-rappel-active-${key}`} />
                   </span>
                   <ChevronLeft className="w-4 h-4 text-gray-300 group-hover:text-emerald-500 transition-all shrink-0 mt-1" />
                 </span>
@@ -938,6 +941,8 @@ export default function LessonsView({ onRateCard, initialLesson, initialQcm, ini
                 <span className="flex-1 text-sm font-bold text-gray-800 dark:text-gray-100 leading-snug">
                   {titre}
                   <SourceBadge cle={key} titre={titre} />
+                  {/* P1-2 : badge 🔴🟡🟢 du rappel SM-2 (invisible sans mémoire réelle). */}
+                  <RappelBadge lessonKey={key} testId={`badge-rappel-passif-${key}`} />
                 </span>
                 <ChevronLeft className="w-4 h-4 text-gray-300 group-hover:text-teal-500 transition-all shrink-0 mt-1" />
               </span>
