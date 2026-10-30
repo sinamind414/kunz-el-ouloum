@@ -1,10 +1,11 @@
 // corrigesTypeJury.lock.test.ts — VERROU DE LA TRANCHE P1-1 (corrigés type
-// jury, session 1 : 2024, session 2 : 2023).
+// jury, session 1 : 2024, session 2 : 2023, session 3 : 2022, session 4 :
+// 2021).
 //
 // Ce que le verrou garantit (méthode H1 — données puis gardes) :
-//   1. COUVERTURE EXACTE : [2023, 2024] encodées, 12 exercices (2 années ×
-//      2 sujets × 3), chaque exercice porte le barème IMPRIMÉ sur le sujet
-//      (5/7/8) — le seul chiffre officiel utilisable ;
+//   1. COUVERTURE EXACTE : [2021, 2022, 2023, 2024] encodées, 24 exercices
+//      (4 années × 2 sujets × 3), chaque exercice porte le barème IMPRIMÉ
+//      sur le sujet (5/7/8) — le seul chiffre officiel utilisable ;
 //   2. AUCUN BARÈME INVENTÉ PAR ITEM : les éléments n'ont pas de points —
 //      structurellement une grille de jury, jamais une note automatique ;
 //      aucun énoncé ne contient d'attribution de points (« X نقاط ») ;
@@ -36,9 +37,9 @@ const TOUS: CorrigeTypeJuryExercice[] = ANNEES_ENCODEES.flatMap((annee) =>
 const PARASITES = /[\u0400-\u04FF\u4E00-\u9FFF]/;
 
 describe('corrigés type jury — couverture et barème officiel', () => {
-  it(`deux sessions encodées à ce stade : 2023 puis 2024`, () => {
-    expect(ANNEES_ENCODEES).toEqual([2023, 2024]);
-    expect(TOUS.length).toBe(12); // 2 années × 2 sujets × 3 exercices
+  it(`quatre sessions encodées à ce stade : 2021, 2022, 2023 puis 2024`, () => {
+    expect(ANNEES_ENCODEES).toEqual([2021, 2022, 2023, 2024]);
+    expect(TOUS.length).toBe(24); // 4 années × 2 sujets × 3 exercices
   });
 
   it(`par année : 6 exercices (2 sujets × 3), barème imprimé 5/7/8 par sujet`, () => {
