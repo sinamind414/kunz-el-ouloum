@@ -1,11 +1,11 @@
 // corrigesTypeJury.lock.test.ts — VERROU DE LA TRANCHE P1-1 (corrigés type
 // jury, session 1 : 2024, session 2 : 2023, session 3 : 2022, session 4 :
-// 2021).
+// 2021, session 5 : 2020).
 //
 // Ce que le verrou garantit (méthode H1 — données puis gardes) :
-//   1. COUVERTURE EXACTE : [2021, 2022, 2023, 2024] encodées, 24 exercices
-//      (4 années × 2 sujets × 3), chaque exercice porte le barème IMPRIMÉ
-//      sur le sujet (5/7/8) — le seul chiffre officiel utilisable ;
+//   1. COUVERTURE EXACTE : [2020, 2021, 2022, 2023, 2024] encodées, 30
+//      exercices (5 années × 2 sujets × 3), chaque exercice porte le barème
+//      IMPRIMÉ sur le sujet (5/7/8) — le seul chiffre officiel utilisable ;
 //   2. AUCUN BARÈME INVENTÉ PAR ITEM : les éléments n'ont pas de points —
 //      structurellement une grille de jury, jamais une note automatique ;
 //      aucun énoncé ne contient d'attribution de points (« X نقاط ») ;
@@ -37,9 +37,9 @@ const TOUS: CorrigeTypeJuryExercice[] = ANNEES_ENCODEES.flatMap((annee) =>
 const PARASITES = /[\u0400-\u04FF\u4E00-\u9FFF]/;
 
 describe('corrigés type jury — couverture et barème officiel', () => {
-  it(`quatre sessions encodées à ce stade : 2021, 2022, 2023 puis 2024`, () => {
-    expect(ANNEES_ENCODEES).toEqual([2021, 2022, 2023, 2024]);
-    expect(TOUS.length).toBe(24); // 4 années × 2 sujets × 3 exercices
+  it(`cinq sessions encodées à ce stade : 2020, 2021, 2022, 2023 puis 2024`, () => {
+    expect(ANNEES_ENCODEES).toEqual([2020, 2021, 2022, 2023, 2024]);
+    expect(TOUS.length).toBe(30); // 5 années × 2 sujets × 3 exercices
   });
 
   it(`par année : 6 exercices (2 sujets × 3), barème imprimé 5/7/8 par sujet`, () => {
@@ -105,7 +105,7 @@ describe('corrigés type jury — contenu sain et traçable', () => {
 
   it(`années non encodées → vide (l'UI n'affiche rien de fabriqué)`, () => {
     expect(corrigesTypeJuryPour(2013, 1)).toEqual([]);
-    expect(corrigesTypeJuryPour(2020, 2)).toEqual([]);
+    expect(corrigesTypeJuryPour(2019, 2)).toEqual([]);
     expect(corrigesTypeJuryPour(2025, 1)).toEqual([]); // 2025 = registre noté (attendusBac2025), pas une grille jury
   });
 });
