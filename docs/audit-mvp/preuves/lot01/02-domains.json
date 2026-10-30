@@ -1,0 +1,168 @@
+{
+  "title": "كنز العلوم - SVT BAC DZ",
+  "text": "تجاوز إلى المحتوى الرئيسي\nطالب متميز\nSVT BAC DZ\nالدروس؟\nأ\n0\n|\n0 XP\nالقائمة الرئيسية\nالرئيسية\nACCUEIL\nالدروس\nAPPRENDRE\nالتمارين والتدريب\nS'ENTRAÎNER\nمفتاح المنهجية\nMÉTHODE\nالمراجعة\nRÉVISER\nأنا\nMOI\n\nالقبطان — مُرشد كنز العلوم\n\nاقرأ بسؤال في رأسك: «ماذا يريد مني المنهاج في هذه الوثيقة؟». القراءة بلا سؤال قراءة بلا أثر.\n\nابدأ بـ: اكتب سؤالك على ورقة قبل أن تفتح الدرس.\n\nفهمت\n→\nعودة\nالدرس الرسمي — اختر المجال\n🧭\nالدرس المقترح التالي\nالنشاط 1 : تذكير بالمكتسبات ومقر تركيب البروتين\n0 / 85\nافتح الدرس\n🧬\nالملخص الذهبي للدرس\nشرح Kunz\n🧠 سؤال المراجعة — هدفك قبل القراءة\n\nلماذا استعمل العلماء الأحماض الأمينية المشعة تحديدا في هذه التجربة؟\n\nاقرأ الملخص بإمعان ثم أجب عن هذا السؤال دون النظر إليه.\n\nالمهمة\n\nأين يتم بالضبط تركيب البروتين في الخلية الإفرازية؟\n\nسلسلة الأسباب والنتائج\nحضن العلماء خلايا عنقودية للبنكرياس في وسط يحتوي لوسينا مشعا ³H\nبعد 3 دقائق فقط يتمركز الإشعاع كليا في الشبكة الهيولية الداخلية المحببة\nينتقل الإشعاع بعد ذلك نحو جهاز غولجي ثم الحويصلات الإفرازية\nيدل تركيز الإشعاع أولا في الشبكة على أنها مقر دمج الأحماض الأمينية\nسميت الشبكة \"محببة\" لوجود الريبوزومات المرتبطة بغشائها\nمفردات مفتاحية\n³H-لوسين\nالشبكة الهيولية المحببة\nالريبوزومات\nجهاز غولجي\nالحويصلات الإفرازية\nالخلية العنقودية\nهيكل الجواب — بكالوريا\n\nبعد مدة قصيرة من الحضن في وسط به ______، يتمركز الإشعاع في ______ مما يثبت أن مقر تركيب البروتين هو ______.\n\n⚠️ خطأ شائع\n\nالاعتقاد أن تركيب البروتين يتم في النواة — الإشعاع يظهر أولا في الشبكة الهيولية المحببة بالهيولى.\n\nسؤال المراجعة — أجب الآن دون النظر إلى الملخص\n\nلماذا استعمل العلماء الأحماض الأمينية المشعة تحديدا في هذه التجربة؟\n\nالمجال 1\n🧬 التخصص الوظيفي للبروتينات\n5 وحدات · 22 فصلاً\nالمجال 2\n⚡ التحولات الطاقوية\n3 وحدات · 11 فصلاً\nالمجال 3\n🌍 التكتونية العامة\n3 وحدات · 14 فصلاً\n🧭 الدليل العام للمنهجية\nمنهجية الامتحان وتحليل الوثائق والمراجعة — خارج المجالات الثلاثة، لأنها تشمل مادة علوم الطبيعة والحياة كلّها",
+  "buttons": [
+    {
+      "text": "؟",
+      "label": "نصيحة القبطان في هذه الصفحة",
+      "testid": "conseil-rubrique-ouvrir",
+      "disabled": false
+    },
+    {
+      "text": "",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "أ",
+      "label": "حجم النص",
+      "testid": "taille-texte-btn",
+      "disabled": false
+    },
+    {
+      "text": "الرئيسية\nACCUEIL",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "الدروس\nAPPRENDRE",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "التمارين والتدريب\nS'ENTRAÎNER",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "مفتاح المنهجية\nMÉTHODE",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "المراجعة\nRÉVISER",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "أنا\nMOI",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "فهمت",
+      "label": null,
+      "testid": "bandeau-conseil-fermer",
+      "disabled": false
+    },
+    {
+      "text": "→\nعودة",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "افتح الدرس",
+      "label": null,
+      "testid": "bandeau-sequence-ouvrir",
+      "disabled": false
+    },
+    {
+      "text": "المجال 1\n🧬 التخصص الوظيفي للبروتينات\n5 وحدات · 22 فصلاً",
+      "label": null,
+      "testid": "domaine-1",
+      "disabled": false
+    },
+    {
+      "text": "المجال 2\n⚡ التحولات الطاقوية\n3 وحدات · 11 فصلاً",
+      "label": null,
+      "testid": "domaine-2",
+      "disabled": false
+    },
+    {
+      "text": "المجال 3\n🌍 التكتونية العامة\n3 وحدات · 14 فصلاً",
+      "label": null,
+      "testid": "domaine-3",
+      "disabled": false
+    },
+    {
+      "text": "🧭 الدليل العام للمنهجية\nمنهجية الامتحان وتحليل الوثائق والمراجعة — خارج المجالات الثلاثة، لأنها تشمل مادة علوم الطبيعة والحياة كلّها",
+      "label": null,
+      "testid": "guide-entree",
+      "disabled": false
+    },
+    {
+      "text": "الرئيسيةAccueil",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "الدروسApprendre",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "التمارين والتدريبS'entraîner",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "مفتاح المنهجيةMéthode",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "المراجعةRéviser",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "أناMoi",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "",
+      "label": "القبطان — مُرشد كنز العلوم",
+      "testid": "fab-morchid",
+      "disabled": false
+    }
+  ],
+  "inputs": [],
+  "testids": [
+    "conseil-rubrique-ouvrir",
+    "taille-texte-btn",
+    "bandeau-conseil-rubrique",
+    "bandeau-conseil-visage",
+    "bandeau-conseil-fermer",
+    "bandeau-sequence",
+    "bandeau-sequence-ouvrir",
+    "resume-or",
+    "domaine-1",
+    "domaine-2",
+    "domaine-3",
+    "guide-entree",
+    "fab-morchid"
+  ],
+  "storage": {
+    "theme": "light",
+    "kunz_declic_last_id_v1": "dem_04",
+    "boussole_conseils_rubriques_vus": "[\"lesson\"]",
+    "kunz_declic_shown_v1": "2026-10-30"
+  },
+  "width": 1280,
+  "scrollWidth": 1280
+}

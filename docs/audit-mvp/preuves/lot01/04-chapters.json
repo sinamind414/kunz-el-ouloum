@@ -1,0 +1,196 @@
+{
+  "title": "كنز العلوم - SVT BAC DZ",
+  "text": "تجاوز إلى المحتوى الرئيسي\nطالب متميز\nSVT BAC DZ\nالدروس؟\nأ\n0\n|\n0 XP\nالقائمة الرئيسية\nالرئيسية\nACCUEIL\nالدروس\nAPPRENDRE\nالتمارين والتدريب\nS'ENTRAÎNER\nمفتاح المنهجية\nMÉTHODE\nالمراجعة\nRÉVISER\nأنا\nMOI\n\nالقبطان — مُرشد كنز العلوم\n\nاقرأ بسؤال في رأسك: «ماذا يريد مني المنهاج في هذه الوثيقة؟». القراءة بلا سؤال قراءة بلا أثر.\n\nابدأ بـ: اكتب سؤالك على ورقة قبل أن تفتح الدرس.\n\nفهمت\n→\nعودة إلى وحدات المجال\nتركيب البروتين\nوحدة 1\nوحدة 2\nوحدة 3\nوحدة 4\nوحدة 5\n\nالتخصص الوظيفي للبروتينات — Synthèse des protéines\n\n1\nالنشاط 1 : تذكير بالمكتسبات ومقر تركيب البروتين\n📖 الفصل 1-2\n2\nالنشاط 2 : استنساخ المعلومات الوراثية الموجودة على مستوى ADN\n📖 الفصل 3\n3\nالنشاط 3 : الترجمة\n📖 الفصل 4-5\n4\nالنشاط 4 : مراحل الترجمة\n📖 الفصل 5",
+  "buttons": [
+    {
+      "text": "؟",
+      "label": "نصيحة القبطان في هذه الصفحة",
+      "testid": "conseil-rubrique-ouvrir",
+      "disabled": false
+    },
+    {
+      "text": "",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "أ",
+      "label": "حجم النص",
+      "testid": "taille-texte-btn",
+      "disabled": false
+    },
+    {
+      "text": "الرئيسية\nACCUEIL",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "الدروس\nAPPRENDRE",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "التمارين والتدريب\nS'ENTRAÎNER",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "مفتاح المنهجية\nMÉTHODE",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "المراجعة\nRÉVISER",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "أنا\nMOI",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "فهمت",
+      "label": null,
+      "testid": "bandeau-conseil-fermer",
+      "disabled": false
+    },
+    {
+      "text": "→\nعودة إلى وحدات المجال",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "وحدة 1",
+      "label": null,
+      "testid": "bande-unite-1",
+      "disabled": false
+    },
+    {
+      "text": "وحدة 2",
+      "label": null,
+      "testid": "bande-unite-2",
+      "disabled": false
+    },
+    {
+      "text": "وحدة 3",
+      "label": null,
+      "testid": "bande-unite-3",
+      "disabled": false
+    },
+    {
+      "text": "وحدة 4",
+      "label": null,
+      "testid": "bande-unite-4",
+      "disabled": false
+    },
+    {
+      "text": "وحدة 5",
+      "label": null,
+      "testid": "bande-unite-5",
+      "disabled": false
+    },
+    {
+      "text": "1\nالنشاط 1 : تذكير بالمكتسبات ومقر تركيب البروتين\n📖 الفصل 1-2",
+      "label": null,
+      "testid": "chapitre-phase1_chapitres_1_2",
+      "disabled": false
+    },
+    {
+      "text": "2\nالنشاط 2 : استنساخ المعلومات الوراثية الموجودة على مستوى ADN\n📖 الفصل 3",
+      "label": null,
+      "testid": "chapitre-lecon_transcription",
+      "disabled": false
+    },
+    {
+      "text": "3\nالنشاط 3 : الترجمة\n📖 الفصل 4-5",
+      "label": null,
+      "testid": "chapitre-phase1_chapitres_1_2_2",
+      "disabled": false
+    },
+    {
+      "text": "4\nالنشاط 4 : مراحل الترجمة\n📖 الفصل 5",
+      "label": null,
+      "testid": "chapitre-phase2_chapitres_3_4",
+      "disabled": false
+    },
+    {
+      "text": "الرئيسيةAccueil",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "الدروسApprendre",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "التمارين والتدريبS'entraîner",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "مفتاح المنهجيةMéthode",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "المراجعةRéviser",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "أناMoi",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "",
+      "label": "القبطان — مُرشد كنز العلوم",
+      "testid": "fab-morchid",
+      "disabled": false
+    }
+  ],
+  "inputs": [],
+  "testids": [
+    "conseil-rubrique-ouvrir",
+    "taille-texte-btn",
+    "bandeau-conseil-rubrique",
+    "bandeau-conseil-visage",
+    "bandeau-conseil-fermer",
+    "bande-unites",
+    "bande-unite-1",
+    "bande-unite-2",
+    "bande-unite-3",
+    "bande-unite-4",
+    "bande-unite-5",
+    "chapitres-icones",
+    "chapitre-phase1_chapitres_1_2",
+    "chapitre-lecon_transcription",
+    "chapitre-phase1_chapitres_1_2_2",
+    "chapitre-phase2_chapitres_3_4",
+    "fab-morchid"
+  ],
+  "storage": {
+    "theme": "light",
+    "kunz_declic_last_id_v1": "dem_04",
+    "boussole_conseils_rubriques_vus": "[\"lesson\"]",
+    "kunz_declic_shown_v1": "2026-10-30"
+  },
+  "width": 1280,
+  "scrollWidth": 1280
+}

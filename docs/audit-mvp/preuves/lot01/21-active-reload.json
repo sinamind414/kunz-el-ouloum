@@ -1,0 +1,143 @@
+{
+  "title": "كنز العلوم - SVT BAC DZ",
+  "text": "تجاوز إلى المحتوى الرئيسي\nطالب متميز\nSVT BAC DZ\nالدروس؟\nأ\n0\n|\n0 XP\nالقائمة الرئيسية\nالرئيسية\nACCUEIL\nالدروس\nAPPRENDRE\nالتمارين والتدريب\nS'ENTRAÎNER\nمفتاح المنهجية\nMÉTHODE\nالمراجعة\nRÉVISER\nأنا\nMOI\n→\nعودة إلى قائمة الدروس النشيطة\nالوحدة 1 : التعبير المورثي ونقل المعلومة\n1/6\nاشرح لي هذه الوحدة\nقيّم مستواي في هذا الدرس\n✓\n2\n3\n4\n5\n6\n\nالدخول إلى الوحدة من صورة حية قريبة من كتاب المدرسة.\n\nالعنكبوت يصنع خيطاً دقيقاً جداً — كيف تصنع الخلية بروتيناً؟\n\nصورة خيط العنكبوت تجعل السؤال مركزاً: كيف تستطيع الخلية تركيب بروتين مضبوط البنية والوظيفة؟\n\nابدأ من سؤال التركيب\nأنتقل من المثال الحي إلى الوثائق التي تشرح التعبير المورثي.\n\nخلاصة الدرس\n\nبيّن كيف يُترجم المحتوى الوراثي المسجل في ADN إلى بروتين ذي وظيفة محددة.\n\nيخزن الـ ADN المعلومة الوراثية في تسلسل النيوكليوتيدات على شكل رامزات ثلاثية.\nيستنسخ جزء من الـ ADN إلى ARNm بواسطة إنزيم ARN بوليميراز في النواة.\nتترجم الرامزات إلى أحماض أمينية في الهيولى على مستوى الشبكة الهيولية (الريبوزومات).\nينقل الـ ARNt الحمض الأميني الموافق لكل رامزة بحسب التكامل مع الرامزة المضادة.\nيحدد تسلسل الأحماض الأمينية بنية البروتين الفراغية، ومنها تخصص وظيفته.\n\n🔑 المصطلح المفتاح للبكالوريا : الشفرة الوراثية / التعبير المورثي",
+  "buttons": [
+    {
+      "text": "؟",
+      "label": "نصيحة القبطان في هذه الصفحة",
+      "testid": "conseil-rubrique-ouvrir",
+      "disabled": false
+    },
+    {
+      "text": "",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "أ",
+      "label": "حجم النص",
+      "testid": "taille-texte-btn",
+      "disabled": false
+    },
+    {
+      "text": "الرئيسية\nACCUEIL",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "الدروس\nAPPRENDRE",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "التمارين والتدريب\nS'ENTRAÎNER",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "مفتاح المنهجية\nMÉTHODE",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "المراجعة\nRÉVISER",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "أنا\nMOI",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "→\nعودة إلى قائمة الدروس النشيطة",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "اشرح لي هذه الوحدة",
+      "label": null,
+      "testid": "morchid-ctx-lecon-active",
+      "disabled": false
+    },
+    {
+      "text": "قيّم مستواي في هذا الدرس",
+      "label": null,
+      "testid": "morchid-ctx-lecon-niveau",
+      "disabled": false
+    },
+    {
+      "text": "ابدأ من سؤال التركيب\nأنتقل من المثال الحي إلى الوثائق التي تشرح التعبير المورثي.",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "الرئيسيةAccueil",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "الدروسApprendre",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "التمارين والتدريبS'entraîner",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "مفتاح المنهجيةMéthode",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "المراجعةRéviser",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "أناMoi",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "",
+      "label": "القبطان — مُرشد كنز العلوم",
+      "testid": "fab-morchid",
+      "disabled": false
+    }
+  ],
+  "inputs": [],
+  "testids": [
+    "conseil-rubrique-ouvrir",
+    "taille-texte-btn",
+    "morchid-ctx-lecon-active",
+    "morchid-ctx-lecon-niveau",
+    "fab-morchid"
+  ],
+  "storage": {
+    "theme": "light",
+    "kunz_lesson_session_v1:d1-u1-l1-expression-genique": "{\"lessonId\":\"d1-u1-l1-expression-genique\",\"state\":\"BLOCKS_IN_PROGRESS\",\"currentBlockIndex\":1,\"validatedBlocks\":[true,false,false,false,false,false],\"outcome\":null,\"feedbackViewed\":false,\"suspendedAt\":1793316853677}",
+    "kunz_declic_last_id_v1": "dem_03",
+    "boussole_conseils_rubriques_vus": "[\"lesson\"]",
+    "kunz_declic_shown_v1": "2026-10-30"
+  },
+  "width": 1280,
+  "scrollWidth": 1280
+}

@@ -1,0 +1,164 @@
+{
+  "title": "كنز العلوم - SVT BAC DZ",
+  "text": "تجاوز إلى المحتوى الرئيسي\nالدروس؟\nأ\n0\n|\n0 XP\nعودة\nبحث في كل الدروس\n2 نتيجة لـ « البروتين »\nدرس\nوحدة 2\n🟢 الهيموغلوبين الطبيعي (HbA) (1/2)\n\n3 محاكي الطفرات الوراثية وتأثيرها على بروتين الهيموغلوبين (HbA مقابل HbS) تحدد المورثة ( ADN ) تسلسل الأحماض الأمينية في البروتين. اضغط لإحداث طفرة ا…\n\nفتح الدرس\nدرس\nوحدة 2\nالفصل 8 : العلاقة بين بنية ووظيفة البروتين (9/10)\n\nتغير في التتابع ⟶ تغير في البنية ⟶ تغير في الوظيفة. وثيقة تربط بين تغير تتابع الهيموغلوبين وتغير شكل كريات الدم الحمراء. حالة مدرسية نموذجية: تغير حم…\n\nفتح الدرس\nالرئيسية\nAccueil\nالدروس\nApprendre\nالتمارين والتدريب\nS'entraîner\nمفتاح المنهجية\nMéthode\nالمراجعة\nRéviser\nأنا\nMoi",
+  "buttons": [
+    {
+      "text": "؟",
+      "label": "نصيحة القبطان في هذه الصفحة",
+      "testid": "conseil-rubrique-ouvrir",
+      "disabled": false
+    },
+    {
+      "text": "",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "أ",
+      "label": "حجم النص",
+      "testid": "taille-texte-btn",
+      "disabled": false
+    },
+    {
+      "text": "الرئيسيةAccueil",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "الدروسApprendre",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "التمارين والتدريبS'entraîner",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "مفتاح المنهجيةMéthode",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "المراجعةRéviser",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "أناMoi",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "عودة",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "",
+      "label": "مسح البحث",
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "",
+      "label": "إضافة إلى المفضلة",
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "فتح الدرس",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "",
+      "label": "إضافة إلى المفضلة",
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "فتح الدرس",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "الرئيسية\nAccueil",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "الدروس\nApprendre",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "التمارين والتدريب\nS'entraîner",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "مفتاح المنهجية\nMéthode",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "المراجعة\nRéviser",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "أنا\nMoi",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "",
+      "label": "القبطان — مُرشد كنز العلوم",
+      "testid": "fab-morchid",
+      "disabled": false
+    },
+    {
+      "text": "",
+      "label": "تكبير الشكل",
+      "testid": null,
+      "disabled": false
+    }
+  ],
+  "inputs": [
+    {
+      "tag": "INPUT",
+      "placeholder": "اكتب كلمة أو موضوع… (مثال: الفسفرة التأكسدية)",
+      "label": "البحث في الدروس"
+    }
+  ],
+  "testids": [
+    "conseil-rubrique-ouvrir",
+    "taille-texte-btn",
+    "fab-morchid"
+  ],
+  "storage": {
+    "theme": "light",
+    "kunz_declic_last_id_v1": "dem_02",
+    "boussole_conseils_rubriques_vus": "[\"lesson\"]",
+    "kunz_declic_shown_v1": "2026-10-30"
+  },
+  "width": 390,
+  "scrollWidth": 390
+}

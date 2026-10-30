@@ -27,9 +27,14 @@
 ## Programme
 
 11 unités officielles (`src/data/curriculumOfficial.ts`), regroupées en domaines
-(`PASSIVE_DOMAINS` dans `src/data/lessonModes.ts`). Leçons : 47 HTML « passives »
-(`public/lessons/*.html`, **protégées**) + 20 actives en TS (`src/data/activeLessons.ts`,
-**protégé**). Index tuteur : `src/data/lessonIndex.ts` (généré).
+(`PASSIVE_DOMAINS` dans `src/data/lessonModes.ts`). Comptage vérifié le 30/10/2026 :
+le parcours comporte 47 entrées HTML + 27 entrées actives, puis 11 bilans (85 tâches).
+`ACTIVE_LESSONS` contient 29 définitions : deux variantes à clé HTML ne figurent
+pas dans le menu actif ; ne pas additionner ces catégories sans tenir compte du
+recouvrement. Le précédent chiffre « 20 actives » était périmé.
+Les HTML et `src/data/activeLessons.ts` sont **protégés**.
+Preuves et limites : `docs/audit-mvp/F01-catalogue.md`.
+Index tuteur : `src/data/lessonIndex.ts` (généré).
 
 ## Glossaire des modules
 

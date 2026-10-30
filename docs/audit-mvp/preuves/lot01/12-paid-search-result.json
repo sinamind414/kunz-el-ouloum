@@ -1,0 +1,150 @@
+{
+  "title": "كنز العلوم - SVT BAC DZ",
+  "text": "تجاوز إلى المحتوى الرئيسي\nطالب متميز\nSVT BAC DZ\nالدروس؟\nأ\n0\n|\n0 XP\nالقائمة الرئيسية\nالرئيسية\nACCUEIL\nالدروس\nAPPRENDRE\nالتمارين والتدريب\nS'ENTRAÎNER\nمفتاح المنهجية\nMÉTHODE\nالمراجعة\nRÉVISER\nأنا\nMOI\n→\nعودة إلى قائمة الدروس النشيطة\nالفصل 31 : تذكير بالمكتسبات — الفصل 32 : مقر عملية التركيب الضوئي\n0/1\nاشرح لي هذه الوحدة\nقيّم مستواي في هذا الدرس\nمهمة الدرس\nتحديد مقر التفاعلات الضوئية ثم تحليلها منهجياً.\nابدأ الدرس النشيط\n\nخلاصة الدرس\n\nحدّد مقر عملية التركيب الضوئي على مستوى الورقة والصانعة الخضراء.\n\nيقع مقر التركيب الضوئي في الصانعات الخضراء (البلاستيدات الخضراء) لنسيج الورقة.\nتوفر الثغور الورقية دخول CO2، وتوصل الأوعية الماء والأملاح إلى الورقة.\nتقسم الصانعة الخضراء إلى أغشية وتيلاكويدات وحشوة (مصفوفة إنزيمية).\nتحتوي التيلاكويدات أصباغاً ضوئية التمتص (الكلوروفيل) منظمة في نظامين ضوئيين.\nتميز بنية الصانعة مرحلة كيموضوئية (أغشية) ومرحلة كيميوحيوية (الحشوة).\n\n🔑 المصطلح المفتاح للبكالوريا : الصانعة الخضراء / التيلاكويد والحشوة",
+  "buttons": [
+    {
+      "text": "؟",
+      "label": "نصيحة القبطان في هذه الصفحة",
+      "testid": "conseil-rubrique-ouvrir",
+      "disabled": false
+    },
+    {
+      "text": "",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "أ",
+      "label": "حجم النص",
+      "testid": "taille-texte-btn",
+      "disabled": false
+    },
+    {
+      "text": "الرئيسية\nACCUEIL",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "الدروس\nAPPRENDRE",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "التمارين والتدريب\nS'ENTRAÎNER",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "مفتاح المنهجية\nMÉTHODE",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "المراجعة\nRÉVISER",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "أنا\nMOI",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "→\nعودة إلى قائمة الدروس النشيطة",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "اشرح لي هذه الوحدة",
+      "label": null,
+      "testid": "morchid-ctx-lecon-active",
+      "disabled": false
+    },
+    {
+      "text": "قيّم مستواي في هذا الدرس",
+      "label": null,
+      "testid": "morchid-ctx-lecon-niveau",
+      "disabled": false
+    },
+    {
+      "text": "ابدأ الدرس النشيط",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "الرئيسيةAccueil",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "الدروسApprendre",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "التمارين والتدريبS'entraîner",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "مفتاح المنهجيةMéthode",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "المراجعةRéviser",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "أناMoi",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "",
+      "label": "القبطان — مُرشد كنز العلوم",
+      "testid": "fab-morchid",
+      "disabled": false
+    },
+    {
+      "text": "",
+      "label": "تكبير الشكل",
+      "testid": null,
+      "disabled": false
+    }
+  ],
+  "inputs": [],
+  "testids": [
+    "conseil-rubrique-ouvrir",
+    "taille-texte-btn",
+    "morchid-ctx-lecon-active",
+    "morchid-ctx-lecon-niveau",
+    "fab-morchid"
+  ],
+  "storage": {
+    "boussole_favorites": "[{\"lessonKey\":\"phase11_chapitres_21_22\",\"lessonKind\":\"active\",\"title\":\"الفصل 31 : تذكير بالمكتسبات — الفصل 32 : مقر عملية التركيب الضوئي\",\"unitId\":6,\"addedAt\":1793316767290},{\"lessonKey\":\"phase1_chapitres_1_2\",\"lessonKind\":\"html\",\"title\":\"الدرس 1 : تذكير بالمكتسبات ومقر تركيب البروتين\",\"unitId\":1,\"addedAt\":1793316763424}]",
+    "theme": "light",
+    "kunz_declic_last_id_v1": "dem_04",
+    "boussole_recent_searches": "[\"التركيب الضوئي\",\"البروتين\",\"تركيب البروتين\"]",
+    "boussole_conseils_rubriques_vus": "[\"lesson\"]",
+    "kunz_declic_shown_v1": "2026-10-30"
+  },
+  "width": 1280,
+  "scrollWidth": 1280
+}

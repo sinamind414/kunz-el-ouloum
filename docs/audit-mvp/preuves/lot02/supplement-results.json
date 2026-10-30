@@ -1,0 +1,47 @@
+{
+  "corpus": {
+    "hosila": {
+      "unites": 11,
+      "points": 72,
+      "blocs": 470
+    },
+    "capsules": 32,
+    "units": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11
+    ]
+  },
+  "hosilaRating": {
+    "srsBefore": null,
+    "srsAfter": null,
+    "pointCounts": {
+      "lus": [],
+      "evals": {
+        "d1u1#2": {
+          "again": 0,
+          "hard": 0,
+          "good": 1,
+          "easy": 0
+        }
+      },
+      "sectionsLues": []
+    }
+  },
+  "timerExpired": {
+    "mode": "real component isolated in Chromium, simulated clock",
+    "zeroVisible": true,
+    "questionStillVisible": true,
+    "reportVisible": false,
+    "enabledAnswerButtons": 4,
+    "completionCalls": 0
+  }
+}

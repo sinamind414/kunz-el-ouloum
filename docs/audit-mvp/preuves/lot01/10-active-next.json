@@ -1,0 +1,155 @@
+{
+  "title": "كنز العلوم - SVT BAC DZ",
+  "text": "تجاوز إلى المحتوى الرئيسي\nطالب متميز\nSVT BAC DZ\nالدروس؟\nأ\n0\n|\n0 XP\nالقائمة الرئيسية\nالرئيسية\nACCUEIL\nالدروس\nAPPRENDRE\nالتمارين والتدريب\nS'ENTRAÎNER\nمفتاح المنهجية\nMÉTHODE\nالمراجعة\nRÉVISER\nأنا\nMOI\n→\nعودة إلى قائمة الدروس النشيطة\nالدرس الموالي ← الفصل 4 : الترجمة\nالفصل 3 : استنساخ المعلومات الوراثية الموجودة على مستوى ADN\n6/4\nاشرح لي هذه الوحدة\nقيّم مستواي في هذا الدرس\n\n🏆\n\nأكملت الاستنساخ. الخطوة الطبيعية الآن هي فهم الترجمة.\n\nالدرس الموالي ← الفصل 4 : الترجمة\n\nخلاصة الدرس\n\nفسّر مراحل استنساخ الرسالة الوراثية على مستوى الـ ADN في النواة.\n\nيمثل الاستنساخ المرحلة الأولى للتعبير المورثي ويجري في النواة.\nيفكّ إنزيم ARN بوليميراز اللولب المزدوج ويكشف رامزات السلسلة المستنسخة.\nيرتكز الـ ARNm على السلسلة وفق التكامل القاعدي وباتجاه واحد 5'→3'.\nيتوقف الاستنساخ عند إشارة النهاية ويعود الـ ADN إلى لفه اللولبي الأصلي.\nيوجه الـ ARNm الرسول نحو الهيولى ليقرأه الريبوزوم في مرحلة الترجمة.\n\n🔑 المصطلح المفتاح للبكالوريا : ARN بوليميراز / السلسلة المستنسخة",
+  "buttons": [
+    {
+      "text": "؟",
+      "label": "نصيحة القبطان في هذه الصفحة",
+      "testid": "conseil-rubrique-ouvrir",
+      "disabled": false
+    },
+    {
+      "text": "",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "أ",
+      "label": "حجم النص",
+      "testid": "taille-texte-btn",
+      "disabled": false
+    },
+    {
+      "text": "الرئيسية\nACCUEIL",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "الدروس\nAPPRENDRE",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "التمارين والتدريب\nS'ENTRAÎNER",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "مفتاح المنهجية\nMÉTHODE",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "المراجعة\nRÉVISER",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "أنا\nMOI",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "→\nعودة إلى قائمة الدروس النشيطة",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "الدرس الموالي ← الفصل 4 : الترجمة",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "اشرح لي هذه الوحدة",
+      "label": null,
+      "testid": "morchid-ctx-lecon-active",
+      "disabled": false
+    },
+    {
+      "text": "قيّم مستواي في هذا الدرس",
+      "label": null,
+      "testid": "morchid-ctx-lecon-niveau",
+      "disabled": false
+    },
+    {
+      "text": "الدرس الموالي ← الفصل 4 : الترجمة",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "الرئيسيةAccueil",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "الدروسApprendre",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "التمارين والتدريبS'entraîner",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "مفتاح المنهجيةMéthode",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "المراجعةRéviser",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "أناMoi",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "",
+      "label": "القبطان — مُرشد كنز العلوم",
+      "testid": "fab-morchid",
+      "disabled": false
+    },
+    {
+      "text": "",
+      "label": "تكبير الشكل",
+      "testid": null,
+      "disabled": false
+    }
+  ],
+  "inputs": [],
+  "testids": [
+    "conseil-rubrique-ouvrir",
+    "taille-texte-btn",
+    "morchid-ctx-lecon-active",
+    "morchid-ctx-lecon-niveau",
+    "fab-morchid"
+  ],
+  "storage": {
+    "theme": "light",
+    "kunz_declic_last_id_v1": "dem_04",
+    "kunz_lesson_session_v1:d1-u1-l2-transcription": "{\"lessonId\":\"d1-u1-l2-transcription\",\"state\":\"COMPLETION_VISIBLE\",\"currentBlockIndex\":5,\"validatedBlocks\":[true,true,true,true,true,true],\"outcome\":\"passed\",\"feedbackViewed\":false,\"suspendedAt\":1793316760792}",
+    "boussole_conseils_rubriques_vus": "[\"lesson\"]",
+    "kunz_declic_shown_v1": "2026-10-30"
+  },
+  "width": 1280,
+  "scrollWidth": 1280
+}

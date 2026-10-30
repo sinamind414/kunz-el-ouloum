@@ -1,0 +1,143 @@
+{
+  "title": "كنز العلوم - SVT BAC DZ",
+  "text": "تجاوز إلى المحتوى الرئيسي\nالدروس؟\nأ\n0\n|\n0 XP\n→\nعودة إلى قائمة الدروس النشيطة\nالوحدة 1 : التعبير المورثي ونقل المعلومة\n0/6\nاشرح لي هذه الوحدة\nقيّم مستواي في هذا الدرس\n1\n2\n3\n4\n5\n6\n\nالدخول إلى المجال من وضعية مشكلة حقيقية.\n\nكيف يمكن لتغير في بنية بروتين أن يؤدي إلى مرض خطير؟\n\nننطلق من حالة البريون ومرض جنون البقر لنفهم لماذا ليست البروتينات مجرد تعريفات تُحفظ، بل جزيئات يؤدي تغير بنيتها إلى آثار خطيرة.\n\nابدأ من وضعية البريون\nأفهم أولاً لماذا يهمّنا البروتين قبل الدخول إلى آلية تركيبه.\n\nخلاصة الدرس\n\nبيّن كيف يُترجم المحتوى الوراثي المسجل في ADN إلى بروتين ذي وظيفة محددة.\n\nيخزن الـ ADN المعلومة الوراثية في تسلسل النيوكليوتيدات على شكل رامزات ثلاثية.\nيستنسخ جزء من الـ ADN إلى ARNm بواسطة إنزيم ARN بوليميراز في النواة.\nتترجم الرامزات إلى أحماض أمينية في الهيولى على مستوى الشبكة الهيولية (الريبوزومات).\nينقل الـ ARNt الحمض الأميني الموافق لكل رامزة بحسب التكامل مع الرامزة المضادة.\nيحدد تسلسل الأحماض الأمينية بنية البروتين الفراغية، ومنها تخصص وظيفته.\n\n🔑 المصطلح المفتاح للبكالوريا : الشفرة الوراثية / التعبير المورثي\n\nالرئيسية\nAccueil\nالدروس\nApprendre\nالتمارين والتدريب\nS'entraîner\nمفتاح المنهجية\nMéthode\nالمراجعة\nRéviser\nأنا\nMoi",
+  "buttons": [
+    {
+      "text": "؟",
+      "label": "نصيحة القبطان في هذه الصفحة",
+      "testid": "conseil-rubrique-ouvrir",
+      "disabled": false
+    },
+    {
+      "text": "",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "أ",
+      "label": "حجم النص",
+      "testid": "taille-texte-btn",
+      "disabled": false
+    },
+    {
+      "text": "الرئيسيةAccueil",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "الدروسApprendre",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "التمارين والتدريبS'entraîner",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "مفتاح المنهجيةMéthode",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "المراجعةRéviser",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "أناMoi",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "→\nعودة إلى قائمة الدروس النشيطة",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "اشرح لي هذه الوحدة",
+      "label": null,
+      "testid": "morchid-ctx-lecon-active",
+      "disabled": false
+    },
+    {
+      "text": "قيّم مستواي في هذا الدرس",
+      "label": null,
+      "testid": "morchid-ctx-lecon-niveau",
+      "disabled": false
+    },
+    {
+      "text": "ابدأ من وضعية البريون\nأفهم أولاً لماذا يهمّنا البروتين قبل الدخول إلى آلية تركيبه.",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "الرئيسية\nAccueil",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "الدروس\nApprendre",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "التمارين والتدريب\nS'entraîner",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "مفتاح المنهجية\nMéthode",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "المراجعة\nRéviser",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "أنا\nMoi",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "",
+      "label": "القبطان — مُرشد كنز العلوم",
+      "testid": "fab-morchid",
+      "disabled": false
+    }
+  ],
+  "inputs": [],
+  "testids": [
+    "conseil-rubrique-ouvrir",
+    "taille-texte-btn",
+    "morchid-ctx-lecon-active",
+    "morchid-ctx-lecon-niveau",
+    "fab-morchid"
+  ],
+  "storage": {
+    "theme": "light",
+    "kunz_lesson_session_v1:d1-u1-l1-expression-genique": "{\"lessonId\":\"d1-u1-l1-expression-genique\",\"state\":\"BLOCKS_IN_PROGRESS\",\"currentBlockIndex\":0,\"validatedBlocks\":[false,false,false,false,false,false],\"outcome\":null,\"feedbackViewed\":false,\"suspendedAt\":1793316786883}",
+    "kunz_declic_last_id_v1": "dem_02",
+    "boussole_conseils_rubriques_vus": "[\"lesson\"]",
+    "kunz_declic_shown_v1": "2026-10-30"
+  },
+  "width": 390,
+  "scrollWidth": 390
+}

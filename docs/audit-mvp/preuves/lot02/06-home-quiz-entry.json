@@ -1,0 +1,189 @@
+{
+  "text": "تجاوز إلى المحتوى الرئيسي\nالقائمة الرئيسية\nالرئيسية\nACCUEIL\nالدروس\nAPPRENDRE\nالتمارين والتدريب\nS'ENTRAÎNER\nمفتاح المنهجية\nMÉTHODE\nالمراجعة\nRÉVISER\nأنا\nMOI\n\nلوحة البداية\n\nماذا أدرس الآن؟\n0\n|\n0 XP\nأنشئ حسابك بدون بريد إلكتروني\n\nلا بريد ولا كلمة مرور تحفظها: تكتب اسمك، وتختار رمزًا سريًا من 6 أرقام، فيمنحك التطبيق رمز دخول قصيرًا. يحفظ أستاذك نتائجك ويتابع تقدمك.\n\nإنشاء حساب في دقيقةأو تابع كزائر — كل الدروس متاحة\n\nالأولوية\n\nخطوتك التالية\nمهمة واحدة، ثم اختر الباقي\n\nمهمة اليوم\n\n1. تركيب البروتين\n\nالنشاط 1 : تذكير بالمكتسبات ومقر تركيب البروتين\nابدأ الآن\n\n0 / 1 مهمة اليوم\n\nمساري\nمهمّة اليوم أولًا — الفصل يفتح فصلًا، والتمارين مع مجالها\nماذا تريد أن تفعل؟\n\nثلاثة اختيارات واضحة حسب هدفك الآن\n\nأتعلّم\nدرس وشرح\nأتدرّب\nتمرين وBAC\nأراجع\nبطاقات وأخطاء\nالمزيد من الأدوات\nالخطة، التذكير، المنهجية، الخرائط والتقدم",
+  "buttons": [
+    {
+      "text": "الرئيسية\nACCUEIL",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "الدروس\nAPPRENDRE",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "التمارين والتدريب\nS'ENTRAÎNER",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "مفتاح المنهجية\nMÉTHODE",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "المراجعة\nRÉVISER",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "أنا\nMOI",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "0\n|\n0 XP",
+      "label": "عرض تقدمي اليوم",
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "إنشاء حساب في دقيقة",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "ابدأ الآن",
+      "label": null,
+      "testid": "home-nba-start",
+      "disabled": false
+    },
+    {
+      "text": "مساري\nمهمّة اليوم أولًا — الفصل يفتح فصلًا، والتمارين مع مجالها",
+      "label": null,
+      "testid": "btn-masari",
+      "disabled": false
+    },
+    {
+      "text": "أتعلّم\nدرس وشرح",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "أتدرّب\nتمرين وBAC",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "أراجع\nبطاقات وأخطاء",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "المزيد من الأدوات\nالخطة، التذكير، المنهجية، الخرائط والتقدم",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "الرئيسيةAccueil",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "الدروسApprendre",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "التمارين والتدريبS'entraîner",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "مفتاح المنهجيةMéthode",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "المراجعةRéviser",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "أناMoi",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "",
+      "label": "القبطان — مُرشد كنز العلوم",
+      "testid": "fab-morchid",
+      "disabled": false
+    },
+    {
+      "text": "",
+      "label": "تكبير الشكل",
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "−",
+      "label": "تصغير",
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "+",
+      "label": "تكبير",
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "ملاءمة",
+      "label": "إعادة الملاءمة إلى الشاشة",
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "100%",
+      "label": "الحجم الأصلي للشكل",
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "نافذة",
+      "label": "فتح الشكل في نافذة مستقلة",
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "إغلاق",
+      "label": "إغلاق (Esc)",
+      "testid": null,
+      "disabled": false
+    }
+  ],
+  "testids": [
+    "carte-compte-sans-email",
+    "home-nba",
+    "home-nba-start",
+    "btn-masari",
+    "fab-morchid"
+  ],
+  "inputs": [],
+  "width": 1280,
+  "scrollWidth": 1280,
+  "storage": {
+    "theme": "light",
+    "kunz_declic_last_id_v1": "dem_01",
+    "boussole_conseils_rubriques_vus": "[\"review\",\"reviser\",\"animations\",\"training\",\"lesson\"]",
+    "kunz_declic_shown_v1": "2026-10-30"
+  }
+}

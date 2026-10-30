@@ -1,0 +1,205 @@
+{
+  "text": "تجاوز إلى المحتوى الرئيسي\nطالب متميز\nSVT BAC DZ\nالدروس؟\nأ\n0\n|\n0 XP\nالقائمة الرئيسية\nالرئيسية\nACCUEIL\nالدروس\nAPPRENDRE\nالتمارين والتدريب\nS'ENTRAÎNER\nمفتاح المنهجية\nMÉTHODE\nالمراجعة\nRÉVISER\nأنا\nMOI\n\nالقبطان — مُرشد كنز العلوم\n\nاقرأ بسؤال في رأسك: «ماذا يريد مني المنهاج في هذه الوثيقة؟». القراءة بلا سؤال قراءة بلا أثر.\n\nابدأ بـ: اكتب سؤالك على ورقة قبل أن تفتح الدرس.\n\nفهمت\n→\nعودة\nالحصيلة المعرفية — كل ما يجب حفظه\nوضع الحفظ\nأ—كبير\nطباعة\nاختبار الفصول\nالحصيلة المعرفية (11 وحدات) + الدليل العام للمنهجية (11 أقسام) — اقرأ، فعّل « وضع الحفظ » لتختبر نفسك، ثم اختبر في « اختبار الفصول ».\n📚 72 نقطة · 11 وحدات · 824 سجلاً قابلاً للبحث\n✅ 0/11 وحدات محفوظة\nالمجال 1 — التخصص الوظيفي للبروتينات\nوحدة 1\nتركيب البروتين\n📖 الحصيلة الرسمية\n12 نقطة\n34 بطاقة\nوحدة 2\nالعلاقة بين بنية ووظيفة البروتين\n📖 الحصيلة الرسمية\n3 نقطة\n25 بطاقة\nوحدة 3\nالنشاط الإنزيمي للبروتينات\n📖 الحصيلة الرسمية\n4 نقطة\n15 بطاقة\nوحدة 4\nدور البروتينات في الدفاع عن الذات\n📖 الحصيلة الرسمية\n12 نقطة\n79 بطاقة\nوحدة 5\nالاتصال العصبي\n📖 الحصيلة الرسمية\n6 نقطة\n72 بطاقة",
+  "buttons": [
+    {
+      "text": "؟",
+      "label": "نصيحة القبطان في هذه الصفحة",
+      "testid": "conseil-rubrique-ouvrir",
+      "disabled": false
+    },
+    {
+      "text": "",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "أ",
+      "label": "حجم النص",
+      "testid": "taille-texte-btn",
+      "disabled": false
+    },
+    {
+      "text": "الرئيسية\nACCUEIL",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "الدروس\nAPPRENDRE",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "التمارين والتدريب\nS'ENTRAÎNER",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "مفتاح المنهجية\nMÉTHODE",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "المراجعة\nRÉVISER",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "أنا\nMOI",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "فهمت",
+      "label": null,
+      "testid": "bandeau-conseil-fermer",
+      "disabled": false
+    },
+    {
+      "text": "→\nعودة",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "وضع الحفظ",
+      "label": null,
+      "testid": "toggle-hafiz",
+      "disabled": false
+    },
+    {
+      "text": "أ—كبير",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "طباعة",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "اختبار الفصول",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "وحدة 1\nتركيب البروتين\n📖 الحصيلة الرسمية\n12 نقطة\n34 بطاقة",
+      "label": null,
+      "testid": "okacha-unite-d1u1",
+      "disabled": false
+    },
+    {
+      "text": "وحدة 2\nالعلاقة بين بنية ووظيفة البروتين\n📖 الحصيلة الرسمية\n3 نقطة\n25 بطاقة",
+      "label": null,
+      "testid": "okacha-unite-d1u2",
+      "disabled": false
+    },
+    {
+      "text": "وحدة 3\nالنشاط الإنزيمي للبروتينات\n📖 الحصيلة الرسمية\n4 نقطة\n15 بطاقة",
+      "label": null,
+      "testid": "okacha-unite-d1u3",
+      "disabled": false
+    },
+    {
+      "text": "وحدة 4\nدور البروتينات في الدفاع عن الذات\n📖 الحصيلة الرسمية\n12 نقطة\n79 بطاقة",
+      "label": null,
+      "testid": "okacha-unite-d1u4",
+      "disabled": false
+    },
+    {
+      "text": "وحدة 5\nالاتصال العصبي\n📖 الحصيلة الرسمية\n6 نقطة\n72 بطاقة",
+      "label": null,
+      "testid": "okacha-unite-d1u5",
+      "disabled": false
+    },
+    {
+      "text": "الرئيسيةAccueil",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "الدروسApprendre",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "التمارين والتدريبS'entraîner",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "مفتاح المنهجيةMéthode",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "المراجعةRéviser",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "أناMoi",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "",
+      "label": "القبطان — مُرشد كنز العلوم",
+      "testid": "fab-morchid",
+      "disabled": false
+    }
+  ],
+  "testids": [
+    "conseil-rubrique-ouvrir",
+    "taille-texte-btn",
+    "bandeau-conseil-rubrique",
+    "bandeau-conseil-visage",
+    "bandeau-conseil-fermer",
+    "toggle-hafiz",
+    "okacha-search",
+    "okacha-contexte",
+    "okacha-unites-icones",
+    "okacha-unite-d1u1",
+    "unite-numero-d1u1",
+    "okacha-unite-d1u2",
+    "unite-numero-d1u2",
+    "okacha-unite-d1u3",
+    "unite-numero-d1u3",
+    "okacha-unite-d1u4",
+    "unite-numero-d1u4",
+    "okacha-unite-d1u5",
+    "unite-numero-d1u5",
+    "marque-document",
+    "fab-morchid"
+  ],
+  "inputs": [
+    {
+      "type": "text",
+      "label": null,
+      "placeholder": "ابحث في كل الملخصات والدليل العام… (مثال: الاستنساخ، المورثة، التفسير)"
+    }
+  ],
+  "width": 1280,
+  "scrollWidth": 1280,
+  "storage": {
+    "theme": "light",
+    "kunz_declic_last_id_v1": "dem_01",
+    "boussole_conseils_rubriques_vus": "[\"lesson\"]",
+    "kunz_declic_shown_v1": "2026-10-30"
+  }
+}

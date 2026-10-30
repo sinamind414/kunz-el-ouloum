@@ -11,6 +11,16 @@
 `CARTE_DU_DEPOT.md`, `ARCHITECTURE.md`, `DONNEES_GENEREES.md`, `TESTS_ET_CI.md`,
 `SOURCES.md`, `CONSTATS_OUVERTS.md`.
 
+## Audit fonctionnel et préparation du MVP
+
+[audit-mvp/README.md](audit-mvp/README.md) — cadrage du 30/10/2026, constats de
+la découverte, plan global d'audit, inventaire de 50 unités de suivi et fiche
+d'audit réutilisable. [Lot 01](audit-mvp/LOT01.md) : F01–F05 examinées dans Chromium
+sur bureau et viewport mobile, avec tests ciblés et limites explicites.
+Le périmètre MVP définitif reste à décider à partir des audits.
+[Journal central](audit-mvp/JOURNAL.md) : dix fonctions examinées, quarante restantes ;
+[lot 02](audit-mvp/LOT02.md) : F06–F10 et leurs preuves.
+
 ## Références vivantes (décisions et contrats en vigueur)
 
 | Document | Sujet |

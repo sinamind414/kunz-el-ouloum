@@ -1,0 +1,150 @@
+{
+  "title": "كنز العلوم - SVT BAC DZ",
+  "text": "تجاوز إلى المحتوى الرئيسي\nالدروس؟\nأ\n0\n|\n0 XP\n\nالقبطان — مُرشد كنز العلوم\n\nاقرأ بسؤال في رأسك: «ماذا يريد مني المنهاج في هذه الوثيقة؟». القراءة بلا سؤال قراءة بلا أثر.\n\nابدأ بـ: اكتب سؤالك على ورقة قبل أن تفتح الدرس.\n\nفهمت\nدروس السنة الثالثة ثانوي — علوم الطبيعة والحياة\nمساحة التعلّم\n\nافهم الدرس أولاً، ثم انتقل إلى الاختبارات عندما تصبح جاهزاً\n\n🔎 بحث في كل الدروس\nابحث عن موضوع أو كلمة في ٤٥٠ مقطعاً — وافتح الدرس مباشرةً (يعمل دون اتصال)\nاختر طريقة التعلّم\n\nشرح تفاعلي أو درس رسمي مقروء\n\nالدرس النشيط\nتعلّم تفاعلي « كلمة بكلمة » : مهمة، وثائق، محاكاة ومنهجية — مع تصحيح فوري لكل إنتاج\nالدرس الرسمي\nالدروس المقروءة الرسمية (47 درساً) — ثلاثة مجالات، كل مجال بوحداته وفصوله\nالخرائط الذهنية التفاعلية\nاربط مفاهيم الوحدة في خريطة واحدة — اعرضها، وسّعها، ثم اختبر نفسك منها\nالرئيسية\nAccueil\nالدروس\nApprendre\nالتمارين والتدريب\nS'entraîner\nمفتاح المنهجية\nMéthode\nالمراجعة\nRéviser\nأنا\nMoi",
+  "buttons": [
+    {
+      "text": "؟",
+      "label": "نصيحة القبطان في هذه الصفحة",
+      "testid": "conseil-rubrique-ouvrir",
+      "disabled": false
+    },
+    {
+      "text": "",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "أ",
+      "label": "حجم النص",
+      "testid": "taille-texte-btn",
+      "disabled": false
+    },
+    {
+      "text": "الرئيسيةAccueil",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "الدروسApprendre",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "التمارين والتدريبS'entraîner",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "مفتاح المنهجيةMéthode",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "المراجعةRéviser",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "أناMoi",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "فهمت",
+      "label": null,
+      "testid": "bandeau-conseil-fermer",
+      "disabled": false
+    },
+    {
+      "text": "🔎 بحث في كل الدروس\nابحث عن موضوع أو كلمة في ٤٥٠ مقطعاً — وافتح الدرس مباشرةً (يعمل دون اتصال)",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "الدرس النشيط\nتعلّم تفاعلي « كلمة بكلمة » : مهمة، وثائق، محاكاة ومنهجية — مع تصحيح فوري لكل إنتاج",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "الدرس الرسمي\nالدروس المقروءة الرسمية (47 درساً) — ثلاثة مجالات، كل مجال بوحداته وفصوله",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "الخرائط الذهنية التفاعلية\nاربط مفاهيم الوحدة في خريطة واحدة — اعرضها، وسّعها، ثم اختبر نفسك منها",
+      "label": null,
+      "testid": "lecons-mindmap",
+      "disabled": false
+    },
+    {
+      "text": "الرئيسية\nAccueil",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "الدروس\nApprendre",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "التمارين والتدريب\nS'entraîner",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "مفتاح المنهجية\nMéthode",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "المراجعة\nRéviser",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "أنا\nMoi",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "",
+      "label": "القبطان — مُرشد كنز العلوم",
+      "testid": "fab-morchid",
+      "disabled": false
+    }
+  ],
+  "inputs": [],
+  "testids": [
+    "conseil-rubrique-ouvrir",
+    "taille-texte-btn",
+    "bandeau-conseil-rubrique",
+    "bandeau-conseil-visage",
+    "bandeau-conseil-fermer",
+    "lecons-mindmap",
+    "fab-morchid"
+  ],
+  "storage": {
+    "theme": "light",
+    "kunz_declic_last_id_v1": "dem_02",
+    "boussole_conseils_rubriques_vus": "[\"lesson\"]",
+    "kunz_declic_shown_v1": "2026-10-30"
+  },
+  "width": 390,
+  "scrollWidth": 390
+}

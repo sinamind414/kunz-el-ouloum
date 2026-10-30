@@ -1,0 +1,548 @@
+{
+  "date": "2026-10-29T23:52:46.737302+00:00",
+  "base": "http://localhost:3000",
+  "mode": "development",
+  "checks": [
+    {
+      "name": "F06-parcours-started",
+      "state": {
+        "kunz_parcours_v1": {
+          "done": {},
+          "reviews": {},
+          "extraAllowance": 0,
+          "mig": 6,
+          "current": "parcours:u1:l0"
+        }
+      }
+    },
+    {
+      "name": "F06-home-resume",
+      "action": "استئناف التعلّم\n\n1. تركيب البروتين\n\nالنشاط 1 : تذكير بالمكتسبات ومقر تركيب البروتين\nاستئناف\n\n0 / 1 مهمة اليوم"
+    },
+    {
+      "name": "F06-home-resume-target",
+      "iframe": "lesson-phase1_chapitres_1_2"
+    },
+    {
+      "name": "F06-before-reload",
+      "draft": "AUDIT-DRAFT-2026-10-30",
+      "snapshot": {
+        "kunz_lesson_session_v1:d1-u1-l1-expression-genique": {
+          "lessonId": "d1-u1-l1-expression-genique",
+          "state": "BLOCKS_IN_PROGRESS",
+          "currentBlockIndex": 2,
+          "validatedBlocks": [
+            true,
+            true,
+            false,
+            false,
+            false,
+            false
+          ],
+          "outcome": null,
+          "feedbackViewed": false,
+          "suspendedAt": 1793317975368
+        }
+      }
+    },
+    {
+      "name": "F06-after-reload",
+      "draft": "",
+      "snapshot": {
+        "kunz_lesson_session_v1:d1-u1-l1-expression-genique": {
+          "lessonId": "d1-u1-l1-expression-genique",
+          "state": "BLOCKS_IN_PROGRESS",
+          "currentBlockIndex": 2,
+          "validatedBlocks": [
+            true,
+            true,
+            false,
+            false,
+            false,
+            false
+          ],
+          "outcome": null,
+          "feedbackViewed": false,
+          "suspendedAt": 1793317981046
+        }
+      }
+    },
+    {
+      "name": "F06-after-back",
+      "snapshot": {
+        "kunz_lesson_session_v1:d1-u1-l1-expression-genique": null
+      }
+    },
+    {
+      "name": "F06-reopen-after-back",
+      "startScreen": true
+    },
+    {
+      "name": "F07-free-units",
+      "count": 5
+    },
+    {
+      "name": "F07-hidden-points",
+      "count": 12
+    },
+    {
+      "name": "F07-rate",
+      "state": {
+        "kunz_okacha_progress_v1": {
+          "lus": [
+            "d1u1"
+          ],
+          "evals": {
+            "d1u1#2": {
+              "again": 0,
+              "hard": 0,
+              "good": 1,
+              "easy": 0
+            }
+          },
+          "sectionsLues": []
+        },
+        "svt_progress": {
+          "xp": 10,
+          "streak": 1,
+          "completedUnits": [],
+          "completedQuestionsCount": 0,
+          "studyMinutes": 0,
+          "dailyGoals": {
+            "type": "minutes",
+            "targetMinutes": 25,
+            "targetQuestions": 20,
+            "lastActiveDate": "2026-10-30",
+            "todayMinutes": 0,
+            "todayQuestions": 1,
+            "streakDays": 1,
+            "completedToday": false,
+            "history": [
+              {
+                "date": "2026-10-30",
+                "target": 25,
+                "achieved": 0,
+                "type": "minutes",
+                "completed": false
+              }
+            ],
+            "serieDernierJour": "2026-10-30",
+            "joursActifsTotal": 1
+          },
+          "flashcardStats": {
+            "again": 0,
+            "hard": 0,
+            "good": 1,
+            "easy": 0
+          },
+          "quizScoreHistory": []
+        }
+      }
+    },
+    {
+      "name": "F07-reopen-persistence",
+      "state": {
+        "kunz_okacha_progress_v1": {
+          "lus": [
+            "d1u1"
+          ],
+          "evals": {
+            "d1u1#2": {
+              "again": 0,
+              "hard": 0,
+              "good": 1,
+              "easy": 0
+            }
+          },
+          "sectionsLues": []
+        }
+      },
+      "button": "محفوظة"
+    },
+    {
+      "name": "F07-no-results",
+      "text": "🔎 0 نتيجة لـ « zzzzzzzzz »\n\nلا نتائج — جرّب كلمة أخرى"
+    },
+    {
+      "name": "F07-cross-domain-search",
+      "buttons": 10
+    },
+    {
+      "name": "F07-paid-gate",
+      "paywall": 1,
+      "returnButtons": 1
+    },
+    {
+      "name": "F07-paywall-return",
+      "unitsVisible": true
+    },
+    {
+      "name": "F07-capsule-initial",
+      "answerVisible": 0,
+      "question": "كيف أحدّد بالضبط أين يتدخّل دواء على تركيب البروتين؟"
+    },
+    {
+      "name": "F07-capsule-reveal",
+      "answerVisible": true
+    },
+    {
+      "name": "F07-capsule-next",
+      "answerVisible": 0,
+      "question": "كيف أنتقل من عدد النيكليوتيدات إلى عدد الأحماض الأمينية دون خطأ؟"
+    },
+    {
+      "name": "F07-capsule-warm-offline",
+      "answerHidden": true
+    },
+    {
+      "name": "F08-map",
+      "nodes": 15,
+      "links": 16,
+      "keyboardNodes": 0
+    },
+    {
+      "name": "F08-node-click",
+      "zoomOverlay": 1,
+      "quizButton": 1
+    },
+    {
+      "name": "F08-search-no-match",
+      "opacities": [
+        "1",
+        "0.25"
+      ]
+    },
+    {
+      "name": "F08-radial",
+      "nodes": 15
+    },
+    {
+      "name": "F08-official-unit4",
+      "quizButton": "اختبار فوري في مفاهيم دور البروتينات في الدفاع عن الذات"
+    },
+    {
+      "name": "F08-unit4-quiz-target",
+      "quizHeader": "علوم الطبيعة والحياة • دور البروتينات في الدفاع عن الذات\nالسؤال 1 من 77\n15:00\nرسم تخطيطي توضيحي\nصعوبة: أساسي\nما الإكمال المناسب لعبارة «الذات»؟\nأ\nلمفاوية تتمايز إلى بلازمية منتجة للأجسام المضادة\nب\nجزيئات يتعرف عليها الجهاز المناعي كمنتمية للجسم\nج\nتفاعل CPA وLT4 وLB أو LT8 لإنجاز استجابة فعالة\nد\nVIH يزيد عدد LT4 في الدم تدريجياً.\nالسابق\nالتالي"
+    },
+    {
+      "name": "F08-paid-gate",
+      "paywall": 1,
+      "localBack": 0
+    },
+    {
+      "name": "F09-gallery",
+      "figures": 3,
+      "animateElements": 20
+    },
+    {
+      "name": "F09-prediction-required",
+      "hint": true,
+      "verdict": 0
+    },
+    {
+      "name": "F09-wrong-prediction",
+      "ph": "7.0",
+      "verdict": "راجع القاعدة : pH الوسط (7.0) أكبر من pHi (6)، فالشحنة الإجمالية سالبة والهجرة نحو المصعد (القطب الموجب).\nالنتيجة : 0 / 1\nمحاولة أخرى",
+      "score": "النتيجة : 0 / 1"
+    },
+    {
+      "name": "F09-idempotent-launch",
+      "score": "النتيجة : 0 / 1"
+    },
+    {
+      "name": "F09-equality",
+      "verdict": "pH الوسط (6.0) يساوي pHi (6)، فالشحنة الإجمالية معدومة (الصيغة ثنائية القطب) ولا تحدث أي هجرة.",
+      "score": "النتيجة : 1 / 2"
+    },
+    {
+      "name": "F09-near-equality",
+      "ph": "3.0",
+      "verdict": "pH الوسط (3.0) يساوي pHi (3.2)، فالشحنة الإجمالية معدومة (الصيغة ثنائية القطب) ولا تحدث أي هجرة."
+    },
+    {
+      "name": "F09-warm-offline",
+      "verdict": "pH الوسط (4.0) أقل من pHi (6)، فالشحنة الإجمالية موجبة والهجرة نحو المهبط (القطب السالب)."
+    },
+    {
+      "name": "F10-technical-fixture",
+      "questions": 57,
+      "qcm": 46,
+      "fillBlank": 11
+    },
+    {
+      "name": "F10-before-answer",
+      "nextDisabled": true
+    },
+    {
+      "name": "F10-wrong-feedback",
+      "questionId": 505,
+      "lockedOptions": 4,
+      "feedbackVisible": 1
+    },
+    {
+      "name": "F10-completed",
+      "text": "علوم الطبيعة والحياة • العلاقة بين بنية ووظيفة البروتين\nانتهاء تمرين الوحدة\n\nأنجزت تمرين وحدة العلاقة بين بنية ووظيفة البروتين — نتيجتك في هذه الجلسة:\n\nمعدل الإجابة الصحيحة\n98%\nالنتيجة الإجمالية\n56 / 57\nمستوى ممتاز في هذه الجلسة. ثبّته بإعادة حل الوحدة في مراجعة قادمة.\n\nمن أين جاء خطؤك في هذا التمرين؟\n\nسؤال واحد فقط، ولن يتكرّر في هذه الجلسة. الجواب يُحفظ على هاتفك وحدك.\n\nلم أكن أعرف المفهوم\nخلطت بين مصطلحين، أو نسيت المفهوم أصلًا\nعرفت الفكرة ولم أستدلّ عليها\nأجبت بالنتيجة وحدها دون التجربة أو الوثيقة التي تثبتها\nلم أقرأ السؤال أو الوثيقة بتمعّن\nاستعجلت، أو تجاهلت قيمة أو وسما في الوثيقة\nسبب آخر\nلن نسجّل شيئًا — لا نخترع سببًا لا تعرفه\n\nأخطاء هذه الجلسة — ستعود في مقدمتك القادمة: 1\n\n• حسب ملخصات البنية الفراغية، بم تتميز «البنية الثالثية» (Structure tertiaire) للبروتين؟\nالعودة للرئيسية\nأعد أخطائي فقط (1)\nإعادة المحاولة والتدرب",
+      "before": {
+        "svt_progress": {
+          "xp": 0,
+          "streak": 0,
+          "completedUnits": [],
+          "completedQuestionsCount": 0,
+          "studyMinutes": 0,
+          "dailyGoals": {
+            "type": "minutes",
+            "targetMinutes": 25,
+            "targetQuestions": 20,
+            "lastActiveDate": "",
+            "todayMinutes": 0,
+            "todayQuestions": 0,
+            "streakDays": 0,
+            "completedToday": false
+          },
+          "flashcardStats": {
+            "again": 0,
+            "hard": 0,
+            "good": 0,
+            "easy": 0
+          },
+          "quizScoreHistory": []
+        },
+        "boussole_activity_queue": null
+      },
+      "after": {
+        "svt_progress": {
+          "xp": 1120,
+          "streak": 1,
+          "completedUnits": [
+            2
+          ],
+          "completedQuestionsCount": 57,
+          "studyMinutes": 86,
+          "dailyGoals": {
+            "type": "minutes",
+            "targetMinutes": 25,
+            "targetQuestions": 20,
+            "lastActiveDate": "2026-10-30",
+            "todayMinutes": 86,
+            "todayQuestions": 57,
+            "streakDays": 1,
+            "completedToday": true,
+            "history": [
+              {
+                "date": "2026-10-30",
+                "target": 25,
+                "achieved": 86,
+                "type": "minutes",
+                "completed": true
+              }
+            ],
+            "serieDernierJour": "2026-10-30",
+            "joursActifsTotal": 1
+          },
+          "flashcardStats": {
+            "again": 0,
+            "hard": 0,
+            "good": 0,
+            "easy": 0
+          },
+          "quizScoreHistory": [
+            {
+              "date": "30‏/10‏/2026",
+              "score": 56,
+              "total": 57,
+              "unitTitle": "العلاقة بين بنية ووظيفة البروتين"
+            }
+          ]
+        },
+        "boussole_activity_queue": [
+          {
+            "kind": "event",
+            "payload": {
+              "studentId": "local",
+              "type": "quiz",
+              "payload": {
+                "title": "اختبار",
+                "score": 56,
+                "total": 57,
+                "percent": 98,
+                "unitId": 2,
+                "domain": "العلاقة بين بنية ووظيفة البروتين"
+              },
+              "id": "act_1793318065213_0bmctyl",
+              "createdAt": "2026-10-29T23:54:25.213Z"
+            },
+            "owner": "invite"
+          }
+        ]
+      }
+    },
+    {
+      "name": "F10-error-cause",
+      "acknowledgement": 1,
+      "state": {
+        "boussole_profil_erreurs": {
+          "notion_confusion": {
+            "n": 1,
+            "dernier": "2026-10-29T23:54:26.576Z",
+            "themes": [
+              "العلاقة بين بنية ووظيفة البروتين"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "F10-retry-errors",
+      "questionText": "حسب ملخصات البنية الفراغية، بم تتميز «البنية الثالثية» (Structure tertiaire) للبروتين؟",
+      "sameQuestion": true
+    },
+    {
+      "name": "F10-retry-no-double-credit",
+      "before": {
+        "svt_progress": {
+          "xp": 1120,
+          "streak": 1,
+          "completedUnits": [
+            2
+          ],
+          "completedQuestionsCount": 57,
+          "studyMinutes": 86,
+          "dailyGoals": {
+            "type": "minutes",
+            "targetMinutes": 25,
+            "targetQuestions": 20,
+            "lastActiveDate": "2026-10-30",
+            "todayMinutes": 86,
+            "todayQuestions": 57,
+            "streakDays": 1,
+            "completedToday": true,
+            "history": [
+              {
+                "date": "2026-10-30",
+                "target": 25,
+                "achieved": 86,
+                "type": "minutes",
+                "completed": true
+              }
+            ],
+            "serieDernierJour": "2026-10-30",
+            "joursActifsTotal": 1
+          },
+          "flashcardStats": {
+            "again": 0,
+            "hard": 0,
+            "good": 0,
+            "easy": 0
+          },
+          "quizScoreHistory": [
+            {
+              "date": "30‏/10‏/2026",
+              "score": 56,
+              "total": 57,
+              "unitTitle": "العلاقة بين بنية ووظيفة البروتين"
+            }
+          ]
+        },
+        "boussole_activity_queue": [
+          {
+            "kind": "event",
+            "payload": {
+              "studentId": "local",
+              "type": "quiz",
+              "payload": {
+                "title": "اختبار",
+                "score": 56,
+                "total": 57,
+                "percent": 98,
+                "unitId": 2,
+                "domain": "العلاقة بين بنية ووظيفة البروتين"
+              },
+              "id": "act_1793318065213_0bmctyl",
+              "createdAt": "2026-10-29T23:54:25.213Z"
+            },
+            "owner": "invite"
+          }
+        ]
+      },
+      "after": {
+        "svt_progress": {
+          "xp": 1120,
+          "streak": 1,
+          "completedUnits": [
+            2
+          ],
+          "completedQuestionsCount": 57,
+          "studyMinutes": 86,
+          "dailyGoals": {
+            "type": "minutes",
+            "targetMinutes": 25,
+            "targetQuestions": 20,
+            "lastActiveDate": "2026-10-30",
+            "todayMinutes": 86,
+            "todayQuestions": 57,
+            "streakDays": 1,
+            "completedToday": true,
+            "history": [
+              {
+                "date": "2026-10-30",
+                "target": 25,
+                "achieved": 86,
+                "type": "minutes",
+                "completed": true
+              }
+            ],
+            "serieDernierJour": "2026-10-30",
+            "joursActifsTotal": 1
+          },
+          "flashcardStats": {
+            "again": 0,
+            "hard": 0,
+            "good": 0,
+            "easy": 0
+          },
+          "quizScoreHistory": [
+            {
+              "date": "30‏/10‏/2026",
+              "score": 56,
+              "total": 57,
+              "unitTitle": "العلاقة بين بنية ووظيفة البروتين"
+            }
+          ]
+        },
+        "boussole_activity_queue": [
+          {
+            "kind": "event",
+            "payload": {
+              "studentId": "local",
+              "type": "quiz",
+              "payload": {
+                "title": "اختبار",
+                "score": 56,
+                "total": 57,
+                "percent": 98,
+                "unitId": 2,
+                "domain": "العلاقة بين بنية ووظيفة البروتين"
+              },
+              "id": "act_1793318065213_0bmctyl",
+              "createdAt": "2026-10-29T23:54:25.213Z"
+            },
+            "owner": "invite"
+          }
+        ]
+      }
+    },
+    {
+      "name": "mobile-overflow-animation",
+      "width": 390,
+      "scrollWidth": 390
+    },
+    {
+      "name": "mobile-overflow-quiz",
+      "width": 390,
+      "scrollWidth": 390
+    }
+  ],
+  "pageErrors": [],
+  "scenarioErrors": [],
+  "browser": "156.0.8078.4"
+}
