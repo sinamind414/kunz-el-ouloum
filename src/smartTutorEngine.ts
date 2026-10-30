@@ -82,10 +82,11 @@ import {
   fuzzyTokenEquals,
   tokenOverlapRatio,
   includesAsWord,
+  egalSansArticle,
+  prefixeMatch,
 } from './utils/arabicNormalize';
 
 export { normalizeArabic, calculateKeywordScore, tokenizeArabic } from './utils/arabicNormalize';
-
 export type SourceType = 'internal_card' | 'legacy_card' | 'book' | 'opus' | 'methodology' | 'guide' | 'domain' | 'quiz' | 'lesson' | 'out_of_scope';
 
 export interface SourceRef {
@@ -1002,6 +1003,78 @@ export function searchAllBasesScores(norm: string, activeDomainId: number | null
 export function searchAllBases(norm: string, activeDomainId: number | null): SearchChunk[] {
   return searchAllBasesScores(norm, activeDomainId)
     .filter((x) => x.score >= 12)
+    .map((x) => x.ch);
+}
+
+/**
+ * Recherche de la PAGE RECHERCHE uniquement (B1, retour frère 30/10/2026,
+ * capture 08:40:47 : « faut écrire tout le mot clé pour avoir un résultat »).
+ *
+ * Le parcours TUTORAT continue de passer par `searchAllBases[Scores]` et son
+ * barème R6 inchangé (deux seuils 12/28, population 26 questions) : la page
+ * recherche est un usage DIFFÉRENT — une liste de résultats où le rappel a
+ * priorité. Mesure avant la tranche (sonde, u=null) :
+ *   « المناعة »  → 58 correspondances, 0 visibles (le seuil 12 écrase tout)
+ *   « مغماتية »   → uniquement le score de faute (+3, article manquant)
+ *   « فوس »      → 0
+ *
+ * Trois couches de rappel ajoutées AU-DESSUS du score existant :
+ *   a) égalité mot à mot SANS article (+6) — la requête de l'élève porte
+ *      rarement « ال », les mots-clés du corpus presque toujours ;
+ *   b) préfixe dans l'un des deux sens (+4, ≥ 3 lettres, article ignoré) ;
+ *   c) token du TITRE reconnu (+3 entendu, +2 préfixe, plafond +6).
+ *   d) les bonus a/b plafonnés à +12 par extrait (3 mots-clés), pour qu'un
+ *      préfixe générique (« تحا ») ne fabrique pas un faux pilote.
+ */
+export const SEUIL_RECHERCHE_PAGE = 4;
+
+export function recherchePageScores(norm: string, activeDomainId: number | null): ScoredChunk[] {
+  if (!norm || norm.length < 3) return [];
+  const base = new Map<string, number>();
+  for (const { ch, score } of searchAllBasesScores(norm, activeDomainId)) {
+    base.set(ch.id, score);
+  }
+  const inputTokens = tokenizeArabic(norm);
+  const resultats: ScoredChunk[] = [];
+  for (const ch of tousLesChunks()) {
+    let score = base.get(ch.id) ?? 0;
+    let bonusMotCle = 0;
+    for (const kw of ch.normKeywords) {
+      if (!kw || kw.includes(' ')) continue;
+      for (const it of inputTokens) {
+        if (it !== kw && egalSansArticle(it, kw)) {
+          // a) même mot, article présent/absent d'un seul côté
+          bonusMotCle += 6;
+          break;
+        }
+        if (prefixeMatch(it, kw)) {
+          // b) préfixe de mot-clé (≥ 3 lettres, article ignoré)
+          bonusMotCle += 4;
+          break;
+        }
+      }
+      if (bonusMotCle >= 12) break; // d) plafond de rappel par mots-clés
+    }
+    let bonusTitre = 0;
+    if (ch.normTitle) {
+      for (const mot of tokenizeArabic(ch.normTitle)) {
+        if (inputTokens.some((it) => it !== mot && egalSansArticle(it, mot))) {
+          bonusTitre += 3;
+        } else if (inputTokens.some((it) => prefixeMatch(it, mot))) {
+          bonusTitre += 2;
+        }
+        if (bonusTitre >= 6) break; // c) plafond titre
+      }
+    }
+    const total = score + Math.min(bonusMotCle, 12) + Math.min(bonusTitre, 6);
+    if (total > 0) resultats.push({ ch, score: total });
+  }
+  return resultats.length > 1 ? resultats.sort((a, b) => b.score - a.score) : resultats;
+}
+
+export function recherchePage(norm: string, activeDomainId: number | null): SearchChunk[] {
+  return recherchePageScores(norm, activeDomainId)
+    .filter((x) => x.score >= SEUIL_RECHERCHE_PAGE)
     .map((x) => x.ch);
 }
 

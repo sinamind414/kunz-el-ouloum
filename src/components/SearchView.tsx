@@ -6,7 +6,7 @@
 // Avant : la recherche n'existait que dans les cartes mentales.
 import { useMemo, useState } from 'react';
 import { ArrowRight, BookOpen, Search, Sparkles, Star, X } from 'lucide-react';
-import { normalizeArabic, searchAllBases } from '../smartTutorEngine';
+import { normalizeArabic, recherchePage } from '../smartTutorEngine';
 import { LESSON_INDEX_STATS } from '../data/lessonIndex';
 import { useBasesTuteurPrechargees } from '../data/useBasesTuteur';
 import {
@@ -50,7 +50,7 @@ function snippet(text: string, max = 150): string {
   return clean.length > max ? `${clean.slice(0, max - 1)}…` : clean;
 }
 
-function groupResults(hits: ReturnType<typeof searchAllBases>): GroupedResult[] {
+function groupResults(hits: ReturnType<typeof recherchePage>): GroupedResult[] {
   const map = new Map<string, GroupedResult>();
   for (const ch of hits) {
     // Une leçon découpée en plusieurs chunks → on garde le meilleur morceau,
@@ -102,7 +102,7 @@ export default function SearchView({ onBack, onOpenLesson }: SearchViewProps) {
   const results = useMemo<GroupedResult[]>(() => {
     const q = query.trim();
     if (q.length < 2) return [];
-    return groupResults(searchAllBases(normalizeArabic(q), null)).slice(0, MAX_RESULTS);
+    return groupResults(recherchePage(normalizeArabic(q), null)).slice(0, MAX_RESULTS);
     // leconsPretes = ticker d'invalidation volontaire (bases tuteur préchargées)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [query, leconsPretes]);

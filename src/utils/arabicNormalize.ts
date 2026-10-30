@@ -145,3 +145,39 @@ export function includesAsWord(haystack: string, needle: string): boolean {
     from = idx + 1;
   }
 }
+
+/**
+ * B1 (retour frère 30/10/2026) — aides de rappel pour la PAGE RECHERCHE.
+ *
+ * Comportement mesuré avant la tranche (sonde sur 10 requêtes) : « المناعة »
+ * → 58 correspondances mais 0 visible (seuil tutorat 12), « مغماتية » sans
+ * article → seulement le score de faute (+3), « فوس » → 0. La page recherche
+ * est une liste de résultats, pas une réponse de tuteur : rappel > précision,
+ * d'où ces fonctions — utilisées UNIQUEMENT par `recherchePageScores`
+ * (smartTutorEngine.ts). `includesAsWord` et le barème R6 restent intacts.
+ */
+
+/** Retire l'article défini initial « ال » (mots de 3+ lettres seulement). */
+export function sansArticle(mot: string): string {
+  return mot.startsWith('ال') && mot.length > 2 ? mot.slice(2) : mot;
+}
+
+/** Égalité de deux mots (3+ lettres) en ignorant l'article défini initial :
+ *  « مغماتيه » (requête) === « المغماتيه » (mot-clé) — la requête de l'élève
+ *  porte rarement l'article, le mot-clé du corpus presque toujours. */
+export function egalSansArticle(a: string, b: string): boolean {
+  if (!a || !b) return false;
+  if (a.length < 3 || b.length < 3) return false;
+  return a === b || sansArticle(a) === sansArticle(b);
+}
+
+/** Préfixe accepté dans l'un des deux sens (≥ 3 lettres), article ignoré :
+ *  « فوس » est préfixe de « فوسفور », « المناعة » de « المناعي »…
+ *  Contrairement à une sous-chaîne arbitraire, un PRÉFIXE de 3+ lettres ne
+ *  produit pas le faux positif historique (« لب » dans « الباك »). */
+export function prefixeMatch(tokenRequete: string, motif: string): boolean {
+  const it = sansArticle(tokenRequete);
+  const kw = sansArticle(motif);
+  if (it.length < 3 || kw.length < 3) return false;
+  return kw.startsWith(it) || it.startsWith(kw);
+}
