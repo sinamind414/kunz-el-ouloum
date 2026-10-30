@@ -18,8 +18,10 @@ la découverte, plan global d'audit, inventaire de 50 unités de suivi et fiche
 d'audit réutilisable. [Lot 01](audit-mvp/LOT01.md) : F01–F05 examinées dans Chromium
 sur bureau et viewport mobile, avec tests ciblés et limites explicites.
 Le périmètre MVP définitif reste à décider à partir des audits.
-[Journal central](audit-mvp/JOURNAL.md) : dix fonctions examinées, quarante restantes ;
+[Journal central](audit-mvp/JOURNAL.md) : vingt fonctions examinées, trente restantes ;
 [lot 02](audit-mvp/LOT02.md) : F06–F10 et leurs preuves.
+[Lot 03](audit-mvp/LOT03.md) : F11–F15, limites des validateurs et supports manquants.
+[Lot 04](audit-mvp/LOT04.md) : F16–F20, méthode, Tadwin, correction et bilans de rédaction.
 
 ## Références vivantes (décisions et contrats en vigueur)
 

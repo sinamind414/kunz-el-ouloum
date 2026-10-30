@@ -16,7 +16,9 @@ Travail réalisé seul ; aucun sous-agent sans demande explicite du propriétair
 - [Fiche d'audit](FICHE_AUDIT.md) : modèle à copier pour chaque fonction.
 - [Lot 01 — F01 à F05](LOT01.md) : résultats navigateur, tests et défauts reproduits.
 - [Lot 02 — F06 à F10](LOT02.md) : reprise, synthèses, cartes, animations et QCM.
-- [Journal central](JOURNAL.md) : dix fonctions examinées, défauts ouverts et quarante restantes.
+- [Lot 03 — F11 à F15](LOT03.md) : QCM livre, textes à trous, schémas, situations et atelier.
+- [Lot 04 — F16 à F20](LOT04.md) : méthode, cartes, Tadwin, correction et bilans de rédaction.
+- [Journal central](JOURNAL.md) : vingt fonctions examinées, défauts ouverts et trente restantes.
 - [Catalogue documentaire existant](../README.md).
 
 ## Ce que nous savons, et ce que nous ne savons pas
@@ -163,3 +165,5 @@ et risques. Aucune moyenne chiffrée ne doit masquer un défaut bloquant.
 | 2026-10-30 | Consolidation de la lecture du dépôt et de la conversation | Inventaire initial, cadre d'audit et fiche créés ; aucun audit fonctionnel terminé ; aucun périmètre MVP arrêté. |
 | 2026-10-30 | Lot 01, F01–F05 | Cinq fiches et preuves navigateur bureau/mobile ; 268 tests ciblés et typecheck verts ; cinq défauts documentés, dont trois majeurs. Aucun correctif produit ni périmètre MVP arrêté. |
 | 2026-10-30 | Lot 02, F06–F10 | Cinq fiches, 25 captures, 262 tests ciblés et typecheck verts ; cinq nouveaux défauts, dont un majeur pédagogique ; journal central créé. Prochain lot F11–F15. |
+| 2026-10-30 | Lot 03, F11–F15 | Cinq fiches, 31 captures, 246 tests ciblés et typecheck verts ; six nouveaux défauts ; accès payant simulé explicitement distingué du parcours invité. Prochain lot F16–F20. |
+| 2026-10-30 | Lot 04, F16–F20 | Cinq fiches, 35 images, 487 tests ciblés et typecheck verts ; huit nouveaux défauts ; notes, contrôle de forme et réserve humaine distingués. Prochain lot F21–F25. |

@@ -1,0 +1,238 @@
+{
+  "text": "تجاوز إلى المحتوى الرئيسي\nطالب متميز\nSVT BAC DZ\nمفتاح المنهجية؟\nأ\n0\n|\n0 XP\nالقائمة الرئيسية\nالرئيسية\nACCUEIL\nالدروس\nAPPRENDRE\nالتمارين والتدريب\nS'ENTRAÎNER\nمفتاح المنهجية\nMÉTHODE\nالمراجعة\nRÉVISER\nأنا\nMOI\n\nالقبطان — مُرشد كنز العلوم\n\nمفتاح لا يُقرأ كالدرس — يُستعمل. خُذ إنتاجًا كتبتَه فعلًا وقارنه بمعايير الفعل، واكتب الخطأ الذي وقعت فيه.\n\nابدأ بـ: افتح تمرينًا واحدًا وأكمل مرحلة واحدة فقط.\n\nفهمت\nنظام التجميع البيداغوجي الموحد (Compilateur SVT)\n🔑 مفتاح المنهجية v6.0\n\n4 أسنان · 3 بوابات · إجابة تفتح النقطة — منهجية الإجابة في علوم الطبيعة والحياة · بكالوريا\n\nمؤشر ICM الحالي\n—\nالمرحلة النشطة\nالمستوى 1 / 4\nاختر الورشة التي تريد العمل بها\nالخطوات الأربع\nالمحاكي · 4 مراحل\nفهرس الأفعال الثمانية والنماذج\nبطاقات الأفعال + نماذج\nمصفوفة الإتقان\nالخلايا وتحليل الأخطاء\nالمصححة\nملف التصحيح\nقواعد الإجابة الـ 4 (الطبقة 0)\nالطبقة 0 · البوابات\nمفتاح المنهجية + BAC 2025\nv6.0 · 3 وجوه + تطبيق\nجدار حلّل — التدريب\nتحليل أم تفسير؟\nبطاقة المفتاح — للطباعة\nالمفتاح\n\nمفتاح المنهجية · 4 حركات · بابان · تحليل دون تفسير\n\nالرجوع إلى المفتاح\nالمفتاح\n\nللجميع، من اليوم الأول · La clé — 4 gestes, 2 portes\n\nحركات\nالحركات الأربع\n0\nالقفل — ما هدف التمرين؟\nأقرأ السياق. الهدف قد يكون مصرحا («بغرض معرفة دور الضوء») أو ضمنيا. الاستنتاج الأخير يجب أن يجيب عن هذا الهدف، لا أن يعيد وصف الوثيقة.\n1\nفعل — ماذا تريد مني التعليمة؟\n2\nدليل — لا آخذ كل شيء\n3\nعلاقة — وصفة حلّل\n4\nجواب — الاستنتاج يجيب الهدف\nأ\nالبابان\nالمفتاح في 10 ثوانٍ\n\nما الهدف؟ → ماذا يريد الفعل؟ → أين دليله؟ → ما العلاقة دون تفسير؟ → ماذا أستنتج للهدف؟",
+  "buttons": [
+    {
+      "text": "؟",
+      "label": "نصيحة القبطان في هذه الصفحة",
+      "testid": "conseil-rubrique-ouvrir",
+      "disabled": false
+    },
+    {
+      "text": "",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "أ",
+      "label": "حجم النص",
+      "testid": "taille-texte-btn",
+      "disabled": false
+    },
+    {
+      "text": "الرئيسية\nACCUEIL",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "الدروس\nAPPRENDRE",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "التمارين والتدريب\nS'ENTRAÎNER",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "مفتاح المنهجية\nMÉTHODE",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "المراجعة\nRÉVISER",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "أنا\nMOI",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "فهمت",
+      "label": null,
+      "testid": "bandeau-conseil-fermer",
+      "disabled": false
+    },
+    {
+      "text": "الخطوات الأربع\nالمحاكي · 4 مراحل",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "فهرس الأفعال الثمانية والنماذج\nبطاقات الأفعال + نماذج",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "مصفوفة الإتقان\nالخلايا وتحليل الأخطاء",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "المصححة\nملف التصحيح",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "قواعد الإجابة الـ 4 (الطبقة 0)\nالطبقة 0 · البوابات",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "مفتاح المنهجية + BAC 2025\nv6.0 · 3 وجوه + تطبيق",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "جدار حلّل — التدريب\nتحليل أم تفسير؟",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "بطاقة المفتاح — للطباعة",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "الرجوع إلى المفتاح",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "",
+      "label": "بدء الإملاء الصوتي",
+      "testid": "dictaphone-meftah-recherche",
+      "disabled": false
+    },
+    {
+      "text": "حركات\nالحركات الأربع",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "0\nالقفل — ما هدف التمرين؟\nأقرأ السياق. الهدف قد يكون مصرحا («بغرض معرفة دور الضوء») أو ضمنيا. الاستنتاج الأخير يجب أن يجيب عن هذا الهدف، لا أن يعيد وصف الوثيقة.",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "1\nفعل — ماذا تريد مني التعليمة؟",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "2\nدليل — لا آخذ كل شيء",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "3\nعلاقة — وصفة حلّل",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "4\nجواب — الاستنتاج يجيب الهدف",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "أ\nالبابان",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "الرئيسيةAccueil",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "الدروسApprendre",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "التمارين والتدريبS'entraîner",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "مفتاح المنهجيةMéthode",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "المراجعةRéviser",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "أناMoi",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "",
+      "label": "القبطان — مُرشد كنز العلوم",
+      "testid": "fab-morchid",
+      "disabled": false
+    }
+  ],
+  "testids": [
+    "conseil-rubrique-ouvrir",
+    "taille-texte-btn",
+    "bandeau-conseil-rubrique",
+    "bandeau-conseil-visage",
+    "bandeau-conseil-fermer",
+    "meftah-view",
+    "dictaphone-meftah-recherche",
+    "meftah-level-view-base",
+    "marque-document",
+    "fab-morchid"
+  ],
+  "inputs": [
+    {
+      "type": "text",
+      "label": null,
+      "placeholder": "ابحث في المفتاح..."
+    }
+  ],
+  "width": 1280,
+  "scrollWidth": 1280,
+  "storage": {
+    "boussole_prescriptions_v1": "{\"prescriptions\":[{\"motif\":\"accueil:training\",\"cible\":\"training\",\"emisMs\":1793358671439,\"issue\":\"ignoree\",\"resoluMs\":1793358674945}],\"motifs\":{\"accueil:training\":{\"dits\":1,\"suivis\":0,\"ignores\":1,\"expires\":0}}}",
+    "theme": "light",
+    "kunz_declic_last_id_v1": "dem_03",
+    "boussole_capitaine_invitation_ignoree": "1793358674945",
+    "boussole_conseils_rubriques_vus": "[\"methodology\"]",
+    "kunz_declic_shown_v1": "2026-10-30"
+  }
+}

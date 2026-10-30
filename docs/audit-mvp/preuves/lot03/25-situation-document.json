@@ -1,0 +1,180 @@
+{
+  "text": "تجاوز إلى المحتوى الرئيسي\nطالب متميز\nSVT BAC DZ\nتمارين بالوضعيات؟\nأ\n0\n|\n0 XP\nالقائمة الرئيسية\nالرئيسية\nACCUEIL\nالدروس\nAPPRENDRE\nالتمارين والتدريب\nS'ENTRAÎNER\nمفتاح المنهجية\nMÉTHODE\nالمراجعة\nRÉVISER\nأنا\nMOI\n\nالقبطان — مُرشد كنز العلوم\n\nالوضعية تُحلّل قبل أن تُحسب: استخرج المعطيات، ثم المطلوب، ثم ابدأ.\n\nابدأ بـ: اشطب على كل معطاة لا تستعملها.\n\nفهمت\nالمضاد الحيوي\n\nلماذا يقتل الريفاميسين البكتيريا دون أن يقتل خلايانا؟\n\nكل الوضعيات\nالوحدة 1\nنمط البكالوريا\n20 دقيقة\nسقطت في البكالوريا: 2024 · 2023 · 2022 · 2020 · 2019\nالوضعية\n\nيصف الطبيب للمريض مضاداً حيوياً هو الريفاميسين لعلاج التهاب بكتيري. بعد ثلاثة أيام تتوقف البكتيريا عن التكاثر. أُجريت تجربتان مخبريتان (H1 و H2) لمتابعة تركيب ARNm داخل الخلية البكتيرية في وجود الدواء وفي غيابه.\n\nالتعليمة\n\nحلّل نتائج الوثيقتين ثم استنتج مستوى تدخّل الريفاميسين في تدفق المعلومة الوراثية.\n\nالسندات (3)\n\nجدول يوضح غياب حلقات H1 وH2 (ARNm) عند إضافة الريفاميسين.\n\nتغيب جزيئات ARNm عند إضافة الريفاميسين رغم وجود ADN.\n\nوثيقتان حول تأثير الريفاميسين على النسخ وعلى الحمض النووي.\n\nتبين الوثيقة 1 انخفاض النسخ والوثيقة 2 بقاء الحمض النووي سليماً.\n\nوثيقتان حول تأثير الريفاميسين على النسخ وعلى الحمض النووي.\n\nتبين الوثيقة 1 انخفاض النسخ والوثيقة 2 بقاء الحمض النووي سليماً.\n\nتمارين تحليل الوثائق (1)\n\nوثيقتان حول تأثير الريفاميسين على النسخ (H1/H2).\n\nوثيقتان نوعيتان حول تأثير الريفاميسين في الاستنساخ.\n\nالشرط\tالاستنساخ\tتشكل ARNm\nدون ريفاميسين\tيحدث\tموجود\nمع الريفاميسين\tمثبط\tغائب\nالوثيقة 1: أثر الريفاميسين في الاستنساخ وتشكّل ARNm.\nالشرط\tADN\tARNm\nمع الريفاميسين\tموجود\tغائب\nالوثيقة 2: يبقى ADN موجوداً رغم غياب ARNm.\nحلل — حلل تأثير الريفاميسين في الوثيقة 1.\nقالب الصياغة: كلما زاد التركيز كلما …\nاقترح فرضية — اقترح فرضية جزيئية (H1) لتأثيره.\nقالب الصياغة: نفترض أن الريفاميسين يثبط …\nصادق — صادق بربط الوثيقتين مع معالجة H2 بحذر.\nقالب الصياغة: تبين 1 … و2 … وبربطهما … (H2 غير مدعومة لا تُنفى).\n\nشبكة التدريب: تحليل كمّي (4) · فرضية نفترض أن + هدف (5) · تركيب + حذر H2 (7) · مصطلحات جينية (4)\n\nGrille d'entraînement Kunz — n'est pas le barème officiel du sujet BAC\n\nما الذي يُقيَّم فعلاً\n\nالاستنساخ: دور ARN بوليميراز وتشكّل ARNm انطلاقاً من السلسلة الناسخة.\n\n⚠️ كثير من التلاميذ يجيبون « يمنع تركيب البروتين ». الجواب المقبول يحدّد المرحلة بدقة: تثبيط الاستنساخ، وليس الترجمة — والدليل هو غياب ARNm لا غياب البروتين.\n\nأحتاج تلميحاً من المرشد قبل التصحيح\nأظهر عناصر التصحيح\n\nالقبطان — مُرشد كنز العلوم\n\nلا نبدأ بالمنهج كله. نبدأ بدقيقتين.\n\nاختبار قصير: سؤال واحد.\n\nيومك الأول في السلسلة.\n\nاختبار قصير: سؤال واحد.\nلاحقًا",
+  "buttons": [
+    {
+      "text": "؟",
+      "label": "نصيحة القبطان في هذه الصفحة",
+      "testid": "conseil-rubrique-ouvrir",
+      "disabled": false
+    },
+    {
+      "text": "",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "أ",
+      "label": "حجم النص",
+      "testid": "taille-texte-btn",
+      "disabled": false
+    },
+    {
+      "text": "الرئيسية\nACCUEIL",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "الدروس\nAPPRENDRE",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "التمارين والتدريب\nS'ENTRAÎNER",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "مفتاح المنهجية\nMÉTHODE",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "المراجعة\nRÉVISER",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "أنا\nMOI",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "فهمت",
+      "label": null,
+      "testid": "bandeau-conseil-fermer",
+      "disabled": false
+    },
+    {
+      "text": "كل الوضعيات",
+      "label": null,
+      "testid": "fermer-fiche",
+      "disabled": false
+    },
+    {
+      "text": "أحتاج تلميحاً من المرشد قبل التصحيح",
+      "label": null,
+      "testid": "morchid-ctx-situation",
+      "disabled": false
+    },
+    {
+      "text": "أظهر عناصر التصحيح",
+      "label": null,
+      "testid": "basculer-correction",
+      "disabled": false
+    },
+    {
+      "text": "الرئيسيةAccueil",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "الدروسApprendre",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "التمارين والتدريبS'entraîner",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "مفتاح المنهجيةMéthode",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "المراجعةRéviser",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "أناMoi",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "اختبار قصير: سؤال واحد.",
+      "label": null,
+      "testid": "bulle-capitaine-agir",
+      "disabled": false
+    },
+    {
+      "text": "لاحقًا",
+      "label": "إغلاق",
+      "testid": "bulle-capitaine-fermer",
+      "disabled": false
+    },
+    {
+      "text": "",
+      "label": "القبطان — مُرشد كنز العلوم",
+      "testid": "fab-morchid",
+      "disabled": false
+    },
+    {
+      "text": "",
+      "label": "تكبير الشكل",
+      "testid": null,
+      "disabled": false
+    }
+  ],
+  "testids": [
+    "conseil-rubrique-ouvrir",
+    "taille-texte-btn",
+    "bandeau-conseil-rubrique",
+    "bandeau-conseil-visage",
+    "bandeau-conseil-fermer",
+    "situation-fiche",
+    "fermer-fiche",
+    "fiche-echo-bac",
+    "fiche-question",
+    "fiche-documents",
+    "fiche-exercices-elite",
+    "exercice-elite-rifamycine_h1h2",
+    "doc-figure",
+    "doc-mixte",
+    "doc-tableau",
+    "doc-tableau",
+    "fiche-piege",
+    "morchid-ctx-situation",
+    "basculer-correction",
+    "bulle-capitaine",
+    "bulle-capitaine-agir",
+    "bulle-capitaine-fermer",
+    "fab-morchid"
+  ],
+  "inputs": [],
+  "width": 1280,
+  "scrollWidth": 1280,
+  "storage": {
+    "boussole_prescriptions_v1": "{\"prescriptions\":[{\"motif\":\"accueil:training\",\"cible\":\"training\",\"emisMs\":1793357018967,\"issue\":\"en_attente\"}],\"motifs\":{\"accueil:training\":{\"dits\":1,\"suivis\":0,\"ignores\":0,\"expires\":0}}}",
+    "theme": "light",
+    "boussole_token": "audit-local-fixture-not-a-real-token",
+    "kunz_acces": "{\"statut\":\"essai\",\"expireLe\":\"2099-06-30\"}",
+    "kunz_declic_last_id_v1": "dem_05",
+    "boussole_conseils_rubriques_vus": "[\"situations\",\"training\"]",
+    "kunz_declic_shown_v1": "2026-10-30"
+  }
+}

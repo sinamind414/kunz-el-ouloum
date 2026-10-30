@@ -42,7 +42,7 @@ Index tuteur : `src/data/lessonIndex.ts` (généré).
 |---|---|---|---|
 | Correcteur V1 | — | correction des réponses ouvertes par mots-clés sourcés (L1-L6) + barème 5/7/8 | `src/correcteurV1.ts`, `src/lib/validation/`, `src/utils/calibration.ts` |
 | Meftah / Miftah | مفتاح المنهجية | méthode de rédaction BAC (verbes, « لأنّ ») ; marque | `src/data/miftahSpec.ts`, `src/data/meftahLaw.ts`, `docs/MARQUE.md`, `docs/PROTOCOLE_PREUVE.md` |
-| Boussole | بوصلة الإجابة | 4 étapes de rédaction (اقرأ · اجمع · اربط · اختم) | `docs/SPEC_BOUSSOLE_NSOE.md`, `tests/boussole.test.ts` |
+| Boussole | بوصلة الإجابة | Fiche legacy dans le sous-écran de carte ; carte principale actuelle = `MiftahCard`. Les anciens libellés de la spec sont historiques. | `BoussoleCard.tsx`, `MiftahCard.tsx`, `docs/SPEC_BOUSSOLE_NSOE.md`, `tests/boussole.test.ts` |
 | Morchid | المرشد | tuteur conversationnel local | `src/smartTutorEngine.ts`, `src/tutorKnowledge.ts`, `src/components/AITutorView.tsx` |
 | Capitaine | القبطان | voix unique du guide + boucle coach (prescription → issue) | `src/data/capitaine.ts`, `src/lib/prescriptions.ts`, `src/lib/coach/` |
 | NBA | — | « next best action » : quoi faire ensuite | `src/components/NbaCard.tsx` |
@@ -54,6 +54,12 @@ Index tuteur : `src/data/lessonIndex.ts` (généré).
 | Rappel / SM-2 | — | répétition espacée | `src/lib/sm2.ts`, `rappelAdaptatif.ts`, `rappelConcepts.ts` |
 | Banque BAC | أفكار التمارين | sujets indexés par session 2016-2026 | `src/data/bacSessionIndex.ts`, `src/data/sujetsBlancs/`, `public/bac-sujets/` |
 | Marque | — | marque de traçabilité apposée aux exports | `src/utils/marque.ts`, `server.ts` |
+
+Clarifications vérifiées le 30/10/2026 ([lot 04](../audit-mvp/LOT04.md)) :
+Tadwin est bien câblé dans l'app malgré un commentaire ancien du moteur.
+Les carnets de méthode (`kunz_methodology_production_log_v1`) et de rédaction
+BAC (`kunz.bacTrainer.{exercice}.{famille}`) sont distincts. La file locale de
+correction n'atteste pas à elle seule l'identité d'un correcteur enseignant.
 
 ## Où chercher selon la demande
 

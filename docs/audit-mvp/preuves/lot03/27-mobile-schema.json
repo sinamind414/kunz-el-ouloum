@@ -1,0 +1,194 @@
+{
+  "text": "تجاوز إلى المحتوى الرئيسي\nارسم من الذاكرة؟\nأ\n0\n|\n0 XP\n\nالقبطان — مُرشد كنز العلوم\n\nارسم قبل أن تنظر. الرسم من الذاكرة يكشف الثغرة التي يخفيها التعريف المحفوظ.\n\nابدأ بـ: ارسم مرة واحدة بلا نظر، ثم قارن.\n\nفهمت\nمخطط المشبك العصبي\n\nالوحدة 5\n\nمطلوب في البكالوريا: 2026 · 2025 · 2024 · 2023 · 2022 · 2021 · 2020 · 2018 · 2017 · 2016\n\nكل الرسومات\n\nضع علامة على كل عنصر موجود فعلاً في ورقتك. كن صادقاً: الهدف كشف المنسيّ لا جمع النقاط.\n\nالنهاية قبل المشبكية\n2 ن\nالشقّ المشبكي\n2 ن\nالغشاء بعد المشبكي\n2 ن\nالحويصلات المشبكية المحتوية على المبلّغ\n2 ن\nالمستقبلات النوعية على الغشاء بعد المشبكي\n2 ن\nالميتوكوندريات في النهاية قبل المشبكية\n1 ن\nسهم اتجاه الرسالة (أحادي الاتجاه)\n1 ن\nأظهر النتيجة والرسم الرسمي\nالرئيسية\nAccueil\nالدروس\nApprendre\nالتمارين والتدريب\nS'entraîner\nمفتاح المنهجية\nMéthode\nالمراجعة\nRéviser\nأنا\nMoi",
+  "buttons": [
+    {
+      "text": "؟",
+      "label": "نصيحة القبطان في هذه الصفحة",
+      "testid": "conseil-rubrique-ouvrir",
+      "disabled": false
+    },
+    {
+      "text": "",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "أ",
+      "label": "حجم النص",
+      "testid": "taille-texte-btn",
+      "disabled": false
+    },
+    {
+      "text": "الرئيسيةAccueil",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "الدروسApprendre",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "التمارين والتدريبS'entraîner",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "مفتاح المنهجيةMéthode",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "المراجعةRéviser",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "أناMoi",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "فهمت",
+      "label": null,
+      "testid": "bandeau-conseil-fermer",
+      "disabled": false
+    },
+    {
+      "text": "كل الرسومات",
+      "label": null,
+      "testid": "drill-quitter",
+      "disabled": false
+    },
+    {
+      "text": "النهاية قبل المشبكية\n2 ن",
+      "label": null,
+      "testid": "element-pre",
+      "disabled": false
+    },
+    {
+      "text": "الشقّ المشبكي\n2 ن",
+      "label": null,
+      "testid": "element-fente",
+      "disabled": false
+    },
+    {
+      "text": "الغشاء بعد المشبكي\n2 ن",
+      "label": null,
+      "testid": "element-post",
+      "disabled": false
+    },
+    {
+      "text": "الحويصلات المشبكية المحتوية على المبلّغ\n2 ن",
+      "label": null,
+      "testid": "element-vesicules",
+      "disabled": false
+    },
+    {
+      "text": "المستقبلات النوعية على الغشاء بعد المشبكي\n2 ن",
+      "label": null,
+      "testid": "element-recepteurs",
+      "disabled": false
+    },
+    {
+      "text": "الميتوكوندريات في النهاية قبل المشبكية\n1 ن",
+      "label": null,
+      "testid": "element-mitochondries",
+      "disabled": false
+    },
+    {
+      "text": "سهم اتجاه الرسالة (أحادي الاتجاه)\n1 ن",
+      "label": null,
+      "testid": "element-sens",
+      "disabled": false
+    },
+    {
+      "text": "أظهر النتيجة والرسم الرسمي",
+      "label": null,
+      "testid": "drill-valider",
+      "disabled": false
+    },
+    {
+      "text": "الرئيسية\nAccueil",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "الدروس\nApprendre",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "التمارين والتدريب\nS'entraîner",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "مفتاح المنهجية\nMéthode",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "المراجعة\nRéviser",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "أنا\nMoi",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "",
+      "label": "القبطان — مُرشد كنز العلوم",
+      "testid": "fab-morchid",
+      "disabled": false
+    }
+  ],
+  "testids": [
+    "conseil-rubrique-ouvrir",
+    "taille-texte-btn",
+    "bandeau-conseil-rubrique",
+    "bandeau-conseil-visage",
+    "bandeau-conseil-fermer",
+    "drill-exercice",
+    "drill-echo-bac",
+    "drill-quitter",
+    "phase-evaluation",
+    "element-pre",
+    "element-fente",
+    "element-post",
+    "element-vesicules",
+    "element-recepteurs",
+    "element-mitochondries",
+    "element-sens",
+    "drill-valider",
+    "fab-morchid"
+  ],
+  "inputs": [],
+  "width": 390,
+  "scrollWidth": 390,
+  "storage": {
+    "boussole_prescriptions_v1": "{\"prescriptions\":[{\"motif\":\"accueil:training\",\"cible\":\"training\",\"emisMs\":1793357032978,\"issue\":\"ignoree\",\"resoluMs\":1793357036344}],\"motifs\":{\"accueil:training\":{\"dits\":1,\"suivis\":0,\"ignores\":1,\"expires\":0}}}",
+    "theme": "light",
+    "boussole_token": "audit-local-fixture-not-a-real-token",
+    "kunz_acces": "{\"statut\":\"essai\",\"expireLe\":\"2099-06-30\"}",
+    "kunz_declic_last_id_v1": "dem_01",
+    "boussole_capitaine_invitation_ignoree": "1793357036344",
+    "boussole_conseils_rubriques_vus": "[\"schemas\",\"reviser\",\"lesson\",\"examens\",\"training\"]",
+    "kunz_declic_shown_v1": "2026-10-30"
+  }
+}

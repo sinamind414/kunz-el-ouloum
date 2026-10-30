@@ -1,0 +1,140 @@
+{
+  "text": "تجاوز إلى المحتوى الرئيسي\nطالب متميز\nSVT BAC DZ\nالتدوين الشامل؟\nأ\n0\n|\n0 XP\nالقائمة الرئيسية\nالرئيسية\nACCUEIL\nالدروس\nAPPRENDRE\nالتمارين والتدريب\nS'ENTRAÎNER\nمفتاح المنهجية\nMÉTHODE\nالمراجعة\nRÉVISER\nأنا\nMOI\nالتدوين الشامل\n✓\n✓\n✓\n✓\n4\n\nالتثبيت — Consolidation (rappel espacé)\n\nتركيب البروتين (La synthèse des protéines)\n\nاستنساخ (النواة/ARN بوليميراز)\nARNm\nتتمثل المرحلة الأولى من التعبير المورثي في استنساخ المعلومة الوراثية داخل النواة، حيث تتدخل إنزيمة ARN بوليميراز لتركيب جزيئة ARNm انطلاقاً من إحدى سلسلتي ADN.\n\nهل تذكّرت الزبدة قبل إظهارها؟\n\nتذكّرتها\nلم أتذكرها",
+  "buttons": [
+    {
+      "text": "؟",
+      "label": "نصيحة القبطان في هذه الصفحة",
+      "testid": "conseil-rubrique-ouvrir",
+      "disabled": false
+    },
+    {
+      "text": "",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "أ",
+      "label": "حجم النص",
+      "testid": "taille-texte-btn",
+      "disabled": false
+    },
+    {
+      "text": "الرئيسية\nACCUEIL",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "الدروس\nAPPRENDRE",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "التمارين والتدريب\nS'ENTRAÎNER",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "مفتاح المنهجية\nMÉTHODE",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "المراجعة\nRÉVISER",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "أنا\nMOI",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "تذكّرتها",
+      "label": null,
+      "testid": "tadwin-rappel-ok-tadwin_1793358963653_rl17qy",
+      "disabled": false
+    },
+    {
+      "text": "لم أتذكرها",
+      "label": null,
+      "testid": "tadwin-rappel-ko-tadwin_1793358963653_rl17qy",
+      "disabled": false
+    },
+    {
+      "text": "الرئيسيةAccueil",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "الدروسApprendre",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "التمارين والتدريبS'entraîner",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "مفتاح المنهجيةMéthode",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "المراجعةRéviser",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "أناMoi",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "",
+      "label": "القبطان — مُرشد كنز العلوم",
+      "testid": "fab-morchid",
+      "disabled": false
+    }
+  ],
+  "testids": [
+    "conseil-rubrique-ouvrir",
+    "taille-texte-btn",
+    "tadwin-rappel-ok-tadwin_1793358963653_rl17qy",
+    "tadwin-rappel-ko-tadwin_1793358963653_rl17qy",
+    "fab-morchid"
+  ],
+  "inputs": [],
+  "width": 1280,
+  "scrollWidth": 1280,
+  "storage": {
+    "boussole_prescriptions_v1": "{\"prescriptions\":[{\"motif\":\"accueil:training\",\"cible\":\"training\",\"emisMs\":1793358951222,\"issue\":\"ignoree\",\"resoluMs\":1793358954652}],\"motifs\":{\"accueil:training\":{\"dits\":1,\"suivis\":0,\"ignores\":1,\"expires\":0}}}",
+    "theme": "light",
+    "kunz_tadwin_etat_v1:backup": "{\"uniteId\":1,\"palier\":3,\"defiDebutAt\":1793358956393}",
+    "kunz_tadwin_etat_v1": "{\"uniteId\":1,\"palier\":4,\"defiDebutAt\":1793358956393}",
+    "kunz_tadwin_fiches_v1": "[{\"id\":\"tadwin_1793358963653_rl17qy\",\"uniteId\":1,\"clesChoisies\":[\"استنساخ (النواة/ARN بوليميراز)\",\"ARNm\"],\"reponse\":\"تتمثل المرحلة الأولى من التعبير المورثي في استنساخ المعلومة الوراثية داخل النواة، حيث تتدخل إنزيمة ARN بوليميراز لتركيب جزيئة ARNm انطلاقاً من إحدى سلسلتي ADN.\",\"c2\":1,\"stuffingDetecte\":false,\"palier\":3,\"creeLe\":1793358963653,\"rappelStage\":0,\"prochainRappelAt\":1793445363653,\"maitrise\":\"en_cours\"}]",
+    "kunz_declic_last_id_v1": "dem_02",
+    "boussole_capitaine_invitation_ignoree": "1793358954652",
+    "boussole_conseils_rubriques_vus": "[\"tadwin\",\"training\"]",
+    "kunz_declic_shown_v1": "58802-01-08"
+  }
+}

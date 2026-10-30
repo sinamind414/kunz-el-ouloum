@@ -1,0 +1,153 @@
+{
+  "text": "تجاوز إلى المحتوى الرئيسي\nطالب متميز\nSVT BAC DZ\nالتدوين الشامل؟\nأ\n0\n|\n0 XP\nالقائمة الرئيسية\nالرئيسية\nACCUEIL\nالدروس\nAPPRENDRE\nالتمارين والتدريب\nS'ENTRAÎNER\nمفتاح المنهجية\nMÉTHODE\nالمراجعة\nRÉVISER\nأنا\nMOI\nالتدوين الشامل\nجرّب 3 أيام — باقٍ 3 أيام\n✓\n✓\n✓\n3\n4\n\nمستقل — Autonome (production notée)\n\nقاوِم الرغبة — مفتاحان يكفيان. اختر 2 أو 3 مفاتيح فقط من الثلاثة.\n\n○ استنساخ (النواة/ARN بوليميراز)○ ARNm○ ترجمة (الريبوزوم/ARNt/الرامزة)\n\nالاختيار: 0 من 3 (الحد الأدنى 2)\n\nالتالي — اكتب الزبدة",
+  "buttons": [
+    {
+      "text": "؟",
+      "label": "نصيحة القبطان في هذه الصفحة",
+      "testid": "conseil-rubrique-ouvrir",
+      "disabled": false
+    },
+    {
+      "text": "",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "أ",
+      "label": "حجم النص",
+      "testid": "taille-texte-btn",
+      "disabled": false
+    },
+    {
+      "text": "الرئيسية\nACCUEIL",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "الدروس\nAPPRENDRE",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "التمارين والتدريب\nS'ENTRAÎNER",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "مفتاح المنهجية\nMÉTHODE",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "المراجعة\nRÉVISER",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "أنا\nMOI",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "○ استنساخ (النواة/ARN بوليميراز)",
+      "label": null,
+      "testid": "tadwin-cle-0",
+      "disabled": false
+    },
+    {
+      "text": "○ ARNm",
+      "label": null,
+      "testid": "tadwin-cle-1",
+      "disabled": false
+    },
+    {
+      "text": "○ ترجمة (الريبوزوم/ARNt/الرامزة)",
+      "label": null,
+      "testid": "tadwin-cle-2",
+      "disabled": false
+    },
+    {
+      "text": "التالي — اكتب الزبدة",
+      "label": null,
+      "testid": "tadwin-choix-valider",
+      "disabled": true
+    },
+    {
+      "text": "الرئيسيةAccueil",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "الدروسApprendre",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "التمارين والتدريبS'entraîner",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "مفتاح المنهجيةMéthode",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "المراجعةRéviser",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "أناMoi",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "",
+      "label": "القبطان — مُرشد كنز العلوم",
+      "testid": "fab-morchid",
+      "disabled": false
+    }
+  ],
+  "testids": [
+    "conseil-rubrique-ouvrir",
+    "taille-texte-btn",
+    "tadwin-cle-0",
+    "tadwin-cle-1",
+    "tadwin-cle-2",
+    "tadwin-choix-valider",
+    "fab-morchid"
+  ],
+  "inputs": [],
+  "width": 1280,
+  "scrollWidth": 1280,
+  "storage": {
+    "boussole_prescriptions_v1": "{\"prescriptions\":[{\"motif\":\"accueil:training\",\"cible\":\"training\",\"emisMs\":1793358951222,\"issue\":\"ignoree\",\"resoluMs\":1793358954652}],\"motifs\":{\"accueil:training\":{\"dits\":1,\"suivis\":0,\"ignores\":1,\"expires\":0}}}",
+    "theme": "light",
+    "kunz_tadwin_etat_v1:backup": "{\"uniteId\":1,\"palier\":2,\"defiDebutAt\":1793358956393}",
+    "kunz_tadwin_etat_v1": "{\"uniteId\":1,\"palier\":3,\"defiDebutAt\":1793358956393}",
+    "kunz_declic_last_id_v1": "dem_05",
+    "boussole_capitaine_invitation_ignoree": "1793358954652",
+    "boussole_conseils_rubriques_vus": "[\"tadwin\",\"training\"]",
+    "kunz_declic_shown_v1": "2026-10-30"
+  }
+}

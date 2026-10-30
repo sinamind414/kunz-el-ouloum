@@ -52,3 +52,45 @@ Précisions : une notation Hosila crédite les compteurs/XP mais aucun rappel SM
 de ce point n'a été constaté ; le chrono QCM est indicatif dans le composant testé.
 Les 262 tests ciblés et le typecheck sont verts ; ni la CI globale ni l'APK ne
 sont validés par ce lot.
+
+### Lot 03 — F11 à F15
+
+Référence `9bccc8b`, aucun changement produit. [Preuves et limites](../audit-mvp/LOT03.md).
+Les vues payantes sont testées avec un essai client simulé ; la facturation
+authentifiée n'est pas validée. Le scénario invité du jalon est sans simulation.
+
+| Référence | Gravité | Constat |
+|---|---|---|
+| L03-01 | Majeure | Le hub examens refuse l'invité, mais le jalon gratuit ouvre le QCM puis le bilan des trois domaines sans token. |
+| L03-02 | Majeure pédagogique | `fillBlankValidate` accepte une négation et les associations de bases inversées avec les mêmes mots-porteurs. |
+| L03-03 | Majeure sur les exercices concernés | Quatre documents indisponibles : `lecture_shifra` (2), `anemie_falciforme` (1), `seuil_integration` (1). |
+| L03-04 | Majeure pédagogique | `LessonTwoView.validateW2` valide « لا يحدث تثبيط » grâce au seul mot `تثبيط`. |
+| L03-05 | Modérée | La sortie de l'atelier de transcription efface ses réponses et sa progression, y compris après 100 %. |
+| L03-06 | Mineure | Sur 390×844, le badge fixe de l'atelier recouvre les libellés de navigation mobile. |
+
+Clarification de navigation : l'entrée `workshop` monte `LessonTwoView`, et non
+`MethodologyCompilerView` ; le test `atelierFlux` couvre ce dernier. Les schémas
+de mémoire sont dans Révision ; leur score est une auto-évaluation sur papier.
+Les 246 tests ciblés et le typecheck sont verts ; aucune suite globale ni CI
+distante relancée pour ce lot. Le bilan QCM ne persiste pas son diagnostic.
+
+### Lot 04 — F16 à F20
+
+Référence `9bccc8b`, aucun code ni barème modifié.
+[Preuves, reproductions et limites](../audit-mvp/LOT04.md).
+
+| Référence | Gravité | Constat |
+|---|---|---|
+| L04-01 | Mineure | Meftah transmet le verbe du lien BAC, mais le parent ouvre seulement l'index général. |
+| L04-02 | Majeure pour l'impression | La carte React est tronquée en A4 et dépend du scroll ; l'HTML autonome produit quatre pages. |
+| L04-03 | Majeure | Tadwin reste au palier 4 après une fiche, sans création supplémentaire ni changement d'unité. |
+| L04-04 | Majeure pédagogique | Tadwin enregistre une production à 0 % et propose sa consolidation sans réécriture. |
+| L04-05 | Modérée | Au palier autonome Tadwin, choix des clés et brouillon disparaissent au rechargement. |
+| L04-06 | Majeure de workflow | L'invité approuve le fond dans la file locale : ce statut ne prouve pas une correction enseignante. |
+| L04-07 | Majeure pour l'export | Le rapport de rédaction peut être imprimé vide ; remonter en haut fournit du contenu. |
+| L04-08 | Modérée | La reprise d'une famille BAC non standard ouvre la famille par défaut et un champ vide, sans effacer le vrai brouillon. |
+
+Mesure locale : 30 fichiers / 487 tests ciblés et typecheck verts. L'ICM et C2
+ne sont pas une note de BAC ; les six groupes 2025 conservent la réserve humaine.
+Pas de précision indépendante sur copies, de facturation ou de suivi enseignant
+authentifié validés. Aucun de ces constats n'est corrigé par les documents.

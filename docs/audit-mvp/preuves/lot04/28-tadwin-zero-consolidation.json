@@ -1,0 +1,135 @@
+{
+  "text": "تجاوز إلى المحتوى الرئيسي\nطالب متميز\nSVT BAC DZ\nالتدوين الشامل؟\nأ\n0\n|\n0 XP\nالقائمة الرئيسية\nالرئيسية\nACCUEIL\nالدروس\nAPPRENDRE\nالتمارين والتدريب\nS'ENTRAÎNER\nمفتاح المنهجية\nMÉTHODE\nالمراجعة\nRÉVISER\nأنا\nMOI\n\nالقبطان — مُرشد كنز العلوم\n\nالتدوين للتلخيص بكلماتك أنت، لا لنسخ الدرس. إن استطعت النسخ فأنت لم تفهم بعد.\n\nابدأ بـ: أغلق الدرس واكتب الفكرة من رأسك.\n\nفهمت\nالتدوين الشامل\nجرّب 3 أيام — باقٍ 3 أيام\n✓\n✓\n✓\n✓\n4\n\nالتثبيت — Consolidation (rappel espacé)\n\nلا توجد فقرة مستحقة للمراجعة الآن\n\nالراجعة المخطّطة: 1 — حسب جدول J+1 / J+3 / J+7 / J+14.",
+  "buttons": [
+    {
+      "text": "؟",
+      "label": "نصيحة القبطان في هذه الصفحة",
+      "testid": "conseil-rubrique-ouvrir",
+      "disabled": false
+    },
+    {
+      "text": "",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "أ",
+      "label": "حجم النص",
+      "testid": "taille-texte-btn",
+      "disabled": false
+    },
+    {
+      "text": "الرئيسية\nACCUEIL",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "الدروس\nAPPRENDRE",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "التمارين والتدريب\nS'ENTRAÎNER",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "مفتاح المنهجية\nMÉTHODE",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "المراجعة\nRÉVISER",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "أنا\nMOI",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "فهمت",
+      "label": null,
+      "testid": "bandeau-conseil-fermer",
+      "disabled": false
+    },
+    {
+      "text": "",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "الرئيسيةAccueil",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "الدروسApprendre",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "التمارين والتدريبS'entraîner",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "مفتاح المنهجيةMéthode",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "المراجعةRéviser",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "أناMoi",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "",
+      "label": "القبطان — مُرشد كنز العلوم",
+      "testid": "fab-morchid",
+      "disabled": false
+    }
+  ],
+  "testids": [
+    "conseil-rubrique-ouvrir",
+    "taille-texte-btn",
+    "bandeau-conseil-rubrique",
+    "bandeau-conseil-visage",
+    "bandeau-conseil-fermer",
+    "fab-morchid"
+  ],
+  "inputs": [],
+  "width": 1280,
+  "scrollWidth": 1280,
+  "storage": {
+    "boussole_prescriptions_v1": "{\"prescriptions\":[{\"motif\":\"accueil:training\",\"cible\":\"training\",\"emisMs\":1793358602345,\"issue\":\"ignoree\",\"resoluMs\":1793358605734}],\"motifs\":{\"accueil:training\":{\"dits\":1,\"suivis\":0,\"ignores\":1,\"expires\":0}}}",
+    "theme": "light",
+    "kunz_tadwin_etat_v1:backup": "{\"uniteId\":1,\"palier\":3,\"defiDebutAt\":1793358607637}",
+    "kunz_tadwin_etat_v1": "{\"uniteId\":1,\"palier\":4,\"defiDebutAt\":1793358607637}",
+    "kunz_tadwin_fiches_v1": "[{\"id\":\"tadwin_1793358608067_wei7lc\",\"uniteId\":1,\"clesChoisies\":[\"استنساخ (النواة/ARN بوليميراز)\",\"ARNm\"],\"reponse\":\"درس شيق يتحدث عن البروتين وأهميته في الجسم.\",\"c2\":0,\"stuffingDetecte\":false,\"palier\":3,\"creeLe\":1793358608067,\"rappelStage\":0,\"prochainRappelAt\":1793445008067,\"maitrise\":\"en_cours\"}]",
+    "kunz_declic_last_id_v1": "dem_03",
+    "boussole_capitaine_invitation_ignoree": "1793358605734",
+    "boussole_conseils_rubriques_vus": "[\"tadwin\",\"training\"]",
+    "kunz_declic_shown_v1": "2026-10-30"
+  }
+}

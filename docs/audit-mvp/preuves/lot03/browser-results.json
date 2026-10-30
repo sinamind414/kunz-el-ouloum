@@ -1,0 +1,344 @@
+{
+  "observations": [
+    {
+      "name": "F11-guest-entry",
+      "paywall": 1,
+      "hub": 0
+    },
+    {
+      "name": "F11-book-list",
+      "count": 41,
+      "chapters": 24,
+      "unitGroups": 8
+    },
+    {
+      "name": "F11-chapter-completed",
+      "chapter": 1,
+      "total": 2,
+      "expectedScore": 1,
+      "text": "→\nعودة إلى الفصول\nالفصل 1 : تذكير بالمكتسبات\nالنتيجة : 1 / 2 — راجع التفسيرات أدناه ثم أعد المحاولة\n1\n\nأين تتواجد جزيئة الـ ADN عند الكائنات حقيقية النواة، وماذا تحمل؟\n\n❌ في الهيولى حرة، ولا تحمل أي معلومةداخل الرايبوزومات، وتصنع البروتينات بنفسها✅ داخل النواة، وتحمل المعلومات الوراثية الضرورية لتركيب البروتينات\n💡 النواة مقر الـ ADN عند حقيقيات النواة، وهي حامل المعلومة الوراثية للتركيب الحيوي للبروتينات (البداية l.542).\n2\n\nأين يتم تركيب البروتين وبأي معلومات؟\n\nفي الميتوكوندري باستعمال طاقتهافي النواة باستعمال المعلومات المتواجدة على ال ADN✅ في الهيولى باستعمال المعلومات الوراثية المتواجدة في النواة\n💡 النص (l.546) : يتم تركيب البروتين في الهيولى باستعمال المعلومات الوراثية المتواجدة في النواة (تُنقل عبر ARNm).",
+      "before": {
+        "boussole_prescriptions_v1": "{\"prescriptions\":[{\"motif\":\"accueil:training\",\"cible\":\"training\",\"emisMs\":1793357058291,\"issue\":\"en_attente\"}],\"motifs\":{\"accueil:training\":{\"dits\":1,\"suivis\":0,\"ignores\":0,\"expires\":0}}}",
+        "theme": "light",
+        "boussole_token": "audit-local-fixture-not-a-real-token",
+        "kunz_acces": "{\"statut\":\"essai\",\"expireLe\":\"2099-06-30\"}",
+        "kunz_declic_last_id_v1": "dem_02",
+        "boussole_conseils_rubriques_vus": "[\"lesson\",\"examens\",\"training\"]",
+        "kunz_declic_shown_v1": "2026-10-30"
+      },
+      "after": {
+        "boussole_prescriptions_v1": "{\"prescriptions\":[{\"motif\":\"accueil:training\",\"cible\":\"training\",\"emisMs\":1793357058291,\"issue\":\"en_attente\"}],\"motifs\":{\"accueil:training\":{\"dits\":1,\"suivis\":0,\"ignores\":0,\"expires\":0}}}",
+        "theme": "light",
+        "kunz_parcours_v1": "{\"done\":{},\"reviews\":{},\"extraAllowance\":0,\"mig\":6}",
+        "boussole_token": "audit-local-fixture-not-a-real-token",
+        "kunz_acces": "{\"statut\":\"essai\",\"expireLe\":\"2099-06-30\"}",
+        "kunz_declic_last_id_v1": "dem_02",
+        "svt_progress": "{\"xp\":0,\"streak\":0,\"completedUnits\":[],\"completedQuestionsCount\":0,\"studyMinutes\":0,\"dailyGoals\":{\"type\":\"minutes\",\"targetMinutes\":25,\"targetQuestions\":20,\"lastActiveDate\":\"\",\"todayMinutes\":0,\"todayQuestions\":0,\"streakDays\":0,\"completedToday\":false},\"flashcardStats\":{\"again\":0,\"hard\":0,\"good\":0,\"easy\":0},\"quizScoreHistory\":[{\"date\":\"30‏/10‏/2026\",\"score\":1,\"total\":2,\"unitTitle\":\"تركيب البروتين\",\"source\":\"livre\",\"chapitre\":1}]}",
+        "boussole_conseils_rubriques_vus": "[\"lesson\",\"examens\",\"training\"]",
+        "kunz_declic_shown_v1": "2026-10-30",
+        "svt_units": "[{\"id\":1,\"title\":\"تركيب البروتين\",\"lessonsCount\":6,\"description\":\"التخصص الوظيفي للبروتينات — Synthèse des protéines\",\"progress\":0,\"isLocked\":false,\"domain\":\"التخصص الوظيفي للبروتينات\"},{\"id\":2,\"title\":\"العلاقة بين بنية ووظيفة البروتين\",\"lessonsCount\":4,\"description\":\"التخصص الوظيفي للبروتينات — Relation structure-fonction\",\"progress\":0,\"isLocked\":true,\"domain\":\"التخصص الوظيفي للبروتينات\"},{\"id\":3,\"title\":\"النشاط الإنزيمي للبروتينات\",\"lessonsCount\":5,\"description\":\"التخصص الوظيفي للبروتينات — Activité enzymatique\",\"progress\":0,\"isLocked\":true,\"domain\":\"التخصص الوظيفي للبروتينات\"},{\"id\":4,\"title\":\"دور البروتينات في الدفاع عن الذات\",\"lessonsCount\":6,\"description\":\"التخصص الوظيفي للبروتينات — Immunité\",\"progress\":0,\"isLocked\":true,\"domain\":\"التخصص الوظيفي للبروتينات\"},{\"id\":5,\"title\":\"دور البروتينات في الاتصال العصبي\",\"lessonsCount\":5,\"description\":\"التخصص الوظيفي للبروتينات — Communication nerveuse\",\"progress\":0,\"isLocked\":true,\"domain\":\"التخصص الوظيفي للبروتينات\"},{\"id\":6,\"title\":\"آليات تحويل الطاقة الضوئية إلى طاقة كيميائية كامنة\",\"lessonsCount\":3,\"description\":\"التحولات الطاقوية — Photosynthèse\",\"progress\":0,\"isLocked\":true,\"domain\":\"التحولات الطاقوية\"},{\"id\":7,\"title\":\"آليات تحويل الطاقة الكيميائية الكامنة في الجزيئات العضوية إلى ATP\",\"lessonsCount\":3,\"description\":\"التحولات الطاقوية — Respiration cellulaire\",\"progress\":0,\"isLocked\":true,\"domain\":\"التحولات الطاقوية\"},{\"id\":8,\"title\":\"تحويل الطاقة على المستوى ما فوق البنية الخلوية\",\"lessonsCount\":3,\"description\":\"التحولات الطاقوية — Bilan énergétique\",\"progress\":0,\"isLocked\":true,\"domain\":\"التحولات الطاقوية\"},{\"id\":9,\"title\":\"النشاط التكتوني للصفائح\",\"lessonsCount\":3,\"description\":\"التكتونية العامة — Activité tectonique\",\"progress\":0,\"isLocked\":true,\"domain\":\"التكتونية العامة\"},{\"id\":10,\"title\":\"بنية الكرة الأرضية\",\"lessonsCount\":3,\"description\":\"التكتونية العامة — Structure de la Terre\",\"progress\":0,\"isLocked\":true,\"domain\":\"التكتونية العامة\"},{\"id\":11,\"title\":\"النشاط التكتوني والبنيات الجيولوجية المرتبطة به\",\"lessonsCount\":3,\"description\":\"التكتونية العامة — Structures géologiques\",\"progress\":0,\"isLocked\":true,\"domain\":\"التكتونية العامة\"}]"
+      },
+      "images": [
+        {
+          "src": "/logo_capitaine_avatar.png",
+          "loaded": true
+        },
+        {
+          "src": "assets/images/schemas/domaine1_proteines/schema_01_adn.svg",
+          "loaded": true
+        },
+        {
+          "src": "assets/images/schemas/domaine1_proteines/schema_01_adn.svg",
+          "loaded": true
+        }
+      ]
+    },
+    {
+      "name": "F11-chapter-reentry",
+      "resultVisible": false
+    },
+    {
+      "name": "F11-bilan-pool",
+      "count": 91,
+      "domains": {
+        "1": 45,
+        "2": 17,
+        "3": 29
+      }
+    },
+    {
+      "name": "F11-bilan-completed",
+      "expected": "14/15",
+      "text": "النتيجة : 14 / 15\n\nالمجال 1 — التخصص الوظيفي للبروتينات\n\n4 / 5\n\nالمجال 2 — التحولات الطاقوية\n\n5 / 5\n\nالمجال 3 — التكتونية العامة\n\n5 / 5\n\nخطة المراجعة — 1 خطأ :\n\nيُختار نمط الاستجابة المناعية (خلطية أو خلوية) حسب:\n\n✅ طبيعة الجسم الغريب وموقعه: حر → أجسام مضادة، داخل خلية → LTc\n\n💡 إشكالية الفصل (l.1990) : المستضد الحر يوجه استجابة خلطية بالأجسام المضادة، والمستضد الخلوي يستدعي الاستجابة الخلوية.\n\n📌 راجع : الفصل 22\n\n↻ تشخيص جديد\nعودة إلى الفصول",
+      "before": {
+        "boussole_prescriptions_v1": "{\"prescriptions\":[{\"motif\":\"accueil:training\",\"cible\":\"training\",\"emisMs\":1793357058291,\"issue\":\"en_attente\"}],\"motifs\":{\"accueil:training\":{\"dits\":1,\"suivis\":0,\"ignores\":0,\"expires\":0}}}",
+        "theme": "light",
+        "kunz_parcours_v1": "{\"done\":{},\"reviews\":{},\"extraAllowance\":0,\"mig\":6}",
+        "boussole_token": "audit-local-fixture-not-a-real-token",
+        "kunz_acces": "{\"statut\":\"essai\",\"expireLe\":\"2099-06-30\"}",
+        "kunz_declic_last_id_v1": "dem_02",
+        "svt_progress": "{\"xp\":0,\"streak\":0,\"completedUnits\":[],\"completedQuestionsCount\":0,\"studyMinutes\":0,\"dailyGoals\":{\"type\":\"minutes\",\"targetMinutes\":25,\"targetQuestions\":20,\"lastActiveDate\":\"\",\"todayMinutes\":0,\"todayQuestions\":0,\"streakDays\":0,\"completedToday\":false},\"flashcardStats\":{\"again\":0,\"hard\":0,\"good\":0,\"easy\":0},\"quizScoreHistory\":[{\"date\":\"30‏/10‏/2026\",\"score\":1,\"total\":2,\"unitTitle\":\"تركيب البروتين\",\"source\":\"livre\",\"chapitre\":1}]}",
+        "boussole_conseils_rubriques_vus": "[\"lesson\",\"examens\",\"training\"]",
+        "kunz_declic_shown_v1": "2026-10-30",
+        "svt_units": "[{\"id\":1,\"title\":\"تركيب البروتين\",\"lessonsCount\":6,\"description\":\"التخصص الوظيفي للبروتينات — Synthèse des protéines\",\"progress\":0,\"isLocked\":false,\"domain\":\"التخصص الوظيفي للبروتينات\"},{\"id\":2,\"title\":\"العلاقة بين بنية ووظيفة البروتين\",\"lessonsCount\":4,\"description\":\"التخصص الوظيفي للبروتينات — Relation structure-fonction\",\"progress\":0,\"isLocked\":true,\"domain\":\"التخصص الوظيفي للبروتينات\"},{\"id\":3,\"title\":\"النشاط الإنزيمي للبروتينات\",\"lessonsCount\":5,\"description\":\"التخصص الوظيفي للبروتينات — Activité enzymatique\",\"progress\":0,\"isLocked\":true,\"domain\":\"التخصص الوظيفي للبروتينات\"},{\"id\":4,\"title\":\"دور البروتينات في الدفاع عن الذات\",\"lessonsCount\":6,\"description\":\"التخصص الوظيفي للبروتينات — Immunité\",\"progress\":0,\"isLocked\":true,\"domain\":\"التخصص الوظيفي للبروتينات\"},{\"id\":5,\"title\":\"دور البروتينات في الاتصال العصبي\",\"lessonsCount\":5,\"description\":\"التخصص الوظيفي للبروتينات — Communication nerveuse\",\"progress\":0,\"isLocked\":true,\"domain\":\"التخصص الوظيفي للبروتينات\"},{\"id\":6,\"title\":\"آليات تحويل الطاقة الضوئية إلى طاقة كيميائية كامنة\",\"lessonsCount\":3,\"description\":\"التحولات الطاقوية — Photosynthèse\",\"progress\":0,\"isLocked\":true,\"domain\":\"التحولات الطاقوية\"},{\"id\":7,\"title\":\"آليات تحويل الطاقة الكيميائية الكامنة في الجزيئات العضوية إلى ATP\",\"lessonsCount\":3,\"description\":\"التحولات الطاقوية — Respiration cellulaire\",\"progress\":0,\"isLocked\":true,\"domain\":\"التحولات الطاقوية\"},{\"id\":8,\"title\":\"تحويل الطاقة على المستوى ما فوق البنية الخلوية\",\"lessonsCount\":3,\"description\":\"التحولات الطاقوية — Bilan énergétique\",\"progress\":0,\"isLocked\":true,\"domain\":\"التحولات الطاقوية\"},{\"id\":9,\"title\":\"النشاط التكتوني للصفائح\",\"lessonsCount\":3,\"description\":\"التكتونية العامة — Activité tectonique\",\"progress\":0,\"isLocked\":true,\"domain\":\"التكتونية العامة\"},{\"id\":10,\"title\":\"بنية الكرة الأرضية\",\"lessonsCount\":3,\"description\":\"التكتونية العامة — Structure de la Terre\",\"progress\":0,\"isLocked\":true,\"domain\":\"التكتونية العامة\"},{\"id\":11,\"title\":\"النشاط التكتوني والبنيات الجيولوجية المرتبطة به\",\"lessonsCount\":3,\"description\":\"التكتونية العامة — Structures géologiques\",\"progress\":0,\"isLocked\":true,\"domain\":\"التكتونية العامة\"}]"
+      },
+      "after": {
+        "boussole_prescriptions_v1": "{\"prescriptions\":[{\"motif\":\"accueil:training\",\"cible\":\"training\",\"emisMs\":1793357058291,\"issue\":\"en_attente\"}],\"motifs\":{\"accueil:training\":{\"dits\":1,\"suivis\":0,\"ignores\":0,\"expires\":0}}}",
+        "theme": "light",
+        "kunz_parcours_v1": "{\"done\":{},\"reviews\":{},\"extraAllowance\":0,\"mig\":6}",
+        "boussole_token": "audit-local-fixture-not-a-real-token",
+        "kunz_acces": "{\"statut\":\"essai\",\"expireLe\":\"2099-06-30\"}",
+        "kunz_declic_last_id_v1": "dem_02",
+        "svt_progress": "{\"xp\":0,\"streak\":0,\"completedUnits\":[],\"completedQuestionsCount\":0,\"studyMinutes\":0,\"dailyGoals\":{\"type\":\"minutes\",\"targetMinutes\":25,\"targetQuestions\":20,\"lastActiveDate\":\"\",\"todayMinutes\":0,\"todayQuestions\":0,\"streakDays\":0,\"completedToday\":false},\"flashcardStats\":{\"again\":0,\"hard\":0,\"good\":0,\"easy\":0},\"quizScoreHistory\":[{\"date\":\"30‏/10‏/2026\",\"score\":1,\"total\":2,\"unitTitle\":\"تركيب البروتين\",\"source\":\"livre\",\"chapitre\":1}]}",
+        "boussole_conseils_rubriques_vus": "[\"lesson\",\"examens\",\"training\"]",
+        "kunz_declic_shown_v1": "2026-10-30",
+        "svt_units": "[{\"id\":1,\"title\":\"تركيب البروتين\",\"lessonsCount\":6,\"description\":\"التخصص الوظيفي للبروتينات — Synthèse des protéines\",\"progress\":0,\"isLocked\":false,\"domain\":\"التخصص الوظيفي للبروتينات\"},{\"id\":2,\"title\":\"العلاقة بين بنية ووظيفة البروتين\",\"lessonsCount\":4,\"description\":\"التخصص الوظيفي للبروتينات — Relation structure-fonction\",\"progress\":0,\"isLocked\":true,\"domain\":\"التخصص الوظيفي للبروتينات\"},{\"id\":3,\"title\":\"النشاط الإنزيمي للبروتينات\",\"lessonsCount\":5,\"description\":\"التخصص الوظيفي للبروتينات — Activité enzymatique\",\"progress\":0,\"isLocked\":true,\"domain\":\"التخصص الوظيفي للبروتينات\"},{\"id\":4,\"title\":\"دور البروتينات في الدفاع عن الذات\",\"lessonsCount\":6,\"description\":\"التخصص الوظيفي للبروتينات — Immunité\",\"progress\":0,\"isLocked\":true,\"domain\":\"التخصص الوظيفي للبروتينات\"},{\"id\":5,\"title\":\"دور البروتينات في الاتصال العصبي\",\"lessonsCount\":5,\"description\":\"التخصص الوظيفي للبروتينات — Communication nerveuse\",\"progress\":0,\"isLocked\":true,\"domain\":\"التخصص الوظيفي للبروتينات\"},{\"id\":6,\"title\":\"آليات تحويل الطاقة الضوئية إلى طاقة كيميائية كامنة\",\"lessonsCount\":3,\"description\":\"التحولات الطاقوية — Photosynthèse\",\"progress\":0,\"isLocked\":true,\"domain\":\"التحولات الطاقوية\"},{\"id\":7,\"title\":\"آليات تحويل الطاقة الكيميائية الكامنة في الجزيئات العضوية إلى ATP\",\"lessonsCount\":3,\"description\":\"التحولات الطاقوية — Respiration cellulaire\",\"progress\":0,\"isLocked\":true,\"domain\":\"التحولات الطاقوية\"},{\"id\":8,\"title\":\"تحويل الطاقة على المستوى ما فوق البنية الخلوية\",\"lessonsCount\":3,\"description\":\"التحولات الطاقوية — Bilan énergétique\",\"progress\":0,\"isLocked\":true,\"domain\":\"التحولات الطاقوية\"},{\"id\":9,\"title\":\"النشاط التكتوني للصفائح\",\"lessonsCount\":3,\"description\":\"التكتونية العامة — Activité tectonique\",\"progress\":0,\"isLocked\":true,\"domain\":\"التكتونية العامة\"},{\"id\":10,\"title\":\"بنية الكرة الأرضية\",\"lessonsCount\":3,\"description\":\"التكتونية العامة — Structure de la Terre\",\"progress\":0,\"isLocked\":true,\"domain\":\"التكتونية العامة\"},{\"id\":11,\"title\":\"النشاط التكتوني والبنيات الجيولوجية المرتبطة به\",\"lessonsCount\":3,\"description\":\"التكتونية العامة — Structures géologiques\",\"progress\":0,\"isLocked\":true,\"domain\":\"التكتونية العامة\"}]"
+      }
+    },
+    {
+      "name": "F11-after-reload",
+      "bilanVisible": 0,
+      "state": {
+        "boussole_prescriptions_v1": "{\"prescriptions\":[{\"motif\":\"accueil:training\",\"cible\":\"training\",\"emisMs\":1793357058291,\"issue\":\"en_attente\"}],\"motifs\":{\"accueil:training\":{\"dits\":1,\"suivis\":0,\"ignores\":0,\"expires\":0}}}",
+        "theme": "light",
+        "kunz_parcours_v1": "{\"done\":{},\"reviews\":{},\"extraAllowance\":0,\"mig\":6}",
+        "boussole_token": "audit-local-fixture-not-a-real-token",
+        "kunz_acces": "{\"statut\":\"essai\",\"expireLe\":\"2099-06-30\"}",
+        "kunz_declic_last_id_v1": "dem_02",
+        "svt_progress": "{\"xp\":0,\"streak\":0,\"completedUnits\":[],\"completedQuestionsCount\":0,\"studyMinutes\":0,\"dailyGoals\":{\"type\":\"minutes\",\"targetMinutes\":25,\"targetQuestions\":20,\"lastActiveDate\":\"\",\"todayMinutes\":0,\"todayQuestions\":0,\"streakDays\":0,\"completedToday\":false},\"flashcardStats\":{\"again\":0,\"hard\":0,\"good\":0,\"easy\":0},\"quizScoreHistory\":[{\"date\":\"30‏/10‏/2026\",\"score\":1,\"total\":2,\"unitTitle\":\"تركيب البروتين\",\"source\":\"livre\",\"chapitre\":1}]}",
+        "boussole_conseils_rubriques_vus": "[\"lesson\",\"examens\",\"training\"]",
+        "kunz_declic_shown_v1": "2026-10-30",
+        "svt_units": "[{\"id\":1,\"title\":\"تركيب البروتين\",\"lessonsCount\":6,\"description\":\"التخصص الوظيفي للبروتينات — Synthèse des protéines\",\"progress\":0,\"isLocked\":false,\"domain\":\"التخصص الوظيفي للبروتينات\"},{\"id\":2,\"title\":\"العلاقة بين بنية ووظيفة البروتين\",\"lessonsCount\":4,\"description\":\"التخصص الوظيفي للبروتينات — Relation structure-fonction\",\"progress\":0,\"isLocked\":true,\"domain\":\"التخصص الوظيفي للبروتينات\"},{\"id\":3,\"title\":\"النشاط الإنزيمي للبروتينات\",\"lessonsCount\":5,\"description\":\"التخصص الوظيفي للبروتينات — Activité enzymatique\",\"progress\":0,\"isLocked\":true,\"domain\":\"التخصص الوظيفي للبروتينات\"},{\"id\":4,\"title\":\"دور البروتينات في الدفاع عن الذات\",\"lessonsCount\":6,\"description\":\"التخصص الوظيفي للبروتينات — Immunité\",\"progress\":0,\"isLocked\":true,\"domain\":\"التخصص الوظيفي للبروتينات\"},{\"id\":5,\"title\":\"دور البروتينات في الاتصال العصبي\",\"lessonsCount\":5,\"description\":\"التخصص الوظيفي للبروتينات — Communication nerveuse\",\"progress\":0,\"isLocked\":true,\"domain\":\"التخصص الوظيفي للبروتينات\"},{\"id\":6,\"title\":\"آليات تحويل الطاقة الضوئية إلى طاقة كيميائية كامنة\",\"lessonsCount\":3,\"description\":\"التحولات الطاقوية — Photosynthèse\",\"progress\":0,\"isLocked\":true,\"domain\":\"التحولات الطاقوية\"},{\"id\":7,\"title\":\"آليات تحويل الطاقة الكيميائية الكامنة في الجزيئات العضوية إلى ATP\",\"lessonsCount\":3,\"description\":\"التحولات الطاقوية — Respiration cellulaire\",\"progress\":0,\"isLocked\":true,\"domain\":\"التحولات الطاقوية\"},{\"id\":8,\"title\":\"تحويل الطاقة على المستوى ما فوق البنية الخلوية\",\"lessonsCount\":3,\"description\":\"التحولات الطاقوية — Bilan énergétique\",\"progress\":0,\"isLocked\":true,\"domain\":\"التحولات الطاقوية\"},{\"id\":9,\"title\":\"النشاط التكتوني للصفائح\",\"lessonsCount\":3,\"description\":\"التكتونية العامة — Activité tectonique\",\"progress\":0,\"isLocked\":true,\"domain\":\"التكتونية العامة\"},{\"id\":10,\"title\":\"بنية الكرة الأرضية\",\"lessonsCount\":3,\"description\":\"التكتونية العامة — Structure de la Terre\",\"progress\":0,\"isLocked\":true,\"domain\":\"التكتونية العامة\"},{\"id\":11,\"title\":\"النشاط التكتوني والبنيات الجيولوجية المرتبطة به\",\"lessonsCount\":3,\"description\":\"التكتونية العامة — Structures géologiques\",\"progress\":0,\"isLocked\":true,\"domain\":\"التكتونية العامة\"}]"
+      }
+    },
+    {
+      "name": "F12-empty",
+      "submitDisabled": true,
+      "prompt": "أكمل: الجين يرتبط هنا بـ: _______"
+    },
+    {
+      "name": "F12-answer-0",
+      "prompt": "أكمل: الجين يرتبط هنا بـ: _______",
+      "answer": "ليس صحيحا أن قطعة من ADN تحمل معلومة تركيب سلسلة ببتيدية أو بروتين معين",
+      "accepted": [
+        "قطعة من ADN تحمل معلومة تركيب سلسلة ببتيدية أو بروتين معين"
+      ],
+      "correctFeedback": 1,
+      "inputLocked": true,
+      "text": "السؤال 34 من 44\n14:35\nأكمل: الجين يرتبط هنا بـ: _______\nإجابة صحيحة\nالشرح والمبرر العلمي:\n\nالتعريف الصحيح: قطعة من ADN تحمل معلومة تركيب سلسلة ببتيدية أو بروتين معين\n\nالسابق\nالتالي"
+    },
+    {
+      "name": "F12-answer-1",
+      "prompt": "أكمل: النيوكليوتيد يرتبط هنا بـ: _______",
+      "answer": "WRONG",
+      "accepted": [
+        "الوحدة البنائية لـADN ويتكوّن من سكر وفوسفات وقاعدة آزوتية"
+      ],
+      "correctFeedback": 0,
+      "inputLocked": true,
+      "text": "السؤال 35 من 44\n14:34\nأكمل: النيوكليوتيد يرتبط هنا بـ: _______\nإجابة غير مكتملة — راجع التصحيح أدناه\nالشرح والمبرر العلمي:\n\nالتعريف الصحيح: الوحدة البنائية لـADN ويتكوّن من سكر وفوسفات وقاعدة آزوتية\n\nالسابق\nالتالي"
+    },
+    {
+      "name": "F12-answer-2",
+      "prompt": "أكمل: قاعدة التكامل يرتبط هنا بـ: _______",
+      "answer": "A تقابل T وG تقابل C في ADN",
+      "accepted": [
+        "A تقابل T وG تقابل C في ADN"
+      ],
+      "correctFeedback": 1,
+      "inputLocked": true,
+      "text": "السؤال 36 من 44\n14:32\nأكمل: قاعدة التكامل يرتبط هنا بـ: _______\nإجابة صحيحة\nالشرح والمبرر العلمي:\n\nالتعريف الصحيح: A تقابل T وG تقابل C في ADN\n\nالسابق\nالتالي"
+    },
+    {
+      "name": "F12-reload-incomplete-session",
+      "quizVisible": [],
+      "before": {
+        "boussole_prescriptions_v1": "{\"prescriptions\":[{\"motif\":\"accueil:training\",\"cible\":\"training\",\"emisMs\":1793357081607,\"issue\":\"en_attente\"}],\"motifs\":{\"accueil:training\":{\"dits\":1,\"suivis\":0,\"ignores\":0,\"expires\":0}}}",
+        "theme": "light",
+        "kunz_declic_last_id_v1": "dem_02",
+        "svt_progress": "{\"xp\":0,\"streak\":0,\"completedUnits\":[],\"completedQuestionsCount\":0,\"studyMinutes\":0,\"dailyGoals\":{\"type\":\"minutes\",\"targetMinutes\":25,\"targetQuestions\":20,\"lastActiveDate\":\"\",\"todayMinutes\":0,\"todayQuestions\":0,\"streakDays\":0,\"completedToday\":false},\"flashcardStats\":{\"again\":0,\"hard\":0,\"good\":0,\"easy\":0},\"quizScoreHistory\":[]}",
+        "lastStudyTime": "1793357088438",
+        "boussole_conseils_rubriques_vus": "[\"lesson\"]",
+        "kunz_declic_shown_v1": "2026-10-30",
+        "svt_units": "[{\"id\":1,\"title\":\"تركيب البروتين\",\"lessonsCount\":6,\"description\":\"التخصص الوظيفي للبروتينات — Synthèse des protéines\",\"progress\":0,\"isLocked\":false,\"domain\":\"التخصص الوظيفي للبروتينات\",\"lastStudiedTimestamp\":1793357088435},{\"id\":2,\"title\":\"العلاقة بين بنية ووظيفة البروتين\",\"lessonsCount\":4,\"description\":\"التخصص الوظيفي للبروتينات — Relation structure-fonction\",\"progress\":0,\"isLocked\":true,\"domain\":\"التخصص الوظيفي للبروتينات\"},{\"id\":3,\"title\":\"النشاط الإنزيمي للبروتينات\",\"lessonsCount\":5,\"description\":\"التخصص الوظيفي للبروتينات — Activité enzymatique\",\"progress\":0,\"isLocked\":true,\"domain\":\"التخصص الوظيفي للبروتينات\"},{\"id\":4,\"title\":\"دور البروتينات في الدفاع عن الذات\",\"lessonsCount\":6,\"description\":\"التخصص الوظيفي للبروتينات — Immunité\",\"progress\":0,\"isLocked\":true,\"domain\":\"التخصص الوظيفي للبروتينات\"},{\"id\":5,\"title\":\"دور البروتينات في الاتصال العصبي\",\"lessonsCount\":5,\"description\":\"التخصص الوظيفي للبروتينات — Communication nerveuse\",\"progress\":0,\"isLocked\":true,\"domain\":\"التخصص الوظيفي للبروتينات\"},{\"id\":6,\"title\":\"آليات تحويل الطاقة الضوئية إلى طاقة كيميائية كامنة\",\"lessonsCount\":3,\"description\":\"التحولات الطاقوية — Photosynthèse\",\"progress\":0,\"isLocked\":true,\"domain\":\"التحولات الطاقوية\"},{\"id\":7,\"title\":\"آليات تحويل الطاقة الكيميائية الكامنة في الجزيئات العضوية إلى ATP\",\"lessonsCount\":3,\"description\":\"التحولات الطاقوية — Respiration cellulaire\",\"progress\":0,\"isLocked\":true,\"domain\":\"التحولات الطاقوية\"},{\"id\":8,\"title\":\"تحويل الطاقة على المستوى ما فوق البنية الخلوية\",\"lessonsCount\":3,\"description\":\"التحولات الطاقوية — Bilan énergétique\",\"progress\":0,\"isLocked\":true,\"domain\":\"التحولات الطاقوية\"},{\"id\":9,\"title\":\"النشاط التكتوني للصفائح\",\"lessonsCount\":3,\"description\":\"التكتونية العامة — Activité tectonique\",\"progress\":0,\"isLocked\":true,\"domain\":\"التكتونية العامة\"},{\"id\":10,\"title\":\"بنية الكرة الأرضية\",\"lessonsCount\":3,\"description\":\"التكتونية العامة — Structure de la Terre\",\"progress\":0,\"isLocked\":true,\"domain\":\"التكتونية العامة\"},{\"id\":11,\"title\":\"النشاط التكتوني والبنيات الجيولوجية المرتبطة به\",\"lessonsCount\":3,\"description\":\"التكتونية العامة — Structures géologiques\",\"progress\":0,\"isLocked\":true,\"domain\":\"التكتونية العامة\"}]"
+      },
+      "after": {
+        "boussole_prescriptions_v1": "{\"prescriptions\":[{\"motif\":\"accueil:training\",\"cible\":\"training\",\"emisMs\":1793357081607,\"issue\":\"en_attente\"}],\"motifs\":{\"accueil:training\":{\"dits\":1,\"suivis\":0,\"ignores\":0,\"expires\":0}}}",
+        "theme": "light",
+        "kunz_declic_last_id_v1": "dem_02",
+        "svt_progress": "{\"xp\":0,\"streak\":0,\"completedUnits\":[],\"completedQuestionsCount\":0,\"studyMinutes\":0,\"dailyGoals\":{\"type\":\"minutes\",\"targetMinutes\":25,\"targetQuestions\":20,\"lastActiveDate\":\"\",\"todayMinutes\":0,\"todayQuestions\":0,\"streakDays\":0,\"completedToday\":false},\"flashcardStats\":{\"again\":0,\"hard\":0,\"good\":0,\"easy\":0},\"quizScoreHistory\":[]}",
+        "lastStudyTime": "1793357088438",
+        "boussole_conseils_rubriques_vus": "[\"lesson\"]",
+        "kunz_declic_shown_v1": "2026-10-30",
+        "svt_units": "[{\"id\":1,\"title\":\"تركيب البروتين\",\"lessonsCount\":6,\"description\":\"التخصص الوظيفي للبروتينات — Synthèse des protéines\",\"progress\":0,\"isLocked\":false,\"domain\":\"التخصص الوظيفي للبروتينات\",\"lastStudiedTimestamp\":1793357088435},{\"id\":2,\"title\":\"العلاقة بين بنية ووظيفة البروتين\",\"lessonsCount\":4,\"description\":\"التخصص الوظيفي للبروتينات — Relation structure-fonction\",\"progress\":0,\"isLocked\":true,\"domain\":\"التخصص الوظيفي للبروتينات\"},{\"id\":3,\"title\":\"النشاط الإنزيمي للبروتينات\",\"lessonsCount\":5,\"description\":\"التخصص الوظيفي للبروتينات — Activité enzymatique\",\"progress\":0,\"isLocked\":true,\"domain\":\"التخصص الوظيفي للبروتينات\"},{\"id\":4,\"title\":\"دور البروتينات في الدفاع عن الذات\",\"lessonsCount\":6,\"description\":\"التخصص الوظيفي للبروتينات — Immunité\",\"progress\":0,\"isLocked\":true,\"domain\":\"التخصص الوظيفي للبروتينات\"},{\"id\":5,\"title\":\"دور البروتينات في الاتصال العصبي\",\"lessonsCount\":5,\"description\":\"التخصص الوظيفي للبروتينات — Communication nerveuse\",\"progress\":0,\"isLocked\":true,\"domain\":\"التخصص الوظيفي للبروتينات\"},{\"id\":6,\"title\":\"آليات تحويل الطاقة الضوئية إلى طاقة كيميائية كامنة\",\"lessonsCount\":3,\"description\":\"التحولات الطاقوية — Photosynthèse\",\"progress\":0,\"isLocked\":true,\"domain\":\"التحولات الطاقوية\"},{\"id\":7,\"title\":\"آليات تحويل الطاقة الكيميائية الكامنة في الجزيئات العضوية إلى ATP\",\"lessonsCount\":3,\"description\":\"التحولات الطاقوية — Respiration cellulaire\",\"progress\":0,\"isLocked\":true,\"domain\":\"التحولات الطاقوية\"},{\"id\":8,\"title\":\"تحويل الطاقة على المستوى ما فوق البنية الخلوية\",\"lessonsCount\":3,\"description\":\"التحولات الطاقوية — Bilan énergétique\",\"progress\":0,\"isLocked\":true,\"domain\":\"التحولات الطاقوية\"},{\"id\":9,\"title\":\"النشاط التكتوني للصفائح\",\"lessonsCount\":3,\"description\":\"التكتونية العامة — Activité tectonique\",\"progress\":0,\"isLocked\":true,\"domain\":\"التكتونية العامة\"},{\"id\":10,\"title\":\"بنية الكرة الأرضية\",\"lessonsCount\":3,\"description\":\"التكتونية العامة — Structure de la Terre\",\"progress\":0,\"isLocked\":true,\"domain\":\"التكتونية العامة\"},{\"id\":11,\"title\":\"النشاط التكتوني والبنيات الجيولوجية المرتبطة به\",\"lessonsCount\":3,\"description\":\"التكتونية العامة — Structures géologiques\",\"progress\":0,\"isLocked\":true,\"domain\":\"التكتونية العامة\"}]"
+      }
+    },
+    {
+      "name": "F13-guest",
+      "paywall": 1
+    },
+    {
+      "name": "F13-list",
+      "count": "18 رسماً"
+    },
+    {
+      "name": "F13-filter",
+      "count": "2 رسماً"
+    },
+    {
+      "name": "F13-draw",
+      "images": 0
+    },
+    {
+      "name": "F13-evaluation",
+      "images": 0,
+      "criteria": 7
+    },
+    {
+      "name": "F13-zero",
+      "score": "0 / 12",
+      "verdict": "يحتاج إعادة كاملة اليوم",
+      "missing": 1
+    },
+    {
+      "name": "F13-perfect",
+      "score": "12 / 12",
+      "verdict": "مُتقَن — انتقل إلى رسم آخر",
+      "image": {
+        "src": "http://localhost:3000/assets/images/schemas/domaine1_regulations/schema_82_synapse_modern_ar.svg",
+        "loaded": true
+      },
+      "before": {
+        "boussole_prescriptions_v1": "{\"prescriptions\":[{\"motif\":\"accueil:training\",\"cible\":\"training\",\"emisMs\":1793357119647,\"issue\":\"en_attente\"}],\"motifs\":{\"accueil:training\":{\"dits\":1,\"suivis\":0,\"ignores\":0,\"expires\":0}}}",
+        "theme": "light",
+        "boussole_token": "audit-local-fixture-not-a-real-token",
+        "kunz_acces": "{\"statut\":\"essai\",\"expireLe\":\"2099-06-30\"}",
+        "kunz_declic_last_id_v1": "dem_03",
+        "boussole_conseils_rubriques_vus": "[\"schemas\",\"reviser\"]",
+        "kunz_declic_shown_v1": "2026-10-30"
+      },
+      "after": {
+        "boussole_prescriptions_v1": "{\"prescriptions\":[{\"motif\":\"accueil:training\",\"cible\":\"training\",\"emisMs\":1793357119647,\"issue\":\"en_attente\"}],\"motifs\":{\"accueil:training\":{\"dits\":1,\"suivis\":0,\"ignores\":0,\"expires\":0}}}",
+        "theme": "light",
+        "boussole_token": "audit-local-fixture-not-a-real-token",
+        "kunz_acces": "{\"statut\":\"essai\",\"expireLe\":\"2099-06-30\"}",
+        "kunz_declic_last_id_v1": "dem_03",
+        "boussole_conseils_rubriques_vus": "[\"schemas\",\"reviser\"]",
+        "kunz_declic_shown_v1": "2026-10-30"
+      }
+    },
+    {
+      "name": "F13-offline-warm",
+      "score": "0 / 12"
+    },
+    {
+      "name": "F13-reentry",
+      "drawing": 1
+    },
+    {
+      "name": "F14-guest",
+      "paywall": 1
+    },
+    {
+      "name": "F14-list",
+      "count": "22 وضعية"
+    },
+    {
+      "name": "F14-empty",
+      "empty": 1
+    },
+    {
+      "name": "F14-search",
+      "count": "1 وضعية"
+    },
+    {
+      "name": "F14-unit-filter",
+      "count": "5 وضعية"
+    },
+    {
+      "name": "F14-detail-hidden",
+      "documents": 1,
+      "elite": 1,
+      "correction": 0,
+      "inputs": 0
+    },
+    {
+      "name": "F14-correction",
+      "text": "نفترض أن الجانوفيا يثبط إنزيم DPP-4 مما يرفع مستوى الهرمون المعزز للأنسولين؛ تبين الوثيقة 1 انخفاض السكر والثانية ارتفاع الهرمون.\n\nالعناصر المنتظرة: تنخفض نسبة السكر بعد تناول الجرعة · كلما مر الزمن كلما انخفضت النسبة · تستقر النسبة عند مستوى منخفض\n\nالعناصر المنتظرة: نفترض أن الجانوفيا يثبط إنزيماً · يرتفع مستوى الهرمون المعزز لإفراز الأنسولين · تنخفض نسبة السكر في الدم نتيجة لذلك\n\nالعناصر المنتظرة: تبين الوثيقة 1 انخفاض نسبة السكر · تبين الوثيقة 2 ارتفاع مستوى الهرمون · يؤكد الربط بين الوثيقتين صحة الفرضية",
+      "before": {
+        "boussole_prescriptions_v1": "{\"prescriptions\":[{\"motif\":\"accueil:training\",\"cible\":\"training\",\"emisMs\":1793357131452,\"issue\":\"en_attente\"}],\"motifs\":{\"accueil:training\":{\"dits\":1,\"suivis\":0,\"ignores\":0,\"expires\":0}}}",
+        "theme": "light",
+        "boussole_token": "audit-local-fixture-not-a-real-token",
+        "kunz_acces": "{\"statut\":\"essai\",\"expireLe\":\"2099-06-30\"}",
+        "kunz_declic_last_id_v1": "dem_04",
+        "boussole_conseils_rubriques_vus": "[\"situations\",\"training\"]",
+        "kunz_declic_shown_v1": "2026-10-30"
+      },
+      "after": {
+        "boussole_prescriptions_v1": "{\"prescriptions\":[{\"motif\":\"accueil:training\",\"cible\":\"training\",\"emisMs\":1793357131452,\"issue\":\"en_attente\"}],\"motifs\":{\"accueil:training\":{\"dits\":1,\"suivis\":0,\"ignores\":0,\"expires\":0}}}",
+        "theme": "light",
+        "boussole_token": "audit-local-fixture-not-a-real-token",
+        "kunz_acces": "{\"statut\":\"essai\",\"expireLe\":\"2099-06-30\"}",
+        "kunz_declic_last_id_v1": "dem_04",
+        "boussole_conseils_rubriques_vus": "[\"situations\",\"training\"]",
+        "kunz_declic_shown_v1": "2026-10-30"
+      }
+    },
+    {
+      "name": "F14-offline-warm",
+      "correction": 1
+    },
+    {
+      "name": "F14-reentry",
+      "correctionHidden": true
+    },
+    {
+      "name": "F15-entry",
+      "text": "الوحدة 1: آليات تركيب البروتين\n\nالدرس 2: استنساخ المعلومة الوراثية\n\nخريطة المفاهيم (D3)\n0%\nالمجال الأول: التخصص الوظيفي للبروتينات\n\nتقوم العنكبوت بإنتاج كميات معتبرة من الخيوط لبناء بيتها الذي يقوم في آن واحد بدور مصيدة لاصطياد فريستها. تتكون خيوط العنكبوت أساساً من بروتين يدعى الفيبروين. لا تقتصر العنكبوت على إنتاج بروتين الفيبروين، وإنما تقوم بتصنيع عدد كبير من البروتينات داخل خلاياها مثلها في ذلك مثل باقي الكائنات الحية الحيوانية والنباتية والدقيقة.\n\nالنواة (ADN → ARNm)\nالمرحلة 1: نسخ الحمض النووي (mRNA)\n\nداخل النواة\n\nالهيولى (انتقال ARNm)\nالمرحلة 2: انتقال (mRNA) إلى الهيولى\n\nوربطه بالريبوزوم\n\nالترجمة (tRNA + أحماض أمينية)\nالمرحلة 3: ترجمة (mRNA) إلى بروتين\n\nربط الأحماض الأمينية\n\nالنتيجة"
+    },
+    {
+      "name": "F15-wrong",
+      "progress": "الوحدة 1: آليات تركيب البروتين\n\nالدرس 2: استنساخ المعلومة الوراثية\n\nخريطة المفاهيم (D3)\n0%\nالمجال الأول: التخصص الوظيفي للبروتينات\n\nتقوم العنكبوت بإنتاج كميات معتبرة من الخيوط لبناء بيتها الذي يقوم في آن واحد بدور مصيدة لاصطياد فريستها. تتكون خيوط العنكبوت أساساً من بروتين يدعى الفيبروين. لا تقتصر العنكبوت على إنتاج بروتين الفيبروين، وإنما تقوم بتصنيع عدد كبير من البروتينات داخل خلاياها مثلها في ذلك مثل باقي الكائنات الحية الحيوانية والنباتية وال"
+    },
+    {
+      "name": "F15-negation",
+      "answer": "لا يحدث تثبيط",
+      "inputDisabled": true,
+      "feedback": "2\nالكلمة المقدسة الثانية: ARN بوليميراز\n\nيرتبط إنزيمARN بوليميرازبمنطقة بداية المورثة في النواة.\n\nالريبوزوم\nARN بوليميراز\nADN بوليميراز\nالوثيقة 3 ص17: تأثير مركب ألفا أمانيتين (سام)\nتركيز ألفا أمانيتين\nنسبة تشكل ARNm\nADN بوليميراز\nARN بوليميراز\nالهيليكاز\n\nانقر على الإنزيم المسؤول عن الاستنساخ في هذا المنحنى.\n\nسؤال الإنتاج: ماذا يحدث إذا أضفنا مثبط نوعي لـ ARN بوليميراز؟\n\nأحسنت! إجابة دقيقة.\n\nالتفسير المنهجي (Interprétation)\n\nوهذا يدل على أن الإنزيم المسؤول عن عملية الاستنساخ هو ARN بوليميراز، لأن تثبيطه أدى إلى تناقص نسبة تشكل ARNm."
+    },
+    {
+      "name": "F15-completed",
+      "has100": true,
+      "text": "بين السلسلتين هي علاقة تكامل القواعد الآزوتية.\n\n4\nالكلمة المقدسة الرابعة: اتجاه الاستنساخ\n\nيتجه الاستنساخ دائما من الجهة التي تكون فيها خيوط الـ ARNmقصيرة.\n\nمتساوية\nطويلة\nقصيرة\nصورة مجهرية (محاكاة): انقر على بداية المورثة (رقم 1) ثم نهايتها (رقم 2)\nبداية 1\nنهاية 2\nسؤال الإنتاج: كيف نحدد اتجاه الاستنساخ من الصورة؟\n\nممتاز! اتجاه الاستنساخ يكون من الخيوط القصيرة إلى الطويلة.\n\nالاستنتاج المنهجي (Constat)\n\nألاحظ أن طول خيوط ARNm يزداد كلما اتجهنا نحو نهاية المورثة، مما يحدد اتجاه النسخ من البداية (خيوط قصيرة) إلى النهاية (خيوط طويلة).\n\n5\nالكلمة المقدسة الخامسة: ARNm والتركيب النهائي\n\nعند وصول الإنزيم إلى نهاية المورثة، ينفصل وتتحرر جزيئةARNmلتنتقل نحو الهيولى.\n\nADN\nARNm\nARNt\nالخلاصة: لخص في جملتين: أين يحدث الاستنساخ؟ وما هو ناتجه؟ (استعمل الكلمات المقدسة)\n\nملخص رائع! لقد استوعبت مفهوم الاستنساخ بالكامل.\n\nالنص العلمي الشامل (Méthodologie finale)\nمقدمة:\nتتميز الخلايا حقيقية النواة بوجود ADN في النواة بينما تركيب البروتين في الهيولى، فما هي الآلية التي تسمح بانتقال المعلومة؟\nعرض:\nيتم الاستنساخ في النواة بواسطة ARN بوليميراز الذي يقرأ السلسلة الناسخة في الاتجاه 3'←5' ويركب ARNm في الاتجاه 5'←3' حسب مبدأ التكامل بين القواعد الآزوتية، حيث يزداد طول الخيوط لتحديد اتجاه الاستنساخ نحو نهاية المورثة.\nخاتمة:\nوعليه، الاستنساخ هو نسخ المعلومة من ADN إلى ARNm الذي سينتقل للهيولى للترجمة.\nما مدى سهولة وفهم هذا الدرس؟\nهذه Leçon Mot par Mot تعتمد على محاكاة SVG مدمجة - لا تحتاج إنترنت خارجي للصور 🚀",
+      "state": {
+        "boussole_prescriptions_v1": "{\"prescriptions\":[{\"motif\":\"accueil:training\",\"cible\":\"training\",\"emisMs\":1793357142501,\"issue\":\"en_attente\"}],\"motifs\":{\"accueil:training\":{\"dits\":1,\"suivis\":0,\"ignores\":0,\"expires\":0}}}",
+        "theme": "light",
+        "kunz_declic_last_id_v1": "dem_02",
+        "boussole_conseils_rubriques_vus": "[\"training\"]",
+        "kunz_declic_shown_v1": "2026-10-30"
+      }
+    },
+    {
+      "name": "F15-reentry",
+      "has100": false,
+      "input": "",
+      "before": {
+        "boussole_prescriptions_v1": "{\"prescriptions\":[{\"motif\":\"accueil:training\",\"cible\":\"training\",\"emisMs\":1793357142501,\"issue\":\"en_attente\"}],\"motifs\":{\"accueil:training\":{\"dits\":1,\"suivis\":0,\"ignores\":0,\"expires\":0}}}",
+        "theme": "light",
+        "kunz_declic_last_id_v1": "dem_02",
+        "boussole_conseils_rubriques_vus": "[\"training\"]",
+        "kunz_declic_shown_v1": "2026-10-30"
+      },
+      "after": {
+        "boussole_prescriptions_v1": "{\"prescriptions\":[{\"motif\":\"accueil:training\",\"cible\":\"training\",\"emisMs\":1793357142501,\"issue\":\"en_attente\"}],\"motifs\":{\"accueil:training\":{\"dits\":1,\"suivis\":0,\"ignores\":0,\"expires\":0}}}",
+        "theme": "light",
+        "kunz_declic_last_id_v1": "dem_02",
+        "boussole_conseils_rubriques_vus": "[\"training\"]",
+        "kunz_declic_shown_v1": "2026-10-30"
+      }
+    }
+  ],
+  "pageErrors": [],
+  "scenarioErrors": [],
+  "browser": "156.0.8078.4"
+}

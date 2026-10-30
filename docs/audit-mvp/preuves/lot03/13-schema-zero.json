@@ -1,0 +1,161 @@
+{
+  "text": "تجاوز إلى المحتوى الرئيسي\nطالب متميز\nSVT BAC DZ\nارسم من الذاكرة؟\nأ\n0\n|\n0 XP\nالقائمة الرئيسية\nالرئيسية\nACCUEIL\nالدروس\nAPPRENDRE\nالتمارين والتدريب\nS'ENTRAÎNER\nمفتاح المنهجية\nMÉTHODE\nالمراجعة\nRÉVISER\nأنا\nMOI\nمخطط المشبك العصبي\n\nالوحدة 5\n\nمطلوب في البكالوريا: 2026 · 2025 · 2024 · 2023 · 2022 · 2021 · 2020 · 2018 · 2017 · 2016\n\nكل الرسومات\n\n0 / 12\n\nيحتاج إعادة كاملة اليوم\n\nعناصر أساسية غابت عن ورقتك\n\n• النهاية قبل المشبكية\n• الشقّ المشبكي\n• الغشاء بعد المشبكي\n• الحويصلات المشبكية المحتوية على المبلّغ\n• المستقبلات النوعية على الغشاء بعد المشبكي\nلماذا نسيت هذه العناصر؟ اسأل المرشد\n\nالأخطاء التي تُفقد النقاط\n\n⚠️ رسم الحويصلات في الجانب بعد المشبكي.\n⚠️ سهم في الاتجاهين: النقل المشبكي أحادي الاتجاه.\n⚠️ نسيان المستقبلات: بدونها لا يوجد تأثير بعد مشبكي.\nمخطط مشبك عصبي مع الحويصلات والمستقبلات.\nأعد الرسم من الذاكرة\n\nالقبطان — مُرشد كنز العلوم\n\nلا نبدأ بالمنهج كله. نبدأ بدقيقتين.\n\nاختبار قصير: سؤال واحد.\n\nيومك الأول في السلسلة.\n\nاختبار قصير: سؤال واحد.\nلاحقًا",
+  "buttons": [
+    {
+      "text": "؟",
+      "label": "نصيحة القبطان في هذه الصفحة",
+      "testid": "conseil-rubrique-ouvrir",
+      "disabled": false
+    },
+    {
+      "text": "",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "أ",
+      "label": "حجم النص",
+      "testid": "taille-texte-btn",
+      "disabled": false
+    },
+    {
+      "text": "الرئيسية\nACCUEIL",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "الدروس\nAPPRENDRE",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "التمارين والتدريب\nS'ENTRAÎNER",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "مفتاح المنهجية\nMÉTHODE",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "المراجعة\nRÉVISER",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "أنا\nMOI",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "كل الرسومات",
+      "label": null,
+      "testid": "drill-quitter",
+      "disabled": false
+    },
+    {
+      "text": "لماذا نسيت هذه العناصر؟ اسأل المرشد",
+      "label": null,
+      "testid": "morchid-ctx-schema-oublis",
+      "disabled": false
+    },
+    {
+      "text": "أعد الرسم من الذاكرة",
+      "label": null,
+      "testid": "drill-recommencer",
+      "disabled": false
+    },
+    {
+      "text": "الرئيسيةAccueil",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "الدروسApprendre",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "التمارين والتدريبS'entraîner",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "مفتاح المنهجيةMéthode",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "المراجعةRéviser",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "أناMoi",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "اختبار قصير: سؤال واحد.",
+      "label": null,
+      "testid": "bulle-capitaine-agir",
+      "disabled": false
+    },
+    {
+      "text": "لاحقًا",
+      "label": "إغلاق",
+      "testid": "bulle-capitaine-fermer",
+      "disabled": false
+    },
+    {
+      "text": "",
+      "label": "القبطان — مُرشد كنز العلوم",
+      "testid": "fab-morchid",
+      "disabled": false
+    }
+  ],
+  "testids": [
+    "conseil-rubrique-ouvrir",
+    "taille-texte-btn",
+    "drill-exercice",
+    "drill-echo-bac",
+    "drill-quitter",
+    "phase-comparaison",
+    "drill-score",
+    "drill-verdict",
+    "drill-oublis",
+    "morchid-ctx-schema-oublis",
+    "drill-asset",
+    "drill-recommencer",
+    "bulle-capitaine",
+    "bulle-capitaine-agir",
+    "bulle-capitaine-fermer",
+    "fab-morchid"
+  ],
+  "inputs": [],
+  "width": 1280,
+  "scrollWidth": 1280,
+  "storage": {
+    "boussole_prescriptions_v1": "{\"prescriptions\":[{\"motif\":\"accueil:training\",\"cible\":\"training\",\"emisMs\":1793357119647,\"issue\":\"en_attente\"}],\"motifs\":{\"accueil:training\":{\"dits\":1,\"suivis\":0,\"ignores\":0,\"expires\":0}}}",
+    "theme": "light",
+    "boussole_token": "audit-local-fixture-not-a-real-token",
+    "kunz_acces": "{\"statut\":\"essai\",\"expireLe\":\"2099-06-30\"}",
+    "kunz_declic_last_id_v1": "dem_03",
+    "boussole_conseils_rubriques_vus": "[\"schemas\",\"reviser\"]",
+    "kunz_declic_shown_v1": "2026-10-30"
+  }
+}

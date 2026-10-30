@@ -25,16 +25,16 @@ définitive n'est attribuée. Ajouter un lien vers la fiche quand l'audit commen
 | F08 | Cartes mentales et détails des notions | `src/components/MindMap/MindMapView.tsx` | [Partielle : zoom et clavier](F08-cartes-mentales.md) |
 | F09 | Animations et simulateur d'électrophorèse | `src/components/AnimationsView.tsx`, `src/components/ElectrophoresisSimulator.tsx` | [Partielle : égalité inexacte dans le feedback](F09-animations-simulateur.md) |
 | F10 | QCM : réponse, explication, score et journalisation | `src/components/QuizView.tsx`, `src/quizCorpus/` | [Séance complète et reprise validées sur U2](F10-qcm.md) |
-| F11 | QCM du livre et bilans d'unité | `src/components/QcmLivreView.tsx`, `src/components/QcmBilanView.tsx` | À auditer |
-| F12 | Textes à trous | `src/data/fillBlanks.ts`, `src/components/QuizView.tsx` | À auditer |
-| F13 | Schémas : exercices et restitution de mémoire | `src/components/SchemaDrillView.tsx`, `src/data/drillBank.ts` | À auditer |
-| F14 | Situations scientifiques et analyse de documents | `src/components/SituationBankView.tsx`, `src/components/DocumentFigure.tsx` | À auditer |
-| F15 | Atelier interactif de production de réponse | `src/App.tsx` (branche `workshop`), `src/components/MethodologyCompilerView.tsx` | À auditer |
-| F16 | Méthodologie Meftah et consignes du BAC | `src/components/MeftahView.tsx`, `src/data/miftahSpec.ts` | À auditer |
-| F17 | Boussole : lire, recueillir, relier, conclure | `src/components/BoussoleCard.tsx`, `docs/SPEC_BOUSSOLE_NSOE.md` | À auditer |
-| F18 | Tadwin : synthèse personnelle et couverture des clés | `src/components/TadwinView.tsx`, `src/lib/tadwin/tadwinEngine.ts` | À auditer |
-| F19 | Correction des réponses ouvertes et limites manuelles | `src/correcteurV1.ts`, `src/lib/validation/` | À auditer |
-| F20 | Relecture, bilan et évolution des productions écrites | `src/components/WritingReviewPanel.tsx`, `src/components/WritingReportSheet.tsx`, `src/components/ProductionEvolutionPanel.tsx` | À auditer |
+| F11 | QCM du livre et bilans d'unité | `src/components/QcmLivreView.tsx`, `src/components/QcmBilanView.tsx` | [Partielle : score fonctionnel, accès incohérent ; conserver et unifier](F11-qcm-livre-bilans.md) |
+| F12 | Textes à trous | `src/data/fillBlanks.ts`, `src/components/QuizView.tsx` | [Partielle : contradictions acceptées ; fiabiliser la validation](F12-textes-a-trous.md) |
+| F13 | Schémas : exercices et restitution de mémoire | `src/components/SchemaDrillView.tsx`, `src/data/schemaDrills.ts` | [Auto-évaluation papier validée sur l'échantillon ; conserver simplement](F13-schemas-memoire.md) |
+| F14 | Situations scientifiques et analyse de documents | `src/components/SituationBankView.tsx`, `src/components/DocumentFigure.tsx` | [Partielle : supports manquants ; sélectionner les exercices complets](F14-situations-documents.md) |
+| F15 | Atelier interactif de transcription | `src/App.tsx` (branche `workshop`), `src/components/LessonTwoView.tsx` | [Partielle : validation permissive et reprise absente ; fusionner ou différer](F15-atelier-interactif.md) |
+| F16 | Méthodologie Meftah et consignes du BAC | `src/components/MeftahView.tsx`, `src/data/miftahSpec.ts` | [Consultation validée sur l'échantillon ; renvoi au verbe à cibler](F16-meftah.md) |
+| F17 | Boussole legacy et cartes de méthode | `src/components/BoussoleCard.tsx`, `src/components/MiftahCard.tsx` | [Partielle : impression tronquée ; unifier les cartes](F17-boussole.md) |
+| F18 | Tadwin : synthèse personnelle et couverture des clés | `src/components/TadwinView.tsx`, `src/lib/tadwin/tadwinEngine.ts` | [Partielle : première fiche puis boucle fermée ; fiabiliser écriture/réécriture](F18-tadwin.md) |
+| F19 | Correction des réponses ouvertes et limites manuelles | `src/correcteurV1.ts`, `src/lib/validation/` | [Partielle : réserve humaine présente, approbation locale non attestée](F19-correction-ouverte.md) |
+| F20 | Relecture, bilan et évolution des productions écrites | `src/components/WritingReviewPanel.tsx`, `src/components/WritingReportSheet.tsx`, `src/components/ProductionEvolutionPanel.tsx` | [Partielle : sauvegarde utile, reprise et export à fiabiliser](F20-bilans-redaction.md) |
 | F21 | Flashcards et répétition espacée SM-2 | `src/components/RevisionView.tsx`, `src/utils/flashcardsSrs.ts` | À auditer |
 | F22 | Rappels des concepts et révisions J+14 du parcours | `src/lib/rappelAdaptatif.ts`, `src/lib/rappelConcepts.ts`, `src/lib/parcours/nbaEngine.ts` | À auditer |
 | F23 | Plan final selon temps disponible, suivi et impression | `src/components/RevisionPlanView.tsx`, `src/data/revisionPlan.ts` | À auditer |
