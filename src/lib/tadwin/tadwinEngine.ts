@@ -147,6 +147,7 @@ export interface EtatTadwin {
 }
 
 export type MaitriseFiche = 'en_cours' | 'maitrise';
+export type StatutRappel = 'actif' | 'desactive';
 
 export interface FicheTadwin {
   id: string;
@@ -161,6 +162,8 @@ export interface FicheTadwin {
   prochainRappelAt: number;
   dernierRappelAt?: number;
   maitrise: MaitriseFiche;
+  /** 'desactive' exclut la fiche de fichesDuees() ; défaut implicite 'actif'. */
+  statutRappel?: StatutRappel;
 }
 
 export function etatParDefaut(): EtatTadwin {
@@ -319,6 +322,48 @@ function remplacerFiche(fiche: FicheTadwin): void {
   ecrireFiches([...sans, fiche]);
 }
 
+// ── Fonctions pures de gestion du statut de rappel (pas de persistance) ─────
+
+/**
+ * Reporter le rappel : prochainRappelAt = now + delaiHeures.
+ * rappelStage / maitrise inchangés.
+ */
+export function reporterRappel(
+  fiche: FicheTadwin,
+  delaiHeures: number = 24,
+  now: number = Date.now(),
+): FicheTadwin {
+  return {
+    ...fiche,
+    prochainRappelAt: now + delaiHeures * 60 * 60 * 1000,
+  };
+}
+
+/**
+ * Désactiver le rappel : la fiche est exclue de fichesDuees().
+ */
+export function desactiverRappel(
+  fiche: FicheTadwin,
+  _now: number = Date.now(),
+): FicheTadwin {
+  return { ...fiche, statutRappel: 'desactive' };
+}
+
+/**
+ * Réactiver le rappel : statut 'actif'.
+ * prochainRappelAt conservé s'il est encore dans le futur, sinon ramené à now.
+ */
+export function reactiverRappel(
+  fiche: FicheTadwin,
+  now: number = Date.now(),
+): FicheTadwin {
+  const prochainRappelAt =
+    fiche.prochainRappelAt != null && fiche.prochainRappelAt > now
+      ? fiche.prochainRappelAt
+      : now;
+  return { ...fiche, statutRappel: 'actif', prochainRappelAt };
+}
+
 export function ficheDue(fiche: FicheTadwin, maintenant: number = Date.now()): boolean {
   return fiche.prochainRappelAt != null && maintenant >= fiche.prochainRappelAt;
 }
@@ -364,9 +409,11 @@ export function enregistrerRappel(
 
 /** Fiches du carnet dont le rappel est dû (palier 4). */
 export function fichesDuees(maintenant: number = Date.now()): FicheTadwin[] {
-  return lireFiches().filter((f) => ficheDue(f, maintenant));
+  return lireFiches().filter((f) => {
+    const actif = (f.statutRappel ?? 'actif') === 'actif';
+    return actif && ficheDue(f, maintenant);
+  });
 }
-
 // ──────────────────────────────────────────────────────────────────────────────
 // Avancement des paliers — la grille est « une tentative terminée », jamais
 // un seuil de note (la note est un outil de diagnostic, pas une barrière).
