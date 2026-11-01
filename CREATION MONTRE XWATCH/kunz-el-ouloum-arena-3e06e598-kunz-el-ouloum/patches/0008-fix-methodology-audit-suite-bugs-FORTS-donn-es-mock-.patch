@@ -1,0 +1,387 @@
+From 9229446923f5290fdb3ad21352a295d1b6301504 Mon Sep 17 00:00:00 2001
+From: sinamind414 <sinamind414@users.noreply.github.com>
+Date: Thu, 3 Sep 2026 13:21:06 +0000
+Subject: [PATCH 8/9] =?UTF-8?q?fix(methodology):=20audit=20suite=20?=
+ =?UTF-8?q?=E2=80=94=20bugs=20FORTS=20(donn=C3=A9es=20mock=C3=A9es,=20?=
+ =?UTF-8?q?=D9=85=D9=81=D8=AA=D8=A7=D8=AD=20p=C3=A9rim=C3=A9)=20+=20bugs?=
+ =?UTF-8?q?=20FAIBLES=20(20=20crit=C3=A8res=20sans=20vraie=20r=C3=A8gle)?=
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+BUGS FORTS :
+1) Matrice d'icm « مصفوفة الإتقان » : 92/85/68/84… affichés EN DUR (les données de
+   démonstration que la v1 prétendait avoir retirées). → calculée depuis le carnet
+   réel (dernier icm par verbe×thème), cellules « — » si non évalué, note d'honnêteté.
+2) « دفتر الأخطاء النوعية (الأسبوع الحالي) » : compteurs 4/3/2/1 en dur. → semés depuis
+   les productions des 7 derniers jours + état vide honnête.
+3) مفتاح périmé au changement de verbe : sélecteur + cartes + reprise de brouillon ne
+   réinitialisaient PAS switchChoice → un rapport pouvait hériter de la décision du
+   verbe précédent. → porte du مفتاح rouverte à chaque changement (stades 3/4).
+4) Timer au retour de brouillon : repartait du montant périmé (180) sans démarrer.
+   → chrono = limite du bon exercice + isTimerRunning(true).
+
+BUG FAIBLE (le plus lourd) :
+5) 20 critères jugés par le fallback « longueur > 40 » au lieu de leur vraie règle
+   (comp_c2, cr_c1-4, ded_c2, exp_m_c1-2, hyp_c1, ju_c1-4, sc_c1-4, sch_c1-2, val_c2)
+   → détections réelles alignées sur les wording/check déclarés.
+6) missing_unit étendu : tous les verbes à document + texte scientifique.
+7) ju_c2 assoupli (« نلاحظ في الوثيقة 1 أن » accepté).
+
+Tests : tsc 0 erreur · build ✓ 6,1 s · 24/24 tests runtime des nouvelles règles.
+---
+ src/components/MethodologyCompilerView.tsx | 103 ++++++++------
+ src/utils/methodologyScorer.ts             | 148 ++++++++++++++++++++-
+ 2 files changed, 211 insertions(+), 40 deletions(-)
+
+diff --git a/src/components/MethodologyCompilerView.tsx b/src/components/MethodologyCompilerView.tsx
+index dc4cd22..0ecd1d7 100644
+--- a/src/components/MethodologyCompilerView.tsx
++++ b/src/components/MethodologyCompilerView.tsx
+@@ -66,19 +66,27 @@ export default function MethodologyCompilerView({ onBackToHome }: MethodologyPro
+   const [showSwitchGate, setShowSwitchGate] = useState(false);
+   const [switchChoice, setSwitchChoice] = useState<SwitchState | null>(null);
+ 
+-  // Local storage stats & matrix
+-  const [matrixScores, setMatrixScores] = useState<Record<string, Record<string, number>>>({
+-    verb_analyse_v1: { protein_synthesis: 92, enzymology: 85, immunology: 68, neuro_comm: 84 },
+-    verb_explain_v1: { protein_synthesis: 71, enzymology: 88, immunology: 64, neuro_comm: 79 },
+-    verb_compare_v1: { protein_synthesis: 80, enzymology: 90, immunology: 87, neuro_comm: 62 },
+-    verb_hypothesis_v1: { protein_synthesis: 75, enzymology: 80, immunology: 70, neuro_comm: 65 }
+-  });
+-
+-  const [weeklyErrorCounters, setWeeklyErrorCounters] = useState<Record<string, number>>({
+-    missing_unit: 4,
+-    premature_interpretation: 3,
+-    missing_reference: 2,
+-    missing_conclusion: 1
++  // Matrice d'icm PAR VERBE × THÈME — calculée depuis le carnet de bord réel
++  // (dernière note par couple verbe/thème). Plus AUCUNE donnée de démonstration.
++  const matrixScores = React.useMemo(() => {
++    const m: Record<string, Record<string, number>> = {};
++    getProductionLogs().forEach(l => {
++      if (!l.theme || !l.verbId) return;
++      m[l.verbId] = m[l.verbId] || {};
++      m[l.verbId][l.theme] = l.icm; // logs triés par date croissante → on garde la plus récente
++    });
++    return m;
++  }, [evolutionVersion]);
++
++  // Compteur d'erreurs typées (semaine courante) : semé depuis le carnet réel,
++  // pas depuis des valeurs inventées (4/3/2/1).
++  const [weeklyErrorCounters, setWeeklyErrorCounters] = useState<Record<string, number>>(() => {
++    const weekAgo = Date.now() - 7 * 24 * 3600 * 1000;
++    const c: Record<string, number> = {};
++    getProductionLogs()
++      .filter(l => new Date(l.dateISO).getTime() >= weekAgo)
++      .forEach(l => l.errorTags.forEach(t => { c[t] = (c[t] || 0) + 1; }));
++    return c;
+   });
+ 
+   const currentVerb = VERB_CARDS.find(v => v.id === selectedVerbId) || VERB_CARDS[0];
+@@ -189,17 +197,7 @@ export default function MethodologyCompilerView({ onBackToHome }: MethodologyPro
+     });
+     setEvolutionVersion(v => v + 1);
+ 
+-    // Update matrix score & error counters
+-    if (currentExercise.theme) {
+-      setMatrixScores(prev => ({
+-        ...prev,
+-        [selectedVerbId]: {
+-          ...(prev[selectedVerbId] || {}),
+-          [currentExercise.theme]: rep.icm
+-        }
+-      }));
+-    }
+-
++    // Compteur d'erreurs typées de la semaine (carnet réel, plus de mock)
+     if (rep.detectedErrors.length > 0) {
+       setWeeklyErrorCounters(prev => {
+         const nextCounters = { ...prev };
+@@ -226,7 +224,16 @@ export default function MethodologyCompilerView({ onBackToHome }: MethodologyPro
+       || TRAINING_EXERCISES.find(e => e.verbId === entry.verbId)
+       || TRAINING_EXERCISES[0];
+     setSelectedExerciseId(ex.id);
+-    setCurrentStage(entry.stage === 2 ? 2 : 4);
++    const resumeStage = entry.stage === 2 ? 2 : 4;
++    setCurrentStage(resumeStage);
++    // Chrono repart du bon montant pour CET exercice (pas le montant périmé)
++    if (resumeStage === 4) {
++      setTimerSeconds(ex.stage4.timeLimitSec);
++      setIsTimerRunning(true);
++    }
++    // 🔁 Reprise = nouvelle décision de مفتاح (le choix du brouillon ne vaut plus)
++    setSwitchChoice(null);
++    if (resumeStage === 4) setShowSwitchGate(true);
+     // Restaurer le texte (retirer le résumé « البطاقة » stocké après la ligne)
+     const restoredText = entry.text.split('\n— البطاقة:')[0];
+     setStudentText(restoredText);
+@@ -365,6 +372,12 @@ export default function MethodologyCompilerView({ onBackToHome }: MethodologyPro
+                     if (matchingEx) setSelectedExerciseId(matchingEx.id);
+                     else setSelectedExerciseId('');
+                     handleResetExercise();
++                    // 🔁 Nouveau verbe = nouvelle décision : on rouvre la porte du مفتاح
++                    // (sinon le choix du verbe précédent faussait le verdict du rapport)
++                    if (currentStage === 3 || currentStage === 4) {
++                      setShowSwitchGate(true);
++                      if (matchingEx) setTimerSeconds(matchingEx.stage4.timeLimitSec);
++                    }
+                   }}
+                   className="bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 font-black text-gray-900 dark:text-white px-3 py-1.5 rounded-xl text-sm"
+                 >
+@@ -1043,6 +1056,12 @@ export default function MethodologyCompilerView({ onBackToHome }: MethodologyPro
+                           const ex = TRAINING_EXERCISES.find(item => item.verbId === verbCard.id);
+                           if (ex) setSelectedExerciseId(ex.id);
+                           setActiveTab('simulator');
++                          handleResetExercise();
++                          // 🔁 Changer de verbe ne doit jamais hériter du مفتاح précédent
++                          if (currentStage === 3 || currentStage === 4) {
++                            setShowSwitchGate(true);
++                            if (ex) setTimerSeconds(ex.stage4.timeLimitSec);
++                          }
+                         }}
+                         disabled={!TRAINING_EXERCISES.some(item => item.verbId === verbCard.id)}
+                         title={TRAINING_EXERCISES.some(item => item.verbId === verbCard.id) ? 'تدريب المحاكي' : 'لا يتوفر تمرين محاكاة لهذا الفعل بعد'}
+@@ -1163,6 +1182,9 @@ export default function MethodologyCompilerView({ onBackToHome }: MethodologyPro
+               <p className="text-xs md:text-sm text-gray-500 dark:text-gray-400 mt-1">
+                 القاعدة: لا يُعتبر الفعل مؤتمتاً ومكتسباً حتى يحقق التلميذ ICM ≥ 90% في 3 وحدات مختلفة على الأقل.
+               </p>
++              <p className="text-[10px] font-bold text-gray-400 dark:text-gray-500">
++                «—» = لم يُقيَّم بعد في هذه الوحدة — الأرقام كلها من إجاباتك الحقيقية في المحاكي، لا شيء مُخترع.
++              </p>
+             </div>
+ 
+             {/* Matrix Table */}
+@@ -1179,38 +1201,38 @@ export default function MethodologyCompilerView({ onBackToHome }: MethodologyPro
+                   </tr>
+                 </thead>
+                 <tbody>
+-                  {VERB_CARDS.slice(0, 4).map((verb) => {
++                  {VERB_CARDS.map((verb) => {
+                     const scores = matrixScores[verb.id] || {};
+                     const isAutomated = Object.values(scores).filter((s: any) => Number(s) >= 85).length >= 3;
++                    const cellCls = (v: number | undefined) => v === undefined
++                      ? 'bg-gray-50 dark:bg-gray-900 text-gray-400 dark:text-gray-600'
++                      : v >= 90 ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300' : 'bg-amber-100 text-amber-800 dark:bg-amber-950/60 dark:text-amber-300';
++                    const fmtCell = (v: number | undefined) => v === undefined ? '—' : `${v}%`;
+                     return (
+                       <tr key={verb.id} className="border-b border-gray-100 dark:border-gray-800 hover:bg-gray-50/50 dark:hover:bg-white/5">
+                         <td className="p-3 font-black text-gray-900 dark:text-white">{verb.verbAr}</td>
+                         <td className="p-3 text-center">
+-                          <span className={`px-2 py-1 rounded-md font-bold text-xs ${
+-                            (scores.protein_synthesis || 0) >= 90 ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300' : 'bg-amber-100 text-amber-800 dark:bg-amber-950/60 dark:text-amber-300'
+-                          }`}>
+-                            {scores.protein_synthesis || 0}%
++                          <span className={`px-2 py-1 rounded-md font-bold text-xs ${cellCls(scores.protein_synthesis)}`}>
++                            {fmtCell(scores.protein_synthesis)}
+                           </span>
+                         </td>
+                         <td className="p-3 text-center">
+-                          <span className={`px-2 py-1 rounded-md font-bold text-xs ${
+-                            (scores.enzymology || 0) >= 90 ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300' : 'bg-amber-100 text-amber-800 dark:bg-amber-950/60 dark:text-amber-300'
+-                          }`}>
+-                            {scores.enzymology || 0}%
++                          <span className={`px-2 py-1 rounded-md font-bold text-xs ${cellCls(scores.enzymology)}`}>
++                            {fmtCell(scores.enzymology)}
+                           </span>
+                         </td>
+                         <td className="p-3 text-center">
+                           <span className={`px-2 py-1 rounded-md font-bold text-xs ${
+-                            (scores.immunology || 0) >= 90 ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300' : 'bg-red-100 text-red-800 dark:bg-red-950/60 dark:text-red-300'
++                            cellCls(scores.immunology)
+                           }`}>
+-                            {scores.immunology || 0}%
++                            {fmtCell(scores.immunology)}
+                           </span>
+                         </td>
+                         <td className="p-3 text-center">
+                           <span className={`px-2 py-1 rounded-md font-bold text-xs ${
+-                            (scores.neuro_comm || 0) >= 90 ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300' : 'bg-amber-100 text-amber-800 dark:bg-amber-950/60 dark:text-amber-300'
++                            cellCls(scores.neuro_comm)
+                           }`}>
+-                            {scores.neuro_comm || 0}%
++                            {fmtCell(scores.neuro_comm)}
+                           </span>
+                         </td>
+                         <td className="p-3 text-center">
+@@ -1242,6 +1264,11 @@ export default function MethodologyCompilerView({ onBackToHome }: MethodologyPro
+               </div>
+ 
+               <div className="space-y-3">
++                {Object.keys(weeklyErrorCounters).length === 0 && (
++                  <div className="p-3.5 bg-emerald-50 dark:bg-emerald-950/30 rounded-xl border border-emerald-200 dark:border-emerald-800/50 text-[11px] font-black text-emerald-800 dark:text-emerald-300">
++                    لا أخطاء منهجية مسجلة هذا الأسبوع — كل إجابة تكتبها في المحاكي تُقيَّم هنا تلقائياً.
++                  </div>
++                )}
+                 {Object.entries(weeklyErrorCounters).map(([tag, count]) => {
+                   const errorDef = ERROR_TAXONOMY[tag];
+                   if (!errorDef) return null;
+diff --git a/src/utils/methodologyScorer.ts b/src/utils/methodologyScorer.ts
+index 234b09e..5bf71bb 100644
+--- a/src/utils/methodologyScorer.ts
++++ b/src/utils/methodologyScorer.ts
+@@ -74,9 +74,11 @@ export function evaluateStudentProduction(
+   }
+ 
+   // Vérification de l'absence d'unités si des nombres sont présents (missing_unit)
++  // Aligné sur la boussole étape 2 « كل رقم بوحدته » : TOUS les verbes à document,
++  // plus le texte scientifique — plus seulement حَلِّلْ.
+   const numbersPresent = /\d+/.test(textLower);
+   const unitsPresent = /(غ\/ل|g\/l|%|دقيقة|min|ثانية|s|وحدة اعتبارية|ua|°|درجة|ميكرومول)/i.test(textLower);
+-  if (numbersPresent && !unitsPresent && verbCard.id === 'verb_analyse_v1') {
++  if (numbersPresent && !unitsPresent && (REFERENT_VERBS.includes(verbCard.id) || verbCard.id === 'verb_composer_v1')) {
+     detectedErrorsMap.add('missing_unit');
+   }
+ 
+@@ -195,8 +197,150 @@ export function evaluateStudentProduction(
+         ? 'صياغة إخبارية جازمة خالية من الشك والتردد.' 
+         : `خطأ منهجي: « ${criterion.wording.compass} » - تجنب صيغ الشك (ربما/لعل) في الفرضية.`;
+     }
++    else if (criterion.id === 'comp_c2') {
++      // Comparaison : critères explicites communs + similitudes ET différences traitées ensemble
++      const compCriteriaRe = /(أوجه التشابه|أوجه الاختلاف|يتشابه|تتشابه|يختلف|تختلف|بينما|في حين|في المقابل|من جهة أخرى|نفس المعيار|من حيث|من ناحية)/i;
++      passed = compCriteriaRe.test(textLower) && textLower.length > 30;
++      feedback = passed
++        ? 'تم اعتماد معايير مشتركة صريحة وعولجت أوجه التشابه والاختلاف معاً.'
++        : `تنبيه: « ${criterion.wording.compass} » - اذكر المعيار المشترك ثم قارن الطرفين معاً (بينما / في حين).`;
++    }
++    else if (criterion.id === 'cr_c1') {
++      const critSubjectRe = /(نقد|أنتقد|أقيم|أقيّم|موضوع|أعترض|إيجابيات|سلبيات|أدرس هذا)/i;
++      passed = critSubjectRe.test(textLower);
++      feedback = passed
++        ? 'موضوع النقد مصرح به بدقة.'
++        : `تنبيه: « ${criterion.wording.compass} » - صرح أولاً بما تنقده بالضبط.`;
++    }
++    else if (criterion.id === 'cr_c2') {
++      const critPosRe = /(إيجابي|ميزة|مزايا|حسنات|نقاط القوة|من حسن|جيد|مفيد|يجدر الإبقاء)/i;
++      passed = critPosRe.test(textLower) && (REFERENCE_REQUIRED_RE.test(textLower) || textLower.length > 50);
++      feedback = passed
++        ? 'تم ذكر الإيجابيات بدعم من الوثيقة.'
++        : `تنبيه: « ${criterion.wording.compass} » - اذكر على الأقل ميزة واحدة مسنودة بالوثيقة.`;
++    }
++    else if (criterion.id === 'cr_c3') {
++      const critNegRe = /(سلب|عيب|عيوب|حدود|نقائص|قصور|سلبيات|لا يخلو|ينقصه)/i;
++      passed = critNegRe.test(textLower);
++      feedback = passed
++        ? 'تم ذكر السلبيات والحدود.'
++        : `تنبيه: « ${criterion.wording.compass} » - اذكر على الأقل سلبية أو حداً واحداً.`;
++    }
++    else if (criterion.id === 'cr_c4') {
++      const critJudgeRe = /(رأيي|أرى|أعتقد|في رأي|في نظري|حكمي|أوصي|الحكم النهائي)/i;
++      passed = critJudgeRe.test(textLower);
++      feedback = passed
++        ? 'الحكم النهائي متوازن وموجز.'
++        : `تنبيه: « ${criterion.wording.compass} » - اختم بحكم شخصي متوازن موجز (في رأيي …).`;
++    }
++    else if (criterion.id === 'ded_c2') {
++      // L'استنتاج ne doit pas répéter les chiffres : on isole la partie après l'annonce de conclusion
++      const afterConclusion = textLower.split(/الاستنتاج|نستنتج|نخلص/).pop() ?? textLower;
++      passed = !/\d/.test(afterConclusion);
++      feedback = passed
++        ? 'الاستنتاج نظيف من الأرقام المعادة (جملة علمية مجردة).'
++        : `تنبيه: « ${criterion.wording.compass} » - لا تعد الأرقام في الاستنتاج؛ صغ جملة علمية عامة.`;
++    }
++    else if (criterion.id === 'exp_m_c1') {
++      const expDoc1Re = /(الوثيقة 1|الوثيقة الأولى|المنحنى 1|الجدول 1|الشكل 1)/i;
++      passed = expDoc1Re.test(textLower) && /(نلاحظ|تظهر|يبيّن|يتمثل|نستخلص|نتيجة)/i.test(textLower);
++      feedback = passed
++        ? 'تم استغلال الوثيقة الأولى وإبراز نتيجتها المستخلصة.'
++        : `تنبيه: « ${criterion.wording.compass} » - ابدأ بالوثيقة الأولى واذكر نتيجتها (نلاحظ …).`;
++    }
++    else if (criterion.id === 'exp_m_c2') {
++      const expDoc2Re = /(الوثيقة 2|الوثيقة الثانية|المنحنى 2|الجدول 2|الشكل 2)/i;
++      passed = expDoc2Re.test(textLower) && /(نلاحظ|تظهر|يبين|يبيّن|أربط|بينما|في المقابل|في سياق)/i.test(textLower);
++      feedback = passed
++        ? 'تم استغلال الوثيقة الثانية وربطها بالسياق العام.'
++        : `تنبيه: « ${criterion.wording.compass} » - استغل الوثيقة الثانية واربط نتيجتها بالسياق العام.`;
++    }
++    else if (criterion.id === 'hyp_c1') {
++      const hypStartRe = /(نلاحظ|يبيّن|تظهر|الوثيقة|المنحنى|الجدول|التجربة|المعطى)/i;
++      passed = hypStartRe.test(textLower) && (/([؟?]|المشكل|التساؤل|كيف|لماذا|فما)/.test(textLower) || /(طرح|فما هي|إشكال)/i.test(textLower));
++      feedback = passed
++        ? 'الفرضية تنطلق من معطى تجريبي محدد يطرح المشكل.'
++        : `تنبيه: « ${criterion.wording.compass} » - انطلق من معطى تجريبي محدد ثم اطرح المشكل العلمي.`;
++    }
++    else if (criterion.id === 'ju_c1') {
++      const juAnnounceRe = /(أعلن|أرى أن|أعتقد أن|أؤيد|أرفض|أختار|رأيي|في نظري|أرى)/i;
++      passed = juAnnounceRe.test(textLower);
++      feedback = passed
++        ? 'الفكرة أو الاختيار المُراد تعليله مصرح به.'
++        : `تنبيه: « ${criterion.wording.compass} » - أعلن الفكرة أو الاختيار الذي تريد تعليله.`;
++    }
++    else if (criterion.id === 'ju_c2') {
++      const juArgRe = /(يتبين أن|نلاحظ|استنادا|انطلاقا|حجة|دليل|يظهر|يثبت)/i;
++      passed = REFERENCE_REQUIRED_RE.test(textLower) && juArgRe.test(textLower);
++      feedback = passed
++        ? 'حجة من الوثيقة تدعم الفكرة.'
++        : `تنبيه: « ${criterion.wording.compass} » - استخرج حجة من الوثيقة (يتبين أن …).`;
++    }
++    else if (criterion.id === 'ju_c3') {
++      const juAcquisRe = /(نعلم أن|مكتسب|من درسي|سبق لنا|المعروف أن|كما نعلم|من المعارف|تعلمنا)/i;
++      passed = juAcquisRe.test(textLower);
++      feedback = passed
++        ? 'مكتسب قبلي موظف لخدمة الفكرة.'
++        : `تنبيه: « ${criterion.wording.compass} » - وظف مكتسبك القبلي (نعلم أن …).`;
++    }
++    else if (criterion.id === 'ju_c4') {
++      const juCausalRe = /(لأن|وبالتالي|إذن|منه|بالتالي|وبذلك|وبناء|يعود ذلك|بسبب)/i;
++      passed = juCausalRe.test(textLower);
++      feedback = passed
++        ? 'الربط السببي الختامي يثبت صحة الفكرة.'
++        : `تنبيه: « ${criterion.wording.compass} » - اختم بربط سببي (وبالتالي / لأن …).`;
++    }
++    else if (criterion.id === 'sc_c1') {
++      const schShapeRe = /(أرسم|الرسم|مربعات|دوائر|مستطيلات|أشكال|بنيات|الإطار)/i;
++      passed = schShapeRe.test(textLower);
++      feedback = passed
++        ? 'البنيات مرسومة بأشكال هندسية بسيطة ومعبرة.'
++        : `تنبيه: « ${criterion.wording.compass} » - ارسم البنيات بأشكال بسيطة (مربعات/دوائر).`;
++    }
++    else if (criterion.id === 'sc_c2') {
++      const schLabelRe = /(سهم|أسهم|أسمي|تسمية|أكتب بجانب|يُسمّى)/i;
++      passed = schLabelRe.test(textLower);
++      feedback = passed
++        ? 'كل بنية مسمّاة بأسهم أفقية.'
++        : `تنبيه: « ${criterion.wording.compass} » - سمِّ كل بنية بسهم أفقي.`;
++    }
++    else if (criterion.id === 'sc_c3') {
++      const schNumRe = /(مرقم|مرقّم|أرقام|زمني|تسلسل|ترتيب|١\s*[←→]|1\s*[←→])/i;
++      passed = schNumRe.test(textLower);
++      feedback = passed
++        ? 'الظواهر مميزة بأسهم مرقمة حسب التسلسل الزمني.'
++        : `تنبيه: « ${criterion.wording.compass} » - رقم الظواهر حسب تسلسلها الزمني.`;
++    }
++    else if (criterion.id === 'sc_c4') {
++      const schKeyTitleRe = /(مفتاح|عنوان|التسميات|أضع عنوان)/i;
++      passed = schKeyTitleRe.test(textLower);
++      feedback = passed
++        ? 'المفتاح والعنوان الشامل موجودان.'
++        : `تنبيه: « ${criterion.wording.compass} » - ضع مفتاح الأرقام أسفل الرسم وعنواناً شاملاً.`;
++    }
++    else if (criterion.id === 'sch_c1') {
++      const schFrameRe = /(أرسم|إطار|مربع|دائرة|مستطيل|أشكال|صندوق|بنية|هيكل)/i;
++      passed = schFrameRe.test(textLower);
++      feedback = passed
++        ? 'العناصر البيولوجية الفاعلة مؤطرة ومنظمة.'
++        : `تنبيه: « ${criterion.wording.compass} » - ضع العناصر الفاعلة داخل أشكال منظمة.`;
++    }
++    else if (criterion.id === 'sch_c2') {
++      const schArrowRe = /(سهم|أسهم|اتجاه|تدفق|←|→|يؤدي إلى|تحول|يحوّل)/i;
++      passed = schArrowRe.test(textLower);
++      feedback = passed
++        ? 'اتجاهات الأسهم والمعاني الوظيفية مضبوطة وواضحة.'
++        : `تنبيه: « ${criterion.wording.compass} » - اضبط اتجاهات الأسهم ودلالاتها الوظيفية.`;
++    }
++    else if (criterion.id === 'val_c2') {
++      const valConfRe = /(الفرضية|فرضية|يتأكد|تتأكد|يؤكد|ينفي|يدعم|يتوافق مع|يتعارض مع|يثبت)/i;
++      passed = valConfRe.test(textLower);
++      feedback = passed
++        ? 'الدليل مواجه بالفرضية المراد تأكيدها أو نفيها.'
++        : `تنبيه: « ${criterion.wording.compass} » - واجه الدليل مباشرة بنص الفرضية.`;
++    }
+     else {
+-      // Fallback
++      // Fallback de sécurité (aucun critère connu ne devrait l'atteindre)
+       passed = textLower.length > 40;
+       feedback = passed ? 'معيار مستوفى.' : `يرجى مراجعة المعيار: « ${criterion.wording.compass} ».`;
+     }

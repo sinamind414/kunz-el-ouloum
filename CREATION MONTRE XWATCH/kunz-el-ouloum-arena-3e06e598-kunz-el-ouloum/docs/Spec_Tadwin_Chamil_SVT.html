@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Spec — التدوين الشامل (SVT BAC)</title>
+<style>
+  :root{
+    --bg:#0b0f14; --panel:#141b24; --panel2:#1b2430; --border:#26313d;
+    --txt:#e8eef4; --muted:#93a1b0; --green:#37c66b; --gold:#f2c94c;
+    --blue:#4ea1ff; --violet:#a884ff; --teal:#2dd4bf; --red:#f87171;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--txt);
+    font-family:-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;line-height:1.62}
+  .wrap{max-width:1000px;margin:0 auto;padding:34px 22px 90px}
+  header.hd{border-bottom:1px solid var(--border);padding-bottom:22px;margin-bottom:8px}
+  h1{font-size:27px;margin:0 0 6px}
+  .sub{color:var(--muted);font-size:14px}
+  .pill{display:inline-block;font-size:12px;padding:3px 10px;border-radius:999px;background:#1a2432;color:var(--teal);border:1px solid #24333f;margin:3px 4px 0 0}
+  h2{font-size:20px;margin:38px 0 12px;padding-inline-start:11px;border-inline-start:4px solid var(--teal)}
+  h3{font-size:15.5px;margin:22px 0 8px;color:var(--gold)}
+  h4{font-size:14px;margin:16px 0 6px;color:var(--blue)}
+  p{margin:9px 0}
+  .lead{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:18px 20px}
+  .ar{direction:rtl;text-align:right;font-family:"Segoe UI","Noto Naskh Arabic",serif}
+  .callout{background:linear-gradient(160deg,#16283a,#141b24);border:1px solid var(--border);border-radius:14px;padding:16px 18px;margin:14px 0}
+  .callout.g{border-inline-start:4px solid var(--green)}
+  .callout.r{border-inline-start:4px solid var(--red);background:rgba(248,113,113,.06)}
+  .callout.v{border-inline-start:4px solid var(--violet)}
+  table{width:100%;border-collapse:collapse;margin:12px 0;font-size:13.4px}
+  th,td{border:1px solid var(--border);padding:9px 11px;text-align:start;vertical-align:top}
+  th{background:#1a2230;color:var(--muted);font-weight:600}
+  tr:nth-child(even) td{background:#12181f}
+  code{background:#0b1620;border:1px solid #24303c;border-radius:5px;padding:1px 6px;font-family:ui-monospace,Menlo,monospace;font-size:12.4px;color:#a9d1ff}
+  .grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin:12px 0}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:12px 0}
+  @media(max-width:760px){.grid,.grid2{grid-template-columns:1fr}}
+  .card{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:15px 16px}
+  .card .n{font-size:11px;color:var(--muted);font-weight:700;letter-spacing:.5px}
+  .card h4{margin:4px 0 6px}
+  .step{display:flex;gap:14px;margin:12px 0;background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:14px 16px}
+  .step .lvl{flex:none;width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:15px;color:#04140a}
+  .l0{background:#5b6470;color:#e8eef4} .l1{background:var(--blue)} .l2{background:var(--teal)} .l3{background:var(--gold)} .l4{background:var(--green)}
+  .muted{color:var(--muted)}
+  .kw{display:inline-block;background:#12202b;border:1px solid #24414f;color:#8fdcff;border-radius:14px;padding:2px 9px;font-size:12px;margin:2px}
+  .foot{margin-top:40px;padding-top:16px;border-top:1px solid var(--border);color:var(--muted);font-size:12px}
+  .rubric td:first-child{white-space:nowrap;font-weight:600}
+  .tag{font-size:11px;font-weight:700;padding:2px 8px;border-radius:6px}
+  .ok{background:#12331f;color:#8ce6a8} .no{background:#331a1a;color:#ffb3ab}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="hd">
+  <h1>Spécification fonctionnelle — <span class="ar">التدوين الشامل</span></h1>
+  <div class="sub">Module de prise de notes essentielle adapté au BAC SVT (شعبة العلوم التجريبية) · Résumé 3-clés + Carnet شامل + Notation de reformulation</div>
+  <div style="margin-top:12px">
+    <span class="pill">Spec produit — sans code</span>
+    <span class="pill">Inspiré de « محب الكتب » (اكتب أقل، فكّر أكثر)</span>
+    <span class="pill">S'appuie sur le moteur Morchid existant</span>
+    <span class="pill">v2 · 2026-09-30 — décisions figées (voir <code>docs/tadwin_decisions.md</code>)</span>
+  </div>
+</header>
+
+<div class="lead">
+  <p><strong>Objet.</strong> Transformer le réflexe destructeur de l'élève — <em>tout recopier, puis tout oublier</em> — en un
+  geste d'apprentissage actif : <strong>extraire l'essence (« الزيتونة ») de chaque unité, la reformuler avec ses propres mots,
+  et la déposer dans un carnet unique</strong> que Morchid interroge et note. Le module ne note pas la copie, il note la
+  <strong>reformulation</strong> et la <strong>maîtrise des mots-clés que le correcteur attend</strong>.</p>
+  <p><strong>Pourquoi maintenant.</strong> C'est le prolongement naturel de ce que Morchid fait déjà : la notation par points-clés
+  récompense l'essence, et le garde-fou anti-bourrage (R3) punit déjà le fait d'« écrire tout ». Ce module rend cette philosophie
+  <em>enseignable et progressive</em>.</p>
+</div>
+
+<h2>1. Principe pédagogique (le « pourquoi »)</h2>
+<div class="grid">
+  <div class="card"><div class="n">SCIENCE</div><h4>Écrire moins, retenir plus</h4><p class="muted">Reformuler avec ses mots (effet génératif + rappel actif) bat le surlignage et la copie verbatim dans la quasi-totalité des études sur la mémoire.</p></div>
+  <div class="card"><div class="n">CONTRAINTE</div><h4>La limite crée l'effort</h4><p class="muted">Imposer « 3 clés, une demi-page » force le cerveau à <em>juger</em> ce qui compte — c'est une difficulté désirable, pas un handicap.</p></div>
+  <div class="card"><div class="n">BAC</div><h4>Aligné sur le correcteur</h4><p class="muted">Au BAC SVT, la note vient des <em>mots-clés attendus</em> placés dans une phrase reformulée + la relation cause→effet. Exactement les 3 clés.</p></div>
+</div>
+
+<h2>2. L'unité de base : la fiche « 3 clés » (<span class="ar">مفتاح الوحدة</span>)</h2>
+<p>Chaque leçon/unité se résume en <strong>exactement trois clés</strong>. Ce triptyque n'est pas arbitraire : il mappe les trois
+choses que le correcteur récompense.</p>
+
+<div class="grid">
+  <div class="card"><div class="n">المِفتاح 1</div><h4>الآلية — le mécanisme reformulé</h4><p class="muted">L'histoire scientifique en <strong>1 à 2 phrases, tes mots</strong>. « Quoi → où → comment → résultat ».</p></div>
+  <div class="card"><div class="n">المِفتاح 2</div><h4>الكلمات المفتاحية — les termes exacts</h4><p class="muted"><strong>3 à 5 termes précis</strong> que le correcteur attend. Orthographe scientifique exacte (synonymes acceptés).</p></div>
+  <div class="card"><div class="n">المِفتاح 3</div><h4>العلاقة / المخطط — la chaîne ou le schéma</h4><p class="muted">La relation <strong>cause → effet</strong> ou <strong>structure → fonction</strong> en une ligne fléchée.</p></div>
+</div>
+
+<div class="callout g">
+  <h3 style="margin-top:0">Exemple concret — Unité : الغوص (subduction)</h3>
+  <div class="ar">
+    <p><strong>المِفتاح 1 (الآلية، بأسلوبك):</strong> صفيحة محيطية باردة وكثيفة تندسّ تحت صفيحة أخرى عند حدّ متقارب.</p>
+    <p><strong>المِفتاح 2 (الكلمات المفتاحية):</strong>
+      <span class="kw">خندق محيطي</span><span class="kw">مستوى بنيوف</span><span class="kw">شذوذ حراري سلبي</span><span class="kw">بركانية</span></p>
+    <p><strong>المِفتاح 3 (العلاقة):</strong> برودة الصفيحة ↑ ⟵ سُمكها ↑ ⟵ كثافتها ↑ ⟸ فتغوص بقوة الثقل.</p>
+  </div>
+  <p class="muted" style="margin-bottom:0">Une unité entière tient sur une demi-page. Trois clés × 3-4 unités → « الصورة الكبيرة » du domaine se fixe.</p>
+</div>
+
+<h2>3. Le carnet unique (<span class="ar">الدفتر الشامل</span>)</h2>
+<p>Toutes les fiches 3-clés de l'élève vivent dans un carnet <strong>unique, personnel, hors-ligne</strong>, organisé selon la
+structure officielle du programme.</p>
+
+<div class="grid2">
+  <div class="card">
+    <h4>Organisation (arborescence)</h4>
+    <p class="muted">3 Domaines → 11 Unités → 1 fiche « 3 clés » par unité (+ variantes de l'élève). C'est la même ossature que Morchid — les fiches de l'élève se rangent <em>à côté</em> des fiches curées, jamais mélangées.</p>
+  </div>
+  <div class="card">
+    <h4>Vue « carte mentale » (cercle + carrés)</h4>
+    <p class="muted">Reprise directe de la méthode vidéo : <strong>cercle central</strong> = le domaine (l'objectif) ; <strong>carrés autour</strong> = les unités ; <strong>colonne de droite</strong> = « mes réflexes » — adaptation SVT des « bonnes/mauvaises habitudes » : <em>mes oublis récurrents</em> (ex. « j'oublie la conclusion ») tirés du دفتر الأخطاء.</p>
+  </div>
+</div>
+
+<h3>Modèle de données conceptuel (entités, pas de code)</h3>
+<table>
+  <thead><tr><th>Entité</th><th>Champs signifiants</th><th>Rôle</th></tr></thead>
+  <tbody>
+    <tr><td><strong>FicheTroisClés</strong></td><td>unité, clé1_mécanisme (texte élève), clé2_motsClés (liste), clé3_relation (texte élève), statutMaîtrise, dateCréation, dateRévisions[]</td><td>l'atome du carnet</td></tr>
+    <tr><td><strong>Carnet</strong></td><td>élève (pseudonyme local), fiches[] indexées par domaine/unité, réflexesRécurrents[]</td><td>le conteneur personnel, 100% local</td></tr>
+    <tr><td><strong>RéférentielUnité</strong></td><td>3 clés prescrites avec <code>atoms[]</code> auteur-déclarés, relationModèle, texteSourceLeçon (anti-copie, V1.5)</td><td>fourni par Morchid pour noter/comparer</td></tr>
+    <tr><td><strong>ÉvaluationReformulation</strong></td><td>scoreReformulation, scoreCouverture, scoreConcision, scoreExactitude, verdict, indices[]</td><td>résultat d'une soumission</td></tr>
+    <tr><td><strong>PlanRévision</strong></td><td>fiche, échéances (J+1, J+3, J+7, J+14)</td><td>répétition espacée</td></tr>
+  </tbody>
+</table>
+<p class="muted">Tout est stocké <strong>localement</strong> (aucune PII, pseudonyme + code d'export 8 caractères), cohérent avec l'app hors-ligne.</p>
+
+<h2>4. La notation de la reformulation (le cœur)</h2>
+<p>Morchid ne juge pas « as-tu tout écrit ». Il juge <strong>« as-tu compris et t'es-tu approprié »</strong>, sur une grille de
+4 critères notés 0-1-2 (max 8) — même logique que le protocole de preuve existant.</p>
+
+<table class="rubric">
+  <thead><tr><th>Critère</th><th>0</th><th>1</th><th>2</th></tr></thead>
+  <tbody>
+    <tr><td>C1 · Reformulation <span class="tag" style="background:#24333f;color:var(--muted)">V1.5</span><br><span class="muted">(tes mots, pas la copie)</span></td><td>Copie quasi mot-à-mot de la leçon</td><td>Partiellement reformulé</td><td>Entièrement dans ton style</td></tr>
+    <tr><td>C2 · Couverture <strong>par clé</strong><br><span class="muted">(l'atome est la preuve, la clé est l'unité notée)</span></td><td>&lt; 50 % des clés écrites couvertes</td><td>50–80 %</td><td>≥ 80 % des clés couvertes</td></tr>
+    <tr><td>C3 · Concision<br><span class="muted">(≤ demi-page)</span></td><td>Dépasse largement la limite</td><td>À la limite</td><td>Concis et dense</td></tr>
+    <tr><td>C4 · Exactitude<br><span class="muted">(pas d'inversion de sens)</span></td><td>Erreur / polarité inversée</td><td>Approximatif</td><td>Correct</td></tr>
+  </tbody>
+</table>
+
+<div class="callout g">
+  <h4 style="margin-top:0">C2 — la règle exacte (décision figée, mesurée)</h4>
+  <p style="margin:6px 0"><strong>Une clé est « couverte » si la réponse contient assez de <em>ses propres</em> atomes</strong> (ses termes-preuves ; seuil calibré sur fiches-modèles — jamais supposé). <strong>C2 = clés couvertes / clés écrites.</strong></p>
+  <p style="margin:0">Pourquoi pas un ratio sur l'union des atomes : mesuré, 2 clés composites tolèrent 3 manques là où 2 clés simples n'en tolèrent <strong>aucun</strong> — même effort au niveau bloc, tolérance opposée. Noter <em>par clé</em> place la note exactement là où vit « <span class="ar">قاوم الرغبة — مفتاحان يكفيان</span> » : au niveau du bloc. Options rejetées et mesures dans <code>docs/tadwin_decisions.md</code>.</p>
+</div>
+
+<div class="callout v">
+  <h4 style="margin-top:0">Comment ces critères s'appuient sur le moteur EXISTANT (aucune brique magique)</h4>
+  <ul style="margin:6px 0 0">
+    <li><strong>C1 (anti-copie) <span class="tag" style="background:#24333f;color:var(--muted)">V1.5</span></strong> → détection de chevauchement verbatim entre la réponse et <code>texteSourceLeçon</code> (<strong>n-grammes longs ≥ 5 tokens, avec exemption des spans contenant un atome attendu</strong> — sans exemption, C1 et C2 se contredisent) : au-delà du seuil, verdict « <span class="ar">أنت تنقل، أعِد الصياغة بأسلوبك</span> ». Reporté en V1.5 : seul risque scientifique du module, à calibrer sur fiches-modèles.</li>
+    <li><strong>C2 (couverture par clé)</strong> → <strong>évaluateur par-clé à écrire</strong> (il enveloppe le matcher d'atomes existant) + expansion synonyme (R3) : « acetylcholine » = « الأستيل كولين ». Les atomes de chaque clé sont <strong>auteur-déclarés</strong> (<code>motsClesAttendus[i].atoms[]</code>) — jamais un parser runtime (l'écart 28 vs 17 clés mono-atome selon l'instrument en a prouvé la fragilité).</li>
+    <li><strong>C3 (concision)</strong> → cap de longueur + détecteur de bourrage (R3) : répéter un mot-clé ne gonfle pas la note.</li>
+    <li><strong>C4 (exactitude)</strong> → notation consciente de la négation (déjà présente : <span class="ar">لا / ليس</span> ne créditent pas un point nié).</li>
+  </ul>
+</div>
+
+<h2>5. Comment l'élève APPREND la méthode — libération graduelle</h2>
+<p>Le point décisif : on n'apprend pas « écris moins » en le lisant une fois. On l'apprend par <strong>libération graduelle de la
+responsabilité</strong> (je montre → nous faisons ensemble → tu fais seul), avec un <strong>estompage progressif de l'aide</strong>
+(<em>fading</em>). Cinq paliers.</p>
+
+<div class="step"><div class="lvl l0">0</div><div>
+  <h4 style="margin:0 0 4px"><span class="ar">الصدمة</span> — La preuve (le crochet)</h4>
+  <p class="muted" style="margin:0">L'élève lit une unité normalement. Au <strong>rappel J+1 déjà planifié par le moteur</strong> (étape 0 de la répétition espacée existante, ancrée sur <code>reviewStartedAt</code> — pas un minuteur client, pas de notification 48 h qui casserait la promesse « Minute 0 »), Morchid lui demande de la restituer. Il constate qu'il a oublié.
+  Message : « <span class="ar">المشكلة ليست في ذاكرتك، بل في طريقة تدوينك</span> ». On ne prêche pas la méthode, on prouve le besoin.</p>
+</div></div>
+
+<div class="step"><div class="lvl l1">1</div><div>
+  <h4 style="margin:0 0 4px"><span class="ar">موجّه</span> — Guidé (modelage + gabarit pré-rempli)</h4>
+  <p class="muted" style="margin:0">Morchid <strong>montre un exemple travaillé</strong> (une fiche 3-clés modèle), puis présente le gabarit à trous : les
+  <strong>mots-clés sont donnés</strong>, l'élève n'écrit que la clé 1 (le mécanisme) en reformulant. Beaucoup d'indices, zéro pression.
+  Objectif : ressentir « je peux résumer en une phrase ».</p>
+</div></div>
+
+<div class="step"><div class="lvl l2">2</div><div>
+  <h4 style="margin:0 0 4px"><span class="ar">مُساعَد</span> — Assisté (pratique guidée + retour en direct)</h4>
+  <p class="muted" style="margin:0">Gabarit vide, mais l'élève peut <strong>demander un indice</strong>. Retour immédiat pendant la frappe :
+  « <span class="ar">⚠︎ تكرار — ابحث عن الزبدة</span> » (bourrage, R3). L'alerte copie « <span class="ar">⚠︎ أنت تنقل من الدرس</span> » arrive en <strong>V1.5</strong> avec C1. C'est ici que se
+  travaille le geste central : <strong>résister à l'envie d'écrire plus</strong>.</p>
+</div></div>
+
+<div class="step"><div class="lvl l3">3</div><div>
+  <h4 style="margin:0 0 4px"><span class="ar">مستقل</span> — Autonome (production notée)</h4>
+  <p class="muted" style="margin:0"><strong>Étape de sélection des clés — obligatoire avant l'écriture.</strong> L'élève <strong>choisit 2 à 3 clés parmi les 3 prescrites de l'unité</strong>. Double rôle : (1) c'est le geste « <span class="ar">قاوم الرغبة — مفتاحان يكفيان</span> » rendu <em>explicite</em> — on entraîne la retenue par le choix même ; (2) c'est ce qui donne à C2 son <strong>dénominateur</strong> : les clés <em>écrites</em>, pas un pool d'unité. Sans cette étape, C2 n'a pas de dénominateur au palier 3 (gabarit vide, de mémoire) et la note deviendrait circulaire.
+  Puis gabarit vide, <strong>chronomètre doux</strong> (<code>FocusTimer</code>), aucun indice. L'élève produit ses clés ; Morchid note (C2-C4 en V1) et rend un verdict + 1 conseil unique et actionnable. La fiche entre dans le carnet.</p>
+</div></div>
+
+<div class="step"><div class="lvl l4">4</div><div>
+  <h4 style="margin:0 0 4px"><span class="ar">التثبيت</span> — Consolidation (rappel espacé)</h4>
+  <p class="muted" style="margin:0">Répétition espacée sur les <strong>propres fiches</strong> de l'élève (J+1, J+3, J+7, J+14 — les stages existants de <code>store.ts</code>) en mode <em>rappel actif</em>
+  (carnet masqué, l'élève restitue de mémoire). C'est ce qui transforme la fiche en savoir durable, et alimente la vue « carte mentale ».</p>
+</div></div>
+
+<div class="callout g">
+  <h4 style="margin-top:0">Deux dispositifs d'engagement (repris de la vidéo)</h4>
+  <p style="margin:6px 0"><strong>Le défi 3 jours</strong> — à l'entrée du module : « <span class="ar">جرّب 3 أيام فقط</span> ». Un objet d'engagement qui abaisse la barrière et crée l'habitude.</p>
+  <p style="margin:0"><strong>Le micro-geste « retiens-toi »</strong> — quand l'élève dépasse 2-3 mots-clés, une micro-interaction l'invite à s'arrêter : « <span class="ar">قاوم الرغبة — مفتاحان يكفيان</span> ». On entraîne littéralement la retenue.</p>
+</div>
+
+<h2>6. Parcours d'écran (flux, sans UI figée)</h2>
+<table>
+  <thead><tr><th>#</th><th>Écran / moment</th><th>Ce que voit l'élève</th></tr></thead>
+  <tbody>
+    <tr><td>1</td><td>Entrée module</td><td>« <span class="ar">التدوين الشامل</span> » + défi 3 jours + choix de l'unité à résumer</td></tr>
+    <tr><td>2</td><td>Modelage (palier 1)</td><td>fiche 3-clés modèle annotée « voici la زبدة »</td></tr>
+    <tr><td>3</td><td>Choix des clés + gabarit</td><td><strong>choix de 2-3 clés parmi les 3 prescrites</strong> (le geste « مفتاحان يكفيان »), puis 3 champs (mécanisme / mots-clés / relation) + compteur de mots-clés</td></tr>
+    <tr><td>4</td><td>Retour en direct</td><td>alertes copie/bourrage, indices à la demande (selon palier)</td></tr>
+    <tr><td>5</td><td>Verdict</td><td>score d'entraînement labellisé « <span class="ar">تقييم التدوين — ليست نقطة البكالوريا</span> » + barres (C2-C4 en V1 ; C1 en V1.5), <strong>un seul</strong> conseil actionnable</td></tr>
+    <tr><td>6</td><td>Carnet</td><td>fiche rangée par domaine/unité ; badge de maîtrise ; échéances de révision</td></tr>
+    <tr><td>7</td><td>Carte mentale</td><td>cercle domaine + carrés unités + colonne « mes réflexes récurrents »</td></tr>
+    <tr><td>8</td><td>Rappel espacé</td><td>carnet masqué → restitution de mémoire → mise à jour du statut</td></tr>
+  </tbody>
+</table>
+
+<h2>7. Anti-triche &amp; garde-fous</h2>
+<div class="grid2">
+  <div class="card"><h4><span class="tag no">C1</span> Détection de copie verbatim <span class="tag" style="background:#24333f;color:var(--muted)">V1.5</span></h4><p class="muted">Chevauchement de <strong>n-grammes longs (≥ 5 tokens)</strong> avec le texte de la leçon, <strong>exemptant les spans qui contiennent un atome attendu</strong> → refus de créditer la reformulation. « Copier n'est pas résumer ». Reporté en V1.5 : seul risque scientifique du module, isolé et calibré sur fiches-modèles.</p></div>
+  <div class="card"><h4><span class="tag no">C3</span> Détection de bourrage</h4><p class="muted">Réutilise le détecteur du projet (R3) : répéter le même terme ne monte pas la note.</p></div>
+  <div class="card"><h4><span class="tag ok">C2</span> Tolérance intelligente</h4><p class="muted">Synonymes et fautes de frappe acceptés (R1/R3) : on ne pénalise pas une bonne idée mal tapée sur un clavier de téléphone.</p></div>
+  <div class="card"><h4><span class="tag ok">C4</span> Sens avant forme</h4><p class="muted">La négation/inversion est comprise : nier un point-clé ne le crédite pas.</p></div>
+</div>
+
+<h2>8. Intégration avec l'existant</h2>
+<table>
+  <thead><tr><th>Brique existante</th><th>Réutilisation</th></tr></thead>
+  <tbody>
+    <tr><td>Moteur Morchid (points-clés, négation, synonymes R3, anti-bourrage R3)</td><td>C3 et C4 par réusage direct ; C2 via un <strong>scorer par-clé neuf</strong> qui enveloppe le matcher d'atomes existant</td></tr>
+    <tr><td>Dictionnaire de synonymes + tolérance aux fautes (R1/R3)</td><td>Équité de C2</td></tr>
+    <tr><td>Détecteur de bourrage (R3)</td><td>Garde-fou de C3</td></tr>
+    <tr><td>Bases (fiches, guide, livre étoffé R4)</td><td>Source des mots-clés attendus et du <code>texteSourceLeçon</code></td></tr>
+    <tr><td>دفتر الأخطاء <span class="tag" style="background:#24333f;color:var(--muted)">V1.5</span></td><td>Alimente la colonne « mes réflexes récurrents » de la carte mentale. Briques source existantes (<code>learningErrors</code> dans <code>store.ts</code>, clé <code>kunz_learning_errors_v1</code>) mais le carnet persistant est à créer.</td></tr>
+    <tr><td><code>FocusTimer</code> + capsules Déclic (commit <code>9c79d05</code>)</td><td>Chronomètre doux du palier 3 + rappel motivation 1×/jour</td></tr>
+    <tr><td>Gamification / badges</td><td>Badge « <span class="ar">صائد الزبدة</span> » (maître de l'essence) ; série du défi 3 jours</td></tr>
+    <tr><td>Fonctionnement hors-ligne</td><td>Tout le module vit en local — cohérent avec la promesse « Minute 0 »</td></tr>
+  </tbody>
+</table>
+
+<h2>9. Comment on mesure que ça marche (preuve, pas opinion)</h2>
+<table>
+  <thead><tr><th>Indicateur</th><th>Cible</th></tr></thead>
+  <tbody>
+    <tr><td>Taux de reformulation (C1 = 2) sur fiches autonomes</td><td>≥ 70 % après 1 semaine</td></tr>
+    <tr><td>Rétention à J+7 (rappel actif réussi sur ses propres fiches)</td><td>&gt; contrôle « lecture seule »</td></tr>
+    <tr><td>Longueur médiane d'une fiche</td><td>≤ demi-page (baisse vs habitude initiale)</td></tr>
+    <tr><td>Complétion du défi 3 jours</td><td>≥ 50 % des entrants</td></tr>
+  </tbody>
+</table>
+<p class="muted">À valider par un mini-protocole pré/post-test avec groupe contrôle, comme <code>PROTOCOLE_PREUVE.md</code>. Si la reformulation ne bat pas la lecture seule, le module est réorienté — pas maintenu par inertie.</p>
+
+<h2>10. Ce qu'on refuse de promettre</h2>
+<div class="callout r">
+  <ul style="margin:0">
+    <li><strong>Pas de « note de BAC garantie »</strong> : le module entraîne un geste, il ne prédit pas une copie.</li>
+    <li><strong>Pas de correction de dissertation complète</strong> : on note 3 clés, pas un raisonnement argumenté de bout en bout.</li>
+    <li><strong>Pas de « résumé parfait généré pour toi »</strong> : si Morchid écrivait la fiche à la place de l'élève, il tuerait l'effet génératif — donc il <em>refuse</em> de le faire. Il guide, il ne remplace pas.</li>
+  </ul>
+</div>
+
+<h2>Annexe — La méthode, en une phrase pour l'élève</h2>
+<div class="callout">
+  <p class="ar" style="font-size:17px;margin:0"><strong>لا تنقل الدرس — استخرج زبدته في 3 مفاتيح بأسلوبك، وستتذكّره في الامتحان.</strong></p>
+  <p class="muted" style="margin:8px 0 0">« Ne recopie pas la leçon — extrais sa substance en 3 clés, avec tes mots, et tu t'en souviendras à l'examen. »</p>
+</div>
+
+<div class="foot">
+  Spec fonctionnelle v2 — sans implémentation. Décisions figées dans <code>docs/tadwin_decisions.md</code> (mesurées, non supposées).
+  Périmètre <strong>V1</strong> : C2 par-clé + C3 + C4-négation + 5 paliers/fading + rappel espacé (J+14) + étape de sélection des clés.
+  <strong>V1.5</strong> : C1 anti-copie (n-grammes ≥ 5 + exemption atomes) et دفتر الأخطاء persistant.
+  S'appuie sur le moteur Morchid (points-clés, négation, synonymes R3, anti-bourrage R3,
+  tolérance aux fautes R1, bases étoffées R4). Méthode inspirée de la vidéo « طريقة القراءة والتدوين المعجزة » (محب الكتب, 2026-08-09).
+  Aligné sur la gouvernance de marque et la culture de preuve du projet.
+</div>
+
+</div>
+</body>
+</html>

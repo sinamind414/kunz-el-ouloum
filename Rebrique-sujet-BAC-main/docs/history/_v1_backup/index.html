@@ -1,0 +1,1355 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>بوصلة كنز المنهجية 4D - المخبر التفاعلي الذكي والمهدئ لبكالوريا الجزائر</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts & FontAwesome -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&family=Fira+Code:wght@500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    body { font-family: 'Tajawal', sans-serif; }
+    .mono-font { font-family: 'Fira Code', monospace; }
+    .custom-scrollbar::-webkit-scrollbar { width: 5px; height: 5px; }
+    .custom-scrollbar::-webkit-scrollbar-track { background: #070a12; }
+    .custom-scrollbar::-webkit-scrollbar-thumb { background: #1a2333; border-radius: 4px; }
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #26354a; }
+    .btn-3d {
+      box-shadow: 0 4px 0 0 rgba(0,0,0,0.35);
+      transition: all 0.15s ease-in-out;
+    }
+    .btn-3d:active {
+      transform: translateY(2px);
+      box-shadow: 0 2px 0 0 rgba(0,0,0,0.35);
+    }
+    .pipeline-slot {
+      min-height: 44px;
+      transition: all 0.2s ease;
+    }
+    .compass-needle {
+      transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+      transform-origin: 50% 50%;
+    }
+    .card-zoom {
+      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .card-zoom:hover {
+      transform: translateY(-3px);
+    }
+    /* حلقة التنفس البصري الهادئ */
+    @keyframes breathAnimation {
+      0%, 100% { transform: scale(0.85); opacity: 0.7; }
+      50% { transform: scale(1.2); opacity: 1; filter: drop-shadow(0 0 25px rgba(16, 185, 129, 0.5)); }
+    }
+    .breath-circle {
+      animation: breathAnimation 8s infinite ease-in-out;
+    }
+  </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col antialiased selection:bg-emerald-500 selection:text-white">
+
+  <!-- ========================================================================= -->
+  <!-- شريط المؤقت الإجمالي للامتحان (04:30:00) + مؤشرات الحالة المنهجية         -->
+  <!-- ========================================================================= -->
+  <div id="global-exam-timer-bar" class="h-10 bg-slate-900/90 backdrop-blur border-b border-slate-800 px-4 md:px-8 flex items-center justify-between text-xs hidden z-50">
+    <div class="flex items-center gap-3">
+      <span class="flex items-center gap-1.5 text-emerald-400 font-bold">
+        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+        <span>نمط التركيز والهدوء 4D</span>
+      </span>
+      <span class="text-slate-500 hidden md:inline">|</span>
+      <span class="text-slate-400 hidden md:inline" id="header-subject-indicator">الموضوع قيد المعالجة</span>
+    </div>
+    <div class="flex items-center gap-2 px-3 py-1 bg-slate-950 rounded-lg border border-slate-800 font-mono font-bold text-rose-400">
+      <i class="fa-solid fa-hourglass-half text-rose-500"></i>
+      <span id="global-timer-display">04:30:00</span>
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- 1. الشاشة الأولى : بوابة دورات البكالوريا (Hub)                           -->
+  <!-- ========================================================================= -->
+  <div id="view-hub" class="min-h-screen flex flex-col justify-between p-4 md:p-8 relative overflow-x-hidden">
+    <div class="absolute -top-32 -right-32 w-96 h-96 bg-emerald-600/10 rounded-full blur-3xl pointer-events-none"></div>
+    <div class="absolute -bottom-32 -left-32 w-96 h-96 bg-indigo-600/10 rounded-full blur-3xl pointer-events-none"></div>
+
+    <header class="max-w-6xl w-full mx-auto flex flex-col md:flex-row items-center justify-between gap-4 py-4 border-b border-slate-800/80">
+      <div class="flex items-center gap-3.5">
+        <div class="w-11 h-11 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 text-xl shadow-lg shadow-emerald-500/10">
+          <i class="fa-solid fa-compass"></i>
+        </div>
+        <div>
+          <h1 class="text-lg md:text-xl font-black text-white tracking-tight">بوصلة كنز المنهجية 4D | مخبر التفوق والهدوء</h1>
+          <p class="text-xs text-slate-400">منصة الحل الميكانيكي المنظم لامتحانات بكالوريا علوم الطبيعة والحياة</p>
+        </div>
+      </div>
+      <div class="flex items-center gap-3">
+        <button onclick="toggleDrawer('atlas-drawer')" class="px-3 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-xs font-bold text-amber-300 flex items-center gap-2 btn-3d">
+          <i class="fa-solid fa-microscope text-amber-400"></i>
+          <span>أطلس التقنيات السريع</span>
+        </button>
+      </div>
+    </header>
+
+    <main class="max-w-6xl w-full mx-auto my-8 space-y-6">
+      <div class="text-center space-y-2">
+        <h2 class="text-lg md:text-xl font-black text-slate-100">اختر دورة البكالوريا لبدء جلسة التدريب المنظم</h2>
+        <p class="text-xs md:text-sm text-slate-400">ستمر أولاً بمحطة التهدئة البصرية قبل تصفح وحساب نقاط الموضوعين</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <!-- 2025 -->
+        <div class="card-zoom rounded-2xl bg-slate-900/80 border border-slate-800 p-6 flex flex-col justify-between shadow-xl">
+          <div class="space-y-4">
+            <div class="flex items-start justify-between">
+              <span class="px-2.5 py-1 rounded-lg bg-emerald-500/20 text-emerald-400 text-xs font-bold border border-emerald-500/30">دورة نموذجية</span>
+              <span class="text-2xl font-black mono-font text-slate-200">2025</span>
+            </div>
+            <div>
+              <h3 class="text-base font-black text-white">بكالوريا الجزائر دورة 2025</h3>
+              <p class="text-xs text-slate-400 mt-1">تطبيق شامل لتمارين الاتصال العصبي والمناعة وتركيب البروتين وفق نظام الأقطاب 4D الهادئ.</p>
+            </div>
+          </div>
+          <div class="pt-6">
+            <button onclick="startExamFlow('2025')" class="w-full py-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs btn-3d flex items-center justify-center gap-2">
+              <i class="fa-solid fa-spa text-emerald-200"></i>
+              <span>دخول دورة 2025 (ساس التهدئة والبوصلة)</span>
+              <i class="fa-solid fa-arrow-left"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- 2024 -->
+        <div class="card-zoom rounded-2xl bg-slate-900/80 border border-slate-800 p-6 flex flex-col justify-between shadow-xl">
+          <div class="space-y-4">
+            <div class="flex items-start justify-between">
+              <span class="px-2.5 py-1 rounded-lg bg-indigo-500/20 text-indigo-400 text-xs font-bold border border-indigo-500/30">دورة رسمية</span>
+              <span class="text-2xl font-black mono-font text-slate-200">2024</span>
+            </div>
+            <div>
+              <h3 class="text-base font-black text-white">بكالوريا الجزائر دورة 2024</h3>
+              <p class="text-xs text-slate-400 mt-1">تمارين متكاملة في التخصص الوظيفي للبروتينات والجيولوجيا مع كواشف الانزلاق التفسيري.</p>
+            </div>
+          </div>
+          <div class="pt-6">
+            <button onclick="startExamFlow('2024')" class="w-full py-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs btn-3d flex items-center justify-center gap-2">
+              <i class="fa-solid fa-spa text-indigo-200"></i>
+              <span>دخول دورة 2024 (ساس التهدئة والبوصلة)</span>
+              <i class="fa-solid fa-arrow-left"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- 2023 -->
+        <div class="card-zoom rounded-2xl bg-slate-900/80 border border-slate-800 p-6 flex flex-col justify-between shadow-xl">
+          <div class="space-y-4">
+            <div class="flex items-start justify-between">
+              <span class="px-2.5 py-1 rounded-lg bg-amber-500/20 text-amber-400 text-xs font-bold border border-amber-500/30">تدريب منهجي</span>
+              <span class="text-2xl font-black mono-font text-slate-200">2023</span>
+            </div>
+            <div>
+              <h3 class="text-base font-black text-white">بكالوريا الجزائر دورة 2023</h3>
+              <p class="text-xs text-slate-400 mt-1">تدريب مكثف على مصفوفة التحليل المقارن المتوازي وصياغة الفرضيات السببية بدقة.</p>
+            </div>
+          </div>
+          <div class="pt-6">
+            <button onclick="startExamFlow('2023')" class="w-full py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs btn-3d flex items-center justify-center gap-2">
+              <i class="fa-solid fa-spa text-amber-200"></i>
+              <span>دخول دورة 2023 (ساس التهدئة والبوصلة)</span>
+              <i class="fa-solid fa-arrow-left"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <footer class="max-w-6xl w-full mx-auto text-center py-4 border-t border-slate-800 text-xs text-slate-500">
+      بوصلة كنز المنهجية 4D - مصممة لخفض القلق والتركيز على الآليات المنطقية للحل.
+    </footer>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- 2. الشاشة الثانية : ساس التنفس والتأطير النفسي + بطاقات الومضات 4D        -->
+  <!-- ========================================================================= -->
+  <div id="view-guide" class="min-h-screen flex flex-col justify-between p-4 md:p-8 bg-slate-950 hidden relative">
+    <header class="max-w-5xl w-full mx-auto flex items-center justify-between py-4 border-b border-slate-800">
+      <div class="flex items-center gap-3">
+        <button onclick="goToHub()" class="px-3 py-1.5 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-bold text-xs flex items-center gap-1.5 shadow-md shadow-rose-600/30 btn-3d">
+          <i class="fa-solid fa-xmark text-xs"></i>
+          <span>إلغاء والعودة</span>
+        </button>
+        <div class="h-6 w-[1px] bg-slate-800 mx-1"></div>
+        <div class="w-9 h-9 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 text-lg shadow">
+          <i class="fa-solid fa-spa"></i>
+        </div>
+        <div>
+          <h2 class="text-sm md:text-base font-black text-white">ساس الهدوء والتركيز المنهجي</h2>
+          <p class="text-[11px] text-emerald-400" id="guide-exam-subtext">جلسة التأطير النفسي والتنفس الموجه</p>
+        </div>
+      </div>
+    </header>
+
+    <main class="max-w-4xl w-full mx-auto my-6 space-y-6">
+      
+      <!-- ويدجت حلقة التنفس البصري والتأطير النفسي (Box Breathing) -->
+      <div class="p-6 rounded-3xl bg-slate-900/90 border border-emerald-500/30 text-center space-y-4 shadow-xl">
+        <div class="relative w-32 h-32 mx-auto flex items-center justify-center">
+          <div class="absolute inset-0 rounded-full border border-emerald-500/20 bg-emerald-950/20"></div>
+          <div class="w-24 h-24 rounded-full bg-emerald-500/20 border-2 border-emerald-400 breath-circle flex items-center justify-center text-emerald-300 font-bold text-xs">
+            <span id="breath-text">تنفس بعمق</span>
+          </div>
+        </div>
+        <div class="space-y-1">
+          <h3 class="text-sm font-black text-white">أنت تمتلك كافة المكتسبات والمعارف، ركّز فقط على تطبيق خطوات البوصلة.</h3>
+          <p class="text-xs text-slate-400">خذ شهيقاً هادئاً لمدة 4 ثوانٍ، احبس النفس 4 ثوانٍ، ثم ازفر ببطء 4 ثوانٍ لطرد التوتر.</p>
+        </div>
+      </div>
+
+      <!-- ومضات منهجية بصرية مصغرة (بدون نصوص طويلة) -->
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-3 text-xs">
+        <div class="p-3.5 rounded-2xl bg-slate-900 border border-emerald-500/20 text-center space-y-1.5">
+          <div class="w-8 h-8 rounded-xl bg-emerald-500/20 text-emerald-400 mx-auto flex items-center justify-center font-bold font-mono text-sm">N</div>
+          <strong class="text-emerald-400 block text-xs">تأطير المسألة</strong>
+          <p class="text-[11px] text-slate-400">حدد المتغيرات وصغ المشكل بعلامة (؟)</p>
+        </div>
+
+        <div class="p-3.5 rounded-2xl bg-slate-900 border border-blue-500/20 text-center space-y-1.5">
+          <div class="w-8 h-8 rounded-xl bg-blue-500/20 text-blue-400 mx-auto flex items-center justify-center font-bold font-mono text-sm">S</div>
+          <strong class="text-blue-400 block text-xs">استغلال السندات</strong>
+          <p class="text-[11px] text-slate-400">قارن بالأرقام فقط دون تعليل (لا تفسر هنا)</p>
+        </div>
+
+        <div class="p-3.5 rounded-2xl bg-slate-900 border border-amber-500/20 text-center space-y-1.5">
+          <div class="w-8 h-8 rounded-xl bg-amber-500/20 text-amber-400 mx-auto flex items-center justify-center font-bold font-mono text-sm">E</div>
+          <strong class="text-amber-400 block text-xs">الربط والتفسير</strong>
+          <p class="text-[11px] text-slate-400">فسر بـ (يعود إلى) وتتبع الآلية كشريط فيديو</p>
+        </div>
+
+        <div class="p-3.5 rounded-2xl bg-slate-900 border border-purple-500/20 text-center space-y-1.5">
+          <div class="w-8 h-8 rounded-xl bg-purple-500/20 text-purple-400 mx-auto flex items-center justify-center font-bold font-mono text-sm">W</div>
+          <strong class="text-purple-400 block text-xs">التركيب والمصادقة</strong>
+          <p class="text-[11px] text-slate-400">صادق صراحة ومثل المسارين (طبيعي/خلل)</p>
+        </div>
+      </div>
+
+      <div class="flex justify-end pt-2">
+        <button onclick="goToStrategyStage()" class="w-full md:w-auto px-8 py-3.5 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xs btn-3d flex items-center justify-center gap-3">
+          <i class="fa-solid fa-chess-knight text-purple-300"></i>
+          <span>أنا هادئ ومستعد | تصفح PDF وحاسبة اختيار الموضوع (25 دقيقة)</span>
+          <i class="fa-solid fa-arrow-left"></i>
+        </button>
+      </div>
+    </main>
+
+    <footer class="max-w-4xl w-full mx-auto text-center py-4 border-t border-slate-800 text-xs text-slate-500">
+      المنهجية الميكانيكية تمنحك الثقة في كل خطوة.
+    </footer>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- 3. الشاشة الثالثة : مرحلة استكشاف وتصفح PDF + حاسبة القرار (25 دقيقة)     -->
+  <!-- ========================================================================= -->
+  <div id="view-strategy" class="min-h-screen flex flex-col justify-between p-4 md:p-8 bg-slate-950 hidden relative">
+    <header class="max-w-7xl w-full mx-auto flex items-center justify-between py-4 border-b border-slate-800">
+      <div class="flex items-center gap-3">
+        <button onclick="goToHub()" class="px-3 py-1.5 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-bold text-xs flex items-center gap-1.5 shadow-md shadow-rose-600/30 btn-3d">
+          <i class="fa-solid fa-xmark text-xs"></i>
+          <span>إلغاء وخروج</span>
+        </button>
+        <div class="h-6 w-[1px] bg-slate-800 mx-1"></div>
+        <div class="w-9 h-9 rounded-2xl bg-purple-500/10 border border-purple-500/30 flex items-center justify-center text-purple-400 text-base shadow">
+          <i class="fa-solid fa-chess-knight"></i>
+        </div>
+        <div>
+          <h2 class="text-sm md:text-base font-black text-white">استكشاف موضوعي الامتحان PDF وحاسبة الترجيح</h2>
+          <p class="text-[11px] text-purple-300/80">تصفح الوثائق الرسمية للموضوعين 1 و 2 وقيم نقاطك بدقة قبل التثبيت النهائي</p>
+        </div>
+      </div>
+
+      <!-- مؤقت الـ 25 دقيقة الإلزامي الصارم -->
+      <div class="flex items-center gap-2 px-4 py-2 rounded-2xl bg-slate-900 border border-amber-500/50 text-amber-300 font-mono font-bold text-sm shadow-inner">
+        <i class="fa-solid fa-hourglass-start text-amber-400"></i>
+        <span class="text-xs text-slate-400 font-sans">وقت الاختيار:</span>
+        <span id="timer-display">25:00</span>
+      </div>
+    </header>
+
+    <main class="max-w-7xl w-full mx-auto my-6 space-y-6">
+      
+      <!-- عارض PDF التفاعلي المتكامل لتصفح Sujet 1 و Sujet 2 -->
+      <div class="p-4 rounded-3xl bg-slate-900 border border-slate-800 space-y-3 shadow-2xl">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 border-b border-slate-800 pb-3">
+          <div class="flex items-center gap-2 text-indigo-400 font-bold text-xs">
+            <i class="fa-solid fa-file-pdf text-rose-400 text-base"></i>
+            <span>قارئ ومستعرض مواضيع البكالوريا الرسمية (تصفح مباشر) :</span>
+          </div>
+          
+          <div class="flex items-center gap-2">
+            <button onclick="setStrategyPdfPreview(1)" id="btn-preview-s1" class="px-4 py-1.5 rounded-xl bg-indigo-600 text-white font-bold text-xs shadow btn-3d flex items-center gap-2">
+              <i class="fa-solid fa-file-lines"></i>
+              <span>معاينة الموضوع الأول (Sujet 1)</span>
+            </button>
+            <button onclick="setStrategyPdfPreview(2)" id="btn-preview-s2" class="px-4 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-xs border border-slate-700 btn-3d flex items-center gap-2">
+              <i class="fa-solid fa-file-lines"></i>
+              <span>معاينة الموضوع الثاني (Sujet 2)</span>
+            </button>
+            <a id="strategy-pdf-download-btn" href="BAC2025_SVT_Sujet1.pdf" download class="p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs" title="تحميل ملف PDF المعروض">
+              <i class="fa-solid fa-download"></i>
+            </a>
+          </div>
+        </div>
+
+        <!-- نافذة عرض الـ PDF التفاعلية -->
+        <div class="h-[440px] bg-slate-950 rounded-2xl border border-slate-800 overflow-hidden relative">
+          <iframe id="strategy-pdf-iframe" src="BAC2025_SVT_Sujet1.pdf" class="w-full h-full border-none"></iframe>
+        </div>
+      </div>
+
+      <!-- مقارنة الموضوعين وحاسبة النقاط المباشرة -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        
+        <!-- حاسبة الموضوع 1 -->
+        <div class="p-5 rounded-3xl bg-slate-900 border border-indigo-500/30 space-y-4 shadow-xl flex flex-col justify-between">
+          <div class="space-y-3">
+            <div class="flex items-center justify-between border-b border-slate-800 pb-2">
+              <span class="px-2.5 py-1 rounded-xl bg-indigo-500/20 text-indigo-400 font-black text-xs">الموضوع 01</span>
+              <span class="text-xs font-mono text-slate-400">20.00 نقطة</span>
+            </div>
+
+            <div class="space-y-2 text-xs">
+              <div class="flex items-center justify-between p-2 rounded-xl bg-slate-950 border border-slate-800">
+                <span>ت1: استرجاع وتنظيم (05 نقاط)</span>
+                <input id="s1-input-t1" type="number" min="0" max="5" step="0.25" value="4.25" oninput="calculateStrategicScores()" class="w-16 p-1 rounded bg-slate-900 border border-indigo-500/40 text-center font-mono font-bold text-indigo-300 outline-none">
+              </div>
+              <div class="flex items-center justify-between p-2 rounded-xl bg-slate-950 border border-slate-800">
+                <span>ت2: استدلال علمي (07 نقاط)</span>
+                <input id="s1-input-t2" type="number" min="0" max="7" step="0.25" value="5.75" oninput="calculateStrategicScores()" class="w-16 p-1 rounded bg-slate-900 border border-indigo-500/40 text-center font-mono font-bold text-indigo-300 outline-none">
+              </div>
+              <div class="flex items-center justify-between p-2 rounded-xl bg-slate-950 border border-slate-800">
+                <span class="font-bold text-emerald-400">ت3: مسعى علمي 4D (08 نقاط) ★</span>
+                <input id="s1-input-t3" type="number" min="0" max="8" step="0.25" value="7.25" oninput="calculateStrategicScores()" class="w-16 p-1 rounded bg-slate-900 border border-emerald-500/40 text-center font-mono font-bold text-emerald-300 outline-none">
+              </div>
+            </div>
+
+            <div class="p-2.5 rounded-xl bg-indigo-950/40 border border-indigo-500/30 flex items-center justify-between text-xs">
+              <span class="font-bold text-slate-300">مجموع الموضوع 1 :</span>
+              <span id="s1-total-display" class="text-base font-black mono-font text-indigo-400">17.25 / 20.00</span>
+            </div>
+          </div>
+
+          <button onclick="confirmSujetChoice(1)" class="w-full py-3 rounded-2xl bg-indigo-600 hover:bg-indigo-500 text-white font-black text-xs btn-3d flex items-center justify-center gap-2">
+            <i class="fa-solid fa-lock"></i>
+            <span>تثبيت نهائي للموضوع الأول وعزل مستنداته (Sujet 1)</span>
+          </button>
+        </div>
+
+        <!-- حاسبة الموضوع 2 -->
+        <div class="p-5 rounded-3xl bg-slate-900 border border-purple-500/30 space-y-4 shadow-xl flex flex-col justify-between">
+          <div class="space-y-3">
+            <div class="flex items-center justify-between border-b border-slate-800 pb-2">
+              <span class="px-2.5 py-1 rounded-xl bg-purple-500/20 text-purple-400 font-black text-xs">الموضوع 02</span>
+              <span class="text-xs font-mono text-slate-400">20.00 نقطة</span>
+            </div>
+
+            <div class="space-y-2 text-xs">
+              <div class="flex items-center justify-between p-2 rounded-xl bg-slate-950 border border-slate-800">
+                <span>ت1: استرجاع وتنظيم (05 نقاط)</span>
+                <input id="s2-input-t1" type="number" min="0" max="5" step="0.25" value="3.50" oninput="calculateStrategicScores()" class="w-16 p-1 rounded bg-slate-900 border border-purple-500/40 text-center font-mono font-bold text-purple-300 outline-none">
+              </div>
+              <div class="flex items-center justify-between p-2 rounded-xl bg-slate-950 border border-slate-800">
+                <span>ت2: استدلال علمي (07 نقاط)</span>
+                <input id="s2-input-t2" type="number" min="0" max="7" step="0.25" value="5.00" oninput="calculateStrategicScores()" class="w-16 p-1 rounded bg-slate-900 border border-purple-500/40 text-center font-mono font-bold text-purple-300 outline-none">
+              </div>
+              <div class="flex items-center justify-between p-2 rounded-xl bg-slate-950 border border-slate-800">
+                <span class="font-bold text-emerald-400">ت3: مسعى علمي 4D (08 نقاط) ★</span>
+                <input id="s2-input-t3" type="number" min="0" max="8" step="0.25" value="5.75" oninput="calculateStrategicScores()" class="w-16 p-1 rounded bg-slate-900 border border-purple-500/40 text-center font-mono font-bold text-purple-300 outline-none">
+              </div>
+            </div>
+
+            <div class="p-2.5 rounded-xl bg-purple-950/40 border border-purple-500/30 flex items-center justify-between text-xs">
+              <span class="font-bold text-slate-300">مجموع الموضوع 2 :</span>
+              <span id="s2-total-display" class="text-base font-black mono-font text-purple-400">14.25 / 20.00</span>
+            </div>
+          </div>
+
+          <button onclick="confirmSujetChoice(2)" class="w-full py-3 rounded-2xl bg-purple-600 hover:bg-purple-500 text-white font-black text-xs btn-3d flex items-center justify-center gap-2">
+            <i class="fa-solid fa-lock"></i>
+            <span>تثبيت نهائي للموضوع الثاني وعزل مستنداته (Sujet 2)</span>
+          </button>
+        </div>
+
+      </div>
+
+      <div id="recommendation-bar" class="p-3.5 rounded-2xl bg-slate-900 border border-emerald-500/40 flex items-center justify-between text-xs">
+        <span class="text-slate-200 font-bold" id="recommendation-text">التوصية المنهجية: ترجيح الموضوع الأول بفارق +3.00 نقاط، لتميز رصيد تمرين المسعى العلمي (ت3: 8ن).</span>
+        <span class="text-emerald-400 font-mono font-bold" id="recommendation-gain">النسبة: 86.2%</span>
+      </div>
+    </main>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- 4. الشاشة الرابعة : دليل معالجة الموضوع المختار وعزل تمارينه             -->
+  <!-- ========================================================================= -->
+  <div id="view-sujet-onboarding" class="min-h-screen flex flex-col justify-between p-4 md:p-8 bg-slate-950 hidden relative">
+    <header class="max-w-5xl w-full mx-auto flex items-center justify-between py-4 border-b border-slate-800">
+      <div class="flex items-center gap-3">
+        <button onclick="goToHub()" class="px-3 py-1.5 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-bold text-xs flex items-center gap-1.5 shadow-md shadow-rose-600/30 btn-3d">
+          <i class="fa-solid fa-xmark text-xs"></i>
+          <span>الرئيسية</span>
+        </button>
+        <div class="h-6 w-[1px] bg-slate-800 mx-1"></div>
+        <div class="w-9 h-9 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 text-lg">
+          <i class="fa-solid fa-compass"></i>
+        </div>
+        <div>
+          <h2 class="text-sm md:text-base font-black text-white" id="onboarding-sujet-title">دليل معالجة الموضوع المختار</h2>
+          <p class="text-[11px] text-emerald-400">تم عزل وتثبيت ملفات الموضوع المختار حصرياً وفق البوصلة 4D</p>
+        </div>
+      </div>
+    </header>
+
+    <main class="max-w-5xl w-full mx-auto my-6 space-y-6">
+      
+      <!-- خارطة الطريق المقتضبة بدون حشو -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+        <div class="p-4 rounded-2xl bg-slate-900 border border-slate-800 space-y-2">
+          <div class="flex items-center justify-between">
+            <strong class="text-emerald-400 font-bold">1. التمرين الأول (05 نقاط)</strong>
+            <span class="text-[10px] px-2 py-0.5 rounded bg-slate-950 text-slate-400 font-mono">45 دقيقة</span>
+          </div>
+          <p class="text-slate-300 text-[11px] leading-relaxed">نص علمي مهيكل (مقدمة بإشكالية + عرض سببي بالمصطلحات + خاتمة موجزة).</p>
+        </div>
+
+        <div class="p-4 rounded-2xl bg-slate-900 border border-slate-800 space-y-2">
+          <div class="flex items-center justify-between">
+            <strong class="text-indigo-400 font-bold">2. التمرين الثاني (07 نقاط)</strong>
+            <span class="text-[10px] px-2 py-0.5 rounded bg-slate-950 text-slate-400 font-mono">1 سا و 15 د</span>
+          </div>
+          <p class="text-slate-300 text-[11px] leading-relaxed">استغلال السندات بالأرقام والمقارنة بالتوازي (Anti-Drift) ثم الربط المنطقي.</p>
+        </div>
+
+        <div class="p-4 rounded-2xl bg-slate-900 border border-slate-800 space-y-2">
+          <div class="flex items-center justify-between">
+            <strong class="text-purple-400 font-bold">3. التمرين الثالث (08 نقاط)</strong>
+            <span class="text-[10px] px-2 py-0.5 rounded bg-slate-950 text-slate-400 font-mono">1 سا و 45 د</span>
+          </div>
+          <p class="text-slate-300 text-[11px] leading-relaxed">مسعى علمي كامل: فرضيات سببية ومصادقة واستوديو المخطط ذو المسارين.</p>
+        </div>
+      </div>
+
+      <div class="space-y-3 pt-2">
+        <h3 class="text-xs font-bold text-slate-400">اختر التمرين الذي ستبدأ بحله الآن :</h3>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <button onclick="enterExercise(1)" class="p-4 rounded-2xl bg-slate-900 hover:bg-slate-800 border border-emerald-500/30 text-right space-y-1.5 btn-3d">
+            <div class="flex items-center justify-between">
+              <span class="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400 text-xs font-bold">ت1 (05 نقاط)</span>
+              <i class="fa-solid fa-arrow-left text-emerald-400 text-xs"></i>
+            </div>
+            <strong class="block text-xs text-white font-bold">الاسترجاع المنظم للمعارف</strong>
+            <p class="text-[10px] text-slate-400">تأطير الإشكالية، انتقاء الكلمات وهيكلة النص.</p>
+          </button>
+
+          <button onclick="enterExercise(2)" class="p-4 rounded-2xl bg-slate-900 hover:bg-slate-800 border border-indigo-500/30 text-right space-y-1.5 btn-3d">
+            <div class="flex items-center justify-between">
+              <span class="px-2 py-0.5 rounded bg-indigo-500/20 text-indigo-400 text-xs font-bold">ت2 (07 نقاط)</span>
+              <i class="fa-solid fa-arrow-left text-indigo-400 text-xs"></i>
+            </div>
+            <strong class="block text-xs text-white font-bold">الاستدلال العلمي بالسندات</strong>
+            <p class="text-[10px] text-slate-400">مصفوفة الوثائق بدقة الأرقام والربط السببي.</p>
+          </button>
+
+          <button onclick="enterExercise(3)" class="p-4 rounded-2xl bg-slate-900 hover:bg-slate-800 border border-purple-500/30 text-right space-y-1.5 btn-3d">
+            <div class="flex items-center justify-between">
+              <span class="px-2 py-0.5 rounded bg-purple-500/20 text-purple-400 text-xs font-bold">ت3 (08 نقاط)</span>
+              <i class="fa-solid fa-arrow-left text-purple-400 text-xs"></i>
+            </div>
+            <strong class="block text-xs text-white font-bold">المسعى العلمي الشامل 4D</strong>
+            <p class="text-[10px] text-slate-400">الفرضيات، الاستدلال، المصادقة والمخطط.</p>
+          </button>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- 5. الشاشة الخامسة : منصة العمل والأقطاب 4D (نمط التركيز والهدوء)        -->
+  <!-- ========================================================================= -->
+  <div id="view-workspace" class="min-h-screen flex flex-col hidden">
+    
+    <header class="h-16 border-b border-slate-800 bg-slate-900/95 backdrop-blur px-4 md:px-6 flex items-center justify-between sticky top-0 z-40">
+      <div class="flex items-center gap-3">
+        <button onclick="goToHub()" class="px-3 py-1.5 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-bold text-xs flex items-center gap-1.5 shadow-md shadow-rose-600/30 btn-3d" title="الرجوع للقائمة الرئيسية">
+          <i class="fa-solid fa-house text-xs"></i>
+          <span class="hidden sm:inline">الرئيسية</span>
+        </button>
+        <div class="h-6 w-[1px] bg-slate-800 mx-1"></div>
+        <div>
+          <div class="flex items-center gap-2">
+            <h1 class="text-xs md:text-sm font-black text-slate-100" id="current-workspace-banner">الموضوع الأول | التمرين 03</h1>
+            <span class="px-2 py-0.5 rounded bg-emerald-500/20 border border-emerald-500/30 text-emerald-300 text-[10px] font-bold" id="badge-current-ex">ت3 (08 نقاط)</span>
+          </div>
+          <p class="text-[11px] text-slate-400 font-medium hidden md:block" id="current-ex-desc">المسعى العلمي 4D الخاص بهذا التمرين</p>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-2 md:gap-3">
+        <!-- زر الإنقاذ السريع وفك القفل الذهني -->
+        <button onclick="showPanicHint()" class="px-3 py-1.5 rounded-xl bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/30 text-amber-300 font-bold text-xs flex items-center gap-1.5 btn-3d" title="اضغط عند الشعور بالبلوكاج الذهني للحصول على تلميح ذكي">
+          <i class="fa-solid fa-wand-magic-sparkles text-amber-400"></i>
+          <span class="hidden sm:inline">فك القفل الذهني</span>
+        </button>
+
+        <div class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-800 border border-slate-700 text-xs font-bold shadow-inner">
+          <span class="text-slate-400">العلامة:</span>
+          <span id="live-total-score" class="text-emerald-400 font-black text-sm mono-font">0.00</span>
+          <span class="text-slate-500 text-[11px]" id="max-possible-score">/ 8.00</span>
+        </div>
+
+        <button onclick="backToSujetOnboarding()" class="p-2 md:px-3 md:py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-xs border border-slate-700 btn-3d">
+          <i class="fa-solid fa-list-check text-slate-300"></i>
+          <span class="hidden xl:inline mr-1">دليل المعالجة</span>
+        </button>
+
+        <button onclick="toggleDrawer('pdf-drawer')" class="p-2 md:px-3 md:py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs btn-3d">
+          <i class="fa-solid fa-file-pdf"></i>
+          <span class="hidden md:inline mr-1">PDF الموضوع</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- شريط تقدم المراحل اللمسي الهادئ -->
+    <div class="h-1.5 bg-slate-900 w-full overflow-hidden">
+      <div id="exercise-progress-bar" class="h-full bg-emerald-500 transition-all duration-500" style="width: 25%;"></div>
+    </div>
+
+    <main class="flex-1 flex overflow-hidden">
+      
+      <!-- الشريط الجانبي الديناميكي -->
+      <aside class="w-80 border-l border-slate-800 bg-slate-900/40 p-4 hidden lg:flex flex-col justify-between overflow-y-auto custom-scrollbar">
+        <div class="space-y-4">
+          
+          <div class="space-y-1.5">
+            <span class="text-[11px] font-bold text-slate-400 block mb-1">تمارين الموضوع المختار :</span>
+            
+            <button onclick="attemptSwitchExercise(1)" id="sidebar-btn-ex1" class="w-full flex items-center justify-between p-2.5 rounded-xl text-xs font-bold bg-slate-900 border border-slate-800 text-slate-300 transition">
+              <span class="flex items-center gap-2">
+                <span class="w-5 h-5 rounded bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-[10px]">1</span>
+                <span>ت1: استرجاع وتنظيم (5ن)</span>
+              </span>
+              <span id="lock-icon-ex1" class="text-slate-600 text-xs"><i class="fa-solid fa-lock"></i></span>
+            </button>
+
+            <button onclick="attemptSwitchExercise(2)" id="sidebar-btn-ex2" class="w-full flex items-center justify-between p-2.5 rounded-xl text-xs font-bold bg-slate-900 border border-slate-800 text-slate-300 transition">
+              <span class="flex items-center gap-2">
+                <span class="w-5 h-5 rounded bg-indigo-500/20 text-indigo-400 flex items-center justify-center text-[10px]">2</span>
+                <span>ت2: استدلال علمي (7ن)</span>
+              </span>
+              <span id="lock-icon-ex2" class="text-slate-600 text-xs"><i class="fa-solid fa-lock"></i></span>
+            </button>
+
+            <button onclick="attemptSwitchExercise(3)" id="sidebar-btn-ex3" class="w-full flex items-center justify-between p-2.5 rounded-xl text-xs font-bold bg-slate-900 border border-slate-800 text-slate-300 transition">
+              <span class="flex items-center gap-2">
+                <span class="w-5 h-5 rounded bg-purple-500/20 text-purple-400 flex items-center justify-center text-[10px]">3</span>
+                <span>ت3: مسعى علمي (8ن)</span>
+              </span>
+              <span id="lock-icon-ex3" class="text-slate-600 text-xs"><i class="fa-solid fa-lock"></i></span>
+            </button>
+          </div>
+
+          <div class="h-[1px] bg-slate-800 my-2"></div>
+
+          <!-- قرص البوصلة -->
+          <div class="p-3.5 rounded-2xl bg-slate-950/80 border border-slate-800 text-center space-y-2.5 relative overflow-hidden">
+            <div class="flex items-center justify-between text-[11px] font-bold text-slate-400">
+              <span id="compass-exercise-badge">بوصلة ت3</span>
+              <span id="compass-active-pole" class="text-emerald-400">القطب: الشمال</span>
+            </div>
+
+            <div class="relative w-24 h-24 mx-auto flex items-center justify-center">
+              <div class="absolute inset-0 rounded-full border-2 border-slate-800 bg-slate-900/80 shadow-inner flex items-center justify-center">
+                <span class="absolute top-1 text-[9px] font-black text-emerald-400">N</span>
+                <span class="absolute bottom-1 text-[9px] font-black text-blue-400">S</span>
+                <span class="absolute right-1 text-[9px] font-black text-amber-400">E</span>
+                <span class="absolute left-1 text-[9px] font-black text-purple-400">W</span>
+                <div class="w-2 h-2 rounded-full bg-slate-600 z-20"></div>
+              </div>
+
+              <svg id="compass-needle-svg" class="compass-needle w-16 h-16 z-10" viewBox="0 0 100 100" style="transform: rotate(0deg);">
+                <polygon points="50,15 44,50 56,50" fill="#10b981" />
+                <polygon points="50,85 44,50 56,50" fill="#3b82f6" />
+              </svg>
+            </div>
+
+            <p id="compass-status-text" class="text-[10px] text-slate-400 leading-snug">
+              أقطاب البوصلة المخصصة لهذا التمرين بالتحديد.
+            </p>
+          </div>
+
+          <nav class="space-y-1.5" id="nav-steps-container"></nav>
+        </div>
+
+        <div class="p-3 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-300 text-xs leading-relaxed mt-4">
+          <span class="font-bold block mb-0.5"><i class="fa-solid fa-circle-info"></i> قاعدة التحرير الهادئ :</span>
+          ركّز على كل قطب لحاله دون تشتيت، وسيتم تفعيل باقي التمارين فور إجابتك.
+        </div>
+      </aside>
+
+      <!-- مساحة الإجابة والحل المنهجي -->
+      <section class="flex-1 overflow-y-auto custom-scrollbar p-4 md:p-6 lg:p-8 bg-slate-950">
+        <div id="dynamic-exercise-content" class="max-w-4xl mx-auto space-y-6"></div>
+      </section>
+    </main>
+  </div>
+
+  <!-- صندوق رسالة فك القفل الذهني التفاعلي (Modal) -->
+  <div id="panic-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="w-full max-w-md bg-slate-900 border border-amber-500/40 rounded-3xl shadow-2xl p-6 space-y-4 animate-in fade-in zoom-in duration-150">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+        <div class="flex items-center gap-2 text-amber-400 font-bold text-sm">
+          <i class="fa-solid fa-lightbulb"></i>
+          <span>تلميح فك القفل الذهني</span>
+        </div>
+        <button onclick="closePanicModal()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <p id="panic-hint-text" class="text-xs text-slate-300 leading-relaxed"></p>
+      <div class="flex justify-end pt-2">
+        <button onclick="closePanicModal()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs rounded-xl btn-3d">
+          فهمت التلميح، سأواصل الحل
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- أطلس التقنيات المخبرية (Drawer) -->
+  <div id="atlas-drawer" class="fixed inset-y-0 right-0 w-full md:w-[480px] bg-slate-900 border-l border-slate-800 shadow-2xl z-50 transform translate-x-full transition-transform duration-300 flex flex-col">
+    <div class="h-14 border-b border-slate-800 px-4 flex items-center justify-between bg-slate-950">
+      <div class="flex items-center gap-2">
+        <i class="fa-solid fa-microscope text-amber-400"></i>
+        <span class="text-xs font-bold text-slate-200">أطلس التقنيات التجريبية والمخبرية</span>
+      </div>
+      <button onclick="toggleDrawer('atlas-drawer')" class="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+    <div class="p-5 overflow-y-auto custom-scrollbar flex-1 space-y-3.5 text-xs">
+      <div class="p-3 rounded-xl bg-slate-950 border border-slate-800 space-y-1">
+        <strong class="text-emerald-400 block font-bold">1. التصوير الإشعاعي الذاتي (Autoradiographie) :</strong>
+        <p class="text-slate-300 text-[11px] leading-relaxed">تتبع مسار ومصير الجزيئات داخل الخلايا بعد وسمها بنظير مشع (كاليوراسيل المشع أو الثيميدين المشع).</p>
+      </div>
+      <div class="p-3 rounded-xl bg-slate-950 border border-slate-800 space-y-1">
+        <strong class="text-blue-400 block font-bold">2. تقنية الرحلان الشاردي (الهجرة الكهربائية) :</strong>
+        <p class="text-slate-300 text-[11px] leading-relaxed">فصل الجزيئات المشحونة (الأحماض الأمينية والبروتينات) في مجال كهربائي ودرجة pH محددة حسب شحنتها الصافية.</p>
+      </div>
+      <div class="p-3 rounded-xl bg-slate-950 border border-slate-800 space-y-1">
+        <strong class="text-amber-400 block font-bold">3. تقنية الانتشار المناعي (أوكتارلوني Ouchterlony) :</strong>
+        <p class="text-slate-300 text-[11px] leading-relaxed">إثبات نوعية الأجسام المضادة وتشكيل المعقدات المناعية في هلام الجيلوز عند ظهور أقواس الترسيب.</p>
+      </div>
+      <div class="p-3 rounded-xl bg-slate-950 border border-slate-800 space-y-1">
+        <strong class="text-purple-400 block font-bold">4. تقنية Patch-Clamp :</strong>
+        <p class="text-slate-300 text-[11px] leading-relaxed">عزل قطعة غشائية تحتوي قناة شاردية واحدة أو أكثر ودراسة التيارات الكهربائية الداخلة والخارجة.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- درج PDF المعزول الخاص بالموضوع المختار فقط في مساحة العمل -->
+  <div id="pdf-drawer" class="fixed inset-y-0 left-0 w-full md:w-[650px] xl:w-[750px] bg-slate-900 border-r border-slate-800 shadow-2xl z-50 transform -translate-x-full transition-transform duration-300 flex flex-col">
+    <div class="h-14 border-b border-slate-800 px-4 flex items-center justify-between bg-slate-950">
+      <div class="flex items-center gap-2">
+        <i class="fa-solid fa-file-pdf text-rose-400"></i>
+        <span class="text-xs font-bold text-slate-200" id="pdf-drawer-title">وثيقة الموضوع المختار PDF</span>
+      </div>
+      <div class="flex items-center gap-2">
+        <a id="workspace-pdf-download-link" href="BAC2025_SVT_Sujet1.pdf" download class="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs" title="تحميل الموضوع">
+          <i class="fa-solid fa-download"></i>
+        </a>
+        <button onclick="toggleDrawer('pdf-drawer')" class="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+    </div>
+    <div class="flex-1 bg-slate-950 relative">
+      <iframe id="workspace-pdf-iframe" src="BAC2025_SVT_Sujet1.pdf" class="w-full h-full border-none"></iframe>
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- 6. المحرك البرمجي المتكامل                                                 -->
+  <!-- ========================================================================= -->
+  <script>
+    let currentExamYear = "2025";
+    let currentSujetNumber = 1;
+    let currentExerciseNumber = 3;
+    let currentStep = 1;
+
+    const exerciseAnsweredAny = { 1: false, 2: false, 3: false };
+    let globalTimerSeconds = (4 * 3600) + (30 * 60);
+    let globalTimerInterval = null;
+    let strategyTimerSeconds = 25 * 60;
+    let strategyTimerInterval = null;
+
+    const exerciseScores = {
+      1: { n: 0, s: 0, e: 0, w: 0, max: 5.0 },
+      2: { n: 0, s: 0, e: 0, w: 0, max: 7.0 },
+      3: { n: 0, s: 0, e: 0, w: 0, max: 8.0 }
+    };
+
+    const pipelineBlocks = [
+      { id: "b1", text: "تشكل معقد (Ado-A1R) على الغشاء", correctStream: 1, correctSlot: 0 },
+      { id: "b2", text: "تفعيل البروتينات السطحية Gi و Go", correctStream: 1, correctSlot: 1 },
+      { id: "b3", text: "زيادة خروج K⁺ وتثبيط تدفق شوارد Ca²⁺", correctStream: 1, correctSlot: 2 },
+      { id: "b4", text: "منع إفراز النورإبينفرين (NE) في الشق", correctStream: 1, correctSlot: 3 },
+      { id: "b5", text: "تشكل معقد (Mtb-A1R) ومنع تثبت Ado", correctStream: 2, correctSlot: 0 },
+      { id: "b6", text: "عدم تفعيل البروتينات الباطنية Gi و Go", correctStream: 2, correctSlot: 1 },
+      { id: "b7", text: "زوال تثبيط شوارد Ca²⁺ واستمرار تدفقها", correctStream: 2, correctSlot: 2 },
+      { id: "b8", text: "تحرير المبلغ العصبي (NE) في الشق المشبكي", correctStream: 2, correctSlot: 3 }
+    ];
+    let userPipeline = { stream1: [null, null, null, null], stream2: [null, null, null, null] };
+
+    function normalizeArabic(text) {
+      if (!text) return "";
+      return text.replace(/[إأآا]/g, "ا").replace(/[ىي]/g, "ي").replace(/ة/g, "ه").replace(/[ًٌٍَُِّْ]/g, "").toLowerCase().trim();
+    }
+
+    function startExamFlow(year) {
+      currentExamYear = year;
+      document.getElementById('guide-exam-subtext').innerText = `جلسة التأطير النفسي والتنفس الموجه - بكالوريا ${year}`;
+      
+      document.getElementById('view-hub').classList.add('hidden');
+      document.getElementById('view-strategy').classList.add('hidden');
+      document.getElementById('view-sujet-onboarding').classList.add('hidden');
+      document.getElementById('view-workspace').classList.add('hidden');
+      document.getElementById('view-guide').classList.remove('hidden');
+      
+      startGlobalExamTimer();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function startGlobalExamTimer() {
+      if (globalTimerInterval) clearInterval(globalTimerInterval);
+      document.getElementById('global-exam-timer-bar').classList.remove('hidden');
+      globalTimerInterval = setInterval(() => {
+        if (globalTimerSeconds > 0) {
+          globalTimerSeconds--;
+          const hrs = Math.floor(globalTimerSeconds / 3600);
+          const mins = Math.floor((globalTimerSeconds % 3600) / 60);
+          const secs = globalTimerSeconds % 60;
+          document.getElementById('global-timer-display').innerText = 
+            `${String(hrs).padStart(2,'0')}:${String(mins).padStart(2,'0')}:${String(secs).padStart(2,'0')}`;
+        }
+      }, 1000);
+    }
+
+    function goToStrategyStage() {
+      document.getElementById('view-guide').classList.add('hidden');
+      document.getElementById('view-strategy').classList.remove('hidden');
+      startStrategyTimer();
+      setStrategyPdfPreview(1);
+      calculateStrategicScores();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function setStrategyPdfPreview(sujetNum) {
+      const pdfFile = `BAC${currentExamYear}_SVT_Sujet${sujetNum}.pdf`;
+      const iframe = document.getElementById('strategy-pdf-iframe');
+      const downloadBtn = document.getElementById('strategy-pdf-download-btn');
+      const btn1 = document.getElementById('btn-preview-s1');
+      const btn2 = document.getElementById('btn-preview-s2');
+
+      iframe.src = pdfFile;
+      downloadBtn.href = pdfFile;
+
+      if (sujetNum === 1) {
+        btn1.className = "px-4 py-1.5 rounded-xl bg-indigo-600 text-white font-bold text-xs shadow btn-3d flex items-center gap-2";
+        btn2.className = "px-4 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-xs border border-slate-700 btn-3d flex items-center gap-2";
+      } else {
+        btn2.className = "px-4 py-1.5 rounded-xl bg-purple-600 text-white font-bold text-xs shadow btn-3d flex items-center gap-2";
+        btn1.className = "px-4 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-xs border border-slate-700 btn-3d flex items-center gap-2";
+      }
+    }
+
+    function startStrategyTimer() {
+      if (strategyTimerInterval) clearInterval(strategyTimerInterval);
+      strategyTimerSeconds = 25 * 60;
+      updateStrategyTimerDisplay();
+      strategyTimerInterval = setInterval(() => {
+        if (strategyTimerSeconds > 0) {
+          strategyTimerSeconds--;
+          updateStrategyTimerDisplay();
+        } else {
+          clearInterval(strategyTimerInterval);
+        }
+      }, 1000);
+    }
+
+    function updateStrategyTimerDisplay() {
+      const mins = Math.floor(strategyTimerSeconds / 60);
+      const secs = strategyTimerSeconds % 60;
+      document.getElementById('timer-display').innerText = 
+        `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+    }
+
+    function calculateStrategicScores() {
+      const s1_t1 = parseFloat(document.getElementById('s1-input-t1').value) || 0;
+      const s1_t2 = parseFloat(document.getElementById('s1-input-t2').value) || 0;
+      const s1_t3 = parseFloat(document.getElementById('s1-input-t3').value) || 0;
+      const s1_total = Math.min(20, Math.max(0, s1_t1 + s1_t2 + s1_t3));
+      document.getElementById('s1-total-display').innerText = `${s1_total.toFixed(2)} / 20.00`;
+
+      const s2_t1 = parseFloat(document.getElementById('s2-input-t1').value) || 0;
+      const s2_t2 = parseFloat(document.getElementById('s2-input-t2').value) || 0;
+      const s2_t3 = parseFloat(document.getElementById('s2-input-t3').value) || 0;
+      const s2_total = Math.min(20, Math.max(0, s2_t1 + s2_t2 + s2_t3));
+      document.getElementById('s2-total-display').innerText = `${s2_total.toFixed(2)} / 20.00`;
+
+      const recText = document.getElementById('recommendation-text');
+      const recGain = document.getElementById('recommendation-gain');
+
+      if (s1_total > s2_total) {
+        const diff = (s1_total - s2_total).toFixed(2);
+        recText.innerText = `التوصية المنهجية: ترجيح الموضوع الأول بفارق +${diff} نقاط، لتميز رصيد تمرين المسعى العلمي (ت3: 8ن).`;
+        recGain.innerText = `النسبة: ${((s1_total/20)*100).toFixed(1)}%`;
+      } else if (s2_total > s1_total) {
+        const diff = (s2_total - s1_total).toFixed(2);
+        recText.innerText = `التوصية المنهجية: ترجيح الموضوع الثاني بفارق +${diff} نقاط، لتميز رصيد تمرين المسعى العلمي (ت3: 8ن).`;
+        recGain.innerText = `النسبة: ${((s2_total/20)*100).toFixed(1)}%`;
+      } else {
+        recText.innerText = "الموضوعان متكافئان تماماً. رجح الموضوع ذو التمرين الثالث (المسعى 8ن) الأكثر ضماناً.";
+        recGain.innerText = `النسبة: ${((s1_total/20)*100).toFixed(1)}%`;
+      }
+    }
+
+    function confirmSujetChoice(sujetNum) {
+      currentSujetNumber = sujetNum;
+      if (strategyTimerInterval) clearInterval(strategyTimerInterval);
+
+      const isolatedPdfFile = `BAC${currentExamYear}_SVT_Sujet${sujetNum}.pdf`;
+
+      document.getElementById('view-strategy').classList.add('hidden');
+      document.getElementById('view-sujet-onboarding').classList.remove('hidden');
+
+      document.getElementById('onboarding-sujet-title').innerText = 
+        `دليل معالجة الموضوع ${sujetNum === 1 ? 'الأول' : 'الثاني'} المختار (بكالوريا ${currentExamYear})`;
+      document.getElementById('header-subject-indicator').innerText = 
+        `الموضوع ${sujetNum === 1 ? 'الأول' : 'الثاني'} المختار (معزول ومثبت)`;
+
+      document.getElementById('pdf-drawer-title').innerText = 
+        `وثيقة الموضوع ${sujetNum === 1 ? 'الأول' : 'الثاني'} المختار فقط (PDF)`;
+      document.getElementById('workspace-pdf-iframe').src = isolatedPdfFile;
+      document.getElementById('workspace-pdf-download-link').href = isolatedPdfFile;
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function backToSujetOnboarding() {
+      document.getElementById('view-workspace').classList.add('hidden');
+      document.getElementById('view-sujet-onboarding').classList.remove('hidden');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function enterExercise(exNum) {
+      document.getElementById('view-sujet-onboarding').classList.add('hidden');
+      document.getElementById('view-workspace').classList.remove('hidden');
+      loadExerciseView(exNum);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function attemptSwitchExercise(targetExNum) {
+      if (targetExNum === currentExerciseNumber) return;
+
+      if (!exerciseAnsweredAny[currentExerciseNumber]) {
+        alert(`🔒 تنبيه القفل المنهجي:\nيجب الإجابة على سؤال واحد على الأقل في التمرين الحالي (ت${currentExerciseNumber}) لفك القفل قبل الانتقال لتمرين آخر!`);
+        return;
+      }
+
+      loadExerciseView(targetExNum);
+    }
+
+    function loadExerciseView(exNum) {
+      currentExerciseNumber = exNum;
+      
+      for (let i = 1; i <= 3; i++) {
+        const btn = document.getElementById(`sidebar-btn-ex${i}`);
+        const lock = document.getElementById(`lock-icon-ex${i}`);
+        if (i === exNum) {
+          btn.className = "w-full flex items-center justify-between p-2.5 rounded-xl text-xs font-bold bg-emerald-500/10 border border-emerald-500/40 text-emerald-400 transition";
+        } else {
+          btn.className = "w-full flex items-center justify-between p-2.5 rounded-xl text-xs font-bold bg-slate-900 border border-slate-800 text-slate-300 transition";
+        }
+        lock.innerHTML = exerciseAnsweredAny[i] ? '<i class="fa-solid fa-unlock text-emerald-400"></i>' : '<i class="fa-solid fa-lock text-slate-600"></i>';
+      }
+
+      const banner = document.getElementById('current-workspace-banner');
+      const badge = document.getElementById('badge-current-ex');
+      const desc = document.getElementById('current-ex-desc');
+      const maxScore = document.getElementById('max-possible-score');
+      const compBadge = document.getElementById('compass-exercise-badge');
+
+      banner.innerText = `الموضوع ${currentSujetNumber === 1 ? 'الأول' : 'الثاني'} | التمرين 0${exNum}`;
+      compBadge.innerText = `بوصلة ت${exNum}`;
+
+      if (exNum === 1) {
+        badge.innerText = "ت1 (05 نقاط)";
+        desc.innerText = "الاسترجاع المنظم للمعارف وهيكلة النص العلمي المعياري";
+        maxScore.innerText = "/ 5.00";
+      } else if (exNum === 2) {
+        badge.innerText = "ت2 (07 نقاط)";
+        desc.innerText = "الاستدلال العلمي ومصفوفة تفكيك السندات بالتحليل المقارن";
+        maxScore.innerText = "/ 7.00";
+      } else if (exNum === 3) {
+        badge.innerText = "ت3 (08 نقاط)";
+        desc.innerText = "المسعى العلمي الشامل 4D والمخطط التحصيلي ذو المسارين";
+        maxScore.innerText = "/ 8.00";
+      }
+
+      renderExerciseSpecificSidebarNav(exNum);
+      renderExerciseWorkspaceContent(exNum);
+      goToStep(1);
+      updateLiveScore();
+    }
+
+    function renderExerciseSpecificSidebarNav(exNum) {
+      const nav = document.getElementById('nav-steps-container');
+      if (exNum === 1) {
+        nav.innerHTML = `
+          <button onclick="goToStep(1)" id="step-nav-1" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-right text-xs font-bold bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 transition">
+            <span class="w-5 h-5 rounded bg-emerald-500/20 flex items-center justify-center text-[10px] font-mono">N</span>
+            <div>تأطير الإشكالية (1.00ن)</div>
+          </button>
+          <button onclick="goToStep(2)" id="step-nav-2" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-right text-xs font-bold text-slate-400 hover:bg-slate-800/60 transition">
+            <span class="w-5 h-5 rounded bg-slate-800 flex items-center justify-center text-[10px] font-mono">S</span>
+            <div>المفاهيم والكلمات (1.00ن)</div>
+          </button>
+          <button onclick="goToStep(3)" id="step-nav-3" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-right text-xs font-bold text-slate-400 hover:bg-slate-800/60 transition">
+            <span class="w-5 h-5 rounded bg-slate-800 flex items-center justify-center text-[10px] font-mono">E</span>
+            <div>العرض السببي (2.00ن)</div>
+          </button>
+          <button onclick="goToStep(4)" id="step-nav-4" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-right text-xs font-bold text-slate-400 hover:bg-slate-800/60 transition">
+            <span class="w-5 h-5 rounded bg-slate-800 flex items-center justify-center text-[10px] font-mono">W</span>
+            <div>الخاتمة التركيبية (1.00ن)</div>
+          </button>
+        `;
+      } else if (exNum === 2) {
+        nav.innerHTML = `
+          <button onclick="goToStep(1)" id="step-nav-1" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-right text-xs font-bold bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 transition">
+            <span class="w-5 h-5 rounded bg-emerald-500/20 flex items-center justify-center text-[10px] font-mono">N</span>
+            <div>سياق الاستدلال (1.00ن)</div>
+          </button>
+          <button onclick="goToStep(2)" id="step-nav-2" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-right text-xs font-bold text-slate-400 hover:bg-slate-800/60 transition">
+            <span class="w-5 h-5 rounded bg-slate-800 flex items-center justify-center text-[10px] font-mono">S</span>
+            <div>استغلال السندات (2.50ن)</div>
+          </button>
+          <button onclick="goToStep(3)" id="step-nav-3" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-right text-xs font-bold text-slate-400 hover:bg-slate-800/60 transition">
+            <span class="w-5 h-5 rounded bg-slate-800 flex items-center justify-center text-[10px] font-mono">E</span>
+            <div>الربط السببي (2.50ن)</div>
+          </button>
+          <button onclick="goToStep(4)" id="step-nav-4" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-right text-xs font-bold text-slate-400 hover:bg-slate-800/60 transition">
+            <span class="w-5 h-5 rounded bg-slate-800 flex items-center justify-center text-[10px] font-mono">W</span>
+            <div>الاستخلاص والحل (1.00ن)</div>
+          </button>
+        `;
+      } else if (exNum === 3) {
+        nav.innerHTML = `
+          <button onclick="goToStep(1)" id="step-nav-1" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-right text-xs font-bold bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 transition">
+            <span class="w-5 h-5 rounded bg-emerald-500/20 flex items-center justify-center text-[10px] font-mono">N</span>
+            <div>تأطير المسعى (0.50ن)</div>
+          </button>
+          <button onclick="goToStep(2)" id="step-nav-2" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-right text-xs font-bold text-slate-400 hover:bg-slate-800/60 transition">
+            <span class="w-5 h-5 rounded bg-slate-800 flex items-center justify-center text-[10px] font-mono">S</span>
+            <div>مصفوفة الوثيقة 1 (2.00ن)</div>
+          </button>
+          <button onclick="goToStep(3)" id="step-nav-3" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-right text-xs font-bold text-slate-400 hover:bg-slate-800/60 transition">
+            <span class="w-5 h-5 rounded bg-slate-800 flex items-center justify-center text-[10px] font-mono">E</span>
+            <div>الفرضيات وسند 2 (4.00ن)</div>
+          </button>
+          <button onclick="goToStep(4)" id="step-nav-4" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-right text-xs font-bold text-slate-400 hover:bg-slate-800/60 transition">
+            <span class="w-5 h-5 rounded bg-slate-800 flex items-center justify-center text-[10px] font-mono">W</span>
+            <div>المصادقة والمخطط (1.50ن)</div>
+          </button>
+        `;
+      }
+    }
+
+    function renderExerciseWorkspaceContent(exNum) {
+      const container = document.getElementById('dynamic-exercise-content');
+      
+      if (exNum === 1) {
+        container.innerHTML = `
+          <div id="step-panel-1" class="space-y-4">
+            <div class="p-5 rounded-2xl bg-slate-900 border border-slate-800 space-y-3">
+              <span class="px-2.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300 text-xs font-bold">القطب الشمال (1.00ن)</span>
+              <h2 class="text-base font-black text-slate-100">تأطير الإشكالية والمشكل العلمي المستهدف في النص</h2>
+              <div class="space-y-2 text-xs">
+                <input id="ex1-problem-input" type="text" placeholder="صياغة المشكل العلمي بدقة..." class="w-full p-2.5 rounded-xl bg-slate-950 border border-slate-800 text-slate-200 outline-none">
+                <button onclick="evalEx1North()" class="mt-2 px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl font-bold btn-3d">تأكيد القطب الشمال (فك القفل)</button>
+              </div>
+            </div>
+          </div>
+
+          <div id="step-panel-2" class="space-y-4 hidden">
+            <div class="p-5 rounded-2xl bg-slate-900 border border-slate-800 space-y-3">
+              <span class="px-2.5 py-0.5 rounded bg-blue-500/20 text-blue-300 text-xs font-bold">القطب الجنوب (1.00ن)</span>
+              <h2 class="text-base font-black text-slate-100">انتقاء الموارد والمعارف الأساسية والكلمات المفتاحية</h2>
+              <input id="ex1-keywords-input" type="text" placeholder="مستقبلات قنوية، استقطاب، إدماج عصبي..." class="w-full p-2.5 rounded-xl bg-slate-950 border border-slate-800 text-xs text-slate-200 outline-none">
+              <button onclick="evalEx1South()" class="mt-2 px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl font-bold btn-3d">تأكيد القطب الجنوب</button>
+            </div>
+          </div>
+
+          <div id="step-panel-3" class="space-y-4 hidden">
+            <div class="p-5 rounded-2xl bg-slate-900 border border-slate-800 space-y-3">
+              <span class="px-2.5 py-0.5 rounded bg-amber-500/20 text-amber-300 text-xs font-bold">القطب الشرق (2.00ن)</span>
+              <h2 class="text-base font-black text-slate-100">هيكلة العرض العلمي وتوضيح التسلسل البيولوجي السببي</h2>
+              <textarea id="ex1-body-input" rows="4" placeholder="فقرة العرض المفصل بالتسلسل البيولوجي..." class="w-full p-3 rounded-xl bg-slate-950 border border-slate-800 text-xs text-slate-200 outline-none"></textarea>
+              <button onclick="evalEx1East()" class="mt-2 px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl font-bold btn-3d">تأكيد القطب الشرق</button>
+            </div>
+          </div>
+
+          <div id="step-panel-4" class="space-y-4 hidden">
+            <div class="p-5 rounded-2xl bg-slate-900 border border-slate-800 space-y-3">
+              <span class="px-2.5 py-0.5 rounded bg-purple-500/20 text-purple-300 text-xs font-bold">القطب الغرب (1.00ن)</span>
+              <h2 class="text-base font-black text-slate-100">الخاتمة التركيبية الوجيزة لحل الإشكالية</h2>
+              <input id="ex1-conclusion-input" type="text" placeholder="الخاتمة كإجابة نهائية مختصرة..." class="w-full p-2.5 rounded-xl bg-slate-950 border border-slate-800 text-xs text-slate-200 outline-none">
+              <button onclick="evalEx1West()" class="mt-2 px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl font-bold btn-3d">تأكيد القطب الغرب</button>
+            </div>
+          </div>
+        `;
+      } else if (exNum === 2) {
+        container.innerHTML = `
+          <div id="step-panel-1" class="space-y-4">
+            <div class="p-5 rounded-2xl bg-slate-900 border border-slate-800 space-y-3">
+              <span class="px-2.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300 text-xs font-bold">القطب الشمال (1.00ن)</span>
+              <h2 class="text-base font-black text-slate-100">تحديد سياق الاستدلال والمتغيرات المستقلة والتابعة</h2>
+              <input id="ex2-var-input" type="text" placeholder="المتغيرات المستقلة والتابعة..." class="w-full p-2.5 rounded-xl bg-slate-950 border border-slate-800 text-xs text-slate-200 outline-none">
+              <button onclick="evalEx2North()" class="mt-2 px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl font-bold btn-3d">تأكيد القطب الشمال (فك القفل)</button>
+            </div>
+          </div>
+
+          <div id="step-panel-2" class="space-y-4 hidden">
+            <div class="p-5 rounded-2xl bg-slate-900 border border-slate-800 space-y-3">
+              <span class="px-2.5 py-0.5 rounded bg-blue-500/20 text-blue-300 text-xs font-bold">القطب الجنوب (2.50ن)</span>
+              <h2 class="text-base font-black text-slate-100">مصفوفة استغلال الوثائق بالأرقام (مقارنة بالتوازي)</h2>
+              <textarea id="ex2-doc1-input" rows="4" placeholder="التحليل التفكيكي المقارن بالتوازي..." class="w-full p-3 rounded-xl bg-slate-950 border border-slate-800 text-xs text-slate-200 outline-none"></textarea>
+              <button onclick="evalEx2South()" class="mt-2 px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl font-bold btn-3d">تأكيد القطب الجنوب</button>
+            </div>
+          </div>
+
+          <div id="step-panel-3" class="space-y-4 hidden">
+            <div class="p-5 rounded-2xl bg-slate-900 border border-slate-800 space-y-3">
+              <span class="px-2.5 py-0.5 rounded bg-amber-500/20 text-amber-300 text-xs font-bold">القطب الشرق (2.50ن)</span>
+              <h2 class="text-base font-black text-slate-100">الربط المنطقي والتعليل السببي لحل المشكل العلمي</h2>
+              <textarea id="ex2-synthesis-input" rows="4" placeholder="بناء الاستدلال السببي والربط المنطقي..." class="w-full p-3 rounded-xl bg-slate-950 border border-slate-800 text-xs text-slate-200 outline-none"></textarea>
+              <button onclick="evalEx2East()" class="mt-2 px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl font-bold btn-3d">تأكيد القطب الشرق</button>
+            </div>
+          </div>
+
+          <div id="step-panel-4" class="space-y-4 hidden">
+            <div class="p-5 rounded-2xl bg-slate-900 border border-slate-800 space-y-3">
+              <span class="px-2.5 py-0.5 rounded bg-purple-500/20 text-purple-300 text-xs font-bold">القطب الغرب (1.00ن)</span>
+              <h2 class="text-base font-black text-slate-100">الاستخلاص النهائي الواضح</h2>
+              <input id="ex2-conclusion-input" type="text" placeholder="الاستخلاص النهائي الشامل..." class="w-full p-2.5 rounded-xl bg-slate-950 border border-slate-800 text-xs text-slate-200 outline-none">
+              <button onclick="evalEx2West()" class="mt-2 px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl font-bold btn-3d">تأكيد القطب الغرب</button>
+            </div>
+          </div>
+        `;
+      } else if (exNum === 3) {
+        container.innerHTML = `
+          <!-- القطب الشمال -->
+          <div id="step-panel-1" class="space-y-4">
+            <div class="p-5 rounded-2xl bg-slate-900 border border-slate-800 space-y-3">
+              <span class="px-2.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300 text-xs font-bold">القطب الشمال (0.50ن)</span>
+              <h2 class="text-base font-black text-slate-100">تأطير المسعى العلمي وضبط المتغيرات</h2>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs pt-1">
+                <input id="nord-var-indep" type="text" placeholder="تراكيز مادة Mtb / الأدينوزين Ado..." class="w-full p-2.5 rounded-xl bg-slate-950 border border-slate-800 text-slate-200 outline-none">
+                <input id="nord-var-dep" type="text" placeholder="النشاط الدماغي وشدة الارتباط بمستقبلات A1R..." class="w-full p-2.5 rounded-xl bg-slate-950 border border-slate-800 text-slate-200 outline-none">
+              </div>
+              <button onclick="evalEx3North()" class="mt-2 px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl font-bold text-xs btn-3d">تأكيد القطب الشمال (فك القفل)</button>
+              <div id="feedback-nord" class="hidden p-3 rounded-xl text-xs space-y-1 mt-2"></div>
+            </div>
+          </div>
+
+          <!-- القطب الجنوب -->
+          <div id="step-panel-2" class="space-y-4 hidden">
+            <div class="p-5 rounded-2xl bg-slate-900 border border-slate-800 space-y-3">
+              <span class="px-2.5 py-0.5 rounded bg-blue-500/20 text-blue-300 text-xs font-bold">القطب الجنوب (2.00ن)</span>
+              <h2 class="text-base font-black text-slate-100">مصفوفة استغلال الوثيقة 1 (الشكل أ والشكل ب) بدقة الأرقام</h2>
+              <div class="space-y-2 text-xs p-3 bg-slate-950 rounded-xl border border-slate-800">
+                <strong class="text-slate-300 block">1. الشكل (أ): التحليل المقارن بالتوازي + الاستنتاج الخاص:</strong>
+                <textarea id="sud-doc1a-data" rows="2" placeholder="التحليل بالتوازي: في غياب Mtb ينخفض النشاط من 80% إلى 10% بينما بوجودها ينخفض إلى 50% فقط..." class="w-full p-2 rounded-lg bg-slate-900 border border-slate-800 text-slate-200 outline-none"></textarea>
+                <input id="sud-doc1a-ded" type="text" placeholder="الاستنتاج الخاص بالشكل أ: Mtb يحد من التأثير المثبط للأدينوزين..." class="w-full p-2 rounded-lg bg-slate-900 border border-slate-800 text-slate-200 outline-none">
+              </div>
+              <div class="space-y-2 text-xs p-3 bg-slate-950 rounded-xl border border-slate-800">
+                <strong class="text-slate-300 block">2. الشكل (ب): شدة الارتباط + الاستنتاج الخاص:</strong>
+                <input id="sud-doc1b-data" type="text" placeholder="تناقص شدة ارتباط Ado بمستقبلات A1R من 100 و.إ حتى الانعدام مع تزايد Mtb..." class="w-full p-2 rounded-lg bg-slate-900 border border-slate-800 text-slate-200 outline-none">
+                <input id="sud-doc1b-ded" type="text" placeholder="الاستنتاج الخاص بالشكل ب: مركب Mtb يعيق ارتباط Ado بمستقبله الغشائي A1R..." class="w-full p-2 rounded-lg bg-slate-900 border border-slate-800 text-slate-200 outline-none">
+              </div>
+              <button onclick="evalEx3South()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl font-bold text-xs btn-3d">فحص مصفوفة السندات</button>
+              <div id="feedback-sud" class="hidden p-3 rounded-xl text-xs space-y-1 mt-2"></div>
+            </div>
+          </div>
+
+          <!-- القطب الشرق -->
+          <div id="step-panel-3" class="space-y-4 hidden">
+            <div class="p-5 rounded-2xl bg-slate-900 border border-slate-800 space-y-3">
+              <span class="px-2.5 py-0.5 rounded bg-amber-500/20 text-amber-300 text-xs font-bold">القطب الشرق (4.00ن)</span>
+              <h2 class="text-base font-black text-slate-100">صياغة الفرضيات السببية واستدلال الوثيقة 2</h2>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
+                <input id="est-hypo-1" type="text" placeholder="الفرضية 1 (التنافس الغشائي على A1R)..." class="w-full p-2 rounded-lg bg-slate-950 border border-slate-800 text-slate-200 outline-none">
+                <input id="est-hypo-2" type="text" placeholder="الفرضية 2 (الارتباط بجزيئة Ado)..." class="w-full p-2 rounded-lg bg-slate-950 border border-slate-800 text-slate-200 outline-none">
+              </div>
+              <div class="space-y-1 text-xs">
+                <label class="block font-bold text-slate-300">استدلال الوثيقة 2 (تتبع السلسلة الجزيئية كشريط فيديو بطيء) :</label>
+                <textarea id="est-doc2-text" rows="4" placeholder="تتبع مسار Gi/Go وقنوات K+ و Ca2+ وإفراز النورإبينفرين NE في غياب ووجود Mtb والمصادقة الصريحة..." class="w-full p-2.5 rounded-xl bg-slate-950 border border-slate-800 text-slate-200 outline-none"></textarea>
+              </div>
+              <button onclick="evalEx3East()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl font-bold text-xs btn-3d">تأكيد القطب الشرق</button>
+              <div id="feedback-est" class="hidden p-3 rounded-xl text-xs space-y-1 mt-2"></div>
+            </div>
+          </div>
+
+          <!-- القطب الغرب -->
+          <div id="step-panel-4" class="space-y-4 hidden">
+            <div class="p-5 rounded-2xl bg-slate-900 border border-slate-800 space-y-4">
+              <span class="px-2.5 py-0.5 rounded bg-purple-500/20 text-purple-300 text-xs font-bold">القطب الغرب (1.50ن)</span>
+              <h2 class="text-base font-black text-slate-100">المصادقة واستوديو المخطط المقارن (الحالة الطبيعية مقابل الخلل)</h2>
+              
+              <div class="p-3 bg-slate-950 rounded-xl border border-slate-800 space-y-2">
+                <span class="text-xs font-bold text-amber-300 block">📦 بنك العناصر البيوكيميائية للمخطط :</span>
+                <div id="blocks-bank" class="flex flex-wrap gap-2 pt-1"></div>
+              </div>
+
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="p-3 rounded-xl bg-slate-950 border border-rose-500/30 space-y-2" id="pipeline-stream-1">
+                  <strong class="text-rose-400 text-xs block">المسار 1: الحالة الطبيعية في غياب Mtb (نقص اليقظة)</strong>
+                  <div class="pipeline-slot p-2 rounded-lg bg-slate-900 border border-dashed border-slate-700 text-xs cursor-pointer" onclick="clearSlot(1,0)"><span class="text-slate-500 text-[10px]">1. الاستقبال الغشائي</span></div>
+                  <div class="pipeline-slot p-2 rounded-lg bg-slate-900 border border-dashed border-slate-700 text-xs cursor-pointer" onclick="clearSlot(1,1)"><span class="text-slate-500 text-[10px]">2. البروتينات Gi/Go</span></div>
+                  <div class="pipeline-slot p-2 rounded-lg bg-slate-900 border border-dashed border-slate-700 text-xs cursor-pointer" onclick="clearSlot(1,2)"><span class="text-slate-500 text-[10px]">3. القنوات K+/Ca2+</span></div>
+                  <div class="pipeline-slot p-2 rounded-lg bg-slate-900 border border-dashed border-slate-700 text-xs cursor-pointer" onclick="clearSlot(1,3)"><span class="text-slate-500 text-[10px]">4. إفراز النورإبينفرين</span></div>
+                </div>
+
+                <div class="p-3 rounded-xl bg-slate-950 border border-emerald-500/30 space-y-2" id="pipeline-stream-2">
+                  <strong class="text-emerald-400 text-xs block">المسار 2: في وجود مادة Mtb (زيادة اليقظة)</strong>
+                  <div class="pipeline-slot p-2 rounded-lg bg-slate-900 border border-dashed border-slate-700 text-xs cursor-pointer" onclick="clearSlot(2,0)"><span class="text-slate-500 text-[10px]">1. التنافس على A1R</span></div>
+                  <div class="pipeline-slot p-2 rounded-lg bg-slate-900 border border-dashed border-slate-700 text-xs cursor-pointer" onclick="clearSlot(2,1)"><span class="text-slate-500 text-[10px]">2. عدم تفعيل Gi/Go</span></div>
+                  <div class="pipeline-slot p-2 rounded-lg bg-slate-900 border border-dashed border-slate-700 text-xs cursor-pointer" onclick="clearSlot(2,2)"><span class="text-slate-500 text-[10px]">3. استمرار تدفق Ca2+</span></div>
+                  <div class="pipeline-slot p-2 rounded-lg bg-slate-900 border border-dashed border-slate-700 text-xs cursor-pointer" onclick="clearSlot(2,3)"><span class="text-slate-500 text-[10px]">4. تحرير النورإبينفرين</span></div>
+                </div>
+              </div>
+
+              <button onclick="evalEx3West()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl font-bold text-xs btn-3d">مصادقة المخطط التحصيلي</button>
+              <div id="feedback-west" class="hidden p-3 rounded-xl text-xs space-y-1 mt-2"></div>
+            </div>
+          </div>
+        `;
+        initPipelineBank();
+        renderPipelineSlots();
+      }
+    }
+
+    function goToStep(stepIndex) {
+      currentStep = stepIndex;
+      
+      // تحديث شريط التقدم الهادئ
+      const progressBar = document.getElementById('exercise-progress-bar');
+      if (progressBar) {
+        progressBar.style.width = `${stepIndex * 25}%`;
+      }
+
+      for (let i = 1; i <= 4; i++) {
+        const panel = document.getElementById(`step-panel-${i}`);
+        const navBtn = document.getElementById(`step-nav-${i}`);
+        if (panel) {
+          if (i === stepIndex) {
+            panel.classList.remove('hidden');
+            if (navBtn) navBtn.className = "w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-right text-xs font-bold bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 transition";
+          } else {
+            panel.classList.add('hidden');
+            if (navBtn) navBtn.className = "w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-right text-xs font-bold text-slate-400 hover:bg-slate-800/60 transition";
+          }
+        }
+      }
+
+      const needle = document.getElementById('compass-needle-svg');
+      const poleText = document.getElementById('compass-active-pole');
+      if (stepIndex === 1) {
+        needle.style.transform = "rotate(0deg)";
+        poleText.innerText = "القطب: الشمال (N)";
+      } else if (stepIndex === 2) {
+        needle.style.transform = "rotate(180deg)";
+        poleText.innerText = "القطب: الجنوب (S)";
+      } else if (stepIndex === 3) {
+        needle.style.transform = "rotate(90deg)";
+        poleText.innerText = "القطب: الشرق (E)";
+      } else if (stepIndex === 4) {
+        needle.style.transform = "rotate(270deg)";
+        poleText.innerText = "القطب: الغرب (W)";
+      }
+    }
+
+    // دوال تلميحات فك القفل الذهني (Panic Helper)
+    function showPanicHint() {
+      const modal = document.getElementById('panic-modal');
+      const hintText = document.getElementById('panic-hint-text');
+      
+      if (currentStep === 1) {
+        hintText.innerText = "💡 تلميح القطب الشمال: انظر إلى سياق التمرين، ما هو العامل الذي يغيره المجرب؟ (المتغير المستقل)، وما هي الظاهرة المقاسة؟ (المتغير التابع). صغ المشكل بعلامة استفهام دون الإجابة عنه هنا.";
+      } else if (currentStep === 2) {
+        hintText.innerText = "💡 تلميح القطب الجنوب: ركّز على الأرقام في المنحنى أو الجدول، قارن بالتوازي بين الحالتين بذكر القيم الابتدائية والنهائية، وتجنب تماماً كتابة 'بسبب' أو 'يرجع إلى'.";
+      } else if (currentStep === 3) {
+        hintText.innerText = "💡 تلميح القطب الشرق: تخيل ما يحدث على مستوى الغشاء كشريط فيديو بطيء: ارتباط الجزيئة -> تفعيل البروتينات الباطنية -> حركة الشوارد -> إفراز المبلغ. صغ فرضيتك كحل مسبب دون استخدام 'ربما'.";
+      } else if (currentStep === 4) {
+        hintText.innerText = "💡 تلميح القطب الغرب: في المخطط التحصيلي رتب العقد البيوكيميائية بالترتيب السببي (استقبال غشائي -> بروتينات باطنية -> قنوات -> إفراز المبلغ) ومثّل المسارين جنباً إلى جنب.";
+      }
+
+      modal.classList.remove('hidden');
+    }
+
+    function closePanicModal() {
+      document.getElementById('panic-modal').classList.add('hidden');
+    }
+
+    function markAnsweredAndUnlock(exNum) {
+      exerciseAnsweredAny[exNum] = true;
+      const lockIcon = document.getElementById(`lock-icon-ex${exNum}`);
+      if (lockIcon) {
+        lockIcon.innerHTML = '<i class="fa-solid fa-unlock text-emerald-400"></i>';
+      }
+    }
+
+    function evalEx1North() { exerciseScores[1].n = 1.0; markAnsweredAndUnlock(1); updateLiveScore(); goToStep(2); }
+    function evalEx1South() { exerciseScores[1].s = 1.0; markAnsweredAndUnlock(1); updateLiveScore(); goToStep(3); }
+    function evalEx1East()  { exerciseScores[1].e = 2.0; markAnsweredAndUnlock(1); updateLiveScore(); goToStep(4); }
+    function evalEx1West()  { exerciseScores[1].w = 1.0; markAnsweredAndUnlock(1); updateLiveScore(); alert("🎉 ممتاز! أكملت حل التمرين 1 بالبوصلة 4D (5.00/5.00)"); }
+
+    function evalEx2North() { exerciseScores[2].n = 1.0; markAnsweredAndUnlock(2); updateLiveScore(); goToStep(2); }
+    function evalEx2South() { exerciseScores[2].s = 2.5; markAnsweredAndUnlock(2); updateLiveScore(); goToStep(3); }
+    function evalEx2East()  { exerciseScores[2].e = 2.5; markAnsweredAndUnlock(2); updateLiveScore(); goToStep(4); }
+    function evalEx2West()  { exerciseScores[2].w = 1.0; markAnsweredAndUnlock(2); updateLiveScore(); alert("🎉 ممتاز! أكملت حل التمرين 2 بالبوصلة 4D (7.00/7.00)"); }
+
+    function evalEx3North() {
+      exerciseScores[3].n = 0.50;
+      markAnsweredAndUnlock(3);
+      updateLiveScore();
+      goToStep(2);
+    }
+
+    function evalEx3South() {
+      exerciseScores[3].s = 2.0;
+      updateLiveScore();
+      goToStep(3);
+    }
+
+    function evalEx3East() {
+      exerciseScores[3].e = 4.0;
+      updateLiveScore();
+      goToStep(4);
+    }
+
+    function evalEx3West() {
+      let correct1 = 0, correct2 = 0;
+      for (let i = 0; i < 4; i++) {
+        const b1 = userPipeline.stream1[i];
+        if (b1 && b1.correctStream === 1 && b1.correctSlot === i) correct1++;
+        const b2 = userPipeline.stream2[i];
+        if (b2 && b2.correctStream === 2 && b2.correctSlot === i) correct2++;
+      }
+
+      const total = (correct1 / 4) * 0.75 + (correct2 / 4) * 0.75;
+      exerciseScores[3].w = total;
+      updateLiveScore();
+
+      const fb = document.getElementById('feedback-west');
+      fb.classList.remove('hidden');
+      fb.className = `p-3 rounded-xl text-xs border ${total >= 1.2 ? 'bg-emerald-950/40 border-emerald-800 text-emerald-300' : 'bg-slate-950 border-slate-800 text-slate-300'}`;
+      fb.innerHTML = `✔ نتيجة مصادقة المخطط التحصيلي ذو المسارين: <strong>${total.toFixed(2)} / 1.50ن</strong>`;
+      if (total >= 1.2) alert("🎉 أحسنت! حققت العلامة الكاملة في تمرين المسعى العلمي 4D (8.00/8.00) وفق المعايير الوزارية!");
+    }
+
+    function updateLiveScore() {
+      const current = exerciseScores[currentExerciseNumber];
+      const sum = current.n + current.s + current.e + current.w;
+      document.getElementById('live-total-score').innerText = sum.toFixed(2);
+    }
+
+    function initPipelineBank() {
+      const bank = document.getElementById('blocks-bank');
+      if (!bank) return;
+      bank.innerHTML = "";
+      pipelineBlocks.forEach(block => {
+        const btn = document.createElement('button');
+        btn.id = `btn-block-${block.id}`;
+        btn.className = "px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-[10px] font-bold text-slate-200 text-right cursor-pointer";
+        btn.innerText = block.text;
+        btn.onclick = () => placeBlock(block);
+        bank.appendChild(btn);
+      });
+    }
+
+    function placeBlock(block) {
+      for (let s = 1; s <= 2; s++) {
+        const key = `stream${s}`;
+        for (let i = 0; i < 4; i++) {
+          if (userPipeline[key][i] === null) {
+            userPipeline[key][i] = block;
+            document.getElementById(`btn-block-${block.id}`).classList.add('opacity-30', 'pointer-events-none');
+            renderPipelineSlots();
+            return;
+          }
+        }
+      }
+    }
+
+    function clearSlot(stream, index) {
+      const key = `stream${stream}`;
+      const block = userPipeline[key][index];
+      if (block) {
+        userPipeline[key][index] = null;
+        const btn = document.getElementById(`btn-block-${block.id}`);
+        if (btn) btn.classList.remove('opacity-30', 'pointer-events-none');
+        renderPipelineSlots();
+      }
+    }
+
+    function renderPipelineSlots() {
+      for (let s = 1; s <= 2; s++) {
+        const container = document.getElementById(`pipeline-stream-${s}`);
+        if (!container) continue;
+        const slots = container.querySelectorAll('.pipeline-slot');
+        slots.forEach((slot, idx) => {
+          const item = userPipeline[`stream${s}`][idx];
+          if (item) {
+            slot.className = "pipeline-slot p-2 rounded-lg bg-slate-800 border border-emerald-500/50 flex items-center justify-between text-xs cursor-pointer";
+            slot.innerHTML = `<span class="text-emerald-300 font-bold text-[11px]">${item.text}</span><i class="fa-solid fa-trash text-rose-400 text-[10px]"></i>`;
+          } else {
+            slot.className = "pipeline-slot p-2 rounded-lg bg-slate-900 border border-dashed border-slate-700 text-xs cursor-pointer";
+            slot.innerHTML = `<span class="text-slate-500 text-[10px]">${idx + 1}. انقر لوضع عقدة بيوكيميائية...</span>`;
+          }
+        });
+      }
+    }
+
+    function toggleDrawer(id) {
+      const drawer = document.getElementById(id);
+      if (id === 'pdf-drawer') {
+        drawer.classList.toggle('-translate-x-full');
+      } else {
+        drawer.classList.toggle('translate-x-full');
+      }
+    }
+
+    function goToHub() {
+      if (strategyTimerInterval) clearInterval(strategyTimerInterval);
+      if (globalTimerInterval) clearInterval(globalTimerInterval);
+      document.getElementById('global-exam-timer-bar').classList.add('hidden');
+      document.getElementById('view-workspace').classList.add('hidden');
+      document.getElementById('view-sujet-onboarding').classList.add('hidden');
+      document.getElementById('view-guide').classList.add('hidden');
+      document.getElementById('view-strategy').classList.add('hidden');
+      document.getElementById('view-hub').classList.remove('hidden');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  </script>
+</body>
+</html>

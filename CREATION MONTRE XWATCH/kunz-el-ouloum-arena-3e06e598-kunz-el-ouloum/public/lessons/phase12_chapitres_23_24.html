@@ -1,0 +1,1641 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>منصة بنزر العلم | المرحلة 12 : النشاط 23 والنشاط 24</title>
+    <style>
+        :root {
+            --bg-main: #f8fafc;
+            --surface: #ffffff;
+            --primary: #0f172a;
+            --accent: #2563eb;
+            --accent-light: #eff6ff;
+            --success: #16a34a;
+            --success-light: #f0fdf4;
+            --warning: #d97706;
+            --warning-light: #fffbeb;
+            --danger: #dc2626;
+            --danger-light: #fef2f2;
+            --emerald-dark: #047857;
+            --emerald-light: #ecfdf5;
+            --amber-dark: #b45309;
+            --amber-light: #fffbeb;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            --radius: 16px;
+            --shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Noto Kufi Arabic', 'Kufi', 'Cairo', sans-serif;
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            line-height: 1.8;
+            padding-bottom: 60px;
+        }
+
+        .ltr-seq {
+            direction: ltr;
+            unicode-bidi: embed;
+            display: inline-block;
+            font-family: monospace;
+            font-weight: bold;
+            color: var(--accent);
+            background: #f1f5f9;
+            padding: 2px 8px;
+            border-radius: 6px;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 2rem auto;
+            padding: 0 1.2rem;
+        }
+
+        .chapter-view {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .chapter-view.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Hero Header */
+        .lesson-header {
+            border-radius: var(--radius);
+            padding: 2.5rem;
+            margin-bottom: 2rem;
+            position: relative;
+            overflow: hidden;
+            color: white;
+        }
+
+        .header-ch23 {
+            background: linear-gradient(135deg, #064e3b 0%, #059669 100%);
+        }
+
+        .header-ch24 {
+            background: linear-gradient(135deg, #78350f 0%, #d97706 100%);
+        }
+
+        .lesson-breadcrumb {
+            font-size: 0.85rem;
+            opacity: 0.9;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .lesson-header h1 {
+            font-size: 2.1rem;
+            font-weight: 900;
+            margin-bottom: 1rem;
+            line-height: 1.3;
+        }
+
+        .lesson-objectives {
+            background: rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            font-size: 0.95rem;
+        }
+
+        /* Cards */
+        .card {
+            background: var(--surface);
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow);
+        }
+
+        @media (max-width: 600px) {
+            .lesson-header { padding: 1.5rem; }
+            .lesson-header h1 { font-size: 1.5rem; }
+            .card { padding: 1.2rem; }
+        }
+
+        .section-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid var(--bg-main);
+            padding-bottom: 0.8rem;
+        }
+
+        .step-num {
+            background: #d1fae5;
+            color: #047857;
+            width: 38px;
+            height: 38px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 10px;
+            font-weight: 900;
+            font-size: 1.1rem;
+        }
+
+        .step-num-amber {
+            background: #fef3c7;
+            color: #b45309;
+        }
+
+        .problem-box {
+            background: var(--warning-light);
+            border-right: 5px solid var(--warning);
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin-bottom: 1.5rem;
+        }
+
+        .problem-title {
+            font-weight: 800;
+            color: #92400e;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Document Analysis */
+        .doc-viewer {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            align-items: start;
+        }
+
+        @media (max-width: 850px) {
+            .doc-viewer { grid-template-columns: 1fr; }
+        }
+
+        .doc-visual {
+            background: #0f172a;
+            border-radius: 12px;
+            padding: 1.5rem;
+            color: white;
+        }
+
+        .svg-container {
+            width: 100%;
+            height: auto;
+            max-height: 260px;
+        }
+
+        /* ProFigureEngine — préserve le ratio des figures générées (max-height:260px les écrasait) */
+        .doc-visual svg.pfe-figure {
+            max-height: none;
+        }
+
+        .doc-analysis {
+            background: var(--bg-main);
+            border-radius: 12px;
+            padding: 1.5rem;
+            border: 1px solid var(--border);
+        }
+
+        .method-tag {
+            display: inline-block;
+            background: #e0f2fe;
+            color: #0369a1;
+            font-size: 0.75rem;
+            font-weight: 800;
+            padding: 2px 8px;
+            border-radius: 4px;
+            margin-bottom: 8px;
+        }
+
+        /* Interactive simulators */
+        .interactive-box {
+            background: #1e293b;
+            border-radius: 12px;
+            padding: 1.5rem;
+            color: white;
+            margin: 1.5rem 0;
+        }
+
+        .btn-action {
+            background: #059669;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 10px;
+            font-family: inherit;
+            font-weight: 800;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin: 5px;
+        }
+
+        .btn-action:hover { background: #047857; }
+        .btn-amber { background: #d97706; }
+        .btn-amber:hover { background: #b45309; }
+
+        /* Scientific text */
+        .scientific-text {
+            background: var(--surface);
+            border: 2px solid #cbd5e1;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-top: 1rem;
+        }
+
+        .text-part {
+            margin-bottom: 1.2rem;
+            padding-right: 1rem;
+            border-right: 4px solid #059669;
+        }
+
+        .text-part.ch24-border { border-right-color: #d97706; }
+
+        .text-part h4 {
+            font-size: 0.95rem;
+            color: #059669;
+            margin-bottom: 0.3rem;
+            font-weight: 800;
+        }
+
+        .text-part.ch24-border h4 { color: #d97706; }
+
+        /* Quiz */
+        .question-item {
+            background: var(--bg-main);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 10px;
+            margin-top: 1rem;
+        }
+
+        .option-btn {
+            background: white;
+            border: 1.5px solid var(--border);
+            padding: 12px 16px;
+            border-radius: 10px;
+            text-align: right;
+            font-family: inherit;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: var(--text-main);
+        }
+
+        .option-btn:hover {
+            border-color: #059669;
+            background: #ecfdf5;
+        }
+
+        .option-btn.correct {
+            background: var(--success-light);
+            border-color: var(--success);
+            color: var(--success);
+            font-weight: 700;
+        }
+
+        .option-btn.wrong {
+            background: var(--danger-light);
+            border-color: var(--danger);
+            color: var(--danger);
+        }
+
+        .feedback-box {
+            margin-top: 1rem;
+            padding: 1rem;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            display: none;
+            line-height: 1.6;
+        }
+    
+        /* === MIFTAH + Sommaire + Badge (v3.2 prototype) === */
+        .sommaire{position:sticky;top:0;z-index:999;max-width:1100px;width:calc(100% - 16px);margin:8px auto 0;background:#0f172a;border:1px solid #334155;border-radius:0 0 16px 16px;padding:10px 14px;display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;justify-content:flex-start;box-shadow:0 10px 28px rgba(15,23,42,.35)}
+        .sommaire::-webkit-scrollbar{display:none}
+        .sommaire a{white-space:nowrap;font-size:.82rem;font-weight:800;color:#e2e8f0;text-decoration:none;padding:6px 12px;border-radius:8px;border:1px solid #475569;background:#1e293b;transition:all .15s}
+        .sommaire a:hover{border-color:#38bdf8;color:#7dd3fc;background:#0ea5e9}
+        .sommaire a.active{background:#2563eb;color:#fff;border-color:#60a5fa}
+        .sommaire .sep{width:1px;background:#475569;margin:0 4px;flex-shrink:0}
+        .miftah-encadre{background:#fffdf4;border:1px solid #f3e0b0;border-right:4px solid #c08a1f;border-radius:10px;padding:10px 13px;margin:10px 0;font-size:.88rem;line-height:1.65}
+        .miftah-encadre b{color:#7a5610}
+        .quiz-badge{display:none;margin-top:12px;padding:10px 14px;border-radius:10px;font-weight:800;text-align:center;font-size:.95rem;animation:fadeIn .25s ease}
+        .quiz-badge.show{display:block}
+        .quiz-badge.faible{background:#fef2f2;color:#991b1b;border:1px solid #fecaca}
+        .quiz-badge.moyen{background:#fffbeb;color:#92400e;border:1px solid #fde68a}
+        .quiz-badge.mumtaz{background:#f0fdf4;color:#166534;border:1px solid #bbf7d0}
+        @media(max-width:768px){.sommaire{top:0;width:100%;max-width:100%;border-radius:0;margin-left:0;margin-right:0}}
+
+    </style>
+</head>
+<body>
+
+    
+
+    
+    <!-- Sommaire sticky (v3.2) -->
+    <div class="sommaire" id="sommaire">
+        <a href="#ch1-step1" id="link-ch1-step1" onclick="scrollToStep('ch1-step1',event)">📖 1-1 وضعية</a>
+        <a href="#ch1-step2" id="link-ch1-step2" onclick="scrollToStep('ch1-step2',event)">🔬 1-2 تحليل</a>
+        <a href="#ch1-step3" id="link-ch1-step3" onclick="scrollToStep('ch1-step3',event)">🧪 1-3 محاكي</a>
+        <a href="#ch1-step4" id="link-ch1-step4" onclick="scrollToStep('ch1-step4',event)">✅ 1-4 تقويم</a>
+        <span class="sep"></span>
+        <a href="#ch2-step1" id="link-ch2-step1" onclick="scrollToStep('ch2-step1',event)">❓ 2-1 إشكالية</a>
+        <a href="#ch2-step2" id="link-ch2-step2" onclick="scrollToStep('ch2-step2',event)">🔬 2-2 تحليل</a>
+        <a href="#ch2-step3" id="link-ch2-step3" onclick="scrollToStep('ch2-step3',event)">🧪 2-3 محاكي</a>
+        <a href="#ch2-step4" id="link-ch2-step4" onclick="scrollToStep('ch2-step4',event)">✅ 2-4 تقويم</a>
+        <a href="#resume" id="link-resume" onclick="scrollToStep('resume',event)">📝 خلاصة</a>
+        <a href="#hosila" id="link-hosila" onclick="scrollToStep('hosila',event)">🏛 الحصيلة</a>
+    </div>
+
+    <div class="container">
+
+        <!-- ================================================================= -->
+        <!-- CHAPTER 23 : LE CYCLE DE CALVIN & SYNTHÈSE (النشاط 23) -->
+        <!-- ================================================================= -->
+        <div id="ch23" class="chapter-view active">
+            
+            <header class="lesson-header header-ch23">
+                <div class="lesson-breadcrumb">المجال الثاني : التحولات الطاقوية • الوحدة 1 : آليات تحويل الطاقة الضوئية إلى طاقة كيميائية كامنة</div>
+                <h1>النشاط 4 : تفاعلات المرحلة الكيميوحيوية (حلقة كالفن تثبيت غاز CO₂ وبناء السكريات)</h1>
+                <div class="lesson-objectives">
+                    <div>🎯 <strong>الهدف العلمي :</strong> حدّد خطوات حلقة كالفن (التثبيت، الإرجاع، التجديد)، ووضّح دور إنزيم الروبيسكو واستهلاك نواتج المرحلة الضوئية (ATP و NADPH).</div>
+                    <div>⏱️ <strong>المدة التقديرية للتعلم الذاتي :</strong> 25 دقيقة</div>
+                </div>
+            </header>
+
+            <!-- Step 1: Problématique -->
+            <section class="card" id="ch1-step1">
+                <div class="section-title">
+                    <span class="step-num">1</span>
+                    <span>وضعية الانطلاق وبناء الإشكالية العلميـة</span>
+                </div>
+                <div class="problem-box">
+                    <div class="problem-title">⚠️ كيف يبني النبات جذوعه وأوراقه وثماره انطلاقا من غاز في الهواء؟</div>
+                    <p>المادة العضوية للنبات (سكر النشا، السليلوز، الغلوكوز) تتكون أساساً من سلاسل كربونية (<span class="ltr-seq">C-C</span>). والمصدر الوحيد لهذا الكربون هو غاز ثاني أكسيد الكربون (<span class="ltr-seq">CO₂</span>) الموجود في الهواء بنسبة ضئيلة جداً (0.04%). <strong>كيف تقوم الحشوة (الستروما) باقتناص وتثبيت جزيئات الـ CO₂ الغازية وربطها معاً لتشكيل سكر الغلوكوز (C₆H₁₂O₆) الصلب والغني بالطاقة؟</strong></p>
+                </div>
+            </section>
+
+            <!-- Step 2: Document Analyse -->
+            <section class="card" id="ch1-step2">
+                <div class="section-title">
+                    <span class="step-num">2</span>
+                    <span>التحليل المنهجي لتجارب كالفن وبنسون (الكربون المشع ¹⁴CO₂) وخطوات الحلقة</span>
+                </div>
+                <div class="doc-viewer">
+                    <div class="doc-visual" style="background: #064e3b;">
+                        <h4 style="color: #6ee7b7; margin-bottom: 1rem; font-size: 0.95rem;">مخطط حلقة كالفن (دورة إدماج الكربون في الحشوة بتدخل إنزيم Rubisco)</h4>
+                        <!-- SVG Calvin Cycle -->
+                        <!-- Generated by ProFigureEngine - SVT BAC DZ -->
+<svg class="svg-container pfe-figure" viewBox="0 0 800 500" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="مخطط حلقة كالفن — دورة إدماج الكربون في الحشوة">
+  <defs>
+    <style>
+      .pfe-title { font-family: 'Cairo', 'Segoe UI', Tahoma, sans-serif; font-weight: 700; fill: #f8fafc; }
+      .pfe-label { font-family: 'Cairo', 'Segoe UI', Tahoma, sans-serif; font-size: 13px; fill: #cbd5e1; }
+      .pfe-sub { font-family: 'Segoe UI', Tahoma, sans-serif; font-size: 11px; fill: #94a3b8; }
+      .pfe-badge { font-family: monospace; font-size: 11px; font-weight: bold; }
+    </style>
+    <filter id="pf-f0-pfe-glow-red" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="3" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+    <marker id="pf-f0-pfe-arrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 10 5 L 0 9 z" fill="#38bdf8" />
+    </marker>
+    <marker id="pf-f0-pfe-arrow-gold" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 10 5 L 0 9 z" fill="#fbbf24" />
+    </marker>
+    <linearGradient id="pf-f0-pfe-membrane-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1e293b" />
+      <stop offset="100%" stop-color="#0f172a" />
+    </linearGradient>
+    <linearGradient id="pf-f0-pfe-nucleus-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1e3a5f" />
+      <stop offset="100%" stop-color="#0f172a" />
+    </linearGradient>
+    
+  </defs>
+  <rect x="10" y="10" width="780" height="480" rx="22" fill="#0c1322" stroke="#1e293b" stroke-width="2"/>
+  <text x="400" y="40" text-anchor="middle" font-size="16" font-weight="700" fill="#f8fafc" font-family="'Cairo', 'Segoe UI', Tahoma, sans-serif">مخطط حلقة كالفن — دورة إدماج الكربون في الحشوة</text>
+  <text x="400" y="62" text-anchor="middle" font-size="11.5" fill="#94a3b8" font-family="'Cairo', 'Segoe UI', Tahoma, sans-serif">Cycle de Calvin — RuBP (C₅) → fixation CO₂ → glucose (C₆)</text>
+  <g transform="translate(30, 150)">
+  <rect x="0" y="0" width="150.5" height="148" rx="14" fill="#111c31" stroke="#38bdf8" stroke-width="2"/>
+  <circle cx="24" cy="26" r="14" fill="#38bdf8" fill-opacity="0.22" stroke="#38bdf8" stroke-width="1.5"/>
+  <text x="24" y="31" text-anchor="middle" font-size="13" font-weight="700" fill="#38bdf8" font-family="'Consolas', monospace">1</text>
+  <text x="75.3" y="64" text-anchor="middle" font-size="13.5" font-weight="700" fill="#f8fafc" font-family="'Cairo', 'Segoe UI', Tahoma, sans-serif">6 RuBP (C₅)</text>
+  <text x="75.3" y="104" text-anchor="middle" font-size="11.5" fill="#cbd5e1" font-family="'Cairo', 'Segoe UI', Tahoma, sans-serif">حامل الـ CO₂</text>
+  <rect x="17.3" y="126" width="116" height="20" rx="10" fill="#38bdf8" fill-opacity="0.16" stroke="#38bdf8" stroke-width="1"/>
+  <text x="75.3" y="141" text-anchor="middle" font-size="11" font-weight="700" fill="#38bdf8" font-family="'Cairo', 'Segoe UI', Tahoma, sans-serif">C₅</text>
+  </g>
+  <line x1="186.5" y1="224" x2="220.5" y2="224" stroke="#38bdf8" stroke-width="2.5" stroke-linecap="round"/><path d="M 220.5,224 L 214.9,220.2 L 214.9,227.9 z" fill="#38bdf8" transform="rotate(0 220.5 224)"/>
+  <text x="203.5" y="118" text-anchor="middle" font-size="11" font-weight="700" fill="#fbbf24" font-family="'Cairo', 'Segoe UI', Tahoma, sans-serif">+ 6 CO₂</text>
+  <g transform="translate(226.5, 150)">
+  <rect x="0" y="0" width="150.5" height="148" rx="14" fill="#111c31" stroke="#f43f5e" stroke-width="2"/>
+  <circle cx="24" cy="26" r="14" fill="#f43f5e" fill-opacity="0.22" stroke="#f43f5e" stroke-width="1.5"/>
+  <text x="24" y="31" text-anchor="middle" font-size="13" font-weight="700" fill="#f43f5e" font-family="'Consolas', monospace">2</text>
+  <text x="75.3" y="64" text-anchor="middle" font-size="13.5" font-weight="700" fill="#f8fafc" font-family="'Cairo', 'Segoe UI', Tahoma, sans-serif">تثبيت6 CO₂</text>
+  <text x="75.3" y="104" text-anchor="middle" font-size="11.5" fill="#cbd5e1" font-family="'Cairo', 'Segoe UI', Tahoma, sans-serif">إنزيم Rubisco</text>
+  <rect x="17.3" y="126" width="116" height="20" rx="10" fill="#f43f5e" fill-opacity="0.16" stroke="#f43f5e" stroke-width="1"/>
+  <text x="75.3" y="141" text-anchor="middle" font-size="11" font-weight="700" fill="#f43f5e" font-family="'Cairo', 'Segoe UI', Tahoma, sans-serif">Rubisco</text>
+  </g>
+  <line x1="383" y1="224" x2="417" y2="224" stroke="#38bdf8" stroke-width="2.5" stroke-linecap="round"/><path d="M 417,224 L 411.4,220.2 L 411.4,227.9 z" fill="#38bdf8" transform="rotate(0 417 224)"/>
+  <text x="400" y="118" text-anchor="middle" font-size="11" font-weight="700" fill="#fbbf24" font-family="'Cairo', 'Segoe UI', Tahoma, sans-serif">12 ATP + 12 NADPH</text>
+  <g transform="translate(423, 150)">
+  <rect x="0" y="0" width="150.5" height="148" rx="14" fill="#111c31" stroke="#fbbf24" stroke-width="2"/>
+  <circle cx="24" cy="26" r="14" fill="#fbbf24" fill-opacity="0.22" stroke="#fbbf24" stroke-width="1.5"/>
+  <text x="24" y="31" text-anchor="middle" font-size="13" font-weight="700" fill="#fbbf24" font-family="'Consolas', monospace">3</text>
+  <text x="75.3" y="64" text-anchor="middle" font-size="13.5" font-weight="700" fill="#f8fafc" font-family="'Cairo', 'Segoe UI', Tahoma, sans-serif">12 APG (C₃)</text>
+  <text x="75.3" y="104" text-anchor="middle" font-size="11.5" fill="#cbd5e1" font-family="'Cairo', 'Segoe UI', Tahoma, sans-serif">اختزال بـ NADPH</text>
+  <rect x="17.3" y="126" width="116" height="20" rx="10" fill="#fbbf24" fill-opacity="0.16" stroke="#fbbf24" stroke-width="1"/>
+  <text x="75.3" y="141" text-anchor="middle" font-size="11" font-weight="700" fill="#fbbf24" font-family="'Cairo', 'Segoe UI', Tahoma, sans-serif">12 ATP</text>
+  </g>
+  <line x1="579.5" y1="224" x2="613.5" y2="224" stroke="#38bdf8" stroke-width="2.5" stroke-linecap="round"/><path d="M 613.5,224 L 607.9,220.2 L 607.9,227.9 z" fill="#38bdf8" transform="rotate(0 613.5 224)"/>
+  <text x="596.5" y="118" text-anchor="middle" font-size="11" font-weight="700" fill="#fbbf24" font-family="'Cairo', 'Segoe UI', Tahoma, sans-serif">اختزال → PGAL</text>
+  <g transform="translate(619.5, 150)">
+  <rect x="0" y="0" width="150.5" height="148" rx="14" fill="#111c31" stroke="#34d399" stroke-width="2"/>
+  <circle cx="24" cy="26" r="14" fill="#34d399" fill-opacity="0.22" stroke="#34d399" stroke-width="1.5"/>
+  <text x="24" y="31" text-anchor="middle" font-size="13" font-weight="700" fill="#34d399" font-family="'Consolas', monospace">4</text>
+  <text x="75.3" y="64" text-anchor="middle" font-size="13.5" font-weight="700" fill="#f8fafc" font-family="'Cairo', 'Segoe UI', Tahoma, sans-serif">غلوكوز C₆H₁₂O₆</text>
+  <text x="75.3" y="104" text-anchor="middle" font-size="11.5" fill="#cbd5e1" font-family="'Cairo', 'Segoe UI', Tahoma, sans-serif">+ تجديد6 RuBP</text>
+  <rect x="17.3" y="126" width="116" height="20" rx="10" fill="#34d399" fill-opacity="0.16" stroke="#34d399" stroke-width="1"/>
+  <text x="75.3" y="141" text-anchor="middle" font-size="11" font-weight="700" fill="#34d399" font-family="'Cairo', 'Segoe UI', Tahoma, sans-serif">C₆H₁₂O₆</text>
+  </g>
+  <line x1="694.8" y1="306" x2="694.8" y2="344" stroke="#94a3b8" stroke-width="2.5" stroke-dasharray="7 5" stroke-linecap="round"/>
+  <line x1="694.8" y1="344" x2="105.3" y2="344" stroke="#94a3b8" stroke-width="2.5" stroke-dasharray="7 5" stroke-linecap="round"/>
+  <line x1="105.3" y1="344" x2="105.3" y2="306" stroke="#94a3b8" stroke-width="2.5" stroke-dasharray="7 5" stroke-linecap="round"/><path d="M 105.3,306 L 99.7,302.2 L 99.7,309.9 z" fill="#94a3b8" transform="rotate(-90 105.3 306)"/>
+  <rect x="250" y="320" width="300" height="20" rx="10" fill="#0c1322" fill-opacity="0.95" stroke="none" stroke-width="1"/>
+  <text x="400" y="334" text-anchor="middle" font-size="11.5" font-weight="700" fill="#cbd5e1" font-family="'Cairo', 'Segoe UI', Tahoma, sans-serif">تجديد RuBP (6 ATP) لإغلاق الدورة</text>
+  <rect x="30" y="424" width="740" height="56" rx="10" fill="#0f172a" stroke="#1e293b" stroke-width="1"/>
+  <text x="400" y="446" text-anchor="middle" font-size="12.5" fill="#cbd5e1" font-family="'Cairo', 'Segoe UI', Tahoma, sans-serif">المكان: الحشوة (Stroma) — يحتاج ATP و NADPH من مرحلة الضوء.</text>
+  <text x="400" y="472" text-anchor="middle" font-size="12.5" fill="#94a3b8" font-family="'Cairo', 'Segoe UI', Tahoma, sans-serif">لكل CO₂ مثبَّت: 3 ATP + 2 NADPH.</text>
+</svg>
+                        <p style="font-size: 0.85rem; color: #cbd5e1; margin-top: 10px;">💡 أول مركب ثابت يتشكل بعد تثبيت CO₂ هو حمض الفوسفوغليسيريك APG (C₃).</p>
+                    </div>
+
+                    <div class="doc-analysis">
+                        <span class="method-tag">منهجية البكالوريا : أطوار حلقة كالفن الثلاثة</span>
+                        <h4 style="margin: 8px 0; color: var(--primary);">كيف تعمل حلقة كالفن؟</h4>
+                        <ol style="padding-right: 1.2rem; line-height: 1.8;">
+                            <li><strong>مرحلة التثبيت (<span class="ltr-seq">Fixation</span>) :</strong> يثبت غاز <span class="ltr-seq">CO₂</span> على مستقبل خماسي الكربون هو الـ <strong><span class="ltr-seq">RuBP</span> (ريبولوز ثنائي الفوسفات)</strong> بتدخل إنزيم <strong><span class="ltr-seq">Rubisco</span></strong>، فيعطي مباشرة جزيئتين من مركب ثلاثي الكربون هو <strong><span class="ltr-seq">APG</span> (حمض الفوسفوغليسيريك)</strong>.</li>
+                            <li><strong>مرحلة الإرجاع (<span class="ltr-seq">Réduction</span>) :</strong> يرجع حمض <span class="ltr-seq">APG</span> إلى سكر ثلاثي فوسفغليسيرألديهيد (<strong><span class="ltr-seq">PGAL</span></strong>) باستهلاك طاقة <span class="ltr-seq">ATP</span> وإلكترونات <span class="ltr-seq">NADPH, H⁺</span> القادمة من المرحلة الضوئية.</li>
+                            <li><strong>مرحلة التجديد والبناء :</strong> يُستعمل 1/6 من سكر <span class="ltr-seq">PGAL</span> لتركيب <strong>سكر الغلوكوز سداسي الكربون (<span class="ltr-seq">C₆H₁₂O₆</span>)</strong> والنشا، بينما تُستعمل 5/6 المتبقية لتجديد الـ <span class="ltr-seq">RuBP</span> لاستمرار الحلقة باستهلاك <span class="ltr-seq">ATP</span>.</li>
+                        </ol>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Step 3: Interactive Calvin Simulator -->
+            <section class="card" id="ch1-step3">
+                <div class="section-title">
+                    <span class="step-num">3</span>
+                    <span>محاكي عجلة كالفن التفاعلي</span>
+                </div>
+                <p>اضغط لتنفيذ خطوات حلقة كالفن وبناء جزيء غلوكوز كامل (يتطلب 6 دورات وتثبيت 6 CO₂) :</p>
+                
+                <div class="interactive-box" style="background: #064e3b;">
+                    <div style="margin-bottom: 15px;">
+                        <button class="btn-action" onclick="simCalvin(1)">1️⃣ تثبيت 6 CO₂ بواسطة إنزيم Rubisco</button>
+                        <button class="btn-action" onclick="simCalvin(2)">2️⃣ إرجاع 12 APG إلى 12 PGAL</button>
+                        <button class="btn-action" onclick="simCalvin(3)">3️⃣ بناء الغلوكوز وتجديد الـ RuBP</button>
+                    </div>
+                    <div id="calvinDisplayBox" style="background: #047857; border: 2px solid #34d399; border-radius: 12px; padding: 1.5rem; text-align: center;">
+                        <h3 style="color: #6ee7b7; margin-bottom: 10px;">1️⃣ الخطوة الأولى : تثبيت غاز الكربون CO₂</h3>
+                        <p style="color: #cbd5e1; line-height: 1.8;">يقوم إنزيم الروبيسكو (<span class="ltr-seq">Rubisco</span>) بدمج 6 جزيئات من غاز <span class="ltr-seq">CO₂</span> (6 كربون) مع 6 جزيئات من مستقبل <span class="ltr-seq">RuBP</span> (30 كربون). تتشكل 12 جزيئة من حمض <span class="ltr-seq">APG</span> ثلاثي الكربون (المجموع 36 ذرة كربون وثابتة).</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Step 4: Quiz Ch23 -->
+            <section class="card" id="ch1-step4">
+                <div class="section-title">
+                    <span class="step-num">4</span>
+                    <span>تقويم النشاط 4 : أسئلة البكالوريا المتكررة</span>
+                </div>
+
+                <div class="question-item" id="c23q1-container">
+                    <h4 style="margin-bottom: 12px;">1. ما هو الإنزيم الرئيسي المتدخل في المرحلة الكيميوحيوية (حشوة الصانعة) ومسؤول عن تثبيت الـ <span class="ltr-seq">CO₂</span>؟</h4>
+                    <div class="options-grid">
+                        <button class="option-btn" onclick="checkCh23Answer(0, true)">أ) إنزيم الروبيسكو (<span class="ltr-seq">Rubisco - Ribulose-1,5-bisphosphate carboxylase</span>).</button>
+                        <button class="option-btn" onclick="checkCh23Answer(1, false)">ب) إنزيم الـ <span class="ltr-seq">ATP synthase</span>.</button>
+                        <button class="option-btn" onclick="checkCh23Answer(2, false)">ج) إنزيم الأستيل كولين إستراز.</button>
+                    </div>
+                    <div class="feedback-box" id="c23q1-feedback"></div>
+                    <div class="quiz-badge" id="c1-badge"></div>
+                </div>
+            </section>
+        </div>
+
+        <!-- ================================================================= -->
+        <!-- CHAPTER 24 : COUPLAGE PHOTO-BIOCHIMIQUE & BILAN (النشاط 24) -->
+        <!-- ================================================================= -->
+        <div id="ch24" class="chapter-view">
+            
+            <header class="lesson-header header-ch24">
+                <div class="lesson-breadcrumb">المجال الثاني : التحولات الطاقوية • الوحدة 1 : آليات تحويل الطاقة الضوئية إلى طاقة كيميائية كامنة</div>
+                <h1>النشاط 5 : التكامل بين المرحلتين (الكيميوضوئية والكيميوحيوية) والحصيلة الطاقوية الشاملة</h1>
+                <div class="lesson-objectives">
+                    <div>🎯 <strong>الهدف العلمي :</strong> بيّن تجريبي أن المرحلتين متكاملتان وضروريتان لبعضهما، واكتب المعادلة الإجمالية واحسب استهلاك طاقة ATP لنبتة واحدة.</div>
+                    <div>⏱️ <strong>المدة التقديرية للتعلم الذاتي :</strong> 25 دقيقة</div>
+                </div>
+            </header>
+
+            <!-- Step 1: Problématique -->
+            <section class="card" id="ch2-step1">
+                <div class="section-title">
+                    <span class="step-num step-num-amber">1</span>
+                    <span>الإشكالية الختامية للوحدة الأولى من المجال الثاني</span>
+                </div>
+                <div class="problem-box" style="border-right-color: var(--amber-dark); background: var(--amber-light);">
+                    <div class="problem-title" style="color: #92400e;">⚠️ لماذا تتوقف المرحلة الكيميوحيوية في الظلام بعد ثوانٍ رغم أنها لا تتطلب ضوءاً؟</div>
+                    <p>تسمى المرحلة الثانية بالمرحلة الكيميوحيوية لأنها لا تتطلب ضوءاً بشكل مباشر في تفاعلاتها. ولكن تجريبياً، إذا نقلنا نبتة من الضوء إلى الظلام التام، تتوقف حلقة كالفن عن تثبيت <span class="ltr-seq">CO₂</span> بعد ثوانٍ معدودة! وكذلك إذا منعنا الـ <span class="ltr-seq">CO₂</span> في الضوء تتوقف أكسدة الماء في التيلاكويد! <strong>كيف يفسر هذا الترابط الوثيق والتكامل التام بين المرحلتين؟</strong></p>
+                </div>
+            </section>
+
+            <!-- Step 2: Document Analyse -->
+            <section class="card" id="ch2-step2">
+                <div class="section-title">
+                    <span class="step-num step-num-amber">2</span>
+                    <span>التحليل المنهجي لمخطط التكامل والازدواج الوظيفي بين التيلاكويد والحشوة</span>
+                </div>
+                <div class="doc-viewer">
+                    <div class="doc-visual" style="background: #451a03;">
+                        <h4 style="color: #fde047; margin-bottom: 1rem; font-size: 0.95rem;">مخطط الازدواج الوظيفي (دورة جزيئات الطاقة والنواقل بين التيلاكويد والحشوة)</h4>
+                        <!-- SVG Couplage -->
+                        <!-- Generated by ProFigureEngine - SVT BAC DZ -->
+<svg class="svg-container pfe-figure" viewBox="0 0 800 500" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="الازدواج الوظيفي بين التيلاكويد والحشوة">
+  <defs>
+    <style>
+      .pfe-title { font-family: 'Cairo', 'Segoe UI', Tahoma, sans-serif; font-weight: 700; fill: #f8fafc; }
+      .pfe-label { font-family: 'Cairo', 'Segoe UI', Tahoma, sans-serif; font-size: 13px; fill: #cbd5e1; }
+      .pfe-sub { font-family: 'Segoe UI', Tahoma, sans-serif; font-size: 11px; fill: #94a3b8; }
+      .pfe-badge { font-family: monospace; font-size: 11px; font-weight: bold; }
+    </style>
+    <filter id="pf-f1-pfe-glow-red" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="3" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+    <marker id="pf-f1-pfe-arrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 10 5 L 0 9 z" fill="#38bdf8" />
+    </marker>
+    <marker id="pf-f1-pfe-arrow-gold" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 10 5 L 0 9 z" fill="#fbbf24" />
+    </marker>
+    <linearGradient id="pf-f1-pfe-membrane-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1e293b" />
+      <stop offset="100%" stop-color="#0f172a" />
+    </linearGradient>
+    <linearGradient id="pf-f1-pfe-nucleus-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1e3a5f" />
+      <stop offset="100%" stop-color="#0f172a" />
+    </linearGradient>
+    
+  </defs>
+  <rect x="10" y="10" width="780" height="480" rx="22" fill="#0c1322" stroke="#1e293b" stroke-width="2"/>
+  <text x="400" y="40" text-anchor="middle" font-size="16" font-weight="700" fill="#f8fafc" font-family="'Cairo', 'Segoe UI', Tahoma, sans-serif">الازدواج الوظيفي بين التيلاكويد والحشوة</text>
+  <text x="400" y="62" text-anchor="middle" font-size="11.5" fill="#94a3b8" font-family="'Cairo', 'Segoe UI', Tahoma, sans-serif">Couplage — phase photochimique (lumière) ↔ chimioautotrophie (CO₂)</text>
+  <rect x="30" y="104" width="295" height="44" rx="12" fill="#38bdf8" fill-opacity="0.18" stroke="#38bdf8" stroke-width="1.8"/>
+  <text x="177.5" y="131" text-anchor="middle" font-size="13" font-weight="700" fill="#f8fafc" font-family="'Cairo', 'Segoe UI', Tahoma, sans-serif">التيلةكويدي (ضوء) — المرحلة الكيميائية</text>
+  <circle cx="177.5" cy="186" r="24" fill="#38bdf8" fill-opacity="0.14" stroke="#38bdf8" stroke-width="2"/>
+  <text x="177.5" y="193" text-anchor="middle" font-size="15" font-weight="700" fill="#38bdf8" font-family="'Consolas', monospace">hν</text>
+  <text x="177.5" y="226" text-anchor="middle" font-size="11.5" fill="#cbd5e1" font-family="'Cairo', 'Segoe UI', Tahoma, sans-serif">تصريف الماء: H₂O → O₂</text>
+  <text x="177.5" y="247" text-anchor="middle" font-size="11.5" fill="#cbd5e1" font-family="'Cairo', 'Segoe UI', Tahoma, sans-serif">ينتج ATP و NADPH</text>
+  <text x="177.5" y="268" text-anchor="middle" font-size="11.5" fill="#cbd5e1" font-family="'Cairo', 'Segoe UI', Tahoma, sans-serif">المرحلة المحبة للضوء</text>
+  <rect x="475" y="104" width="295" height="44" rx="12" fill="#fbbf24" fill-opacity="0.18" stroke="#fbbf24" stroke-width="1.8"/>
+  <text x="622.5" y="131" text-anchor="middle" font-size="13" font-weight="700" fill="#f8fafc" font-family="'Cairo', 'Segoe UI', Tahoma, sans-serif">الحشوة (Rubisco) — المرحلة الكيميوحيوية</text>
+  <circle cx="622.5" cy="186" r="24" fill="#fbbf24" fill-opacity="0.14" stroke="#fbbf24" stroke-width="2"/>
+  <text x="622.5" y="193" text-anchor="middle" font-size="15" font-weight="700" fill="#fbbf24" font-family="'Consolas', monospace">C</text>
+  <text x="622.5" y="226" text-anchor="middle" font-size="11.5" fill="#cbd5e1" font-family="'Cairo', 'Segoe UI', Tahoma, sans-serif">تثبيت CO₂ في حلقة كالفن</text>
+  <text x="622.5" y="247" text-anchor="middle" font-size="11.5" fill="#cbd5e1" font-family="'Cairo', 'Segoe UI', Tahoma, sans-serif">ينتج سكر النشا</text>
+  <text x="622.5" y="268" text-anchor="middle" font-size="11.5" fill="#cbd5e1" font-family="'Cairo', 'Segoe UI', Tahoma, sans-serif">المرحلة غير المحبة للضوء</text>
+  <line x1="333" y1="230" x2="467" y2="230" stroke="#fbbf24" stroke-width="2.5" stroke-linecap="round"/><path d="M 467,230 L 461.4,226.2 L 461.4,233.9 z" fill="#fbbf24" transform="rotate(0 467 230)"/>
+  <text x="400" y="220" text-anchor="middle" font-size="11" font-weight="700" fill="#fbbf24" font-family="'Cairo', 'Segoe UI', Tahoma, sans-serif">ATP + NADPH, H⁺</text>
+  <line x1="467" y1="300" x2="333" y2="300" stroke="#38bdf8" stroke-width="2.5" stroke-linecap="round"/><path d="M 333,300 L 327.4,296.2 L 327.4,303.9 z" fill="#38bdf8" transform="rotate(180 333 300)"/>
+  <text x="400" y="290" text-anchor="middle" font-size="11" font-weight="700" fill="#38bdf8" font-family="'Cairo', 'Segoe UI', Tahoma, sans-serif">ADP + Pi + NADP⁺</text>
+  <rect x="30" y="444" width="740" height="36" rx="10" fill="#0f172a" stroke="#1e293b" stroke-width="1"/>
+  <text x="400" y="468" text-anchor="middle" font-size="12.5" fill="#cbd5e1" font-family="'Cairo', 'Segoe UI', Tahoma, sans-serif">الضوء يوفّر ATP و NADPH التي تُستعمل في تثبيت CO₂ بالحشوة.</text>
+</svg>
+                        <p style="font-size: 0.85rem; color: #cbd5e1; margin-top: 10px;">💡 المرحلة الضوئية تنتج الوقود، والمرحلة الحيوية تستهلكه وترجع فوارغه.</p>
+                    </div>
+
+                    <div class="doc-analysis">
+                        <span class="method-tag" style="background: #fef3c7; color: #b45309;">تعليل التكامل في البكالوريا</span>
+                        <h4 style="margin: 8px 0; color: var(--primary);">لماذا لا تعمل مرحلة دون الأخرى؟</h4>
+                        <ul style="list-style-type: none; line-height: 1.8;">
+                            <li>• <strong>المرحلة الكيميوضوئية تزود المرحلة الكيميوحيوية بـ :</strong> طاقة <span class="ltr-seq">ATP</span> ونواقل الهيدروجين المرجعة <span class="ltr-seq">NADPH, H⁺</span> الضرورية لإرجاع حمض <span class="ltr-seq">APG</span> وبناء الغلوكوز. وفي غياب الضوء تنفد هذه النواتج وتتوقف حلقة كالفن.</li>
+                            <li>• <strong>المرحلة الكيميوحيوية تزود المرحلة الكيميوضوئية بـ :</strong> النواقل المؤكسدة فارغة الشحنة <span class="ltr-seq">ADP + Pi</span> و <span class="ltr-seq">NADP⁺</span>. وفي غياب الـ <span class="ltr-seq">CO₂</span> تتوقف حلقة كالفن، فتتراكم النواقل المرجعة ويتوقف أكسدة الماء في التيلاكويد لعدم وجود مستقبلات إلكترونات فارغة!</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Step 3: Interactive Couplage Lab -->
+            <section class="card" id="ch2-step3">
+                <div class="section-title">
+                    <span class="step-num step-num-amber">3</span>
+                    <span>مختبر التكامل الوظيفي التفاعلي</span>
+                </div>
+                <p>اختر الشرط التجريبي لمعاينة استجابة المرحلتين وحصيلة التركيب الضوئي :</p>
+                
+                <div class="interactive-box" style="background: #451a03;">
+                    <div style="margin-bottom: 15px;">
+                        <button class="btn-action btn-amber" onclick="simCoopPh('full')">☀️ ضوء + غاز CO₂ (تكامل طبيعي مستمر)</button>
+                        <button class="btn-action" style="background:#dc2626;" onclick="simCoopPh('dark')">🌑 ظلام + غاز CO₂ (توقف الكيميوحيوية)</button>
+                        <button class="btn-action" style="background:#7c3aed;" onclick="simCoopPh('noco2')">☀️ ضوء دون غاز CO₂ (توقف الكيميوضوئية)</button>
+                    </div>
+                    <div id="coopPhDisplayBox" style="background: #78350f; border: 2px solid #fbbf24; border-radius: 12px; padding: 1.5rem; text-align: center;">
+                        <h3 style="color: #4ade80; margin-bottom: 10px;">☀️ ضوء + CO₂ : تركيب ضوئي نشط 100%</h3>
+                        <p style="color: #cbd5e1; line-height: 1.8;">المرحلتان تعملان بتناغم دوري مثالي. ينتج التيلاكويد طاقة <span class="ltr-seq">ATP</span> وتستهلكها الحشوة لتثبيت <span class="ltr-seq">CO₂</span> وبناء النشا، ثم تعود الفوارغ للتيلاكويد ليعاد شحنها بالضوء.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Step 4: Quiz Ch24 -->
+            <!-- خلاصة النشاط (standard 2026-09-21, ancrée au livre officiel — verrou resumes.lock) -->
+            <section class="card" id="resume">
+                <div class="section-title">
+                    <span class="step-num" style="background:#059669;">📝</span>
+                    <span>خلاصة الدرس</span>
+                </div>
+                <p style="font-weight:700; font-size:14px; margin:10px 0;">🎯 فسّر تفاعلات المرحلة الكيميوحيوية (حلقة كالفن) وتحويل CO2 إلى مادة عضوية.</p>
+                <ol style="margin:8px 0; padding-right:24px; line-height:1.9; font-size:13px;">
+                    <li style="margin-bottom:6px;">تجري المرحلة الكيميوحيوية في حشوة الصانعة الخضراء ولا تحتاج إلى ضوء مباشرة.</li>
+                    <li style="margin-bottom:6px;">يتثبت CO2 على الريبولوز ثنائي الفوسفات (5C) بفضل إنزيم Rubisco.</li>
+                    <li style="margin-bottom:6px;">تُرجع سكريات ثلاثية الفوسفات باستعمال ATP و NADPH القادمين من المرحلة الكيموضوئية.</li>
+                    <li style="margin-bottom:6px;">يتجزأ جزء من السكريات المثلثة لتجديد مستقبل CO2 ويدور بذلك التفاعل حلقة.</li>
+                    <li style="margin-bottom:6px;">توجه بقية السكريات نحو تركيب الغلوكوز والنشا مخزنة الطاقة كيميائياً كامنة.</li>
+                </ol>
+                <p style="font-weight:800; font-size:13px; color:#b45309; margin-top:10px;">🔑 المصطلح المفتاحي في البكالوريا : المرحلة الكيميوحيوية / حلقة كالفن</p>
+            </section>
+
+            <!-- الحصيلة المعرفية الرسمية (citation verbatim du livre officiel — voir docs/RESUMES_MAARIFI_LIVRE_2026-09-21.md) -->
+
+            <section class="card" id="ch2-step4">
+                <div class="section-title">
+                    <span class="step-num step-num-amber">4</span>
+                    <span>تقويم النشاط 5 : الحصيلة الطاقوية الشاملة</span>
+                </div>
+
+                <div class="question-item" id="c24q1-container">
+                    <h4 style="margin-bottom: 12px;">1. كم تستهلك حلقة كالفن لتركيب جزيء غلوكوز واحد (<span class="ltr-seq">C₆H₁₂O₆</span>) انطلاقا من 6 جزيئات <span class="ltr-seq">CO₂</span>؟</h4>
+                    <div class="options-grid">
+                        <button class="option-btn" onclick="checkCh24Answer(0, true)">أ) تستهلك 18 جزيئة ATP و 12 جزيئة NADPH, H⁺ (المعادلة : 6CO₂ + 18ATP + 12NADPH, H⁺ → الغلوكوز).</button>
+                        <button class="option-btn" onclick="checkCh24Answer(1, false)">ب) تستهلك 2 ATP فقط.</button>
+                        <button class="option-btn" onclick="checkCh24Answer(2, false)">ج) لا تستهلك أي طاقة نهائياً.</button>
+                    </div>
+                    <div class="feedback-box" id="c24q1-feedback"></div>
+                    <div class="quiz-badge" id="c2-badge"></div>
+                </div>
+            </section>
+        </div>
+
+        <!-- ═══ Zone de synthèse commune (🏛 حصيلة + 🗺 مخطط) — hors chapter-view :
+             visible dans LES DEUX leçons du fichier (survit au slicing lessonChapterSplit) ═══ -->
+        <div class="synthese-zone" id="zone-synthese">
+<section class="card" id="hosila" style="border:2px solid #f59e0b;">
+                <div class="section-title">
+                    <span class="step-num" style="background:#b45309;">🏛</span>
+                    <span>الحصيلة المعرفية</span>
+                </div>
+                <p style="font-size:11px; color:#92400e; font-weight:700; margin:6px 0;">الوحدة: D2-U6 — التركيب الضوئي — نص بتنسيق قرائي، دون تغيير في المعنى، مع تنسيق قرائي يجعل النص مقروءاً.</p>
+
+<p style="line-height:2; font-size:13px;">« التركيب الضوئي هو آلية تسمح بتحويل الطاقة الضوئية إلى طاقة كيميائية مخزنة في شكل جزيئات عضوية مثل النشا، وفق المعادلة : »</p>
+<div style="background:#fff; border:1px solid #fcd34d; border-radius:12px; padding:10px; text-align:center; font-weight:800; direction:ltr;">
+n(H₂O) + n(CO₂) ──(ضوء + يخضور)──► (CH₂O)ₙ + n(O₂)
+</div>
+<ul style="margin:8px 0; padding-right:24px; line-height:2; font-size:13px;">
+<li>تتطلب العملية توفر الضوء واليخضور، وتتم في <b>الصانعات الخضراء</b> المقسمة إلى حجرات.</li>
+<li>تحتوي أغشية <b>التيلاكويد</b> على : أغشية ضوئية (النظامان PS-I و PS-II)، ناقلات الإلكترونات، ومعقد بروتيني كبير يركب ATP.</li>
+<li>تحتوي <b>الحشوة</b> على مواد الأيض الوسطية والمرافقات الإنزيمية (ATP, NADP) وإنزيمات التركيب العضوي.</li>
+<li>للظاهرة مرحلتان : مرحلة <b>كيموضوئية</b> على أغشية التيلاكويد، ومرحلة <b>كيميوحيوية</b> في الحشوة.</li>
+</ul>
+
+            </section>
+        </div>
+
+    </div>
+
+    <!-- Scripts -->
+    <script>
+        function showChapter(chId, evt) {
+            document.querySelectorAll('.chapter-view').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.ch-btn').forEach(el => el.classList.remove('active'));
+            document.getElementById(chId).classList.add('active');
+            if (evt) evt.target.classList.add('active');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function simCalvin(step) {
+            let box = document.getElementById('calvinDisplayBox');
+            if (step === 1) {
+                box.innerHTML = `
+                    <h3 style="color: #6ee7b7; margin-bottom: 10px;">1️⃣ الخطوة الأولى : تثبيت غاز الكربون CO₂</h3>
+                    <p style="color: #cbd5e1; line-height: 1.8;">يقوم إنزيم الروبيسكو (<span class="ltr-seq">Rubisco</span>) بدمج 6 جزيئات من غاز <span class="ltr-seq">CO₂</span> (6 كربون) مع 6 جزيئات من مستقبل <span class="ltr-seq">RuBP</span> (30 كربون). تتشكل 12 جزيئة من حمض <span class="ltr-seq">APG</span> ثلاثي الكربون (المجموع 36 ذرة كربون).</p>
+                `;
+            } else if (step === 2) {
+                box.innerHTML = `
+                    <h3 style="color: #fbbf24; margin-bottom: 10px;">2️⃣ الخطوة الثانية : الإرجاع والفسفرة (APG → PGAL)</h3>
+                    <p style="color: #cbd5e1; line-height: 1.8;">يتم فسفرة وإرجاع 12 جزيئة من حمض <span class="ltr-seq">APG</span> باستهلاك 12 جزيئة <span class="ltr-seq">ATP</span> و 12 جزيئة <span class="ltr-seq">NADPH, H⁺</span> القادمة من المرحلة الضوئية، فنتحصل على 12 جزيئة سكر ثلاثي الفوسفات (<strong><span class="ltr-seq">PGAL</span></strong>).</p>
+                `;
+            } else {
+                box.innerHTML = `
+                    <h3 style="color: #4ade80; margin-bottom: 10px;">3️⃣ الخطوة الثالثة : بناء الغلوكوز وتجديد المستقبل</h3>
+                    <p style="color: #cbd5e1; line-height: 1.8;">تغادر جزيئتان من سكر <span class="ltr-seq">PGAL</span> (2 × 3 = 6 كربون) الحلقة لتلتحما وتشكلة جزيء <strong>غلوكوز واحد (<span class="ltr-seq">C₆H₁₂O₆</span>)</strong> أو النشا. بينما تبقى 10 جزيئات <span class="ltr-seq">PGAL</span> (30 كربون) ليعاد هيكلتها وفسفرتها بـ 6 <span class="ltr-seq">ATP</span> لتجديد 6 جزيئات من مستقبل <span class="ltr-seq">RuBP</span>.</p>
+                `;
+            }
+        }
+
+        function simCoopPh(cond) {
+            let box = document.getElementById('coopPhDisplayBox');
+            if (cond === 'full') {
+                box.innerHTML = `
+                    <h3 style="color: #4ade80; margin-bottom: 10px;">☀️ ضوء + CO₂ : تركيب ضوئي نشط 100%</h3>
+                    <p style="color: #cbd5e1; line-height: 1.8;">المرحلتان تعملان بتناغم دوري مثالي. ينتج التيلاكويد طاقة <span class="ltr-seq">ATP</span> وتستهلكها الحشوة لتثبيت <span class="ltr-seq">CO₂</span> وبناء النشا، ثم تعود الفوارغ للتيلاكويد ليعاد شحنها بالضوء.</p>
+                `;
+            } else if (cond === 'dark') {
+                box.innerHTML = `
+                    <h3 style="color: #ef4444; margin-bottom: 10px;">🌑 ظلام + CO₂ : توقف المرحلة الحيوية بعد ثوانٍ</h3>
+                    <p style="color: #cbd5e1; line-height: 1.8;">في الظلام تتوقف المرحلة الضوئية عن إنتاج <span class="ltr-seq">ATP و NADPH</span>. تستهلك الحشوة المخزون المتبقي خلال ثوانٍ ثم تتوقف حلقة كالفن عن إرجاع <span class="ltr-seq">APG</span> ويتوقف بناء السكر تماماً رغم توفر الـ <span class="ltr-seq">CO₂</span>.</p>
+                `;
+            } else {
+                box.innerHTML = `
+                    <h3 style="color: #c084fc; margin-bottom: 10px;">☀️ ضوء دون CO₂ : شلل المرحلة الضوئية بالاختناق</h3>
+                    <p style="color: #cbd5e1; line-height: 1.8;">بغيب الـ <span class="ltr-seq">CO₂</span> تتوقف حلقة كالفن، فتتراكم النواقل المرجعة (<span class="ltr-seq">NADPH</span>) وتنفد النواقل الفارغة (<span class="ltr-seq">NADP⁺</span>). لا يجد التيلاكويد مستقبلاً نهائياً للإلكترونات فتتوقف أكسدة الماء وينقطع انطلاق الأكسجين رغم وجود الضوء الساطع!</p>
+                `;
+            }
+        }
+
+        function checkCh23Answer(optIdx, isCorrect) {
+            let container = document.getElementById('c23q1-container');
+            let btns = container.querySelectorAll('.option-btn');
+            let fb = document.getElementById('c23q1-feedback');
+
+            btns.forEach((b, idx) => {
+                b.disabled = true;
+                if (idx === optIdx) b.classList.add(isCorrect ? 'correct' : 'wrong');
+            });
+
+            fb.style.display = 'block';
+            if (isCorrect) {
+                fb.style.background = '#f0fdf4'; fb.style.color = '#166534'; fb.style.border = '1px solid #bbf7d0';
+                fb.innerHTML = '<strong>✅ إجابة صحيحة ممتاز!</strong> إنزيم الروبيسكو هو أكثر إنزيم متوافر على وجه الأرض وهو المسؤول عن تثبيت غاز CO₂.';
+            } else {
+                fb.style.background = '#fef2f2'; fb.style.color = '#991b1b'; fb.style.border = '1px solid #fecaca';
+                fb.innerHTML = '<strong>❌ إجابة خاطئة.</strong> إنزيم الروبيسكو هو المسؤول الحصري عن عملية التثبيت الكربوكسيلي في حلقة كالفن.';
+            }
+        }
+
+        function checkCh24Answer(optIdx, isCorrect) {
+            let container = document.getElementById('c24q1-container');
+            let btns = container.querySelectorAll('.option-btn');
+            let fb = document.getElementById('c24q1-feedback');
+
+            btns.forEach((b, idx) => {
+                b.disabled = true;
+                if (idx === optIdx) b.classList.add(isCorrect ? 'correct' : 'wrong');
+            });
+
+            fb.style.display = 'block';
+            if (isCorrect) {
+                fb.style.background = '#f0fdf4'; fb.style.color = '#166534'; fb.style.border = '1px solid #bbf7d0';
+                fb.innerHTML = '<strong>✅ إجابة صحيحة ممتاز!</strong> حصيلة بناء جزيء غلوكوز سداسي الكربون تتطلب 18 ATP و 12 NADPH, H⁺ بالضبط.';
+            } else {
+                fb.style.background = '#fef2f2'; fb.style.color = '#991b1b'; fb.style.border = '1px solid #fecaca';
+                fb.innerHTML = '<strong>❌ إجابة خاطئة.</strong> كل جزيئة CO₂ واحدة تتطلب 3 ATP و 2 NADPH، ولذلك لـ 6 CO₂ نحتاج 18 ATP و 12 NADPH.';
+            }
+        }
+    
+        // === v3.2 generic: sommaire + badges faible/moyen/mumtaz (auto) ===
+        function scrollToStep(id, evt){
+            if(evt) evt.preventDefault();
+            const el = document.getElementById(id);
+            if(el) window.scrollTo({top: el.getBoundingClientRect().top + window.scrollY - 110, behavior:'smooth'});
+            document.querySelectorAll('.sommaire a').forEach(a=>a.classList.remove('active'));
+            const link = document.getElementById('link-'+id);
+            if(link) link.classList.add('active');
+            const ch = id.startsWith('ch1') ? 'ch1' : 'ch2';
+            if(!document.getElementById(ch).classList.contains('active')){
+                document.querySelectorAll('.chapter-view').forEach(el=>el.classList.remove('active'));
+                document.getElementById(ch).classList.add('active');
+                document.querySelectorAll('.ch-btn').forEach(b=>b.classList.remove('active'));
+                const btnIdx = ch==='ch1'?0:1;
+                const btns = document.querySelectorAll('.ch-btn');
+                if(btns[btnIdx]) btns[btnIdx].classList.add('active');
+            }
+        }
+        function updateBadges(){
+            ['ch1','ch2'].forEach((ch, idx)=>{
+                const chapterEl = document.getElementById(ch);
+                if(!chapterEl) return;
+                const questions = chapterEl.querySelectorAll('.question-item');
+                if(questions.length===0) return;
+                let total = questions.length, answered=0, correct=0;
+                questions.forEach(q=>{
+                    const btns = q.querySelectorAll('.option-btn');
+                    let qAnswered=false, qCorrect=false;
+                    btns.forEach(b=>{
+                        if(b.classList.contains('correct')) {qAnswered=true; qCorrect=true;}
+                        if(b.classList.contains('wrong')) qAnswered=true;
+                    });
+                    if(qAnswered) answered++;
+                    if(qCorrect) correct++;
+                });
+                const badge = document.getElementById(idx===0?'c1-badge':'c2-badge');
+                if(!badge) return;
+                if(answered < total) return;
+                const score = Math.round(correct/total*100);
+                badge.classList.add('show');
+                if(score===100){ badge.className='quiz-badge show mumtaz'; badge.textContent='ممتاز (fort) — 100% · جاهز للمرحلة التالية'; }
+                else if(score>=50){ badge.className='quiz-badge show moyen'; badge.textContent='متوسط (moyen) — '+score+'% · راجع ثم أعد'; }
+                else { badge.className='quiz-badge show faible'; badge.textContent='ضعيف (faible) — '+score+'% · راجع النشاط ثم أعد'; }
+            });
+        }
+        // hook all check functions and also listen to clicks
+        (function(){
+            // wrap any existing check* functions if they exist
+            Object.keys(window).forEach(k=>{
+                if(k.startsWith('check') && typeof window[k]==='function'){
+                    const orig = window[k];
+                    window[k]= function(...args){
+                        const res = orig.apply(this,args);
+                        setTimeout(updateBadges, 50);
+                        return res;
+                    };
+                }
+            });
+            document.addEventListener('click', (e)=>{
+                if(e.target.closest('.option-btn')){
+                    setTimeout(updateBadges, 80);
+                }
+            });
+        })();
+        const observer = new IntersectionObserver((entries)=>{
+            entries.forEach(e=>{
+                if(e.isIntersecting){
+                    document.querySelectorAll('.sommaire a').forEach(a=>a.classList.remove('active'));
+                    const link = document.getElementById('link-'+e.target.id);
+                    if(link) link.classList.add('active');
+                }
+            });
+        }, {rootMargin:'-120px 0px -70% 0px', threshold:0});
+        window.addEventListener('DOMContentLoaded', ()=>{
+            document.querySelectorAll('section.card[id]').forEach(s=>observer.observe(s));
+            // also patch any check functions defined after DOMContentLoaded (delay)
+            setTimeout(()=>{
+                Object.keys(window).forEach(k=>{
+                    if(k.startsWith('check') && typeof window[k]==='function' && !window[k]._patched){
+                        const orig = window[k];
+                        window[k]= function(...args){
+                            const res = orig.apply(this,args);
+                            setTimeout(updateBadges, 50);
+                            return res;
+                        };
+                        window[k]._patched=true;
+                    }
+                });
+            }, 500);
+        });
+
+    </script>
+<!-- PFE-ZOOM v1 — démarrage (généré, ne pas éditer à la main) -->
+<style id="pfe-zoom-style">
+    /* PFE-ZOOM — pastille de zoom */
+    .pfe-zoom-badge {
+        position: fixed;
+        z-index: 2147483000;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 7px 12px;
+        border: 0;
+        border-radius: 999px;
+        background: #006d37;
+        color: #fff;
+        font: 700 13px/1.1 system-ui, "Segoe UI", Tahoma, sans-serif;
+        box-shadow: 0 6px 18px rgba(0, 0, 0, .28);
+        cursor: pointer;
+        direction: rtl;
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+        transition: opacity .12s ease;
+        -webkit-tap-highlight-color: transparent;
+    }
+    .pfe-zoom-badge.is-visible { opacity: 1; visibility: visible; pointer-events: auto; }
+    .pfe-zoom-badge:hover { background: #00562b; }
+    .pfe-zoom-badge svg { width: 15px; height: 15px; }
+
+    /* Verrou de défilement du document pendant l'agrandissement */
+    html.pfe-zoom-lock, html.pfe-zoom-lock body { overflow: hidden !important; }
+
+    /* PFE-ZOOM — superposition plein écran */
+    .pfe-zoom-overlay {
+        position: fixed;
+        inset: 0;
+        z-index: 2147483100;
+        display: none;
+        flex-direction: column;
+        background: rgba(6, 12, 9, .95);
+        color: #f4faf6;
+        direction: rtl;
+        font-family: system-ui, "Segoe UI", Tahoma, sans-serif;
+        touch-action: none;
+        overscroll-behavior: contain;
+    }
+    .pfe-zoom-overlay.is-open { display: flex; }
+    .pfe-zoom-bar {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-wrap: wrap;
+        padding: 10px 14px;
+        background: rgba(255, 255, 255, .07);
+        border-bottom: 1px solid rgba(255, 255, 255, .14);
+    }
+    .pfe-zoom-title {
+        flex: 1 1 200px;
+        min-width: 0;
+        font-weight: 700;
+        font-size: 15px;
+        line-height: 1.4;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    .pfe-zoom-btn {
+        min-width: 42px;
+        height: 38px;
+        padding: 0 12px;
+        border-radius: 10px;
+        border: 1px solid rgba(255, 255, 255, .22);
+        background: rgba(255, 255, 255, .1);
+        color: #fff;
+        font: 700 15px/1 system-ui, "Segoe UI", Tahoma, sans-serif;
+        cursor: pointer;
+    }
+    .pfe-zoom-btn:hover { background: rgba(255, 255, 255, .24); }
+    .pfe-zoom-btn.is-close { background: #b3261e; border-color: #b3261e; }
+    .pfe-zoom-pct {
+        min-width: 64px;
+        text-align: center;
+        font-weight: 700;
+        font-size: 14px;
+        font-variant-numeric: tabular-nums;
+    }
+    .pfe-zoom-stage {
+        position: relative;
+        flex: 1 1 auto;
+        overflow: hidden;
+        cursor: grab;
+        touch-action: none;
+        background: rgba(255, 255, 255, .04);
+    }
+    .pfe-zoom-stage.is-dragging { cursor: grabbing; }
+    .pfe-zoom-canvas { position: absolute; top: 0; left: 0; transform-origin: 0 0; will-change: transform; }
+    .pfe-zoom-canvas svg,
+    .pfe-zoom-canvas img {
+        display: block;
+        max-width: none !important;
+        max-height: none !important;
+        background: #fff;
+        border-radius: 10px;
+        box-shadow: 0 14px 46px rgba(0, 0, 0, .5);
+    }
+    .pfe-zoom-foot {
+        padding: 8px 14px;
+        font-size: 12.5px;
+        line-height: 1.5;
+        color: rgba(244, 250, 246, .78);
+        text-align: center;
+        border-top: 1px solid rgba(255, 255, 255, .12);
+    }
+    @media (max-width: 640px) {
+        .pfe-zoom-title { font-size: 13.5px; }
+        .pfe-zoom-foot { font-size: 11.5px; }
+    }
+</style>
+<script id="pfe-zoom-runtime">
+(function () {
+    'use strict';
+    if (window.__pfeZoomRuntime) { return; }
+    window.__pfeZoomRuntime = true;
+
+    var MIN_W = 150;            /* taille minimale d'une figure « zoomable »  */
+    var MIN_H = 100;
+    var ZMIN = 0.3;
+    var ZMAX = 20;
+    var STEP = 1.25;
+    var HINT = 'اسحب للتحريك · عجلة الفأرة أو + / − للتكبير · نقر مزدوج = تبديل الملاءمة · Esc للإغلاق';
+
+    var badge = null;
+    var badgeFig = null;
+    var overlay = null;
+    var stage = null;
+    var canvas = null;
+    var titleEl = null;
+    var pctEl = null;
+    var openFig = null;
+    var cloneSeq = 0;
+    var bound = [];             /* écouteurs globaux mémorisés (démontage exact) */
+    var wired = false;          /* écouteurs clavier/fullscreen branchés (idempotent) */
+    var st = { s: 1, base: 1, tx: 0, ty: 0, nw: 0, nh: 0, fit: true };
+
+    /* ── Utilitaires ─────────────────────────────────────────────────────── */
+    function node(tag, cls, text) {
+        var n = document.createElement(tag);
+        if (cls) { n.className = cls; }
+        if (text !== undefined && text !== null) { n.textContent = text; }
+        return n;
+    }
+
+    function button(label, tip, fn, extra) {
+        var b = node('button', 'pfe-zoom-btn' + (extra ? ' ' + extra : ''), label);
+        b.setAttribute('type', 'button');
+        b.setAttribute('title', tip);
+        b.setAttribute('aria-label', tip);
+        b.addEventListener('click', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            fn();
+        });
+        return b;
+    }
+
+    function textOf(n) {
+        return n ? String(n.textContent || '').replace(/\s+/g, ' ').trim() : '';
+    }
+
+    /* Écouteur global mémorisé : indispensable pour un démontage EXACT (tests
+       automatisés multi-documents, démontage d'une couche React, SPA). */
+    function bind(target, type, fn, capture) {
+        var cap = !!capture;
+        target.addEventListener(type, fn, cap);
+        bound.push([target, type, fn, cap]);
+    }
+
+    /* Élément interdit au zoom : contrôles, liens, icônes décoratives. */
+    function blocked(el) {
+        if (!el || !el.closest) { return true; }
+        if (el.closest('button,a,label,select,input,textarea,header,nav,footer,.no-zoom,[data-no-zoom],[data-pfe-zoom-skip]')) { return true; }
+        return el.getAttribute('aria-hidden') === 'true';
+    }
+
+    function bigEnough(el) {
+        var r = el.getBoundingClientRect();
+        return r.width >= MIN_W && r.height >= MIN_H;
+    }
+
+    /* Remonte du nœud cliqué vers la figure (svg ou image) la plus proche. */
+    function figureFrom(target) {
+        var el = target && target.nodeType === 1 ? target : (target ? target.parentElement : null);
+        while (el && el !== document.documentElement) {
+            var tag = el.tagName ? el.tagName.toLowerCase() : '';
+            if (tag === 'svg' || tag === 'img') {
+                if (blocked(el) || !bigEnough(el)) { return null; }
+                return el;
+            }
+            el = el.parentElement;
+        }
+        return null;
+    }
+
+    /* ── Clonage : préfixe les ids pour éviter tout doublon dans le document ─ */
+    function rewriteRefs(value, map) {
+        return value.replace(/url\(\s*(['"]?)#([^)'"\s]+)\1\s*\)/g, function (m, q, id) {
+            return map[id] ? 'url(' + q + '#' + map[id] + q + ')' : m;
+        });
+    }
+
+    function prepareClone(source) {
+        var clone = source.cloneNode(true);
+        cloneSeq += 1;
+        var prefix = 'pfez' + cloneSeq + '-';
+        if (clone.tagName.toLowerCase() === 'img') { return clone; }
+
+        var map = {};
+        var withId = clone.querySelectorAll('[id]');
+        var i;
+        for (i = 0; i < withId.length; i++) {
+            var oldId = withId[i].getAttribute('id');
+            map[oldId] = prefix + oldId;
+            withId[i].setAttribute('id', prefix + oldId);
+        }
+        if (clone.getAttribute('id')) {
+            var rootId = clone.getAttribute('id');
+            map[rootId] = prefix + rootId;
+            clone.setAttribute('id', prefix + rootId);
+        }
+
+        /* Réécrit les références internes d'un nœud (racine INCLUSE) : attributs
+           de peinture, marker-*, href/xlink:href, et le texte des <style> embarqués
+           (sélecteurs #id ou url(#id)) qui portent souvent les marqueurs de flèches. */
+        var attrs = ['fill', 'stroke', 'filter', 'clip-path', 'mask', 'style', 'marker-start', 'marker-mid', 'marker-end'];
+        function rewriteNode(n) {
+            for (var k = 0; k < attrs.length; k++) {
+                var v = n.getAttribute(attrs[k]);
+                if (v && v.indexOf('#') > -1) { n.setAttribute(attrs[k], rewriteRefs(v, map)); }
+            }
+            var href = n.getAttribute('href');
+            if (href && href.charAt(0) === '#' && map[href.slice(1)]) {
+                n.setAttribute('href', '#' + map[href.slice(1)]);
+            }
+            var xlink = n.getAttribute('xlink:href');
+            if (xlink && xlink.charAt(0) === '#' && map[xlink.slice(1)]) {
+                n.setAttribute('xlink:href', '#' + map[xlink.slice(1)]);
+            }
+            if ((n.tagName || '').toLowerCase() === 'style' && n.textContent) {
+                n.textContent = n.textContent.replace(/#([A-Za-z_][A-Za-z0-9_-]*)/g, function (m, id) {
+                    return map[id] ? '#' + map[id] : m;
+                });
+            }
+        }
+        var all = clone.querySelectorAll('*');
+        rewriteNode(clone);
+        for (i = 0; i < all.length; i++) {
+            rewriteNode(all[i]);
+        }
+        return clone;
+    }
+
+    /* ── Pastille flottante au survol ─────────────────────────────────────── */
+    function ensureBadge() {
+        if (badge) { return; }
+        badge = node('button', 'pfe-zoom-badge', '\uD83D\uDD0D تكبير');
+        badge.setAttribute('type', 'button');
+        badge.setAttribute('title', 'تكبير الشكل لقراءته بوضوح');
+        badge.setAttribute('aria-label', 'تكبير الشكل');
+        badge.addEventListener('click', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            if (badgeFig) { open(badgeFig); }
+        });
+        document.body.appendChild(badge);
+    }
+
+    function positionBadge() {
+        if (!badge || !badgeFig) { return; }
+        var r = badgeFig.getBoundingClientRect();
+        var w = badge.offsetWidth || 96;
+        var h = badge.offsetHeight || 32;
+        var left = r.left + 8;
+        var top = r.bottom - h - 8;
+        if (top < 8) { top = r.top + 8; }
+        if (left + w > window.innerWidth - 8) { left = Math.max(8, r.right - w - 8); }
+        if (top + h > window.innerHeight - 8) { top = Math.max(8, window.innerHeight - h - 8); }
+        badge.style.left = Math.max(8, left) + 'px';
+        badge.style.top = Math.max(8, top) + 'px';
+    }
+
+    function showBadge(fig) {
+        ensureBadge();
+        badgeFig = fig;
+        positionBadge();
+        badge.classList.add('is-visible');
+    }
+
+    function hideBadge() {
+        badgeFig = null;
+        if (badge) { badge.classList.remove('is-visible'); }
+    }
+
+    /* Titre porté par la figure elle-même : le plus fiable (aria-label sur les
+       figures ProFigure, alt sur les schémas image, <title>/<desc> sinon). */
+    function ownTitle(el) {
+        var t = el.getAttribute('aria-label') || el.getAttribute('data-title') || '';
+        if (!t && el.tagName.toLowerCase() === 'img') { t = el.getAttribute('alt') || ''; }
+        if (!t && el.querySelector) { t = textOf(el.querySelector('title,desc')); }
+        return t ? String(t).replace(/\s+/g, ' ').trim() : '';
+    }
+
+    function figureTitle(el) {
+        var self = ownTitle(el);
+        if (self) { return self; }
+        var host = el.closest ? el.closest('figure,.svg-container,.doc-visual,.visual-card,section') : null;
+        if (host) {
+            var cap = host.querySelector('figcaption,.svg-caption,.figure-caption,.caption,.svg-title');
+            var capText = textOf(cap);
+            if (capText) { return capText; }
+        }
+        var probe = el;
+        var hops = 0;
+        while (probe && hops < 60) {
+            probe = probe.previousElementSibling || probe.parentElement;
+            hops += 1;
+            if (!probe || probe === document.body) { break; }
+            var head = /^H[1-4]$/.test(probe.tagName || '') ? probe : probe.querySelector('h1,h2,h3,h4');
+            var headText = textOf(head);
+            if (headText) { return headText; }
+        }
+        return textOf(document.querySelector('h1,h2')) || 'الشكل';
+    }
+
+    /* Taille « naturelle » : viewBox pour un SVG (vectoriel net à 100 %), pixels pour une image. */
+    function naturalSize(el) {
+        if (el.tagName.toLowerCase() === 'img') {
+            var r = el.getBoundingClientRect();
+            return [el.naturalWidth || r.width || 900, el.naturalHeight || r.height || 600];
+        }
+        var vb = el.viewBox && el.viewBox.baseVal;
+        if (vb && vb.width && vb.height) { return [vb.width, vb.height]; }
+        var box = el.getBoundingClientRect();
+        return [box.width || 900, box.height || 500];
+    }
+
+    /* ── Manipulation : glisser, molette, pincement, double-clic ──────────── */
+    function bindStage() {
+        var pointers = {};
+        var drag = null;
+        var pinch = null;
+
+        function count() {
+            var n = 0;
+            for (var k in pointers) { if (pointers[k]) { n += 1; } }
+            return n;
+        }
+
+        function list() {
+            var out = [];
+            for (var k in pointers) { if (pointers[k]) { out.push(pointers[k]); } }
+            return out;
+        }
+
+        function distance(a, b) {
+            var dx = a.clientX - b.clientX;
+            var dy = a.clientY - b.clientY;
+            return Math.sqrt(dx * dx + dy * dy) || 1;
+        }
+
+        function release(e) {
+            delete pointers[e.pointerId];
+            if (count() < 2) { pinch = null; }
+            if (count() === 0) {
+                drag = null;
+                stage.classList.remove('is-dragging');
+            }
+        }
+
+        stage.addEventListener('pointerdown', function (e) {
+            if (e.pointerType === 'mouse' && e.button !== 0) { return; }
+            pointers[e.pointerId] = e;
+            try { stage.setPointerCapture(e.pointerId); } catch (err) {}
+            if (count() === 1) {
+                drag = { x: e.clientX, y: e.clientY, tx: st.tx, ty: st.ty };
+                stage.classList.add('is-dragging');
+            } else if (count() === 2) {
+                drag = null;
+                var two = list();
+                var p = localPoint(two[0]);
+                var q = localPoint(two[1]);
+                pinch = { d: distance(two[0], two[1]), s: st.s, cx: (p[0] + q[0]) / 2, cy: (p[1] + q[1]) / 2 };
+            }
+            e.preventDefault();
+        });
+
+        stage.addEventListener('pointermove', function (e) {
+            if (!pointers[e.pointerId]) { return; }
+            pointers[e.pointerId] = e;
+            if (pinch && count() === 2) {
+                var pair = list();
+                var mid = localPoint(pair[0]);
+                zoomTo(pinch.s * (distance(pair[0], pair[1]) / pinch.d), mid[0], mid[1]);
+                return;
+            }
+            if (drag) {
+                st.tx = drag.tx + (e.clientX - drag.x);
+                st.ty = drag.ty + (e.clientY - drag.y);
+                st.fit = false;
+                apply();
+            }
+        });
+
+        stage.addEventListener('pointerup', release);
+        stage.addEventListener('pointercancel', release);
+        stage.addEventListener('lostpointercapture', release);
+
+        stage.addEventListener('wheel', function (e) {
+            e.preventDefault();
+            var p = localPoint(e);
+            zoomBy(e.deltaY < 0 ? 1.14 : 1 / 1.14, p[0], p[1]);
+        }, { passive: false });
+
+        stage.addEventListener('dblclick', function (e) {
+            e.preventDefault();
+            if (st.fit || st.s <= st.base * 1.05) {
+                var p = localPoint(e);
+                zoomTo(Math.max(1, st.base * 2), p[0], p[1]);
+            } else {
+                fitView();
+            }
+        });
+    }
+
+    /* ── Superposition plein écran ────────────────────────────────────────── */
+    function stageSize() {
+        var r = stage.getBoundingClientRect();
+        return [r.width, r.height];
+    }
+
+    function apply() {
+        canvas.style.transform = 'translate(' + st.tx + 'px,' + st.ty + 'px) scale(' + st.s + ')';
+        if (pctEl) { pctEl.textContent = Math.round(st.s * 100) + '%'; }
+    }
+
+    function fitView() {
+        var s = stageSize();
+        var pad = 28;
+        var k = Math.min((s[0] - pad) / st.nw, (s[1] - pad) / st.nh);
+        if (!isFinite(k) || k <= 0) { k = 1; }
+        st.s = k;
+        st.base = k;
+        st.fit = true;
+        st.tx = (s[0] - st.nw * k) / 2;
+        st.ty = (s[1] - st.nh * k) / 2;
+        apply();
+    }
+
+    function zoomTo(target, px, py) {
+        var s = stageSize();
+        if (px === undefined) { px = s[0] / 2; }
+        if (py === undefined) { py = s[1] / 2; }
+        var next = Math.min(ZMAX, Math.max(ZMIN, target));
+        var f = next / st.s;
+        st.tx = px - (px - st.tx) * f;
+        st.ty = py - (py - st.ty) * f;
+        st.s = next;
+        st.fit = false;
+        apply();
+    }
+
+    function zoomBy(factor, px, py) {
+        zoomTo(st.s * factor, px, py);
+    }
+
+    function localPoint(e) {
+        var r = stage.getBoundingClientRect();
+        return [e.clientX - r.left, e.clientY - r.top];
+    }
+
+    function ensureOverlay() {
+        if (overlay) { return; }
+
+        overlay = node('section', 'pfe-zoom-overlay');
+        overlay.setAttribute('role', 'dialog');
+        overlay.setAttribute('aria-modal', 'true');
+        overlay.setAttribute('aria-label', 'عرض الشكل مكبَّرًا');
+
+        var bar = node('div', 'pfe-zoom-bar');
+        titleEl = node('div', 'pfe-zoom-title', '');
+        pctEl = node('span', 'pfe-zoom-pct', '100%');
+        bar.appendChild(titleEl);
+        bar.appendChild(pctEl);
+        bar.appendChild(button('−', 'تصغير', function () { zoomBy(1 / STEP); }));
+        bar.appendChild(button('+', 'تكبير', function () { zoomBy(STEP); }));
+        bar.appendChild(button('ملاءمة', 'إعادة الملاءمة إلى الشاشة', function () { fitView(); }));
+        bar.appendChild(button('100%', 'الحجم الأصلي للشكل', function () { zoomTo(1); }));
+        bar.appendChild(button('نافذة', 'فتح الشكل في نافذة مستقلة', openStandalone));
+        bar.appendChild(button('إغلاق', 'إغلاق (Esc)', close, 'is-close'));
+
+        stage = node('div', 'pfe-zoom-stage');
+        canvas = node('div', 'pfe-zoom-canvas');
+        stage.appendChild(canvas);
+
+        overlay.appendChild(bar);
+        overlay.appendChild(stage);
+        overlay.appendChild(node('div', 'pfe-zoom-foot', HINT));
+        document.body.appendChild(overlay);
+
+        bindStage();
+        overlay.addEventListener('click', function (e) {
+            if (e.target === overlay) { close(); }
+        });
+    }
+
+    function open(fig) {
+        if (!fig) { return; }
+        ensureOverlay();
+        openFig = fig;
+        hideBadge();
+        canvas.innerHTML = '';
+        canvas.appendChild(prepareClone(fig));
+
+        var nat = naturalSize(fig);
+        st.nw = Math.max(1, nat[0]);
+        st.nh = Math.max(1, nat[1]);
+        canvas.firstChild.style.width = st.nw + 'px';
+        canvas.firstChild.style.height = st.nh + 'px';
+        titleEl.textContent = figureTitle(fig);
+
+        overlay.classList.add('is-open');
+        document.documentElement.classList.add('pfe-zoom-lock');
+        fitView();
+        goFullscreen();
+        /* Idempotent : une seule paire d'écouteurs actifs à la fois. */
+        if (!wired) {
+            wired = true;
+            document.addEventListener('keydown', onKey, true);
+            window.addEventListener('resize', onResize);
+            document.addEventListener('fullscreenchange', onResize);
+        }
+    }
+
+    function close() {
+        if (!overlay) { return; }
+        overlay.classList.remove('is-open');
+        document.documentElement.classList.remove('pfe-zoom-lock');
+        if (wired) {
+            wired = false;
+            document.removeEventListener('keydown', onKey, true);
+            window.removeEventListener('resize', onResize);
+            document.removeEventListener('fullscreenchange', onResize);
+        }
+        if (document.fullscreenElement && document.exitFullscreen) {
+            try { document.exitFullscreen(); } catch (err) {}
+        }
+        canvas.innerHTML = '';
+        openFig = null;
+        st.fit = true;
+        hideBadge();
+    }
+
+    function goFullscreen() {
+        var fn = overlay.requestFullscreen || overlay.webkitRequestFullscreen || overlay.msRequestFullscreen;
+        if (!fn) { return; }
+        try {
+            var p = fn.call(overlay);
+            if (p && p.catch) { p.catch(function () {}); }
+        } catch (err) {}
+    }
+
+    function onResize() {
+        if (!overlay || !overlay.classList.contains('is-open')) { return; }
+        if (st.fit) { fitView(); } else { apply(); }
+    }
+
+    function onKey(e) {
+        if (!overlay || !overlay.classList.contains('is-open')) { return; }
+        var k = e.key;
+        if (k === 'Escape') { close(); }
+        else if (k === '+' || k === '=') { zoomBy(STEP); }
+        else if (k === '-' || k === '_') { zoomBy(1 / STEP); }
+        else if (k === '0') { fitView(); }
+        else if (k === 'ArrowUp') { st.ty += 48; apply(); }
+        else if (k === 'ArrowDown') { st.ty -= 48; apply(); }
+        else if (k === 'ArrowRight') { st.tx -= 48; apply(); }
+        else if (k === 'ArrowLeft') { st.tx += 48; apply(); }
+        else { return; }
+        e.preventDefault();
+        e.stopPropagation();
+    }
+
+    /* ── Figure seule dans une fenêtre (zoom natif du navigateur + impression) */
+    function escapeHtml(value) {
+        return String(value)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;');
+    }
+
+    function openStandalone() {
+        if (!openFig) { return; }
+        var clone = prepareClone(openFig);
+        clone.style.width = '100%';
+        clone.style.height = 'auto';
+        clone.style.maxWidth = 'none';
+
+        var styles = '';
+        var sheets = document.querySelectorAll('style');
+        for (var i = 0; i < sheets.length; i++) { styles += String(sheets[i].textContent || ''); }
+
+        var title = escapeHtml(figureTitle(openFig));
+        var extra = 'html,body{margin:0;background:#fff;color:#111}' +
+            'body{padding:18px 16px 64px;font-family:system-ui,"Segoe UI",Tahoma,sans-serif;direction:rtl}' +
+            '.pfe-standalone-title{font-size:17px;font-weight:700;margin:0 0 14px;line-height:1.5}' +
+            '.pfe-standalone-fig{margin:0;padding:12px;border:1px solid #e2e8e0;border-radius:16px;background:#fff}' +
+            '.pfe-standalone-fig svg,.pfe-standalone-fig img{width:100%;height:auto;max-width:none}' +
+            '.pfe-standalone-tip{margin-top:16px;font-size:13.5px;color:#3f5147;text-align:center;line-height:1.7}' +
+            '@media print{.pfe-standalone-tip{display:none}}';
+
+        var doc = '<!DOCTYPE html><html dir="rtl" lang="ar"><head><meta charset="utf-8">' +
+            '<meta name="viewport" content="width=device-width,initial-scale=1">' +
+            '<title>' + title + '</title>' +
+            '<style>' + styles + '</style><style>' + extra + '</style></head><body>' +
+            '<h1 class="pfe-standalone-title">' + title + '</h1>' +
+            '<figure class="pfe-standalone-fig">' + clone.outerHTML + '</figure>' +
+            '<p class="pfe-standalone-tip">استعمل Ctrl مع عجلة الفأرة، أو أزرار التكبير في المتصفح · ' +
+            'F11 لملء الشاشة · Ctrl + P للطباعة</p></body></html>';
+
+        var w = window.open('', '_blank');
+        if (!w) { return; }
+        w.document.open();
+        w.document.write(doc);
+        w.document.close();
+    }
+
+    /* ── Câblage des événements (délégation : aucun nœud ajouté aux figures) ─ */
+    bind(document, 'pointerover', function (e) {
+        if (overlay && overlay.classList.contains('is-open')) { return; }
+        if (badge && badge.contains(e.target)) { return; }
+        var fig = figureFrom(e.target);
+        if (!fig) {
+            if (badgeFig) { hideBadge(); }
+            return;
+        }
+        if (fig !== badgeFig) { showBadge(fig); }
+    }, true);
+
+    bind(document, 'pointerout', function (e) {
+        if (!badgeFig) { return; }
+        if (badge && badge.contains(e.target)) { return; }
+        /* La pastille est montée dans document.body, JAMAIS dans la figure :
+           en passant de la figure à la pastille, relatedTarget vaut la pastille,
+           figureFrom() remonte jusqu'au <html> et renvoie null, ce qui masquait
+           la pastille au moment exact où l'on visait le clic. Elle est donc
+           traitée comme l'intérieur de la figure. */
+        if (badge && badge.contains(e.relatedTarget)) { return; }
+        if (figureFrom(e.relatedTarget) !== badgeFig) { hideBadge(); }
+    }, true);
+
+    var pending = false;
+    bind(window, 'scroll', function () {
+        if (!badgeFig || pending) { return; }
+        pending = true;
+        window.requestAnimationFrame(function () {
+            pending = false;
+            if (badgeFig) { positionBadge(); }
+        });
+    }, true);
+
+    bind(window, 'resize', function () {
+        if (badgeFig) { positionBadge(); }
+    });
+
+    bind(document, 'click', function (e) {
+        if (e.button !== 0 || e.defaultPrevented || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) { return; }
+        if (overlay && overlay.classList.contains('is-open')) { return; }
+        if (badge && badge.contains(e.target)) { return; }
+        var fig = figureFrom(e.target);
+        if (!fig) { return; }
+        e.preventDefault();
+        open(fig);
+    }, true);
+
+    /* Démontage exact : ferme, retire pastille/superposition et détache tous les
+       écouteurs (le runtime peut alors être rebranché sur un autre document). */
+    function destroy() {
+        close();
+        for (var i = 0; i < bound.length; i++) {
+            var h = bound[i];
+            h[0].removeEventListener(h[1], h[2], h[3]);
+        }
+        bound.length = 0;
+        if (badge && badge.parentNode) { badge.parentNode.removeChild(badge); }
+        if (overlay && overlay.parentNode) { overlay.parentNode.removeChild(overlay); }
+        badge = null;
+        badgeFig = null;
+        overlay = null;
+        stage = null;
+        canvas = null;
+        titleEl = null;
+        pctEl = null;
+        openFig = null;
+        window.__pfeZoomRuntime = false;
+        window.__pfeZoom = null;
+    }
+
+    /* API publique minimale (tests automatiques + usages programmatiques). */
+    window.__pfeZoom = { open: open, close: close, figureAt: figureFrom, destroy: destroy };
+})();
+
+</script>
+<!-- PFE-ZOOM v1 — fin (généré) -->
+</body>
+</html>

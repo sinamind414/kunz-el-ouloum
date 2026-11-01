@@ -1,0 +1,155 @@
+{
+  "srs": {
+    "manuels": [
+      "transcription",
+      "traduction",
+      "enzymes",
+      "photosynthese",
+      "synapse",
+      "subduction",
+      "protein_structure_function",
+      "photochemical_chain",
+      "immunity_hiv_aids",
+      "enzyme_inhibitors",
+      "amino_acid_behavior",
+      "immunity_self_nonself",
+      "immunity_humoral_response",
+      "immunity_cellular_response",
+      "immunity_memory",
+      "seismic_waves"
+    ],
+    "questionsParConcept": 4
+  },
+  "auto": {
+    "auto": 63
+  },
+  "hub": {
+    "entrees": [
+      {
+        "tab": "review",
+        "titre": "المراجعة الذكية"
+      },
+      {
+        "tab": "plan",
+        "titre": "خطة المراجعة النهائية"
+      },
+      {
+        "tab": "schemas",
+        "titre": "ارسم من الذاكرة"
+      }
+    ],
+    "entrées": 3
+  },
+  "plan": {
+    "cle": "kunz.revisionPlan.settings",
+    "defaut": {
+      "daysLeft": 14,
+      "minutesPerDay": 90
+    },
+    "bornes": {
+      "joursMin": 1,
+      "joursMax": 60,
+      "minutesMin": 20,
+      "minutesMax": 240
+    }
+  },
+  "par": {
+    "delaiRevueJours": 14,
+    "seuilFragile": 0.6,
+    "clee": "kunz_parcours_v1"
+  },
+  "chemin": {
+    "total": 85,
+    "premier": [
+      {
+        "id": "parcours:u1:l0",
+        "kind": "lesson",
+        "unitId": 1,
+        "titre": "النشاط 1 : تذكير بالمكتسبات ومقر تركيب البروتين"
+      },
+      {
+        "id": "parcours:u1:l1",
+        "kind": "lesson",
+        "unitId": 1,
+        "titre": "النشاط 2 : استنساخ المعلومات الوراثية الموجودة على مستوى ADN"
+      },
+      {
+        "id": "parcours:u1:l2",
+        "kind": "lesson",
+        "unitId": 1,
+        "titre": "النشاط 3 : الترجمة"
+      },
+      {
+        "id": "parcours:u1:l3",
+        "kind": "lesson",
+        "unitId": 1,
+        "titre": "النشاط 4 : مراحل الترجمة"
+      },
+      {
+        "id": "parcours:u1:l4",
+        "kind": "lesson",
+        "unitId": 1,
+        "titre": "الوحدة 1 : التعبير المورثي ونقل المعلومة"
+      },
+      {
+        "id": "parcours:u1:l5",
+        "kind": "lesson",
+        "unitId": 1,
+        "titre": "الفصل 3 : استنساخ المعلومات الوراثية الموجودة على مستوى ADN"
+      }
+    ]
+  },
+  "bac": {
+    "annees": [
+      2026,
+      2025,
+      2024,
+      2023,
+      2022,
+      2021,
+      2020,
+      2019,
+      2018,
+      2017,
+      2016
+    ],
+    "manquantes": [],
+    "incomplets": [
+      {
+        "year": 2021,
+        "sujet": 2,
+        "raison": "exercice 1 non lisible dans la source consultée"
+      }
+    ],
+    "pendants": [
+      2013,
+      2014,
+      2015
+    ],
+    "idees": 65,
+    "exemples": [
+      {
+        "id": "bac2016_s1_e1",
+        "titre": "من المورثة إلى البروتين: أربع مورثات تحت Anagène",
+        "annee": 2016
+      },
+      {
+        "id": "bac2016_s1_e2",
+        "titre": "اللمفاوية (س) و دور الأنترلوكين 2",
+        "annee": 2016
+      },
+      {
+        "id": "bac2016_s1_e3",
+        "titre": "تركيب الـ ATP في عضيتين: تيلاكوئيد و ميتوكوندري",
+        "annee": 2016
+      }
+    ]
+  },
+  "unites": {
+    "unite1": {
+      "id": 1,
+      "titre": "تركيب البروتين",
+      "cartes": 0
+    }
+  }
+}

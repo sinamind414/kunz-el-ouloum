@@ -1,0 +1,371 @@
+From 96b3d94ec007e4c16a518f35032b45f32db1b271 Mon Sep 17 00:00:00 2001
+From: sinamind414 <sinamind414@users.noreply.github.com>
+Date: Thu, 3 Sep 2026 09:27:23 +0000
+Subject: [PATCH 7/9] =?UTF-8?q?fix(methodology):=20audit=20assimilation=20?=
+ =?UTF-8?q?=E2=80=94=209=20correctifs=20du=20trident=20diagnostique=20(bou?=
+ =?UTF-8?q?ssole=20live,=20pas=20jet=C3=A9e)?=
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+LE DIAGNOSTIC (3 correctifs critiques) :
+1) تأكيد دون سند (missing_reference) : vérification GLOBALE pour les 9 verbes
+   adossés à un document — avant, seuls حلّل/فسّر/قارن/صادق étaient couverts par
+   leurs critères c1 ; علّل/انقُد/استنتج/اشْرح/فرضية passaient sans être vérifiés.
+2) Le choix du مفتاح entre dans la correction : écart élève/vérité = verb_confusion
+   (confusion d'actes, adresse étape 1) + archivage switchChoice/switchTruth dans
+   le carnet — la confusion حلّل/فسّر devient mesurable dans تقدمي.
+3) Remédiation cliquable : le bouton « أدرّب المفتاح الآن (60 ث) » dans la carte
+   d'erreurs ouvre le micro-drill — fini la promesse sans action.
+
+L'INTÉGRITÉ DU RAPPORT (3 correctifs) :
+4) Rapport honnête : « لم يُرصد خطأ » au lieu de « سليم » ; étape 1 « غير مُقيَّم »
+   tant que le مفتاح n'est pas tranché ; bannière ⚠ « نتيجة غير موثوقة » quand le
+   مفتاح choisi est faux — plus jamais 5 lignes vertes avec un مفتاح ✗.
+5) Interprétation prématurée étendue à TOUS les verbes fermés
+   (استنتج/قارن/لخّص/ارسم/حلّل) — aligné sur le مفتاح de la boussole.
+6) durationSec = temps réellement passé (limite − restant) au lieu du temps restant
+   (et undefined après la fin du chrono) — statistiques du carnet fiables.
+
+L'ACQUISITION (3 correctifs) :
+7) Le drill re-mélange les 12 verbes à chaque relance (round) — le réflexe, pas la
+   mémorisation de la séquence.
+8) La démo « même document, deux consignes » est ouverte par défaut.
+9) Le gabarit « وهذا لأنّ » (phrase-type n°2 de la boussole) est reconnu par ex_c3 ;
+   exp_m_c3 (اشْرح) passe par la branche conclusion au lieu du fallback.
+
+Tests : tsc 0 erreur · build ✓ 7,8 s · 7/7 tests runtime du scoreur (avant/après).
+---
+ src/components/MethodologyCompilerView.tsx | 50 ++++++++++++++++++----
+ src/components/MethodologyGlobalStats.tsx  | 35 ++++++++++++---
+ src/components/SwitchDrillModal.tsx        |  4 +-
+ src/components/SwitchDuoDemo.tsx           |  3 +-
+ src/utils/methodologyLog.ts                |  5 ++-
+ src/utils/methodologyScorer.ts             | 48 ++++++++++++++++-----
+ 6 files changed, 117 insertions(+), 28 deletions(-)
+
+diff --git a/src/components/MethodologyCompilerView.tsx b/src/components/MethodologyCompilerView.tsx
+index db8821a..dc4cd22 100644
+--- a/src/components/MethodologyCompilerView.tsx
++++ b/src/components/MethodologyCompilerView.tsx
+@@ -134,7 +134,10 @@ export default function MethodologyCompilerView({ onBackToHome }: MethodologyPro
+     currentExercise.stage2.blanks.forEach(b => {
+       fullText = fullText.replace(`{{${b.id}}}`, clozeAnswers[b.id] || '');
+     });
+-    const rep = evaluateStudentProduction(selectedVerbId, fullText, undefined, 2);
++    const rep = evaluateStudentProduction(selectedVerbId, fullText, undefined, 2, {
++      switchChoice: null,
++      switchTruth: getSwitchForVerb(selectedVerbId),
++    });
+     setScoreReport(rep);
+     // Carnet de bord : archiver la production complétée (diagnostic d'évolution)
+     logProduction({
+@@ -146,6 +149,8 @@ export default function MethodologyCompilerView({ onBackToHome }: MethodologyPro
+       icm: rep.icm,
+       criteriaSummary: rep.criteriaResults.map(c => ({ label: c.label, passed: c.passed })),
+       errorTags: rep.detectedErrors.map(e => e.tag),
++      switchChoice: null,
++      switchTruth: getSwitchForVerb(selectedVerbId),
+     });
+     setEvolutionVersion(v => v + 1);
+   };
+@@ -157,7 +162,13 @@ export default function MethodologyCompilerView({ onBackToHome }: MethodologyPro
+       steps: draftSteps,
+       finalSentence: draftFinalSentence
+     };
+-    const rep = evaluateStudentProduction(selectedVerbId, studentText, draft, currentStage);
++    // 🔑 Le choix du مفتاح entre dans la correction : une erreur de décision
++    // devient mesurable (et archivée) — plus de rapport « tout vert » mensonger.
++    const switchTruth = getSwitchForVerb(selectedVerbId);
++    const rep = evaluateStudentProduction(selectedVerbId, studentText, draft, currentStage, {
++      switchChoice,
++      switchTruth,
++    });
+     setScoreReport(rep);
+ 
+     // Carnet de bord : archiver le brouillon complet de l'élève (texte + résumé)
+@@ -171,7 +182,10 @@ export default function MethodologyCompilerView({ onBackToHome }: MethodologyPro
+       icm: rep.icm,
+       criteriaSummary: rep.criteriaResults.map(c => ({ label: c.label, passed: c.passed })),
+       errorTags: rep.detectedErrors.map(e => e.tag),
+-      durationSec: isTimerRunning ? timerSeconds : undefined,
++      // Temps réellement PASSÉ (compte à rebours), plus le temps restant.
++      durationSec: currentStage === 4 ? Math.max(0, currentExercise.stage4.timeLimitSec - timerSeconds) : undefined,
++      switchChoice,
++      switchTruth,
+     });
+     setEvolutionVersion(v => v + 1);
+ 
+@@ -858,20 +872,40 @@ export default function MethodologyCompilerView({ onBackToHome }: MethodologyPro
+                   );
+                 })()}
+ 
++                {/* ⚠ Honnêteté : مفتاح faux = résultat non fiable (et non plus « tout vert ») */}
++                {(() => {
++                  const truth = getSwitchForVerb(selectedVerbId);
++                  if (switchChoice === null || switchChoice === truth) return null;
++                  return (
++                    <div className="rounded-xl border border-amber-400/60 bg-amber-500/15 p-2.5 flex items-center gap-2">
++                      <AlertTriangle className="w-4 h-4 text-amber-300 shrink-0" />
++                      <p className="text-[10px] font-black text-amber-200 leading-snug">
++                        ⚠ نتيجة غير موثوقة — اخترتَ مفتاحًا خاطئًا لهذا الفعل: الفحص أدناه لا يمكنه أن يزن إجابتك بعد. أعد قراءة الفعل ثم أعد الإجابة.
++                      </p>
++                    </div>
++                  );
++                })()}
++
+                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-1.5">
+                   {groupErrorsByAddress(scoreReport.detectedErrors.map(e => e.tag)).map(g => {
+                     const ok = g.tags.length === 0;
++                    // Étape 1 (الفعل محترم) : pas évaluable sans l'aveu du مفتاح
++                    const notEvaluated = g.address === 1 && switchChoice === null;
+                     const step = g.address === 'switch' ? null : getStep(g.address as 1 | 2 | 3 | 4);
+                     return (
+-                      <div key={String(g.address)} className={`rounded-xl p-2.5 border ${ok ? 'bg-emerald-500/10 border-emerald-400/40' : 'bg-red-500/10 border-red-400/40'}`}>
++                      <div key={String(g.address)} className={`rounded-xl p-2.5 border ${notEvaluated ? 'bg-slate-500/10 border-slate-400/30' : ok ? 'bg-emerald-500/10 border-emerald-400/40' : 'bg-red-500/10 border-red-400/40'}`}>
+                         <div className="flex items-center justify-between mb-1">
+-                          <span className="text-[11px] font-black flex items-center gap-1" style={{ color: ok ? '#6ee7b7' : '#fca5a5' }}>
++                          <span className="text-[11px] font-black flex items-center gap-1" style={{ color: notEvaluated ? '#94a3b8' : ok ? '#6ee7b7' : '#fca5a5' }}>
+                             {g.address === 'switch' ? '🔑 المفتاح' : `${g.address}. ${step!.word}`}
+                           </span>
+-                          <span className={`text-sm font-black ${ok ? 'text-emerald-400' : 'text-red-400'}`}>{ok ? '✓' : '✗'}</span>
++                          <span className={`text-sm font-black ${notEvaluated ? 'text-slate-400' : ok ? 'text-emerald-400' : 'text-red-400'}`}>
++                            {notEvaluated ? '؟' : ok ? '✓' : '✗'}
++                          </span>
+                         </div>
+-                        {ok ? (
+-                          <p className="text-[9px] text-emerald-300/90 font-bold">سليم</p>
++                        {notEvaluated ? (
++                          <p className="text-[9px] text-slate-300/90 font-bold">غير مُقيَّم — أجب عن سؤال المفتاح ليُقيَّم الفعل</p>
++                        ) : ok ? (
++                          <p className="text-[9px] text-emerald-300/90 font-bold">لم يُرصد خطأ</p>
+                         ) : (
+                           <div className="space-y-1">
+                             {g.tags.map(tag => (
+diff --git a/src/components/MethodologyGlobalStats.tsx b/src/components/MethodologyGlobalStats.tsx
+index 3d2f6bf..13949f2 100644
+--- a/src/components/MethodologyGlobalStats.tsx
++++ b/src/components/MethodologyGlobalStats.tsx
+@@ -1,7 +1,7 @@
+-import React, { useMemo } from 'react';
++import React, { useMemo, useState } from 'react';
+ import {
+   PenLine, TrendingUp, TrendingDown, Award, BarChart2, AlertTriangle,
+-  Target, NotebookPen, CheckCircle2, Anchor, Compass, KeyRound
++  Target, NotebookPen, CheckCircle2, Anchor, Compass, KeyRound, Zap
+ } from 'lucide-react';
+ import {
+   LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid,
+@@ -12,6 +12,7 @@ import {
+ } from '../utils/methodologyLog';
+ import { VERB_CARDS } from '../data/methodologyEngine';
+ import { getStep, ERROR_ADDRESS_MAP, ERROR_REMEDY_MAP, errorAddressAr, ErrorAddress } from '../data/boussoleData';
++import SwitchDrillModal from './SwitchDrillModal';
+ 
+ interface Props {
+   onNavigate?: (tab: string) => void;
+@@ -32,6 +33,8 @@ function fmtShort(iso: string): string {
+  * par le simulateur, sont agrégées ici — aucune donnée de démonstration.
+  */
+ export default function MethodologyGlobalStats({ onNavigate }: Props) {
++  // Remédiation réelle : le « تمرين دقيق 60 ثانية » promis par le diagnostic
++  const [showDrill, setShowDrill] = useState(false);
+   const data = useMemo(() => {
+     const logs = getProductionLogs();
+     const stats = getAllVerbStats(VERB_CARDS.map(v => v.id));
+@@ -301,11 +304,27 @@ export default function MethodologyGlobalStats({ onNavigate }: Props) {
+           })}
+         </div>
+         {weakestCount > 0 && (
+-          <div className="flex items-center gap-2 bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800/50 rounded-xl px-3 py-2.5">
+-            <Target className="w-4 h-4 text-amber-500 shrink-0" />
+-            <p className="text-[10px] font-black text-amber-800 dark:text-amber-300 leading-snug">
+-              تمرينك المقترح في الجلسة القادمة: تقوية «{errorAddressAr(weakest.addr as ErrorAddress)}» — أضعف خطوة في بوصلتك (تمرين دقيق 60 ثانية).
+-            </p>
++          <div className="flex flex-col gap-2 bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800/50 rounded-xl px-3 py-2.5">
++            <div className="flex items-center gap-2">
++              <Target className="w-4 h-4 text-amber-500 shrink-0" />
++              <p className="text-[10px] font-black text-amber-800 dark:text-amber-300 leading-snug">
++                تمرينك المقترح في الجلسة القادمة: تقوية «{errorAddressAr(weakest.addr as ErrorAddress)}» — أضعف خطوة في بوصلتك (تمرين دقيق 60 ثانية).
++              </p>
++            </div>
++            <div className="flex flex-wrap items-center gap-2">
++              <button
++                onClick={() => setShowDrill(true)}
++                className="flex items-center gap-1.5 bg-[#006d37] hover:bg-[#00854a] text-white rounded-xl px-3 py-1.5 text-[10px] font-black transition-colors cursor-pointer"
++              >
++                <Zap className="w-3.5 h-3.5" />
++                <span>أدرّب المفتاح الآن (60 ث)</span>
++              </button>
++              {weakest.addr !== 'switch' && (
++                <span className="text-[9px] font-bold text-amber-700/90 dark:text-amber-400/80 leading-snug">
++                  التصحيح يبدأ من المفتاح: ميّز الفعل قبل كتابة أي سطر
++                </span>
++              )}
++            </div>
+           </div>
+         )}
+         <p className="text-[9.5px] font-bold text-gray-400 leading-relaxed">
+@@ -375,6 +394,8 @@ export default function MethodologyGlobalStats({ onNavigate }: Props) {
+           </div>
+         </div>
+       </div>
++      {/* Remédiation directe depuis le diagnostic */}
++      <SwitchDrillModal open={showDrill} onClose={() => setShowDrill(false)} />
+     </section>
+   );
+ }
+diff --git a/src/components/SwitchDrillModal.tsx b/src/components/SwitchDrillModal.tsx
+index c90d968..2ec818b 100644
+--- a/src/components/SwitchDrillModal.tsx
++++ b/src/components/SwitchDrillModal.tsx
+@@ -47,6 +47,7 @@ export default function SwitchDrillModal({ open, onClose, focusVerbId }: Props)
+   const [answers, setAnswers] = useState<{ verbId: string; correct: boolean }[]>([]);
+   const [secondsLeft, setSecondsLeft] = useState(DRILL_SECONDS);
+   const [done, setDone] = useState(false);
++  const [round, setRound] = useState(0); // chaque relance re-mélange : on muscle le réflexe, pas la mémoire de la séquence
+   const answeredRef = useRef(false);
+ 
+   // Sélection des verbes : 12 en rafale (ou 1 seul en remédiation)
+@@ -57,7 +58,7 @@ export default function SwitchDrillModal({ open, onClose, focusVerbId }: Props)
+       : VERB_CARDS.map(v => v.id);
+     return shuffle(pool);
+     // eslint-disable-next-line react-hooks/exhaustive-deps
+-  }, [open, focusVerbId]);
++  }, [open, focusVerbId, round]);
+ 
+   const reset = (restart = false) => {
+     setStarted(restart);
+@@ -66,6 +67,7 @@ export default function SwitchDrillModal({ open, onClose, focusVerbId }: Props)
+     setSecondsLeft(DRILL_SECONDS);
+     setDone(false);
+     answeredRef.current = false;
++    if (restart) setRound(r => r + 1);
+   };
+ 
+   // Timer
+diff --git a/src/components/SwitchDuoDemo.tsx b/src/components/SwitchDuoDemo.tsx
+index d55207c..f4044d7 100644
+--- a/src/components/SwitchDuoDemo.tsx
++++ b/src/components/SwitchDuoDemo.tsx
+@@ -38,7 +38,8 @@ function GlycemiaChart() {
+ }
+ 
+ export default function SwitchDuoDemo() {
+-  const [open, setOpen] = useState(false);
++  // Ouvert par défaut : c'est la démonstration qui donne son sens à la boussole
++  const [open, setOpen] = useState(true);
+ 
+   const row = (n: number, left: string, right: string, opts?: { highlight?: boolean; muted?: boolean }) => (
+     <tr className={opts?.highlight ? 'bg-emerald-50/70 dark:bg-emerald-950/20' : ''}>
+diff --git a/src/utils/methodologyLog.ts b/src/utils/methodologyLog.ts
+index c9cb1bf..f8d7c77 100644
+--- a/src/utils/methodologyLog.ts
++++ b/src/utils/methodologyLog.ts
+@@ -5,6 +5,7 @@
+ // vrai diagnostic de progression dans le temps.
+ // 100% local : aucune donnée ne quitte l'appareil de l'élève.
+ // ============================================================
++import type { SwitchState } from '../data/boussoleData';
+ 
+ export interface ProductionLogEntry {
+   id: string;
+@@ -17,7 +18,9 @@ export interface ProductionLogEntry {
+   icm: number;             // 0-100 (indice de conformité méthodologique)
+   criteriaSummary: { label: string; passed: boolean }[];
+   errorTags: string[];     // erreurs détectées par le scoreur
+-  durationSec?: number;    // temps passé (mode sprint)
++  durationSec?: number;    // temps PASSÉ (mode sprint) — corrigé : plus le temps restant
++  switchChoice?: SwitchState | null;  // 🔑 réponse de l'élève au مفتاح (mesure la confusion)
++  switchTruth?: SwitchState;          // 🔑 vérité du verbe — le diagnostic devient possible
+ }
+ 
+ export interface VerbEvolutionStats {
+diff --git a/src/utils/methodologyScorer.ts b/src/utils/methodologyScorer.ts
+index 8fbb08c..234b09e 100644
+--- a/src/utils/methodologyScorer.ts
++++ b/src/utils/methodologyScorer.ts
+@@ -1,4 +1,5 @@
+ import { VERB_CARDS, ERROR_TAXONOMY, VerbCriteriaItem } from '../data/methodologyEngine';
++import { SWITCH_CLOSED_VERBS, SwitchState } from '../data/boussoleData';
+ 
+ export interface ScoreReport {
+   icm: number; // 0 to 100
+@@ -25,7 +26,8 @@ export function evaluateStudentProduction(
+   verbId: string,
+   userText: string,
+   draftText?: { verb: string; steps: string; finalSentence: string },
+-  currentStage: 1 | 2 | 3 | 4 = 3
++  currentStage: 1 | 2 | 3 | 4 = 3,
++  switchContext?: { switchChoice?: SwitchState | null; switchTruth?: SwitchState }
+ ): ScoreReport {
+   const verbCard = VERB_CARDS.find(v => v.id === verbId) || VERB_CARDS[0];
+   const criteria = verbCard.criteria || [];
+@@ -37,14 +39,40 @@ export function evaluateStudentProduction(
+   let passedCount = 0;
+ 
+   // 1. Détection des erreurs typées globales
+-  // Vérification de l'interdit pour l'analyse (premature_interpretation)
+-  if (verbCard.id === 'verb_analyse_v1') {
+-    const causalRegex = /(لأن|راجع إلى|بسبب|يفسر ذلك|نعلل|يدل على|دلالة على|هذا يدل|car|parce que|s'explique)/i;
+-    if (causalRegex.test(textLower)) {
+-      detectedErrorsMap.add('premature_interpretation');
++  // Alignement BOUSSOLE v2 : le scoreur juge exactement ce que la
++  // boussole enseigne (4 étapes + مفتاح), verbes, pas seulement حَلِّلْ.
++
++  const causalRegex = /(لأن|راجع إلى|بسبب|يفسر ذلك|نعلل|يدل على|دلالة على|هذا يدل|car|parce que|s'explique)/i;
++
++  // 🔑 Mauvais مفتاح = confusion d'actes (verb_confusion → adresse étape 1).
++  // C'est la décision pédagogique la plus coûteuse : la rendre visible.
++  {
++    const sw = switchContext?.switchChoice;
++    const truth = switchContext?.switchTruth;
++    if (sw && truth && sw !== truth) {
++      detectedErrorsMap.add('verb_confusion');
+     }
+   }
+ 
++  // Interprétation prématurée : TOUS les verbes à مفتاح FERMÉ
++  // (حَلِّلْ · قَارِنْ · اسْتَنْتِجْ · لَخِّصْ …), pas seulement verb_analyse_v1.
++  if (SWITCH_CLOSED_VERBS.includes(verbCard.id) && causalRegex.test(textLower)) {
++    detectedErrorsMap.add('premature_interpretation');
++  }
++
++  // تأكيد دون سند : vérification GLOBALE pour les 9 verbes adossés
++  // à un document — jusqu'ici seuls 4 verbes étaient couverts par les
++  // critères c1 ; علّل/انقُد/استنتج/صادق… passaient sans être vérifiés.
++  const REFERENT_VERBS: string[] = [
++    'verb_analyse_v1', 'verb_explain_v1', 'verb_explain_multi_v1', 'verb_compare_v1',
++    'verb_validate_v1', 'verb_deduce_v1', 'verb_justify_v1', 'verb_critique_v1',
++    'verb_hypothesis_v1',
++  ];
++  const REFERENCE_REQUIRED_RE = /(الوثيقة|منحنى|جدول|الملاحظة|الشاهد|نلاحظ|الشكل|الرسم|document|graphe)/i;
++  if (REFERENT_VERBS.includes(verbCard.id) && !REFERENCE_REQUIRED_RE.test(textLower)) {
++    detectedErrorsMap.add('missing_reference');
++  }
++
+   // Vérification de l'absence d'unités si des nombres sont présents (missing_unit)
+   const numbersPresent = /\d+/.test(textLower);
+   const unitsPresent = /(غ\/ل|g\/l|%|دقيقة|min|ثانية|s|وحدة اعتبارية|ua|°|درجة|ميكرومول)/i.test(textLower);
+@@ -101,7 +129,7 @@ export function evaluateStudentProduction(
+         ? 'ممتاز: التحليل وصفي موضوعي وخالٍ من التعليل المسبق.' 
+         : `خطأ منهجي: « ${criterion.wording.compass} » - تم رصد كلمات تعليل وسببية داخل التحليل!`;
+     }
+-    else if (criterion.id === 'an_c4' || criterion.id === 'ex_c4' || criterion.id === 'comp_c4' || criterion.id === 'ded_c1' || criterion.id === 'sch_c3' || criterion.id === 'val_c3') {
++    else if (criterion.id === 'an_c4' || criterion.id === 'ex_c4' || criterion.id === 'comp_c4' || criterion.id === 'ded_c1' || criterion.id === 'sch_c3' || criterion.id === 'val_c3' || criterion.id === 'exp_m_c3') {
+       // Conclusion / Phrase-bilan
+       passed = !detectedErrorsMap.has('missing_conclusion') && textLower.length > 50;
+       feedback = passed 
+@@ -116,9 +144,9 @@ export function evaluateStudentProduction(
+         : `تنبيه: « ${criterion.wording.compass} » - التفسير يحتاج إلى تفصيل الآلية الجزيئية/الخلوية.`;
+     }
+     else if (criterion.id === 'ex_c3') {
+-      // Connecteur causal obligatoire
+-      const causalRegex = /(يعود ذلك إلى|يرجع هذا لـ|بسبب|مما يؤدي|يفسر ذلك بـ)/i;
+-      passed = causalRegex.test(textLower);
++      // Connecteur causal obligatoire — gabarit de la boussole : « وهذا لأنّ … »
++      const causalConnectorRe = /(يعود ذلك إلى|يرجع هذا لـ|بسبب|مما يؤدي|يفسر ذلك بـ|وهذا لأن|هذا لأن|لأن)/i;
++      passed = causalConnectorRe.test(textLower);
+       feedback = passed 
+         ? 'تم استخدام الرابط السببي الإلزامي بكفاءة.' 
+         : `تنبيه: « ${criterion.wording.compass} » - أين هو الرابط السببي "يعود ذلك إلى" في جملتك؟`;

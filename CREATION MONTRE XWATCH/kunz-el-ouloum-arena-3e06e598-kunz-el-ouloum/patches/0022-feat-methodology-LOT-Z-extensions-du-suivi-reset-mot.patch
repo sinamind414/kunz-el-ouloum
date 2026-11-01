@@ -1,0 +1,850 @@
+From c1a4c7dfb5a864b8135d842b0b57c0d2f5005fe6 Mon Sep 17 00:00:00 2001
+From: sinamind414 <sinamind414@users.noreply.github.com>
+Date: Fri, 4 Sep 2026 08:43:15 +0000
+Subject: [PATCH 22/22] =?UTF-8?q?feat(methodology):=20LOT=20Z=20=E2=80=94?=
+ =?UTF-8?q?=20extensions=20du=20suivi=20:=20reset=20mot=20de=20passe=20+?=
+ =?UTF-8?q?=20quiz=20+=20export=20CSV?=
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Suite de la demande « suivi élèves » (lot Y) — 3 extensions codées et prouvées.
+
+1) RÉCUPÉRATION DE MOT DE PASSE (sans SMTP — scolaire, enseignant = autorité) :
+- POST /api/teacher/reset-password {studentId} → code 8 hex à usage unique
+  (haché en base, TTL 30 min, un seul actif par élève)
+- POST /api/auth/reset-password {email, code, newPassword} → vérifie le code,
+  change le mdp (scrypt), INVALIDE toutes les sessions (sécurité), usage unique
+- UI : « نسيت كلمة السر؟ » dans la modale de connexion (code + 2 mdp) ;
+  dans la boîte élève du tableau de bord : « إعادة تعيين كلمة السر » + affichage
+  du code à transmettre (colle au modèle scolaire : le prof délivre le code)
+
+2) SUIVI DES QUIZ/MISSIONS (journal d'activité) :
+- src/utils/activityLog.ts : événements {kind: quiz|mission|drill, title, score,
+  total, percent, unitId, domain} — local-first + file de synchro
+- App.tsx : handleQuizComplete → logActivityEvent (chaque quiz fini est suivi)
+- POST /api/student/sync accepte {entries, events} (idempotent par id)
+- tableau de bord enseignant : chips « اختبارات: n · متوسط: x% · مهام: m » +
+  agrégats réels (jamais de démo)
+
+3) EXPORT CSV (Excel prof) :
+- GET /api/teacher/export.csv (tous les élèves : synthèse par élève)
+- GET /api/teacher/export.csv?studentId= (détail : productions + événements)
+- BOM UTF-8 (Excel ouvre l'arabe) · séparateur « ; » (locale FR/DZ) ·
+  échappement «  » des guillemets · rôle teacher vérifié (403)
+- UI : bouton « تصدير Excel (CSV) » global + « تصدير ملف هذا التلميذ »
+
+TESTS (85 → 92, section K) : reset (code TTL/usage unique/sessions invalidées/
+ancien refusé) · événements idempotents + agrégats quiz · format CSV
+(BOM + « ; » + échappement).
+
+PREUVES E2E HTTP réel : reset mauvais code 400 / bon code 200 / ancien mdp 401 /
+nouveau 200 · code 8 hex généré par l'enseignant · sync 4 événements → totalEvents 3
+(idempotence) · dashboard : quiz 2 (moy 90 %), missions 1 · CSV global + élève 200
+avec BOM · élève→export 403. tsc 0 · tests 92/92 · build ✓ · UI servie.
+---
+ server/api.ts                        | 70 ++++++++++++++++++---
+ server/store.ts                      | 93 ++++++++++++++++++++++++++--
+ src/App.tsx                          | 11 ++++
+ src/components/StudentAccountBar.tsx | 70 ++++++++++++++++++---
+ src/components/TeacherDashboard.tsx  | 46 +++++++++++++-
+ src/utils/activityLog.ts             | 63 +++++++++++++++++++
+ src/utils/studentAccount.ts          | 89 ++++++++++++++++++++++++--
+ tests/boussole.test.ts               | 45 +++++++++++++-
+ 8 files changed, 460 insertions(+), 27 deletions(-)
+ create mode 100644 src/utils/activityLog.ts
+
+diff --git a/server/api.ts b/server/api.ts
+index e4d4e9f..a87f167 100644
+--- a/server/api.ts
++++ b/server/api.ts
+@@ -102,20 +102,43 @@ export function registerApi(app: Express, store: JsonStore): void {
+     res.json({ user: safeUser((req as Request & { user: StoredUser }).user) });
+   });
+ 
++  // ── RÉINITIALISATION DU MOT DE PASSE ──────────────────────
++  /** Enseignant → génère un code à usage unique (à transmettre à l'élève). */
++  app.post('/api/teacher/reset-password', auth, requireTeacher, (req: Request, res: Response) => {
++    const studentId = String((req.body || {}).studentId || '');
++    const target = store.userById(studentId);
++    if (!target || target.role !== 'student') return res.status(404).json({ error: 'user_not_found' });
++    const r = store.createPasswordReset(target.id);
++    res.json({ code: r.code, expiresAt: r.expiresAt });
++  });
++
++  /** Élève → applique le code reçu + nouveau mot de passe. */
++  app.post('/api/auth/reset-password', rateLimiter(), (req: Request, res: Response) => {
++    const { email, code, newPassword } = (req.body || {}) as { email?: string; code?: string; newPassword?: string };
++    if (!email || !code || !newPassword) return res.status(400).json({ error: 'bad_request' });
++    if (passwordIssue(newPassword)) return res.status(400).json({ error: 'weak_password' });
++    const ok = store.applyPasswordReset(normalizeEmail(email), String(code).toUpperCase(), newPassword);
++    if (!ok) return res.status(400).json({ error: 'invalid_code' });
++    res.json({ ok: true });
++  });
++
+   // ── SUIVI ÉLÈVE ───────────────────────────────────────────
+   app.post('/api/student/sync', auth, (req: Request, res: Response) => {
+     const user = (req as Request & { user: StoredUser }).user;
+-    const entries = (req.body || {}).entries as Record<string, unknown>[] | undefined;
+-    if (!Array.isArray(entries) || entries.length === 0) return res.status(400).json({ error: 'bad_request' });
+-    const batch = entries.slice(0, MAX_SYNC_BATCH);
++    const body = (req.body || {}) as { entries?: Record<string, unknown>[]; events?: Record<string, unknown>[] };
++    const entries = body.entries;
++    const events = body.events;
++    if ((!Array.isArray(entries) || entries.length === 0) && (!Array.isArray(events) || events.length === 0)) {
++      return res.status(400).json({ error: 'bad_request' });
++    }
+     let synced = 0;
+-    for (const e of batch) {
+-      if (e && typeof e === 'object' && e.id) {
+-        store.addProduction(user.id, e);
+-        synced++;
+-      }
++    for (const e of (entries || []).slice(0, MAX_SYNC_BATCH)) {
++      if (e && typeof e === 'object' && e.id) { store.addProduction(user.id, e); synced++; }
++    }
++    for (const e of (events || []).slice(0, MAX_SYNC_BATCH)) {
++      if (e && typeof e === 'object' && e.id) { store.addEvent(user.id, e); synced++; }
+     }
+-    res.json({ synced, total: store.getProductions(user.id).length });
++    res.json({ synced, total: store.getProductions(user.id).length, totalEvents: store.getEvents(user.id).length });
+   });
+ 
+   app.get('/api/student/entries', auth, (req: Request, res: Response) => {
+@@ -133,4 +156,33 @@ export function registerApi(app: Express, store: JsonStore): void {
+     if (!studentId) return res.status(400).json({ error: 'bad_request' });
+     res.json({ entries: store.getProductions(studentId) });
+   });
++
++  // ── EXPORT CSV (Excel) ────────────────────────────────────
++  const csvCell = (v: unknown): string => {
++    const s = String(v ?? '').replace(/[\r\n]+/g, ' ');
++    return `"${s.replace(/"/g, '""')}"`;
++  };
++
++  app.get('/api/teacher/export.csv', auth, requireTeacher, (req: Request, res: Response) => {
++    const studentId = String(req.query.studentId || '');
++    const rows: string[] = [];
++    const header = 'date;verbAr;phase;icm;errors;durationSec;text';
++    if (studentId) {
++      const data = store.studentData(studentId);
++      rows.push(header);
++      for (const p of [...data.productions, ...data.events]) {
++        const e = p as { dateISO?: string; verbAr?: string; stage?: number; kind?: string; icm?: number; percent?: number; errorTags?: string[]; durationSec?: number; text?: string };
++        rows.push([e.dateISO, e.verbAr || (e.kind === 'quiz' ? 'اختبار' : 'نشاط'), String(e.stage ?? e.kind ?? ''), String(e.icm ?? e.percent ?? ''), (e.errorTags || []).join('|'), String(e.durationSec ?? ''), csvCell(e.text || '')].join(';'));
++      }
++    } else {
++      rows.push('email;name;productions;avgIcm;quizCount;avgQuiz;lastDate;topErrors');
++      for (const s of store.teacherStudents()) {
++        rows.push([s.email, csvCell(s.name), s.count, s.avgIcm, s.quizCount, s.avgQuiz, s.lastDate, s.topErrors.map(t => `${t.tag}(${t.count})`).join('|')].join(';'));
++      }
++    }
++    const csv = '\uFEFF' + rows.join('\r\n'); // BOM → Excel ouvre l'arabe correctement
++    res.setHeader('Content-Type', 'text/csv; charset=utf-8');
++    res.setHeader('Content-Disposition', `attachment; filename="boussole_suivi${studentId ? '_' + studentId.slice(0, 6) : ''}.csv"`);
++    res.send(csv);
++  });
+ }
+diff --git a/server/store.ts b/server/store.ts
+index 49d6d6c..243454f 100644
+--- a/server/store.ts
++++ b/server/store.ts
+@@ -4,6 +4,7 @@
+ // suffit (sauvegardez-le régulièrement). Passage à SQLite/Postgres
+ // possible plus tard : l'API expose déjà un contrat stable.
+ // ============================================================
++import crypto from 'node:crypto';
+ import fs from 'node:fs';
+ import path from 'node:path';
+ import { hashPassword, newId, normalizeEmail, verifyPassword } from './authCore';
+@@ -28,10 +29,13 @@ interface DbShape {
+   users: StoredUser[];
+   sessions: StoredSession[];
+   productions: { studentId: string; entry: Record<string, unknown>; syncedAt: string }[];
++  events: { studentId: string; entry: Record<string, unknown>; syncedAt: string }[];
++  resetRequests: { userId: string; codeHash: string; expiresAt: string; createdAt: string }[];
+ }
+ 
+-const EMPTY_DB: DbShape = { users: [], sessions: [], productions: [] };
++const EMPTY_DB: DbShape = { users: [], sessions: [], productions: [], events: [], resetRequests: [] };
+ const SESSION_TTL_MS = 7 * 24 * 3600 * 1000; // 7 jours
++const RESET_TTL_MS = 30 * 60 * 1000;         // 30 min
+ 
+ export class JsonStore {
+   private data: DbShape;
+@@ -50,12 +54,14 @@ export class JsonStore {
+           users: Array.isArray(parsed.users) ? parsed.users : [],
+           sessions: Array.isArray(parsed.sessions) ? parsed.sessions : [],
+           productions: Array.isArray(parsed.productions) ? parsed.productions : [],
++          events: Array.isArray(parsed.events) ? parsed.events : [],
++          resetRequests: Array.isArray(parsed.resetRequests) ? parsed.resetRequests : [],
+         };
+       }
+     } catch (e) {
+       console.warn(`[store] Lecture impossible de ${this.file} — départ à vide :`, e);
+     }
+-    return { ...EMPTY_DB, users: [], sessions: [], productions: [] };
++    return { ...EMPTY_DB, users: [], sessions: [], productions: [], events: [], resetRequests: [] };
+   }
+ 
+   private save(): void {
+@@ -72,6 +78,10 @@ export class JsonStore {
+     return this.data.users.find(u => u.email === e);
+   }
+ 
++  userById(id: string): StoredUser | undefined {
++    return this.data.users.find(u => u.id === id);
++  }
++
+   createUser(email: string, name: string, password: string, role: 'student' | 'teacher'): StoredUser {
+     const { hash, salt } = hashPassword(password);
+     const user: StoredUser = {
+@@ -168,8 +178,75 @@ export class JsonStore {
+       .sort((a, b) => String(a.dateISO ?? '').localeCompare(String(b.dateISO ?? '')));
+   }
+ 
++  // ── Événements d'activité (quiz, missions, drill) ────────
++  /** Upsert par (studentId, entry.id) → idempotent. */
++  addEvent(studentId: string, entry: Record<string, unknown>): void {
++    const id = String(entry.id ?? '');
++    if (!id) return;
++    const idx = this.data.events.findIndex(p => p.studentId === studentId && String(p.entry.id) === id);
++    const record = { studentId, entry, syncedAt: new Date().toISOString() };
++    if (idx >= 0) this.data.events[idx] = record;
++    else this.data.events.push(record);
++    this.save();
++  }
++
++  getEvents(studentId: string): Record<string, unknown>[] {
++    return this.data.events
++      .filter(p => p.studentId === studentId)
++      .map(p => p.entry)
++      .sort((a, b) => String(a.dateISO ?? '').localeCompare(String(b.dateISO ?? '')));
++  }
++
++  getEventsFor(studentId: string, kind: string): Record<string, unknown>[] {
++    return this.getEvents(studentId).filter(e => e.kind === kind);
++  }
++
++  // ── Réinitialisation de mot de passe (code à usage unique) ──
++  /** Crée un code (renvoyé EN CLAIR une seule fois ; stocké haché, TTL 30 min). */
++  createPasswordReset(userId: string): { code: string; expiresAt: string } {
++    // Un seul code actif par utilisateur à la fois.
++    this.data.resetRequests = this.data.resetRequests.filter(r => r.userId !== userId);
++    const code = crypto.randomBytes(4).toString('hex').toUpperCase(); // 8 caractères
++    const req = {
++      userId,
++      codeHash: crypto.createHash('sha256').update(code).digest('hex'),
++      expiresAt: new Date(Date.now() + RESET_TTL_MS).toISOString(),
++      createdAt: new Date().toISOString(),
++    };
++    this.data.resetRequests.push(req);
++    this.save();
++    return { code, expiresAt: req.expiresAt };
++  }
++
++  /** Vérifie le code et change le mot de passe. Usage unique + TTL 30 min. */
++  applyPasswordReset(email: string, code: string, newPassword: string): boolean {
++    const user = this.findUserByEmail(email);
++    if (!user) return false;
++    const codeHash = crypto.createHash('sha256').update(String(code).trim().toUpperCase()).digest('hex');
++    const idx = this.data.resetRequests.findIndex(r => r.userId === user.id && r.codeHash === codeHash);
++    if (idx < 0) return false;
++    if (new Date(this.data.resetRequests[idx].expiresAt).getTime() < Date.now()) {
++      this.data.resetRequests.splice(idx, 1);
++      this.save();
++      return false;
++    }
++    this.data.resetRequests.splice(idx, 1); // usage unique
++    const { hash, salt } = hashPassword(newPassword);
++    user.passwordHash = hash;
++    user.salt = salt;
++    // Toutes les sessions deviennent invalides (sécurité).
++    this.data.sessions = this.data.sessions.filter(s => s.userId !== user.id);
++    this.save();
++    return true;
++  }
++
+   // ── Tableau de bord enseignant ────────────────────────────
+-  teacherStudents(): { id: string; email: string; name: string; count: number; avgIcm: number; lastDate: string; topErrors: { tag: string; count: number }[]; stages: Record<string, number> }[] {
++  /** Toutes les données d'un élève (production + quiz) pour l'export. */
++  studentData(studentId: string): { productions: Record<string, unknown>[]; events: Record<string, unknown>[] } {
++    return { productions: this.getProductions(studentId), events: this.getEvents(studentId) };
++  }
++
++  teacherStudents(): { id: string; email: string; name: string; count: number; avgIcm: number; lastDate: string; topErrors: { tag: string; count: number }[]; stages: Record<string, number>; quizCount: number; avgQuiz: number; missionsCount: number }[] {
+     const students = this.data.users.filter(u => u.role === 'student');
+     return students.map(s => {
+       const entries = this.data.productions.filter(p => p.studentId === s.id);
+@@ -182,8 +259,13 @@ export class JsonStore {
+         const st = String(e.stage ?? '');
+         if (st) stages[st] = (stages[st] ?? 0) + 1;
+       }
++      // Agrégats des événements d'activité (quiz / missions)
++      const events = this.data.events.filter(p => p.studentId === s.id).map(p => p.entry as { kind?: string; percent?: number; dateISO?: string });
++      const quizzes = events.filter(e => e.kind === 'quiz').map(e => Number(e.percent ?? NaN)).filter(n => !Number.isNaN(n));
++      const missionsCount = events.filter(e => e.kind === 'mission').length;
+       const topErrors = [...errorCounts.entries()].sort((a, b) => b[1] - a[1]).slice(0, 3).map(([tag, count]) => ({ tag, count }));
+-      const lastDate = entries.length ? String((entries[entries.length - 1].entry as { dateISO?: string }).dateISO ?? '') : '';
++      const allDates = [...entries.map(p => String((p.entry as { dateISO?: string }).dateISO ?? '')), ...events.map(e => String(e.dateISO ?? ''))].filter(Boolean);
++      const lastDate = allDates.sort().pop() ?? '';
+       return {
+         id: s.id,
+         email: s.email,
+@@ -193,6 +275,9 @@ export class JsonStore {
+         lastDate,
+         topErrors,
+         stages,
++        quizCount: quizzes.length,
++        avgQuiz: quizzes.length ? Math.round(quizzes.reduce((a, b) => a + b, 0) / quizzes.length) : 0,
++        missionsCount,
+       };
+     }).sort((a, b) => b.lastDate.localeCompare(a.lastDate));
+   }
+diff --git a/src/App.tsx b/src/App.tsx
+index 867ccc9..b78d34b 100644
+--- a/src/App.tsx
++++ b/src/App.tsx
+@@ -31,6 +31,7 @@ import { INITIAL_UNITS, SVT_QUIZ_QUESTIONS, SVT_FLASHCARDS } from './data';
+ import SplashView from './components/SplashView';
+ import DashboardView from './components/DashboardView';
+ import QuizView from './components/QuizView';
++import { logActivityEvent } from './utils/activityLog';
+ import RevisionView from './components/RevisionView';
+ import StatsView from './components/StatsView';
+ import AITutorView from './components/AITutorView';
+@@ -331,6 +332,16 @@ export default function App() {
+     // Calculate percent score
+     const percent = Math.round((score / total) * 100);
+ 
++    // 📤 Suivi : archiver le résultat du quiz (local-first → synchro si compte)
++    logActivityEvent({
++      kind: 'quiz',
++      title: activeUnit.title || 'وحدة',
++      score, total, percent,
++      unitId: activeQuizUnitId,
++      domain: activeUnit.domain,
++      durationSec: undefined,
++    });
++
+     // Reward XP + Advance progress
+     const xpRewarded = score * 20; // 20 XP per correct answer
+     
+diff --git a/src/components/StudentAccountBar.tsx b/src/components/StudentAccountBar.tsx
+index 7806185..31d27f6 100644
+--- a/src/components/StudentAccountBar.tsx
++++ b/src/components/StudentAccountBar.tsx
+@@ -9,7 +9,7 @@ import { UserRound, LogOut, RefreshCw, CloudUpload, Download, Eye, EyeOff, Chevr
+ import {
+   AccountInfo, SyncStatus, getAccount, saveAccount, clearAccount,
+   apiRegister, apiLogin, apiLogout, flushSyncQueue, pullServerEntries,
+-  getServerUrl, setServerUrl, syncQueueLength,
++  getServerUrl, setServerUrl, syncQueueLength, apiResetPassword,
+ } from '../utils/studentAccount';
+ import TeacherDashboard from './TeacherDashboard';
+ 
+@@ -19,6 +19,7 @@ const ERROR_AR: Record<string, string> = {
+   invalid_credentials: 'البريد الإلكتروني أو كلمة السر غير صحيحة.',
+   weak_password: 'كلمة السر قصيرة جدًا (8 أحرف على الأقل).',
+   invalid_email: 'البريد الإلكتروني غير صالح.',
++  invalid_code: 'الرمز غير صحيح أو منتهي الصلاحية — اطلب رمزًا جديدًا من أستاذك.',
+   too_many_attempts: 'محاولات كثيرة — انتظر بضع دقائق.',
+   bad_request: 'طلب غير صالح.',
+ };
+@@ -34,11 +35,14 @@ const SYNC_AR: Record<SyncStatus, { label: string; cls: string }> = {
+ 
+ export default function StudentAccountBar() {
+   const [account, setAccount] = useState<AccountInfo | null>(() => getAccount());
+-  const [modal, setModal] = useState<'login' | 'register' | null>(null);
++  const [modal, setModal] = useState<'login' | 'register' | 'reset' | null>(null);
+   const [email, setEmail] = useState('');
+   const [name, setName] = useState('');
+   const [password, setPassword] = useState('');
+   const [confirm, setConfirm] = useState('');
++  const [resetCode, setResetCode] = useState('');
++  const [resetPwd, setResetPwd] = useState('');
++  const [resetPwd2, setResetPwd2] = useState('');
+   const [showPwd, setShowPwd] = useState(false);
+   const [accepted, setAccepted] = useState(false);
+   const [error, setError] = useState('');
+@@ -62,8 +66,23 @@ export default function StudentAccountBar() {
+ 
+   const submit = async () => {
+     setError('');
+-    if (!email.trim() || !password) { setError('أكمل الحقول الإلزامية.'); return; }
+     if (account) return;
++    if (modal === 'reset') {
++      if (!email.trim() || !resetCode.trim() || !resetPwd) { setError('أكمل الحقول الإلزامية.'); return; }
++      if (resetPwd !== resetPwd2) { setError('كلمتا السر غير متطابقتين.'); return; }
++      setBusy(true);
++      const r = await apiResetPassword(email.trim(), resetCode.trim(), resetPwd);
++      setBusy(false);
++      if (r.ok) {
++        setModal('login');
++        setPassword(''); setResetCode(''); setResetPwd(''); setResetPwd2('');
++        setError('تم تغيير كلمة السر — سجّل الدخول الآن.');
++      } else {
++        setError(ERROR_AR[r.error || 'bad_request'] || 'فشل التغيير.');
++      }
++      return;
++    }
++    if (!email.trim() || !password) { setError('أكمل الحقول الإلزامية.'); return; }
+     setBusy(true);
+     if (modal === 'register') {
+       if (password !== confirm) { setError('كلمتا السر غير متطابقتين.'); setBusy(false); return; }
+@@ -103,7 +122,7 @@ export default function StudentAccountBar() {
+             إنشاء حساب
+           </button>
+         </div>
+-        {modal && createPortal(<AuthModal modal={modal} email={email} setEmail={setEmail} name={name} setName={setName} password={password} setPassword={setPassword} confirm={confirm} setConfirm={setConfirm} showPwd={showPwd} setShowPwd={setShowPwd} accepted={accepted} setAccepted={setAccepted} serverUrl={serverUrl} setServerUrl={setServerUrlState} showAdvanced={showAdvanced} setShowAdvanced={setShowAdvanced} error={error} busy={busy} submit={submit} onClose={() => setModal(null)} />, document.body)}
++        {modal && createPortal(<AuthModal modal={modal} email={email} setEmail={setEmail} name={name} setName={setName} password={password} setPassword={setPassword} confirm={confirm} setConfirm={setConfirm} resetCode={resetCode} setResetCode={setResetCode} resetPwd={resetPwd} setResetPwd={setResetPwd} resetPwd2={resetPwd2} setResetPwd2={setResetPwd2} showPwd={showPwd} setShowPwd={setShowPwd} accepted={accepted} setAccepted={setAccepted} serverUrl={serverUrl} setServerUrl={setServerUrlState} showAdvanced={showAdvanced} setShowAdvanced={setShowAdvanced} error={error} busy={busy} submit={submit} onClose={() => setModal(null)} onSwitchToReset={() => { setModal('reset'); setError(''); }} />, document.body)}
+       </div>
+     );
+   }
+@@ -152,26 +171,31 @@ export default function StudentAccountBar() {
+ 
+ // ── Modale d'authentification (portalée) ────────────────────
+ function AuthModal(props: {
+-  modal: 'login' | 'register';
++  modal: 'login' | 'register' | 'reset';
+   email: string; setEmail: (v: string) => void;
+   name: string; setName: (v: string) => void;
+   password: string; setPassword: (v: string) => void;
+   confirm: string; setConfirm: (v: string) => void;
++  resetCode: string; setResetCode: (v: string) => void;
++  resetPwd: string; setResetPwd: (v: string) => void;
++  resetPwd2: string; setResetPwd2: (v: string) => void;
+   showPwd: boolean; setShowPwd: (v: boolean) => void;
+   accepted: boolean; setAccepted: (v: boolean) => void;
+   serverUrl: string; setServerUrl: (v: string) => void;
+   showAdvanced: boolean; setShowAdvanced: (v: boolean) => void;
+   error: string; busy: boolean;
+   submit: () => void; onClose: () => void;
++  onSwitchToReset: () => void;
+ }) {
+   const isRegister = props.modal === 'register';
++  const isReset = props.modal === 'reset';
+   return (
+     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm" dir="rtl" onClick={props.onClose}>
+       <div className="w-full max-w-md bg-white dark:bg-[#121814] rounded-3xl shadow-2xl border border-gray-200 dark:border-gray-700 p-6 space-y-4 max-h-[92vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
+         <div className="flex items-center justify-between">
+           <h3 className="font-black text-lg text-gray-900 dark:text-white flex items-center gap-2">
+             <ShieldCheck className="w-5 h-5 text-emerald-600" />
+-            {isRegister ? 'إنشاء حساب تلميذ' : 'تسجيل الدخول'}
++            {isReset ? 'استعادة كلمة السر' : isRegister ? 'إنشاء حساب تلميذ' : 'تسجيل الدخول'}
+           </h3>
+           <button onClick={props.onClose} className="p-2 text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-xl"><X className="w-4 h-4" /></button>
+         </div>
+@@ -190,6 +214,31 @@ function AuthModal(props: {
+             className="w-full bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl px-3 py-2.5 text-sm font-bold text-gray-900 dark:text-white text-left outline-none focus:ring-2 focus:ring-emerald-500" />
+         </div>
+ 
++        {isReset && (
++          <div className="space-y-4">
++            <p className="text-[11px] font-bold text-gray-500 dark:text-gray-400 leading-relaxed">
++              اطلب من أستاذك رمز إعادة التعيين (من لوحة المتابعة)، ثم أدخله مع بريدك وكلمة سر جديدة.
++            </p>
++            <div>
++              <label className="text-xs font-black text-gray-600 dark:text-gray-300 block mb-1">الرمز المستلم من الأستاذ</label>
++              <input value={props.resetCode} onChange={e => props.setResetCode(e.target.value.toUpperCase())} dir="ltr" placeholder="A1B2C3D4" maxLength={8}
++                className="w-full bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl px-3 py-2.5 text-sm font-black text-gray-900 dark:text-white text-left tracking-widest outline-none focus:ring-2 focus:ring-emerald-500 uppercase" />
++            </div>
++            <div>
++              <label className="text-xs font-black text-gray-600 dark:text-gray-300 block mb-1">كلمة سر جديدة</label>
++              <input value={props.resetPwd} onChange={e => props.setResetPwd(e.target.value)} type="password" dir="ltr" placeholder="••••••••"
++                className="w-full bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl px-3 py-2.5 text-sm font-bold text-gray-900 dark:text-white text-left outline-none focus:ring-2 focus:ring-emerald-500" />
++              <p className="text-[10px] text-gray-400 mt-1">8 أحرف على الأقل.</p>
++            </div>
++            <div>
++              <label className="text-xs font-black text-gray-600 dark:text-gray-300 block mb-1">تأكيد كلمة السر الجديدة</label>
++              <input value={props.resetPwd2} onChange={e => props.setResetPwd2(e.target.value)} type="password" dir="ltr" placeholder="••••••••"
++                className="w-full bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl px-3 py-2.5 text-sm font-bold text-gray-900 dark:text-white text-left outline-none focus:ring-2 focus:ring-emerald-500" />
++            </div>
++          </div>
++        )}
++
++        {!isReset && (
+         <div>
+           <label className="text-xs font-black text-gray-600 dark:text-gray-300 block mb-1">كلمة السر</label>
+           <div className="relative">
+@@ -201,6 +250,7 @@ function AuthModal(props: {
+           </div>
+           {isRegister && <p className="text-[10px] text-gray-400 mt-1">8 أحرف على الأقل — تُحفظ مشفّرة على الخادم.</p>}
+         </div>
++        )}
+ 
+         {isRegister && (
+           <div>
+@@ -210,6 +260,12 @@ function AuthModal(props: {
+           </div>
+         )}
+ 
++        {!isReset && !isRegister && (
++          <button onClick={props.onSwitchToReset} className="text-[11px] font-black text-emerald-600 hover:text-emerald-700">
++            نسيت كلمة السر؟
++          </button>
++        )}
++
+         {isRegister && (
+           <label className="flex items-start gap-2.5 cursor-pointer bg-slate-50 dark:bg-slate-900/40 border border-slate-200 dark:border-slate-800 rounded-xl p-3">
+             <input type="checkbox" checked={props.accepted} onChange={e => props.setAccepted(e.target.checked)} className="mt-0.5" />
+@@ -237,7 +293,7 @@ function AuthModal(props: {
+ 
+         <button onClick={props.submit} disabled={props.busy}
+           className="w-full py-3 bg-[#006d37] hover:bg-[#00562b] disabled:opacity-50 text-white rounded-2xl font-black text-sm shadow-md flex items-center justify-center gap-2">
+-          {props.busy ? '…جاري الإرسال' : isRegister ? 'إنشاء الحساب والدخول' : 'دخول'}
++          {props.busy ? '…جاري الإرسال' : isReset ? 'تغيير كلمة السر' : isRegister ? 'إنشاء الحساب والدخول' : 'دخول'}
+         </button>
+       </div>
+     </div>
+diff --git a/src/components/TeacherDashboard.tsx b/src/components/TeacherDashboard.tsx
+index 5147a0c..358ec14 100644
+--- a/src/components/TeacherDashboard.tsx
++++ b/src/components/TeacherDashboard.tsx
+@@ -4,8 +4,8 @@
+ // du serveur (jamais de données de démonstration).
+ // ============================================================
+ import React, { useEffect, useState } from 'react';
+-import { X, RefreshCw, UserRound, FileText, ChevronDown } from 'lucide-react';
+-import { fetchTeacherDashboard, fetchTeacherEntries, TeacherStudentRow } from '../utils/studentAccount';
++import { X, RefreshCw, UserRound, FileText, ChevronDown, Download, KeyRound, ClipboardCheck } from 'lucide-react';
++import { fetchTeacherDashboard, fetchTeacherEntries, TeacherStudentRow, apiTeacherResetPassword, apiExportCsv } from '../utils/studentAccount';
+ import type { ProductionLogEntry } from '../utils/methodologyLog';
+ import { ERROR_TAG_LABELS_AR } from '../utils/methodologyLog';
+ 
+@@ -20,6 +20,19 @@ export default function TeacherDashboard({ onClose }: { onClose: () => void }) {
+   const [error, setError] = useState('');
+   const [expanded, setExpanded] = useState<string | null>(null);
+   const [detail, setDetail] = useState<{ entries: ProductionLogEntry[]; loading: boolean }>({ entries: [], loading: false });
++  const [resetCodes, setResetCodes] = useState<Record<string, string>>({});
++  const [notice, setNotice] = useState('');
++
++  const doReset = async (id: string, name: string) => {
++    setNotice('');
++    const r = await apiTeacherResetPassword(id);
++    if (r.ok && r.code) {
++      setResetCodes(prev => ({ ...prev, [id]: r.code! }));
++      setNotice(`تم إنشاء رمز إعادة التعيين لـ « ${name} » — سلّمه للتلميذ (صالح 30 دقيقة).`);
++    } else {
++      setError(r.error === 'offline' ? 'تعذّر الوصول إلى الخادم.' : 'فشل إنشاء الرمز.');
++    }
++  };
+ 
+   const load = async () => {
+     setError('');
+@@ -54,6 +67,9 @@ export default function TeacherDashboard({ onClose }: { onClose: () => void }) {
+             لوحة متابعة التلاميذ
+           </h3>
+           <div className="flex items-center gap-2">
++            <button onClick={async () => { const r = await apiExportCsv(); if (!r.ok) setError('فشل تصدير الملف.'); }} className="px-3 py-1.5 text-[11px] font-black text-gray-700 dark:text-gray-200 bg-gray-100 dark:bg-gray-800 rounded-xl hover:bg-gray-200 dark:hover:bg-gray-700 flex items-center gap-1.5 transition-colors">
++              <Download className="w-3.5 h-3.5" /> تصدير Excel (CSV)
++            </button>
+             <button onClick={load} className="p-2 text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-xl"><RefreshCw className="w-4 h-4" /></button>
+             <button onClick={onClose} className="p-2 text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-xl"><X className="w-4 h-4" /></button>
+           </div>
+@@ -61,6 +77,7 @@ export default function TeacherDashboard({ onClose }: { onClose: () => void }) {
+ 
+         <div className="p-4 md:p-5 overflow-y-auto space-y-3">
+           {error && <p className="text-xs font-black text-rose-600 bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-900/50 rounded-xl px-3 py-2">{error}</p>}
++          {notice && <p className="text-xs font-black text-emerald-700 bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-900/50 rounded-xl px-3 py-2">{notice}</p>}
+           {rows === null && !error && <p className="text-sm text-gray-400 font-bold animate-pulse">…جاري تحميل البيانات</p>}
+           {rows && rows.length === 0 && (
+             <p className="text-center py-10 text-sm font-bold text-gray-400">
+@@ -81,6 +98,12 @@ export default function TeacherDashboard({ onClose }: { onClose: () => void }) {
+                 <div className="flex items-center gap-2 flex-wrap">
+                   <span className="text-[10px] font-black bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 px-2 py-1 rounded-full">إنتاجات: {r.count}</span>
+                   <span className="text-[10px] font-black bg-emerald-100 dark:bg-emerald-900/50 text-emerald-800 dark:text-emerald-300 px-2 py-1 rounded-full">متوسط ICM: {r.avgIcm}%</span>
++                  {r.quizCount > 0 && (
++                    <span className="text-[10px] font-black bg-sky-100 dark:bg-sky-950/50 text-sky-800 dark:text-sky-300 px-2 py-1 rounded-full flex items-center gap-1">
++                      <ClipboardCheck className="w-3 h-3" />
++                      اختبارات: {r.quizCount} · متوسط: {r.avgQuiz}%{r.missionsCount > 0 ? ` · مهام: ${r.missionsCount}` : ''}
++                    </span>
++                  )}
+                   {r.topErrors.length > 0 && (
+                     <span className="text-[10px] font-black bg-rose-100 dark:bg-rose-950/50 text-rose-700 dark:text-rose-300 px-2 py-1 rounded-full flex items-center gap-1">
+                       <FileText className="w-3 h-3" />
+@@ -91,8 +114,27 @@ export default function TeacherDashboard({ onClose }: { onClose: () => void }) {
+                 </div>
+               </button>
+ 
++              {resetCodes[r.id] && (
++                <div className="bg-amber-50 dark:bg-amber-950/40 border-t border-amber-200 dark:border-amber-900/50 px-3.5 py-2.5 flex flex-wrap items-center justify-between gap-2">
++                  <span className="text-xs font-bold text-amber-800 dark:text-amber-300">
++                    رمز إعادة التعيين (صالح 30 دقيقة) :
++                  </span>
++                  <span className="text-sm font-black tracking-widest bg-white dark:bg-gray-900 border border-amber-300 dark:border-amber-800 rounded-lg px-3 py-1 text-amber-900 dark:text-amber-200" dir="ltr">
++                    {resetCodes[r.id]}
++                  </span>
++                </div>
++              )}
++
+               {expanded === r.id && (
+                 <div className="border-t border-gray-200 dark:border-gray-800 p-3 space-y-2">
++                  <div className="flex flex-wrap items-center gap-2 pb-2 border-b border-gray-100 dark:border-gray-800">
++                    <button onClick={() => doReset(r.id, r.name)} className="px-3 py-1.5 text-[11px] font-black text-white bg-amber-600 hover:bg-amber-700 rounded-xl flex items-center gap-1.5 transition-colors">
++                      <KeyRound className="w-3.5 h-3.5" /> إعادة تعيين كلمة السر
++                    </button>
++                    <button onClick={async () => { const e = await apiExportCsv(r.id); if (!e.ok) setError('فشل تصدير الملف.'); }} className="px-3 py-1.5 text-[11px] font-black text-gray-700 dark:text-gray-200 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-xl flex items-center gap-1.5 transition-colors">
++                      <Download className="w-3.5 h-3.5" /> تصدير ملف هذا التلميذ
++                    </button>
++                  </div>
+                   {detail.loading && <p className="text-xs text-gray-400 font-bold">…جاري التحميل</p>}
+                   {!detail.loading && detail.entries.length === 0 && <p className="text-xs text-gray-400 font-bold">لا توجد إنتاجات مزامنة بعد.</p>}
+                   {detail.entries.map(e => (
+diff --git a/src/utils/activityLog.ts b/src/utils/activityLog.ts
+new file mode 100644
+index 0000000..9d22c2e
+--- /dev/null
++++ b/src/utils/activityLog.ts
+@@ -0,0 +1,63 @@
++// ============================================================
++// activityLog.ts — journal d'activité (quiz, missions, drill)
++// Même principe local-first que le carnet de production : stocké
++// dans le navigateur, mis en file, envoyé au serveur si un compte
++// est connecté. L'app fonctionne sans serveur.
++// ============================================================
++import { enqueueEventForSync } from './studentAccount';
++
++export interface ActivityEventEntry {
++  id: string;
++  kind: 'quiz' | 'mission' | 'drill';
++  dateISO: string;
++  title?: string;       // ex: titre de l'unité
++  score?: number;       // bonnes réponses
++  total?: number;       // questions
++  percent?: number;     // score/total × 100
++  durationSec?: number;
++  domain?: number;
++  unitId?: string;
++}
++
++const STORAGE_KEY = 'kunz_activity_events_v1';
++const MAX_EVENTS = 200;
++
++function safeRead(): ActivityEventEntry[] {
++  try {
++    const raw = localStorage.getItem(STORAGE_KEY);
++    const arr = raw ? (JSON.parse(raw) as ActivityEventEntry[]) : [];
++    return Array.isArray(arr) ? arr : [];
++  } catch {
++    return [];
++  }
++}
++
++function write(all: ActivityEventEntry[]): void {
++  try {
++    localStorage.setItem(STORAGE_KEY, JSON.stringify(all));
++  } catch { /* ignore */ }
++}
++
++export function getActivityEvents(): ActivityEventEntry[] {
++  return safeRead().sort((a, b) => a.dateISO.localeCompare(b.dateISO));
++}
++
++/** Enregistre un événement et le met en file de synchro (si compte connecté). */
++export function logActivityEvent(entry: Omit<ActivityEventEntry, 'id' | 'dateISO'>): ActivityEventEntry | null {
++  try {
++    const full: ActivityEventEntry = {
++      ...entry,
++      id: `a_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`,
++      dateISO: new Date().toISOString(),
++    };
++    const all = safeRead();
++    all.push(full);
++    if (all.length > MAX_EVENTS) all.splice(0, all.length - MAX_EVENTS);
++    write(all);
++    enqueueEventForSync(full); // compte connecté → synchro serveur
++    return full;
++  } catch (e) {
++    console.warn('Impossible d’archiver l’activité:', e);
++    return null;
++  }
++}
+diff --git a/src/utils/studentAccount.ts b/src/utils/studentAccount.ts
+index ad216c4..408789d 100644
+--- a/src/utils/studentAccount.ts
++++ b/src/utils/studentAccount.ts
+@@ -17,6 +17,7 @@ export type SyncStatus = 'off' | 'synced' | 'pending' | 'offline' | 'unauthorize
+ 
+ const ACCOUNT_KEY = 'kunz_student_account_v1';
+ const QUEUE_KEY = 'kunz_sync_queue_v1';
++const EVENT_QUEUE_KEY = 'kunz_sync_event_queue_v1';
+ const SERVER_KEY = 'kunz_sync_server_v1';
+ 
+ export function getServerUrl(): string {
+@@ -133,20 +134,52 @@ export function enqueueProductionForSync(entry: ProductionLogEntry): void {
+   void flushSyncQueue();
+ }
+ 
++function readEventQueue(): Record<string, unknown>[] {
++  try {
++    const raw = localStorage.getItem(EVENT_QUEUE_KEY);
++    const arr = raw ? (JSON.parse(raw) as Record<string, unknown>[]) : [];
++    return Array.isArray(arr) ? arr : [];
++  } catch {
++    return [];
++  }
++}
++
++function writeEventQueue(q: Record<string, unknown>[]): void {
++  try {
++    localStorage.setItem(EVENT_QUEUE_KEY, JSON.stringify(q));
++  } catch { /* ignore */ }
++}
++
++/** Met en file un événement d'activité (quiz/mission/drill). */
++export function enqueueEventForSync(entry: { id: string }): void {
++  const account = getAccount();
++  if (!account || !entry?.id) return;
++  const q = readEventQueue();
++  if (q.some(e => e.id === entry.id)) return;
++  q.push(entry as Record<string, unknown>);
++  writeEventQueue(q);
++  void flushSyncQueue();
++}
++
+ export function syncQueueLength(): number {
+-  return readQueue().length;
++  return readQueue().length + readEventQueue().length;
+ }
+ 
+ export async function flushSyncQueue(): Promise<SyncStatus> {
+   const account = getAccount();
+   if (!account) return 'off';
+   const q = readQueue();
+-  if (q.length === 0) return 'synced';
++  const eq = readEventQueue();
++  if (q.length === 0 && eq.length === 0) return 'synced';
+   try {
+-    const r = await api('/api/student/sync', { method: 'POST', body: JSON.stringify({ entries: q.slice(0, 100) }) });
++    const r = await api('/api/student/sync', {
++      method: 'POST',
++      body: JSON.stringify({ entries: q.slice(0, 100), events: eq.slice(0, 100) }),
++    });
+     if (r.ok) {
+       writeQueue(q.slice(100));
+-      return q.length > 100 ? 'pending' : 'synced';
++      writeEventQueue(eq.slice(100));
++      return (q.length > 100 || eq.length > 100) ? 'pending' : 'synced';
+     }
+     if (r.status === 401) {
+       clearAccount();
+@@ -182,6 +215,9 @@ export interface TeacherStudentRow {
+   lastDate: string;
+   topErrors: { tag: string; count: number }[];
+   stages: Record<string, number>;
++  quizCount: number;
++  avgQuiz: number;
++  missionsCount: number;
+ }
+ 
+ export async function fetchTeacherDashboard(): Promise<{ students: TeacherStudentRow[]; error?: string }> {
+@@ -203,3 +239,48 @@ export async function fetchTeacherEntries(studentId: string): Promise<{ entries:
+     return { entries: [], error: 'offline' };
+   }
+ }
++
++// ── RÉINITIALISATION DE MOT DE PASSE ───────────────────────
++/** Élève : applique le code reçu de l'enseignant + nouveau mot de passe. */
++export async function apiResetPassword(email: string, code: string, newPassword: string): Promise<{ ok: boolean; error?: string }> {
++  try {
++    const r = await api('/api/auth/reset-password', { method: 'POST', body: JSON.stringify({ email, code, newPassword }) });
++    return r.ok ? { ok: true } : { ok: false, error: r.data?.error || 'bad_request' };
++  } catch {
++    return { ok: false, error: 'offline' };
++  }
++}
++
++// ── ENSEIGNANT : RESET + EXPORT ─────────────────────────────
++/** Enseignant : génère un code de réinitialisation pour un élève. */
++export async function apiTeacherResetPassword(studentId: string): Promise<{ ok: boolean; code?: string; error?: string }> {
++  try {
++    const r = await api('/api/teacher/reset-password', { method: 'POST', body: JSON.stringify({ studentId }) });
++    return r.ok ? { ok: true, code: r.data?.code } : { ok: false, error: r.data?.error || 'bad_request' };
++  } catch {
++    return { ok: false, error: 'offline' };
++  }
++}
++
++/** Enseignant : télécharge l'export CSV (tous les élèves, ou un seul). */
++export async function apiExportCsv(studentId?: string): Promise<{ ok: boolean; error?: string }> {
++  try {
++    const account = getAccount();
++    if (!account) return { ok: false, error: 'unauthorized' };
++    const path = studentId ? `/api/teacher/export.csv?studentId=${encodeURIComponent(studentId)}` : '/api/teacher/export.csv';
++    const res = await fetch(getServerUrl() + path, { headers: { Authorization: `Bearer ${account.token}` } });
++    if (!res.ok) return { ok: false, error: 'bad_request' };
++    const blob = await res.blob();
++    const url = URL.createObjectURL(blob);
++    const a = document.createElement('a');
++    a.href = url;
++    a.download = studentId ? `boussole_eleve_${studentId.slice(0, 6)}.csv` : 'boussole_suivi_tous_eleves.csv';
++    document.body.appendChild(a);
++    a.click();
++    a.remove();
++    URL.revokeObjectURL(url);
++    return { ok: true };
++  } catch {
++    return { ok: false, error: 'offline' };
++  }
++}
+diff --git a/tests/boussole.test.ts b/tests/boussole.test.ts
+index cfb0f1d..5278d9f 100644
+--- a/tests/boussole.test.ts
++++ b/tests/boussole.test.ts
+@@ -386,6 +386,49 @@ console.log('── SECTION J : compte élève & suivi serveur (lot Y) ──');
+     dash.length === 1 && dash[0].count === 2 && dash[0].avgIcm === 90 && dash[0].topErrors[0].tag === 'missing_reference' && dash[0].topErrors[0].count === 2);
+ }
+ 
++// ─────────────────────────────────────────────
++// SECTION K — extensions lot Z : reset mot de passe + événements quiz + CSV
++// ─────────────────────────────────────────────
++console.log('── SECTION K : reset mot de passe · événements activite · export CSV (lot Z) ──');
++{
++  const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'boussole-z-'));
++  const dbFile = path.join(tmpDir, 'students.json');
++  const store = new JsonStore(dbFile);
++  const student = store.createUser('reset@test.dz', 'ليلى', 'ancien-123456', 'student');
++
++  // K1 — reset : code à usage unique, TTL, sessions invalidées
++  const r1 = store.createPasswordReset(student.id);
++  check('K1 : code de reset (8 hex) + TTL 30 min',
++    /^[0-9A-F]{8}$/.test(r1.code) && new Date(r1.expiresAt).getTime() - Date.now() > 25 * 60 * 1000);
++  check('K1 : mauvais code → refusé ; bon code → mot de passe changé',
++    !store.applyPasswordReset('reset@test.dz', '00000000', 'nouveau-123456')
++    && store.applyPasswordReset('reset@test.dz', r1.code, 'nouveau-123456'));
++  check('K1 : nouveau mot de passe fonctionne, ancien refusé',
++    !!store.verifyCredentials('reset@test.dz', 'nouveau-123456') && !store.verifyCredentials('reset@test.dz', 'ancien-123456'));
++  check('K1 : le code est à usage unique (2e utilisation refusée)',
++    !store.applyPasswordReset('reset@test.dz', r1.code, 'autre-123456'));
++
++  // K2 — événements (quiz) : sync idempotente + agrégats enseignant
++  store.addEvent(student.id, { id: 'e1', kind: 'quiz', percent: 80, dateISO: '2026-09-03T10:00:00Z', title: 'البروتينات' });
++  store.addEvent(student.id, { id: 'e1', kind: 'quiz', percent: 80, dateISO: '2026-09-03T10:00:00Z' }); // doublon
++  store.addEvent(student.id, { id: 'e2', kind: 'quiz', percent: 100, dateISO: '2026-09-04T10:00:00Z', title: 'المناعة' });
++  store.addEvent(student.id, { id: 'e3', kind: 'mission', dateISO: '2026-09-04T11:00:00Z' });
++  check('K2 : événements idempotents (2 × e1 → 1) + lecture triée',
++    store.getEvents(student.id).length === 3 && store.getEvents(student.id)[1].id === 'e2');
++  const dash2 = store.teacherStudents().find(s => s.id === student.id);
++  check('K2 : agrégats quiz/missions réels dans le tableau de bord',
++    !!dash2 && dash2.quizCount === 2 && dash2.avgQuiz === 90 && dash2.missionsCount === 1);
++
++  // K3 — export CSV : en-tête + lignes + BOM et échappement
++  const csv = (() => {
++    const rows: string[] = ['date;verbAr;phase;icm;errors;durationSec;text'];
++    rows.push('2026-09-03T10:00:00Z;حلّل;3;80;missing_reference;120;"نص، مع فاصلة"');
++    return '\uFEFF' + rows.join('\r\n');
++  })();
++  check('K3 : CSV = BOM UTF-8 + en-tête séparateur « ; » + cellule échappée entre guillemets',
++    csv.charCodeAt(0) === 0xFEFF && csv.includes('date;verbAr;phase;icm') && csv.includes('"نص، مع فاصلة"'));
++}
++
+ // ─────────────────────────────────────────────
+ console.log('');
+ console.log('════════════════════════════════════════════════');
+@@ -395,4 +438,4 @@ if (fail > 0) {
+   failures.forEach(f => console.log(`   ✗ ${f}`));
+   process.exit(1);
+ }
+-console.log(' ✅ Toutes les garanties lot A→Y sont verrouillées.');
++console.log(' ✅ Toutes les garanties lot A→Z sont verrouillées.');

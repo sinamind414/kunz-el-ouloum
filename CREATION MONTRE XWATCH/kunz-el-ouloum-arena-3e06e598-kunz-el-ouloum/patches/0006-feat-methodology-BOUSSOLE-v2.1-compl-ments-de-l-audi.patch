@@ -1,0 +1,732 @@
+From 5310b87d4afe7188afcc5afcb9ecccb22602070f Mon Sep 17 00:00:00 2001
+From: sinamind414 <sinamind414@users.noreply.github.com>
+Date: Thu, 3 Sep 2026 08:30:31 +0000
+Subject: [PATCH 6/6] =?UTF-8?q?feat(methodology):=20BOUSSOLE=20v2.1=20?=
+ =?UTF-8?q?=E2=80=94=20compl=C3=A9ments=20de=20l'audit=20(drill=20=D9=85?=
+ =?UTF-8?q?=D9=81=D8=AA=D8=A7=D8=AD=2060s,=20d=C3=A9mo=20m=C3=AAme=20docum?=
+ =?UTF-8?q?ent/2=20consignes,=20fiche=20imprimable,=20chrono=20en=20quarts?=
+ =?UTF-8?q?)?=
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Les 10 % qui manquaient pour passer de la mémorisation à la compétence :
+
+1) MICRO-DRILL DU مفتاح (SwitchDrillModal, 60 s)
+- 12 verbes en rafale, décision < 5 s : مفتوح أم مغلق ? feedback immédiat
+- timer 60 s, score %, relances infinies ; bouton « درّب المفتاح (60 ث) »
+
+2) DÉMONSTRATION « MÊME DOCUMENT, DEUX CONSIGNES » (SwitchDuoDemo)
+- courbe de glycémie SVG authentique ; tableau حلّل vs فسّر (étape 3 illuminée)
+- « الفرق لا يأتي من المعرفة — بل من مفتاح واحد » (audit §4)
+
+3) FICHE ÉLÈVE IMPRIMABLE (BoussoleCardPrint — audit §9)
+- une page arabe + impression @media print ; bouton « البطاقة + طباعة »
+
+4) CHRONO EN QUARTS (QuarterTimerBar — audit §5)
+- sous le chrono niveau بكالوريا : 3 segments + phase courante vécue
+---
+ src/components/BoussoleCardPrint.tsx       | 135 +++++++++++
+ src/components/BoussolePanel.tsx           |  28 ++-
+ src/components/MethodologyCompilerView.tsx |   8 +
+ src/components/QuarterTimerBar.tsx         |  58 +++++
+ src/components/SwitchDrillModal.tsx        | 259 +++++++++++++++++++++
+ src/components/SwitchDuoDemo.tsx           | 124 ++++++++++
+ 6 files changed, 611 insertions(+), 1 deletion(-)
+ create mode 100644 src/components/BoussoleCardPrint.tsx
+ create mode 100644 src/components/QuarterTimerBar.tsx
+ create mode 100644 src/components/SwitchDrillModal.tsx
+ create mode 100644 src/components/SwitchDuoDemo.tsx
+
+diff --git a/src/components/BoussoleCardPrint.tsx b/src/components/BoussoleCardPrint.tsx
+new file mode 100644
+index 0000000..85c64ff
+--- /dev/null
++++ b/src/components/BoussoleCardPrint.tsx
+@@ -0,0 +1,135 @@
++import React from 'react';
++import { X, Printer } from 'lucide-react';
++import {
++  BOUSSOLE_STEPS, REGLE_D_OR_AR, SWITCH_QUESTION_AR, SELF_CHECKS, TIME_RULE_AR,
++  SWITCH_CLOSED_VERBS, SWITCH_OPEN_VERBS,
++} from '../data/boussoleData';
++import { VERB_CARDS } from '../data/methodologyEngine';
++
++interface Props {
++  open: boolean;
++  onClose: () => void;
++}
++
++const verbName = (id: string) => VERB_CARDS.find(v => v.id === id)?.verbAr || id;
++
++/**
++ * La fiche unique de l'élève (audit v2 §9) : une page, arabe uniquement,
++ * à coller sur la couverture du cahier. C'est ELLE qu'on consulte quand on
++ * est perdu — c'est le seul objet qui porte vraiment le nom « بوصلة ».
++ * Impression : seul ce contenu est imprimé (CSS @media print).
++ */
++export default function BoussoleCardPrint({ open, onClose }: Props) {
++  if (!open) return null;
++
++  const print = () => {
++    try { window.print(); } catch { /* ignore */ }
++  };
++
++  return (
++    <>
++      <style>{`
++        @media print {
++          body * { visibility: hidden !important; }
++          #boussole-print-card, #boussole-print-card * { visibility: visible !important; }
++          #boussole-print-card {
++            position: fixed !important; inset: 0 !important; overflow: visible !important;
++            background: #fff !important; border: none !important; box-shadow: none !important;
++            border-radius: 0 !important; margin: 0 !important; padding: 8mm !important;
++            max-height: none !important; height: auto !important; width: 100% !important;
++          }
++          #boussole-print-no-print { display: none !important; }
++        }
++      `}</style>
++
++      <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm overflow-y-auto">
++        <div id="boussole-print-card" className="w-full max-w-md bg-white dark:bg-[#10150f] rounded-3xl shadow-2xl border-4 border-[#006d37] dark:border-[#2ecc71] overflow-hidden my-auto">
++          {/* En-tête */}
++          <div className="px-6 pt-6 pb-4 text-center border-b-4 border-[#006d37] dark:border-[#2ecc71]">
++            <h3 className="text-xl font-black text-[#006d37] dark:text-[#2ecc71]" dir="rtl">🧭 بوصلة الإجابة — علوم الطبيعة والحياة</h3>
++            <p className="text-[10.5px] font-bold text-gray-500 dark:text-gray-400 mt-1" dir="rtl">
++              قبل كل إجابة: أربع خطوات، ومفتاح واحد. الإبهام يلمس الأصابع الأربعة: ١ · ٢ · ٣ · ٤
++            </p>
++          </div>
++
++          {/* 🔑 interrupteur */}
++          <div className="mx-6 mt-4 rounded-xl border-2 border-[#006d37] dark:border-[#2ecc71] p-3">
++            <p className="font-black text-[12.5px] text-gray-900 dark:text-white" dir="rtl">
++              🔑 السؤال الوحيد: {SWITCH_QUESTION_AR}
++            </p>
++            <div className="grid grid-cols-2 gap-2 mt-2 text-[10px] font-bold">
++              <div className="bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg px-2 py-1.5 text-gray-600 dark:text-gray-300" dir="rtl">
++                مُغلق ← ١ ثم ٢ ثم ٤<br />
++                <span className="text-[9px] text-gray-400">{SWITCH_CLOSED_VERBS.map(verbName).join(' · ')}</span>
++              </div>
++              <div className="bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 rounded-lg px-2 py-1.5 text-emerald-800 dark:text-emerald-300" dir="rtl">
++                مفتوح ← ١ ثم ٢ ثم ٣ ثم ٤<br />
++                <span className="text-[9px] text-emerald-600 dark:text-emerald-400">{SWITCH_OPEN_VERBS.map(verbName).join(' · ')}</span>
++              </div>
++            </div>
++          </div>
++
++          {/* Les 4 étapes */}
++          <div className="grid grid-cols-4 gap-1.5 mx-6 mt-3">
++            {BOUSSOLE_STEPS.map(step => (
++              <div key={step.id} className="rounded-lg border-2 p-1.5 text-center" style={{ borderColor: step.color, backgroundColor: step.colorSoft + '44' }}>
++                <div className="text-xs font-black" style={{ color: step.color }}>{step.id}</div>
++                <div className="text-[11px] font-black text-gray-900 dark:text-white">{step.word}</div>
++                <div className="text-[7.5px] font-bold text-gray-400">{step.whereAr}</div>
++              </div>
++            ))}
++          </div>
++
++          {/* Détail des 4 étapes */}
++          <div className="mx-6 mt-3 space-y-2.5">
++            {BOUSSOLE_STEPS.map(step => (
++              <div key={step.id} className="flex gap-2">
++                <span className="w-6 h-6 shrink-0 rounded-md text-white flex items-center justify-center text-[11px] font-black" style={{ backgroundColor: step.color }}>
++                  {step.id}
++                </span>
++                <div className="min-w-0">
++                  <p className="text-[10.5px] font-black text-gray-800 dark:text-gray-200" dir="rtl">
++                    {step.word} — <span style={{ color: step.color }}>« {step.questionAr} »</span>
++                  </p>
++                  {step.templateAr && (
++                    <p className="text-[10px] font-bold text-gray-600 dark:text-gray-400 leading-snug" dir="rtl">✍️ {step.templateAr}</p>
++                  )}
++                  <p className="text-[9px] font-bold text-red-500 leading-snug" dir="rtl">🚫 {step.interditAr.join(' · ')}</p>
++                </div>
++              </div>
++            ))}
++          </div>
++
++          {/* Contrôles + temps + règle d'or */}
++          <div className="mx-6 mt-4 rounded-xl bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 p-3 space-y-1.5">
++            <p className="text-[10.5px] font-black text-gray-800 dark:text-gray-200" dir="rtl">✅ الفحص = الخطوات نفسها من الأخير إلى الأول:</p>
++            <div className="space-y-0.5 text-[9.5px] font-bold text-gray-600 dark:text-gray-400" dir="rtl">
++              {SELF_CHECKS.map(c => <p key={c.step}>— {c.step}. {c.checkAr}</p>)}
++            </div>
++            <p className="text-[9.5px] font-bold text-gray-600 dark:text-gray-400 pt-1" dir="rtl">⏳ {TIME_RULE_AR}</p>
++          </div>
++
++          <p className="mx-6 my-4 text-center text-[12px] font-black text-[#944a00] dark:text-amber-300 bg-[#fff9ed] dark:bg-amber-950/30 border border-[#fed65b]/40 rounded-xl px-3 py-2" dir="rtl">
++            {REGLE_D_OR_AR}
++          </p>
++
++          {/* Boutons (non imprimés) */}
++          <div id="boussole-print-no-print" className="px-6 pb-6 flex gap-2.5">
++            <button
++              onClick={print}
++              className="flex-1 flex items-center justify-center gap-2 bg-[#006d37] hover:bg-[#005027] text-white font-black text-sm px-4 py-3 rounded-2xl transition-colors cursor-pointer"
++            >
++              <Printer className="w-4 h-4" /> طباعة البطاقة
++            </button>
++            <button
++              onClick={onClose}
++              className="flex-1 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300 font-black text-sm px-4 py-3 rounded-2xl transition-colors cursor-pointer"
++            >
++              إغلاق
++            </button>
++          </div>
++        </div>
++      </div>
++    </>
++  );
++}
+diff --git a/src/components/BoussolePanel.tsx b/src/components/BoussolePanel.tsx
+index f31795f..131a285 100644
+--- a/src/components/BoussolePanel.tsx
++++ b/src/components/BoussolePanel.tsx
+@@ -1,11 +1,13 @@
+ import React from 'react';
+-import { Compass, Anchor, ChevronDown, ChevronUp, KeyRound, Timer, Sparkles } from 'lucide-react';
++import { Compass, Anchor, ChevronDown, ChevronUp, KeyRound, Timer, Sparkles, Zap, Printer } from 'lucide-react';
+ import {
+   BOUSSOLE_STEPS, getStep, getSwitchForVerb, getSpecialFormatForVerb,
+   switchPathAr, REGLE_D_OR_AR, TIME_RULE_AR, FINGERS_RITUAL_AR,
+   SWITCH_QUESTION_AR, SELF_CHECKS,
+ } from '../data/boussoleData';
+ import { getNavigatorGrade, NavigatorGrade } from '../utils/methodologyLog';
++import SwitchDrillModal from './SwitchDrillModal';
++import BoussoleCardPrint from './BoussoleCardPrint';
+ 
+ interface Props {
+   activeLevel: number;   // 1..4 (niveau d'aide)
+@@ -23,6 +25,8 @@ const GRADE_STYLE: Record<NavigatorGrade['key'], { ring: string; text: string; b
+ export default function BoussolePanel({ activeLevel, verbId }: Props) {
+   const [open, setOpen] = React.useState(true);
+   const [expandedStep, setExpandedStep] = React.useState<number | null>(null);
++  const [showDrill, setShowDrill] = React.useState(false);
++  const [showCard, setShowCard] = React.useState(false);
+ 
+   const switchState = getSwitchForVerb(verbId);
+   const isOpen = switchState === 'open';
+@@ -182,8 +186,30 @@ export default function BoussolePanel({ activeLevel, verbId }: Props) {
+               <Timer className="w-3 h-3" /> {TIME_RULE_AR}
+             </span>
+           </div>
++
++          {/* Actions : drill du مفتاح + fiche imprimable */}
++          <div className="grid grid-cols-2 gap-2.5">
++            <button
++              onClick={() => setShowDrill(true)}
++              className="flex items-center justify-center gap-2 bg-[#006d37] hover:bg-[#005027] text-white text-[11px] font-black px-3 py-2.5 rounded-xl transition-colors cursor-pointer"
++            >
++              <Zap className="w-3.5 h-3.5" />
++              <span>درّب المفتاح (60 ث)</span>
++            </button>
++            <button
++              onClick={() => setShowCard(true)}
++              className="flex items-center justify-center gap-2 border-2 border-[#006d37]/40 hover:border-[#006d37] text-[#006d37] dark:text-[#2ecc71] text-[11px] font-black px-3 py-2.5 rounded-xl transition-colors cursor-pointer"
++            >
++              <Printer className="w-3.5 h-3.5" />
++              <span>البطاقة + طباعة</span>
++            </button>
++          </div>
+         </div>
+       )}
++
++      {/* Modals du panneau */}
++      <SwitchDrillModal open={showDrill} onClose={() => setShowDrill(false)} />
++      <BoussoleCardPrint open={showCard} onClose={() => setShowCard(false)} />
+     </div>
+   );
+ }
+diff --git a/src/components/MethodologyCompilerView.tsx b/src/components/MethodologyCompilerView.tsx
+index 8fec4a7..db8821a 100644
+--- a/src/components/MethodologyCompilerView.tsx
++++ b/src/components/MethodologyCompilerView.tsx
+@@ -14,6 +14,8 @@ import { evaluateStudentProduction, ScoreReport } from '../utils/methodologyScor
+ import { logProduction, getProductionLogs, getVerbEvolution, VerbEvolutionStats, ProductionLogEntry, ERROR_TAG_LABELS_AR } from '../utils/methodologyLog';
+ import ProductionEvolutionPanel from './ProductionEvolutionPanel';
+ import BoussolePanel from './BoussolePanel';
++import SwitchDuoDemo from './SwitchDuoDemo';
++import QuarterTimerBar from './QuarterTimerBar';
+ import SwitchGateModal from './SwitchGateModal';
+ import { AID_LEVELS, getStep, getSwitchForVerb, groupErrorsByAddress, ERROR_REMEDY_MAP, SWITCH_QUESTION_AR, SwitchState } from '../data/boussoleData';
+ 
+@@ -459,6 +461,9 @@ export default function MethodologyCompilerView({ onBackToHome }: MethodologyPro
+             </div>
+           </div>
+ 
++          {/* Démonstration : même document, deux consignes — le mafteh en 10 s */}
++          <SwitchDuoDemo />
++
+           {/* BOUSSOLE v2 : 4 étapes + mafteh + niveaux d'aide */}
+           <BoussolePanel activeLevel={currentStage} verbId={selectedVerbId} />
+ 
+@@ -621,6 +626,9 @@ export default function MethodologyCompilerView({ onBackToHome }: MethodologyPro
+                       </div>
+                     </div>
+ 
++                    {/* Barre de temps en quarts : الربع الأول · النصف · الربع الأخير */}
++                    <QuarterTimerBar timeLimit={currentExercise.stage4.timeLimitSec} timeLeft={timerSeconds} />
++
+                     {/* Compulsory 90s Draft Accordion */}
+                     <div className="bg-white/10 backdrop-blur-sm p-3.5 rounded-xl border border-white/20 text-xs space-y-2">
+                       <div className="flex items-center justify-between font-bold">
+diff --git a/src/components/QuarterTimerBar.tsx b/src/components/QuarterTimerBar.tsx
+new file mode 100644
+index 0000000..457ed5b
+--- /dev/null
++++ b/src/components/QuarterTimerBar.tsx
+@@ -0,0 +1,58 @@
++import React from 'react';
++import { Timer } from 'lucide-react';
++import { getStep } from '../data/boussoleData';
++
++interface Props {
++  timeLimit: number;   // secondes totales
++  timeLeft: number;    // secondes restantes
++}
++
++/**
++ * Barre de temps en quarts (audit v2 §5) :
++ *   الربع الأول (25 %) : اقرأ + اجمع  ·  النصف (50 %) : اربط / اكتب  ·  الربع الأخير (25 %) : اختم + الفحص
++ * Le dernier quart ne se négocie pas : c'est là que sont la conclusion et la relecture.
++ */
++export default function QuarterTimerBar({ timeLimit, timeLeft }: Props) {
++  const elapsed = Math.max(0, timeLimit - timeLeft);
++  const f = timeLimit > 0 ? elapsed / timeLimit : 0; // 0..1
++
++  const phases = [
++    { id: 1, label: '١ اقرأ + ٢ اجمع', color: getStep(1).color, from: 0, to: 0.25 },
++    { id: 2, label: '٣ اربط / اكتب', color: getStep(3).color, from: 0.25, to: 0.75 },
++    { id: 3, label: '٤ اختم + الفحص', color: getStep(4).color, from: 0.75, to: 1 },
++  ];
++
++  const current = phases.find(p => f >= p.from && f < p.to) || phases[phases.length - 1];
++
++  return (
++    <div className="space-y-1.5">
++      {/* Label phase courante */}
++      <div className="flex items-center justify-between gap-2">
++        <span className="flex items-center gap-1.5 text-[10px] font-black text-white/90">
++          <Timer className="w-3 h-3" />
++          <span>
++            أنت الآن في: <span style={{ color: current.color === '#7c3aed' ? '#c4b5fd' : '#fed65b' }}>{current.label}</span>
++          </span>
++        </span>
++        <span className="text-[9px] font-bold text-white/60">
++          الربع الأخير لا يُناقَش — فيه الخاتمة والفحص
++        </span>
++      </div>
++
++      {/* Barre segmentée */}
++      <div className="flex h-2.5 w-full rounded-full overflow-hidden bg-black/25" dir="rtl">
++        {phases.map(p => {
++          const segFrom = f < p.from ? 0 : f >= p.to ? 1 : (f - p.from) / (p.to - p.from);
++          return (
++            <div key={p.id} className="relative h-full" style={{ width: `${(p.to - p.from) * 100}%`, backgroundColor: p.id === current.id ? `${p.color}33` : 'rgba(255,255,255,0.06)' }}>
++              <div
++                className="absolute inset-y-0 right-0 rounded-full transition-all duration-500"
++                style={{ width: `${segFrom * 100}%`, backgroundColor: p.color, opacity: p.id === current.id ? 1 : 0.35 }}
++              />
++            </div>
++          );
++        })}
++      </div>
++    </div>
++  );
++}
+diff --git a/src/components/SwitchDrillModal.tsx b/src/components/SwitchDrillModal.tsx
+new file mode 100644
+index 0000000..c90d968
+--- /dev/null
++++ b/src/components/SwitchDrillModal.tsx
+@@ -0,0 +1,259 @@
++import React, { useMemo, useState, useEffect, useRef } from 'react';
++import { KeyRound, Lock, Unlock, Timer, RefreshCw, X, Zap, CheckCircle2, XCircle } from 'lucide-react';
++import { getSwitchForVerb, SWITCH_QUESTION_AR, switchPathAr, SwitchState } from '../data/boussoleData';
++import { VERB_CARDS } from '../data/methodologyEngine';
++
++interface Props {
++  open: boolean;
++  onClose: () => void;
++  /** exercice proposé en remédiation : on peut ne drill que ce verbe */
++  focusVerbId?: string;
++}
++
++const DRILL_SECONDS = 60;
++
++function shuffle<T>(arr: T[]): T[] {
++  const a = [...arr];
++  for (let i = a.length - 1; i > 0; i--) {
++    const j = Math.floor(Math.random() * (i + 1));
++    [a[i], a[j]] = [a[j], a[i]];
++  }
++  return a;
++}
++
++const QUOTES: Record<string, string> = {
++  verb_analyse_v1: 'حَلِّلْ',
++  verb_explain_v1: 'فَسِّرْ',
++  verb_compare_v1: 'قَارِنْ',
++  verb_hypothesis_v1: 'اقْتَرِحْ فَرَضِيَّةً',
++  verb_deduce_v1: 'اسْتَنْتِجْ',
++  verb_validate_v1: 'صَادِقْ عَلَى الصِّحَّة',
++  verb_explain_multi_v1: 'اشْرَحْ',
++  verb_schema_v1: 'لَخِّصْ فِي مُخَطَّطْ',
++  verb_justify_v1: 'عَلِّلْ / بَرِّرْ',
++  verb_schematic_v1: 'أَنْجِزْ رَسْمًا تَخْطِيطِيًا وَظِيفِيًا',
++  verb_critique_v1: 'انْقُدْ',
++  verb_composer_v1: 'اكْتُبْ نَصًّا عِلْمِيًّا',
++};
++
++/**
++ * Micro-drill du مفتاح : 60 secondes, des verbes en rafale.
++ * Le réflexe à entraîner n'est pas de réciter la méthode — c'est de
++ * décider, en 2 secondes, si le verbe permet « لأنّ ».
++ */
++export default function SwitchDrillModal({ open, onClose, focusVerbId }: Props) {
++  const [started, setStarted] = useState(false);
++  const [index, setIndex] = useState(0);
++  const [answers, setAnswers] = useState<{ verbId: string; correct: boolean }[]>([]);
++  const [secondsLeft, setSecondsLeft] = useState(DRILL_SECONDS);
++  const [done, setDone] = useState(false);
++  const answeredRef = useRef(false);
++
++  // Sélection des verbes : 12 en rafale (ou 1 seul en remédiation)
++  const deck = useMemo(() => {
++    if (!open) return [];
++    const pool = focusVerbId
++      ? [focusVerbId]
++      : VERB_CARDS.map(v => v.id);
++    return shuffle(pool);
++    // eslint-disable-next-line react-hooks/exhaustive-deps
++  }, [open, focusVerbId]);
++
++  const reset = (restart = false) => {
++    setStarted(restart);
++    setIndex(0);
++    setAnswers([]);
++    setSecondsLeft(DRILL_SECONDS);
++    setDone(false);
++    answeredRef.current = false;
++  };
++
++  // Timer
++  useEffect(() => {
++    if (!open || !started || done) return;
++    const id = setInterval(() => setSecondsLeft(s => Math.max(0, s - 1)), 1000);
++    return () => clearInterval(id);
++  }, [open, started, done]);
++
++  // Fin automatique (temps écoulé)
++  useEffect(() => {
++    if (open && started && secondsLeft === 0 && !done) {
++      setDone(true);
++    }
++  }, [open, started, secondsLeft, done]);
++
++  if (!open) return null;
++
++  const total = deck.length;
++  const currentVerbId = deck[Math.min(index, total - 1)];
++  const truth = currentVerbId ? getSwitchForVerb(currentVerbId) : 'closed';
++  const answered = answeredRef.current;
++  const correctCount = answers.filter(a => a.correct).length;
++
++  const answer = (choice: SwitchState) => {
++    if (answered || done) return;
++    answeredRef.current = true;
++    setAnswers(prev => [...prev, { verbId: currentVerbId, correct: choice === truth }]);
++  };
++
++  const next = () => {
++    if (index + 1 >= total) {
++      setDone(true);
++    } else {
++      answeredRef.current = false;
++      setIndex(i => i + 1);
++    }
++  };
++
++  const scorePct = total ? Math.round((correctCount / total) * 100) : 0;
++
++  return (
++    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
++      <div className="w-full max-w-md bg-white dark:bg-[#10150f] rounded-3xl shadow-2xl border border-gray-200 dark:border-gray-800 overflow-hidden">
++        {/* En-tête */}
++        <div className="bg-gradient-to-l from-[#00401f] via-[#006d37] to-[#0a9a4f] px-6 py-4 text-white flex items-center justify-between gap-3">
++          <div className="flex items-center gap-3">
++            <div className="w-10 h-10 rounded-2xl bg-white/20 flex items-center justify-center">
++              <KeyRound className="w-5 h-5" />
++            </div>
++            <div>
++              <h3 className="font-black text-sm md:text-base">تمرين المفتاح — 60 ثانية</h3>
++              <p className="text-[10.5px] font-bold text-emerald-100">
++                قرار واحد بسرعة: {SWITCH_QUESTION_AR}
++              </p>
++            </div>
++          </div>
++          <button onClick={() => { reset(false); onClose(); }} className="w-8 h-8 rounded-full bg-white/15 hover:bg-white/25 flex items-center justify-center transition-colors cursor-pointer">
++            <X className="w-4 h-4" />
++          </button>
++        </div>
++
++        {/* Timer + score */}
++        {started && !done && (
++          <div className="px-6 pt-4">
++            <div className="flex items-center justify-between mb-1.5">
++              <span className="text-[10px] font-black text-gray-400 flex items-center gap-1">
++                <Timer className="w-3 h-3" /> {total} أفعال · السؤال {index + 1}/{total}
++              </span>
++              <span className={`text-lg font-black tabular-nums ${secondsLeft <= 10 ? 'text-red-500 animate-pulse' : 'text-[#006d37]'}`}>
++                {secondsLeft} ث
++              </span>
++            </div>
++            <div className="h-1.5 w-full bg-gray-100 dark:bg-gray-800 rounded-full overflow-hidden">
++              <div className="h-full bg-gradient-to-r from-[#059669] to-[#f59e0b] rounded-full transition-all duration-1000 ease-linear" style={{ width: `${(secondsLeft / DRILL_SECONDS) * 100}%` }} />
++            </div>
++          </div>
++        )}
++
++        <div className="px-6 py-5">
++          {!started && (
++            <div className="text-center space-y-4">
++              <p className="text-sm font-bold text-gray-600 dark:text-gray-400 leading-relaxed">
++                {focusVerbId
++                  ? 'علاج موجّه: حدّد مفتاح هذا الفعل — هل يسمح بـ«لأنّ»؟'
++                  : 'أنت أمام سلسلة أفعال. لكل فعل، قرّر في أقل من 5 ثوانٍ: هل يسمح بـ«لأنّ»؟'}
++              </p>
++              <div className="flex justify-center gap-3 text-[11px] font-black">
++                <span className="flex items-center gap-1 text-slate-600 bg-slate-100 dark:bg-slate-800 rounded-full px-3 py-1.5"><Lock className="w-3.5 h-3.5" /> مغلق ← ١٢٤</span>
++                <span className="flex items-center gap-1 text-emerald-700 bg-emerald-50 dark:bg-emerald-950/40 rounded-full px-3 py-1.5"><Unlock className="w-3.5 h-3.5" /> مفتوح ← ١٢٣٤</span>
++              </div>
++              <button
++                onClick={() => reset(true)}
++                className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-[#006d37] to-[#0a9a4f] hover:opacity-95 text-white font-black text-sm px-5 py-3.5 rounded-2xl transition-all active:scale-[0.99] cursor-pointer"
++              >
++                <Zap className="w-4 h-4" /> ابدأ التمرين
++              </button>
++            </div>
++          )}
++
++          {started && !done && currentVerbId && (
++            <div className="space-y-4">
++              <div className="text-center">
++                <p className="text-[11px] font-black text-gray-400">هذا الفعل:</p>
++                <p className="text-2xl font-black text-gray-900 dark:text-white mt-1">« {QUOTES[currentVerbId] || '—'} »</p>
++              </div>
++
++              {!answered ? (
++                <div className="grid grid-cols-2 gap-3">
++                  <button
++                    onClick={() => answer('closed')}
++                    className="flex flex-col items-center gap-1.5 border-2 border-slate-300 dark:border-slate-600 hover:border-slate-400 bg-slate-50 dark:bg-slate-800/50 rounded-2xl px-3 py-4 transition-all active:scale-[0.98] cursor-pointer"
++                  >
++                    <Lock className="w-5 h-5 text-slate-500" />
++                    <span className="font-black text-sm text-slate-700 dark:text-slate-200">مُغلق</span>
++                  </button>
++                  <button
++                    onClick={() => answer('open')}
++                    className="flex flex-col items-center gap-1.5 border-2 border-emerald-400/70 hover:border-emerald-500 bg-emerald-50/60 dark:bg-emerald-950/30 rounded-2xl px-3 py-4 transition-all active:scale-[0.98] cursor-pointer"
++                  >
++                    <Unlock className="w-5 h-5 text-emerald-600" />
++                    <span className="font-black text-sm text-emerald-800 dark:text-emerald-300">مفتوح</span>
++                  </button>
++                </div>
++              ) : (
++                <div className="space-y-3">
++                  <div className={`text-center rounded-xl border p-3 ${answers[answers.length - 1]?.correct ? 'bg-emerald-50 dark:bg-emerald-950/30 border-emerald-300' : 'bg-red-50 dark:bg-red-950/30 border-red-300'}`}>
++                    <div className="flex items-center justify-center gap-2">
++                      {answers[answers.length - 1]?.correct
++                        ? <CheckCircle2 className="w-5 h-5 text-emerald-600" />
++                        : <XCircle className="w-5 h-5 text-red-500" />}
++                      <span className={`font-black text-sm ${answers[answers.length - 1]?.correct ? 'text-emerald-800 dark:text-emerald-300' : 'text-red-700 dark:text-red-300'}`}>
++                        {answers[answers.length - 1]?.correct ? 'أحسنت!' : 'لا — هذا الفعل'}
++                      </span>
++                    </div>
++                    <p className="text-[11px] font-black mt-1" style={{ color: truth === 'open' ? '#059669' : '#64748b' }}>
++                      {truth === 'open' ? 'مفتوح ← المسار ١٢٣٤' : 'مغلق ← المسار ١٢٤'}{' '}
++                      <span className="text-gray-400 font-bold">— أي «لأنّ» = نقاط مفقودة</span>
++                    </p>
++                  </div>
++                  <button
++                    onClick={next}
++                    className="w-full bg-[#006d37] hover:bg-[#005027] text-white font-black text-sm px-5 py-3 rounded-2xl transition-colors cursor-pointer"
++                  >
++                    {index + 1 >= total ? 'النتيجة النهائية' : 'التالي ←'}
++                  </button>
++                </div>
++              )}
++            </div>
++          )}
++
++          {done && (
++            <div className="text-center space-y-4">
++              <div className="w-16 h-16 mx-auto rounded-full flex items-center justify-center text-2xl font-black"
++                style={{ backgroundColor: scorePct >= 80 ? '#d1fae5' : scorePct >= 50 ? '#fef3c7' : '#fee2e2', color: scorePct >= 80 ? '#059669' : scorePct >= 50 ? '#b45309' : '#b91c1c' }}>
++                {scorePct}%
++              </div>
++              <p className="font-black text-lg text-gray-900 dark:text-white">
++                {scorePct >= 80 ? '⚡ ردة فعلك سريعة — جاهز للبوابة!' : scorePct >= 50 ? 'في الطريق — أعد التمرين لرفع الحدس' : 'أعد المحاولة: المفتاح واحد لكنه حاسم'}
++              </p>
++              <p className="text-[11px] font-bold text-gray-500 dark:text-gray-400">
++                {correctCount}/{total} صحيح{secondsLeft === 0 && answers.length < total ? ' (انتهى الوقت)' : ''}
++              </p>
++              <div className="flex gap-2.5">
++                <button
++                  onClick={() => reset(true)}
++                  className="flex-1 flex items-center justify-center gap-2 border-2 border-[#006d37] text-[#006d37] hover:bg-[#006d37]/5 font-black text-sm px-4 py-3 rounded-2xl transition-colors cursor-pointer"
++                >
++                  <RefreshCw className="w-4 h-4" /> أعد
++                </button>
++                <button
++                  onClick={() => { reset(false); onClose(); }}
++                  className="flex-1 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300 font-black text-sm px-4 py-3 rounded-2xl transition-colors cursor-pointer"
++                >
++                  إغلاق
++                </button>
++              </div>
++            </div>
++          )}
++        </div>
++
++        {/* Pied : chemin de l'actuel */}
++        {started && !done && currentVerbId && (
++          <p className="px-6 pb-5 text-center text-[9.5px] font-bold text-gray-400">
++            مسار هذا الفعل: {switchPathAr(currentVerbId)}
++          </p>
++        )}
++      </div>
++    </div>
++  );
++}
+diff --git a/src/components/SwitchDuoDemo.tsx b/src/components/SwitchDuoDemo.tsx
+new file mode 100644
+index 0000000..d55207c
+--- /dev/null
++++ b/src/components/SwitchDuoDemo.tsx
+@@ -0,0 +1,124 @@
++import React, { useState } from 'react';
++import { ChevronDown, ChevronUp, KeyRound, Eye } from 'lucide-react';
++import { getStep } from '../data/boussoleData';
++
++/**
++ * Démonstration « même document, deux consignes » (audit v2 §4).
++ * Un seul document (courbe de glycémie), deux verbes : حلّل (🔑 fermé) et فسّر (🔑 ouvert).
++ * L'élève VOIT que les étapes 1, 2 et 4 ne bougent pas — seule l'étape 3 s'allume.
++ * La différence de note ne vient pas du savoir : elle vient d'un interrupteur.
++ */
++
++function GlycemiaChart() {
++  return (
++    <svg viewBox="0 0 420 180" width="100%" role="img" aria-label="منحنى تطور نسبة السكر في الدم" className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl">
++      {/* grille */}
++      {[30, 60, 90, 120, 150].map(y => <line key={y} x1="46" y1={y + 14} x2="392" y2={y + 14} stroke="#e5e7eb" strokeWidth="1" strokeDasharray="3 4" />)}
++      {/* axes */}
++      <line x1="46" y1="166" x2="392" y2="166" stroke="#94a3b8" strokeWidth="2" />
++      <line x1="46" y1="16" x2="46" y2="166" stroke="#94a3b8" strokeWidth="2" />
++      {/* courbe glycémie : monte de 0.9 à 1.6 en 30 min puis revient à 0.9 après 2h */}
++      <path d="M 46 130 C 90 60, 120 44, 150 46 S 250 120, 300 126 S 360 130, 392 130"
++        fill="none" stroke="#059669" strokeWidth="4" strokeLinecap="round" />
++      {/* points clés */}
++      <circle cx="46" cy="130" r="5" fill="#1d4ed8" />
++      <circle cx="150" cy="46" r="5" fill="#d97706" />
++      <circle cx="360" cy="130.5" r="5" fill="#7c3aed" />
++      {/* labels */}
++      <text x="46" y="122" fontSize="10" fontWeight="800" fill="#1d4ed8" textAnchor="middle">0.9</text>
++      <text x="150" y="38" fontSize="10" fontWeight="800" fill="#d97706" textAnchor="middle">1.6</text>
++      <text x="360" y="122" fontSize="10" fontWeight="800" fill="#7c3aed" textAnchor="middle">0.9</text>
++      <text x="60" y="184" fontSize="9" fontWeight="700" fill="#64748b">0 د</text>
++      <text x="150" y="184" fontSize="9" fontWeight="700" fill="#64748b" textAnchor="middle">30 د</text>
++      <text x="392" y="184" fontSize="9" fontWeight="700" fill="#64748b" textAnchor="middle">120 د</text>
++      <text x="34" y="58" fontSize="10" fontWeight="800" fill="#059669" textAnchor="start" transform="rotate(-90 34 58)">غ/ل</text>
++      <text x="392" y="16" fontSize="10" fontWeight="800" fill="#059669" textAnchor="end">نسبة السكر في الدم (غ/ل)</text>
++    </svg>
++  );
++}
++
++export default function SwitchDuoDemo() {
++  const [open, setOpen] = useState(false);
++
++  const row = (n: number, left: string, right: string, opts?: { highlight?: boolean; muted?: boolean }) => (
++    <tr className={opts?.highlight ? 'bg-emerald-50/70 dark:bg-emerald-950/20' : ''}>
++      <td className="text-center font-black text-white w-10" style={{ backgroundColor: getStep(n as 1 | 2 | 3 | 4).color }}>
++        {n}
++      </td>
++      <td className={`text-[10.5px] leading-relaxed ${opts?.muted ? 'text-gray-400' : ''}`} dir="rtl">{left}</td>
++      <td className={`text-[10.5px] leading-relaxed border-r border-gray-100 dark:border-gray-800 ${opts?.highlight ? 'bg-emerald-50/70 dark:bg-emerald-950/20 font-bold' : ''}`} dir="rtl">{right}</td>
++    </tr>
++  );
++
++  return (
++    <div className="bg-white dark:bg-[#161c18] rounded-2xl border border-gray-200 dark:border-gray-800 shadow-sm overflow-hidden">
++      <button
++        onClick={() => setOpen(o => !o)}
++        className="w-full flex items-center justify-between gap-3 px-4 py-3 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors cursor-pointer"
++      >
++        <div className="flex items-center gap-2.5 min-w-0">
++          <div className="w-9 h-9 shrink-0 rounded-xl bg-amber-100 dark:bg-amber-950/50 text-amber-700 dark:text-amber-300 flex items-center justify-center">
++            <Eye className="w-5 h-5" />
++          </div>
++          <div className="min-w-0 text-right">
++            <h3 className="font-black text-sm text-gray-900 dark:text-white">نفس الوثيقة، تعليمتان — أين الفرق؟</h3>
++            <p className="text-[10px] md:text-[11px] text-gray-500 dark:text-gray-400 font-bold">
++              حَلِّلْ مقابل فَسِّرْ : ١ و ٢ و ٤ لا تتغير — مفتاح واحد فقط يضيء
++            </p>
++          </div>
++        </div>
++        {open ? <ChevronUp className="w-4 h-4 text-gray-400 shrink-0" /> : <ChevronDown className="w-4 h-4 text-gray-400 shrink-0" />}
++      </button>
++
++      {open && (
++        <div className="border-t border-gray-100 dark:border-gray-800 px-4 md:px-5 py-4 space-y-4">
++          {/* Le document */}
++          <div>
++            <p className="text-[10px] font-black text-gray-400 mb-1.5">📄 الوثيقة:</p>
++            <GlycemiaChart />
++            <p className="text-[9.5px] font-bold text-gray-400 mt-1">منحنى تطوّر نسبة السكر في الدم عند شخص سليم بعد وجبة غنيّة بالسكّر.</p>
++          </div>
++
++          {/* Tableau comparatif */}
++          <div className="overflow-x-auto">
++            <table className="w-full border-collapse text-[10.5px]">
++              <thead>
++                <tr>
++                  <th className="w-10"></th>
++                  <th className="text-center font-black text-sm text-slate-700 dark:text-slate-200 bg-slate-100 dark:bg-slate-800/70 rounded-r-xl px-3 py-2">
++                    🔒 « حَلِّلْ الوثيقة » — المسار ١٢٤
++                  </th>
++                  <th className="text-center font-black text-sm text-emerald-800 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/40 rounded-l-xl px-3 py-2">
++                    🔓 « فَسِّرْ تطوّر المنحنى » — المسار ١٢٣٤
++                  </th>
++                </tr>
++              </thead>
++              <tbody>
++                {row(1,
++                  'المسودة: الفعل = حلّل ← وصف فقط. المطلوب: وصف تغيّرات الغليسيميا.',
++                  'المسودة: الفعل = فسّر ← آلية مطلوبة. المطلوب: سبب رجوع الغليسيميا.')}
++                {row(2,
++                  'انطلاقًا من الوثيقة نلاحظ أنّ نسبة السكر في الدم ترتفع من 0.9 غ/ل إلى 1.6 غ/ل خلال 30 دقيقة، ثمّ تتراجع تدريجيًا لتعود إلى 0.9 غ/ل بعد ساعتين.',
++                  '↞ الجملة نفسها حرفيًا')}
++                {row(3,
++                  '— مُغلق —\nأيّ «لأنّ» أو «يدلّ على» هنا = نقاط مفقودة',
++                  'وهذا لأنّ ارتفاع الغليسيميا يُحرّض خلايا بيتا في جزر لانغرهانس على إفراز الأنسولين، وبالتالي يزداد استهلاك الغلوكوز وتخزينه في الكبد على شكل غليكوجين.',
++                  { highlight: true })}
++                {row(4,
++                  'ومنه نستنتج أنّ نسبة السكر في الدم تعود إلى قيمتها المرجعية بعد كلّ ارتفاع مؤقّت.',
++                  'ومنه نستنتج أنّ الأنسولين هرمون مُخفِّض للغليسيميا يضمن ثباتها.')}
++              </tbody>
++            </table>
++          </div>
++
++          <div className="flex flex-col sm:flex-row items-center gap-2 bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800/50 rounded-xl px-4 py-3">
++            <KeyRound className="w-5 h-5 text-amber-600 shrink-0" />
++            <p className="text-[11px] font-black text-amber-900 dark:text-amber-300 text-center flex-1">
++              في 10 ثوانٍ: الكوبيتان تشتركان في العمود 2 وبنيّة الخاتمة. الفرق في العلامة لا يأتي من المعرفة — بل من مفتاح واحد.
++            </p>
++          </div>
++        </div>
++      )}
++    </div>
++  );
++}

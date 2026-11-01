@@ -1,0 +1,18 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "types": ["node", "vite/client"]
+  },
+  "include": [
+    "src/data/methodologyEngine.ts",
+    "src/data/boussoleData.ts",
+    "src/utils/methodologyScorer.ts",
+    "src/utils/methodologyLog.ts",
+    "src/components/MethodologyCompilerView.tsx",
+    "src/components/BoussoleCard.tsx",
+    "src/components/ProductionEvolutionPanel.tsx",
+    "src/components/__tests__/**/*",
+    "src/utils/__tests__/**/*",
+    "tests/boussole.test.ts"
+  ]
+}

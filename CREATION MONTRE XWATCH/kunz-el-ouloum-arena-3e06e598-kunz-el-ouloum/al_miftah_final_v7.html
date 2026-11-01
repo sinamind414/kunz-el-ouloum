@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>المفتاح v7.0 · مفتاح المنهجية — علوم الطبيعة والحياة · بكالوريا الجزائر</title>
+<style>
+:root{
+  --gold:#b77a12; --gold2:#6e4a09; --gold-l:#fff8e8; --gold-m:#efd69e;
+  --teal:#0b6f6a; --teal2:#07534f; --teal-l:#eaf7f5;
+  --red:#b42318; --red-l:#fff1ef;
+  --blue:#265fd5; --blue-l:#eef4ff;
+  --violet:#6b46c1; --violet-l:#f5f0ff;
+  --ink:#14181d; --mute:#52606d; --line:#dfe7eb; --paper:#fff; --bg:#edf1f3;
+  --shadow:0 10px 30px rgba(9,73,70,.08),0 2px 8px rgba(0,0,0,.05);
+  --r:18px;
+}
+*{box-sizing:border-box}
+html{-webkit-print-color-adjust:exact;print-color-adjust:exact;scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Noto Kufi Arabic","Kufi","Cairo",Tahoma,Arial,sans-serif;font-size:15px;line-height:1.85}
+.page{max-width:1000px;margin:24px auto;background:var(--paper);padding:32px 40px;border:1px solid #e4eaee;border-radius:var(--r);box-shadow:var(--shadow)}
+.brand{display:flex;align-items:flex-start;justify-content:space-between;gap:20px;border-bottom:3px solid var(--gold);padding-bottom:14px}
+h1,h2,h3{margin:0}
+h1{color:var(--gold2);font-size:32px;font-weight:800;line-height:1.2}
+.official{color:var(--gold2);font-size:13px;font-weight:800;margin-top:4px}
+.tag{color:var(--mute);font-size:12.5px;margin-top:2px}
+.app{color:var(--mute);font-size:11px;line-height:1.6;text-align:left;direction:ltr}
+h2{margin:18px 0 10px;color:var(--teal2);font-size:19px;font-weight:800;border-bottom:2px solid var(--teal);padding-bottom:5px}
+h3{margin:12px 0 6px;font-size:14.5px;font-weight:800;display:flex;align-items:center;gap:7px}
+h3 .n{display:inline-flex;width:24px;height:24px;border-radius:50%;align-items:center;justify-content:center;flex:0 0 auto;color:#fff;background:linear-gradient(135deg,var(--gold),var(--gold2));font-size:11px}
+.label{display:inline-block;background:var(--teal);color:#fff;border-radius:999px;padding:4px 12px;font-size:11.5px;font-weight:800;margin-top:10px}
+.label.gold{background:linear-gradient(135deg,var(--gold),var(--gold2))}
+.legend{font-size:10.5px;color:var(--mute);margin:4px 0 8px;line-height:1.55}
+.box{border-radius:12px;padding:10px 13px;margin:8px 0;line-height:1.65}
+.gold{background:var(--gold-l);border:1px solid var(--gold-m)}
+.teal{background:var(--teal-l);border:1px solid #bfdfdb}
+.red{background:var(--red-l);border:1px solid #f4c3be}
+.blue{background:var(--blue-l);border:1px solid #c9d9fb}
+.violet{background:var(--violet-l);border:1px solid #ddd0fb}
+.corr{background:var(--red-l);border-right:4px solid var(--red);padding:7px 10px;border-radius:7px;font-size:11px;line-height:1.55;margin:7px 0}
+.corr b{color:var(--red)}
+.teeth{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0}
+.tooth{background:linear-gradient(135deg,var(--gold),var(--gold2));color:#fff;border-radius:9px;padding:4px 9px;font-weight:800;font-size:11.5px;box-shadow:0 2px 5px rgba(183,122,18,.2)}
+table{width:100%;border-collapse:separate;border-spacing:0;border:1px solid var(--line);border-radius:10px;overflow:hidden;margin:6px 0 10px;font-size:12px}
+th,td{border-left:1px solid var(--line);border-bottom:1px solid var(--line);padding:6px 8px;vertical-align:top;text-align:right}
+th{background:#eef7f6;color:var(--teal2);font-weight:800}
+tr:last-child td{border-bottom:0}
+th:last-child,td:last-child{border-left:0}
+td.c{text-align:center;font-weight:800;color:var(--gold2);background:#fffdf4}
+.fam{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.gate{background:#fbfcfd;border:1px solid var(--line);border-radius:11px;padding:10px}
+.q{font-size:13px;margin-bottom:4px}
+.small{font-size:10.5px;color:var(--mute)}
+.opt{margin-top:5px;border-radius:7px;padding:5px 7px;font-size:11px;line-height:1.5}
+.opt.a{background:var(--gold-l);border:1px solid #f0d9a8}
+.opt.b{background:var(--teal-l);border:1px solid #b9d9d9}
+.opt.c{background:var(--violet-l);border:1px solid #ddd0fb}
+.chain{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:6px;background:#fbfcfd;border:1px solid var(--line);border-radius:11px;padding:9px;margin:7px 0}
+.node{background:#fff;border:2px solid var(--teal);border-radius:9px;padding:3px 9px;color:var(--teal);font-weight:800;font-size:11.5px}
+.node.g{border-color:var(--gold);color:var(--gold2);background:#fffdf4}
+.node.r{border-color:var(--red);color:var(--red);background:var(--red-l)}
+.node.dash{border-style:dashed;border-color:var(--mute);color:var(--mute)}
+.arr{color:var(--mute);font-size:16px}
+.sent{background:#fff;border:1px solid var(--line);border-right:4px solid var(--gold);border-radius:8px;padding:6px 9px;margin:5px 0;font-size:11.8px}
+.check{display:flex;flex-wrap:wrap;gap:6px}
+.check div{flex:1 1 170px;background:var(--gold-l);border:1px solid #f0dfb6;border-radius:9px;padding:6px 8px;font-size:11.2px}
+.check b{color:var(--gold2)}
+.center{text-align:center}
+.tri{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.tri .card{border:1px solid var(--line);border-radius:11px;padding:10px;background:#fbfcfd}
+.card .num{font-weight:800;font-size:20px;color:var(--gold2)}
+.card b{color:var(--teal2)}
+.counterex{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:6px 0}
+.counterex div{border-radius:9px;padding:7px 9px;font-size:11px;line-height:1.55}
+.cx-w{background:var(--red-l);border:1px solid #f4c3be}
+.cx-r{background:var(--teal-l);border:1px solid #bfdfdb}
+footer{text-align:center;color:var(--mute);font-size:10px;margin-top:12px}
+@media(max-width:700px){.page{margin:10px;padding:20px}.brand{flex-direction:column}.fam,.tri,.counterex{grid-template-columns:1fr}}
+@media print{
+  body{background:#fff;font-size:9pt;line-height:1.45}
+  .page{max-width:none;margin:0;padding:0;border:0;border-radius:0;box-shadow:none}
+  .break{page-break-before:always}
+  @page{size:A4;margin:8mm 9mm}
+}
+</style>
+</head>
+<body>
+
+<!-- ===================== الوجه الأول: النواة ===================== -->
+<section class="page">
+  <div class="brand">
+    <div>
+      <h1>المفتاح</h1>
+      <div class="official">مفتاح المنهجية · الإصدار 7</div>
+      <div class="tag">منهجية الإجابة في علوم الطبيعة والحياة · بكالوريا الجزائر</div>
+      <div class="tag" dir="ltr">3 opérations · un contrôleur · 4 exercices progressifs · 1 exemple corrigé</div>
+    </div>
+    <div class="app"><b>كنز العلوم</b> · Kunz El Ouloum<br>v7.0 · fiche élève · recto = النواة</div>
+  </div>
+
+  <span class="label">البطاقة الأولى · ابدأ هنا</span>
+  <h2>المفتاح — قبل أن أكتب، أعرف ماذا أُنتج</h2>
+  <div class="teeth">
+    <span class="tooth">1 فعل</span><span class="tooth">2 دليل</span><span class="tooth">3 جواب</span><span class="tooth">4 فحص</span>
+  </div>
+  <div class="corr"><b>ما الجديد في v7؟</b> «علاقة» أصبحت <b>عملية اختيارية</b> داخل الجواب لا خطوة إلزامية: لا علاقة تُطلب في السمّ أو العرّف. المسار كذلك <b>حلقة</b> يمكن الرجوع فيها من الدليل إلى الفعل إذا كشفت الوثيقة حاجة أخرى.</div>
+
+  <h3><span class="n">أ</span> الحركات الأربع — حلقة تحكم، لا خط مستقيم</h3>
+  <div class="chain">
+    <div class="node g">1 فعل</div><div class="arr">⇄</div>
+    <div class="node">2 دليل</div><div class="arr">→</div>
+    <div class="node">3 جواب <span class="small">(تحتوي علاقة إن لزم)</span></div><div class="arr">→</div>
+    <div class="node r">4 فحص</div>
+    <div class="arr">↩</div><div class="node dash">رجوع إلى الفعل عند اللزوم</div>
+  </div>
+  <table>
+    <tr><th>#</th><th>الحركة</th><th>ما الذي أفعله؟</th><th>علامة أمان</th></tr>
+    <tr><td class="c">1</td><td class="c">فعل</td><td>أقرأ التعليمة كاملة، أطوّق الفعل، وأحدد نوع المنتج المطلوب.</td><td>لا أجيب عن سؤال آخر لمجرد أنني أعرف معلومات عنه.</td></tr>
+    <tr><td class="c">2</td><td class="c">دليل</td><td>أختار فقط المعطيات النافعة: القيم، الوحدات، التغيرات، المقارنة، الشاهد، الشروط.</td><td>كل معطى مُختار يجب أن يخدم الاستدلال.</td></tr>
+    <tr><td class="c">3</td><td class="c">جواب</td><td>أكتب المنتج المطلوب مباشرة. إذا اقتضت التعليمة ربط معطيين، أستعمل داخل الجواب صيغة العلاقة: كلما… / بينما… / مقارنة بـ…</td><td>الجملة النهائية يجب أن تُقرأ وحدها.</td></tr>
+    <tr><td class="c">4</td><td class="c">فحص</td><td>أتحقق: هل نفّذت الفعل؟ هل استعملت الدليل؟ هل أجبت عن السؤال؟</td><td>الفحص تدريب، وليس حكمًا آليًا على التنقيط.</td></tr>
+  </table>
+  <div class="box teal"><b>تنبيه مهم:</b> خطا «اختيار الدليل» و«صياغة العلاقة» خطا <b>تفكير</b>؛ لا يشترط ظهورهما كقسمين مستقلين في الأسئلة القصيرة. في التركيب أو الجواب الطويل، فإنهما يختفيان داخل صياغة الجمل.</div>
+
+  <h3><span class="n">ب</span> العمليات الثلاث — تُدمج ولا تُنفقح</h3>
+  <div class="fam">
+    <div class="gate">
+      <div class="q">🟡 <b>أصف</b> <span class="small">— ماذا تُظهر المعطيات؟</span></div>
+      <div class="opt a"><b>أنتظر:</b> ملاحظة، استخراج، مقارنة، تنظيم قيم.</div>
+      <div class="opt b"><b>لغة مساعدة:</b> نلاحظ · يرتفع · ينخفض · يثبت · يختلف.</div>
+      <div class="opt c"><b>تنبيه:</b> لا أضيف تفسيرًا لم تطلبه التعليمة.</div>
+    </div>
+    <div class="gate">
+      <div class="q">🟢 <b>أفسّر</b> <span class="small">— ماذا تعني المعطيات؟ (كان «أقرأ»)</span></div>
+      <div class="opt a"><b>أنتظر:</b> تعليلًا يربط <b>معطى الوثيقة</b> بـ<b>معرفة علمية</b>.</div>
+      <div class="opt b"><b>لغة مساعدة:</b> وهذا راجع إلى… · نعلم أن… · مما يؤدي إلى…</div>
+      <div class="opt c"><b>تمييز v7:</b> في التفسير أحتاج دائمًا عنصرين: <b>معطى</b> + <b>معرفة</b>. تعريف سريع: «المعطى» ما يظهر في الوثيقة، «المعرفة» ما تعلمناه في الدرس.</div>
+    </div>
+    <div class="gate">
+      <div class="q">🟣 <b>أحكم</b> <span class="small">— ماذا أقرر بناءً على الدليل؟</span></div>
+      <div class="opt a"><b>أنتظر:</b> قبول أو رفض فرضية، تبريرًا، اقتراحًا…</div>
+      <div class="opt b"><b>لغة مساعدة:</b> يتوافق مع… · لا يتوافق… · لذلك…</div>
+      <div class="opt c"><b>قاعدة v7:</b> عند نقص الدليل أكتب: «المعطيات لا تكفي وحدها لإثبات…» — فالحدود المعلَنة جزء من الحكم لا نقص فيه.</div>
+    </div>
+  </div>
+  <div class="corr"><b>قاعدة v7:</b> العمليات الثلاث <b>قابلة للدمج</b> في جواب واحد: أصف التغير، ثم أفسّره، ثم أحكم فقط إذا طلبت التعليمة. لا أحفظ «فعل = عملية» بشكل آلي؛ التعليمة كاملة هي التي تحدد المنتج.</div>
+
+  <h3><span class="n">ج</span> وضع الاسترجاع — عندما لا يُطلب تفسير</h3>
+  <table>
+    <tr><th>الفعل</th><th>العملية</th></tr>
+    <tr><td class="c">سمّ / اذكر / عدّد</td><td>قائمة واضحة؛ عنصر مستقل لكل معلومة، والعدد يطابق المطلوب.</td></tr>
+    <tr><td class="c">عرّف</td><td>الانتماء + الخاصية المميزة + الدور إذا كان مطلوبًا.</td></tr>
+    <tr><td class="c">حدّد</td><td>أقرأ الجملة كاملة؛ قد يعني التعرف أو التعيين أو بيانًا يكونه السياق.</td></tr>
+  </table>
+
+  <h3><span class="n">د</span> مثال مُصحح كامل — الوثيقة ثم المنتج</h3>
+  <div class="box blue">
+    <b>التعليمة:</b> استغلّ المعطيات لتحليل تأثر التنفس البشري بشدة الجهد العضلي، ثم استخرج العلاقة بينهما.
+    <div style="margin-top:6px;font-size:11px">
+      <b>وثيقة 1 – نتائج القياس:</b> عند جهد خفيف (مشي): مؤشر حجم التنفس = 1 · عند جهد متوسط (هرولة): مؤشر = 3.4 (الوحدة نفسها، i.u.) · عند جهد شديد: لا نملك قياسًا.
+    </div>
+  </div>
+  <div class="sent"><b>خطأ شائع — جواب فشل:</b> «التنفس يزيد مع الجهد.» <span class="small">← فشل: نسخ الملاحظة بلا دليل، ولا عبارة علاقة، ولا قيم.</span></div>
+  <div class="sent" style="border-right-color:var(--teal)"><b>✓ جواب نموذجي:</b> «نلاحظ <b>تضاعف</b> مؤشر حجم التنفس عند الانتقال من المشي (1) إلى الهرولة (3.4)، أي بزيادة بـ <b>2.4 مرة</b>. إذن <b>كلما زادت</b> شدة الجهد العضلي، <b>زادت</b> شدة التنفس.»</div>
+  <div class="box gold"><b>شرح الجواب:</b> «نلاحظ…» = فعل + الدليل (القيم ومقارنتها) + العلاقة (كلما… زادت) داخل الجملة نفسها. لا تفسير مضاف لأن الحلّ لم يطلبه.</div>
+
+  <h3><span class="n">هـ</span> فحص — «هل أستطيع الدفاع عن كل جملة؟»</h3>
+  <div class="check">
+    <div><b>1</b> هل نفّذت الفعل المطلوب؟</div>
+    <div><b>2</b> هل استعملت الدليل المناسب؟</div>
+    <div><b>3</b> هل فرّقت بين الملاحظة والتفسير؟</div>
+    <div><b>4</b> هل الجواب يجيب السؤال فعلًا؟</div>
+  </div>
+  <h3 style="margin-top:14px"><span class="n">و</span> ثلاسة فخاخ متكررة مع علاجها</h3>
+  <table>
+    <tr><th>الفخ</th><th>مثال</th><th>العلاج (جملة انطلق)</th></tr>
+    <tr><td>معلومة صحيحة لا تجيب السؤال</td><td>سُئلت عن النتيجة فشرحت الآلية كاملة.</td><td>اقرأ التعليمة مرة أخيرة قبل كتابة كل جزء.</td></tr>
+    <tr><td>تفسير في مكان الوصف</td><td>«يرتفع التنفس لأن الجهد يحتاج طاقة» عند سؤال الوصف.</td><td>نمّي الحسّ لأحكم هل طلبتَ الوصف أم التفسير.</td></tr>
+    <tr><td>معطى بلا استعمال حقيقي</td><td>أُثبتت وحدة قياس في فقرة ثم لم تُستعمل.</td><td>كل جملة:<b> معطى + دور</b>. إن لم يكن لها دور، احذفها.</td></tr>
+  </table>
+  <footer>المفتاح v7 · كنز العلوم · الوجه الأول — النواة</footer>
+</section>
+
+<!-- ===================== الوجه الثاني: المفتاح+ ===================== -->
+<section class="page break">
+  <div class="brand">
+    <div>
+      <h1>المفتاح<span style="color:var(--gold)">+</span></h1>
+      <div class="official">المستوى المتقدم · بعد إتقان النواة</div>
+      <div class="tag">الفرضية · التجربة · التركيب · زيادة التطبيق بعد التأصيل</div>
+    </div>
+    <div class="app"><b>كنز العلوم</b> · v7.0 · verso = المفتاح+</div>
+  </div>
+
+  <span class="label gold">البطاقة الثانية · عند الحاجة</span>
+  <h2>المفتاح+ — عندما يصبح السؤال مركّبًا</h2>
+  <div class="box violet"><b>ترتيب v7 الجديد:</b> هذه البطاقة تعمل <b>بعد</b> إتقان النواة، لا معها. إن كنت ما زلت تنسى الخطوة 1 أو 2 في الوجه الأول، تدرّب عليها أولًا بتمارين النواة ثم عد إلى هنا.</div>
+
+  <h3><span class="n">أ</span> التجربة — المتغيرات الأربعة</h3>
+  <div class="check">
+    <div>ماذا غيّرنا؟ ← <b>المتغيّر المختبَر</b></div>
+    <div>ماذا قسنا؟ ← <b>المتغيّر المقاس</b></div>
+    <div>بماذا قارنّا؟ ← <b>الشاهد أو وضعية مرجعية</b></div>
+    <div>ماذا ثبّتنا؟ ← <b>الشروط الثابتة</b></div>
+  </div>
+  <div class="corr"><b>تمييز v7:</b> «الشاهد» ليس في كل تجربة وضعية مقارنة واحدة. أحيانًا هو <b>وضع طبيعي دون عامل</b>، وأحيانًا <b>تجربة مرجعية</b>. قبل استعمال كلمة «الشاهد»، اسأل: ماذا قارنت به بالضبط؟ فالجواب يساعد على اختيار الكلمة الصحيحة.</div>
+
+  <h3><span class="n">ب</span> الفرضية → الدليل → المواجهة → الحكم</h3>
+  <div class="chain">
+    <div class="node g">فرضية</div><div class="arr">←</div>
+    <div class="node">دليل</div><div class="arr">←</div>
+    <div class="node">مواجهة</div><div class="arr">←</div>
+    <div class="node r">حكم</div>
+  </div>
+  <div class="sent"><b>الفرضية:</b> فكرة قابلة للاختبار، واضحة ولا تشتمل على تفسير محتمل فقط.</div>
+  <div class="sent"><b>الدليل:</b> «انطلاقًا من الوثيقة…» ثم المعلومة التي تسمح بالمقارنة.</div>
+  <div class="sent"><b>المواجهة:</b> هل تتوافق النتيجة مع الفرضية أم تخالفها؟</div>
+  <div class="sent"><b>الحكم:</b> وثيقة تسمح فقط بما تسمح به. عند نقص الدليل: «لا يمكن استنتاج… من هذه الوثيقة وحدها.»</div>
+
+  <h3><span class="n">ج</span> فاصل علمي — الظاهرة الظاهرة فقط</h3>
+  <div class="box red"><b>⚠</b> تزامن تغيّر X مع Y لا يكفي وحده لإثبات أن X يسبب Y. افحص المقارنة، الشاهد، الشروط والعلاقة بين المتغيرات.</div>
+  <div class="counterex">
+    <div class="cx-w"><b>على الأخذ:</b> «يزداد السكر في الدم عندما تزيد كمية الأنسولين، إذن الأنسولين يرفع السكر» — <span class="small">خطأ: ضياع استعمال نظري + عدم تدقيق العلاقة والظرف.</span></div>
+    <div class="cx-r"><b>✓ الصياغة الصحيحة:</b> «تتزامن الزيادة… ولكن لأن مرادف الفرضية تحتاج شاهدًا يلبّيها، لا يمكن استنتاج ابتداء السبب والنتيجة من هذه الوثيقة وحدها.»</div>
+  </div>
+
+  <h3><span class="n">د</span> التركيب — أجيب عن القفل لا عن نسخة من السؤال</h3>
+  <div class="chain">
+    <div class="node g">الهدف العام</div><div class="arr">←</div>
+    <div class="node">المعلومة 1</div><div class="arr">←</div>
+    <div class="node">المعلومة 2</div><div class="arr">←</div>
+    <div class="node">المعلومة 3</div><div class="arr">←</div>
+    <div class="node r">الاستنتاج</div>
+  </div>
+  <div class="sent"><b>القالب:</b> «من الجزء I نعلم أنّ…، ومن الجزء II أنّ…، ومن الجزء III أنّ…؛ ومنه [الجواب عن الهدف العام].»</div>
+  <div class="corr"><b>لكن:</b> «ومنه» ليست كلمة سحرية. قيمتها من أن الجملة الأخيرة مبنية فعلًا على العناصر السابقة — جرّب إزالة كل جزء فتلاحظ اختلاء النتيجة.</div>
+
+  <h3><span class="n">هـ</span> تمارين v7 — أربع مستويات، بعد الأسهل ثم الأصعب</h3>
+  <table>
+    <tr><th>المستوى</th><th>شكل التمرين</th><th>ماذا يحقق؟</th><th>الشرط قبل الانتقال</th></tr>
+    <tr><td class="c">1</td><td><b>القدوة المشروحة:</b> مثال مُصحح كامل مع تعليق بعد كل جملة على سبب صحّتها.</td><td>يرى الشكل النهائي قبل محاولة إنتاجه.</td><td>اقرأ القدوة مرتين ولاحظ الفعل الذي تعمل عليه وبأي شكل تظهر كل حركة.</td></tr>
+    <tr><td class="c">2</td><td><b>التمرين المبادئي:</b> إطار الجواب مشروط، بعض الخطوات موجودة، أكمل الأخرى.</td><td>يساند الشكل دون إعطائه مجاناً.</td><td>أكمل  ثلاثة تمارين على الأقل من هذا النوع.</td></tr>
+    <tr><td class="c">3</td><td><b>التمرين المستقل:</b> تعليمة جديدة من نوع غير مُزدَجَل، مثال «جدول أو رسم بنية» بلا إطار.</td><td>نقل المفتاح إلى شكل سند غير مسبوق.</td><td>اجتز ثلاثة تمارين من نوع هذا.</td></tr>
+    <tr><td class="c">4</td><td><b>تشخيص الخطأ:</b> جواب وفَّ ربما لكنه زائف؛ استخرج ما فح objected وأعد بناءها.</td><td>ينمّي حصالة رؤية الخطأ والتحرير منه.</td><td>تناول ثلاثة أخطاء أذكى من خطأ.</td></tr>
+  </table>
+  <div class="box gold"><b>ملاحظة v7:</b> لا تمرّ إلى المستوى التالي إلا بعد اجتياز ثلاث تمارين ناجحة على الأقل من المستوى الحالي. القراءة الفهم الجيد لمنهج لا تعني بالضرورة إثباته عند كتابة الأمر.</div>
+
+  <h3><span class="n">و</span> السريع الحكيم — بعد الفهم لا قبله</h3>
+  <div class="box teal">
+    <b>المرحلة 1:</b> حلّ <b>المستوى 3</b> بلا توقيت، مع <b>تبرير</b> اختيارك لكل غطوة:<br>
+    &nbsp;&nbsp;• لماذا اخترت هذا الدليل ولم تستعمل غيره؟<br>
+    &nbsp;&nbsp;• لماذا اخترت هذه العملية (أصف، أفسّر، أحكم) للجواب؟<br>
+    &nbsp;&nbsp;• لماذا كتبت العلاقة على هذا الشكل بالخصوص؟
+  </div>
+  <div class="box teal" style="margin-top:6px">
+    <b>المرحلة 2:</b> بعد 3 أسطر مُبرَّرة ناجحة، أعد تمرينًا وقته مقيد. الهدف: <b>إزالة التفكر</b> في القرار لا تغيير شكله. لا تبدأ بضيق الوقت مباشرة، لأنه يدفع أعرف مقابلة السرعة على قراءة الحرف — وهو ما المفتاح يمنع.
+  </div>
+
+  <h3><span class="n">ز</span> مذهب اللغة في v7</h3>
+  <table>
+    <tr><th>الموقف</th><th>الحل في v7</th></tr>
+    <tr><td>تعبير متداوَل في الفرنسية مثل «Réflexe»، «utiles»، «implicit»</td><td><b>عربية</b> بمящих (العملية، النافعة، الضمني) — الفرنسية فقط لو إيرام الدرس مكتوبة بالفرنسية أو لاحتم أحمر به.</td></tr>
+    <tr><td>مصطلح علمي عربيَه غير مُكفَف</td><td>عربية موحّدة + مصاحبة بالفرنسية بين قوسين عند أول استعمال: «الشاهد (témoins)».</td></tr>
+    <tr><td>جملة مركّبة تحتاج قراءة ثانية</td><td>تقصّر: جملة واحدة = فكرة واحدة. اقفز قبل الطباعة.</td></tr>
+  </table>
+
+  <div class="box gold center">
+    <div style="font-size:16px;font-weight:800;color:var(--gold2)">فعل → دليل → جواب (مع علاقة إن لزم) → فحص</div>
+    <div class="small">أصف ما تظهره المعطيات · أفسّر ما تعنيه · أحكم بما تسمح به الأدلة — <b>تتدارج يمكن أن تتراكم ولا تتناقض</b></div>
+  </div>
+
+  <footer>المفتاح+ v7 · كنز العلوم · الوجه الثاني — الصعوبة بعد الفهم، لا معها</footer>
+</section>
+
+</body>
+</html>

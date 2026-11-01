@@ -1,0 +1,162 @@
+﻿ M .gitignore
+ D fix_action_card.cjs
+ D fix_app_layout.cjs
+ D fix_badge.cjs
+ D fix_cards.cjs
+ D fix_clip.cjs
+ D fix_dashboard.cjs
+ D fix_dashboard_layout.cjs
+ D fix_fab.cjs
+ D fix_main_container.cjs
+ D fix_root_relative.cjs
+ D fix_sidebar.cjs
+ M package.json
+ M public/lessons/lecon_transcription.html
+ M public/lessons/phase10_chapitres_19_20.html
+ M public/lessons/phase11_chapitres_21_22.html
+ M public/lessons/phase12_chapitres_23_24.html
+ M public/lessons/phase13_chapitres_25_26.html
+ M public/lessons/phase14_chapitres_27_28.html
+ M public/lessons/phase15_chapitres_29_30.html
+ M public/lessons/phase16_chapitres_31_32.html
+ M public/lessons/phase17_chapitres_33_34.html
+ M public/lessons/phase18_chapitres_35_36.html
+ M public/lessons/phase19_chapitres_37_38.html
+ M public/lessons/phase1_chapitres_1_2.html
+ M public/lessons/phase20_chapitres_39_40.html
+ M public/lessons/phase21_chapitres_41_42.html
+ M public/lessons/phase22_chapitres_43_44.html
+ M public/lessons/phase2_chapitres_3_4.html
+ M public/lessons/phase3_chapitres_5_6.html
+ M public/lessons/phase4_chapitres_7_8.html
+ M public/lessons/phase5_chapitres_9_10.html
+ M public/lessons/phase6_chapitres_11_12.html
+ M public/lessons/phase7_chapitres_13_14.html
+ M public/lessons/phase8_chapitres_15_16.html
+ M public/lessons/phase9_chapitres_17_18.html
+ D replace_nav.cjs
+ M src/components/BoussoleCard.tsx
+ M src/components/HtmlLessonViewer.tsx
+ M src/components/LessonsView.tsx
+ M src/correcteurV1.test.ts
+ M src/correcteurV1.ts
+ M src/data/activeLessons.ts
+ M src/data/dictionaries/correcteurIntegration.test.ts
+ M src/data/dictionaries/dictionnaireCorrecteur.test.ts
+ M src/data/dictionaries/sanctionsCorrecteur.ts
+ M src/data/lessonHtmlGetters.ts
+ M src/data/lessonModes.ts
+ M src/data/unitLessonSequences.ts
+ M src/lessonData.ts
+ M src/lib/validation/normalizeAr.ts
+ M src/tutorKnowledge.ts
+ M src/utils/__tests__/dashboardActions.test.ts
+ M src/utils/dashboardActions.ts
+ M tsc_out.txt
+?? AUDIT_FIX.txt
+?? AUDIT_PROG.txt
+?? AUDIT_RUN2.txt
+?? CHAP_RUN2.txt
+?? ETAT_COMPLET.txt
+?? ETAT_H1.txt
+?? ETAT_MID.txt
+?? KEYS_OUT.txt
+?? RAP_TDM.txt
+?? STRUCT.txt
+?? TAIL_ZONE.txt
+?? TDM.txt
+?? ZONE.txt
+?? add_missing_lessons.py
+?? add_missing_phases.py
+?? analyze_entries.py
+?? audit-h1-full.txt
+?? audit-titles.txt
+?? audit_55.txt
+?? audit_chap.txt
+?? audit_chap2.txt
+?? audit_chap3.txt
+?? audit_chapters.txt
+?? audit_crumb.txt
+?? audit_etat.txt
+?? audit_final.txt
+?? audit_final2.txt
+?? audit_full.txt
+?? audit_h1.txt
+?? audit_h1_full.txt
+?? audit_live.txt
+?? audit_now.txt
+?? audit_pass.txt
+?? audit_pass2.txt
+?? audit_run.txt
+?? audit_sizes.txt
+?? audit_state_u8.txt
+?? audit_titles.txt
+?? audit_titres.txt
+?? audit_utf8.txt
+?? audit_utf8_chap.txt
+?? audit_v2.txt
+?? audit_x.txt
+?? book_tdm_clean.md
+?? book_toc_extract.txt
+?? check_brackets.py
+?? count_keys.py
+?? count_original_keys.py
+?? docs/sources/.gitignore
+?? docs/sources/README.md
+?? find_close.py
+?? find_insert_point.py
+?? find_library.py
+?? fix_brackets.py
+?? fix_ending.py
+?? fix_insert.py
+?? fix_insert2.py
+?? fix_lecon.py
+?? fix_lesson_data.js
+?? fix_lesson_data.py
+?? fix_phase10_11.py
+?? git_state.txt
+?? insert_before_library.py
+?? insert_before_slugs.py
+?? insert_by_line.py
+?? insert_phases.py
+?? insert_phases_v2.py
+?? public/lessons/phase23_chapitres_45_46.html
+?? public/lessons/phase24_chapitres_47_48.html
+?? public/lessons/phase25_chapitres_49_50.html
+?? public/lessons/phase26_chapitres_51_52.html
+?? restore_original.py
+?? scripts/analyser-tracabilite.ts
+?? scripts/evaluer-copies.ts
+?? scripts/gen-phases-45-52.mjs
+?? scripts/recalibrer-copiees.ts
+?? scripts/tronquer-sources.ts
+?? show_context.py
+?? show_exact.py
+?? show_lines.py
+?? show_range.py
+?? src/data/dictionaries/calibrationBac2025.test.ts
+?? src/data/dictionaries/calibrationBac2025.ts
+?? src/data/lessonChapterSplit.test.ts
+?? src/data/lessonChapterSplit.ts
+?? src/data/lessonListIntegration.test.ts
+?? src/lib/validation/gradeEtoile.test.ts
+?? src/lib/validation/gradeEtoile.ts
+?? tmp-h1.cjs
+?? tmp_audit_lessons.txt
+?? tmp_diff1.txt
+?? tmp_diff2.txt
+?? tmp_diff3.txt
+?? tmp_diffstat.txt
+?? tmp_git_diff.txt
+?? tmp_test_dot.txt
+?? tmp_test_out.txt
+?? tools-audit-55.mjs
+?? tools-audit-chapitres.mjs
+?? tools-audit-etat.mjs
+?? tools-audit-h1.mjs
+?? tools-audit-lessons.mjs
+?? tools-etat-complet.mjs
+?? tools-etat-reel.mjs
+?? tools-fix-lessondata.mjs
+?? tools-keys.mjs
+?? tools-state.mjs

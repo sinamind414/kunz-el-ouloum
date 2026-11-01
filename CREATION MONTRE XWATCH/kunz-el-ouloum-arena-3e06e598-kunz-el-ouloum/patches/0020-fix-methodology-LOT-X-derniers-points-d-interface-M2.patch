@@ -1,0 +1,125 @@
+From 7800959f439242290d1491f3f20de2541bb1ae15 Mon Sep 17 00:00:00 2001
+From: sinamind414 <sinamind414@users.noreply.github.com>
+Date: Fri, 4 Sep 2026 08:02:12 +0000
+Subject: [PATCH 20/22] =?UTF-8?q?fix(methodology):=20LOT=20X=20=E2=80=94?=
+ =?UTF-8?q?=20derniers=20points=20d'interface=20(M2=20+=20F3=20+=20r=C3=A9?=
+ =?UTF-8?q?sidus=20fran=C3=A7ais)?=
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Suite au rapport d'analyse v3.5 : M2 et F3 (choix laissés ouverts) + un résidu
+du même type découvert en chemin.
+
+M2 — documents différenciés dans le sélecteur « الوثيقة: » :
+- option = themeAr + « — » + supportTitle → fini les 3 « الوثيقة 1 » ambigus
+  pour حلّل (أصبح « تركيب البروتين — الوثيقة 1… », « الاتصال العصبي — الوثيقة 2… », …)
+- aucune donnée modifiée (la numérotation interne des documents reste
+  cohérente avec les textes à trous/réponses-modèles : zéro risque pour le scoreur)
+
+F3 — UI 100 % arabe (règle d'origine) :
+- dropdown des verbes : « حَلّل (Analyser) » → « حَلّل »
+- badge verbFr des cartes d'action supprimé
+- planning de révision espacée : « حَلّل (Analyser) » → « حَلّل », idem فسّر/قارن
+- verbFr conservé dans les DONNÉES (VERB_CARDS) pour de futurs outils prof
+
+TESTS (73 → 76, section I) : libellé affichable unique par verbe (M2), themeAr
+renseigné pour les 10 exercices, verbFr complet pour les 12 verbes (F3).
+tsc 0 · tests 76/76 · build ✓ 8,4 s · scan : 0 résidu français dans l'UI.
+---
+ src/components/MethodologyCompilerView.tsx | 13 +++++------
+ tests/boussole.test.ts                     | 25 ++++++++++++++++++++--
+ 2 files changed, 28 insertions(+), 10 deletions(-)
+
+diff --git a/src/components/MethodologyCompilerView.tsx b/src/components/MethodologyCompilerView.tsx
+index 56cfc68..bd563af 100644
+--- a/src/components/MethodologyCompilerView.tsx
++++ b/src/components/MethodologyCompilerView.tsx
+@@ -413,7 +413,7 @@ export default function MethodologyCompilerView({ onBackToHome }: MethodologyPro
+                     className="bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 font-black text-gray-900 dark:text-white px-3 py-1.5 rounded-xl text-sm"
+                   >
+                     {VERB_CARDS.map(v => (
+-                      <option key={v.id} value={v.id}>{v.verbAr} ({v.verbFr})</option>
++                      <option key={v.id} value={v.id}>{v.verbAr}</option>
+                     ))}
+                   </select>
+ 
+@@ -437,7 +437,7 @@ export default function MethodologyCompilerView({ onBackToHome }: MethodologyPro
+                         className="bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 font-black text-gray-900 dark:text-white px-3 py-1.5 rounded-xl text-sm max-w-[240px]"
+                       >
+                         {exercisesForVerb.map(ex => (
+-                          <option key={ex.id} value={ex.id}>{ex.supportTitle}</option>
++                          <option key={ex.id} value={ex.id}>{ex.themeAr} — {ex.supportTitle}</option>
+                         ))}
+                       </select>
+                     </div>
+@@ -1158,9 +1158,6 @@ export default function MethodologyCompilerView({ onBackToHome }: MethodologyPro
+                       <div>
+                         <h3 className="font-black text-lg text-gray-900 dark:text-white flex items-center gap-2">
+                           {verbCard.verbAr}
+-                          <span className="text-xs font-bold text-gray-400 bg-gray-100 dark:bg-gray-800 px-2 py-0.5 rounded">
+-                            {verbCard.verbFr}
+-                          </span>
+                         </h3>
+                         <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">{verbCard.goal}</p>
+                       </div>
+@@ -1439,9 +1436,9 @@ export default function MethodologyCompilerView({ onBackToHome }: MethodologyPro
+ 
+               <div className="space-y-2.5">
+                 {[
+-                  { day: 'J + 1', verb: 'حَلّل (Analyser)', status: 'جاهز للمراجعة', isDue: true },
+-                  { day: 'J + 3', verb: 'فَسّر (Expliquer)', status: 'متبقي يومان', isDue: false },
+-                  { day: 'J + 7', verb: 'قَارن (Comparer)', status: 'متبقي 4 أيام', isDue: false },
++                  { day: 'J + 1', verb: 'حَلّل', status: 'جاهز للمراجعة', isDue: true },
++                  { day: 'J + 3', verb: 'فَسّر', status: 'متبقي يومان', isDue: false },
++                  { day: 'J + 7', verb: 'قَارن', status: 'متبقي 4 أيام', isDue: false },
+                   { day: 'J + 16', verb: 'اقْتَرح فرضيّة', status: 'متبقي 11 يوماً', isDue: false },
+                   { day: 'J + 30', verb: 'صَادق على الفرضية', status: 'متبقي 24 يوماً', isDue: false }
+                 ].map((item, idx) => (
+diff --git a/tests/boussole.test.ts b/tests/boussole.test.ts
+index adedce0..fdee6d3 100644
+--- a/tests/boussole.test.ts
++++ b/tests/boussole.test.ts
+@@ -11,7 +11,7 @@
+ // ============================================================
+ import { evaluateStudentProduction } from '../src/utils/methodologyScorer';
+ import { getSwitchForVerb, groupErrorsByAddress, switchPathAr, getStep } from '../src/data/boussoleData';
+-import { TRAINING_EXERCISES } from '../src/data/methodologyEngine';
++import { TRAINING_EXERCISES, VERB_CARDS } from '../src/data/methodologyEngine';
+ import fs from 'node:fs';
+ import path from 'node:path';
+ 
+@@ -317,6 +317,27 @@ console.log('── SECTION H : correctif F1/M1 (repli fantôme + types de suppo
+     && TRAINING_EXERCISES.every(e => ['courbe','schema','tableau','photo','texte'].includes(e.supportType)));
+ }
+ 
++// ─────────────────────────────────────────────
++// SECTION I — correctifs M2/F3 : libellés de documents + UI 100 % arabe
++// ─────────────────────────────────────────────
++console.log('── SECTION I : correctifs M2/F3 (documents différenciés + arabisation) ──');
++{
++  // M2 : le préfixe du sélecteur est le thème de l'exercice → deux documents d'un
++  // même verbe ne peuvent plus avoir le même libellé (fini les « الوثيقة 1 » ×3).
++  const byVerb = (verbId: string) => TRAINING_EXERCISES.filter(e => e.verbId === verbId);
++  check('M2 : libellé affichable unique pour chaque verbe (themeAr + titre, jamais de doublon)',
++    ['verb_analyse_v1', 'verb_explain_v1', 'verb_compare_v1'].every(v => {
++      const labels = byVerb(v).map(e => `${e.themeAr} — ${e.supportTitle}`);
++      return new Set(labels).size === labels.length;
++    }));
++  check('M2 : chaque thème de document (themeAr) est renseigné pour les 10 exercices',
++    TRAINING_EXERCISES.every(e => !!e.themeAr && e.themeAr.length > 3));
++  // F3 : la référence française reste dans les DONNÉES (outils prof futurs),
++  // mais n'est plus affichée : l'UI élève est 100 % arabe.
++  check('F3 : les 12 verbes gardent leur libellé français dans les données (verbFr)',
++    VERB_CARDS.length === 12 && VERB_CARDS.every(v => !!v.verbFr && v.verbFr.length > 1));
++}
++
+ // ─────────────────────────────────────────────
+ console.log('');
+ console.log('════════════════════════════════════════════════');
+@@ -326,4 +347,4 @@ if (fail > 0) {
+   failures.forEach(f => console.log(`   ✗ ${f}`));
+   process.exit(1);
+ }
+-console.log(' ✅ Toutes les garanties lot A→W sont verrouillées.');
++console.log(' ✅ Toutes les garanties lot A→X sont verrouillées.');

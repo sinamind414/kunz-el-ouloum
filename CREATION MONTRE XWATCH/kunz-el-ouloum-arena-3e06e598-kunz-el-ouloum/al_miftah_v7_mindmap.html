@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>المفتاح v7.0 — الخريطة الذهنية · SVT · بكالوريا الجزائر</title>
+<style>
+:root{
+  --gold:#b77a12; --gold2:#6e4a09; --gold-l:#fff8e8;
+  --teal:#0b6f6a; --teal2:#07534f; --teal-l:#eaf7f5;
+  --red:#b42318; --red-l:#fff1ef;
+  --blue:#265fd5; --blue-l:#eef4ff;
+  --violet:#6b46c1; --violet-l:#f5f0ff;
+  --ink:#14181d; --mute:#52606d; --line:#dfe7eb; --paper:#fff; --bg:#edf1f3;
+}
+*{box-sizing:border-box}
+body{margin:0;background:
+  radial-gradient(circle at 20% 15%, #f4f0e2 0%, transparent 45%),
+  radial-gradient(circle at 85% 80%, #e3f0ee 0%, transparent 45%),
+  var(--bg);
+  color:var(--ink);font-family:"Noto Kufi Arabic","Segoe UI",Tahoma,Arial,sans-serif;font-size:14px;line-height:1.7;min-height:100vh}
+.topbar{max-width:1100px;margin:20px auto 0;padding:14px 22px;background:var(--paper);border:1px solid var(--line);border-radius:14px;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px;box-shadow:0 8px 24px rgba(9,73,70,.08)}
+.topbar h1{margin:0;font-size:20px;color:var(--gold2);font-weight:800}
+.topbar h1 small{color:var(--mute);font-weight:600;font-size:12px}
+.topbar .hint{font-size:11.5px;color:var(--mute)}
+.map{max-width:1100px;margin:16px auto 40px;padding:10px 22px 30px;position:relative}
+.center-node{margin:34px auto 0;max-width:420px;background:linear-gradient(135deg,#fffdf4,var(--gold-l));border:2px solid var(--gold);border-radius:16px;padding:14px 20px;text-align:center;box-shadow:0 10px 28px rgba(183,122,18,.18);position:relative;z-index:2}
+.center-node .t{font-size:20px;font-weight:800;color:var(--gold2)}
+.center-node .s{font-size:11px;color:var(--mute);margin-top:3px}
+.center-node .teeth{display:flex;flex-wrap:wrap;gap:5px;justify-content:center;margin-top:9px}
+.tooth{background:linear-gradient(135deg,var(--gold),var(--gold2));color:#fff;border-radius:8px;padding:2px 8px;font-weight:800;font-size:10.5px}
+.branch{margin:26px auto 0;max-width:960px;display:grid;grid-template-columns:1fr;gap:18px;position:relative;z-index:2}
+.branch::before{content:"";position:absolute;inset-inline-start:50%;top:-18px;bottom:100%;width:0}
+@media(min-width:860px){.branch{grid-template-columns:1fr 1fr}}
+.bnode{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:14px 16px;box-shadow:0 4px 14px rgba(0,0,0,.05);position:relative}
+.bnode::before{content:"";position:absolute;top:-16px;inset-inline-start:24px;width:2px;height:16px;background:var(--line)}
+.bnode h2{margin:0 0 4px;font-size:15px;font-weight:800;display:flex;align-items:center;gap:8px}
+.bnode .dot{width:22px;height:22px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;color:#fff;font-size:12px;font-weight:800;flex:0 0 auto}
+.bnode .tagline{font-size:11px;color:var(--mute);margin-bottom:8px}
+.tree{list-style:none;margin:0;padding:0}
+.tree>li{margin:7px 0;border-radius:9px;padding:6px 10px;font-size:12px;background:#fff;border:1px solid var(--line)}
+.tree>li>b{font-size:12.5px}
+.tree ul{list-style:none;margin:4px 0 0;padding-inline-start:14px;border-inline-start:2px dashed var(--line)}
+.tree ul li{font-size:11.5px;color:var(--mute);margin:4px 0;position:relative}
+.tree ul li::before{content:"◂";position:absolute;inset-inline-start:-13px;color:var(--mute);font-size:9px}
+.c-gold .dot{background:linear-gradient(135deg,var(--gold),var(--gold2))}.c-gold>li,.c-gold .tree>li{background:var(--gold-l);border-color:#f0d9a8}
+.c-teal .dot{background:var(--teal)}.c-teal .tree>li{background:var(--teal-l);border-color:#bfdfdb}
+.c-violet .dot{background:var(--violet)}.c-violet .tree>li{background:var(--violet-l);border-color:#ddd0fb}
+.c-red .dot{background:var(--red)}.c-red .tree>li{background:var(--red-l);border-color:#f4c3be}
+.c-blue .dot{background:var(--blue)}.c-blue .tree>li{background:var(--blue-l);border-color:#c9d9fb}
+.sap{margin:26px auto 0;max-width:640px;background:linear-gradient(135deg,#fffdf4,var(--teal-l));border:2px double var(--teal);border-radius:14px;padding:12px 18px;text-align:center}
+.sap .a{font-size:15px;font-weight:800;color:var(--teal2)}
+.sap .b{font-size:11.5px;color:var(--mute);margin-top:3px}
+.legend{max-width:960px;margin:20px auto 0;padding:10px 16px;border:1px dashed var(--line);border-radius:12px;background:#fbfcfd;font-size:11px;color:var(--mute);text-align:center}
+@media print{
+  body{background:#fff}.topbar,.map,.sap,.legend{box-shadow:none}
+  @page{size:A4;margin:8mm}
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <h1>المفتاح v7.0 — الخريطة الذهنية <small>· SVT · بكالوريا الجزائر · كنز العلوم</small></h1>
+  <div class="hint">اقرأ من الجذر نحو الفروع اتجاهًا واحدًا لكل موضع: من المركز إلى الفروع ومنها إلى التفاصيل.</div>
+</div>
+
+<div class="map">
+
+  <div class="center-node">
+    <div class="t">🔑 المفتاح — قبل أن أكتب</div>
+    <div class="s">دائرة القرار · العمليات الثلاث · الحلقة · الأمثلة · التريم</div>
+    <div class="teeth">
+      <span class="tooth">فعل</span><span class="tooth">دليل</span><span class="tooth">جواب</span><span class="tooth">فحص</span>
+    </div>
+  </div>
+
+  <div class="branch">
+
+    <!-- 1 الحلقة -->
+    <div class="bnode c-gold">
+      <h2><span class="dot">1</span> الحلقة الأربعة</h2>
+      <div class="tagline">حلقة تحكّم، لا خط مستقيم — يمكن الرجوع من الدليل إلى الفعل.</div>
+      <ul class="tree">
+        <li><b>1 · فعل</b> — أطوّق الفعل، أحدد نوع المنتج.
+          <ul><li>علامة أمان: لا أجيب عن سؤال آخر أعرف معلومات عنه فقط.</li></ul>
+        </li>
+        <li><b>2 · دليل</b> — المعطيات النافعة فقط: القيم، الوحدات، التغيرات، الشاهد، الشروط.
+          <ul><li>كل معطى مُختار يخدم الاستدلال، وإلا يُحذف.</li></ul>
+        </li>
+        <li><b>3 · جواب</b> — المنتج المطلوب مباشرة (+ <b>علاقة إن اقتضتها التعليمة</b>: كلما… / بينما…).
+          <ul><li>علاقة اختيارية داخل الجواب، ليست خطوة إلزامية.</li>
+              <li>الجملة النهائية تُقرأ وحدها.</li></ul>
+        </li>
+        <li><b>4 · فحص</b> — «هل أستطيع الدفاع عن كل جملة؟»
+          <ul><li>حلقة: إن فشل الفحص ← رجوع إلى الفعل.</li></ul>
+        </li>
+      </ul>
+    </div>
+
+    <!-- 2 العمليات الثلاث -->
+    <div class="bnode c-teal">
+      <h2><span class="dot">2</span> العمليات الثلاث — قابلة للدمج</h2>
+      <div class="tagline">تتراكم في جواب واحد ولا تُساوم بينها، إلا إذا طلبت التعليمة عملية واحدة.</div>
+      <ul class="tree">
+        <li><b>🟡 أصف</b> — ماذا تُظهر المعطيات؟
+          <ul><li>لغة: نلاحظ · يرتفع · ينخفض · يثبت · يقارن.</li>
+              <li>لا تفسير لم تطلبه التعليمة.</li></ul>
+        </li>
+        <li><b>🟢 أفسّر</b> — ماذا تعني المعطيات؟
+          <ul><li>معطى (الوثيقة) + معرفة (الدرس) — العنصران معًا إلزاميان.</li>
+              <li>لغة: وهذا راجع إلى… · نعلم أن… · مما يؤدي إلى…</li></ul>
+        </li>
+        <li><b>🟣 أحكم</b> — ماذا أقرر بناءً على الدليل؟
+          <ul><li>لغة: يتوافق مع… · لا يتوافق… · لذلك…</li>
+              <li>عند نقص الدليل: «المعطيات لا تكفي وحدها لإثبات…» — حدود الاستنتاج جزء من الحكم.</li></ul>
+        </li>
+        <li><b>وضع الاسترجاع</b> — سمّ / عدّد: قائمة · عرّف: انتماء+خاصية+دور · حدّد: بحسب السياق.</li>
+      </ul>
+    </div>
+
+    <!-- 3 تجربة + فاصل علمي -->
+    <div class="bnode c-red">
+      <h2><span class="dot">3</span> التجربة والمنطق العلمي</h2>
+      <div class="tagline">المتغيرات الأربعة ثم حدود ما تسمح به المعطيات.</div>
+      <ul class="tree">
+        <li><b>الشرح: المتغيرات الأربعة</b>
+          <ul><li>التغير = المتغير المختبَر.</li>
+              <li>القياس = المتغير المقاس.</li>
+              <li>الشاهد (témoins) = وضعية مرجعية أو تجربة قياس — ليست دائمًا «مقارنة» بسيطة.</li>
+              <li>الشروط الثابتة.</li></ul>
+        </li>
+        <li><b>⚠ فاصل علمي</b>
+          <ul><li>تزامن X وY ≠ X يسبب Y.</li>
+              <li>صياغة الحذر: «تُظهر المعطيات ارتباطًا بين X وY، لكنها لا تكفي وحدها لإثبات أن X يسبب Y — لا استنتاج سببية إلا بشاهد وعلاقة مثبتة».</li></ul>
+        </li>
+      </ul>
+    </div>
+
+    <!-- 4 التركيب -->
+    <div class="bnode c-blue">
+      <h2><span class="dot">4</span> التركيب — أجيب عن القفل</h2>
+      <div class="tagline">الهدف العام ← المعلومات ← الاستنتاج.</div>
+      <ul class="tree">
+        <li><b>القالب:</b> «من الجزء I نعلم أنّ…، ومن II أنّ…، ومن III أنّ…؛ ومنه [الجواب]».</li>
+        <li><b>قاعدة:</b> «ومنه» ليست كلمة سحرية — جرب إزالة جزء: إن اختلّ الاستنتاج، فالبناء صحيح.</li>
+      </ul>
+    </div>
+
+    <!-- 5 التدريب -->
+    <div class="bnode c-violet">
+      <h2><span class="dot">5</span> التدريب المُتدرِّج</h2>
+      <div class="tagline">بعد الفهم، لا قبله — 3 نجاحات قبل الانتقال للمستوى التالي.</div>
+      <ul class="tree">
+        <li><b>مستوى 1 · القدوة المشروحة</b> — مثال كامل مع تعليق على كل جملة.</li>
+        <li><b>مستوى 2 · التمرين الموجَّه</b> — هيكل جزئي، أكمل الباقي.</li>
+        <li><b>مستوى 3 · التمرين المستقل</b> — سند جديد (جدول / رسم بنية) بلا إطار.</li>
+        <li><b>مستوى 4 · تشخيص الخطأ</b> — جواب «يبدو صحيحًا»، اكتشاف ما سقط ثم إعادة بنائه.</li>
+        <li><b>السباق الحكيم (بعد المرحلة 2)</b> — أولًا تبرير كل اختيار بلا توقيت ← ثانية توقيت قصير لسرعة القرار.</li>
+      </ul>
+    </div>
+
+    <!-- 6 اللغة -->
+    <div class="bnode c-gold">
+      <h2><span class="dot">6</span> سياسة اللغة</h2>
+      <div class="tagline">عربية أولًا، الفرنسية بمعيار محدد.</div>
+      <ul class="tree">
+        <li>مصطلح عربي معتمد ← يُستعمل ويُرافق بالفرنسية بين قوسين أول مرة: «الشاهد (témoins)».</li>
+        <li>مصطلح درس فرنسي ← يُكتب بالفرنسية كما هو في السند أو البرنامج.</li>
+        <li>جملة واحدة = فكرة واحدة؛ تُقصَّر الجملة الطويلة قبل النسخ النهائي.</li>
+      </ul>
+    </div>
+
+  </div>
+
+  <div class="sap">
+    <div class="a">فعل ← دليل ← جواب (علاقة إن لزم) ← فحص</div>
+    <div class="b">أَصف ما تُظهره المعطيات · أَفسّر ما تعنيه · أَحكم بما تسمح به الأدلة — والخطأ فرصة لتفسير، لا عقاب</div>
+  </div>
+
+  <div class="legend">
+    🟡 ذهب = الحلقة · 🟢 أخضر = العمليات · 🔴 أحمر = التجربة والحذر العلمي · 🔵 أزرق = التركيب · 🟣 بنفسجي = التدريب · خشبي = اللغة
+  </div>
+
+</div>
+</body>
+</html>

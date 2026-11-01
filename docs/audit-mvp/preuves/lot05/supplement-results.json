@@ -1,0 +1,65 @@
+{
+  "observations": [
+    {
+      "name": "F23-moteur-déterministe",
+      "tachesJour1": [
+        {
+          "genre": "capsule",
+          "ref": "cap_u6_calvin",
+          "titre": "كيف أحفظ حلقة كالفن دون أن أختلط؟",
+          "minutes": 3
+        },
+        {
+          "genre": "schema",
+          "ref": "drill_chaine_photochimique",
+          "titre": "المرحلة الكيموضوئية على غشاء التيلاكويد",
+          "minutes": 12
+        },
+        {
+          "genre": "montage",
+          "ref": "arch_mibide_photosynthese",
+          "titre": "التركيب المتكرّر: مبيد يقطع سلسلة التركيب الضوئي",
+          "minutes": 10
+        },
+        {
+          "genre": "redaction",
+          "ref": "bac2017_s1_e3",
+          "titre": "اكتب جواب تمرين 2017: الصانعة الخضراء: من الضوء إلى المادة العضوية",
+          "minutes": 15
+        },
+        {
+          "genre": "situation",
+          "ref": "serre_agricole",
+          "titre": "البيت البلاستيكي",
+          "minutes": 20
+        }
+      ],
+      "secondAppelIdentique": true,
+      "jours": 21,
+      "totalMinutesJour1": 60,
+      "totalMinutesDefaut14x60": 60
+    },
+    {
+      "name": "F21-libellés-moteur",
+      "intervales": {
+        "again": "داخل الجلسة",
+        "hard": "يوم واحد",
+        "good": "يوم واحد",
+        "easy": "4 أيام"
+      }
+    },
+    {
+      "name": "F24-garde-fous",
+      "clé": "kunz_parcours_v1",
+      "typeSurStoreVide": "new",
+      "closureInexistante": false
+    },
+    {
+      "name": "mobile-largeur",
+      "largeur": 390,
+      "scrollWidth": 390
+    }
+  ],
+  "pageErrors": [],
+  "scenarioErrors": []
+}

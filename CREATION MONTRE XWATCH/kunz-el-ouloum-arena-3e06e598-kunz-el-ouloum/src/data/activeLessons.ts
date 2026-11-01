@@ -1,0 +1,3166 @@
+// activeLessons.ts
+// Modèle de données du Pilier 1 : Leçon Active "Mot par Mot".
+// Les leçons sont indexées par le même `lessonId` que celui utilisé dans l'app
+// (ex: "lecon_transcription"), pour que le tunnel se déclenche sur une leçon réelle.
+
+// Source de vérité officielle (lexique DZ strict) — voir kunzDatabase.ts.
+import { CoreReflexId } from '../data/reflexes';
+import type { ValidationContext } from '../lib/validation/ValidationEngine';
+import { ActiveLesson_D1_U3_L1_Enzyme } from './kunzDatabase';
+export interface MicroTest {
+  prompt: string;
+  acceptedAnswers: string[];
+  errorHint: string;
+}
+
+export type TextAndProduceBlock =
+  | {
+      // Forme 1 : remplissage à trous (contenu avec [____] + micro-test intégré).
+      type: 'TEXT_AND_PRODUCE';
+      objective: string;
+      content: string; // Contient des [____] pour les trous
+      popups: Record<string, string>; // Définitions des termes cliquables
+      microTest: MicroTest;
+    }
+  | {
+      // Forme 2 : production de texte libre (aucun trou) — prompt + réponses acceptées.
+      type: 'TEXT_AND_PRODUCE';
+      objective: string;
+      prompt: string;
+      acceptedAnswers: string[];
+      errorHint: string;
+    };
+
+export interface HotspotAndMethodologyBlock {
+  type: 'HOTSPOT_AND_METHODOLOGY';
+  objective: string;
+  introText: string;
+  schemaSrc: string; // Chemin local vers le SVG/WebP
+  supportAssetSrc?: string;
+  supportAltAr?: string;
+  supportCaptionAr?: string;
+  supportSecondaryAssetSrc?: string;
+  supportSecondaryAltAr?: string;
+  supportSecondaryCaptionAr?: string;
+  supportGallery?: {
+    assetSrc?: string;
+    altAr: string;
+    captionAr?: string;
+  }[];
+  hotspot: {
+    prompt: string;
+    correctZone: { x: number; y: number; radius: number }; // Pourcentage sur l'image
+    successFeedback: string;
+  };
+  methodology: {
+    prompt: string;
+    steps: { label: string; placeholder: string; requiredKeywords: string[] }[];
+  };
+}
+
+export interface MissionChoiceBlock {
+  type: 'MISSION_CHOICE';
+  objective: string;
+  heroTitle: string;
+  heroText: string;
+  imageSrc?: string;
+  supportAssetSrc?: string;
+  supportAltAr?: string;
+  supportCaptionAr?: string;
+  choices: {
+    id: string;
+    labelAr: string;
+    descriptionAr: string;
+    nextLessonId?: string;
+    completeOnSelect?: boolean;
+  }[];
+}
+
+export interface GuidedDocQaBlock {
+  type: 'GUIDED_DOC_QA';
+  objective: string;
+  doc: {
+    assetSrc?: string;
+    altAr: string;
+    captionAr?: string;
+    secondaryAssetSrc?: string;
+    secondaryAltAr?: string;
+    secondaryCaptionAr?: string;
+  };
+  questions: {
+    id: string;
+    verbAr: string;
+    promptAr: string;
+    answerType: 'short_text';
+    validationMode: 'engine' | 'keywords';
+    validationCtx?: ValidationContext;
+    requiredKeywords?: string[];
+    /** #44 — Sous-ensemble de `requiredKeywords` dont l'ORDRE d'apparition fait la réponse (sens, chronologie). */
+    orderedKeywords?: string[];
+    forbiddenKeywords?: string[];
+    successMessageAr?: string;
+    errorHintAr?: string;
+  }[];
+  summaryAr: string;
+}
+
+export interface DualEvidenceBlock {
+  type: 'DUAL_EVIDENCE';
+  objective: string;
+  docA: {
+    assetSrc?: string;
+    altAr: string;
+    captionAr: string;
+  };
+  docB: {
+    assetSrc?: string;
+    altAr: string;
+    captionAr: string;
+  };
+  extractionPromptAr: string;
+  justificationPromptAr: string;
+  extractionKeywords: string[];
+  justificationKeywords: string[];
+  summaryAr: string;
+}
+
+export interface HypothesisExperimentBlock {
+  type: 'HYPOTHESIS_EXPERIMENT';
+  objective: string;
+  problemAr: string;
+  experimentAssetSrc?: string;
+  experimentAltAr: string;
+  hypothesisPromptAr: string;
+  resultPromptAr: string;
+  validationPromptAr: string;
+  namingPromptAr?: string;
+  expectedTargets: string[];
+  resultKeywords?: string[];
+  validationKeywords?: string[];
+  namingAccepted?: string[];
+  summaryAr: string;
+}
+
+export interface ComparisonTableBlock {
+  type: 'COMPARISON_TABLE';
+  objective: string;
+  promptAr: string;
+  assetSrc?: string;
+  altAr?: string;
+  supportGallery?: {
+    assetSrc?: string;
+    altAr: string;
+    captionAr?: string;
+  }[];
+  criteria: {
+    id: string;
+    labelAr: string;
+    leftExpected: string[];
+    rightExpected: string[];
+  }[];
+  conclusionPromptAr: string;
+  conclusionKeywords: string[];
+  summaryAr: string;
+}
+
+export interface SequenceOrderBlock {
+  type: 'SEQUENCE_ORDER';
+  objective: string;
+  promptAr: string;
+  assetSrc?: string;
+  altAr?: string;
+  secondaryAssetSrc?: string;
+  secondaryAltAr?: string;
+  secondaryCaptionAr?: string;
+  supportGallery?: {
+    assetSrc?: string;
+    altAr: string;
+    captionAr?: string;
+  }[];
+  steps: {
+    id: string;
+    labelAr: string;
+    expectedOrder: number;
+  }[];
+  summaryPromptAr: string;
+  summaryKeywords: string[];
+  summaryAr: string;
+}
+
+export interface ReasoningCountBlock {
+  type: 'REASONING_COUNT';
+  objective: string;
+  promptAr: string;
+  assetSrc?: string;
+  altAr?: string;
+  options: {
+    symbolCount: 1 | 2 | 3;
+    combinations: number;
+    isCorrect: boolean;
+  }[];
+  rationalePromptAr: string;
+  rationaleKeywords: string[];
+  summaryAr: string;
+}
+
+export type Block =
+  | TextAndProduceBlock
+  | HotspotAndMethodologyBlock
+  | MissionChoiceBlock
+  | GuidedDocQaBlock
+  | DualEvidenceBlock
+  | HypothesisExperimentBlock
+  | ComparisonTableBlock
+  | SequenceOrderBlock
+  | ReasoningCountBlock;
+
+export interface ActiveLesson {
+  id: string;
+  title: string;
+  blocks: Block[];
+}
+
+// Correction A — orientation de fin de leçon (Speckit FINAL §3).
+export interface LessonProgression {
+  nextLessonId?: string;
+  recommendedReflexId?: CoreReflexId;
+  completionMessageAr: string;
+}
+
+export const LESSON_PROGRESSION: Record<string, LessonProgression> = {
+  'lecon_transcription': {
+    nextLessonId: 'd1-u1-l3-traduction',
+    recommendedReflexId: 'explain',
+    completionMessageAr: 'أكملت الاستنساخ. الخطوة الطبيعية الآن هي فهم الترجمة.',
+  },
+  'd1-u1-l1-expression-genique': {
+    nextLessonId: 'd1-u1-l2-transcription',
+    recommendedReflexId: 'hypothesize',
+    completionMessageAr: 'أكملت بناء فكرة انتقال المعلومة الوراثية. الآن انتقل إلى آلية الاستنساخ.',
+  },
+  'phase11_chapitres_21_22': {
+    nextLessonId: 'synapse',
+    recommendedReflexId: 'interpret',
+    completionMessageAr: 'أكملت التفاعلات الضوئية. الآن انتقل إلى الاتصال العصبي.',
+  },
+  'synapse': {
+    nextLessonId: undefined,
+    recommendedReflexId: 'interpret',
+    completionMessageAr: 'أحسنت! فهمت تحوّل التنبيه الكهربائي إلى رسالة كيميائية ثم كهربائية.',
+  },
+  'subduction': {
+    nextLessonId: 'd3-u9-l2-benioff',
+    recommendedReflexId: 'interpret',
+    completionMessageAr: 'أحسنت! فهمت كيف يؤدي الغوص إلى انصهار الوشاح ونشاط بركاني.',
+  },
+  'protein_structure_function': {
+    nextLessonId: 'd1-u3-l1-enzyme',
+    recommendedReflexId: 'interpret',
+    completionMessageAr: 'أحسنت! فهمت كيف يحدد تتابع الأحماض الأمينية بنية البروتين ووظيفته.',
+  },
+  'seismic_waves': {
+    nextLessonId: undefined,
+    recommendedReflexId: 'interpret',
+    completionMessageAr: 'أحسنت! فهمت كيف تكشف الأمواج P و S عن بنية باطن الأرض.',
+  },
+  'prerequis2AS_genetique': {
+    nextLessonId: 'immunity_self_nonself',
+    recommendedReflexId: 'compare',
+    completionMessageAr:
+      'استرجعت المكتسبات القبلية (مورثة، أليل، نمط وراثي، تساوي السيادة). الآن أنت جاهز لدرس الذات واللاذات.',
+  },
+  'immunity_self_nonself': {
+    nextLessonId: 'immunity_humoral_response',
+    recommendedReflexId: 'interpret',
+    completionMessageAr: 'أكملت التمييز بين الذات واللاذات. الآن انتقل إلى الاستجابة الخلطية.',
+  },
+  'immunity_humoral_response': {
+    nextLessonId: 'immunity_cellular_response',
+    recommendedReflexId: 'explain',
+    completionMessageAr: 'أكملت الاستجابة الخلطية. الآن انتقل إلى الاستجابة الخلوية.',
+  },
+  'immunity_cellular_response': {
+    nextLessonId: 'immunity_memory_response',
+    recommendedReflexId: 'explain',
+    completionMessageAr: 'أكملت الاستجابة الخلوية. الآن انتقل إلى الذاكرة المناعية.',
+  },
+  'immunity_memory_response': {
+    nextLessonId: 'immunity_cooperation',
+    recommendedReflexId: 'interpret',
+    completionMessageAr: 'أحسنت! أكملت سلسلة المناعة: الذات واللاذات → خلطية → خلوية → ذاكرة. تبقى حوصلة التعاون الخلوي.',
+  },
+  'immunity_cooperation': {
+    nextLessonId: undefined,
+    recommendedReflexId: 'explain',
+    completionMessageAr: 'أتممت حوصلة وحدة المناعة: التعاون الخلوي من الخلية العارضة إلى المنفِّذات وخلايا الذاكرة.',
+  },
+  'amino_acid_behavior': {
+    nextLessonId: 'protein_structure_function',
+    recommendedReflexId: 'analyse',
+    completionMessageAr:
+      'أتقنت قاعدة pH / pHi واتجاه الهجرة. الخطوة الموالية : كيف تحدد بنية البروتين وظيفته.',
+  },
+  'd1-u1-l2-transcription': {
+    nextLessonId: 'd1-u1-l3-traduction',
+    recommendedReflexId: 'explain',
+    completionMessageAr: 'أكملت الاستنساخ. الخطوة الطبيعية الآن هي فهم الترجمة.',
+  },
+  'd1-u1-l3-traduction': {
+    nextLessonId: 'd1-u3-l1-enzyme',
+    recommendedReflexId: 'interpret',
+    completionMessageAr: 'أكملت الترجمة. الآن حان دور فهم المنحنى الإنزيمي.',
+  },
+  'enzyme_inhibitors': {
+    nextLessonId: undefined,
+    recommendedReflexId: 'interpret',
+    completionMessageAr:
+      'أتممت وحدة الإنزيمات : أصبحت تقرأ أي منحنى تثبيط بمقارنتين فقط، Vmax ثم Km.',
+  },
+  'immunity_hiv_aids': {
+    nextLessonId: 'immunity_cooperation',
+    recommendedReflexId: 'interpret',
+    completionMessageAr:
+      'أتقنت ملف السيدا. تبقى الحوصلة : كيف تتعاون خلايا المناعة فيما بينها ؟',
+  },
+  'photochemical_chain': {
+    nextLessonId: 'd2-u6-l3-calvin',
+    recommendedReflexId: 'explain',
+    completionMessageAr:
+      'أتقنت السلسلة الكيموضوئية. النواتج ATP و NADPH جاهزة الآن لحلقة كالفن.',
+  },
+  'd1-u3-l1-enzyme': {
+    nextLessonId: 'enzyme_inhibitors',
+    recommendedReflexId: 'hypothesize',
+    completionMessageAr: 'أحسنت! أكملت المنحنى الإنزيمي. تبقى قراءة المثبطات : تنافسي أم لا تنافسي ؟',
+  },
+  'd2-u6-l1-hill-ruben': {
+    nextLessonId: 'd2-u6-l2-jagendorf',
+    recommendedReflexId: 'hypothesize',
+    completionMessageAr: 'أحسنت! أثبتت تجربتا هيل وروبن أن الأكسجين المنطلق مصدره الماء. الآن اكتشف دور الضوء الحقيقي في تركيب ATP.',
+  },
+  'd2-u6-l2-jagendorf': {
+    nextLessonId: 'photochemical_chain',
+    recommendedReflexId: 'interpret',
+    completionMessageAr: 'ممتاز! تجربة جاغندورف أثبتت أن تدرج البروتونات هو مصدر طاقة تركيب ATP. الآن ركّب السلسلة الكيموضوئية كاملة.',
+  },
+  'd2-u6-l3-calvin': {
+    nextLessonId: 'd2-u7-l2-demarche-respiration',
+    recommendedReflexId: 'explain',
+    completionMessageAr: 'رائع! اكتشفت كيف يتحول ¹⁴CO₂ إلى سكريات في حلقة كالفن. الآن انتقل إلى التنفس: أين يحدث، وأي ركيزة تستعملها الميتوكوندري؟',
+  },
+  'd2-u7-l2-demarche-respiration': {
+    nextLessonId: 'd2-u7-l1-mitchell-racker',
+    recommendedReflexId: 'hypothesize',
+    completionMessageAr: 'اتممت المسار التجريبي للتنفس: الميتوكوندري مقر الأكسدة، والغلوكوز يتحلل في الهيولى إلى حمض البيروفيك الذي يدخل حلقة كريبس. تبقى آلية تركيب ATP: إثبات ميتشل وراكر تنتظرك.',
+  },
+  'd2-u7-l1-mitchell-racker': {
+    recommendedReflexId: 'interpret',
+    completionMessageAr: 'أحسنت! إعادة البناء الاصطناعي عند راكر أثبتت نظرية ميتشل: تدرج البروتونات يوحد التركيب الضوئي والتنفس الخلوي.',
+  },
+  'd3-u11-l1-migmatite': {
+    recommendedReflexId: 'interpret',
+    completionMessageAr: 'ممتاز! أثبت صخر المغماتيت التضاعف القشري الناتج عن التقلص. راجع شواهد المحيط القديم (الأفيوليت) في الدرس الموالي.',
+  },
+  'd3-u9-l2-benioff': {
+    nextLessonId: 'seismic_waves',
+    recommendedReflexId: 'interpret',
+    completionMessageAr: 'ممتاز! اصطفاف بؤر الزلازل على مستوى بنيوف دليل قاطع على الغوص. الآن اكتشف كيف تكشف الموجات الزلزالية عن باطن الأرض.',
+  },
+};
+
+export function getLessonProgression(lessonId: string): LessonProgression | undefined {
+  return LESSON_PROGRESSION[lessonId];
+}
+
+export const ACTIVE_LESSONS: Record<string, ActiveLesson> = {
+  'd1-u1-l1-expression-genique': {
+    id: 'd1-u1-l1-expression-genique',
+    title: 'الوحدة 1 : التعبير المورثي ونقل المعلومة',
+    blocks: [
+      {
+        type: 'MISSION_CHOICE',
+        objective: 'الدخول إلى المجال من وضعية مشكلة حقيقية.',
+        heroTitle: 'كيف يمكن لتغير في بنية بروتين أن يؤدي إلى مرض خطير؟',
+        heroText: 'ننطلق من حالة البريون ومرض جنون البقر لنفهم لماذا ليست البروتينات مجرد تعريفات تُحفظ، بل جزيئات يؤدي تغير بنيتها إلى آثار خطيرة.',
+        imageSrc: '/assets/images/schemas/domaine1_proteines/schema_09_intro_prion.svg',
+        supportAssetSrc: '/assets/images/schemas/domaine1_proteines/schema_09b_spongiform_histology_modern_ar.svg',
+        supportAltAr: 'وثيقة دعم حديثة شبيهة بالهستولوجيا الإسفنجية المرتبطة بحالة البريون.',
+        supportCaptionAr: 'دعم بصري إضافي: الحقل النسيجي يوضح أن الخلل البنيوي للبروتين قد ينعكس على النسيج العصبي.',
+        choices: [
+          {
+            id: 'start_prion_question',
+            labelAr: 'ابدأ من وضعية البريون',
+            descriptionAr: 'أفهم أولاً لماذا يهمّنا البروتين قبل الدخول إلى آلية تركيبه.',
+            completeOnSelect: true,
+          },
+        ],
+      },
+      {
+        type: 'MISSION_CHOICE',
+        objective: 'الدخول إلى الوحدة من صورة حية قريبة من كتاب المدرسة.',
+        heroTitle: 'العنكبوت يصنع خيطاً دقيقاً جداً — كيف تصنع الخلية بروتيناً؟',
+        heroText: 'صورة خيط العنكبوت تجعل السؤال مركزاً: كيف تستطيع الخلية تركيب بروتين مضبوط البنية والوظيفة؟',
+        imageSrc: '/assets/images/schemas/domaine1_proteines/schema_10_intro_spider.svg',
+        supportAssetSrc: '/assets/images/schemas/domaine1_proteines/schema_10b_cell_animal_reference_modern_ar.svg',
+        supportAltAr: 'وثيقة دعم حديثة تذكر ببنية الخلية الحيوانية ومسار المعلومة من النواة إلى الهيولى.',
+        supportCaptionAr: 'تذكير بنيوي: أين توجد النواة؟ أين تعمل الريبوزومات؟',
+        choices: [
+          {
+            id: 'start_spider_question',
+            labelAr: 'ابدأ من سؤال التركيب',
+            descriptionAr: 'أنتقل من المثال الحي إلى الوثائق التي تشرح التعبير المورثي.',
+            completeOnSelect: true,
+          },
+        ],
+      },
+      {
+        type: 'GUIDED_DOC_QA',
+        objective: 'ربط المورثات بالبروتينات واستنتاج مفهوم التعبير المورثي.',
+        doc: {
+          assetSrc: '/assets/images/schemas/domaine1_proteines/schema_11_gene_proteins.svg',
+          altAr: 'مخطط يبين مورثات على ADN وبروتينات مقابلة لها في السيتوبلازم.',
+          captionAr: 'الوثيقة: مورثات مختلفة تقابلها بروتينات مختلفة.',
+        },
+        questions: [
+          {
+            id: 'observe_gene_protein',
+            verbAr: 'حلل',
+            promptAr: 'ماذا تلاحظ بين المورثات والبروتينات؟',
+            answerType: 'short_text',
+            validationMode: 'keywords',
+            requiredKeywords: ['مورثات مختلفة', 'بروتينات مختلفة'],
+            successMessageAr: 'أحسنت، وصفت العلاقة المشاهدة.',
+            errorHintAr: 'صف ما تراه: مورثات مختلفة ↔ بروتينات مختلفة.',
+          },
+          {
+            id: 'relate_gene_protein',
+            verbAr: 'حلل',
+            promptAr: 'ما العلاقة بين المورثة 1 والبروتين 1؟',
+            answerType: 'short_text',
+            validationMode: 'keywords',
+            requiredKeywords: ['كل مورثة', 'بروتين محدد'],
+            successMessageAr: 'ممتاز، ربطت كل مورثة بمنتوجها.',
+            errorHintAr: 'حاول أن تذكر أن كل مورثة تحمل معلومات بروتين محدد.',
+          },
+          {
+            id: 'infer_expression',
+            verbAr: 'استنتج',
+            promptAr: 'استنتج مفهوم التعبير المورثي.',
+            answerType: 'short_text',
+            validationMode: 'keywords',
+            requiredKeywords: ['المعلومات الوراثية', 'تركيب بروتين'],
+            successMessageAr: 'أحسنت، هذا هو معنى التعبير المورثي.',
+            errorHintAr: 'اربط بين استعمال المعلومة الوراثية وظهور بروتين محدد.',
+          },
+        ],
+        summaryAr: 'التعبير المورثي هو استعمال المعلومة الموجودة في المورثة من أجل تركيب بروتين محدد.',
+      },
+      {
+        type: 'DUAL_EVIDENCE',
+        objective: 'استخلاص مقر تركيب البروتين وتبريره انطلاقاً من وثيقتين.',
+        docA: {
+          assetSrc: '/assets/images/schemas/domaine1_proteines/schema_12_protein_site_photo.svg',
+          altAr: 'صورة مجهرية تبين مناطق ظهور البروتينات الموسومة.',
+          captionAr: 'الوثيقة 1: صورة قريبة من الوثيقة التجريبية.',
+        },
+        docB: {
+          assetSrc: '/assets/images/schemas/domaine1_proteines/schema_13_protein_site_interpret.svg',
+          altAr: 'رسم تفسيري لخلية مع مواقع ظهور البروتينات المشعة.',
+          captionAr: 'الوثيقة 2: رسم تفسيري.',
+        },
+        extractionPromptAr: 'ما مقر تركيب البروتين داخل الخلية؟',
+        justificationPromptAr: 'علل جوابك اعتماداً على الوثيقتين.',
+        extractionKeywords: ['الريبوزومات'],
+        justificationKeywords: ['الإشعاع', 'الوثيقتين'],
+        summaryAr: 'يتم تركيب البروتين على مستوى الريبوزومات، ويثبت ذلك ظهور الوسم في هذه المناطق في الوثيقتين.',
+      },
+      {
+        type: 'HYPOTHESIS_EXPERIMENT',
+        objective: 'اقتراح فرضية تفسر انتقال المعلومة الوراثية من النواة إلى السيتوبلازم.',
+        problemAr: 'كيف تنتقل المعلومة الوراثية من النواة إلى السيتوبلازم من أجل تركيب البروتين؟',
+        experimentAssetSrc: '/assets/images/schemas/domaine1_proteines/schema_14_arn_groups.svg',
+        experimentAltAr: 'نتائج تجربة ثلاث مجموعات توضح أثر حقن ARN.',
+        hypothesisPromptAr: 'اقترح فرضية تفسر هذا الانتقال.',
+        resultPromptAr: 'حلل نتائج المجموعات الثلاث بإيجاز.',
+        validationPromptAr: 'هل تؤيد النتائج فرضية وجود جزيء وسيط؟ علل.',
+        expectedTargets: ['جزيء', 'وسيط', 'النواة', 'السيتوبلازم', 'تركيب البروتين'],
+        resultKeywords: ['المجموعة الثالثة', 'ARN', 'هيموغلوبين'],
+        validationKeywords: ['جزيء وسيط', 'ARN', 'يوجه تركيب بروتين'],
+        summaryAr: 'تؤيد التجربة وجود جزيء وسيط من نوع ARN يوجّه تركيب بروتين محدد.',
+      },
+      {
+        type: 'HYPOTHESIS_EXPERIMENT',
+        objective: 'التحقق من دور ARN الرسول باستعمال اليوراسيل المشع.',
+        problemAr: 'لماذا يظهر الوسم أولاً في النواة ثم لاحقاً في السيتوبلازم؟',
+        experimentAssetSrc: '/assets/images/schemas/domaine1_proteines/schema_15_uracile_tracking.svg',
+        experimentAltAr: 'وثيقة تبين تموضع الوسم بعد مدة قصيرة وبعد مدة أطول.',
+        hypothesisPromptAr: 'ما الفرضية التي يدعمها هذا التتبع؟',
+        resultPromptAr: 'أين يظهر الوسم أولاً؟ وأين يظهر لاحقاً؟',
+        validationPromptAr: 'هل تتحقق الفرضية؟ علل.',
+        namingPromptAr: 'اقترح تسمية مناسبة لهذا ARN.',
+        expectedTargets: ['اليوراسيل', 'النواة', 'السيتوبلازم', 'ARN'],
+        resultKeywords: ['النواة', 'السيتوبلازم'],
+        validationKeywords: ['ARN', 'ينتقل', 'النواة', 'السيتوبلازم'],
+        namingAccepted: ['ARNm', 'ARN رسول'],
+        summaryAr: 'يُصنّع ARNm في النواة ثم ينتقل إلى السيتوبلازم حاملاً نسخة من المعلومة الوراثية.',
+      },
+    ],
+  },
+  lecon_transcription: {
+    id: 'lecon_transcription',
+    title: 'الفصل 3 : استنساخ المعلومات الوراثية الموجودة على مستوى ADN',
+    blocks: [
+      {
+        type: 'TEXT_AND_PRODUCE',
+        objective: 'اكتشاف مقر وآلية تركيب جزيئة ARNm انطلاقا من ADN.',
+        content:
+          'تتم عملية [____] داخل [____] حيث يركب إنزيم [____] سلسلة ARNm انطلاقا من السلسلة القالبية.',
+        popups: {
+          'الاستنساخ': 'نقل المعلومة الوراثية من ADN إلى ARNm داخل النواة.',
+          'النواة': 'المقر الذي يتم فيه الاستنساخ عند حقيقيات النوى.',
+          'ARN بوليميراز': 'الإنزيم الذي يركب ARN في اتجاه 5←3 ويقرأ القالب 3←5.',
+        },
+        microTest: {
+          prompt: 'ما هو الإنزيم الذي يركب ARNm انطلاقا من السلسلة القالبية؟',
+          acceptedAnswers: ['ARN بوليميراز'],
+          errorHint: 'التعريف الصحيح: ARN بوليميراز',
+        },
+      },
+      {
+        type: 'TEXT_AND_PRODUCE',
+        objective: 'ربط السلسلة القالبية باتجاه القراءة.',
+        content:
+          'يقرأ الريبوزوم السلسلة الرسولية من [____] نحو [____]، بينما يُستعمل مرجع تكامل القواعد ما يسمى بـ [____].',
+        popups: {
+          'السلسلة القالبية': 'السلسلة التي تُستعمل مرجعا لتكامل قواعد ARNm.',
+          '5 نحو 3': 'اتجاه قراءة ARNm وتركيب البروتين.',
+        },
+        microTest: {
+          prompt: 'أكمل: السلسلة التي تُستعمل مرجعا لتكامل قواعد ARNm تسمى _______',
+          acceptedAnswers: ['السلسلة القالبية'],
+          errorHint: 'التعريف الصحيح: السلسلة القالبية',
+        },
+      },
+      {
+        type: 'HOTSPOT_AND_METHODOLOGY',
+        objective: 'تحديد مقر الاستنساخ ثم تحليل انتقال الإشعاع منهجياً.',
+        introText:
+          'لاحظ مخطط خلية حقيقية النوى. حدد مقر حدوث الاستنساخ ثم حلل ظاهرة انتقال الإشعاع من النواة نحو الهيولى دون تفسير (تحليل محض).',
+        schemaSrc: '/assets/images/schemas/domaine1_proteines/schema_02_transcription.svg',
+        hotspot: {
+          prompt: 'انقر على مقر حدوث الاستنساخ (داخل النواة).',
+          correctZone: { x: 50, y: 45, radius: 28 },
+          successFeedback: 'صحيح! الاستنساخ يتم داخل النواة حيث يوجد ADN.',
+        },
+        methodology: {
+          prompt: 'حلل ظاهرة انتقال الإشعاع من النواة إلى الهيولى (تحليل محض، بدون تفسير).',
+          steps: [
+            {
+              label: 'التحليل (ملاحظة محضة)',
+              placeholder: 'ماذا تلاحظ بعد 15 ثم 90 دقيقة؟ تجنب لأن/راجع إلى...',
+              requiredKeywords: ['النواة', 'الهيولى', 'الإشعاع'],
+            },
+            {
+              label: 'الاستنتاج',
+              placeholder: 'استنتج مقر وآلية تركيب ARNm...',
+              requiredKeywords: ['يتم تركيب', 'ARNm'],
+            },
+          ],
+        },
+      },
+    ],
+  },
+
+  phase11_chapitres_21_22: {
+    id: 'phase11_chapitres_21_22',
+    title: 'الفصل 31 : تذكير بالمكتسبات — الفصل 32 : مقر عملية التركيب الضوئي',
+    blocks: [
+      {
+        type: 'HOTSPOT_AND_METHODOLOGY',
+        objective: 'تحديد مقر التفاعلات الضوئية ثم تحليلها منهجياً.',
+        introText:
+          'لاحظ مخطط الصانعة الخضراء. حدد مقر التفاعلات الضوئية (التيلاكويد) ثم حلل دور الأنظمة الضوئية في التقاط الفوتونات.',
+        schemaSrc: '/assets/images/schemas/domaine2_energie/schema_09_photosynthese.svg',
+        hotspot: {
+          prompt: 'انقر على التيلاكويد (مقر التفاعلات الضوئية).',
+          correctZone: { x: 50, y: 55, radius: 30 },
+          successFeedback: 'صحيح! التفاعلات الضوئية تتم على غشاء التيلاكويد.',
+        },
+        methodology: {
+          prompt: 'حلل دور الأنظمة الضوئية PSII و PSI في التقاط الفوتونات (تحليل محض).',
+          steps: [
+            {
+              label: 'التحليل',
+              placeholder: 'صف ما يحدث للإلكترونات دون تفسير...',
+              requiredKeywords: ['الفوتون', 'الأنظمة الضوئية', 'الإلكترونات'],
+            },
+            {
+              label: 'الاستنتاج',
+              placeholder: 'استنتج مصدر الأكسجين المنطلق...',
+              requiredKeywords: ['الماء', 'الأكسجين'],
+            },
+          ],
+        },
+      },
+    ],
+  },
+  synapse: {
+    id: 'synapse',
+    title: 'الفصل 26 : آلية النقل المشبكي',
+    blocks: [
+      {
+        type: 'HOTSPOT_AND_METHODOLOGY',
+        objective: 'تحديد النهاية قبل المشبكية ثم تحليل تحوّل التنبيه.',
+        introText:
+          'لاحظ مخطط المشبك الكيميائي. حدد النهاية قبل المشبكية ثم حلل تحوّل التنبيه الكهربائي إلى رسالة كيميائية ثم كهربائية.',
+        supportAssetSrc: '/assets/images/schemas/domaine1_proteines/schema_30_ligand_gated_channel_modern_ar.svg',
+        supportAltAr: 'وثيقة حديثة تبين مستقبلات وقنوات مرتبطة بالربيطة على الغشاء بعد المشبكي.',
+        supportCaptionAr: 'دعم بنيوي: المستقبل بعد المشبكي يفتح قناة مرتبطة بالربيطة عند ارتباط الناقل العصبي.',
+        schemaSrc: '/assets/images/schemas/domaine1_proteines/schema_08_synapse.svg',
+        hotspot: {
+          prompt: 'انقر على النهاية قبل المشبكية (مقر تحرير الناقل العصبي).',
+          correctZone: { x: 50, y: 30, radius: 25 },
+          successFeedback: 'صحيح! عند الوصول الكمون العمل تنفتح قنوات Ca²⁺ وتتحرر الحويصلات المشبكية.',
+        },
+        methodology: {
+          prompt: 'حلل تحوّل التنبيه الكهربائي إلى رسالة كيميائية ثم كهربائية (تحليل محض).',
+          steps: [
+            {
+              label: 'الملاحظة',
+              placeholder: 'صف ما يحدث عند وصول كمون العمل إلى النهاية قبل المشبكية...',
+              requiredKeywords: ['كمون العمل', 'Ca²⁺', 'حويصلات'],
+            },
+            {
+              label: 'الآلية',
+              placeholder: 'اشرح كيف يتحوّل التنبيه الكهربائي إلى رسالة كيميائية...',
+              requiredKeywords: ['ناقل عصبي', 'شق مشبكي', 'مستقبل'],
+            },
+            {
+              label: 'الاستنتاج',
+              placeholder: 'استنتج كيف تعود الإشارة إلى شكل كهربائي بعد المشبكي...',
+              requiredKeywords: ['PPSE', 'PPSI', 'كمون بعد مشبكي'],
+            },
+          ],
+        },
+      },
+    ],
+  },
+  subduction: {
+    id: 'subduction',
+    title: 'الفصل 43 : تحديد الصفائح التكتونية — الفصل 44 : حركات الصفائح التكتونية',
+    blocks: [
+      {
+        type: 'HOTSPOT_AND_METHODOLOGY',
+        objective: 'تحديد منطقة الغوص ثم تحليل دور الماء المحرر.',
+        introText:
+          'لاحظ مخطط الغوص. حدد اللوح الغائص ومصدر الماء ثم حلل كيف يخفض الماء درجة انصهار الوشاح.',
+        schemaSrc: '/assets/images/schemas/domaine3_tectonique/schema_16_subduction.svg',
+        hotspot: {
+          prompt: 'انقر على اللوح الغائص (الصفيحة المحيطية الكثيفة).',
+          correctZone: { x: 35, y: 60, radius: 25 },
+          successFeedback: 'صحيح! الصفيحة المحيطية الباردة الكثيفة تنغمس تحت الصفيحة الطافية.',
+        },
+        methodology: {
+          prompt: 'حلل كيف يخفض الماء المحرر درجة انصهار الوشاح فوق اللوح الغائص (تحليل محض).',
+          steps: [
+            {
+              label: 'الملاحظة',
+              placeholder: 'صف ما يحدث للصفيحة المحيطية عند الغوص...',
+              requiredKeywords: ['اندساس', 'صفيحة محيطية', 'كثيفة', 'باردة'],
+            },
+            {
+              label: 'الآلية',
+              placeholder: 'اشرح كيف يتحرر الماء من اللوح الغائص...',
+              requiredKeywords: ['ماء', 'معادن', 'الوشاح', 'انصهار جزئي'],
+            },
+            {
+              label: 'الاستنتاج',
+              placeholder: 'استنتج كيف تتولد الصهارة والبركانية...',
+              requiredKeywords: ['صهارة', 'بركانية', 'قوس', 'أنديزيت'],
+            },
+          ],
+        },
+      },
+    ],
+  },
+  protein_structure_function: {
+    id: 'protein_structure_function',
+    title: 'الفصل 8 : العلاقة بين بنية ووظيفة البروتين',
+    blocks: [
+      {
+        type: 'MISSION_CHOICE',
+        objective: 'الدخول إلى الدرس من وضعية مرضية تُظهر أن تغير حمض أميني واحد قد يغيّر وظيفة البروتين.',
+        heroTitle: 'كيف يمكن لتبديل حمض أميني واحد أن يغيّر شكل الخلية ووظيفتها؟',
+        heroText: 'ننطلق من حالة الهيموغلوبين وفقر الدم المنجلي: تغيير صغير في البنية الأولية قد يقود إلى تغير في الطي، ثم في وظيفة البروتين، ثم في حالة الخلية كلها.',
+        imageSrc: '/assets/images/schemas/domaine1_proteines/schema_40_hemoglobin_structure_function_modern.svg',
+        choices: [
+          {
+            id: 'start_hemoglobin_case',
+            labelAr: 'ابدأ من حالة الهيموغلوبين',
+            descriptionAr: 'أفهم أولاً كيف تربط الوثيقة بين الطفرة والبنية والوظيفة.',
+            completeOnSelect: true,
+          },
+        ],
+      },
+      {
+        type: 'GUIDED_DOC_QA',
+        objective: 'فهم أن الحمض الأميني هو وحدة البناء وأن تتابعه يحدد البنية الأولية ومسار الطي.',
+        doc: {
+          assetSrc: '/assets/images/schemas/domaine1_proteines/schema_41_alanine_representations_modern.svg',
+          altAr: 'وثيقة تبين الصيغة العامة للحمض الأميني مع مثال الألانين وتمثيله داخل السلسلة.',
+          captionAr: 'وحدة البناء: كل كرة في السلسلة تمثل حمضاً أمينياً له مجموعة جانبية.',
+          secondaryAssetSrc: '/assets/images/schemas/domaine1_proteines/schema_46_folding_pathway_modern.svg',
+          secondaryAltAr: 'وثيقة تبين مسار الانتقال من سلسلة خطية إلى طي محلي ثم شكل وظيفي.',
+          secondaryCaptionAr: 'المسار البنيوي: تتابع خطي ⟶ طي محلي ⟶ شكل وظيفي.',
+        },
+        questions: [
+          {
+            id: 'amino_acid_unit',
+            verbAr: 'حدد',
+            promptAr: 'حدد ماذا تمثل الوحدة الأساسية في هذه الوثيقة، وما الذي يختلف من حمض أميني إلى آخر؟',
+            answerType: 'short_text',
+            validationMode: 'keywords',
+            requiredKeywords: ['حمض أميني', 'مجموعة جانبية'],
+            successMessageAr: 'أحسنت، ميزت بين الهيكل العام والمجموعة الجانبية.',
+            errorHintAr: 'اذكر أن الوحدة الأساسية هي الحمض الأميني وأن الاختلاف يكون في المجموعة الجانبية.',
+          },
+          {
+            id: 'primary_structure_define',
+            verbAr: 'استنتج',
+            promptAr: 'استنتج معنى البنية الأولية للبروتين.',
+            answerType: 'short_text',
+            validationMode: 'keywords',
+            requiredKeywords: ['تتابع الأحماض الأمينية', 'رابطة ببتيدية|روابط ببتيدية'],
+            successMessageAr: 'ممتاز، ربطت البنية الأولية بالتتابع الخطي.',
+            errorHintAr: 'اذكر أن البنية الأولية هي تتابع الأحماض الأمينية المرتبطة بروابط ببتيدية.',
+          },
+          {
+            id: 'why_one_change_matters',
+            verbAr: 'فسر',
+            promptAr: 'فسّر لماذا يمكن لتغير حمض أميني واحد أن يؤثر لاحقاً في طي البروتين ووظيفته.',
+            answerType: 'short_text',
+            validationMode: 'keywords',
+            requiredKeywords: ['حمض أميني', 'الطي', 'وظيفة'],
+            successMessageAr: 'جيد، ربطت بين التغير الأولي ونتيجته الوظيفية.',
+            errorHintAr: 'اربط بين تبديل حمض أميني واحد وتغير الطي ثم تغير الوظيفة.',
+          },
+        ],
+        summaryAr: 'البنية الأولية هي تتابع الأحماض الأمينية، وأي تغير نوعي في هذا التتابع قد يغيّر لاحقاً طي البروتين ووظيفته.',
+      },
+      {
+        type: 'COMPARISON_TABLE',
+        objective: 'المقارنة بين أهم شكلين من البنى الثانوية قبل الانتقال إلى البنية الثالثية.',
+        promptAr: 'قارن بين البنية الحلزونية α والبنية الصفائحية β حسب المعايير الآتية.',
+        assetSrc: '/assets/images/schemas/domaine1_proteines/schema_42_secondary_alpha_beta_modern.svg',
+        altAr: 'وثيقة مقارنة بين الحلزون α والصفائح β مع إبراز الروابط الهيدروجينية.',
+        criteria: [
+          { id: 'shape', labelAr: 'الشكل العام', leftExpected: ['حلزون', 'لولبي'], rightExpected: ['صفائح', 'مستوية'] },
+          { id: 'stabilization', labelAr: 'نوع التثبيت', leftExpected: ['روابط هيدروجينية'], rightExpected: ['روابط هيدروجينية'] },
+          { id: 'level', labelAr: 'المستوى البنيوي', leftExpected: ['بنية ثانوية'], rightExpected: ['بنية ثانوية'] },
+        ],
+        conclusionPromptAr: 'اكتب خلاصة قصيرة تشرح ما تمثله البنى الثانوية في البروتين.',
+        conclusionKeywords: ['البنية الثانوية', 'روابط هيدروجينية'],
+        summaryAr: 'الحلزون α والصفائح β شكلان من أشكال البنية الثانوية، ويثبتهما أساساً تشكل روابط هيدروجينية داخل السلسلة أو بينها.',
+      },
+      {
+        type: 'GUIDED_DOC_QA',
+        objective: 'ربط التآثرات الداخلية بتشكل البنية الثالثية والموقع الوظيفي للبروتين.',
+        doc: {
+          assetSrc: '/assets/images/schemas/domaine1_proteines/schema_43_secondary_stabilization_modern.svg',
+          altAr: 'وثيقة تبين بعض التآثرات التي تثبت البنية الفراغية للبروتين.',
+          captionAr: 'تآثرات متعددة تثبت الشكل النهائي للبروتين.',
+          secondaryAssetSrc: '/assets/images/schemas/domaine1_proteines/schema_06_structure_proteines.svg',
+          secondaryAltAr: 'رسم يوضح البروتين المطوي مع موقعه النشط.',
+          secondaryCaptionAr: 'النتيجة الوظيفية: يتشكل الموقع النشط من البنية الفراغية النهائية.',
+        },
+        questions: [
+          {
+            id: 'tertiary_interactions',
+            verbAr: 'حدد',
+            promptAr: 'حدد مثالين من التآثرات التي تساهم في تثبيت البنية الفراغية للبروتين.',
+            answerType: 'short_text',
+            validationMode: 'keywords',
+            requiredKeywords: ['روابط هيدروجينية', 'روابط شاردية'],
+            successMessageAr: 'أحسنت، ذكرت تآثرات تثبيت رئيسية.',
+            errorHintAr: 'اذكر مثالين واضحين مثل الروابط الهيدروجينية والروابط الشاردية.',
+          },
+          {
+            id: 'tertiary_stability',
+            verbAr: 'فسر',
+            promptAr: 'فسر كيف تسمح هذه التآثرات بتثبيت البنية الثالثية.',
+            answerType: 'short_text',
+            validationMode: 'keywords',
+            requiredKeywords: ['تآثرات', 'تثبت', 'البنية الثالثية'],
+            successMessageAr: 'جيد، ربطت التآثر بالثبات البنيوي.',
+            errorHintAr: 'اذكر أن هذه التآثرات تثبت البنية الثالثية وتحافظ على الشكل الفراغي.',
+          },
+          {
+            id: 'active_site_relation',
+            verbAr: 'استنتج',
+            promptAr: 'استنتج لماذا يرتبط الموقع النشط مباشرة بالبنية الثالثية ووظيفة البروتين.',
+            answerType: 'short_text',
+            validationMode: 'keywords',
+            requiredKeywords: ['الموقع النشط', 'وظيفة', 'البنية الثالثية'],
+            successMessageAr: 'ممتاز، ربطت الشكل الفراغي بالوظيفة.',
+            errorHintAr: 'اربط بين تشكل الموقع النشط والبنية الثالثية ثم وظيفة البروتين.',
+          },
+        ],
+        summaryAr: 'البنية الثالثية ليست مجرد شكل؛ فهي التي تسمح بتشكل الموقع النشط، وبالتالي تحدد طبيعة الوظيفة البيولوجية للبروتين.',
+      },
+      {
+        type: 'SEQUENCE_ORDER',
+        objective: 'ترتيب المستويات البنيوية الأربعة من الأبسط إلى الأكثر تركيباً.',
+        promptAr: 'رتب مستويات بنية البروتين من التتابع الخطي إلى المعقد الكامل.',
+        assetSrc: '/assets/images/schemas/domaine1_proteines/schema_45_four_levels_structure_modern.svg',
+        altAr: 'وثيقة تلخص المستويات الأربعة لبنية البروتين.',
+        secondaryAssetSrc: '/assets/images/schemas/domaine1_proteines/schema_44_quaternary_hemoglobin_tim_modern.svg',
+        secondaryAltAr: 'وثيقة توضح معنى البنية الرباعية عبر مثال بروتين متعدد الوحدات.',
+        secondaryCaptionAr: 'البنية الرباعية تظهر عندما تتجمع عدة سلاسل أو وحدات فرعية.',
+        steps: [
+          { id: 'primary', labelAr: 'تتابع خطي للأحماض الأمينية = البنية الأولية', expectedOrder: 1 },
+          { id: 'secondary', labelAr: 'تشكل حلزون α أو صفائح β = البنية الثانوية', expectedOrder: 2 },
+          { id: 'tertiary', labelAr: 'انطواء السلسلة إلى شكل ثلاثي الأبعاد = البنية الثالثية', expectedOrder: 3 },
+          { id: 'quaternary', labelAr: 'تجمع عدة سلاسل/وحدات في معقد واحد = البنية الرباعية', expectedOrder: 4 },
+        ],
+        summaryPromptAr: 'اشرح بإيجاز كيف ينتقل البروتين من تتابع خطي إلى معقد وظيفي كامل.',
+        summaryKeywords: ['البنية الأولية', 'البنية الثانوية', 'البنية الثالثية', 'البنية الرباعية'],
+        summaryAr: 'يبنى البروتين على مستويات متتالية: أولية ثم ثانوية ثم ثالثية، وقد يصل إلى رباعية عندما تتجمع عدة وحدات في معقد وظيفي واحد.',
+      },
+      {
+        type: 'GUIDED_DOC_QA',
+        objective: 'العودة إلى حالة الهيموغلوبين لاستنتاج السلسلة السببية الكاملة: تغير في التتابع ⟶ تغير في البنية ⟶ تغير في الوظيفة.',
+        doc: {
+          assetSrc: '/assets/images/schemas/domaine1_proteines/schema_40_hemoglobin_structure_function_modern.svg',
+          altAr: 'وثيقة تربط بين تغير تتابع الهيموغلوبين وتغير شكل كريات الدم الحمراء.',
+          captionAr: 'حالة مدرسية نموذجية: تغير حمض أميني واحد قد يقود إلى مرض.',
+          secondaryAssetSrc: '/assets/images/schemas/domaine1_proteines/schema_44_quaternary_hemoglobin_tim_modern.svg',
+          secondaryAltAr: 'وثيقة داعمة لفهم أن الهيموغلوبين بروتين متعدد الوحدات.',
+          secondaryCaptionAr: 'الهيموغلوبين مثال مناسب لربط البنية بالوظيفة ثم بالحالة المرضية.',
+        },
+        questions: [
+          {
+            id: 'sickle_observation',
+            verbAr: 'حلل',
+            promptAr: 'حلل ماذا تغير في شكل الكريات الحمراء بين الحالة العادية والحالة المرضية.',
+            answerType: 'short_text',
+            validationMode: 'keywords',
+            requiredKeywords: ['شكل منجلي', 'كريات الدم'],
+            successMessageAr: 'أحسنت، وصفت المظهر الظاهري النهائي.',
+            errorHintAr: 'اذكر أن بعض كريات الدم تصبح ذات شكل منجلي في الحالة المرضية.',
+          },
+          {
+            id: 'mutation_to_structure',
+            verbAr: 'فسر',
+            promptAr: 'فسر كيف يمكن لتغير حمض أميني واحد أن يغيّر بنية الهيموغلوبين.',
+            answerType: 'short_text',
+            validationMode: 'keywords',
+            requiredKeywords: ['تغير حمض أميني واحد', 'بنية', 'الهيموغلوبين'],
+            successMessageAr: 'جيد، ربطت بين الطفرة والبنية البروتينية.',
+            errorHintAr: 'اربط بين تغير حمض أميني واحد وتغير بنية الهيموغلوبين.',
+          },
+          {
+            id: 'structure_to_function_disease',
+            verbAr: 'استنتج',
+            promptAr: 'استنتج كيف يقود هذا التغير البنيوي إلى تغير الوظيفة ثم إلى المرض.',
+            answerType: 'short_text',
+            validationMode: 'keywords',
+            requiredKeywords: ['وظيفة', 'مرض', 'هيموغلوبين'],
+            successMessageAr: 'ممتاز، بنيت السلسلة السببية كاملة.',
+            errorHintAr: 'اذكر أن تغير بنية الهيموغلوبين يغير وظيفته ويؤدي في النهاية إلى مرض.',
+          },
+        ],
+        summaryAr: 'الوثيقة تلخص الفكرة المركزية للدرس: تغير بسيط في البنية الأولية قد يغيّر البنية الفراغية، ثم الوظيفة، ثم الحالة الخلوية والمرضية.',
+      },
+    ],
+  },
+  immunity_self_nonself: {
+    id: 'immunity_self_nonself',
+    title: 'الفصل 14 : الذات واللاذات',
+    blocks: [
+      {
+        type: 'HOTSPOT_AND_METHODOLOGY',
+        objective: 'فهم كيف تمثل جزيئات HLA / CMH بطاقة الهوية المناعية للخلية، وكيف يقود اختلافها إلى رفض الطعم غير المتوافق.',
+        introText:
+          'ابدأ من مقارنة HLA-I و HLA-II ثم من مثال الزمر الدموية وعامل Rh لتفهم أن الخلية تحمل محددات سطحية تُقرأ مناعياً. بعد ذلك حدد جزيئات HLA / CMH على الغشاء وفسر لماذا قد يرفض الجسم طعماً غير متوافق.',
+        supportAssetSrc: '/assets/images/schemas/domaine1_proteines/schema_59_blood_group_determination_modern.svg',
+        supportAltAr: 'وثيقة حديثة تبين كيف تسمح المحددات السطحية بتحديد الزمرة الدموية.',
+        supportCaptionAr: 'مثال مدرسي قريب: الزمرة الدموية تكشف أن الخلية تحمل علامات سطحية نوعية.',
+        supportSecondaryAssetSrc: '/assets/images/schemas/domaine1_proteines/schema_69_rh_factor_genotype_phenotype_modern.svg',
+        supportSecondaryAltAr: 'وثيقة حديثة تقارن بين Rh+ و Rh− من حيث مولد الضد D على السطح.',
+        supportSecondaryCaptionAr: 'عامل Rh يضيف علامة سطحية أخرى تدخل في منطق التوافق الحيوي.',
+        supportGallery: [
+          {
+            assetSrc: '/assets/images/schemas/domaine1_proteines/schema_55_membrane_proteins_em_modern_ar.svg',
+            altAr: 'وثيقة حديثة شبيهة بالمجهر الإلكتروني تبين وجود بروتينات مدمجة داخل الغشاء البلازمي.',
+            captionAr: 'رؤية مجهرية: العلامات السطحية ليست فكرة مجردة بل بروتينات مدمجة في الغشاء.',
+          },
+          {
+            assetSrc: '/assets/images/schemas/domaine1_proteines/schema_56_fluid_mosaic_model_modern_ar.svg',
+            altAr: 'وثيقة حديثة تلخص النموذج الفسيفسائي المائع للغشاء مع البروتينات السطحية.',
+            captionAr: 'النموذج الغشائي يوضح أين تتموضع البروتينات والعلامات المناعية.',
+          },
+          {
+            assetSrc: '/assets/images/schemas/domaine1_proteines/schema_57_membrane_fluidity_fusion_modern_ar.svg',
+            altAr: 'وثيقة حديثة تبين أن الغشاء بنية مائعة ديناميكية تسمح بحركة البروتينات السطحية وتجمعها.',
+            captionAr: 'سيولة الغشاء تساعد على فهم توزع الواسمات السطحية وتغير تجمعها.',
+          },
+        ],
+        schemaSrc: '/assets/images/schemas/domaine1_proteines/schema_58_hla_I_II_structure_modern.svg',
+        hotspot: {
+          prompt: 'انقر على جزيئات HLA / CMH السطحية (بطاقة الهوية المناعية).',
+          correctZone: { x: 50, y: 47, radius: 18 },
+          successFeedback: 'صحيح! هذه الجزيئات السطحية تحمل هوية الخلية، واختلافها قد يثير رفض الطعم.',
+        },
+        methodology: {
+          prompt: 'حلل كيف يميز الجهاز المناعي الذات عن اللاذات اعتماداً على جزيئات HLA / CMH ومفهوم المحددات السطحية.',
+          steps: [
+            {
+              label: 'الملاحظة',
+              placeholder: 'صف ما تحمله الخلايا على سطحها، وما الذي يختلف من فرد إلى آخر...',
+              requiredKeywords: ['CMH', 'HLA', 'خلايا'],
+            },
+            {
+              label: 'الآلية',
+              placeholder: 'اشرح كيف تسمح هذه الجزيئات بالتعرف على الذات واللاذات...',
+              requiredKeywords: ['تعرف مناعي', 'CMH', 'لاذات'],
+            },
+            {
+              label: 'الاستنتاج',
+              placeholder: 'استنتج لماذا يؤدي اختلاف هذه الجزيئات إلى رفض الطعم غير المتوافق...',
+              requiredKeywords: ['رفض', 'طعم', 'CMH', 'تعرف'],
+            },
+          ],
+        },
+      },
+    ],
+  },
+  immunity_humoral_response: {
+    id: 'immunity_humoral_response',
+    title: 'الفصل 16 : المعقد المناعي',
+    blocks: [
+      {
+        type: 'HOTSPOT_AND_METHODOLOGY',
+        objective: 'فهم كيف تنطلق الاستجابة الخلطية من لمفاوية B نوعية ثم تنتهي بإفراز أجسام مضادة نوعية وتشكيل معقدات مناعية.',
+        introText:
+          'ابدأ من مخطط يربط اللمفاوية B بالتكاثر النسيلي ثم بالخلية البلازمية. بعد ذلك استعن ببنية الجسم المضاد وبخطوط الترسب لتفهم لماذا تكون الأجسام المضادة نوعية تجاه مستضد معين.',
+        supportAssetSrc: '/assets/images/schemas/domaine1_proteines/schema_65_antibody_structure_hl_modern.svg',
+        supportAltAr: 'وثيقة حديثة تبين السلاسل الثقيلة والخفيفة وموقعي الارتباط بالمستضد في الجسم المضاد.',
+        supportCaptionAr: 'بنية الجسم المضاد تفسر نوعية الارتباط بالمستضد.',
+        supportSecondaryAssetSrc: '/assets/images/schemas/domaine1_proteines/schema_67_immunodiffusion_precipitin_lines_modern.svg',
+        supportSecondaryAltAr: 'وثيقة حديثة تبين خطوط الترسب في الانتشار المناعي المزدوج.',
+        supportSecondaryCaptionAr: 'خطوط الترسب تُظهر أن الأجسام المضادة ترتبط نوعياً بمحددات معينة.',
+        supportGallery: [
+          {
+            assetSrc: '/assets/images/schemas/domaine1_proteines/schema_60_complement_membrane_attack_modern.svg',
+            altAr: 'وثيقة حديثة تبين تشكل معقد الهجوم الغشائي بعد تنشيط المتممة.',
+            captionAr: 'نتيجة ممكنة لارتباط الأجسام المضادة: تنشيط المتممة وإحداث ثقوب غشائية.',
+          },
+        ],
+        schemaSrc: '/assets/images/schemas/domaine1_proteines/schema_63_antigen_antibody_complex_modern.svg',
+        hotspot: {
+          prompt: 'انقر على اللمفاوية B (الخلية التي تتعرف أولاً على المستضد).',
+          correctZone: { x: 19, y: 47, radius: 16 },
+          successFeedback: 'صحيح! هنا تبدأ الاستجابة الخلطية قبل التكاثر النسيلي والتمايز إلى خلايا بلازمية.',
+        },
+        methodology: {
+          prompt: 'حلل كيف يؤدي التعرف النوعي للمستضد إلى تكاثر اللمفاوية B وتمايزها ثم إفراز أجسام مضادة نوعية.',
+          steps: [
+            {
+              label: 'الملاحظة',
+              placeholder: 'صف ما يحدث عندما تتعرف اللمفاوية B النوعية على المستضد...',
+              requiredKeywords: ['لمفاوية B', 'مستضد', 'تعرف'],
+            },
+            {
+              label: 'الآلية',
+              placeholder: 'اشرح كيف يحدث التكاثر النسيلي والتمايز إلى خلايا بلازمية...',
+              requiredKeywords: ['تكاثر نسيلي', 'تمايز', 'خلية بلازمية'],
+            },
+            {
+              label: 'الاستنتاج',
+              placeholder: 'استنتج كيف تظهر الأجسام المضادة النوعية في المصل وما أثرها على المستضد...',
+              requiredKeywords: ['جسم مضاد', 'إفراز', 'بلازمية'],
+            },
+          ],
+        },
+      },
+    ],
+  },
+  immunity_cellular_response: {
+    id: 'immunity_cellular_response',
+    title: 'الفصل 18 : العناصر الدفاعية في الحالة الثانية',
+    blocks: [
+      {
+        type: 'HOTSPOT_AND_METHODOLOGY',
+        objective: 'فهم كيف تتعرف اللمفاوية T القاتلة على الخلية الهدف نوعياً، ثم كيف تقصيها تماسياً.',
+        introText:
+          'ابدأ من وثيقة التعرف النوعي بين LT والخلية الهدف، ثم استعن بوثائق التكاثر النسيلي وآلية perforines / granzymes لتفهم أن الاستجابة الخلوية تقوم على التعرف أولاً ثم الإقصاء الموجه.',
+        supportAssetSrc: '/assets/images/schemas/domaine1_proteines/schema_71_clonal_cd8_activation_modern.svg',
+        supportAltAr: 'وثيقة حديثة تبين التكاثر النسيلي وتميز اللمفاويات T بعد التنشيط.',
+        supportCaptionAr: 'بعد التعرف النوعي تتضاعف الخلايا T الموافقة ثم تتمايز إلى خلايا فعالة.',
+        supportSecondaryAssetSrc: '/assets/images/schemas/domaine1_proteines/schema_72_perforin_granzyme_lysis_modern.svg',
+        supportSecondaryAltAr: 'وثيقة حديثة تبين إطلاق perforines و granzymes نحو الخلية الهدف.',
+        supportSecondaryCaptionAr: 'آلية الإقصاء تكون تماسية وموجهة نحو الخلية الهدف بعد التعرف.',
+        supportGallery: [
+          {
+            assetSrc: '/assets/images/schemas/domaine1_proteines/schema_74_immunological_synapse_specificity_modern.svg',
+            altAr: 'وثيقة حديثة تقارن بين تماس نوعي ينجح في الإقصاء وتماس غير نوعي لا يفعل القتل.',
+            captionAr: 'ليس كل تماس كافياً: النوعية شرط أساسي في الاستجابة الخلوية.',
+          },
+        ],
+        schemaSrc: '/assets/images/schemas/domaine1_proteines/schema_70_tcr_cmh_target_modern.svg',
+        hotspot: {
+          prompt: 'انقر على اللمفاوية T القاتلة (الخلية الزرقاء التي تتعرف على الهدف).',
+          correctZone: { x: 25, y: 51, radius: 16 },
+          successFeedback: 'صحيح! هذه هي اللمفاوية T القاتلة التي تبدأ بالتعرف النوعي ثم تنفذ الإقصاء.',
+        },
+        methodology: {
+          prompt: 'حلل كيف تقصي اللمفاويات T الخلايا المصابة اعتماداً على التعرف النوعي ثم آلية القتل التماسي.',
+          steps: [
+            {
+              label: 'الملاحظة',
+              placeholder: 'صف ما يحدث عندما تلامس اللمفاوية T الخلية الهدف وما الذي يميز هذه الحالة...',
+              requiredKeywords: ['لمفاوية T', 'خلية هدف', 'تعرف'],
+            },
+            {
+              label: 'الآلية',
+              placeholder: 'اشرح كيف يرتبط التعرف النوعي بجزيئات CMH والمحدد المستضدي ثم بإطلاق آليات القتل...',
+              requiredKeywords: ['محدد مستضدي', 'CMH', 'تعرف نوعي'],
+            },
+            {
+              label: 'الاستنتاج',
+              placeholder: 'استنتج كيف يتم إقصاء الخلية الهدف ولماذا تعد هذه الاستجابة خلوية نوعية...',
+              requiredKeywords: ['إقصاء خلوي', 'استجابة خلوية', 'قتل'],
+            },
+          ],
+        },
+      },
+    ],
+  },
+  immunity_memory_response: {
+    id: 'immunity_memory_response',
+    title: 'الفصل 20 : مصدر اللمفاويات LTc',
+    blocks: [
+      {
+        type: 'HOTSPOT_AND_METHODOLOGY',
+        objective: 'فهم لماذا تكون الاستجابة الثانوية أسرع وأقوى، وكيف يستغل التلقيح هذا المبدأ عبر تكوين خلايا الذاكرة.',
+        introText:
+          'ابدأ من منحنى يقارن بين الاستجابة الأولية والثانوية، ثم استعن بوثائق تكوين خلايا الذاكرة والجرعة التذكيرية لتفهم أن الذاكرة المناعية هي التي تختصر زمن الكمون وترفع شدة الاستجابة.',
+        supportAssetSrc: '/assets/images/schemas/domaine1_proteines/schema_76_memory_cell_fate_modern.svg',
+        supportAltAr: 'وثيقة حديثة تبين تشكل خلايا ذاكرة بعد التعرض الأول للمستضد.',
+        supportCaptionAr: 'في نهاية الاستجابة الأولى تبقى خلايا ذاكرة طويلة البقاء.',
+        supportSecondaryAssetSrc: '/assets/images/schemas/domaine1_proteines/schema_77_vaccination_booster_timeline_modern.svg',
+        supportSecondaryAltAr: 'وثيقة حديثة تبين أثر الجرعة التذكيرية على شدة الاستجابة المناعية.',
+        supportSecondaryCaptionAr: 'التلقيح والجرعة التذكيرية يطبقان مبدأ الذاكرة المناعية عملياً.',
+        supportGallery: [
+          {
+            assetSrc: '/assets/images/schemas/domaine1_proteines/schema_78_memory_cell_reactivation_modern.svg',
+            altAr: 'وثيقة حديثة تبين إعادة تنشيط خلايا الذاكرة بسرعة عند التعرض الثاني.',
+            captionAr: 'عند التعرض الثاني تُفعل خلايا الذاكرة بسرعة أكبر من الخلايا البكر.',
+          },
+          {
+            assetSrc: '/assets/images/schemas/domaine1_proteines/schema_80_immunity_big_picture_modern.svg',
+            altAr: 'وثيقة تركيبية حديثة تلخص مسار المناعة من التعرف إلى الاستجابة ثم الذاكرة.',
+            captionAr: 'خريطة تركيبية نهائية: الذات واللاذات → خلطية / خلوية → ذاكرة.',
+          },
+        ],
+        schemaSrc: '/assets/images/schemas/domaine1_proteines/schema_75_primary_secondary_response_curve_modern.svg',
+        hotspot: {
+          prompt: 'انقر على الاستجابة الثانوية (المنحنى الأحمر الأعلى والأسرع).',
+          correctZone: { x: 69, y: 26, radius: 16 },
+          successFeedback: 'صحيح! الاستجابة الثانوية ترتفع بسرعة أكبر وتبلغ ذروة أعلى بفضل خلايا الذاكرة.',
+        },
+        methodology: {
+          prompt: 'حلل الفرق بين الاستجابة الأولية والثانوية من حيث زمن الكمون والشدة، ثم اربط ذلك بخلايا الذاكرة المناعية.',
+          steps: [
+            {
+              label: 'الملاحظة',
+              placeholder: 'صف ما تلاحظه في منحنى الاستجابة الأولية والثانوية من حيث السرعة والذروة...',
+              requiredKeywords: ['استجابة أولية', 'زمن كمون', 'أجسام مضادة'],
+            },
+            {
+              label: 'الآلية',
+              placeholder: 'اشرح كيف تتكون خلايا الذاكرة وكيف يعاد تنشيطها عند التعرض الثاني...',
+              requiredKeywords: ['خلايا ذاكرة', 'تكاثر نسيلي', 'تمايز'],
+            },
+            {
+              label: 'الاستنتاج',
+              placeholder: 'استنتج لماذا تكون الاستجابة الثانية أسرع وأقوى وما علاقة ذلك بالتلقيح...',
+              requiredKeywords: ['استجابة ثانوية', 'أسرع', 'أقوى', 'ذاكرة'],
+            },
+          ],
+        },
+      },
+    ],
+  },
+  seismic_waves: {
+    id: 'seismic_waves',
+    title: 'الفصل 39 : الموجات الزلزالية — الفصل 40 : التركيب الكيميائي للصخور',
+    blocks: [
+      {
+        type: 'HOTSPOT_AND_METHODOLOGY',
+        objective: 'فهم كيف تكشف الأمواج P و S عن بنية باطن الأرض.',
+        introText:
+          'لاحظ مخطط انتشار الأمواج الزلزالية. حدد الموجة P ثم الموجة S ثم فسّر سلوكهما عند انقطاع غوتنبرغ.',
+        schemaSrc: '/assets/images/schemas/domaine3_tectonique/schema_14_ondes.svg',
+        hotspot: {
+          prompt: 'انقر على الموجة P (موجة انضغاطية).',
+          correctZone: { x: 50, y: 50, radius: 20 },
+          successFeedback: 'صحيح! الموجات P انضغاطية وتنتشر في الأوساط الصلبة والسائلة.',
+        },
+        methodology: {
+          prompt: 'حلل كيف تكشف الأمواج الزلزالية عن بنية باطن الأرض (تحليل محض).',
+          steps: [
+            {
+              label: 'الملاحظة',
+              placeholder: 'صف سلوك الموجات P و S في القشرة والوشاح...',
+              requiredKeywords: ['موجات P', 'موجات S', 'سرعة', 'وسط'],
+            },
+            {
+              label: 'الآلية',
+              placeholder: 'اشرح ماذا يحدث عند انقطاع غوتنبرغ...',
+              requiredKeywords: ['اختفاء S', 'نواة خارجية', 'سائلة', 'موجات P'],
+            },
+            {
+              label: 'الاستنتاج',
+              placeholder: 'استنتج لماذا تدل هذه الظواهر على سيولة النواة الخارجية...',
+              requiredKeywords: ['سائلة', 'قوى قص', 'نواة خارجية', 'استنتاج'],
+            },
+          ],
+        },
+      },
+    ],
+  },
+
+  // Leçons officielles câblées depuis la Source de Vérité (kunzDatabase.ts).
+  'd1-u1-l2-transcription': {
+    id: 'd1-u1-l2-transcription',
+    title: 'الفصل 3 : استنساخ المعلومات الوراثية الموجودة على مستوى ADN',
+    blocks: [
+      {
+        type: 'COMPARISON_TABLE',
+        objective: 'المقارنة بين ADN و ARN حسب معايير واضحة قبل فهم آلية الاستنساخ.',
+        promptAr: 'قارن بين ADN و ARN حسب المعايير الآتية.',
+        assetSrc: '/assets/images/schemas/domaine1_proteines/schema_16_compare_adn_arn_modern.svg',
+        altAr: 'مقارنة بصرية حديثة بين ADN و ARN من حيث السكر والقواعد وعدد السلاسل والوظيفة.',
+        supportGallery: [
+          {
+            assetSrc: '/assets/images/schemas/domaine1_proteines/schema_16b_rna_nucleotide_assembly_modern_ar.svg',
+            altAr: 'وثيقة دعم حديثة تبين تركيب النيكليوتيد الريبوزي من فوسفات وسكر ريبوز وقاعدة آزوتية.',
+            captionAr: 'تفكيك بنية النيكليوتيد: فوسفات + ريبوز + قاعدة آزوتية.',
+          },
+          {
+            assetSrc: '/assets/images/schemas/domaine1_proteines/schema_16c_arn_structure_modern_ar.svg',
+            altAr: 'وثيقة دعم حديثة تبين أن ARN سلسلة واحدة تبنى في اتجاه 5 شرطة إلى 3 شرطة.',
+            captionAr: 'شكل ARN نفسه: سلسلة واحدة تحمل القواعد A U G C.',
+          },
+          {
+            assetSrc: '/assets/images/schemas/domaine1_proteines/schema_16d_rna_components_modern_ar.svg',
+            altAr: 'وثيقة دعم حديثة تلخص مكونات ARN ووظيفته الأساسية في نقل المعلومة.',
+            captionAr: 'لوحة كيميائية سريعة: السكر، القاعدة، عدد السلاسل، الوظيفة.',
+          },
+        ],
+        criteria: [
+          { id: 'sugar', labelAr: 'السكر', leftExpected: ['منقوص الأكسجين', 'ريبوز منقوص الأكسجين'], rightExpected: ['ريبوز'] },
+          { id: 'bases', labelAr: 'القواعد الآزوتية', leftExpected: ['A', 'T', 'C', 'G', 'الثايمين'], rightExpected: ['A', 'U', 'C', 'G', 'اليوراسيل'] },
+          { id: 'strands', labelAr: 'عدد السلاسل', leftExpected: ['ثنائي', 'سلسلتين'], rightExpected: ['أحادي', 'سلسلة واحدة'] },
+          { id: 'role', labelAr: 'الوظيفة', leftExpected: ['يحفظ المعلومات الوراثية', 'تخزين المعلومة الوراثية'], rightExpected: ['ينقل المعلومة الوراثية', 'نسخة من المعلومة الوراثية'] },
+        ],
+        conclusionPromptAr: 'اكتب خلاصة قصيرة للمقارنة بين الجزيئين.',
+        conclusionKeywords: ['ADN', 'ARN', 'المعلومة الوراثية'],
+        summaryAr: 'ADN يخزن المعلومة الوراثية، أما ARN فيساهم في نقلها واستعمالها، مع اختلاف في السكر والقواعد والبنية.',
+      },
+      {
+        type: 'GUIDED_DOC_QA',
+        objective: 'تحليل وثيقة الاستنساخ ومنحنى المثبط لاستنتاج دور ARN بوليمراز.',
+        doc: {
+          assetSrc: '/assets/images/schemas/domaine1_proteines/schema_17_transcription_bubble_modern.svg',
+          altAr: 'وثيقة تبين منطقة الاستنساخ وتفاصيل عمل ARN بوليمراز على ADN.',
+          captionAr: 'وثيقة الاستنساخ وتحديد اتجاه تركيب ARNm.',
+          secondaryAssetSrc: '/assets/images/schemas/domaine1_proteines/schema_18_amanitine_curve_modern.svg',
+          secondaryAltAr: 'وثيقة تربط بين α-amanitine وانخفاض تشكل ARNm.',
+          secondaryCaptionAr: 'وثيقة داعمة: تأثير α-amanitine على تشكل ARNm.',
+        },
+        questions: [
+          {
+            id: 'transcription_direction',
+            verbAr: 'حدد',
+            promptAr: 'حدد اتجاه حدوث الاستنساخ انطلاقاً من الوثيقة.',
+            answerType: 'short_text',
+            validationMode: 'keywords',
+            // #43 — ['5','3'] acceptait la date « 2035 » et refusait la réponse
+            // juste écrite en toutes lettres. On accepte les deux graphies et on
+            // exige la marque du sens (de … vers …), qui est le fond de la question.
+            requiredKeywords: ['5|خماسي', '3|ثلاثي', 'نحو|الى|إلى|من'],
+            // #44 — Le sens EST la réponse : « من 3 نحو 5 » contient les mêmes
+            // mots-clés que la réponse juste tout en énonçant l'inverse.
+            orderedKeywords: ['5|خماسي', '3|ثلاثي'],
+            successMessageAr: 'أحسنت، حددت اتجاه القراءة والتركيب.',
+            errorHintAr: 'اذكر اتجاه قراءة السلسلة الناسخة واتجاه تركيب ARNm.',
+          },
+          {
+            id: 'amanitine_curve',
+            verbAr: 'حلل',
+            promptAr: 'حلل منحنى تأثير α-amanitine على تشكل ARNm.',
+            answerType: 'short_text',
+            validationMode: 'keywords',
+            requiredKeywords: ['انخفاض|تناقص|نقصان|قلة', 'ARNm', 'تركيز'],
+            successMessageAr: 'جيد، وصفت العلاقة بين تركيز المثبط وتشكل ARNm.',
+            errorHintAr: 'اذكر أن زيادة تركيز المثبط ترافقها قلة تشكل ARNm.',
+          },
+          {
+            id: 'arn_pol_role',
+            verbAr: 'استنتج',
+            promptAr: 'استنتج دور ARN بوليمراز.',
+            answerType: 'short_text',
+            validationMode: 'keywords',
+            requiredKeywords: ['ARN بوليمراز', 'ضروري', 'الاستنساخ'],
+            successMessageAr: 'أحسنت، استنتجت الدور الإنزيمي الصحيح.',
+            errorHintAr: 'اربط بين تثبيط α-amanitine وتعطل تشكل ARNm.',
+          },
+        ],
+        summaryAr: 'انخفاض تشكل ARNm بوجود α-amanitine يدل على أن ARN بوليمراز إنزيم أساسي في عملية الاستنساخ.',
+      },
+      {
+        type: 'SEQUENCE_ORDER',
+        objective: 'ترتيب مراحل الاستنساخ ثم صياغتها في نص علمي مرتب.',
+        promptAr: 'رتب مراحل الاستنساخ من البداية إلى النهاية.',
+        assetSrc: '/assets/images/schemas/domaine1_proteines/schema_17_transcription_bubble_modern.svg',
+        altAr: 'رسم يوضح تشكل ARNm انطلاقاً من ADN أثناء الاستنساخ.',
+        secondaryAssetSrc: '/assets/images/schemas/domaine1_proteines/schema_21_multiple_transcription_modern_ar.svg',
+        secondaryAltAr: 'وثيقة حديثة تبين عدة خيوط ARN في طور التشكل على نفس المورثة.',
+        secondaryCaptionAr: 'صورة حدسية: يمكن أن تتشكل عدة نسخ ARN على نفس المورثة في آن واحد.',
+        steps: [
+          { id: 'binding', labelAr: 'تثبت ARN بوليمراز على منطقة البداية', expectedOrder: 1 },
+          { id: 'opening', labelAr: 'انفتاح جزء محدود من ADN', expectedOrder: 2 },
+          { id: 'templating', labelAr: 'استعمال إحدى السلسلتين قالباً', expectedOrder: 3 },
+          { id: 'elongation', labelAr: 'إضافة النيكليوتيدات المكملة واستطالة ARNm', expectedOrder: 4 },
+          { id: 'termination', labelAr: 'الوصول إلى منطقة النهاية وتحرر ARNm', expectedOrder: 5 },
+        ],
+        summaryPromptAr: 'اشرح مراحل الاستنساخ في 3 إلى 5 أسطر.',
+        summaryKeywords: ['ARN بوليمراز', 'السلسلة القالب', 'تكامل', 'ARNm'],
+        summaryAr: 'يبدأ الاستنساخ بتثبت الإنزيم، ثم انفتاح ADN، ثم تركيب ARNm المكمل للسلسلة القالبية إلى غاية النهاية.',
+      },
+      {
+        type: 'SEQUENCE_ORDER',
+        objective: 'فهم تحول ARNm الأولي إلى ARNm ناضج بعد انتهاء الاستنساخ.',
+        promptAr: 'رتب الخطوات التي تفسر نضج ARNm بعد انتهاء الاستنساخ.',
+        assetSrc: '/assets/images/schemas/domaine1_proteines/schema_20_splicing_exons_introns_modern.svg',
+        altAr: 'رسم يوضح تحول ADN إلى ARNm أولي ثم ARNm ناضج.',
+        secondaryAssetSrc: '/assets/images/schemas/domaine1_proteines/schema_19_splicing_micrograph_modern.svg',
+        secondaryAltAr: 'صورة مجهرية مع تفسير بصري لظاهرة التضفير.',
+        secondaryCaptionAr: 'وثيقة داعمة: صورة بالمجهر + رسم تفسيري للتضفير.',
+        steps: [
+          { id: 'primary', labelAr: 'يتشكل ARNm أولي بعد الاستنساخ', expectedOrder: 1 },
+          { id: 'selection', labelAr: 'تُحدد الأجزاء المحتفظ بها والأجزاء التي ستُحذف', expectedOrder: 2 },
+          { id: 'removal', labelAr: 'تُحذف بعض المقاطع غير المحتفظ بها', expectedOrder: 3 },
+          { id: 'mature', labelAr: 'يتشكل ARNm ناضج أقصر وصالح للترجمة', expectedOrder: 4 },
+        ],
+        summaryPromptAr: 'فسر لماذا يكون ARNm الناضج أقصر من ARNm الأولي.',
+        summaryKeywords: ['ARNm أولي', 'ARNm ناضج', 'أقصر', 'حذف'],
+        summaryAr: 'ARNm الناضج أقصر لأن النسخة الأولية تخضع لعملية نضج تُحذف خلالها بعض المقاطع قبل أن تصبح صالحة للترجمة.',
+      },
+    ],
+  },
+  'd1-u1-l3-traduction': {
+    id: 'd1-u1-l3-traduction',
+    title: 'الفصل 4 : الترجمة',
+    blocks: [
+      {
+        type: 'REASONING_COUNT',
+        objective: 'استنتاج لماذا يجب أن تكون الشفرة الوراثية ثلاثية القواعد.',
+        promptAr: 'إذا كانت اللغة النووية مكوّنة من 4 قواعد فقط بينما اللغة البروتينية تضم 20 حمضاً أمينياً، فكم قاعدة نحتاج في الرامزة الواحدة؟',
+        assetSrc: '/assets/images/schemas/domaine1_proteines/schema_22_nirenberg_decode_modern.svg',
+        altAr: 'تجربة توضح أن ARNm الاصطناعي متعدد U ينتج متعدد Phe، وباقي القواعد تعطي أحماضاً أخرى.',
+        options: [
+          { symbolCount: 1, combinations: 4, isCorrect: false },
+          { symbolCount: 2, combinations: 16, isCorrect: false },
+          { symbolCount: 3, combinations: 64, isCorrect: true },
+        ],
+        rationalePromptAr: 'علل اختيارك بالحساب: ماذا تعطي قاعدة واحدة؟ قاعدتان؟ ثلاث قواعد؟',
+        rationaleKeywords: ['4', '16', '64'],
+        summaryAr: 'الشفرة الوراثية ثلاثية لأن 4³ = 64 احتمالاً، وهو عدد كافٍ لتشفير 20 حمضاً أمينياً.',
+      },
+      {
+        type: 'GUIDED_DOC_QA',
+        objective: 'فهم العلاقة بين الكودون على ARNm ومضاد الكودون على ARNt داخل الريبوزوم.',
+        doc: {
+          assetSrc: '/assets/images/schemas/domaine1_proteines/schema_03_traduction.svg',
+          altAr: 'مخطط يبين ARNm والريبوزوم و ARNt الحامل لمضاد الكودون والحمض الأميني.',
+          captionAr: 'مخطط الترجمة: كودون ↔ مضاد الكودون ↔ حمض أميني.',
+          secondaryAssetSrc: '/assets/images/schemas/domaine1_proteines/schema_23_genetic_code_table_modern.svg',
+          secondaryAltAr: 'جدول الشفرة الوراثية لقراءة الرامزات وتحديد الحمض الأميني الموافق.',
+          secondaryCaptionAr: 'جدول داعم لقراءة الرامزات وتحديد رموز البدء والتوقف.',
+        },
+        questions: [
+          {
+            id: 'codon_location',
+            verbAr: 'حدد',
+            promptAr: 'حدد أين يوجد الكودون وأين يوجد مضاد الكودون.',
+            answerType: 'short_text',
+            validationMode: 'keywords',
+            requiredKeywords: ['الكودون', 'ARNm', 'مضاد الكودون', 'ARNt'],
+            successMessageAr: 'أحسنت، ميزت بين موضع الكودون وموضع مضاد الكودون.',
+            errorHintAr: 'اذكر أن الكودون على ARNm ومضاد الكودون على ARNt.',
+          },
+          {
+            id: 'pairing_role',
+            verbAr: 'فسر',
+            promptAr: 'فسّر كيف يضمن هذا الاقتران اختيار الحمض الأميني الصحيح.',
+            answerType: 'short_text',
+            validationMode: 'keywords',
+            requiredKeywords: ['تكامل', 'الحمض الأميني', 'ARNt'],
+            successMessageAr: 'جيد، ربطت بين التكامل واختيار الحمض الأميني.',
+            errorHintAr: 'اربط بين تكامل الكودون/مضاد الكودون وحمل ARNt لحمض أميني محدد.',
+          },
+          {
+            id: 'start_stop',
+            verbAr: 'استنتج',
+            promptAr: 'استنتج دور AUG ودور رامزات التوقف.',
+            answerType: 'short_text',
+            validationMode: 'keywords',
+            requiredKeywords: ['AUG', 'بداية', 'توقف'],
+            successMessageAr: 'أحسنت، ميزت بين الانطلاق والتوقف في الترجمة.',
+            errorHintAr: 'اذكر أن AUG رامزة بداية وأن UAA/UAG/UGA رامزات توقف.',
+          },
+        ],
+        summaryAr: 'تتم ترجمة رسالة ARNm بفضل تكامل الكودون مع مضاد الكودون، حيث يوجه كل ARNt حمضاً أمينياً محدداً إلى الريبوزوم.',
+      },
+      {
+        type: 'SEQUENCE_ORDER',
+        objective: 'ترتيب خطوات الترجمة من بدء القراءة إلى تشكل السلسلة الببتيدية.',
+        promptAr: 'رتب مراحل الترجمة على مستوى الريبوزوم من البداية إلى النهاية.',
+        assetSrc: '/assets/images/schemas/domaine1_proteines/schema_31_translation_stages_modern_ar.svg',
+        altAr: 'وثيقة حديثة تلخص مراحل الترجمة: انطلاق، استطالة، توقف.',
+        secondaryAssetSrc: '/assets/images/schemas/domaine1_proteines/schema_32_filter_binding_experiment_modern_ar.svg',
+        secondaryAltAr: 'وثيقة حديثة تبين تجربة تثبت نوعية ارتباط الرامزة مع ARNt الموافق.',
+        secondaryCaptionAr: 'تجربة دعم: الزوج الصحيح كودون / مضاد كودون هو الذي يثبت نوعياً.',
+        steps: [
+          { id: 'start', labelAr: 'يرتبط ARNm بالريبوزوم عند AUG', expectedOrder: 1 },
+          { id: 'arrival', labelAr: 'يدخل ARNt الحامل للحمض الأميني الموافق', expectedOrder: 2 },
+          { id: 'pairing', labelAr: 'يتكامل مضاد الكودون مع الكودون', expectedOrder: 3 },
+          { id: 'bond', labelAr: 'تتشكل رابطة ببتيدية بين الأحماض الأمينية', expectedOrder: 4 },
+          { id: 'elongation', labelAr: 'تتكرر العملية فيطول السلسلة الببتيدية', expectedOrder: 5 },
+          { id: 'stop', labelAr: 'تتوقف الترجمة عند رامزة توقف', expectedOrder: 6 },
+        ],
+        summaryPromptAr: 'اشرح في 3 إلى 5 أسطر كيف تنتقل الشفرة الوراثية إلى سلسلة ببتيدية.',
+        summaryKeywords: ['الريبوزوم', 'ARNm', 'ARNt', 'رابطة ببتيدية'],
+        summaryAr: 'تبدأ الترجمة عند AUG، ثم تُقرأ الكودونات تباعاً ويجلب كل ARNt حمضه الأميني الموافق، فتتشكل الروابط الببتيدية إلى غاية رامزة التوقف.',
+      },
+      {
+        type: 'GUIDED_DOC_QA',
+        objective: 'تحديد مقر الترجمة في الهيولى وفهم دور متعدد الريبوزوم في زيادة مردود التركيب.',
+        doc: {
+          assetSrc: '/assets/images/schemas/domaine1_proteines/schema_24_polysome_translation_modern.svg',
+          altAr: 'رسم يوضح عدة ريبوزومات تترجم نفس ARNm داخل الهيولى.',
+          captionAr: 'ترجمة نفس الرسالة من طرف عدة ريبوزومات.',
+          secondaryAssetSrc: '/assets/images/schemas/domaine1_proteines/schema_33_secretory_tracking_cells_modern_ar.svg',
+          secondaryAltAr: 'وثيقة حديثة تتبع البروتين داخل الخلايا من الشبكة الهيولية الخشنة إلى الغولجي ثم الحويصلات.',
+          secondaryCaptionAr: 'رؤية خلوية موسعة: إنتاج كمية كبيرة من البروتين يتكامل مع التوجيه داخل الخلية.',
+        },
+        questions: [
+          {
+            id: 'translation_site',
+            verbAr: 'حدد',
+            promptAr: 'حدد مقر تركيب البروتين في الهيولى.',
+            answerType: 'short_text',
+            validationMode: 'keywords',
+            requiredKeywords: ['الريبوزومات', 'الهيولى'],
+            successMessageAr: 'أحسنت، حددت مقر الترجمة.',
+            errorHintAr: 'اذكر أن الترجمة تتم على مستوى الريبوزومات في الهيولى.',
+          },
+          {
+            id: 'polysome_role',
+            verbAr: 'استنتج',
+            promptAr: 'استنتج دور متعدد الريبوزوم.',
+            answerType: 'short_text',
+            validationMode: 'keywords',
+            requiredKeywords: ['عدة ريبوزومات', 'نفس ARNm', 'زيادة'],
+            successMessageAr: 'جيد، استنتجت كيف يرفع متعدد الريبوزوم مردود التركيب.',
+            errorHintAr: 'اربط بين قراءة نفس ARNm من طرف عدة ريبوزومات وزيادة كمية البروتين المصنّع.',
+          },
+        ],
+        summaryAr: 'وجود متعدد الريبوزوم يعني أن عدة ريبوزومات تترجم نفس ARNm في وقت واحد، مما يزيد كمية البروتين المصنّع.',
+      },
+      {
+        type: 'GUIDED_DOC_QA',
+        objective: 'تمييز مكونات الريبوزوم وبنية ARNt وربطهما بوظيفتهما في الترجمة.',
+        doc: {
+          assetSrc: '/assets/images/schemas/domaine1_proteines/schema_25_ribosome_arnt_structure_modern.svg',
+          altAr: 'رسم يوضح الريبوزوم بموقعي A وP وبنية ARNt.',
+          captionAr: 'الريبوزوم و ARNt: بنية مرتبطة مباشرة بالوظيفة.',
+        },
+        questions: [
+          {
+            id: 'ribosome_parts',
+            verbAr: 'حدد',
+            promptAr: 'حدد مكونات الريبوزوم الأساسية وموقعي A وP.',
+            answerType: 'short_text',
+            validationMode: 'keywords',
+            requiredKeywords: ['تحت وحدة كبرى', 'تحت وحدة صغرى', 'A', 'P'],
+            successMessageAr: 'أحسنت، ميزت بين البنية ومواقع الارتباط.',
+            errorHintAr: 'اذكر تحت الوحدة الكبرى، تحت الوحدة الصغرى، وموقعي A وP.',
+          },
+          {
+            id: 'arnt_structure_role',
+            verbAr: 'استنتج',
+            promptAr: 'استنتج كيف تسمح بنية ARNt بوظيفته في الترجمة.',
+            answerType: 'short_text',
+            validationMode: 'keywords',
+            requiredKeywords: ['الحمض الأميني', 'الرامزة المضادة', 'ARNt'],
+            successMessageAr: 'جيد، ربطت البنية بوظيفة النقل والتعرف.',
+            errorHintAr: 'اذكر أن ARNt يحمل حمضاً أمينياً في طرف، ورامزة مضادة في الطرف الآخر.',
+          },
+        ],
+        summaryAr: 'الريبوزوم يوفر مواقع A وP لترتيب الترجمة، بينما تسمح بنية ARNt بحمل الحمض الأميني والتعرف على الكودون الموافق.',
+      },
+      {
+        type: 'SEQUENCE_ORDER',
+        objective: 'ترتيب خطوات تنشيط الأحماض الأمينية قبل إدخالها في الترجمة.',
+        promptAr: 'رتب مراحل تنشيط الحمض الأميني وربطه بـ ARNt.',
+        assetSrc: '/assets/images/schemas/domaine1_proteines/schema_26_aa_activation_modern.svg',
+        altAr: 'رسم يوضح تدخل الإنزيم النوعي وATP في شحن ARNt بحمضه الأميني.',
+        steps: [
+          { id: 'elements', labelAr: 'يجتمع حمض أميني و ARNt وإنزيم نوعي', expectedOrder: 1 },
+          { id: 'energy', labelAr: 'تُستهلك طاقة ATP لتشكيل المعقد', expectedOrder: 2 },
+          { id: 'binding', labelAr: 'يرتبط الحمض الأميني بـ ARNt الموافق', expectedOrder: 3 },
+          { id: 'release', labelAr: 'يتحرر ARNt مشحون وجاهز للترجمة', expectedOrder: 4 },
+        ],
+        summaryPromptAr: 'اشرح لماذا تحتاج الترجمة إلى تنشيط الأحماض الأمينية قبل بدايتها.',
+        summaryKeywords: ['ATP', 'إنزيم نوعي', 'ARNt', 'حمض أميني'],
+        summaryAr: 'قبل الترجمة يجب شحن كل ARNt بحمضه الأميني المناسب بوساطة إنزيم نوعي وطاقة من ATP.',
+      },
+      {
+        type: 'SEQUENCE_ORDER',
+        objective: 'فهم مصير البروتين بعد تركيبه داخل الهيولى أو على الشبكة الهيولية الخشنة.',
+        promptAr: 'رتب مسار البروتين بعد تركيبه عندما يكون موجهاً للإفراز.',
+        assetSrc: '/assets/images/schemas/domaine1_proteines/schema_27_secretory_pathway_destination_modern.svg',
+        altAr: 'رسم يوضح مرور البروتين عبر الشبكة الهيولية الخشنة ثم جهاز غولجي ثم الحويصلات.',
+        secondaryAssetSrc: '/assets/images/schemas/domaine1_proteines/schema_24_secretory_pathway_pancreas_modern_ar.svg',
+        secondaryAltAr: 'وثيقة حديثة شبيهة بخلايا بنكرياسية مفرزة تربط الشبكة الهيولية الخشنة وجهاز غولجي بالإفراز.',
+        secondaryCaptionAr: 'مثال نسيجي: الخلايا المفرزة مثل خلايا البنكرياس تُظهر بوضوح مسار البروتين الإفرازي.',
+        supportGallery: [
+          {
+            assetSrc: '/assets/images/schemas/domaine1_proteines/schema_34_secretory_tracking_graph_modern_ar.svg',
+            altAr: 'وثيقة حديثة بيانية تبين انتقال الوسم البروتيني زمنياً من الشبكة الهيولية إلى الغولجي ثم الحويصلات.',
+            captionAr: 'رؤية كمية: الإشارة ترتفع تباعاً في الشبكة ثم الغولجي ثم الحويصلات / الخارج.',
+          },
+        ],
+        steps: [
+          { id: 'rer', labelAr: 'يُركّب البروتين على الشبكة الهيولية الخشنة', expectedOrder: 1 },
+          { id: 'golgi', labelAr: 'ينتقل إلى جهاز غولجي للتعديل والتغليف', expectedOrder: 2 },
+          { id: 'vesicles', labelAr: 'يُعبأ داخل حويصلات', expectedOrder: 3 },
+          { id: 'secretion', labelAr: 'يتجه إلى الغشاء أو يُفرز خارج الخلية', expectedOrder: 4 },
+        ],
+        summaryPromptAr: 'فسر بإيجاز كيف يصل البروتين إلى مكان عمله بعد تركيبه.',
+        summaryKeywords: ['الشبكة الهيولية', 'جهاز غولجي', 'حويصلات', 'مكان عمله'],
+        summaryAr: 'لا تنتهي وظيفة الخلية عند تركيب البروتين؛ إذ يُنقل ويُعدّل ثم يُوجّه إلى مكان عمله داخل الخلية أو خارجها.',
+      },
+    ],
+  },
+  'd1-u3-l1-enzyme': ActiveLesson_D1_U3_L1_Enzyme as ActiveLesson,
+
+  // ===== Leçons expérimentales historiques (Pilier 1 — mot par mot) =====
+  'd2-u6-l1-hill-ruben': {
+    id: 'd2-u6-l1-hill-ruben',
+    title: 'تجربة هيل وروبن : مصدر الأكسجين المنطلق في التركيب الضوئي',
+    blocks: [
+      {
+        type: 'MISSION_CHOICE',
+        objective: 'الدخول إلى التجربتين التاريخيتين من وضعية مشكلة: من أين يأتي الأكسجين المنطلق؟',
+        heroTitle: 'هل يأتي الأكسجين المنطلق من CO₂ أم من الماء H₂O؟',
+        heroText: 'حتى سنة 1937 اعتُقد أن الأكسجين المنطلق في التركيب الضوئي يأتي من تحلل ثاني أكسيد الكربون. جاءت تجربة هيل ثم تجربة روبن بالوسم المشع لتثبت العكس ببرهان تجريبي صارم.',
+        imageSrc: '/assets/images/schemas/domaine2_energie/schema_89_hill_ruben_experiment_modern_ar.svg',
+        choices: [
+          {
+            id: 'start_hill_question',
+            labelAr: 'ابدأ من وضعية تجربة هيل',
+            descriptionAr: 'أعِد ذكر شروط عمل الصانعة الخضراء ثم صِغ فرضياتك حول مصدر الأكسجين.',
+            completeOnSelect: true,
+          },
+        ],
+      },
+      {
+        type: 'HYPOTHESIS_EXPERIMENT',
+        objective: 'صياغة فرضيات حول مصدر الأكسجين المنطلق والتحقق منها بتجربتي هيل وروبن.',
+        problemAr: 'انطلاقا من معادلة التركيب الضوئي الكلية، ما مصدر الأكسجين المنطلق: جزيئة CO₂ أم جزيئة H₂O؟',
+        experimentAssetSrc: '/assets/images/schemas/domaine2_energie/schema_89_hill_ruben_experiment_modern_ar.svg',
+        experimentAltAr: 'وثيقة تجريبية: تجربة هيل بالصانعات المعزولة مع مستقبل اصطناعي، ثم وسم ¹⁸O عند روبن.',
+        hypothesisPromptAr: 'اقترح فرضية أو فرضيتين توضحان مصدر الأكسجين المنطلق (من CO₂ أم من H₂O؟).',
+        resultPromptAr: 'حلل النتائج: انطلاق O₂ من الصانعات المعزولة في وسط خالٍ من CO₂، ثم وسم O₂ المنطلق بـ ¹⁸O فقط حين يكون الوسم في الماء.',
+        validationPromptAr: 'تحقق من الفرضيات: أي جزيء يأتي منه الأكسجين المنطلق؟ علّل اعتمادا على الوثيقتين.',
+        namingPromptAr: 'سمِّ تحلل الماء تحت تأثير الضوء داخل النظام الضوئي.',
+        expectedTargets: ['التحلل الضوئي للماء', 'الأكسجين', 'الماء', 'الإلكترونات'],
+        resultKeywords: ['انطلاق O₂', 'بدون CO₂', 'H₂O', '¹⁸O'],
+        validationKeywords: ['الماء', 'التحلل الضوئي', 'الأكسجين'],
+        namingAccepted: ['التحلل الضوئي للماء', 'التحلل الضوئي'],
+        summaryAr: 'تظهر تجربة هيل أن الصانعات المعزولة تنطلق O₂ في غياب CO₂، وتثبت تجربة روبن بوسم ¹⁸O أن مصدر الأكسجين المنطلق هو التحلل الضوئي لجزيئات الماء.',
+      },
+      {
+        type: 'GUIDED_DOC_QA',
+        objective: 'استثمار وثيقة التجربتين لاستخلاص دور الضوء واليخضور ومصدر الإلكترونات.',
+        doc: {
+          assetSrc: '/assets/images/schemas/domaine2_energie/schema_89_hill_ruben_experiment_modern_ar.svg',
+          altAr: 'لوحتان تجريبيتان: تجربة هيل بالصانعات المعزولة، وتجربة روبن بمياه موسومة بـ ¹⁸O.',
+          captionAr: 'الوسم يتبع الماء: الأكسجين المنطلق يأتي من H₂O لا من CO₂.',
+        },
+        questions: [
+          {
+            id: 'hill_artificial_acceptor',
+            verbAr: 'حدد',
+            promptAr: 'حدد دور أملاح الحديد Fe³⁺ في تجربة هيل.',
+            answerType: 'short_text',
+            validationMode: 'keywords',
+            requiredKeywords: ['مستقبل اصطناعي', 'الإلكترونات'],
+            successMessageAr: 'أحسنت: Fe³⁺ يقوم دور المستقبل الاصطناعي الذي يقبل الإلكترونات المحررة.',
+            errorHintAr: 'اذكر أن Fe³⁺ يُرجَع إلى Fe²⁺ إذ يقبل الإلكترونات: هو مستقبل اصطناعي يحل محل NADP الطبيعي.',
+          },
+          {
+            id: 'hill_no_co2',
+            verbAr: 'فسّر',
+            promptAr: 'فسّر لماذا يعد انطلاق O₂ في تجربة هيل دليلا على أن CO₂ ليس مصدره.',
+            answerType: 'short_text',
+            validationMode: 'keywords',
+            requiredKeywords: ['بدون CO₂', 'الأكسجين'],
+            successMessageAr: 'صحيح: انطلاق الأكسجين في غياب كلي للـ CO₂ يفيد أن CO₂ ليس مصدره.',
+            errorHintAr: 'اذكر أن الوسط المعزول خالٍ تماما من CO₂ ومع ذلك ينطلق O₂.',
+          },
+          {
+            id: 'ruben_deduction',
+            verbAr: 'استنتج',
+            promptAr: 'استنتج من وسم ¹⁸O عند روبن مصدر الأكسجين المنطلق.',
+            answerType: 'short_text',
+            validationMode: 'keywords',
+            requiredKeywords: ['H₂O', 'التحلل الضوئي'],
+            successMessageAr: 'ممتاز: الوسم يظهر في O₂ فقط عندما يكون في الماء، إذن المصدر هو التحلل الضوئي للماء.',
+            errorHintAr: 'اذكر أن O₂ موسوم بـ ¹⁸O فقط في الوسط المحتوي على H₂¹⁸O.',
+          },
+        ],
+        summaryAr: 'الضوء الممتص في النظام الضوئي يطرد إلكترونات اليخضور، وتعوّضها إلكترونات الماء: التحلل الضوئي للماء يوفر الإلكترونات ويحرر الأكسجين.',
+      },
+      {
+        type: 'SEQUENCE_ORDER',
+        objective: 'ترتيب أحداث المرحلة الكيميوضوئية منذ امتصاص الفوتون إلى إرجاع المستقبل النهائي.',
+        promptAr: 'رتب أحداث المرحلة الكيميوضوئية منذ امتصاص الضوء إلى تشكل نواتجها.',
+        assetSrc: '/assets/images/schemas/domaine2_energie/schema_89_hill_ruben_experiment_modern_ar.svg',
+        altAr: 'وثيقة تجريبية تربط تحلل الماء بمرور الإلكترونات وإرجاع المستقبل.',
+        steps: [
+          { id: 'photon', labelAr: 'يمتص اليخضور فوتون الضوء فيتهيج ويطرد إلكترونا', expectedOrder: 1 },
+          { id: 'water', labelAr: 'تحلل الماء يعوّض الإلكترون المطرود ويحرر O₂', expectedOrder: 2 },
+          { id: 'chain', labelAr: 'تمر الإلكترونات في سلسلة النواقل داخل غشاء التيلاكويد', expectedOrder: 3 },
+          { id: 'acceptor', labelAr: 'يُرجَع NADP إلى NADPH ويتركب ATP', expectedOrder: 4 },
+        ],
+        summaryPromptAr: 'اشرح بإيجاز علاقة تحلل الماء بمرور الإلكترونات في السلسلة.',
+        summaryKeywords: ['الماء', 'الإلكترونات', 'التحلل الضوئي'],
+        summaryAr: 'الفوتون يطرد إلكترونات اليخضور، وتعوّضها الإلكترونات الآتية من تحلل الماء الذي يحرر الأكسجين، ثم تمر الإلكترونات في السلسلة فتُرجَع NADP ويتركب ATP.',
+      },
+    ],
+  },
+  'd2-u6-l2-jagendorf': {
+    id: 'd2-u6-l2-jagendorf',
+    title: 'تجربة جاغندورف : تركيب ATP في الظلام وتدرج البروتونات',
+    blocks: [
+      {
+        type: 'MISSION_CHOICE',
+        objective: 'مساءلة الفكرة الشائعة القائلة إن الضوء يتركب ATP مباشرة داخل الصانعة.',
+        heroTitle: 'هل يتركب ATP في الصانعة بفعل الضوء مباشرة؟',
+        heroText: 'جرت العادة على القول إن الضوء يصنع ATP في التركيب الضوئي. جاءت تجربة جاغندورف سنة 1966 لتوضح الدور الحقيقي للضوء: لا يتركب ATP إلا بفضل فرق تدرج البروتونات H⁺.',
+        imageSrc: '/assets/images/schemas/domaine2_energie/schema_90_jagendorf_acid_bath_modern_ar.svg',
+        choices: [
+          {
+            id: 'start_jagendorf',
+            labelAr: 'اكتشف بروتوكول جاغندورف',
+            descriptionAr: 'انظر ماذا يحدث عندما نحاكي تدرج H⁺ صناعيا في الظلام.',
+            completeOnSelect: true,
+          },
+        ],
+      },
+      {
+        type: 'TEXT_AND_PRODUCE',
+        objective: 'تحديد مسار البروتونات في المرحلة الكيميوضوئية قبل تفسير التجربة.',
+        content: 'أثناء المرحلة الكيميوضوئية تُضخ شوارد H⁺ من الحشوة إلى تجويف [____] داخل غشاء [____]، فيتكون تدرج في التركيز، ثم تعود H⁺ نحو الحشوة عبر [____] التي تقوم بدور تركيب ATP.',
+        popups: {
+          'الكييس': 'تجويف الكييس: الفضاء الداخلي للثيلاكويد حيث يتجمع البروتون H⁺.',
+          'التيلاكويد': 'كيس غشائي داخل الصانعة الخضراء تحدث فيه تفاعلات المرحلة الكيميوضوئية.',
+          'الكرية المذنبة': 'معقد إنزيمي (ATP-synthase) يسمح بعودة H⁺ وتركيب ATP.',
+        },
+        microTest: {
+          prompt: 'أكمل: تعود H⁺ عبر ______ المذنبة لتركيب ATP.',
+          acceptedAnswers: ['الكرية المذنبة', 'الكرية'],
+          errorHint: 'الجواب: الكرية المذنبة (ATP-synthase).',
+        },
+      },
+      {
+        type: 'HYPOTHESIS_EXPERIMENT',
+        objective: 'التحقق من دور تدرج البروتونات في تركيب ATP عبر تجربة جاغندورف.',
+        problemAr: 'ما الدور الحقيقي للضوء في تركيب ATP في الصانعة: تركيب مباشر أم تكوين تدرج H⁺؟',
+        experimentAssetSrc: '/assets/images/schemas/domaine2_energie/schema_90_jagendorf_acid_bath_modern_ar.svg',
+        experimentAltAr: 'بروتوكول جاغندورف: كييسات في الظلام عند pH = 4 ثم نقلها إلى pH = 8 مع ADP وPi في الظلام.',
+        hypothesisPromptAr: 'اقترح فرضية: إذا كان تدرج H⁺ هو مصدر الطاقة لتركيب ATP، فماذا تتوقع في الظلام عند خلق فرق pH صناعي؟',
+        resultPromptAr: 'حلل النتيجة: تكوّن ATP في الظلام بعد خلق فرق تدرج خارجي.',
+        validationPromptAr: 'تحقق من الفرضية وعلل: لماذا لا يتركب ATP بدون فرق تدرج البروتونات؟',
+        namingPromptAr: 'سمِّ النظرية التي تفسر تركيب ATP عبر تدرج البروتونات.',
+        expectedTargets: ['تدرج البروتونات', 'ATP', 'الكرية المذنبة'],
+        resultKeywords: ['ATP', 'الظلام', 'فرق pH', 'تدرج'],
+        validationKeywords: ['تدرج البروتونات', 'الكرية المذنبة', 'ATP'],
+        namingAccepted: ['النظرية الكيمياؤسموزية', 'نظرية ميتشل', 'الكيمياؤسموزية'],
+        summaryAr: 'تكوّن ATP في الظلام عند فرق pH صناعي يثبت أن تدرج البروتونات هو مصدر الطاقة، وأن دور الضوء هو تكوين هذا التدرج داخل التيلاكويد.',
+      },
+      {
+        type: 'SEQUENCE_ORDER',
+        objective: 'ترتيب مراحل تجربة جاغندورف التي أثبتت تركيب ATP في الظلام.',
+        promptAr: 'رتب مراحل تجربة جاغندورف منذ تحضير الكييسات إلى ظهور ATP.',
+        assetSrc: '/assets/images/schemas/domaine2_energie/schema_90_jagendorf_acid_bath_modern_ar.svg',
+        altAr: 'أربع مراحل لتجربة جاغندورف في الظلام: pH 4 ثم pH 8 مع ADP وPi ثم تركيب ATP.',
+        steps: [
+          { id: 'step1', labelAr: 'وضع الكييسات في الظلام في محلول pH = 4', expectedOrder: 1 },
+          { id: 'step2', labelAr: 'نقل الكييسات إلى محلول pH = 8 يحتوي ADP و Pi', expectedOrder: 2 },
+          { id: 'step3', labelAr: 'عودة H⁺ من التجويف إلى الوسط عبر الكرية المذنبة', expectedOrder: 3 },
+          { id: 'step4', labelAr: 'تكوّن ATP في الظلام بلا ضوء', expectedOrder: 4 },
+        ],
+        summaryPromptAr: 'اشرح لماذا تدل تجربة جاغندورف على كفاية التدرج البروتوني.',
+        summaryKeywords: ['الظلام', 'تدرج', 'ATP'],
+        summaryAr: 'تحقق تركيب ATP في الظلام بمجرد خلق فرق تدرج H⁺ صناعي: التدرج هو مصدر الطاقة وليس الضوء مباشرة.',
+      },
+    ],
+  },
+  'd2-u6-l3-calvin': {
+    id: 'd2-u6-l3-calvin',
+    title: 'تجربة كالفن : تتبع ¹⁴CO₂ وكشف حلقة كالفن',
+    blocks: [
+      {
+        type: 'MISSION_CHOICE',
+        objective: 'الدخول إلى تجربة كالفن من سؤال مصير CO₂ الممتص.',
+        heroTitle: 'ما مصير ثاني أكسيد الكربون الممتص في الصانعة الخضراء؟',
+        heroText: 'نواتج المرحلة الكيميوضوئية (ATP و NADPH) تُوظف في المرحلة الكيميوحيوية لصنع مركبات عضوية. لكشف المسار استعمل كالفن الكربون الموسوم ¹⁴CO₂ مع كروماتوغرافيا ثنائية الأبعاد وتصوير إشعاعي ذاتي.',
+        imageSrc: '/assets/images/schemas/domaine2_energie/schema_91_calvin_2d_chromatography_modern_ar.svg',
+        choices: [
+          {
+            id: 'start_calvin',
+            labelAr: 'تتبع الكربون في الزمن',
+            descriptionAr: 'خذ عينات عند 5 و30 و60 ثانية وراقب المركبات الموسومة.',
+            completeOnSelect: true,
+          },
+        ],
+      },
+      {
+        type: 'GUIDED_DOC_QA',
+        objective: 'استثمار نتائج الكروماتوغرافيا ثنائية الأبعاد لتحديد أول مركب مثبت للكربون.',
+        doc: {
+          assetSrc: '/assets/images/schemas/domaine2_energie/schema_91_calvin_2d_chromatography_modern_ar.svg',
+          altAr: 'تركيب تجريبي (مصاصة) ولوحات كروماتوغرافية عند 5 و30 و60 ثانية.',
+          captionAr: 'الوسم يظهر أولا في 3-PGA ثم يتوسع إلى تريوزات فوسفاتية ثم سكريات.',
+        },
+        questions: [
+          {
+            id: 'first_compound',
+            verbAr: 'حدد',
+            promptAr: 'حدد أول مركب عضوي موسوم بعد 5 ثوان من التثبيت.',
+            answerType: 'short_text',
+            validationMode: 'keywords',
+            requiredKeywords: ['حمض فوسفوغليسريك', '3-PGA'],
+            successMessageAr: 'أحسنت: أول مركب موسوم هو حمض فوسفوغليسريك (3-PGA).',
+            errorHintAr: 'اذكر حمض فوسفوغليسريك (3-PGA) الذي يظهر وحده على اللوحة عند 5 ثوان.',
+          },
+          {
+            id: 'methanol_role',
+            verbAr: 'فسّر',
+            promptAr: 'فسّر سبب استعمال الميثانول المغلي لإيقاف العينة.',
+            answerType: 'short_text',
+            validationMode: 'keywords',
+            requiredKeywords: ['إيقاف', 'التفاعلات'],
+            successMessageAr: 'صحيح: الميثانول المغلي يوقف التفاعلات فورا فيتثبت الوضع الحالي للمركبات.',
+            errorHintAr: 'اذكر أن الميثانول المغلي يوقف التفاعلات لحظيا ليحفظ المركبات المتشكلة في اللحظة المأخوذة.',
+          },
+          {
+            id: 'cycle_deduction',
+            verbAr: 'استنتج',
+            promptAr: 'استنتج من تدرج ظهور الوسم طبيعة مسار تثبيت الكربون.',
+            answerType: 'short_text',
+            validationMode: 'keywords',
+            requiredKeywords: ['حلقة', 'تجديد', 'المستقبل'],
+            successMessageAr: 'ممتاز: الظهور التدريجي يفيد مسارا حلقيا مع تجديد مستقبل CO₂.',
+            errorHintAr: 'اذكر أن المسار حلقي: تثبيت ثم اختزال ثم تجديد المستقبل الذي يعاد توظيفه.',
+          },
+        ],
+        summaryAr: 'كشف كالفن أول مركب مثبت (3-PGA) وتدرج الوسم في التريوزات ثم السكريات: تثبيت الكربون يدور في حلقة تجدد فيها المستقبل.',
+      },
+      {
+        type: 'SEQUENCE_ORDER',
+        objective: 'ترتيب خطوات حلقة كالفن كما كشفتها تجربة كالفن.',
+        promptAr: 'رتب خطوات حلقة كالفن من تثبيت CO₂ إلى بناء السكريات.',
+        assetSrc: '/assets/images/schemas/domaine2_energie/schema_91_calvin_2d_chromatography_modern_ar.svg',
+        altAr: 'لوحات كروماتوغرافية ومسار حلقة كالفن.',
+        steps: [
+          { id: 'fix', labelAr: 'تثبيت CO₂ على مركب 5 كربون (RuBP) بوساطة إنزيم Rubisco', expectedOrder: 1 },
+          { id: 'pga', labelAr: 'تشكل 3-PGA (حمض فوسفوغليسريك)', expectedOrder: 2 },
+          { id: 'red', labelAr: 'اختزال 3-PGA إلى APG (تريوزات فوسفاتية) بوساطة ATP و NADPH', expectedOrder: 3 },
+          { id: 'regen', labelAr: 'تجديد RuBP وبناء جزيئات عضوية (غلوكوز)', expectedOrder: 4 },
+        ],
+        summaryPromptAr: 'اشرح دور نواتج المرحلة الكيميوضوئية في الحلقة.',
+        summaryKeywords: ['ATP', 'NADPH', 'الاختزال'],
+        summaryAr: 'تزود المرحلة الكيميوضوئية الحلقة بـ ATP للطاقة و NADPH لقدرة الإرجاع: تثبيت ثم اختزال ثم تجديد المستقبل.',
+      },
+      {
+        type: 'TEXT_AND_PRODUCE',
+        objective: 'حفظ الحصيلة الطاقوية للحلقة الكالفنية.',
+        content: 'لكل 3 جزيئات CO₂ مثبتة في حلقة كالفن، تستهلك الخلية [____] جزيئات ATP و [____] جزيئات NADPH لتكوين جزيء APG (تريوز فوسفاتي) واحد قابل لبناء الجزيئات العضوية.',
+        popups: {
+          'APG': 'غليسيرين ألدهيد 3 فوسفات: تريوز فوسفاتية ناتجة عن اختزال 3-PGA، تبنى منها السكريات وتجدد منها RuBP.',
+        },
+        microTest: {
+          prompt: 'أكمل: 3 CO₂ تحتاج 9 ATP و ______ NADPH.',
+          acceptedAnswers: ['6', 'ستة'],
+          errorHint: 'الجواب: 6 جزيئات NADPH (مضاعفة 9 ATP / 6 NADPH لكل 3 CO₂).',
+        },
+      },
+    ],
+  },
+  // ─────────── Chantier ③ D2-U2 — U7 : المسار التجريبي للتنفس ───────────
+  // Le chemin expérimental du LIVRE (OCR 3755-3897), AVANT la preuve moderne :
+  //   ch. 36 [3766-3818] مقر الأكسدة التنفسية (خميرة الخبز + الأخضر جانوس +
+  //            بنية الميتوكوندري بالأبعاد الرسمية 0.5-2 / 0.1-0.5 ميكرون),
+  //   ch. 37 [3819-3885] التحلل السكري (الغلوكوز المشع — جداول أ/ب + مخطط الهيولى),
+  //   ch. 38 [3886-3972] مراحل تفكك حمض البيروفيك (ميتوكوندريات معزولة + حلقة كريبس).
+  // Le ch. 39 est déjà couvert par la leçon Racker qui suit (ordre du livre).
+  // Chiffres du livre uniquement ; aucune donnée inventée.
+  'd2-u7-l2-demarche-respiration': {
+    id: 'd2-u7-l2-demarche-respiration',
+    title: 'المسار التجريبي للتنفس : مقر الأكسدة، الركيزة، حلقة كريبس',
+    blocks: [
+      {
+        type: 'MISSION_CHOICE',
+        objective: 'الدخول إلى المسار التجريبي من سؤال مقر الأكسدة التنفسية داخل الخلية.',
+        heroTitle: 'أين يحدث هدم الغلوكوز داخل الخلية؟',
+        heroText:
+          'تلخص المعادلة الإجمالية للتنفس هدم جزيئة الغلوكوز في وجود الأكسجين، لكنها لا تكشف مكان التفاعلات داخل الخلية. خميرة الخبز كائن ينمو بسهولة وينشط في الوسط الهوائي واللاهوائي معا، وهذا ما يجعلها نموذجا مناسبا لبناء المسار التجريبي.',
+        choices: [
+          {
+            id: 'start_demarche',
+            labelAr: 'ابنِ المسار التجريبي بخميرة الخبز',
+            descriptionAr: 'مزرعتان على محلول سكري: وسط هوائي ووسط لاهوائي، ثم صبغ العينات بالأخضر جانوس.',
+            completeOnSelect: true,
+          },
+        ],
+      },
+      {
+        type: 'HYPOTHESIS_EXPERIMENT',
+        objective: 'إظهار العلاقة بين تهوية الوسط ونشاط الميتوكوندري، واستنتاج مقر الأكسدة التنفسية.',
+        problemAr: 'ما هو مقر الأكسدة التنفسية داخل الخلية؟',
+        experimentAltAr:
+          'مزرعتان من خميرة الخبز في إناءين يحتوي كل منهما على محلول سكري: سُدّ الأول بإحكام (وسط لاهوائي) ووُظّف الثاني بتهوية مستمرة (وسط هوائي). بعد مدة من الزمن تُصبغ عينة من كل إناء بمحلول الأخضر جانوس، وهو ملون حيوي أخضر في الحالة المؤكسدة وشفاف في الحالة المرجعة.',
+        hypothesisPromptAr: 'اقترح فرضية تربط تهوية الوسط بنشاط خلايا الخميرة.',
+        resultPromptAr:
+          'ظهرت حبيبات ملونة بالأخضر في الخلايا المأخوذة من الوسط الهوائي، ولم تظهر في الخلايا المأخوذة من الوسط اللاهوائي. فسّر النتيجة.',
+        validationPromptAr: 'ما الاستنتاج فيما يخص العلاقة بين وجود الميتوكوندري وتهوية وسط الزرع؟',
+        expectedTargets: ['الميتوكوندري', 'الأكسدة التنفسية', 'الوسط الهوائي'],
+        resultKeywords: ['الأخضر جانوس', 'الهوائي', 'اللاهوائي'],
+        validationKeywords: ['الميتوكوندري', 'مقر الأكسدة التنفسية'],
+        namingPromptAr: 'سمِّ العضية التي يمثل تمصبغها بالأخضر دليلا على نشاطها.',
+        namingAccepted: ['الميتوكوندري', 'الميتوكوندريات', 'الميتوكندري'],
+        summaryAr:
+          'تمصبغ العضيات بالأخضر جانوس في خلايا الوسط الهوائي حصرا يدل على أن تهوية الوسط شرط نشاط الميتوكوندري، وأنها هي مقر الأكسدة التنفسية.',
+      },
+      {
+        type: 'GUIDED_DOC_QA',
+        objective: 'وصف بنية الميتوكوندري واستنتاج علاقة الوظيفة بالتركيب الكيميائي.',
+        doc: {
+          altAr:
+            'الميتوكوندري عضيات يتراوح طولها بين 0.5 و2 ميكرون وقطرها بين 0.1 و0.5 ميكرون، يمكن مشاهدة بنيتها بالمجهر الإلكتروني النافذ: غشاء خارجي وغشاء داخلي بينهما فراغ، وتضم مادة أساسية.',
+          captionAr: 'معطيات الكتاب (ص 208): بنية الميتوكوندري وأبعادها بالميكرون.',
+        },
+        questions: [
+          {
+            id: 'structure',
+            verbAr: 'اوصف',
+            promptAr: 'صِف بنية الميتوكوندري كما تظهر بالمجهر الإلكتروني النافذ.',
+            answerType: 'short_text',
+            validationMode: 'keywords',
+            requiredKeywords: ['غشاء خارجي', 'غشاء داخلي', 'المادة الأساسية'],
+            successMessageAr: 'غشاء خارجي وغشاء داخلي بينهما فراغ، ومادة أساسية: هذه هي بنية العضية الطاقوية.',
+            errorHintAr: 'اذكر الغشاءين، وما بينهما، وما يحدده الغشاء الداخلي من الداخل.',
+          },
+          {
+            id: 'fonction',
+            verbAr: 'استنتج',
+            promptAr:
+              'وظيفة أي عضية مرتبطة أساسا بتركيبها الكيميائي: بعد المقارنة الكيميوحيوية لمكونات الغشاء الداخلي والغشاء الخارجي والمادة الأساسية (بتقنية الطرد)، ماذا يمكن قول الغشاء الداخلي؟',
+            answerType: 'short_text',
+            validationMode: 'keywords',
+            requiredKeywords: ['البروتينات', 'الغشاء الداخلي'],
+            successMessageAr:
+              'الغشاء الداخلي غني بالبروتينات (إنزيمات)، وهي ميزة تركيبية تربطه مباشرة بالوظيفة التأكسدية للعضية.',
+            errorHintAr: 'الغشاء الداخلي يختلف عن الخارجي بغناه بمركب ضروري لأي نشاط إنزيمي.',
+          },
+        ],
+        summaryAr:
+          'الميتوكوندري عضيات (0.5-2 ميكرون في الطول، 0.1-0.5 ميكرون في القطر) محدودة بغشاءين بينهما فراغ وتضم مادة أساسية، وغناها الداخلي بالبروتينات يربط بنيته بوظيفتها الطاقوية.',
+      },
+      {
+        type: 'DUAL_EVIDENCE',
+        objective: 'تحديد الركيزة العضوية المستعملة من طرف الميتوكوندري وموقع التحلل السكري.',
+        docA: {
+          altAr:
+            'الإناء المهوّى (وسط هوائي) — خلايا خميرة على سكر الغلوكوز المشع: يظهر الإشعاع G* في الهيولى أولا، ثم يظهر P* (حمض البيروفيك المشع) في الهيولى قبل أن يظهر لاحقا في الميتوكوندري.',
+          captionAr: 'الجدول (أ): تتبع الإشعاع في وسط هوائي عبر الزمن.',
+        },
+        docB: {
+          altAr:
+            'الإناء المسدود (وسط لاهوائي) — خلايا خميرة على سكر الغلوكوز المشع: يظهر الإشعاع في الهيولى على شكل G* ثم P*، دون أن يظهر إشعاع في الميتوكوندري.',
+          captionAr: 'الجدول (ب): تتبع الإشعاع في وسط لاهوائي عبر الزمن.',
+        },
+        extractionPromptAr: 'أين يظهر الإشعاع أولا في الوسطين، وما مصيره؟',
+        justificationPromptAr: 'علل استحالة قيام الميتوكوندري بأكسدة الغلوكوز مباشرة.',
+        extractionKeywords: ['الهيولى', 'حمض البيروفيك'],
+        justificationKeywords: ['الغلوكوز', 'الهيولى', 'الميتوكوندري'],
+        summaryAr:
+          'الغلوكوز لا يدخل الميتوكوندري مباشرة: يتحلل في الهيولى إلى حمض البيروفيك، وهو الذي يظهر لاحقا في الميتوكوندري حيث يتم أكسدته.',
+      },
+      {
+        type: 'SEQUENCE_ORDER',
+        objective: 'ترتيب مراحل التحلل السكري في الهيولى وفق مخطط الكتاب.',
+        promptAr: 'رتب مركبات التحلل السكري من الترتيب الأول إلى الأخير انطلاقا من الغلوكوز.',
+        steps: [
+          { id: 'glucose', labelAr: 'الغلوكوز (مركب ذو 6 ذرات كربون)', expectedOrder: 1 },
+          { id: 'g6p', labelAr: 'الغلوكوز - 6 - فسفات', expectedOrder: 2 },
+          { id: 'f6p', labelAr: 'الفركتوز - 6 - فسفات', expectedOrder: 3 },
+          { id: 'f16dp', labelAr: 'الفركتوز - 1، 6 - ثنائي فسفات', expectedOrder: 4 },
+          { id: 'pgal', labelAr: 'فسفو غليسر الدهيد', expectedOrder: 5 },
+          { id: 'pyruvate', labelAr: 'حمض البيروفيك (مركبا ذوا 3 ذرات كربون)', expectedOrder: 6 },
+        ],
+        summaryPromptAr: 'أين يتم التحلل السكري، وما ميزات تفاعلاته؟',
+        summaryKeywords: ['الهيولى', 'الإنزيمات', 'حمض البيروفيك'],
+        summaryAr:
+          'يتحلل الغلوكوز (مركب ذو 6 ذرات كربون) في الهيولى تدريجيا بتدخل إنزيمات خاصة إلى حمض البيروفيك، خلال سلسلة تفاعلات بعضها المستهلك للـ ATP وبعضها المنتج له، ومنها ما يؤدي إلى إرجاع المرافق الإنزيمي NAD.',
+      },
+      {
+        type: 'GUIDED_DOC_QA',
+        objective: 'إظهار أكسدة حمض البيروفيك في المادة الأساسية للميتوكوندري ودخول أستيل مرافق الإنزيم أ حلقة كريبس.',
+        doc: {
+          altAr:
+            'وُضع معلق من ميتوكوندريات معزولة في وسط غني بالأكسجين ثم حُقنت كمية من حمض البيروفيك، وسُجلت القيم عبر الزمن بواسطة أقطاب: انخفض تركيز الأكسجين وتزايد ثاني أكسيد الكربون.',
+          captionAr: 'وثيقة الكتاب (ص 210): ميتوكوندريات معزولة حقنت بحمض البيروفيك.',
+        },
+        questions: [
+          {
+            id: 'lieu',
+            verbAr: 'حدد',
+            promptAr: 'بينت القياسات أن حمض البيروفيك يتعرض لسلسلة من التفاعلات في الميتوكوندري: في أي جزء منها يتم ذلك؟',
+            answerType: 'short_text',
+            validationMode: 'keywords',
+            requiredKeywords: ['المادة الأساسية'],
+            successMessageAr: 'التفاعلات تتم في المادة الأساسية للميتوكوندري، كما بيّنته ميتوكوندريات معزولة.',
+            errorHintAr: 'تذكّر ما يحده الغشاء الداخلي من الداخل.',
+          },
+          {
+            id: 'preparation',
+            verbAr: 'صرح',
+            promptAr: 'إلى ماذا يتحول حمض البيروفيك قبل دخوله حلقة كريبس، وما الذي يصاحب التحول؟',
+            answerType: 'short_text',
+            validationMode: 'keywords',
+            requiredKeywords: ['أستيل مرافق الإنزيم', 'ثاني أكسيد الكربون'],
+            successMessageAr: 'يتحول إلى أستيل مرافق الإنزيم (أ) مع تحرير ثاني أكسيد الكربون، ثم يدخل حلقة كريبس.',
+            errorHintAr: 'الخطوة التحضيرية هي إلحاق مجموعة أستيل بمرافق الإنزيم (أ).',
+          },
+        ],
+        summaryAr:
+          'في الخطوة التحضيرية يتحول حمض البيروفيك إلى أستيل مرافق الإنزيم (أ) مع تحرير ثاني أكسيد الكربون، ثم يدخل الأستيل حلقة كريبس في المادة الأساسية للميتوكوندري: سلسلة تفاعلات أكسدة وكربوكسيلة تدعى حلقة كريبس نسبة إلى العالم الذي كشفها.',
+      },
+    ],
+  },
+  'd2-u7-l1-mitchell-racker': {
+    id: 'd2-u7-l1-mitchell-racker',
+    title: 'تجربة راكر : إثبات النظرية الكيمياؤسموزية لميتشل',
+    blocks: [
+      {
+        type: 'MISSION_CHOICE',
+        objective: 'الدخول إلى إعادة البناء الاصطناعي عند راكر من سؤال آلية التحويل.',
+        heroTitle: 'ما الذي يحوِّل تدرج H⁺ إلى ATP داخل الكرية المذنبة؟',
+        heroText: 'بعد اكتشاف تدرج البروتونات في الميتوكندرون والصانعة، ظلت آلية تحويله إلى ATP لغزا. أعاد راكر سنة 1974 بناء النظام اصطناعيا: مضخة بروتونات تعمل بالضوء (بكتيريورودوبسين) + كرية مذنبة = ATP. برهان قاطع على نظرية ميتشل.',
+        imageSrc: '/assets/images/schemas/domaine2_energie/schema_92_racker_bacteriorhodopsin_modern_ar.svg',
+        choices: [
+          {
+            id: 'start_racker',
+            labelAr: 'ابنِ الحويصلة مع راكر',
+            descriptionAr: 'ضَع بروتينين فقط في غشاء اصطناعي وراقب ما يحدث مع الضوء.',
+            completeOnSelect: true,
+          },
+        ],
+      },
+      {
+        type: 'GUIDED_DOC_QA',
+        objective: 'استثمار وثيقة إعادة البناء الاصطناعي لاستخلاص البرهان على النظرية الكيمياؤسموزية.',
+        doc: {
+          assetSrc: '/assets/images/schemas/domaine2_energie/schema_92_racker_bacteriorhodopsin_modern_ar.svg',
+          altAr: 'حويصلة غشائية تحمل بروتين بكتيريورودوبسين مضخة H⁺ وكرية مذنبة، مع شواهد الضوء والظلام.',
+          captionAr: 'بروتينان فقط: مضخة H⁺ بالضوء + كرية مذنبة = تركيب ATP.',
+        },
+        questions: [
+          {
+            id: 'racker_pump_source',
+            verbAr: 'حدد',
+            promptAr: 'حدد مصدر تشكل تدرج H⁺ في تجربة راكر.',
+            answerType: 'short_text',
+            validationMode: 'keywords',
+            requiredKeywords: ['البكتيريورودوبسين', 'الضوء'],
+            successMessageAr: 'أحسنت: البكتيريورودوبسين مضخة H⁺ تحركها طاقة الضوء (مستخلصة من البكتيريا Halobacterium).',
+            errorHintAr: 'اذكر البكتيريورودوبسين: بروتين مضخة H⁺ تعمل بفعل الضوء دون أي سلسلة تنفسية.',
+          },
+          {
+            id: 'racker_light_role',
+            verbAr: 'فسّر',
+            promptAr: 'فسّر دور الضوء في هذه التجربة.',
+            answerType: 'short_text',
+            validationMode: 'keywords',
+            requiredKeywords: ['ضخ', 'H⁺', 'تدرج'],
+            successMessageAr: 'صحيح: الضوء لا يتركب ATP مباشرة بل يحرك مضخة البروتونات فيتكون التدرج.',
+            errorHintAr: 'اذكر أن الضوء يضخ H⁺ داخل الحويصلة فيتكون تدرج البروتونات.',
+          },
+          {
+            id: 'racker_deduction',
+            verbAr: 'استنتج',
+            promptAr: 'استنتج البرهان الذي تقدمه هذه التجربة لنظرية ميتشل.',
+            answerType: 'short_text',
+            validationMode: 'keywords',
+            requiredKeywords: ['تدرج البروتونات', 'الكرية المذنبة', 'ATP'],
+            successMessageAr: 'ممتاز: تدرج H⁺ وحده كاف لتركيب ATP عبر الكرية المذنبة: النظرية صحيحة.',
+            errorHintAr: 'اذكر أن عودة H⁺ عبر الكرية المذنبة تتركب ATP في غياب كل شيء آخر.',
+          },
+        ],
+        summaryAr: 'إعادة البناء الاصطناعي عند راكر برهنت أن تدرج البروتونات وحده، مع الكرية المذنبة، كاف لتركيب ATP: إذ صححت النظرية الكيمياؤسموزية لميتشل (نوبل 1978).',
+      },
+      {
+        type: 'SEQUENCE_ORDER',
+        objective: 'ترتيب خطوات تجربة راكر من تركيب الحويصلة إلى إنتاج ATP.',
+        promptAr: 'رتب خطوات تجربة راكر.',
+        assetSrc: '/assets/images/schemas/domaine2_energie/schema_92_racker_bacteriorhodopsin_modern_ar.svg',
+        altAr: 'ترتيب خطوات إعادة البناء الاصطناعي.',
+        steps: [
+          { id: 's1', labelAr: 'عزل بروتين البكتيريورودوبسين من البكتيريا وإدخاله في حويصلة غشائية', expectedOrder: 1 },
+          { id: 's2', labelAr: 'إضافة الكرية المذنبة (ATP-synthase) إلى الغشاء الاصطناعي', expectedOrder: 2 },
+          { id: 's3', labelAr: 'إضاءة الحويصلات: ضخ H⁺ إلى الداخل وتكوين التدرج', expectedOrder: 3 },
+          { id: 's4', labelAr: 'تركيب ATP خارج الحويصلة بفضل عودة H⁺ عبر الكرية المذنبة', expectedOrder: 4 },
+        ],
+        summaryPromptAr: 'اشرح لماذا تدل التجربة على صحة النظرية الكيمياؤسموزية.',
+        summaryKeywords: ['تدرج', 'ATP', 'الكرية المذنبة'],
+        summaryAr: 'بغياب كل مكونات السلسلة التنفسية، يكفي تدرج H⁺ مع الكرية المذنبة لتركيب ATP: دليل أن التدرج هو الوسيط الطاقوي الوحيد.',
+      },
+      {
+        type: 'TEXT_AND_PRODUCE',
+        objective: 'ربط التحويلات الطاقوية في التركيب الضوئي والتنفس الخلوي بمفهوم التدرج البروتوني.',
+        content: 'التفسير الكيمياؤسموزي يوحد بين التركيب الضوئي والتنفس الخلوي: في الصانعة تُضخ H⁺ داخل تجويف [____]، وفي الميتوكوندريون تُضخ H⁺ في المسافة [____]، وفي الحالتين تعود H⁺ عبر [____] لتركيب ATP.',
+        popups: {
+          'التيلاكويد': 'الغشاء الداخلي للكييس في الصانعة الخضراء: مقر ضخ H⁺ في التركيب الضوئي.',
+          'بين الغشاءين': 'الفضاء بين الغشاء الداخلي والخارجي في الميتوكوندريون: مقر تراكم H⁺ في التنفس الخلوي.',
+          'الكرية المذنبة': 'ATP-synthase: الإنزيم الذي يحول طاقة التدرج البروتوني إلى طاقة كيميائية في ATP.',
+        },
+        microTest: {
+          prompt: 'أكمل: يعود H⁺ عبر ______ لتركيب ATP في الصانعة والميتوكندريون معا.',
+          acceptedAnswers: ['الكرية المذنبة', 'الكرية', 'ATP-synthase'],
+          errorHint: 'الجواب: الكرية المذنبة (ATP-synthase) في كلتا الحالتين.',
+        },
+      },
+    ],
+  },
+  'd3-u9-l2-benioff': {
+    id: 'd3-u9-l2-benioff',
+    title: 'مستوى بنيوف : توزع بؤر الزلازل دليل على الغوص',
+    blocks: [
+      {
+        type: 'MISSION_CHOICE',
+        objective: 'الدخول إلى تحليل بنيوف من سؤال الشاهد الجيوفيزيائي على الغوص.',
+        heroTitle: 'كيف نثبت أن الصفيحة المحيطية تغوص فعلا داخل البرنس؟',
+        heroText: 'لا يمكن ملاحظة الغوص مباشرة في عمق الأرض. لكن أعاد واداتي ثم بنيوف ترصيد بؤر الزلازل في مناطق الاندساس: اصطففت على مستوى مائل من الخندق حتى عمق 700 كلم. هذا الاصطفاف هو بصمة الغوص.',
+        imageSrc: '/assets/images/schemas/domaine3_tectonique/schema_93_benioff_plan_modern_ar.svg',
+        choices: [
+          {
+            id: 'start_benioff',
+            labelAr: 'حلل توزع بؤر الزلازل',
+            descriptionAr: 'لاحظ كيف تتعمق البؤر كلما ابتعدنا عن الخندق نحو القارة.',
+            completeOnSelect: true,
+          },
+        ],
+      },
+      {
+        type: 'GUIDED_DOC_QA',
+        objective: 'استثمار وثيقة توزع البؤر الزلزالية لاستخلاص دليل الغوص.',
+        doc: {
+          assetSrc: '/assets/images/schemas/domaine3_tectonique/schema_93_benioff_plan_modern_ar.svg',
+          altAr: 'مقطع في منطقة غوص يبين الخندق والصفيحة الغائصة واصطفاف البؤر الزلزالية على مستوى مائل.',
+          captionAr: 'بؤر الزلازل ترسم مستوى مائلا من الخندق حتى 700 كلم: مستوى بنيوف.',
+        },
+        questions: [
+          {
+            id: 'foci_distribution',
+            verbAr: 'حدد',
+            promptAr: 'حدد كيف تتوزع بؤر الزلازل في منطقة الغوص.',
+            answerType: 'short_text',
+            validationMode: 'keywords',
+            requiredKeywords: ['سطحية', 'الخندق', 'عميقة'],
+            successMessageAr: 'أحسنت: البؤر سطحية عند الخندق وتتعمق تدريجيا نحو القارة.',
+            errorHintAr: 'اذكر أن البؤر سطحية قرب الخندق ثم تتعمق كلما ابتعدنا نحو القارة.',
+          },
+          {
+            id: 'deep_earthquakes',
+            verbAr: 'فسّر',
+            promptAr: 'فسّر وجود زلازل على عمق 300 و500 و700 كلم.',
+            answerType: 'short_text',
+            validationMode: 'keywords',
+            requiredKeywords: ['صفيحة صلبة', 'برنس', 'تنكسر'],
+            successMessageAr: 'صحيح: وجود بؤر عميقة يثبت أن مادة صلبة وباردة تغوص وتنكسر داخل البرنس المطاطي.',
+            errorHintAr: 'اذكر أن الاستينوسفير المطاطي لا يولد زلازل، إذن البؤر العميقة تعود إلى صفيحة صلبة غائصة تنكسر.',
+          },
+          {
+            id: 'benioff_deduction',
+            verbAr: 'استنتج',
+            promptAr: 'استنتج ما يدل عليه اصطفاف البؤر على مستوى مائل.',
+            answerType: 'short_text',
+            validationMode: 'keywords',
+            requiredKeywords: ['مستوى بنيوف', 'الغوص', 'الصفيحة'],
+            successMessageAr: 'ممتاز: مستوى بنيوف هو مسار الصفيحة المحيطية الغائصة داخل البرنس.',
+            errorHintAr: 'اذكر أن اصطفاف البؤر على مستوى مائل يرسم مسار غوص الصفيحة المحيطية.',
+          },
+        ],
+        summaryAr: 'اصطفاف بؤر الزلازل على مستوى مائل (مستوى بنيوف) من الخندق حتى 700 كلم هو الدليل الجيوفيزيائي القاطع على غوص الصفيحة المحيطية الصلبة الباردة داخل البرنس.',
+      },
+      {
+        type: 'SEQUENCE_ORDER',
+        objective: 'ترتيب الشواهد الجيوفيزيائية من السطح إلى العمق في منطقة الغوص.',
+        promptAr: 'رتب الشواهد المرصودة في منطقة الغوص من الأقرب إلى الأبعد عن الخندق.',
+        assetSrc: '/assets/images/schemas/domaine3_tectonique/schema_93_benioff_plan_modern_ar.svg',
+        altAr: 'مقطع يبين الخندق ثم بؤر الزلازل العميقة ثم البركان الأنديزي.',
+        steps: [
+          { id: 'trench', labelAr: 'خندق محيطي عميق عند حدود التقاء الصفيحتين', expectedOrder: 1 },
+          { id: 'shallow', labelAr: 'زلازل سطحية قرب الخندق (< 70 كلم)', expectedOrder: 2 },
+          { id: 'deep', labelAr: 'زلازل عميقة جدا على مستوى مائل (حتى 700 كلم)', expectedOrder: 3 },
+          { id: 'volcano', labelAr: 'بركان أنديزي على الصفيحة الطافية بعد أن يتحرر الماء', expectedOrder: 4 },
+        ],
+        summaryPromptAr: 'اشرح علاقة عمق الزلازل بمسافة الخندق.',
+        summaryKeywords: ['العمق', 'الخندق', 'الغوص'],
+        summaryAr: 'كلما ابتعدنا عن الخندق اتجهنا نحو القارة ازداد عمق البؤر الزلزالية: ذلك يرسم مسار الغوص المائل للصفيحة المحيطية.',
+      },
+      {
+        type: 'TEXT_AND_PRODUCE',
+        objective: 'ربط مستوى بنيوف بالانصهار المائي والنشاط البركاني على الصفيحة الطافية.',
+        content: 'الصفيحة الغائصة تحمل معها ماء التحولات، وعند عمق معين يتحرر الماء فيُميّه بيريدوتيت [____] للصفيحة الطافية فيخفض درجة انصهاره، فينشأ انصهار جزئي وتصعد ماغما أنديزيتية فتتشكل [____] على الصفيحة الطافية.',
+        popups: {
+          'البرنس': 'الجزء الصخري الدافئ أسفل القشرة: مصدر الانصهار الجزئي المائي في مناطق الغوص.',
+          'البراكين': 'قوس بركاني (كالأنديز أو اليابان) ينشأ فوق منطقة الغوص بفعل الماغما الأنديزيتية اللزجة.',
+        },
+        microTest: {
+          prompt: 'أكمل: يخفض الماء درجة انصهار بيريدوتيت ______ فيحدث انصهار جزئي.',
+          acceptedAnswers: ['البرنس', 'الستار', 'المعطف'],
+          errorHint: 'الجواب: بيريدوتيت البرنس (المعطف) للصفيحة الطافية.',
+        },
+      },
+    ],
+  },
+  'd3-u11-l1-migmatite': {
+    id: 'd3-u11-l1-migmatite',
+    title: 'الدرس 7 : شواهد التقلص — التضاعف القشري وصخر المغماتيت',
+    blocks: [
+      {
+        type: 'MISSION_CHOICE',
+        objective: 'الدخول إلى شواهد التقلص من سؤال دليل التضاعف القشري.',
+        heroTitle: 'كيف نثبت أن القشرة تزداد سمكا عند التصادم القاري؟',
+        heroText: 'يؤدي التصادم القاري إلى تقلص أفقي. لكن كيف نحصل على دليل صخري على أن الليتوسفير صار أسمك؟ الجواب موجود في صخر المغماتيت : صخر متحول لا يتشكل إلا في أعماق القشرة المتضاعفة.',
+        imageSrc: '/assets/images/schemas/domaine3_tectonique/schema_94_migmatite_crustal_thickening_modern_ar.svg',
+        choices: [
+          {
+            id: 'start_migmatite',
+            labelAr: 'ابدأ من الصخر الشاهد',
+            descriptionAr: 'اقرأ الوثيقة البتروغرافية واستخرج معادن المغماتيت.',
+            completeOnSelect: true,
+          },
+        ],
+      },
+      {
+        type: 'GUIDED_DOC_QA',
+        objective: 'استثمار وثيقة المغماتيت والتضاعف القشري لاستخلاص شواهد التقلص.',
+        doc: {
+          assetSrc: '/assets/images/schemas/domaine3_tectonique/schema_94_migmatite_crustal_thickening_modern_ar.svg',
+          altAr: 'لوحة تربط التصادم القاري بالتضاعف القشري، مع شريحة المغماتيت ومعادنه المميزة.',
+          captionAr: 'المغماتيت : تناوب كوارتز-غرونا-ميكا-بلاجيوكلاز مع صفوف أومفيبوليت.',
+        },
+        questions: [
+          {
+            id: 'deformation_type',
+            verbAr: 'حدّد',
+            promptAr: 'حدّد نوع التركيب الجيولوجي الناشئ المميز لمنطقة التصادم.',
+            answerType: 'short_text',
+            validationMode: 'keywords',
+            requiredKeywords: ['طية', 'فالق عكسي', 'تضاعف قشري'],
+            successMessageAr: 'أحسنت: الطيات والفوالق العكسية والصخور المغتربة هي تراكيب مناطق التصادم.',
+            errorHintAr: 'اذكر الطيات والفوالق العكسية والصخور المغتربة التي تنشأ بفعل قوى الانضغاط.',
+          },
+          {
+            id: 'migmatite_minerals',
+            verbAr: 'صف',
+            promptAr: 'صف كيفية توضع المعادن المكونة لصخر المغماتيت.',
+            answerType: 'short_text',
+            validationMode: 'keywords',
+            requiredKeywords: ['تناوب', 'غرونا', 'ميكا'],
+            successMessageAr: 'جيد: معادن المغماتيت متوضعة في صفوف متناوبة (كوارتز-غرونا-ميكا-بلاجيوكلاز) مع صفوف أومفيبوليت.',
+            errorHintAr: 'اذكر التناوب بين صفوف المعادن : الغرونا والميكا والكوارتز والبلاجيوكلاز.',
+          },
+          {
+            id: 'crustal_thickening_evidence',
+            verbAr: 'استنتج',
+            promptAr: 'استنتج لماذا يعد المغماتيت شاهد ودليلا على التضاعف القشري.',
+            answerType: 'short_text',
+            validationMode: 'keywords',
+            requiredKeywords: ['انصهار جزئي', 'الغرانيت', 'السمك'],
+            successMessageAr: 'ممتاز: المغماتيت ناتج عن انصهار جزئي لغرانيت القشرة العميقة بفعل ارتفاع الحرارة والضغط ⟶ دليل زيادة سمك الليتوسفير.',
+            errorHintAr: 'اربط المغماتيت بالانصهار الجزئي لغرانيت القشرة العميقة الذي لا يحدث إلا في سمك قشري متزايد.',
+          },
+        ],
+        summaryAr: 'يدل صخر المغماتيت على التضاعف القشري وزيادة سمك الليتوسفير : فهو ينتج عن تحول الصخور العميقة وانصهار جزئي لغرانيت القشرة القارية بفعل ارتفاع الحرارة والضغط.',
+      },
+      {
+        type: 'SEQUENCE_ORDER',
+        objective: 'ترتيب مراحل تشكل صخر المغماتيت : التقلص ⇐ التضاعف القشري ⇐ التحول ⇐ الانصهار الجزئي.',
+        promptAr: 'رتّب مراحل تشكل صخر المغماتيت من التصادم القاري حتى الصخر الشاهد.',
+        assetSrc: '/assets/images/schemas/domaine3_tectonique/schema_94_migmatite_crustal_thickening_modern_ar.svg',
+        altAr: 'لوحة التضاعف القشري والمغماتيت.',
+        steps: [
+          { id: 'collision', labelAr: 'التصادم القاري يسبب تقلصا أفقيا', expectedOrder: 1 },
+          { id: 'thickening', labelAr: 'التضاعف القشري يزيد سمك الليتوسفير', expectedOrder: 2 },
+          { id: 'metamorphism', labelAr: 'تحول الصخور العميقة بارتفاع الحرارة والضغط', expectedOrder: 3 },
+          { id: 'melting', labelAr: 'انصهار جزئي لغرانيت القشرة ⇐ المغماتيت', expectedOrder: 4 },
+        ],
+        summaryPromptAr: 'لخّص في نص علمي مراحل تشكل صخر المغماتيت.',
+        summaryKeywords: ['التقلص', 'التضاعف القشري', 'الانصهار الجزئي', 'المغماتيت'],
+        summaryAr: 'التصادم القاري ⇐ تقلص أفقي ⇐ تضاعف قشري وزيادة سمك الليتوسفير ⇐ تحول الصخور العميقة ⇐ انصهار جزئي للغرانيت ⇐ صخر المغماتيت الشاهد على التقلص.',
+      },
+      {
+        type: 'TEXT_AND_PRODUCE',
+        objective: 'إنتاج النص العلمي : مراحل تشكل المغماتيت.',
+        prompt: 'لخّص في نص علمي مراحل تشكل صخر المغماتيت.',
+        acceptedAnswers: ['التقلص', 'التضاعف القشري', 'الانصهار الجزئي', 'الغرانيت'],
+        errorHint: 'الجواب : التصادم ⇐ التقلص ⇐ التضاعف القشري ⇐ الانصهار الجزئي للغرانيت ⇐ المغماتيت.',
+      },
+    ],
+  },
+  // ANCHOR_MIG_L2
+  // ─────────────────────────────────────────────────────────────────────────
+  // U4 — التعاون الخلوي (synthèse de l'unité مناعة) : schéma-bilan interactif
+  // + 3 exercices type BAC. Livre officiel, chapitres 21 (تحفيز LB و LT) et
+  // 22 (اختيار نمط الاستجابة المناعية).
+  // ─────────────────────────────────────────────────────────────────────────
+  immunity_cooperation: {
+    id: 'immunity_cooperation',
+    title: 'التعاون الخلوي في الاستجابة المناعية النوعية (حوصلة الوحدة)',
+    blocks: [
+      {
+        type: 'SEQUENCE_ORDER',
+        objective:
+          'بناء المخطط الحصيلي للتعاون الخلوي : من دخول المستضد إلى الخلايا المنفِّذة، وهو المخطط المطلوب في تمارين البكالوريا.',
+        promptAr:
+          'رتّب مراحل التعاون الخلوي بين الخلية العارضة واللمفاويات LT4 و LB و LT8 حسب التسلسل الزمني.',
+        assetSrc: '/assets/images/schemas/domaine1_proteines/schema_80_immunity_big_picture_modern.svg',
+        altAr: 'مخطط تركيبي يلخص مسار الاستجابة المناعية من التعرف إلى الخلايا المنفذة.',
+        secondaryAssetSrc: '/assets/images/schemas/domaine1_proteines/schema_74_immunological_synapse_specificity_modern.svg',
+        secondaryAltAr: 'وثيقة تبين المشبك المناعي بين الخلية العارضة واللمفاوية ونوعية التعرف.',
+        secondaryCaptionAr: 'التعرف يتم عبر مشبك مناعي : مستقبل اللمفاوية + المستضد المعروض مع CMH.',
+        steps: [
+          {
+            id: 'phagocytose',
+            labelAr: 'تبلعم المستضد من طرف البلعمية الكبيرة (الخلية العارضة CPA)',
+            expectedOrder: 1,
+          },
+          {
+            id: 'presentation',
+            labelAr: 'عرض محدد المستضد على سطح الخلية العارضة مرفقاً بجزيئة CMH-II',
+            expectedOrder: 2,
+          },
+          {
+            id: 'selection_lt4',
+            labelAr: 'انتقاء اللمفاوية LT4 ذات المستقبل النوعي وتنشيطها (المشبك المناعي)',
+            expectedOrder: 3,
+          },
+          {
+            id: 'interleukine',
+            labelAr: 'إفراز الإنترلوكين 2 من طرف LT4 المنشطة',
+            expectedOrder: 4,
+          },
+          {
+            id: 'proliferation',
+            labelAr: 'تكاثر نسيلي وتمايز للّمفاويات LB و LT8 المنتقاة',
+            expectedOrder: 5,
+          },
+          {
+            id: 'effecteurs',
+            labelAr: 'ظهور المنفِّذات : خلايا بلازمية (أجسام مضادة) و LTc + خلايا ذاكرة',
+            expectedOrder: 6,
+          },
+        ],
+        summaryPromptAr:
+          'لخّص في نص علمي مراحل التعاون الخلوي من دخول المستضد إلى ظهور المنفِّذات.',
+        summaryKeywords: ['العارضة', 'CMH', 'الإنترلوكين', 'التكاثر النسيلي', 'البلازمية'],
+        summaryAr:
+          'تبلعم المستضد ⇐ عرضه مع CMH-II على الخلية العارضة ⇐ انتقاء LT4 النوعية وتنشيطها ⇐ إفراز الإنترلوكين 2 ⇐ تكاثر نسيلي وتمايز LB و LT8 ⇐ خلايا بلازمية تفرز الأجسام المضادة + LTc قاتلة + خلايا ذاكرة. اللمفاوية LT4 هي محور التعاون : بدونها لا تنطلق أي استجابة نوعية.',
+      },
+      {
+        type: 'GUIDED_DOC_QA',
+        objective:
+          'التمرن على ثلاثة أسئلة بكالوريا كلاسيكية حول تجربة الزرع في الوسط الحر : دور LT4 والإنترلوكين.',
+        doc: {
+          assetSrc: '/assets/images/schemas/domaine1_proteines/schema_71_clonal_cd8_activation_modern.svg',
+          altAr: 'وثيقة تبين تنشيط وتكاثر نسيلي للّمفاويات CD8 بعد التعرف على المستضد.',
+          captionAr:
+            'تجربة زرع : الوسط 1 يحوي LB + مستضد فقط ⟵ لا أجسام مضادة. الوسط 2 يحوي LB + مستضد + LT4 ⟵ أجسام مضادة. الوسط 3 يحوي LB + مستضد + إنترلوكين 2 دون LT4 ⟵ أجسام مضادة.',
+          secondaryAssetSrc: '/assets/images/schemas/domaine1_proteines/schema_72_perforin_granzyme_lysis_modern.svg',
+          secondaryAltAr: 'وثيقة تبين حل الخلية المستهدفة بواسطة البرفورين المفرز من LTc.',
+          secondaryCaptionAr: 'الوجه الخلوي للاستجابة : LTc تُحدث الحل الخلوي بالبرفورين.',
+        },
+        questions: [
+          {
+            id: 'coop_analyse_milieux',
+            verbAr: 'حلل',
+            promptAr:
+              'حلل نتائج الأوساط الثلاثة : متى تُنتَج الأجسام المضادة ومتى تنعدم؟',
+            answerType: 'short_text',
+            validationMode: 'keywords',
+            requiredKeywords: ['الوسط 1|LB وحدها|دون LT4', 'أجسام مضادة', 'LT4|الإنترلوكين'],
+            successMessageAr: 'أحسنت : ربطت غياب الإنتاج بغياب LT4 أو الإنترلوكين.',
+            errorHintAr:
+              'قارن الأوساط اثنين اثنين : LB + مستضد وحدهما لا يكفيان ؛ إضافة LT4 أو الإنترلوكين تسمح بالإنتاج.',
+          },
+          {
+            id: 'coop_role_il2',
+            verbAr: 'استنتج',
+            promptAr:
+              'استنتج طبيعة العامل الذي تفرزه LT4 ودوره الدقيق على اللمفاوية LB.',
+            answerType: 'short_text',
+            validationMode: 'keywords',
+            requiredKeywords: ['الإنترلوكين', 'تكاثر|تكاثر نسيلي', 'تمايز|بلازمية'],
+            forbiddenKeywords: ['جسم مضاد يرتبط بالإنترلوكين'],
+            successMessageAr: 'ممتاز : الإنترلوكين بلّغ كيميائي يحفز التكاثر النسيلي والتمايز.',
+            errorHintAr:
+              'الإنترلوكين 2 ليس جسماً مضاداً : إنه بلّغ كيميائي يحفز تكاثر LB النسيلي وتمايزها إلى خلايا بلازمية.',
+          },
+          {
+            id: 'coop_synthese_bac',
+            verbAr: 'فسّر',
+            promptAr:
+              'فسّر لماذا يؤدي تخريب اللمفاويات LT4 (كما في السيدا) إلى انهيار المناعتين الخلطية والخلوية معاً.',
+            answerType: 'short_text',
+            validationMode: 'keywords',
+            requiredKeywords: ['LT4', 'الإنترلوكين', 'خلطية', 'خلوية'],
+            successMessageAr: 'جيد جداً : أثبتّ أن LT4 محور التعاون بين الاستجابتين.',
+            errorHintAr:
+              'بدون LT4 لا إنترلوكين ⇐ لا تكاثر لـ LB (لا أجسام مضادة) ولا لـ LT8 (لا LTc) ⇐ انهيار الاستجابتين معاً.',
+          },
+        ],
+        summaryAr:
+          'LB + مستضد لا يكفيان : لا بد من إشارة LT4. والإنترلوكين 2 يعوض LT4 في الوسط، فهو الوسيط الكيميائي للتعاون. تخريب LT4 يُسقط الاستجابتين الخلطية والخلوية في آن واحد.',
+      },
+      {
+        type: 'COMPARISON_TABLE',
+        objective:
+          'تثبيت الفرق بين وجهي الاستجابة النوعية بعد التعاون : الخلطية والخلوية — أكثر خلط مسجَّل في التصحيح.',
+        promptAr:
+          'قارن بين الاستجابة المناعية الخلطية والاستجابة المناعية الخلوية حسب المعايير الآتية.',
+        assetSrc: '/assets/images/schemas/domaine1_proteines/schema_synthese_immunite_U4.jpg',
+        altAr: 'لوحة تركيبية لوحدة المناعة تجمع الاستجابة الخلطية والاستجابة الخلوية.',
+        criteria: [
+          {
+            id: 'cible',
+            labelAr: 'طبيعة المستضد المستهدف',
+            leftExpected: ['مستضد حر', 'في السوائل', 'سموم'],
+            rightExpected: ['خلية مصابة', 'خلية غريبة', 'خلية سرطانية'],
+          },
+          {
+            id: 'lymphocyte',
+            labelAr: 'اللمفاوية المسؤولة',
+            leftExpected: ['LB', 'خلية بلازمية'],
+            rightExpected: ['LT8', 'LTc'],
+          },
+          {
+            id: 'effecteur',
+            labelAr: 'العنصر المنفِّذ',
+            leftExpected: ['الأجسام المضادة', 'المعقد المناعي'],
+            rightExpected: ['البرفورين', 'الحل الخلوي'],
+          },
+          {
+            id: 'transfert',
+            labelAr: 'نقل المناعة تجريبياً',
+            leftExpected: ['بالمصل', 'المصل'],
+            rightExpected: ['بالخلايا اللمفاوية', 'اللمفاويات'],
+          },
+        ],
+        conclusionPromptAr:
+          'استنتج المعيار العملي الذي يسمح في التمرين بالحكم على نمط الاستجابة انطلاقاً من تجربة نقل.',
+        conclusionKeywords: ['المصل', 'اللمفاويات', 'خلطية', 'خلوية'],
+        summaryAr:
+          'الخلطية : مستضد حر ⇐ LB ⇐ خلايا بلازمية ⇐ أجسام مضادة ⇐ تُنقل بالمصل. الخلوية : خلية مصابة ⇐ LT8 ⇐ LTc ⇐ برفورين وحل خلوي ⇐ تُنقل بالخلايا اللمفاوية. كلتاهما تحتاج إشارة LT4.',
+      },
+      {
+        type: 'TEXT_AND_PRODUCE',
+        objective:
+          'إنتاج النص العلمي المطلوب في البكالوريا : حوصلة التعاون الخلوي في بضعة أسطر.',
+        prompt:
+          'اكتب نصاً علمياً (4 إلى 6 أسطر) تشرح فيه التعاون الخلوي الذي يقود إلى القضاء على فيروس دخل الجسم لأول مرة.',
+        acceptedAnswers: ['العارضة', 'CMH', 'LT4', 'الإنترلوكين', 'التكاثر النسيلي', 'أجسام مضادة', 'LTc', 'ذاكرة'],
+        errorHint:
+          'الخطة المنتظرة : تبلعم وعرض مع CMH-II ⇐ انتقاء LT4 وتنشيطها ⇐ إفراز الإنترلوكين 2 ⇐ تكاثر نسيلي وتمايز LB و LT8 ⇐ أجسام مضادة + LTc ⇐ خلايا ذاكرة تضمن استجابة ثانوية أسرع.',
+      },
+    ],
+  },
+  // ─────────────────────────────────────────────────────────────────────────
+  // U4 — تذكير بالمكتسبات القبلية (جذع مشترك / السنة الثانية) قبل درس الذات
+  // واللاذات. المصدر : الكتاب الرسمي، الفصل 14 (الذات واللاذات) والفصل 23
+  // (زمر الدم، CMH/HLA، النمط الوراثي). مدة مستهدفة ≈ 15 دقيقة.
+  // ─────────────────────────────────────────────────────────────────────────
+  prerequis2AS_genetique: {
+    id: 'prerequis2AS_genetique',
+    title: 'تذكير بالمكتسبات القبلية : المورثة والأليل والنمط الوراثي (تمهيد للذات واللاذات)',
+    blocks: [
+      {
+        type: 'TEXT_AND_PRODUCE',
+        objective:
+          'استرجاع مفاهيم المورثة/الأليل/النمط الوراثي/النمط الظاهري الضرورية لفهم الزمر الدموية ونظام HLA في وحدة المناعة.',
+        content:
+          'المورثة قطعة من الـ ADN محمولة على [____] في موقع ثابت يسمى المَوقع. الأشكال المختلفة لنفس المورثة تسمى [____]. مجموع الأليلات التي يحملها الفرد تشكل [____] ، بينما الصفة التي تُلاحَظ أو تُكشَف مخبرياً تشكل [____]. في نظام ABO يكون الأليلان A و B [____] فيما بينهما وسائدين على الأليل O.',
+        popups: {
+          'المورثة': 'قطعة من ADN تحمل معلومة تركيب بروتين أو صفة، محمولة على صبغي في موقع ثابت.',
+          'الأليل': 'أحد الأشكال الممكنة لنفس المورثة في نفس الموقع (مثال : A، B، O لمورثة الزمرة الدموية).',
+          'النمط الوراثي': 'مجموع الأليلات التي يحملها الفرد (مثال : A//O)، يُكتب بين خطين مائلين.',
+          'النمط الظاهري': 'الصفة المعبَّر عنها فعلياً والمكشوفة بالملاحظة أو بالتفاعل المناعي، تُكتب بين [ ] مثل [A].',
+          'التساوي السيادة': 'حالة يُعبَّر فيها عن الأليلين معاً في النمط الظاهري (النمط الوراثي A//B ⇐ النمط الظاهري [AB]).',
+          'متماثل / مختلف اللواقح': 'متماثل : أليلان متطابقان (A//A). مختلف : أليلان مختلفان (A//O).',
+        },
+        microTest: {
+          prompt: 'شخص نمطه الوراثي A//B. ما نمطه الظاهري ولماذا؟ (كلمة مفتاحية واحدة تكفي)',
+          acceptedAnswers: ['AB', '[AB]', 'تساوي السيادة', 'التساوي في السيادة', 'تساوي سيادة', 'codominance'],
+          errorHint:
+            'الأليلان A و B متساويا السيادة : يُعبَّر عنهما معاً، فالنمط الظاهري هو [AB] وليس [A] ولا [B].',
+        },
+      },
+      {
+        type: 'COMPARISON_TABLE',
+        objective:
+          'التمييز بين نظام الزمر الدموية ABO ونظام التوافق النسيجي CMH/HLA — وهو التمييز الذي يُخطئ فيه أغلب المترشحين في تمارين نقل الدم والطعم.',
+        promptAr:
+          'قارن بين نظام ABO ونظام HLA (CMH) من حيث مقر المحددات، عدد الأليلات، نمط السيادة، والمجال الذي يُستعمل فيه في التمارين.',
+        criteria: [
+          {
+            id: 'mocqar',
+            labelAr: 'مقر المحددات (أين توجد؟)',
+            leftExpected: ['غشاء الكرية الحمراء', 'الكريات الحمراء', 'غشاء الكريات'],
+            rightExpected: ['غشاء كل الخلايا ذات نواة', 'كل الخلايا', 'الخلايا ذات نواة'],
+          },
+          {
+            id: 'alleles',
+            labelAr: 'عدد الأليلات (تعدد الأشكال)',
+            leftExpected: ['ثلاثة أليلات', '3 أليلات', 'A B O'],
+            rightExpected: ['عدد كبير من الأليلات', 'تعدد أليلي كبير', 'مئات الأليلات'],
+          },
+          {
+            id: 'siyada',
+            labelAr: 'نمط السيادة',
+            leftExpected: ['A و B متساويا السيادة', 'تساوي السيادة', 'O متنحي'],
+            rightExpected: ['كل الأليلات متساوية السيادة', 'تساوي السيادة', 'تعبير الأليلين معاً'],
+          },
+          {
+            id: 'usage',
+            labelAr: 'الاستعمال في التمارين',
+            leftExpected: ['نقل الدم', 'التحاقن', 'الأجسام المضادة الطبيعية'],
+            rightExpected: ['الطعم', 'زرع الأعضاء', 'رفض الطعم'],
+          },
+        ],
+        conclusionPromptAr:
+          'استنتج لماذا يمكن أن يتوافق شخصان في الزمرة الدموية ومع ذلك يُرفض الطعم بينهما.',
+        conclusionKeywords: ['HLA', 'التوافق النسيجي', 'الطعم', 'الزمرة الدموية'],
+        summaryAr:
+          'ABO : محددات على غشاء الكريات الحمراء، ثلاثة أليلات (A، B متساويا السيادة وسائدان على O) ⇐ نقل الدم. HLA/CMH : محددات على غشاء كل الخلايا ذات نواة، تعدد أليلي كبير وكل الأليلات متساوية السيادة ⇐ قبول أو رفض الطعم. التوافق في ABO لا يعني التوافق النسيجي.',
+      },
+      {
+        type: 'SEQUENCE_ORDER',
+        objective:
+          'بناء سلسلة الاستدلال الوراثي التي تُستعمل في تمارين الطعم : من الأليلات إلى النمط الظاهري الغشائي ثم إلى قبول الطعم أو رفضه.',
+        promptAr:
+          'رتّب خطوات الاستدلال المطلوبة للحكم على نجاح طعم بين شخصين انطلاقاً من معطيات وراثية.',
+        steps: [
+          {
+            id: 'alleles',
+            labelAr: 'تحديد أليلات المورثات HLA المحمولة على الصبغي 6 عند كل شخص',
+            expectedOrder: 1,
+          },
+          {
+            id: 'haplotype',
+            labelAr: 'تجميع أليلات كل صبغي في نمط فرداني (haplotype) : واحد من الأب وواحد من الأم',
+            expectedOrder: 2,
+          },
+          {
+            id: 'phenotype',
+            labelAr: 'استنتاج النمط الظاهري الغشائي : كل الأليلات معبَّر عنها لأنها متساوية السيادة',
+            expectedOrder: 3,
+          },
+          {
+            id: 'compare',
+            labelAr: 'مقارنة محددات المُعطي بمحددات المستقبل (ذات / لا ذات)',
+            expectedOrder: 4,
+          },
+          {
+            id: 'conclude',
+            labelAr: 'الاستنتاج : تشابه المحددات ⇐ قبول الطعم، اختلافها ⇐ رفض الطعم',
+            expectedOrder: 5,
+          },
+        ],
+        summaryPromptAr:
+          'اكتب في سطرين سلسلة الاستدلال : من الأليلات إلى قبول الطعم أو رفضه.',
+        summaryKeywords: ['أليلات', 'النمط الفرداني', 'متساوية السيادة', 'الطعم'],
+        summaryAr:
+          'أليلات HLA على الصبغي 6 ⇐ نمطان فردانيان (أب + أم) ⇐ كل الأليلات معبَّر عنها لتساوي السيادة ⇐ مقارنة محددات المُعطي والمستقبل ⇐ التشابه يعني ذاتاً فيُقبل الطعم، والاختلاف يعني لا ذاتاً فيُرفض.',
+      },
+      {
+        type: 'TEXT_AND_PRODUCE',
+        objective:
+          'توظيف المكتسبات القبلية في صياغة جواب بكالوريا قصير حول التوأمين الحقيقيين والإخوة.',
+        prompt:
+          'لماذا ينجح الطعم دائماً بين توأمين حقيقيين بينما قد يُرفض بين أخوين من نفس الأبوين؟ (جواب في سطرين)',
+        acceptedAnswers: ['نفس النمط الوراثي', 'نفس الأليلات', 'التوافق النسيجي', 'HLA', 'ذات'],
+        errorHint:
+          'التوأمان الحقيقيان لهما نفس النمط الوراثي ⇐ نفس محددات HLA ⇐ الطعم ذاتي يُقبل. أما الأخوان فيرثان نمطين فردانيين مختلفين ⇐ محددات مختلفة تُعتبر لا ذات ⇐ خطر الرفض.',
+      },
+    ],
+  },
+  // ─────────── SPRINT 7 (audit, items 9, 10 et 11) — U6 : المرحلة الكيموضوئية ───────────
+  // Notion n°1 du classement de difficulté (83 points) et cœur des 39 % que pèsent
+  // U6+U7. L'app avait Hill/Ruben, Jagendorf et Calvin — c'est-à-dire les PREUVES
+  // expérimentales — mais aucune leçon sur la CHAÎNE elle-même (item 11), ni la
+  // synthèse U6/U7 (item 9). Ancrage : ch. 33 « تفاعلات المرحلة الكيموضوئية » (PSII,
+  // enzyme de photolyse, chaîne de transporteurs, NADP⁺ + 2e⁻ + 2H⁺ → NADPH + H⁺,
+  // pompe T, Mitchell) et ch. 40 pour la comparaison avec la respiration.
+  photochemical_chain: {
+    id: 'photochemical_chain',
+    title: 'السلسلة الكيموضوئية : من الفوتون إلى ATP و NADPH',
+    blocks: [
+      {
+        type: 'GUIDED_DOC_QA',
+        objective:
+          'تتبع الإلكترون من تحلل الماء إلى NADPH، وفهم لماذا يُعوَّض الإلكترون المفقود من PSII بالماء.',
+        doc: {
+          assetSrc: '/assets/images/schemas/domaine2_energie/schema_93_photochemical_chain_z_scheme_ar.svg',
+          altAr:
+            'مخطط غشاء التيلاكويد : PSII، سلسلة النواقل والمضخة، PSI، الكرة المذنبة، مع مسار الإلكترونات وتدرج البروتونات بين الحشوة والتجويف.',
+          captionAr:
+            'الوثيقة : تنظيم المعقدات في غشاء التيلاكويد ومسار الإلكترونات والبروتونات أثناء المرحلة الكيموضوئية.',
+        },
+        questions: [
+          {
+            id: 'photo_origine_electrons',
+            verbAr: 'حدد',
+            promptAr: 'من أين يستعيد النظام الضوئي PSII الإلكترونات التي فقدها ؟ اكتب المعادلة.',
+            answerType: 'short_text',
+            validationMode: 'keywords',
+            requiredKeywords: ['الماء', 'التحلل الضوئي', 'O₂'],
+            successMessageAr:
+              'نعم : H₂O → 2H⁺ + 2e⁻ + ½O₂. الماء هو المانح الأول للإلكترونات، والأكسجين مجرد فضلة.',
+            errorHintAr:
+              'أكسدة اليخضور في PSII تترك نقصاً في الإلكترونات. إنزيم ضمن المعقد يحلل الماء : H₂O → 2H⁺ + 2e⁻ + ½O₂.',
+          },
+          {
+            id: 'photo_destination_electrons',
+            verbAr: 'حلل',
+            promptAr:
+              'تتبّع مسار الإلكترون من PSII إلى مستقبله النهائي، مع ذكر ما يحدث في PSI.',
+            answerType: 'short_text',
+            validationMode: 'keywords',
+            requiredKeywords: ['النواقل', 'PSI', 'NADP', 'NADPH'],
+            successMessageAr:
+              'ممتاز : PSII ⟵ سلسلة النواقل ⟵ PSI (تهيج ثانٍ) ⟵ NADP⁺ الذي يُرجَع إلى NADPH + H⁺.',
+            errorHintAr:
+              'الإلكترون لا يعود إلى PSII : ينتقل عبر سلسلة النواقل إلى PSI حيث يتهيج من جديد بفعل الضوء، ثم يُستقبل نهائياً من طرف NADP⁺.',
+          },
+          {
+            id: 'photo_role_gradient',
+            verbAr: 'فسر',
+            promptAr:
+              'فسّر كيف يتحول انتقال الإلكترونات إلى تركيب ATP، مع تحديد اتجاه حركة H⁺.',
+            answerType: 'short_text',
+            validationMode: 'keywords',
+            requiredKeywords: ['تدرج', 'H', 'التجويف', 'الكرة المذنبة'],
+            successMessageAr:
+              'نعم : الطاقة المحررة تضخ H⁺ من الحشوة إلى التجويف، وعودتها عبر الكرة المذنبة هي التي تركّب ATP.',
+            errorHintAr:
+              'الطاقة المحررة من انتقال الإلكترونات لا تركّب ATP مباشرة : تُستعمل أولاً لضخ H⁺ نحو التجويف، ثم عودة H⁺ عبر الكرة المذنبة تركّب ATP (النظرية الكيميواسموزية).',
+          },
+        ],
+        summaryAr:
+          'سلسلة واحدة، مانح أول (الماء) ومستقبل أخير (NADP⁺). بين الاثنين : تهيّجان ضوئيان (PSII ثم PSI)، سلسلة نواقل، وضخ H⁺ نحو التجويف. الضوء لا يصنع ATP مباشرة بل يصنع التدرج.',
+      },
+      {
+        type: 'SEQUENCE_ORDER',
+        objective: 'ترتيب أحداث المرحلة الكيموضوئية في سلسلة واحدة متصلة، وهي مطلوبة في سؤال الاسترجاع.',
+        promptAr: 'رتّب أحداث المرحلة الكيموضوئية بالترتيب الزمني الصحيح.',
+        assetSrc: '/assets/images/schemas/domaine2_energie/schema_93_photochemical_chain_z_scheme_ar.svg',
+        altAr: 'مخطط السلسلة الكيموضوئية في غشاء التيلاكويد.',
+        steps: [
+          { id: 'photo_s1_photon', labelAr: 'امتصاص فوتون من طرف أصبغة PSII وتهيّج اليخضور a في مركز التفاعل', expectedOrder: 1 },
+          { id: 'photo_s2_oxydation', labelAr: 'أكسدة اليخضور : فقدان إلكترونين غنيين بالطاقة', expectedOrder: 2 },
+          { id: 'photo_s3_photolyse', labelAr: 'التحلل الضوئي للماء يعوّض الإلكترونات المفقودة ويحرر H⁺ و ½O₂', expectedOrder: 3 },
+          { id: 'photo_s4_chaine', labelAr: 'انتقال الإلكترونات عبر سلسلة النواقل مع تحرر طاقة', expectedOrder: 4 },
+          { id: 'photo_s5_pompe', labelAr: 'استعمال هذه الطاقة لضخ H⁺ من الحشوة إلى تجويف الكييس', expectedOrder: 5 },
+          { id: 'photo_s6_psi', labelAr: 'وصول الإلكترونات إلى PSI وتهيّجها من جديد بفعل الضوء', expectedOrder: 6 },
+          { id: 'photo_s7_nadph', labelAr: 'إرجاع NADP⁺ : NADP⁺ + 2e⁻ + 2H⁺ → NADPH + H⁺', expectedOrder: 7 },
+          { id: 'photo_s8_atp', labelAr: 'عودة H⁺ نحو الحشوة عبر الكرة المذنبة وتركيب ATP', expectedOrder: 8 },
+        ],
+        summaryPromptAr: 'ما الحدثان اللذان يقعان في التجويف وحده ؟',
+        summaryKeywords: ['التحلل الضوئي', 'تراكم', 'H'],
+        summaryAr:
+          'في التجويف يقع حدثان : التحلل الضوئي للماء وتراكم البروتونات. أما إرجاع NADP⁺ وتركيب ATP فيقعان في الحشوة.',
+      },
+      {
+        // Item 10 — micro-fiche active : le bilan que l'élève doit pouvoir écrire seul.
+        type: 'TEXT_AND_PRODUCE',
+        objective: 'كتابة حصيلة المرحلة الكيموضوئية دون الخلط بين النواتج والفضلات.',
+        content:
+          'تستعمل المرحلة الكيموضوئية ثلاثة مدخلات : الطاقة الضوئية، الماء و[____]. وتعطي ناتجين يُستعملان في المرحلة الكيميوحيوية هما [____] و[____]، بينما يُطرح [____] كفضلة خارج الصانعة.',
+        popups: {
+          'NADP': 'NADP⁺ هو المستقبل النهائي للإلكترونات في هذه المرحلة ؛ إرجاعه يعطي NADPH + H⁺.',
+          'ATP': 'ATP يُركَّب على مستوى الكرة المذنبة بفضل عودة البروتونات، لا بفعل الضوء مباشرة.',
+          'NADPH': 'NADPH هو القوة المرجعة التي ستُستعمل في حلقة كالفن لإرجاع الكربون.',
+          'الأكسجين': 'الأكسجين ناتج عن تحلل الماء فقط، وليس عن CO₂ : هذا ما أثبتته تجربة روبن بالوسم.',
+        },
+        microTest: {
+          prompt: 'لماذا نقول إن الأكسجين المنطلق فضلة وليس هدفاً للمرحلة الكيموضوئية ؟',
+          acceptedAnswers: [
+            'لأنه ناتج جانبي عن التحلل الضوئي للماء، والهدف الحقيقي هو الحصول على الإلكترونات و NADPH و ATP',
+            'لأن هدف المرحلة هو تعويض إلكترونات PSII وإنتاج ATP و NADPH، والأكسجين مجرد ناتج عن تحلل الماء',
+          ],
+          errorHint:
+            'الماء يُحلَّل من أجل إلكتروناته وبروتوناته. الأكسجين هو ما يتبقى من هذا التحلل، ولا تستعمله الصانعة في المرحلة الموالية.',
+        },
+      },
+      {
+        // Item 9 — synthèse U6 + U7 : le même mécanisme dans deux organites.
+        type: 'COMPARISON_TABLE',
+        objective:
+          'ربط الوحدة 6 بالوحدة 7 : نفس الآلية الكيميواسموزية في الصانعة الخضراء وفي الميتوكوندري.',
+        promptAr:
+          'قارن بين الفسفرة الضوئية في الصانعة (يمين) والفسفرة التأكسدية في الميتوكوندري (يسار).',
+        assetSrc: '/assets/images/schemas/domaine2_energie/schema_94_photophosphorylation_vs_oxydative_ar.svg',
+        altAr: 'لوحتان متقابلتان : غشاء التيلاكويد وغشاء الميتوكوندري الداخلي، مع تدرج H⁺ وكرة مذنبة في كل منهما.',
+        criteria: [
+          {
+            id: 'photo_cmp_membrane',
+            labelAr: 'الغشاء الذي يحدث فيه التدرج',
+            leftExpected: ['الغشاء الداخلي', 'الأعراف'],
+            rightExpected: ['غشاء التيلاكويد', 'الكييس'],
+          },
+          {
+            id: 'photo_cmp_source',
+            labelAr: 'مصدر الإلكترونات',
+            leftExpected: ['NADH', 'FADH', 'المواد العضوية'],
+            rightExpected: ['الماء', 'التحلل الضوئي'],
+          },
+          {
+            id: 'photo_cmp_accepteur',
+            labelAr: 'المستقبل النهائي للإلكترونات',
+            leftExpected: ['الأكسجين', 'الماء'],
+            rightExpected: ['NADP', 'NADPH'],
+          },
+          {
+            id: 'photo_cmp_compartiment',
+            labelAr: 'الحيز الذي تتراكم فيه H⁺',
+            leftExpected: ['بين الغشاءين', 'الحيز بين الغشاءين'],
+            rightExpected: ['التجويف', 'تجويف الكييس'],
+          },
+          {
+            id: 'photo_cmp_enzyme',
+            labelAr: 'الإنزيم الذي يركب ATP',
+            leftExpected: ['الكرة المذنبة', 'ATP synthase'],
+            rightExpected: ['الكرة المذنبة', 'ATP synthase'],
+          },
+        ],
+        conclusionPromptAr:
+          'استنتج المبدأ المشترك بين العضيتين رغم اختلاف مصدر الإلكترونات.',
+        conclusionKeywords: ['تدرج', 'H', 'الكرة المذنبة', 'ATP'],
+        summaryAr:
+          'المشترك : تدرج في تركيز H⁺ عبر غشاء، وعودة البروتونات عبر الكرة المذنبة تركّب ATP (نظرية ميتشل الكيميواسموزية). المختلف : في الصانعة المانح هو الماء والمستقبل NADP⁺ ؛ في الميتوكوندري المانح هو المواد العضوية (NADH, FADH₂) والمستقبل الأكسجين.',
+      },
+      {
+        type: 'TEXT_AND_PRODUCE',
+        objective: 'إنتاج تعليل من مستوى البكالوريا حول شرط الضوء.',
+        prompt:
+          'أظهرت تجربة جاغندورف تركيب ATP في الظلام. بيّن في 4 أسطر لماذا لا يتناقض ذلك مع تسمية « المرحلة الكيموضوئية »، محدداً الدور الحقيقي للضوء.',
+        acceptedAnswers: [
+          'الضوء لا يركّب ATP مباشرة بل يحرك الإلكترونات فيتولد تدرج في تركيز H⁺، وجاغندورف أنشأ هذا التدرج صناعياً في الظلام فتركب ATP : الشرط هو التدرج لا الضوء',
+          'دور الضوء هو إنشاء تدرج البروتونات عبر غشاء التيلاكويد، وما دام التدرج موجوداً يتركب ATP حتى في الظلام',
+        ],
+        errorHint:
+          'افصل بين السبب المباشر والسبب البعيد : السبب المباشر لتركيب ATP هو عودة H⁺ عبر الكرة المذنبة، والضوء ليس إلا الوسيلة التي تُنشئ هذا التدرج عادة.',
+      },
+    ],
+  },
+  // ─────────── SPRINT 6 (audit, item 3 bis) — U4 : VIH / السيدا ───────────
+  // Plus gros écart offre/demande du corpus : ~700 K vues cumulées sur le VIH chez
+  // trois chaînes concurrentes contre 4 QCM réels dans l'app. Contenu ancré sur le
+  // ch. 23 du livre officiel (« سبب فقدان المناعة المكتسبة »), qui donne gp120/CD4,
+  // gp41, transcriptase inverse, ADN proviral, seuil des 200 LT4/mm³, ELISA +
+  // Western blot, PCR, multithérapie et échec vaccinal par mutations.
+  immunity_hiv_aids: {
+    id: 'immunity_hiv_aids',
+    title: 'فيروس VIH والسيدا : قراءة منحنيات التطور والتمييز بين موجب المصل والمريض',
+    blocks: [
+      {
+        type: 'GUIDED_DOC_QA',
+        objective:
+          'قراءة المنحنيات الثلاثة للإصابة (الحمولة الفيروسية، LT4، الأجسام المضادة) وربط كل مرحلة بحالة المصاب.',
+        doc: {
+          assetSrc: '/assets/images/schemas/domaine1_immunite/schema_89_vih_evolution_curves_ar.svg',
+          altAr:
+            'منحنيات تطور الحمولة الفيروسية واللمفاويات LT4 والأجسام المضادة عبر ثلاث مراحل : إصابة أولية، مرحلة بدون أعراض، ثم السيدا.',
+          captionAr:
+            'الوثيقة : تطور ثلاثة مؤشرات عند شخص مصاب بـ VIH دون علاج، من الإصابة إلى مرحلة السيدا.',
+        },
+        questions: [
+          {
+            id: 'vih_analyse_phases',
+            verbAr: 'حلل',
+            promptAr: 'حلل تطور الحمولة الفيروسية وعدد اللمفاويات LT4 خلال المراحل الثلاث.',
+            answerType: 'short_text',
+            validationMode: 'keywords',
+            requiredKeywords: ['الحمولة الفيروسية', 'LT4', 'تتناقص', 'ترتفع'],
+            successMessageAr:
+              'أحسنت : ذروة فيروسية أولى، ثم مرحلة طويلة شبه صامتة، ثم انقلاب نهائي (الفيروس يرتفع و LT4 تنهار).',
+            errorHintAr:
+              'صف كل منحنى على حدة : الحمولة الفيروسية تبلغ ذروة مبكرة ثم تنخفض ثم ترتفع من جديد ؛ اللمفاويات LT4 تتناقص تدريجياً حتى تنهار.',
+          },
+          {
+            id: 'vih_seroconversion',
+            verbAr: 'فسر',
+            promptAr:
+              'فسّر انخفاض الحمولة الفيروسية في نهاية المرحلة الأولى رغم بقاء الفيروس في العضوية.',
+            answerType: 'short_text',
+            validationMode: 'keywords',
+            requiredKeywords: ['الأجسام المضادة', 'الانقلاب المصلي', 'استجابة مناعية'],
+            successMessageAr:
+              'نعم : الانقلاب المصلي — الاستجابة المناعية تسيطر على الفيروس دون أن تقضي عليه.',
+            errorHintAr:
+              'ظهور الأجسام المضادة (الانقلاب المصلي) يعني أن الاستجابة المناعية النوعية انطلقت وكبحت التضاعف الفيروسي، لكنها لا تقضي على الفيروس المدمج.',
+          },
+          {
+            id: 'vih_effondrement_final',
+            verbAr: 'استنتج',
+            promptAr:
+              'استنتج سبب ظهور الأمراض الانتهازية في المرحلة الثالثة، مستعيناً بعتبة 200 خلية / ملم³.',
+            answerType: 'short_text',
+            validationMode: 'keywords',
+            requiredKeywords: ['LT4', '200', 'التعاون', 'انتهازية'],
+            successMessageAr:
+              'ممتاز : تحت 200 LT4/ملم³ ينهار التعاون الخلوي، فتعجز الاستجابتان الخلطية والخلوية معاً.',
+            errorHintAr:
+              'اللمفاويات LT4 هي محور التعاون المناعي (إفراز الأنترلوكين 2). تحت 200 خلية / ملم³ لا تُنشَّط لا LB ولا LTc، فتستغل الجراثيم الانتهازية هذا العجز.',
+          },
+        ],
+        summaryAr:
+          'ثلاث مراحل : إصابة أولية (ذروة فيروسية قبل الانقلاب المصلي)، مرحلة طويلة بدون أعراض (توازن هش : الفيروس يتضاعف و LT4 تتناقص ببطء)، ثم السيدا (انهيار LT4 تحت 200/ملم³، ارتفاع الحمولة الفيروسية، أمراض انتهازية وأورام).',
+      },
+      {
+        type: 'SEQUENCE_ORDER',
+        objective: 'ترتيب مراحل دورة الفيروس داخل اللمفاوية LT4، وهي مطلوبة حرفياً في أسئلة الاسترجاع.',
+        promptAr: 'رتّب مراحل دورة فيروس VIH داخل الخلية المستهدفة.',
+        assetSrc: '/assets/images/schemas/domaine1_immunite/schema_90_vih_cycle_lt4_ar.svg',
+        altAr: 'مخطط دورة فيروس VIH داخل اللمفاوية LT4 في ست خطوات مرقمة.',
+        steps: [
+          { id: 'vih_fixation', labelAr: 'تثبيت الفيروس بفضل gp120 على مستقبل CD4 للمفاوية LT4', expectedOrder: 1 },
+          { id: 'vih_fusion', labelAr: 'اندماج الغشاءين بفضل gp41 ودخول المحتوى الفيروسي', expectedOrder: 2 },
+          { id: 'vih_transcription_inverse', labelAr: 'النسخ العكسي : تحويل ARN الفيروسي إلى ADN بفضل إنزيم الاستنساخ العكسي', expectedOrder: 3 },
+          { id: 'vih_integration', labelAr: 'اندماج ADN الفيروسي في ADN نواة الخلية (ADN مدمج قد يبقى كامناً)', expectedOrder: 4 },
+          { id: 'vih_synthese', labelAr: 'استنساخ المورثات الفيروسية وترجمتها إلى بروتينات فيروسية', expectedOrder: 5 },
+          { id: 'vih_bourgeonnement', labelAr: 'التبرعم وتحرير فيروسات جديدة، مع تخريب الخلية المستهدفة', expectedOrder: 6 },
+        ],
+        summaryPromptAr: 'لماذا يُصنّف VIH ضمن الفيروسات القهقرية (الراجعة) ؟',
+        summaryKeywords: ['ARN', 'ADN', 'الاستنساخ العكسي'],
+        summaryAr:
+          'الفيروس القهقري يملك ARN ويحوّله إلى ADN بإنزيم الاستنساخ العكسي، عكس الاتجاه المعتاد ADN ⟵ ARN. هذا ما يسمح باندماجه في مورثات الخلية وبقائه كامناً.',
+      },
+      {
+        type: 'COMPARISON_TABLE',
+        objective: 'إزالة الخلط الأكثر شيوعاً في التصحيح : موجب المصل ليس بالضرورة مريضاً بالسيدا.',
+        promptAr: 'قارن بين شخص موجب المصل في المرحلة الصامتة (يمين) ومريض في مرحلة السيدا (يسار).',
+        assetSrc: '/assets/images/schemas/domaine1_immunite/schema_89_vih_evolution_curves_ar.svg',
+        altAr: 'منحنيات تطور الإصابة بفيروس VIH.',
+        criteria: [
+          {
+            id: 'vih_presence_ac',
+            labelAr: 'الأجسام المضادة ضد VIH',
+            leftExpected: ['موجودة', 'تتناقص'],
+            rightExpected: ['موجودة', 'مرتفعة'],
+          },
+          {
+            id: 'vih_taux_lt4',
+            labelAr: 'عدد اللمفاويات LT4',
+            leftExpected: ['أقل من 200', 'منهار', 'ضعيف جداً'],
+            rightExpected: ['شبه عادي', 'يتناقص ببطء'],
+          },
+          {
+            id: 'vih_charge_virale',
+            labelAr: 'الحمولة الفيروسية',
+            leftExpected: ['مرتفعة', 'ترتفع'],
+            rightExpected: ['منخفضة', 'مستقرة'],
+          },
+          {
+            id: 'vih_symptomes',
+            labelAr: 'الأعراض السريرية',
+            leftExpected: ['أمراض انتهازية', 'أورام', 'أعراض'],
+            rightExpected: ['بدون أعراض', 'لا أعراض'],
+          },
+          {
+            id: 'vih_contagion',
+            labelAr: 'إمكانية نقل العدوى',
+            leftExpected: ['ينقل العدوى', 'ناقل'],
+            rightExpected: ['ينقل العدوى', 'ناقل'],
+          },
+        ],
+        conclusionPromptAr:
+          'استنتج لماذا يكون الشخص موجب المصل ناقلاً للعدوى حتى في غياب أي عرض.',
+        conclusionKeywords: ['الفيروس', 'يتضاعف', 'بدون أعراض'],
+        summaryAr:
+          'موجب المصل = يحمل أجساماً مضادة ضد VIH، أي أنه مصاب وناقل للعدوى مدى الحياة. مريض السيدا = المرحلة الأخيرة، حيث ينهار عدد LT4 تحت 200/ملم³ وتظهر الأمراض الانتهازية. كل مريض بالسيدا موجب المصل، والعكس غير صحيح.',
+      },
+      {
+        type: 'GUIDED_DOC_QA',
+        objective:
+          'قراءة نتيجة تشخيص (ELISA ثم Western blot) والتمييز بين الكشف عن الأجسام المضادة والكشف عن الفيروس نفسه.',
+        doc: {
+          assetSrc: '/assets/images/schemas/domaine1_immunite/schema_90_vih_cycle_lt4_ar.svg',
+          altAr: 'مخطط دورة الفيروس داخل اللمفاوية LT4 : الهدف هنا هو تحديد ما يكشف عنه كل اختبار.',
+          captionAr:
+            'الوثيقة : دورة الفيروس. اختبارا ELISA و Western blot يكشفان عن الأجسام المضادة، بينما تكشف تقنية PCR عن ARN الفيروسي نفسه.',
+        },
+        questions: [
+          {
+            id: 'vih_diagnostic_principe',
+            verbAr: 'حدد',
+            promptAr: 'ماذا تكشف تقنية ELISA في مصل الشخص : الفيروس أم الأجسام المضادة ؟',
+            answerType: 'short_text',
+            validationMode: 'keywords',
+            requiredKeywords: ['الأجسام المضادة', 'المصل'],
+            successMessageAr: 'نعم : ELISA تبحث عن الأجسام المضادة ضد بروتينات الفيروس في المصل.',
+            errorHintAr:
+              'الاختبار الروتيني يبحث عن أجسام مضادة ضد بروتينات VIH في المصل، ويُؤكَّد بتقنية Western blot.',
+          },
+          {
+            id: 'vih_fenetre_serologique',
+            verbAr: 'فسر',
+            promptAr:
+              'شخص أصيب منذ أسبوع أعطى اختبار ELISA سالباً. فسّر هذه النتيجة دون أن تستنتج أنه سليم.',
+            answerType: 'short_text',
+            validationMode: 'keywords',
+            requiredKeywords: ['الأجسام المضادة', 'لم تتشكل', 'الانقلاب المصلي'],
+            successMessageAr:
+              'ممتاز : قبل الانقلاب المصلي لا توجد أجسام مضادة قابلة للكشف — نتيجة سالبة لا تعني السلامة.',
+            errorHintAr:
+              'الأجسام المضادة تظهر بعد أسابيع (الانقلاب المصلي). قبل ذلك يكون الشخص مصاباً وناقلاً رغم سلبية الاختبار : لهذا يُلجأ إلى PCR.',
+          },
+          {
+            id: 'vih_traitement_vaccin',
+            verbAr: 'علل',
+            promptAr:
+              'علّل فشل اللقاحات التجريبية ضد VIH، واذكر على ماذا يرتكز العلاج الحالي.',
+            answerType: 'short_text',
+            validationMode: 'keywords',
+            requiredKeywords: ['الطفرات', 'الاستنساخ العكسي', 'كبت'],
+            successMessageAr:
+              'نعم : تعدد الطفرات يُفقد الأجسام المضادة نجاعتها، والعلاج يكبت الإنزيمات الفيروسية دون استئصال الفيروس.',
+            errorHintAr:
+              'الفيروس شديد التحول : الطفرات تغير بروتيناته فتصبح الأجسام المضادة غير فعالة. العلاج متعدد يكبت إنزيم الاستنساخ العكسي والبروتياز.',
+          },
+        ],
+        summaryAr:
+          'ELISA و Western blot يكشفان عن الأجسام المضادة (دليل غير مباشر)، و PCR تكشف عن ARN الفيروسي (دليل مباشر). نتيجة سالبة قبل الانقلاب المصلي لا تنفي الإصابة، والعلاج الحالي يسيطر على التضاعف الفيروسي دون شفاء.',
+      },
+      {
+        type: 'TEXT_AND_PRODUCE',
+        objective: 'إنتاج فقرة تفسيرية تربط بين هدف الفيروس ودور LT4 في التعاون المناعي.',
+        prompt:
+          'بيّن في 4 إلى 5 أسطر لماذا يؤدي فيروس يهاجم اللمفاويات LT4 فقط إلى انهيار المناعتين الخلطية والخلوية معاً.',
+        acceptedAnswers: [
+          'اللمفاويات LT4 المساعدة تفرز الأنترلوكين 2 الذي ينشط LB و LTc، فإذا تناقص عددها ينهار التعاون المناعي وتعجز الاستجابتان الخلطية والخلوية معاً',
+          'لأن LT4 هي محور التعاون المناعي عن طريق الأنترلوكينات، فتخريبها يمنع تنشيط الخلايا البلازمية واللمفاويات السامة معاً',
+        ],
+        errorHint:
+          'الفكرة المحورية : LT4 ليست خلية منفذة بل خلية منشِّطة. عبر الأنترلوكين 2 تنشط LB (خلطية) و LTc (خلوية) ؛ إقصاؤها يقطع التنشيط في الفرعين معاً، وهذا هو سبب النقص المناعي المكتسب.',
+      },
+    ],
+  },
+  // ─────────── SPRINT 5 (audit, items 7 et 8) — U3 : المثبطات الإنزيمية ───────────
+  // Priorité n°1 du plan de renforcement : la matrice d'audit donnait pour cette
+  // notion « leçon ⚠️2, micro-remédiation ⚠️1, carte mentale ❌0, simulation ❌ ».
+  // La carte mentale a été livrée au sprint 4 ; voici la leçon active et l'atelier
+  // des 6 courbes (@MostafaBdd : « أفكار تمارين الإنزيمات » 148 K vues — l'entrée
+  // attendue sur cette unité est typologique, pas un cours de plus).
+  enzyme_inhibitors: {
+    id: 'enzyme_inhibitors',
+    title: 'المثبطات الإنزيمية : تنافسي أم لا تنافسي ؟ قراءة منحنيات V = f([S])',
+    blocks: [
+      {
+        type: 'GUIDED_DOC_QA',
+        objective:
+          'تحليل منحنيي تثبيط مقارنة بالشاهد، واستخراج المعيار الحاسم : ماذا يحدث للسرعة القصوى Vmax ؟',
+        doc: {
+          assetSrc: '/assets/images/schemas/domaine1_enzymes/schema_87_enzyme_inhibition_curves_ar.svg',
+          altAr: 'ثلاثة منحنيات V = f([S]) : الشاهد، المنحنى A بنفس Vmax مع Km أكبر، والمنحنى B بـ Vmax منخفضة.',
+          captionAr:
+            'الوثيقة : سرعة التفاعل الابتدائية بدلالة تركيز الركيزة، في غياب المثبط (الشاهد) وفي وجود المثبط A ثم المثبط B، مع نفس تركيز الإنزيم.',
+        },
+        questions: [
+          {
+            id: 'inhib_analyse_courbes',
+            verbAr: 'حلل',
+            promptAr: 'حلل تطور السرعة في المنحنيات الثلاثة مع ارتفاع تركيز الركيزة.',
+            answerType: 'short_text',
+            validationMode: 'keywords',
+            requiredKeywords: ['تزداد', 'تستقر', 'الشاهد'],
+            successMessageAr: 'أحسنت : وصف السلوك العام قبل أي تفسير — هذا هو التحليل.',
+            errorHintAr:
+              'صف ما تراه : في الحالات الثلاث تزداد السرعة مع تركيز الركيزة ثم تستقر، لكن عند مستويات مختلفة مقارنة بالشاهد.',
+          },
+          {
+            id: 'inhib_comparer_vmax',
+            verbAr: 'قارن',
+            promptAr: 'قارن السرعة القصوى Vmax وقيمة Km في المنحنيين A و B مع الشاهد.',
+            answerType: 'short_text',
+            validationMode: 'keywords',
+            requiredKeywords: ['Vmax', 'Km', 'نفس', 'تنخفض'],
+            successMessageAr:
+              'ممتاز : المنحنى A يبلغ نفس Vmax لكن بـ Km أكبر، والمنحنى B لا يبلغ Vmax الشاهد أبداً.',
+            errorHintAr:
+              'اقرأ المستقيم الأفقي لكل منحنى (Vmax)، ثم أسقط Vmax/2 على محور التراكيز (Km). A : نفس Vmax و Km أكبر ؛ B : Vmax تنخفض.',
+          },
+          {
+            id: 'inhib_identifier_type',
+            verbAr: 'استنتج',
+            promptAr: 'استنتج نوع كل مثبط، وعلل بمكان تثبيته على الإنزيم.',
+            answerType: 'short_text',
+            validationMode: 'keywords',
+            requiredKeywords: ['تنافسي', 'الموقع الفعال', 'لا تنافسي', 'آخر'],
+            successMessageAr:
+              'A مثبط تنافسي يحتل الموقع الفعال نفسه، و B مثبط لا تنافسي يتثبت على موقع آخر ويشوّه الموقع الفعال.',
+            errorHintAr:
+              'نفس Vmax ⟵ يمكن التغلب على المثبط بزيادة الركيزة ⟵ منافسة على الموقع الفعال. Vmax منخفضة ⟵ لا يمكن التغلب عليه ⟵ تثبيت على موقع آخر.',
+          },
+        ],
+        summaryAr:
+          'المعيار الحاسم في كل تمرين تثبيط هو Vmax : إذا بقيت كما هي فالمثبط تنافسي (يُزاح بزيادة الركيزة)، وإذا انخفضت فالمثبط لا تنافسي (تشوّه البنية الفراغية للموقع الفعال).',
+      },
+      {
+        type: 'COMPARISON_TABLE',
+        objective: 'تثبيت المقارنة بين المثبط التنافسي والمثبط اللاتنافسي على المعايير الخمسة المطلوبة في التصحيح.',
+        promptAr: 'قارن المثبط التنافسي (يمين) والمثبط اللاتنافسي (يسار) حسب كل معيار.',
+        assetSrc: '/assets/images/schemas/domaine1_enzymes/schema_87_enzyme_inhibition_curves_ar.svg',
+        altAr: 'منحنيات التثبيط الثلاثة.',
+        criteria: [
+          {
+            id: 'site_fixation',
+            labelAr: 'موقع تثبيت المثبط',
+            leftExpected: ['موقع آخر', 'موقع تنظيمي', 'خارج الموقع الفعال'],
+            rightExpected: ['الموقع الفعال', 'نفس الموقع'],
+          },
+          {
+            id: 'ressemblance',
+            labelAr: 'التشابه البنيوي مع الركيزة',
+            leftExpected: ['لا يشبه الركيزة', 'بنية مختلفة'],
+            rightExpected: ['يشبه الركيزة', 'تشابه بنيوي'],
+          },
+          {
+            id: 'effet_vmax',
+            labelAr: 'أثره على السرعة القصوى Vmax',
+            leftExpected: ['تنخفض', 'Vmax أقل'],
+            rightExpected: ['لا تتغير', 'نفس Vmax'],
+          },
+          {
+            id: 'effet_km',
+            labelAr: 'أثره على Km',
+            leftExpected: ['لا يتغير', 'نفس Km'],
+            rightExpected: ['يرتفع', 'Km أكبر'],
+          },
+          {
+            id: 'exces_substrat',
+            labelAr: 'ماذا يحدث عند رفع تركيز الركيزة ؟',
+            leftExpected: ['يبقى التثبيط', 'لا يزول'],
+            rightExpected: ['يزول التثبيط', 'يُزاح المثبط'],
+          },
+        ],
+        conclusionPromptAr:
+          'استنتج لماذا لا يمكن التغلب على المثبط اللاتنافسي بزيادة تركيز الركيزة.',
+        conclusionKeywords: ['موقع آخر', 'البنية', 'الموقع الفعال'],
+        summaryAr:
+          'المثبط التنافسي يشبه الركيزة ويحتل موقعها فتزيحه زيادة الركيزة : Vmax محفوظة و Km يرتفع. المثبط اللاتنافسي يتثبت على موقع آخر فيغير البنية الفراغية ويجعل الموقع الفعال غير مكمل : Vmax تنخفض ولا تنفع زيادة الركيزة.',
+      },
+      {
+        type: 'SEQUENCE_ORDER',
+        objective: 'بناء منهجية ثابتة في 5 خطوات لكل تمرين يعرض منحنى إنزيمياً مع مثبط.',
+        promptAr: 'رتّب خطوات قراءة وثيقة التثبيط كما تُصحَّح في البكالوريا.',
+        assetSrc: '/assets/images/schemas/domaine1_enzymes/schema_87_enzyme_inhibition_curves_ar.svg',
+        altAr: 'منحنيات V = f([S]) للشاهد ومثبطين.',
+        steps: [
+          { id: 'identifier_axes', labelAr: 'أحدد المتغيرين : ماذا على محور الفواصل وماذا على محور التراتيب ؟', expectedOrder: 1 },
+          { id: 'reperer_temoin', labelAr: 'أحدد منحنى الشاهد الذي تُقارن به بقية المنحنيات', expectedOrder: 2 },
+          { id: 'lire_vmax', labelAr: 'أقرأ Vmax لكل منحنى : هل بلغ نفس المستوى الأفقي للشاهد ؟', expectedOrder: 3 },
+          { id: 'lire_km', labelAr: 'أُسقط Vmax/2 على محور التراكيز لأقرأ Km وأقارنه بالشاهد', expectedOrder: 4 },
+          { id: 'conclure_type', labelAr: 'أستنتج نوع المثبط وأعلل بمكان تثبيته على الإنزيم', expectedOrder: 5 },
+        ],
+        summaryPromptAr: 'لخّص المنهجية : ما القراءتان اللتان تكفيان لتحديد نوع المثبط ؟',
+        summaryKeywords: ['Vmax', 'Km', 'الشاهد'],
+        summaryAr:
+          'قراءتان تكفيان : Vmax ثم Km، دائماً بالمقارنة مع الشاهد. لا يُستنتج نوع المثبط من شكل المنحنى وحده.',
+      },
+      {
+        // Item 8 de l'audit — atelier des 6 courbes.
+        type: 'GUIDED_DOC_QA',
+        objective:
+          'التمييز بين المنحنيات الستة الأكثر ورودا في الوحدة 3 قبل قراءة نص السؤال، لتفادي الخلط بين وثيقة وأخرى.',
+        doc: {
+          assetSrc: '/assets/images/schemas/domaine1_enzymes/schema_88_enzyme_six_curves_workshop_ar.svg',
+          altAr:
+            'ست منحنيات : تركيز الركيزة، درجة الحرارة، درجة الحموضة، مثبط تنافسي، مثبط لا تنافسي، وتراكم الناتج بدلالة الزمن.',
+          captionAr:
+            'ورشة : ستة منحنيات مرقمة من 1 إلى 6. لكل منحنى سؤال واحد : ما المتغير ؟ وماذا يعني شكل المنحنى ؟',
+        },
+        questions: [
+          {
+            id: 'atelier_courbe1_substrat',
+            verbAr: 'حلل',
+            promptAr: 'المنحنى 1 : لماذا تستقر السرعة عند مستوى ثابت رغم استمرار زيادة [S] ؟',
+            answerType: 'short_text',
+            validationMode: 'keywords',
+            requiredKeywords: ['التشبع', 'المواقع الفعالة', 'مشغولة'],
+            successMessageAr: 'نعم : تشبع المواقع الفعالة، لا نفاد الإنزيم.',
+            errorHintAr: 'الاستقرار = تشبع : كل المواقع الفعالة مشغولة. الإنزيم لا يُستهلك ولا ينفد.',
+          },
+          {
+            id: 'atelier_courbe2_temperature',
+            verbAr: 'فسر',
+            promptAr: 'المنحنى 2 : فسّر الجزء الصاعد ثم الانهيار السريع بعد الدرجة المثلى.',
+            answerType: 'short_text',
+            validationMode: 'keywords',
+            requiredKeywords: ['التصادم', 'المثلى', 'تخريب'],
+            successMessageAr: 'تفسيران مختلفان في منحنى واحد : تصادمات ثم تخريب البنية.',
+            errorHintAr:
+              'الصعود : ارتفاع الحرارة يزيد التصادمات بين الإنزيم والركيزة. النزول : تخريب البنية الفراغية للموقع الفعال.',
+          },
+          {
+            id: 'atelier_courbe3_ph',
+            verbAr: 'فسر',
+            promptAr: 'المنحنى 3 : لماذا ينخفض النشاط على جانبي pH الأمثل ؟',
+            answerType: 'short_text',
+            validationMode: 'keywords',
+            requiredKeywords: ['الشحنات', 'الموقع الفعال', 'الجذور'],
+            successMessageAr: 'ممتاز : تغير الحالة الأيونية للجذور يشوّه الموقع الفعال.',
+            errorHintAr:
+              'تغير pH يغير شحنات جذور الأحماض الأمينية، فتتفكك الروابط الشاردية ويتشوه الموقع الفعال (رابط مع الوحدة 2).',
+          },
+          {
+            id: 'atelier_courbe4_competitif',
+            verbAr: 'استنتج',
+            promptAr: 'المنحنى 4 : المنحنى المتقطع هو الشاهد. حدد نوع المثبط وعلل.',
+            answerType: 'short_text',
+            validationMode: 'keywords',
+            requiredKeywords: ['تنافسي', 'Vmax', 'Km'],
+            successMessageAr: 'نعم : نفس Vmax مع Km أكبر ⟵ مثبط تنافسي.',
+            errorHintAr: 'إذا بلغ المنحنى نفس Vmax لكن ببطء (Km أكبر) فالمثبط تنافسي.',
+          },
+          {
+            id: 'atelier_courbe5_non_competitif',
+            verbAr: 'استنتج',
+            promptAr: 'المنحنى 5 : حدد نوع المثبط، ثم قل هل تنفع زيادة الركيزة ؟',
+            answerType: 'short_text',
+            validationMode: 'keywords',
+            requiredKeywords: ['لا تنافسي', 'Vmax', 'لا تنفع'],
+            successMessageAr: 'نعم : Vmax منخفضة ⟵ لا تنافسي ⟵ زيادة الركيزة لا ترفع السرعة القصوى.',
+            errorHintAr: 'انخفاض Vmax يعني أن المثبط لا يُزاح : المنافسة مستحيلة لأنه ليس على الموقع الفعال.',
+          },
+          {
+            id: 'atelier_courbe6_produit_temps',
+            verbAr: 'حلل',
+            promptAr: 'المنحنى 6 : المتغير هو الزمن وليس [S]. لماذا يبلغ تراكم الناتج مستوى ثابتاً ؟',
+            answerType: 'short_text',
+            validationMode: 'keywords',
+            requiredKeywords: ['الركيزة', 'نفاد', 'الزمن'],
+            successMessageAr: 'انتبه للفرق : هنا الاستقرار سببه نفاد الركيزة، لا التشبع.',
+            errorHintAr:
+              'المحور الأفقي هو الزمن : المنحنى يستقر لأن الركيزة نفدت (تحولت كلها إلى ناتج)، وليس بسبب تشبع المواقع.',
+          },
+        ],
+        summaryAr:
+          'ستة منحنيات، ثلاثة أسباب مختلفة للاستقرار : تشبع المواقع (1 و 4 و 5)، وتخريب البنية (2 و 3)، ونفاد الركيزة (6). الخلط بين « تشبع » و « نفاد الركيزة » من أكثر الأخطاء كلفة في التصحيح.',
+      },
+      {
+        type: 'TEXT_AND_PRODUCE',
+        objective: 'إنتاج فقرة تعليل من مستوى البكالوريا انطلاقاً من وضعية دوائية.',
+        prompt:
+          'دواء يستعمل لخفض نشاط إنزيم معين. أظهرت الدراسة أن السرعة القصوى Vmax لم تتغير في وجود الدواء، وأن زيادة تركيز الركيزة تلغي أثره. حدد نوع هذا المثبط، واشرح آليته في 3 إلى 4 أسطر.',
+        acceptedAnswers: [
+          'مثبط تنافسي يشبه الركيزة ويتثبت على الموقع الفعال، وزيادة الركيزة تزيحه فتبقى Vmax كما هي مع ارتفاع Km',
+          'تنافسي لأن Vmax لم تتغير ويزول أثره بزيادة الركيزة، فهو ينافس الركيزة على الموقع الفعال',
+        ],
+        errorHint:
+          'المعطيان حاسمان : Vmax محفوظة + أثر يزول بزيادة الركيزة ⟵ مثبط تنافسي. اذكر في التعليل : التشابه البنيوي مع الركيزة، التثبيت على الموقع الفعال، والمنافسة التي تُحسم لصالح الأكثر تركيزاً.',
+      },
+    ],
+  },
+  // ─────────── SPRINT 3 (audit, item 5) — U2 : سلوك الأحماض الأمينية ───────────
+  // Trou n°1 de l'audit : le pHi n'apparaissait NULLE PART dans l'app alors que
+  // c'est la 2e notion la plus difficile du corpus (73 occurrences) et que le
+  // livre officiel lui consacre une activité entière (ch. 8, « سلوك الأحماض
+  // الأمينية في الوسط » : électrophorèse de Ala à pH 2, 6 et 12).
+  amino_acid_behavior: {
+    id: 'amino_acid_behavior',
+    title: 'سلوك الأحماض الأمينية في الوسط : الشحنة، نقطة التعادل الكهربائي (pHi) والهجرة',
+    blocks: [
+      {
+        type: 'GUIDED_DOC_QA',
+        objective:
+          'استغلال نتائج الهجرة الكهربائية للحمض الأميني ألانين Ala عند ثلاث قيم pH، واستنتاج قاعدة تحديد الشحنة.',
+        doc: {
+          assetSrc: '/assets/images/schemas/domaine1_proteines/schema_41_alanine_representations_modern.svg',
+          altAr: 'تمثيلات مختلفة للحمض الأميني ألانين : الصيغة العامة، المجموعة الأمينية والمجموعة الكربوكسيلية والجذر R.',
+          captionAr:
+            'الوثيقة 1 : الصيغة العامة للحمض الأميني — مجموعة أمينية (-NH₂) ومجموعة كربوكسيلية (-COOH) على نفس ذرة الكربون، مع الجذر R.',
+          secondaryAssetSrc: '/assets/images/schemas/domaine1_proteines/schema_66_gamma_globulin_electrophoresis_modern.svg',
+          secondaryAltAr: 'جهاز الهجرة الكهربائية : شريط فصل، محلول منظم ذو pH محدد، ومهبط ومصعد.',
+          secondaryCaptionAr:
+            'الوثيقة 2 : وُضعت قطرة من محلول Ala في منتصف شريط الهجرة الكهربائية عند pH = 2، ثم أُعيدت التجربة عند pH = 6 وعند pH = 12. النتيجة : هجرة نحو المهبط عند 2، لا هجرة عند 6، هجرة نحو المصعد عند 12.',
+        },
+        questions: [
+          {
+            id: 'phi_analyse_migration',
+            verbAr: 'حلل',
+            promptAr: 'حلل نتائج الهجرة الكهربائية للحمض الأميني Ala عند pH = 2 و pH = 6 و pH = 12.',
+            answerType: 'short_text',
+            validationMode: 'keywords',
+            requiredKeywords: ['المهبط', 'المصعد', 'لا يهاجر'],
+            successMessageAr: 'أحسنت : وصفت الاتجاهات الثلاثة دون أن تفسرها بعد — هذا هو التحليل.',
+            errorHintAr:
+              'اذكر الاتجاه في كل حالة : نحو المهبط (السالب) عند pH = 2، لا يهاجر عند pH = 6، نحو المصعد (الموجب) عند pH = 12.',
+          },
+          {
+            id: 'phi_deduire_charge',
+            verbAr: 'فسر',
+            promptAr:
+              'ماذا تستنتج عن شحنة Ala في كل وسط؟ (تذكّر : الجسيم المشحون ينجذب نحو القطب المعاكس لشحنته).',
+            answerType: 'short_text',
+            validationMode: 'keywords',
+            requiredKeywords: ['موجبة', 'متعادل', 'سالبة'],
+            successMessageAr: 'ممتاز : شحنة موجبة عند pH = 2، تعادل كهربائي عند 6، شحنة سالبة عند 12.',
+            errorHintAr:
+              'الهجرة نحو المهبط تعني شحنة موجبة، والهجرة نحو المصعد تعني شحنة سالبة، وانعدام الهجرة يعني التعادل الكهربائي.',
+          },
+          {
+            id: 'phi_regle_generale',
+            verbAr: 'استنتج',
+            promptAr:
+              'علماً أن pH = 6 يمثل نقطة التعادل الكهربائي (pHi) للألانين، استخرج القاعدة التي تسمح بتحديد شحنة أي حمض أميني بمقارنة pH الوسط مع pHi.',
+            answerType: 'short_text',
+            validationMode: 'keywords',
+            requiredKeywords: ['pHi', 'أقل', 'أعلى', 'الشحنة'],
+            successMessageAr:
+              'هذه هي القاعدة المطلوبة في البكالوريا : pH < pHi ⟵ شحنة موجبة ؛ pH = pHi ⟵ متعادل ؛ pH > pHi ⟵ شحنة سالبة.',
+            errorHintAr:
+              'صُغ القاعدة بمقارنة صريحة : إذا كان pH الوسط أقل من pHi تكون الشحنة موجبة، وإذا كان أعلى من pHi تكون الشحنة سالبة.',
+          },
+        ],
+        summaryAr:
+          'الحمض الأميني مركب أمفوتيري : يسلك سلوك حمض في الوسط القاعدي وسلوك قاعدة في الوسط الحمضي. تتغير شحنته حسب pH الوسط، وتسمى قيمة pH التي يكون عندها متعادلاً كهربائياً بنقطة التعادل الكهربائي pHi.',
+      },
+      {
+        type: 'SEQUENCE_ORDER',
+        objective:
+          'بناء منهجية ثابتة من 5 خطوات للإجابة على أي سؤال بكالوريا حول الهجرة الكهربائية للأحماض الأمينية أو الببتيدات.',
+        promptAr:
+          'رتّب خطوات المنهجية التي تقودك من معطيات التمرين إلى تحديد اتجاه الهجرة.',
+        assetSrc: '/assets/images/schemas/domaine1_proteines/schema_66_gamma_globulin_electrophoresis_modern.svg',
+        altAr: 'شريط الهجرة الكهربائية مع المهبط والمصعد والمحلول المنظم.',
+        steps: [
+          { id: 'lire_ph', labelAr: 'أقرأ pH المحلول المنظم المستعمل في جهاز الهجرة الكهربائية', expectedOrder: 1 },
+          { id: 'lire_phi', labelAr: 'أستخرج قيمة pHi الخاصة بالحمض الأميني من نص التمرين أو من الجدول', expectedOrder: 2 },
+          { id: 'comparer', labelAr: 'أقارن : هل pH الوسط أقل من pHi أم يساويه أم أعلى منه؟', expectedOrder: 3 },
+          { id: 'charge', labelAr: 'أستنتج الشحنة : موجبة إذا pH < pHi، متعادلة إذا pH = pHi، سالبة إذا pH > pHi', expectedOrder: 4 },
+          { id: 'sens', labelAr: 'أستنتج الاتجاه : الشحنة الموجبة تهاجر نحو المهبط، والسالبة نحو المصعد، والمتعادلة تبقى في مكان الوضع', expectedOrder: 5 },
+        ],
+        summaryPromptAr:
+          'لخّص المنهجية في جملة واحدة : ما هي المقارنة المحورية، وما الذي تستنتجه منها؟',
+        summaryKeywords: ['pHi', 'الشحنة', 'المهبط', 'المصعد'],
+        summaryAr:
+          'كل تمرين هجرة كهربائية يُحلّ بمقارنة واحدة : pH الوسط أمام pHi. منها تُستنتج الشحنة، ومن الشحنة يُستنتج القطب الذي يهاجر نحوه الحمض الأميني.',
+      },
+      {
+        type: 'COMPARISON_TABLE',
+        objective:
+          'تثبيت الفرق بين الوسط الحمضي (pH < pHi) والوسط القاعدي (pH > pHi) على أربعة معايير مطلوبة في التصحيح.',
+        promptAr: 'قارن سلوك الحمض الأميني في الحالتين : pH أقل من pHi، و pH أعلى من pHi.',
+        assetSrc: '/assets/images/schemas/domaine1_proteines/schema_41_alanine_representations_modern.svg',
+        altAr: 'صيغ الحمض الأميني حسب pH الوسط.',
+        criteria: [
+          {
+            id: 'charge_nette',
+            labelAr: 'الشحنة الإجمالية للحمض الأميني',
+            leftExpected: ['موجبة', 'شحنة موجبة'],
+            rightExpected: ['سالبة', 'شحنة سالبة'],
+          },
+          {
+            id: 'groupement',
+            labelAr: 'حالة المجموعتين الوظيفيتين',
+            leftExpected: ['NH3+', 'المجموعة الأمينية', 'تكتسب بروتون'],
+            rightExpected: ['COO-', 'المجموعة الكربوكسيلية', 'تحرر بروتون'],
+          },
+          {
+            id: 'sens_migration',
+            labelAr: 'اتجاه الهجرة الكهربائية',
+            leftExpected: ['المهبط', 'القطب السالب'],
+            rightExpected: ['المصعد', 'القطب الموجب'],
+          },
+          {
+            id: 'exemple_ala',
+            labelAr: 'مثال الألانين (pHi = 6)',
+            leftExpected: ['pH = 2', 'وسط حمضي'],
+            rightExpected: ['pH = 12', 'وسط قاعدي'],
+          },
+        ],
+        conclusionPromptAr:
+          'استنتج لماذا يوصف الحمض الأميني بأنه مركب أمفوتيري (حمامي).',
+        conclusionKeywords: ['أمفوتيري', 'حمض', 'قاعدة'],
+        summaryAr:
+          'في الوسط الحمضي (pH < pHi) يكتسب الحمض الأميني بروتونات فيصبح موجباً ويهاجر نحو المهبط ؛ وفي الوسط القاعدي (pH > pHi) يحرر بروتونات فيصبح سالباً ويهاجر نحو المصعد. هذا السلوك المزدوج هو معنى المركب الأمفوتيري.',
+      },
+      {
+        // Item 5 bis de l'audit (@MostafaBdd : « كيف نكتب صيغة الحمض الأميني بطريقة صحيحة ؟ »,
+        // 12:30 / 151 K vues) — écrire la FORME IONISÉE, et pas seulement en déduire la charge.
+        type: 'TEXT_AND_PRODUCE',
+        objective:
+          'كتابة الصيغة المفصلة للحمض الأميني في الأوساط الثلاثة : الشكل المشحون موجباً، الشكل ثنائي القطب، والشكل المشحون سالباً.',
+        content:
+          'في الوسط الحمضي (pH = 2) تكون المجموعة الأمينية على شكل [____] والمجموعة الكربوكسيلية على شكل [____] : الشحنة الإجمالية موجبة. عند نقطة التعادل الكهربائي (pH = pHi) نكتب الشكل [____] : المجموعة الأمينية NH₃⁺ والمجموعة الكربوكسيلية COO⁻ في آن واحد. في الوسط القاعدي (pH = 12) تفقد المجموعة الأمينية بروتونها فتصبح [____] وتبقى الكربوكسيلية COO⁻ : الشحنة الإجمالية سالبة.',
+        popups: {
+          'NH₃⁺': 'المجموعة الأمينية بعد اكتساب بروتون H⁺ — تحمل شحنة موجبة.',
+          'COOH': 'المجموعة الكربوكسيلية غير متأينة — لا تحمل شحنة، لأنها لم تحرر بروتونها في الوسط الحمضي.',
+          'ثنائي القطب': 'الشكل الأمفوتيري (Zwitterion) : شحنتان متساويتان ومتعاكستان في نفس الجزيء، فالمحصلة معدومة.',
+          'NH₂': 'المجموعة الأمينية بعد فقدان بروتونها في الوسط القاعدي — لا تحمل شحنة.',
+        },
+        microTest: {
+          prompt:
+            'عند pH يساوي pHi، اكتب حالة المجموعتين : المجموعة الأمينية ______ والمجموعة الكربوكسيلية ______.',
+          acceptedAnswers: ['NH3+ COO-', 'NH₃⁺ COO⁻', 'موجبة سالبة', 'ثنائي القطب'],
+          errorHint:
+            'عند pHi لا تختفي الشحنات : تبقى NH₃⁺ و COO⁻ معاً (الشكل ثنائي القطب)، ومحصلتهما معدومة. هذا هو الشكل المطلوب رسمه في التمارين.',
+        },
+      },
+      {
+        type: 'TEXT_AND_PRODUCE',
+        objective: 'إنتاج نص علمي قصير يوظف القاعدة في وضعية بكالوريا (فصل خليط من الأحماض الأمينية).',
+        prompt:
+          'خليط من ثلاثة أحماض أمينية : Glu (pHi = 3.2) و Ala (pHi = 6) و Lys (pHi = 9.7)، وُضع في منتصف شريط الهجرة الكهربائية عند pH = 6. حدد شحنة كل حمض أميني واتجاه هجرته، ثم علل في نص من 3 إلى 4 أسطر.',
+        acceptedAnswers: [
+          'Glu سالب يهاجر نحو المصعد لأن pH أعلى من pHi، Ala متعادل لا يهاجر لأن pH يساوي pHi، Lys موجب يهاجر نحو المهبط لأن pH أقل من pHi',
+          'الغلوتاميك سالب نحو المصعد، الألانين متعادل يبقى في مكانه، الليزين موجب نحو المهبط',
+        ],
+        errorHint:
+          'عالج كل حمض أميني على حدة بنفس المقارنة : pH = 6 أمام pHi الخاص به. عند Glu (3.2) الوسط أعلى ⟵ سالب ⟵ المصعد ؛ عند Ala (6) تساوٍ ⟵ لا هجرة ؛ عند Lys (9.7) الوسط أقل ⟵ موجب ⟵ المهبط.',
+      },
+    ],
+  },
+};

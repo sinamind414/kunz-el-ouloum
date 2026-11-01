@@ -1,0 +1,576 @@
+From ec6cf40d321ce58989bf529aae7da61d67309307 Mon Sep 17 00:00:00 2001
+From: sinamind414 <sinamind414@users.noreply.github.com>
+Date: Thu, 3 Sep 2026 20:17:01 +0000
+Subject: [PATCH 18/22] =?UTF-8?q?feat(methodology):=20LOT=20V=20=E2=80=94?=
+ =?UTF-8?q?=203=20planches=20secondaires=20(photosynth=C3=A8se,=20feuille,?=
+ =?UTF-8?q?=20collision)=20+=203=20exercices?=
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Fermeture de la checklist du guide ONEC (les 7 planches sont faites).
+
+VISUELS (manifest 125 → 128) :
+- schema_86_photosynthese_intensite_lumiere_modern_ar.svg (énergie) : 2 courbes
+  CO₂ 0,03% / 1%, phases « proportionnelle » puis « saturation » + facteur limitant.
+- schema_87_coupe_feuille_modern_ar.svg (énergie) : coupe transversale — cuticule,
+  épiderme, tissu palissadique (chloroplastes), lacuneux, stomates, flux CO₂/O₂.
+- schema_88_collision_continentale_modern_ar.svg (tectonique) : collision
+  continent-continent, suture, racine crustale, chaîne, comparaison avec subduction.
+
+EXERCICES (TRAINING_EXERCISES 7 → 10 ; thèmes energy + geodynamics) :
+- ex_analyse_photosynthese_08 (حلّل · energy · 5 trous)
+- ex_explain_feuille_09 (فسّر · energy · 6 trous)
+- ex_compare_tectonique_10 (قارن · geodynamics · 6 trous)
+chacun : modelage 4 étapes, hints (sند, unités, outils de comparaison).
+
+MATRICE : 2 colonnes ajoutées « التحولات الطاقوية » + « الظواهر الجيولوجية »
+(le scoreur est générique thème→ICM depuis le carnet réel — colonnes honnêtes
+d'office, données jamais inventées).
+
+TESTS (66 → 68, section G) : 10 exercices, répartition 4/3/3, 3 nouveaux
+diagramUrl, modelages, manifest 128 + fichiers sur disque (fs).
+
+Preuves : tsc 0 · tests 68/68 · build ✓ 9,4 s · 3 SVG servis 200 · manifest 128.
+---
+ ...tosynthese_intensite_lumiere_modern_ar.svg |  61 ++++++++
+ .../schema_87_coupe_feuille_modern_ar.svg     |  93 +++++++++++++
+ ...ma_88_collision_continentale_modern_ar.svg |  78 +++++++++++
+ public/assets/images/schemas/manifest.json    |   5 +-
+ src/components/MethodologyCompilerView.tsx    |  12 ++
+ src/data/methodologyEngine.ts                 | 131 ++++++++++++++++++
+ tests/boussole.test.ts                        |  49 ++++---
+ 7 files changed, 412 insertions(+), 17 deletions(-)
+ create mode 100644 public/assets/images/schemas/domaine2_energie/schema_86_photosynthese_intensite_lumiere_modern_ar.svg
+ create mode 100644 public/assets/images/schemas/domaine2_energie/schema_87_coupe_feuille_modern_ar.svg
+ create mode 100644 public/assets/images/schemas/domaine3_tectonique/schema_88_collision_continentale_modern_ar.svg
+
+diff --git a/public/assets/images/schemas/domaine2_energie/schema_86_photosynthese_intensite_lumiere_modern_ar.svg b/public/assets/images/schemas/domaine2_energie/schema_86_photosynthese_intensite_lumiere_modern_ar.svg
+new file mode 100644
+index 0000000..191f4b1
+--- /dev/null
++++ b/public/assets/images/schemas/domaine2_energie/schema_86_photosynthese_intensite_lumiere_modern_ar.svg
+@@ -0,0 +1,61 @@
++<svg xmlns="http://www.w3.org/2000/svg" width="900" height="580" viewBox="0 0 900 580" font-family="Segoe UI, Tahoma, Arial, sans-serif">
++  <defs>
++    <marker id="ar_dg" markerWidth="9" markerHeight="9" refX="6" refY="4" orient="auto">
++      <path d="M0,0 L8,4 L0,8 z" fill="#64748b"/>
++    </marker>
++  </defs>
++
++  <rect width="900" height="580" fill="#ffffff"/>
++
++  <!-- ░░ EN-TÊTE ░░ -->
++  <rect width="900" height="70" fill="#006d37"/>
++  <text x="450" y="30" text-anchor="middle" fill="#fed65b" font-size="19" font-weight="bold" lang="ar" dir="rtl">الوثيقة 1 : تأثير شدة الإضاءة وتركيز CO₂ على سرعة التركيب الضوئي</text>
++  <text x="450" y="54" text-anchor="middle" fill="#ffffff" font-size="13" lang="ar" dir="rtl">منحنيان : تراكيز مختلفة من غاز CO₂ (المنحنى المتقطع أقل تركيزا)</text>
++
++  <!-- ░░ AXES ░░ -->
++  <line x1="110" y1="120" x2="110" y2="430" stroke="#0f172a" stroke-width="2.5"/>
++  <line x1="110" y1="430" x2="860" y2="430" stroke="#0f172a" stroke-width="2.5" marker-end="url(#ar_dg)"/>
++  <text x="868" y="436" fill="#0f172a" font-size="14" font-weight="bold" lang="ar" dir="rtl">شدة الإضاءة (تتزايد ← )</text>
++  <text x="102" y="80" text-anchor="middle" fill="#0f172a" font-size="13.5" font-weight="bold" lang="ar" dir="rtl">سرعة التركيب الضوئي</text>
++  <text x="102" y="98" text-anchor="middle" fill="#475569" font-size="11.5" lang="ar" dir="rtl">(كمية O₂ المنطلقة / وحدة زمن)</text>
++
++  <!-- graduations -->
++  <g fill="#475569" font-size="12" text-anchor="middle">
++    <text x="290" y="448">منخفضة</text><text x="500" y="448">متوسطة</text><text x="710" y="448">عالية</text>
++  </g>
++
++  <!-- ░░ COURBES ░░ -->
++  <!-- CO2 faible (0.03%) : montée puis plateau bas -->
++  <path d="M110,395 L 200,395 C 260,380 320,330 380,300 C 440,272 500,262 570,258 L 860,258"
++        fill="none" stroke="#1d4ed8" stroke-width="3.5" stroke-dasharray="10,6"/>
++  <!-- CO2 élevé (1%) : montée plus raide puis plateau haut -->
++  <path d="M110,395 L 200,395 C 250,360 300,270 360,215 C 420,162 490,148 570,144 L 860,144"
++        fill="none" stroke="#15803d" stroke-width="3.5"/>
++
++  <!-- légende courbes -->
++  <rect x="640" y="90" width="210" height="40" rx="10" fill="#f1f5f9" stroke="#cbd5e1"/>
++  <line x1="660" y1="110" x2="700" y2="110" stroke="#1d4ed8" stroke-width="3.5" stroke-dasharray="10,6"/>
++  <text x="710" y="115" fill="#1e3a8a" font-size="12.5" lang="ar" dir="rtl">CO₂ منخفض (0,03%)</text>
++  <rect x="640" y="138" width="210" height="40" rx="10" fill="#f1f5f9" stroke="#cbd5e1"/>
++  <line x1="660" y1="158" x2="700" y2="158" stroke="#15803d" stroke-width="3.5"/>
++  <text x="710" y="163" fill="#166534" font-size="12.5" lang="ar" dir="rtl">CO₂ مرتفع (1%)</text>
++
++  <!-- ░░ ZONES D'ANALYSE ░░ -->
++  <!-- zone limitée par la lumière -->
++  <rect x="200" y="252" width="200" height="60" rx="10" fill="#fef9c3" stroke="#ca8a04" stroke-width="1.2"/>
++  <text x="300" y="278" text-anchor="middle" fill="#854d0e" font-size="13" font-weight="bold" lang="ar" dir="rtl">المرحلة الأولى :</text>
++  <text x="300" y="298" text-anchor="middle" fill="#854d0e" font-size="12" lang="ar" dir="rtl">السرعة تتناسب مع شدة الإضاءة</text>
++  <text x="300" y="316" text-anchor="middle" fill="#854d0e" font-size="11" lang="ar" dir="rtl">(العامل المحدد = الضوء)</text>
++
++  <!-- zone saturée -->
++  <rect x="560" y="185" width="260" height="55" rx="10" fill="#dcfce7" stroke="#16a34a" stroke-width="1.2"/>
++  <text x="690" y="210" text-anchor="middle" fill="#166534" font-size="13" font-weight="bold" lang="ar" dir="rtl">المرحلة الثانية :</text>
++  <text x="690" y="230" text-anchor="middle" fill="#166534" font-size="12" lang="ar" dir="rtl">تشبع — الإضاءة لم تعد عاملا محددا</text>
++
++  <!-- ░░ ENCADRÉ BILAN ░░ -->
++  <rect x="110" y="470" width="750" height="88" rx="12" fill="#f0fdf4" stroke="#22c55e" stroke-width="1.5"/>
++  <text x="130" y="497" fill="#15803d" font-size="14" font-weight="bold" lang="ar" dir="rtl">نستنتج :</text>
++  <text x="362" y="497" fill="#1e293b" font-size="13" lang="ar" dir="rtl">التركيب الضوئي يزداد بزيادة الإضاءة حتى حد التشبع، ثم يثبت (قانون العامل المحدد: CO₂ أو درجة الحرارة).</text>
++  <text x="130" y="524" fill="#1e293b" font-size="13" lang="ar" dir="rtl">عند إشباع الضوء، رفع تركيز CO₂ يرفع سرعة التركيب الضوئي من جديد ⇐ CO₂ عامل محدّد في هذه المرحلة.</text>
++  <text x="130" y="548" fill="#0f172a" font-size="13.5" font-weight="bold" lang="ar" dir="rtl">الدرس : تحليل المنحنى يجب أن يحدد مراحل النموذج (تناسب ثم تشبع) والعامل المحدد في كل مرحلة.</text>
++</svg>
+diff --git a/public/assets/images/schemas/domaine2_energie/schema_87_coupe_feuille_modern_ar.svg b/public/assets/images/schemas/domaine2_energie/schema_87_coupe_feuille_modern_ar.svg
+new file mode 100644
+index 0000000..60a6aca
+--- /dev/null
++++ b/public/assets/images/schemas/domaine2_energie/schema_87_coupe_feuille_modern_ar.svg
+@@ -0,0 +1,93 @@
++<svg xmlns="http://www.w3.org/2000/svg" width="900" height="580" viewBox="0 0 900 580" font-family="Segoe UI, Tahoma, Arial, sans-serif">
++  <defs>
++    <marker id="ar_dg" markerWidth="9" markerHeight="9" refX="6" refY="4" orient="auto">
++      <path d="M0,0 L8,4 L0,8 z" fill="#64748b"/>
++    </marker>
++    <marker id="ar_yl" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
++      <path d="M0,0 L10,5 L0,10 z" fill="#d97706"/>
++    </marker>
++    <marker id="ar_gn" markerWidth="10" markerHeight="10" refX="7" refY="5" orient="auto">
++      <path d="M0,0 L9,5 L0,10 z" fill="#15803d"/>
++    </marker>
++    <marker id="ar_bk" markerWidth="10" markerHeight="10" refX="7" refY="5" orient="auto">
++      <path d="M0,0 L9,5 L0,10 z" fill="#475569"/>
++    </marker>
++  </defs>
++
++  <rect width="900" height="580" fill="#ffffff"/>
++
++  <!-- ░░ EN-TÊTE ░░ -->
++  <rect width="900" height="70" fill="#006d37"/>
++  <text x="450" y="30" text-anchor="middle" fill="#fed65b" font-size="19" font-weight="bold" lang="ar" dir="rtl">الوثيقة 2 : مقطع عرضي في ورقة نباتية — البنية المتعلقة بالتركيب الضوئي</text>
++  <text x="450" y="54" text-anchor="middle" fill="#ffffff" font-size="13" lang="ar" dir="rtl">العلاقة بين البنية والوظيفة : تبادل الغازات + استقبال الضوء</text>
++
++  <!-- ░░ RAYONS DE LUMIÈRE ░░ -->
++  <g stroke="#f59e0b" stroke-width="4" marker-end="url(#ar_yl)" fill="none">
++    <path d="M180,95 L 210,160"/>
++    <path d="M320,95 L 330,160"/>
++    <path d="M460,95 L 450,160"/>
++    <path d="M600,95 L 570,160"/>
++    <path d="M740,95 L 690,160"/>
++  </g>
++  <text x="450" y="92" text-anchor="middle" fill="#b45309" font-size="14" font-weight="bold" lang="ar" dir="rtl">أشعة الضوء</text>
++
++  <!-- ░░ FEUILLE ░░ -->
++  <!-- épiderme supérieur + cuticule -->
++  <rect x="100" y="170" width="700" height="18" rx="4" fill="#d9f99d" stroke="#65a30d" stroke-width="1.5"/>
++  <rect x="100" y="164" width="700" height="8" rx="4" fill="#fef08a" stroke="#ca8a04" stroke-width="1"/>
++  <!-- parenchyne palissadique : colonnes -->
++  <g fill="#a3e635" stroke="#4d7c0f" stroke-width="1.6">
++    <rect x="118" y="192" width="52" height="66" rx="10"/>
++    <rect x="188" y="192" width="52" height="66" rx="10"/>
++    <rect x="258" y="192" width="52" height="66" rx="10"/>
++    <rect x="328" y="192" width="52" height="66" rx="10"/>
++    <rect x="398" y="192" width="52" height="66" rx="10"/>
++    <rect x="468" y="192" width="52" height="66" rx="10"/>
++    <rect x="538" y="192" width="52" height="66" rx="10"/>
++    <rect x="608" y="192" width="52" height="66" rx="10"/>
++    <rect x="678" y="192" width="52" height="66" rx="10"/>
++  </g>
++  <!-- chloroplastes points -->
++  <g fill="#15803d">
++    <circle cx="136" cy="210" r="5"/><circle cx="150" cy="235" r="5"/><circle cx="206" cy="215" r="5"/>
++    <circle cx="222" cy="242" r="5"/><circle cx="276" cy="210" r="5"/><circle cx="292" cy="238" r="5"/>
++    <circle cx="346" cy="212" r="5"/><circle cx="362" cy="240" r="5"/><circle cx="416" cy="208" r="5"/>
++    <circle cx="432" cy="238" r="5"/><circle cx="486" cy="214" r="5"/><circle cx="502" cy="242" r="5"/>
++    <circle cx="556" cy="210" r="5"/><circle cx="572" cy="238" r="5"/><circle cx="626" cy="212" r="5"/>
++    <circle cx="642" cy="240" r="5"/><circle cx="696" cy="210" r="5"/><circle cx="712" cy="238" r="5"/>
++  </g>
++  <!-- parenchyne lacuneux : alvéoles -->
++  <g fill="#bef264" stroke="#65a30d" stroke-width="1.6">
++    <ellipse cx="200" cy="300" rx="70" ry="26"/>
++    <ellipse cx="400" cy="302" rx="70" ry="24"/>
++    <ellipse cx="600" cy="300" rx="70" ry="26"/>
++  </g>
++  <!-- épiderme inférieur -->
++  <rect x="100" y="330" width="700" height="14" rx="4" fill="#d9f99d" stroke="#65a30d" stroke-width="1.5"/>
++  <!-- ouverture stomatique : couper avec deux cellules en haricot -->
++  <path d="M520,338 C 500,330 500,352 520,344 C 540,336 560,330 560,338 C 560,346 540,352 520,344 Z" fill="#84cc16" stroke="#3f6212" stroke-width="1.6"/>
++  <text x="540" y="326" fill="#0f172a" font-size="5"> </text>
++  <!-- pore -->
++  <path d="M540,338 L 540,342" stroke="#0f172a" stroke-width="1"/>
++
++  <!-- ░░ FLUX DE GAZ ░░ -->
++  <path d="M300,415 Q 300,395 300,360 L 300,348" fill="none" stroke="#15803d" stroke-width="3.5" marker-end="url(#ar_gn)"/>
++  <text x="238" y="400" fill="#166534" font-size="14" font-weight="bold" lang="ar" dir="rtl">دخول CO₂</text>
++  <path d="M690,352 L 690,415" fill="none" stroke="#475569" stroke-width="3.5" marker-end="url(#ar_bk)"/>
++  <text x="706" y="390" fill="#334155" font-size="14" font-weight="bold" lang="ar" dir="rtl">خروج O₂</text>
++
++  <!-- ░░ ANNOTATIONS ░░ -->
++  <text x="120" y="156" fill="#a16207" font-size="12.5" font-weight="bold" lang="ar" dir="rtl">الكيوتيكل + البشرة العلوية</text>
++  <text x="120" y="270" fill="#4d7c0f" font-size="12.5" font-weight="bold" lang="ar" dir="rtl">نسيج عمادي (كثيف الخلايا ↕)</text>
++  <text x="255" y="270" fill="#4d7c0f" font-size="12" lang="ar" dir="rtl">خلايا غنية بالبلاستيدات الخضراء</text>
++  <text x="560" y="270" fill="#4d7c0f" font-size="12.5" font-weight="bold" lang="ar" dir="rtl">نسيج إسفنجي</text>
++  <text x="560" y="288" fill="#4d7c0f" font-size="11.5" lang="ar" dir="rtl">(فراغات هوائية تسمح بتبادل الغازات)</text>
++  <text x="120" y="362" fill="#4d7c0f" font-size="12.5" font-weight="bold" lang="ar" dir="rtl">البشرة السفلية</text>
++  <text x="552" y="368" fill="#3f6212" font-size="12.5" font-weight="bold" lang="ar" dir="rtl">خلية حارسة للثغرة</text>
++
++  <!-- ░░ ENCADRÉ BILAN ░░ -->
++  <rect x="100" y="478" width="700" height="82" rx="12" fill="#f0fdf4" stroke="#22c55e" stroke-width="1.5"/>
++  <text x="120" y="504" fill="#15803d" font-size="14" font-weight="bold" lang="ar" dir="rtl">نستنتج :</text>
++  <text x="352" y="504" fill="#1e293b" font-size="13" lang="ar" dir="rtl">بنية الورقة مهيأة للتركيب الضوئي : النسيج العمادي يعرض البلاستيدات للضوء، والثغور + الفراغات تسمح بتبادل CO₂ و O₂.</text>
++  <text x="120" y="532" fill="#1e293b" font-size="13" lang="ar" dir="rtl">∴ العلاقة بين البنية والوظيفة : كل طبقة تقوم بدور محدد في المسار (ضوء ← CO₂ ← غلوكوز + O₂).</text>
++</svg>
+diff --git a/public/assets/images/schemas/domaine3_tectonique/schema_88_collision_continentale_modern_ar.svg b/public/assets/images/schemas/domaine3_tectonique/schema_88_collision_continentale_modern_ar.svg
+new file mode 100644
+index 0000000..c6e53fb
+--- /dev/null
++++ b/public/assets/images/schemas/domaine3_tectonique/schema_88_collision_continentale_modern_ar.svg
+@@ -0,0 +1,78 @@
++<svg xmlns="http://www.w3.org/2000/svg" width="900" height="580" viewBox="0 0 900 580" font-family="Segoe UI, Tahoma, Arial, sans-serif">
++  <defs>
++    <marker id="ar_dg" markerWidth="9" markerHeight="9" refX="6" refY="4" orient="auto">
++      <path d="M0,0 L8,4 L0,8 z" fill="#64748b"/>
++    </marker>
++    <marker id="ar_rd" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
++      <path d="M0,0 L10,5 L0,10 z" fill="#dc2626"/>
++    </marker>
++    <marker id="ar_bk" markerWidth="10" markerHeight="10" refX="7" refY="5" orient="auto">
++      <path d="M0,0 L9,5 L0,10 z" fill="#475569"/>
++    </marker>
++  </defs>
++
++  <rect width="900" height="580" fill="#ffffff"/>
++
++  <!-- ░░ EN-TÊTE ░░ -->
++  <rect width="900" height="70" fill="#006d37"/>
++  <text x="450" y="30" text-anchor="middle" fill="#fed65b" font-size="19" font-weight="bold" lang="ar" dir="rtl">الوثيقة 3 : مقطع يوضح اصطدام صفيحتين قاريتين (نموذج سلاسل جبلية حديثة)</text>
++  <text x="450" y="54" text-anchor="middle" fill="#ffffff" font-size="13" lang="ar" dir="rtl">بعد إغلاق المحيط : تقارب قارة مع قارة ← تَكَوُّن سلسلة جبال</text>
++
++  <!-- ░░ MONTAGNES ░░ -->
++  <g fill="#78716c" stroke="#44403c" stroke-width="2">
++    <path d="M140,170 L 210,96 L 280,170 Z"/>
++    <path d="M240,170 L 320,110 L 400,170 Z"/>
++    <path d="M380,170 L 450,96 L 520,170 Z"/>
++    <path d="M500,170 L 580,112 L 660,170 Z"/>
++    <path d="M620,170 L 700,102 L 770,170 Z"/>
++  </g>
++  <text x="455" y="88" text-anchor="middle" fill="#57534e" font-size="13.5" font-weight="bold" lang="ar" dir="rtl">سلسلة جبلية حديثة (نمط الهيمالايا/الألب)</text>
++
++  <!-- ░░ CROÛTES CONTINENTALES ░░ -->
++  <!-- bloc A (gauche) -->
++  <path d="M110,170 L 430,170 L 470,180 L 430,300 L 110,300 Z" fill="#d6d3d1" stroke="#78716c" stroke-width="2.5"/>
++  <path d="M110,220 L 430,220 L 455,224 L 430,300 L 110,300 Z" fill="#a8a29e" opacity="0.6"/>
++  <!-- bloc B (droite) -->
++  <path d="M790,170 L 470,170 L 430,180 L 470,300 L 790,300 Z" fill="#d6d3d1" stroke="#78716c" stroke-width="2.5"/>
++  <path d="M790,220 L 470,220 L 445,224 L 470,300 L 790,300 Z" fill="#a8a29e" opacity="0.6"/>
++
++  <!-- zone de suture -->
++  <rect x="443" y="180" width="12" height="120" fill="#ef4444" opacity="0.75"/>
++  <text x="500" y="200" fill="#b91c1c" font-size="13.5" font-weight="bold" lang="ar" dir="rtl">منطقة الخياطة القارية</text>
++  <text x="500" y="219" fill="#991b1b" font-size="12" lang="ar" dir="rtl">(مكان إغلاق المحيط سابقا)</text>
++
++  <!-- racine crustale -->
++  <path d="M420,300 L 480,300 L 460,372 Z" fill="#57534e"/>
++
++  <!-- ░░ MANTEAU LITHOSPHÉRIQUE ░░ -->
++  <path d="M110,300 L 110,380 L 300,380 L 350,300 Z" fill="#fde68a" stroke="#b45309" stroke-width="2" opacity="0.8"/>
++  <path d="M790,300 L 790,380 L 600,380 L 550,300 Z" fill="#fde68a" stroke="#b45309" stroke-width="2" opacity="0.8"/>
++
++  <!-- ░░ ASTHÉNOSPHÈRE ░░ -->
++  <rect x="80" y="382" width="740" height="88" rx="18" fill="#fecaca" stroke="#b91c1c" stroke-width="2"/>
++  <g stroke="#dc2626" stroke-width="2.5" fill="none" opacity="0.7">
++    <path d="M150,410 q40,-16 80,0 q40,16 80,0 q40,-16 80,0 q40,16 80,0 q40,-16 80,0 q40,16 80,0 q40,-16 80,0"/>
++    <path d="M150,444 q40,-16 80,0 q40,16 80,0 q40,-16 80,0 q40,16 80,0 q40,-16 80,0 q40,16 80,0 q40,-16 80,0"/>
++  </g>
++  <text x="450" y="414" text-anchor="middle" fill="#7f1d1d" font-size="13.5" font-weight="bold" lang="ar" dir="rtl">الغلاف المائع (اللدن) — تيارات الحمل</text>
++
++  <!-- ░░ FLÈCHES DE CONVERGENCE ░░ -->
++  <line x1="40" y1="250" x2="98" y2="250" stroke="#dc2626" stroke-width="4" marker-end="url(#ar_rd)"/>
++  <line x1="860" y1="250" x2="802" y2="250" stroke="#dc2626" stroke-width="4" marker-end="url(#ar_rd)"/>
++  <text x="28" y="240" fill="#b91c1c" font-size="13" font-weight="bold" lang="ar" dir="rtl">صفيحة أ</text>
++  <text x="788" y="240" fill="#b91c1c" font-size="13" font-weight="bold" lang="ar" dir="rtl">صفيحة ب</text>
++  <text x="450" y="330" text-anchor="middle" fill="#b91c1c" font-size="13.5" font-weight="bold" lang="ar" dir="rtl">اتجاه التقارب</text>
++  <line x1="450" y1="342" x2="450" y2="290" stroke="#b91c1c" stroke-width="2.5" marker-end="url(#ar_rd)"/>
++
++  <!-- annotations structures -->
++  <text x="118" y="322" fill="#92400e" font-size="12.5" font-weight="bold" lang="ar" dir="rtl">الغلاف الصخري القاري</text>
++  <text x="118" y="340" fill="#92400e" font-size="11.5" lang="ar" dir="rtl">(قشرة + دثار علوي صلب)</text>
++  <text x="560" y="355" fill="#57534e" font-size="12.5" font-weight="bold" lang="ar" dir="rtl">جذور جبلية</text>
++  <line x1="560" y1="362" x2="500" y2="352" stroke="#57534e" stroke-width="1.8" marker-end="url(#ar_bk)"/>
++
++  <!-- ░░ ENCADRÉ BILAN ░░ -->
++  <rect x="80" y="482" width="740" height="80" rx="12" fill="#fef2f2" stroke="#ef4444" stroke-width="1.5"/>
++  <text x="100" y="508" fill="#b91c1c" font-size="14" font-weight="bold" lang="ar" dir="rtl">نستنتج :</text>
++  <text x="390" y="508" fill="#1e293b" font-size="13" lang="ar" dir="rtl">عند تقارب قارتين يغلق المحيط ثم تصطدم القارات فلا تنغرس (خفة القشرة القارية) بل تتشوه وتتضخم.</text>
++  <text x="100" y="536" fill="#1e293b" font-size="13" lang="ar" dir="rtl">الناتج : سماكة القشرة (جذور جبلية)، انثناء ورفع ⇐ تكوّن سلاسل جبلية حديثة (الهيمالايا، الألب) + منطقة خياطة.</text>
++</svg>
+diff --git a/public/assets/images/schemas/manifest.json b/public/assets/images/schemas/manifest.json
+index 67db47a..6261a6f 100644
+--- a/public/assets/images/schemas/manifest.json
++++ b/public/assets/images/schemas/manifest.json
+@@ -114,6 +114,8 @@
+     "/assets/images/schemas/domaine2_energie/schema_11_fermentation.svg",
+     "/assets/images/schemas/domaine2_energie/schema_12_bilan_energetique.png",
+     "/assets/images/schemas/domaine2_energie/schema_12_bilan_energetique.svg",
++    "/assets/images/schemas/domaine2_energie/schema_86_photosynthese_intensite_lumiere_modern_ar.svg",
++    "/assets/images/schemas/domaine2_energie/schema_87_coupe_feuille_modern_ar.svg",
+     "/assets/images/schemas/domaine3_tectonique/schema_13_terre.svg",
+     "/assets/images/schemas/domaine3_tectonique/schema_14_ondes.png",
+     "/assets/images/schemas/domaine3_tectonique/schema_14_ondes.svg",
+@@ -124,6 +126,7 @@
+     "/assets/images/schemas/domaine3_tectonique/schema_17_collision.png",
+     "/assets/images/schemas/domaine3_tectonique/schema_17_collision.svg",
+     "/assets/images/schemas/domaine3_tectonique/schema_18_wilson.png",
+-    "/assets/images/schemas/domaine3_tectonique/schema_18_wilson.svg"
++    "/assets/images/schemas/domaine3_tectonique/schema_18_wilson.svg",
++    "/assets/images/schemas/domaine3_tectonique/schema_88_collision_continentale_modern_ar.svg"
+   ]
+ }
+\ No newline at end of file
+diff --git a/src/components/MethodologyCompilerView.tsx b/src/components/MethodologyCompilerView.tsx
+index c76a7af..3c49f32 100644
+--- a/src/components/MethodologyCompilerView.tsx
++++ b/src/components/MethodologyCompilerView.tsx
+@@ -1278,6 +1278,8 @@ export default function MethodologyCompilerView({ onBackToHome }: MethodologyPro
+                     <th className="p-3 font-bold text-gray-600 dark:text-gray-400 text-center">المناعة</th>
+                     <th className="p-3 font-bold text-gray-600 dark:text-gray-400 text-center">الاتصال العصبي</th>
+                     <th className="p-3 font-bold text-gray-600 dark:text-gray-400 text-center">التنظيم الهرموني</th>
++                    <th className="p-3 font-bold text-gray-600 dark:text-gray-400 text-center">التحولات الطاقوية</th>
++                    <th className="p-3 font-bold text-gray-600 dark:text-gray-400 text-center">الظواهر الجيولوجية</th>
+                     <th className="p-3 font-bold text-gray-600 dark:text-gray-400 text-center">الحالة</th>
+                   </tr>
+                 </thead>
+@@ -1321,6 +1323,16 @@ export default function MethodologyCompilerView({ onBackToHome }: MethodologyPro
+                             {fmtCell(scores.regulation)}
+                           </span>
+                         </td>
++                        <td className="p-3 text-center">
++                          <span className={`px-2 py-1 rounded-md font-bold text-xs ${cellCls(scores.energy)}`}>
++                            {fmtCell(scores.energy)}
++                          </span>
++                        </td>
++                        <td className="p-3 text-center">
++                          <span className={`px-2 py-1 rounded-md font-bold text-xs ${cellCls(scores.geodynamics)}`}>
++                            {fmtCell(scores.geodynamics)}
++                          </span>
++                        </td>
+                         <td className="p-3 text-center">
+                           <span className={`px-2.5 py-1 rounded-full text-[11px] font-black ${
+                             isAutomated 
+diff --git a/src/data/methodologyEngine.ts b/src/data/methodologyEngine.ts
+index eff8df4..8786509 100644
+--- a/src/data/methodologyEngine.ts
++++ b/src/data/methodologyEngine.ts
+@@ -1350,6 +1350,137 @@ export const TRAINING_EXERCISES: TrainingExercise[] = [
+       timeLimitSec: 200,
+       passIcmThreshold: 90
+     }
++  },
++  {
++    id: 'ex_analyse_photosynthese_08',
++    verbId: 'verb_analyse_v1',
++    theme: 'energy',
++    themeAr: 'التحولات الطاقوية في النبات',
++    supportType: 'courbe',
++    supportTitle: 'الوثيقة 1: تأثير شدة الإضاءة وتركيز CO₂ على سرعة التركيب الضوئي',
++    context: 'قيس سرعة التركيب الضوئي (كمية الأكسجين المنطلق) عند نبتة مائية بتراكيز مختلفة من CO₂ وبشدة إضاءة متزايدة.',
++    question: 'حلل منحنى الوثيقة 1 الممثل لتغير سرعة التركيب الضوئي بدلالة شدة الإضاءة وتركيز CO₂.',
++    dataSnippet: 'المنحنى المتقطع: CO₂ منخفض (0,03%) — المنحنى المتصل: CO₂ مرتفع (1%). المرحلة 1: سرعة تتناسب مع الإضاءة. المرحلة 2: تشبع (قيام الإضاءة إضافة إلى العامل المحدد: CO₂).',
++    diagramUrl: '/assets/images/schemas/domaine2_energie/schema_86_photosynthese_intensite_lumiere_modern_ar.svg',
++    stage1: {
++      expertAnswer: 'تمثل الوثيقة 1 منحنيين لتغير سرعة التركيب الضوئي بدلالة شدة الإضاءة عند تركيزين من CO₂، حيث نلاحظ: في المرحلة الأولى، تتناسب سرعة التركيب الضوئي (خطيا) مع شدة الإضاءة مهما كان تركيز CO₂، أي أن الضوء هو العامل المحدد. في المرحلة الثانية، يثبت المنحنى عند حد التشبع رغم زيادة الإضاءة، ويكون حد التشبع أعلى مع CO₂ المرتفع (1% مقابل 0,03%)، أي أن CO₂ أصبح العامل المحدد. الاستنتاج: يتبع التركيب الضوئي قانون العامل المحدد: يزداد بزيادة العامل الأقل وفرة حتى ينتقل التحديد إلى عامل آخر (CO₂ أو الحرارة).',
++      segments: [
++        { stepNumber: 1, text: 'تمثل الوثيقة 1 منحنيين لتغير سرعة التركيب الضوئي بدلالة شدة الإضاءة عند تركيزين من CO₂ (0,03% و 1%)', colorClass: 'bg-blue-100 dark:bg-blue-900/40 text-blue-800 dark:text-blue-300' },
++        { stepNumber: 2, text: 'المرحلة الأولى: تتناسب السرعة مع شدة الإضاءة (منحنيان متقاربين) — المرحلة الثانية: تشبع عند مستوى أعلى مع CO₂ المرتفع', colorClass: 'bg-emerald-100 dark:bg-emerald-900/40 text-emerald-800 dark:text-emerald-300' },
++        { stepNumber: 3, text: 'الضوء عامل محدد في المرحلة الأولى، ثم يصبح CO₂ هو العامل المحدد عند التشبع', colorClass: 'bg-amber-100 dark:bg-amber-900/40 text-amber-800 dark:text-amber-300' },
++        { stepNumber: 4, text: 'الاستنتاج: التركيب الضوئي يخضع لقانون العامل المحدد (نقص عنصر يبطئ العملية حتى لو وُفر الباقي)', colorClass: 'bg-purple-100 dark:bg-purple-900/40 text-purple-800 dark:text-purple-300' }
++      ]
++    },
++    stage2: {
++      clozePrompt: 'في المرحلة الأولى من المنحنى تتناسب {{1}} مع {{2}}، أي أن {{3}} هي العامل المحدد. أما في المرحلة الثانية فيثبت المنحنى رغم الزيادة، ويكون حد التشبع أعلى عندما يكون {{4}} مرتفعا، أي أن {{5}} أصبح العامل المحدد.',
++      blanks: [
++        { id: '1', expectedText: 'سرعة التركيب الضوئي', hint: 'ما الذي يتغير على المحور العمودي؟' },
++        { id: '2', expectedText: 'شدة الإضاءة', hint: 'العامل الأول' },
++        { id: '3', expectedText: 'الضوء', hint: 'العامل المحدد في المرحلة الأولى' },
++        { id: '4', expectedText: 'تركيز CO₂', hint: 'ماذا يرفع حد التشبع؟' },
++        { id: '5', expectedText: 'CO₂', hint: 'العامل المحدد بعد التشبع' }
++      ]
++    },
++    stage3: {
++      recommendedTimeSec: 180,
++      hints: [
++        'سند: الوثيقة 1 (منحنيان: CO₂ منخفض / مرتفع)',
++        'مرحلتان: تناسب ثم تشبع — سمّهما في تحليلك',
++        'العامل المحدد: ذكره في كل مرحلة (الضوء ثم CO₂)'
++      ]
++    },
++    stage4: {
++      timeLimitSec: 180,
++      passIcmThreshold: 90
++    }
++  },
++  {
++    id: 'ex_explain_feuille_09',
++    verbId: 'verb_explain_v1',
++    theme: 'energy',
++    themeAr: 'التحولات الطاقوية في النبات',
++    supportType: 'schema',
++    supportTitle: 'الوثيقة 2: مقطع عرضي في ورقة نباتية',
++    context: 'تُظهر الوثيقة بنية الورقة: كيوتيكل وبشرة علوية، نسيج عمادي غني بالبلاستيدات، نسيج إسفنجي بفراغات، وبشرة سفلية تحمل ثغورا.',
++    question: 'فسّر تكيّف بنية الورقة مع وظيفة التركيب الضوئي اعتمادا على الوثيقة 2.',
++    dataSnippet: 'الضوء يخترق البشرة ← النسيج العمادي (بلاستيدات خضراء كثيفة) ← CO₂ يدخل عبر الثغور والفراغات ← O₂ يخرج.',
++    diagramUrl: '/assets/images/schemas/domaine2_energie/schema_87_coupe_feuille_modern_ar.svg',
++    stage1: {
++      expertAnswer: 'توضح الوثيقة 2 أن بنية الورقة مهيأة للتركيب الضوئي: يخترق الضوء الكيوتيكل (طبقة شفافة) والبشرة العلوية ثم يصيب النسيج العمادي الذي يحتوي على خلايا غنية بالبلاستيدات الخضراء الممتدة عموديا، مما يضمن أقصى امتصاص للضوء. يدخل CO₂ عبر الثغور (بين الخليتين الحارستين في البشرة السفلية) وينتشر في الفراغات الهوائية للنسيج الإسفنجي حتى يصل إلى الخلايا العمادية، ويخرج O₂ بالعكس. إذن: البنية (شفافية، عمودية، فراغات، ثغور) تجعل الورقة عضوا مخصصا للتركيب الضوئي — علاقة بنية/وظيفة.',
++      segments: [
++        { stepNumber: 1, text: 'توضح الوثيقة 2 مقطعا عرضيا في ورقة: كيوتيكل + بشرة علوية، نسيج عمادي، نسيج إسفنجي، بشرة سفلية بثغور', colorClass: 'bg-blue-100 dark:bg-blue-900/40 text-blue-800 dark:text-blue-300' },
++        { stepNumber: 2, text: 'الضوء يخترق الكيوتيكل ثم يصل إلى النسيج العمادي الغني بالبلاستيدات الخضراء (امتصاص أقصى)', colorClass: 'bg-emerald-100 dark:bg-emerald-900/40 text-emerald-800 dark:text-emerald-300' },
++        { stepNumber: 3, text: 'CO₂ يدخل عبر الثغور ثم ينتشر في الفراغات الإسفنجية حتى الخلايا الوظيفية، ويخرج O₂ بالعكس', colorClass: 'bg-amber-100 dark:bg-amber-900/40 text-amber-800 dark:text-amber-300' },
++        { stepNumber: 4, text: 'الاستنتاج: بنية الورقة مهيأة للتركيب الضوئي (شفافية، عمودية، فراغات، ثغور) — علاقة بنية بوظيفة', colorClass: 'bg-purple-100 dark:bg-purple-900/40 text-purple-800 dark:text-purple-300' }
++      ]
++    },
++    stage2: {
++      clozePrompt: 'تسمح {{1}} الشفافة بدخول الضوء إلى {{2}} الغني بـ {{3}}. يدخل {{4}} عبر الثغور وينتشر في {{5}} حتى يصل إلى الخلايا، ويخرج {{6}} بالعكس.',
++      blanks: [
++        { id: '1', expectedText: 'البشرة العلوية (الكيوتيكل)', hint: 'الطبقة الشفافة' },
++        { id: '2', expectedText: 'النسيج العمادي', hint: 'النسيج المستقبل للضوء' },
++        { id: '3', expectedText: 'البلاستيدات الخضراء', hint: 'المحتوى الأساسي' },
++        { id: '4', expectedText: 'CO₂', hint: 'الغاز الداخل' },
++        { id: '5', expectedText: 'الفراغات الهوائية (النسيج الإسفنجي)', hint: 'مسار الانتشار' },
++        { id: '6', expectedText: 'O₂', hint: 'الغاز الخارج' }
++      ]
++    },
++    stage3: {
++      recommendedTimeSec: 180,
++      hints: [
++        'سند: الوثيقة 2 (المقطع العرضي)',
++        'اربط كل طبقة بدورها — لا تسرد فقط',
++        'اختم بـ «علاقة البنية بالوظيفة»'
++      ]
++    },
++    stage4: {
++      timeLimitSec: 180,
++      passIcmThreshold: 90
++    }
++  },
++  {
++    id: 'ex_compare_tectonique_10',
++    verbId: 'verb_compare_v1',
++    theme: 'geodynamics',
++    themeAr: 'الظواهر الجيولوجية (التكتونية)',
++    supportType: 'schema',
++    supportTitle: 'الوثيقة 3: اصطدام صفيحتين قاريتين (نموذج سلاسل حديثة)',
++    context: 'بعد إغلاق المحيط، تتقارب صفيحتان قاريتان (أ و ب) وتصطدمان فتتشوه القشرة.',
++    question: 'قارن بين هذا النموذج (اصطدام قاري-قاري) ونموذج الانغراس (تقارب محيطي-قاري).',
++    dataSnippet: 'اصطدام: قارتان خفيفتان ← تشوه ورفع + جذور جبلية (لا انغراس). انغراس: محيطية ثقيلة تنغرس تحت قارية ← خندق + قوس بركاني.',
++    diagramUrl: '/assets/images/schemas/domaine3_tectonique/schema_88_collision_continentale_modern_ar.svg',
++    stage1: {
++      expertAnswer: 'تمثل الوثيقة 3 اصطدام صفيحتين قاريتين، وبمقارنته مع الانغراس (تقارب محيطي-قاري) نلاحظ: 1) طبيعة الصفيحة الملتقية: في الانغراس تنزل الصفيحة المحيطية (ثقيلة) تحت القارية، أما في الاصطدام فالقارتان خفيفتان فلا تنغرسان. 2) النتيجة السطحية: الانغراس يعطي خندقا محيطيا وقوسا بركانيا، بينما الاصطدام يعطي سلسلة جبال حديثة (منطقة خياطة وجذور جبلية) كالهيمالايا. 3) مكان التقاء: في الاصطدام تلتقي قشرة قارية بقشرة قارية (إغلاق محيط سابق)، بينما في الانغراس يلتقي محيط بقارة. الخلاصة: النوعان وجهان لتقارب الصفائح، ويختلفان في كثافة الصفائح والنتيجة الجيولوجية.',
++      segments: [
++        { stepNumber: 1, text: 'تمثل الوثيقة 3 اصطدام صفيحتين قاريتين بعد إغلاق المحيط (منطقة خياطة + جذور جبلية + سلسلة)', colorClass: 'bg-blue-100 dark:bg-blue-900/40 text-blue-800 dark:text-blue-300' },
++        { stepNumber: 2, text: 'في الانغراس: صفيحة محيطية ثقيلة تنغرس تحت قارية (خندق + قوس بركاني) — في الاصطدام: قارتان خفيفتان لا تنغرسان', colorClass: 'bg-emerald-100 dark:bg-emerald-900/40 text-emerald-800 dark:text-emerald-300' },
++        { stepNumber: 3, text: 'النتيجة: الانغراس يعطي خندقا وقوسا بركانيا، والاصطدام يعطي سلسلة جبال وجذورا (الهيمالايا مثلا)', colorClass: 'bg-amber-100 dark:bg-amber-900/40 text-amber-800 dark:text-amber-300' },
++        { stepNumber: 4, text: 'الخلاصة: كلاهما تقارب صفائح، ويختلفان بكثافة الصفائح والنتيجة الجيولوجية', colorClass: 'bg-purple-100 dark:bg-purple-900/40 text-purple-800 dark:text-purple-300' }
++      ]
++    },
++    stage2: {
++      clozePrompt: 'في نموذج {{1}} تنغرس الصفيحة {{2}} تحت القارية (نتيجة: {{3}})، بينما في نموذج {{4}} تصطدم قارتان خفيفتان فلا {{5}} بل تتشوه القشرة وتتشكل {{6}}.',
++      blanks: [
++        { id: '1', expectedText: 'الانغراس', hint: 'النموذج الأول' },
++        { id: '2', expectedText: 'المحيطية (الغلاف الصخري المحيطي)', hint: 'أي صفيحة تنزل؟' },
++        { id: '3', expectedText: 'خندق محيطي وقوس بركاني', hint: 'النتيجة المميزة' },
++        { id: '4', expectedText: 'الاصطدام القاري', hint: 'النموذج الثاني' },
++        { id: '5', expectedText: 'تنغرس', hint: 'ماذا يحدث للقارات؟' },
++        { id: '6', expectedText: 'سلسلة جبال حديثة (بدنا جذور جبلية)', hint: 'النتيجة الثانية' }
++      ]
++    },
++    stage3: {
++      recommendedTimeSec: 200,
++      hints: [
++        'سند: الوثيقة 3 (الاصطدام) + مقارنة مع الانغراس (وثيقة سابقة)',
++        'استعمل أدوات المقابلة: بينما / في المقابل / بالمقابل',
++        'قارن عنصرين على الأقل: صفيحة ملتقية + نتيجة جيولوجية'
++      ]
++    },
++    stage4: {
++      timeLimitSec: 200,
++      passIcmThreshold: 90
++    }
+   }
+ ];
+ 
+diff --git a/tests/boussole.test.ts b/tests/boussole.test.ts
+index 5b2c8d6..9019d5d 100644
+--- a/tests/boussole.test.ts
++++ b/tests/boussole.test.ts
+@@ -231,15 +231,14 @@ check('getStep : 4 étapes (اقرأ/اجمع/اربط/اختم) présentes',
+ // ─────────────────────────────────────────────
+ // SECTION G — exercices, sélecteur & planches officielles (lots T + U)
+ // ─────────────────────────────────────────────
+-console.log('── SECTION G : exercices, sélecteur & planches (lots T + U) ──');
++console.log('── SECTION G : exercices, sélecteur & planches officielles (lots T + U + V) ──');
+ {
+   const byVerb = (verbId: string) => TRAINING_EXERCISES.filter(e => e.verbId === verbId);
+-  check('7 exercices au total (protéines, enzyme, immunité, glycémie, synapse, potentiel, anticorps)',
+-    TRAINING_EXERCISES.length === 7);
+-  check('verb_analyse_v1 a 3 exercices → sélecteur de document justifié',
+-    byVerb('verb_analyse_v1').length === 3);
+-  check('verb_explain_v1 a 2 exercices et verb_compare_v1 a 2 exercices',
+-    byVerb('verb_explain_v1').length === 2 && byVerb('verb_compare_v1').length === 2);
++  check('10 exercices au total (protéines, enzyme, immunité, glycémie, synapse, PA, anticorps, photosynthèse, feuille, collision)',
++    TRAINING_EXERCISES.length === 10);
++  check('répartition : analyse 4 · فسّر 3 · قارن 3 (sélecteur justifié partout)',
++    byVerb('verb_analyse_v1').length === 4 && byVerb('verb_explain_v1').length === 3 && byVerb('verb_compare_v1').length === 3);
++
+   const gly = TRAINING_EXERCISES.find(e => e.id === 'ex_analyse_glycemie_04');
+   check('exercice glycémie (lot T) : thème regulation + courbe fichier du lot R',
+     !!gly && gly.theme === 'regulation' && gly.diagramUrl === '/assets/images/schemas/domaine1_regulations/schema_81_glycemie_curve_modern.svg');
+@@ -254,25 +253,43 @@ console.log('── SECTION G : exercices, sélecteur & planches (lots T + U) 
+   const ab = TRAINING_EXERCISES.find(e => e.id === 'ex_compare_anticorps_07');
+   check('exercice anticorps (قارن) : thème immunology + planche schema_85',
+     !!ab && ab.theme === 'immunology' && ab.diagramUrl === '/assets/images/schemas/domaine1_proteines/schema_85_anticorps_primaire_secondaire_modern_ar.svg');
+-  check('les 3 nouveaux exercices ont un modelage complet (4 segments + textes à trous)',
++
++  // — Lot V : planches secondaires (énergie + géologie) —
++  const ph = TRAINING_EXERCISES.find(e => e.id === 'ex_analyse_photosynthese_08');
++  check('exercice photosynthèse (حلّل) : thème energy + planche schema_86',
++    !!ph && ph.theme === 'energy' && ph.diagramUrl === '/assets/images/schemas/domaine2_energie/schema_86_photosynthese_intensite_lumiere_modern_ar.svg');
++  const fe = TRAINING_EXERCISES.find(e => e.id === 'ex_explain_feuille_09');
++  check('exercice coupe de feuille (فسّر) : thème energy + planche schema_87',
++    !!fe && fe.theme === 'energy' && fe.diagramUrl === '/assets/images/schemas/domaine2_energie/schema_87_coupe_feuille_modern_ar.svg');
++  const te = TRAINING_EXERCISES.find(e => e.id === 'ex_compare_tectonique_10');
++  check('exercice collision (قارن) : thème geodynamics + planche schema_88',
++    !!te && te.theme === 'geodynamics' && te.diagramUrl === '/assets/images/schemas/domaine3_tectonique/schema_88_collision_continentale_modern_ar.svg');
++
++  check('les 6 exercices des lots U et V ont un modelage complet (4 segments + textes à trous ≥ 5)',
+     !!syn && syn.stage1.segments.length === 4 && syn.stage2.blanks.length === 6
+     && !!pa && pa.stage1.segments.length === 4 && pa.stage2.blanks.length === 5
+-    && !!ab && ab.stage1.segments.length === 4 && ab.stage2.blanks.length === 6);
++    && !!ab && ab.stage1.segments.length === 4 && ab.stage2.blanks.length === 6
++    && !!ph && ph.stage1.segments.length === 4 && ph.stage2.blanks.length === 5
++    && !!fe && fe.stage1.segments.length === 4 && fe.stage2.blanks.length === 6
++    && !!te && te.stage1.segments.length === 4 && te.stage2.blanks.length === 6);
+ 
+-  // — Manifest : 125 ressources, les 4 planches U déclarées + présentes sur disque —
++  // — Manifest : 128 ressources, 7 planches U+V déclarées + présentes sur disque —
+   const manifestPath = path.resolve('public/assets/images/schemas/manifest.json');
+   const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
+-  check('manifest : 125 ressources (121 + 4 planches du lot U)',
+-    Array.isArray(manifest.assets) && manifest.assets.length === 125);
++  check('manifest : 128 ressources (121 + 4 lot U + 3 lot V)',
++    Array.isArray(manifest.assets) && manifest.assets.length === 128);
+   const newSchemas = [
+     'domaine1_regulations/schema_82_synapse_modern_ar.svg',
+     'domaine1_regulations/schema_83_potentiel_action_modern_ar.svg',
+     'domaine1_regulations/schema_84_glycemie_insuline_glucagon_modern_ar.svg',
+-    'domaine1_proteines/schema_85_anticorps_primaire_secondaire_modern_ar.svg'
++    'domaine1_proteines/schema_85_anticorps_primaire_secondaire_modern_ar.svg',
++    'domaine2_energie/schema_86_photosynthese_intensite_lumiere_modern_ar.svg',
++    'domaine2_energie/schema_87_coupe_feuille_modern_ar.svg',
++    'domaine3_tectonique/schema_88_collision_continentale_modern_ar.svg'
+   ];
+-  check('manifest : les 4 planches du lot U déclarées',
++  check('manifest : les 7 planches des lots U et V déclarées',
+     newSchemas.every(s => manifest.assets.includes('/assets/images/schemas/' + s)));
+-  check('disque : les 4 fichiers SVG du lot U existent réellement',
++  check('disque : les 7 fichiers SVG des lots U et V existent réellement',
+     newSchemas.every(s => fs.existsSync(path.resolve('public/assets/images/schemas', s))));
+ }
+ 
+@@ -285,4 +302,4 @@ if (fail > 0) {
+   failures.forEach(f => console.log(`   ✗ ${f}`));
+   process.exit(1);
+ }
+-console.log(' ✅ Toutes les garanties lot H→U sont verrouillées.');
++console.log(' ✅ Toutes les garanties lot H→V sont verrouillées.');

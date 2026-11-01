@@ -1,0 +1,163 @@
+From e38e4959ea249ddda08cf040b2d8d79a0b455052 Mon Sep 17 00:00:00 2001
+From: sinamind414 <sinamind414@users.noreply.github.com>
+Date: Thu, 3 Sep 2026 15:29:23 +0000
+Subject: [PATCH 11/22] =?UTF-8?q?fix(methodology):=20la=20boucle=20d'appre?=
+ =?UTF-8?q?ntissage=20se=20ferme=20=E2=80=94=20d=C3=A9cision=20p=C3=A9dago?=
+ =?UTF-8?q?gique=20ACTIONNABLE=20+=20modals=20portalis=C3=A9s=20+=20fautes?=
+ =?UTF-8?q?=20du=20texte=20=C3=A0=20trous=20compt=C3=A9es?=
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+1) [FORT] La « décision pédagogique » était affichée mais inerte : le rapport écrit
+   « العودة إلى المرحلة 2 » sans bouton — l'élève lisait son verdict puis restait
+   où il était (même famille que la remédiation fantôme). → bouton réel
+   « الانتقال إلى المرحلة ٢/٣/٤ الآن » dans le bloc de décision (handleSelectStage),
+   visible seulement si la recommandation diffère du stage courant. Le moteur
+   pédagogique passe de « conseil » à « action ».
+
+2) [FORT] Les 3 modals fixés (SwitchDrillModal, SwitchGateModal, BoussoleCardPrint)
+   étaient montés SOUS le <motion.div initial={{opacity:0, y:10}}> de App.tsx qui
+   enveloppe toute la vue : un ancêtre avec transform crée un « containing block »
+   → position: fixed cassé (modals décalés/clippés pendant l'animation d'entrée et
+   tant que framer-motion laisse translateY). → createPortal(document.body) pour
+   les 3 : la porte du مفتاح, le drill et la fiche s'affichent toujours au vrai
+   viewport (et l'impression @media print de la fiche sort de l'ancêtre).
+
+3) [FAIBLE] Les erreurs du stage 2 (texte à trous) n'alimentaient pas le
+   « دفتر الأخطاء النوعية (الأسبوع الحالي) » : un élève qui faisait une faute
+   d'unité au texte à trous puis une production propre disparaissait du carnet
+   d'erreurs. → même mise à jour des compteurs hebdo que les stages 3/4.
+
+tsc 0 erreur · build ✓ 8,7 s · serveur : marqueurs présents (createPortal ×3, bouton action ×1).
+---
+ src/components/BoussoleCardPrint.tsx       |  5 ++++-
+ src/components/MethodologyCompilerView.tsx | 25 ++++++++++++++++++++++
+ src/components/SwitchDrillModal.tsx        |  5 ++++-
+ src/components/SwitchGateModal.tsx         |  5 ++++-
+ 4 files changed, 37 insertions(+), 3 deletions(-)
+
+diff --git a/src/components/BoussoleCardPrint.tsx b/src/components/BoussoleCardPrint.tsx
+index 85c64ff..0911890 100644
+--- a/src/components/BoussoleCardPrint.tsx
++++ b/src/components/BoussoleCardPrint.tsx
+@@ -1,4 +1,5 @@
+ import React from 'react';
++import { createPortal } from 'react-dom';
+ import { X, Printer } from 'lucide-react';
+ import {
+   BOUSSOLE_STEPS, REGLE_D_OR_AR, SWITCH_QUESTION_AR, SELF_CHECKS, TIME_RULE_AR,
+@@ -26,7 +27,7 @@ export default function BoussoleCardPrint({ open, onClose }: Props) {
+     try { window.print(); } catch { /* ignore */ }
+   };
+ 
+-  return (
++  return createPortal(
+     <>
+       <style>{`
+         @media print {
+@@ -131,5 +132,7 @@ export default function BoussoleCardPrint({ open, onClose }: Props) {
+         </div>
+       </div>
+     </>
++  ,
++    document.body
+   );
+ }
+diff --git a/src/components/MethodologyCompilerView.tsx b/src/components/MethodologyCompilerView.tsx
+index 0ecd1d7..a9230f3 100644
+--- a/src/components/MethodologyCompilerView.tsx
++++ b/src/components/MethodologyCompilerView.tsx
+@@ -161,6 +161,17 @@ export default function MethodologyCompilerView({ onBackToHome }: MethodologyPro
+       switchTruth: getSwitchForVerb(selectedVerbId),
+     });
+     setEvolutionVersion(v => v + 1);
++
++    // Les fautes du texte à trous alimentent aussi le carnet d'erreurs hebdo
++    if (rep.detectedErrors.length > 0) {
++      setWeeklyErrorCounters(prev => {
++        const nextCounters = { ...prev };
++        rep.detectedErrors.forEach(err => {
++          nextCounters[err.tag] = (nextCounters[err.tag] || 0) + 1;
++        });
++        return nextCounters;
++      });
++    }
+   };
+ 
+   // Submit Stage 3 or 4
+@@ -946,6 +957,20 @@ export default function MethodologyCompilerView({ onBackToHome }: MethodologyPro
+                   <p className="text-xs md:text-sm text-emerald-800 dark:text-emerald-400 font-medium mt-0.5">
+                     {scoreReport.pedagogicalDecisionAr}
+                   </p>
++                  {scoreReport.nextPedagogicalStage !== currentStage && (
++                    <div className="flex flex-wrap items-center gap-2 mt-2.5">
++                      <button
++                        onClick={() => handleSelectStage(scoreReport.nextPedagogicalStage)}
++                        className="flex items-center gap-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl px-3.5 py-2 text-[11px] font-black transition-colors cursor-pointer"
++                      >
++                        <Target className="w-3.5 h-3.5" />
++                        <span>الانتقال إلى المرحلة {['١', '٢', '٣', '٤'][scoreReport.nextPedagogicalStage - 1]} الآن</span>
++                      </button>
++                      <span className="text-[9.5px] font-bold text-emerald-700/80 dark:text-emerald-400/70 leading-snug">
++                        الدخول حسب توصية المحرك — من المفتاح ثم خطوات البوصلة
++                      </span>
++                    </div>
++                  )}
+                 </div>
+               </div>
+ 
+diff --git a/src/components/SwitchDrillModal.tsx b/src/components/SwitchDrillModal.tsx
+index 2ec818b..4047323 100644
+--- a/src/components/SwitchDrillModal.tsx
++++ b/src/components/SwitchDrillModal.tsx
+@@ -1,4 +1,5 @@
+ import React, { useMemo, useState, useEffect, useRef } from 'react';
++import { createPortal } from 'react-dom';
+ import { KeyRound, Lock, Unlock, Timer, RefreshCw, X, Zap, CheckCircle2, XCircle } from 'lucide-react';
+ import { getSwitchForVerb, SWITCH_QUESTION_AR, switchPathAr, SwitchState } from '../data/boussoleData';
+ import { VERB_CARDS } from '../data/methodologyEngine';
+@@ -109,7 +110,7 @@ export default function SwitchDrillModal({ open, onClose, focusVerbId }: Props)
+ 
+   const scorePct = total ? Math.round((correctCount / total) * 100) : 0;
+ 
+-  return (
++  return createPortal(
+     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
+       <div className="w-full max-w-md bg-white dark:bg-[#10150f] rounded-3xl shadow-2xl border border-gray-200 dark:border-gray-800 overflow-hidden">
+         {/* En-tête */}
+@@ -257,5 +258,7 @@ export default function SwitchDrillModal({ open, onClose, focusVerbId }: Props)
+         )}
+       </div>
+     </div>
++  ,
++    document.body
+   );
+ }
+diff --git a/src/components/SwitchGateModal.tsx b/src/components/SwitchGateModal.tsx
+index 7b22ea0..6fbdd45 100644
+--- a/src/components/SwitchGateModal.tsx
++++ b/src/components/SwitchGateModal.tsx
+@@ -1,4 +1,5 @@
+ import React, { useEffect, useState, useRef } from 'react';
++import { createPortal } from 'react-dom';
+ import { KeyRound, Lock, Unlock, Timer } from 'lucide-react';
+ import { SwitchState, SWITCH_QUESTION_AR, REGLE_D_OR_AR } from '../data/boussoleData';
+ 
+@@ -49,7 +50,7 @@ export default function SwitchGateModal({ open, verbAr, onDecide }: Props) {
+ 
+   const progress = ((GATE_SECONDS - seconds) / GATE_SECONDS) * 100;
+ 
+-  return (
++  return createPortal(
+     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
+       <div className="w-full max-w-md bg-white dark:bg-[#10150f] rounded-3xl shadow-2xl border border-gray-200 dark:border-gray-800 overflow-hidden">
+         {/* En-tête */}
+@@ -118,5 +119,7 @@ export default function SwitchGateModal({ open, verbAr, onDecide }: Props) {
+         </div>
+       </div>
+     </div>
++  ,
++    document.body
+   );
+ }

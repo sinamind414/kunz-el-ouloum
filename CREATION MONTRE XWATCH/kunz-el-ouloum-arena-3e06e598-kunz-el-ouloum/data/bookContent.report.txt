@@ -1,0 +1,19 @@
+GENERATED 2026-09-20T10:46:59.667510Z
+SRC ocr_full_text: bytes=576250 sha256=3b7a47ab2d2cd782...
+SRC corrected_v1: bytes=280742 sha256=1dcfc5ae7a64bf5e...
+SRC official_pdf: bytes=16040028 sha256=e873bd7a4f43478a...
+SRC tdm_raw: bytes=5928 sha256=3bf4dfdfc2f2124c...
+OCR encoding=utf-8-sig chars=325878 lines=6105
+FIXED encoding=utf-8-sig chars=163394
+TDM domains=3 units=11 chapters=55
+MARKER domain_situation: lines=0 runs=0
+MARKER activity: lines=133 runs=127
+MARKER knowledge_summary: lines=14 runs=14
+MARKER final_scheme: lines=3 runs=3
+MARKER investment: lines=3 runs=3
+MARKER lesson_number: lines=1 runs=1
+MARKER unit_word: lines=22 runs=21
+MARKER domain_word: lines=12 runs=12
+WARNING TDM: encodage partiellement irréversible (caractères -> '?')
+WARNING TDM: arabe du fichier déposé perdu à l'encodage (mojibake) — titres FR fiables ; titres AR officiels disponibles dans src/data/curriculumOfficial.ts
+OUT c:\Users\zakaria\Documents\application kunz el ouloum finale\data\bookContent.json bytes=643092

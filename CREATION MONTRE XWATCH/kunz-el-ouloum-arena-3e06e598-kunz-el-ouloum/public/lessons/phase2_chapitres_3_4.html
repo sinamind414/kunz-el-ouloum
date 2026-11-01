@@ -1,0 +1,1737 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>منصة بنزر العلم | المرحلة 2 : النشاط 3 والنشاط 4</title>
+    <style>
+        :root {
+            --bg-main: #f8fafc;
+            --surface: #ffffff;
+            --primary: #0f172a;
+            --accent: #2563eb;
+            --accent-light: #eff6ff;
+            --success: #16a34a;
+            --success-light: #f0fdf4;
+            --warning: #d97706;
+            --warning-light: #fffbeb;
+            --danger: #dc2626;
+            --danger-light: #fef2f2;
+            --teal: #0d9488;
+            --teal-light: #f0fdf4;
+            --rose: #e11d48;
+            --rose-light: #fff1f2;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            --radius: 16px;
+            --shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Noto Kufi Arabic', 'Kufi', 'Cairo', sans-serif;
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            line-height: 1.8;
+            padding-bottom: 60px;
+        }
+
+        .ltr-seq {
+            direction: ltr;
+            unicode-bidi: embed;
+            display: inline-block;
+            font-family: monospace;
+            font-weight: bold;
+            color: var(--accent);
+            background: #f1f5f9;
+            padding: 2px 8px;
+            border-radius: 6px;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 2rem auto;
+            padding: 0 1.2rem;
+        }
+
+        .chapter-view {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .chapter-view.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Hero Header */
+        .lesson-header {
+            border-radius: var(--radius);
+            padding: 2.5rem;
+            margin-bottom: 2rem;
+            position: relative;
+            overflow: hidden;
+            color: white;
+        }
+
+        .header-ch3 {
+            background: linear-gradient(135deg, #0f172a 0%, #0d9488 100%);
+        }
+
+        .header-ch4 {
+            background: linear-gradient(135deg, #4c0519 0%, #e11d48 100%);
+        }
+
+        .lesson-breadcrumb {
+            font-size: 0.85rem;
+            opacity: 0.9;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .lesson-header h1 {
+            font-size: 2.1rem;
+            font-weight: 900;
+            margin-bottom: 1rem;
+            line-height: 1.3;
+        }
+
+        .lesson-objectives {
+            background: rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            font-size: 0.95rem;
+        }
+
+        /* Cards */
+        .card {
+            background: var(--surface);
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow);
+        }
+
+        @media (max-width: 600px) {
+            .lesson-header { padding: 1.5rem; }
+            .lesson-header h1 { font-size: 1.5rem; }
+            .card { padding: 1.2rem; }
+        }
+
+        .section-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid var(--bg-main);
+            padding-bottom: 0.8rem;
+        }
+
+        .step-num {
+            background: var(--accent-light);
+            color: var(--accent);
+            width: 38px;
+            height: 38px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 10px;
+            font-weight: 900;
+            font-size: 1.1rem;
+        }
+
+        .step-num-rose {
+            background: var(--rose-light);
+            color: var(--rose);
+        }
+
+        .problem-box {
+            background: var(--warning-light);
+            border-right: 5px solid var(--warning);
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin-bottom: 1.5rem;
+        }
+
+        .problem-title {
+            font-weight: 800;
+            color: #92400e;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Document Analysis */
+        .doc-viewer {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            align-items: start;
+        }
+
+        @media (max-width: 850px) {
+            .doc-viewer { grid-template-columns: 1fr; }
+        }
+
+        .doc-visual {
+            background: #0f172a;
+            border-radius: 12px;
+            padding: 1.5rem;
+            color: white;
+        }
+
+        .svg-container {
+            width: 100%;
+            height: auto;
+            max-height: 260px;
+        }
+
+        /* ProFigureEngine — préserve le ratio des figures générées (max-height:260px les écrasait) */
+        .doc-visual svg.pfe-figure {
+            max-height: none;
+        }
+
+        .doc-analysis {
+            background: var(--bg-main);
+            border-radius: 12px;
+            padding: 1.5rem;
+            border: 1px solid var(--border);
+        }
+
+        .method-tag {
+            display: inline-block;
+            background: #e0f2fe;
+            color: #0369a1;
+            font-size: 0.75rem;
+            font-weight: 800;
+            padding: 2px 8px;
+            border-radius: 4px;
+            margin-bottom: 8px;
+        }
+
+        /* Interactive simulators */
+        .interactive-box {
+            background: #1e293b;
+            border-radius: 12px;
+            padding: 1.5rem;
+            color: white;
+            margin: 1.5rem 0;
+        }
+
+        .sim-ribosome-display {
+            background: #0f172a;
+            border: 2px solid #334155;
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+            min-height: 180px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .btn-action {
+            background: var(--teal);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 10px;
+            font-family: inherit;
+            font-weight: 800;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin: 5px;
+        }
+
+        .btn-action:hover { background: #0f766e; }
+        .btn-reset { background: #475569; }
+
+        /* Structure Selector */
+        .struct-tabs {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+
+        @media (max-width: 600px) {
+            .struct-tabs { grid-template-columns: 1fr 1fr; }
+        }
+
+        .btn-struct {
+            background: #334155;
+            color: white;
+            border: 1px solid #475569;
+            padding: 10px;
+            border-radius: 8px;
+            font-family: inherit;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+        }
+
+        .btn-struct.active {
+            background: var(--rose);
+            border-color: #fda4af;
+        }
+
+        /* Scientific text */
+        .scientific-text {
+            background: var(--surface);
+            border: 2px solid #cbd5e1;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-top: 1rem;
+        }
+
+        .text-part {
+            margin-bottom: 1.2rem;
+            padding-right: 1rem;
+            border-right: 4px solid var(--teal);
+        }
+
+        .text-part.ch4-border { border-right-color: var(--rose); }
+
+        .text-part h4 {
+            font-size: 0.95rem;
+            color: var(--teal);
+            margin-bottom: 0.3rem;
+            font-weight: 800;
+        }
+
+        .text-part.ch4-border h4 { color: var(--rose); }
+
+        /* Quiz */
+        .question-item {
+            background: var(--bg-main);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 10px;
+            margin-top: 1rem;
+        }
+
+        .option-btn {
+            background: white;
+            border: 1.5px solid var(--border);
+            padding: 12px 16px;
+            border-radius: 10px;
+            text-align: right;
+            font-family: inherit;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: var(--text-main);
+        }
+
+        .option-btn:hover {
+            border-color: var(--teal);
+            background: #f0fdf4;
+        }
+
+        .option-btn.correct {
+            background: var(--success-light);
+            border-color: var(--success);
+            color: var(--success);
+            font-weight: 700;
+        }
+
+        .option-btn.wrong {
+            background: var(--danger-light);
+            border-color: var(--danger);
+            color: var(--danger);
+        }
+
+        .feedback-box {
+            margin-top: 1rem;
+            padding: 1rem;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            display: none;
+            line-height: 1.6;
+        }
+    
+        /* === MIFTAH + Sommaire + Badge (v3.2 prototype) === */
+        .sommaire{position:sticky;top:0;z-index:999;max-width:1100px;width:calc(100% - 16px);margin:8px auto 0;background:#0f172a;border:1px solid #334155;border-radius:0 0 16px 16px;padding:10px 14px;display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;justify-content:flex-start;box-shadow:0 10px 28px rgba(15,23,42,.35)}
+        .sommaire::-webkit-scrollbar{display:none}
+        .sommaire a{white-space:nowrap;font-size:.82rem;font-weight:800;color:#e2e8f0;text-decoration:none;padding:6px 12px;border-radius:8px;border:1px solid #475569;background:#1e293b;transition:all .15s}
+        .sommaire a:hover{border-color:#38bdf8;color:#7dd3fc;background:#0ea5e9}
+        .sommaire a.active{background:#2563eb;color:#fff;border-color:#60a5fa}
+        .sommaire .sep{width:1px;background:#475569;margin:0 4px;flex-shrink:0}
+        .miftah-encadre{background:#fffdf4;border:1px solid #f3e0b0;border-right:4px solid #c08a1f;border-radius:10px;padding:10px 13px;margin:10px 0;font-size:.88rem;line-height:1.65}
+        .miftah-encadre b{color:#7a5610}
+        .quiz-badge{display:none;margin-top:12px;padding:10px 14px;border-radius:10px;font-weight:800;text-align:center;font-size:.95rem;animation:fadeIn .25s ease}
+        .quiz-badge.show{display:block}
+        .quiz-badge.faible{background:#fef2f2;color:#991b1b;border:1px solid #fecaca}
+        .quiz-badge.moyen{background:#fffbeb;color:#92400e;border:1px solid #fde68a}
+        .quiz-badge.mumtaz{background:#f0fdf4;color:#166534;border:1px solid #bbf7d0}
+        @media(max-width:768px){.sommaire{top:0;width:100%;max-width:100%;border-radius:0;margin-left:0;margin-right:0}}
+
+    </style>
+</head>
+<body>
+
+    
+
+    
+    <!-- Sommaire sticky (v3.2) -->
+    <div class="sommaire" id="sommaire">
+        <a href="#ch1-step1" id="link-ch1-step1" onclick="scrollToStep('ch1-step1',event)">📖 1-1 وضعية</a>
+        <a href="#ch1-step2" id="link-ch1-step2" onclick="scrollToStep('ch1-step2',event)">🔬 1-2 تحليل</a>
+        <a href="#ch1-step3" id="link-ch1-step3" onclick="scrollToStep('ch1-step3',event)">🧪 1-3 محاكي</a>
+        <a href="#ch1-step4" id="link-ch1-step4" onclick="scrollToStep('ch1-step4',event)">📝 1-4 خلاصة + Quiz</a>
+        <span class="sep"></span>
+        <a href="#ch2-step1" id="link-ch2-step1" onclick="scrollToStep('ch2-step1',event)">❓ 2-1 إشكالية</a>
+        <a href="#ch2-step2" id="link-ch2-step2" onclick="scrollToStep('ch2-step2',event)">🔬 2-2 تحليل</a>
+        <a href="#ch2-step3" id="link-ch2-step3" onclick="scrollToStep('ch2-step3',event)">🧪 2-3 محاكي</a>
+        <a href="#ch2-step4" id="link-ch2-step4" onclick="scrollToStep('ch2-step4',event)">✅ 2-4 تقويم</a>
+        <a href="#resume" id="link-resume" onclick="scrollToStep('resume',event)">📝 خلاصة</a>
+        <a href="#hosila" id="link-hosila" onclick="scrollToStep('hosila',event)">🏛 الحصيلة</a>
+        <a href="#schema-synthese" id="link-schema" onclick="scrollToStep('schema-synthese',event)">🗺 المخطط</a>
+    </div>
+
+    <div class="container">
+
+        <!-- ================================================================= -->
+        <!-- CHAPTER 3 : LES ÉTAPES DE LA TRADUCTION (مراحل الترجمة) -->
+        <!-- ================================================================= -->
+        <div id="ch3" class="chapter-view active">
+            
+            <header class="lesson-header header-ch3">
+                <div class="lesson-breadcrumb">المجال الأول : التخصص الوظيفي للبروتينات • الوحدة 1 : تركيب البروتين</div>
+                <h1>النشاط 4 : مراحل الترجمة في الريبوزوم وظاهرة متعدد الريبوزوم (Polysome)</h1>
+                <div class="lesson-objectives">
+                    <div>🎯 <strong>الهدف العلمي :</strong> حدّد المراحل الثلاث للترجمة (البداية، الاستطالة، النهاية) ودور متعدد الريبوزوم في تضخيم التصنيع.</div>
+                    <div>⏱️ <strong>المدة التقديرية للتعلم الذاتي :</strong> 25 دقيقة</div>
+                </div>
+            </header>
+
+            <!-- Step 1: Problématique -->
+            <section class="card" id="ch1-step1">
+                <div class="section-title">
+                    <span class="step-num">1</span>
+                    <span>وضعية الانطلاق وبناء الإشكالية العلميـة</span>
+                </div>
+                <div class="problem-box">
+                    <div class="problem-title">⚠️ كيف يتحول الـ ARNm إلى سلسلة بيبتيدية في أجزاء من الثانية؟</div>
+                    <p>بعد وصول الـ <span class="ltr-seq">ARNm</span> إلى الهيولى، وتنشيط الأحماض الأمينية بارتباطها مع جزيئات الـ <span class="ltr-seq">ARNt</span>، تتدخل عضيات دقيقة تسمى <strong>الريبوزومات (<span class="ltr-seq">Ribosomes</span>)</strong> لقراءة شفرة الـ <span class="ltr-seq">ARNm</span> وربط الأحماض الأمينية بروابط بيبتيدية. <strong>كيف تتم هذه العملية زمنياً ومكانياً داخل الريبوزوم؟ وكيف تضمن الخلية سرعة الإنتاج؟</strong></p>
+                </div>
+            </section>
+
+            <!-- Step 2: Document Analyse -->
+            <section class="card" id="ch1-step2">
+                <div class="section-title">
+                    <span class="step-num">2</span>
+                    <span>التحليل المنهجي لظاهرة متعدد الريبوزوم (البوليزوم - Polysome)</span>
+                </div>
+                <div class="doc-viewer">
+                    <div class="doc-visual">
+                        <h4 style="margin-bottom: 1rem; color: #5eead4; font-size: 0.95rem;">صورة بالمجهر الإلكتروني ورسم تفسيري لمتعدد الريبوزوم أثناء الترجمة</h4>
+                        <!-- Generated by ProFigureEngine - SVT BAC DZ -->
+<svg class="svg-container pfe-figure" viewBox="0 0 840 450" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="متعدد الريبوزوم (Polysome) وآلية الرفع من مردود تركيب البروتين">
+  <defs>
+    <style>
+      .pfe-title { font-family: 'Cairo', 'Segoe UI', Tahoma, sans-serif; font-weight: 700; fill: #f8fafc; }
+      .pfe-label { font-family: 'Cairo', 'Segoe UI', Tahoma, sans-serif; font-size: 13px; fill: #cbd5e1; }
+      .pfe-sub { font-family: 'Segoe UI', Tahoma, sans-serif; font-size: 11px; fill: #94a3b8; }
+      .pfe-badge { font-family: monospace; font-size: 11px; font-weight: bold; }
+    </style>
+    <filter id="pf-b0-pfe-glow-red" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="3" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+    <marker id="pf-b0-pfe-arrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 10 5 L 0 9 z" fill="#38bdf8" />
+    </marker>
+    <marker id="pf-b0-pfe-arrow-gold" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 10 5 L 0 9 z" fill="#fbbf24" />
+    </marker>
+    <linearGradient id="pf-b0-pfe-membrane-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1e293b" />
+      <stop offset="100%" stop-color="#0f172a" />
+    </linearGradient>
+    <linearGradient id="pf-b0-pfe-nucleus-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1e3a5f" />
+      <stop offset="100%" stop-color="#0f172a" />
+    </linearGradient>
+    
+  </defs>
+
+  <rect x="10" y="10" width="820" height="430" rx="24" fill="#0b1326" stroke="#1e293b" stroke-width="2"/>
+
+  <!-- ARNm Backbone -->
+  <g id="pf-b0-mrna-backbone">
+    <path d="M 60,240 C 200,230 400,250 780,240" stroke="#f43f5e" stroke-width="6" stroke-linecap="round"/>
+    <path d="M 60,240 C 200,230 400,250 780,240" stroke="#fda4af" stroke-width="2" stroke-linecap="round"/>
+
+    <rect x="40" y="215" width="48" height="26" rx="6" fill="#881337" stroke="#f43f5e" stroke-width="1.5"/>
+    <text x="64" y="233" text-anchor="middle" font-family="monospace" font-size="14" font-weight="bold" fill="#fecdd3">5'</text>
+
+    <rect x="750" y="215" width="48" height="26" rx="6" fill="#881337" stroke="#f43f5e" stroke-width="1.5"/>
+    <text x="774" y="233" text-anchor="middle" font-family="monospace" font-size="14" font-weight="bold" fill="#fecdd3">3'</text>
+  </g>
+
+  <!-- Ribosomes -->
+  <g id="pf-b0-ribosome-1" transform="translate(150, 240)">
+    <ellipse cx="0" cy="18" rx="28" ry="16" fill="#0f766e" stroke="#2dd4bf" stroke-width="2"/>
+    <text x="0" y="22" text-anchor="middle" font-size="10" fill="#ccfbf1">40S</text>
+    <ellipse cx="0" cy="-18" rx="36" ry="24" fill="#115e59" stroke="#2dd4bf" stroke-width="2.5"/>
+    <text x="0" y="-14" text-anchor="middle" font-size="11" font-weight="bold" fill="#ccfbf1">60S</text>
+    <path d="M 0,-38 Q -10,-55 -5,-65" fill="none" stroke="#fbbf24" stroke-width="4.5" stroke-linecap="round"/>
+    <circle cx="-5" cy="-65" r="5" fill="#f59e0b"/>
+  </g>
+
+  <g id="pf-b0-ribosome-2" transform="translate(310, 242)">
+    <ellipse cx="0" cy="18" rx="28" ry="16" fill="#0f766e" stroke="#2dd4bf" stroke-width="2"/>
+    <ellipse cx="0" cy="-18" rx="36" ry="24" fill="#115e59" stroke="#2dd4bf" stroke-width="2.5"/>
+    <text x="0" y="-14" text-anchor="middle" font-size="11" font-weight="bold" fill="#ccfbf1">60S</text>
+    <path d="M 0,-38 Q -15,-60 5,-80 Q 20,-100 0,-115" fill="none" stroke="#fbbf24" stroke-width="4.5" stroke-linecap="round"/>
+    <circle cx="0" cy="-115" r="6" fill="#f59e0b"/>
+  </g>
+
+  <g id="pf-b0-ribosome-3" transform="translate(480, 243)">
+    <ellipse cx="0" cy="18" rx="28" ry="16" fill="#0f766e" stroke="#2dd4bf" stroke-width="2"/>
+    <ellipse cx="0" cy="-18" rx="36" ry="24" fill="#115e59" stroke="#2dd4bf" stroke-width="2.5"/>
+    <text x="0" y="-14" text-anchor="middle" font-size="11" font-weight="bold" fill="#ccfbf1">60S</text>
+    <path d="M 0,-38 Q -20,-65 10,-95 Q 30,-125 -10,-145 Q -25,-160 -10,-175" fill="none" stroke="#fbbf24" stroke-width="5" stroke-linecap="round"/>
+    <circle cx="-10" cy="-175" r="7" fill="#f59e0b"/>
+  </g>
+
+  <g id="pf-b0-ribosome-4" transform="translate(660, 240)">
+    <ellipse cx="0" cy="18" rx="28" ry="16" fill="#0f766e" stroke="#2dd4bf" stroke-width="2"/>
+    <ellipse cx="0" cy="-18" rx="36" ry="24" fill="#115e59" stroke="#2dd4bf" stroke-width="2.5"/>
+    <text x="0" y="-14" text-anchor="middle" font-size="11" font-weight="bold" fill="#ccfbf1">60S</text>
+    <path d="M 0,-38 Q -25,-70 15,-105 Q 40,-140 -15,-165 Q -30,-185 10,-205" fill="none" stroke="#fbbf24" stroke-width="5" stroke-linecap="round"/>
+    <circle cx="10" cy="-205" r="8" fill="#f59e0b"/>
+  </g>
+
+  <!-- Direction de déplacement -->
+  <g id="pf-b0-translation-direction">
+    <path d="M 140,320 L 680,320" stroke="#38bdf8" stroke-width="3" marker-end="url(#pf-b0-pfe-arrow)"/>
+    <rect x="290" y="300" width="260" height="38" rx="8" fill="#0c4a6e" stroke="#38bdf8" stroke-width="1"/>
+    <text x="420" y="324" text-anchor="middle" class="pfe-title" font-size="13" fill="#e0f2fe">اتجاه حركة وانتقال الريبوزومات ➡️</text>
+    <text x="420" y="355" text-anchor="middle" font-size="11.5" fill="#94a3b8">قراءة الشفرة الوراثية دوماً من النهاية 5' نحو النهاية 3'</text>
+  </g>
+
+  <!-- Cartouche pédagogique -->
+  <rect x="40" y="30" width="400" height="90" rx="10" fill="#1e1b4b" stroke="#6366f1" stroke-width="1.5"/>
+  <text x="55" y="55" font-size="13" font-weight="bold" fill="#a5b4fc">💡 المبدأ العلمي لمتعدد الريبوزوم (Polysome) :</text>
+  <text x="55" y="78" font-size="12" fill="#e0e7ff">• كل ريبوزوم يركب سلسلة بيبتيدية متطابقة لنفس البروتين.</text>
+  <text x="55" y="100" font-size="12" fill="#fde047">• طول السلسلة يزداد كلما اقترب الريبوزوم من النهاية 3'.</text>
+
+</svg>
+                        <p style="font-size: 0.85rem; color: #cbd5e1; margin-top: 10px;">🟡 الخيوط الصفراء المتدرجة في الطول تمثل السلاسل البيبتيدية قيد التشكل.</p>
+                    </div>
+
+                    <div class="doc-analysis">
+                        <span class="method-tag">منهجية البكالوريا : التفسير والأهمية البيولوجية</span>
+                        <h4 style="margin: 8px 0; color: var(--primary);">ما هو متعدد الريبوزوم؟ وما فائدته للخلية؟</h4>
+                        <p><strong>التعريف :</strong> متعدد الريبوزوم (<span class="ltr-seq">Polysome</span>) هو خيط واحد من الـ <span class="ltr-seq">ARNm</span> ترتبط به عدة ريبوزومات في نفس الوقت، حيث يقوم كل ريبوزوم بترجمة نفس الرسالة الوراثية.</p>
+                        <hr style="margin: 12px 0; border: none; border-top: 1px solid var(--border);">
+                        <p><strong>الأهمية البيولوجية (سؤال كلاسيكي في البكالوريا) :</strong></p>
+                        <p>يسمح متعدد الريبوزوم بتركيب <strong>كميات كبيرة جدا من نفس البروتين في مدة زمنية قصيرة جداً</strong>، استجابة لحاجة الخلية والعضوية الفورية.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Step 3: Interactive Translation Simulator -->
+            <section class="card" id="ch1-step3">
+                <div class="section-title">
+                    <span class="step-num">3</span>
+                    <span>المحاكي التفاعلي لخطوات الترجمة داخل الريبوزوم</span>
+                </div>
+                <p>يتكون الريبوزوم من تحت وحدتين (صغرى وكبرى)، ويحتوي على موقعين تحفيزيين : الموقع الببتيدي (<span class="ltr-seq">Site P</span>) والموقع الأميني (<span class="ltr-seq">Site A</span>). اضغط لتنفيذ مراحل الترجمة :</p>
+                
+                <div class="interactive-box">
+                    <div style="margin-bottom: 15px;">
+                        <button class="btn-action" onclick="simTrans(1)">1️⃣ مرحلة البداية (Initiation)</button>
+                        <button class="btn-action" onclick="simTrans(2)">2️⃣ مرحلة الاستطالة (Élongation)</button>
+                        <button class="btn-action" onclick="simTrans(3)">3️⃣ مرحلة النهاية (Terminaison)</button>
+                    </div>
+                    <div class="sim-ribosome-display" id="simTransBox">
+                        <h3 style="color: #2dd4bf; margin-bottom: 10px;">🔬 اختر مرحلة من المراحل أعلاه لمعاينة تفاصيلها الجزيئية</h3>
+                        <p style="color: #cbd5e1;">ستشاهد كيف يتحرك الريبوزوم خطوة بخطوة (بمقدار رامزة واحدة) وكيف تتشكل الرابطة البيبتيدية.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Step 4: Bilan & Quiz Ch3 -->
+            <section class="card" id="ch1-step4">
+                <div class="section-title">
+                    <span class="step-num">4</span>
+                    <span>الخلاصة والتقويم الذاتي (النشاط 4)</span>
+                </div>
+                <div class="scientific-text">
+                    <div class="text-part">
+                        <h4>ملخص المراحل الثلاث للترجمة</h4>
+                        <p>• <strong>البداية :</strong> توضع تحت الوحدة الصغرى على رامزة البداية <span class="ltr-seq">AUG</span>، ثم ارتباط المعقد (<span class="ltr-seq">ARNt - Méthionine</span>) في الموقع <span class="ltr-seq">P</span>، تليها التحاق تحت الوحدة الكبرى.</p>
+                        <p>• <strong>الاستطالة :</strong> دخول المعقد الثاني إلى الموقع <span class="ltr-seq">A</span>، تشكل رابطة ببتيدية بين الميثيونين والحمض الثاني، ثم حركة الريبوزوم برامزة واحدة (انتقال الموقع <span class="ltr-seq">A</span> إلى <span class="ltr-seq">P</span>).</p>
+                        <p>• <strong>النهاية :</strong> وصول الريبوزوم إلى إحدى رامزات التوقف (<span class="ltr-seq">UAA, UAG, UGA</span>)، انفصال تحت وحدتي الريبوزوم، وتحرر السلسلة البيبتيدية ثم ينفصل الميثيونين الأول غالبا.</p>
+                    </div>
+                </div>
+
+                <!-- Quiz Ch3 -->
+                <div class="question-item" id="c3q1-container" style="margin-top: 1.5rem;">
+                    <h4 style="margin-bottom: 12px;">اختبر فهمك : أين تتشكل الرابطة البيبتيدية أثناء مرحلة الاستطالة في الريبوزوم؟</h4>
+                    <div class="options-grid">
+                        <button class="option-btn" onclick="checkCh3Answer(0, true)">أ) بين الحمض الأميني المحمول على الـ <span class="ltr-seq">ARNt</span> في الموقع <span class="ltr-seq">P</span> والحمض الأميني الجديد في الموقع <span class="ltr-seq">A</span>.</button>
+                        <button class="option-btn" onclick="checkCh3Answer(1, false)">ب) بين تحت الوحدة الصغرى وتحت الوحدة الكبرى للريبوزوم.</button>
+                        <button class="option-btn" onclick="checkCh3Answer(2, false)">ج) بين رامزة الـ <span class="ltr-seq">ARNm</span> والرامزة المضادة للـ <span class="ltr-seq">ARNt</span>.</button>
+                    </div>
+                    <div class="feedback-box" id="c3q1-feedback"></div>
+                    <div class="quiz-badge" id="c1-badge"></div>
+                </div>
+            </section>
+        </div>
+
+        <!-- ================================================================= -->
+        <!-- CHAPTER 4 : STRUCTURE SPATIALE DES PROTÉINES (البنية الفراغية) -->
+        <!-- ================================================================= -->
+        <div id="ch4" class="chapter-view">
+            
+            <header class="lesson-header header-ch4">
+                <div class="lesson-breadcrumb">المجال الأول : التخصص الوظيفي للبروتينات • الوحدة 2 : العلاقة بين بنية ووظيفة البروتين</div>
+                <h1>النشاط 2 : مستويات البنية الفراغية للبروتين وأنواع الروابط الكيميائية</h1>
+                <div class="lesson-objectives">
+                    <div>🎯 <strong>الهدف العلمي :</strong> ميّز الدقيق بين المستويات الأربعة (أولية، ثانوية، ثالثية، رابعية) وحدّد الروابط الأربعة المسؤولة عن استقرار البنية الثلاثية.</div>
+                    <div>⏱️ <strong>المدة التقديرية للتعلم الذاتي :</strong> 25 دقيقة</div>
+                </div>
+            </header>
+
+            <!-- Step 1: Problématique -->
+            <section class="card" id="ch2-step1">
+                <div class="section-title">
+                    <span class="step-num step-num-rose">1</span>
+                    <span>الإشكالية الأساسية للوحدة الثانية</span>
+                </div>
+                <div class="problem-box" style="border-right-color: var(--rose); background: var(--rose-light);">
+                    <div class="problem-title" style="color: #881337;">⚠️ لماذا يفقد البروتين وظيفته إذا تغيرت شكله؟</div>
+                    <p>بعد انتهاء الترجمة، لا تبقى السلسلة البيبتيدية كخيط مستقيم طويل، بل تلتف وتنطوي بشكل ثلاثي الأبعاد دقيق ومحدد وراثيا يسمى <strong>البنية الفراغية (<span class="ltr-seq">Structure spatiale</span>)</strong>. <strong>ما هي المستويات المتدرجة لهذه البنية؟ وما هي الروابط الكيميائية التي تحافظ على استقرارها وتمنحها التخصص الوظيفي؟</strong></p>
+                </div>
+            </section>
+
+            <!-- Step 2: Interactive Structure Explorer -->
+            <section class="card" id="ch2-step2">
+                <div class="section-title">
+                    <span class="step-num step-num-rose">2</span>
+                    <span>المختبر الافتراضي لمستويات البنية الفراغية الأربعة</span>
+                </div>
+                <p>اضغط على المستوى الفراغي لمعاينة خصائصه الهندسية والروابط المساهمة فيه :</p>
+                
+                <div class="interactive-box" style="background: #18181b;">
+                    <div class="struct-tabs">
+                        <button class="btn-struct active" onclick="showStruct(1, event)">1️⃣ البنية الأولية (Primaire)</button>
+                        <button class="btn-struct" onclick="showStruct(2, event)">2️⃣ البنية الثانوية (Secondaire)</button>
+                        <button class="btn-struct" onclick="showStruct(3, event)">3️⃣ البنية الثالثية (Tertiaire)</button>
+                        <button class="btn-struct" onclick="showStruct(4, event)">4️⃣ البنية الرابعية (Quaternaire)</button>
+                    </div>
+                    <div id="structBox" style="background: #27272a; border-radius: 10px; padding: 1.5rem; border: 1px solid #3f3f46;">
+                        <h3 style="color: #fda4af; margin-bottom: 10px;">1️⃣ البنية الأولية (<span class="ltr-seq">Structure Primaire</span>)</h3>
+                        <p style="line-height: 1.8;">هي تسلسل خطي بسيط للأحماض الأمينية المرتبطة ببعضها البعض بواسطة <strong>روابط ببتيدية (<span class="ltr-seq">Liaisons peptidiques التكافؤية قوية</span>)</strong> فقط. لا تمتلك البنية الأولية أي التفاف أو وظيفة بيولوجية فعالة.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Step 3: Les 4 Liaisons Chimiques -->
+            <section class="card" id="ch2-step3">
+                <div class="section-title">
+                    <span class="step-num step-num-rose">3</span>
+                    <span>الروابط الكيميائية الأربعة المسؤولة عن استقرار البنية الثالثية</span>
+                </div>
+                <p>تستقر البنية الثالثية بفضل نشأة روابط كيميائية بين الجذور الحرة (<span class="ltr-seq">Radicaux R</span>) للأحماض الأمينية المحددة وراثياً :</p>
+                
+                <div class="doc-viewer" style="margin-top: 1rem;">
+                    <div class="doc-visual" style="background: #3f1d38;">
+                        <h4 style="color: #fda4af; margin-bottom: 12px;">تصنيف الروابط حسب القوة والنوعية</h4>
+                        <ul style="list-style-type: none; line-height: 2.2; font-size: 0.95rem;">
+                            <li>🔒 <strong>جسور ثنائية الكبريت (<span class="ltr-seq">Ponts disulfures</span>) :</strong> رابطة تكافؤية قوية جداً تنشأ بين جذري حمضين من السيستيين (<span class="ltr-seq">Cys - Cys</span>).</li>
+                            <li>⚡ <strong>روابط شاردية الأيونية (<span class="ltr-seq">Liaisons ioniques</span>) :</strong> تجاذب كهربائي بين جذر سالب (حامضي) وجذر موجب (قاعدي).</li>
+                            <li>💧 <strong>تجاذب الجذور الكارهة للماء (<span class="ltr-seq">Interactions hydrophobes</span>) :</strong> تجمع الجذور غير القطبية نحو الداخل بعيداً عن الماء.</li>
+                            <li>🧲 <strong>روابط هيدروجينية (<span class="ltr-seq">Liaisons hydrogènes</span>) :</strong> روابط ضعيفة بين ذرات ذات كهروسلبية مختلفة (<span class="ltr-seq">H ... O</span>).</li>
+                        </ul>
+                    </div>
+
+                    <div class="doc-analysis">
+                        <span class="method-tag" style="background: #ffe4e6; color: #9f1239;">قاعدة ذهبية في أسئلة البكالوريا</span>
+                        <p style="margin-top: 8px;">تتوقف وظيفة البروتين على <strong>بنيته الفراغية الثلاثية أو الرابعية</strong>، وهذه الأخيرة تتوقف على <strong>عدد ونوع وترتيب الأحماض الأمينية</strong> (البنية الأولية) التي تحدد مواضع الروابط الكيميائية بدقة.</p>
+                        <p style="margin-top: 8px; font-weight: bold; color: var(--rose);">أي تغير في تسلسل الأحماض الأمينية (طفرة) يؤدي إلى تغير أماكن الروابط، وبالتالي تخريب البنية الفراغية وفقدان الوظيفة.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Step 4: Quiz Ch4 -->
+            <!-- خلاصة النشاط (standard 2026-09-21, ancrée au livre officiel — verrou resumes.lock ; restructuration É2 du résumé hérité) -->
+            <section class="card" id="resume">
+                <div class="section-title">
+                    <span class="step-num" style="background:#059669;">📝</span>
+                    <span>خلاصة الدرس</span>
+                </div>
+                <p style="font-weight:700; font-size:14px; margin:10px 0;">🎯 فسّر المراحل الثلاث للترجمة على مستوى متعدد الريبوزومات.</p>
+                <ol style="margin:8px 0; padding-right:24px; line-height:1.9; font-size:13px;">
+                    <li style="margin-bottom:6px;">تجري الترجمة على الريبوزومات المجتمعة في متعدد ريبوزومات يترجم ARNm واحداً.</li>
+                    <li style="margin-bottom:6px;">تبدأ مرحلة البداية برامزة AUG وارتباط ARNt-ميثيونين في الموقع P.</li>
+                    <li style="margin-bottom:6px;">تتشكل الرابطة الببتيدية أثناء الاستطالة ويتقدم الريبوزوم رامزة بعد رامزة.</li>
+                    <li style="margin-bottom:6px;">تتوقف الترجمة عند رامزة توقف فتتحرر السلسلة الببتيدية من الريبوزوم.</li>
+                    <li style="margin-bottom:6px;">يسمح متعدد الريبوزومات بتركيب عدة نسخ من البروتين في الوقت نفسه.</li>
+                </ol>
+                <p style="font-weight:800; font-size:13px; color:#b45309; margin-top:10px;">🔑 المصطلح المفتاحي في البكالوريا : المراحل الثلاث للترجمة / متعدد الريبوزومات</p>
+            </section>
+
+            
+            
+
+            
+            <section class="card" id="ch2-step4">
+                <div class="section-title">
+                    <span class="step-num step-num-rose">4</span>
+                    <span>تقويم النشاط 2 : أسئلة البكالوريا المتكررة</span>
+                </div>
+
+                <div class="question-item" id="c4q1-container">
+                    <h4 style="margin-bottom: 12px;">1. ما هو الفرق الأساسي الذي يميز البنية الرابعية عن البنية الثالثية؟</h4>
+                    <div class="options-grid">
+                        <button class="option-btn" onclick="checkCh4Answer(1, 0, true)">أ) البنية الرابعية تتكون من تجمع تحت وحدتين أو أكثر (سلسلتين بيبتيديتين أو أكثر ذوات بنية ثالثية).</button>
+                        <button class="option-btn" onclick="checkCh4Answer(1, 1, false)">ب) البنية الرابعية لا تحتوي على أي روابط بيبتيدية.</button>
+                        <button class="option-btn" onclick="checkCh4Answer(1, 2, false)">ج) البنية الرابعية تتواجد داخل النواة فقط.</button>
+                    </div>
+                    <div class="feedback-box" id="c4q1-feedback"></div>
+                </div>
+
+                <div class="question-item" id="c4q2-container">
+                    <h4 style="margin-bottom: 12px;">2. ما هي الرابطة التكافؤية (القوية جداً) الوحيدة التي تساهم في استقرار البنية الثالثية؟</h4>
+                    <div class="options-grid">
+                        <button class="option-btn" onclick="checkCh4Answer(2, 0, false)">أ) الرابطة الهيدروجينية.</button>
+                        <button class="option-btn" onclick="checkCh4Answer(2, 1, false)">ب) الرابطة الشاردية الأيونية.</button>
+                        <button class="option-btn" onclick="checkCh4Answer(2, 2, true)">ج) الجسر ثنائي الكبريت (<span class="ltr-seq">Pont disulfure</span>).</button>
+                    </div>
+                    <div class="feedback-box" id="c4q2-feedback"></div>
+                    <div class="quiz-badge" id="c2-badge"></div>
+                </div>
+            </section>
+        </div>
+
+        <!-- ═══ Zone de synthèse commune (🏛 حصيلة + 🗺 مخطط) — hors chapter-view :
+             visible dans LES DEUX leçons du fichier (survit au slicing lessonChapterSplit) ═══ -->
+        <div class="synthese-zone" id="zone-synthese">
+<!-- الحصيلة المعرفية الرسمية (citation verbatim du livre officiel — voir docs/RESUMES_MAARIFI_LIVRE_2026-09-21.md) -->
+            <section class="card" id="hosila" style="border:2px solid #f59e0b;">
+                <div class="section-title">
+                    <span class="step-num" style="background:#b45309;">🏛</span>
+                    <span>الحصيلة المعرفية</span>
+                </div>
+                <p style="font-size:11px; color:#92400e; font-weight:700; margin:6px 0;">الوحدة: D1-U1 — تركيب البروتين — نص بتنسيق قرائي، دون تغيير في المعنى، مع تنسيق قرائي يجعل النص مقروءاً.</p>
+
+<p style="font-weight:700; margin:8px 0;">📌 المخطط التحصيلي لعملية تركيب البروتين :</p>
+<div style="background:#fff; border:1px solid #fcd34d; border-radius:12px; padding:12px; text-align:center; font-weight:700; line-height:2.2;">
+ADN (النواة عند حقيقيات النواة)<br>⬇ استنساخ<br>ARNm ⬇ ترجمة على الريبوزوم (تحت الوحدة الكبرى)<br>⬇<br>سلسلة ببتيدية ⬇ بروتين بوظيفة محددة
+</div>
+<p style="font-size:11px; color:#78716c; margin-top:6px;">يميز المخطط الرسمي بين موقع الترجمة عند أوليات النواة (في الهيولى) وعند حقيقيات النواة (على الشبكة الهيولية) — تنسيق قرائي لعناصر المخطط دون تغيير مضمونه.</p>
+
+            </section>
+<!-- المخطط الشامل لآليات تركيب البروتين (reconstruit mécaniquement depuis le texte officiel — تحقّق آلي داخلي: 12/12) -->
+            <section class="card" id="schema-synthese" style="border:2px solid #2563eb;">
+                <div class="section-title">
+                    <span class="step-num" style="background:#2563eb;">🗺</span>
+                    <span>المخطط الشامل لآليات تركيب البروتين</span>
+                </div>
+
+                <img src="/assets/images/schemas/domaine1_traduction/schema_synthese_traduction_U1.jpg" alt="المخطط الشامل لآليات تركيب البروتين" style="width:100%; max-width:920px; display:block; margin:0 auto 10px; border-radius:12px; border:1px solid #e2e8f0;">
+                <p style="font-size:11px; color:#78716c; margin:0 0 10px; text-align:center;">الأصل المُدرج — تحوي طبقة الصورة أخطاء استخراج آلي معروفة (مثلا: «اللواة» بدل «النواة»، «المعلمة الواقعية»)؛ النسخة النصية المصححة أدناه هي المرجع القرائي.</p>
+
+                <div style="display:flex; gap:12px; flex-wrap:wrap; margin:12px 0;">
+                    <div style="flex:1; min-width:280px; background:#f3e8ff; border:1px solid #c084fc; border-radius:14px; padding:12px;">
+                        <p style="font-weight:900; text-align:center; margin-bottom:8px;">حقيقيات النواة (Eukaryotes)</p>
+                        <div style="background:#fff; border-radius:10px; padding:10px; line-height:2.1; font-size:12.5px; text-align:center;">
+                            ADN داخل <b>النواة</b> (غلاف نووي مسامي)<br>
+                            ⬇ <b>استنساخ</b> في النواة<br>
+                            ARNm <b>طليعي</b><br>
+                            ⬇ <b>معالجة</b> (حذف القطع غير الدالة Introns)<br>
+                            ARNm <b>ناضج</b> ← يخرج عبر المسام النووية<br>
+                            ⬇ <b>ترجمة</b> في الهيولى على <b>البوليزوم</b><br>
+                            ⬇ سلسلة ببتيدية
+                        </div>
+                        <p style="font-size:11px; color:#6b21a8; margin-top:6px; text-align:center;">المرحلتان في مكانين مختلفين وفي وقتين مختلفين (بفصل الغشاء النووي).</p>
+                    </div>
+                    <div style="flex:1; min-width:280px; background:#dbeafe; border:1px solid #60a5fa; border-radius:14px; padding:12px;">
+                        <p style="font-weight:900; text-align:center; margin-bottom:8px;">أوليات النواة (Prokaryotes)</p>
+                        <div style="background:#fff; border-radius:10px; padding:10px; line-height:2.1; font-size:12.5px; text-align:center;">
+                            ADN في الهيولى (بدون نواة محددة الحدود)<br>
+                            ⬇ <b>استنساخ</b> في الهيولى<br>
+                            ARNm ← <b>ترجمة</b> فورية على الريبوزوم<br>
+                            ⬇ سلسلة ببتيدية
+                        </div>
+                        <p style="font-size:11px; color:#1e40af; margin-top:6px; text-align:center;">يمكن للترجمة أن تنطلق <b>قبل انتهاء الاستنساخ</b> : المرحلتان في نفس المكان وفي آن واحد.</p>
+                    </div>
+                </div>
+
+                <p style="font-weight:800; margin:10px 0 6px;">مراحل التعبير الجيني :</p>
+                <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                    <div style="flex:1; min-width:180px; background:#fff; border:2px solid #16a34a; border-radius:12px; padding:8px; text-align:center;">
+                        <p style="font-weight:900; font-size:12.5px;">١. الاستنساخ (Transcription)</p>
+                        <p style="font-size:11.5px; line-height:1.8;">تركيب ARNm انطلاقا من السلسلة المستنسخة للـ ADN بواسطة ARN بوليميراز (انطلاق ← استطالة ← نهاية).</p>
+                    </div>
+                    <div style="flex:1; min-width:180px; background:#fff; border:2px solid #d97706; border-radius:12px; padding:8px; text-align:center;">
+                        <p style="font-weight:900; font-size:12.5px;">٢. نضج ARNm (Maturation)</p>
+                        <p style="font-size:11.5px; line-height:1.8;">حذف القطع غير الدالة (Introns) والاحتفاظ بالقطع الدالة (Exons) : ARNm طليعي ← ناضج.</p>
+                    </div>
+                    <div style="flex:1; min-width:180px; background:#fff; border:2px solid #2563eb; border-radius:12px; padding:8px; text-align:center;">
+                        <p style="font-weight:900; font-size:12.5px;">٣. الترجمة (Traduction)</p>
+                        <p style="font-size:11.5px; line-height:1.8;">انطلاق برامزة AUG في الموقع P، استطالة برابطة ببتيدية، توقف برامزة UAA/UAG/UGA.</p>
+                    </div>
+                    <div style="flex:1; min-width:180px; background:#fff; border:2px solid #dc2626; border-radius:12px; padding:8px; text-align:center;">
+                        <p style="font-weight:900; font-size:12.5px;">٤. نضج وتوجيه البروتين</p>
+                        <p style="font-size:11.5px; line-height:1.8;">انطواء البروتين واتجاهه إلى مقر وظيفته (داخل/خارج الخلية عبر الشبكة الهيولية الفعالة والحويصلات وجهاز غولجي).</p>
+                    </div>
+                </div>
+                <p style="font-size:10.5px; color:#78716c; margin-top:10px; text-align:center;">🗺 مخطط مُعاد بناؤه آلياً — كل مفرداته مثبتة في النص (تحقّق آلي داخلي: 12/12).</p>
+            </section>
+        </div>
+
+    </div>
+
+    <!-- Scripts -->
+    <script>
+        function showChapter(chId, evt) {
+            document.querySelectorAll('.chapter-view').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.ch-btn').forEach(el => el.classList.remove('active'));
+            document.getElementById(chId).classList.add('active');
+            if (evt) evt.target.classList.add('active');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Translation Simulator
+        function simTrans(step) {
+            let box = document.getElementById('simTransBox');
+            if (step === 1) {
+                box.innerHTML = `
+                    <h3 style="color: #38bdf8; margin-bottom: 10px;">1️⃣ مرحلة البداية (Initiation)</h3>
+                    <p style="line-height: 1.8;">• تتوضع تحت الوحدة الصغرى للريبوزوم على رامزة البداية <span class="ltr-seq">5'- AUG -3'</span> للـ <span class="ltr-seq">ARNm</span>.<br>
+                    • يلتحق الـ <span class="ltr-seq">ARNt</span> الحامل للميثيونين (<span class="ltr-seq">Met</span>) ذو الرامزة المضادة <span class="ltr-seq">UAC</span> بالموقع الببتيدي (<span class="ltr-seq">Site P</span>).<br>
+                    • تلتحق تحت الوحدة الكبرى بالصغرى ليتشكل <strong>معقد الانطلاق الفعال</strong>، ويبقى الموقع الأميني (<span class="ltr-seq">Site A</span>) شاغراً لاستقبال الحمض الموالي.</p>
+                `;
+            } else if (step === 2) {
+                box.innerHTML = `
+                    <h3 style="color: #fbbf24; margin-bottom: 10px;">2️⃣ مرحلة الاستطالة (Élongation)</h3>
+                    <p style="line-height: 1.8;">• يدخل الـ <span class="ltr-seq">ARNt</span> الثاني الحامل للحمض الأميني رقم 2 إلى الموقع <span class="ltr-seq">Site A</span>.<br>
+                    • تنشأ <strong>رابطة ببتيدية</strong> بين الميثيونين والحمض الأميني الثاني بتدخل إنزيمات وريبو-إنزيمات في الريبوزوم.<br>
+                    • ينفصل الـ <span class="ltr-seq">ARNt</span> الأول ويغادر الريبوزوم، ثم يتحرك الريبوزوم خطوة واحدة (رامزة واحدة) على خيط الـ <span class="ltr-seq">ARNm</span>، فيصبح الموقع <span class="ltr-seq">Site A</span> شاغراً من جديد.</p>
+                `;
+            } else if (step === 3) {
+                box.innerHTML = `
+                    <h3 style="color: #f43f5e; margin-bottom: 10px;">3️⃣ مرحلة النهاية (Terminaison)</h3>
+                    <p style="line-height: 1.8;">• يصل الموقع <span class="ltr-seq">Site A</span> للريبوزوم إلى إحدى رامزات التوقف (<span class="ltr-seq">UAA, UAG, UGA</span>).<br>
+                    • لا يوجد أي <span class="ltr-seq">ARNt</span> يحمل رامزة مضادة لرامزات التوقف، فيتدخل عامل التحرير.<br>
+                    • تنفصل السلسلة البيبتيدية المتشكلة، وينفصل الحمض الأميني الأول (الميثيونين <span class="ltr-seq">Met</span>)، وتتفكك تحت وحدتي الريبوزوم عن خيط الـ <span class="ltr-seq">ARNm</span>.</p>
+                `;
+            }
+        }
+
+        // Structure Virtual Lab
+        function showStruct(num, evt) {
+            document.querySelectorAll('.btn-struct').forEach(el => el.classList.remove('active'));
+            if (evt) evt.target.classList.add('active');
+
+            let box = document.getElementById('structBox');
+            if (num === 1) {
+                box.innerHTML = `
+                    <h3 style="color: #fda4af; margin-bottom: 10px;">1️⃣ البنية الأولية (<span class="ltr-seq">Structure Primaire</span>)</h3>
+                    <p style="line-height: 1.8;">هي تسلسل خطي بسيط للأحماض الأمينية المرتبطة ببعضها البعض بواسطة <strong>روابط ببتيدية (<span class="ltr-seq">Liaisons peptidiques التكافؤية القوية</span>)</strong> فقط. لا تمتلك البنية الأولية أي التفاف أو وظيفة بيولوجية فعالة.</p>
+                `;
+            } else if (num === 2) {
+                box.innerHTML = `
+                    <h3 style="color: #fb7185; margin-bottom: 10px;">2️⃣ البنية الثانوية (<span class="ltr-seq">Structure Secondaire</span>)</h3>
+                    <p style="line-height: 1.8;">تنتج عن التفاف واطواء السلسلة البيبتيدية (البنية الأولية) في مناطق محددة بفضل نشأة <strong>روابط هيدروجينية</strong> بين مجموعات (<span class="ltr-seq">C=O</span>) ومجموعات (<span class="ltr-seq">N-H</span>) للروابط البيبتيدية. وتأخذ نمطين أساسيين : الحلزون ألفا (<span class="ltr-seq">α</span>) والوريقة المطوية بيتا (<span class="ltr-seq">β</span>).</p>
+                `;
+            } else if (num === 3) {
+                box.innerHTML = `
+                    <h3 style="color: #f43f5e; margin-bottom: 10px;">3️⃣ البنية الثالثية (<span class="ltr-seq">Structure Tertiaire</span>)</h3>
+                    <p style="line-height: 1.8;">تنتج عن انطواء البنية الثانوية في الفراغ بفضل مناطق البينية (المنعطفات)، وتتميز بوجود 4 أنواع من الروابط بين الجذور الحرة (<span class="ltr-seq">Radicaux R</span>) : جسور ثنائية الكبريت، روابط شاردية، هيدروجينية، وتجاذب الجذور الكارهة للماء. وهي بنية وظيفية فعالة.</p>
+                `;
+            } else if (num === 4) {
+                box.innerHTML = `
+                    <h3 style="color: #e11d48; margin-bottom: 10px;">4️⃣ البنية الرابعية (<span class="ltr-seq">Structure Quaternaire</span>)</h3>
+                    <p style="line-height: 1.8;">هي أعلى مستوى تنظيم فراغي، تنتج عن تجمع وترافق <strong>سلسلتين بيبتيديتين أو أكثر</strong> (تسمى كل سلسلة تحت وحدة - <span class="ltr-seq">Sous-unité</span> ذوات بنية ثالثية منفصلة). ترتبط تحت الوحدات فيما بينها بروابط ضعيفة (هيدروجينية، شاردية، كارهة للماء) مثل جزيئة الهيموغلوبين (<span class="ltr-seq">Hémoglobine</span>).</p>
+                `;
+            }
+        }
+
+        function checkCh3Answer(optIdx, isCorrect) {
+            let container = document.getElementById('c3q1-container');
+            let btns = container.querySelectorAll('.option-btn');
+            let fb = document.getElementById('c3q1-feedback');
+
+            btns.forEach((b, idx) => {
+                b.disabled = true;
+                if (idx === optIdx) b.classList.add(isCorrect ? 'correct' : 'wrong');
+            });
+
+            fb.style.display = 'block';
+            if (isCorrect) {
+                fb.style.background = '#f0fdf4'; fb.style.color = '#166534'; fb.style.border = '1px solid #bbf7d0';
+                fb.innerHTML = '<strong>✅ إجابة صحيحة ممتاز!</strong> تتشكل الرابطة البيبتيدية داخل الموقع التحفيزي للريبوزوم بين الحمض الموجود في الموقع P والحمض الملتحق بالموقع A.';
+            } else {
+                fb.style.background = '#fef2f2'; fb.style.color = '#991b1b'; fb.style.border = '1px solid #fecaca';
+                fb.innerHTML = '<strong>❌ إجابة خاطئة.</strong> الرابطة البيبتيدية تتشكل بين الأحماض الأمينية المتجاورة في الموقعين P و A للريبوزوم.';
+            }
+        }
+
+        function checkCh4Answer(qIdx, optIdx, isCorrect) {
+            let container = document.getElementById(`c4q${qIdx}-container`);
+            let btns = container.querySelectorAll('.option-btn');
+            let fb = document.getElementById(`c4q${qIdx}-feedback`);
+
+            btns.forEach((b, idx) => {
+                b.disabled = true;
+                if (idx === optIdx) b.classList.add(isCorrect ? 'correct' : 'wrong');
+            });
+
+            fb.style.display = 'block';
+            if (isCorrect) {
+                fb.style.background = '#f0fdf4'; fb.style.color = '#166534'; fb.style.border = '1px solid #bbf7d0';
+                fb.innerHTML = '<strong>✅ إجابة صحيحة ممتاز!</strong> تعليل علمي دقيق ومتوافق مع المنهج الرسمي לבكالوريا الجزائر.';
+            } else {
+                fb.style.background = '#fef2f2'; fb.style.color = '#991b1b'; fb.style.border = '1px solid #fecaca';
+                if (qIdx === 1) {
+                    fb.innerHTML = '<strong>❌ إجابة خاطئة.</strong> البنية الرابعية تتكون بالضرورة من سلسلتين بيبتيديتين على الأقل (تحت وحدتين).';
+                } else {
+                    fb.innerHTML = '<strong>❌ إجابة خاطئة.</strong> الرابطة التكافؤية القوية الوحيدة بين الجذور R هي الجسر ثنائي الكبريت (Pont disulfure) بين أحماض السيستيين Cys.';
+                }
+            }
+        }
+    
+        // === v3.2 generic: sommaire + badges faible/moyen/mumtaz (auto) ===
+        function scrollToStep(id, evt){
+            if(evt) evt.preventDefault();
+            const el = document.getElementById(id);
+            if(el) window.scrollTo({top: el.getBoundingClientRect().top + window.scrollY - 110, behavior:'smooth'});
+            document.querySelectorAll('.sommaire a').forEach(a=>a.classList.remove('active'));
+            const link = document.getElementById('link-'+id);
+            if(link) link.classList.add('active');
+            const ch = id.startsWith('ch1') ? 'ch1' : 'ch2';
+            if(!document.getElementById(ch).classList.contains('active')){
+                document.querySelectorAll('.chapter-view').forEach(el=>el.classList.remove('active'));
+                document.getElementById(ch).classList.add('active');
+                document.querySelectorAll('.ch-btn').forEach(b=>b.classList.remove('active'));
+                const btnIdx = ch==='ch1'?0:1;
+                const btns = document.querySelectorAll('.ch-btn');
+                if(btns[btnIdx]) btns[btnIdx].classList.add('active');
+            }
+        }
+        function updateBadges(){
+            ['ch1','ch2'].forEach((ch, idx)=>{
+                const chapterEl = document.getElementById(ch);
+                if(!chapterEl) return;
+                const questions = chapterEl.querySelectorAll('.question-item');
+                if(questions.length===0) return;
+                let total = questions.length, answered=0, correct=0;
+                questions.forEach(q=>{
+                    const btns = q.querySelectorAll('.option-btn');
+                    let qAnswered=false, qCorrect=false;
+                    btns.forEach(b=>{
+                        if(b.classList.contains('correct')) {qAnswered=true; qCorrect=true;}
+                        if(b.classList.contains('wrong')) qAnswered=true;
+                    });
+                    if(qAnswered) answered++;
+                    if(qCorrect) correct++;
+                });
+                const badge = document.getElementById(idx===0?'c1-badge':'c2-badge');
+                if(!badge) return;
+                if(answered < total) return;
+                const score = Math.round(correct/total*100);
+                badge.classList.add('show');
+                if(score===100){ badge.className='quiz-badge show mumtaz'; badge.textContent='ممتاز (fort) — 100% · جاهز للمرحلة التالية'; }
+                else if(score>=50){ badge.className='quiz-badge show moyen'; badge.textContent='متوسط (moyen) — '+score+'% · راجع ثم أعد'; }
+                else { badge.className='quiz-badge show faible'; badge.textContent='ضعيف (faible) — '+score+'% · راجع النشاط ثم أعد'; }
+            });
+        }
+        // hook all check functions and also listen to clicks
+        (function(){
+            // wrap any existing check* functions if they exist
+            Object.keys(window).forEach(k=>{
+                if(k.startsWith('check') && typeof window[k]==='function'){
+                    const orig = window[k];
+                    window[k]= function(...args){
+                        const res = orig.apply(this,args);
+                        setTimeout(updateBadges, 50);
+                        return res;
+                    };
+                }
+            });
+            document.addEventListener('click', (e)=>{
+                if(e.target.closest('.option-btn')){
+                    setTimeout(updateBadges, 80);
+                }
+            });
+        })();
+        const observer = new IntersectionObserver((entries)=>{
+            entries.forEach(e=>{
+                if(e.isIntersecting){
+                    document.querySelectorAll('.sommaire a').forEach(a=>a.classList.remove('active'));
+                    const link = document.getElementById('link-'+e.target.id);
+                    if(link) link.classList.add('active');
+                }
+            });
+        }, {rootMargin:'-120px 0px -70% 0px', threshold:0});
+        window.addEventListener('DOMContentLoaded', ()=>{
+            document.querySelectorAll('section.card[id]').forEach(s=>observer.observe(s));
+            // also patch any check functions defined after DOMContentLoaded (delay)
+            setTimeout(()=>{
+                Object.keys(window).forEach(k=>{
+                    if(k.startsWith('check') && typeof window[k]==='function' && !window[k]._patched){
+                        const orig = window[k];
+                        window[k]= function(...args){
+                            const res = orig.apply(this,args);
+                            setTimeout(updateBadges, 50);
+                            return res;
+                        };
+                        window[k]._patched=true;
+                    }
+                });
+            }, 500);
+        });
+
+    </script>
+<!-- PFE-ZOOM v1 — démarrage (généré, ne pas éditer à la main) -->
+<style id="pfe-zoom-style">
+    /* PFE-ZOOM — pastille de zoom */
+    .pfe-zoom-badge {
+        position: fixed;
+        z-index: 2147483000;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 7px 12px;
+        border: 0;
+        border-radius: 999px;
+        background: #006d37;
+        color: #fff;
+        font: 700 13px/1.1 system-ui, "Segoe UI", Tahoma, sans-serif;
+        box-shadow: 0 6px 18px rgba(0, 0, 0, .28);
+        cursor: pointer;
+        direction: rtl;
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+        transition: opacity .12s ease;
+        -webkit-tap-highlight-color: transparent;
+    }
+    .pfe-zoom-badge.is-visible { opacity: 1; visibility: visible; pointer-events: auto; }
+    .pfe-zoom-badge:hover { background: #00562b; }
+    .pfe-zoom-badge svg { width: 15px; height: 15px; }
+
+    /* Verrou de défilement du document pendant l'agrandissement */
+    html.pfe-zoom-lock, html.pfe-zoom-lock body { overflow: hidden !important; }
+
+    /* PFE-ZOOM — superposition plein écran */
+    .pfe-zoom-overlay {
+        position: fixed;
+        inset: 0;
+        z-index: 2147483100;
+        display: none;
+        flex-direction: column;
+        background: rgba(6, 12, 9, .95);
+        color: #f4faf6;
+        direction: rtl;
+        font-family: system-ui, "Segoe UI", Tahoma, sans-serif;
+        touch-action: none;
+        overscroll-behavior: contain;
+    }
+    .pfe-zoom-overlay.is-open { display: flex; }
+    .pfe-zoom-bar {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-wrap: wrap;
+        padding: 10px 14px;
+        background: rgba(255, 255, 255, .07);
+        border-bottom: 1px solid rgba(255, 255, 255, .14);
+    }
+    .pfe-zoom-title {
+        flex: 1 1 200px;
+        min-width: 0;
+        font-weight: 700;
+        font-size: 15px;
+        line-height: 1.4;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    .pfe-zoom-btn {
+        min-width: 42px;
+        height: 38px;
+        padding: 0 12px;
+        border-radius: 10px;
+        border: 1px solid rgba(255, 255, 255, .22);
+        background: rgba(255, 255, 255, .1);
+        color: #fff;
+        font: 700 15px/1 system-ui, "Segoe UI", Tahoma, sans-serif;
+        cursor: pointer;
+    }
+    .pfe-zoom-btn:hover { background: rgba(255, 255, 255, .24); }
+    .pfe-zoom-btn.is-close { background: #b3261e; border-color: #b3261e; }
+    .pfe-zoom-pct {
+        min-width: 64px;
+        text-align: center;
+        font-weight: 700;
+        font-size: 14px;
+        font-variant-numeric: tabular-nums;
+    }
+    .pfe-zoom-stage {
+        position: relative;
+        flex: 1 1 auto;
+        overflow: hidden;
+        cursor: grab;
+        touch-action: none;
+        background: rgba(255, 255, 255, .04);
+    }
+    .pfe-zoom-stage.is-dragging { cursor: grabbing; }
+    .pfe-zoom-canvas { position: absolute; top: 0; left: 0; transform-origin: 0 0; will-change: transform; }
+    .pfe-zoom-canvas svg,
+    .pfe-zoom-canvas img {
+        display: block;
+        max-width: none !important;
+        max-height: none !important;
+        background: #fff;
+        border-radius: 10px;
+        box-shadow: 0 14px 46px rgba(0, 0, 0, .5);
+    }
+    .pfe-zoom-foot {
+        padding: 8px 14px;
+        font-size: 12.5px;
+        line-height: 1.5;
+        color: rgba(244, 250, 246, .78);
+        text-align: center;
+        border-top: 1px solid rgba(255, 255, 255, .12);
+    }
+    @media (max-width: 640px) {
+        .pfe-zoom-title { font-size: 13.5px; }
+        .pfe-zoom-foot { font-size: 11.5px; }
+    }
+</style>
+<script id="pfe-zoom-runtime">
+(function () {
+    'use strict';
+    if (window.__pfeZoomRuntime) { return; }
+    window.__pfeZoomRuntime = true;
+
+    var MIN_W = 150;            /* taille minimale d'une figure « zoomable »  */
+    var MIN_H = 100;
+    var ZMIN = 0.3;
+    var ZMAX = 20;
+    var STEP = 1.25;
+    var HINT = 'اسحب للتحريك · عجلة الفأرة أو + / − للتكبير · نقر مزدوج = تبديل الملاءمة · Esc للإغلاق';
+
+    var badge = null;
+    var badgeFig = null;
+    var overlay = null;
+    var stage = null;
+    var canvas = null;
+    var titleEl = null;
+    var pctEl = null;
+    var openFig = null;
+    var cloneSeq = 0;
+    var bound = [];             /* écouteurs globaux mémorisés (démontage exact) */
+    var wired = false;          /* écouteurs clavier/fullscreen branchés (idempotent) */
+    var st = { s: 1, base: 1, tx: 0, ty: 0, nw: 0, nh: 0, fit: true };
+
+    /* ── Utilitaires ─────────────────────────────────────────────────────── */
+    function node(tag, cls, text) {
+        var n = document.createElement(tag);
+        if (cls) { n.className = cls; }
+        if (text !== undefined && text !== null) { n.textContent = text; }
+        return n;
+    }
+
+    function button(label, tip, fn, extra) {
+        var b = node('button', 'pfe-zoom-btn' + (extra ? ' ' + extra : ''), label);
+        b.setAttribute('type', 'button');
+        b.setAttribute('title', tip);
+        b.setAttribute('aria-label', tip);
+        b.addEventListener('click', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            fn();
+        });
+        return b;
+    }
+
+    function textOf(n) {
+        return n ? String(n.textContent || '').replace(/\s+/g, ' ').trim() : '';
+    }
+
+    /* Écouteur global mémorisé : indispensable pour un démontage EXACT (tests
+       automatisés multi-documents, démontage d'une couche React, SPA). */
+    function bind(target, type, fn, capture) {
+        var cap = !!capture;
+        target.addEventListener(type, fn, cap);
+        bound.push([target, type, fn, cap]);
+    }
+
+    /* Élément interdit au zoom : contrôles, liens, icônes décoratives. */
+    function blocked(el) {
+        if (!el || !el.closest) { return true; }
+        if (el.closest('button,a,label,select,input,textarea,header,nav,footer,.no-zoom,[data-no-zoom],[data-pfe-zoom-skip]')) { return true; }
+        return el.getAttribute('aria-hidden') === 'true';
+    }
+
+    function bigEnough(el) {
+        var r = el.getBoundingClientRect();
+        return r.width >= MIN_W && r.height >= MIN_H;
+    }
+
+    /* Remonte du nœud cliqué vers la figure (svg ou image) la plus proche. */
+    function figureFrom(target) {
+        var el = target && target.nodeType === 1 ? target : (target ? target.parentElement : null);
+        while (el && el !== document.documentElement) {
+            var tag = el.tagName ? el.tagName.toLowerCase() : '';
+            if (tag === 'svg' || tag === 'img') {
+                if (blocked(el) || !bigEnough(el)) { return null; }
+                return el;
+            }
+            el = el.parentElement;
+        }
+        return null;
+    }
+
+    /* ── Clonage : préfixe les ids pour éviter tout doublon dans le document ─ */
+    function rewriteRefs(value, map) {
+        return value.replace(/url\(\s*(['"]?)#([^)'"\s]+)\1\s*\)/g, function (m, q, id) {
+            return map[id] ? 'url(' + q + '#' + map[id] + q + ')' : m;
+        });
+    }
+
+    function prepareClone(source) {
+        var clone = source.cloneNode(true);
+        cloneSeq += 1;
+        var prefix = 'pfez' + cloneSeq + '-';
+        if (clone.tagName.toLowerCase() === 'img') { return clone; }
+
+        var map = {};
+        var withId = clone.querySelectorAll('[id]');
+        var i;
+        for (i = 0; i < withId.length; i++) {
+            var oldId = withId[i].getAttribute('id');
+            map[oldId] = prefix + oldId;
+            withId[i].setAttribute('id', prefix + oldId);
+        }
+        if (clone.getAttribute('id')) {
+            var rootId = clone.getAttribute('id');
+            map[rootId] = prefix + rootId;
+            clone.setAttribute('id', prefix + rootId);
+        }
+
+        /* Réécrit les références internes d'un nœud (racine INCLUSE) : attributs
+           de peinture, marker-*, href/xlink:href, et le texte des <style> embarqués
+           (sélecteurs #id ou url(#id)) qui portent souvent les marqueurs de flèches. */
+        var attrs = ['fill', 'stroke', 'filter', 'clip-path', 'mask', 'style', 'marker-start', 'marker-mid', 'marker-end'];
+        function rewriteNode(n) {
+            for (var k = 0; k < attrs.length; k++) {
+                var v = n.getAttribute(attrs[k]);
+                if (v && v.indexOf('#') > -1) { n.setAttribute(attrs[k], rewriteRefs(v, map)); }
+            }
+            var href = n.getAttribute('href');
+            if (href && href.charAt(0) === '#' && map[href.slice(1)]) {
+                n.setAttribute('href', '#' + map[href.slice(1)]);
+            }
+            var xlink = n.getAttribute('xlink:href');
+            if (xlink && xlink.charAt(0) === '#' && map[xlink.slice(1)]) {
+                n.setAttribute('xlink:href', '#' + map[xlink.slice(1)]);
+            }
+            if ((n.tagName || '').toLowerCase() === 'style' && n.textContent) {
+                n.textContent = n.textContent.replace(/#([A-Za-z_][A-Za-z0-9_-]*)/g, function (m, id) {
+                    return map[id] ? '#' + map[id] : m;
+                });
+            }
+        }
+        var all = clone.querySelectorAll('*');
+        rewriteNode(clone);
+        for (i = 0; i < all.length; i++) {
+            rewriteNode(all[i]);
+        }
+        return clone;
+    }
+
+    /* ── Pastille flottante au survol ─────────────────────────────────────── */
+    function ensureBadge() {
+        if (badge) { return; }
+        badge = node('button', 'pfe-zoom-badge', '\uD83D\uDD0D تكبير');
+        badge.setAttribute('type', 'button');
+        badge.setAttribute('title', 'تكبير الشكل لقراءته بوضوح');
+        badge.setAttribute('aria-label', 'تكبير الشكل');
+        badge.addEventListener('click', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            if (badgeFig) { open(badgeFig); }
+        });
+        document.body.appendChild(badge);
+    }
+
+    function positionBadge() {
+        if (!badge || !badgeFig) { return; }
+        var r = badgeFig.getBoundingClientRect();
+        var w = badge.offsetWidth || 96;
+        var h = badge.offsetHeight || 32;
+        var left = r.left + 8;
+        var top = r.bottom - h - 8;
+        if (top < 8) { top = r.top + 8; }
+        if (left + w > window.innerWidth - 8) { left = Math.max(8, r.right - w - 8); }
+        if (top + h > window.innerHeight - 8) { top = Math.max(8, window.innerHeight - h - 8); }
+        badge.style.left = Math.max(8, left) + 'px';
+        badge.style.top = Math.max(8, top) + 'px';
+    }
+
+    function showBadge(fig) {
+        ensureBadge();
+        badgeFig = fig;
+        positionBadge();
+        badge.classList.add('is-visible');
+    }
+
+    function hideBadge() {
+        badgeFig = null;
+        if (badge) { badge.classList.remove('is-visible'); }
+    }
+
+    /* Titre porté par la figure elle-même : le plus fiable (aria-label sur les
+       figures ProFigure, alt sur les schémas image, <title>/<desc> sinon). */
+    function ownTitle(el) {
+        var t = el.getAttribute('aria-label') || el.getAttribute('data-title') || '';
+        if (!t && el.tagName.toLowerCase() === 'img') { t = el.getAttribute('alt') || ''; }
+        if (!t && el.querySelector) { t = textOf(el.querySelector('title,desc')); }
+        return t ? String(t).replace(/\s+/g, ' ').trim() : '';
+    }
+
+    function figureTitle(el) {
+        var self = ownTitle(el);
+        if (self) { return self; }
+        var host = el.closest ? el.closest('figure,.svg-container,.doc-visual,.visual-card,section') : null;
+        if (host) {
+            var cap = host.querySelector('figcaption,.svg-caption,.figure-caption,.caption,.svg-title');
+            var capText = textOf(cap);
+            if (capText) { return capText; }
+        }
+        var probe = el;
+        var hops = 0;
+        while (probe && hops < 60) {
+            probe = probe.previousElementSibling || probe.parentElement;
+            hops += 1;
+            if (!probe || probe === document.body) { break; }
+            var head = /^H[1-4]$/.test(probe.tagName || '') ? probe : probe.querySelector('h1,h2,h3,h4');
+            var headText = textOf(head);
+            if (headText) { return headText; }
+        }
+        return textOf(document.querySelector('h1,h2')) || 'الشكل';
+    }
+
+    /* Taille « naturelle » : viewBox pour un SVG (vectoriel net à 100 %), pixels pour une image. */
+    function naturalSize(el) {
+        if (el.tagName.toLowerCase() === 'img') {
+            var r = el.getBoundingClientRect();
+            return [el.naturalWidth || r.width || 900, el.naturalHeight || r.height || 600];
+        }
+        var vb = el.viewBox && el.viewBox.baseVal;
+        if (vb && vb.width && vb.height) { return [vb.width, vb.height]; }
+        var box = el.getBoundingClientRect();
+        return [box.width || 900, box.height || 500];
+    }
+
+    /* ── Manipulation : glisser, molette, pincement, double-clic ──────────── */
+    function bindStage() {
+        var pointers = {};
+        var drag = null;
+        var pinch = null;
+
+        function count() {
+            var n = 0;
+            for (var k in pointers) { if (pointers[k]) { n += 1; } }
+            return n;
+        }
+
+        function list() {
+            var out = [];
+            for (var k in pointers) { if (pointers[k]) { out.push(pointers[k]); } }
+            return out;
+        }
+
+        function distance(a, b) {
+            var dx = a.clientX - b.clientX;
+            var dy = a.clientY - b.clientY;
+            return Math.sqrt(dx * dx + dy * dy) || 1;
+        }
+
+        function release(e) {
+            delete pointers[e.pointerId];
+            if (count() < 2) { pinch = null; }
+            if (count() === 0) {
+                drag = null;
+                stage.classList.remove('is-dragging');
+            }
+        }
+
+        stage.addEventListener('pointerdown', function (e) {
+            if (e.pointerType === 'mouse' && e.button !== 0) { return; }
+            pointers[e.pointerId] = e;
+            try { stage.setPointerCapture(e.pointerId); } catch (err) {}
+            if (count() === 1) {
+                drag = { x: e.clientX, y: e.clientY, tx: st.tx, ty: st.ty };
+                stage.classList.add('is-dragging');
+            } else if (count() === 2) {
+                drag = null;
+                var two = list();
+                var p = localPoint(two[0]);
+                var q = localPoint(two[1]);
+                pinch = { d: distance(two[0], two[1]), s: st.s, cx: (p[0] + q[0]) / 2, cy: (p[1] + q[1]) / 2 };
+            }
+            e.preventDefault();
+        });
+
+        stage.addEventListener('pointermove', function (e) {
+            if (!pointers[e.pointerId]) { return; }
+            pointers[e.pointerId] = e;
+            if (pinch && count() === 2) {
+                var pair = list();
+                var mid = localPoint(pair[0]);
+                zoomTo(pinch.s * (distance(pair[0], pair[1]) / pinch.d), mid[0], mid[1]);
+                return;
+            }
+            if (drag) {
+                st.tx = drag.tx + (e.clientX - drag.x);
+                st.ty = drag.ty + (e.clientY - drag.y);
+                st.fit = false;
+                apply();
+            }
+        });
+
+        stage.addEventListener('pointerup', release);
+        stage.addEventListener('pointercancel', release);
+        stage.addEventListener('lostpointercapture', release);
+
+        stage.addEventListener('wheel', function (e) {
+            e.preventDefault();
+            var p = localPoint(e);
+            zoomBy(e.deltaY < 0 ? 1.14 : 1 / 1.14, p[0], p[1]);
+        }, { passive: false });
+
+        stage.addEventListener('dblclick', function (e) {
+            e.preventDefault();
+            if (st.fit || st.s <= st.base * 1.05) {
+                var p = localPoint(e);
+                zoomTo(Math.max(1, st.base * 2), p[0], p[1]);
+            } else {
+                fitView();
+            }
+        });
+    }
+
+    /* ── Superposition plein écran ────────────────────────────────────────── */
+    function stageSize() {
+        var r = stage.getBoundingClientRect();
+        return [r.width, r.height];
+    }
+
+    function apply() {
+        canvas.style.transform = 'translate(' + st.tx + 'px,' + st.ty + 'px) scale(' + st.s + ')';
+        if (pctEl) { pctEl.textContent = Math.round(st.s * 100) + '%'; }
+    }
+
+    function fitView() {
+        var s = stageSize();
+        var pad = 28;
+        var k = Math.min((s[0] - pad) / st.nw, (s[1] - pad) / st.nh);
+        if (!isFinite(k) || k <= 0) { k = 1; }
+        st.s = k;
+        st.base = k;
+        st.fit = true;
+        st.tx = (s[0] - st.nw * k) / 2;
+        st.ty = (s[1] - st.nh * k) / 2;
+        apply();
+    }
+
+    function zoomTo(target, px, py) {
+        var s = stageSize();
+        if (px === undefined) { px = s[0] / 2; }
+        if (py === undefined) { py = s[1] / 2; }
+        var next = Math.min(ZMAX, Math.max(ZMIN, target));
+        var f = next / st.s;
+        st.tx = px - (px - st.tx) * f;
+        st.ty = py - (py - st.ty) * f;
+        st.s = next;
+        st.fit = false;
+        apply();
+    }
+
+    function zoomBy(factor, px, py) {
+        zoomTo(st.s * factor, px, py);
+    }
+
+    function localPoint(e) {
+        var r = stage.getBoundingClientRect();
+        return [e.clientX - r.left, e.clientY - r.top];
+    }
+
+    function ensureOverlay() {
+        if (overlay) { return; }
+
+        overlay = node('section', 'pfe-zoom-overlay');
+        overlay.setAttribute('role', 'dialog');
+        overlay.setAttribute('aria-modal', 'true');
+        overlay.setAttribute('aria-label', 'عرض الشكل مكبَّرًا');
+
+        var bar = node('div', 'pfe-zoom-bar');
+        titleEl = node('div', 'pfe-zoom-title', '');
+        pctEl = node('span', 'pfe-zoom-pct', '100%');
+        bar.appendChild(titleEl);
+        bar.appendChild(pctEl);
+        bar.appendChild(button('−', 'تصغير', function () { zoomBy(1 / STEP); }));
+        bar.appendChild(button('+', 'تكبير', function () { zoomBy(STEP); }));
+        bar.appendChild(button('ملاءمة', 'إعادة الملاءمة إلى الشاشة', function () { fitView(); }));
+        bar.appendChild(button('100%', 'الحجم الأصلي للشكل', function () { zoomTo(1); }));
+        bar.appendChild(button('نافذة', 'فتح الشكل في نافذة مستقلة', openStandalone));
+        bar.appendChild(button('إغلاق', 'إغلاق (Esc)', close, 'is-close'));
+
+        stage = node('div', 'pfe-zoom-stage');
+        canvas = node('div', 'pfe-zoom-canvas');
+        stage.appendChild(canvas);
+
+        overlay.appendChild(bar);
+        overlay.appendChild(stage);
+        overlay.appendChild(node('div', 'pfe-zoom-foot', HINT));
+        document.body.appendChild(overlay);
+
+        bindStage();
+        overlay.addEventListener('click', function (e) {
+            if (e.target === overlay) { close(); }
+        });
+    }
+
+    function open(fig) {
+        if (!fig) { return; }
+        ensureOverlay();
+        openFig = fig;
+        hideBadge();
+        canvas.innerHTML = '';
+        canvas.appendChild(prepareClone(fig));
+
+        var nat = naturalSize(fig);
+        st.nw = Math.max(1, nat[0]);
+        st.nh = Math.max(1, nat[1]);
+        canvas.firstChild.style.width = st.nw + 'px';
+        canvas.firstChild.style.height = st.nh + 'px';
+        titleEl.textContent = figureTitle(fig);
+
+        overlay.classList.add('is-open');
+        document.documentElement.classList.add('pfe-zoom-lock');
+        fitView();
+        goFullscreen();
+        /* Idempotent : une seule paire d'écouteurs actifs à la fois. */
+        if (!wired) {
+            wired = true;
+            document.addEventListener('keydown', onKey, true);
+            window.addEventListener('resize', onResize);
+            document.addEventListener('fullscreenchange', onResize);
+        }
+    }
+
+    function close() {
+        if (!overlay) { return; }
+        overlay.classList.remove('is-open');
+        document.documentElement.classList.remove('pfe-zoom-lock');
+        if (wired) {
+            wired = false;
+            document.removeEventListener('keydown', onKey, true);
+            window.removeEventListener('resize', onResize);
+            document.removeEventListener('fullscreenchange', onResize);
+        }
+        if (document.fullscreenElement && document.exitFullscreen) {
+            try { document.exitFullscreen(); } catch (err) {}
+        }
+        canvas.innerHTML = '';
+        openFig = null;
+        st.fit = true;
+        hideBadge();
+    }
+
+    function goFullscreen() {
+        var fn = overlay.requestFullscreen || overlay.webkitRequestFullscreen || overlay.msRequestFullscreen;
+        if (!fn) { return; }
+        try {
+            var p = fn.call(overlay);
+            if (p && p.catch) { p.catch(function () {}); }
+        } catch (err) {}
+    }
+
+    function onResize() {
+        if (!overlay || !overlay.classList.contains('is-open')) { return; }
+        if (st.fit) { fitView(); } else { apply(); }
+    }
+
+    function onKey(e) {
+        if (!overlay || !overlay.classList.contains('is-open')) { return; }
+        var k = e.key;
+        if (k === 'Escape') { close(); }
+        else if (k === '+' || k === '=') { zoomBy(STEP); }
+        else if (k === '-' || k === '_') { zoomBy(1 / STEP); }
+        else if (k === '0') { fitView(); }
+        else if (k === 'ArrowUp') { st.ty += 48; apply(); }
+        else if (k === 'ArrowDown') { st.ty -= 48; apply(); }
+        else if (k === 'ArrowRight') { st.tx -= 48; apply(); }
+        else if (k === 'ArrowLeft') { st.tx += 48; apply(); }
+        else { return; }
+        e.preventDefault();
+        e.stopPropagation();
+    }
+
+    /* ── Figure seule dans une fenêtre (zoom natif du navigateur + impression) */
+    function escapeHtml(value) {
+        return String(value)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;');
+    }
+
+    function openStandalone() {
+        if (!openFig) { return; }
+        var clone = prepareClone(openFig);
+        clone.style.width = '100%';
+        clone.style.height = 'auto';
+        clone.style.maxWidth = 'none';
+
+        var styles = '';
+        var sheets = document.querySelectorAll('style');
+        for (var i = 0; i < sheets.length; i++) { styles += String(sheets[i].textContent || ''); }
+
+        var title = escapeHtml(figureTitle(openFig));
+        var extra = 'html,body{margin:0;background:#fff;color:#111}' +
+            'body{padding:18px 16px 64px;font-family:system-ui,"Segoe UI",Tahoma,sans-serif;direction:rtl}' +
+            '.pfe-standalone-title{font-size:17px;font-weight:700;margin:0 0 14px;line-height:1.5}' +
+            '.pfe-standalone-fig{margin:0;padding:12px;border:1px solid #e2e8e0;border-radius:16px;background:#fff}' +
+            '.pfe-standalone-fig svg,.pfe-standalone-fig img{width:100%;height:auto;max-width:none}' +
+            '.pfe-standalone-tip{margin-top:16px;font-size:13.5px;color:#3f5147;text-align:center;line-height:1.7}' +
+            '@media print{.pfe-standalone-tip{display:none}}';
+
+        var doc = '<!DOCTYPE html><html dir="rtl" lang="ar"><head><meta charset="utf-8">' +
+            '<meta name="viewport" content="width=device-width,initial-scale=1">' +
+            '<title>' + title + '</title>' +
+            '<style>' + styles + '</style><style>' + extra + '</style></head><body>' +
+            '<h1 class="pfe-standalone-title">' + title + '</h1>' +
+            '<figure class="pfe-standalone-fig">' + clone.outerHTML + '</figure>' +
+            '<p class="pfe-standalone-tip">استعمل Ctrl مع عجلة الفأرة، أو أزرار التكبير في المتصفح · ' +
+            'F11 لملء الشاشة · Ctrl + P للطباعة</p></body></html>';
+
+        var w = window.open('', '_blank');
+        if (!w) { return; }
+        w.document.open();
+        w.document.write(doc);
+        w.document.close();
+    }
+
+    /* ── Câblage des événements (délégation : aucun nœud ajouté aux figures) ─ */
+    bind(document, 'pointerover', function (e) {
+        if (overlay && overlay.classList.contains('is-open')) { return; }
+        if (badge && badge.contains(e.target)) { return; }
+        var fig = figureFrom(e.target);
+        if (!fig) {
+            if (badgeFig) { hideBadge(); }
+            return;
+        }
+        if (fig !== badgeFig) { showBadge(fig); }
+    }, true);
+
+    bind(document, 'pointerout', function (e) {
+        if (!badgeFig) { return; }
+        if (badge && badge.contains(e.target)) { return; }
+        /* La pastille est montée dans document.body, JAMAIS dans la figure :
+           en passant de la figure à la pastille, relatedTarget vaut la pastille,
+           figureFrom() remonte jusqu'au <html> et renvoie null, ce qui masquait
+           la pastille au moment exact où l'on visait le clic. Elle est donc
+           traitée comme l'intérieur de la figure. */
+        if (badge && badge.contains(e.relatedTarget)) { return; }
+        if (figureFrom(e.relatedTarget) !== badgeFig) { hideBadge(); }
+    }, true);
+
+    var pending = false;
+    bind(window, 'scroll', function () {
+        if (!badgeFig || pending) { return; }
+        pending = true;
+        window.requestAnimationFrame(function () {
+            pending = false;
+            if (badgeFig) { positionBadge(); }
+        });
+    }, true);
+
+    bind(window, 'resize', function () {
+        if (badgeFig) { positionBadge(); }
+    });
+
+    bind(document, 'click', function (e) {
+        if (e.button !== 0 || e.defaultPrevented || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) { return; }
+        if (overlay && overlay.classList.contains('is-open')) { return; }
+        if (badge && badge.contains(e.target)) { return; }
+        var fig = figureFrom(e.target);
+        if (!fig) { return; }
+        e.preventDefault();
+        open(fig);
+    }, true);
+
+    /* Démontage exact : ferme, retire pastille/superposition et détache tous les
+       écouteurs (le runtime peut alors être rebranché sur un autre document). */
+    function destroy() {
+        close();
+        for (var i = 0; i < bound.length; i++) {
+            var h = bound[i];
+            h[0].removeEventListener(h[1], h[2], h[3]);
+        }
+        bound.length = 0;
+        if (badge && badge.parentNode) { badge.parentNode.removeChild(badge); }
+        if (overlay && overlay.parentNode) { overlay.parentNode.removeChild(overlay); }
+        badge = null;
+        badgeFig = null;
+        overlay = null;
+        stage = null;
+        canvas = null;
+        titleEl = null;
+        pctEl = null;
+        openFig = null;
+        window.__pfeZoomRuntime = false;
+        window.__pfeZoom = null;
+    }
+
+    /* API publique minimale (tests automatiques + usages programmatiques). */
+    window.__pfeZoom = { open: open, close: close, figureAt: figureFrom, destroy: destroy };
+})();
+
+</script>
+<!-- PFE-ZOOM v1 — fin (généré) -->
+</body>
+</html>

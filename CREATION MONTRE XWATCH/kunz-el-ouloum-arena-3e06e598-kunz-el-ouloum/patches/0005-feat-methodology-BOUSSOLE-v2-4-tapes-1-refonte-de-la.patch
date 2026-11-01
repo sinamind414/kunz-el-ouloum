@@ -1,0 +1,1696 @@
+From 1843c54ccae0519010d6eb8c9d3793f86f224fa2 Mon Sep 17 00:00:00 2001
+From: sinamind414 <sinamind414@users.noreply.github.com>
+Date: Thu, 3 Sep 2026 06:33:49 +0000
+Subject: [PATCH 5/6] =?UTF-8?q?feat(methodology):=20BOUSSOLE=20v2=20?=
+ =?UTF-8?q?=E2=80=94=204=20=C3=A9tapes=20+=201=20=D9=85=D9=81=D8=AA=D8=A7?=
+ =?UTF-8?q?=D8=AD=20(refonte=20de=20la=20v1=20NSOE)?=
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Audit v2 (boussole_svt_v2.html) : la démarche v1 était juste mais chargeait
+~40 éléments à mémoriser. Refonte : charge mémoire ≈ 8.
+
+MÉTHODE (boussoleData.ts réécrit) :
+- 4 étapes : اِقْرَأْ · اِجْمَعْ · اِرْبِطْ · اِخْتِمْ (bleu/vert/orange/violet)
+  avec question mécanique, phrase-type, gestes de crayon, interdits
+- 🔑 UN interrupteur binaire : « هل الفعل يسمح بـ«لأنّ»؟ » — 12 trajets → 2 familles
+- 3 phrases-types : «انطلاقًا من الوثيقة (…) نلاحظ أنّ…» / «وهذا لأنّ … وبالتالي…» / «ومنه نستنتج أنّ…»
+- 4 contrôles = les 4 étapes relues à l'envers (zéro élément nouveau)
+- temps : quart · moitié · quart · règle d'or conservée mot pour mot
+- erreurs : UNE adresse chacune (1/🔑/2/3/4) + remède mécanique — premature_interpretation
+  appartient au مفتاح ; tags du moteur inchangés
+- 4 formats spéciaux = habillages (comparaison/schéma/hypothèse/nas)
+
+INTÉGRATION (séparation des axes) :
+- étapes = axe vertical · niveaux d'aide = axe horizontal (مع النموذج/إكمال/كتابة بالبطاقة/بكالوريا)
+- fil d'étapes à la place de la rose des vents ; segment 3 = lampe du مفتاح
+- SwitchGateModal : 10 s, une question avant d'écrire (niveaux 3-4), choix enregistré
+- rapport de correction : 5 lignes 🔑 + 1..4 avec remèdes
+- onboarding v2 · خريطة الأخطاء par étape dans تقدمي avec « أولوية العلاج »
+- supprimés : CompassRose, RitualCompassModal, lexique marin de l'interface
+- gardés (couche motivation séparée) : grades نوتي/ملاح/ربان/قبطان
+---
+ src/App.tsx                                |   2 +-
+ src/components/BoussoleIntroModal.tsx      |  98 +++---
+ src/components/BoussolePanel.tsx           | 210 ++++++++-----
+ src/components/CompassRose.tsx             |  98 ------
+ src/components/MethodologyCompilerView.tsx | 123 +++++---
+ src/components/MethodologyGlobalStats.tsx  |  91 +++---
+ src/components/RitualCompassModal.tsx      | 136 --------
+ src/components/SwitchGateModal.tsx         | 122 ++++++++
+ src/data/boussoleData.ts                   | 345 ++++++++++++++-------
+ src/utils/methodologyLog.ts                |   4 +-
+ 10 files changed, 664 insertions(+), 565 deletions(-)
+ delete mode 100644 src/components/CompassRose.tsx
+ delete mode 100644 src/components/RitualCompassModal.tsx
+ create mode 100644 src/components/SwitchGateModal.tsx
+
+diff --git a/src/App.tsx b/src/App.tsx
+index 1b687f7..867ccc9 100644
+--- a/src/App.tsx
++++ b/src/App.tsx
+@@ -481,7 +481,7 @@ export default function App() {
+         onSchedule={handleScheduleReminder} 
+       />
+ 
+-      {/* Boussole d'accueil : premier lancement (apprendre les 4 gestes NSOE) */}
++      {/* Boussole d'accueil : premier lancement (4 étapes + mafteh) */}
+       {showBoussoleIntro && currentTab !== 'splash' && (
+         <BoussoleIntroModal
+           open={showBoussoleIntro}
+diff --git a/src/components/BoussoleIntroModal.tsx b/src/components/BoussoleIntroModal.tsx
+index b893a60..8d886a1 100644
+--- a/src/components/BoussoleIntroModal.tsx
++++ b/src/components/BoussoleIntroModal.tsx
+@@ -1,20 +1,17 @@
+ import React from 'react';
+-import { Compass, ArrowLeft, Sailboat } from 'lucide-react';
+-import CompassRose from './CompassRose';
+-import { BOUSSOLE_CAPS, REGLE_D_OR_AR } from '../data/boussoleData';
++import { Compass, ArrowLeft, KeyRound, Lock, Unlock, Sparkles } from 'lucide-react';
++import { BOUSSOLE_STEPS, REGLE_D_OR_AR, SWITCH_QUESTION_AR, TIME_RULE_AR } from '../data/boussoleData';
+ 
+ interface Props {
+   open: boolean;
+-  /** Fermer sans aller à la méthodologie */
+   onClose: () => void;
+-  /** Aller directement à la rubrique منهجية الإجابة (بوصلة NSOE) */
+   onStart: () => void;
+ }
+ 
+ /**
+- * Écran d'accueil « boussole » — première ouverture de l'app.
+- * L'élève apprend les 4 caps (mots + gestes) en moins d'une minute,
+- * puis il entre dans l'app ou se rend directement au simulateur.
++ * Écran d'accueil « بوصلة » — première ouverture.
++ * 4 étapes + 1 interrupteur : mémorisables en 7 secondes
++ * (« اقرأ، اجمع، اربط، اختم — وهل يسمح الفعل بـلأنّ؟ »).
+  */
+ export default function BoussoleIntroModal({ open, onClose, onStart }: Props) {
+   if (!open) return null;
+@@ -25,58 +22,65 @@ export default function BoussoleIntroModal({ open, onClose, onStart }: Props) {
+         {/* En-tête */}
+         <div className="bg-gradient-to-br from-[#00401f] via-[#006d37] to-[#0a9a4f] px-6 pt-6 pb-5 text-white relative overflow-hidden">
+           <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'radial-gradient(circle at 80% 10%, #fed65b 0%, transparent 45%)' }} />
+-          <div className="relative flex items-start justify-between gap-4">
+-            <div>
+-              <span className="inline-flex items-center gap-1.5 bg-white/15 border border-white/25 rounded-full px-3 py-1 text-[10px] font-black tracking-wide">
+-                <Sailboat className="w-3.5 h-3.5" /> مرحباً بك أيها الملاح — بوصلة NSOE
+-              </span>
+-              <h3 className="text-xl md:text-2xl font-black mt-3 leading-snug">
+-                كل إجابة في البكالوريا هي رحلة من 4 كابات
+-              </h3>
+-              <p className="text-[12px] md:text-[13px] text-emerald-100 font-bold mt-1.5 max-w-md leading-relaxed">
+-                شمال · جنوب · غرب · شرق — كلمات من 4 حروف تحفظها في 30 ثانية، وترافقك في كل سؤال
+-                حتى لا تضلّ أبداً.
+-              </p>
+-            </div>
+-            <div className="shrink-0 bg-white/95 rounded-2xl p-1.5 shadow-lg">
+-              <CompassRose activeCap={null} size={110} />
+-            </div>
++          <div className="relative">
++            <span className="inline-flex items-center gap-1.5 bg-white/15 border border-white/25 rounded-full px-3 py-1 text-[10px] font-black tracking-wide">
++              <Compass className="w-3.5 h-3.5" /> بوصلة الإجابة — علوم الطبيعة والحياة
++            </span>
++            <h3 className="text-xl md:text-2xl font-black mt-3 leading-snug">
++              كل إجابة في البكالوريا: 4 خطوات، ومفتاح واحد
++            </h3>
++            <p className="text-[12px] md:text-[13px] text-emerald-100 font-bold mt-1.5 max-w-lg leading-relaxed">
++              اقرأ · اجمع · اربط · اختم — ثم سؤال واحد فقط: <b className="text-[#fed65b]">هل يسمح الفعل بـ«لأنّ»؟</b>.
++              تذكّرها في 7 ثوانٍ وطبّقها في كل سؤال، حتى لا تضلّ أبدًا.
++            </p>
+           </div>
+         </div>
+ 
+-        {/* Les 4 caps : mots + gestes */}
++        {/* Les 4 étapes */}
+         <div className="px-5 md:px-6 py-5">
+           <div className="grid grid-cols-2 md:grid-cols-4 gap-2.5">
+-            {BOUSSOLE_CAPS.map(cap => (
++            {BOUSSOLE_STEPS.map(step => (
+               <div
+-                key={cap.id}
+-                className="rounded-2xl border-2 p-3 text-center space-y-1.5"
+-                style={{ borderColor: cap.color + '66', backgroundColor: cap.colorSoft + '33' }}
++                key={step.id}
++                className="rounded-2xl border-2 p-3 text-center space-y-1"
++                style={{ borderColor: step.color + '66', backgroundColor: step.colorSoft + '33' }}
+               >
+-                <div
+-                  className="w-9 h-9 mx-auto rounded-xl text-white text-lg flex items-center justify-center shadow-sm"
+-                  style={{ backgroundColor: cap.color }}
+-                >
+-                  {cap.icon}
++                <div className="w-8 h-8 mx-auto rounded-xl text-white text-sm font-black flex items-center justify-center shadow-sm" style={{ backgroundColor: step.color }}>
++                  {step.id}
+                 </div>
+-                <div className="font-black text-sm" style={{ color: cap.color }}>{cap.ar}</div>
+-                <div className="text-base font-black text-gray-900 dark:text-white">{cap.word}</div>
+-                <p className="text-[10px] font-bold text-gray-500 dark:text-gray-400 leading-snug">
+-                  {cap.gestureAr}
+-                </p>
+-                <p className="text-[10px] font-black text-gray-700 dark:text-gray-300 leading-snug">
+-                  « {cap.questionAr} »
+-                </p>
++                <div className="text-base font-black text-gray-900 dark:text-white">{step.word}</div>
++                <p className="text-[10px] font-black leading-snug" style={{ color: step.color }}>« {step.questionAr} »</p>
++                {step.templateAr && (
++                  <p className="text-[9.5px] font-bold text-gray-500 dark:text-gray-400 leading-snug" dir="rtl">✍️ {step.templateAr}</p>
++                )}
+               </div>
+             ))}
+           </div>
+ 
+-          {/* Règle d'or */}
+-          <p className="text-center text-[11px] md:text-[12px] font-black text-[#944a00] dark:text-amber-300 bg-[#fff9ed] dark:bg-amber-950/30 border border-[#fed65b]/40 rounded-xl px-3 py-2.5 mt-4">
++          {/* L'interrupteur */}
++          <div className="mt-3 rounded-2xl border-2 border-emerald-400/50 bg-emerald-50/50 dark:bg-emerald-950/20 p-3.5">
++            <div className="flex items-center gap-2 flex-wrap">
++              <KeyRound className="w-4 h-4 text-emerald-600" />
++              <span className="font-black text-[12px] text-gray-900 dark:text-white">🔑 {SWITCH_QUESTION_AR}</span>
++            </div>
++            <div className="grid grid-cols-2 gap-2 mt-2 text-[10.5px] font-bold">
++              <div className="flex items-center gap-1.5 bg-white dark:bg-gray-900 border border-slate-200 dark:border-slate-700 rounded-xl px-2.5 py-2 text-slate-600 dark:text-slate-300">
++                <Lock className="w-3.5 h-3.5 text-slate-500 shrink-0" />
++                مُغلق (حلّل، قارن، لخّص، استنتج، رسم) ← ١٢٤
++              </div>
++              <div className="flex items-center gap-1.5 bg-white dark:bg-gray-900 border border-emerald-200 dark:border-emerald-800 rounded-xl px-2.5 py-2 text-emerald-700 dark:text-emerald-300">
++                <Unlock className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
++                مفتوح (فسّر، اشرح، علّل، صادق، انقد، فرضية، نص) ← ١٢٣٤
++              </div>
++            </div>
++          </div>
++
++          {/* Règle d'or + temps */}
++          <p className="text-center text-[11px] md:text-[12px] font-black text-[#944a00] dark:text-amber-300 bg-[#fff9ed] dark:bg-amber-950/30 border border-[#fed65b]/40 rounded-xl px-3 py-2.5 mt-3">
+             {REGLE_D_OR_AR}
+           </p>
+-          <p className="text-center text-[10px] text-gray-400 dark:text-gray-500 font-bold mt-2">
+-            سيظهر لك هذا الدرس في «منهجية الإجابة» على شكل بوصلة تدور مع كل مرحلة — ولن تضلّ بعد اليوم.
++          <p className="text-center text-[10px] text-gray-400 dark:text-gray-500 font-bold mt-2 flex items-center justify-center gap-1">
++            <Sparkles className="w-3 h-3" /> {TIME_RULE_AR}
+           </p>
+         </div>
+ 
+@@ -94,7 +98,7 @@ export default function BoussoleIntroModal({ open, onClose, onStart }: Props) {
+             onClick={onClose}
+             className="flex-1 sm:flex-none px-6 py-3.5 rounded-2xl font-black text-sm text-gray-600 dark:text-gray-300 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors cursor-pointer"
+           >
+-            لاحقاً
++            لاحقًا
+           </button>
+         </div>
+       </div>
+diff --git a/src/components/BoussolePanel.tsx b/src/components/BoussolePanel.tsx
+index 6eaf58e..f31795f 100644
+--- a/src/components/BoussolePanel.tsx
++++ b/src/components/BoussolePanel.tsx
+@@ -1,11 +1,15 @@
+ import React from 'react';
+-import { Compass, Anchor, Wind, ChevronDown, ChevronUp } from 'lucide-react';
+-import CompassRose from './CompassRose';
+-import { BOUSSOLE_CAPS, capForStage, REGLE_D_OR_AR, BoussoleCap } from '../data/boussoleData';
++import { Compass, Anchor, ChevronDown, ChevronUp, KeyRound, Timer, Sparkles } from 'lucide-react';
++import {
++  BOUSSOLE_STEPS, getStep, getSwitchForVerb, getSpecialFormatForVerb,
++  switchPathAr, REGLE_D_OR_AR, TIME_RULE_AR, FINGERS_RITUAL_AR,
++  SWITCH_QUESTION_AR, SELF_CHECKS,
++} from '../data/boussoleData';
+ import { getNavigatorGrade, NavigatorGrade } from '../utils/methodologyLog';
+ 
+ interface Props {
+-  activeStage: number; // 1..4
++  activeLevel: number;   // 1..4 (niveau d'aide)
++  verbId: string;
+ }
+ 
+ const GRADE_STYLE: Record<NavigatorGrade['key'], { ring: string; text: string; bg: string }> = {
+@@ -16,50 +20,13 @@ const GRADE_STYLE: Record<NavigatorGrade['key'], { ring: string; text: string; b
+   admiral:   { ring: 'border-amber-500/60',                         text: 'text-amber-700 dark:text-amber-300',     bg: 'bg-amber-50 dark:bg-amber-950/40' },
+ };
+ 
+-function CapCard({ cap, active, done }: { cap: BoussoleCap; active: boolean; done: boolean; key?: string }) {
+-  return (
+-    <div
+-      className={`rounded-xl border p-3 space-y-1.5 transition-all duration-300 ${
+-        active
+-          ? 'bg-white dark:bg-[#161c18] shadow-md scale-[1.02]'
+-          : 'bg-gray-50/70 dark:bg-gray-900/40 opacity-75'
+-      }`}
+-      style={{ borderColor: active ? cap.color : '#e5e7eb' }}
+-    >
+-      <div className="flex items-center justify-between gap-1">
+-        <div className="flex items-center gap-1.5 min-w-0">
+-          <span
+-            className="w-6 h-6 shrink-0 rounded-lg text-white flex items-center justify-center text-[11px] font-black"
+-            style={{ backgroundColor: cap.color }}
+-          >
+-            {cap.num}
+-          </span>
+-          <span className="font-black text-[12px] text-gray-900 dark:text-white truncate" style={{ color: active ? cap.color : undefined }}>
+-            {cap.ar} · {cap.word}
+-          </span>
+-        </div>
+-        {done && <span className="text-[10px] font-black text-emerald-600 dark:text-emerald-400 shrink-0">✓</span>}
+-      </div>
+-
+-      {/* question mécanique */}
+-      <p className="text-[11px] font-black text-gray-700 dark:text-gray-300 leading-snug">
+-        « {cap.questionAr} »
+-      </p>
+-
+-      {/* geste + micro-actions */}
+-      <div className="flex items-start gap-1.5">
+-        <span className="text-base leading-none">{cap.icon}</span>
+-        <div className="text-[9.5px] text-gray-500 dark:text-gray-400 font-bold leading-snug">
+-          {cap.gestureAr} · {cap.stepsAr.length} أشياء
+-        </div>
+-      </div>
+-    </div>
+-  );
+-}
+-
+-export default function BoussolePanel({ activeStage }: Props) {
++export default function BoussolePanel({ activeLevel, verbId }: Props) {
+   const [open, setOpen] = React.useState(true);
+-  const activeCap = capForStage(activeStage);
++  const [expandedStep, setExpandedStep] = React.useState<number | null>(null);
++
++  const switchState = getSwitchForVerb(verbId);
++  const isOpen = switchState === 'open';
++  const special = getSpecialFormatForVerb(verbId);
+   const grade = getNavigatorGrade();
+   const gs = GRADE_STYLE[grade.key];
+ 
+@@ -76,25 +43,21 @@ export default function BoussolePanel({ activeStage }: Props) {
+           </div>
+           <div className="min-w-0 text-right">
+             <h3 className="font-black text-sm md:text-base text-gray-900 dark:text-white flex items-center gap-2 flex-wrap">
+-              <span>بوصلة الإجابة NSOE</span>
++              <span>بوصلة الإجابة</span>
+               <span className="text-[10px] font-black text-emerald-700 bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 rounded-full px-2 py-0.5">
+-                شمال · جنوب · غرب · شرق
++                4 خطوات · مفتاح واحد
+               </span>
+             </h3>
+             <p className="text-[10px] md:text-[11px] text-gray-500 dark:text-gray-400 font-bold truncate">
+-              قبل كل إجابة: انظر ← اجمع ← اغص ← أشرق — وكل مرحلة من المحاكي تسمّى كاباً
++              اقرأ · اجمع · اربط · اختم — والمفتاح: هل يسمح الفعل بـ«لأنّ»؟
+             </p>
+           </div>
+         </div>
+ 
+         <div className="flex items-center gap-2 shrink-0">
+-          {/* Rang du navigateur */}
+-          <span
+-            className={`hidden sm:inline-flex items-center gap-1.5 border rounded-full px-2.5 py-1 text-[10px] font-black ${gs.ring} ${gs.text} ${gs.bg}`}
+-            title={grade.conditionAr}
+-          >
++          <span className={`hidden sm:inline-flex items-center gap-1.5 border rounded-full px-2.5 py-1 text-[10px] font-black ${gs.ring} ${gs.text} ${gs.bg}`} title={grade.conditionAr}>
+             <Anchor className="w-3 h-3" />
+-            رتبتك: {grade.icon} {grade.nameAr}
++            {grade.icon} {grade.nameAr}
+           </span>
+           {open ? <ChevronUp className="w-4 h-4 text-gray-400" /> : <ChevronDown className="w-4 h-4 text-gray-400" />}
+         </div>
+@@ -102,42 +65,121 @@ export default function BoussolePanel({ activeStage }: Props) {
+ 
+       {open && (
+         <div className="border-t border-gray-100 dark:border-gray-800 px-4 md:px-5 py-4 space-y-4">
+-          <div className="flex flex-col md:flex-row items-center gap-4 md:gap-6">
+-            {/* Rose des vents */}
+-            <CompassRose activeCap={activeCap} size={185} />
++          {/* Fil des 4 étapes — segment 3 = lampe du mafteh */}
++          <div>
++            <div className="grid grid-cols-4 gap-1.5">
++              {BOUSSOLE_STEPS.map((step, i) => {
++                const isSwitchStep = step.id === 3;
++                const isActiveStep = expandedStep === step.id;
++                return (
++                  <button
++                    key={step.id}
++                    onClick={() => setExpandedStep(isActiveStep ? null : step.id)}
++                    className={`rounded-xl border-2 px-2 py-2 text-center transition-all cursor-pointer ${
++                      isActiveStep ? 'shadow-md scale-[1.02]' : 'hover:shadow-sm'
++                    }`}
++                    style={{
++                      borderColor: isSwitchStep ? (isOpen ? '#059669' : '#94a3b8') : step.color,
++                      backgroundColor: isActiveStep ? step.colorSoft + '44' : step.colorSoft + '22',
++                    }}
++                    title={step.questionAr}
++                  >
++                    <div className="text-[15px] font-black" style={{ color: step.color }}>{step.id}</div>
++                    <div className="text-[12px] md:text-[13px] font-black text-gray-900 dark:text-white leading-none mt-0.5">
++                      {step.word}
++                    </div>
++                    {/* Lampe du mafteh sur le segment 3 */}
++                    {isSwitchStep && (
++                      <div className={`mt-1 text-[9px] font-black rounded-full px-1 py-0.5 ${isOpen ? 'bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300' : 'bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300'}`}>
++                        {isOpen ? '🔑 مفتوح ✓' : '🔑 مغلق ✗'}
++                      </div>
++                    )}
++                  </button>
++                );
++              })}
++            </div>
++            <p className="text-[9.5px] text-gray-400 dark:text-gray-500 font-bold mt-1.5 text-center">
++              {FINGERS_RITUAL_AR} · المستوى {activeLevel}/4: {activeLevel === 1 ? 'مع النموذج' : activeLevel === 2 ? 'الإكمال' : activeLevel === 3 ? 'كتابة بالبطاقة' : 'بكالوريا'}
++            </p>
++          </div>
++
++          {/* Détail de l'étape cliquée (ou étapes 2-3-4 en continu) */}
++          <div className="space-y-2">
++            {(expandedStep !== null ? [getStep(expandedStep as 1 | 2 | 3 | 4)] : BOUSSOLE_STEPS).map(step => {
++              const active = expandedStep === step.id;
++              return (
++                <div
++                  key={step.id}
++                  className={`rounded-xl border p-3 ${active ? '' : 'border-gray-150 dark:border-gray-800'}`}
++                  style={active ? { borderColor: step.color, backgroundColor: step.colorSoft + '22' } : undefined}
++                >
++                  <div className="flex items-center gap-2 flex-wrap">
++                    <span className="w-6 h-6 shrink-0 rounded-lg text-white flex items-center justify-center text-[11px] font-black" style={{ backgroundColor: step.color }}>
++                      {step.id}
++                    </span>
++                    <span className="font-black text-[13px] text-gray-900 dark:text-white">{step.word}</span>
++                    <span className="text-[10px] font-bold text-gray-400">{step.whereAr}</span>
++                    <span className="text-[11px] font-black mr-auto" style={{ color: step.color }}>« {step.questionAr} »</span>
++                  </div>
++                  {step.templateAr && (
++                    <p className={`mt-1.5 text-[11px] font-black rounded-lg px-2.5 py-1.5 ${step.id === 3 && !isOpen ? 'bg-slate-100 dark:bg-slate-800/70 text-slate-500 line-through' : 'bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 text-gray-800 dark:text-gray-200'}`} dir="rtl">
++                      ✍️ {step.templateAr}
++                    </p>
++                  )}
++                  <div className="flex flex-wrap gap-x-3 gap-y-0.5 mt-1.5 text-[10px] font-bold text-gray-600 dark:text-gray-400">
++                    {step.actionsAr.map((a, i) => <span key={i} className="flex items-center gap-1"><Sparkles className="w-2.5 h-2.5" style={{ color: step.color }} />{a}</span>)}
++                    {step.interditAr.map((x, i) => <span key={i} className="text-red-500">🚫 {x}</span>)}
++                  </div>
++                  {step.noteAr && <p className="mt-1 text-[9.5px] text-gray-400 font-bold">💡 {step.noteAr}</p>}
++                </div>
++              );
++            })}
++          </div>
++
++          {/* 🔑 L'interrupteur pour CE verbe */}
++          <div className={`rounded-xl border-2 p-3.5 ${isOpen ? 'border-emerald-400/60 bg-emerald-50/60 dark:bg-emerald-950/20' : 'border-slate-300 dark:border-slate-600 bg-slate-50 dark:bg-slate-800/40'}`}>
++            <div className="flex items-center gap-2 flex-wrap">
++              <KeyRound className={`w-4 h-4 ${isOpen ? 'text-emerald-600' : 'text-slate-500'}`} />
++              <span className="font-black text-[12px] text-gray-900 dark:text-white">
++                🔑 {SWITCH_QUESTION_AR}
++              </span>
++              <span className={`text-[10px] font-black rounded-full px-2 py-0.5 ${isOpen ? 'bg-emerald-600 text-white' : 'bg-slate-500 text-white'}`}>
++                {isOpen ? 'مفتوح: أُعلِّل (مسار ١٢٣٤)' : 'مغلق: أصفّ فقط (مسار ١٢٤)'}
++              </span>
++            </div>
++            <p className="text-[10px] font-bold text-gray-600 dark:text-gray-400 mt-1">
++              {isOpen
++                ? 'لهذا الفعل: «وهذا لأنّ … وبالتالي …» مطلوبة — لا تأكيد بلا سبب.'
++                : 'لهذا الفعل: أيّ «لأنّ» أو «يدلّ على» هنا = نقاط مفقودة. صِف ثم اختم.'}
++            </p>
++          </div>
+ 
+-            {/* 4 caps */}
+-            <div className="flex-1 w-full">
+-              <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5">
+-                {BOUSSOLE_CAPS.map(cap => (
+-                  <CapCard
+-                    key={cap.id}
+-                    cap={cap}
+-                    active={activeCap === cap.id}
+-                    done={BOUSSOLE_CAPS.findIndex(c => c.id === activeCap) > BOUSSOLE_CAPS.findIndex(c => c.id === cap.id)}
+-                  />
+-                ))}
+-              </div>
++          {/* Format spécial (habillage) */}
++          {special && (
++            <div className="rounded-xl border border-violet-300/60 bg-violet-50/60 dark:bg-violet-950/20 p-3.5">
++              <p className="text-[11px] font-black text-violet-800 dark:text-violet-300">📋 شكل خاص — نفس الخطوات، تغيير العرض:</p>
++              <p className="text-[10.5px] font-bold text-gray-700 dark:text-gray-300 mt-0.5">{special.whatChangesAr}</p>
++              <p className="text-[10px] font-black text-violet-700 dark:text-violet-400 mt-1">✓ فحصه: {special.specialCheckAr}</p>
++            </div>
++          )}
+ 
+-              {/* Moteurs des caps (phrase de passage) */}
+-              <p className="text-center text-[10px] md:text-[11px] text-gray-500 dark:text-gray-400 font-bold mt-3 px-2">
+-                {activeCap
+-                  ? BOUSSOLE_CAPS.find(c => c.id === activeCap)?.questionAr
+-                  : 'اختر مرحلة لتوجيه البوصلة'} —{' '}
+-                <span className="text-[#006d37] dark:text-[#2ecc71]">
+-                  {activeCap ? BOUSSOLE_CAPS.find(c => c.id === activeCap)?.motorAr : ''}
++          {/* Vérification = mêmes étapes à l'envers */}
++          <div className="bg-[#f8fafc] dark:bg-gray-900/50 border border-gray-200 dark:border-gray-800 rounded-xl p-3">
++            <p className="text-[10.5px] font-black text-gray-700 dark:text-gray-300 mb-1">✅ الفحص = الخطوات نفسها من الأخير إلى الأول:</p>
++            <div className="flex flex-wrap gap-x-4 gap-y-0.5">
++              {SELF_CHECKS.map(c => (
++                <span key={c.step} className="text-[9.5px] font-bold text-gray-500 dark:text-gray-400">
++                  {c.step}. {c.checkAr}
+                 </span>
+-              </p>
++              ))}
+             </div>
+           </div>
+ 
+-          {/* Règle d'or */}
++          {/* Règle d'or + temps */}
+           <div className="flex flex-col sm:flex-row items-center justify-between gap-2 bg-[#fff9ed] dark:bg-[#161c18] border border-[#fed65b]/40 rounded-xl px-4 py-2.5">
+-            <p className="text-[11px] md:text-[12px] font-black text-[#944a00] dark:text-amber-300 text-center flex-1">
+-              {REGLE_D_OR_AR}
+-            </p>
++            <p className="text-[11px] md:text-[12px] font-black text-[#944a00] dark:text-amber-300 text-center flex-1">{REGLE_D_OR_AR}</p>
+             <span className="flex items-center gap-1 text-[9px] font-black text-gray-400 shrink-0">
+-              <Wind className="w-3 h-3" /> رياح معاكسة؟ عد إلى البوصلة
++              <Timer className="w-3 h-3" /> {TIME_RULE_AR}
+             </span>
+           </div>
+         </div>
+diff --git a/src/components/CompassRose.tsx b/src/components/CompassRose.tsx
+deleted file mode 100644
+index 493cd94..0000000
+--- a/src/components/CompassRose.tsx
++++ /dev/null
+@@ -1,98 +0,0 @@
+-import React from 'react';
+-import { BOUSSOLE_CAPS, CapId } from '../data/boussoleData';
+-
+-interface Props {
+-  activeCap: CapId | null;
+-  size?: number;
+-}
+-
+-// Angle (degrés, sens horaire depuis le nord) pour chaque cap
+-const CAP_ANGLE: Record<CapId, number> = { north: 0, south: 180, west: 270, east: 90 };
+-
+-// Positions des 4 points cardinaux (centre 110,110, rayon ~86)
+-const CAP_POS: Record<CapId, { x: number; y: number; lx: number; ly: number }> = {
+-  north: { x: 110, y: 42, lx: 110, ly: 16 },
+-  south: { x: 110, y: 178, lx: 110, ly: 204 },
+-  west:  { x: 42,  y: 110, lx: 20,  ly: 114 },
+-  east:  { x: 178, y: 110, lx: 202, ly: 114 },
+-};
+-
+-/**
+- * Rose des vents de la réponse (بوصلة الإجابة).
+- * L'aiguille tourne doucement vers le cap actif ; le cap actif s'illumine.
+- */
+-export default function CompassRose({ activeCap, size = 190 }: Props) {
+-  const angle = activeCap ? CAP_ANGLE[activeCap] : 0;
+-
+-  return (
+-    <svg
+-      viewBox="0 0 220 220"
+-      width="100%"
+-      style={{ maxWidth: size }}
+-      role="img"
+-      aria-label="بوصلة الإجابة — شمال جنوب غرب شرق"
+-      className="select-none shrink-0"
+-    >
+-      {/* Cercles */}
+-      <circle cx="110" cy="110" r="103" fill="#f8fafc" stroke="#cbd5e1" strokeWidth="2" />
+-      <circle cx="110" cy="110" r="86" fill="none" stroke="#e2e8f0" strokeWidth="1.5" strokeDasharray="4 6" />
+-
+-      {/* Points cardinaux (numéros + labels arabes) */}
+-      {BOUSSOLE_CAPS.map(cap => {
+-        const pos = CAP_POS[cap.id];
+-        const active = activeCap === cap.id;
+-        return (
+-          <g key={cap.id} style={{ transition: 'opacity .4s' }}>
+-            {/* halo du cap actif */}
+-            <circle
+-              cx={pos.x}
+-              cy={pos.y}
+-              r={19}
+-              fill="none"
+-              stroke={cap.color}
+-              strokeWidth={3}
+-              opacity={active ? 1 : 0}
+-              style={{ transition: 'opacity .5s' }}
+-            />
+-            <circle cx={pos.x} cy={pos.y} r={14} fill={cap.color} />
+-            <text x={pos.x} y={pos.y + 5} fontSize="13" fontWeight="900" fill="#fff" textAnchor="middle">
+-              {cap.num}
+-            </text>
+-            {/* label arabe */}
+-            <text
+-              x={pos.lx}
+-              y={pos.ly + 4}
+-              fontSize="12"
+-              fontWeight="800"
+-              fill={cap.color}
+-              textAnchor="middle"
+-              fontFamily="Tahoma, sans-serif"
+-              opacity={active ? 1 : 0.75}
+-            >
+-              {cap.ar}
+-            </text>
+-          </g>
+-        );
+-      })}
+-
+-      {/* Aiguille — pointe vers le cap actif (rotation fluide CSS) */}
+-      <g
+-        style={{
+-          transform: `rotate(${angle}deg)`,
+-          transformOrigin: '110px 110px',
+-          transition: 'transform 900ms cubic-bezier(0.45, 0.05, 0.2, 1)',
+-        }}
+-      >
+-        <polygon points="110,26 102,64 110,92" fill="#1d4ed8" />
+-        <polygon points="110,26 118,64 110,92" fill="#dc2626" />
+-        <circle cx="110" cy="110" r="11" fill="#00401f" />
+-        <circle cx="110" cy="110" r="5" fill="#fed65b" />
+-      </g>
+-
+-      {/* Petit repère central de direction */}
+-      <text x="110" y="222" fontSize="9" fontWeight="700" fill="#94a3b8" textAnchor="middle" fontFamily="Tahoma, sans-serif">
+-        دع البوصلة تطمئنك: عُدْ إلى الشمال إن ضللت
+-      </text>
+-    </svg>
+-  );
+-}
+diff --git a/src/components/MethodologyCompilerView.tsx b/src/components/MethodologyCompilerView.tsx
+index 8f45036..8fec4a7 100644
+--- a/src/components/MethodologyCompilerView.tsx
++++ b/src/components/MethodologyCompilerView.tsx
+@@ -4,7 +4,7 @@ import {
+   Target, Sparkles, BookOpen, Layers, CheckCircle2, AlertTriangle, 
+   Clock, ShieldAlert, ArrowLeft, ArrowRight, RotateCcw, 
+   HelpCircle, Check, X, Award, ChevronDown, ChevronUp, Cpu, 
+-  Calendar, FileText, CheckSquare, Zap, Eye, Lightbulb, Compass
++  Calendar, FileText, CheckSquare, Zap, Eye, Lightbulb, Compass, KeyRound
+ } from 'lucide-react';
+ import { 
+   VERB_CARDS, UNIVERSAL_GRAMMAR_RULES, TRAINING_EXERCISES, 
+@@ -14,8 +14,8 @@ import { evaluateStudentProduction, ScoreReport } from '../utils/methodologyScor
+ import { logProduction, getProductionLogs, getVerbEvolution, VerbEvolutionStats, ProductionLogEntry, ERROR_TAG_LABELS_AR } from '../utils/methodologyLog';
+ import ProductionEvolutionPanel from './ProductionEvolutionPanel';
+ import BoussolePanel from './BoussolePanel';
+-import RitualCompassModal from './RitualCompassModal';
+-import { BOUSSOLE_CAPS, BOUSSOLE_STAGES_META, groupErrorsByCap } from '../data/boussoleData';
++import SwitchGateModal from './SwitchGateModal';
++import { AID_LEVELS, getStep, getSwitchForVerb, groupErrorsByAddress, ERROR_REMEDY_MAP, SWITCH_QUESTION_AR, SwitchState } from '../data/boussoleData';
+ 
+ interface MethodologyProps {
+   onBackToHome?: () => void;
+@@ -60,8 +60,9 @@ export default function MethodologyCompilerView({ onBackToHome }: MethodologyPro
+   // Carnet de bord : historique des productions & diagnostic d'évolution
+   const [evolutionVersion, setEvolutionVersion] = useState(0); // bump pour rafraîchir le diagnostic
+ 
+-  // Rituel du navigateur : 30 s avant le cap EST (stade 4)
+-  const [showRitual, setShowRitual] = useState(false);
++  // بوابة المفتاح : une seule question avant d'écrire (niveaux 3 et 4)
++  const [showSwitchGate, setShowSwitchGate] = useState(false);
++  const [switchChoice, setSwitchChoice] = useState<SwitchState | null>(null);
+ 
+   // Local storage stats & matrix
+   const [matrixScores, setMatrixScores] = useState<Record<string, Record<string, number>>>({
+@@ -194,9 +195,12 @@ export default function MethodologyCompilerView({ onBackToHome }: MethodologyPro
+     }
+   };
+ 
+-  // Rituel NSOE : à chaque entrée dans le cap EST (stade 4), la boussole se déploie 30 s
++  // بوابة المفتاح : 10 secondes avant toute écriture (niveaux 3 et 4)
+   useEffect(() => {
+-    if (currentStage === 4) setShowRitual(true);
++    if (currentStage === 3 || currentStage === 4) {
++      setSwitchChoice(null);
++      setShowSwitchGate(true);
++    }
+   }, [currentStage]);
+ 
+   // Reprendre un brouillon archivé (diagnostic → simulateur)
+@@ -222,6 +226,7 @@ export default function MethodologyCompilerView({ onBackToHome }: MethodologyPro
+ 
+   // Reset exercise
+   const handleResetExercise = () => {
++    setSwitchChoice(null);
+     setStudentText('');
+     setHighlightedSteps({});
+     setClozeAnswers({});
+@@ -279,7 +284,7 @@ export default function MethodologyCompilerView({ onBackToHome }: MethodologyPro
+             }`}
+           >
+             <Zap className="w-4 h-4" />
+-            <span>بوصلة NSOE · المحاكي</span>
++            <span>بوصلة الإجابة · المحاكي</span>
+           </button>
+ 
+           <button
+@@ -303,7 +308,7 @@ export default function MethodologyCompilerView({ onBackToHome }: MethodologyPro
+             }`}
+           >
+             <Layers className="w-4 h-4" />
+-            <span>مصفوفة الإتقان وخريطة الرياح</span>
++            <span>مصفوفة الإتقان ودفتر الأخطاء</span>
+           </button>
+ 
+           <button
+@@ -379,8 +384,7 @@ export default function MethodologyCompilerView({ onBackToHome }: MethodologyPro
+ 
+             {/* 4 Stages Pills */}
+             <div className="grid grid-cols-2 md:grid-cols-4 gap-2 pt-2">
+-              {BOUSSOLE_STAGES_META.map(st => {
+-                const capColor = BOUSSOLE_CAPS[st.num - 1].color;
++              {AID_LEVELS.map(st => {
+                 const active = currentStage === st.num;
+                 return (
+                 <button
+@@ -388,19 +392,18 @@ export default function MethodologyCompilerView({ onBackToHome }: MethodologyPro
+                   onClick={() => handleSelectStage(st.num as any)}
+                   className={`p-3 rounded-xl border text-right transition-all flex flex-col justify-between ${
+                     active
+-                      ? 'bg-emerald-50/60 dark:bg-emerald-950/30 shadow-sm'
++                      ? 'bg-emerald-50/60 dark:bg-emerald-950/30 border-emerald-500 shadow-sm ring-2 ring-emerald-500/20'
+                       : 'bg-gray-50 dark:bg-gray-800/40 border-gray-200 dark:border-gray-700 hover:border-gray-300'
+                   }`}
+-                  style={{ borderColor: active ? capColor : undefined, boxShadow: active ? '0 0 0 2px ' + capColor + '22' : undefined }}
+                 >
+                   <div className="flex items-center justify-between mb-1">
+                     <span className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-black ${
+-                      active ? 'text-white' : 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300'
+-                    }`} style={{ backgroundColor: active ? capColor : undefined }}>
++                      active ? 'bg-emerald-600 text-white' : 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300'
++                    }`}>
+                       {st.num}
+                     </span>
+                     {active && (
+-                      <span className="text-[10px] text-white px-2 py-0.5 rounded-full font-bold" style={{ backgroundColor: capColor }}>كاب الآن</span>
++                      <span className="text-[10px] bg-emerald-600 text-white px-2 py-0.5 rounded-full font-bold">النشط</span>
+                     )}
+                   </div>
+                   <div>
+@@ -456,8 +459,8 @@ export default function MethodologyCompilerView({ onBackToHome }: MethodologyPro
+             </div>
+           </div>
+ 
+-          {/* BOUSSOLE NSOE : rose des vents + rituel des 4 caps + grade */}
+-          <BoussolePanel activeStage={currentStage} />
++          {/* BOUSSOLE v2 : 4 étapes + mafteh + niveaux d'aide */}
++          <BoussolePanel activeLevel={currentStage} verbId={selectedVerbId} />
+ 
+           {/* STAGE 1: MODELAGE (النمذجة بالخطوات والألوان) */}
+           {currentStage === 1 && (
+@@ -466,7 +469,7 @@ export default function MethodologyCompilerView({ onBackToHome }: MethodologyPro
+                 <div>
+                   <h3 className="text-base md:text-lg font-black text-gray-900 dark:text-white flex items-center gap-2">
+                     <Eye className="w-5 h-5 text-blue-600" />
+-                    <span>المرحلة 1 — كاب الشمال «انْظُرْ»: النمذجة (استكشاف خطوات الإجابة النموذجية)</span>
++                    <span>المستوى 1 — مَعَ النَّمُوذَج: استكشاف خطوات الإجابة النموذجية</span>
+                   </h3>
+                   <p className="text-xs md:text-sm text-gray-500 dark:text-gray-400 mt-1">
+                     اقرأ إجابة الخبير، وانقر على الأجزاء لتحديد كل خطوة من خطوات هيكل الفعل.
+@@ -546,7 +549,7 @@ export default function MethodologyCompilerView({ onBackToHome }: MethodologyPro
+                 <div>
+                   <h3 className="text-base md:text-lg font-black text-gray-900 dark:text-white flex items-center gap-2">
+                     <CheckSquare className="w-5 h-5 text-emerald-600" />
+-                    <span>المرحلة 2 — كاب الجنوب «اجْمَعْ»: الإكمال (الشكل جاهز والمجهود على المضمون)</span>
++                    <span>المستوى 2 — إكْمالُ الفَراغات: الشكل جاهز والمجهود على المضمون</span>
+                   </h3>
+                   <p className="text-xs md:text-sm text-gray-500 dark:text-gray-400 mt-1">
+                     الروابط المنهجية موجودة سلفاً، املأ الفراغات بالمعطيات العلمية والوحدات المطلوبة.
+@@ -611,7 +614,7 @@ export default function MethodologyCompilerView({ onBackToHome }: MethodologyPro
+                     <div className="flex items-center justify-between">
+                       <div className="flex items-center gap-2">
+                         <Clock className="w-5 h-5 animate-pulse" />
+-                        <span className="font-black text-sm">كاب الشرق «أَشْرِقْ» — محاكاة البكالوريا (توقيت رسمي)</span>
++                        <span className="font-black text-sm">المستوى 4 — بَكالوريا (توقيت رسمي)</span>
+                       </div>
+                       <div className="font-mono text-xl font-black bg-black/30 px-3 py-1 rounded-xl">
+                         {Math.floor(timerSeconds / 60)}:{(timerSeconds % 60).toString().padStart(2, '0')}
+@@ -813,40 +816,61 @@ export default function MethodologyCompilerView({ onBackToHome }: MethodologyPro
+                 </div>
+               </div>
+ 
+-              {/* Rapport de bord NSOE : où le voyage a dévié */}
+-              <div className="bg-gradient-to-l from-slate-900 via-slate-800 to-slate-900 text-white rounded-2xl p-4 space-y-3 border border-slate-700">
++              {/* Rapport de correction بوصلة : 5 lignes — مفتاح + 4 خطوات */}
++              <div className="bg-gradient-to-l from-slate-900 via-slate-800 to-slate-900 text-white rounded-2xl p-4 space-y-2 border border-slate-700">
+                 <div className="flex flex-wrap items-center justify-between gap-2">
+                   <h4 className="font-black text-sm flex items-center gap-2">
+                     <Compass className="w-4 h-4 text-[#fed65b]" />
+-                    <span>تقرير الملاحة NSOE</span>
++                    <span>تقرير البوصلة — 4 خطوات + مفتاح</span>
+                   </h4>
+-                  <span className="text-[10px] font-bold text-slate-300">كل خطأ منهجي = ريح معاكسة في كاب معيّن</span>
++                  <span className="text-[10px] font-bold text-slate-300">نفس العلامة، لكنها مُعنونة بالخطوة التي انحرفت فيها</span>
+                 </div>
+-                <div className="grid grid-cols-2 lg:grid-cols-4 gap-2">
+-                  {groupErrorsByCap(scoreReport.detectedErrors.map(e => e.tag)).map(capRes => {
+-                    const cap = BOUSSOLE_CAPS.find(c => c.id === capRes.capId)!;
+-                    const ok = capRes.tags.length === 0;
++
++                {/* Verdict du مفتاح (choix de l'élève vs réalité du verbe) */}
++                {(() => {
++                  const truth = getSwitchForVerb(selectedVerbId);
++                  const userOk = switchChoice === null ? null : switchChoice === truth;
++                  return (
++                    <div className={`rounded-xl border p-2.5 flex items-center justify-between gap-3 ${userOk === null ? 'bg-slate-500/20 border-slate-400/40' : userOk ? 'bg-emerald-500/10 border-emerald-400/40' : 'bg-amber-500/10 border-amber-400/50'}`}>
++                      <div className="min-w-0">
++                        <div className="text-[11px] font-black flex items-center gap-1.5">
++                          <KeyRound className="w-3.5 h-3.5 text-[#fed65b]" />
++                          <span>🔑 {SWITCH_QUESTION_AR}</span>
++                        </div>
++                        <p className="text-[9.5px] text-slate-200 font-bold leading-snug">
++                          {switchChoice === null
++                            ? 'لم تُجب عن سؤال المفتاح — إنه أهم قرار قبل الكتابة'
++                            : `اخترتَ: ${switchChoice === 'open' ? 'مفتوح (أعلّل)' : 'مغلق (أصفّ فقط)'} — والصحيح لهذا الفعل: ${truth === 'open' ? 'مفتوح: المسار ١٢٣٤' : 'مغلق: المسار ١٢٤'}`}
++                        </p>
++                      </div>
++                      <span className={`text-lg font-black shrink-0 ${userOk === null ? 'text-slate-300' : userOk ? 'text-emerald-400' : 'text-amber-400'}`}>
++                        {userOk === null ? '؟' : userOk ? '✓' : '✗'}
++                      </span>
++                    </div>
++                  );
++                })()}
++
++                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-1.5">
++                  {groupErrorsByAddress(scoreReport.detectedErrors.map(e => e.tag)).map(g => {
++                    const ok = g.tags.length === 0;
++                    const step = g.address === 'switch' ? null : getStep(g.address as 1 | 2 | 3 | 4);
+                     return (
+-                      <div
+-                        key={capRes.capId}
+-                        className={`rounded-xl p-2.5 border ${ok ? 'bg-emerald-500/10 border-emerald-400/40' : 'bg-red-500/10 border-red-400/40'}`}
+-                      >
++                      <div key={String(g.address)} className={`rounded-xl p-2.5 border ${ok ? 'bg-emerald-500/10 border-emerald-400/40' : 'bg-red-500/10 border-red-400/40'}`}>
+                         <div className="flex items-center justify-between mb-1">
+-                          <span className="text-[11px] font-black" style={{ color: ok ? '#6ee7b7' : '#fca5a5' }}>
+-                            {cap.num}. {cap.ar} · {cap.word}
+-                          </span>
+-                          <span className={`text-sm font-black ${ok ? 'text-emerald-400' : 'text-red-400'}`}>
+-                            {ok ? '✓' : '✗'}
++                          <span className="text-[11px] font-black flex items-center gap-1" style={{ color: ok ? '#6ee7b7' : '#fca5a5' }}>
++                            {g.address === 'switch' ? '🔑 المفتاح' : `${g.address}. ${step!.word}`}
+                           </span>
++                          <span className={`text-sm font-black ${ok ? 'text-emerald-400' : 'text-red-400'}`}>{ok ? '✓' : '✗'}</span>
+                         </div>
+                         {ok ? (
+-                          <p className="text-[9px] text-emerald-300/90 font-bold">إبحار سليم — لا رياح معاكسة</p>
++                          <p className="text-[9px] text-emerald-300/90 font-bold">سليم</p>
+                         ) : (
+-                          <div className="space-y-0.5">
+-                            {capRes.tags.map(tag => (
+-                              <p key={tag} className="text-[9px] text-red-200 font-bold leading-snug">
+-                                🌬 {ERROR_TAG_LABELS_AR[tag] || tag}
+-                              </p>
++                          <div className="space-y-1">
++                            {g.tags.map(tag => (
++                              <div key={tag}>
++                                <p className="text-[9px] text-red-200 font-bold leading-snug">{ERROR_TAG_LABELS_AR[tag] || tag}</p>
++                                <p className="text-[8.5px] text-amber-200/90 font-bold leading-snug">الدواء: {ERROR_REMEDY_MAP[tag] || ''}</p>
++                              </div>
+                             ))}
+                           </div>
+                         )}
+@@ -855,7 +879,7 @@ export default function MethodologyCompilerView({ onBackToHome }: MethodologyPro
+                   })}
+                 </div>
+                 <p className="text-[9.5px] text-slate-300 font-bold leading-relaxed">
+-                  🌫️ عادت البوصلة إلى الشرق: حتى لو انحرفتَ في كاب، راجع الفحوصات الأربعة في الشرق — وحدة ✓ فعل ✓ سند ✓ خاتمة ✓
++                  ✅ الفحص = الخطوات نفسها من الأخير إلى الأول: ٤ خاتمة تُجيب المطلوب · ٣ كل تأكيد له «لأنّ» · ٢ الوثيقة والوحدة · ١ الفعل محترم
+                 </p>
+               </div>
+ 
+@@ -1280,10 +1304,11 @@ export default function MethodologyCompilerView({ onBackToHome }: MethodologyPro
+         </section>
+       )}
+ 
+-      {/* Rituel NSOE : 30 s avant le cap EST */}
+-      <RitualCompassModal
+-        open={showRitual}
+-        onComplete={() => setShowRitual(false)}
++      {/* بوابة المفتاح : 10 s, la seule décision avant d'écrire */}
++      <SwitchGateModal
++        open={showSwitchGate}
++        verbAr={currentVerb.verbAr}
++        onDecide={(choice) => { setSwitchChoice(choice); setShowSwitchGate(false); }}
+       />
+     </div>
+   );
+diff --git a/src/components/MethodologyGlobalStats.tsx b/src/components/MethodologyGlobalStats.tsx
+index f60d746..3d2f6bf 100644
+--- a/src/components/MethodologyGlobalStats.tsx
++++ b/src/components/MethodologyGlobalStats.tsx
+@@ -1,7 +1,7 @@
+ import React, { useMemo } from 'react';
+ import {
+   PenLine, TrendingUp, TrendingDown, Award, BarChart2, AlertTriangle,
+-  Target, NotebookPen, CheckCircle2, Anchor, Compass, Wind
++  Target, NotebookPen, CheckCircle2, Anchor, Compass, KeyRound
+ } from 'lucide-react';
+ import {
+   LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid,
+@@ -11,7 +11,7 @@ import {
+   getProductionLogs, getAllVerbStats, getNavigatorGrade, ERROR_TAG_LABELS_AR
+ } from '../utils/methodologyLog';
+ import { VERB_CARDS } from '../data/methodologyEngine';
+-import { BOUSSOLE_CAPS, VENT_CAP_MAP, CapId } from '../data/boussoleData';
++import { getStep, ERROR_ADDRESS_MAP, ERROR_REMEDY_MAP, errorAddressAr, ErrorAddress } from '../data/boussoleData';
+ 
+ interface Props {
+   onNavigate?: (tab: string) => void;
+@@ -71,21 +71,26 @@ export default function MethodologyGlobalStats({ onNavigate }: Props) {
+     .slice(0, 5);
+   const maxErr = topErrors[0]?.count || 1;
+ 
+-  // --- Rang de navigateur (boussole NSOE) : calculé depuis le carnet réel ---
++  // --- Rang de navigateur (boussole) : calculé depuis le carnet réel ---
+   const grade = getNavigatorGrade();
+ 
+-  // --- Carte des vents : chaque erreur souffle dans un cap précis ---
+-  const windsByCap: Record<CapId, { tag: string; count: number }[]> = { north: [], south: [], west: [], east: [] };
++  // --- Carte des erreurs : chaque erreur a UNE adresse (étape 1-4 ou 🔑) ---
++  const errsByAddr: Record<ErrorAddress, { tag: string; count: number }[]> = { 1: [], 2: [], 3: [], 4: [], switch: [] };
+   logs.forEach(l => l.errorTags.forEach(tag => {
+-    const cap = VENT_CAP_MAP[tag];
+-    if (!cap) return;
+-    const arr = windsByCap[cap];
++    const addr = ERROR_ADDRESS_MAP[tag];
++    if (!addr) return;
++    const arr = errsByAddr[addr];
+     const found = arr.find(w => w.tag === tag);
+     if (found) found.count += 1;
+     else arr.push({ tag, count: 1 });
+   }));
+-  const totalWinds = logs.reduce((a, l) => a + l.errorTags.length, 0);
+-  const maxWindCount = Math.max(1, ...Object.values(windsByCap).flat().map(w => w.count));
++  const totalErrs = logs.reduce((a, l) => a + l.errorTags.length, 0);
++  const maxErrCount = Math.max(1, ...Object.values(errsByAddr).flat().map(w => w.count));
++  // L'étape la plus faible = la seule priorité de remédiation
++  const weakest = (['1', '2', '3', '4', 'switch'] as ErrorAddress[])
++    .map(a => ({ addr: a, count: errsByAddr[a].reduce((s, w) => s + w.count, 0) }))
++    .sort((a, b) => b.count - a.count)[0];
++  const weakestCount = weakest?.count || 0;
+ 
+   const tooltipStyle = {
+     direction: 'rtl' as const,
+@@ -111,7 +116,7 @@ export default function MethodologyGlobalStats({ onNavigate }: Props) {
+             كل بثول تكتبه في المحاكي (المرحلة 2، 3 أو 4) يُحفظ هنا مع علامته وأخطائه، ليتشكل منحنى تطورك في أفعال الأداء الـ 12. بدون بثول حقيقية نعرض لا شيء — بلا أرقام وهمية.
+           </p>
+           <p className="text-[11px] font-black text-[#944a00] bg-[#fff9ed] border border-[#fed65b]/40 rounded-xl px-3 py-2 mb-4">
+-            {grade.icon} رتبتك الحالية: {grade.nameAr} — اكتب أول رحلة NSOE لبدء اكتساب الرتب
++            {grade.icon} رتبتك الحالية: {grade.nameAr} — اكتب أول إجابة بالبوصلة لبدء اكتساب الرتب
+           </p>
+           <button
+             onClick={() => onNavigate?.('methodology')}
+@@ -136,7 +141,7 @@ export default function MethodologyGlobalStats({ onNavigate }: Props) {
+         </span>
+       </div>
+ 
+-      {/* Rang de navigateur (boussole NSOE) */}
++      {/* Rang de navigateur (boussole) */}
+       <div className="flex flex-wrap items-center justify-between gap-3 bg-gradient-to-l from-[#00401f]/8 to-[#2ecc71]/5 dark:from-[#2ecc71]/10 dark:to-transparent border border-[#006d37]/15 dark:border-[#2ecc71]/15 rounded-2xl px-4 py-3">
+         <div className="flex items-center gap-3">
+           <div className="w-11 h-11 rounded-2xl bg-[#006d37] dark:bg-[#2ecc71]/20 text-white dark:text-[#2ecc71] flex items-center justify-center text-xl shadow-sm">
+@@ -145,7 +150,7 @@ export default function MethodologyGlobalStats({ onNavigate }: Props) {
+           <div>
+             <div className="flex items-center gap-2 flex-wrap">
+               <span className="font-black text-sm text-gray-900 dark:text-white">رتبتك في الملاحة: {grade.nameAr}</span>
+-              <span className="text-[9px] font-black bg-[#006d37]/10 dark:bg-[#2ecc71]/15 text-[#006d37] dark:text-[#2ecc71] rounded-full px-2 py-0.5">NSOE</span>
++              <span className="text-[9px] font-black bg-[#006d37]/10 dark:bg-[#2ecc71]/15 text-[#006d37] dark:text-[#2ecc71] rounded-full px-2 py-0.5">4 خطوات · مفتاح واحد</span>
+             </div>
+             <p className="text-[10px] font-bold text-gray-500 dark:text-gray-400 leading-snug">{grade.conditionAr}</p>
+           </div>
+@@ -235,52 +240,58 @@ export default function MethodologyGlobalStats({ onNavigate }: Props) {
+         </div>
+       </div>
+ 
+-      {/* Carte des vents NSOE : où tes erreurs soufflent */}
++      {/* Carte des erreurs : une adresse par erreur (étape ou مفتاح) */}
+       <div className="space-y-2">
+         <div className="flex items-center justify-between gap-2 flex-wrap">
+           <h4 className="text-xs font-black text-[#1f1c0b] flex items-center gap-1.5">
+-            <Wind className="w-4 h-4 text-[#d97706]" /> خريطة الرياح NSOE — كاب الريح المعاكسة
++            <AlertTriangle className="w-4 h-4 text-amber-500" /> خريطة الأخطاء — حسب خطوات البوصلة
+           </h4>
+           <span className="text-[9.5px] font-black text-gray-400">
+-            {totalWinds} ريح معاكسة مرصودة عبر {totalAttempts} رحلة
++            {totalErrs} خطأ منهجي عبر {totalAttempts} إجابة
+           </span>
+         </div>
+-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5">
+-          {BOUSSOLE_CAPS.map(cap => {
+-            const winds = windsByCap[cap.id];
+-            const clean = winds.length === 0;
++        <div className="grid grid-cols-2 lg:grid-cols-5 gap-2">
++          {(['1', '2', '3', '4', 'switch'] as ErrorAddress[]).map(addr => {
++            const list = errsByAddr[addr];
++            const clean = list.length === 0;
++            const color = addr === 'switch' ? '#7c3aed' : getStep(addr as 1 | 2 | 3 | 4).color;
++            const soft = addr === 'switch' ? '#ede9fe' : getStep(addr as 1 | 2 | 3 | 4).colorSoft;
++            const label = errorAddressAr(addr);
++            const isWeakest = addr === weakest?.addr && weakestCount > 0;
+             return (
+               <div
+-                key={cap.id}
+-                className="rounded-2xl border-2 p-3 space-y-2"
+-                style={{ borderColor: cap.color + (clean ? '33' : '88'), backgroundColor: clean ? cap.colorSoft + '22' : cap.colorSoft + '4d' }}
++                key={addr}
++                className={`relative rounded-2xl border-2 p-3 space-y-2 ${isWeakest ? 'ring-2 ring-amber-400/60' : ''}`}
++                style={{ borderColor: color + (clean ? '33' : '88'), backgroundColor: clean ? soft + '22' : soft + '4d' }}
+               >
++                {isWeakest && (
++                  <span className="absolute -top-2 right-2 text-[8.5px] font-black bg-amber-400 text-white rounded-full px-2 py-0.5">
++                    أولوية العلاج
++                  </span>
++                )}
+                 <div className="flex items-center justify-between gap-1">
+-                  <span className="text-[11px] font-black" style={{ color: cap.color }}>
+-                    {cap.num}. {cap.ar} · {cap.word}
++                  <span className="text-[11px] font-black flex items-center gap-1" style={{ color }}>
++                    {addr === 'switch' ? <KeyRound className="w-3 h-3" /> : null}
++                    {label}
+                   </span>
+                   <span className={`text-[9px] font-black rounded-full px-1.5 py-0.5 ${clean ? 'bg-emerald-100 text-emerald-700' : 'bg-red-100 text-red-600'}`}>
+-                    {clean ? 'إبحار سليم' : `ريح ×${winds.reduce((a, w) => a + w.count, 0)}`}
++                    {clean ? 'سليم' : `أخطاء ×${list.reduce((a, w) => a + w.count, 0)}`}
+                   </span>
+                 </div>
+                 {clean ? (
+-                  <p className="text-[9.5px] font-bold text-emerald-700 leading-snug">✓ لا رياح معاكسة في هذا الكاب</p>
++                  <p className="text-[9.5px] font-bold text-emerald-700 leading-snug">✓ هذه الخطوة سليمة</p>
+                 ) : (
+                   <div className="space-y-1.5">
+-                    {winds.map(w => (
++                    {list.map(w => (
+                       <div key={w.tag}>
+                         <div className="flex items-center justify-between gap-1 mb-0.5">
+-                          <span className="text-[9.5px] font-black text-gray-700 leading-snug">
+-                            🌬 {ERROR_TAG_LABELS_AR[w.tag] || w.tag}
+-                          </span>
++                          <span className="text-[9.5px] font-black text-gray-700 leading-snug">{ERROR_TAG_LABELS_AR[w.tag] || w.tag}</span>
+                           <span className="text-[9px] font-black text-red-500 shrink-0">×{w.count}</span>
+                         </div>
+                         <div className="h-1 w-full bg-red-100/70 rounded-full overflow-hidden">
+-                          <div
+-                            className="h-full rounded-full"
+-                            style={{ width: `${Math.round((w.count / maxWindCount) * 100)}%`, backgroundColor: cap.color }}
+-                          />
++                          <div className="h-full rounded-full" style={{ width: `${Math.round((w.count / maxErrCount) * 100)}%`, backgroundColor: color }} />
+                         </div>
++                        <p className="text-[8.5px] font-bold text-gray-400 leading-snug mt-0.5">الدواء: {ERROR_REMEDY_MAP[w.tag] || ''}</p>
+                       </div>
+                     ))}
+                   </div>
+@@ -289,8 +300,16 @@ export default function MethodologyGlobalStats({ onNavigate }: Props) {
+             );
+           })}
+         </div>
++        {weakestCount > 0 && (
++          <div className="flex items-center gap-2 bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800/50 rounded-xl px-3 py-2.5">
++            <Target className="w-4 h-4 text-amber-500 shrink-0" />
++            <p className="text-[10px] font-black text-amber-800 dark:text-amber-300 leading-snug">
++              تمرينك المقترح في الجلسة القادمة: تقوية «{errorAddressAr(weakest.addr as ErrorAddress)}» — أضعف خطوة في بوصلتك (تمرين دقيق 60 ثانية).
++            </p>
++          </div>
++        )}
+         <p className="text-[9.5px] font-bold text-gray-400 leading-relaxed">
+-          🧭 حتى لو هبت رياح معاكسة في كاب، عد إلى الشرق: فحص الوحدة ✓ الفعل ✓ السند ✓ الخاتمة ✓ — ثم أعد الرحلة ببوصلة أكثر حكمة.
++          ✅ الفحص = الخطوات نفسها من الأخير إلى الأول: ٤ خاتمة تُجيب المطلوب · ٣ كل تأكيد له «لأنّ» · ٢ الوثيقة والوحدة · ١ الفعل محترم
+         </p>
+       </div>
+ 
+diff --git a/src/components/RitualCompassModal.tsx b/src/components/RitualCompassModal.tsx
+deleted file mode 100644
+index 9e64f93..0000000
+--- a/src/components/RitualCompassModal.tsx
++++ /dev/null
+@@ -1,136 +0,0 @@
+-import React, { useEffect, useState, useRef } from 'react';
+-import { Compass, Clock, Play, X } from 'lucide-react';
+-import { BOUSSOLE_CAPS, REGLE_D_OR_AR } from '../data/boussoleData';
+-
+-interface Props {
+-  open: boolean;
+-  onComplete: () => void; // appelé quand le compte à rebours touche 0 OU quand l'élève démarre
+-}
+-
+-const RITUAL_SECONDS = 30;
+-
+-/**
+- * Rituel du navigateur : 30 secondes avant le cap EST (bac chronométré).
+- * L'élève passe les 4 caps en revue (gestes + questions mécaniques),
+- * puis l'aiguille se met en route vers l'est — ou il démarre directement.
+- */
+-export default function RitualCompassModal({ open, onComplete }: Props) {
+-  const [seconds, setSeconds] = useState(RITUAL_SECONDS);
+-  const startedRef = useRef(false);
+-
+-  // Compte à rebours (remis à 30 à chaque ouverture)
+-  useEffect(() => {
+-    if (!open) {
+-      setSeconds(RITUAL_SECONDS);
+-      startedRef.current = false;
+-      return;
+-    }
+-    const id = setInterval(() => setSeconds(s => Math.max(0, s - 1)), 1000);
+-    return () => clearInterval(id);
+-  }, [open]);
+-
+-  // Fin automatique à 0 (une seule fois)
+-  useEffect(() => {
+-    if (open && seconds === 0 && !startedRef.current) {
+-      startedRef.current = true;
+-      onComplete();
+-    }
+-  }, [open, seconds, onComplete]);
+-
+-  if (!open) return null;
+-
+-  const progress = ((RITUAL_SECONDS - seconds) / RITUAL_SECONDS) * 100;
+-
+-  return (
+-    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
+-      <div className="w-full max-w-lg bg-white dark:bg-[#10150f] rounded-3xl shadow-2xl border border-gray-200 dark:border-gray-800 overflow-hidden">
+-        {/* En-tête : cap EST */}
+-        <div className="bg-gradient-to-l from-[#d97706] via-[#f59e0b] to-[#fbbf24] px-6 py-4 text-white">
+-          <div className="flex items-center justify-between gap-3">
+-            <div className="flex items-center gap-3">
+-              <div className="w-11 h-11 rounded-2xl bg-white/20 flex items-center justify-center">
+-                <Compass className="w-6 h-6" />
+-              </div>
+-              <div>
+-                <h3 className="font-black text-base md:text-lg">جولة البوصلة قبل الشرق</h3>
+-                <p className="text-[11px] font-bold text-amber-100">
+-                  30 ثانية كافية للانطلاق في رحلة صحيحة — ثم تكتب إجابتك كاملة
+-                </p>
+-              </div>
+-            </div>
+-            <button
+-              onClick={() => { startedRef.current = true; onComplete(); }}
+-              className="w-8 h-8 rounded-full bg-white/15 hover:bg-white/25 flex items-center justify-center transition-colors cursor-pointer"
+-              title="تخطي الجولة وابدأ مباشرة"
+-            >
+-              <X className="w-4 h-4" />
+-            </button>
+-          </div>
+-        </div>
+-
+-        {/* Compte à rebours */}
+-        <div className="px-6 pt-5">
+-          <div className="flex items-center justify-between mb-1.5">
+-            <span className="text-[11px] font-black text-gray-500 dark:text-gray-400 flex items-center gap-1.5">
+-              <Clock className="w-3.5 h-3.5" /> لعبة الإحماء
+-            </span>
+-            <span className={`text-xl font-black tabular-nums ${seconds <= 10 ? 'text-red-500 animate-pulse' : 'text-[#f59e0b]'}`}>
+-              {seconds} ث
+-            </span>
+-          </div>
+-          <div className="h-2 w-full bg-gray-100 dark:bg-gray-800 rounded-full overflow-hidden">
+-            <div
+-              className="h-full bg-gradient-to-r from-[#2563eb] via-[#059669] to-[#f59e0b] rounded-full transition-all duration-1000 ease-linear"
+-              style={{ width: `${progress}%` }}
+-            />
+-          </div>
+-        </div>
+-
+-        {/* Les 4 caps : gestes + questions */}
+-        <div className="px-6 py-5 space-y-2.5">
+-          {BOUSSOLE_CAPS.map(cap => (
+-            <div
+-              key={cap.id}
+-              className="flex items-center gap-3 rounded-xl border px-3 py-2.5"
+-              style={{ borderColor: cap.color + '55', backgroundColor: cap.colorSoft + '22' }}
+-            >
+-              <span
+-                className="w-8 h-8 shrink-0 rounded-lg text-white flex items-center justify-center text-sm font-black"
+-                style={{ backgroundColor: cap.color }}
+-              >
+-                {cap.num}
+-              </span>
+-              <div className="min-w-0 flex-1">
+-                <div className="flex items-center gap-1.5">
+-                  <span className="font-black text-xs" style={{ color: cap.color }}>{cap.ar}</span>
+-                  <span className="text-[11px] font-black text-gray-800 dark:text-gray-200">{cap.word}</span>
+-                  <span className="text-[10px] text-gray-400 font-bold">{cap.fr}</span>
+-                </div>
+-                <p className="text-[11px] font-bold text-gray-600 dark:text-gray-400 leading-snug truncate">
+-                  {cap.icon} {cap.gestureAr} — « {cap.questionAr} »
+-                </p>
+-              </div>
+-            </div>
+-          ))}
+-        </div>
+-
+-        {/* Règle d'or + CTA */}
+-        <div className="px-6 pb-6 space-y-3">
+-          <p className="text-center text-[11px] font-black text-[#944a00] dark:text-amber-300 bg-[#fff9ed] dark:bg-amber-950/30 border border-[#fed65b]/40 rounded-xl px-3 py-2">
+-            {REGLE_D_OR_AR}
+-          </p>
+-          <button
+-            onClick={() => { startedRef.current = true; onComplete(); }}
+-            className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-[#006d37] to-[#0a9a4f] hover:opacity-95 text-white font-black text-sm px-5 py-3.5 rounded-2xl shadow-md transition-all active:scale-[0.99] cursor-pointer"
+-          >
+-            <Play className="w-4 h-4" />
+-            <span>أنا جاهز — لتبدأ رحلة الشرق</span>
+-          </button>
+-          <p className="text-center text-[9.5px] text-gray-400 font-bold">
+-            تنطلق تلقائياً عند نهاية العدّ — يمكنك الذهاب مباشرة في أي وقت
+-          </p>
+-        </div>
+-      </div>
+-    </div>
+-  );
+-}
+diff --git a/src/components/SwitchGateModal.tsx b/src/components/SwitchGateModal.tsx
+new file mode 100644
+index 0000000..7b22ea0
+--- /dev/null
++++ b/src/components/SwitchGateModal.tsx
+@@ -0,0 +1,122 @@
++import React, { useEffect, useState, useRef } from 'react';
++import { KeyRound, Lock, Unlock, Timer } from 'lucide-react';
++import { SwitchState, SWITCH_QUESTION_AR, REGLE_D_OR_AR } from '../data/boussoleData';
++
++interface Props {
++  open: boolean;
++  verbAr: string;
++  /** null = l'élève n'a pas répondu (temps écoulé) — la correction le signalera */
++  onDecide: (choice: SwitchState | null) => void;
++}
++
++const GATE_SECONDS = 10;
++
++/**
++ * بوابة المفتاح : 10 secondes, une seule question avant d'écrire.
++ * « هل الفعل يسمح بـ«لأنّ» ؟ » — la seule décision méthodologique de l'épreuve.
++ * Le choix de l'élève est enregistré ; s'il se trompe, la correction le lui dit
++ * AVANT de compter les fautes de fond.
++ */
++export default function SwitchGateModal({ open, verbAr, onDecide }: Props) {
++  const [seconds, setSeconds] = useState(GATE_SECONDS);
++  const decidedRef = useRef(false);
++
++  useEffect(() => {
++    if (!open) {
++      setSeconds(GATE_SECONDS);
++      decidedRef.current = false;
++      return;
++    }
++    const id = setInterval(() => setSeconds(s => Math.max(0, s - 1)), 1000);
++    return () => clearInterval(id);
++  }, [open]);
++
++  // Temps écoulé sans réponse → on enregistre null (une seule fois)
++  useEffect(() => {
++    if (open && seconds === 0 && !decidedRef.current) {
++      decidedRef.current = true;
++      onDecide(null);
++    }
++  }, [open, seconds, onDecide]);
++
++  if (!open) return null;
++
++  const decide = (c: SwitchState) => {
++    if (decidedRef.current) return;
++    decidedRef.current = true;
++    onDecide(c);
++  };
++
++  const progress = ((GATE_SECONDS - seconds) / GATE_SECONDS) * 100;
++
++  return (
++    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
++      <div className="w-full max-w-md bg-white dark:bg-[#10150f] rounded-3xl shadow-2xl border border-gray-200 dark:border-gray-800 overflow-hidden">
++        {/* En-tête */}
++        <div className="bg-gradient-to-l from-[#00401f] via-[#006d37] to-[#0a9a4f] px-6 py-5 text-white">
++          <div className="flex items-center gap-3">
++            <div className="w-11 h-11 rounded-2xl bg-white/20 flex items-center justify-center">
++              <KeyRound className="w-6 h-6" />
++            </div>
++            <div>
++              <h3 className="font-black text-base md:text-lg">بوّابة المفتاح — قبل أن تكتب</h3>
++              <p className="text-[11px] font-bold text-emerald-100">
++                الفعل: <span className="text-[#fed65b] font-black">{verbAr}</span> — سؤال واحد فقط، 10 ثوانٍ
++              </p>
++            </div>
++          </div>
++
++          {/* Compte à rebours */}
++          <div className="mt-4">
++            <div className="flex items-center justify-between mb-1">
++              <span className="text-[10px] font-black text-emerald-100 flex items-center gap-1">
++                <Timer className="w-3.5 h-3.5" /> القرار الوحيد
++              </span>
++              <span className={`text-lg font-black tabular-nums ${seconds <= 3 ? 'text-red-300 animate-pulse' : 'text-[#fed65b]'}`}>
++                {seconds} ث
++              </span>
++            </div>
++            <div className="h-2 w-full bg-white/15 rounded-full overflow-hidden">
++              <div className="h-full bg-gradient-to-r from-[#fed65b] to-[#f59e0b] rounded-full transition-all duration-1000 ease-linear" style={{ width: `${progress}%` }} />
++            </div>
++          </div>
++        </div>
++
++        {/* La question — gros caractères */}
++        <div className="px-6 py-6 text-center">
++          <p className="text-[13px] font-black text-gray-400 mb-1.5">{SWITCH_QUESTION_AR}</p>
++          <p className="text-xl md:text-2xl font-black text-gray-900 dark:text-white leading-snug" dir="rtl">
++            هل هذا الفعل يسمح بـ«لأنّ»؟
++          </p>
++
++          {/* Deux boutons */}
++          <div className="grid grid-cols-2 gap-3 mt-5">
++            <button
++              onClick={() => decide('closed')}
++              className="flex flex-col items-center gap-1.5 border-2 border-slate-300 dark:border-slate-600 hover:border-slate-400 bg-slate-50 dark:bg-slate-800/50 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-2xl px-3 py-4 transition-all active:scale-[0.98] cursor-pointer"
++            >
++              <Lock className="w-6 h-6 text-slate-500" />
++              <span className="font-black text-sm text-slate-700 dark:text-slate-200">لا — مُغلق</span>
++              <span className="text-[10px] font-bold text-slate-500 leading-snug">أصفّ فقط: ١ ← ٢ ← ٤</span>
++            </button>
++            <button
++              onClick={() => decide('open')}
++              className="flex flex-col items-center gap-1.5 border-2 border-emerald-400/70 hover:border-emerald-500 bg-emerald-50/60 dark:bg-emerald-950/30 hover:bg-emerald-50 dark:hover:bg-emerald-950/50 rounded-2xl px-3 py-4 transition-all active:scale-[0.98] cursor-pointer"
++            >
++              <Unlock className="w-6 h-6 text-emerald-600" />
++              <span className="font-black text-sm text-emerald-800 dark:text-emerald-300">نعم — مفتوح</span>
++              <span className="text-[10px] font-bold text-emerald-700 dark:text-emerald-400 leading-snug">أُعلِّل: ١ ← ٢ ← ٣ ← ٤</span>
++            </button>
++          </div>
++
++          <p className="text-[11px] font-black text-[#944a00] dark:text-amber-300 bg-[#fff9ed] dark:bg-amber-950/30 border border-[#fed65b]/40 rounded-xl px-3 py-2 mt-5">
++            {REGLE_D_OR_AR}
++          </p>
++          <p className="text-[9.5px] text-gray-400 font-bold mt-2.5">
++            إن أخطأت في هذا القرار، التصحيح سيقول لك قبل احتساب أخطاء المحتوى — اقرأ البوصلة إذا ترددت.
++          </p>
++        </div>
++      </div>
++    </div>
++  );
++}
+diff --git a/src/data/boussoleData.ts b/src/data/boussoleData.ts
+index 030ab5f..a8c1637 100644
+--- a/src/data/boussoleData.ts
++++ b/src/data/boussoleData.ts
+@@ -1,154 +1,275 @@
+ // ============================================================
+-// BOUSSOLE NSOE — بوصلة الإجابة (شمال · جنوب · غرب · شرق)
+-// Les 4 caps = les 4 stades du simulateur, racontés comme un voyage.
+-// Contenu 100 % aligné sur le livre officiel (manhadjiya vérifié).
++// BOUSSOLE v2 — بوصلة الإجابة · 4 خطوات + مفتاح واحد
++// اِقْرَأْ · اِجْمَعْ · اِرْبِطْ · اِخْتِمْ  +  🔑 هل الفعل يسمح بـ«لأنّ»؟
++// Refonte de la v1 (NSOE) : charge mémoire ≈ 8 éléments au lieu de 40.
++// Aligné sur le manhadjiya officiel et les 12 verbes de l'app.
+ // ============================================================
+ 
+-export type CapId = 'north' | 'south' | 'west' | 'east';
+-
+-export interface BoussoleCap {
+-  id: CapId;
+-  num: number;          // 1..4 (ordre du voyage)
+-  ar: string;           // شمال
+-  fr: string;           // NORD
+-  word: string;         // انْظُرْ  (mot de passe)
+-  color: string;        // couleur du cap
+-  colorSoft: string;    // fond pastel
+-  icon: string;         // geste (emoji)
+-  gestureAr: string;    // le geste physique
+-  questionAr: string;   // la question mécanique
+-  stepsAr: string[];    // 3 micro-actions
+-  motorAr: string;      // phrase « moteur » du cap
++export type StepId = 1 | 2 | 3 | 4;
++export type SwitchState = 'open' | 'closed';
++
++export interface BoussoleStep {
++  id: StepId;
++  word: string;          // اِقْرَأْ
++  fr: string;            // Lis
++  whereAr: string;       // بالمسودة / على الورقة
++  color: string;
++  colorSoft: string;
++  questionAr: string;
++  templateAr?: string;   // phrase-type (étapes 2, 3, 4)
++  actionsAr: string[];   // gestes de crayon / ce qu'on fait
++  ruleAr?: string;
++  interditAr: string[];
++  noteAr?: string;
+ }
+ 
+-export const BOUSSOLE_CAPS: BoussoleCap[] = [
++export const BOUSSOLE_STEPS: BoussoleStep[] = [
+   {
+-    id: 'north',
+-    num: 1,
+-    ar: 'الشمال',
+-    fr: 'NORD',
+-    word: 'انْظُرْ',
+-    color: '#2563eb',
++    id: 1,
++    word: 'اِقْرَأْ',
++    fr: 'Lis',
++    whereAr: 'المسودة فقط',
++    color: '#1d4ed8',
+     colorSoft: '#dbeafe',
+-    icon: '✋',
+-    gestureAr: 'أرفع يدي نحو الأفق',
+-    questionAr: 'ماذا يُطلب منّي بالضبط؟',
+-    stepsAr: [
+-      'أقرأ التعليمة 3 مرات',
+-      'أحدد فعل الأداء (حلّل؟ فسّر؟)',
+-      'ألوّن الكلمات المفتاحية والمشكل',
++    questionAr: 'ماذا يُطلَب منّي بالضبط؟',
++    actionsAr: [
++      'أُحيط بالفعل (فعل الأداء)',
++      'أُسطّر الكلمات المفتاحية',
++      'أكتب «المطلوب: …» في ≤ 5 كلمات',
+     ],
+-    motorAr: '« من لا يعرف وجهته لا يصل »',
++    interditAr: ['الكتابة على الورقة قبل تحديد الفعل'],
++    noteAr: 'لا شيء من هذه الخطوة يُكتب على الورقة. أبدًا.',
+   },
+   {
+-    id: 'south',
+-    num: 2,
+-    ar: 'الجنوب',
+-    fr: 'SUD',
+-    word: 'اجْمَعْ',
++    id: 2,
++    word: 'اِجْمَعْ',
++    fr: 'Rassemble',
++    whereAr: 'على الورقة',
+     color: '#059669',
+     colorSoft: '#d1fae5',
+-    icon: '👇',
+-    gestureAr: 'أخفض يدي نحو الأرض',
+     questionAr: 'ماذا أملك؟',
+-    stepsAr: [
+-      'كل وثيقة = معطى + وحدته',
+-      'أرقامنا دائماً بوحدتها (غ/ل، %, د)',
+-      'أكتب مكتسباتي من الدرس في سطرين',
++    templateAr: 'انطلاقًا من الوثيقة (…) نلاحظ أنّ … (قيمة + وحدة)',
++    actionsAr: [
++      'وثيقة واحدة = معطى واحد على الأقل',
++      'كل رقم بوحدته',
++      'أصف ما تراه العين فقط',
+     ],
+-    motorAr: '« السفينة لا تبحر بلا مؤن »',
++    interditAr: ['رقم بلا وحدة', 'وثيقة صامتة'],
+   },
+   {
+-    id: 'west',
+-    num: 3,
+-    ar: 'الغرب',
+-    fr: 'OUEST',
+-    word: 'اغُصْ',
++    id: 3,
++    word: 'اِرْبِطْ',
++    fr: 'Relie',
++    whereAr: 'على الورقة — إذا كان المفتاح مفتوحًا',
+     color: '#d97706',
+     colorSoft: '#fef3c7',
+-    icon: '👈',
+-    gestureAr: 'أمدّ يدي وأمسح الأفق',
+-    questionAr: 'كيف أصل؟',
+-    stepsAr: [
+-      'أربط المعطى بالمكتسب (علاقة أو آلية)',
+-      'أستعمل: لأن، وبالتالي، بينما، في حين',
+-      'كل تأكيد يبدأ بـ «انطلاقاً من الوثيقة…»',
++    questionAr: 'هل الفعل يسمح بـ«لأنّ»؟',
++    templateAr: 'وهذا لأنّ … وبالتالي …',
++    actionsAr: [
++      'معطى + مكتسب ← علاقة (طردية/عكسية) أو آلية (سبب ← نتيجة)',
++      'المفتاح مغلق ⇒ أقفز من 2 إلى 4',
+     ],
+-    motorAr: '« العبور يكون بالدليل لا بالظن »',
++    interditAr: ['ربما / لعل', 'تأكيد بلا سبب'],
++    noteAr: 'القفز ليس نسيانًا — القفز هو احترام الفعل.',
+   },
+   {
+-    id: 'east',
+-    num: 4,
+-    ar: 'الشرق',
+-    fr: 'EST',
+-    word: 'أَشْرِقْ',
+-    color: '#f59e0b',
+-    colorSoft: '#fef9c3',
+-    icon: '👉',
+-    gestureAr: 'أرفع يدي نحو الفجر',
+-    questionAr: 'ما خلاصتي؟ وهل تحققتُ؟',
+-    stepsAr: [
+-      'جملة ختامية تعيد صياغة المطلوب',
+-      'الفحص: وحدة ✓ فعل ✓ سند ✓ خاتمة ✓',
+-      'أقرأ جملتي الأخيرة بصوت خافت',
++    id: 4,
++    word: 'اِخْتِمْ',
++    fr: 'Conclus',
++    whereAr: 'على الورقة',
++    color: '#7c3aed',
++    colorSoft: '#ede9fe',
++    questionAr: 'ما خلاصتي؟',
++    templateAr: 'ومنه نستنتج أنّ … (أُعيد صياغة «المطلوب» كحقيقة علمية)',
++    actionsAr: [
++      'أقرأ خانة «المطلوب» ثم خاتمتي: هل تُجيبها؟',
+     ],
+-    motorAr: '« الخلاصة هي الفجر الذي يجيب عن الشمال »',
++    interditAr: ['إجابة بلا جملة ختامية', 'خاتمة بأرقام'],
++    noteAr: 'أرخص خطوة في الجهد وأغلاها في العلامة.',
+   },
+ ];
+ 
+-export function capForStage(stage: number): CapId | null {
+-  if (stage >= 1 && stage <= 4) return BOUSSOLE_CAPS[stage - 1].id;
+-  return null;
++export function getStep(id: StepId): BoussoleStep {
++  return BOUSSOLE_STEPS.find(s => s.id === id)!;
++}
++
++// ------------------------------------------------------------
++// 🔑 LE SEUL INTERRUPTEUR — même document, deux verbes, une seule
++// décision avant d'écrire : le verbe permet-il « لماذا » ?
++// ------------------------------------------------------------
++export const SWITCH_QUESTION_AR = 'هل الفعل يسمح بـ«لأنّ»؟';
++
++/** Verbes descriptifs : l'étape 3 reste FERMÉE (trajet 1 → 2 → 4). */
++export const SWITCH_CLOSED_VERBS: string[] = [
++  'verb_analyse_v1',   // حَلِّلْ
++  'verb_compare_v1',   // قَارِنْ
++  'verb_deduce_v1',    // اسْتَنْتِجْ
++  'verb_schema_v1',    // لَخِّصْ فِي مُخَطَّطْ
++  'verb_schematic_v1', // أَنْجِزْ رَسْمًا تَخْطِيطِيًا وَظِيفِيًا
++];
++
++/** Verbes explicatifs : l'étape 3 est OUVERTE (trajet 1 → 2 → 3 → 4). */
++export const SWITCH_OPEN_VERBS: string[] = [
++  'verb_explain_v1',      // فَسِّرْ
++  'verb_explain_multi_v1',// اشْرَحْ
++  'verb_justify_v1',      // عَلِّلْ / بَرِّرْ
++  'verb_validate_v1',     // صَادِقْ عَلَى الصِّحَّة
++  'verb_critique_v1',     // انْقُدْ
++  'verb_hypothesis_v1',   // اقْتَرِحْ فَرَضِيَّةً
++  'verb_composer_v1',     // اكْتُبْ نَصًّا عِلْمِيًّا
++];
++
++export function getSwitchForVerb(verbId: string): SwitchState {
++  return SWITCH_OPEN_VERBS.includes(verbId) ? 'open' : 'closed';
+ }
+ 
+-export function getCap(capId: CapId): BoussoleCap {
+-  return BOUSSOLE_CAPS.find(c => c.id === capId)!;
++export function switchPathAr(verbId: string): string {
++  return getSwitchForVerb(verbId) === 'open' ? '١ ← ٢ ← ٣ ← ٤' : '١ ← ٢ ← ٤';
+ }
+ 
+ // ------------------------------------------------------------
+-// Carte des vents : chaque erreur du scoreur → cap où elle souffle.
+-// (tags identiques à ERROR_TAXONOMY du moteur — aucun changement du score)
++// Les 8 erreurs du correcteur — UNE adresse chacune (étape ou 🔑),
++// avec son remède mécanique. Les tags restent identiques au moteur.
+ // ------------------------------------------------------------
+-export const VENT_CAP_MAP: Record<string, CapId> = {
+-  // الشمال : mauvais départ
+-  verb_confusion: 'north',
+-  // الجنوب : chargement incomplet / brouillon
+-  missing_unit: 'south',
+-  comparison_without_criteria: 'south',
+-  // الغرب : raisonnement troué
+-  missing_reference: 'west',
+-  premature_interpretation: 'west',
+-  conditional_hypothesis: 'west',
+-  unbalanced_comparison: 'west',
+-  // الشرق : arrivée sans lumière
+-  missing_conclusion: 'east',
++export type ErrorAddress = 'switch' | StepId;
++
++export const ERROR_ADDRESS_MAP: Record<string, ErrorAddress> = {
++  verb_confusion: 1,                       // الخلط بين أفعال الأداء
++  premature_interpretation: 'switch',      // التفسير المبكر = erreur de L'interrupteur
++  missing_unit: 2,                         // غياب الوحدة القياسية
++  missing_reference: 2,                    // تأكيد دون سند
++  comparison_without_criteria: 2,          // مقارنة بلا معيار
++  conditional_hypothesis: 3,               // فرضية بصيغة الشك
++  unbalanced_comparison: 3,                // مقارنة غير متوازنة
++  missing_conclusion: 4,                   // غياب الجملة الختامية
++};
++
++export const ERROR_REMEDY_MAP: Record<string, string> = {
++  verb_confusion: 'أُحيط بالفعل وأكتب «المطلوب: …» قبل أي سطر',
++  premature_interpretation: 'أُسأل: هل الفعل يسمح بـ«لأنّ»؟ ثم أُغلق الخطوة 3',
++  missing_unit: 'كل رقم بوحدته — أُراجع أرقامي واحدًا واحدًا',
++  missing_reference: 'أستعمل القالب: «انطلاقًا من الوثيقة (…)»',
++  comparison_without_criteria: 'أكتب المعيار في المسودة قبل العمودين',
++  conditional_hypothesis: 'صيغة إخبارية جازمة فقط — لا «ربما/لعل»',
++  unbalanced_comparison: 'ما قلته عن الطرف الأول أقوله عن الثاني بـ«بينما»',
++  missing_conclusion: '«ومنه نستنتج أنّ …» — لا أُسلّم ورقة بدونها',
+ };
+ 
+-/** Renvoie les erreurs (tags) de chaque cap + les caps sans erreur. */
+-export function groupErrorsByCap(errorTags: string[]): { capId: CapId; tags: string[] }[] {
+-  const map: Record<CapId, string[]> = { north: [], south: [], west: [], east: [] };
+-  errorTags.forEach(tag => {
+-    const cap = VENT_CAP_MAP[tag];
+-    if (cap) map[cap].push(tag);
++export function errorAddressAr(addr: ErrorAddress): string {
++  return addr === 'switch' ? '🔑 المفتاح' : `${addr} ${getStep(addr as StepId).word}`;
++}
++
++export interface StepErrorGroup {
++  address: ErrorAddress;
++  tags: string[];
++}
++
++/** Regroupe les tags d'erreurs par adresse, dans l'ordre 1 → 🔑 → 2 → 3 → 4. */
++export function groupErrorsByAddress(tags: string[]): StepErrorGroup[] {
++  const map: Record<ErrorAddress, string[]> = { 1: [], 2: [], 3: [], 4: [], switch: [] };
++  tags.forEach(tag => {
++    const addr = ERROR_ADDRESS_MAP[tag];
++    if (addr) map[addr].push(tag);
+   });
+-  return BOUSSOLE_CAPS.map(c => ({ capId: c.id, tags: map[c.id] }));
++  return [
++    { address: 1, tags: map[1] },
++    { address: 'switch', tags: map['switch'] },
++    { address: 2, tags: map[2] },
++    { address: 3, tags: map[3] },
++    { address: 4, tags: map[4] },
++  ];
+ }
+ 
+ // ------------------------------------------------------------
+-// Les 4 gestes du « tour de boussole » (rituel 30 s)
++// Les 4 formats spéciaux : des habillages, pas des méthodes.
++// (comparaison, schéma, hypothèse, texte scientifique)
+ // ------------------------------------------------------------
+-export const BOUSSOLE_RITUAL = [
+-  { capId: 'north' as CapId, gesture: 'نظرة إلى الأفق' },
+-  { capId: 'south' as CapId, gesture: 'جمع من الأرض' },
+-  { capId: 'west' as CapId, gesture: 'مسح البحر' },
+-  { capId: 'east' as CapId, gesture: 'يد نحو الفجر' },
++export interface SpecialFormat {
++  verbIds: string[];
++  whatChangesAr: string;
++  specialCheckAr: string;
++}
++
++export const SPECIAL_FORMATS: SpecialFormat[] = [
++  {
++    verbIds: ['verb_compare_v1'],
++    whatChangesAr: 'الخطوة 2 في عمودين على معيار واحد؛ الخطوة 3 بـ«بينما / في حين»',
++    specialCheckAr: 'هل قلتُ عن الطرفين نفس عدد الأشياء؟',
++  },
++  {
++    verbIds: ['verb_schema_v1', 'verb_schematic_v1'],
++    whatChangesAr: 'الخطوة 2 = البنيات؛ الخطوة 3 = أسهم مرقّمة؛ الخطوة 4 = عنوان + مفتاح',
++    specialCheckAr: 'عنوان ✓ مفتاح ✓ أسهم مرقّمة ✓',
++  },
++  {
++    verbIds: ['verb_hypothesis_v1'],
++    whatChangesAr: 'الخطوة 3 وحدها تُكتب، بصيغة جازمة',
++    specialCheckAr: 'هل خلت من «ربما / لعل / يمكن أن»؟',
++  },
++  {
++    verbIds: ['verb_composer_v1'],
++    whatChangesAr: 'الخطوات نفسها تصير أقسام النص: مقدمة = 1 (+ طرح المشكل) · عرض = 2 و 3 · خاتمة = 4',
++    specialCheckAr: 'هل الخاتمة تُجيب مشكل المقدمة؟',
++  },
+ ];
+ 
+-export const REGLE_D_OR_AR = '« لا خاتمةَ قبل حُجّة، ولا حُجّةَ قبل مُعطى، ولا مُعطى قبلَ فَهْمِ السؤال »';
++export function getSpecialFormatForVerb(verbId: string): SpecialFormat | null {
++  return SPECIAL_FORMATS.find(f => f.verbIds.includes(verbId)) || null;
++}
++
++// ------------------------------------------------------------
++// Les 4 NIVEAUX d'aide (axe horizontal) — chaque niveau parcourt
++// TOUJOURS les 4 étapes ; seule l'aide diminue.
++// ------------------------------------------------------------
++export interface AidLevelMeta {
++  num: number;
++  title: string;     // مع النموذج
++  sub: string;       // Modelage
++  desc: string;
++}
++
++export const AID_LEVELS: AidLevelMeta[] = [
++  {
++    num: 1,
++    title: 'مَعَ النَّمُوذَج',
++    sub: 'Modelage',
++    desc: 'أرى إجابة كاملة ملوّنة بأربعة ألوان الخطوات، والمفتاح مُبيَّن ومُبرَّر',
++  },
++  {
++    num: 2,
++    title: 'إكْمالُ الفَراغات',
++    sub: 'Complétion',
++    desc: 'أملأ القوالب الثلاثة: القيمة، الوحدة، الوثيقة، «لأنّ»، «ومنه نستنتج»',
++  },
++  {
++    num: 3,
++    title: 'كِتابةٌ بِالبِطاقة',
++    sub: 'Guidée',
++    desc: 'أكتب كامل الإجابة والبطاقة ظاهرة على الشاشة (شريط الخطوات + المفتاح)',
++  },
++  {
++    num: 4,
++    title: 'بَكالوريا',
++    sub: 'Bac',
++    desc: 'زمن محدّد بلا بطاقة — ثم الفحوصات الأربعة تظهر في الرُّبع الأخير',
++  },
++];
++
++// ------------------------------------------------------------
++// Textes socle
++// ------------------------------------------------------------
++export const REGLE_D_OR_AR =
++  '« لا خاتمةَ قبل حُجّة، ولا حُجّةَ قبل مُعطى، ولا مُعطى قبلَ فَهْمِ السؤال »';
++
++export const TIME_RULE_AR =
++  'الرُّبع الأول: اقرأ + اجمع · النِّصف: اربط (أو الكتابة إن كان مغلقًا) · الرُّبع الأخير: اختم + الفحص — والوقت يتناسب مع النقاط';
++
++export const FINGERS_RITUAL_AR = 'الإبهام يلمس الأصابع الأربعة: ١ · ٢ · ٣ · ٤ (5 ثوانٍ، تحت الطاولة)';
+ 
+-export const BOUSSOLE_STAGES_META = [
+-  { num: 1, title: 'شمال · انْظُرْ', sub: 'النمذجة', desc: 'تحديد المطلوب ثم تلوين خطوات الخبير' },
+-  { num: 2, title: 'جنوب · اجْمَعْ', sub: 'الإكمال', desc: 'جمع المعطيات والوحدات في الشكل الجاهز' },
+-  { num: 3, title: 'غرب · اغُصْ', sub: 'إنتاج موجّه', desc: 'الاستدلال مع بوصلة مفتوحة (مساعدة متاحة)' },
+-  { num: 4, title: 'شرق · أَشْرِقْ', sub: 'محاكاة البكالوريا', desc: 'رحلة كاملة مؤقتة + خاتمة وفحص' },
++/** Les 4 contrôles = les 4 étapes relues à l'envers. */
++export const SELF_CHECKS: { step: StepId; checkAr: string }[] = [
++  { step: 4, checkAr: 'هل آخر جملة تُجيب «المطلوب»؟' },
++  { step: 3, checkAr: 'هل كل تأكيد له «لأنّ»؟' },
++  { step: 2, checkAr: 'هل ذكرتُ الوثيقة والقيمة والوحدة؟' },
++  { step: 1, checkAr: 'هل احترمتُ الفعل (وصف أم تفسير)؟' },
+ ];
+diff --git a/src/utils/methodologyLog.ts b/src/utils/methodologyLog.ts
+index cf00234..c9cb1bf 100644
+--- a/src/utils/methodologyLog.ts
++++ b/src/utils/methodologyLog.ts
+@@ -135,7 +135,7 @@ export function clearProductionLog(): void {
+ }
+ 
+ // ------------------------------------------------------------
+-// Grades de navigation (boussole NSOE) — calculés depuis le
++// Grades de navigation (boussole) — calculés depuis le
+ // carnet de bord réel, jamais inventés.
+ //   نوتي (mousse) → ملاح (matelot) → ربان (capitaine) → قبطان (amiral)
+ // ------------------------------------------------------------
+@@ -153,7 +153,7 @@ export function getNavigatorGrade(): NavigatorGrade {
+       key: 'none',
+       nameAr: 'مبتدئ الإبحار',
+       icon: '🌫️',
+-      conditionAr: 'أكمل أول رحلة NSOE (بثول واحد مُقيَّم) لتحصل على رتبتك',
++      conditionAr: 'أكمل أول إجابة بالبوصلة (بثول واحد مُقيَّم) لتحصل على رتبتك',
+     };
+   }
+ 

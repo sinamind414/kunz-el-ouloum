@@ -1,0 +1,32 @@
+﻿
+Name                         Length
+----                         ------
+lecon_transcription.html      42754
+phase1_chapitres_1_2.html     50352
+phase10_chapitres_19_20.html  45240
+phase11_chapitres_21_22.html  44663
+phase12_chapitres_23_24.html  46547
+phase13_chapitres_25_26.html  46917
+phase14_chapitres_27_28.html  45094
+phase15_chapitres_29_30.html  45816
+phase16_chapitres_31_32.html  45653
+phase17_chapitres_33_34.html  46926
+phase18_chapitres_35_36.html  43687
+phase19_chapitres_37_38.html  46278
+phase2_chapitres_3_4.html     50190
+phase20_chapitres_39_40.html  46376
+phase21_chapitres_41_42.html  45367
+phase22_chapitres_43_44.html  47152
+phase23_chapitres_45_46.html   2038
+phase24_chapitres_47_48.html   1904
+phase25_chapitres_49_50.html   1852
+phase26_chapitres_51_52.html   1850
+phase3_chapitres_5_6.html     45714
+phase4_chapitres_7_8.html     45584
+phase5_chapitres_9_10.html    44423
+phase6_chapitres_11_12.html   45493
+phase7_chapitres_13_14.html   45552
+phase8_chapitres_15_16.html   44458
+phase9_chapitres_17_18.html   45770
+
+

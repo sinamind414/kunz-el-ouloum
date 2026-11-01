@@ -1,0 +1,144 @@
+{
+  "genere_par": "scripts/profigure/applyFlashcardDiagramMap.ts --export",
+  "phase": "Phase 5 — cartes re-pointées sur les figures ProFigure dédiées (jamais utilisées avant)",
+  "methode": "Concept = chaîne réelle entre «» dans questionText (jamais inventée). Figure retenue seulement si son aria-label / ses libellés SVG nomment le concept, ou si le concept est le phénomène même que la figure représente (potentiel d'action, inhibition enzymatique). Aucune carte n'a été déplacée depuis une figure déjà spécifique (schema_08_synapse nomme Ca²⁺, vésicules, AChR, AChE, PPSE ; schema_07_enzyme le site actif) : ce serait une régression.",
+  "prefixe": "/assets/images/schemas/",
+  "entries": [
+    {
+      "concept": "كمون العمل",
+      "figure": "domaine1_regulations/schema_83_potentiel_action_modern_ar.svg"
+    },
+    {
+      "concept": "عتبة التنبيه",
+      "figure": "domaine1_regulations/schema_83_potentiel_action_modern_ar.svg"
+    },
+    {
+      "concept": "الكل أو لا شيء",
+      "figure": "domaine1_regulations/schema_83_potentiel_action_modern_ar.svg"
+    },
+    {
+      "concept": "زوال الاستقطاب",
+      "figure": "domaine1_regulations/schema_83_potentiel_action_modern_ar.svg"
+    },
+    {
+      "concept": "إعادة الاستقطاب",
+      "figure": "domaine1_regulations/schema_83_potentiel_action_modern_ar.svg"
+    },
+    {
+      "concept": "فرط الاستقطاب",
+      "figure": "domaine1_regulations/schema_83_potentiel_action_modern_ar.svg"
+    },
+    {
+      "concept": "فترة الجموح",
+      "figure": "domaine1_regulations/schema_83_potentiel_action_modern_ar.svg"
+    },
+    {
+      "concept": "نضج ARNm",
+      "figure": "domaine1_proteines/schema_20_splicing_exons_introns_modern.svg"
+    },
+    {
+      "concept": "الإكسون",
+      "figure": "domaine1_proteines/schema_20_splicing_exons_introns_modern.svg"
+    },
+    {
+      "concept": "الإنترون",
+      "figure": "domaine1_proteines/schema_20_splicing_exons_introns_modern.svg"
+    },
+    {
+      "concept": "البولي ريبوزوم",
+      "figure": "domaine1_proteines/schema_24_polysome_translation_modern.svg"
+    },
+    {
+      "concept": "الشفرة الوراثية",
+      "figure": "domaine1_proteines/schema_23_genetic_code_table_modern.svg"
+    },
+    {
+      "concept": "الشفرة المترادفة",
+      "figure": "domaine1_proteines/schema_23_genetic_code_table_modern.svg"
+    },
+    {
+      "concept": "جهاز غولجي",
+      "figure": "domaine1_proteines/schema_24_secretory_pathway_pancreas_modern_ar.svg"
+    },
+    {
+      "concept": "الشبكة الإندوبلازمية الخشنة",
+      "figure": "domaine1_proteines/schema_24_secretory_pathway_pancreas_modern_ar.svg"
+    },
+    {
+      "concept": "الجسم المضاد",
+      "figure": "domaine1_proteines/schema_65_antibody_structure_hl_modern.svg"
+    },
+    {
+      "concept": "الباراتوب",
+      "figure": "domaine1_proteines/schema_65_antibody_structure_hl_modern.svg"
+    },
+    {
+      "concept": "الحاتمة",
+      "figure": "domaine1_proteines/schema_65_antibody_structure_hl_modern.svg"
+    },
+    {
+      "concept": "الذاكرة المناعية",
+      "figure": "domaine1_proteines/schema_76_memory_cell_fate_modern.svg"
+    },
+    {
+      "concept": "الذاكرة T",
+      "figure": "domaine1_proteines/schema_76_memory_cell_fate_modern.svg"
+    },
+    {
+      "concept": "المثبط التنافسي",
+      "figure": "domaine1_enzymes/schema_87_enzyme_inhibition_curves_ar.svg"
+    },
+    {
+      "concept": "المثبط غير التنافسي",
+      "figure": "domaine1_enzymes/schema_87_enzyme_inhibition_curves_ar.svg"
+    },
+    {
+      "concept": "Km",
+      "figure": "domaine1_enzymes/schema_87_enzyme_inhibition_curves_ar.svg"
+    },
+    {
+      "concept": "Vmax",
+      "figure": "domaine1_enzymes/schema_87_enzyme_inhibition_curves_ar.svg"
+    },
+    {
+      "concept": "الإشباع الإنزيمي",
+      "figure": "domaine1_enzymes/schema_87_enzyme_inhibition_curves_ar.svg"
+    },
+    {
+      "concept": "منحنى pH",
+      "figure": "domaine1_enzymes/schema_88_enzyme_six_curves_workshop_ar.svg"
+    },
+    {
+      "concept": "شدة الإضاءة",
+      "figure": "domaine2_energie/schema_86_photosynthese_intensite_lumiere_modern_ar.svg"
+    },
+    {
+      "concept": "التحلل الضوئي للماء",
+      "figure": "domaine2_energie/schema_89_hill_ruben_experiment_modern_ar.svg"
+    },
+    {
+      "concept": "O2 المطروح",
+      "figure": "domaine2_energie/schema_89_hill_ruben_experiment_modern_ar.svg"
+    },
+    {
+      "concept": "حلقة كالفن",
+      "figure": "domaine2_energie/schema_91_calvin_2d_chromatography_modern_ar.svg"
+    },
+    {
+      "concept": "الكيميواسموز",
+      "figure": "domaine2_energie/schema_92_racker_bacteriorhodopsin_modern_ar.svg"
+    },
+    {
+      "concept": "مستوى واداتي-بينيوف",
+      "figure": "domaine3_tectonique/schema_93_benioff_plan_modern_ar.svg"
+    },
+    {
+      "concept": "التصادم القاري",
+      "figure": "domaine3_tectonique/schema_88_collision_continentale_modern_ar.svg"
+    },
+    {
+      "concept": "تثخن القشرة",
+      "figure": "domaine3_tectonique/schema_94_migmatite_crustal_thickening_modern_ar.svg"
+    }
+  ]
+}

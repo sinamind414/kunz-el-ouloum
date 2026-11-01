@@ -1,0 +1,2219 @@
+{
+  "meta": {
+    "script": "scripts/audit_resumes_hosila.py",
+    "date": "2026-09-23",
+    "etalon": "docs/RESUMES_MAARIFI_LIVRE_2026-09-21.md + data/bookContent.json",
+    "recette_norm": "miroir resumes.lock.test.ts L20-24",
+    "seuil_lock": 1
+  },
+  "stats": {
+    "resumes": 44,
+    "ancrage_keys": 44,
+    "cles_passives": 25,
+    "points": 210,
+    "lock_ok": 210,
+    "lock_fail": 0,
+    "fragile_1_jeton": 21,
+    "hors_livre": 0,
+    "sans_jeton": 0,
+    "suspects": 7,
+    "gold_entries": 19,
+    "gold_blocs": 294,
+    "gold_hors_livre": 13,
+    "gold_fragile": 90,
+    "hosila_unites": 10,
+    "hosila_points": 71,
+    "html_hosila": 11,
+    "okacha_residus": {
+      "EXTRAIRE": 0,
+      "إليك النص": 0,
+      "METHODO": 0
+    },
+    "book_lignes": 6105,
+    "chapitres": 55,
+    "gold_hors_latin_ocr": 3,
+    "gold_hors_vrai": 10
+  },
+  "suspects": [
+    {
+      "type": "suspect_lexical",
+      "motif": "تعبرز",
+      "note": "graphie inhabituelle — vérifier تبرز / تُبرز vs livre",
+      "key": "phase5_chapitres_9_10",
+      "ligne": 105,
+      "field": "point2",
+      "texte": "تعبرز جزيئات CMH-I على سطح جميع الخلايا المنواة لعرض شظايا البروتينات الداخلية.",
+      "ancrage_chs": [
+        14,
+        15,
+        16,
+        17
+      ],
+      "nb_jetons": 7,
+      "jetons_hit_chapitres": [
+        "جزييات",
+        "الخلايا",
+        "البروتينات"
+      ],
+      "point_passe_lock": true,
+      "motif_dans_livre": false,
+      "motif_dans_chapitres_ancrage": false,
+      "nb_jetons_dans_livre": 4
+    },
+    {
+      "type": "suspect_lexical",
+      "motif": "تعبرز",
+      "note": "graphie inhabituelle — vérifier تبرز / تُبرز vs livre",
+      "key": "phase5_chapitres_9_10",
+      "ligne": 106,
+      "field": "point3",
+      "texte": "تعبرز جزيئات CMH-II من طرف خلايا مناعية متخصصة لعرض شظايا اللاذات المبتلعة.",
+      "ancrage_chs": [
+        14,
+        15,
+        16,
+        17
+      ],
+      "nb_jetons": 8,
+      "jetons_hit_chapitres": [
+        "جزييات",
+        "خلايا",
+        "مناعيه",
+        "اللاذات"
+      ],
+      "point_passe_lock": true,
+      "motif_dans_livre": false,
+      "motif_dans_chapitres_ancrage": false,
+      "nb_jetons_dans_livre": 5
+    },
+    {
+      "type": "suspect_lexical",
+      "motif": "فترة كامن",
+      "note": "expression — vérifier période de latence vs livre",
+      "key": "phase6_chapitres_11_12",
+      "ligne": 126,
+      "field": "point2",
+      "texte": "تتميز الاستجابة المناعية الأولية بفترة كامن وبمستوى أجسام مضادة منخفض.",
+      "ancrage_chs": [
+        17,
+        21
+      ],
+      "nb_jetons": 9,
+      "jetons_hit_chapitres": [
+        "اجسام",
+        "مضاده"
+      ],
+      "point_passe_lock": true,
+      "motif_dans_livre": false,
+      "motif_dans_chapitres_ancrage": false,
+      "nb_jetons_dans_livre": 7
+    },
+    {
+      "type": "suspect_lexical",
+      "motif": "ناشزة",
+      "note": "graphie — vérifier ناشِعة/ناشِطة vs livre",
+      "key": "immunity_humoral_response",
+      "ligne": 139,
+      "field": "point4",
+      "texte": "تتمايز اللمفاويات B إلى خلايا بلازمية ناشزة (قصيرة العمر) وخلايا ذاكرة طويلة العمر.",
+      "ancrage_chs": [
+        16,
+        17
+      ],
+      "nb_jetons": 11,
+      "jetons_hit_chapitres": [
+        "تتمايز",
+        "اللمفاويات",
+        "خلايا",
+        "بلازميه"
+      ],
+      "point_passe_lock": true,
+      "motif_dans_livre": false,
+      "motif_dans_chapitres_ancrage": false,
+      "nb_jetons_dans_livre": 10
+    },
+    {
+      "type": "suspect_lexical",
+      "motif": "إلى الترجمة",
+      "note": "sens douteux en contexte ATP (H+ → matrice ?)",
+      "key": "phase14_chapitres_27_28",
+      "ligne": 306,
+      "field": "point5",
+      "texte": "يعود H+ إلى الترجمة عبر ATP-synthase فيركب كمية كبيرة من ATP.",
+      "ancrage_chs": [
+        39,
+        40
+      ],
+      "nb_jetons": 4,
+      "jetons_hit_chapitres": [
+        "كبيره"
+      ],
+      "point_passe_lock": true,
+      "motif_dans_livre": false,
+      "motif_dans_chapitres_ancrage": false,
+      "nb_jetons_dans_livre": 2
+    },
+    {
+      "type": "suspect_lexical",
+      "motif": "يتكسر تراكم",
+      "note": "syntaxe étrange — vérifier formulation livre",
+      "key": "phase19_chapitres_37_38",
+      "ligne": 397,
+      "field": "point5",
+      "texte": "يتكسر تراكم الإجهاد في الصخور فتنطلق الطاقة على شكل موجات زلزالية.",
+      "ancrage_chs": [
+        45
+      ],
+      "nb_jetons": 8,
+      "jetons_hit_chapitres": [
+        "موجات",
+        "زلزاليه"
+      ],
+      "point_passe_lock": true,
+      "motif_dans_livre": false,
+      "motif_dans_chapitres_ancrage": false,
+      "nb_jetons_dans_livre": 5
+    },
+    {
+      "type": "suspect_lexical",
+      "motif": "المغماتية",
+      "note": "orthographe — الميغmatite / مغماتية vs livre",
+      "key": "phase21_chapitres_41_42",
+      "ligne": 425,
+      "field": "objectif",
+      "texte": "فسّر المغماتية وتشكل اللوح المحيطي عند الظهرات وسط المحيطية.",
+      "ancrage_chs": [
+        49,
+        50
+      ],
+      "nb_jetons": 6,
+      "jetons_hit_chapitres": [
+        "المغماتيه",
+        "وتشكل",
+        "اللوح",
+        "المحيطي",
+        "الظهرات",
+        "المحيطيه"
+      ],
+      "point_passe_lock": true,
+      "motif_dans_livre": true,
+      "motif_dans_chapitres_ancrage": true,
+      "nb_jetons_dans_livre": 6
+    }
+  ],
+  "points_lock_fail": [],
+  "points_fragiles": [
+    {
+      "key": "d1-u1-l2-transcription",
+      "point": 3,
+      "ligne": 39,
+      "texte": "يرتكز الـ ARNm على السلسلة وفق التكامل القاعدي وباتجاه واحد 5\\'→3\\'.",
+      "nb_jetons": 5,
+      "hits_chapitres": 1,
+      "hits_livre": 4,
+      "lock_ok": true,
+      "fragile_1_jeton": true,
+      "hors_livre": false,
+      "sans_jeton": false
+    },
+    {
+      "key": "d1-u3-l1-enzyme",
+      "point": 1,
+      "ligne": 77,
+      "texte": "يحفز الإنزيم تفاعلات الوساط الحيوية بتسريعها دون أن يستهلك.",
+      "nb_jetons": 6,
+      "hits_chapitres": 1,
+      "hits_livre": 5,
+      "lock_ok": true,
+      "fragile_1_jeton": true,
+      "hors_livre": false,
+      "sans_jeton": false
+    },
+    {
+      "key": "d1-u3-l1-enzyme",
+      "point": 2,
+      "ligne": 77,
+      "texte": "يمتلك الإنزيم موقعاً فعالاً تسند فيه المادة بعلاقة تكامل بنيوي.",
+      "nb_jetons": 8,
+      "hits_chapitres": 1,
+      "hits_livre": 5,
+      "lock_ok": true,
+      "fragile_1_jeton": true,
+      "hors_livre": false,
+      "sans_jeton": false
+    },
+    {
+      "key": "phase6_chapitres_11_12",
+      "point": 4,
+      "ligne": 122,
+      "texte": "تضمن خلايا الذاكرة المناعة المكتسبة طويلة المدى.",
+      "nb_jetons": 6,
+      "hits_chapitres": 1,
+      "hits_livre": 5,
+      "lock_ok": true,
+      "fragile_1_jeton": true,
+      "hors_livre": false,
+      "sans_jeton": false
+    },
+    {
+      "key": "immunity_cellular_response",
+      "point": 3,
+      "ligne": 154,
+      "texte": "تفرز LTc البرفورين المحدث لثقوب في غشاء الخلية الهدف فتموت موتاً مبرمجاً.",
+      "nb_jetons": 7,
+      "hits_chapitres": 1,
+      "hits_livre": 3,
+      "lock_ok": true,
+      "fragile_1_jeton": true,
+      "hors_livre": false,
+      "sans_jeton": false
+    },
+    {
+      "key": "immunity_cellular_response",
+      "point": 4,
+      "ligne": 154,
+      "texte": "تتحرر LTc بعد الفعل وتتسكع في الوسط الداخلي لمهاجمة أهداف جديدة.",
+      "nb_jetons": 8,
+      "hits_chapitres": 1,
+      "hits_livre": 6,
+      "lock_ok": true,
+      "fragile_1_jeton": true,
+      "hors_livre": false,
+      "sans_jeton": false
+    },
+    {
+      "key": "immunity_memory_response",
+      "point": 2,
+      "ligne": 164,
+      "texte": "يتمايز اللمفاويتان T و B ويكتسبان مستقبلاتهما المتخصصة قبل التعرض للمستضد.",
+      "nb_jetons": 7,
+      "hits_chapitres": 1,
+      "hits_livre": 4,
+      "lock_ok": true,
+      "fragile_1_jeton": true,
+      "hors_livre": false,
+      "sans_jeton": false
+    },
+    {
+      "key": "phase8_chapitres_15_16",
+      "point": 4,
+      "ligne": 176,
+      "texte": "تضمن مضخة Na+/K+ (باستهلاك ATP) حفظ التفاوت في التركيزات الأيونية.",
+      "nb_jetons": 4,
+      "hits_chapitres": 1,
+      "hits_livre": 1,
+      "lock_ok": true,
+      "fragile_1_jeton": true,
+      "hors_livre": false,
+      "sans_jeton": false
+    },
+    {
+      "key": "phase8_chapitres_15_16",
+      "point": 5,
+      "ligne": 176,
+      "texte": "يقوم التوازن الكهركيميائي عند حد تثبت قيمة كمون الراحة.",
+      "nb_jetons": 3,
+      "hits_chapitres": 1,
+      "hits_livre": 1,
+      "lock_ok": true,
+      "fragile_1_jeton": true,
+      "hors_livre": false,
+      "sans_jeton": false
+    },
+    {
+      "key": "phase11_active_moc",
+      "point": 2,
+      "ligne": 233,
+      "texte": "توفر الثغور الورقية دخول CO2، وتوصل الأوعية الماء والأملاح إلى الورقة.",
+      "nb_jetons": 7,
+      "hits_chapitres": 1,
+      "hits_livre": 2,
+      "lock_ok": true,
+      "fragile_1_jeton": true,
+      "hors_livre": false,
+      "sans_jeton": false
+    },
+    {
+      "key": "phase14_chapitres_27_28",
+      "point": 5,
+      "ligne": 299,
+      "texte": "يعود H+ إلى الترجمة عبر ATP-synthase فيركب كمية كبيرة من ATP.",
+      "nb_jetons": 4,
+      "hits_chapitres": 1,
+      "hits_livre": 2,
+      "lock_ok": true,
+      "fragile_1_jeton": true,
+      "hors_livre": false,
+      "sans_jeton": false
+    },
+    {
+      "key": "phase17_chapitres_33_34",
+      "point": 2,
+      "ligne": 356,
+      "texte": "تتوزع بؤر الزلازل على مستوى بنيوف المائل بعمق يصل إلى 700 كم.",
+      "nb_jetons": 5,
+      "hits_chapitres": 1,
+      "hits_livre": 3,
+      "lock_ok": true,
+      "fragile_1_jeton": true,
+      "hors_livre": false,
+      "sans_jeton": false
+    },
+    {
+      "key": "d3-u9-l2-benioff",
+      "point": 1,
+      "ligne": 367,
+      "texte": "يتعمق توزع بؤر الزلازل تدريجياً من الخندق نحو القارة.",
+      "nb_jetons": 5,
+      "hits_chapitres": 1,
+      "hits_livre": 4,
+      "lock_ok": true,
+      "fragile_1_jeton": true,
+      "hors_livre": false,
+      "sans_jeton": false
+    },
+    {
+      "key": "phase19_chapitres_37_38",
+      "point": 3,
+      "ligne": 390,
+      "texte": "تتغير سرعة الموجات واتجاهها عند العبور بين أوساط مختلفة الكثافة (انكسار وانعكاس).",
+      "nb_jetons": 9,
+      "hits_chapitres": 1,
+      "hits_livre": 7,
+      "lock_ok": true,
+      "fragile_1_jeton": true,
+      "hors_livre": false,
+      "sans_jeton": false
+    },
+    {
+      "key": "phase19_chapitres_37_38",
+      "point": 4,
+      "ligne": 390,
+      "texte": "لا تعبر موجات S الأوساط السائلة فيتأخر وصولها وتشكل مناطق ظل.",
+      "nb_jetons": 7,
+      "hits_chapitres": 1,
+      "hits_livre": 6,
+      "lock_ok": true,
+      "fragile_1_jeton": true,
+      "hors_livre": false,
+      "sans_jeton": false
+    },
+    {
+      "key": "seismic_waves",
+      "point": 2,
+      "ligne": 401,
+      "texte": "تعتمد سرعة الموجات على كثافة الوسط وخصائصه الميكانيكية.",
+      "nb_jetons": 6,
+      "hits_chapitres": 1,
+      "hits_livre": 4,
+      "lock_ok": true,
+      "fragile_1_jeton": true,
+      "hors_livre": false,
+      "sans_jeton": false
+    },
+    {
+      "key": "seismic_waves",
+      "point": 4,
+      "ligne": 401,
+      "texte": "يؤدي عدم عبور موجات S للنواة الخارجية إلى استنتاج حالتها السائلة.",
+      "nb_jetons": 6,
+      "hits_chapitres": 1,
+      "hits_livre": 4,
+      "lock_ok": true,
+      "fragile_1_jeton": true,
+      "hors_livre": false,
+      "sans_jeton": false
+    },
+    {
+      "key": "phase21_chapitres_41_42",
+      "point": 4,
+      "ligne": 424,
+      "texte": "يوثق التمغنط المتباين المتناظر على جانبي الظهر تمدد القاع وانعكاس المجال المغناطيسي.",
+      "nb_jetons": 9,
+      "hits_chapitres": 1,
+      "hits_livre": 6,
+      "lock_ok": true,
+      "fragile_1_jeton": true,
+      "hors_livre": false,
+      "sans_jeton": false
+    },
+    {
+      "key": "phase21_chapitres_41_42",
+      "point": 5,
+      "ligne": 424,
+      "texte": "يزداد عمر صخور القاع كلما ابتعدنا عن محور الظهر.",
+      "nb_jetons": 4,
+      "hits_chapitres": 1,
+      "hits_livre": 4,
+      "lock_ok": true,
+      "fragile_1_jeton": true,
+      "hors_livre": false,
+      "sans_jeton": false
+    },
+    {
+      "key": "d3-u11-l1-migmatite",
+      "point": 4,
+      "ligne": 435,
+      "texte": "يمثل صخر المغماتيت مزيجاً انتقالياً بين الصخور المتحولة والصخور النارية.",
+      "nb_jetons": 7,
+      "hits_chapitres": 1,
+      "hits_livre": 5,
+      "lock_ok": true,
+      "fragile_1_jeton": true,
+      "hors_livre": false,
+      "sans_jeton": false
+    },
+    {
+      "key": "phase1_chapitres_1_2",
+      "point": 4,
+      "ligne": 482,
+      "texte": "تنشط الأحماض الأمينية بإنزيمات وبطاقة ATP قبل ارتباطها بـ ARNt الموافق.",
+      "nb_jetons": 6,
+      "hits_chapitres": 1,
+      "hits_livre": 4,
+      "lock_ok": true,
+      "fragile_1_jeton": true,
+      "hors_livre": false,
+      "sans_jeton": false
+    }
+  ],
+  "objectifs_cache": [
+    {
+      "key": "d1-u1-l1-expression-genique",
+      "field": "objectif",
+      "texte": "بيّن كيف يُترجم المحتوى الوراثي المسجل في ADN إلى بروتين ذي وظيفة محددة.",
+      "nb_jetons": 7,
+      "hits_chapitres": 3,
+      "hits_livre": 7,
+      "lock_note": "non vérifié par le verrou (lock ne couvre que points)",
+      "fragile": false,
+      "hors_livre": false
+    },
+    {
+      "key": "d1-u1-l1-expression-genique",
+      "field": "termeBac",
+      "texte": "الشفرة الوراثية / التعبير المورثي",
+      "nb_jetons": 4,
+      "hits_chapitres": 4,
+      "hits_livre": 4,
+      "lock_note": "non vérifié par le verrou (lock ne couvre que points)",
+      "fragile": false,
+      "hors_livre": false
+    },
+    {
+      "key": "lecon_transcription",
+      "field": "objectif",
+      "texte": "حدّد مقر وآلية استنساخ جزيئة الـ ARNm انطلاقاً من الـ ADN.",
+      "nb_jetons": 4,
+      "hits_chapitres": 2,
+      "hits_livre": 4,
+      "lock_note": "non vérifié par le verrou (lock ne couvre que points)",
+      "fragile": false,
+      "hors_livre": false
+    },
+    {
+      "key": "lecon_transcription",
+      "field": "termeBac",
+      "texte": "استنساخ المعلومات الوراثية (Transcription)",
+      "nb_jetons": 4,
+      "hits_chapitres": 3,
+      "hits_livre": 3,
+      "lock_note": "non vérifié par le verrou (lock ne couvre que points)",
+      "fragile": false,
+      "hors_livre": false
+    },
+    {
+      "key": "d1-u1-l2-transcription",
+      "field": "objectif",
+      "texte": "فسّر مراحل استنساخ الرسالة الوراثية على مستوى الـ ADN في النواة.",
+      "nb_jetons": 6,
+      "hits_chapitres": 4,
+      "hits_livre": 6,
+      "lock_note": "non vérifié par le verrou (lock ne couvre que points)",
+      "fragile": false,
+      "hors_livre": false
+    },
+    {
+      "key": "d1-u1-l2-transcription",
+      "field": "termeBac",
+      "texte": "ARN بوليميراز / السلسلة المستنسخة",
+      "nb_jetons": 3,
+      "hits_chapitres": 2,
+      "hits_livre": 2,
+      "lock_note": "non vérifié par le verrou (lock ne couvre que points)",
+      "fragile": false,
+      "hors_livre": false
+    },
+    {
+      "key": "d1-u1-l3-traduction",
+      "field": "objectif",
+      "texte": "فسّر آلية ترجمة الرسالة الوراثية إلى سلسلة ببتيدية في الهيولى.",
+      "nb_jetons": 6,
+      "hits_chapitres": 5,
+      "hits_livre": 6,
+      "lock_note": "non vérifié par le verrou (lock ne couvre que points)",
+      "fragile": false,
+      "hors_livre": false
+    },
+    {
+      "key": "d1-u1-l3-traduction",
+      "field": "termeBac",
+      "texte": "الترجمة / الرامزة المضادة (Anticodon)",
+      "nb_jetons": 4,
+      "hits_chapitres": 4,
+      "hits_livre": 4,
+      "lock_note": "non vérifié par le verrou (lock ne couvre que points)",
+      "fragile": false,
+      "hors_livre": false
+    },
+    {
+      "key": "protein_structure_function",
+      "field": "objectif",
+      "texte": "بيّن العلاقة بين البنية الفراغية للبروتين ووظيفته البيولوجية.",
+      "nb_jetons": 6,
+      "hits_chapitres": 4,
+      "hits_livre": 6,
+      "lock_note": "non vérifié par le verrou (lock ne couvre que points)",
+      "fragile": false,
+      "hors_livre": false
+    },
+    {
+      "key": "protein_structure_function",
+      "field": "termeBac",
+      "texte": "البنية الفراغية / التخصص الوظيفي للبروتينات",
+      "nb_jetons": 5,
+      "hits_chapitres": 3,
+      "hits_livre": 5,
+      "lock_note": "non vérifié par le verrou (lock ne couvre que points)",
+      "fragile": false,
+      "hors_livre": false
+    },
+    {
+      "key": "d1-u3-l1-enzyme",
+      "field": "objectif",
+      "texte": "بيّن خصوصية الإنزيم وعلاقة نشاطه بالبنية الفراغية لموقعه الفعال.",
+      "nb_jetons": 8,
+      "hits_chapitres": 1,
+      "hits_livre": 5,
+      "lock_note": "non vérifié par le verrou (lock ne couvre que points)",
+      "fragile": true,
+      "hors_livre": false
+    },
+    {
+      "key": "d1-u3-l1-enzyme",
+      "field": "termeBac",
+      "texte": "الموقع الفعال / المعقد إنزيم-مادة",
+      "nb_jetons": 4,
+      "hits_chapitres": 1,
+      "hits_livre": 4,
+      "lock_note": "non vérifié par le verrou (lock ne couvre que points)",
+      "fragile": true,
+      "hors_livre": false
+    },
+    {
+      "key": "phase4_chapitres_7_8",
+      "field": "objectif",
+      "texte": "فسّر تأثير تغيرات pH الوسط ودرجة الحرارة على النشاط الإنزيمي.",
+      "nb_jetons": 7,
+      "hits_chapitres": 7,
+      "hits_livre": 7,
+      "lock_note": "non vérifié par le verrou (lock ne couvre que points)",
+      "fragile": false,
+      "hors_livre": false
+    },
+    {
+      "key": "phase4_chapitres_7_8",
+      "field": "termeBac",
+      "texte": "pH الأمثل / الموقع الفعال",
+      "nb_jetons": 3,
+      "hits_chapitres": 2,
+      "hits_livre": 2,
+      "lock_note": "non vérifié par le verrou (lock ne couvre que points)",
+      "fragile": false,
+      "hors_livre": false
+    },
+    {
+      "key": "phase5_chapitres_9_10",
+      "field": "objectif",
+      "texte": "حدّد مفهومي الذات واللاذات، وبيّن الدور المناعي لجزيئات CMH وزمر الدم.",
+      "nb_jetons": 6,
+      "hits_chapitres": 3,
+      "hits_livre": 4,
+      "lock_note": "non vérifié par le verrou (lock ne couvre que points)",
+      "fragile": false,
+      "hors_livre": false
+    },
+    {
+      "key": "phase5_chapitres_9_10",
+      "field": "termeBac",
+      "texte": "الذات واللاذات / المعقد الملائم للنسج (CMH)",
+      "nb_jetons": 5,
+      "hits_chapitres": 3,
+      "hits_livre": 3,
+      "lock_note": "non vérifié par le verrou (lock ne couvre que points)",
+      "fragile": false,
+      "hors_livre": false
+    },
+    {
+      "key": "immunity_self_nonself",
+      "field": "objectif",
+      "texte": "حدّد أساس التعرف على الذات واللاذات ودور CMH فيه.",
+      "nb_jetons": 3,
+      "hits_chapitres": 3,
+      "hits_livre": 3,
+      "lock_note": "non vérifié par le verrou (lock ne couvre que points)",
+      "fragile": false,
+      "hors_livre": false
+    },
+    {
+      "key": "immunity_self_nonself",
+      "field": "termeBac",
+      "texte": "CMH (HLA) / الاستجابة المناعية",
+      "nb_jetons": 2,
+      "hits_chapitres": 0,
+      "hits_livre": 2,
+      "lock_note": "non vérifié par le verrou (lock ne couvre que points)",
+      "fragile": true,
+      "hors_livre": false
+    },
+    {
+      "key": "phase6_chapitres_11_12",
+      "field": "objectif",
+      "texte": "بيّن مصدر الأجسام المضادة، وفسّر الفرق بين الاستجابة الأولية والثانوية.",
+      "nb_jetons": 6,
+      "hits_chapitres": 2,
+      "hits_livre": 4,
+      "lock_note": "non vérifié par le verrou (lock ne couvre que points)",
+      "fragile": false,
+      "hors_livre": false
+    },
+    {
+      "key": "phase6_chapitres_11_12",
+      "field": "termeBac",
+      "texte": "الاستجابة الأولية والثانوية / خلايا الذاكرة",
+      "nb_jetons": 5,
+      "hits_chapitres": 1,
+      "hits_livre": 4,
+      "lock_note": "non vérifié par le verrou (lock ne couvre que points)",
+      "fragile": true,
+      "hors_livre": false
+    },
+    {
+      "key": "immunity_humoral_response",
+      "field": "objectif",
+      "texte": "فسّر تشكل المعقد المناعي ودوره في إبطال مفعول المستضد.",
+      "nb_jetons": 6,
+      "hits_chapitres": 5,
+      "hits_livre": 5,
+      "lock_note": "non vérifié par le verrou (lock ne couvre que points)",
+      "fragile": false,
+      "hors_livre": false
+    },
+    {
+      "key": "immunity_humoral_response",
+      "field": "termeBac",
+      "texte": "المعقد المناعي / الأجسام المضادة",
+      "nb_jetons": 4,
+      "hits_chapitres": 4,
+      "hits_livre": 4,
+      "lock_note": "non vérifié par le verrou (lock ne couvre que points)",
+      "fragile": false,
+      "hors_livre": false
+    },
+    {
+      "key": "phase7_chapitres_13_14",
+      "field": "objectif",
+      "texte": "فسّر طرق تأثير اللمفاويات السامة LTc على الخلية المصابة.",
+      "nb_jetons": 5,
+      "hits_chapitres": 5,
+      "hits_livre": 5,
+      "lock_note": "non vérifié par le verrou (lock ne couvre que points)",
+      "fragile": false,
+      "hors_livre": false
+    },
+    {
+      "key": "phase7_chapitres_13_14",
+      "field": "termeBac",
+      "texte": "LTc / البرفورين / الموت الخلوي المبرمج",
+      "nb_jetons": 4,
+      "hits_chapitres": 1,
+      "hits_livre": 4,
+      "lock_note": "non vérifié par le verrou (lock ne couvre que points)",
+      "fragile": true,
+      "hors_livre": false
+    },
+    {
+      "key": "immunity_cellular_response",
+      "field": "objectif",
+      "texte": "فسّر دور اللمفاويات LTc في تدمير الخلايا المصابة (الحالة الدفاعية الثانية).",
+      "nb_jetons": 7,
+      "hits_chapitres": 5,
+      "hits_livre": 6,
+      "lock_note": "non vérifié par le verrou (lock ne couvre que points)",
+      "fragile": false,
+      "hors_livre": false
+    },
+    {
+      "key": "immunity_cellular_response",
+      "field": "termeBac",
+      "texte": "الحالة الدفاعية الثانية / LTc",
+      "nb_jetons": 3,
+      "hits_chapitres": 2,
+      "hits_livre": 3,
+      "lock_note": "non vérifié par le verrou (lock ne couvre que points)",
+      "fragile": false,
+      "hors_livre": false
+    },
+    {
+      "key": "immunity_memory_response",
+      "field": "objectif",
+      "texte": "بيّن مصدر اللمفاويات LTc ودور خلايا الذاكرة في الرد المناعي.",
+      "nb_jetons": 4,
+      "hits_chapitres": 3,
+      "hits_livre": 4,
+      "lock_note": "non vérifié par le verrou (lock ne couvre que points)",
+      "fragile": false,
+      "hors_livre": false
+    },
+    {
+      "key": "immunity_memory_response",
+      "field": "termeBac",
+      "texte": "الغدة الزعترية / خلايا الذاكرة",
+      "nb_jetons": 4,
+      "hits_chapitres": 2,
+      "hits_livre": 3,
+      "lock_note": "non vérifié par le verrou (lock ne couvre que points)",
+      "fragile": false,
+      "hors_livre": false
+    },
+    {
+      "key": "phase8_chapitres_15_16",
+      "field": "objectif",
+      "texte": "فسّر الأساس الأيوني والبروتيني لكمون الراحة عند العصبون.",
+      "nb_jetons": 6,
+      "hits_chapitres": 4,
+      "hits_livre": 5,
+      "lock_note": "non vérifié par le verrou (lock ne couvre que points)",
+      "fragile": false,
+      "hors_livre": false
+    },
+    {
+      "key": "phase8_chapitres_15_16",
+      "field": "termeBac",
+      "texte": "كمون الراحة / مضخة Na+ و K+",
+      "nb_jetons": 1,
+      "hits_chapitres": 1,
+      "hits_livre": 1,
+      "lock_note": "non vérifié par le verrou (lock ne couvre que points)",
+      "fragile": true,
+      "hors_livre": false
+    },
+    {
+      "key": "phase9_chapitres_17_18",
+      "field": "objectif",
+      "texte": "فسّر آلية النقل المشبكي الأحادي الاتجاه بواسطة الأستيل كولين.",
+      "nb_jetons": 7,
+      "hits_chapitres": 4,
+      "hits_livre": 7,
+      "lock_note": "non vérifié par le verrou (lock ne couvre que points)",
+      "fragile": false,
+      "hors_livre": false
+    },
+    {
+      "key": "phase9_chapitres_17_18",
+      "field": "termeBac",
+      "texte": "المشبك / الأستيل كولين (ACh)",
+      "nb_jetons": 3,
+      "hits_chapitres": 3,
+      "hits_livre": 3,
+      "lock_note": "non vérifié par le verrou (lock ne couvre que points)",
+      "fragile": false,
+      "hors_livre": false
+    },
+    {
+      "key": "synapse",
+      "field": "objectif",
+      "texte": "فسّر مراحل النقل المشبكي ودور الأستيل كولين فيه.",
+      "nb_jetons": 5,
+      "hits_chapitres": 4,
+      "hits_livre": 5,
+      "lock_note": "non vérifié par le verrou (lock ne couvre que points)",
+      "fragile": false,
+      "hors_livre": false
+    },
+    {
+      "key": "synapse",
+      "field": "termeBac",
+      "texte": "الفجوة المشبكية / الأستيل كولين (ACh)",
+      "nb_jetons": 4,
+      "hits_chapitres": 3,
+      "hits_livre": 3,
+      "lock_note": "non vérifié par le verrou (lock ne couvre que points)",
+      "fragile": false,
+      "hors_livre": false
+    },
+    {
+      "key": "phase10_chapitres_19_20",
+      "field": "objectif",
+      "texte": "اشرح تأثير المخدرات على النقل المشبكي، وحدّد مقر التركيب الضوئي وبنيته.",
+      "nb_jetons": 7,
+      "hits_chapitres": 4,
+      "hits_livre": 7,
+      "lock_note": "non vérifié par le verrou (lock ne couvre que points)",
+      "fragile": false,
+      "hors_livre": false
+    },
+    {
+      "key": "phase10_chapitres_19_20",
+      "field": "termeBac",
+      "texte": "المرابط الأفيونية / الصانعة الخضراء",
+      "nb_jetons": 4,
+      "hits_chapitres": 1,
+      "hits_livre": 2,
+      "lock_note": "non vérifié par le verrou (lock ne couvre que points)",
+      "fragile": true,
+      "hors_livre": false
+    },
+    {
+      "key": "phase11_chapitres_21_22",
+      "field": "objectif",
+      "texte": "حدّد دور النظامين الضوئيين PSII و PSI ومصدر الأكسجين المنطلق.",
+      "nb_jetons": 5,
+      "hits_chapitres": 3,
+      "hits_livre": 4,
+      "lock_note": "non vérifié par le verrou (lock ne couvre que points)",
+      "fragile": false,
+      "hors_livre": false
+    },
+    {
+      "key": "phase11_chapitres_21_22",
+      "field": "termeBac",
+      "texte": "التحلل الضوئي للماء / النظامان الضوئيان",
+      "nb_jetons": 5,
+      "hits_chapitres": 2,
+      "hits_livre": 3,
+      "lock_note": "non vérifié par le verrou (lock ne couvre que points)",
+      "fragile": false,
+      "hors_livre": false
+    },
+    {
+      "key": "phase11_active_moc",
+      "field": "objectif",
+      "texte": "حدّد مقر عملية التركيب الضوئي على مستوى الورقة والصانعة الخضراء.",
+      "nb_jetons": 7,
+      "hits_chapitres": 5,
+      "hits_livre": 5,
+      "lock_note": "non vérifié par le verrou (lock ne couvre que points)",
+      "fragile": false,
+      "hors_livre": false
+    },
+    {
+      "key": "phase11_active_moc",
+      "field": "termeBac",
+      "texte": "الصانعة الخضراء / التيلاكويد والحشوة",
+      "nb_jetons": 4,
+      "hits_chapitres": 4,
+      "hits_livre": 4,
+      "lock_note": "non vérifié par le verrou (lock ne couvre que points)",
+      "fragile": false,
+      "hors_livre": false
+    },
+    {
+      "key": "d2-u6-l1-hill-ruben",
+      "field": "objectif",
+      "texte": "بيّن بتجربتي هيل وروبن أن مصدر الأكسجين المنطلق هو الماء لا CO2.",
+      "nb_jetons": 5,
+      "hits_chapitres": 3,
+      "hits_livre": 3,
+      "lock_note": "non vérifié par le verrou (lock ne couvre que points)",
+      "fragile": false,
+      "hors_livre": false
+    },
+    {
+      "key": "d2-u6-l1-hill-ruben",
+      "field": "termeBac",
+      "texte": "التحلل الضوئي للماء / النظير 18O",
+      "nb_jetons": 4,
+      "hits_chapitres": 1,
+      "hits_livre": 3,
+      "lock_note": "non vérifié par le verrou (lock ne couvre que points)",
+      "fragile": true,
+      "hors_livre": false
+    },
+    {
+      "key": "d2-u6-l2-jagendorf",
+      "field": "objectif",
+      "texte": "فسّر تجربة جاغندورف المثبتة لتركيب ATP بتدرج البروتونات في الظلام.",
+      "nb_jetons": 7,
+      "hits_chapitres": 4,
+      "hits_livre": 4,
+      "lock_note": "non vérifié par le verrou (lock ne couvre que points)",
+      "fragile": false,
+      "hors_livre": false
+    },
+    {
+      "key": "d2-u6-l2-jagendorf",
+      "field": "termeBac",
+      "texte": "تدرج البروتونات / ATP-synthase",
+      "nb_jetons": 2,
+      "hits_chapitres": 1,
+      "hits_livre": 1,
+      "lock_note": "non vérifié par le verrou (lock ne couvre que points)",
+      "fragile": true,
+      "hors_livre": false
+    },
+    {
+      "key": "d2-u6-l3-calvin",
+      "field": "objectif",
+      "texte": "فسّر كيف وثق كالفن مسار الكربون الموسوم وصولاً إلى حلقة تثبيت CO2.",
+      "nb_jetons": 5,
+      "hits_chapitres": 3,
+      "hits_livre": 5,
+      "lock_note": "non vérifié par le verrou (lock ne couvre que points)",
+      "fragile": false,
+      "hors_livre": false
+    },
+    {
+      "key": "d2-u6-l3-calvin",
+      "field": "termeBac",
+      "texte": "حلقة كالفن / تثبيت CO2",
+      "nb_jetons": 2,
+      "hits_chapitres": 2,
+      "hits_livre": 2,
+      "lock_note": "non vérifié par le verrou (lock ne couvre que points)",
+      "fragile": false,
+      "hors_livre": false
+    },
+    {
+      "key": "phase12_chapitres_23_24",
+      "field": "objectif",
+      "texte": "فسّر تفاعلات المرحلة الكيميوحيوية (حلقة كالفن) وتحويل CO2 إلى مادة عضوية.",
+      "nb_jetons": 6,
+      "hits_chapitres": 4,
+      "hits_livre": 5,
+      "lock_note": "non vérifié par le verrou (lock ne couvre que points)",
+      "fragile": false,
+      "hors_livre": false
+    },
+    {
+      "key": "phase12_chapitres_23_24",
+      "field": "termeBac",
+      "texte": "المرحلة الكيميوحيوية / حلقة كالفن",
+      "nb_jetons": 3,
+      "hits_chapitres": 2,
+      "hits_livre": 2,
+      "lock_note": "non vérifié par le verrou (lock ne couvre que points)",
+      "fragile": false,
+      "hors_livre": false
+    },
+    {
+      "key": "phase13_chapitres_25_26",
+      "field": "objectif",
+      "texte": "بيّن مراحل التحلل السكري وتحويل الغلوكوز إلى حمض البيروفيك.",
+      "nb_jetons": 6,
+      "hits_chapitres": 5,
+      "hits_livre": 6,
+      "lock_note": "non vérifié par le verrou (lock ne couvre que points)",
+      "fragile": false,
+      "hors_livre": false
+    },
+    {
+      "key": "phase13_chapitres_25_26",
+      "field": "termeBac",
+      "texte": "التحلل السكري (Glycolyse) / حمض البيروفيك",
+      "nb_jetons": 4,
+      "hits_chapitres": 3,
+      "hits_livre": 3,
+      "lock_note": "non vérifié par le verrou (lock ne couvre que points)",
+      "fragile": false,
+      "hors_livre": false
+    },
+    {
+      "key": "phase14_chapitres_27_28",
+      "field": "objectif",
+      "texte": "فسّر آلية الفسفرة التأكسدية ودور تدرج البروتونات في تركيب ATP.",
+      "nb_jetons": 4,
+      "hits_chapitres": 4,
+      "hits_livre": 4,
+      "lock_note": "non vérifié par le verrou (lock ne couvre que points)",
+      "fragile": false,
+      "hors_livre": false
+    },
+    {
+      "key": "phase14_chapitres_27_28",
+      "field": "termeBac",
+      "texte": "الفسفرة التأكسدية / سلسلة نقل الإلكترونات",
+      "nb_jetons": 4,
+      "hits_chapitres": 4,
+      "hits_livre": 4,
+      "lock_note": "non vérifié par le verrou (lock ne couvre que points)",
+      "fragile": false,
+      "hors_livre": false
+    },
+    {
+      "key": "d2-u7-l1-mitchell-racker",
+      "field": "objectif",
+      "texte": "فسّر تجربة راكر الداعمة للنظرية الكيمياؤسموزية لميتشل في تركيب ATP.",
+      "nb_jetons": 6,
+      "hits_chapitres": 2,
+      "hits_livre": 2,
+      "lock_note": "non vérifié par le verrou (lock ne couvre que points)",
+      "fragile": false,
+      "hors_livre": false
+    },
+    {
+      "key": "d2-u7-l1-mitchell-racker",
+      "field": "termeBac",
+      "texte": "النظرية الكيمياؤسموزية / القوة الدافعة البروتونية",
+      "nb_jetons": 5,
+      "hits_chapitres": 0,
+      "hits_livre": 1,
+      "lock_note": "non vérifié par le verrou (lock ne couvre que points)",
+      "fragile": true,
+      "hors_livre": false
+    },
+    {
+      "key": "phase15_chapitres_29_30",
+      "field": "objectif",
+      "texte": "قارن بين التركيب الضوئي والأكسدة التنفسية من حيث المقر والتفاعلات والطاقة.",
+      "nb_jetons": 7,
+      "hits_chapitres": 3,
+      "hits_livre": 6,
+      "lock_note": "non vérifié par le verrou (lock ne couvre que points)",
+      "fragile": false,
+      "hors_livre": false
+    },
+    {
+      "key": "phase15_chapitres_29_30",
+      "field": "termeBac",
+      "texte": "التحولات الطاقوية / ATP",
+      "nb_jetons": 2,
+      "hits_chapitres": 2,
+      "hits_livre": 2,
+      "lock_note": "non vérifié par le verrou (lock ne couvre que points)",
+      "fragile": false,
+      "hors_livre": false
+    },
+    {
+      "key": "phase16_chapitres_31_32",
+      "field": "objectif",
+      "texte": "حدّد الصفائح التكتونية وأسس تحديدها انطلاقاً من توزيع الظواهر الجيولوجية.",
+      "nb_jetons": 7,
+      "hits_chapitres": 5,
+      "hits_livre": 6,
+      "lock_note": "non vérifié par le verrou (lock ne couvre que points)",
+      "fragile": false,
+      "hors_livre": false
+    },
+    {
+      "key": "phase16_chapitres_31_32",
+      "field": "termeBac",
+      "texte": "الصفائح التكتونية / حدود الصفائح",
+      "nb_jetons": 3,
+      "hits_chapitres": 3,
+      "hits_livre": 3,
+      "lock_note": "non vérifié par le verrou (lock ne couvre que points)",
+      "fragile": false,
+      "hors_livre": false
+    },
+    {
+      "key": "subduction",
+      "field": "objectif",
+      "texte": "حدّد الصفائح التكتونية وفسّر حركاتها عند حدود التقارب (الغوص).",
+      "nb_jetons": 5,
+      "hits_chapitres": 3,
+      "hits_livre": 4,
+      "lock_note": "non vérifié par le verrou (lock ne couvre que points)",
+      "fragile": false,
+      "hors_livre": false
+    },
+    {
+      "key": "subduction",
+      "field": "termeBac",
+      "texte": "الغوص (Subduction) / الخندق المحيطي",
+      "nb_jetons": 4,
+      "hits_chapitres": 1,
+      "hits_livre": 2,
+      "lock_note": "non vérifié par le verrou (lock ne couvre que points)",
+      "fragile": true,
+      "hors_livre": false
+    },
+    {
+      "key": "phase17_chapitres_33_34",
+      "field": "objectif",
+      "texte": "فسّر الظواهر المرتبطة بالغوص على المستويين السطحي والعميق.",
+      "nb_jetons": 6,
+      "hits_chapitres": 3,
+      "hits_livre": 4,
+      "lock_note": "non vérifié par le verrou (lock ne couvre que points)",
+      "fragile": false,
+      "hors_livre": false
+    },
+    {
+      "key": "phase17_chapitres_33_34",
+      "field": "termeBac",
+      "texte": "الغوص / مستوى بنيوف",
+      "nb_jetons": 3,
+      "hits_chapitres": 2,
+      "hits_livre": 2,
+      "lock_note": "non vérifié par le verrou (lock ne couvre que points)",
+      "fragile": false,
+      "hors_livre": false
+    },
+    {
+      "key": "d3-u9-l2-benioff",
+      "field": "objectif",
+      "texte": "بيّن أن توزع بؤر الزلازل على مستوى بنيوف دليل مورفولوجي على الغوص.",
+      "nb_jetons": 5,
+      "hits_chapitres": 2,
+      "hits_livre": 3,
+      "lock_note": "non vérifié par le verrou (lock ne couvre que points)",
+      "fragile": false,
+      "hors_livre": false
+    },
+    {
+      "key": "d3-u9-l2-benioff",
+      "field": "termeBac",
+      "texte": "مستوى بنيوف / بؤرة الزلزال",
+      "nb_jetons": 3,
+      "hits_chapitres": 1,
+      "hits_livre": 2,
+      "lock_note": "non vérifié par le verrou (lock ne couvre que points)",
+      "fragile": true,
+      "hors_livre": false
+    },
+    {
+      "key": "phase18_chapitres_35_36",
+      "field": "objectif",
+      "texte": "بيّن مصدر الطاقة الداخلية للأرض ودورها في تحريك الصفائح التكتونية.",
+      "nb_jetons": 7,
+      "hits_chapitres": 5,
+      "hits_livre": 6,
+      "lock_note": "non vérifié par le verrou (lock ne couvre que points)",
+      "fragile": false,
+      "hors_livre": false
+    },
+    {
+      "key": "phase18_chapitres_35_36",
+      "field": "termeBac",
+      "texte": "تيارات الحمل / الاضمحلال الإشعاعي",
+      "nb_jetons": 4,
+      "hits_chapitres": 1,
+      "hits_livre": 3,
+      "lock_note": "non vérifié par le verrou (lock ne couvre que points)",
+      "fragile": true,
+      "hors_livre": false
+    },
+    {
+      "key": "phase19_chapitres_37_38",
+      "field": "objectif",
+      "texte": "استغل خصائص الموجات الزلزالية في التعرف على البنية الداخلية للأرض.",
+      "nb_jetons": 8,
+      "hits_chapitres": 2,
+      "hits_livre": 8,
+      "lock_note": "non vérifié par le verrou (lock ne couvre que points)",
+      "fragile": false,
+      "hors_livre": false
+    },
+    {
+      "key": "phase19_chapitres_37_38",
+      "field": "termeBac",
+      "texte": "الموجات الزلزالية (P و S) / الانقطاع",
+      "nb_jetons": 3,
+      "hits_chapitres": 2,
+      "hits_livre": 3,
+      "lock_note": "non vérifié par le verrou (lock ne couvre que points)",
+      "fragile": false,
+      "hors_livre": false
+    },
+    {
+      "key": "seismic_waves",
+      "field": "objectif",
+      "texte": "استغل الموجات الزلزالية P و S في نمذجة بنية الأرض الداخلية.",
+      "nb_jetons": 6,
+      "hits_chapitres": 3,
+      "hits_livre": 6,
+      "lock_note": "non vérifié par le verrou (lock ne couvre que points)",
+      "fragile": false,
+      "hors_livre": false
+    },
+    {
+      "key": "seismic_waves",
+      "field": "termeBac",
+      "texte": "موجات P و S / منطقة الظل",
+      "nb_jetons": 2,
+      "hits_chapitres": 1,
+      "hits_livre": 2,
+      "lock_note": "non vérifié par le verrou (lock ne couvre que points)",
+      "fragile": true,
+      "hors_livre": false
+    },
+    {
+      "key": "phase20_chapitres_39_40",
+      "field": "objectif",
+      "texte": "نمذج البنية الداخلية للكرة الأرضية انطلاقاً من المعطيات الزلزالية والكيميائية.",
+      "nb_jetons": 8,
+      "hits_chapitres": 7,
+      "hits_livre": 8,
+      "lock_note": "non vérifié par le verrou (lock ne couvre que points)",
+      "fragile": false,
+      "hors_livre": false
+    },
+    {
+      "key": "phase20_chapitres_39_40",
+      "field": "termeBac",
+      "texte": "انقطاع موهو وغوتنبرغ / النواة والوشاح",
+      "nb_jetons": 4,
+      "hits_chapitres": 2,
+      "hits_livre": 2,
+      "lock_note": "non vérifié par le verrou (lock ne couvre que points)",
+      "fragile": false,
+      "hors_livre": false
+    },
+    {
+      "key": "phase21_chapitres_41_42",
+      "field": "objectif",
+      "texte": "فسّر المغماتية وتشكل اللوح المحيطي عند الظهرات وسط المحيطية.",
+      "nb_jetons": 6,
+      "hits_chapitres": 6,
+      "hits_livre": 6,
+      "lock_note": "non vérifié par le verrou (lock ne couvre que points)",
+      "fragile": false,
+      "hors_livre": false
+    },
+    {
+      "key": "phase21_chapitres_41_42",
+      "field": "termeBac",
+      "texte": "المغماتيت / التمدد المحيطي",
+      "nb_jetons": 3,
+      "hits_chapitres": 1,
+      "hits_livre": 3,
+      "lock_note": "non vérifié par le verrou (lock ne couvre que points)",
+      "fragile": true,
+      "hors_livre": false
+    },
+    {
+      "key": "d3-u11-l1-migmatite",
+      "field": "objectif",
+      "texte": "بيّن شواهد التقلص والتضاعف القشري وصخر المغماتيت في سلاسل الجبال.",
+      "nb_jetons": 7,
+      "hits_chapitres": 4,
+      "hits_livre": 5,
+      "lock_note": "non vérifié par le verrou (lock ne couvre que points)",
+      "fragile": false,
+      "hors_livre": false
+    },
+    {
+      "key": "d3-u11-l1-migmatite",
+      "field": "termeBac",
+      "texte": "التضاعف القشري / المغماتيت",
+      "nb_jetons": 3,
+      "hits_chapitres": 2,
+      "hits_livre": 3,
+      "lock_note": "non vérifié par le verrou (lock ne couvre que points)",
+      "fragile": false,
+      "hors_livre": false
+    },
+    {
+      "key": "phase22_chapitres_43_44",
+      "field": "objectif",
+      "texte": "بيّن دورة الصخور في الطبيعة كدورة جيولوجية مغلقة ومستمرة.",
+      "nb_jetons": 6,
+      "hits_chapitres": 3,
+      "hits_livre": 4,
+      "lock_note": "non vérifié par le verrou (lock ne couvre que points)",
+      "fragile": false,
+      "hors_livre": false
+    },
+    {
+      "key": "phase22_chapitres_43_44",
+      "field": "termeBac",
+      "texte": "دورة الصخور / التحول (المطاعن)",
+      "nb_jetons": 3,
+      "hits_chapitres": 2,
+      "hits_livre": 2,
+      "lock_note": "non vérifié par le verrou (lock ne couvre que points)",
+      "fragile": false,
+      "hors_livre": false
+    },
+    {
+      "key": "lecon_representation",
+      "field": "objectif",
+      "texte": "اختر النموذج الجزيئي الموافق لتمثيل البنية الفراغية للبروتين.",
+      "nb_jetons": 7,
+      "hits_chapitres": 5,
+      "hits_livre": 7,
+      "lock_note": "non vérifié par le verrou (lock ne couvre que points)",
+      "fragile": false,
+      "hors_livre": false
+    },
+    {
+      "key": "lecon_representation",
+      "field": "termeBac",
+      "texte": "النماذج الجزيئية للبنية الفراغية",
+      "nb_jetons": 4,
+      "hits_chapitres": 2,
+      "hits_livre": 4,
+      "lock_note": "non vérifié par le verrou (lock ne couvre que points)",
+      "fragile": false,
+      "hors_livre": false
+    },
+    {
+      "key": "lecon_activite_structure",
+      "field": "objectif",
+      "texte": "بيّن أن النشاط الإنزيمي مرتبط بالبنية الفراغية للموقع الفعال.",
+      "nb_jetons": 7,
+      "hits_chapitres": 5,
+      "hits_livre": 5,
+      "lock_note": "non vérifié par le verrou (lock ne couvre que points)",
+      "fragile": false,
+      "hors_livre": false
+    },
+    {
+      "key": "lecon_activite_structure",
+      "field": "termeBac",
+      "texte": "الخصوصية الإنزيمية / الموقع الفعال",
+      "nb_jetons": 4,
+      "hits_chapitres": 3,
+      "hits_livre": 3,
+      "lock_note": "non vérifié par le verrou (lock ne couvre que points)",
+      "fragile": false,
+      "hors_livre": false
+    },
+    {
+      "key": "phase1_chapitres_1_2",
+      "field": "objectif",
+      "texte": "حدّد مقر تركيب البروتين عند حقيقيات النوى وشروط تنشيط الأحماض الأمينية.",
+      "nb_jetons": 8,
+      "hits_chapitres": 4,
+      "hits_livre": 7,
+      "lock_note": "non vérifié par le verrou (lock ne couvre que points)",
+      "fragile": false,
+      "hors_livre": false
+    },
+    {
+      "key": "phase1_chapitres_1_2",
+      "field": "termeBac",
+      "texte": "الشبكة الهيولية المحببة / مقر تركيب البروتين",
+      "nb_jetons": 5,
+      "hits_chapitres": 2,
+      "hits_livre": 4,
+      "lock_note": "non vérifié par le verrou (lock ne couvre que points)",
+      "fragile": false,
+      "hors_livre": false
+    },
+    {
+      "key": "phase2_chapitres_3_4",
+      "field": "objectif",
+      "texte": "فسّر المراحل الثلاث للترجمة على مستوى متعدد الريبوزومات.",
+      "nb_jetons": 6,
+      "hits_chapitres": 4,
+      "hits_livre": 5,
+      "lock_note": "non vérifié par le verrou (lock ne couvre que points)",
+      "fragile": false,
+      "hors_livre": false
+    },
+    {
+      "key": "phase2_chapitres_3_4",
+      "field": "termeBac",
+      "texte": "المراحل الثلاث للترجمة / متعدد الريبوزومات",
+      "nb_jetons": 5,
+      "hits_chapitres": 3,
+      "hits_livre": 4,
+      "lock_note": "non vérifié par le verrou (lock ne couvre que points)",
+      "fragile": false,
+      "hors_livre": false
+    },
+    {
+      "key": "phase3_chapitres_5_6",
+      "field": "objectif",
+      "texte": "بيّن أن تسلسل الأحماض الأمينية يحدد البنية الفراغية، وأن الوظيفة مرتبطة بالبنية.",
+      "nb_jetons": 8,
+      "hits_chapitres": 5,
+      "hits_livre": 6,
+      "lock_note": "non vérifié par le verrou (lock ne couvre que points)",
+      "fragile": false,
+      "hors_livre": false
+    },
+    {
+      "key": "phase3_chapitres_5_6",
+      "field": "termeBac",
+      "texte": "التسلسل يحدد البنية / العلاقة بين البنية والوظيفة",
+      "nb_jetons": 5,
+      "hits_chapitres": 3,
+      "hits_livre": 3,
+      "lock_note": "non vérifié par le verrou (lock ne couvre que points)",
+      "fragile": false,
+      "hors_livre": false
+    }
+  ],
+  "gold_rows_hors": [
+    {
+      "key": "d2-u6-l2-jagendorf",
+      "field_idx": 2,
+      "nb_jetons": 1,
+      "hits_chapitres": 0,
+      "hits_livre": 0,
+      "lock_ok_noir": false,
+      "fragile_1": false,
+      "hors_livre": true,
+      "status": "adaptation_pedagogique",
+      "reviewed": false,
+      "ligne": 54,
+      "extrait": "ATP-synthase"
+    },
+    {
+      "key": "d2-u6-l2-jagendorf",
+      "field_idx": 4,
+      "nb_jetons": 2,
+      "hits_chapitres": 0,
+      "hits_livre": 0,
+      "lock_ok_noir": false,
+      "fragile_1": false,
+      "hors_livre": true,
+      "status": "adaptation_pedagogique",
+      "reviewed": false,
+      "ligne": 54,
+      "extrait": "النظرية الكيمياؤسموزية"
+    },
+    {
+      "key": "d2-u6-l3-calvin",
+      "field_idx": 0,
+      "nb_jetons": 1,
+      "hits_chapitres": 0,
+      "hits_livre": 0,
+      "lock_ok_noir": false,
+      "fragile_1": false,
+      "hors_livre": true,
+      "status": "adaptation_pedagogique",
+      "reviewed": false,
+      "ligne": 73,
+      "extrait": "¹⁴CO₂"
+    },
+    {
+      "key": "d2-u6-l3-calvin",
+      "field_idx": 4,
+      "nb_jetons": 1,
+      "hits_chapitres": 0,
+      "hits_livre": 0,
+      "lock_ok_noir": false,
+      "fragile_1": false,
+      "hors_livre": true,
+      "status": "adaptation_pedagogique",
+      "reviewed": false,
+      "ligne": 73,
+      "extrait": "Rubisco"
+    },
+    {
+      "key": "d1-u1-l2-transcription",
+      "field_idx": 1,
+      "nb_jetons": 1,
+      "hits_chapitres": 0,
+      "hits_livre": 0,
+      "lock_ok_noir": false,
+      "fragile_1": false,
+      "hors_livre": true,
+      "status": "adaptation_pedagogique",
+      "reviewed": false,
+      "ligne": 112,
+      "extrait": "ARN بوليميراز"
+    },
+    {
+      "key": "d1-u1-l3-traduction",
+      "field_idx": 2,
+      "nb_jetons": 1,
+      "hits_chapitres": 0,
+      "hits_livre": 0,
+      "lock_ok_noir": false,
+      "fragile_1": false,
+      "hors_livre": true,
+      "status": "adaptation_pedagogique",
+      "reviewed": false,
+      "ligne": 131,
+      "extrait": "الكودون"
+    },
+    {
+      "key": "d1-u1-l3-traduction",
+      "field_idx": 3,
+      "nb_jetons": 1,
+      "hits_chapitres": 0,
+      "hits_livre": 0,
+      "lock_ok_noir": false,
+      "fragile_1": false,
+      "hors_livre": true,
+      "status": "adaptation_pedagogique",
+      "reviewed": false,
+      "ligne": 131,
+      "extrait": "مضاد الكودون"
+    },
+    {
+      "key": "d1-u3-l1-enzyme",
+      "field_idx": 2,
+      "nb_jetons": 1,
+      "hits_chapitres": 0,
+      "hits_livre": 0,
+      "lock_ok_noir": false,
+      "fragile_1": false,
+      "hors_livre": true,
+      "status": "adaptation_pedagogique",
+      "reviewed": false,
+      "ligne": 150,
+      "extrait": "التشبّع"
+    },
+    {
+      "key": "subduction",
+      "field_idx": 4,
+      "nb_jetons": 1,
+      "hits_chapitres": 0,
+      "hits_livre": 0,
+      "lock_ok_noir": false,
+      "fragile_1": false,
+      "hors_livre": true,
+      "status": "adaptation_pedagogique",
+      "reviewed": false,
+      "ligne": 207,
+      "extrait": "صهارة"
+    },
+    {
+      "key": "protein_structure_function",
+      "field_idx": 5,
+      "nb_jetons": 1,
+      "hits_chapitres": 0,
+      "hits_livre": 0,
+      "lock_ok_noir": false,
+      "fragile_1": false,
+      "hors_livre": true,
+      "status": "adaptation_pedagogique",
+      "reviewed": false,
+      "ligne": 227,
+      "extrait": "الطفرات"
+    },
+    {
+      "key": "d2-u7-l1-mitchell-racker",
+      "field_idx": 0,
+      "nb_jetons": 2,
+      "hits_chapitres": 0,
+      "hits_livre": 0,
+      "lock_ok_noir": false,
+      "fragile_1": false,
+      "hors_livre": true,
+      "status": "adaptation_pedagogique",
+      "reviewed": false,
+      "ligne": 322,
+      "extrait": "النظرية الكيمياؤسموزية"
+    },
+    {
+      "key": "d2-u7-l1-mitchell-racker",
+      "field_idx": 1,
+      "nb_jetons": 1,
+      "hits_chapitres": 0,
+      "hits_livre": 0,
+      "lock_ok_noir": false,
+      "fragile_1": false,
+      "hors_livre": true,
+      "status": "adaptation_pedagogique",
+      "reviewed": false,
+      "ligne": 322,
+      "extrait": "البكتيريورودوبسين"
+    },
+    {
+      "key": "d2-u7-l1-mitchell-racker",
+      "field_idx": 9,
+      "nb_jetons": 6,
+      "hits_chapitres": 0,
+      "hits_livre": 0,
+      "lock_ok_noir": false,
+      "fragile_1": false,
+      "hors_livre": true,
+      "status": "adaptation_pedagogique",
+      "reviewed": false,
+      "ligne": 322,
+      "extrait": "بالإضاءة ضخ H⁺ داخل الحويصلة فيتكون تدرج، وتركب ATP خارج الحويصلة"
+    }
+  ],
+  "html_rows": [
+    {
+      "file": "phase2_chapitres_3_4",
+      "absent": false,
+      "id_hosila": true,
+      "link_hosila": true,
+      "marqueurs_ok": true,
+      "marqueurs_ko": [],
+      "injection_resume": true
+    },
+    {
+      "file": "phase3_chapitres_5_6",
+      "absent": false,
+      "id_hosila": true,
+      "link_hosila": true,
+      "marqueurs_ok": true,
+      "marqueurs_ko": [],
+      "injection_resume": true
+    },
+    {
+      "file": "phase7_chapitres_13_14",
+      "absent": false,
+      "id_hosila": true,
+      "link_hosila": true,
+      "marqueurs_ok": true,
+      "marqueurs_ko": [],
+      "injection_resume": true
+    },
+    {
+      "file": "phase12_chapitres_23_24",
+      "absent": false,
+      "id_hosila": true,
+      "link_hosila": true,
+      "marqueurs_ok": true,
+      "marqueurs_ko": [],
+      "injection_resume": true
+    },
+    {
+      "file": "phase14_chapitres_27_28",
+      "absent": false,
+      "id_hosila": true,
+      "link_hosila": true,
+      "marqueurs_ok": true,
+      "marqueurs_ko": [],
+      "injection_resume": true
+    },
+    {
+      "file": "phase15_chapitres_29_30",
+      "absent": false,
+      "id_hosila": true,
+      "link_hosila": true,
+      "marqueurs_ok": true,
+      "marqueurs_ko": [],
+      "injection_resume": true
+    },
+    {
+      "file": "phase22_chapitres_43_44",
+      "absent": false,
+      "id_hosila": true,
+      "link_hosila": true,
+      "marqueurs_ok": true,
+      "marqueurs_ko": [],
+      "injection_resume": true
+    },
+    {
+      "file": "phase4_chapitres_7_8",
+      "absent": false,
+      "id_hosila": true,
+      "link_hosila": true,
+      "marqueurs_ok": true,
+      "marqueurs_ko": [],
+      "injection_resume": true
+    },
+    {
+      "file": "phase10_chapitres_19_20",
+      "absent": false,
+      "id_hosila": true,
+      "link_hosila": true,
+      "marqueurs_ok": true,
+      "marqueurs_ko": [],
+      "injection_resume": true
+    },
+    {
+      "file": "phase18_chapitres_35_36",
+      "absent": false,
+      "id_hosila": true,
+      "link_hosila": true,
+      "marqueurs_ok": true,
+      "marqueurs_ko": [],
+      "injection_resume": true
+    },
+    {
+      "file": "phase20_chapitres_39_40",
+      "absent": false,
+      "id_hosila": true,
+      "link_hosila": true,
+      "marqueurs_ok": true,
+      "marqueurs_ko": [],
+      "injection_resume": true
+    }
+  ],
+  "hosila": {
+    "unites": [
+      "d1u1",
+      "d1u2",
+      "d1u3",
+      "d1u4",
+      "d1u5",
+      "d2u1",
+      "d2u2",
+      "d3u1",
+      "d3u2",
+      "d3u3"
+    ],
+    "nb_unites": 10,
+    "nb_blocs": 488,
+    "nb_points": 71,
+    "stats_header": "10 unités · 71 points · 488 blocs.",
+    "residus_code": {
+      "EXTRAIRE": 0,
+      "إليك النص الكامل": 0,
+      "livre_scolaire": 0,
+      "LaTeX_$": 0
+    },
+    "residus_dans_donnees": {
+      "EXTRAIRE": 0,
+      "إليك النص الكامل": 0
+    }
+  },
+  "okacha": {
+    "stats": {
+      "points": "58",
+      "genere": "2026-09-23",
+      "pointsTotal": "58"
+    },
+    "residus": {
+      "EXTRAIRE": 0,
+      "إليك النص": 0,
+      "METHODO": 0
+    },
+    "nb_points_kind": 58,
+    "lignes": 925
+  },
+  "P0": [
+    {
+      "id": "P0-suspect-horslivre-phase5_chapitres_9_10-point2",
+      "fichier": "src/data/resumesLecons.ts",
+      "key": "phase5_chapitres_9_10",
+      "ligne": 105,
+      "texte": "تعبرز جزيئات CMH-I على سطح جميع الخلايا المنواة لعرض شظايا البروتينات الداخلية.",
+      "preuve": "motif « تعبرز » absent du livre normalisé ; graphie inhabituelle — vérifier تبرز / تُبرز vs livre",
+      "rec": "Corriger la formulation d'après le livre."
+    },
+    {
+      "id": "P0-suspect-horslivre-phase5_chapitres_9_10-point3",
+      "fichier": "src/data/resumesLecons.ts",
+      "key": "phase5_chapitres_9_10",
+      "ligne": 106,
+      "texte": "تعبرز جزيئات CMH-II من طرف خلايا مناعية متخصصة لعرض شظايا اللاذات المبتلعة.",
+      "preuve": "motif « تعبرز » absent du livre normalisé ; graphie inhabituelle — vérifier تبرز / تُبرز vs livre",
+      "rec": "Corriger la formulation d'après le livre."
+    },
+    {
+      "id": "P0-suspect-horslivre-phase6_chapitres_11_12-point2",
+      "fichier": "src/data/resumesLecons.ts",
+      "key": "phase6_chapitres_11_12",
+      "ligne": 126,
+      "texte": "تتميز الاستجابة المناعية الأولية بفترة كامن وبمستوى أجسام مضادة منخفض.",
+      "preuve": "motif « فترة كامن » absent du livre normalisé ; expression — vérifier période de latence vs livre",
+      "rec": "Corriger la formulation d'après le livre."
+    },
+    {
+      "id": "P0-suspect-horslivre-immunity_humoral_response-point4",
+      "fichier": "src/data/resumesLecons.ts",
+      "key": "immunity_humoral_response",
+      "ligne": 139,
+      "texte": "تتمايز اللمفاويات B إلى خلايا بلازمية ناشزة (قصيرة العمر) وخلايا ذاكرة طويلة العمر.",
+      "preuve": "motif « ناشزة » absent du livre normalisé ; graphie — vérifier ناشِعة/ناشِطة vs livre",
+      "rec": "Corriger la formulation d'après le livre."
+    },
+    {
+      "id": "P0-suspect-horslivre-phase14_chapitres_27_28-point5",
+      "fichier": "src/data/resumesLecons.ts",
+      "key": "phase14_chapitres_27_28",
+      "ligne": 306,
+      "texte": "يعود H+ إلى الترجمة عبر ATP-synthase فيركب كمية كبيرة من ATP.",
+      "preuve": "motif « إلى الترجمة » absent du livre normalisé ; sens douteux en contexte ATP (H+ → matrice ?)",
+      "rec": "Corriger la formulation d'après le livre."
+    },
+    {
+      "id": "P0-suspect-horslivre-phase19_chapitres_37_38-point5",
+      "fichier": "src/data/resumesLecons.ts",
+      "key": "phase19_chapitres_37_38",
+      "ligne": 397,
+      "texte": "يتكسر تراكم الإجهاد في الصخور فتنطلق الطاقة على شكل موجات زلزالية.",
+      "preuve": "motif « يتكسر تراكم » absent du livre normalisé ; syntaxe étrange — vérifier formulation livre",
+      "rec": "Corriger la formulation d'après le livre."
+    }
+  ],
+  "P1": [
+    {
+      "id": "P1-fragile-1jeton",
+      "fichier": "src/data/resumesLecons.ts",
+      "count": 21,
+      "exemples": [
+        {
+          "key": "d1-u1-l2-transcription",
+          "point": 3,
+          "jeton_hit": "يرتكز الـ ARNm على السلسلة وفق التكامل القاعدي وباتجاه واحد "
+        },
+        {
+          "key": "d1-u3-l1-enzyme",
+          "point": 1,
+          "jeton_hit": "يحفز الإنزيم تفاعلات الوساط الحيوية بتسريعها دون أن يستهلك."
+        },
+        {
+          "key": "d1-u3-l1-enzyme",
+          "point": 2,
+          "jeton_hit": "يمتلك الإنزيم موقعاً فعالاً تسند فيه المادة بعلاقة تكامل بني"
+        },
+        {
+          "key": "phase6_chapitres_11_12",
+          "point": 4,
+          "jeton_hit": "تضمن خلايا الذاكرة المناعة المكتسبة طويلة المدى."
+        },
+        {
+          "key": "immunity_cellular_response",
+          "point": 3,
+          "jeton_hit": "تفرز LTc البرفورين المحدث لثقوب في غشاء الخلية الهدف فتموت م"
+        },
+        {
+          "key": "immunity_cellular_response",
+          "point": 4,
+          "jeton_hit": "تتحرر LTc بعد الفعل وتتسكع في الوسط الداخلي لمهاجمة أهداف جد"
+        },
+        {
+          "key": "immunity_memory_response",
+          "point": 2,
+          "jeton_hit": "يتمايز اللمفاويتان T و B ويكتسبان مستقبلاتهما المتخصصة قبل ا"
+        },
+        {
+          "key": "phase8_chapitres_15_16",
+          "point": 4,
+          "jeton_hit": "تضمن مضخة Na+/K+ (باستهلاك ATP) حفظ التفاوت في التركيزات الأ"
+        }
+      ],
+      "preuve": "21 point(s) ne passent le verrou que par 1 seul jeton ≥5 car.",
+      "rec": "Renforcer : 2 jetons ou reformuler sur le texte chapitre."
+    },
+    {
+      "id": "P1-objectif-hors-verrou",
+      "fichier": "src/data/resumesLecons.ts",
+      "count": 15,
+      "exemples": [
+        {
+          "key": "d1-u3-l1-enzyme",
+          "field": "objectif",
+          "texte": "بيّن خصوصية الإنزيم وعلاقة نشاطه بالبنية الفراغية لموقعه الفعال.",
+          "nb_jetons": 8,
+          "hits_chapitres": 1,
+          "hits_livre": 5,
+          "lock_note": "non vérifié par le verrou (lock ne couvre que points)",
+          "fragile": true,
+          "hors_livre": false
+        },
+        {
+          "key": "d1-u3-l1-enzyme",
+          "field": "termeBac",
+          "texte": "الموقع الفعال / المعقد إنزيم-مادة",
+          "nb_jetons": 4,
+          "hits_chapitres": 1,
+          "hits_livre": 4,
+          "lock_note": "non vérifié par le verrou (lock ne couvre que points)",
+          "fragile": true,
+          "hors_livre": false
+        },
+        {
+          "key": "immunity_self_nonself",
+          "field": "termeBac",
+          "texte": "CMH (HLA) / الاستجابة المناعية",
+          "nb_jetons": 2,
+          "hits_chapitres": 0,
+          "hits_livre": 2,
+          "lock_note": "non vérifié par le verrou (lock ne couvre que points)",
+          "fragile": true,
+          "hors_livre": false
+        },
+        {
+          "key": "phase6_chapitres_11_12",
+          "field": "termeBac",
+          "texte": "الاستجابة الأولية والثانوية / خلايا الذاكرة",
+          "nb_jetons": 5,
+          "hits_chapitres": 1,
+          "hits_livre": 4,
+          "lock_note": "non vérifié par le verrou (lock ne couvre que points)",
+          "fragile": true,
+          "hors_livre": false
+        },
+        {
+          "key": "phase7_chapitres_13_14",
+          "field": "termeBac",
+          "texte": "LTc / البرفورين / الموت الخلوي المبرمج",
+          "nb_jetons": 4,
+          "hits_chapitres": 1,
+          "hits_livre": 4,
+          "lock_note": "non vérifié par le verrou (lock ne couvre que points)",
+          "fragile": true,
+          "hors_livre": false
+        },
+        {
+          "key": "phase8_chapitres_15_16",
+          "field": "termeBac",
+          "texte": "كمون الراحة / مضخة Na+ و K+",
+          "nb_jetons": 1,
+          "hits_chapitres": 1,
+          "hits_livre": 1,
+          "lock_note": "non vérifié par le verrou (lock ne couvre que points)",
+          "fragile": true,
+          "hors_livre": false
+        },
+        {
+          "key": "phase10_chapitres_19_20",
+          "field": "termeBac",
+          "texte": "المرابط الأفيونية / الصانعة الخضراء",
+          "nb_jetons": 4,
+          "hits_chapitres": 1,
+          "hits_livre": 2,
+          "lock_note": "non vérifié par le verrou (lock ne couvre que points)",
+          "fragile": true,
+          "hors_livre": false
+        },
+        {
+          "key": "d2-u6-l1-hill-ruben",
+          "field": "termeBac",
+          "texte": "التحلل الضوئي للماء / النظير 18O",
+          "nb_jetons": 4,
+          "hits_chapitres": 1,
+          "hits_livre": 3,
+          "lock_note": "non vérifié par le verrou (lock ne couvre que points)",
+          "fragile": true,
+          "hors_livre": false
+        }
+      ],
+      "preuve": "objectif/termeBac : resumes.lock ne vérifie QUE les points — objectifs fragiles ou hors livre non bloqués",
+      "rec": "Étendre le verrou à objectif + termeBac."
+    },
+    {
+      "id": "P1-gold-hors-livre",
+      "fichier": "src/data/lessonGoldSummaries.ts",
+      "count": 13,
+      "exemples": [
+        {
+          "key": "d2-u6-l2-jagendorf",
+          "field_idx": 4,
+          "nb_jetons": 2,
+          "hits_chapitres": 0,
+          "hits_livre": 0,
+          "lock_ok_noir": false,
+          "fragile_1": false,
+          "hors_livre": true,
+          "status": "adaptation_pedagogique",
+          "reviewed": false,
+          "ligne": 54,
+          "extrait": "النظرية الكيمياؤسموزية",
+          "hit4": "0/2"
+        },
+        {
+          "key": "d1-u1-l3-traduction",
+          "field_idx": 2,
+          "nb_jetons": 1,
+          "hits_chapitres": 0,
+          "hits_livre": 0,
+          "lock_ok_noir": false,
+          "fragile_1": false,
+          "hors_livre": true,
+          "status": "adaptation_pedagogique",
+          "reviewed": false,
+          "ligne": 131,
+          "extrait": "الكودون",
+          "hit4": "0/1"
+        },
+        {
+          "key": "d1-u1-l3-traduction",
+          "field_idx": 3,
+          "nb_jetons": 1,
+          "hits_chapitres": 0,
+          "hits_livre": 0,
+          "lock_ok_noir": false,
+          "fragile_1": false,
+          "hors_livre": true,
+          "status": "adaptation_pedagogique",
+          "reviewed": false,
+          "ligne": 131,
+          "extrait": "مضاد الكودون",
+          "hit4": "1/2"
+        },
+        {
+          "key": "d1-u3-l1-enzyme",
+          "field_idx": 2,
+          "nb_jetons": 1,
+          "hits_chapitres": 0,
+          "hits_livre": 0,
+          "lock_ok_noir": false,
+          "fragile_1": false,
+          "hors_livre": true,
+          "status": "adaptation_pedagogique",
+          "reviewed": false,
+          "ligne": 150,
+          "extrait": "التشبّع",
+          "hit4": "0/1"
+        },
+        {
+          "key": "subduction",
+          "field_idx": 4,
+          "nb_jetons": 1,
+          "hits_chapitres": 0,
+          "hits_livre": 0,
+          "lock_ok_noir": false,
+          "fragile_1": false,
+          "hors_livre": true,
+          "status": "adaptation_pedagogique",
+          "reviewed": false,
+          "ligne": 207,
+          "extrait": "صهارة",
+          "hit4": "0/1"
+        },
+        {
+          "key": "protein_structure_function",
+          "field_idx": 5,
+          "nb_jetons": 1,
+          "hits_chapitres": 0,
+          "hits_livre": 0,
+          "lock_ok_noir": false,
+          "fragile_1": false,
+          "hors_livre": true,
+          "status": "adaptation_pedagogique",
+          "reviewed": false,
+          "ligne": 227,
+          "extrait": "الطفرات",
+          "hit4": "0/1"
+        },
+        {
+          "key": "d2-u7-l1-mitchell-racker",
+          "field_idx": 0,
+          "nb_jetons": 2,
+          "hits_chapitres": 0,
+          "hits_livre": 0,
+          "lock_ok_noir": false,
+          "fragile_1": false,
+          "hors_livre": true,
+          "status": "adaptation_pedagogique",
+          "reviewed": false,
+          "ligne": 322,
+          "extrait": "النظرية الكيمياؤسموزية",
+          "hit4": "0/2"
+        },
+        {
+          "key": "d2-u7-l1-mitchell-racker",
+          "field_idx": 1,
+          "nb_jetons": 1,
+          "hits_chapitres": 0,
+          "hits_livre": 0,
+          "lock_ok_noir": false,
+          "fragile_1": false,
+          "hors_livre": true,
+          "status": "adaptation_pedagogique",
+          "reviewed": false,
+          "ligne": 322,
+          "extrait": "البكتيريورودوبسين",
+          "hit4": "0/1"
+        }
+      ],
+      "preuve": "13 bloc(s) gold sans jeton ≥5 car. dans le livre normalisé — dont 3 tokens latins/OCR (ex. « ATP-synthase » : « synthase » présent brut) et 10 termes hors livre (كودون، تشبّع، صهارة، طفرات، كيمياؤسموزية…) — aucun lock d'ancrage gold existant",
+      "rec": "P1 : ajouter lessonGold.lock (ancrage vocab/mécanisme vs chapitres) ; pour les termes arabes absents de l'OCR, s'appuyer sur l'étalon حصيلة ou marquer source hors-OCR (comme les 4 حصيلة user).",
+      "latins_ocr": [
+        {
+          "key": "d2-u6-l2-jagendorf",
+          "field_idx": 2,
+          "nb_jetons": 1,
+          "hits_chapitres": 0,
+          "hits_livre": 0,
+          "lock_ok_noir": false,
+          "fragile_1": false,
+          "hors_livre": true,
+          "status": "adaptation_pedagogique",
+          "reviewed": false,
+          "ligne": 54,
+          "extrait": "ATP-synthase",
+          "classe": "LATIN_OCR",
+          "toks": [
+            "ATP",
+            "synthase"
+          ]
+        },
+        {
+          "key": "d1-u1-l2-transcription",
+          "field_idx": 1,
+          "nb_jetons": 1,
+          "hits_chapitres": 0,
+          "hits_livre": 0,
+          "lock_ok_noir": false,
+          "fragile_1": false,
+          "hors_livre": true,
+          "status": "adaptation_pedagogique",
+          "reviewed": false,
+          "ligne": 112,
+          "extrait": "ARN بوليميراز",
+          "classe": "LATIN_OCR",
+          "toks": [
+            "ARN"
+          ]
+        },
+        {
+          "key": "d2-u7-l1-mitchell-racker",
+          "field_idx": 9,
+          "nb_jetons": 6,
+          "hits_chapitres": 0,
+          "hits_livre": 0,
+          "lock_ok_noir": false,
+          "fragile_1": false,
+          "hors_livre": true,
+          "status": "adaptation_pedagogique",
+          "reviewed": false,
+          "ligne": 322,
+          "extrait": "بالإضاءة ضخ H⁺ داخل الحويصلة فيتكون تدرج، وتركب ATP خارج الحويصلة",
+          "classe": "LATIN_OCR",
+          "toks": [
+            "H",
+            "ATP"
+          ]
+        }
+      ],
+      "count_detail": {
+        "total": 13,
+        "latin_ocr": 3,
+        "hors_vrai": 10
+      },
+      "breakdown": {
+        "latin_ocr": 3,
+        "lexicale": 10
+      }
+    },
+    {
+      "id": "P1-lock-design",
+      "fichier": "src/data/resumes.lock.test.ts",
+      "preuve": "seuil ancrage = ≥1 jeton ≥5 car./point — trop faible (fragilité mesurée ci-dessus) ; objectif/termeBac/gold non couverts",
+      "rec": "Durcir : ≥2 jetons ou couverture objectif+gold."
+    }
+  ],
+  "P2": [
+    {
+      "id": "P2-suspect-note-phase21_chapitres_41_42-objectif",
+      "fichier": "src/data/resumesLecons.ts",
+      "key": "phase21_chapitres_41_42",
+      "ligne": 425,
+      "texte": "فسّر المغماتية وتشكل اللوح المحيطي عند الظهرات وسط المحيطية.",
+      "preuve": "motif « المغماتية » présent dans chapitres — qualité rédactionnelle à relire (orthographe — الميغmatite / مغماتية vs livre)",
+      "rec": "Relecture éditoriale owner."
+    },
+    {
+      "id": "P2-gold-fragile",
+      "fichier": "src/data/lessonGoldSummaries.ts",
+      "count": 90,
+      "preuve": "90 bloc(s) gold avec 1 seul jeton d'ancre",
+      "rec": "Renforcer ancrage gold."
+    },
+    {
+      "id": "P2-gold-statut",
+      "fichier": "src/data/lessonGoldSummaries.ts",
+      "preuve": "19/19 status=adaptation_pedagogique, reviewed=false, 0 manuel_officiel_verifie",
+      "rec": "Traçabilité : relecture enseignant ou bascule honest status (déjà documenté Speckit V3)."
+    },
+    {
+      "id": "P2-hosila-propore",
+      "fichier": "src/data/hosila.ts",
+      "preuve": "0 résidu extraction dans données ; 10 u. / 71 pts — lock anti-résidus OK",
+      "rec": "Aucun (statut vert)."
+    },
+    {
+      "id": "P2-html-hosila-ok",
+      "fichier": "public/lessons/*.html",
+      "preuve": "11/11 cartes حصيلة HTML OK (id + marqueurs)",
+      "rec": "Aucun (statut vert)."
+    }
+  ]
+}

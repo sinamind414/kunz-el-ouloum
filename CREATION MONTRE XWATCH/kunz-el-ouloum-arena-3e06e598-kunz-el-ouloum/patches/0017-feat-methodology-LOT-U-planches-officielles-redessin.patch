@@ -1,0 +1,630 @@
+From b1e83b6cb4aa890e15ec4f203ced3f8d6887673e Mon Sep 17 00:00:00 2001
+From: sinamind414 <sinamind414@users.noreply.github.com>
+Date: Thu, 3 Sep 2026 20:10:28 +0000
+Subject: [PATCH 17/22] =?UTF-8?q?feat(methodology):=20LOT=20U=20=E2=80=94?=
+ =?UTF-8?q?=20planches=20officielles=20redessin=C3=A9es=20(guide=20ONEC=20?=
+ =?UTF-8?q?=E2=91=A2=C2=B7ex=C3=A9cution)=20+=203=20exercices?=
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Exécution de la checklist prioritaire du guide de collecte (trou critique = chapitre
+nerveux) : 4 planches redessinées en SVG arabe (style lot R) + câblage.
+
+VISUELS (manifest 121 → 125) :
+- schema_82_synapse_modern_ar.svg (régulations) : bouton présynaptique, vésicules
+  + ACh, canal Ca²⁺, fente 20 nm, récepteurs, exocytose, sens de propagation.
+- schema_83_potentiel_action_modern_ar.svg (régulations) : -70 → -55 (seuil) →
+  +30 → -70, phase Na⁺/K⁺, encadré «كل شيء أو لا شيء».
+- schema_84_glycemie_insuline_glucagon_modern_ar.svg (régulations) : glycémie
+  0,9 → 1,6 → 0,9 g/L + courbes insuline (β) et glucagon (α) en miroir.
+- schema_85_anticorps_primaire_secondaire_modern_ar.svg (protéines) : réponse
+  primaire (lente/faible) vs secondaire (rapide/forte) + cellules mémoire + vaccines.
+
+EXERCICES (TRAINING_EXERCISES 4 → 7 ; thèmes à colonnes de matrice existantes) :
+- ex_explain_synapse_05 (فسّر · neuro_comm · 6 trous)
+- ex_analyse_pa_06 (حلّل · neuro_comm · 5 trous)
+- ex_compare_anticorps_07 (قارن · immunology · 6 trous)
+chacun : modelage 4 étapes, hints boussole (سند, unités, outils de comparaison).
+
+TESTS (60 → 66, section G étendue) : 7 exercices, répartition par verbe, 3
+diagramUrl, modelages, manifest 125 + fichiers réellement présents sur disque.
+
+Preuves : tsc 0 · tests 66/66 · build ✓ 8,6 s · 4 SVG servis 200 · manifest 125.
+---
+ ...nticorps_primaire_secondaire_modern_ar.svg |  72 ++++++++++
+ .../schema_82_synapse_modern_ar.svg           | 101 ++++++++++++++
+ .../schema_83_potentiel_action_modern_ar.svg  |  75 ++++++++++
+ ...4_glycemie_insuline_glucagon_modern_ar.svg |  70 ++++++++++
+ public/assets/images/schemas/manifest.json    |   4 +
+ src/data/methodologyEngine.ts                 | 131 ++++++++++++++++++
+ tests/boussole.test.ts                        |  57 ++++++--
+ 7 files changed, 497 insertions(+), 13 deletions(-)
+ create mode 100644 public/assets/images/schemas/domaine1_proteines/schema_85_anticorps_primaire_secondaire_modern_ar.svg
+ create mode 100644 public/assets/images/schemas/domaine1_regulations/schema_82_synapse_modern_ar.svg
+ create mode 100644 public/assets/images/schemas/domaine1_regulations/schema_83_potentiel_action_modern_ar.svg
+ create mode 100644 public/assets/images/schemas/domaine1_regulations/schema_84_glycemie_insuline_glucagon_modern_ar.svg
+
+diff --git a/public/assets/images/schemas/domaine1_proteines/schema_85_anticorps_primaire_secondaire_modern_ar.svg b/public/assets/images/schemas/domaine1_proteines/schema_85_anticorps_primaire_secondaire_modern_ar.svg
+new file mode 100644
+index 0000000..cf8c45c
+--- /dev/null
++++ b/public/assets/images/schemas/domaine1_proteines/schema_85_anticorps_primaire_secondaire_modern_ar.svg
+@@ -0,0 +1,72 @@
++<svg xmlns="http://www.w3.org/2000/svg" width="900" height="580" viewBox="0 0 900 580" font-family="Segoe UI, Tahoma, Arial, sans-serif">
++  <defs>
++    <marker id="ar_dg" markerWidth="9" markerHeight="9" refX="6" refY="4" orient="auto">
++      <path d="M0,0 L8,4 L0,8 z" fill="#64748b"/>
++    </marker>
++  </defs>
++
++  <rect width="900" height="580" fill="#ffffff"/>
++
++  <!-- ░░ EN-TÊTE ░░ -->
++  <rect width="900" height="70" fill="#006d37"/>
++  <text x="450" y="30" text-anchor="middle" fill="#fed65b" font-size="19" font-weight="bold" lang="ar" dir="rtl">الوثيقة 4 : الاستجابة المناعية الخلطية (الأولية والثانوية) لنفس مولد الضد</text>
++  <text x="450" y="54" text-anchor="middle" fill="#ffffff" font-size="13" lang="ar" dir="rtl">تطور تركيز الأجسام المضادة في الدم بعد الحقن الأول والثاني</text>
++
++  <!-- ░░ AXES ░░ -->
++  <line x1="120" y1="120" x2="120" y2="430" stroke="#0f172a" stroke-width="2.5"/>
++  <line x1="120" y1="430" x2="860" y2="430" stroke="#0f172a" stroke-width="2.5" marker-end="url(#ar_dg)"/>
++  <text x="868" y="436" fill="#0f172a" font-size="14" font-weight="bold" lang="ar" dir="rtl">الزمن (بالأيام)</text>
++  <text x="112" y="76" text-anchor="middle" fill="#0f172a" font-size="13.5" font-weight="bold" lang="ar" dir="rtl">تركيز الأجسام المضادة</text>
++  <text x="112" y="94" text-anchor="middle" fill="#475569" font-size="11.5" lang="ar" dir="rtl">(وحدة عيارية — مقياس لوغاريتمي)</text>
++
++  <!-- graduations Y -->
++  <g fill="#475569" font-size="12" text-anchor="end">
++    <text x="112" y="160">مرتفع</text><text x="112" y="255">متوسط</text><text x="112" y="370">منخفض</text>
++  </g>
++  <!-- graduations X : jours -->
++  <g fill="#475569" font-size="12" text-anchor="middle">
++    <text x="208" y="448">5</text><text x="296" y="448">10</text><text x="384" y="448">15</text>
++    <text x="472" y="448">20</text><text x="560" y="448">25</text><text x="648" y="448">30</text>
++  </g>
++  <g fill="#475569" font-size="11" text-anchor="middle">
++    <text x="120" y="448">0</text>
++  </g>
++
++  <!-- injections -->
++  <line x1="158" y1="120" x2="158" y2="430" stroke="#b91c1c" stroke-width="1.5" stroke-dasharray="6,5"/>
++  <text x="158" y="112" text-anchor="middle" fill="#b91c1c" font-size="13" font-weight="bold" lang="ar" dir="rtl">الحقن الأول : مولد ضد (X)</text>
++  <line x1="466" y1="120" x2="466" y2="430" stroke="#7c3aed" stroke-width="1.5" stroke-dasharray="6,5"/>
++  <text x="466" y="112" text-anchor="middle" fill="#7c3aed" font-size="13" font-weight="bold" lang="ar" dir="rtl">الحقن الثاني : نفس مولد الضد (X)</text>
++
++  <!-- ░░ COURBES ░░
++       primaire : démarre d5, monte lentement, plateau faible (d12)
++       secondaire : démarre d16, monte vite, plateau fort (d20-22) -->
++  <path d="M158,396 L 208,396 C 240,392 262,360 296,318 C 330,276 352,250 384,238 C 420,228 440,238 466,244 L 860,244"
++        fill="none" stroke="#b91c1c" stroke-width="3.5"/>
++  <path d="M466,396 L 520,390 C 548,382 566,320 584,262 C 598,210 612,164 632,148 C 652,132 690,132 720,140 C 760,150 800,148 860,148"
++        fill="none" stroke="#7c3aed" stroke-width="3.5"/>
++
++  <!-- annotations -->
++  <text x="238" y="388" fill="#b91c1c" font-size="14" font-weight="bold" lang="ar" dir="rtl">الاستجابة الأولية</text>
++  <text x="238" y="408" fill="#991b1b" font-size="12" lang="ar" dir="rtl">بطيئة (5-10 أيام) وضعيفة</text>
++  <text x="238" y="426" fill="#991b1b" font-size="12" lang="ar" dir="rtl">(كمية قليلة من الأضداد)</text>
++
++  <text x="640" y="112" fill="#7c3aed" font-size="14" font-weight="bold" lang="ar" dir="rtl">الاستجابة الثانوية</text>
++  <text x="640" y="130" fill="#6d28d9" font-size="12" lang="ar" dir="rtl">سريعة (2-3 أيام) وقوية</text>
++  <line x1="660" y1="138" x2="672" y2="144" stroke="#7c3aed" stroke-width="2"/>
++
++  <!-- cellules mémoire -->
++  <g>
++    <circle cx="500" cy="352" r="12" fill="#ede9fe" stroke="#7c3aed" stroke-width="2.5"/>
++    <circle cx="530" cy="352" r="12" fill="#ede9fe" stroke="#7c3aed" stroke-width="2.5"/>
++  </g>
++  <text x="552" y="357" fill="#6d28d9" font-size="13" font-weight="bold" lang="ar" dir="rtl">خلايا الذاكرة</text>
++  <text x="552" y="375" fill="#6d28d9" font-size="11.5" lang="ar" dir="rtl">تبقى بعد الاستجابة الأولية</text>
++
++  <!-- ░░ ENCADRÉ BILAN ░░ -->
++  <rect x="120" y="470" width="740" height="88" rx="12" fill="#faf5ff" stroke="#a855f7" stroke-width="1.5"/>
++  <text x="140" y="497" fill="#7c3aed" font-size="14" font-weight="bold" lang="ar" dir="rtl">نستنتج :</text>
++  <text x="372" y="497" fill="#1e293b" font-size="13" lang="ar" dir="rtl">الحقن الثاني لنفس مولد الضد يثير استجابة أسرع وأقوى من الأولى (الذاكرة المناعية).</text>
++  <text x="140" y="524" fill="#1e293b" font-size="13" lang="ar" dir="rtl">الاستجابة الثانوية تتم بفضل خلايا الذاكرة التي تتمايز بسرعة إلى خلايا بلازمية منتجة للأجسام المضادة.</text>
++  <text x="140" y="548" fill="#0f172a" font-size="13.5" font-weight="bold" lang="ar" dir="rtl">هذا ما يفسّر فعالية اللقاحات : حقن مولد ضد مضعّف يُكسب ذاكرة مناعية = استجابة ثانوية سريعة عند الإصابة الحقيقية.</text>
++</svg>
+diff --git a/public/assets/images/schemas/domaine1_regulations/schema_82_synapse_modern_ar.svg b/public/assets/images/schemas/domaine1_regulations/schema_82_synapse_modern_ar.svg
+new file mode 100644
+index 0000000..578bcbc
+--- /dev/null
++++ b/public/assets/images/schemas/domaine1_regulations/schema_82_synapse_modern_ar.svg
+@@ -0,0 +1,101 @@
++<svg xmlns="http://www.w3.org/2000/svg" width="900" height="580" viewBox="0 0 900 580" font-family="Segoe UI, Tahoma, Arial, sans-serif">
++  <defs>
++    <marker id="ar_dg" markerWidth="9" markerHeight="9" refX="6" refY="4" orient="auto">
++      <path d="M0,0 L8,4 L0,8 z" fill="#64748b"/>
++    </marker>
++    <marker id="ar_bl" markerWidth="10" markerHeight="10" refX="7" refY="5" orient="auto">
++      <path d="M0,0 L9,5 L0,10 z" fill="#2563eb"/>
++    </marker>
++    <marker id="ar_rd" markerWidth="10" markerHeight="10" refX="7" refY="5" orient="auto">
++      <path d="M0,0 L9,5 L0,10 z" fill="#dc2626"/>
++    </marker>
++  </defs>
++
++  <rect width="900" height="580" fill="#ffffff"/>
++
++  <!-- ░░ EN-TÊTE ░░ -->
++  <rect width="900" height="70" fill="#006d37"/>
++  <text x="450" y="30" text-anchor="middle" fill="#fed65b" font-size="19" font-weight="bold" lang="ar" dir="rtl">الوثيقة 1 : مقطع في المشبك العصبي — بنية وطريقة انتقال الرسالة العصبية</text>
++  <text x="450" y="54" text-anchor="middle" fill="#ffffff" font-size="13" lang="ar" dir="rtl">عصبون قبل مشبكي (نهاية عصبية) ←→ عصبون بعد مشبكي (التغصنات)</text>
++
++  <!-- ░░ ANNEAU SENS DE PROPAGATION ░░ -->
++  <text x="60" y="100" fill="#0f172a" font-size="15" font-weight="bold" lang="ar" dir="rtl">اتجاه انتشار السيالة العصبية :</text>
++  <line x1="330" y1="112" x2="560" y2="112" stroke="#dc2626" stroke-width="3" marker-end="url(#ar_rd)"/>
++
++  <!-- ░░ CELLULE PRÉSYNAPTIQUE ░░ -->
++  <rect x="50" y="150" width="300" height="330" rx="26" fill="#e0f2fe" stroke="#0284c7" stroke-width="3"/>
++  <text x="200" y="178" text-anchor="middle" fill="#075985" font-size="15" font-weight="bold" lang="ar" dir="rtl">النهاية العصبية قبل المشبكية</text>
++
++  <!-- mitochondries -->
++  <ellipse cx="105" cy="230" rx="34" ry="18" fill="#fef3c7" stroke="#d97706" stroke-width="2"/>
++  <path d="M78,230 q14,-9 27,0 q13,9 27,0" fill="none" stroke="#d97706" stroke-width="2"/>
++  <text x="105" y="268" text-anchor="middle" fill="#92400e" font-size="11" lang="ar" dir="rtl">ميتوكوندريا</text>
++
++  <!-- vesicles -->
++  <g>
++    <circle cx="215" cy="245" r="20" fill="#bfdbfe" stroke="#2563eb" stroke-width="2.5"/>
++    <circle cx="215" cy="245" r="6" fill="#2563eb"/>
++    <circle cx="258" cy="278" r="20" fill="#bfdbfe" stroke="#2563eb" stroke-width="2.5"/>
++    <circle cx="258" cy="278" r="6" fill="#2563eb"/>
++    <circle cx="230" cy="330" r="20" fill="#bfdbfe" stroke="#2563eb" stroke-width="2.5"/>
++    <circle cx="230" cy="330" r="6" fill="#2563eb"/>
++    <circle cx="185" cy="300" r="20" fill="#bfdbfe" stroke="#2563eb" stroke-width="2.5"/>
++    <circle cx="185" cy="300" r="6" fill="#2563eb"/>
++  </g>
++  <text x="252" y="228" fill="#1d4ed8" font-size="13" font-weight="bold" lang="ar" dir="rtl">حويصلات مشبكية</text>
++  <text x="252" y="246" fill="#1e3a8a" font-size="11" lang="ar" dir="rtl">تحوي الوسيط الكيميائي</text>
++  <text x="252" y="264" fill="#1e3a8a" font-size="11" lang="ar" dir="rtl">(أستيل كولين)</text>
++
++  <!-- canal Ca2+ et flèche -->
++  <text x="60" y="330" fill="#b91c1c" font-size="13" font-weight="bold" lang="ar" dir="rtl">دخول شوارد Ca²⁺</text>
++  <line x1="60" y1="345" x2="150" y2="345" stroke="#dc2626" stroke-width="3" marker-end="url(#ar_rd)"/>
++  <rect x="332" y="335" width="26" height="26" rx="5" fill="#fee2e2" stroke="#dc2626" stroke-width="2.5"/>
++  <text x="345" y="353" text-anchor="middle" fill="#b91c1c" font-size="11" font-weight="bold">Ca²⁺</text>
++
++  <!-- ░░ FENTE SYNAPTIQUE ░░ -->
++  <rect x="358" y="150" width="150" height="330" fill="#f8fafc"/>
++  <text x="433" y="178" text-anchor="middle" fill="#475569" font-size="14" font-weight="bold" lang="ar" dir="rtl">الشق المشبكي</text>
++  <text x="433" y="200" text-anchor="middle" fill="#64748b" font-size="11" lang="ar" dir="rtl">فجوة ~ 20 نانومتر</text>
++  <!-- neurotransmetteurs libérés dans la fente -->
++  <g fill="#2563eb">
++    <circle cx="390" cy="240" r="5"/><circle cx="420" cy="255" r="5"/><circle cx="400" cy="280" r="5"/>
++    <circle cx="440" cy="300" r="5"/><circle cx="415" cy="330" r="5"/><circle cx="455" cy="350" r="5"/>
++  </g>
++  <!-- exocytose -->
++  <path d="M350,300 Q 380,290 395,265" fill="none" stroke="#7c3aed" stroke-width="2.5" stroke-dasharray="6,4" marker-end="url(#ar_dg)"/>
++  <text x="392" y="222" fill="#6d28d9" font-size="12" font-weight="bold" lang="ar" dir="rtl">تحرّر الوسيط</text>
++  <text x="392" y="240" fill="#6d28d9" font-size="11" lang="ar" dir="rtl">(خاصية إفرازية)</text>
++
++  <!-- ░░ CELLULE POSTSYNAPTIQUE ░░ -->
++  <rect x="515" y="150" width="335" height="330" rx="26" fill="#fef3c7" stroke="#d97706" stroke-width="3"/>
++  <text x="682" y="178" text-anchor="middle" fill="#92400e" font-size="15" font-weight="bold" lang="ar" dir="rtl">الغشاء بعد المشبكي (التغصنات)</text>
++  <!-- membrane épaisse -->
++  <rect x="515" y="300" width="335" height="14" fill="#f59e0b" opacity="0.55"/>
++  <!-- récepteurs (formes en Y) -->
++  <g stroke="#7c3aed" stroke-width="3" fill="none">
++    <path d="M560,295 v18 m0,-8 l-10,-9 m10,9 l10,-9"/>
++    <path d="M640,295 v18 m0,-8 l-10,-9 m10,9 l10,-9"/>
++    <path d="M720,295 v18 m0,-8 l-10,-9 m10,9 l10,-9"/>
++  </g>
++  <text x="560" y="340" fill="#6d28d9" font-size="12" font-weight="bold" lang="ar" dir="rtl">مستقبلات</text>
++  <text x="560" y="358" fill="#6d28d9" font-size="11" lang="ar" dir="rtl">غشائية نوعية</text>
++  <!-- liaison médiateur-récepteur -->
++  <circle cx="560" cy="272" r="6" fill="#2563eb"/>
++  <circle cx="640" cy="272" r="6" fill="#2563eb"/>
++  <circle cx="720" cy="272" r="6" fill="#2563eb"/>
++  <text x="662" y="250" fill="#1e3a8a" font-size="12" font-weight="bold" lang="ar" dir="rtl">ارتباط الوسيط بالمستقبل</text>
++  <!-- nouvelle impulsion -->
++  <text x="662" y="415" fill="#15803d" font-size="13" font-weight="bold" lang="ar" dir="rtl">توليد سيالة عصبية جديدة</text>
++  <line x1="682" y1="430" x2="832" y2="430" stroke="#15803d" stroke-width="3" marker-end="url(#ar_dg)"/>
++
++  <!-- ░░ LÉGENDE BAS ░░ -->
++  <rect x="50" y="505" width="800" height="55" rx="12" fill="#f1f5f9" stroke="#cbd5e1" stroke-width="1.5"/>
++  <circle cx="95" cy="533" r="10" fill="#bfdbfe" stroke="#2563eb" stroke-width="2"/>
++  <text x="112" y="538" fill="#1e3a8a" font-size="13" lang="ar" dir="rtl">حويصلة مشبكية + وسيط كيميائي</text>
++  <circle cx="330" cy="533" r="6" fill="#2563eb"/>
++  <text x="345" y="538" fill="#1e3a8a" font-size="13" lang="ar" dir="rtl">وسيط كيميائي (أستيل كولين)</text>
++  <path d="M540,526 v16 m0,-7 l-9,-8 m9,8 l9,-8" stroke="#7c3aed" stroke-width="3" fill="none"/>
++  <text x="562" y="538" fill="#1e3a8a" font-size="13" lang="ar" dir="rtl">مستقبل غشائي نوعي</text>
++  <line x1="770" y1="533" x2="815" y2="533" stroke="#dc2626" stroke-width="3" marker-end="url(#ar_rd)"/>
++  <text x="712" y="538" fill="#1e3a8a" font-size="13" lang="ar" dir="rtl">مسار السيالة</text>
++</svg>
+diff --git a/public/assets/images/schemas/domaine1_regulations/schema_83_potentiel_action_modern_ar.svg b/public/assets/images/schemas/domaine1_regulations/schema_83_potentiel_action_modern_ar.svg
+new file mode 100644
+index 0000000..683a1f3
+--- /dev/null
++++ b/public/assets/images/schemas/domaine1_regulations/schema_83_potentiel_action_modern_ar.svg
+@@ -0,0 +1,75 @@
++<svg xmlns="http://www.w3.org/2000/svg" width="900" height="580" viewBox="0 0 900 580" font-family="Segoe UI, Tahoma, Arial, sans-serif">
++  <defs>
++    <marker id="ar_dg" markerWidth="9" markerHeight="9" refX="6" refY="4" orient="auto">
++      <path d="M0,0 L8,4 L0,8 z" fill="#64748b"/>
++    </marker>
++  </defs>
++
++  <rect width="900" height="580" fill="#ffffff"/>
++
++  <!-- ░░ EN-TÊTE ░░ -->
++  <rect width="900" height="70" fill="#006d37"/>
++  <text x="450" y="30" text-anchor="middle" fill="#fed65b" font-size="19" font-weight="bold" lang="ar" dir="rtl">الوثيقة 2 : تطور الكمون الغشائي أثناء توليد السيالة العصبية</text>
++  <text x="450" y="54" text-anchor="middle" fill="#ffffff" font-size="13" lang="ar" dir="rtl">الكمون العصبي : إزالة الاستقطاب ثم إعادة الاستقطاب (تحفيز فوق العتبة)</text>
++
++  <!-- ░░ AXES ░░ -->
++  <line x1="140" y1="120" x2="140" y2="440" stroke="#0f172a" stroke-width="2.5"/>
++  <line x1="140" y1="440" x2="860" y2="440" stroke="#0f172a" stroke-width="2.5" marker-end="url(#ar_dg)"/>
++  <text x="868" y="446" fill="#0f172a" font-size="14" font-weight="bold" lang="ar" dir="rtl">الزمن (ميللي ثانية)</text>
++  <text x="132" y="66" text-anchor="middle" fill="#0f172a" font-size="14" font-weight="bold" lang="ar" dir="rtl">كمون الغشاء (mV)</text>
++
++  <!-- graduations Y -->
++  <g fill="#475569" font-size="12" text-anchor="end">
++    <text x="132" y="126">+30</text><text x="132" y="170">+10</text><text x="132" y="214">-10</text>
++    <text x="132" y="258">-30</text><text x="132" y="302">-50</text><text x="132" y="346">-70</text><text x="132" y="390">-80</text>
++  </g>
++  <!-- graduations X -->
++  <g fill="#475569" font-size="12" text-anchor="middle">
++    <text x="260" y="458">1</text><text x="380" y="458">2</text><text x="500" y="458">3</text>
++    <text x="620" y="458">4</text><text x="740" y="458">5</text><text x="860" y="458">6</text>
++  </g>
++
++  <!-- lignes de référence -->
++  <line x1="140" y1="346" x2="860" y2="346" stroke="#16a34a" stroke-width="1.5" stroke-dasharray="8,5"/>
++  <text x="152" y="338" fill="#15803d" font-size="13" font-weight="bold" lang="ar" dir="rtl">كمون الراحة : -70 mV</text>
++  <line x1="140" y1="302" x2="860" y2="302" stroke="#dc2626" stroke-width="1.5" stroke-dasharray="8,5"/>
++  <text x="152" y="294" fill="#b91c1c" font-size="13" font-weight="bold" lang="ar" dir="rtl">عتبة التنبيه : -55 mV</text>
++
++  <!-- ░░ COURBE ░░ -->
++  <path d="M140,346 L 330,346
++           C 368,346 375,308 385,300
++           C 400,286 402,150 420,124
++           C 426,114 428,114 432,124
++           C 448,158 450,270 470,290
++           C 490,310 505,352 520,368
++           C 535,384 545,390 560,390
++           C 580,390 590,376 600,362
++           C 612,346 620,340 700,340
++           L 860,340"
++        fill="none" stroke="#1d4ed8" stroke-width="3.5"/>
++
++  <!-- annotations -->
++  <text x="408" y="92" text-anchor="middle" fill="#1d4ed8" font-size="17" font-weight="bold" lang="ar" dir="rtl">ذروة الكمون : +30 mV</text>
++  <line x1="408" y1="102" x2="424" y2="118" stroke="#1d4ed8" stroke-width="2"/>
++
++  <text x="470" y="215" fill="#1d4ed8" font-size="15" font-weight="bold" lang="ar" dir="rtl">إزالة الاستقطاب</text>
++  <text x="470" y="236" fill="#1e40af" font-size="12" lang="ar" dir="rtl">دخول سريع لشوارد Na⁺</text>
++  <line x1="470" y1="250" x2="440" y2="285" stroke="#1d4ed8" stroke-width="2" marker-end="url(#ar_dg)"/>
++
++  <text x="655" y="300" fill="#b91c1c" font-size="15" font-weight="bold" lang="ar" dir="rtl">إعادة الاستقطاب</text>
++  <text x="655" y="320" fill="#991b1b" font-size="12" lang="ar" dir="rtl">خروج شوارد K⁺</text>
++  <line x1="630" y1="330" x2="600" y2="350" stroke="#b91c1c" stroke-width="2" marker-end="url(#ar_dg)"/>
++
++  <text x="700" y="375" fill="#7c3aed" font-size="13" font-weight="bold" lang="ar" dir="rtl">فرط استقطاب قصير (-80 mV)</text>
++  <line x1="700" y1="384" x2="636" y2="386" stroke="#7c3aed" stroke-width="2" marker-end="url(#ar_dg)"/>
++
++  <text x="240" y="378" fill="#475569" font-size="13" lang="ar" dir="rtl">التحفيز فوق العتبة عند د 1</text>
++  <line x1="300" y1="386" x2="336" y2="352" stroke="#475569" stroke-width="2" marker-end="url(#ar_dg)"/>
++
++  <!-- ░░ ENCADRÉ EXPLICATIF ░░ -->
++  <rect x="140" y="480" width="720" height="80" rx="12" fill="#eef2ff" stroke="#818cf8" stroke-width="1.5"/>
++  <text x="160" y="508" fill="#3730a3" font-size="14" font-weight="bold" lang="ar" dir="rtl">خلاصة :</text>
++  <text x="410" y="508" fill="#1e293b" font-size="13" lang="ar" dir="rtl">توليد السيالة العصبية = تغيّر مفاجئ وقصير في الكمون الغشائي (إزالة استقطاب ثم إعادة استقطاب)</text>
++  <text x="160" y="534" fill="#1e293b" font-size="13" lang="ar" dir="rtl">عند بلوغ العتبة (-55 mV) تُفتح قنوات Na⁺ فيحدث انقلاب الشحنة حتى +30 mV، ثم تُغلق وتُفتح قنوات K⁺ فيعود الكمون إلى -70 mV.</text>
++  <text x="160" y="556" fill="#1e293b" font-size="13" lang="ar" dir="rtl">يُنتقل الكمون عبر الغشاء (الاتصال العصبي) دون أن يُضعف المنبه : السيالة «كل شيء أو لا شيء» فوق العتبة.</text>
++</svg>
+diff --git a/public/assets/images/schemas/domaine1_regulations/schema_84_glycemie_insuline_glucagon_modern_ar.svg b/public/assets/images/schemas/domaine1_regulations/schema_84_glycemie_insuline_glucagon_modern_ar.svg
+new file mode 100644
+index 0000000..9772a78
+--- /dev/null
++++ b/public/assets/images/schemas/domaine1_regulations/schema_84_glycemie_insuline_glucagon_modern_ar.svg
+@@ -0,0 +1,70 @@
++<svg xmlns="http://www.w3.org/2000/svg" width="900" height="580" viewBox="0 0 900 580" font-family="Segoe UI, Tahoma, Arial, sans-serif">
++  <defs>
++    <marker id="ar_dg" markerWidth="9" markerHeight="9" refX="6" refY="4" orient="auto">
++      <path d="M0,0 L8,4 L0,8 z" fill="#64748b"/>
++    </marker>
++  </defs>
++
++  <rect width="900" height="580" fill="#ffffff"/>
++
++  <!-- ░░ EN-TÊTE ░░ -->
++  <rect width="900" height="70" fill="#006d37"/>
++  <text x="450" y="30" text-anchor="middle" fill="#fed65b" font-size="19" font-weight="bold" lang="ar" dir="rtl">الوثيقة 3 : دور الأنسولين والغلوكاغون في تنظيم تركيز الغليسيما</text>
++  <text x="450" y="54" text-anchor="middle" fill="#ffffff" font-size="13" lang="ar" dir="rtl">تطور الغليسيما وتركيزي الهرمونين بعد وجبة غنية بالغلوكوز</text>
++
++  <!-- ░░ AXES ░░ -->
++  <line x1="120" y1="120" x2="120" y2="430" stroke="#0f172a" stroke-width="2.5"/>
++  <line x1="120" y1="430" x2="860" y2="430" stroke="#0f172a" stroke-width="2.5" marker-end="url(#ar_dg)"/>
++  <text x="868" y="436" fill="#0f172a" font-size="14" font-weight="bold" lang="ar" dir="rtl">الزمن (بالساعات)</text>
++  <text x="112" y="80" text-anchor="middle" fill="#0f172a" font-size="14" font-weight="bold" lang="ar" dir="rtl">الغليسيما (غ/ل)</text>
++  <text x="868" y="90" text-anchor="middle" fill="#0f172a" font-size="13" font-weight="bold" lang="ar" dir="rtl">تركيز الهرمون (وحدة عيارية)</text>
++
++  <!-- graduations Y (glycémie 0,6 → 1,8) : y = 430 - (v-0.6)/(1.8-0.6)*300 -->
++  <g fill="#475569" font-size="12" text-anchor="end">
++    <text x="112" y="166">1,8</text><text x="112" y="241">1,5</text><text x="112" y="316">1,2</text>
++    <text x="112" y="391">0,9</text><text x="112" y="428">0,6</text>
++  </g>
++  <g fill="#475569" font-size="12" text-anchor="middle">
++    <text x="265" y="448">0</text><text x="380" y="448">1</text><text x="495" y="448">2</text>
++    <text x="610" y="448">3</text><text x="725" y="448">4</text>
++  </g>
++
++  <!-- reps -->
++  <line x1="380" y1="120" x2="380" y2="430" stroke="#f59e0b" stroke-width="1.5" stroke-dasharray="6,5"/>
++  <text x="380" y="114" text-anchor="middle" fill="#b45309" font-size="13" font-weight="bold" lang="ar" dir="rtl">وجبة غنية بالغلوكوز</text>
++
++  <!-- ░░ COURBES ░░
++       glycémie : 0,9 (0) → 1,6 (1h) → 0,9 (2,5h) → 0,75 (3,5h) → 0,9 (4h)
++       y(glycémie)= 430-(v-0.6)/1.2*300
++       0,9→355 ; 1,6→180 ; 0,75→392 ; 1,0→330
++       insuline (axe droit, base y=390, amplitude 0→160) : 0,75h:20 → 1,5h:150 → 2,25h:60 → 3h:10
++       glucagon : 0-2,5h:15 → 3,25h:130 → 4h:25
++  -->
++  <path d="M120,355 L 265,355 C 300,355 330,260 380,180 C 420,120 430,200 495,262 C 540,305 590,332 610,355 L 700,392 C 720,398 740,392 760,370 L 860,355"
++        fill="none" stroke="#15803d" stroke-width="3.5"/>
++  <path d="M120,388 L 265,388 C 300,386 330,300 380,255 C 440,205 470,220 495,280 C 530,330 560,378 610,378 L 860,380"
++        fill="none" stroke="#2563eb" stroke-width="3" stroke-dasharray="10,5"/>
++  <path d="M120,385 L 500,385 C 540,385 560,378 595,360 C 640,300 660,268 680,255 C 700,242 720,250 740,300 L 860,375"
++        fill="none" stroke="#ea580c" stroke-width="3" stroke-dasharray="4,5"/>
++
++  <!-- pointillés de lecture -->
++  <line x1="380" y1="180" x2="500" y2="180" stroke="#15803d" stroke-width="1.2" stroke-dasharray="4,4"/>
++  <text x="508" y="172" fill="#15803d" font-size="15" font-weight="bold" lang="ar" dir="rtl">ذروة الغليسيما : 1,6 غ/ل</text>
++  <line x1="120" y1="355" x2="860" y2="355" stroke="#94a3b8" stroke-width="1" stroke-dasharray="2,4"/>
++  <text x="516" y="360" fill="#64748b" font-size="13" lang="ar" dir="rtl">القيمة الطبيعية : 0,9 غ/ل</text>
++
++  <!-- annotations hormone -->
++  <text x="516" y="230" fill="#1d4ed8" font-size="14" font-weight="bold" lang="ar" dir="rtl">الأنسولين</text>
++  <text x="516" y="250" fill="#1e3a8a" font-size="12" lang="ar" dir="rtl">يفرز عند ارتفاع الغليسيما</text>
++  <text x="516" y="268" fill="#1e3a8a" font-size="12" lang="ar" dir="rtl">(خلايا β في جزر لانغرهانس)</text>
++  <text x="700" y="330" fill="#c2410c" font-size="14" font-weight="bold" lang="ar" dir="rtl">الغلوكاغون</text>
++  <text x="700" y="350" fill="#9a3412" font-size="12" lang="ar" dir="rtl">يفرز عند انخفاض الغليسيما</text>
++  <text x="700" y="368" fill="#9a3412" font-size="12" lang="ar" dir="rtl">(خلايا α)</text>
++
++  <!-- ░░ ENCADRÉ BILAN ░░ -->
++  <rect x="120" y="470" width="740" height="90" rx="12" fill="#f0fdf4" stroke="#22c55e" stroke-width="1.5"/>
++  <text x="140" y="497" fill="#15803d" font-size="14" font-weight="bold" lang="ar" dir="rtl">نستنتج :</text>
++  <text x="355" y="497" fill="#1e293b" font-size="13" lang="ar" dir="rtl">ارتفاع الغليسيما بعد الوجبة ← إفراز الأنسولين ← خفضها (تخزين الغلوكوز) ✔</text>
++  <text x="140" y="525" fill="#1e293b" font-size="13" lang="ar" dir="rtl">انخفاض الغليسيما ← إفراز الغلوكاغون ← رفعها (تحلل الغليكوجين) ✔</text>
++  <text x="140" y="549" fill="#0f172a" font-size="13.5" font-weight="bold" lang="ar" dir="rtl">الأنسولين هرمون خافض للغليسيما · الغلوكاغون هرمون رافع لها ⇐ توازن ذاتي حول 0,9 غ/ل (الاستتباب).</text>
++</svg>
+diff --git a/public/assets/images/schemas/manifest.json b/public/assets/images/schemas/manifest.json
+index fa5f7ea..67db47a 100644
+--- a/public/assets/images/schemas/manifest.json
++++ b/public/assets/images/schemas/manifest.json
+@@ -101,7 +101,11 @@
+     "/assets/images/schemas/domaine1_proteines/schema_78_memory_cell_reactivation_modern.svg",
+     "/assets/images/schemas/domaine1_proteines/schema_79_vaccine_antibody_followup_modern.svg",
+     "/assets/images/schemas/domaine1_proteines/schema_80_immunity_big_picture_modern.svg",
++    "/assets/images/schemas/domaine1_proteines/schema_85_anticorps_primaire_secondaire_modern_ar.svg",
+     "/assets/images/schemas/domaine1_regulations/schema_81_glycemie_curve_modern.svg",
++    "/assets/images/schemas/domaine1_regulations/schema_82_synapse_modern_ar.svg",
++    "/assets/images/schemas/domaine1_regulations/schema_83_potentiel_action_modern_ar.svg",
++    "/assets/images/schemas/domaine1_regulations/schema_84_glycemie_insuline_glucagon_modern_ar.svg",
+     "/assets/images/schemas/domaine2_energie/schema_09_photosynthese.png",
+     "/assets/images/schemas/domaine2_energie/schema_09_photosynthese.svg",
+     "/assets/images/schemas/domaine2_energie/schema_10_respiration.png",
+diff --git a/src/data/methodologyEngine.ts b/src/data/methodologyEngine.ts
+index 4a2b2f4..eff8df4 100644
+--- a/src/data/methodologyEngine.ts
++++ b/src/data/methodologyEngine.ts
+@@ -1219,6 +1219,137 @@ export const TRAINING_EXERCISES: TrainingExercise[] = [
+       timeLimitSec: 180,
+       passIcmThreshold: 90
+     }
++  },
++  {
++    id: 'ex_explain_synapse_05',
++    verbId: 'verb_explain_v1',
++    theme: 'neuro_comm',
++    themeAr: 'الاتصال العصبي',
++    supportType: 'schema',
++    supportTitle: 'الوثيقة 1: مقطع في المشبك العصبي (بنية وانتقال الرسالة)',
++    context: 'تصل سيالة عصبية إلى النهاية قبل المشبكية، فيدخل الكالسيوم، وتتحرر الحويصلات محتواها في الشق المشبكي، ثم يرتبط الوسيط بمستقبلات الغشاء بعد المشبكي.',
++    question: 'فسّر انتقال الرسالة العصبية عبر المشبك اعتمادا على الوثيقة 1.',
++    dataSnippet: 'وصول السيالة → دخول Ca²⁺ → اندماج الحويصلات → تحرّر الوسيط الكيميائي في الشق → ارتباطه بمستقبلات نوعية → توليد سيالة جديدة.',
++    diagramUrl: '/assets/images/schemas/domaine1_regulations/schema_82_synapse_modern_ar.svg',
++    stage1: {
++      expertAnswer: 'توضح الوثيقة 1 بنية المشبك العصبي، وفسّر انتقال الرسالة العصبية: عند وصول السيالة العصبية إلى النهاية قبل المشبكية يفتح قنوات الكالسيوم فيدخل Ca²⁺، فيندمج الحويصلات المشبكية مع الغشاء وتحرّر الوسيط الكيميائي (الأستيل كولين) في الشق المشبكي (خاصية إفرازية). ينتشر الوسيط عبر الشق ويرتبط بمستقبلات نوعية على الغشاء بعد المشبكي، مما يؤدي إلى توليد سيالة عصبية جديدة في العصبون بعد المشبكي، ثم يحلّل الوسيط بسرعة ليعود المشبك إلى حالته.',
++      segments: [
++        { stepNumber: 1, text: 'توضح الوثيقة 1 بنية المشبك العصبي (نهاية قبل مشبكية + شق مشبكي + الغشاء بعد المشبكي)', colorClass: 'bg-blue-100 dark:bg-blue-900/40 text-blue-800 dark:text-blue-300' },
++        { stepNumber: 2, text: 'عند وصول السيالة تدخل شوارد Ca²⁺ وتندمج الحويصلات فيتحرر الوسيط الكيميائي (أستيل كولين) في الشق المشبكي', colorClass: 'bg-emerald-100 dark:bg-emerald-900/40 text-emerald-800 dark:text-emerald-300' },
++        { stepNumber: 3, text: 'ينتشر الوسيط ويرتبط بمستقبلات نوعية على الغشاء بعد المشبكي فيحدث تغيّر في نفاذية الغشاء', colorClass: 'bg-amber-100 dark:bg-amber-900/40 text-amber-800 dark:text-amber-300' },
++        { stepNumber: 4, text: 'الاستنتاج: ينتقل الرسالة العصبية عبر المشبك بوسيط كيميائي (منع إشارة عصبية إلى كيميائية ثم عصبية)، ثم يُحلَّل الوسيط', colorClass: 'bg-purple-100 dark:bg-purple-900/40 text-purple-800 dark:text-purple-300' }
++      ]
++    },
++    stage2: {
++      clozePrompt: 'عند وصول {{1}} إلى النهاية قبل المشبكية تفتح قنوات الكالسيوم فيدخل {{2}}، فتندمج الحويصلات وتحرّر {{3}} في {{4}}. ينتشر الوسيط ويرتبط بـ {{5}} على الغشاء بعد المشبكي، مما يولّد {{6}} جديدة.',
++      blanks: [
++        { id: '1', expectedText: 'السيالة العصبية', hint: 'ما الذي يصل؟' },
++        { id: '2', expectedText: 'Ca²⁺', hint: 'الشوارد الداخلة' },
++        { id: '3', expectedText: 'الوسيط الكيميائي (الأستيل كولين)', hint: 'محتوى الحويصلات' },
++        { id: '4', expectedText: 'الشق المشبكي', hint: 'مكان الإفراز' },
++        { id: '5', expectedText: 'مستقبلات نوعية', hint: 'على الغشاء بعد المشبكي' },
++        { id: '6', expectedText: 'سيالة عصبية', hint: 'النتيجة النهائية' }
++      ]
++    },
++    stage3: {
++      recommendedTimeSec: 180,
++      hints: [
++        'سند: الوثيقة 1 (بنية المشبك) — اذكرها أولاً',
++        'حافظ على الترتيب السببي: وصول ← Ca²⁺ ← تحرّر ← ارتباط ← توليد',
++        'ختم بذكر تحلل الوسيط (وإلا بقي المشبك منشطا باستمرار)'
++      ]
++    },
++    stage4: {
++      timeLimitSec: 180,
++      passIcmThreshold: 90
++    }
++  },
++  {
++    id: 'ex_analyse_pa_06',
++    verbId: 'verb_analyse_v1',
++    theme: 'neuro_comm',
++    themeAr: 'الاتصال العصبي',
++    supportType: 'courbe',
++    supportTitle: 'الوثيقة 2: تطور الكمون الغشائي أثناء توليد السيالة العصبية',
++    context: 'تم تسجيل تطور الكمون الغشائي لعصبون بعد تحفيز فوق مستوى العتبة (منبه فعال).',
++    question: 'حلل منحنى الوثيقة 2 الممثل لتطور الكمون الغشائي بدلالة الزمن.',
++    dataSnippet: 'الراحة: -70 mV. العتبة: -55 mV. الذروة: +30 mV. عودة سريعة إلى -70 mV مع فرط استقطاب قصير (-80 mV).',
++    diagramUrl: '/assets/images/schemas/domaine1_regulations/schema_83_potentiel_action_modern_ar.svg',
++    stage1: {
++      expertAnswer: 'تمثل الوثيقة 2 منحنى تطور الكمون الغشائي لعصبون بدلالة الزمن (بالميللي ثانية)، حيث نلاحظ: قبل التحفيز، كمون راحة مستقر عند -70 mV. عند د 1 (التحفيز فوق العتبة -55 mV) يحدث انقلاب سريع للشحنة: إزالة استقطاب تبلغ ذروتها +30 mV. ثم عودة سريعة: إعادة استقطاب حتى -70 mV مع فرط استقطاب قصير (-80 mV) قبل الاستقرار. الاستنتاج: توليد السيالة العصبية = تغيّر مفاجئ وقصير في الكمون الغشائي (انقلاب الشحنة) ناتج عن تبادل شوارد Na⁺ (دخول) وK⁺ (خروج) من وإلى الغشاء.',
++      segments: [
++        { stepNumber: 1, text: 'تمثل الوثيقة 2 منحنى تطور الكمون الغشائي لعصبون بدلالة الزمن (بالميللي ثانية)', colorClass: 'bg-blue-100 dark:bg-blue-900/40 text-blue-800 dark:text-blue-300' },
++        { stepNumber: 2, text: 'قبل التحفيز: كمون راحة -70 mV · عند التحفيز: إزالة استقطاب حتى +30 mV · ثم إعادة استقطاب إلى -70 mV', colorClass: 'bg-emerald-100 dark:bg-emerald-900/40 text-emerald-800 dark:text-emerald-300' },
++        { stepNumber: 3, text: 'الانقلاب يحدث بعد بلوغ العتبة (-55 mV) ويعود الكمون بعدها بسرعة مع فرط استقطاب قصير', colorClass: 'bg-amber-100 dark:bg-amber-900/40 text-amber-800 dark:text-amber-300' },
++        { stepNumber: 4, text: 'الاستنتاج: السيالة العصبية = تغيّر قصير ومفاجئ في الكمون الغشائي (دخول Na⁺ ثم خروج K⁺)', colorClass: 'bg-purple-100 dark:bg-purple-900/40 text-purple-800 dark:text-purple-300' }
++      ]
++    },
++    stage2: {
++      clozePrompt: 'يمثل المنحنى {{1}} بدلالة الزمن. قبل التحفيز يكون الكمون ساكنا عند {{2}}. عند بلوغ العتبة {{3}} يحدث انقلاب سريع للشحنة يبلغ ذروته {{4}}، ثم عودة سريعة إلى -70 mV تسمى {{5}}.',
++      blanks: [
++        { id: '1', expectedText: 'تطور الكمون الغشائي', hint: 'تقديم الوثيقة' },
++        { id: '2', expectedText: '-70 mV', hint: 'قيمة كمون الراحة' },
++        { id: '3', expectedText: '-55 mV', hint: 'قيمة العتبة' },
++        { id: '4', expectedText: '+30 mV', hint: 'ذروة إزالة الاستقطاب' },
++        { id: '5', expectedText: 'إعادة الاستقطاب', hint: 'العودة إلى -70' }
++      ]
++    },
++    stage3: {
++      recommendedTimeSec: 180,
++      hints: [
++        'سند: الوثيقة 2 (منحنى الكمون الغشائي)',
++        'اكتب كل قيمة بوحدتها: mV (الكمون) و ms (الزمن)',
++        'في التحليل: اقرأ القيم فقط؛ اترك تفسير الأيونات (Na⁺/K⁺) لخطوة الاستنتاج'
++      ]
++    },
++    stage4: {
++      timeLimitSec: 180,
++      passIcmThreshold: 90
++    }
++  },
++  {
++    id: 'ex_compare_anticorps_07',
++    verbId: 'verb_compare_v1',
++    theme: 'immunology',
++    themeAr: 'الاستجابة المناعية الخلطية',
++    supportType: 'courbe',
++    supportTitle: 'الوثيقة 3: التطور الزمني لتركيز الأجسام المضادة بعد حقن مولد ضد مرتين',
++    context: 'حُقن شخص بمولد ضد X مرتين (الحقن الأول عند د 0 والثاني عند د 14)، وتُتبع تركيز الأجسام المضادة في دمه.',
++    question: 'قارن بين الاستجابة المناعية الأولية والاستجابة الثانوية لنفس مولد الضد.',
++    dataSnippet: 'الاستجابة الأولية: بطيئة (5-10 أيام) وضعيفة (تركيز منخفض). الاستجابة الثانوية: سريعة (2-3 أيام) وقوية (تركيز مرتفع جداً).',
++    diagramUrl: '/assets/images/schemas/domaine1_proteines/schema_85_anticorps_primaire_secondaire_modern_ar.svg',
++    stage1: {
++      expertAnswer: 'تمثل الوثيقة 3 تطور تركيز الأجسام المضادة بعد حقن مولد الضد X مرتين، ونقارن: 1) سرعة الاستجابة: الأولية بطيئة (5-10 أيام) بينما الثانوية سريعة (2-3 أيام فقط). 2) شدتها: الأولية ضعيفة (تركيز منخفض) في حين الثانوية قوية (تركيز مرتفع جداً). 3) أصلها المناعي: الأولية من تمايز الخلايا اللمفاوية B إلى خلايا بلازمية، أما الثانوية فتتم بفضل خلايا الذاكرة المتكونة بعد أول حقن. الخلاصة: الحقن الثاني لنفس المولد يثير استجابة أسرع وأقوى (الذاكرة المناعية)، وهو ما يفسر مبدأ اللقاحات.',
++      segments: [
++        { stepNumber: 1, text: 'تمثل الوثيقة 3 تطور تركيز الأجسام المضادة بعد حقن مولد الضد X مرتين (د 0 و د 14)', colorClass: 'bg-blue-100 dark:bg-blue-900/40 text-blue-800 dark:text-blue-300' },
++        { stepNumber: 2, text: 'الاستجابة الأولية بطيئة (5-10 أيام) وضعيفة، بينما الثانوية سريعة (2-3 أيام) وقوية', colorClass: 'bg-emerald-100 dark:bg-emerald-900/40 text-emerald-800 dark:text-emerald-300' },
++        { stepNumber: 3, text: 'الأولية من تمايز اللمفاويات B إلى خلايا بلازمية، أما الثانوية فبفضل خلايا الذاكرة', colorClass: 'bg-amber-100 dark:bg-amber-900/40 text-amber-800 dark:text-amber-300' },
++        { stepNumber: 4, text: 'الخلاصة: الذاكرة المناعية تجعل الاستجابة الثانوية أسرع وأقوى — وهذا مبدأ اللقاحات', colorClass: 'bg-purple-100 dark:bg-purple-900/40 text-purple-800 dark:text-purple-300' }
++      ]
++    },
++    stage2: {
++      clozePrompt: 'تمثل الوثيقة 3 تطور {{1}}. تكون الاستجابة الأولية {{2}} (5-10 أيام) و{{3}}، بالمقابل تكون الاستجابة الثانوية {{4}} (2-3 أيام) و{{5}} بفضل {{6}}.',
++      blanks: [
++        { id: '1', expectedText: 'تركيز الأجسام المضادة بعد حقن مولد الضد مرتين', hint: 'تقديم الوثيقة' },
++        { id: '2', expectedText: 'بطيئة', hint: 'سرعة الاستجابة الأولية' },
++        { id: '3', expectedText: 'ضعيفة', hint: 'شدة الاستجابة الأولية' },
++        { id: '4', expectedText: 'سريعة', hint: 'سرعة الاستجابة الثانوية' },
++        { id: '5', expectedText: 'قوية', hint: 'شدة الاستجابة الثانوية' },
++        { id: '6', expectedText: 'خلايا الذاكرة', hint: 'سبب القوة والسرعة' }
++      ]
++    },
++    stage3: {
++      recommendedTimeSec: 200,
++      hints: [
++        'سند: الوثيقة 3 (منحنى الأجسام المضادة)',
++        'استعمل أدوات المقابلة (بينما / في المقابل) ولا تذكر كل استجابة في فقرة منعزلة',
++        'اختم بخلاصة تبين دور الذاكرة المناعية ومبدأ اللقاحات'
++      ]
++    },
++    stage4: {
++      timeLimitSec: 200,
++      passIcmThreshold: 90
++    }
+   }
+ ];
+ 
+diff --git a/tests/boussole.test.ts b/tests/boussole.test.ts
+index 974692f..5b2c8d6 100644
+--- a/tests/boussole.test.ts
++++ b/tests/boussole.test.ts
+@@ -12,6 +12,8 @@
+ import { evaluateStudentProduction } from '../src/utils/methodologyScorer';
+ import { getSwitchForVerb, groupErrorsByAddress, switchPathAr, getStep } from '../src/data/boussoleData';
+ import { TRAINING_EXERCISES } from '../src/data/methodologyEngine';
++import fs from 'node:fs';
++import path from 'node:path';
+ 
+ let pass = 0;
+ let fail = 0;
+@@ -227,22 +229,51 @@ check('getStep : 4 étapes (اقرأ/اجمع/اربط/اختم) présentes',
+   [1, 2, 3, 4].every(n => typeof getStep(n as 1 | 2 | 3 | 4).word === 'string' && getStep(n as 1 | 2 | 3 | 4).word.length > 0));
+ 
+ // ─────────────────────────────────────────────
+-// SECTION G — exercices & sélecteur (lot T) : 4 exercices, glycémie branchée
++// SECTION G — exercices, sélecteur & planches officielles (lots T + U)
+ // ─────────────────────────────────────────────
+-console.log('── SECTION G : exercices & sélecteur (lot T) ──');
++console.log('── SECTION G : exercices, sélecteur & planches (lots T + U) ──');
+ {
+   const byVerb = (verbId: string) => TRAINING_EXERCISES.filter(e => e.verbId === verbId);
+-  check('4 exercices au total (analyse protéines, فسّر إنزيم, قارن مناعة, analyse glycémie)',
+-    TRAINING_EXERCISES.length === 4);
+-  check('verb_analyse_v1 a 2 exercices → le sélecteur de document est justifié',
+-    byVerb('verb_analyse_v1').length === 2);
++  check('7 exercices au total (protéines, enzyme, immunité, glycémie, synapse, potentiel, anticorps)',
++    TRAINING_EXERCISES.length === 7);
++  check('verb_analyse_v1 a 3 exercices → sélecteur de document justifié',
++    byVerb('verb_analyse_v1').length === 3);
++  check('verb_explain_v1 a 2 exercices et verb_compare_v1 a 2 exercices',
++    byVerb('verb_explain_v1').length === 2 && byVerb('verb_compare_v1').length === 2);
+   const gly = TRAINING_EXERCISES.find(e => e.id === 'ex_analyse_glycemie_04');
+-  check('exercice glycémie présent, thème regulation, analyse, cursus bac',
+-    !!gly && gly.verbId === 'verb_analyse_v1' && gly.theme === 'regulation' && gly.supportType === 'courbe');
+-  check('exercice glycémie branché sur la courbe fichier (lot R)',
+-    !!gly && gly.diagramUrl === '/assets/images/schemas/domaine1_regulations/schema_81_glycemie_curve_modern.svg');
+-  check('exercice glycémie : les 4 étapes du modelage (stage1) + texte à trous (stage2) présents',
+-    !!gly && gly.stage1.segments.length === 4 && gly.stage2.blanks.length === 5);
++  check('exercice glycémie (lot T) : thème regulation + courbe fichier du lot R',
++    !!gly && gly.theme === 'regulation' && gly.diagramUrl === '/assets/images/schemas/domaine1_regulations/schema_81_glycemie_curve_modern.svg');
++
++  // — Lot U : planches officielles redessinées (trou critique : chapitre nerveux) —
++  const syn = TRAINING_EXERCISES.find(e => e.id === 'ex_explain_synapse_05');
++  check('exercice synapse (فسّر) : thème neuro_comm + planche schema_82',
++    !!syn && syn.theme === 'neuro_comm' && syn.diagramUrl === '/assets/images/schemas/domaine1_regulations/schema_82_synapse_modern_ar.svg');
++  const pa = TRAINING_EXERCISES.find(e => e.id === 'ex_analyse_pa_06');
++  check('exercice potentiel d\'action (حلّل) : thème neuro_comm + planche schema_83',
++    !!pa && pa.theme === 'neuro_comm' && pa.diagramUrl === '/assets/images/schemas/domaine1_regulations/schema_83_potentiel_action_modern_ar.svg');
++  const ab = TRAINING_EXERCISES.find(e => e.id === 'ex_compare_anticorps_07');
++  check('exercice anticorps (قارن) : thème immunology + planche schema_85',
++    !!ab && ab.theme === 'immunology' && ab.diagramUrl === '/assets/images/schemas/domaine1_proteines/schema_85_anticorps_primaire_secondaire_modern_ar.svg');
++  check('les 3 nouveaux exercices ont un modelage complet (4 segments + textes à trous)',
++    !!syn && syn.stage1.segments.length === 4 && syn.stage2.blanks.length === 6
++    && !!pa && pa.stage1.segments.length === 4 && pa.stage2.blanks.length === 5
++    && !!ab && ab.stage1.segments.length === 4 && ab.stage2.blanks.length === 6);
++
++  // — Manifest : 125 ressources, les 4 planches U déclarées + présentes sur disque —
++  const manifestPath = path.resolve('public/assets/images/schemas/manifest.json');
++  const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
++  check('manifest : 125 ressources (121 + 4 planches du lot U)',
++    Array.isArray(manifest.assets) && manifest.assets.length === 125);
++  const newSchemas = [
++    'domaine1_regulations/schema_82_synapse_modern_ar.svg',
++    'domaine1_regulations/schema_83_potentiel_action_modern_ar.svg',
++    'domaine1_regulations/schema_84_glycemie_insuline_glucagon_modern_ar.svg',
++    'domaine1_proteines/schema_85_anticorps_primaire_secondaire_modern_ar.svg'
++  ];
++  check('manifest : les 4 planches du lot U déclarées',
++    newSchemas.every(s => manifest.assets.includes('/assets/images/schemas/' + s)));
++  check('disque : les 4 fichiers SVG du lot U existent réellement',
++    newSchemas.every(s => fs.existsSync(path.resolve('public/assets/images/schemas', s))));
+ }
+ 
+ // ─────────────────────────────────────────────
+@@ -254,4 +285,4 @@ if (fail > 0) {
+   failures.forEach(f => console.log(`   ✗ ${f}`));
+   process.exit(1);
+ }
+-console.log(' ✅ Toutes les garanties lot H→R sont verrouillées.');
++console.log(' ✅ Toutes les garanties lot H→U sont verrouillées.');

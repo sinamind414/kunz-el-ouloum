@@ -1,0 +1,916 @@
+// enrich_okacha.ts — 2ᵉ passe OCR + structuration du « بنك الحفظ » (audit 2026-09-22).
+//
+// ENTRÉE : src/data/okacha.ts (injection mécanique v1 verbatim — NE PAS ÉDITER).
+// SORTIE : src/data/okachaEnriched.ts (GÉNÉRÉ — NE PAS ÉDITER À LA MAIN).
+//
+// Transformations (toutes tracées dans ENRICH_STATS / ENRICH_FIXES) :
+//  1. Parsing en blocs sémantiques : titre | point (numéroté) | puce | note | texte ;
+//  2. Recollage des fragments OCR (< 25 car.) et des lignes de continuation
+//     (précédent sans ponctuation finale) — le texte reste contiguous ;
+//  3. Normalisation de la numérotation (« 6-\t » → « 6- », « 14 ٠ » → « 14- »,
+//     « 3 1 - » → « 31- ») — AUCUNE renumérotation, seul le séparateur est nettoyé ;
+//  4. Corrections OCR à haute confiance (dictionnaire ci-dessous) — zéro invention :
+//     un mot non réparable reste verbatim ;
+//  5. Méthodo : découpage en sections par déclencheurs documentés ;
+//     9ᵉ section « nasiha » = OKACHA_CONSEILS (ex-d2u2, isolée 2026-09-23) ;
+//     tamarin1 : sous-sections à ids stables (t1-def/don/inter/dessin/texte) ;
+//     filtre OCR anti-résidu (footer éditeur, marqueurs page, fragments cassés)
+//     sur sections + conseils — SANS réécriture du sens (retrait seul) ;
+//  6. Nettoyage post-fixes : un retrait (famille B) peut vider un bloc ou le
+//     réduire sous 20 car. APRÈS les passes de structurize → on retire les
+//     blocs vides (aucun sens inventé — la ligne source reste couverte côté
+//     verrou via ENRICH_FIXES) et on recolle les restes courts au précédent.
+//
+// Verrou : src/data/okachaEnriched.lock.test.ts (v2).
+
+import { writeFileSync } from 'node:fs';
+import { resolve } from 'node:path';
+import { OKACHA_UNITES, OKACHA_METHODO, OKACHA_CONSEILS } from '../src/data/okacha';
+import { assainirTexte, estDechetOCR } from '../src/data/okachaQuality';
+
+// ── Dictionnaire de corrections OCR (haute confiance uniquement) ──
+// v2 (2026-09-24, audit « arabe 100 % » de la rubrique الحصيلة المعرفية) :
+//   · famille A : réparations فصحى certaines (darija « بصح » retirée, mots OCR
+//     attestés : العرض / حيث / الطالب / التمرين / الأسئلة / وثائق…) ;
+//   · famille B : retraits de résidus 100 % illisibles (valeur to vide) —
+//     aucun sens inventé, on retire ce qui ne peut pas être lu.
+const FIXES: Record<string, string> = {
+  // ── A. Réparations certaines (les plus longues d’abord : non-recouvrement) ──
+  // Audit الحصيلة المعرفية (2026-09-24) : fautes OCR attestées à l’écran.
+  'الغلكوكوكيناز': 'الغليكوكيناز', // استتاج الخاص — l.1603
+  'المستتجة': 'المستنتجة', // ربط المستنجة — l.1701
+  'استتاج': 'استنتاج', // الاستتاج(ات) / باستتاج — ت↔ن OCR
+  'انجاه': 'اتجاه', // اتجاه الموجة / الحقل / مادة التفاعل
+  'انتفال': 'انتقال', // انتقال الموجة الزلزالية — l.822
+  'لاكا بصح بالابتعاد عن كل وسائل التشويش (هاتف، موسيقى، تلفاز...) ولدراسة في غفة جبد: ءة وهادئة، بالإضافة إلى':
+    'لكن لا بدّ من الابتعاد عن كل وسائل التشويش (الهاتف، الموسيقى، التلفاز...)، وأن تجري الدراسة في غرفة نظيفة هادئة، مع',
+  '،:وي النمرين الثاني على جزأين منتابعبن ومنكاملبن من': 'ويتضمّن التمرين الثاني جزأين متتابعين ومتكاملين من',
+  '،انيا ما بحنوي النمرين الثاني على:': 'أمّا ما يحتوي عليه التمرين الثاني فهو:',
+  'نرظبف الموارد المعرفية والمنهجية في مارسة الاسنادلال المامي.': 'نوظِّف الموارد المعرفية والمنهجية في ممارسة الاستدلال العلمي.',
+  'ماشرة ونمر-لعمر مطلوب': 'مباشرةً ونمرّر للعنوان المطلوب',
+  'آلة عمل لاريم إما تكبها': 'آلية عمل الإنزيم إمّا تكتبها',
+  'تفنع عأيهد فسلن لس مهاود سر ته دفيديبافايد اد اعزما بمن الاعتبار:':
+    'ينبغي أن نأخذ في الحسبان:',
+  'أنناء الإجابة عن كل موضوع يوجد معلومات رنبسبة (.ركرية) و.ملممات تانري: (مطن)':
+    'أنّ في الإجابة عن كل موضوع معلومات رئيسية ومعلومات ثانوية',
+  'يركر الطالب على المعلومات الرلبسية': 'يُركّز الطالب على المعلومات الرئيسية',
+  'يادللإجانة على السوال': 'عند الإجابة عن السؤال',
+  'حبث يخير اطالب': 'حيث يختار الطالب',
+  'ويحبذلوتكون الإجابة': 'ويُحبَّذ لو تكون الإجابة',
+  'تسهيل همة المصحح': 'تسهيل مهمة المصحح',
+  'الممنومات لنربا الإمام والغموض': 'المعلومات لرفع الإبهام والغموض',
+  'مفدمة خاصة بكل جزء': 'مقدمة خاصة بكل جزء',
+  'عنوان النحلبل': 'عنوان التحليل',
+  'الحلالب أن محس. استغلالها': 'الطالب أن يُحسِن استغلالها',
+  'بتلربفة الحصول عليها': 'بطريقة الحصول عليها',
+  'لبي شكل عنوان': 'في شكل عنوان',
+  'اللمران المناني:': 'التمرين الثاني:',
+  'الورض:': 'العرض:',
+  'مجموعة طمات': 'مجموعة كلمات',
+  'الأعضاء المناعبة الهيطية': 'الأعضاء المناعية اللمفاوية',
+  'بدائيات النواة': 'أوليات النواة',
+  'النمرين': 'التمرين',
+  'الأستلة': 'الأسئلة',
+  'الأسلة': 'الأسئلة',
+  'السوال': 'السؤال',
+  'الجزيات': 'الجزئيات',
+  'استنباطين': 'استنباطية',
+  'ونائف': 'وثائق',
+  'المنعلف: بها': 'المتعلقة بها',
+  'إذاكانت': 'إذا كانت',
+  'إذاكان': 'إذا كان',
+  'إذاكتبت': 'إذا كتبت',
+  'دكرت سافا': 'ذكرت سالفاً',
+  // ── B. Retraits de résidus illisibles (aucune réécriture) ──
+  'فاتارز': '', // fin de « . نقوم بس … نادفلد\tفاتارز » (méthodo l.1669) — 100 % illisible
+  // NB (audit 2026-09-26) : les entrées « clés mortes » recopiées à la main d'une
+  // AUTRE source (504601676-كتاب-العلوم…) et introuvables dans okacha.ts ont été
+  // retirées — elles ne corrigeaient rien. Les résidus U1 réellement présents sont
+  // traités dans le lot D (règles extraites verbatim, cf. scripts/gen_okacha_fixes2.ts).
+  // Restauration (2026-09-26) : ces DEUX clés sont APPLICABLES — la forme « \t »
+  // frappe la source brute (l.1708 « .\tالصاغة…جد٠\tا »), la forme « espace » frappe
+  // le bloc structuré (parseBloc écrase \t → « جد٠ ا »). Les deux sont nécessaires.
+  'الصاغة الدقيقة للمخكر لملمك وحصره جيدا٠ ا': '',
+  'الصاغة الدقيقة للمخكر لملمك وحصره جيدا٠\tا': '',
+  'يفايي فاد اطمي في ود فنففأ، ٥ اشه ١ي٤عب٢ دبئ ودش': '',
+  'ب-شو ثالع نجية: و هذه الالذ بمدا قمتا شحليل للمطيات افحيية والقطما الفحرن ت٢٢،': '',
+  'فلي ميازفي انحاب تحرية شاهدة أي نكودفيه التبحة طيمية، واقي التجاي فم ٠٠': '',
+  'مرة ي كف فدد ايحداد أش فيفافيأتلبنت دطد ود فد ': '',
+  'ءماش، الملالس الممو لك': '',
+  'يحسن تغ و على': '',
+  'مشروع ءكاشة للطالس المنفوفى المفوف في ءلوم العليم.': '',
+  'نقوم بس سبدبدتديتفي«نادفلد': '',
+  'المصدرية ..الخ)': '',
+  'مت مد إم ف يدر د الة فنخ مداع اني ي فا ة': '',
+  'بربشفي^سأةم :': '',
+  'الالياسدسماي كد ا بي١٨٠٨دششت اد بصورة أدف.': '',
+  'باندثاعن مستويات الينية الفراغية ني العرض، نقول في الخاتمة أن النية الفراغية محددة ورايا وأي طفرة ض ,-^,,؛٠٠٠:-٠٠٠-^—, ;د بلا٠': '',
+  "لأحأض'لأ^في'^٠ اصاد ي ك": '',
+  'يل امم تف كصرس اسب المامة 2٢ ياط فهاماالاكايا أسحت ٢ الكا ير': '',
+  'وا لتدن عدانهارب فعية، نتك رقب نر من كل نهبة(عوااإن أحد) نم غمللكل ت2 مله': '',
+  'تحدر مدف م شد « شطأ أتا سي -١٢ ٥٢ قطب ٨٩٢ ٤': '',
+  'ادب سه قبل ٦2 يوما، ينما يد دام سريعا في - مد اس في س': '',
+  'تد التالة: لماذا، كيف، انساخ مس مب ادمكة :': '',
+  'يمد مع افد الي اميياك الكن من صحة م ) الخروج بمعلون .': '',
+  'لمه النسل في هو يعود ل، يرجع ال، يتسبب ب، يفر ر٠ لأن...':
+    'يعود إلى، يرجع إلى، يتسبب في، يُفسَّر بـ ...',
+  'با تكتب في نقاط وجيزة، أي ما فل': 'بل تُكتب في نقاط وجيزة.',
+  // ── Historique v1 (audit 2026-09-22) ──
+  'الأمنية': 'الأمينية', // أحماض أمينية (U1)
+  'براوبط': 'بروابط', // روابط boustrophedon (U1)
+  'النيكلبوتيدة': 'النيكليوتيدة', // (U1)
+  // ── Lot C (2026-09-24) : corrections ciblées SVT — haute confiance, zéro invention ──
+  'أحماض أمنية': 'أحماض أمينية', // U1 : amino acids
+  'الأحماض الأمنية': 'الأحماض الأمينية',
+  'إلى صفن': 'إلى صنفين', // U1 : « تقس القواعد الآزوتية إلى صفن » → صنفين
+  // Clé SANS espace de tête : le texte brut a « \t- را وور » et le bloc a
+  // « - را وور » (tab normalisé) — seule la forme « - را وور » s'applique des
+  // DEUX côtés, sinon la couverture du verrou échoue (asymétrie texte/bloc).
+  '- را وور': '', // U1 : queue de ligne OCR illisible (retrait)
+  'تقس القواعد الآزوتية': 'تنقسم القواعد الآزوتية',
+  'باليوراسبل': 'باليوراسيل', // U1 : uracil
+  'اليوراسبل': 'اليوراسيل',
+  // ── Lot D (2026-09-26, audit arabe) : restaurations U1 alignées sur le livre
+  //    officiel (الكتاب_المصحح_v1.0.md / الحصيلة الرسمية). Clés extraites VERBATIM
+  //    par scripts/gen_okacha_fixes2.ts — aucune recopie manuelle (cf. 10 clés mortes
+  //    retirées : elles ne s'appliquaient jamais). Zéro invention de sens.
+  // NB : le point « ا- » est avalé par parseBloc (→ « ا- الرونبنات » avec espace) :
+  // la clé ne doit donc PAS inclure le marqueur de tête, sinon elle ne s'applique jamais.
+  'الرونبنات هي جزيئات عضوية حيوية ضخمة': 'البروتينات هي جزيئات عضوية حيوية ضخمة',
+  'من سلسة ببتيدية أ أكثر': 'من سلسلة ببتيدية أو أكثر',
+  'بروابط بيبتيدية.': 'بروابط ببتيدية.',
+  'أ- ال اللاهو الدعامة الجزيئية للمعلومات الوراثية': '2- الـ ADN الدعامة الجزيئية للمعلومات الوراثية',
+  'داخل أنوية الخلايا نبفبة النواة (eucaryote)، تلتف حول البروتينات الهيستونية (الهيستونات) مشكلة ما يعرف بالصبغيات الكوموسومات)':
+    'داخل أنوية الخلايا حقيقية النواة (eucaryote)، تلتف حول البروتينات الهيستونية (الهيستونات) مشكّلة ما يعرف بالصبغيات (الكروموسومات)',
+  'ا لكلونيد: هي الوحدة البناية لسلاسل ال ADN، تركب من ارتباط سكر خماسي منقوص الأكسجين ن ليوزاروالئ) بإحدى القواعد الآزوتية الأربعة عن طريق رابطة تكافؤية':
+    '3- النيوكليوتيد: هي الوحدة البنائية لسلاسل الـ ADN، يتركب من ارتباط سكر خماسي منقوص الأكسجين (ديزوكسي ريبوز) بإحدى القواعد الآزوتية الأربعة عن طريق رابطة تكافؤية',
+  'بيورينية وهي الأدنين (A) والغوانين (6)': 'بيورينية وهي الأدنين (A) والغوانين (G)',
+  'وبيريميدينية وهي السيتوزين()) والتايمين (آ)واليوراسيل (لا)':
+    'وبيريميدينية وهي السيتوزين (C) والتايمين (T) واليوراسيل (U)',
+  'ترتبط النكليوتيدات في السلسلة الواحدة بروابط استرفوسفاتية (فوسفاتية ثنائية الأستر)، كما..':
+    'ترتبط النيوكليوتيدات في السلسلة الواحدة بروابط فوسفاتية ثنائية الأستر، كما',
+  'ما لرب': 'ترتبط',
+  'نكليوتيدات السلسلة المقابلة': 'نيوكليوتيدات السلسلة المقابلة',
+  '-المورثة هي قطعة من ال ADN حاملة لصفة وراثية معينة، وتمثل كل مورثة داخل النواة بأليلين محمهل':
+    '8- المورثة هي قطعة من الـ ADN حاملة لصفة وراثية معينة، وتمثل كل مورثة داخل النواة بأليلين محمّلين على',
+  'تحدد من النيكليوتيدات (القواعد الآزلب,': 'محدّد من النيوكليوتيدات (القواعد الآزوتية،',
+  'وحداتما النائة': 'وحداتها البنائية',
+  'يتعح غن عملية التعبير المورثي': 'ينتج عن عملية التعبير المورثي',
+  'يظهر عند الفردني ثلاث مستويات': 'يظهر عند الفرد على ثلاث مستويات',
+  '(النمة الظاهري)': '(النمط الظاهري)',
+  'والترجمة في اليلن عند حقيقيات النوى': 'والترجمة في الهيولى عند حقيقيات النوى',
+  'الحمض النووي الريبي الرسول (اا٨٩) (غير منقوص الأوكسجين) وسيط كيموحيوي ينقل نسخة : المعلومة الوراثية الموجودة في النواة إلى مقر تكيب البروتين على مستوى الهيول ا تتمنع الموثة عن. 2 مباشرة للهيولى نظرا لكبر قطرها مقارنة بقطر ثقوب الغلاف النووي)':
+    'الحمض النووي الريبي الرسول (ARNm) وسيط كيموحيوي ينقل نسخة من المعلومة الوراثية الموجودة في النواة إلى مقر تركيب البروتين على مستوى الهيولى (تتعذّر المورثة على الانتقال مباشرة إلى الهيولى نظراً لكبر قطرها مقارنة بقطر ثقوب الغلاف النووي).',
+  'وا- الاستتاخ ظاهرة حيوية (المرحلة الأولى للتعبير المورثي) تحدث على مستوى النواة، يتم فيها تركيب جزيمة لداعا انطلاقا من إحدى سلسلتي ال الاهتسمى السلسلة المستنسخة أو الناسخة، وذلك حسب مبدا':
+    'الاستنساخ ظاهرة حيوية (المرحلة الأولى للتعبير المورثي) تحدث على مستوى النواة، يتم فيها تركيب جزيئة ARNm انطلاقاً من إحدى سلسلتي الـ ADN تسمى السلسلة المستنسخة أو الناسخة، وذلك حسب مبدأ',
+  'نكامل القواعد الآزوتية': 'تكامل القواعد الآزوتية',
+  'ا1- العناصر الضرورية لعملية الاستنساخ': '11- العناصر الضرورية لعملية الاستنساخ',
+  'والطاقة اللازمة لعملية النسخ في': 'طاقة ATP اللازمة لعملية النسخ.',
+  // Résidus OCR des l.59-60 d'okacha.ts : retirés EN ENTIER (clés complètes).
+  // L'audit du 2026-09-26 les avait tronquées en croyant des « clés mortes »
+  // (verify_okacha_fixes.ts ne décodait pas \t / préfixe « "أمثي" ») — il en
+  // restait « "أمثي" لي لا5"أيأ » affichés à l'écran. Restauration.
+  '"أمثي" يكرف ساف وففو في، أ، ٨صد دب د"٩، فى شكل«آ»( أدينوزين ثلاثي الفوسفات).': '',
+  'غاد منه املية علي اللفة لورية بن ال»اع٨ و د٩ا٩«مع امتالال الألميث لي لا5"أيأ': '',
+  'مشروع ءكاشة لاطالس المنموى ة اطم:.. بعضها البعض. بفوم بفراءة التنايع النكليونيمي (الشيفرة الورالية) على السلسلة المستنسخة وبوريظ (ست النكليونيدات المرة المكملة فا ن سلسلة':
+    'يقوم إنزيم ARN بوليميراز بقراءة تتابع النيوكليوتيدات (الشيفرة الوراثية) على السلسلة المستنسخة، ويربط النيوكليوتيدات الحرة المتكاملة معها في سلسلة ARNm المتشكلة، بحيث يقابل A في الـ ARNm القاعدة U، و T يقابلها A، و C يقابلها G، و G يقابلها C.',
+  ') يقابلها و6 يقابلها).': '',
+  'الاستطالة: يننقل الإنزيم': 'الاستطالة: ينتقل الإنزيم',
+  'في فراءة نلا النكليوتيدات': 'في قراءة تتابع النيوكليوتيدات',
+  // Tete HORS clé : parseBloc mange « 24 الاستنساخ » → « 24- الاستنساخ » (mêmes
+  // deux côtés après bare() du verrou). La clé sans tête s'applique au texte source
+  // (« 24 الاستنساخ… ») ET au bloc structuré (« 24- الاستنساخ… ») — cf. alif restitué.
+  'الاستنساخ المتعدد هو ارتباط عدة جزيئات من إنزيم الاستنساخ بصورة متزامنة بنفس المورئة':
+    'الاستنساخ المتعدد هو ارتباط عدة جزيئات من إنزيم الاستنساخ بصورة متزامنة بنفس المورثة',
+  'لنشك عدة نسخ': 'لتشكيل عدة نسخ',
+  'من جزيئة الا ا٨00٣ القابلة للترجمة': 'من جزيئة الـ ARNm القابلة للترجمة',
+  'يتم من خلالهاالاصطناع الحيوي': 'يتم من خلالها الاصطناع الحيوي',
+  'من خلال ترجمة الرساة الوراثية': 'من خلال ترجمة الرسالة الوراثية',
+  '(لا، ٨، )، 6)': '(A، G، C، U)',
+
+  // ── Lot E (2026-09-26, audit lexique unités 2 → 11) ──────────────────────
+  // Sélection faite par scripts/audit_lexique.ts (formes affichées absentes des
+  // 2 livres), puis PARS CHAQUE candidat vérifié à la main par scripts/
+  // dbg_probe*.ts : comptage brut, toutes les occurrences enrichies (contexte)
+  // et fréquence dans الكتاب_المصحح_v1.0.md + المكتبة_الكاملة_SVT.md.
+  // Règle : on ne corrige QUE si le contexte prouve le mot attendu — sinon on
+  // laisse tel quel (« نشفر », « اغيطي », « زنط » : cibles divergentes ou non
+  // attestées → aucune réécriture). NB : l'ordre de déclaration EST l'ordre
+  // d'application (applyFixes parcourt Object.entries(FIXES)).
+  'العصيي': 'العصبي', // 1× « داخل الليف العصيي » — AVANT « العصي » (sinon « العصبيي »)
+  'العصي': 'العصبي', // 20× النظام/المركز/الليف العصي → العصبي (réf. 28 + 188 ; 0 usage légitime au corpus)
+  ' لليف': ' الليف', // 7× alif absent : « السطح الخارجي لليف » (26 autres «الليف » sont justes)
+  'جاني': 'جانبي', // 16× « على جاني الغشاء / الجذر الجاني » (réf. 0 + 10/73)
+  'نركيز': 'تركيز', // 3× « تركيز جزيئات الإنزيم » (réf. 0 → 113/700)
+  'نركيب': 'تركيب', // 2× « دور الإنزيم في تركيب ATP »
+  'بالنالي': 'بالتالي', // 4× « وبالنالي تحافظ المضخة » (préfixe و déjà présent)
+  'بؤدي': 'يؤدي', // 8× « ما يؤدي إلى … » (réf. 0 → 12/142)
+  'فنوات': 'قنوات', // 5× « قنوات الفولطية » (réf. 0 → 22/107)
+  'اخلاياالتي': 'الخلايا التي', // 1× « -اخلاياالتي » — AVANT « اخلايا » (espace + article)
+  'اخلايا': 'الخلايا', // 3× « اخلايا التي تتعرف … » (réf. 0)
+  'إنزم': 'إنزيم', // 11× (10 «الإنزم » + 1 «إنزم ») → couvre الإنزم/الإنزمات/الإنزمية
+  'الإزم': 'الإنزيم', // 1× « تركيز الإزم والركيزة » (sans nûn)
+  'البيتيدية': 'الببتيدية', // 3× « السلسلة البيتيدية » (réf. 0 → 22/54)
+  'الإلكزون': 'الإلكترون', // 3× « الإلكترونات الناتجة عن أكسدة الماء » — électrons, PAS exons (réf. 0 → 7/14)
+  'الأنترولكين': 'الانترلوكين', // 3× aligné sur la forme déjà employée ailleurs au corpus (2×)
+  'ألديهيد': 'ألدهيد', // 3× « غليسير ألدهيد / أستيل ألديهيد » (réf. 0 → 2)
+  'للمتوكندري': 'للميتوكوندري', // 4× (réf. 0 → 0/6)
+  'المتوكندري': 'الميتوكوندري', // 4× (réf. 0 → 0/18)
+  'عددكبير': 'عدد كبير', // 3× espace manquant (réf. 0 → 0/16)
+  'تياركهربائي': 'تيار كهربائي', // 2× espace manquant (réf. 0 → 0/1)
+  'ذوكمون': 'ذو كمون', // 2× « ناقل ذو كمون أكسدة-إرجاع » — espace manquant
+  'انزبم': 'إنزيم', // 1× « تشبيط انزبم » (m ↔ ي)
+  'اشترلوني': 'اوشترلوني', // 2× graphie du livre officiel : « راجع تجربة اوشترلوني »
+  'بخفض تيمة ال': 'بخفض قيمة ال', // 1× « بخفض تيمة ال PH » (2ᵉ « تيمة » reste : phrase entièrement illisible)
+  'نفع في قاع': 'تقع في قاع', // 2× « سلاسل جبلية محيطية مرتفعة تقع في قاع المحيط »
+
+  // ── Lot F (2026-09-26, retrait des fragments de filigrane de scan) ────────
+  // Famille B : retrait pur, aucun ajout, aucune réécriture. Fragments
+  // inventoriés par scripts/scan_okacha_filigrane.ts, puis cartographiés ligne
+  // par ligne (pièce = sous-chaîne coincée entre deux frontières de ligne).
+  // UNE clé doit exister à la fois
+  // dans le BLOC structuré (espaces normalisés) ET dans la LIGNE BRUTE,
+  // sinon l'application devient asymétrique et le verrou de couverture échoue.
+  //  · pièce traversant une frontière de ligne → émise à part, PLAFONNÉE par le
+  //    bord de ligne (jamais de clé contenant un « \n ») ;
+  //  · ligne à tabulation → les DEUX formes sont déclarées (« \t » frappe la
+  //    source brute, espace frappe le bloc) — cf. note l.90-92 ;
+  //  · fréquence = 1 ligne exigée : « ب: » (17×) et « ، » (717×) ne peuvent
+  //    PAS être des clés — leurs pièces restent donc volontairement en place.
+  // Le numéro manquant (« ١- » de tafsir) est recollé au point précédent par
+  // nettoieBlocs : accepté, préférable au filigrane complet.
+  'كاشة لنطانس النهوق....': '', // d1u1#61 suffixe — le « . » de fin de phrase reste au bloc
+  'المنهوق اي ،1,م المطسعة والحماة': '', // d1u1#63 préfixe
+  'المنهوق بي،لموم الطبعة والحباء': '', // d1u3#13 pièce 1/2 — bloc entier
+  '،٩ إنالس المفوك......': '', // d1u3#13 pièce 2/2 — bloc vidé puis retiré
+  'خيرن مكاشه الطالس المدود . - شا بنرب': '', // d1u4#7 — « 177-المط … » (contenu) suit sur la même ligne
+  '،روءكاءة': '', // d1u4#16 pièce 1/2 — le « . » initial reste sur la ligne brute
+  'للطالس المتهول.....': '', // d1u4#16 pièce 2/2
+  'كاشة للطالب المنهوك': '', // d1u4#59 pièce 1/3 — « ب: » (17×) reste : pièce non cléable
+  'للط١ب الفوق المنفوق في علوم الطبيعة والحباة': '', // d3u2#2 — AVANT la clé suivante
+  'المنفوق في علوم الطبيعة والحباة': '', // d1u4#59 pièce 2/3 + d3u2#2 — 2 lignes, TOUTES filigrane
+  'مضرو ءكاخة للعطالس المنهوق\tالمنهو ف، و ء': '', // d1u4#73 forme brute (tab)
+  'مضرو ءكاخة للعطالس المنهوق المنهو ف، و ء': '', // d1u4#73 forme bloc (espace)
+  'ز المنفوفى لي عاوم العل...': '', // d1u4#93 bloc entier
+  'كاشة للطالب المنفوث.': '', // d1u4#104
+  'مخروع ثكاشة الطال المتوك.-٠٠—“--—-—٠ثويرممس': '', // d1u4#151
+  'للمطالب المنفوق': '', // d1u5#34 ligne brute isolée
+  'المه وقى ! عاوم الطمبعة والحجاة': '', // d1u5#34 ligne brute isolée
+  '»اشف الملالب المنهوف': '', // d1u5#69 pièce 1/2 — la « ، » de la pièce 2 reste (717× corpus)
+  'كاشة للطالب المتفوك........ المفود لي ما,م المطبمة ,الهباة لل سفة ساة عصية عم عصود حسى، تشابلك مد الأدود : الهايه افد شحي المشاد . المذكور سابقا.': '', // d1u5#110
+  'كاشة الدلالب المنهوق\tالمنهوفى في،لوم المطيم: والحجاء': '', // d3u1#7 forme brute (tab)
+  'كاشة الدلالب المنهوق المنهوفى في،لوم المطيم: والحجاء': '', // d3u1#7 forme bloc (espace)
+  '٦بلمض.م-': '', // d3u3#39 pièce 1/3
+  '٤رو٤': '', // d3u3#39 pièce 2/3
+  '»اشة الطالب المنهوق': '', // d3u3#39 pièce 3/3
+  '»كاشة للطالب المنفوق\t- ٠': '', // d2u1#15 forme brute (tab)
+  '»كاشة للطالب المنفوق - ٠': '', // d2u1#15 forme bloc (espace) — AVANT « كاشة للطالب المنفوق »
+  'ا67.': '', // d2u1#15 pièce 2/2
+  'كاشة لنطالس المنهوفالمنهف في ،له٠ احطمبعة ٠اخمباء': '', // d2u2#16 pièce 1/2
+  'ع٤\tماء ا: ب٠': '', // d2u2#16 pièce 2/2 forme brute (tab)
+  'ع٤ ماء ا: ب٠': '', // d2u2#16 pièce 2/2 forme bloc (espace)
+  'المنهوف ا عاوم العطبمة ,المجبا:': '', // d2u2#43 titre entier
+  'مدسدمصح': '', // méth:intro#5 pièce 1/3 — jeton orphelin isolé sur sa ligne
+  'مشروع عكامة للطالب المذفوفى': '', // méth:intro#5 pièce 2/3
+  'المنهوق وي ء1و٠ الوز': '', // méth:intro#5 pièce 3/3
+  'المنفوق إ ،اوم الطبعة والحماة': '', // tamarin1#22 préfixe
+  'كاشة للطالب المنفوق': '', // tamarin1#38 pièce 1/2 (1ʳᵉ ligne ; l'occurrence d2u1#15 est déjà vidée)
+  'تمد المارمات المستخرجة غيم عدده': '', // tamarin1#38 pièce 2/2
+  'لطالب المنفوق\t,صوى د علوم الضئ واخباة': '', // tafsir#16 forme brute (tab, SANS tiret — le bloc, lui, a « ١- »)
+  'لطالب المنفوق ,صوى د علوم الضئ واخباة': '', // tafsir#16 forme bloc (espace)
+  'المذفوق لي ءاوم الطبيعة والحياة': '', // istinj#19
+  'المنفوف في ءاوم الطببعة والحباة': '', // istinj#60
+  // DERNIÈRE : ne reste couverte par aucune clé longue que d1u5#34 (« .كاشة »,
+  // ligne brute L668). Les 9 autres blocs affichés porteurs de « كاشة » sont
+  // déjà vidés ci-dessus — déclarée avant, elle y laisserait des débris.
+  'كاشة': '',
+};
+
+// ── Normalisation arabe (même logique que okacha.lock.test.ts) ──
+export const normAr = (s: string): string =>
+  s
+    .normalize('NFKC')
+    .replace(/[\u064B-\u065F\u0670\u0640]/g, '')
+    .replace(/[إأآٱا]/g, 'ا')
+    .replace(/ة/g, 'ه')
+    .replace(/ى/g, 'ي');
+
+type BlocKind = 'titre' | 'point' | 'puce' | 'note' | 'texte';
+interface Bloc {
+  kind: BlocKind;
+  num?: string;
+  texte: string;
+}
+
+const TERMINAL = /[.!؟:]$/;
+
+// Détection d'un point numéroté (chiffres latins OU arabes-indiques, ou lettre-ordinal)
+// NB : « ٠ » n'est PAS un séparateur ici — il est géré comme puce (branche num==='٠').
+const RE_POINT =
+  /^\s*((?:\d{1,2}|[٠-٩]{1,2})\s*(?:[-–٫.\t''ʼ])\s*|[٠-٩]\s+(?=\S)|[أ-ي]\s*-\s*)/;
+const RE_POINT_DIRTY = /^\s*(\d{1,2})\s+([٠ا]|ا)\s*[-–٫.]?\s*/; // « 14 ٠ » / « 1 ا »
+const RE_POINT_SPLIT = /^\s*(\d)\s+(\d)\s*[-–٫.]\s*/; // « 3 1 - » → « 31- »
+const RE_PUCE = /^\s*(?:[٠•*\u2022]|-\s|\u2013\s|\.)/;
+
+function parseBlocRaw(raw: string): Bloc {
+  const t = raw.replace(/\s+/g, ' ').trim();
+  if (/^الوحدة/.test(t)) return { kind: 'titre', texte: t };
+  let m = RE_POINT_SPLIT.exec(t);
+  if (m) return { kind: 'point', num: `${m[1]}${m[2]}`, texte: `${m[1]}${m[2]}- ${t.slice(m[0].length)}` };
+  m = RE_POINT_DIRTY.exec(t);
+  if (m) {
+    let reste = t.slice(m[0].length);
+    // « 24 الاستنساخ » : le marqueur « 24 ا » avale l'alif de l'article « ال »
+    // (reste « لاستنساخ » → bloc affiché « 24- لاستنساخ », arabe incorrect).
+    // On le restitue quand le reste commence par « ل » — cas « 14 ٠ » / « 1 ا »
+    // (puce OCR sans article) inchangé.
+    if (m[2] === 'ا' && reste.startsWith('ل')) reste = `ا${reste}`;
+    return { kind: 'point', num: m[1], texte: `${m[1]}- ${reste}` };
+  }
+  m = RE_POINT.exec(t);
+  if (m) {
+    // NB : « ٠ » N'EST PAS dans la classe de strip — c'est un chiffre, pas un séparateur.
+    let num = m[1].trim().replace(/[-–٫.\t\s''ʼ]+$/g, '');
+    if (!num) num = '٠';
+    // « ٠ » seul en tête = puce OCR, pas un point numéroté 0 (tiret inclus).
+    if (num === '٠') {
+      return { kind: 'puce', texte: t.replace(/^\s*٠\s*[-–٫.]?\s*/, '') };
+    }
+    // Gargouilles OCR d'apostrophe entre le numéro et le tiret (« 3'?- ») :
+    // le marqueur a mangé « ' », le « ? » et le « - » résiduels partent aussi.
+    const reste = t.slice(m[0].length).replace(/^\s*[?'؟][-–٫.\s]*/, '');
+    return { kind: 'point', num, texte: `${num}- ${reste}` };
+  }
+  if (/^ملاحظة/.test(t)) return { kind: 'note', texte: t };
+  if (RE_PUCE.test(t)) {
+    const texte = t
+      .replace(/^\s*[٠•*\u2022]\s*/, '')
+      .replace(/^\s*[-–]\s*/, '')
+      .replace(/^\s*\.\s*/, '');
+    // Une puce qui n'est qu'un intitulé court se terminant par « : » = sous-titre.
+    if (texte.endsWith(':') && texte.length < 40) return { kind: 'titre', texte };
+    return { kind: 'puce', texte };
+  }
+  if (t.endsWith(':') && t.length < 90) return { kind: 'titre', texte: t };
+  return { kind: 'texte', texte: t };
+}
+
+/** Même critère que les passes A/C et le verrou : un sous-titre court (< 20 car.)
+ *  finissant par « : » est un TITRE — « ملاحظة: », « 1- التحليل: »… ne sont pas
+ *  des fragments orphelins. Appliqué APRÈS les branches point/note/puce (qui
+ *  interceptent ces lignes avant la règle titre générique). */
+function parseBloc(raw: string): Bloc {
+  const b = parseBlocRaw(raw);
+  if (b.kind !== 'titre' && b.texte.trim().endsWith(':') && b.texte.trim().length < 20) {
+    b.kind = 'titre';
+  }
+  return b;
+}
+
+/** Applique les 3 passes de recollage + normalisation sur une liste de lignes brutes. */
+function structurize(lignes: string[]): { blocs: Bloc[]; fragments: number; rattrapages: number; numeros: number } {
+  const blocs = lignes.map(parseBloc).filter((b) => b.texte.length > 0);
+  let fragments = 0;
+  let rattrapages = 0;
+  let numeros = 0;
+
+  // Pass A — fragments courts (< 25 car.) : recollés au précédent (ou au suivant).
+  // Protection : les blocs « titre de section » (court et se terminant par « : »)
+  // ne sont JAMAIS recollés — ils servent de déclencheurs (méthodo) et d'ancres.
+  const isHeadingLike = (b: Bloc) => b.texte.trim().endsWith(':') && b.texte.trim().length < 40;
+  for (let i = 0; i < blocs.length; ) {
+    const b = blocs[i];
+    if (b.kind !== 'titre' && !isHeadingLike(b) && b.texte.trim().length < 25) {
+      if (i > 0) {
+        blocs[i - 1].texte += ` ${b.texte}`;
+        blocs.splice(i, 1);
+      } else if (blocs.length > 1) {
+        blocs[i + 1].texte = `${b.texte} ${blocs[i + 1].texte}`;
+        blocs.splice(i, 1);
+      } else break;
+      fragments++;
+    } else i++;
+  }
+
+  // Pass B — continuations : uniquement vers une ligne « texte » (jamais vers une
+  // puce/point — deux puces sans point final restent deux puces distinctes).
+  for (let i = 0; i < blocs.length - 1; ) {
+    const b = blocs[i];
+    const next = blocs[i + 1];
+    if (
+      next.kind === 'texte' &&
+      (b.kind === 'texte' || b.kind === 'puce') &&
+      !TERMINAL.test(b.texte.trim())
+    ) {
+      b.texte += ` ${next.texte}`;
+      blocs.splice(i + 1, 1);
+      rattrapages++;
+    } else i++;
+  }
+
+  // Pass C — sécurité : plus aucun non-titre < 20 car. (titres protégés).
+  for (let i = 0; i < blocs.length; ) {
+    const b = blocs[i];
+    if (b.kind !== 'titre' && !isHeadingLike(b) && b.texte.trim().length < 20) {
+      if (i > 0) {
+        blocs[i - 1].texte += ` ${b.texte}`;
+        blocs.splice(i, 1);
+      } else if (blocs.length > 1) {
+        blocs[i + 1].texte = `${b.texte} ${blocs[i + 1].texte}`;
+        blocs.splice(i, 1);
+      } else break;
+      fragments++;
+    } else i++;
+  }
+
+  // Normalisation de la numérotation (aucune renumérotation — séparateurs seulement).
+  for (const b of blocs) {
+    if (b.kind === 'point' && /\t/.test(b.texte)) {
+      b.texte = b.texte.replace(/\t+/g, ' ').replace(/\s{2,}/g, ' ');
+      numeros++;
+    }
+  }
+  return { blocs, fragments, rattrapages, numeros };
+}
+
+
+// ── Filtre OCR anti-résidu (retrait seul — zéro réécriture du sens) ──
+// Appliqué aux sections méthodo + conseils. Motifs documentés (audit 2026-09-23).
+const RE_FOOTER_EDITEUR = /[,،;]?\s*(مكاداللطالس المنهول|كاداللطالس المنهول|كاشة لإطالس المنهوق[^.،\n]*|كاشة لاطالب المنفوق[^.،\n]*|ماشة الطالس المنهوق[^.،\n]*|لطالس المنهوق|لطالس المنه|,?\s*مكاداللطالس المنهول)\s*$/u;
+const RE_FOOTER_MID = /[,،]\s*(مكاداللطالس المنهول|كاداللطالس المنهول)\b/u;
+const RE_PAGE_MARK = /^\s*(?:صفحة\s*)?\d{1,4}\s*[٪%]?\s*$/u;
+const RE_PURE_JUNK = /^\s*[\d\s%.\-–—٠-٩]+\s*$/u;
+/** Fragments entièrement illisibles attestés (liste fermée — retraits documentés).
+ *  NB : jamais de classe \W générique — l'arabe n'est PAS \w en JS, un motif
+ *  large supprimerait tout le corpus. On ne retire QUE des signatures connues. */
+const JUNK_EXACT = new Set([
+  'ابونان\t٠ف٤ش٠٠ا١كد',
+  'زعبف مهما',
+  'ف مفات مرب',
+  'م العلوم الطبيعية.',
+  '،٠٠',
+  'القسم ؟',
+]);
+const JUNK_INCLUDES = [
+  'زعبف مهما',
+  'طتتلاعفيه قالبا لتجنب النكات',
+  'ييياييبيطات يميماخم',
+  'فعاياكاي الابية',
+  'موقمين نحفبزين',
+  'اا40من ارتباط',
+  'Blot اا0 ا٤',
+  'ماشة الطالس المنهوق',
+  'كاشة لإطالس المنهوق',
+  'كاشة لاطالب المنفوق',
+  'تديييدييتديييدييي',
+  'خثئكلكتلاتتكبيككادافاة',
+  'عوف تتعاعل مع القادة',
+  'يعكائ للطاف سول حيفيعم',
+  'لابهم حجم المرض بقدر',
+  'توترة إل باه الص العلمي',
+  'لنت كابنة رقور أقلام',
+  'اشلنكمات الفتاحية العلمية',
+  'باكاد اليان الاحن',
+  'إق (رس بعوان',
+  'أعلب السومات النخطبطية',
+  'لابيي»ال64ال',
+  'نئ^ عدت على مستوى',
+  'المنهوف ا عاوم العطبمة',
+  '،-إنماز رسم تهطيطي',
+  'و ددابة لبا أن',
+];
+function estJunk(t: string): boolean {
+  const s = t.trim();
+  if (JUNK_EXACT.has(s)) return true;
+  return JUNK_INCLUDES.some((x) => s.includes(x));
+}
+
+function filtreOcrBlocs(blocs: { kind: string; num?: string; texte: string }[]): number {
+  let retraits = 0;
+  for (let i = blocs.length - 1; i >= 0; i--) {
+    let t = blocs[i].texte;
+    // 9070 → 90 % (OCR attesté : « يوفر لك 9070 من الزاد » → 90 %)
+    if (t.includes('9070')) { t = t.split('9070').join('90 %'); retraits++; }
+    // footer éditeur (fin ou milieu)
+    const av = t;
+    t = t.replace(RE_FOOTER_MID, '').replace(RE_FOOTER_EDITEUR, '').trim();
+    // queue de chiffres type n° page / téléphone OCR (ex. « … الفيتامين سي. ٦٤٥٦٢٦١٨ »)
+    t = t.replace(/[.،؛]\s*[\d٠-٩\s]{6,}$/u, '').trim();
+    if (t !== av) retraits++;
+    // marqueurs de page purs
+    if (RE_PAGE_MARK.test(t) || (blocs[i].kind !== 'titre' && RE_PURE_JUNK.test(t) && t.length < 12)) {
+      blocs.splice(i, 1); retraits++; continue;
+    }
+    // bloc entier illisible (liste fermée documentée)
+    if (blocs[i].kind !== 'titre' && estJunk(t)) { blocs.splice(i, 1); retraits++; continue; }
+    // vide après filtre → retirer (sauf titre conservé tel quel)
+    if (!t && blocs[i].kind !== 'titre') { blocs.splice(i, 1); retraits++; continue; }
+    blocs[i] = { ...blocs[i], texte: t };
+  }
+  return retraits;
+}
+
+// ── Sections méthodo : dans L'ORDRE DU LIVRE. Déclencheurs testés sur le texte
+// NORMALISÉ (normAr : ة→ه, أ→ا, ى→ي) — motifs écrits en forme normalisée :
+// « 1- التحليل: » (l.205), « 2-التفهلسوير: » (l.289, OCR de التفسير),
+// « 3- المقارنة: » → « 3- المقارنه: », « ٠. اللالملقفقاة: » (l.339, OCR de
+// الاستنتاج), « 9-الاستدلال العلمي: » (l.437) — sondage scripts/_probe_okacha.ts.
+const SECTION_RULES: { id: string; titreAr: string; test: (t: string) => boolean }[] = [
+  {
+    id: 'intro',
+    titreAr: 'مقدمة المنهجية — قواعد العمل',
+    test: () => false, // section par défaut (tout ce qui précède le 1ᵉʳ déclencheur)
+  },
+  {
+    id: 'hikala',
+    titreAr: 'هيكلة الموضوع — التمهيد، الوثائق، التعليمة',
+    test: (t) => t.includes('الهيكله العامه') || t.startsWith('التمهيد'),
+  },
+  {
+    id: 'tamarin1',
+    titreAr: 'التمرين الأول — أسئلة استرداد الموارد',
+    test: (t) =>
+      t.length < 60 &&
+      /النمريف الامل|التمرين الاول|النمرين الاول|ارز ما يطرح/.test(t),
+  },
+  {
+    id: 'tahil',
+    titreAr: 'التحليل — استغلال الوثيقة',
+    test: (t) => t.length < 45 && /^1\s*[''ʼ٠]?\s*[-–٫.]?\s*التحليل|^التحليل:/.test(t),
+  },
+  {
+    id: 'tafsir',
+    titreAr: 'التفسير — من الملاحظة إلى العلّة',
+    // Variantes OCR attestées : « 2-التفهلسير: » (l.289) et « التفسير ».
+    test: (t) => t.length < 45 && /^2\s*[-–٫.]?\s*التف\S{0,5}ير/.test(t),
+  },
+  {
+    id: 'mouqarana',
+    titreAr: 'المقارنة — أوجه التشابه والاختلاف',
+    test: (t) => t.length < 45 && /^3\s*[-–٫.]?\s*المقارنه/.test(t),
+  },
+  {
+    id: 'istinj',
+    titreAr: 'الاستنتاج — خاص وعام',
+    test: (t) => {
+      const core = t.replace(/^[\s٠.٫\-–]+/, '');
+      return (
+        /^٠\s*[.٫]?\s*(اللالملقفقاه|الاستنتاج)/.test(t) ||
+        (core.length < 45 && /الاستنتاج|الاستتاج|اللالملقفقاه/.test(core))
+      );
+    },
+  },
+  {
+    id: 'istidlal',
+    titreAr: 'الاستدلال العلمي ومعاييره',
+    test: (t) => t.length < 50 && /الاستدلال العلمي|الاست»دلال/.test(t),
+  },
+];
+
+function sectionsMethodo(lignes: string[]): {
+  sections: { id: string; titreAr: string; blocs: Bloc[]; sous?: { id: string; titreAr: string; from: number }[] }[];
+  corrections: number;
+  fragments: number;
+  rattrapages: number;
+  numeros: number;
+  ocr: number;
+  retires: number;
+  dechets: number;
+} {
+  // Lot B : déchets en ligne brute AVANT recollage (ne pas fusionner propre+sale).
+  const pre = filtrerLignesDechet(lignes);
+  let dechets = pre.n;
+  const { blocs, fragments, rattrapages, numeros } = structurize(pre.lignes);
+  const corrections = applyFixes(blocs);
+  // Propreté post-fixes AVANT découpage (blocs vidés inertes + restes < 20 car.).
+  let retires = nettoieBlocs(blocs);
+  const sections: { id: string; titreAr: string; blocs: Bloc[]; sous?: { id: string; titreAr: string; from: number }[] }[] = [];
+  let current: { id: string; titreAr: string; blocs: Bloc[]; sous?: { id: string; titreAr: string; from: number }[] } = { id: 'intro', titreAr: SECTION_RULES[0].titreAr, blocs: [] as Bloc[] };
+  sections.push(current);
+  // Pointeur : chaque déclencheur n'est testé que dans l'ordre du livre —
+  // une mention tardive d'un thème déjà traité ne rouvre jamais sa section.
+  let nextRule = 1;
+  for (const b of blocs) {
+    const t = normAr(b.texte);
+    if (nextRule < SECTION_RULES.length && SECTION_RULES[nextRule].test(t)) {
+      current = { id: SECTION_RULES[nextRule].id, titreAr: SECTION_RULES[nextRule].titreAr, blocs: [b] };
+      sections.push(current);
+      nextRule++;
+    } else {
+      current.blocs.push(b);
+    }
+  }
+  // Fusion des sections trop petites (< 3 blocs) dans la précédente — jamais de section vide.
+  for (let i = 1; i < sections.length; ) {
+    if (sections[i].blocs.length < 3) {
+      sections[i - 1].blocs.push(...sections[i].blocs);
+      sections.splice(i, 1);
+    } else i++;
+  }
+  // Filtre OCR anti-résidu sur chaque section (retrait seul) + re-nettoyage
+  // (le filtre peut vider un bloc ou laisser un titre vide).
+  let ocr = 0;
+  for (const s of sections) {
+    ocr += filtreOcrBlocs(s.blocs);
+    retires += nettoieBlocs(s.blocs);
+  }
+  // Lot B : filet post-fixes sur les blocs (déchets restants) AVANT re-fusion + ancrages sous.
+  for (const s of sections) dechets += filtreDechetOCR(s.blocs);
+  // Re-fusion post-filtre si une section a été vidée sous le seuil.
+  for (let i = 1; i < sections.length; ) {
+    if (sections[i].blocs.length < 3) {
+      sections[i - 1].blocs.push(...sections[i].blocs);
+      sections.splice(i, 1);
+    } else i++;
+  }
+  // Sous-sections à ids stables dans tamarin1 (découpage logique — ancrage par contenu).
+  const t1 = sections.find((s) => s.id === 'tamarin1');
+  if (t1) {
+    const sousDefs: { id: string; titreAr: string; ancre: (t: string) => boolean }[] = [
+      { id: 't1-def', titreAr: 'التعريف والكلمات المفتاحية', ancre: (t) => /التعريف:|الكلمه المفتاحيه|الكلمة المفتاحية/.test(t) },
+      { id: 't1-don', titreAr: 'البيانات واستخراج المعطيات', ancre: (t) => /اشحاج العلومات|استخراج العناصر|العلومات من الرسم/.test(t) },
+      { id: 't1-inter', titreAr: 'استغلال الوثيقة والتفسير الموجز', ancre: (t) => /اذاكان الرسم يوضح وظيفه|اذاكان الرسم يوضح بنيه/.test(t) },
+      { id: 't1-dessin', titreAr: 'الرسم التخطيطي — الرسم والبيانات', ancre: (t) => /انواع الرسومات التخطيطيه|رسم تخطيطي تفسيري/.test(t) },
+      { id: 't1-texte', titreAr: 'كتابة النص العلمي', ancre: (t) => /كابه نص علمي|كتابه نص علمي|النص العلمي يشبه/.test(t) },
+    ];
+    const idxs: number[] = [];
+    for (const d of sousDefs) {
+      const i = t1.blocs.findIndex((b, gi) => idxs.every((x) => gi > x) && d.ancre(normAr(b.texte)));
+      if (i >= 0 && (idxs.length === 0 || i > idxs[idxs.length - 1])) idxs.push(i);
+      else idxs.push(-1); // ancre absente — on n'insère pas de faux repère
+    }
+    const starts: { id: string; titreAr: string; from: number }[] = [{ id: 't1-entree', titreAr: 'مقدمة التمرين وأساليب الأسئلة', from: 0 }];
+    for (let k = 0; k < sousDefs.length; k++) {
+      if (idxs[k] >= 0) starts.push({ id: sousDefs[k].id, titreAr: sousDefs[k].titreAr, from: idxs[k] });
+    }
+    t1.sous = starts;
+  }
+  return { sections, corrections, fragments, rattrapages, numeros, ocr, retires, dechets };
+}
+function applyFixes(blocs: Bloc[]): number {
+  let n = 0;
+  for (const b of blocs) {
+    for (const [from, to] of Object.entries(FIXES)) {
+      while (b.texte.includes(from)) {
+        b.texte = b.texte.replace(from, to);
+        n++;
+      }
+    }
+  }
+  return n;
+}
+
+/** Propreté POST-fixes (étape 6 du header) : un retrait (famille B) peut vider
+ *  un bloc ou le réduire sous 20 car. APRÈS les passes de structurize.
+ *   1. trim + retrait des blocs vides (tous kinds — un titre vide ne sert à rien) ;
+ *      la ligne source reste couverte côté verrou (avecFixes → '' → toujours inclus) ;
+ *   2. promotion « titre » des restes < 20 finissant par « : » (miroir parseBloc) ;
+ *   3. recollage des restes courts non-titre vers le précédent (règle Pass C).
+ *  Idempotent — appelé après applyFixes (unités, méthodo) et après filtreOcr
+ *  (sections, conseils). Renvoie le nombre de blocs retirés. */
+function nettoieBlocs(blocs: Bloc[]): number {
+  let retires = 0;
+  for (const b of blocs) b.texte = b.texte.trim();
+  for (let i = blocs.length - 1; i >= 0; i--) {
+    if (blocs[i].texte.length === 0) {
+      blocs.splice(i, 1);
+      retires++;
+    }
+  }
+  for (const b of blocs) {
+    if (b.kind !== 'titre' && b.texte.endsWith(':') && b.texte.length < 20) b.kind = 'titre';
+  }
+  for (let i = 0; i < blocs.length; ) {
+    const b = blocs[i];
+    if (b.kind !== 'titre' && b.texte.length < 20) {
+      if (i > 0) {
+        blocs[i - 1].texte += ` ${b.texte}`;
+        blocs.splice(i, 1);
+      } else if (blocs.length > 1) {
+        blocs[i + 1].texte = `${b.texte} ${blocs[i + 1].texte}`;
+        blocs.splice(i, 1);
+      } else break;
+      retires++;
+    } else i++;
+  }
+  return retires;
+}
+
+/** Lot B (pré-structurize) : retire les lignes brutes qui SONT des déchets
+ *  (score ≥ seuil) AVANT recollage — évite d'avaler une ligne propre fusionnée
+ *  à un déchet. Assainit ■ sur les lignes conservées. */
+function filtrerLignesDechet(lignes: string[]): { lignes: string[]; n: number } {
+  const out: string[] = [];
+  let n = 0;
+  for (const l of lignes) {
+    if (estDechetOCR(l)) {
+      n++;
+      continue;
+    }
+    out.push(assainirTexte(l));
+  }
+  return { lignes: out, n };
+}
+
+/** Lot B (post-fixes) : retrait des déchets scan restants (score ≥ seuil)
+ *  + assainissement des blocs conservés (retrait ■).
+ *  N'épile JAMAIS une erreur de lettres lisible (lot C s'en charge via FIXES). */
+function filtreDechetOCR(blocs: Bloc[]): number {
+  let retraits = 0;
+  for (let i = blocs.length - 1; i >= 0; i--) {
+    if (estDechetOCR(blocs[i].texte)) {
+      blocs.splice(i, 1);
+      retraits++;
+      continue;
+    }
+    const nettoye = assainirTexte(blocs[i].texte);
+    if (nettoye !== blocs[i].texte) blocs[i] = { ...blocs[i], texte: nettoye };
+    if (!blocs[i].texte) {
+      blocs.splice(i, 1);
+      retraits++;
+    }
+  }
+  return retraits;
+}
+
+// ── Génération ──
+const stats = { fragments: 0, rattrapages: 0, numeros: 0, corrections: 0, ocr: 0, retires: 0, dechets: 0 };
+const unitesOut = OKACHA_UNITES.map((u) => {
+  const pre = filtrerLignesDechet(u.lignes);
+  stats.dechets += pre.n;
+  const r = structurize(pre.lignes);
+  const corrections = applyFixes(r.blocs);
+  stats.retires += nettoieBlocs(r.blocs);
+  stats.dechets += filtreDechetOCR(r.blocs);
+  stats.fragments += r.fragments;
+  stats.rattrapages += r.rattrapages;
+  stats.numeros += r.numeros;
+  stats.corrections += corrections;
+  return {
+    id: u.id,
+    domaine: u.domaine,
+    uniteAr: u.uniteAr,
+    sourceRange: u.sourceRange,
+    blocs: r.blocs,
+    nbPoints: r.blocs.filter((b) => b.kind === 'point').length,
+  };
+});
+
+// Copie mutable : OKACHA_METHODO.lignes est un tuple readonly (okacha.ts as const).
+const meth = sectionsMethodo([...OKACHA_METHODO.lignes]);
+stats.corrections += meth.corrections;
+stats.fragments += meth.fragments;
+stats.rattrapages += meth.rattrapages;
+stats.numeros += meth.numeros;
+stats.ocr += meth.ocr;
+stats.retires += meth.retires;
+stats.dechets += meth.dechets;
+
+// 9ᵉ section « nasiha » : قسم النصائح isolé (OKACHA_CONSEILS, ex-d2u2).
+{
+  const preN = filtrerLignesDechet([...OKACHA_CONSEILS.lignes]);
+  stats.dechets += preN.n;
+  const r = structurize(preN.lignes);
+  const c = applyFixes(r.blocs);
+  const o = filtreOcrBlocs(r.blocs);
+  stats.retires += nettoieBlocs(r.blocs);
+  stats.dechets += filtreDechetOCR(r.blocs);
+  stats.corrections += c;
+  stats.fragments += r.fragments;
+  stats.rattrapages += r.rattrapages;
+  stats.numeros += r.numeros;
+  stats.ocr += o;
+  meth.sections.push({ id: 'nasiha', titreAr: 'نصائح المراجعة والتحضير (قسم النصائح)', blocs: r.blocs });
+}
+
+// Comptage précis des corrections : réapplication sur les textes ORIGINAUX.
+const fixesOut = Object.entries(FIXES).map(([from, to]) => {
+  let count = 0;
+  for (const l of [...OKACHA_UNITES.flatMap((u) => u.lignes), ...OKACHA_METHODO.lignes, ...OKACHA_CONSEILS.lignes]) {
+    count += l.split(from).length - 1;
+  }
+  return { from, to, count };
+});
+
+function blocTs(b: Bloc): string {
+  const num = b.num ? `, num: ${JSON.stringify(b.num)}` : '';
+  return `    { kind: ${JSON.stringify(b.kind)}${num}, texte: ${JSON.stringify(b.texte)} }`;
+}
+
+const out: string[] = [];
+out.push('// okachaEnriched.ts — GÉNÉRÉ par scripts/enrich_okacha.ts — NE PAS ÉDITER À LA MAIN.');
+out.push('// 2ᵉ passe OCR + structuration du بنك الحفظ (audit 2026-09-22, phases A+B).');
+out.push('// Source : src/data/okacha.ts (injection mécanique v1) — transformations tracées');
+out.push('// dans ENRICH_STATS / ENRICH_FIXES. Verrou : src/data/okachaEnriched.lock.test.ts');
+out.push('');
+out.push("export type BlocKind = 'titre' | 'point' | 'puce' | 'note' | 'texte';");
+out.push('');
+out.push('export interface BlocOkacha {');
+out.push('  kind: BlocKind;');
+out.push('  num?: string;');
+out.push('  texte: string;');
+out.push('}');
+out.push('');
+out.push('export interface UniteOkachaEnrichie {');
+out.push('  id: string;');
+out.push('  domaine: 1 | 2 | 3;');
+out.push('  uniteAr: string;');
+out.push('  sourceRange: string;');
+out.push('  blocs: BlocOkacha[];');
+out.push('  nbPoints: number;');
+out.push('}');
+out.push('');
+out.push('export interface SousSectionMethodo {');
+out.push('  id: string;');
+out.push('  titreAr: string;');
+out.push('  /** Index du premier bloc (inclus) dans section.blocs. */');
+out.push('  from: number;');
+out.push('}');
+out.push('');
+out.push('export interface SectionMethodo {');
+out.push('  id: string;');
+out.push('  titreAr: string;');
+out.push('  blocs: BlocOkacha[];');
+out.push('  /** Sous-sections à ids stables (tamarin1) — ancrage par index de bloc. */');
+out.push('  sous?: SousSectionMethodo[];');
+out.push('}');
+out.push('');
+out.push('/** Normalisation arabe pour la recherche (miroir de okacha.lock.test.ts). */');
+// `normAr.toString()` perd l'annotation (esbuild) — on la réinjecte pour
+// garder un fichier généré strict-compliant sans dupliquer la logique.
+const normArSrc = normAr.toString().replace(/^\(?\s*s\s*\)?\s*=>/, '(s: string): string =>');
+if (!normArSrc.startsWith('(s: string): string =>')) {
+  throw new Error('enrich_okacha: forme de normAr.toString() inattendue — réinjecter le typage manuellement');
+}
+out.push('export const normAr = ' + normArSrc + ';');
+out.push('');
+out.push('export const OKACHA_UNITES_ENRICHIES: UniteOkachaEnrichie[] = [');
+for (const u of unitesOut) {
+  out.push('  {');
+  out.push(`    id: ${JSON.stringify(u.id)},`);
+  out.push(`    domaine: ${u.domaine} as 1 | 2 | 3,`);
+  out.push(`    uniteAr: ${JSON.stringify(u.uniteAr)},`);
+  out.push(`    sourceRange: ${JSON.stringify(u.sourceRange)},`);
+  out.push('    blocs: [');
+  for (const b of u.blocs) out.push(blocTs(b) + ',');
+  out.push('    ],');
+  out.push(`    nbPoints: ${u.nbPoints},`);
+  out.push('  },');
+}
+out.push('];');
+out.push('');
+out.push('export const OKACHA_METHODO_SECTIONS: SectionMethodo[] = [');
+for (const s of meth.sections) {
+  out.push('  {');
+  out.push(`    id: ${JSON.stringify(s.id)},`);
+  out.push(`    titreAr: ${JSON.stringify(s.titreAr)},`);
+  if (s.sous && s.sous.length) {
+    out.push('    sous: [');
+    for (const ss of s.sous) {
+      out.push(`      { id: ${JSON.stringify(ss.id)}, titreAr: ${JSON.stringify(ss.titreAr)}, from: ${ss.from} },`);
+    }
+    out.push('    ],');
+  }
+  out.push('    blocs: [');
+  for (const b of s.blocs) out.push(blocTs(b) + ',');
+  out.push('    ],');
+  out.push('  },');
+}
+out.push('];');
+out.push('');
+out.push('/** Corrections OCR appliquées (haute confiance) — comptées sur les textes sources. */');
+out.push('export const ENRICH_FIXES: { from: string; to: string; count: number }[] = [');
+for (const f of fixesOut) {
+  out.push(`  { from: ${JSON.stringify(f.from)}, to: ${JSON.stringify(f.to)}, count: ${f.count} },`);
+}
+out.push('];');
+out.push('');
+out.push("/** Bilan de la passe d'enrichissement (audit 2026-09-22). */");
+out.push('export const ENRICH_STATS = {');
+out.push(`  fragmentsRecolles: ${stats.fragments},`);
+out.push(`  rattrapagesContinuation: ${stats.rattrapages},`);
+out.push(`  numerosNormalises: ${stats.numeros},`);
+out.push(`  correctionsAppliquees: ${stats.corrections},`);
+  out.push(`  blocsRetiresPostFix: ${stats.retires},`);
+out.push(`  sectionsMethodo: ${meth.sections.length},`);
+out.push(`  pointsTotal: ${unitesOut.reduce((s, u) => s + u.nbPoints, 0)},`);
+out.push(`  ocrRetraits: ${stats.ocr},`);
+out.push(`  dechetsRetires: ${stats.dechets},`);
+out.push("  genere: '2026-09-24',");
+out.push('} as const;');
+out.push('');
+
+const OUT_PATH = resolve(import.meta.dirname ?? '.', '../src/data/okachaEnriched.ts');
+writeFileSync(OUT_PATH, out.join('\n'), 'utf-8');
+
+console.log('[enrich_okacha] généré :', OUT_PATH);
+console.log('  unités             :', unitesOut.length);
+console.log('  points numérotés   :', unitesOut.reduce((s, u) => s + u.nbPoints, 0));
+console.log('  fragments recollés :', stats.fragments);
+console.log('  rattrapages        :', stats.rattrapages);
+console.log('  numéros normalisés :', stats.numeros);
+console.log('  corrections OCR    :', stats.corrections);
+console.log('  blocs retirés      :', stats.retires, '(post-fixes, vides ou < 20 car.)');
+console.log('  déchets scan (B)   :', stats.dechets, '(score OCR ≥ seuil)');
+console.log('  sections méthodo   :', meth.sections.length, '→', meth.sections.map((s) => `${s.id}(${s.blocs.length})`).join(' '));
+console.log('  filtre OCR retraits:', stats.ocr);

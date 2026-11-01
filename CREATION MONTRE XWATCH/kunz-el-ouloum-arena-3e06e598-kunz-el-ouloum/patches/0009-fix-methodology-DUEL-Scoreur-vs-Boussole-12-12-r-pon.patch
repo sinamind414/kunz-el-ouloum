@@ -1,0 +1,156 @@
+From e689c984df6ab3e1d23a84283ed274700a01db51 Mon Sep 17 00:00:00 2001
+From: sinamind414 <sinamind414@users.noreply.github.com>
+Date: Thu, 3 Sep 2026 13:30:54 +0000
+Subject: [PATCH 9/9] =?UTF-8?q?fix(methodology):=20DUEL=20Scoreur=20vs=20B?=
+ =?UTF-8?q?oussole=20=E2=80=94=2012/12=20r=C3=A9ponses-mod=C3=A8les,=203?=
+ =?UTF-8?q?=20mines=20de=20faux=20positifs=20d=C3=A9gag=C3=A9es?=
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Le duel : une réponse-modèle bâtie sur les 3 gabarits de la fiche (انطلاقًا من /
+وهذا لأنّ / ومِنه نستنتج) soumise aux 12 verbes → exigence ICM = 100 + zéro erreur.
+
+Résultat initial : 7/12. Le scoreur sanctionnait des élèves SANS FAUTE à cause de
+l'agglutination de l'arabe (faux positifs par sous-chaîne) :
+
+1) «الأنسولين» contient littéralement «لأنّ» → un verbe FERMÉ qui cite l'insuline
+   (استنتج/لخّص…) était taggé « تفسير مبكر » ! L'élève qui écrit la réponse juste
+   au bac était puni par la machine. → frontières de mot arabes (préfixes
+   و/ف/ال/بال… autorisés, jamais en plein milieu d'un mot) : arPattern() + textClean
+   (tashkeel retiré) appliqués à causalReg, doubtReg, ex_c3 (وهذا لأنّ), ju_c4.
+2) «العلاقة» contient «لعل» → une فرضية qui parle de «العلاقة بين الدواء والريبوزوم»
+   était taggée « صيغة الشك » (hyp_c3). → même correctif (doubtReg).
+3) «الوثيقة 2» (référence de document) comptait comme « nombre sans unité »
+   → missing_unit sur فرضية/نقد/نص علمي. → strip préalable des numéros de documents
+   (الوثيقة/الوثيقتين/المنحنى/الجدول/الشكل…) avant le test de chiffres.
+
+Bonus de cohérence :
+4) missing_conclusion exclut le رسم تخطيطي (son étape 4 = العنوان + المفتاح,
+   sc_c4 — pas une phrase de bilan) : un dessin sans « نستنتج » n'est plus taggé.
+5) Radical « الوثيق » aussi dans les critères c1 (couvre «الوثيقتين» au duel).
+
+Vérifié : tsc 0 erreur · build ✓ · duEL 12/12 · 4 régressions (vrais coupables
+toujours détectés : لأن réel, ربما réel, chiffre sans unité, réponse sans سند).
+---
+ src/utils/methodologyScorer.ts | 46 +++++++++++++++++++++++-----------
+ 1 file changed, 32 insertions(+), 14 deletions(-)
+
+diff --git a/src/utils/methodologyScorer.ts b/src/utils/methodologyScorer.ts
+index 5bf71bb..e47d6a0 100644
+--- a/src/utils/methodologyScorer.ts
++++ b/src/utils/methodologyScorer.ts
+@@ -41,8 +41,18 @@ export function evaluateStudentProduction(
+   // 1. Détection des erreurs typées globales
+   // Alignement BOUSSOLE v2 : le scoreur juge exactement ce que la
+   // boussole enseigne (4 étapes + مفتاح), verbes, pas seulement حَلِّلْ.
+-
+-  const causalRegex = /(لأن|راجع إلى|بسبب|يفسر ذلك|نعلل|يدل على|دلالة على|هذا يدل|car|parce que|s'explique)/i;
++  //
++  // ⚠ L'arabe agglutine les préfixes : «الأنسولين» CONTIENT «لأن», «العلاقة»
++  // contient «لعل»… Une détection par sous-chaîne sanctionne donc l'élève qui
++  // cite l'insuline ! → frontières de mot (préfixes و/ف/ال… autorisés, jamais
++  // en plein milieu d'un mot).
++  const AR_LETTERS = '\\u0621-\\u064A'; // lettres arabes, hors diacritiques
++  const stripTashkeel = (s: string) => s.replace(/[\u064B-\u065F\u0670]/g, '');
++  const textClean = stripTashkeel(textLower);
++  const arPattern = (alts: string[]) => new RegExp(
++    `(?:^|[^${AR_LETTERS}])(?:و|ف|ثم|بل|لا|ب|ل|ك|ال|وال|فال|بال)?(?:${alts.join('|')})(?=$|[^${AR_LETTERS}])`, 'i');
++  const causalReg = arPattern(['لأن', 'راجع إلى', 'بسبب', 'يفسر ذلك', 'نعلل', 'يدل على', 'دلالة على', 'هذا يدل', 'car', 'parce que', "s'explique"]);
++  const doubtReg = arPattern(['ربما', 'قد يكون', 'لعل', 'احتمال', 'peut-être']);
+ 
+   // 🔑 Mauvais مفتاح = confusion d'actes (verb_confusion → adresse étape 1).
+   // C'est la décision pédagogique la plus coûteuse : la rendre visible.
+@@ -56,19 +66,20 @@ export function evaluateStudentProduction(
+ 
+   // Interprétation prématurée : TOUS les verbes à مفتاح FERMÉ
+   // (حَلِّلْ · قَارِنْ · اسْتَنْتِجْ · لَخِّصْ …), pas seulement verb_analyse_v1.
+-  if (SWITCH_CLOSED_VERBS.includes(verbCard.id) && causalRegex.test(textLower)) {
++  if (SWITCH_CLOSED_VERBS.includes(verbCard.id) && causalReg.test(textClean)) {
+     detectedErrorsMap.add('premature_interpretation');
+   }
+ 
+   // تأكيد دون سند : vérification GLOBALE pour les 9 verbes adossés
+   // à un document — jusqu'ici seuls 4 verbes étaient couverts par les
+   // critères c1 ; علّل/انقُد/استنتج/صادق… passaient sans être vérifiés.
++  // (radical « الوثيق » : couvre الوثيقة / الوثيقتين / الوثائق)
+   const REFERENT_VERBS: string[] = [
+     'verb_analyse_v1', 'verb_explain_v1', 'verb_explain_multi_v1', 'verb_compare_v1',
+     'verb_validate_v1', 'verb_deduce_v1', 'verb_justify_v1', 'verb_critique_v1',
+     'verb_hypothesis_v1',
+   ];
+-  const REFERENCE_REQUIRED_RE = /(الوثيقة|منحنى|جدول|الملاحظة|الشاهد|نلاحظ|الشكل|الرسم|document|graphe)/i;
++  const REFERENCE_REQUIRED_RE = /(الوثيق|الوثائق|منحنى|جدول|الملاحظة|الشاهد|نلاحظ|الشكل|الرسم|document|graphe)/i;
+   if (REFERENT_VERBS.includes(verbCard.id) && !REFERENCE_REQUIRED_RE.test(textLower)) {
+     detectedErrorsMap.add('missing_reference');
+   }
+@@ -76,7 +87,12 @@ export function evaluateStudentProduction(
+   // Vérification de l'absence d'unités si des nombres sont présents (missing_unit)
+   // Aligné sur la boussole étape 2 « كل رقم بوحدته » : TOUS les verbes à document,
+   // plus le texte scientifique — plus seulement حَلِّلْ.
+-  const numbersPresent = /\d+/.test(textLower);
++  // (on retire d'abord les numéros de documents « الوثيقة 2 » : ce ne sont pas des
++  // mesures, pas des valeurs sans unité)
++  const textNoDocRefs = textLower.replace(
++    new RegExp(`((?:الوثيقة|الوثيقتين|الوثيقتان|الوثائق|المنحنى|المنحنيين|الجدول|الجدولين|الشكل|الشكلين|الرسم|النموذج|التجربة|الملاحظة|الصورة)[${AR_LETTERS}]*)\\s*\\d+`, 'g'),
++    ' ');
++  const numbersPresent = /\d+/.test(textNoDocRefs);
+   const unitsPresent = /(غ\/ل|g\/l|%|دقيقة|min|ثانية|s|وحدة اعتبارية|ua|°|درجة|ميكرومول)/i.test(textLower);
+   if (numbersPresent && !unitsPresent && (REFERENT_VERBS.includes(verbCard.id) || verbCard.id === 'verb_composer_v1')) {
+     detectedErrorsMap.add('missing_unit');
+@@ -84,8 +100,7 @@ export function evaluateStudentProduction(
+ 
+   // Vérification des hypothèses conditionnelles (conditional_hypothesis)
+   if (verbCard.id === 'verb_hypothesis_v1') {
+-    const doubtRegex = /(ربما|قد يكون|لعل|احتمال|peut-être)/i;
+-    if (doubtRegex.test(textLower)) {
++    if (doubtReg.test(textClean)) {
+       detectedErrorsMap.add('conditional_hypothesis');
+     }
+   }
+@@ -99,8 +114,10 @@ export function evaluateStudentProduction(
+   }
+ 
+   // Vérification de la présence de la conclusion (missing_conclusion)
++  // Le رسم تخطيطي est exclu : son « step 4 » est le titre + le مفتاح (sc_c4),
++  // pas une phrase de bilan — un dessin sans « نستنتج » n'est pas une faute.
+   const conclusionRegex = /(الاستنتاج|نستنتج|الخلاصة|نخلص|يؤكد صحة|خاتمة|conclusion)/i;
+-  if (!conclusionRegex.test(textLower)) {
++  if (verbCard.id !== 'verb_schematic_v1' && !conclusionRegex.test(textLower)) {
+     detectedErrorsMap.add('missing_conclusion');
+   }
+ 
+@@ -110,8 +127,8 @@ export function evaluateStudentProduction(
+     let feedback = '';
+ 
+     if (criterion.id === 'an_c1' || criterion.id === 'ex_c1' || criterion.id === 'comp_c1' || criterion.id === 'val_c1') {
+-      // Présentation / Référent
+-      const refKeywords = /(تمثل الوثيقة|منحنى|جدول|الوثيقة|الملاحظة|الشاهد|نلاحظ|document|graphe)/i;
++      // Présentation / Référent (radical « الوثيق » : singulier + duel الوثيقتين)
++      const refKeywords = /(تمثل الوثيق|منحنى|جدول|الوثيق|الوثائق|الملاحظة|الشاهد|نلاحظ|document|graphe)/i;
+       passed = refKeywords.test(textLower) && textLower.length > 25;
+       feedback = passed 
+         ? 'تم تحديد الوثيقة والسياق بنجاح.' 
+@@ -147,8 +164,9 @@ export function evaluateStudentProduction(
+     }
+     else if (criterion.id === 'ex_c3') {
+       // Connecteur causal obligatoire — gabarit de la boussole : « وهذا لأنّ … »
+-      const causalConnectorRe = /(يعود ذلك إلى|يرجع هذا لـ|بسبب|مما يؤدي|يفسر ذلك بـ|وهذا لأن|هذا لأن|لأن)/i;
+-      passed = causalConnectorRe.test(textLower);
++      // Connecteur causal obligatoire — gabarit de la boussole : « وهذا لأنّ … »
++      const causalConnectorRe = arPattern(['يعود ذلك إلى', 'يرجع هذا لـ', 'بسبب', 'مما يؤدي', 'يفسر ذلك بـ', 'وهذا لأن', 'هذا لأن', 'لأن']);
++      passed = causalConnectorRe.test(textClean);
+       feedback = passed 
+         ? 'تم استخدام الرابط السببي الإلزامي بكفاءة.' 
+         : `تنبيه: « ${criterion.wording.compass} » - أين هو الرابط السببي "يعود ذلك إلى" في جملتك؟`;
+@@ -284,8 +302,8 @@ export function evaluateStudentProduction(
+         : `تنبيه: « ${criterion.wording.compass} » - وظف مكتسبك القبلي (نعلم أن …).`;
+     }
+     else if (criterion.id === 'ju_c4') {
+-      const juCausalRe = /(لأن|وبالتالي|إذن|منه|بالتالي|وبذلك|وبناء|يعود ذلك|بسبب)/i;
+-      passed = juCausalRe.test(textLower);
++      const juCausalRe = arPattern(['لأن', 'وبالتالي', 'إذن', 'منه', 'بالتالي', 'وبذلك', 'وبناء', 'يعود ذلك', 'بسبب']);
++      passed = juCausalRe.test(textClean);
+       feedback = passed
+         ? 'الربط السببي الختامي يثبت صحة الفكرة.'
+         : `تنبيه: « ${criterion.wording.compass} » - اختم بربط سببي (وبالتالي / لأن …).`;

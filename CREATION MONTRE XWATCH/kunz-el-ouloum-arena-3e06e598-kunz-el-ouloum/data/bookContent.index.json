@@ -1,0 +1,624 @@
+{
+  "schema_version": "1.0",
+  "generated_utc": "2026-09-20T11:22:11.553Z",
+  "source": {
+    "fichier": "data/bookContent.json",
+    "octets": 635610,
+    "sha256": "a18966d94af395bb5ccdfeac1371118ccdfda66f0f68e04c70676c355d192fbd",
+    "lignes_ocr": 6105
+  },
+  "methode": "scripts/build_chapter_index.ts — affectation monotone après exclusion du cluster TDM du livre ; passes : ligne-titre → ligne → bi-ligne → tiges",
+  "grille": {
+    "domains": 3,
+    "units": 11,
+    "chapters": 55
+  },
+  "tdm_du_livre": {
+    "fin": 192
+  },
+  "stats": {
+    "verbatim-ligne": 42,
+    "tiges": 10,
+    "inferred-borne": 1,
+    "ancre-documentee": 2
+  },
+  "preamble": {
+    "debut": 0,
+    "fin": 541
+  },
+  "chapitres": [
+    {
+      "domain": 1,
+      "unit": 1,
+      "chapter": 1,
+      "titreAr": "تذكير بالمكتسبات",
+      "ligneDebut": 542,
+      "mode": "verbatim-ligne",
+      "evidence": "النشاط O التذكير بالمكتسبات",
+      "ligneFin": 543
+    },
+    {
+      "domain": 1,
+      "unit": 1,
+      "chapter": 2,
+      "titreAr": "مقر تركيب البروتين",
+      "ligneDebut": 544,
+      "mode": "verbatim-ligne",
+      "evidence": "النشاط 0: مقر تركيب البروتين",
+      "ligneFin": 548
+    },
+    {
+      "domain": 1,
+      "unit": 1,
+      "chapter": 3,
+      "titreAr": "استنساخ المعلومات الوراثية الموجودة على مستوى ADN",
+      "ligneDebut": 549,
+      "mode": "tiges",
+      "evidence": "النشاط ٥: استنساخ المعلومات الوراثية الموجودة على مستوى ال ADN",
+      "tiges": [
+        "المعلومات",
+        "الوراثيه"
+      ],
+      "ligneFin": 555
+    },
+    {
+      "domain": 1,
+      "unit": 1,
+      "chapter": 4,
+      "titreAr": "الترجمة",
+      "ligneDebut": 556,
+      "mode": "verbatim-ligne",
+      "evidence": "النشاط 0: الترجمة",
+      "ligneFin": 565
+    },
+    {
+      "domain": 1,
+      "unit": 1,
+      "chapter": 5,
+      "titreAr": "مراحل الترجمة",
+      "ligneDebut": 566,
+      "mode": "verbatim-ligne",
+      "evidence": "النشاط 0: مراحل الترجمة",
+      "ligneFin": 650
+    },
+    {
+      "domain": 1,
+      "unit": 2,
+      "chapter": 6,
+      "titreAr": "تمثيل البنية الفراغية للبروتين",
+      "ligneDebut": 651,
+      "mode": "verbatim-ligne",
+      "evidence": "-\tكيفية تمثيل البنية الفراغية للبروتينات.",
+      "ligneFin": 672
+    },
+    {
+      "domain": 1,
+      "unit": 2,
+      "chapter": 7,
+      "titreAr": "مستويات البنية الفراغية للبروتينات",
+      "ligneDebut": 673,
+      "mode": "verbatim-ligne",
+      "evidence": "مستويات البنية الفراغية للبروتينات",
+      "ligneFin": 729
+    },
+    {
+      "domain": 1,
+      "unit": 2,
+      "chapter": 8,
+      "titreAr": "العلاقة بين بنية ووظيفة البروتين",
+      "ligneDebut": 730,
+      "mode": "verbatim-ligne",
+      "evidence": "» ما هي العلاقة بين بنية ووظيفة البروتين ؟",
+      "ligneFin": 970
+    },
+    {
+      "domain": 1,
+      "unit": 3,
+      "chapter": 9,
+      "titreAr": "مفهوم الإنزيم وأهميته",
+      "ligneDebut": 971,
+      "mode": "verbatim-ligne",
+      "evidence": "1.\tمفهوم الإنزيم وأهميته.",
+      "ligneFin": 971
+    },
+    {
+      "domain": 1,
+      "unit": 3,
+      "chapter": 10,
+      "titreAr": "النشاط الإنزيمي وعلاقته ببنية الإنزيم",
+      "ligneDebut": 972,
+      "mode": "verbatim-ligne",
+      "evidence": "2.\tالنشاط الإنزيمي وعلاقته ببنية الإنزيم.",
+      "ligneFin": 972
+    },
+    {
+      "domain": 1,
+      "unit": 3,
+      "chapter": 11,
+      "titreAr": "دراسة تأثير تغير درجة pH الوسط على نشاط الإنزيم",
+      "ligneDebut": 973,
+      "mode": "tiges",
+      "evidence": "3.\tدراسة تأثير تغير درجة ! 1 الوسط على نشاط الإنزيم.",
+      "tiges": [
+        "الانزيم",
+        "دراسه"
+      ],
+      "ligneFin": 973
+    },
+    {
+      "domain": 1,
+      "unit": 3,
+      "chapter": 12,
+      "titreAr": "دراسة تأثير تغيرات درجة الحرارة على نشاط الإنزيم",
+      "ligneDebut": 974,
+      "mode": "verbatim-ligne",
+      "evidence": "4.\tدراسة تأثير تغيرات درجة الحرارة على نشاط الإنزيم.",
+      "ligneFin": 1283
+    },
+    {
+      "domain": 1,
+      "unit": 4,
+      "chapter": 13,
+      "titreAr": "تذكير بالمكتسبات",
+      "ligneDebut": 1284,
+      "mode": "verbatim-ligne",
+      "evidence": "تذكير بالمكتسبات",
+      "ligneFin": 1306
+    },
+    {
+      "domain": 1,
+      "unit": 4,
+      "chapter": 14,
+      "titreAr": "الذات واللاذات",
+      "ligneDebut": 1307,
+      "mode": "verbatim-ligne",
+      "evidence": "الذات واللاذات",
+      "ligneFin": 1584
+    },
+    {
+      "domain": 1,
+      "unit": 4,
+      "chapter": 15,
+      "titreAr": "الحزينات الدفاعية في الحالة الأولى",
+      "ligneDebut": 1585,
+      "mode": "tiges",
+      "evidence": "86 الجزينات الدفاعية في الحالة الاولى",
+      "tiges": [
+        "الدفاعيه",
+        "الحاله"
+      ],
+      "ligneFin": 1587
+    },
+    {
+      "domain": 1,
+      "unit": 4,
+      "chapter": 16,
+      "titreAr": "المعقد المناعي",
+      "ligneDebut": 1588,
+      "mode": "verbatim-ligne",
+      "evidence": "المعقد المناعي",
+      "ligneFin": 1678
+    },
+    {
+      "domain": 1,
+      "unit": 4,
+      "chapter": 17,
+      "titreAr": "مصدر الأجسام المضادة",
+      "ligneDebut": 1679,
+      "mode": "verbatim-ligne",
+      "evidence": "مصدر الأجسام المضادة",
+      "ligneFin": 1795
+    },
+    {
+      "domain": 1,
+      "unit": 4,
+      "chapter": 18,
+      "titreAr": "العناصر الدفاعية في الحالة الثانية",
+      "ligneDebut": 1796,
+      "mode": "inferred-borne",
+      "evidence": "bannière p.97 absente de l OCR — borné par طرق تأثير (l.1797) ; récap l.2179 écarté",
+      "ambigu": true,
+      "ligneFin": 1796
+    },
+    {
+      "domain": 1,
+      "unit": 4,
+      "chapter": 19,
+      "titreAr": "طرق تأثير اللمفاويات LTc",
+      "ligneDebut": 1797,
+      "mode": "ancre-documentee",
+      "evidence": "en-tête OCR l.1797 (LTc tronqué en LT) ; p.98",
+      "ambigu": true,
+      "ligneFin": 1849
+    },
+    {
+      "domain": 1,
+      "unit": 4,
+      "chapter": 20,
+      "titreAr": "مصدر اللمفاويات LTc",
+      "ligneDebut": 1850,
+      "mode": "ancre-documentee",
+      "evidence": "en-tête OCR l.1850 ; p.100",
+      "ambigu": true,
+      "ligneFin": 1973
+    },
+    {
+      "domain": 1,
+      "unit": 4,
+      "chapter": 21,
+      "titreAr": "تحفيز الخلايا LB و LT",
+      "ligneDebut": 1974,
+      "mode": "tiges",
+      "evidence": "هآلية تحفيز الخلايا اللمفاوية",
+      "tiges": [
+        "الخلايا",
+        "تحفيز"
+      ],
+      "ligneFin": 1986
+    },
+    {
+      "domain": 1,
+      "unit": 4,
+      "chapter": 22,
+      "titreAr": "اختيار نمط الاستجابة المناعية",
+      "ligneDebut": 1987,
+      "mode": "verbatim-ligne",
+      "evidence": "إختيار نمط الاستجابة المناعية",
+      "ligneFin": 2099
+    },
+    {
+      "domain": 1,
+      "unit": 4,
+      "chapter": 23,
+      "titreAr": "سبب فقدان المناعة المكتسبة",
+      "ligneDebut": 2100,
+      "mode": "verbatim-ligne",
+      "evidence": "سبب فقدان المناعة المكتسبة",
+      "ligneFin": 2423
+    },
+    {
+      "domain": 1,
+      "unit": 5,
+      "chapter": 24,
+      "titreAr": "تذكير بالمكتسبات",
+      "ligneDebut": 2424,
+      "mode": "verbatim-ligne",
+      "evidence": "تذكير بالمكتسبات",
+      "ligneFin": 2450
+    },
+    {
+      "domain": 1,
+      "unit": 5,
+      "chapter": 25,
+      "titreAr": "النقل المشبكي (الكمون الغشائي)",
+      "ligneDebut": 2451,
+      "mode": "verbatim-ligne",
+      "evidence": "130 النقل المشبكي (الكمون الغشائي)",
+      "ligneFin": 2489
+    },
+    {
+      "domain": 1,
+      "unit": 5,
+      "chapter": 26,
+      "titreAr": "آلية النقل المشبكي",
+      "ligneDebut": 2490,
+      "mode": "verbatim-ligne",
+      "evidence": "النقاط3 الية النقل المشبكي",
+      "ligneFin": 2566
+    },
+    {
+      "domain": 1,
+      "unit": 5,
+      "chapter": 27,
+      "titreAr": "كمون الراحة",
+      "ligneDebut": 2567,
+      "mode": "verbatim-ligne",
+      "evidence": "4.\tيدعى التسجيل (ب) بكمون الراحة علل.",
+      "ligneFin": 2706
+    },
+    {
+      "domain": 1,
+      "unit": 5,
+      "chapter": 28,
+      "titreAr": "كمون العمل",
+      "ligneDebut": 2707,
+      "mode": "verbatim-ligne",
+      "evidence": "142 كمون العمل",
+      "ligneFin": 2797
+    },
+    {
+      "domain": 1,
+      "unit": 5,
+      "chapter": 29,
+      "titreAr": "آلية الإدماج العصبي",
+      "ligneDebut": 2798,
+      "mode": "verbatim-ligne",
+      "evidence": "آلية الادماج العصبي",
+      "ligneFin": 2909
+    },
+    {
+      "domain": 1,
+      "unit": 5,
+      "chapter": 30,
+      "titreAr": "تأثير المخدرات على مستوى المشابك",
+      "ligneDebut": 2910,
+      "mode": "verbatim-ligne",
+      "evidence": "تأثير المخدرات على مستوى المشابك",
+      "ligneFin": 2986
+    },
+    {
+      "domain": 2,
+      "unit": 1,
+      "chapter": 31,
+      "titreAr": "تذكير بالمكتسبات",
+      "ligneDebut": 2987,
+      "mode": "verbatim-ligne",
+      "evidence": "النشاط O التذكير بالمكتسبات",
+      "ligneFin": 3317
+    },
+    {
+      "domain": 2,
+      "unit": 1,
+      "chapter": 32,
+      "titreAr": "مقر عملية التركيب الضوئي",
+      "ligneDebut": 3318,
+      "mode": "verbatim-ligne",
+      "evidence": "مقر عملية التركيب الضوئي -ما فوق البنية الخلوية",
+      "ligneFin": 3470
+    },
+    {
+      "domain": 2,
+      "unit": 1,
+      "chapter": 33,
+      "titreAr": "تفاعلات المرحلة الكيموضوئية",
+      "ligneDebut": 3471,
+      "mode": "verbatim-ligne",
+      "evidence": "0 تسلسل تفاعلات المرحلة الكيموضوئية",
+      "ligneFin": 3620
+    },
+    {
+      "domain": 2,
+      "unit": 1,
+      "chapter": 34,
+      "titreAr": "تفاعلات المرحلة الكيموحيوية",
+      "ligneDebut": 3621,
+      "mode": "verbatim-ligne",
+      "evidence": "194 تفاعلات المرحلة الكيموحيوية",
+      "ligneFin": 3754
+    },
+    {
+      "domain": 2,
+      "unit": 2,
+      "chapter": 35,
+      "titreAr": "تذكير بالمكتسبات",
+      "ligneDebut": 3755,
+      "mode": "verbatim-ligne",
+      "evidence": "تذكير بالمكتسبات",
+      "ligneFin": 3765
+    },
+    {
+      "domain": 2,
+      "unit": 2,
+      "chapter": 36,
+      "titreAr": "مقر الأكسدة التنفسية",
+      "ligneDebut": 3766,
+      "mode": "verbatim-ligne",
+      "evidence": "مقر الأكسدة التنفسية",
+      "ligneFin": 3818
+    },
+    {
+      "domain": 2,
+      "unit": 2,
+      "chapter": 37,
+      "titreAr": "التحلل السكري",
+      "ligneDebut": 3819,
+      "mode": "verbatim-ligne",
+      "evidence": "التحلل السكري",
+      "ligneFin": 3885
+    },
+    {
+      "domain": 2,
+      "unit": 2,
+      "chapter": 38,
+      "titreAr": "مراحل تفكك حمض البيروفيك (تفاعلات حلقة كريبس)",
+      "ligneDebut": 3886,
+      "mode": "verbatim-ligne",
+      "evidence": "مراحل تفكك حمض البيروفيك (تفاعلات حلقة كريبس)",
+      "ligneFin": 3972
+    },
+    {
+      "domain": 2,
+      "unit": 2,
+      "chapter": 39,
+      "titreAr": "الفسفرة التأكسدية",
+      "ligneDebut": 3973,
+      "mode": "verbatim-ligne",
+      "evidence": "الفسفرة التأكسدية",
+      "ligneFin": 4250
+    },
+    {
+      "domain": 2,
+      "unit": 2,
+      "chapter": 40,
+      "titreAr": "آليات تحويل الطاقة الكيميائية الكامنة في وسط لا هوائي",
+      "ligneDebut": 4251,
+      "mode": "tiges",
+      "evidence": "استخراج الطاقة الكيميائية الكامنة في الجزيئات العضوية",
+      "tiges": [
+        "الكيمياييه",
+        "الكامنه"
+      ],
+      "ligneFin": 4276
+    },
+    {
+      "domain": 2,
+      "unit": 3,
+      "chapter": 41,
+      "titreAr": "التحولات الطاقوية على المستوى الخلوي",
+      "ligneDebut": 4277,
+      "mode": "verbatim-ligne",
+      "evidence": "236 التحولات الطاقوية على المستوى الخلوي",
+      "ligneFin": 4341
+    },
+    {
+      "domain": 3,
+      "unit": 1,
+      "chapter": 42,
+      "titreAr": "تحديد الصفائح التكتونية",
+      "ligneDebut": 4342,
+      "mode": "verbatim-ligne",
+      "evidence": "تحديد الصفائح التكتونية",
+      "ligneFin": 4599
+    },
+    {
+      "domain": 3,
+      "unit": 1,
+      "chapter": 43,
+      "titreAr": "حركات الصفائح التكتونية",
+      "ligneDebut": 4600,
+      "mode": "verbatim-ligne",
+      "evidence": "النشاط 0: حركات الصفائح التكتونية",
+      "ligneFin": 4618
+    },
+    {
+      "domain": 3,
+      "unit": 1,
+      "chapter": 44,
+      "titreAr": "الطاقة الداخلية للكرة الأرضية",
+      "ligneDebut": 4619,
+      "mode": "verbatim-ligne",
+      "evidence": "لنشاط © الطاقة الداخلية للكرة الأرضية",
+      "ligneFin": 4702
+    },
+    {
+      "domain": 3,
+      "unit": 2,
+      "chapter": 45,
+      "titreAr": "الموجات الزلزالية",
+      "ligneDebut": 4703,
+      "mode": "verbatim-ligne",
+      "evidence": "1.\tالموجات الزلزالية.",
+      "ligneFin": 4703
+    },
+    {
+      "domain": 3,
+      "unit": 2,
+      "chapter": 46,
+      "titreAr": "التركيب الكيميائي لصخور القشرة الأرضية والمعطف (البرنس)",
+      "ligneDebut": 4704,
+      "mode": "tiges",
+      "evidence": "2.\tالتركيب الكيميائي لصخور القشرة الأرضية والبرنس (المعطف).",
+      "tiges": [
+        "الكيميايي",
+        "التركيب"
+      ],
+      "ligneFin": 4704
+    },
+    {
+      "domain": 3,
+      "unit": 2,
+      "chapter": 47,
+      "titreAr": "نمذجة البنية الداخلية للكرة الأرضية",
+      "ligneDebut": 4705,
+      "mode": "verbatim-ligne",
+      "evidence": "3.\tنمذجة البنية الداخلية للكرة الأرضية.",
+      "ligneFin": 5306
+    },
+    {
+      "domain": 3,
+      "unit": 3,
+      "chapter": 48,
+      "titreAr": "الظواهر المرتبطة بالبناء (خصائص الظهرات وسط محيطية)",
+      "ligneDebut": 5307,
+      "mode": "tiges",
+      "evidence": "»مامي الظواهر اجيولوجية المرتبطة بهذه المناطق وكيف نفسر التقاريس الناستة عنها)",
+      "tiges": [
+        "المرتبطه",
+        "الظواهر"
+      ],
+      "ligneFin": 5934
+    },
+    {
+      "domain": 3,
+      "unit": 3,
+      "chapter": 49,
+      "titreAr": "المغماتية وتشكل اللوح المحيطي",
+      "ligneDebut": 5935,
+      "mode": "verbatim-ligne",
+      "evidence": "النشاط 0: المغماتية وتشكل اللوح المحيطي",
+      "ligneFin": 5939
+    },
+    {
+      "domain": 3,
+      "unit": 3,
+      "chapter": 50,
+      "titreAr": "تشكل الصخور المميزة للظهرة وسط محيطية",
+      "ligneDebut": 5940,
+      "mode": "tiges",
+      "evidence": "النشاط 0: تشكل التضاريس المميزة للظهرة وسط محيطية",
+      "tiges": [
+        "المميزه",
+        "للظهره"
+      ],
+      "ligneFin": 5949
+    },
+    {
+      "domain": 3,
+      "unit": 3,
+      "chapter": 51,
+      "titreAr": "الظواهر المرتبطة بالغوص",
+      "ligneDebut": 5950,
+      "mode": "verbatim-ligne",
+      "evidence": "النشاط ٥: الظواهر المرتبطة بالغوص",
+      "ligneFin": 5952
+    },
+    {
+      "domain": 3,
+      "unit": 3,
+      "chapter": 52,
+      "titreAr": "اختفاء اللوح المحيطي والظواهر المرتبطة بالغوص",
+      "ligneDebut": 5953,
+      "mode": "tiges",
+      "evidence": "النشاط ٥: اختفه اللوح المحيطي والظواهر المرتبطة بالغوص",
+      "tiges": [
+        "والظواهر",
+        "المرتبطه"
+      ],
+      "ligneFin": 5966
+    },
+    {
+      "domain": 3,
+      "unit": 3,
+      "chapter": 53,
+      "titreAr": "التضاريس الناجمة عن التصادم",
+      "ligneDebut": 5967,
+      "mode": "tiges",
+      "evidence": "النشاط 0: التضاريس الناشئة عن التصادم",
+      "tiges": [
+        "التضاريس",
+        "التصادم"
+      ],
+      "ligneFin": 5971
+    },
+    {
+      "domain": 3,
+      "unit": 3,
+      "chapter": 54,
+      "titreAr": "شواهد التقلص",
+      "ligneDebut": 5972,
+      "mode": "verbatim-ligne",
+      "evidence": "النشاط 0: شواهد التقلص",
+      "ligneFin": 5977
+    },
+    {
+      "domain": 3,
+      "unit": 3,
+      "chapter": 55,
+      "titreAr": "شواهد محيط قديم",
+      "ligneDebut": 5978,
+      "mode": "verbatim-ligne",
+      "evidence": "شواهد محيط قديم",
+      "ligneFin": 6104
+    }
+  ]
+}

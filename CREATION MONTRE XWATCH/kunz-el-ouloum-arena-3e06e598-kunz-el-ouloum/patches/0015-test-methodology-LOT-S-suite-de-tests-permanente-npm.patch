@@ -1,0 +1,298 @@
+From 02aab77df23888e444f238eb854fead96d4b54f8 Mon Sep 17 00:00:00 2001
+From: sinamind414 <sinamind414@users.noreply.github.com>
+Date: Thu, 3 Sep 2026 17:40:25 +0000
+Subject: [PATCH 15/22] =?UTF-8?q?test(methodology):=20LOT=20S=20=E2=80=94?=
+ =?UTF-8?q?=20suite=20de=20tests=20permanente=20(npm=20test,=2055=20assert?=
+ =?UTF-8?q?ions)?=
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Les harnais de vérification (duel 12/12, étalonnage 8 profils, 20 règles de
+critères, 4 régressions critiques, anti-faux-positifs d'agglutination) étaient
+des scripts TEMPORAIRES exécutés puis supprimés — la prochaine modification
+pouvait casser une garantie en silence. Désormais verrouillées dans le repo :
+
+tests/boussole.test.ts — 6 sections :
+  A. DUEL : 12 réponses-modèles (gabarits de la fiche) → ICM 100 + 0 erreur
+  B. ÉTALONNAGE : 8 profils → ICM + stage exacts (100/4 · 75/3 · 50/2 · 25/2 ·
+     60 pondéré · 60 pondéré · 25/2 · seuil ≥90 → 4)
+  C. RÈGLES : les 20 critères réels (comp_c2, cr_c1-4, ded_c2 ±, exp_m_c1-2,
+     hyp_c1, ju_c1-4, sc_c1-4, sch_c1-2 ±, val_c2)
+  D. RÉGRESSIONS : لأنّ réel → premature · ربما réel → conditional ·
+     chiffre nu → missing_unit (même si «دقيقة» présente) · sans سند →
+     missing_reference · مفتاح faux → verb_confusion
+  E. ANTI-FAUX-POSITIFS : «الأنسولين»⊅premature · «العلاقة»⊅conditional ·
+     «الوثيقتين 1 و2»⊅missing_unit · légende seule⊅sc_c3 · «وهذا لأنّ»→ex_c3
+  F. BOUSSOLE DATA : مفتاح 12 verbes (5 fermés/7 ouverts), chemins ١٢٤/١٢٣٤,
+     adresses des 5 erreurs, getStep.
+
+package.json : script « test » = tsx tests/boussole.test.ts (0 dépendance
+nouvelle — tsx déjà présent, 100 % offline).
+
+Le harnais a immédiatement attrapé une erreur de MON cas de test (sch_c2) :
+« أُحدّد اتجاه الأسهم ووظيفتها » satisfait légitimement le critère — corrigé
+en un vrai cas négatif. tsc 0 erreur · tests 55/55.
+---
+ package.json           |   3 +-
+ tests/boussole.test.ts | 237 +++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 239 insertions(+), 1 deletion(-)
+ create mode 100644 tests/boussole.test.ts
+
+diff --git a/package.json b/package.json
+index 94f865c..1c1aafc 100644
+--- a/package.json
++++ b/package.json
+@@ -8,7 +8,8 @@
+     "build": "vite build && esbuild server.ts --bundle --platform=node --format=cjs --packages=external --sourcemap --outfile=dist/server.cjs",
+     "start": "node dist/server.cjs",
+     "clean": "rm -rf dist server.js",
+-    "lint": "tsc --noEmit"
++    "lint": "tsc --noEmit",
++    "test": "tsx tests/boussole.test.ts"
+   },
+   "dependencies": {
+     "@tailwindcss/vite": "^4.1.14",
+diff --git a/tests/boussole.test.ts b/tests/boussole.test.ts
+new file mode 100644
+index 0000000..d06b5e4
+--- /dev/null
++++ b/tests/boussole.test.ts
+@@ -0,0 +1,237 @@
++// ============================================================
++// BOUSSOLE v3 — suite de tests de régression (exécutable via « npm test »)
++// Verrouille les garanties établies lots H→R :
++//   · duel Scoreur vs Boussole (12 réponses-modèles → ICM 100, 0 erreur)
++//   · étalonnage du grading (8 profils → ICM + stage exacts)
++//   · les 20 vraies règles de critères (plus aucun fallback « longueur »)
++//   · les 4 régressions critiques (vrais coupables toujours détectés)
++//   · l'arabe agglutiné ne punit plus («الأنسولين»⊅«لأنّ», «العلاقة»⊅«لعل»)
++//   · boussoleData : مفتاح des 12 verbes + adresses des erreurs
++// 100 % offline, sans dépendance : tsx + Node seulement.
++// ============================================================
++import { evaluateStudentProduction } from '../src/utils/methodologyScorer';
++import { getSwitchForVerb, groupErrorsByAddress, switchPathAr, getStep } from '../src/data/boussoleData';
++
++let pass = 0;
++let fail = 0;
++const failures: string[] = [];
++
++function check(name: string, ok: boolean, detail = ''): void {
++  if (ok) { pass++; }
++  else { fail++; failures.push(`${name}${detail ? ' — ' + detail : ''}`); console.error(`  ✗ ${name}${detail ? ' — ' + detail : ''}`); }
++}
++
++function evalCase(v: string, text: string, sw: 'open' | 'closed') {
++  return evaluateStudentProduction(v, text, undefined, 3, { switchChoice: sw, switchTruth: sw });
++}
++
++// ─────────────────────────────────────────────
++// SECTION A — DUEL : 12 réponses-modèles (gabarits de la fiche) → ICM 100, 0 erreur
++// ─────────────────────────────────────────────
++const DUEL: { v: string; sw: 'open' | 'closed'; text: string }[] = [
++  { v: 'verb_analyse_v1', sw: 'closed', text:
++    'انطلاقًا من الوثيقة 1، تمثل منحنى تطور الغليسيما عند شخص سليم. نلاحظ ارتفاعًا من 0.9 غ/ل إلى 1.6 غ/ل بعد 30 دقيقة، ثم انخفاضًا إلى 0.9 غ/ل بعد 120 دقيقة. الاستنتاج: الغليسيما تنتظم حول 0.9 غ/ل في الجسم السليم.' },
++  { v: 'verb_explain_v1', sw: 'open', text:
++    'انطلاقًا من الوثيقة 1، نمثل منحنى تطور الغليسيما بعد وجبة غذائية. نلاحظ ارتفاعًا من 0.9 غ/ل إلى 1.6 غ/ل بعد 30 دقيقة ثم عودة إلى 0.9 غ/ل بعد 120 دقيقة. وهذا لأنّ ارتفاع الغليسيما يحرّض خلايا بيتا في البنكرياس على إفراز الأنسولين، الذي يجعل الكبد يخزن الغلوكوز على شكل غليكوجين، فتنخفض الغليسيما. ومنه نستنتج أنّ البنكرياس ينظم الغليسيما بفضل الأنسولين.' },
++  { v: 'verb_compare_v1', sw: 'closed', text:
++    'انطلاقًا من الوثيقتين 1 و2، نمثل جدولين يبينان النشاط الإنزيمي في وسطيين مختلفين. أوجه التشابه: يتشابهان في درجة الحرارة المثلى 37°. أوجه الاختلاف: في حين يختلفان في الرقم الهيدروجيني الأمثل، وفي المقابل لا يختلفان في كمية الإنزيم. ومنه نستنتج أنّ الرقم الهيدروجيني يلعب دورًا مهمًا في النشاط الإنزيمي.' },
++  { v: 'verb_hypothesis_v1', sw: 'open', text:
++    'انطلاقًا من الوثيقة 1، نلاحظ أنّ الخلايا المعالجة بالدواء توقفت عن إنتاج البروتين بينما الخلايا الشاهدة واصلت إنتاجه. فما العلاقة بين الدواء والريبوزوم؟ الفرضية: يثبط الدواء عمل الريبوزومات، فيتوقف تركيب البروتين داخل الخلية. الاستنتاج: الدواء يثبط الترجمة على مستوى الريبوزوم.' },
++  { v: 'verb_deduce_v1', sw: 'closed', text:
++    'انطلاقًا من الوثيقة 1، نلاحظ أن الغليسيما ترتفع بعد الوجبة من 0.9 غ/ل إلى 1.6 غ/ل، ثم تعود إلى 0.9 غ/ل بعد 120 دقيقة. الاستنتاج: ارتفاع الغليسيما يحرّض البنكرياس على إفراز الأنسولين الذي يخزن الغلوكوز في الكبد.' },
++  { v: 'verb_validate_v1', sw: 'open', text:
++    'انطلاقًا من الوثيقة 1، نمثل منحنى الغليسيما بعد حقن الأنسولين. الفرضية: الأنسولين يخفض الغليسيما. نلاحظ أن الغليسيما تنخفض من 1.6 غ/ل إلى 0.9 غ/ل بعد حقن الأنسولين، وهذا يؤكد الفرضية ويتوافق معها. ومنه نستنتج أن الأنسولين يخفض الغليسيما.' },
++  { v: 'verb_explain_multi_v1', sw: 'open', text:
++    'تمثل الوثيقة 1 منحنى الغليسيما: نلاحظ ارتفاعًا بعد الوجبة ثم عودة إلى 0.9 غ/ل. وتمثل الوثيقة 2 تطور الغليكوجين: نلاحظ ارتفاعه في الكبد بعد الوجبة. وهذا لأنّ الأنسولين يحفز الخزن. الاستنتاج: الكبد ينظم الغليسيما بتحريض الأنسولين.' },
++  { v: 'verb_justify_v1', sw: 'open', text:
++    'أعلن أن الأنسولين يخفض الغليسيما. نلاحظ في الوثيقة 1 أن الغليسيما تعود إلى 0.9 غ/ل بعد 120 دقيقة. نعلم أن الأنسولين يخزن الغلوكوز على شكل غليكوجين في الكبد. وبالتالي يخفض الأنسولين الغليسيما. الاستنتاج: الكبد يخفض الغليسيما بتحريض الأنسولين.' },
++  { v: 'verb_schema_v1', sw: 'closed', text:
++    'انطلاقًا من الوثيقة 1، أضع العناصر الفاعلة (الأنسولين، الريبوزوم، الغلوكوز) داخل أشكال منظمة: مربعات ودوائر. أحدد اتجاه الأسهم: يتحول الغلوكوز إلى غليكوجين في الكبد. الاستنتاج: يخزن الكبد الغلوكوز بتحريض الأنسولين.' },
++  { v: 'verb_schematic_v1', sw: 'closed', text:
++    'أرسم البنيات بمربعات بسيطة: الخلية، النواة، الريبوزوم. أسمي كل بنية بسهم أفقي. أميز الظواهر بأسهم مرقمة: 1 دخول الدواء إلى الخلية، 2 تثبيت الدواء على الريبوزوم. أضع مفتاح الأرقام أسفل الرسم وعنوانًا شاملا: تأثير الدواء على التركيب البروتيني.' },
++  { v: 'verb_critique_v1', sw: 'open', text:
++    'أنتقد نموذج الدواء كعلاج وحيد: أعلن أن موضوع النقد هو الاعتماد الكامل على الدواء. من الإيجابيات أنه يقلل الأعراض، كما نلاحظ في الوثيقة 2. من السلبيات والحدود أنه لا يعالج سبب المرض، وتظهر حدود الجرعات. في رأيي يجب دمج الدواء مع تنظيم الحياة اليومية. الاستنتاج: الدواء علاج مساعد وليس وحيدا.' },
++  { v: 'verb_composer_v1', sw: 'open', text:
++    'مقدمة: تتعرض الخلايا الحية لعوامل خارجية تؤثر على نشاطها، فما هي العلاقة بين الدواء والريبوزوم؟ يظهر في الوثيقة 1 أن الدواء يثبط الترجمة على مستوى الريبوزوم، وبالتالي يتوقف تركيب البروتين. النواة تحمل المعلومة الوراثية وتنسخها، ويرجمه الريبوزوم إلى أحماض أمينية. ومنه نستنتج أن الدواء يثبط عمل الريبوزوم ويوقف التعبير المورثي. الخلاصة: الدواء يثبط الترجمة فيقل إنتاج البروتين.' },
++];
++
++console.log('── SECTION A : duel (12 réponses-modèles → ICM 100, 0 erreur) ──');
++for (const c of DUEL) {
++  const rep = evalCase(c.v, c.text, c.sw);
++  const fails = rep.criteriaResults.filter(x => !x.passed).map(x => x.criterionId);
++  check(`duel ${c.v}`, rep.icm === 100 && fails.length === 0 && rep.detectedErrors.length === 0,
++    `ICM=${rep.icm} échoués=[${fails.join(',')}] erreurs=[${rep.detectedErrors.map(e => e.tag).join(',')}]`);
++}
++
++// ─────────────────────────────────────────────
++// SECTION B — ÉTALONNAGE : 8 profils → ICM + stage exacts
++// ─────────────────────────────────────────────
++console.log('── SECTION B : étalonnage du grading (8 profils) ──');
++{
++  const p0 = evalCase('verb_explain_v1', DUEL[1].text, 'open');
++  check('P0 élite → ICM 100 · stade 4', p0.icm === 100 && p0.nextPedagogicalStage === 4, `ICM=${p0.icm} stade=${p0.nextPedagogicalStage}`);
++
++  const p1 = evalCase('verb_analyse_v1',
++    'انطلاقًا من الوثيقة 1، تمثل منحنى تطور الغليسيما عند شخص سليم. نلاحظ ارتفاعًا من 0.9 غ/ل إلى 1.6 غ/ل بعد 30 دقيقة ثم انخفاضًا إلى 0.9 غ/ل بعد 120 دقيقة.', 'closed');
++  check('P1 1 accroc (sans conclusion) → ICM 75 · stade 3', p1.icm === 75 && p1.nextPedagogicalStage === 3, `ICM=${p1.icm} stade=${p1.nextPedagogicalStage}`);
++
++  const p2 = evalCase('verb_analyse_v1',
++    'تمثل الوثيقة 1 منحنى الغليسيما. نلاحظ ارتفاعًا من 0.9 إلى 1.6 بعد 30 دقيقة ثم انخفاضًا إلى 0.9 بعد 120 دقيقة.', 'closed');
++  check('P2 valeurs nues (0.9/1.6 sans unité) → ICM 50 · stade 2', p2.icm === 50 && p2.nextPedagogicalStage === 2, `ICM=${p2.icm} stade=${p2.nextPedagogicalStage}`);
++
++  const p3 = evaluateStudentProduction('verb_analyse_v1',
++    'نلاحظ أن الغليسيما ترتفع من 0.9 غ/ل إلى 1.6 غ/ل لأنّ الأنسولين يفرز ثم يخزنها الكبد.',
++    undefined, 3, { switchChoice: 'open', switchTruth: 'closed' });
++  check('P3 مفتاح faux + لأنّ + sans سند → ICM 25 · stade 2', p3.icm === 25 && p3.nextPedagogicalStage === 2, `ICM=${p3.icm} stade=${p3.nextPedagogicalStage} erreurs=[${p3.detectedErrors.map(e => e.tag).join(',')}]`);
++
++  const p4 = evalCase('verb_schematic_v1',
++    'أرسم البنيات بمربعات بسيطة: الخلية، النواة، الريبوزوم. أسمي كل بنية بسهم أفقي. أضع مفتاح الأرقام أسفل الرسم وعنوانًا شاملا: تأثير الدواء.', 'closed');
++  check('P4 رسم sans ترقيم الظواهر → ICM 60 pondéré (75 non pondéré)', p4.icm === 60, `ICM=${p4.icm} stade=${p4.nextPedagogicalStage}`);
++
++  const p5 = evalCase('verb_composer_v1',
++    'مقدمة: ما العلاقة بين الدواء والريبوزوم؟ نلاحظ في الوثيقة 1 أن البروتين يقل مع الدواء. الخلاصة: الدواء يثبط الترجمة.', 'open');
++  check('P5 texte sans mécanisme détaillé → ICM 60 pondéré', p5.icm === 60, `ICM=${p5.icm} stade=${p5.nextPedagogicalStage}`);
++
++  const p6 = evaluateStudentProduction('verb_analyse_v1', 'تتغير الغليسيما.', undefined, 3, { switchChoice: 'open', switchTruth: 'closed' });
++  check('P6 réponse quasi vide → ICM ≤25 · stade 2', p6.icm <= 25 && p6.nextPedagogicalStage === 2, `ICM=${p6.icm} stade=${p6.nextPedagogicalStage}`);
++
++  const p95 = evalCase('verb_explain_v1',
++    'انطلاقًا من الوثيقة 1، منحنى الغليسيما. نلاحظ ارتفاعًا من 0.9 غ/ل إلى 1.6 غ/ل بعد 30 دقيقة ثم عودة إلى 0.9 غ/ل. وهذا لأنّ الأنسولين يخزن الغلوكوز. الاستنتاج: البنكرياس ينظم الغليسيما.', 'open');
++  check('seuil ≥90 → stade 4', p95.icm >= 90 && p95.nextPedagogicalStage === 4, `ICM=${p95.icm} stade=${p95.nextPedagogicalStage}`);
++}
++
++// ─────────────────────────────────────────────
++// SECTION C — les 20 vraies règles de critères (plus de fallback « longueur »)
++// ─────────────────────────────────────────────
++console.log('── SECTION C : 20 vraies règles de critères ──');
++function critPasses(v: string, text: string, sw: 'open' | 'closed', cid: string, expected = true): void {
++  const rep = evalCase(v, text, sw);
++  const c = rep.criteriaResults.find(x => x.criterionId === cid);
++  check(`[${cid}] ${v} → ${expected ? 'passe' : 'échoue'}`, !!c && c.passed === expected, c ? (c.passed ? 'passé' : 'échoué') : `critère ${cid} absent`);
++}
++
++// comparaison : critères communs + similitudes ET différences
++critPasses('verb_compare_v1',
++  'تمثل الوثيقة جدولين عن النشاط الإنزيمي. أوجه التشابه: يتشابهان في درجة الحرارة المثلى. أوجه الاختلاف: في حين يختلفان في الرقم الهيدروجيني الأمثل، وفي المقابل لا يختلفان في التركيز. ومنه نستنتج أن الرقم الهيدروجيني يلعب دورا في النشاط الإنزيمي.', 'closed', 'comp_c2');
++// نقد : objet, positif+document, négatif/limites, jugement
++critPasses('verb_critique_v1',
++  'أنتقد نموذج الدواء كعامل وحيد: من الإيجابيات أنه يقلل الأعراض حسب الوثيقة 2، لكن من السلبيات أنه لا يعالج السبب، كما أن له حدودا في الجرعات. في رأيي يجب دمجه مع تنظيم الحياة اليومية.', 'open', 'cr_c1');
++critPasses('verb_critique_v1',
++  'أنتقد نموذج الدواء كعامل وحيد: من الإيجابيات أنه يقلل الأعراض حسب الوثيقة 2، لكن من السلبيات أنه لا يعالج السبب، كما أن له حدودا في الجرعات. في رأيي يجب دمجه مع تنظيم الحياة اليومية.', 'open', 'cr_c2');
++critPasses('verb_critique_v1',
++  'أنتقد نموذج الدواء كعامل وحيد: من الإيجابيات أنه يقلل الأعراض حسب الوثيقة 2، لكن من السلبيات أنه لا يعالج السبب، كما أن له حدودا في الجرعات. في رأيي يجب دمجه مع تنظيم الحياة اليومية.', 'open', 'cr_c3');
++critPasses('verb_critique_v1',
++  'أنتقد نموذج الدواء كعامل وحيد: من الإيجابيات أنه يقلل الأعراض حسب الوثيقة 2، لكن من السلبيات أنه لا يعالج السبب، كما أن له حدودا في الجرعات. في رأيي يجب دمجه مع تنظيم الحياة اليومية.', 'open', 'cr_c4');
++// استنتاج : aucun chiffre répété après « الاستنتاج »
++critPasses('verb_deduce_v1',
++  'انطلاقا من الوثيقة 1 نلاحظ تطور الغليسيما عند شخص سليم. الاستنتاج: ارتفاع الغليسيما بعد الوجبة يحرر الأنسولين الذي يخزن الغلوكوز في الكبد.', 'closed', 'ded_c2');
++critPasses('verb_deduce_v1',
++  'انطلاقا من الوثيقة 1 نلاحظ تطور الغليسيما. الاستنتاج: تبلغ قيمة الغليسيما 1.6 غ/ل بعد 30 دقيقة.', 'closed', 'ded_c2', false);
++// اشرح multi-documents
++critPasses('verb_explain_multi_v1',
++  'تمثل الوثيقة 1 منحنى الغليسيما: نلاحظ ارتفاعا ثم عودة إلى 0.9 غ/ل. وتمثل الوثيقة 2 تطور الغليكوجين: نلاحظ ارتفاعه بعد الوجبة. وهذا لأن الأنسولين يحفز الخزن. نستنتج أن الكبد ينظم الغليسيما.', 'open', 'exp_m_c1');
++critPasses('verb_explain_multi_v1',
++  'تمثل الوثيقة 1 منحنى الغليسيما: نلاحظ ارتفاعا ثم عودة إلى 0.9 غ/ل. وتمثل الوثيقة 2 تطور الغليكوجين: نلاحظ ارتفاعه بعد الوجبة. وهذا لأن الأنسولين يحفز الخزن. نستنتج أن الكبد ينظم الغليسيما.', 'open', 'exp_m_c2');
++// فرضية : départ expérimental + problème
++critPasses('verb_hypothesis_v1',
++  'نلاحظ في التجربة أن الخلايا المعالجة بالدواء تتوقف عن الترجمات. المشكل العلمي: كيف يعمل الدواء على الخلية؟ الفرضية: يثبط الدواء عمل الريبوزومات.', 'open', 'hyp_c1');
++// تعليل : annonce, argument documenté, مكتسبات, lien causal final
++critPasses('verb_justify_v1',
++  'أعلن أن الأنسولين يخفض الغليسيما. نلاحظ في الوثيقة 1 أن الغليسيما تعود إلى 0.9 غ/ل بعد 120 دقيقة. نعلم أن الأنسولين يخزن الغلوكوز على شكل غليكوجين في الكبد. وبالتالي يخفض الأنسولين الغليسيما. الاستنتاج: الكبد يخفض الغليسيما بتحريض الأنسولين.', 'open', 'ju_c1');
++critPasses('verb_justify_v1',
++  'أعلن أن الأنسولين يخفض الغليسيما. نلاحظ في الوثيقة 1 أن الغليسيما تعود إلى 0.9 غ/ل بعد 120 دقيقة. نعلم أن الأنسولين يخزن الغلوكوز على شكل غليكوجين في الكبد. وبالتالي يخفض الأنسولين الغليسيما. الاستنتاج: الكبد يخفض الغليسيما بتحريض الأنسولين.', 'open', 'ju_c2');
++critPasses('verb_justify_v1',
++  'أعلن أن الأنسولين يخفض الغليسيما. نلاحظ في الوثيقة 1 أن الغليسيما تعود إلى 0.9 غ/ل بعد 120 دقيقة. نعلم أن الأنسولين يخزن الغلوكوز على شكل غليكوجين في الكبد. وبالتالي يخفض الأنسولين الغليسيما. الاستنتاج: الكبد يخفض الغليسيما بتحريض الأنسولين.', 'open', 'ju_c3');
++critPasses('verb_justify_v1',
++  'أعلن أن الأنسولين يخفض الغليسيما. نلاحظ في الوثيقة 1 أن الغليسيما تعود إلى 0.9 غ/ل بعد 120 دقيقة. نعلم أن الأنسولين يخزن الغلوكوز على شكل غليكوجين في الكبد. وبالتالي يخفض الأنسولين الغليسيما. الاستنتاج: الكبد يخفض الغليسيما بتحريض الأنسولين.', 'open', 'ju_c4');
++// رسم تخطيطي : formes, trames, flèches numérotées, مفتاح+عنوان
++for (const cid of ['sc_c1', 'sc_c2', 'sc_c3', 'sc_c4']) {
++  critPasses('verb_schematic_v1',
++    'أرسم البنيات بمربعات بسيطة: الخلية، النواة، الريبوزوم. أسمي كل بنية بسهم أفقي. أميز الظواهر بأسهم مرقمة: 1 دخول الدواء إلى الخلية، 2 تثبيت الدواء على الريبوزوم. أضع مفتاح الأرقام أسفل الرسم وعنوانًا شاملا: تأثير الدواء على التركيب البروتيني.', 'closed', cid);
++}
++// مخطط : éléments dans formes + sens des flèches
++critPasses('verb_schema_v1',
++  'انطلاقا من الوثيقة 1، أضع العناصر الفاعلة (الأنسولين، الريبوزوم، الغلوكوز) داخل أشكال منظمة: مربعات ودوائر. أحدد اتجاه الأسهم: يتحول الغلوكوز إلى غليكوجين في الكبد. الاستنتاج: يخزن الكبد الغلوكوز بتحريض الأنسولين.', 'closed', 'sch_c1');
++critPasses('verb_schema_v1',
++  'انطلاقا من الوثيقة 1، أضع العناصر الفاعلة داخل أشكال منظمة. الاستنتاج: يخزن الكبد الغلوكوز.', 'closed', 'sch_c2', false);
++// تصديق : confrontation preuve/hypothèse
++critPasses('verb_validate_v1',
++  'الفرضية: الهرمون يرفع الغليسيما. نلاحظ في الوثيقة 1 أن الغليسيما ترتفع بعد حقن الهرمون، وهذا يؤكد الفرضية ويدعمها. ومنه نستنتج صحة الفرضية.', 'open', 'val_c2');
++
++// ─────────────────────────────────────────────
++// SECTION D — régressions critiques (les vrais coupables restent détectés)
++// ─────────────────────────────────────────────
++console.log('── SECTION D : régressions critiques (faux négatifs refusés) ──');
++check('« لأنّ » réel chez حلّل → premature_interpretation',
++  evalCase('verb_analyse_v1', 'تمثل الوثيقة 1 منحنى الغليسيما. نلاحظ ارتفاعا من 0.9 إلى 1.6 غ/ل لأن الأنسولين يفرز.', 'closed')
++    .detectedErrors.some(e => e.tag === 'premature_interpretation'));
++check('« ربما » réel chez فرضية → conditional_hypothesis',
++  evalCase('verb_hypothesis_v1', 'انطلاقا من الوثيقة 1 نلاحظ توقف الترجمات. فما العلاقة؟ الفرضية: ربما يثبط الدواء الريبوزوم.', 'open')
++    .detectedErrors.some(e => e.tag === 'conditional_hypothesis'));
++check('chiffre sans unité (même si «30 دقيقة» présente) → missing_unit',
++  evalCase('verb_analyse_v1', 'تمثل الوثيقة 1 منحنى. نلاحظ ارتفاعا من 0.9 إلى 1.6 ثم انخفاضا بعد 30 دقيقة. الاستنتاج: تنتظم الغليسيما.', 'closed')
++    .detectedErrors.some(e => e.tag === 'missing_unit'));
++check('réponse sans سند («نلاحظ» seul) → missing_reference',
++  evalCase('verb_explain_v1', 'نلاحظ أن الأنسولين يخفض الغليسيما لأنه يخزن الغلوكوز. ومنه نستنتج أن البنكرياس ينظمها.', 'open')
++    .detectedErrors.some(e => e.tag === 'missing_reference'));
++check('مفتاح faux (حلّل choisi مفتوح) → verb_confusion',
++  evaluateStudentProduction('verb_analyse_v1',
++    'تمثل الوثيقة 1 منحنى تطور الغليسيما حيث نلاحظ ارتفاعا من 0.9 إلى 1.6 غ/ل ثم نستنتج أنّ الخلايا تخزن الغلوكوز.',
++    undefined, 3, { switchChoice: 'open', switchTruth: 'closed' })
++    .detectedErrors.some(e => e.tag === 'verb_confusion'));
++
++// ─────────────────────────────────────────────
++// SECTION E — l'arabe agglutiné ne punit plus (faux positifs refusés)
++// ─────────────────────────────────────────────
++console.log('── SECTION E : anti-faux-positifs (agglutination arabe) ──');
++check('«الأنسولين» (contient «لأن») chez استنتج → PAS de premature',
++  !evalCase('verb_deduce_v1',
++    'انطلاقا من الوثيقة 1، نلاحظ أن الغليسيما ترتفع بعد الوجبة من 0.9 غ/ل إلى 1.6 غ/ل، ثم تعود إلى 0.9 غ/ل بعد 120 دقيقة. الاستنتاج: ارتفاع الغليسيما يحرّض البنكرياس على إفراز الأنسولين الذي يخزن الغلوكوز في الكبد.', 'closed')
++    .detectedErrors.some(e => e.tag === 'premature_interpretation'));
++check('«العلاقة» (contient «لعل») chez فرضية → PAS de conditional',
++  !evalCase('verb_hypothesis_v1',
++    'انطلاقًا من الوثيقة 1، نلاحظ أنّ الخلايا المعالجة بالدواء توقفت عن إنتاج البروتين. فما العلاقة بين الدواء والريبوزوم؟ الفرضية: يثبط الدواء عمل الريبوزومات. الاستنتاج: الدواء يثبط الترجمة.', 'open')
++    .detectedErrors.some(e => e.tag === 'conditional_hypothesis'));
++check('«الوثيقتين 1 و2» → PAS de missing_unit',
++  !evalCase('verb_compare_v1',
++    'انطلاقًا من الوثيقتين 1 و2، نمثل جدولين. أوجه التشابه: يتشابهان في درجة الحرارة المثلى 37°. أوجه الاختلاف: في حين يختلفان في الرقم الهيدروجيني الأمثل. ومنه نستنتج أهمية الرقم الهيدروجيني.', 'closed')
++    .detectedErrors.some(e => e.tag === 'missing_unit'));
++check('« مفتاح الأرقام » seul (légende) → PAS de sc_c3 (ترقيم réel requis)',
++  (() => { const rep = evalCase('verb_schematic_v1',
++    'أرسم البنيات بمربعات بسيطة: الخلية، النواة، الريبوزوم. أسمي كل بنية بسهم أفقي. أضع مفتاح الأرقام أسفل الرسم وعنوانًا شاملا: تأثير الدواء.', 'closed');
++    const c = rep.criteriaResults.find(x => x.criterionId === 'sc_c3');
++    return !!c && c.passed === false; })());
++check('« وهذا لأنّ » reconnu chez فسّر (ex_c3 passe)',
++  (() => { const rep = evalCase('verb_explain_v1',
++    'انطلاقًا من الوثيقة 1، نلاحظ ارتفاعًا من 0.9 غ/ل إلى 1.6 غ/ل. وهذا لأنّ الأنسولين يخزن الغلوكوز. الاستنتاج: البنكرياس ينظم الغليسيما.', 'open');
++    const c = rep.criteriaResults.find(x => x.criterionId === 'ex_c3');
++    return !!c && c.passed === true; })());
++
++// ─────────────────────────────────────────────
++// SECTION F — boussoleData : مفتاح des 12 verbes + adresses des erreurs
++// ─────────────────────────────────────────────
++console.log('── SECTION F : بوصلةData (مفتاح 12 verbes + adresses) ──');
++const CLOSED = ['verb_analyse_v1', 'verb_compare_v1', 'verb_deduce_v1', 'verb_schema_v1', 'verb_schematic_v1'];
++const OPEN = ['verb_explain_v1', 'verb_explain_multi_v1', 'verb_justify_v1', 'verb_validate_v1', 'verb_critique_v1', 'verb_hypothesis_v1', 'verb_composer_v1'];
++check('مفتاح : 5 verbes fermés + 7 ouverts (12/12)',
++  CLOSED.every(v => getSwitchForVerb(v) === 'closed') && OPEN.every(v => getSwitchForVerb(v) === 'open'));
++check('switchPathAr : fermé = ١٢٤, ouvert = ١٢٣٤',
++  switchPathAr('verb_analyse_v1') === '١ ← ٢ ← ٤' && switchPathAr('verb_explain_v1') === '١ ← ٢ ← ٣ ← ٤');
++const groups = groupErrorsByAddress(['verb_confusion', 'premature_interpretation', 'missing_unit', 'missing_reference', 'missing_conclusion']);
++const addrOf = (tag: string) => groups.find(g => g.tags.includes(tag))?.address;
++check('adresses : verb_confusion→1 · premature→🔑 · missing_unit→2 · missing_reference→2 · missing_conclusion→4',
++  addrOf('verb_confusion') === 1 && addrOf('premature_interpretation') === 'switch' &&
++  addrOf('missing_unit') === 2 && addrOf('missing_reference') === 2 && addrOf('missing_conclusion') === 4);
++check('getStep : 4 étapes (اقرأ/اجمع/اربط/اختم) présentes',
++  [1, 2, 3, 4].every(n => typeof getStep(n as 1 | 2 | 3 | 4).word === 'string' && getStep(n as 1 | 2 | 3 | 4).word.length > 0));
++
++// ─────────────────────────────────────────────
++console.log('');
++console.log('════════════════════════════════════════════════');
++console.log(` BOUSSOLE v3 — tests : ${pass} ok · ${fail} ko`);
++if (fail > 0) {
++  console.log(' ÉCHECS :');
++  failures.forEach(f => console.log(`   ✗ ${f}`));
++  process.exit(1);
++}
++console.log(' ✅ Toutes les garanties lot H→R sont verrouillées.');

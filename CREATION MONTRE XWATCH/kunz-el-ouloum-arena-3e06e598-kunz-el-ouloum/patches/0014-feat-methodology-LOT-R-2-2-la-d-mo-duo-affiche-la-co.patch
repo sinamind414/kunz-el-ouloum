@@ -1,0 +1,77 @@
+From 64bac979fefbe76e2400c031f80b8ea92b920bfe Mon Sep 17 00:00:00 2001
+From: sinamind414 <sinamind414@users.noreply.github.com>
+Date: Thu, 3 Sep 2026 17:33:36 +0000
+Subject: [PATCH 14/22] =?UTF-8?q?feat(methodology):=20LOT=20R=202/2=20?=
+ =?UTF-8?q?=E2=80=94=20la=20d=C3=A9mo=20duo=20affiche=20la=20courbe=20de?=
+ =?UTF-8?q?=20glyc=C3=A9mie=20en=20FICHIER?=
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Application de la modification ① du WORKPACKAGE_R_cablage_glycemie.md :
+
+- SwitchDuoDemo : function GlycemiaChart() = <img src=…schema_81_glycemie_curve_modern.svg>
+  (au lieu de 65 lignes de SVG inline). Source unique de vérité visuelle :
+  mêmes valeurs (0,9 → 1,6 → 0,9 g/L à 0/30/120 min), courbe zoomable,
+  cohérente avec la bibliothèque des autres exercices.
+- Fichier dans public/assets/images/schemas/domaine1_regulations/
+  (validé : XML, HTTP 200) — 100 % offline, aucune dépendance.
+
+Restent documentés (optionnels, plus tard) : ② exercice glycémie dans
+TRAINING_EXERCISES (nécessiterait un sélecteur d'exercice par verbe),
+③ enrichissement planches ONEC (collecte seule, zéro code).
+
+Vérifié : tsc 0 erreur · build ✓ 11,7 s · fichier servi 200 · marqueur présent
+· 0 reste de l'ancien SVG inline · 3 exercices toujours branchés.
+---
+ src/components/SwitchDuoDemo.tsx | 35 +++++++++++---------------------
+ 1 file changed, 12 insertions(+), 23 deletions(-)
+
+diff --git a/src/components/SwitchDuoDemo.tsx b/src/components/SwitchDuoDemo.tsx
+index f4044d7..821dac0 100644
+--- a/src/components/SwitchDuoDemo.tsx
++++ b/src/components/SwitchDuoDemo.tsx
+@@ -9,31 +9,20 @@ import { getStep } from '../data/boussoleData';
+  * La différence de note ne vient pas du savoir : elle vient d'un interrupteur.
+  */
+ 
++/**
++ * Courbe de glycémie : maintenant un FICHIER de la bibliothèque (lot R),
++ * plus un SVG inline de 65 lignes. Source unique de vérité visuelle :
++ * mêmes valeurs (0,9 → 1,6 → 0,9 g/L à 0/30/120 min), zoomable,
++ * partageable, et cohérente avec la bibliothèque des autres exercices.
++ */
+ function GlycemiaChart() {
+   return (
+-    <svg viewBox="0 0 420 180" width="100%" role="img" aria-label="منحنى تطور نسبة السكر في الدم" className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl">
+-      {/* grille */}
+-      {[30, 60, 90, 120, 150].map(y => <line key={y} x1="46" y1={y + 14} x2="392" y2={y + 14} stroke="#e5e7eb" strokeWidth="1" strokeDasharray="3 4" />)}
+-      {/* axes */}
+-      <line x1="46" y1="166" x2="392" y2="166" stroke="#94a3b8" strokeWidth="2" />
+-      <line x1="46" y1="16" x2="46" y2="166" stroke="#94a3b8" strokeWidth="2" />
+-      {/* courbe glycémie : monte de 0.9 à 1.6 en 30 min puis revient à 0.9 après 2h */}
+-      <path d="M 46 130 C 90 60, 120 44, 150 46 S 250 120, 300 126 S 360 130, 392 130"
+-        fill="none" stroke="#059669" strokeWidth="4" strokeLinecap="round" />
+-      {/* points clés */}
+-      <circle cx="46" cy="130" r="5" fill="#1d4ed8" />
+-      <circle cx="150" cy="46" r="5" fill="#d97706" />
+-      <circle cx="360" cy="130.5" r="5" fill="#7c3aed" />
+-      {/* labels */}
+-      <text x="46" y="122" fontSize="10" fontWeight="800" fill="#1d4ed8" textAnchor="middle">0.9</text>
+-      <text x="150" y="38" fontSize="10" fontWeight="800" fill="#d97706" textAnchor="middle">1.6</text>
+-      <text x="360" y="122" fontSize="10" fontWeight="800" fill="#7c3aed" textAnchor="middle">0.9</text>
+-      <text x="60" y="184" fontSize="9" fontWeight="700" fill="#64748b">0 د</text>
+-      <text x="150" y="184" fontSize="9" fontWeight="700" fill="#64748b" textAnchor="middle">30 د</text>
+-      <text x="392" y="184" fontSize="9" fontWeight="700" fill="#64748b" textAnchor="middle">120 د</text>
+-      <text x="34" y="58" fontSize="10" fontWeight="800" fill="#059669" textAnchor="start" transform="rotate(-90 34 58)">غ/ل</text>
+-      <text x="392" y="16" fontSize="10" fontWeight="800" fill="#059669" textAnchor="end">نسبة السكر في الدم (غ/ل)</text>
+-    </svg>
++    <img
++      src="/assets/images/schemas/domaine1_regulations/schema_81_glycemie_curve_modern.svg"
++      alt="منحنى تطور تركيز الغليسيما عند شخص سليم بعد وجبة غذائية"
++      loading="lazy"
++      className="w-full bg-white border border-gray-200 dark:border-gray-700 rounded-xl"
++    />
+   );
+ }
+ 

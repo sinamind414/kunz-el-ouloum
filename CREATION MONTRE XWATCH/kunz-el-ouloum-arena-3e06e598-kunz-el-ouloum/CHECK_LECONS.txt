@@ -1,0 +1,62 @@
+﻿🔍 check:lecons — 27 fichiers
+✓ lecon_transcription.html
+✓ phase10_chapitres_19_20.html
+✓ phase11_chapitres_21_22.html
+✓ phase12_chapitres_23_24.html
+✓ phase13_chapitres_25_26.html
+✓ phase14_chapitres_27_28.html
+✓ phase15_chapitres_29_30.html
+✓ phase16_chapitres_31_32.html
+✓ phase17_chapitres_33_34.html
+✓ phase18_chapitres_35_36.html
+✓ phase19_chapitres_37_38.html
+✓ phase1_chapitres_1_2.html
+✓ phase20_chapitres_39_40.html
+✓ phase21_chapitres_41_42.html
+✓ phase22_chapitres_43_44.html
+node.exe : ✗ 
+phase23_chapitres_45_46.html → sommaire 
+manquant, miftah-encadre manquant, 
+quiz-badge manquant, CSS sommaire 
+manquant, ids ch1/ch2-step* manquants, 
+c1/c2-badge manquants, JS scrollToStep 
+manquant
+Au caractère Ligne:1 : 1
++ & "C:\Program Files\nodejs/node.exe" 
+"C:\Program Files\nodejs/node_mo ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecif 
+   ied: (✗ phase23_chapi...ToStep manq  
+  uant:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCom 
+   mandError
+ 
+✗ phase24_chapitres_47_48.html → 
+sommaire manquant, miftah-encadre 
+manquant, quiz-badge manquant, CSS 
+sommaire manquant, ids ch1/ch2-step* 
+manquants, c1/c2-badge manquants, JS 
+scrollToStep manquant
+✗ phase25_chapitres_49_50.html → 
+sommaire manquant, miftah-encadre 
+manquant, quiz-badge manquant, CSS 
+sommaire manquant, ids ch1/ch2-step* 
+manquants, c1/c2-badge manquants, JS 
+scrollToStep manquant
+✗ phase26_chapitres_51_52.html → 
+sommaire manquant, miftah-encadre 
+manquant, quiz-badge manquant, CSS 
+sommaire manquant, ids ch1/ch2-step* 
+manquants, c1/c2-badge manquants, JS 
+scrollToStep manquant
+✓ phase2_chapitres_3_4.html
+✓ phase3_chapitres_5_6.html
+✓ phase4_chapitres_7_8.html
+✓ phase5_chapitres_9_10.html
+✓ phase6_chapitres_11_12.html
+✓ phase7_chapitres_13_14.html
+✓ phase8_chapitres_15_16.html
+✓ phase9_chapitres_17_18.html
+
+4/27 leçons en échec — v3.2 incomplet

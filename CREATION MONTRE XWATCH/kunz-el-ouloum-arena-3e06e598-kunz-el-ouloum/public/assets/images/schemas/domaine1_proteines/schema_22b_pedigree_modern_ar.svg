@@ -1,0 +1,64 @@
+<svg aria-label="شجرة نسب — مرض وراثي عند عائلة" role="img" class="pfe-figure" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 560" font-family="Arial, sans-serif">
+  <rect width="900" height="560" fill="#ffffff"/>
+  <text x="450" y="34" text-anchor="middle" font-size="20" font-weight="bold">شجرة نسب — مرض وراثي عند عائلة</text>
+
+  <!-- Generation I -->
+  <g stroke="#1f2937" stroke-width="2" fill="none">
+    <rect x="200" y="90" width="52" height="52"/>
+    <circle cx="380" cy="116" r="27"/>
+    <line x1="252" y1="116" x2="353" y2="116"/>
+    <line x1="300" y1="116" x2="300" y2="205"/>
+    <line x1="300" y1="205" x2="470" y2="205"/>
+    <line x1="470" y1="205" x2="470" y2="225"/>
+  </g>
+  <text x="226" y="122" text-anchor="middle" font-size="15" font-weight="bold">I1</text>
+  <text x="380" y="122" text-anchor="middle" font-size="15" font-weight="bold">I2</text>
+  <text x="226" y="168" text-anchor="middle" font-size="13" fill="#16a34a">سليم</text>
+  <text x="380" y="168" text-anchor="middle" font-size="13" fill="#16a34a">سليمة</text>
+
+  <!-- Generation II : II3 fille atteinte (cercle plein) -->
+  <g stroke="#1f2937" stroke-width="2" fill="none">
+    <circle cx="470" cy="255" r="27"/>
+  </g>
+  <circle cx="470" cy="255" r="27" fill="#1f2937"/>
+  <text x="470" y="261" text-anchor="middle" font-size="15" font-weight="bold" fill="#ffffff">II3</text>
+  <text x="470" y="302" text-anchor="middle" font-size="13" fill="#dc2626">مصابة</text>
+
+  <!-- II3 x homme sain -->
+  <g stroke="#1f2937" stroke-width="2" fill="none">
+    <line x1="497" y1="255" x2="600" y2="255"/>
+    <line x1="600" y1="255" x2="600" y2="255"/>
+    <rect x="620" y="229" width="52" height="52"/>
+    <line x1="497" y1="255" x2="598" y2="255"/>
+    <line x1="598" y1="255" x2="620" y2="255"/>
+  </g>
+  <text x="646" y="261" text-anchor="middle" font-size="15" font-weight="bold">II4</text>
+  <text x="646" y="307" text-anchor="middle" font-size="13" fill="#16a34a">سليم</text>
+
+  <!-- Descendance II3 x II4 -->
+  <g stroke="#1f2937" stroke-width="2" fill="none">
+    <line x1="548" y1="255" x2="548" y2="380"/>
+    <line x1="548" y1="380" x2="560" y2="380"/>
+    <line x1="548" y1="380" x2="536" y2="380"/>
+    <rect x="510" y="400" width="52" height="52"/>
+  </g>
+  <line x1="548" y1="385" x2="548" y2="400" stroke="#1f2937" stroke-width="2"/>
+  <text x="536" y="432" text-anchor="middle" font-size="15" font-weight="bold">III1</text>
+  <text x="536" y="478" text-anchor="middle" font-size="13" fill="#16a34a">سليم</text>
+
+  <!-- Legend -->
+  <g font-size="14">
+    <rect x="60" y="420" width="22" height="22" fill="none" stroke="#1f2937" stroke-width="2"/>
+    <text x="92" y="436">ذكر سليم</text>
+    <circle cx="71" cy="470" r="11" fill="none" stroke="#1f2937" stroke-width="2"/>
+    <text x="92" y="475">أنثى سليمة</text>
+    <circle cx="200" cy="470" r="11" fill="#1f2937"/>
+    <text x="220" y="475">أنثى مصابة</text>
+  </g>
+
+  <!-- Key observation callouts -->
+  <g font-size="13" fill="#b45309">
+    <text x="150" y="80">① أبوان سليمان (I1 × I2) ⟵ طفلة مصابة (II3)</text>
+    <text x="150" y="530">② بنت مصابة (II3) من أب سليم ⟵ الموقع الجسمي</text>
+  </g>
+</svg>

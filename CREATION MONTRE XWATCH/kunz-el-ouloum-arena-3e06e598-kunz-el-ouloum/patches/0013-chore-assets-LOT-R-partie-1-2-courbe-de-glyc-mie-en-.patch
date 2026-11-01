@@ -1,0 +1,132 @@
+From c0f05d8c16ad5786de3d49b7a612837d431511d9 Mon Sep 17 00:00:00 2001
+From: sinamind414 <sinamind414@users.noreply.github.com>
+Date: Thu, 3 Sep 2026 15:48:26 +0000
+Subject: [PATCH 13/22] =?UTF-8?q?chore(assets):=20LOT=20R=20partie=201/2?=
+ =?UTF-8?q?=20=E2=80=94=20courbe=20de=20glyc=C3=A9mie=20en=20fichier=20(le?=
+ =?UTF-8?q?=20dernier=20trou=20de=20la=20biblioth=C3=A8que)?=
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Ajout de la courbe officielle de la démo « même document, deux consignes »
+en ACTIF (plus uniquement dessinée dans le code) :
+
+- public/assets/images/schemas/domaine1_regulations/schema_81_glycemie_curve_modern.svg
+  0,9 → 1,6 → 0,9 g/L à 0/30/120 min · axes/grille/ligne de référence 0,9 ·
+  points bleu/orange/violet · légende · lecture étape 2 + étape 3 en arabe RTL.
+  Mêmes valeurs que SwitchDuoDemo (source unique de vérité visuelle).
+- manifest.json : 121e ressource de la bibliothèque (ligne 104).
+- Vérifié : XML valide + servie HTTP 200.
+
+Aucun changement de comportement (l'app n'affiche pas encore ce fichier) :
+c'est la PARTIE 1. La partie 2 (câblage de la démo sur ce fichier + exercice
+glycémie optionnel) est documentée, prête à appliquer :
+WORKPACKAGE_R_cablage_glycemie.md (modifs ① ② ③ avec ancres exactes).
+
+tsc 0 erreur · build inchangé.
+---
+ .../schema_81_glycemie_curve_modern.svg       | 82 +++++++++++++++++++
+ public/assets/images/schemas/manifest.json    |  1 +
+ 2 files changed, 83 insertions(+)
+ create mode 100644 public/assets/images/schemas/domaine1_regulations/schema_81_glycemie_curve_modern.svg
+
+diff --git a/public/assets/images/schemas/domaine1_regulations/schema_81_glycemie_curve_modern.svg b/public/assets/images/schemas/domaine1_regulations/schema_81_glycemie_curve_modern.svg
+new file mode 100644
+index 0000000..d1c7a0e
+--- /dev/null
++++ b/public/assets/images/schemas/domaine1_regulations/schema_81_glycemie_curve_modern.svg
+@@ -0,0 +1,82 @@
++<svg xmlns="http://www.w3.org/2000/svg" width="900" height="580" viewBox="0 0 900 580" font-family="Segoe UI, Tahoma, Arial, sans-serif">
++  <defs>
++    <marker id="ar_dg" markerWidth="9" markerHeight="9" refX="6" refY="4" orient="auto">
++      <path d="M0,0 L8,4 L0,8 z" fill="#64748b"/>
++    </marker>
++  </defs>
++
++  <rect width="900" height="580" fill="#ffffff"/>
++
++  <!-- ░░ EN-TÊTE ░░ -->
++  <rect width="900" height="70" fill="#006d37"/>
++  <text x="450" y="30" text-anchor="middle" fill="#fed65b" font-size="19" font-weight="bold" lang="ar" dir="rtl">الوثيقة 1 : تطور تركيز الغليسيما عند شخص سليم بعد وجبة غذائية</text>
++  <text x="450" y="53" text-anchor="middle" fill="#d7f0e2" font-size="12" lang="ar" dir="rtl">قيم مقاسة في المحاكي : 0,9 غ/ل عند 0 دقيقة ← 1,6 غ/ل عند 30 دقيقة ← 0,9 غ/ل عند 120 دقيقة</text>
++
++  <!-- ░░ AXES ░░ -->
++  <line x1="110" y1="470" x2="850" y2="470" stroke="#334155" stroke-width="2"/>
++  <line x1="110" y1="470" x2="110" y2="90" stroke="#334155" stroke-width="2"/>
++
++  <!-- étiquettes Y (g/L) -->
++  <text x="96" y="474" text-anchor="end" font-size="11.5" fill="#475569" lang="ar" dir="rtl">0,6</text>
++  <text x="96" y="404" text-anchor="end" font-size="11.5" fill="#475569" lang="ar" dir="rtl">0,9</text>
++  <text x="96" y="334" text-anchor="end" font-size="11.5" fill="#475569" lang="ar" dir="rtl">1,2</text>
++  <text x="96" y="264" text-anchor="end" font-size="11.5" fill="#475569" lang="ar" dir="rtl">1,5</text>
++  <text x="96" y="194" text-anchor="end" font-size="11.5" fill="#475569" lang="ar" dir="rtl">1,8</text>
++  <text x="60" y="290" text-anchor="middle" font-size="12.5" font-weight="bold" fill="#1e293b" transform="rotate(-90 60 290)" lang="ar" dir="rtl">الغليسيما (غ/ل)</text>
++
++  <!-- étiquettes X (min) -->
++  <text x="110" y="492" text-anchor="middle" font-size="11.5" fill="#475569">0</text>
++  <text x="295" y="492" text-anchor="middle" font-size="11.5" fill="#475569">30</text>
++  <text x="480" y="492" text-anchor="middle" font-size="11.5" fill="#475569">60</text>
++  <text x="665" y="492" text-anchor="middle" font-size="11.5" fill="#475569">90</text>
++  <text x="850" y="492" text-anchor="middle" font-size="11.5" fill="#475569">120</text>
++  <text x="480" y="518" text-anchor="middle" font-size="12.5" font-weight="bold" fill="#1e293b" lang="ar" dir="rtl">الزمن (دقيقة)</text>
++
++  <!-- grille -->
++  <g stroke="#e2e8f0" stroke-width="1">
++    <line x1="110" y1="404" x2="850" y2="404"/>
++    <line x1="110" y1="334" x2="850" y2="334"/>
++    <line x1="110" y1="264" x2="850" y2="264"/>
++    <line x1="110" y1="194" x2="850" y2="194"/>
++    <line x1="295" y1="90" x2="295" y2="470" stroke-dasharray="4 5"/>
++    <line x1="480" y1="90" x2="480" y2="470" stroke-dasharray="4 5"/>
++    <line x1="665" y1="90" x2="665" y2="470" stroke-dasharray="4 5"/>
++  </g>
++
++  <!-- ligne de référence normale -->
++  <line x1="110" y1="404" x2="850" y2="404" stroke="#10b981" stroke-width="1.5" stroke-dasharray="7 5"/>
++  <text x="838" y="394" text-anchor="end" font-size="11" font-weight="bold" fill="#059669" lang="ar" dir="rtl">القيمة الطبيعية ≈ 0,9 غ/ل</text>
++
++  <!-- ░░ COURBE : 0,9 → 1,6 → 0,9 (points aux mesures) ░░ -->
++  <path d="M110,404 C 150,404 200,300 295,240 C 360,202 420,202 480,260 C 540,318 600,380 665,404 C 730,426 790,430 850,404"
++        fill="none" stroke="#0ea5e9" stroke-width="3.5" stroke-linejoin="round" stroke-linecap="round"/>
++
++  <!-- points de mesure -->
++  <circle cx="110" cy="404" r="7" fill="#3b82f6" stroke="#fff" stroke-width="2.5"/>
++  <circle cx="295" cy="240" r="8" fill="#f97316" stroke="#fff" stroke-width="2.5"/>
++  <circle cx="850" cy="404" r="7" fill="#a855f7" stroke="#fff" stroke-width="2.5"/>
++
++  <!-- annotations des points -->
++  <text x="215" y="452" text-anchor="middle" font-size="12" font-weight="bold" fill="#1e293b" lang="ar" dir="rtl">0,9 غ/ل + وجبة</text>
++  <text x="295" y="222" text-anchor="middle" font-size="13" font-weight="bold" fill="#ea580c" lang="ar" dir="rtl">1,6 غ/ل (ذروة عند د 30)</text>
++  <text x="836" y="448" text-anchor="middle" font-size="12" font-weight="bold" fill="#7e22ce" lang="ar" dir="rtl">0,9 غ/ل عند د 120</text>
++
++  <!-- flèches de lecture -->
++  <line x1="142" y1="350" x2="200" y2="300" stroke="#64748b" stroke-width="1.5" marker-end="url(#ar_dg)"/>
++  <text x="204" y="300" font-size="11" fill="#475569" lang="ar" dir="rtl">ارتفاع بعد الوجبة</text>
++
++  <!-- légende -->
++  <rect x="470" y="110" width="386" height="58" rx="10" fill="#f8fafc" stroke="#cbd5e1"/>
++  <line x1="486" y1="130" x2="536" y2="130" stroke="#0ea5e9" stroke-width="3.5"/>
++  <text x="546" y="134" font-size="12" fill="#0f172a" lang="ar" dir="rtl">غليسيما الشخص السليم</text>
++  <circle cx="494" cy="151" r="6" fill="#3b82f6" stroke="#fff" stroke-width="2"/>
++  <text x="510" y="155" font-size="11" fill="#0f172a" lang="ar" dir="rtl">آخر وجبة</text>
++  <circle cx="610" cy="151" r="6" fill="#f97316" stroke="#fff" stroke-width="2"/>
++  <text x="626" y="155" font-size="11" fill="#0f172a" lang="ar" dir="rtl">ذروة</text>
++  <circle cx="712" cy="151" r="6" fill="#a855f7" stroke="#fff" stroke-width="2"/>
++  <text x="728" y="155" font-size="11" fill="#0f172a" lang="ar" dir="rtl">عودة للقيمة الطبيعية</text>
++
++  <!-- ░░ PIED : questions de lecture (étapes 2/3 de la boussole) ░░ -->
++  <rect x="60" y="536" width="780" height="30" rx="8" fill="#f0fdf4" stroke="#bbf7d0"/>
++  <text x="450" y="556" text-anchor="middle" font-size="11.5" fill="#15803d" lang="ar" dir="rtl">الملاحظة : ارتفاع سريع بعد الوجبة إلى 1,6 غ/ل (د 30) ثم عودة تدريجية إلى 0,9 غ/ل (د 120) · التفسير : ارتفاع الغليسيما يحرّض خلايا بيتا على إفراز الأنسولين الذي يخزن الغلوكوز غليكوجينًا في الكبد</text>
++</svg>
+diff --git a/public/assets/images/schemas/manifest.json b/public/assets/images/schemas/manifest.json
+index f7d77e6..fa5f7ea 100644
+--- a/public/assets/images/schemas/manifest.json
++++ b/public/assets/images/schemas/manifest.json
+@@ -101,6 +101,7 @@
+     "/assets/images/schemas/domaine1_proteines/schema_78_memory_cell_reactivation_modern.svg",
+     "/assets/images/schemas/domaine1_proteines/schema_79_vaccine_antibody_followup_modern.svg",
+     "/assets/images/schemas/domaine1_proteines/schema_80_immunity_big_picture_modern.svg",
++    "/assets/images/schemas/domaine1_regulations/schema_81_glycemie_curve_modern.svg",
+     "/assets/images/schemas/domaine2_energie/schema_09_photosynthese.png",
+     "/assets/images/schemas/domaine2_energie/schema_09_photosynthese.svg",
+     "/assets/images/schemas/domaine2_energie/schema_10_respiration.png",

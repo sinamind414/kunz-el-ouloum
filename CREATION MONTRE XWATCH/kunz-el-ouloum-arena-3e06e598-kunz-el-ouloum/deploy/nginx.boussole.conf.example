@@ -1,0 +1,50 @@
+# ============================================================
+# deploy/nginx.boussole.conf.example — nginx réverse-proxy
+# HTTPS OBLIGATOIRE en production (aucun mot de passe en clair).
+#   · certificat TLS (certbot: sudo certbot --nginx -d boussole.exemple.dz)
+#   · TRUST_PROXY=1 côté app → req.ip = IP réelle de l'élève
+#   · gzip + sécurité minimale + proxy vers le serveur Node
+# Copier vers /etc/nginx/sites-available/boussole puis symlink.
+# ============================================================
+server {
+    listen 80;
+    server_name boussole.exemple.dz;
+    # Redirection vers HTTPS (pas de formulaire de connexion en clair)
+    return 301 https://$host$request_uri;
+}
+
+server {
+    listen 443 ssl http2;
+    server_name boussole.exemple.dz;
+
+    ssl_certificate     /etc/letsencrypt/live/boussole.exemple.dz/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/boussole.exemple.dz/privkey.pem;
+    ssl_protocols TLSv1.2 TLSv1.3;
+    ssl_ciphers HIGH:!aNULL:!MD5;
+
+    # Sécurité de base
+    add_header X-Content-Type-Options nosniff always;
+    add_header X-Frame-Options DENY always;
+    add_header X-XSS-Protection "1; mode=block" always;
+    add_header Referrer-Policy no-referrer always;
+
+    # Gzip (l'arabe + JSON = gros gains)
+    gzip on;
+    gzip_types text/plain text/css application/javascript application/json image/svg+xml;
+    gzip_min_length 1024;
+
+    # Client max (payload sync du carnet : répertoire méthodo, pas de fichier lourd)
+    client_max_body_size 2m;
+
+    location / {
+        proxy_pass http://127.0.0.1:3000;
+        proxy_http_version 1.1;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        # ⚠ L'app doit être lancée avec TRUST_PROXY=1 (sinon req.ip = 127.0.0.1
+        #    pour tous et le limiteur d'inscription bloque toute l'école).
+        proxy_read_timeout 60s;
+    }
+}

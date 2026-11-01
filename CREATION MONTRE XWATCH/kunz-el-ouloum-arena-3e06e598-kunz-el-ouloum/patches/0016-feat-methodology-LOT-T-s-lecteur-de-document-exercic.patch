@@ -1,0 +1,250 @@
+From e36711728d663dac851f64736c9c08082f4bc1ec Mon Sep 17 00:00:00 2001
+From: sinamind414 <sinamind414@users.noreply.github.com>
+Date: Thu, 3 Sep 2026 17:52:21 +0000
+Subject: [PATCH 16/22] =?UTF-8?q?feat(methodology):=20LOT=20T=20=E2=80=94?=
+ =?UTF-8?q?=20s=C3=A9lecteur=20de=20document=20+=20exercice=20glyc=C3=A9mi?=
+ =?UTF-8?q?e=20(workpackage=20R=20=E2=91=A1)?=
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Dernière suite ouverte : rendre ATTEIGNABLE l'exercice glycémie (workpackage ②).
+
+1) src/data/methodologyEngine.ts : 4e exercice ex_analyse_glycemie_04.
+   - verb_analyse_v1 · thème 'regulation' · courbe de glycémie (0,9 → 1,6 →
+     0,9 g/L à 0/30/120 min) · diagramUrl → schema_81_glycemie_curve_modern.svg
+   - stage1 (4 segments modelés), stage2 (cloze 5 blancs), stage3/4 complets
+     (hints : unités, سند, pas de «لأن» en analyse).
+
+2) MethodologyCompilerView : sélecteur « الوثيقة: » à côté de « فعل الأداء: »
+   (exercisesForVerb, affiché uniquement si le verbe a plusieurs documents —
+   analyse : protéines OU glycémie) ; changement = reset + porte du مفتاح
+   rouverte (3/4) + timer du bon exercice.
+
+3) Matrice « مصفوفة الإتقان » : colonne « التنظيم الهرموني » (theme regulation)
+   ajoutée (calculée depuis le carnet réel — honnête d'office).
+
+4) tests/boussole.test.ts : section G (4 exercices, 2 pour analyse, glycémie
+   branchée avec 4 étapes + cloze) → 60 assertions. tsc 0 · tests 60/60 ·
+   build ✓ 7,8 s · sélecteur + colonne + courbe servis 200.
+---
+ src/components/MethodologyCompilerView.tsx | 89 +++++++++++++++-------
+ src/data/methodologyEngine.ts              | 43 +++++++++++
+ tests/boussole.test.ts                     | 20 +++++
+ 3 files changed, 125 insertions(+), 27 deletions(-)
+
+diff --git a/src/components/MethodologyCompilerView.tsx b/src/components/MethodologyCompilerView.tsx
+index 675d6b3..c76a7af 100644
+--- a/src/components/MethodologyCompilerView.tsx
++++ b/src/components/MethodologyCompilerView.tsx
+@@ -91,6 +91,9 @@ export default function MethodologyCompilerView({ onBackToHome }: MethodologyPro
+ 
+   const currentVerb = VERB_CARDS.find(v => v.id === selectedVerbId) || VERB_CARDS[0];
+   const currentExercise = TRAINING_EXERCISES.find(e => e.id === selectedExerciseId) || TRAINING_EXERCISES[0];
++  /** Exercices (documents) disponibles pour le verbe sélectionné — le sélecteur
++   *  n'apparaît que s'il y en a plusieurs (analyse : protéines + glycémie). */
++  const exercisesForVerb = TRAINING_EXERCISES.filter(e => e.verbId === selectedVerbId);
+ 
+   // Diagnostic d'évolution : statistiques par verbe depuis le carnet de bord
+   const evolutionStats: VerbEvolutionStats[] = React.useMemo(
+@@ -373,35 +376,61 @@ export default function MethodologyCompilerView({ onBackToHome }: MethodologyPro
+               </div>
+             )}
+             <div className="flex flex-col md:flex-row items-center justify-between gap-3 mb-3">
+-              <div className="flex items-center gap-2">
+-                <span className="font-bold text-sm text-gray-500 dark:text-gray-400">فعل الأداء:</span>
+-                <select 
+-                  value={selectedVerbId}
+-                  onChange={(e) => {
+-                    setSelectedVerbId(e.target.value);
+-                    const matchingEx = TRAINING_EXERCISES.find(ex => ex.verbId === e.target.value);
+-                    if (matchingEx) setSelectedExerciseId(matchingEx.id);
+-                    else setSelectedExerciseId('');
+-                    handleResetExercise();
+-                    // 🔁 Nouveau verbe = nouvelle décision : on rouvre la porte du مفتاح
+-                    // (sinon le choix du verbe précédent faussait le verdict du rapport)
+-                    if (currentStage === 3 || currentStage === 4) {
+-                      setShowSwitchGate(true);
+-                      if (matchingEx) setTimerSeconds(matchingEx.stage4.timeLimitSec);
+-                    }
+-                  }}
+-                  className="bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 font-black text-gray-900 dark:text-white px-3 py-1.5 rounded-xl text-sm"
+-                >
+-                  {VERB_CARDS.map(v => (
+-                    <option key={v.id} value={v.id}>{v.verbAr} ({v.verbFr})</option>
+-                  ))}
+-                </select>
+-              </div>
++                <div className="flex flex-wrap items-center gap-2">
++                  <span className="font-bold text-sm text-gray-500 dark:text-gray-400">فعل الأداء:</span>
++                  <select 
++                    value={selectedVerbId}
++                    onChange={(e) => {
++                      setSelectedVerbId(e.target.value);
++                      const matchingEx = TRAINING_EXERCISES.find(ex => ex.verbId === e.target.value);
++                      if (matchingEx) setSelectedExerciseId(matchingEx.id);
++                      else setSelectedExerciseId('');
++                      handleResetExercise();
++                      // 🔁 Nouveau verbe = nouvelle décision : on rouvre la porte du مفتاح
++                      // (sinon le choix du verbe précédent faussait le verdict du rapport)
++                      if (currentStage === 3 || currentStage === 4) {
++                        setShowSwitchGate(true);
++                        if (matchingEx) setTimerSeconds(matchingEx.stage4.timeLimitSec);
++                      }
++                    }}
++                    className="bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 font-black text-gray-900 dark:text-white px-3 py-1.5 rounded-xl text-sm"
++                  >
++                    {VERB_CARDS.map(v => (
++                      <option key={v.id} value={v.id}>{v.verbAr} ({v.verbFr})</option>
++                    ))}
++                  </select>
+ 
+-              <div className="text-xs font-bold text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/40 px-3 py-1.5 rounded-full border border-emerald-200 dark:border-emerald-800">
+-                القاعدة: لا نسحب وسيلتي مساعدة في نفس الوقت
++                  {/* Sélecteur de DOCUMENT / exercice : uniquement si le verbe en a plusieurs */}
++                  {exercisesForVerb.length > 1 && (
++                    <div className="flex items-center gap-2">
++                      <span className="font-bold text-sm text-gray-500 dark:text-gray-400">الوثيقة:</span>
++                      <select
++                        value={selectedExerciseId}
++                        onChange={(e) => {
++                          const ex = TRAINING_EXERCISES.find(x => x.id === e.target.value);
++                          if (!ex) return;
++                          setSelectedExerciseId(ex.id);
++                          handleResetExercise();
++                          // Nouveau document = nouvelle lecture : نهبط على المفتاح من جديد
++                          if (currentStage === 3 || currentStage === 4) {
++                            setShowSwitchGate(true);
++                            setTimerSeconds(ex.stage4.timeLimitSec);
++                          }
++                        }}
++                        className="bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 font-black text-gray-900 dark:text-white px-3 py-1.5 rounded-xl text-sm max-w-[240px]"
++                      >
++                        {exercisesForVerb.map(ex => (
++                          <option key={ex.id} value={ex.id}>{ex.supportTitle}</option>
++                        ))}
++                      </select>
++                    </div>
++                  )}
++                </div>
++
++                <div className="text-xs font-bold text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/40 px-3 py-1.5 rounded-full border border-emerald-200 dark:border-emerald-800">
++                  القاعدة: لا نسحب وسيلتي مساعدة في نفس الوقت
++                </div>
+               </div>
+-            </div>
+ 
+             {/* Indicateur d'évolution du verbe sélectionné */}
+             {currentVerbStats && (
+@@ -1248,6 +1277,7 @@ export default function MethodologyCompilerView({ onBackToHome }: MethodologyPro
+                     <th className="p-3 font-bold text-gray-600 dark:text-gray-400 text-center">النشاط الإنزيمي</th>
+                     <th className="p-3 font-bold text-gray-600 dark:text-gray-400 text-center">المناعة</th>
+                     <th className="p-3 font-bold text-gray-600 dark:text-gray-400 text-center">الاتصال العصبي</th>
++                    <th className="p-3 font-bold text-gray-600 dark:text-gray-400 text-center">التنظيم الهرموني</th>
+                     <th className="p-3 font-bold text-gray-600 dark:text-gray-400 text-center">الحالة</th>
+                   </tr>
+                 </thead>
+@@ -1286,6 +1316,11 @@ export default function MethodologyCompilerView({ onBackToHome }: MethodologyPro
+                             {fmtCell(scores.neuro_comm)}
+                           </span>
+                         </td>
++                        <td className="p-3 text-center">
++                          <span className={`px-2 py-1 rounded-md font-bold text-xs ${cellCls(scores.regulation)}`}>
++                            {fmtCell(scores.regulation)}
++                          </span>
++                        </td>
+                         <td className="p-3 text-center">
+                           <span className={`px-2.5 py-1 rounded-full text-[11px] font-black ${
+                             isAutomated 
+diff --git a/src/data/methodologyEngine.ts b/src/data/methodologyEngine.ts
+index 9dc22ad..4a2b2f4 100644
+--- a/src/data/methodologyEngine.ts
++++ b/src/data/methodologyEngine.ts
+@@ -1176,6 +1176,49 @@ export const TRAINING_EXERCISES: TrainingExercise[] = [
+       timeLimitSec: 200,
+       passIcmThreshold: 90
+     }
++  },
++  {
++    id: 'ex_analyse_glycemie_04',
++    verbId: 'verb_analyse_v1',
++    theme: 'regulation',
++    themeAr: 'التنظيم الهرموني للسكر',
++    supportType: 'courbe',
++    supportTitle: 'الوثيقة 1: تطور تركيز الغليسيما عند شخص سليم بعد وجبة غذائية',
++    context: 'قُيّمت الغليسيما عند شخص سليم قبل تناول وجبة غنية بالغلوكوز (عند د 0)، وبعد 30 دقيقة (ذروة)، وبعد 120 دقيقة (عودة إلى القيمة الطبيعية).',
++    question: 'حلل منحنى الوثيقة 1 الممثل لتطور الغليسيما بدلالة الزمن.',
++    dataSnippet: 'عند د 0 : 0,9 غ/ل (قبل الوجبة).\nعند د 30 : 1,6 غ/ل (ذروة بعد الوجبة).\nعند د 120 : 0,9 غ/ل (عودة إلى القيمة الطبيعية).',
++    diagramUrl: '/assets/images/schemas/domaine1_regulations/schema_81_glycemie_curve_modern.svg',
++    stage1: {
++      expertAnswer: 'تمثل الوثيقة 1 منحنى تطور تركيز الغليسيما عند شخص سليم بدلالة الزمن (بالدقائق)، حيث نلاحظ:\n- عند د 0: تركيز طبيعي يقدر بـ 0,9 غ/ل قبل الوجبة.\n- من د 0 إلى د 30: ارتفاع سريع لتركيز الغليسيما ليبلغ ذروة 1,6 غ/ل.\n- من د 30 إلى د 120: انخفاض تدريجي ليعود التركيز إلى 0,9 غ/ل عند د 120.\nالاستنتاج: يتشكل تنظيم ذاتي لتركيز الغليسيما: يرتفع بعد الوجبة ثم يعود إلى قيمته الطبيعية 0,9 غ/ل، أي أن الجسم يحافظ على توازنه الداخلي (الاستتباب).',
++      segments: [
++        { stepNumber: 1, text: 'تمثل الوثيقة 1 منحنى تطور تركيز الغليسيما عند شخص سليم بدلالة الزمن (بالدقائق)', colorClass: 'bg-blue-100 dark:bg-blue-900/40 text-blue-800 dark:text-blue-300' },
++        { stepNumber: 2, text: 'عند د 0: 0,9 غ/ل · من د 0 إلى د 30: ارتفاع إلى 1,6 غ/ل · من د 30 إلى د 120: انخفاض إلى 0,9 غ/ل', colorClass: 'bg-emerald-100 dark:bg-emerald-900/40 text-emerald-800 dark:text-emerald-300' },
++        { stepNumber: 3, text: 'الارتفاع السريع يحدث بعد الوجبة (ذروة عند د 30) ثم يعود التركيز تدريجياً إلى 0,9 غ/ل', colorClass: 'bg-amber-100 dark:bg-amber-900/40 text-amber-800 dark:text-amber-300' },
++        { stepNumber: 4, text: 'الاستنتاج: يتنظم تركيز الغليسيما ذاتياً حول القيمة الطبيعية 0,9 غ/ل', colorClass: 'bg-purple-100 dark:bg-purple-900/40 text-purple-800 dark:text-purple-300' }
++      ]
++    },
++    stage2: {
++      clozePrompt: 'تمثل الوثيقة 1 {{1}} حيث نلاحظ:\n- عند د 0: تركيز طبيعي يقدر بـ {{2}} قبل الوجبة.\n- من د 0 إلى د 30: ارتفاع سريع ليبلغ الذروة {{3}}.\n- من د 30 إلى د 120: {{4}} ليعود التركيز إلى 0,9 غ/ل عند د 120.\nالاستنتاج: {{5}}.',
++      blanks: [
++        { id: '1', expectedText: 'منحنى تطور تركيز الغليسيما عند شخص سليم بدلالة الزمن بالدقائق', hint: 'تقديم الوثيقة بدلالة المتغيرين' },
++        { id: '2', expectedText: '0,9 غ/ل', hint: 'القيمة مع الوحدة' },
++        { id: '3', expectedText: '1,6 غ/ل عند د 30', hint: 'القيمة مع الوحدة والزمن' },
++        { id: '4', expectedText: 'انخفاض تدريجي', hint: 'سلوك المنحنى بعد الذروة' },
++        { id: '5', expectedText: 'يتنظم تركيز الغليسيما ذاتيا حول القيمة الطبيعية 0,9 غ/ل', hint: 'الاستنتاج العلمي' }
++      ]
++    },
++    stage3: {
++      recommendedTimeSec: 180,
++      hints: [
++        'تأكد من ذكر (تمثل الوثيقة) مع المتغيرين (الزمن والتركيز)',
++        'اكتب كل قيمة بوحدتها: غ/ل ثم دقيقة',
++        'في التحليل لا تذكر سبب الارتفاع (الأنسولين) — اتركه للاستنتاج أو لسؤال «فسّر»'
++      ]
++    },
++    stage4: {
++      timeLimitSec: 180,
++      passIcmThreshold: 90
++    }
+   }
+ ];
+ 
+diff --git a/tests/boussole.test.ts b/tests/boussole.test.ts
+index d06b5e4..974692f 100644
+--- a/tests/boussole.test.ts
++++ b/tests/boussole.test.ts
+@@ -11,6 +11,7 @@
+ // ============================================================
+ import { evaluateStudentProduction } from '../src/utils/methodologyScorer';
+ import { getSwitchForVerb, groupErrorsByAddress, switchPathAr, getStep } from '../src/data/boussoleData';
++import { TRAINING_EXERCISES } from '../src/data/methodologyEngine';
+ 
+ let pass = 0;
+ let fail = 0;
+@@ -225,6 +226,25 @@ check('adresses : verb_confusion→1 · premature→🔑 · missing_unit→2 ·
+ check('getStep : 4 étapes (اقرأ/اجمع/اربط/اختم) présentes',
+   [1, 2, 3, 4].every(n => typeof getStep(n as 1 | 2 | 3 | 4).word === 'string' && getStep(n as 1 | 2 | 3 | 4).word.length > 0));
+ 
++// ─────────────────────────────────────────────
++// SECTION G — exercices & sélecteur (lot T) : 4 exercices, glycémie branchée
++// ─────────────────────────────────────────────
++console.log('── SECTION G : exercices & sélecteur (lot T) ──');
++{
++  const byVerb = (verbId: string) => TRAINING_EXERCISES.filter(e => e.verbId === verbId);
++  check('4 exercices au total (analyse protéines, فسّر إنزيم, قارن مناعة, analyse glycémie)',
++    TRAINING_EXERCISES.length === 4);
++  check('verb_analyse_v1 a 2 exercices → le sélecteur de document est justifié',
++    byVerb('verb_analyse_v1').length === 2);
++  const gly = TRAINING_EXERCISES.find(e => e.id === 'ex_analyse_glycemie_04');
++  check('exercice glycémie présent, thème regulation, analyse, cursus bac',
++    !!gly && gly.verbId === 'verb_analyse_v1' && gly.theme === 'regulation' && gly.supportType === 'courbe');
++  check('exercice glycémie branché sur la courbe fichier (lot R)',
++    !!gly && gly.diagramUrl === '/assets/images/schemas/domaine1_regulations/schema_81_glycemie_curve_modern.svg');
++  check('exercice glycémie : les 4 étapes du modelage (stage1) + texte à trous (stage2) présents',
++    !!gly && gly.stage1.segments.length === 4 && gly.stage2.blanks.length === 5);
++}
++
+ // ─────────────────────────────────────────────
+ console.log('');
+ console.log('════════════════════════════════════════════════');

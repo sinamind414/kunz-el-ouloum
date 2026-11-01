@@ -1,0 +1,28 @@
+--- src/App.tsx
++++ src/App.tsx
+@@ -177,7 +177,7 @@
+   };
+ 
+   const [activeUnitPortalId, setActiveUnitPortalId] = useState<number | null>(null);
+-  const [activeCombatChallenge, setActiveCombatChallenge] = useState<{id: string, title: string} | null>(null);
++  const [activeCombatChallenge, setActiveCombatChallenge] = useState<{id: string, title: string, mode: 'coach'|'sprint'} | null>(null);
+ 
+   // Launching and finishing Quiz callback
+   const handleLaunchQuiz = (unitId: number) => {
+@@ -250,6 +250,7 @@
+       <CombatChallengePortal 
+         challengeId={activeCombatChallenge.id}
+         challengeTitle={activeCombatChallenge.title}
++        mode={activeCombatChallenge.mode}
+         onClose={() => setActiveCombatChallenge(null)}
+       />
+     );
+@@ -475,7 +476,7 @@
+ 
+               {currentTab === 'bootcamp' && (
+                 <CombatTrainerView 
+-                  onStartChallenge={(id, title) => setActiveCombatChallenge({id, title})}
++                  onStartChallenge={(id, title, mode) => setActiveCombatChallenge({id, title, mode})}
+                 />
+               )}
+             </motion.div>

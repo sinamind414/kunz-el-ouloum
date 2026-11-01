@@ -1,0 +1,143 @@
+From db811f72f7622d05292a30801ef9825211b2198f Mon Sep 17 00:00:00 2001
+From: sinamind414 <sinamind414@users.noreply.github.com>
+Date: Thu, 3 Sep 2026 15:01:35 +0000
+Subject: [PATCH 10/22] =?UTF-8?q?fix(methodology):=20=C3=A9talonnage=20du?=
+ =?UTF-8?q?=20grading=20=E2=80=94=20ICM=20pond=C3=A9r=C3=A9=20+=20seuils?=
+ =?UTF-8?q?=2090/60=20v=C3=A9rifi=C3=A9s=20sur=208=20profils=20d'=C3=A9l?=
+ =?UTF-8?q?=C3=A8ve?=
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+L'audit de grading : les poids déclarés (weight: 2 pour sc_c3 «ترقيم الظواهر» du
+رسم et cos_c2 «العرض المنظم» du texte) étaient IGNORÉS par le calcul
+(passedCount / totalCriteria, à poids égal). Et 3 règles étaient trop laxistes
+détectées par le harnais de profils :
+
+1) ICM PONDÉRÉ : icm = round(Σ passés×weight / Σ weight ×100). Rater le cœur du
+   رسم coûte maintenant 2× (75 → 60) ; rater le titre coûte 1×. La décision
+   pédagogique (stage 2/3/4) devient fidèle à la difficulté réelle.
+2) Unités PAR NOMBRE (bareNumbers) : avant, la seule présence de « دقيقة »
+   faisait passer 0.9 / 1.6 SANS unité de mesure. Chaque valeur numérique doit
+   avoir son unité juste après ; les numéros de documents « الوثيقتين 1 و2 »
+   (nombres enchaînés) sont retirés avant le test.
+3) سند = nom du document : « نلاحظ » seul ne suffit plus → missing_reference
+   (cohérent avec la boussole « انطلاقًا من الوثيقة »).
+4) sc_c3 : « مفتاح الأرقام » (la légende) ne valide plus — il faut des flèches
+   réellement numérotées (مرقمة / تسلسل / رقم + ←).
+
+Harnais d'étalonnage (8 profils) : P0 100 st4 · P1 75 st3 · P2 50 st2 ·
+P3 25 st2 · P4 60 (pondéré) · P5 60 (pondéré) · P6 25 st2 · seuil ≥90 st4.
+DUEL relancé : 12/12 ICM=100 + 4/4 régressions. tsc 0 erreur · build ✓ 8,3 s.
+---
+ src/utils/methodologyScorer.ts | 48 ++++++++++++++++++++++------------
+ 1 file changed, 31 insertions(+), 17 deletions(-)
+
+diff --git a/src/utils/methodologyScorer.ts b/src/utils/methodologyScorer.ts
+index e47d6a0..290c6cd 100644
+--- a/src/utils/methodologyScorer.ts
++++ b/src/utils/methodologyScorer.ts
+@@ -36,7 +36,11 @@ export function evaluateStudentProduction(
+   const criteriaResults: ScoreReport['criteriaResults'] = [];
+   const detectedErrorsMap = new Set<string>();
+ 
+-  let passedCount = 0;
++  // ICM pondéré : chaque critère porte un poids déclaré (weight) — un critère
++  // CARDINAL (ex. ترقيم الظواهر du رسم, العرض المنظم du texte) pèse 2× un critère
++  // d'habillage. Sans cela, rater le cœur du dessein coûte aussi cher que rater le titre.
++  let weightedPass = 0;
++  let weightedTotal = 0;
+ 
+   // 1. Détection des erreurs typées globales
+   // Alignement BOUSSOLE v2 : le scoreur juge exactement ce que la
+@@ -79,22 +83,29 @@ export function evaluateStudentProduction(
+     'verb_validate_v1', 'verb_deduce_v1', 'verb_justify_v1', 'verb_critique_v1',
+     'verb_hypothesis_v1',
+   ];
+-  const REFERENCE_REQUIRED_RE = /(الوثيق|الوثائق|منحنى|جدول|الملاحظة|الشاهد|نلاحظ|الشكل|الرسم|document|graphe)/i;
++  const REFERENCE_REQUIRED_RE = /(الوثيق|الوثائق|منحنى|جدول|الملاحظة|الشاهد|الشكل|الرسم|document|graphe)/i;
+   if (REFERENT_VERBS.includes(verbCard.id) && !REFERENCE_REQUIRED_RE.test(textLower)) {
+     detectedErrorsMap.add('missing_reference');
+   }
+ 
+   // Vérification de l'absence d'unités si des nombres sont présents (missing_unit)
+-  // Aligné sur la boussole étape 2 « كل رقم بوحدته » : TOUS les verbes à document,
+-  // plus le texte scientifique — plus seulement حَلِّلْ.
+-  // (on retire d'abord les numéros de documents « الوثيقة 2 » : ce ne sont pas des
+-  // mesures, pas des valeurs sans unité)
++  // Aligné sur la boussole étape 2 « كل رقم بوحدته » : chaque VALEUR numérique
++  // doit avoir son unité juste après. Avant : la seule présence de « دقيقة »
++  // (unité de temps) faisait passer 0.9 / 1.6 SANS unité de mesure !
++  // (les numéros de documents « الوثيقة 2 » sont d'abord retirés : ce ne sont
++  // pas des mesures)
+   const textNoDocRefs = textLower.replace(
+-    new RegExp(`((?:الوثيقة|الوثيقتين|الوثيقتان|الوثائق|المنحنى|المنحنيين|الجدول|الجدولين|الشكل|الشكلين|الرسم|النموذج|التجربة|الملاحظة|الصورة)[${AR_LETTERS}]*)\\s*\\d+`, 'g'),
++    new RegExp(`((?:الوثيقة|الوثيقتين|الوثيقتان|الوثائق|المنحنى|المنحنيين|الجدول|الجدولين|الشكل|الشكلين|الرسم|النموذج|التجربة|الملاحظة|الصورة)[${AR_LETTERS}]*)\\s*\\d+(?:\\s*(?:و|،|,)\\s*\\d+)*`, 'g'),
+     ' ');
+-  const numbersPresent = /\d+/.test(textNoDocRefs);
+-  const unitsPresent = /(غ\/ل|g\/l|%|دقيقة|min|ثانية|s|وحدة اعتبارية|ua|°|درجة|ميكرومول)/i.test(textLower);
+-  if (numbersPresent && !unitsPresent && (REFERENT_VERBS.includes(verbCard.id) || verbCard.id === 'verb_composer_v1')) {
++  const NUM_UNIT_RE = /(غ\/ل|g\/l|%|دقيقة|دقائق|دق|min|ساعة|ثانية|ثواني|s\b|وحدة اعتبارية|ua|°|درجة|ميكرومول|مول|نل|مل|لتر|مم|سم|نانومتر|كيلومتر|خلايا|بلورات|وحدات)/i;
++  const numberTokens = Array.from(textNoDocRefs.matchAll(/\d+(?:[.,]\d+)?/g));
++  const bareNumbers = numberTokens.filter(m => {
++    const idx = m.index || 0;
++    const after = textNoDocRefs.slice(idx + m[0].length, idx + m[0].length + 14);
++    return !NUM_UNIT_RE.test(after);
++  });
++  const allNumbersHaveUnits = numberTokens.length > 0 && bareNumbers.length === 0;
++  if (bareNumbers.length > 0 && (REFERENT_VERBS.includes(verbCard.id) || verbCard.id === 'verb_composer_v1')) {
+     detectedErrorsMap.add('missing_unit');
+   }
+ 
+@@ -128,15 +139,15 @@ export function evaluateStudentProduction(
+ 
+     if (criterion.id === 'an_c1' || criterion.id === 'ex_c1' || criterion.id === 'comp_c1' || criterion.id === 'val_c1') {
+       // Présentation / Référent (radical « الوثيق » : singulier + duel الوثيقتين)
+-      const refKeywords = /(تمثل الوثيق|منحنى|جدول|الوثيق|الوثائق|الملاحظة|الشاهد|نلاحظ|document|graphe)/i;
++      const refKeywords = /(تمثل الوثيق|منحنى|جدول|الوثيق|الوثائق|الملاحظة|الشاهد|document|graphe)/i;
+       passed = refKeywords.test(textLower) && textLower.length > 25;
+       feedback = passed 
+         ? 'تم تحديد الوثيقة والسياق بنجاح.' 
+         : `تنبيه: « ${criterion.wording.compass} » - لم يتم ذكر السند بوضوح.`;
+     } 
+     else if (criterion.id === 'an_c2') {
+-      // Découpage et unités
+-      passed = numbersPresent && unitsPresent;
++      // Découpage et unités : CHAQUE valeur numérique a son unité juste après
++      passed = allNumbersHaveUnits;
+       feedback = passed 
+         ? 'تم تفكيك المعطيات وإرفاق القيم بالوحدات القياسية.' 
+         : `تنبيه: « ${criterion.wording.compass} » - تأكد من كتابة كل رقم متبوعاً بوحدته (غ/ل، %، دقيقة).`;
+@@ -323,7 +334,9 @@ export function evaluateStudentProduction(
+         : `تنبيه: « ${criterion.wording.compass} » - سمِّ كل بنية بسهم أفقي.`;
+     }
+     else if (criterion.id === 'sc_c3') {
+-      const schNumRe = /(مرقم|مرقّم|أرقام|زمني|تسلسل|ترتيب|١\s*[←→]|1\s*[←→])/i;
++      // «ترقيم الظواهر» : des flèches réellement NUMÉROTÉES — «مفتاح الأرقام»
++      // (la légende) ne suffit pas : l'élève doit avoir numéroté ses flèches.
++      const schNumRe = /(مرقم|مرقّم|مرقمة|مرقّمة|زمني|تسلسل|ترتيب|رقمت|نرقم|أرقام الظواهر|أرقام الأسهم|\d+\s*[←→])/i;
+       passed = schNumRe.test(textLower);
+       feedback = passed
+         ? 'الظواهر مميزة بأسهم مرقمة حسب التسلسل الزمني.'
+@@ -363,8 +376,10 @@ export function evaluateStudentProduction(
+       feedback = passed ? 'معيار مستوفى.' : `يرجى مراجعة المعيار: « ${criterion.wording.compass} ».`;
+     }
+ 
++    const w = criterion.weight || 1;
++    weightedTotal += w;
+     if (passed) {
+-      passedCount += 1;
++      weightedPass += w;
+     } else if (criterion.errorTag) {
+       detectedErrorsMap.add(criterion.errorTag);
+     }
+@@ -379,8 +394,7 @@ export function evaluateStudentProduction(
+     });
+   });
+ 
+-  const totalCriteria = criteria.length;
+-  const icm = Math.round((passedCount / totalCriteria) * 100);
++  const icm = weightedTotal > 0 ? Math.round((weightedPass / weightedTotal) * 100) : 0;
+ 
+   // 3. Décision pédagogique adaptative selon l'algorithme du document
+   let nextPedagogicalStage: 1 | 2 | 3 | 4 = currentStage;

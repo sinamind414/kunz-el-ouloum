@@ -1,0 +1,235 @@
+From 757a4718ee28e65d3f8b0abe02cc240a40190af7 Mon Sep 17 00:00:00 2001
+From: sinamind414 <sinamind414@users.noreply.github.com>
+Date: Fri, 4 Sep 2026 07:52:40 +0000
+Subject: [PATCH 19/22] =?UTF-8?q?fix(methodology):=20LOT=20W=20=E2=80=94?=
+ =?UTF-8?q?=20correctifs=20bugs=20forts/faibles=20(F1=20+=20M1=20+=20F2)?=
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+F1 — BUG FORT « exercice fantôme protéines » (9 verbes sans exercice voient le
+contenu protéines + peuvent soumettre → verdict faussé, carnet pollué) :
+- currentExercise = find(...) || null (plus de repli silencieux vers [0])
+- garde d'affichage isExerciseAvailable : contexte, support réel, modelage,
+  texte à trous et stages 1→4 masqués → carte d'attente arabe dédiée
+- gardes logiques : handleCheckStage1/2, handleSubmitProduction, timer
+  (currentExercise?.stage4.timeLimitSec ?? 180) et handleResumeDraft
+  (repli || null) — un log orphelin ne ramène plus jamais de fantôme
+
+M1 — BUG MOYEN : « السند: schema » affiché en latin (3 exercices) →
+SUPPORT_TYPE_AR (courbe→منحنى, schema→مخطط, tableau→جدول, photo→صورة, texte→نص)
+
+F2 — BUG FAIBLE : « مؤتمت (Acquis) » → « مؤتمت » (règle 100 % arabe)
+
+TESTS : section H (5 assertions) = resolving null + 9 verbes sans exercice
+verrouillés + supportType couverts → 68 → 73. tsc 0 · tests 73/73 ·
+build ✓ 8,5 s · module servi : 0 occurrence de TRAINING_EXERCISES[0].
+---
+ src/components/MethodologyCompilerView.tsx | 54 ++++++++++++++++++----
+ tests/boussole.test.ts                     | 26 ++++++++++-
+ 2 files changed, 71 insertions(+), 9 deletions(-)
+
+diff --git a/src/components/MethodologyCompilerView.tsx b/src/components/MethodologyCompilerView.tsx
+index 3c49f32..56cfc68 100644
+--- a/src/components/MethodologyCompilerView.tsx
++++ b/src/components/MethodologyCompilerView.tsx
+@@ -23,6 +23,16 @@ interface MethodologyProps {
+   onBackToHome?: () => void;
+ }
+ 
++/** Libellés arabes des types de support (règle : jamais de mot latin dans l'UI élève).
++ *  M1 : « schema » était affiché tel quel dans « السند: ». */
++const SUPPORT_TYPE_AR: Record<string, string> = {
++  courbe: 'منحنى',
++  schema: 'مخطط',
++  tableau: 'جدول',
++  photo: 'صورة',
++  texte: 'نص',
++};
++
+ export default function MethodologyCompilerView({ onBackToHome }: MethodologyProps) {
+   // Navigation Tabs: 'engine_rules' (Couche 0) | 'verbs_ref' (Fiches) | 'simulator' (4 Stades) | 'mastery_matrix' (Analytics & Erreurs)
+   const [activeTab, setActiveTab] = useState<'simulator' | 'verbs_ref' | 'engine_rules' | 'mastery_matrix'>('simulator');
+@@ -90,7 +100,10 @@ export default function MethodologyCompilerView({ onBackToHome }: MethodologyPro
+   });
+ 
+   const currentVerb = VERB_CARDS.find(v => v.id === selectedVerbId) || VERB_CARDS[0];
+-  const currentExercise = TRAINING_EXERCISES.find(e => e.id === selectedExerciseId) || TRAINING_EXERCISES[0];
++  /** Exercice sélectionné — NULL si le verbe choisi n'a aucun exercice (F1 :
++   *  plus de repli silencieux vers l'exercice protéines qui faussait l'affichage). */
++  const currentExercise = TRAINING_EXERCISES.find(e => e.id === selectedExerciseId) || null;
++  const isExerciseAvailable = currentExercise !== null;
+   /** Exercices (documents) disponibles pour le verbe sélectionné — le sélecteur
+    *  n'apparaît que s'il y en a plusieurs (analyse : protéines + glycémie). */
+   const exercisesForVerb = TRAINING_EXERCISES.filter(e => e.verbId === selectedVerbId);
+@@ -120,7 +133,7 @@ export default function MethodologyCompilerView({ onBackToHome }: MethodologyPro
+     setCurrentStage(stage);
+     setScoreReport(null);
+     if (stage === 4) {
+-      setTimerSeconds(currentExercise.stage4.timeLimitSec);
++      setTimerSeconds(currentExercise?.stage4.timeLimitSec ?? 180);
+       setIsTimerRunning(true);
+       setIsDraftCompleted(false);
+     } else {
+@@ -130,6 +143,7 @@ export default function MethodologyCompilerView({ onBackToHome }: MethodologyPro
+ 
+   // Submit Stage 1
+   const handleCheckStage1 = () => {
++    if (!currentExercise) return; // F1 : pas d'exercice pour ce verbe → rien à évaluer
+     const totalSegments = currentExercise.stage1.segments.length;
+     const count = Object.keys(highlightedSteps).length;
+     if (count >= totalSegments) {
+@@ -140,6 +154,7 @@ export default function MethodologyCompilerView({ onBackToHome }: MethodologyPro
+ 
+   // Submit Stage 2
+   const handleCheckStage2 = () => {
++    if (!currentExercise) return; // F1 : pas d'exercice pour ce verbe → rien à évaluer
+     setClozeSubmitted(true);
+     let fullText = currentExercise.stage2.clozePrompt;
+     currentExercise.stage2.blanks.forEach(b => {
+@@ -179,6 +194,7 @@ export default function MethodologyCompilerView({ onBackToHome }: MethodologyPro
+ 
+   // Submit Stage 3 or 4
+   const handleSubmitProduction = () => {
++    if (!currentExercise) return; // F1 : pas d'exercice pour ce verbe → jamais de log pollué
+     const draft = {
+       verb: draftVerb,
+       steps: draftSteps,
+@@ -236,7 +252,8 @@ export default function MethodologyCompilerView({ onBackToHome }: MethodologyPro
+     setSelectedVerbId(entry.verbId);
+     const ex = TRAINING_EXERCISES.find(e => e.verbId === entry.verbId && e.theme === entry.theme)
+       || TRAINING_EXERCISES.find(e => e.verbId === entry.verbId)
+-      || TRAINING_EXERCISES[0];
++      || null;
++    if (!ex) return; // F1 : verbe sans exercice (vieux log orphelin) → jamais de fantôme
+     setSelectedExerciseId(ex.id);
+     const resumeStage = entry.stage === 2 ? 2 : 4;
+     setCurrentStage(resumeStage);
+@@ -274,7 +291,7 @@ export default function MethodologyCompilerView({ onBackToHome }: MethodologyPro
+     setDraftFinalSentence('');
+     setIsDraftCompleted(false);
+     if (currentStage === 4) {
+-      setTimerSeconds(currentExercise.stage4.timeLimitSec);
++      setTimerSeconds(currentExercise?.stage4.timeLimitSec ?? 180);
+       setIsTimerRunning(true);
+     }
+   };
+@@ -367,7 +384,7 @@ export default function MethodologyCompilerView({ onBackToHome }: MethodologyPro
+         <section className="space-y-6">
+           {/* Top Stage Progression Bar */}
+           <div className="bg-white dark:bg-[#161c18] p-4 rounded-2xl border border-gray-200 dark:border-gray-800 shadow-sm">
+-            {currentExercise.verbId !== selectedVerbId && (
++            {!isExerciseAvailable && (
+               <div className="mb-3 flex items-start gap-2.5 bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800/50 text-amber-900 dark:text-amber-200 rounded-xl px-3.5 py-2.5 text-xs font-bold">
+                 <HelpCircle className="w-4 h-4 shrink-0 mt-0.5" />
+                 <span>
+@@ -486,7 +503,8 @@ export default function MethodologyCompilerView({ onBackToHome }: MethodologyPro
+             </div>
+           </div>
+ 
+-          {/* Current Exercise Subject Context */}
++          {/* Current Exercise Subject Context — masqué si le verbe n'a pas d'exercice (F1) */}
++          {isExerciseAvailable && (
+           <div className="bg-white dark:bg-[#161c18] p-5 md:p-6 rounded-2xl border border-gray-200 dark:border-gray-800 shadow-sm">
+             <div className="flex items-center justify-between gap-3 mb-3 border-b border-gray-100 dark:border-gray-800 pb-3">
+               <div className="flex items-center gap-2">
+@@ -498,7 +516,7 @@ export default function MethodologyCompilerView({ onBackToHome }: MethodologyPro
+                 </span>
+               </div>
+               <span className="text-xs font-bold text-gray-400">
+-                السند: {currentExercise.supportType}
++                السند: {SUPPORT_TYPE_AR[currentExercise.supportType] ?? currentExercise.supportType}
+               </span>
+             </div>
+ 
+@@ -553,6 +571,7 @@ export default function MethodologyCompilerView({ onBackToHome }: MethodologyPro
+               </div>
+             </div>
+           </div>
++          )}
+ 
+           {/* Démonstration : même document, deux consignes — le mafteh en 10 s */}
+           <SwitchDuoDemo />
+@@ -560,6 +579,11 @@ export default function MethodologyCompilerView({ onBackToHome }: MethodologyPro
+           {/* BOUSSOLE v2 : 4 étapes + mafteh + niveaux d'aide */}
+           <BoussolePanel activeLevel={currentStage} verbId={selectedVerbId} />
+ 
++          {/* STAGE 1 → 4 : les blocs de production ne s'affichent QUE si l'exercice
++              existe pour le verbe choisi — sinon carte d'attente (F1 : plus de
++              contenu « protéines » fantôme pour hypothèse/déduire/valider/…) */}
++          {isExerciseAvailable ? (
++          <>
+           {/* STAGE 1: MODELAGE (النمذجة بالخطوات والألوان) */}
+           {currentStage === 1 && (
+             <div className="bg-white dark:bg-[#161c18] p-5 md:p-6 rounded-2xl border border-gray-200 dark:border-gray-800 shadow-sm space-y-5">
+@@ -1085,6 +1109,20 @@ export default function MethodologyCompilerView({ onBackToHome }: MethodologyPro
+ 
+             </motion.div>
+           )}
++          </>
++          ) : (
++          <div className="bg-white dark:bg-[#161c18] p-8 md:p-10 rounded-2xl border border-dashed border-gray-300 dark:border-gray-700 text-center space-y-3">
++            <div className="text-4xl">🧭</div>
++            <p className="font-black text-base text-gray-800 dark:text-gray-200">
++              لا يتوفر تمرين محاكاة لهذا الفعل بعد
++            </p>
++            <p className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed max-w-md mx-auto">
++              تدرّب على الأفعال الثلاثة المتوفرة في هذا التبويب (حلّل، فسّر، قارن)،
++              أو راجع فيشة الفعل في تبويب «بطاقات الأفعال» (البنية، الشروط، الأمثلة)
++              ثم عد إلى هذا التمرين.
++            </p>
++          </div>
++          )}
+ 
+         </section>
+       )}
+@@ -1339,7 +1377,7 @@ export default function MethodologyCompilerView({ onBackToHome }: MethodologyPro
+                               ? 'bg-emerald-600 text-white' 
+                               : 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300'
+                           }`}>
+-                            {isAutomated ? 'مؤتمت (Acquis)' : 'قيد التدريب'}
++                            {isAutomated ? 'مؤتمت' : 'قيد التدريب'}
+                           </span>
+                         </td>
+                       </tr>
+diff --git a/tests/boussole.test.ts b/tests/boussole.test.ts
+index 9019d5d..adedce0 100644
+--- a/tests/boussole.test.ts
++++ b/tests/boussole.test.ts
+@@ -293,6 +293,30 @@ console.log('── SECTION G : exercices, sélecteur & planches officielles (lo
+     newSchemas.every(s => fs.existsSync(path.resolve('public/assets/images/schemas', s))));
+ }
+ 
++// ─────────────────────────────────────────────
++// SECTION H — correctif F1/M1 (bugs forts/faibles) : plus de repli fantôme
++// ─────────────────────────────────────────────
++console.log('── SECTION H : correctif F1/M1 (repli fantôme + types de support) ──');
++{
++  // F1 : la résolution d'exercice du composant renvoie NULL (plus jamais l'exercice
++  // protéines « fantôme ») quand le verbe sélectionné n'a pas d'exercice.
++  const resolveExercise = (id: string) => TRAINING_EXERCISES.find(e => e.id === id) || null;
++  check('F1 : selectedExerciseId vide → null (plus de repli vers ex_analyse_protein_01)',
++    resolveExercise('') === null);
++  check('F1 : id inconnu → null',
++    resolveExercise('ex_nonexistent') === null);
++  check('F1 : id valide → bien l\'exercice demandé',
++    resolveExercise('ex_analyse_protein_01')?.id === 'ex_analyse_protein_01');
++  check('F1 : les 9 verbes sans exercice ne peuvent plus recevoir de contenu (aucun exercice fantôme)',
++    ['verb_hypothesis_v1','verb_deduce_v1','verb_validate_v1','verb_explain_multi_v1',
++     'verb_schema_v1','verb_justify_v1','verb_schematic_v1','verb_critique_v1','verb_composer_v1']
++      .every(v => !TRAINING_EXERCISES.some(e => e.verbId === v) && resolveExercise('') === null));
++  // M1 : chaque type de support a une traduction arabe dans l'UI (courbe/schema/…)
++  check('M1 : tous les supportType sont couverts par le mapping arabe',
++    ['courbe','schema','tableau','photo','texte'].includes(TRAINING_EXERCISES[0].supportType)
++    && TRAINING_EXERCISES.every(e => ['courbe','schema','tableau','photo','texte'].includes(e.supportType)));
++}
++
+ // ─────────────────────────────────────────────
+ console.log('');
+ console.log('════════════════════════════════════════════════');
+@@ -302,4 +326,4 @@ if (fail > 0) {
+   failures.forEach(f => console.log(`   ✗ ${f}`));
+   process.exit(1);
+ }
+-console.log(' ✅ Toutes les garanties lot H→V sont verrouillées.');
++console.log(' ✅ Toutes les garanties lot A→W sont verrouillées.');

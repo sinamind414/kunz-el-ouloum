@@ -1,0 +1,111 @@
+From 56cdff7c981cadc4dcd4311838f849c3c3be8736 Mon Sep 17 00:00:00 2001
+From: sinamind414 <sinamind414@users.noreply.github.com>
+Date: Thu, 3 Sep 2026 15:43:14 +0000
+Subject: [PATCH 12/22] =?UTF-8?q?feat(methodology):=20VISUELS=20=E2=80=94?=
+ =?UTF-8?q?=20la=20biblioth=C3=A8que=20SVG=20branch=C3=A9e=20sur=20le=20si?=
+ =?UTF-8?q?mulateur=20boussole?=
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Le simulateur affichait les supports d'exercices en TEXTE seul (dataSnippet)
+alors que l'app possède déjà ~120 visuels scientifiques locaux dans
+public/assets/images/schemas/ (utilisés uniquement par le module Quiz).
+L'élève de la boussole ne voyait ni courbe ni photo — l'élève du quiz si.
+
+→ TrainingExercise.diagramUrl (optionnel) + affichage dans le simulateur :
+la DOCUMENT s'affiche au-dessus de la transcription, encadrée, cliquable
+(plein écran), avec le titre du support (supportTitle) — 100 % arabe.
+
+Correspondance exercice → visuel EXACT de la bibliothèque :
+- ex_analyse_protein_01 (courbe sécrétion RE/Golgi/vésicules) →
+  schema_34_secretory_tracking_graph_modern_ar.svg (la même donnée d'examen :
+  80% à d5 · 60% à d20 · 90% à d60)
+- ex_explain_enzymes_02 (pH de la pepsine) → schema_07_enzyme.svg
+  (site actif + complexe E-S — le mécanisme que l'élève doit expliquer)
+- ex_compare_immunity_03 (humorale/cellulaire) →
+  schema_80_immunity_big_picture_modern.svg (la carte complète de l'immunité)
+
+Lien cliqué = ouverture du SVG natif dans un onglet (zoom réel, aucune
+dépendance externe, tout local/offline). tsc 0 erreur · build ✓ 8,4 s ·
+3 visuels servis 200 par le serveur.
+---
+ src/components/MethodologyCompilerView.tsx | 26 ++++++++++++++++++++++
+ src/data/methodologyEngine.ts              |  6 +++++
+ 2 files changed, 32 insertions(+)
+
+diff --git a/src/components/MethodologyCompilerView.tsx b/src/components/MethodologyCompilerView.tsx
+index a9230f3..675d6b3 100644
+--- a/src/components/MethodologyCompilerView.tsx
++++ b/src/components/MethodologyCompilerView.tsx
+@@ -479,6 +479,32 @@ export default function MethodologyCompilerView({ onBackToHome }: MethodologyPro
+                 {currentExercise.context}
+               </p>
+ 
++              {/* ══ SUPPORT RÉEL (courbe/photo/schéma de la bibliothèque locale) ══
++                   L'élève lit LA DOCUMENT, plus seulement sa transcription texte. */}
++              {currentExercise.diagramUrl && (
++                <div className="bg-white dark:bg-[#10150f] p-3 rounded-xl border border-gray-200 dark:border-gray-800 space-y-2">
++                  <a
++                    href={currentExercise.diagramUrl}
++                    target="_blank"
++                    rel="noreferrer"
++                    title="افتح الوثيقة بالحجم الكامل"
++                    className="block bg-gray-50 dark:bg-[#121614] border border-gray-200 dark:border-gray-700 rounded-lg p-2 hover:border-[#006d37] dark:hover:border-[#2ecc71] transition-colors"
++                  >
++                    <img
++                      src={currentExercise.diagramUrl}
++                      alt={currentExercise.supportTitle}
++                      loading="lazy"
++                      className="w-full max-h-80 object-contain mx-auto"
++                    />
++                  </a>
++                  <p className="text-[11px] font-black text-gray-600 dark:text-gray-300 flex items-center gap-1.5">
++                    <Eye className="w-3.5 h-3.5 text-[#006d37] dark:text-[#2ecc71]" />
++                    <span>{currentExercise.supportTitle}</span>
++                    <span className="text-[9px] font-bold text-gray-400 font-sans">(اضغط لتكبير الوثيقة)</span>
++                  </p>
++                </div>
++              )}
++
+               {currentExercise.dataSnippet && (
+                 <div className="bg-emerald-50/70 dark:bg-emerald-950/20 p-3.5 rounded-xl border border-emerald-100 dark:border-emerald-900/40 text-xs md:text-sm font-medium text-emerald-950 dark:text-emerald-200 whitespace-pre-line">
+                   {currentExercise.dataSnippet}
+diff --git a/src/data/methodologyEngine.ts b/src/data/methodologyEngine.ts
+index c73ded3..9dc22ad 100644
+--- a/src/data/methodologyEngine.ts
++++ b/src/data/methodologyEngine.ts
+@@ -49,6 +49,9 @@ export interface TrainingExercise {
+   context: string;
+   question: string;
+   dataSnippet?: string;
++  /** Visuel réel du support (bibliothèque locale /assets/images/schemas/…).
++   *  Affiché dans le simulateur : l'élève lit la COURBE/PHOTO, plus seulement le texte. */
++  diagramUrl?: string;
+   // Stade 1 - Modelage
+   stage1: {
+     expertAnswer: string;
+@@ -1054,6 +1057,7 @@ export const TRAINING_EXERCISES: TrainingExercise[] = [
+     context: 'تم وضع خلايا كبدية في وسط يحتوي على لوسين مشع لفترات زمنية قصيرة، ثم تم قياس نسبة الإشعاع في العضيات الخلوية (الشبكة الهيولية الفعالة، جهاز غولجي، الحويصلات الإفرازية).',
+     question: 'حلل منحنيات الوثيقة 1 الممثلة لتطور الإشعاع بدلالة الزمن.',
+     dataSnippet: 'في الشبكة الهيولية: يبلغ الإشعاع ذروته (80%) عند د 5 ثم ينخفض.\nفي جهاز غولجي: يبلغ ذروته (60%) عند د 20 ثم ينخفض.\nفي الحويصلات: يرتفع تدريجياً بعد د 30 ليصل 90% عند د 60.',
++    diagramUrl: '/assets/images/schemas/domaine1_proteines/schema_34_secretory_tracking_graph_modern_ar.svg',
+     stage1: {
+       expertAnswer: 'تمثل الوثيقة 1 منحنيات تطور نسبة الإشعاع في مختلف العضيات الخلوية بدلالة الزمن (بالدقائق)، حيث نلاحظ:\n- من د 0 إلى د 5: تزايد سريع لنسبة الإشعاع في الشبكة الهيولية الفعالة ليبلغ ذروة 80%، مع بقائه منعدماً في باقي العضيات.\n- من د 5 إلى د 20: تناقص نسبة الإشعاع في الشبكة الهيولية يقابله تزايد سريع في جهاز غولجي ليبلغ 60% عند د 20.\n- بعد د 20: تناقص الإشعاع في جهاز غولجي وتزايده تدريجياً في الحويصلات الإفرازية ليبلغ 90% عند د 60.\nالاستنتاج: يتم تركيب البروتين في الشبكة الهيولية المحببة ثم ينتقل عبر جهاز غولجي ليفرز خارج الخلية عبر الحويصلات الإفرازية.',
+       segments: [
+@@ -1097,6 +1101,7 @@ export const TRAINING_EXERCISES: TrainingExercise[] = [
+     context: 'تمت معايرة النشاط الإنزيمي لإنزيم البيبسين المعدي في درجات pH مختلفة (من pH=1 إلى pH=8). أظهرت النتائج نشاطاً أعظمياً عند pH=2 وانعداماً تاماً عند pH=6.',
+     question: 'فسر سبب انعدام النشاط الإنزيمي للبيبسين في الوسط ذي pH=6.',
+     dataSnippet: 'عند pH=2: نشاط أعظمي (100%).\nعند pH=6: نشاط منعدم (0%).',
++    diagramUrl: '/assets/images/schemas/domaine1_proteines/schema_07_enzyme.svg',
+     stage1: {
+       expertAnswer: 'الملاحظة: انعدام النشاط الإنزيمي لإنزيم البيبسين عند درجة الحموضة pH=6.\nالتفسير: يعود ذلك إلى أن الوسط القاعدي المقارب للتعادل (pH=6) يؤدي إلى اكتساب المجموعات الكيميائية الحرة في السلاسل الجانبية للأحماض الأمينية للموقع الفعال شحنات سالبة إضافية (تأين COO-) وفقدان الشحنات الموجبة (NH3+)، مما يؤدي إلى كسر الروابط الشاردية وفقدان الموقع الفعال لشكله الفراغي المميز ثلاثي الأبعاد، وبالتالي عدم القدرة على التكامل البنيوي مع الركيزة وعدم تشكل المعقد (إنزيم-ركيزة).',
+       segments: [
+@@ -1139,6 +1144,7 @@ export const TRAINING_EXERCISES: TrainingExercise[] = [
+     context: 'جدول مقارن يوضح خصائص الاستجابة المناعية الخلطية والاستجابة المناعية الخلوية من حيث: الخلايا المنفذة، طبيعة الجزيئات المؤثرة، والمستضدات المستهدفة.',
+     question: 'قارن بين الاستجابة المناعية النوعية ذات الوساطة الخلطية وذات الوساطة الخلوية.',
+     dataSnippet: 'الخلطية: خلايا LB / بلازموسيت، جزيئات أجسام مضادة نوعية، استهداف مستضدات حرة وسائلة.\nالخلوية: خلايا LTc سامة، جزيئات البيرفورين والغرانزيم، استهداف خلايا مصابة وسرطانية.',
++    diagramUrl: '/assets/images/schemas/domaine1_proteines/schema_80_immunity_big_picture_modern.svg',
+     stage1: {
+       expertAnswer: 'أوجه التشابه: كلاهما استجابة مناعية نوعية مكتسبة تعتمد على التكاثر والتمايز اللمفاوي وامتلاك ذاكرة مناعية.\nأوجه الاختلاف وفق المعايير:\n- الخلايا المنفذة: تتمثل في الخلايا البلازمية (البلزموسيت) في الاستجابة الخلطية، بينما تتمثل في اللمفاويات التائية السامة (LTc) في الاستجابة الخلوية.\n- طبيعة التأثير: تؤثر الاستجابة الخلطية بإفراز أجسام مضادة سارية في السوائل، في حين تؤثر الاستجابة الخلوية بالتماس المباشر وإفراز سم البيرفورين.\n- نوع المستضد المستهدف: تستهدف الخلطية المستضدات الحرة في الأخلاط، بينما تستهدف الخلوية الخلايا المصابة والسرطانية والخلايا الغريبة.\nالخلاصة: تتكامل الاستجابتان الخلطية والخلوية عبر اللمفاويات LT4 لضمان القضاء الشامل على مختلف أشكال المستضدات.',
+       segments: [

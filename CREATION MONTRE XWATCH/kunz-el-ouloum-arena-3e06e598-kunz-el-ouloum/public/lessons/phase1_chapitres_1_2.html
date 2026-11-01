@@ -1,0 +1,1671 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>منصة بنزر العلم | المرحلة 1 : النشاط 1 والنشاط 2</title>
+    <style>
+        :root {
+            --bg-main: #f8fafc;
+            --surface: #ffffff;
+            --primary: #0f172a;
+            --accent: #2563eb;
+            --accent-light: #eff6ff;
+            --success: #16a34a;
+            --success-light: #f0fdf4;
+            --warning: #d97706;
+            --warning-light: #fffbeb;
+            --danger: #dc2626;
+            --danger-light: #fef2f2;
+            --purple: #7c3aed;
+            --purple-light: #f5f3ff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            --radius: 16px;
+            --shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Noto Kufi Arabic', 'Kufi', 'Cairo', sans-serif;
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            line-height: 1.8;
+            padding-bottom: 60px;
+        }
+
+        .ltr-seq {
+            direction: ltr;
+            unicode-bidi: embed;
+            display: inline-block;
+            font-family: monospace;
+            font-weight: bold;
+            color: var(--accent);
+            background: #f1f5f9;
+            padding: 2px 8px;
+            border-radius: 6px;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 2rem auto;
+            padding: 0 1.2rem;
+        }
+
+        /* Chapter Views */
+        .chapter-view {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .chapter-view.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Hero Header */
+        .lesson-header {
+            border-radius: var(--radius);
+            padding: 2.5rem;
+            margin-bottom: 2rem;
+            position: relative;
+            overflow: hidden;
+            color: white;
+        }
+
+        .header-ch1 {
+            background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%);
+        }
+
+        .header-ch2 {
+            background: linear-gradient(135deg, #312e81 0%, #6d28d9 100%);
+        }
+
+        .lesson-breadcrumb {
+            font-size: 0.85rem;
+            opacity: 0.9;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .lesson-header h1 {
+            font-size: 2.1rem;
+            font-weight: 900;
+            margin-bottom: 1rem;
+            line-height: 1.3;
+        }
+
+        .lesson-objectives {
+            background: rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            font-size: 0.95rem;
+        }
+
+        /* Cards */
+        .card {
+            background: var(--surface);
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow);
+        }
+
+        @media (max-width: 600px) {
+            .lesson-header { padding: 1.5rem; }
+            .lesson-header h1 { font-size: 1.5rem; }
+            .card { padding: 1.2rem; }
+        }
+
+        .section-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid var(--bg-main);
+            padding-bottom: 0.8rem;
+        }
+
+        .step-num {
+            background: var(--accent-light);
+            color: var(--accent);
+            width: 38px;
+            height: 38px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 10px;
+            font-weight: 900;
+            font-size: 1.1rem;
+        }
+
+        .step-num-purple {
+            background: var(--purple-light);
+            color: var(--purple);
+        }
+
+        .problem-box {
+            background: var(--warning-light);
+            border-right: 5px solid var(--warning);
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin-bottom: 1.5rem;
+        }
+
+        .problem-title {
+            font-weight: 800;
+            color: #92400e;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Document Analysis */
+        .doc-viewer {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            align-items: start;
+        }
+
+        @media (max-width: 850px) {
+            .doc-viewer { grid-template-columns: 1fr; }
+        }
+
+        .doc-visual {
+            background: #0f172a;
+            border-radius: 12px;
+            padding: 1.5rem;
+            color: white;
+        }
+
+        .svg-container {
+            width: 100%;
+            height: auto;
+            max-height: 260px;
+        }
+
+        /* ProFigureEngine — préserve le ratio des figures générées (max-height:260px les écrasait) */
+        .doc-visual svg.pfe-figure {
+            max-height: none;
+        }
+
+        .doc-analysis {
+            background: var(--bg-main);
+            border-radius: 12px;
+            padding: 1.5rem;
+            border: 1px solid var(--border);
+        }
+
+        .method-tag {
+            display: inline-block;
+            background: #e0f2fe;
+            color: #0369a1;
+            font-size: 0.75rem;
+            font-weight: 800;
+            padding: 2px 8px;
+            border-radius: 4px;
+            margin-bottom: 8px;
+        }
+
+        /* Interactive Organelle Explorer / Code Genetic Decoder */
+        .interactive-box {
+            background: #1e293b;
+            border-radius: 12px;
+            padding: 1.5rem;
+            color: white;
+            margin: 1.5rem 0;
+        }
+
+        .cell-explorer-btns {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 15px;
+        }
+
+        .btn-exp {
+            background: #334155;
+            color: white;
+            border: 1px solid #475569;
+            padding: 10px 16px;
+            border-radius: 8px;
+            font-family: inherit;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-exp.active {
+            background: var(--accent);
+            border-color: #60a5fa;
+        }
+
+        .exp-detail-card {
+            background: #0f172a;
+            border: 1px solid #334155;
+            border-radius: 10px;
+            padding: 1.2rem;
+            line-height: 1.7;
+        }
+
+        /* Genetic Code Decoder Grid */
+        .decoder-controls {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-bottom: 1rem;
+        }
+
+        @media (max-width: 500px) {
+            .decoder-controls { grid-template-columns: 1fr; }
+        }
+
+        .nuc-select {
+            background: #334155;
+            color: white;
+            border: 2px solid #64748b;
+            padding: 10px;
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .decoder-result {
+            background: #0f172a;
+            border: 2px solid var(--purple);
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        /* Scientific text */
+        .scientific-text {
+            background: var(--surface);
+            border: 2px solid #cbd5e1;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-top: 1rem;
+        }
+
+        .text-part {
+            margin-bottom: 1.2rem;
+            padding-right: 1rem;
+            border-right: 4px solid var(--accent);
+        }
+
+        .text-part.ch2-border { border-right-color: var(--purple); }
+
+        .text-part h4 {
+            font-size: 0.95rem;
+            color: var(--accent);
+            margin-bottom: 0.3rem;
+            font-weight: 800;
+        }
+
+        .text-part.ch2-border h4 { color: var(--purple); }
+
+        /* Quiz */
+        .question-item {
+            background: var(--bg-main);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 10px;
+            margin-top: 1rem;
+        }
+
+        .option-btn {
+            background: white;
+            border: 1.5px solid var(--border);
+            padding: 12px 16px;
+            border-radius: 10px;
+            text-align: right;
+            font-family: inherit;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: var(--text-main);
+        }
+
+        .option-btn:hover {
+            border-color: var(--accent);
+            background: var(--accent-light);
+        }
+
+        .option-btn.correct {
+            background: var(--success-light);
+            border-color: var(--success);
+            color: var(--success);
+            font-weight: 700;
+        }
+
+        .option-btn.wrong {
+            background: var(--danger-light);
+            border-color: var(--danger);
+            color: var(--danger);
+        }
+
+        .feedback-box {
+            margin-top: 1rem;
+            padding: 1rem;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            display: none;
+        }
+    
+        /* === MIFTAH + Sommaire + Badge (v3.2 prototype phase1) === */
+        .sommaire{position:sticky;top:0;z-index:999;max-width:1100px;width:calc(100% - 16px);margin:8px auto 0;background:#0f172a;border:1px solid #334155;border-radius:0 0 16px 16px;padding:10px 14px;display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;justify-content:flex-start;box-shadow:0 10px 28px rgba(15,23,42,.35)}
+        .sommaire::-webkit-scrollbar{display:none}
+        .sommaire a{white-space:nowrap;font-size:.82rem;font-weight:800;color:#e2e8f0;text-decoration:none;padding:6px 12px;border-radius:8px;border:1px solid #475569;background:#1e293b;transition:all .15s}
+        .sommaire a:hover{border-color:#38bdf8;color:#7dd3fc;background:#0ea5e9}
+        .sommaire a.active{background:#2563eb;color:#fff;border-color:#60a5fa}
+        .sommaire .sep{width:1px;background:#475569;margin:0 4px;flex-shrink:0}
+        .miftah-encadre{background:#fffdf4;border:1px solid #f3e0b0;border-right:4px solid #c08a1f;border-radius:10px;padding:10px 13px;margin:10px 0;font-size:.88rem;line-height:1.65}
+        .miftah-encadre b{color:#7a5610}
+        .quiz-badge{display:none;margin-top:12px;padding:10px 14px;border-radius:10px;font-weight:800;text-align:center;font-size:.95rem;animation:fadeIn .25s ease}
+        .quiz-badge.show{display:block}
+        .quiz-badge.faible{background:#fef2f2;color:#991b1b;border:1px solid #fecaca}
+        .quiz-badge.moyen{background:#fffbeb;color:#92400e;border:1px solid #fde68a}
+        .quiz-badge.mumtaz{background:#f0fdf4;color:#166534;border:1px solid #bbf7d0}
+        @media(max-width:768px){.sommaire{top:0;width:100%;max-width:100%;border-radius:0;margin-left:0;margin-right:0}}
+
+    </style>
+</head>
+<body>
+
+    
+
+    
+    <!-- Sommaire sticky (prototype v3.2) -->
+    <div class="sommaire" id="sommaire">
+        <a href="#ch1-step1" id="link-ch1-step1" onclick="scrollToStep('ch1-step1',event)">📖 1-1 وضعية</a>
+        <a href="#ch1-step2" id="link-ch1-step2" onclick="scrollToStep('ch1-step2',event)">🔬 1-2 تحليل</a>
+        <a href="#ch1-step3" id="link-ch1-step3" onclick="scrollToStep('ch1-step3',event)">🔍 1-3 مستكشف</a>
+        <a href="#ch1-step4" id="link-ch1-step4" onclick="scrollToStep('ch1-step4',event)">📝 1-4 خلاصة + Quiz</a>
+        <span class="sep"></span>
+        <a href="#ch2-step1" id="link-ch2-step1" onclick="scrollToStep('ch2-step1',event)">🧬 2-1 إشكالية</a>
+        <a href="#ch2-step2" id="link-ch2-step2" onclick="scrollToStep('ch2-step2',event)">🔓 2-2 فك الشفرة</a>
+        <a href="#ch2-step3" id="link-ch2-step3" onclick="scrollToStep('ch2-step3',event)">⚡ 2-3 تنشيط</a>
+        <a href="#ch2-step4" id="link-ch2-step4" onclick="scrollToStep('ch2-step4',event)">✅ 2-4 تقويم</a>
+        <a href="#resume" id="link-resume" onclick="scrollToStep('resume',event)">📝 خلاصة</a>
+    </div>
+
+    <div class="container">
+
+        <!-- ================================================================= -->
+        <!-- CHAPTER 1 : SIÈGE DE LA SYNTHÈSE DES PROTÉINES (مقر تركيب البروتين) -->
+        <!-- ================================================================= -->
+        <div id="ch1" class="chapter-view active">
+            
+            <header class="lesson-header header-ch1">
+                <div class="lesson-breadcrumb">المجال الأول : التخصص الوظيفي للبروتينات • الوحدة 1 : تركيب البروتين</div>
+                <h1>النشاط 1 : تذكير بالمكتسبات ومقر تركيب البروتين في الخلية</h1>
+                <div class="lesson-objectives">
+                    <div>🎯 <strong>الهدف العلمي :</strong> بيّن أن تركيب البروتين يتم في الهيولى بالضبط على مستوى الشبكة الهيولية الداخلية المحببة (REG).</div>
+                    <div>⏱️ <strong>المدة التقديرية للتعلم الذاتي :</strong> 20 دقيقة</div>
+                </div>
+            </header>
+
+            <!-- Step 1: Problématique -->
+            <section class="card" id="ch1-step1">
+                <div class="section-title">
+                    <span class="step-num">1</span>
+                    <span>وضعية الانطلاق وبناء الإشكالية العلميـة</span>
+                </div>
+                <div class="problem-box">
+                    <div class="problem-title">⚠️ التساؤل الجوهري لبداية الوحدة</div>
+                    <p>تتميز الخلايا الحية بقدرتها الفائقة على اصطناع بروتينات متنوعة (إنزيمات، هرمونات، أجسام مضادة) تضمن تخصصها الوظيفي. انطلاقا من مكتسباتك حول البنية الدقيقة للخلية، <strong>أين يتم بالضبط تجميع الأحماض الأمينية لتركيب هذه البروتينات داخل الخلية؟</strong></p>
+                </div>
+                <p>للتأكد من المقر الدقيق لتركيب البروتين، قام العلماء بإجراء تجارب تتتبع مسار الأحماض الأمينية المشعة داخل الخلايا الإفرازية (مثل خلايا البنكرياس).</p>
+            </section>
+
+            <!-- Step 2: Document Analyse -->
+            <section class="card" id="ch1-step2">
+                <div class="section-title">
+                    <span class="step-num">2</span>
+                    <span>التحليل المنهجي لتجربة التصوير الإشعاعي الذاتي (الأحماض الأمينية المشعة)</span>
+                </div>
+                <div class="doc-viewer">
+                    <div class="doc-visual">
+                        <h4 style="margin-bottom: 1rem; color: #93c5fd; font-size: 0.95rem;">خلية عنقودية للبنكرياس بعد 3 دقائق من الحضن في وسط به لوسين مشع ³H-Leucine</h4>
+                        <!-- Generated by ProFigureEngine - SVT BAC DZ -->
+<svg class="svg-container pfe-figure" viewBox="0 0 800 480" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="خلية عنقودية للبنكرياس بعد 3 دقائق من الحضن في وسط به لوسين مشع">
+  <defs>
+    <style>
+      .pfe-title { font-family: 'Cairo', 'Segoe UI', Tahoma, sans-serif; font-weight: 700; fill: #f8fafc; }
+      .pfe-label { font-family: 'Cairo', 'Segoe UI', Tahoma, sans-serif; font-size: 13px; fill: #cbd5e1; }
+      .pfe-sub { font-family: 'Segoe UI', Tahoma, sans-serif; font-size: 11px; fill: #94a3b8; }
+      .pfe-badge { font-family: monospace; font-size: 11px; font-weight: bold; }
+    </style>
+    <filter id="pf-b0-pfe-glow-red" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="3" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+    <marker id="pf-b0-pfe-arrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 10 5 L 0 9 z" fill="#38bdf8" />
+    </marker>
+    <marker id="pf-b0-pfe-arrow-gold" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 10 5 L 0 9 z" fill="#fbbf24" />
+    </marker>
+    <linearGradient id="pf-b0-pfe-membrane-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1e293b" />
+      <stop offset="100%" stop-color="#0f172a" />
+    </linearGradient>
+    <linearGradient id="pf-b0-pfe-nucleus-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1e3a5f" />
+      <stop offset="100%" stop-color="#0f172a" />
+    </linearGradient>
+    
+  </defs>
+
+  <rect x="10" y="10" width="780" height="460" rx="24" fill="#0c1322" stroke="#1e293b" stroke-width="2"/>
+  <path d="M 50,180 C 50,70 140,40 380,40 C 620,40 750,70 750,200 C 750,340 680,440 420,440 C 180,440 50,360 50,180 Z" fill="url(#pf-b0-pfe-membrane-grad)" stroke="#38bdf8" stroke-width="3"/>
+  <text x="30" y="32" class="pfe-sub" fill="#64748b" font-weight="bold">القطب القاعدي (Pôle basal)</text>
+  <text x="745" y="452" text-anchor="end" class="pfe-sub" fill="#64748b" font-weight="bold">القطب القمي الإفرازي (Pôle apical)</text>
+
+  <!-- النواة -->
+  <g id="pf-b0-nucleus-group">
+    <ellipse cx="170" cy="240" rx="90" ry="110" fill="url(#pf-b0-pfe-nucleus-grad)" stroke="#60a5fa" stroke-width="2.5" stroke-dasharray="12 4"/>
+    <path d="M 120,220 Q 150,190 190,210 Q 220,240 160,270 Q 130,250 170,220" fill="none" stroke="#3b82f6" stroke-width="2" opacity="0.4"/>
+    <circle cx="160" cy="235" r="22" fill="#1d4ed8" opacity="0.5"/>
+    <text x="170" y="240" text-anchor="middle" class="pfe-label" font-weight="bold" fill="#bfdbfe">النواة</text>
+    <text x="170" y="258" text-anchor="middle" class="pfe-sub">Noyau</text>
+  </g>
+
+  <!-- الشبكة الهيولية المحببة REG -->
+  <g id="pf-b0-reg-group">
+    <path d="M 275,130 C 310,140 330,170 305,210 C 285,240 305,270 325,300 C 340,320 320,350 280,365" fill="none" stroke="#0284c7" stroke-width="9" stroke-linecap="round"/>
+    <path d="M 295,120 C 335,135 355,165 330,210 C 310,245 330,275 350,305 C 365,325 345,355 305,375" fill="none" stroke="#38bdf8" stroke-width="8" stroke-linecap="round"/>
+    <path d="M 315,110 C 360,130 380,165 355,210 C 335,250 355,280 375,310 C 390,330 370,365 330,385" fill="none" stroke="#7dd3fc" stroke-width="7" stroke-linecap="round"/>
+
+    <!-- الإشعاع المتركز -->
+    <g id="pf-b0-radiation-hotspots-reg" filter="url(#pf-b0-pfe-glow-red)">
+      <circle cx="295" cy="140" r="6" fill="#ef4444"/><circle cx="312" cy="170" r="6.5" fill="#ef4444"/>
+      <circle cx="300" cy="205" r="6" fill="#ef4444"/><circle cx="320" cy="240" r="7" fill="#ef4444"/>
+      <circle cx="310" cy="275" r="6" fill="#ef4444"/><circle cx="335" cy="210" r="6.5" fill="#ef4444"/>
+      <circle cx="345" cy="270" r="6.5" fill="#ef4444"/><circle cx="330" cy="310" r="6" fill="#ef4444"/>
+    </g>
+    <g fill="#ffffff">
+      <circle cx="295" cy="140" r="2.5"/><circle cx="312" cy="170" r="2.5"/>
+      <circle cx="300" cy="205" r="2.5"/><circle cx="320" cy="240" r="3"/>
+      <circle cx="310" cy="275" r="2.5"/><circle cx="335" cy="210" r="2.5"/>
+    </g>
+  </g>
+
+  <!-- جهاز غولجي والحويصلات -->
+  <g id="pf-b0-golgi-group">
+    <path d="M 460,160 C 485,190 485,240 460,280" fill="none" stroke="#c084fc" stroke-width="6.5" stroke-linecap="round"/>
+    <path d="M 480,165 C 505,195 505,235 480,275" fill="none" stroke="#a855f7" stroke-width="6" stroke-linecap="round"/>
+    <circle cx="410" cy="180" r="8" fill="#334155" stroke="#a855f7" stroke-width="1.5"/>
+    <circle cx="420" cy="230" r="9" fill="#334155" stroke="#a855f7" stroke-width="1.5"/>
+  </g>
+  <g id="pf-b0-secretory-vesicles-group">
+    <circle cx="580" cy="180" r="16" fill="#1e293b" stroke="#64748b" stroke-width="2"/>
+    <circle cx="610" cy="240" r="19" fill="#1e293b" stroke="#64748b" stroke-width="2"/>
+    <circle cx="590" cy="300" r="17" fill="#1e293b" stroke="#64748b" stroke-width="2"/>
+  </g>
+
+  <!-- تسميات ومؤشرات -->
+  <path d="M 320,88 L 320,108" stroke="#38bdf8" stroke-width="1.5" marker-end="url(#pf-b0-pfe-arrow)"/>
+  <rect x="225" y="56" width="190" height="30" rx="6" fill="#032b44" stroke="#0284c7" stroke-width="1"/>
+  <text x="320" y="76" text-anchor="middle" class="pfe-label" font-weight="bold" fill="#7dd3fc">الشبكة الهيولية المحببة (REG)</text>
+
+  <path d="M 485,100 L 485,150" stroke="#c084fc" stroke-width="1.5" marker-end="url(#pf-b0-pfe-arrow)"/>
+  <rect x="420" y="70" width="130" height="30" rx="6" fill="#2e1065" stroke="#a855f7" stroke-width="1"/>
+  <text x="485" y="90" text-anchor="middle" class="pfe-label" font-weight="bold" fill="#e9d5ff">جهاز غولجي</text>
+
+  <path d="M 580,127 L 580,162" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#pf-b0-pfe-arrow)"/>
+  <rect x="545" y="95" width="135" height="30" rx="6" fill="#1e293b" stroke="#64748b" stroke-width="1"/>
+  <text x="612" y="115" text-anchor="middle" class="pfe-label" font-weight="bold" fill="#cbd5e1">حويصلات إفرازية</text>
+
+  <rect x="380" y="350" width="260" height="50" rx="10" fill="#1e1b4b" stroke="#6366f1" stroke-width="1.5"/>
+  <circle cx="400" cy="375" r="10" fill="#ef4444" filter="url(#pf-b0-pfe-glow-red)"/>
+  <circle cx="400" cy="375" r="4" fill="#ffffff"/>
+  <text x="420" y="370" font-size="12" font-weight="bold" fill="#e0e7ff">الحالة عند t = 3 دقائق :</text>
+  <text x="420" y="390" font-size="11" fill="#a5b4fc">100% من الإشعاع متمركز في الشبكة (REG)</text>
+
+</svg>
+                        <p style="font-size: 0.85rem; color: #cbd5e1; margin-top: 10px;">🔴 النقاط الحمراء تشير إلى الإشعاع المتركز في الشبكة الهيولية الداخلية المحببة بعد 3 دقائق فقط.</p>
+                    </div>
+
+                    <div class="doc-analysis">
+                        <span class="method-tag">منهجية البكالوريا : الاستدلال العلمي</span>
+                        <div class="miftah-encadre">🔑 <b>مفتاح المنهجية:</b> البوابة 1 → <b>📄 ورقة</b> (وثيقة حاضرة) · البوابة 2 → <b>📷 صورة</b> (حلّل/صِف → <span class="ltr-seq" style="font-size:.8rem">1→2→4</span>) · السنّ 2: استخرج <b>رقم + وحدة + اتجاه</b> قبل أي تفسير</div>
+                        <h4 style="margin: 8px 0; color: var(--primary);">لماذا استعمل العلماء الأحماض الأمينية المشعة تحديدًا؟</h4>
+                        <ul style="list-style-type: none; padding-right: 0;">
+                            <li style="margin-bottom: 10px;">• <strong>الأحماض الأمينية</strong> هي الوحدات البنائية الأساسية لتركيب البروتينات.</li>
+                            <li style="margin-bottom: 10px;">• <strong>العنصر المشع (التريتيوم ³H)</strong> يسمح بتحديد المقر الدقيق ومتابعة الحركية الزمنية داخل العضيات الخلوية.</li>
+                            <li style="background: #eff6ff; padding: 12px; border-radius: 8px; border-right: 3px solid var(--accent);">
+                                <strong>النتيجة الحاسمة :</strong> بعد مدة قصيرة (3 دقائق)، يظهر الإشعاع حصريا على مستوى <strong>الشبكة الهيولية الداخلية المحببة <span class="ltr-seq">REG</span></strong>، مما يثبت أنها المقر الحقيقي لتركيب البروتين في الخلية.
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Step 3: Interactive Cell Explorer -->
+            <section class="card" id="ch1-step3">
+                <div class="section-title">
+                    <span class="step-num">3</span>
+                    <span>المستكشف التفاعلي لحركية البروتين داخل الخلية الإفرازية</span>
+                </div>
+                <p>اضغط على الزمن التجريبي لمتابعة مسار البروتين المصنوع حديثا :</p>
+                
+                <div class="interactive-box">
+                    <div class="cell-explorer-btns">
+                        <button class="btn-exp active" onclick="exploreTime(3, event)">⏱️ بعد 3 دقائق (البداية)</button>
+                        <button class="btn-exp" onclick="exploreTime(20, event)">⏱️ بعد 20 دقيقة (النضج)</button>
+                        <button class="btn-exp" onclick="exploreTime(120, event)">⏱️ بعد 120 دقيقة (الإفراز)</button>
+                    </div>
+                    <div class="exp-detail-card" id="expDetailText">
+                        <strong style="color: #60a5fa; font-size: 1.1rem;">⏱️ الحالة عند الزمن 3 دقائق :</strong>
+                        <p style="margin-top: 8px;">يتمركز الإشعاع كليا على مستوى <strong>الشبكة الهيولية الداخلية المحببة (<span class="ltr-seq">REG</span>)</strong> المتواجدة في الهيولى. وهذا يدل على أن عملية دمج الأحماض الأمينية وتركيب السلسلة البيبتيدية تبدأ هنا بفضل الريبوزومات المتصلة بأغشية الشبكة.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Step 4: Bilan & Quiz Ch1 -->
+            <section class="card" id="ch1-step4">
+                <div class="section-title">
+                    <span class="step-num">4</span>
+                    <span>الخلاصة والتقويم الذاتي (النشاط 1)</span>
+                </div>
+                <div class="scientific-text">
+                    <div class="text-part" style="border-right-color: var(--success); margin-bottom: 0;">
+                        <h4 style="color: var(--success);">الحقيقة العلمية المعتمدة في البكالوريا</h4>
+                        <p>يتم تركيب البروتين عند حقيقيات النوى في <strong>الهيولى (الستوبلازم)</strong>، وبالتحديد على مستوى <strong>الشبكة الهيولية الداخلية المحببة (<span class="ltr-seq">Réticulum Endoplasmique Granuleux</span>)</strong> انطلاقا من الأحماض الأمينية.</p>
+                    </div>
+                </div>
+
+                <!-- Quiz Ch1 -->
+                <div class="question-item" id="c1q1-container" style="margin-top: 1.5rem;">
+                    <h4 style="margin-bottom: 12px;">اختبر فهمك : لماذا تسمى الشبكة الهيولية بـ "المحببة" أو "الفعالة"؟</h4>
+                    <div class="options-grid">
+                        <button class="option-btn" onclick="checkCh1Answer(0, false)">أ) لاحتوائها على حبيبات الجليكوجين المخزنة للطاقة.</button>
+                        <button class="option-btn" onclick="checkCh1Answer(1, true)">ب) لوجود جسيمات دقيقة متصلة بغشائها الخارجي تسمى الريبوزومات (<span class="ltr-seq">Ribosomes</span>).</button>
+                        <button class="option-btn" onclick="checkCh1Answer(2, false)">ج) لأنها تحتوي على ثقوب نووية تسمح بخروج الـ <span class="ltr-seq">ADN</span>.</button>
+                    </div>
+                    <div class="feedback-box" id="c1q1-feedback"></div>
+                    <div class="quiz-badge" id="c1-badge"></div>
+                </div>
+            </section>
+        </div>
+
+        <!-- ================================================================= -->
+        <!-- CHAPTER 2 : CODE GÉNÉTIQUE ET ACTIVATION (الشفرة الوراثية والتنشيط) -->
+        <!-- ================================================================= -->
+        <div id="ch2" class="chapter-view">
+            
+            <header class="lesson-header header-ch2">
+                <div class="lesson-breadcrumb">المجال الأول : التخصص الوظيفي للبروتينات • الوحدة 1 : تركيب البروتين</div>
+                <h1>النشاط 2 : الشفرة الوراثية وتنشيط الأحماض الأمينية</h1>
+                <div class="lesson-objectives">
+                    <div>🎯 <strong>الهدف العلمي :</strong> وضّح كيفية ترجمة اللغة النووية (4 أحرف) إلى لغة بروتينية (20 حمض أميني)، وفسّر آلية تنشيط الحمض الأميني بالـ <span class="ltr-seq">ARNt</span>.</div>
+                    <div>⏱️ <strong>المدة التقديرية للتعلم الذاتي :</strong> 25 دقيقة</div>
+                </div>
+            </header>
+
+            <!-- Step 1: Problématique -->
+            <section class="card" id="ch2-step1">
+                <div class="section-title">
+                    <span class="step-num step-num-purple">1</span>
+                    <span>الإشكالية الرياضية والبيولوجية للشفرة الوراثية</span>
+                </div>
+                <div class="problem-box" style="border-right-color: var(--purple); background: var(--purple-light);">
+                    <div class="problem-title" style="color: #5b21b6;">⚠️ كيف نترجم 4 أحرف إلى 20 كلمة؟</div>
+                    <p>تتكون اللغة النووية للـ <span class="ltr-seq">ARNm</span> من <strong>4 قواعد آزوتية فقط (<span class="ltr-seq">A, U, C, G</span>)</strong>، بينما تتكون اللغة البروتينية من <strong>20 حمضاً أمينياً مختلفاً</strong> في بالطبيعة. كيف يمكن لأربع قواعد فقط أن تشفر وتنظم ترتيب 20 حمضاً أمينياً دون أي نقص أو تداخل؟</p>
+                </div>
+                <p>بالبرهان الرياضي المنطقي :</p>
+                <ul style="margin-right: 1.5rem; line-height: 2;">
+                    <li>• إذا كانت كل قاعدة تشفر لحمض أميني واحد ($4^1 = 4$) : هذا غير كافٍ لتغطية 20 حمضاً.</li>
+                    <li>• إذا كانت كل قاعدتين تشفران لحمض أميني ($4^2 = 16$) : يبقى العدد غير كافٍ.</li>
+                    <li>• <strong>الاستنتاج الحتمي ($4^3 = 64$) :</strong> كل <strong>3 قواعد آزوتية متتالية (رامزة)</strong> تشفر لحمض أميني واحد. وبما أن 64 > 20، فهذا يفسر تشفير عدة رامزات لحمض أميني واحد (الترادف).</li>
+                </ul>
+            </section>
+
+            <!-- Step 2: Interactive Decoder -->
+            <section class="card" id="ch2-step2">
+                <div class="section-title">
+                    <span class="step-num step-num-purple">2</span>
+                    <span>فك شفرة البكالوريا التفاعلي (جدول الشفرة الوراثية)</span>
+                </div>
+                                        <div class="miftah-encadre">🔑 <b>تذكير منهجي:</b> البوابة 1 → <b>📄 ورقة</b> · البوابة 2 → <b>🎬 فيلم</b> (فسّر/علل → <span class="ltr-seq" style="font-size:.8rem">1→2→3→4</span>) · السنّ 3: <b>لأنّ</b> مسبوقة بمعطى من الوثيقة</div>
+                <p>اختر القواعد الآزوتية الثلاث (الرامزة على الـ <span class="ltr-seq">ARNm</span>) لاكتشاف الحمض الأميني الموافق ومعنى الرامزات الخاصة :</p>
+                
+                <div class="interactive-box" style="background: #0f172a;">
+                    <div class="decoder-controls">
+                        <div>
+                            <label style="font-size:0.85rem; color:#94a3b8;">الحرف الأول (5') :</label>
+                            <select id="nuc1" class="nuc-select" style="width:100%;" onchange="decodeCodon()">
+                                <option value="A">A (أدينين)</option>
+                                <option value="U">U (يوراسيل)</option>
+                                <option value="C">C (سيتوزين)</option>
+                                <option value="G">G (غوانين)</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label style="font-size:0.85rem; color:#94a3b8;">الحرف الثاني :</label>
+                            <select id="nuc2" class="nuc-select" style="width:100%;" onchange="decodeCodon()">
+                                <option value="U">U (يوراسيل)</option>
+                                <option value="A">A (أدينين)</option>
+                                <option value="C">C (سيتوزين)</option>
+                                <option value="G">G (غوانين)</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label style="font-size:0.85rem; color:#94a3b8;">الحرف الثالث (3') :</label>
+                            <select id="nuc3" class="nuc-select" style="width:100%;" onchange="decodeCodon()">
+                                <option value="G">G (غوانين)</option>
+                                <option value="A">A (أدينين)</option>
+                                <option value="U">U (يوراسيل)</option>
+                                <option value="C">C (سيتوزين)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="decoder-result" id="decoderBox">
+                        <div style="font-size: 1.5rem; font-family: monospace; color: #c084fc; font-weight: bold; direction: ltr;">5'- AUG -3'</div>
+                        <h3 style="margin: 10px 0; color: #4ade80;">الحمض الأميني : الميثيونين (Méthionine - Met)</h3>
+                        <p style="font-size: 0.9rem; color: #cbd5e1;">🟢 هذه هي <strong>رامزة البداية (Codon d'initiation)</strong> التي تنطلق منها دائما عملية الترجمة في الخلية.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Step 3: Activation des Acides Aminés -->
+            <section class="card" id="ch2-step3">
+                <div class="section-title">
+                    <span class="step-num step-num-purple">3</span>
+                    <span>آلية تنشيط الأحماض الأمينية (المرحلة التحضيرية للترجمة)</span>
+                </div>
+                <p>لكي يشارك الحمض الأميني في تركيب البروتين، يجب أن يُربط أولاً بالناقل الخاص به وهو الـ <strong><span class="ltr-seq">ARNt</span> (ARN de transfert)</strong>. تتم هذه العملية بتدخل ثلاثة عناصر جوهرية :</p>
+                
+                <div class="doc-viewer" style="margin-top: 1rem;">
+                    <div class="doc-visual" style="background: #1e1b4b;">
+                        <h4 style="color: #c084fc; margin-bottom: 10px; font-size: 0.95rem;">شروط ومتطلبات عملية التنشيط</h4>
+                        <ul style="list-style-type: none; line-height: 2; font-size: 0.95rem;">
+                            <li>🧪 <strong>حمض أميني حر (<span class="ltr-seq">AA</span>)</strong> في الهيولى.</li>
+                            <li>🧬 <strong>ناقل نوعي (<span class="ltr-seq">ARNt</span>)</strong> يمتلك موقعين : موقع تثبيت الحمض الأميني، وموقع الرامزة المضادة (<span class="ltr-seq">Anticodon</span>).</li>
+                            <li>⚡ <strong>طاقة جزيئية (<span class="ltr-seq">ATP</span>)</strong> لإنشاء الرابطة الغنية بالطاقة.</li>
+                            <li>⚙️ <strong>إنزيم التنشيط النوعي (<span class="ltr-seq">Aminoacyl-ARNt synthétase</span>)</strong>.</li>
+                        </ul>
+                    </div>
+
+                    <div class="doc-analysis">
+                                                <div class="miftah-encadre">🔑 <b>مفتاح المنهجية:</b> البوابة 1 → <b>📄 ورقة</b> · البوابة 2 → <b>🎬 فيلم</b> (فسّر/علل → <span class="ltr-seq" style="font-size:.8rem">1→2→3→4</span>) · السنّ 3: <b>لأنّ</b> مسبوقة بمعطى من الوثيقة</div>
+                        <span class="method-tag" style="background: #f3e8ff; color: #6b21a8;">خطوات التنشيط في البكالوريا</span>
+                        <p style="margin-top: 5px;">1. يتوضع كل من الحمض الأميني والـ <span class="ltr-seq">ARNt</span> في المواقع الفعالة النوعية لإنزيم التنشيط.</p>
+                        <p>2. تتم إماهة جزيئة الـ <span class="ltr-seq">ATP</span> لربط الحمض الأميني بالـ <span class="ltr-seq">ARNt</span> برابطة إسترية غنية بالطاقة.</p>
+                        <p>3. يتحرر المعقد <strong>(حمض أميني - <span class="ltr-seq">ARNt</span> منشط)</strong> وينفصل عن الإنزيم ليتجه نحو الريبوزوم.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Step 4: Quiz Ch2 -->
+            <!-- خلاصة النشاط (standard 2026-09-21, ancrée au livre officiel — verrou resumes.lock ; restructuration É2 du résumé hérité) -->
+            <section class="card" id="resume">
+                <div class="section-title">
+                    <span class="step-num" style="background:#059669;">📝</span>
+                    <span>خلاصة الدرس</span>
+                </div>
+                <p style="font-weight:700; font-size:14px; margin:10px 0;">🎯 حدّد مقر تركيب البروتين عند حقيقيات النوى وشروط تنشيط الأحماض الأمينية.</p>
+                <ol style="margin:8px 0; padding-right:24px; line-height:1.9; font-size:13px;">
+                    <li style="margin-bottom:6px;">يتم تركيب البروتين في الهيولى وبالتحديد على مستوى الشبكة الهيولية المحببة.</li>
+                    <li style="margin-bottom:6px;">يبدأ التعبير المورثي بالاستنساخ في النواة واكتماله بالترجمة في الهيولى.</li>
+                    <li style="margin-bottom:6px;">تحمل النواة المعلومة الوراثية التي تنتقل إلى الهيولى لإنجاز التركيب.</li>
+                    <li style="margin-bottom:6px;">تنشط الأحماض الأمينية بإنزيمات وبطاقة ATP قبل ارتباطها بـ ARNt الموافق.</li>
+                    <li style="margin-bottom:6px;">يحمل الـ ARNm الرسول المعلومة الوراثية من النواة إلى الهيولى.</li>
+                </ol>
+                <p style="font-weight:800; font-size:13px; color:#b45309; margin-top:10px;">🔑 المصطلح المفتاحي في البكالوريا : الشبكة الهيولية المحببة / مقر تركيب البروتين</p>
+            </section>
+
+            <section class="card" id="ch2-step4">
+                <div class="section-title">
+                    <span class="step-num step-num-purple">4</span>
+                    <span>تقويم النشاط 2 : أسئلة البكالوريا المتكررة</span>
+                </div>
+
+                <div class="question-item" id="c2q1-container">
+                    <h4 style="margin-bottom: 12px;">1. كم عدد الرامزات التي لا تشفر لأي حمض أميني وتسمى "رامزات التوقف" (<span class="ltr-seq">Codons STOP</span>)؟</h4>
+                    <div class="options-grid">
+                        <button class="option-btn" onclick="checkCh2Answer(1, 0, false)">أ) رامزة واحدة فقط وهي <span class="ltr-seq">AUG</span>.</button>
+                        <button class="option-btn" onclick="checkCh2Answer(1, 1, true)">ب) 3 رامزات وهي : <span class="ltr-seq">UAA, UAG, UGA</span>.</button>
+                        <button class="option-btn" onclick="checkCh2Answer(1, 2, false)">ج) 64 رامزة بالكامل.</button>
+                    </div>
+                    <div class="feedback-box" id="c2q1-feedback"></div>
+                </div>
+
+                <div class="question-item" id="c2q2-container">
+                    <h4 style="margin-bottom: 12px;">2. إذا حدث طفرة أدت إلى تخريب موقع الرامزة المضادة (<span class="ltr-seq">Anticodon</span>) في جزيئة الـ <span class="ltr-seq">ARNt</span>، ماذا يحدث؟</h4>
+                    <div class="options-grid">
+                        <button class="option-btn" onclick="checkCh2Answer(2, 0, false)">أ) يتوقف استنساخ الـ <span class="ltr-seq">ADN</span> داخل النواة.</button>
+                        <button class="option-btn" onclick="checkCh2Answer(2, 1, true)">ب) يفشل الـ <span class="ltr-seq">ARNt</span> في التعرف على رامزة الـ <span class="ltr-seq">ARNm</span> الموافقة أثناء الترجمة في الريبوزوم.</button>
+                        <button class="option-btn" onclick="checkCh2Answer(2, 2, false)">ج) لا يتحلل جزيء الـ <span class="ltr-seq">ATP</span> أبداً.</button>
+                    </div>
+                    <div class="feedback-box" id="c2q2-feedback"></div>
+                    <div class="quiz-badge" id="c2-badge"></div>
+                </div>
+            </section>
+        </div>
+
+    </div>
+
+    <!-- Scripts -->
+    <script>
+        // Switch chapters
+        function showChapter(chId, evt) {
+            document.querySelectorAll('.chapter-view').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.ch-btn').forEach(el => el.classList.remove('active'));
+            document.getElementById(chId).classList.add('active');
+            if (evt) evt.target.classList.add('active');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Cell Explorer Time Switcher
+        function exploreTime(minutes, evt) {
+            document.querySelectorAll('.btn-exp').forEach(el => el.classList.remove('active'));
+            if (evt) evt.target.classList.add('active');
+
+            let box = document.getElementById('expDetailText');
+            if (minutes === 3) {
+                box.innerHTML = `<strong style="color: #60a5fa; font-size: 1.1rem;">⏱️ الحالة عند الزمن 3 دقائق :</strong>
+                <p style="margin-top: 8px;">يتمركز الإشعاع كليا على مستوى <strong>الشبكة الهيولية الداخلية المحببة (<span class="ltr-seq">REG</span>)</strong> المتواجدة في الهيولى. وهذا يدل على أن عملية دمج الأحماض الأمينية وتركيب السلسلة البيبتيدية تبدأ هنا بفضل الريبوزومات.</p>`;
+            } else if (minutes === 20) {
+                box.innerHTML = `<strong style="color: #a855f7; font-size: 1.1rem;">⏱️ الحالة عند الزمن 20 دقيقة :</strong>
+                <p style="margin-top: 8px;">ينتقل الإشعاع من الشبكة الهيولية المحببة ليستقر داخل <strong>جهاز غولجي (<span class="ltr-seq">Appareil de Golgi</span>)</strong> عبر حويصلات انتقالية، حيث يكتسب البروتين بنيته الفراغية النهائية ونضجه الوظيفي.</p>`;
+            } else if (minutes === 120) {
+                box.innerHTML = `<strong style="color: #4ade80; font-size: 1.1rem;">⏱️ الحالة عند الزمن 120 دقيقة (ساعتان) :</strong>
+                <p style="margin-top: 8px;">يتجمع الإشعاع داخل <strong>الحويصلات الإفرازية (<span class="ltr-seq">Vésicules de sécrétion</span>)</strong> التي تهاجر نحو الغشاء الهيولي لتطرح محتواها البروتيني خارج الخلية عن طريق ظاهرة الإطراح الخلوي (<span class="ltr-seq">Exocytose</span>).</p>`;
+            }
+        }
+
+        // Genetic Code Decoder
+        function decodeCodon() {
+            let n1 = document.getElementById('nuc1').value;
+            let n2 = document.getElementById('nuc2').value;
+            let n3 = document.getElementById('nuc3').value;
+            let codon = n1 + n2 + n3;
+
+            let box = document.getElementById('decoderBox');
+            let aa = "";
+            let desc = "";
+            let color = "#4ade80";
+
+            if (codon === "AUG") {
+                aa = "الميثيونين (Méthionine - Met)";
+                desc = "🟢 هذه هي <strong>رامزة البداية (Codon d'initiation)</strong> التي تنطلق منها دائما عملية الترجمة في الخلية.";
+            } else if (codon === "UAA" || codon === "UAG" || codon === "UGA") {
+                aa = "توقف الترجمة (Codon STOP)";
+                desc = "🛑 هذه <strong>رامزة توقف بدون حمض أميني</strong>، تؤدي إلى انفصال الريبوزوم وتحرير السلسلة البيبتيدية.";
+                color = "#ef4444";
+            } else if (n1 === "U" && n2 === "U" && (n3 === "U" || n3 === "C")) {
+                aa = "الفينيل ألانين (Phénylalanine - Phe)";
+                desc = "🔬 أول حمض أميني تم اكتشاف شفرته تاريخياً من طرف العالم نيرنبرغ باستعمال متعدد اليوراسيل (Poly-U).";
+            } else if (n1 === "C" && n2 === "C") {
+                aa = "البرولين (Proline - Pro)";
+                desc = "💡 نلاحظ أن الأحرف الأولى CC كافية لتحديد البرولين مهما كان الحرف الثالث (خاصية الترادف في الشفرة).";
+            } else if (n1 === "G" && n2 === "G") {
+                aa = "الغليسين (Glycine - Gly)";
+                desc = "🧪 أصغر حمض أميني في الطبيعة، تشفر له جميع الرامزات التي تبدأ بـ GG.";
+            } else {
+                aa = "حمض أميني محدد ضمن الشفرة الوراثية";
+                desc = "📖 كل رامزة ثلاثية على الـ <span class=\"ltr-seq\">ARNm</span> تقابلها رامزة مضادة على الـ <span class=\"ltr-seq\">ARNt</span> تحمل هذا الحمض الأميني بدقة.";
+            }
+
+            box.innerHTML = `
+                <div style="font-size: 1.5rem; font-family: monospace; color: #c084fc; font-weight: bold; direction: ltr;">5'- ${codon} -3'</div>
+                <h3 style="margin: 10px 0; color: ${color};">الحمض الأميني : ${aa}</h3>
+                <p style="font-size: 0.9rem; color: #cbd5e1;">${desc}</p>
+            `;
+        }
+
+        // Quiz Checkers
+        function checkCh1Answer(optIdx, isCorrect) {
+            let container = document.getElementById('c1q1-container');
+            let btns = container.querySelectorAll('.option-btn');
+            let fb = document.getElementById('c1q1-feedback');
+
+            btns.forEach((b, idx) => {
+                b.disabled = true;
+                if (idx === optIdx) b.classList.add(isCorrect ? 'correct' : 'wrong');
+            });
+
+            fb.style.display = 'block';
+            if (isCorrect) {
+                fb.style.background = '#f0fdf4'; fb.style.color = '#166534'; fb.style.border = '1px solid #bbf7d0';
+                fb.innerHTML = '<strong>✅ إجابة صحيحة ممتاز!</strong> الريبوزومات هي العضيات المسؤولة عن تجميع الأحماض الأمينية وتمنح الشبكة مظهرها المحبب.';
+            } else {
+                fb.style.background = '#fef2f2'; fb.style.color = '#991b1b'; fb.style.border = '1px solid #fecaca';
+                fb.innerHTML = '<strong>❌ إجابة خاطئة.</strong> الشبكة الهيولية تسمى محببة لأن غشاءها الخارجي مرصع بالريبوزومات التي تظهر كحبيبات دقيقة تحت المجهر الإلكتروني.';
+            }
+        }
+
+        function checkCh2Answer(qIdx, optIdx, isCorrect) {
+            let container = document.getElementById(`c2q${qIdx}-container`);
+            let btns = container.querySelectorAll('.option-btn');
+            let fb = document.getElementById(`c2q${qIdx}-feedback`);
+
+            btns.forEach((b, idx) => {
+                b.disabled = true;
+                if (idx === optIdx) b.classList.add(isCorrect ? 'correct' : 'wrong');
+            });
+
+            fb.style.display = 'block';
+            if (isCorrect) {
+                fb.style.background = '#f0fdf4'; fb.style.color = '#166534'; fb.style.border = '1px solid #bbf7d0';
+                fb.innerHTML = '<strong>✅ إجابة صحيحة ممتاز!</strong> تعليل علمي دقيق ومتوافق مع المنهج الرسمي.';
+            } else {
+                fb.style.background = '#fef2f2'; fb.style.color = '#991b1b'; fb.style.border = '1px solid #fecaca';
+                if (qIdx === 1) {
+                    fb.innerHTML = '<strong>❌ إجابة خاطئة.</strong> توجد 3 رامزات توقف في جدول الشفرة الوراثية (UAA, UAG, UGA) ولا تقابلها أي جزيئة ARNt.';
+                } else {
+                    fb.innerHTML = '<strong>❌ إجابة خاطئة.</strong> الرامزة المضادة على الـ ARNt تتكامل مع رامزة الـ ARNm في الريبوزوم، وتخريبها يمنع التعرف السليم على الرسالة الوراثية.';
+                }
+            }
+        }
+    
+        // === v3.2 prototype: sommaire + badges faible/moyen/mumtaz ===
+        let c1Score = null, c2Correct = 0, c2Answered = 0;
+        function scrollToStep(id, evt){
+            if(evt) evt.preventDefault();
+            const el = document.getElementById(id);
+            if(el) window.scrollTo({top: el.getBoundingClientRect().top + window.scrollY - 110, behavior:'smooth'});
+            document.querySelectorAll('.sommaire a').forEach(a=>a.classList.remove('active'));
+            const link = document.getElementById('link-'+id);
+            if(link) link.classList.add('active');
+            const ch = id.startsWith('ch1') ? 'ch1' : 'ch2';
+            if(!document.getElementById(ch).classList.contains('active')){
+                document.querySelectorAll('.chapter-view').forEach(el=>el.classList.remove('active'));
+                document.getElementById(ch).classList.add('active');
+                document.querySelectorAll('.ch-btn').forEach(b=>b.classList.remove('active'));
+                const btnIdx = ch==='ch1'?0:1;
+                document.querySelectorAll('.ch-btn')[btnIdx].classList.add('active');
+            }
+        }
+        function updateBadgeC1(isCorrect){
+            c1Score = isCorrect ? 100 : 0;
+            const badge = document.getElementById('c1-badge');
+            badge.classList.add('show');
+            if(c1Score===100){ badge.className='quiz-badge show mumtaz'; badge.innerHTML='ممتاز (fort) — 100% · <span style="font-weight:600">يمكنك المرور إلى النشاط 2 أو إعادة التحدي</span> <a href="#ch1-step2" onclick="scrollToStep(\'ch1-step2\',event)" style="color:#166534;text-decoration:underline">مراجعة التحليل</a>'; }
+            else { badge.className='quiz-badge show faible'; badge.innerHTML='ضعيف (faible) — 0% · راجع السنّ 2 (الريبوزومات على REG) ثم أعد المحاولة'; }
+        }
+        function updateBadgeC2(isCorrect){
+            c2Answered++; if(isCorrect) c2Correct++;
+            if(c2Answered<2) return;
+            const score = Math.round(c2Correct/2*100);
+            const badge = document.getElementById('c2-badge');
+            badge.classList.add('show');
+            if(score===100){ badge.className='quiz-badge show mumtaz'; badge.textContent='ممتاز (fort) — 100% · جاهز للتدريب المنهجي : حلّل وثيقة الشفرة'; }
+            else if(score===50){ badge.className='quiz-badge show moyen'; badge.textContent='متوسط (moyen) — 50% · راجع رامزات التوقف (UAA/UAG/UGA) ثم أعد'; }
+            else { badge.className='quiz-badge show faible'; badge.textContent='ضعيف (faible) — 0% · راجع الإشكالية الرياضية 4^3=64'; }
+        }
+        (function(){
+            const _origCheckCh1 = window.checkCh1Answer;
+            window.checkCh1Answer = function(optIdx, isCorrect){
+                _origCheckCh1(optIdx, isCorrect);
+                updateBadgeC1(isCorrect);
+            };
+            const _origCheckCh2 = window.checkCh2Answer;
+            window.checkCh2Answer = function(qIdx, optIdx, isCorrect){
+                _origCheckCh2(qIdx, optIdx, isCorrect);
+                updateBadgeC2(isCorrect);
+            };
+        })();
+        const observer = new IntersectionObserver((entries)=>{
+            entries.forEach(e=>{
+                if(e.isIntersecting){
+                    document.querySelectorAll('.sommaire a').forEach(a=>a.classList.remove('active'));
+                    const link = document.getElementById('link-'+e.target.id);
+                    if(link) link.classList.add('active');
+                }
+            });
+        }, {rootMargin:'-120px 0px -70% 0px', threshold:0});
+        window.addEventListener('DOMContentLoaded', ()=>{
+            document.querySelectorAll('section.card[id]').forEach(s=>observer.observe(s));
+        });
+
+    </script>
+<!-- PFE-ZOOM v1 — démarrage (généré, ne pas éditer à la main) -->
+<style id="pfe-zoom-style">
+    /* PFE-ZOOM — pastille de zoom */
+    .pfe-zoom-badge {
+        position: fixed;
+        z-index: 2147483000;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 7px 12px;
+        border: 0;
+        border-radius: 999px;
+        background: #006d37;
+        color: #fff;
+        font: 700 13px/1.1 system-ui, "Segoe UI", Tahoma, sans-serif;
+        box-shadow: 0 6px 18px rgba(0, 0, 0, .28);
+        cursor: pointer;
+        direction: rtl;
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+        transition: opacity .12s ease;
+        -webkit-tap-highlight-color: transparent;
+    }
+    .pfe-zoom-badge.is-visible { opacity: 1; visibility: visible; pointer-events: auto; }
+    .pfe-zoom-badge:hover { background: #00562b; }
+    .pfe-zoom-badge svg { width: 15px; height: 15px; }
+
+    /* Verrou de défilement du document pendant l'agrandissement */
+    html.pfe-zoom-lock, html.pfe-zoom-lock body { overflow: hidden !important; }
+
+    /* PFE-ZOOM — superposition plein écran */
+    .pfe-zoom-overlay {
+        position: fixed;
+        inset: 0;
+        z-index: 2147483100;
+        display: none;
+        flex-direction: column;
+        background: rgba(6, 12, 9, .95);
+        color: #f4faf6;
+        direction: rtl;
+        font-family: system-ui, "Segoe UI", Tahoma, sans-serif;
+        touch-action: none;
+        overscroll-behavior: contain;
+    }
+    .pfe-zoom-overlay.is-open { display: flex; }
+    .pfe-zoom-bar {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-wrap: wrap;
+        padding: 10px 14px;
+        background: rgba(255, 255, 255, .07);
+        border-bottom: 1px solid rgba(255, 255, 255, .14);
+    }
+    .pfe-zoom-title {
+        flex: 1 1 200px;
+        min-width: 0;
+        font-weight: 700;
+        font-size: 15px;
+        line-height: 1.4;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    .pfe-zoom-btn {
+        min-width: 42px;
+        height: 38px;
+        padding: 0 12px;
+        border-radius: 10px;
+        border: 1px solid rgba(255, 255, 255, .22);
+        background: rgba(255, 255, 255, .1);
+        color: #fff;
+        font: 700 15px/1 system-ui, "Segoe UI", Tahoma, sans-serif;
+        cursor: pointer;
+    }
+    .pfe-zoom-btn:hover { background: rgba(255, 255, 255, .24); }
+    .pfe-zoom-btn.is-close { background: #b3261e; border-color: #b3261e; }
+    .pfe-zoom-pct {
+        min-width: 64px;
+        text-align: center;
+        font-weight: 700;
+        font-size: 14px;
+        font-variant-numeric: tabular-nums;
+    }
+    .pfe-zoom-stage {
+        position: relative;
+        flex: 1 1 auto;
+        overflow: hidden;
+        cursor: grab;
+        touch-action: none;
+        background: rgba(255, 255, 255, .04);
+    }
+    .pfe-zoom-stage.is-dragging { cursor: grabbing; }
+    .pfe-zoom-canvas { position: absolute; top: 0; left: 0; transform-origin: 0 0; will-change: transform; }
+    .pfe-zoom-canvas svg,
+    .pfe-zoom-canvas img {
+        display: block;
+        max-width: none !important;
+        max-height: none !important;
+        background: #fff;
+        border-radius: 10px;
+        box-shadow: 0 14px 46px rgba(0, 0, 0, .5);
+    }
+    .pfe-zoom-foot {
+        padding: 8px 14px;
+        font-size: 12.5px;
+        line-height: 1.5;
+        color: rgba(244, 250, 246, .78);
+        text-align: center;
+        border-top: 1px solid rgba(255, 255, 255, .12);
+    }
+    @media (max-width: 640px) {
+        .pfe-zoom-title { font-size: 13.5px; }
+        .pfe-zoom-foot { font-size: 11.5px; }
+    }
+</style>
+<script id="pfe-zoom-runtime">
+(function () {
+    'use strict';
+    if (window.__pfeZoomRuntime) { return; }
+    window.__pfeZoomRuntime = true;
+
+    var MIN_W = 150;            /* taille minimale d'une figure « zoomable »  */
+    var MIN_H = 100;
+    var ZMIN = 0.3;
+    var ZMAX = 20;
+    var STEP = 1.25;
+    var HINT = 'اسحب للتحريك · عجلة الفأرة أو + / − للتكبير · نقر مزدوج = تبديل الملاءمة · Esc للإغلاق';
+
+    var badge = null;
+    var badgeFig = null;
+    var overlay = null;
+    var stage = null;
+    var canvas = null;
+    var titleEl = null;
+    var pctEl = null;
+    var openFig = null;
+    var cloneSeq = 0;
+    var bound = [];             /* écouteurs globaux mémorisés (démontage exact) */
+    var wired = false;          /* écouteurs clavier/fullscreen branchés (idempotent) */
+    var st = { s: 1, base: 1, tx: 0, ty: 0, nw: 0, nh: 0, fit: true };
+
+    /* ── Utilitaires ─────────────────────────────────────────────────────── */
+    function node(tag, cls, text) {
+        var n = document.createElement(tag);
+        if (cls) { n.className = cls; }
+        if (text !== undefined && text !== null) { n.textContent = text; }
+        return n;
+    }
+
+    function button(label, tip, fn, extra) {
+        var b = node('button', 'pfe-zoom-btn' + (extra ? ' ' + extra : ''), label);
+        b.setAttribute('type', 'button');
+        b.setAttribute('title', tip);
+        b.setAttribute('aria-label', tip);
+        b.addEventListener('click', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            fn();
+        });
+        return b;
+    }
+
+    function textOf(n) {
+        return n ? String(n.textContent || '').replace(/\s+/g, ' ').trim() : '';
+    }
+
+    /* Écouteur global mémorisé : indispensable pour un démontage EXACT (tests
+       automatisés multi-documents, démontage d'une couche React, SPA). */
+    function bind(target, type, fn, capture) {
+        var cap = !!capture;
+        target.addEventListener(type, fn, cap);
+        bound.push([target, type, fn, cap]);
+    }
+
+    /* Élément interdit au zoom : contrôles, liens, icônes décoratives. */
+    function blocked(el) {
+        if (!el || !el.closest) { return true; }
+        if (el.closest('button,a,label,select,input,textarea,header,nav,footer,.no-zoom,[data-no-zoom],[data-pfe-zoom-skip]')) { return true; }
+        return el.getAttribute('aria-hidden') === 'true';
+    }
+
+    function bigEnough(el) {
+        var r = el.getBoundingClientRect();
+        return r.width >= MIN_W && r.height >= MIN_H;
+    }
+
+    /* Remonte du nœud cliqué vers la figure (svg ou image) la plus proche. */
+    function figureFrom(target) {
+        var el = target && target.nodeType === 1 ? target : (target ? target.parentElement : null);
+        while (el && el !== document.documentElement) {
+            var tag = el.tagName ? el.tagName.toLowerCase() : '';
+            if (tag === 'svg' || tag === 'img') {
+                if (blocked(el) || !bigEnough(el)) { return null; }
+                return el;
+            }
+            el = el.parentElement;
+        }
+        return null;
+    }
+
+    /* ── Clonage : préfixe les ids pour éviter tout doublon dans le document ─ */
+    function rewriteRefs(value, map) {
+        return value.replace(/url\(\s*(['"]?)#([^)'"\s]+)\1\s*\)/g, function (m, q, id) {
+            return map[id] ? 'url(' + q + '#' + map[id] + q + ')' : m;
+        });
+    }
+
+    function prepareClone(source) {
+        var clone = source.cloneNode(true);
+        cloneSeq += 1;
+        var prefix = 'pfez' + cloneSeq + '-';
+        if (clone.tagName.toLowerCase() === 'img') { return clone; }
+
+        var map = {};
+        var withId = clone.querySelectorAll('[id]');
+        var i;
+        for (i = 0; i < withId.length; i++) {
+            var oldId = withId[i].getAttribute('id');
+            map[oldId] = prefix + oldId;
+            withId[i].setAttribute('id', prefix + oldId);
+        }
+        if (clone.getAttribute('id')) {
+            var rootId = clone.getAttribute('id');
+            map[rootId] = prefix + rootId;
+            clone.setAttribute('id', prefix + rootId);
+        }
+
+        /* Réécrit les références internes d'un nœud (racine INCLUSE) : attributs
+           de peinture, marker-*, href/xlink:href, et le texte des <style> embarqués
+           (sélecteurs #id ou url(#id)) qui portent souvent les marqueurs de flèches. */
+        var attrs = ['fill', 'stroke', 'filter', 'clip-path', 'mask', 'style', 'marker-start', 'marker-mid', 'marker-end'];
+        function rewriteNode(n) {
+            for (var k = 0; k < attrs.length; k++) {
+                var v = n.getAttribute(attrs[k]);
+                if (v && v.indexOf('#') > -1) { n.setAttribute(attrs[k], rewriteRefs(v, map)); }
+            }
+            var href = n.getAttribute('href');
+            if (href && href.charAt(0) === '#' && map[href.slice(1)]) {
+                n.setAttribute('href', '#' + map[href.slice(1)]);
+            }
+            var xlink = n.getAttribute('xlink:href');
+            if (xlink && xlink.charAt(0) === '#' && map[xlink.slice(1)]) {
+                n.setAttribute('xlink:href', '#' + map[xlink.slice(1)]);
+            }
+            if ((n.tagName || '').toLowerCase() === 'style' && n.textContent) {
+                n.textContent = n.textContent.replace(/#([A-Za-z_][A-Za-z0-9_-]*)/g, function (m, id) {
+                    return map[id] ? '#' + map[id] : m;
+                });
+            }
+        }
+        var all = clone.querySelectorAll('*');
+        rewriteNode(clone);
+        for (i = 0; i < all.length; i++) {
+            rewriteNode(all[i]);
+        }
+        return clone;
+    }
+
+    /* ── Pastille flottante au survol ─────────────────────────────────────── */
+    function ensureBadge() {
+        if (badge) { return; }
+        badge = node('button', 'pfe-zoom-badge', '\uD83D\uDD0D تكبير');
+        badge.setAttribute('type', 'button');
+        badge.setAttribute('title', 'تكبير الشكل لقراءته بوضوح');
+        badge.setAttribute('aria-label', 'تكبير الشكل');
+        badge.addEventListener('click', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            if (badgeFig) { open(badgeFig); }
+        });
+        document.body.appendChild(badge);
+    }
+
+    function positionBadge() {
+        if (!badge || !badgeFig) { return; }
+        var r = badgeFig.getBoundingClientRect();
+        var w = badge.offsetWidth || 96;
+        var h = badge.offsetHeight || 32;
+        var left = r.left + 8;
+        var top = r.bottom - h - 8;
+        if (top < 8) { top = r.top + 8; }
+        if (left + w > window.innerWidth - 8) { left = Math.max(8, r.right - w - 8); }
+        if (top + h > window.innerHeight - 8) { top = Math.max(8, window.innerHeight - h - 8); }
+        badge.style.left = Math.max(8, left) + 'px';
+        badge.style.top = Math.max(8, top) + 'px';
+    }
+
+    function showBadge(fig) {
+        ensureBadge();
+        badgeFig = fig;
+        positionBadge();
+        badge.classList.add('is-visible');
+    }
+
+    function hideBadge() {
+        badgeFig = null;
+        if (badge) { badge.classList.remove('is-visible'); }
+    }
+
+    /* Titre porté par la figure elle-même : le plus fiable (aria-label sur les
+       figures ProFigure, alt sur les schémas image, <title>/<desc> sinon). */
+    function ownTitle(el) {
+        var t = el.getAttribute('aria-label') || el.getAttribute('data-title') || '';
+        if (!t && el.tagName.toLowerCase() === 'img') { t = el.getAttribute('alt') || ''; }
+        if (!t && el.querySelector) { t = textOf(el.querySelector('title,desc')); }
+        return t ? String(t).replace(/\s+/g, ' ').trim() : '';
+    }
+
+    function figureTitle(el) {
+        var self = ownTitle(el);
+        if (self) { return self; }
+        var host = el.closest ? el.closest('figure,.svg-container,.doc-visual,.visual-card,section') : null;
+        if (host) {
+            var cap = host.querySelector('figcaption,.svg-caption,.figure-caption,.caption,.svg-title');
+            var capText = textOf(cap);
+            if (capText) { return capText; }
+        }
+        var probe = el;
+        var hops = 0;
+        while (probe && hops < 60) {
+            probe = probe.previousElementSibling || probe.parentElement;
+            hops += 1;
+            if (!probe || probe === document.body) { break; }
+            var head = /^H[1-4]$/.test(probe.tagName || '') ? probe : probe.querySelector('h1,h2,h3,h4');
+            var headText = textOf(head);
+            if (headText) { return headText; }
+        }
+        return textOf(document.querySelector('h1,h2')) || 'الشكل';
+    }
+
+    /* Taille « naturelle » : viewBox pour un SVG (vectoriel net à 100 %), pixels pour une image. */
+    function naturalSize(el) {
+        if (el.tagName.toLowerCase() === 'img') {
+            var r = el.getBoundingClientRect();
+            return [el.naturalWidth || r.width || 900, el.naturalHeight || r.height || 600];
+        }
+        var vb = el.viewBox && el.viewBox.baseVal;
+        if (vb && vb.width && vb.height) { return [vb.width, vb.height]; }
+        var box = el.getBoundingClientRect();
+        return [box.width || 900, box.height || 500];
+    }
+
+    /* ── Manipulation : glisser, molette, pincement, double-clic ──────────── */
+    function bindStage() {
+        var pointers = {};
+        var drag = null;
+        var pinch = null;
+
+        function count() {
+            var n = 0;
+            for (var k in pointers) { if (pointers[k]) { n += 1; } }
+            return n;
+        }
+
+        function list() {
+            var out = [];
+            for (var k in pointers) { if (pointers[k]) { out.push(pointers[k]); } }
+            return out;
+        }
+
+        function distance(a, b) {
+            var dx = a.clientX - b.clientX;
+            var dy = a.clientY - b.clientY;
+            return Math.sqrt(dx * dx + dy * dy) || 1;
+        }
+
+        function release(e) {
+            delete pointers[e.pointerId];
+            if (count() < 2) { pinch = null; }
+            if (count() === 0) {
+                drag = null;
+                stage.classList.remove('is-dragging');
+            }
+        }
+
+        stage.addEventListener('pointerdown', function (e) {
+            if (e.pointerType === 'mouse' && e.button !== 0) { return; }
+            pointers[e.pointerId] = e;
+            try { stage.setPointerCapture(e.pointerId); } catch (err) {}
+            if (count() === 1) {
+                drag = { x: e.clientX, y: e.clientY, tx: st.tx, ty: st.ty };
+                stage.classList.add('is-dragging');
+            } else if (count() === 2) {
+                drag = null;
+                var two = list();
+                var p = localPoint(two[0]);
+                var q = localPoint(two[1]);
+                pinch = { d: distance(two[0], two[1]), s: st.s, cx: (p[0] + q[0]) / 2, cy: (p[1] + q[1]) / 2 };
+            }
+            e.preventDefault();
+        });
+
+        stage.addEventListener('pointermove', function (e) {
+            if (!pointers[e.pointerId]) { return; }
+            pointers[e.pointerId] = e;
+            if (pinch && count() === 2) {
+                var pair = list();
+                var mid = localPoint(pair[0]);
+                zoomTo(pinch.s * (distance(pair[0], pair[1]) / pinch.d), mid[0], mid[1]);
+                return;
+            }
+            if (drag) {
+                st.tx = drag.tx + (e.clientX - drag.x);
+                st.ty = drag.ty + (e.clientY - drag.y);
+                st.fit = false;
+                apply();
+            }
+        });
+
+        stage.addEventListener('pointerup', release);
+        stage.addEventListener('pointercancel', release);
+        stage.addEventListener('lostpointercapture', release);
+
+        stage.addEventListener('wheel', function (e) {
+            e.preventDefault();
+            var p = localPoint(e);
+            zoomBy(e.deltaY < 0 ? 1.14 : 1 / 1.14, p[0], p[1]);
+        }, { passive: false });
+
+        stage.addEventListener('dblclick', function (e) {
+            e.preventDefault();
+            if (st.fit || st.s <= st.base * 1.05) {
+                var p = localPoint(e);
+                zoomTo(Math.max(1, st.base * 2), p[0], p[1]);
+            } else {
+                fitView();
+            }
+        });
+    }
+
+    /* ── Superposition plein écran ────────────────────────────────────────── */
+    function stageSize() {
+        var r = stage.getBoundingClientRect();
+        return [r.width, r.height];
+    }
+
+    function apply() {
+        canvas.style.transform = 'translate(' + st.tx + 'px,' + st.ty + 'px) scale(' + st.s + ')';
+        if (pctEl) { pctEl.textContent = Math.round(st.s * 100) + '%'; }
+    }
+
+    function fitView() {
+        var s = stageSize();
+        var pad = 28;
+        var k = Math.min((s[0] - pad) / st.nw, (s[1] - pad) / st.nh);
+        if (!isFinite(k) || k <= 0) { k = 1; }
+        st.s = k;
+        st.base = k;
+        st.fit = true;
+        st.tx = (s[0] - st.nw * k) / 2;
+        st.ty = (s[1] - st.nh * k) / 2;
+        apply();
+    }
+
+    function zoomTo(target, px, py) {
+        var s = stageSize();
+        if (px === undefined) { px = s[0] / 2; }
+        if (py === undefined) { py = s[1] / 2; }
+        var next = Math.min(ZMAX, Math.max(ZMIN, target));
+        var f = next / st.s;
+        st.tx = px - (px - st.tx) * f;
+        st.ty = py - (py - st.ty) * f;
+        st.s = next;
+        st.fit = false;
+        apply();
+    }
+
+    function zoomBy(factor, px, py) {
+        zoomTo(st.s * factor, px, py);
+    }
+
+    function localPoint(e) {
+        var r = stage.getBoundingClientRect();
+        return [e.clientX - r.left, e.clientY - r.top];
+    }
+
+    function ensureOverlay() {
+        if (overlay) { return; }
+
+        overlay = node('section', 'pfe-zoom-overlay');
+        overlay.setAttribute('role', 'dialog');
+        overlay.setAttribute('aria-modal', 'true');
+        overlay.setAttribute('aria-label', 'عرض الشكل مكبَّرًا');
+
+        var bar = node('div', 'pfe-zoom-bar');
+        titleEl = node('div', 'pfe-zoom-title', '');
+        pctEl = node('span', 'pfe-zoom-pct', '100%');
+        bar.appendChild(titleEl);
+        bar.appendChild(pctEl);
+        bar.appendChild(button('−', 'تصغير', function () { zoomBy(1 / STEP); }));
+        bar.appendChild(button('+', 'تكبير', function () { zoomBy(STEP); }));
+        bar.appendChild(button('ملاءمة', 'إعادة الملاءمة إلى الشاشة', function () { fitView(); }));
+        bar.appendChild(button('100%', 'الحجم الأصلي للشكل', function () { zoomTo(1); }));
+        bar.appendChild(button('نافذة', 'فتح الشكل في نافذة مستقلة', openStandalone));
+        bar.appendChild(button('إغلاق', 'إغلاق (Esc)', close, 'is-close'));
+
+        stage = node('div', 'pfe-zoom-stage');
+        canvas = node('div', 'pfe-zoom-canvas');
+        stage.appendChild(canvas);
+
+        overlay.appendChild(bar);
+        overlay.appendChild(stage);
+        overlay.appendChild(node('div', 'pfe-zoom-foot', HINT));
+        document.body.appendChild(overlay);
+
+        bindStage();
+        overlay.addEventListener('click', function (e) {
+            if (e.target === overlay) { close(); }
+        });
+    }
+
+    function open(fig) {
+        if (!fig) { return; }
+        ensureOverlay();
+        openFig = fig;
+        hideBadge();
+        canvas.innerHTML = '';
+        canvas.appendChild(prepareClone(fig));
+
+        var nat = naturalSize(fig);
+        st.nw = Math.max(1, nat[0]);
+        st.nh = Math.max(1, nat[1]);
+        canvas.firstChild.style.width = st.nw + 'px';
+        canvas.firstChild.style.height = st.nh + 'px';
+        titleEl.textContent = figureTitle(fig);
+
+        overlay.classList.add('is-open');
+        document.documentElement.classList.add('pfe-zoom-lock');
+        fitView();
+        goFullscreen();
+        /* Idempotent : une seule paire d'écouteurs actifs à la fois. */
+        if (!wired) {
+            wired = true;
+            document.addEventListener('keydown', onKey, true);
+            window.addEventListener('resize', onResize);
+            document.addEventListener('fullscreenchange', onResize);
+        }
+    }
+
+    function close() {
+        if (!overlay) { return; }
+        overlay.classList.remove('is-open');
+        document.documentElement.classList.remove('pfe-zoom-lock');
+        if (wired) {
+            wired = false;
+            document.removeEventListener('keydown', onKey, true);
+            window.removeEventListener('resize', onResize);
+            document.removeEventListener('fullscreenchange', onResize);
+        }
+        if (document.fullscreenElement && document.exitFullscreen) {
+            try { document.exitFullscreen(); } catch (err) {}
+        }
+        canvas.innerHTML = '';
+        openFig = null;
+        st.fit = true;
+        hideBadge();
+    }
+
+    function goFullscreen() {
+        var fn = overlay.requestFullscreen || overlay.webkitRequestFullscreen || overlay.msRequestFullscreen;
+        if (!fn) { return; }
+        try {
+            var p = fn.call(overlay);
+            if (p && p.catch) { p.catch(function () {}); }
+        } catch (err) {}
+    }
+
+    function onResize() {
+        if (!overlay || !overlay.classList.contains('is-open')) { return; }
+        if (st.fit) { fitView(); } else { apply(); }
+    }
+
+    function onKey(e) {
+        if (!overlay || !overlay.classList.contains('is-open')) { return; }
+        var k = e.key;
+        if (k === 'Escape') { close(); }
+        else if (k === '+' || k === '=') { zoomBy(STEP); }
+        else if (k === '-' || k === '_') { zoomBy(1 / STEP); }
+        else if (k === '0') { fitView(); }
+        else if (k === 'ArrowUp') { st.ty += 48; apply(); }
+        else if (k === 'ArrowDown') { st.ty -= 48; apply(); }
+        else if (k === 'ArrowRight') { st.tx -= 48; apply(); }
+        else if (k === 'ArrowLeft') { st.tx += 48; apply(); }
+        else { return; }
+        e.preventDefault();
+        e.stopPropagation();
+    }
+
+    /* ── Figure seule dans une fenêtre (zoom natif du navigateur + impression) */
+    function escapeHtml(value) {
+        return String(value)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;');
+    }
+
+    function openStandalone() {
+        if (!openFig) { return; }
+        var clone = prepareClone(openFig);
+        clone.style.width = '100%';
+        clone.style.height = 'auto';
+        clone.style.maxWidth = 'none';
+
+        var styles = '';
+        var sheets = document.querySelectorAll('style');
+        for (var i = 0; i < sheets.length; i++) { styles += String(sheets[i].textContent || ''); }
+
+        var title = escapeHtml(figureTitle(openFig));
+        var extra = 'html,body{margin:0;background:#fff;color:#111}' +
+            'body{padding:18px 16px 64px;font-family:system-ui,"Segoe UI",Tahoma,sans-serif;direction:rtl}' +
+            '.pfe-standalone-title{font-size:17px;font-weight:700;margin:0 0 14px;line-height:1.5}' +
+            '.pfe-standalone-fig{margin:0;padding:12px;border:1px solid #e2e8e0;border-radius:16px;background:#fff}' +
+            '.pfe-standalone-fig svg,.pfe-standalone-fig img{width:100%;height:auto;max-width:none}' +
+            '.pfe-standalone-tip{margin-top:16px;font-size:13.5px;color:#3f5147;text-align:center;line-height:1.7}' +
+            '@media print{.pfe-standalone-tip{display:none}}';
+
+        var doc = '<!DOCTYPE html><html dir="rtl" lang="ar"><head><meta charset="utf-8">' +
+            '<meta name="viewport" content="width=device-width,initial-scale=1">' +
+            '<title>' + title + '</title>' +
+            '<style>' + styles + '</style><style>' + extra + '</style></head><body>' +
+            '<h1 class="pfe-standalone-title">' + title + '</h1>' +
+            '<figure class="pfe-standalone-fig">' + clone.outerHTML + '</figure>' +
+            '<p class="pfe-standalone-tip">استعمل Ctrl مع عجلة الفأرة، أو أزرار التكبير في المتصفح · ' +
+            'F11 لملء الشاشة · Ctrl + P للطباعة</p></body></html>';
+
+        var w = window.open('', '_blank');
+        if (!w) { return; }
+        w.document.open();
+        w.document.write(doc);
+        w.document.close();
+    }
+
+    /* ── Câblage des événements (délégation : aucun nœud ajouté aux figures) ─ */
+    bind(document, 'pointerover', function (e) {
+        if (overlay && overlay.classList.contains('is-open')) { return; }
+        if (badge && badge.contains(e.target)) { return; }
+        var fig = figureFrom(e.target);
+        if (!fig) {
+            if (badgeFig) { hideBadge(); }
+            return;
+        }
+        if (fig !== badgeFig) { showBadge(fig); }
+    }, true);
+
+    bind(document, 'pointerout', function (e) {
+        if (!badgeFig) { return; }
+        if (badge && badge.contains(e.target)) { return; }
+        /* La pastille est montée dans document.body, JAMAIS dans la figure :
+           en passant de la figure à la pastille, relatedTarget vaut la pastille,
+           figureFrom() remonte jusqu'au <html> et renvoie null, ce qui masquait
+           la pastille au moment exact où l'on visait le clic. Elle est donc
+           traitée comme l'intérieur de la figure. */
+        if (badge && badge.contains(e.relatedTarget)) { return; }
+        if (figureFrom(e.relatedTarget) !== badgeFig) { hideBadge(); }
+    }, true);
+
+    var pending = false;
+    bind(window, 'scroll', function () {
+        if (!badgeFig || pending) { return; }
+        pending = true;
+        window.requestAnimationFrame(function () {
+            pending = false;
+            if (badgeFig) { positionBadge(); }
+        });
+    }, true);
+
+    bind(window, 'resize', function () {
+        if (badgeFig) { positionBadge(); }
+    });
+
+    bind(document, 'click', function (e) {
+        if (e.button !== 0 || e.defaultPrevented || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) { return; }
+        if (overlay && overlay.classList.contains('is-open')) { return; }
+        if (badge && badge.contains(e.target)) { return; }
+        var fig = figureFrom(e.target);
+        if (!fig) { return; }
+        e.preventDefault();
+        open(fig);
+    }, true);
+
+    /* Démontage exact : ferme, retire pastille/superposition et détache tous les
+       écouteurs (le runtime peut alors être rebranché sur un autre document). */
+    function destroy() {
+        close();
+        for (var i = 0; i < bound.length; i++) {
+            var h = bound[i];
+            h[0].removeEventListener(h[1], h[2], h[3]);
+        }
+        bound.length = 0;
+        if (badge && badge.parentNode) { badge.parentNode.removeChild(badge); }
+        if (overlay && overlay.parentNode) { overlay.parentNode.removeChild(overlay); }
+        badge = null;
+        badgeFig = null;
+        overlay = null;
+        stage = null;
+        canvas = null;
+        titleEl = null;
+        pctEl = null;
+        openFig = null;
+        window.__pfeZoomRuntime = false;
+        window.__pfeZoom = null;
+    }
+
+    /* API publique minimale (tests automatiques + usages programmatiques). */
+    window.__pfeZoom = { open: open, close: close, figureAt: figureFrom, destroy: destroy };
+})();
+
+</script>
+<!-- PFE-ZOOM v1 — fin (généré) -->
+</body>
+</html>
