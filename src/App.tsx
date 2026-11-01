@@ -685,7 +685,7 @@ export default function App() {
     // Automatically unlock next unit if scored well (>= 60%)
     if (activeQuizUnitId !== null && percent >= 60 && activeQuizUnitId < units.length) {
       const nextId = activeQuizUnitId + 1;
-      updatedUnits[nextId - 1].isLocked = false;
+      updatedUnits[nextId - 1] = { ...updatedUnits[nextId - 1], isLocked: false };
     }
 
     const updatedHistory = [
@@ -832,7 +832,28 @@ export default function App() {
       window.navigator.vibrate(50);
     }
     setCurrentTab(tab);
+    if (typeof window !== 'undefined' && window.history && window.history.pushState) {
+      const current = window.location.hash;
+      const next = `#__kunz_current_tab__=${encodeURIComponent(tab)}`;
+      if (!current || current === '#') {
+        window.history.replaceState({ tab }, '', next);
+      } else if (current !== next) {
+        window.history.pushState({ tab }, '', next);
+      }
+    }
   };
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const onWebTabChange = (ev: Event) => {
+      const detail = (ev as CustomEvent<{ tab: string }>).detail;
+      if (detail?.tab && detail.tab !== currentTab) {
+        setCurrentTab(detail.tab as typeof currentTab);
+      }
+    };
+    window.addEventListener('kunz-web-tab-change', onWebTabChange as EventListener);
+    return () => window.removeEventListener('kunz-web-tab-change', onWebTabChange as EventListener);
+  }, [currentTab]);
 
   // U1 (audits Opus 5.5 / Gemini 3.8) : navigation principale consolidée 12 → 5.
   // Les vues secondaires restent accessibles à un clic (groupe « المزيد »)
@@ -1390,7 +1411,7 @@ export default function App() {
           et défi (activeCombatChallenge). Mesure s_quiz : elle couvrait la
           barre de navigation du quiz. */}
       {!isFocusMode && !epreuveEnCours && currentTab !== 'chat' && activeQuizUnitId === null && activeCombatChallenge === null && (
-        <div className="fixed bottom-24 left-4 z-40 md:bottom-8 flex flex-col items-start gap-2">
+        <div className="fixed bottom-24 right-4 z-40 md:bottom-8 flex flex-col items-end gap-2">
           {/*
             LA BULLE PARLE AU BON MOMENT, PAS EN PERMANENCE (loi 1). Un signal
             toujours présent n'est plus un signal : c'est le mur du fond qui

@@ -68,6 +68,21 @@ if ('serviceWorker' in navigator && !import.meta.env.PROD) {
   });
 }
 
+// WEB : le bouton retour du navigateur suit la navigation interne par onglets.
+// L'APK Capacitor garde son propre listener matériel (voir bloc suivant).
+if (!estApkCapacitor) {
+  const currentTabKey = '__kunz_current_tab__';
+  // Initialise la navigation web si l'historique est vide.
+  if (window.history && window.history.replaceState && window.location.hash !== `#${currentTabKey}`) {
+    window.history.replaceState({ tab: 'home' }, '', `#${currentTabKey}=home`);
+  }
+  window.addEventListener('popstate', () => {
+    const match = window.location.hash.match(new RegExp(`${currentTabKey}=([^&]+)`));
+    const nextTab = match ? decodeURIComponent(match[1]) : 'home';
+    window.dispatchEvent(new CustomEvent('kunz-web-tab-change', { detail: { tab: nextTab } }));
+  });
+}
+
 // ============================================================
 // BOUTON RETOUR ANDROID (H2, 23/10/2026 — audit ARTEMIS + demande
 // explicite : « le retour matériel quitte l'app »).
