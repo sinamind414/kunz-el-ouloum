@@ -206,3 +206,100 @@ describe('TadwinView — rappel espacé (carnet masqué)', () => {
     );
   });
 });
+
+// ──────────────────────────────────────────────────────────────────────────────
+// 4. StatutRappel — reporter / désactiver / réactiver (Commit 2)
+// ──────────────────────────────────────────────────────────────────────────────
+
+describe('TadwinView — StatutRappel', () => {
+  /** Crée une fiche due dans le carnet et force l_état palier 4. */
+  async function preparerPalier4(reponse: string = REPONSE_2_CLES) {
+    const { enregistrerFiche, ecrireEtat } = await import('../../lib/tadwin/tadwinEngine');
+    // Créer une fiche due dans le passé
+    const fiche = enregistrerFiche(reponse, {
+      uniteId: 1,
+      clesChoisies: ['استنساخ (النواة/ARN بوليميراز)', 'ARNm'],
+    }, Date.now() - 2 * 24 * 60 * 60 * 1000);
+    ecrireEtat({ uniteId: 1, palier: 4, defiDebutAt: Date.now() });
+    cleanup();
+    render(<TadwinView onBackToHome={() => {}} />);
+    return fiche;
+  }
+
+  it('bouton تأجيل 24 ساعة repousse le prochain rappel de 24h', async () => {
+    const fiche = await preparerPalier4();
+    const ancien = fiche.prochainRappelAt;
+
+    // Révéler la fiche
+    await fireEvent.click(screen.getByTestId(`tadwin-rappel-reveler-${fiche.id}`));
+    expect(screen.getByTestId(`tadwin-rappel-reporter-${fiche.id}`)).toBeTruthy();
+
+    // Cliquer sur reporter
+    await fireEvent.click(screen.getByTestId(`tadwin-rappel-reporter-${fiche.id}`));
+
+    // La fiche ne doit plus être due immédiatement
+    const { fichesDuees } = await import('../../lib/tadwin/tadwinEngine');
+    const dues = fichesDuees(Date.now());
+    expect(dues).toHaveLength(0);
+
+    // prochainRappelAt avancé de 24h
+    const { lireFiches } = await import('../../lib/tadwin/tadwinEngine');
+    const updated = lireFiches().find((f) => f.id === fiche.id);
+    expect(updated).toBeDefined();
+    expect(updated!.prochainRappelAt).toBeGreaterThan(ancien);
+  });
+
+  it('bouton إيقاف التذكير désactive la fiche (exclue de fichesDuees)', async () => {
+    const fiche = await preparerPalier4();
+
+    await fireEvent.click(screen.getByTestId(`tadwin-rappel-reveler-${fiche.id}`));
+    expect(screen.getByTestId(`tadwin-rappel-desactiver-${fiche.id}`)).toBeTruthy();
+
+    await fireEvent.click(screen.getByTestId(`tadwin-rappel-desactiver-${fiche.id}`));
+
+    // La fiche disparaît de la vue des dues
+    await waitFor(() =>
+      expect(screen.queryByTestId(`tadwin-rappel-reveler-${fiche.id}`)).toBeNull(),
+    );
+
+    const { fichesDuees, desactiverRappel } = await import('../../lib/tadwin/tadwinEngine');
+    const { lireFiches } = await import('../../lib/tadwin/tadwinEngine');
+    const updated = lireFiches().find((f) => f.id === fiche.id);
+    expect(updated!.statutRappel).toBe('desactive');
+    expect(fichesDuees(Date.now())).toHaveLength(0);
+  });
+
+  it('section Fiches désactivées apparaît quand une fiche est désactivée', async () => {
+    const fiche = await preparerPalier4();
+    await fireEvent.click(screen.getByTestId(`tadwin-rappel-reveler-${fiche.id}`));
+    await fireEvent.click(screen.getByTestId(`tadwin-rappel-desactiver-${fiche.id}`));
+
+    await waitFor(() =>
+      expect(screen.getByText(/Fiches désactivées/)).toBeTruthy(),
+    );
+    expect(screen.getByTestId(`tadwin-rappel-reactiver-${fiche.id}`)).toBeTruthy();
+  });
+
+  it('bouton إعادة تفعiler réactive la fiche (statut actif)', async () => {
+    const fiche = await preparerPalier4();
+    await fireEvent.click(screen.getByTestId(`tadwin-rappel-reveler-${fiche.id}`));
+    await fireEvent.click(screen.getByTestId(`tadwin-rappel-desactiver-${fiche.id}`));
+
+    // Attendre que la section désactivées apparaisse
+    await waitFor(() =>
+      expect(screen.getByTestId(`tadwin-rappel-reactiver-${fiche.id}`)).toBeTruthy(),
+    );
+
+    // Réactiver
+    await fireEvent.click(screen.getByTestId(`tadwin-rappel-reactiver-${fiche.id}`));
+
+    // La section désactivées doit disparaître
+    await waitFor(() =>
+      expect(screen.queryByText(/Fiches désactivées/)).toBeNull(),
+    );
+
+    const { lireFiches } = await import('../../lib/tadwin/tadwinEngine');
+    const updated = lireFiches().find((f) => f.id === fiche.id);
+    expect(updated!.statutRappel).toBe('actif');
+  });
+});

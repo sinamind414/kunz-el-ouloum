@@ -19,6 +19,9 @@ import {
   enregistrerFiche,
   ficheDue,
   enregistrerRappel,
+  reporterRappel,
+  desactiverRappel,
+  reactiverRappel,
   fichesDuees,
   avancerPalier,
   palierValide,
@@ -415,5 +418,125 @@ describe('tadwinEngine — défi 3 jours', () => {
     expect(joursRestantsDefi(etat, T0)).toBe(3);
     expect(joursRestantsDefi(etat, T0 + 2 * JOUR)).toBe(1);
     expect(joursRestantsDefi(etat, T0 + 3 * JOUR)).toBe(0);
+  });
+});
+
+// ──────────────────────────────────────────────────────────────────────────────
+// 8. StatutRappel — reporter / désactiver / réactiver (Commit 1)
+// ──────────────────────────────────────────────────────────────────────────────
+
+describe('tadwinEngine — StatutRappel', () => {
+  /** Construit une fiche minimale pour les tests de statut. */
+  function ficheBase(now: number = T0): FicheTadwin {
+    return {
+      id: 'fiche_sr_1',
+      uniteId: 1,
+      clesChoisies: ['k1', 'k2'],
+      reponse: 'réponse',
+      c2: 1,
+      stuffingDetecte: false,
+      palier: 4,
+      creeLe: now - JOUR,
+      rappelStage: 1,
+      prochainRappelAt: now + 2 * JOUR,
+      maitrise: 'en_cours',
+    };
+  }
+
+  // ── reporterRappel ────────────────────────────────────────────────────────
+
+  it('reporterRappel avance prochainRappelAt de 24h par défaut', () => {
+    const f = ficheBase();
+    const now = T0;
+    const apres = reporterRappel(f, 24, now);
+    expect(apres.prochainRappelAt).toBe(now + 24 * 60 * 60 * 1000);
+    expect(apres.rappelStage).toBe(f.rappelStage);
+    expect(apres.maitrise).toBe(f.maitrise);
+    expect(apres.id).toBe(f.id);
+  });
+
+  it('reporterRappel accepte un délai personnalisé', () => {
+    const f = ficheBase();
+    const now = T0;
+    const apres = reporterRappel(f, 12, now);
+    expect(apres.prochainRappelAt).toBe(now + 12 * 60 * 60 * 1000);
+  });
+
+  it('reporterRappel ne mut pas la fiche d_origine', () => {
+    const f = ficheBase();
+    reporterRappel(f, 24, T0);
+    expect(f.prochainRappelAt).toBe(T0 + 2 * JOUR);
+  });
+
+  // ── desactiverRappel ──────────────────────────────────────────────────────
+
+  it('desactiverRappel met statutRappel à desactive', () => {
+    const f = ficheBase();
+    const apres = desactiverRappel(f, T0);
+    expect(apres.statutRappel).toBe('desactive');
+    expect(apres.rappelStage).toBe(f.rappelStage);
+    expect(apres.prochainRappelAt).toBe(f.prochainRappelAt);
+  });
+
+  // ── reactiverRappel ───────────────────────────────────────────────────────
+
+  it('reactiverRappel remet statutRappel à actif', () => {
+    const f = ficheBase();
+    const desactivee = desactiverRappel(f, T0);
+    const apres = reactiverRappel(desactivee, T0);
+    expect(apres.statutRappel).toBe('actif');
+  });
+
+  it('reactiverRappel conserve prochainRappelAt s il est dans le futur', () => {
+    const prochain = T0 + 5 * JOUR;
+    const f = { ...ficheBase(), prochainRappelAt: prochain };
+    const desactivee = desactiverRappel(f, T0);
+    const apres = reactiverRappel(desactivee, T0);
+    expect(apres.prochainRappelAt).toBe(prochain);
+  });
+
+  it('reactiverRappel ramène prochainRappelAt à now si déjà dépassé', () => {
+    const prochain = T0 - JOUR; // dans le passé
+    const f = { ...ficheBase(), prochainRappelAt: prochain };
+    const desactivee = desactiverRappel(f, T0);
+    const apres = reactiverRappel(desactivee, T0);
+    expect(apres.prochainRappelAt).toBe(T0);
+  });
+
+  // ── fichesDuees : exclusion des désactivées ───────────────────────────────
+
+  it('fichesDuees exclut les fiches desactive', () => {
+    const f1 = enregistrerFiche(REPONSE_MODELE_U1_PARTIELLE, U1_CHOIX, T0);
+    const f2 = enregistrerFiche(REPONSE_MODELE_U1_PARTIELLE, U1_CHOIX, T0 + JOUR);
+    // Désactiver f1
+    const f2_desactive = desactiverRappel(f2, T0);
+    ecrireFiches(lireFiches().map((f) => (f.id === f2.id ? f2_desactive : f)));
+    // A J+2 : f1 due (active), f2 due (mais desactivee) -> 1 seule
+    const dues = fichesDuees(T0 + 2 * JOUR);
+    expect(dues).toHaveLength(1);
+    expect(dues[0].id).toBe(f1.id);
+  });
+
+  // ── Compatibilité ascendante ──────────────────────────────────────────────
+
+  it('ancienne fiche sans statutRappel est traitée comme actif', () => {
+    const fiches: FicheTadwin[] = [
+      {
+        id: 'old_1',
+        uniteId: 1,
+        clesChoisies: ['k1'],
+        reponse: 'r',
+        c2: 1,
+        stuffingDetecte: false,
+        palier: 4,
+        creeLe: T0,
+        rappelStage: 0,
+        prochainRappelAt: T0 - JOUR, // due
+        maitrise: 'en_cours',
+        // pas de statutRappel
+      } as FicheTadwin,
+    ];
+    ecrireFiches(fiches);
+    expect(fichesDuees(T0)).toHaveLength(1);
   });
 });
