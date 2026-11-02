@@ -23,23 +23,60 @@ Le marché du livre religieux francophone sur les prophètes est **saturé de r�
 
 ## État d'avancement
 
+**Manuscrit complet. Version 1.0 — 2 novembre 2026.**
+
 | Livrable | Statut | Mots | Fichier |
 |---|---|---|---|
-| Plan complet | ✅ | 3 800 | `PLAN_LIVRE_SULAYMAN.md` |
+| Plan complet | ✅ | 3 900 | `PLAN_LIVRE_SULAYMAN.md` |
 | Grille de vérification | ✅ | 1 450 | `GRILLE_VERIFICATION_SOURCES.md` |
-| Chapitre 1 — Pourquoi ce livre | ✅ rédigé | 3 000 | `CHAPITRE_01_Pourquoi_ce_livre.md` |
-| Chapitre 2 — Les quatre dons | ✅ rédigé | 3 300 | `CHAPITRE_02_Les_quatre_dons.md` |
-| Chapitre 3 — Le jugement | ✅ rédigé | 3 500 | `CHAPITRE_03_Le_jugement_et_les_deux_hommes.md` |
-| Chapitre 4 — Les armées et les oiseaux | ✅ rédigé | 2 900 | `CHAPITRE_04_Les_armees_et_les_oiseaux.md` |
-| Chapitre 5 — La huppe et Saba | ✅ rédigé | 3 200 | `CHAPITRE_05_La_huppe_et_Saba.md` |
-| Chapitres 6 à 12 + annexes | ⬜ à écrire | — | — |
-| Extrait gratuit « 7 choses » | ⬜ à écrire | — | — |
-| Analyse concurrentielle My Islam | ✅ | 1 300 | `ANALYSE_CONCURRENCE_MYISLAM.md` |
+| Ch. 1 — Pourquoi ce livre | ✅ | 3 000 | `CHAPITRE_01_Pourquoi_ce_livre.md` |
+| Ch. 2 — Les quatre dons | ✅ | 3 300 | `CHAPITRE_02_Les_quatre_dons.md` |
+| Ch. 3 — Le jugement | ✅ | 3 500 | `CHAPITRE_03_Le_jugement_et_les_deux_hommes.md` |
+| Ch. 4 — Les armées et les oiseaux | ✅ | 3 100 | `CHAPITRE_04_Les_armees_et_les_oiseaux.md` |
+| Ch. 5 — La huppe et Saba | ✅ | 3 150 | `CHAPITRE_05_La_huppe_et_Saba.md` |
+| Ch. 6 — La lettre et le conseil | ✅ | 3 000 | `CHAPITRE_06_La_lettre_et_le_conseil.md` |
+| Ch. 7 — Le trône et le savoir | ✅ | 3 000 | `CHAPITRE_07_Le_trone_et_le_savoir.md` |
+| Ch. 8 — Le palais de cristal | ✅ | 2 600 | `CHAPITRE_08_Le_palais_de_cristal.md` |
+| Ch. 9 — Les jinn et la gratitude | ✅ | 2 900 | `CHAPITRE_09_Les_jinn_le_mihrab_et_la_gratitude.md` |
+| Ch. 10 — Le bâton et la mort | ✅ | 2 500 | `CHAPITRE_10_Le_baton_et_la_mort.md` |
+| Ch. 11 — La magie | ✅ | 2 800 | `CHAPITRE_11_La_magie_et_le_faux_proces.md` |
+| Ch. 12 — Les légendes | ✅ | 2 800 | `CHAPITRE_12_Les_legendes_une_par_une.md` |
+| Annexes (5) | ✅ | 2 200 | `ANNEXES.md` |
+| Extrait gratuit « 7 choses » | ✅ | 1 700 | `EXTRAIT_GRATUIT_7_CHOSES.md` |
+| Analyse concurrentielle | ✅ | 1 300 | `ANALYSE_CONCURRENCE_MYISLAM.md` |
 
-**Total rédigé : ~16 100 mots sur 28 000 visés (57 %).**
+**Total manuscrit : ~36 800 mots** — au-delà de l'objectif de 28 000 (les chapitres ont pris
+de l'ampleur sur les chapitres de contenu). C'est acceptable : la cible était prudente.
 
-> ⚠️ **Conflit de plan résolu :** 21:78–79 figurait à la fois au chap. 2 et au chap. 3.
-> Décision : le chap. 2 ne traite que le **don de compréhension** (21:79), le chap. 3 traite la **scène complète** (21:78–80).
+### Ce qui reste à faire avant publication
+
+1. **Vérification des sources** — chaque référence du manuscrit, via `GRILLE_VERIFICATION_SOURCES.md`. **Blocage absolu : rien ne part avant.**
+2. **Relecture religieuse** par un enseignant en sciences islamiques (2–3 semaines, 15 000–40 000 DZD).
+3. **Vérifications signalées dans les notes auteur** : voir la liste consolidée ci-dessous.
+4. **Correction linguistique**, couverture, maquette EPUB/PDF.
+5. **Décision audio** : version complète (≈ 2 h) ou abrégée (≈ 40 min).
+
+### Points de vérification critiques (consolidés)
+
+| # | Point | Chapitre | Gravité |
+|---|---|---|---|
+| 1 | **2:102** — Hârût et Mârût, trois lectures, nature angélique | 11 | ⚠️⚠️⚠️ |
+| 2 | **34:14** — texte mot à mot, découpage du verset | 10 | ⚠️⚠️⚠️ |
+| 3 | **27:40** — verset central, numérotation | 7 | ⚠️⚠️⚠️ |
+| 4 | ***tamāthīl*** (statues) — formulation à valider | 9 | ⚠️⚠️⚠️ |
+| 5 | **Héritage 27:16** — les deux positions | 2 | ⚠️⚠️ |
+| 6 | **Le règne d'une femme** — ne pas entrer dans la polémique | 5, 6 | ⚠️⚠️ |
+| 7 | **« Il n'a pas accès à l'invisible »** — nature des prophètes | 2, 9 | ⚠️⚠️ |
+| 8 | **Hadith « ne les croyez pas et ne les démentez pas »** — numéro à vérifier | 1 | ⚠️⚠️ |
+| 9 | **« Unique fois où un prophète rit »** — vérifier par index, sinon retirer | 4 | ⚠️ |
+| 10 | **Mûsâ/Pharaon en miroir** — appui dans le tafsîr | 4 | ⚠️ |
+
+### Corrections déjà effectuées
+
+- ✅ Ch. 3 : note de rédaction parasite retirée, transition réécrite
+- ✅ Ch. 7 : ligne arabe corrompue retirée, référence 27:42 rétablie
+- ✅ Ch. 10 : verset non vérifié retiré, passage réécrit sans citation
+- ✅ Plan : conflit 21:78–79 tranché (chap. 2 = don ; chap. 3 = scène)
 
 ---
 
