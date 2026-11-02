@@ -179,6 +179,8 @@ export default function App() {
   const [currentTab, setCurrentTab] = useState<'splash' | 'home' | 'review' | 'stats' | 'chat' | 'methodology' | 'bootcamp' | 'badges' | 'lesson' | 'workshop' | 'mindmap' | 'teacher' | 'animations' | 'situations' | 'schemas' | 'training' | 'plan' | 'bacideas' | 'focus' | 'tadwin' | 'moi' | 'reviser' | 'examens' | 'parcours'>('splash');
   const currentTabRef = useRef(currentTab);
   const [previousTab, setPreviousTab] = useState<typeof currentTab | null>(null);
+  const [previousHash, setPreviousHash] = useState<string>('');
+  const [capitaineOpen, setCapitaineOpen] = useState(false);
   // SPA minimal history router (hash-based) — permet le retour navigateur et les
   // deep-links sans routeur tiers. L'état courant est reflété dans `location.hash`.
   const TAB_ROUTE: Record<typeof currentTab, string> = {
@@ -249,7 +251,8 @@ export default function App() {
   // Bouton retour vers la rubrique d'origine (précédente) quand on est dans le chat.
   const ouvrirChat = () => {
     setPreviousTab(currentTab);
-    navigateToTab('chat');
+    setPreviousHash(location.hash);
+    setCapitaineOpen(true);
   };
   const [activeMindMapUnitId, setActiveMindMapUnitId] = useState<number>(1);
   // Assistant contextuel « المرشد » (2026-10-11) : question apportée par une
@@ -266,7 +269,8 @@ export default function App() {
       if (!detail?.question) return;
       setMorchidSeed(detail.question);
       setPreviousTab(currentTabRef.current);
-      navigateToTab('chat');
+      setPreviousHash(location.hash);
+      setCapitaineOpen(true);
     };
     window.addEventListener(MORCHID_ASK_EVENT, onMorchidAsk);
     return () => window.removeEventListener(MORCHID_ASK_EVENT, onMorchidAsk);
@@ -1243,21 +1247,19 @@ export default function App() {
                 />
               )}
 
-              {currentTab === 'chat' && (
-                <AITutorView
-                  onBackToDashboard={() => navigateToTab('home')}
-                  onBackToPreviousTab={() => {
-                    if (previousTab) {
-                      navigateToTab(previousTab);
-                    } else {
-                      navigateToTab('home');
-                    }
-                  }}
-                  onXPGagné={handleTutorXPGained}
-                  questionInitiale={morchidSeed}
-                  onQuestionInitialeConsumed={() => setMorchidSeed(null)}
-                  onOuvrirLeconDuCoach={ouvrirLeçonDepuisParcours}
-                />
+              {capitaineOpen && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
+                  <div className="w-full max-w-2xl max-h-[90vh] overflow-hidden rounded-3xl bg-white dark:bg-[#111a17] shadow-2xl">
+                    <AITutorView
+                      onBackToDashboard={() => setCapitaineOpen(false)}
+                      onBackToPreviousTab={() => setCapitaineOpen(false)}
+                      onXPGagné={handleTutorXPGained}
+                      questionInitiale={morchidSeed}
+                      onQuestionInitialeConsumed={() => setMorchidSeed(null)}
+                      onOuvrirLeconDuCoach={ouvrirLeçonDepuisParcours}
+                    />
+                  </div>
+                </div>
               )}
 
               {currentTab === 'tadwin' && (
