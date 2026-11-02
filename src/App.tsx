@@ -63,7 +63,7 @@ import {
 } from './utils/activiteQuotidienne';
 // Nomenclature figée (docs/MARQUE.md §3) — la rubrique porte le nom officiel de la source
 // unique miftahSpec : aucun littéral dans ce fichier (garde-fou check:miftah §13, 2026-09-15).
-import { MIFTAH_NAME_OFFICIAL_AR } from './data/miftahSpec';
+import { MIFTAH_NAME_OFFICIAL_AR, MIFTAH_NAME_AR } from './data/miftahSpec';
 import { AR_LATN } from './utils/latinDigits';
 
 import SplashView from './components/SplashView';
@@ -179,18 +179,57 @@ export default function App() {
   const [currentTab, setCurrentTab] = useState<'splash' | 'home' | 'review' | 'stats' | 'chat' | 'methodology' | 'bootcamp' | 'badges' | 'lesson' | 'workshop' | 'mindmap' | 'teacher' | 'animations' | 'situations' | 'schemas' | 'training' | 'plan' | 'bacideas' | 'focus' | 'tadwin' | 'moi' | 'reviser' | 'examens' | 'parcours'>('splash');
   const currentTabRef = useRef(currentTab);
   const [previousTab, setPreviousTab] = useState<typeof currentTab | null>(null);
+  // SPA minimal history router (hash-based) — permet le retour navigateur et les
+  // deep-links sans routeur tiers. L'état courant est reflété dans `location.hash`.
+  const TAB_ROUTE: Record<typeof currentTab, string> = {
+    splash: '', home: '#home', review: '#review', stats: '#stats', chat: '#chat',
+    methodology: '#methodology', bootcamp: '#bootcamp', badges: '#badges', lesson: '#lesson',
+    workshop: '#workshop', mindmap: '#mindmap', teacher: '#teacher', animations: '#animations',
+    situations: '#situations', schemas: '#schemas', training: '#training', plan: '#plan',
+    bacideas: '#bacideas', focus: '#focus', tadwin: '#tadwin', moi: '#moi', reviser: '#reviser',
+    examens: '#examens', parcours: '#parcours',
+  };
+  const navigateToTab = (tab: typeof currentTab, replace = false) => {
+    if (currentTabRef.current === tab && !replace) return;
+    const nextHash = TAB_ROUTE[tab];
+    if (replace || !nextHash || location.hash !== nextHash) {
+      if (replace) {
+        history.replaceState({ tab }, '', nextHash || window.location.pathname + window.location.search);
+      } else {
+        history.pushState({ tab }, '', nextHash || window.location.pathname + window.location.search);
+      }
+    }
+    setCurrentTab(tab);
+  };
+  // Restaure le tab depuis l'URL au montage + écoute le retour navigateur.
+  useEffect(() => {
+    const fromHash = (Object.entries(TAB_ROUTE) as [typeof currentTab, string][]).find(
+      ([, route]) => route && location.hash === route
+    );
+    const initialTab = fromHash?.[0] ?? 'home';
+    if (initialTab !== currentTabRef.current) {
+      setCurrentTab(initialTab);
+    }
+    const onPopState = (ev: PopStateEvent) => {
+      const state = ev.state as { tab?: typeof currentTab } | null;
+      const target = state?.tab ?? (Object.entries(TAB_ROUTE) as [typeof currentTab, string][]).find(
+        ([, route]) => route && location.hash === route
+      )?.[0] ?? 'home';
+      setCurrentTab(target);
+      setPreviousTab(currentTabRef.current === target ? null : currentTabRef.current);
+    };
+    window.addEventListener('popstate', onPopState);
+    return () => window.removeEventListener('popstate', onPopState);
+  }, []);
+  // Examen choisi dans le hub S'entraîner → LessonsView l'ouvre en mode examen.
+  const ouvrirExamen = (mode: 'qcm' | 'bac') => {
+    setParcoursMode(mode);
+    setParcoursQcm(null);
+    setParcoursLesson(null);
+    setCurrentTab('lesson');
+  };
   // Deep-link : ouverture d'une leçon précise depuis un raccourci (الدروس, أنا…).
   const [parcoursLesson, setParcoursLesson] = useState<{ key: string; kind: 'html' | 'active'; unitId: number } | null>(null);
-  // Bouton retour vers la rubrique d'origine (précédente) quand on est dans le chat.
-  const ouvrirChat = () => {
-    setPreviousTab(currentTab);
-    setCurrentTab('chat');
-  };
-  // Garde la valeur à jour dans le ref pour l'écouteur global qui ne peut pas
-  // dépendre de `currentTab` sans se réabonner à chaque navigation.
-  useEffect(() => {
-    currentTabRef.current = currentTab;
-  }, [currentTab]);
   // Deep-link : ouverture du QCM d'une unité précise (raccourci).
   const [parcoursQcm, setParcoursQcm] = useState<number | null>(null);
   // Deep-link : examen à ouvrir dans LessonsView ('qcm' = QCM du livre,
@@ -207,12 +246,10 @@ export default function App() {
     setParcoursLesson(null);
     setCurrentTab('lesson');
   };
-  // Examen choisi dans le hub S'entraîner → LessonsView l'ouvre en mode examen.
-  const ouvrirExamen = (mode: 'qcm' | 'bac') => {
-    setParcoursMode(mode);
-    setParcoursQcm(null);
-    setParcoursLesson(null);
-    setCurrentTab('lesson');
+  // Bouton retour vers la rubrique d'origine (précédente) quand on est dans le chat.
+  const ouvrirChat = () => {
+    setPreviousTab(currentTab);
+    setCurrentTab('chat');
   };
   const [activeMindMapUnitId, setActiveMindMapUnitId] = useState<number>(1);
   // Assistant contextuel « المرشد » (2026-10-11) : question apportée par une
@@ -884,7 +921,7 @@ export default function App() {
     // Après la Phase 1 (la porte ouvre l'atelier المفتاح) et la sortie du hub
     // التمارين — pour rester à UNE seule porte (verrou PortesUniques) — le 6ᵉ
     // portail rend l'outil permanent. Nom officiel : constante unique §13.
-    { tab: 'methodology', label: 'المنهجية', fr: 'Méthode', Icon: Key },
+    { tab: 'methodology', label: MIFTAH_NAME_AR, fr: 'Méthode', Icon: Key },
     { tab: 'reviser', label: 'المراجعة', fr: 'Réviser', Icon: Layers },
     { tab: 'moi', label: 'أنا', fr: 'Moi', Icon: Sprout },
   ];
