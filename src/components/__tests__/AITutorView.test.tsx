@@ -480,4 +480,17 @@ describe('AITutorView — point d entrée contextuel (restructuration 2026-10-11
     rerender(<AITutorView questionInitiale={null} onQuestionInitialeConsumed={consumed} />);
     expect(input.value).toBe('');
   });
+
+  it('envoie un message libre via le formulaire et reçoit une réponse', async () => {
+    const user = userEvent.setup();
+    render(<AITutorView />);
+
+    const input = screen.getByLabelText('حقل السؤال إلى القبطان');
+    await user.type(input, 'ما مستواي{Enter}');
+
+    await waitFor(() => {
+      const html = screen.getByTestId('tutor-messages').innerHTML;
+      expect(html).toContain('ما مستواي');
+    });
+  });
 });

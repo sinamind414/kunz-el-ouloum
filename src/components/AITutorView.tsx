@@ -580,6 +580,7 @@ export default function AITutorView({ onXPGagné, questionInitiale, onQuestionIn
       {/* Input Form Footer */}
       <div className="p-4 border-t border-[#e2dabf]/60 shrink-0 bg-[#ffffff]">
         <form
+          data-testid="tutor-chat-form"
           onSubmit={(e) => {
             e.preventDefault();
             handleSend(input);
@@ -587,6 +588,7 @@ export default function AITutorView({ onXPGagné, questionInitiale, onQuestionIn
           className="flex gap-2"
         >
           <input
+            data-testid="tutor-chat-input"
             type="text"
             value={input}
             onChange={(e) => setInput(e.target.value)}
