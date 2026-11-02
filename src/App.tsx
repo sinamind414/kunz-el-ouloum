@@ -823,10 +823,20 @@ export default function App() {
   }
 
   // Render Splash Landing Screen
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const onWebTabChange = (ev: Event) => {
+      const detail = (ev as CustomEvent<{ tab: string }>).detail;
+      if (detail?.tab && detail.tab !== currentTab) {
+        setCurrentTab(detail.tab as typeof currentTab);
+      }
+    };
+    window.addEventListener('kunz-web-tab-change', onWebTabChange as EventListener);
+    return () => window.removeEventListener('kunz-web-tab-change', onWebTabChange as EventListener);
+  }, [currentTab]);
   if (currentTab === 'splash') {
     return <SplashView onStart={() => setCurrentTab('home')} />;
   }
-
   const handleTabChange = (tab: any) => {
     if (typeof window !== 'undefined' && window.navigator && window.navigator.vibrate) {
       window.navigator.vibrate(50);
