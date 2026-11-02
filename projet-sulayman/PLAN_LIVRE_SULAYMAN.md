@@ -21,6 +21,26 @@ Le marché du livre religieux francophone sur les prophètes est **saturé de r�
 
 ---
 
+## État d'avancement
+
+| Livrable | Statut | Mots | Fichier |
+|---|---|---|---|
+| Plan complet | ✅ | 3 800 | `PLAN_LIVRE_SULAYMAN.md` |
+| Grille de vérification | ✅ | 1 450 | `GRILLE_VERIFICATION_SOURCES.md` |
+| Chapitre 1 — Pourquoi ce livre | ✅ rédigé | 3 000 | `CHAPITRE_01_Pourquoi_ce_livre.md` |
+| Chapitre 2 — Les quatre dons | ✅ rédigé | 3 300 | `CHAPITRE_02_Les_quatre_dons.md` |
+| Chapitre 3 — Le jugement | ✅ rédigé | 3 500 | `CHAPITRE_03_Le_jugement_et_les_deux_hommes.md` |
+| Chapitre 4 — Les armées et les oiseaux | ⬜ à écrire | — | — |
+| Chapitres 5 à 12 + annexes | ⬜ à écrire | — | — |
+| Extrait gratuit « 7 choses » | ⬜ à écrire | — | — |
+
+**Total rédigé : ~9 800 mots sur 28 000 visés (35 %).**
+
+> ⚠️ **Conflit de plan résolu :** 21:78–79 figurait à la fois au chap. 2 et au chap. 3.
+> Décision : le chap. 2 ne traite que le **don de compréhension** (21:79), le chap. 3 traite la **scène complète** (21:78–80).
+
+---
+
 ## 1. Le positionnement : où est le trou
 
 ### Ce qui existe déjà
