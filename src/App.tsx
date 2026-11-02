@@ -181,6 +181,13 @@ export default function App() {
   const [previousTab, setPreviousTab] = useState<typeof currentTab | null>(null);
   const [previousHash, setPreviousHash] = useState<string>('');
   const [capitaineOpen, setCapitaineOpen] = useState(false);
+  const fermerCapitaine = () => {
+    setCapitaineOpen(false);
+    if (previousHash && location.hash !== previousHash) {
+      history.replaceState({ tab: previousTab ?? 'home' }, '', previousHash || window.location.pathname + window.location.search);
+      setCurrentTab(previousTab ?? 'home');
+    }
+  };
   // SPA minimal history router (hash-based) — permet le retour navigateur et les
   // deep-links sans routeur tiers. L'état courant est reflété dans `location.hash`.
   const TAB_ROUTE: Record<typeof currentTab, string> = {
@@ -1251,8 +1258,8 @@ export default function App() {
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
                   <div className="w-full max-w-2xl max-h-[90vh] overflow-hidden rounded-3xl bg-white dark:bg-[#111a17] shadow-2xl">
                     <AITutorView
-                      onBackToDashboard={() => setCapitaineOpen(false)}
-                      onBackToPreviousTab={() => setCapitaineOpen(false)}
+                      onBackToDashboard={fermerCapitaine}
+                      onBackToPreviousTab={fermerCapitaine}
                       onXPGagné={handleTutorXPGained}
                       questionInitiale={morchidSeed}
                       onQuestionInitialeConsumed={() => setMorchidSeed(null)}
