@@ -6,7 +6,7 @@ Moteur de composition : fpdf2 + shaping HarfBuzz.
 Deux passes : la première mesure les pages, la seconde insère le sommaire paginé.
 """
 
-import re, os, sys
+import re, os, sys, tempfile
 from fpdf import FPDF
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -1124,7 +1124,8 @@ def add_bookmarks(pdf_path, entries):
 if __name__ == "__main__":
     os.makedirs(os.path.dirname(os.path.abspath(__file__)), exist_ok=True)
     # passe 1
-    e1, n1 = build(entries=None, out="_pass1.pdf")
+    tmp1 = os.path.join(tempfile.gettempdir(), "sulayman_pass1.pdf")
+    e1, n1 = build(entries=None, out=tmp1)
     # passe 2 : sommaire paginé
     e2, n2 = build(entries=e1, out="LIVRE_Sulayman_v1.pdf")
     add_bookmarks(os.path.join(os.path.dirname(os.path.abspath(__file__)), "LIVRE_Sulayman_v1.pdf"), e2)
