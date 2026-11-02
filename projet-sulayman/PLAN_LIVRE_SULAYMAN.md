@@ -30,11 +30,12 @@ Le marché du livre religieux francophone sur les prophètes est **saturé de r�
 | Chapitre 1 — Pourquoi ce livre | ✅ rédigé | 3 000 | `CHAPITRE_01_Pourquoi_ce_livre.md` |
 | Chapitre 2 — Les quatre dons | ✅ rédigé | 3 300 | `CHAPITRE_02_Les_quatre_dons.md` |
 | Chapitre 3 — Le jugement | ✅ rédigé | 3 500 | `CHAPITRE_03_Le_jugement_et_les_deux_hommes.md` |
-| Chapitre 4 — Les armées et les oiseaux | ⬜ à écrire | — | — |
+| Chapitre 4 — Les armées et les oiseaux | ✅ rédigé | 2 900 | `CHAPITRE_04_Les_armees_et_les_oiseaux.md` |
 | Chapitres 5 à 12 + annexes | ⬜ à écrire | — | — |
 | Extrait gratuit « 7 choses » | ⬜ à écrire | — | — |
+| Analyse concurrentielle My Islam | ✅ | 1 300 | `ANALYSE_CONCURRENCE_MYISLAM.md` |
 
-**Total rédigé : ~9 800 mots sur 28 000 visés (35 %).**
+**Total rédigé : ~12 900 mots sur 28 000 visés (46 %).**
 
 > ⚠️ **Conflit de plan résolu :** 21:78–79 figurait à la fois au chap. 2 et au chap. 3.
 > Décision : le chap. 2 ne traite que le **don de compréhension** (21:79), le chap. 3 traite la **scène complète** (21:78–80).
@@ -61,6 +62,23 @@ C'est exactement l'inquiétude d'un parent ou d'un jeune adulte qui cherche « �
 ### La promesse au lecteur (une phrase)
 
 > « En 120 pages, vous saurez tout ce que le Coran et la Sunna disent de Sulaymân — et vous reconnaîtrez, à la première lecture, tout ce qu'on invente sur lui. »
+
+---
+
+## 1 bis. Corrections issues de l'analyse concurrentielle (My Islam)
+
+Six actions à intégrer, décidées le 2 novembre 2026 après audit de `myislam.org/fr/prophete-souleymane/` :
+
+- [ ] **Chapitre 10** — ajouter le traitement de l'**Ange de la mort et du bâton** (🔴 L) et des **termites** (34:14 : *dâbbat al-arḍ* est dans le verset ; le reste est brodé)
+- [ ] **Chapitre 12** — ajouter la ligne « **19 fils de Dâwûd** » (🟡 R, origine exégétique, présentée comme un fait par le concurrent)
+- [ ] **Chapitre 12** — vérifier que notre traitement de **38:31–34** est au moins aussi précis : deux lectures de *mashan* (frapper / caresser), renvoi à Ibn Jarîr
+- [ ] **Production** — décider du **format audio** (narration complète ≈ 2 h, ou version abrégée ≈ 40 min). Le concurrent propose 32 min ; l'audio est un usage réel sur ce marché
+- [ ] **Marketing** — inscrire « **aucune représentation figurée** » dans les arguments de vente (4ᵉ de couverture, fiche produit)
+- [ ] **Marketing** — page de vente « **Ce que les articles gratuits ne vous disent pas** »
+
+> **Positionnement révisé après audit :** ne plus vendre « l'histoire de Sulaymân » (disponible gratuitement,
+> en 5 langues, avec audio et quiz) mais **« pourquoi ce que vous avez lu sur Sulaymân n'est pas tout à fait
+> Sulaymân »**. La méthode des 4 étiquettes devient l'argument central, pas un supplément.
 
 ---
 
