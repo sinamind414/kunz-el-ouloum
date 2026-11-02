@@ -63,7 +63,7 @@ import {
 } from './utils/activiteQuotidienne';
 // Nomenclature figée (docs/MARQUE.md §3) — la rubrique porte le nom officiel de la source
 // unique miftahSpec : aucun littéral dans ce fichier (garde-fou check:miftah §13, 2026-09-15).
-import { MIFTAH_NAME_OFFICIAL_AR } from './data/miftahSpec';
+import { MIFTAH_NAME_OFFICIAL_AR, MIFTAH_NAME_AR } from './data/miftahSpec';
 import { AR_LATN } from './utils/latinDigits';
 
 import SplashView from './components/SplashView';
@@ -179,18 +179,57 @@ export default function App() {
   const [currentTab, setCurrentTab] = useState<'splash' | 'home' | 'review' | 'stats' | 'chat' | 'methodology' | 'bootcamp' | 'badges' | 'lesson' | 'workshop' | 'mindmap' | 'teacher' | 'animations' | 'situations' | 'schemas' | 'training' | 'plan' | 'bacideas' | 'focus' | 'tadwin' | 'moi' | 'reviser' | 'examens' | 'parcours'>('splash');
   const currentTabRef = useRef(currentTab);
   const [previousTab, setPreviousTab] = useState<typeof currentTab | null>(null);
+  // SPA minimal history router (hash-based) — permet le retour navigateur et les
+  // deep-links sans routeur tiers. L'état courant est reflété dans `location.hash`.
+  const TAB_ROUTE: Record<typeof currentTab, string> = {
+    splash: '', home: '#home', review: '#review', stats: '#stats', chat: '#chat',
+    methodology: '#methodology', bootcamp: '#bootcamp', badges: '#badges', lesson: '#lesson',
+    workshop: '#workshop', mindmap: '#mindmap', teacher: '#teacher', animations: '#animations',
+    situations: '#situations', schemas: '#schemas', training: '#training', plan: '#plan',
+    bacideas: '#bacideas', focus: '#focus', tadwin: '#tadwin', moi: '#moi', reviser: '#reviser',
+    examens: '#examens', parcours: '#parcours',
+  };
+  const navigateToTab = (tab: typeof currentTab, replace = false) => {
+    if (currentTabRef.current === tab && !replace) return;
+    const nextHash = TAB_ROUTE[tab];
+    if (replace || !nextHash || location.hash !== nextHash) {
+      if (replace) {
+        history.replaceState({ tab }, '', nextHash || window.location.pathname + window.location.search);
+      } else {
+        history.pushState({ tab }, '', nextHash || window.location.pathname + window.location.search);
+      }
+    }
+    setCurrentTab(tab);
+  };
+  // Restaure le tab depuis l'URL au montage + écoute le retour navigateur.
+  useEffect(() => {
+    const fromHash = (Object.entries(TAB_ROUTE) as [typeof currentTab, string][]).find(
+      ([, route]) => route && location.hash === route
+    );
+    const initialTab = fromHash?.[0] ?? 'home';
+    if (initialTab !== currentTabRef.current) {
+      setCurrentTab(initialTab);
+    }
+    const onPopState = (ev: PopStateEvent) => {
+      const state = ev.state as { tab?: typeof currentTab } | null;
+      const target = state?.tab ?? (Object.entries(TAB_ROUTE) as [typeof currentTab, string][]).find(
+        ([, route]) => route && location.hash === route
+      )?.[0] ?? 'home';
+      setCurrentTab(target);
+      setPreviousTab(currentTabRef.current === target ? null : currentTabRef.current);
+    };
+    window.addEventListener('popstate', onPopState);
+    return () => window.removeEventListener('popstate', onPopState);
+  }, []);
+  // Examen choisi dans le hub S'entraîner → LessonsView l'ouvre en mode examen.
+  const ouvrirExamen = (mode: 'qcm' | 'bac') => {
+    setParcoursMode(mode);
+    setParcoursQcm(null);
+    setParcoursLesson(null);
+    navigateToTab('lesson');
+  };
   // Deep-link : ouverture d'une leçon précise depuis un raccourci (الدروس, أنا…).
   const [parcoursLesson, setParcoursLesson] = useState<{ key: string; kind: 'html' | 'active'; unitId: number } | null>(null);
-  // Bouton retour vers la rubrique d'origine (précédente) quand on est dans le chat.
-  const ouvrirChat = () => {
-    setPreviousTab(currentTab);
-    setCurrentTab('chat');
-  };
-  // Garde la valeur à jour dans le ref pour l'écouteur global qui ne peut pas
-  // dépendre de `currentTab` sans se réabonner à chaque navigation.
-  useEffect(() => {
-    currentTabRef.current = currentTab;
-  }, [currentTab]);
   // Deep-link : ouverture du QCM d'une unité précise (raccourci).
   const [parcoursQcm, setParcoursQcm] = useState<number | null>(null);
   // Deep-link : examen à ouvrir dans LessonsView ('qcm' = QCM du livre,
@@ -200,19 +239,17 @@ export default function App() {
   const ouvrirLeçonDepuisParcours = (key: string, kind: 'html' | 'active', unitId: number) => {
     setParcoursLesson({ key, kind, unitId });
     setParcoursQcm(null);
-    setCurrentTab('lesson');
+    navigateToTab('lesson');
   };
   const ouvrirQcmDepuisParcours = (unitId: number) => {
     setParcoursQcm(unitId);
     setParcoursLesson(null);
-    setCurrentTab('lesson');
+    navigateToTab('lesson');
   };
-  // Examen choisi dans le hub S'entraîner → LessonsView l'ouvre en mode examen.
-  const ouvrirExamen = (mode: 'qcm' | 'bac') => {
-    setParcoursMode(mode);
-    setParcoursQcm(null);
-    setParcoursLesson(null);
-    setCurrentTab('lesson');
+  // Bouton retour vers la rubrique d'origine (précédente) quand on est dans le chat.
+  const ouvrirChat = () => {
+    setPreviousTab(currentTab);
+    navigateToTab('chat');
   };
   const [activeMindMapUnitId, setActiveMindMapUnitId] = useState<number>(1);
   // Assistant contextuel « المرشد » (2026-10-11) : question apportée par une
@@ -229,7 +266,7 @@ export default function App() {
       if (!detail?.question) return;
       setMorchidSeed(detail.question);
       setPreviousTab(currentTabRef.current);
-      setCurrentTab('chat');
+      navigateToTab('chat');
     };
     window.addEventListener(MORCHID_ASK_EVENT, onMorchidAsk);
     return () => window.removeEventListener(MORCHID_ASK_EVENT, onMorchidAsk);
@@ -637,7 +674,7 @@ export default function App() {
 
   const setSelectedRevisionUnit = (unitId: number) => {
     setSelectedRevisionUnitId(unitId);
-    setCurrentTab('review');
+    navigateToTab('review');
   };
 
   // XP gagnés dans le المرشد الذكي (tutor) — même patron que handleQuizComplete :
@@ -841,20 +878,20 @@ export default function App() {
     const onWebTabChange = (ev: Event) => {
       const detail = (ev as CustomEvent<{ tab: string }>).detail;
       if (detail?.tab && detail.tab !== currentTab) {
-        setCurrentTab(detail.tab as typeof currentTab);
+        navigateToTab(detail.tab as typeof currentTab);
       }
     };
     window.addEventListener('kunz-web-tab-change', onWebTabChange as EventListener);
     return () => window.removeEventListener('kunz-web-tab-change', onWebTabChange as EventListener);
   }, [currentTab]);
   if (currentTab === 'splash') {
-    return <SplashView onStart={() => setCurrentTab('home')} />;
+    return <SplashView onStart={() => navigateToTab('home')} />;
   }
   const handleTabChange = (tab: any) => {
     if (typeof window !== 'undefined' && window.navigator && window.navigator.vibrate) {
       window.navigator.vibrate(50);
     }
-    setCurrentTab(tab);
+    navigateToTab(tab);
   };
 
   // U1 (audits Opus 5.5 / Gemini 3.8) : navigation principale consolidée 12 → 5.
@@ -884,7 +921,7 @@ export default function App() {
     // Après la Phase 1 (la porte ouvre l'atelier المفتاح) et la sortie du hub
     // التمارين — pour rester à UNE seule porte (verrou PortesUniques) — le 6ᵉ
     // portail rend l'outil permanent. Nom officiel : constante unique §13.
-    { tab: 'methodology', label: 'المنهجية', fr: 'Méthode', Icon: Key },
+    { tab: 'methodology', label: MIFTAH_NAME_AR, fr: 'Méthode', Icon: Key },
     { tab: 'reviser', label: 'المراجعة', fr: 'Réviser', Icon: Layers },
     { tab: 'moi', label: 'أنا', fr: 'Moi', Icon: Sprout },
   ];
@@ -892,7 +929,7 @@ export default function App() {
   // portait ont rejoint leur rubrique d'objectif.
   //   • « المؤقّت (تركيز) » : outil transversal, pas un contenu à apprendre ni
   //     à réviser → plus une rubrique du tout. Il reste ouvert par le Déclic
-  //     ( MotivationDeclic → setCurrentTab('focus') ), autrement dit au moment
+  //     ( MotivationDeclic → navigateToTab('focus') ), autrement dit au moment
   //     où l'élève s'engage à travailler — pas en errant dans un menu.
   //   • « الخرائط الذهنية » : outil de SYNTHÈSE → déplacé dans « الدروس »
   //     (Apprendre), cf. LessonsView, carte data-testid="lecons-mindmap".
@@ -951,7 +988,7 @@ export default function App() {
         <div className="flex items-center gap-3">
           {studentEmail ? (
             <StudentAccountBar
-              onOpenTeacher={() => setCurrentTab('teacher')}
+              onOpenTeacher={() => navigateToTab('teacher')}
               onLogout={handleStudentLogout}
             />
           ) : (
@@ -1172,7 +1209,7 @@ export default function App() {
               {currentTab === 'examens' && (
                 <ExamensHubView
                   onOpen={(mode) => ouvrirExamen(mode)}
-                  onBack={() => setCurrentTab('training')}
+                  onBack={() => navigateToTab('training')}
                 />
               )}
 
@@ -1180,8 +1217,8 @@ export default function App() {
                   de consolidation sont déclarés dans src/data/revisionHub.ts. */}
               {currentTab === 'reviser' && (
                 <ReviewHubView
-                  onOpen={(tab) => setCurrentTab(tab)}
-                  onBackToHome={() => setCurrentTab('home')}
+                  onOpen={(tab) => navigateToTab(tab)}
+                  onBackToHome={() => navigateToTab('home')}
                 />
               )}
 
@@ -1202,18 +1239,18 @@ export default function App() {
                 <StatsView 
                   progress={progress}
                   units={units}
-                  onNavigate={(t) => setCurrentTab(t as typeof currentTab)}
+                  onNavigate={(t) => navigateToTab(t as typeof currentTab)}
                 />
               )}
 
               {currentTab === 'chat' && (
                 <AITutorView
-                  onBackToDashboard={() => setCurrentTab('home')}
+                  onBackToDashboard={() => navigateToTab('home')}
                   onBackToPreviousTab={() => {
                     if (previousTab) {
-                      setCurrentTab(previousTab);
+                      navigateToTab(previousTab);
                     } else {
-                      setCurrentTab('home');
+                      navigateToTab('home');
                     }
                   }}
                   onXPGagné={handleTutorXPGained}
@@ -1224,15 +1261,15 @@ export default function App() {
               )}
 
               {currentTab === 'tadwin' && (
-                <TadwinView onBackToHome={() => setCurrentTab('home')} />
+                <TadwinView onBackToHome={() => navigateToTab('home')} />
               )}
 
               {currentTab === 'methodology' && (
-                <MethodologyCompilerView onBackToHome={() => setCurrentTab('home')} />
+                <MethodologyCompilerView onBackToHome={() => navigateToTab('home')} />
               )}
 
               {currentTab === 'teacher' && (
-                <TeacherDashboardView onBack={() => setCurrentTab('home')} />
+                <TeacherDashboardView onBack={() => navigateToTab('home')} />
               )}
 
               {currentTab === 'bootcamp' && (
@@ -1252,7 +1289,7 @@ export default function App() {
                   initialQcm={parcoursQcm ?? undefined}
                   initialMode={parcoursMode ?? undefined}
                   onDeepLinkConsumed={() => { setParcoursLesson(null); setParcoursQcm(null); setParcoursMode(null); }}
-                  onOpenTab={(tab) => setCurrentTab(tab as typeof currentTab)}
+                  onOpenTab={(tab) => navigateToTab(tab as typeof currentTab)}
                   /* Audit Capitaine §2 : le score de اختبار الكتاب atteint
                      enfin quizScoreHistory (source: 'livre', par chapitre). */
                   onScoreLivre={enregistrerScoreLivre}
@@ -1274,46 +1311,46 @@ export default function App() {
               {currentTab === 'mindmap' && (
                 <MindMapView 
                   initialUnitId={activeMindMapUnitId}
-                  onBackToHome={() => setCurrentTab('home')}
+                  onBackToHome={() => navigateToTab('home')}
                   onStartQuizForUnit={handleLaunchQuiz}
                   isDarkMode={isDarkMode}
                 />
               )}
 
               {currentTab === 'animations' && (
-                <AnimationsView onBackToHome={() => setCurrentTab('training')} />
+                <AnimationsView onBackToHome={() => navigateToTab('training')} />
               )}
 
               {currentTab === 'training' && (
                 <TrainingHubView
-                  onOpen={(tab) => setCurrentTab(tab)}
-                  onBackToHome={() => setCurrentTab('home')}
+                  onOpen={(tab) => navigateToTab(tab)}
+                  onBackToHome={() => navigateToTab('home')}
                 />
               )}
 
               {currentTab === 'plan' && (
                 <RevisionPlanView
-                  onBackToHome={() => setCurrentTab('training')}
+                  onBackToHome={() => navigateToTab('training')}
                   onOpenRedaction={(ideaId) => {
                     setBacIdeaFocus(ideaId);
-                    setCurrentTab('bacideas');
+                    navigateToTab('bacideas');
                   }}
                 />
               )}
 
               {currentTab === 'bacideas' && (
                 <BacIdeasView
-                  onBackToHome={() => setCurrentTab('training')}
+                  onBackToHome={() => navigateToTab('training')}
                   focusIdeaId={bacIdeaFocus}
                 />
               )}
 
               {currentTab === 'situations' && (
-                <SituationBankView onBackToHome={() => setCurrentTab('training')} />
+                <SituationBankView onBackToHome={() => navigateToTab('training')} />
               )}
 
               {currentTab === 'schemas' && (
-                <SchemaDrillView onBackToHome={() => setCurrentTab('training')} />
+                <SchemaDrillView onBackToHome={() => navigateToTab('training')} />
               )}
 
               {currentTab === 'focus' && (
@@ -1345,11 +1382,11 @@ export default function App() {
                 onStart={() => {
                   closeDeclicOverlay();
                   updateLastStudyTime();
-                  setCurrentTab('review');
+                  navigateToTab('review');
                 }}
                 onStartFocus={() => {
                   closeDeclicOverlay();
-                  setCurrentTab('focus');
+                  navigateToTab('focus');
                 }}
               />
             </Suspense>
@@ -1454,7 +1491,7 @@ export default function App() {
                     // sera crédité que s'il a réellement lieu (et c'est
                     // `activiteQuotidienne` qui en décide, pas ce clic).
                     accepter();
-                    setCurrentTab(invitation.cible);
+                    navigateToTab(invitation.cible);
                   }}
                   className="rounded-xl bg-[#006d37] px-3 py-1.5 text-[11px] font-black text-white cursor-pointer"
                 >

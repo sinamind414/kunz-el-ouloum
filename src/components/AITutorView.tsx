@@ -592,6 +592,12 @@ export default function AITutorView({ onXPGagné, questionInitiale, onQuestionIn
             type="text"
             value={input}
             onChange={(e) => setInput(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                e.preventDefault();
+                handleSend(input);
+              }
+            }}
             placeholder="اكتب سؤالك للقبطان في علوم الطبيعة والحياة..."
             aria-label="حقل السؤال إلى القبطان"
             className="flex-1 px-4 h-12 rounded-xl bg-[#f3f4f5] border border-transparent focus:border-[#006d37] focus:bg-[#ffffff] text-sm focus:outline-none transition-all placeholder:text-[#506072]/60"

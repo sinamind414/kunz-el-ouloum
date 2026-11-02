@@ -79,9 +79,8 @@ if ('serviceWorker' in navigator && !import.meta.env.PROD) {
 //      clique CE bouton, exactement comme le ferait l'élève ;
 //   3. un bouton عودة est visible (retour in-app) → on le clique ;
 //   4. sinon (racine) → TOAST + double-retour < 2 s pour quitter.
-// L'app est une SPA à état pur (aucun pushState) : piloter les
-// mêmes boutons que l'élève est fidèle ET évite de toucher à
-// App.tsx (fichier protégé — travail concurrent non signé).
+// L'app utilise un routeur SPA minimal par hash (pushState/popstate)
+// : history.back() fonctionne et restore le dernier onglet visité.
 // ============================================================
 if (estApkCapacitor) {
   void import('@capacitor/app').then(({ App: CapApp }) => {
