@@ -41,4 +41,4 @@ public/apk/
 .vercel
 
 # livrable : la maquette PDF du livre (exception à *.pdf)
-!projet-sulayman/maquette/LIVRE_Sulayman_v1.pdf
+!LIVRE_SULAYMAN/maquette/LIVRE_Sulayman_v1.pdf
