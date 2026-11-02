@@ -1,4 +1,4 @@
-import { useState, useEffect, lazy, Suspense } from 'react';
+import { useState, useEffect, useRef, lazy, Suspense } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import {
   Home,
@@ -177,8 +177,20 @@ export default function App() {
   // Exercice sur lequel ouvrir l'atelier quand on arrive depuis le plan.
   const [bacIdeaFocus, setBacIdeaFocus] = useState<string | null>(null);
   const [currentTab, setCurrentTab] = useState<'splash' | 'home' | 'review' | 'stats' | 'chat' | 'methodology' | 'bootcamp' | 'badges' | 'lesson' | 'workshop' | 'mindmap' | 'teacher' | 'animations' | 'situations' | 'schemas' | 'training' | 'plan' | 'bacideas' | 'focus' | 'tadwin' | 'moi' | 'reviser' | 'examens' | 'parcours'>('splash');
+  const currentTabRef = useRef(currentTab);
+  const [previousTab, setPreviousTab] = useState<typeof currentTab | null>(null);
   // Deep-link : ouverture d'une leçon précise depuis un raccourci (الدروس, أنا…).
   const [parcoursLesson, setParcoursLesson] = useState<{ key: string; kind: 'html' | 'active'; unitId: number } | null>(null);
+  // Bouton retour vers la rubrique d'origine (précédente) quand on est dans le chat.
+  const ouvrirChat = () => {
+    setPreviousTab(currentTab);
+    setCurrentTab('chat');
+  };
+  // Garde la valeur à jour dans le ref pour l'écouteur global qui ne peut pas
+  // dépendre de `currentTab` sans se réabonner à chaque navigation.
+  useEffect(() => {
+    currentTabRef.current = currentTab;
+  }, [currentTab]);
   // Deep-link : ouverture du QCM d'une unité précise (raccourci).
   const [parcoursQcm, setParcoursQcm] = useState<number | null>(null);
   // Deep-link : examen à ouvrir dans LessonsView ('qcm' = QCM du livre,
@@ -216,6 +228,7 @@ export default function App() {
       const detail = (e as CustomEvent<MorchidAskDetail>).detail;
       if (!detail?.question) return;
       setMorchidSeed(detail.question);
+      setPreviousTab(currentTabRef.current);
       setCurrentTab('chat');
     };
     window.addEventListener(MORCHID_ASK_EVENT, onMorchidAsk);
@@ -1196,11 +1209,16 @@ export default function App() {
               {currentTab === 'chat' && (
                 <AITutorView
                   onBackToDashboard={() => setCurrentTab('home')}
-                  onXPGained={handleTutorXPGained}
+                  onBackToPreviousTab={() => {
+                    if (previousTab) {
+                      setCurrentTab(previousTab);
+                    } else {
+                      setCurrentTab('home');
+                    }
+                  }}
+                  onXPGagné={handleTutorXPGained}
                   questionInitiale={morchidSeed}
                   onQuestionInitialeConsumed={() => setMorchidSeed(null)}
-                  /* Audit Capitaine §1 (2026-10-17) : « اشرح <unité> » ouvre
-                     la leçon réelle (mêmes handlers que مساري). */
                   onOuvrirLeconDuCoach={ouvrirLeçonDepuisParcours}
                 />
               )}
@@ -1475,7 +1493,7 @@ export default function App() {
           <button
             type="button"
             data-testid="fab-morchid"
-            onClick={() => setCurrentTab('chat')}
+            onClick={ouvrirChat}
             title={CAPITAINE_IDENTITE_AR}
             aria-label={CAPITAINE_IDENTITE_AR}
             className="flex h-14 w-14 items-center justify-center overflow-hidden rounded-full border-2 border-[#006d37] bg-[#fff9ed] shadow-lg shadow-[#006d37]/30 transition-transform hover:scale-105 active:scale-95 cursor-pointer dark:bg-[#121614]"

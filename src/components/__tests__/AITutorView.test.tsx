@@ -99,10 +99,10 @@ describe('AITutorView — rendu riche du moteur (T2)', () => {
     }
   }, 30000);
 
-  it('propage les XP gagnés au parent via onXPGained (score final du quiz)', async () => {
+  it('propage les XP gagnés au parent via onXPGagné (score final du quiz)', async () => {
     const xpSpy = vi.fn();
     const user = userEvent.setup();
-    render(<AITutorView onXPGained={xpSpy} />);
+    render(<AITutorView onXPGagné={xpSpy} />);
 
     // Domaine 1 → diagnostic → 1 réponse → le moteur émet reward (10 XP par bonne réponse)
     await user.click(screen.getAllByTestId(/^quick-action-\d+$/)[0]);

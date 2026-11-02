@@ -131,7 +131,7 @@ describe('B5 — anti-farm préservé à l\'accueil (audit Morchid)', () => {
 });
 
 // ---------------------------------------------------------------------------
-// B6 : un quiz à 0 XP émet tout de même un reward (onXPGained → journalisation).
+// B6 : un quiz à 0 XP émet tout de même un reward (onXPGagné → journalisation).
 // ---------------------------------------------------------------------------
 
 describe('B6 — activité 0-XP journalisée (audit Morchid)', () => {

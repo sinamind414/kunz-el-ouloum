@@ -20,9 +20,11 @@ import { loadSession, saveSession, resetSession, clearPendingInteractions, type 
 
 interface AITutorViewProps {
   onBackToDashboard?: () => void;
+  /** Retour à la rubrique d'origine (sauf si la rubrique est 'chat'). */
+  onBackToPreviousTab?: () => void;
   /** Propagation des XP gagnés dans le tutor vers le UserProgress global de l'App.
    *  details (3e paramètre) porte la fin d'activité → journalisation serveur (rec #2 de l'audit). */
-  onXPGained?: (xpGained: number, questionsAnswered: number, details?: TutorRewardDetails) => void;
+  onXPGagné?: (xpGained: number, questionsAnswered: number, details?: TutorRewardDetails) => void;
   /** Point d'entrée contextuel (2026-10-11) : question formulée par la vue d'où
    *  vient l'élève — « اشرح لي هذه الوحدة » dans un cours, « لماذا إجابتي خاطئة؟ »
    *  après une erreur. Elle pré-remplit le champ SANS être envoyée : l'élève la
@@ -75,7 +77,7 @@ function buildWelcomeMessage(): ChatMessage {
   };
 }
 
-export default function AITutorView({ onXPGained, questionInitiale, onQuestionInitialeConsumed, onOuvrirLeconDuCoach }: AITutorViewProps) {
+export default function AITutorView({ onXPGagné, questionInitiale, onQuestionInitialeConsumed, onOuvrirLeconDuCoach, onBackToPreviousTab }: AITutorViewProps) {
   const [session, setSession] = useState<BotSession>(() => loadSession());
   const [messages, setMessages] = useState<ChatMessage[]>(() => [buildWelcomeMessage()]);
   const [input, setInput] = useState('');
@@ -158,7 +160,7 @@ export default function AITutorView({ onXPGained, questionInitiale, onQuestionIn
     // journalisée dans le suivi enseignant (/api/student/sync). L'incrément XP
     // n'est crédité que si > 0.
     if (result.action.reward) {
-      onXPGained?.(Math.max(0, result.action.reward.xpGained ?? 0), 1, {
+      onXPGagné?.(Math.max(0, result.action.reward.xpGained ?? 0), 1, {
         kind: result.action.reward.kind ?? 'quiz',
         score: result.action.reward.score ?? 0,
         total: result.action.reward.total ?? 0,
@@ -346,6 +348,18 @@ export default function AITutorView({ onXPGained, questionInitiale, onQuestionIn
           <Trash2 className="w-4 h-4" />
         </button>
       </div>
+
+      {/* Retour à la rubrique initiale (quand on est dans une rubrique et
+          qu'on ouvre le chat). */}
+      {onBackToPreviousTab && (
+        <button
+          onClick={onBackToPreviousTab}
+          className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl border border-[#e2dabf]/60 bg-[#fff9ed] text-[#006d37] font-bold text-sm transition-colors hover:bg-[#fed65b]/30 cursor-pointer"
+        >
+          <Globe2 className="w-4 h-4" />
+          <span>العودة إلى Rubrique précédente</span>
+        </button>
+      )}
 
       {/* Messages Scroll area */}
       <div ref={listRef} className="relative flex-1 overflow-y-auto p-4 md:p-6 space-y-4 bg-[#fcf3d8]/10" data-testid="tutor-messages">
