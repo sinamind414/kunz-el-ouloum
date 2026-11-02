@@ -31,11 +31,12 @@ Le marché du livre religieux francophone sur les prophètes est **saturé de r�
 | Chapitre 2 — Les quatre dons | ✅ rédigé | 3 300 | `CHAPITRE_02_Les_quatre_dons.md` |
 | Chapitre 3 — Le jugement | ✅ rédigé | 3 500 | `CHAPITRE_03_Le_jugement_et_les_deux_hommes.md` |
 | Chapitre 4 — Les armées et les oiseaux | ✅ rédigé | 2 900 | `CHAPITRE_04_Les_armees_et_les_oiseaux.md` |
-| Chapitres 5 à 12 + annexes | ⬜ à écrire | — | — |
+| Chapitre 5 — La huppe et Saba | ✅ rédigé | 3 200 | `CHAPITRE_05_La_huppe_et_Saba.md` |
+| Chapitres 6 à 12 + annexes | ⬜ à écrire | — | — |
 | Extrait gratuit « 7 choses » | ⬜ à écrire | — | — |
 | Analyse concurrentielle My Islam | ✅ | 1 300 | `ANALYSE_CONCURRENCE_MYISLAM.md` |
 
-**Total rédigé : ~12 900 mots sur 28 000 visés (46 %).**
+**Total rédigé : ~16 100 mots sur 28 000 visés (57 %).**
 
 > ⚠️ **Conflit de plan résolu :** 21:78–79 figurait à la fois au chap. 2 et au chap. 3.
 > Décision : le chap. 2 ne traite que le **don de compréhension** (21:79), le chap. 3 traite la **scène complète** (21:78–80).
