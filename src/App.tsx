@@ -11,11 +11,9 @@ import {
   Moon,
   Swords,
   PlayCircle,
-  Layers,
   Search,
   PenTool,
   Dumbbell,
-  Key,
   Sprout
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
@@ -63,7 +61,7 @@ import {
 } from './utils/activiteQuotidienne';
 // Nomenclature figée (docs/MARQUE.md §3) — la rubrique porte le nom officiel de la source
 // unique miftahSpec : aucun littéral dans ce fichier (garde-fou check:miftah §13, 2026-09-15).
-import { MIFTAH_NAME_OFFICIAL_AR, MIFTAH_NAME_AR } from './data/miftahSpec';
+import { MIFTAH_NAME_OFFICIAL_AR } from './data/miftahSpec';
 import { AR_LATN } from './utils/latinDigits';
 
 import SplashView from './components/SplashView';
@@ -927,13 +925,6 @@ export default function App() {
     { tab: 'home', label: 'الرئيسية', fr: 'Accueil', Icon: Home },
     { tab: 'lesson', label: 'الدروس', fr: 'Apprendre', Icon: BookOpen },
     { tab: 'training', label: 'التمارين والتدريب', fr: "S'entraîner", Icon: Dumbbell },
-    // Phase 2, Commit C (GO 2026-10-16) : المفتاح reçoit sa PROPRE
-    // porte visible. La plainte expert : l'élève « ne se retrouvait plus ».
-    // Après la Phase 1 (la porte ouvre l'atelier المفتاح) et la sortie du hub
-    // التمارين — pour rester à UNE seule porte (verrou PortesUniques) — le 6ᵉ
-    // portail rend l'outil permanent. Nom officiel : constante unique §13.
-    { tab: 'methodology', label: MIFTAH_NAME_AR, fr: 'Méthode', Icon: Key },
-    { tab: 'reviser', label: 'المراجعة', fr: 'Réviser', Icon: Layers },
     { tab: 'moi', label: 'أنا', fr: 'Moi', Icon: Sprout },
   ];
   // « المزيد » — VIDE depuis le 2026-10-12 : les deux derniers outils qu'il
