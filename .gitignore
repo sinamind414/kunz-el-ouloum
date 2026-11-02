@@ -39,3 +39,6 @@ _lint_final.txt
 # se reconstruit par assembleRelease).
 public/apk/
 .vercel
+
+# livrable : la maquette PDF du livre (exception à *.pdf)
+!LIVRE_SULAYMAN/maquette/LIVRE_Sulayman_v1.pdf
