@@ -50,11 +50,16 @@ Reproduire la CI en local : `TZ=UTC npx vitest run`.
 (durée 16,5 s vs 9,7 s isolé) : ses `findByText` plafonnent à 4 s et le
 parallélisme interne de vitest fait dépasser le délai. Vérifié : **6/6 vert en
 isolé, 3 705/3 705 vert au re-run complet** — c'est du bruit de charge, pas un
-défaut. **Reproduit AUSSI sur CI** (run master `41779532217` du 04/11/2026 :
-mêmes 3 tests, 16,2 s — sur un arbre identique au 5/5 de la PR #41) ; replay
-du job seul lancé via `gh run rerun --failed`. Durcissement appliqué : les 3
-`findBy` de la suite passent de 4000 ms à 8000 ms — un élément jamais rendu
-échouerait quand même, la patience accrue ne masque pas une vraie régression.
+défaut. **Reproduit AUSSI sur CI** (runs master `41779532217` puis
+`41782128315`, 04/11/2026 : 3 puis 2 tests perdus, 15-16 s — sur des arbres
+identiques aux 5/5 des PR #41/#42) ; replay du job seul lancé via
+`gh run rerun --failed` (vert à chaque fois). Durcissement en deux couches :
+les 3 `findBy` de la suite passent de 4000 ms à 8000 ms, et les deux tests
+les plus lourds (rendu `<App />` complet, l. 180 et 209) reçoivent un timeout
+de test explicite de 15 000 ms — leur coupable réel était le défaut vitest de
+5000 ms par test (`Test timed out in 5000ms`), pas les `findBy`. Une vraie
+régression échouerait toujours (assertion ou blocage) : la patience accrue ne
+masque rien.
 Méthode inchangée : un échec isolé se rejoue SEUL avant tout diagnostic ; et
 vitest + jest ne doivent jamais tourner en parallèle (contention CPU, cf.
 BacIdeaTrainer/AITutorView innocentés le 03/11).

@@ -177,6 +177,11 @@ describe('App — la série de jours est écrite pour de vrai', () => {
     expect(p.dailyGoals?.serieDernierJour).toBe(jourLocal());
   });
 
+  // Timeout 15000 (durci le 2026-11-04) : ces deux tests rendent <App /> au
+  // complet et dépassaient le défaut vitest de 5000 ms sous la contention de
+  // la suite CI (runs master 41779532217 puis 41782128315 : « Test timed out
+  // in 5000ms »). Une vraie régression échouerait toujours — par assertion ou
+  // par blocage — : la patience accrue ne masque rien.
   it('ouvrir l’app ne fabrique PAS une journée : la série de la veille survit', async () => {
     const veille = ajouterJours(jourLocal(), -1);
     localStorage.setItem('svt_progress', JSON.stringify(progressionSemee({
@@ -204,7 +209,7 @@ describe('App — la série de jours est écrite pour de vrai', () => {
     expect(chip.textContent).toContain('5');
     const p = JSON.parse(localStorage.getItem('svt_progress') ?? '{}') as UserProgress;
     expect(p.dailyGoals?.serieDernierJour ?? veille).toBe(veille);
-  });
+  }, 15000);
 
   it('un jour manqué : la série affichée retombe à 0, sans attendre une activité', async () => {
     const ilYA3Jours = ajouterJours(jourLocal(), -3);
@@ -230,5 +235,5 @@ describe('App — la série de jours est écrite pour de vrai', () => {
     const chip = screen.getByLabelText('عرض تقدمي اليوم');
     expect(chip.textContent).not.toContain('9');
     expect(chip.textContent).toContain('0');
-  });
+  }, 15000);
 });
