@@ -74,3 +74,12 @@ Aucun de ces fichiers n'était référencé par le code, les tests, le build ou 
 Les 40 `eleve_*.txt` + `RECAPITULATIF.txt` (corpus de calibration du correcteur),
 `docs/copies-bac2025/`, `data/students.db*`, `*.pdf` hors `public/bac-sujets/`,
 `public/apk/`. Les scripts et tests qui en dépendent se désactivent (`skipIf`) en leur absence.
+
+**Piège de build APK (M2, décision propriétaire 2026-11-04 : option A, offline
+complet)** : Vite recopie `public/` verbatim dans `dist/`, donc `dist/apk/` contient
+l'APK de 88 Mo ; or `capacitor.config.ts` (`webDir: 'dist'`) embarque TOUT `dist`
+dans l'APK — le prochain `npx cap sync` glisserait l'APK dans lui-même (poids mort
+récursif). **Procédure obligatoire avant tout build Capacitor** : supprimer
+`dist/apk/` après `npm run build` et avant `npx cap sync`. Les 28 PDFs
+(93,6 Mo, `public/bac-sujets/`) restent embarqués volontairement : c'est le choix
+produit offline (option A), ne pas les « optimiser » sans décision contraire.
