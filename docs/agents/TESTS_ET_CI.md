@@ -18,14 +18,14 @@
 
 Lancer un seul fichier : `npx vitest run chemin/du.test.ts`.
 
-## État de référence (2026-11-04, après H1 + fix fuseau/splash)
+## État de référence (2026-11-04, après H1 + H3 + fix fuseau/splash)
 
 | Suite | Résultat |
 |---|---|
 | tsc | vert (0 erreur) |
-| vitest | 318 fichiers / 3 705 tests : **100 % vert** (flake de contention connu, voir ci-dessous) |
-| jest | 310 suites / 3 648 tests : **100 % vert** |
-| CI (PR #41, run 41776027631) | **5 jobs / 5 verts** |
+| vitest | 319 fichiers / 3 713 tests : **100 % vert** (flake de contention durci, voir ci-dessous) |
+| jest | 311 suites / 3 656 tests : **100 % vert** |
+| CI (PR #42, run 41781025735) | **5 jobs / 5 verts** — head 30ccfed (H3 + durcissement) |
 
 Les chiffres du 2026-10-26 (3 675 tests, 1 échec fuseau, 1 erreur eslint acces.ts) sont périmés :
 l'échec fuseau est corrigé (`0ce98a4`) et l'erreur eslint ne se reproduit plus.
