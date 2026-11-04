@@ -51,6 +51,7 @@
 
 import type { SituationCapitaine } from '../data/capitaine';
 import { conseilDeRubrique } from '../data/conseilsRubrique';
+import type { EtatEleve } from './etatEleve';
 // Le relais humain (§5.D, 4ᵉ tentative — étape 5). Le module `relais` ne connaît
 // ni les prescriptions ni la taxonomie des erreurs : la flèche va dans ce sens,
 // et jamais dans l'autre, pour qu'aucun compteur de la boucle ne puisse bouger à
@@ -561,3 +562,131 @@ export function invitationDuMoment(ctx: ContexteCapitaine): Invitation | null {
 
 /** Texte de la bulle quand elle n'a rien à dire : une porte, pas un slogan. */
 export const LIBELLE_BULLE_SILENCIEUX_AR = 'اسأل القبطان';
+
+// ─────────────────────────────────────────────────────────────────────────────
+// LA CONSIGNE D'ENTRÉE DE « التمارين والتدريب » — C'EST LE CAPITAINE QUI DÉCIDE.
+//
+// Arbitrage propriétaire du 2026-11-04 : « un helper pur, c'est le Capitaine
+// Kunz El Ouloum, c'est lui qui guide l'élève, c'est le coach ». La règle vit
+// donc ICI, dans le module du coach, à côté de `invitationDuMoment` : ce n'est
+// PAS un guide autonome, c'est le CALCUL du guide. Le hub ne décide de rien, il
+// projette ce que le Capitaine a tranché. Aucune troisième voix.
+//
+// POURQUOI UNE FONCTION PURE : mêmes portes de silence que la bulle, aucune
+// lecture DOM, aucune écriture de stockage, aucun état caché. La consigne est
+// une PROJECTION DÉRIVÉE de l'état unique (`etatEleveRuntime`), jamais stockée —
+// exactement le verrou « couleur/état = projection, pas stockage ».
+//
+// CE QU'ELLE NE FAIT PAS : elle n'ajoute aucune porte (les 7 cartes restent 7),
+// ne crée aucune valeur de `CibleInvitation` (la bulle garde `cible:'training'`
+// et `App.tsx:1429` reste inchangé), ne touche pas `App.tsx`, et ne désigne
+// JAMAIS un module cadenassé : seuls `situations`, `workshop` et `examens` sont
+// éligibles, tous libres dès le premier jour.
+//
+// LE SILENCE EST UNE DÉCISION : état absent, compétence non chargée ou épreuve
+// en cours ⇒ `null`. On ne fabrique pas une recommandation avec des données
+// qu'on n'a pas.
+//
+// ET LA 1ʳᵉ VISITE ? Le bandeau d'accueil (`BandeauConseilRubrique`) donne le
+// PRINCIPE (« un exercice complet vaut mieux que trois incomplets »). Il ne
+// nomme aucun module — c'est précisément le défaut signalé. La prescription
+// d'état PRIME donc : elle nomme le point de départ dès la première ouverture.
+// Ce ne sont pas deux guides : un seul décideur (`consigneEntreeTraining`), un
+// seul personnage EN GRAND (le bandeau, qui garde son visage), et le bloc du
+// hub n'affiche NI visage NI image — le guide y SIGNE son nom, sans se
+// redessiner une deuxième fois.
+// ─────────────────────────────────────────────────────────────────────────────
+
+/** Onglets du hub que le Capitaine peut désigner — jamais un module verrouillé. */
+export type GesteEntreeTab = 'situations' | 'workshop' | 'examens';
+
+export interface ConsigneEntreeTraining {
+  /** L'UNIQUE carte mise en avant. */
+  tab: GesteEntreeTab;
+  /** Ce que dit le Capitaine : UN geste, court, en arabe. */
+  gesteAr: string;
+  /** « لماذا » : une seule ligne, dérivée de l'état, jamais inventée. */
+  pourquoiAr: string;
+  /** Durée annoncée pour UN exercice, auto-correction comprise. */
+  dureeMin: number;
+}
+
+/** Un exercice complet, correction incluse — pas une séance, pas un QCM-porte. */
+export const DUREE_GESTE_ENTREE_MIN = 10;
+
+/**
+ * LE CAPITAINE CHOISIT LE PREMIER GESTE BAC.
+ *
+ * Ordre enseignant (arbitrage 2026-11-04) : `Rappel → UN geste BAC →
+ * auto-correction → SRS à la maison`. Le QCM/flashcard reste un ÉCHAUFFEMENT
+ * diagnostique, jamais une porte obligatoire ni une destination : cette
+ * consigne désigne donc toujours un geste de production ou d'analyse de sند.
+ *
+ * Table de décision, toutes dérivées de l'état déjà assemblé une fois :
+ *   1. date du BAC officielle, ≤ 30 jours, ≥ 2 unités → `examens` (الورقة والساعة) ;
+ *   2. zéro unité complète                          → `workshop` (جواب مُوجَّه) ;
+ *   3. unité faible ou ≥ 2 erreurs au دفتر          → `situations` (سند ciblé) ;
+ *   4. sinon                                        → `situations` (cœur du BAC).
+ *
+ * `unitesCompletes` vient de la progression RÉELLE du parcours, pas d'une
+ * estimation. `null` en retour = silence honnête, pas un module par défaut.
+ */
+export function consigneEntreeTraining(
+  etat: EtatEleve | null,
+  unitesCompletes: number,
+): ConsigneEntreeTraining | null {
+  // ── Les portes du silence, partagées avec la bulle. ────────────────────────
+  if (!etat) return null; // état pas encore déposé : rien à recommander
+  if (etat.contexte.epreuveEnCours) return null; // épreuve : silence absolu
+  if (!etat.competence.chargee) return null; // verdicts absents ⇒ pas d'invention
+  // PAS de porte sur `conseilRubriqueAPrendre` : le bandeau de 1ʳᵉ visite dit le
+  // principe sans nommer de module. Le mute ici aurait laissé le défaut entier
+  // au moment où l'élève en a le plus besoin. La prescription d'état prime.
+
+  const unites = Number.isInteger(unitesCompletes) && unitesCompletes > 0 ? unitesCompletes : 0;
+  const faible = etat.competence.unitePrioritaire ?? etat.competence.faibles[0] ?? null;
+  // Une date provisoire ne produit AUCUN décompte : on n'annonce pas un chiffre
+  // qu'on n'a pas mesuré (même honnêteté que `cumul` dans `invitationDuMoment`).
+  const jours = etat.horizon.dateProvisoire ? null : etat.horizon.joursAvantBac;
+  const dureeMin = DUREE_GESTE_ENTREE_MIN;
+
+  if (jours !== null && Number.isFinite(jours) && jours > 0 && jours <= 30 && unites >= 2) {
+    return {
+      tab: 'examens',
+      gesteAr: 'اكتب محاكاة واحدة بورقة وقلم، ثم صحّحها.',
+      pourquoiAr: jours === 1
+        ? 'بقي يوم واحد: الورقة والساعة تكشفان الثغرة قبل البكالوريا.'
+        : `بقي ${jours} يومًا: الورقة والساعة تكشفان الثغرة قبل البكالوريا.`,
+      dureeMin,
+    };
+  }
+
+  if (unites === 0) {
+    return {
+      tab: 'workshop',
+      gesteAr: 'أنتج جوابًا واحدًا خطوة بخطوة، ثم صحّحه.',
+      pourquoiAr: 'لم تُكمل وحدة بعد: الجواب المُوجَّه يبني الحركة الأولى قبل سند الامتحان.',
+      dureeMin,
+    };
+  }
+
+  if (faible !== null || etat.erreurs.total >= 2) {
+    return {
+      tab: 'situations',
+      gesteAr: faible !== null
+        ? `حلّل سندًا واحدًا من «${faible}»، ثم صحّح جوابك.`
+        : 'حلّل سندًا واحدًا من دفتر أخطائك، ثم صحّح جوابك.',
+      pourquoiAr: faible !== null
+        ? `الوحدة «${faible}» ما زالت ضعيفة: نبدأ منها، لا من المنهج كله.`
+        : 'خطآن في الدفتر يكفيان لاختيار السند الذي نبدأ به.',
+      dureeMin,
+    };
+  }
+
+  return {
+    tab: 'situations',
+    gesteAr: 'حلّل سندًا واحدًا، ثم صحّح جوابك.',
+    pourquoiAr: 'تحليل السند هو قلب امتحان البكالوريا: تمرين واحد كامل أنفع من ثلاثة ناقصة.',
+    dureeMin,
+  };
+}

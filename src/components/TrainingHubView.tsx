@@ -7,6 +7,9 @@
 import { ArrowRight, CalendarDays, Dumbbell, FileText, Key, Lock, PenTool, PlayCircle, Search, Sparkles, Swords } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import { TRAINING_ENTRIES, type TrainingTab } from '../data/trainingHub';
+import { CAPITAINE_IDENTITE_AR } from '../data/capitaineIdentite';
+import { consigneEntreeTraining } from '../lib/invitationCapitaine';
+import { etatEleveSiChargee } from '../lib/etatEleveRuntime';
 import { loadParcours, unitesCompletes } from '../lib/parcours/parcoursProgress';
 
 interface TrainingHubViewProps {
@@ -29,6 +32,10 @@ export default function TrainingHubView({ onOpen, onBackToHome }: TrainingHubVie
   // Phase 2 (GO 2026-10-16) : le cadenas lit la progression RÉELLE du
   // parcours — une unité complète = toutes ses leçons + son جسر.
   const unites = unitesCompletes(loadParcours());
+  // Projection dérivée : l'état unique a été assemblé et déposé UNE fois par le
+  // Capitaine (`useInvitationCapitaine` → `fournirEtatEleve`). Le hub ne relit
+  // aucun stockage de plus, ne décide de rien, n'invente rien : `null` = silence.
+  const consigne = consigneEntreeTraining(etatEleveSiChargee(), unites);
   return (
     <div className="min-h-screen p-4 md:p-8 max-w-5xl mx-auto" dir="rtl" data-testid="training-hub">
       {/* RTL : le conteneur est en dir="rtl", donc `flex-row` place le PREMIER
@@ -97,6 +104,18 @@ export default function TrainingHubView({ onOpen, onBackToHome }: TrainingHubVie
                   ) : (
                     <span className="inline-block text-[11px] font-bold px-2.5 py-1 rounded-lg bg-[#fff9ed] dark:bg-black/20 text-[#8a6a00] dark:text-[#d9a400]">
                       {e.gestureAr}
+                      {/* UN SEUL badge, sur la SEULE carte désignée par le Capitaine.
+                          Ce n'est pas une voix de plus : c'est la projection de sa
+                          décision. Jamais sur une carte verrouillée (la règle ne peut
+                          désigner que situations / workshop / examens). */}
+                      {consigne?.tab === e.tab && !verrouille && (
+                        <span
+                          data-testid="recommande-aujourdhui"
+                          className="inline-block mx-2 text-[11px] font-black px-2.5 py-1 rounded-lg bg-[#e8f5ee] text-[#006d37] dark:bg-emerald-400/10 dark:text-emerald-300"
+                        >
+                          موصى به اليوم
+                        </span>
+                      )}
                     </span>
                   )}
                 </div>
@@ -105,6 +124,37 @@ export default function TrainingHubView({ onOpen, onBackToHome }: TrainingHubVie
           );
         })}
       </div>
+
+      {/* UNE prescription, pas un second bandeau : aucun visage, aucune image
+          — le personnage EN GRAND reste UNIQUE (règle « une seule voix » de
+          BandeauConseilRubrique). Le nom du guide est signé, pas redessiné.
+          Le texte est décidé par
+          SON module ; il n'existe que si l'état est chargé et hors épreuve.
+          Dès la 1ʳᵉ visite il NOMME le module : le bandeau d'accueil, lui, ne
+          donne que le principe. */}
+      {consigne && (
+        <div
+          data-testid="consigne-entree-capitaine"
+          dir="rtl"
+          className="mb-4 rounded-2xl border border-[#006d37]/25 bg-[#f8fbfa] px-4 py-3 dark:border-emerald-400/25 dark:bg-[#121614]"
+        >
+          <p className="text-[10px] font-black tracking-wide text-[#006d37]/80 dark:text-emerald-400/80">
+            {CAPITAINE_IDENTITE_AR} — ابدأ من هنا
+          </p>
+          <p
+            data-testid="consigne-entree-geste"
+            className="mt-1 text-[13px] font-bold leading-relaxed text-[#1f2b24] dark:text-gray-100"
+          >
+            {consigne.gesteAr}
+          </p>
+          <p
+            data-testid="consigne-entree-pourquoi"
+            className="mt-1 text-[11.5px] leading-relaxed text-[#506072] dark:text-gray-400"
+          >
+            لماذا: {consigne.pourquoiAr} — {consigne.dureeMin} دقائق، تمرين واحد، والتصحيح جزء منه.
+          </p>
+        </div>
+      )}
     </div>
   );
 }
