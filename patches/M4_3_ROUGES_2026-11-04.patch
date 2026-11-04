@@ -1,0 +1,352 @@
+diff --git a/public/sw.js b/public/sw.js
+index c7c0319..4dd31e0 100644
+--- a/public/sw.js
++++ b/public/sw.js
+@@ -298,17 +298,27 @@ self.addEventListener('push', (event) => {
+   );
+ });
+ 
++// 🔴 M4 (3) — clic sur notification.
++// AVANT : `new URL(url)` avec url='/' levait « TypeError: Invalid URL » dès
++// qu'un onglet de l'app était déjà ouvert → la notification ne faisait rien.
++// APRÈS : résolution systématique contre l'origine du SW + URL absolue.
+ self.addEventListener('notificationclick', (event) => {
+   event.notification.close();
+   const url = event.notification.data?.url || '/';
++  let cible;
++  try {
++    cible = new URL(url, self.location.origin);
++  } catch {
++    cible = new URL('/', self.location.origin);
++  }
+   event.waitUntil(
+     self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then((clients) => {
+       for (const client of clients) {
+-        if (client.url.includes(new URL(url).origin) && 'focus' in client) {
++        if (new URL(client.url).origin === cible.origin && 'focus' in client) {
+           return client.focus();
+         }
+       }
+-      if (self.clients.openWindow) return self.clients.openWindow(url);
++      if (self.clients.openWindow) return self.clients.openWindow(cible.href);
+     }),
+   );
+ });
+diff --git a/server.ts b/server.ts
+index 8bf576e..7e10cbb 100644
+--- a/server.ts
++++ b/server.ts
+@@ -13,6 +13,7 @@ import { PostgresStore, migrateJsonFilesToPostgres } from "./server/store.pg";
+ import { resumeActivite, calculeActivite } from "./server/activite";
+ import { mesurerPilotage } from "./src/server/mesurePilotage";
+ import webpush from 'web-push';
++import { rappelDejaEnvoyeAujourdHui } from "./server/pushRappels";
+ // ── VAPID (M4 Web Push) ──────────────────────────────────────
+ // Clé publique exposée au client via VITE_VAPID_PUBLIC_KEY ;
+ // clé privée côté serveur uniquement (VAPID_PRIVATE_KEY).
+@@ -772,7 +773,7 @@ async function startServer() {
+       }
+       const studentId = (req as any).student?.id;
+       if (!studentId) return res.status(401).json({ error: "non_authentifie" });
+-      store.upsertPushSubscription(studentId, endpoint, p256dh, auth, userAgent);
++      await store.upsertPushSubscription(studentId, endpoint, p256dh, auth, userAgent);
+       res.json({ ok: true });
+     }));
+ 
+@@ -780,13 +781,15 @@ async function startServer() {
+     app.post("/api/push/unsubscribe", studentAuth, asyncHandler(async (req: Request, res: Response) => {
+       const { endpoint } = req.body || {};
+       if (!endpoint) return res.status(400).json({ error: "endpoint_requis" });
+-      store.removePushSubscription(endpoint);
++      await store.removePushSubscription(endpoint);
+       res.json({ ok: true });
+     }));
+ 
++    // 🔴 M4 (1) : l'envoi en diffusion est réservé à l'ENSEIGNANT.
++    // Un élève authentifié ne doit jamais pouvoir notifier tous les abonnés.
+     // Envoi de rappels : respecte 1 notification/jour par utilisateur
+     // et les heures algériennes (pas d'envoi entre 22h et 08h UTC+1).
+-    app.post("/api/push/send", studentAuth, asyncHandler(async (req: Request, res: Response) => {
++    app.post("/api/push/send", teacherAuth, asyncHandler(async (req: Request, res: Response) => {
+       const { title, body, studentId } = req.body || {};
+       if (!VAPID_PRIVATE_KEY) {
+         return res.status(503).json({ error: "push_desactive" });
+@@ -803,23 +806,22 @@ async function startServer() {
+ 
+       let envoyes = 0;
+       const erreurs: string[] = [];
+-      const aujourdhui = now.toISOString().slice(0, 10);
+-
+       for (const s of subs) {
+-        // Contrainte : max 1 notification par jour par utilisateur.
+-        if (s.derniere_notif && s.derniere_notif.slice(0, 10) === aujourdhui) continue;
++        // 🔴 M4 (2) : max 1 notification / jour. Le garde-fou normalise
++        // ISO (SQLite), Date et String(Date) (Postgres) — voir pushRappels.ts.
++        if (rappelDejaEnvoyeAujourdHui(s.derniere_notif, now)) continue;
+         try {
+           await webpush.sendNotification(
+             { endpoint: s.endpoint, keys: { p256dh: s.p256dh, auth: s.auth } },
+             JSON.stringify({ title: title ?? "Rappel de révision", body: body ?? "Il est temps de réviser vos leçons SVT." }),
+             { vapidDetails: { subject: VAPID_EMAIL, publicKey: VAPID_PUBLIC_KEY, privateKey: VAPID_PRIVATE_KEY }, TTL: 86400 },
+           );
+-          store.updatePushDerniereNotif(s.endpoint, now.toISOString());
++          await store.updatePushDerniereNotif(s.endpoint, now.toISOString());
+           envoyes++;
+         } catch (err: any) {
+           if (err.statusCode === 410 || err.statusCode === 404) {
+             // Abonnement expiré → on le retire.
+-            store.removePushSubscription(s.endpoint);
++            await store.removePushSubscription(s.endpoint);
+           } else {
+             erreurs.push(String(err.message || err));
+           }
+diff --git a/server/pushRappels.test.ts b/server/pushRappels.test.ts
+new file mode 100644
+index 0000000..260240d
+--- /dev/null
++++ b/server/pushRappels.test.ts
+@@ -0,0 +1,58 @@
++import { describe, expect, it } from 'vitest';
++import {
++  horaireAlgerienAutorise,
++  horodatageIsoPush,
++  jourPush,
++  rappelDejaEnvoyeAujourdHui,
++} from './pushRappels';
++
++const MAINTENANT = new Date('2026-11-04T10:00:00.000Z'); // 11h à Alger
++
++describe('🔴 2 — la date PostgreSQL est normalisée ( quota 1/jour )', () => {
++  it('un objet Date (timestamptz pg) devient un ISO exploitable', () => {
++    expect(horodatageIsoPush(new Date('2026-11-04T09:30:00.000Z'))).toBe('2026-11-04T09:30:00.000Z');
++  });
++
++  it('LA FORME DU BUG : String(Date) = « Wed Nov 04 … » est comprise', () => {
++    const brut = String(new Date('2026-11-04T09:30:00.000Z'));
++    expect(brut.slice(0, 10)).not.toBe('2026-11-04'); // l'ancien code échouait ici
++    expect(jourPush(brut)).toBe('2026-11-04'); // le garde-fou, lui, passe
++  });
++
++  it('SQLite (ISO), Postgres (Date) et String(Date) donnent le MÊME jour', () => {
++    const iso = '2026-11-04T08:00:00.000Z';
++    const jours = [jourPush(iso), jourPush(new Date(iso)), jourPush(String(new Date(iso)))];
++    expect(jours).toEqual(['2026-11-04', '2026-11-04', '2026-11-04']);
++  });
++
++  it('valeurs absentes ou invalides → null (jamais de quota fantôme)', () => {
++    for (const v of [null, undefined, '', 'pas-une-date']) {
++      expect(horodatageIsoPush(v)).toBeNull();
++    }
++  });
++});
++
++describe('🔴 2 — le quota est réellement appliqué', () => {
++  it('même jour → rappel bloqué, quelle que soit la forme du store', () => {
++    const hier = '2026-11-04T08:00:00.000Z';
++    expect(rappelDejaEnvoyeAujourdHui(hier, MAINTENANT)).toBe(true);
++    expect(rappelDejaEnvoyeAujourdHui(new Date(hier), MAINTENANT)).toBe(true);
++    expect(rappelDejaEnvoyeAujourdHui(String(new Date(hier)), MAINTENANT)).toBe(true);
++  });
++
++  it('veille, absence et invalide → un rappel est autorisé', () => {
++    expect(rappelDejaEnvoyeAujourdHui('2026-11-03T23:00:00.000Z', MAINTENANT)).toBe(false);
++    expect(rappelDejaEnvoyeAujourdHui(null, MAINTENANT)).toBe(false);
++    expect(rappelDejaEnvoyeAujourdHui('pas-une-date', MAINTENANT)).toBe(false);
++  });
++});
++
++describe('plage horaire algérienne 08h-22h (UTC+1)', () => {
++  it('08h et 21h59 autorisées ; 07h59, 22h et 00h30 refusées', () => {
++    expect(horaireAlgerienAutorise(new Date('2026-11-04T07:00:00.000Z'))).toBe(true);
++    expect(horaireAlgerienAutorise(new Date('2026-11-04T20:59:00.000Z'))).toBe(true);
++    expect(horaireAlgerienAutorise(new Date('2026-11-04T06:59:00.000Z'))).toBe(false);
++    expect(horaireAlgerienAutorise(new Date('2026-11-04T21:00:00.000Z'))).toBe(false);
++    expect(horaireAlgerienAutorise(new Date('2026-11-04T23:30:00.000Z'))).toBe(false);
++  });
++});
+diff --git a/server/pushRappels.ts b/server/pushRappels.ts
+new file mode 100644
+index 0000000..a3e29d8
+--- /dev/null
++++ b/server/pushRappels.ts
+@@ -0,0 +1,44 @@
++// ============================================================
++// pushRappels.ts — garde-fous PURS du rappel Web Push (M4, 🔴 2).
++//
++// Défaut mesuré : côté PostgreSQL, `listPushSubscriptions()` renvoyait
++// `String(row.derniere_notif)` sur un `timestamptz`, soit
++// « Wed Nov 04 2026 10:00:00 GMT+0000 … ». La comparaison
++// `slice(0, 10) === '2026-11-04'` était donc TOUJOURS fausse : le quota
++// « 1 notification / jour » n'existait pas en production Postgres.
++// SQLite stockait déjà l'ISO, d'où une parité trompeuse.
++//
++// Aucune dépendance (ni pg, ni Express, ni horloge cachée) : le serveur
++// ET les tests exécutent exactement les mêmes fonctions.
++// ============================================================
++
++/** Normalise Date JS, chaîne ISO ou `String(Date)` en horodatage ISO. */
++export function horodatageIsoPush(valeur: unknown): string | null {
++  if (valeur === null || valeur === undefined || valeur === '') return null;
++  const date = valeur instanceof Date ? valeur : new Date(String(valeur));
++  if (Number.isNaN(date.getTime())) return null;
++  return date.toISOString();
++}
++
++/** Jour UTC (YYYY-MM-DD) d'un horodatage, ou null si absent/invalide. */
++export function jourPush(valeur: unknown): string | null {
++  const iso = horodatageIsoPush(valeur);
++  return iso === null ? null : iso.slice(0, 10);
++}
++
++/** Vrai si le rappel a déjà été envoyé le jour (UTC) de `maintenant`. */
++export function rappelDejaEnvoyeAujourdHui(derniereNotif: unknown, maintenant: Date): boolean {
++  const aujourdhui = jourPush(maintenant);
++  return aujourdhui !== null && jourPush(derniereNotif) === aujourdhui;
++}
++
++/** Heure d'Alger (UTC+1, pas d'heure d'été en Algérie). */
++export function heureAlgerienne(maintenant: Date): number {
++  return maintenant.getUTCHours() + 1;
++}
++
++/** Pas d'envoi entre 22h et 08h, heure d'Alger. */
++export function horaireAlgerienAutorise(maintenant: Date): boolean {
++  const h = heureAlgerienne(maintenant);
++  return h >= 8 && h < 22;
++}
+diff --git a/server/store.pg.ts b/server/store.pg.ts
+index d65bc38..ca845e8 100644
+--- a/server/store.pg.ts
++++ b/server/store.pg.ts
+@@ -21,6 +21,7 @@ import type { Student, ProductionEntry, ActivityEntry, ResetCode, Teacher, Dashb
+ import { calculeActivite } from './activite';
+ import { MAX_APPAREILS_PAR_CODE as MAX_APPAREILS } from '../src/server/facturation';
+ import { isoleDate, iso, fromJson } from './dates.pg';
++import { horodatageIsoPush } from './pushRappels';
+ 
+ /** Verrou consultatif du schéma : sérialise la création de tables entre
+  *  instances froides serverless (arbitraire mais fixe, réservé à ce rôle). */
+@@ -460,7 +461,7 @@ export class PostgresStore {
+       auth: String(row.auth),
+       user_agent: row.user_agent ?? null,
+       heures_locales: String(row.heures_locales),
+-      derniere_notif: row.derniere_notif ? String(row.derniere_notif) : null,
++      derniere_notif: horodatageIsoPush(row.derniere_notif),
+       cree_le: String(row.cree_le),
+     }));
+   }
+diff --git a/src/__tests__/pushM4.comportement.test.ts b/src/__tests__/pushM4.comportement.test.ts
+new file mode 100644
+index 0000000..b5e29d3
+--- /dev/null
++++ b/src/__tests__/pushM4.comportement.test.ts
+@@ -0,0 +1,109 @@
++// ============================================================
++// Tests COMPORTEMENTAUX des 3 défauts 🔴 du lot M4 (Web Push).
++// Contrairement aux verrous de chaîne source, ceux-ci EXÉCUTENT le
++// middleware JWT et le vrai Service Worker dans un bac à sable.
++// ============================================================
++import { describe, expect, it } from 'vitest';
++import fs from 'node:fs';
++import path from 'node:path';
++import vm from 'node:vm';
++import jwt from 'jsonwebtoken';
++import { makeStudentAuth, makeTeacherAuth } from '../../server/auth';
++
++const SECRET = 'secret-de-test-push-m4';
++const lire = (f: string) => fs.readFileSync(path.resolve(process.cwd(), f), 'utf-8');
++
++// ── 🔴 1 : diffusion ──────────────────────────────────────────────────
++function passer(middleware: (req: any, res: any, next: any) => void, token: string) {
++  const statuts: number[] = [];
++  let suivant = 0;
++  const res = {
++    status(code: number) { statuts.push(code); return this; },
++    json() { return this; },
++  };
++  middleware({ headers: { authorization: `Bearer ${token}` } }, res, () => { suivant += 1; });
++  return { statuts, suivant };
++}
++
++describe('🔴 1 — /api/push/send : un jeton ÉLÈVE ne franchit pas teacherAuth', () => {
++  it('jeton élève → 401 et middleware non franchi', () => {
++    const token = jwt.sign({ studentId: 'eleve-1', email: 'eleve@ecole.dz' }, SECRET);
++    const { statuts, suivant } = passer(makeTeacherAuth(SECRET), token);
++    expect(suivant).toBe(0);
++    expect(statuts).toContain(401);
++  });
++
++  it('jeton enseignant → le middleware laisse passer', () => {
++    const token = jwt.sign({ role: 'teacher', email: 'prof@ecole.dz' }, SECRET);
++    expect(passer(makeTeacherAuth(SECRET), token).suivant).toBe(1);
++  });
++
++  it('la route de diffusion est déclarée avec teacherAuth, jamais studentAuth', () => {
++    const src = lire('server.ts');
++    expect(src).toMatch(/app\.post\("\/api\/push\/send",\s*teacherAuth/);
++    expect(src).not.toMatch(/app\.post\("\/api\/push\/send",\s*studentAuth/);
++  });
++
++  it('réciproque : studentAuth refuse un jeton enseignant', () => {
++    const token = jwt.sign({ role: 'teacher', email: 'prof@ecole.dz' }, SECRET);
++    expect(passer(makeStudentAuth(SECRET), token).suivant).toBe(0);
++  });
++});
++
++// ── 🔴 3 : clic sur notification ──────────────────────────────────────
++type ClientFactice = { url: string; focus: () => Promise<void> };
++
++function chargerSW(clients: ClientFactice[]) {
++  const handlers: Record<string, (event: any) => void> = {};
++  const ouvertures: string[] = [];
++  const self = {
++    location: { href: 'https://app.example/sw.js', origin: 'https://app.example' },
++    addEventListener: (type: string, fn: (event: any) => void) => { handlers[type] = fn; },
++    registration: { showNotification: async () => undefined },
++    clients: {
++      matchAll: async () => clients,
++      openWindow: async (url: string) => { ouvertures.push(url); },
++    },
++  };
++  vm.runInNewContext(lire('public/sw.js'), {
++    self, URL, JSON, Promise, console, navigator: { connection: undefined },
++  });
++  return { handlers, ouvertures };
++}
++
++async function cliquer(handlers: Record<string, (e: any) => void>, url: string) {
++  let attente: Promise<unknown> | undefined;
++  handlers.notificationclick({
++    notification: { close: () => undefined, data: { url } },
++    waitUntil: (p: Promise<unknown>) => { attente = p; },
++  });
++  await attente;
++}
++
++describe('🔴 3 — notificationclick focalise/ouvre l’app, même avec url relative', () => {
++  it('url "/" + onglet déjà ouvert → focus(), sans exception', async () => {
++    let focalisations = 0;
++    const { handlers, ouvertures } = chargerSW([
++      { url: 'https://app.example/plan', focus: async () => { focalisations += 1; } },
++    ]);
++    await cliquer(handlers, '/');
++    expect(focalisations).toBe(1);
++    expect(ouvertures).toHaveLength(0);
++  });
++
++  it('aucun onglet → openWindow reçoit une URL ABSOLUE de la même origine', async () => {
++    const { handlers, ouvertures } = chargerSW([]);
++    await cliquer(handlers, '/');
++    expect(ouvertures).toHaveLength(1);
++    expect(ouvertures[0].startsWith('https://app.example/')).toBe(true);
++  });
++
++  it('URL absolue du serveur → aucune exception et focus()', async () => {
++    let focalisations = 0;
++    const { handlers } = chargerSW([
++      { url: 'https://app.example/', focus: async () => { focalisations += 1; } },
++    ]);
++    await cliquer(handlers, 'https://app.example/revision');
++    expect(focalisations).toBe(1);
++  });
++});

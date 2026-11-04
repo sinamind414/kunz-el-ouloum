@@ -1,0 +1,567 @@
+diff --git a/src/lib/invitationCapitaine.ts b/src/lib/invitationCapitaine.ts
+--- a/src/lib/invitationCapitaine.ts
++++ b/src/lib/invitationCapitaine.ts
+@@ -51,6 +51,7 @@
+ 
+ import type { SituationCapitaine } from '../data/capitaine';
+ import { conseilDeRubrique } from '../data/conseilsRubrique';
++import type { EtatEleve } from './etatEleve';
+ // Le relais humain (§5.D, 4ᵉ tentative — étape 5). Le module `relais` ne connaît
+ // ni les prescriptions ni la taxonomie des erreurs : la flèche va dans ce sens,
+ // et jamais dans l'autre, pour qu'aucun compteur de la boucle ne puisse bouger à
+@@ -561,3 +562,131 @@
+ 
+ /** Texte de la bulle quand elle n'a rien à dire : une porte, pas un slogan. */
+ export const LIBELLE_BULLE_SILENCIEUX_AR = 'اسأل القبطان';
++
++// ─────────────────────────────────────────────────────────────────────────────
++// LA CONSIGNE D'ENTRÉE DE « التمارين والتدريب » — C'EST LE CAPITAINE QUI DÉCIDE.
++//
++// Arbitrage propriétaire du 2026-11-04 : « un helper pur, c'est le Capitaine
++// Kunz El Ouloum, c'est lui qui guide l'élève, c'est le coach ». La règle vit
++// donc ICI, dans le module du coach, à côté de `invitationDuMoment` : ce n'est
++// PAS un guide autonome, c'est le CALCUL du guide. Le hub ne décide de rien, il
++// projette ce que le Capitaine a tranché. Aucune troisième voix.
++//
++// POURQUOI UNE FONCTION PURE : mêmes portes de silence que la bulle, aucune
++// lecture DOM, aucune écriture de stockage, aucun état caché. La consigne est
++// une PROJECTION DÉRIVÉE de l'état unique (`etatEleveRuntime`), jamais stockée —
++// exactement le verrou « couleur/état = projection, pas stockage ».
++//
++// CE QU'ELLE NE FAIT PAS : elle n'ajoute aucune porte (les 7 cartes restent 7),
++// ne crée aucune valeur de `CibleInvitation` (la bulle garde `cible:'training'`
++// et `App.tsx:1429` reste inchangé), ne touche pas `App.tsx`, et ne désigne
++// JAMAIS un module cadenassé : seuls `situations`, `workshop` et `examens` sont
++// éligibles, tous libres dès le premier jour.
++//
++// LE SILENCE EST UNE DÉCISION : état absent, compétence non chargée ou épreuve
++// en cours ⇒ `null`. On ne fabrique pas une recommandation avec des données
++// qu'on n'a pas.
++//
++// ET LA 1ʳᵉ VISITE ? Le bandeau d'accueil (`BandeauConseilRubrique`) donne le
++// PRINCIPE (« un exercice complet vaut mieux que trois incomplets »). Il ne
++// nomme aucun module — c'est précisément le défaut signalé. La prescription
++// d'état PRIME donc : elle nomme le point de départ dès la première ouverture.
++// Ce ne sont pas deux guides : un seul décideur (`consigneEntreeTraining`), un
++// seul personnage EN GRAND (le bandeau, qui garde son visage), et le bloc du
++// hub n'affiche NI visage NI image — le guide y SIGNE son nom, sans se
++// redessiner une deuxième fois.
++// ─────────────────────────────────────────────────────────────────────────────
++
++/** Onglets du hub que le Capitaine peut désigner — jamais un module verrouillé. */
++export type GesteEntreeTab = 'situations' | 'workshop' | 'examens';
++
++export interface ConsigneEntreeTraining {
++  /** L'UNIQUE carte mise en avant. */
++  tab: GesteEntreeTab;
++  /** Ce que dit le Capitaine : UN geste, court, en arabe. */
++  gesteAr: string;
++  /** « لماذا » : une seule ligne, dérivée de l'état, jamais inventée. */
++  pourquoiAr: string;
++  /** Durée annoncée pour UN exercice, auto-correction comprise. */
++  dureeMin: number;
++}
++
++/** Un exercice complet, correction incluse — pas une séance, pas un QCM-porte. */
++export const DUREE_GESTE_ENTREE_MIN = 10;
++
++/**
++ * LE CAPITAINE CHOISIT LE PREMIER GESTE BAC.
++ *
++ * Ordre enseignant (arbitrage 2026-11-04) : `Rappel → UN geste BAC →
++ * auto-correction → SRS à la maison`. Le QCM/flashcard reste un ÉCHAUFFEMENT
++ * diagnostique, jamais une porte obligatoire ni une destination : cette
++ * consigne désigne donc toujours un geste de production ou d'analyse de sند.
++ *
++ * Table de décision, toutes dérivées de l'état déjà assemblé une fois :
++ *   1. date du BAC officielle, ≤ 30 jours, ≥ 2 unités → `examens` (الورقة والساعة) ;
++ *   2. zéro unité complète                          → `workshop` (جواب مُوجَّه) ;
++ *   3. unité faible ou ≥ 2 erreurs au دفتر          → `situations` (سند ciblé) ;
++ *   4. sinon                                        → `situations` (cœur du BAC).
++ *
++ * `unitesCompletes` vient de la progression RÉELLE du parcours, pas d'une
++ * estimation. `null` en retour = silence honnête, pas un module par défaut.
++ */
++export function consigneEntreeTraining(
++  etat: EtatEleve | null,
++  unitesCompletes: number,
++): ConsigneEntreeTraining | null {
++  // ── Les portes du silence, partagées avec la bulle. ────────────────────────
++  if (!etat) return null; // état pas encore déposé : rien à recommander
++  if (etat.contexte.epreuveEnCours) return null; // épreuve : silence absolu
++  if (!etat.competence.chargee) return null; // verdicts absents ⇒ pas d'invention
++  // PAS de porte sur `conseilRubriqueAPrendre` : le bandeau de 1ʳᵉ visite dit le
++  // principe sans nommer de module. Le mute ici aurait laissé le défaut entier
++  // au moment où l'élève en a le plus besoin. La prescription d'état prime.
++
++  const unites = Number.isInteger(unitesCompletes) && unitesCompletes > 0 ? unitesCompletes : 0;
++  const faible = etat.competence.unitePrioritaire ?? etat.competence.faibles[0] ?? null;
++  // Une date provisoire ne produit AUCUN décompte : on n'annonce pas un chiffre
++  // qu'on n'a pas mesuré (même honnêteté que `cumul` dans `invitationDuMoment`).
++  const jours = etat.horizon.dateProvisoire ? null : etat.horizon.joursAvantBac;
++  const dureeMin = DUREE_GESTE_ENTREE_MIN;
++
++  if (jours !== null && Number.isFinite(jours) && jours > 0 && jours <= 30 && unites >= 2) {
++    return {
++      tab: 'examens',
++      gesteAr: 'اكتب محاكاة واحدة بورقة وقلم، ثم صحّحها.',
++      pourquoiAr: jours === 1
++        ? 'بقي يوم واحد: الورقة والساعة تكشفان الثغرة قبل البكالوريا.'
++        : `بقي ${jours} يومًا: الورقة والساعة تكشفان الثغرة قبل البكالوريا.`,
++      dureeMin,
++    };
++  }
++
++  if (unites === 0) {
++    return {
++      tab: 'workshop',
++      gesteAr: 'أنتج جوابًا واحدًا خطوة بخطوة، ثم صحّحه.',
++      pourquoiAr: 'لم تُكمل وحدة بعد: الجواب المُوجَّه يبني الحركة الأولى قبل سند الامتحان.',
++      dureeMin,
++    };
++  }
++
++  if (faible !== null || etat.erreurs.total >= 2) {
++    return {
++      tab: 'situations',
++      gesteAr: faible !== null
++        ? `حلّل سندًا واحدًا من «${faible}»، ثم صحّح جوابك.`
++        : 'حلّل سندًا واحدًا من دفتر أخطائك، ثم صحّح جوابك.',
++      pourquoiAr: faible !== null
++        ? `الوحدة «${faible}» ما زالت ضعيفة: نبدأ منها، لا من المنهج كله.`
++        : 'خطآن في الدفتر يكفيان لاختيار السند الذي نبدأ به.',
++      dureeMin,
++    };
++  }
++
++  return {
++    tab: 'situations',
++    gesteAr: 'حلّل سندًا واحدًا، ثم صحّح جوابك.',
++    pourquoiAr: 'تحليل السند هو قلب امتحان البكالوريا: تمرين واحد كامل أنفع من ثلاثة ناقصة.',
++    dureeMin,
++  };
++}
+diff --git a/src/components/TrainingHubView.tsx b/src/components/TrainingHubView.tsx
+--- a/src/components/TrainingHubView.tsx
++++ b/src/components/TrainingHubView.tsx
+@@ -3,10 +3,20 @@
+ // Remplace cinq entrées de menu par une seule. Chaque carte annonce le GESTE
+ // travaillé (« أحلّل سنداً », « أرسم وأقيّم »…) plutôt que le nom de l'outil :
+ // l'élève choisit ce qu'il veut exercer, pas une marque interne.
++//
++// 2026-11-04 — CONSIGNE D'ENTRÉE : le Capitaine décide (règle PURE dans
++// `lib/invitationCapitaine.ts`), le hub ne fait que PROJETER sa décision sur
++// UNE carte. Aucune porte ajoutée, aucun stockage, aucun second personnage en
++// grand : pendant une épreuve, ou sans état chargé, la consigne se tait.
++// `App.tsx` n'est PAS modifié : la bulle ouvre toujours `training`, et le prop
++// `onOpen(tab)` existant mène au module désigné.
+ 
+ import { ArrowRight, CalendarDays, Dumbbell, FileText, Key, Lock, PenTool, PlayCircle, Search, Sparkles, Swords } from 'lucide-react';
+ import type { LucideIcon } from 'lucide-react';
+ import { TRAINING_ENTRIES, type TrainingTab } from '../data/trainingHub';
++import { CAPITAINE_IDENTITE_AR } from '../data/capitaineIdentite';
++import { consigneEntreeTraining } from '../lib/invitationCapitaine';
++import { etatEleveSiChargee } from '../lib/etatEleveRuntime';
+ import { loadParcours, unitesCompletes } from '../lib/parcours/parcoursProgress';
+ 
+ interface TrainingHubViewProps {
+@@ -29,6 +39,10 @@
+   // Phase 2 (GO 2026-10-16) : le cadenas lit la progression RÉELLE du
+   // parcours — une unité complète = toutes ses leçons + son جسر.
+   const unites = unitesCompletes(loadParcours());
++  // Projection dérivée : l'état unique a été assemblé et déposé UNE fois par le
++  // Capitaine (`useInvitationCapitaine` → `fournirEtatEleve`). Le hub ne relit
++  // aucun stockage de plus, ne décide de rien, n'invente rien : `null` = silence.
++  const consigne = consigneEntreeTraining(etatEleveSiChargee(), unites);
+   return (
+     <div className="min-h-screen p-4 md:p-8 max-w-5xl mx-auto" dir="rtl" data-testid="training-hub">
+       {/* RTL : le conteneur est en dir="rtl", donc `flex-row` place le PREMIER
+@@ -56,6 +70,37 @@
+           </button>
+         )}
+       </div>
++
++      {/* UNE prescription, pas un second bandeau : aucun visage, aucune image
++          — le personnage EN GRAND reste UNIQUE (règle « une seule voix » de
++          BandeauConseilRubrique). Le nom du guide est signé, pas redessiné.
++          Le texte est décidé par
++          SON module ; il n'existe que si l'état est chargé et hors épreuve.
++          Dès la 1ʳᵉ visite il NOMME le module : le bandeau d'accueil, lui, ne
++          donne que le principe. */}
++      {consigne && (
++        <div
++          data-testid="consigne-entree-capitaine"
++          dir="rtl"
++          className="mb-4 rounded-2xl border border-[#006d37]/25 bg-[#f8fbfa] px-4 py-3 dark:border-emerald-400/25 dark:bg-[#121614]"
++        >
++          <p className="text-[10px] font-black tracking-wide text-[#006d37]/80 dark:text-emerald-400/80">
++            {CAPITAINE_IDENTITE_AR} — ابدأ من هنا
++          </p>
++          <p
++            data-testid="consigne-entree-geste"
++            className="mt-1 text-[13px] font-bold leading-relaxed text-[#1f2b24] dark:text-gray-100"
++          >
++            {consigne.gesteAr}
++          </p>
++          <p
++            data-testid="consigne-entree-pourquoi"
++            className="mt-1 text-[11.5px] leading-relaxed text-[#506072] dark:text-gray-400"
++          >
++            لماذا: {consigne.pourquoiAr} — {consigne.dureeMin} دقائق، تمرين واحد، والتصحيح جزء منه.
++          </p>
++        </div>
++      )}
+ 
+       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+         {TRAINING_ENTRIES.map((e) => {
+@@ -99,6 +144,18 @@
+                       {e.gestureAr}
+                     </span>
+                   )}
++                  {/* UN SEUL badge, sur la SEULE carte désignée par le Capitaine.
++                      Ce n'est pas une voix de plus : c'est la projection de sa
++                      décision. Jamais sur une carte verrouillée (la règle ne peut
++                      désigner que situations / workshop / examens). */}
++                  {consigne?.tab === e.tab && !verrouille && (
++                    <span
++                      data-testid="recommande-aujourdhui"
++                      className="inline-block mx-2 text-[11px] font-black px-2.5 py-1 rounded-lg bg-[#e8f5ee] text-[#006d37] dark:bg-emerald-400/10 dark:text-emerald-300"
++                    >
++                      موصى به اليوم
++                    </span>
++                  )}
+                 </div>
+               </div>
+             </button>
+diff --git a/src/lib/__tests__/consigneEntreeTraining.test.ts b/src/lib/__tests__/consigneEntreeTraining.test.ts
+new file mode 100644
+--- /dev/null
++++ b/src/lib/__tests__/consigneEntreeTraining.test.ts
+@@ -0,0 +1,161 @@
++// consigneEntreeTraining.test.ts — LE CAPITAINE DÉCIDE, et il sait se taire.
++//
++// Patch « consigne d'entrée » (2026-11-04). Ces tests sont COMPORTEMENTAUX :
++// ils appellent la règle, ils ne lisent pas son code source. Ils verrouillent
++// surtout les SILENCES — c'est là que se joue l'honnêteté du guide (pas de
++// recommandation fabriquée avec des données absentes).
++
++import { describe, expect, it } from 'vitest';
++import { assemblerEtatEleve, type EtatEleve } from '../../lib/etatEleve';
++import { consigneEntreeTraining, DUREE_GESTE_ENTREE_MIN } from '../../lib/invitationCapitaine';
++import { TRAINING_ENTRIES } from '../../data/trainingHub';
++
++const MAINTENANT = new Date(2026, 10, 4, 10, 0, 0); // 4 nov 2026, 10 h locales
++
++interface Options {
++  chargee?: boolean;
++  epreuve?: boolean;
++  bandeauPremiereVisite?: boolean;
++  unitePrioritaire?: string | null;
++  faibles?: string[];
++  erreurs?: number;
++  horizon?: { joursAvantBac: number | null; dateProvisoire: boolean };
++}
++
++/** Un VRAI état assemblé par le module du Capitaine, jamais un objet deviné. */
++function etatDeTest(o: Options = {}): EtatEleve {
++  const base = assemblerEtatEleve({
++    daily: undefined,
++    maintenant: MAINTENANT,
++    rubrique: 'training',
++    rubriqueAUnConseil: true,
++    // Rubrique déjà vue ⇒ le bandeau de 1ʳᵉ visite s'est tu : une seule voix.
++    rubriquesDejaVues: o.bandeauPremiereVisite ? [] : ['training'],
++    epreuveEnCours: o.epreuve === true,
++    competence: o.chargee === false
++      ? null
++      : {
++          verdicts: {},
++          faibles: o.faibles ?? [],
++          unitePrioritaire: o.unitePrioritaire ?? null,
++        },
++    erreurs: {
++      total: o.erreurs ?? 0,
++      dominante: null,
++      capital: { fermees: 0, rouvertes: 0, total: 0 },
++    },
++  });
++  return o.horizon ? { ...base, horizon: o.horizon } : base;
++}
++
++describe('consigne d entrée — les silences du Capitaine', () => {
++  it('état pas encore déposé ⇒ null, aucune recommandation inventée', () => {
++    expect(consigneEntreeTraining(null, 3)).toBeNull();
++  });
++
++  it('compétence non chargée ⇒ null (pas de verdicts, pas de module deviné)', () => {
++    expect(consigneEntreeTraining(etatDeTest({ chargee: false }), 3)).toBeNull();
++  });
++
++  it('épreuve en cours ⇒ silence absolu', () => {
++    expect(consigneEntreeTraining(etatDeTest({ epreuve: true }), 3)).toBeNull();
++  });
++
++  it('1ʳᵉ visite AVEC état ⇒ la prescription nomme quand même le module', () => {
++    // Le bandeau d'accueil donne le principe mais ne nomme AUCUNE carte : le
++    // muter ici aurait laissé « par quoi je commence ? » sans réponse au moment
++    // où l'élève en a le plus besoin. Un seul décideur, donc pas de 2ᵉ guide.
++    const c = consigneEntreeTraining(etatDeTest({ bandeauPremiereVisite: true }), 3);
++    expect(c).not.toBeNull();
++    expect(c!.tab).toBe('situations');
++  });
++});
++
++describe('consigne d entrée — la décision pédagogique', () => {
++  it('zéro unité complète ⇒ UN geste guidé (workshop), pas un sند à froid', () => {
++    const c = consigneEntreeTraining(etatDeTest(), 0);
++    expect(c).not.toBeNull();
++    expect(c!.tab).toBe('workshop');
++    expect(c!.gesteAr.length).toBeGreaterThan(3);
++  });
++
++  it('unité faible ⇒ situations, et le « لماذا » nomme la VRAIE unité', () => {
++    const c = consigneEntreeTraining(etatDeTest({ unitePrioritaire: 'التركيب الضوئي' }), 2);
++    expect(c!.tab).toBe('situations');
++    expect(c!.pourquoiAr).toContain('التركيب الضوئي');
++    expect(c!.gesteAr).toContain('التركيب الضوئي');
++  });
++
++  it('deux erreurs au دفتر sans unité nommée ⇒ situations, sans ancrage inventé', () => {
++    const c = consigneEntreeTraining(etatDeTest({ erreurs: 2 }), 2);
++    expect(c!.tab).toBe('situations');
++    expect(c!.pourquoiAr).not.toContain('undefined');
++    expect(c!.gesteAr).not.toContain('undefined');
++  });
++
++  it('date officielle ≤ 30 jours et ≥ 2 unités ⇒ examens (الورقة والساعة)', () => {
++    const c = consigneEntreeTraining(
++      etatDeTest({ horizon: { joursAvantBac: 12, dateProvisoire: false } }),
++      2,
++    );
++    expect(c!.tab).toBe('examens');
++    expect(c!.pourquoiAr).toContain('12');
++  });
++
++  it('date PROVISOIRE ⇒ aucun décompte annoncé, la branche sprint ne ment pas', () => {
++    const c = consigneEntreeTraining(
++      etatDeTest({ horizon: { joursAvantBac: 12, dateProvisoire: true } }),
++      4,
++    );
++    expect(c!.tab).not.toBe('examens');
++    expect(c!.pourquoiAr).not.toContain('بقي 12');
++  });
++
++  it('élève solide ⇒ situations, cœur du BAC (jamais une porte QCM)', () => {
++    const c = consigneEntreeTraining(etatDeTest(), 3);
++    expect(c!.tab).toBe('situations');
++    expect(c!.gesteAr).toContain('صحّح');
++  });
++
++  it('un seul exercice, 10 minutes, correction incluse dans la consigne', () => {
++    const c = consigneEntreeTraining(etatDeTest(), 3)!;
++    expect(c.dureeMin).toBe(DUREE_GESTE_ENTREE_MIN);
++    expect(c.dureeMin).toBeGreaterThan(0);
++    expect(c.pourquoiAr.trim().length).toBeGreaterThan(10);
++    expect(c.gesteAr.length).toBeLessThan(90);
++  });
++});
++
++describe('consigne d entrée — elle ne casse aucune porte', () => {
++  it('tous les états possibles ne désignent QUE des cartes existantes et libres', () => {
++    const etats: [EtatEleve, number][] = [
++      [etatDeTest(), 0],
++      [etatDeTest(), 1],
++      [etatDeTest(), 2],
++      [etatDeTest(), 5],
++      [etatDeTest({ unitePrioritaire: 'المناعة' }), 3],
++      [etatDeTest({ erreurs: 4 }), 3],
++      [etatDeTest({ horizon: { joursAvantBac: 9, dateProvisoire: false } }), 3],
++    ];
++    for (const [etat, unites] of etats) {
++      const c = consigneEntreeTraining(etat, unites)!;
++      const carte = TRAINING_ENTRIES.find((e) => e.tab === c.tab);
++      expect(carte, `onglet ${c.tab} introuvable dans le hub`).toBeTruthy();
++      expect(carte!.deverrouApresUnites, `${c.tab} ne doit jamais être cadenassé`).toBeUndefined();
++    }
++    expect(new Set(etats.map(([e, u]) => consigneEntreeTraining(e, u)!.tab)).size).toBeGreaterThan(1);
++  });
++
++  it('progression négative ou non entière ⇒ traitée comme zéro, sans exception', () => {
++    expect(consigneEntreeTraining(etatDeTest(), -4)!.tab).toBe('workshop');
++    expect(consigneEntreeTraining(etatDeTest(), Number.NaN)!.tab).toBe('workshop');
++  });
++
++  it('pureté : mêmes entrées ⇒ même décision, et AUCUNE écriture de stockage', () => {
++    const avant = localStorage.length;
++    const a = consigneEntreeTraining(etatDeTest({ unitePrioritaire: 'الوراثة' }), 2);
++    const b = consigneEntreeTraining(etatDeTest({ unitePrioritaire: 'الوراثة' }), 2);
++    expect(a).toEqual(b);
++    expect(localStorage.length).toBe(avant);
++  });
++});
+diff --git a/src/components/__tests__/consigneEntreeHub.test.tsx b/src/components/__tests__/consigneEntreeHub.test.tsx
+new file mode 100644
+--- /dev/null
++++ b/src/components/__tests__/consigneEntreeHub.test.tsx
+@@ -0,0 +1,161 @@
++// consigneEntreeHub.test.tsx — LE HUB PROJETTE, IL NE DÉCIDE PAS.
++//
++// Patch « consigne d'entrée » (2026-11-04). Ces tests montent le VRAI hub,
++// déposent un VRAI état assemblé par le Capitaine, cliquent sur la carte et
++// vérifient ce qui s'affiche. Aucun `readFileSync`, aucun verrou de chaîne
++// source : un test qui passe prouve un comportement élève.
++
++import { cleanup, render, screen } from '@testing-library/react';
++import userEvent from '@testing-library/user-event';
++import { afterEach, describe, expect, it, vi } from 'vitest';
++import TrainingHubView from '../TrainingHubView';
++import { TRAINING_ENTRIES } from '../../data/trainingHub';
++import { CAPITAINE_IDENTITE_AR } from '../../data/capitaineIdentite';
++import { assemblerEtatEleve, type EtatEleve } from '../../lib/etatEleve';
++import { fournirEtatEleve, reinitialiserEtatEleve } from '../../lib/etatEleveRuntime';
++import { markDone, resetParcours } from '../../lib/parcours/parcoursProgress';
++import { PARCOURS_FLAT } from '../../lib/parcours/parcoursPath';
++
++const MAINTENANT = new Date(2026, 10, 4, 10, 0, 0);
++
++interface Options {
++  chargee?: boolean;
++  epreuve?: boolean;
++  bandeauPremiereVisite?: boolean;
++  unitePrioritaire?: string | null;
++}
++
++function etatDeTest(o: Options = {}): EtatEleve {
++  return assemblerEtatEleve({
++    daily: undefined,
++    maintenant: MAINTENANT,
++    rubrique: 'training',
++    rubriqueAUnConseil: true,
++    rubriquesDejaVues: o.bandeauPremiereVisite ? [] : ['training'],
++    epreuveEnCours: o.epreuve === true,
++    competence: o.chargee === false
++      ? null
++      : { verdicts: {}, faibles: [], unitePrioritaire: o.unitePrioritaire ?? null },
++    erreurs: { total: 0, dominante: null, capital: { fermees: 0, rouvertes: 0, total: 0 } },
++  });
++}
++
++/** Progression RÉELLE : n unités complètes (leçons + جسر), pas une estimation. */
++function ouvrirUnites(n: number): void {
++  resetParcours();
++  const ids = [...new Set(PARCOURS_FLAT.map((i) => i.unitId))].sort((a, b) => a - b);
++  for (const uid of ids.slice(0, n)) {
++    for (const item of PARCOURS_FLAT.filter((i) => i.unitId === uid)) markDone(item.id);
++  }
++}
++
++afterEach(() => {
++  cleanup();
++  reinitialiserEtatEleve();
++  localStorage.clear();
++});
++
++describe('hub — la consigne du Capitaine est visible', () => {
++  it('état chargé ⇒ UNE consigne signée, UN geste, UN « لماذا », UNE carte mise en avant', () => {
++    ouvrirUnites(2);
++    fournirEtatEleve(etatDeTest());
++    render(<TrainingHubView onOpen={() => {}} />);
++
++    const bloc = screen.getByTestId('consigne-entree-capitaine');
++    expect(bloc.textContent).toContain(CAPITAINE_IDENTITE_AR);
++    expect(bloc.textContent).toContain('ابدأ من هنا');
++    expect(screen.getByTestId('consigne-entree-geste').textContent!.trim().length).toBeGreaterThan(5);
++    expect(screen.getByTestId('consigne-entree-pourquoi').textContent).toContain('لماذا');
++
++    // Exactement UN badge, sur la SEULE carte décidée par le Capitaine.
++    const badges = screen.getAllByTestId('recommande-aujourdhui');
++    expect(badges).toHaveLength(1);
++    expect(badges[0].closest('[data-testid^="hub-"]')!.getAttribute('data-testid')).toBe('hub-situations');
++  });
++
++  it('le clic sur la carte recommandée ouvre le module désigné (comportement réel)', async () => {
++    ouvrirUnites(2);
++    fournirEtatEleve(etatDeTest());
++    const onOpen = vi.fn();
++    const user = userEvent.setup();
++    render(<TrainingHubView onOpen={onOpen} />);
++
++    await user.click(screen.getByTestId('recommande-aujourdhui').closest('button')!);
++    expect(onOpen).toHaveBeenCalledTimes(1);
++    expect(onOpen).toHaveBeenCalledWith('situations');
++  });
++
++  it('unité faible ⇒ la recommandation suit l état, pas un ordre fixe', () => {
++    ouvrirUnites(2);
++    fournirEtatEleve(etatDeTest({ unitePrioritaire: 'المناعة' }));
++    render(<TrainingHubView onOpen={() => {}} />);
++
++    expect(screen.getByTestId('consigne-entree-pourquoi').textContent).toContain('المناعة');
++    expect(screen.getByTestId('recommande-aujourdhui').closest('[data-testid^="hub-"]')!.getAttribute('data-testid')).toBe('hub-situations');
++  });
++
++  it('zéro unité ⇒ workshop recommandé, jamais une carte cadenassée', () => {
++    ouvrirUnites(0);
++    fournirEtatEleve(etatDeTest());
++    render(<TrainingHubView onOpen={() => {}} />);
++
++    expect(screen.getByTestId('recommande-aujourdhui').closest('[data-testid^="hub-"]')!.getAttribute('data-testid')).toBe('hub-workshop');
++    expect(screen.getByTestId('verrou-bootcamp')).toBeTruthy();
++    expect(screen.getByTestId('hub-bootcamp').textContent).not.toContain('موصى به اليوم');
++  });
++});
++
++describe('hub — les silences, sans recommandation inventée', () => {
++  it('aucun état déposé ⇒ ni consigne ni badge, et les 7 cartes restent là', () => {
++    ouvrirUnites(0);
++    reinitialiserEtatEleve();
++    render(<TrainingHubView onOpen={() => {}} />);
++
++    expect(screen.queryByTestId('consigne-entree-capitaine')).toBeNull();
++    expect(screen.queryByTestId('recommande-aujourdhui')).toBeNull();
++    for (const e of TRAINING_ENTRIES) {
++      expect(screen.getByTestId(`hub-${e.tab}`), e.tab).toBeTruthy();
++    }
++  });
++
++  it('compétence non chargée ⇒ silence', () => {
++    ouvrirUnites(2);
++    fournirEtatEleve(etatDeTest({ chargee: false }));
++    render(<TrainingHubView onOpen={() => {}} />);
++    expect(screen.queryByTestId('consigne-entree-capitaine')).toBeNull();
++  });
++
++  it('épreuve en cours ⇒ silence absolu', () => {
++    ouvrirUnites(2);
++    fournirEtatEleve(etatDeTest({ epreuve: true }));
++    render(<TrainingHubView onOpen={() => {}} />);
++    expect(screen.queryByTestId('consigne-entree-capitaine')).toBeNull();
++  });
++
++  it('1ʳᵉ visite ⇒ la consigne nomme le module, SANS second personnage en grand', () => {
++    ouvrirUnites(2);
++    fournirEtatEleve(etatDeTest({ bandeauPremiereVisite: true }));
++    render(<TrainingHubView onOpen={() => {}} />);
++
++    const bloc = screen.getByTestId('consigne-entree-capitaine');
++    expect(bloc.textContent).toContain('ابدأ من هنا');
++    // « une seule voix » : le visage du Capitaine n'existe QUE dans
++    // BandeauConseilRubrique. Ici le guide SIGNE sa prescription, sans image.
++    expect(bloc.textContent).toContain(CAPITAINE_IDENTITE_AR);
++    expect(bloc.querySelector('img')).toBeNull();
++    expect(screen.getAllByTestId('recommande-aujourdhui')).toHaveLength(1);
++  });
++});
++
++describe('hub — aucune porte ajoutée', () => {
++  it('le nombre de cartes reste strictement celui de TRAINING_ENTRIES', () => {
++    ouvrirUnites(2);
++    fournirEtatEleve(etatDeTest());
++    const { container } = render(<TrainingHubView onOpen={() => {}} />);
++    const cartes = container.querySelectorAll('[data-testid^="hub-"]');
++    // `onBackToHome` absent ⇒ pas de `hub-retour` ; le badge n'a PAS de
++    // préfixe `hub-` : il ne peut donc pas se faire passer pour une 8ᵉ porte.
++    expect(cartes).toHaveLength(TRAINING_ENTRIES.length);
++    expect(TRAINING_ENTRIES.length).toBeLessThanOrEqual(8);
++  });
++});

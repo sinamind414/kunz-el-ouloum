@@ -1,0 +1,119 @@
+diff --git a/scripts/evaluer-copies.ts b/scripts/evaluer-copies.ts
+index b81bbbc..e8465d0 100644
+--- a/scripts/evaluer-copies.ts
++++ b/scripts/evaluer-copies.ts
+@@ -21,6 +21,9 @@ function arg(flag: string): string | undefined {
+ }
+ 
+ const dir = arg('--dir') ?? '/home/user/uploads';
++// M3 : le lot de validation est INDÉPENDANT du corpus de calibration.
++const corpusIndependant =
++  process.argv.includes('--independant') || /copies_validation_m3/i.test(dir);
+ const out = arg('--out');
+ const sujetArg = arg('--sujet');
+ const groupeArg = arg('--groupe');
+@@ -141,12 +144,21 @@ if (out) {
+     ``,
+     `> **Moteur** : commit \`${commit}\` · **Corpus** : \`${dir}\` · **n** = ${stats.n} copies · **référence prof** : ${recap ? `${recap.notes.size} notes` : 'absent'}`,
+     `>`,
+-    `> ⚠ **PROVENANCE (audit F5, garde-fou)** : ce corpus a servi à **calibrer** les`,
+-    `> registres d'attendus (items, formes, plafonds). Ce n'est **pas** un jeu de`,
+-    `> validation indépendant : les écarts publiés sont un **plancher** de l'erreur`,
+-    `> de généralisation. La validation F5 (300 copies authentiques, double`,
+-    `> correction à l'aveugle, ≥20 % arbitrées, calibration/test séparés) reste`,
+-    `> **à constituer**. Voir le protocole ci-dessous.`,
++    ...(corpusIndependant
++      ? [
++          `> ✅ **PROVENANCE (M3)** : corpus de validation INDÉPENDANT du jeu de`,
++          `> calibration (copies authentiques, double correction à l'aveugle).`,
++          `> Les écarts publiés mesurent la généralisation du correcteur.`,
++          `> Le protocole M3 §7 interdit tout recalibrage à partir d'ici.`,
++        ]
++      : [
++          `> ⚠ **PROVENANCE (audit F5, garde-fou)** : ce corpus a servi à **calibrer** les`,
++          `> registres d'attendus (items, formes, plafonds). Ce n'est **pas** un jeu de`,
++          `> validation indépendant : les écarts publiés sont un **plancher** de l'erreur`,
++          `> de généralisation. La validation F5 (300 copies authentiques, double`,
++          `> correction à l'aveugle, ≥20 % arbitrées, calibration/test séparés) reste`,
++          `> **à constituer**. Voir le protocole ci-dessous.`,
++        ]),
+     ``,
+     `## Tableau des copies`,
+     ``,
+diff --git a/src/supervision/evaluerCopies.m3.test.ts b/src/supervision/evaluerCopies.m3.test.ts
+new file mode 100644
+index 0000000..6d8a74f
+--- /dev/null
++++ b/src/supervision/evaluerCopies.m3.test.ts
+@@ -0,0 +1,54 @@
++// Pré-vol M3 (2026-11-04) : le harnais doit accepter le lot tel que le
++// README le décrit (30 copies numérotées 101-130 + RECAPITULATIF).
++import { describe, expect, it } from 'vitest';
++import {
++  couperBlocScore,
++  evaluerBatch,
++  parserRecap,
++  parserScoreAttendu,
++} from './evaluerCopies';
++
++const copieComplete = () =>
++  [
++    'التمرين الأول réponse de l élève 1',
++    'التمرين الثاني réponse de l élève 2',
++    'التمرين الثالث réponse de l élève 3',
++  ].join('\n');
++
++describe('M3 — RECAPITULATIF et numérotation 101-130', () => {
++  it('30 lignes → 30 notes distinctes 101…130 (avant le fix : 4 clés 10/11/12/13)', () => {
++    const lignes = Array.from({ length: 30 }, (_, i) => `eleve_${101 + i} | ${(4 + (i % 13)).toFixed(1)}`).join('\n');
++    const r = parserRecap(lignes);
++    expect(r.notes.size).toBe(30);
++    expect([...r.notes.keys()].sort((a, b) => a - b)).toEqual(Array.from({ length: 30 }, (_, i) => 101 + i));
++    expect(r.notes.has(10)).toBe(false);
++  });
++
++  it('formats historiques (2 chiffres, virgule, tableau) : non-régression', () => {
++    const r = parserRecap('eleve_01 : 12.5\neleve_02 13,5/20\n03 | 9');
++    expect(r.notes.get(1)).toBe(12.5);
++    expect(r.notes.get(2)).toBe(13.5);
++    expect(r.notes.get(3)).toBe(9);
++  });
++
++  it('les notes prof sont bien associées aux copies 101-103', () => {
++    const recap = parserRecap('eleve_101 | 4.5\neleve_102 | 11.5\neleve_103 | 16');
++    const copies = [101, 102, 103].map((n) => ({ fichier: `eleve_${n}.txt`, texte: copieComplete() }));
++    const { stats, resultats } = evaluerBatch(copies, recap);
++    expect(stats.nAvecProf).toBe(3);
++    expect(resultats.every((r) => r.noteProf !== undefined)).toBe(true);
++  });
++});
++
++describe('M3 — la note prof dans le fichier de copie', () => {
++  it('« SCORE: 11.5/20 » (forme du README) n’est PAS lu', () => {
++    expect(parserScoreAttendu('réponse\nSCORE: 11.5/20')).toBeNull();
++  });
++
++  it('la forme réellement lue : SCORE ATTENDU + Exercice N + TOTAL', () => {
++    const bloc =
++      'SCORE ATTENDU\n- Exercice 1 : 4/5\n- Exercice 2 : 5/7\n- Exercice 3 : 2.5/8\n- TOTAL : 11.5/20';
++    expect(parserScoreAttendu('réponse\n' + bloc)?.total).toBe(11.5);
++    expect(couperBlocScore('réponse\n' + bloc)).toBe('réponse\n');
++  });
++});
+diff --git a/src/supervision/evaluerCopies.ts b/src/supervision/evaluerCopies.ts
+index 7d2ac6a..b2cb058 100644
+--- a/src/supervision/evaluerCopies.ts
++++ b/src/supervision/evaluerCopies.ts
+@@ -153,8 +153,10 @@ export function parserRecap(texteBrut: string): RecapParse {
+   for (const ligneBrute of latiniser(texteBrut).split(/\r?\n/)) {
+     const ligne = ligneBrute.trim();
+     if (!ligne) continue;
+-    const mEleve = ligne.match(/eleve\s*[_\-\s]?\s*(\d{1,2})/i);
+-    const mTable = mEleve ? null : ligne.match(/^(\d{1,2})\s*\|/);
++    // M3 (2026-11-04) : le lot exige eleve_101…130. Avec \d{1,2}, les 30
++    // lignes s’écrasaient sur 4 clés (10,11,12,13) → 0 comparaison prof.
++    const mEleve = ligne.match(/eleve\s*[_\-\s]?\s*(\d{1,3})/i);
++    const mTable = mEleve ? null : ligne.match(/^(\d{1,3})\s*\|/);
+     if (!mEleve && !mTable) {
+       if (/\d/.test(ligne)) lignesNonParsees.push(ligneBrute);
+       continue;
