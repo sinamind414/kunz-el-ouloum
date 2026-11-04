@@ -12,9 +12,11 @@ import {
   Share2,
   Trophy,
   UserPlus,
+  X,
 } from 'lucide-react';
 import DailyGoalWidget from './DailyGoalWidget';
 import SmartReminderCard from './SmartReminderCard';
+import FAQView from './FAQView';
 // 2026-10-14 (M7) — `TodayCard` et `NbaCard` ne sont plus importées
 // statiquement : à elles deux, elles tiraient dans le bundle d'entrée tout le
 // plan de révision et tout le chemin pédagogique (plan, cartes mentales, index
@@ -110,6 +112,7 @@ export default function DashboardView({
   const [importEnCours, setImportEnCours] = useState(false);
   const [showStreakModal, setShowStreakModal] = useState(false);
   const [showMoreTools, setShowMoreTools] = useState(false);
+  const [showFaq, setShowFaq] = useState(false);
 
   // Le compteur n'est lu qu'une fois les données chargées et à chaque montage.
   // Pas d'intervalle : ce n'est pas un indicateur temps réel, et interroger
@@ -498,6 +501,13 @@ export default function DashboardView({
                   <Dumbbell className="h-5 w-5 shrink-0 text-[#006d37]" />
                   <span><span className="block text-xs font-black dark:text-white">كل أدوات التدريب</span><span className="text-[10px] font-bold text-[#506072]">ثمانية فضاءات في مكان واحد</span></span>
                 </button>
+
+                {/* M5 — FAQ autonome, accessible depuis l'accueil sans toucher
+                    au routeur d'App.tsx : section dépliable dans DashboardView. */}
+                <button type="button" onClick={() => setShowFaq(true)} className="flex items-center gap-3 rounded-2xl border border-[#006d37]/30 p-3 text-right bg-[#fff9ed] dark:bg-gray-900/30 dark:border-gray-800">
+                  <HelpCircle className="h-5 w-5 shrink-0 text-[#006d37]" />
+                  <span><span className="block text-xs font-black dark:text-white">الأسئلة الشائعة</span><span className="text-[10px] font-bold text-[#506072]">كل ما تريد معرفته عن التطبيق</span></span>
+                </button>
               </div>
             </div>
 
@@ -562,6 +572,31 @@ export default function DashboardView({
         streakDays={serieAfficheeDepuisDaily(progress.dailyGoals)}
         onOpenShareModal={() => setShowWeeklyShareModal(true)}
       />
+
+      {/* M5 — FAQ autonome, affichée en overlay depuis l'accueil. */}
+      {showFaq && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 dark:bg-black/60 backdrop-blur-sm"
+          onClick={() => setShowFaq(false)}
+        >
+          <div
+            className="bg-white dark:bg-[#141916] rounded-3xl p-6 max-w-2xl w-full max-h-[90vh] overflow-y-auto border border-gray-200 dark:border-gray-800"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-black text-[#1f1c0b] dark:text-white">الأسئلة الشائعة</h3>
+              <button
+                onClick={() => setShowFaq(false)}
+                className="p-1 rounded-full text-gray-400 hover:text-gray-600 dark:hover:text-gray-200"
+                title="إغلاق"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            <FAQView />
+          </div>
+        </div>
+      )}
     </div>
   );
 }
