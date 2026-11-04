@@ -294,3 +294,26 @@ describe('plan de révision — rappels SRS (H3, audit 8 axes)', () => {
     expect(jour1.tasks.some((t) => t.kind === 'rappel')).toBe(false);
   });
 });
+
+describe('plan de révision — la promesse de budget reste honnête (audit 8 axes, ②)', () => {
+  it('invité : le plan ne peut pas remplir 90 min/jour — la vue le DIT, chiffres mesurés', () => {
+    // Contexte INVITÉ : pas de kunz_acces (le beforeEach de la suite pose un
+    // abonnement — on le retire). U1-U5 ouvertes, 2 gestes : le jour le plus
+    // plein fait ~56 min, pas 90. Avant ce fix, l'écart était silencieux.
+    localStorage.removeItem('kunz_acces');
+    render(<RevisionPlanView />);
+    const avis = screen.getByTestId('plan-budget-avise');
+    // Le chiffre affiché est le max MESURÉ des journées du plan, pas une estimation.
+    const annonce = Number(avis.textContent?.match(/(\d+) د\/يوم/)?.[1]);
+    expect(annonce).toBeGreaterThan(0);
+    expect(annonce).toBeLessThan(90);
+    // La mention d'abonnement n'apparaît que pour du contenu réellement fermé.
+    expect(avis.textContent).toContain('الاشتراك');
+  });
+
+  it('abonné au budget atteignable : aucun avis (pas de fausse alerte)', () => {
+    // Contexte du beforeEach : abonnement, tout ouvert — le plan remplit 90 min.
+    render(<RevisionPlanView />);
+    expect(screen.queryByTestId('plan-budget-avise')).toBeNull();
+  });
+});

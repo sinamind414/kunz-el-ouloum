@@ -106,6 +106,17 @@ export default function RevisionPlanView({ onBackToHome, onOpenRedaction }: Revi
   const parUnite = useMemo(() => minutesByUnit(plan), [plan]);
   const cle = cleStockage(daysLeft, minutesPerDay);
 
+  // ② (audit 8 axes, 2026-11-04) : la promesse de budget doit rester honnête.
+  // Pour un invité, le contenu ouvert (U1-U5, capsules + cartes seulement)
+  // ne remplit pas le budget demandé : même le jour le plus plein du plan
+  // fait moins que `minutesPerDay`, et RIEN ne le disait — l'élève découvrait
+  // un plan plus court que promis, sans explication. Le chiffre affiché est
+  // MESURÉ sur le plan réel (max des journées), jamais estimé ; la mention
+  // « اشتراك » n'apparaît que si des gestes sont réellement fermés.
+  const jourLePlusPlein = plan.days.reduce((max, j) => Math.max(max, j.totalMinutes), 0);
+  const budgetNonAtteint = jourLePlusPlein < minutesPerDay;
+  const gestesLimites = !rubriquePayanteOuverte();
+
   useEffect(() => {
     setFait(chargerFait(cle));
   }, [cle]);
@@ -242,6 +253,12 @@ export default function RevisionPlanView({ onBackToHome, onOpenRedaction }: Revi
           </span>
           <span data-testid="plan-progression">أنجزت {pourcent}٪</span>
         </div>
+        {budgetNonAtteint && (
+          <p data-testid="plan-budget-avise" className="mt-2 text-xs font-bold text-[#8a5a00] dark:text-amber-300">
+            المحتوى المتاح يمنح {jourLePlusPlein} د/يوم فقط — أقل من {minutesPerDay} د المطلوبة
+            {gestesLimites ? ' (بعض الأنشطة تتطلب الاشتراك)' : ''}.
+          </p>
+        )}
         <div className="mt-3 h-2 rounded-full bg-black/10 dark:bg-white/10 overflow-hidden">
           <div className="h-full bg-[#006d37] transition-all" style={{ width: `${pourcent}%` }} />
         </div>
