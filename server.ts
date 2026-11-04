@@ -12,6 +12,22 @@ import { avertissementProxy } from "./server/proxyConfiance";
 import { PostgresStore, migrateJsonFilesToPostgres } from "./server/store.pg";
 import { resumeActivite, calculeActivite } from "./server/activite";
 import { mesurerPilotage } from "./src/server/mesurePilotage";
+import webpush from 'web-push';
+// ── VAPID (M4 Web Push) ──────────────────────────────────────
+// Clé publique exposée au client via VITE_VAPID_PUBLIC_KEY ;
+// clé privée côté serveur uniquement (VAPID_PRIVATE_KEY).
+const VAPID_PUBLIC_KEY = process.env.VITE_VAPID_PUBLIC_KEY || '';
+const VAPID_PRIVATE_KEY = process.env.VAPID_PRIVATE_KEY || '';
+const VAPID_EMAIL = process.env.VAPID_EMAIL || 'mailto:push@kunz-el-ouloum.dz';
+if (VAPID_PRIVATE_KEY) {
+  webpush.setVapidDetails(
+    VAPID_EMAIL,
+    VAPID_PUBLIC_KEY,
+    VAPID_PRIVATE_KEY,
+  );
+} else {
+  console.warn('[push] VAPID_PRIVATE_KEY non définie — les abonnements sont acceptés mais l\'envoi est désactivé');
+}
 // Marque de traçabilité : MÊME fonction que celle apposée dans les documents
 // exportés (images, PDF imprimés). C'est ce qui permet au professeur de
 // remonter d'un document qui circule jusqu'à l'élève — colonne `marque` du CSV.
@@ -746,6 +762,73 @@ async function startServer() {
       }
       next();
     });
+
+    // ── Web Push (M4) ─────────────────────────────────────────
+    // Abonnement : l'élève s'abonne aux rappels de révision espacée.
+    app.post("/api/push/subscribe", studentAuth, asyncHandler(async (req: Request, res: Response) => {
+      const { endpoint, p256dh, auth, userAgent } = req.body || {};
+      if (!endpoint || !p256dh || !auth) {
+        return res.status(400).json({ error: "subscription_incomplete" });
+      }
+      const studentId = (req as any).student?.id;
+      if (!studentId) return res.status(401).json({ error: "non_authentifie" });
+      store.upsertPushSubscription(studentId, endpoint, p256dh, auth, userAgent);
+      res.json({ ok: true });
+    }));
+
+    // Désabonnement : l'élève retire son abonnement push.
+    app.post("/api/push/unsubscribe", studentAuth, asyncHandler(async (req: Request, res: Response) => {
+      const { endpoint } = req.body || {};
+      if (!endpoint) return res.status(400).json({ error: "endpoint_requis" });
+      store.removePushSubscription(endpoint);
+      res.json({ ok: true });
+    }));
+
+    // Envoi de rappels : respecte 1 notification/jour par utilisateur
+    // et les heures algériennes (pas d'envoi entre 22h et 08h UTC+1).
+    app.post("/api/push/send", studentAuth, asyncHandler(async (req: Request, res: Response) => {
+      const { title, body, studentId } = req.body || {};
+      if (!VAPID_PRIVATE_KEY) {
+        return res.status(503).json({ error: "push_desactive" });
+      }
+      const now = new Date();
+      const heureAlgerie = now.getUTCHours() + 1; // UTC+1 = Alger
+      if (heureAlgerie < 8 || heureAlgerie >= 22) {
+        return res.status(429).json({ error: "hors_horaire_algerien", heure: heureAlgerie });
+      }
+
+      const subs = studentId
+        ? (await store.listPushSubscriptions()).filter(s => s.student_id === studentId)
+        : await store.listPushSubscriptions();
+
+      let envoyes = 0;
+      const erreurs: string[] = [];
+      const aujourdhui = now.toISOString().slice(0, 10);
+
+      for (const s of subs) {
+        // Contrainte : max 1 notification par jour par utilisateur.
+        if (s.derniere_notif && s.derniere_notif.slice(0, 10) === aujourdhui) continue;
+        try {
+          await webpush.sendNotification(
+            { endpoint: s.endpoint, keys: { p256dh: s.p256dh, auth: s.auth } },
+            JSON.stringify({ title: title ?? "Rappel de révision", body: body ?? "Il est temps de réviser vos leçons SVT." }),
+            { vapidDetails: { subject: VAPID_EMAIL, publicKey: VAPID_PUBLIC_KEY, privateKey: VAPID_PRIVATE_KEY }, TTL: 86400 },
+          );
+          store.updatePushDerniereNotif(s.endpoint, now.toISOString());
+          envoyes++;
+        } catch (err: any) {
+          if (err.statusCode === 410 || err.statusCode === 404) {
+            // Abonnement expiré → on le retire.
+            store.removePushSubscription(s.endpoint);
+          } else {
+            erreurs.push(String(err.message || err));
+          }
+        }
+      }
+
+      res.json({ ok: true, envoyes, erreurs: erreurs.length });
+    }));
+
     app.use(express.static(distPath, { index: false, dotfiles: "deny" }));
     app.get("*", (_req: Request, res: Response) => {
       res.sendFile(path.join(distPath, "index.html"));

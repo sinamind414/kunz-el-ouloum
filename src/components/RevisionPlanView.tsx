@@ -12,6 +12,7 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import { ArrowRight, CalendarDays, Check, Clock, ListChecks, Printer } from 'lucide-react';
+import PushOptIn from './PushOptIn';
 import { ARCHETYPE_BY_ID } from '../data/bacArchetypes';
 import { readPlanSettings, writePlanSettings } from '../data/planSettings';
 import { INITIAL_UNITS } from '../unitCatalog';
@@ -480,6 +481,9 @@ export default function RevisionPlanView({ onBackToHome, onOpenRedaction }: Revi
       </div>
       {/* Pied de page de traçabilité — VISIBLE À L'IMPRESSION SEULEMENT (A3). */}
       <MarqueDocument document="خطة المراجعة" />
+
+      {/* M4 — Web Push : opt-in aux rappels de révision espacée. */}
+      <PushOptIn mode="plein" />
     </div>
   );
 }

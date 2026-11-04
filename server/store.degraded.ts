@@ -109,6 +109,23 @@ export class DegradedStore {
     return this.refuse();
   }
 
+  // ── Push (M4) : indisponible en mode dégradé ──────────────────
+  upsertPushSubscription(): never {
+    return this.refuse();
+  }
+
+  removePushSubscription(): never {
+    return this.refuse();
+  }
+
+  listPushSubscriptions(): never {
+    return this.refuse();
+  }
+
+  updatePushDerniereNotif(): never {
+    return this.refuse();
+  }
+
   addEntriesIfNew(): never {
     return this.refuse();
   }
