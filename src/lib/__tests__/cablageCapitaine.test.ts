@@ -125,3 +125,17 @@ describe('l’identité du capitaine est unique et cohérente', () => {
     expect(app).toContain('aria-label={CAPITAINE_IDENTITE_AR}');
   });
 });
+
+describe('le coach du capitaine départage par le poids BAC (tranche 3, audit 8 axes)', () => {
+  it('le hook passe `unitPriority` à `classerParUrgence` — pas le défaut neutre', () => {
+    // Le défaut `() => 1` rendait la promesse « ce qui rapporte le plus au BAC
+    // d'abord » morte dans le hook : toutes les unités à poids 1, l'ordre de
+    // sortie = l'ordre d'entrée. Le hook doit passer la même source de poids
+    // que le plan de révision (`unitPriority` de revisionPlan), en import
+    // DYNAMIQUE comme `parcoursMeta` (jamais dans le bundle d'entrée).
+    expect(hook).toContain("import('../data/revisionPlan')");
+    expect(hook).toContain('classerParUrgence(diags, plan.unitPriority)');
+    // Et l'ancien appel neutre ne survit nulle part.
+    expect(hook).not.toContain('classerParUrgence(diags)');
+  });
+});

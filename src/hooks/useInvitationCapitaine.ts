@@ -139,15 +139,26 @@ export function useInvitationCapitaine(options: {
 
   useEffect(() => {
     let vivant = true;
-    import('../lib/parcours/parcoursMeta')
-      .then((meta) => {
+    // Tranche 3 (audit 8 axes, 2026-11-04) : le départage BAC du coach n'était
+    // plus qu'un défaut neutre — l'appel sans `poidsBac`, donc « ce qui
+    // rapporte le plus au BAC d'abord » ne départageait RIEN (toutes les
+    // unités à poids 1). `unitPriority` (revisionPlan) est la
+    // source unique du poids dans l'app : le coach parle désormais le même
+    // ordre que le plan de révision. Import dynamique, même discipline que
+    // `parcoursMeta` — revisionPlan tire la banque de flashcards, jamais dans
+    // le bundle d'entrée pour un ordre de tri.
+    Promise.all([
+      import('../lib/parcours/parcoursMeta'),
+      import('../data/revisionPlan'),
+    ])
+      .then(([meta, plan]) => {
         if (!vivant) return;
         const diags = diagnostiquerParcours(
           PARCOURS_DOMAINS.flatMap((d) => d.units),
           loadParcours(),
           meta.scoreLivreUnite,
         );
-        const ordre = classerParUrgence(diags);
+        const ordre = classerParUrgence(diags, plan.unitPriority);
         setFamilleCompetence({
           verdicts: Object.fromEntries(ordre.map((d) => [d.titre, d.verdict])),
           faibles: ordre
