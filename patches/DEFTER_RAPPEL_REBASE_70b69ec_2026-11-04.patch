@@ -1,0 +1,724 @@
+diff --git a/src/components/RappelTroisQuestions.tsx b/src/components/RappelTroisQuestions.tsx
+index a6c6e70..92f30a2 100644
+--- a/src/components/RappelTroisQuestions.tsx
++++ b/src/components/RappelTroisQuestions.tsx
+@@ -1,32 +1,42 @@
+ // RappelTroisQuestions.tsx — « 3 دقائق استذكار » : l'échauffement, PAS la porte.
+ //
+-// Lot 2 du 2026-11-04. Ce composant ne décide de rien et ne parle pas : il n'a
+-// NI nom de guide, NI visage, NI identité. Le Capitaine a déjà choisi les 3
+-// questions (`tirageRappelTrois` dans `lib/invitationCapitaine.ts`) ; ici on
+-// les AFFICHE une par une, avec un retour immédiat et l'explication du corpus.
++// Lot 2 (2026-11-04) : panneau de 3 questions, feedback immédiat, CTA vers UN
++// geste BAC. Il ne décide de rien et ne parle pas : ni nom de guide, ni visage.
++// Lot 3 : si l'élève a raté au moins une question, le panneau pose LA question
++// du produit (« من أين جاء خطؤك ؟ », `CAUSES_QCM`) et transmet la cause
++// DÉCLARÉE au دفتر الأخطاء. Rien n'est déduit, rien n'est noté, et cette
++// déclaration reste OPTIONNELLE : le CTA et les 7 cartes restent visibles.
+ //
+ // RÈGLES TENUES :
+-//   · OPTIONNEL — l'élève peut ne jamais cliquer ; la consigne d'entrée et les
+-//     7 cartes du hub restent visibles et cliquables. Pas de porte obligatoire.
+-//   · ZÉRO STOCKAGE — réponses en `useState` uniquement. Aucun `rateCard`,
+-//     aucun `enregistrerErreurs`, aucun `localStorage`. Le SRS reste « à la
+-//     maison » dans `RevisionView` : l'échauffement ne note pas l'élève.
+-//   · ZÉRO NOUVELLE PORTE — le CTA final appelle le MÊME `onOpen(tab)` que la
+-//     carte recommandée ; aucun onglet, aucune entrée de menu, aucun 8ᵉ portail.
+-//   · HONNÊTETÉ — corpus absent ou catalogue vide ⇒ on le dit, on n'invente
+-//     aucune question. Pas de chronomètre coercitif : « 3 دقائق » est une
+-//     promesse de format, pas un compte à rebours.
++//   · OPTIONNEL — jamais de porte obligatoire, « تخطّي » à tout moment.
++//   · Le Capitaine DÉCIDE (`bilanDuRappel` dans `lib/invitationCapitaine.ts`) ;
++//     l'élève DÉCLARE ; le pont (`lib/pontRappelErreurs.ts`) ÉCRIT une fois.
++//   · ZÉRO SRS, zéro `rateCard`, zéro crédit de journée. Seule la clé
++//     existante `boussole_profil_erreurs` est touchée, sur déclaration.
++//   · ZÉRO NOUVELLE PORTE — le CTA appelle le MÊME `onOpen(tab)` que la carte.
++//   · HONNÊTETÉ — corpus absent / catalogue vide / cause « autre » ⇒ on le dit,
++//     on n'invente ni question ni erreur. Pas de chronomètre coercitif.
+ 
+ import { useState } from 'react';
+ import { Timer, Zap } from 'lucide-react';
+-import type { QuestionRappel } from '../lib/invitationCapitaine';
++import { bilanDuRappel, type QuestionRappel } from '../lib/invitationCapitaine';
++import {
++  CAUSES_QCM,
++  QUESTION_CAUSE_AR,
++  REMERCIEMENT_CAUSE_AR,
++  causeParId,
++} from '../data/diagnosticQuiz';
++import { enregistrerCauseDuRappel } from '../lib/pontRappelErreurs';
++
++/** Reprise VERBATIM de `QuizView.tsx:686` : « autre » ne doit pas dire « سُجّل ». */
++const RIEN_ENREGISTRE_AR = 'لم نسجّل شيئًا. لم يُخترع سبب لم تعرفه.';
+ 
+ interface RappelTroisQuestionsProps {
+   /** Les 3 questions tirées par le Capitaine (≤ 3). */
+   questions: readonly QuestionRappel[];
+   /** Charge le corpus à la demande — appelé UNE fois, au clic. */
+   onDemarrer: () => void;
+-  /** `true` = corpus disponible (sert à distinguer « chargement » / « indisponible »). */
++  /** `true` = corpus disponible (distingue « chargement » / « indisponible »). */
+   corpusPret: boolean;
+   /** CTA final vers UN geste BAC, ou `null` si le Capitaine n'a rien désigné. */
+   onOuvrirGeste: (() => void) | null;
+@@ -43,9 +53,12 @@ export default function RappelTroisQuestions({
+   const [demarre, setDemarre] = useState(false);
+   const [ferme, setFerme] = useState(false);
+   const [index, setIndex] = useState(0);
+-  const [choisi, setChoisi] = useState<number | null>(null);
++  // Une réponse par question, conservée jusqu'au bilan : c'est la matière du
++  // `bilanDuRappel`. `choisi` en est dérivé — aucune double source de vérité.
++  const [reponses, setReponses] = useState<readonly (number | null)[]>([]);
+   const [reussites, setReussites] = useState(0);
+   const [termine, setTermine] = useState(false);
++  const [causeDeclaree, setCauseDeclaree] = useState<string | null>(null);
+ 
+   if (ferme) return null;
+ 
+@@ -108,12 +121,55 @@ export default function RappelTroisQuestions({
+     );
+   }
+ 
++  const bilan = bilanDuRappel(questions, reponses);
++  const declarerCause = (id: string): void => {
++    if (causeDeclaree !== null) return; // UNE seule écriture par session
++    const theme = bilan.themes[0] ?? '';
++    enregistrerCauseDuRappel(id, theme);
++    setCauseDeclaree(id);
++  };
++
+   if (termine) {
++    const causeChoisie = causeDeclaree !== null ? causeParId(causeDeclaree) : null;
+     return (
+       <section data-testid="rappel-panel" dir="rtl" className="mb-4 rounded-2xl border border-[#006d37]/25 bg-[#f8fbfa] px-4 py-3 dark:border-emerald-400/25 dark:bg-[#121614]">
+         <p data-testid="rappel-bilan" className="text-[13px] font-black text-[#1f2b24] dark:text-gray-100">
+           استذكار منتهٍ: {reussites} من {questions.length} — والآن تمرين واحد كامل، ثم التصحيح.
+         </p>
++
++        {/* LOT 3 — une seule question, une seule fois, seulement s'il y a eu
++            une vraie erreur. Le CTA reste dessous, visible même sans réponse. */}
++        {bilan.aDeclarer && causeDeclaree === null && (
++          <div data-testid="rappel-cause-bloc" className="mt-2 rounded-xl border border-[#006d37]/20 bg-white p-3 dark:bg-black/20">
++            <p data-testid="rappel-cause-question" className="text-[11.5px] font-black text-[#006d37] dark:text-emerald-300">
++              {QUESTION_CAUSE_AR}
++            </p>
++            <p className="mt-1 text-[10.5px] leading-relaxed text-[#506072] dark:text-gray-400">
++              سؤال واحد فقط، ولن يتكرّر في هذه الجلسة. الجواب يُحفظ على هاتفك وحدك.
++            </p>
++            <div className="mt-2 space-y-1.5">
++              {CAUSES_QCM.map((cause) => (
++                <button
++                  key={cause.id}
++                  type="button"
++                  data-testid={`rappel-cause-${cause.id}`}
++                  onClick={() => declarerCause(cause.id)}
++                  className="block w-full rounded-xl border border-[#e2dabf] bg-white px-3 py-2 text-right cursor-pointer hover:border-[#006d37] dark:border-gray-800 dark:bg-[#1a1f1c]"
++                >
++                  <span className="block text-[11.5px] font-black text-[#1f2b24] dark:text-gray-100">{cause.libelleAr}</span>
++                  <span className="mt-0.5 block text-[10px] leading-relaxed text-[#506072] dark:text-gray-400">{cause.precisionAr}</span>
++                </button>
++              ))}
++            </div>
++          </div>
++        )}
++
++        {causeDeclaree !== null && (
++          <p data-testid="rappel-cause-enregistree" className="mt-2 text-[11px] font-bold text-[#006d37] dark:text-emerald-300">
++            {causeChoisie?.code ? REMERCIEMENT_CAUSE_AR : RIEN_ENREGISTRE_AR}
++          </p>
++        )}
++
+         {onOuvrirGeste && (
+           <button
+             type="button"
+@@ -129,16 +185,13 @@ export default function RappelTroisQuestions({
+   }
+ 
+   const q = questions[Math.min(index, questions.length - 1)];
++  const choisi = reponses[index] ?? null;
+   const repondu = choisi !== null;
+   const correct = repondu && choisi === q.correctIndex;
+ 
+   const suivant = (): void => {
+-    if (index + 1 < questions.length) {
+-      setIndex(index + 1);
+-      setChoisi(null);
+-    } else {
+-      setTermine(true);
+-    }
++    if (index + 1 < questions.length) setIndex(index + 1);
++    else setTermine(true);
+   };
+ 
+   return (
+@@ -169,7 +222,11 @@ export default function RappelTroisQuestions({
+             data-testid={`rappel-option-${i}`}
+             onClick={() => {
+               if (repondu) return;
+-              setChoisi(i);
++              setReponses((prev) => {
++                const prochain = [...prev];
++                prochain[index] = i;
++                return prochain;
++              });
+               if (i === q.correctIndex) setReussites((r) => r + 1);
+             }}
+             aria-pressed={choisi === i}
+diff --git a/src/components/TrainingHubView.tsx b/src/components/TrainingHubView.tsx
+index 3001466..6319cf3 100644
+--- a/src/components/TrainingHubView.tsx
++++ b/src/components/TrainingHubView.tsx
+@@ -14,6 +14,9 @@
+ // Lot 2 : échauffement OPTIONNEL de 3 questions tirées par le Capitaine
+ // (`tirageRappelTrois`), corpus reçu via peekCorpus()/loadCorpus(), zéro import
+ // statique du corpus, zéro SRS ici, CTA = le MÊME onOpen(tab) que les cartes.
++// Lot 3 : chaque question porte le TITRE FACTUEL de son unité
++// (`PARCOURS_DOMAINS`) pour que la cause déclarée par l'élève soit
++// enregistrée AVEC son thème dans le دفتر. Le hub ne décide toujours rien.
+ 
+ import { useMemo, useState } from 'react';
+ import { ArrowRight, CalendarDays, Dumbbell, FileText, Key, Lock, PenTool, PlayCircle, Search, Sparkles, Swords } from 'lucide-react';
+@@ -23,6 +26,7 @@ import { CAPITAINE_IDENTITE_AR } from '../data/capitaineIdentite';
+ import { consigneEntreeTraining, tirageRappelTrois, type QuestionRappel, type SignalRappel } from '../lib/invitationCapitaine';
+ import { etatEleveSiChargee } from '../lib/etatEleveRuntime';
+ import { loadParcours, unitesCompletes } from '../lib/parcours/parcoursProgress';
++import { PARCOURS_DOMAINS } from '../lib/parcours/parcoursPath';
+ import { loadCorpus, peekCorpus, type Corpus } from '../data/corpusLoader';
+ import { sortByDue } from '../utils/flashcardsSrs';
+ import { jourLocal } from '../utils/dayKey';
+@@ -50,6 +54,11 @@ const ICONS: Record<string, LucideIcon> = {
+ /** Une carte `fc_q_<id>` due renvoie l'id du QCM dont elle est dérivée. */
+ const ID_CARTE_DERIVEE = /^fc_q_(\d+)$/;
+ 
++/** Titre FACTUEL de l'unité — déjà la source du parcours, aucune donnée neuve. */
++const TITRES_UNITES: ReadonlyMap<number, string> = new Map(
++  PARCOURS_DOMAINS.flatMap((d) => d.units.map((u) => [u.unitId, u.title] as const)),
++);
++
+ export default function TrainingHubView({ onOpen, onBackToHome, corpusRappel }: TrainingHubViewProps) {
+   // Phase 2 (GO 2026-10-16) : le cadenas lit la progression RÉELLE du
+   // parcours — une unité complète = toutes ses leçons + son جسر.
+@@ -92,6 +101,8 @@ export default function TrainingHubView({ onOpen, onBackToHome, corpusRappel }:
+         optionsAr: q.options,
+         correctIndex: q.correctAnswerIndex,
+         explicationAr: q.explanation ?? '',
++        // Lot 3 : le thème suit la question jusqu'au دفتر, si l'élève déclare.
++        themeAr: TITRES_UNITES.get(q.unitId),
+       }));
+     const idsDues = sortByDue([...(corpus?.flashcards ?? [])])
+       .map((c) => ID_CARTE_DERIVEE.exec(c.id))
+diff --git a/src/components/__tests__/rappelVersDefter.test.tsx b/src/components/__tests__/rappelVersDefter.test.tsx
+new file mode 100644
+index 0000000..4fdc630
+--- /dev/null
++++ b/src/components/__tests__/rappelVersDefter.test.tsx
+@@ -0,0 +1,259 @@
++// rappelVersDefter.test.tsx — LA CAUSE DÉCLARÉE ARRIVE VRAIEMENT AU دفتر.
++//
++// Lot 3 (2026-11-04), ENCHAÎNÉ sur les lots 1 + 2. Chaîne complète prouvée sur
++// les modules RÉELS, sans simulacre :
++//   élève rate un rappel → il DÉCLARE sa cause → enregistrerErreurs()
++//   → profilErreurs (localStorage) → resumeProfilAr() / contexteCapitaine().
++//
++// On verrouille aussi le contraire : « سبب آخر » n'écrit rien, un sans-faute ne
++// demande rien, une session n'écrit qu'UNE fois, et le SRS n'est pas touché.
++
++import { cleanup, render, screen } from '@testing-library/react';
++import userEvent from '@testing-library/user-event';
++import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
++import RappelTroisQuestions from '../RappelTroisQuestions';
++import TrainingHubView from '../TrainingHubView';
++import { CAUSES_QCM, QUESTION_CAUSE_AR } from '../../data/diagnosticQuiz';
++import { enregistrerCauseDuRappel } from '../../lib/pontRappelErreurs';
++import type { QuestionRappel } from '../../lib/invitationCapitaine';
++import {
++  enregistrerErreurs,
++  profilErreurs,
++  resumeProfilAr,
++  totalErreurs,
++} from '../../utils/profilErreurs';
++import { assemblerEtatEleve, contexteCapitaine } from '../../lib/etatEleve';
++import { fournirEtatEleve, reinitialiserEtatEleve } from '../../lib/etatEleveRuntime';
++import { markDone, resetParcours } from '../../lib/parcours/parcoursProgress';
++import { PARCOURS_FLAT, PARCOURS_DOMAINS } from '../../lib/parcours/parcoursPath';
++import type { Corpus } from '../../data/corpusLoader';
++import type { Flashcard, QuizQuestion } from '../../types';
++
++const THEME_U1 = PARCOURS_DOMAINS.flatMap((d) => d.units).find((u) => u.unitId === 1)!.title;
++const CLE_DEFTER = 'boussole_profil_erreurs';
++
++function q(id: number, correctIndex = 1): QuestionRappel {
++  return {
++    id,
++    uniteId: 1,
++    questionAr: `سؤال ${id}`,
++    optionsAr: ['خطأ', 'صواب'],
++    correctIndex,
++    explicationAr: `تفسير ${id}`,
++    themeAr: THEME_U1,
++  };
++}
++
++const TROIS = [q(1), q(2), q(3)];
++
++function corpusDeTest(): Corpus {
++  const questions: QuizQuestion[] = [1, 2, 3, 4, 5, 6].map((id) => ({
++    id,
++    unitId: 1,
++    questionText: `سؤال ${id}`,
++    options: ['خطأ', 'صواب'],
++    correctAnswerIndex: 1,
++    explanation: `تفسير ${id}`,
++  }));
++  const flashcards: Flashcard[] = questions.map((x) => ({
++    id: `fc_q_${x.id}`,
++    unitId: 1,
++    question: x.questionText,
++    answerBullets: [x.explanation],
++  }));
++  return { questions, flashcards };
++}
++
++function ouvrirUnites(n: number): void {
++  resetParcours();
++  const ids = [...new Set(PARCOURS_FLAT.map((i) => i.unitId))].sort((a, b) => a - b);
++  for (const uid of ids.slice(0, n)) {
++    for (const item of PARCOURS_FLAT.filter((i) => i.unitId === uid)) markDone(item.id);
++  }
++}
++
++beforeEach(() => {
++  localStorage.clear();
++  reinitialiserEtatEleve();
++});
++
++afterEach(() => {
++  cleanup();
++  localStorage.clear();
++  reinitialiserEtatEleve();
++});
++
++function rendre(options: { questions?: readonly QuestionRappel[] } = {}) {
++  const onDemarrer = vi.fn();
++  render(
++    <RappelTroisQuestions
++      questions={options.questions ?? TROIS}
++      onDemarrer={onDemarrer}
++      corpusPret
++      onOuvrirGeste={vi.fn()}
++      libelleGesteAr="تمارين بالوضعيات"
++    />,
++  );
++  return { onDemarrer };
++}
++
++async function parcourir(user: ReturnType<typeof userEvent.setup>, reponses: number[], nombre: number): Promise<void> {
++  await user.click(screen.getByTestId('rappel-demarrer'));
++  for (let i = 0; i < nombre; i++) {
++    await user.click(screen.getByTestId(`rappel-option-${reponses[i]}`));
++    await user.click(screen.getByTestId('rappel-suivant'));
++  }
++}
++
++describe('lot 3 — la déclaration est demandée, jamais imposée', () => {
++  it('une erreur ⇒ LA question du produit et ses 4 causes, pas une de plus', async () => {
++    const user = userEvent.setup();
++    rendre();
++    await parcourir(user, [0, 1, 1], 3);
++    expect(screen.getByTestId('rappel-cause-question').textContent).toBe(QUESTION_CAUSE_AR);
++    for (const c of CAUSES_QCM) {
++      expect(screen.getByTestId(`rappel-cause-${c.id}`), c.id).toBeTruthy();
++    }
++  });
++
++  it('sans-faute ⇒ AUCUNE question de cause, AUCUNE écriture', async () => {
++    const user = userEvent.setup();
++    rendre();
++    await parcourir(user, [1, 1, 1], 3);
++    expect(screen.queryByTestId('rappel-cause-bloc')).toBeNull();
++    expect(totalErreurs()).toBe(0);
++    expect(localStorage.getItem(CLE_DEFTER)).toBeNull();
++  });
++
++  it('le CTA vers le geste BAC reste visible AVEC la question de cause', async () => {
++    const user = userEvent.setup();
++    rendre();
++    await parcourir(user, [0, 1, 1], 3);
++    expect(screen.getByTestId('rappel-cause-bloc')).toBeTruthy();
++    expect(screen.getByTestId('rappel-cta-geste')).toBeTruthy();
++  });
++});
++
++describe('lot 3 — écriture réelle, une seule, avec le bon thème', () => {
++  it('cause « notion » ⇒ 1 occurrence dans le دفتر, AVEC le titre de l unité', async () => {
++    const user = userEvent.setup();
++    rendre();
++    await parcourir(user, [0, 1, 1], 3);
++    await user.click(screen.getByTestId('rappel-cause-notion'));
++
++    expect(totalErreurs()).toBe(1);
++    const entree = profilErreurs()['notion_confusion'];
++    expect(entree).toBeTruthy();
++    expect(entree.n).toBe(1);
++    expect(entree.themes).toContain(THEME_U1);
++    expect(screen.getByTestId('rappel-cause-enregistree').textContent).toContain('سُجّل');
++  });
++
++  it('UNE seule écriture par session : les boutons disparaissent après déclaration', async () => {
++    const user = userEvent.setup();
++    rendre();
++    await parcourir(user, [0, 0, 0], 3);
++    await user.click(screen.getByTestId('rappel-cause-preuve'));
++    expect(screen.queryByTestId('rappel-cause-bloc')).toBeNull();
++    expect(totalErreurs()).toBe(1); // 3 erreurs ≠ 3 occurrences : pas d'inflation
++  });
++
++  it('« سبب آخر » ⇒ ZÉRO écriture et un message honnête', async () => {
++    const user = userEvent.setup();
++    rendre();
++    await parcourir(user, [0, 1, 1], 3);
++    await user.click(screen.getByTestId('rappel-cause-autre'));
++    expect(totalErreurs()).toBe(0);
++    expect(localStorage.getItem(CLE_DEFTER)).toBeNull();
++    expect(screen.getByTestId('rappel-cause-enregistree').textContent).toContain('لم نسجّل شيئًا');
++  });
++
++  it('cause inconnue (code orphelin) ⇒ ignorée sans exception', () => {
++    expect(enregistrerCauseDuRappel('cause_qui_nexiste_pas', THEME_U1)).toEqual({
++      enregistrees: 0,
++      code: null,
++    });
++    expect(totalErreurs()).toBe(0);
++  });
++
++  it('deux sessions sur la MÊME cause ⇒ le profil peut enfin parler', async () => {
++    const user = userEvent.setup();
++    for (let session = 0; session < 2; session++) {
++      rendre();
++      await parcourir(user, [0, 1, 1], 3);
++      await user.click(screen.getByTestId('rappel-cause-notion'));
++      cleanup();
++    }
++    expect(totalErreurs()).toBe(2);
++    expect(resumeProfilAr()).not.toBeNull();
++  });
++
++  it('UNE session isolée ne fait PAS croire à un profil', async () => {
++    const user = userEvent.setup();
++    rendre();
++    await parcourir(user, [0, 1, 1], 3);
++    await user.click(screen.getByTestId('rappel-cause-notion'));
++    expect(totalErreurs()).toBe(1);
++    expect(resumeProfilAr()).toBeNull();
++  });
++
++  it('AUCUNE nouvelle clé : seul le دفتر existant est touché, jamais le SRS', async () => {
++    const user = userEvent.setup();
++    rendre();
++    await parcourir(user, [0, 1, 1], 3);
++    await user.click(screen.getByTestId('rappel-cause-notion'));
++    const cles: string[] = [];
++    for (let i = 0; i < localStorage.length; i++) {
++      const k = localStorage.key(i);
++      if (k) cles.push(k);
++    }
++    expect(cles).toEqual([CLE_DEFTER]);
++    expect(localStorage.getItem('kunz_flashcard_srs_v1')).toBeNull();
++    expect(localStorage.getItem('kunz-rappel-adaptatif-v1')).toBeNull();
++  });
++});
++
++describe('lot 3 — la chaîne remonte jusqu au Capitaine', () => {
++  it('totalErreurs() alimente bien contexteCapitaine().erreursAReprendre', () => {
++    enregistrerErreurs(['notion_confusion'], { theme: THEME_U1 });
++    expect(totalErreurs()).toBe(1);
++    const etat = assemblerEtatEleve({
++      daily: undefined,
++      maintenant: new Date(2026, 10, 4, 10, 0, 0),
++      erreurs: { total: totalErreurs(), dominante: null, capital: { fermees: 0, rouvertes: 0, total: 0 } },
++    });
++    expect(contexteCapitaine(etat).erreursAReprendre).toBe(1);
++  });
++
++  it('dans le VRAI hub : déclarer écrit le thème du parcours, et le CTA ouvre le module', async () => {
++    ouvrirUnites(2);
++    fournirEtatEleve(assemblerEtatEleve({
++      daily: undefined,
++      maintenant: new Date(2026, 10, 4, 10, 0, 0),
++      rubrique: 'training',
++      rubriqueAUnConseil: true,
++      rubriquesDejaVues: ['training'],
++      competence: { verdicts: {}, faibles: [], unitePrioritaire: null },
++      erreurs: { total: 0, dominante: null, capital: { fermees: 0, rouvertes: 0, total: 0 } },
++    }));
++    const onOpen = vi.fn();
++    const user = userEvent.setup();
++    render(<TrainingHubView onOpen={onOpen} corpusRappel={corpusDeTest()} />);
++
++    await user.click(screen.getByTestId('rappel-demarrer'));
++    await user.click(screen.getByTestId('rappel-option-0'));
++    await user.click(screen.getByTestId('rappel-suivant'));
++    await user.click(screen.getByTestId('rappel-option-1'));
++    await user.click(screen.getByTestId('rappel-suivant'));
++    await user.click(screen.getByTestId('rappel-option-1'));
++    await user.click(screen.getByTestId('rappel-suivant'));
++
++    await user.click(screen.getByTestId('rappel-cause-support'));
++    expect(profilErreurs()['missing_reference'].themes).toContain(THEME_U1);
++    await user.click(screen.getByTestId('rappel-cta-geste'));
++    expect(onOpen).toHaveBeenCalledWith('situations');
++    // La consigne du lot 1 et les 7 cartes n'ont pas bougé.
++    expect(screen.getByTestId('consigne-entree-capitaine')).toBeTruthy();
++    expect(screen.getAllByTestId('recommande-aujourdhui')).toHaveLength(1);
++  });
++});
+diff --git a/src/lib/__tests__/bilanDuRappel.test.ts b/src/lib/__tests__/bilanDuRappel.test.ts
+new file mode 100644
+index 0000000..ee98e96
+--- /dev/null
++++ b/src/lib/__tests__/bilanDuRappel.test.ts
+@@ -0,0 +1,92 @@
++// bilanDuRappel.test.ts — LE CAPITAINE COMPTE LES ERREURS SANS EN INVENTER.
++//
++// Lot 3 (2026-11-04). Tests comportementaux de la règle pure : aucun
++// `readFileSync`, aucun stockage. On verrouille surtout les SILENCES — une
++// réponse absente n'est pas une faute, et un échauffement sans faute ne doit
++// déclencher AUCUNE déclaration de cause.
++
++import { describe, expect, it } from 'vitest';
++import {
++  ERREURS_MIN_POUR_DECLARER,
++  bilanDuRappel,
++  themeUniteAr,
++  type QuestionRappel,
++} from '../../lib/invitationCapitaine';
++
++function q(id: number, uniteId: number, themeAr?: string): QuestionRappel {
++  return {
++    id,
++    uniteId,
++    questionAr: `سؤال ${id}`,
++    optionsAr: ['خطأ', 'صواب'],
++    correctIndex: 1,
++    explicationAr: `تفسير ${id}`,
++    ...(themeAr ? { themeAr } : {}),
++  };
++}
++
++const TROIS = [q(1, 1, '1. تركيب البروتين'), q(2, 2, '2. العلاقة بين بنية ووظيفة البروتين'), q(3, 3)];
++
++describe('bilan du rappel — compter juste', () => {
++  it('une erreur suffit à demander la cause, mais le seuil est explicite', () => {
++    expect(ERREURS_MIN_POUR_DECLARER).toBe(1);
++    expect(bilanDuRappel(TROIS, [0, 1, 1]).aDeclarer).toBeTruthy();
++  });
++
++  it('sans erreur ⇒ aucun bilan à déclarer, aucun thème', () => {
++    const b = bilanDuRappel(TROIS, [1, 1, 1]);
++    expect(b.erreurs).toBe(0);
++    expect(b.aDeclarer).toBeFalsy();
++    expect(b.themes).toEqual([]);
++  });
++
++  it('compte les mauvaises réponses et seulement elles', () => {
++    expect(bilanDuRappel(TROIS, [0, 0, 1]).erreurs).toBe(2);
++    expect(bilanDuRappel(TROIS, [0, 0, 0]).erreurs).toBe(3);
++  });
++
++  it('une réponse ABSENTE n est PAS une erreur inventée', () => {
++    const b = bilanDuRappel(TROIS, [null, undefined]);
++    expect(b.erreurs).toBe(0);
++    expect(b.aDeclarer).toBeFalsy();
++  });
++
++  it('réponses surnuméraires ou non entières ignorées', () => {
++    expect(bilanDuRappel(TROIS, [1, 1, 1, 0, 0]).erreurs).toBe(0);
++    expect(bilanDuRappel(TROIS, [Number.NaN, 1, 99, 0]).erreurs).toBe(1);
++  });
++
++  it('catalogue vide ⇒ bilan vide, aucune déclaration', () => {
++    expect(bilanDuRappel([], [0, 0, 0])).toEqual({ erreurs: 0, themes: [], aDeclarer: false });
++  });
++
++  it('les thèmes sont FACTUELS, dédupliqués, dans l ordre du tirage', () => {
++    const b = bilanDuRappel(TROIS, [0, 0, 0]);
++    expect(b.themes).toEqual([
++      '1. تركيب البروتين',
++      '2. العلاقة بين بنية ووظيفة البروتين',
++      themeUniteAr(3),
++    ]);
++  });
++
++  it('sans titre d unité ⇒ repli « الوحدة N », jamais un thème deviné', () => {
++    expect(themeUniteAr(3)).toBe('الوحدة 3');
++    expect(themeUniteAr(0)).toBe('');
++    expect(themeUniteAr(Number.NaN)).toBe('');
++    expect(bilanDuRappel([q(9, 3)], [0]).themes).toEqual(['الوحدة 3']);
++  });
++
++  it('deux questions de la même unité ⇒ UN seul thème', () => {
++    const b = bilanDuRappel([q(1, 1, '1. تركيب البروتين'), q(2, 1, '1. تركيب البروتين')], [0, 0]);
++    expect(b.erreurs).toBe(2);
++    expect(b.themes).toEqual(['1. تركيب البروتين']);
++  });
++
++  it('pureté : aucune lecture ni écriture de stockage', () => {
++    const avant = localStorage.length;
++    const a = bilanDuRappel(TROIS, [0, 1, 0]);
++    const b = bilanDuRappel(TROIS, [0, 1, 0]);
++    expect(a).toEqual(b);
++    expect(localStorage.length).toBe(avant);
++  });
++});
+diff --git a/src/lib/invitationCapitaine.ts b/src/lib/invitationCapitaine.ts
+index eaf4659..489cef2 100644
+--- a/src/lib/invitationCapitaine.ts
++++ b/src/lib/invitationCapitaine.ts
+@@ -728,6 +728,9 @@ export interface QuestionRappel {
+   optionsAr: readonly string[];
+   correctIndex: number;
+   explicationAr: string;
++  /** Titre FACTUEL de l'unité (lot 3) — thème transmis au دفتر si l'élève
++   *  déclare une cause. Absent ⇒ `themeUniteAr(uniteId)`, jamais deviné. */
++  themeAr?: string;
+ }
+ 
+ export interface SignalRappel {
+@@ -820,3 +823,86 @@ export function tirageRappelTrois(
+ 
+   return tirees;
+ }
++
++// ─────────────────────────────────────────────────────────────────────────────
++// LOT 3 — LE RAPPEL NOURRIT LE دفتر الأخطاء (LE CAPITAINE DÉCIDE TOUJOURS).
++//
++// Changement de contrat, assumé et demandé : les lots 1-2 n'écrivaient RIEN.
++// Le lot 3 écrit, mais UNE SEULE fois et SEULEMENT quand l'élève a déclaré
++// lui-même la cause de son erreur. Aucune déduction : `diagnosticQuiz.ts` le
++// dit déjà — « aucune question du corpus ne porte d'étiquette de notion…
++// toute déduction serait une invention ». Le Capitaine ne devine donc pas un
++// code d'erreur ; il décide QUAND demander, et l'élève dit LEQUEL.
++//
++// CE QUE LE CAPITAINE DÉCIDE ICI (pur, aucune donnée, aucun stockage) :
++//   · combien de questions ont été RATÉES (une réponse absente n'est PAS une
++//     erreur inventée) ;
++//   · les THÈMES factuels de ces erreurs (titre d'unité du parcours, sinon
++//     « الوحدة N ») ;
++//   · s'il faut demander une déclaration (≥ 1 erreur, une fois par session).
++//
++// Le pont d'écriture (`lib/pontRappelErreurs.ts`) n'est PAS un guide : il
++// exécute l'appel canonique `enregistrerErreurs` avec le code déclaré. Le
++// panneau ne fait que poser la question du produit (`CAUSES_QCM`).
++//
++// EFFET MESURÉ SUR LA PAROLE DU CAPITAINE : `contexteCapitaine()` transmet
++// `erreursAReprendre = etat.erreurs.total`, et `invitationDuMoment` ne parle
++// sur le motif « erreur » qu'à `j >= 3 && total >= 2`. UNE déclaration = UNE
++// occurrence ⇒ `resumeProfilAr()` reste `null` : un échauffement isolé ne fait
++// PAS croire à un profil. Deux sessions sur la même cause, elles, comptent —
++// c'est voulu.
++//
++// NON INCLUS, MESURÉ : `planifierRappelsPourErreurs()` ne trouve AUCUNE
++// micro-reprise pour les trois codes déclarables (`notion_confusion`,
++// `unsupported_claim`, `missing_reference`) et renvoie `[]`. L'appeler ici
++// chargerait 164 Ko de chunk pour un no-op. Le pont reste là où il est
++// (`QuizView`, atelier) — cf. `cablageBoucleCoach.test.ts`. Aucun `rateCard`,
++// aucun SRS, aucun `signalTravail` : « Déclic → Focus → Révision, une fois/jour »
++// n'est pas touché.
++// ─────────────────────────────────────────────────────────────────────────────
++
++/** Une erreur suffit à demander la cause — mais une seule fois par session. */
++export const ERREURS_MIN_POUR_DECLARER = 1;
++
++export interface BilanRappel {
++  /** Nombre de questions réellement ratées. */
++  erreurs: number;
++  /** Thèmes des questions ratées, sans doublon, dans l'ordre du tirage. */
++  themes: readonly string[];
++  /** Faut-il poser la question de déclaration ? */
++  aDeclarer: boolean;
++}
++
++/** Repli factuel quand le parcours ne fournit pas de titre d'unité. */
++export function themeUniteAr(uniteId: number): string {
++  return Number.isInteger(uniteId) && uniteId > 0 ? `الوحدة ${uniteId}` : '';
++}
++
++/**
++ * LE BILAN DU RAPPEL — pure, déterministe, sans lecture de stockage.
++ *
++ * `reponses[i]` est l'index choisi pour `questions[i]`, ou `null`/absent si
++ * l'élève n'a pas répondu. Une absence N'EST PAS une erreur : on ne compte que
++ * ce qui a été réellement répondu à côté. Les questions surnuméraires (le
++ * tableau de réponses est plus long que le tirage) sont ignorées.
++ */
++export function bilanDuRappel(
++  questions: readonly QuestionRappel[],
++  reponses: readonly (number | null | undefined)[],
++): BilanRappel {
++  const themes: string[] = [];
++  let erreurs = 0;
++  questions.forEach((q, i) => {
++    const r = reponses[i];
++    if (typeof r !== 'number' || !Number.isInteger(r)) return;
++    if (r === q.correctIndex) return;
++    erreurs += 1;
++    const theme = (q.themeAr ?? '').trim() || themeUniteAr(q.uniteId);
++    if (theme && !themes.includes(theme)) themes.push(theme);
++  });
++  return {
++    erreurs,
++    themes,
++    aDeclarer: erreurs >= ERREURS_MIN_POUR_DECLARER,
++  };
++}
+diff --git a/src/lib/pontRappelErreurs.ts b/src/lib/pontRappelErreurs.ts
+new file mode 100644
+index 0000000..751d3c4
+--- /dev/null
++++ b/src/lib/pontRappelErreurs.ts
+@@ -0,0 +1,45 @@
++// pontRappelErreurs.ts — LE PONT VERS LE دفتر الأخطاء (lot 3, 2026-11-04).
++//
++// ADAPTER, PAS UN GUIDE. Aucune décision pédagogique ici :
++//   · le Capitaine a décidé QUAND demander (`bilanDuRappel`) ;
++//   · l'élève a déclaré LEQUEL (`CAUSES_QCM` du produit) ;
++//   · ce module exécute l'écriture canonique, une seule fois par session.
++//
++// ÉCRITURE — changement de contrat explicite par rapport aux lots 1-2 :
++//   · `boussole_profil_erreurs` (clé EXISTANTE, aucune nouvelle clé) ;
++//   · `boussole_erreurs_fermees` uniquement si une erreur déjà fermée
++//     réapparaît — comportement existant de `enregistrerErreurs`, pas du lot.
++//   · « سبب آخر » (`code === null`) n'écrit RIEN : on n'invente pas une cause.
++//
++// N'ÉCRIT PAS : `kunz_flashcard_srs_v1` (SRS), `kunz-rappel-adaptatif-v1`,
++// aucun compteur d'activité, aucun `signalTravail`. L'échauffement ne note pas
++// l'élève et ne crédite pas une journée de travail : le contrat
++// « Déclic → Focus → Révision, une fois/jour » reste intact.
++//
++// PONT SM-2 DÉLIBÉRÉMENT ABSENT : mesuré le 2026-11-04,
++// `remediationPour()` ne trouve aucune micro-reprise pour les trois codes
++// déclarables et `planifierRappelsPourErreurs([...])` renvoie `[]`. L'appeler
++// chargerait un chunk de 164 Ko pour un no-op. Le pont reste branché sur
++// `QuizView` et l'atelier méthodologique, prêt pour le jour où le corpus
++// couvrira ces codes (même raisonnement que le H1 de `QuizView.tsx:218`).
++
++import { enregistrerErreurs } from '../utils/profilErreurs';
++import { causeParId } from '../data/diagnosticQuiz';
++
++export interface EcritureRappel {
++  /** Nombre d'occurrences réellement ajoutées au دفتر (0 ou 1). */
++  enregistrees: number;
++  /** Code de taxonomie écrit, ou `null` si l'élève a choisi « سبب آخر ». */
++  code: string | null;
++}
++
++/**
++ * Enregistre la cause DÉCLARÉE par l'élève. Un code inconnu de `CAUSES_QCM`
++ * est ignoré sans exception : jamais de code fabriqué.
++ */
++export function enregistrerCauseDuRappel(causeId: string, theme: string): EcritureRappel {
++  const cause = causeParId(causeId);
++  if (!cause?.code) return { enregistrees: 0, code: null };
++  const enregistrees = enregistrerErreurs([cause.code], { theme });
++  return { enregistrees, code: cause.code };
++}
