@@ -18,29 +18,41 @@
 
 Lancer un seul fichier : `npx vitest run chemin/du.test.ts`.
 
-## État de référence (2026-10-26, avant et après la réorganisation)
+## État de référence (2026-11-04, après H1 + fix fuseau/splash)
 
 | Suite | Résultat |
 |---|---|
-| tsc | vert |
-| vitest | 314 fichiers / 3 675 tests : **1 échec** (voir ci-dessous), 2 ignorés |
-| jest | 306 suites / 3 618 tests : **même échec**, 2 ignorés |
-| boussole | 138/138 |
-| eslint | **1 erreur** : `src/utils/acces.ts:192` (`@typescript-eslint/no-empty-object-type`) |
+| tsc | vert (0 erreur) |
+| vitest | 318 fichiers / 3 705 tests : **100 % vert** (flake de contention connu, voir ci-dessous) |
+| jest | 310 suites / 3 648 tests : **100 % vert** |
+| CI (PR #41, run 41776027631) | **5 jobs / 5 verts** |
 
-Les chiffres du `README.md` (294 fichiers / 3 465 tests, 18/10) sont périmés.
+Les chiffres du 2026-10-26 (3 675 tests, 1 échec fuseau, 1 erreur eslint acces.ts) sont périmés :
+l'échec fuseau est corrigé (`0ce98a4`) et l'erreur eslint ne se reproduit plus.
 
-### Échec connu : dépendance au fuseau horaire
+### Échec connu : dépendance au fuseau horaire — **RÉSOLU le 2026-11-04**
 
-`server/store.pg.dates.test.ts` › « couvre le cas UTC+1 » échoue quand la machine est
-en UTC et **passe** avec `TZ=Africa/Algiers` (vérifié). Le test suppose le fuseau du
-développeur. Les runners GitHub Actions sont en UTC : sur `master`, les jobs vitest,
-jest et `npm test` sont **rouges** sur les runs 259 à 261 (25/10/2026), alors que les
-messages de commit annoncent « 3675/3675 » — mesure faite localement à l'heure d'Alger.
-Cause confirmée dans les logs du job jest (run 261 : `store.pg.dates.test.ts:21`).
-Leçon : une mesure locale ne remplace pas la CI ; vérifier le run GitHub.
-Reproduire la CI en local : `TZ=UTC npx vitest run`. Corriger le test (le rendre
-indépendant du fuseau) est un chantier à part, non fait dans la réorganisation.
+`server/store.pg.dates.test.ts` › « couvre le cas UTC+1 » échouait quand la machine est
+en UTC et **passait** avec `TZ=Africa/Algiers`. Les runners GitHub Actions sont en UTC :
+sur `master`, les jobs vitest, jest et `npm test` étaient **rouges** (runs 259-261, puis
+run 41466381160 du 02/11 : 3 jobs / 5 rouges), alors que les messages de commit
+annonçaient des suites vertes mesurées localement à l'heure d'Alger.
+**Fix (commit `0ce98a4`, PR #41)** : l'attendu est recalculé via
+`Intl.DateTimeFormat("sv-SE")` — voie de vérification différente du code testé
+(`getFullYear/getDate`) — 3/3 verts sous `TZ=UTC` et sous `TZ=Africa/Algiers`.
+Preuve CI : run `41776027631` (PR #41) : **5 jobs / 5 verts** (04/11/2026).
+Leçon inchangée : une mesure locale ne remplace pas la CI ; vérifier le run GitHub.
+Reproduire la CI en local : `TZ=UTC npx vitest run`.
+
+### Flake connu : contention sous la suite complète (constaté 2026-11-04)
+
+`serieIntegration.test.tsx` peut perdre 3 tests sous `npx vitest run` complet
+(durée 16,5 s vs 9,7 s isolé) : ses `findByText` plafonnent à 4 s et le
+parallélisme interne de vitest fait dépasser le délai. Vérifié : **6/6 vert en
+isolé, 3 705/3 705 vert au re-run complet** — c'est du bruit de charge, pas un
+défaut. Méthode inchangée : un échec isolé se rejoue SEUL avant tout diagnostic ;
+et vitest + jest ne doivent jamais tourner en parallèle (contention CPU, cf.
+BacIdeaTrainer/AITutorView innocentés le 03/11).
 
 ## Conventions de test
 

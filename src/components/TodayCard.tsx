@@ -9,8 +9,15 @@
 // affiche les trois premières tâches non cochées du jour 1.
 
 import { CalendarDays, Check } from 'lucide-react';
-import { buildRevisionPlan, TASK_LABEL_AR } from '../data/revisionPlan';
+import {
+  buildRevisionPlan,
+  gestesOuverts,
+  prioritizedUnitIds,
+  TASK_LABEL_AR,
+  type PlanAcces,
+} from '../data/revisionPlan';
 import { readPlanSettings } from '../data/planSettings';
+import { rubriquePayanteOuverte, uniteOuverte } from '../utils/acces';
 
 interface Props {
   /** 2026-10-12 — OPTIONNEL. La carte affiche le programme du jour ; ouvrir le
@@ -31,7 +38,15 @@ function cochees(daysLeft: number, minutesPerDay: number): Set<string> {
 
 export default function TodayCard({ onOpenPlan }: Props) {
   const { daysLeft, minutesPerDay } = readPlanSettings();
-  const plan = buildRevisionPlan({ daysLeft, minutesPerDay });
+  // H1 (audit 8 axes) : même contrat que la vue du plan — l'invité ne reçoit
+  // QUE ce qu'il peut ouvrir (unités 1-5 + gestes gratuits). Snapshot au
+  // montage, identique à RevisionPlanView : aucune tâche renvoie à une
+  // impasse payante.
+  const acces: PlanAcces = {
+    unites: prioritizedUnitIds().filter((u) => uniteOuverte(u)),
+    gestes: gestesOuverts(rubriquePayanteOuverte()),
+  };
+  const plan = buildRevisionPlan({ daysLeft, minutesPerDay, acces });
   const jour = plan.days[0];
   if (!jour) return null;
 
