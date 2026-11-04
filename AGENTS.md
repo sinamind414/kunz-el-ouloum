@@ -50,6 +50,15 @@ sauf demande explicite.
 - `scripts/tools/`, `tmp_*.txt`, `tmp_*.mjs`
 - Les 40 `eleve_*.txt` et `RECAPITULATIF.txt` (données élèves — lecture seule)
 
+**Exception SIGNÉE (2026-11-04, validée par le propriétaire en session)** : la
+tranche 2 de l'audit 8 axes a modifié `src/App.tsx` (+ navigation unifiée
+`navigateToTab`, 31 appels) et `src/main.tsx` — câblage verrouillé par
+`motivationWiring.test.ts` (6 tests, ancrés sur les handlers, pas sur la
+chaîne nue) + `LessonsMindmapMove.test.tsx` + `cablageCapitaine.test.ts`,
+CI master 5/5. La règle ci-dessus s'applique à tout travail NON signé :
+toute nouvelle modification d'`App.tsx` exige une validation explicite du
+propriétaire AVANT le code, et une mention signée ici.
+
 ## Tests
 - `@testing-library/jest-dom` **n'est pas câblé** → utiliser `.toBeTruthy()`,
   `.toBeNull()`, `.toHaveLength()`. Appeler `cleanup()` explicitement.
