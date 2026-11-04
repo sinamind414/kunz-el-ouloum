@@ -57,6 +57,17 @@ describe('parserRecap — formats multiples', () => {
     expect(r.notes.has(7)).toBe(false);
     expect(r.lignesNonParsees.some((l) => l.includes('99'))).toBe(true);
   });
+
+  it('eleve_101..130 (3 chiffres, lot M3) → tous matcheés', () => {
+    const lignes = [];
+    for (let i = 101; i <= 130; i++) lignes.push(`eleve_${i} : ${(i % 20).toFixed(1)}`);
+    const r = parserRecap(lignes.join('\n'));
+    expect(r.notes.size).toBe(30);
+    expect(r.notes.get(101)).toBe(1);
+    expect(r.notes.get(115)).toBe(15);
+    expect(r.notes.get(130)).toBe(10);
+    expect(r.lignesNonParsees).toHaveLength(0);
+  });
 });
 
 describe('pearson', () => {
@@ -169,6 +180,37 @@ describe('SCORE ATTENDU — formats réels des copies bac2025-S1 (master)', () =
   it('absence de bloc → null ; copie sans bloc → texte intact', () => {
     expect(parserScoreAttendu('copie sans bloc FINAL : 12/20')).toBeNull();
     expect(couperBlocScore('texte brut')).toBe('texte brut');
+  });
+
+  it('SCORE: 11.5/20 (format M3, sans ATTENDU) → total lu, bloc coupé', () => {
+    const brut = [
+      'التمرين الأول: bla ARNm',
+      'التمرين الثاني: bla',
+      'التمرين الثالث: bla',
+      'SCORE: 11.5/20',
+    ].join('\n');
+    const a = parserScoreAttendu(brut);
+    expect(a).not.toBeNull();
+    expect(a!.total).toBe(11.5);
+    // Pas d'Exercice ni de TOTAL → exercices sont null, total seul est lu.
+    expect(a!.exercices).toEqual([null, null, null]);
+    const nettoye = couperBlocScore(brut);
+    expect(nettoye).not.toContain('SCORE:');
+    expect(nettoye).toContain('التمرين الأول');
+  });
+
+  it('SCORE ATTENDU avec détail (format legacy) → toujours lu', () => {
+    const brut = [
+      'SCORE ATTENDU:',
+      '- Exercice 1 : 5/5',
+      '- Exercice 2 : 6.5/7',
+      '- Exercice 3 : 8/8',
+      '- TOTAL : 19.5/20',
+    ].join('\n');
+    const a = parserScoreAttendu(brut);
+    expect(a).not.toBeNull();
+    expect(a!.exercices).toEqual([5, 6.5, 8]);
+    expect(a!.total).toBe(19.5);
   });
 
   it('RECAP table à barres « N° | NOM | Ex1 | Ex2 | Ex3 | TOTAL »', () => {

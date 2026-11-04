@@ -91,7 +91,8 @@ function latiniser(s: string): string {
  */
 export function couperBlocScore(texte: string): string {
   const i = texte.search(/SCORE\s+ATTENDU/i);
-  return i < 0 ? texte : texte.slice(0, i);
+  const j = i < 0 ? texte.search(/SCORE\s*:/i) : i;
+  return j < 0 ? texte : texte.slice(0, j);
 }
 
 export interface ScoreAttendu {
@@ -99,17 +100,22 @@ export interface ScoreAttendu {
   total: number | null;
 }
 
-/** Parse « - Exercice N : X/Y » + « - TOTAL : T/20 » (décimales . ou ,). */
+/** Parse « SCORE [ATTENDU]: … » avec « - Exercice N : X/Y » + « - TOTAL : T/20 » (décimales . ou ,).
+ * Accepte aussi « SCORE: X/20 » (total seul, sans détail par exercice). */
 export function parserScoreAttendu(texte: string): ScoreAttendu | null {
-  const bloc = texte.slice(texte.search(/SCORE\s+ATTENDU/i));
-  if (!bloc) return null;
+  const i = texte.search(/SCORE\s+ATTENDU/i);
+  const j = i < 0 ? texte.search(/SCORE\s*:/i) : i;
+  if (j < 0) return null;
+  const bloc = texte.slice(j);
   const exercices: (number | null)[] = [null, null, null];
   let m: RegExpExecArray | null;
   const re = /Exercice\s*([123])\s*:\s*(\d{1,2}(?:[.,]\d{1,2})?)\s*\/\s*\d+/gi;
   while ((m = re.exec(bloc)) !== null) exercices[parseInt(m[1], 10) - 1] = parseFloat(m[2].replace(',', '.'));
   const t = bloc.match(/TOTAL\s*:\s*(\d{1,2}(?:[.,]\d{1,2})?)\s*\/\s*20/i);
-  const any = exercices.some((x) => x !== null) || t !== null;
-  return any ? { exercices, total: t ? parseFloat(t[1].replace(',', '.')) : null } : null;
+  // Fallback total-only : « SCORE: 11.5/20 » sans détail par exercice.
+  const s = !t ? bloc.match(/SCORE\s*:?\s*(\d{1,2}(?:[.,]\d{1,2})?)\s*\/\s*20/i) : null;
+  const any = exercices.some((x) => x !== null) || t !== null || s !== null;
+  return any ? { exercices, total: t ? parseFloat(t[1].replace(',', '.')) : s ? parseFloat(s[1].replace(',', '.')) : null } : null;
 }
 
 /**
@@ -153,7 +159,7 @@ export function parserRecap(texteBrut: string): RecapParse {
   for (const ligneBrute of latiniser(texteBrut).split(/\r?\n/)) {
     const ligne = ligneBrute.trim();
     if (!ligne) continue;
-    const mEleve = ligne.match(/eleve\s*[_\-\s]?\s*(\d{1,2})/i);
+    const mEleve = ligne.match(/eleve\s*[_\-\s]?\s*(\d{1,4})/i);
     const mTable = mEleve ? null : ligne.match(/^(\d{1,2})\s*\|/);
     if (!mEleve && !mTable) {
       if (/\d/.test(ligne)) lignesNonParsees.push(ligneBrute);
