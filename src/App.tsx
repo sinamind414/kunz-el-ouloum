@@ -209,13 +209,22 @@ export default function App() {
     setCurrentTab(tab);
   };
   // Restaure le tab depuis l'URL au montage + écoute le retour navigateur.
+  // 2026-11-03 : CORRECTIF DE RÉGRESSION (introduit par 337533f qui avait
+  // remplacé ici l'effet de synchro du ref). Deux effets restaient :
+  //  1. `?? 'home'` forçait le tableau de bord au montage SANS hash → le
+  //     splash était dépassé ~30 ms après le montage pour tout visiteur neuf
+  //     (mesuré : splash vu à t=0/16 ms, parti à t≈50 ms, sans clic) — les
+  //     suites serieIntegration / motivationIntegration / masariBranche
+  //     étaient les messagères (12 tests rouges). Désormais : SANS hash.
+  //  2. `currentTabRef` n'était plus jamais écrit → le garde-fou anti-doublon
+  //     de navigateToTab (l. 200) était mort. La synchro est rétablie ci-dessous.
+  useEffect(() => { currentTabRef.current = currentTab; }, [currentTab]);
   useEffect(() => {
     const fromHash = (Object.entries(TAB_ROUTE) as [typeof currentTab, string][]).find(
       ([, route]) => route && location.hash === route
     );
-    const initialTab = fromHash?.[0] ?? 'home';
-    if (initialTab !== currentTabRef.current) {
-      setCurrentTab(initialTab);
+    if (fromHash && fromHash[0] !== currentTabRef.current) {
+      setCurrentTab(fromHash[0]);
     }
     const onPopState = (ev: PopStateEvent) => {
       const state = ev.state as { tab?: typeof currentTab } | null;

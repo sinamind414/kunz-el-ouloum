@@ -54,7 +54,10 @@ describe('la bulle est réellement branchée dans App.tsx', () => {
     // fait une chose de plus AVANT de naviguer : il note l'intention de l'élève
     // (`accepter`), ce qui distingue dans la boucle du coach « il n'a pas vu » de
     // « il a vu et n'a pas pu ». On vérifie les deux, séparément.
-    expect(app).toContain('setCurrentTab(invitation.cible)');
+    // 2026-11-03 : navigation inter-onglets unifiée sous `navigateToTab`
+    // (ancien `setCurrentTab`) — le contrat de la loi 3 (un clic, la
+    // destination réelle) ne change pas, le verrou suit l'API.
+    expect(app).toContain('navigateToTab(invitation.cible)');
     const bloc = app.slice(app.indexOf('bulle-capitaine-agir'));
     expect(bloc.slice(0, 900)).toContain('accepter()');
   });
