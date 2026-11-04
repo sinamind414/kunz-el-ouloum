@@ -20,6 +20,8 @@ import MarqueDocument from './MarqueDocument';
 import {
   DIFFICULTY_BONUS,
   declaredWeight,
+  duesDuDeck,
+  fileRappels,
   gestesOuverts,
   observedWeight,
   prioritizedUnitIds,
@@ -50,6 +52,7 @@ const KIND_CLASS: Record<PlanTask['kind'], string> = {
   redaction: 'bg-[#e0f2fe] text-[#075985] dark:bg-sky-500/10 dark:text-sky-300',
   situation: 'bg-[#e8f5ee] text-[#006d37] dark:bg-black/20 dark:text-[#2ecc71]',
   carte: 'bg-blue-50 text-blue-800 dark:bg-blue-500/10 dark:text-blue-300',
+  rappel: 'bg-[#fce7f3] text-[#9d174d] dark:bg-pink-500/10 dark:text-pink-300',
 };
 
 const cleStockage = (d: number, m: number) => `kunz.revisionPlan.${d}x${m}`;
@@ -88,9 +91,17 @@ export default function RevisionPlanView({ onBackToHome, onOpenRedaction }: Revi
     const unites = prioritizedUnitIds().filter((u) => uniteOuverte(u));
     return { unites, gestes: gestesOuverts(rubriquePayanteOuverte()) };
   }, []);
+  // H3 (audit 8 axes) : les cartes SRS DUES ouvrent chaque journée. Mesure au
+  // montage (même snapshot que `acces`) : les échéances changent quand l'élève
+  // note ses cartes, et le plan est recalculé à chaque ouverture — le rappel
+  // d'hier noté « جيد » repart avec son intervalle au lieu d'être re-programmé.
+  const rappels = useMemo(
+    () => fileRappels(duesDuDeck(acces.unites), acces.unites),
+    [acces],
+  );
   const plan = useMemo(
-    () => buildRevisionPlan({ daysLeft, minutesPerDay, acces }),
-    [daysLeft, minutesPerDay, acces],
+    () => buildRevisionPlan({ daysLeft, minutesPerDay, acces, rappels }),
+    [daysLeft, minutesPerDay, acces, rappels],
   );
   const parUnite = useMemo(() => minutesByUnit(plan), [plan]);
   const cle = cleStockage(daysLeft, minutesPerDay);
