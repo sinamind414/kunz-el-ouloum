@@ -37,11 +37,16 @@ beforeEach(() => {
   localStorage.clear();
 });
 
-/** Ouvre le coffre et démarre : le déclic du jour est affiché. */
+/** Ouvre le coffre et démarre : le déclic du jour est affiché.
+ *  Timeout 8000 (durci le 2026-11-04) : sous la suite vitest complète, cette
+ *  suite perdait 3 tests par contention CPU (16,5 s vs 9,7 s isolé — flake
+ *  documenté dans docs/agents/TESTS_ET_CI.md, reproduit aussi sur CI run
+ *  41779532217). Un élément jamais rendu échouerait quand même : la patience
+ *  accrue ne masque pas une vraie régression. */
 async function demarrer() {
   fireEvent.click(screen.getByText('افْتَحْ كَنْزَ العُلُومِ (دخول)'));
-  fireEvent.click(await screen.findByText('ابدأ رحلة التعلم', {}, { timeout: 4000 }));
-  await screen.findByTestId('declic-overlay', {}, { timeout: 4000 });
+  fireEvent.click(await screen.findByText('ابدأ رحلة التعلم', {}, { timeout: 8000 }));
+  await screen.findByTestId('declic-overlay', {}, { timeout: 8000 });
 }
 
 /** Démarre puis ferme le déclic : on arrive sur le tableau de bord. */
@@ -57,7 +62,7 @@ async function demarrerEtFermerDeclic() {
  */
 async function terminerSessionFocus(): Promise<UserProgress> {
   fireEvent.click(screen.getByText('جلسة تركيز'));
-  await screen.findByText('ابدأ', {}, { timeout: 4000 });
+  await screen.findByText('ابدأ', {}, { timeout: 8000 });
   // Ancre à midi du jour local : l'avance simulée de 25 min reste dans le même
   // jour, quoi qu'il soit. Sans ancre, tout lancement entre 23 h 35 et 00 h 00
   // (heure locale, UTC+1) faisait traverser minuit à l'horloge simulée —
