@@ -483,7 +483,7 @@ export default function RevisionPlanView({ onBackToHome, onOpenRedaction }: Revi
       <MarqueDocument document="خطة المراجعة" />
 
       {/* M4 — Web Push : opt-in aux rappels de révision espacée. */}
-      <PushOptIn mode="plein" />
+      <PushOptIn mode="كامل" />
     </div>
   );
 }

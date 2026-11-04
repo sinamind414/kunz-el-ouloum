@@ -460,7 +460,7 @@ export class PostgresStore {
       auth: String(row.auth),
       user_agent: row.user_agent ?? null,
       heures_locales: String(row.heures_locales),
-      derniere_notif: row.derniere_notif ? String(row.derniere_notif) : null,
+      derniere_notif: row.derniere_notif ? new Date(row.derniere_notif).toISOString() : null,
       cree_le: String(row.cree_le),
     }));
   }

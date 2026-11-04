@@ -772,21 +772,27 @@ async function startServer() {
       }
       const studentId = (req as any).student?.id;
       if (!studentId) return res.status(401).json({ error: "non_authentifie" });
-      store.upsertPushSubscription(studentId, endpoint, p256dh, auth, userAgent);
+      await store.upsertPushSubscription(studentId, endpoint, p256dh, auth, userAgent);
       res.json({ ok: true });
     }));
 
-    // Désabonnement : l'élève retire son abonnement push.
+    // Désabonnement : l'élève retire son abonnement push (uniquement le sien).
     app.post("/api/push/unsubscribe", studentAuth, asyncHandler(async (req: Request, res: Response) => {
       const { endpoint } = req.body || {};
       if (!endpoint) return res.status(400).json({ error: "endpoint_requis" });
-      store.removePushSubscription(endpoint);
+      const studentId = (req as any).student?.id;
+      if (!studentId) return res.status(401).json({ error: "non_authentifie" });
+      const abonnement = (await store.listPushSubscriptions()).find((s) => s.endpoint === endpoint);
+      if (!abonnement || abonnement.student_id !== studentId) {
+        return res.status(403).json({ error: "abonnement_non_appartient" });
+      }
+      await store.removePushSubscription(endpoint);
       res.json({ ok: true });
     }));
 
-    // Envoi de rappels : respecte 1 notification/jour par utilisateur
-    // et les heures algériennes (pas d'envoi entre 22h et 08h UTC+1).
-    app.post("/api/push/send", studentAuth, asyncHandler(async (req: Request, res: Response) => {
+    // Envoi de rappels : réservé à l'enseignant (teacherAuth). Respecte 1 notification/jour
+    // par utilisateur et les heures algériennes (pas d'envoi entre 22h et 08h UTC+1).
+    app.post("/api/push/send", teacherAuth, asyncHandler(async (req: Request, res: Response) => {
       const { title, body, studentId } = req.body || {};
       if (!VAPID_PRIVATE_KEY) {
         return res.status(503).json({ error: "push_desactive" });
@@ -798,7 +804,7 @@ async function startServer() {
       }
 
       const subs = studentId
-        ? (await store.listPushSubscriptions()).filter(s => s.student_id === studentId)
+        ? (await store.listPushSubscriptions()).filter((s) => s.student_id === studentId)
         : await store.listPushSubscriptions();
 
       let envoyes = 0;
@@ -807,19 +813,21 @@ async function startServer() {
 
       for (const s of subs) {
         // Contrainte : max 1 notification par jour par utilisateur.
-        if (s.derniere_notif && s.derniere_notif.slice(0, 10) === aujourdhui) continue;
+        // toISOString() garantit le format ISO (YYYY-MM-DD) sur SQLite ET Postgres.
+        const derniere = s.derniere_notif ? new Date(s.derniere_notif).toISOString().slice(0, 10) : null;
+        if (derniere === aujourdhui) continue;
         try {
           await webpush.sendNotification(
             { endpoint: s.endpoint, keys: { p256dh: s.p256dh, auth: s.auth } },
-            JSON.stringify({ title: title ?? "Rappel de révision", body: body ?? "Il est temps de réviser vos leçons SVT." }),
+            JSON.stringify({ title: title ?? "تذكير بالمراجعة", body: body ?? "حان الوقت لمراجعة دروسك في الأحياء والجيولوجيا." }),
             { vapidDetails: { subject: VAPID_EMAIL, publicKey: VAPID_PUBLIC_KEY, privateKey: VAPID_PRIVATE_KEY }, TTL: 86400 },
           );
-          store.updatePushDerniereNotif(s.endpoint, now.toISOString());
+          await store.updatePushDerniereNotif(s.endpoint, now.toISOString());
           envoyes++;
         } catch (err: any) {
           if (err.statusCode === 410 || err.statusCode === 404) {
             // Abonnement expiré → on le retire.
-            store.removePushSubscription(s.endpoint);
+            await store.removePushSubscription(s.endpoint);
           } else {
             erreurs.push(String(err.message || err));
           }

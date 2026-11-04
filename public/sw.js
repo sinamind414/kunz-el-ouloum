@@ -275,7 +275,7 @@ self.addEventListener('fetch', (event) => {
 
 // ── Web Push (M4) — handler de notification push ─────────────
 self.addEventListener('push', (event) => {
-  let data = { title: 'Rappel de révision', body: 'Il est temps de réviser vos leçons SVT.', url: '/' };
+  let data = { title: 'تذكير بالمراجعة', body: 'حان الوقت لمراجعة دروسك في الأحياء والجيولوجيا.', url: '/' };
   try {
     if (event.data) data = JSON.parse(event.data.text());
   } catch { /* données push non-JSON : on garde les valeurs par défaut */ }
@@ -304,7 +304,7 @@ self.addEventListener('notificationclick', (event) => {
   event.waitUntil(
     self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then((clients) => {
       for (const client of clients) {
-        if (client.url.includes(new URL(url).origin) && 'focus' in client) {
+        if (client.url.includes(new URL(url, self.location.origin).origin) && 'focus' in client) {
           return client.focus();
         }
       }
