@@ -20,6 +20,7 @@ import {
 } from '../../data/revisionPlan';
 import { INITIAL_UNITS } from '../../unitCatalog';
 import { ARCHETYPE_BY_ID } from '../../data/bacArchetypes';
+import { SVT_FLASHCARDS } from '../../data';
 
 afterEach(cleanup);
 // Contexte de cette suite : élève ABONNÉ. Les invariants ci-dessus verrouillent
@@ -256,5 +257,40 @@ describe('plan de révision — « لماذا هذا الترتيب؟ » (sprint
     const texte = screen.getByTestId('plan-explication').textContent ?? '';
     expect(texte).toContain('19');
     expect(texte).toContain('3,3');
+  });
+});
+
+describe('plan de révision — rappels SRS (H3, audit 8 axes)', () => {
+  it('une carte due ouvre la journée 1, AVANT toute tâche de rotation', async () => {
+    const user = userEvent.setup();
+    // Une carte de l'unité 4, échue hier : l'état SM-2 persisté est la seule
+    // source — le plan ne devine rien, il reflète ce que l'élève a réellement
+    // laissé mûrir.
+    const carte = SVT_FLASHCARDS.find((c) => c.unitId === 4);
+    expect(carte).toBeTruthy();
+    localStorage.setItem(
+      'kunz_flashcard_srs_v1',
+      JSON.stringify({
+        [carte!.id]: { ease: 2.5, intervalDays: 3, dueAt: Date.now() - 86_400_000, reps: 2, lapses: 0 },
+      }),
+    );
+    render(<RevisionPlanView />);
+    await user.click(screen.getByTestId('imprimer-jour'));
+    const feuille = screen.getByTestId('feuille-impression');
+    const premier = feuille.querySelector('[data-testid^="feuille-tache-"]');
+    expect(premier).not.toBeNull();
+    expect(premier!.getAttribute('data-testid')).toBe(`feuille-tache-rappel:${carte!.id}`);
+    // La tâche existe aussi dans la feuille de jour interactive.
+    expect(screen.getByTestId(`tache-1:rappel:${carte!.id}`)).toBeTruthy();
+  });
+
+  it('sans état SRS (élève neuf) : aucun rappel inventé, plan inchangé', () => {
+    render(<RevisionPlanView />);
+    const jour1 = buildRevisionPlan({ daysLeft: 14, minutesPerDay: 90 }).days[0];
+    const rappelsAffiches = Array.from(
+      document.querySelectorAll('[data-testid^="tache-1:rappel:"]'),
+    );
+    expect(rappelsAffiches).toHaveLength(0);
+    expect(jour1.tasks.some((t) => t.kind === 'rappel')).toBe(false);
   });
 });

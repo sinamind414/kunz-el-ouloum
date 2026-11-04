@@ -11,6 +11,8 @@
 import { CalendarDays, Check } from 'lucide-react';
 import {
   buildRevisionPlan,
+  duesDuDeck,
+  fileRappels,
   gestesOuverts,
   prioritizedUnitIds,
   TASK_LABEL_AR,
@@ -46,7 +48,10 @@ export default function TodayCard({ onOpenPlan }: Props) {
     unites: prioritizedUnitIds().filter((u) => uniteOuverte(u)),
     gestes: gestesOuverts(rubriquePayanteOuverte()),
   };
-  const plan = buildRevisionPlan({ daysLeft, minutesPerDay, acces });
+  // H3 (audit 8 axes) : mêmes rappels SRS que la vue du plan — le jour commence
+  // par les cartes dues, la carte du jour ne peut pas les passer sous silence.
+  const rappels = fileRappels(duesDuDeck(acces.unites), acces.unites);
+  const plan = buildRevisionPlan({ daysLeft, minutesPerDay, acces, rappels });
   const jour = plan.days[0];
   if (!jour) return null;
 
