@@ -1,0 +1,44 @@
+{
+  "beforeReload": {
+    "kunz_lesson_session_v1:d1-u1-l1-expression-genique": "{\"lessonId\":\"d1-u1-l1-expression-genique\",\"state\":\"BLOCKS_IN_PROGRESS\",\"currentBlockIndex\":1,\"validatedBlocks\":[true,false,false,false,false,false],\"outcome\":null,\"feedbackViewed\":false,\"suspendedAt\":1793316848774}"
+  },
+  "afterReload": {
+    "kunz_lesson_session_v1:d1-u1-l1-expression-genique": "{\"lessonId\":\"d1-u1-l1-expression-genique\",\"state\":\"BLOCKS_IN_PROGRESS\",\"currentBlockIndex\":1,\"validatedBlocks\":[true,false,false,false,false,false],\"outcome\":null,\"feedbackViewed\":false,\"suspendedAt\":1793316853677}"
+  },
+  "reloadHasMissionStart": false,
+  "searchLessons": [
+    {
+      "lessonKey": "phase11_chapitres_21_22",
+      "lessonKind": "active",
+      "title": "الفصل 31 : تذكير بالمكتسبات — الفصل 32 : مقر عملية التركيب الضوئي",
+      "unitId": 6,
+      "addedAt": 1793316856403
+    },
+    {
+      "lessonKey": "phase12_chapitres_23_24_2",
+      "lessonKind": "html",
+      "title": "لماذا تتوقف المرحلة الكيميوحيوية في الظلام بعد ثوانٍ رغم أنها لا تتطلب ضوءاً؟",
+      "unitId": 6,
+      "addedAt": 1793316856450
+    },
+    {
+      "lessonKey": "d2-u6-l1-hill-ruben",
+      "lessonKind": "active",
+      "title": "تجربة هيل وروبن : مصدر الأكسجين المنطلق في التركيب الضوئي",
+      "unitId": 6,
+      "addedAt": 1793316856485
+    }
+  ],
+  "htmlPaywall": {
+    "lesson": {
+      "lessonKey": "phase12_chapitres_23_24_2",
+      "lessonKind": "html",
+      "title": "لماذا تتوقف المرحلة الكيميوحيوية في الظلام بعد ثوانٍ رغم أنها لا تتطلب ضوءاً؟",
+      "unitId": 6,
+      "addedAt": 1793316856450
+    },
+    "hasCodeInput": true,
+    "returnButtons": 0,
+    "text": "تجاوز إلى المحتوى الرئيسي\nطالب متميز\nSVT BAC DZ\nالدروس؟\nأ\n0\n|\n0 XP\nالقائمة الرئيسية\nالرئيسية\nACCUEIL\nالدروس\nAPPRENDRE\nالتمارين والتدريب\nS'ENTRAÎNER\nمفتاح المنهجية\nMÉTHODE\nالمراجعة\nRÉVISER\nأنا\nMOI\nالدرس السلبي — 6. آليات تحويل الطاقة الضوئية إلى طاقة كيميائية كامنة — مفتاح بالكود\n\nحصيلة المجال الأول (الوحدات من 1 إلى 5) وتمارينها مجانية دائماً حتى بدون حساب. باقي الوحدات والمواضيع تُفتح باشتراك موسم كامل:\n\n1200 دج / سنة دراسية — حتى نهاية الموسم (30 جوان)، أيّاً كان تاريخ شرائك.\n\nادفع 1200 دج عبر بريدي موب إلى رقم المعلّم (تصلك معلومات الدفع من مؤسسة التطبيق).\nاستلم كود تفعيل مكوّن من ٤ أحرف و ٤ أرقام بالشكل KUNZ-XXXX-XXXX.\nأدخل الكود هنا — يُربط الكود بحسابك وبجهازك (جهاز واحد فقط)، وتُفتح المادة كاملة فوراً حتى 30 جوان. إذا غيّرت هاتفك، راسل الأستاذ عبر واتساب ليصلك كود جديد.\nتفعيل"
+  }
+}

@@ -6,7 +6,7 @@
 //      OFFICIAL_PROGRAM_SEQUENCE). Chaque fichier de phase portant 2 leçons,
 //      la séquence expose la clé de base puis la clé `_2` — une leçon affichée
 //      à la fois (isolation par sliceLessonHtml).
-import { lazy, Suspense, useEffect, useState } from 'react';
+import { lazy, Suspense, useEffect, useRef, useState } from 'react';
 import { BookOpen, ChevronLeft, Zap, MonitorPlay, Network, FlaskConical, Leaf, Globe2, BookMarked, Grid3x3, Search, Compass } from 'lucide-react';
 import HtmlLessonViewer from './HtmlLessonViewer';
 import ActiveLessonView from './ActiveLessonView';
@@ -135,6 +135,56 @@ export default function LessonsView({ onRateCard, initialLesson, initialQcm, ini
   // le séjour — sinon le filtre جسر disparaîtrait au re-render.
   const [qcmUniteInitiale] = useState<number | undefined>(initialQcm);
 
+  // Sous-routeur pour الدروس : navigation interne (domaine → unité → leçon)
+  // avec historique séparé. Chaque changement d'état interne ajoute une entrée
+  // `pushState` pour que `history.back()` revienne étape par étape dans الدروس.
+  type LessonHistoryState = {
+    view: 'lessons';
+    domain: number | null;
+    passiveUnit: number | null;
+    activeUnit: number | null;
+    activeLesson: string | null;
+    passiveLesson: string | null;
+    mode: LessonMode | 'qcm' | 'bac' | 'okacha' | 'search' | null;
+  };
+  const lessonHistoryRef = useRef<LessonHistoryState>({
+    view: 'lessons',
+    domain: null,
+    passiveUnit: null,
+    activeUnit: null,
+    activeLesson: null,
+    passiveLesson: null,
+    mode: null,
+  });
+  const pushLessonHistory = () => {
+    const snapshot: LessonHistoryState = {
+      view: 'lessons',
+      domain: selectedDomain,
+      passiveUnit: selectedPassiveUnitId,
+      activeUnit: selectedActiveUnitId,
+      activeLesson: selectedActiveLesson,
+      passiveLesson: selectedPassiveLesson,
+      mode,
+    };
+    lessonHistoryRef.current = snapshot;
+    history.pushState({ ...snapshot, view: 'lessons' }, '', `#lesson`);
+  };
+  useEffect(() => {
+    const onPopState = (ev: PopStateEvent) => {
+      const state = ev.state as LessonHistoryState | null;
+      if (!state || state.view !== 'lessons') return;
+      setSelectedDomain(state.domain);
+      setSelectedPassiveUnitId(state.passiveUnit);
+      setSelectedActiveUnitId(state.activeUnit);
+      setSelectedActiveLesson(state.activeLesson);
+      setSelectedPassiveLesson(state.passiveLesson);
+      setMode(state.mode);
+      lessonHistoryRef.current = state;
+    };
+    window.addEventListener('popstate', onPopState);
+    return () => window.removeEventListener('popstate', onPopState);
+  }, []);
+
   // Deep-link (مسار) : ouverture à UNE reprise au montage, puis on vide l'état
   // du parent pour qu'un retour sur l'onglet ne rejoue pas le deep-link.
   useEffect(() => {
@@ -218,7 +268,7 @@ export default function LessonsView({ onRateCard, initialLesson, initialQcm, ini
           // Retour sur les icônes de la MÊME unité (pas la liste des unités).
           setSelectedActiveUnitId(uid);
         }}
-        onNext={nextKey && nextUnit ? () => { setSelectedUnit(nextUnit); setSelectedActiveLesson(nextKey); } : undefined}
+        onNext={nextKey && nextUnit ? () => { setSelectedUnit(nextUnit); setSelectedActiveLesson(nextKey); pushLessonHistory(); } : undefined}
         nextTitleAr={nextKey ? getActiveLessonTitle(nextKey) : undefined}
       />
     );
@@ -240,8 +290,8 @@ export default function LessonsView({ onRateCard, initialLesson, initialQcm, ini
     return (
       <HtmlLessonViewer
         lessonKey={selectedPassiveLesson}
-        onBack={() => setSelectedPassiveLesson(null)}
-        onNext={nextKey ? () => setSelectedPassiveLesson(nextKey) : undefined}
+        onBack={() => { setSelectedPassiveLesson(null); pushLessonHistory(); }}
+        onNext={nextKey ? () => { setSelectedPassiveLesson(nextKey); pushLessonHistory(); } : undefined}
         nextTitleAr={nextKey ? getPassiveLessonTitle(nextKey, selectedUnit) : undefined}
       />
     );
@@ -352,7 +402,7 @@ export default function LessonsView({ onRateCard, initialLesson, initialQcm, ini
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {/* Leçon Active */}
           <button
-            onClick={() => { setMode('active'); setSelectedDomain(null); setSelectedActiveUnitId(null); }}
+            onClick={() => { setMode('active'); setSelectedDomain(null); setSelectedActiveUnitId(null); pushLessonHistory(); }}
             className="group p-6 rounded-3xl border-2 border-emerald-200 dark:border-emerald-900/50 bg-gradient-to-b from-emerald-50 to-white dark:from-emerald-950/30 dark:to-[#161c18] hover:border-emerald-500 hover:shadow-lg transition-all text-center space-y-3"
           >
             <span className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-[#006d37] text-white shadow-md group-hover:scale-105 transition-transform">
@@ -366,7 +416,7 @@ export default function LessonsView({ onRateCard, initialLesson, initialQcm, ini
 
           {/* Leçon Passive */}
           <button
-            onClick={() => { setMode('passive'); setSelectedDomain(null); setSelectedPassiveUnitId(null); }}
+            onClick={() => { setMode('passive'); setSelectedDomain(null); setSelectedPassiveUnitId(null); pushLessonHistory(); }}
             className="group p-6 rounded-3xl border-2 border-teal-200 dark:border-teal-900/50 bg-gradient-to-b from-teal-50 to-white dark:from-teal-950/30 dark:to-[#161c18] hover:border-teal-500 hover:shadow-lg transition-all text-center space-y-3"
           >
             <span className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-[#0e6b6b] text-white shadow-md group-hover:scale-105 transition-transform">
@@ -524,7 +574,7 @@ export default function LessonsView({ onRateCard, initialLesson, initialQcm, ini
             return (
               <button
                 key={key}
-                onClick={() => { setSelectedUnit(selectedActiveUnitId); setSelectedActiveLesson(key); }}
+                onClick={() => { setSelectedUnit(selectedActiveUnitId); setSelectedActiveLesson(key); pushLessonHistory(); }}
                 data-testid={`lecon-active-${key}`}
                 className="group p-4 rounded-2xl border-2 border-gray-200 dark:border-gray-800 bg-white dark:bg-[#161c18] hover:border-emerald-500 hover:shadow-md transition-all text-right"
               >
@@ -731,7 +781,7 @@ export default function LessonsView({ onRateCard, initialLesson, initialQcm, ini
             return (
               <button
                 key={d.id}
-                onClick={() => { setSelectedDomain(d.id); setSelectedPassiveUnitId(null); }}
+                onClick={() => { setSelectedDomain(d.id); setSelectedPassiveUnitId(null); pushLessonHistory(); }}
                 data-testid={`domaine-${d.id}`}
                 className="group p-6 rounded-3xl border-2 border-gray-200 dark:border-gray-800 bg-white dark:bg-[#161c18] hover:border-teal-500 hover:shadow-lg transition-all text-center space-y-3"
               >
@@ -819,7 +869,7 @@ export default function LessonsView({ onRateCard, initialLesson, initialQcm, ini
             return (
               <button
                 key={uid}
-                onClick={() => setSelectedPassiveUnitId(uid)}
+                onClick={() => { setSelectedPassiveUnitId(uid); pushLessonHistory(); }}
                 data-testid={`unite-${uid}`}
                 className="group p-5 rounded-3xl border-2 border-gray-200 dark:border-gray-800 bg-white dark:bg-[#161c18] hover:border-teal-500 hover:shadow-lg transition-all text-right flex items-start gap-4"
               >
@@ -896,7 +946,7 @@ export default function LessonsView({ onRateCard, initialLesson, initialQcm, ini
         {domain?.unitIds.map((uid) => (
           <button
             key={uid}
-            onClick={() => setSelectedPassiveUnitId(uid)}
+            onClick={() => { setSelectedPassiveUnitId(uid); pushLessonHistory(); }}
             title={getUnitTitle(uid)}
             data-testid={`bande-unite-${uid}`}
             className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-[11px] font-black transition-colors ${

@@ -1,0 +1,49 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "HardBenchmarkAuditManifest",
+  "type": "object",
+  "required": ["version", "records"],
+  "properties": {
+    "version": { "const": 1 },
+    "records": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "auditId",
+          "consentRef",
+          "copySha256",
+          "transcriptionSha256",
+          "annotationForms",
+          "verifiedBy",
+          "verifiedAt"
+        ],
+        "properties": {
+          "auditId": { "type": "string", "pattern": "^AUD-[A-Z0-9-]{8,}$" },
+          "consentRef": { "type": "string", "minLength": 8 },
+          "copySha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+          "transcriptionSha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+          "annotationForms": {
+            "type": "array",
+            "minItems": 2,
+            "maxItems": 2,
+            "items": {
+              "type": "object",
+              "required": ["annotator", "sha256", "completedAt"],
+              "properties": {
+                "annotator": { "type": "string", "minLength": 1 },
+                "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+                "completedAt": { "type": "string", "format": "date-time" }
+              },
+              "additionalProperties": false
+            }
+          },
+          "verifiedBy": { "type": "string", "minLength": 1 },
+          "verifiedAt": { "type": "string", "format": "date-time" }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}

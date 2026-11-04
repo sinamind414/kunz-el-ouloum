@@ -17,6 +17,12 @@ afterEach(() => {
   cleanup();
   localStorage.clear();
   vi.useRealTimers();
+  // 2026-11-03 : le routeur SPA restaure l'onglet depuis location.hash au
+  // montage. La navigation d'un test précédent laisse « #home » dans l'URL du
+  // runner jsdom (qui la garde pendant tout le fichier) et le test suivant
+  // naîtrait DÉJÀ sur le tableau de bord, sans splash. On remet l'URL à zéro,
+  // comme un vrai visiteur neuf.
+  window.history.replaceState(null, '', window.location.pathname + window.location.search);
 });
 
 /**

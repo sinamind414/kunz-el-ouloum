@@ -1,0 +1,91 @@
+{
+  "text": "علوم الطبيعة والحياة • تركيب البروتين\nالسؤال 34 من 44\n14:34\nأكمل: الجين يرتبط هنا بـ: _______\nإجابة صحيحة\nالشرح والمبرر العلمي:\n\nالتعريف الصحيح: قطعة من ADN تحمل معلومة تركيب سلسلة ببتيدية أو بروتين معين\n\nالسابق\nالتالي",
+  "buttons": [
+    {
+      "text": "",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "السابق",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "التالي",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "",
+      "label": "تكبير الشكل",
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "−",
+      "label": "تصغير",
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "+",
+      "label": "تكبير",
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "ملاءمة",
+      "label": "إعادة الملاءمة إلى الشاشة",
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "100%",
+      "label": "الحجم الأصلي للشكل",
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "نافذة",
+      "label": "فتح الشكل في نافذة مستقلة",
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "إغلاق",
+      "label": "إغلاق (Esc)",
+      "testid": null,
+      "disabled": false
+    }
+  ],
+  "testids": [],
+  "inputs": [
+    {
+      "type": "text",
+      "label": "فراغ الإجابة",
+      "placeholder": "اكتب إجابتك هنا..."
+    }
+  ],
+  "width": 1280,
+  "scrollWidth": 1280,
+  "storage": {
+    "boussole_prescriptions_v1": "{\"prescriptions\":[{\"motif\":\"accueil:training\",\"cible\":\"training\",\"emisMs\":1793357081607,\"issue\":\"en_attente\"}],\"motifs\":{\"accueil:training\":{\"dits\":1,\"suivis\":0,\"ignores\":0,\"expires\":0}}}",
+    "theme": "light",
+    "kunz_declic_last_id_v1": "dem_02",
+    "svt_progress": "{\"xp\":0,\"streak\":0,\"completedUnits\":[],\"completedQuestionsCount\":0,\"studyMinutes\":0,\"dailyGoals\":{\"type\":\"minutes\",\"targetMinutes\":25,\"targetQuestions\":20,\"lastActiveDate\":\"\",\"todayMinutes\":0,\"todayQuestions\":0,\"streakDays\":0,\"completedToday\":false},\"flashcardStats\":{\"again\":0,\"hard\":0,\"good\":0,\"easy\":0},\"quizScoreHistory\":[]}",
+    "lastStudyTime": "1793357088438",
+    "boussole_conseils_rubriques_vus": "[\"lesson\"]",
+    "kunz_declic_shown_v1": "2026-10-30",
+    "svt_units": "[{\"id\":1,\"title\":\"تركيب البروتين\",\"lessonsCount\":6,\"description\":\"التخصص الوظيفي للبروتينات — Synthèse des protéines\",\"progress\":0,\"isLocked\":false,\"domain\":\"التخصص الوظيفي للبروتينات\",\"lastStudiedTimestamp\":1793357088435},{\"id\":2,\"title\":\"العلاقة بين بنية ووظيفة البروتين\",\"lessonsCount\":4,\"description\":\"التخصص الوظيفي للبروتينات — Relation structure-fonction\",\"progress\":0,\"isLocked\":true,\"domain\":\"التخصص الوظيفي للبروتينات\"},{\"id\":3,\"title\":\"النشاط الإنزيمي للبروتينات\",\"lessonsCount\":5,\"description\":\"التخصص الوظيفي للبروتينات — Activité enzymatique\",\"progress\":0,\"isLocked\":true,\"domain\":\"التخصص الوظيفي للبروتينات\"},{\"id\":4,\"title\":\"دور البروتينات في الدفاع عن الذات\",\"lessonsCount\":6,\"description\":\"التخصص الوظيفي للبروتينات — Immunité\",\"progress\":0,\"isLocked\":true,\"domain\":\"التخصص الوظيفي للبروتينات\"},{\"id\":5,\"title\":\"دور البروتينات في الاتصال العصبي\",\"lessonsCount\":5,\"description\":\"التخصص الوظيفي للبروتينات — Communication nerveuse\",\"progress\":0,\"isLocked\":true,\"domain\":\"التخصص الوظيفي للبروتينات\"},{\"id\":6,\"title\":\"آليات تحويل الطاقة الضوئية إلى طاقة كيميائية كامنة\",\"lessonsCount\":3,\"description\":\"التحولات الطاقوية — Photosynthèse\",\"progress\":0,\"isLocked\":true,\"domain\":\"التحولات الطاقوية\"},{\"id\":7,\"title\":\"آليات تحويل الطاقة الكيميائية الكامنة في الجزيئات العضوية إلى ATP\",\"lessonsCount\":3,\"description\":\"التحولات الطاقوية — Respiration cellulaire\",\"progress\":0,\"isLocked\":true,\"domain\":\"التحولات الطاقوية\"},{\"id\":8,\"title\":\"تحويل الطاقة على المستوى ما فوق البنية الخلوية\",\"lessonsCount\":3,\"description\":\"التحولات الطاقوية — Bilan énergétique\",\"progress\":0,\"isLocked\":true,\"domain\":\"التحولات الطاقوية\"},{\"id\":9,\"title\":\"النشاط التكتوني للصفائح\",\"lessonsCount\":3,\"description\":\"التكتونية العامة — Activité tectonique\",\"progress\":0,\"isLocked\":true,\"domain\":\"التكتونية العامة\"},{\"id\":10,\"title\":\"بنية الكرة الأرضية\",\"lessonsCount\":3,\"description\":\"التكتونية العامة — Structure de la Terre\",\"progress\":0,\"isLocked\":true,\"domain\":\"التكتونية العامة\"},{\"id\":11,\"title\":\"النشاط التكتوني والبنيات الجيولوجية المرتبطة به\",\"lessonsCount\":3,\"description\":\"التكتونية العامة — Structures géologiques\",\"progress\":0,\"isLocked\":true,\"domain\":\"التكتونية العامة\"}]"
+  }
+}

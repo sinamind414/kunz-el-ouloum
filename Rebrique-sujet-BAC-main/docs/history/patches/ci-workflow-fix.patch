@@ -1,0 +1,13 @@
+diff --git a/.github/workflows/quality.yml b/.github/workflows/quality.yml
+index 0d713aa..dbfa7f4 100644
+--- a/.github/workflows/quality.yml
++++ b/.github/workflows/quality.yml
+@@ -2,7 +2,7 @@ name: Quality
+ 
+ on:
+   push:
+-    branches: [arena/01a0376b-rebrique-sujet-bac]
++    branches: [main, arena/**]
+   pull_request:
+ 
+ permissions:

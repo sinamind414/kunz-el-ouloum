@@ -93,7 +93,7 @@ describe('hub d entraînement — contenu', () => {
     const i = src.indexOf('const PRIMARY_NAV');
     const bloc = src.slice(i, src.indexOf('];', i));
     const onglets = [...bloc.matchAll(/\{ tab: '([a-z]+)'/g)].map((m) => m[1]);
-    expect(onglets).toEqual(['home', 'lesson', 'training', 'methodology', 'reviser', 'moi']);
+    expect(onglets).toEqual(['home', 'lesson', 'training', 'moi']);
     // Et la vue reste bien montée pour son onglet (inchangé).
     expect(src).toContain("currentTab === 'methodology'");
   });

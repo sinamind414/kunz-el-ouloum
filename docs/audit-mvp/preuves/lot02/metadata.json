@@ -1,0 +1,1966 @@
+{
+  "maps": {
+    "1": {
+      "unitId": 1,
+      "unitTitle": "آليات تركيب البروتين",
+      "domain": "المجال الأول: التخصص الوظيفي للبروتينات",
+      "rootId": "node-u1-root",
+      "nodes": [
+        {
+          "id": "node-u1-root",
+          "label": "تركيب البروتين",
+          "unitId": 1
+        },
+        {
+          "id": "node-u1-transcription",
+          "label": "الاستنساخ (Transcription)",
+          "unitId": 1
+        },
+        {
+          "id": "node-u1-nucleus",
+          "label": "النواة (مقر الاستنساخ)",
+          "unitId": 1
+        },
+        {
+          "id": "node-u1-rna-polymerase",
+          "label": "إنزيم ARN بوليميراز",
+          "unitId": 1
+        },
+        {
+          "id": "node-u1-mrna",
+          "label": "الرسول الوراثي (ARNm)",
+          "unitId": 1
+        },
+        {
+          "id": "node-u1-transcription-steps",
+          "label": "مراحل الاستنساخ",
+          "unitId": 1
+        },
+        {
+          "id": "node-u1-activation",
+          "label": "تنشيط الأحماض الأمينية",
+          "unitId": 1
+        },
+        {
+          "id": "node-u1-trna",
+          "label": "الناقل (ARNt)",
+          "unitId": 1
+        },
+        {
+          "id": "node-u1-activation-enzyme",
+          "label": "إنزيم التنشيط النوعي",
+          "unitId": 1
+        },
+        {
+          "id": "node-u1-translation",
+          "label": "الترجمة (Translation)",
+          "unitId": 1
+        },
+        {
+          "id": "node-u1-ribosome",
+          "label": "الريبوزوم (العضية المحركة)",
+          "unitId": 1
+        },
+        {
+          "id": "node-u1-genetic-code",
+          "label": "الشفرة الوراثية (Genetic Code)",
+          "unitId": 1
+        },
+        {
+          "id": "node-u1-polysome",
+          "label": "البوليزوم (Polysome)",
+          "unitId": 1
+        },
+        {
+          "id": "node-u1-translation-steps",
+          "label": "مراحل الترجمة (انطلاق - استطالة - نهاية)",
+          "unitId": 1
+        },
+        {
+          "id": "node-u1-protein-output",
+          "label": "السلسلة الببتيدية المتشكلة",
+          "unitId": 1
+        }
+      ],
+      "links": [
+        {
+          "source": "node-u1-root",
+          "target": "node-u1-transcription",
+          "relation": "المرحلة الأولى",
+          "type": "primary"
+        },
+        {
+          "source": "node-u1-root",
+          "target": "node-u1-activation",
+          "relation": "المرحلة التحضيرية",
+          "type": "primary"
+        },
+        {
+          "source": "node-u1-root",
+          "target": "node-u1-translation",
+          "relation": "المرحلة الثانية",
+          "type": "primary"
+        },
+        {
+          "source": "node-u1-transcription",
+          "target": "node-u1-nucleus",
+          "relation": "يحدث داخل",
+          "type": "primary"
+        },
+        {
+          "source": "node-u1-transcription",
+          "target": "node-u1-rna-polymerase",
+          "relation": "يتم بواسطة",
+          "type": "catalytic"
+        },
+        {
+          "source": "node-u1-transcription",
+          "target": "node-u1-mrna",
+          "relation": "ينتج عنه",
+          "type": "primary"
+        },
+        {
+          "source": "node-u1-transcription",
+          "target": "node-u1-transcription-steps",
+          "relation": "يتكون من",
+          "type": "secondary"
+        },
+        {
+          "source": "node-u1-activation",
+          "target": "node-u1-trna",
+          "relation": "يربط الحمض بـ",
+          "type": "primary"
+        },
+        {
+          "source": "node-u1-activation",
+          "target": "node-u1-activation-enzyme",
+          "relation": "يحفزه",
+          "type": "catalytic"
+        },
+        {
+          "source": "node-u1-mrna",
+          "target": "node-u1-translation",
+          "relation": "يحمل القالب لـ",
+          "type": "primary"
+        },
+        {
+          "source": "node-u1-trna",
+          "target": "node-u1-translation",
+          "relation": "ينقل الأحماض لـ",
+          "type": "primary"
+        },
+        {
+          "source": "node-u1-translation",
+          "target": "node-u1-ribosome",
+          "relation": "يتم على مستوى",
+          "type": "primary"
+        },
+        {
+          "source": "node-u1-translation",
+          "target": "node-u1-genetic-code",
+          "relation": "يخضع لقواعد",
+          "type": "secondary"
+        },
+        {
+          "source": "node-u1-translation",
+          "target": "node-u1-polysome",
+          "relation": "يتكثف عبر",
+          "type": "secondary"
+        },
+        {
+          "source": "node-u1-translation",
+          "target": "node-u1-translation-steps",
+          "relation": "يمر عبر",
+          "type": "secondary"
+        },
+        {
+          "source": "node-u1-translation",
+          "target": "node-u1-protein-output",
+          "relation": "ينتج عنه مباشرة",
+          "type": "primary"
+        }
+      ]
+    },
+    "2": {
+      "unitId": 2,
+      "unitTitle": "العلاقة بين بنية ووظيفة البروتين",
+      "domain": "المجال الأول: التخصص الوظيفي للبروتينات",
+      "rootId": "node-u2-root",
+      "nodes": [
+        {
+          "id": "node-u2-root",
+          "label": "بنية ووظيفة البروتين",
+          "unitId": 2
+        },
+        {
+          "id": "node-u2-amino-acid-structure",
+          "label": "بنية الحمض الأميني العامة",
+          "unitId": 2
+        },
+        {
+          "id": "node-u2-amphoteric",
+          "label": "السلوك الأمفوتيري (الحمقلي)",
+          "unitId": 2
+        },
+        {
+          "id": "node-u2-phi",
+          "label": "نقطة التعادل الكهربائي (pHi)",
+          "unitId": 2
+        },
+        {
+          "id": "node-u2-structural-levels",
+          "label": "مستويات البنية الفراغية",
+          "unitId": 2
+        },
+        {
+          "id": "node-u2-chemical-bonds",
+          "label": "الروابط الكيميائية الحافظة للبنية",
+          "unitId": 2
+        },
+        {
+          "id": "node-u2-peptide-bond",
+          "label": "الرابطة الببتيدية (-CO-NH-)",
+          "unitId": 2
+        },
+        {
+          "id": "node-u2-ph-temp-factors",
+          "label": "تأثير الـ pH والحرارة",
+          "unitId": 2
+        },
+        {
+          "id": "node-u2-classification",
+          "label": "تصنيف الأحماض الأمينية",
+          "unitId": 2
+        },
+        {
+          "id": "node-u2-electrophoresis",
+          "label": "الهجرة الكهربائية",
+          "unitId": 2
+        },
+        {
+          "id": "node-u2-denaturation",
+          "label": "التغيير البنيوي (الدنترة)",
+          "unitId": 2
+        },
+        {
+          "id": "node-u2-structure-function",
+          "label": "مبدأ البنية والوظيفة",
+          "unitId": 2
+        },
+        {
+          "id": "node-u2-examples",
+          "label": "أمثلة وظيفية",
+          "unitId": 2
+        }
+      ],
+      "links": [
+        {
+          "source": "node-u2-root",
+          "target": "node-u2-amino-acid-structure",
+          "relation": "الوحدة الأساسية",
+          "type": "primary"
+        },
+        {
+          "source": "node-u2-root",
+          "target": "node-u2-amphoteric",
+          "relation": "الخاصية الكيميائية",
+          "type": "primary"
+        },
+        {
+          "source": "node-u2-root",
+          "target": "node-u2-structural-levels",
+          "relation": "المستويات الفراغية",
+          "type": "primary"
+        },
+        {
+          "source": "node-u2-amino-acid-structure",
+          "target": "node-u2-peptide-bond",
+          "relation": "يشكل روابط",
+          "type": "primary"
+        },
+        {
+          "source": "node-u2-amphoteric",
+          "target": "node-u2-phi",
+          "relation": "يتحدد وفق",
+          "type": "primary"
+        },
+        {
+          "source": "node-u2-structural-levels",
+          "target": "node-u2-chemical-bonds",
+          "relation": "تستقر بفضل",
+          "type": "primary"
+        },
+        {
+          "source": "node-u2-chemical-bonds",
+          "target": "node-u2-ph-temp-factors",
+          "relation": "تتأثر بـ",
+          "type": "secondary"
+        },
+        {
+          "source": "node-u2-amphoteric",
+          "target": "node-u2-ph-temp-factors",
+          "relation": "يرتبط بـ",
+          "type": "secondary"
+        },
+        {
+          "source": "node-u2-amino-acid-structure",
+          "target": "node-u2-classification",
+          "relation": "تُصنَّف حسب جذرها",
+          "type": "primary"
+        },
+        {
+          "source": "node-u2-classification",
+          "target": "node-u2-phi",
+          "relation": "تحدد قيمة",
+          "type": "secondary"
+        },
+        {
+          "source": "node-u2-amphoteric",
+          "target": "node-u2-electrophoresis",
+          "relation": "يُكشف عنه بـ",
+          "type": "primary"
+        },
+        {
+          "source": "node-u2-phi",
+          "target": "node-u2-electrophoresis",
+          "relation": "يُحدَّد تجريبياً بـ",
+          "type": "primary"
+        },
+        {
+          "source": "node-u2-ph-temp-factors",
+          "target": "node-u2-denaturation",
+          "relation": "تؤدي إلى",
+          "type": "primary"
+        },
+        {
+          "source": "node-u2-denaturation",
+          "target": "node-u2-structure-function",
+          "relation": "تُفقد",
+          "type": "inhibitory"
+        },
+        {
+          "source": "node-u2-root",
+          "target": "node-u2-structure-function",
+          "relation": "المبدأ الناظم",
+          "type": "primary"
+        },
+        {
+          "source": "node-u2-structural-levels",
+          "target": "node-u2-structure-function",
+          "relation": "تحدد",
+          "type": "primary"
+        },
+        {
+          "source": "node-u2-structure-function",
+          "target": "node-u2-examples",
+          "relation": "تتجسد في",
+          "type": "primary"
+        },
+        {
+          "source": "node-u2-classification",
+          "target": "node-u2-structural-levels",
+          "relation": "تؤثر في",
+          "type": "secondary"
+        }
+      ]
+    },
+    "3": {
+      "unitId": 4,
+      "unitTitle": "دور البروتينات في الدفاع عن الذات",
+      "domain": "المجال الأول: التخصص الوظيفي للبروتينات",
+      "rootId": "node-u3-root",
+      "nodes": [
+        {
+          "id": "node-u3-root",
+          "label": "المناعة والدفاع عن الذات",
+          "unitId": 4
+        },
+        {
+          "id": "node-u3-self-non-self",
+          "label": "التمييز بين الذات واللاذات",
+          "unitId": 4
+        },
+        {
+          "id": "node-u3-mhc",
+          "label": "معقد التوافق النسيجي (CMH / HLA)",
+          "unitId": 4
+        },
+        {
+          "id": "node-u3-humoral",
+          "label": "الاستجابة المناعية الخلطية",
+          "unitId": 4
+        },
+        {
+          "id": "node-u3-antibody",
+          "label": "الجسم المضاد (Immunoglobulin)",
+          "unitId": 4
+        },
+        {
+          "id": "node-u3-cellular",
+          "label": "الاستجابة المناعية الخلوية",
+          "unitId": 4
+        },
+        {
+          "id": "node-u3-perforin",
+          "label": "البيرفورين والغرونزيم (آلية الإقصاء)",
+          "unitId": 4
+        },
+        {
+          "id": "node-u3-cooperation",
+          "label": "التعاون المناعي والإنترلوكين (IL-2)",
+          "unitId": 4
+        },
+        {
+          "id": "node-u3-cpa",
+          "label": "الخلية العارضة للمستضد (CPA)",
+          "unitId": 4
+        },
+        {
+          "id": "node-u3-immune-synapse",
+          "label": "المشبك المناعي والتعرف المزدوج",
+          "unitId": 4
+        },
+        {
+          "id": "node-u3-il2",
+          "label": "الإنترلوكين 2 (IL-2)",
+          "unitId": 4
+        },
+        {
+          "id": "node-u3-clonal-selection",
+          "label": "الانتقاء والتكاثر النسيلي",
+          "unitId": 4
+        },
+        {
+          "id": "node-u3-plasmocyte",
+          "label": "الخلية البلازمية (المنفِّذ الخلطي)",
+          "unitId": 4
+        },
+        {
+          "id": "node-u3-ltc",
+          "label": "اللمفاوية السامة LTc (المنفِّذ الخلوي)",
+          "unitId": 4
+        },
+        {
+          "id": "node-u3-memory",
+          "label": "خلايا الذاكرة والاستجابة الثانوية",
+          "unitId": 4
+        }
+      ],
+      "links": [
+        {
+          "source": "node-u3-root",
+          "target": "node-u3-self-non-self",
+          "relation": "القاعدة الأساسية",
+          "type": "primary"
+        },
+        {
+          "source": "node-u3-self-non-self",
+          "target": "node-u3-mhc",
+          "relation": "يتحدد بواسطة",
+          "type": "primary"
+        },
+        {
+          "source": "node-u3-root",
+          "target": "node-u3-humoral",
+          "relation": "المسار الخلطي",
+          "type": "primary"
+        },
+        {
+          "source": "node-u3-humoral",
+          "target": "node-u3-antibody",
+          "relation": "تنتج وتفرز",
+          "type": "primary"
+        },
+        {
+          "source": "node-u3-root",
+          "target": "node-u3-cellular",
+          "relation": "المسار الخلوي",
+          "type": "primary"
+        },
+        {
+          "source": "node-u3-cellular",
+          "target": "node-u3-perforin",
+          "relation": "تتدخل عبر",
+          "type": "primary"
+        },
+        {
+          "source": "node-u3-root",
+          "target": "node-u3-cooperation",
+          "relation": "ينسقه ويحفزه",
+          "type": "primary"
+        },
+        {
+          "source": "node-u3-cooperation",
+          "target": "node-u3-humoral",
+          "relation": "يحفز تكاثر وتمايز",
+          "type": "catalytic"
+        },
+        {
+          "source": "node-u3-cooperation",
+          "target": "node-u3-cellular",
+          "relation": "يحفز تكاثر وتمايز",
+          "type": "catalytic"
+        },
+        {
+          "source": "node-u3-root",
+          "target": "node-u3-cpa",
+          "relation": "ينطلق من",
+          "type": "primary"
+        },
+        {
+          "source": "node-u3-cpa",
+          "target": "node-u3-immune-synapse",
+          "relation": "يعرض المحدد عبر",
+          "type": "primary"
+        },
+        {
+          "source": "node-u3-immune-synapse",
+          "target": "node-u3-cooperation",
+          "relation": "ينشّط",
+          "type": "primary"
+        },
+        {
+          "source": "node-u3-cooperation",
+          "target": "node-u3-il2",
+          "relation": "تفرز",
+          "type": "primary"
+        },
+        {
+          "source": "node-u3-il2",
+          "target": "node-u3-clonal-selection",
+          "relation": "يحفز",
+          "type": "catalytic"
+        },
+        {
+          "source": "node-u3-clonal-selection",
+          "target": "node-u3-plasmocyte",
+          "relation": "تمايز خلطي",
+          "type": "primary"
+        },
+        {
+          "source": "node-u3-clonal-selection",
+          "target": "node-u3-ltc",
+          "relation": "تمايز خلوي",
+          "type": "primary"
+        },
+        {
+          "source": "node-u3-clonal-selection",
+          "target": "node-u3-memory",
+          "relation": "يُبقي",
+          "type": "secondary"
+        },
+        {
+          "source": "node-u3-plasmocyte",
+          "target": "node-u3-antibody",
+          "relation": "تفرز",
+          "type": "primary"
+        },
+        {
+          "source": "node-u3-ltc",
+          "target": "node-u3-perforin",
+          "relation": "تفرز",
+          "type": "primary"
+        },
+        {
+          "source": "node-u3-mhc",
+          "target": "node-u3-immune-synapse",
+          "relation": "شرط التعرف",
+          "type": "secondary"
+        }
+      ]
+    },
+    "4": {
+      "unitId": 3,
+      "unitTitle": "النشاط الإنزيمي للبروتينات",
+      "domain": "المجال الأول: التخصص الوظيفي للبروتينات",
+      "rootId": "node-enz-root",
+      "nodes": [
+        {
+          "id": "node-enz-root",
+          "label": "النشاط الإنزيمي",
+          "unitId": 3
+        },
+        {
+          "id": "node-enz-protein-nature",
+          "label": "الطبيعة البروتينية للإنزيم",
+          "unitId": 3
+        },
+        {
+          "id": "node-enz-active-site",
+          "label": "الموقع الفعال",
+          "unitId": 3
+        },
+        {
+          "id": "node-enz-specificity",
+          "label": "النوعية المزدوجة",
+          "unitId": 3
+        },
+        {
+          "id": "node-enz-es-complex",
+          "label": "معقد إنزيم-ركيزة",
+          "unitId": 3
+        },
+        {
+          "id": "node-enz-substrate-curve",
+          "label": "منحنى تركيز الركيزة و التشبع",
+          "unitId": 3
+        },
+        {
+          "id": "node-enz-km",
+          "label": "ثابت ميكاليس Km",
+          "unitId": 3
+        },
+        {
+          "id": "node-enz-temperature",
+          "label": "تأثير درجة الحرارة",
+          "unitId": 3
+        },
+        {
+          "id": "node-enz-ph",
+          "label": "تأثير درجة الحموضة pH",
+          "unitId": 3
+        },
+        {
+          "id": "node-enz-competitive",
+          "label": "المثبط التنافسي",
+          "unitId": 3
+        },
+        {
+          "id": "node-enz-noncompetitive",
+          "label": "المثبط اللاتنافسي",
+          "unitId": 3
+        },
+        {
+          "id": "node-enz-inhibition-read",
+          "label": "قراءة منحنيات التثبيط",
+          "unitId": 3
+        }
+      ],
+      "links": [
+        {
+          "source": "node-enz-root",
+          "target": "node-enz-protein-nature",
+          "relation": "طبيعته الكيميائية",
+          "type": "primary"
+        },
+        {
+          "source": "node-enz-root",
+          "target": "node-enz-active-site",
+          "relation": "يعمل بواسطة",
+          "type": "primary"
+        },
+        {
+          "source": "node-enz-root",
+          "target": "node-enz-substrate-curve",
+          "relation": "تُقاس فعاليته بـ",
+          "type": "primary"
+        },
+        {
+          "source": "node-enz-root",
+          "target": "node-enz-competitive",
+          "relation": "يُثبَّط بـ",
+          "type": "primary"
+        },
+        {
+          "source": "node-enz-root",
+          "target": "node-enz-noncompetitive",
+          "relation": "يُثبَّط بـ",
+          "type": "primary"
+        },
+        {
+          "source": "node-enz-protein-nature",
+          "target": "node-enz-active-site",
+          "relation": "تحدد شكل",
+          "type": "primary"
+        },
+        {
+          "source": "node-enz-active-site",
+          "target": "node-enz-specificity",
+          "relation": "يفسر",
+          "type": "primary"
+        },
+        {
+          "source": "node-enz-active-site",
+          "target": "node-enz-es-complex",
+          "relation": "يثبت الركيزة في",
+          "type": "primary"
+        },
+        {
+          "source": "node-enz-es-complex",
+          "target": "node-enz-substrate-curve",
+          "relation": "يحدد سرعة",
+          "type": "secondary"
+        },
+        {
+          "source": "node-enz-substrate-curve",
+          "target": "node-enz-km",
+          "relation": "تُقرأ منه",
+          "type": "primary"
+        },
+        {
+          "source": "node-enz-substrate-curve",
+          "target": "node-enz-temperature",
+          "relation": "تتأثر بـ",
+          "type": "secondary"
+        },
+        {
+          "source": "node-enz-substrate-curve",
+          "target": "node-enz-ph",
+          "relation": "تتأثر بـ",
+          "type": "secondary"
+        },
+        {
+          "source": "node-enz-temperature",
+          "target": "node-enz-protein-nature",
+          "relation": "تخرب",
+          "type": "inhibitory"
+        },
+        {
+          "source": "node-enz-ph",
+          "target": "node-enz-active-site",
+          "relation": "يشوّه",
+          "type": "inhibitory"
+        },
+        {
+          "source": "node-enz-competitive",
+          "target": "node-enz-active-site",
+          "relation": "يحتل",
+          "type": "inhibitory"
+        },
+        {
+          "source": "node-enz-noncompetitive",
+          "target": "node-enz-protein-nature",
+          "relation": "يغير بنيتها",
+          "type": "inhibitory"
+        },
+        {
+          "source": "node-enz-competitive",
+          "target": "node-enz-inhibition-read",
+          "relation": "يُميَّز بـ",
+          "type": "primary"
+        },
+        {
+          "source": "node-enz-noncompetitive",
+          "target": "node-enz-inhibition-read",
+          "relation": "يُميَّز بـ",
+          "type": "primary"
+        },
+        {
+          "source": "node-enz-inhibition-read",
+          "target": "node-enz-km",
+          "relation": "يقارن",
+          "type": "secondary"
+        }
+      ]
+    },
+    "5": {
+      "unitId": 5,
+      "unitTitle": "الاتصال العصبي",
+      "domain": "المجال الثاني: التخصص الوظيفي للبروتينات في الاتصال العصبي",
+      "rootId": "node-u5-root",
+      "nodes": [
+        {
+          "id": "node-u5-root",
+          "label": "الاتصال العصبي",
+          "unitId": 5
+        },
+        {
+          "id": "node-u5-resting",
+          "label": "كمون الراحة",
+          "unitId": 5
+        },
+        {
+          "id": "node-u5-action",
+          "label": "كمون العمل",
+          "unitId": 5
+        },
+        {
+          "id": "node-u5-frequency",
+          "label": "الترميز التواتري",
+          "unitId": 5
+        },
+        {
+          "id": "node-u5-myelin",
+          "label": "غمد الميالين وسرعة السيالة",
+          "unitId": 5
+        },
+        {
+          "id": "node-u5-synapse",
+          "label": "المشبك العصبي",
+          "unitId": 5
+        },
+        {
+          "id": "node-u5-neurotransmitter",
+          "label": "المبلغ الكيميائي",
+          "unitId": 5
+        },
+        {
+          "id": "node-u5-chemical-coding",
+          "label": "الترميز الكيميائي",
+          "unitId": 5
+        },
+        {
+          "id": "node-u5-integration",
+          "label": "التكامل العصبي",
+          "unitId": 5
+        },
+        {
+          "id": "node-u5-effector",
+          "label": "العضو المنفذ والصفيحة المحركة",
+          "unitId": 5
+        },
+        {
+          "id": "node-u5-toxins",
+          "label": "السموم والأدوية",
+          "unitId": 5
+        },
+        {
+          "id": "node-u5-reflex",
+          "label": "المنعكس العضلي",
+          "unitId": 5
+        }
+      ],
+      "links": [
+        {
+          "source": "node-u5-root",
+          "target": "node-u5-resting",
+          "relation": "ينطلق من",
+          "type": "primary"
+        },
+        {
+          "source": "node-u5-resting",
+          "target": "node-u5-action",
+          "relation": "يتحول عند التنبيه إلى",
+          "type": "primary"
+        },
+        {
+          "source": "node-u5-action",
+          "target": "node-u5-frequency",
+          "relation": "يُرمَّز بـ",
+          "type": "primary"
+        },
+        {
+          "source": "node-u5-action",
+          "target": "node-u5-myelin",
+          "relation": "تتعلق سرعته بـ",
+          "type": "secondary"
+        },
+        {
+          "source": "node-u5-root",
+          "target": "node-u5-synapse",
+          "relation": "يمر عبر",
+          "type": "primary"
+        },
+        {
+          "source": "node-u5-synapse",
+          "target": "node-u5-neurotransmitter",
+          "relation": "يعمل بواسطة",
+          "type": "primary"
+        },
+        {
+          "source": "node-u5-neurotransmitter",
+          "target": "node-u5-chemical-coding",
+          "relation": "يحدد",
+          "type": "primary"
+        },
+        {
+          "source": "node-u5-frequency",
+          "target": "node-u5-chemical-coding",
+          "relation": "يتحول إلى",
+          "type": "secondary"
+        },
+        {
+          "source": "node-u5-synapse",
+          "target": "node-u5-integration",
+          "relation": "يساهم في",
+          "type": "primary"
+        },
+        {
+          "source": "node-u5-integration",
+          "target": "node-u5-action",
+          "relation": "يولّد عند بلوغ العتبة",
+          "type": "primary"
+        },
+        {
+          "source": "node-u5-root",
+          "target": "node-u5-effector",
+          "relation": "ينتهي عند",
+          "type": "primary"
+        },
+        {
+          "source": "node-u5-neurotransmitter",
+          "target": "node-u5-effector",
+          "relation": "يحدث تقلصاً في",
+          "type": "secondary"
+        },
+        {
+          "source": "node-u5-toxins",
+          "target": "node-u5-synapse",
+          "relation": "تعطل",
+          "type": "inhibitory"
+        },
+        {
+          "source": "node-u5-toxins",
+          "target": "node-u5-neurotransmitter",
+          "relation": "تنافس أو تثبط",
+          "type": "inhibitory"
+        },
+        {
+          "source": "node-u5-root",
+          "target": "node-u5-reflex",
+          "relation": "مثال تطبيقي",
+          "type": "primary"
+        },
+        {
+          "source": "node-u5-reflex",
+          "target": "node-u5-effector",
+          "relation": "يؤدي إلى استجابة",
+          "type": "secondary"
+        },
+        {
+          "source": "node-u5-reflex",
+          "target": "node-u5-synapse",
+          "relation": "يتضمن",
+          "type": "secondary"
+        }
+      ]
+    },
+    "6": {
+      "unitId": 6,
+      "unitTitle": "التركيب الضوئي",
+      "domain": "المجال الثاني: تحويل الطاقة في العضوية",
+      "rootId": "node-u6-root",
+      "nodes": [
+        {
+          "id": "node-u6-root",
+          "label": "التركيب الضوئي",
+          "unitId": 6
+        },
+        {
+          "id": "node-u6-chloroplast",
+          "label": "الصانعة الخضراء",
+          "unitId": 6
+        },
+        {
+          "id": "node-u6-pigments",
+          "label": "الأصبغة اليخضورية",
+          "unitId": 6
+        },
+        {
+          "id": "node-u6-photochemical",
+          "label": "المرحلة الكيموضوئية",
+          "unitId": 6
+        },
+        {
+          "id": "node-u6-photolysis",
+          "label": "التحلل الضوئي للماء",
+          "unitId": 6
+        },
+        {
+          "id": "node-u6-electron-chain",
+          "label": "سلسلة نقل الإلكترونات",
+          "unitId": 6
+        },
+        {
+          "id": "node-u6-proton-gradient",
+          "label": "تدرج البروتونات والكرة المذنبة",
+          "unitId": 6
+        },
+        {
+          "id": "node-u6-biochemical",
+          "label": "المرحلة الكيميوحيوية (حلقة كالفن)",
+          "unitId": 6
+        },
+        {
+          "id": "node-u6-first-product",
+          "label": "أول مركب مثبت (3-PGA)",
+          "unitId": 6
+        },
+        {
+          "id": "node-u6-products",
+          "label": "النواتج العضوية",
+          "unitId": 6
+        },
+        {
+          "id": "node-u6-factors",
+          "label": "العوامل المؤثرة",
+          "unitId": 6
+        },
+        {
+          "id": "node-u6-link-u7",
+          "label": "الجسر نحو الوحدة 7",
+          "unitId": 6
+        }
+      ],
+      "links": [
+        {
+          "source": "node-u6-root",
+          "target": "node-u6-chloroplast",
+          "relation": "يحدث في",
+          "type": "primary"
+        },
+        {
+          "source": "node-u6-chloroplast",
+          "target": "node-u6-pigments",
+          "relation": "يحوي غشاؤها",
+          "type": "primary"
+        },
+        {
+          "source": "node-u6-root",
+          "target": "node-u6-photochemical",
+          "relation": "المرحلة الأولى",
+          "type": "primary"
+        },
+        {
+          "source": "node-u6-pigments",
+          "target": "node-u6-photochemical",
+          "relation": "تلتقط الطاقة لـ",
+          "type": "primary"
+        },
+        {
+          "source": "node-u6-photochemical",
+          "target": "node-u6-photolysis",
+          "relation": "يتضمن",
+          "type": "primary"
+        },
+        {
+          "source": "node-u6-photochemical",
+          "target": "node-u6-electron-chain",
+          "relation": "يتضمن",
+          "type": "primary"
+        },
+        {
+          "source": "node-u6-photolysis",
+          "target": "node-u6-electron-chain",
+          "relation": "يعوّض إلكترونات",
+          "type": "secondary"
+        },
+        {
+          "source": "node-u6-electron-chain",
+          "target": "node-u6-proton-gradient",
+          "relation": "ينشئ",
+          "type": "primary"
+        },
+        {
+          "source": "node-u6-root",
+          "target": "node-u6-biochemical",
+          "relation": "المرحلة الثانية",
+          "type": "primary"
+        },
+        {
+          "source": "node-u6-photochemical",
+          "target": "node-u6-biochemical",
+          "relation": "يزوّدها بـ ATP و NADPH",
+          "type": "primary"
+        },
+        {
+          "source": "node-u6-biochemical",
+          "target": "node-u6-first-product",
+          "relation": "يعطي أولاً",
+          "type": "primary"
+        },
+        {
+          "source": "node-u6-first-product",
+          "target": "node-u6-products",
+          "relation": "يتحول إلى",
+          "type": "primary"
+        },
+        {
+          "source": "node-u6-root",
+          "target": "node-u6-factors",
+          "relation": "تتحكم فيه",
+          "type": "primary"
+        },
+        {
+          "source": "node-u6-factors",
+          "target": "node-u6-biochemical",
+          "relation": "تحد من",
+          "type": "secondary"
+        },
+        {
+          "source": "node-u6-proton-gradient",
+          "target": "node-u6-link-u7",
+          "relation": "نفس المبدأ في",
+          "type": "secondary"
+        },
+        {
+          "source": "node-u6-chloroplast",
+          "target": "node-u6-biochemical",
+          "relation": "حشوتها مقر",
+          "type": "secondary"
+        }
+      ]
+    },
+    "7": {
+      "unitId": 7,
+      "unitTitle": "تحويل الطاقة الكامنة إلى ATP",
+      "domain": "المجال الثاني: تحويل الطاقة في العضوية",
+      "rootId": "node-u7-root",
+      "nodes": [
+        {
+          "id": "node-u7-root",
+          "label": "تحويل الطاقة إلى ATP",
+          "unitId": 7
+        },
+        {
+          "id": "node-u7-atp",
+          "label": "جزيئة ATP",
+          "unitId": 7
+        },
+        {
+          "id": "node-u7-mitochondria",
+          "label": "الميتوكوندري",
+          "unitId": 7
+        },
+        {
+          "id": "node-u7-glycolysis",
+          "label": "التحلل السكري",
+          "unitId": 7
+        },
+        {
+          "id": "node-u7-krebs",
+          "label": "حلقة كريبس",
+          "unitId": 7
+        },
+        {
+          "id": "node-u7-carriers",
+          "label": "النواقل المرجعة",
+          "unitId": 7
+        },
+        {
+          "id": "node-u7-respiratory-chain",
+          "label": "السلسلة التنفسية",
+          "unitId": 7
+        },
+        {
+          "id": "node-u7-oxidative-phosphorylation",
+          "label": "الفسفرة التأكسدية",
+          "unitId": 7
+        },
+        {
+          "id": "node-u7-balance",
+          "label": "الحصيلة الطاقوية",
+          "unitId": 7
+        },
+        {
+          "id": "node-u7-fermentation",
+          "label": "التخمر",
+          "unitId": 7
+        },
+        {
+          "id": "node-u7-muscle",
+          "label": "التطبيق العضلي",
+          "unitId": 7
+        },
+        {
+          "id": "node-u7-link-u6",
+          "label": "الجسر نحو الوحدة 6",
+          "unitId": 7
+        }
+      ],
+      "links": [
+        {
+          "source": "node-u7-root",
+          "target": "node-u7-atp",
+          "relation": "يهدف إلى إنتاج",
+          "type": "primary"
+        },
+        {
+          "source": "node-u7-root",
+          "target": "node-u7-glycolysis",
+          "relation": "يبدأ بـ",
+          "type": "primary"
+        },
+        {
+          "source": "node-u7-glycolysis",
+          "target": "node-u7-krebs",
+          "relation": "يزوّد بحمض البيروفيك",
+          "type": "primary"
+        },
+        {
+          "source": "node-u7-krebs",
+          "target": "node-u7-carriers",
+          "relation": "يشحن",
+          "type": "primary"
+        },
+        {
+          "source": "node-u7-carriers",
+          "target": "node-u7-respiratory-chain",
+          "relation": "تغذي",
+          "type": "primary"
+        },
+        {
+          "source": "node-u7-respiratory-chain",
+          "target": "node-u7-oxidative-phosphorylation",
+          "relation": "تنشئ التدرج لـ",
+          "type": "primary"
+        },
+        {
+          "source": "node-u7-oxidative-phosphorylation",
+          "target": "node-u7-atp",
+          "relation": "يركّب",
+          "type": "primary"
+        },
+        {
+          "source": "node-u7-mitochondria",
+          "target": "node-u7-krebs",
+          "relation": "مادتها الأساسية مقر",
+          "type": "primary"
+        },
+        {
+          "source": "node-u7-mitochondria",
+          "target": "node-u7-respiratory-chain",
+          "relation": "غشاؤها الداخلي مقر",
+          "type": "primary"
+        },
+        {
+          "source": "node-u7-root",
+          "target": "node-u7-fermentation",
+          "relation": "في غياب الأكسجين",
+          "type": "primary"
+        },
+        {
+          "source": "node-u7-glycolysis",
+          "target": "node-u7-fermentation",
+          "relation": "يتبعه في اللاهوائي",
+          "type": "secondary"
+        },
+        {
+          "source": "node-u7-fermentation",
+          "target": "node-u7-balance",
+          "relation": "حصيلته ضعيفة",
+          "type": "secondary"
+        },
+        {
+          "source": "node-u7-oxidative-phosphorylation",
+          "target": "node-u7-balance",
+          "relation": "يحدد",
+          "type": "primary"
+        },
+        {
+          "source": "node-u7-fermentation",
+          "target": "node-u7-muscle",
+          "relation": "يفسر",
+          "type": "secondary"
+        },
+        {
+          "source": "node-u7-balance",
+          "target": "node-u7-muscle",
+          "relation": "تفسر اختيار",
+          "type": "secondary"
+        },
+        {
+          "source": "node-u7-oxidative-phosphorylation",
+          "target": "node-u7-link-u6",
+          "relation": "نفس المبدأ في",
+          "type": "secondary"
+        }
+      ]
+    },
+    "8": {
+      "unitId": 8,
+      "unitTitle": "ما فوق البنية الخلوية والوظائف",
+      "domain": "المجال الثاني: التخصص الوظيفي للبروتينات في التحويلات الطاقوية",
+      "rootId": "node-u8-root",
+      "nodes": [
+        {
+          "id": "node-u8-root",
+          "label": "ما فوق البنية الخلوية والوظائف",
+          "unitId": 8
+        },
+        {
+          "id": "node-u8-chloroplast",
+          "label": "الصانعة الخضراء",
+          "unitId": 8
+        },
+        {
+          "id": "node-u8-thylakoid",
+          "label": "غشاء التيلاكويد",
+          "unitId": 8
+        },
+        {
+          "id": "node-u8-stroma",
+          "label": "الحشوة (Stroma)",
+          "unitId": 8
+        },
+        {
+          "id": "node-u8-mitochondria",
+          "label": "الميتوكوندري",
+          "unitId": 8
+        },
+        {
+          "id": "node-u8-cristae",
+          "label": "الأعراف الميتوكوندرية",
+          "unitId": 8
+        },
+        {
+          "id": "node-u8-matrix",
+          "label": "المطرس",
+          "unitId": 8
+        },
+        {
+          "id": "node-u8-atp-synthase",
+          "label": "ATP سنتاز",
+          "unitId": 8
+        },
+        {
+          "id": "node-u8-gas-exchange",
+          "label": "المبادلات الغازية",
+          "unitId": 8
+        },
+        {
+          "id": "node-u8-compensation",
+          "label": "نقطة التعويض",
+          "unitId": 8
+        },
+        {
+          "id": "node-u8-dark-light",
+          "label": "النهار والليل",
+          "unitId": 8
+        },
+        {
+          "id": "node-u8-structure-function",
+          "label": "مبدأ البنية/الوظيفة",
+          "unitId": 8
+        }
+      ],
+      "links": [
+        {
+          "source": "node-u8-root",
+          "target": "node-u8-chloroplast",
+          "relation": "تتضمن",
+          "type": "primary"
+        },
+        {
+          "source": "node-u8-root",
+          "target": "node-u8-mitochondria",
+          "relation": "تتضمن",
+          "type": "primary"
+        },
+        {
+          "source": "node-u8-chloroplast",
+          "target": "node-u8-thylakoid",
+          "relation": "تحتوي على",
+          "type": "primary"
+        },
+        {
+          "source": "node-u8-chloroplast",
+          "target": "node-u8-stroma",
+          "relation": "تحتوي على",
+          "type": "primary"
+        },
+        {
+          "source": "node-u8-mitochondria",
+          "target": "node-u8-cristae",
+          "relation": "تحتوي على",
+          "type": "primary"
+        },
+        {
+          "source": "node-u8-mitochondria",
+          "target": "node-u8-matrix",
+          "relation": "تحتوي على",
+          "type": "primary"
+        },
+        {
+          "source": "node-u8-thylakoid",
+          "target": "node-u8-atp-synthase",
+          "relation": "تحمل",
+          "type": "primary"
+        },
+        {
+          "source": "node-u8-cristae",
+          "target": "node-u8-atp-synthase",
+          "relation": "تحمل",
+          "type": "primary"
+        },
+        {
+          "source": "node-u8-thylakoid",
+          "target": "node-u8-stroma",
+          "relation": "تزود بـ ATP و NADPH",
+          "type": "secondary"
+        },
+        {
+          "source": "node-u8-matrix",
+          "target": "node-u8-cristae",
+          "relation": "تزود بالمرجعات",
+          "type": "secondary"
+        },
+        {
+          "source": "node-u8-root",
+          "target": "node-u8-gas-exchange",
+          "relation": "تُقاس عبر",
+          "type": "primary"
+        },
+        {
+          "source": "node-u8-gas-exchange",
+          "target": "node-u8-compensation",
+          "relation": "تنعدم عند",
+          "type": "primary"
+        },
+        {
+          "source": "node-u8-gas-exchange",
+          "target": "node-u8-dark-light",
+          "relation": "تتغير حسب",
+          "type": "primary"
+        },
+        {
+          "source": "node-u8-chloroplast",
+          "target": "node-u8-gas-exchange",
+          "relation": "تؤثر في",
+          "type": "secondary"
+        },
+        {
+          "source": "node-u8-mitochondria",
+          "target": "node-u8-gas-exchange",
+          "relation": "تؤثر في",
+          "type": "secondary"
+        },
+        {
+          "source": "node-u8-root",
+          "target": "node-u8-structure-function",
+          "relation": "يُلخّصها",
+          "type": "primary"
+        },
+        {
+          "source": "node-u8-atp-synthase",
+          "target": "node-u8-structure-function",
+          "relation": "مثال على",
+          "type": "secondary"
+        }
+      ]
+    },
+    "9": {
+      "unitId": 9,
+      "unitTitle": "النشاط التكتوني للكرة الأرضية",
+      "domain": "المجال الثالث: ظواهر جيولوجية داخلية",
+      "rootId": "node-u9-root",
+      "nodes": [
+        {
+          "id": "node-u9-root",
+          "label": "النشاط التكتوني للكرة الأرضية",
+          "unitId": 9
+        },
+        {
+          "id": "node-u9-boundaries",
+          "label": "حدود الألواح",
+          "unitId": 9
+        },
+        {
+          "id": "node-u9-divergence",
+          "label": "التباعد (الظهرة)",
+          "unitId": 9
+        },
+        {
+          "id": "node-u9-convergence",
+          "label": "التقارب (الغوص)",
+          "unitId": 9
+        },
+        {
+          "id": "node-u9-transform",
+          "label": "حدود الانزلاق",
+          "unitId": 9
+        },
+        {
+          "id": "node-u9-hydration",
+          "label": "تميّه اللوح المحيطي",
+          "unitId": 9
+        },
+        {
+          "id": "node-u9-partial-melting",
+          "label": "الانصهار الجزئي",
+          "unitId": 9
+        },
+        {
+          "id": "node-u9-magma",
+          "label": "الصهارة",
+          "unitId": 9
+        },
+        {
+          "id": "node-u9-volcanism",
+          "label": "النشاط البركاني",
+          "unitId": 9
+        },
+        {
+          "id": "node-u9-benioff",
+          "label": "مستوي بنيوف",
+          "unitId": 9
+        },
+        {
+          "id": "node-u9-collision",
+          "label": "التصادم القاري",
+          "unitId": 9
+        },
+        {
+          "id": "node-u9-convection",
+          "label": "تيارات الحمل",
+          "unitId": 9
+        }
+      ],
+      "links": [
+        {
+          "source": "node-u9-root",
+          "target": "node-u9-boundaries",
+          "relation": "تُصنَّف حسب",
+          "type": "primary"
+        },
+        {
+          "source": "node-u9-boundaries",
+          "target": "node-u9-divergence",
+          "relation": "منها",
+          "type": "primary"
+        },
+        {
+          "source": "node-u9-boundaries",
+          "target": "node-u9-convergence",
+          "relation": "منها",
+          "type": "primary"
+        },
+        {
+          "source": "node-u9-boundaries",
+          "target": "node-u9-transform",
+          "relation": "منها",
+          "type": "primary"
+        },
+        {
+          "source": "node-u9-convergence",
+          "target": "node-u9-hydration",
+          "relation": "تُحرّر ماء عبر",
+          "type": "primary"
+        },
+        {
+          "source": "node-u9-hydration",
+          "target": "node-u9-partial-melting",
+          "relation": "يسبب",
+          "type": "primary"
+        },
+        {
+          "source": "node-u9-partial-melting",
+          "target": "node-u9-magma",
+          "relation": "ينتج",
+          "type": "primary"
+        },
+        {
+          "source": "node-u9-magma",
+          "target": "node-u9-volcanism",
+          "relation": "يؤدي إلى",
+          "type": "primary"
+        },
+        {
+          "source": "node-u9-convergence",
+          "target": "node-u9-benioff",
+          "relation": "يُرسم عبر",
+          "type": "primary"
+        },
+        {
+          "source": "node-u9-convergence",
+          "target": "node-u9-collision",
+          "relation": "ينتهي إلى",
+          "type": "secondary"
+        },
+        {
+          "source": "node-u9-divergence",
+          "target": "node-u9-magma",
+          "relation": "تصعد فيها",
+          "type": "secondary"
+        },
+        {
+          "source": "node-u9-root",
+          "target": "node-u9-convection",
+          "relation": "يُفسَّر بـ",
+          "type": "primary"
+        },
+        {
+          "source": "node-u9-convection",
+          "target": "node-u9-boundaries",
+          "relation": "تحرّك",
+          "type": "secondary"
+        },
+        {
+          "source": "node-u9-transform",
+          "target": "node-u9-benioff",
+          "relation": "لا يُنتج",
+          "type": "inhibitory"
+        },
+        {
+          "source": "node-u9-collision",
+          "target": "node-u9-volcanism",
+          "relation": "يُنهي",
+          "type": "inhibitory"
+        },
+        {
+          "source": "node-u9-divergence",
+          "target": "node-u9-volcanism",
+          "relation": "يرافقه",
+          "type": "secondary"
+        }
+      ]
+    },
+    "10": {
+      "unitId": 10,
+      "unitTitle": "بنية الكرة الأرضية",
+      "domain": "المجال الثالث: ظواهر جيولوجية داخلية",
+      "rootId": "node-u10-root",
+      "nodes": [
+        {
+          "id": "node-u10-root",
+          "label": "بنية الكرة الأرضية",
+          "unitId": 10
+        },
+        {
+          "id": "node-u10-seismic",
+          "label": "الأمواج الزلزالية",
+          "unitId": 10
+        },
+        {
+          "id": "node-u10-p-waves",
+          "label": "الأمواج P",
+          "unitId": 10
+        },
+        {
+          "id": "node-u10-s-waves",
+          "label": "الأمواج S",
+          "unitId": 10
+        },
+        {
+          "id": "node-u10-shadow-zone",
+          "label": "منطقة الظل",
+          "unitId": 10
+        },
+        {
+          "id": "node-u10-moho",
+          "label": "انقطاع موهو",
+          "unitId": 10
+        },
+        {
+          "id": "node-u10-gutenberg",
+          "label": "انقطاع غوتنبرغ",
+          "unitId": 10
+        },
+        {
+          "id": "node-u10-lehmann",
+          "label": "انقطاع ليمان",
+          "unitId": 10
+        },
+        {
+          "id": "node-u10-crust",
+          "label": "القشرة",
+          "unitId": 10
+        },
+        {
+          "id": "node-u10-mantle",
+          "label": "الوشاح",
+          "unitId": 10
+        },
+        {
+          "id": "node-u10-outer-core",
+          "label": "النواة الخارجية",
+          "unitId": 10
+        },
+        {
+          "id": "node-u10-inner-core",
+          "label": "النواة الداخلية",
+          "unitId": 10
+        }
+      ],
+      "links": [
+        {
+          "source": "node-u10-root",
+          "target": "node-u10-seismic",
+          "relation": "يُدرَس بـ",
+          "type": "primary"
+        },
+        {
+          "source": "node-u10-seismic",
+          "target": "node-u10-p-waves",
+          "relation": "منها",
+          "type": "primary"
+        },
+        {
+          "source": "node-u10-seismic",
+          "target": "node-u10-s-waves",
+          "relation": "منها",
+          "type": "primary"
+        },
+        {
+          "source": "node-u10-s-waves",
+          "target": "node-u10-shadow-zone",
+          "relation": "غيابها يحدد",
+          "type": "primary"
+        },
+        {
+          "source": "node-u10-p-waves",
+          "target": "node-u10-shadow-zone",
+          "relation": "انكسارها يحدد",
+          "type": "secondary"
+        },
+        {
+          "source": "node-u10-seismic",
+          "target": "node-u10-moho",
+          "relation": "تكشف",
+          "type": "primary"
+        },
+        {
+          "source": "node-u10-seismic",
+          "target": "node-u10-gutenberg",
+          "relation": "تكشف",
+          "type": "primary"
+        },
+        {
+          "source": "node-u10-seismic",
+          "target": "node-u10-lehmann",
+          "relation": "تكشف",
+          "type": "primary"
+        },
+        {
+          "source": "node-u10-moho",
+          "target": "node-u10-crust",
+          "relation": "يحدّ",
+          "type": "primary"
+        },
+        {
+          "source": "node-u10-moho",
+          "target": "node-u10-mantle",
+          "relation": "يحدّ",
+          "type": "primary"
+        },
+        {
+          "source": "node-u10-gutenberg",
+          "target": "node-u10-outer-core",
+          "relation": "يحدّ",
+          "type": "primary"
+        },
+        {
+          "source": "node-u10-lehmann",
+          "target": "node-u10-inner-core",
+          "relation": "يحدّ",
+          "type": "primary"
+        },
+        {
+          "source": "node-u10-shadow-zone",
+          "target": "node-u10-outer-core",
+          "relation": "تُثبت سيولة",
+          "type": "primary"
+        },
+        {
+          "source": "node-u10-s-waves",
+          "target": "node-u10-outer-core",
+          "relation": "لا تعبر",
+          "type": "inhibitory"
+        },
+        {
+          "source": "node-u10-root",
+          "target": "node-u10-crust",
+          "relation": "تشمل",
+          "type": "secondary"
+        },
+        {
+          "source": "node-u10-root",
+          "target": "node-u10-mantle",
+          "relation": "تشمل",
+          "type": "secondary"
+        }
+      ]
+    },
+    "11": {
+      "unitId": 11,
+      "unitTitle": "البنيات الجيولوجية الكبرى",
+      "domain": "المجال الثالث: ظواهر جيولوجية داخلية",
+      "rootId": "node-u11-root",
+      "nodes": [
+        {
+          "id": "node-u11-root",
+          "label": "البنيات الجيولوجية الكبرى",
+          "unitId": 11
+        },
+        {
+          "id": "node-u11-ridge",
+          "label": "الظهرة المحيطية",
+          "unitId": 11
+        },
+        {
+          "id": "node-u11-pillow-basalt",
+          "label": "البازلت الوسادي",
+          "unitId": 11
+        },
+        {
+          "id": "node-u11-gabbro",
+          "label": "الغابرو",
+          "unitId": 11
+        },
+        {
+          "id": "node-u11-spreading",
+          "label": "توسّع قاع المحيط",
+          "unitId": 11
+        },
+        {
+          "id": "node-u11-ophiolite",
+          "label": "التتابع الأوفيوليتي",
+          "unitId": 11
+        },
+        {
+          "id": "node-u11-subduction",
+          "label": "منطقة الغوص",
+          "unitId": 11
+        },
+        {
+          "id": "node-u11-andesite",
+          "label": "الأنديزيت",
+          "unitId": 11
+        },
+        {
+          "id": "node-u11-metamorphism",
+          "label": "التحول الصخري",
+          "unitId": 11
+        },
+        {
+          "id": "node-u11-collision",
+          "label": "سلسلة التصادم",
+          "unitId": 11
+        },
+        {
+          "id": "node-u11-wilson",
+          "label": "دورة ويلسون",
+          "unitId": 11
+        },
+        {
+          "id": "node-u11-criteria",
+          "label": "شبكة التصنيف",
+          "unitId": 11
+        }
+      ],
+      "links": [
+        {
+          "source": "node-u11-root",
+          "target": "node-u11-ridge",
+          "relation": "تشمل",
+          "type": "primary"
+        },
+        {
+          "source": "node-u11-root",
+          "target": "node-u11-subduction",
+          "relation": "تشمل",
+          "type": "primary"
+        },
+        {
+          "source": "node-u11-root",
+          "target": "node-u11-collision",
+          "relation": "تشمل",
+          "type": "primary"
+        },
+        {
+          "source": "node-u11-ridge",
+          "target": "node-u11-pillow-basalt",
+          "relation": "تُنتج",
+          "type": "primary"
+        },
+        {
+          "source": "node-u11-ridge",
+          "target": "node-u11-gabbro",
+          "relation": "تُنتج",
+          "type": "primary"
+        },
+        {
+          "source": "node-u11-ridge",
+          "target": "node-u11-spreading",
+          "relation": "تُسبب",
+          "type": "primary"
+        },
+        {
+          "source": "node-u11-subduction",
+          "target": "node-u11-andesite",
+          "relation": "تُنتج",
+          "type": "primary"
+        },
+        {
+          "source": "node-u11-subduction",
+          "target": "node-u11-metamorphism",
+          "relation": "تُسبب",
+          "type": "primary"
+        },
+        {
+          "source": "node-u11-subduction",
+          "target": "node-u11-collision",
+          "relation": "تنتهي إلى",
+          "type": "primary"
+        },
+        {
+          "source": "node-u11-collision",
+          "target": "node-u11-ophiolite",
+          "relation": "تحتفظ بـ",
+          "type": "secondary"
+        },
+        {
+          "source": "node-u11-metamorphism",
+          "target": "node-u11-collision",
+          "relation": "تُؤرّخ",
+          "type": "secondary"
+        },
+        {
+          "source": "node-u11-root",
+          "target": "node-u11-wilson",
+          "relation": "تنتظم في",
+          "type": "primary"
+        },
+        {
+          "source": "node-u11-wilson",
+          "target": "node-u11-ridge",
+          "relation": "تبدأ بـ",
+          "type": "secondary"
+        },
+        {
+          "source": "node-u11-wilson",
+          "target": "node-u11-collision",
+          "relation": "تنتهي بـ",
+          "type": "secondary"
+        },
+        {
+          "source": "node-u11-root",
+          "target": "node-u11-criteria",
+          "relation": "تُصنَّف بـ",
+          "type": "primary"
+        },
+        {
+          "source": "node-u11-criteria",
+          "target": "node-u11-subduction",
+          "relation": "تميّز",
+          "type": "secondary"
+        },
+        {
+          "source": "node-u11-spreading",
+          "target": "node-u11-subduction",
+          "relation": "يوازنه",
+          "type": "secondary"
+        }
+      ]
+    }
+  },
+  "animations": [
+    {
+      "id": "action-potential",
+      "titleAr": "انتشار السيالة العصبية",
+      "unitAr": "الوحدة 2 — التخصص الوظيفي للبروتينات"
+    },
+    {
+      "id": "plate-divergence",
+      "titleAr": "تباعد الصفائح وارتفاع الصهارة",
+      "unitAr": "الوحدة 9 — التكتونية العامة"
+    },
+    {
+      "id": "protein-synthesis",
+      "titleAr": "الاستنساخ ثم الترجمة",
+      "unitAr": "الوحدة 1 — التخصص الوظيفي للبروتينات"
+    }
+  ],
+  "capsuleExports": [
+    "CAPSULE_BY_ID",
+    "CAPSULE_DOMAINS",
+    "MICRO_CAPSULES",
+    "MICRO_CAPSULE_COUNT",
+    "MICRO_CAPSULE_TOTAL_MINUTES",
+    "capsuleMinutesByDomain",
+    "capsuleOfTheDay",
+    "capsuleUnitIds",
+    "capsulesForUnit",
+    "todayKey"
+  ]
+}

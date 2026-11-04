@@ -1,0 +1,238 @@
+{
+  "text": "تجاوز إلى المحتوى الرئيسي\nطالب متميز\nSVT BAC DZ\nالأنميشن العلمي؟\nأ\n0\n|\n0 XP\nالقائمة الرئيسية\nالرئيسية\nACCUEIL\nالدروس\nAPPRENDRE\nالتمارين والتدريب\nS'ENTRAÎNER\nمفتاح المنهجية\nMÉTHODE\nالمراجعة\nRÉVISER\nأنا\nMOI\n\nالقبطان — مُرشد كنز العلوم\n\nالأنميشن يشرح حركة لا يُحفظ مكانها. شاهده مرة بلا توقّف، ثم أعد وصفه بكلماتك.\n\nابدأ بـ: اصرخ الجواب بصوتك بعد المشاهدة.\n\nفهمت\nالأنميشن العلمي\n\nمحاكاة متحركة وتفاعلية لآليات البكالوريا — تعمل دون أنترنت\n\nالعودة\nمحاكاة تفاعلية — الوحدة 2\nمحاكاة الهجرة الكهربائية : pH ← الشحنة ← الاتجاه\n\nاختر الحمض الأميني و pH الوسط، ثم توقّع الاتجاه قبل التشغيل. القاعدة الوحيدة : قارن pH الوسط بـ pHi.\n\nالألانين (Ala) — pHi = 6\nحمض الغلوتاميك (Glu) — pHi = 3.2\nالليزين (Lys) — pHi = 9.7\nالهيستيدين (His) — pHi = 7.6\npH الوسط\n2.0\n+\nالمصعد\n−\nالمهبط\nمكان الوضع\n?\nتوقّعك :\nنحو المهبط\nنحو المصعد\nلا يهاجر\nشغّل الهجرة\n\nتذكير : المسافة المقطوعة تكبر كلما ابتعد pH الوسط عن pHi، لأن الشحنة الإجمالية تصبح أكبر. عند pH = pHi تنعدم الهجرة — وهي الطريقة التجريبية لتحديد pHi.\n\n+ + +\n+Na يدخل\n+K يخرج\nانتشار السيالة العصبية\n\nدخول Na+ يولّد كمون العمل، ثم خروج K+ يعيد الاستقطاب — تنتشر الموجة على طول المحور من قطعة لأخرى.\n\nالوحدة 2 — التخصص الوظيفي للبروتينات\nتباعد\nتباعد\nالوشاح (أثينوسفير)\nتباعد الصفائح وارتفاع الصهارة\n\nعند الحدود التباعدية تبتعد الصفيحتان فترتفع الصهارة من الوشاح وتتصلب مكوّنةً قشرة محيطية جديدة.\n\nالوحدة 9 — التكتونية العامة\nADN\nARNm\nرايبوسوم\nالاستنساخ ثم الترجمة\n\nتُنسخ المورثة إلى ARNm، ثم يقرأها الرايبوسوم ويربط الأحماض الأمينية وفق الرامزات لتتشكّل السلسلة الببتيدية.\n\nالوحدة 1 — التخصص الوظيفي للبروتينات\n\nكل محاكاة مرسومة برمجيًا (SVG) ولا تحتاج اتصالاً بالإنترنت. إن واجهت رسومًا لا تظهر، حدّث المتصفح أو فعّل وضع السطح المكتب.",
+  "buttons": [
+    {
+      "text": "؟",
+      "label": "نصيحة القبطان في هذه الصفحة",
+      "testid": "conseil-rubrique-ouvrir",
+      "disabled": false
+    },
+    {
+      "text": "",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "أ",
+      "label": "حجم النص",
+      "testid": "taille-texte-btn",
+      "disabled": false
+    },
+    {
+      "text": "الرئيسية\nACCUEIL",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "الدروس\nAPPRENDRE",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "التمارين والتدريب\nS'ENTRAÎNER",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "مفتاح المنهجية\nMÉTHODE",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "المراجعة\nRÉVISER",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "أنا\nMOI",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "فهمت",
+      "label": null,
+      "testid": "bandeau-conseil-fermer",
+      "disabled": false
+    },
+    {
+      "text": "العودة",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "الألانين (Ala) — pHi = 6",
+      "label": null,
+      "testid": "molecule-ala",
+      "disabled": false
+    },
+    {
+      "text": "حمض الغلوتاميك (Glu) — pHi = 3.2",
+      "label": null,
+      "testid": "molecule-glu",
+      "disabled": false
+    },
+    {
+      "text": "الليزين (Lys) — pHi = 9.7",
+      "label": null,
+      "testid": "molecule-lys",
+      "disabled": false
+    },
+    {
+      "text": "الهيستيدين (His) — pHi = 7.6",
+      "label": null,
+      "testid": "molecule-his",
+      "disabled": false
+    },
+    {
+      "text": "نحو المهبط",
+      "label": null,
+      "testid": "prediction-cathode",
+      "disabled": false
+    },
+    {
+      "text": "نحو المصعد",
+      "label": null,
+      "testid": "prediction-anode",
+      "disabled": false
+    },
+    {
+      "text": "لا يهاجر",
+      "label": null,
+      "testid": "prediction-immobile",
+      "disabled": false
+    },
+    {
+      "text": "شغّل الهجرة",
+      "label": null,
+      "testid": "lancer-migration",
+      "disabled": false
+    },
+    {
+      "text": "الرئيسيةAccueil",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "الدروسApprendre",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "التمارين والتدريبS'entraîner",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "مفتاح المنهجيةMéthode",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "المراجعةRéviser",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "أناMoi",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "",
+      "label": "القبطان — مُرشد كنز العلوم",
+      "testid": "fab-morchid",
+      "disabled": false
+    },
+    {
+      "text": "",
+      "label": "تكبير الشكل",
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "−",
+      "label": "تصغير",
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "+",
+      "label": "تكبير",
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "ملاءمة",
+      "label": "إعادة الملاءمة إلى الشاشة",
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "100%",
+      "label": "الحجم الأصلي للشكل",
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "نافذة",
+      "label": "فتح الشكل في نافذة مستقلة",
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "إغلاق",
+      "label": "إغلاق (Esc)",
+      "testid": null,
+      "disabled": false
+    }
+  ],
+  "testids": [
+    "conseil-rubrique-ouvrir",
+    "taille-texte-btn",
+    "bandeau-conseil-rubrique",
+    "bandeau-conseil-visage",
+    "bandeau-conseil-fermer",
+    "electrophorese-sim",
+    "molecule-ala",
+    "molecule-glu",
+    "molecule-lys",
+    "molecule-his",
+    "ph-slider",
+    "ph-valeur",
+    "spot",
+    "prediction-cathode",
+    "prediction-anode",
+    "prediction-immobile",
+    "lancer-migration",
+    "fab-morchid"
+  ],
+  "inputs": [
+    {
+      "type": "range",
+      "label": null,
+      "placeholder": ""
+    }
+  ],
+  "width": 1280,
+  "scrollWidth": 1280,
+  "storage": {
+    "theme": "light",
+    "kunz_declic_last_id_v1": "dem_01",
+    "boussole_conseils_rubriques_vus": "[\"animations\",\"training\",\"lesson\"]",
+    "kunz_declic_shown_v1": "2026-10-30"
+  }
+}

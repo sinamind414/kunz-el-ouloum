@@ -15,10 +15,12 @@ import { ArrowRight, CalendarDays, Check, Clock, ListChecks, Printer } from 'luc
 import { ARCHETYPE_BY_ID } from '../data/bacArchetypes';
 import { readPlanSettings, writePlanSettings } from '../data/planSettings';
 import { INITIAL_UNITS } from '../unitCatalog';
+import { rubriquePayanteOuverte, uniteOuverte } from '../utils/acces';
 import MarqueDocument from './MarqueDocument';
 import {
   DIFFICULTY_BONUS,
   declaredWeight,
+  gestesOuverts,
   observedWeight,
   prioritizedUnitIds,
   unitPriority,
@@ -26,6 +28,7 @@ import {
   TASK_LABEL_AR,
   buildRevisionPlan,
   minutesByUnit,
+  type PlanAcces,
   type PlanTask,
 } from '../data/revisionPlan';
 
@@ -75,7 +78,20 @@ export default function RevisionPlanView({ onBackToHome, onOpenRedaction }: Revi
   // programme (U7 annoncée à 19 %, constatée à 3,3 %).
   const [explication, setExplication] = useState(false);
 
-  const plan = useMemo(() => buildRevisionPlan({ daysLeft, minutesPerDay }), [daysLeft, minutesPerDay]);
+  // H1 (audit 8 axes) : l'accès réel — l'invité garde le المجال 1 (U1-U5) et
+  // les gestes qui ne renvoient pas à une rubrique payante (mesures :
+  // schémas, situations, rédactions, montages => SchemaDrillView/SituationBankView/
+  // BacIdeasView — `rubriquePayanteOuverte` ; capsules/carte => `uniteOuverte`).
+  // Snapshot au montage : la facturation change rarement au milieu d'un plan ;
+  // le « pour » de chaque ligne reste verrouillé dans acces.test.ts.
+  const acces = useMemo<PlanAcces>(() => {
+    const unites = prioritizedUnitIds().filter((u) => uniteOuverte(u));
+    return { unites, gestes: gestesOuverts(rubriquePayanteOuverte()) };
+  }, []);
+  const plan = useMemo(
+    () => buildRevisionPlan({ daysLeft, minutesPerDay, acces }),
+    [daysLeft, minutesPerDay, acces],
+  );
   const parUnite = useMemo(() => minutesByUnit(plan), [plan]);
   const cle = cleStockage(daysLeft, minutesPerDay);
 
@@ -207,7 +223,12 @@ export default function RevisionPlanView({ onBackToHome, onOpenRedaction }: Revi
             <Clock className="w-4 h-4" />
             {Math.round(plan.totalMinutes / 60)} ساعة إجمالاً
           </span>
-          <span>الوحدات المغطاة: {plan.coveredUnitIds.length} / 11</span>
+          {/* H1 : le dénominateur est l'accès réel — « 5 / 11 » pour un invité
+              qui ne VOIT que 5 unités serait un mensonge de poudre aux yeux et
+              « 4 / 11 » un mensonge d'absence. Le chiffre promis reste honnête : */}
+          <span data-testid="plan-unites-cibles">
+            الوحدات المغطاة: {plan.coveredUnitIds.length} / {acces.unites.length}
+          </span>
           <span data-testid="plan-progression">أنجزت {pourcent}٪</span>
         </div>
         <div className="mt-3 h-2 rounded-full bg-black/10 dark:bg-white/10 overflow-hidden">
@@ -239,6 +260,7 @@ export default function RevisionPlanView({ onBackToHome, onOpenRedaction }: Revi
             {prioritizedUnitIds().map((unitId) => {
               const titre = INITIAL_UNITS.find((u) => u.id === unitId)?.title ?? `وحدة ${unitId}`;
               const minutes = parUnite[unitId] ?? 0;
+              const ouverte = uniteOuverte(unitId);
               return (
                 <p
                   key={unitId}
@@ -249,6 +271,13 @@ export default function RevisionPlanView({ onBackToHome, onOpenRedaction }: Revi
                   {observedWeight(unitId)}٪ · علاوة الصعوبة {DIFFICULTY_BONUS[unitId] ?? 0} · الأولوية{' '}
                   {Math.round(unitPriority(unitId) * 10) / 10}
                   {minutes > 0 && <span className="text-[#006d37] dark:text-[#2ecc71]"> · {minutes} دقيقة في خطتك</span>}
+                  {/* H1 : une unité fermée est NOMMÉE comme fermée, jamais
+                      passée sous silence ni programmée en cachette. */}
+                  {!ouverte && (
+                    <span data-testid={`explication-verrouillee-${unitId}`} className="text-[#8a6a00] font-bold">
+                      {' '}· 🔒 يُفتَح بالاشتراك
+                    </span>
+                  )}
                 </p>
               );
             })}

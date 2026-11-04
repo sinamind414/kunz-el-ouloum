@@ -1,0 +1,20 @@
+{
+  "observations": [
+    {
+      "name": "revhub",
+      "entrees": [
+        "revhub-retour",
+        "revhub-review",
+        "revhub-plan",
+        "revhub-schemas"
+      ]
+    },
+    {
+      "name": "bac-ideas-invite",
+      "paywall": 1,
+      "ideas": 0
+    }
+  ],
+  "pageErrors": [],
+  "scenarioErrors": []
+}

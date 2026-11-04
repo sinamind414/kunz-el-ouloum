@@ -1,0 +1,28 @@
+{
+  "id": "./",
+  "name": "مفتاح الكنز | بكالوريا الجزائر",
+  "short_name": "مفتاح الكنز",
+  "description": "تدريب منهجي في أربع خطوات لبكالوريا علوم الطبيعة والحياة، مع عمل دون اتصال للمحتوى الذي فُتح سابقاً.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#020617",
+  "theme_color": "#020617",
+  "orientation": "portrait-primary",
+  "lang": "ar",
+  "dir": "rtl",
+  "icons": [
+    {
+      "src": "assets/icon-192.png?v=d06847e34102",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "assets/icon-512.png?v=48ad8ebbee47",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

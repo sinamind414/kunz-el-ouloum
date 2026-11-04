@@ -1,0 +1,145 @@
+{
+  "title": "كنز العلوم - SVT BAC DZ",
+  "text": "تجاوز إلى المحتوى الرئيسي\nطالب متميز\nSVT BAC DZ\nالدروس؟\nأ\n0\n|\n0 XP\nالقائمة الرئيسية\nالرئيسية\nACCUEIL\nالدروس\nAPPRENDRE\nالتمارين والتدريب\nS'ENTRAÎNER\nمفتاح المنهجية\nMÉTHODE\nالمراجعة\nRÉVISER\nأنا\nMOI\n→\nعودة إلى قائمة الدروس\nالدرس النشيط — الوحدة المطلوبة — مفتاح بالكود\n\nحصيلة المجال الأول (الوحدات من 1 إلى 5) وتمارينها مجانية دائماً حتى بدون حساب. باقي الوحدات والمواضيع تُفتح باشتراك موسم كامل:\n\n1200 دج / سنة دراسية — حتى نهاية الموسم (30 جوان)، أيّاً كان تاريخ شرائك.\n\nادفع 1200 دج عبر بريدي موب إلى رقم المعلّم (تصلك معلومات الدفع من مؤسسة التطبيق).\nاستلم كود تفعيل مكوّن من ٤ أحرف و ٤ أرقام بالشكل KUNZ-XXXX-XXXX.\nأدخل الكود هنا — يُربط الكود بحسابك وبجهازك (جهاز واحد فقط)، وتُفتح المادة كاملة فوراً حتى 30 جوان. إذا غيّرت هاتفك، راسل الأستاذ عبر واتساب ليصلك كود جديد.\nتفعيل",
+  "buttons": [
+    {
+      "text": "؟",
+      "label": "نصيحة القبطان في هذه الصفحة",
+      "testid": "conseil-rubrique-ouvrir",
+      "disabled": false
+    },
+    {
+      "text": "",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "أ",
+      "label": "حجم النص",
+      "testid": "taille-texte-btn",
+      "disabled": false
+    },
+    {
+      "text": "الرئيسية\nACCUEIL",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "الدروس\nAPPRENDRE",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "التمارين والتدريب\nS'ENTRAÎNER",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "مفتاح المنهجية\nMÉTHODE",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "المراجعة\nRÉVISER",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "أنا\nMOI",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "→\nعودة إلى قائمة الدروس",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "تفعيل",
+      "label": null,
+      "testid": "bouton-activer-code",
+      "disabled": true
+    },
+    {
+      "text": "الرئيسيةAccueil",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "الدروسApprendre",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "التمارين والتدريبS'entraîner",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "مفتاح المنهجيةMéthode",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "المراجعةRéviser",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "أناMoi",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "",
+      "label": "القبطان — مُرشد كنز العلوم",
+      "testid": "fab-morchid",
+      "disabled": false
+    },
+    {
+      "text": "",
+      "label": "تكبير الشكل",
+      "testid": null,
+      "disabled": false
+    }
+  ],
+  "inputs": [
+    {
+      "tag": "INPUT",
+      "placeholder": "KUNZ-XXXX-XXXX",
+      "label": "كود التفعيل"
+    }
+  ],
+  "testids": [
+    "conseil-rubrique-ouvrir",
+    "taille-texte-btn",
+    "ecran-paiement",
+    "champ-code-activation",
+    "bouton-activer-code",
+    "fab-morchid"
+  ],
+  "storage": {
+    "boussole_favorites": "[{\"lessonKey\":\"phase11_chapitres_21_22\",\"lessonKind\":\"active\",\"title\":\"الفصل 31 : تذكير بالمكتسبات — الفصل 32 : مقر عملية التركيب الضوئي\",\"unitId\":6,\"addedAt\":1793316767290},{\"lessonKey\":\"phase1_chapitres_1_2\",\"lessonKind\":\"html\",\"title\":\"الدرس 1 : تذكير بالمكتسبات ومقر تركيب البروتين\",\"unitId\":1,\"addedAt\":1793316763424}]",
+    "theme": "light",
+    "kunz_declic_last_id_v1": "dem_04",
+    "boussole_recent_searches": "[\"التركيب الضوئي\",\"البروتين\",\"تركيب البروتين\"]",
+    "boussole_conseils_rubriques_vus": "[\"lesson\"]",
+    "kunz_declic_shown_v1": "2026-10-30"
+  },
+  "width": 1280,
+  "scrollWidth": 1280
+}

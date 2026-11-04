@@ -1,0 +1,174 @@
+{
+  "title": "كنز العلوم - SVT BAC DZ",
+  "text": "تجاوز إلى المحتوى الرئيسي\nطالب متميز\nSVT BAC DZ\nالدروس؟\nأ\n0\n|\n0 XP\nالقائمة الرئيسية\nالرئيسية\nACCUEIL\nالدروس\nAPPRENDRE\nالتمارين والتدريب\nS'ENTRAÎNER\nمفتاح المنهجية\nMÉTHODE\nالمراجعة\nRÉVISER\nأنا\nMOI\n\nالقبطان — مُرشد كنز العلوم\n\nاقرأ بسؤال في رأسك: «ماذا يريد مني المنهاج في هذه الوثيقة؟». القراءة بلا سؤال قراءة بلا أثر.\n\nابدأ بـ: اكتب سؤالك على ورقة قبل أن تفتح الدرس.\n\nفهمت\n→\nعودة إلى المجالات\n🧬 التخصص الوظيفي للبروتينات\nاختر الوحدة (أيقونة) ثم نشاطها\nوحدة 1\nتركيب البروتين\nالتخصص الوظيفي للبروتينات — Synthèse des protéines\n4 فصول\nوحدة 2\nالعلاقة بين بنية ووظيفة البروتين\nالتخصص الوظيفي للبروتينات — Relation structure-fonction\n3 فصول\nوحدة 3\nالنشاط الإنزيمي للبروتينات\nالتخصص الوظيفي للبروتينات — Activité enzymatique\n4 فصول\nوحدة 4\nدور البروتينات في الدفاع عن الذات\nالتخصص الوظيفي للبروتينات — Immunité\n6 فصول\nوحدة 5\nدور البروتينات في الاتصال العصبي\nالتخصص الوظيفي للبروتينات — Communication nerveuse\n5 فصول\nالحصيلة المعرفية — التخصص الوظيفي للبروتينات\nكل ما يجب حفظه في هذا المجال — ملخصات مرقّمة لكل وحدة + الدليل العام للمنهجية",
+  "buttons": [
+    {
+      "text": "؟",
+      "label": "نصيحة القبطان في هذه الصفحة",
+      "testid": "conseil-rubrique-ouvrir",
+      "disabled": false
+    },
+    {
+      "text": "",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "أ",
+      "label": "حجم النص",
+      "testid": "taille-texte-btn",
+      "disabled": false
+    },
+    {
+      "text": "الرئيسية\nACCUEIL",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "الدروس\nAPPRENDRE",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "التمارين والتدريب\nS'ENTRAÎNER",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "مفتاح المنهجية\nMÉTHODE",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "المراجعة\nRÉVISER",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "أنا\nMOI",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "فهمت",
+      "label": null,
+      "testid": "bandeau-conseil-fermer",
+      "disabled": false
+    },
+    {
+      "text": "→\nعودة إلى المجالات",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "وحدة 1\nتركيب البروتين\nالتخصص الوظيفي للبروتينات — Synthèse des protéines\n4 فصول",
+      "label": null,
+      "testid": "unite-1",
+      "disabled": false
+    },
+    {
+      "text": "وحدة 2\nالعلاقة بين بنية ووظيفة البروتين\nالتخصص الوظيفي للبروتينات — Relation structure-fonction\n3 فصول",
+      "label": null,
+      "testid": "unite-2",
+      "disabled": false
+    },
+    {
+      "text": "وحدة 3\nالنشاط الإنزيمي للبروتينات\nالتخصص الوظيفي للبروتينات — Activité enzymatique\n4 فصول",
+      "label": null,
+      "testid": "unite-3",
+      "disabled": false
+    },
+    {
+      "text": "وحدة 4\nدور البروتينات في الدفاع عن الذات\nالتخصص الوظيفي للبروتينات — Immunité\n6 فصول",
+      "label": null,
+      "testid": "unite-4",
+      "disabled": false
+    },
+    {
+      "text": "وحدة 5\nدور البروتينات في الاتصال العصبي\nالتخصص الوظيفي للبروتينات — Communication nerveuse\n5 فصول",
+      "label": null,
+      "testid": "unite-5",
+      "disabled": false
+    },
+    {
+      "text": "الحصيلة المعرفية — التخصص الوظيفي للبروتينات\nكل ما يجب حفظه في هذا المجال — ملخصات مرقّمة لكل وحدة + الدليل العام للمنهجية",
+      "label": null,
+      "testid": "okacha-entree-domaine",
+      "disabled": false
+    },
+    {
+      "text": "الرئيسيةAccueil",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "الدروسApprendre",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "التمارين والتدريبS'entraîner",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "مفتاح المنهجيةMéthode",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "المراجعةRéviser",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "أناMoi",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "",
+      "label": "القبطان — مُرشد كنز العلوم",
+      "testid": "fab-morchid",
+      "disabled": false
+    }
+  ],
+  "inputs": [],
+  "testids": [
+    "conseil-rubrique-ouvrir",
+    "taille-texte-btn",
+    "bandeau-conseil-rubrique",
+    "bandeau-conseil-visage",
+    "bandeau-conseil-fermer",
+    "unites-icones",
+    "unite-1",
+    "unite-2",
+    "unite-3",
+    "unite-4",
+    "unite-5",
+    "okacha-entree-domaine",
+    "fab-morchid"
+  ],
+  "storage": {
+    "theme": "light",
+    "kunz_declic_last_id_v1": "dem_04",
+    "boussole_conseils_rubriques_vus": "[\"lesson\"]",
+    "kunz_declic_shown_v1": "2026-10-30"
+  },
+  "width": 1280,
+  "scrollWidth": 1280
+}

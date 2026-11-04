@@ -1,0 +1,140 @@
+{
+  "text": "تجاوز إلى المحتوى الرئيسي\nطالب متميز\nSVT BAC DZ\nالدروس؟\nأ\n1\n|\n10 XP\nالقائمة الرئيسية\nالرئيسية\nACCUEIL\nالدروس\nAPPRENDRE\nالتمارين والتدريب\nS'ENTRAÎNER\nمفتاح المنهجية\nMÉTHODE\nالمراجعة\nRÉVISER\nأنا\nMOI\n→\nالعودة إلى مجال البروتينات المجاني\nالمجال 2 — التحولات الطاقوية — مفتاح بالكود\n\nحصيلة المجال الأول (الوحدات من 1 إلى 5) وتمارينها مجانية دائماً حتى بدون حساب. باقي الوحدات والمواضيع تُفتح باشتراك موسم كامل:\n\n1200 دج / سنة دراسية — حتى نهاية الموسم (30 جوان)، أيّاً كان تاريخ شرائك.\n\nادفع 1200 دج عبر بريدي موب إلى رقم المعلّم (تصلك معلومات الدفع من مؤسسة التطبيق).\nاستلم كود تفعيل مكوّن من ٤ أحرف و ٤ أرقام بالشكل KUNZ-XXXX-XXXX.\nأدخل الكود هنا — يُربط الكود بحسابك وبجهازك (جهاز واحد فقط)، وتُفتح المادة كاملة فوراً حتى 30 جوان. إذا غيّرت هاتفك، راسل الأستاذ عبر واتساب ليصلك كود جديد.\nتفعيل",
+  "buttons": [
+    {
+      "text": "؟",
+      "label": "نصيحة القبطان في هذه الصفحة",
+      "testid": "conseil-rubrique-ouvrir",
+      "disabled": false
+    },
+    {
+      "text": "",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "أ",
+      "label": "حجم النص",
+      "testid": "taille-texte-btn",
+      "disabled": false
+    },
+    {
+      "text": "الرئيسية\nACCUEIL",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "الدروس\nAPPRENDRE",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "التمارين والتدريب\nS'ENTRAÎNER",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "مفتاح المنهجية\nMÉTHODE",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "المراجعة\nRÉVISER",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "أنا\nMOI",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "→\nالعودة إلى مجال البروتينات المجاني",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "تفعيل",
+      "label": null,
+      "testid": "bouton-activer-code",
+      "disabled": true
+    },
+    {
+      "text": "الرئيسيةAccueil",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "الدروسApprendre",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "التمارين والتدريبS'entraîner",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "مفتاح المنهجيةMéthode",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "المراجعةRéviser",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "أناMoi",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "",
+      "label": "القبطان — مُرشد كنز العلوم",
+      "testid": "fab-morchid",
+      "disabled": false
+    }
+  ],
+  "testids": [
+    "conseil-rubrique-ouvrir",
+    "taille-texte-btn",
+    "ecran-paiement",
+    "champ-code-activation",
+    "bouton-activer-code",
+    "fab-morchid"
+  ],
+  "inputs": [
+    {
+      "type": "text",
+      "label": "كود التفعيل",
+      "placeholder": "KUNZ-XXXX-XXXX"
+    }
+  ],
+  "width": 1280,
+  "scrollWidth": 1280,
+  "storage": {
+    "theme": "light",
+    "kunz_okacha_progress_v1": "{\"lus\":[\"d1u1\"],\"evals\":{\"d1u1#2\":{\"again\":0,\"hard\":0,\"good\":1,\"easy\":0}},\"sectionsLues\":[]}",
+    "kunz_declic_last_id_v1": "dem_04",
+    "svt_progress": "{\"xp\":10,\"streak\":1,\"completedUnits\":[],\"completedQuestionsCount\":0,\"studyMinutes\":0,\"dailyGoals\":{\"type\":\"minutes\",\"targetMinutes\":25,\"targetQuestions\":20,\"lastActiveDate\":\"2026-10-30\",\"todayMinutes\":0,\"todayQuestions\":1,\"streakDays\":1,\"completedToday\":false,\"history\":[{\"date\":\"2026-10-30\",\"target\":25,\"achieved\":0,\"type\":\"minutes\",\"completed\":false}],\"serieDernierJour\":\"2026-10-30\",\"joursActifsTotal\":1},\"flashcardStats\":{\"again\":0,\"hard\":0,\"good\":1,\"easy\":0},\"quizScoreHistory\":[]}",
+    "lastStudyTime": "1793317987629",
+    "boussole_conseils_rubriques_vus": "[\"lesson\"]",
+    "kunz_declic_shown_v1": "2026-10-30",
+    "svt_units": "[{\"id\":1,\"title\":\"تركيب البروتين\",\"lessonsCount\":6,\"description\":\"التخصص الوظيفي للبروتينات — Synthèse des protéines\",\"progress\":0,\"isLocked\":false,\"domain\":\"التخصص الوظيفي للبروتينات\"},{\"id\":2,\"title\":\"العلاقة بين بنية ووظيفة البروتين\",\"lessonsCount\":4,\"description\":\"التخصص الوظيفي للبروتينات — Relation structure-fonction\",\"progress\":0,\"isLocked\":true,\"domain\":\"التخصص الوظيفي للبروتينات\"},{\"id\":3,\"title\":\"النشاط الإنزيمي للبروتينات\",\"lessonsCount\":5,\"description\":\"التخصص الوظيفي للبروتينات — Activité enzymatique\",\"progress\":0,\"isLocked\":true,\"domain\":\"التخصص الوظيفي للبروتينات\"},{\"id\":4,\"title\":\"دور البروتينات في الدفاع عن الذات\",\"lessonsCount\":6,\"description\":\"التخصص الوظيفي للبروتينات — Immunité\",\"progress\":0,\"isLocked\":true,\"domain\":\"التخصص الوظيفي للبروتينات\"},{\"id\":5,\"title\":\"دور البروتينات في الاتصال العصبي\",\"lessonsCount\":5,\"description\":\"التخصص الوظيفي للبروتينات — Communication nerveuse\",\"progress\":0,\"isLocked\":true,\"domain\":\"التخصص الوظيفي للبروتينات\"},{\"id\":6,\"title\":\"آليات تحويل الطاقة الضوئية إلى طاقة كيميائية كامنة\",\"lessonsCount\":3,\"description\":\"التحولات الطاقوية — Photosynthèse\",\"progress\":0,\"isLocked\":true,\"domain\":\"التحولات الطاقوية\"},{\"id\":7,\"title\":\"آليات تحويل الطاقة الكيميائية الكامنة في الجزيئات العضوية إلى ATP\",\"lessonsCount\":3,\"description\":\"التحولات الطاقوية — Respiration cellulaire\",\"progress\":0,\"isLocked\":true,\"domain\":\"التحولات الطاقوية\"},{\"id\":8,\"title\":\"تحويل الطاقة على المستوى ما فوق البنية الخلوية\",\"lessonsCount\":3,\"description\":\"التحولات الطاقوية — Bilan énergétique\",\"progress\":0,\"isLocked\":true,\"domain\":\"التحولات الطاقوية\"},{\"id\":9,\"title\":\"النشاط التكتوني للصفائح\",\"lessonsCount\":3,\"description\":\"التكتونية العامة — Activité tectonique\",\"progress\":0,\"isLocked\":true,\"domain\":\"التكتونية العامة\"},{\"id\":10,\"title\":\"بنية الكرة الأرضية\",\"lessonsCount\":3,\"description\":\"التكتونية العامة — Structure de la Terre\",\"progress\":0,\"isLocked\":true,\"domain\":\"التكتونية العامة\"},{\"id\":11,\"title\":\"النشاط التكتوني والبنيات الجيولوجية المرتبطة به\",\"lessonsCount\":3,\"description\":\"التكتونية العامة — Structures géologiques\",\"progress\":0,\"isLocked\":true,\"domain\":\"التكتونية العامة\"}]"
+  }
+}

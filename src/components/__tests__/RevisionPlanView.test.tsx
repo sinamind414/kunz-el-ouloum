@@ -22,7 +22,15 @@ import { INITIAL_UNITS } from '../../unitCatalog';
 import { ARCHETYPE_BY_ID } from '../../data/bacArchetypes';
 
 afterEach(cleanup);
-beforeEach(() => localStorage.clear());
+// Contexte de cette suite : élève ABONNÉ. Les invariants ci-dessus verrouillent
+// les MÉCANIQUES de la vue (réglages, cochage, impression, atelier)
+// indépendamment du palier d'accès ; le plan invité, lui, est l'exclusivité de
+// revisionPlan.acces.lock.test.ts et du bloc « accès réel » ci-dessous (H1).
+beforeEach(() => {
+  localStorage.clear();
+  localStorage.setItem('boussole_token', 'jeton-test');
+  localStorage.setItem('kunz_acces', JSON.stringify({ statut: 'abonnement', expireLe: '2027-06-30' }));
+});
 
 describe('plan de révision — rendu', () => {
   it('affiche par défaut un plan de 14 jours à 90 minutes', () => {

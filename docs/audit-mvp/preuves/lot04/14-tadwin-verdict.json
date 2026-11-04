@@ -1,0 +1,137 @@
+{
+  "text": "تجاوز إلى المحتوى الرئيسي\nطالب متميز\nSVT BAC DZ\nالتدوين الشامل؟\nأ\n0\n|\n0 XP\nالقائمة الرئيسية\nالرئيسية\nACCUEIL\nالدروس\nAPPRENDRE\nالتمارين والتدريب\nS'ENTRAÎNER\nمفتاح المنهجية\nMÉTHODE\nالمراجعة\nRÉVISER\nأنا\nMOI\nالتدوين الشامل\nجرّب 3 أيام — باقٍ 3 أيام\n✓\n✓\n✓\n3\n4\n\nمستقل — Autonome (production notée)\n\nتقييم التدوين — ليست نقطة البكالوريا\n\nزبدة ممتازة — كل المفاتيح مغطاة\n\nالتغطية (C2)\n100%\nنصيحة واحدة: ثبّت هذه المفاتيح في راحة J+3، ثم انتقل إلى الوحدة الموالية\n✓ استنساخ (النواة/ARN بوليميراز)\n✓ ARNm\n\nحُفظت الفقرة في الدفتر — ستراجعها في J+1.\n\nالانتقال إلى التثبيت",
+  "buttons": [
+    {
+      "text": "؟",
+      "label": "نصيحة القبطان في هذه الصفحة",
+      "testid": "conseil-rubrique-ouvrir",
+      "disabled": false
+    },
+    {
+      "text": "",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "أ",
+      "label": "حجم النص",
+      "testid": "taille-texte-btn",
+      "disabled": false
+    },
+    {
+      "text": "الرئيسية\nACCUEIL",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "الدروس\nAPPRENDRE",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "التمارين والتدريب\nS'ENTRAÎNER",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "مفتاح المنهجية\nMÉTHODE",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "المراجعة\nRÉVISER",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "أنا\nMOI",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "الانتقال إلى التثبيت",
+      "label": null,
+      "testid": "tadwin-vers-consolidation",
+      "disabled": false
+    },
+    {
+      "text": "الرئيسيةAccueil",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "الدروسApprendre",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "التمارين والتدريبS'entraîner",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "مفتاح المنهجيةMéthode",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "المراجعةRéviser",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "أناMoi",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "",
+      "label": "القبطان — مُرشد كنز العلوم",
+      "testid": "fab-morchid",
+      "disabled": false
+    }
+  ],
+  "testids": [
+    "conseil-rubrique-ouvrir",
+    "taille-texte-btn",
+    "tadwin-verdict",
+    "tadwin-c2-label",
+    "tadwin-c2",
+    "tadwin-conseil",
+    "tadwin-vers-consolidation",
+    "fab-morchid"
+  ],
+  "inputs": [],
+  "width": 1280,
+  "scrollWidth": 1280,
+  "storage": {
+    "boussole_prescriptions_v1": "{\"prescriptions\":[{\"motif\":\"accueil:training\",\"cible\":\"training\",\"emisMs\":1793358951222,\"issue\":\"ignoree\",\"resoluMs\":1793358954652}],\"motifs\":{\"accueil:training\":{\"dits\":1,\"suivis\":0,\"ignores\":1,\"expires\":0}}}",
+    "theme": "light",
+    "kunz_tadwin_etat_v1:backup": "{\"uniteId\":1,\"palier\":2,\"defiDebutAt\":1793358956393}",
+    "kunz_tadwin_etat_v1": "{\"uniteId\":1,\"palier\":3,\"defiDebutAt\":1793358956393}",
+    "kunz_tadwin_fiches_v1": "[{\"id\":\"tadwin_1793358963653_rl17qy\",\"uniteId\":1,\"clesChoisies\":[\"استنساخ (النواة/ARN بوليميراز)\",\"ARNm\"],\"reponse\":\"تتمثل المرحلة الأولى من التعبير المورثي في استنساخ المعلومة الوراثية داخل النواة، حيث تتدخل إنزيمة ARN بوليميراز لتركيب جزيئة ARNm انطلاقاً من إحدى سلسلتي ADN.\",\"c2\":1,\"stuffingDetecte\":false,\"palier\":3,\"creeLe\":1793358963653,\"rappelStage\":0,\"prochainRappelAt\":1793445363653,\"maitrise\":\"en_cours\"}]",
+    "kunz_declic_last_id_v1": "dem_05",
+    "boussole_capitaine_invitation_ignoree": "1793358954652",
+    "boussole_conseils_rubriques_vus": "[\"tadwin\",\"training\"]",
+    "kunz_declic_shown_v1": "2026-10-30"
+  }
+}

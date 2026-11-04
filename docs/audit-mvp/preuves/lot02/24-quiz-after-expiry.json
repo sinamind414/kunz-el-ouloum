@@ -1,0 +1,66 @@
+{
+  "text": "علوم الطبيعة والحياة • AUDIT TIMER\nالسؤال 1 من 2\n00:00\nرسم تخطيطي توضيحي\nصعوبة: أساسي\nحسب ملخصات البنية الفراغية، بم تتميز «البنية الثالثية» (Structure tertiaire) للبروتين؟\nأ\nتجمع سلسلتين ببتيديتين أو أكثر.\nب\nالتفاف السلسلة لتشكيل حلزون ألفا أو وريقة بيتا بواسطة روابط هيدروجينية.\nج\nانطواء السلسلة الثانوية في الفراغ، وتستقر بروابط (كبريتية، شاردية، هيدروجينية، كارهة للماء) بين الجذور (R).\nد\nتتابع خطي للأحماض الأمينية بروابط ببتيدية فقط.\nالسابق\nالتالي",
+  "buttons": [
+    {
+      "text": "افْتَحْ كَنْزَ العُلُومِ (دخول)",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "أ\nتجمع سلسلتين ببتيديتين أو أكثر.",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "ب\nالتفاف السلسلة لتشكيل حلزون ألفا أو وريقة بيتا بواسطة روابط هيدروجينية.",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "ج\nانطواء السلسلة الثانوية في الفراغ، وتستقر بروابط (كبريتية، شاردية، هيدروجينية، كارهة للماء) بين الجذور (R).",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "د\nتتابع خطي للأحماض الأمينية بروابط ببتيدية فقط.",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "السابق",
+      "label": null,
+      "testid": null,
+      "disabled": true
+    },
+    {
+      "text": "التالي",
+      "label": null,
+      "testid": null,
+      "disabled": true
+    }
+  ],
+  "testids": [],
+  "inputs": [],
+  "width": 1280,
+  "scrollWidth": 1280,
+  "storage": {
+    "theme": "light"
+  }
+}

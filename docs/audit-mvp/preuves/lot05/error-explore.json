@@ -1,0 +1,217 @@
+{
+  "text": "تجاوز إلى المحتوى الرئيسي\nطالب متميز\nSVT BAC DZ\nالقبطان — مُرشد كنز العلوم\nأ\n0\n|\n0 XP\nالقائمة الرئيسية\nالرئيسية\nACCUEIL\nالدروس\nAPPRENDRE\nالتمارين والتدريب\nS'ENTRAÎNER\nمفتاح المنهجية\nMÉTHODE\nالمراجعة\nRÉVISER\nأنا\nMOI\nمرشدك لفهم الدرس\nشرح وتلميحات من منهاج البكالوريا — يعمل دون اتصال\n\nأنا القبطان، مُرشدك في علوم الطبيعة والحياة — من أول سؤال إلى ليلة البكالوريا.\n\nلن أعطيك الجواب جاهزًا: سأسألك، وأشير إلى الوثيقة التي تنظر إليها، وأنتظر دليلك. وإذا لم تأتِ بدليل، لن أُغلق لك التمرين.\n\nلا نبدأ بالمنهج كله. ابدأ بأصغر خطوة: اختر مجالاً، أو اكتب مفهومًا واحدًا لم تفهمه.\n\nالتخصص الوظيفي للبروتينات\nالتحولات الطاقوية\nالتكتونية العامة\n٠٩:٢٦ ص\nأسئلة يمكنك طرحها مباشرةً:\nاشرح لي آليات عملية الاستنساخ بالتفصيل\nما معنى الخاصية الحمقلية (الأمفوتيرية)؟\nلخص دور اللمفاويات LT4 في تنشيط المناعة\nما هي مستويات البنية الفراغية للبروتين؟\nأدوات تدريب إضافية\nإظهار",
+  "buttons": [
+    {
+      "text": "",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "أ",
+      "label": "حجم النص",
+      "testid": "taille-texte-btn",
+      "disabled": false
+    },
+    {
+      "text": "الرئيسية\nACCUEIL",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "الدروس\nAPPRENDRE",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "التمارين والتدريب\nS'ENTRAÎNER",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "مفتاح المنهجية\nMÉTHODE",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "المراجعة\nRÉVISER",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "أنا\nMOI",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "التخصص الوظيفي للبروتينات",
+      "label": null,
+      "testid": "quick-action-0",
+      "disabled": false
+    },
+    {
+      "text": "التحولات الطاقوية",
+      "label": null,
+      "testid": "quick-action-1",
+      "disabled": false
+    },
+    {
+      "text": "التكتونية العامة",
+      "label": null,
+      "testid": "quick-action-2",
+      "disabled": false
+    },
+    {
+      "text": "اشرح لي آليات عملية الاستنساخ بالتفصيل",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "ما معنى الخاصية الحمقلية (الأمفوتيرية)؟",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "لخص دور اللمفاويات LT4 في تنشيط المناعة",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "ما هي مستويات البنية الفراغية للبروتين؟",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "",
+      "label": null,
+      "testid": "journey-daily-mission",
+      "disabled": false
+    },
+    {
+      "text": "",
+      "label": null,
+      "testid": "journey-coach-diagnostic",
+      "disabled": false
+    },
+    {
+      "text": "",
+      "label": null,
+      "testid": "journey-diagnostic",
+      "disabled": false
+    },
+    {
+      "text": "",
+      "label": null,
+      "testid": "journey-boss-fight",
+      "disabled": false
+    },
+    {
+      "text": "",
+      "label": null,
+      "testid": "journey-review-mistakes",
+      "disabled": false
+    },
+    {
+      "text": "",
+      "label": null,
+      "testid": "journey-gold-summaries",
+      "disabled": false
+    },
+    {
+      "text": "",
+      "label": null,
+      "testid": "journey-home",
+      "disabled": false
+    },
+    {
+      "text": "",
+      "label": null,
+      "testid": null,
+      "disabled": true
+    },
+    {
+      "text": "الرئيسيةAccueil",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "الدروسApprendre",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "التمارين والتدريبS'entraîner",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "مفتاح المنهجيةMéthode",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "المراجعةRéviser",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "أناMoi",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    }
+  ],
+  "testids": [
+    "taille-texte-btn",
+    "tutor-messages",
+    "tutor-quick-actions",
+    "quick-action-0",
+    "quick-action-1",
+    "quick-action-2",
+    "journey-daily-mission",
+    "journey-coach-diagnostic",
+    "journey-diagnostic",
+    "journey-boss-fight",
+    "journey-review-mistakes",
+    "journey-gold-summaries",
+    "journey-home"
+  ],
+  "inputs": [
+    {
+      "type": "text",
+      "label": "حقل السؤال إلى القبطان",
+      "placeholder": "اكتب سؤالك للقبطان في علوم الطبيعة والحياة..."
+    }
+  ],
+  "width": 1280,
+  "scrollWidth": 1280,
+  "storage": {
+    "kunz.revisionPlan.settings": "{\"daysLeft\":14,\"minutesPerDay\":90}",
+    "boussole_prescriptions_v1": "{\"prescriptions\":[{\"motif\":\"accueil:training\",\"cible\":\"training\",\"emisMs\":1793435161564,\"issue\":\"en_attente\"}],\"motifs\":{\"accueil:training\":{\"dits\":1,\"suivis\":0,\"ignores\":0,\"expires\":0}}}",
+    "theme": "light",
+    "kunz_declic_last_id_v1": "dem_04",
+    "boussole_conseils_rubriques_vus": "[\"bacideas\",\"training\",\"plan\",\"reviser\"]",
+    "kunz_declic_shown_v1": "2026-10-31"
+  }
+}

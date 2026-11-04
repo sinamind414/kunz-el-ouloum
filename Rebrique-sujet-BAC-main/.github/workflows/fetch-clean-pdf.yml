@@ -1,0 +1,105 @@
+name: Fetch or rebuild BAC PDFs
+
+# One-shot fetch/rebuild from a runner that can reach the sources and run apt.
+# The sandbox can do neither (TLS allowlist, no tesseract).
+# Must run from this branch: workflow_dispatch is only registered on the default
+# branch. The path filter stops the PDF commit this job pushes from retriggering it.
+on:
+  push:
+    branches: [arena/01a0c9d4-rebrique-sujet-bac]
+    paths:
+      - .github/workflows/fetch-clean-pdf.yml
+
+permissions:
+  contents: write
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+
+      - name: Download candidate official subjects
+        run: |
+          set -euo pipefail
+          mkdir -p incoming/se-2023
+          download() {
+            local url="$1" dest="$2"
+            echo "GET $url"
+            if curl -fL --retry 4 --retry-delay 2 -A "Mozilla/5.0" -o "$dest" "$url"; then
+              if head -c 5 "$dest" | grep -q '%PDF'; then
+                echo "OK $dest $(wc -c < "$dest") bytes"
+                return 0
+              fi
+              echo "NOT A PDF: $dest"
+              file "$dest" || true
+              rm -f "$dest"
+            else
+              echo "FAIL $url"
+            fi
+            return 1
+          }
+          download "https://www.ency-education.com/uploads/3/0/9/3/309326/bac2023-sciences-se.pdf" \
+            incoming/se-2023/ency-bac2023-sciences-se.pdf || true
+          download "https://bac-algerie.net/sujets/2023/bac2023-Sciences-experimentales.pdf" \
+            incoming/se-2023/bac-algerie-2023-se.pdf || true
+          download "https://eddirasa.com/wp-content/uploads/2023/06/eddirasa.com-bac-sciences-se-2023.pdf" \
+            incoming/se-2023/eddirasa-bac-sciences-se-2023.pdf || true
+          mkdir -p incoming/se-2014
+          download "https://eddirasa.com/wp-content/uploads/2014/06/eddirasa-com-bac-sci-science-2014.pdf" \
+            incoming/se-2014/eddirasa-bac-sci-science-2014.pdf || true
+          download "https://www.dzexams.com/uploads/sujets/officiels/bac/2023/dzexams-bac-sciences-naturelles-1780707.pdf" \
+            incoming/se-2023/dzexams-bac-sciences-naturelles-1780707.pdf || true
+          ls -la incoming/se-2023
+          find incoming/se-2023 -type f -name '*.pdf' | grep -q .
+
+      # BATCH E (phase 2B) : HQ 2025 — SE:2025 + M:2025 (4 sujets) à 450 dpi
+      # + filtre conf>=15 (tampons QR/code-barres lus comme texte, lettres
+      # d'en-tête confuses). On garde le meilleur des deux rendus par fichier.
+      # Pilote scripts/ocr-batch.py. Diagnostics incoming/batch-hq-2025/.
+      - name: OCR batch E HQ-2025 (logical layer rebuild)
+        run: |
+          set -euo pipefail
+          mkdir -p incoming/batch-hq-2025
+          {
+            echo "## versions"
+            sudo apt-get update -qq
+            sudo apt-get install -y -qq tesseract-ocr tesseract-ocr-ara tesseract-ocr-fra tesseract-ocr-eng qpdf
+            sudo apt-get install -y -qq fonts-sil-lateef fonts-kacst fonts-hosny-amiri || echo "polices apt optionnelles indisponibles"
+          pip install --quiet --break-system-packages pymupdf python-bidi
+            tesseract --version | head -2
+            qpdf --version
+            python3 -c "import fitz; print('pymupdf OK')"
+          } 2>&1 | tee incoming/batch-hq-2025/setup.txt
+          python3 scripts/ocr-batch.py incoming/batch-hq-2025 --only SE:2025 M:2025 --dpi 450 --min-conf 15
+          ls -la incoming/batch-hq-2025
+          find incoming/batch-hq-2025 -type f -name '*.pdf' | grep -q .
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: se-2023-candidates
+          path: incoming/se-2023
+          if-no-files-found: error
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: batch-hq-2025
+          path: incoming/batch-hq-2025
+          if-no-files-found: error
+
+      - name: Commit the PDFs so they can be pulled over github.com
+        if: always()
+        run: |
+          set -euo pipefail
+          git config user.name "arena-ai-coding-agent[bot]"
+          git config user.email "41898282+arena-ai-coding-agent[bot]@users.noreply.github.com"
+          git add incoming/
+          git status
+          if git diff --cached --quiet; then
+            echo "No new PDF to commit"
+            exit 0
+          fi
+          git commit -m "OCR batch E HQ 2025 : couches LOGIQUES 450dpi conf>=15"
+          git push origin "HEAD:${{ github.ref_name }}"

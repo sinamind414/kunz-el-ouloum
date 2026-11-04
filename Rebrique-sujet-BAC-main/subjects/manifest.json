@@ -1,0 +1,510 @@
+[
+  {
+    "track": "M",
+    "year": 2013,
+    "subject": 1,
+    "session": "main",
+    "file": "subjects/M/2013/sujet-1.pdf",
+    "source": "https://www.dzexams.com/uploads/sujets/officiels/bac/2013/dzexams-bac-sciences-2770867.pdf",
+    "pages": 2
+  },
+  {
+    "track": "M",
+    "year": 2013,
+    "subject": 2,
+    "session": "main",
+    "file": "subjects/M/2013/sujet-2.pdf",
+    "source": "https://www.dzexams.com/uploads/sujets/officiels/bac/2013/dzexams-bac-sciences-2770867.pdf",
+    "pages": 2
+  },
+  {
+    "track": "M",
+    "year": 2014,
+    "subject": 1,
+    "session": "main",
+    "file": "subjects/M/2014/sujet-1.pdf",
+    "source": "https://www.dzexams.com/uploads/sujets/officiels/bac/2014/dzexams-bac-sciences-2369148.pdf",
+    "pages": 2
+  },
+  {
+    "track": "M",
+    "year": 2014,
+    "subject": 2,
+    "session": "main",
+    "file": "subjects/M/2014/sujet-2.pdf",
+    "source": "https://www.dzexams.com/uploads/sujets/officiels/bac/2014/dzexams-bac-sciences-2369148.pdf",
+    "pages": 2
+  },
+  {
+    "track": "M",
+    "year": 2015,
+    "subject": 1,
+    "session": "main",
+    "file": "subjects/M/2015/sujet-1.pdf",
+    "source": "https://www.dzexams.com/uploads/sujets/officiels/bac/2015/dzexams-bac-sciences-2723927.pdf",
+    "pages": 2
+  },
+  {
+    "track": "M",
+    "year": 2015,
+    "subject": 2,
+    "session": "main",
+    "file": "subjects/M/2015/sujet-2.pdf",
+    "source": "https://www.dzexams.com/uploads/sujets/officiels/bac/2015/dzexams-bac-sciences-2723927.pdf",
+    "pages": 2
+  },
+  {
+    "track": "M",
+    "year": 2016,
+    "subject": 1,
+    "session": "main",
+    "file": "subjects/M/2016/sujet-1.pdf",
+    "pages": 2
+  },
+  {
+    "track": "M",
+    "year": 2016,
+    "subject": 2,
+    "session": "main",
+    "file": "subjects/M/2016/sujet-2.pdf",
+    "pages": 2
+  },
+  {
+    "track": "M",
+    "year": 2017,
+    "subject": 1,
+    "session": "main",
+    "file": "subjects/M/2017/sujet-1.pdf",
+    "source": "https://www.dzexams.com/uploads/sujets/officiels/bac/2017/dzexams-bac-sciences-2275712.pdf",
+    "pages": 2
+  },
+  {
+    "track": "M",
+    "year": 2017,
+    "subject": 2,
+    "session": "main",
+    "file": "subjects/M/2017/sujet-2.pdf",
+    "source": "https://www.dzexams.com/uploads/sujets/officiels/bac/2017/dzexams-bac-sciences-2275712.pdf",
+    "pages": 2
+  },
+  {
+    "track": "M",
+    "year": 2018,
+    "subject": 1,
+    "session": "main",
+    "file": "subjects/M/2018/sujet-1.pdf",
+    "source": "https://www.dzexams.com/uploads/sujets/officiels/bac/2018/dzexams-bac-sciences-1967487.pdf",
+    "pages": 3
+  },
+  {
+    "track": "M",
+    "year": 2018,
+    "subject": 2,
+    "session": "main",
+    "file": "subjects/M/2018/sujet-2.pdf",
+    "source": "https://www.dzexams.com/uploads/sujets/officiels/bac/2018/dzexams-bac-sciences-1967487.pdf",
+    "pages": 3
+  },
+  {
+    "track": "M",
+    "year": 2019,
+    "subject": 1,
+    "session": "main",
+    "file": "subjects/M/2019/sujet-1.pdf",
+    "source": "https://www.dzexams.com/uploads/sujets/officiels/bac/2019/dzexams-bac-sciences-2280992.pdf",
+    "pages": 3
+  },
+  {
+    "track": "M",
+    "year": 2019,
+    "subject": 2,
+    "session": "main",
+    "file": "subjects/M/2019/sujet-2.pdf",
+    "source": "https://www.dzexams.com/uploads/sujets/officiels/bac/2019/dzexams-bac-sciences-2280992.pdf",
+    "pages": 2
+  },
+  {
+    "track": "M",
+    "year": 2020,
+    "subject": 1,
+    "session": "main",
+    "file": "subjects/M/2020/sujet-1.pdf",
+    "pages": 3
+  },
+  {
+    "track": "M",
+    "year": 2020,
+    "subject": 2,
+    "session": "main",
+    "file": "subjects/M/2020/sujet-2.pdf",
+    "pages": 2
+  },
+  {
+    "track": "M",
+    "year": 2021,
+    "subject": 1,
+    "session": "main",
+    "file": "subjects/M/2021/sujet-1.pdf",
+    "pages": 3
+  },
+  {
+    "track": "M",
+    "year": 2021,
+    "subject": 2,
+    "session": "main",
+    "file": "subjects/M/2021/sujet-2.pdf",
+    "pages": 3
+  },
+  {
+    "track": "M",
+    "year": 2022,
+    "subject": 1,
+    "session": "main",
+    "file": "subjects/M/2022/sujet-1.pdf",
+    "source": "https://www.dzexams.com/uploads/sujets/officiels/bac/2022/dzexams-bac-sciences-1777391.pdf",
+    "pages": 3
+  },
+  {
+    "track": "M",
+    "year": 2022,
+    "subject": 2,
+    "session": "main",
+    "file": "subjects/M/2022/sujet-2.pdf",
+    "source": "https://www.dzexams.com/uploads/sujets/officiels/bac/2022/dzexams-bac-sciences-1777391.pdf",
+    "pages": 3
+  },
+  {
+    "track": "M",
+    "year": 2023,
+    "subject": 1,
+    "session": "main",
+    "file": "subjects/M/2023/sujet-1.pdf",
+    "source": "https://www.dzexams.com/uploads/sujets/officiels/bac/2023/dzexams-bac-sciences-naturelles-1077342.pdf",
+    "pages": 3
+  },
+  {
+    "track": "M",
+    "year": 2023,
+    "subject": 2,
+    "session": "main",
+    "file": "subjects/M/2023/sujet-2.pdf",
+    "source": "https://www.dzexams.com/uploads/sujets/officiels/bac/2023/dzexams-bac-sciences-naturelles-1077342.pdf",
+    "pages": 3
+  },
+  {
+    "track": "M",
+    "year": 2024,
+    "subject": 1,
+    "session": "main",
+    "file": "subjects/M/2024/sujet-1.pdf",
+    "source": "https://www.dzexams.com/uploads/sujets/officiels/bac/2024/dzexams-bac-sciences-naturelles-1482576.pdf",
+    "pages": 3
+  },
+  {
+    "track": "M",
+    "year": 2024,
+    "subject": 2,
+    "session": "main",
+    "file": "subjects/M/2024/sujet-2.pdf",
+    "source": "https://www.dzexams.com/uploads/sujets/officiels/bac/2024/dzexams-bac-sciences-naturelles-1482576.pdf",
+    "pages": 3
+  },
+  {
+    "track": "M",
+    "year": 2025,
+    "subject": 1,
+    "session": "main",
+    "file": "subjects/M/2025/sujet-1.pdf",
+    "source": "https://www.dzexams.com/uploads/sujets/officiels/bac/2025/dzexams-bac-sciences-naturelles-1554243.pdf",
+    "pages": 3
+  },
+  {
+    "track": "M",
+    "year": 2025,
+    "subject": 2,
+    "session": "main",
+    "file": "subjects/M/2025/sujet-2.pdf",
+    "source": "https://www.dzexams.com/uploads/sujets/officiels/bac/2025/dzexams-bac-sciences-naturelles-1554243.pdf",
+    "pages": 3
+  },
+  {
+    "track": "M",
+    "year": 2026,
+    "subject": 1,
+    "session": "main",
+    "file": "subjects/M/2026/sujet-1.pdf",
+    "source": "https://www.dzexams.com/uploads/sujets/officiels/bac/2026/dzexams-bac-sciences-naturelles-1343688.pdf",
+    "pages": 3
+  },
+  {
+    "track": "M",
+    "year": 2026,
+    "subject": 2,
+    "session": "main",
+    "file": "subjects/M/2026/sujet-2.pdf",
+    "source": "https://www.dzexams.com/uploads/sujets/officiels/bac/2026/dzexams-bac-sciences-naturelles-1343688.pdf",
+    "pages": 3
+  },
+  {
+    "track": "SE",
+    "year": 2013,
+    "subject": 1,
+    "session": "main",
+    "file": "subjects/SE/2013/sujet-1.pdf",
+    "source": "https://www.dzexams.com/uploads/sujets/officiels/bac/2013/dzexams-bac-sciences-4463279.pdf",
+    "pages": 4
+  },
+  {
+    "track": "SE",
+    "year": 2013,
+    "subject": 2,
+    "session": "main",
+    "file": "subjects/SE/2013/sujet-2.pdf",
+    "source": "https://www.dzexams.com/uploads/sujets/officiels/bac/2013/dzexams-bac-sciences-4463279.pdf",
+    "pages": 4
+  },
+  {
+    "track": "SE",
+    "year": 2014,
+    "subject": 1,
+    "session": "main",
+    "file": "subjects/SE/2014/sujet-1.pdf",
+    "source": "https://www.dzexams.com/uploads/sujets/officiels/bac/2014/dzexams-bac-sciences-4380238.pdf",
+    "pages": 5
+  },
+  {
+    "track": "SE",
+    "year": 2014,
+    "subject": 2,
+    "session": "main",
+    "file": "subjects/SE/2014/sujet-2.pdf",
+    "source": "https://www.dzexams.com/uploads/sujets/officiels/bac/2014/dzexams-bac-sciences-4380238.pdf",
+    "pages": 5
+  },
+  {
+    "track": "SE",
+    "year": 2015,
+    "subject": 1,
+    "session": "main",
+    "file": "subjects/SE/2015/sujet-1.pdf",
+    "source": "https://www.dzexams.com/uploads/sujets/officiels/bac/2015/dzexams-bac-sciences-5906014.pdf",
+    "pages": 5
+  },
+  {
+    "track": "SE",
+    "year": 2015,
+    "subject": 2,
+    "session": "main",
+    "file": "subjects/SE/2015/sujet-2.pdf",
+    "source": "https://www.dzexams.com/uploads/sujets/officiels/bac/2015/dzexams-bac-sciences-5906014.pdf",
+    "pages": 5
+  },
+  {
+    "track": "SE",
+    "year": 2016,
+    "subject": 1,
+    "session": "main",
+    "file": "subjects/SE/2016/sujet-1.pdf",
+    "pages": 5
+  },
+  {
+    "track": "SE",
+    "year": 2016,
+    "subject": 2,
+    "session": "main",
+    "file": "subjects/SE/2016/sujet-2.pdf",
+    "pages": 5
+  },
+  {
+    "track": "SE",
+    "year": 2017,
+    "subject": 1,
+    "session": "main",
+    "file": "subjects/SE/2017/sujet-1.pdf",
+    "source": "https://www.dzexams.com/uploads/sujets/officiels/bac/2017/dzexams-bac-sciences-2581269.pdf",
+    "pages": 4
+  },
+  {
+    "track": "SE",
+    "year": 2017,
+    "subject": 2,
+    "session": "main",
+    "file": "subjects/SE/2017/sujet-2.pdf",
+    "source": "https://www.dzexams.com/uploads/sujets/officiels/bac/2017/dzexams-bac-sciences-2581269.pdf",
+    "pages": 4
+  },
+  {
+    "track": "SE",
+    "year": 2018,
+    "subject": 1,
+    "session": "main",
+    "file": "subjects/SE/2018/sujet-1.pdf",
+    "source": "https://www.dzexams.com/uploads/sujets/officiels/bac/2018/dzexams-bac-sciences-3509975.pdf",
+    "pages": 4
+  },
+  {
+    "track": "SE",
+    "year": 2018,
+    "subject": 2,
+    "session": "main",
+    "file": "subjects/SE/2018/sujet-2.pdf",
+    "source": "https://www.dzexams.com/uploads/sujets/officiels/bac/2018/dzexams-bac-sciences-3509975.pdf",
+    "pages": 5
+  },
+  {
+    "track": "SE",
+    "year": 2019,
+    "subject": 1,
+    "session": "main",
+    "file": "subjects/SE/2019/sujet-1.pdf",
+    "source": "https://www.dzexams.com/uploads/sujets/officiels/bac/2019/dzexams-bac-sciences-3051478.pdf",
+    "pages": 5
+  },
+  {
+    "track": "SE",
+    "year": 2019,
+    "subject": 2,
+    "session": "main",
+    "file": "subjects/SE/2019/sujet-2.pdf",
+    "source": "https://www.dzexams.com/uploads/sujets/officiels/bac/2019/dzexams-bac-sciences-3051478.pdf",
+    "pages": 4
+  },
+  {
+    "track": "SE",
+    "year": 2020,
+    "subject": 1,
+    "session": "main",
+    "file": "subjects/SE/2020/sujet-1.pdf",
+    "source": "https://www.dzexams.com/uploads/sujets/officiels/bac/2020/dzexams-bac-sciences-2356016.pdf",
+    "pages": 4
+  },
+  {
+    "track": "SE",
+    "year": 2020,
+    "subject": 2,
+    "session": "main",
+    "file": "subjects/SE/2020/sujet-2.pdf",
+    "source": "https://www.dzexams.com/uploads/sujets/officiels/bac/2020/dzexams-bac-sciences-2356016.pdf",
+    "pages": 5
+  },
+  {
+    "track": "SE",
+    "year": 2021,
+    "subject": 1,
+    "session": "main",
+    "file": "subjects/SE/2021/sujet-1.pdf",
+    "source": "https://www.dzexams.com/uploads/sujets/officiels/bac/2021/dzexams-bac-sciences-2728849.pdf",
+    "pages": 5
+  },
+  {
+    "track": "SE",
+    "year": 2021,
+    "subject": 2,
+    "session": "main",
+    "file": "subjects/SE/2021/sujet-2.pdf",
+    "source": "https://www.dzexams.com/uploads/sujets/officiels/bac/2021/dzexams-bac-sciences-2728849.pdf",
+    "pages": 5
+  },
+  {
+    "track": "SE",
+    "year": 2022,
+    "subject": 1,
+    "session": "main",
+    "file": "subjects/SE/2022/sujet-1.pdf",
+    "source": "https://www.dzexams.com/uploads/sujets/officiels/bac/2022/dzexams-bac-sciences-2311208.pdf",
+    "pages": 5
+  },
+  {
+    "track": "SE",
+    "year": 2022,
+    "subject": 2,
+    "session": "main",
+    "file": "subjects/SE/2022/sujet-2.pdf",
+    "source": "https://www.dzexams.com/uploads/sujets/officiels/bac/2022/dzexams-bac-sciences-2311208.pdf",
+    "pages": 5
+  },
+  {
+    "track": "SE",
+    "year": 2023,
+    "subject": 1,
+    "session": "main",
+    "file": "subjects/SE/2023/sujet-1.pdf",
+    "source": "https://eddirasa.com/wp-content/uploads/2023/06/eddirasa.com-bac-sciences-se-2023.pdf",
+    "pages": 4
+  },
+  {
+    "track": "SE",
+    "year": 2023,
+    "subject": 2,
+    "session": "main",
+    "file": "subjects/SE/2023/sujet-2.pdf",
+    "source": "https://eddirasa.com/wp-content/uploads/2023/06/eddirasa.com-bac-sciences-se-2023.pdf",
+    "pages": 6
+  },
+  {
+    "track": "SE",
+    "year": 2024,
+    "subject": 1,
+    "session": "main",
+    "file": "subjects/SE/2024/sujet-1.pdf",
+    "source": "https://www.dzexams.com/uploads/sujets/officiels/bac/2024/dzexams-bac-sciences-naturelles-1751784.pdf",
+    "pages": 5
+  },
+  {
+    "track": "SE",
+    "year": 2024,
+    "subject": 2,
+    "session": "main",
+    "file": "subjects/SE/2024/sujet-2.pdf",
+    "source": "https://www.dzexams.com/uploads/sujets/officiels/bac/2024/dzexams-bac-sciences-naturelles-1751784.pdf",
+    "pages": 5
+  },
+  {
+    "track": "SE",
+    "year": 2026,
+    "subject": 1,
+    "session": "main",
+    "file": "subjects/SE/2026/sujet-1.pdf",
+    "pages": 5
+  },
+  {
+    "track": "SE",
+    "year": 2026,
+    "subject": 2,
+    "session": "main",
+    "file": "subjects/SE/2026/sujet-2.pdf",
+    "pages": 5
+  },
+  {
+    "track": "M",
+    "year": 2017,
+    "subject": 1,
+    "session": "exceptional",
+    "file": "subjects/M/2017/exceptional/sujet-1.pdf",
+    "pages": 2
+  },
+  {
+    "track": "M",
+    "year": 2017,
+    "subject": 2,
+    "session": "exceptional",
+    "file": "subjects/M/2017/exceptional/sujet-2.pdf",
+    "pages": 2
+  },
+  {
+    "track": "SE",
+    "year": 2025,
+    "subject": 1,
+    "session": "main",
+    "file": "subjects/SE/2025/sujet-1.pdf",
+    "pages": 11
+  },
+  {
+    "track": "SE",
+    "year": 2025,
+    "subject": 2,
+    "session": "main",
+    "file": "subjects/SE/2025/sujet-2.pdf",
+    "pages": 11
+  }
+]

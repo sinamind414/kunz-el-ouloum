@@ -1,0 +1,160 @@
+{
+  "text": "تجاوز إلى المحتوى الرئيسي\nالورشة التفاعلية\nأ\n0\n|\n0 XP\nالوحدة 1: آليات تركيب البروتين\n\nالدرس 2: استنساخ المعلومة الوراثية\n\nخريطة المفاهيم (D3)\n0%\nالمجال الأول: التخصص الوظيفي للبروتينات\n\nتقوم العنكبوت بإنتاج كميات معتبرة من الخيوط لبناء بيتها الذي يقوم في آن واحد بدور مصيدة لاصطياد فريستها. تتكون خيوط العنكبوت أساساً من بروتين يدعى الفيبروين. لا تقتصر العنكبوت على إنتاج بروتين الفيبروين، وإنما تقوم بتصنيع عدد كبير من البروتينات داخل خلاياها مثلها في ذلك مثل باقي الكائنات الحية الحيوانية والنباتية والدقيقة.\n\nالنواة (ADN → ARNm)\nالمرحلة 1: نسخ الحمض النووي (mRNA)\n\nداخل النواة\n\nالهيولى (انتقال ARNm)\nالمرحلة 2: انتقال (mRNA) إلى الهيولى\n\nوربطه بالريبوزوم\n\nالترجمة (tRNA + أحماض أمينية)\nالمرحلة 3: ترجمة (mRNA) إلى بروتين\n\nربط الأحماض الأمينية\n\nالنتيجة:\n\nبروتين نهائي وظيفي، تتشكل البروتينات النهائية عن طريق ربط الأحماض الأمينية.\n\n1\nالكلمة المقدسة الأولى: السلسلة الناسخة\n\nيتم التعبير عن المعلومة الوراثية على مرحلتين: الاستنساخ في النواة يتم انطلاقا من إحدى سلسلتي الـ ADN وتسمى............\n\nالسلسلة غير الناسخة\nالسلسلة المحمولة\nالسلسلة الناسخة\nسؤال الإنتاج: لماذا نسميها \"ناسخة\"؟ (أجب في سطر واحد)\nتحقق\nهذه Leçon Mot par Mot تعتمد على محاكاة SVG مدمجة - لا تحتاج إنترنت خارجي للصور 🚀\nالرئيسية\nAccueil\nالدروس\nApprendre\nالتمارين والتدريب\nS'entraîner\nمفتاح المنهجية\nMéthode\nالمراجعة\nRéviser\nأنا\nMoi",
+  "buttons": [
+    {
+      "text": "",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "أ",
+      "label": "حجم النص",
+      "testid": "taille-texte-btn",
+      "disabled": false
+    },
+    {
+      "text": "الرئيسيةAccueil",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "الدروسApprendre",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "التمارين والتدريبS'entraîner",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "مفتاح المنهجيةMéthode",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "المراجعةRéviser",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "أناMoi",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "خريطة المفاهيم (D3)",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "السلسلة غير الناسخة",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "السلسلة المحمولة",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "السلسلة الناسخة",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "تحقق",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "الرئيسية\nAccueil",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "الدروس\nApprendre",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "التمارين والتدريب\nS'entraîner",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "مفتاح المنهجية\nMéthode",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "المراجعة\nRéviser",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "أنا\nMoi",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "",
+      "label": "القبطان — مُرشد كنز العلوم",
+      "testid": "fab-morchid",
+      "disabled": false
+    },
+    {
+      "text": "",
+      "label": "تكبير الشكل",
+      "testid": null,
+      "disabled": false
+    }
+  ],
+  "testids": [
+    "taille-texte-btn",
+    "fab-morchid"
+  ],
+  "inputs": [
+    {
+      "type": "text",
+      "label": null,
+      "placeholder": "اكتب إجابتك هنا أو استخدم الميكروفون..."
+    }
+  ],
+  "width": 390,
+  "scrollWidth": 390,
+  "storage": {
+    "boussole_prescriptions_v1": "{\"prescriptions\":[{\"motif\":\"accueil:training\",\"cible\":\"training\",\"emisMs\":1793357032978,\"issue\":\"ignoree\",\"resoluMs\":1793357036344}],\"motifs\":{\"accueil:training\":{\"dits\":1,\"suivis\":0,\"ignores\":1,\"expires\":0}}}",
+    "theme": "light",
+    "boussole_token": "audit-local-fixture-not-a-real-token",
+    "kunz_acces": "{\"statut\":\"essai\",\"expireLe\":\"2099-06-30\"}",
+    "kunz_declic_last_id_v1": "dem_01",
+    "boussole_capitaine_invitation_ignoree": "1793357036344",
+    "boussole_conseils_rubriques_vus": "[\"situations\",\"schemas\",\"reviser\",\"lesson\",\"examens\",\"training\"]",
+    "kunz_declic_shown_v1": "2026-10-30"
+  }
+}

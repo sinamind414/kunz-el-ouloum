@@ -31,7 +31,7 @@ function norm(s: string): string {
 }
 
 const livre = JSON.parse(readFileSync(join(process.cwd(), 'data', 'bookContent.json'), 'utf-8'));
-const tdmBrut = readFileSync(join(process.cwd(), 'book_tdm_clean.md'), 'utf-8');
+const tdmBrut = readFileSync(join(process.cwd(), 'uploads_externes', 'book_tdm_clean.md'), 'utf-8');
 const lignes: string[] = livre.book.full_text;
 const nLignes = lignes.map(norm);
 

@@ -101,6 +101,46 @@ export interface PlanOptions {
   daysLeft: number;
   /** Budget quotidien en minutes (20 à 240). */
   minutesPerDay: number;
+  /**
+   * 2026-11-04 (audit H1) : l'accès RÉEL de l'élève. Absent ⇒ tout est ouvert
+   * (comportement d'un abonné, inchangé pour les verrous existants).
+   * Audit 8 axes (novembre 2026) : 41 % du temps d'un plan invité tombait sur
+   * des unités payantes (U6 en tête de liste) et des gestes servis par des
+   * rubriques fermées — le coach s'interrompait au milieu de sa propre
+   * consigne. Le moteur devient fidèle : il ne programme QUE ce que l'élève
+   * peut réellement ouvrir. Paramètre explicite (pas de lecture cachée du
+   * stockage ici) : le plan reste pur et déterministe, verrouilé par tests.
+   */
+  acces?: PlanAcces;
+}
+
+/** Accès réel, mesuré côté vue par `utils/acces.ts` (uniteOuverte / rubriquePayanteOuverte). */
+export interface PlanAcces {
+  /** Unités réellement ouvertes (invité : le المجال 1 entier, U1-U5). */
+  unites: readonly number[];
+  /** Gestes réellement ouverts (invité : capsule + carte — les schémas,
+   *  situations, rédactions et montages vivent dans des rubriques payantes). */
+  gestes: readonly TaskKind[];
+}
+
+/**
+ * Gestes qui OUVRENT une rubrique payante (mesures 2026-11-04) :
+ * SchemaDrillView → `rubriquePayanteOuverte()` (l. 344), SituationBankView
+ * (l. 472), BacIdeasView (l. 574 : la ورشة ET ses montages l. 174-250).
+ * Capsule et carte dépendent de l'unité (`uniteOuverte`), pas de la rubrique.
+ */
+export const GESTES_RUBRIQUE_PAYANTE: readonly TaskKind[] = [
+  'schema',
+  'situation',
+  'redaction',
+  'montage',
+];
+
+/** Gestes ouverts pour un niveau d'accès donné (pur — la vue fournit le booléen). */
+export function gestesOuverts(rubriquePayante: boolean): readonly TaskKind[] {
+  return rubriquePayante
+    ? ORDRE_NORMAL
+    : ORDRE_NORMAL.filter((k) => !GESTES_RUBRIQUE_PAYANTE.includes(k));
 }
 
 /**
@@ -159,11 +199,11 @@ export function prioritizedUnitIds(): number[] {
  * Les occurrences sont étalées (méthode du plus grand reste) pour qu'une unité
  * lourde revienne régulièrement au lieu d'être servie en bloc.
  */
-export function weightedUnitSequence(): number[] {
-  const unites = prioritizedUnitIds();
-  const min = Math.min(...unites.map(unitPriority));
+export function weightedUnitSequence(unites?: readonly number[]): number[] {
+  const base = unites ?? prioritizedUnitIds();
+  const min = Math.min(...base.map(unitPriority));
   const occurrences: { unitId: number; position: number; priority: number }[] = [];
-  for (const unitId of unites) {
+  for (const unitId of base) {
     const parts = Math.max(1, Math.round(unitPriority(unitId) / min));
     for (let k = 0; k < parts; k += 1) {
       occurrences.push({ unitId, position: (k + 0.5) / parts, priority: unitPriority(unitId) });
@@ -359,12 +399,30 @@ function buildQueue(
  * Construit le plan. Déterministe : mêmes options ⇒ même plan, ce qui permet
  * à l'élève de retrouver sa journée d'hier et au test de la vérifier.
  */
-export function buildRevisionPlan({ daysLeft, minutesPerDay }: PlanOptions): RevisionPlan {
+export function buildRevisionPlan({ daysLeft, minutesPerDay, acces }: PlanOptions): RevisionPlan {
   const jours = Math.min(60, Math.max(1, Math.round(daysLeft)));
   const budget = Math.min(240, Math.max(20, Math.round(minutesPerDay)));
 
-  const sequence = weightedUnitSequence();
-  const pools = new Map(prioritizedUnitIds().map((u) => [u, poolForUnit(u)]));
+  // H1 (audit 8 axes) : les unités fermées ne produisent PAS de tâches. Sans
+  // `acces`, comportement abonné inchangé (verrouillage identique).
+  const unitesDisponibles = acces
+    ? prioritizedUnitIds().filter((u) => acces.unites.includes(u))
+    : prioritizedUnitIds();
+  // Hints diagonaux : on plafonne par geste en amont — une rubrique fermée ne
+  // remplit pas sa file, donc son geste tombe tout seul de la rotation.
+  const gestes = acces ? new Set<TaskKind>(acces.gestes) : null;
+  const sequence = weightedUnitSequence(unitesDisponibles);
+  const pools = new Map(
+    unitesDisponibles.map((u) => {
+      const brut = poolForUnit(u);
+      if (!gestes) return [u, brut];
+      const filtré = {} as ReturnType<typeof poolForUnit>;
+      for (const [k, liste] of Object.entries(brut)) {
+        (filtré as Record<string, PlanTask[]>)[k] = gestes.has(k as TaskKind) ? liste : [];
+      }
+      return [u, filtré];
+    }),
+  );
   const queue = buildQueue(pools, sequence, jours * Math.ceil(budget / 5) + 40);
   const consomme = new Array<boolean>(queue.length).fill(false);
 

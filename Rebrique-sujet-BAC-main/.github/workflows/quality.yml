@@ -1,0 +1,72 @@
+name: Quality
+
+on:
+  push:
+    branches: [main, arena/**]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run typecheck
+      - run: npm run format:check
+      - run: npm test
+      - run: npm run build
+      - run: npm run release:verify
+      - run: npm run docs:check
+      - run: npx playwright install --with-deps chromium
+      - run: npm run test:e2e
+      # D12 — portes d'acceptation du projet. P1 et P2 sont INCOMPLÈTES
+      # (P1 3/6, P2 6/7) : les exécuter en bloquant rendrait la CI rouge en
+      # permanence, ce qui ferait ignorer tous les autres signaux. On les publie
+      # donc sans bloquer, pour que l'écart soit visible à chaque push plutôt que
+      # découvert à la main. Les retirer de `continue-on-error` dès que les
+      # critères restants sont fermés.
+      - name: P1 — inventaires et copies (attendu INCOMPLET)
+        if: always()
+        continue-on-error: true
+        run: npm run p1:check
+      - name: P2 — qualité des contenus (attendu INCOMPLET)
+        if: always()
+        continue-on-error: true
+        run: npm run p2:check
+      # Dossier juridique : deux documents générés depuis subjects/manifest.json
+      # et l'arbre de code. Ils décrivent le périmètre des contenus tiers et
+      # l'impact d'une bascule vers les liens externes — un dossier périmé
+      # ferait prendre une décision juridique sur des chiffres faux. Bloquants,
+      # donc : --check compare le document committé au document régénéré.
+      - name: Dossier de demande d'autorisation (généré, bloquant)
+        if: always()
+        run: npm run rights:check
+      - name: Impact des liens externes (généré, bloquant)
+        if: always()
+        run: npm run impact:check
+      # P3 est fermé (6/6) : il devient bloquant, conformément à la règle ci-dessus.
+      # `p3:check` ne lit que le système de fichiers du dépôt — ni réseau, ni
+      # `process.env`, ni artefact de build — donc son résultat est déterministe.
+      - name: P3 — poids et empreinte (6/6, bloquant)
+        if: always()
+        run: npm run p3:check
+      # Couche texte des PDF officiels : 6/40 seulement permettent une relecture
+      # assistée. Bloquer ici rendrait la CI rouge en permanence ; on publie
+      # l'écart. Ce n'est pas un garde-fou à « réparer » : voir T3 dans
+      # PROMPT_REPRISE.md — le reste exige une relecture humaine.
+      - name: Couche texte des PDF (6/40, attendu INCOMPLET)
+        if: always()
+        continue-on-error: true
+        run: npm run pdftext:check
+      - name: Calibration — état réel du banc
+        if: always()
+        continue-on-error: true
+        run: npm run calibration

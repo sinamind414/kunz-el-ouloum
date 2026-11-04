@@ -145,7 +145,7 @@ describe('data/bookContent.index.json — index de localisation des 55 chapitres
   });
 
   it('tout chapitre a une preuve non vide ; chaque titre AR est celui de la TDM propre', () => {
-    const tdm = readFileSync(join(process.cwd(), 'book_tdm_clean.md'), 'utf-8');
+    const tdm = readFileSync(join(process.cwd(), 'uploads_externes', 'book_tdm_clean.md'), 'utf-8');
     const titresTdm = (tdm.match(/^\d+\.\s*(.+)$/gm) ?? []).map((l) =>
       l.replace(/^\d+\.\s*/, '').split(/\s*-\s*/)[0].trim()
     );

@@ -1,0 +1,25 @@
+node_modules
+dist
+*.log
+.DS_Store
+Thumbs.db
+image-search/
+test-results/
+playwright-report/
+
+# Sujets d'examen bruts (M/, SE/) — contenus tiers, non redistribuables.
+# Retirés de l'index le 2026-09-19 (option B de PROMPT_DECISIONS_PROPRIETAIRE.md) :
+# ils n'étaient ni servis ni lus à l'exécution, et doublaient les URL externes
+# dzexams déjà référencées. La provenance est désormais dans subjects/manifest.json
+# (champ "source", URL externe).
+# NE PAS RÉINTÉGRER sans autorisation écrite documentée dans docs/CONTENT_RIGHTS.md.
+# Attention : ces fichiers restent dans l'HISTORIQUE Git (git rm --cached ne purge
+# rien) ; seul git filter-repo les supprimerait, au prix d'une réécriture des SHA.
+# Ancré à la racine (/M/) pour ne pas ignorer scripts/extracted/M/** (preuves OCR).
+/M/
+# Ancré à la racine (/SE/) pour ne pas ignorer data/years/se/** (les fichiers
+# d'années SVT passent bien par Prettier — angle mort fermé le 2026-09-20).
+/SE/
+
+# Renders de travail pour les checklists de relecture (ne jamais committer).
+rendered/

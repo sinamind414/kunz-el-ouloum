@@ -1,0 +1,5562 @@
+{
+  "chapters": [
+    {
+      "domain": 1,
+      "unit": 1,
+      "chapter": 1,
+      "titreAr": "تذكير بالمكتسبات",
+      "ligneDebut": 542,
+      "mode": "verbatim-ligne",
+      "evidence": "النشاط O التذكير بالمكتسبات",
+      "ligneFin": 543
+    },
+    {
+      "domain": 1,
+      "unit": 1,
+      "chapter": 2,
+      "titreAr": "مقر تركيب البروتين",
+      "ligneDebut": 544,
+      "mode": "verbatim-ligne",
+      "evidence": "النشاط 0: مقر تركيب البروتين",
+      "ligneFin": 548
+    },
+    {
+      "domain": 1,
+      "unit": 1,
+      "chapter": 3,
+      "titreAr": "استنساخ المعلومات الوراثية الموجودة على مستوى ADN",
+      "ligneDebut": 549,
+      "mode": "tiges",
+      "evidence": "النشاط ٥: استنساخ المعلومات الوراثية الموجودة على مستوى ال ADN",
+      "tiges": [
+        "المعلومات",
+        "الوراثيه"
+      ],
+      "ligneFin": 555
+    },
+    {
+      "domain": 1,
+      "unit": 1,
+      "chapter": 4,
+      "titreAr": "الترجمة",
+      "ligneDebut": 556,
+      "mode": "verbatim-ligne",
+      "evidence": "النشاط 0: الترجمة",
+      "ligneFin": 565
+    },
+    {
+      "domain": 1,
+      "unit": 1,
+      "chapter": 5,
+      "titreAr": "مراحل الترجمة",
+      "ligneDebut": 566,
+      "mode": "verbatim-ligne",
+      "evidence": "النشاط 0: مراحل الترجمة",
+      "ligneFin": 650
+    },
+    {
+      "domain": 1,
+      "unit": 2,
+      "chapter": 6,
+      "titreAr": "تمثيل البنية الفراغية للبروتين",
+      "ligneDebut": 651,
+      "mode": "verbatim-ligne",
+      "evidence": "-\tكيفية تمثيل البنية الفراغية للبروتينات.",
+      "ligneFin": 672
+    },
+    {
+      "domain": 1,
+      "unit": 2,
+      "chapter": 7,
+      "titreAr": "مستويات البنية الفراغية للبروتينات",
+      "ligneDebut": 673,
+      "mode": "verbatim-ligne",
+      "evidence": "مستويات البنية الفراغية للبروتينات",
+      "ligneFin": 729
+    },
+    {
+      "domain": 1,
+      "unit": 2,
+      "chapter": 8,
+      "titreAr": "العلاقة بين بنية ووظيفة البروتين",
+      "ligneDebut": 730,
+      "mode": "verbatim-ligne",
+      "evidence": "» ما هي العلاقة بين بنية ووظيفة البروتين ؟",
+      "ligneFin": 970
+    },
+    {
+      "domain": 1,
+      "unit": 3,
+      "chapter": 9,
+      "titreAr": "مفهوم الإنزيم وأهميته",
+      "ligneDebut": 971,
+      "mode": "verbatim-ligne",
+      "evidence": "1.\tمفهوم الإنزيم وأهميته.",
+      "ligneFin": 971
+    },
+    {
+      "domain": 1,
+      "unit": 3,
+      "chapter": 10,
+      "titreAr": "النشاط الإنزيمي وعلاقته ببنية الإنزيم",
+      "ligneDebut": 972,
+      "mode": "verbatim-ligne",
+      "evidence": "2.\tالنشاط الإنزيمي وعلاقته ببنية الإنزيم.",
+      "ligneFin": 972
+    },
+    {
+      "domain": 1,
+      "unit": 3,
+      "chapter": 11,
+      "titreAr": "دراسة تأثير تغير درجة pH الوسط على نشاط الإنزيم",
+      "ligneDebut": 973,
+      "mode": "tiges",
+      "evidence": "3.\tدراسة تأثير تغير درجة ! 1 الوسط على نشاط الإنزيم.",
+      "tiges": [
+        "الانزيم",
+        "دراسه"
+      ],
+      "ligneFin": 973
+    },
+    {
+      "domain": 1,
+      "unit": 3,
+      "chapter": 12,
+      "titreAr": "دراسة تأثير تغيرات درجة الحرارة على نشاط الإنزيم",
+      "ligneDebut": 974,
+      "mode": "verbatim-ligne",
+      "evidence": "4.\tدراسة تأثير تغيرات درجة الحرارة على نشاط الإنزيم.",
+      "ligneFin": 1283
+    },
+    {
+      "domain": 1,
+      "unit": 4,
+      "chapter": 13,
+      "titreAr": "تذكير بالمكتسبات",
+      "ligneDebut": 1284,
+      "mode": "verbatim-ligne",
+      "evidence": "تذكير بالمكتسبات",
+      "ligneFin": 1306
+    },
+    {
+      "domain": 1,
+      "unit": 4,
+      "chapter": 14,
+      "titreAr": "الذات واللاذات",
+      "ligneDebut": 1307,
+      "mode": "verbatim-ligne",
+      "evidence": "الذات واللاذات",
+      "ligneFin": 1584
+    },
+    {
+      "domain": 1,
+      "unit": 4,
+      "chapter": 15,
+      "titreAr": "الحزينات الدفاعية في الحالة الأولى",
+      "ligneDebut": 1585,
+      "mode": "tiges",
+      "evidence": "86 الجزينات الدفاعية في الحالة الاولى",
+      "tiges": [
+        "الدفاعيه",
+        "الحاله"
+      ],
+      "ligneFin": 1587
+    },
+    {
+      "domain": 1,
+      "unit": 4,
+      "chapter": 16,
+      "titreAr": "المعقد المناعي",
+      "ligneDebut": 1588,
+      "mode": "verbatim-ligne",
+      "evidence": "المعقد المناعي",
+      "ligneFin": 1678
+    },
+    {
+      "domain": 1,
+      "unit": 4,
+      "chapter": 17,
+      "titreAr": "مصدر الأجسام المضادة",
+      "ligneDebut": 1679,
+      "mode": "verbatim-ligne",
+      "evidence": "مصدر الأجسام المضادة",
+      "ligneFin": 1795
+    },
+    {
+      "domain": 1,
+      "unit": 4,
+      "chapter": 18,
+      "titreAr": "العناصر الدفاعية في الحالة الثانية",
+      "ligneDebut": 1796,
+      "mode": "inferred-borne",
+      "evidence": "bannière p.97 absente de l OCR — borné par طرق تأثير (l.1797) ; récap l.2179 écarté",
+      "ambigu": true,
+      "ligneFin": 1796
+    },
+    {
+      "domain": 1,
+      "unit": 4,
+      "chapter": 19,
+      "titreAr": "طرق تأثير اللمفاويات LTc",
+      "ligneDebut": 1797,
+      "mode": "ancre-documentee",
+      "evidence": "en-tête OCR l.1797 (LTc tronqué en LT) ; p.98",
+      "ambigu": true,
+      "ligneFin": 1849
+    },
+    {
+      "domain": 1,
+      "unit": 4,
+      "chapter": 20,
+      "titreAr": "مصدر اللمفاويات LTc",
+      "ligneDebut": 1850,
+      "mode": "ancre-documentee",
+      "evidence": "en-tête OCR l.1850 ; p.100",
+      "ambigu": true,
+      "ligneFin": 1973
+    },
+    {
+      "domain": 1,
+      "unit": 4,
+      "chapter": 21,
+      "titreAr": "تحفيز الخلايا LB و LT",
+      "ligneDebut": 1974,
+      "mode": "tiges",
+      "evidence": "هآلية تحفيز الخلايا اللمفاوية",
+      "tiges": [
+        "الخلايا",
+        "تحفيز"
+      ],
+      "ligneFin": 1986
+    },
+    {
+      "domain": 1,
+      "unit": 4,
+      "chapter": 22,
+      "titreAr": "اختيار نمط الاستجابة المناعية",
+      "ligneDebut": 1987,
+      "mode": "verbatim-ligne",
+      "evidence": "إختيار نمط الاستجابة المناعية",
+      "ligneFin": 2099
+    },
+    {
+      "domain": 1,
+      "unit": 4,
+      "chapter": 23,
+      "titreAr": "سبب فقدان المناعة المكتسبة",
+      "ligneDebut": 2100,
+      "mode": "verbatim-ligne",
+      "evidence": "سبب فقدان المناعة المكتسبة",
+      "ligneFin": 2423
+    },
+    {
+      "domain": 1,
+      "unit": 5,
+      "chapter": 24,
+      "titreAr": "تذكير بالمكتسبات",
+      "ligneDebut": 2424,
+      "mode": "verbatim-ligne",
+      "evidence": "تذكير بالمكتسبات",
+      "ligneFin": 2450
+    },
+    {
+      "domain": 1,
+      "unit": 5,
+      "chapter": 25,
+      "titreAr": "النقل المشبكي (الكمون الغشائي)",
+      "ligneDebut": 2451,
+      "mode": "verbatim-ligne",
+      "evidence": "130 النقل المشبكي (الكمون الغشائي)",
+      "ligneFin": 2489
+    },
+    {
+      "domain": 1,
+      "unit": 5,
+      "chapter": 26,
+      "titreAr": "آلية النقل المشبكي",
+      "ligneDebut": 2490,
+      "mode": "verbatim-ligne",
+      "evidence": "النقاط3 الية النقل المشبكي",
+      "ligneFin": 2566
+    },
+    {
+      "domain": 1,
+      "unit": 5,
+      "chapter": 27,
+      "titreAr": "كمون الراحة",
+      "ligneDebut": 2567,
+      "mode": "verbatim-ligne",
+      "evidence": "4.\tيدعى التسجيل (ب) بكمون الراحة علل.",
+      "ligneFin": 2706
+    },
+    {
+      "domain": 1,
+      "unit": 5,
+      "chapter": 28,
+      "titreAr": "كمون العمل",
+      "ligneDebut": 2707,
+      "mode": "verbatim-ligne",
+      "evidence": "142 كمون العمل",
+      "ligneFin": 2797
+    },
+    {
+      "domain": 1,
+      "unit": 5,
+      "chapter": 29,
+      "titreAr": "آلية الإدماج العصبي",
+      "ligneDebut": 2798,
+      "mode": "verbatim-ligne",
+      "evidence": "آلية الادماج العصبي",
+      "ligneFin": 2909
+    },
+    {
+      "domain": 1,
+      "unit": 5,
+      "chapter": 30,
+      "titreAr": "تأثير المخدرات على مستوى المشابك",
+      "ligneDebut": 2910,
+      "mode": "verbatim-ligne",
+      "evidence": "تأثير المخدرات على مستوى المشابك",
+      "ligneFin": 2986
+    },
+    {
+      "domain": 2,
+      "unit": 1,
+      "chapter": 31,
+      "titreAr": "تذكير بالمكتسبات",
+      "ligneDebut": 2987,
+      "mode": "verbatim-ligne",
+      "evidence": "النشاط O التذكير بالمكتسبات",
+      "ligneFin": 3317
+    },
+    {
+      "domain": 2,
+      "unit": 1,
+      "chapter": 32,
+      "titreAr": "مقر عملية التركيب الضوئي",
+      "ligneDebut": 3318,
+      "mode": "verbatim-ligne",
+      "evidence": "مقر عملية التركيب الضوئي -ما فوق البنية الخلوية",
+      "ligneFin": 3470
+    },
+    {
+      "domain": 2,
+      "unit": 1,
+      "chapter": 33,
+      "titreAr": "تفاعلات المرحلة الكيموضوئية",
+      "ligneDebut": 3471,
+      "mode": "verbatim-ligne",
+      "evidence": "0 تسلسل تفاعلات المرحلة الكيموضوئية",
+      "ligneFin": 3620
+    },
+    {
+      "domain": 2,
+      "unit": 1,
+      "chapter": 34,
+      "titreAr": "تفاعلات المرحلة الكيموحيوية",
+      "ligneDebut": 3621,
+      "mode": "verbatim-ligne",
+      "evidence": "194 تفاعلات المرحلة الكيموحيوية",
+      "ligneFin": 3754
+    },
+    {
+      "domain": 2,
+      "unit": 2,
+      "chapter": 35,
+      "titreAr": "تذكير بالمكتسبات",
+      "ligneDebut": 3755,
+      "mode": "verbatim-ligne",
+      "evidence": "تذكير بالمكتسبات",
+      "ligneFin": 3765
+    },
+    {
+      "domain": 2,
+      "unit": 2,
+      "chapter": 36,
+      "titreAr": "مقر الأكسدة التنفسية",
+      "ligneDebut": 3766,
+      "mode": "verbatim-ligne",
+      "evidence": "مقر الأكسدة التنفسية",
+      "ligneFin": 3818
+    },
+    {
+      "domain": 2,
+      "unit": 2,
+      "chapter": 37,
+      "titreAr": "التحلل السكري",
+      "ligneDebut": 3819,
+      "mode": "verbatim-ligne",
+      "evidence": "التحلل السكري",
+      "ligneFin": 3885
+    },
+    {
+      "domain": 2,
+      "unit": 2,
+      "chapter": 38,
+      "titreAr": "مراحل تفكك حمض البيروفيك (تفاعلات حلقة كريبس)",
+      "ligneDebut": 3886,
+      "mode": "verbatim-ligne",
+      "evidence": "مراحل تفكك حمض البيروفيك (تفاعلات حلقة كريبس)",
+      "ligneFin": 3972
+    },
+    {
+      "domain": 2,
+      "unit": 2,
+      "chapter": 39,
+      "titreAr": "الفسفرة التأكسدية",
+      "ligneDebut": 3973,
+      "mode": "verbatim-ligne",
+      "evidence": "الفسفرة التأكسدية",
+      "ligneFin": 4250
+    },
+    {
+      "domain": 2,
+      "unit": 2,
+      "chapter": 40,
+      "titreAr": "آليات تحويل الطاقة الكيميائية الكامنة في وسط لا هوائي",
+      "ligneDebut": 4251,
+      "mode": "tiges",
+      "evidence": "استخراج الطاقة الكيميائية الكامنة في الجزيئات العضوية",
+      "tiges": [
+        "الكيمياييه",
+        "الكامنه"
+      ],
+      "ligneFin": 4276
+    },
+    {
+      "domain": 2,
+      "unit": 3,
+      "chapter": 41,
+      "titreAr": "التحولات الطاقوية على المستوى الخلوي",
+      "ligneDebut": 4277,
+      "mode": "verbatim-ligne",
+      "evidence": "236 التحولات الطاقوية على المستوى الخلوي",
+      "ligneFin": 4341
+    },
+    {
+      "domain": 3,
+      "unit": 1,
+      "chapter": 42,
+      "titreAr": "تحديد الصفائح التكتونية",
+      "ligneDebut": 4342,
+      "mode": "verbatim-ligne",
+      "evidence": "تحديد الصفائح التكتونية",
+      "ligneFin": 4599
+    },
+    {
+      "domain": 3,
+      "unit": 1,
+      "chapter": 43,
+      "titreAr": "حركات الصفائح التكتونية",
+      "ligneDebut": 4600,
+      "mode": "verbatim-ligne",
+      "evidence": "النشاط 0: حركات الصفائح التكتونية",
+      "ligneFin": 4618
+    },
+    {
+      "domain": 3,
+      "unit": 1,
+      "chapter": 44,
+      "titreAr": "الطاقة الداخلية للكرة الأرضية",
+      "ligneDebut": 4619,
+      "mode": "verbatim-ligne",
+      "evidence": "لنشاط © الطاقة الداخلية للكرة الأرضية",
+      "ligneFin": 4702
+    },
+    {
+      "domain": 3,
+      "unit": 2,
+      "chapter": 45,
+      "titreAr": "الموجات الزلزالية",
+      "ligneDebut": 4703,
+      "mode": "verbatim-ligne",
+      "evidence": "1.\tالموجات الزلزالية.",
+      "ligneFin": 4703
+    },
+    {
+      "domain": 3,
+      "unit": 2,
+      "chapter": 46,
+      "titreAr": "التركيب الكيميائي لصخور القشرة الأرضية والمعطف (البرنس)",
+      "ligneDebut": 4704,
+      "mode": "tiges",
+      "evidence": "2.\tالتركيب الكيميائي لصخور القشرة الأرضية والبرنس (المعطف).",
+      "tiges": [
+        "الكيميايي",
+        "التركيب"
+      ],
+      "ligneFin": 4704
+    },
+    {
+      "domain": 3,
+      "unit": 2,
+      "chapter": 47,
+      "titreAr": "نمذجة البنية الداخلية للكرة الأرضية",
+      "ligneDebut": 4705,
+      "mode": "verbatim-ligne",
+      "evidence": "3.\tنمذجة البنية الداخلية للكرة الأرضية.",
+      "ligneFin": 5306
+    },
+    {
+      "domain": 3,
+      "unit": 3,
+      "chapter": 48,
+      "titreAr": "الظواهر المرتبطة بالبناء (خصائص الظهرات وسط محيطية)",
+      "ligneDebut": 5307,
+      "mode": "tiges",
+      "evidence": "»مامي الظواهر اجيولوجية المرتبطة بهذه المناطق وكيف نفسر التقاريس الناستة عنها)",
+      "tiges": [
+        "المرتبطه",
+        "الظواهر"
+      ],
+      "ligneFin": 5934
+    },
+    {
+      "domain": 3,
+      "unit": 3,
+      "chapter": 49,
+      "titreAr": "المغماتية وتشكل اللوح المحيطي",
+      "ligneDebut": 5935,
+      "mode": "verbatim-ligne",
+      "evidence": "النشاط 0: المغماتية وتشكل اللوح المحيطي",
+      "ligneFin": 5939
+    },
+    {
+      "domain": 3,
+      "unit": 3,
+      "chapter": 50,
+      "titreAr": "تشكل الصخور المميزة للظهرة وسط محيطية",
+      "ligneDebut": 5940,
+      "mode": "tiges",
+      "evidence": "النشاط 0: تشكل التضاريس المميزة للظهرة وسط محيطية",
+      "tiges": [
+        "المميزه",
+        "للظهره"
+      ],
+      "ligneFin": 5949
+    },
+    {
+      "domain": 3,
+      "unit": 3,
+      "chapter": 51,
+      "titreAr": "الظواهر المرتبطة بالغوص",
+      "ligneDebut": 5950,
+      "mode": "verbatim-ligne",
+      "evidence": "النشاط ٥: الظواهر المرتبطة بالغوص",
+      "ligneFin": 5952
+    },
+    {
+      "domain": 3,
+      "unit": 3,
+      "chapter": 52,
+      "titreAr": "اختفاء اللوح المحيطي والظواهر المرتبطة بالغوص",
+      "ligneDebut": 5953,
+      "mode": "tiges",
+      "evidence": "النشاط ٥: اختفه اللوح المحيطي والظواهر المرتبطة بالغوص",
+      "tiges": [
+        "والظواهر",
+        "المرتبطه"
+      ],
+      "ligneFin": 5966
+    },
+    {
+      "domain": 3,
+      "unit": 3,
+      "chapter": 53,
+      "titreAr": "التضاريس الناجمة عن التصادم",
+      "ligneDebut": 5967,
+      "mode": "tiges",
+      "evidence": "النشاط 0: التضاريس الناشئة عن التصادم",
+      "tiges": [
+        "التضاريس",
+        "التصادم"
+      ],
+      "ligneFin": 5971
+    },
+    {
+      "domain": 3,
+      "unit": 3,
+      "chapter": 54,
+      "titreAr": "شواهد التقلص",
+      "ligneDebut": 5972,
+      "mode": "verbatim-ligne",
+      "evidence": "النشاط 0: شواهد التقلص",
+      "ligneFin": 5977
+    },
+    {
+      "domain": 3,
+      "unit": 3,
+      "chapter": 55,
+      "titreAr": "شواهد محيط قديم",
+      "ligneDebut": 5978,
+      "mode": "verbatim-ligne",
+      "evidence": "شواهد محيط قديم",
+      "ligneFin": 6104
+    }
+  ],
+  "book": [
+    {
+      "chapitre": 1,
+      "question": "أين تتواجد جزيئة الـ ADN عند الكائنات حقيقية النواة، وماذا تحمل؟",
+      "options": [
+        "في الهيولى حرة، ولا تحمل أي معلومة",
+        "داخل الرايبوزومات، وتصنع البروتينات بنفسها",
+        "داخل النواة، وتحمل المعلومات الوراثية الضرورية لتركيب البروتينات"
+      ],
+      "correct": 2,
+      "schema": "assets/images/schemas/domaine1_proteines/schema_01_adn.svg",
+      "explication": "النواة مقر الـ ADN عند حقيقيات النواة، وهي حامل المعلومة الوراثية للتركيب الحيوي للبروتينات (البداية l.542)."
+    },
+    {
+      "chapitre": 13,
+      "question": "يُظهر رفض الطعم (زراعة الجلد بين شخصين مختلفين) أن العضوية:",
+      "options": [
+        "تقبل أي طعم بشرط أن يكون من نفس زمرة الدم",
+        "تميّز اللاذات وترفضها لأنها غريبة عن هويتها البيولوجية",
+        "تفقد القدرة على التمييز بعد الجراحة فقط"
+      ],
+      "correct": 1,
+      "schema": "assets/images/schemas/domaine1_proteines/schema_19_immunite_cmh.svg",
+      "explication": "وثيقة 3 من التذكير (l.1302) : رفض الطعم = دليل على التعرف على اللاذات ورفضها رفضاً مناعياً."
+    },
+    {
+      "chapitre": 13,
+      "question": "التفاعلات الالتهابية عند الإصابة (أحمر، سخن، ألم) تتم في مستوى:",
+      "options": [
+        "أحد الخطوط الدفاعية الأولى التي تمنع انتشار العنصر الغريب",
+        "الخط الدفاعي النوعي الثالث حصراً",
+        "النخاع الشوكي فقط دون تدخل الجلد"
+      ],
+      "correct": 0,
+      "schema": "assets/images/schemas/domaine1_proteines/schema_19_immunite_cmh.svg",
+      "explication": "النشاط (l.1298) : الالتهاب نموذج لدفاع فطري مبكر يحد من انتشار العامل الغريب قبل الاستجابة النوعية."
+    },
+    {
+      "chapitre": 17,
+      "question": "أظهرت الهجرة الكهربائية لمصل الفأر المحقون بكريات الدم الحمراء للخروف:",
+      "options": [
+        "اختفاء جميع بروتينات المصل",
+        "تحول الغلوبولينات غاما إلى كريات حمراء",
+        "زيادة الغلوبولينات غاما مقارنة بالفأر الشاهد"
+      ],
+      "correct": 2,
+      "schema": "assets/images/schemas/domaine1_proteines/schema_66_gamma_globulin_electrophoresis_modern.svg",
+      "explication": "الوثيقة 1 (l.1693) : ارتفاع بند الغلوبولينات غاما بعد التحصين هو البرهان على أن الأجسام المضادة هي غلوبولينات غاما."
+    },
+    {
+      "chapitre": 17,
+      "question": "عند انتقاء الخلايا اللمفاوية بعد التحصين، أي خلية تتمايز إلى خلية بلازمية مفرزة للأجسام المضادة؟",
+      "options": [
+        "الخلية البالعة الكبيرة (ماكروفاج)",
+        "اللمفاوية B (LB)",
+        "اللمفاوية T السامة (LTc)"
+      ],
+      "correct": 1,
+      "schema": "assets/images/schemas/domaine1_proteines/schema_20_immunite_humorale.svg",
+      "explication": "فرضية التجارب (l.1700) : الخلية اللمفاوية B تنتقي وتتمايز إلى بلازموسيت هو المصدر الحصري لإفراز الأجسام المضادة."
+    },
+    {
+      "chapitre": 18,
+      "question": "في الحالة الدفاعية الثانية (الاستجابة ذات الوساطة الخلوية)، العنصر الفاعل الحاسم هو:",
+      "options": [
+        "اللمفاوية T السامة LTc التي تهاجم الخلية المصابة تماساً مباشراً",
+        "الجسم المضاد الحر في بلازما الدم",
+        "الحاجز الجلدي فقط"
+      ],
+      "correct": 0,
+      "schema": "assets/images/schemas/domaine1_proteines/schema_70_tcr_cmh_target_modern.svg",
+      "explication": "الحالة الثانية = مناعة خلوية: LTc تتعرف عبر مستقبلها TCR على المستضد المُعرَض بجزيئات CMH للخلية المصابة (تفصيله في الفصول 19-21)."
+    },
+    {
+      "chapitre": 18,
+      "question": "التعرف على الخلية المصابة من طرف LTc يتطلب:",
+      "options": [
+        "حركة الأجسام المضادة نحو الخلية المصابة",
+        "ابتلاع الخلية المصابة من طرف LTc مباشرة",
+        "عرض مفتاح المستضد من طرف جزيئات CMH على غشاء الخلية المصابة"
+      ],
+      "correct": 2,
+      "schema": "assets/images/schemas/domaine1_proteines/schema_58_hla_I_II_structure_modern.svg",
+      "explication": "الاعتراف مزدوج: المستضد + CMH الذاتية — لهذا لا تهاجم LTc إلا الخلايا التي تعرض اللاذات (انظر أيضاً الفصل 14 : الذات واللاذات)."
+    },
+    {
+      "chapitre": 20,
+      "question": "ماذا يحدث عند استئصال الغدة التيموسية من الفأر حديث الولادة؟",
+      "options": [
+        "تتحول اللمفاويات B إلى لمفاويات T لتعويض الغدة",
+        "يختفي عدد كبير من الخلايا اللمفاوية T",
+        "تتضاعف اللمفاويات B فقط دون تأثير"
+      ],
+      "correct": 1,
+      "schema": "assets/images/schemas/domaine1_proteines/schema_71_clonal_cd8_activation_modern.svg",
+      "explication": "الوثيقة 1-2 (l.1868) : استئصال التيموس → اختفاء اللمفاويات؛ زرع تيموس → عودة تشكلها. التيموس ضروري لتمايز T."
+    },
+    {
+      "chapitre": 20,
+      "question": "أين تنشأ الخلايا اللمفاوية T وأين تكتسب كفاءتها المناعية؟",
+      "options": [
+        "تنشأ في نخاع العظام وتكتسب كفاءتها في الغدة التيموسية",
+        "تنشأ وتكتسب كفاءتها في الطحال مباشرة",
+        "تنشأ في التيموس وتكتسب كفاءتها في الكبد"
+      ],
+      "correct": 0,
+      "schema": "assets/images/schemas/domaine1_proteines/schema_71_clonal_cd8_activation_modern.svg",
+      "explication": "دور التيموس (l.1910) : الخلايا T ولودة في النقي ثم تنضج وتُنتقى في التيموس — حقن خلايا النقي يعيد اللمفاويات فقط مع غدة سالمة."
+    },
+    {
+      "chapitre": 22,
+      "question": "أظهرت تجربة المكورات الرئوية المقتولة مع اللمفاويات أن الاستجابة الفعالة تتطلب:",
+      "options": [
+        "عمل اللمفاويات معزولة عن كل خلية أخرى",
+        "وجود الأجسام المضادة قبل التماس مع المستضد",
+        "تعاون الخلايا البالعة مع اللمفاويات T و B (تقديم المستضد)"
+      ],
+      "correct": 2,
+      "schema": "assets/images/schemas/domaine1_proteines/schema_80_immunity_big_picture_modern.svg",
+      "explication": "الوثيقة 1 (l.2007) : البلعمة ثم عرض المستضد من طرف البالعة هي الخطوة الافتتاحية للتعاون الخلوي واختيار نمط الاستجابة."
+    },
+    {
+      "chapitre": 22,
+      "question": "يُختار نمط الاستجابة المناعية (خلطية أو خلوية) حسب:",
+      "options": [
+        "الصدفة العشوائية دون أي قاعدة",
+        "طبيعة الجسم الغريب وموقعه: حر → أجسام مضادة، داخل خلية → LTc",
+        "العمر فقط دون علاقة بالجسم الغريب"
+      ],
+      "correct": 1,
+      "schema": "assets/images/schemas/domaine1_proteines/schema_80_immunity_big_picture_modern.svg",
+      "explication": "إشكالية الفصل (l.1990) : المستضد الحر يوجه استجابة خلطية بالأجسام المضادة، والمستضد الخلوي يستدعي الاستجابة الخلوية."
+    },
+    {
+      "chapitre": 23,
+      "question": "جزيئات CMH من الصنف الأول التي تحدد هوية الفرد البيولوجية تتواجد:",
+      "options": [
+        "على أغشية جميع خلايا الجسم ذات النواة",
+        "على كريات الدم الحمراء فقط",
+        "داخل النواة مرتبطة بالـ ADN"
+      ],
+      "correct": 0,
+      "schema": "assets/images/schemas/domaine1_proteines/schema_58_hla_I_II_structure_modern.svg",
+      "explication": "النص (l.2117) : غليكوبروتينات CMH-I الناتجة عن مورثات معقد التوافق النسيجي هي بطاقة التعرف على الذات لكل خلية منواة."
+    },
+    {
+      "chapitre": 23,
+      "question": "فقدان المناعة المكتسبة عند مرضى السيدا (الإيدز) سببه:",
+      "options": [
+        "فرط إنتاج الأجسام المضادة لكل المستضدات",
+        "غياب معقد التوافق النسيجي منذ الولادة",
+        "تدمير فيروس العوز المناعي (VIH) للخلايا اللمفاوية T4 المساعدة"
+      ],
+      "correct": 2,
+      "schema": "assets/images/schemas/domaine1_proteines/schema_22_immunite_vih.svg",
+      "explication": "موضوع الفصل : بحذف T4 تنهار القيادة المناعية (تعاون مع B و LTc) فتفقد المناعة المكتسبة وجهيها الخلطي والخلوي."
+    },
+    {
+      "chapitre": 24,
+      "question": "العناصر التشريحية للمنعكس العضلي مرتبة في المسار الصحيح:",
+      "options": [
+        "مستقبل ← عضلة ← مركز عصبي ← عصبون محرك",
+        "مستقبل حسّي ← عصبون حسّي ناقل ← مركز عصبي ← عصبون محرّك ← عضلة منفذة",
+        "عضلة ← مركز عصبي ← مستقبل ← عصبون حسّي"
+      ],
+      "correct": 1,
+      "schema": "assets/images/schemas/domaine1_regulations/schema_83_potentiel_action_modern_ar.svg",
+      "explication": "التذكير (l.2426) : القوس الانعكاسي يمر إلزامياً بالناقل الحسي والمركز ثم المحرك قبل العضلة المنفذة."
+    },
+    {
+      "chapitre": 25,
+      "question": "عند وضع إلكترود داخل الليف العصبي في حالة الراحة، يُسجَّل:",
+      "options": [
+        "كمون غشائي سالب في الداخل مقارنة بالخارج (كمون الراحة)",
+        "كمون موجب في الداخل يتناقص مع الزمن",
+        "صفر فولت دائماً في كل الظروف"
+      ],
+      "correct": 0,
+      "schema": "assets/images/schemas/domaine1_regulations/schema_83_potentiel_action_modern_ar.svg",
+      "explication": "تقنية التسجيل (l.2455) : الفولتمتر يبين قطبية الغشاء عند الراحة — الداخل سالب بالنسبة للخارج (أساس كل كمون لاحق)."
+    },
+    {
+      "chapitre": 25,
+      "question": "الكمون المفرَغ عنه تحت العتبة (PPSE) يتميز عن كمون الفعل بأنه:",
+      "options": [
+        "يخضع لقانون الكل أو لا شيء",
+        "لا يمكن تسجيله كهربائياً",
+        "متدرج: سعته تناسب شدة التنبيه وتخمد بالمسافة"
+      ],
+      "correct": 2,
+      "schema": "assets/images/schemas/domaine1_regulations/schema_83_potentiel_action_modern_ar.svg",
+      "explication": "التدرج مقابل الثبات: PPSE قابل للجمع والتخميد، أما PA فيثبت سعته فوق العتبة (تفصيل C28)."
+    },
+    {
+      "chapitre": 26,
+      "question": "تمركز الإشعاع في الوثيقة 1 بعد حقن α-bungarotoxine المشعة يكون في:",
+      "options": [
+        "الميتوكندريات داخل العضلة",
+        "الغشاء بعد المشبكي — مواقع مستقبلات الأستيل كولين",
+        "الغشاء قبل المشبكي — حويصلات الناقل"
+      ],
+      "correct": 1,
+      "schema": "assets/images/schemas/domaine1_proteines/schema_30_ligand_gated_channel_modern_ar.svg",
+      "explication": "التجربة (l.2514) : السم مرتبط بمستقبلات الأستيل كولين حصراً؛ تمركز التأشع بعد المشبكي يثبت مقر المستقبلات."
+    },
+    {
+      "chapitre": 26,
+      "question": "ارتباط الأستيل كولين بمستقبلاته بعد المشبكية يسبب:",
+      "options": [
+        "انفتاح قنوات مبوبة كيميائياً وتوليد كمون مفرغ بعد مشبكي (PPSS)",
+        "هدم الناقل داخل الخلية قبل المشبكية",
+        "توقف كل نقل أيوني عبر الغشاء"
+      ],
+      "correct": 0,
+      "schema": "assets/images/schemas/domaine1_proteines/schema_30_ligand_gated_channel_modern_ar.svg",
+      "explication": "الميكانيزم : الناقل = مفتاح كيميائي يفتح قنوات أيونية مبوبة؛ النتيجة تغير قطبية الغشاء بعد المشبكي (استقطاب أو فرط)."
+    },
+    {
+      "chapitre": 31,
+      "question": "في المنعكس العضلي، ينتج جهاز التسجيل كمون عمل إثر:",
+      "options": [
+        "تحفيز العضلة مباشرة دون مرور عصبي",
+        "حقن مادة كيميائية في النخاع",
+        "تنبيه فعال لليف عصبي حسي يمر عبر المركز العصبي ثم المحرك"
+      ],
+      "correct": 2,
+      "schema": "assets/images/schemas/domaine1_regulations/schema_83_potentiel_action_modern_ar.svg",
+      "explication": "التذكير (l.2989) : مسار السيالة كامل من المستقبل إلى العضلة — أساس لفهم مشابك الوحدة قبل دراسة الطاقة."
+    },
+    {
+      "chapitre": 35,
+      "question": "المعادلة الإجمالية لظاهرة التنفس الخلوي هي:",
+      "options": [
+        "غلوكوز ← كحول + CO₂ في وجود الأكسجين",
+        "غلوكوز + 6 O₂ ← 6 CO₂ + 6 H₂O + طاقة (هدم كلي)",
+        "6 CO₂ + ماء + ضوء ← غلوكوز + O₂"
+      ],
+      "correct": 1,
+      "schema": "assets/images/schemas/domaine2_energie/schema_10_respiration.svg",
+      "explication": "المعادلة (l.3760) : التنفس هدم كلي للغلوكوز في وجود الأكسجين — خلافاً للتخمر (هدم جزئي بلا O₂)."
+    },
+    {
+      "chapitre": 36,
+      "question": "ظهرت حبيبات ملونة في خلايا الخميرة المزروعة في وسط مهوّى، ولم تظهر في الوسط المسدود. الاستنتاج:",
+      "options": [
+        "الميتوكندري يتطور في وجود الأكسجين وهو مقر الأكسدة التنفسية",
+        "الميتوكندري يتلف ويتلاشى في غياب الأكسجين",
+        "الخميرة لا تحتوي ميتوكندريات أبداً"
+      ],
+      "correct": 0,
+      "schema": "assets/images/schemas/domaine2_energie/schema_12_bilan_energetique.svg",
+      "explication": "التجربة (l.3772) : التهوية تسمح بتطور الميتوكندريات = مقر الأكسدة التنفسية (الميتوكندري موجود في كل الخلايا ما عدا البكتيريا l.3768)."
+    },
+    {
+      "chapitre": 36,
+      "question": "بنية الميتوكندري كما يظهرها المجهر الإلكتروني تتكون من:",
+      "options": [
+        "غشاء واحد محتوي على الإنزيمات كلها",
+        "نواة صغيرة وغشاء خلوي خاص",
+        "غشاءين: خارجي أملس وداخلي متجوّف يكوّن التموّجات (الأعراف)"
+      ],
+      "correct": 2,
+      "schema": "assets/images/schemas/domaine2_energie/schema_12_bilan_energetique.svg",
+      "explication": "بنية الميتوكندري (l.3810) : الغشاء الداخلي بأعرافه يستضيف السلسلة التنفسية — الجواب في الفصل 39 (الفسفرة التأكسدية)."
+    },
+    {
+      "chapitre": 49,
+      "question": "الفوالق العادية الموازية لمحور الظهرات وسط المحيطية تُفسر:",
+      "options": [
+        "انزلاق أفقي فقط دون تمديد",
+        "قوى شد وتباعد تعمل على توسيع الظهرة",
+        "قوى انضغاط ترفع الجبال على المحور"
+      ],
+      "correct": 1,
+      "schema": "assets/images/schemas/domaine3_tectonique/schema_15_dorsale.svg",
+      "explication": "النص (l.5937) : فوالق عادية ∥ المحور = توسع؛ الفوالق التحويلية ⊥ المحور = تغيير مسارها ودورانها."
+    },
+    {
+      "chapitre": 49,
+      "question": "الفوالق التحويلية على مستوى الظهرات تتميز بأنها:",
+      "options": [
+        "عمودية على محور الظهرة وتغير مسارها",
+        "موازية للمحور وتسبّب توسعه",
+        "لا تصاحبها أي زلازل"
+      ],
+      "correct": 0,
+      "schema": "assets/images/schemas/domaine3_tectonique/schema_15_dorsale.svg",
+      "explication": "النص (l.5938) : نوعان من الفوالق يقطعان الظهرة — العادية (توسع) والتحويلية (انزياح ومسار)، وكلاهما مصدر زلازل سطحية."
+    },
+    {
+      "chapitre": 50,
+      "question": "يتكون اللوح المحيطي من الأسفل إلى الأعلى من الصخور:",
+      "options": [
+        "بازلت ثم غابرو ثم بيريدوتيت",
+        "غرانيت ثم كلس ثم رمل",
+        "بيريدوتيت ثم غابرو ثم بازلت"
+      ],
+      "correct": 2,
+      "schema": "assets/images/schemas/domaine3_tectonique/schema_15_dorsale.svg",
+      "explication": "الترتيب حرفي : البيريدوتيت من المعادن الثقيلة غير المنصهرة، والغابرو نسيجه محبب بتبرد بطيء."
+    },
+    {
+      "chapitre": 50,
+      "question": "لماذا يمتلك الغابرو نسيجاً حبيبياً (بلورات كبيرة مرئية)؟",
+      "options": [
+        "لأنه صخر رسوبي تراكمت فيه الحبيبات",
+        "لأنه تبرد ببطء شديد في العمق سمح بتكبر البلورات",
+        "لأنه تبرد فجأة في السطح فحبس البلورات"
+      ],
+      "correct": 1,
+      "schema": "assets/images/schemas/domaine3_tectonique/schema_15_dorsale.svg",
+      "explication": "النص (l.5942) : سرعة التبرد تحكم حجم البلورات — البطء في العمق = نسيج محبب (قارن بالبازلت الزجاجي السطحي)."
+    },
+    {
+      "chapitre": 54,
+      "question": "يدل صخر الميغماتيت على مستوى مناطق التصادم القاري على:",
+      "options": [
+        "التضاعف القشري وزيادة سمك الليتوسفير",
+        "تباعد اللوحين وانفتاح محيط جديد",
+        "غياب أي نشاط تكتوني في المنطقة"
+      ],
+      "correct": 0,
+      "schema": "assets/images/schemas/domaine3_tectonique/schema_94_migmatite_crustal_thickening_modern_ar.svg",
+      "explication": "النص (l.5974) : الميغماتيت = شاهد التضاعف القشري — انصهار جزئي للغرانيت تحت الحرارة والضغط في العمق."
+    },
+    {
+      "chapitre": 54,
+      "question": "قوى الانفغاط (التصادم) في نشوء السلاسل الجبلية تتجلى بـ:",
+      "options": [
+        "فوالق عادية موازية لمحور ظهرة",
+        "انفتاح خندق محيطي جديد",
+        "طيات وفوالق عكسية وهجرة الصخور المغتربة"
+      ],
+      "correct": 2,
+      "schema": "assets/images/schemas/domaine3_tectonique/schema_88_collision_continentale_modern_ar.svg",
+      "explication": "النص (l.5972) : التقلص الأفقي يولّد الطيات والفوالق العكسية ويهاجر بها الصخور نحو مناطق الخلف الجبلية."
+    },
+    {
+      "chapitre": 1,
+      "question": "أين يتم تركيب البروتين وبأي معلومات؟",
+      "options": [
+        "في النواة باستعمال المعلومات المتواجدة على ال ADN",
+        "في الهيولى باستعمال المعلومات الوراثية المتواجدة في النواة",
+        "في الميتوكوندري باستعمال طاقتها"
+      ],
+      "correct": 1,
+      "schema": "assets/images/schemas/domaine1_proteines/schema_01_adn.svg",
+      "explication": "النص (l.546) : يتم تركيب البروتين في الهيولى باستعمال المعلومات الوراثية المتواجدة في النواة (تُنقل عبر ARNm)."
+    },
+    {
+      "chapitre": 24,
+      "question": "ما الترتيب الصحيح لعناصر القوس الانعكاسي في المنعكس العضلي؟",
+      "options": [
+        "عضلات منفذة ← عصبونات نابذة ← مستقبلات حسية",
+        "مركز عصبي ← مستقبلات ← عضلات ← عصبونات حسية",
+        "مستقبلات حسية ← عصبونات حسية جابذة ← مركز عصبي ← عصبونات نابذة محركة ← عضلات منفذة"
+      ],
+      "correct": 2,
+      "schema": "assets/images/schemas/domaine1_regulations/schema_83_potentiel_action_modern_ar.svg",
+      "explication": "النص (l.2426-2427) : مستقبلات حسية، عصبونات حسية جابذة نحو المركز العصبي، عصبونات نابذة محركة، عضلات منفذة."
+    },
+    {
+      "chapitre": 31,
+      "question": "كيف تنتقل الرسالة العصبية المشفرة في الليف العصبي قبل المشبكي؟",
+      "options": [
+        "على شكل تواترات لكمونات العمل",
+        "على شكل رسالة كيميائية في الليف نفسه",
+        "على شكل كمون ثابت الشدة لا يتغير"
+      ],
+      "correct": 0,
+      "schema": "assets/images/schemas/domaine1_regulations/schema_83_potentiel_action_modern_ar.svg",
+      "explication": "النص (l.2987) : تنتقل الرسالة المشفرة في الليف قبل المشبكي على شكل تواترات لكمونات العمل، وتتحول إلى رسالة كيميائية عند المشبك."
+    },
+    {
+      "chapitre": 35,
+      "question": "الهدم الكلي لجزيئة الغلوكوز في الأكسدة التنفسية يحدث في:",
+      "options": [
+        "الظلام فقط دون ضوء",
+        "وسط مسدود غياب الأكسجين",
+        "الوسط الهوائي بوجود الأكسجين"
+      ],
+      "correct": 2,
+      "schema": "assets/images/schemas/domaine2_energie/schema_10_respiration.svg",
+      "explication": "النص (l.3755) : آليات التحويل في الوسط الهوائي؛ (l.3761-3762) : المعادلة الإجمالية لهدم الغلوكوز كليا."
+    },
+    {
+      "chapitre": 42,
+      "question": "مغنطة قاع الأطلسي تُظهر أحزمة ممغنطة متناظرة على جانبي الظهرة؛ ماذا يفسر هذا التناظر؟",
+      "options": [
+        "تشكل القشرة المحيطية عند محور الظهرة واندفاعها جانبيا (التباعد)",
+        "غوص اللوح المحيطي تحت الحافة القارية",
+        "انقلاب الأقطاب الجغرافية دون أي حركة للألواح"
+      ],
+      "correct": 0,
+      "schema": "assets/images/schemas/domaine3_tectonique/schema_15_dorsale.svg",
+      "explication": "النص (l.4423-4425) : مغنطة قاع الأطلسي على جانبي الظهرة بأحزمة متناظرة؛ (l.4443) : أعمار صخور القاع تُحدد بالحفر وتزداد بالابتعاد."
+    },
+    {
+      "chapitre": 47,
+      "question": "يشير تغير سرعة الموجات الزلزالية الحاد عند عمق 2900 كم إلى:",
+      "options": [
+        "الحد بين القشرة والبرنس عند عمق 40 كم تقريبا",
+        "الحد الفاصل بين البرنس واللب الخارجي",
+        "الحد بين اللب الخارجي واللب الداخلي"
+      ],
+      "correct": 1,
+      "schema": "assets/images/schemas/domaine3_tectonique/schema_13_terre.svg",
+      "explication": "النص (l.4852) : تغيرات سرعة الموجات الزلزالية بين عمق 40 و2900 كم — العمق 2900 كم يحدد الحد الفاصل بين البرنس واللب الخارجي."
+    },
+    {
+      "chapitre": 48,
+      "question": "بينت الدراسات المحيطية أن درجة حرارة اللوح المحيطي كلما ابتعدنا عن الظهرة:",
+      "options": [
+        "تتناقص (يتبرّد اللوح)",
+        "تزداد باستمرار",
+        "تبقى ثابتة لا تتغير"
+      ],
+      "correct": 0,
+      "schema": "assets/images/schemas/domaine3_tectonique/schema_15_dorsale.svg",
+      "explication": "النص (l.5633) : درجة حرارة اللوح المحيطي تتناقص كلما ابتعدنا عن الظهرة — اللوح يبرد ويثخن (ومنه قابليته للغوص l.5955)."
+    },
+    {
+      "chapitre": 52,
+      "question": "من الصخور الناتجة عن الغوص التي تتميز بتبرد بطيء في العمق:",
+      "options": [
+        "الأندية (Andésite) ذات التبرد السريع السطحي",
+        "الغرانوديوريت",
+        "البازلت الوسائدي للظهرة"
+      ],
+      "correct": 1,
+      "schema": "assets/images/schemas/domaine3_tectonique/schema_16_subduction.svg",
+      "explication": "النص (l.5956-5959) : صخور الغوص نوعان — أنديزيت (تبرد سريع سطحي) وغرانوديوريت (تبرد بطيء عمقي) من ماغما غنية بالسيليس بركانية انفجارية."
+    },
+    {
+      "chapitre": 52,
+      "question": "ما دور الماء في تشكل ماغما مناطق الغوص؟",
+      "options": [
+        "مبرد يصلّب الصفيحة الغائصة",
+        "وسيط ينقل الماغما إلى السطح",
+        "مذيب يخفض درجة حرارة انصهار البرنس فيؤدي إلى انصهاره الجزئي"
+      ],
+      "correct": 2,
+      "schema": "assets/images/schemas/domaine3_tectonique/schema_93_benioff_plan_modern_ar.svg",
+      "explication": "النص (l.5960-5962) : انصهار جزئي للبيريدوتيت بفعل إماهة البرنس — الماء مذيب يخفض درجة حرارة الانصهار ويتحرر بسبب الضغط المسلط."
+    },
+    {
+      "chapitre": 53,
+      "question": "تشكل السلسلة الجبلية نتيجة تقارب لوحين قاريين عقب الغوص يسمى:",
+      "options": [
+        "الحركة البانية للجبال (Orogenèse)",
+        "الحركة التدميرية للجبال",
+        "التمدد القاري"
+      ],
+      "correct": 0,
+      "schema": "assets/images/schemas/domaine3_tectonique/schema_17_collision.svg",
+      "explication": "النص (l.5970-5971) : التصادم ينتج سلسلة جبلية، وتدعى هذه العملية بالحركة البانية للجبال."
+    },
+    {
+      "chapitre": 55,
+      "question": "تعد الأفيوليت الموجودة في السلاسل الجبلية الحديثة شاهدا على:",
+      "options": [
+        "توسع محيط قائم حاليا",
+        "غلق محيط قديم وتصادم قاري",
+        "بركانية قارية حديثة"
+      ],
+      "correct": 1,
+      "schema": "assets/images/schemas/domaine3_tectonique/schema_18_wilson.svg",
+      "explication": "النص (l.5980-5982) : اندساس بقايا الليتوسفير المحيطي (الأفيوليت) داخل السلسلة شاهد على التصادم القاري وغلق المحيط؛ (l.5984) : متتاليتها بيريدوتيت-غابرو-مركب بازلتي."
+    },
+    {
+      "chapitre": 45,
+      "question": "بالمقارنة مع الموجات (P)، تتميز الموجات (S) بـ:",
+      "options": [
+        "سرعة أكبر وقدرة على الانتشار في كل الأوساط",
+        "سرعة أقل وانتشار في المواد الصلبة فقط",
+        "انتشار مواز لسطح الأرض فقط"
+      ],
+      "correct": 1,
+      "schema": "assets/images/schemas/domaine3_tectonique/schema_14_ondes.svg",
+      "explication": "النص (l.4770) : P أولية لأن سرعتها كبيرة (طولية)؛ (l.4774) : S ثانوية لأن سرعتها أقل وتنتشر في المواد الصلبة فقط."
+    },
+    {
+      "chapitre": 46,
+      "question": "التركيب الكيميائي لصخر البرنس (البيريدوتيت) يتميز بـ:",
+      "options": [
+        "غنى بالسيليس وفقرة بالحديد والمغنيزيوم",
+        "كونه أساسا من الكوارتز والفلسبار",
+        "فقرة بالسيليس وغنى بالحديد والمغنيزيوم"
+      ],
+      "correct": 2,
+      "schema": "assets/images/schemas/domaine3_tectonique/schema_13_terre.svg",
+      "explication": "النص (l.5206-5208) : البيريدوتيت صخر البرنس — السيليس 44%، المغنيزيوم 42%، الحديد 8.5%: فقير بالسيليس وغني بالحديد والمغنيزيوم."
+    }
+  ],
+  "bilanExports": [
+    "META_LECONS",
+    "POOL",
+    "mulberry32",
+    "tirageBilan"
+  ],
+  "pool": [
+    {
+      "id": "B:1:1",
+      "source": "livre",
+      "sourceLabel": "الفصل 1",
+      "domaine": 1,
+      "chapitre": 1,
+      "question": "أين تتواجد جزيئة الـ ADN عند الكائنات حقيقية النواة، وماذا تحمل؟",
+      "options": [
+        "في الهيولى حرة، ولا تحمل أي معلومة",
+        "داخل الرايبوزومات، وتصنع البروتينات بنفسها",
+        "داخل النواة، وتحمل المعلومات الوراثية الضرورية لتركيب البروتينات"
+      ],
+      "correct": 2,
+      "schema": "assets/images/schemas/domaine1_proteines/schema_01_adn.svg",
+      "explication": "النواة مقر الـ ADN عند حقيقيات النواة، وهي حامل المعلومة الوراثية للتركيب الحيوي للبروتينات (البداية l.542)."
+    },
+    {
+      "id": "B:13:1",
+      "source": "livre",
+      "sourceLabel": "الفصل 13",
+      "domaine": 1,
+      "chapitre": 13,
+      "question": "يُظهر رفض الطعم (زراعة الجلد بين شخصين مختلفين) أن العضوية:",
+      "options": [
+        "تقبل أي طعم بشرط أن يكون من نفس زمرة الدم",
+        "تميّز اللاذات وترفضها لأنها غريبة عن هويتها البيولوجية",
+        "تفقد القدرة على التمييز بعد الجراحة فقط"
+      ],
+      "correct": 1,
+      "schema": "assets/images/schemas/domaine1_proteines/schema_19_immunite_cmh.svg",
+      "explication": "وثيقة 3 من التذكير (l.1302) : رفض الطعم = دليل على التعرف على اللاذات ورفضها رفضاً مناعياً."
+    },
+    {
+      "id": "B:13:2",
+      "source": "livre",
+      "sourceLabel": "الفصل 13",
+      "domaine": 1,
+      "chapitre": 13,
+      "question": "التفاعلات الالتهابية عند الإصابة (أحمر، سخن، ألم) تتم في مستوى:",
+      "options": [
+        "أحد الخطوط الدفاعية الأولى التي تمنع انتشار العنصر الغريب",
+        "الخط الدفاعي النوعي الثالث حصراً",
+        "النخاع الشوكي فقط دون تدخل الجلد"
+      ],
+      "correct": 0,
+      "schema": "assets/images/schemas/domaine1_proteines/schema_19_immunite_cmh.svg",
+      "explication": "النشاط (l.1298) : الالتهاب نموذج لدفاع فطري مبكر يحد من انتشار العامل الغريب قبل الاستجابة النوعية."
+    },
+    {
+      "id": "B:17:1",
+      "source": "livre",
+      "sourceLabel": "الفصل 17",
+      "domaine": 1,
+      "chapitre": 17,
+      "question": "أظهرت الهجرة الكهربائية لمصل الفأر المحقون بكريات الدم الحمراء للخروف:",
+      "options": [
+        "اختفاء جميع بروتينات المصل",
+        "تحول الغلوبولينات غاما إلى كريات حمراء",
+        "زيادة الغلوبولينات غاما مقارنة بالفأر الشاهد"
+      ],
+      "correct": 2,
+      "schema": "assets/images/schemas/domaine1_proteines/schema_66_gamma_globulin_electrophoresis_modern.svg",
+      "explication": "الوثيقة 1 (l.1693) : ارتفاع بند الغلوبولينات غاما بعد التحصين هو البرهان على أن الأجسام المضادة هي غلوبولينات غاما."
+    },
+    {
+      "id": "B:17:2",
+      "source": "livre",
+      "sourceLabel": "الفصل 17",
+      "domaine": 1,
+      "chapitre": 17,
+      "question": "عند انتقاء الخلايا اللمفاوية بعد التحصين، أي خلية تتمايز إلى خلية بلازمية مفرزة للأجسام المضادة؟",
+      "options": [
+        "الخلية البالعة الكبيرة (ماكروفاج)",
+        "اللمفاوية B (LB)",
+        "اللمفاوية T السامة (LTc)"
+      ],
+      "correct": 1,
+      "schema": "assets/images/schemas/domaine1_proteines/schema_20_immunite_humorale.svg",
+      "explication": "فرضية التجارب (l.1700) : الخلية اللمفاوية B تنتقي وتتمايز إلى بلازموسيت هو المصدر الحصري لإفراز الأجسام المضادة."
+    },
+    {
+      "id": "B:18:1",
+      "source": "livre",
+      "sourceLabel": "الفصل 18",
+      "domaine": 1,
+      "chapitre": 18,
+      "question": "في الحالة الدفاعية الثانية (الاستجابة ذات الوساطة الخلوية)، العنصر الفاعل الحاسم هو:",
+      "options": [
+        "اللمفاوية T السامة LTc التي تهاجم الخلية المصابة تماساً مباشراً",
+        "الجسم المضاد الحر في بلازما الدم",
+        "الحاجز الجلدي فقط"
+      ],
+      "correct": 0,
+      "schema": "assets/images/schemas/domaine1_proteines/schema_70_tcr_cmh_target_modern.svg",
+      "explication": "الحالة الثانية = مناعة خلوية: LTc تتعرف عبر مستقبلها TCR على المستضد المُعرَض بجزيئات CMH للخلية المصابة (تفصيله في الفصول 19-21)."
+    },
+    {
+      "id": "B:18:2",
+      "source": "livre",
+      "sourceLabel": "الفصل 18",
+      "domaine": 1,
+      "chapitre": 18,
+      "question": "التعرف على الخلية المصابة من طرف LTc يتطلب:",
+      "options": [
+        "حركة الأجسام المضادة نحو الخلية المصابة",
+        "ابتلاع الخلية المصابة من طرف LTc مباشرة",
+        "عرض مفتاح المستضد من طرف جزيئات CMH على غشاء الخلية المصابة"
+      ],
+      "correct": 2,
+      "schema": "assets/images/schemas/domaine1_proteines/schema_58_hla_I_II_structure_modern.svg",
+      "explication": "الاعتراف مزدوج: المستضد + CMH الذاتية — لهذا لا تهاجم LTc إلا الخلايا التي تعرض اللاذات (انظر أيضاً الفصل 14 : الذات واللاذات)."
+    },
+    {
+      "id": "B:20:1",
+      "source": "livre",
+      "sourceLabel": "الفصل 20",
+      "domaine": 1,
+      "chapitre": 20,
+      "question": "ماذا يحدث عند استئصال الغدة التيموسية من الفأر حديث الولادة؟",
+      "options": [
+        "تتحول اللمفاويات B إلى لمفاويات T لتعويض الغدة",
+        "يختفي عدد كبير من الخلايا اللمفاوية T",
+        "تتضاعف اللمفاويات B فقط دون تأثير"
+      ],
+      "correct": 1,
+      "schema": "assets/images/schemas/domaine1_proteines/schema_71_clonal_cd8_activation_modern.svg",
+      "explication": "الوثيقة 1-2 (l.1868) : استئصال التيموس → اختفاء اللمفاويات؛ زرع تيموس → عودة تشكلها. التيموس ضروري لتمايز T."
+    },
+    {
+      "id": "B:20:2",
+      "source": "livre",
+      "sourceLabel": "الفصل 20",
+      "domaine": 1,
+      "chapitre": 20,
+      "question": "أين تنشأ الخلايا اللمفاوية T وأين تكتسب كفاءتها المناعية؟",
+      "options": [
+        "تنشأ في نخاع العظام وتكتسب كفاءتها في الغدة التيموسية",
+        "تنشأ وتكتسب كفاءتها في الطحال مباشرة",
+        "تنشأ في التيموس وتكتسب كفاءتها في الكبد"
+      ],
+      "correct": 0,
+      "schema": "assets/images/schemas/domaine1_proteines/schema_71_clonal_cd8_activation_modern.svg",
+      "explication": "دور التيموس (l.1910) : الخلايا T ولودة في النقي ثم تنضج وتُنتقى في التيموس — حقن خلايا النقي يعيد اللمفاويات فقط مع غدة سالمة."
+    },
+    {
+      "id": "B:22:1",
+      "source": "livre",
+      "sourceLabel": "الفصل 22",
+      "domaine": 1,
+      "chapitre": 22,
+      "question": "أظهرت تجربة المكورات الرئوية المقتولة مع اللمفاويات أن الاستجابة الفعالة تتطلب:",
+      "options": [
+        "عمل اللمفاويات معزولة عن كل خلية أخرى",
+        "وجود الأجسام المضادة قبل التماس مع المستضد",
+        "تعاون الخلايا البالعة مع اللمفاويات T و B (تقديم المستضد)"
+      ],
+      "correct": 2,
+      "schema": "assets/images/schemas/domaine1_proteines/schema_80_immunity_big_picture_modern.svg",
+      "explication": "الوثيقة 1 (l.2007) : البلعمة ثم عرض المستضد من طرف البالعة هي الخطوة الافتتاحية للتعاون الخلوي واختيار نمط الاستجابة."
+    },
+    {
+      "id": "B:22:2",
+      "source": "livre",
+      "sourceLabel": "الفصل 22",
+      "domaine": 1,
+      "chapitre": 22,
+      "question": "يُختار نمط الاستجابة المناعية (خلطية أو خلوية) حسب:",
+      "options": [
+        "الصدفة العشوائية دون أي قاعدة",
+        "طبيعة الجسم الغريب وموقعه: حر → أجسام مضادة، داخل خلية → LTc",
+        "العمر فقط دون علاقة بالجسم الغريب"
+      ],
+      "correct": 1,
+      "schema": "assets/images/schemas/domaine1_proteines/schema_80_immunity_big_picture_modern.svg",
+      "explication": "إشكالية الفصل (l.1990) : المستضد الحر يوجه استجابة خلطية بالأجسام المضادة، والمستضد الخلوي يستدعي الاستجابة الخلوية."
+    },
+    {
+      "id": "B:23:1",
+      "source": "livre",
+      "sourceLabel": "الفصل 23",
+      "domaine": 1,
+      "chapitre": 23,
+      "question": "جزيئات CMH من الصنف الأول التي تحدد هوية الفرد البيولوجية تتواجد:",
+      "options": [
+        "على أغشية جميع خلايا الجسم ذات النواة",
+        "على كريات الدم الحمراء فقط",
+        "داخل النواة مرتبطة بالـ ADN"
+      ],
+      "correct": 0,
+      "schema": "assets/images/schemas/domaine1_proteines/schema_58_hla_I_II_structure_modern.svg",
+      "explication": "النص (l.2117) : غليكوبروتينات CMH-I الناتجة عن مورثات معقد التوافق النسيجي هي بطاقة التعرف على الذات لكل خلية منواة."
+    },
+    {
+      "id": "B:23:2",
+      "source": "livre",
+      "sourceLabel": "الفصل 23",
+      "domaine": 1,
+      "chapitre": 23,
+      "question": "فقدان المناعة المكتسبة عند مرضى السيدا (الإيدز) سببه:",
+      "options": [
+        "فرط إنتاج الأجسام المضادة لكل المستضدات",
+        "غياب معقد التوافق النسيجي منذ الولادة",
+        "تدمير فيروس العوز المناعي (VIH) للخلايا اللمفاوية T4 المساعدة"
+      ],
+      "correct": 2,
+      "schema": "assets/images/schemas/domaine1_proteines/schema_22_immunite_vih.svg",
+      "explication": "موضوع الفصل : بحذف T4 تنهار القيادة المناعية (تعاون مع B و LTc) فتفقد المناعة المكتسبة وجهيها الخلطي والخلوي."
+    },
+    {
+      "id": "B:24:1",
+      "source": "livre",
+      "sourceLabel": "الفصل 24",
+      "domaine": 1,
+      "chapitre": 24,
+      "question": "العناصر التشريحية للمنعكس العضلي مرتبة في المسار الصحيح:",
+      "options": [
+        "مستقبل ← عضلة ← مركز عصبي ← عصبون محرك",
+        "مستقبل حسّي ← عصبون حسّي ناقل ← مركز عصبي ← عصبون محرّك ← عضلة منفذة",
+        "عضلة ← مركز عصبي ← مستقبل ← عصبون حسّي"
+      ],
+      "correct": 1,
+      "schema": "assets/images/schemas/domaine1_regulations/schema_83_potentiel_action_modern_ar.svg",
+      "explication": "التذكير (l.2426) : القوس الانعكاسي يمر إلزامياً بالناقل الحسي والمركز ثم المحرك قبل العضلة المنفذة."
+    },
+    {
+      "id": "B:25:1",
+      "source": "livre",
+      "sourceLabel": "الفصل 25",
+      "domaine": 1,
+      "chapitre": 25,
+      "question": "عند وضع إلكترود داخل الليف العصبي في حالة الراحة، يُسجَّل:",
+      "options": [
+        "كمون غشائي سالب في الداخل مقارنة بالخارج (كمون الراحة)",
+        "كمون موجب في الداخل يتناقص مع الزمن",
+        "صفر فولت دائماً في كل الظروف"
+      ],
+      "correct": 0,
+      "schema": "assets/images/schemas/domaine1_regulations/schema_83_potentiel_action_modern_ar.svg",
+      "explication": "تقنية التسجيل (l.2455) : الفولتمتر يبين قطبية الغشاء عند الراحة — الداخل سالب بالنسبة للخارج (أساس كل كمون لاحق)."
+    },
+    {
+      "id": "B:25:2",
+      "source": "livre",
+      "sourceLabel": "الفصل 25",
+      "domaine": 1,
+      "chapitre": 25,
+      "question": "الكمون المفرَغ عنه تحت العتبة (PPSE) يتميز عن كمون الفعل بأنه:",
+      "options": [
+        "يخضع لقانون الكل أو لا شيء",
+        "لا يمكن تسجيله كهربائياً",
+        "متدرج: سعته تناسب شدة التنبيه وتخمد بالمسافة"
+      ],
+      "correct": 2,
+      "schema": "assets/images/schemas/domaine1_regulations/schema_83_potentiel_action_modern_ar.svg",
+      "explication": "التدرج مقابل الثبات: PPSE قابل للجمع والتخميد، أما PA فيثبت سعته فوق العتبة (تفصيل C28)."
+    },
+    {
+      "id": "B:26:1",
+      "source": "livre",
+      "sourceLabel": "الفصل 26",
+      "domaine": 1,
+      "chapitre": 26,
+      "question": "تمركز الإشعاع في الوثيقة 1 بعد حقن α-bungarotoxine المشعة يكون في:",
+      "options": [
+        "الميتوكندريات داخل العضلة",
+        "الغشاء بعد المشبكي — مواقع مستقبلات الأستيل كولين",
+        "الغشاء قبل المشبكي — حويصلات الناقل"
+      ],
+      "correct": 1,
+      "schema": "assets/images/schemas/domaine1_proteines/schema_30_ligand_gated_channel_modern_ar.svg",
+      "explication": "التجربة (l.2514) : السم مرتبط بمستقبلات الأستيل كولين حصراً؛ تمركز التأشع بعد المشبكي يثبت مقر المستقبلات."
+    },
+    {
+      "id": "B:26:2",
+      "source": "livre",
+      "sourceLabel": "الفصل 26",
+      "domaine": 1,
+      "chapitre": 26,
+      "question": "ارتباط الأستيل كولين بمستقبلاته بعد المشبكية يسبب:",
+      "options": [
+        "انفتاح قنوات مبوبة كيميائياً وتوليد كمون مفرغ بعد مشبكي (PPSS)",
+        "هدم الناقل داخل الخلية قبل المشبكية",
+        "توقف كل نقل أيوني عبر الغشاء"
+      ],
+      "correct": 0,
+      "schema": "assets/images/schemas/domaine1_proteines/schema_30_ligand_gated_channel_modern_ar.svg",
+      "explication": "الميكانيزم : الناقل = مفتاح كيميائي يفتح قنوات أيونية مبوبة؛ النتيجة تغير قطبية الغشاء بعد المشبكي (استقطاب أو فرط)."
+    },
+    {
+      "id": "B:31:1",
+      "source": "livre",
+      "sourceLabel": "الفصل 31",
+      "domaine": 2,
+      "chapitre": 31,
+      "question": "في المنعكس العضلي، ينتج جهاز التسجيل كمون عمل إثر:",
+      "options": [
+        "تحفيز العضلة مباشرة دون مرور عصبي",
+        "حقن مادة كيميائية في النخاع",
+        "تنبيه فعال لليف عصبي حسي يمر عبر المركز العصبي ثم المحرك"
+      ],
+      "correct": 2,
+      "schema": "assets/images/schemas/domaine1_regulations/schema_83_potentiel_action_modern_ar.svg",
+      "explication": "التذكير (l.2989) : مسار السيالة كامل من المستقبل إلى العضلة — أساس لفهم مشابك الوحدة قبل دراسة الطاقة."
+    },
+    {
+      "id": "B:35:1",
+      "source": "livre",
+      "sourceLabel": "الفصل 35",
+      "domaine": 2,
+      "chapitre": 35,
+      "question": "المعادلة الإجمالية لظاهرة التنفس الخلوي هي:",
+      "options": [
+        "غلوكوز ← كحول + CO₂ في وجود الأكسجين",
+        "غلوكوز + 6 O₂ ← 6 CO₂ + 6 H₂O + طاقة (هدم كلي)",
+        "6 CO₂ + ماء + ضوء ← غلوكوز + O₂"
+      ],
+      "correct": 1,
+      "schema": "assets/images/schemas/domaine2_energie/schema_10_respiration.svg",
+      "explication": "المعادلة (l.3760) : التنفس هدم كلي للغلوكوز في وجود الأكسجين — خلافاً للتخمر (هدم جزئي بلا O₂)."
+    },
+    {
+      "id": "B:36:1",
+      "source": "livre",
+      "sourceLabel": "الفصل 36",
+      "domaine": 2,
+      "chapitre": 36,
+      "question": "ظهرت حبيبات ملونة في خلايا الخميرة المزروعة في وسط مهوّى، ولم تظهر في الوسط المسدود. الاستنتاج:",
+      "options": [
+        "الميتوكندري يتطور في وجود الأكسجين وهو مقر الأكسدة التنفسية",
+        "الميتوكندري يتلف ويتلاشى في غياب الأكسجين",
+        "الخميرة لا تحتوي ميتوكندريات أبداً"
+      ],
+      "correct": 0,
+      "schema": "assets/images/schemas/domaine2_energie/schema_12_bilan_energetique.svg",
+      "explication": "التجربة (l.3772) : التهوية تسمح بتطور الميتوكندريات = مقر الأكسدة التنفسية (الميتوكندري موجود في كل الخلايا ما عدا البكتيريا l.3768)."
+    },
+    {
+      "id": "B:36:2",
+      "source": "livre",
+      "sourceLabel": "الفصل 36",
+      "domaine": 2,
+      "chapitre": 36,
+      "question": "بنية الميتوكندري كما يظهرها المجهر الإلكتروني تتكون من:",
+      "options": [
+        "غشاء واحد محتوي على الإنزيمات كلها",
+        "نواة صغيرة وغشاء خلوي خاص",
+        "غشاءين: خارجي أملس وداخلي متجوّف يكوّن التموّجات (الأعراف)"
+      ],
+      "correct": 2,
+      "schema": "assets/images/schemas/domaine2_energie/schema_12_bilan_energetique.svg",
+      "explication": "بنية الميتوكندري (l.3810) : الغشاء الداخلي بأعرافه يستضيف السلسلة التنفسية — الجواب في الفصل 39 (الفسفرة التأكسدية)."
+    },
+    {
+      "id": "B:49:1",
+      "source": "livre",
+      "sourceLabel": "الفصل 49",
+      "domaine": 3,
+      "chapitre": 49,
+      "question": "الفوالق العادية الموازية لمحور الظهرات وسط المحيطية تُفسر:",
+      "options": [
+        "انزلاق أفقي فقط دون تمديد",
+        "قوى شد وتباعد تعمل على توسيع الظهرة",
+        "قوى انضغاط ترفع الجبال على المحور"
+      ],
+      "correct": 1,
+      "schema": "assets/images/schemas/domaine3_tectonique/schema_15_dorsale.svg",
+      "explication": "النص (l.5937) : فوالق عادية ∥ المحور = توسع؛ الفوالق التحويلية ⊥ المحور = تغيير مسارها ودورانها."
+    },
+    {
+      "id": "B:49:2",
+      "source": "livre",
+      "sourceLabel": "الفصل 49",
+      "domaine": 3,
+      "chapitre": 49,
+      "question": "الفوالق التحويلية على مستوى الظهرات تتميز بأنها:",
+      "options": [
+        "عمودية على محور الظهرة وتغير مسارها",
+        "موازية للمحور وتسبّب توسعه",
+        "لا تصاحبها أي زلازل"
+      ],
+      "correct": 0,
+      "schema": "assets/images/schemas/domaine3_tectonique/schema_15_dorsale.svg",
+      "explication": "النص (l.5938) : نوعان من الفوالق يقطعان الظهرة — العادية (توسع) والتحويلية (انزياح ومسار)، وكلاهما مصدر زلازل سطحية."
+    },
+    {
+      "id": "B:50:1",
+      "source": "livre",
+      "sourceLabel": "الفصل 50",
+      "domaine": 3,
+      "chapitre": 50,
+      "question": "يتكون اللوح المحيطي من الأسفل إلى الأعلى من الصخور:",
+      "options": [
+        "بازلت ثم غابرو ثم بيريدوتيت",
+        "غرانيت ثم كلس ثم رمل",
+        "بيريدوتيت ثم غابرو ثم بازلت"
+      ],
+      "correct": 2,
+      "schema": "assets/images/schemas/domaine3_tectonique/schema_15_dorsale.svg",
+      "explication": "الترتيب حرفي : البيريدوتيت من المعادن الثقيلة غير المنصهرة، والغابرو نسيجه محبب بتبرد بطيء."
+    },
+    {
+      "id": "B:50:2",
+      "source": "livre",
+      "sourceLabel": "الفصل 50",
+      "domaine": 3,
+      "chapitre": 50,
+      "question": "لماذا يمتلك الغابرو نسيجاً حبيبياً (بلورات كبيرة مرئية)؟",
+      "options": [
+        "لأنه صخر رسوبي تراكمت فيه الحبيبات",
+        "لأنه تبرد ببطء شديد في العمق سمح بتكبر البلورات",
+        "لأنه تبرد فجأة في السطح فحبس البلورات"
+      ],
+      "correct": 1,
+      "schema": "assets/images/schemas/domaine3_tectonique/schema_15_dorsale.svg",
+      "explication": "النص (l.5942) : سرعة التبرد تحكم حجم البلورات — البطء في العمق = نسيج محبب (قارن بالبازلت الزجاجي السطحي)."
+    },
+    {
+      "id": "B:54:1",
+      "source": "livre",
+      "sourceLabel": "الفصل 54",
+      "domaine": 3,
+      "chapitre": 54,
+      "question": "يدل صخر الميغماتيت على مستوى مناطق التصادم القاري على:",
+      "options": [
+        "التضاعف القشري وزيادة سمك الليتوسفير",
+        "تباعد اللوحين وانفتاح محيط جديد",
+        "غياب أي نشاط تكتوني في المنطقة"
+      ],
+      "correct": 0,
+      "schema": "assets/images/schemas/domaine3_tectonique/schema_94_migmatite_crustal_thickening_modern_ar.svg",
+      "explication": "النص (l.5974) : الميغماتيت = شاهد التضاعف القشري — انصهار جزئي للغرانيت تحت الحرارة والضغط في العمق."
+    },
+    {
+      "id": "B:54:2",
+      "source": "livre",
+      "sourceLabel": "الفصل 54",
+      "domaine": 3,
+      "chapitre": 54,
+      "question": "قوى الانفغاط (التصادم) في نشوء السلاسل الجبلية تتجلى بـ:",
+      "options": [
+        "فوالق عادية موازية لمحور ظهرة",
+        "انفتاح خندق محيطي جديد",
+        "طيات وفوالق عكسية وهجرة الصخور المغتربة"
+      ],
+      "correct": 2,
+      "schema": "assets/images/schemas/domaine3_tectonique/schema_88_collision_continentale_modern_ar.svg",
+      "explication": "النص (l.5972) : التقلص الأفقي يولّد الطيات والفوالق العكسية ويهاجر بها الصخور نحو مناطق الخلف الجبلية."
+    },
+    {
+      "id": "B:1:2",
+      "source": "livre",
+      "sourceLabel": "الفصل 1",
+      "domaine": 1,
+      "chapitre": 1,
+      "question": "أين يتم تركيب البروتين وبأي معلومات؟",
+      "options": [
+        "في النواة باستعمال المعلومات المتواجدة على ال ADN",
+        "في الهيولى باستعمال المعلومات الوراثية المتواجدة في النواة",
+        "في الميتوكوندري باستعمال طاقتها"
+      ],
+      "correct": 1,
+      "schema": "assets/images/schemas/domaine1_proteines/schema_01_adn.svg",
+      "explication": "النص (l.546) : يتم تركيب البروتين في الهيولى باستعمال المعلومات الوراثية المتواجدة في النواة (تُنقل عبر ARNm)."
+    },
+    {
+      "id": "B:24:2",
+      "source": "livre",
+      "sourceLabel": "الفصل 24",
+      "domaine": 1,
+      "chapitre": 24,
+      "question": "ما الترتيب الصحيح لعناصر القوس الانعكاسي في المنعكس العضلي؟",
+      "options": [
+        "عضلات منفذة ← عصبونات نابذة ← مستقبلات حسية",
+        "مركز عصبي ← مستقبلات ← عضلات ← عصبونات حسية",
+        "مستقبلات حسية ← عصبونات حسية جابذة ← مركز عصبي ← عصبونات نابذة محركة ← عضلات منفذة"
+      ],
+      "correct": 2,
+      "schema": "assets/images/schemas/domaine1_regulations/schema_83_potentiel_action_modern_ar.svg",
+      "explication": "النص (l.2426-2427) : مستقبلات حسية، عصبونات حسية جابذة نحو المركز العصبي، عصبونات نابذة محركة، عضلات منفذة."
+    },
+    {
+      "id": "B:31:2",
+      "source": "livre",
+      "sourceLabel": "الفصل 31",
+      "domaine": 2,
+      "chapitre": 31,
+      "question": "كيف تنتقل الرسالة العصبية المشفرة في الليف العصبي قبل المشبكي؟",
+      "options": [
+        "على شكل تواترات لكمونات العمل",
+        "على شكل رسالة كيميائية في الليف نفسه",
+        "على شكل كمون ثابت الشدة لا يتغير"
+      ],
+      "correct": 0,
+      "schema": "assets/images/schemas/domaine1_regulations/schema_83_potentiel_action_modern_ar.svg",
+      "explication": "النص (l.2987) : تنتقل الرسالة المشفرة في الليف قبل المشبكي على شكل تواترات لكمونات العمل، وتتحول إلى رسالة كيميائية عند المشبك."
+    },
+    {
+      "id": "B:35:2",
+      "source": "livre",
+      "sourceLabel": "الفصل 35",
+      "domaine": 2,
+      "chapitre": 35,
+      "question": "الهدم الكلي لجزيئة الغلوكوز في الأكسدة التنفسية يحدث في:",
+      "options": [
+        "الظلام فقط دون ضوء",
+        "وسط مسدود غياب الأكسجين",
+        "الوسط الهوائي بوجود الأكسجين"
+      ],
+      "correct": 2,
+      "schema": "assets/images/schemas/domaine2_energie/schema_10_respiration.svg",
+      "explication": "النص (l.3755) : آليات التحويل في الوسط الهوائي؛ (l.3761-3762) : المعادلة الإجمالية لهدم الغلوكوز كليا."
+    },
+    {
+      "id": "B:42:1",
+      "source": "livre",
+      "sourceLabel": "الفصل 42",
+      "domaine": 3,
+      "chapitre": 42,
+      "question": "مغنطة قاع الأطلسي تُظهر أحزمة ممغنطة متناظرة على جانبي الظهرة؛ ماذا يفسر هذا التناظر؟",
+      "options": [
+        "تشكل القشرة المحيطية عند محور الظهرة واندفاعها جانبيا (التباعد)",
+        "غوص اللوح المحيطي تحت الحافة القارية",
+        "انقلاب الأقطاب الجغرافية دون أي حركة للألواح"
+      ],
+      "correct": 0,
+      "schema": "assets/images/schemas/domaine3_tectonique/schema_15_dorsale.svg",
+      "explication": "النص (l.4423-4425) : مغنطة قاع الأطلسي على جانبي الظهرة بأحزمة متناظرة؛ (l.4443) : أعمار صخور القاع تُحدد بالحفر وتزداد بالابتعاد."
+    },
+    {
+      "id": "B:47:1",
+      "source": "livre",
+      "sourceLabel": "الفصل 47",
+      "domaine": 3,
+      "chapitre": 47,
+      "question": "يشير تغير سرعة الموجات الزلزالية الحاد عند عمق 2900 كم إلى:",
+      "options": [
+        "الحد بين القشرة والبرنس عند عمق 40 كم تقريبا",
+        "الحد الفاصل بين البرنس واللب الخارجي",
+        "الحد بين اللب الخارجي واللب الداخلي"
+      ],
+      "correct": 1,
+      "schema": "assets/images/schemas/domaine3_tectonique/schema_13_terre.svg",
+      "explication": "النص (l.4852) : تغيرات سرعة الموجات الزلزالية بين عمق 40 و2900 كم — العمق 2900 كم يحدد الحد الفاصل بين البرنس واللب الخارجي."
+    },
+    {
+      "id": "B:48:1",
+      "source": "livre",
+      "sourceLabel": "الفصل 48",
+      "domaine": 3,
+      "chapitre": 48,
+      "question": "بينت الدراسات المحيطية أن درجة حرارة اللوح المحيطي كلما ابتعدنا عن الظهرة:",
+      "options": [
+        "تتناقص (يتبرّد اللوح)",
+        "تزداد باستمرار",
+        "تبقى ثابتة لا تتغير"
+      ],
+      "correct": 0,
+      "schema": "assets/images/schemas/domaine3_tectonique/schema_15_dorsale.svg",
+      "explication": "النص (l.5633) : درجة حرارة اللوح المحيطي تتناقص كلما ابتعدنا عن الظهرة — اللوح يبرد ويثخن (ومنه قابليته للغوص l.5955)."
+    },
+    {
+      "id": "B:52:1",
+      "source": "livre",
+      "sourceLabel": "الفصل 52",
+      "domaine": 3,
+      "chapitre": 52,
+      "question": "من الصخور الناتجة عن الغوص التي تتميز بتبرد بطيء في العمق:",
+      "options": [
+        "الأندية (Andésite) ذات التبرد السريع السطحي",
+        "الغرانوديوريت",
+        "البازلت الوسائدي للظهرة"
+      ],
+      "correct": 1,
+      "schema": "assets/images/schemas/domaine3_tectonique/schema_16_subduction.svg",
+      "explication": "النص (l.5956-5959) : صخور الغوص نوعان — أنديزيت (تبرد سريع سطحي) وغرانوديوريت (تبرد بطيء عمقي) من ماغما غنية بالسيليس بركانية انفجارية."
+    },
+    {
+      "id": "B:52:2",
+      "source": "livre",
+      "sourceLabel": "الفصل 52",
+      "domaine": 3,
+      "chapitre": 52,
+      "question": "ما دور الماء في تشكل ماغما مناطق الغوص؟",
+      "options": [
+        "مبرد يصلّب الصفيحة الغائصة",
+        "وسيط ينقل الماغما إلى السطح",
+        "مذيب يخفض درجة حرارة انصهار البرنس فيؤدي إلى انصهاره الجزئي"
+      ],
+      "correct": 2,
+      "schema": "assets/images/schemas/domaine3_tectonique/schema_93_benioff_plan_modern_ar.svg",
+      "explication": "النص (l.5960-5962) : انصهار جزئي للبيريدوتيت بفعل إماهة البرنس — الماء مذيب يخفض درجة حرارة الانصهار ويتحرر بسبب الضغط المسلط."
+    },
+    {
+      "id": "B:53:1",
+      "source": "livre",
+      "sourceLabel": "الفصل 53",
+      "domaine": 3,
+      "chapitre": 53,
+      "question": "تشكل السلسلة الجبلية نتيجة تقارب لوحين قاريين عقب الغوص يسمى:",
+      "options": [
+        "الحركة البانية للجبال (Orogenèse)",
+        "الحركة التدميرية للجبال",
+        "التمدد القاري"
+      ],
+      "correct": 0,
+      "schema": "assets/images/schemas/domaine3_tectonique/schema_17_collision.svg",
+      "explication": "النص (l.5970-5971) : التصادم ينتج سلسلة جبلية، وتدعى هذه العملية بالحركة البانية للجبال."
+    },
+    {
+      "id": "B:55:1",
+      "source": "livre",
+      "sourceLabel": "الفصل 55",
+      "domaine": 3,
+      "chapitre": 55,
+      "question": "تعد الأفيوليت الموجودة في السلاسل الجبلية الحديثة شاهدا على:",
+      "options": [
+        "توسع محيط قائم حاليا",
+        "غلق محيط قديم وتصادم قاري",
+        "بركانية قارية حديثة"
+      ],
+      "correct": 1,
+      "schema": "assets/images/schemas/domaine3_tectonique/schema_18_wilson.svg",
+      "explication": "النص (l.5980-5982) : اندساس بقايا الليتوسفير المحيطي (الأفيوليت) داخل السلسلة شاهد على التصادم القاري وغلق المحيط؛ (l.5984) : متتاليتها بيريدوتيت-غابرو-مركب بازلتي."
+    },
+    {
+      "id": "B:45:1",
+      "source": "livre",
+      "sourceLabel": "الفصل 45",
+      "domaine": 3,
+      "chapitre": 45,
+      "question": "بالمقارنة مع الموجات (P)، تتميز الموجات (S) بـ:",
+      "options": [
+        "سرعة أكبر وقدرة على الانتشار في كل الأوساط",
+        "سرعة أقل وانتشار في المواد الصلبة فقط",
+        "انتشار مواز لسطح الأرض فقط"
+      ],
+      "correct": 1,
+      "schema": "assets/images/schemas/domaine3_tectonique/schema_14_ondes.svg",
+      "explication": "النص (l.4770) : P أولية لأن سرعتها كبيرة (طولية)؛ (l.4774) : S ثانوية لأن سرعتها أقل وتنتشر في المواد الصلبة فقط."
+    },
+    {
+      "id": "B:46:1",
+      "source": "livre",
+      "sourceLabel": "الفصل 46",
+      "domaine": 3,
+      "chapitre": 46,
+      "question": "التركيب الكيميائي لصخر البرنس (البيريدوتيت) يتميز بـ:",
+      "options": [
+        "غنى بالسيليس وفقرة بالحديد والمغنيزيوم",
+        "كونه أساسا من الكوارتز والفلسبار",
+        "فقرة بالسيليس وغنى بالحديد والمغنيزيوم"
+      ],
+      "correct": 2,
+      "schema": "assets/images/schemas/domaine3_tectonique/schema_13_terre.svg",
+      "explication": "النص (l.5206-5208) : البيريدوتيت صخر البرنس — السيليس 44%، المغنيزيوم 42%، الحديد 8.5%: فقير بالسيليس وغني بالحديد والمغنيزيوم."
+    },
+    {
+      "id": "L:lecon_transcription:1",
+      "source": "lecon",
+      "sourceLabel": "lecon_transcription",
+      "domaine": 1,
+      "question": "ما هو الإنزيم المسؤول حصريا عن عملية استنساخ الـ ARNm ؟",
+      "options": [
+        "أ) إنزيم ADN Polymérase",
+        "ب) إنزيم ARN Polymérase",
+        "ج) إنزيم الهيليكاز ( Hélicase )"
+      ],
+      "correct": 1
+    },
+    {
+      "id": "L:lecon_transcription:2",
+      "source": "lecon",
+      "sourceLabel": "lecon_transcription",
+      "domaine": 1,
+      "question": "إذا كانت قطعة من السلسلة غير المستنسخة للـ ADN تحمل التسلسل 5'- ATG CGC -3' ، فإن تسلسل الـ ARNm الموافق هو:",
+      "options": [
+        "أ) 5'- UAC GCG -3'",
+        "ب) 5'- AUG CGC -3'",
+        "ج) 5'- TAC GCG -3'"
+      ],
+      "correct": 1
+    },
+    {
+      "id": "L:phase10_chapitres_19_20:1",
+      "source": "lecon",
+      "sourceLabel": "phase10_chapitres_19_20",
+      "domaine": 1,
+      "question": "أين تتواجد المستقبلات الأفيونية الخاصة بالأنكيفالين والمورفين؟ وما هو تأثير ارتباط المورفين بها؟",
+      "options": [
+        "أ) تتواجد على الغشاء قبل المشبكي للعصبون الحسي للألم، وارتباط المورفين بها يغلق قنوات Ca²⁺ ويمنع إطراح المادة P.",
+        "ب) تتواجد على الغشاء بعد المشبكي للعصبون وتبعية مشابكية، ما يغيّر تحرير المادة P.",
+        "ج) تتواجد في النخاع الشوكي حيث تُحفظ رسالة الألم قبل توزعها."
+      ],
+      "correct": 0
+    },
+    {
+      "id": "L:phase10_chapitres_19_20:2",
+      "source": "lecon",
+      "sourceLabel": "phase10_chapitres_19_20",
+      "domaine": 2,
+      "question": "لماذا تعتبر الصانعة الخضراء عضية مقسمة إلى مقصورات ( Compartimentée )؟",
+      "options": [
+        "أ) لأنها تحتوي على فراغات وأغشية منفصلة (التيلاكويد والحشوة) تمنح شروطاً كيميائية وإنزيمية مختلفة ومستقلة تسمح بحدوث مرحلتي التركيب الضوئي بانتظام.",
+        "ب) لأنها تحتوي على نواة مستقلة.",
+        "ج) لأنها تتواجد في خلايا الإنسان."
+      ],
+      "correct": 0
+    },
+    {
+      "id": "L:phase11_chapitres_21_22:1",
+      "source": "lecon",
+      "sourceLabel": "phase11_chapitres_21_22",
+      "domaine": 2,
+      "question": "أين تتراكم شوارد الهيدروجين (البروتونات H⁺ ) الناتجة عن أكسدة الماء في الصانعة الخضراء؟",
+      "options": [
+        "أ) داخل تجويف التيلاكويد ( Lumen du thylakoïde ) مما يجعل تجويفه حامضياً جداً مقارنة بالحشوة.",
+        "ب) في الحشوة ( Stroma ) مباشرة.",
+        "ج) تطرح خارج الخلية النباتية مع الأكسجين."
+      ],
+      "correct": 0
+    },
+    {
+      "id": "L:phase11_chapitres_21_22:2",
+      "source": "lecon",
+      "sourceLabel": "phase11_chapitres_21_22",
+      "domaine": 2,
+      "question": "ماذا يحدث لإنتاج الـ ATP إذا وضعنا تيلاكويد معزول في وسط يحتوي على مادة تجعل الغشاء منفذاً حراً لشوارد الهيدروجين ( H⁺ )؟",
+      "options": [
+        "أ) يتوقف إنتاج الـ ATP نهائياً، لأن نفاذية الغشاء تمنع تشكل تدرج تركيز البروتونات ( H⁺ )، فلا تعبر شوارد H⁺ عبر الكرية المذنبة.",
+        "ب) يتضاعف إنتاج الـ ATP عشر مرات.",
+        "ج) يستمر إنتاج الـ ATP عبر التنفس الخلوي فقط، دون أي علاقة بالضوء."
+      ],
+      "correct": 0
+    },
+    {
+      "id": "L:phase12_chapitres_23_24:1",
+      "source": "lecon",
+      "sourceLabel": "phase12_chapitres_23_24",
+      "domaine": 2,
+      "question": "ما هو الإنزيم الرئيسي المتدخل في المرحلة الكيميوحيوية (حشوة الصانعة) ومسؤول عن تثبيت الـ CO₂ ؟",
+      "options": [
+        "أ) إنزيم الروبيسكو ( Rubisco - Ribulose-1,5-bisphosphate carboxylase ).",
+        "ب) إنزيم الـ ATP synthase .",
+        "ج) إنزيم الأستيل كولين إستراز."
+      ],
+      "correct": 0
+    },
+    {
+      "id": "L:phase12_chapitres_23_24:2",
+      "source": "lecon",
+      "sourceLabel": "phase12_chapitres_23_24",
+      "domaine": 2,
+      "question": "كم تستهلك حلقة كالفن لتركيب جزيء غلوكوز واحد ( C₆H₁₂O₆ ) انطلاقا من 6 جزيئات CO₂ ؟",
+      "options": [
+        "أ) تستهلك 18 جزيئة ATP و 12 جزيئة NADPH, H⁺ (المعادلة : 6CO₂ + 18ATP + 12NADPH, H⁺ → الغلوكوز).",
+        "ب) تستهلك 2 ATP فقط.",
+        "ج) لا تستهلك أي طاقة نهائياً."
+      ],
+      "correct": 0
+    },
+    {
+      "id": "L:phase13_chapitres_25_26:1",
+      "source": "lecon",
+      "sourceLabel": "phase13_chapitres_25_26",
+      "domaine": 2,
+      "question": "لماذا تكون الحصيلة الطاقوية الصافية للتحلل السكري هي 2 ATP فقط رغم أنه يتم إنتاج 4 ATP في المرحلة الأخيرة؟",
+      "options": [
+        "أ) لأنه تم استهلاك (استثمار) 2 ATP في المرحلة الأولى لتنشيط الغلوكوز بالفسفرة (4 منتجة - 2 مستهلكة = 2 ATP صافية).",
+        "ب) لأن الميتوكندرون يمتص 2 ATP فوراً.",
+        "ج) لأن الغلوكوز يضيع نصف طاقته كحرارة."
+      ],
+      "correct": 0
+    },
+    {
+      "id": "L:phase13_chapitres_25_26:2",
+      "source": "lecon",
+      "sourceLabel": "phase13_chapitres_25_26",
+      "domaine": 2,
+      "question": "كم عدد جزيئات النواقل المرجعة ( NADH, H⁺ و FADH₂ ) التي تنتجها المادة الأساسية للميتوكندرون أثناء التفكيك التام لجزيء غلوكوز واحد (أي لـ 2 بيروفيك من التمهيدي إلى نهاية كريبس)؟",
+      "options": [
+        "أ) تنتج 8 جزيئات NADH, H⁺ (2 تمهيدي + 6 كريبس) و 2 جزيئات FADH₂ (من كريبس).",
+        "ب) تنتج 2 NADH فقط.",
+        "ج) تنتج 38 جزيئة FADH₂."
+      ],
+      "correct": 0
+    },
+    {
+      "id": "L:phase14_chapitres_27_28:1",
+      "source": "lecon",
+      "sourceLabel": "phase14_chapitres_27_28",
+      "domaine": 2,
+      "question": "ما هو المستقبل الإلكتروني والبروتوني النهائي في السلسلة التنفسية؟ وماذا ينتج عن إرجاعه؟",
+      "options": [
+        "أ) غاز الأكسجين (O₂) هو المستقبل النهائي، وينتج عن إرجاعه جزيء الماء (H₂O).",
+        "ب) غاز ثاني أكسيد الكربون هو المستقبل النهائي.",
+        "ج) حمض البيروفيك هو المستقبل النهائي."
+      ],
+      "correct": 0
+    },
+    {
+      "id": "L:phase14_chapitres_27_28:2",
+      "source": "lecon",
+      "sourceLabel": "phase14_chapitres_27_28",
+      "domaine": 2,
+      "question": "لماذا تعتبر الحصيلة الطاقوية للتخمر (2 ATP) ضئيلة جداً مقارنة بالتنفس (38 ATP)؟",
+      "options": [
+        "أ) لأن التخمر هدم جزئي للغلوكوز، حيث تبقى معظم الطاقة الكيميائية الكامنة مخزنة في الروابط الكربونية للمنتج العضوي النهائي (كحول الإيثانول أو حمض اللبن).",
+        "ب) لأن التخمر يستهلك 36 ATP في الهيولى.",
+        "ج) لأن التخمر يستهلك الأكسجين فيستهلك معه معظم طاقة الغلوكوز."
+      ],
+      "correct": 0
+    },
+    {
+      "id": "L:phase15_chapitres_29_30:1",
+      "source": "lecon",
+      "sourceLabel": "phase15_chapitres_29_30",
+      "domaine": 2,
+      "question": "ما هو العامل المشترك الأساسي الذي يدير إنزيم الـ ATP synthase في كل من الصانعة الخضراء والميتوكندرون؟",
+      "options": [
+        "أ) التدرج الكهروكيميائي لشوارد الهيدروجين ( H⁺ ) عبر الغشاء (النظرية الكيميوأسموزية).",
+        "ب) غاز ثاني أكسيد الكربون.",
+        "ج) أشعة الشمس المباشرة."
+      ],
+      "correct": 0
+    },
+    {
+      "id": "L:phase15_chapitres_29_30:2",
+      "source": "lecon",
+      "sourceLabel": "phase15_chapitres_29_30",
+      "domaine": 2,
+      "question": "لماذا نقول إن الطاقة \"تتدفق\" في المحيط الحيوي ولا \"تدور\" مثل المادة؟",
+      "options": [
+        "أ) لأن الطاقة تتحول في النهاية إلى حرارة متبددة في الفضاء لا تستطيع النباتات التقاطها لإعادة بناء الغلوكوز، مما يتطلب إمداداً شمسياً يومياً مستمراً.",
+        "ب) لأن المادة تدور بينما الطاقة تُخزَّن كاملة في الكتلة الحيوية.",
+        "ج) لأن الطاقة تنفد من الكون."
+      ],
+      "correct": 0
+    },
+    {
+      "id": "L:phase16_chapitres_31_32:1",
+      "source": "lecon",
+      "sourceLabel": "phase16_chapitres_31_32",
+      "domaine": 3,
+      "question": "ما هو الفرق الفيزيائي الذي يسمح للغلاف الصخري ( Lithosphère ) بالطفو والحركة فوق الاستينوسفير ( Asthénosphère )؟",
+      "options": [
+        "أ) الغلاف الصخري صلب وبارد، بينما الاستينوسفير لدن ومطاطي ( Ductile ) وأعلى حرارة بسبب سرعة الموجات الزلزالية المنخفضة (منطقة LVZ ).",
+        "ب) الغلاف الصخري سائل والاستينوسفير صلب.",
+        "ج) كلاهما صلب ومحكم الارتباط."
+      ],
+      "correct": 0
+    },
+    {
+      "id": "L:phase16_chapitres_31_32:2",
+      "source": "lecon",
+      "sourceLabel": "phase16_chapitres_31_32",
+      "domaine": 3,
+      "question": "ماذا يدل التناظر الهندسي التام لأشرطة المغناطيسية القديمة (العادية والمقلوبة) على جانبي محور الظهرات المحيطية؟",
+      "options": [
+        "أ) يدل على أن صخور قاع المحيط تتشكل بشكل مستمر وبسرعة متساوية من صعود الماغما في محور الظهرات، وتندفع نحو الجانبين بشكل متناظر مع مرور الزمن.",
+        "ب) يدل على أن الأرض تتوقف عن الدوران.",
+        "ج) يدل على أن المحيط يتقلص وينكمش في محور الظهرات."
+      ],
+      "correct": 0
+    },
+    {
+      "id": "L:phase17_chapitres_33_34:1",
+      "source": "lecon",
+      "sourceLabel": "phase17_chapitres_33_34",
+      "domaine": 3,
+      "question": "ما هو السبب الفيزيائي الكثافي الذي يجعل الصفيحة المحيطية تغوص تحت الصفيحة القارية وليس العكس؟",
+      "options": [
+        "أ) لأن الغلاف الصخري المحيطي القديم يبرد ويزداد سمكه بمرور الزمن فتصبح كثافته (3.3 g/cm³) أعلى من كثافة الاستينوسفير والقشرة القارية (2.7 g/cm³)، فيغوص بقوة الثقل.",
+        "ب) لأن الصفيحة القارية تحتوي على ماء أكثر.",
+        "ج) لأن الجاذبية الأرضية أقوى فوق المحيطات."
+      ],
+      "correct": 0
+    },
+    {
+      "id": "L:phase17_chapitres_33_34:2",
+      "source": "lecon",
+      "sourceLabel": "phase17_chapitres_33_34",
+      "domaine": 3,
+      "question": "ما هو الفرق البنيوي بين صخر الأنديزيت وصخر الغرانودوريت رغم أنهما ينتجان عن نفس الماغما؟",
+      "options": [
+        "أ) الغرانودوريت ذو بنية محببة (بلورات كبيرة مرئية) لأنه تصلب ببطء شديد في العمق، بينما الأنديزيت ذو بنية ميكروليتية (بلورات دقيقة وزجاج) لأنه تصلب بسرعة على السطح بعد الانفجار البركاني.",
+        "ب) الفرق في اللون فقط: الأنديزيت فاتح والغرانودوريت داكن، دون فرق بنيوي حقيقي.",
+        "ج) الأنديزيت صخر رسوبي والغرانودوريت صخر متحول."
+      ],
+      "correct": 0
+    },
+    {
+      "id": "L:phase18_chapitres_35_36:1",
+      "source": "lecon",
+      "sourceLabel": "phase18_chapitres_35_36",
+      "domaine": 3,
+      "question": "ما هو المصدر الأول والأساسي للطاقة الحرارية الداخلية للكرة الأرضية؟",
+      "options": [
+        "أ) التفكك الإشعاعي التلقائي والمستمر للنظائر المشعة (اليورانيوم، الثوريوم، البوتاسيوم) الموجودة في صخور الأرض.",
+        "ب) أشعة الشمس التي تخترق القشرة الأرضية.",
+        "ج) احتراق النفط والفحم في باطن الأرض."
+      ],
+      "correct": 0
+    },
+    {
+      "id": "L:phase18_chapitres_35_36:2",
+      "source": "lecon",
+      "sourceLabel": "phase18_chapitres_35_36",
+      "domaine": 3,
+      "question": "لماذا نقول إن الكرة الأرضية تعمل كـ \"آلة حرارية\" ( Machine thermique )؟",
+      "options": [
+        "أ) لأنها تقوم بتحويل الطاقة الحرارية الداخلية (المكتسبة من التفكك الإشعاعي) إلى طاقة ميكانيكية حركية تتجلى في تيارات الحمل الحراري وحركة الصفائح التكتونية.",
+        "ب) لأن حرارتها الداخلية مصدرها بقايا حرارة اكتسبتها الأرض عند تكوّنها فقط.",
+        "ج) لأنها تدور في الفضاء بسرعة ثابتة."
+      ],
+      "correct": 0
+    },
+    {
+      "id": "L:phase19_chapitres_37_38:1",
+      "source": "lecon",
+      "sourceLabel": "phase19_chapitres_37_38",
+      "domaine": 3,
+      "question": "ما هو الدليل العلمي القاطع الذي استنتجه العلماء من توقف واختفاء الموجات الزلزالية ( Ondes S ) عند العمق 2900 كم تقريباً (الانقطاع الاكتشافي للموجات S)؟",
+      "options": [
+        "أ) استنتجوا أن النواة الخارجية للكرة الأرضية توجد في حالة فيزيائية سائلة (مصهورة)، لأن الموجات S لا تنتشر في السوائل.",
+        "ب) استنتجوا أن الأرض فارغة ومجوفة من الداخل.",
+        "ج) استنتجوا أن النواة الخارجية أصلب من الماس."
+      ],
+      "correct": 0
+    },
+    {
+      "id": "L:phase19_chapitres_37_38:2",
+      "source": "lecon",
+      "sourceLabel": "phase19_chapitres_37_38",
+      "domaine": 3,
+      "question": "ما هو الصخر الأم الأساسي الذي يتكون منه ستار أو برنس الكرة الأرضية ( Manteau ) بالكامل؟",
+      "options": [
+        "أ) صخر البيريدوتيت ( Péridotite الغني بالأوليفين والبيروكسين).",
+        "ب) صخر الغرانيت.",
+        "ج) صخر الكلس."
+      ],
+      "correct": 0
+    },
+    {
+      "id": "L:phase1_chapitres_1_2:1",
+      "source": "lecon",
+      "sourceLabel": "phase1_chapitres_1_2",
+      "domaine": 1,
+      "question": "اختبر فهمك : لماذا تسمى الشبكة الهيولية بـ \"المحببة\" أو \"الفعالة\"؟",
+      "options": [
+        "أ) لاحتوائها على حبيبات الجليكوجين المخزنة للطاقة.",
+        "ب) لوجود جسيمات دقيقة متصلة بغشائها الخارجي تسمى الريبوزومات ( Ribosomes ).",
+        "ج) لأنها تحتوي على ثقوب نووية تسمح بخروج الـ ADN ."
+      ],
+      "correct": 1
+    },
+    {
+      "id": "L:phase1_chapitres_1_2:2",
+      "source": "lecon",
+      "sourceLabel": "phase1_chapitres_1_2",
+      "domaine": 1,
+      "question": "كم عدد الرامزات التي لا تشفر لأي حمض أميني وتسمى \"رامزات التوقف\" ( Codons STOP )؟",
+      "options": [
+        "أ) رامزة واحدة فقط وهي AUG .",
+        "ب) 3 رامزات وهي : UAA, UAG, UGA .",
+        "ج) 64 رامزة بالكامل."
+      ],
+      "correct": 1
+    },
+    {
+      "id": "L:phase1_chapitres_1_2:3",
+      "source": "lecon",
+      "sourceLabel": "phase1_chapitres_1_2",
+      "domaine": 1,
+      "question": "إذا حدث طفرة أدت إلى تخريب موقع الرامزة المضادة ( Anticodon ) في جزيئة الـ ARNt ، ماذا يحدث؟",
+      "options": [
+        "أ) يتوقف استنساخ الـ ADN داخل النواة.",
+        "ب) يفشل الـ ARNt في التعرف على رامزة الـ ARNm الموافقة أثناء الترجمة في الريبوزوم.",
+        "ج) لا يتحلل جزيء الـ ATP أبداً."
+      ],
+      "correct": 1
+    },
+    {
+      "id": "L:phase20_chapitres_39_40:1",
+      "source": "lecon",
+      "sourceLabel": "phase20_chapitres_39_40",
+      "domaine": 3,
+      "question": "ما هو التركيب الكيميائي المميّز لقلب الأرض (النواة الخارجية والداخلية معاً) والذي يفسر كثافتها العالية جداً (10 إلى 13 g/cm³)؟",
+      "options": [
+        "أ) تتكون النواة من سبيكة معدنية ثقيلة جداً من الحديد والنيكل ( Fe - Ni أو NIFE ).",
+        "ب) تتكون من سيليكون ومغنيزيوم في الحالة الصلبة تماماً.",
+        "ج) تتكون من ماء وأكسجين مضغوط."
+      ],
+      "correct": 0
+    },
+    {
+      "id": "L:phase20_chapitres_39_40:2",
+      "source": "lecon",
+      "sourceLabel": "phase20_chapitres_39_40",
+      "domaine": 3,
+      "question": "إذا وجدت في خريطة جيولوجية منطقة تحتوي على سلسلة كثيفة من \"الفوالق العادية\" ( Failles normales )، فماذا تستنتج حول النشاط التكتوني السائد في تلك المنطقة؟",
+      "options": [
+        "أ) أستنتج أن المنطقة تخضع لنشاط تكتوني يتميز بقوى شد وتباعد ( Forces de distension ) مثل الظهرات أو الخسف القاري (Rift).",
+        "ب) أستنتج أن المنطقة تخضع لقوى تصادم وانضغاط عنيف.",
+        "ج) أستنتج أن المنطقة لا تشهد أي نشاط تكتوني نهائياً."
+      ],
+      "correct": 0
+    },
+    {
+      "id": "L:phase21_chapitres_41_42:1",
+      "source": "lecon",
+      "sourceLabel": "phase21_chapitres_41_42",
+      "domaine": 3,
+      "question": "ما هو الفرق الأساسي في عامل الانصهار بين الظهرات المحيطية (تباعد) ومنطقة الغوص (تقارب)؟",
+      "options": [
+        "أ) في الظهرات العامل هو انخفاض الضغط (تخفيف الضغط الأدياباتيكي) في غياب الماء، بينما في الغوص العامل هو دخول الماء (الإماهة) الذي يخفض نقطة الانصهار.",
+        "ب) لا يوجد فرق، فكلاهما انصهار مائي.",
+        "ج) في الظهرات ينصهر الغرانيت وفي الغوص ينصهر الكلس."
+      ],
+      "correct": 0
+    },
+    {
+      "id": "L:phase21_chapitres_41_42:2",
+      "source": "lecon",
+      "sourceLabel": "phase21_chapitres_41_42",
+      "domaine": 3,
+      "question": "لماذا تعتبر صخور \"الأفيوليت\" ( Ophiolites ) الموجودة فوق قمم جبال الألب والهيمالايا دليلاً قاطعاً على حدوث تصادم قاري مسبوق بغوص؟",
+      "options": [
+        "أ) لأن الأفيوليت يمثل بقايا القشرة المحيطية القديمة التي احتجزت وانحصرت ورفعت إلى القمم أثناء اصطدام القارتين وإغلاق المحيط الذي كان يفصل بينهما.",
+        "ب) لأن الرفع الجبلي يصاحب دائماً براكين سفلية ترفع القشرة المحيطية حديثاً.",
+        "ج) لأن قمة إيفرست كانت جزيرة بركانية."
+      ],
+      "correct": 0
+    },
+    {
+      "id": "L:phase22_chapitres_43_44:1",
+      "source": "lecon",
+      "sourceLabel": "phase22_chapitres_43_44",
+      "domaine": 3,
+      "question": "ما هو الفرق الجوهري في آلية التشكل بين الصخر المتحول ( Roche métamorphique ) والصخر الناري ( Roche magmatique )؟",
+      "options": [
+        "أ) الصخر المتحول يتغير في الحالة الصلبة تحت تأثير الضغط والحرارة دون أن ينصهر، بينما الصخر الناري ينتج عن تصلب سائل صهاري مصهور بالكامل (الماغما).",
+        "ب) الصخر المتحول يمر دائماً بحالة انصهار كاملة قبل أن يتصلب.",
+        "ج) الصخر المتحول يتشكل من الحمم البركانية مباشرة تماماً كالصخر الناري."
+      ],
+      "correct": 0
+    },
+    {
+      "id": "L:phase22_chapitres_43_44:2",
+      "source": "lecon",
+      "sourceLabel": "phase22_chapitres_43_44",
+      "domaine": 3,
+      "question": "لماذا تترتب الموائع الثلاثة المحجوزة داخل صخر الخزان في المصيدة البترولية بالترتيب التالي من الأعلى إلى الأسفل : (غاز طبيعي ← ثم بترول خام ← ثم ماء مالح)؟",
+      "options": [
+        "أ) تترتب وفقاً لتباين الكثافة ( Ségrégation gravitaire par densité ) : الغاز أخف الموائع فيصعد للقمة، يليه البترول في الوسط، بينما الماء المالح هو الأثقل والأكثف فيستقر في قاع الخزان.",
+        "ب) تترتب حسب درجة الحرارة.",
+        "ج) تترتب حسب زمن دخولها إلى المصيدة: الأقدم يبقى في القمة دائماً."
+      ],
+      "correct": 0
+    },
+    {
+      "id": "L:phase2_chapitres_3_4:1",
+      "source": "lecon",
+      "sourceLabel": "phase2_chapitres_3_4",
+      "domaine": 1,
+      "question": "اختبر فهمك : أين تتشكل الرابطة البيبتيدية أثناء مرحلة الاستطالة في الريبوزوم؟",
+      "options": [
+        "أ) بين الحمض الأميني المحمول على الـ ARNt في الموقع P والحمض الأميني الجديد في الموقع A .",
+        "ب) بين تحت الوحدة الصغرى وتحت الوحدة الكبرى للريبوزوم.",
+        "ج) بين رامزة الـ ARNm والرامزة المضادة للـ ARNt ."
+      ],
+      "correct": 0
+    },
+    {
+      "id": "L:phase2_chapitres_3_4:2",
+      "source": "lecon",
+      "sourceLabel": "phase2_chapitres_3_4",
+      "domaine": 1,
+      "question": "ما هو الفرق الأساسي الذي يميز البنية الرابعية عن البنية الثالثية؟",
+      "options": [
+        "أ) البنية الرابعية تتكون من تجمع تحت وحدتين أو أكثر (سلسلتين بيبتيديتين أو أكثر ذوات بنية ثالثية).",
+        "ب) البنية الرابعية لا تحتوي على أي روابط بيبتيدية.",
+        "ج) البنية الرابعية تتواجد داخل النواة فقط."
+      ],
+      "correct": 0
+    },
+    {
+      "id": "L:phase2_chapitres_3_4:3",
+      "source": "lecon",
+      "sourceLabel": "phase2_chapitres_3_4",
+      "domaine": 1,
+      "question": "ما هي الرابطة التكافؤية (القوية جداً) الوحيدة التي تساهم في استقرار البنية الثالثية؟",
+      "options": [
+        "أ) الرابطة الهيدروجينية.",
+        "ب) الرابطة الشاردية الأيونية.",
+        "ج) الجسر ثنائي الكبريت ( Pont disulfure )."
+      ],
+      "correct": 2
+    },
+    {
+      "id": "L:phase3_chapitres_5_6:1",
+      "source": "lecon",
+      "sourceLabel": "phase3_chapitres_5_6",
+      "domaine": 1,
+      "question": "اختبر فهمك : لماذا تسبب طفرة استبدال (الغلوتاميك بالفالين) في الموضع 6 لمرض فقر الدم المنجلي؟",
+      "options": [
+        "أ) لأن الفالين ( Val ) كاره للماء، فيؤدي لتجمع وتراص جزيئات الهيموغلوبين في ألياف صلبة تشوه كرية الدم.",
+        "ب) لأن الفالين يمنع حدوث عملية الاستنساخ داخل النواة.",
+        "ج) لأن الفالين يكسر جميع الجسور ثنائية الكبريت في الريبوزوم."
+      ],
+      "correct": 0
+    },
+    {
+      "id": "L:phase3_chapitres_5_6:2",
+      "source": "lecon",
+      "sourceLabel": "phase3_chapitres_5_6",
+      "domaine": 1,
+      "question": "ماذا نقصد بأن الإنزيم ذو \"خصوصية مزدوجة\"؟",
+      "options": [
+        "أ) أنه متخصص في مادة تفاعل واحدة (أو مجموعة محددة) ومتخصص في نوع تفاعل كيميائي واحد (تحلل، بناء، أكسدة...).",
+        "ب) أنه يعمل في النواة وفي الهيولى في نفس الوقت.",
+        "ج) أنه يستهلك جزيئتين من الـ ATP لكل تفاعل."
+      ],
+      "correct": 0
+    },
+    {
+      "id": "L:phase4_chapitres_7_8:1",
+      "source": "lecon",
+      "sourceLabel": "phase4_chapitres_7_8",
+      "domaine": 1,
+      "question": "ماذا يحدث للجذور الحرة الأمينية ( -NH₂ ) في الموقع الفعال عند وضع الإنزيم في وسط شديد الحموضة ( pH حامضي جداً )؟",
+      "options": [
+        "أ) تسلك سلوك القاعدة وتكتسب بروتونات ( H⁺ ) فتصبح شحنتها موجبة ( -NH₃⁺ ).",
+        "ب) تفقد بروتونات وتصبح سالبة الشحنة.",
+        "ج) تتحول إلى جسور ثنائية الكبريت."
+      ],
+      "correct": 0
+    },
+    {
+      "id": "L:phase4_chapitres_7_8:2",
+      "source": "lecon",
+      "sourceLabel": "phase4_chapitres_7_8",
+      "domaine": 1,
+      "question": "لماذا نستطيع استرجاع النشاط الإنزيمي بعد تبريده إلى 0°C، ولا نستطيع استرجاعه بعد تسخينه إلى 80°C؟",
+      "options": [
+        "أ) لأن التبريد يقلل الحركة الجزيئية دون تخريب الروابط الفراغية، بينما التسخين يكسر الروابط الضعيفة ويخرب الموقع الفعال نهائياً.",
+        "ب) لأن التبريد يكسر الروابط الشاردية فقط بينما التسخين يحافظ عليها كلها.",
+        "ج) لأن التبريد يكسر الجسور ثنائية الكبريت فقط."
+      ],
+      "correct": 0
+    },
+    {
+      "id": "L:phase5_chapitres_9_10:1",
+      "source": "lecon",
+      "sourceLabel": "phase5_chapitres_9_10",
+      "domaine": 1,
+      "question": "أين تتواجد مؤشرات الـ CMH من الصنف الأول ( CMH-I ) في جسم الإنسان؟",
+      "options": [
+        "أ) على الغشاء الهيولي لجميع الخلايا المنواة في الجسم.",
+        "ب) على سطح كريات الدم الحمراء فقط.",
+        "ج) داخل النواة متصلة بالـ ADN ."
+      ],
+      "correct": 0
+    },
+    {
+      "id": "L:phase5_chapitres_9_10:2",
+      "source": "lecon",
+      "sourceLabel": "phase5_chapitres_9_10",
+      "domaine": 1,
+      "question": "ماذا يحمل مصل (بلازما) شخص ذو زمرة دموية ( O⁻ ) من أجسام مضادة؟",
+      "options": [
+        "أ) يحمل أجساماً مضادة ضد A وأجساماً مضادة ضد B ( Anti-A و Anti-B ).",
+        "ب) لا يحمل أي أجسام مضادة نهائياً.",
+        "ج) يحمل مستضدات A و B."
+      ],
+      "correct": 0
+    },
+    {
+      "id": "L:phase6_chapitres_11_12:1",
+      "source": "lecon",
+      "sourceLabel": "phase6_chapitres_11_12",
+      "domaine": 1,
+      "question": "أين تقع المنطقة المتغيرة التي تشكل موقع تثبيت محدد المستضد في جزيء الجسم المضاد؟",
+      "options": [
+        "أ) في النهايات الأمينية (الجزء العلوي) للسلاسل الثقيلة والخفيفة معاً.",
+        "ب) في الجزء السفلي للسلاسل الثقيلة فقط.",
+        "ج) في الجسور ثنائية الكبريت."
+      ],
+      "correct": 0
+    },
+    {
+      "id": "L:phase6_chapitres_11_12:2",
+      "source": "lecon",
+      "sourceLabel": "phase6_chapitres_11_12",
+      "domaine": 1,
+      "question": "ما هو الدور المباشر الذي يلعبه تشكل \"المعقد المناعي\" (ارتباط الجسم المضاد بالمستضد)؟",
+      "options": [
+        "أ) إبطال مفعول المستضد (منع تكاثره وانتشاره وتأثيره السام) وتسهيل بلعمته من طرف الماكروفاج.",
+        "ب) التحلل الذاتي والفوري للبكتيريا دون الحاجة لبلعميات.",
+        "ج) تحويل المستضد إلى كريات دم حمراء."
+      ],
+      "correct": 0
+    },
+    {
+      "id": "L:phase7_chapitres_13_14:1",
+      "source": "lecon",
+      "sourceLabel": "phase7_chapitres_13_14",
+      "domaine": 1,
+      "question": "ما هو الدور الدقيق الذي يلعبه بروتين \"البرفورين\" ( Perforine ) في القضاء على الخلية المصابة؟",
+      "options": [
+        "أ) يتبلمر في غشاء الخلية المصابة مشكلاً ثقوباً تسمح بدخول الماء والشوارد والغرانزيم لإحداث صدمة حلولية مميتة.",
+        "ب) يتحول إلى جسم مضاد يرتبط بالفيروس في الدم.",
+        "ج) يقوم ببلعمة الخلية السرطانية مباشرة."
+      ],
+      "correct": 0
+    },
+    {
+      "id": "L:phase7_chapitres_13_14:2",
+      "source": "lecon",
+      "sourceLabel": "phase7_chapitres_13_14",
+      "domaine": 1,
+      "question": "لماذا لا تستجيب الخلايا اللمفاوية غير المحسسة (التي لم تتعرف بعد على المستضد) لهرمون الأنترلوكين-2 ( IL-2 )؟",
+      "options": [
+        "أ) لأن الخلية اللمفاوية لا تقوم بتركيب وعرض المستقبلات الغشائية الخاصة بالـ IL-2 إلا بعد تعرفها وتنشيطها بالمستضد.",
+        "ب) لأن هرمون IL-2 يدمر الخلايا غير المحسسة.",
+        "ج) لأن الخلايا غير المحسسة لا تمتلك غشاء هيولياً."
+      ],
+      "correct": 0
+    },
+    {
+      "id": "L:phase8_chapitres_15_16:1",
+      "source": "lecon",
+      "sourceLabel": "phase8_chapitres_15_16",
+      "domaine": 1,
+      "question": "ما هو نوع النقل الذي تقوم به مضخة ( Na⁺/K⁺-ATPase )؟",
+      "options": [
+        "أ) نقل فعال ( Transport actif ) يتم عكس تدرج التركيز ويستهلك طاقة جزيئة الـ ATP .",
+        "ب) انتشار حر وسلبي وفق تدرج التركيز دون طاقة.",
+        "ج) بلعمة خلوية."
+      ],
+      "correct": 0
+    },
+    {
+      "id": "L:phase8_chapitres_15_16:2",
+      "source": "lecon",
+      "sourceLabel": "phase8_chapitres_15_16",
+      "domaine": 1,
+      "question": "لماذا يتميز كمون العمل بخاصية \"قانون الكل أو لا شيء\" ( Loi du tout ou rien )؟",
+      "options": [
+        "أ) لأن التنبيه الذي يقل عن العتبة ( Seuil ) لا يفتح القنوات الفولطية فلا يسجل أي كمون عمل، أما التنبيه الذي يفوق العتبة فيولد كمون عمل بسعة ثابتة دوماً (+30 mV).",
+        "ب) لأن شدة التنبيه تُرمَّز بتواتر كمونات العمل لا بمداها، فوق العتبة دائماً.",
+        "ج) لأن سعة كمون العمل تزداد بازدياد شدة التنبيه إلى ما لا نهاية."
+      ],
+      "correct": 0
+    },
+    {
+      "id": "L:phase9_chapitres_17_18:1",
+      "source": "lecon",
+      "sourceLabel": "phase9_chapitres_17_18",
+      "domaine": 1,
+      "question": "ما هو الفرق البنيوي والوظيفي بين القنوات المبوبة كهربائياً والقنوات المبوبة كيميائياً؟",
+      "options": [
+        "أ) المبوبة كهربائياً تفتح بتغير فرق الجهد (على طول الليف العصبي)، أما المبوبة كيميائياً فتفتح عند تثبيت مبلغ كيميائي مثل ACh (على الغشاء بعد المشبكي).",
+        "ب) كلاهما قنوات مبوبة، والفرق في الموقع فقط: قبل المشبكي دائماً لكلتيهما.",
+        "ج) القنوات الكيميائية تستهلك طاقة ATP الفورية."
+      ],
+      "correct": 0
+    },
+    {
+      "id": "L:phase9_chapitres_17_18:2",
+      "source": "lecon",
+      "sourceLabel": "phase9_chapitres_17_18",
+      "domaine": 1,
+      "question": "ما هو المبلغ العصبي الرئيسي والمستقبل الأيوني المسؤول عن نشأة الكمون التثبيطي ( PPSI )؟",
+      "options": [
+        "أ) حمض الغابا ( GABA ) الذي يفتح القنوات المبوبة كيميائياً للكلور ( Cl⁻ ) فيدخل الكلور السالب محدثاً فرط استقطاب.",
+        "ب) الأستيل كولين الذي يدخل شوارد الكالسيوم.",
+        "ج) أنزيم الأستيل كولين إستراز."
+      ],
+      "correct": 0
+    },
+    {
+      "id": "L:lecon_representation:1",
+      "source": "lecon",
+      "sourceLabel": "lecon_representation",
+      "domaine": 1,
+      "question": "ماذا يُظهر النموذج الشريطي للبروتين؟",
+      "options": [
+        "أ) البنيات الثانوية (لوالب α وأوراق β) والمنعطفات ومسار السلسلة",
+        "ب) كل ذرة على حدة بحجمها الحقيقي",
+        "ج) تتابع النكليوتيدات في المورثة"
+      ],
+      "correct": 0
+    },
+    {
+      "id": "L:lecon_activite_structure:1",
+      "source": "lecon",
+      "sourceLabel": "lecon_activite_structure",
+      "domaine": 1,
+      "question": "مما يتكون الموقع الفعال للإنزيم؟",
+      "options": [
+        "أ) منطقتا تثبيت الركيزة وتحفيز التفاعل، من أحماض أمينية متقاربة فراغيا",
+        "ب) سلسلة كاملة من الأحماض الأمينية للإنزيم",
+        "ج) جزيء الركيزة نفسها"
+      ],
+      "correct": 0
+    }
+  ],
+  "blanks": [
+    {
+      "id": "fb_1_1",
+      "unitId": 1,
+      "lessonId": 1,
+      "type": "TEXT_AND_PRODUCE",
+      "microTest": {
+        "prompt": "أكمل: الجين يرتبط هنا بـ: _______",
+        "acceptedAnswers": [
+          "قطعة من ADN تحمل معلومة تركيب سلسلة ببتيدية أو بروتين معين"
+        ],
+        "errorHint": "التعريف الصحيح: قطعة من ADN تحمل معلومة تركيب سلسلة ببتيدية أو بروتين معين"
+      }
+    },
+    {
+      "id": "fb_1_2",
+      "unitId": 1,
+      "lessonId": 1,
+      "type": "TEXT_AND_PRODUCE",
+      "microTest": {
+        "prompt": "أكمل: النيوكليوتيد يرتبط هنا بـ: _______",
+        "acceptedAnswers": [
+          "الوحدة البنائية لـADN ويتكوّن من سكر وفوسفات وقاعدة آزوتية"
+        ],
+        "errorHint": "التعريف الصحيح: الوحدة البنائية لـADN ويتكوّن من سكر وفوسفات وقاعدة آزوتية"
+      }
+    },
+    {
+      "id": "fb_1_3",
+      "unitId": 1,
+      "lessonId": 2,
+      "type": "TEXT_AND_PRODUCE",
+      "microTest": {
+        "prompt": "أكمل: قاعدة التكامل يرتبط هنا بـ: _______",
+        "acceptedAnswers": [
+          "A تقابل T وG تقابل C في ADN"
+        ],
+        "errorHint": "التعريف الصحيح: A تقابل T وG تقابل C في ADN"
+      }
+    },
+    {
+      "id": "fb_1_4",
+      "unitId": 1,
+      "lessonId": 1,
+      "type": "TEXT_AND_PRODUCE",
+      "microTest": {
+        "prompt": "أكمل: الشفرة الوراثية يرتبط هنا بـ: _______",
+        "acceptedAnswers": [
+          "كل رامزة من ثلاث قواعد في ARNm تحدد حمضاً أمينياً"
+        ],
+        "errorHint": "التعريف الصحيح: كل رامزة من ثلاث قواعد في ARNm تحدد حمضاً أمينياً"
+      }
+    },
+    {
+      "id": "fb_1_5",
+      "unitId": 1,
+      "lessonId": 3,
+      "type": "TEXT_AND_PRODUCE",
+      "microTest": {
+        "prompt": "أكمل: AUG يرتبط هنا بـ: _______",
+        "acceptedAnswers": [
+          "رامزة بدء الترجمة وتشفر غالباً للميتيونين"
+        ],
+        "errorHint": "التعريف الصحيح: رامزة بدء الترجمة وتشفر غالباً للميتيونين"
+      }
+    },
+    {
+      "id": "fb_1_6",
+      "unitId": 1,
+      "lessonId": 3,
+      "type": "TEXT_AND_PRODUCE",
+      "microTest": {
+        "prompt": "أكمل: UAA/UAG/UGA يرتبط هنا بـ: _______",
+        "acceptedAnswers": [
+          "رامزات توقف لا يوافقها ARNt حامل لحمض أميني"
+        ],
+        "errorHint": "التعريف الصحيح: رامزات توقف لا يوافقها ARNt حامل لحمض أميني"
+      }
+    },
+    {
+      "id": "fb_1_7",
+      "unitId": 1,
+      "lessonId": 4,
+      "type": "TEXT_AND_PRODUCE",
+      "microTest": {
+        "prompt": "أكمل: الشفرة المترادفة يرتبط هنا بـ: _______",
+        "acceptedAnswers": [
+          "الحمض الأميني الواحد قد توافقه عدة رامزات"
+        ],
+        "errorHint": "التعريف الصحيح: الحمض الأميني الواحد قد توافقه عدة رامزات"
+      }
+    },
+    {
+      "id": "fb_1_8",
+      "unitId": 1,
+      "lessonId": 4,
+      "type": "TEXT_AND_PRODUCE",
+      "microTest": {
+        "prompt": "أكمل: ARNm يرتبط هنا بـ: _______",
+        "acceptedAnswers": [
+          "ينقل نسخة الرسالة الوراثية من النواة نحو الريبوزوم"
+        ],
+        "errorHint": "التعريف الصحيح: ينقل نسخة الرسالة الوراثية من النواة نحو الريبوزوم"
+      }
+    },
+    {
+      "id": "fb_1_9",
+      "unitId": 1,
+      "lessonId": 2,
+      "type": "TEXT_AND_PRODUCE",
+      "microTest": {
+        "prompt": "أكمل: ARNt يرتبط هنا بـ: _______",
+        "acceptedAnswers": [
+          "يحمل حمضاً أمينياً ومضاد رامزة مكمل لرامزة ARNm"
+        ],
+        "errorHint": "التعريف الصحيح: يحمل حمضاً أمينياً ومضاد رامزة مكمل لرامزة ARNm"
+      }
+    },
+    {
+      "id": "fb_1_10",
+      "unitId": 1,
+      "lessonId": 5,
+      "type": "TEXT_AND_PRODUCE",
+      "microTest": {
+        "prompt": "أكمل: ARNr يرتبط هنا بـ: _______",
+        "acceptedAnswers": [
+          "يدخل في تركيب الريبوزوم ويساهم في نشاطه"
+        ],
+        "errorHint": "التعريف الصحيح: يدخل في تركيب الريبوزوم ويساهم في نشاطه"
+      }
+    },
+    {
+      "id": "fb_1_11",
+      "unitId": 1,
+      "lessonId": 2,
+      "type": "TEXT_AND_PRODUCE",
+      "microTest": {
+        "prompt": "أكمل: اليوراسيل U يرتبط هنا بـ: _______",
+        "acceptedAnswers": [
+          "يعوض الثيمين T في جزيئات ARN"
+        ],
+        "errorHint": "التعريف الصحيح: يعوض الثيمين T في جزيئات ARN"
+      }
+    },
+    {
+      "id": "fb_2_36",
+      "unitId": 2,
+      "lessonId": 7,
+      "type": "TEXT_AND_PRODUCE",
+      "microTest": {
+        "prompt": "أكمل: الحمض الأميني يرتبط هنا بـ: _______",
+        "acceptedAnswers": [
+          "وحدة بناء البروتينات وله NH2 وCOOH وجذر R"
+        ],
+        "errorHint": "التعريف الصحيح: وحدة بناء البروتينات وله NH2 وCOOH وجذر R"
+      }
+    },
+    {
+      "id": "fb_2_37",
+      "unitId": 2,
+      "lessonId": 7,
+      "type": "TEXT_AND_PRODUCE",
+      "microTest": {
+        "prompt": "أكمل: الجذر R يرتبط هنا بـ: _______",
+        "acceptedAnswers": [
+          "اختلافه يحدد خصائص الحمض الأميني"
+        ],
+        "errorHint": "التعريف الصحيح: اختلافه يحدد خصائص الحمض الأميني"
+      }
+    },
+    {
+      "id": "fb_2_38",
+      "unitId": 2,
+      "lessonId": 7,
+      "type": "TEXT_AND_PRODUCE",
+      "microTest": {
+        "prompt": "أكمل: الرابطة الببتيدية يرتبط هنا بـ: _______",
+        "acceptedAnswers": [
+          "رابطة تساهمية بين COOH لحمض وNH2 لآخر مع طرح ماء"
+        ],
+        "errorHint": "التعريف الصحيح: رابطة تساهمية بين COOH لحمض وNH2 لآخر مع طرح ماء"
+      }
+    },
+    {
+      "id": "fb_2_39",
+      "unitId": 2,
+      "lessonId": 7,
+      "type": "TEXT_AND_PRODUCE",
+      "microTest": {
+        "prompt": "أكمل: عديد الببتيد يرتبط هنا بـ: _______",
+        "acceptedAnswers": [
+          "سلسلة طويلة من أحماض أمينية مترابطة بروابط ببتيدية"
+        ],
+        "errorHint": "التعريف الصحيح: سلسلة طويلة من أحماض أمينية مترابطة بروابط ببتيدية"
+      }
+    },
+    {
+      "id": "fb_2_40",
+      "unitId": 2,
+      "lessonId": 8,
+      "type": "TEXT_AND_PRODUCE",
+      "microTest": {
+        "prompt": "أكمل: الطرف N يرتبط هنا بـ: _______",
+        "acceptedAnswers": [
+          "نهاية السلسلة الحاملة للمجموعة الأمينية الحرة"
+        ],
+        "errorHint": "التعريف الصحيح: نهاية السلسلة الحاملة للمجموعة الأمينية الحرة"
+      }
+    },
+    {
+      "id": "fb_2_41",
+      "unitId": 2,
+      "lessonId": 7,
+      "type": "TEXT_AND_PRODUCE",
+      "microTest": {
+        "prompt": "أكمل: الطرف C يرتبط هنا بـ: _______",
+        "acceptedAnswers": [
+          "نهاية السلسلة الحاملة للمجموعة الكربوكسيلية الحرة"
+        ],
+        "errorHint": "التعريف الصحيح: نهاية السلسلة الحاملة للمجموعة الكربوكسيلية الحرة"
+      }
+    },
+    {
+      "id": "fb_2_42",
+      "unitId": 2,
+      "lessonId": 9,
+      "type": "TEXT_AND_PRODUCE",
+      "microTest": {
+        "prompt": "أكمل: الأحماض الأمينية الأساسية يرتبط هنا بـ: _______",
+        "acceptedAnswers": [
+          "لا يستطيع الجسم تركيبها بكمية كافية"
+        ],
+        "errorHint": "التعريف الصحيح: لا يستطيع الجسم تركيبها بكمية كافية"
+      }
+    },
+    {
+      "id": "fb_2_43",
+      "unitId": 2,
+      "lessonId": 9,
+      "type": "TEXT_AND_PRODUCE",
+      "microTest": {
+        "prompt": "أكمل: تفاعل التكاثف يرتبط هنا بـ: _______",
+        "acceptedAnswers": [
+          "ينتج الرابطة الببتيدية مع تحرير H2O"
+        ],
+        "errorHint": "التعريف الصحيح: ينتج الرابطة الببتيدية مع تحرير H2O"
+      }
+    },
+    {
+      "id": "fb_2_44",
+      "unitId": 2,
+      "lessonId": 7,
+      "type": "TEXT_AND_PRODUCE",
+      "microTest": {
+        "prompt": "أكمل: التحلل المائي يرتبط هنا بـ: _______",
+        "acceptedAnswers": [
+          "يكسر الرابطة الببتيدية بإضافة الماء"
+        ],
+        "errorHint": "التعريف الصحيح: يكسر الرابطة الببتيدية بإضافة الماء"
+      }
+    },
+    {
+      "id": "fb_2_45",
+      "unitId": 2,
+      "lessonId": 10,
+      "type": "TEXT_AND_PRODUCE",
+      "microTest": {
+        "prompt": "أكمل: البنية الأولية يرتبط هنا بـ: _______",
+        "acceptedAnswers": [
+          "تسلسل خطي للأحماض الأمينية في السلسلة"
+        ],
+        "errorHint": "التعريف الصحيح: تسلسل خطي للأحماض الأمينية في السلسلة"
+      }
+    },
+    {
+      "id": "fb_2_46",
+      "unitId": 2,
+      "lessonId": 10,
+      "type": "TEXT_AND_PRODUCE",
+      "microTest": {
+        "prompt": "أكمل: البنية الثانوية يرتبط هنا بـ: _______",
+        "acceptedAnswers": [
+          "لولب ألفا أو صفيحة بيتا تثبتهما روابط هيدروجينية"
+        ],
+        "errorHint": "التعريف الصحيح: لولب ألفا أو صفيحة بيتا تثبتهما روابط هيدروجينية"
+      }
+    },
+    {
+      "id": "fb_3_69",
+      "unitId": 3,
+      "lessonId": 11,
+      "type": "TEXT_AND_PRODUCE",
+      "microTest": {
+        "prompt": "أكمل: الإنزيم يرتبط هنا بـ: _______",
+        "acceptedAnswers": [
+          "محفز حيوي غالباً بروتيني يسرع التفاعل دون أن يستهلك"
+        ],
+        "errorHint": "التعريف الصحيح: محفز حيوي غالباً بروتيني يسرع التفاعل دون أن يستهلك"
+      }
+    },
+    {
+      "id": "fb_3_70",
+      "unitId": 3,
+      "lessonId": 11,
+      "type": "TEXT_AND_PRODUCE",
+      "microTest": {
+        "prompt": "أكمل: الركيزة يرتبط هنا بـ: _______",
+        "acceptedAnswers": [
+          "الجزيء الذي يعمل عليه الإنزيم"
+        ],
+        "errorHint": "التعريف الصحيح: الجزيء الذي يعمل عليه الإنزيم"
+      }
+    },
+    {
+      "id": "fb_3_71",
+      "unitId": 3,
+      "lessonId": 11,
+      "type": "TEXT_AND_PRODUCE",
+      "microTest": {
+        "prompt": "أكمل: الناتج يرتبط هنا بـ: _______",
+        "acceptedAnswers": [
+          "الجزيء المتحصل عليه بعد التحول الإنزيمي"
+        ],
+        "errorHint": "التعريف الصحيح: الجزيء المتحصل عليه بعد التحول الإنزيمي"
+      }
+    },
+    {
+      "id": "fb_3_72",
+      "unitId": 3,
+      "lessonId": 12,
+      "type": "TEXT_AND_PRODUCE",
+      "microTest": {
+        "prompt": "أكمل: الموقع الفعال يرتبط هنا بـ: _______",
+        "acceptedAnswers": [
+          "منطقة تثبيت الركيزة والتحفيز في الإنزيم"
+        ],
+        "errorHint": "التعريف الصحيح: منطقة تثبيت الركيزة والتحفيز في الإنزيم"
+      }
+    },
+    {
+      "id": "fb_3_73",
+      "unitId": 3,
+      "lessonId": 12,
+      "type": "TEXT_AND_PRODUCE",
+      "microTest": {
+        "prompt": "أكمل: النوعية الإنزيمية يرتبط هنا بـ: _______",
+        "acceptedAnswers": [
+          "مرتبطة بتكامل شكل وشحنات الموقع الفعال مع الركيزة"
+        ],
+        "errorHint": "التعريف الصحيح: مرتبطة بتكامل شكل وشحنات الموقع الفعال مع الركيزة"
+      }
+    },
+    {
+      "id": "fb_3_74",
+      "unitId": 3,
+      "lessonId": 11,
+      "type": "TEXT_AND_PRODUCE",
+      "microTest": {
+        "prompt": "أكمل: المحفز يرتبط هنا بـ: _______",
+        "acceptedAnswers": [
+          "يخفض طاقة التنشيط ولا يغير حصيلة التفاعل"
+        ],
+        "errorHint": "التعريف الصحيح: يخفض طاقة التنشيط ولا يغير حصيلة التفاعل"
+      }
+    },
+    {
+      "id": "fb_3_75",
+      "unitId": 3,
+      "lessonId": 13,
+      "type": "TEXT_AND_PRODUCE",
+      "microTest": {
+        "prompt": "أكمل: E+S يرتبط هنا بـ: _______",
+        "acceptedAnswers": [
+          "يتحول مؤقتاً إلى معقد ES قبل تحرير الناتج"
+        ],
+        "errorHint": "التعريف الصحيح: يتحول مؤقتاً إلى معقد ES قبل تحرير الناتج"
+      }
+    },
+    {
+      "id": "fb_3_76",
+      "unitId": 3,
+      "lessonId": 14,
+      "type": "TEXT_AND_PRODUCE",
+      "microTest": {
+        "prompt": "أكمل: الإنزيم بعد التفاعل يرتبط هنا بـ: _______",
+        "acceptedAnswers": [
+          "يبقى قابلاً لإعادة الاستعمال"
+        ],
+        "errorHint": "التعريف الصحيح: يبقى قابلاً لإعادة الاستعمال"
+      }
+    },
+    {
+      "id": "fb_3_77",
+      "unitId": 3,
+      "lessonId": 14,
+      "type": "TEXT_AND_PRODUCE",
+      "microTest": {
+        "prompt": "أكمل: بنية الإنزيم يرتبط هنا بـ: _______",
+        "acceptedAnswers": [
+          "تحدد نشاطه لأنها تحدد شكل الموقع الفعال"
+        ],
+        "errorHint": "التعريف الصحيح: تحدد نشاطه لأنها تحدد شكل الموقع الفعال"
+      }
+    },
+    {
+      "id": "fb_3_78",
+      "unitId": 3,
+      "lessonId": 15,
+      "type": "TEXT_AND_PRODUCE",
+      "microTest": {
+        "prompt": "أكمل: النوعية المطلقة يرتبط هنا بـ: _______",
+        "acceptedAnswers": [
+          "إنزيم لا يقبل إلا ركيزة محددة جداً"
+        ],
+        "errorHint": "التعريف الصحيح: إنزيم لا يقبل إلا ركيزة محددة جداً"
+      }
+    },
+    {
+      "id": "fb_3_79",
+      "unitId": 3,
+      "lessonId": 11,
+      "type": "TEXT_AND_PRODUCE",
+      "microTest": {
+        "prompt": "أكمل: نوعية التفاعل يرتبط هنا بـ: _______",
+        "acceptedAnswers": [
+          "إنزيم يحفز نمط تفاعل معيناً"
+        ],
+        "errorHint": "التعريف الصحيح: إنزيم يحفز نمط تفاعل معيناً"
+      }
+    },
+    {
+      "id": "fb_4_114",
+      "unitId": 4,
+      "lessonId": 16,
+      "type": "TEXT_AND_PRODUCE",
+      "microTest": {
+        "prompt": "أكمل: الذات يرتبط هنا بـ: _______",
+        "acceptedAnswers": [
+          "جزيئات يتعرف عليها الجهاز المناعي كمنتمية للجسم"
+        ],
+        "errorHint": "التعريف الصحيح: جزيئات يتعرف عليها الجهاز المناعي كمنتمية للجسم"
+      }
+    },
+    {
+      "id": "fb_4_115",
+      "unitId": 4,
+      "lessonId": 16,
+      "type": "TEXT_AND_PRODUCE",
+      "microTest": {
+        "prompt": "أكمل: اللاذات يرتبط هنا بـ: _______",
+        "acceptedAnswers": [
+          "عناصر غريبة قادرة على إثارة رد مناعي"
+        ],
+        "errorHint": "التعريف الصحيح: عناصر غريبة قادرة على إثارة رد مناعي"
+      }
+    },
+    {
+      "id": "fb_4_116",
+      "unitId": 4,
+      "lessonId": 17,
+      "type": "TEXT_AND_PRODUCE",
+      "microTest": {
+        "prompt": "أكمل: CMH يرتبط هنا بـ: _______",
+        "acceptedAnswers": [
+          "واسمات غشائية تساعد على تمييز الذات"
+        ],
+        "errorHint": "التعريف الصحيح: واسمات غشائية تساعد على تمييز الذات"
+      }
+    },
+    {
+      "id": "fb_4_117",
+      "unitId": 4,
+      "lessonId": 17,
+      "type": "TEXT_AND_PRODUCE",
+      "microTest": {
+        "prompt": "أكمل: CMH I يرتبط هنا بـ: _______",
+        "acceptedAnswers": [
+          "يوجد على معظم الخلايا المنواة ويعرض ببتيدات داخلية"
+        ],
+        "errorHint": "التعريف الصحيح: يوجد على معظم الخلايا المنواة ويعرض ببتيدات داخلية"
+      }
+    },
+    {
+      "id": "fb_4_118",
+      "unitId": 4,
+      "lessonId": 18,
+      "type": "TEXT_AND_PRODUCE",
+      "microTest": {
+        "prompt": "أكمل: CMH II يرتبط هنا بـ: _______",
+        "acceptedAnswers": [
+          "يوجد على خلايا تقديم المستضد وينشط LT4"
+        ],
+        "errorHint": "التعريف الصحيح: يوجد على خلايا تقديم المستضد وينشط LT4"
+      }
+    },
+    {
+      "id": "fb_4_119",
+      "unitId": 4,
+      "lessonId": 16,
+      "type": "TEXT_AND_PRODUCE",
+      "microTest": {
+        "prompt": "أكمل: المستضد يرتبط هنا بـ: _______",
+        "acceptedAnswers": [
+          "عنصر غريب يملك حاتمات نوعية"
+        ],
+        "errorHint": "التعريف الصحيح: عنصر غريب يملك حاتمات نوعية"
+      }
+    },
+    {
+      "id": "fb_4_120",
+      "unitId": 4,
+      "lessonId": 19,
+      "type": "TEXT_AND_PRODUCE",
+      "microTest": {
+        "prompt": "أكمل: الحاتمة يرتبط هنا بـ: _______",
+        "acceptedAnswers": [
+          "جزء محدد من المستضد يتعرف عليه مستقبل أو جسم مضاد"
+        ],
+        "errorHint": "التعريف الصحيح: جزء محدد من المستضد يتعرف عليه مستقبل أو جسم مضاد"
+      }
+    },
+    {
+      "id": "fb_4_121",
+      "unitId": 4,
+      "lessonId": 16,
+      "type": "TEXT_AND_PRODUCE",
+      "microTest": {
+        "prompt": "أكمل: CPA يرتبط هنا بـ: _______",
+        "acceptedAnswers": [
+          "خلية تقدم المستضد مثل البالعة الكبيرة"
+        ],
+        "errorHint": "التعريف الصحيح: خلية تقدم المستضد مثل البالعة الكبيرة"
+      }
+    },
+    {
+      "id": "fb_4_122",
+      "unitId": 4,
+      "lessonId": 20,
+      "type": "TEXT_AND_PRODUCE",
+      "microTest": {
+        "prompt": "أكمل: رفض الطعم يرتبط هنا بـ: _______",
+        "acceptedAnswers": [
+          "ينتج عن اختلاف واسمات CMH بين المعطي والمتلقي"
+        ],
+        "errorHint": "التعريف الصحيح: ينتج عن اختلاف واسمات CMH بين المعطي والمتلقي"
+      }
+    },
+    {
+      "id": "fb_4_123",
+      "unitId": 4,
+      "lessonId": 20,
+      "type": "TEXT_AND_PRODUCE",
+      "microTest": {
+        "prompt": "أكمل: الباراتوب يرتبط هنا بـ: _______",
+        "acceptedAnswers": [
+          "موقع ارتباط على الجسم المضاد أو مستقبل LB"
+        ],
+        "errorHint": "التعريف الصحيح: موقع ارتباط على الجسم المضاد أو مستقبل LB"
+      }
+    },
+    {
+      "id": "fb_4_124",
+      "unitId": 4,
+      "lessonId": 17,
+      "type": "TEXT_AND_PRODUCE",
+      "microTest": {
+        "prompt": "أكمل: المناعة غير النوعية يرتبط هنا بـ: _______",
+        "acceptedAnswers": [
+          "استجابة فطرية سريعة لا تستهدف مستضداً محدداً"
+        ],
+        "errorHint": "التعريف الصحيح: استجابة فطرية سريعة لا تستهدف مستضداً محدداً"
+      }
+    },
+    {
+      "id": "fb_5_162",
+      "unitId": 5,
+      "lessonId": 22,
+      "type": "TEXT_AND_PRODUCE",
+      "microTest": {
+        "prompt": "أكمل: العصبون يرتبط هنا بـ: _______",
+        "acceptedAnswers": [
+          "خلية متخصصة في استقبال ودمج ونقل الرسالة العصبية"
+        ],
+        "errorHint": "التعريف الصحيح: خلية متخصصة في استقبال ودمج ونقل الرسالة العصبية"
+      }
+    },
+    {
+      "id": "fb_5_163",
+      "unitId": 5,
+      "lessonId": 22,
+      "type": "TEXT_AND_PRODUCE",
+      "microTest": {
+        "prompt": "أكمل: التغصنات يرتبط هنا بـ: _______",
+        "acceptedAnswers": [
+          "تستقبل رسائل من عصبونات أخرى"
+        ],
+        "errorHint": "التعريف الصحيح: تستقبل رسائل من عصبونات أخرى"
+      }
+    },
+    {
+      "id": "fb_5_164",
+      "unitId": 5,
+      "lessonId": 22,
+      "type": "TEXT_AND_PRODUCE",
+      "microTest": {
+        "prompt": "أكمل: المحور يرتبط هنا بـ: _______",
+        "acceptedAnswers": [
+          "ينقل كمون العمل بعيداً عن الجسم الخلوي"
+        ],
+        "errorHint": "التعريف الصحيح: ينقل كمون العمل بعيداً عن الجسم الخلوي"
+      }
+    },
+    {
+      "id": "fb_5_165",
+      "unitId": 5,
+      "lessonId": 23,
+      "type": "TEXT_AND_PRODUCE",
+      "microTest": {
+        "prompt": "أكمل: الغشاء العصبي يرتبط هنا بـ: _______",
+        "acceptedAnswers": [
+          "يحافظ على فروق تراكيز أيونية بين الداخل والخارج"
+        ],
+        "errorHint": "التعريف الصحيح: يحافظ على فروق تراكيز أيونية بين الداخل والخارج"
+      }
+    },
+    {
+      "id": "fb_5_166",
+      "unitId": 5,
+      "lessonId": 23,
+      "type": "TEXT_AND_PRODUCE",
+      "microTest": {
+        "prompt": "أكمل: القنوات الأيونية يرتبط هنا بـ: _______",
+        "acceptedAnswers": [
+          "بروتينات تسمح بمرور نوعي للأيونات"
+        ],
+        "errorHint": "التعريف الصحيح: بروتينات تسمح بمرور نوعي للأيونات"
+      }
+    },
+    {
+      "id": "fb_5_167",
+      "unitId": 5,
+      "lessonId": 24,
+      "type": "TEXT_AND_PRODUCE",
+      "microTest": {
+        "prompt": "أكمل: قنوات فولطية يرتبط هنا بـ: _______",
+        "acceptedAnswers": [
+          "تنفتح أو تنغلق حسب فرق الكمون"
+        ],
+        "errorHint": "التعريف الصحيح: تنفتح أو تنغلق حسب فرق الكمون"
+      }
+    },
+    {
+      "id": "fb_5_168",
+      "unitId": 5,
+      "lessonId": 24,
+      "type": "TEXT_AND_PRODUCE",
+      "microTest": {
+        "prompt": "أكمل: الغمد النخاعيني يرتبط هنا بـ: _______",
+        "acceptedAnswers": [
+          "يزيد سرعة انتشار السيالة في الألياف المغمدة"
+        ],
+        "errorHint": "التعريف الصحيح: يزيد سرعة انتشار السيالة في الألياف المغمدة"
+      }
+    },
+    {
+      "id": "fb_5_169",
+      "unitId": 5,
+      "lessonId": 22,
+      "type": "TEXT_AND_PRODUCE",
+      "microTest": {
+        "prompt": "أكمل: عقد رانفييه يرتبط هنا بـ: _______",
+        "acceptedAnswers": [
+          "مناطق غير مغمدة يتم بينها الانتشار القفزي"
+        ],
+        "errorHint": "التعريف الصحيح: مناطق غير مغمدة يتم بينها الانتشار القفزي"
+      }
+    },
+    {
+      "id": "fb_5_170",
+      "unitId": 5,
+      "lessonId": 25,
+      "type": "TEXT_AND_PRODUCE",
+      "microTest": {
+        "prompt": "أكمل: المضخة Na+/K+ يرتبط هنا بـ: _______",
+        "acceptedAnswers": [
+          "بروتين غشائي يستعمل ATP للحفاظ على التدرجات"
+        ],
+        "errorHint": "التعريف الصحيح: بروتين غشائي يستعمل ATP للحفاظ على التدرجات"
+      }
+    },
+    {
+      "id": "fb_5_171",
+      "unitId": 5,
+      "lessonId": 22,
+      "type": "TEXT_AND_PRODUCE",
+      "microTest": {
+        "prompt": "أكمل: الرسالة العصبية يرتبط هنا بـ: _______",
+        "acceptedAnswers": [
+          "تشفّر غالباً بتواتر كمونات العمل"
+        ],
+        "errorHint": "التعريف الصحيح: تشفّر غالباً بتواتر كمونات العمل"
+      }
+    },
+    {
+      "id": "fb_5_172",
+      "unitId": 5,
+      "lessonId": 26,
+      "type": "TEXT_AND_PRODUCE",
+      "microTest": {
+        "prompt": "أكمل: المستقبلات الغشائية يرتبط هنا بـ: _______",
+        "acceptedAnswers": [
+          "تتعرف على النواقل العصبية في المشبك"
+        ],
+        "errorHint": "التعريف الصحيح: تتعرف على النواقل العصبية في المشبك"
+      }
+    },
+    {
+      "id": "fb_6_217",
+      "unitId": 6,
+      "lessonId": 27,
+      "type": "TEXT_AND_PRODUCE",
+      "microTest": {
+        "prompt": "أكمل: الصانعة الخضراء يرتبط هنا بـ: _______",
+        "acceptedAnswers": [
+          "عضية يتم فيها التركيب الضوئي في الخلايا اليخضورية"
+        ],
+        "errorHint": "التعريف الصحيح: عضية يتم فيها التركيب الضوئي في الخلايا اليخضورية"
+      }
+    },
+    {
+      "id": "fb_6_218",
+      "unitId": 6,
+      "lessonId": 27,
+      "type": "TEXT_AND_PRODUCE",
+      "microTest": {
+        "prompt": "أكمل: الثيلاكويدات يرتبط هنا بـ: _______",
+        "acceptedAnswers": [
+          "أكياس غشائية تحمل أصباغاً ومكونات المرحلة الضوئية"
+        ],
+        "errorHint": "التعريف الصحيح: أكياس غشائية تحمل أصباغاً ومكونات المرحلة الضوئية"
+      }
+    },
+    {
+      "id": "fb_6_219",
+      "unitId": 6,
+      "lessonId": 27,
+      "type": "TEXT_AND_PRODUCE",
+      "microTest": {
+        "prompt": "أكمل: الغرانا يرتبط هنا بـ: _______",
+        "acceptedAnswers": [
+          "تراص عدة ثيلاكويدات داخل الصانعة"
+        ],
+        "errorHint": "التعريف الصحيح: تراص عدة ثيلاكويدات داخل الصانعة"
+      }
+    },
+    {
+      "id": "fb_6_220",
+      "unitId": 6,
+      "lessonId": 27,
+      "type": "TEXT_AND_PRODUCE",
+      "microTest": {
+        "prompt": "أكمل: الستروما يرتبط هنا بـ: _______",
+        "acceptedAnswers": [
+          "سائل داخلي تتم فيه حلقة كالفن"
+        ],
+        "errorHint": "التعريف الصحيح: سائل داخلي تتم فيه حلقة كالفن"
+      }
+    },
+    {
+      "id": "fb_6_221",
+      "unitId": 6,
+      "lessonId": 27,
+      "type": "TEXT_AND_PRODUCE",
+      "microTest": {
+        "prompt": "أكمل: اليخضور a يرتبط هنا بـ: _______",
+        "acceptedAnswers": [
+          "صبغة أساسية تمتص الضوء وتطلق إلكترونات مثارة"
+        ],
+        "errorHint": "التعريف الصحيح: صبغة أساسية تمتص الضوء وتطلق إلكترونات مثارة"
+      }
+    },
+    {
+      "id": "fb_6_222",
+      "unitId": 6,
+      "lessonId": 28,
+      "type": "TEXT_AND_PRODUCE",
+      "microTest": {
+        "prompt": "أكمل: اليخضور b يرتبط هنا بـ: _______",
+        "acceptedAnswers": [
+          "صبغة مساعدة توسع مجال امتصاص الضوء"
+        ],
+        "errorHint": "التعريف الصحيح: صبغة مساعدة توسع مجال امتصاص الضوء"
+      }
+    },
+    {
+      "id": "fb_6_223",
+      "unitId": 6,
+      "lessonId": 28,
+      "type": "TEXT_AND_PRODUCE",
+      "microTest": {
+        "prompt": "أكمل: الكاروتينات يرتبط هنا بـ: _______",
+        "acceptedAnswers": [
+          "أصباغ مساعدة وتحمي من فائض الضوء"
+        ],
+        "errorHint": "التعريف الصحيح: أصباغ مساعدة وتحمي من فائض الضوء"
+      }
+    },
+    {
+      "id": "fb_6_224",
+      "unitId": 6,
+      "lessonId": 27,
+      "type": "TEXT_AND_PRODUCE",
+      "microTest": {
+        "prompt": "أكمل: طيف الامتصاص يرتبط هنا بـ: _______",
+        "acceptedAnswers": [
+          "يبين الأطوال الموجية التي تمتصها الصبغة"
+        ],
+        "errorHint": "التعريف الصحيح: يبين الأطوال الموجية التي تمتصها الصبغة"
+      }
+    },
+    {
+      "id": "fb_6_225",
+      "unitId": 6,
+      "lessonId": 29,
+      "type": "TEXT_AND_PRODUCE",
+      "microTest": {
+        "prompt": "أكمل: طيف العمل يرتبط هنا بـ: _______",
+        "acceptedAnswers": [
+          "يبين فعالية الأطوال الموجية في التركيب الضوئي"
+        ],
+        "errorHint": "التعريف الصحيح: يبين فعالية الأطوال الموجية في التركيب الضوئي"
+      }
+    },
+    {
+      "id": "fb_6_226",
+      "unitId": 6,
+      "lessonId": 29,
+      "type": "TEXT_AND_PRODUCE",
+      "microTest": {
+        "prompt": "أكمل: الضوء الأحمر والأزرق يرتبط هنا بـ: _______",
+        "acceptedAnswers": [
+          "يمتصهما اليخضور بفعالية عالية"
+        ],
+        "errorHint": "التعريف الصحيح: يمتصهما اليخضور بفعالية عالية"
+      }
+    },
+    {
+      "id": "fb_6_227",
+      "unitId": 6,
+      "lessonId": 29,
+      "type": "TEXT_AND_PRODUCE",
+      "microTest": {
+        "prompt": "أكمل: الضوء الأخضر يرتبط هنا بـ: _______",
+        "acceptedAnswers": [
+          "ينعكس جزئياً لذلك تبدو الأوراق خضراء"
+        ],
+        "errorHint": "التعريف الصحيح: ينعكس جزئياً لذلك تبدو الأوراق خضراء"
+      }
+    },
+    {
+      "id": "fb_7_262",
+      "unitId": 7,
+      "lessonId": 30,
+      "type": "TEXT_AND_PRODUCE",
+      "microTest": {
+        "prompt": "أكمل: الميتوكندري يرتبط هنا بـ: _______",
+        "acceptedAnswers": [
+          "عضية التنفس الخلوي الهوائي وإنتاج ATP"
+        ],
+        "errorHint": "التعريف الصحيح: عضية التنفس الخلوي الهوائي وإنتاج ATP"
+      }
+    },
+    {
+      "id": "fb_7_263",
+      "unitId": 7,
+      "lessonId": 30,
+      "type": "TEXT_AND_PRODUCE",
+      "microTest": {
+        "prompt": "أكمل: الغشاء الداخلي يرتبط هنا بـ: _______",
+        "acceptedAnswers": [
+          "يحمل السلسلة التنفسية وATP synthase"
+        ],
+        "errorHint": "التعريف الصحيح: يحمل السلسلة التنفسية وATP synthase"
+      }
+    },
+    {
+      "id": "fb_7_264",
+      "unitId": 7,
+      "lessonId": 30,
+      "type": "TEXT_AND_PRODUCE",
+      "microTest": {
+        "prompt": "أكمل: الأعراف يرتبط هنا بـ: _______",
+        "acceptedAnswers": [
+          "طيات تزيد مساحة الغشاء الداخلي"
+        ],
+        "errorHint": "التعريف الصحيح: طيات تزيد مساحة الغشاء الداخلي"
+      }
+    },
+    {
+      "id": "fb_7_265",
+      "unitId": 7,
+      "lessonId": 30,
+      "type": "TEXT_AND_PRODUCE",
+      "microTest": {
+        "prompt": "أكمل: المصفوفة يرتبط هنا بـ: _______",
+        "acceptedAnswers": [
+          "مقر أكسدة البيروفات وحلقة كريبس"
+        ],
+        "errorHint": "التعريف الصحيح: مقر أكسدة البيروفات وحلقة كريبس"
+      }
+    },
+    {
+      "id": "fb_7_266",
+      "unitId": 7,
+      "lessonId": 31,
+      "type": "TEXT_AND_PRODUCE",
+      "microTest": {
+        "prompt": "أكمل: الغشاء الخارجي يرتبط هنا بـ: _______",
+        "acceptedAnswers": [
+          "يفصل الميتوكندري عن الهيولى"
+        ],
+        "errorHint": "التعريف الصحيح: يفصل الميتوكندري عن الهيولى"
+      }
+    },
+    {
+      "id": "fb_7_267",
+      "unitId": 7,
+      "lessonId": 31,
+      "type": "TEXT_AND_PRODUCE",
+      "microTest": {
+        "prompt": "أكمل: الحشوة الميتوكندرية يرتبط هنا بـ: _______",
+        "acceptedAnswers": [
+          "تحتوي إنزيمات ودنا ميتوكندري"
+        ],
+        "errorHint": "التعريف الصحيح: تحتوي إنزيمات ودنا ميتوكندري"
+      }
+    },
+    {
+      "id": "fb_7_268",
+      "unitId": 7,
+      "lessonId": 31,
+      "type": "TEXT_AND_PRODUCE",
+      "microTest": {
+        "prompt": "أكمل: وجود O2 يرتبط هنا بـ: _______",
+        "acceptedAnswers": [
+          "يسمح باستمرار السلسلة التنفسية"
+        ],
+        "errorHint": "التعريف الصحيح: يسمح باستمرار السلسلة التنفسية"
+      }
+    },
+    {
+      "id": "fb_7_269",
+      "unitId": 7,
+      "lessonId": 30,
+      "type": "TEXT_AND_PRODUCE",
+      "microTest": {
+        "prompt": "أكمل: ATP الميتوكندري يرتبط هنا بـ: _______",
+        "acceptedAnswers": [
+          "ينتج بكثرة في الفسفرة التأكسدية"
+        ],
+        "errorHint": "التعريف الصحيح: ينتج بكثرة في الفسفرة التأكسدية"
+      }
+    },
+    {
+      "id": "fb_7_270",
+      "unitId": 7,
+      "lessonId": 32,
+      "type": "TEXT_AND_PRODUCE",
+      "microTest": {
+        "prompt": "أكمل: تدرج H+ يرتبط هنا بـ: _______",
+        "acceptedAnswers": [
+          "يتشكل عبر الغشاء الداخلي"
+        ],
+        "errorHint": "التعريف الصحيح: يتشكل عبر الغشاء الداخلي"
+      }
+    },
+    {
+      "id": "fb_7_271",
+      "unitId": 7,
+      "lessonId": 31,
+      "type": "TEXT_AND_PRODUCE",
+      "microTest": {
+        "prompt": "أكمل: التحلل السكري يرتبط هنا بـ: _______",
+        "acceptedAnswers": [
+          "تفكيك الغلوكوز إلى بيروفات في الهيولى"
+        ],
+        "errorHint": "التعريف الصحيح: تفكيك الغلوكوز إلى بيروفات في الهيولى"
+      }
+    },
+    {
+      "id": "fb_7_272",
+      "unitId": 7,
+      "lessonId": 32,
+      "type": "TEXT_AND_PRODUCE",
+      "microTest": {
+        "prompt": "أكمل: المقر يرتبط هنا بـ: _______",
+        "acceptedAnswers": [
+          "الهيولى وليس الميتوكندري"
+        ],
+        "errorHint": "التعريف الصحيح: الهيولى وليس الميتوكندري"
+      }
+    },
+    {
+      "id": "fb_8_307",
+      "unitId": 8,
+      "lessonId": 33,
+      "type": "TEXT_AND_PRODUCE",
+      "microTest": {
+        "prompt": "أكمل: ATP يرتبط هنا بـ: _______",
+        "acceptedAnswers": [
+          "جزيء طاقوي مباشر الاستعمال في الخلية"
+        ],
+        "errorHint": "التعريف الصحيح: جزيء طاقوي مباشر الاستعمال في الخلية"
+      }
+    },
+    {
+      "id": "fb_8_308",
+      "unitId": 8,
+      "lessonId": 33,
+      "type": "TEXT_AND_PRODUCE",
+      "microTest": {
+        "prompt": "أكمل: ADP + Pi يرتبط هنا بـ: _______",
+        "acceptedAnswers": [
+          "ينتجان عن حلمهة ATP"
+        ],
+        "errorHint": "التعريف الصحيح: ينتجان عن حلمهة ATP"
+      }
+    },
+    {
+      "id": "fb_8_309",
+      "unitId": 8,
+      "lessonId": 33,
+      "type": "TEXT_AND_PRODUCE",
+      "microTest": {
+        "prompt": "أكمل: الحلمهة يرتبط هنا بـ: _______",
+        "acceptedAnswers": [
+          "تحرر طاقة قابلة للاستعمال الخلوي"
+        ],
+        "errorHint": "التعريف الصحيح: تحرر طاقة قابلة للاستعمال الخلوي"
+      }
+    },
+    {
+      "id": "fb_8_310",
+      "unitId": 8,
+      "lessonId": 33,
+      "type": "TEXT_AND_PRODUCE",
+      "microTest": {
+        "prompt": "أكمل: الاقتران الطاقوي يرتبط هنا بـ: _______",
+        "acceptedAnswers": [
+          "ربط تفاعل محرر للطاقة بتفاعل مستهلك لها"
+        ],
+        "errorHint": "التعريف الصحيح: ربط تفاعل محرر للطاقة بتفاعل مستهلك لها"
+      }
+    },
+    {
+      "id": "fb_8_311",
+      "unitId": 8,
+      "lessonId": 33,
+      "type": "TEXT_AND_PRODUCE",
+      "microTest": {
+        "prompt": "أكمل: فسفرة الجزيئات يرتبط هنا بـ: _______",
+        "acceptedAnswers": [
+          "نقل فوسفات من ATP لتفعيل تفاعل"
+        ],
+        "errorHint": "التعريف الصحيح: نقل فوسفات من ATP لتفعيل تفاعل"
+      }
+    },
+    {
+      "id": "fb_8_312",
+      "unitId": 8,
+      "lessonId": 34,
+      "type": "TEXT_AND_PRODUCE",
+      "microTest": {
+        "prompt": "أكمل: دورة ATP/ADP يرتبط هنا بـ: _______",
+        "acceptedAnswers": [
+          "تضمن تداول الطاقة داخل الخلية"
+        ],
+        "errorHint": "التعريف الصحيح: تضمن تداول الطاقة داخل الخلية"
+      }
+    },
+    {
+      "id": "fb_8_313",
+      "unitId": 8,
+      "lessonId": 34,
+      "type": "TEXT_AND_PRODUCE",
+      "microTest": {
+        "prompt": "أكمل: ATP ليس مخزناً بعيد المدى يرتبط هنا بـ: _______",
+        "acceptedAnswers": [
+          "بل وسيط سريع التجدد"
+        ],
+        "errorHint": "التعريف الصحيح: بل وسيط سريع التجدد"
+      }
+    },
+    {
+      "id": "fb_8_314",
+      "unitId": 8,
+      "lessonId": 33,
+      "type": "TEXT_AND_PRODUCE",
+      "microTest": {
+        "prompt": "أكمل: التفاعلات البنائية يرتبط هنا بـ: _______",
+        "acceptedAnswers": [
+          "غالباً تستهلك ATP"
+        ],
+        "errorHint": "التعريف الصحيح: غالباً تستهلك ATP"
+      }
+    },
+    {
+      "id": "fb_8_315",
+      "unitId": 8,
+      "lessonId": 35,
+      "type": "TEXT_AND_PRODUCE",
+      "microTest": {
+        "prompt": "أكمل: النقل الفعال يرتبط هنا بـ: _______",
+        "acceptedAnswers": [
+          "مثال لعملية تستهلك ATP"
+        ],
+        "errorHint": "التعريف الصحيح: مثال لعملية تستهلك ATP"
+      }
+    },
+    {
+      "id": "fb_8_316",
+      "unitId": 8,
+      "lessonId": 35,
+      "type": "TEXT_AND_PRODUCE",
+      "microTest": {
+        "prompt": "أكمل: العمل العضلي يرتبط هنا بـ: _______",
+        "acceptedAnswers": [
+          "يعتمد مباشرة على حلمهة ATP"
+        ],
+        "errorHint": "التعريف الصحيح: يعتمد مباشرة على حلمهة ATP"
+      }
+    },
+    {
+      "id": "fb_8_317",
+      "unitId": 8,
+      "lessonId": 35,
+      "type": "TEXT_AND_PRODUCE",
+      "microTest": {
+        "prompt": "أكمل: التركيب الضوئي يرتبط هنا بـ: _______",
+        "acceptedAnswers": [
+          "ينتج مادة عضوية وO2"
+        ],
+        "errorHint": "التعريف الصحيح: ينتج مادة عضوية وO2"
+      }
+    },
+    {
+      "id": "fb_9_347",
+      "unitId": 9,
+      "lessonId": 36,
+      "type": "TEXT_AND_PRODUCE",
+      "microTest": {
+        "prompt": "أكمل: الغلاف الصخري يرتبط هنا بـ: _______",
+        "acceptedAnswers": [
+          "غلاف صلب من القشرة والبرنس العلوي ومجزأ إلى صفائح"
+        ],
+        "errorHint": "التعريف الصحيح: غلاف صلب من القشرة والبرنس العلوي ومجزأ إلى صفائح"
+      }
+    },
+    {
+      "id": "fb_9_348",
+      "unitId": 9,
+      "lessonId": 36,
+      "type": "TEXT_AND_PRODUCE",
+      "microTest": {
+        "prompt": "أكمل: الأستينوسفير يرتبط هنا بـ: _______",
+        "acceptedAnswers": [
+          "جزء لدن من البرنس العلوي يسمح بحركة الصفائح"
+        ],
+        "errorHint": "التعريف الصحيح: جزء لدن من البرنس العلوي يسمح بحركة الصفائح"
+      }
+    },
+    {
+      "id": "fb_9_349",
+      "unitId": 9,
+      "lessonId": 36,
+      "type": "TEXT_AND_PRODUCE",
+      "microTest": {
+        "prompt": "أكمل: الصفيحة التكتونية يرتبط هنا بـ: _______",
+        "acceptedAnswers": [
+          "قطعة صلبة من الغلاف الصخري تتحرك ببطء"
+        ],
+        "errorHint": "التعريف الصحيح: قطعة صلبة من الغلاف الصخري تتحرك ببطء"
+      }
+    },
+    {
+      "id": "fb_9_350",
+      "unitId": 9,
+      "lessonId": 36,
+      "type": "TEXT_AND_PRODUCE",
+      "microTest": {
+        "prompt": "أكمل: القشرة المحيطية يرتبط هنا بـ: _______",
+        "acceptedAnswers": [
+          "أكثف وأرق من القشرة القارية"
+        ],
+        "errorHint": "التعريف الصحيح: أكثف وأرق من القشرة القارية"
+      }
+    },
+    {
+      "id": "fb_9_351",
+      "unitId": 9,
+      "lessonId": 36,
+      "type": "TEXT_AND_PRODUCE",
+      "microTest": {
+        "prompt": "أكمل: القشرة القارية يرتبط هنا بـ: _______",
+        "acceptedAnswers": [
+          "أقل كثافة وأكثر سماكة غالباً"
+        ],
+        "errorHint": "التعريف الصحيح: أقل كثافة وأكثر سماكة غالباً"
+      }
+    },
+    {
+      "id": "fb_9_352",
+      "unitId": 9,
+      "lessonId": 37,
+      "type": "TEXT_AND_PRODUCE",
+      "microTest": {
+        "prompt": "أكمل: حدود الصفائح يرتبط هنا بـ: _______",
+        "acceptedAnswers": [
+          "تتركز عندها الزلازل والبراكين والتشوهات"
+        ],
+        "errorHint": "التعريف الصحيح: تتركز عندها الزلازل والبراكين والتشوهات"
+      }
+    },
+    {
+      "id": "fb_9_353",
+      "unitId": 9,
+      "lessonId": 37,
+      "type": "TEXT_AND_PRODUCE",
+      "microTest": {
+        "prompt": "أكمل: الحركة السنوية يرتبط هنا بـ: _______",
+        "acceptedAnswers": [
+          "تقاس غالباً بالسنتيمترات في السنة"
+        ],
+        "errorHint": "التعريف الصحيح: تقاس غالباً بالسنتيمترات في السنة"
+      }
+    },
+    {
+      "id": "fb_9_354",
+      "unitId": 9,
+      "lessonId": 36,
+      "type": "TEXT_AND_PRODUCE",
+      "microTest": {
+        "prompt": "أكمل: الغلاف الصخري المحيطي يرتبط هنا بـ: _______",
+        "acceptedAnswers": [
+          "يزداد سمكاً وكثافة بابتعاده عن الظهرة"
+        ],
+        "errorHint": "التعريف الصحيح: يزداد سمكاً وكثافة بابتعاده عن الظهرة"
+      }
+    },
+    {
+      "id": "fb_9_355",
+      "unitId": 9,
+      "lessonId": 38,
+      "type": "TEXT_AND_PRODUCE",
+      "microTest": {
+        "prompt": "أكمل: البرنس العلوي يرتبط هنا بـ: _______",
+        "acceptedAnswers": [
+          "يشمل جزءاً صلباً وآخر لدناً"
+        ],
+        "errorHint": "التعريف الصحيح: يشمل جزءاً صلباً وآخر لدناً"
+      }
+    },
+    {
+      "id": "fb_9_356",
+      "unitId": 9,
+      "lessonId": 38,
+      "type": "TEXT_AND_PRODUCE",
+      "microTest": {
+        "prompt": "أكمل: الصفائح الكبرى يرتبط هنا بـ: _______",
+        "acceptedAnswers": [
+          "مثل الإفريقية والأوراسية والهادئة"
+        ],
+        "errorHint": "التعريف الصحيح: مثل الإفريقية والأوراسية والهادئة"
+      }
+    },
+    {
+      "id": "fb_9_357",
+      "unitId": 9,
+      "lessonId": 38,
+      "type": "TEXT_AND_PRODUCE",
+      "microTest": {
+        "prompt": "أكمل: خريطة الزلازل يرتبط هنا بـ: _______",
+        "acceptedAnswers": [
+          "تكشف حدود الصفائح"
+        ],
+        "errorHint": "التعريف الصحيح: تكشف حدود الصفائح"
+      }
+    },
+    {
+      "id": "fb_10_390",
+      "unitId": 10,
+      "lessonId": 39,
+      "type": "TEXT_AND_PRODUCE",
+      "microTest": {
+        "prompt": "أكمل: الزلزال يرتبط هنا بـ: _______",
+        "acceptedAnswers": [
+          "اهتزاز مفاجئ ناتج عن تحرير طاقة على فالق"
+        ],
+        "errorHint": "التعريف الصحيح: اهتزاز مفاجئ ناتج عن تحرير طاقة على فالق"
+      }
+    },
+    {
+      "id": "fb_10_391",
+      "unitId": 10,
+      "lessonId": 39,
+      "type": "TEXT_AND_PRODUCE",
+      "microTest": {
+        "prompt": "أكمل: البؤرة يرتبط هنا بـ: _______",
+        "acceptedAnswers": [
+          "نقطة انطلاق الموجات في العمق"
+        ],
+        "errorHint": "التعريف الصحيح: نقطة انطلاق الموجات في العمق"
+      }
+    },
+    {
+      "id": "fb_10_392",
+      "unitId": 10,
+      "lessonId": 39,
+      "type": "TEXT_AND_PRODUCE",
+      "microTest": {
+        "prompt": "أكمل: المركز السطحي يرتبط هنا بـ: _______",
+        "acceptedAnswers": [
+          "إسقاط البؤرة على سطح الأرض"
+        ],
+        "errorHint": "التعريف الصحيح: إسقاط البؤرة على سطح الأرض"
+      }
+    },
+    {
+      "id": "fb_10_393",
+      "unitId": 10,
+      "lessonId": 39,
+      "type": "TEXT_AND_PRODUCE",
+      "microTest": {
+        "prompt": "أكمل: الموجة P يرتبط هنا بـ: _______",
+        "acceptedAnswers": [
+          "موجة طولية سريعة تنتشر في الصلب والسائل"
+        ],
+        "errorHint": "التعريف الصحيح: موجة طولية سريعة تنتشر في الصلب والسائل"
+      }
+    },
+    {
+      "id": "fb_10_394",
+      "unitId": 10,
+      "lessonId": 39,
+      "type": "TEXT_AND_PRODUCE",
+      "microTest": {
+        "prompt": "أكمل: الموجة S يرتبط هنا بـ: _______",
+        "acceptedAnswers": [
+          "موجة عرضية لا تنتشر في السوائل"
+        ],
+        "errorHint": "التعريف الصحيح: موجة عرضية لا تنتشر في السوائل"
+      }
+    },
+    {
+      "id": "fb_10_395",
+      "unitId": 10,
+      "lessonId": 40,
+      "type": "TEXT_AND_PRODUCE",
+      "microTest": {
+        "prompt": "أكمل: الموجات L يرتبط هنا بـ: _______",
+        "acceptedAnswers": [
+          "سطحية وبطيئة وكبيرة السعة ومدمرة"
+        ],
+        "errorHint": "التعريف الصحيح: سطحية وبطيئة وكبيرة السعة ومدمرة"
+      }
+    },
+    {
+      "id": "fb_10_396",
+      "unitId": 10,
+      "lessonId": 40,
+      "type": "TEXT_AND_PRODUCE",
+      "microTest": {
+        "prompt": "أكمل: السيزموغرام يرتبط هنا بـ: _______",
+        "acceptedAnswers": [
+          "تسجيل وصول الموجات الزلزالية"
+        ],
+        "errorHint": "التعريف الصحيح: تسجيل وصول الموجات الزلزالية"
+      }
+    },
+    {
+      "id": "fb_10_397",
+      "unitId": 10,
+      "lessonId": 40,
+      "type": "TEXT_AND_PRODUCE",
+      "microTest": {
+        "prompt": "أكمل: فرق وصول P وS يرتبط هنا بـ: _______",
+        "acceptedAnswers": [
+          "يساعد على حساب بعد المحطة عن البؤرة"
+        ],
+        "errorHint": "التعريف الصحيح: يساعد على حساب بعد المحطة عن البؤرة"
+      }
+    },
+    {
+      "id": "fb_10_398",
+      "unitId": 10,
+      "lessonId": 41,
+      "type": "TEXT_AND_PRODUCE",
+      "microTest": {
+        "prompt": "أكمل: سرعة P يرتبط هنا بـ: _______",
+        "acceptedAnswers": [
+          "أكبر من سرعة S لذلك تصل أولاً"
+        ],
+        "errorHint": "التعريف الصحيح: أكبر من سرعة S لذلك تصل أولاً"
+      }
+    },
+    {
+      "id": "fb_10_399",
+      "unitId": 10,
+      "lessonId": 39,
+      "type": "TEXT_AND_PRODUCE",
+      "microTest": {
+        "prompt": "أكمل: الموجات السطحية يرتبط هنا بـ: _______",
+        "acceptedAnswers": [
+          "تصل أخيراً غالباً وتسبب أضراراً كبيرة"
+        ],
+        "errorHint": "التعريف الصحيح: تصل أخيراً غالباً وتسبب أضراراً كبيرة"
+      }
+    },
+    {
+      "id": "fb_10_400",
+      "unitId": 10,
+      "lessonId": 41,
+      "type": "TEXT_AND_PRODUCE",
+      "microTest": {
+        "prompt": "أكمل: السعة يرتبط هنا بـ: _______",
+        "acceptedAnswers": [
+          "ترتبط بشدة الاهتزاز المسجل"
+        ],
+        "errorHint": "التعريف الصحيح: ترتبط بشدة الاهتزاز المسجل"
+      }
+    },
+    {
+      "id": "fb_11_440",
+      "unitId": 11,
+      "lessonId": 42,
+      "type": "TEXT_AND_PRODUCE",
+      "microTest": {
+        "prompt": "أكمل: الظهرة يرتبط هنا بـ: _______",
+        "acceptedAnswers": [
+          "حد تباعدي محيطي تتشكل عنده قشرة جديدة"
+        ],
+        "errorHint": "التعريف الصحيح: حد تباعدي محيطي تتشكل عنده قشرة جديدة"
+      }
+    },
+    {
+      "id": "fb_11_441",
+      "unitId": 11,
+      "lessonId": 42,
+      "type": "TEXT_AND_PRODUCE",
+      "microTest": {
+        "prompt": "أكمل: الصهير البازلتي يرتبط هنا بـ: _______",
+        "acceptedAnswers": [
+          "يصعد عند الظهرة نتيجة انخفاض الضغط"
+        ],
+        "errorHint": "التعريف الصحيح: يصعد عند الظهرة نتيجة انخفاض الضغط"
+      }
+    },
+    {
+      "id": "fb_11_442",
+      "unitId": 11,
+      "lessonId": 42,
+      "type": "TEXT_AND_PRODUCE",
+      "microTest": {
+        "prompt": "أكمل: البازلت الوسائدي يرتبط هنا بـ: _______",
+        "acceptedAnswers": [
+          "ينتج من تبرد اللافا سريعاً في ماء البحر"
+        ],
+        "errorHint": "التعريف الصحيح: ينتج من تبرد اللافا سريعاً في ماء البحر"
+      }
+    },
+    {
+      "id": "fb_11_443",
+      "unitId": 11,
+      "lessonId": 42,
+      "type": "TEXT_AND_PRODUCE",
+      "microTest": {
+        "prompt": "أكمل: الدوليريت يرتبط هنا بـ: _______",
+        "acceptedAnswers": [
+          "عروق تغذي البازلت على شكل قواطع"
+        ],
+        "errorHint": "التعريف الصحيح: عروق تغذي البازلت على شكل قواطع"
+      }
+    },
+    {
+      "id": "fb_11_444",
+      "unitId": 11,
+      "lessonId": 42,
+      "type": "TEXT_AND_PRODUCE",
+      "microTest": {
+        "prompt": "أكمل: الغابرو يرتبط هنا بـ: _______",
+        "acceptedAnswers": [
+          "صخر ماغماتي عميق بطيء التبلور في القشرة المحيطية"
+        ],
+        "errorHint": "التعريف الصحيح: صخر ماغماتي عميق بطيء التبلور في القشرة المحيطية"
+      }
+    },
+    {
+      "id": "fb_11_445",
+      "unitId": 11,
+      "lessonId": 43,
+      "type": "TEXT_AND_PRODUCE",
+      "microTest": {
+        "prompt": "أكمل: البيريدوتيت يرتبط هنا بـ: _______",
+        "acceptedAnswers": [
+          "صخر البرنس أسفل موهو المحيطي"
+        ],
+        "errorHint": "التعريف الصحيح: صخر البرنس أسفل موهو المحيطي"
+      }
+    },
+    {
+      "id": "fb_11_446",
+      "unitId": 11,
+      "lessonId": 43,
+      "type": "TEXT_AND_PRODUCE",
+      "microTest": {
+        "prompt": "أكمل: الرواسب البحرية يرتبط هنا بـ: _______",
+        "acceptedAnswers": [
+          "تزداد سماكتها بالابتعاد عن الظهرة"
+        ],
+        "errorHint": "التعريف الصحيح: تزداد سماكتها بالابتعاد عن الظهرة"
+      }
+    },
+    {
+      "id": "fb_11_447",
+      "unitId": 11,
+      "lessonId": 43,
+      "type": "TEXT_AND_PRODUCE",
+      "microTest": {
+        "prompt": "أكمل: العمر المحيطي يرتبط هنا بـ: _______",
+        "acceptedAnswers": [
+          "صغير عند الظهرة ويزداد بعيداً عنها"
+        ],
+        "errorHint": "التعريف الصحيح: صغير عند الظهرة ويزداد بعيداً عنها"
+      }
+    },
+    {
+      "id": "fb_11_448",
+      "unitId": 11,
+      "lessonId": 44,
+      "type": "TEXT_AND_PRODUCE",
+      "microTest": {
+        "prompt": "أكمل: التدفق الحراري يرتبط هنا بـ: _______",
+        "acceptedAnswers": [
+          "مرتفع قرب محور الظهرة"
+        ],
+        "errorHint": "التعريف الصحيح: مرتفع قرب محور الظهرة"
+      }
+    },
+    {
+      "id": "fb_11_449",
+      "unitId": 11,
+      "lessonId": 42,
+      "type": "TEXT_AND_PRODUCE",
+      "microTest": {
+        "prompt": "أكمل: الثقوب الحرارية يرتبط هنا بـ: _______",
+        "acceptedAnswers": [
+          "مياه ساخنة غنية بالمعادن قرب الظهرات"
+        ],
+        "errorHint": "التعريف الصحيح: مياه ساخنة غنية بالمعادن قرب الظهرات"
+      }
+    },
+    {
+      "id": "fb_11_450",
+      "unitId": 11,
+      "lessonId": 44,
+      "type": "TEXT_AND_PRODUCE",
+      "microTest": {
+        "prompt": "أكمل: البناء المحيطي يرتبط هنا بـ: _______",
+        "acceptedAnswers": [
+          "يعوض هدم الليثوسفير عند الغوص"
+        ],
+        "errorHint": "التعريف الصحيح: يعوض هدم الليثوسفير عند الغوص"
+      }
+    }
+  ],
+  "drills": [
+    {
+      "id": "drill_transcription",
+      "unitId": 1,
+      "titleAr": "مخطط الاستنساخ",
+      "consigneAr": "أنجز رسماً تخطيطياً معنوناً يوضّح آلية الاستنساخ داخل النواة.",
+      "whyAr": "يُطلب كسؤال استرجاع (التمرين الأول، 05 نقاط) في كل دورة تقريباً، ويُصحَّح بالعناصر لا بالجمال.",
+      "minutes": 8,
+      "orderAr": [
+        "ابدأ بالعنوان فوق الرسم.",
+        "ارسم سلسلتي ADN مع فقاعة الاستنساخ في الوسط.",
+        "ضع ARN بوليميراز على السلسلة الناسخة وحدها.",
+        "اسحب ARNm الناشئ وحدّد اتجاه 5ʹ→3ʹ بسهم."
+      ],
+      "elements": [
+        {
+          "id": "titre",
+          "labelAr": "عنوان الرسم",
+          "points": 1
+        },
+        {
+          "id": "adn_double",
+          "labelAr": "سلسلتا ADN مع فتح موضعي (فقاعة)",
+          "points": 2
+        },
+        {
+          "id": "brin_transcrit",
+          "labelAr": "تحديد السلسلة الناسخة وحدها",
+          "points": 2
+        },
+        {
+          "id": "polymerase",
+          "labelAr": "إنزيم ARN بوليميراز في موضعه",
+          "points": 2
+        },
+        {
+          "id": "arnm",
+          "labelAr": "جزيء ARNm الناشئ",
+          "points": 2
+        },
+        {
+          "id": "sens",
+          "labelAr": "سهم يبيّن اتجاه التركيب 5ʹ→3ʹ",
+          "points": 1
+        },
+        {
+          "id": "noyau",
+          "labelAr": "الإشارة إلى أن المقرّ هو النواة",
+          "points": 1
+        }
+      ],
+      "trapsAr": [
+        "رسم السلسلتين تُستنسخان معاً: واحدة فقط ناسخة.",
+        "كتابة T في ARNm بدل U.",
+        "نسيان العنوان — وهو نقطة كاملة في أغلب السلالم."
+      ],
+      "assetSrc": "/assets/images/schemas/domaine1_proteines/schema_02_transcription.svg",
+      "altAr": "مخطط الاستنساخ: فقاعة الاستنساخ و ARN بوليميراز و ARNm الناشئ.",
+      "lessonId": "lecon_transcription"
+    },
+    {
+      "id": "drill_traduction",
+      "unitId": 1,
+      "titleAr": "مخطط الترجمة على الريبوزوم",
+      "consigneAr": "ارسم مخططاً يوضّح مرحلة الاستطالة في الترجمة على مستوى الريبوزوم.",
+      "whyAr": "يختبر فهم العلاقة رامزة/مضاد رامزة، وهي العقدة التي تفصل بين التلميذ الذي حفظ والذي فهم.",
+      "minutes": 8,
+      "orderAr": [
+        "ضع العنوان ثم ارسم ARNm أفقياً مع بعض الرامزات.",
+        "ارسم الريبوزوم بوحدتيه الصغرى والكبرى فوق ARNm.",
+        "ضع ARNt في الموقعين مع مضاد الرامزة والحمض الأميني.",
+        "اربط الأحماض الأمينية برابطة ببتيدية واتجاه التقدّم."
+      ],
+      "elements": [
+        {
+          "id": "titre",
+          "labelAr": "عنوان الرسم",
+          "points": 1
+        },
+        {
+          "id": "arnm",
+          "labelAr": "ARNm مع رامزات مكتوبة بثلاث قواعد",
+          "points": 2
+        },
+        {
+          "id": "ribosome",
+          "labelAr": "الريبوزوم بوحدتيه",
+          "points": 2
+        },
+        {
+          "id": "arnt",
+          "labelAr": "ARNt مع مضاد الرامزة المتمّم",
+          "points": 2
+        },
+        {
+          "id": "aa",
+          "labelAr": "الحمض الأميني المحمول على ARNt",
+          "points": 2
+        },
+        {
+          "id": "peptide",
+          "labelAr": "السلسلة الببتيدية والرابطة الببتيدية",
+          "points": 1
+        },
+        {
+          "id": "sens",
+          "labelAr": "سهم تقدّم الريبوزوم على ARNm",
+          "points": 1
+        }
+      ],
+      "trapsAr": [
+        "كتابة مضاد رامزة غير متمّم للرامزة المقابلة.",
+        "رسم ARNt يحمل ثلاثة أحماض أمينية: واحد فقط.",
+        "وضع العملية في النواة."
+      ],
+      "assetSrc": "/assets/images/schemas/domaine1_proteines/schema_03_traduction.svg",
+      "altAr": "مخطط الترجمة: ARNm، الريبوزوم، ARNt، السلسلة الببتيدية."
+    },
+    {
+      "id": "drill_niveaux_structure",
+      "unitId": 2,
+      "titleAr": "المستويات الأربعة لبنية البروتين",
+      "consigneAr": "أنجز مخططاً يمثّل المستويات البنيوية الأربعة للبروتين مع الرابطة المميّزة لكل مستوى.",
+      "whyAr": "سؤال استرجاع متكرّر؛ يُنقَّط عنصراً بعنصر: مستوى + شكل + رابطة.",
+      "minutes": 10,
+      "orderAr": [
+        "قسّم الورقة إلى أربع خانات معنونة.",
+        "في كل خانة ارسم الشكل المميّز للمستوى.",
+        "اكتب تحت كل شكل نوع الرابطة المثبّتة."
+      ],
+      "elements": [
+        {
+          "id": "primaire",
+          "labelAr": "البنية الأولية: تسلسل خطي + رابطة ببتيدية",
+          "points": 2
+        },
+        {
+          "id": "secondaire",
+          "labelAr": "البنية الثانوية: لولب α وصفيحة β + روابط هيدروجينية",
+          "points": 2
+        },
+        {
+          "id": "tertiaire",
+          "labelAr": "البنية الثالثية: شكل فراغي + جسر ثنائي الكبريت",
+          "points": 2
+        },
+        {
+          "id": "quaternaire",
+          "labelAr": "البنية الرباعية: عدة سلاسل (مثال الهيموغلوبين)",
+          "points": 2
+        },
+        {
+          "id": "titre",
+          "labelAr": "عنوان عام للمخطط",
+          "points": 1
+        },
+        {
+          "id": "ordre",
+          "labelAr": "ترتيب تصاعدي واضح من الأولية إلى الرباعية",
+          "points": 1
+        }
+      ],
+      "trapsAr": [
+        "نسبة الروابط الهيدروجينية إلى البنية الأولية.",
+        "الخلط بين لولب α وصفيحة β في الرسم.",
+        "إعطاء مثال رباعي بسلسلة واحدة."
+      ],
+      "assetSrc": "/assets/images/schemas/domaine1_proteines/schema_45_four_levels_structure_modern.svg",
+      "altAr": "المستويات الأربعة لبنية البروتين.",
+      "lessonId": "protein_structure_function"
+    },
+    {
+      "id": "drill_enzyme_site_actif",
+      "unitId": 3,
+      "titleAr": "الموقع الفعّال والتكامل البنيوي",
+      "consigneAr": "ارسم مخططاً يوضّح تشكّل المعقّد إنزيم-ركيزة ثم تحرير النواتج.",
+      "whyAr": "يربط البنية بالوظيفة، وهو الأساس الذي تُبنى عليه كل أسئلة التثبيط.",
+      "minutes": 8,
+      "orderAr": [
+        "ارسم الإنزيم مع تجويف الموقع الفعّال.",
+        "ارسم الركيزة المتكاملة شكلياً مع التجويف.",
+        "ارسم المعقّد ثم النواتج والإنزيم حرّاً من جديد."
+      ],
+      "elements": [
+        {
+          "id": "enzyme",
+          "labelAr": "الإنزيم مع موقع فعّال محدّد بوضوح",
+          "points": 2
+        },
+        {
+          "id": "substrat",
+          "labelAr": "الركيزة متكاملة شكلياً مع الموقع",
+          "points": 2
+        },
+        {
+          "id": "complexe",
+          "labelAr": "المعقّد إنزيم-ركيزة",
+          "points": 2
+        },
+        {
+          "id": "produits",
+          "labelAr": "النواتج المحرَّرة",
+          "points": 2
+        },
+        {
+          "id": "recyclage",
+          "labelAr": "عودة الإنزيم حرّاً (سهم إعادة الاستعمال)",
+          "points": 1
+        },
+        {
+          "id": "titre",
+          "labelAr": "عنوان الرسم",
+          "points": 1
+        }
+      ],
+      "trapsAr": [
+        "رسم الإنزيم يُستهلك في التفاعل: الإنزيم يُسترجع سليماً.",
+        "ركيزة أكبر من الموقع الفعّال أو غير متكاملة معه.",
+        "نسيان النواتج."
+      ],
+      "assetSrc": "/assets/images/schemas/domaine1_proteines/schema_07_enzyme.svg",
+      "altAr": "مخطط الموقع الفعّال والمعقّد إنزيم-ركيزة.",
+      "lessonId": "enzyme_inhibitors"
+    },
+    {
+      "id": "drill_courbes_inhibition",
+      "unitId": 3,
+      "titleAr": "منحنيات التثبيط التنافسي وغير التنافسي",
+      "consigneAr": "ارسم على معلم واحد منحنى التفاعل دون مثبّط، مع مثبّط تنافسي، ومع مثبّط غير تنافسي.",
+      "whyAr": "الرسم هنا هو الجواب: شكل المنحنيات وحده يُثبت نوع التثبيط.",
+      "minutes": 10,
+      "orderAr": [
+        "ارسم المعلم: [S] على الأفقي، V على العمودي، مع الوحدات.",
+        "ارسم المنحنى المرجعي حتى Vmax.",
+        "أضف منحنى التنافسي: نفس Vmax، بلوغ أبطأ.",
+        "أضف منحنى غير التنافسي: Vmax أخفض."
+      ],
+      "elements": [
+        {
+          "id": "axes",
+          "labelAr": "معلم معنون بالوحدات ([S] و V)",
+          "points": 2
+        },
+        {
+          "id": "temoin",
+          "labelAr": "المنحنى المرجعي الزائدي حتى Vmax",
+          "points": 2
+        },
+        {
+          "id": "competitif",
+          "labelAr": "منحنى تنافسي يبلغ نفس Vmax",
+          "points": 2
+        },
+        {
+          "id": "non_competitif",
+          "labelAr": "منحنى غير تنافسي بـ Vmax أخفض",
+          "points": 2
+        },
+        {
+          "id": "legende",
+          "labelAr": "مفتاح يميّز المنحنيات الثلاثة",
+          "points": 1
+        },
+        {
+          "id": "vmax",
+          "labelAr": "تحديد Vmax بخط متقطّع",
+          "points": 1
+        }
+      ],
+      "trapsAr": [
+        "خفض Vmax في التثبيط التنافسي.",
+        "رسم منحنيات خطية بدل منحنيات زائدية.",
+        "معلم بلا وحدات: تُخصم النقطة آلياً."
+      ],
+      "assetSrc": "/assets/images/schemas/domaine1_enzymes/schema_87_enzyme_inhibition_curves_ar.svg",
+      "altAr": "منحنيات النشاط الإنزيمي مع وبدون مثبّطات.",
+      "lessonId": "enzyme_inhibitors"
+    },
+    {
+      "id": "drill_anticorps",
+      "unitId": 4,
+      "titleAr": "بنية الجسم المضاد",
+      "consigneAr": "أنجز رسماً تخطيطياً معنوناً لبنية جسم مضاد من نوع IgG.",
+      "whyAr": "من أكثر الرسومات طلباً؛ ثلاث نقاط تُفقد عادة في المناطق الثابتة/المتغيّرة.",
+      "minutes": 7,
+      "orderAr": [
+        "ارسم شكل Y مع أربع سلاسل.",
+        "ميّز السلسلتين الثقيلتين عن الخفيفتين.",
+        "لوّن أو ظلّل المناطق المتغيّرة في الأطراف.",
+        "ضع جسور ثنائي الكبريت ومواقع تثبيت المستضد."
+      ],
+      "elements": [
+        {
+          "id": "y",
+          "labelAr": "الشكل العام على هيئة Y",
+          "points": 1
+        },
+        {
+          "id": "chaines",
+          "labelAr": "سلسلتان ثقيلتان وسلسلتان خفيفتان",
+          "points": 2
+        },
+        {
+          "id": "variable",
+          "labelAr": "المناطق المتغيّرة في الأطراف",
+          "points": 2
+        },
+        {
+          "id": "constante",
+          "labelAr": "المناطق الثابتة",
+          "points": 1
+        },
+        {
+          "id": "sites",
+          "labelAr": "موقعا تثبيت المستضد",
+          "points": 2
+        },
+        {
+          "id": "ponts",
+          "labelAr": "جسور ثنائي الكبريت",
+          "points": 1
+        },
+        {
+          "id": "titre",
+          "labelAr": "عنوان الرسم",
+          "points": 1
+        }
+      ],
+      "trapsAr": [
+        "موقع تثبيت واحد بدل موقعين.",
+        "وضع المنطقة المتغيّرة في القاعدة بدل الأطراف.",
+        "الخلط بين السلاسل الثقيلة والخفيفة في الطول."
+      ],
+      "assetSrc": "/assets/images/schemas/domaine1_proteines/schema_65_antibody_structure_hl_modern.svg",
+      "altAr": "بنية الجسم المضاد: سلاسل ثقيلة وخفيفة ومواقع التثبيت.",
+      "lessonId": "immunity_humoral_response"
+    },
+    {
+      "id": "drill_cmh",
+      "unitId": 4,
+      "titleAr": "معقّد التوافق النسيجي CMH I و II",
+      "consigneAr": "ارسم مخططاً مقارناً بين CMH I و CMH II مبيّناً الخلية الحاملة والخلية المتعرّفة.",
+      "whyAr": "الخلط بين الصنفين يُسقط كل تفسير لعرض المستضد.",
+      "minutes": 8,
+      "orderAr": [
+        "ارسم غشاءين متقابلين، واحد لكل صنف.",
+        "ضع CMH I على كل خلية ذات نواة، وCMH II على الخلية العارضة.",
+        "ضع المستضد في التجويف، ثم الخلية المتعرّفة LT8 أو LT4."
+      ],
+      "elements": [
+        {
+          "id": "membrane",
+          "labelAr": "الغشاء الهيولي مرسوم بوضوح",
+          "points": 1
+        },
+        {
+          "id": "cmh1",
+          "labelAr": "CMH I على خلية ذات نواة",
+          "points": 2
+        },
+        {
+          "id": "cmh2",
+          "labelAr": "CMH II على خلية عارضة (بلعمية أو LB)",
+          "points": 2
+        },
+        {
+          "id": "antigene",
+          "labelAr": "الببتيد المستضدي داخل التجويف",
+          "points": 2
+        },
+        {
+          "id": "lt8",
+          "labelAr": "LT8 تتعرّف على CMH I",
+          "points": 2
+        },
+        {
+          "id": "lt4",
+          "labelAr": "LT4 تتعرّف على CMH II",
+          "points": 2
+        },
+        {
+          "id": "titre",
+          "labelAr": "عنوان ومفتاح",
+          "points": 1
+        }
+      ],
+      "trapsAr": [
+        "عكس الأزواج: LT4 مع CMH I.",
+        "وضع CMH II على كل الخلايا.",
+        "نسيان الببتيد المعروض: بدونه لا يوجد تعرّف."
+      ],
+      "assetSrc": "/assets/images/schemas/domaine1_proteines/schema_58_hla_I_II_structure_modern.svg",
+      "altAr": "بنية CMH I و CMH II والخلايا المتعرّفة.",
+      "lessonId": "immunity_self_nonself"
+    },
+    {
+      "id": "drill_reponse_primaire_secondaire",
+      "unitId": 4,
+      "titleAr": "منحنى الاستجابة الأولية والثانوية",
+      "consigneAr": "ارسم منحنى تطوّر نسبة الأجسام المضادة بعد حقنتين متتاليتين لنفس المستضد.",
+      "whyAr": "الرسم يُطلب مباشرة في تمارين التلقيح، ويجب أن يُظهر ثلاثة فروق قابلة للقياس.",
+      "minutes": 8,
+      "orderAr": [
+        "ارسم المعلم: الزمن بالأيام، وتركيز الأجسام المضادة.",
+        "ضع سهمي الحقن الأول والثاني.",
+        "ارسم الاستجابة الأولية: كمون طويل وذروة منخفضة.",
+        "ارسم الثانوية: كمون قصير، ذروة أعلى، مدة أطول."
+      ],
+      "elements": [
+        {
+          "id": "axes",
+          "labelAr": "معلم معنون بالوحدات",
+          "points": 2
+        },
+        {
+          "id": "injections",
+          "labelAr": "سهما الحقن الأول والثاني",
+          "points": 2
+        },
+        {
+          "id": "latence",
+          "labelAr": "زمن كمون أطول في الأولية",
+          "points": 2
+        },
+        {
+          "id": "amplitude",
+          "labelAr": "ذروة أعلى في الثانوية",
+          "points": 2
+        },
+        {
+          "id": "duree",
+          "labelAr": "استمرار أطول في الثانوية",
+          "points": 1
+        },
+        {
+          "id": "titre",
+          "labelAr": "عنوان ومفتاح",
+          "points": 1
+        }
+      ],
+      "trapsAr": [
+        "رسم ذروتين متساويتين.",
+        "نسيان زمن الكمون: هو أول فرق يُقرأ.",
+        "حقن ثانٍ بمستضد مختلف: عندئذٍ لا استجابة ثانوية."
+      ],
+      "assetSrc": "/assets/images/schemas/domaine1_proteines/schema_75_primary_secondary_response_curve_modern.svg",
+      "altAr": "منحنى الاستجابة المناعية الأولية والثانوية.",
+      "lessonId": "immunity_memory_response"
+    },
+    {
+      "id": "drill_vih_cycle",
+      "unitId": 4,
+      "titleAr": "دورة فيروس VIH داخل LT4",
+      "consigneAr": "أنجز مخططاً يلخّص مراحل تكاثر فيروس VIH داخل اللمفاوية LT4.",
+      "whyAr": "يجمع بين المناعة والبيولوجيا الجزيئية، ويُطلب غالباً في التمرين الثاني.",
+      "minutes": 10,
+      "orderAr": [
+        "ارسم LT4 مع مستقبل CD4 على غشائها.",
+        "ثبّت الفيروس ثم أدخل محتواه.",
+        "ارسم النسخ العكسي ثم الإدماج في ADN الخلية.",
+        "انهِ بالتضاعف وتبرعم فيروسات جديدة."
+      ],
+      "elements": [
+        {
+          "id": "lt4",
+          "labelAr": "اللمفاوية LT4 ومستقبل CD4",
+          "points": 2
+        },
+        {
+          "id": "fixation",
+          "labelAr": "تثبيت الفيروس على المستقبل",
+          "points": 2
+        },
+        {
+          "id": "transcriptase",
+          "labelAr": "النسخ العكسي: ARN فيروسي إلى ADN",
+          "points": 2
+        },
+        {
+          "id": "integration",
+          "labelAr": "إدماج ADN الفيروسي في مورثات الخلية",
+          "points": 2
+        },
+        {
+          "id": "production",
+          "labelAr": "إنتاج فيروسات جديدة وتبرعمها",
+          "points": 2
+        },
+        {
+          "id": "lyse",
+          "labelAr": "موت اللمفاوية LT4",
+          "points": 1
+        }
+      ],
+      "trapsAr": [
+        "نسيان الإنزيم الناسخ العكسي: هو خصوصية الفيروسات القهقرية.",
+        "إصابة أي خلية: الفيروس نوعي لحاملات CD4.",
+        "الخلط بين مرحلة الكمون السريرية وغياب التكاثر الفيروسي."
+      ],
+      "assetSrc": "/assets/images/schemas/domaine1_immunite/schema_90_vih_cycle_lt4_ar.svg",
+      "altAr": "دورة تكاثر فيروس VIH داخل اللمفاوية LT4.",
+      "lessonId": "immunity_hiv_aids"
+    },
+    {
+      "id": "drill_synapse",
+      "unitId": 5,
+      "titleAr": "مخطط المشبك العصبي",
+      "consigneAr": "ارسم مخططاً معنوناً لمشبك عصبي عصبي مبيّناً مسار الرسالة العصبية.",
+      "whyAr": "أكثر رسم يُطلب في الوحدة 5؛ ستة عناصر تُنقَّط بشكل مستقل.",
+      "minutes": 10,
+      "orderAr": [
+        "ارسم النهاية قبل المشبكية والعنصر بعد المشبكي والشقّ بينهما.",
+        "ضع الحويصلات المشبكية والميتوكوندريات.",
+        "ارسم تحرّر المبلّغ في الشقّ وتثبيته على المستقبلات.",
+        "بيّن اتجاه الرسالة بسهم واحد لا رجعة فيه."
+      ],
+      "elements": [
+        {
+          "id": "pre",
+          "labelAr": "النهاية قبل المشبكية",
+          "points": 2
+        },
+        {
+          "id": "fente",
+          "labelAr": "الشقّ المشبكي",
+          "points": 2
+        },
+        {
+          "id": "post",
+          "labelAr": "الغشاء بعد المشبكي",
+          "points": 2
+        },
+        {
+          "id": "vesicules",
+          "labelAr": "الحويصلات المشبكية المحتوية على المبلّغ",
+          "points": 2
+        },
+        {
+          "id": "recepteurs",
+          "labelAr": "المستقبلات النوعية على الغشاء بعد المشبكي",
+          "points": 2
+        },
+        {
+          "id": "mitochondries",
+          "labelAr": "الميتوكوندريات في النهاية قبل المشبكية",
+          "points": 1
+        },
+        {
+          "id": "sens",
+          "labelAr": "سهم اتجاه الرسالة (أحادي الاتجاه)",
+          "points": 1
+        }
+      ],
+      "trapsAr": [
+        "رسم الحويصلات في الجانب بعد المشبكي.",
+        "سهم في الاتجاهين: النقل المشبكي أحادي الاتجاه.",
+        "نسيان المستقبلات: بدونها لا يوجد تأثير بعد مشبكي."
+      ],
+      "assetSrc": "/assets/images/schemas/domaine1_regulations/schema_82_synapse_modern_ar.svg",
+      "altAr": "مخطط مشبك عصبي مع الحويصلات والمستقبلات.",
+      "lessonId": "synapse"
+    },
+    {
+      "id": "drill_potentiel_action",
+      "unitId": 5,
+      "titleAr": "منحنى كمون العمل",
+      "consigneAr": "ارسم منحنى كمون العمل مع تسمية مراحله وقيمه المميّزة.",
+      "whyAr": "يجب أن يُرسم بالقيم: −70 mV و +30 mV، وإلا فُقدت نقطة القراءة.",
+      "minutes": 8,
+      "orderAr": [
+        "ارسم المعلم: الزمن (ms) والفرق في الكمون (mV).",
+        "ابدأ من كمون الراحة −70 mV.",
+        "ارسم زوال الاستقطاب حتى +30 mV ثم إعادة الاستقطاب.",
+        "أضف فرط الاستقطاب والعودة إلى الراحة."
+      ],
+      "elements": [
+        {
+          "id": "axes",
+          "labelAr": "معلم بالوحدات: ms و mV",
+          "points": 2
+        },
+        {
+          "id": "repos",
+          "labelAr": "كمون الراحة عند −70 mV",
+          "points": 2
+        },
+        {
+          "id": "depolarisation",
+          "labelAr": "طور زوال الاستقطاب",
+          "points": 2
+        },
+        {
+          "id": "pic",
+          "labelAr": "الذروة عند +30 mV تقريباً",
+          "points": 2
+        },
+        {
+          "id": "repolarisation",
+          "labelAr": "طور إعادة الاستقطاب",
+          "points": 2
+        },
+        {
+          "id": "hyperpolarisation",
+          "labelAr": "فرط الاستقطاب العابر",
+          "points": 1
+        },
+        {
+          "id": "seuil",
+          "labelAr": "تحديد العتبة",
+          "points": 1
+        }
+      ],
+      "trapsAr": [
+        "رسم كمون عمل بسعة متغيّرة حسب شدّة المنبّه.",
+        "نسيان الإشارة السالبة في كمون الراحة.",
+        "قلب محوري المعلم."
+      ],
+      "assetSrc": "/assets/images/schemas/domaine1_regulations/schema_83_potentiel_action_modern_ar.svg",
+      "altAr": "منحنى كمون العمل بمراحله الأربع.",
+      "lessonId": "synapse"
+    },
+    {
+      "id": "drill_chaine_photochimique",
+      "unitId": 6,
+      "titleAr": "المرحلة الكيموضوئية على غشاء التيلاكويد",
+      "consigneAr": "أنجز مخططاً يبيّن مسار الإلكترون من الماء إلى NADP⁺ على غشاء التيلاكويد.",
+      "whyAr": "الوحدة الأثقل في الامتحان (المجال 2 يمثّل 39 %)، والرسم يجمع كل عناصر التنقيط.",
+      "minutes": 12,
+      "orderAr": [
+        "ارسم غشاء التيلاكويد بين التجويف والحشوة.",
+        "ضع PSII ثم السلسلة الناقلة ثم PSI من اليسار إلى اليمين.",
+        "ابدأ بالتحلّل الضوئي للماء في التجويف.",
+        "انتهِ بـ NADPH في الحشوة وATP سنتاز مع تدفّق H⁺."
+      ],
+      "elements": [
+        {
+          "id": "membrane",
+          "labelAr": "غشاء التيلاكويد مع تمييز التجويف والحشوة",
+          "points": 2
+        },
+        {
+          "id": "photolyse",
+          "labelAr": "التحلّل الضوئي للماء: H₂O → 2H⁺ + 2e⁻ + ½O₂",
+          "points": 2
+        },
+        {
+          "id": "psii",
+          "labelAr": "النظام الضوئي II في موقعه",
+          "points": 2
+        },
+        {
+          "id": "chaine",
+          "labelAr": "سلسلة نقل الإلكترونات",
+          "points": 2
+        },
+        {
+          "id": "psi",
+          "labelAr": "النظام الضوئي I",
+          "points": 2
+        },
+        {
+          "id": "nadph",
+          "labelAr": "إرجاع ⁺NADP إلى NADPH في الحشوة",
+          "points": 2
+        },
+        {
+          "id": "atpsynthase",
+          "labelAr": "ATP سنتاز وتدفّق البروتونات",
+          "points": 2
+        }
+      ],
+      "trapsAr": [
+        "ترتيب PSI قبل PSII: الترقيم تاريخي، والمسار يبدأ من PSII.",
+        "وضع الأكسجين ناتجاً عن CO₂.",
+        "نسيان تدرّج البروتونات: بدونه لا يوجد ATP."
+      ],
+      "assetSrc": "/assets/images/schemas/domaine2_energie/schema_93_photochemical_chain_z_scheme_ar.svg",
+      "altAr": "مخطط Z للمرحلة الكيموضوئية على غشاء التيلاكويد.",
+      "lessonId": "photochemical_chain"
+    },
+    {
+      "id": "drill_respiration",
+      "unitId": 7,
+      "titleAr": "مراحل التنفس الخلوي ومقارّها",
+      "consigneAr": "ارسم مخططاً يلخّص مراحل الهدم التنفسي محدّداً مقرّ كل مرحلة وحصيلتها.",
+      "whyAr": "سؤال استرجاع مباشر؛ يكفي أن تكون المقارّ الثلاثة صحيحة لاقتناص أغلب النقاط.",
+      "minutes": 10,
+      "orderAr": [
+        "ارسم خلية بها ميتوكوندري، وميّز الهيولى والمطرس والغشاء الداخلي.",
+        "ضع التحلّل السكري في الهيولى.",
+        "ضع حلقة كريبس في المطرس.",
+        "ضع السلسلة التنفسية والفسفرة على الغشاء الداخلي."
+      ],
+      "elements": [
+        {
+          "id": "glycolyse",
+          "labelAr": "التحلّل السكري في الهيولى (غلوكوز → حمض بيروفيك)",
+          "points": 2
+        },
+        {
+          "id": "krebs",
+          "labelAr": "حلقة كريبس في المطرس",
+          "points": 2
+        },
+        {
+          "id": "chaine",
+          "labelAr": "السلسلة التنفسية على الغشاء الداخلي (الأعراف)",
+          "points": 2
+        },
+        {
+          "id": "transporteurs",
+          "labelAr": "المرجعات NADH و FADH₂ بين المراحل",
+          "points": 2
+        },
+        {
+          "id": "o2",
+          "labelAr": "الأكسجين مستقبلاً نهائياً للإلكترونات",
+          "points": 2
+        },
+        {
+          "id": "bilan",
+          "labelAr": "الحصيلة الإجمالية (حوالي 36 ATP)",
+          "points": 1
+        }
+      ],
+      "trapsAr": [
+        "وضع التحلّل السكري داخل الميتوكوندري.",
+        "نسبة معظم ATP إلى كريبس.",
+        "نسيان الماء كناتج نهائي."
+      ],
+      "assetSrc": "/assets/images/schemas/domaine2_energie/schema_10_respiration.svg",
+      "altAr": "مخطط مراحل التنفس الخلوي ومقارّها."
+    },
+    {
+      "id": "drill_coupe_feuille",
+      "unitId": 8,
+      "titleAr": "مقطع عرضي في ورقة نبات",
+      "consigneAr": "أنجز رسماً تخطيطياً لمقطع عرضي في ورقة نبات مع تسمية الأنسجة.",
+      "whyAr": "يربط البنية التشريحية بالوظيفة الضوئية، ويُطلب في تمارين المبادلات الغازية.",
+      "minutes": 8,
+      "orderAr": [
+        "ارسم البشرتين العليا والسفلى.",
+        "ضع النسيج العمادي تحت البشرة العليا والإسفنجي تحته.",
+        "أضف الثغر في البشرة السفلى والحزمة الوعائية."
+      ],
+      "elements": [
+        {
+          "id": "epiderme",
+          "labelAr": "البشرة العليا والبشرة السفلى",
+          "points": 2
+        },
+        {
+          "id": "palissadique",
+          "labelAr": "النسيج العمادي الغني باليخضور",
+          "points": 2
+        },
+        {
+          "id": "lacuneux",
+          "labelAr": "النسيج الإسفنجي وفراغاته",
+          "points": 2
+        },
+        {
+          "id": "stomate",
+          "labelAr": "ثغر مع خليتيه الحارستين",
+          "points": 2
+        },
+        {
+          "id": "vaisseaux",
+          "labelAr": "الحزمة الوعائية (خشب ولحاء)",
+          "points": 1
+        },
+        {
+          "id": "titre",
+          "labelAr": "عنوان ومفتاح",
+          "points": 1
+        }
+      ],
+      "trapsAr": [
+        "وضع الثغور في البشرة العليا أساساً.",
+        "نسيان الفراغات في النسيج الإسفنجي: هي مسار الغازات.",
+        "رسم اليخضورات في البشرة."
+      ],
+      "assetSrc": "/assets/images/schemas/domaine2_energie/schema_87_coupe_feuille_modern_ar.svg",
+      "altAr": "مقطع عرضي في ورقة نبات مع الأنسجة والثغر."
+    },
+    {
+      "id": "drill_subduction",
+      "unitId": 9,
+      "titleAr": "مخطط منطقة الغوص",
+      "consigneAr": "ارسم مخططاً لمنطقة غوص مبيّناً الخندق والبراكين ومستوي بنيوف.",
+      "whyAr": "رسم تركيبي يُطلب في نهاية الوحدة، وكل عنصر فيه يُنقَّط.",
+      "minutes": 10,
+      "orderAr": [
+        "ارسم لوحاً محيطياً ولوحاً قارياً.",
+        "ضع الخندق عند نقطة الغوص.",
+        "ارسم اللوح الغائص مع بؤر الزلازل المتعمّقة.",
+        "أضف الانصهار الجزئي والبراكين على الحافة القارية."
+      ],
+      "elements": [
+        {
+          "id": "plaques",
+          "labelAr": "لوح محيطي كثيف ولوح قاري",
+          "points": 2
+        },
+        {
+          "id": "fosse",
+          "labelAr": "الخندق المحيطي",
+          "points": 2
+        },
+        {
+          "id": "benioff",
+          "labelAr": "بؤر الزلازل المتعمّقة (مستوي بنيوف)",
+          "points": 2
+        },
+        {
+          "id": "fusion",
+          "labelAr": "منطقة الانصهار الجزئي فوق اللوح الغائص",
+          "points": 2
+        },
+        {
+          "id": "volcans",
+          "labelAr": "البراكين على الحافة القارية",
+          "points": 2
+        },
+        {
+          "id": "eau",
+          "labelAr": "تحرّر الماء من اللوح المتميّه",
+          "points": 1
+        }
+      ],
+      "trapsAr": [
+        "غوص اللوح القاري تحت المحيطي: الأكثف هو الذي يغوص.",
+        "بؤر زلازل سطحية فقط.",
+        "وضع البراكين فوق الخندق مباشرة."
+      ],
+      "assetSrc": "/assets/images/schemas/domaine3_tectonique/schema_16_subduction.svg",
+      "altAr": "مخطط منطقة غوص مع الخندق ومستوي بنيوف والبراكين.",
+      "lessonId": "subduction"
+    },
+    {
+      "id": "drill_structure_terre",
+      "unitId": 10,
+      "titleAr": "البنية الداخلية للكرة الأرضية",
+      "consigneAr": "ارسم مقطعاً في الكرة الأرضية مبيّناً الطبقات والانقطاعات الكبرى.",
+      "whyAr": "الرسم يُطلب مع أسئلة الأمواج الزلزالية؛ الانقطاعات هي مفتاح التنقيط.",
+      "minutes": 8,
+      "orderAr": [
+        "ارسم دوائر متمركزة: قشرة، وشاح، نواة خارجية، نواة داخلية.",
+        "سمِّ الانقطاعات: موهو ثم غوتنبرغ ثم ليمان.",
+        "حدّد الحالة الفيزيائية لكل طبقة."
+      ],
+      "elements": [
+        {
+          "id": "croute",
+          "labelAr": "القشرة (قارية ومحيطية)",
+          "points": 2
+        },
+        {
+          "id": "manteau",
+          "labelAr": "الوشاح",
+          "points": 2
+        },
+        {
+          "id": "noyau_ext",
+          "labelAr": "النواة الخارجية سائلة",
+          "points": 2
+        },
+        {
+          "id": "noyau_int",
+          "labelAr": "النواة الداخلية صلبة",
+          "points": 2
+        },
+        {
+          "id": "moho",
+          "labelAr": "انقطاع موهو",
+          "points": 1
+        },
+        {
+          "id": "gutenberg",
+          "labelAr": "انقطاع غوتنبرغ",
+          "points": 1
+        },
+        {
+          "id": "lehmann",
+          "labelAr": "انقطاع ليمان",
+          "points": 1
+        }
+      ],
+      "trapsAr": [
+        "نواة خارجية صلبة: غياب الأمواج S يُثبت سيولتها.",
+        "خلط موهو بغوتنبرغ.",
+        "رسم طبقات بسماكات عشوائية دون سلّم تقريبي."
+      ],
+      "assetSrc": "/assets/images/schemas/domaine3_tectonique/schema_13_terre.svg",
+      "altAr": "مقطع في الكرة الأرضية مع الطبقات والانقطاعات.",
+      "lessonId": "seismic_waves"
+    },
+    {
+      "id": "drill_dorsale",
+      "unitId": 11,
+      "titleAr": "مخطط الظهرة المحيطية",
+      "consigneAr": "ارسم مخططاً لظهرة محيطية يوضّح تشكّل قشرة محيطية جديدة.",
+      "whyAr": "يقابل رسم الغوص في المقارنة بناء/هدم، ويُطلب معه غالباً في نفس التمرين.",
+      "minutes": 8,
+      "orderAr": [
+        "ارسم المحور مع الوادي الأخدودي.",
+        "ضع حجرة الصهارة تحت المحور.",
+        "أضف البازلت الوسادي والغابرو ثم تيارات الحمل.",
+        "بيّن ابتعاد اللوحين بسهمين متعاكسين."
+      ],
+      "elements": [
+        {
+          "id": "axe",
+          "labelAr": "محور الظهرة والوادي الأخدودي",
+          "points": 2
+        },
+        {
+          "id": "chambre",
+          "labelAr": "حجرة الصهارة",
+          "points": 2
+        },
+        {
+          "id": "basalte",
+          "labelAr": "البازلت الوسادي في السطح",
+          "points": 2
+        },
+        {
+          "id": "gabbro",
+          "labelAr": "الغابرو في العمق",
+          "points": 2
+        },
+        {
+          "id": "divergence",
+          "labelAr": "سهما ابتعاد اللوحين",
+          "points": 2
+        },
+        {
+          "id": "age",
+          "labelAr": "تزايد عمر الصخور بالابتعاد عن المحور",
+          "points": 1
+        }
+      ],
+      "trapsAr": [
+        "سهام متقاربة: الظهرة منطقة تباعد لا تقارب.",
+        "وضع الغرانيت في القشرة المحيطية.",
+        "نسيان تدرّج الأعمار، وهو البرهان على التوسّع."
+      ],
+      "assetSrc": "/assets/images/schemas/domaine3_tectonique/schema_15_dorsale.svg",
+      "altAr": "مخطط ظهرة محيطية مع حجرة الصهارة والبازلت الوسادي."
+    },
+    {
+      "id": "drill_bilan_photosynthese",
+      "unitId": 6,
+      "titleAr": "مخطط حصيلة التركيب الضوئي",
+      "consigneAr": "أنجز رسماً تخطيطياً وظيفياً معنوناً يوضّح مرحلتَي التركيب الضوئي و ما تتبادلانه داخل الصانعة الخضراء.",
+      "whyAr": "الجزء الثالث من تمرين 08 نقاط يطلب غالباً هذا المخطط: النقاط تُمنح على الأسهم و التبادلات، لا على جمال الرسم.",
+      "minutes": 10,
+      "orderAr": [
+        "ارسم الصانعة الخضراء بغشاء التيلاكوئيد و الحشوة، و سمِّ كلاً منهما.",
+        "ضع المرحلة الكيموضوئية على التيلاكوئيد: الضوء، الماء، O₂ المطروح.",
+        "ضع المرحلة الكيميائية في الحشوة: CO₂ الداخل، المادة العضوية الناتجة.",
+        "اربط المرحلتين بسهمَي ATP و NADPH,H⁺ في اتجاه واحد، و بسهم ADP + Pi في الاتجاه المعاكس."
+      ],
+      "elements": [
+        {
+          "id": "el_thylakoide",
+          "labelAr": "غشاء التيلاكوئيد مسمّى",
+          "points": 2
+        },
+        {
+          "id": "el_stroma",
+          "labelAr": "الحشوة مسمّاة",
+          "points": 2
+        },
+        {
+          "id": "el_h2o_o2",
+          "labelAr": "دخول H₂O و طرح O₂ على مستوى التيلاكوئيد",
+          "points": 2
+        },
+        {
+          "id": "el_co2_organique",
+          "labelAr": "دخول CO₂ و إنتاج المادة العضوية في الحشوة",
+          "points": 2
+        },
+        {
+          "id": "el_atp_nadph",
+          "labelAr": "سهم ATP و NADPH,H⁺ من التيلاكوئيد نحو الحشوة",
+          "points": 2
+        },
+        {
+          "id": "el_retour_adp",
+          "labelAr": "سهم ADP + Pi و NADP⁺ في الاتجاه المعاكس",
+          "points": 1
+        },
+        {
+          "id": "el_lumiere",
+          "labelAr": "سهم الطاقة الضوئية الداخل",
+          "points": 1
+        },
+        {
+          "id": "el_titre",
+          "labelAr": "عنوان المخطط",
+          "points": 1
+        }
+      ],
+      "trapsAr": [
+        "رسم سهم ATP في الاتجاهين: الـ ATP يُنتج في التيلاكوئيد و يُستهلك في الحشوة.",
+        "نسيان عودة ADP + Pi و NADP⁺: بدونها المخطط ليس وظيفياً بل قائمة عناصر.",
+        "وضع تثبيت CO₂ على التيلاكوئيد: الخلط بين مقرّي المرحلتين يُفقد نقطتين."
+      ],
+      "assetSrc": "/assets/images/schemas/domaine2_energie/schema_09_photosynthese.svg",
+      "altAr": "مخطط حصيلة التركيب الضوئي: المرحلة الكيموضوئية على التيلاكوئيد و المرحلة الكيميائية في الحشوة، مع تبادل ATP و NADPH.",
+      "lessonId": "d2-u6-l3-calvin"
+    }
+  ],
+  "situations": [
+    {
+      "id": "antibiotique_rifamycine",
+      "titleAr": "المضاد الحيوي",
+      "subtitleAr": "لماذا يقتل الريفاميسين البكتيريا دون أن يقتل خلايانا؟",
+      "situationAr": "يصف الطبيب للمريض مضاداً حيوياً هو الريفاميسين لعلاج التهاب بكتيري. بعد ثلاثة أيام تتوقف البكتيريا عن التكاثر. أُجريت تجربتان مخبريتان (H1 و H2) لمتابعة تركيب ARNm داخل الخلية البكتيرية في وجود الدواء وفي غيابه.",
+      "questionAr": "حلّل نتائج الوثيقتين ثم استنتج مستوى تدخّل الريفاميسين في تدفق المعلومة الوراثية.",
+      "notionAr": "الاستنساخ: دور ARN بوليميراز وتشكّل ARNm انطلاقاً من السلسلة الناسخة.",
+      "piegeAr": "كثير من التلاميذ يجيبون « يمنع تركيب البروتين ». الجواب المقبول يحدّد المرحلة بدقة: تثبيط الاستنساخ، وليس الترجمة — والدليل هو غياب ARNm لا غياب البروتين.",
+      "unitIds": [
+        1
+      ],
+      "difficulty": 2,
+      "minutes": 20,
+      "tags": [
+        "المضاد الحيوي",
+        "الريفاميسين",
+        "الاستنساخ",
+        "ARNm",
+        "rifamycine"
+      ],
+      "exerciseIds": [
+        "rifamycine_h1h2"
+      ],
+      "lessonId": "lecon_transcription"
+    },
+    {
+      "id": "uracile_radioactif",
+      "titleAr": "اليوراسيل المشع",
+      "subtitleAr": "تتبّع جزيء من النواة إلى الهيولى",
+      "situationAr": "وُضعت خلايا في وسط يحتوي يوراسيل مشع. بعد دقائق قليلة يظهر الإشعاع في النواة وحدها، وبعد ساعة يظهر في الهيولى.",
+      "questionAr": "فسّر انتقال الإشعاع من النواة إلى الهيولى، مستعيناً بمعلوماتك حول تدفق المعلومة الوراثية.",
+      "notionAr": "اليوراسيل خاص بـ ARN: تُركَّب ARNm في النواة ثم تُهاجر إلى الهيولى نحو الريبوزومات.",
+      "piegeAr": "اليوراسيل يسم ARN وليس ADN؛ الخلط مع الثيمين يُفقد كل نقاط التمرين.",
+      "unitIds": [
+        1
+      ],
+      "difficulty": 1,
+      "minutes": 12,
+      "tags": [
+        "اليوراسيل",
+        "المشع",
+        "النواة",
+        "ARNm",
+        "الهيولى"
+      ],
+      "exerciseIds": [
+        "uracile_marque"
+      ],
+      "lessonId": "lecon_transcription"
+    },
+    {
+      "id": "lecture_shifra",
+      "titleAr": "قراءة الشفرة الوراثية",
+      "subtitleAr": "من الرامزة إلى الحمض الأميني",
+      "situationAr": "يُعطى لك جزء من ARNm وجدول الشفرة الوراثية. يُطلب منك بناء السلسلة الببتيدية الموافقة وتحديد الريبوزوم كمقر للعملية.",
+      "questionAr": "حدّد تسلسل الأحماض الأمينية، ثم بيّن دور مضاد الرامزة على ARNt.",
+      "notionAr": "الترجمة: الرامزة على ARNm ↔ مضاد الرامزة على ARNt ↔ حمض أميني واحد.",
+      "piegeAr": "قراءة الجدول في الاتجاه الخاطئ (3ʹ→5ʹ) أو نسيان رامزة البدء AUG.",
+      "unitIds": [
+        1
+      ],
+      "difficulty": 1,
+      "minutes": 15,
+      "tags": [
+        "الشفرة الوراثية",
+        "الترجمة",
+        "الرامزة",
+        "ARNt",
+        "الريبوزوم"
+      ],
+      "exerciseIds": [
+        "codon_anticodon",
+        "translation_schema",
+        "h1_h2_generic_double_doc"
+      ]
+    },
+    {
+      "id": "anemie_falciforme",
+      "titleAr": "فقر الدم المنجلي",
+      "subtitleAr": "حمض أميني واحد يغيّر مصير كريّة دم",
+      "situationAr": "مريض يعاني من فقر دم منجلي. يُظهر الترحيل الكهربائي لهيموغلوبينه (HbS) هجرة مختلفة عن هيموغلوبين شخص سليم (HbA)، رغم أن الفارق بين البروتينين حمض أميني واحد فقط.",
+      "questionAr": "حلّل نتيجة الترحيل الكهربائي، ثم فسّر كيف يؤدي تبديل حمض أميني واحد إلى تغيّر وظيفة البروتين.",
+      "notionAr": "العلاقة بنية/وظيفة: تغيّر الشحنة → تغيّر الطي الفراغي → تغيّر الوظيفة.",
+      "piegeAr": "الجواب « لأن الطفرة غيّرت المورثة » لا يكفي: يجب ربط الشحنة الكهربائية للحمض الأميني الجديد بمسافة الهجرة الملاحظة.",
+      "unitIds": [
+        2,
+        1
+      ],
+      "difficulty": 3,
+      "minutes": 25,
+      "tags": [
+        "فقر الدم المنجلي",
+        "HbS",
+        "الترحيل الكهربائي",
+        "الطفرة",
+        "البنية والوظيفة"
+      ],
+      "exerciseIds": [
+        "electro_hb",
+        "mutation_protein_function"
+      ],
+      "lessonId": "protein_structure_function"
+    },
+    {
+      "id": "mixture_acides_amines",
+      "titleAr": "المورثة و سلوك الأحماض الأمينية",
+      "subtitleAr": "مزيج في المخبر: من يهاجر نحو المصعد؟",
+      "situationAr": "يضع تقنيّ مخبر نقطة من مزيج ثلاثة أحماض أمينية في وسط ذي pH محدّد، ثم يطبّق حقلاً كهربائياً. بعد ثلاثين دقيقة تتفرّق البقع: واحدة نحو المصعد، واحدة نحو المهبط، وواحدة بقيت في مكانها.",
+      "questionAr": "حدّد شحنة كل حمض أميني في هذا الوسط واستنتج قاعدة عامة تربط pH الوسط بـ pHi الجزيء.",
+      "notionAr": "pH < pHi ⇒ شحنة موجبة ⇒ هجرة نحو المهبط؛ pH > pHi ⇒ شحنة سالبة ⇒ نحو المصعد؛ pH = pHi ⇒ ثبات.",
+      "piegeAr": "خلط المصعد بالمهبط. القاعدة الثابتة: الشحنة السالبة تنجذب نحو القطب الموجب (المصعد). راجع المحاكاة التفاعلية في « الأنميشن العلمي ».",
+      "unitIds": [
+        2
+      ],
+      "difficulty": 3,
+      "minutes": 20,
+      "tags": [
+        "الأحماض الأمينية",
+        "pHi",
+        "الترحيل الكهربائي",
+        "المصعد",
+        "المهبط",
+        "electrophorese"
+      ],
+      "exerciseIds": [
+        "amino_acid_electrophoresis"
+      ],
+      "lessonId": "amino_acid_behavior"
+    },
+    {
+      "id": "digestion_pepsine",
+      "titleAr": "الهضم في المعدة",
+      "subtitleAr": "لماذا تتوقف سرعة الهضم عن الارتفاع؟",
+      "situationAr": "لمتابعة نشاط إنزيم هاضم، يقيس باحث سرعة التفاعل عند تراكيز متزايدة من الركيزة، عند pH و درجة حرارة ثابتتين. يرتفع المنحنى أولاً ثم ينبسط.",
+      "questionAr": "حلّل المنحنى، ثم فسّر انبساطه في الجزء الأخير.",
+      "notionAr": "التشبّع: عدد المواقع الفعّالة محدود، فتبلغ السرعة قيمة قصوى Vmax.",
+      "piegeAr": "قول « الإنزيم تمسّخ » خطأ: الشروط ثابتة. السبب هو إشباع المواقع الفعّالة، لا إتلافها.",
+      "unitIds": [
+        3
+      ],
+      "difficulty": 2,
+      "minutes": 18,
+      "tags": [
+        "الإنزيم",
+        "التشبع",
+        "Vmax",
+        "الركيزة",
+        "ميكاييلس"
+      ],
+      "exerciseIds": [
+        "michaelis_courbe"
+      ]
+    },
+    {
+      "id": "detergent_enzymatique",
+      "titleAr": "مسحوق الغسيل البيولوجي",
+      "subtitleAr": "ماء ساخن أم فاتر؟ و أي pH؟",
+      "situationAr": "يحتوي مسحوق غسيل على إنزيمات محلِّلة للبروتين. تُعطى نتائج نشاط الإنزيم في جدول مزدوج المدخل حسب pH ودرجة الحرارة.",
+      "questionAr": "استخرج من الجدول الشرطين الأمثلين لنشاط هذا الإنزيم، ثم فسّر انهيار النشاط خارجهما.",
+      "notionAr": "لكل إنزيم pH أمثل ودرجة حرارة مثلى؛ خارجهما يحدث تمسّخ يفقد الموقع الفعّال شكله.",
+      "piegeAr": "قراءة سطر واحد من الجدول: يجب تقاطع المدخلين (pH × T°) قبل أي استنتاج.",
+      "unitIds": [
+        3
+      ],
+      "difficulty": 2,
+      "minutes": 15,
+      "tags": [
+        "الإنزيم",
+        "pH",
+        "درجة الحرارة",
+        "التمسخ",
+        "جدول"
+      ],
+      "exerciseIds": [
+        "enzyme_ph_temp"
+      ],
+      "lessonId": "enzyme_inhibitors"
+    },
+    {
+      "id": "diabete_januvia",
+      "titleAr": "مريض السكري و دواء الجانوفيا",
+      "subtitleAr": "دواء يعمل بتثبيط إنزيم",
+      "situationAr": "يتناول مريض بداء السكري من النمط الثاني دواء « جانوفيا ». تُتابَع نسبة الغلوكوز في دمه قبل الدواء وبعده خلال ساعات.",
+      "questionAr": "حلّل المنحنيين باستعمال صيغة « كلما … كلما … »، ثم اقترح آلية تفسّر مفعول الدواء.",
+      "notionAr": "التثبيط الإنزيمي في سياق طبي: تثبيط إنزيم يهدم هرموناً ⇒ بقاء الهرمون ⇒ خفض السكر.",
+      "piegeAr": "الاكتفاء بوصف المنحنى دون اقتراح آلية: السؤال من عائلة « الحدّاد » (اقترح/فسّر)، لا من عائلة « الصورة ».",
+      "unitIds": [
+        3
+      ],
+      "difficulty": 3,
+      "minutes": 25,
+      "tags": [
+        "السكري",
+        "الجانوفيا",
+        "التثبيط",
+        "الغليسيميا",
+        "januvia"
+      ],
+      "exerciseIds": [
+        "glycemie_januvia"
+      ],
+      "lessonId": "enzyme_inhibitors"
+    },
+    {
+      "id": "greffe_rein",
+      "titleAr": "زرع الكلية",
+      "subtitleAr": "لماذا يرفض الجسم عضواً يحتاجه؟",
+      "situationAr": "مريض بحاجة إلى زرع كلية. يقارن الطبيب محدّدات التوافق النسيجي HLA بين المريض وثلاثة متبرعين محتملين قبل اختيار أحدهم.",
+      "questionAr": "بيّن على أي أساس يُختار المتبرّع، ثم فسّر سبب رفض الطعم عند اختلاف المحددات.",
+      "notionAr": "الذات واللاذات: معقد HLA (CMH) بصمة بيولوجية تُعرَض للمفاويات T.",
+      "piegeAr": "الخلط بين الزمر الدموية ABO ومحددات HLA: هما نظامان مختلفان، والسؤال يحدد أيّهما.",
+      "unitIds": [
+        4
+      ],
+      "difficulty": 2,
+      "minutes": 20,
+      "tags": [
+        "زرع",
+        "الكلية",
+        "HLA",
+        "CMH",
+        "الذات واللاذات",
+        "الرفض"
+      ],
+      "exerciseIds": [
+        "cmh_transplant_compatibility",
+        "membrane_hla_schema"
+      ],
+      "lessonId": "immunity_self_nonself"
+    },
+    {
+      "id": "sida_vih",
+      "titleAr": "فيروس فقدان المناعة VIH",
+      "subtitleAr": "من موجب المصل إلى مرحلة السيدا",
+      "situationAr": "تُتابَع عند شخص مصاب بـ VIH ثلاث منحنيات خلال عشر سنوات: الحمولة الفيروسية، عدد اللمفاويات LT4، والأجسام المضادة.",
+      "questionAr": "حدّد مراحل الإصابة الثلاث انطلاقاً من المنحنيات، ثم فسّر انهيار المناعة في المرحلة الأخيرة.",
+      "notionAr": "LT4 هي منسّق الاستجابة المناعية؛ تدميرها يُسقط المناعتين الخلطية والخلوية معاً.",
+      "piegeAr": "الخلط بين « موجب المصل » (حامل للأجسام المضادة) و« مريض بالسيدا » (انهيار LT4 + أمراض انتهازية).",
+      "unitIds": [
+        4
+      ],
+      "difficulty": 3,
+      "minutes": 30,
+      "tags": [
+        "السيدا",
+        "VIH",
+        "LT4",
+        "الحمولة الفيروسية",
+        "موجب المصل"
+      ],
+      "exerciseIds": [
+        "vih_evolution_courbes"
+      ],
+      "lessonId": "immunity_hiv_aids"
+    },
+    {
+      "id": "vaccination_rappel",
+      "titleAr": "حملة التلقيح و الجرعة التذكيرية",
+      "subtitleAr": "لماذا جرعتان و ليست واحدة؟",
+      "situationAr": "في حملة تلقيح مدرسية، يتلقّى التلاميذ جرعة أولى ثم جرعة تذكيرية بعد شهر. يُقارَن تطوّر نسبة الأجسام المضادة بعد كل جرعة.",
+      "questionAr": "قارن الاستجابتين الأولية والثانوية، ثم فسّر الفرق مستعيناً بمفهوم الخلايا ذات الذاكرة.",
+      "notionAr": "الاستجابة الثانوية أسرع وأقوى وأطول بفضل اللمفاويات ذات الذاكرة الناتجة عن الانتقاء النسيلي.",
+      "piegeAr": "وصف المنحنيين دون ذكر الخلايا ذات الذاكرة: المقارنة وحدها لا تُفسّر شيئاً.",
+      "unitIds": [
+        4
+      ],
+      "difficulty": 2,
+      "minutes": 20,
+      "tags": [
+        "التلقيح",
+        "الجرعة التذكيرية",
+        "الذاكرة المناعية",
+        "الأجسام المضادة"
+      ],
+      "exerciseIds": [
+        "primary_secondary_response",
+        "lb_antibody_response"
+      ],
+      "lessonId": "immunity_memory_response"
+    },
+    {
+      "id": "labo_ouchterlony",
+      "titleAr": "مخبر التحاليل: هل المصلان متطابقان؟",
+      "subtitleAr": "قراءة هالات أوشترلوني",
+      "situationAr": "في تقنية أوشترلوني، تُوضع مستضدات في حفر وأمصال في حفر أخرى داخل هلام. بعد 24 ساعة تظهر أقواس ترسيب: بعضها يندمج وبعضها يتقاطع.",
+      "questionAr": "حلّل شكل الأقواس ثم استنتج العلاقة بين المستضدات المستعملة.",
+      "notionAr": "اندماج قوسين ⇒ تطابق المستضدّين؛ تقاطعهما ⇒ اختلافهما — النوعية مستضد/جسم مضاد.",
+      "piegeAr": "الاستنتاج من عدد الحفر بدل شكل الأقواس؛ لا بدّ من وصف الاندماج/التقاطع قبل الاستنتاج.",
+      "unitIds": [
+        4
+      ],
+      "difficulty": 2,
+      "minutes": 18,
+      "tags": [
+        "أوشترلوني",
+        "المستضد",
+        "الجسم المضاد",
+        "الترسيب",
+        "النوعية"
+      ],
+      "exerciseIds": [
+        "ouchterlony_arcs"
+      ],
+      "lessonId": "immunity_humoral_response"
+    },
+    {
+      "id": "cellules_cibles_lt",
+      "titleAr": "الخلايا المصابة تختفي",
+      "subtitleAr": "دليل تجريبي على الإقصاء الخلوي",
+      "situationAr": "تُوضع خلايا هدف مصابة بفيروس في وسط زرع، ثم تُضاف إليها لمفاويات T سامّة مأخوذة من حيوان ملقّح. يُتابَع عدد الخلايا الهدف الحيّة مع الزمن.",
+      "questionAr": "حلّل المنحنى ثم بيّن أنه دليل على مناعة ذات وساطة خلوية.",
+      "notionAr": "LTc تتعرّف على الخلية المصابة بفضل HLA وتُحدث انحلالها بالبرفورين.",
+      "piegeAr": "نسبة الاختفاء إلى الأجسام المضادة: الوسط لا يحتوي مصلاً، بل خلايا — وهذا هو الشاهد الحاسم.",
+      "unitIds": [
+        4
+      ],
+      "difficulty": 2,
+      "minutes": 18,
+      "tags": [
+        "الخلايا الهدف",
+        "LTc",
+        "الإقصاء الخلوي",
+        "البرفورين"
+      ],
+      "exerciseIds": [
+        "lt_target_cell_response"
+      ],
+      "lessonId": "immunity_cellular_response"
+    },
+    {
+      "id": "sarin_attaque",
+      "titleAr": "التسمّم بغاز السارين",
+      "subtitleAr": "لماذا يبقى العضل منقبضاً حتى الاختناق؟",
+      "situationAr": "يُعرَض حيوان مخبري لجرعة صغيرة من السارين. تبيّن الوثيقتان انهيار نشاط إنزيم الأستيل كولين إستراز وبقاء الناقل في الشقّ المشبكي.",
+      "questionAr": "حلّل الوثيقتين، ثم فسّر الانقباض العضلي الدائم الملاحَظ عند الحيوان.",
+      "notionAr": "AChE تُفكّك الأستيل كولين؛ تثبيطها ⇒ تنبيه دائم للمستقبلات بعد المشبكية.",
+      "piegeAr": "الخلط مع الكورار: السارين يُبقي الناقل (انقباض دائم)، الكورار يحتلّ المستقبل (شلل رخو). الآليتان متعاكستان.",
+      "unitIds": [
+        5,
+        3
+      ],
+      "difficulty": 3,
+      "minutes": 25,
+      "tags": [
+        "السارين",
+        "الأستيل كولين",
+        "AChE",
+        "التثبيط",
+        "المشبك",
+        "sarin"
+      ],
+      "exerciseIds": [
+        "sarin_gb_double"
+      ],
+      "lessonId": "synapse"
+    },
+    {
+      "id": "curare_chirurgie",
+      "titleAr": "الكورار في غرفة العمليات",
+      "subtitleAr": "شلل مؤقّت مطلوب طبياً",
+      "situationAr": "يستعمل طبيب التخدير مشتقاً من الكورار لإرخاء عضلات المريض أثناء الجراحة. يعرض جدول تجارب شدّة الانقباض العضلي قبل الحقن وبعده وبعد غسل الوسط.",
+      "questionAr": "حلّل الجدول ثم حدّد مستوى تأثير الكورار على مستوى اللوحة المحركة.",
+      "notionAr": "الكورار مضاد للأستيل كولين ينافسه على المستقبل النيكوتيني دون فتح القناة.",
+      "piegeAr": "القول إنه « يوقف السيالة العصبية »: السيالة تصل فعلاً إلى النهاية العصبية؛ العطل بعد المشبكي.",
+      "unitIds": [
+        5
+      ],
+      "difficulty": 2,
+      "minutes": 20,
+      "tags": [
+        "الكورار",
+        "اللوحة المحركة",
+        "المستقبل النيكوتيني",
+        "الشلل",
+        "curare"
+      ],
+      "exerciseIds": [
+        "curare_table",
+        "ach_jnm_schema"
+      ],
+      "lessonId": "synapse"
+    },
+    {
+      "id": "seuil_integration",
+      "titleAr": "منبّه ضعيف لا يُولّد استجابة",
+      "subtitleAr": "الإدماج الزماني و المكاني",
+      "situationAr": "يُنبَّه عصبون قبل مشبكي بمنبّه ضعيف: لا استجابة. تُكرَّر التنبيهات بسرعة، أو تُنبَّه عدة مشابك في آنٍ واحد: يظهر كمون عمل.",
+      "questionAr": "فسّر ظهور كمون العمل في الحالتين الأخيرتين، ثم قارن بين PPSE و PPSI.",
+      "notionAr": "الإدماج العصبي: جمع الكمونات الموضعية حتى بلوغ العتبة، ثم قانون الكل أو اللاشيء.",
+      "piegeAr": "الخلط بين PPSE (موضعي، متدرّج) و PPM (اللوحة المحركة) وكمون العمل (كلّ أو لاشيء).",
+      "unitIds": [
+        5
+      ],
+      "difficulty": 3,
+      "minutes": 25,
+      "tags": [
+        "الإدماج",
+        "العتبة",
+        "PPSE",
+        "PPSI",
+        "كمون العمل"
+      ],
+      "exerciseIds": [
+        "synapse_integration",
+        "ppse_ppsi_compare",
+        "nmj_ppm_courbe"
+      ],
+      "lessonId": "synapse"
+    },
+    {
+      "id": "serre_agricole",
+      "titleAr": "البيت البلاستيكي",
+      "subtitleAr": "هل تزيد الإضاءة المردود إلى ما لا نهاية؟",
+      "situationAr": "يريد فلاح رفع مردود بيته البلاستيكي. يُقاس معدّل التركيب الضوئي عند شدّات إضاءة متزايدة: يرتفع المنحنى ثم ينبسط رغم زيادة الضوء.",
+      "questionAr": "حلّل المنحنى، ثم حدّد العامل المحدِّد في الجزء المنبسط واقترح إجراءً عملياً للفلاح.",
+      "notionAr": "العوامل المحدّدة: الضوء، CO₂، درجة الحرارة — والانبساط يدلّ على عامل آخر صار محدِّداً.",
+      "piegeAr": "قول « النبات تعب »: المطلوب تسمية عامل محدّد (غالباً CO₂) وربطه بالمرحلة الكيمياحيوية.",
+      "unitIds": [
+        6
+      ],
+      "difficulty": 2,
+      "minutes": 20,
+      "tags": [
+        "التركيب الضوئي",
+        "العامل المحدد",
+        "الإضاءة",
+        "CO2",
+        "البيت البلاستيكي"
+      ],
+      "exerciseIds": [
+        "photosynth_courbe",
+        "photosynthese_cycle"
+      ]
+    },
+    {
+      "id": "jagendorf_chloroplaste",
+      "titleAr": "تجربة جاغندورف",
+      "subtitleAr": "ATP في الظلام: الضوء ليس الشرط المباشر",
+      "situationAr": "تُوضع صفائح تيلاكويدية في وسط حمضي ثم تُنقل فجأة إلى وسط قاعدي، في الظلام التام. يُسجَّل تركيب ATP رغم غياب الضوء.",
+      "questionAr": "فسّر تركيب ATP في الظلام، ثم حدّد مصدر الطاقة المستعملة فعلياً.",
+      "notionAr": "نظرية ميتشل: تدرّج البروتونات عبر الغشاء هو الطاقة المباشرة لتركيب ATP (الكرة المذنّبة).",
+      "piegeAr": "الجواب « الضوء يصنع ATP » خاطئ: الضوء يصنع التدرّج، والتدرّج يصنع ATP — التجربة نفسها هي البرهان.",
+      "unitIds": [
+        6
+      ],
+      "difficulty": 3,
+      "minutes": 25,
+      "tags": [
+        "جاغندورف",
+        "ميتشل",
+        "التدرج البروتوني",
+        "ATP",
+        "المرحلة الكيموضوئية"
+      ],
+      "exerciseIds": [
+        "photochemical_chain_membrane"
+      ],
+      "lessonId": "photochemical_chain"
+    },
+    {
+      "id": "coureur_crampe",
+      "titleAr": "العدّاء و التشنّج العضلي",
+      "subtitleAr": "من أين يأتي الـ ATP عند نفاد الأكسجين؟",
+      "situationAr": "يركض رياضي سباق 400 م بأقصى سرعته. تنفد كمية الأكسجين المتاحة لعضلاته فيشعر بحرقة وتشنّج. يُعطى جدول مراحل الهدم التنفسي ومردود كل مرحلة من ATP.",
+      "questionAr": "حدّد المرحلة التي توفّر معظم ATP، ثم فسّر ما يحدث في العضلة عند نقص الأكسجين.",
+      "notionAr": "التخمّر اللبني: حصيلة جزيئتي ATP فقط مقابل 36 في التنفس، مع تراكم حمض اللبن.",
+      "piegeAr": "نسبة معظم ATP إلى حلقة كريبس: المنتج الأكبر هو الفسفرة التأكسدية على مستوى الغشاء الداخلي.",
+      "unitIds": [
+        7
+      ],
+      "difficulty": 2,
+      "minutes": 20,
+      "tags": [
+        "التنفس",
+        "التخمر",
+        "ATP",
+        "حمض اللبن",
+        "العضلة",
+        "كريبس"
+      ],
+      "exerciseIds": [
+        "respiration_bilan"
+      ]
+    },
+    {
+      "id": "feuille_jour_nuit",
+      "titleAr": "ورقة نبات: نهاراً و ليلاً",
+      "subtitleAr": "من يستهلك و من ينتج الأكسجين؟",
+      "situationAr": "تُقاس المبادلات الغازية لخلية يخضورية في ثلاث حالات: في الظلام، عند إضاءة ضعيفة، وعند إضاءة قوية.",
+      "questionAr": "قارن المبادلات الغازية في الحالات الثلاث، ثم استنتج العلاقة بين التركيب الضوئي والتنفس.",
+      "notionAr": "التنفس متواصل ليلاً ونهاراً؛ نقطة التعويض هي التساوي الظاهري بين الوظيفتين.",
+      "piegeAr": "الاعتقاد أن النبات « يتنفّس ليلاً فقط »: عند نقطة التعويض المبادلات صفر ظاهرياً لا حقيقةً.",
+      "unitIds": [
+        8,
+        6,
+        7
+      ],
+      "difficulty": 2,
+      "minutes": 18,
+      "tags": [
+        "المبادلات الغازية",
+        "نقطة التعويض",
+        "التنفس",
+        "التركيب الضوئي",
+        "اليخضور"
+      ],
+      "exerciseIds": [
+        "bilan_energetique_cellule"
+      ]
+    },
+    {
+      "id": "seisme_boumerdes",
+      "titleAr": "زلزال و باطن الأرض",
+      "subtitleAr": "ما الذي تكشفه الأمواج التي لا تصل؟",
+      "situationAr": "بعد هزّة أرضية، تسجّل محطات رصد موزّعة حول الكرة الأرضية أمواج P و S. تُلاحَظ منطقة ظلّ لا تصلها الأمواج S إطلاقاً.",
+      "questionAr": "حلّل خصائص الأمواج P و S، ثم استنتج حالة النواة الخارجية.",
+      "notionAr": "الأمواج S لا تنتشر في السوائل: منطقة الظلّ برهان على نواة خارجية سائلة.",
+      "piegeAr": "وصف الانقطاعات دون استعمال منطقة الظل كحجة: الاستنتاج يجب أن يستند إلى غياب S لا إلى تباطؤ P فقط.",
+      "unitIds": [
+        10,
+        9
+      ],
+      "difficulty": 2,
+      "minutes": 20,
+      "tags": [
+        "الزلزال",
+        "الأمواج P",
+        "الأمواج S",
+        "منطقة الظل",
+        "النواة",
+        "غوتنبرغ"
+      ],
+      "exerciseIds": [
+        "seismic_p_s_core",
+        "structure_terre_ondes"
+      ],
+      "lessonId": "seismic_waves"
+    },
+    {
+      "id": "volcans_subduction",
+      "titleAr": "براكين فوق منطقة الغوص",
+      "subtitleAr": "لماذا ينصهر الوشاح رغم برودة اللوح الغائص؟",
+      "situationAr": "تصطفّ البراكين على حافّة قارّية موازية لخندق محيطي. تُعطى معطيات حول تميّه صخور اللوح المحيطي وتحرّر الماء مع العمق.",
+      "questionAr": "فسّر كيف يؤدّي غوص لوح بارد إلى انصهار جزئي للوشاح فوقه.",
+      "notionAr": "الماء المحرَّر يخفض درجة انصهار البيريدوتيت ⇒ انصهار جزئي ⇒ صعود صهارة.",
+      "piegeAr": "قول « الحرارة تنصهر بالعمق »: المفتاح هو الماء الذي يخفّض عتبة الانصهار، لا ارتفاع الحرارة وحده.",
+      "unitIds": [
+        9,
+        11
+      ],
+      "difficulty": 3,
+      "minutes": 25,
+      "tags": [
+        "الغوص",
+        "البراكين",
+        "الانصهار الجزئي",
+        "التميه",
+        "البيريدوتيت"
+      ],
+      "exerciseIds": [
+        "subduction_water_melting",
+        "structures_geologiques_compare"
+      ],
+      "lessonId": "subduction"
+    }
+  ]
+}

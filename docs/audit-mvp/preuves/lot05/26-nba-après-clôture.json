@@ -1,0 +1,150 @@
+{
+  "text": "تجاوز إلى المحتوى الرئيسي\nالقائمة الرئيسية\nالرئيسية\nACCUEIL\nالدروس\nAPPRENDRE\nالتمارين والتدريب\nS'ENTRAÎNER\nمفتاح المنهجية\nMÉTHODE\nالمراجعة\nRÉVISER\nأنا\nMOI\n\nلوحة البداية\n\nماذا أدرس الآن؟\n0\n|\n0 XP\nأنشئ حسابك بدون بريد إلكتروني\n\nلا بريد ولا كلمة مرور تحفظها: تكتب اسمك، وتختار رمزًا سريًا من 6 أرقام، فيمنحك التطبيق رمز دخول قصيرًا. يحفظ أستاذك نتائجك ويتابع تقدمك.\n\nإنشاء حساب في دقيقةأو تابع كزائر — كل الدروس متاحة\n\nالأولوية\n\nخطوتك التالية\nمهمة واحدة، ثم اختر الباقي\n\nمراجعة موعدة\n\n1. تركيب البروتين\n\nالنشاط 2 : استنساخ المعلومات الوراثية الموجودة على مستوى ADN\nراجِع الآن\n\n0 / 1 مهمة اليوم\n\nمساري\nمهمّة اليوم أولًا — الفصل يفتح فصلًا، والتمارين مع مجالها\nماذا تريد أن تفعل؟\n\nثلاثة اختيارات واضحة حسب هدفك الآن\n\nأتعلّم\nدرس وشرح\nأتدرّب\nتمرين وBAC\nأراجع\nبطاقات وأخطاء\nالمزيد من الأدوات\nالخطة، التذكير، المنهجية، الخرائط والتقدم",
+  "buttons": [
+    {
+      "text": "الرئيسية\nACCUEIL",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "الدروس\nAPPRENDRE",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "التمارين والتدريب\nS'ENTRAÎNER",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "مفتاح المنهجية\nMÉTHODE",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "المراجعة\nRÉVISER",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "أنا\nMOI",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "0\n|\n0 XP",
+      "label": "عرض تقدمي اليوم",
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "إنشاء حساب في دقيقة",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "راجِع الآن",
+      "label": null,
+      "testid": "home-nba-start",
+      "disabled": false
+    },
+    {
+      "text": "مساري\nمهمّة اليوم أولًا — الفصل يفتح فصلًا، والتمارين مع مجالها",
+      "label": null,
+      "testid": "btn-masari",
+      "disabled": false
+    },
+    {
+      "text": "أتعلّم\nدرس وشرح",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "أتدرّب\nتمرين وBAC",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "أراجع\nبطاقات وأخطاء",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "المزيد من الأدوات\nالخطة، التذكير، المنهجية، الخرائط والتقدم",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "الرئيسيةAccueil",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "الدروسApprendre",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "التمارين والتدريبS'entraîner",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "مفتاح المنهجيةMéthode",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "المراجعةRéviser",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "أناMoi",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "",
+      "label": "القبطان — مُرشد كنز العلوم",
+      "testid": "fab-morchid",
+      "disabled": false
+    }
+  ],
+  "testids": [
+    "carte-compte-sans-email",
+    "home-nba",
+    "home-nba-start",
+    "btn-masari",
+    "fab-morchid"
+  ],
+  "inputs": [],
+  "width": 1280,
+  "scrollWidth": 1280,
+  "storage": {
+    "boussole_prescriptions_v1": "{\"prescriptions\":[{\"motif\":\"accueil:training\",\"cible\":\"training\",\"emisMs\":1793435884051,\"issue\":\"ignoree\",\"resoluMs\":1793435887642}],\"motifs\":{\"accueil:training\":{\"dits\":1,\"suivis\":0,\"ignores\":1,\"expires\":0}}}",
+    "theme": "light",
+    "kunz_parcours_v1": "{\"done\":{\"parcours:u1:l0\":{\"at\":\"2026-10-31\",\"fragile\":false},\"parcours:u1:l1\":{\"at\":\"2026-10-31\",\"fragile\":false}},\"reviews\":{\"parcours:u1:l0\":\"2026-11-30\",\"parcours:u1:l1\":\"2026-11-14\"},\"extraAllowance\":0,\"mig\":6}",
+    "kunz_declic_last_id_v1": "dem_01",
+    "boussole_capitaine_invitation_ignoree": "1793435887642",
+    "boussole_conseils_rubriques_vus": "[\"lesson\"]",
+    "kunz_declic_shown_v1": "2026-11-16"
+  }
+}

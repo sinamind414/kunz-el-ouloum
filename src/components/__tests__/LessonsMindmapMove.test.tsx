@@ -68,8 +68,13 @@ describe('les deux rubriques ont quitté le menu « المزيد »', () => {
 
 describe('rien n est perdu : les deux outils restent joignables', () => {
   it('le minuteur reste monté et ouvert par le Déclic', () => {
-    expect(APP).toContain('<FocusTimer');
-    expect(APP).toMatch(/setCurrentTab\('focus'\)/);
+    // 2026-11-03 : navigation unifiée sous `navigateToTab` (ancien
+    // `setCurrentTab`) et durcissement des ancres : le montage pointe la
+    // BRANCHE d'onglet réelle, l'ouverture pointe le câblage du Déclic
+    // (la seule occurrence libre tomberait aussi dans un commentaire de
+    // App.tsx).
+    expect(APP).toMatch(/currentTab === 'focus' && \(\s*<FocusTimer/);
+    expect(APP).toMatch(/onStartFocus=\{\(\) => \{\s*closeDeclicOverlay\(\);\s*navigateToTab\('focus'\);/);
   });
 
   it('la vue الخرائط الذهنية reste montée sur son onglet', () => {
