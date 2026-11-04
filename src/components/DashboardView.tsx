@@ -577,11 +577,9 @@ export default function DashboardView({
       {showFaq && (
         <div
           className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 dark:bg-black/60 backdrop-blur-sm"
-          onClick={() => setShowFaq(false)}
         >
           <div
             className="bg-white dark:bg-[#141916] rounded-3xl p-6 max-w-2xl w-full max-h-[90vh] overflow-y-auto border border-gray-200 dark:border-gray-800"
-            onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-lg font-black text-[#1f1c0b] dark:text-white">الأسئلة الشائعة</h3>
