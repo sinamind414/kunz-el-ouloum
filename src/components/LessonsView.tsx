@@ -19,6 +19,8 @@ import { LESSON_GOLD_SUMMARIES } from '../data/lessonGoldSummaries';
 import Icone from './Icone';
 import EcranPaiement from './EcranPaiement';
 import { rubriquePayanteOuverte, uniteOuverte } from '../utils/acces';
+import { etatEleveSiChargee, surveillerEtatEleve } from '../lib/etatEleveRuntime';
+import type { VerdictUnite } from '../lib/coach/diagnostic';
 
 // Sprint 32 : ces quatre vues (QCM du livre, sujets BAC, bibliothèque Okacha,
 // recherche) embarquaient à elles seules plusieurs centaines de kilo-octets de
@@ -49,6 +51,38 @@ import {
 } from '../data/lessonModes';
 
 const DOMAIN_ICONS = [FlaskConical, Leaf, Globe2];
+
+/**
+ * Tranche 3 (audit 8 axes, 2026-11-04) — LA PASTILLE D'ÉTAT PAR UNITÉ (M1).
+ * L'élève ne voit nulle part où il en est : le coach le DIT dans la bulle,
+ * rien n'est VISIBLE durablement. La couleur dérive du verdict existant du
+ * coach (`coach/diagnostic`), jamais d'une nouvelle logique :
+ *   🔴 faible · 🟡 moyen · ⚪ non commencé · 🟢 fort.
+ * VERROU : tant que `etatEleveSiChargee()` est `null` (l'état n'est pas encore
+ * arrivé, import dynamique), AUCUNE pastille n'est rendue — ni gris qui
+ * ressemble à un verdict, ni valeur inventée. L'unité absente du verdict
+ * (famille non chargée) reste sans pastille, pour la même raison.
+ */
+const COULEUR_VERDICT: Record<VerdictUnite, { puce: string; libelle: string }> = {
+  faible: { puce: '🔴', libelle: 'يحتاج مراجعة' },
+  moyen: { puce: '🟡', libelle: 'قيد التقدم' },
+  non_commence: { puce: '⚪', libelle: 'لم يبدأ بعد' },
+  fort: { puce: '🟢', libelle: 'متقن' },
+};
+
+function PastilleUnite({ uid, verdict }: { uid: number; verdict: VerdictUnite }) {
+  const c = COULEUR_VERDICT[verdict];
+  return (
+    <span
+      data-testid={`etat-unite-${uid}`}
+      title={c.libelle}
+      className="inline-flex items-center justify-center w-5 h-5 rounded-full text-[10px] leading-none shrink-0"
+      aria-label={c.libelle}
+    >
+      {c.puce}
+    </span>
+  );
+}
 
 
 /** Props : le callback d'auto-évaluation des flashcards (handleRateCard, App.tsx)
@@ -129,6 +163,24 @@ export default function LessonsView({ onRateCard, initialLesson, initialQcm, ini
   const [selectedPassiveUnitId, setSelectedPassiveUnitId] = useState<number | null>(null);
   /** Unité active ouverte (navigation par icônes : unité → leçons). */
   const [selectedActiveUnitId, setSelectedActiveUnitId] = useState<number | null>(null);
+
+  /**
+   * Tranche 3 (audit 8 axes) : l'état élève arrive en ASYNCHRONE (le capitaine
+   * le dépose après son import dynamique). Sans abonnement, une pastille lue
+   * au montage resterait `null` pour toujours — l'élève verrait « aucune
+   * couleur » même après avoir travaillé. Le dépôt prévient (option C) :
+   * on incrémente une version, le render relit le pointeur.
+   */
+  const [versionEtatEleve, setVersionEtatEleve] = useState(0);
+  useEffect(() => surveillerEtatEleve(() => setVersionEtatEleve((v) => v + 1)), []);
+
+  /** Verdict du coach pour une unité — `null` = pas de pastille (verrou). */
+  const verdictUnite = (uid: number): VerdictUnite | null => {
+    void versionEtatEleve; // dépendance de re-render : le dépôt re-déclenche la lecture
+    const verdicts = etatEleveSiChargee()?.competence.verdicts;
+    if (!verdicts) return null;
+    return verdicts[getUnitTitle(uid)] ?? null;
+  };
 
   // Capture à UNE reprise des deep-links (مسار) : le parent vide son état juste
   // après (onDeepLinkConsumed), mais la vue conserve l'unité demandée pour tout
@@ -512,6 +564,10 @@ export default function LessonsView({ onRateCard, initialLesson, initialQcm, ini
                       <span className="inline-flex items-center justify-center h-6 px-2 rounded-lg bg-emerald-50 dark:bg-emerald-950/40 text-[#006d37] dark:text-emerald-300 text-[11px] font-black shrink-0">
                         وحدة {u.id}
                       </span>
+                      {(() => {
+                        const v = verdictUnite(u.id);
+                        return v ? <PastilleUnite uid={u.id} verdict={v} /> : null;
+                      })()}
                       <span className="text-sm font-black text-gray-800 dark:text-gray-100">{u.title}</span>
                     </span>
                     <span className="block text-[11px] font-bold text-gray-500 dark:text-gray-400">{u.description}</span>
@@ -881,6 +937,10 @@ export default function LessonsView({ onRateCard, initialLesson, initialQcm, ini
                     <span className="inline-flex items-center justify-center h-6 px-2 rounded-lg bg-teal-50 dark:bg-teal-950/40 text-[#0e6b6b] dark:text-teal-300 text-[11px] font-black shrink-0">
                       وحدة {uid}
                     </span>
+                    {(() => {
+                      const v = verdictUnite(uid);
+                      return v ? <PastilleUnite uid={uid} verdict={v} /> : null;
+                    })()}
                     <span className="flex-1 min-w-0 text-sm font-black text-gray-800 dark:text-gray-100 break-words">{unit?.title}</span>
                   </span>
                   <span className="block text-[11px] font-bold text-gray-500 dark:text-gray-400 break-words">{unit?.description}</span>

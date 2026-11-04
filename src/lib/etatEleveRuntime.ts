@@ -22,9 +22,14 @@ import type { EtatEleve } from './etatEleve';
 
 let etatDepose: EtatEleve | null = null;
 
+/** Écouteur prévenu quand l'état est déposé (ou remis à zéro). */
+type EcouteurEtatEleve = () => void;
+const ecouteurs = new Set<EcouteurEtatEleve>();
+
 /** Le capitaine (qui assemble l'état une fois) le dépose ici. */
 export function fournirEtatEleve(etat: EtatEleve): void {
   etatDepose = etat;
+  for (const e of [...ecouteurs]) e();
 }
 
 /** Le moteur lit ici — `null` tant que le capitaine n'a pas parlé. */
@@ -32,7 +37,22 @@ export function etatEleveSiChargee(): EtatEleve | null {
   return etatDepose;
 }
 
+/**
+ * Les VUES s'abonnent ici (tranche 3, audit 8 axes — 2026-11-04). Le pointeur
+ * se remplit ASYNCHRONEMENT (import dynamique dans le hook) : une vue qui le
+ * lit au montage verrait `null` pour toujours si rien ne la prévenait. Le
+ * dépôt (et la remise à zéro) préviennent donc chaque abonné — la vue relit
+ * alors `etatEleveSiChargee()` elle-même. Retour : la fonction de désabonnement.
+ */
+export function surveillerEtatEleve(ecouteur: EcouteurEtatEleve): () => void {
+  ecouteurs.add(ecouteur);
+  return () => {
+    ecouteurs.delete(ecouteur);
+  };
+}
+
 /** Isolement des suites de tests. */
 export function reinitialiserEtatEleve(): void {
   etatDepose = null;
+  for (const e of [...ecouteurs]) e();
 }

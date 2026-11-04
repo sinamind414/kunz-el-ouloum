@@ -64,5 +64,8 @@ module.exports = {
     // cf. LIMITES en tête) — StudentAuthView (api), atelierFlux (flux).
     'StudentAuthView\\.test\\.tsx$',
     'atelierFlux\\.test\\.tsx$',
+    // Tranche 3 (2026-11-04) : mock de HtmlLessonViewer (vi.mock) — couvert
+    // par vitest, comme LessonsViewPassiveNav ci-dessus.
+    'LessonsViewEtat\\.test\\.tsx$',
   ],
 };
