@@ -17,11 +17,12 @@
 //   · `fileRappels` filtre les unités fermées (cohérence H1) et trie par
 //     échéance croissante — la plus en retard passe en premier.
 
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi, afterEach } from 'vitest';
 import {
   MINUTES_RAPPEL,
   RAPPELS_PAR_JOUR,
   buildRevisionPlan,
+  duesDuDeck,
   fileRappels,
   type RappelDu,
 } from './revisionPlan';
@@ -125,5 +126,25 @@ describe('plan de révision × rappels SRS (H3, audit 8 axes)', () => {
     expect(file.every((t) => t.kind === 'rappel')).toBe(true);
     // Le tri : la carte la plus EN RETARD (dueAt le plus ancien) en premier.
     expect(file[0].refId).toBe('fc_u2_retard');
+  });
+
+  it('duesDuDeck : UN seul parse du stockage, quelle que soit la taille du deck (perf)', () => {
+    // Constat d'audit (2026-11-04) : via getSrsState, chaque carte du deck
+    // re-parseait TOUT le stockage — 288 lectures/parse pour les 288 cartes
+    // de U1-U5, ≈297× le coût d'un parse unique, plusieurs centaines de ms
+    // par montage de « خطة المراجعة » sur un téléphone bas de gamme. Le fix
+    // lit tout UNE fois (`lireTousLesEtatsSrs`) puis boucle en mémoire.
+    localStorage.setItem(
+      'kunz_flashcard_srs_v1',
+      JSON.stringify({ fc_factice: { dueAt: Date.now() - 1000 } }),
+    );
+    const espion = vi.spyOn(Storage.prototype, 'getItem');
+    try {
+      duesDuDeck([1, 2, 3, 4, 5]);
+      const lecturesSrs = espion.mock.calls.filter(([cle]) => cle === 'kunz_flashcard_srs_v1').length;
+      expect(lecturesSrs).toBe(1);
+    } finally {
+      espion.mockRestore();
+    }
   });
 });

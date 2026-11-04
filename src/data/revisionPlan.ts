@@ -67,7 +67,7 @@ import { BAC_ARCHETYPES, ideasOfArchetype, yearsOfArchetype } from './bacArchety
 // moteur ne lit JAMAIS le stockage lui-même — `duesDuDeck` (côté vue) mesure
 // l'état SRS et le résultat arrive au plan par le paramètre `rappels`.
 import { SVT_FLASHCARDS } from './index';
-import { getSrsState } from '../utils/flashcardsSrs';
+import { lireTousLesEtatsSrs } from '../utils/flashcardsSrs';
 
 export type TaskKind =
   | 'capsule'
@@ -231,18 +231,23 @@ export function fileRappels(
 
 /**
  * MESURE (côté vue, pas dans le moteur) : les cartes du deck dont l'échéance
- * SM-2 est ATTEINTE. Lit l'état persisté (`getSrsState`) — c'est volontairement
- * le SEUL endroit du parcours plan où le stockage est lu, et son résultat arrive
- * au moteur par le paramètre `rappels`. Une carte neuve (jamais vue), graduee
- * (dueAt = 0) ou programmée plus tard (dueAt > maintenant) n'est PAS due.
+ * SM-2 est ATTEINTE. Lit l'état persisté — c'est volontairement le SEUL endroit
+ * du parcours plan où le stockage est lu, et son résultat arrive au moteur par
+ * le paramètre `rappels`. Une carte neuve (jamais vue), graduee (dueAt = 0) ou
+ * programmée plus tard (dueAt > maintenant) n'est PAS due.
+ *
+ * Perf (audit 8 axes, 2026-11-04) : UN seul parse du stockage (`lireTousLesEtatsSrs`),
+ * puis boucle en mémoire — pas un `getSrsState` par carte (288 re-parses mesurés
+ * avant le fix, ≈297× le coût d'un parse unique).
  */
 export function duesDuDeck(
   unitesOuvertes: readonly number[],
   now = Date.now(),
 ): RappelDu[] {
+  const etats = lireTousLesEtatsSrs();
   return SVT_FLASHCARDS.flatMap((c) => {
     if (!unitesOuvertes.includes(c.unitId)) return [];
-    const st = getSrsState(c.id);
+    const st = etats[c.id] ?? null;
     if (!st || st.dueAt === 0 || st.dueAt > now) return [];
     return [{ id: c.id, unitId: c.unitId, question: c.question, dueAt: st.dueAt }];
   });

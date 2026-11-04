@@ -65,6 +65,18 @@ export function getSrsState(cardId: string): SrsCardState | null {
   return loadAll()[cardId] ?? null;
 }
 
+/**
+ * Lecture UNE fois de tout l'état persisté — pour les boucles. Mesure
+ * (audit 8 axes, 2026-11-04) : `duesDuDeck` mesure 288 cartes ; via
+ * `getSrsState`, chacune re-parseait TOUT le stockage (~64 ms/appel mesuré,
+ * ≈297× le coût d'un parse unique) — plusieurs centaines de ms par montage
+ * de « خطة المراجعة » sur un téléphone bas de gamme. Un seul parse ici,
+ * puis boucle en mémoire. Le record retourné est une LECTURE : ne pas muter.
+ */
+export function lireTousLesEtatsSrs(): Record<string, SrsCardState> {
+  return loadAll();
+}
+
 export function resetAllSrs(): void {
   try {
     localStorage.removeItem(STORAGE_KEY);
