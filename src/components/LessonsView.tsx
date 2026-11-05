@@ -546,7 +546,7 @@ export default function LessonsView({ onRateCard, initialLesson, initialQcm, ini
             </p>
           )}
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4" data-testid="unites-actives-icones">
+          <div className="grid gap-4 grid-cols-[repeat(auto-fill,minmax(300px,1fr))]" data-testid="unites-actives-icones">
             {activeUnits.map((u) => {
               const keys = getActiveLessonKeysForUnit(u.id);
               return (
@@ -624,7 +624,7 @@ export default function LessonsView({ onRateCard, initialLesson, initialQcm, ini
 
         <p className="text-[11px] font-bold text-gray-500 dark:text-gray-400">{uniteActive?.description}</p>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3" data-testid="lecons-actives-icones">
+        <div className="grid gap-3 grid-cols-[repeat(auto-fill,minmax(280px,1fr))]" data-testid="lecons-actives-icones">
           {clesActives.map((key, i) => {
             const titre = getActiveLessonTitle(key);
             return (
@@ -827,7 +827,10 @@ export default function LessonsView({ onRateCard, initialLesson, initialQcm, ini
           </div>
         )}
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        {/* B-visuel (2026-11-05) : cellules garenties ≥ 240px — avec le main
+            plafonné ~768px, les 3 colonnes fixes d'avant généraient des cartes
+            de 243px où le titre unité se cassait lettre par lettre (vertical). */}
+        <div className="grid gap-4 grid-cols-[repeat(auto-fill,minmax(240px,1fr))]">
           {PASSIVE_DOMAINS.map((d, i) => {
             const Icon = DOMAIN_ICONS[i] ?? Network;
             const chapters = d.unitIds.reduce(
@@ -851,7 +854,7 @@ export default function LessonsView({ onRateCard, initialLesson, initialQcm, ini
                   {d.emoji} {d.titleAr}
                 </span>
                 <span className="block text-xs font-bold text-gray-500 dark:text-gray-400">
-                  {d.unitIds.length} وحدات · {chapters} فصلاً
+                  {d.unitIds.length} وحدات · فصلاً : {chapters}
                 </span>
                 {/* Aperçu : les icônes des unités du domaine (entrée « icône après icône »). */}
                 <span className="flex items-center justify-center gap-1.5 flex-wrap pt-1">
@@ -918,7 +921,10 @@ export default function LessonsView({ onRateCard, initialLesson, initialQcm, ini
           </span>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4" data-testid="unites-icones">
+        {/* B-visuel (2026-11-05) : auto-fill ≥300px. Avant : xl:grid-cols-3 sur un
+            main de ~762px = cellules de 243px → span titre ~91px → césure
+            « une lettre par ligne » (reproduit + mesuré en headless). */}
+        <div className="grid gap-4 grid-cols-[repeat(auto-fill,minmax(300px,1fr))]" data-testid="unites-icones">
           {domain?.unitIds.map((uid) => {
             const unit = INITIAL_UNITS.find((u) => u.id === uid);
             const chapters = getUnitLessonSequence(uid).filter(hasHtmlFile);
@@ -946,7 +952,10 @@ export default function LessonsView({ onRateCard, initialLesson, initialQcm, ini
                   <span className="block text-[11px] font-bold text-gray-500 dark:text-gray-400 break-words">{unit?.description}</span>
                   <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg bg-emerald-50 dark:bg-emerald-950/30 text-[10px] font-black text-emerald-700 dark:text-emerald-300">
                     <Grid3x3 className="w-3 h-3" />
-                    {chapters.length} فصول
+                    {/* B-visuel (2026-11-05) : « {n} فصول » s'affichait « فصول ن » et
+                        se lisait à tort « الفصل ن » (plainte élève). Deux-points =
+                        lecture libellé : valeur, sans îlot bidi. */}
+                    فصول : {chapters.length}
                   </span>
                 </span>
                 <ChevronLeft className="w-5 h-5 text-gray-300 group-hover:text-teal-500 transition-all shrink-0 mt-4" />
@@ -1023,7 +1032,8 @@ export default function LessonsView({ onRateCard, initialLesson, initialQcm, ini
 
       <p className="text-[11px] font-bold text-gray-500 dark:text-gray-400 break-words">{unitCourante?.description}</p>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3" data-testid="chapitres-icones">
+        {/* B-visuel (2026-11-05) : cellules ≥ 280px, même cause que les cartes unités. */}
+        <div className="grid gap-3 grid-cols-[repeat(auto-fill,minmax(280px,1fr))]" data-testid="chapitres-icones">
         {chapitres.length === 0 && (
           <p className="text-xs font-bold text-gray-500 dark:text-gray-400 col-span-full text-center py-6">
             لا يوجد نشاط في هذه الوحدة بعد.

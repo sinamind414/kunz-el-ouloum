@@ -716,8 +716,11 @@ export default function OkachaView({ onBack, onRate, onOpenQcm, domaineInitial }
       )}
 
       {/* ── Unités du domaine : ICÔNES (une icône = une unité du livre) ── */}
+      {/* B-visuel (2026-11-05) : auto-fill ≥300px — même correctif que
+          LessonsView : les colonnes fixes généraient des cellules trop
+          étroites qui cassaient les titres lettre par lettre. */}
       {!resultats && onglet !== 'm' && ouverte === null && (
-        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4" data-testid="okacha-unites-icones">
+        <div className="grid gap-4 grid-cols-[repeat(auto-fill,minmax(300px,1fr))]" data-testid="okacha-unites-icones">
           {unites.map((u) => {
             const th = THEME[u.domaine as ThemeCle];
             const lue = prog.lus.includes(u.id);
