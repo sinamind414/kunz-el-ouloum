@@ -278,9 +278,10 @@ describe('MoiView — المزيد : rubriques déplacées du menu latéral', ()
     // menu principal à 4 onglets) : l'utilisateur a ramené la barre à 4 —
     // methodology et reviser repartaient — mais le constat mesuré du 5/11 en
     // live a prouvé les DEUX onglets orphelins (aucune porte visible restante).
-    // 2026-11-05, GO propriétaire : restauration de d1b3f3b, la barre reprend
-    // ses 6 portails — home, lesson, training, المنهجية, المراجعة, moi.
-    expect(entreesPrincipales).toBe(6);
+    // 2026-11-05 (GO utilisateur, spec 6 → 4) : الدروس / التمارين / المراجعة
+    // deviennent 3 ONGLETS d'une seule porte « التعلّم » (src/data/apprentissageNav.ts) ; leurs identifiants d'écran restent
+    // montés dans App.tsx. « أنا » devient « حسابي » mais garde l'id `moi`.
+    expect(entreesPrincipales).toBe(4);
     expect(menuPrincipal, 'تقدمي est toujours dans la barre principale').not.toContain(
       "tab: 'stats'",
     );

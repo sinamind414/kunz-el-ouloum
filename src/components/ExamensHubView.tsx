@@ -32,7 +32,8 @@ const EXAMENS = [
   {
     mode: 'bac' as const,
     titre: 'اختبار بكالوريا',
-    detail: 'ثلاثة اختبارات كاملة على 20 نقطة — تصحيح ذاتي على سلّم التنقيط.',
+    detail:
+      'ثلاثة مواضيع تجريبية مركّبة من أفكار رسمية (5/7/8 نقاط) بتنقيط ذاتي تشخيصي.',
     geste: 'أجتاز امتحاناً كاملاً',
     Icon: GraduationCap,
   },
@@ -86,6 +87,14 @@ function ExamensHubViewInterne({ onOpen, onBack }: ExamensHubViewProps) {
           </button>
         ))}
       </div>
+      <p
+        data-testid="examens-avertissement"
+        className="mt-4 rounded-2xl p-3 text-[11px] leading-6 text-amber-900 dark:text-amber-300 bg-amber-50 dark:bg-amber-950/20 border border-amber-300/60 dark:border-amber-800/40 text-right"
+      >
+        تنبيه: هذه مواضيع تجريبية مبنية على أفكار تمارين سقطت فعلاً، لا على نصوص مواضيع ONEC
+        الكاملة؛ داخل التطبيق يوجد موضوع كامل واحد (2025) ومقياس رسمي مُدمج لدورات 2023–2025 فقط.
+        للدورات الأخرى، الرابط إلى « الإجابة النموذجية الرسمية » متاح في « أفكار التمارين حسب الدورة ».
+      </p>
     </div>
   );
 }

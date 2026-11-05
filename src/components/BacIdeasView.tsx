@@ -48,6 +48,9 @@ import BacIdeaTrainer from './BacIdeaTrainer';
 import WritingReviewPanel from './WritingReviewPanel';
 import MockExamPanel from './MockExamPanel';
 import { draftedFamilies, writingStats } from '../data/writingProgress';
+import BacCorrectionPanel from './BacCorrectionPanel';
+import BacTypeStats from './BacTypeStats';
+import { AVERTISSEMENT_ENONCES_BAC, COUVERTURE_BAC } from '../data/bacCorrectionIndex';
 import { INITIAL_UNITS } from '../unitCatalog';
 
 interface BacIdeasViewProps {
@@ -157,6 +160,10 @@ function BacIdeasViewInterne({ onBackToHome, focusIdeaId = null }: BacIdeasViewP
   const [revision, setRevision] = useState(0);
   const [revueVisible, setRevueVisible] = useState(false);
   const [sujetVisible, setSujetVisible] = useState(false);
+  // Correction 2026-11-05 : la vérité sur les corrigés + les stats PAR TYPE
+  // sont accessibles ici, au même endroit que les idées (pas une 9ᵉ porte).
+  const [correctionVisible, setCorrectionVisible] = useState(false);
+  const [statsVisibles, setStatsVisibles] = useState(false);
 
   useEffect(() => {
     if (focusIdeaId && IDEA_BY_ID[focusIdeaId]) setEntrainement(IDEA_BY_ID[focusIdeaId]);
@@ -272,7 +279,47 @@ function BacIdeasViewInterne({ onBackToHome, focusIdeaId = null }: BacIdeasViewP
         >
           {sujetVisible ? 'إخفاء الموضوع التجريبي' : 'ركّب موضوعاً تجريبياً'}
         </button>
+        <button
+          data-testid="basculer-corrections"
+          onClick={() => setCorrectionVisible((v) => !v)}
+          className="text-[11px] font-bold px-3 py-1.5 rounded-xl bg-[#006d37] text-white cursor-pointer"
+        >
+          {correctionVisible ? 'إخفاء التصحيح حسب الدورة' : 'ما الذي يُصحَّح فعلاً؟'}
+        </button>
+        <button
+          data-testid="basculer-stats-types"
+          onClick={() => setStatsVisibles((v) => !v)}
+          className="text-[11px] font-bold px-3 py-1.5 rounded-xl bg-[#f3f4f5] dark:bg-[#1f2622] text-[#006d37] dark:text-[#2ecc71] cursor-pointer"
+        >
+          {statsVisibles ? 'إخفاء إحصاءاتي' : 'إحصاءاتي حسب نوع الموضوع'}
+        </button>
       </div>
+
+      {correctionVisible && (
+        <BacCorrectionPanel annee={annee === 'all' ? null : annee} />
+      )}
+      {statsVisibles && <BacTypeStats />}
+
+      <p
+        data-testid="idees-avertissement-enonces"
+        className="mb-3 text-[11px] leading-6 text-[#506072] dark:text-gray-400 text-right"
+      >
+        {AVERTISSEMENT_ENONCES_BAC.ar} · {COUVERTURE_BAC.filter((c) => c.niveau === 'bareme-officiel').length}{' '}
+        دورات فقط تحمل مقياساً رسمياً مُدمجاً؛ {"المواضيع التجريبية ملخّصة من أفكار رسمية، وليست نصوص ONEC"}.
+      </p>
+
+      {correctionVisible && (
+        <BacCorrectionPanel annee={annee === 'all' ? null : annee} />
+      )}
+      {statsVisibles && <BacTypeStats />}
+
+      <p
+        data-testid="idees-avertissement-enonces"
+        className="mb-3 text-[11px] leading-6 text-[#506072] dark:text-gray-400 text-right"
+      >
+        {AVERTISSEMENT_ENONCES_BAC.ar} · {COUVERTURE_BAC.filter((c) => c.niveau === 'bareme-officiel').length}{' '}
+        دورات فقط تحمل مقياساً رسمياً مُدمجاً؛ {"المواضيع التجريبية ملخّصة من أفكار رسمية، وليست نصوص ONEC"}.
+      </p>
 
       {sujetVisible && <MockExamPanel onTrain={setEntrainement} />}
 

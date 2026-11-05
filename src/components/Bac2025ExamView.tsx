@@ -34,6 +34,8 @@ function sujetBlancActif(sujet: SujetId): SujetBlanc | null {
   if (sujet === 'blanc4') return SUJET_BLANC_4;
   return null;
 }
+import { BAC_IDEAS } from '../data/bacSessionIndex';
+import { archetypesForIdea } from '../data/bacArchetypes';
 import { noterCopieCalibree } from '../data/dictionaries/calibrationBac2025';
 import { demarrer, mettreEnPause, minutesEcoulees, remettreAZero, type ExamSession } from '../data/examSession';
 import { formatDuree, phaseEpreuve } from '../data/examTimer';
@@ -128,6 +130,19 @@ function Bac2025ExamViewInterne({ onClose }: { onClose: () => void }) {
     setSoumis(true);
     // B3 : la remise fige le chrono (consolidation de la période en cours).
     majSession(mettreEnPause(session));
+    // Correction 2026-11-05 : la tentative porte sa provenance RÉELLE (année,
+    // archétypes officiellement tombés) pour alimenter les stats PAR TYPE de
+    // sujet. Aucun archétype n'est inventé : on lit la banque BAC_IDEAS.
+    const archetypeIds = [
+      ...new Set(
+        ([1, 2, 3] as const).flatMap((rang) => {
+          const idea = BAC_IDEAS.find(
+            (i) => i.year === 2025 && i.sujet === sujet && i.exercice === rang,
+          );
+          return idea ? archetypesForIdea(idea.id).map((a) => a.id) : [];
+        }),
+      ),
+    ];
     logExamAttempt({
       sujet,
       total: c.total,
@@ -138,6 +153,9 @@ function Bac2025ExamViewInterne({ onClose }: { onClose: () => void }) {
         maxPts: n.maxPts,
         couverture: Math.round(n.couverture * 100) / 100,
       })),
+      source: 'bac2025',
+      year: 2025,
+      archetypeIds,
     });
     setHistorique(getExamAttempts());
   };

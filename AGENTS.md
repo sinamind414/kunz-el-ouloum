@@ -82,6 +82,21 @@ visites par rubrique + `oublierVisitesRubriques()`. Tests mis à jour :
 `src/lib/invitationCapitaine.ts` + test (accès `conseils[0]`).
 Chaîne verte : tsc 0, vitest 3822/3822, jest 3761/3761, build exit 0.
 
+**Exception SIGNÉE (2026-11-05, GO propriétaire en session, spec navigation 6 → 4 rubriques)** :
+modification de `src/App.tsx` pour passer de 6 à 4 portes dans PRIMARY_NAV :
+« الدروس » / « التمارين والتدريب » / « المراجعة » deviennent 3 ONGLETS d'une
+seule porte « التعلّم / Apprentissage » (porte virtuelle résolue vers lesson /
+training / reviser). Les 24 identifiants d'écran restent intacts (verrou
+PortesUniques conservé). Création des fichiers :
+src/data/apprentissageNav.ts, src/data/apprentissageProgression.ts,
+src/utils/navigationHash.ts, src/utils/deepLinkInterne.ts,
+src/components/ApprentissageTabs.tsx (+ 4 verrous, + navigation4Rubiques.test.tsx).
+Modification de src/components/BandeauConseilRubrique.tsx (déjà couverte par
+l'exception option B ci-dessus). Mise en avant « المنهجية » par fond vert très
+pâle (#f1faf4) + liseré, jamais le vert saturé de l'état actif.
+Renommage « أنا » → « حسابي / Mon espace » (icône Sprout → User).
+Chaîne verte : tsc 0, vitest 3897/3897, jest 3833/3833, build exit 0.
+
 ## Tests
 - `@testing-library/jest-dom` **n'est pas câblé** → utiliser `.toBeTruthy()`,
   `.toBeNull()`, `.toHaveLength()`. Appeler `cleanup()` explicitement.

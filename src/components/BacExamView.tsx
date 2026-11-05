@@ -70,6 +70,14 @@ export default function BacExamView({ onBack }: Props) {
           3 مواضيع بيضاء بالبنية الرسمية : ثلاثة تمارين (5 + 7 + 8 نقاط) · 4 سا و
           30 د · من تمارين سقطت فعلاً في البكالوريا (الدورات مذكورة، المصادر ONEC)
         </p>
+        <p
+          data-testid="bac-blanc-avertissement"
+          className="text-[11px] leading-6 font-bold text-amber-900 dark:text-amber-300 bg-amber-50 dark:bg-amber-950/20 border border-amber-300/60 dark:border-amber-800/40 rounded-2xl p-3"
+        >
+          تنبيه: هذه مواضيع تجريبية مركّبة من أفكار تمارين رسمية، وليست نصوص مواضيع ONEC
+          الكاملة. لا تُقدَّم هنا إجابة نموذجية رسمية ولا درجة مصحّح؛ العلامة ذاتية وتشخيصية. روابط الموضوع
+          الأصلي والإجابة النموذجية لكل دورة تجدها في « أفكار التمارين حسب الدورة » → « ما الذي يُصحَّح فعلاً؟ ».
+        </p>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {NUMEROS_SUJETS.map((numero) => {
             const s = composeMockExam(numero);
@@ -131,7 +139,8 @@ export default function BacExamView({ onBack }: Props) {
         هذه مواضيع بيضاء مؤلفة من تمارين سقطت فعلاً (لا نصوص مولدة). اقرأ فكرة
         كل تمرين ومعطياته المذكورة، وحلّه على الورقة كأنك في الامتحان، ثم ضع
         علامة على ما أنجزته كاملاً. النصوص الأصلية الكاملة متوفرة لدى ONEC
-        (eddirasa / dzexams) لكل دورة مذكورة.
+        (eddirasa / dzexams) لكل دورة مذكورة. لا تُحتسب هذه العلامة درجةً رسمية،
+        ولا يُقدَّم هنا تصحيح نموذجي مُدمج: القرار النهائي للمصحح.
       </div>
 
       {sujet.exercices.map((e: BacExerciseIdea) => {
