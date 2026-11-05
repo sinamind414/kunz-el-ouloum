@@ -14,6 +14,8 @@ import {
   Search,
   PenTool,
   Dumbbell,
+  Key,
+  Layers,
   Sprout
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
@@ -61,7 +63,7 @@ import {
 } from './utils/activiteQuotidienne';
 // Nomenclature figée (docs/MARQUE.md §3) — la rubrique porte le nom officiel de la source
 // unique miftahSpec : aucun littéral dans ce fichier (garde-fou check:miftah §13, 2026-09-15).
-import { MIFTAH_NAME_OFFICIAL_AR } from './data/miftahSpec';
+import { MIFTAH_NAME_OFFICIAL_AR, MIFTAH_NAME_AR } from './data/miftahSpec';
 import { AR_LATN } from './utils/latinDigits';
 
 import SplashView from './components/SplashView';
@@ -934,6 +936,17 @@ export default function App() {
     { tab: 'home', label: 'الرئيسية', fr: 'Accueil', Icon: Home },
     { tab: 'lesson', label: 'الدروس', fr: 'Apprendre', Icon: BookOpen },
     { tab: 'training', label: 'التمارين والتدريب', fr: "S'entraîner", Icon: Dumbbell },
+    // 2026-11-05, GO propriétaire : restauration des 2 portes supprimées par
+    // db3c13d (réduction à 4 onglets du 2026-11-02). Constat mesuré en live
+    // (chromium headless) : « مفتاح المنهجية » et « المراجعة » étaient
+    // ORPHELINES — la vue restait montée (currentTab === 'methodology' /
+    // 'reviser') mais plus AUCUNE porte visible n'ouvrait ces onglets, et le
+    // dashboard « المزيد من الأدوات » promettait « المنهجية » dans son
+    // sous-titre sans la livrer. État restauré = d1b3f3b (6ᵉ portail, GO
+    // 2026-10-16), partagé MethodologyCompilerView + RevisionHub, une seule
+    // porte chacune (verrou PortesUniques).
+    { tab: 'methodology', label: MIFTAH_NAME_AR, fr: 'Méthode', Icon: Key },
+    { tab: 'reviser', label: 'المراجعة', fr: 'Réviser', Icon: Layers },
     { tab: 'moi', label: 'أنا', fr: 'Moi', Icon: Sprout },
   ];
   // « المزيد » — VIDE depuis le 2026-10-12 : les deux derniers outils qu'il

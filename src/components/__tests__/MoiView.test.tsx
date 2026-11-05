@@ -276,9 +276,11 @@ describe('MoiView — المزيد : rubriques déplacées du menu latéral', ()
     // 2026-10-16 (Commit C, Phase 2, GO) : la barre passait de 5 à 6 portails —
     // « المنهجية » avait rejoint la barre. 2026-11-03 (db3c13d, réduction du
     // menu principal à 4 onglets) : l'utilisateur a ramené la barre à 4 —
-    // home, lesson, training, moi — « المنهجية » repart de la barre. Le verrou
-    // suit la décision produite, il ne l'approuve pas.
-    expect(entreesPrincipales).toBe(4);
+    // methodology et reviser repartaient — mais le constat mesuré du 5/11 en
+    // live a prouvé les DEUX onglets orphelins (aucune porte visible restante).
+    // 2026-11-05, GO propriétaire : restauration de d1b3f3b, la barre reprend
+    // ses 6 portails — home, lesson, training, المنهجية, المراجعة, moi.
+    expect(entreesPrincipales).toBe(6);
     expect(menuPrincipal, 'تقدمي est toujours dans la barre principale').not.toContain(
       "tab: 'stats'",
     );

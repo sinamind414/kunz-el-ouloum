@@ -59,6 +59,16 @@ CI master 5/5. La règle ci-dessus s'applique à tout travail NON signé :
 toute nouvelle modification d'`App.tsx` exige une validation explicite du
 propriétaire AVANT le code, et une mention signée ici.
 
+**Exception SIGNÉE (2026-11-05, GO propriétaire en session)** : restauration des
+entrées `methodology` (مفتاح المنهجية) et `reviser` (المراجعة) dans
+`PRIMARY_NAV` d'`src/App.tsx`, supprimées par `db3c13d` (réduction à 4 onglets,
+2026-11-02). Constat mesuré en live (headless CDP) : les deux vues restaient
+montées mais **orphelines** — aucune porte visible ne les ouvrait. État restauré
+= `d1b3f3b` (GO 2026-10-16). Verrous de tests mis à jour :
+`src/components/__tests__/TrainingHubView.test.tsx` (6 onglets) et
+`src/components/__tests__/MoiView.test.tsx` (6 entrées). Chaîne verte :
+tsc 0, vitest 3818/3818, jest 3757/3757, build exit 0.
+
 ## Tests
 - `@testing-library/jest-dom` **n'est pas câblé** → utiliser `.toBeTruthy()`,
   `.toBeNull()`, `.toHaveLength()`. Appeler `cleanup()` explicitement.

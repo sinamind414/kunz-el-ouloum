@@ -88,12 +88,16 @@ describe('hub d entraînement — contenu', () => {
     expect(tabs).not.toContain('methodology');
     expect(tabs).not.toContain('schemas');
     expect(tabs).not.toContain('plan');
-    // La porte barre existe, entre التمارين et المراجعة, et « أنا » ferme la barre.
+    // 2026-11-05, GO propriétaire : db3c13d (réduction à 4 onglets du 2/11)
+    // avait laissé « مفتاح المنهجية » et « المراجعة » SANS AUCUNE porte visible
+    // (constat mesuré en live : clic « مفتاح » impossible, meftah-view absent).
+    // Restauration de d1b3f3b : methodology + reviser reviennent dans la barre,
+    // « أنا » ferme la barre. Le hub garde une seule porte par fonctionnalité.
     const src = readFileSync(resolve(__dirname, '../../App.tsx'), 'utf8');
     const i = src.indexOf('const PRIMARY_NAV');
     const bloc = src.slice(i, src.indexOf('];', i));
     const onglets = [...bloc.matchAll(/\{ tab: '([a-z]+)'/g)].map((m) => m[1]);
-    expect(onglets).toEqual(['home', 'lesson', 'training', 'moi']);
+    expect(onglets).toEqual(['home', 'lesson', 'training', 'methodology', 'reviser', 'moi']);
     // Et la vue reste bien montée pour son onglet (inchangé).
     expect(src).toContain("currentTab === 'methodology'");
   });
