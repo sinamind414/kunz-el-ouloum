@@ -3,18 +3,41 @@
 // Remplace cinq entrées de menu par une seule. Chaque carte annonce le GESTE
 // travaillé (« أحلّل سنداً », « أرسم وأقيّم »…) plutôt que le nom de l'outil :
 // l'élève choisit ce qu'il veut exercer, pas une marque interne.
+//
+// REBASÉ SUR master 70b69ec (2026-11-04) — LOTS 2 ET 3.
+// Le lot 1 de master est une VARIANTE : le bloc « consigne d'entrée » y était
+// placé APRÈS la grille de 7 cartes. Ce rebasage le remet AVANT la grille et
+// place le rappel AVANT la consigne, pour restaurer la séquence pédagogique
+// « Rappel 3 min → UN geste BAC → auto-correction ». C'est un DÉPLACEMENT de
+// bloc : aucune décision, aucun calcul, aucun test du lot 1 n'est modifié.
+//
+// Lot 2 : échauffement OPTIONNEL de 3 questions tirées par le Capitaine
+// (`tirageRappelTrois`), corpus reçu via peekCorpus()/loadCorpus(), zéro import
+// statique du corpus, zéro SRS ici, CTA = le MÊME onOpen(tab) que les cartes.
+// Lot 3 : chaque question porte le TITRE FACTUEL de son unité
+// (`PARCOURS_DOMAINS`) pour que la cause déclarée par l'élève soit
+// enregistrée AVEC son thème dans le دفتر. Le hub ne décide toujours rien.
 
+import { useMemo, useState } from 'react';
 import { ArrowRight, CalendarDays, Dumbbell, FileText, Key, Lock, PenTool, PlayCircle, Search, Sparkles, Swords } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import { TRAINING_ENTRIES, type TrainingTab } from '../data/trainingHub';
 import { CAPITAINE_IDENTITE_AR } from '../data/capitaineIdentite';
-import { consigneEntreeTraining } from '../lib/invitationCapitaine';
+import { consigneEntreeTraining, tirageRappelTrois, type QuestionRappel, type SignalRappel } from '../lib/invitationCapitaine';
 import { etatEleveSiChargee } from '../lib/etatEleveRuntime';
 import { loadParcours, unitesCompletes } from '../lib/parcours/parcoursProgress';
+import { PARCOURS_DOMAINS } from '../lib/parcours/parcoursPath';
+import { loadCorpus, peekCorpus, type Corpus } from '../data/corpusLoader';
+import { sortByDue } from '../utils/flashcardsSrs';
+import { jourLocal } from '../utils/dayKey';
+import RappelTroisQuestions from './RappelTroisQuestions';
 
 interface TrainingHubViewProps {
   onOpen: (tab: TrainingTab) => void;
   onBackToHome?: () => void;
+  /** Injectable pour les tests / rendu hors ligne : corpus déjà chargé. En
+   *  production, `peekCorpus()` suffit — App.tsx l'a préchargé au repos. */
+  corpusRappel?: Corpus | null;
 }
 
 const ICONS: Record<string, LucideIcon> = {
@@ -28,14 +51,70 @@ const ICONS: Record<string, LucideIcon> = {
   key: Key,
 };
 
-export default function TrainingHubView({ onOpen, onBackToHome }: TrainingHubViewProps) {
+/** Une carte `fc_q_<id>` due renvoie l'id du QCM dont elle est dérivée. */
+const ID_CARTE_DERIVEE = /^fc_q_(\d+)$/;
+
+/** Titre FACTUEL de l'unité — déjà la source du parcours, aucune donnée neuve. */
+const TITRES_UNITES: ReadonlyMap<number, string> = new Map(
+  PARCOURS_DOMAINS.flatMap((d) => d.units.map((u) => [u.unitId, u.title] as const)),
+);
+
+export default function TrainingHubView({ onOpen, onBackToHome, corpusRappel }: TrainingHubViewProps) {
   // Phase 2 (GO 2026-10-16) : le cadenas lit la progression RÉELLE du
   // parcours — une unité complète = toutes ses leçons + son جسر.
   const unites = unitesCompletes(loadParcours());
   // Projection dérivée : l'état unique a été assemblé et déposé UNE fois par le
   // Capitaine (`useInvitationCapitaine` → `fournirEtatEleve`). Le hub ne relit
   // aucun stockage de plus, ne décide de rien, n'invente rien : `null` = silence.
-  const consigne = consigneEntreeTraining(etatEleveSiChargee(), unites);
+  const etat = etatEleveSiChargee();
+  const consigne = consigneEntreeTraining(etat, unites);
+  const carteGeste = consigne
+    ? TRAINING_ENTRIES.find((e) => e.tab === consigne.tab)
+    : undefined;
+
+  // Le corpus est CHARGÉ À LA DEMANDE, au clic sur l'échauffement : aucun
+  // import dynamique pour l'élève qui va droit au geste BAC. `loadCorpus()`
+  // possède déjà un cache de module partagé avec App.tsx (sprint 31).
+  const [corpus, setCorpus] = useState<Corpus | null>(() =>
+    corpusRappel !== undefined ? corpusRappel : peekCorpus(),
+  );
+
+  const demarrerRappel = (): void => {
+    if (corpusRappel !== undefined || corpus !== null) return;
+    void loadCorpus()
+      .then(setCorpus)
+      .catch(() => {
+        /* hors ligne : le panneau le dit, la consigne reste disponible */
+      });
+  };
+
+  // Tirage du Capitaine : catalogue reçu en entrée (jamais importé dans le
+  // bundle d'entrée), cartes DUES en lecture seule, unité faible, rotation
+  // stable du jour. `useMemo` évite de reparser l'état SM-2 à chaque rendu.
+  const questionsRappel: QuestionRappel[] = useMemo(() => {
+    const catalogue: QuestionRappel[] = (corpus?.questions ?? [])
+      .filter((q) => !q.kind || q.kind === 'qcm')
+      .map((q) => ({
+        id: q.id,
+        uniteId: q.unitId,
+        questionAr: q.questionText,
+        optionsAr: q.options,
+        correctIndex: q.correctAnswerIndex,
+        explicationAr: q.explanation ?? '',
+        // Lot 3 : le thème suit la question jusqu'au دفتر, si l'élève déclare.
+        themeAr: TITRES_UNITES.get(q.unitId),
+      }));
+    const idsDues = sortByDue([...(corpus?.flashcards ?? [])])
+      .map((c) => ID_CARTE_DERIVEE.exec(c.id))
+      .filter((m): m is RegExpExecArray => m !== null)
+      .map((m) => Number(m[1]));
+    const signal: SignalRappel = {
+      idsDues,
+      unitePrioritaire: etat?.competence.unitePrioritaire ?? etat?.competence.faibles[0] ?? null,
+      jour: jourLocal(),
+    };
+    return tirageRappelTrois(catalogue, signal);
+  }, [corpus, etat]);
   return (
     <div className="min-h-screen p-4 md:p-8 max-w-5xl mx-auto" dir="rtl" data-testid="training-hub">
       {/* RTL : le conteneur est en dir="rtl", donc `flex-row` place le PREMIER
@@ -63,6 +142,48 @@ export default function TrainingHubView({ onOpen, onBackToHome }: TrainingHubVie
           </button>
         )}
       </div>
+
+      {/* LOT 2 — Rappel 3 min, AVANT la consigne (Rappel → UN geste BAC).
+          Optionnel : aucune porte obligatoire, la consigne et la grille restent
+          visibles. Le CTA final réutilise le MÊME `onOpen(tab)` que la carte. */}
+      <RappelTroisQuestions
+        questions={questionsRappel}
+        onDemarrer={demarrerRappel}
+        corpusPret={corpus !== null}
+        onOuvrirGeste={consigne ? () => onOpen(consigne.tab) : null}
+        libelleGesteAr={carteGeste?.titleAr}
+      />
+
+      {/* UNE prescription, pas un second bandeau : aucun visage, aucune image
+          — le personnage EN GRAND reste UNIQUE (règle « une seule voix » de
+          BandeauConseilRubrique). Le nom du guide est signé, pas redessiné.
+          Le texte est décidé par
+          SON module ; il n'existe que si l'état est chargé et hors épreuve.
+          Dès la 1ʳᵉ visite il NOMME le module : le bandeau d'accueil, lui, ne
+          donne que le principe. */}
+      {consigne && (
+        <div
+          data-testid="consigne-entree-capitaine"
+          dir="rtl"
+          className="mb-4 rounded-2xl border border-[#006d37]/25 bg-[#f8fbfa] px-4 py-3 dark:border-emerald-400/25 dark:bg-[#121614]"
+        >
+          <p className="text-[10px] font-black tracking-wide text-[#006d37]/80 dark:text-emerald-400/80">
+            {CAPITAINE_IDENTITE_AR} — ابدأ من هنا
+          </p>
+          <p
+            data-testid="consigne-entree-geste"
+            className="mt-1 text-[13px] font-bold leading-relaxed text-[#1f2b24] dark:text-gray-100"
+          >
+            {consigne.gesteAr}
+          </p>
+          <p
+            data-testid="consigne-entree-pourquoi"
+            className="mt-1 text-[11.5px] leading-relaxed text-[#506072] dark:text-gray-400"
+          >
+            لماذا: {consigne.pourquoiAr} — {consigne.dureeMin} دقائق، تمرين واحد، والتصحيح جزء منه.
+          </p>
+        </div>
+      )}
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {TRAINING_ENTRIES.map((e) => {
@@ -125,36 +246,6 @@ export default function TrainingHubView({ onOpen, onBackToHome }: TrainingHubVie
         })}
       </div>
 
-      {/* UNE prescription, pas un second bandeau : aucun visage, aucune image
-          — le personnage EN GRAND reste UNIQUE (règle « une seule voix » de
-          BandeauConseilRubrique). Le nom du guide est signé, pas redessiné.
-          Le texte est décidé par
-          SON module ; il n'existe que si l'état est chargé et hors épreuve.
-          Dès la 1ʳᵉ visite il NOMME le module : le bandeau d'accueil, lui, ne
-          donne que le principe. */}
-      {consigne && (
-        <div
-          data-testid="consigne-entree-capitaine"
-          dir="rtl"
-          className="mb-4 rounded-2xl border border-[#006d37]/25 bg-[#f8fbfa] px-4 py-3 dark:border-emerald-400/25 dark:bg-[#121614]"
-        >
-          <p className="text-[10px] font-black tracking-wide text-[#006d37]/80 dark:text-emerald-400/80">
-            {CAPITAINE_IDENTITE_AR} — ابدأ من هنا
-          </p>
-          <p
-            data-testid="consigne-entree-geste"
-            className="mt-1 text-[13px] font-bold leading-relaxed text-[#1f2b24] dark:text-gray-100"
-          >
-            {consigne.gesteAr}
-          </p>
-          <p
-            data-testid="consigne-entree-pourquoi"
-            className="mt-1 text-[11.5px] leading-relaxed text-[#506072] dark:text-gray-400"
-          >
-            لماذا: {consigne.pourquoiAr} — {consigne.dureeMin} دقائق، تمرين واحد، والتصحيح جزء منه.
-          </p>
-        </div>
-      )}
     </div>
   );
 }
