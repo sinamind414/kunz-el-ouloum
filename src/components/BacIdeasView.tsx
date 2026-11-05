@@ -15,6 +15,7 @@ import {
   BAC_IDEAS,
   BAC_SESSION_SOURCES,
   IDEA_BY_ID,
+  INCOMPLETE_SUJETS,
   MISSING_YEARS,
   YEARS_COVERED,
   ideasForYear,
@@ -39,6 +40,9 @@ import WritingReviewPanel from './WritingReviewPanel';
 import MockExamPanel from './MockExamPanel';
 import { draftedFamilies, writingStats } from '../data/writingProgress';
 import { INITIAL_UNITS } from '../unitCatalog';
+import BacCorrectionPanel from './BacCorrectionPanel';
+import BacTypeStats from './BacTypeStats';
+import { AVERTISSEMENT_ENONCES_BAC, COUVERTURE_BAC } from '../data/bacCorrectionIndex';
 
 interface BacIdeasViewProps {
   onBackToHome?: () => void;
@@ -147,6 +151,10 @@ export default function BacIdeasView({ onBackToHome, focusIdeaId = null }: BacId
   const [revision, setRevision] = useState(0);
   const [revueVisible, setRevueVisible] = useState(false);
   const [sujetVisible, setSujetVisible] = useState(false);
+  // Correction 2026-11-05 : la vérité sur les corrigés + les stats PAR TYPE
+  // sont accessibles ici, au même endroit que les idées (pas une 9ᵉ porte).
+  const [correctionVisible, setCorrectionVisible] = useState(false);
+  const [statsVisibles, setStatsVisibles] = useState(false);
 
   useEffect(() => {
     if (focusIdeaId && IDEA_BY_ID[focusIdeaId]) setEntrainement(IDEA_BY_ID[focusIdeaId]);
@@ -254,7 +262,7 @@ export default function BacIdeasView({ onBackToHome, focusIdeaId = null }: BacId
         />
       )}
 
-      <div className="flex mb-3">
+      <div className="flex flex-wrap gap-2 mb-3">
         <button
           data-testid="basculer-sujet"
           onClick={() => setSujetVisible((v) => !v)}
@@ -262,7 +270,34 @@ export default function BacIdeasView({ onBackToHome, focusIdeaId = null }: BacId
         >
           {sujetVisible ? 'إخفاء الموضوع التجريبي' : 'ركّب موضوعاً تجريبياً'}
         </button>
+        <button
+          data-testid="basculer-corrections"
+          onClick={() => setCorrectionVisible((v) => !v)}
+          className="text-[11px] font-bold px-3 py-1.5 rounded-xl bg-[#006d37] text-white cursor-pointer"
+        >
+          {correctionVisible ? 'إخفاء التصحيح حسب الدورة' : 'ما الذي يُصحَّح فعلاً؟'}
+        </button>
+        <button
+          data-testid="basculer-stats-types"
+          onClick={() => setStatsVisibles((v) => !v)}
+          className="text-[11px] font-bold px-3 py-1.5 rounded-xl bg-[#f3f4f5] dark:bg-[#1f2622] text-[#006d37] dark:text-[#2ecc71] cursor-pointer"
+        >
+          {statsVisibles ? 'إخفاء إحصاءاتي' : 'إحصاءاتي حسب نوع الموضوع'}
+        </button>
       </div>
+
+      {correctionVisible && (
+        <BacCorrectionPanel annee={annee === 'all' ? null : annee} />
+      )}
+      {statsVisibles && <BacTypeStats />}
+
+      <p
+        data-testid="idees-avertissement-enonces"
+        className="mb-3 text-[11px] leading-6 text-[#506072] dark:text-gray-400 text-right"
+      >
+        {AVERTISSEMENT_ENONCES_BAC.ar} · {COUVERTURE_BAC.filter((c) => c.niveau === 'bareme-officiel').length}{' '}
+        دورات فقط تحمل مقياساً رسمياً مُدمجاً؛ {"المواضيع التجريبية ملخّصة من أفكار رسمية، وليست نصوص ONEC"}.
+      </p>
 
       {sujetVisible && <MockExamPanel onTrain={setEntrainement} />}
 
@@ -448,6 +483,18 @@ export default function BacIdeasView({ onBackToHome, focusIdeaId = null }: BacId
           )}
         </p>
       )}
+
+      {!requete && !montage && !famille && annee !== 'all' &&
+        INCOMPLETE_SUJETS.some((l) => l.year === annee) && (
+          <p
+            data-testid="idees-lacune"
+            className="mb-3 rounded-2xl p-3 text-[11px] leading-6 text-amber-900 dark:text-amber-300 bg-amber-50 dark:bg-amber-950/20 border border-amber-300/60 dark:border-amber-800/40 text-right"
+          >
+            تنبيه: {INCOMPLETE_SUJETS.filter((l) => l.year === annee)
+              .map((l) => `الموضوع ${l.sujet} — ${l.raison}`)
+              .join(' · ')}. مجموعه {pointsOfSujet(annee, 2)}/20 بدل 20؛ لم يُضَف تمرين بديل من عندنا.
+          </p>
+        )}
 
       {redige.exercices > 0 && (
         <div className="mb-2 flex items-center justify-between gap-2">

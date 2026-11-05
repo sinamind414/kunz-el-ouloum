@@ -28,6 +28,8 @@ import SectionObligatoire from './SectionObligatoire';
 import Dictaphone from './Dictaphone';
 import { logExamAttempt, getExamAttempts, clearExamLog, type ExamAttempt } from '../utils/examLog';
 import { fmtDateLatn } from '../utils/latinDigits';
+import { BAC_IDEAS } from '../data/bacSessionIndex';
+import { archetypesForIdea } from '../data/bacArchetypes';
 
 // Session 2025 DISTINCTE de la session du simulateur (kunz.examSession) :
 // les deux épreuves doivent pouvoir vivre sans s'écraser leur chronomètre.
@@ -113,6 +115,19 @@ export default function Bac2025ExamView({ onClose }: { onClose: () => void }) {
     setSoumis(true);
     // B3 : la remise fige le chrono (consolidation de la période en cours).
     majSession(mettreEnPause(session));
+    // Correction 2026-11-05 : la tentative porte sa provenance RÉELLE (année,
+    // archétypes officiellement tombés) pour alimenter les stats PAR TYPE de
+    // sujet. Aucun archétype n'est inventé : on lit la banque BAC_IDEAS.
+    const archetypeIds = [
+      ...new Set(
+        ([1, 2, 3] as const).flatMap((rang) => {
+          const idea = BAC_IDEAS.find(
+            (i) => i.year === 2025 && i.sujet === sujet && i.exercice === rang,
+          );
+          return idea ? archetypesForIdea(idea.id).map((a) => a.id) : [];
+        }),
+      ),
+    ];
     logExamAttempt({
       sujet,
       total: c.total,
@@ -123,6 +138,9 @@ export default function Bac2025ExamView({ onClose }: { onClose: () => void }) {
         maxPts: n.maxPts,
         couverture: Math.round(n.couverture * 100) / 100,
       })),
+      source: 'bac2025',
+      year: 2025,
+      archetypeIds,
     });
     setHistorique(getExamAttempts());
   };

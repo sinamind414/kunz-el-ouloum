@@ -252,6 +252,26 @@ describe('أفكار التمارين — relecture de la production (sprint 27)
   });
 });
 
+describe('أفكار التمارين — vérité des corrigés (2026-11-05)', () => {
+  it('ouvre le panneau de correction et les stats par type sans nouvelle porte', async () => {
+    const user = userEvent.setup();
+    render(<BacIdeasView />);
+    expect(screen.queryByTestId('bac-correction-panel')).toBeNull();
+    await user.click(screen.getByTestId('basculer-corrections'));
+    expect(screen.getByTestId('bac-correction-panel')).toBeTruthy();
+    await user.click(screen.getByTestId('basculer-stats-types'));
+    expect(screen.getByTestId('bac-stats-types')).toBeTruthy();
+    expect(screen.getByTestId('idees-avertissement-enonces').textContent).toContain('ONEC');
+  });
+
+  it('déclare la lacune 2021 S2 au lieu de la masquer', async () => {
+    const user = userEvent.setup();
+    render(<BacIdeasView />);
+    await user.click(screen.getByTestId('annee-2021'));
+    expect(screen.getByTestId('idees-lacune').textContent).toContain('15/20');
+  });
+});
+
 describe('أفكار التمارين — sujet blanc (sprint 41)', () => {
   it('compose un sujet à la demande et le referme', async () => {
     const user = userEvent.setup();

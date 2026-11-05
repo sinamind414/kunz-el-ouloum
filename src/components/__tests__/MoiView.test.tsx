@@ -274,8 +274,12 @@ describe('MoiView — المزيد : rubriques déplacées du menu latéral', ()
     const entreesPrincipales = (menuPrincipal.match(/\{ tab: '/g) ?? []).length;
     // 2026-10-16 (Commit C, Phase 2, GO) : la barre passe de 5 à 6 portails —
     // « المنهجية » rejoint la barre (plainte : l'élève ne retrouvait pas
-    // مفتاح المنهجية), sortie du hub التمارين pour rester à UNE porte.
-    expect(entreesPrincipales).toBe(6);
+    // مفتاح المنهجية).
+    // 2026-11-05 (GO utilisateur, spec 6 → 4) : الدروس / التمارين / المراجعة
+    // deviennent 3 ONGLETS d'une seule porte « التعلّم ». Le verrou garde son
+    // objet (une porte par fonctionnalité, « أنا » ferme la barre) et son
+    // cardinalité passe à 4 — verrou détaillé : apprentissageNav.lock.test.ts.
+    expect(entreesPrincipales).toBe(4);
     expect(menuPrincipal, 'تقدمي est toujours dans la barre principale').not.toContain(
       "tab: 'stats'",
     );

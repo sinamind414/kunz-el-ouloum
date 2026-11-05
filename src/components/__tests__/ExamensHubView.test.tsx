@@ -26,6 +26,13 @@ describe('sous-écran examens — contenu', () => {
     expect(screen.getByTestId('examens-bac').textContent).toContain('أجتاز امتحاناً كاملاً');
   });
 
+  it('ne promet plus trois « épreuves complètes » et dit ce qui manque', () => {
+    render(<ExamensHubView onOpen={() => {}} />);
+    const hub = screen.getByTestId('examens-hub').textContent!;
+    expect(hub).not.toContain('ثلاثة اختبارات كاملة');
+    expect(screen.getByTestId('examens-avertissement').textContent).toContain('ONEC');
+  });
+
   it('est bien atteint UNIQUEMENT depuis l entrée examens du hub', () => {
     const tabs = TRAINING_ENTRIES.map((e) => e.tab);
     expect(tabs).toContain('examens');

@@ -62,6 +62,7 @@ import {
 } from '../utils/activityLog';
 
 import {
+  BAC_EXAM_DATE_IS_PROVISIONAL,
   bacDaysLeft,
   biggestGapUnit,
   closestAchievementUnit,
@@ -526,6 +527,14 @@ export default function DashboardView({
                 <div className="px-2">
                   <span className="block text-base font-black text-sky-700">{bacDays ?? '—'}</span>
                   <span className="text-[10px] font-bold text-[#506072]">يوماً للـ BAC</span>
+                  {BAC_EXAM_DATE_IS_PROVISIONAL && (
+                    <span
+                      data-testid="bac-date-provisoire"
+                      className="mt-1 block text-[9px] font-bold text-amber-700 dark:text-amber-400"
+                    >
+                      تاريخ تقديري — بانتظار القرار الرسمي
+                    </span>
+                  )}
                 </div>
                 <div className="px-2">
                   <Trophy className="mx-auto mb-1 h-4 w-4 text-amber-500" />

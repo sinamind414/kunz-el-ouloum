@@ -22,7 +22,7 @@ l'ordre, avec la commande exacte.
 | Icône adaptative (masque) | ✅ présente | `public/icons/icon-512-maskable.png` |
 | Manifeste PWA complet (`id`, `scope`, `start_url`, `display`) | ✅ | `public/manifest.json` |
 | Politique de confidentialité **publique, sans JavaScript, ar + fr** | ✅ route servie | `GET /privacy` (`src/server/politiqueHtml.ts`) |
-| Digital Asset Links (TWA) | ⚠️ gabarit **non renseigné** (volontaire) | `store/assetlinks.json` |
+| Digital Asset Links (TWA) | ⚠️ fichier **renseigné** mais empreinte **non vérifiée** contre un keystore réel — à confirmer avant envoi | `store/assetlinks.json` |
 | Textes de fiche (titre, descriptions, nouveautés) ar + fr | ✅ | `store/fiche-play.json` |
 | Brouillon « Sécurité des données » | ✅ | `store/data-safety.md` |
 | Captures d'écran | ❌ **à produire sur un appareil** | voir §4 |
@@ -32,6 +32,13 @@ l'ordre, avec la commande exacte.
 `src/store/fichePlay.test.ts` refuse une fiche trop longue (limites Play), un texte qui promet une
 fonctionnalité inexistante, et un `assetlinks.json` servi en gabarit.
 `src/server/assetLinks.test.ts` couvre les quatre états du fichier (absent, gabarit, invalide, valide).
+
+> ⚠️ État réel au 05/11/2026 : `store/assetlinks.json` contient `com.kunzelouloum.app` et une
+> empreinte SHA-256, donc `verifierAssetLinks` le considère **valide** et le sert. Mais rien dans ce
+> dépôt ne prouve que cette empreinte correspond au certificat qui signera l'AAB, ni que le nom de
+> paquet retenu est `dz.kunzelouloum.app` (celui suggéré dans `fiche-play.json`). **Non vérifiable** :
+> à contrôler avec le keystore et la Play Console avant toute publication, sinon Android rejettera
+> silencieusement la vérification et la TWA gardera sa barre d'adresse.
 
 ---
 
@@ -82,7 +89,8 @@ perçue comme « un site dans une coquille ». Le site doit déclarer l'applicat
 #    de signature de l'application » ; il faut les DEUX, upload et signature).
 keytool -list -v -keystore android.keystore -alias androiddebugkey | grep SHA256
 
-# 2. Renseigner store/assetlinks.json (remplacer les deux gabarits), puis
+# 2. Vérifier/remplacer dans store/assetlinks.json le package_name et l'empreinte
+#    (le fichier n'est plus un gabarit : le confirmer avec le keystore), puis
 #    redémarrer le serveur et vérifier :
 curl -s https://<votre-domaine>/.well-known/assetlinks.json | head
 ```

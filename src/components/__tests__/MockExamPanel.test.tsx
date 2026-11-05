@@ -19,6 +19,17 @@ describe('panneau du sujet blanc', () => {
     for (let i = 1; i <= 3; i += 1) expect(screen.getByTestId(`mock-exercice-${i}`)).toBeTruthy();
   });
 
+  it('cite la source officielle de CHAQUE exercice et dit que les énoncés manquent', () => {
+    render(<MockExamPanel onTrain={() => {}} />);
+    const attendu = composeMockExam(numeroDuJour());
+    for (const e of attendu.exercices) {
+      const source = screen.getByTestId(`mock-source-${e.id}`);
+      expect(source.textContent).toContain('الموضوع الرسمي');
+      expect(source.querySelector('a')!.getAttribute('href')).toMatch(/^https:\/\//);
+    }
+    expect(screen.getByTestId('mock-avertissement').textContent).toContain('غير مضمّنة');
+  });
+
   it('affiche la durée et le barème officiels', () => {
     render(<MockExamPanel onTrain={() => {}} />);
     const entete = screen.getByTestId('mock-entete').textContent ?? '';

@@ -11,7 +11,7 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import { Clock, Dices, FileText, Pause, Play, Printer, RotateCcw } from 'lucide-react';
-import type { BacExerciseIdea } from '../data/bacSessionIndex';
+import { sourcesForYear, type BacExerciseIdea } from '../data/bacSessionIndex';
 import { composeMockExam, numeroDuJour } from '../data/mockExam';
 import {
   changerSujet,
@@ -216,6 +216,25 @@ export default function MockExamPanel({ onTrain }: Props) {
             <p className="text-[11px] text-[#8a6a00] dark:text-[#d9a400] text-right mb-2">
               التعليمات: {e.verbsAr.join(' · ')}
             </p>
+            {(() => {
+              const src = sourcesForYear(e.year);
+              if (!src) return null;
+              return (
+                <p
+                  data-testid={`mock-source-${e.id}`}
+                  className="text-[10px] leading-5 text-[#506072] dark:text-gray-400 text-right mb-2"
+                >
+                  دورة {e.year} ·{' '}
+                  <a href={src.url} target="_blank" rel="noreferrer" className="underline">
+                    الموضوع الرسمي
+                  </a>
+                  {' · '}
+                  <a href={src.correctionUrl} target="_blank" rel="noreferrer" className="underline">
+                    الإجابة النموذجية الرسمية
+                  </a>
+                </p>
+              );
+            })()}
             {budgets[i] && (
               <p
                 data-testid={`mock-budget-${i + 1}`}
@@ -246,9 +265,13 @@ export default function MockExamPanel({ onTrain }: Props) {
         ))}
       </ol>
 
-      <p className="mt-3 text-[10px] leading-5 text-[#506072] dark:text-gray-500 text-right">
-        المصدر: مواضيع بكالوريا رسمية (2017-2026). النصوص هنا ملخّصة للتدريب على البنية و التعليمات؛
-        للاطلاع على الموضوع الأصلي كاملاً ارجع إلى الدورة المذكورة.
+      <p
+        data-testid="mock-avertissement"
+        className="mt-3 text-[10px] leading-5 text-[#506072] dark:text-gray-500 text-right"
+      >
+        هذا موضوع تجريبي مركّب من أفكار تمارين ملخّصة من مواضيع رسمية سقطت فعلاً (المصدر مُشار إليه
+        تحت كل تمرين). نصوص المواضيع ووثائقها الأصلية (ONEC) غير مضمّنة داخل التطبيق، ولا يُقدَّم هنا
+        تصحيح رسمي مُدمج: استعمل رابط « الإجابة النموذجية الرسمية » لكل دورة، واعتبر التنقيط الذاتي تشخيصياً.
       </p>
       {/* Pied de page de traçabilité — VISIBLE À L'IMPRESSION SEULEMENT (A3). */}
       {/*

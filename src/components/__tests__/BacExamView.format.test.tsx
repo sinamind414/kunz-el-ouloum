@@ -31,6 +31,8 @@ describe('BacExamView — format officiel uniquement (B2)', () => {
 
     // L'ancien sous-titre mensonger « 4 تمارين × 5 نقاط، 3 ساعات » est interdit :
     expect(screen.queryByText(/4 تمارين/)).toBeNull();
+    // Correction 2026-11-05 : la nature COMPOSÉE des sujets est dite d'emblée.
+    expect(screen.getByTestId('bac-blanc-avertissement').textContent).toContain('ONEC');
 
     const premiers = screen.getAllByTestId(/^bac-blanc-\d+$/);
     expect(premiers.length).toBeGreaterThanOrEqual(3);

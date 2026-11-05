@@ -8,6 +8,7 @@
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { describe, expect, it } from 'vitest';
+import { SVT_QUIZ_QUESTIONS } from '../quizCorpus/index';
 
 const RACINE = resolve(__dirname, '../..');
 const FICHE = JSON.parse(readFileSync(resolve(RACINE, 'store/fiche-play.json'), 'utf-8')) as {
@@ -96,6 +97,26 @@ describe('fiche Play — honnêteté des promesses', () => {
     // Immunité innée et une partie de U11 sont absentes (audit H5). Les annoncer
     // dans la fiche est la seule position tenable pour un outil d'examen.
     expect(FICHE.locales.fr.description_complete).toMatch(/immunité innée/);
+  });
+
+  it('aligne les compteurs publiés sur les exports RÉELLEMENT servis (2026-11-05)', () => {
+    // 550/588 étaient des chiffres d'avant le filtre T3a. On les dérive du
+    // corpus servi : si le corpus change, la fiche doit casser, pas dériver.
+    const qcm = SVT_QUIZ_QUESTIONS.length;
+    expect(FICHE.locales.fr.description_complete).toContain(`${qcm} QCM`);
+    expect(FICHE.locales.ar.description_complete).toContain(`${qcm} سؤالاً`);
+    // 569 = 531 cartes dérivées + 35 حصيلة + 3 collège ; verrouillé par
+    // src/data/flashcards.lock.test.ts (le test qui retourne les 569 cartes).
+    expect(FICHE.locales.fr.description_complete).toContain('569 cartes');
+    expect(FICHE.locales.ar.description_complete).toContain('569 بطاقة');
+  });
+
+  it('ne promet plus de « sujets blancs complets » ni de corrigés pour 11 sessions', () => {
+    expect(TEXTE_PUBLIE).not.toMatch(/sujets blancs complets|اختبارات كاملة|مواضيع كاملة/);
+    expect(FICHE.locales.fr.description_complete).toContain('ne sont pas reproduits');
+    expect(FICHE.locales.ar.description_complete).toContain('غير مضمّنة');
+    expect(FICHE.locales.fr.description_complete).toContain('2023, 2024 et 2025');
+    expect(FICHE.locales.fr.description_complete).toContain('diagnostique et indicative');
   });
 });
 

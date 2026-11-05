@@ -9,6 +9,7 @@ import {
   logExamAttempt,
   getExamAttempts,
   getExamStats,
+  getExamStatsByType,
   clearExamLog,
 } from './examLog';
 import { logActivityLocally } from './activityLog';
@@ -103,6 +104,63 @@ describe('examLog — historique des notes obligatoires', () => {
         type: 'quiz',
         payload: expect.objectContaining({ domain: 'bac2025', score: 16, total: 20, percent: 80 }),
       })
+    );
+  });
+});
+
+describe('examLog — statistiques PAR TYPE (correction 2026-11-05)', () => {
+  it('aucune tentative → tous les groupes vides, pas de zéro inventé', () => {
+    const s = getExamStatsByType();
+    expect(s.attempts).toBe(0);
+    expect(s.parArchetype).toEqual([]);
+    expect(s.parAnnee).toEqual([]);
+    expect(s.parSource).toEqual([]);
+    expect(s.parExercice).toEqual([]);
+  });
+
+  it('groupe par archétype dédupliqué, année, source et rang d’exercice', () => {
+    logExamAttempt({
+      sujet: 1,
+      total: 14,
+      exercices: [
+        { sujet: 1, exercice: 1, points: 4, maxPts: 5, couverture: 0.8 },
+        { sujet: 1, exercice: 3, points: 5, maxPts: 8, couverture: 0.62 },
+      ],
+      source: 'bac2025',
+      year: 2025,
+      archetypeIds: ['arch_a', 'arch_a', 'arch_b'],
+    });
+    logExamAttempt({
+      sujet: 2,
+      total: 18,
+      exercices: [{ sujet: 2, exercice: 3, points: 8, maxPts: 8, couverture: 1 }],
+      source: 'bareme',
+      year: 2024,
+      archetypeIds: ['arch_a'],
+    });
+    const s = getExamStatsByType();
+    expect(s.attempts).toBe(2);
+    expect(s.parArchetype.find((x) => x.key === 'arch_a')!.attempts).toBe(2);
+    expect(s.parArchetype.find((x) => x.key === 'arch_b')!.attempts).toBe(1);
+    expect(s.parAnnee.map((x) => x.key)).toEqual(['2025', '2024']);
+    expect(s.parSource.map((x) => x.key).sort()).toEqual(['bac2025', 'bareme']);
+    const rang3 = s.parExercice.find((x) => x.exercice === 3)!;
+    expect(rang3.occurrences).toBe(2);
+    expect(rang3.taux).toBeCloseTo(13 / 16, 2);
+  });
+
+  it('le domaine envoyé au dashboard suit la provenance réelle', () => {
+    logExamAttempt({
+      sujet: 1,
+      total: 12,
+      exercices: [],
+      source: 'bareme',
+      year: 2023,
+    });
+    expect(vi.mocked(logActivityLocally)).toHaveBeenLastCalledWith(
+      expect.objectContaining({
+        payload: expect.objectContaining({ domain: 'bareme' }),
+      }),
     );
   });
 });

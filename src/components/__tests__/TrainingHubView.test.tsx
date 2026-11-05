@@ -93,7 +93,11 @@ describe('hub d entraînement — contenu', () => {
     const i = src.indexOf('const PRIMARY_NAV');
     const bloc = src.slice(i, src.indexOf('];', i));
     const onglets = [...bloc.matchAll(/\{ tab: '([a-z]+)'/g)].map((m) => m[1]);
-    expect(onglets).toEqual(['home', 'lesson', 'training', 'methodology', 'reviser', 'moi']);
+    // 2026-11-05 (GO utilisateur) : 6 → 4 portes. Les trois rubriques
+    // الدروس / التمارين / المراجعة deviennent des ONGLETS de « التعلّم »
+    // (src/data/apprentissageNav.ts) ; leurs identifiants d'écran restent
+    // montés dans App.tsx. « أنا » devient « حسابي » mais garde l'id `moi`.
+    expect(onglets).toEqual(['home', 'apprentissage', 'methodology', 'moi']);
     // Et la vue reste bien montée pour son onglet (inchangé).
     expect(src).toContain("currentTab === 'methodology'");
   });

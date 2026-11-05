@@ -18,12 +18,20 @@ export interface ExamExerciceResult {
   couverture: number; // 0..1 (points attendus auto crédités / Σ auto)
 }
 
+/** Provenance d'une tentative — alimente les stats PAR TYPE de sujet. */
+export type ExamSource = 'bac2025' | 'bareme' | 'blanc' | 'autre';
+
 export interface ExamAttempt {
   id: string;
   dateISO: string;
   sujet: 1 | 2;
   total: number; // /20
   exercices: ExamExerciceResult[];
+  /** Champs OPTIONNELS : les anciennes tentatives restent lisibles telles quelles. */
+  source?: ExamSource;
+  year?: number;
+  /** Archétypes BAC réellement tombés dans ce sujet (bacArchetypes.ts). */
+  archetypeIds?: string[];
 }
 
 export interface ExamStats {
@@ -70,15 +78,21 @@ export function logExamAttempt(entry: Omit<ExamAttempt, 'id' | 'dateISO'>): Exam
     console.warn("Impossible d'archiver la tentative:", e);
   }
   // Événement dashboard (file offline-first ; sans token rien ne quitte l'appareil).
+  // `domain` suit la provenance réelle : une tentative d'un sujet blanc ou d'un
+  // barème isolé ne doit pas être comptée comme un « الإطار الرسمي 2025 ».
+  const source: ExamSource = entry.source ?? 'bac2025';
   logActivityLocally({
     studentId: 'local',
     type: 'quiz',
     payload: {
-      title: `الإطار الرسمي 2025 — الموضوع ${entry.sujet === 1 ? 'الأول' : 'الثاني'}`,
+      title:
+        source === 'bac2025'
+          ? `الإطار الرسمي 2025 — الموضوع ${entry.sujet === 1 ? 'الأول' : 'الثاني'}`
+          : `بكالوريا ${entry.year ?? '—'} — الموضوع ${entry.sujet === 1 ? 'الأول' : 'الثاني'}`,
       score: Math.round(entry.total * 100) / 100,
       total: 20,
       percent: Math.round((entry.total / 20) * 100),
-      domain: 'bac2025',
+      domain: source,
     },
   });
   return full;
@@ -103,6 +117,105 @@ export function getExamStats(): ExamStats | null {
     best: Math.max(...totals),
     average: Math.round((sum / spark.length) * 100) / 100,
     spark,
+  };
+}
+
+// ── Statistiques PAR TYPE DE SUJET (correction axe 5, 2026-11-05) ──────────
+//
+// `getExamStats()` ne donnait qu'une tendance globale (dernière / meilleure /
+// moyenne). L'élève ne pouvait pas savoir s'il perd ses points sur un type de
+// montage, sur une année ou sur le 3ᵉ exercice (08 pts). Ces groupes sont
+// calculés UNIQUEMENT à partir des tentatives réellement archivées : aucune
+// moyenne fictive, aucun « 0 » affiché à la place d'une donnée absente.
+
+export interface TypeStatBac {
+  key: string;
+  attempts: number;
+  average: number | null;
+  best: number | null;
+}
+
+export interface ExerciceStatBac {
+  exercice: 1 | 2 | 3;
+  occurrences: number;
+  pointsMoyens: number | null;
+  maxPtsMoyen: number | null;
+  /** Part des points obtenus sur ce rang, 0..1 (null si aucun barème lisible). */
+  taux: number | null;
+}
+
+export interface ExamTypeStats {
+  attempts: number;
+  parArchetype: TypeStatBac[];
+  parAnnee: TypeStatBac[];
+  parSource: TypeStatBac[];
+  parExercice: ExerciceStatBac[];
+}
+
+function agreger(cle: string, tentatives: ExamAttempt[]): TypeStatBac {
+  if (tentatives.length === 0) return { key: cle, attempts: 0, average: null, best: null };
+  const totaux = tentatives.map((a) => a.total);
+  const somme = totaux.reduce((s, x) => s + x, 0);
+  return {
+    key: cle,
+    attempts: totaux.length,
+    average: Math.round((somme / totaux.length) * 100) / 100,
+    best: Math.max(...totaux),
+  };
+}
+
+function grouperPar<T>(
+  tentatives: ExamAttempt[],
+  cles: (a: ExamAttempt) => T[],
+): TypeStatBac[] {
+  const groupes = new Map<string, ExamAttempt[]>();
+  for (const a of tentatives) {
+    // Set : un même archétype cité deux fois dans un sujet ne compte qu'une fois.
+    for (const cle of new Set(cles(a))) {
+      const k = String(cle);
+      const liste = groupes.get(k) ?? [];
+      liste.push(a);
+      groupes.set(k, liste);
+    }
+  }
+  return [...groupes.entries()]
+    .map(([k, liste]) => agreger(k, liste))
+    .sort((a, b) => b.attempts - a.attempts || a.key.localeCompare(b.key));
+}
+
+/** Stats par archétype / année / provenance / rang d'exercice. */
+export function getExamStatsByType(): ExamTypeStats {
+  const all = getExamAttempts();
+  const parExercice: ExerciceStatBac[] = [];
+  for (const rang of [1, 2, 3] as const) {
+    const points: number[] = [];
+    const maxPts: number[] = [];
+    for (const a of all) {
+      for (const e of a.exercices) {
+        if (e.exercice !== rang || !(e.maxPts > 0)) continue;
+        points.push(e.points);
+        maxPts.push(e.maxPts);
+      }
+    }
+    if (points.length === 0) continue; // pas de zéro inventé
+    const sommePts = points.reduce((s, x) => s + x, 0);
+    const sommeMax = maxPts.reduce((s, x) => s + x, 0);
+    parExercice.push({
+      exercice: rang,
+      occurrences: points.length,
+      pointsMoyens: Math.round((sommePts / points.length) * 100) / 100,
+      maxPtsMoyen: Math.round((sommeMax / maxPts.length) * 100) / 100,
+      taux: sommeMax > 0 ? Math.round((sommePts / sommeMax) * 100) / 100 : null,
+    });
+  }
+  return {
+    attempts: all.length,
+    parArchetype: grouperPar(all, (a) => a.archetypeIds ?? []),
+    parAnnee: grouperPar(all, (a) => (a.year === undefined ? [] : [a.year])).sort(
+      (a, b) => Number(b.key) - Number(a.key),
+    ),
+    parSource: grouperPar(all, (a) => [a.source ?? 'bac2025']),
+    parExercice,
   };
 }
 
