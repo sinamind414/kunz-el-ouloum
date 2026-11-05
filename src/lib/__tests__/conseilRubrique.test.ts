@@ -1,21 +1,27 @@
-// conseilRubrique.test.ts — LE GUIDE ACCUEILLE UNE FOIS, PUIS SE TAIT.
+// conseilRubrique.test.ts — LE GUIDE PARLE À CHAQUE ENTRÉE, EN ROTATION.
 //
-// Demande d'origine : « le tutor parle quand tu rentres à une rubrique ». La
-// partie facile est d'afficher un bandeau. La partie difficile est de ne PAS le
-// réafficher : un guide qui répète la même consigne à chaque entrée devient du
-// décor, et l'élève cesse de le lire au bout de trois fois. Ces tests portent
-// donc surtout sur les cas de SILENCE.
+// Option B (2026-11-05) : le guide parle à chaque entrée de rubrique, pas
+// seulement à la première visite. Chaque rubrique a 2 ou 3 conseils en
+// rotation — le compteur de visites détermine lequel s'affiche. Ces tests
+// portent donc sur la rotation et sur la validité des données.
 import { describe, expect, it, beforeEach } from 'vitest';
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import {
-  CLE_CONSEILS_VUS,
+  CLE_VISITES_RUBRIQUES,
   doitParlerRubrique,
-  marquerRubriqueVue,
-  oublierConseilsVus,
-  rubriquesVues,
+  enregistrerVisiteRubrique,
+  indiceConseil,
+  nbVisitesRubrique,
+  oublierVisitesRubriques,
+  rubriquesVisitees,
+  visitesRubriques,
 } from '../conseilRubrique';
-import { CONSEILS_RUBRIQUES, conseilDeRubrique } from '../../data/conseilsRubrique';
+import {
+  CONSEILS_RUBRIQUES,
+  conseilDeRubrique,
+  tousLesConseils,
+} from '../../data/conseilsRubrique';
 
 const app = readFileSync(resolve(process.cwd(), 'src/App.tsx'), 'utf8');
 const bandeau = readFileSync(resolve(process.cwd(), 'src/components/BandeauConseilRubrique.tsx'), 'utf8');
@@ -32,77 +38,91 @@ beforeEach(() => {
   window.localStorage.clear();
 });
 
-describe('la décision de parler — et surtout celle de se taire', () => {
-  it('elle parle la PREMIÈRE fois, jamais la deuxième', () => {
-    expect(doitParlerRubrique('training', [], true)).toBe(true);
-    expect(doitParlerRubrique('training', ['training'], true)).toBe(false);
+describe('la décision de parler — option B : à chaque entrée', () => {
+  it('elle parle quand la rubrique a un conseil', () => {
+    expect(doitParlerRubrique('training', true)).toBe(true);
+    expect(doitParlerRubrique('methodology', true)).toBe(true);
+  });
+
+  it('elle parle même si la rubrique a déjà été visitée', () => {
+    enregistrerVisiteRubrique('training');
+    expect(doitParlerRubrique('training', true)).toBe(true);
   });
 
   it('une rubrique sans conseil ne parle pas', () => {
-    expect(doitParlerRubrique('training', [], false)).toBe(false);
+    expect(doitParlerRubrique('training', false)).toBe(false);
   });
 
   it('elle ne parle pas de l’écran de démarrage', () => {
-    expect(doitParlerRubrique('splash', [], true)).toBe(false);
+    expect(doitParlerRubrique('splash', true)).toBe(false);
   });
 
   it('un identifiant vide ou absent ne déclenche rien', () => {
-    expect(doitParlerRubrique('', [], true)).toBe(false);
-    expect(doitParlerRubrique(null, [], true)).toBe(false);
-    expect(doitParlerRubrique(undefined, [], true)).toBe(false);
-  });
-
-  it('l’ordre des rubriques déjà vues est indifférent', () => {
-    expect(doitParlerRubrique('focus', ['training', 'examens'], true)).toBe(true);
-    expect(doitParlerRubrique('examens', ['training', 'examens'], true)).toBe(false);
+    expect(doitParlerRubrique('', true)).toBe(false);
+    expect(doitParlerRubrique(null, true)).toBe(false);
+    expect(doitParlerRubrique(undefined, true)).toBe(false);
   });
 });
 
-describe('la mémoire des rubriques expliquées', () => {
-  it('une rubrique vue une fois reste vue', () => {
-    marquerRubriqueVue('methodology');
-    expect(rubriquesVues()).toContain('methodology');
-    expect(doitParlerRubrique('methodology', rubriquesVues(), true)).toBe(false);
+describe('la rotation des conseils', () => {
+  it('le premier indice est 0 (première visite)', () => {
+    expect(indiceConseil('training', 2)).toBe(0);
   });
 
-  it('marquer deux fois la même rubrique ne la duplique pas', () => {
-    marquerRubriqueVue('training');
-    marquerRubriqueVue('training');
-    expect(rubriquesVues().filter((r) => r === 'training')).toHaveLength(1);
+  it('l’indice tourne après une visite (1 % 2 = 1)', () => {
+    enregistrerVisiteRubrique('training');
+    expect(indiceConseil('training', 2)).toBe(1);
   });
 
-  it('la plus récente passe en tête (la liste est bornée)', () => {
-    marquerRubriqueVue('training');
-    marquerRubriqueVue('focus');
-    expect(rubriquesVues()[0]).toBe('focus');
+  it('l’indice revient à 0 après deux visites (2 % 2 = 0)', () => {
+    enregistrerVisiteRubrique('training');
+    enregistrerVisiteRubrique('training');
+    expect(indiceConseil('training', 2)).toBe(0);
   });
 
-  it('un stockage corrompu ne fait pas planter et n’affiche rien de faux', () => {
-    window.localStorage.setItem(CLE_CONSEILS_VUS, '{{{ pas du json');
-    expect(rubriquesVues()).toEqual([]);
-    window.localStorage.setItem(CLE_CONSEILS_VUS, '{"pas":"un tableau"}');
-    expect(rubriquesVues()).toEqual([]);
-    // Un tableau contenant n'importe quoi : on ne garde que les chaînes.
-    window.localStorage.setItem(CLE_CONSEILS_VUS, '[42, null, "focus"]');
-    expect(rubriquesVues()).toEqual(['focus']);
+  it('chaque rubrique a son propre compteur', () => {
+    enregistrerVisiteRubrique('training');
+    expect(indiceConseil('methodology', 2)).toBe(0);
+    expect(indiceConseil('training', 2)).toBe(1);
   });
 
-  it('oublier remet le guide en position de réexpliquer', () => {
-    marquerRubriqueVue('examens');
-    oublierConseilsVus();
-    expect(rubriquesVues()).toEqual([]);
-    expect(doitParlerRubrique('examens', rubriquesVues(), true)).toBe(true);
+  it('enregistrer une visite incrémente le compteur', () => {
+    expect(nbVisitesRubrique('examens')).toBe(0);
+    enregistrerVisiteRubrique('examens');
+    expect(nbVisitesRubrique('examens')).toBe(1);
+    enregistrerVisiteRubrique('examens');
+    expect(nbVisitesRubrique('examens')).toBe(2);
+  });
+
+  it('rubriquesVisitees liste les rubriques avec au moins une visite', () => {
+    expect(rubriquesVisitees()).toEqual([]);
+    enregistrerVisiteRubrique('lesson');
+    enregistrerVisiteRubrique('schemas');
+    expect(rubriquesVisitees().sort()).toEqual(['lesson', 'schemas']);
+  });
+
+  it('oublierVisitesRubriques remet les compteurs à zéro', () => {
+    enregistrerVisiteRubrique('focus');
+    oublierVisitesRubriques();
+    expect(nbVisitesRubrique('focus')).toBe(0);
+    expect(indiceConseil('focus', 2)).toBe(0);
+  });
+
+  it('un stockage corrompu ne fait pas planter', () => {
+    window.localStorage.setItem(CLE_VISITES_RUBRIQUES, '{{{ pas du json');
+    expect(visitesRubriques()).toEqual({});
+    window.localStorage.setItem(CLE_VISITES_RUBRIQUES, '{"pas":"un objet"}');
+    expect(visitesRubriques()).toEqual({});
+    window.localStorage.setItem(CLE_VISITES_RUBRIQUES, '{"training": "pas un nombre"}');
+    expect(visitesRubriques()).toEqual({});
   });
 });
 
 describe('les conseils sont des données valides', () => {
   it('chaque conseil vise un onglet qui EXISTE dans App.tsx', () => {
-    // Leçon apprise : `erreurs` et `entrainement` étaient des identifiants
-    // inventés, et le bouton du capitaine menait dans le vide. Un conseil rangé
-    // sous une rubrique inexistante ne s'afficherait jamais — silencieusement.
-    for (const c of CONSEILS_RUBRIQUES) {
-      expect(ONGLETS_REELS.has(c.rubrique), `« ${c.rubrique} » n’est pas un onglet`).toBe(true);
-      expect(app, `App.tsx ne gère pas l’onglet « ${c.rubrique} »`).toContain(`currentTab === '${c.rubrique}'`);
+    for (const cr of CONSEILS_RUBRIQUES) {
+      expect(ONGLETS_REELS.has(cr.rubrique), `« ${cr.rubrique} » n’est pas un onglet`).toBe(true);
+      expect(app, `App.tsx ne gère pas l’onglet « ${cr.rubrique} »`).toContain(`currentTab === '${cr.rubrique}'`);
     }
   });
 
@@ -110,31 +130,31 @@ describe('les conseils sont des données valides', () => {
     expect(new Set(CONSEILS_RUBRIQUES.map((c) => c.rubrique)).size).toBe(CONSEILS_RUBRIQUES.length);
   });
 
+  it('chaque rubrique a au moins 2 conseils', () => {
+    for (const cr of CONSEILS_RUBRIQUES) {
+      expect(cr.conseils.length, `${cr.rubrique} : pas assez de conseils pour la rotation`).toBeGreaterThanOrEqual(2);
+    }
+  });
+
   it('chaque conseil porte une idée ET un geste, jamais l’un sans l’autre', () => {
-    for (const c of CONSEILS_RUBRIQUES) {
-      // Seuil à 50 et non 60 : l'arabe est une langue dense, « جلسة واحدة = هدف
-      // واحد. الهدف الغامض يتحوّل إلى تصفّح. » est une idée complète en 53
-      // caractères. Allonger un bon conseil pour atteindre un seuil serait
-      // ajouter du remplissage — exactement ce que ce fichier interdit.
-      expect(c.conseilAr.length, `${c.rubrique} : conseil trop court`).toBeGreaterThan(50);
-      expect(c.gesteAr.length, `${c.rubrique} : geste trop long`).toBeLessThan(70);
-      expect(c.gesteAr.length, `${c.rubrique} : geste trop court`).toBeGreaterThan(15);
+    for (const c of tousLesConseils()) {
+      expect(c.conseilAr.length, `conseil trop court`).toBeGreaterThan(50);
+      expect(c.gesteAr.length, `geste trop long`).toBeLessThan(70);
+      expect(c.gesteAr.length, `geste trop court`).toBeGreaterThan(15);
     }
   });
 
   it('aucun conseil n’est une phrase d’encouragement', () => {
-    // « Bravo », « courage », « bonne chance » : ce sont des mots qui ne changent
-    // aucun geste. Un professeur utile donne une consigne, pas un applaudissement.
-    for (const c of CONSEILS_RUBRIQUES) {
+    for (const c of tousLesConseils()) {
       for (const creux of ['بالتوفيق', 'أحسنت', 'شجاعة', 'لا تستسلم', 'ثابر']) {
-        expect(c.conseilAr, `${c.rubrique} contient « ${creux} »`).not.toContain(creux);
+        expect(c.conseilAr, `conseil contient « ${creux} »`).not.toContain(creux);
       }
     }
   });
 
-  it('deux rubriques ne reçoivent pas le même texte', () => {
-    // Le signe d'un remplissage automatique : des conseils interchangeables.
-    expect(new Set(CONSEILS_RUBRIQUES.map((c) => c.conseilAr)).size).toBe(CONSEILS_RUBRIQUES.length);
+  it('tous les conseils sont uniques entre eux', () => {
+    const tous = tousLesConseils().map((c) => c.conseilAr);
+    expect(new Set(tous).size).toBe(tous.length);
   });
 
   it('une rubrique absente est silencieuse, et c’est normal', () => {
@@ -146,31 +166,18 @@ describe('les conseils sont des données valides', () => {
 
 describe('le branchement dans App.tsx', () => {
   it('le bandeau est rendu et le rappel existe', () => {
-    // Le testid du bandeau vit dans le COMPOSANT (il y est vérifié plus bas) ;
-    // ici on vérifie ce qui appartient à App.tsx : le rendu et le bouton de rappel.
     expect(app).toContain('<BandeauConseilRubrique');
     expect(app).toContain('data-testid="conseil-rubrique-ouvrir"');
   });
 
   it('le guide se TAIT pendant une épreuve', () => {
-    // Pendant une épreuve chronométrée, aucune parole : c'est la règle du §7 du
-    // cahier des charges, déjà appliquée à la bulle.
     const bloc = app.slice(app.indexOf('<BandeauConseilRubrique') - 320);
     expect(bloc).toContain('!epreuveEnCours');
   });
 
-  it('le conseil est mémorisé À L’AFFICHAGE, pas à la fermeture', () => {
-    // Sinon un élève qui change d'onglet sans lire revoit le même discours à
-    // l'infini — et l'application devient un perroquet.
-    const bloc = app.slice(app.indexOf('etat.contexte.conseilRubriqueAPrendre'));
-    expect(bloc.slice(0, 400)).toContain('marquerRubriqueVue(currentTab)');
-    expect(app).toContain('setConseilFerme(false)');
-    // Et la famille « contexte » n'est plus relue ici : depuis l'état unique
-    // (15/10/2026 soir), `App.tsx` consomme ce que `lib/etatEleve.ts` a assemblé
-    // une fois. Relire `rubriquesVues()` ici rouvrirait le défaut réparé.
-    expect(app, 'App.tsx relit la famille que l’état lui fournit').not.toContain('rubriquesVues()');
-    const etatSrc = readFileSync(resolve(process.cwd(), 'src/lib/etatEleve.ts'), 'utf8');
-    expect(etatSrc, 'plus personne ne lit les rubriques vues').toContain('rubriquesVues()');
+  it('le conseil est sélectionné par rotation', () => {
+    expect(app).toContain('indiceConseil');
+    expect(app).toContain('enregistrerVisiteRubrique');
   });
 
   it('le bandeau est fermable par l’élève', () => {
@@ -178,14 +185,12 @@ describe('le branchement dans App.tsx', () => {
     expect(bandeau).toContain('onFermer');
   });
 
-  it('le bandeau porte le visage du capitaine, une seule fois par écran', () => {
+  it('le bandeau porte le visage du capitaine', () => {
     expect(bandeau).toContain('CAPITAINE_VISAGE_URL');
     expect((bandeau.match(/<img/g) ?? []).length).toBe(1);
   });
 
   it('le texte du conseil n’est jamais recopié dans le composant', () => {
-    // Le composant affiche la donnée ; il ne la fabrique pas. Sans cette garde,
-    // un conseil pourrait vivre en dur dans le JSX et échapper aux tests ci-dessus.
     expect(bandeau).not.toMatch(/[ء-ي]{25,}/);
   });
 });

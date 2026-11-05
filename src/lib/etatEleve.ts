@@ -50,7 +50,7 @@ import {
   type BilanBoucle,
   type Registre,
 } from './prescriptions';
-import { doitParlerRubrique, rubriquesVues } from './conseilRubrique';
+import { doitParlerRubrique, visitesRubriques } from './conseilRubrique';
 import { cumulJoursDepuisDaily, serieAfficheeDepuisDaily } from '../utils/activiteQuotidienne';
 import { ecartEnJours, jourLocal } from '../utils/dayKey';
 import { PALIERS_SERIE } from '../utils/serie';
@@ -326,7 +326,6 @@ export function assemblerEtatEleve(entrees: EntreesEtatEleve): EtatEleve {
       rubriqueOuverte: entrees.rubrique ?? null,
       conseilRubriqueAPrendre: doitParlerRubrique(
         entrees.rubrique,
-        entrees.rubriquesDejaVues ?? [],
         entrees.rubriqueAUnConseil === true,
       ),
     },
@@ -350,7 +349,7 @@ export function lireEtatEleve(entrees: Omit<EntreesEtatEleve, 'registre' | 'igno
     // état qu'on consulte tous les jours ne peut pas laisser une prescription
     // « en attente » pour toujours.
     ignoreeMs: derniereInvitationIgnoreeMs(),
-    rubriquesDejaVues: rubriquesVues(),
+    rubriquesDejaVues: Object.keys(visitesRubriques()),
     // Le relais humain : le nom qu'un élève a confié reste ici, sur l'appareil,
     // et remonte par la famille « relation » comme le reste de l'état.
     relais: lireRelais(),

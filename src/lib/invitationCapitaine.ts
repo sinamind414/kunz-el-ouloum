@@ -473,8 +473,8 @@ export function invitationDuMoment(ctx: ContexteCapitaine): Invitation | null {
           : null;
       return parler({
         situation: 'reprise',
-        messageAr: conseilExamens.conseilAr,
-        actionAr: conseilExamens.gesteAr,
+        messageAr: conseilExamens.conseils[0].conseilAr,
+        actionAr: conseilExamens.conseils[0].gesteAr,
         gainImmediatAr:
           jours !== null
             ? `بقي ${jours} يومًا. محاكاة واحدة تكشف ثغرتك قبل يوم البكالوريا.`

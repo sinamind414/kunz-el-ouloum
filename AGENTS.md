@@ -69,6 +69,19 @@ montées mais **orphelines** — aucune porte visible ne les ouvrait. État rest
 `src/components/__tests__/MoiView.test.tsx` (6 entrées). Chaîne verte :
 tsc 0, vitest 3818/3818, jest 3757/3757, build exit 0.
 
+**Exception SIGNÉE (2026-11-05, GO propriétaire en session, option B)** :
+modification de `src/App.tsx` pour que le bandeau « القبطان » réagisse à CHAQUE
+entrée de rubrique (option B : rotation de conseils). `conseilFerme` remplacé
+par `conseilOuvert` ; le conseil est sélectionné par rotation via
+`indiceConseil(visites % nbConseils)` depuis `src/lib/conseilRubrique.ts`.
+`src/data/conseilsRubrique.ts` : 2 conseils par rubrique (en فصحى uniquement,
+sans phrase d'encouragement). `src/lib/conseilRubrique.ts` : compteurs de
+visites par rubrique + `oublierVisitesRubriques()`. Tests mis à jour :
+`src/lib/__tests__/conseilRubrique.test.ts`, `src/lib/__tests__/etatEleve.test.ts`
+(nouvelle clé `boussole_conseils_visites_rubriques`),
+`src/lib/invitationCapitaine.ts` + test (accès `conseils[0]`).
+Chaîne verte : tsc 0, vitest 3822/3822, jest 3761/3761, build exit 0.
+
 ## Tests
 - `@testing-library/jest-dom` **n'est pas câblé** → utiliser `.toBeTruthy()`,
   `.toBeNull()`, `.toHaveLength()`. Appeler `cleanup()` explicitement.

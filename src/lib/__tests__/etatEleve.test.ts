@@ -46,6 +46,7 @@ const CLES_DE_L_ETAT = [
   'boussole_prescriptions_v1',
   'boussole_capitaine_invitation_ignoree',
   'boussole_conseils_rubriques_vus',
+  'boussole_conseils_visites_rubriques',
   // Étape 5 : le relais humain. Le nom qu'un élève confie passe par l'état
   // comme le reste — une seule lecture, un seul assemblage.
   'boussole_relais_v1',

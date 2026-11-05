@@ -155,8 +155,8 @@ import BandeauConseilRubrique from './components/BandeauConseilRubrique';
 // Étape 5 (§5.D) : le relais humain. Une carte, deux questions, aucune sortie de
 // l'appareil — voir `lib/relais.ts` pour la règle complète.
 import RelaisCapitaine from './components/RelaisCapitaine';
-import { conseilDeRubrique, type ConseilRubrique } from './data/conseilsRubrique';
-import { marquerRubriqueVue } from './lib/conseilRubrique';
+import { conseilDeRubrique, type Conseil, type ConseilRubrique, tousLesConseils } from './data/conseilsRubrique';
+import { indiceConseil, enregistrerVisiteRubrique } from './lib/conseilRubrique';
 import { replanifierRevue, SEUIL_FRAGILE } from './lib/parcours/parcoursProgress';
 import { 
   startPirateMusic, 
@@ -401,38 +401,39 @@ export default function App() {
   });
 
   /**
-   * Le conseil d'entrée de rubrique.
+   * Le conseil d'entrée de rubrique — option B : le guide parle à CHAQUE
+   * entrée de rubrique, avec un conseil différent à chaque fois (rotation).
    *
-   * `ouvertureAuto` distingue les deux façons d'afficher le même bandeau :
-   *  · ouvert automatiquement, une seule fois, à la première visite ;
-   *  · rouvert par l'élève via le « ؟ » de l'en-tête, autant de fois qu'il veut.
-   * Sans cette distinction, le bandeau se fermerait puis se rouvrirait tout seul
-   * au changement d'onglet — le comportement le plus agaçant possible.
+   * `conseilOuvert` distingue les deux façons d'afficher le même bandeau :
+   *  · ouvert automatiquement à chaque changement de rubrique qui a un conseil ;
+   *  · rouvert/fermé par l'élève via le « ؟ » de l'en-tête.
+   * Quand l'élève change de rubrique, le bandeau de la rubrique précédente se
+   * ferme ; si la nouvelle rubrique a un conseil, il s'ouvre tout seul.
    */
-  const [conseilFerme, setConseilFerme] = useState(true);
+  const [conseilOuvert, setConseilOuvert] = useState(false);
   /**
-   * L'état est délibérément HORS des dépendances de cet effet, et ce n'est pas un
-   * oubli : l'effet doit se déclencher quand l'élève CHANGE DE RUBRIQUE, pas
-   * quand l'état se recalcule. Sans cela, `marquerRubriqueVue` — juste en dessous
-   * — rendrait `conseilRubriqueAPrendre` faux au recalcul suivant, et l'effet
-   * refermerait le bandeau que l'élève est en train de lire.
+   * Le conseil sélectionné par rotation pour la rubrique courante.
+   * `indiceConseil` utilise le compteur de visites : visites % nbConseils.
+   * Réentrer dans une rubrique donne donc un conseil différent.
+   */
+  const conseilSelectionne: Conseil | null =
+    conseilCourant != null
+      ? conseilCourant.conseils[indiceConseil(currentTab, conseilCourant.conseils.length)]
+      : null;
+  /**
+   * L'effet se déclenche quand l'élève CHANGE DE RUBRIQUE, pas quand l'état
+   * se recalcule. Si la nouvelle rubrique a un conseil et qu'aucune épreuve
+   * n'est en cours, le bandeau s'ouvre automatiquement et la visite est
+   * enregistrée (pour faire tourner le conseil à la prochaine entrée).
    */
   useEffect(() => {
-    if (!conseilCourant) {
-      setConseilFerme(true);
+    if (!conseilSelectionne || epreuveEnCours) {
+      setConseilOuvert(false);
       return;
     }
-    // La famille « contexte » de l'état unique : la liste des rubriques déjà vues
-    // n'est plus relue ici, et la décision de parler n'est plus prise deux fois.
-    if (etat.contexte.conseilRubriqueAPrendre) {
-      // On mémorise À L'AFFICHAGE, pas à la fermeture : un élève qui change
-      // d'onglet sans lire ne doit pas revoir le même discours indéfiniment.
-      marquerRubriqueVue(currentTab);
-      setConseilFerme(false);
-    } else {
-      setConseilFerme(true);
-    }
-  }, [currentTab, conseilCourant]);
+    enregistrerVisiteRubrique(currentTab);
+    setConseilOuvert(true);
+  }, [currentTab, conseilSelectionne, epreuveEnCours]);
 
   // Apply dark mode theme class to document element
   useEffect(() => {
@@ -1063,7 +1064,7 @@ export default function App() {
             <button
               type="button"
               data-testid="conseil-rubrique-ouvrir"
-              onClick={() => setConseilFerme((f) => !f)}
+              onClick={() => setConseilOuvert((f) => !f)}
               title="نصيحة القبطان في هذه الصفحة"
               aria-label="نصيحة القبطان في هذه الصفحة"
               className="ms-2 inline-flex h-5 w-5 items-center justify-center rounded-full border border-[#006d37]/40 align-middle text-[11px] font-black text-[#006d37] transition-colors hover:bg-[#006d37] hover:text-white cursor-pointer dark:border-emerald-400/40 dark:text-emerald-300"
@@ -1195,8 +1196,8 @@ export default function App() {
               {/* Hors du Suspense de l'onglet À DESSEIN : le conseil ne doit pas
                   attendre le chargement du morceau de la rubrique pour apparaître,
                   sinon il surgirait après coup, sur une page déjà commencée. */}
-              {conseilCourant && !conseilFerme && !epreuveEnCours && (
-                <BandeauConseilRubrique conseil={conseilCourant} onFermer={() => setConseilFerme(true)} />
+              {conseilSelectionne && conseilOuvert && !epreuveEnCours && (
+                <BandeauConseilRubrique conseil={conseilSelectionne} onFermer={() => setConseilOuvert(false)} />
               )}
               {currentTab === 'home' && (
                 <DashboardView 
