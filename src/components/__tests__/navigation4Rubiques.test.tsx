@@ -89,6 +89,12 @@ describe('4 rubriques — navigation réelle', () => {
   });
 
   it('?idee= ouvre directement la banque BAC (pas le hub التمارين)', async () => {
+    // Fiabilisation (2026-11-06, GO propriétaire) : BacIdeasView est chargé par
+    // `lazy()` dans App. En jsdom (imports lourds), la résolution du chunk
+    // pouvait dépasser le timeout par défaut (1 s) de findByTestId et rendre
+    // le verrou flaky. On importe le module ICI : le loader du lazy résout
+    // ensuite depuis le cache de modules en un tick, de façon déterministe.
+    await import('../../components/BacIdeasView');
     const idee = BAC_IDEAS[0].id;
     window.history.replaceState(null, '', `/#/apprentissage/entrainement?idee=${idee}`);
     render(<App />);

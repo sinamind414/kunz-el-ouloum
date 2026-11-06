@@ -97,6 +97,16 @@ pâle (#f1faf4) + liseré, jamais le vert saturé de l'état actif.
 Renommage « أنا » → « حسابي / Mon espace » (icône Sprout → User).
 Chaîne verte : tsc 0, vitest 3897/3897, jest 3833/3833, build exit 0.
 
+**Exception SIGNÉE (2026-11-06, GO propriétaire en session)** : fiabilisation de
+`src/components/__tests__/navigation4Rubiques.test.tsx` (test « ?idee= ouvre
+directement la banque BAC ») — modification : pré-import explicite du
+composant `BacIdeasView` avant le rendu, pour que la résolution du `lazy()`
+d'App soit déterministe et ne dépende plus du timeout par défaut (1 s) de
+`findByTestId` ni de la charge des imports en jsdom. Constat à l'origine : le
+test était rouge 2/2 en isolation chez HEAD à l'audit du matin (2026-11-06),
+alors que le commit e730d9c déclarait vitest 3897/3897. Observé après
+correction : 3/3 exécutions vertes en isolation.
+
 ## Tests
 - `@testing-library/jest-dom` **n'est pas câblé** → utiliser `.toBeTruthy()`,
   `.toBeNull()`, `.toHaveLength()`. Appeler `cleanup()` explicitement.
