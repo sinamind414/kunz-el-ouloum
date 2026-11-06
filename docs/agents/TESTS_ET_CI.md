@@ -30,6 +30,44 @@ Lancer un seul fichier : `npx vitest run chemin/du.test.ts`.
 Les chiffres du 2026-10-26 (3 675 tests, 1 échec fuseau, 1 erreur eslint acces.ts) sont périmés :
 l'échec fuseau est corrigé (`0ce98a4`) et l'erreur eslint ne se reproduit plus.
 
+### État de référence (2026-11-06, Windows local, branche `reorganisation-med` 1bfea79)
+
+| Suite | Résultat |
+|---|---|
+| tsc | vert (0 erreur) |
+| vitest intégral | **336 fichiers / 3 897 tests : 100 % vert** (exit 0, 361 s) |
+| jest intégral | **327 suites / 3 833 tests : 100 % vert** (exit 0) |
+| build | exit 0 (24 s) |
+
+Mesure prise après la fiabilisation du verrou `?idee=` (voir piège `lazy()` ci-dessous).
+Chiffres antérieurs (2026-11-04 : 3 722 vitest / 3 661 jest) reflétaient une autre
+branche et un autre état du dépôt.
+
+### Piège connu : verrou comportemental sur un composant `lazy()` — constaté 2026-11-06
+
+`navigation4Rubiques.test.tsx` › test « ?idee= ouvre directement la banque BAC » :
+`BacIdeasView` est chargé par `lazy()` dans `App.tsx`, donc son `data-testid`
+n'apparaît qu'à la résolution du chunk. En jsdom chargé (imports lourds), cette
+résolution dépassait le timeout par défaut de `findByTestId` (1 s) : **test rouge
+2/2 en isolation chez HEAD** le 2026-11-06, alors que le commit e730d9c déclarait
+vitest 3897/3897 — le compte était vrai dans l'environnement du commit, le verrou
+n'était simplement pas reproductible sur une autre machine.
+
+**Règle** : un verrou qui asserte sur le rendu d'un composant `lazy()` doit
+pré-importer le module avant le `render(<App />)` —
+
+```ts
+await import('../../components/BacIdeasView');   // résout le lazy au tick
+render(<App />);
+```
+
+ainsi le loader de `React.lazy` résout depuis le cache de modules de façon
+déterministe, quel que soit le poids des imports. Fix poussé : commit `1bfea79`
+(isolation 3/3 vert ; suites complètes 3 897 vitest + 3 833 jest vertes).
+Lecture à retenir pour tout futur verrou de navigation : ne jamais baser la
+preuve comportementale sur le timeout par défaut d'un `findBy*` quand la cible
+est derrière un `lazy()`.
+
 ### Échec connu : dépendance au fuseau horaire — **RÉSOLU le 2026-11-04**
 
 `server/store.pg.dates.test.ts` › « couvre le cas UTC+1 » échouait quand la machine est
@@ -73,6 +111,8 @@ BacIdeaTrainer/AITutorView innocentés le 03/11).
 - jest exclut 8 suites (vi.mock non hoisté, top-level await) : couvertes par vitest seul.
 - Les tests `skipIf` (SQLite, fixtures locales, copies élèves) sont **ignorés** quand
   leurs prérequis manquent — ignoré ≠ vert.
+- Un verrou qui asserte sur le rendu d'un composant `lazy()` pré-importe le module
+  avant `render()` (cf. piège `lazy()` ci-dessus, constat 2026-11-06).
 - Les suites `figureZoom*` (travail concurrent) sont exclues de la CI ; ne pas y toucher.
 
 ## CI (`.github/workflows/ci.yml`, push/PR sur `master`, Node 22)
