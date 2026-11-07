@@ -4,6 +4,8 @@
 import { describe, expect, it } from 'vitest';
 import {
   BAC_EXAM_DATE,
+  BAC_EXAM_DATE_IS_PROVISIONAL,
+  ETIQUETTE_DATE_BAC_PROVISOIRE_AR,
   bacDaysLeft,
   biggestGapUnit,
   closestAchievementUnit,
@@ -158,5 +160,23 @@ describe('bacDaysLeft — عدّاد BAC', () => {
 
   it('franchit correctement les fins de mois', () => {
     expect(bacDaysLeft(new Date(2026, 8, 30), '2026-10-03')).toBe(3);
+  });
+});
+
+describe('R5 (audit coach 2026-11-06) — l’étiquette unique de la date provisoire', () => {
+  it('la date reste DÉCLARÉE provisoire tant qu’aucun arrêté officiel n’est cité', () => {
+    // Cette constante est le RÉGLAGE central : quand l'owner fournit une
+    // source officielle datée, la passer à `false` (et citer la source dans
+    // le commentaire de `BAC_EXAM_DATE`) est le SEUL changement nécessaire.
+    expect(BAC_EXAM_DATE_IS_PROVISIONAL).toBe(true);
+  });
+
+  it('l’étiquette existe, est non vide, et reste LA source unique (une seule formulation)', () => {
+    expect(typeof ETIQUETTE_DATE_BAC_PROVISOIRE_AR).toBe('string');
+    expect(ETIQUETTE_DATE_BAC_PROVISOIRE_AR.length).toBeGreaterThan(5);
+    // Verrou de formulation : le libellé historique de la tuile est conservé
+    // mot pour mot — toute reformulation doit être une décision consciente.
+    expect(ETIQUETTE_DATE_BAC_PROVISOIRE_AR).toContain('تقديري');
+    expect(ETIQUETTE_DATE_BAC_PROVISOIRE_AR).toContain('القرار الرسمي');
   });
 });

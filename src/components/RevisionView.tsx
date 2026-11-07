@@ -6,6 +6,7 @@ import { playFlipSound, playSuccessSound } from '../utils/audio';
 import { getSrsState, rateCard, sortByDue, previewIntervalDays, formatIntervalLabel } from '../utils/flashcardsSrs';
 import { noterAffichageEffort } from '../utils/effortMesure';
 import MicroCapsulePanel from './MicroCapsulePanel';
+import PanneauSrs from './PanneauSrs';
 import BoutonMorchid from './BoutonMorchid';
 import EcranPaiement from './EcranPaiement';
 import { uniteOuverte } from '../utils/acces';
@@ -198,6 +199,19 @@ export default function RevisionView({ units, flashcards, onRateCard, isFocusMod
       {/* Audit item 15 (sprint 11) — « فكرة في دقيقة » : le format le plus court,
           placé là où l'élève vient déjà réviser, et aligné sur l'unité choisie. */}
       {!isFocusMode && !isReaderMode && <MicroCapsulePanel unitId={selectedUnitId} />}
+
+      {/* Reco 3 (audit coach 2026-11-06, lot 🔴) — le SRS devient lisible :
+          le SM-2 tournait depuis 2026-10 mais l'élève ne voyait que « 3 / 12 ».
+          Le bilan est une LECTURE pure de l'état persisté : aucune note, aucun
+          écriture, aucun pourcentage inventé (cf. `utils/bilanSrs.ts`). */}
+      {!isFocusMode && !isReaderMode && (
+        <PanneauSrs
+          cards={flashcards}
+          uniteId={selectedUnitId}
+          uniteTitre={getSelectedUnitTitle()}
+          srsVersion={srsVersion}
+        />
+      )}
 
       {/* Selection Filter Tab Selector - Hidden in Focus Mode and Reader Mode */}
       {!isFocusMode && !isReaderMode && (

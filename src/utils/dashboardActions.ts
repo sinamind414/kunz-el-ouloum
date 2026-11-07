@@ -31,6 +31,20 @@ import { Unit, UserProgress } from '../types';
 export const BAC_EXAM_DATE = '2027-06-08';
 export const BAC_EXAM_DATE_IS_PROVISIONAL = true;
 
+/**
+ * R5 (audit coach 2026-11-06, GO propriétaire en session) — L'ÉTIQUETTE UNIQUE.
+ *
+ * La date est PROVISOIRE tant qu'aucun arrêté officiel ne la confirme ; chaque
+ * endroit où le décompte apparaît doit le dire dans les mêmes mots. La phrase
+ * vivait uniquement dans la tuile du dashboard (`DashboardView`) sous la forme
+ * d'un texte local — la recopier ailleurs créerait des variantes, exactement le
+ * défaut que `data/capitaine.ts` refuse (« la même phrase ne doit pas exister
+ * en trois variantes selon l'écran »). La source devient CETTE constante :
+ * le jour où la formulation change (ou que la date se confirme et que
+ * l'étiquette se retire), un seul endroit à corriger.
+ */
+export const ETIQUETTE_DATE_BAC_PROVISOIRE_AR = 'تاريخ تقديري — بانتظار القرار الرسمي';
+
 const MS_PER_DAY = 86_400_000;
 
 /** Millisecondes UTC d'un jour local (évite les décalages de fuseau/HE). */

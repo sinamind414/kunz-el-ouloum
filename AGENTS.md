@@ -107,6 +107,32 @@ test était rouge 2/2 en isolation chez HEAD à l'audit du matin (2026-11-06),
 alors que le commit e730d9c déclarait vitest 3897/3897. Observé après
 correction : 3/3 exécutions vertes en isolation.
 
+**Exception SIGNÉE (2026-11-06/07, GO propriétaire en session, audit « Coach
+Capitaine » 2026-11-06 — lot 🔴 recos 1-5, 5 tranches)** : implémentation des
+5 recommandations 🔴 du rapport `audit-coach-capitaine-2026-11-06.md` (non
+commité, fourni par l'owner). AUCUN fichier protégé modifié : `App.tsx` est
+INCHANGÉ — la reco 1 (profil élève) vit dans un PANNEAU de `MoiView`
+(`ProfilEleveView`), pas une rubrique ; les verrous 4 onglets / 24 écrans
+(2026-11-05) restent intacts. Règle pédagogique SIGNÉE modifiée (tranche 2 =
+reco 5, décisions owner en session 5/5 + arbitrages) :
+`phaseEleve.deduireNiveau` n'entre plus en phase 5 « sprint » sur une date
+provisoire (`dateProvisoire ? null : joursAvantBac`) — alignement sur la règle
+déjà appliquée par la bulle ; le sprint redevient atteignable le jour où
+l'owner pose une date officielle (arrêté daté) et passe
+`BAC_EXAM_DATE_IS_PROVISIONAL` à false. Constante unique
+`ETIQUETTE_DATE_BAC_PROVISOIRE_AR` (dashboardActions, jamais reformulée) ;
+seuils du capitaine ≥ 2 INTACTS (verrou source-scan R4 qui l'interdit).
+Exemples : `src/utils/bilanSrs.ts` + `src/components/PanneauSrs.tsx` (R3) ;
+`src/utils/activiteQuotidienne.ts::bilanJoursSerieux` + pastille
+`StatsView` (R2, version douce) ; pastille passive `stats-erreurs-signal`
+(R4, dès 1 erreur) ; `src/utils/profilEleve.ts` + `ProfilEleveView` (R1,
+objectif de note LOCAL et INERTE pour le coach — verrou d'inertie). Verrous
+mis à jour : `MoiView.test.tsx` (ordre des blocs de حسابي,
+`profile-eleve` inséré avant `moi-raccourcis`), `phaseEleve.test.ts`,
+`etatEleve.test.ts`, `dashboardActions.test.ts`. Chaîne verte finale :
+tsc 0, vitest 343 fichiers / 3944 tests, jest 334 suites / 3880 tests,
+build exit 0.
+
 ## Tests
 - `@testing-library/jest-dom` **n'est pas câblé** → utiliser `.toBeTruthy()`,
   `.toBeNull()`, `.toHaveLength()`. Appeler `cleanup()` explicitement.

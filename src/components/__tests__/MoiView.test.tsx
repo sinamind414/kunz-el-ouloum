@@ -192,7 +192,11 @@ describe('MoiView — المزيد : rubriques déplacées du menu latéral', ()
     const blocs = [...container.querySelectorAll('section[data-testid]')].map((s) =>
       s.getAttribute('data-testid'),
     );
-    expect(blocs).toEqual(['moi-tree', 'moi-nums', 'moi-raccourcis']);
+    // 2026-11-06 (R1, audit coach, GO propriétaire) : « ملفّي » (ProfilEleveView,
+    // panneau du profil élève minimal) rejoint Calculs — il reste un PANNEAU de
+    // l'écran, pas une rubrique ; l'invariant protégé ici est que « المزيد »
+    // termine TOUJOURS la page.
+    expect(blocs).toEqual(['moi-tree', 'moi-nums', 'profil-eleve', 'moi-raccourcis']);
   });
 
   it('affiche exactement une icône par rubrique déplacée, avec son libellé', () => {

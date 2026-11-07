@@ -33,7 +33,7 @@ import { lessonIndexSiChargee } from './data/lessonIndexRuntime';
 // Fusion master 3e970d2 (2026-10-01) : R6 pondère les erreurs par le poids
 // BAC des unités (unitOpenings) ; R8 affiche le compte à rebours BAC.
 import { UNIT_OPENINGS } from './data/unitOpenings';
-import { BAC_EXAM_DATE, bacDaysLeft } from './utils/dashboardActions';
+import { BAC_EXAM_DATE, BAC_EXAM_DATE_IS_PROVISIONAL, ETIQUETTE_DATE_BAC_PROVISOIRE_AR, bacDaysLeft } from './utils/dashboardActions';
 import { jourLocal } from './utils/dayKey';
 // Négation/réfutation : primitives partagées avec le scorer C2 de Tadwin.
 import { tokenAffirme } from './lib/validation/negationAr';
@@ -3042,9 +3042,14 @@ export function getDailyMission(session: BotSession): EngineResult {
   // vide → le compte à rebours affichait « — ». La date (provisoire, voir
   // dashboardActions) est désormais visible dans la mission.
   const bacLeft = bacDaysLeft(new Date(), BAC_EXAM_DATE);
+  // R5 (audit coach 2026-11-06) : la mission assertait « بقي N يوماً » SANS
+  // dire que la date est provisoire — un chiffre précis, apparu précis.
+  // L'étiquette unique (`ETIQUETTE_DATE_BAC_PROVISOIRE_AR`) suit le décompte
+  // partout où il apparaît. La réglée : ce module ne reformule PAS l'étiquette.
+  const etiquetteBac = BAC_EXAM_DATE_IS_PROVISIONAL ? ` (${ETIQUETTE_DATE_BAC_PROVISOIRE_AR})` : '';
   const bacLine =
     bacLeft != null && bacLeft > 0
-      ? `\n⏳ **بقي ${bacLeft} يوماً على البكالوريا.** كل يوم تثبّت فيه نقطة واحدة = نقطة مضمونة.\n`
+      ? `\n⏳ **بقي ${bacLeft} يوماً على البكالوريا${etiquetteBac}.** كل يوم تثبّت فيه نقطة واحدة = نقطة مضمونة.\n`
       : '';
 
   // ── R7 : le guide ne se cache plus derrière une phrase magique. Quand

@@ -65,6 +65,7 @@ import {
 
 import {
   BAC_EXAM_DATE_IS_PROVISIONAL,
+  ETIQUETTE_DATE_BAC_PROVISOIRE_AR,
   bacDaysLeft,
   biggestGapUnit,
   closestAchievementUnit,
@@ -541,7 +542,7 @@ export default function DashboardView({
                       data-testid="bac-date-provisoire"
                       className="mt-1 block text-[9px] font-bold text-amber-700 dark:text-amber-400"
                     >
-                      تاريخ تقديري — بانتظار القرار الرسمي
+                      {ETIQUETTE_DATE_BAC_PROVISOIRE_AR}
                     </span>
                   )}
                 </div>

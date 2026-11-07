@@ -43,6 +43,29 @@ Mesure prise après la fiabilisation du verrou `?idee=` (voir piège `lazy()` ci
 Chiffres antérieurs (2026-11-04 : 3 722 vitest / 3 661 jest) reflétaient une autre
 branche et un autre état du dépôt.
 
+### État de référence (2026-11-07, Windows local, branche `reorganisation-med`, lot 🔴 audit coach — 5 tranches non commitées)
+
+| Suite | Résultat |
+|---|---|
+| tsc | vert (0 erreur) |
+| vitest intégral | **343 fichiers / 3 944 tests : 100 % vert** (exit 0, 272 s) |
+| jest intégral | **334 suites / 3 880 tests : 100 % vert** (exit 0) |
+| build | exit 0 (warnings zod/chunk préexistants) |
+
+Chiffres antérieurs (2026-11-06 : 336/3 897 vitest, 327/3 833 jest) reflétaient
+l'état d'avant le lot 🔴 (recos 1-5 de `audit-coach-capitaine-2026-11-06.md`).
+Détail du lot : exception SIGNÉE 2026-11-06/07 dans `AGENTS.md`.
+
+### Flake de contention connu : `flashcardsExhaustif` — constaté 2026-11-07
+
+En suite intégrale, `flashcardsExhaustif` frôlait/crossait son plafond de 75 s
+par test. Rejoué SEUL hors contention : 40,7 s — plus de moitié du budget est
+de la contention de workers, pas une régression du code. Ne pas durcir le
+plafond ni casser la couverture pour ça ; si le flake revient, d'abord rejouer
+la suite SEULE (règle générale ci-dessus), puis envisager `--pool=vmThreads`
+(la segmentation vitest elle-même suggère 1 295 s cumulées de création de
+jsdom sur la run intégrale).
+
 ### Piège connu : verrou comportemental sur un composant `lazy()` — constaté 2026-11-06
 
 `navigation4Rubiques.test.tsx` › test « ?idee= ouvre directement la banque BAC » :
@@ -113,6 +136,22 @@ BacIdeaTrainer/AITutorView innocentés le 03/11).
   leurs prérequis manquent — ignoré ≠ vert.
 - Un verrou qui asserte sur le rendu d'un composant `lazy()` pré-importe le module
   avant `render()` (cf. piège `lazy()` ci-dessus, constat 2026-11-06).
+- Verrous de rendu (`data-testid`) : poser le testid sur la **valeur** affichée,
+  pas seulement le conteneur — convention `${testid}-valeur` pour la valeur
+  numérique (ex. pastilles `StatsView` du lot 🔴 2026-11-07). Un testid qui
+  survit à un changement de présentation importe peu ; un testid qui fige la
+  valeur protège contre une régression de calcul muette.
+- Tout test temporel ou SM-2 (SRS, séries, phases) stocke ses données **relativement
+  à `Date.now()`** (jamais de dates absolues) : sinon le test se pésera dans le
+  temps ou deviendra rouge selon le fuseau. Constat des verrous `bilanSrs` /
+  `activiteQuotidienne` (lot 🔴 2026-11-07).
+- Pour les composants lourds à rendre (canvas, `StatsView`, vue intégrale), un
+  **verrou source-scan** (`readFileSync` du source + `toContain`) fige le câblage
+  sans monter le composant — modèle `tc2Brancher` / `porteMethode`. Exemples
+  : `statsJoursSerieux.lock.test.ts` (4 tests source-scan) et
+  `statsErreursPassives.lock.test.ts` (fige aussi le seuil ≥ 2 mot pour mot).
+  Toujours le combiner avec au moins un test de rendu jsdom : le scan seul ne
+  prouve pas que le code compile et s'exécute.
 - Les suites `figureZoom*` (travail concurrent) sont exclues de la CI ; ne pas y toucher.
 
 ## CI (`.github/workflows/ci.yml`, push/PR sur `master`, Node 22)

@@ -19,6 +19,7 @@ import {
 } from '../etatEleve';
 import { emettrePrescription, marquerIgnoree } from '../prescriptions';
 import { RELAIS_VIDE } from '../relais';
+import { deduirePhase } from '../phaseEleve';
 import { bacDaysLeft } from '../../utils/dashboardActions';
 import type { DailyGoalConfig } from '../../types';
 
@@ -310,14 +311,37 @@ describe('la phase traverse l’état jusqu’au contexte du capitaine', () => {
     expect(etat.phase.creux).toBe(false);
   });
 
-  it('l’adaptateur transmet `sprint` et le décompte — la date du BAC DÉCIDE', () => {
-    // 20 mai 2027 : la session du BAC (08/06/2027) est à moins de trente jours.
-    const sprint = lireEtatEleve({
+  it('l’adaptateur transmet `sprint` et le décompte — une date CONFIRMÉE décide', () => {
+    // 20 mai 2027 : la session du BAC (08/06/2027 provisoire) est à moins de
+    // trente jours du décompte. R5 (audit coach 2026-11-06, GO propriétaire) :
+    // la date DÉCIDE seulement une fois confirmée — le test simule la
+    // confirmation (`dateProvisoire: false`) et recalcule la phase, puisque
+    // l'adaptateur ne lit JAMAIS l'horizon lui-même, il transmet la décision.
+    const horizonProvisoire = lireEtatEleve({
       daily: daily({ joursActifsTotal: 12, serieDernierJour: '2026-10-14' }),
       maintenant: new Date(2027, 4, 20, 10, 0, 0),
     });
-    expect(sprint.phase.niveau).toBe(5);
-    const ctx = contexteCapitaine(sprint);
+    expect(horizonProvisoire.horizon.dateProvisoire).toBe(true);
+    expect(horizonProvisoire.horizon.joursAvantBac).toBeGreaterThan(0);
+    expect(horizonProvisoire.horizon.joursAvantBac).toBeLessThanOrEqual(30);
+    // La date provisoire, telle que LIVRÉE, ne décide pas : pas de sprint.
+    expect(horizonProvisoire.phase.niveau).not.toBe(5);
+    expect(contexteCapitaine(horizonProvisoire).sprint).toBe(false);
+
+    // Le jour où l'arrêté officiel confirme la date, la CHAÎNE ENTIÈRE bascule :
+    // la phase est redéduite de l'état corrigé, l'adaptateur transmet, le
+    // décompte reste fidèle. Aucun nouveau code ne sera nécessaire côté
+    // adaptateur ni côté module pur.
+    const dateConfirmee: EtatEleve = {
+      ...horizonProvisoire,
+      horizon: { ...horizonProvisoire.horizon, dateProvisoire: false },
+      phase: deduirePhase({
+        ...horizonProvisoire,
+        horizon: { ...horizonProvisoire.horizon, dateProvisoire: false },
+      }) as unknown as EtatEleve['phase'],
+    };
+    expect(dateConfirmee.phase.niveau).toBe(5);
+    const ctx = contexteCapitaine(dateConfirmee);
     expect(ctx.sprint).toBe(true);
     expect(ctx.joursAvantBac).toBeGreaterThan(0);
     expect(ctx.joursAvantBac).toBeLessThanOrEqual(30);
