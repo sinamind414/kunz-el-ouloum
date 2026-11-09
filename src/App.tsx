@@ -122,6 +122,12 @@ const LessonsView = lazy(() => import('./components/LessonsView'));
 // ouvert aussi peu que les autres onglets secondaires → import différé.
 const MoiView = lazy(() => import('./components/MoiView'));
 const LessonTwoView = lazy(() => import('./components/LessonTwoView'));
+// Étage 2 (2026-11-07) : le glossaire du capitaine est chargé À LA DEMANDE,
+// uniquement quand l'élève ouvre la bulle. Il ne doit jamais entrer dans le
+// bundle d'entrée (plafond 700 Ko).
+const GlossaireCapitaine = lazy(() => import('./components/GlossaireCapitaine'));
+// Étage 3 (2026-11-07) : positionnement + express J-7, également à la demande.
+const ParcoursAssimilation = lazy(() => import('./components/ParcoursAssimilation'));
 const TrainingHubView = lazy(() => import('./components/TrainingHubView'));
 // Hub « الاختبارات » — sous-écran du hub S'entraîner (2026-10-12).
 const ExamensHubView = lazy(() => import('./components/ExamensHubView'));
@@ -193,6 +199,14 @@ export default function App() {
     const savedTheme = localStorage.getItem('theme');
     return savedTheme === 'dark';
   });
+
+  // Étage 2 (2026-11-07) : la bulle du capitaine répond elle-même au mot tapé
+  // (glossaire dérivé de `acceptedAnswers`, 0 invention). État placé AVANT tout
+  // retour anticipé (splash / quiz) pour ne pas rejouer le défaut « Rendered
+  // more hooks than during the previous render ».
+  const [glossaireOuvert, setGlossaireOuvert] = useState(false);
+  // Étage 3 : panneau « niveau de l'élève + plan J-7 », même zone sûre.
+  const [parcoursOuvert, setParcoursOuvert] = useState(false);
 
   // Navigation tab state
   // Étape 3 : les paramètres d'un lien profond (?lecon= / ?qcm= / ?examen= /
@@ -294,7 +308,7 @@ export default function App() {
   // Deep-link : examen à ouvrir dans LessonsView ('qcm' = QCM du livre,
   // 'bac' = tests bac complets). Les examens ont quitté « الدروس » le
   // 2026-10-12 pour le hub S'entraîner (src/data/trainingHub.ts, `examens`).
-  const [parcoursMode, setParcoursMode] = useState<'qcm' | 'bac' | null>(deepLinkInitial?.examen ?? null);
+  const [parcoursMode, setParcoursMode] = useState<'qcm' | 'bac' | 'search' | null>(deepLinkInitial?.examen ?? null);
   const ouvrirLeçonDepuisParcours = (key: string, kind: 'html' | 'active', unitId: number) => {
     setParcoursLesson({ key, kind, unitId });
     setParcoursQcm(null);
@@ -1313,6 +1327,7 @@ export default function App() {
                   onOpenQcm={ouvrirQcmDepuisParcours}
                   onOpenAuth={() => setIsAuthOpen(true)}
                   connecte={Boolean(studentName || studentEmail)}
+                  onOuvrirParcours={() => setParcoursOuvert(true)}
                 />
               )}
 
@@ -1589,7 +1604,9 @@ export default function App() {
             disparaît. Quand il n'y a rien à dire, la bulle n'existe pas — il
             reste le bouton, qu'un clic ouvre.
           */}
-          {invitation && (
+          {/* Étage 2 (2026-11-07) : quand la bulle répond (panneau glossaire
+              ouvert), l'invitation se tait — UNE seule voix à l'écran. */}
+          {!glossaireOuvert && invitation && (
             <div
               data-testid="bulle-capitaine"
               dir="rtl"
@@ -1642,7 +1659,9 @@ export default function App() {
             une seule voix s'adresse à l'élève. Rien ne sort de l'appareil — le nom
             est écrit en local, et il s'efface d'un geste.
           */}
-          <RelaisCapitaine question={relais} onFait={rafraichir} />
+          {/* Étage 2 : le relais et l'invitation se taisent pendant la réponse
+              de la bulle (une seule voix, loi 1 — demandé par l'audit). */}
+          {!glossaireOuvert && <RelaisCapitaine question={relais} onFait={rafraichir} />}
           {/*
             LE BOUTON RESTE ROND — c'est le repère (14/10/2026, demande
             explicite). Ce qui change : la boussole cède la place au VISAGE du
@@ -1657,7 +1676,7 @@ export default function App() {
           <button
             type="button"
             data-testid="fab-morchid"
-            onClick={ouvrirChat}
+            onClick={() => setGlossaireOuvert((v) => !v)}
             title={CAPITAINE_IDENTITE_AR}
             aria-label={CAPITAINE_IDENTITE_AR}
             className="flex h-14 w-14 items-center justify-center overflow-hidden rounded-full border-2 border-[#006d37] bg-[#fff9ed] shadow-lg shadow-[#006d37]/30 transition-transform hover:scale-105 active:scale-95 cursor-pointer dark:bg-[#121614]"
@@ -1669,7 +1688,53 @@ export default function App() {
               className="h-full w-full object-cover"
             />
           </button>
+          {/* Étage 2 (2026-11-07) : la réponse s'affiche ICI, DANS le bloc
+              gardé par !epreuveEnCours / !isFocusMode / quiz / défi — pendant
+              une épreuve il est impossible de la monter. Le pont vers le
+              المرشد reste explicite (« تابع مع المرشد » dans le panneau) via
+              ouvrirChat(), la voie canonique de cette branche (modale
+              capitaineOpen) — pas de `setCurrentTab('chat')`, tab sans vue ici. */}
+          {glossaireOuvert && (
+            <Suspense
+              fallback={
+                <div className="mb-2 w-[17rem] rounded-2xl border border-[#006d37]/25 bg-white p-3 text-[11px] font-bold text-[#506072] dark:bg-[#121614] dark:text-gray-300">
+                  …
+                </div>
+              }
+            >
+              <GlossaireCapitaine
+                onFermer={() => setGlossaireOuvert(false)}
+                onOuvrirTuteur={() => {
+                  setGlossaireOuvert(false);
+                  ouvrirChat();
+                }}
+              />
+            </Suspense>
+          )}
         </div>
+      )}
+
+      {/* Étage 3 (2026-11-07) : panneau hors du bloc du FAB, mais gardé par
+          !epreuveEnCours — pendant une épreuve aucune porte vers le plan de
+          révision n'est montée. Les 3 cibles utilisent le mapping OFFICIEL
+          TAB_PAR_ONGLET, aucun onglet inventé. */}
+      {!epreuveEnCours && parcoursOuvert && (
+        <Suspense fallback={null}>
+          <ParcoursAssimilation
+            onFermer={() => setParcoursOuvert(false)}
+            onOuvrirRubrique={(rubrique) => {
+              setParcoursOuvert(false);
+              handleTabChange(TAB_PAR_ONGLET[rubrique]);
+            }}
+            onOuvrirRecherche={() => {
+              // R7 : accueil → panneau → onglet J-7 → recherche OUVERTE.
+              // On réutilise le mode réel de LessonsView, pas une 5ᵉ porte.
+              setParcoursOuvert(false);
+              setParcoursMode('search');
+              handleTabChange('lesson');
+            }}
+          />
+        </Suspense>
       )}
     </div>
   );

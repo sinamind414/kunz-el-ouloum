@@ -1,0 +1,127 @@
+diff --git a/src/utils/navigationHash.ts b/src/utils/navigationHash.ts
+--- a/src/utils/navigationHash.ts
++++ b/src/utils/navigationHash.ts
+@@ -152,6 +152,23 @@
+   window.history.replaceState(null, '', cible);
+ }
+
++/**
++ * Écrit les paramètres d'un raccourci INTERNE (?lecon=, ?qcm=, ?idee=…) sur
++ * la route de l'onglet, SANS empiler d'entrée d'historique (c'est un état de
++ * l'écran, pas une navigation). `remplacerRoutePourTab` les laisse ensuite
++ * intactes tant que la rubrique ne change pas ; un clic explicite sur un onglet
++ * les consomme via `pousserRoutePourTab`.
++ */
++export function ecrireParametresPourTab(tab: OngletApp, query: string): void {
++  if (typeof window === 'undefined') return;
++  const base = hashPourTab(tab);
++  if (!base) return;
++  const cible = query ? `${base}?${query.replace(/^\?/, '')}` : base;
++  if (window.location.hash !== cible) {
++    window.history.replaceState(null, '', cible);
++  }
++}
++
+ /** Vérifiable : chaque onglet d'un sous-écran a bien une route parente. */
+ export function ongletsAyantUneRoute(): OngletApprentissageId[] {
+   return (Object.keys(HASH_PAR_ONGLET) as OngletApprentissageId[]).filter(
+diff --git a/src/utils/deepLinkInterne.ts b/src/utils/deepLinkInterne.ts
+--- a/src/utils/deepLinkInterne.ts
++++ b/src/utils/deepLinkInterne.ts
+@@ -88,6 +88,21 @@
+   return Object.keys(out).length > 0 ? out : null;
+ }
+
++/** Fabrique les paramètres ÉCRITS par les raccourcis internes de l'app.
++    Mêmes noms et mêmes validations que `lireDeepLinkInterne` (aller-retour). */
++export function queryPourLecon(key: string): string {
++  return `lecon=${encodeURIComponent(key)}`;
++}
++export function queryPourQcm(unite: number): string {
++  return `qcm=${unite}`;
++}
++export function queryPourExamen(mode: 'qcm' | 'bac'): string {
++  return `examen=${mode}`;
++}
++export function queryPourIdee(id: string): string {
++  return `idee=${encodeURIComponent(id)}`;
++}
++
+ /** Query d'une URL : le hash est prioritaire (notation PWA), sinon `?` du chemin. */
+ export function queryDeUrl(hash: string, search: string): string {
+   const i = hash.indexOf('?');
+diff --git a/src/utils/deepLinkInterne.lock.test.ts b/src/utils/deepLinkInterne.lock.test.ts
+--- a/src/utils/deepLinkInterne.lock.test.ts
++++ b/src/utils/deepLinkInterne.lock.test.ts
+@@ -5,7 +5,7 @@
+ // d'entrée accepte exactement les 65 ids réels. Aucune donnée lourde n'est
+ // ainsi ajoutée au premier écran (verrou poidsEntree.verrou.test.ts).
+
+-import { describe, expect, it } from 'vitest';
++import { afterEach, describe, expect, it } from 'vitest';
+ import { BAC_IDEAS, INCOMPLETE_SUJETS } from '../data/bacSessionIndex';
+ import { PARCOURS_FLAT } from '../lib/parcours/parcoursPath';
+ import {
+@@ -13,8 +13,21 @@
+   estIdeeBacValide,
+   lireDeepLinkInterne,
+   queryDeUrl,
++  queryPourLecon,
++  queryPourQcm,
++  queryPourExamen,
++  queryPourIdee,
+ } from './deepLinkInterne';
+-import { resoudreRoute } from './navigationHash';
++import {
++  resoudreRoute,
++  ecrireParametresPourTab,
++  remplacerRoutePourTab,
++  pousserRoutePourTab,
++} from './navigationHash';
++
++afterEach(() => {
++  window.history.replaceState(null, '', '/');
++});
+
+ const LECON = PARCOURS_FLAT.find((i) => i.kind === 'lesson' && i.lessonKey)!;
+ const IDEE = BAC_IDEAS[0].id;
+@@ -124,3 +137,39 @@
+     });
+   });
+ });
++
++describe('aller-retour : les raccourcis internes écrivent ce que le lecteur comprend', () => {
++  it('chaque fabrique produit une query lisible par lireDeepLinkInterne', () => {
++    expect(lireDeepLinkInterne(queryPourLecon(LECON.lessonKey!))).toEqual({
++      lecon: {
++        key: LECON.lessonKey,
++        kind: LECON.lessonKind ?? 'html',
++        unitId: LECON.unitId,
++      },
++    });
++    expect(lireDeepLinkInterne(queryPourQcm(UNITES_REELLES[0]))).toEqual({ qcm: UNITES_REELLES[0] });
++    expect(lireDeepLinkInterne(queryPourExamen('bac'))).toEqual({ examen: 'bac' });
++    expect(lireDeepLinkInterne(queryPourIdee(IDEE))).toEqual({ idee: IDEE });
++  });
++
++  it('ecrireParametresPourTab pose le hash sans empiler d’historique', () => {
++    ecrireParametresPourTab('lesson', queryPourLecon(LECON.lessonKey!));
++    expect(window.location.hash).toBe(
++      `#/apprentissage/cours?${queryPourLecon(LECON.lessonKey!)}`,
++    );
++    expect(resoudreRoute('/', window.location.hash)?.tab).toBe('lesson');
++  });
++
++  it('la synchronisation interne GARDE les paramètres, un clic explicite les consomme', () => {
++    ecrireParametresPourTab('lesson', queryPourLecon(LECON.lessonKey!));
++    remplacerRoutePourTab('lesson');
++    expect(window.location.hash).toContain(`lecon=${encodeURIComponent(LECON.lessonKey!)}`);
++    pousserRoutePourTab('reviser');
++    expect(window.location.hash).toBe('#/apprentissage/revision');
++  });
++
++  it('un onglet sans route (المرشد) n’écrit rien', () => {
++    ecrireParametresPourTab('chat', 'lecon=x');
++    expect(window.location.hash).toBe('');
++  });
++});

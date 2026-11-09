@@ -51,6 +51,7 @@ import type { LessonKind } from '../lib/parcours/parcoursPath';
 import { playStreakMilestoneSound } from '../utils/audio';
 // H3 : la série affichée est celle qui est encore vivante (0 si un jour a été manqué).
 import { cumulJoursDepuisDaily, serieAfficheeDepuisDaily } from '../utils/activiteQuotidienne';
+import { LIBELLE_BULLE_SILENCIEUX_AR } from '../lib/invitationCapitaine';
 // Correctif 14/10/2026 : le travail fait en invité n'est PLUS attribué d'office
 // au compte qui se connecte sur le même appareil (téléphone partagé entre
 // frères et sœurs, ou simple oubli de connexion). C'est l'élève qui tranche.
@@ -87,6 +88,8 @@ interface DashboardViewProps {
   onOpenAuth?: () => void;
   /** Vrai quand une session élève existe déjà : la carte disparaît. */
   connecte?: boolean;
+  /** Étage 3 (2026-11-07) : ouvre le panneau « niveau + plan J-7 ». */
+  onOuvrirParcours?: () => void;
 }
 
 export default function DashboardView({
@@ -101,6 +104,7 @@ export default function DashboardView({
   onOpenQcm,
   onOpenAuth,
   connecte = false,
+  onOuvrirParcours,
 }: DashboardViewProps) {
   const [showWeeklyShareModal, setShowWeeklyShareModal] = useState(false);
   // Activités de cet appareil produites AVANT toute connexion, à confirmer.
@@ -495,13 +499,25 @@ export default function DashboardView({
                     question libre a une entrée visible. */}
                 <button type="button" onClick={() => onNavigateToTab?.('chat')} className="flex items-center gap-3 rounded-2xl border border-emerald-200 p-3 text-right dark:border-emerald-900/50">
                   <HelpCircle className="h-5 w-5 shrink-0 text-[#006d37]" />
-                  <span><span className="block text-xs font-black dark:text-white">اسأل القبطان</span><span className="text-[10px] font-bold text-[#506072]">من أول سؤال إلى ليلة البكالوريا</span></span>
+                  <span><span className="block text-xs font-black dark:text-white">{LIBELLE_BULLE_SILENCIEUX_AR}</span><span className="text-[10px] font-bold text-[#506072]">من أول سؤال إلى ليلة البكالوريا</span></span>
                 </button>
                 {/* Renvoi vers le hub, pas vers un outil : l'accueil ne remplace
                     pas la rubrique, il indique où aller. */}
                 <button type="button" onClick={() => onNavigateToTab?.('training')} className="flex items-center gap-3 rounded-2xl border border-emerald-200 p-3 text-right dark:border-emerald-900/50">
                   <Dumbbell className="h-5 w-5 shrink-0 text-[#006d37]" />
                   <span><span className="block text-xs font-black dark:text-white">كل أدوات التدريب</span><span className="text-[10px] font-bold text-[#506072]">ثمانية فضاءات في مكان واحد</span></span>
+                </button>
+                {/* Étage 3 / R1 + R4 : une SEULE porte vers le positionnement
+                    et le plan J-7. Les 25 outils restent rangés derrière les
+                    4 rubriques ; on n'ajoute pas de rubrique. */}
+                <button
+                  type="button"
+                  data-testid="dashboard-ouvrir-parcours"
+                  onClick={() => onOuvrirParcours?.()}
+                  className="flex items-center gap-3 rounded-2xl border border-emerald-200 p-3 text-right dark:border-emerald-900/50 cursor-pointer"
+                >
+                  <RouteIcon className="h-5 w-5 shrink-0 text-[#006d37]" />
+                  <span><span className="block text-xs font-black dark:text-white">خطة تناسب مستواك</span><span className="text-[10px] font-bold text-[#506072]">تحديد المستوى ومراجعة J-7</span></span>
                 </button>
 
                 {/* M5 — FAQ autonome, accessible depuis l'accueil sans toucher

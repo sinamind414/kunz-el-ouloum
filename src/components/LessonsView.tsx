@@ -30,6 +30,8 @@ const QcmLivreView = lazy(() => import('./QcmLivreView'));
 const BacExamView = lazy(() => import('./BacExamView'));
 const OkachaView = lazy(() => import('./OkachaView'));
 const SearchView = lazy(() => import('./SearchView'));
+// R5 (2026-11-07) : micro-leçons + synthèse 3 phrases, à la demande uniquement.
+const MicroLeconsPanel = lazy(() => import('./MicroLeconsPanel'));
 
 function VueEnChargement() {
   return (
@@ -97,7 +99,9 @@ interface LessonsProps {
    *  Les examens vivaient dans l'écran 1 de الدروس : ils mélangeaient
    *  apprentissage et entraînement. Ils sont désormais dans le hub
    *  « التمارين والتدريب » (src/data/trainingHub.ts, entrée `examens`). */
-  initialMode?: 'qcm' | 'bac';
+  /** Étage 3 (2026-11-07 / R7) : 'search' pré-ouvre la recherche plein texte
+   *  déjà existante, sans créer de 5ᵉ rubrique ni de nouveau moteur. */
+  initialMode?: 'qcm' | 'bac' | 'search';
   /** 2026-10-12 — ouverture d'un onglet de l'app depuis une carte de l'écran
    *  principal (ex. « الخرائط الذهنية » → onglet mindmap). Évite de dupliquer
    *  une vue ici : la carte est une PORTE, pas une copie. */
@@ -154,7 +158,7 @@ const unitOfActiveLesson = (key: string): number =>
   INITIAL_UNITS.find((u) => getActiveLessonKeysForUnit(u.id).includes(key))?.id ?? 1;
 
 export default function LessonsView({ onRateCard, initialLesson, initialQcm, initialMode, onOpenTab, onDeepLinkConsumed, onScoreLivre }: LessonsProps) {
-  const [mode, setMode] = useState<LessonMode | 'qcm' | 'bac' | 'okacha' | 'search' | null>(null);
+  const [mode, setMode] = useState<LessonMode | 'qcm' | 'bac' | 'okacha' | 'search' | 'micro' | null>(null);
   const [selectedUnit, setSelectedUnit] = useState<number>(1);
   const [selectedDomain, setSelectedDomain] = useState<number | null>(null);
   const [selectedActiveLesson, setSelectedActiveLesson] = useState<string | null>(null);
@@ -197,7 +201,7 @@ export default function LessonsView({ onRateCard, initialLesson, initialQcm, ini
     activeUnit: number | null;
     activeLesson: string | null;
     passiveLesson: string | null;
-    mode: LessonMode | 'qcm' | 'bac' | 'okacha' | 'search' | null;
+    mode: LessonMode | 'qcm' | 'bac' | 'okacha' | 'search' | 'micro' | null;
   };
   const lessonHistoryRef = useRef<LessonHistoryState>({
     view: 'lessons',
@@ -412,6 +416,17 @@ export default function LessonsView({ onRateCard, initialLesson, initialQcm, ini
     );
   }
 
+  // ----- Écran 0 quinquies : R5 — DROITS D'ENTRÉE des micro-leçons -----
+  // Une seule porte de plus sur l'écran d'accueil, pas une 5ᵉ rubrique :
+  // le panneau est chargé à la demande et reste dans l'onglet « الدروس ».
+  if (mode === 'micro') {
+    return (
+      <Suspense fallback={<VueEnChargement />}>
+        <MicroLeconsPanel onBack={() => setMode(null)} />
+      </Suspense>
+    );
+  }
+
   // ----- Écran 1 : les deux icônes (Leçon Active / Leçon Passive) -----
   if (mode === null) {
     return (
@@ -441,6 +456,31 @@ export default function LessonsView({ onRateCard, initialLesson, initialQcm, ini
             </span>
             <span className="block text-xs font-bold text-gray-500 dark:text-gray-400 leading-relaxed">
               ابحث عن موضوع أو كلمة في ٤٥٠ مقطعاً — وافتح الدرس مباشرةً (يعمل دون اتصال)
+            </span>
+          </span>
+          <ChevronLeft className="w-5 h-5 text-emerald-600 dark:text-emerald-400 shrink-0" />
+        </button>
+
+        {/* R5 (2026-11-07) : micro-leçons + synthèse « 3 phrases ».
+            Une seule porte de plus sur l'écran d'accueil, PAS une 5ᵉ rubrique :
+            le panneau et l'index des leçons ne sont chargés qu'au clic. Aucun
+            chiffre n'est écrit ici (les statistiques réelles viennent du
+            panneau) pour ne pas annoncer une donnée inventée. */}
+        <button
+          type="button"
+          data-testid="lecons-ouvrir-micro"
+          onClick={() => setMode('micro')}
+          className="group w-full flex items-center gap-4 p-4 rounded-2xl border-2 border-emerald-200 dark:border-emerald-900/50 bg-gradient-to-l from-emerald-50 to-white dark:from-emerald-950/30 dark:to-[#161c18] hover:border-emerald-500 hover:shadow-lg transition-all text-right cursor-pointer"
+        >
+          <span className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-[#006d37] text-white shadow-md group-hover:scale-105 transition-transform shrink-0">
+            <BookMarked className="w-6 h-6" />
+          </span>
+          <span className="flex-1 min-w-0">
+            <span className="block text-base font-black text-gray-800 dark:text-gray-100">
+              📚 دروس مصغّرة وخلاصة في 3 جمل
+            </span>
+            <span className="block text-xs font-bold text-gray-500 dark:text-gray-400 leading-relaxed">
+              مقاطع قصيرة مقتبسة حرفياً من الدرس، مع خلاصة مُثبتة ومدة مُصرّح بها فقط عند وجودها
             </span>
           </span>
           <ChevronLeft className="w-5 h-5 text-emerald-600 dark:text-emerald-400 shrink-0" />

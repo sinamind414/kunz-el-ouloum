@@ -1,4 +1,4 @@
-import { useState, useMemo, useRef } from 'react';
+import { useState, useMemo, useRef, lazy, Suspense } from 'react';
 import { useCompteARebours } from '../hooks/useWallClock';
 import { motion, AnimatePresence } from 'motion/react';
 import { X, Timer, CheckCircle2, AlertCircle, ArrowLeft, ArrowRight, RotateCcw, Award, Check, BookOpen, GraduationCap, AlertOctagon, HelpCircle, Eye, EyeOff } from 'lucide-react';
@@ -26,6 +26,10 @@ import { uniteOuverte } from '../utils/acces';
 // s'ouvre sur ce qui est dû. La règle (SM-2 borné, sans intervalle inventé)
 // vit ENTIRÈREMENT dans lib/memoireQuestions.ts — ici, on ne fait qu'appeler.
 import { enregistrerReponseQcm, ordonnerParDues } from '../lib/memoireQuestions';
+// R9 (2026-11-07) : mode adaptatif OPT-IN, chargé à la demande. Un quiz
+// d'unité ne contient qu'UN palier (mesuré : U1-5=1, U6-8=2, U9-11=3) ;
+// piloter les 3 niveaux exige le corpus inter-unités, chargé en différé.
+const QuizAdaptatif = lazy(() => import('./QuizAdaptatif'));
 
 interface QuizViewProps {
   unitId: number;
@@ -49,6 +53,8 @@ export default function QuizView({ unitId, unitTitle, questions, onClose, onQuiz
   const [quizFinished, setQuizFinished] = useState(false);
   const [score, setScore] = useState(0);
   const [isFocusMode, setIsFocusMode] = useState<boolean>(false);
+  // R9 : désactivée par défaut — aucune modification du quiz d'unité existant.
+  const [adaptatif, setAdaptatif] = useState(false);
   // État des questions à trou (kind === 'fillBlank') — S-C4.
   const [fbInput, setFbInput] = useState<{ [key: number]: string }>({});
   const [fbResult, setFbResult] = useState<{ [key: number]: boolean }>({});
@@ -100,7 +106,7 @@ export default function QuizView({ unitId, unitTitle, questions, onClose, onQuiz
 
   const timeLeft = useCompteARebours({
     dureeSec: DUREE_QUIZ_SEC + essai * 0, // la dépendance utile est `actif`
-    actif: !quizFinished,
+    actif: !quizFinished && !adaptatif,
     rafraichissementMs: 500,
   });
 
@@ -222,6 +228,25 @@ export default function QuizView({ unitId, unitTitle, questions, onClose, onQuiz
     }
   };
 
+  // R9 : MODE ADAPTATIF — rendu après TOUS les hooks, sans déplacer d'état.
+  // Le compte à rebours est suspendu (actif=false) et le quiz d'unité reprend
+  // intact au retour. Aucune seconde voix, aucune notification.
+  if (adaptatif) {
+    return (
+      <div dir="rtl" className="min-h-screen bg-[#f8f9fa] dark:bg-[#0c0f0d]">
+        <Suspense
+          fallback={
+            <p className="p-6 text-center text-[11px] font-bold text-[#506072]">
+              جارٍ تحضير التدريب المتكيّف…
+            </p>
+          }
+        >
+          <QuizAdaptatif onBack={() => setAdaptatif(false)} questionsInitiales={questions} />
+        </Suspense>
+      </div>
+    );
+  }
+
   return (
     // `dir` explicite (sprint 48) : l'écran héritait du `dir="rtl"` de la page,
     // ce qui suffit aujourd'hui mais casse dès qu'il est rendu dans un
@@ -249,6 +274,17 @@ export default function QuizView({ unitId, unitTitle, questions, onClose, onQuiz
           </div>
 
           <div className="flex items-center gap-2">
+            {/* R9 : porte OPT-IN vers le quiz adaptatif (3 paliers inter-unités). */}
+            <button
+              type="button"
+              data-testid="quiz-ouvrir-adaptatif"
+              onClick={() => setAdaptatif(true)}
+              className="flex cursor-pointer items-center gap-1 rounded-full bg-[#f3f4f5] px-3 py-2 text-[10px] font-black text-[#006d37] hover:bg-[#fed65b]/20 dark:bg-zinc-800 dark:text-[#2ecc71]"
+              title="تدريب متكيّف حسب مستواك"
+            >
+              <GraduationCap className="w-4 h-4" />
+              <span>تدريب متكيّف</span>
+            </button>
             {/* Focus Mode button */}
             <button
               onClick={() => setIsFocusMode(true)}

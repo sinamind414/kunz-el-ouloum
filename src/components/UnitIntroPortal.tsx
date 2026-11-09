@@ -14,6 +14,9 @@
 import { AlertTriangle, ArrowLeft, Compass, Flag, ListOrdered, Target, X } from 'lucide-react';
 import { motion } from 'motion/react';
 import { openingForUnit } from '../data/unitOpenings';
+// Étage 3 / R2 : priorité CALCULÉE sur les 65 idées BAC, pour TOUTE unité.
+// Les 🔴/🟡/🟢 des schémas sont des légendes d'image, pas des priorités.
+import { phrasePrioriteAr, prioritePourUnite } from '../data/prioritesBac';
 
 interface UnitIntroPortalProps {
   unitId: number;
@@ -29,6 +32,8 @@ export default function UnitIntroPortal({
   onClose,
 }: UnitIntroPortalProps) {
   const opening = openingForUnit(unitId);
+  // `null` pour une unité inexistante : aucune étiquette inventée.
+  const priorite = prioritePourUnite(unitId);
 
   return (
     <div
@@ -52,6 +57,14 @@ export default function UnitIntroPortal({
       </header>
 
       <main className="flex-1 overflow-y-auto pb-28">
+        {priorite && (
+          <p
+            data-testid="portal-priorite"
+            className="mx-auto mt-3 w-[calc(100%-2rem)] max-w-2xl rounded-2xl bg-[#e5f6ed] px-3 py-2 text-center text-[11px] font-bold text-[#006d37] dark:bg-[#0f2a1c] dark:text-emerald-300"
+          >
+            {phrasePrioriteAr(priorite)}
+          </p>
+        )}
         <motion.div
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
