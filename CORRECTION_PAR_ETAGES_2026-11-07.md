@@ -243,3 +243,9 @@ Branche active inchangée · historique réécrit puis publications en fast-forw
 **[CONSTAT]** Relecture : le bilan final disait « 5 fichiers en attente » alors qu'il y en avait **6**. **[INTERPRÉTATION]** Correction apportée dans un **second commit local distinct** (documentation seule), après une nouvelle chaîne complète : aucun amendement du commit `078d39f`, donc aucune réécriture, même locale. Les deux commits restent **non publiés** et forment un fast-forward propre le jour d'une publication.
 
 **[INTERPRÉTATION]** Un mot nommé **« push R9 »** reste nécessaire pour publier. Le **« classement entre amis »** reste **non fait** et **« Non vérifiable »** : aucun de ces deux commits ne le simule.
+
+---
+
+## Rectification — 9/11/2026 (apport de la génération 2 du patch arena)
+
+**[CONSTAT]** La formulation de R9 dans la section « Classement entre amis » disait que `server.ts` n'expose aucun backend ni compte élève. Mesure affinée : `server.ts` expose **bien** un backend — authentification (`/api/auth/*`), élève (`/api/student/*`), professeur (`/api/teacher/*`) et `/api/health`. Ce qui manque est précisément **un endpoint de classement**, **une relation « ami »** et **un score comparatif entre élèves**. **[INTERPRÉTATION]** La formulation initiale était trop large ; elle est corrigée ici. Fabriquer un classement obligerait à inventer les relations entre pairs, les scores et leur persistance : interdit par la règle « zéro contenu inventé ». `server.ts` est **protégé** et n'a pas été touché. **[CONSTAT]** Ce manque reste donc **ouvert**, signalé et non déguisé ; R9 doit être lu comme **partiel**.
