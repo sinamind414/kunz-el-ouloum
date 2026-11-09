@@ -133,6 +133,38 @@ mis à jour : `MoiView.test.tsx` (ordre des blocs de حسابي,
 tsc 0, vitest 343 fichiers / 3944 tests, jest 334 suites / 3880 tests,
 build exit 0.
 
+**Exception SIGNÉE (2026-11-09, GO propriétaire en session — patch arena,
+2 tranches A + C, commit `3abd246`)** : intégration du patch workspace-arena
+« Correction par étages » (base `02666c2`, 129 commits avant notre HEAD) en
+**tranche A** (additions pures : 22 fichiers — 14 code des 4 blocs glossaire
+capitaine / étage 3 R1-R2-R4-R7 / micro-leçons R5 / quiz adaptatif R9 + 8 docs
+racine) et **tranche C** (câblage minimal, GO explicite donné en session) :
+`src/App.tsx` +70/−3 (lazy `GlossaireCapitaine` + `ParcoursAssimilation`,
+états `glossaireOuvert`/`parcoursOuvert` dans la zone sûre des hooks, FAB
+`fab-morchid` bascule le panneau, silences un-seuls-voix invitation/relais,
+panneau parcours gardé `!epreuveEnCours`, `parcoursMode` +`'search'`) ;
+`LessonsView.tsx` +46 (porte `lecons-ouvrir-micro` ×1, lazy `MicroLeconsPanel`,
+`initialMode?: 'qcm' | 'bac' | 'search'`) ; `QuizView.tsx` +40 (lazy
+`QuizAdaptatif` OPT-IN, compte à rebours suspendu, porte
+`quiz-ouvrir-adaptatif`) ; `DashboardView.tsx` +18 (`LIBELLE_BULLE_SILENCIEUX_AR`
+importé à la source, porte `dashboard-ouvrir-parcours`) ; `UnitIntroPortal.tsx`
++13 (étiquette priorité calculée sur les 65 idées BAC). **Portes interdites
+honorées** : navigation 4 rubriques / 24 identifiants d'écran INTACTES,
+`ETIQUETTE_DATE_BAC_PROVISOIRE_AR`, entrée FAQ M5 et types `blanc1..4`
+d'`examLog` préservés (portage fichier-entier refusé — le patch ferait
+régresser le lot rouge signé 2026-11-06 ; arbre cible reconstruit en scratch
+worktree `65a9301` pour analyse seulement). Recalibrages de verrous SUR NOS
+mesures `npx tsx` du 2026-11-08 (le patch était calé sur le corpus arena 562
+chunks) : 578 chunks / 76 leçons / 221 micros / 54 ancre + 22 extrait /
+0 absente / 25 durées déclarées (51 sans) / max 9 min ; 2 attentes de câblage
+rebranchées sur `ouvrirChat()` — aucune vue n'est liée à
+`currentTab === 'chat'` dans CETTE branche (mesuré), le tuteur s'ouvre par la
+modale `capitaineOpen`. Chaîne verte finale : tsc 0, vitest 352 fichiers /
+4030 tests (verrou zombie `integriteVues` rouge → vert : les 4 composants lazy
+sont câblés), jest 343 suites / 3966 tests, boussole 138/0, build exit 0,
+entrée **553,5 Ko < 700 Ko**, **0** chunk `lhx_`, 4 blocs lazy 4,8-10 Ko hors
+entrée. Pas de push (règle susmentionnée).
+
 ## Tests
 - `@testing-library/jest-dom` **n'est pas câblé** → utiliser `.toBeTruthy()`,
   `.toBeNull()`, `.toHaveLength()`. Appeler `cleanup()` explicitement.
