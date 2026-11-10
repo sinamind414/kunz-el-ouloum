@@ -145,6 +145,34 @@ Résultat : `npm run lint:eslint` → **0 erreur, 0 warning**.
 ESLint — la CI n'a jamais été menacée. C'est le garde-fou **local** qui était
 cassé (et donc la règle « 0/0 » invérifiable en pratique).
 
+## Piège connu : la Web Speech API n'existe PAS dans la WebView Android — 2026-11-10
+
+`Dictaphone` (le micro qui écrit) s'appuyait sur `webkitSpeechRecognition` —
+**absente de la WebView Android** : sur l'APK, le bouton micro était
+**désactivé** (message « الإملاء الصوتي غير مدعوم في هذا المتصفح »). De plus,
+sur Chrome, cette API envoie l'audio aux serveurs de Google → contredit la
+promesse « en mode invité, rien ne quitte votre téléphone »
+(`src/data/politiqueConfidentialite.ts` §3).
+
+**Solution retenue** : un plugin natif
+`android/app/src/main/java/com/sinamind414/kunzelouloum/speech/SpeechToTextPlugin.java`
+qui utilise `SpeechRecognizer.createOnDeviceSpeechRecognizer` (API 31+,
+Android 12) → **reconnaissance SUR APPAREIL, hors ligne**. Le plugin ne
+bascule JAMAIS sur le moteur réseau (`createSpeechRecognizer` est interdit
+par le verrou `cablageMicrophoneApk.lock.test.ts`).
+
+**Conséquence assumée** : sans pack linguistique arabe installé, ou sous
+Android 11 et antérieurs, la dictée n'est pas disponible — le bouton reste
+désactivé avec un message honnête et l'élève écrit. Pas de faux silence, pas
+d'audio envoyé à un tiers.
+
+À savoir pour le web : `@capacitor/core` est importé **dynamiquement** dans
+`src/lib/microphone.ts` (il ne doit pas entrer dans le bundle web) ; le
+plugin est enregistré dans `MainActivity.onCreate` **avant**
+`super.onCreate` (exigence Capacitor). En Capacitor 8, `PermissionState` est
+une **enum** (`GRANTED`/`DENIED`/`PROMPT`) : l'ancien
+`getPermissionState(alias).hasPermission()` ne compile plus.
+
 ## Piège connu : edge-to-edge Android 15+ (APK) — zone sûre — constaté 2026-11-10
 
 `android/variables.gradle` → `targetSdkVersion = 36` : **Android 15 impose

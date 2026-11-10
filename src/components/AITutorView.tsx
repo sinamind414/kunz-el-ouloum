@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { Send, Sparkles, AlertCircle, Trash2, BrainCircuit, Target, Stethoscope, Swords, ClipboardList, Globe2, BookOpen } from 'lucide-react';
 import { ChatMessage } from '../types';
 import { MORCHID_LOGO_URL } from '../data/brandAssets';
+import Dictaphone from './Dictaphone';
 
 import {
   processStudentInput,
@@ -601,6 +602,16 @@ export default function AITutorView({ onXPGagné, questionInitiale, onQuestionIn
             placeholder="اكتب سؤالك للقبطان في علوم الطبيعة والحياة..."
             aria-label="حقل السؤال إلى القبطان"
             className="flex-1 px-4 h-12 rounded-xl bg-[#f3f4f5] border border-transparent focus:border-[#006d37] focus:bg-[#ffffff] text-sm focus:outline-none transition-all placeholder:text-[#506072]/60"
+            disabled={isLoading}
+          />
+          {/* Dictée vocale (2026-11-10, demande du propriétaire) : l'élève
+              parle OU il écrit. Sur l'APK, la dictée passe par le moteur
+              NATIF sur appareil (hors ligne) ; sur le web, par la Web Speech
+              API du navigateur. Le texte dicté est ajouté à la question
+              SANS l'envoyer : l'élève le relit et valide. */}
+          <Dictaphone
+            zone="tutor-chat"
+            onTranscript={(texte) => setInput((v) => (v.trim() ? `${v.trim()} ${texte}` : texte))}
             disabled={isLoading}
           />
           <button
