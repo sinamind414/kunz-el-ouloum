@@ -17,7 +17,7 @@
 //   · `fileRappels` filtre les unités fermées (cohérence H1) et trie par
 //     échéance croissante — la plus en retard passe en premier.
 
-import { describe, expect, it, vi, afterEach } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import {
   MINUTES_RAPPEL,
   RAPPELS_PAR_JOUR,

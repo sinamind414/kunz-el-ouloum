@@ -936,6 +936,26 @@ export default function App() {
     // §6.2 : la bulle se recalcule après un travail réel mesuré.
     setSignalBulle((s) => s + 1);
   };
+  /* RÈGLE DES HOOKS (correction 2026-11-10) : cet effet était déclaré APRÈS
+     les retours anticipés (quiz, portail d'unité, épreuve) — React comparait
+     alors deux rendus successifs avec un nombre de hooks différent
+     (« Rendered fewer/more hooks than expected ») dès que l'élève ouvrait puis
+     fermait un quiz. Il est remonté AVANT le premier retour anticipé :
+     `navigateToTab` (l. 256) et `currentTab` sont déjà initialisés à ce
+     point, le comportement est inchangé (écouteur du même événement, mêmes
+     dépendances). */
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const onWebTabChange = (ev: Event) => {
+      const detail = (ev as CustomEvent<{ tab: string }>).detail;
+      if (detail?.tab && detail.tab !== currentTab) {
+        navigateToTab(detail.tab as typeof currentTab);
+      }
+    };
+    window.addEventListener('kunz-web-tab-change', onWebTabChange as EventListener);
+    return () => window.removeEventListener('kunz-web-tab-change', onWebTabChange as EventListener);
+  }, [currentTab]);
+
   if (activeCombatChallenge) {
     // Épreuve officielle bac2025 : la boucle élève de bout en bout (Pierre 2).
     if (activeCombatChallenge.id === 'bac-2025-sujets') {
@@ -990,17 +1010,6 @@ export default function App() {
   }
 
   // Render Splash Landing Screen
-  useEffect(() => {
-    if (typeof window === 'undefined') return;
-    const onWebTabChange = (ev: Event) => {
-      const detail = (ev as CustomEvent<{ tab: string }>).detail;
-      if (detail?.tab && detail.tab !== currentTab) {
-        navigateToTab(detail.tab as typeof currentTab);
-      }
-    };
-    window.addEventListener('kunz-web-tab-change', onWebTabChange as EventListener);
-    return () => window.removeEventListener('kunz-web-tab-change', onWebTabChange as EventListener);
-  }, [currentTab]);
   if (currentTab === 'splash') {
     return <SplashView onStart={() => navigateToTab('home')} />;
   }

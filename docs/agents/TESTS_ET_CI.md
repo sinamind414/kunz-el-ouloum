@@ -125,6 +125,26 @@ Méthode inchangée : un échec isolé se rejoue SEUL avant tout diagnostic ; et
 vitest + jest ne doivent jamais tourner en parallèle (contention CPU, cf.
 BacIdeaTrainer/AITutorView innocentés le 03/11).
 
+## Piège connu : le garde-fou ESLint local explosait après tout build APK — constaté 2026-11-10
+
+`npm run lint:eslint` (règle du dépôt : **0 erreur ET 0 warning**) sortait
+**11 575 erreurs + 730 warnings** après un `npx cap sync` / build Gradle, alors
+que le code source n'en comptait que 20. Deux familles d'artefacts n'étaient
+pas ignorées :
+
+- `android/app/src/main/assets/public/**` → **copie verbatim de `dist/`**
+  (l'ignore `public/**` ne couvre pas `android/…`) et
+  `android/app/build/intermediates/**` (sorties Gradle) ;
+- `Rebrique-sujet-BAC-main/**` → projet **vendorisé tiers** (489 fichiers
+  suivis, pdfjs minifié) : ce n'est pas notre code.
+
+Ces trois chemins sont désormais dans les `ignores` d'`eslint.config.mjs`.
+Résultat : `npm run lint:eslint` → **0 erreur, 0 warning**.
+
+À noter : **le job `lint` de la CI n'exécute que `tsc`** (`npm run lint`), pas
+ESLint — la CI n'a jamais été menacée. C'est le garde-fou **local** qui était
+cassé (et donc la règle « 0/0 » invérifiable en pratique).
+
 ## Piège connu : edge-to-edge Android 15+ (APK) — zone sûre — constaté 2026-11-10
 
 `android/variables.gradle` → `targetSdkVersion = 36` : **Android 15 impose

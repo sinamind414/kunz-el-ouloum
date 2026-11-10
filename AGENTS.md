@@ -195,6 +195,33 @@ bouton Capitaine bas 724 px (≤ 820), bloc de commandes du zoom
 (`pointer: coarse` détecté). Chaîne verte : tsc 0, vitest 356 fichiers /
 4052 tests, jest 346 suites / 3985 tests, build exit 0.
 
+**Exception SIGNÉE (2026-11-10, GO propriétaire en session — garde-fou ESLint
+local + règle des hooks)** : la règle « ESLint 0 erreur ET 0 warning » était
+**invérifiable en local** : `npm run lint:eslint` sortait 11 575 erreurs +
+730 warnings, dont **19 sur 20** venaient d'artefacts non ignorés — la copie
+Capacitor de `dist/` (`android/app/src/main/assets/public/**`, hors
+`public/**`) + les sorties Gradle (`android/app/build/**`) = 10 670 erreurs, et
+le projet vendorisé tiers `Rebrique-sujet-BAC-main/**` (489 fichiers suivis)
+= 1 635. Ces 3 chemins sont ajoutés aux `ignores` d'`eslint.config.mjs`
+(artefacts + vendor, pas du code source). **Le job `lint` de la CI n'exécute
+que `tsc`** : la CI n'était pas menacée, c'est le garde-fou local qui était
+cassé. Restant source, corrigé un par un : `src/App.tsx` (**PROTÉGÉ —
+exception signée ici**) : le `useEffect` du listener `kunz-web-tab-change` était
+déclaré **APRÈS** les retours anticipés (quiz / portail d'unité / épreuve) →
+le nombre de hooks variait d'un rendu à l'autre (violation des règles des
+hooks, `react-hooks/rules-of-hooks` en erreur) ; il est **remonté avant le
+premier retour anticipé** (`navigateToTab` est défini l. 256, donc déjà
+initialisé → comportement inchangé) ; `src/utils/acces.ts:192`
+(`{}` → `Record<string, never>`, constat n° 4 de `CONSTATS_OUVERTS.md`) ;
+`scripts/build_spaced_recall_auto.ts:121` (expression inutilisée → if
+explicite) ; 14 imports/variables inutilisés supprimés (`FAQView` × 8,
+`TadwinView`, 4 tests) ; `src/components/PanneauSrs.tsx` (2 directives
+`exhaustive-deps` documentées pour la dépendance `srsVersion` volontairement
+« inutile » + 1 directive devenue inutile supprimée) ; 1 test renforcé
+(`tirageRappelTrois` : le tirage du jour précédent est maintenant asserts).
+Preuve : `npm run lint:eslint` → **0 erreur, 0 warning** (sortie vide),
+`npm run lint` (tsc) → 0 erreur.
+
 ## Tests
 - `@testing-library/jest-dom` **n'est pas câblé** → utiliser `.toBeTruthy()`,
   `.toBeNull()`, `.toHaveLength()`. Appeler `cleanup()` explicitement.

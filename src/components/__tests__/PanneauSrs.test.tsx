@@ -10,7 +10,7 @@
 // de textContent. `cleanup()` est appelé explicitement.
 
 import { afterEach, describe, expect, it } from 'vitest';
-import { cleanup, render, screen } from '@testing-library/react';
+import { cleanup, render } from '@testing-library/react';
 import PanneauSrs from '../PanneauSrs';
 import type { Flashcard } from '../../types';
 

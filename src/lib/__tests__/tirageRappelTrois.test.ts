@@ -116,6 +116,7 @@ describe('tirage du rappel — ordre pédagogique', () => {
   it('un jour différent peut décaler le tirage, sans jamais sortir du catalogue', () => {
     const a = tirageRappelTrois(CATALOGUE, signal({ jour: '2026-11-04' }));
     const b = tirageRappelTrois(CATALOGUE, signal({ jour: '2026-11-05' }));
+    expect(a).toHaveLength(3);
     expect(b).toHaveLength(3);
     expect(new Set(b.map((x) => x.id)).size).toBe(3);
     expect(b.every((x) => CATALOGUE.some((c) => c.id === x.id))).toBeTruthy();

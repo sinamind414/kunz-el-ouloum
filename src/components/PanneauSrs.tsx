@@ -59,9 +59,15 @@ interface PanneauSrsProps {
 }
 
 export default function PanneauSrs({ cards, uniteId, uniteTitre, srsVersion }: PanneauSrsProps) {
+  /* `srsVersion` est une dépendance DÉLIBÉRÉMENT « inutile » pour la règle
+     exhaustive-deps : chaque notation dans la vue l'incrémente, ce qui
+     rejoue ces deux memo sans re-lire le stockage à chaque rendu. Sans elle,
+     le panneau afficherait un bilan périmé jusqu'au rechargement. */
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const etats = useMemo(() => lireTousLesEtatsSrs(), [srsVersion]);
   // L'horloge est lue UNE fois par version de stockage, pas à chaque rendu :
   // un re-render passager ne doit pas déplacer une « échéance d'un jour ».
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const maintenant = useMemo(() => Date.now(), [srsVersion]);
 
   const global = useMemo(
@@ -92,7 +98,6 @@ export default function PanneauSrs({ cards, uniteId, uniteTitre, srsVersion }: P
       titre: uniteTitre ?? '',
       bilan: bilanSrsDesCartes(cartesUnite, etats, maintenant),
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [uniteId, uniteTitre, cartesUniques, etats, maintenant]);
 
   const prochaines = useMemo(

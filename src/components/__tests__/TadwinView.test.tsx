@@ -262,7 +262,7 @@ describe('TadwinView — StatutRappel', () => {
       expect(screen.queryByTestId(`tadwin-rappel-reveler-${fiche.id}`)).toBeNull(),
     );
 
-    const { fichesDuees, desactiverRappel } = await import('../../lib/tadwin/tadwinEngine');
+    const { fichesDuees } = await import('../../lib/tadwin/tadwinEngine');
     const { lireFiches } = await import('../../lib/tadwin/tadwinEngine');
     const updated = lireFiches().find((f) => f.id === fiche.id);
     expect(updated!.statutRappel).toBe('desactive');

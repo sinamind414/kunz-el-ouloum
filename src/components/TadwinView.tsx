@@ -46,7 +46,6 @@ import {
   type FicheTadwin,
   type ResultatTadwin,
   type EvenementPalier,
-  type StatutRappel,
 } from '../lib/tadwin/tadwinEngine';
 import type { ChoixCles } from '../lib/validation/couvCle';
 

@@ -12,14 +12,6 @@ import {
   ChevronDown,
   ChevronUp,
   HelpCircle,
-  Phone,
-  Clock,
-  ShieldCheck,
-  WifiOff,
-  Bell,
-  CreditCard,
-  GraduationCap,
-  Lock,
 } from 'lucide-react';
 
 interface FAQItem {

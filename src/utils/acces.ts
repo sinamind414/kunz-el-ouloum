@@ -189,7 +189,7 @@ export async function rafraichirAcces(): Promise<EtatAccesClient> {
       ecrireCache({ statut: 'invite', expireLe: null });
       return { statut: 'invite', expireLe: null };
     }
-    const data = (await res.json()) as Partial<ReponseEntitlement> | {};
+    const data = (await res.json()) as Partial<ReponseEntitlement> | Record<string, never>;
     if (!res.ok || !('statut' in data)) throw new Error('request_failed');
     const etat: EtatAccesClient = {
       statut: (data as ReponseEntitlement).statut,

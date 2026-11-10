@@ -3,13 +3,17 @@
 > Lu depuis `AGENTS.md`. Problèmes **réels** découverts pendant la réorganisation,
 > hors de son périmètre. Classés par gravité. Supprimer une ligne quand elle est réglée,
 > avec la preuve dans le commit.
+>
+> **Constat n° 4 (ESLint) RÉSOLU le 2026-11-10** — voir le bloc « Réponses » en bas :
+> la règle « 0 erreur ET 0 warning » est désormais réellement vérifiable en local
+> (le garde-fou était explosé : 11 575 erreurs issues d'artefacts de build et d'un
+> projet vendorisé, tous deux désormais ignorés).
 
 | # | Gravité | Constat | Preuve | Qui décide |
 |---|---|---|---|---|
 | 1 | haute | Deux livres sous droits (L1 `الكتاب_المصحح_v1.0.md`, L2 `504601676-…txt`) sont versionnés dans un dépôt **public**, contre la règle de `docs/sources/README.md` | `git ls-files uploads_externes/` ; dépôt `private: false` | propriétaire (retrait = réécriture d'historique) |
 | 2 | haute | CI `master` rouge (vitest, jest, `npm test`) sur les runs 259-261, alors que les commits annoncent des suites vertes | `server/store.pg.dates.test.ts` dépend du fuseau (passe en `TZ=Africa/Algiers`, échoue en UTC) — voir `TESTS_ET_CI.md` | correction du test |
 | 3 | moyenne | `README.md` annonce « 100 % gratuite » alors que le freemium (essai 30 j, abonnement 1200 DA, codes) est en production | `src/server/facturation.ts`, `src/utils/acces.ts` | propriétaire (texte public) |
-| 4 | moyenne | ESLint : 1 erreur (`no-empty-object-type`) alors que la règle du dépôt est « 0 erreur » | `src/utils/acces.ts:192` | correction simple |
 | 5 | basse | En-tête de `src/server/facturation.ts` : « Unité 1 gratuite » ; code client : unités 1-5 (`UNITES_GRATUITES`) | décision du 25/10/2026 | mise à jour du commentaire |
 | 6 | basse | Générateurs non exécutables depuis le dépôt : `book_to_json.py` (chemins Windows), `build_okacha.py` (source absente), `build_bac_exam.py` (sortie `bacExam.ts` absente) | `DONNEES_GENEREES.md` | — |
 | 7 | basse | Chiffres de tests du `README.md` (18/10) périmés : 314 fichiers / 3 675 tests vitest aujourd'hui | `TESTS_ET_CI.md` | mise à jour du README |
@@ -94,3 +98,41 @@ Mesure locale : 30 fichiers / 487 tests ciblés et typecheck verts. L'ICM et C2
 ne sont pas une note de BAC ; les six groupes 2025 conservent la réserve humaine.
 Pas de précision indépendante sur copies, de facturation ou de suivi enseignant
 authentifié validés. Aucun de ces constats n'est corrigé par les documents.
+
+## Réponses du 2026-11-10 — constat n° 4 (ESLint) : RÉSOLU
+
+**Constat** : « ESLint : 1 erreur (`no-empty-object-type`) alors que la règle du
+dépôt est « 0 erreur ET 0 warning ». » → `src/utils/acces.ts:192`.
+
+**Ce que la vérification a réellement donné** (mesure du 2026-11-10, avant
+correction) : `npm run lint:eslint` sortait **11 575 erreurs + 730 warnings** —
+et **19 des 20** restants venaient du *code source*. Trois causes distinctes :
+
+| Cause | Volume | Traitement |
+|---|---|---|
+| Artefacts de build Capacitor (`android/app/src/main/assets/public/**` = copie de `dist/`, et `android/app/build/intermediates/**`) — non suivis par git, jamais dans `public/**` (seul dossier ignoré) | 10 670 | `ignores` ESLint ajoutés (générés, pas du source) |
+| Projet vendorisé tiers `Rebrique-sujet-BAC-main/**` (489 fichiers suivis, pdfjs minifié) | 1 635 | `ignores` ESLint ajoutés (ce n'est pas notre code) |
+| Code source : 3 erreurs + 17 warnings | 20 | corrigés un par un (voir ci-dessous) |
+
+**Corrections source** :
+- `src/App.tsx` : `useEffect` du listener `kunz-web-tab-change` **remonté avant
+  les retours anticipés** (quiz / portail d'unité / épreuve) — il était déclaré
+  APRÈS, donc le nombre de hooks variait d'un rendu à l'autre (violation des
+  règles des hooks, `react-hooks/rules-of-hooks` en erreur).
+- `src/utils/acces.ts:192` : `{}` → `Record<string, never>` (le constat n° 4).
+- `scripts/build_spaced_recall_auto.ts:121` : expression inutilisée
+  (`record[id] = record[id] ?? [], (...)` en virgule) → réécrite en if explicite.
+- 14 imports/variables inutilisés supprimés (`FAQView` × 8, `TadwinView`,
+  4 tests) et 1 test renforcé (`tirageRappelTrois` : le tirage du jour précédent
+  est maintenant asserts).
+- `src/components/PanneauSrs.tsx` : 2 directives `exhaustive-deps` documentées
+  (dépendance `srsVersion` volontairement « inutile » = rechargement du bilan)
+  + 1 directive devenue inutile supprimée.
+
+**Preuve** : `npm run lint:eslint` → **0 erreur, 0 warning** (sortie vide).
+`npm run lint` (tsc) → 0 erreur. Suite complète vitest + jest vertes.
+Le job `lint` de la CI n'exécute que `tsc` (le job `build-et-postbuild` fait
+`npm run lint` puis `npm run build`) : la CI n'était pas menacée, mais le
+garde-fou **local** était inutilisable après tout build APK — c'est ce qui
+était réellement cassé.
+

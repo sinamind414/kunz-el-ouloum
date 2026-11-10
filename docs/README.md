@@ -70,11 +70,13 @@ Le périmètre MVP définitif reste à décider à partir des audits.
 `BILAN_AUDIT_MODULES_VS_MASTER_2026-10-01.md`, `BILAN_VERITE_AUDITS_2026-10-01.md`,
 `FUSION_MASTER_3e970d2_2026-10-01.md`.
 
-## `rapports/` — rapports d'octobre 2026 (auparavant à la racine)
+## `rapports/` — rapports d'audit (octobre–novembre 2026 ; auparavant à la racine)
 
 | Document | Sujet |
 |---|---|
 | `AUDIT_8_AXES_2026-10-20_RAPPORT_FINAL.md` | audit 8 axes (75/100) |
+| `AUDIT_EXTERNE_8_AXES_2026-11-10_RAPPORT.md` | audit externe n°3 reçu (77/100) : réception, contrôle des preuves contre le dépôt, corrections à appliquer |
+| `AUDIT_EXTERNE_8_AXES_2026-11-10_MATRICE.md` | les 133 critères de cet audit (extraction verbatim) + colonne de contrôle du dépôt |
 | `VERIF_AUDIT_RAPPORT_FINAL_2026-10-20.md` | vérification terrain de ce rapport |
 | `ANALYSE_AUDIT_EXTERNE_2_2026-10-21.md` | analyse de l'audit externe n°2 (64/100) |
 | `CHIFFRAGE_APK_2026-10-20.md` | chiffrage APK (cité par `capacitor.config.ts`, `src/main.tsx`) |
