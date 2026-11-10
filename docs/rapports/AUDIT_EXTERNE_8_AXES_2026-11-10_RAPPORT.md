@@ -1,16 +1,115 @@
 # AUDIT EXTERNE 8 AXES — rapport de réception et de contrôle (2026-11-10)
 
-> **Objet** : deux archives `pedagogical-svt-app-audit (2).zip` et
-> `pedagogical-svt-app-audit (3).zip` reçues dans `Downloads/NEW`, contenant une
-> appli web d'audit de l'application Kunz El Ouloum.
+> **Objet** : trois archives d'audit reçues dans `Downloads/` :
+> `pedagogical-svt-app-audit (2).zip`, `pedagogical-svt-app-audit (3).zip`
+> (dossier `NEW`) et `pedagogical-svt-app-claude 5.2.zip` (reçue le 10/11 à
+> 13:42). Chacune contient une appli web d'audit de l'application.
 >
-> **Verdict** : **l'archive (2) est l'audit pertinent** ; l'archive (3) en est une
-> version **antérieure et appauvrie** — à écarter.
+> **Verdict (mis à jour le 10/11 après réception de l'archive 5.2)** :
+> **l'archive « claude 5.2 » est la référence** — elle audite notre code au
+> commit `70b69ec` (4 nov. 2026, dans notre historique) au lieu de s'appuyer
+> sur le README, et elle **rectifie explicitement** les audits précédents.
+> L'archive (2) reste utile (matrice de 133 critères). L'archive (3) est à
+> écarter.
 >
-> **Matrice des 133 critères** : [AUDIT_EXTERNE_8_AXES_2026-11-10_MATRICE.md](AUDIT_EXTERNE_8_AXES_2026-11-10_MATRICE.md)
+> **Matrice des 133 critères** (archive (2)) : [AUDIT_EXTERNE_8_AXES_2026-11-10_MATRICE.md](AUDIT_EXTERNE_8_AXES_2026-11-10_MATRICE.md)
 >
 > **À lire avec** : [AUDIT_8_AXES_2026-10-20_RAPPORT_FINAL.md](AUDIT_8_AXES_2026-10-20_RAPPORT_FINAL.md)
 > (audit interne du 20/10) et `docs/AUDIT_EXTERNE_8_AXES_2026-10-14.md`.
+
+---
+
+## 0. L'archive « claude 5.2 » — la référence (reçue le 10/11 à 13:42)
+
+**Ce qu'elle change** : elle audite le **code source** au commit `70b69ec`
+(4 nov. 2026 — vérifié : ce commit est dans notre historique), et non le
+README. Conséquences :
+
+- **Score 74,6 / 100** (recalculé : 8 · 7 · 7,5 · 7,5 · 7,5 · 7 · 7,5 · 7,5,
+  poids 100) avec une **confiance notée 4 / 5** (`CONFIANCE`) — la note est
+  assortie de son degré de certitude.
+- **Un `RECTIFICATIF` explicite** qui annule les erreurs des audits
+  précédents : « la version précédente s'appuyait uniquement sur le README »,
+  « elle déclarait absents le parcours guidé, le plan de révision, l'objectif
+  quotidien, la série et les badges », « elle annonçait un seul sujet de Bac
+  intégral : le dépôt en contient 28 en PDF », « elle raisonnait sur un
+  programme (génétique, écologie, mitose et méiose) qui n'est pas celui de la
+  3AS », « elle contenait des chiffres sans source ». **Ces cinq points sont
+  exactement ceux que j'avais moi-même vérifiés** le 10/11 (§ 3.2 de ce
+  rapport) : les deux travaux convergent.
+- **Des `LIMITES` explicites** : lecture statique (ni compilé, ni lancé, ni
+  testé sur téléphone), tests non exécutés (323 fichiers recensés),
+  échantillons réduits (8 QCM relus sur 550), aucun utilisateur interrogé,
+  aucune fiche Play Store.
+- **Un rectificatif de fond** : « Le glossaire et le plan de 12 semaines bâtis
+  dessus sont retirés » → **la recommandation du glossaire FR↔AR, que je
+  présentais comme le seul reste à faire coûteux, est ANNULÉE** : elle
+  reposait sur une grille de programme erronée.
+
+### 0.1 Contrôle de ses chiffres contre le dépôt (2026-11-10)
+
+| Affirmation de l'audit 5.2 | Mesure |
+|---|---|
+| 11 unités, 3 domaines, 108 h | ✔ `curriculumOfficial.ts` |
+| 15 citations exactes / 42, 13 sous 85 % « à réviser » | ✔ en-tête du fichier, mot pour mot |
+| 3 hors-exigibles + 2 chapitres « culture générale » | ✔ `NON_EXIGIBLES`, `CULTURE_GENERALE` |
+| errata du manuel intégrés | ✔ `manuelErrata.ts` |
+| poids d'examen renseigné pour 7 unités sur 11 | ✔ `unitOpenings.ts` : U1-U7 (10, 9, 13, 13, 16, 20, 19), U8-U11 absents |
+| 4 cartes de survie non validées (1 sur 5) | ✔ `survivalCards.ts` : « sc_enzymes reviewed:true, les autres reviewed:false » |
+| aucun QCM ne porte de niveau de difficulté | ✔ 7 occurrences de `difficulte:` dans tout le corpus |
+| aucun QCM ne porte d'étiquette de notion | ✔ 0 occurrence de `notion:` |
+| 28 sujets officiels en PDF, 65 exercices indexés | ✔ `public/bac-sujets` (28 PDF), `BAC_IDEAS` (65) |
+| recherche, favoris, mode sombre, taille de texte | ✔ présents dans le code |
+| série, points, badges | ✔ `BadgesView`, `StreakCelebrationModal` |
+| domaine 1 gratuit, essai 30 j, 1 200 DA | ✔ `facturation.ts` |
+| 323 fichiers de test | ⚠️ **dépassé** : 359 aujourd'hui (le dépôt a grandi) |
+
+### 0.2 Le point le plus intéressant : l'écart sur les poids d'examen
+
+L'audit 5.2 constate que le poids **annoncé** à l'élève (10, 9, 13, 13, 16,
+20, 19 %) ne correspond pas à la part **constatée** (18,6 · 5,1 · 14,7 · 20 ·
+18,6 · 11,7 · 6,7 · 1,1 ×4), et le signale comme « à confirmer avec la
+fonction du dépôt ».
+
+**Vérifié : ce n'est pas un défaut.** La colonne « constatée » de l'audit est
+**exactement** la sortie de la fonction du dépôt
+`observedUnitSharePercent()` (`src/data/bacSessionIndex.ts:1725`) — 11 valeurs
+identiques au dixième, avec la même règle d'attribution (les points d'un
+exercice vont à son unité **principale**, la première de `unitIds`). Et le
+dépôt documente depuis longtemps que les deux mesures ne disent pas la même
+chose :
+
+> « À lire à côté de `unitOpenings.bacWeightPercent`, qui donne le poids
+> ANNONCÉ par la répartition du programme. Les deux ne disent pas la même
+> chose, et c'est l'information la plus utile de toute la banque. »
+> — `bacSessionIndex.ts:1716-1723`
+
+**Ce qui reste vrai et actionnable** : l'élève ne voit que le poids *annoncé*
+(`UnitIntroPortal.tsx:149`), jamais la part *constatée* — alors que le dépôt
+la qualifie de « l'information la plus utile de toute la banque ». Concrètement :
+U7 est annoncée à 19 % alors qu'elle ne pèse que 6,7 % des exercices indexés ;
+U1 annoncée à 10 % pour 18,6 % réels ; et U8-U11 (25 h officielles) n'ont
+**aucun** poids affiché. **Piste** : afficher les deux nombres côte à côte
+plutôt que corriger l'un par l'autre (les deux sont vrais, à des niveaux
+différents).
+
+### 0.3 Ce que l'audit 5.2 laisse ouvert (10 recommandations « haute »)
+
+1. Visa d'un enseignant de SVT sur 13 citations « à réviser » + 4 cartes de
+   survie.
+2. Renseigner le poids des 4 unités manquantes (U8-U11) et afficher le poids
+   annoncé **à côté** de la part constatée.
+3. Étiqueter les 550 QCM par 3 niveaux (tombé / fréquent / approfondissement).
+4. Étiqueter les 550 QCM par **notion** (pour alimenter le profil d'erreurs
+   sans dépendre de la déclaration de l'élève).
+5. Test de positionnement court (22 QCM) préremplissant le plan.
+6. Correction notée par attendus pour 2024, 2023, 2022 (18 exercices).
+7. Corrigés résumés hors ligne pour les 65 exercices indexés.
+8. Mesures sur téléphone d'entrée de gamme (3G, poids installé, mémoire).
+9. Publication de l'APK signé sur Google Play.
+10. **Télécharger les PDF à la demande au lieu de les embarquer (94 Mo
+    évités)** — à trancher avec notre choix « offline complet » (l'APK pèse
+    88,1 Mo) ; l'audit privilégie la taille, nous privilégions l'autonomie.
 
 ---
 
@@ -109,6 +208,16 @@ documenté dans `phaseEleve.ts`), basculement français, résumés IA
 livré par le patch arena est le glossaire *du Capitaine*, **pas** un glossaire
 FR↔AR : le gap reste entier.
 
+> **⚠️ RECTIFICATIF (archive « claude 5.2 », reçue le 10/11) : cette
+> recommandation est ANNULÉE.** L'audit 5.2, qui a lu le code et non le
+> README, montre que le glossaire FR↔AR et le « plan de 12 semaines » des
+> audits précédents étaient bâtis sur **une grille de programme erronée**
+> (génétique, écologie, mitose/méiose — qui ne sont pas des unités de la
+> 3AS algérienne). Les 11 unités réelles sont le التخصص الوظيفي للبروتينات /
+> التحولات الطاقوية / التكتونية العامة. Un glossaire construit sur la bonne
+> grille reste possible — mais l'audit 5.2 ne le réclame plus, et la
+> priorité n'est plus la même.
+
 Les 34 critères « P » (partiels) sont le second gisement : hiérarchie de
 priorité visible, poids d'examen par unité, objectif d'entrée, scaffolding
 intra-leçon, révisions croisées, etc. Le détail est dans la
@@ -116,15 +225,22 @@ intra-leçon, révisions croisées, etc. Le détail est dans la
 
 ## 5. Action recommandée
 
-1. **Priorité unique** : glossaire scientifique FR↔AR (~180 termes, équivalence
-   vérifiée en QCM inversé) — c'est le seul « absent » qui coûte des points à
-   l'élève, et il est nommé deux fois par l'auditeur.
-2. **Rafraîchir l'audit** avant tout usage décisionnel : les 6 lignes du § 3.2
-   et les chiffres de tests. Un audit qui planifie des manques déjà comblés
-   fait perdre du temps.
+1. **Priorité unique (rectifiée le 10/11)** : l'audit 5.2 remplace le
+   glossaire par trois chantiers mesurables — (a) **afficher le poids annoncé
+   À CÔTÉ de la part constatée** dans la fiche d'unité (les deux sont vrais,
+   voir § 0.2 ; l'élève n'a aujourd'hui que le premier), (b) **étiqueter les
+   550 QCM par notion** (0 étiquette aujourd'hui : c'est ce qui permettrait au
+   profil d'erreurs de se remplir sans dépendre de la déclaration de
+   l'élève), (c) **préremplir le plan par un test de positionnement court**
+   (22 QCM) — le moteur de guidage existe déjà, il manque l'entrée.
+2. **Visa humain** : 13 citations « à réviser » + 4 cartes de survie (1 sur 5
+   validée) — c'est la seule action qui demande un enseignant, pas du code.
 3. **Arbitrer le droit d'auteur** : garder les 28 PDF officiels dans l'APK
-   (choix offline assumé, 88 Mo) ou n'indexer que les idées (≈ 5 Mo). Ce
-   choix n'est pas écrit dans le code.
+   (choix offline assumé, 88 Mo) ou les télécharger à la demande (≈ 5 Mo,
+   l'audit 5.2 privilégie la taille, nous l'autonomie).
+4. **Rafraîchir les audits** avant tout usage décisionnel : les 6 lignes du
+   § 3.2, les chiffres de tests, et l'échelle « 323 fichiers de test » de
+   l'audit 5.2 (359 aujourd'hui).
 
 ## 6. Where the report lives / comment le reconstruire
 
