@@ -67,7 +67,7 @@ export default function ParcoursAssimilation({ onFermer, onOuvrirRubrique, onOuv
       dir="rtl"
       role="dialog"
       aria-label="خطة المراجعة حسب المستوى"
-      className="fixed inset-0 z-[60] flex items-start justify-center bg-black/40 p-3 sm:p-6"
+      className="fixed inset-0 z-[60] flex items-start justify-center bg-black/40 p-3 sm:p-6 pb-[calc(0.75rem+var(--pfe-safe-bottom))]"
     >
       <div className="max-h-full w-full max-w-lg overflow-y-auto rounded-3xl bg-white p-4 shadow-2xl dark:bg-[#121614]">
         <div className="mb-3 flex items-center justify-between gap-2">

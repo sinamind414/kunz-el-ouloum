@@ -125,7 +125,66 @@ Méthode inchangée : un échec isolé se rejoue SEUL avant tout diagnostic ; et
 vitest + jest ne doivent jamais tourner en parallèle (contention CPU, cf.
 BacIdeaTrainer/AITutorView innocentés le 03/11).
 
+## Piège connu : edge-to-edge Android 15+ (APK) — zone sûre — constaté 2026-11-10
+
+`android/variables.gradle` → `targetSdkVersion = 36` : **Android 15 impose
+l'edge-to-edge** aux applications targeting ≥ 35. La WebView Capacitor passe
+SOUS la barre d'état et SOUS la barre de navigation système.
+
+Le plugin natif `SystemBars` de Capacitor 8 (mode `css`, le défaut — voir
+`node_modules/@capacitor/android/.../plugin/SystemBars.java`) calcule les
+insets et les injecte comme **variables CSS sur `<html>`** :
+`--safe-area-inset-top/right/bottom/left`. **Le web doit les consommer.**
+
+Conséquences si on ne le fait pas (symptômes vus sur l'APK) :
+- les icônes de l'en-tête passent sous la barre d'état ;
+- la barre de navigation applicative est mangée par la barre système ;
+- les surfaces `position: fixed` (bulle/bouton du Capitaine, modale de chat,
+  barre du quiz, barre de la leçon, modales) sont tronquées en bas ;
+- le bloc de commandes de la fenêtre de zoom (`+ / − / ملاءمة`) disparaît
+  sous la barre d'état : le zoom « ne marche pas » alors qu'il s'ouvre.
+
+Règle de code : **`position: fixed` ignore le padding de la coquille** — chaque
+surface fixe doit absorber l'inset elle-même. Source unique des variables :
+`src/index.css` (alias `--pfe-safe-*` = `max(var(--safe-area-inset-*),
+env(safe-area-inset-*))` ; `env()` sert de repli web/PWA). Verrou :
+`src/components/__tests__/safeAreaApk.lock.test.ts` (source-scan, visible en
+CI).
+
+**Reproduire sans téléphone** : Chromium + émulation CDP
+(`Emulation.setDeviceMetricsOverride` 390×844 + `setTouchEmulationEnabled`),
+puis injecter à la main les variables que Capacitor injecte :
+```js
+document.documentElement.style.setProperty('--safe-area-inset-top', '44px');
+document.documentElement.style.setProperty('--safe-area-inset-bottom', '24px');
+```
+C'est exactement le layout web que voit l'APK (le WebView ne dessine rien
+dans la zone système : c'est l'OS qui la recouvre).
+
+## Piège connu : le runtime de zoom n'a pas de survol sur tactile — constaté 2026-11-10
+
+La pastille « تكبير » n'apparaît qu'au `pointerover`. Sur l'APK (tactile),
+le `pointerover` part au toucher et le `pointerout` annule l'affichage à la
+fin de l'appui : la pastille vit ~150 ms (un clignement) et le `pointerout`
+effaçait la figure ciblée (un second appui sur la pastille n'ouvrait plus
+rien). Corrigé dans `src/utils/figureZoomRuntime.ts` : mode tactile
+`(pointer: coarse)`, seuils 110×80 (au lieu de 150×100 — les graphes réduits
+par la mise en page mobile étaient exclus), pastille conservée 2,6 s après
+l'appui, `hideBadge(true)` à l'ouverture de la superposition. Verrou CI :
+`src/utils/__tests__/zoomTactile.lock.test.ts` (nom hors motif `figureZoom*`
+exclu de la CI).
+
+**Rappel** : après toute modification de `src/utils/figureZoomRuntime.ts`, il
+faut **régénérer** les 26 documents servis, sinon le verrou « le HTML servi
+est à jour vis-à-vis de la source du runtime » passe rouge :
+```
+npx tsx scripts/tools/applyFigureZoom.ts
+```
+(les fichiers `public/lessons/*.html` et `public/miftah.html` sont **protégés** :
+jamais de modification manuelle).
+
 ## Conventions de test
+
 
 - `@testing-library/jest-dom` **n'est pas câblé** : `.toBeTruthy()`, `.toBeNull()`,
   `.toHaveLength()` ; appeler `cleanup()` explicitement.

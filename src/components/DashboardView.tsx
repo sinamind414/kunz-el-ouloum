@@ -601,7 +601,7 @@ export default function DashboardView({
       {/* M5 — FAQ autonome, affichée en overlay depuis l'accueil. */}
       {showFaq && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 dark:bg-black/60 backdrop-blur-sm"
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 pb-[calc(1rem+var(--pfe-safe-bottom))] bg-black/40 dark:bg-black/60 backdrop-blur-sm"
         >
           <div
             className="bg-white dark:bg-[#141916] rounded-3xl p-6 max-w-2xl w-full max-h-[90vh] overflow-y-auto border border-gray-200 dark:border-gray-800"

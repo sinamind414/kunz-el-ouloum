@@ -165,6 +165,36 @@ sont câblés), jest 343 suites / 3966 tests, boussole 138/0, build exit 0,
 entrée **553,5 Ko < 700 Ko**, **0** chunk `lhx_`, 4 blocs lazy 4,8-10 Ko hors
 entrée. Pas de push (règle susmentionnée).
 
+**Exception SIGNÉE (2026-11-10, GO propriétaire en session — APK Android :
+zone sûre / edge-to-edge + zoom tactile)** : correction du débordement de
+l'interface sous les barres système sur l'APK (« le chat du Capitaine n'est pas
+plein écran », « des icônes qui dépassent l'écran ») et de l'absence de
+pastille de zoom sur écran tactile. **Cause racine** : `android/variables.gradle`
+→ `targetSdkVersion = 36` ⇒ Android 15+ impose l'edge-to-edge ; le plugin
+natif `SystemBars` de Capacitor 8 (mode `css`, défaut) injecte
+`--safe-area-inset-top/right/bottom/left` sur `<html>`, mais le WEB ne les
+consommait pas (0 occurrence de `safe-area` dans `src/` avant ce lot).
+Fichiers modifiés : `src/index.css` (alias `--pfe-safe-*` =
+`max(var(--safe-area-inset-*), env(safe-area-inset-*))` + surfaces du runtime
+de zoom), `src/App.tsx` (**PROTÉGÉ — exception signée ici** : en-tête,
+barre basse, bouton du Capitaine, modale du Capitaine, overlay Déclic),
+`src/components/{QuizView,LessonTwoView,UnitIntroPortal,CombatChallengePortal,Bac2025ExamView,SplashView,DashboardView,StatsView,StudentAuthView,ParcoursAssimilation,StreakCelebrationModal,WeeklyReportShareModal}.tsx`,
+`src/utils/figureZoomRuntime.ts` (**PROTÉGÉ — exception signée ici** : mode
+tactile `(pointer: coarse)`, seuils 110×80 au lieu de 150×100, pastille qui
+survit à l'appui 2,6 s, `hideBadge(true)` à l'ouverture). Les 26 documents
+servis (`public/lessons/*.html` + `public/miftah.html`, **protégés**) ont été
+régénérés par le générateur `npx tsx scripts/tools/applyFigureZoom.ts`
+(26/26 mis à jour), jamais édités à la main. Verrous ajoutés (visibles en CI,
+hors motif `figureZoom*` exclu) : `src/components/__tests__/safeAreaApk.lock.test.ts`
+(8 tests) et `src/utils/__tests__/zoomTactile.lock.test.ts` (3 tests).
+Mesures : Chromium réel, viewport 390×844 + émulation tactile CDP + insets
+Capacitor injectés (44 px haut / 24 px bas) → en-tête 64→108 px (boutons à
+58-67 px, sous la barre d'état), barre basse icônes 744-808 px (≤ 820),
+bouton Capitaine bas 724 px (≤ 820), bloc de commandes du zoom
+`padding-top` 10→54 px ; tap tactile → overlay de zoom ouvert
+(`pointer: coarse` détecté). Chaîne verte : tsc 0, vitest 356 fichiers /
+4052 tests, jest 346 suites / 3985 tests, build exit 0.
+
 ## Tests
 - `@testing-library/jest-dom` **n'est pas câblé** → utiliser `.toBeTruthy()`,
   `.toBeNull()`, `.toHaveLength()`. Appeler `cleanup()` explicitement.

@@ -37,7 +37,9 @@ export default function UnitIntroPortal({
 
   return (
     <div
-      className="fixed inset-0 z-50 bg-[#fff9ed] dark:bg-[#0c0f0d] flex flex-col font-sans"
+      /* ZONE SÛRE (APK Android 15+) : portail plein écran → on réserve la
+         barre d'état (haut) et la barre de navigation système (bas). */
+      className="fixed inset-0 z-50 bg-[#fff9ed] dark:bg-[#0c0f0d] flex flex-col font-sans pt-[var(--pfe-safe-top)] pb-[var(--pfe-safe-bottom)]"
       dir="rtl"
       data-testid="unit-intro-portal"
     >

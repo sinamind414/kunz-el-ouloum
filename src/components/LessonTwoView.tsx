@@ -853,8 +853,10 @@ export default function LessonTwoView() {
 
       </div>
       
-      {/* Footer Badge */}
-      <div className="fixed bottom-0 left-0 right-0 p-2 bg-[#f8f9fa] dark:bg-[#0c0f0d] text-center border-t border-[#e2dabf]/30 text-[10px] text-gray-500 font-bold z-50">
+      {/* Footer Badge
+          ZONE SÛRE (APK Android 15+) : barre `fixed bottom-0` → elle passait
+          sous la barre de navigation système ; son texte était illisible. */}
+      <div className="fixed bottom-0 left-0 right-0 p-2 pb-[calc(0.5rem+var(--pfe-safe-bottom))] bg-[#f8f9fa] dark:bg-[#0c0f0d] text-center border-t border-[#e2dabf]/30 text-[10px] text-gray-500 font-bold z-50">
         هذه Leçon Mot par Mot تعتمد على محاكاة SVG مدمجة - لا تحتاج إنترنت خارجي للصور 🚀
       </div>
 
@@ -865,7 +867,7 @@ export default function LessonTwoView() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 bg-black/60 backdrop-blur-md flex items-center justify-center p-3 md:p-6"
+            className="fixed inset-0 z-50 bg-black/60 backdrop-blur-md flex items-center justify-center p-3 md:p-6 pb-[calc(0.75rem+var(--pfe-safe-bottom))]"
           >
             <motion.div
               initial={{ scale: 0.95, opacity: 0 }}

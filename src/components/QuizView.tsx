@@ -258,9 +258,13 @@ export default function QuizView({ unitId, unitTitle, questions, onClose, onQuiz
         : 'bg-[#f8f9fa] text-[#191c1d] dark:bg-[#0c0f0d] dark:text-gray-100'
     }`}>
       
-      {/* Quiz Top App Bar - Hidden in Focus Mode */}
+      {/* Quiz Top App Bar - Hidden in Focus Mode
+          ZONE SÛRE (APK Android 15+) : la barre est `fixed top-0` → elle passe
+          sous la barre d'état système et ses boutons deviennent inatteignables.
+          Le fond remonte jusqu'au bord (edge-to-edge), le contenu descend sous
+          la barre d'état. */}
       {!isFocusMode && (
-        <header className="bg-[#ffffff] dark:bg-[#141916] shadow-sm border-b border-[#bbcbbb]/20 dark:border-[#2ecc71]/10 w-full fixed top-0 z-50 h-16 flex items-center justify-between px-6">
+        <header className="bg-[#ffffff] dark:bg-[#141916] shadow-sm border-b border-[#bbcbbb]/20 dark:border-[#2ecc71]/10 w-full fixed top-0 z-50 h-[calc(4rem+var(--pfe-safe-top))] pt-[var(--pfe-safe-top)] flex items-center justify-between px-6">
           <button 
             onClick={onClose}
             className="w-10 h-10 rounded-full hover:bg-[#f3f4f5] dark:hover:bg-zinc-800 flex items-center justify-center text-[#006d37] dark:text-[#2ecc71] transition-colors cursor-pointer"

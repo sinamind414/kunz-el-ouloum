@@ -166,7 +166,9 @@ function Bac2025ExamViewInterne({ onClose }: { onClose: () => void }) {
   const phase = phaseEpreuve(ecoulee, DUREE_EPREUVE_MINUTES);
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-950" dir="rtl">
+    /* ZONE SÛRE (APK Android 15+) : épreuve plein écran → réserve la barre
+       d'état (haut) et la barre de navigation système (bas). */
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-950 pt-[var(--pfe-safe-top)] pb-[var(--pfe-safe-bottom)]" dir="rtl">
       <div className="max-w-3xl mx-auto p-4 md:p-6 pb-24 space-y-4">
         {/* En-tête */}
         <div className="bg-slate-900 rounded-2xl p-5 text-white relative overflow-hidden">

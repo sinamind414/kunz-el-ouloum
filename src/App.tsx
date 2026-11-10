@@ -1107,9 +1107,14 @@ export default function App() {
         }}
       />
 
-      {/* Dynamic Top App Bar matching Screen 2 */}
+      {/* Dynamic Top App Bar matching Screen 2
+          ZONE SÛRE (APK Android 15+, edge-to-edge) : la barre d'état système
+          passe PAR-DESSUS la WebView. La barre garde son fond jusqu'au bord
+          haut (look edge-to-edge) mais son CONTENU (avatar, mode sombre,
+          taille de texte) descend sous la barre d'état : hauteur et padding
+          haut sont augmentés de l'inset (variables --pfe-safe-*, cf. index.css). */}
       {!isFocusMode && currentTab !== 'home' && (
-        <header className="bg-[#ffffff] dark:bg-[#141916] shadow-[0_2px_12px_rgba(0,109,55,0.06)] border-b border-[#e2dabf]/40 dark:border-[#2ecc71]/10 flex flex-row-reverse justify-between items-center px-4 md:px-8 h-16 md:h-20 w-full shrink-0 z-40 select-none">
+        <header className="bg-[#ffffff] dark:bg-[#141916] shadow-[0_2px_12px_rgba(0,109,55,0.06)] border-b border-[#e2dabf]/40 dark:border-[#2ecc71]/10 flex flex-row-reverse justify-between items-center px-4 md:px-8 h-[calc(4rem+var(--pfe-safe-top))] md:h-[calc(5rem+var(--pfe-safe-top))] pt-[var(--pfe-safe-top)] w-full shrink-0 z-40 select-none">
         
         {/* Left Side: Avatar block */}
         <div className="flex items-center gap-3">
@@ -1385,8 +1390,13 @@ export default function App() {
               )}
 
               {capitaineOpen && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
-                  <div className="w-full max-w-2xl max-h-[90vh] overflow-hidden rounded-3xl bg-white dark:bg-[#111a17] shadow-2xl">
+                /* ZONE SÛRE (APK Android 15+) : la modale du Capitaine est en
+                   `fixed inset-0` → elle ignorait la barre de navigation
+                   système : le bas de la fenêtre de chat (zone de saisie) était
+                   coupé et la fenêtre n'occupait pas vraiment l'écran. Le
+                   padding bas et la hauteur utile tiennent compte de l'inset. */
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 pb-[calc(1rem+var(--pfe-safe-bottom))]">
+                  <div className="w-full max-w-2xl max-h-[calc(90dvh-var(--pfe-safe-bottom))] overflow-hidden rounded-3xl bg-white dark:bg-[#111a17] shadow-2xl">
                     <AITutorView
                       onBackToDashboard={fermerCapitaine}
                       onBackToPreviousTab={fermerCapitaine}
@@ -1507,7 +1517,7 @@ export default function App() {
           Révision (agir). cf. docs/INTEGRATION_FOCUS_MOTIVATION.md §2. */}
       {isDeclicOverlayOpen && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 pb-[calc(1rem+var(--pfe-safe-bottom))]"
           role="dialog"
           aria-modal="true"
           data-testid="declic-overlay"
@@ -1545,9 +1555,12 @@ export default function App() {
       {/* Barre mobile : les 4 piliers OPUS 5.5 + nos accès (8 au total).
           Style repris des photos : icône + label AR + label FR, pastille
           active vert pâle. `min-w-0` + `truncate` : 8 colonnes doivent tenir
-          dans 360px sans déborder. */}
+          dans 360px sans déborder.
+          ZONE SÛRE (APK Android 15+) : la barre de navigation SYSTÈME mange
+          le bas de l'écran. La barre applicative grandit de l'inset et ses
+          icônes remontent au-dessus de la barre système. */}
       {!isFocusMode && (
-        <nav className="md:hidden bg-[#f8fbfa] dark:bg-[#141916] shadow-[0_-5px_15px_rgba(0,0,0,0.05)] shrink-0 h-[80px] z-40 flex items-center gap-0.5 px-0.5 pb-2 rounded-t-[24px] select-none border-t border-[#e2e8e0]/50 dark:border-[#2ecc71]/10" dir="rtl">
+        <nav className="md:hidden bg-[#f8fbfa] dark:bg-[#141916] shadow-[0_-5px_15px_rgba(0,0,0,0.05)] shrink-0 h-[calc(80px+var(--pfe-safe-bottom))] z-40 flex items-center gap-0.5 px-0.5 pb-[calc(0.5rem+var(--pfe-safe-bottom))] rounded-t-[24px] select-none border-t border-[#e2e8e0]/50 dark:border-[#2ecc71]/10" dir="rtl">
 
         {PRIMARY_NAV.map(({ tab, label, fr, Icon }) => (
           <button
@@ -1596,8 +1609,12 @@ export default function App() {
           AUSSI quand une vue plein écran a le clavier — quiz (activeQuizUnitId)
           et défi (activeCombatChallenge). Mesure s_quiz : elle couvrait la
           barre de navigation du quiz. */}
+      {/* ZONE SÛRE (APK Android 15+) : la bulle et le bouton du Capitaine sont
+          en `position: fixed` → ils ignorent le padding de la coquille. On les
+          remonte de l'inset de navigation pour qu'ils restent au-dessus de la
+          barre système (et au-dessus de la barre applicative). */}
       {!isFocusMode && !epreuveEnCours && currentTab !== 'chat' && activeQuizUnitId === null && activeCombatChallenge === null && (
-        <div className="fixed bottom-24 left-4 z-40 md:bottom-8 flex flex-col items-start gap-2">
+        <div className="fixed bottom-[calc(6rem+var(--pfe-safe-bottom))] left-4 z-40 md:bottom-8 flex flex-col items-start gap-2">
           {/*
             LA BULLE PARLE AU BON MOMENT, PAS EN PERMANENCE (loi 1). Un signal
             toujours présent n'est plus un signal : c'est le mur du fond qui

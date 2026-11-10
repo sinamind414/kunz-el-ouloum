@@ -898,7 +898,7 @@ export default function StatsView({ progress, units, onNavigate }: StatsViewProp
       {/* Report Card Modal */}
       <AnimatePresence>
         {showReportModal && (
-          <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4 overflow-y-auto no-print">
+          <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4 pb-[calc(1rem+var(--pfe-safe-bottom))] overflow-y-auto no-print">
             <motion.div
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
