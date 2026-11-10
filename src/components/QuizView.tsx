@@ -17,7 +17,7 @@ import { graineSession, melangerQuestions } from '../utils/melangeOptions';
 // que par l'atelier méthodologique — un élève qui n'y va jamais gardait une
 // mémoire vide à vie, et le capitaine n'avait rien à lui dire.
 import { CAUSES_QCM, doitDemanderCause, QUESTION_CAUSE_AR, REMERCIEMENT_CAUSE_AR, causeParId } from '../data/diagnosticQuiz';
-import { enregistrerErreurs } from '../utils/profilErreurs';
+import { enregistrerErreurs, enregistrerNotionRatee } from '../utils/profilErreurs';
 import { planifierRappelsPourErreurs } from '../lib/planificationRappels';
 import EcranPaiement from './EcranPaiement';
 import { uniteOuverte } from '../utils/acces';
@@ -152,6 +152,13 @@ export default function QuizView({ unitId, unitTitle, questions, onClose, onQuiz
       setScore((prev) => prev + 1);
     } else {
       playFailureSound();
+      // NOTION RATÉE (audit externe « claude 5.2 », axe 3) : le sujet raté est
+      // un FAIT — la question porte sa notion (titre de la figure) et l'élève a
+      // répondu faux. On l'enregistre SANS attendre la déclaration de l'élève :
+      // le profil se remplit tout seul (le « pourquoi » reste déclaré).
+      if (currentQuestion.notion) {
+        enregistrerNotionRatee(currentQuestion.notion, currentQuestion.unitId);
+      }
     }
   };
 
@@ -165,6 +172,11 @@ export default function QuizView({ unitId, unitTitle, questions, onClose, onQuiz
       setScore((prev) => prev + 1);
     } else {
       playFailureSound();
+      // Même règle que pour le QCM : la notion ratée est un fait, pas une
+      // déclaration de l'élève.
+      if (currentQuestion.notion) {
+        enregistrerNotionRatee(currentQuestion.notion, currentQuestion.unitId);
+      }
     }
   };
 

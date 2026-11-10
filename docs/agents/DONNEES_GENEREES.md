@@ -17,6 +17,7 @@
 | `data/bookContent.json` (+ `.index.json`) | `scripts/book_to_json.py` puis `scripts/build_chapter_index.ts` | manuel + `uploads_externes/book_tdm_clean.md` | `src/data/bookContent.lock.test.ts`, `bookIndex.lock.test.ts` |
 | `src/data/bacExam.ts` (**absent du dépôt** : sortie retirée, script orphelin) | `scripts/build_bac_exam.py` | `uploads_externes/PROGRAMME NATIONAL SVT CLAUDE OPUS - Copie.MD` | — |
 | `src/data/fillBlanks.ts`, `src/lessonData.ts`, `src/unitCatalog.ts` | « auto-generated » (générateurs historiques absents du dépôt) | — | traiter comme générés : modifier avec prudence et preuve |
+| `src/data/notionsQcm.ts` | `scripts/build_notions_qcm.ts` | `public/assets/images/schemas/**/*.svg` (attribut `aria-label` = titre arabe de la figure) + les 6 segments du corpus | `src/data/notionsQcm.lock.test.ts` |
 
 Commande type : `npx tsx scripts/<générateur>.ts` (ou `python3 scripts/<x>.py`),
 puis relancer le verrou correspondant.
@@ -31,6 +32,11 @@ puis relancer le verrou correspondant.
   `okacha.ts` n'est pas régénérable depuis le dépôt seul.
 - Le compte d'un corpus se fait **sur l'export servi**, jamais sur le fichier brut
   (cf. `src/data/volumeCorpus.lock.test.ts` et le tableau du `README.md`).
+- `scripts/build_notions_qcm.ts` lit les **fichiers SVG des schémas** (110) et
+  n'en retient que ceux référencés par le corpus (56) : la notion d'un QCM est
+  le titre arabe de sa figure. Le verrou `notionsQcm.lock.test.ts` recalcule la
+  table depuis les SVG et échoue si elle diverge → impossible de « corriger »
+  une notion à la main sans que le verrou le dise.
 
 ## Verrous (`*.lock.test.ts`)
 

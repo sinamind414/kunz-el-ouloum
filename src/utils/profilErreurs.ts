@@ -30,14 +30,15 @@
 // module ne fait qu'ajouter la version LOCALE, plus fine (compteurs, récurrence,
 // thèmes), disponible même sans compte et sans réseau.
 //
-// DEUX FAMILLES D'ERREURS, UNE SEULE EST ALIMENTÉE AUJOURD'HUI — dit franchement:
+// DEUX FAMILLES D'ERREURS — LES DEUX SONT MAINTENANT ALIMENTÉES :
 //   · erreurs de MÉTHODE (les 9 de `ERROR_TAXONOMY`) : alimentées par les
 //     productions corrigées, dès maintenant ;
-//   · confusions de NOTIONS (« ADN / ARNm », « codon / anticodon ») : AUCUN
-//     producteur aujourd'hui. Les QCM ne portent pas d'étiquette de notion, donc
-//     le code les accepte (la structure est prête) mais rien ne les remplit.
-//     Inventer ces confusions serait pire que de ne pas les avoir : le guide
-//     affirmerait des choses fausses sur l'élève.
+//   · NOTIONS (le SUJET raté) : depuis le 10/11/2026, chaque QCM porte la
+//     notion qu'il interroge (le titre arabe de sa figure — voir
+//     src/data/notionsQcm.ts) ; l'application enregistre celle que l'élève a
+//     ratée, SANS attendre sa déclaration. C'est un FAIT, pas une supposition :
+//     on ne devine pas POURQUOI il se trompe (cela reste déclaré), on sait
+//     SUR QUOI il s'est trompé.
 // ============================================================
 
 // Import LÉGER délibéré : `methodologyEngine` (105 Ko) ne doit pas entrer
@@ -81,6 +82,107 @@ export interface CompteurErreur {
 }
 
 export type ProfilErreurs = Record<string, CompteurErreur>;
+
+// ─────────────────────────────────────────────────────────────────────────────
+// NOTIONS RATÉES — leproducer qui manquait à la famille « notions ».
+//
+// L'en-tête de ce fichier dit (depuis le 14/10/2026) : « confusions de NOTIONS
+// : AUCUN producteur aujourd'hui. Les QCM ne portent pas d'étiquette de
+// notion ». C'est vrai jusqu'au 10/11/2026 : désormais chaque QCM porte sa
+// notion (le titre arabe de la figure qu'il interroge — voir
+// src/data/notionsQcm.ts), donc le fait EST connu : l'élève a raté une
+// question SUR « النسخ ». Ce n'est pas une hypothèse, c'est un fait.
+//
+// DISTINCTION VOLONTAIRE avec le profil d'erreurs ci-dessus :
+//   · le profil d'erreurs recordre le TYPE de faute (que l'élève DÉCLARE) ;
+//   · le profil de notions recordre le SUJET raté (que l'APPLI CONSTATE).
+// On ne les mélange pas : le guide peut dire « tu as raté 3 fois la notion X »
+// sans prétendre savoir POURQUOI (le pourquoi reste déclaré).
+//
+// Local comme le reste : localStorage, aucune requête, aucun identifiant.
+// ─────────────────────────────────────────────────────────────────────────────
+
+const CLE_NOTIONS = 'boussole_notions_ratees';
+/** Nombre de notions suivies — un trimestre de travail, pas un entrepôt. */
+const MAX_NOTIONS = 30;
+
+export interface CompteurNotion {
+  /** Nombre de fois où une question sur cette notion a été ratée. */
+  n: number;
+  /** Dernière fois (ISO). */
+  dernier: string;
+  /** Unité concernée (pour cibler une révision). */
+  uniteId?: number;
+}
+
+export type ProfilNotions = Record<string, CompteurNotion>;
+
+function lireNotions(): ProfilNotions {
+  try {
+    const brut = localStorage.getItem(CLE_NOTIONS);
+    if (!brut) return {};
+    const obj = JSON.parse(brut) as unknown;
+    if (!obj || typeof obj !== 'object' || Array.isArray(obj)) return {};
+    return obj as ProfilNotions;
+  } catch {
+    return {};
+  }
+}
+
+/**
+ * Enregistre une question ratée : la NOTION est un fait (la question porte
+ * cette notion et l'élève a répondu faux). Aucune notion n'est inventée —
+ * une question sans étiquette n'est simplement pas comptée.
+ */
+export function enregistrerNotionRatee(notion: string, uniteId?: number): void {
+  const nom = typeof notion === 'string' ? notion.trim().slice(0, 80) : '';
+  if (!nom) return;
+  const profil = lireNotions();
+  const courant = profil[nom] ?? { n: 0, dernier: '', uniteId };
+  profil[nom] = {
+    n: courant.n + 1,
+    dernier: new Date().toISOString(),
+    uniteId: uniteId ?? courant.uniteId,
+  };
+  const entrees = Object.entries(profil);
+  const retenues =
+    entrees.length <= MAX_NOTIONS
+      ? entrees
+      : entrees.sort((a, b) => (b[1].dernier || '').localeCompare(a[1].dernier || '')).slice(0, MAX_NOTIONS);
+  try {
+    localStorage.setItem(CLE_NOTIONS, JSON.stringify(Object.fromEntries(retenues)));
+  } catch {
+    /* stockage plein : on perd la mémoire, jamais la séance */
+  }
+}
+
+/** Le profil des notions ratées. */
+export function profilNotions(): ProfilNotions {
+  return lireNotions();
+}
+
+/**
+ * Les notions les plus ratées : d'abord le NOMBRE (ce qui revient est ce qui
+ * coûte), puis la RÉCENCE. Égalité → ordre alphabétique (résultat stable).
+ */
+export function notionsDominantes(n = 3): { notion: string; occurrences: number; uniteId?: number }[] {
+  const entrees = Object.entries(lireNotions());
+  if (entrees.length === 0) return [];
+  return entrees
+    .sort((a, b) => {
+      if (b[1].n !== a[1].n) return b[1].n - a[1].n;
+      const r = (b[1].dernier || '').localeCompare(a[1].dernier || '');
+      if (r !== 0) return r;
+      return a[0].localeCompare(b[0]);
+    })
+    .slice(0, Math.max(0, n))
+    .map(([notion, c]) => ({ notion, occurrences: c.n, uniteId: c.uniteId }));
+}
+
+/** Nombre de questions ratées, toutes notions confondues. */
+export function totalNotionsRatees(): number {
+  return Object.values(lireNotions()).reduce((s, c) => s + (c?.n || 0), 0);
+}
 
 /** Comment une erreur a été fermée. */
 export type OrigineFermeture = 'production_propre' | 'reprise_manuelle';
@@ -415,6 +517,11 @@ export function effacerProfilErreurs(): void {
   try {
     localStorage.removeItem(CLE);
     localStorage.removeItem(CLE_FERMEES);
+    // Les notions ratées font partie de la MÊME mémoire de l'élève : « repartir
+    // de zéro » qui laisserait les notions sur le téléphone serait une
+    // promesse de confidentialité rompue (effacement partiel = données
+    // conservées sans le dire).
+    localStorage.removeItem(CLE_NOTIONS);
   } catch {
     /* ignore */
   }

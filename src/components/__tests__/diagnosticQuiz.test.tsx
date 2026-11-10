@@ -159,8 +159,14 @@ describe('le branchement ne peut pas être retiré en silence', () => {
   const quiz = readFileSync(resolve(process.cwd(), 'src/components/QuizView.tsx'), 'utf8');
 
   it('le QCM importe et appelle réellement enregistrerErreurs', () => {
-    expect(quiz).toContain("import { enregistrerErreurs } from '../utils/profilErreurs'");
+    // 2026-11-10 : l'import porte désormais DEUX fonctions
+    // (enregistrerErreurs + enregistrerNotionRatee) → on vérifie la présence
+    // des deux, pas une chaîne figée.
+    expect(quiz).toMatch(/import \{[^}]*enregistrerErreurs[^}]*\} from '\.\.\/utils\/profilErreurs'/);
     expect(quiz).toMatch(/enregistrerErreurs\(\[cause\.code\]/);
+    // La notion ratée est enregistrée AUTOMATIQUEMENT (fait, pas déclaration).
+    expect(quiz).toMatch(/import \{[^}]*enregistrerNotionRatee[^}]*\}/);
+    expect(quiz).toMatch(/enregistrerNotionRatee\(currentQuestion\.notion/);
   });
 
   it('le profil n’est jamais alimenté par une cause supposée', () => {

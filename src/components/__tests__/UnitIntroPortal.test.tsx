@@ -59,14 +59,21 @@ describe('portail d unité — contenu affiché', () => {
     expect(screen.getByTestId('portal-premiere-action').textContent).toContain(o.firstActionAr);
   });
 
-  it('affiche le poids d examen pour une unité mesurée et l omet sinon', () => {
+  // 2026-11-10 (audit externe « claude 5.2 ») : le portail affiche les DEUX poids
+  // — le poids ANNONCE (repartition du programme, mesuree) et la part CONSTATEE
+  // (points reels de l'unite dans les 65 exercices BAC indexes, calculee par
+  // le depot). Les deux sont vrais : l'ecart se voit. Une unite sans poids
+  // annonce (U8-U11) affiche quand meme sa part constatee ; aucun chiffre invente.
+  it('affiche le poids annonce ET la part constatee, et la part seule sinon', () => {
     render(<UnitIntroPortal unitId={5} unitTitle="" onStartLesson={noop} onClose={noop} />);
     expect(screen.getByTestId('portal-poids').textContent).toContain('16');
     cleanup();
     render(<UnitIntroPortal unitId={10} unitTitle="" onStartLesson={noop} onClose={noop} />);
-    expect(screen.queryByTestId('portal-poids')).toBeNull();
+    // 2026-11-10 : la part CONSTATEE existe pour les 11 unites ; seule la ligne
+    // du poids ANNONCE disparait quand il n'a pas ete mesure.
+    expect(screen.getByTestId('portal-poids-observe').textContent).toContain('1.1');
+    expect(screen.getByTestId('portal-poids').textContent).not.toContain('%');
   });
-
   it('une unité sans carte affiche un message, pas une page blanche', () => {
     render(<UnitIntroPortal unitId={99} unitTitle="وحدة مجهولة" onStartLesson={noop} onClose={noop} />);
     expect(screen.getByTestId('portal-vide')).toBeTruthy();

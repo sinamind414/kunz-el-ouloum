@@ -111,6 +111,14 @@ différents).
     évités)** — à trancher avec notre choix « offline complet » (l'APK pèse
     88,1 Mo) ; l'audit privilégie la taille, nous privilégions l'autonomie.
 
+### 0.4 Ce que le dépôt a fait depuis (10/11/2026) — rang 1
+
+| Item de l'audit 5.2 | État au 2026-11-10 |
+|---|---|
+| 2 — poids annoncé À CÔTÉ de la part constatée | ✅ fait : `UnitIntroPortal` affiche les deux (le premier pour U1-U7, le second pour les 11 unités) |
+| 5 — étiqueter les QCM par notion | ✅ fait : les **550** QCM portent leur notion (titre arabe de la figure interrogée), table **générée** (`src/data/notionsQcm.ts`) + verrou anti-dérive ; la notion ratée est enregistrée **automatiquement** (sans attendre la déclaration) et affichée dans le portail d'unité |
+| 3 et 6 — niveaux de difficulté | ⚠️ **déjà fait, le reproche est caduc** : la difficulté est stampée sur **100 %** des QCM (`src/quizCorpus/index.ts`), le palier est affiché dans le quiz (`QuizView.tsx:411`) et le quiz adaptatif trie par palier. Réserve honnête : le palier vient du **segment** (donc du domaine), pas de l'item — c'est le seul reste de ce reproche |
+
 ---
 
 ## 1. Ce que sont les deux archives
