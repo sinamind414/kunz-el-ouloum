@@ -12,7 +12,7 @@
 // des attributs ARIA et des routes.
 
 import { cleanup, fireEvent, render, screen, act } from '@testing-library/react';
-import { afterEach, describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import App from '../../App';
 import { CLE_DERNIER_ONGLET } from '../../data/apprentissageNav';
 import { PARCOURS_FLAT } from '../../lib/parcours/parcoursPath';
@@ -75,6 +75,25 @@ describe('4 rubriques — navigation réelle', () => {
       window.dispatchEvent(new Event('popstate'));
     });
     expect(screen.getByTestId('apprentissage-onglet-cours').getAttribute('aria-selected')).toBe('true');
+  });
+
+  it('changer d’onglet REMONTE le canevas : la bande et les 3 chapitres sont visibles d’emblée', async () => {
+    // Demande du propriétaire 2026-11-11 : les 3 chapitres sont montés en tête
+    // du canevas ; si l'élève a défilé, ils semblaient « apparaître en bas ».
+    window.history.replaceState(null, '', '/#/apprentissage/cours');
+    render(<App />);
+    await screen.findByTestId('apprentissage-tabs');
+
+    // Le canevas a bien une zone de défilement…
+    const canevas = document.getElementById('zone-principale') as HTMLElement;
+    expect(canevas).toBeTruthy();
+    const scroll = vi.fn();
+    canevas.scrollTo = scroll;
+
+    // …et changer d'onglet le renvoie en haut.
+    fireEvent.click(screen.getByTestId('apprentissage-onglet-revision'));
+    await screen.findByTestId('apprentissage-onglet-revision');
+    expect(scroll).toHaveBeenCalledWith({ top: 0 });
   });
 
   it('?lecon= ouvre le Cours en gardant le paramètre dans l’URL', async () => {

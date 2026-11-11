@@ -956,6 +956,19 @@ export default function App() {
     return () => window.removeEventListener('kunz-web-tab-change', onWebTabChange as EventListener);
   }, [currentTab]);
 
+  /* Remonter le CANEVAS en haut à chaque changement d'onglet (demande du
+     propriétaire 2026-11-11) : la bande « التعلّم » et les 3 chapitres sont
+     montés en tête du canevas ; si l'élève a défilé sur l'onglet précédent,
+     il croyait que les chapitres « apparaissent en bas de la page ». Le
+     retour en haut les rend immédiatement visibles. (Dans le canevas —
+     même zone de règles des hooks que l'écouteur ci-dessus, AVANT tout
+     retour anticipé.) */
+  useEffect(() => {
+    // `scrollTo` peut manquer (jsdom) : appel facultatif, jamais bloquant.
+    const canevas = document.getElementById('zone-principale');
+    canevas?.scrollTo?.({ top: 0 });
+  }, [currentTab]);
+
   if (activeCombatChallenge) {
     // Épreuve officielle bac2025 : la boucle élève de bout en bout (Pierre 2).
     if (activeCombatChallenge.id === 'bac-2025-sujets') {

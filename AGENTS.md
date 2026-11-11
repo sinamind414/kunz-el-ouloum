@@ -223,6 +223,22 @@ Preuve : `npm run lint:eslint` → **0 erreur, 0 warning** (sortie vide),
 `npm run lint` (tsc) → 0 erreur.
 
 **Exception SIGNÉE (2026-11-11, demande explicite du propriétaire en session —
+remontée du canevas au changement d'onglet)** : modification de `src/App.tsx`
+(**PROTÉGÉ — exception signée ici**) : un `useEffect` sur `[currentTab]`
+remonte `#zone-principale` en haut (`scrollTo({ top: 0 })`, appel facultatif
+— `scrollTo` n'existe pas en jsdom, d'où l'appel `?.`). Constat mesuré en
+live (viewport téléphone 390×844, Chromium) : la bande « التعلّم » et les 3
+chapitres sont montés en TÊTE du canevas ; en revenant de « الدروس » (page
+longue, défilée à 832 px) vers « المراجعة », les 3 chapitres semblaient
+« apparaître en bas de la page » — après correction : `scrollTop = 0`, les 3
+cartes à `top = 161 px`, visibles d'emblée. Verrou :
+`src/components/__tests__/navigation4Rubiques.test.tsx` (+1 test
+comportemental, 9/9 verts). ⚠️ Attention : ce fichier s'appelle
+`navigation4Rubiques.test.tsx` (faute de frappe d'origine dans le dépôt,
+« Rubiques » et non « Rubriques ») — un chemin avec la faute échoue en
+ENOENT alors que `git ls-files` le liste.
+
+**Exception SIGNÉE (2026-11-11, demande explicite du propriétaire en session —
 fenêtre du Capitaine épouse l'écran du téléphone)** : modification de
 `src/App.tsx` (**PROTÉGÉ — exception signée ici**) : la modale du Capitaine
 (clic sur la bulle) devient, sur TÉLÉPHONE, une feuille PLEIN ÉCRAN
