@@ -62,9 +62,17 @@ describe('zone sûre (safe-area) — APK Android 15+ edge-to-edge', () => {
     expect(APP).toContain('md:bottom-8');
   });
 
-  it('la fenêtre de chat du Capitaine n’est plus tronquée en bas', () => {
-    expect(APP).toContain('pb-[calc(1rem+var(--pfe-safe-bottom))]');
-    expect(APP).toContain('max-h-[calc(90dvh-var(--pfe-safe-bottom))]');
+  it('la fenêtre du Capitaine épouse l’écran du téléphone (feuille plein écran, zone sûre)', () => {
+    // 2026-11-11 (demande du propriétaire) : sur téléphone, la fenêtre est une
+    // feuille inset-0 coins carrés qui respecte barre d'état ET barre système ;
+    // sur écran large elle reste une carte centrée de 90 dvh.
+    expect(APP).toContain('pb-[var(--pfe-safe-bottom)] pt-[var(--pfe-safe-top)]');
+    expect(APP).toContain('sm:h-[calc(90dvh-var(--pfe-safe-bottom))]');
+    expect(APP).toContain('sm:rounded-3xl');
+    // Le tuteur remplit sa feuille (plus de hauteur en 100vh-140px figée) :
+    const TUTOR = lire('src/components/AITutorView.tsx');
+    expect(TUTOR).toContain('flex h-full min-h-0 flex-col');
+    expect(TUTOR).not.toContain('h-[calc(100vh-140px)]');
   });
 
   it('le bloc de commandes du zoom (runtime) descend sous la barre d’état', () => {

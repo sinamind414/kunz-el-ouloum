@@ -1399,13 +1399,14 @@ export default function App() {
               )}
 
               {capitaineOpen && (
-                /* ZONE SÛRE (APK Android 15+) : la modale du Capitaine est en
-                   `fixed inset-0` → elle ignorait la barre de navigation
-                   système : le bas de la fenêtre de chat (zone de saisie) était
-                   coupé et la fenêtre n'occupait pas vraiment l'écran. Le
-                   padding bas et la hauteur utile tiennent compte de l'inset. */
-                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 pb-[calc(1rem+var(--pfe-safe-bottom))]">
-                  <div className="w-full max-w-2xl max-h-[calc(90dvh-var(--pfe-safe-bottom))] overflow-hidden rounded-3xl bg-white dark:bg-[#111a17] shadow-2xl">
+                /* ZONE SÛRE (APK Android 15+) + ÉPOUSEMENT DE L'ÉCRAN (demande
+                   du propriétaire 2026-11-11) : sur TÉLÉPHONE la fenêtre du
+                   Capitaine est une feuille PLEIN ÉCRAN (inset-0, coins
+                   carrés) qui respecte les barres système via les insets
+                   --pfe-safe-* — la saisie du bas n'est plus coupée. Sur
+                   écran large elle reste une carte centrée de 90 dvh. */
+                <div className="fixed inset-0 z-50 flex flex-col items-stretch justify-end bg-black/60 pb-[var(--pfe-safe-bottom)] pt-[var(--pfe-safe-top)] sm:items-center sm:justify-center sm:p-4 sm:pb-[calc(1rem+var(--pfe-safe-bottom))]">
+                  <div className="flex min-h-0 w-full flex-1 flex-col overflow-hidden bg-white shadow-2xl dark:bg-[#111a17] sm:h-[calc(90dvh-var(--pfe-safe-bottom))] sm:max-w-2xl sm:flex-none sm:rounded-3xl">
                     <AITutorView
                       onBackToDashboard={fermerCapitaine}
                       onBackToPreviousTab={fermerCapitaine}

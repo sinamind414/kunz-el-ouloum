@@ -222,6 +222,24 @@ explicite) ; 14 imports/variables inutilisés supprimés (`FAQView` × 8,
 Preuve : `npm run lint:eslint` → **0 erreur, 0 warning** (sortie vide),
 `npm run lint` (tsc) → 0 erreur.
 
+**Exception SIGNÉE (2026-11-11, demande explicite du propriétaire en session —
+fenêtre du Capitaine épouse l'écran du téléphone)** : modification de
+`src/App.tsx` (**PROTÉGÉ — exception signée ici**) : la modale du Capitaine
+(clic sur la bulle) devient, sur TÉLÉPHONE, une feuille PLEIN ÉCRAN
+(`inset-0`, coins carrés, `flex flex-col`, `justify-end`) qui respecte les
+barres système via `pb-[var(--pfe-safe-bottom)]` /
+`pt-[var(--pfe-safe-top)]` ; sur écran large elle reste une carte centrée
+(`sm:` — 90 dvh, coins arrondis). Fichier `src/components/AITutorView.tsx`
+(travail concurrent non signé en cours — hunk isolé au commit) : la racine
+passe de `h-[calc(100vh-140px)] md:h-[calc(100vh-100px)]` (hauteur figée qui
+débordait/laissait un vide) à `flex h-full min-h-0 flex-col` — la vue remplit
+sa feuille ; `AITutorView` n'a qu'UN SEUL usage dans toute l'app (la modale,
+vérifié : 1 occurrence de `<AITutorView` dans App.tsx). Verrou mis à jour :
+`src/components/__tests__/safeAreaApk.lock.test.ts` (test « fenêtre du
+Capitaine épouse l'écran » — 8 tests verts). Contexte : navigation par
+chapitres commitée juste avant (`121f2e2`, 15 fichiers, chaîne verte
+tsc/eslint/vitest 4088/jest 4020/build).
+
 ## Tests
 - `@testing-library/jest-dom` **n'est pas câblé** → utiliser `.toBeTruthy()`,
   `.toBeNull()`, `.toHaveLength()`. Appeler `cleanup()` explicitement.

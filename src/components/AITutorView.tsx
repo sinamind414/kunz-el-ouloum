@@ -318,7 +318,10 @@ export default function AITutorView({ onXPGagné, questionInitiale, onQuestionIn
   ];
 
   return (
-    <div className="flex flex-col h-[calc(100vh-140px)] md:h-[calc(100vh-100px)] bg-[#ffffff] border border-[#e2dabf]/60 rounded-3xl shadow-sm overflow-hidden font-sans">
+    /* Hauteur : la vue REMPLIT son conteneur (unique usage : la modale du
+       Capitaine dans App.tsx, qui lui donne une hauteur définie — feuille
+       plein écran sur téléphone, carte 90dvh sur écran large). */
+    <div className="flex h-full min-h-0 flex-col bg-[#ffffff] border border-[#e2dabf]/60 rounded-3xl shadow-sm overflow-hidden font-sans">
 
       {/* Chat Title bar */}
       <div className="bg-[#fff9ed] border-b border-[#e2dabf]/60 px-5 py-4 flex justify-between items-center shrink-0">
