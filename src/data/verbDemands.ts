@@ -273,11 +273,15 @@ export function formulationsOfFamily(familyId: string): string[] {
   return [...vues].sort((a, b) => a.localeCompare(b));
 }
 
-/** Exercices réels où la famille est demandée, du plus récent au plus ancien. */
-export function ideasForVerbFamily(familyId: string): BacExerciseIdea[] {
-  return BAC_IDEAS.filter((i) => i.verbsAr.some((v) => classifyVerb(v)?.id === familyId)).sort(
-    (a, b) => b.year - a.year || a.sujet - b.sujet || a.exercice - b.exercice,
-  );
+/** Exercices réels où la famille est demandée, du plus récent au plus ancien.
+ *  `unitesAutorisees` (optionnel) : restreint aux unités d'un chapitre. */
+export function ideasForVerbFamily(familyId: string, unitesAutorisees?: readonly number[]): BacExerciseIdea[] {
+  const ensemble = unitesAutorisees ? new Set(unitesAutorisees) : null;
+  return BAC_IDEAS.filter(
+    (i) =>
+      i.verbsAr.some((v) => classifyVerb(v)?.id === familyId) &&
+      (!ensemble || i.unitIds.some((u) => ensemble.has(u))),
+  ).sort((a, b) => b.year - a.year || a.sujet - b.sujet || a.exercice - b.exercice);
 }
 
 export interface VerbFamilyStat {
@@ -293,12 +297,16 @@ export interface VerbFamilyStat {
   points: number;
 }
 
-/** Poids réel de chaque famille de consignes, mesuré sur le corpus. */
-export function verbFamilyStats(): VerbFamilyStat[] {
+/** Poids réel de chaque famille de consignes, mesuré sur le corpus
+ *  (ou sur les unités d'un chapitre si `unitesAutorisees` est fourni). */
+export function verbFamilyStats(unitesAutorisees?: readonly number[]): VerbFamilyStat[] {
+  const ensemble = unitesAutorisees ? new Set(unitesAutorisees) : null;
+  const duChapitre = (i: BacExerciseIdea) => !ensemble || i.unitIds.some((u) => ensemble.has(u));
   return VERB_FAMILIES.map((f) => {
-    const ideas = ideasForVerbFamily(f.id);
+    const ideas = BAC_IDEAS.filter((i) => duChapitre(i) && i.verbsAr.some((v) => classifyVerb(v)?.id === f.id));
     const occurrences = BAC_IDEAS.reduce(
-      (s, i) => s + i.verbsAr.filter((v) => classifyVerb(v)?.id === f.id).length,
+      (s, i) =>
+        (duChapitre(i) ? s + i.verbsAr.filter((v) => classifyVerb(v)?.id === f.id).length : s),
       0,
     );
     return {

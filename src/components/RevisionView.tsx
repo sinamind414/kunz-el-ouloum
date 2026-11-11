@@ -10,6 +10,7 @@ import PanneauSrs from './PanneauSrs';
 import BoutonMorchid from './BoutonMorchid';
 import EcranPaiement from './EcranPaiement';
 import { uniteOuverte } from '../utils/acces';
+import { filtrerParChapitre, useChapitreActif } from '../lib/chapitreActif';
 
 interface RevisionViewProps {
   units: Unit[];
@@ -25,6 +26,14 @@ interface RevisionViewProps {
 
 export default function RevisionView({ units, flashcards, onRateCard, isFocusMode, setIsFocusMode, initialUnitId = 1 }: RevisionViewProps) {
   const [selectedUnitId, setSelectedUnitId] = useState<number>(initialUnitId);
+  // 2026-11-10 (demande du propriétaire) : l'élève entre par le CHAPITRE puis
+  // choisit sa rubric. La liste des unités affichée est donc celle du chapitre
+  // actif — pas les 11 à plat.
+  const { id: chapitreActif } = useChapitreActif();
+  const unitesDuChapitre = useMemo(
+    () => filtrerParChapitre(units, chapitreActif),
+    [units, chapitreActif],
+  );
   // Deck trié par le SM-2 local (cartes dues d'abord) ; currentCardId est la
   // carte en main, « null » = tête de deck (nouvelle séance, changement d'unité).
   const [currentCardId, setCurrentCardId] = useState<string | null>(null);
@@ -218,7 +227,7 @@ export default function RevisionView({ units, flashcards, onRateCard, isFocusMod
         <section className="bg-[#ffffff] dark:bg-[#141916] border border-[#e2dabf]/60 dark:border-[#2ecc71]/10 p-4 rounded-3xl shadow-sm space-y-3">
           <label className="text-xs font-bold text-[#506072] dark:text-gray-300 block">اختر وحدة الدراسة لتوليد بطاقات المراجعة:</label>
           <div className="flex flex-wrap gap-2">
-            {units.map((unit) => (
+            {unitesDuChapitre.map((unit) => (
               <button
                 key={unit.id}
                 onClick={() => handleUnitChange(unit.id)}

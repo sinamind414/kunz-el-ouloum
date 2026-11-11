@@ -11,6 +11,7 @@ import { BookOpen, ChevronLeft, Zap, MonitorPlay, Network, FlaskConical, Leaf, G
 import HtmlLessonViewer from './HtmlLessonViewer';
 import ActiveLessonView from './ActiveLessonView';
 import { INITIAL_UNITS } from '../unitCatalog';
+import { filtrerParChapitre, useChapitreActif } from '../lib/chapitreActif';
 import { getUnitLessonSequence } from '../data/unitLessonSequences';
 import { HTML_LESSON_ORDER } from '../data/htmlLessonProgression';
 import { sourceLivre, badgeSource, sourceAmbigue } from '../data/bookIndex';
@@ -271,6 +272,9 @@ export default function LessonsView({ onRateCard, initialLesson, initialQcm, ini
    * 'm' = الدليل العام للمنهجية, entré depuis l'écran des domaines.
    */
   const [okachaDomaine, setOkachaDomaine] = useState<1 | 2 | 3 | 'm'>(1);
+  // 2026-11-10 : chapitre actif (l'un des 3 domaines) — source de vérité
+  // partagée par toutes les rubriques (src/lib/chapitreActif.ts).
+  const { id: chapitreActif } = useChapitreActif();
 
   // Freemium (24/10/2026) : compteur de re-render après un changement d'accès
   // (essai démarré, code activé) — les prédicats relisent le cache local.
@@ -561,7 +565,13 @@ export default function LessonsView({ onRateCard, initialLesson, initialQcm, ini
   // Même principe que les leçons passives : une icône = une unité, un clic ouvre
   // les icônes de ses leçons actives (U6 ×3, U7, U9, U11 — 4 unités / 6 leçons).
   if (mode === 'active') {
-    const activeUnits = INITIAL_UNITS.filter((u) => getActiveLessonKeysForUnit(u.id).length > 0);
+    // 2026-11-10 (demande du propriétaire) : l'élève entre par le CHAPITRE
+    // puis voit les rubriques de ce chapitre — la grille des unités actives
+    // ne montre donc que les unités du chapitre actif.
+    const activeUnits = filtrerParChapitre(
+      INITIAL_UNITS.filter((u) => getActiveLessonKeysForUnit(u.id).length > 0),
+      chapitreActif,
+    );
 
     if (selectedActiveUnitId === null) {
       return (

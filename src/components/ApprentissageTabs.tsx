@@ -23,6 +23,12 @@ import {
   type OngletApprentissageId,
 } from '../data/apprentissageNav';
 import type { ProgressionApprentissage } from '../data/apprentissageProgression';
+// 2026-11-10 (demande du propriétaire) : l'élève ENTRE par le CHAPITRE (l'un des
+// 3 domaines du programme), puis voit les rubriques de ce chapitre. Le sélecteur
+// est monté SOUS la bande d'onglets : il vaut pour les trois onglets
+// (الدروس / التمارين / المراجعة) et pour toutes les rubriques qui listent des
+// unités (elles filtrent sur le chapitre actif, cf. src/lib/chapitreActif.ts).
+import SelecteurChapitre from './SelecteurChapitre';
 
 interface Props {
   actif: OngletApprentissageId;
@@ -141,6 +147,9 @@ export default function ApprentissageTabs({ actif, onChanger, progression }: Pro
           );
         })}
       </div>
+
+      {/* Les 3 chapitres : l'élève entre par le chapitre, puis voit ses rubriques. */}
+      <SelecteurChapitre />
     </section>
   );
 }

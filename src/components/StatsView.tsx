@@ -2,6 +2,7 @@ import { useState, useRef, useMemo } from 'react';
 // MARQUE DE TRAÇABILITÉ (A3) : la fiche de résultats exportée en PNG est le
 // document qui circule le plus par WhatsApp (voir utils/marque.ts).
 import { apposerMarqueCanvas } from '../utils/marque';
+import { filtrerParChapitre, useChapitreActif } from '../lib/chapitreActif';
 import { identiteCourante } from '../utils/activityLog';
 import BackupPanel from './BackupPanel';
 import { motion, AnimatePresence } from 'motion/react';
@@ -204,7 +205,11 @@ export default function StatsView({ progress, units, onNavigate }: StatsViewProp
   const completedUnitsCount = progress.completedUnits.length;
 
   // 4. Niveau d'atteinte réel de chaque unité (progression sauvegardée localement)
-  const unitMastery = units.map(u => ({
+  // 2026-11-10 (demande du propriétaire) : l'élève entre par le CHAPITRE puis
+  // voit les rubriques de ce chapitre — la jauge d'unités ne couvre que le
+  // chapitre actif (aucun chiffre inventé, la progression reste celle des unités).
+  const { id: chapitreActif } = useChapitreActif();
+  const unitMastery = filtrerParChapitre(units, chapitreActif).map(u => ({
     name: u.title.length > 16 ? u.title.substring(0, 15) + '…' : u.title,
     'الإتقان %': Math.round(u.progress),
   }));
