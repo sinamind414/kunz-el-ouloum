@@ -31,6 +31,7 @@ import { loadCorpus, peekCorpus, type Corpus } from '../data/corpusLoader';
 import { sortByDue } from '../utils/flashcardsSrs';
 import { jourLocal } from '../utils/dayKey';
 import RappelTroisQuestions from './RappelTroisQuestions';
+import SelecteurChapitre from './SelecteurChapitre';
 
 interface TrainingHubViewProps {
   onOpen: (tab: TrainingTab) => void;
@@ -142,6 +143,12 @@ export default function TrainingHubView({ onOpen, onBackToHome, corpusRappel }: 
           </button>
         )}
       </div>
+
+      {/* 2026-11-11 (demande du propriétaire) : les 3 chapitres sont posés
+          dans la ZONE DE CONTENU de la rubrique (comme dans le Cours et la
+          Révision) — l'élève entre par le chapitre, puis choisit son
+          exercice. */}
+      <SelecteurChapitre titre="اختر الفصل" />
 
       {/* LOT 2 — Rappel 3 min, AVANT la consigne (Rappel → UN geste BAC).
           Optionnel : aucune porte obligatoire, la consigne et la grille restent

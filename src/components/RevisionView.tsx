@@ -11,6 +11,7 @@ import BoutonMorchid from './BoutonMorchid';
 import EcranPaiement from './EcranPaiement';
 import { uniteOuverte } from '../utils/acces';
 import { filtrerParChapitre, useChapitreActif } from '../lib/chapitreActif';
+import SelecteurChapitre from './SelecteurChapitre';
 
 interface RevisionViewProps {
   units: Unit[];
@@ -225,6 +226,11 @@ export default function RevisionView({ units, flashcards, onRateCard, isFocusMod
       {/* Selection Filter Tab Selector - Hidden in Focus Mode and Reader Mode */}
       {!isFocusMode && !isReaderMode && (
         <section className="bg-[#ffffff] dark:bg-[#141916] border border-[#e2dabf]/60 dark:border-[#2ecc71]/10 p-4 rounded-3xl shadow-sm space-y-3">
+          {/* 2026-11-11 (demande du propriétaire) : l'élève ENTRE par le
+              chapitre, DANS cette zone (là où il choisit son unité) — les
+              pastilles ci-dessous ne montrent que les unités du chapitre
+              choisi. Le sélecteur n'est plus une bande sous les onglets. */}
+          <SelecteurChapitre titre="اختر الفصل" />
           <label className="text-xs font-bold text-[#506072] dark:text-gray-300 block">اختر وحدة الدراسة لتوليد بطاقات المراجعة:</label>
           <div className="flex flex-wrap gap-2">
             {unitesDuChapitre.map((unit) => (

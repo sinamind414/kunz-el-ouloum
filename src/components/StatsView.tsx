@@ -3,6 +3,7 @@ import { useState, useRef, useMemo } from 'react';
 // document qui circule le plus par WhatsApp (voir utils/marque.ts).
 import { apposerMarqueCanvas } from '../utils/marque';
 import { filtrerParChapitre, useChapitreActif } from '../lib/chapitreActif';
+import SelecteurChapitre from './SelecteurChapitre';
 import { identiteCourante } from '../utils/activityLog';
 import BackupPanel from './BackupPanel';
 import { motion, AnimatePresence } from 'motion/react';
@@ -219,7 +220,11 @@ export default function StatsView({ progress, units, onNavigate }: StatsViewProp
 
   return (
     <div className="space-y-6 pb-24 font-sans">
-      
+      {/* 2026-11-11 (demande du propriétaire) : les 3 chapitres sont posés
+          dans la ZONE DE CONTENU — la jauge d'atteinte ne montre que les
+          unités du chapitre choisi. */}
+      <SelecteurChapitre titre="اختر الفصل" />
+
       {/* Title Header */}
       <section className="px-1 shrink-0 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>

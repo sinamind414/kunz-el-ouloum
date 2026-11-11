@@ -54,6 +54,7 @@ import { AVERTISSEMENT_ENONCES_BAC, COUVERTURE_BAC } from '../data/bacCorrection
 import { INITIAL_UNITS } from '../unitCatalog';
 import { useChapitreActif } from '../lib/chapitreActif';
 import { unitesDuChapitre } from '../data/chapitres';
+import SelecteurChapitre from './SelecteurChapitre';
 
 interface BacIdeasViewProps {
   onBackToHome?: () => void;
@@ -203,6 +204,10 @@ function BacIdeasViewInterne({ onBackToHome, focusIdeaId = null }: BacIdeasViewP
 
   return (
     <div className="min-h-screen p-4 md:p-8 max-w-4xl mx-auto" dir="rtl" data-testid="bac-ideas">
+      {/* 2026-11-11 (demande du propriétaire) : les 3 chapitres sont posés
+          dans la ZONE DE CONTENU de la rubrique — la banque des idées ne
+          montre que les exercices du chapitre choisi. */}
+      <SelecteurChapitre titre="اختر الفصل" />
       <div className="flex items-center justify-between gap-4 mb-5">
         <div className="flex items-center gap-3">
           <span className="w-12 h-12 rounded-2xl bg-gradient-to-l from-[#006d37] to-emerald-600 flex items-center justify-center shadow-md">

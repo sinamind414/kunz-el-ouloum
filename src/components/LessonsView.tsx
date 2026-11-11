@@ -12,6 +12,7 @@ import HtmlLessonViewer from './HtmlLessonViewer';
 import ActiveLessonView from './ActiveLessonView';
 import { INITIAL_UNITS } from '../unitCatalog';
 import { filtrerParChapitre, useChapitreActif } from '../lib/chapitreActif';
+import SelecteurChapitre from './SelecteurChapitre';
 import { getUnitLessonSequence } from '../data/unitLessonSequences';
 import { HTML_LESSON_ORDER } from '../data/htmlLessonProgression';
 import { sourceLivre, badgeSource, sourceAmbigue } from '../data/bookIndex';
@@ -489,6 +490,12 @@ export default function LessonsView({ onRateCard, initialLesson, initialQcm, ini
           </span>
           <ChevronLeft className="w-5 h-5 text-emerald-600 dark:text-emerald-400 shrink-0" />
         </button>
+
+        {/* 2026-11-11 (demande du propriétaire) : les 3 chapitres sont posés
+            DANS la zone de contenu, juste avant les grandes cartes (الدرس
+            النشيط / الدرس الرسمي / الخريطة الذهنية) — l'élève choisit son
+            chapitre, puis sa méthode et son unité. */}
+        <SelecteurChapitre titre="اختر الفصل" />
 
         <section className="space-y-3" aria-labelledby="lesson-choice-title">
           <div>
