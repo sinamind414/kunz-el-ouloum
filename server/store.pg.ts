@@ -86,6 +86,18 @@ CREATE TABLE IF NOT EXISTS licences (
   expire_le   date,
   appareils   jsonb NOT NULL DEFAULT '[]'::jsonb
 );
+CREATE TABLE IF NOT EXISTS push_subscriptions (
+  id               serial PRIMARY KEY,
+  student_id       text NOT NULL,
+  endpoint         text NOT NULL UNIQUE,
+  p256dh           text NOT NULL,
+  auth             text NOT NULL,
+  user_agent       text,
+  heures_locales   text NOT NULL DEFAULT '08:00-21:00',
+  derniere_notif   timestamptz,
+  cree_le          timestamptz NOT NULL DEFAULT now()
+);
+CREATE INDEX IF NOT EXISTS idx_push_student ON push_subscriptions(student_id);
 ALTER TABLE students ADD COLUMN IF NOT EXISTS abonnement_expire_le date;
 `;
 
@@ -415,6 +427,46 @@ export class PostgresStore {
 
   async markResetUsed(code: string): Promise<void> {
     await this.pool.query('UPDATE reset_codes SET used = true WHERE code = $1', [code]);
+  }
+
+  // ── Push (M4) ──────────────────────────────────────────
+  async upsertPushSubscription(studentId: string, endpoint: string, p256dh: string, auth: string, userAgent: string | undefined): Promise<void> {
+    await this.pool.query(
+      `INSERT INTO push_subscriptions (student_id, endpoint, p256dh, auth, user_agent, cree_le)
+      VALUES ($1, $2, $3, $4, $5, now())
+      ON CONFLICT (endpoint) DO UPDATE SET
+        student_id = EXCLUDED.student_id,
+        p256dh = EXCLUDED.p256dh,
+        auth = EXCLUDED.auth,
+        user_agent = EXCLUDED.user_agent,
+        derniere_notif = push_subscriptions.derniere_notif
+    `, [studentId, endpoint, p256dh, auth, userAgent ?? null]);
+  }
+
+  async removePushSubscription(endpoint: string): Promise<void> {
+    await this.pool.query('DELETE FROM push_subscriptions WHERE endpoint = $1', [endpoint]);
+  }
+
+  async listPushSubscriptions(): Promise<Array<{
+    id: number; student_id: string; endpoint: string; p256dh: string; auth: string;
+    user_agent: string | null; heures_locales: string; derniere_notif: string | null; cree_le: string;
+  }>> {
+    const r = await this.pool.query('SELECT * FROM push_subscriptions');
+    return r.rows.map((row: any) => ({
+      id: Number(row.id),
+      student_id: String(row.student_id),
+      endpoint: String(row.endpoint),
+      p256dh: String(row.p256dh),
+      auth: String(row.auth),
+      user_agent: row.user_agent ?? null,
+      heures_locales: String(row.heures_locales),
+      derniere_notif: row.derniere_notif ? new Date(row.derniere_notif).toISOString() : null,
+      cree_le: String(row.cree_le),
+    }));
+  }
+
+  async updatePushDerniereNotif(endpoint: string, quand: string): Promise<void> {
+    await this.pool.query('UPDATE push_subscriptions SET derniere_notif = $1 WHERE endpoint = $2', [quand, endpoint]);
   }
 
   // ── Import de masse (migration, probes 300k) ─────────────

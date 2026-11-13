@@ -6,9 +6,12 @@ import { playFlipSound, playSuccessSound } from '../utils/audio';
 import { getSrsState, rateCard, sortByDue, previewIntervalDays, formatIntervalLabel } from '../utils/flashcardsSrs';
 import { noterAffichageEffort } from '../utils/effortMesure';
 import MicroCapsulePanel from './MicroCapsulePanel';
+import PanneauSrs from './PanneauSrs';
 import BoutonMorchid from './BoutonMorchid';
 import EcranPaiement from './EcranPaiement';
 import { uniteOuverte } from '../utils/acces';
+import { filtrerParChapitre, useChapitreActif } from '../lib/chapitreActif';
+import SelecteurChapitre from './SelecteurChapitre';
 
 interface RevisionViewProps {
   units: Unit[];
@@ -24,6 +27,14 @@ interface RevisionViewProps {
 
 export default function RevisionView({ units, flashcards, onRateCard, isFocusMode, setIsFocusMode, initialUnitId = 1 }: RevisionViewProps) {
   const [selectedUnitId, setSelectedUnitId] = useState<number>(initialUnitId);
+  // 2026-11-10 (demande du propriétaire) : l'élève entre par le CHAPITRE puis
+  // choisit sa rubric. La liste des unités affichée est donc celle du chapitre
+  // actif — pas les 11 à plat.
+  const { id: chapitreActif } = useChapitreActif();
+  const unitesDuChapitre = useMemo(
+    () => filtrerParChapitre(units, chapitreActif),
+    [units, chapitreActif],
+  );
   // Deck trié par le SM-2 local (cartes dues d'abord) ; currentCardId est la
   // carte en main, « null » = tête de deck (nouvelle séance, changement d'unité).
   const [currentCardId, setCurrentCardId] = useState<string | null>(null);
@@ -199,12 +210,30 @@ export default function RevisionView({ units, flashcards, onRateCard, isFocusMod
           placé là où l'élève vient déjà réviser, et aligné sur l'unité choisie. */}
       {!isFocusMode && !isReaderMode && <MicroCapsulePanel unitId={selectedUnitId} />}
 
+      {/* Reco 3 (audit coach 2026-11-06, lot 🔴) — le SRS devient lisible :
+          le SM-2 tournait depuis 2026-10 mais l'élève ne voyait que « 3 / 12 ».
+          Le bilan est une LECTURE pure de l'état persisté : aucune note, aucun
+          écriture, aucun pourcentage inventé (cf. `utils/bilanSrs.ts`). */}
+      {!isFocusMode && !isReaderMode && (
+        <PanneauSrs
+          cards={flashcards}
+          uniteId={selectedUnitId}
+          uniteTitre={getSelectedUnitTitle()}
+          srsVersion={srsVersion}
+        />
+      )}
+
       {/* Selection Filter Tab Selector - Hidden in Focus Mode and Reader Mode */}
       {!isFocusMode && !isReaderMode && (
         <section className="bg-[#ffffff] dark:bg-[#141916] border border-[#e2dabf]/60 dark:border-[#2ecc71]/10 p-4 rounded-3xl shadow-sm space-y-3">
+          {/* 2026-11-11 (demande du propriétaire) : l'élève ENTRE par le
+              chapitre, DANS cette zone (là où il choisit son unité) — les
+              pastilles ci-dessous ne montrent que les unités du chapitre
+              choisi. Le sélecteur n'est plus une bande sous les onglets. */}
+          <SelecteurChapitre titre="اختر الفصل" />
           <label className="text-xs font-bold text-[#506072] dark:text-gray-300 block">اختر وحدة الدراسة لتوليد بطاقات المراجعة:</label>
           <div className="flex flex-wrap gap-2">
-            {units.map((unit) => (
+            {unitesDuChapitre.map((unit) => (
               <button
                 key={unit.id}
                 onClick={() => handleUnitChange(unit.id)}

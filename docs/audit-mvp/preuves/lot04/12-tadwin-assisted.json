@@ -1,0 +1,162 @@
+{
+  "text": "تجاوز إلى المحتوى الرئيسي\nطالب متميز\nSVT BAC DZ\nالتدوين الشامل؟\nأ\n0\n|\n0 XP\nالقائمة الرئيسية\nالرئيسية\nACCUEIL\nالدروس\nAPPRENDRE\nالتمارين والتدريب\nS'ENTRAÎNER\nمفتاح المنهجية\nMÉTHODE\nالمراجعة\nRÉVISER\nأنا\nMOI\n\nالقبطان — مُرشد كنز العلوم\n\nالتدوين للتلخيص بكلماتك أنت، لا لنسخ الدرس. إن استطعت النسخ فأنت لم تفهم بعد.\n\nابدأ بـ: أغلق الدرس واكتب الفكرة من رأسك.\n\nفهمت\nالتدوين الشامل\nجرّب 3 أيام — باقٍ 3 أيام\n✓\n✓\n2\n3\n4\n\nمُساعَد — Assisté (pratique guidée + retour en direct)\n\nالآن دوّن الزبدة بنفسك — الحقل فارغ. يمكنك طلب تلميح، ولا يُحتسب عليك شيء.\n\n⚠︎ تكرار — ابحث عن الزبدة\nطلب تلميح\nانتهيت",
+  "buttons": [
+    {
+      "text": "؟",
+      "label": "نصيحة القبطان في هذه الصفحة",
+      "testid": "conseil-rubrique-ouvrir",
+      "disabled": false
+    },
+    {
+      "text": "",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "أ",
+      "label": "حجم النص",
+      "testid": "taille-texte-btn",
+      "disabled": false
+    },
+    {
+      "text": "الرئيسية\nACCUEIL",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "الدروس\nAPPRENDRE",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "التمارين والتدريب\nS'ENTRAÎNER",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "مفتاح المنهجية\nMÉTHODE",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "المراجعة\nRÉVISER",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "أنا\nMOI",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "فهمت",
+      "label": null,
+      "testid": "bandeau-conseil-fermer",
+      "disabled": false
+    },
+    {
+      "text": "",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "",
+      "label": "بدء الإملاء الصوتي",
+      "testid": "dictaphone-tadwin-assistee",
+      "disabled": false
+    },
+    {
+      "text": "طلب تلميح",
+      "label": null,
+      "testid": "tadwin-indice",
+      "disabled": false
+    },
+    {
+      "text": "انتهيت",
+      "label": null,
+      "testid": "tadwin-assistee-envoyer",
+      "disabled": false
+    },
+    {
+      "text": "الرئيسيةAccueil",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "الدروسApprendre",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "التمارين والتدريبS'entraîner",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "مفتاح المنهجيةMéthode",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "المراجعةRéviser",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "أناMoi",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "",
+      "label": "القبطان — مُرشد كنز العلوم",
+      "testid": "fab-morchid",
+      "disabled": false
+    }
+  ],
+  "testids": [
+    "conseil-rubrique-ouvrir",
+    "taille-texte-btn",
+    "bandeau-conseil-rubrique",
+    "bandeau-conseil-visage",
+    "bandeau-conseil-fermer",
+    "tadwin-assistee",
+    "dictaphone-tadwin-assistee",
+    "tadwin-indice",
+    "tadwin-assistee-envoyer",
+    "fab-morchid"
+  ],
+  "inputs": [
+    {
+      "type": "textarea",
+      "label": null,
+      "placeholder": "اكتب زبدة الدرس في جملتين أو ثلاث…"
+    }
+  ],
+  "width": 1280,
+  "scrollWidth": 1280,
+  "storage": {
+    "boussole_prescriptions_v1": "{\"prescriptions\":[{\"motif\":\"accueil:training\",\"cible\":\"training\",\"emisMs\":1793358951222,\"issue\":\"ignoree\",\"resoluMs\":1793358954652}],\"motifs\":{\"accueil:training\":{\"dits\":1,\"suivis\":0,\"ignores\":1,\"expires\":0}}}",
+    "theme": "light",
+    "kunz_tadwin_etat_v1:backup": "{\"uniteId\":1,\"palier\":1,\"defiDebutAt\":1793358956393}",
+    "kunz_tadwin_etat_v1": "{\"uniteId\":1,\"palier\":2,\"defiDebutAt\":1793358956393}",
+    "kunz_declic_last_id_v1": "dem_05",
+    "boussole_capitaine_invitation_ignoree": "1793358954652",
+    "boussole_conseils_rubriques_vus": "[\"tadwin\",\"training\"]",
+    "kunz_declic_shown_v1": "2026-10-30"
+  }
+}

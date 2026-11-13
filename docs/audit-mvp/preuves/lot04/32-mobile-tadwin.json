@@ -1,0 +1,140 @@
+{
+  "text": "تجاوز إلى المحتوى الرئيسي\nالتدوين الشامل؟\nأ\n0\n|\n0 XP\n\nالقبطان — مُرشد كنز العلوم\n\nالتدوين للتلخيص بكلماتك أنت، لا لنسخ الدرس. إن استطعت النسخ فأنت لم تفهم بعد.\n\nابدأ بـ: أغلق الدرس واكتب الفكرة من رأسك.\n\nفهمت\nالتدوين الشامل\n0\n1\n2\n3\n4\n\nالصدمة — La preuve\n\nلا تنقل الدرس — استخرج زبدته\n\nجرّب 3 أيام فقط من التدوين الشامل: تلخّص كل درس في مفاتيح قليلة بأسلوبك أنت، وستتذكّره في الامتحان. ليست نقطة بكالوريا — بل طريقة تتدرّب عليها بالتدريج.\n\nاختر الدرس\n1. تركيب البروتين (La synthèse des protéines)\n2. العلاقة بين بنية ووظيفة البروتين\n3. النشاط الإنزيمي للبروتينات\n4. دور البروتينات في الدفاع عن الذات (المناعة)\n5. دور البروتينات في الاتصال العصبي\n6. التركيب الضوئي (Photosynthèse)\n7. تحويل الطاقة الكيميائية إلى ATP (التنفّس والتخمّر)\n8. التحوّلات الطاقوية فوق الخلوية\n9. النشاط التكتوني للصفائح\n10. بنية الكرة الأرضية\n11. النشاط التكتوني والبنيات المرتبطة (الغوص والتصادم)\nابدأ التحدي — جرّب 3 أيام\nالرئيسية\nAccueil\nالدروس\nApprendre\nالتمارين والتدريب\nS'entraîner\nمفتاح المنهجية\nMéthode\nالمراجعة\nRéviser\nأنا\nMoi",
+  "buttons": [
+    {
+      "text": "؟",
+      "label": "نصيحة القبطان في هذه الصفحة",
+      "testid": "conseil-rubrique-ouvrir",
+      "disabled": false
+    },
+    {
+      "text": "",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "أ",
+      "label": "حجم النص",
+      "testid": "taille-texte-btn",
+      "disabled": false
+    },
+    {
+      "text": "الرئيسيةAccueil",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "الدروسApprendre",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "التمارين والتدريبS'entraîner",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "مفتاح المنهجيةMéthode",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "المراجعةRéviser",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "أناMoi",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "فهمت",
+      "label": null,
+      "testid": "bandeau-conseil-fermer",
+      "disabled": false
+    },
+    {
+      "text": "",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "ابدأ التحدي — جرّب 3 أيام",
+      "label": null,
+      "testid": "tadwin-demarrer",
+      "disabled": false
+    },
+    {
+      "text": "الرئيسية\nAccueil",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "الدروس\nApprendre",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "التمارين والتدريب\nS'entraîner",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "مفتاح المنهجية\nMéthode",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "المراجعة\nRéviser",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "أنا\nMoi",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "",
+      "label": "القبطان — مُرشد كنز العلوم",
+      "testid": "fab-morchid",
+      "disabled": false
+    }
+  ],
+  "testids": [
+    "conseil-rubrique-ouvrir",
+    "taille-texte-btn",
+    "bandeau-conseil-rubrique",
+    "bandeau-conseil-visage",
+    "bandeau-conseil-fermer",
+    "tadwin-unite-select",
+    "tadwin-demarrer",
+    "fab-morchid"
+  ],
+  "inputs": [],
+  "width": 390,
+  "scrollWidth": 390,
+  "storage": {
+    "boussole_prescriptions_v1": "{\"prescriptions\":[{\"motif\":\"accueil:training\",\"cible\":\"training\",\"emisMs\":1793358619119,\"issue\":\"ignoree\",\"resoluMs\":1793358622447}],\"motifs\":{\"accueil:training\":{\"dits\":1,\"suivis\":0,\"ignores\":1,\"expires\":0}}}",
+    "theme": "light",
+    "kunz_declic_last_id_v1": "dem_02",
+    "boussole_capitaine_invitation_ignoree": "1793358622447",
+    "boussole_conseils_rubriques_vus": "[\"tadwin\",\"training\",\"methodology\"]",
+    "kunz_declic_shown_v1": "2026-10-30"
+  }
+}

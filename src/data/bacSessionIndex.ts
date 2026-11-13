@@ -1572,11 +1572,14 @@ export const YEARS_COVERED: number[] = Array.from(new Set(BAC_IDEAS.map((i) => i
   (a, b) => b - a,
 );
 
-/** Les idées d'une session, triées sujet puis exercice. */
-export function ideasForYear(year: number): BacExerciseIdea[] {
-  return BAC_IDEAS.filter((i) => i.year === year).sort(
-    (a, b) => a.sujet - b.sujet || a.exercice - b.exercice,
-  );
+/** Les idées d'une session, triées sujet puis exercice.
+ *  `unitesAutorisees` (optionnel) : restreint aux unités d'un chapitre
+ *  (navigation par chapitres, 2026-11-10). Absent = corpus complet. */
+export function ideasForYear(year: number, unitesAutorisees?: readonly number[]): BacExerciseIdea[] {
+  const ensemble = unitesAutorisees ? new Set(unitesAutorisees) : null;
+  return BAC_IDEAS.filter(
+    (i) => i.year === year && (!ensemble || i.unitIds.some((u) => ensemble.has(u))),
+  ).sort((a, b) => a.sujet - b.sujet || a.exercice - b.exercice);
 }
 
 /** Les idées qui mobilisent une unité (principale ou secondaire), récentes d'abord. */
@@ -1646,10 +1649,12 @@ export function pointsOfSujet(year: number, sujet: BacSujet): number {
 }
 
 /** Recherche plein texte tolérante aux diacritiques et aux hamzas. */
-export function searchIdeas(query: string): BacExerciseIdea[] {
+export function searchIdeas(query: string, unitesAutorisees?: readonly number[]): BacExerciseIdea[] {
   const q = normalizeArabic(query.trim());
   if (!q) return [];
+  const ensemble = unitesAutorisees ? new Set(unitesAutorisees) : null;
   return BAC_IDEAS.filter((idea) => {
+    if (ensemble && !idea.unitIds.some((u) => ensemble.has(u))) return false;
     const haystack = normalizeArabic(
       [
         idea.titleAr,

@@ -29,6 +29,7 @@ const sujet = sujetArg === '1' || sujetArg === '2' ? (Number(sujetArg) as 1 | 2)
 const groupe = groupeArg?.match(/^([12])-([123])$/)
   ? { sujet: Number(groupeArg![1]) as 1 | 2, exercice: Number(groupeArg![2]) as 1 | 2 | 3 }
   : undefined;
+const independant = process.argv.includes('--independant');
 
 if (!existsSync(dir)) {
   console.error(`✗ dossier introuvable : ${dir}`);
@@ -136,17 +137,28 @@ if (out) {
       };
     }),
   }));
+  const provenanceLines = independant
+    ? [
+        `> ✅ **PROVENANCE (M3)** : corpus INDÉPENDANT — aucune de ces copies n’a`,
+        `> servi à calibrer le moteur. Les écarts publiés mesurent l’erreur de`,
+        `> généralisation sur des copies jamais vues par l’entraînement.`,
+        `> Validation M3 : 30 copies indépendantes, double correction à l’aveugle,`,
+        `> arbitrage si écart > 2 pts. Voir le protocole ci-dessous.`,
+      ]
+    : [
+        `> ⚠ **PROVENANCE (audit F5, garde-fou)** : ce corpus a servi à **calibrer** les`,
+        `> registres d'attendus (items, formes, plafonds). Ce n'est **pas** un jeu de`,
+        `> validation indépendant : les écarts publiés sont un **plancher** de l'erreur`,
+        `> de généralisation. La validation F5 (300 copies authentiques, double`,
+        `> correction à l'aveugle, ≥20 % arbitrées, calibration/test séparés) reste`,
+        `> **à constituer**. Voir le protocole ci-dessous.`,
+      ];
   const md = [
     `# Supervision correcteur — fiabilité mesurée (${date})`,
     ``,
     `> **Moteur** : commit \`${commit}\` · **Corpus** : \`${dir}\` · **n** = ${stats.n} copies · **référence prof** : ${recap ? `${recap.notes.size} notes` : 'absent'}`,
     `>`,
-    `> ⚠ **PROVENANCE (audit F5, garde-fou)** : ce corpus a servi à **calibrer** les`,
-    `> registres d'attendus (items, formes, plafonds). Ce n'est **pas** un jeu de`,
-    `> validation indépendant : les écarts publiés sont un **plancher** de l'erreur`,
-    `> de généralisation. La validation F5 (300 copies authentiques, double`,
-    `> correction à l'aveugle, ≥20 % arbitrées, calibration/test séparés) reste`,
-    `> **à constituer**. Voir le protocole ci-dessous.`,
+    ...provenanceLines,
     ``,
     `## Tableau des copies`,
     ``,

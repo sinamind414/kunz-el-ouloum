@@ -21,6 +21,12 @@ afterEach(() => {
   cleanup();
   localStorage.clear();
   vi.useRealTimers();
+  // 2026-11-03 : le routeur SPA restaure l'onglet depuis location.hash au
+  // montage. La navigation d'un test précédent laisse « #home » dans l'URL du
+  // runner jsdom (qui la garde pendant tout le fichier) et le test suivant
+  // naîtrait DÉJÀ sur le tableau de bord, sans splash. On remet l'URL à zéro,
+  // comme un vrai visiteur neuf.
+  window.history.replaceState(null, '', window.location.pathname + window.location.search);
 });
 
 // Freemium (24/10/2026) : ce test pilote l'app comme un INVITÉ (flux intro →
@@ -31,11 +37,16 @@ beforeEach(() => {
   localStorage.clear();
 });
 
-/** Ouvre le coffre et démarre : le déclic du jour est affiché. */
+/** Ouvre le coffre et démarre : le déclic du jour est affiché.
+ *  Timeout 8000 (durci le 2026-11-04) : sous la suite vitest complète, cette
+ *  suite perdait 3 tests par contention CPU (16,5 s vs 9,7 s isolé — flake
+ *  documenté dans docs/agents/TESTS_ET_CI.md, reproduit aussi sur CI run
+ *  41779532217). Un élément jamais rendu échouerait quand même : la patience
+ *  accrue ne masque pas une vraie régression. */
 async function demarrer() {
   fireEvent.click(screen.getByText('افْتَحْ كَنْزَ العُلُومِ (دخول)'));
-  fireEvent.click(await screen.findByText('ابدأ رحلة التعلم', {}, { timeout: 4000 }));
-  await screen.findByTestId('declic-overlay', {}, { timeout: 4000 });
+  fireEvent.click(await screen.findByText('ابدأ رحلة التعلم', {}, { timeout: 8000 }));
+  await screen.findByTestId('declic-overlay', {}, { timeout: 8000 });
 }
 
 /** Démarre puis ferme le déclic : on arrive sur le tableau de bord. */
@@ -51,7 +62,7 @@ async function demarrerEtFermerDeclic() {
  */
 async function terminerSessionFocus(): Promise<UserProgress> {
   fireEvent.click(screen.getByText('جلسة تركيز'));
-  await screen.findByText('ابدأ', {}, { timeout: 4000 });
+  await screen.findByText('ابدأ', {}, { timeout: 8000 });
   // Ancre à midi du jour local : l'avance simulée de 25 min reste dans le même
   // jour, quoi qu'il soit. Sans ancre, tout lancement entre 23 h 35 et 00 h 00
   // (heure locale, UTC+1) faisait traverser minuit à l'horloge simulée —
@@ -166,6 +177,11 @@ describe('App — la série de jours est écrite pour de vrai', () => {
     expect(p.dailyGoals?.serieDernierJour).toBe(jourLocal());
   });
 
+  // Timeout 15000 (durci le 2026-11-04) : ces deux tests rendent <App /> au
+  // complet et dépassaient le défaut vitest de 5000 ms sous la contention de
+  // la suite CI (runs master 41779532217 puis 41782128315 : « Test timed out
+  // in 5000ms »). Une vraie régression échouerait toujours — par assertion ou
+  // par blocage — : la patience accrue ne masque rien.
   it('ouvrir l’app ne fabrique PAS une journée : la série de la veille survit', async () => {
     const veille = ajouterJours(jourLocal(), -1);
     localStorage.setItem('svt_progress', JSON.stringify(progressionSemee({
@@ -193,7 +209,7 @@ describe('App — la série de jours est écrite pour de vrai', () => {
     expect(chip.textContent).toContain('5');
     const p = JSON.parse(localStorage.getItem('svt_progress') ?? '{}') as UserProgress;
     expect(p.dailyGoals?.serieDernierJour ?? veille).toBe(veille);
-  });
+  }, 15000);
 
   it('un jour manqué : la série affichée retombe à 0, sans attendre une activité', async () => {
     const ilYA3Jours = ajouterJours(jourLocal(), -3);
@@ -219,5 +235,5 @@ describe('App — la série de jours est écrite pour de vrai', () => {
     const chip = screen.getByLabelText('عرض تقدمي اليوم');
     expect(chip.textContent).not.toContain('9');
     expect(chip.textContent).toContain('0');
-  });
+  }, 15000);
 });

@@ -1,0 +1,246 @@
+{
+  "text": "تجاوز إلى المحتوى الرئيسي\nالقائمة الرئيسية\nالرئيسية\nACCUEIL\nالدروس\nAPPRENDRE\nالتمارين والتدريب\nS'ENTRAÎNER\nمفتاح المنهجية\nMÉTHODE\nالمراجعة\nRÉVISER\nأنا\nMOI\n\nلوحة البداية\n\nماذا أدرس الآن؟\n0\n|\n0 XP\nأنشئ حسابك بدون بريد إلكتروني\n\nلا بريد ولا كلمة مرور تحفظها: تكتب اسمك، وتختار رمزًا سريًا من 6 أرقام، فيمنحك التطبيق رمز دخول قصيرًا. يحفظ أستاذك نتائجك ويتابع تقدمك.\n\nإنشاء حساب في دقيقةأو تابع كزائر — كل الدروس متاحة\n\nالأولوية\n\nخطوتك التالية\nمهمة واحدة، ثم اختر الباقي\n\nمهمة اليوم\n\n1. تركيب البروتين\n\nالنشاط 1 : تذكير بالمكتسبات ومقر تركيب البروتين\nابدأ الآن\n\n0 / 1 مهمة اليوم\n\nمساري\nمهمّة اليوم أولًا — الفصل يفتح فصلًا، والتمارين مع مجالها\nماذا تريد أن تفعل؟\n\nثلاثة اختيارات واضحة حسب هدفك الآن\n\nأتعلّم\nدرس وشرح\nأتدرّب\nتمرين وBAC\nأراجع\nبطاقات وأخطاء\nالمزيد من الأدوات\nالخطة، التذكير، المنهجية، الخرائط والتقدم\nتذكير ذكي — خوارزمية التكرار المتباعد\nالوحدة 1\nتركيب البروتين\nنسبة التقدم\n0%\nباقي 100%\nالتكرار المتباعد:الاسترجاع بعد فترة توقف يرسّخ المفهوم أكثر من إعادة القراءة المتلاحقة — جلسة قصيرة الآن أنفع من قراءة طويلة لاحقاً.\nمتابعة إكمال هذا الدرس الآن\nمراجعة البطاقات\nتذكيري لاحقاً\n\nبرنامج اليوم\n\n14 يوماً قبل الامتحان · 90 دقيقة · أنجزت 0 من 10\n\nفكرة في دقيقة · 3 د — كيف أحفظ حلقة كالفن دون أن أختلط؟\nارسم من الذاكرة · 12 د — المرحلة الكيموضوئية على غشاء التيلاكويد\nتركيب متكرّر في البكالوريا · 10 د — التركيب المتكرّر: مبيد يقطع سلسلة التركيب الضوئي\nو 7 مهام أخرى اليوم.\nالهدف اليومي\n\nتركيز على وقت الاستذكار اليومي\n\n0 أيام\nتعديل\n0\n/ 25 دقيقة مذاكرة\n0%\nمتبقي 25 د\nابدأ أول تمرين اليوم لتسجيل تقدمك!\nتسجيل دراسة خارجية\nنشاط هذا الأسبوع:\n✓\nسبت\n✓\nأحد\n✓\nإثنين\n4\nثلاثاء\n5\nأربعاء\n6\nخميس\n7\nجمعة\nحل أسئلة سريعة\nمراجعة البطاقات الذكية\nالقبطان\nاسأل القبطان\nمن أول سؤال إلى ليلة البكالوريا\nكل أدوات التدريب\nثمانية فضاءات في مكان واحد\nاختبر نفسك الآن\nسؤال مفاجئ\nسؤال واحد، فوري، دون تحضير\n220\nيوماً للـ BAC\nالإنجازات\nتقرير الأسبوع\nنقطة تحتاج مراجعة\nتركيب البروتين",
+  "buttons": [
+    {
+      "text": "الرئيسية\nACCUEIL",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "الدروس\nAPPRENDRE",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "التمارين والتدريب\nS'ENTRAÎNER",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "مفتاح المنهجية\nMÉTHODE",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "المراجعة\nRÉVISER",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "أنا\nMOI",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "0\n|\n0 XP",
+      "label": "عرض تقدمي اليوم",
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "إنشاء حساب في دقيقة",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "ابدأ الآن",
+      "label": null,
+      "testid": "home-nba-start",
+      "disabled": false
+    },
+    {
+      "text": "مساري\nمهمّة اليوم أولًا — الفصل يفتح فصلًا، والتمارين مع مجالها",
+      "label": null,
+      "testid": "btn-masari",
+      "disabled": false
+    },
+    {
+      "text": "أتعلّم\nدرس وشرح",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "أتدرّب\nتمرين وBAC",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "أراجع\nبطاقات وأخطاء",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "المزيد من الأدوات\nالخطة، التذكير، المنهجية، الخرائط والتقدم",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "متابعة إكمال هذا الدرس الآن",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "مراجعة البطاقات",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "تذكيري لاحقاً",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "",
+      "label": null,
+      "testid": null,
+      "disabled": true
+    },
+    {
+      "text": "0 أيام",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "تعديل",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "تسجيل دراسة خارجية",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "حل أسئلة سريعة",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "مراجعة البطاقات الذكية",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "اسأل القبطان\nمن أول سؤال إلى ليلة البكالوريا",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "كل أدوات التدريب\nثمانية فضاءات في مكان واحد",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "سؤال مفاجئ\nسؤال واحد، فوري، دون تحضير",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "تقرير الأسبوع",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "نقطة تحتاج مراجعة\nتركيب البروتين",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "الرئيسيةAccueil",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "الدروسApprendre",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "التمارين والتدريبS'entraîner",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "مفتاح المنهجيةMéthode",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "المراجعةRéviser",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "أناMoi",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "",
+      "label": "القبطان — مُرشد كنز العلوم",
+      "testid": "fab-morchid",
+      "disabled": false
+    }
+  ],
+  "testids": [
+    "carte-compte-sans-email",
+    "home-nba",
+    "home-nba-start",
+    "btn-masari",
+    "today-card",
+    "today-resume",
+    "today-tache-capsule:cap_u6_calvin",
+    "today-tache-schema:drill_chaine_photochimique",
+    "today-tache-montage:arch_mibide_photosynthese",
+    "today-reste",
+    "fab-morchid"
+  ],
+  "inputs": [],
+  "width": 1280,
+  "scrollWidth": 1280,
+  "storage": {
+    "boussole_prescriptions_v1": "{\"prescriptions\":[{\"motif\":\"accueil:training\",\"cible\":\"training\",\"emisMs\":1793435861070,\"issue\":\"ignoree\",\"resoluMs\":1793435864574}],\"motifs\":{\"accueil:training\":{\"dits\":1,\"suivis\":0,\"ignores\":1,\"expires\":0}}}",
+    "theme": "light",
+    "kunz.revisionPlan.settings": "{\"daysLeft\":14,\"minutesPerDay\":90}",
+    "kunz_declic_last_id_v1": "dem_02",
+    "boussole_capitaine_invitation_ignoree": "1793435864574",
+    "boussole_conseils_rubriques_vus": "[\"plan\",\"reviser\"]",
+    "kunz_declic_shown_v1": "2026-10-31"
+  }
+}

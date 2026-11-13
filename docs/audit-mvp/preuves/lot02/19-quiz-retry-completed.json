@@ -1,0 +1,89 @@
+{
+  "text": "علوم الطبيعة والحياة • العلاقة بين بنية ووظيفة البروتين\nانتهاء تمرين الوحدة\n\nأنجزت تمرين وحدة العلاقة بين بنية ووظيفة البروتين — نتيجتك في هذه الجلسة:\n\nمعدل الإجابة الصحيحة\n100%\nالنتيجة الإجمالية\n1 / 1\nمستوى ممتاز في هذه الجلسة. ثبّته بإعادة حل الوحدة في مراجعة قادمة.\n\nسُجّل. سيتذكّره القبطان في المرة القادمة.\n\nالعودة للرئيسية\nإعادة المحاولة والتدرب",
+  "buttons": [
+    {
+      "text": "",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "العودة للرئيسية",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "إعادة المحاولة والتدرب",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "",
+      "label": "تكبير الشكل",
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "−",
+      "label": "تصغير",
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "+",
+      "label": "تكبير",
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "ملاءمة",
+      "label": "إعادة الملاءمة إلى الشاشة",
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "100%",
+      "label": "الحجم الأصلي للشكل",
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "نافذة",
+      "label": "فتح الشكل في نافذة مستقلة",
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "إغلاق",
+      "label": "إغلاق (Esc)",
+      "testid": null,
+      "disabled": false
+    }
+  ],
+  "testids": [
+    "cause-enregistree"
+  ],
+  "inputs": [],
+  "width": 1280,
+  "scrollWidth": 1280,
+  "storage": {
+    "theme": "light",
+    "kunz_qcm_memoire_v1": "[{\"questionId\":36,\"unitId\":2,\"echecs\":0,\"reussites\":1,\"intervalDays\":0,\"dueAt\":0},{\"questionId\":37,\"unitId\":2,\"echecs\":0,\"reussites\":1,\"intervalDays\":0,\"dueAt\":0},{\"questionId\":38,\"unitId\":2,\"echecs\":0,\"reussites\":1,\"intervalDays\":0,\"dueAt\":0},{\"questionId\":39,\"unitId\":2,\"echecs\":0,\"reussites\":1,\"intervalDays\":0,\"dueAt\":0},{\"questionId\":40,\"unitId\":2,\"echecs\":0,\"reussites\":1,\"intervalDays\":0,\"dueAt\":0},{\"questionId\":41,\"unitId\":2,\"echecs\":0,\"reussites\":1,\"intervalDays\":0,\"dueAt\":0},{\"questionId\":42,\"unitId\":2,\"echecs\":0,\"reussites\":1,\"intervalDays\":0,\"dueAt\":0},{\"questionId\":43,\"unitId\":2,\"echecs\":0,\"reussites\":1,\"intervalDays\":0,\"dueAt\":0},{\"questionId\":44,\"unitId\":2,\"echecs\":0,\"reussites\":1,\"intervalDays\":0,\"dueAt\":0},{\"questionId\":45,\"unitId\":2,\"echecs\":0,\"reussites\":1,\"intervalDays\":0,\"dueAt\":0},{\"questionId\":46,\"unitId\":2,\"echecs\":0,\"reussites\":1,\"intervalDays\":0,\"dueAt\":0},{\"questionId\":47,\"unitId\":2,\"echecs\":0,\"reussites\":1,\"intervalDays\":0,\"dueAt\":0},{\"questionId\":48,\"unitId\":2,\"echecs\":0,\"reussites\":1,\"intervalDays\":0,\"dueAt\":0},{\"questionId\":49,\"unitId\":2,\"echecs\":0,\"reussites\":1,\"intervalDays\":0,\"dueAt\":0},{\"questionId\":50,\"unitId\":2,\"echecs\":0,\"reussites\":1,\"intervalDays\":0,\"dueAt\":0},{\"questionId\":51,\"unitId\":2,\"echecs\":0,\"reussites\":1,\"intervalDays\":0,\"dueAt\":0},{\"questionId\":52,\"unitId\":2,\"echecs\":0,\"reussites\":1,\"intervalDays\":0,\"dueAt\":0},{\"questionId\":53,\"unitId\":2,\"echecs\":0,\"reussites\":1,\"intervalDays\":0,\"dueAt\":0},{\"questionId\":54,\"unitId\":2,\"echecs\":0,\"reussites\":1,\"intervalDays\":0,\"dueAt\":0},{\"questionId\":55,\"unitId\":2,\"echecs\":0,\"reussites\":1,\"intervalDays\":0,\"dueAt\":0},{\"questionId\":56,\"unitId\":2,\"echecs\":0,\"reussites\":1,\"intervalDays\":0,\"dueAt\":0},{\"questionId\":57,\"unitId\":2,\"echecs\":0,\"reussites\":1,\"intervalDays\":0,\"dueAt\":0},{\"questionId\":58,\"unitId\":2,\"echecs\":0,\"reussites\":1,\"intervalDays\":0,\"dueAt\":0},{\"questionId\":59,\"unitId\":2,\"echecs\":0,\"reussites\":1,\"intervalDays\":0,\"dueAt\":0},{\"questionId\":60,\"unitId\":2,\"echecs\":0,\"reussites\":1,\"intervalDays\":0,\"dueAt\":0},{\"questionId\":61,\"unitId\":2,\"echecs\":0,\"reussites\":1,\"intervalDays\":0,\"dueAt\":0},{\"questionId\":62,\"unitId\":2,\"echecs\":0,\"reussites\":1,\"intervalDays\":0,\"dueAt\":0},{\"questionId\":63,\"unitId\":2,\"echecs\":0,\"reussites\":1,\"intervalDays\":0,\"dueAt\":0},{\"questionId\":64,\"unitId\":2,\"echecs\":0,\"reussites\":1,\"intervalDays\":0,\"dueAt\":0},{\"questionId\":65,\"unitId\":2,\"echecs\":0,\"reussites\":1,\"intervalDays\":0,\"dueAt\":0},{\"questionId\":66,\"unitId\":2,\"echecs\":0,\"reussites\":1,\"intervalDays\":0,\"dueAt\":0},{\"questionId\":67,\"unitId\":2,\"echecs\":0,\"reussites\":1,\"intervalDays\":0,\"dueAt\":0},{\"questionId\":68,\"unitId\":2,\"echecs\":0,\"reussites\":1,\"intervalDays\":0,\"dueAt\":0},{\"questionId\":505,\"unitId\":2,\"echecs\":1,\"reussites\":1,\"intervalDays\":1,\"dueAt\":1793401200000},{\"questionId\":506,\"unitId\":2,\"echecs\":0,\"reussites\":1,\"intervalDays\":0,\"dueAt\":0},{\"questionId\":507,\"unitId\":2,\"echecs\":0,\"reussites\":1,\"intervalDays\":0,\"dueAt\":0},{\"questionId\":508,\"unitId\":2,\"echecs\":0,\"reussites\":1,\"intervalDays\":0,\"dueAt\":0},{\"questionId\":517,\"unitId\":2,\"echecs\":0,\"reussites\":1,\"intervalDays\":0,\"dueAt\":0},{\"questionId\":518,\"unitId\":2,\"echecs\":0,\"reussites\":1,\"intervalDays\":0,\"dueAt\":0},{\"questionId\":519,\"unitId\":2,\"echecs\":0,\"reussites\":1,\"intervalDays\":0,\"dueAt\":0},{\"questionId\":520,\"unitId\":2,\"echecs\":0,\"reussites\":1,\"intervalDays\":0,\"dueAt\":0},{\"questionId\":521,\"unitId\":2,\"echecs\":0,\"reussites\":1,\"intervalDays\":0,\"dueAt\":0},{\"questionId\":522,\"unitId\":2,\"echecs\":0,\"reussites\":1,\"intervalDays\":0,\"dueAt\":0},{\"questionId\":523,\"unitId\":2,\"echecs\":0,\"reussites\":1,\"intervalDays\":0,\"dueAt\":0},{\"questionId\":524,\"unitId\":2,\"echecs\":0,\"reussites\":1,\"intervalDays\":0,\"dueAt\":0},{\"questionId\":550,\"unitId\":2,\"echecs\":0,\"reussites\":1,\"intervalDays\":0,\"dueAt\":0},{\"questionId\":9000000,\"unitId\":2,\"echecs\":0,\"reussites\":1,\"intervalDays\":0,\"dueAt\":0},{\"questionId\":9000001,\"unitId\":2,\"echecs\":0,\"reussites\":1,\"intervalDays\":0,\"dueAt\":0},{\"questionId\":9000002,\"unitId\":2,\"echecs\":0,\"reussites\":1,\"intervalDays\":0,\"dueAt\":0},{\"questionId\":9000003,\"unitId\":2,\"echecs\":0,\"reussites\":1,\"intervalDays\":0,\"dueAt\":0},{\"questionId\":9000004,\"unitId\":2,\"echecs\":0,\"reussites\":1,\"intervalDays\":0,\"dueAt\":0},{\"questionId\":9000005,\"unitId\":2,\"echecs\":0,\"reussites\":1,\"intervalDays\":0,\"dueAt\":0},{\"questionId\":9000006,\"unitId\":2,\"echecs\":0,\"reussites\":1,\"intervalDays\":0,\"dueAt\":0},{\"questionId\":9000007,\"unitId\":2,\"echecs\":0,\"reussites\":1,\"intervalDays\":0,\"dueAt\":0},{\"questionId\":9000008,\"unitId\":2,\"echecs\":0,\"reussites\":1,\"intervalDays\":0,\"dueAt\":0},{\"questionId\":9000009,\"unitId\":2,\"echecs\":0,\"reussites\":1,\"intervalDays\":0,\"dueAt\":0},{\"questionId\":9000010,\"unitId\":2,\"echecs\":0,\"reussites\":1,\"intervalDays\":0,\"dueAt\":0}]",
+    "boussole_activity_queue": "[{\"kind\":\"event\",\"payload\":{\"studentId\":\"local\",\"type\":\"quiz\",\"payload\":{\"title\":\"اختبار\",\"score\":56,\"total\":57,\"percent\":98,\"unitId\":2,\"domain\":\"العلاقة بين بنية ووظيفة البروتين\"},\"id\":\"act_1793318065213_0bmctyl\",\"createdAt\":\"2026-10-29T23:54:25.213Z\"},\"owner\":\"invite\"}]",
+    "boussole_profil_erreurs": "{\"notion_confusion\":{\"n\":1,\"dernier\":\"2026-10-29T23:54:26.576Z\",\"themes\":[\"العلاقة بين بنية ووظيفة البروتين\"]}}",
+    "kunz_declic_last_id_v1": "dem_05",
+    "svt_progress": "{\"xp\":1120,\"streak\":1,\"completedUnits\":[2],\"completedQuestionsCount\":57,\"studyMinutes\":86,\"dailyGoals\":{\"type\":\"minutes\",\"targetMinutes\":25,\"targetQuestions\":20,\"lastActiveDate\":\"2026-10-30\",\"todayMinutes\":86,\"todayQuestions\":57,\"streakDays\":1,\"completedToday\":true,\"history\":[{\"date\":\"2026-10-30\",\"target\":25,\"achieved\":86,\"type\":\"minutes\",\"completed\":true}],\"serieDernierJour\":\"2026-10-30\",\"joursActifsTotal\":1},\"flashcardStats\":{\"again\":0,\"hard\":0,\"good\":0,\"easy\":0},\"quizScoreHistory\":[{\"date\":\"30‏/10‏/2026\",\"score\":56,\"total\":57,\"unitTitle\":\"العلاقة بين بنية ووظيفة البروتين\"}]}",
+    "lastStudyTime": "1793318065172",
+    "boussole_conseils_rubriques_vus": "[\"lesson\"]",
+    "kunz_declic_shown_v1": "2026-10-30",
+    "svt_units": "[{\"id\":1,\"title\":\"تركيب البروتين\",\"lessonsCount\":6,\"description\":\"التخصص الوظيفي للبروتينات — Synthèse des protéines\",\"progress\":0,\"isLocked\":false,\"domain\":\"التخصص الوظيفي للبروتينات\"},{\"id\":2,\"title\":\"العلاقة بين بنية ووظيفة البروتين\",\"lessonsCount\":4,\"description\":\"التخصص الوظيفي للبروتينات — Relation structure-fonction\",\"progress\":98,\"isLocked\":true,\"domain\":\"التخصص الوظيفي للبروتينات\",\"lastStudiedTimestamp\":1793318023043},{\"id\":3,\"title\":\"النشاط الإنزيمي للبروتينات\",\"lessonsCount\":5,\"description\":\"التخصص الوظيفي للبروتينات — Activité enzymatique\",\"progress\":0,\"isLocked\":false,\"domain\":\"التخصص الوظيفي للبروتينات\"},{\"id\":4,\"title\":\"دور البروتينات في الدفاع عن الذات\",\"lessonsCount\":6,\"description\":\"التخصص الوظيفي للبروتينات — Immunité\",\"progress\":0,\"isLocked\":true,\"domain\":\"التخصص الوظيفي للبروتينات\"},{\"id\":5,\"title\":\"دور البروتينات في الاتصال العصبي\",\"lessonsCount\":5,\"description\":\"التخصص الوظيفي للبروتينات — Communication nerveuse\",\"progress\":0,\"isLocked\":true,\"domain\":\"التخصص الوظيفي للبروتينات\"},{\"id\":6,\"title\":\"آليات تحويل الطاقة الضوئية إلى طاقة كيميائية كامنة\",\"lessonsCount\":3,\"description\":\"التحولات الطاقوية — Photosynthèse\",\"progress\":0,\"isLocked\":true,\"domain\":\"التحولات الطاقوية\"},{\"id\":7,\"title\":\"آليات تحويل الطاقة الكيميائية الكامنة في الجزيئات العضوية إلى ATP\",\"lessonsCount\":3,\"description\":\"التحولات الطاقوية — Respiration cellulaire\",\"progress\":0,\"isLocked\":true,\"domain\":\"التحولات الطاقوية\"},{\"id\":8,\"title\":\"تحويل الطاقة على المستوى ما فوق البنية الخلوية\",\"lessonsCount\":3,\"description\":\"التحولات الطاقوية — Bilan énergétique\",\"progress\":0,\"isLocked\":true,\"domain\":\"التحولات الطاقوية\"},{\"id\":9,\"title\":\"النشاط التكتوني للصفائح\",\"lessonsCount\":3,\"description\":\"التكتونية العامة — Activité tectonique\",\"progress\":0,\"isLocked\":true,\"domain\":\"التكتونية العامة\"},{\"id\":10,\"title\":\"بنية الكرة الأرضية\",\"lessonsCount\":3,\"description\":\"التكتونية العامة — Structure de la Terre\",\"progress\":0,\"isLocked\":true,\"domain\":\"التكتونية العامة\"},{\"id\":11,\"title\":\"النشاط التكتوني والبنيات الجيولوجية المرتبطة به\",\"lessonsCount\":3,\"description\":\"التكتونية العامة — Structures géologiques\",\"progress\":0,\"isLocked\":true,\"domain\":\"التكتونية العامة\"}]"
+  }
+}

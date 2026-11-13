@@ -17,6 +17,15 @@ export interface QuizQuestion {
    * 1 = أساسي · 2 = متوسط · 3 = متقدم.
    */
   difficulte?: 1 | 2 | 3;
+  /**
+   * NOTION testée par le QCM (audit externe « claude 5.2 », axe 3 : « QCM sans
+   * étiquette de notion : lacunes non détectées automatiquement »).
+   * C'est le TITRE ARABE de la figure que le QCM interroge (550/550 QCM ont
+   * une figure) — un contenu déjà relu, jamais inventé. Estampé au moment de
+   * la composition du barrel, comme `difficulte` (source :
+   * src/data/notionsQcm.ts, généré par scripts/build_notions_qcm.ts).
+   */
+  notion?: string;
 }
 
 export interface Unit {
@@ -127,7 +136,15 @@ export interface ChatMessage {
       question: string;
       options: string[];
     };
-    sources?: { type: string; title: string }[];
+    sources?: {
+      type: string;
+      title: string;
+      /** T5 (audit tuteur 2026-11-07) : deep-link « عرض الدرس complet » — renseignés
+       *  quand la source est un chunk de leçon (type 'lesson'). */
+      lessonKey?: string;
+      lessonKind?: 'html' | 'active';
+      unitId?: number;
+    }[];
     confidence?: number;
     reward?: {
       xpGained: number;

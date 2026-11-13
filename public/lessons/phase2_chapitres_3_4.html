@@ -1146,9 +1146,18 @@ ADN (النواة عند حقيقيات النواة)<br>⬇ استنساخ<br>A
 
     var MIN_W = 150;            /* taille minimale d'une figure « zoomable »  */
     var MIN_H = 100;
+    /* ÉCRAN TACTILE (APK Android, tablette) : pas de survol. Les seuils sont
+       abaissés, sinon un graphe réduit par la mise en page mobile (≈ 120×90)
+       reste « non zoomable » et l'élève ne voit jamais la pastille. */
+    var TOUCH = !!(window.matchMedia && window.matchMedia('(pointer: coarse)').matches);
+    var MIN_W_TOUCH = 110;
+    var MIN_H_TOUCH = 80;
     var ZMIN = 0.3;
     var ZMAX = 20;
     var STEP = 1.25;
+    /* Durée pendant laquelle la pastille reste affichée après un APPUI (tactile) :
+       sans elle, la pastille n'existerait que le temps de l'appui. */
+    var BADGE_DELAY = 2600;
     var HINT = 'اسحب للتحريك · عجلة الفأرة أو + / − للتكبير · نقر مزدوج = تبديل الملاءمة · Esc للإغلاق';
 
     var badge = null;
@@ -1162,6 +1171,7 @@ ADN (النواة عند حقيقيات النواة)<br>⬇ استنساخ<br>A
     var cloneSeq = 0;
     var bound = [];             /* écouteurs globaux mémorisés (démontage exact) */
     var wired = false;          /* écouteurs clavier/fullscreen branchés (idempotent) */
+    var badgeTimer = null;      /* minuteur de disparition de la pastille (tactile) */
     var st = { s: 1, base: 1, tx: 0, ty: 0, nw: 0, nh: 0, fit: true };
 
     /* ── Utilitaires ─────────────────────────────────────────────────────── */
@@ -1206,7 +1216,9 @@ ADN (النواة عند حقيقيات النواة)<br>⬇ استنساخ<br>A
 
     function bigEnough(el) {
         var r = el.getBoundingClientRect();
-        return r.width >= MIN_W && r.height >= MIN_H;
+        var minW = TOUCH ? MIN_W_TOUCH : MIN_W;
+        var minH = TOUCH ? MIN_H_TOUCH : MIN_H;
+        return r.width >= minW && r.height >= minH;
     }
 
     /* Remonte du nœud cliqué vers la figure (svg ou image) la plus proche. */
@@ -1315,11 +1327,28 @@ ADN (النواة عند حقيقيات النواة)<br>⬇ استنساخ<br>A
         badgeFig = fig;
         positionBadge();
         badge.classList.add('is-visible');
+        if (badgeTimer) { clearTimeout(badgeTimer); badgeTimer = null; }
     }
 
-    function hideBadge() {
+    /* Sur écran TACTILE, le pointeur quitte la figure à la fin de l'appui :
+       sans délai, la pastille disparaîtrait dans la milliseconde (l'élève
+       ne la voit jamais) et le bouton deviendrait inatteignable — le
+       pointeur du badge serait déjà effacé. On garde donc la pastille et sa
+       figure quelques secondes après l'appui. L'argument force = masquage
+       immédiat (ouverture de la superposition). */
+    function hideBadge(force) {
+        if (!badge) { badgeFig = null; return; }
+        if (TOUCH && !force) {
+            if (badgeTimer) { clearTimeout(badgeTimer); }
+            badgeTimer = setTimeout(function () {
+                badgeTimer = null;
+                badgeFig = null;
+                if (badge) { badge.classList.remove('is-visible'); }
+            }, BADGE_DELAY);
+            return;
+        }
         badgeFig = null;
-        if (badge) { badge.classList.remove('is-visible'); }
+        badge.classList.remove('is-visible');
     }
 
     /* Titre porté par la figure elle-même : le plus fiable (aria-label sur les
@@ -1538,7 +1567,7 @@ ADN (النواة عند حقيقيات النواة)<br>⬇ استنساخ<br>A
         if (!fig) { return; }
         ensureOverlay();
         openFig = fig;
-        hideBadge();
+        hideBadge(true);
         canvas.innerHTML = '';
         canvas.appendChild(prepareClone(fig));
 
@@ -1708,6 +1737,7 @@ ADN (النواة عند حقيقيات النواة)<br>⬇ استنساخ<br>A
        écouteurs (le runtime peut alors être rebranché sur un autre document). */
     function destroy() {
         close();
+        if (badgeTimer) { clearTimeout(badgeTimer); badgeTimer = null; }
         for (var i = 0; i < bound.length; i++) {
             var h = bound[i];
             h[0].removeEventListener(h[1], h[2], h[3]);

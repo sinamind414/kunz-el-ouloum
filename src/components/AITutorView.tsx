@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { Send, Sparkles, AlertCircle, Trash2, BrainCircuit, Target, Stethoscope, Swords, Compass, ClipboardList, Globe2, BookOpen } from 'lucide-react';
 import { ChatMessage } from '../types';
 import { MORCHID_LOGO_URL } from '../data/brandAssets';
+import Dictaphone from './Dictaphone';
 
 import {
   processStudentInput,
@@ -20,9 +21,11 @@ import { loadSession, saveSession, resetSession, clearPendingInteractions, type 
 
 interface AITutorViewProps {
   onBackToDashboard?: () => void;
+  /** Retour à la rubrique d'origine (sauf si la rubrique est 'chat'). */
+  onBackToPreviousTab?: () => void;
   /** Propagation des XP gagnés dans le tutor vers le UserProgress global de l'App.
    *  details (3e paramètre) porte la fin d'activité → journalisation serveur (rec #2 de l'audit). */
-  onXPGained?: (xpGained: number, questionsAnswered: number, details?: TutorRewardDetails) => void;
+  onXPGagné?: (xpGained: number, questionsAnswered: number, details?: TutorRewardDetails) => void;
   /** Point d'entrée contextuel (2026-10-11) : question formulée par la vue d'où
    *  vient l'élève — « اشرح لي هذه الوحدة » dans un cours, « لماذا إجابتي خاطئة؟ »
    *  après une erreur. Elle pré-remplit le champ SANS être envoyée : l'élève la
@@ -79,7 +82,7 @@ function buildWelcomeMessage(): ChatMessage {
   };
 }
 
-export default function AITutorView({ onXPGained, questionInitiale, onQuestionInitialeConsumed, onOuvrirLeconDuCoach }: AITutorViewProps) {
+export default function AITutorView({ onXPGagné, questionInitiale, onQuestionInitialeConsumed, onOuvrirLeconDuCoach, onBackToPreviousTab }: AITutorViewProps) {
   const [session, setSession] = useState<BotSession>(() => loadSession());
   const [messages, setMessages] = useState<ChatMessage[]>(() => [buildWelcomeMessage()]);
   const [input, setInput] = useState('');
@@ -162,7 +165,7 @@ export default function AITutorView({ onXPGained, questionInitiale, onQuestionIn
     // journalisée dans le suivi enseignant (/api/student/sync). L'incrément XP
     // n'est crédité que si > 0.
     if (result.action.reward) {
-      onXPGained?.(Math.max(0, result.action.reward.xpGained ?? 0), 1, {
+      onXPGagné?.(Math.max(0, result.action.reward.xpGained ?? 0), 1, {
         kind: result.action.reward.kind ?? 'quiz',
         score: result.action.reward.score ?? 0,
         total: result.action.reward.total ?? 0,
@@ -319,7 +322,10 @@ export default function AITutorView({ onXPGained, questionInitiale, onQuestionIn
   ];
 
   return (
-    <div className="flex flex-col h-[calc(100vh-140px)] md:h-[calc(100vh-100px)] bg-[#ffffff] border border-[#e2dabf]/60 rounded-3xl shadow-sm overflow-hidden font-sans">
+    /* Hauteur : la vue REMPLIT son conteneur (unique usage : la modale du
+       Capitaine dans App.tsx, qui lui donne une hauteur définie — feuille
+       plein écran sur téléphone, carte 90dvh sur écran large). */
+    <div className="flex h-full min-h-0 flex-col bg-[#ffffff] border border-[#e2dabf]/60 rounded-3xl shadow-sm overflow-hidden font-sans">
 
       {/* Chat Title bar */}
       <div className="bg-[#fff9ed] border-b border-[#e2dabf]/60 px-5 py-4 flex justify-between items-center shrink-0">
@@ -350,6 +356,18 @@ export default function AITutorView({ onXPGained, questionInitiale, onQuestionIn
           <Trash2 className="w-4 h-4" />
         </button>
       </div>
+
+      {/* Retour à la rubrique initiale (quand on est dans une rubrique et
+          qu'on ouvre le chat). */}
+      {onBackToPreviousTab && (
+        <button
+          onClick={onBackToPreviousTab}
+          className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl border border-[#e2dabf]/60 bg-[#fff9ed] text-[#006d37] font-bold text-sm transition-colors hover:bg-[#fed65b]/30 cursor-pointer"
+        >
+          <Globe2 className="w-4 h-4" />
+          <span>العودة إلى Rubrique précédente</span>
+        </button>
+      )}
 
       {/* Messages Scroll area */}
       <div ref={listRef} className="relative flex-1 overflow-y-auto p-4 md:p-6 space-y-4 bg-[#fcf3d8]/10" data-testid="tutor-messages">
@@ -435,16 +453,31 @@ export default function AITutorView({ onXPGained, questionInitiale, onQuestionIn
                   {msg.action?.sources && msg.action.sources.length > 0 && (
                     <div className="mt-2 pt-2 border-t border-[#e2dabf]/40 flex flex-wrap items-center gap-1.5" data-testid="tutor-sources">
                       {msg.action.sources.map((src, sIdx) => (
-                        <span
-                          key={sIdx}
-                          className={`text-[9px] font-bold px-2 py-0.5 rounded-full border ${
-                            src.type === 'out_of_scope'
-                              ? 'bg-[#ffdad6] text-[#ba1a1a] border-[#ba1a1a]/20'
-                              : 'bg-[#fff9ed] text-[#506072] border-[#e2dabf]/50'
-                          }`}
-                        >
-                          {SOURCE_LABELS[src.type] || 'المصدر'}: {src.title}
-                        </span>
+                        <>
+                          <span
+                            key={`${sIdx}-chip`}
+                            className={`text-[9px] font-bold px-2 py-0.5 rounded-full border ${
+                              src.type === 'out_of_scope'
+                                ? 'bg-[#ffdad6] text-[#ba1a1a] border-[#ba1a1a]/20'
+                                : 'bg-[#fff9ed] text-[#506072] border-[#e2dabf]/50'
+                            }`}
+                          >
+                            {SOURCE_LABELS[src.type] || 'المصدر'}: {src.title}
+                          </span>
+                          {/* T5 (audit tuteur 2026-11-07) : bouton « عرض الدرس complet »
+                              sur tout extrait de leçon — réutilise le deep-link déjà
+                              câblé (onOuvrirLeconDuCoach, App.tsx:291). */}
+                          {src.type === 'lesson' && src.lessonKey && src.lessonKind && src.unitId != null && onOuvrirLeconDuCoach && (
+                            <button
+                              key={`${sIdx}-ouvrir`}
+                              onClick={() => onOuvrirLeconDuCoach(src.lessonKey!, src.lessonKind!, src.unitId!)}
+                              className="text-[9px] font-bold px-2 py-0.5 rounded-full border bg-[#fff9ed] text-[#506072] border-[#e2dabf]/50 hover:bg-[#fed65b]/40 cursor-pointer transition-colors"
+                              data-testid={`tutor-ouvrir-lecon-${sIdx}`}
+                            >
+                              عرض الدرس الكامل
+                            </button>
+                          )}
+                        </>
                       ))}
                     </div>
                   )}
@@ -570,6 +603,7 @@ export default function AITutorView({ onXPGained, questionInitiale, onQuestionIn
       {/* Input Form Footer */}
       <div className="p-4 border-t border-[#e2dabf]/60 shrink-0 bg-[#ffffff]">
         <form
+          data-testid="tutor-chat-form"
           onSubmit={(e) => {
             e.preventDefault();
             handleSend(input);
@@ -577,12 +611,29 @@ export default function AITutorView({ onXPGained, questionInitiale, onQuestionIn
           className="flex gap-2"
         >
           <input
+            data-testid="tutor-chat-input"
             type="text"
             value={input}
             onChange={(e) => setInput(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                e.preventDefault();
+                handleSend(input);
+              }
+            }}
             placeholder="اكتب سؤالك للقبطان في علوم الطبيعة والحياة..."
             aria-label="حقل السؤال إلى القبطان"
             className="flex-1 px-4 h-12 rounded-xl bg-[#f3f4f5] border border-transparent focus:border-[#006d37] focus:bg-[#ffffff] text-sm focus:outline-none transition-all placeholder:text-[#506072]/60"
+            disabled={isLoading}
+          />
+          {/* Dictée vocale (2026-11-10, demande du propriétaire) : l'élève
+              parle OU il écrit. Sur l'APK, la dictée passe par le moteur
+              NATIF sur appareil (hors ligne) ; sur le web, par la Web Speech
+              API du navigateur. Le texte dicté est ajouté à la question
+              SANS l'envoyer : l'élève le relit et valide. */}
+          <Dictaphone
+            zone="tutor-chat"
+            onTranscript={(texte) => setInput((v) => (v.trim() ? `${v.trim()} ${texte}` : texte))}
             disabled={isLoading}
           />
           <button

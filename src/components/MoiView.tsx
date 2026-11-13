@@ -27,6 +27,9 @@ import {
   loadParcours,
   todaysCompletions,
 } from '../lib/parcours/parcoursProgress';
+// R1 (audit coach 2026-11-06, GO propriétaire) : le profil élève minimal —
+// panneau de Calculs, pas une rubrique : aucune porte de navigation touchée.
+import ProfilEleveView from './ProfilEleveView';
 
 interface MoiProps {
   /** Prénom de l'élève connecté (null = aucune session). */
@@ -308,6 +311,12 @@ export default function MoiView({ nomEleve, courriel, onOuvrir }: MoiProps) {
             : 'ابدأ من «مساري» — أول درس يفتح الباب لما بعده.'}
         </p>
       </section>
+
+      {/* ---------- ملفّي : le profil élève minimal (R1, audit coach 2026-11-06) ---------- */}
+      {/* Filière affichée (constat — l'app est mono-filière), horizon BAC
+          étiqueté provisoire (jamais tranché par l'élève), objectif de note
+          local et inerte pour le coach. Voir utils/profilEleve.ts. */}
+      <ProfilEleveView />
 
       {/* ---------- المزيد : les rubriques déplacées du menu latéral ---------- */}
       {/* Élément demandé le 2026-10-03 : sous l'avancement de l'élève, sous

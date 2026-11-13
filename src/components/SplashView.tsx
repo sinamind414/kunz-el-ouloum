@@ -54,7 +54,7 @@ const [showIntroSplash, setShowIntroSplash] = useState<boolean>(true);
   };
 
   return (
-    <div className="relative min-h-screen bg-[#fff9ed] text-[#1f1c0b] overflow-hidden flex flex-col justify-between font-sans selection:bg-[#fed65b]/30">
+    <div className="relative min-h-screen bg-[#fff9ed] text-[#1f1c0b] overflow-hidden flex flex-col justify-between font-sans selection:bg-[#fed65b]/30 pt-[var(--pfe-safe-top)] pb-[var(--pfe-safe-bottom)]">
       
       {/* Styles for gold shimmer and sparkles */}
       <style>{`
@@ -239,7 +239,10 @@ const [showIntroSplash, setShowIntroSplash] = useState<boolean>(true);
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.6 }}
-            className="relative min-h-screen w-full flex flex-col justify-between p-6 md:p-12 z-10"
+            /* ZONE SÛRE : le conteneur parent réserve déjà les insets ; ce
+               panneau remplit la hauteur UTILE restante (sinon 100vh déborde
+               et le bouton « دخول » est rogné par le bas). */
+            className="relative min-h-[calc(100dvh-var(--pfe-safe-top)-var(--pfe-safe-bottom))] w-full flex flex-col justify-between p-6 md:p-12 z-10"
           >
             {/* Decorative Atmosphere Orbs */}
             <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
@@ -362,7 +365,8 @@ const [showIntroSplash, setShowIntroSplash] = useState<boolean>(true);
       </AnimatePresence>
 
       {showPrivacy && (
-        <div className="fixed inset-0 z-[100] flex items-end sm:items-center justify-center bg-black/50 p-0 sm:p-6" onClick={() => setShowPrivacy(false)}>
+        /* ZONE SÛRE : feuille `fixed` → padding bas pour la barre système. */
+        <div className="fixed inset-0 z-[100] flex items-end sm:items-center justify-center bg-black/50 p-0 sm:p-6 sm:pb-[calc(1.5rem+var(--pfe-safe-bottom))] pb-[var(--pfe-safe-bottom)]" onClick={() => setShowPrivacy(false)}>
           <div
             dir="rtl"
             onClick={(e) => e.stopPropagation()}

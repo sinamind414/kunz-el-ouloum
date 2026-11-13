@@ -147,6 +147,33 @@
   --text-slate: #a4b0a2;
 }
 
+/* ─────────────────────────────────────────────────────────────────────────
+   ZONES SÛRES (safe-area) — APK ANDROID 15+ (edge-to-edge obligatoire)
+
+   Android 15 impose l'edge-to-edge aux applications targetSdk ≥ 35 : la
+   WebView Capacitor passe SOUS la barre d'état et SOUS la barre de
+   navigation système. Le plugin natif `SystemBars` de Capacitor 8 (mode
+   « css », le défaut) calcule les insets et les injecte comme variables CSS
+   sur <html> :
+       --safe-area-inset-top / -right / -bottom / -left
+   Tant que le WEB ne les consomme pas, l'interface passe sous les barres
+   système : les icônes de l'en-tête disparaissent sous la barre d'état, la
+   barre de navigation est mangée par la barre système, la bulle du Capitaine
+   et la fenêtre de chat (position: fixed) sont tronquées en bas.
+
+   `--pfe-safe-*` = la valeur utile, unifiée :
+     · APK Android  → var(--safe-area-inset-*) (injecté par Capacitor)
+     · web / PWA    → env(safe-area-inset-*) (repli iOS/Android)
+   `max()` garde la plus grande des deux : si les deux sources existent, on
+   prend la plus prudente.
+   ───────────────────────────────────────────────────────────────────────── */
+:root {
+  --pfe-safe-top: max(var(--safe-area-inset-top, 0px), env(safe-area-inset-top, 0px));
+  --pfe-safe-right: max(var(--safe-area-inset-right, 0px), env(safe-area-inset-right, 0px));
+  --pfe-safe-bottom: max(var(--safe-area-inset-bottom, 0px), env(safe-area-inset-bottom, 0px));
+  --pfe-safe-left: max(var(--safe-area-inset-left, 0px), env(safe-area-inset-left, 0px));
+}
+
 @theme {
   --font-sans: "Noto Kufi Arabic", "Inter", sans-serif;
   --font-display: "Noto Kufi Arabic", "Inter", sans-serif;
@@ -396,4 +423,20 @@ header .font-display {
 :focus-visible:not(body) {
   position: relative;
   z-index: 1;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   ZONES SÛRES — composants FIXES (position: fixed).
+   Un élément `fixed` est positionné par rapport au VIEWPORT : il ignore le
+   padding de la coquille de l'app. Il faut donc traiter chaque surface fixe
+   séparément. Cette règle couvre les surfaces montées par le RUNTIME DE ZOOM
+   (src/utils/figureZoomRuntime.ts), dont le bloc de commandes se retrouvait
+   sous la barre d'état et la ligne d'aide sous la barre de navigation :
+   la fenêtre de zoom s'ouvrait, mais ses boutons +/− étaient hors d'atteinte.
+   ───────────────────────────────────────────────────────────────────────── */
+.pfe-zoom-overlay .pfe-zoom-bar {
+  padding-top: calc(10px + var(--pfe-safe-top));
+}
+.pfe-zoom-overlay .pfe-zoom-foot {
+  padding-bottom: calc(8px + var(--pfe-safe-bottom));
 }

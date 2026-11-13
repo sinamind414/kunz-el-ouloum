@@ -1,0 +1,205 @@
+{
+  "observations": [
+    {
+      "name": "F11-guest-bridge",
+      "tokenPresent": false,
+      "freeChapter": 1
+    },
+    {
+      "name": "F11-guest-bilan-three-domains",
+      "screens": [
+        "✕ إنهاء\nالسؤال 1 / 15 — المجال 1 — التخصص الوظيفي للبروتينات\nدرس\n\nأين تتواجد المستقبلات الأفيونية الخاصة بالأنكيفالين والمورفين؟ وما هو تأثير ارتباط المورفين بها؟\n\nج) تتواجد في النخاع الشوكي حيث تُحفظ رسالة الألم قبل توزعها.ب) تتواجد على الغشاء بعد المشبكي للعصبون وتبعية مشابكية، ما يغيّر تحرير المادة P.أ) تتواجد على الغشاء قبل المشبكي للعصبون الحسي للألم، وارتباط المورفين بها يغلق قنوات Ca²⁺ ويمنع إطراح المادة P.",
+        "✕ إنهاء\nالسؤال 2 / 15 — المجال 2 — التحولات الطاقوية\nالفصل 35\n\nالهدم الكلي لجزيئة الغلوكوز في الأكسدة التنفسية يحدث في:\n\nوسط مسدود غياب الأكسجينالوسط الهوائي بوجود الأكسجينالظلام فقط دون ضوء",
+        "✕ إنهاء\nالسؤال 3 / 15 — المجال 3 — التكتونية العامة\nدرس\n\nما هو التركيب الكيميائي المميّز لقلب الأرض (النواة الخارجية والداخلية معاً) والذي يفسر كثافتها العالية جداً (10 إلى 13 g/cm³)؟\n\nب) تتكون من سيليكون ومغنيزيوم في الحالة الصلبة تماماً.أ) تتكون النواة من سبيكة معدنية ثقيلة جداً من الحديد والنيكل ( Fe - Ni أو NIFE ).ج) تتكون من ماء وأكسجين مضغوط."
+      ]
+    },
+    {
+      "name": "F14-documents-inventory",
+      "cards": [
+        {
+          "id": "antibiotique_rifamycine",
+          "figures": 1,
+          "unavailable": 0,
+          "contexts": 1,
+          "elite": 1
+        },
+        {
+          "id": "uracile_radioactif",
+          "figures": 0,
+          "unavailable": 0,
+          "contexts": 1,
+          "elite": 0
+        },
+        {
+          "id": "lecture_shifra",
+          "figures": 0,
+          "unavailable": 2,
+          "contexts": 1,
+          "elite": 1
+        },
+        {
+          "id": "anemie_falciforme",
+          "figures": 0,
+          "unavailable": 1,
+          "contexts": 1,
+          "elite": 1
+        },
+        {
+          "id": "mixture_acides_amines",
+          "figures": 0,
+          "unavailable": 0,
+          "contexts": 1,
+          "elite": 0
+        },
+        {
+          "id": "digestion_pepsine",
+          "figures": 1,
+          "unavailable": 0,
+          "contexts": 1,
+          "elite": 1
+        },
+        {
+          "id": "detergent_enzymatique",
+          "figures": 1,
+          "unavailable": 0,
+          "contexts": 1,
+          "elite": 1
+        },
+        {
+          "id": "diabete_januvia",
+          "figures": 1,
+          "unavailable": 0,
+          "contexts": 1,
+          "elite": 1
+        },
+        {
+          "id": "greffe_rein",
+          "figures": 1,
+          "unavailable": 0,
+          "contexts": 1,
+          "elite": 1
+        },
+        {
+          "id": "sida_vih",
+          "figures": 0,
+          "unavailable": 0,
+          "contexts": 1,
+          "elite": 0
+        },
+        {
+          "id": "vaccination_rappel",
+          "figures": 0,
+          "unavailable": 0,
+          "contexts": 1,
+          "elite": 0
+        },
+        {
+          "id": "labo_ouchterlony",
+          "figures": 1,
+          "unavailable": 0,
+          "contexts": 1,
+          "elite": 1
+        },
+        {
+          "id": "cellules_cibles_lt",
+          "figures": 0,
+          "unavailable": 0,
+          "contexts": 1,
+          "elite": 0
+        },
+        {
+          "id": "sarin_attaque",
+          "figures": 1,
+          "unavailable": 0,
+          "contexts": 1,
+          "elite": 1
+        },
+        {
+          "id": "curare_chirurgie",
+          "figures": 2,
+          "unavailable": 0,
+          "contexts": 1,
+          "elite": 1
+        },
+        {
+          "id": "seuil_integration",
+          "figures": 1,
+          "unavailable": 1,
+          "contexts": 1,
+          "elite": 1
+        },
+        {
+          "id": "serre_agricole",
+          "figures": 1,
+          "unavailable": 0,
+          "contexts": 1,
+          "elite": 1
+        },
+        {
+          "id": "jagendorf_chloroplaste",
+          "figures": 0,
+          "unavailable": 0,
+          "contexts": 1,
+          "elite": 0
+        },
+        {
+          "id": "coureur_crampe",
+          "figures": 1,
+          "unavailable": 0,
+          "contexts": 1,
+          "elite": 1
+        },
+        {
+          "id": "feuille_jour_nuit",
+          "figures": 1,
+          "unavailable": 0,
+          "contexts": 1,
+          "elite": 1
+        },
+        {
+          "id": "seisme_boumerdes",
+          "figures": 1,
+          "unavailable": 0,
+          "contexts": 1,
+          "elite": 1
+        },
+        {
+          "id": "volcans_subduction",
+          "figures": 1,
+          "unavailable": 0,
+          "contexts": 1,
+          "elite": 1
+        }
+      ]
+    },
+    {
+      "name": "F12-reversed-pairing-validator",
+      "id": "fb_1_3",
+      "prompt": "أكمل: قاعدة التكامل يرتبط هنا بـ: _______",
+      "expected": [
+        "A تقابل T وG تقابل C في ADN"
+      ],
+      "wrong": "A تقابل C وG تقابل T في ADN",
+      "result": {
+        "correct": true,
+        "coverage": 1
+      },
+      "empty": {
+        "correct": false,
+        "coverage": 0
+      },
+      "exact": {
+        "correct": true,
+        "coverage": 1
+      },
+      "exported": 121
+    },
+    {
+      "name": "mobile-dimensions",
+      "width": 390,
+      "scrollWidth": 390
+    }
+  ],
+  "pageErrors": [],
+  "scenarioErrors": []
+}

@@ -1,0 +1,108 @@
+{
+  "text": "علوم الطبيعة والحياة • العلاقة بين بنية ووظيفة البروتين\nالسؤال 1 من 57\n15:00\nرسم تخطيطي توضيحي\nصعوبة: أساسي\nحسب ملخصات البنية الفراغية، بم تتميز «البنية الثالثية» (Structure tertiaire) للبروتين؟\nأ\nالتفاف السلسلة لتشكيل حلزون ألفا أو وريقة بيتا بواسطة روابط هيدروجينية.\nب\nتتابع خطي للأحماض الأمينية بروابط ببتيدية فقط.\nج\nانطواء السلسلة الثانوية في الفراغ، وتستقر بروابط (كبريتية، شاردية، هيدروجينية، كارهة للماء) بين الجذور (R).\nد\nتجمع سلسلتين ببتيديتين أو أكثر.\nالشرح والمبرر العلمي:\n\nالبنية الثالثية تنتج عن انطواء البنية الثانوية في الفراغ، ويثبتها أربعة أنواع من الروابط بين الجذور R: جسور ثنائية الكبريت وروابط شاردية وهيدروجينية وتفاعلات كارهة للماء. لا تخلطها بالثانوية المحصورة في السلسلة الرئيسية. في البكالوريا: اذكر الأنواع الأربعة.\n\nإجابتك في هذا السؤال كان الاختيار (أ) « التفاف السلسلة لتشكيل حلزون ألفا أو وريقة بيتا بواسطة روابط هيدروجينية. » — الشرح العلمي أعلاه يوضّح المفهوم المرتبط بهذا الخطأ، ويمكنك إعادة سؤال الوحدة لاحقاً لتثبيته.\n\nالسابق\nالتالي",
+  "buttons": [
+    {
+      "text": "",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "أ\nالتفاف السلسلة لتشكيل حلزون ألفا أو وريقة بيتا بواسطة روابط هيدروجينية.",
+      "label": null,
+      "testid": null,
+      "disabled": true
+    },
+    {
+      "text": "ب\nتتابع خطي للأحماض الأمينية بروابط ببتيدية فقط.",
+      "label": null,
+      "testid": null,
+      "disabled": true
+    },
+    {
+      "text": "ج\nانطواء السلسلة الثانوية في الفراغ، وتستقر بروابط (كبريتية، شاردية، هيدروجينية، كارهة للماء) بين الجذور (R).",
+      "label": null,
+      "testid": null,
+      "disabled": true
+    },
+    {
+      "text": "د\nتجمع سلسلتين ببتيديتين أو أكثر.",
+      "label": null,
+      "testid": null,
+      "disabled": true
+    },
+    {
+      "text": "السابق",
+      "label": null,
+      "testid": null,
+      "disabled": true
+    },
+    {
+      "text": "التالي",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "",
+      "label": "تكبير الشكل",
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "−",
+      "label": "تصغير",
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "+",
+      "label": "تكبير",
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "ملاءمة",
+      "label": "إعادة الملاءمة إلى الشاشة",
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "100%",
+      "label": "الحجم الأصلي للشكل",
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "نافذة",
+      "label": "فتح الشكل في نافذة مستقلة",
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "إغلاق",
+      "label": "إغلاق (Esc)",
+      "testid": null,
+      "disabled": false
+    }
+  ],
+  "testids": [],
+  "inputs": [],
+  "width": 1280,
+  "scrollWidth": 1280,
+  "storage": {
+    "theme": "light",
+    "kunz_declic_last_id_v1": "dem_05",
+    "svt_progress": "{\"xp\":0,\"streak\":0,\"completedUnits\":[],\"completedQuestionsCount\":0,\"studyMinutes\":0,\"dailyGoals\":{\"type\":\"minutes\",\"targetMinutes\":25,\"targetQuestions\":20,\"lastActiveDate\":\"\",\"todayMinutes\":0,\"todayQuestions\":0,\"streakDays\":0,\"completedToday\":false},\"flashcardStats\":{\"again\":0,\"hard\":0,\"good\":0,\"easy\":0},\"quizScoreHistory\":[]}",
+    "lastStudyTime": "1793318023045",
+    "boussole_conseils_rubriques_vus": "[\"lesson\"]",
+    "kunz_declic_shown_v1": "2026-10-30",
+    "svt_units": "[{\"id\":1,\"title\":\"تركيب البروتين\",\"lessonsCount\":6,\"description\":\"التخصص الوظيفي للبروتينات — Synthèse des protéines\",\"progress\":0,\"isLocked\":false,\"domain\":\"التخصص الوظيفي للبروتينات\"},{\"id\":2,\"title\":\"العلاقة بين بنية ووظيفة البروتين\",\"lessonsCount\":4,\"description\":\"التخصص الوظيفي للبروتينات — Relation structure-fonction\",\"progress\":0,\"isLocked\":true,\"domain\":\"التخصص الوظيفي للبروتينات\",\"lastStudiedTimestamp\":1793318023043},{\"id\":3,\"title\":\"النشاط الإنزيمي للبروتينات\",\"lessonsCount\":5,\"description\":\"التخصص الوظيفي للبروتينات — Activité enzymatique\",\"progress\":0,\"isLocked\":true,\"domain\":\"التخصص الوظيفي للبروتينات\"},{\"id\":4,\"title\":\"دور البروتينات في الدفاع عن الذات\",\"lessonsCount\":6,\"description\":\"التخصص الوظيفي للبروتينات — Immunité\",\"progress\":0,\"isLocked\":true,\"domain\":\"التخصص الوظيفي للبروتينات\"},{\"id\":5,\"title\":\"دور البروتينات في الاتصال العصبي\",\"lessonsCount\":5,\"description\":\"التخصص الوظيفي للبروتينات — Communication nerveuse\",\"progress\":0,\"isLocked\":true,\"domain\":\"التخصص الوظيفي للبروتينات\"},{\"id\":6,\"title\":\"آليات تحويل الطاقة الضوئية إلى طاقة كيميائية كامنة\",\"lessonsCount\":3,\"description\":\"التحولات الطاقوية — Photosynthèse\",\"progress\":0,\"isLocked\":true,\"domain\":\"التحولات الطاقوية\"},{\"id\":7,\"title\":\"آليات تحويل الطاقة الكيميائية الكامنة في الجزيئات العضوية إلى ATP\",\"lessonsCount\":3,\"description\":\"التحولات الطاقوية — Respiration cellulaire\",\"progress\":0,\"isLocked\":true,\"domain\":\"التحولات الطاقوية\"},{\"id\":8,\"title\":\"تحويل الطاقة على المستوى ما فوق البنية الخلوية\",\"lessonsCount\":3,\"description\":\"التحولات الطاقوية — Bilan énergétique\",\"progress\":0,\"isLocked\":true,\"domain\":\"التحولات الطاقوية\"},{\"id\":9,\"title\":\"النشاط التكتوني للصفائح\",\"lessonsCount\":3,\"description\":\"التكتونية العامة — Activité tectonique\",\"progress\":0,\"isLocked\":true,\"domain\":\"التكتونية العامة\"},{\"id\":10,\"title\":\"بنية الكرة الأرضية\",\"lessonsCount\":3,\"description\":\"التكتونية العامة — Structure de la Terre\",\"progress\":0,\"isLocked\":true,\"domain\":\"التكتونية العامة\"},{\"id\":11,\"title\":\"النشاط التكتوني والبنيات الجيولوجية المرتبطة به\",\"lessonsCount\":3,\"description\":\"التكتونية العامة — Structures géologiques\",\"progress\":0,\"isLocked\":true,\"domain\":\"التكتونية العامة\"}]"
+  }
+}

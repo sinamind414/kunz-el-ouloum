@@ -1,9 +1,9 @@
-// BandeauConseilRubrique.tsx — LE GUIDE ACCUEILLE, PUIS SE TAIT.
+// BandeauConseilRubrique.tsx — LE GUIDE PARLE À CHAQUE ENTRÉE, EN ROTATION.
 //
 // Demande d'origine (14/10/2026) : « je veux que le tutor morchid parle quand tu
 // rentres à une rubrique, donne des conseils comme un prof ». Le bandeau honore
-// la demande, avec une règle en plus — la PREMIÈRE VISITE seulement. Voir
-// `data/conseilsRubrique.ts` pour la raison complète.
+// la demande : il s'ouvre à chaque entrée de rubrique qui a un conseil, avec un
+// conseil différent à chaque fois (rotation dans `data/conseilsRubrique.ts`).
 //
 // Une exception assumée au « une seule voix » : le bandeau est le SEUL endroit
 // où le personnage apparaît en grand dans une rubrique. Ailleurs il est réduit
@@ -12,11 +12,12 @@
 
 import { CAPITAINE_IDENTITE_AR } from '../data/capitaineIdentite';
 import { CAPITAINE_VISAGE_URL } from '../data/brandAssets';
-import type { ConseilRubrique } from '../data/conseilsRubrique';
+import type { Conseil } from '../data/conseilsRubrique';
 
 interface Props {
-  conseil: ConseilRubrique;
-  /** L'élève ferme le bandeau : il disparaît, et ne revient pas seul. */
+  /** Le conseil sélectionné par rotation — un seul, jamais la liste complète. */
+  conseil: Conseil;
+  /** L'élève ferme le bandeau : il disparaît. */
   onFermer: () => void;
 }
 

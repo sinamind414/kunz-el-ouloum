@@ -12,13 +12,18 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import { ArrowRight, CalendarDays, Check, Clock, ListChecks, Printer } from 'lucide-react';
+import PushOptIn from './PushOptIn';
 import { ARCHETYPE_BY_ID } from '../data/bacArchetypes';
 import { readPlanSettings, writePlanSettings } from '../data/planSettings';
 import { INITIAL_UNITS } from '../unitCatalog';
+import { rubriquePayanteOuverte, uniteOuverte } from '../utils/acces';
 import MarqueDocument from './MarqueDocument';
 import {
   DIFFICULTY_BONUS,
   declaredWeight,
+  duesDuDeck,
+  fileRappels,
+  gestesOuverts,
   observedWeight,
   prioritizedUnitIds,
   unitPriority,
@@ -26,6 +31,7 @@ import {
   TASK_LABEL_AR,
   buildRevisionPlan,
   minutesByUnit,
+  type PlanAcces,
   type PlanTask,
 } from '../data/revisionPlan';
 
@@ -47,6 +53,7 @@ const KIND_CLASS: Record<PlanTask['kind'], string> = {
   redaction: 'bg-[#e0f2fe] text-[#075985] dark:bg-sky-500/10 dark:text-sky-300',
   situation: 'bg-[#e8f5ee] text-[#006d37] dark:bg-black/20 dark:text-[#2ecc71]',
   carte: 'bg-blue-50 text-blue-800 dark:bg-blue-500/10 dark:text-blue-300',
+  rappel: 'bg-[#fce7f3] text-[#9d174d] dark:bg-pink-500/10 dark:text-pink-300',
 };
 
 const cleStockage = (d: number, m: number) => `kunz.revisionPlan.${d}x${m}`;
@@ -75,9 +82,41 @@ export default function RevisionPlanView({ onBackToHome, onOpenRedaction }: Revi
   // programme (U7 annoncée à 19 %, constatée à 3,3 %).
   const [explication, setExplication] = useState(false);
 
-  const plan = useMemo(() => buildRevisionPlan({ daysLeft, minutesPerDay }), [daysLeft, minutesPerDay]);
+  // H1 (audit 8 axes) : l'accès réel — l'invité garde le المجال 1 (U1-U5) et
+  // les gestes qui ne renvoient pas à une rubrique payante (mesures :
+  // schémas, situations, rédactions, montages => SchemaDrillView/SituationBankView/
+  // BacIdeasView — `rubriquePayanteOuverte` ; capsules/carte => `uniteOuverte`).
+  // Snapshot au montage : la facturation change rarement au milieu d'un plan ;
+  // le « pour » de chaque ligne reste verrouillé dans acces.test.ts.
+  const acces = useMemo<PlanAcces>(() => {
+    const unites = prioritizedUnitIds().filter((u) => uniteOuverte(u));
+    return { unites, gestes: gestesOuverts(rubriquePayanteOuverte()) };
+  }, []);
+  // H3 (audit 8 axes) : les cartes SRS DUES ouvrent chaque journée. Mesure au
+  // montage (même snapshot que `acces`) : les échéances changent quand l'élève
+  // note ses cartes, et le plan est recalculé à chaque ouverture — le rappel
+  // d'hier noté « جيد » repart avec son intervalle au lieu d'être re-programmé.
+  const rappels = useMemo(
+    () => fileRappels(duesDuDeck(acces.unites), acces.unites),
+    [acces],
+  );
+  const plan = useMemo(
+    () => buildRevisionPlan({ daysLeft, minutesPerDay, acces, rappels }),
+    [daysLeft, minutesPerDay, acces, rappels],
+  );
   const parUnite = useMemo(() => minutesByUnit(plan), [plan]);
   const cle = cleStockage(daysLeft, minutesPerDay);
+
+  // ② (audit 8 axes, 2026-11-04) : la promesse de budget doit rester honnête.
+  // Pour un invité, le contenu ouvert (U1-U5, capsules + cartes seulement)
+  // ne remplit pas le budget demandé : même le jour le plus plein du plan
+  // fait moins que `minutesPerDay`, et RIEN ne le disait — l'élève découvrait
+  // un plan plus court que promis, sans explication. Le chiffre affiché est
+  // MESURÉ sur le plan réel (max des journées), jamais estimé ; la mention
+  // « اشتراك » n'apparaît que si des gestes sont réellement fermés.
+  const jourLePlusPlein = plan.days.reduce((max, j) => Math.max(max, j.totalMinutes), 0);
+  const budgetNonAtteint = jourLePlusPlein < minutesPerDay;
+  const gestesLimites = !rubriquePayanteOuverte();
 
   useEffect(() => {
     setFait(chargerFait(cle));
@@ -207,9 +246,20 @@ export default function RevisionPlanView({ onBackToHome, onOpenRedaction }: Revi
             <Clock className="w-4 h-4" />
             {Math.round(plan.totalMinutes / 60)} ساعة إجمالاً
           </span>
-          <span>الوحدات المغطاة: {plan.coveredUnitIds.length} / 11</span>
+          {/* H1 : le dénominateur est l'accès réel — « 5 / 11 » pour un invité
+              qui ne VOIT que 5 unités serait un mensonge de poudre aux yeux et
+              « 4 / 11 » un mensonge d'absence. Le chiffre promis reste honnête : */}
+          <span data-testid="plan-unites-cibles">
+            الوحدات المغطاة: {plan.coveredUnitIds.length} / {acces.unites.length}
+          </span>
           <span data-testid="plan-progression">أنجزت {pourcent}٪</span>
         </div>
+        {budgetNonAtteint && (
+          <p data-testid="plan-budget-avise" className="mt-2 text-xs font-bold text-[#8a5a00] dark:text-amber-300">
+            المحتوى المتاح يمنح {jourLePlusPlein} د/يوم فقط — أقل من {minutesPerDay} د المطلوبة
+            {gestesLimites ? ' (بعض الأنشطة تتطلب الاشتراك)' : ''}.
+          </p>
+        )}
         <div className="mt-3 h-2 rounded-full bg-black/10 dark:bg-white/10 overflow-hidden">
           <div className="h-full bg-[#006d37] transition-all" style={{ width: `${pourcent}%` }} />
         </div>
@@ -239,6 +289,7 @@ export default function RevisionPlanView({ onBackToHome, onOpenRedaction }: Revi
             {prioritizedUnitIds().map((unitId) => {
               const titre = INITIAL_UNITS.find((u) => u.id === unitId)?.title ?? `وحدة ${unitId}`;
               const minutes = parUnite[unitId] ?? 0;
+              const ouverte = uniteOuverte(unitId);
               return (
                 <p
                   key={unitId}
@@ -249,6 +300,13 @@ export default function RevisionPlanView({ onBackToHome, onOpenRedaction }: Revi
                   {observedWeight(unitId)}٪ · علاوة الصعوبة {DIFFICULTY_BONUS[unitId] ?? 0} · الأولوية{' '}
                   {Math.round(unitPriority(unitId) * 10) / 10}
                   {minutes > 0 && <span className="text-[#006d37] dark:text-[#2ecc71]"> · {minutes} دقيقة في خطتك</span>}
+                  {/* H1 : une unité fermée est NOMMÉE comme fermée, jamais
+                      passée sous silence ni programmée en cachette. */}
+                  {!ouverte && (
+                    <span data-testid={`explication-verrouillee-${unitId}`} className="text-[#8a6a00] font-bold">
+                      {' '}· 🔒 يُفتَح بالاشتراك
+                    </span>
+                  )}
                 </p>
               );
             })}
@@ -423,6 +481,9 @@ export default function RevisionPlanView({ onBackToHome, onOpenRedaction }: Revi
       </div>
       {/* Pied de page de traçabilité — VISIBLE À L'IMPRESSION SEULEMENT (A3). */}
       <MarqueDocument document="خطة المراجعة" />
+
+      {/* M4 — Web Push : opt-in aux rappels de révision espacée. */}
+      <PushOptIn mode="كامل" />
     </div>
   );
 }

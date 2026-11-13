@@ -272,3 +272,43 @@ self.addEventListener('fetch', (event) => {
 
   event.respondWith(staleWhileRevalidate(request));
 });
+
+// ── Web Push (M4) — handler de notification push ─────────────
+self.addEventListener('push', (event) => {
+  let data = { title: 'تذكير بالمراجعة', body: 'حان الوقت لمراجعة دروسك في الأحياء والجيولوجيا.', url: '/' };
+  try {
+    if (event.data) data = JSON.parse(event.data.text());
+  } catch { /* données push non-JSON : on garde les valeurs par défaut */ }
+
+  const options = {
+    body: data.body,
+    icon: '/icons/icon-192.png',
+    badge: '/icons/icon-192.png',
+    tag: 'rappel-revision',
+    data: { url: data.url || '/' },
+    lang: 'ar',
+    dir: 'rtl',
+    renotify: false,
+    requireInteraction: false,
+    silent: false,
+  };
+
+  event.waitUntil(
+    self.registration.showNotification(data.title, options),
+  );
+});
+
+self.addEventListener('notificationclick', (event) => {
+  event.notification.close();
+  const url = event.notification.data?.url || '/';
+  event.waitUntil(
+    self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then((clients) => {
+      for (const client of clients) {
+        if (client.url.includes(new URL(url, self.location.origin).origin) && 'focus' in client) {
+          return client.focus();
+        }
+      }
+      if (self.clients.openWindow) return self.clients.openWindow(url);
+    }),
+  );
+});

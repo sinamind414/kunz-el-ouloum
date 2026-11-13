@@ -1,0 +1,99 @@
+From: Antigravity Validation Agent
+Subject: [PATCH] Corrections complètes pour archive BAC 2013-2020
+Date: Sun, 30 Aug 2026 16:00:00 +0000
+
+This patch includes:
+1. Fix for CI workflow to run on main and arena/** branches
+2. Instructions for PDF verification (manual step required)
+3. Summary of all changes already pushed to arena/01a0533b-rebrique-sujet-bac
+
+---
+
+=== PART 1: CI WORKFLOW FIX (TO APPLY IMMEDIATELY) ===
+
+File: .github/workflows/quality.yml
+Change: Line 5 - Extend CI to run on main and all arena branches
+
+--- a/.github/workflows/quality.yml
++++ b/.github/workflows/quality.yml
+@@ -2,7 +2,7 @@ name: Quality
+ 
+ on:
+   push:
+-    branches: [arena/01a0376b-rebrique-sujet-bac]
++    branches: [main, arena/**]
+   pull_request:
+ 
+ permissions:
+
+=== PART 2: PDF VERIFICATION (MANUAL STEP REQUIRED) ===
+
+The following 9 PDFs need manual verification (network access required):
+
+| Year | Stream | Session | PDF URL | Status |
+|------|--------|---------|---------|--------|
+| 2018 | SE | main | https://www.dzexams.com/uploads/sujets/officiels/bac/2018/dzexams-bac-sciences-3509975.pdf | ❌ Not verified |
+| 2016 | SE | exceptional | https://www.dzexams.com/uploads/sujets/officiels/bac/2016-2/dzexams-bac-sciences-3814840.pdf | ❌ Not verified |
+| 2014 | SE | main | https://www.dzexams.com/uploads/sujets/officiels/bac/2014/dzexams-bac-sciences-4380238.pdf | ❌ Not verified |
+| 2019 | M | main | https://www.dzexams.com/uploads/sujets/officiels/bac/2019/dzexams-bac-sciences-2280992.pdf | ❌ Not verified |
+| 2018 | M | main | https://www.dzexams.com/uploads/sujets/officiels/bac/2018/dzexams-bac-sciences-1967487.pdf | ❌ Not verified |
+| 2017 | M | main | https://www.dzexams.com/uploads/sujets/officiels/bac/2017/dzexams-bac-sciences-2275712.pdf | ❌ Not verified |
+| 2015 | M | main | https://www.dzexams.com/uploads/sujets/officiels/bac/2015/dzexams-bac-sciences-2723927.pdf | ❌ Not verified |
+| 2014 | M | main | https://www.dzexams.com/uploads/sujets/officiels/bac/2014/dzexams-bac-sciences-2369148.pdf | ❌ Not verified |
+| 2013 | M | main | https://www.dzexams.com/uploads/sujets/officiels/bac/2013/dzexams-bac-sciences-2770867.pdf | ❌ Not verified |
+
+INSTRUCTIONS FOR ANTIGRAVITY:
+1. Run verification script (requires network access to dzexams.com):
+   node scripts/verify-archive-pdfs.mjs
+
+2. If all PDFs are accessible (HTTP 200 + valid PDF):
+   Update data/archive.js for each blocked entry:
+   - Change: page: "access_confirmed" → "consulted"
+   - Change: contentVerified: false → true
+
+3. If some PDFs fail:
+   - Open an issue with the broken links
+   - Search for alternative sources
+
+=== PART 3: ALREADY PUSHED TO arena/01a0533b-rebrique-sujet-bac ===
+
+The following files are already pushed and ready:
+
+1. data/archive.js
+   - Added contentVerified field to all entries
+   - Corrected page status: "consulted" vs "access_confirmed"
+   - 10 entries: contentVerified: true (viewer OK)
+   - 9 entries: contentVerified: false (viewer blocked)
+
+2. tests/archive.test.mjs
+   - Added 4 new tests for contentVerified validation
+   - Tests ensure no unverified entries can be added
+
+3. scripts/verify-archive-pdfs.mjs
+   - Script to verify all blocked PDFs
+   - Checks HTTP 200, valid PDF header, non-empty files
+
+4. scripts/VERIFY_PDFS.md
+   - Complete documentation for manual PDF verification
+   - Includes direct links and troubleshooting
+
+5. .github/issue_ci_workflow.md
+   - Template for CI workflow issue
+
+=== PART 4: MERGE CHECKLIST FOR ANTIGRAVITY ===
+
+Before merging arena/01a0533b-rebrique-sujet-bac to main:
+
+- [ ] Apply CI workflow fix (Part 1)
+- [ ] Verify all 9 blocked PDFs (Part 2)
+- [ ] Update contentVerified status in data/archive.js
+- [ ] Run tests: npm test
+- [ ] Wait for CI SUCCESS on the merge commit
+- [ ] Verify CI runs on main (after workflow fix)
+
+=== PART 5: FINAL VALIDATION ===
+
+After merge:
+1. All 19 entries should have contentVerified: true
+2. CI should run on main for all future pushes
+3. No entries should have page: "access_confirmed" (all should be "consulted")

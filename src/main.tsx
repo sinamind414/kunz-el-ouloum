@@ -18,7 +18,7 @@ createRoot(document.getElementById('root')!).render(
 
 // H1 APK (2026-10-21) : dans l'APK Capacitor, tout le contenu est DÉJÀ embarqué
 // (android/app/src/main/assets/public/) — le Service Worker y serait un
-// double-cache redondant (arbitrage A3, CHIFFRAGE_APK_2026-10-20.md). On le
+// double-cache redondant (arbitrage A3, docs/rapports/CHIFFRAGE_APK_2026-10-20.md). On le
 // neutralise côté natif SANS toucher au web, en détectant le bridge Capacitor
 // injecté par la WebView (window.Capacitor, absent sur un navigateur classique).
 // Aucun import de @capacitor/core : zéro octet ajouté au bundle web.
@@ -79,9 +79,8 @@ if ('serviceWorker' in navigator && !import.meta.env.PROD) {
 //      clique CE bouton, exactement comme le ferait l'élève ;
 //   3. un bouton عودة est visible (retour in-app) → on le clique ;
 //   4. sinon (racine) → TOAST + double-retour < 2 s pour quitter.
-// L'app est une SPA à état pur (aucun pushState) : piloter les
-// mêmes boutons que l'élève est fidèle ET évite de toucher à
-// App.tsx (fichier protégé — travail concurrent non signé).
+// L'app utilise un routeur SPA minimal par hash (pushState/popstate)
+// : history.back() fonctionne et restore le dernier onglet visité.
 // ============================================================
 if (estApkCapacitor) {
   void import('@capacitor/app').then(({ App: CapApp }) => {

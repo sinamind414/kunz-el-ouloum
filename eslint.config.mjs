@@ -26,11 +26,24 @@ export default tseslint.config(
       'scripts/tools/**',
       '.kilo/**',
       'coverage/**',
+      // archives hors produit (réorganisation 2026-10-26, cf. docs/agents/CARTE_DU_DEPOT.md) :
+      'archive/**',
       // travail concurrent NON SIGNÉ (jamais linté, jamais commité) :
       'CREATION MONTRE XWATCH/**',
       'Python/**',
       'xwatch/**',
       'kunz-el-ouloum-arena-3e06e598-kunz-el-ouloum/**',
+      // PROJET VENDORISÉ (tiers, 489 fichiers suivis) : ce n'est pas notre code,
+      // il est embarqué tel quel — le linter n'a rien à y dire. Sans cet
+      // ignore, `npm run lint:eslint` sortait 1 635 erreurs sur du vendor
+      // (pdfjs minifié) et le garde-fou local devenait inutilisable.
+      'Rebrique-sujet-BAC-main/**',
+      // ARTEFACTS DE BUILD ANDROID (générés, non suivis par git) :
+      // `npx cap sync` recopie dist/ dans android/app/src/main/assets/public
+      // et Gradle écrit dans android/app/build/ — le bundle compilé n'est pas
+      // du code source à linter (il n'était pas non plus dans `public/**`).
+      'android/app/build/**',
+      'android/app/src/main/assets/**',
       // bibliothèques vendor embarquées (jamais éditées à la main) :
       '**/d3/7.8.5/d3.min.js',
       '**/d3-flame-graph/**/*.js',

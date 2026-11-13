@@ -11,10 +11,19 @@ import { cleanup, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { afterEach, describe, expect, it } from 'vitest';
 import BacIdeasView from '../BacIdeasView';
-import { YEARS_COVERED, PENDING_YEARS, INCOMPLETE_SUJETS, ideasForYear } from '../../data/bacSessionIndex';
+import { YEARS_COVERED, PENDING_YEARS, INCOMPLETE_SUJETS, ideasForYear, BAC_IDEAS } from '../../data/bacSessionIndex';
 import { archetypeRecurrence, archetypesForIdea, ideasOfArchetype } from '../../data/bacArchetypes';
 import { ideasForVerbFamily, verbFamilyStats } from '../../data/verbDemands';
 import { composeMockExam, numeroDuJour } from '../../data/mockExam';
+import { CHAPITRES } from '../../data/chapitres';
+
+// 2026-11-10 (navigation par chapitres) : la vue entre par le CHAPITRE (par
+// défaut le chapitre 1, unités 1-5). Les attendus de ces verrous sont donc
+// calculés SUR LE MÊME périmètre que la vue — même logique de vérification
+// (vue = données), périmètre réduit au chapitre actif.
+const UNITES_CHAPITRE = CHAPITRES[0].unites;
+const duChapitre = <T extends { unitIds: number[] }>(idees: T[]): T[] =>
+  idees.filter((i) => i.unitIds.some((u) => UNITES_CHAPITRE.includes(u)));
 
 afterEach(cleanup);
 
@@ -22,11 +31,11 @@ describe('أفكار التمارين — rendu', () => {
   it("s'ouvre sur la session la plus récente couverte", () => {
     render(<BacIdeasView />);
     const recente = YEARS_COVERED[0];
-    for (const idea of ideasForYear(recente)) {
+    for (const idea of duChapitre(ideasForYear(recente))) {
       expect(screen.getByTestId(`idee-${idea.id}`), idea.id).toBeTruthy();
     }
     expect(screen.getByTestId('idees-total').textContent).toContain(
-      String(ideasForYear(recente).length),
+      String(duChapitre(ideasForYear(recente)).length),
     );
   });
 
@@ -60,12 +69,15 @@ describe('أفكار التمارين — navigation', () => {
     expect(screen.getByTestId('idee-bac2019_s2_e3')).toBeTruthy();
   });
 
-  it('affiche toutes les idées sur « كل الدورات »', async () => {
+  it('affiche les idées du chapitre actif sur « كل الدورات »', async () => {
     const user = userEvent.setup();
     render(<BacIdeasView />);
     await user.click(screen.getByTestId('annee-all'));
-    expect(screen.getByTestId('idee-bac2019_s1_e1')).toBeTruthy();
-    expect(screen.getByTestId('idee-bac2025_s1_e1')).toBeTruthy();
+    // deux idées DU CHAPITRE actif (unités 1-5), d'années différentes :
+    expect(screen.getByTestId('idee-bac2025_s1_e1')).toBeTruthy(); // unité 1
+    expect(screen.getByTestId('idee-bac2018_s2_e1')).toBeTruthy(); // unités 1-5
+    // une idée HORS chapitre (géologie, unités 9-11) reste invisible :
+    expect(screen.queryByTestId('idee-bac2019_s1_e1')).toBeNull();
   });
 });
 
@@ -102,7 +114,7 @@ describe('أفكار التمارين — fiche', () => {
 describe('أفكار التمارين — montages récurrents (sprint 19)', () => {
   it('propose un bouton par montage, avec ses points et ses sessions', () => {
     render(<BacIdeasView />);
-    for (const m of archetypeRecurrence()) {
+    for (const m of archetypeRecurrence(UNITES_CHAPITRE)) {
       const bouton = screen.getByTestId(`montage-${m.archetypeId}`);
       expect(bouton.textContent).toContain(m.titleAr);
       expect(bouton.textContent).toContain(String(m.points));
@@ -121,11 +133,19 @@ describe('أفكار التمارين — montages récurrents (sprint 19)', () 
   it('filtre la liste sur les seuls exercices du montage, toutes sessions confondues', async () => {
     const user = userEvent.setup();
     render(<BacIdeasView />);
-    await user.click(screen.getByTestId('montage-arch_lecture_geologique'));
-    const attendus = ideasOfArchetype('arch_lecture_geologique');
+    // un montage NON VIDE dans le chapitre actif (la lecture géologique ne
+    // concerne que les unités 9-11, hors chapitre 1) :
+    await user.click(screen.getByTestId('montage-arch_inhibiteur_sosie'));
+    const attendus = ideasOfArchetype('arch_inhibiteur_sosie', UNITES_CHAPITRE);
+    expect(attendus.length).toBeGreaterThan(0);
     for (const idea of attendus) expect(screen.getByTestId(`idee-${idea.id}`), idea.id).toBeTruthy();
     expect(screen.getByTestId('idees-total').textContent).toContain(String(attendus.length));
-    expect(screen.queryByTestId('idee-bac2026_s2_e3')).toBeNull();
+    // un exercice DU chapitre mais HORS montage reste invisible :
+    const horsMontage = BAC_IDEAS.find(
+      (i) => !attendus.some((a) => a.id === i.id) && i.unitIds.some((u) => UNITES_CHAPITRE.includes(u)),
+    );
+    expect(horsMontage).toBeTruthy();
+    expect(screen.queryByTestId(`idee-${horsMontage!.id}`)).toBeNull();
   });
 
   it('libère le filtre quand on revient à une session', async () => {
@@ -139,7 +159,7 @@ describe('أفكار التمارين — montages récurrents (sprint 19)', () 
 
   it('étiquette chaque fiche avec le ou les montages dont elle relève', () => {
     render(<BacIdeasView />);
-    for (const idea of ideasForYear(2026)) {
+    for (const idea of duChapitre(ideasForYear(2026))) {
       for (const a of archetypesForIdea(idea.id)) {
         expect(screen.getByTestId(`fiche-montage-${idea.id}-${a.id}`)).toBeTruthy();
       }
@@ -150,7 +170,7 @@ describe('أفكار التمارين — montages récurrents (sprint 19)', () 
 describe('أفكار التمارين — familles de consignes (sprint 22)', () => {
   it('propose un bouton par famille avec son nombre d’occurrences', () => {
     render(<BacIdeasView />);
-    for (const f of verbFamilyStats()) {
+    for (const f of verbFamilyStats(UNITES_CHAPITRE)) {
       const bouton = screen.getByTestId(`famille-${f.familyId}`);
       expect(bouton.textContent).toContain(String(f.occurrences));
     }
@@ -170,7 +190,7 @@ describe('أفكار التمارين — familles de consignes (sprint 22)', ()
     const user = userEvent.setup();
     render(<BacIdeasView />);
     await user.click(screen.getByTestId('famille-verb_comparer'));
-    const attendus = ideasForVerbFamily('verb_comparer');
+    const attendus = ideasForVerbFamily('verb_comparer', UNITES_CHAPITRE);
     expect(screen.getByTestId('idees-total').textContent).toContain(String(attendus.length));
     for (const idea of attendus) expect(screen.getByTestId(`idee-${idea.id}`), idea.id).toBeTruthy();
   });
@@ -188,7 +208,7 @@ describe('أفكار التمارين — familles de consignes (sprint 22)', ()
 describe('أفكار التمارين — ouverture de l’atelier (sprint 24)', () => {
   it('propose un bouton d’entraînement sur chaque fiche', () => {
     render(<BacIdeasView />);
-    for (const idea of ideasForYear(YEARS_COVERED[0])) {
+    for (const idea of duChapitre(ideasForYear(YEARS_COVERED[0]))) {
       expect(screen.getByTestId(`entrainer-${idea.id}`), idea.id).toBeTruthy();
     }
   });

@@ -11,6 +11,7 @@
  * corriger une leçon d)un domaine n)invalide plus les octets des autres.
  */
 import type { QuizQuestion, Flashcard } from '../types';
+import { notionDeSchema } from '../data/notionsQcm';
 import { QUESTIONS_D1A } from './qcm0-d1a';
 import { QUESTIONS_D2A } from './qcm1-d2a';
 import { QUESTIONS_D3 } from './qcm2-d3';
@@ -64,8 +65,17 @@ const PALIER_PAR_SEGMENT: { qs: QuizQuestion[]; difficulte: PalierDifficulte }[]
   { qs: QUESTIONS_D1C, difficulte: 1 },
 ];
 
+/**
+ * NOTION de chaque QCM (audit externe « claude 5.2 », axe 3 : « QCM sans
+ * étiquette de notion : les lacunes ne sont pas détectées automatiquement »).
+ * Comme la difficulté, elle est estampée CENTRALEMENT au moment de la
+ * composition du barrel : aucune donnée unitaire n'est ajoutée aux segments
+ * (le déplacement littéral reste préservé, les chunks restent stables).
+ * La notion est le titre arabe de la figure interrogée par la question —
+ * un contenu déjà relu (table générée : src/data/notionsQcm.ts).
+ */
 export const SVT_QUIZ_QUESTIONS: QuizQuestion[] = PALIER_PAR_SEGMENT.flatMap(({ qs, difficulte }) =>
-  qs.map((q) => ({ ...q, difficulte })),
+  qs.map((q) => ({ ...q, difficulte, notion: notionDeSchema(q.diagramUrl) })),
 ).filter((q) => !QCM_HORS_PERIMETRE.has(q.id));
 
 /** Libellés d'affichage (فصحى) associés aux paliers — source unique du badge UI. */

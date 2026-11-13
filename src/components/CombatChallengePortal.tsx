@@ -99,7 +99,7 @@ export default function CombatChallengePortal({ challengeTitle, mode, onClose }:
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-[#0f172a] text-white flex flex-col font-sans" dir="rtl">
+    <div className="fixed inset-0 z-50 bg-[#0f172a] text-white flex flex-col font-sans pt-[var(--pfe-safe-top)] pb-[var(--pfe-safe-bottom)]" dir="rtl">
       
       {/* Top Navigation - Combat Style */}
       <header className="p-4 flex justify-between items-center bg-slate-900 border-b border-slate-800 z-20">

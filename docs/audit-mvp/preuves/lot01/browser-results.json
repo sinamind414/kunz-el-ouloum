@@ -1,0 +1,253 @@
+{
+  "date": "2026-10-29T23:32:25.761292+00:00",
+  "base": "http://localhost:3000",
+  "mode": "development",
+  "profile": "guest, isolated browser context",
+  "checks": [
+    {
+      "name": "F01-catalogue-ui",
+      "domains": 3,
+      "units": [
+        "unite-1",
+        "unite-2",
+        "unite-3",
+        "unite-4",
+        "unite-5",
+        "unite-6",
+        "unite-7",
+        "unite-8",
+        "unite-9",
+        "unite-10",
+        "unite-11"
+      ]
+    },
+    {
+      "name": "F02-html-quiz",
+      "title": "lesson-phase1_chapitres_1_2",
+      "bodyLength": 2745,
+      "feedbackChanged": true,
+      "brokenImages": [],
+      "sandbox": "allow-scripts"
+    },
+    {
+      "name": "F02-html-next",
+      "title": "lesson-lecon_transcription"
+    },
+    {
+      "name": "F02-html-return",
+      "chaptersVisible": true
+    },
+    {
+      "name": "F03-resume-after-back",
+      "before": {
+        "kunz_lesson_session_v1:d1-u1-l1-expression-genique": "{\"lessonId\":\"d1-u1-l1-expression-genique\",\"state\":\"BLOCKS_IN_PROGRESS\",\"currentBlockIndex\":1,\"validatedBlocks\":[true,false,false,false,false,false],\"outcome\":null,\"feedbackViewed\":false,\"suspendedAt\":1793316756458}"
+      },
+      "afterBack": {},
+      "missionScreenReturned": true
+    },
+    {
+      "name": "F03-block-0",
+      "kind": "MISSION_CHOICE",
+      "session": {
+        "kunz_lesson_session_v1:d1-u1-l1-expression-genique": "{\"lessonId\":\"d1-u1-l1-expression-genique\",\"state\":\"BLOCKS_IN_PROGRESS\",\"currentBlockIndex\":1,\"validatedBlocks\":[true,false,false,false,false,false],\"outcome\":null,\"feedbackViewed\":false,\"suspendedAt\":1793316757610}"
+      }
+    },
+    {
+      "name": "F03-block-1",
+      "kind": "MISSION_CHOICE",
+      "session": {
+        "kunz_lesson_session_v1:d1-u1-l1-expression-genique": "{\"lessonId\":\"d1-u1-l1-expression-genique\",\"state\":\"BLOCKS_IN_PROGRESS\",\"currentBlockIndex\":2,\"validatedBlocks\":[true,true,false,false,false,false],\"outcome\":null,\"feedbackViewed\":false,\"suspendedAt\":1793316758110}"
+      }
+    },
+    {
+      "name": "F03-empty-answer",
+      "errorVisible": true
+    },
+    {
+      "name": "F03-block-2",
+      "kind": "GUIDED_DOC_QA",
+      "session": {
+        "kunz_lesson_session_v1:d1-u1-l1-expression-genique": "{\"lessonId\":\"d1-u1-l1-expression-genique\",\"state\":\"BLOCKS_IN_PROGRESS\",\"currentBlockIndex\":3,\"validatedBlocks\":[true,true,true,false,false,false],\"outcome\":null,\"feedbackViewed\":false,\"suspendedAt\":1793316759013}"
+      }
+    },
+    {
+      "name": "F03-block-3",
+      "kind": "DUAL_EVIDENCE",
+      "session": {
+        "kunz_lesson_session_v1:d1-u1-l1-expression-genique": "{\"lessonId\":\"d1-u1-l1-expression-genique\",\"state\":\"BLOCKS_IN_PROGRESS\",\"currentBlockIndex\":4,\"validatedBlocks\":[true,true,true,true,false,false],\"outcome\":null,\"feedbackViewed\":false,\"suspendedAt\":1793316759545}"
+      }
+    },
+    {
+      "name": "F03-block-4",
+      "kind": "HYPOTHESIS_EXPERIMENT",
+      "session": {
+        "kunz_lesson_session_v1:d1-u1-l1-expression-genique": "{\"lessonId\":\"d1-u1-l1-expression-genique\",\"state\":\"BLOCKS_IN_PROGRESS\",\"currentBlockIndex\":5,\"validatedBlocks\":[true,true,true,true,true,false],\"outcome\":null,\"feedbackViewed\":false,\"suspendedAt\":1793316759861}"
+      }
+    },
+    {
+      "name": "F03-block-5",
+      "kind": "HYPOTHESIS_EXPERIMENT",
+      "session": {
+        "kunz_lesson_session_v1:d1-u1-l1-expression-genique": "{\"lessonId\":\"d1-u1-l1-expression-genique\",\"state\":\"EXIT_PRACTICE\",\"currentBlockIndex\":5,\"validatedBlocks\":[true,true,true,true,true,true],\"outcome\":null,\"feedbackViewed\":false,\"suspendedAt\":1793316760163}"
+      }
+    },
+    {
+      "name": "F03-completion",
+      "nextButtons": 2,
+      "storage": {
+        "kunz_lesson_session_v1:d1-u1-l1-expression-genique": "{\"lessonId\":\"d1-u1-l1-expression-genique\",\"state\":\"COMPLETION_VISIBLE\",\"currentBlockIndex\":5,\"validatedBlocks\":[true,true,true,true,true,true],\"outcome\":\"passed\",\"feedbackViewed\":false,\"suspendedAt\":1793316760426}"
+      }
+    },
+    {
+      "name": "F03-next-lesson-state",
+      "text": "تجاوز إلى المحتوى الرئيسي\nطالب متميز\nSVT BAC DZ\nالدروس؟\nأ\n0\n|\n0 XP\nالقائمة الرئيسية\nالرئيسية\nACCUEIL\nالدروس\nAPPRENDRE\nالتمارين والتدريب\nS'ENTRAÎNER\nمفتاح المنهجية\nMÉTHODE\nالمراجعة\nRÉVISER\nأنا\nMOI\n→\nعودة إلى قائمة الدروس النشيطة\nالدرس الموالي ← الفصل 4 : الترجمة\nالفصل 3 : استنساخ المعلومات الوراثية الموجودة على مستوى ADN\n6/4\nاشرح لي هذه الوحدة\nقيّم مستواي في هذا الدرس\n\n🏆\n\nأكملت الاستنساخ. الخطوة الطبيعية الآن هي فهم الترجمة.\n\nالدرس الموالي ← الفصل 4 : الترجمة\n\nخلاصة الدرس\n\nفسّر مراحل استنساخ الرسالة الوراثية على مستوى الـ ADN في النواة.\n\nيمثل الاستنساخ المرحلة الأولى للتعبير المورثي ويجري في النواة.\nيفكّ إنزيم ARN بوليميراز اللولب المزدوج ويكشف رامزات السلسلة المستنسخة.\nيرتكز الـ ARNm على السلسلة وفق التكامل القاعدي وباتجاه واحد 5'→3'.\nيتوقف الاستنساخ عند إشارة النهاية ويعود الـ ADN إلى لفه اللولبي الأصلي.\nيوجه الـ ARNm الرسول نحو الهيولى ليقرأه الريبوزوم في مرحلة الترجمة.\n\n🔑 المصطلح المفتاح للبكالوريا : ARN بوليميراز / السلسلة المستنسخة",
+      "storage": {
+        "kunz_lesson_session_v1:d1-u1-l2-transcription": "{\"lessonId\":\"d1-u1-l2-transcription\",\"state\":\"COMPLETION_VISIBLE\",\"currentBlockIndex\":5,\"validatedBlocks\":[true,true,true,true,true,true],\"outcome\":\"passed\",\"feedbackViewed\":false,\"suspendedAt\":1793316760792}"
+      }
+    },
+    {
+      "name": "F04-no-result",
+      "messageVisible": true
+    },
+    {
+      "name": "F04-query",
+      "openableLessons": 3
+    },
+    {
+      "name": "F04-warm-offline-search",
+      "openableLessons": 2
+    },
+    {
+      "name": "F04-open-result",
+      "iframe": 1,
+      "bodyTail": "تجاوز إلى المحتوى الرئيسي\nطالب متميز\nSVT BAC DZ\nالدروس؟\nأ\n0\n|\n0 XP\nالقائمة الرئيسية\nالرئيسية\nACCUEIL\nالدروس\nAPPRENDRE\nالتمارين والتدريب\nS'ENTRAÎNER\nمفتاح المنهجية\nMÉTHODE\nالمراجعة\nRÉVISER\nأنا\nMOI\n→\nعودة إلى قائمة الدروس"
+    },
+    {
+      "name": "F04-favorites-recents",
+      "favorites": 1,
+      "hasRecent": true
+    },
+    {
+      "name": "F04-paid-search",
+      "openableLessons": 3
+    },
+    {
+      "name": "F04-paid-result-identity",
+      "favorites": [
+        {
+          "lessonKey": "phase11_chapitres_21_22",
+          "lessonKind": "active",
+          "title": "الفصل 31 : تذكير بالمكتسبات — الفصل 32 : مقر عملية التركيب الضوئي",
+          "unitId": 6,
+          "addedAt": 1793316767290
+        },
+        {
+          "lessonKey": "phase1_chapitres_1_2",
+          "lessonKind": "html",
+          "title": "الدرس 1 : تذكير بالمكتسبات ومقر تركيب البروتين",
+          "unitId": 1,
+          "addedAt": 1793316763424
+        }
+      ],
+      "tokenPresent": false
+    },
+    {
+      "name": "F04-paid-result-return",
+      "returnButtons": 1,
+      "iframe": 0,
+      "bodyTail": "تجاوز إلى المحتوى الرئيسي\nطالب متميز\nSVT BAC DZ\nالدروس؟\nأ\n0\n|\n0 XP\nالقائمة الرئيسية\nالرئيسية\nACCUEIL\nالدروس\nAPPRENDRE\nالتمارين والتدريب\nS'ENTRAÎNER\nمفتاح المنهجية\nMÉTHODE\nالمراجعة\nRÉVISER\nأنا\nMOI\n→\nعودة إلى قائمة الدروس النشيطة\nالفصل 31 : تذكير بالمكتسبات — الفصل 32 : مقر عملية التركيب الضوئي\n0/1\nاشرح لي هذه الوحدة\nقيّم مستواي في هذا الدرس\nمهمة الدرس\nتحديد مقر التفاعلات الضوئية ثم تحليلها منهجياً.\nابدأ الدرس النشيط\n\nخلاصة الدرس\n\nحدّد مقر عملية التركيب الضوئي على مستوى الورقة والصانعة الخضراء.\n\nيقع مقر التركيب الضوئي في الصانعات الخضراء (البلاستيدات الخضراء) لنسيج الورقة.\nتوفر الثغور الورقية دخول CO2، وتوصل الأوعية الماء والأملاح إلى الورقة.\nتقسم الصانعة الخضراء إلى أغشية وتيلاكويدات وحشوة (مصفوفة إنزيمية).\nتحتوي التيلاكويدات أصباغاً ضوئية التمتص (الكلوروفيل) منظمة في نظامين ضوئيين.\nتميز بنية الصانعة مرحلة كيموضوئية (أغشية) ومرحلة كيميوحيوية (الحشوة).\n\n🔑 المصطلح المفتاح للبكالوريا : الصانعة الخضراء / التيلاكويد والحشوة"
+    },
+    {
+      "name": "F01-paid-normal-gate",
+      "missionVisible": false,
+      "hasCodeInput": true,
+      "text": "تجاوز إلى المحتوى الرئيسي\nطالب متميز\nSVT BAC DZ\nالدروس؟\nأ\n0\n|\n0 XP\nالقائمة الرئيسية\nالرئيسية\nACCUEIL\nالدروس\nAPPRENDRE\nالتمارين والتدريب\nS'ENTRAÎNER\nمفتاح المنهجية\nMÉTHODE\nالمراجعة\nRÉVISER\nأنا\nMOI\n→\nعودة إلى قائمة الدروس\nالدرس النشيط — الوحدة المطلوبة — مفتاح بالكود\n\nحصيلة المجال الأول (الوحدات من 1 إلى 5) وتمارينها مجانية دائماً حتى بدون حساب. باقي الوحدات والمواضيع تُفتح باشتراك موسم كامل:\n\n1200 دج / سنة دراسية — حتى نهاية الموسم (30 جوان)، أيّاً كان تاريخ شرائك.\n\nادفع 1200 دج عبر بريدي موب إلى رقم المعلّم (تصلك معلومات الدفع من مؤسسة التطبيق).\nاستلم كود تفعيل مكوّن من ٤ أحرف و ٤ أرقام بالشكل KUNZ-XXXX-XXXX.\nأدخل الكود هنا — يُربط الكود بحسابك وبجهازك (جهاز واحد فقط)، وتُفتح المادة كاملة فوراً حتى 30 جوان. إذا غيّرت هاتفك، راسل الأستاذ عبر واتساب ليصلك كود جديد.\nتفعيل"
+    },
+    {
+      "name": "F02-load-error",
+      "explicitError": true,
+      "returnVisible": true
+    },
+    {
+      "name": "F05-initial",
+      "rows": 85,
+      "enabledRows": 1,
+      "lockedRows": 84
+    },
+    {
+      "name": "F05-open",
+      "iframe": 0,
+      "storage": {
+        "kunz_parcours_v1": "{\"done\":{},\"reviews\":{},\"extraAllowance\":0,\"mig\":6,\"current\":\"parcours:u1:l0\"}"
+      }
+    },
+    {
+      "name": "F05-declarative-completion",
+      "storage": {
+        "kunz_parcours_v1": "{\"done\":{\"parcours:u1:l0\":{\"at\":\"2026-10-30\",\"fragile\":false}},\"reviews\":{\"parcours:u1:l0\":\"2026-11-13\"},\"extraAllowance\":0,\"mig\":6}"
+      },
+      "secondEnabled": true
+    },
+    {
+      "name": "F05-undo",
+      "storage": {
+        "kunz_parcours_v1": "{\"done\":{},\"reviews\":{},\"extraAllowance\":0,\"mig\":6}"
+      },
+      "secondEnabled": false
+    },
+    {
+      "name": "F05-reload-persistence",
+      "storage": {
+        "kunz_parcours_v1": "{\"done\":{\"parcours:u1:l0\":{\"at\":\"2026-10-30\",\"fragile\":false}},\"reviews\":{\"parcours:u1:l0\":\"2026-11-13\"},\"extraAllowance\":0,\"mig\":6}"
+      }
+    },
+    {
+      "name": "F05-reset",
+      "dialogs": [],
+      "storage": {
+        "kunz_parcours_v1": "{\"done\":{},\"reviews\":{},\"extraAllowance\":0,\"mig\":6}"
+      }
+    },
+    {
+      "name": "mobile-lessons-overflow",
+      "dimensions": {
+        "width": 390,
+        "scrollWidth": 390
+      }
+    },
+    {
+      "name": "mobile-html-overflow",
+      "outer": {
+        "width": 390,
+        "scrollWidth": 390
+      },
+      "frame": {
+        "width": 388,
+        "scrollWidth": 388
+      }
+    },
+    {
+      "name": "mobile-parcours-overflow",
+      "dimensions": {
+        "width": 390,
+        "scrollWidth": 390
+      }
+    },
+    {
+      "name": "mobile-search",
+      "openableLessons": 2
+    }
+  ],
+  "pageErrors": [],
+  "failedRequests": [
+    {
+      "url": "http://localhost:3000/lessons/phase1_chapitres_1_2.html",
+      "error": "net::ERR_FAILED"
+    },
+    {
+      "url": "http://localhost:3000/lessons/phase1_chapitres_1_2.html",
+      "error": "net::ERR_FAILED"
+    }
+  ],
+  "browser": "156.0.8078.4"
+}

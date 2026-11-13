@@ -1,0 +1,169 @@
+{
+  "text": "تجاوز إلى المحتوى الرئيسي\nطالب متميز\nSVT BAC DZ\nالمراجعة؟\nأ\n0\n|\n0 XP\nالقائمة الرئيسية\nالرئيسية\nACCUEIL\nالدروس\nAPPRENDRE\nالتمارين والتدريب\nS'ENTRAÎNER\nمفتاح المنهجية\nMÉTHODE\nالمراجعة\nRÉVISER\nأنا\nMOI\n\nالقبطان — مُرشد كنز العلوم\n\nالمراجعة ليست إعادة قراءة. اختر ما لم تفهمه بعد، لا ما تحبّ مراجعته.\n\nابدأ بـ: ابدأ بالمحور الذي أضعف درجاتك فيه.\n\nفهمت\nالمراجعة\n\nاختر كيف تريد تثبيت ما تعلمته اليوم\n\nالعودة\nالمراجعة الذكية\n\nالبطاقات المستحقة اليوم حسب الذاكرة: راجع ثم قيّم نفسك، وسأعيد جدولة كل بطاقة.\n\nأثبّت بالتكرار المتباعد\nخطة المراجعة النهائية\n\nقل لي كم بقي من الوقت، وسأعطيك برنامج اليوم: كبسولة، رسم، وضعية، خريطة.\n\nأنظّم وقتي\nارسم من الذاكرة\n\nالرسومات التي يجب حفظها: ورقة بيضاء أولاً، ثم شبكة تقييم، ثم الرسم الرسمي.\n\nأسترجع وأقيّم\n\nالقبطان — مُرشد كنز العلوم\n\nلا نبدأ بالمنهج كله. نبدأ بدقيقتين.\n\nاختبار قصير: سؤال واحد.\n\nيومك الأول في السلسلة.\n\nاختبار قصير: سؤال واحد.\nلاحقًا",
+  "buttons": [
+    {
+      "text": "؟",
+      "label": "نصيحة القبطان في هذه الصفحة",
+      "testid": "conseil-rubrique-ouvrir",
+      "disabled": false
+    },
+    {
+      "text": "",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "أ",
+      "label": "حجم النص",
+      "testid": "taille-texte-btn",
+      "disabled": false
+    },
+    {
+      "text": "الرئيسية\nACCUEIL",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "الدروس\nAPPRENDRE",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "التمارين والتدريب\nS'ENTRAÎNER",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "مفتاح المنهجية\nMÉTHODE",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "المراجعة\nRÉVISER",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "أنا\nMOI",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "فهمت",
+      "label": null,
+      "testid": "bandeau-conseil-fermer",
+      "disabled": false
+    },
+    {
+      "text": "العودة",
+      "label": null,
+      "testid": "revhub-retour",
+      "disabled": false
+    },
+    {
+      "text": "المراجعة الذكية\n\nالبطاقات المستحقة اليوم حسب الذاكرة: راجع ثم قيّم نفسك، وسأعيد جدولة كل بطاقة.\n\nأثبّت بالتكرار المتباعد",
+      "label": null,
+      "testid": "revhub-review",
+      "disabled": false
+    },
+    {
+      "text": "خطة المراجعة النهائية\n\nقل لي كم بقي من الوقت، وسأعطيك برنامج اليوم: كبسولة، رسم، وضعية، خريطة.\n\nأنظّم وقتي",
+      "label": null,
+      "testid": "revhub-plan",
+      "disabled": false
+    },
+    {
+      "text": "ارسم من الذاكرة\n\nالرسومات التي يجب حفظها: ورقة بيضاء أولاً، ثم شبكة تقييم، ثم الرسم الرسمي.\n\nأسترجع وأقيّم",
+      "label": null,
+      "testid": "revhub-schemas",
+      "disabled": false
+    },
+    {
+      "text": "الرئيسيةAccueil",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "الدروسApprendre",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "التمارين والتدريبS'entraîner",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "مفتاح المنهجيةMéthode",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "المراجعةRéviser",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "أناMoi",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "اختبار قصير: سؤال واحد.",
+      "label": null,
+      "testid": "bulle-capitaine-agir",
+      "disabled": false
+    },
+    {
+      "text": "لاحقًا",
+      "label": "إغلاق",
+      "testid": "bulle-capitaine-fermer",
+      "disabled": false
+    },
+    {
+      "text": "",
+      "label": "القبطان — مُرشد كنز العلوم",
+      "testid": "fab-morchid",
+      "disabled": false
+    }
+  ],
+  "testids": [
+    "conseil-rubrique-ouvrir",
+    "taille-texte-btn",
+    "bandeau-conseil-rubrique",
+    "bandeau-conseil-visage",
+    "bandeau-conseil-fermer",
+    "revision-hub",
+    "revhub-retour",
+    "revhub-review",
+    "revhub-plan",
+    "revhub-schemas",
+    "bulle-capitaine",
+    "bulle-capitaine-agir",
+    "bulle-capitaine-fermer",
+    "fab-morchid"
+  ],
+  "inputs": [],
+  "width": 1280,
+  "scrollWidth": 1280,
+  "storage": {
+    "boussole_prescriptions_v1": "{\"prescriptions\":[{\"motif\":\"accueil:training\",\"cible\":\"training\",\"emisMs\":1793357422677,\"issue\":\"en_attente\"}],\"motifs\":{\"accueil:training\":{\"dits\":1,\"suivis\":0,\"ignores\":0,\"expires\":0}}}",
+    "theme": "light",
+    "kunz_declic_last_id_v1": "dem_01",
+    "boussole_conseils_rubriques_vus": "[\"reviser\",\"examens\",\"training\"]",
+    "kunz_declic_shown_v1": "2026-10-30"
+  }
+}

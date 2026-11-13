@@ -383,8 +383,8 @@ describe('Le sprint (phase 5) — la date du BAC entre dans la décision', () =>
     // bulle, ce test tombe et dit où regarder.
     const livre = conseilDeRubrique('examens')!;
     const inv = invitationDuMoment(ctxSprint())!;
-    expect(inv.messageAr).toBe(livre.conseilAr);
-    expect(inv.actionAr).toBe(livre.gesteAr);
+    expect(inv.messageAr).toBe(livre.conseils[0].conseilAr);
+    expect(inv.actionAr).toBe(livre.conseils[0].gesteAr);
   });
 
   it('le gain nomme le décompte RÉEL, et rien d’autre', () => {

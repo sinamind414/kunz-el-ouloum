@@ -9,6 +9,8 @@ import { emettrePrescription, lireRegistre } from '../../lib/prescriptions';
 import type { DailyGoalConfig, UserProgress } from '../../types';
 import {
   appliquerActiviteQuotidienne,
+  BILAN_JOURS_SERIEUX_VIDE,
+  bilanJoursSerieux,
   estimationMinutesQuiz,
   jourChange,
   OBJECTIF_QUOTIDIEN_DEFAUT,
@@ -206,12 +208,63 @@ describe('jourChange — lecture seule du changement de jour', () => {
   });
 });
 
-// 15/10/2026 — LA GARDE DU TRAVAIL MESURÉ (phase 1 de la vision du coach).
-//
-// La boucle du coach a besoin de savoir si une prescription a été HONORÉE. Le
-// critère retenu est le plus dur possible : du travail réellement mesuré — des
-// minutes ou des questions — et non un clic, un changement d'onglet ou l'ouverture
-// d'un écran. C'est ce qui empêche le registre de créditer une intention.
+// R2 (audit coach 2026-11-06, GO propriétaire — version douce) — LE DRAPEAU
+// « JOUR SÉRIEUX », DISTINCT DE LA SÉRIE. Série intacte : aucune règle
+// d'invitation, aucun seuil, aucune écriture — le bilan ne LIT que l'historique
+// journalier déjà persisté. Un jour sérieux est un FAIT (l'objectif du jour
+// fixé par l'élève a été atteint), jamais un seuil du correcteur.
+describe('bilanJoursSerieux — le drapeau qualitatif, distinct de la série', () => {
+  it('historique absent ou vide → 0 enregistré / 0 jour sérieux (un fait, pas une accusation)', () => {
+    expect(bilanJoursSerieux(undefined)).toEqual(BILAN_JOURS_SERIEUX_VIDE);
+    expect(bilanJoursSerieux({ ...OBJECTIF_QUOTIDIEN_DEFAUT, history: [] })).toEqual(BILAN_JOURS_SERIEUX_VIDE);
+    // Progression ancienne, sans `history` : « pas encore », jamais « faux ».
+    expect(bilanJoursSerieux({ ...OBJECTIF_QUOTIDIEN_DEFAUT })).toEqual(BILAN_JOURS_SERIEUX_VIDE);
+  });
+
+  it('compte exactement les jours dont l’objectif a été atteint (`completed` = true)', () => {
+    const historique = [
+      { date: '2026-10-01', target: 25, achieved: 25, type: 'minutes' as const, completed: true },
+      { date: '2026-10-02', target: 25, achieved: 10, type: 'minutes' as const, completed: false },
+      { date: '2026-10-03', target: 20, achieved: 20, type: 'questions' as const, completed: true },
+      { date: '2026-10-04', target: 25, achieved: 24, type: 'minutes' as const, completed: false },
+    ];
+    expect(bilanJoursSerieux({ ...OBJECTIF_QUOTIDIEN_DEFAUT, history: historique })).toEqual({
+      jours: 2,
+      enregistres: 4,
+    });
+  });
+
+  it('tous les jours atteints → jours = enregistrés (30 jours complets, aucun plafond caché)', () => {
+    const historique = Array.from({ length: 30 }, (_, i) => ({
+      date: `${String(i + 1).padStart(2, '0')}`,
+      target: 25,
+      achieved: 25,
+      type: 'minutes' as const,
+      completed: true,
+    })) as DailyGoalConfig['history'];
+    const bilan = bilanJoursSerieux({ ...OBJECTIF_QUOTIDIEN_DEFAUT, history: historique });
+    expect(bilan.jours).toBe(30);
+    expect(bilan.enregistres).toBe(30);
+  });
+
+  it('aucun jour sérieux (tout `completed: false`) → jours = 0, enregistrés compte quand même', () => {
+    const historique = [
+      { date: '2026-10-01', target: 25, achieved: 5, type: 'minutes' as const, completed: false },
+      { date: '2026-10-02', target: 25, achieved: 8, type: 'minutes' as const, completed: false },
+    ];
+    expect(bilanJoursSerieux({ ...OBJECTIF_QUOTIDIEN_DEFAUT, history: historique })).toEqual({
+      jours: 0,
+      enregistres: 2,
+    });
+  });
+
+  it('lecture pure : la progression reçue n’est jamais mute', () => {
+    const daily = { ...OBJECTIF_QUOTIDIEN_DEFAUT };
+    const copie = JSON.parse(JSON.stringify(daily));
+    bilanJoursSerieux(daily);
+    expect(daily).toEqual(copie);
+  });
+});
 //
 // Si quelqu'un retire un jour le garde-fou en croyant simplifier, ces deux tests
 // tombent : la suite vaut mieux qu'un commentaire.

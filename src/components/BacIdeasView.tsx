@@ -49,7 +49,13 @@ import BacIdeaTrainer from './BacIdeaTrainer';
 import WritingReviewPanel from './WritingReviewPanel';
 import MockExamPanel from './MockExamPanel';
 import { draftedFamilies, writingStats } from '../data/writingProgress';
+import BacCorrectionPanel from './BacCorrectionPanel';
+import BacTypeStats from './BacTypeStats';
+import { AVERTISSEMENT_ENONCES_BAC, COUVERTURE_BAC } from '../data/bacCorrectionIndex';
 import { INITIAL_UNITS } from '../unitCatalog';
+import { useChapitreActif } from '../lib/chapitreActif';
+import { unitesDuChapitre } from '../data/chapitres';
+import SelecteurChapitre from './SelecteurChapitre';
 
 interface BacIdeasViewProps {
   onBackToHome?: () => void;
@@ -57,6 +63,9 @@ interface BacIdeasViewProps {
   focusIdeaId?: string | null;
 }
 
+// Titre de l'unité pour l'affichage des libellés (cartes, stats) — la liste
+// COMPLÈTE : les sous-composants sont au niveau module et ne portent pas de
+// hook. Le FILTRAGE par chapitre se fait dans `BacIdeasViewInterne` (plus bas).
 const UNIT_TITLE: Record<number, string> = Object.fromEntries(
   INITIAL_UNITS.map((u) => [u.id, u.title]),
 );
@@ -158,6 +167,16 @@ function BacIdeasViewInterne({ onBackToHome, focusIdeaId = null }: BacIdeasViewP
   const [revision, setRevision] = useState(0);
   const [revueVisible, setRevueVisible] = useState(false);
   const [sujetVisible, setSujetVisible] = useState(false);
+  // 2026-11-10 (demande du propriétaire) : l'élève entre par le CHAPITRE puis
+  // voit les rubriques de ce chapitre — la banque des idées BAC ne montre que
+  // les idées des unités du chapitre actif, et les comptes (familles, montages,
+  // recherche) sont recalculés SUR CE chapitre : aucun compte incohérent.
+  const { id: chapitreActif } = useChapitreActif();
+  const unitesChapitre = useMemo(() => unitesDuChapitre(chapitreActif), [chapitreActif]);
+  // Correction 2026-11-05 : la vérité sur les corrigés + les stats PAR TYPE
+  // sont accessibles ici, au même endroit que les idées (pas une 9ᵉ porte).
+  const [correctionVisible, setCorrectionVisible] = useState(false);
+  const [statsVisibles, setStatsVisibles] = useState(false);
   // TRANCHE P1-1 : panneau « corrigé type jury » ouvert (clé annee-sujet).
   // Vide tant que l'année n'est pas encodée — aucune grille fabriquée.
   const [corrigeOuvert, setCorrigeOuvert] = useState<string | null>(null);
@@ -167,17 +186,20 @@ function BacIdeasViewInterne({ onBackToHome, focusIdeaId = null }: BacIdeasViewP
   }, [focusIdeaId]);
 
   const liste = useMemo(() => {
-    if (famille) return ideasForVerbFamily(famille);
-    if (montage) return ideasOfArchetype(montage);
+    if (famille) return ideasForVerbFamily(famille, unitesChapitre);
+    if (montage) return ideasOfArchetype(montage, unitesChapitre);
     const q = requete.trim();
-    if (q) return searchIdeas(q);
-    if (annee === 'all') return [...BAC_IDEAS].sort((a, b) => b.year - a.year || a.sujet - b.sujet || a.exercice - b.exercice);
-    return ideasForYear(annee);
-  }, [annee, requete, montage, famille]);
+    if (q) return searchIdeas(q, unitesChapitre);
+    if (annee === 'all')
+      return [...BAC_IDEAS]
+        .filter((i) => i.unitIds.some((u) => unitesChapitre.includes(u)))
+        .sort((a, b) => b.year - a.year || a.sujet - b.sujet || a.exercice - b.exercice);
+    return ideasForYear(annee, unitesChapitre);
+  }, [annee, requete, montage, famille, unitesChapitre]);
 
-  const montages = useMemo(() => archetypeRecurrence(), []);
+  const montages = useMemo(() => archetypeRecurrence(unitesChapitre), [unitesChapitre]);
   const montageActif = montage ? ARCHETYPE_BY_ID[montage] : undefined;
-  const familles = useMemo(() => verbFamilyStats(), []);
+  const familles = useMemo(() => verbFamilyStats(unitesChapitre), [unitesChapitre]);
   const familleActive = famille ? VERB_FAMILY_BY_ID[famille] : undefined;
 
   const pression = useMemo(() => unitPressure().slice(0, 5), []);
@@ -186,6 +208,10 @@ function BacIdeasViewInterne({ onBackToHome, focusIdeaId = null }: BacIdeasViewP
 
   return (
     <div className="min-h-screen p-4 md:p-8 max-w-4xl mx-auto" dir="rtl" data-testid="bac-ideas">
+      {/* 2026-11-11 (demande du propriétaire) : les 3 chapitres sont posés
+          dans la ZONE DE CONTENU de la rubrique — la banque des idées ne
+          montre que les exercices du chapitre choisi. */}
+      <SelecteurChapitre titre="اختر الفصل" />
       <div className="flex items-center justify-between gap-4 mb-5">
         <div className="flex items-center gap-3">
           <span className="w-12 h-12 rounded-2xl bg-gradient-to-l from-[#006d37] to-emerald-600 flex items-center justify-center shadow-md">
@@ -276,7 +302,47 @@ function BacIdeasViewInterne({ onBackToHome, focusIdeaId = null }: BacIdeasViewP
         >
           {sujetVisible ? 'إخفاء الموضوع التجريبي' : 'ركّب موضوعاً تجريبياً'}
         </button>
+        <button
+          data-testid="basculer-corrections"
+          onClick={() => setCorrectionVisible((v) => !v)}
+          className="text-[11px] font-bold px-3 py-1.5 rounded-xl bg-[#006d37] text-white cursor-pointer"
+        >
+          {correctionVisible ? 'إخفاء التصحيح حسب الدورة' : 'ما الذي يُصحَّح فعلاً؟'}
+        </button>
+        <button
+          data-testid="basculer-stats-types"
+          onClick={() => setStatsVisibles((v) => !v)}
+          className="text-[11px] font-bold px-3 py-1.5 rounded-xl bg-[#f3f4f5] dark:bg-[#1f2622] text-[#006d37] dark:text-[#2ecc71] cursor-pointer"
+        >
+          {statsVisibles ? 'إخفاء إحصاءاتي' : 'إحصاءاتي حسب نوع الموضوع'}
+        </button>
       </div>
+
+      {correctionVisible && (
+        <BacCorrectionPanel annee={annee === 'all' ? null : annee} />
+      )}
+      {statsVisibles && <BacTypeStats />}
+
+      <p
+        data-testid="idees-avertissement-enonces"
+        className="mb-3 text-[11px] leading-6 text-[#506072] dark:text-gray-400 text-right"
+      >
+        {AVERTISSEMENT_ENONCES_BAC.ar} · {COUVERTURE_BAC.filter((c) => c.niveau === 'bareme-officiel').length}{' '}
+        دورات فقط تحمل مقياساً رسمياً مُدمجاً؛ {"المواضيع التجريبية ملخّصة من أفكار رسمية، وليست نصوص ONEC"}.
+      </p>
+
+      {correctionVisible && (
+        <BacCorrectionPanel annee={annee === 'all' ? null : annee} />
+      )}
+      {statsVisibles && <BacTypeStats />}
+
+      <p
+        data-testid="idees-avertissement-enonces"
+        className="mb-3 text-[11px] leading-6 text-[#506072] dark:text-gray-400 text-right"
+      >
+        {AVERTISSEMENT_ENONCES_BAC.ar} · {COUVERTURE_BAC.filter((c) => c.niveau === 'bareme-officiel').length}{' '}
+        دورات فقط تحمل مقياساً رسمياً مُدمجاً؛ {"المواضيع التجريبية ملخّصة من أفكار رسمية، وليست نصوص ONEC"}.
+      </p>
 
       {sujetVisible && <MockExamPanel onTrain={setEntrainement} />}
 

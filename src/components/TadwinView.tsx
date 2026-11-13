@@ -28,8 +28,13 @@ import {
   lireEtat,
   ecrireEtat,
   lireFiches,
+  ecrireFiches,
+  fichesDuees,
   enregistrerFiche,
   enregistrerRappel,
+  reporterRappel,
+  desactiverRappel,
+  reactiverRappel,
   evaluerProduction,
   retourDirect,
   avancerPalier,
@@ -171,7 +176,7 @@ export default function TadwinView({ onBackToHome }: { onBackToHome: () => void 
   // ── Rendu ─────────────────────────────────────────────────────────────────
 
   const maintenant = Date.now();
-  const dues = fiches.filter((f) => f.prochainRappelAt != null && maintenant >= f.prochainRappelAt);
+  const dues = fichesDuees(maintenant);
   const maitrises = fiches.filter((f) => f.maitrise === 'maitrise');
   const chasseurZabda = maitrises.length >= 3;
 
@@ -605,6 +610,34 @@ export default function TadwinView({ onBackToHome }: { onBackToHome: () => void 
                             لم أتذكرها
                           </button>
                         </div>
+                        <div className="flex gap-3 pt-1">
+                          <button
+                            data-testid={`tadwin-rappel-reporter-${fiche.id}`}
+                            onClick={() => {
+                              const updated = reporterRappel(fiche);
+                              ecrireFiches(lireFiches().map((f) => (f.id === fiche.id ? updated : f)));
+                              rafraichirFiches();
+                              setReveleeId(null);
+                            }}
+                            className="flex-1 py-3 rounded-2xl bg-[#944a00]/10 text-[#944a00] font-bold text-sm hover:bg-[#944a00]/20 transition-all cursor-pointer"
+                            aria-label="تأجيل التذكير 24 ساعة"
+                          >
+                            تأجيل 24 ساعة
+                          </button>
+                          <button
+                            data-testid={`tadwin-rappel-desactiver-${fiche.id}`}
+                            onClick={() => {
+                              const updated = desactiverRappel(fiche);
+                              ecrireFiches(lireFiches().map((f) => (f.id === fiche.id ? updated : f)));
+                              rafraichirFiches();
+                              setReveleeId(null);
+                            }}
+                            className="flex-1 py-3 rounded-2xl bg-[#8a8570]/10 text-[#8a8570] font-bold text-sm hover:bg-[#8a8570]/20 transition-all cursor-pointer"
+                            aria-label="إيقاف التذكير"
+                          >
+                            إيقاف التذكير
+                          </button>
+                        </div>
                       </div>
                     ) : (
                       <button
@@ -620,6 +653,51 @@ export default function TadwinView({ onBackToHome }: { onBackToHome: () => void 
                 );
               })
             )}
+
+        {/* ─── Section Fiches désactivées ─── */}
+        {(() => {
+          const desactivees = fiches.filter((f) => (f.statutRappel ?? 'actif') === 'desactive');
+          if (desactivees.length === 0) return null;
+          return (
+            <div className="space-y-3">
+              <p className="text-xs font-bold text-[#8a8570] uppercase tracking-wider">
+                Fiches désactivées ({desactivees.length})
+              </p>
+              {desactivees.map((fiche) => (
+                <div
+                  key={fiche.id}
+                  className="bg-white rounded-3xl border border-[#e2dabf]/60 p-4 space-y-2 shadow-sm"
+                >
+                  <div className="flex flex-wrap gap-2">
+                    {fiche.clesChoisies.map((c) => (
+                      <span
+                        key={c}
+                        className="text-xs font-bold text-[#8a8570] bg-[#8a8570]/8 px-3 py-1.5 rounded-full"
+                      >
+                        {c}
+                      </span>
+                    ))}
+                  </div>
+                  <p className="text-xs text-[#506072]">
+                    Désactivée — rappel en pause
+                  </p>
+                  <button
+                    data-testid={`tadwin-rappel-reactiver-${fiche.id}`}
+                    onClick={() => {
+                      const updated = reactiverRappel(fiche);
+                      ecrireFiches(lireFiches().map((f) => (f.id === fiche.id ? updated : f)));
+                      rafraichirFiches();
+                    }}
+                    className="w-full py-3 rounded-2xl bg-[#006d37]/10 text-[#006d37] font-bold text-sm hover:bg-[#006d37]/20 transition-all cursor-pointer"
+                    aria-label="إعادة تفعيل التذكير"
+                  >
+                    إعادة تفعيل
+                  </button>
+                </div>
+              ))}
+            </div>
+          );
+        })()}
           </div>
         )}
       </div>

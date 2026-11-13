@@ -118,7 +118,8 @@ console.log(`Concepts auto à générer : ${idsAuto.length}`);
 const record: Record<string, PromptGen[]> = {};
 for (const id of idsAuto) {
   const prompts = promptsPourConcept(id);
-  for (const p of prompts) record[id] = record[id] ?? [], (record[id] as PromptGen[]).push(p);
+  if (!record[id]) record[id] = [];
+  for (const p of prompts) record[id].push(p);
 }
 
 const serialiserPrompt = (p: PromptGen, indent: string) => {

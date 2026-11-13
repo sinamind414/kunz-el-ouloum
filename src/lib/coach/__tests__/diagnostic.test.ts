@@ -173,6 +173,27 @@ describe('coach — ordre de travail', () => {
     expect(classe[1].verdict).toBe('non_commence');
   });
 
+  it('à verdict égal, le départage suit le poids BAC fourni (tranche 3, audit 8 axes)', () => {
+    // Deux unités également faibles : sans `poidsBac`, l'ordre d'entrée est
+    // conservé (défaut `() => 1` — départage mort). Avec un poids réel, la
+    // plus lourde au BAC passe devant — même règle que le plan de révision.
+    const u1 = unite(1);
+    const u2 = unite(2);
+    const jalon1 = u1.items.find((i) => i.kind === 'jalon')!;
+    const jalon2 = u2.items.find((i) => i.kind === 'jalon')!;
+    const st = etatParDefaut();
+    st.done[jalon1.id] = { at: '2026-10-12', score: 0.2, total: 10, fragile: false };
+    st.done[jalon2.id] = { at: '2026-10-12', score: 0.2, total: 10, fragile: false };
+
+    const diags = diagnostiquerParcours([u1, u2], st);
+    // Défaut neutre : ordre d'entrée inchangé.
+    expect(classerParUrgence(diags).map((d) => d.unitId)).toEqual([1, 2]);
+    // Poids BAC réel : la plus lourde passe devant.
+    const classe = classerParUrgence(diags, (id) => (id === 2 ? 20 : 5));
+    expect(classe[0].unitId).toBe(2);
+    expect(classe[1].unitId).toBe(1);
+  });
+
   it('le parcours complet se Diagnostique sans erreur', () => {
     const groupes = PARCOURS_DOMAINS.flatMap((d) => d.units);
     const diags = diagnostiquerParcours(groupes, etatParDefaut());

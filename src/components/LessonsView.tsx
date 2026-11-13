@@ -6,11 +6,13 @@
 //      OFFICIAL_PROGRAM_SEQUENCE). Chaque fichier de phase portant 2 leçons,
 //      la séquence expose la clé de base puis la clé `_2` — une leçon affichée
 //      à la fois (isolation par sliceLessonHtml).
-import { lazy, Suspense, useEffect, useState } from 'react';
+import { lazy, Suspense, useEffect, useRef, useState } from 'react';
 import { BookOpen, ChevronLeft, Zap, MonitorPlay, Network, FlaskConical, Leaf, Globe2, BookMarked, Grid3x3, Search, Compass } from 'lucide-react';
 import HtmlLessonViewer from './HtmlLessonViewer';
 import ActiveLessonView from './ActiveLessonView';
 import { INITIAL_UNITS } from '../unitCatalog';
+import { filtrerParChapitre, useChapitreActif } from '../lib/chapitreActif';
+import SelecteurChapitre from './SelecteurChapitre';
 import { getUnitLessonSequence } from '../data/unitLessonSequences';
 import { HTML_LESSON_ORDER } from '../data/htmlLessonProgression';
 import { sourceLivre, badgeSource, sourceAmbigue } from '../data/bookIndex';
@@ -19,6 +21,8 @@ import { LESSON_GOLD_SUMMARIES } from '../data/lessonGoldSummaries';
 import Icone from './Icone';
 import EcranPaiement from './EcranPaiement';
 import { rubriquePayanteOuverte, uniteOuverte } from '../utils/acces';
+import { etatEleveSiChargee, surveillerEtatEleve } from '../lib/etatEleveRuntime';
+import type { VerdictUnite } from '../lib/coach/diagnostic';
 
 // Sprint 32 : ces quatre vues (QCM du livre, sujets BAC, bibliothèque Okacha,
 // recherche) embarquaient à elles seules plusieurs centaines de kilo-octets de
@@ -28,6 +32,8 @@ const QcmLivreView = lazy(() => import('./QcmLivreView'));
 const BacExamView = lazy(() => import('./BacExamView'));
 const OkachaView = lazy(() => import('./OkachaView'));
 const SearchView = lazy(() => import('./SearchView'));
+// R5 (2026-11-07) : micro-leçons + synthèse 3 phrases, à la demande uniquement.
+const MicroLeconsPanel = lazy(() => import('./MicroLeconsPanel'));
 
 function VueEnChargement() {
   return (
@@ -51,6 +57,38 @@ import {
 
 const DOMAIN_ICONS = [FlaskConical, Leaf, Globe2];
 
+/**
+ * Tranche 3 (audit 8 axes, 2026-11-04) — LA PASTILLE D'ÉTAT PAR UNITÉ (M1).
+ * L'élève ne voit nulle part où il en est : le coach le DIT dans la bulle,
+ * rien n'est VISIBLE durablement. La couleur dérive du verdict existant du
+ * coach (`coach/diagnostic`), jamais d'une nouvelle logique :
+ *   🔴 faible · 🟡 moyen · ⚪ non commencé · 🟢 fort.
+ * VERROU : tant que `etatEleveSiChargee()` est `null` (l'état n'est pas encore
+ * arrivé, import dynamique), AUCUNE pastille n'est rendue — ni gris qui
+ * ressemble à un verdict, ni valeur inventée. L'unité absente du verdict
+ * (famille non chargée) reste sans pastille, pour la même raison.
+ */
+const COULEUR_VERDICT: Record<VerdictUnite, { puce: string; libelle: string }> = {
+  faible: { puce: '🔴', libelle: 'يحتاج مراجعة' },
+  moyen: { puce: '🟡', libelle: 'قيد التقدم' },
+  non_commence: { puce: '⚪', libelle: 'لم يبدأ بعد' },
+  fort: { puce: '🟢', libelle: 'متقن' },
+};
+
+function PastilleUnite({ uid, verdict }: { uid: number; verdict: VerdictUnite }) {
+  const c = COULEUR_VERDICT[verdict];
+  return (
+    <span
+      data-testid={`etat-unite-${uid}`}
+      title={c.libelle}
+      className="inline-flex items-center justify-center w-5 h-5 rounded-full text-[10px] leading-none shrink-0"
+      aria-label={c.libelle}
+    >
+      {c.puce}
+    </span>
+  );
+}
+
 
 /** Props : le callback d'auto-évaluation des flashcards (handleRateCard, App.tsx)
  *  est transmis au الحصيلة المعرفية pour créditer XP + flashcardStats (SM-2). */
@@ -64,7 +102,9 @@ interface LessonsProps {
    *  Les examens vivaient dans l'écran 1 de الدروس : ils mélangeaient
    *  apprentissage et entraînement. Ils sont désormais dans le hub
    *  « التمارين والتدريب » (src/data/trainingHub.ts, entrée `examens`). */
-  initialMode?: 'qcm' | 'bac';
+  /** Étage 3 (2026-11-07 / R7) : 'search' pré-ouvre la recherche plein texte
+   *  déjà existante, sans créer de 5ᵉ rubrique ni de nouveau moteur. */
+  initialMode?: 'qcm' | 'bac' | 'search';
   /** 2026-10-12 — ouverture d'un onglet de l'app depuis une carte de l'écran
    *  principal (ex. « الخرائط الذهنية » → onglet mindmap). Évite de dupliquer
    *  une vue ici : la carte est une PORTE, pas une copie. */
@@ -121,7 +161,7 @@ const unitOfActiveLesson = (key: string): number =>
   INITIAL_UNITS.find((u) => getActiveLessonKeysForUnit(u.id).includes(key))?.id ?? 1;
 
 export default function LessonsView({ onRateCard, initialLesson, initialQcm, initialMode, onOpenTab, onDeepLinkConsumed, onScoreLivre }: LessonsProps) {
-  const [mode, setMode] = useState<LessonMode | 'qcm' | 'bac' | 'okacha' | 'search' | null>(null);
+  const [mode, setMode] = useState<LessonMode | 'qcm' | 'bac' | 'okacha' | 'search' | 'micro' | null>(null);
   const [selectedUnit, setSelectedUnit] = useState<number>(1);
   const [selectedDomain, setSelectedDomain] = useState<number | null>(null);
   const [selectedActiveLesson, setSelectedActiveLesson] = useState<string | null>(null);
@@ -131,10 +171,78 @@ export default function LessonsView({ onRateCard, initialLesson, initialQcm, ini
   /** Unité active ouverte (navigation par icônes : unité → leçons). */
   const [selectedActiveUnitId, setSelectedActiveUnitId] = useState<number | null>(null);
 
+  /**
+   * Tranche 3 (audit 8 axes) : l'état élève arrive en ASYNCHRONE (le capitaine
+   * le dépose après son import dynamique). Sans abonnement, une pastille lue
+   * au montage resterait `null` pour toujours — l'élève verrait « aucune
+   * couleur » même après avoir travaillé. Le dépôt prévient (option C) :
+   * on incrémente une version, le render relit le pointeur.
+   */
+  const [versionEtatEleve, setVersionEtatEleve] = useState(0);
+  useEffect(() => surveillerEtatEleve(() => setVersionEtatEleve((v) => v + 1)), []);
+
+  /** Verdict du coach pour une unité — `null` = pas de pastille (verrou). */
+  const verdictUnite = (uid: number): VerdictUnite | null => {
+    void versionEtatEleve; // dépendance de re-render : le dépôt re-déclenche la lecture
+    const verdicts = etatEleveSiChargee()?.competence.verdicts;
+    if (!verdicts) return null;
+    return verdicts[getUnitTitle(uid)] ?? null;
+  };
+
   // Capture à UNE reprise des deep-links (مسار) : le parent vide son état juste
   // après (onDeepLinkConsumed), mais la vue conserve l'unité demandée pour tout
   // le séjour — sinon le filtre جسر disparaîtrait au re-render.
   const [qcmUniteInitiale] = useState<number | undefined>(initialQcm);
+
+  // Sous-routeur pour الدروس : navigation interne (domaine → unité → leçon)
+  // avec historique séparé. Chaque changement d'état interne ajoute une entrée
+  // `pushState` pour que `history.back()` revienne étape par étape dans الدروس.
+  type LessonHistoryState = {
+    view: 'lessons';
+    domain: number | null;
+    passiveUnit: number | null;
+    activeUnit: number | null;
+    activeLesson: string | null;
+    passiveLesson: string | null;
+    mode: LessonMode | 'qcm' | 'bac' | 'okacha' | 'search' | 'micro' | null;
+  };
+  const lessonHistoryRef = useRef<LessonHistoryState>({
+    view: 'lessons',
+    domain: null,
+    passiveUnit: null,
+    activeUnit: null,
+    activeLesson: null,
+    passiveLesson: null,
+    mode: null,
+  });
+  const pushLessonHistory = () => {
+    const snapshot: LessonHistoryState = {
+      view: 'lessons',
+      domain: selectedDomain,
+      passiveUnit: selectedPassiveUnitId,
+      activeUnit: selectedActiveUnitId,
+      activeLesson: selectedActiveLesson,
+      passiveLesson: selectedPassiveLesson,
+      mode,
+    };
+    lessonHistoryRef.current = snapshot;
+    history.pushState({ ...snapshot, view: 'lessons' }, '', `#lesson`);
+  };
+  useEffect(() => {
+    const onPopState = (ev: PopStateEvent) => {
+      const state = ev.state as LessonHistoryState | null;
+      if (!state || state.view !== 'lessons') return;
+      setSelectedDomain(state.domain);
+      setSelectedPassiveUnitId(state.passiveUnit);
+      setSelectedActiveUnitId(state.activeUnit);
+      setSelectedActiveLesson(state.activeLesson);
+      setSelectedPassiveLesson(state.passiveLesson);
+      setMode(state.mode);
+      lessonHistoryRef.current = state;
+    };
+    window.addEventListener('popstate', onPopState);
+    return () => window.removeEventListener('popstate', onPopState);
+  }, []);
 
   // Deep-link (مسار) : ouverture à UNE reprise au montage, puis on vide l'état
   // du parent pour qu'un retour sur l'onglet ne rejoue pas le deep-link.
@@ -166,6 +274,9 @@ export default function LessonsView({ onRateCard, initialLesson, initialQcm, ini
    * 'm' = الدليل العام للمنهجية, entré depuis l'écran des domaines.
    */
   const [okachaDomaine, setOkachaDomaine] = useState<1 | 2 | 3 | 'm'>(1);
+  // 2026-11-10 : chapitre actif (l'un des 3 domaines) — source de vérité
+  // partagée par toutes les rubriques (src/lib/chapitreActif.ts).
+  const { id: chapitreActif } = useChapitreActif();
 
   // Freemium (24/10/2026) : compteur de re-render après un changement d'accès
   // (essai démarré, code activé) — les prédicats relisent le cache local.
@@ -219,7 +330,7 @@ export default function LessonsView({ onRateCard, initialLesson, initialQcm, ini
           // Retour sur les icônes de la MÊME unité (pas la liste des unités).
           setSelectedActiveUnitId(uid);
         }}
-        onNext={nextKey && nextUnit ? () => { setSelectedUnit(nextUnit); setSelectedActiveLesson(nextKey); } : undefined}
+        onNext={nextKey && nextUnit ? () => { setSelectedUnit(nextUnit); setSelectedActiveLesson(nextKey); pushLessonHistory(); } : undefined}
         nextTitleAr={nextKey ? getActiveLessonTitle(nextKey) : undefined}
       />
     );
@@ -241,8 +352,8 @@ export default function LessonsView({ onRateCard, initialLesson, initialQcm, ini
     return (
       <HtmlLessonViewer
         lessonKey={selectedPassiveLesson}
-        onBack={() => setSelectedPassiveLesson(null)}
-        onNext={nextKey ? () => setSelectedPassiveLesson(nextKey) : undefined}
+        onBack={() => { setSelectedPassiveLesson(null); pushLessonHistory(); }}
+        onNext={nextKey ? () => { setSelectedPassiveLesson(nextKey); pushLessonHistory(); } : undefined}
         nextTitleAr={nextKey ? getPassiveLessonTitle(nextKey, selectedUnit) : undefined}
       />
     );
@@ -311,6 +422,17 @@ export default function LessonsView({ onRateCard, initialLesson, initialQcm, ini
     );
   }
 
+  // ----- Écran 0 quinquies : R5 — DROITS D'ENTRÉE des micro-leçons -----
+  // Une seule porte de plus sur l'écran d'accueil, pas une 5ᵉ rubrique :
+  // le panneau est chargé à la demande et reste dans l'onglet « الدروس ».
+  if (mode === 'micro') {
+    return (
+      <Suspense fallback={<VueEnChargement />}>
+        <MicroLeconsPanel onBack={() => setMode(null)} />
+      </Suspense>
+    );
+  }
+
   // ----- Écran 1 : les deux icônes (Leçon Active / Leçon Passive) -----
   if (mode === null) {
     return (
@@ -345,6 +467,37 @@ export default function LessonsView({ onRateCard, initialLesson, initialQcm, ini
           <ChevronLeft className="w-5 h-5 text-emerald-600 dark:text-emerald-400 shrink-0" />
         </button>
 
+        {/* R5 (2026-11-07) : micro-leçons + synthèse « 3 phrases ».
+            Une seule porte de plus sur l'écran d'accueil, PAS une 5ᵉ rubrique :
+            le panneau et l'index des leçons ne sont chargés qu'au clic. Aucun
+            chiffre n'est écrit ici (les statistiques réelles viennent du
+            panneau) pour ne pas annoncer une donnée inventée. */}
+        <button
+          type="button"
+          data-testid="lecons-ouvrir-micro"
+          onClick={() => setMode('micro')}
+          className="group w-full flex items-center gap-4 p-4 rounded-2xl border-2 border-emerald-200 dark:border-emerald-900/50 bg-gradient-to-l from-emerald-50 to-white dark:from-emerald-950/30 dark:to-[#161c18] hover:border-emerald-500 hover:shadow-lg transition-all text-right cursor-pointer"
+        >
+          <span className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-[#006d37] text-white shadow-md group-hover:scale-105 transition-transform shrink-0">
+            <BookMarked className="w-6 h-6" />
+          </span>
+          <span className="flex-1 min-w-0">
+            <span className="block text-base font-black text-gray-800 dark:text-gray-100">
+              📚 دروس مصغّرة وخلاصة في 3 جمل
+            </span>
+            <span className="block text-xs font-bold text-gray-500 dark:text-gray-400 leading-relaxed">
+              مقاطع قصيرة مقتبسة حرفياً من الدرس، مع خلاصة مُثبتة ومدة مُصرّح بها فقط عند وجودها
+            </span>
+          </span>
+          <ChevronLeft className="w-5 h-5 text-emerald-600 dark:text-emerald-400 shrink-0" />
+        </button>
+
+        {/* 2026-11-11 (demande du propriétaire) : les 3 chapitres sont posés
+            DANS la zone de contenu, juste avant les grandes cartes (الدرس
+            النشيط / الدرس الرسمي / الخريطة الذهنية) — l'élève choisit son
+            chapitre, puis sa méthode et son unité. */}
+        <SelecteurChapitre titre="اختر الفصل" />
+
         <section className="space-y-3" aria-labelledby="lesson-choice-title">
           <div>
             <h2 id="lesson-choice-title" className="text-lg font-black text-gray-900 dark:text-white">اختر طريقة التعلّم</h2>
@@ -353,7 +506,7 @@ export default function LessonsView({ onRateCard, initialLesson, initialQcm, ini
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {/* Leçon Active */}
           <button
-            onClick={() => { setMode('active'); setSelectedDomain(null); setSelectedActiveUnitId(null); }}
+            onClick={() => { setMode('active'); setSelectedDomain(null); setSelectedActiveUnitId(null); pushLessonHistory(); }}
             className="group p-6 rounded-3xl border-2 border-emerald-200 dark:border-emerald-900/50 bg-gradient-to-b from-emerald-50 to-white dark:from-emerald-950/30 dark:to-[#161c18] hover:border-emerald-500 hover:shadow-lg transition-all text-center space-y-3"
           >
             <span className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-[#006d37] text-white shadow-md group-hover:scale-105 transition-transform">
@@ -367,7 +520,7 @@ export default function LessonsView({ onRateCard, initialLesson, initialQcm, ini
 
           {/* Leçon Passive */}
           <button
-            onClick={() => { setMode('passive'); setSelectedDomain(null); setSelectedPassiveUnitId(null); }}
+            onClick={() => { setMode('passive'); setSelectedDomain(null); setSelectedPassiveUnitId(null); pushLessonHistory(); }}
             className="group p-6 rounded-3xl border-2 border-teal-200 dark:border-teal-900/50 bg-gradient-to-b from-teal-50 to-white dark:from-teal-950/30 dark:to-[#161c18] hover:border-teal-500 hover:shadow-lg transition-all text-center space-y-3"
           >
             <span className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-[#0e6b6b] text-white shadow-md group-hover:scale-105 transition-transform">
@@ -420,7 +573,13 @@ export default function LessonsView({ onRateCard, initialLesson, initialQcm, ini
   // Même principe que les leçons passives : une icône = une unité, un clic ouvre
   // les icônes de ses leçons actives (U6 ×3, U7, U9, U11 — 4 unités / 6 leçons).
   if (mode === 'active') {
-    const activeUnits = INITIAL_UNITS.filter((u) => getActiveLessonKeysForUnit(u.id).length > 0);
+    // 2026-11-10 (demande du propriétaire) : l'élève entre par le CHAPITRE
+    // puis voit les rubriques de ce chapitre — la grille des unités actives
+    // ne montre donc que les unités du chapitre actif.
+    const activeUnits = filtrerParChapitre(
+      INITIAL_UNITS.filter((u) => getActiveLessonKeysForUnit(u.id).length > 0),
+      chapitreActif,
+    );
 
     if (selectedActiveUnitId === null) {
       return (
@@ -445,7 +604,7 @@ export default function LessonsView({ onRateCard, initialLesson, initialQcm, ini
             </p>
           )}
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4" data-testid="unites-actives-icones">
+          <div className="grid gap-4 grid-cols-[repeat(auto-fill,minmax(300px,1fr))]" data-testid="unites-actives-icones">
             {activeUnits.map((u) => {
               const keys = getActiveLessonKeysForUnit(u.id);
               return (
@@ -463,6 +622,10 @@ export default function LessonsView({ onRateCard, initialLesson, initialQcm, ini
                       <span className="inline-flex items-center justify-center h-6 px-2 rounded-lg bg-emerald-50 dark:bg-emerald-950/40 text-[#006d37] dark:text-emerald-300 text-[11px] font-black shrink-0">
                         وحدة {u.id}
                       </span>
+                      {(() => {
+                        const v = verdictUnite(u.id);
+                        return v ? <PastilleUnite uid={u.id} verdict={v} /> : null;
+                      })()}
                       <span className="text-sm font-black text-gray-800 dark:text-gray-100">{u.title}</span>
                     </span>
                     <span className="block text-[11px] font-bold text-gray-500 dark:text-gray-400">{u.description}</span>
@@ -519,13 +682,13 @@ export default function LessonsView({ onRateCard, initialLesson, initialQcm, ini
 
         <p className="text-[11px] font-bold text-gray-500 dark:text-gray-400">{uniteActive?.description}</p>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3" data-testid="lecons-actives-icones">
+        <div className="grid gap-3 grid-cols-[repeat(auto-fill,minmax(280px,1fr))]" data-testid="lecons-actives-icones">
           {clesActives.map((key, i) => {
             const titre = getActiveLessonTitle(key);
             return (
               <button
                 key={key}
-                onClick={() => { setSelectedUnit(selectedActiveUnitId); setSelectedActiveLesson(key); }}
+                onClick={() => { setSelectedUnit(selectedActiveUnitId); setSelectedActiveLesson(key); pushLessonHistory(); }}
                 data-testid={`lecon-active-${key}`}
                 className="group p-4 rounded-2xl border-2 border-gray-200 dark:border-gray-800 bg-white dark:bg-[#161c18] hover:border-emerald-500 hover:shadow-md transition-all text-right"
               >
@@ -724,7 +887,10 @@ export default function LessonsView({ onRateCard, initialLesson, initialQcm, ini
           </div>
         )}
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        {/* B-visuel (2026-11-05) : cellules garenties ≥ 240px — avec le main
+            plafonné ~768px, les 3 colonnes fixes d'avant généraient des cartes
+            de 243px où le titre unité se cassait lettre par lettre (vertical). */}
+        <div className="grid gap-4 grid-cols-[repeat(auto-fill,minmax(240px,1fr))]">
           {PASSIVE_DOMAINS.map((d, i) => {
             const Icon = DOMAIN_ICONS[i] ?? Network;
             const chapters = d.unitIds.reduce(
@@ -734,7 +900,7 @@ export default function LessonsView({ onRateCard, initialLesson, initialQcm, ini
             return (
               <button
                 key={d.id}
-                onClick={() => { setSelectedDomain(d.id); setSelectedPassiveUnitId(null); }}
+                onClick={() => { setSelectedDomain(d.id); setSelectedPassiveUnitId(null); pushLessonHistory(); }}
                 data-testid={`domaine-${d.id}`}
                 className="group p-6 rounded-3xl border-2 border-gray-200 dark:border-gray-800 bg-white dark:bg-[#161c18] hover:border-teal-500 hover:shadow-lg transition-all text-center space-y-3"
               >
@@ -748,7 +914,7 @@ export default function LessonsView({ onRateCard, initialLesson, initialQcm, ini
                   {d.emoji} {d.titleAr}
                 </span>
                 <span className="block text-xs font-bold text-gray-500 dark:text-gray-400">
-                  {d.unitIds.length} وحدات · {chapters} فصلاً
+                  {d.unitIds.length} وحدات · فصلاً : {chapters}
                 </span>
                 {/* Aperçu : les icônes des unités du domaine (entrée « icône après icône »). */}
                 <span className="flex items-center justify-center gap-1.5 flex-wrap pt-1">
@@ -815,14 +981,17 @@ export default function LessonsView({ onRateCard, initialLesson, initialQcm, ini
           </span>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4" data-testid="unites-icones">
+        {/* B-visuel (2026-11-05) : auto-fill ≥300px. Avant : xl:grid-cols-3 sur un
+            main de ~762px = cellules de 243px → span titre ~91px → césure
+            « une lettre par ligne » (reproduit + mesuré en headless). */}
+        <div className="grid gap-4 grid-cols-[repeat(auto-fill,minmax(300px,1fr))]" data-testid="unites-icones">
           {domain?.unitIds.map((uid) => {
             const unit = INITIAL_UNITS.find((u) => u.id === uid);
             const chapters = getUnitLessonSequence(uid).filter(hasHtmlFile);
             return (
               <button
                 key={uid}
-                onClick={() => setSelectedPassiveUnitId(uid)}
+                onClick={() => { setSelectedPassiveUnitId(uid); pushLessonHistory(); }}
                 data-testid={`unite-${uid}`}
                 className="group p-5 rounded-3xl border-2 border-gray-200 dark:border-gray-800 bg-white dark:bg-[#161c18] hover:border-teal-500 hover:shadow-lg transition-all text-right flex items-start gap-4"
               >
@@ -834,12 +1003,19 @@ export default function LessonsView({ onRateCard, initialLesson, initialQcm, ini
                     <span className="inline-flex items-center justify-center h-6 px-2 rounded-lg bg-teal-50 dark:bg-teal-950/40 text-[#0e6b6b] dark:text-teal-300 text-[11px] font-black shrink-0">
                       وحدة {uid}
                     </span>
+                    {(() => {
+                      const v = verdictUnite(uid);
+                      return v ? <PastilleUnite uid={uid} verdict={v} /> : null;
+                    })()}
                     <span className="flex-1 min-w-0 text-sm font-black text-gray-800 dark:text-gray-100 break-words">{unit?.title}</span>
                   </span>
                   <span className="block text-[11px] font-bold text-gray-500 dark:text-gray-400 break-words">{unit?.description}</span>
                   <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg bg-emerald-50 dark:bg-emerald-950/30 text-[10px] font-black text-emerald-700 dark:text-emerald-300">
                     <Grid3x3 className="w-3 h-3" />
-                    {chapters.length} فصول
+                    {/* B-visuel (2026-11-05) : « {n} فصول » s'affichait « فصول ن » et
+                        se lisait à tort « الفصل ن » (plainte élève). Deux-points =
+                        lecture libellé : valeur, sans îlot bidi. */}
+                    فصول : {chapters.length}
                   </span>
                 </span>
                 <ChevronLeft className="w-5 h-5 text-gray-300 group-hover:text-teal-500 transition-all shrink-0 mt-4" />
@@ -899,7 +1075,7 @@ export default function LessonsView({ onRateCard, initialLesson, initialQcm, ini
         {domain?.unitIds.map((uid) => (
           <button
             key={uid}
-            onClick={() => setSelectedPassiveUnitId(uid)}
+            onClick={() => { setSelectedPassiveUnitId(uid); pushLessonHistory(); }}
             title={getUnitTitle(uid)}
             data-testid={`bande-unite-${uid}`}
             className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-[11px] font-black transition-colors ${
@@ -916,7 +1092,8 @@ export default function LessonsView({ onRateCard, initialLesson, initialQcm, ini
 
       <p className="text-[11px] font-bold text-gray-500 dark:text-gray-400 break-words">{unitCourante?.description}</p>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3" data-testid="chapitres-icones">
+        {/* B-visuel (2026-11-05) : cellules ≥ 280px, même cause que les cartes unités. */}
+        <div className="grid gap-3 grid-cols-[repeat(auto-fill,minmax(280px,1fr))]" data-testid="chapitres-icones">
         {chapitres.length === 0 && (
           <p className="text-xs font-bold text-gray-500 dark:text-gray-400 col-span-full text-center py-6">
             لا يوجد نشاط في هذه الوحدة بعد.

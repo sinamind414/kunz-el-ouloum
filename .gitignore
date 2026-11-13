@@ -39,3 +39,19 @@ _lint_final.txt
 # se reconstruit par assembleRelease).
 public/apk/
 .vercel
+
+# livrable : la maquette PDF du livre (exception à *.pdf)
+!LIVRE_SULAYMAN/maquette/LIVRE_Sulayman_v1.pdf
+
+# 2026-11-07 / étage 4 : les deux transcriptions ci-dessous ont été suivies
+# à la racine (6d26c17, 20/09/2026). Elles sont retirées de l'index ce jour
+# (git rm --cached), restent sur le disque en local et sont désormais ignorées.
+# Le retrait de l'index n'efface pas les commits passés : l'étage 4/2 a
+# réécrit les 320 commits de NOTRE SEULE branche (0 ouvrage dans son historique).
+# Les 8 autres branches et les objets côté GitHub les portent encore : la purge
+# réelle reste « Non vérifiable ». Voir CORRECTION_PAR_ETAGES_2026-11-07.md
+# étage 4 et RECETTE_PURGE_COMPLETE_2026-11-07.md (non exécutée).
+# book_tdm_clean.md (5,8 Ko, simple TDM bilingue) reste suivi : le script
+# scripts/book_to_json.py et la documentation s'en servent.
+الكتاب_المصحح_v1.0.md
+المكتبة_الكاملة_SVT.md

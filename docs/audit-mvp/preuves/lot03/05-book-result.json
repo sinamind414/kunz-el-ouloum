@@ -1,0 +1,194 @@
+{
+  "text": "تجاوز إلى المحتوى الرئيسي\nطالب متميز\nSVT BAC DZ\nالدروس؟\nأ\n0\n|\n0 XP\nالقائمة الرئيسية\nالرئيسية\nACCUEIL\nالدروس\nAPPRENDRE\nالتمارين والتدريب\nS'ENTRAÎNER\nمفتاح المنهجية\nMÉTHODE\nالمراجعة\nRÉVISER\nأنا\nMOI\n\nالقبطان — مُرشد كنز العلوم\n\nاقرأ بسؤال في رأسك: «ماذا يريد مني المنهاج في هذه الوثيقة؟». القراءة بلا سؤال قراءة بلا أثر.\n\nابدأ بـ: اكتب سؤالك على ورقة قبل أن تفتح الدرس.\n\nفهمت\n→\nعودة إلى الفصول\nالفصل 1 : تذكير بالمكتسبات\nالنتيجة : 1 / 2 — راجع التفسيرات أدناه ثم أعد المحاولة\n1\n\nأين تتواجد جزيئة الـ ADN عند الكائنات حقيقية النواة، وماذا تحمل؟\n\n❌ في الهيولى حرة، ولا تحمل أي معلومةداخل الرايبوزومات، وتصنع البروتينات بنفسها✅ داخل النواة، وتحمل المعلومات الوراثية الضرورية لتركيب البروتينات\n💡 النواة مقر الـ ADN عند حقيقيات النواة، وهي حامل المعلومة الوراثية للتركيب الحيوي للبروتينات (البداية l.542).\n2\n\nأين يتم تركيب البروتين وبأي معلومات؟\n\nفي الميتوكوندري باستعمال طاقتهافي النواة باستعمال المعلومات المتواجدة على ال ADN✅ في الهيولى باستعمال المعلومات الوراثية المتواجدة في النواة\n💡 النص (l.546) : يتم تركيب البروتين في الهيولى باستعمال المعلومات الوراثية المتواجدة في النواة (تُنقل عبر ARNm).\n\nالقبطان — مُرشد كنز العلوم\n\nلا نبدأ بالمنهج كله. نبدأ بدقيقتين.\n\nاختبار قصير: سؤال واحد.\n\nيومك الأول في السلسلة.\n\nاختبار قصير: سؤال واحد.\nلاحقًا",
+  "buttons": [
+    {
+      "text": "؟",
+      "label": "نصيحة القبطان في هذه الصفحة",
+      "testid": "conseil-rubrique-ouvrir",
+      "disabled": false
+    },
+    {
+      "text": "",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "أ",
+      "label": "حجم النص",
+      "testid": "taille-texte-btn",
+      "disabled": false
+    },
+    {
+      "text": "الرئيسية\nACCUEIL",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "الدروس\nAPPRENDRE",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "التمارين والتدريب\nS'ENTRAÎNER",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "مفتاح المنهجية\nMÉTHODE",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "المراجعة\nRÉVISER",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "أنا\nMOI",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "فهمت",
+      "label": null,
+      "testid": "bandeau-conseil-fermer",
+      "disabled": false
+    },
+    {
+      "text": "→\nعودة إلى الفصول",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "❌ في الهيولى حرة، ولا تحمل أي معلومة",
+      "label": null,
+      "testid": null,
+      "disabled": true
+    },
+    {
+      "text": "داخل الرايبوزومات، وتصنع البروتينات بنفسها",
+      "label": null,
+      "testid": null,
+      "disabled": true
+    },
+    {
+      "text": "✅ داخل النواة، وتحمل المعلومات الوراثية الضرورية لتركيب البروتينات",
+      "label": null,
+      "testid": null,
+      "disabled": true
+    },
+    {
+      "text": "في الميتوكوندري باستعمال طاقتها",
+      "label": null,
+      "testid": null,
+      "disabled": true
+    },
+    {
+      "text": "في النواة باستعمال المعلومات المتواجدة على ال ADN",
+      "label": null,
+      "testid": null,
+      "disabled": true
+    },
+    {
+      "text": "✅ في الهيولى باستعمال المعلومات الوراثية المتواجدة في النواة",
+      "label": null,
+      "testid": null,
+      "disabled": true
+    },
+    {
+      "text": "الرئيسيةAccueil",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "الدروسApprendre",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "التمارين والتدريبS'entraîner",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "مفتاح المنهجيةMéthode",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "المراجعةRéviser",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "أناMoi",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "اختبار قصير: سؤال واحد.",
+      "label": null,
+      "testid": "bulle-capitaine-agir",
+      "disabled": false
+    },
+    {
+      "text": "لاحقًا",
+      "label": "إغلاق",
+      "testid": "bulle-capitaine-fermer",
+      "disabled": false
+    },
+    {
+      "text": "",
+      "label": "القبطان — مُرشد كنز العلوم",
+      "testid": "fab-morchid",
+      "disabled": false
+    },
+    {
+      "text": "",
+      "label": "تكبير الشكل",
+      "testid": null,
+      "disabled": false
+    }
+  ],
+  "testids": [
+    "conseil-rubrique-ouvrir",
+    "taille-texte-btn",
+    "bandeau-conseil-rubrique",
+    "bandeau-conseil-visage",
+    "bandeau-conseil-fermer",
+    "qcm-livre",
+    "bulle-capitaine",
+    "bulle-capitaine-agir",
+    "bulle-capitaine-fermer",
+    "fab-morchid"
+  ],
+  "inputs": [],
+  "width": 1280,
+  "scrollWidth": 1280,
+  "storage": {
+    "boussole_prescriptions_v1": "{\"prescriptions\":[{\"motif\":\"accueil:training\",\"cible\":\"training\",\"emisMs\":1793357058291,\"issue\":\"en_attente\"}],\"motifs\":{\"accueil:training\":{\"dits\":1,\"suivis\":0,\"ignores\":0,\"expires\":0}}}",
+    "theme": "light",
+    "kunz_parcours_v1": "{\"done\":{},\"reviews\":{},\"extraAllowance\":0,\"mig\":6}",
+    "boussole_token": "audit-local-fixture-not-a-real-token",
+    "kunz_acces": "{\"statut\":\"essai\",\"expireLe\":\"2099-06-30\"}",
+    "kunz_declic_last_id_v1": "dem_02",
+    "svt_progress": "{\"xp\":0,\"streak\":0,\"completedUnits\":[],\"completedQuestionsCount\":0,\"studyMinutes\":0,\"dailyGoals\":{\"type\":\"minutes\",\"targetMinutes\":25,\"targetQuestions\":20,\"lastActiveDate\":\"\",\"todayMinutes\":0,\"todayQuestions\":0,\"streakDays\":0,\"completedToday\":false},\"flashcardStats\":{\"again\":0,\"hard\":0,\"good\":0,\"easy\":0},\"quizScoreHistory\":[{\"date\":\"30‏/10‏/2026\",\"score\":1,\"total\":2,\"unitTitle\":\"تركيب البروتين\",\"source\":\"livre\",\"chapitre\":1}]}",
+    "boussole_conseils_rubriques_vus": "[\"lesson\",\"examens\",\"training\"]",
+    "kunz_declic_shown_v1": "2026-10-30",
+    "svt_units": "[{\"id\":1,\"title\":\"تركيب البروتين\",\"lessonsCount\":6,\"description\":\"التخصص الوظيفي للبروتينات — Synthèse des protéines\",\"progress\":0,\"isLocked\":false,\"domain\":\"التخصص الوظيفي للبروتينات\"},{\"id\":2,\"title\":\"العلاقة بين بنية ووظيفة البروتين\",\"lessonsCount\":4,\"description\":\"التخصص الوظيفي للبروتينات — Relation structure-fonction\",\"progress\":0,\"isLocked\":true,\"domain\":\"التخصص الوظيفي للبروتينات\"},{\"id\":3,\"title\":\"النشاط الإنزيمي للبروتينات\",\"lessonsCount\":5,\"description\":\"التخصص الوظيفي للبروتينات — Activité enzymatique\",\"progress\":0,\"isLocked\":true,\"domain\":\"التخصص الوظيفي للبروتينات\"},{\"id\":4,\"title\":\"دور البروتينات في الدفاع عن الذات\",\"lessonsCount\":6,\"description\":\"التخصص الوظيفي للبروتينات — Immunité\",\"progress\":0,\"isLocked\":true,\"domain\":\"التخصص الوظيفي للبروتينات\"},{\"id\":5,\"title\":\"دور البروتينات في الاتصال العصبي\",\"lessonsCount\":5,\"description\":\"التخصص الوظيفي للبروتينات — Communication nerveuse\",\"progress\":0,\"isLocked\":true,\"domain\":\"التخصص الوظيفي للبروتينات\"},{\"id\":6,\"title\":\"آليات تحويل الطاقة الضوئية إلى طاقة كيميائية كامنة\",\"lessonsCount\":3,\"description\":\"التحولات الطاقوية — Photosynthèse\",\"progress\":0,\"isLocked\":true,\"domain\":\"التحولات الطاقوية\"},{\"id\":7,\"title\":\"آليات تحويل الطاقة الكيميائية الكامنة في الجزيئات العضوية إلى ATP\",\"lessonsCount\":3,\"description\":\"التحولات الطاقوية — Respiration cellulaire\",\"progress\":0,\"isLocked\":true,\"domain\":\"التحولات الطاقوية\"},{\"id\":8,\"title\":\"تحويل الطاقة على المستوى ما فوق البنية الخلوية\",\"lessonsCount\":3,\"description\":\"التحولات الطاقوية — Bilan énergétique\",\"progress\":0,\"isLocked\":true,\"domain\":\"التحولات الطاقوية\"},{\"id\":9,\"title\":\"النشاط التكتوني للصفائح\",\"lessonsCount\":3,\"description\":\"التكتونية العامة — Activité tectonique\",\"progress\":0,\"isLocked\":true,\"domain\":\"التكتونية العامة\"},{\"id\":10,\"title\":\"بنية الكرة الأرضية\",\"lessonsCount\":3,\"description\":\"التكتونية العامة — Structure de la Terre\",\"progress\":0,\"isLocked\":true,\"domain\":\"التكتونية العامة\"},{\"id\":11,\"title\":\"النشاط التكتوني والبنيات الجيولوجية المرتبطة به\",\"lessonsCount\":3,\"description\":\"التكتونية العامة — Structures géologiques\",\"progress\":0,\"isLocked\":true,\"domain\":\"التكتونية العامة\"}]"
+  }
+}

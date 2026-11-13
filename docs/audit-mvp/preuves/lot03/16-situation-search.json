@@ -1,0 +1,319 @@
+{
+  "text": "تجاوز إلى المحتوى الرئيسي\nطالب متميز\nSVT BAC DZ\nتمارين بالوضعيات؟\nأ\n0\n|\n0 XP\nالقائمة الرئيسية\nالرئيسية\nACCUEIL\nالدروس\nAPPRENDRE\nالتمارين والتدريب\nS'ENTRAÎNER\nمفتاح المنهجية\nMÉTHODE\nالمراجعة\nRÉVISER\nأنا\nMOI\nتمارين بالوضعيات\n\nابحث عن التمرين بالحالة الملموسة: المضاد الحيوي، مريض السكري، زرع الكلية… (22 وضعية)\n\nالعودة\nكل الوحدات\nالوحدة 1\nالوحدة 2\nالوحدة 3\nالوحدة 4\nالوحدة 5\nالوحدة 6\nالوحدة 7\nالوحدة 8\nالوحدة 9\nالوحدة 10\nالوحدة 11\nفي المتناول\nنمط البكالوريا\nفخّ كلاسيكي\nحسب نوع الوثيقة\nكل الأنواع\nجدول (5)\nمنحنى (4)\nتخطيط (3)\nوثيقتان (5)\nأقواس الترسيب (1)\nتَرَحُّل كهربائي (1)\nمعطيات عددية (4)\n4 تمارين تُقرأ بالأرقام\n\n1 وضعية\n\nمريض السكري و دواء الجانوفيا\nفخّ كلاسيكي\n\nدواء يعمل بتثبيط إنزيم\n\nالوحدة 3\n25 د\nبكالوريا 2026، 2023، 2022 +2\n\nالقبطان — مُرشد كنز العلوم\n\nلا نبدأ بالمنهج كله. نبدأ بدقيقتين.\n\nاختبار قصير: سؤال واحد.\n\nيومك الأول في السلسلة.\n\nاختبار قصير: سؤال واحد.\nلاحقًا",
+  "buttons": [
+    {
+      "text": "؟",
+      "label": "نصيحة القبطان في هذه الصفحة",
+      "testid": "conseil-rubrique-ouvrir",
+      "disabled": false
+    },
+    {
+      "text": "",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "أ",
+      "label": "حجم النص",
+      "testid": "taille-texte-btn",
+      "disabled": false
+    },
+    {
+      "text": "الرئيسية\nACCUEIL",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "الدروس\nAPPRENDRE",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "التمارين والتدريب\nS'ENTRAÎNER",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "مفتاح المنهجية\nMÉTHODE",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "المراجعة\nRÉVISER",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "أنا\nMOI",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "العودة",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "كل الوحدات",
+      "label": null,
+      "testid": "filtre-unite-tous",
+      "disabled": false
+    },
+    {
+      "text": "الوحدة 1",
+      "label": null,
+      "testid": "filtre-unite-1",
+      "disabled": false
+    },
+    {
+      "text": "الوحدة 2",
+      "label": null,
+      "testid": "filtre-unite-2",
+      "disabled": false
+    },
+    {
+      "text": "الوحدة 3",
+      "label": null,
+      "testid": "filtre-unite-3",
+      "disabled": false
+    },
+    {
+      "text": "الوحدة 4",
+      "label": null,
+      "testid": "filtre-unite-4",
+      "disabled": false
+    },
+    {
+      "text": "الوحدة 5",
+      "label": null,
+      "testid": "filtre-unite-5",
+      "disabled": false
+    },
+    {
+      "text": "الوحدة 6",
+      "label": null,
+      "testid": "filtre-unite-6",
+      "disabled": false
+    },
+    {
+      "text": "الوحدة 7",
+      "label": null,
+      "testid": "filtre-unite-7",
+      "disabled": false
+    },
+    {
+      "text": "الوحدة 8",
+      "label": null,
+      "testid": "filtre-unite-8",
+      "disabled": false
+    },
+    {
+      "text": "الوحدة 9",
+      "label": null,
+      "testid": "filtre-unite-9",
+      "disabled": false
+    },
+    {
+      "text": "الوحدة 10",
+      "label": null,
+      "testid": "filtre-unite-10",
+      "disabled": false
+    },
+    {
+      "text": "الوحدة 11",
+      "label": null,
+      "testid": "filtre-unite-11",
+      "disabled": false
+    },
+    {
+      "text": "في المتناول",
+      "label": null,
+      "testid": "filtre-difficulte-1",
+      "disabled": false
+    },
+    {
+      "text": "نمط البكالوريا",
+      "label": null,
+      "testid": "filtre-difficulte-2",
+      "disabled": false
+    },
+    {
+      "text": "فخّ كلاسيكي",
+      "label": null,
+      "testid": "filtre-difficulte-3",
+      "disabled": false
+    },
+    {
+      "text": "كل الأنواع",
+      "label": null,
+      "testid": "filtre-forme-tous",
+      "disabled": false
+    },
+    {
+      "text": "جدول (5)",
+      "label": null,
+      "testid": "filtre-forme-tableau",
+      "disabled": false
+    },
+    {
+      "text": "منحنى (4)",
+      "label": null,
+      "testid": "filtre-forme-courbe",
+      "disabled": false
+    },
+    {
+      "text": "تخطيط (3)",
+      "label": null,
+      "testid": "filtre-forme-schema",
+      "disabled": false
+    },
+    {
+      "text": "وثيقتان (5)",
+      "label": null,
+      "testid": "filtre-forme-mixed",
+      "disabled": false
+    },
+    {
+      "text": "أقواس الترسيب (1)",
+      "label": null,
+      "testid": "filtre-forme-ouchterlony",
+      "disabled": false
+    },
+    {
+      "text": "تَرَحُّل كهربائي (1)",
+      "label": null,
+      "testid": "filtre-forme-electrophorese",
+      "disabled": false
+    },
+    {
+      "text": "معطيات عددية (4)",
+      "label": null,
+      "testid": "filtre-chiffre",
+      "disabled": false
+    },
+    {
+      "text": "مريض السكري و دواء الجانوفيا\nفخّ كلاسيكي\n\nدواء يعمل بتثبيط إنزيم\n\nالوحدة 3\n25 د\nبكالوريا 2026، 2023، 2022 +2",
+      "label": null,
+      "testid": "situation-diabete_januvia",
+      "disabled": false
+    },
+    {
+      "text": "الرئيسيةAccueil",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "الدروسApprendre",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "التمارين والتدريبS'entraîner",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "مفتاح المنهجيةMéthode",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "المراجعةRéviser",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "أناMoi",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "اختبار قصير: سؤال واحد.",
+      "label": null,
+      "testid": "bulle-capitaine-agir",
+      "disabled": false
+    },
+    {
+      "text": "لاحقًا",
+      "label": "إغلاق",
+      "testid": "bulle-capitaine-fermer",
+      "disabled": false
+    },
+    {
+      "text": "",
+      "label": "القبطان — مُرشد كنز العلوم",
+      "testid": "fab-morchid",
+      "disabled": false
+    }
+  ],
+  "testids": [
+    "conseil-rubrique-ouvrir",
+    "taille-texte-btn",
+    "situation-bank",
+    "situation-search",
+    "filtre-unite-tous",
+    "filtre-unite-1",
+    "filtre-unite-2",
+    "filtre-unite-3",
+    "filtre-unite-4",
+    "filtre-unite-5",
+    "filtre-unite-6",
+    "filtre-unite-7",
+    "filtre-unite-8",
+    "filtre-unite-9",
+    "filtre-unite-10",
+    "filtre-unite-11",
+    "filtre-difficulte-1",
+    "filtre-difficulte-2",
+    "filtre-difficulte-3",
+    "typologie-titre",
+    "filtre-forme-tous",
+    "filtre-forme-tableau",
+    "filtre-forme-courbe",
+    "filtre-forme-schema",
+    "filtre-forme-mixed",
+    "filtre-forme-ouchterlony",
+    "filtre-forme-electrophorese",
+    "filtre-chiffre",
+    "chiffre-libelle",
+    "situation-count",
+    "situation-diabete_januvia",
+    "echo-bac-diabete_januvia",
+    "bulle-capitaine",
+    "bulle-capitaine-agir",
+    "bulle-capitaine-fermer",
+    "fab-morchid"
+  ],
+  "inputs": [
+    {
+      "type": "text",
+      "label": null,
+      "placeholder": "اكتب اسم الحالة أو مفهوماً: السارين، التلقيح، pHi…"
+    }
+  ],
+  "width": 1280,
+  "scrollWidth": 1280,
+  "storage": {
+    "boussole_prescriptions_v1": "{\"prescriptions\":[{\"motif\":\"accueil:training\",\"cible\":\"training\",\"emisMs\":1793357131452,\"issue\":\"en_attente\"}],\"motifs\":{\"accueil:training\":{\"dits\":1,\"suivis\":0,\"ignores\":0,\"expires\":0}}}",
+    "theme": "light",
+    "boussole_token": "audit-local-fixture-not-a-real-token",
+    "kunz_acces": "{\"statut\":\"essai\",\"expireLe\":\"2099-06-30\"}",
+    "kunz_declic_last_id_v1": "dem_04",
+    "boussole_conseils_rubriques_vus": "[\"situations\",\"training\"]",
+    "kunz_declic_shown_v1": "2026-10-30"
+  }
+}

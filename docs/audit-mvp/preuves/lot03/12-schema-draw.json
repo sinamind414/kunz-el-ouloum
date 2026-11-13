@@ -1,0 +1,159 @@
+{
+  "text": "تجاوز إلى المحتوى الرئيسي\nطالب متميز\nSVT BAC DZ\nارسم من الذاكرة؟\nأ\n0\n|\n0 XP\nالقائمة الرئيسية\nالرئيسية\nACCUEIL\nالدروس\nAPPRENDRE\nالتمارين والتدريب\nS'ENTRAÎNER\nمفتاح المنهجية\nMÉTHODE\nالمراجعة\nRÉVISER\nأنا\nMOI\nمخطط المشبك العصبي\n\nالوحدة 5\n\nمطلوب في البكالوريا: 2026 · 2025 · 2024 · 2023 · 2022 · 2021 · 2020 · 2018 · 2017 · 2016\n\nكل الرسومات\n\nالتعليمة\n\nارسم مخططاً معنوناً لمشبك عصبي عصبي مبيّناً مسار الرسالة العصبية.\n\nخذ ورقة بيضاء — 10 دقائق، دون النظر إلى أي سند.\n\nترتيب الرسم\n\n1\nارسم النهاية قبل المشبكية والعنصر بعد المشبكي والشقّ بينهما.\n2\nضع الحويصلات المشبكية والميتوكوندريات.\n3\nارسم تحرّر المبلّغ في الشقّ وتثبيته على المستقبلات.\n4\nبيّن اتجاه الرسالة بسهم واحد لا رجعة فيه.\n\nأكثر رسم يُطلب في الوحدة 5؛ ستة عناصر تُنقَّط بشكل مستقل.\n\nأنا محاصر في الورقة البيضاء — ساعدني\nانتهيت من الرسم — قيّم نفسي\n\nالقبطان — مُرشد كنز العلوم\n\nلا نبدأ بالمنهج كله. نبدأ بدقيقتين.\n\nاختبار قصير: سؤال واحد.\n\nيومك الأول في السلسلة.\n\nاختبار قصير: سؤال واحد.\nلاحقًا",
+  "buttons": [
+    {
+      "text": "؟",
+      "label": "نصيحة القبطان في هذه الصفحة",
+      "testid": "conseil-rubrique-ouvrir",
+      "disabled": false
+    },
+    {
+      "text": "",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "أ",
+      "label": "حجم النص",
+      "testid": "taille-texte-btn",
+      "disabled": false
+    },
+    {
+      "text": "الرئيسية\nACCUEIL",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "الدروس\nAPPRENDRE",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "التمارين والتدريب\nS'ENTRAÎNER",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "مفتاح المنهجية\nMÉTHODE",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "المراجعة\nRÉVISER",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "أنا\nMOI",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "كل الرسومات",
+      "label": null,
+      "testid": "drill-quitter",
+      "disabled": false
+    },
+    {
+      "text": "أنا محاصر في الورقة البيضاء — ساعدني",
+      "label": null,
+      "testid": "morchid-ctx-schema-rappel",
+      "disabled": false
+    },
+    {
+      "text": "انتهيت من الرسم — قيّم نفسي",
+      "label": null,
+      "testid": "drill-fini",
+      "disabled": false
+    },
+    {
+      "text": "الرئيسيةAccueil",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "الدروسApprendre",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "التمارين والتدريبS'entraîner",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "مفتاح المنهجيةMéthode",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "المراجعةRéviser",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "أناMoi",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "اختبار قصير: سؤال واحد.",
+      "label": null,
+      "testid": "bulle-capitaine-agir",
+      "disabled": false
+    },
+    {
+      "text": "لاحقًا",
+      "label": "إغلاق",
+      "testid": "bulle-capitaine-fermer",
+      "disabled": false
+    },
+    {
+      "text": "",
+      "label": "القبطان — مُرشد كنز العلوم",
+      "testid": "fab-morchid",
+      "disabled": false
+    }
+  ],
+  "testids": [
+    "conseil-rubrique-ouvrir",
+    "taille-texte-btn",
+    "drill-exercice",
+    "drill-echo-bac",
+    "drill-quitter",
+    "phase-dessin",
+    "drill-consigne",
+    "drill-ordre",
+    "morchid-ctx-schema-rappel",
+    "drill-fini",
+    "bulle-capitaine",
+    "bulle-capitaine-agir",
+    "bulle-capitaine-fermer",
+    "fab-morchid"
+  ],
+  "inputs": [],
+  "width": 1280,
+  "scrollWidth": 1280,
+  "storage": {
+    "boussole_prescriptions_v1": "{\"prescriptions\":[{\"motif\":\"accueil:training\",\"cible\":\"training\",\"emisMs\":1793357119647,\"issue\":\"en_attente\"}],\"motifs\":{\"accueil:training\":{\"dits\":1,\"suivis\":0,\"ignores\":0,\"expires\":0}}}",
+    "theme": "light",
+    "boussole_token": "audit-local-fixture-not-a-real-token",
+    "kunz_acces": "{\"statut\":\"essai\",\"expireLe\":\"2099-06-30\"}",
+    "kunz_declic_last_id_v1": "dem_03",
+    "boussole_conseils_rubriques_vus": "[\"schemas\",\"reviser\"]",
+    "kunz_declic_shown_v1": "2026-10-30"
+  }
+}

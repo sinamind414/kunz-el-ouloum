@@ -187,3 +187,53 @@ export function serieAfficheeDepuisDaily(daily: DailyGoalConfig | undefined, now
 export function cumulJoursDepuisDaily(daily: DailyGoalConfig | undefined): number {
   return cumulJours(etatSerie(daily?.serieDernierJour, daily?.streakDays, daily?.joursActifsTotal));
 }
+
+// ─────────────────────────────────────────────────────────────────────────────
+// R2 (audit coach 2026-11-06, GO propriétaire en session — VERSION DOUCE) :
+// le drapeau « jour sérieux », DISTINCT de la série.
+//
+// LE PROBLÈME. La série compte TOUT jour d'activité — c'est sa fonction, elle
+// n'est pas touchée. Mais un élève qui produit un clic va la remplir sans que
+// l'apprentissage progresse : l'audit nomme ce risque « l'assiduité de
+// façade », et il est systémique parce que la série pilote la parole du
+// capitaine, l'escalade, puis le retrait des motifs.
+//
+// LA RÈGLE RETENUE (choix owner, version douce) : on n'affaiblit PAS la série,
+// on lui ajoute à côté une mesure QUALITATIVE séparée. Le seul critère
+// disponible SANS inventer d'échelle est déjà mesuré à chaque activité :
+// l'objectif du jour que l'élève s'est fixé lui-même (minutes OU questions,
+// selon `dailyGoals.type`) a-t-il été atteint (`completed`, déjà écrit dans
+// l'historique journalier) ? Un « jour sérieux » est donc un FAIT : le
+// compteur de l'objectif a atteint la cible. Aucune opinion, aucun seuil du
+// correcteur — et le cumul `joursActifsTotal` reste intact.
+//
+// CE QUE CE MODULE NE CHANGE PAS : aucune règle d'invitation, aucun seuil de
+// série, aucun calcul du capitaine n'entre ici — c'est l'AFFICHAGE stats.
+// ─────────────────────────────────────────────────────────────────────────────
+
+/** Le bilan qualitatif des jours enregistrés (historique borné à 30 jours). */
+export interface BilanJoursSerieux {
+  /** Jours dont l'objectif du jour a été ATTEINT (mesuré, jamais présumé). */
+  jours: number;
+  /** Jours classés enregistrés dans l'historique (plafond produit : 30). */
+  enregistres: number;
+}
+
+/** Le bilan neutre : rien d'enregistré — un chiffre dit « pas encore », jamais « faux ». */
+export const BILAN_JOURS_SERIEUX_VIDE: BilanJoursSerieux = { jours: 0, enregistres: 0 };
+
+/**
+ * Le bilan « jours sérieux » d'une progression — PUR, sans accès à l'horloge
+ * ni au stockage. L'historique journalier (`dailyGoals.history`) est déjà borné
+ * à 30 jours par `appliquerActiviteQuotidienne` : le bilan ne lit donc rien de
+ * plus, et une progression ancienne (sans `history`) répond « 0 enregistré » —
+ * un fait, pas une régression.
+ */
+export function bilanJoursSerieux(daily: DailyGoalConfig | undefined): BilanJoursSerieux {
+  const historique = daily?.history ?? [];
+  if (historique.length === 0) return BILAN_JOURS_SERIEUX_VIDE;
+  return {
+    jours: historique.filter((j) => j.completed === true).length,
+    enregistres: historique.length,
+  };
+}

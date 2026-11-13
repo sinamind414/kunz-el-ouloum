@@ -14,6 +14,17 @@
 import { AlertTriangle, ArrowLeft, Compass, Flag, ListOrdered, Target, X } from 'lucide-react';
 import { motion } from 'motion/react';
 import { openingForUnit } from '../data/unitOpenings';
+// Étage 3 / R2 : priorité CALCULÉE sur les 65 idées BAC, pour TOUTE unité.
+// Les 🔴/🟡/🟢 des schémas sont des légendes d'image, pas des priorités.
+import { phrasePrioriteAr, prioritePourUnite } from '../data/prioritesBac';
+// Les DEUX poids d'une unité (audit externe « claude 5.2 ») : le poids ANNONCÉ
+// (répartition du programme, mesuré aux sprints précédents) et la part
+// CONSTATÉE (points réellement portés par l'unité dans les 65 exercices BAC
+// indexés). Les deux sont vrais, à des niveaux différents : on les affiche
+// côte à côte plutôt que d'en corriger un par l'autre.
+import { observedUnitSharePercent } from '../data/bacSessionIndex';
+// Notions que l'élève a ratées (constat automatique, pas déclaration).
+import { notionsDominantes } from '../utils/profilErreurs';
 
 interface UnitIntroPortalProps {
   unitId: number;
@@ -29,10 +40,20 @@ export default function UnitIntroPortal({
   onClose,
 }: UnitIntroPortalProps) {
   const opening = openingForUnit(unitId);
+  // `null` pour une unité inexistante : aucune étiquette inventée.
+  const priorite = prioritePourUnite(unitId);
+  // Part CONSTATÉE de l'unité dans les points des 65 exercices BAC indexés
+  // (mesurée par le dépôt, pas estimée) — arrondie à une décimale.
+  const observe = observedUnitSharePercent()[unitId];
+  const partObservee = typeof observe === 'number' ? Math.round(observe * 10) / 10 : undefined;
+  // Notions que l'élève a lui-même ratées dans cette unité (fait, pas hypothèse).
+  const notionsRatees = notionsDominantes(6).filter((n) => n.uniteId === unitId);
 
   return (
     <div
-      className="fixed inset-0 z-50 bg-[#fff9ed] dark:bg-[#0c0f0d] flex flex-col font-sans"
+      /* ZONE SÛRE (APK Android 15+) : portail plein écran → on réserve la
+         barre d'état (haut) et la barre de navigation système (bas). */
+      className="fixed inset-0 z-50 bg-[#fff9ed] dark:bg-[#0c0f0d] flex flex-col font-sans pt-[var(--pfe-safe-top)] pb-[var(--pfe-safe-bottom)]"
       dir="rtl"
       data-testid="unit-intro-portal"
     >
@@ -52,6 +73,14 @@ export default function UnitIntroPortal({
       </header>
 
       <main className="flex-1 overflow-y-auto pb-28">
+        {priorite && (
+          <p
+            data-testid="portal-priorite"
+            className="mx-auto mt-3 w-[calc(100%-2rem)] max-w-2xl rounded-2xl bg-[#e5f6ed] px-3 py-2 text-center text-[11px] font-bold text-[#006d37] dark:bg-[#0f2a1c] dark:text-emerald-300"
+          >
+            {phrasePrioriteAr(priorite)}
+          </p>
+        )}
         <motion.div
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
@@ -131,13 +160,56 @@ export default function UnitIntroPortal({
                 </ul>
               </section>
 
-              {opening.bacWeightPercent !== undefined && (
-                <p
-                  data-testid="portal-poids"
-                  className="text-[13px] text-[#506072] dark:text-gray-400 text-center"
+              {/* NOTIONS QUE L'ÉLÈVE A RATÉES DANS CETTE UNITÉ (audit externe
+                  « claude 5.2 », axe 3). Ces notions sont un FAIT : chaque QCM
+                  porte la notion qu'il interroge (le titre de sa figure) et
+                  l'application enregistre celle qu'il a ratée — sans attendre
+                  la déclaration de l'élève. Rien n'est inventé : si l'élève n'a
+                  rien raté dans cette unité, la section n'apparaît pas. */}
+              {notionsRatees.length > 0 && (
+                <section
+                  data-testid="portal-notions-ratees"
+                  className="rounded-3xl p-4 bg-amber-50/60 dark:bg-amber-950/20 border border-amber-200/60"
                 >
-                  وزن هذه الوحدة في الامتحان حسب دراسة الدورات: {opening.bacWeightPercent}٪
-                </p>
+                  <p className="text-sm font-black text-amber-800 dark:text-amber-300 mb-2">
+                    ما الذي تعثّرت فيه في هذه الوحدة (من أسئلتك أنت)
+                  </p>
+                  <ul className="space-y-1">
+                    {notionsRatees.map((n) => (
+                      <li
+                        key={n.notion}
+                        className="text-sm leading-7 text-amber-800 dark:text-amber-200"
+                      >
+                        • {n.notion} — {n.occurrences} مرة
+                      </li>
+                    ))}
+                  </ul>
+                </section>
+              )}
+
+              {/* LES DEUX POIDS (audit externe « claude 5.2 », axe 2).
+                  Le poids ANNONCÉ vient de la répartition du programme
+                  (unités 1 à 7 mesurées ; 8 à 11 non mesurées — on n'invente
+                  pas un chiffre). La part CONSTATÉE est calculée par le dépôt
+                  lui-même (`observedUnitSharePercent`) sur les 65 exercices BAC
+                  indexés : elle existe pour les 11 unités.
+                  L'élève voit ainsi l'écart au lieu d'un chiffre unique. */}
+              {(opening.bacWeightPercent !== undefined || partObservee !== undefined) && (
+                <div
+                  data-testid="portal-poids"
+                  className="text-[13px] text-[#506072] dark:text-gray-400 text-center leading-7"
+                >
+                  {opening.bacWeightPercent !== undefined && (
+                    <p>
+                      وزن هذه الوحدة في الامتحان حسب دراسة الدورات: {opening.bacWeightPercent}٪
+                    </p>
+                  )}
+                  {partObservee !== undefined && (
+                    <p data-testid="portal-poids-observe">
+                      حصّتها من نقاط المواضيع المفهرسة (مقاس): {partObservee}٪
+                    </p>
+                  )}
+                </div>
               )}
 
               <section

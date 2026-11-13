@@ -192,7 +192,11 @@ describe('MoiView — المزيد : rubriques déplacées du menu latéral', ()
     const blocs = [...container.querySelectorAll('section[data-testid]')].map((s) =>
       s.getAttribute('data-testid'),
     );
-    expect(blocs).toEqual(['moi-tree', 'moi-nums', 'moi-raccourcis']);
+    // 2026-11-06 (R1, audit coach, GO propriétaire) : « ملفّي » (ProfilEleveView,
+    // panneau du profil élève minimal) rejoint Calculs — il reste un PANNEAU de
+    // l'écran, pas une rubrique ; l'invariant protégé ici est que « المزيد »
+    // termine TOUJOURS la page.
+    expect(blocs).toEqual(['moi-tree', 'moi-nums', 'profil-eleve', 'moi-raccourcis']);
   });
 
   it('affiche exactement une icône par rubrique déplacée, avec son libellé', () => {
@@ -273,10 +277,15 @@ describe('MoiView — المزيد : rubriques déplacées du menu latéral', ()
     //    (rubrique supprimée, principe conservé : compteur + leçon suggérée
     //    dans « الدرس الرسمي »).
     const entreesPrincipales = (menuPrincipal.match(/\{ tab: '/g) ?? []).length;
-    // 2026-10-16 (Commit C, Phase 2, GO) : la barre passe de 5 à 6 portails —
-    // « المنهجية » rejoint la barre (plainte : l'élève ne retrouvait pas
-    // مفتاح المنهجية), sortie du hub التمارين pour rester à UNE porte.
-    expect(entreesPrincipales).toBe(6);
+    // 2026-10-16 (Commit C, Phase 2, GO) : la barre passait de 5 à 6 portails —
+    // « المنهجية » avait rejoint la barre. 2026-11-03 (db3c13d, réduction du
+    // menu principal à 4 onglets) : l'utilisateur a ramené la barre à 4 —
+    // methodology et reviser repartaient — mais le constat mesuré du 5/11 en
+    // live a prouvé les DEUX onglets orphelins (aucune porte visible restante).
+    // 2026-11-05 (GO utilisateur, spec 6 → 4) : الدروس / التمارين / المراجعة
+    // deviennent 3 ONGLETS d'une seule porte « التعلّم » (src/data/apprentissageNav.ts) ; leurs identifiants d'écran restent
+    // montés dans App.tsx. « أنا » devient « حسابي » mais garde l'id `moi`.
+    expect(entreesPrincipales).toBe(4);
     expect(menuPrincipal, 'تقدمي est toujours dans la barre principale').not.toContain(
       "tab: 'stats'",
     );

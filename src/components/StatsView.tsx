@@ -2,6 +2,8 @@ import { useState, useRef, useMemo } from 'react';
 // MARQUE DE TRAÇABILITÉ (A3) : la fiche de résultats exportée en PNG est le
 // document qui circule le plus par WhatsApp (voir utils/marque.ts).
 import { apposerMarqueCanvas } from '../utils/marque';
+import { filtrerParChapitre, useChapitreActif } from '../lib/chapitreActif';
+import SelecteurChapitre from './SelecteurChapitre';
 import { identiteCourante } from '../utils/activityLog';
 import BackupPanel from './BackupPanel';
 import { motion, AnimatePresence } from 'motion/react';
@@ -52,7 +54,18 @@ import { playStreakMilestoneSound, playXPGainSound } from '../utils/audio';
 import { AR_LATN, fmtDateLatn, toLatinDigits } from '../utils/latinDigits';
 
 // H3 : plus aucune série morte à l'écran (« 1 يوم » pour zéro activité).
-import { serieAfficheeDepuisDaily } from '../utils/activiteQuotidienne';
+// R2 (audit coach 2026-11-06, version douce) : à côté de la série, la mesure
+// QUALITATIVE séparée « jour d'objectif atteint » — l'assiduité de façade se
+// voit maintenant, sans toucher à aucune règle de la série.
+import { bilanJoursSerieux, serieAfficheeDepuisDaily } from '../utils/activiteQuotidienne';
+
+// R4 (audit coach 2026-11-06, GO propriétaire — AFFICHAGE PASSIF dès 1) :
+// le دفتر الأخطاء compte depuis la première erreur (`totalErreurs`), mais
+// AUCUN écran stat ne le lisait : l'élève ne voyait rien avant que le
+// capitaine ne parle (seuil de parole ≥ 2 — TOUCHÉ NULLEMENT ici, cf. le
+// verrou de tests). Le drapeau est une LECTURE : ni bulle, ni clic, ni
+// changement de règle — juste le chiffre réel, présent dès la 1ʳᵉ erreur.
+import { totalErreurs } from '../utils/profilErreurs';
 
 interface StatsViewProps {
   progress: UserProgress;
@@ -68,6 +81,10 @@ export default function StatsView({ progress, units, onNavigate }: StatsViewProp
   const [studentName, setStudentName] = useState<string>('');
   const [weeklyMetricTab, setWeeklyMetricTab] = useState<'combined' | 'xp' | 'completion'>('combined');
   const reportRef = useRef<HTMLDivElement>(null);
+  // R4 — lecture pure du دفتر الأخطاء, UNE fois par montage de l'écran :
+  // la pastille n'a pas besoin de réagir à chaque rendu, l'écran se remonte
+  // de toute façon à chaque changement d'onglet (key={currentTab} dans App).
+  const erreursOuvertes = useMemo(() => totalErreurs(), []);
 
   const handleOpenStreakCelebration = () => {
     const serie = serieAfficheeDepuisDaily(progress.dailyGoals);
@@ -189,7 +206,11 @@ export default function StatsView({ progress, units, onNavigate }: StatsViewProp
   const completedUnitsCount = progress.completedUnits.length;
 
   // 4. Niveau d'atteinte réel de chaque unité (progression sauvegardée localement)
-  const unitMastery = units.map(u => ({
+  // 2026-11-10 (demande du propriétaire) : l'élève entre par le CHAPITRE puis
+  // voit les rubriques de ce chapitre — la jauge d'unités ne couvre que le
+  // chapitre actif (aucun chiffre inventé, la progression reste celle des unités).
+  const { id: chapitreActif } = useChapitreActif();
+  const unitMastery = filtrerParChapitre(units, chapitreActif).map(u => ({
     name: u.title.length > 16 ? u.title.substring(0, 15) + '…' : u.title,
     'الإتقان %': Math.round(u.progress),
   }));
@@ -199,7 +220,11 @@ export default function StatsView({ progress, units, onNavigate }: StatsViewProp
 
   return (
     <div className="space-y-6 pb-24 font-sans">
-      
+      {/* 2026-11-11 (demande du propriétaire) : les 3 chapitres sont posés
+          dans la ZONE DE CONTENU — la jauge d'atteinte ne montre que les
+          unités du chapitre choisi. */}
+      <SelecteurChapitre titre="اختر الفصل" />
+
       {/* Title Header */}
       <section className="px-1 shrink-0 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
@@ -602,6 +627,27 @@ export default function StatsView({ progress, units, onNavigate }: StatsViewProp
             <span className="text-[11px] font-black text-emerald-800 bg-white/90 px-2.5 py-1 rounded-xl shadow-2xs">
               {serieAfficheeDepuisDaily(progress.dailyGoals)} أيام مستمرة 🔥
             </span>
+            <span
+              data-testid="stats-jours-serieux"
+              title="عدّ من الأيام المسجّلة التي تحقق فيها هدفك اليومي المقيَّس — مقياس جودة بسيط بجانب السلسلة"
+              className="text-[11px] font-black text-[#506072] dark:text-gray-200 bg-[#fff9ed] dark:bg-[#1c241f] border border-[#e2dabf]/60 dark:border-[#2ecc71]/10 px-2.5 py-1 rounded-xl shadow-2xs"
+            >
+              {bilanJoursSerieux(progress.dailyGoals).jours} يوم جادّ من{' '}
+              {bilanJoursSerieux(progress.dailyGoals).enregistres} محفوظة
+            </span>
+            {/* R4 — passif : visible DÈS 1 erreur enregistrée, silencieux quand
+                le دفتر est vide. Ni clic ni bulle : le capitaine garde SA parole
+                (seuil ≥ 2 inchangé). Le chiffre est celui qui est mémorisé,
+                jamais un décompte estimé. */}
+            {erreursOuvertes > 0 && (
+              <span
+                data-testid="stats-erreurs-signal"
+                title="عدّ الأخطاء المسجَّلة في دفتر الأخطاء (محلياً) — التفاصيل والجرعة في دفتر الأخطاء"
+                className="text-[11px] font-black text-[#944a00] dark:text-[#ffb366] bg-white/90 dark:bg-[#1c241f] border border-[#f2d5b0]/70 dark:border-[#ff9a4a]/20 px-2.5 py-1 rounded-xl shadow-2xs"
+              >
+                أخطاء مُسجَّلة في دفتر الأخطاء: {erreursOuvertes}
+              </span>
+            )}
             <button
               onClick={() => setShowWeeklyShareModal(true)}
               className="px-3 py-1 bg-[#006d37] hover:bg-[#005027] text-white text-[11px] font-black rounded-xl transition-all shadow-xs flex items-center gap-1 cursor-pointer"
@@ -862,7 +908,7 @@ export default function StatsView({ progress, units, onNavigate }: StatsViewProp
       {/* Report Card Modal */}
       <AnimatePresence>
         {showReportModal && (
-          <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4 overflow-y-auto no-print">
+          <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4 pb-[calc(1rem+var(--pfe-safe-bottom))] overflow-y-auto no-print">
             <motion.div
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}

@@ -1,0 +1,395 @@
+{
+  "text": "تجاوز إلى المحتوى الرئيسي\nالدروس؟\nأ\n0\n|\n0 XP\n\nالقبطان — مُرشد كنز العلوم\n\nاقرأ بسؤال في رأسك: «ماذا يريد مني المنهاج في هذه الوثيقة؟». القراءة بلا سؤال قراءة بلا أثر.\n\nابدأ بـ: اكتب سؤالك على ورقة قبل أن تفتح الدرس.\n\nفهمت\n→\nعودة\nاختبار الفصول\n🎯 اختبار تشخيصي شامل\n\n41 سؤالا يغطي 24 فصلا — كل سؤال مع مخططه وتفسيره\n\nالوحدة 1\n1\nتذكير بالمكتسبات\n2 أسئلة\n1\nتذكير بالمكتسبات\n2 أسئلة\nالوحدة 4\n13\nتذكير بالمكتسبات\n2 أسئلة\n13\nتذكير بالمكتسبات\n2 أسئلة\n17\nمصدر الأجسام المضادة\n2 أسئلة\n17\nمصدر الأجسام المضادة\n2 أسئلة\n18\nالعناصر الدفاعية في الحالة الثانية\n2 أسئلة\n18\nالعناصر الدفاعية في الحالة الثانية\n2 أسئلة\n20\nمصدر اللمفاويات LTc\n2 أسئلة\n20\nمصدر اللمفاويات LTc\n2 أسئلة\n22\nاختيار نمط الاستجابة المناعية\n2 أسئلة\n22\nاختيار نمط الاستجابة المناعية\n2 أسئلة\n23\nسبب فقدان المناعة المكتسبة\n2 أسئلة\n23\nسبب فقدان المناعة المكتسبة\n2 أسئلة\nالوحدة 5\n24\nتذكير بالمكتسبات\n2 أسئلة\n25\nالنقل المشبكي (الكمون الغشائي)\n2 أسئلة\n25\nالنقل المشبكي (الكمون الغشائي)\n2 أسئلة\n26\nآلية النقل المشبكي\n2 أسئلة\n26\nآلية النقل المشبكي\n2 أسئلة\n24\nتذكير بالمكتسبات\n2 أسئلة\nالوحدة 6\n31\nتذكير بالمكتسبات\n2 أسئلة\n31\nتذكير بالمكتسبات\n2 أسئلة\nالوحدة 7\n35\nتذكير بالمكتسبات\n2 أسئلة\n36\nمقر الأكسدة التنفسية\n2 أسئلة\n36\nمقر الأكسدة التنفسية\n2 أسئلة\n35\nتذكير بالمكتسبات\n2 أسئلة\nالوحدة 9\n42\nتحديد الصفائح التكتونية\n1 أسئلة\nالوحدة 10\n47\nنمذجة البنية الداخلية للكرة الأرضية\n1 أسئلة\n45\nالموجات الزلزالية\n1 أسئلة\n46\nالتركيب الكيميائي لصخور القشرة الأرضية والمعطف (البرنس)\n1 أسئلة\nالوحدة 11\n49\nالمغماتية وتشكل اللوح المحيطي\n2 أسئلة\n49\nالمغماتية وتشكل اللوح المحيطي\n2 أسئلة\n50\nتشكل الصخور المميزة للظهرة وسط محيطية\n2 أسئلة\n50\nتشكل الصخور المميزة للظهرة وسط محيطية\n2 أسئلة\n54\nشواهد التقلص\n2 أسئلة\n54\nشواهد التقلص\n2 أسئلة\n48\nالظواهر المرتبطة بالبناء (خصائص الظهرات وسط محيطية)\n1 أسئلة\n52\nاختفاء اللوح المحيطي والظواهر المرتبطة بالغوص\n2 أسئلة\n52\nاختفاء اللوح المحيطي والظواهر المرتبطة بالغوص\n2 أسئلة\n53\nالتضاريس الناجمة عن التصادم\n1 أسئلة\n55\nشواهد محيط قديم\n1 أسئلة\nالرئيسية\nAccueil\nالدروس\nApprendre\nالتمارين والتدريب\nS'entraîner\nمفتاح المنهجية\nMéthode\nالمراجعة\nRéviser\nأنا\nMoi",
+  "buttons": [
+    {
+      "text": "؟",
+      "label": "نصيحة القبطان في هذه الصفحة",
+      "testid": "conseil-rubrique-ouvrir",
+      "disabled": false
+    },
+    {
+      "text": "",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "أ",
+      "label": "حجم النص",
+      "testid": "taille-texte-btn",
+      "disabled": false
+    },
+    {
+      "text": "الرئيسيةAccueil",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "الدروسApprendre",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "التمارين والتدريبS'entraîner",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "مفتاح المنهجيةMéthode",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "المراجعةRéviser",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "أناMoi",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "فهمت",
+      "label": null,
+      "testid": "bandeau-conseil-fermer",
+      "disabled": false
+    },
+    {
+      "text": "→\nعودة",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "🎯 اختبار تشخيصي شامل",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "1\nتذكير بالمكتسبات\n2 أسئلة",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "1\nتذكير بالمكتسبات\n2 أسئلة",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "13\nتذكير بالمكتسبات\n2 أسئلة",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "13\nتذكير بالمكتسبات\n2 أسئلة",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "17\nمصدر الأجسام المضادة\n2 أسئلة",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "17\nمصدر الأجسام المضادة\n2 أسئلة",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "18\nالعناصر الدفاعية في الحالة الثانية\n2 أسئلة",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "18\nالعناصر الدفاعية في الحالة الثانية\n2 أسئلة",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "20\nمصدر اللمفاويات LTc\n2 أسئلة",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "20\nمصدر اللمفاويات LTc\n2 أسئلة",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "22\nاختيار نمط الاستجابة المناعية\n2 أسئلة",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "22\nاختيار نمط الاستجابة المناعية\n2 أسئلة",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "23\nسبب فقدان المناعة المكتسبة\n2 أسئلة",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "23\nسبب فقدان المناعة المكتسبة\n2 أسئلة",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "24\nتذكير بالمكتسبات\n2 أسئلة",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "25\nالنقل المشبكي (الكمون الغشائي)\n2 أسئلة",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "25\nالنقل المشبكي (الكمون الغشائي)\n2 أسئلة",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "26\nآلية النقل المشبكي\n2 أسئلة",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "26\nآلية النقل المشبكي\n2 أسئلة",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "24\nتذكير بالمكتسبات\n2 أسئلة",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "31\nتذكير بالمكتسبات\n2 أسئلة",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "31\nتذكير بالمكتسبات\n2 أسئلة",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "35\nتذكير بالمكتسبات\n2 أسئلة",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "36\nمقر الأكسدة التنفسية\n2 أسئلة",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "36\nمقر الأكسدة التنفسية\n2 أسئلة",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "35\nتذكير بالمكتسبات\n2 أسئلة",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "42\nتحديد الصفائح التكتونية\n1 أسئلة",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "47\nنمذجة البنية الداخلية للكرة الأرضية\n1 أسئلة",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "45\nالموجات الزلزالية\n1 أسئلة",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "46\nالتركيب الكيميائي لصخور القشرة الأرضية والمعطف (البرنس)\n1 أسئلة",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "49\nالمغماتية وتشكل اللوح المحيطي\n2 أسئلة",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "49\nالمغماتية وتشكل اللوح المحيطي\n2 أسئلة",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "50\nتشكل الصخور المميزة للظهرة وسط محيطية\n2 أسئلة",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "50\nتشكل الصخور المميزة للظهرة وسط محيطية\n2 أسئلة",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "54\nشواهد التقلص\n2 أسئلة",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "54\nشواهد التقلص\n2 أسئلة",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "48\nالظواهر المرتبطة بالبناء (خصائص الظهرات وسط محيطية)\n1 أسئلة",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "52\nاختفاء اللوح المحيطي والظواهر المرتبطة بالغوص\n2 أسئلة",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "52\nاختفاء اللوح المحيطي والظواهر المرتبطة بالغوص\n2 أسئلة",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "53\nالتضاريس الناجمة عن التصادم\n1 أسئلة",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "55\nشواهد محيط قديم\n1 أسئلة",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "الرئيسية\nAccueil",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "الدروس\nApprendre",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "التمارين والتدريب\nS'entraîner",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "مفتاح المنهجية\nMéthode",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "المراجعة\nRéviser",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "أنا\nMoi",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "",
+      "label": "القبطان — مُرشد كنز العلوم",
+      "testid": "fab-morchid",
+      "disabled": false
+    }
+  ],
+  "testids": [
+    "conseil-rubrique-ouvrir",
+    "taille-texte-btn",
+    "bandeau-conseil-rubrique",
+    "bandeau-conseil-visage",
+    "bandeau-conseil-fermer",
+    "qcm-livre",
+    "qcm-unite-1",
+    "qcm-unite-4",
+    "qcm-unite-5",
+    "qcm-unite-6",
+    "qcm-unite-7",
+    "qcm-unite-9",
+    "qcm-unite-10",
+    "qcm-unite-11",
+    "fab-morchid"
+  ],
+  "inputs": [],
+  "width": 390,
+  "scrollWidth": 390,
+  "storage": {
+    "boussole_prescriptions_v1": "{\"prescriptions\":[{\"motif\":\"accueil:training\",\"cible\":\"training\",\"emisMs\":1793357032978,\"issue\":\"ignoree\",\"resoluMs\":1793357036344}],\"motifs\":{\"accueil:training\":{\"dits\":1,\"suivis\":0,\"ignores\":1,\"expires\":0}}}",
+    "theme": "light",
+    "boussole_token": "audit-local-fixture-not-a-real-token",
+    "kunz_acces": "{\"statut\":\"essai\",\"expireLe\":\"2099-06-30\"}",
+    "kunz_declic_last_id_v1": "dem_01",
+    "boussole_capitaine_invitation_ignoree": "1793357036344",
+    "boussole_conseils_rubriques_vus": "[\"lesson\",\"examens\",\"training\"]",
+    "kunz_declic_shown_v1": "2026-10-30"
+  }
+}

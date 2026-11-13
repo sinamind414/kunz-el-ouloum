@@ -1,0 +1,254 @@
+{
+  "observations": [
+    {
+      "name": "F19-engine-boundaries-six-groups",
+      "groups": [
+        {
+          "sujet": 1,
+          "exercice": 1,
+          "max": 5,
+          "empty": {
+            "points": 0,
+            "reserve": 0,
+            "noteFinale": 0,
+            "manual": [
+              {
+                "id": "bac2025_S1/S1-Ex1/Q2/annonce",
+                "texteAr": "Phrase d'annonce du developpement (3 types d'ARN)",
+                "points": 0,
+                "credite": false,
+                "auto": false,
+                "source": "build",
+                "pointsCredites": 0
+              }
+            ],
+            "autoCredit": 0
+          },
+          "keywordsOnly": {
+            "points": 5,
+            "plafonds": [],
+            "reserve": 0
+          }
+        },
+        {
+          "sujet": 1,
+          "exercice": 2,
+          "max": 7,
+          "empty": {
+            "points": 0,
+            "reserve": 0,
+            "noteFinale": 0,
+            "manual": [],
+            "autoCredit": 0
+          },
+          "keywordsOnly": {
+            "points": 2.1,
+            "plafonds": [
+              {
+                "type": "non_prose",
+                "plafondPct": 0.3
+              }
+            ],
+            "reserve": 0
+          }
+        },
+        {
+          "sujet": 1,
+          "exercice": 3,
+          "max": 8,
+          "empty": {
+            "points": 0,
+            "reserve": 1,
+            "noteFinale": null,
+            "manual": [
+              {
+                "id": "corr-2025-25",
+                "texteAr": "المخطط: مسار Ado (تراكم → ارتباط A1R → نقص NE → نعاس) ومسار Mtb (احتلال A1R → عودة NE → يقظة)",
+                "points": 0.5,
+                "credite": false,
+                "auto": false,
+                "source": "corrige-officiel-2025",
+                "pointsCredites": 0
+              }
+            ],
+            "autoCredit": 0
+          },
+          "keywordsOnly": {
+            "points": 2.4,
+            "plafonds": [
+              {
+                "type": "non_prose",
+                "plafondPct": 0.3
+              }
+            ],
+            "reserve": 1
+          }
+        },
+        {
+          "sujet": 2,
+          "exercice": 1,
+          "max": 5,
+          "empty": {
+            "points": 0,
+            "reserve": 0,
+            "noteFinale": 0,
+            "manual": [
+              {
+                "id": "bac2025_S2/S2-Ex1/Q2/annonce",
+                "texteAr": "Phrase d'annonce (conversion partielle glucose->ATP en 2 etapes)",
+                "points": 0,
+                "credite": false,
+                "auto": false,
+                "source": "build",
+                "pointsCredites": 0
+              }
+            ],
+            "autoCredit": 0
+          },
+          "keywordsOnly": {
+            "points": 1.5,
+            "plafonds": [
+              {
+                "type": "non_prose",
+                "plafondPct": 0.3
+              }
+            ],
+            "reserve": 0
+          }
+        },
+        {
+          "sujet": 2,
+          "exercice": 2,
+          "max": 7,
+          "empty": {
+            "points": 0,
+            "reserve": 0,
+            "noteFinale": 0,
+            "manual": [],
+            "autoCredit": 0
+          },
+          "keywordsOnly": {
+            "points": 2.1,
+            "plafonds": [
+              {
+                "type": "non_prose",
+                "plafondPct": 0.3
+              }
+            ],
+            "reserve": 0
+          }
+        },
+        {
+          "sujet": 2,
+          "exercice": 3,
+          "max": 8,
+          "empty": {
+            "points": 0,
+            "reserve": 0,
+            "noteFinale": 0,
+            "manual": [],
+            "autoCredit": 0
+          },
+          "keywordsOnly": {
+            "points": 2.4,
+            "plafonds": [
+              {
+                "type": "non_prose",
+                "plafondPct": 0.3
+              }
+            ],
+            "reserve": 0
+          }
+        }
+      ]
+    },
+    {
+      "name": "F18-zero-coverage-saved",
+      "coverage": "0%",
+      "state": {
+        "boussole_prescriptions_v1": "{\"prescriptions\":[{\"motif\":\"accueil:training\",\"cible\":\"training\",\"emisMs\":1793358602345,\"issue\":\"ignoree\",\"resoluMs\":1793358605734}],\"motifs\":{\"accueil:training\":{\"dits\":1,\"suivis\":0,\"ignores\":1,\"expires\":0}}}",
+        "theme": "light",
+        "kunz_tadwin_etat_v1:backup": "{\"uniteId\":1,\"palier\":2,\"defiDebutAt\":1793358607637}",
+        "kunz_tadwin_etat_v1": "{\"uniteId\":1,\"palier\":3,\"defiDebutAt\":1793358607637}",
+        "kunz_tadwin_fiches_v1": "[{\"id\":\"tadwin_1793358608067_wei7lc\",\"uniteId\":1,\"clesChoisies\":[\"استنساخ (النواة/ARN بوليميراز)\",\"ARNm\"],\"reponse\":\"درس شيق يتحدث عن البروتين وأهميته في الجسم.\",\"c2\":0,\"stuffingDetecte\":false,\"palier\":3,\"creeLe\":1793358608067,\"rappelStage\":0,\"prochainRappelAt\":1793445008067,\"maitrise\":\"en_cours\"}]",
+        "kunz_declic_last_id_v1": "dem_03",
+        "boussole_capitaine_invitation_ignoree": "1793358605734",
+        "boussole_conseils_rubriques_vus": "[\"tadwin\",\"training\"]",
+        "kunz_declic_shown_v1": "2026-10-30"
+      }
+    },
+    {
+      "name": "F18-zero-consolidated",
+      "state": {
+        "boussole_prescriptions_v1": "{\"prescriptions\":[{\"motif\":\"accueil:training\",\"cible\":\"training\",\"emisMs\":1793358602345,\"issue\":\"ignoree\",\"resoluMs\":1793358605734}],\"motifs\":{\"accueil:training\":{\"dits\":1,\"suivis\":0,\"ignores\":1,\"expires\":0}}}",
+        "theme": "light",
+        "kunz_tadwin_etat_v1:backup": "{\"uniteId\":1,\"palier\":3,\"defiDebutAt\":1793358607637}",
+        "kunz_tadwin_etat_v1": "{\"uniteId\":1,\"palier\":4,\"defiDebutAt\":1793358607637}",
+        "kunz_tadwin_fiches_v1": "[{\"id\":\"tadwin_1793358608067_wei7lc\",\"uniteId\":1,\"clesChoisies\":[\"استنساخ (النواة/ARN بوليميراز)\",\"ARNm\"],\"reponse\":\"درس شيق يتحدث عن البروتين وأهميته في الجسم.\",\"c2\":0,\"stuffingDetecte\":false,\"palier\":3,\"creeLe\":1793358608067,\"rappelStage\":0,\"prochainRappelAt\":1793445008067,\"maitrise\":\"en_cours\"}]",
+        "kunz_declic_last_id_v1": "dem_03",
+        "boussole_capitaine_invitation_ignoree": "1793358605734",
+        "boussole_conseils_rubriques_vus": "[\"tadwin\",\"training\"]",
+        "kunz_declic_shown_v1": "2026-10-30"
+      },
+      "editors": 0,
+      "selectors": 0
+    },
+    {
+      "name": "29-card-print-top",
+      "pages": 1,
+      "characters": [
+        1096
+      ]
+    },
+    {
+      "name": "F17-print-source",
+      "characters": 9621,
+      "start": "🔑 المفتاح\nمفتاح المنهجية\nمنهجية الإجابة في علوم الطبيعة والحياة · بكالوريا\n4 dents · 2 portes · une réponse qui ouvre le point\nكنز",
+      "end": "لمنهجية · كنز العلوم · الملحق — المفتاح PRO · قوة الدليل لمن يستهدف الامتياز · 4 dents · 2 portes · une réponse qui ouvre le point"
+    },
+    {
+      "name": "F17-css-page-size",
+      "pages": 4,
+      "characters": [
+        2567,
+        540,
+        2651,
+        354
+      ]
+    },
+    {
+      "name": "mobile-widths",
+      "width": 390,
+      "scrollWidth": 390
+    },
+    {
+      "name": "F20-resume-nondefault-family",
+      "expectedFamily": "verb_texte_scientifique",
+      "expectedAnswer": "هذا نص تجريبي للتحقق من استعادة الإجابة المحفوظة.",
+      "actualAnswer": "",
+      "families": [
+        {
+          "id": "trainer-famille-verb_restituer",
+          "class": "text-[11px] font-bold px-3 py-1.5 rounded-xl cursor-pointer bg-[#006d37] text-white"
+        },
+        {
+          "id": "trainer-famille-verb_texte_scientifique",
+          "class": "text-[11px] font-bold px-3 py-1.5 rounded-xl cursor-pointer bg-[#f3f4f5] dark:bg-[#1f2622] text-[#506072] dark:text-gray-300"
+        }
+      ],
+      "state": {
+        "boussole_prescriptions_v1": "{\"prescriptions\":[{\"motif\":\"accueil:training\",\"cible\":\"training\",\"emisMs\":1793358627605,\"issue\":\"ignoree\",\"resoluMs\":1793358630964}],\"motifs\":{\"accueil:training\":{\"dits\":1,\"suivis\":0,\"ignores\":1,\"expires\":0}}}",
+        "theme": "light",
+        "boussole_token": "audit-local-fixture-not-a-real-token",
+        "kunz_acces": "{\"statut\":\"essai\",\"expireLe\":\"2099-06-30\"}",
+        "kunz.bacTrainer.bac2026_s1_e1.verb_texte_scientifique": "هذا نص تجريبي للتحقق من استعادة الإجابة المحفوظة.",
+        "kunz_declic_last_id_v1": "dem_05",
+        "boussole_capitaine_invitation_ignoree": "1793358630964",
+        "boussole_conseils_rubriques_vus": "[\"bacideas\",\"training\"]",
+        "kunz_declic_shown_v1": "2026-10-30"
+      }
+    }
+  ],
+  "pageErrors": [],
+  "scenarioErrors": []
+}

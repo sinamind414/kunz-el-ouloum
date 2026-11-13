@@ -1,0 +1,29 @@
+{
+  "ariaCaptain": [
+    {
+      "aria": "القبطان — مُرشد كنز العلوم",
+      "testid": "fab-morchid",
+      "vis": true,
+      "classes": "flex h-14 w-14 items-center justify-center overflow-hidden rounded-full border-2 border-[#006d37] bg-[#fff9ed] shadow-lg"
+    }
+  ],
+  "boutonsAsk": [],
+  "sections": [
+    {
+      "t": "أنشئ حسابك بدون بريد إلكتروني",
+      "id": "sans-email-title"
+    },
+    {
+      "t": "خطوتك التالية",
+      "id": "daily-priority-title"
+    },
+    {
+      "t": "النشاط 1 : تذكير بالمكتسبات ومقر تركيب البروتين",
+      "id": null
+    },
+    {
+      "t": "ماذا تريد أن تفعل؟",
+      "id": "paths-title"
+    }
+  ]
+}

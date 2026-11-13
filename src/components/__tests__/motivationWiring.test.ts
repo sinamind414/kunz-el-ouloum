@@ -27,9 +27,14 @@ describe('App.tsx — câblage de la brique motivation', () => {
     // le Déclic, au moment où l'élève s'engage à travailler.
     expect(APP).not.toContain("tab: 'focus'");
     expect(APP).not.toContain("tab: 'mindmap'");
-    // …mais la vue reste montée et le Déclic l'ouvre toujours.
+    // …mais la vue reste montée sur sa branche d'onglet. 2026-11-03 :
+    // navigation unifiée sous `navigateToTab` (ancien `setCurrentTab`) et
+    // durcissement du verrou — la chaîne « navigateToTab('focus') » existe
+    // aussi dans un COMMENTAIRE explicatif de App.tsx, et navigateToTab n'y
+    // suffit pas : on ancre sur la branch de montage réelle. Le câblage
+    // « le Déclic l'ouvre » est verrouillé dans le test « enchaînement ».
     expect(APP).toContain('<FocusTimer');
-    expect(APP).toMatch(/setCurrentTab\('focus'\)/);
+    expect(APP).toMatch(/currentTab === 'focus' && \(\s*<FocusTimer/);
     // « الخرائط الذهنية » a rejoint « الدروس » (Apprendre) : la carte existe.
     expect(APP).not.toContain('tab: \'mindmap\'');
   });
@@ -45,9 +50,13 @@ describe('App.tsx — câblage de la brique motivation', () => {
   });
 
   it('l\'enchaînement Déclic → Focus → Révision est bien branché', () => {
-    // Le bouton « جلسة تركيز » du Déclic ouvre le minuteur.
-    expect(APP).toMatch(/onStartFocus=\{\(\) => \{\s*closeDeclicOverlay\(\);\s*setCurrentTab\('focus'\);/);
-    // « ابدأ الآن » enchaîne sur la révision.
-    expect(APP).toMatch(/setCurrentTab\('review'\)/);
+    // Le bouton « جلسة تركيز » du Déclic ouvre le minuteur
+    // (navigateToTab : API de navigation unifiée, cf. 2026-11-03).
+    expect(APP).toMatch(/onStartFocus=\{\(\) => \{\s*closeDeclicOverlay\(\);\s*navigateToTab\('focus'\);/);
+    // « ابدأ الآن » enchaîne sur la révision. Ancré sur la prop onStart du
+    // Déclic : `navigateToTab('review')` seul matcherait aussi
+    // setSelectedRevisionUnit (révision depuis le tableau de bord), hors
+    // Déclic — le verrou prouverait de la mauvaise chose.
+    expect(APP).toMatch(/onStart=\{\(\) => \{\s*closeDeclicOverlay\(\);\s*updateLastStudyTime\(\);\s*navigateToTab\('review'\);/);
   });
 });

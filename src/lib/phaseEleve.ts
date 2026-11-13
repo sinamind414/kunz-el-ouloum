@@ -127,7 +127,17 @@ function deduireNiveau(etat: EtatEleve): NiveauPhase {
   if (etat.temps.joursSansTravail === null && etat.assiduite.cumulJours === 0) return 1;
 
   // 5 — SPRINT : la date du BAC devient une entrée de décision.
-  const jours = etat.horizon.joursAvantBac;
+  //
+  // R5 (audit coach 2026-11-06, GO propriétaire en session) : une date
+  // PROVISOIRE n'est pas une entrée de décision. C'est la règle du dépôt déjà
+  // appliquée ailleurs — la consigne d'entrée (`invitationCapitaine.ts`,
+  // « `dateProvisoire ? null : joursAvantBac` ») ne dit jamais un chiffre tiré
+  // d'une date non confirmée. Le sprint déclenche « production chronométrée,
+  // plus aucune découverte » (§5.B, phase 5) : fonder cette bascule sur une
+  // date FAITE À LA PLACE DU MINISTÈRE ferait grimper l'intensité du coach sur
+  // une hypothèse. Tant que `dateProvisoire` est vrai, l'horizon est NON
+  // TRANCHÉ pour la décision — il reste affiché, étiqueté, dans la tuile.
+  const jours = etat.horizon.dateProvisoire ? null : etat.horizon.joursAvantBac;
   if (typeof jours === 'number' && Number.isFinite(jours) && jours <= JOURS_SPRINT_EPREUVE) {
     return 5;
   }

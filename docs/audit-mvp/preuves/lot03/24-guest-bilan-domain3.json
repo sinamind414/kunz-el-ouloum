@@ -1,0 +1,178 @@
+{
+  "text": "تجاوز إلى المحتوى الرئيسي\nطالب متميز\nSVT BAC DZ\nالدروس؟\nأ\n0\n|\n0 XP\nالقائمة الرئيسية\nالرئيسية\nACCUEIL\nالدروس\nAPPRENDRE\nالتمارين والتدريب\nS'ENTRAÎNER\nمفتاح المنهجية\nMÉTHODE\nالمراجعة\nRÉVISER\nأنا\nMOI\n\nالقبطان — مُرشد كنز العلوم\n\nاقرأ بسؤال في رأسك: «ماذا يريد مني المنهاج في هذه الوثيقة؟». القراءة بلا سؤال قراءة بلا أثر.\n\nابدأ بـ: اكتب سؤالك على ورقة قبل أن تفتح الدرس.\n\nفهمت\n✕ إنهاء\nالسؤال 3 / 15 — المجال 3 — التكتونية العامة\nدرس\n\nما هو التركيب الكيميائي المميّز لقلب الأرض (النواة الخارجية والداخلية معاً) والذي يفسر كثافتها العالية جداً (10 إلى 13 g/cm³)؟\n\n❌ ب) تتكون من سيليكون ومغنيزيوم في الحالة الصلبة تماماً.✅ أ) تتكون النواة من سبيكة معدنية ثقيلة جداً من الحديد والنيكل ( Fe - Ni أو NIFE ).ج) تتكون من ماء وأكسجين مضغوط.\nالتالي ←\n\nالقبطان — مُرشد كنز العلوم\n\nلا نبدأ بالمنهج كله. نبدأ بدقيقتين.\n\nاختبار قصير: سؤال واحد.\n\nيومك الأول في السلسلة.\n\nاختبار قصير: سؤال واحد.\nلاحقًا",
+  "buttons": [
+    {
+      "text": "؟",
+      "label": "نصيحة القبطان في هذه الصفحة",
+      "testid": "conseil-rubrique-ouvrir",
+      "disabled": false
+    },
+    {
+      "text": "",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "أ",
+      "label": "حجم النص",
+      "testid": "taille-texte-btn",
+      "disabled": false
+    },
+    {
+      "text": "الرئيسية\nACCUEIL",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "الدروس\nAPPRENDRE",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "التمارين والتدريب\nS'ENTRAÎNER",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "مفتاح المنهجية\nMÉTHODE",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "المراجعة\nRÉVISER",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "أنا\nMOI",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "فهمت",
+      "label": null,
+      "testid": "bandeau-conseil-fermer",
+      "disabled": false
+    },
+    {
+      "text": "✕ إنهاء",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "❌ ب) تتكون من سيليكون ومغنيزيوم في الحالة الصلبة تماماً.",
+      "label": null,
+      "testid": null,
+      "disabled": true
+    },
+    {
+      "text": "✅ أ) تتكون النواة من سبيكة معدنية ثقيلة جداً من الحديد والنيكل ( Fe - Ni أو NIFE ).",
+      "label": null,
+      "testid": null,
+      "disabled": true
+    },
+    {
+      "text": "ج) تتكون من ماء وأكسجين مضغوط.",
+      "label": null,
+      "testid": null,
+      "disabled": true
+    },
+    {
+      "text": "التالي ←",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "الرئيسيةAccueil",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "الدروسApprendre",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "التمارين والتدريبS'entraîner",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "مفتاح المنهجيةMéthode",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "المراجعةRéviser",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "أناMoi",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "اختبار قصير: سؤال واحد.",
+      "label": null,
+      "testid": "bulle-capitaine-agir",
+      "disabled": false
+    },
+    {
+      "text": "لاحقًا",
+      "label": "إغلاق",
+      "testid": "bulle-capitaine-fermer",
+      "disabled": false
+    },
+    {
+      "text": "",
+      "label": "القبطان — مُرشد كنز العلوم",
+      "testid": "fab-morchid",
+      "disabled": false
+    },
+    {
+      "text": "",
+      "label": "تكبير الشكل",
+      "testid": null,
+      "disabled": false
+    }
+  ],
+  "testids": [
+    "conseil-rubrique-ouvrir",
+    "taille-texte-btn",
+    "bandeau-conseil-rubrique",
+    "bandeau-conseil-visage",
+    "bandeau-conseil-fermer",
+    "qcm-livre",
+    "bulle-capitaine",
+    "bulle-capitaine-agir",
+    "bulle-capitaine-fermer",
+    "fab-morchid"
+  ],
+  "inputs": [],
+  "width": 1280,
+  "scrollWidth": 1280,
+  "storage": {
+    "boussole_prescriptions_v1": "{\"prescriptions\":[{\"motif\":\"accueil:training\",\"cible\":\"training\",\"emisMs\":1793357007796,\"issue\":\"en_attente\"}],\"motifs\":{\"accueil:training\":{\"dits\":1,\"suivis\":0,\"ignores\":0,\"expires\":0}}}",
+    "theme": "light",
+    "kunz_parcours_v1": "{\"done\":{\"parcours:u1:l0\":{\"at\":\"2026-10-30\",\"fragile\":false},\"parcours:u1:l1\":{\"at\":\"2026-10-30\",\"fragile\":false},\"parcours:u1:l2\":{\"at\":\"2026-10-30\",\"fragile\":false},\"parcours:u1:l3\":{\"at\":\"2026-10-30\",\"fragile\":false},\"parcours:u1:l4\":{\"at\":\"2026-10-30\",\"fragile\":false},\"parcours:u1:l5\":{\"at\":\"2026-10-30\",\"fragile\":false},\"parcours:u1:l6\":{\"at\":\"2026-10-30\",\"fragile\":false},\"parcours:u1:jalon\":{\"at\":\"2026-10-30\",\"fragile\":false}},\"reviews\":{\"parcours:u1:l0\":\"2026-11-13\",\"parcours:u1:l1\":\"2026-11-13\",\"parcours:u1:l2\":\"2026-11-13\",\"parcours:u1:l3\":\"2026-11-13\",\"parcours:u1:l4\":\"2026-11-13\",\"parcours:u1:l5\":\"2026-11-13\",\"parcours:u1:l6\":\"2026-11-13\",\"parcours:u1:jalon\":\"2026-11-13\"},\"extraAllowance\":0,\"mig\":6}",
+    "kunz_declic_last_id_v1": "dem_04",
+    "boussole_conseils_rubriques_vus": "[\"lesson\"]",
+    "kunz_declic_shown_v1": "2026-10-30"
+  }
+}

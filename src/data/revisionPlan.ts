@@ -63,8 +63,20 @@ import { observedUnitSharePercent, BAC_IDEAS, IDEA_BY_ID } from './bacSessionInd
 import { VERB_FAMILY_BY_ID } from './verbDemands';
 import { famillesDemandeesParIdee } from './bacWriting';
 import { BAC_ARCHETYPES, ideasOfArchetype, yearsOfArchetype } from './bacArchetypes';
+// H3 (audit 8 axes) : le deck des flashcards alimente les rappels DUES. Le
+// moteur ne lit JAMAIS le stockage lui-même — `duesDuDeck` (côté vue) mesure
+// l'état SRS et le résultat arrive au plan par le paramètre `rappels`.
+import { SVT_FLASHCARDS } from './index';
+import { lireTousLesEtatsSrs } from '../utils/flashcardsSrs';
 
-export type TaskKind = 'capsule' | 'schema' | 'montage' | 'redaction' | 'situation' | 'carte';
+export type TaskKind =
+  | 'capsule'
+  | 'schema'
+  | 'montage'
+  | 'redaction'
+  | 'situation'
+  | 'carte'
+  | 'rappel';
 
 export interface PlanTask {
   kind: TaskKind;
@@ -101,6 +113,144 @@ export interface PlanOptions {
   daysLeft: number;
   /** Budget quotidien en minutes (20 à 240). */
   minutesPerDay: number;
+  /**
+   * 2026-11-04 (audit H1) : l'accès RÉEL de l'élève. Absent ⇒ tout est ouvert
+   * (comportement d'un abonné, inchangé pour les verrous existants).
+   * Audit 8 axes (novembre 2026) : 41 % du temps d'un plan invité tombait sur
+   * des unités payantes (U6 en tête de liste) et des gestes servis par des
+   * rubriques fermées — le coach s'interrompait au milieu de sa propre
+   * consigne. Le moteur devient fidèle : il ne programme QUE ce que l'élève
+   * peut réellement ouvrir. Paramètre explicite (pas de lecture cachée du
+   * stockage ici) : le plan reste pur et déterministe, verrouilé par tests.
+   */
+  acces?: PlanAcces;
+  /**
+   * 2026-11-04 (audit H3) : cartes de répétition espacée DUES, préparées par
+   * la vue (qui seule mesure l'état SRS réel via `duesDuDeck`). Le moteur les
+   * injecte EN TÊTE de chaque journée — ≤ RAPPELS_PAR_JOUR, chacune une seule
+   * fois dans tout le plan — avant tout geste neuf. Absent ⇒ aucun rappel,
+   * plan identique (verrous existants intacts). Paramètre explicite, jamais
+   * une lecture cachée du stockage : le plan reste pur et déterministe.
+   */
+  rappels?: readonly PlanTask[];
+}
+
+/** Accès réel, mesuré côté vue par `utils/acces.ts` (uniteOuverte / rubriquePayanteOuverte). */
+export interface PlanAcces {
+  /** Unités réellement ouvertes (invité : le المجال 1 entier, U1-U5). */
+  unites: readonly number[];
+  /** Gestes réellement ouverts (invité : capsule + carte — les schémas,
+   *  situations, rédactions et montages vivent dans des rubriques payantes). */
+  gestes: readonly TaskKind[];
+}
+
+/**
+ * Gestes qui OUVRENT une rubrique payante (mesures 2026-11-04) :
+ * SchemaDrillView → `rubriquePayanteOuverte()` (l. 344), SituationBankView
+ * (l. 472), BacIdeasView (l. 574 : la ورشة ET ses montages l. 174-250).
+ * Capsule et carte dépendent de l'unité (`uniteOuverte`), pas de la rubrique.
+ */
+export const GESTES_RUBRIQUE_PAYANTE: readonly TaskKind[] = [
+  'schema',
+  'situation',
+  'redaction',
+  'montage',
+];
+
+/** Gestes ouverts pour un niveau d'accès donné (pur — la vue fournit le booléen). */
+export function gestesOuverts(rubriquePayante: boolean): readonly TaskKind[] {
+  return rubriquePayante
+    ? ORDRE_NORMAL
+    : ORDRE_NORMAL.filter((k) => !GESTES_RUBRIQUE_PAYANTE.includes(k));
+}
+
+// ------------------------------------------------------------
+// H3 (audit 8 axes, novembre 2026) — le rappel espacé entre dans le plan.
+//
+// Constat d'audit : la répétition espacée (SM-2, utils/flashcardsSrs) vivait
+// dans le deck de RevisionView mais le plan ne la programmais JAMAIS — aucun
+// kind « rappel », aucune importation de l'état SRS. Or le principe même de
+// SM-2 est de REPRÉSENTER une carte à son échéance : un plan qui l'ignore
+// laisse les dues s'entasser hors de la vue de l'élève.
+//
+// Contrat (même esprit que H1) : le moteur reste PUR — la vue mesure l'état
+// SRS réel (`duesDuDeck`, ci-dessous) et passe une file de cartes DUES ; le
+// moteur les injecte en tête de chaque journée, ≤ RAPPELS_PAR_JOUR, chacune
+// une seule fois dans tout le plan. Seules les DUES entrent (échéance SM-2
+// atteinte) : les neuves appartiennent au deck, les graduees (dueAt = 0,
+// borne TC5) et les programmées plus tard ne sont pas du ressort du plan.
+// ------------------------------------------------------------
+
+/** Cartes de rappel maximum par journée — l'audit fixe le geste à 3. */
+export const RAPPELS_PAR_JOUR = 3;
+
+/** Coût d'une carte de rappel dans le budget quotidien (minutes). */
+export const MINUTES_RAPPEL = 2;
+
+/** Une carte DUE, telle que mesurée par `duesDuDeck` côté vue. */
+export interface RappelDu {
+  /** Identifiant de la flashcard (refId de la tâche). */
+  id: string;
+  unitId: number;
+  question: string;
+  /** Échéance SM-2 en ms — la plus ancienne (en retard) passe en premier. */
+  dueAt: number;
+}
+
+/** Troncature arabe sur frontière de mot (les questions du deck sont longues). */
+function tronquer(texte: string, max = 60): string {
+  if (texte.length <= max) return texte;
+  const coupe = texte.slice(0, max);
+  const espace = coupe.lastIndexOf(' ');
+  return (espace > 30 ? coupe.slice(0, espace) : coupe) + '…';
+}
+
+/**
+ * File PURE des rappels : filtre par unités ouvertes (cohérence H1 — une
+ * carte d'une unité fermée n'entre jamais, même due), trie par échéance
+ * croissante (la plus en retard d'abord) et façonne les tâches. Le moteur
+ * consomme cette file séquentiellement, 3 par journée.
+ */
+export function fileRappels(
+  dues: readonly RappelDu[],
+  unitesOuvertes: readonly number[],
+): PlanTask[] {
+  return dues
+    .filter((d) => unitesOuvertes.includes(d.unitId))
+    .sort((a, b) => a.dueAt - b.dueAt)
+    .map((d) => ({
+      kind: 'rappel' as const,
+      refId: d.id,
+      unitId: d.unitId,
+      titleAr: `استرجاع متباعد: ${tronquer(d.question)}`,
+      actionAr:
+        'افتح مجموعة البطاقات في « المراجعة »، استرجع الجواب من ذاكرتك كاملاً ثم قيّم تذكّرك (صعب / جيد / سهل).',
+      minutes: MINUTES_RAPPEL,
+    }));
+}
+
+/**
+ * MESURE (côté vue, pas dans le moteur) : les cartes du deck dont l'échéance
+ * SM-2 est ATTEINTE. Lit l'état persisté — c'est volontairement le SEUL endroit
+ * du parcours plan où le stockage est lu, et son résultat arrive au moteur par
+ * le paramètre `rappels`. Une carte neuve (jamais vue), graduee (dueAt = 0) ou
+ * programmée plus tard (dueAt > maintenant) n'est PAS due.
+ *
+ * Perf (audit 8 axes, 2026-11-04) : UN seul parse du stockage (`lireTousLesEtatsSrs`),
+ * puis boucle en mémoire — pas un `getSrsState` par carte (288 re-parses mesurés
+ * avant le fix, ≈297× le coût d'un parse unique).
+ */
+export function duesDuDeck(
+  unitesOuvertes: readonly number[],
+  now = Date.now(),
+): RappelDu[] {
+  const etats = lireTousLesEtatsSrs();
+  return SVT_FLASHCARDS.flatMap((c) => {
+    if (!unitesOuvertes.includes(c.unitId)) return [];
+    const st = etats[c.id] ?? null;
+    if (!st || st.dueAt === 0 || st.dueAt > now) return [];
+    return [{ id: c.id, unitId: c.unitId, question: c.question, dueAt: st.dueAt }];
+  });
 }
 
 /**
@@ -159,11 +309,11 @@ export function prioritizedUnitIds(): number[] {
  * Les occurrences sont étalées (méthode du plus grand reste) pour qu'une unité
  * lourde revienne régulièrement au lieu d'être servie en bloc.
  */
-export function weightedUnitSequence(): number[] {
-  const unites = prioritizedUnitIds();
-  const min = Math.min(...unites.map(unitPriority));
+export function weightedUnitSequence(unites?: readonly number[]): number[] {
+  const base = unites ?? prioritizedUnitIds();
+  const min = Math.min(...base.map(unitPriority));
   const occurrences: { unitId: number; position: number; priority: number }[] = [];
-  for (const unitId of unites) {
+  for (const unitId of base) {
     const parts = Math.max(1, Math.round(unitPriority(unitId) / min));
     for (let k = 0; k < parts; k += 1) {
       occurrences.push({ unitId, position: (k + 0.5) / parts, priority: unitPriority(unitId) });
@@ -272,8 +422,10 @@ function carteTask(unitId: number): PlanTask | null {
   };
 }
 
-/** Réserve de tâches d'une unité, par type, dans un ordre stable. */
-function poolForUnit(unitId: number) {
+/** Réserve de tâches d'une unité, par type, dans un ordre stable.
+ *  `rappel` y est toujours vide : les rappels SRS ne naissent pas des pools
+ *  d'unité — la vue les mesure et le moteur les injecte à part (H3). */
+function poolForUnit(unitId: number): Record<TaskKind, PlanTask[]> {
   return {
     capsule: MICRO_CAPSULES.filter((c) => c.unitId === unitId).map(capsuleTask),
     schema: SCHEMA_DRILLS.filter((d) => d.unitId === unitId).map(schemaTask),
@@ -283,6 +435,7 @@ function poolForUnit(unitId: number) {
     redaction: redactionTasks(unitId),
     situation: SITUATION_INDEX.filter((s) => s.unitIds[0] === unitId).map(situationTask),
     carte: [carteTask(unitId)].filter((t): t is PlanTask => t !== null),
+    rappel: [],
   };
 }
 
@@ -359,17 +512,45 @@ function buildQueue(
  * Construit le plan. Déterministe : mêmes options ⇒ même plan, ce qui permet
  * à l'élève de retrouver sa journée d'hier et au test de la vérifier.
  */
-export function buildRevisionPlan({ daysLeft, minutesPerDay }: PlanOptions): RevisionPlan {
+export function buildRevisionPlan({
+  daysLeft,
+  minutesPerDay,
+  acces,
+  rappels,
+}: PlanOptions): RevisionPlan {
   const jours = Math.min(60, Math.max(1, Math.round(daysLeft)));
   const budget = Math.min(240, Math.max(20, Math.round(minutesPerDay)));
 
-  const sequence = weightedUnitSequence();
-  const pools = new Map(prioritizedUnitIds().map((u) => [u, poolForUnit(u)]));
+  // H1 (audit 8 axes) : les unités fermées ne produisent PAS de tâches. Sans
+  // `acces`, comportement abonné inchangé (verrouillage identique).
+  const unitesDisponibles = acces
+    ? prioritizedUnitIds().filter((u) => acces.unites.includes(u))
+    : prioritizedUnitIds();
+  // Hints diagonaux : on plafonne par geste en amont — une rubrique fermée ne
+  // remplit pas sa file, donc son geste tombe tout seul de la rotation.
+  const gestes = acces ? new Set<TaskKind>(acces.gestes) : null;
+  const sequence = weightedUnitSequence(unitesDisponibles);
+  const pools = new Map(
+    unitesDisponibles.map((u) => {
+      const brut = poolForUnit(u);
+      if (!gestes) return [u, brut];
+      const filtré = {} as ReturnType<typeof poolForUnit>;
+      for (const [k, liste] of Object.entries(brut)) {
+        (filtré as Record<string, PlanTask[]>)[k] = gestes.has(k as TaskKind) ? liste : [];
+      }
+      return [u, filtré];
+    }),
+  );
   const queue = buildQueue(pools, sequence, jours * Math.ceil(budget / 5) + 40);
   const consomme = new Array<boolean>(queue.length).fill(false);
 
   const days: PlanDay[] = [];
   let debut = 0;
+  // H3 : curseur sur la file des rappels DUES — chaque carte est consommée
+  // une seule fois dans TOUT le plan (une carte revue le jour 1 avec succès
+  // repart avec un intervalle SM-2 ; la re-programmer le lendemain mentirait).
+  const fileRappel = rappels ?? [];
+  let idxRappel = 0;
 
   for (let d = 1; d <= jours; d += 1) {
     const restants = jours - d;
@@ -378,6 +559,17 @@ export function buildRevisionPlan({ daysLeft, minutesPerDay }: PlanOptions): Rev
 
     const tasks: PlanTask[] = [];
     let minutes = 0;
+
+    // H3 : le rappel espacé OUVERT la journée — jusqu'à 3 cartes dues en tête,
+    // AVANT tout geste neuf, y compris les jours de consolidation (représenter
+    // ce qui est déjà acquis est exactement le rôle des deux derniers jours).
+    // Leurs minutes comptent dans le budget : le chiffre promis reste honnête.
+    const rappelsDuJour = fileRappel.slice(idxRappel, idxRappel + RAPPELS_PAR_JOUR);
+    idxRappel += rappelsDuJour.length;
+    for (const r of rappelsDuJour) {
+      tasks.push(r);
+      minutes += r.minutes;
+    }
 
     for (let i = debut; i < queue.length && minutes < budget; i += 1) {
       if (consomme[i]) continue;
@@ -437,6 +629,7 @@ export const TASK_LABEL_AR: Record<TaskKind, string> = {
   redaction: 'اكتب جواباً كاملاً',
   situation: 'وضعية كاملة',
   carte: 'خريطة ذهنية',
+  rappel: 'استرجاع متباعد',
 };
 
 /** Durées proposées par défaut dans l'interface. */

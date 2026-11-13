@@ -1,0 +1,180 @@
+{
+  "text": "تجاوز إلى المحتوى الرئيسي\nطالب متميز\nSVT BAC DZ\nالدروس؟\nأ\n0\n|\n0 XP\nالقائمة الرئيسية\nالرئيسية\nACCUEIL\nالدروس\nAPPRENDRE\nالتمارين والتدريب\nS'ENTRAÎNER\nمفتاح المنهجية\nMÉTHODE\nالمراجعة\nRÉVISER\nأنا\nMOI\n→\nعودة إلى قائمة الدروس النشيطة\nالوحدة 1 : التعبير المورثي ونقل المعلومة\n2/6\nاشرح لي هذه الوحدة\nقيّم مستواي في هذا الدرس\n✓\n✓\n3\n4\n5\n6\n\nربط المورثات بالبروتينات واستنتاج مفهوم التعبير المورثي.\n\nالوثيقة: مورثات مختلفة تقابلها بروتينات مختلفة.\n\nحلل — ماذا تلاحظ بين المورثات والبروتينات؟\n\nحلل — ما العلاقة بين المورثة 1 والبروتين 1؟\n\nاستنتج — استنتج مفهوم التعبير المورثي.\n\nتحقّق من الأجوبة\n\nخلاصة الدرس\n\nبيّن كيف يُترجم المحتوى الوراثي المسجل في ADN إلى بروتين ذي وظيفة محددة.\n\nيخزن الـ ADN المعلومة الوراثية في تسلسل النيوكليوتيدات على شكل رامزات ثلاثية.\nيستنسخ جزء من الـ ADN إلى ARNm بواسطة إنزيم ARN بوليميراز في النواة.\nتترجم الرامزات إلى أحماض أمينية في الهيولى على مستوى الشبكة الهيولية (الريبوزومات).\nينقل الـ ARNt الحمض الأميني الموافق لكل رامزة بحسب التكامل مع الرامزة المضادة.\nيحدد تسلسل الأحماض الأمينية بنية البروتين الفراغية، ومنها تخصص وظيفته.\n\n🔑 المصطلح المفتاح للبكالوريا : الشفرة الوراثية / التعبير المورثي",
+  "buttons": [
+    {
+      "text": "؟",
+      "label": "نصيحة القبطان في هذه الصفحة",
+      "testid": "conseil-rubrique-ouvrir",
+      "disabled": false
+    },
+    {
+      "text": "",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "أ",
+      "label": "حجم النص",
+      "testid": "taille-texte-btn",
+      "disabled": false
+    },
+    {
+      "text": "الرئيسية\nACCUEIL",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "الدروس\nAPPRENDRE",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "التمارين والتدريب\nS'ENTRAÎNER",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "مفتاح المنهجية\nMÉTHODE",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "المراجعة\nRÉVISER",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "أنا\nMOI",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "→\nعودة إلى قائمة الدروس النشيطة",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "اشرح لي هذه الوحدة",
+      "label": null,
+      "testid": "morchid-ctx-lecon-active",
+      "disabled": false
+    },
+    {
+      "text": "قيّم مستواي في هذا الدرس",
+      "label": null,
+      "testid": "morchid-ctx-lecon-niveau",
+      "disabled": false
+    },
+    {
+      "text": "",
+      "label": "بدء الإملاء الصوتي",
+      "testid": "dictaphone-lecon-2-q0",
+      "disabled": false
+    },
+    {
+      "text": "",
+      "label": "بدء الإملاء الصوتي",
+      "testid": "dictaphone-lecon-2-q1",
+      "disabled": false
+    },
+    {
+      "text": "",
+      "label": "بدء الإملاء الصوتي",
+      "testid": "dictaphone-lecon-2-q2",
+      "disabled": false
+    },
+    {
+      "text": "تحقّق من الأجوبة",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "الرئيسيةAccueil",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "الدروسApprendre",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "التمارين والتدريبS'entraîner",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "مفتاح المنهجيةMéthode",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "المراجعةRéviser",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "أناMoi",
+      "label": null,
+      "testid": null,
+      "disabled": false
+    },
+    {
+      "text": "",
+      "label": "القبطان — مُرشد كنز العلوم",
+      "testid": "fab-morchid",
+      "disabled": false
+    }
+  ],
+  "testids": [
+    "conseil-rubrique-ouvrir",
+    "taille-texte-btn",
+    "morchid-ctx-lecon-active",
+    "morchid-ctx-lecon-niveau",
+    "dictaphone-lecon-2-q0",
+    "dictaphone-lecon-2-q1",
+    "dictaphone-lecon-2-q2",
+    "fab-morchid"
+  ],
+  "inputs": [
+    {
+      "type": "textarea",
+      "label": "ماذا تلاحظ بين المورثات والبروتينات؟",
+      "placeholder": ""
+    },
+    {
+      "type": "textarea",
+      "label": "ما العلاقة بين المورثة 1 والبروتين 1؟",
+      "placeholder": ""
+    },
+    {
+      "type": "textarea",
+      "label": "استنتج مفهوم التعبير المورثي.",
+      "placeholder": ""
+    }
+  ],
+  "width": 1280,
+  "scrollWidth": 1280,
+  "storage": {
+    "theme": "light",
+    "kunz_parcours_v1": "{\"done\":{},\"reviews\":{},\"extraAllowance\":0,\"mig\":6,\"current\":\"parcours:u1:l0\"}",
+    "kunz_lesson_session_v1:d1-u1-l1-expression-genique": "{\"lessonId\":\"d1-u1-l1-expression-genique\",\"state\":\"BLOCKS_IN_PROGRESS\",\"currentBlockIndex\":2,\"validatedBlocks\":[true,true,false,false,false,false],\"outcome\":null,\"feedbackViewed\":false,\"suspendedAt\":1793317981046}",
+    "kunz_declic_last_id_v1": "dem_01",
+    "boussole_conseils_rubriques_vus": "[\"lesson\"]",
+    "kunz_declic_shown_v1": "2026-10-30"
+  }
+}

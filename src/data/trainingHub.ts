@@ -95,7 +95,8 @@ export const TRAINING_ENTRIES: TrainingEntry[] = [
     // tests bac complets, ouverts ensuite par deep-link dans LessonsView.
     tab: 'examens',
     titleAr: 'الاختبارات',
-    descriptionAr: 'اختبار الفصول حسب كل فصل، وثلاثة اختبارات بكالوريا كاملة بتصحيح ذاتي على سلّم التنقيط.',
+    descriptionAr:
+      'اختبار الفصول حسب كل فصل، وثلاثة مواضيع تجريبية مركّبة من أفكار رسمية (5/7/8 نقاط) بتنقيط ذاتي تشخيصي.',
     gestureAr: 'أختبر نفسي على سلم التنقيط',
     icon: 'fileText',
   },

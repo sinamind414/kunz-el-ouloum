@@ -111,6 +111,8 @@ interface MethodologyProps {
 }
 
 export default function MethodologyCompilerView(_props: MethodologyProps) {
+  // Mode guide : affiche l'accueil pédagogique avant les ateliers
+  const [guideMode, setGuideMode] = useState(true);
   // Navigation Tabs: 'engine_rules' (Couche 0) | 'verbs_ref' (Fiches) | 'simulator' (4 Stades) | 'mastery_matrix' (Analytics & Erreurs)
   const [activeTab, setActiveTab] = useState<AtelierId>('meftah');
   // File de correction (Phase 3) — bump pour rafraîchir l'onglet + le badge
@@ -724,6 +726,54 @@ const handleSelectStage = (stage: 1 | 2 | 3 | 4) => {
           </button>
         </div>
       </header>
+
+      {/* Guide pédagogique — accueil pas à pas */}
+      {guideMode && (
+        <div className="mb-6 p-5 md:p-6 rounded-3xl border border-[#006d37]/20 bg-[#fff9ed] dark:bg-[#121614] dark:border-emerald-400/20 shadow-sm">
+          <div className="flex items-center justify-between mb-4">
+            <div>
+              <h2 className="text-lg md:text-xl font-black text-[#006d37] dark:text-emerald-300">🔑 تعلم المنهجية خطوة بخطوة</h2>
+              <p className="text-xs md:text-sm text-gray-600 dark:text-gray-300 mt-1">4 phases simples pour construire ta réponse comme un expert.</p>
+            </div>
+            <button
+              onClick={() => setGuideMode(false)}
+              className="text-xs font-bold text-gray-500 hover:text-[#006d37] dark:hover:text-emerald-300 cursor-pointer"
+            >
+              تابع بدون دليل
+            </button>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+            {[
+              { step: 1, title: 'المرحلة 1 — النمذجة', desc: 'شاهد إجابة الخExpert وحدد خطواتها.', color: 'bg-blue-50 border-blue-200 text-blue-800 dark:bg-blue-950/30 dark:border-blue-800 dark:text-blue-200' },
+              { step: 2, title: 'المرحلة 2 — المحاكاة', desc: 'أعد الإجابة بمساعدة ملاحظاتك.', color: 'bg-amber-50 border-amber-200 text-amber-800 dark:bg-amber-950/30 dark:border-amber-800 dark:text-amber-200' },
+              { step: 3, title: 'المرحلة 3 — البوابات', desc: 'تعرّف على نوع القفل: وثيقة / فيلم / حدّاد.', color: 'bg-violet-50 border-violet-200 text-violet-800 dark:bg-violet-950/30 dark:border-violet-800 dark:text-violet-200' },
+              { step: 4, title: 'المرحلة 4 — التقييم', desc: 'صحّح نفسك ثم ارفع إجاباتك للمصحي.', color: 'bg-emerald-50 border-emerald-200 text-emerald-800 dark:bg-emerald-950/30 dark:border-emerald-800 dark:text-emerald-200' },
+            ].map((item) => (
+              <div key={item.step} className={`p-4 rounded-2xl border ${item.color}`}>
+                <div className="text-xs font-black mb-1">المرحلة {item.step}</div>
+                <div className="text-sm font-black mb-1">{item.title}</div>
+                <p className="text-[11px] font-medium leading-relaxed">{item.desc}</p>
+              </div>
+            ))}
+          </div>
+
+          <div className="mt-4 flex flex-wrap gap-2">
+            <button
+              onClick={() => { setGuideMode(false); setActiveTab('simulator'); }}
+              className="px-4 py-2 bg-[#006d37] text-white rounded-xl font-bold text-xs cursor-pointer hover:bg-[#00562b]"
+            >
+              ابدأ المرحلة 1 الآن
+            </button>
+            <button
+              onClick={() => setGuideMode(false)}
+              className="px-4 py-2 bg-white border border-gray-300 text-gray-700 rounded-xl font-bold text-xs cursor-pointer hover:bg-gray-50"
+            >
+              تابع بدون دليل
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* TAB 1: 4-STAGE FADING SIMULATOR */}
       {activeTab === 'simulator' && (

@@ -147,6 +147,19 @@ CREATE TABLE IF NOT EXISTS licences (
   expire_le   TEXT,
   appareils_json TEXT NOT NULL DEFAULT '[]'
 );
+CREATE TABLE IF NOT EXISTS push_subscriptions (
+  id               INTEGER PRIMARY KEY AUTOINCREMENT,
+  student_id       TEXT NOT NULL,
+  endpoint         TEXT NOT NULL UNIQUE,
+  p256dh           TEXT NOT NULL,
+  auth             TEXT NOT NULL,
+  user_agent       TEXT,
+  heures_locales   TEXT NOT NULL DEFAULT '08:00-21:00',
+  derniere_notif   TEXT,
+  cree_le          TEXT NOT NULL,
+  FOREIGN KEY (student_id) REFERENCES students(id) ON DELETE CASCADE
+);
+CREATE INDEX IF NOT EXISTS idx_push_student ON push_subscriptions(student_id);
 `;
 
 /**
@@ -437,6 +450,44 @@ export class SqliteStore {
 
   markResetUsed(code: string): void {
     this.db.prepare('UPDATE reset_codes SET used = 1 WHERE code = ?').run(code);
+  }
+
+  // ── Abonnements Web Push (M4) ──────────────────────────────
+  upsertPushSubscription(studentId: string, endpoint: string, p256dh: string, auth: string, userAgent: string | undefined): void {
+    const now = new Date().toISOString();
+    this.db.prepare(
+      `INSERT INTO push_subscriptions (student_id, endpoint, p256dh, auth, user_agent, cree_le)
+       VALUES (?,?,?,?,?,?)
+       ON CONFLICT(endpoint) DO UPDATE SET
+         student_id = excluded.student_id,
+         p256dh = excluded.p256dh,
+         auth = excluded.auth,
+         user_agent = excluded.user_agent,
+         heures_locales = COALESCE(push_subscriptions.heures_locales, excluded.heures_locales),
+         derniere_notif = push_subscriptions.derniere_notif`
+    ).run(studentId, endpoint, p256dh, auth, userAgent ?? null, now);
+  }
+
+  removePushSubscription(endpoint: string): void {
+    this.db.prepare('DELETE FROM push_subscriptions WHERE endpoint = ?').run(endpoint);
+  }
+
+  removePushSubscriptionsForStudent(studentId: string): void {
+    this.db.prepare('DELETE FROM push_subscriptions WHERE student_id = ?').run(studentId);
+  }
+
+  listPushSubscriptions(): Array<{
+    id: number; student_id: string; endpoint: string; p256dh: string; auth: string;
+    user_agent: string | null; heures_locales: string; derniere_notif: string | null; cree_le: string;
+  }> {
+    return this.db.prepare('SELECT * FROM push_subscriptions').all() as Array<{
+      id: number; student_id: string; endpoint: string; p256dh: string; auth: string;
+      user_agent: string | null; heures_locales: string; derniere_notif: string | null; cree_le: string;
+    }>;
+  }
+
+  updatePushDerniereNotif(endpoint: string, quand: string): void {
+    this.db.prepare('UPDATE push_subscriptions SET derniere_notif = ? WHERE endpoint = ?').run(quand, endpoint);
   }
 
   // ── Import de masse (migration, probes 300k) ─────────────

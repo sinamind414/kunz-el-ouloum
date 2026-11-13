@@ -51,6 +51,7 @@
 
 import type { SituationCapitaine } from '../data/capitaine';
 import { conseilDeRubrique } from '../data/conseilsRubrique';
+import type { EtatEleve } from './etatEleve';
 // Le relais humain (§5.D, 4ᵉ tentative — étape 5). Le module `relais` ne connaît
 // ni les prescriptions ni la taxonomie des erreurs : la flèche va dans ce sens,
 // et jamais dans l'autre, pour qu'aucun compteur de la boucle ne puisse bouger à
@@ -472,8 +473,8 @@ export function invitationDuMoment(ctx: ContexteCapitaine): Invitation | null {
           : null;
       return parler({
         situation: 'reprise',
-        messageAr: conseilExamens.conseilAr,
-        actionAr: conseilExamens.gesteAr,
+        messageAr: conseilExamens.conseils[0].conseilAr,
+        actionAr: conseilExamens.conseils[0].gesteAr,
         gainImmediatAr:
           jours !== null
             ? `بقي ${jours} يومًا. محاكاة واحدة تكشف ثغرتك قبل يوم البكالوريا.`
@@ -561,3 +562,347 @@ export function invitationDuMoment(ctx: ContexteCapitaine): Invitation | null {
 
 /** Texte de la bulle quand elle n'a rien à dire : une porte, pas un slogan. */
 export const LIBELLE_BULLE_SILENCIEUX_AR = 'اسأل القبطان';
+
+// ─────────────────────────────────────────────────────────────────────────────
+// LA CONSIGNE D'ENTRÉE DE « التمارين والتدريب » — C'EST LE CAPITAINE QUI DÉCIDE.
+//
+// Arbitrage propriétaire du 2026-11-04 : « un helper pur, c'est le Capitaine
+// Kunz El Ouloum, c'est lui qui guide l'élève, c'est le coach ». La règle vit
+// donc ICI, dans le module du coach, à côté de `invitationDuMoment` : ce n'est
+// PAS un guide autonome, c'est le CALCUL du guide. Le hub ne décide de rien, il
+// projette ce que le Capitaine a tranché. Aucune troisième voix.
+//
+// POURQUOI UNE FONCTION PURE : mêmes portes de silence que la bulle, aucune
+// lecture DOM, aucune écriture de stockage, aucun état caché. La consigne est
+// une PROJECTION DÉRIVÉE de l'état unique (`etatEleveRuntime`), jamais stockée —
+// exactement le verrou « couleur/état = projection, pas stockage ».
+//
+// CE QU'ELLE NE FAIT PAS : elle n'ajoute aucune porte (les 7 cartes restent 7),
+// ne crée aucune valeur de `CibleInvitation` (la bulle garde `cible:'training'`
+// et `App.tsx:1429` reste inchangé), ne touche pas `App.tsx`, et ne désigne
+// JAMAIS un module cadenassé : seuls `situations`, `workshop` et `examens` sont
+// éligibles, tous libres dès le premier jour.
+//
+// LE SILENCE EST UNE DÉCISION : état absent, compétence non chargée ou épreuve
+// en cours ⇒ `null`. On ne fabrique pas une recommandation avec des données
+// qu'on n'a pas.
+//
+// ET LA 1ʳᵉ VISITE ? Le bandeau d'accueil (`BandeauConseilRubrique`) donne le
+// PRINCIPE (« un exercice complet vaut mieux que trois incomplets »). Il ne
+// nomme aucun module — c'est précisément le défaut signalé. La prescription
+// d'état PRIME donc : elle nomme le point de départ dès la première ouverture.
+// Ce ne sont pas deux guides : un seul décideur (`consigneEntreeTraining`), un
+// seul personnage EN GRAND (le bandeau, qui garde son visage), et le bloc du
+// hub n'affiche NI visage NI image — le guide y SIGNE son nom, sans se
+// redessiner une deuxième fois.
+// ─────────────────────────────────────────────────────────────────────────────
+
+/** Onglets du hub que le Capitaine peut désigner — jamais un module verrouillé. */
+export type GesteEntreeTab = 'situations' | 'workshop' | 'examens';
+
+export interface ConsigneEntreeTraining {
+  /** L'UNIQUE carte mise en avant. */
+  tab: GesteEntreeTab;
+  /** Ce que dit le Capitaine : UN geste, court, en arabe. */
+  gesteAr: string;
+  /** « لماذا » : une seule ligne, dérivée de l'état, jamais inventée. */
+  pourquoiAr: string;
+  /** Durée annoncée pour UN exercice, auto-correction comprise. */
+  dureeMin: number;
+}
+
+/** Un exercice complet, correction incluse — pas une séance, pas un QCM-porte. */
+export const DUREE_GESTE_ENTREE_MIN = 10;
+
+/**
+ * LE CAPITAINE CHOISIT LE PREMIER GESTE BAC.
+ *
+ * Ordre enseignant (arbitrage 2026-11-04) : `Rappel → UN geste BAC →
+ * auto-correction → SRS à la maison`. Le QCM/flashcard reste un ÉCHAUFFEMENT
+ * diagnostique, jamais une porte obligatoire ni une destination : cette
+ * consigne désigne donc toujours un geste de production ou d'analyse de sند.
+ *
+ * Table de décision, toutes dérivées de l'état déjà assemblé une fois :
+ *   1. date du BAC officielle, ≤ 30 jours, ≥ 2 unités → `examens` (الورقة والساعة) ;
+ *   2. zéro unité complète                          → `workshop` (جواب مُوجَّه) ;
+ *   3. unité faible ou ≥ 2 erreurs au دفتر          → `situations` (سند ciblé) ;
+ *   4. sinon                                        → `situations` (cœur du BAC).
+ *
+ * `unitesCompletes` vient de la progression RÉELLE du parcours, pas d'une
+ * estimation. `null` en retour = silence honnête, pas un module par défaut.
+ */
+export function consigneEntreeTraining(
+  etat: EtatEleve | null,
+  unitesCompletes: number,
+): ConsigneEntreeTraining | null {
+  // ── Les portes du silence, partagées avec la bulle. ────────────────────────
+  if (!etat) return null; // état pas encore déposé : rien à recommander
+  if (etat.contexte.epreuveEnCours) return null; // épreuve : silence absolu
+  if (!etat.competence.chargee) return null; // verdicts absents ⇒ pas d'invention
+  // PAS de porte sur `conseilRubriqueAPrendre` : le bandeau de 1ʳᵉ visite dit le
+  // principe sans nommer de module. Le mute ici aurait laissé le défaut entier
+  // au moment où l'élève en a le plus besoin. La prescription d'état prime.
+
+  const unites = Number.isInteger(unitesCompletes) && unitesCompletes > 0 ? unitesCompletes : 0;
+  const faible = etat.competence.unitePrioritaire ?? etat.competence.faibles[0] ?? null;
+  // Une date provisoire ne produit AUCUN décompte : on n'annonce pas un chiffre
+  // qu'on n'a pas mesuré (même honnêteté que `cumul` dans `invitationDuMoment`).
+  const jours = etat.horizon.dateProvisoire ? null : etat.horizon.joursAvantBac;
+  const dureeMin = DUREE_GESTE_ENTREE_MIN;
+
+  if (jours !== null && Number.isFinite(jours) && jours > 0 && jours <= 30 && unites >= 2) {
+    return {
+      tab: 'examens',
+      gesteAr: 'اكتب محاكاة واحدة بورقة وقلم، ثم صحّحها.',
+      pourquoiAr: jours === 1
+        ? 'بقي يوم واحد: الورقة والساعة تكشفان الثغرة قبل البكالوريا.'
+        : `بقي ${jours} يومًا: الورقة والساعة تكشفان الثغرة قبل البكالوريا.`,
+      dureeMin,
+    };
+  }
+
+  if (unites === 0) {
+    return {
+      tab: 'workshop',
+      gesteAr: 'أنتج جوابًا واحدًا خطوة بخطوة، ثم صحّحه.',
+      pourquoiAr: 'لم تُكمل وحدة بعد: الجواب المُوجَّه يبني الحركة الأولى قبل سند الامتحان.',
+      dureeMin,
+    };
+  }
+
+  if (faible !== null || etat.erreurs.total >= 2) {
+    return {
+      tab: 'situations',
+      gesteAr: faible !== null
+        ? `حلّل سندًا واحدًا من «${faible}»، ثم صحّح جوابك.`
+        : 'حلّل سندًا واحدًا من دفتر أخطائك، ثم صحّح جوابك.',
+      pourquoiAr: faible !== null
+        ? `الوحدة «${faible}» ما زالت ضعيفة: نبدأ منها، لا من المنهج كله.`
+        : 'خطآن في الدفتر يكفيان لاختيار السند الذي نبدأ به.',
+      dureeMin,
+    };
+  }
+
+  return {
+    tab: 'situations',
+    gesteAr: 'حلّل سندًا واحدًا، ثم صحّح جوابك.',
+    pourquoiAr: 'تحليل السند هو قلب امتحان البكالوريا: تمرين واحد كامل أنفع من ثلاثة ناقصة.',
+    dureeMin,
+  };
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// LE RAPPEL DE 3 MINUTES — LE CAPITAINE CHOISIT AUSSI LES 3 QUESTIONS.
+//
+// Lot 2 du 2026-11-04, ENCHAÎNÉ sur `consigneEntreeTraining` (lot 1). Même
+// règle : la décision pédagogique vit ICI, dans le module du coach. Le panneau
+// `RappelTroisQuestions` ne décide de rien, ne parle pas, n'a ni nom ni visage
+// — il AFFICHE les 3 questions que le Capitaine a tirées.
+//
+// POURQUOI LE TIRAGE EST PUR ET « SANS DONNÉES » : ce module est importé
+// STATIQUEMENT par le hook du Capitaine, donc par le bundle d'entrée. Lui faire
+// importer les 531 QCM (`src/data/index.ts`, ~600 Ko de source) rejouerait très
+// exactement le défaut du sprint 31 (« tout élève télécharge 549 questions
+// avant de voir son tableau de bord »). Le catalogue est donc REÇU en entrée,
+// depuis `peekCorpus()`/`loadCorpus()` — déjà chargés par App.tsx:431/608.
+// Mesuré au build : +0 Ko de CORPUS, +0 requête, +0 clé de stockage. Le lot
+// lui-même coûte ~1 Ko d'entrée et ~5 Ko au chunk du hub — jamais les 531 QCM.
+//
+// ORDRE DE PRIORITÉ (diagnostique, pas une évaluation) :
+//   1. les QCM dont la carte dérivée est DUE (SM-2, `sortByDue` en lecture
+//      seule) ; 2. l'unité faible désignée par le coach ; 3. une rotation
+//      STABLE sur la journée pour compléter — jamais de hasard à chaque rendu,
+//      jamais de question inventée, jamais de doublon.
+//
+// Ce rappel n'est NI une porte obligatoire NI une destination : l'élève peut
+// l'ignorer, la consigne d'entrée et les 7 cartes restent visibles. Le SRS,
+// lui, reste « à la maison » (`RevisionView`) : ici AUCUNE note, AUCUNE
+// écriture, AUCUN `rateCard`. Séquence : Rappel → UN geste BAC → auto-correction.
+// ─────────────────────────────────────────────────────────────────────────────
+
+/** Une question servie par le rappel — forme structurelle, aucun import de data. */
+export interface QuestionRappel {
+  id: number;
+  uniteId: number;
+  questionAr: string;
+  optionsAr: readonly string[];
+  correctIndex: number;
+  explicationAr: string;
+  /** Titre FACTUEL de l'unité (lot 3) — thème transmis au دفتر si l'élève
+   *  déclare une cause. Absent ⇒ `themeUniteAr(uniteId)`, jamais deviné. */
+  themeAr?: string;
+}
+
+export interface SignalRappel {
+  /** ids des QCM dont la carte `fc_q_<id>` est due, DANS l'ordre SRS. */
+  idsDues: readonly number[];
+  /** Titre de l'unité prioritaire du coach (ex. « 1. تركيب البروتين »). */
+  unitePrioritaire: string | null;
+  /** Clé de jour locale `AAAA-MM-JJ` : rotation stable, pas de hasard. */
+  jour: string;
+}
+
+/** Trois questions, pas quatre : l'échauffement doit tenir en trois minutes. */
+export const NOMBRE_QUESTIONS_RAPPEL = 3;
+
+/**
+ * L'unité prioritaire est un TITRE, pas un identifiant (`useInvitationCapitaine`
+ * pose `ordre[0].titre`). Lire son préfixe numérique est un « best effort » :
+ * si le titre n'en porte pas, on renvoie `null` et le tirage se passe de filtre
+ * — on ne devine JAMAIS une unité.
+ */
+export function uniteIdDepuisTitre(titre: string | null): number | null {
+  if (typeof titre !== 'string') return null;
+  const m = /^\s*(\d{1,2})(?:\s*[.)\-:]|\s)/.exec(titre);
+  if (!m) return null;
+  const n = Number(m[1]);
+  return Number.isInteger(n) && n > 0 ? n : null;
+}
+
+/** Décalage déterministe d'une clé de jour — même tirage toute la journée. */
+function decalageDuJour(jour: string, taille: number): number {
+  if (taille <= 0) return 0;
+  let h = 0;
+  for (let i = 0; i < jour.length; i++) h = (h * 31 + jour.charCodeAt(i)) % 1000003;
+  return h % taille;
+}
+
+/**
+ * LE CAPITAINE TIRE LES 3 QUESTIONS DE RAPPEL.
+ *
+ * Renvoie **au plus** `NOMBRE_QUESTIONS_RAPPEL` questions, toutes issues du
+ * catalogue réel, sans doublon. Un catalogue vide (corpus hors ligne) donne
+ * `[]` : le panneau le dit honnêtement au lieu de fabriquer une question.
+ */
+export function tirageRappelTrois(
+  catalogue: readonly QuestionRappel[],
+  signal: SignalRappel,
+): QuestionRappel[] {
+  const valides = catalogue.filter(
+    (q) =>
+      Number.isFinite(q.id) &&
+      q.optionsAr.length >= 2 &&
+      Number.isInteger(q.correctIndex) &&
+      q.correctIndex >= 0 &&
+      q.correctIndex < q.optionsAr.length &&
+      q.questionAr.trim().length > 0,
+  );
+  if (valides.length === 0) return [];
+  if (valides.length <= NOMBRE_QUESTIONS_RAPPEL) return valides.slice();
+
+  const parId = new Map(valides.map((q) => [q.id, q]));
+  const pris = new Set<number>();
+  const tirees: QuestionRappel[] = [];
+  const ajouter = (q: QuestionRappel | undefined): void => {
+    if (!q || tirees.length >= NOMBRE_QUESTIONS_RAPPEL || pris.has(q.id)) return;
+    pris.add(q.id);
+    tirees.push(q);
+  };
+
+  // 1. D'abord ce que la mémoire réclame : les cartes DUES (SM-2, lecture seule).
+  for (const id of signal.idsDues) {
+    if (tirees.length >= NOMBRE_QUESTIONS_RAPPEL) break;
+    ajouter(parId.get(id));
+  }
+
+  // 2. Puis l'unité que le coach a désignée comme faible.
+  const uniteFaible = uniteIdDepuisTitre(signal.unitePrioritaire);
+  if (uniteFaible !== null) {
+    for (const q of valides) {
+      if (tirees.length >= NOMBRE_QUESTIONS_RAPPEL) break;
+      if (q.uniteId === uniteFaible) ajouter(q);
+    }
+  }
+
+  // 3. Compléter par une rotation stable du jour — jamais de `Math.random()`
+  //    (sinon les 3 questions changeraient à chaque rendu React).
+  const depart = decalageDuJour(signal.jour, valides.length);
+  for (let k = 0; k < valides.length && tirees.length < NOMBRE_QUESTIONS_RAPPEL; k++) {
+    ajouter(valides[(depart + k) % valides.length]);
+  }
+
+  return tirees;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// LOT 3 — LE RAPPEL NOURRIT LE دفتر الأخطاء (LE CAPITAINE DÉCIDE TOUJOURS).
+//
+// Changement de contrat, assumé et demandé : les lots 1-2 n'écrivaient RIEN.
+// Le lot 3 écrit, mais UNE SEULE fois et SEULEMENT quand l'élève a déclaré
+// lui-même la cause de son erreur. Aucune déduction : `diagnosticQuiz.ts` le
+// dit déjà — « aucune question du corpus ne porte d'étiquette de notion…
+// toute déduction serait une invention ». Le Capitaine ne devine donc pas un
+// code d'erreur ; il décide QUAND demander, et l'élève dit LEQUEL.
+//
+// CE QUE LE CAPITAINE DÉCIDE ICI (pur, aucune donnée, aucun stockage) :
+//   · combien de questions ont été RATÉES (une réponse absente n'est PAS une
+//     erreur inventée) ;
+//   · les THÈMES factuels de ces erreurs (titre d'unité du parcours, sinon
+//     « الوحدة N ») ;
+//   · s'il faut demander une déclaration (≥ 1 erreur, une fois par session).
+//
+// Le pont d'écriture (`lib/pontRappelErreurs.ts`) n'est PAS un guide : il
+// exécute l'appel canonique `enregistrerErreurs` avec le code déclaré. Le
+// panneau ne fait que poser la question du produit (`CAUSES_QCM`).
+//
+// EFFET MESURÉ SUR LA PAROLE DU CAPITAINE : `contexteCapitaine()` transmet
+// `erreursAReprendre = etat.erreurs.total`, et `invitationDuMoment` ne parle
+// sur le motif « erreur » qu'à `j >= 3 && total >= 2`. UNE déclaration = UNE
+// occurrence ⇒ `resumeProfilAr()` reste `null` : un échauffement isolé ne fait
+// PAS croire à un profil. Deux sessions sur la même cause, elles, comptent —
+// c'est voulu.
+//
+// NON INCLUS, MESURÉ : `planifierRappelsPourErreurs()` ne trouve AUCUNE
+// micro-reprise pour les trois codes déclarables (`notion_confusion`,
+// `unsupported_claim`, `missing_reference`) et renvoie `[]`. L'appeler ici
+// chargerait 164 Ko de chunk pour un no-op. Le pont reste là où il est
+// (`QuizView`, atelier) — cf. `cablageBoucleCoach.test.ts`. Aucun `rateCard`,
+// aucun SRS, aucun `signalTravail` : « Déclic → Focus → Révision, une fois/jour »
+// n'est pas touché.
+// ─────────────────────────────────────────────────────────────────────────────
+
+/** Une erreur suffit à demander la cause — mais une seule fois par session. */
+export const ERREURS_MIN_POUR_DECLARER = 1;
+
+export interface BilanRappel {
+  /** Nombre de questions réellement ratées. */
+  erreurs: number;
+  /** Thèmes des questions ratées, sans doublon, dans l'ordre du tirage. */
+  themes: readonly string[];
+  /** Faut-il poser la question de déclaration ? */
+  aDeclarer: boolean;
+}
+
+/** Repli factuel quand le parcours ne fournit pas de titre d'unité. */
+export function themeUniteAr(uniteId: number): string {
+  return Number.isInteger(uniteId) && uniteId > 0 ? `الوحدة ${uniteId}` : '';
+}
+
+/**
+ * LE BILAN DU RAPPEL — pure, déterministe, sans lecture de stockage.
+ *
+ * `reponses[i]` est l'index choisi pour `questions[i]`, ou `null`/absent si
+ * l'élève n'a pas répondu. Une absence N'EST PAS une erreur : on ne compte que
+ * ce qui a été réellement répondu à côté. Les questions surnuméraires (le
+ * tableau de réponses est plus long que le tirage) sont ignorées.
+ */
+export function bilanDuRappel(
+  questions: readonly QuestionRappel[],
+  reponses: readonly (number | null | undefined)[],
+): BilanRappel {
+  const themes: string[] = [];
+  let erreurs = 0;
+  questions.forEach((q, i) => {
+    const r = reponses[i];
+    if (typeof r !== 'number' || !Number.isInteger(r)) return;
+    if (r === q.correctIndex) return;
+    erreurs += 1;
+    const theme = (q.themeAr ?? '').trim() || themeUniteAr(q.uniteId);
+    if (theme && !themes.includes(theme)) themes.push(theme);
+  });
+  return {
+    erreurs,
+    themes,
+    aDeclarer: erreurs >= ERREURS_MIN_POUR_DECLARER,
+  };
+}

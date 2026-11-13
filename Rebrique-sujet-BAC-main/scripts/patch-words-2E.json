@@ -1,0 +1,31 @@
+{
+  "_note": "Phase 2E : corrections exactes mot-à-mot (forme affichée → correction). Chaque clé a été mesurée à occurrence unique et sûre dans son fichier (voir mesure-tmp). Non couverts : déchets QR (phase 2F éventuelle), M/2013-s1 الأول illisible (١ G A Les u), SE/2014-s2 sans ligne الموضوع.",
+  "subjects/SE/2025/sujet-1.pdf": {
+    "بكالوربا": "بكالوريا",
+    "REA ALI": "الديمقراطية",
+    "الطيعة": "الطبيعة",
+    "لي": "في"
+  },
+  "subjects/SE/2025/sujet-2.pdf": { "بكالوربا": "بكالوريا", "هادة:": "مادة:", "اخبار": "اختبار" },
+  "subjects/SE/2026/sujet-2.pdf": { "gb": "الثاني" },
+  "subjects/SE/2016/sujet-2.pdf": { "الثاد": "الثاني" },
+  "subjects/M/2014/sujet-2.pdf": { "الموصوع": "الموضوع" },
+  "subjects/SE/2015/sujet-1.pdf": { "الدبمقراطية": "الديمقراطية", "الا": "الأول" },
+  "subjects/M/2014/sujet-1.pdf": {
+    "هادة": "مادة",
+    "الجرائرية": "الجزائرية",
+    "الدعمقراطية": "الديمقراطية",
+    "امار": "اختبار",
+    "امبحان": "امتحان",
+    "ذورة": "دورة",
+    "جواك": "جوان"
+  },
+  "subjects/M/2013/sujet-1.pdf": {
+    "هادة": "مادة",
+    "الجرائرية": "الجزائرية",
+    "امتحات": "امتحان",
+    "cuil AE": "الديمقراطية",
+    "جوات": "جوان"
+  },
+  "subjects/SE/2013/sujet-1.pdf": { "الدبمقراطية": "الديمقراطية", "الآ": "الأول" }
+}

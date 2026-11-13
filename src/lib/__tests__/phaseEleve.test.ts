@@ -99,12 +99,34 @@ describe('les cinq phases, et ce qui les distingue', () => {
     expect(deduirePhase(sansVerdicts).niveau).toBe(3);
   });
 
-  it('phase 5 — sprint : la date du BAC devient une entrée de décision', () => {
-    const phase = deduirePhase(
-      assemblerEtatEleve({ daily: daily({ joursActifsTotal: 12 }), maintenant: SPRINT_DATE }),
-    );
+  it('phase 5 — sprint : la date CONFIRMÉE du BAC devient une entrée de décision', () => {
+    // R5 (audit coach 2026-11-06, GO propriétaire en session) : le sprint se
+    // déduit d'une date OFFICIELLE. La date livrée est provisoire — les tests
+    // la CONFIRMENT explicitement (`dateProvisoire: false`) pour simuler le
+    // jour où l'arrêté officiel arrivera : cumul 12 jours, horizon ≤ 30 jours.
+    const brut = assemblerEtatEleve({
+      daily: daily({ joursActifsTotal: 12 }),
+      maintenant: SPRINT_DATE,
+    });
+    const etatConfirmee = { ...brut, horizon: { ...brut.horizon, dateProvisoire: false } };
+    const phase = deduirePhase(etatConfirmee);
     expect(phase.niveau).toBe(5);
     expect(phase.besoin).toBe<BesoinPhase>('production_chronometree');
+  });
+
+  it('une date PROVISOIRE ne déclenche JAMAIS le sprint (R5, règle signée)', () => {
+    // La date livrée dans le dépôt est provisoire : même à 19 jours du décompte
+    // affiché, l'horizon de DÉCISION reste non tranché — le capitaine retombe
+    // sur la phase 3 (« protéger ce qui est construit »), jamais fausse.
+    const enDelivery = assemblerEtatEleve({
+      daily: daily({ joursActifsTotal: 12 }),
+      maintenant: SPRINT_DATE,
+    });
+    expect(enDelivery.horizon.dateProvisoire).toBe(true); // l'état du dépôt, pas un réglage du test
+    expect(enDelivery.horizon.joursAvantBac).toBeLessThanOrEqual(JOURS_SPRINT_EPREUVE);
+    const phase = deduirePhase(enDelivery);
+    expect(phase.niveau).toBe(3);
+    expect(phase.besoin).toBe<BesoinPhase>('proteger_acquis');
   });
 
   it('la frontière du sprint est exacte, et connue', () => {
@@ -159,9 +181,12 @@ describe('les deux règles de fond qui protègent l’élève', () => {
   it('le sprint ne demande JAMAIS de contenu neuf (§5.B)', () => {
     // Vérifié par construction : le besoin de la phase 5 est une production, et
     // les destinations du capitaine ne proposent aucune découverte.
-    const phase = deduirePhase(
-      assemblerEtatEleve({ daily: daily({ joursActifsTotal: 12 }), maintenant: SPRINT_DATE }),
-    );
+    // R5 : le sprint exige une date confirmée — l'état du test la confirme.
+    const brut = assemblerEtatEleve({
+      daily: daily({ joursActifsTotal: 12 }),
+      maintenant: SPRINT_DATE,
+    });
+    const phase = deduirePhase({ ...brut, horizon: { ...brut.horizon, dateProvisoire: false } });
     expect(phase.besoin).toBe('production_chronometree');
     expect(phase.besoin).not.toBe('victoires_courtes');
   });

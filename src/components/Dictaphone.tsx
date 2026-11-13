@@ -1,11 +1,14 @@
 // Dictaphone.tsx — le micro qui écrit (demande utilisateur 2026-10-16 :
 // « ajouter microphone pour dicter et écrire le texte quand l'élève clique »).
 //
-// Technologie : la Web Speech API NATIVE du navigateur (SpeechRecognition /
-// webkitSpeechRecognition — Chrome, Edge, Android Chrome). Aucun service
-// externe, aucune clé, aucun coût. La dictée nécessite un navigateur qui la
-// supporte (sinon le bouton se désactive HONNÊTEMENT) et, selon le navigateur,
-// une connexion Internet le temps de la dictée.
+// Technologie, par ordre de préférence :
+//   1. MOTEUR NATIF (APK Android) — plugin `SpeechToText` : reconnaissance
+//      SUR APPAREIL via le moteur du système, donc HORS LIGNE (rien ne
+//      quitte le téléphone). C'est le seul moteur qui fonctionne dans la
+//      WebView Android, où la Web Speech API n'existe pas (le bouton restait
+//      désactivé sur l'APK) — cf. src/lib/microphone.ts.
+//   2. Web Speech API du navigateur (Chrome, Edge, Android Chrome) — utile
+//      sur le web ; selon le navigateur, la dictée peut exiger le réseau.
 //
 // CONTRAT avec les champs :
 //   Seuls les textes FINAUX sont poussés via onTranscript (jamais les
@@ -18,6 +21,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { Mic, MicOff } from 'lucide-react';
+import { dicterNatif, moteurNatifDisponible } from '../lib/microphone';
 
 export interface SpeechRecognitionLike {
   lang: string;
@@ -59,7 +63,21 @@ export default function Dictaphone({ onTranscript, zone, lang = 'ar-SA', disable
   const cbRef = useRef(onTranscript);
   cbRef.current = onTranscript;
 
-  const supporte = moteurDeDictee() != null;
+  // MOTEUR NATIF (APK) : la WebView Android n'a pas de Web Speech API, mais
+  // le plugin maison donne la reconnaissance SUR APPAREIL (hors ligne).
+  const [natifDispo, setNatifDispo] = useState(false);
+  useEffect(() => {
+    let vivant = true;
+    void moteurNatifDisponible().then((info) => {
+      if (vivant) setNatifDispo(Boolean(info));
+    });
+    return () => {
+      vivant = false;
+    };
+  }, []);
+
+  const supporteWeb = moteurDeDictee() != null;
+  const supporte = supporteWeb || natifDispo;
 
   // Déplacement / démontage pendant l'écoute → on coupe, pas de micro resté
   // ouvert à l'insu de l'élève.
@@ -70,13 +88,29 @@ export default function Dictaphone({ onTranscript, zone, lang = 'ar-SA', disable
     [],
   );
 
-  const basculer = () => {
+  const basculer = async () => {
     if (ecoute) {
       recRef.current?.stop();
       // Retour visuel immédiat (le moteur confirmera via onend/onerror).
       setEcoute(false);
       return;
     }
+    setMessageAr(null);
+
+    // 1) MOTEUR NATIF (APK) — prioritaire : hors ligne, dans l'appareil.
+    if (natifDispo) {
+      setEcoute(true);
+      const resultat = await dicterNatif(lang.split('-')[0] ?? 'ar');
+      setEcoute(false);
+      if (resultat.texte) {
+        cbRef.current(resultat.texte);
+      } else if (resultat.message) {
+        setMessageAr(resultat.message);
+      }
+      return;
+    }
+
+    // 2) Web Speech API (navigateur) — comportement historique inchangé.
     const Moteur = moteurDeDictee();
     if (!Moteur) return;
     const rec = new Moteur();
@@ -122,14 +156,14 @@ export default function Dictaphone({ onTranscript, zone, lang = 'ar-SA', disable
         aria-pressed={ecoute}
         title={
           !supporte
-            ? 'الإملاء الصوتي غير مدعوم في هذا المتصفح — استخدم Chrome أو Edge'
+            ? 'الإملاء الصوتي غير متاح هنا — اكتب إجابتك (على الهاتف: أندرويد 12 أو أحدث مع حزمة اللغة العربية)'
             : ecoute
               ? 'إسماع… انقر للإيقاف'
               : 'انقر ثم امل — تُكتب كلماتك في الحقل مباشرة'
         }
         aria-label={
           !supporte
-            ? 'الإملاء الصوتي غير مدعوم في هذا المتصفح'
+            ? 'الإملاء الصوتي غير متاح على هذا الجهاز'
             : ecoute
               ? 'إيقاف الإملاء الصوتي'
               : 'بدء الإملاء الصوتي'

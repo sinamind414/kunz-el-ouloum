@@ -1,0 +1,6 @@
+# .ignore — lu par ripgrep (et donc par les outils de recherche des agents IA).
+# Ces chemins restent versionnés mais sortent des recherches par défaut :
+# ils ne font pas partie du produit et alourdissent le contexte d'un agent.
+# Pour les fouiller quand même : rg --no-ignore-dot <motif> archive/
+# Inventaire et raisons : docs/agents/CARTE_DU_DEPOT.md
+archive/

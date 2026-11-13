@@ -366,13 +366,15 @@ export const ARCHETYPE_BY_ID: Record<string, BacArchetype> = Object.fromEntries(
   BAC_ARCHETYPES.map((a) => [a.id, a]),
 );
 
-/** Les exercices réels d'un archétype, du plus récent au plus ancien. */
-export function ideasOfArchetype(archetypeId: string): BacExerciseIdea[] {
+/** Les exercices réels d'un archétype, du plus récent au plus ancien.
+ *  `unitesAutorisees` (optionnel) : restreint aux unités d'un chapitre. */
+export function ideasOfArchetype(archetypeId: string, unitesAutorisees?: readonly number[]): BacExerciseIdea[] {
   const arch = ARCHETYPE_BY_ID[archetypeId];
   if (!arch) return [];
+  const ensemble = unitesAutorisees ? new Set(unitesAutorisees) : null;
   return arch.ideaIds
     .map((id) => IDEA_BY_ID[id])
-    .filter((i): i is BacExerciseIdea => Boolean(i))
+    .filter((i): i is BacExerciseIdea => Boolean(i) && (!ensemble || i.unitIds.some((u) => ensemble.has(u))))
     .sort((a, b) => b.year - a.year || a.sujet - b.sujet || a.exercice - b.exercice);
 }
 
@@ -382,8 +384,8 @@ export function archetypesForIdea(ideaId: string): BacArchetype[] {
 }
 
 /** Sessions couvertes par un archétype, décroissant. */
-export function yearsOfArchetype(archetypeId: string): number[] {
-  return Array.from(new Set(ideasOfArchetype(archetypeId).map((i) => i.year))).sort(
+export function yearsOfArchetype(archetypeId: string, unitesAutorisees?: readonly number[]): number[] {
+  return Array.from(new Set(ideasOfArchetype(archetypeId, unitesAutorisees).map((i) => i.year))).sort(
     (a, b) => b - a,
   );
 }
@@ -391,8 +393,9 @@ export function yearsOfArchetype(archetypeId: string): number[] {
 /**
  * Récurrence des montages : combien d'exercices, sur combien de sessions, et
  * quel total de points. C'est le classement qui dit par quoi commencer.
+ * (mesuré sur le corpus, ou sur les unités d'un chapitre si demandé)
  */
-export function archetypeRecurrence(): {
+export function archetypeRecurrence(unitesAutorisees?: readonly number[]): {
   archetypeId: string;
   titleAr: string;
   exercices: number;
@@ -400,12 +403,12 @@ export function archetypeRecurrence(): {
   points: number;
 }[] {
   return BAC_ARCHETYPES.map((a) => {
-    const ideas = ideasOfArchetype(a.id);
+    const ideas = ideasOfArchetype(a.id, unitesAutorisees);
     return {
       archetypeId: a.id,
       titleAr: a.titleAr,
       exercices: ideas.length,
-      sessions: yearsOfArchetype(a.id).length,
+      sessions: yearsOfArchetype(a.id, unitesAutorisees).length,
       points: ideas.reduce((s, i) => s + i.points, 0),
     };
   }).sort(

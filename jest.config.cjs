@@ -64,5 +64,12 @@ module.exports = {
     // cf. LIMITES en tête) — StudentAuthView (api), atelierFlux (flux).
     'StudentAuthView\\.test\\.tsx$',
     'atelierFlux\\.test\\.tsx$',
+    // vitest-only : vi.mock (non hoistee par babel-plugin-jest-hoist,
+    // cf. LIMITES en tête) — chemin NATIF de la dictée (plugin de l'APK :
+    // le module mocké est importé statiquement, le mock doit être hoisté).
+    'dictaphoneNatif\\.test\\.tsx$',
+    // Tranche 3 (2026-11-04) : mock de HtmlLessonViewer (vi.mock) — couvert
+    // par vitest, comme LessonsViewPassiveNav ci-dessus.
+    'LessonsViewEtat\\.test\\.tsx$',
   ],
 };

@@ -1,4 +1,4 @@
-import { useState, useEffect, lazy, Suspense } from 'react';
+import { useState, useEffect, useMemo, useRef, lazy, Suspense } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import {
   Home,
@@ -11,11 +11,11 @@ import {
   Moon,
   Swords,
   PlayCircle,
-  Layers,
   Search,
   PenTool,
   Dumbbell,
   Key,
+  Layers,
   Sprout
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
@@ -63,8 +63,29 @@ import {
 } from './utils/activiteQuotidienne';
 // Nomenclature figée (docs/MARQUE.md §3) — la rubrique porte le nom officiel de la source
 // unique miftahSpec : aucun littéral dans ce fichier (garde-fou check:miftah §13, 2026-09-15).
-import { MIFTAH_NAME_OFFICIAL_AR } from './data/miftahSpec';
+import { MIFTAH_NAME_OFFICIAL_AR, MIFTAH_NAME_AR } from './data/miftahSpec';
 import { AR_LATN } from './utils/latinDigits';
+// Navigation 2026-11-05 (GO utilisateur) : 6 → 4 rubriques, « التعلّم » porte
+// 3 onglets. Les 24 identifiants d'écran RESTENT INTACTS : seule la couche de
+// présentation change (voir src/data/apprentissageNav.ts et utils/navigationHash.ts).
+import {
+  TAB_PAR_ONGLET,
+  RUBRIQUE_PAR_TAB_NAV,
+  lireDernierOnglet,
+  ecrireDernierOnglet,
+  ongletPourTab,
+  rubriquePourTab,
+  type OngletApp,
+  type OngletApprentissageId,
+} from './data/apprentissageNav';
+import {
+  resoudreRoute,
+  pousserRoutePourTab,
+  remplacerRoutePourTab,
+} from './utils/navigationHash';
+import { lireDeepLinkInterne, queryDeUrl } from './utils/deepLinkInterne';
+import { lireProgressionApprentissage } from './data/apprentissageProgression';
+import ApprentissageTabs from './components/ApprentissageTabs';
 
 import SplashView from './components/SplashView';
 import ChunkErrorBoundary from './components/ChunkErrorBoundary';
@@ -101,6 +122,12 @@ const LessonsView = lazy(() => import('./components/LessonsView'));
 // ouvert aussi peu que les autres onglets secondaires → import différé.
 const MoiView = lazy(() => import('./components/MoiView'));
 const LessonTwoView = lazy(() => import('./components/LessonTwoView'));
+// Étage 2 (2026-11-07) : le glossaire du capitaine est chargé À LA DEMANDE,
+// uniquement quand l'élève ouvre la bulle. Il ne doit jamais entrer dans le
+// bundle d'entrée (plafond 700 Ko).
+const GlossaireCapitaine = lazy(() => import('./components/GlossaireCapitaine'));
+// Étage 3 (2026-11-07) : positionnement + express J-7, également à la demande.
+const ParcoursAssimilation = lazy(() => import('./components/ParcoursAssimilation'));
 const TrainingHubView = lazy(() => import('./components/TrainingHubView'));
 // Hub « الاختبارات » — sous-écran du hub S'entraîner (2026-10-12).
 const ExamensHubView = lazy(() => import('./components/ExamensHubView'));
@@ -155,8 +182,8 @@ import BandeauConseilRubrique from './components/BandeauConseilRubrique';
 // Étape 5 (§5.D) : le relais humain. Une carte, deux questions, aucune sortie de
 // l'appareil — voir `lib/relais.ts` pour la règle complète.
 import RelaisCapitaine from './components/RelaisCapitaine';
-import { conseilDeRubrique, type ConseilRubrique } from './data/conseilsRubrique';
-import { marquerRubriqueVue } from './lib/conseilRubrique';
+import { conseilDeRubrique, type Conseil, type ConseilRubrique, tousLesConseils } from './data/conseilsRubrique';
+import { indiceConseil, enregistrerVisiteRubrique } from './lib/conseilRubrique';
 import { replanifierRevue, SEUIL_FRAGILE } from './lib/parcours/parcoursProgress';
 import { 
   startPirateMusic, 
@@ -173,34 +200,130 @@ export default function App() {
     return savedTheme === 'dark';
   });
 
+  // Étage 2 (2026-11-07) : la bulle du capitaine répond elle-même au mot tapé
+  // (glossaire dérivé de `acceptedAnswers`, 0 invention). État placé AVANT tout
+  // retour anticipé (splash / quiz) pour ne pas rejouer le défaut « Rendered
+  // more hooks than during the previous render ».
+  const [glossaireOuvert, setGlossaireOuvert] = useState(false);
+  // Étage 3 : panneau « niveau de l'élève + plan J-7 », même zone sûre.
+  const [parcoursOuvert, setParcoursOuvert] = useState(false);
+
   // Navigation tab state
+  // Étape 3 : les paramètres d'un lien profond (?lecon= / ?qcm= / ?examen= /
+  // ?idee=) sont lus UNE fois au montage puis validés contre les sources
+  // réelles (voir src/utils/deepLinkInterne.ts). Une clé inconnue est ignorée.
+  const deepLinkInitial = useMemo(
+    () => (typeof window === 'undefined'
+      ? null
+      : lireDeepLinkInterne(queryDeUrl(window.location.hash, window.location.search))),
+    [],
+  );
   // Exercice sur lequel ouvrir l'atelier quand on arrive depuis le plan.
-  const [bacIdeaFocus, setBacIdeaFocus] = useState<string | null>(null);
-  const [currentTab, setCurrentTab] = useState<'splash' | 'home' | 'review' | 'stats' | 'chat' | 'methodology' | 'bootcamp' | 'badges' | 'lesson' | 'workshop' | 'mindmap' | 'teacher' | 'animations' | 'situations' | 'schemas' | 'training' | 'plan' | 'bacideas' | 'focus' | 'tadwin' | 'moi' | 'reviser' | 'examens' | 'parcours'>('splash');
-  // Deep-link : ouverture d'une leçon précise depuis un raccourci (الدروس, أنا…).
-  const [parcoursLesson, setParcoursLesson] = useState<{ key: string; kind: 'html' | 'active'; unitId: number } | null>(null);
-  // Deep-link : ouverture du QCM d'une unité précise (raccourci).
-  const [parcoursQcm, setParcoursQcm] = useState<number | null>(null);
-  // Deep-link : examen à ouvrir dans LessonsView ('qcm' = QCM du livre,
-  // 'bac' = tests bac complets). Les examens ont quitté « الدروس » le
-  // 2026-10-12 pour le hub S'entraîner (src/data/trainingHub.ts, `examens`).
-  const [parcoursMode, setParcoursMode] = useState<'qcm' | 'bac' | null>(null);
-  const ouvrirLeçonDepuisParcours = (key: string, kind: 'html' | 'active', unitId: number) => {
-    setParcoursLesson({ key, kind, unitId });
-    setParcoursQcm(null);
-    setCurrentTab('lesson');
+  const [bacIdeaFocus, setBacIdeaFocus] = useState<string | null>(deepLinkInitial?.idee ?? null);
+  // Un lien profond (notification / URL propre) ouvre DIRECTEMENT son écran,
+  // sans repasser par le splash. Sans route reconnue : splash habituel.
+  const [currentTab, setCurrentTab] = useState<OngletApp>(() => {
+    if (typeof window === 'undefined') return 'splash';
+    const route = resoudreRoute(
+      window.location.pathname + window.location.search,
+      window.location.hash,
+    );
+    // ?idee=… ouvre l'écran de la banque BAC (Entraînement), pas le hub.
+    if (route && deepLinkInitial?.idee && route.tab === 'training') return 'bacideas';
+    return route?.tab ?? 'splash';
+  });
+  const currentTabRef = useRef(currentTab);
+  const [previousTab, setPreviousTab] = useState<typeof currentTab | null>(null);
+  const [previousHash, setPreviousHash] = useState<string>('');
+  const [capitaineOpen, setCapitaineOpen] = useState(false);
+  const fermerCapitaine = () => {
+    setCapitaineOpen(false);
+    if (previousHash && location.hash !== previousHash) {
+      history.replaceState({ tab: previousTab ?? 'home' }, '', previousHash || window.location.pathname + window.location.search);
+      setCurrentTab(previousTab ?? 'home');
+    }
   };
-  const ouvrirQcmDepuisParcours = (unitId: number) => {
-    setParcoursQcm(unitId);
-    setParcoursLesson(null);
-    setCurrentTab('lesson');
+  // SPA minimal history router (hash-based) — permet le retour navigateur et les
+  // deep-links sans routeur tiers. L'état courant est reflété dans `location.hash`.
+  const TAB_ROUTE: Record<typeof currentTab, string> = {
+    splash: '', home: '#home', review: '#review', stats: '#stats', chat: '#chat',
+    methodology: '#methodology', bootcamp: '#bootcamp', badges: '#badges', lesson: '#lesson',
+    workshop: '#workshop', mindmap: '#mindmap', teacher: '#teacher', animations: '#animations',
+    situations: '#situations', schemas: '#schemas', training: '#training', plan: '#plan',
+    bacideas: '#bacideas', focus: '#focus', tadwin: '#tadwin', moi: '#moi', reviser: '#reviser',
+    examens: '#examens', parcours: '#parcours',
   };
+  const navigateToTab = (tab: typeof currentTab, replace = false) => {
+    if (currentTabRef.current === tab && !replace) return;
+    const nextHash = TAB_ROUTE[tab];
+    if (replace || !nextHash || location.hash !== nextHash) {
+      if (replace) {
+        history.replaceState({ tab }, '', nextHash || window.location.pathname + window.location.search);
+      } else {
+        history.pushState({ tab }, '', nextHash || window.location.pathname + window.location.search);
+      }
+    }
+    setCurrentTab(tab);
+  };
+  // Restaure le tab depuis l'URL au montage + écoute le retour navigateur.
+  // 2026-11-03 : CORRECTIF DE RÉGRESSION (introduit par 337533f qui avait
+  // remplacé ici l'effet de synchro du ref). Deux effets restaient :
+  //  1. `?? 'home'` forçait le tableau de bord au montage SANS hash → le
+  //     splash était dépassé ~30 ms après le montage pour tout visiteur neuf
+  //     (mesuré : splash vu à t=0/16 ms, parti à t≈50 ms, sans clic) — les
+  //     suites serieIntegration / motivationIntegration / masariBranche
+  //     étaient les messagères (12 tests rouges). Désormais : SANS hash.
+  //  2. `currentTabRef` n'était plus jamais écrit → le garde-fou anti-doublon
+  //     de navigateToTab (l. 200) était mort. La synchro est rétablie ci-dessous.
+  useEffect(() => { currentTabRef.current = currentTab; }, [currentTab]);
+  useEffect(() => {
+    const fromHash = (Object.entries(TAB_ROUTE) as [typeof currentTab, string][]).find(
+      ([, route]) => route && location.hash === route
+    );
+    if (fromHash && fromHash[0] !== currentTabRef.current) {
+      setCurrentTab(fromHash[0]);
+    }
+    const onPopState = (ev: PopStateEvent) => {
+      const state = ev.state as { tab?: typeof currentTab } | null;
+      const target = state?.tab ?? (Object.entries(TAB_ROUTE) as [typeof currentTab, string][]).find(
+        ([, route]) => route && location.hash === route
+      )?.[0] ?? 'home';
+      setCurrentTab(target);
+      setPreviousTab(currentTabRef.current === target ? null : currentTabRef.current);
+    };
+    window.addEventListener('popstate', onPopState);
+    return () => window.removeEventListener('popstate', onPopState);
+  }, []);
   // Examen choisi dans le hub S'entraîner → LessonsView l'ouvre en mode examen.
   const ouvrirExamen = (mode: 'qcm' | 'bac') => {
     setParcoursMode(mode);
     setParcoursQcm(null);
     setParcoursLesson(null);
-    setCurrentTab('lesson');
+    navigateToTab('lesson');
+  };
+  // Deep-link : ouverture d'une leçon précise depuis un raccourci (الدروس, أنا…).
+  const [parcoursLesson, setParcoursLesson] = useState<{ key: string; kind: 'html' | 'active'; unitId: number } | null>(deepLinkInitial?.lecon ?? null);
+  // Deep-link : ouverture du QCM d'une unité précise (raccourci).
+  const [parcoursQcm, setParcoursQcm] = useState<number | null>(deepLinkInitial?.qcm ?? null);
+  // Deep-link : examen à ouvrir dans LessonsView ('qcm' = QCM du livre,
+  // 'bac' = tests bac complets). Les examens ont quitté « الدروس » le
+  // 2026-10-12 pour le hub S'entraîner (src/data/trainingHub.ts, `examens`).
+  const [parcoursMode, setParcoursMode] = useState<'qcm' | 'bac' | 'search' | null>(deepLinkInitial?.examen ?? null);
+  const ouvrirLeçonDepuisParcours = (key: string, kind: 'html' | 'active', unitId: number) => {
+    setParcoursLesson({ key, kind, unitId });
+    setParcoursQcm(null);
+    navigateToTab('lesson');
+  };
+  const ouvrirQcmDepuisParcours = (unitId: number) => {
+    setParcoursQcm(unitId);
+    setParcoursLesson(null);
+    navigateToTab('lesson');
+  };
+  // Bouton retour vers la rubrique d'origine (précédente) quand on est dans le chat.
+  const ouvrirChat = () => {
+    setPreviousTab(currentTab);
+    setPreviousHash(location.hash);
+    setCapitaineOpen(true);
   };
   const [activeMindMapUnitId, setActiveMindMapUnitId] = useState<number>(1);
   // Assistant contextuel « المرشد » (2026-10-11) : question apportée par une
@@ -216,7 +339,9 @@ export default function App() {
       const detail = (e as CustomEvent<MorchidAskDetail>).detail;
       if (!detail?.question) return;
       setMorchidSeed(detail.question);
-      setCurrentTab('chat');
+      setPreviousTab(currentTabRef.current);
+      setPreviousHash(location.hash);
+      setCapitaineOpen(true);
     };
     window.addEventListener(MORCHID_ASK_EVENT, onMorchidAsk);
     return () => window.removeEventListener(MORCHID_ASK_EVENT, onMorchidAsk);
@@ -225,6 +350,47 @@ export default function App() {
   // Abonnement au signal d'épreuve : un seul point d'écoute, dans App, plutôt
   // qu'une condition recopiée dans chaque vue qui pourrait afficher le bouton.
   useEffect(() => abonnerExamen(setEpreuveEnCours), []);
+
+  // ─── 4 rubriques : URL, bouton Retour, dernier onglet mémorisé ───────────
+  // 1. Un chemin propre (/apprentissage/cours) ou un ancien alias (/apprendre)
+  //    est ramené au hash canonique sans empiler d'entrée d'historique.
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const route = resoudreRoute(window.location.pathname + window.location.search, window.location.hash);
+    if (route && window.location.hash !== route.canonique) {
+      window.history.replaceState(null, '', '/' + route.canonique);
+    }
+  }, []);
+
+  // 2. Navigation INTERNE (hub → sous-écran) : on garde l'URL sur la route de
+  //    l'onglet parent, sans créer de fausse route ni d'entrée d'historique.
+  //    Si aucun hash n'est présent (démarrage normal), on n'en fabrique pas :
+  //    c'est le clic explicite sur une rubrique qui ouvre l'historique.
+  useEffect(() => {
+    remplacerRoutePourTab(currentTab);
+  }, [currentTab]);
+
+  // 3. « l'app se souvient du dernier onglet visité » — y compris quand on
+  //    entre dans un sous-écran d'un hub (bacideas → التمارين, review → المراجعة).
+  useEffect(() => {
+    const onglet = ongletPourTab(currentTab);
+    if (onglet) ecrireDernierOnglet(onglet);
+  }, [currentTab]);
+
+  // 4. Bouton Retour Android / flèche du navigateur : `pushState` n'émet pas
+  //    `hashchange`, donc on écoute `popstate` sans risque de boucle.
+  useEffect(() => {
+    const onRetour = () => {
+      const route = resoudreRoute(window.location.pathname + window.location.search, window.location.hash);
+      if (route) setCurrentTab(route.tab);
+    };
+    window.addEventListener('popstate', onRetour);
+    window.addEventListener('hashchange', onRetour);
+    return () => {
+      window.removeEventListener('popstate', onRetour);
+      window.removeEventListener('hashchange', onRetour);
+    };
+  }, []);
 
   const [isAuthOpen, setIsAuthOpen] = useState(false);
   // Session élève persistée (correctif : la session était perdue à chaque F5).
@@ -331,38 +497,39 @@ export default function App() {
   });
 
   /**
-   * Le conseil d'entrée de rubrique.
+   * Le conseil d'entrée de rubrique — option B : le guide parle à CHAQUE
+   * entrée de rubrique, avec un conseil différent à chaque fois (rotation).
    *
-   * `ouvertureAuto` distingue les deux façons d'afficher le même bandeau :
-   *  · ouvert automatiquement, une seule fois, à la première visite ;
-   *  · rouvert par l'élève via le « ؟ » de l'en-tête, autant de fois qu'il veut.
-   * Sans cette distinction, le bandeau se fermerait puis se rouvrirait tout seul
-   * au changement d'onglet — le comportement le plus agaçant possible.
+   * `conseilOuvert` distingue les deux façons d'afficher le même bandeau :
+   *  · ouvert automatiquement à chaque changement de rubrique qui a un conseil ;
+   *  · rouvert/fermé par l'élève via le « ؟ » de l'en-tête.
+   * Quand l'élève change de rubrique, le bandeau de la rubrique précédente se
+   * ferme ; si la nouvelle rubrique a un conseil, il s'ouvre tout seul.
    */
-  const [conseilFerme, setConseilFerme] = useState(true);
+  const [conseilOuvert, setConseilOuvert] = useState(false);
   /**
-   * L'état est délibérément HORS des dépendances de cet effet, et ce n'est pas un
-   * oubli : l'effet doit se déclencher quand l'élève CHANGE DE RUBRIQUE, pas
-   * quand l'état se recalcule. Sans cela, `marquerRubriqueVue` — juste en dessous
-   * — rendrait `conseilRubriqueAPrendre` faux au recalcul suivant, et l'effet
-   * refermerait le bandeau que l'élève est en train de lire.
+   * Le conseil sélectionné par rotation pour la rubrique courante.
+   * `indiceConseil` utilise le compteur de visites : visites % nbConseils.
+   * Réentrer dans une rubrique donne donc un conseil différent.
+   */
+  const conseilSelectionne: Conseil | null =
+    conseilCourant != null
+      ? conseilCourant.conseils[indiceConseil(currentTab, conseilCourant.conseils.length)]
+      : null;
+  /**
+   * L'effet se déclenche quand l'élève CHANGE DE RUBRIQUE, pas quand l'état
+   * se recalcule. Si la nouvelle rubrique a un conseil et qu'aucune épreuve
+   * n'est en cours, le bandeau s'ouvre automatiquement et la visite est
+   * enregistrée (pour faire tourner le conseil à la prochaine entrée).
    */
   useEffect(() => {
-    if (!conseilCourant) {
-      setConseilFerme(true);
+    if (!conseilSelectionne || epreuveEnCours) {
+      setConseilOuvert(false);
       return;
     }
-    // La famille « contexte » de l'état unique : la liste des rubriques déjà vues
-    // n'est plus relue ici, et la décision de parler n'est plus prise deux fois.
-    if (etat.contexte.conseilRubriqueAPrendre) {
-      // On mémorise À L'AFFICHAGE, pas à la fermeture : un élève qui change
-      // d'onglet sans lire ne doit pas revoir le même discours indéfiniment.
-      marquerRubriqueVue(currentTab);
-      setConseilFerme(false);
-    } else {
-      setConseilFerme(true);
-    }
-  }, [currentTab, conseilCourant]);
+    enregistrerVisiteRubrique(currentTab);
+    setConseilOuvert(true);
+  }, [currentTab, conseilSelectionne, epreuveEnCours]);
 
   // Apply dark mode theme class to document element
   useEffect(() => {
@@ -624,7 +791,7 @@ export default function App() {
 
   const setSelectedRevisionUnit = (unitId: number) => {
     setSelectedRevisionUnitId(unitId);
-    setCurrentTab('review');
+    navigateToTab('review');
   };
 
   // XP gagnés dans le المرشد الذكي (tutor) — même patron que handleQuizComplete :
@@ -769,6 +936,39 @@ export default function App() {
     // §6.2 : la bulle se recalcule après un travail réel mesuré.
     setSignalBulle((s) => s + 1);
   };
+  /* RÈGLE DES HOOKS (correction 2026-11-10) : cet effet était déclaré APRÈS
+     les retours anticipés (quiz, portail d'unité, épreuve) — React comparait
+     alors deux rendus successifs avec un nombre de hooks différent
+     (« Rendered fewer/more hooks than expected ») dès que l'élève ouvrait puis
+     fermait un quiz. Il est remonté AVANT le premier retour anticipé :
+     `navigateToTab` (l. 256) et `currentTab` sont déjà initialisés à ce
+     point, le comportement est inchangé (écouteur du même événement, mêmes
+     dépendances). */
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const onWebTabChange = (ev: Event) => {
+      const detail = (ev as CustomEvent<{ tab: string }>).detail;
+      if (detail?.tab && detail.tab !== currentTab) {
+        navigateToTab(detail.tab as typeof currentTab);
+      }
+    };
+    window.addEventListener('kunz-web-tab-change', onWebTabChange as EventListener);
+    return () => window.removeEventListener('kunz-web-tab-change', onWebTabChange as EventListener);
+  }, [currentTab]);
+
+  /* Remonter le CANEVAS en haut à chaque changement d'onglet (demande du
+     propriétaire 2026-11-11) : la bande « التعلّم » et les 3 chapitres sont
+     montés en tête du canevas ; si l'élève a défilé sur l'onglet précédent,
+     il croyait que les chapitres « apparaissent en bas de la page ». Le
+     retour en haut les rend immédiatement visibles. (Dans le canevas —
+     même zone de règles des hooks que l'écouteur ci-dessus, AVANT tout
+     retour anticipé.) */
+  useEffect(() => {
+    // `scrollTo` peut manquer (jsdom) : appel facultatif, jamais bloquant.
+    const canevas = document.getElementById('zone-principale');
+    canevas?.scrollTo?.({ top: 0 });
+  }, [currentTab]);
+
   if (activeCombatChallenge) {
     // Épreuve officielle bac2025 : la boucle élève de bout en bout (Pierre 2).
     if (activeCombatChallenge.id === 'bac-2025-sujets') {
@@ -824,58 +1024,67 @@ export default function App() {
 
   // Render Splash Landing Screen
   if (currentTab === 'splash') {
-    return <SplashView onStart={() => setCurrentTab('home')} />;
+    return <SplashView onStart={() => navigateToTab('home')} />;
   }
-
-  const handleTabChange = (tab: any) => {
+  const handleTabChange = (tab: OngletApp | 'apprentissage') => {
     if (typeof window !== 'undefined' && window.navigator && window.navigator.vibrate) {
       window.navigator.vibrate(50);
     }
-    setCurrentTab(tab);
+    // La 2ᵉ porte n'est pas un écran : elle ouvre le DERNIER onglet visité
+    // (défaut « Cours »), tout en gardant les 24 identifiants d'écran intacts.
+    const cible: OngletApp = tab === 'apprentissage'
+      ? TAB_PAR_ONGLET[lireDernierOnglet()]
+      : tab;
+    setCurrentTab(cible);
+    // Un clic explicite crée une entrée d'historique → bouton Retour réel.
+    pousserRoutePourTab(cible);
   };
 
-  // U1 (audits Opus 5.5 / Gemini 3.8) : navigation principale consolidée 12 → 5.
-  // Les vues secondaires restent accessibles à un clic (groupe « المزيد »)
-  // et par les cartes du tableau de bord (onNavigateToTab).
+  /** Clic sur l'un des 3 onglets segmentés de « التعلّم ». */
+  const changerOngletApprentissage = (id: OngletApprentissageId) => {
+    ecrireDernierOnglet(id);
+    handleTabChange(TAB_PAR_ONGLET[id]);
+  };
+
+  // 2026-11-05 (GO utilisateur, spec « 6 → 4 rubriques ») : la navigation passe
+  // à QUATRE portes. « التعلّم » regroupe les trois anciennes rubriques sous
+  // forme d'onglets segmentés (Cours → Entraînement → Révision) ; Accueil et
+  // المنهجية restent ; « أنا » يصبح « حسابي / Mon espace ».
   //
-  // 2026-10-11 — restructuration en 5 rubriques principales, UNE par objectif :
-  //   الرئيسية (que faire maintenant ?) → الدروس (comprendre) →
-  //   التمارين والتدريب (produire une réponse) → المراجعة (consolider) → أنا
-  //   (suivre). Chaque rubrique porte ses espaces dans un hub dédié
-  //   (src/data/trainingHub.ts, src/data/revisionHub.ts) : plus de menu
-  //   « المزيد » fourre-tout, et un seul emplacement principal par fonction.
-  //   « المرشد » quitte CETTE barre : il devient un assistant contextuel
-  //   accessible depuis n'importe quelle rubrique via le bouton flottant
-  //   « fab-morchid » — une rubrique ne peut pas contenir à la fois la
-  //   mission, le diagnostic, le défi et les résumés.
-  //   Rappel des départs précédents (principes conservés, jamais supprimés) :
-  //   « البكالوريا » (2026-10-09), « مسار تعلمك » (moteur parcours intact,
-  //   compteur + leçon suggérée en tête de « الدرس الرسمي »), « تقدمي » et les
-  //   raccourcis « أنا » (voir src/data/moiRaccourcis.ts).
-  const PRIMARY_NAV: { tab: typeof currentTab; label: string; fr: string; Icon: LucideIcon }[] = [
+  // Les 24 identifiants d'écran NE CHANGENT PAS : `apprentissage` est une
+  // porte virtuelle résolue vers `lesson` / `training` / `reviser` par
+  // handleTabChange. Les hubs (trainingHub / revisionHub), les conseils
+  // d'entrée de rubrique, le capitaine, l'épreuve en cours et le mode focus
+  // restent donc indexés sur leurs onglets réels — aucun écran orphelin.
+  // Source unique du mapping : src/data/apprentissageNav.ts.
+  // « المرشد » reste un bouton flottant contextuel, jamais une 5ᵉ porte.
+  const PRIMARY_NAV: { tab: OngletApp | 'apprentissage'; label: string; fr: string; Icon: LucideIcon }[] = [
     { tab: 'home', label: 'الرئيسية', fr: 'Accueil', Icon: Home },
-    { tab: 'lesson', label: 'الدروس', fr: 'Apprendre', Icon: BookOpen },
-    { tab: 'training', label: 'التمارين والتدريب', fr: "S'entraîner", Icon: Dumbbell },
-    // Phase 2, Commit C (GO 2026-10-16) : المفتاح reçoit sa PROPRE
-    // porte visible. La plainte expert : l'élève « ne se retrouvait plus ».
-    // Après la Phase 1 (la porte ouvre l'atelier المفتاح) et la sortie du hub
-    // التمارين — pour rester à UNE seule porte (verrou PortesUniques) — le 6ᵉ
-    // portail rend l'outil permanent. Nom officiel : constante unique §13.
+    { tab: 'apprentissage', label: 'التعلّم', fr: 'Apprentissage', Icon: BookOpen },
     { tab: 'methodology', label: 'المنهجية', fr: 'Méthode', Icon: Key },
-    { tab: 'reviser', label: 'المراجعة', fr: 'Réviser', Icon: Layers },
-    { tab: 'moi', label: 'أنا', fr: 'Moi', Icon: Sprout },
+    { tab: 'moi', label: 'حسابي', fr: 'Mon espace', Icon: User },
   ];
   // « المزيد » — VIDE depuis le 2026-10-12 : les deux derniers outils qu'il
   // portait ont rejoint leur rubrique d'objectif.
   //   • « المؤقّت (تركيز) » : outil transversal, pas un contenu à apprendre ni
   //     à réviser → plus une rubrique du tout. Il reste ouvert par le Déclic
-  //     ( MotivationDeclic → setCurrentTab('focus') ), autrement dit au moment
+  //     ( MotivationDeclic → navigateToTab('focus') ), autrement dit au moment
   //     où l'élève s'engage à travailler — pas en errant dans un menu.
   //   • « الخرائط الذهنية » : outil de SYNTHÈSE → déplacé dans « الدروس »
   //     (Apprendre), cf. LessonsView, carte data-testid="lecons-mindmap".
   // Le tableau est gardé (structure inchangée) mais vide : le bloc « المزيد »
   // n'est plus rendu tant qu'aucun outil secondaire n'y revient.
   const SECONDARY_NAV: { tab: typeof currentTab; label: string; Icon: LucideIcon }[] = [];
+
+  // État actif dérivé : un sous-écran d'un hub (bacideas, review, parcours…)
+  // garde sa rubrique et son onglet allumés, sans changer currentTab.
+  const ongletApprentissageActif = ongletPourTab(currentTab);
+  const rubriqueActive = (tab: OngletApp | 'apprentissage'): boolean =>
+    rubriquePourTab(currentTab) === RUBRIQUE_PAR_TAB_NAV[tab];
+  // Indicateurs par onglet : compteurs RÉELS relus à chaque rendu. Calcul
+  // volontairement SANS hook : ce bloc vit APRÈS les retours anticipés (splash,
+  // quiz), où un useMemo supplémentaire casserait les règles de hooks.
+  const progressionApprentissage = lireProgressionApprentissage(progress);
 
   return (
     <div className={`h-[100dvh] w-full overflow-hidden relative transition-all duration-500 flex flex-col ${
@@ -920,15 +1129,20 @@ export default function App() {
         }}
       />
 
-      {/* Dynamic Top App Bar matching Screen 2 */}
+      {/* Dynamic Top App Bar matching Screen 2
+          ZONE SÛRE (APK Android 15+, edge-to-edge) : la barre d'état système
+          passe PAR-DESSUS la WebView. La barre garde son fond jusqu'au bord
+          haut (look edge-to-edge) mais son CONTENU (avatar, mode sombre,
+          taille de texte) descend sous la barre d'état : hauteur et padding
+          haut sont augmentés de l'inset (variables --pfe-safe-*, cf. index.css). */}
       {!isFocusMode && currentTab !== 'home' && (
-        <header className="bg-[#ffffff] dark:bg-[#141916] shadow-[0_2px_12px_rgba(0,109,55,0.06)] border-b border-[#e2dabf]/40 dark:border-[#2ecc71]/10 flex flex-row-reverse justify-between items-center px-4 md:px-8 h-16 md:h-20 w-full shrink-0 z-40 select-none">
+        <header className="bg-[#ffffff] dark:bg-[#141916] shadow-[0_2px_12px_rgba(0,109,55,0.06)] border-b border-[#e2dabf]/40 dark:border-[#2ecc71]/10 flex flex-row-reverse justify-between items-center px-4 md:px-8 h-[calc(4rem+var(--pfe-safe-top))] md:h-[calc(5rem+var(--pfe-safe-top))] pt-[var(--pfe-safe-top)] w-full shrink-0 z-40 select-none">
         
         {/* Left Side: Avatar block */}
         <div className="flex items-center gap-3">
           {studentEmail ? (
             <StudentAccountBar
-              onOpenTeacher={() => setCurrentTab('teacher')}
+              onOpenTeacher={() => navigateToTab('teacher')}
               onLogout={handleStudentLogout}
             />
           ) : (
@@ -979,7 +1193,7 @@ export default function App() {
             <button
               type="button"
               data-testid="conseil-rubrique-ouvrir"
-              onClick={() => setConseilFerme((f) => !f)}
+              onClick={() => setConseilOuvert((f) => !f)}
               title="نصيحة القبطان في هذه الصفحة"
               aria-label="نصيحة القبطان في هذه الصفحة"
               className="ms-2 inline-flex h-5 w-5 items-center justify-center rounded-full border border-[#006d37]/40 align-middle text-[11px] font-black text-[#006d37] transition-colors hover:bg-[#006d37] hover:text-white cursor-pointer dark:border-emerald-400/40 dark:text-emerald-300"
@@ -1046,10 +1260,13 @@ export default function App() {
               key={tab}
               onClick={() => handleTabChange(tab)}
               title={`${label} · ${fr}`}
+              data-testid={tab === 'methodology' ? 'nav-methode' : undefined}
               className={`w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-bold transition-all cursor-pointer ${
-                currentTab === tab
+                rubriqueActive(tab)
                   ? 'bg-[#e5f6ed] text-[#006d37] dark:bg-[#2ecc71]/15 dark:text-[#2ecc71]'
-                  : 'text-[#504441] hover:bg-[#fff9ed] hover:text-[#006d37] dark:text-gray-300 dark:hover:bg-[#1d2620]'
+                  : `${tab === 'methodology'
+                      ? 'bg-[#f1faf4] ring-1 ring-[#006d37]/25 dark:bg-[#10231a] dark:ring-[#2ecc71]/25 '
+                      : ''}text-[#504441] hover:bg-[#fff9ed] hover:text-[#006d37] dark:text-gray-300 dark:hover:bg-[#1d2620]`
               }`}
             >
               <Icon className="w-5 h-5 shrink-0" />
@@ -1061,7 +1278,7 @@ export default function App() {
               <span
                 dir="ltr"
                 className={`shrink-0 text-[9px] font-semibold uppercase tracking-wide ${
-                  currentTab === tab ? 'text-[#006d37]/70' : 'text-[#64748b]/70'
+                  rubriqueActive(tab) ? 'text-[#006d37]/70' : 'text-[#64748b]/70'
                 }`}
               >
                 {fr}
@@ -1096,6 +1313,16 @@ export default function App() {
 
         {/* Dynamic Display Canvas — M5 : cible du lien d'évitement */}
         <main id="zone-principale" className={`flex-1 overflow-y-auto overflow-x-hidden relative ${isFocusMode ? 'flex items-center justify-center' : ''}`}>
+          {/* 3 onglets de « التعلّم ». Hors de l'AnimatePresence : la bande ne
+              clignote pas à chaque changement d'écran. Silence pendant l'épreuve
+              chronométrée et en mode focus, comme pour le capitaine. */}
+          {!isFocusMode && !epreuveEnCours && ongletApprentissageActif !== null && (
+            <ApprentissageTabs
+              actif={ongletApprentissageActif}
+              onChanger={changerOngletApprentissage}
+              progression={progressionApprentissage}
+            />
+          )}
           <AnimatePresence mode="wait">
             <motion.div
               key={currentTab}
@@ -1111,8 +1338,8 @@ export default function App() {
               {/* Hors du Suspense de l'onglet À DESSEIN : le conseil ne doit pas
                   attendre le chargement du morceau de la rubrique pour apparaître,
                   sinon il surgirait après coup, sur une page déjà commencée. */}
-              {conseilCourant && !conseilFerme && !epreuveEnCours && (
-                <BandeauConseilRubrique conseil={conseilCourant} onFermer={() => setConseilFerme(true)} />
+              {conseilSelectionne && conseilOuvert && !epreuveEnCours && (
+                <BandeauConseilRubrique conseil={conseilSelectionne} onFermer={() => setConseilOuvert(false)} />
               )}
               {currentTab === 'home' && (
                 <DashboardView 
@@ -1127,6 +1354,7 @@ export default function App() {
                   onOpenQcm={ouvrirQcmDepuisParcours}
                   onOpenAuth={() => setIsAuthOpen(true)}
                   connecte={Boolean(studentName || studentEmail)}
+                  onOuvrirParcours={() => setParcoursOuvert(true)}
                 />
               )}
 
@@ -1149,7 +1377,7 @@ export default function App() {
               {currentTab === 'examens' && (
                 <ExamensHubView
                   onOpen={(mode) => ouvrirExamen(mode)}
-                  onBack={() => setCurrentTab('training')}
+                  onBack={() => navigateToTab('training')}
                 />
               )}
 
@@ -1157,8 +1385,8 @@ export default function App() {
                   de consolidation sont déclarés dans src/data/revisionHub.ts. */}
               {currentTab === 'reviser' && (
                 <ReviewHubView
-                  onOpen={(tab) => setCurrentTab(tab)}
-                  onBackToHome={() => setCurrentTab('home')}
+                  onOpen={(tab) => navigateToTab(tab)}
+                  onBackToHome={() => navigateToTab('home')}
                 />
               )}
 
@@ -1179,32 +1407,41 @@ export default function App() {
                 <StatsView 
                   progress={progress}
                   units={units}
-                  onNavigate={(t) => setCurrentTab(t as typeof currentTab)}
+                  onNavigate={(t) => navigateToTab(t as typeof currentTab)}
                 />
               )}
 
-              {currentTab === 'chat' && (
-                <AITutorView
-                  onBackToDashboard={() => setCurrentTab('home')}
-                  onXPGained={handleTutorXPGained}
-                  questionInitiale={morchidSeed}
-                  onQuestionInitialeConsumed={() => setMorchidSeed(null)}
-                  /* Audit Capitaine §1 (2026-10-17) : « اشرح <unité> » ouvre
-                     la leçon réelle (mêmes handlers que مساري). */
-                  onOuvrirLeconDuCoach={ouvrirLeçonDepuisParcours}
-                />
+              {capitaineOpen && (
+                /* ZONE SÛRE (APK Android 15+) + ÉPOUSEMENT DE L'ÉCRAN (demande
+                   du propriétaire 2026-11-11) : sur TÉLÉPHONE la fenêtre du
+                   Capitaine est une feuille PLEIN ÉCRAN (inset-0, coins
+                   carrés) qui respecte les barres système via les insets
+                   --pfe-safe-* — la saisie du bas n'est plus coupée. Sur
+                   écran large elle reste une carte centrée de 90 dvh. */
+                <div className="fixed inset-0 z-50 flex flex-col items-stretch justify-end bg-black/60 pb-[var(--pfe-safe-bottom)] pt-[var(--pfe-safe-top)] sm:items-center sm:justify-center sm:p-4 sm:pb-[calc(1rem+var(--pfe-safe-bottom))]">
+                  <div className="flex min-h-0 w-full flex-1 flex-col overflow-hidden bg-white shadow-2xl dark:bg-[#111a17] sm:h-[calc(90dvh-var(--pfe-safe-bottom))] sm:max-w-2xl sm:flex-none sm:rounded-3xl">
+                    <AITutorView
+                      onBackToDashboard={fermerCapitaine}
+                      onBackToPreviousTab={fermerCapitaine}
+                      onXPGagné={handleTutorXPGained}
+                      questionInitiale={morchidSeed}
+                      onQuestionInitialeConsumed={() => setMorchidSeed(null)}
+                      onOuvrirLeconDuCoach={ouvrirLeçonDepuisParcours}
+                    />
+                  </div>
+                </div>
               )}
 
               {currentTab === 'tadwin' && (
-                <TadwinView onBackToHome={() => setCurrentTab('home')} />
+                <TadwinView onBackToHome={() => navigateToTab('home')} />
               )}
 
               {currentTab === 'methodology' && (
-                <MethodologyCompilerView onBackToHome={() => setCurrentTab('home')} />
+                <MethodologyCompilerView onBackToHome={() => navigateToTab('home')} />
               )}
 
               {currentTab === 'teacher' && (
-                <TeacherDashboardView onBack={() => setCurrentTab('home')} />
+                <TeacherDashboardView onBack={() => navigateToTab('home')} />
               )}
 
               {currentTab === 'bootcamp' && (
@@ -1224,7 +1461,7 @@ export default function App() {
                   initialQcm={parcoursQcm ?? undefined}
                   initialMode={parcoursMode ?? undefined}
                   onDeepLinkConsumed={() => { setParcoursLesson(null); setParcoursQcm(null); setParcoursMode(null); }}
-                  onOpenTab={(tab) => setCurrentTab(tab as typeof currentTab)}
+                  onOpenTab={(tab) => navigateToTab(tab as typeof currentTab)}
                   /* Audit Capitaine §2 : le score de اختبار الكتاب atteint
                      enfin quizScoreHistory (source: 'livre', par chapitre). */
                   onScoreLivre={enregistrerScoreLivre}
@@ -1246,46 +1483,46 @@ export default function App() {
               {currentTab === 'mindmap' && (
                 <MindMapView 
                   initialUnitId={activeMindMapUnitId}
-                  onBackToHome={() => setCurrentTab('home')}
+                  onBackToHome={() => navigateToTab('home')}
                   onStartQuizForUnit={handleLaunchQuiz}
                   isDarkMode={isDarkMode}
                 />
               )}
 
               {currentTab === 'animations' && (
-                <AnimationsView onBackToHome={() => setCurrentTab('training')} />
+                <AnimationsView onBackToHome={() => navigateToTab('training')} />
               )}
 
               {currentTab === 'training' && (
                 <TrainingHubView
-                  onOpen={(tab) => setCurrentTab(tab)}
-                  onBackToHome={() => setCurrentTab('home')}
+                  onOpen={(tab) => navigateToTab(tab)}
+                  onBackToHome={() => navigateToTab('home')}
                 />
               )}
 
               {currentTab === 'plan' && (
                 <RevisionPlanView
-                  onBackToHome={() => setCurrentTab('training')}
+                  onBackToHome={() => navigateToTab('training')}
                   onOpenRedaction={(ideaId) => {
                     setBacIdeaFocus(ideaId);
-                    setCurrentTab('bacideas');
+                    navigateToTab('bacideas');
                   }}
                 />
               )}
 
               {currentTab === 'bacideas' && (
                 <BacIdeasView
-                  onBackToHome={() => setCurrentTab('training')}
+                  onBackToHome={() => navigateToTab('training')}
                   focusIdeaId={bacIdeaFocus}
                 />
               )}
 
               {currentTab === 'situations' && (
-                <SituationBankView onBackToHome={() => setCurrentTab('training')} />
+                <SituationBankView onBackToHome={() => navigateToTab('training')} />
               )}
 
               {currentTab === 'schemas' && (
-                <SchemaDrillView onBackToHome={() => setCurrentTab('training')} />
+                <SchemaDrillView onBackToHome={() => navigateToTab('training')} />
               )}
 
               {currentTab === 'focus' && (
@@ -1303,7 +1540,7 @@ export default function App() {
           Révision (agir). cf. docs/INTEGRATION_FOCUS_MOTIVATION.md §2. */}
       {isDeclicOverlayOpen && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 pb-[calc(1rem+var(--pfe-safe-bottom))]"
           role="dialog"
           aria-modal="true"
           data-testid="declic-overlay"
@@ -1317,11 +1554,11 @@ export default function App() {
                 onStart={() => {
                   closeDeclicOverlay();
                   updateLastStudyTime();
-                  setCurrentTab('review');
+                  navigateToTab('review');
                 }}
                 onStartFocus={() => {
                   closeDeclicOverlay();
-                  setCurrentTab('focus');
+                  navigateToTab('focus');
                 }}
               />
             </Suspense>
@@ -1341,22 +1578,28 @@ export default function App() {
       {/* Barre mobile : les 4 piliers OPUS 5.5 + nos accès (8 au total).
           Style repris des photos : icône + label AR + label FR, pastille
           active vert pâle. `min-w-0` + `truncate` : 8 colonnes doivent tenir
-          dans 360px sans déborder. */}
+          dans 360px sans déborder.
+          ZONE SÛRE (APK Android 15+) : la barre de navigation SYSTÈME mange
+          le bas de l'écran. La barre applicative grandit de l'inset et ses
+          icônes remontent au-dessus de la barre système. */}
       {!isFocusMode && (
-        <nav className="md:hidden bg-[#f8fbfa] dark:bg-[#141916] shadow-[0_-5px_15px_rgba(0,0,0,0.05)] shrink-0 h-[80px] z-40 flex items-center gap-0.5 px-0.5 pb-2 rounded-t-[24px] select-none border-t border-[#e2e8e0]/50 dark:border-[#2ecc71]/10" dir="rtl">
+        <nav className="md:hidden bg-[#f8fbfa] dark:bg-[#141916] shadow-[0_-5px_15px_rgba(0,0,0,0.05)] shrink-0 h-[calc(80px+var(--pfe-safe-bottom))] z-40 flex items-center gap-0.5 px-0.5 pb-[calc(0.5rem+var(--pfe-safe-bottom))] rounded-t-[24px] select-none border-t border-[#e2e8e0]/50 dark:border-[#2ecc71]/10" dir="rtl">
 
         {PRIMARY_NAV.map(({ tab, label, fr, Icon }) => (
           <button
             key={tab}
             onClick={() => handleTabChange(tab)}
             title={`${label} · ${fr}`}
+            data-testid={tab === 'methodology' ? 'nav-methode' : undefined}
             className={`relative flex min-w-0 flex-1 flex-col items-center justify-center gap-0.5 rounded-2xl px-0 transition-all h-[64px] cursor-pointer ${
-              currentTab === tab
+              rubriqueActive(tab)
                 ? 'bg-[#e5f6ed] text-[#006d37] dark:bg-[#2ecc71]/15 dark:text-[#2ecc71]'
-                : 'text-[#64748b] hover:text-[#006d37] dark:text-gray-400'
+                : `${tab === 'methodology'
+                    ? 'bg-[#f1faf4] ring-1 ring-[#006d37]/25 dark:bg-[#10231a] dark:ring-[#2ecc71]/25 '
+                    : ''}text-[#64748b] hover:text-[#006d37] dark:text-gray-400`
             }`}
           >
-            <Icon className="w-5 h-5 shrink-0" />
+            <Icon className="w-4 h-4" />
             {/* §13 MARQUE : nom officiel rendu depuis la source unique. */}
             <span className="w-full truncate text-center text-[9px] font-bold leading-tight">
               {tab === 'methodology' ? <span className="truncate text-center">{MIFTAH_NAME_OFFICIAL_AR}</span> : label}
@@ -1367,7 +1610,7 @@ export default function App() {
             >
               {fr}
             </span>
-            {currentTab === tab && <div className="absolute -bottom-1 w-1.5 h-1.5 rounded-full bg-[#006d37] dark:bg-[#2ecc71]"></div>}
+            {rubriqueActive(tab) && <div className="absolute -bottom-1 w-1.5 h-1.5 rounded-full bg-[#006d37] dark:bg-[#2ecc71]"></div>}
           </button>
         ))}
 
@@ -1389,15 +1632,21 @@ export default function App() {
           AUSSI quand une vue plein écran a le clavier — quiz (activeQuizUnitId)
           et défi (activeCombatChallenge). Mesure s_quiz : elle couvrait la
           barre de navigation du quiz. */}
+      {/* ZONE SÛRE (APK Android 15+) : la bulle et le bouton du Capitaine sont
+          en `position: fixed` → ils ignorent le padding de la coquille. On les
+          remonte de l'inset de navigation pour qu'ils restent au-dessus de la
+          barre système (et au-dessus de la barre applicative). */}
       {!isFocusMode && !epreuveEnCours && currentTab !== 'chat' && activeQuizUnitId === null && activeCombatChallenge === null && (
-        <div className="fixed bottom-24 left-4 z-40 md:bottom-8 flex flex-col items-start gap-2">
+        <div className="fixed bottom-[calc(6rem+var(--pfe-safe-bottom))] left-4 z-40 md:bottom-8 flex flex-col items-start gap-2">
           {/*
             LA BULLE PARLE AU BON MOMENT, PAS EN PERMANENCE (loi 1). Un signal
             toujours présent n'est plus un signal : c'est le mur du fond qui
             disparaît. Quand il n'y a rien à dire, la bulle n'existe pas — il
             reste le bouton, qu'un clic ouvre.
           */}
-          {invitation && (
+          {/* Étage 2 (2026-11-07) : quand la bulle répond (panneau glossaire
+              ouvert), l'invitation se tait — UNE seule voix à l'écran. */}
+          {!glossaireOuvert && invitation && (
             <div
               data-testid="bulle-capitaine"
               dir="rtl"
@@ -1426,7 +1675,7 @@ export default function App() {
                     // sera crédité que s'il a réellement lieu (et c'est
                     // `activiteQuotidienne` qui en décide, pas ce clic).
                     accepter();
-                    setCurrentTab(invitation.cible);
+                    navigateToTab(invitation.cible);
                   }}
                   className="rounded-xl bg-[#006d37] px-3 py-1.5 text-[11px] font-black text-white cursor-pointer"
                 >
@@ -1450,7 +1699,9 @@ export default function App() {
             une seule voix s'adresse à l'élève. Rien ne sort de l'appareil — le nom
             est écrit en local, et il s'efface d'un geste.
           */}
-          <RelaisCapitaine question={relais} onFait={rafraichir} />
+          {/* Étage 2 : le relais et l'invitation se taisent pendant la réponse
+              de la bulle (une seule voix, loi 1 — demandé par l'audit). */}
+          {!glossaireOuvert && <RelaisCapitaine question={relais} onFait={rafraichir} />}
           {/*
             LE BOUTON RESTE ROND — c'est le repère (14/10/2026, demande
             explicite). Ce qui change : la boussole cède la place au VISAGE du
@@ -1465,7 +1716,7 @@ export default function App() {
           <button
             type="button"
             data-testid="fab-morchid"
-            onClick={() => setCurrentTab('chat')}
+            onClick={() => setGlossaireOuvert((v) => !v)}
             title={CAPITAINE_IDENTITE_AR}
             aria-label={CAPITAINE_IDENTITE_AR}
             className="flex h-14 w-14 items-center justify-center overflow-hidden rounded-full border-2 border-[#006d37] bg-[#fff9ed] shadow-lg shadow-[#006d37]/30 transition-transform hover:scale-105 active:scale-95 cursor-pointer dark:bg-[#121614]"
@@ -1477,7 +1728,53 @@ export default function App() {
               className="h-full w-full object-cover"
             />
           </button>
+          {/* Étage 2 (2026-11-07) : la réponse s'affiche ICI, DANS le bloc
+              gardé par !epreuveEnCours / !isFocusMode / quiz / défi — pendant
+              une épreuve il est impossible de la monter. Le pont vers le
+              المرشد reste explicite (« تابع مع المرشد » dans le panneau) via
+              ouvrirChat(), la voie canonique de cette branche (modale
+              capitaineOpen) — pas de `setCurrentTab('chat')`, tab sans vue ici. */}
+          {glossaireOuvert && (
+            <Suspense
+              fallback={
+                <div className="mb-2 w-[17rem] rounded-2xl border border-[#006d37]/25 bg-white p-3 text-[11px] font-bold text-[#506072] dark:bg-[#121614] dark:text-gray-300">
+                  …
+                </div>
+              }
+            >
+              <GlossaireCapitaine
+                onFermer={() => setGlossaireOuvert(false)}
+                onOuvrirTuteur={() => {
+                  setGlossaireOuvert(false);
+                  ouvrirChat();
+                }}
+              />
+            </Suspense>
+          )}
         </div>
+      )}
+
+      {/* Étage 3 (2026-11-07) : panneau hors du bloc du FAB, mais gardé par
+          !epreuveEnCours — pendant une épreuve aucune porte vers le plan de
+          révision n'est montée. Les 3 cibles utilisent le mapping OFFICIEL
+          TAB_PAR_ONGLET, aucun onglet inventé. */}
+      {!epreuveEnCours && parcoursOuvert && (
+        <Suspense fallback={null}>
+          <ParcoursAssimilation
+            onFermer={() => setParcoursOuvert(false)}
+            onOuvrirRubrique={(rubrique) => {
+              setParcoursOuvert(false);
+              handleTabChange(TAB_PAR_ONGLET[rubrique]);
+            }}
+            onOuvrirRecherche={() => {
+              // R7 : accueil → panneau → onglet J-7 → recherche OUVERTE.
+              // On réutilise le mode réel de LessonsView, pas une 5ᵉ porte.
+              setParcoursOuvert(false);
+              setParcoursMode('search');
+              handleTabChange('lesson');
+            }}
+          />
+        </Suspense>
       )}
     </div>
   );

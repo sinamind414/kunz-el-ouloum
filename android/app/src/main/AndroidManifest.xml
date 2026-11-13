@@ -38,4 +38,11 @@
     <!-- Permissions -->
 
     <uses-permission android:name="android.permission.INTERNET" />
+
+    <!-- Dictée vocale LOCALE (plugin SpeechToText) : le micro de l'appareil,
+         reconnaissance sur l'appareil (aucun réseau, aucune donnée qui sort).
+         MODIFY_AUDIO_SETTINGS est demandé par Capacitor en complément
+         (BridgeWebChromeClient.onPermissionRequest) pour le moteur système. -->
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
 </manifest>

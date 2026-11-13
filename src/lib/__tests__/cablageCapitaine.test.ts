@@ -54,7 +54,10 @@ describe('la bulle est réellement branchée dans App.tsx', () => {
     // fait une chose de plus AVANT de naviguer : il note l'intention de l'élève
     // (`accepter`), ce qui distingue dans la boucle du coach « il n'a pas vu » de
     // « il a vu et n'a pas pu ». On vérifie les deux, séparément.
-    expect(app).toContain('setCurrentTab(invitation.cible)');
+    // 2026-11-03 : navigation inter-onglets unifiée sous `navigateToTab`
+    // (ancien `setCurrentTab`) — le contrat de la loi 3 (un clic, la
+    // destination réelle) ne change pas, le verrou suit l'API.
+    expect(app).toContain('navigateToTab(invitation.cible)');
     const bloc = app.slice(app.indexOf('bulle-capitaine-agir'));
     expect(bloc.slice(0, 900)).toContain('accepter()');
   });
@@ -120,5 +123,19 @@ describe('l’identité du capitaine est unique et cohérente', () => {
   it('la bulle et le bouton utilisent la même source de nom', () => {
     expect(app).toContain('{CAPITAINE_IDENTITE_AR}</p>');
     expect(app).toContain('aria-label={CAPITAINE_IDENTITE_AR}');
+  });
+});
+
+describe('le coach du capitaine départage par le poids BAC (tranche 3, audit 8 axes)', () => {
+  it('le hook passe `unitPriority` à `classerParUrgence` — pas le défaut neutre', () => {
+    // Le défaut `() => 1` rendait la promesse « ce qui rapporte le plus au BAC
+    // d'abord » morte dans le hook : toutes les unités à poids 1, l'ordre de
+    // sortie = l'ordre d'entrée. Le hook doit passer la même source de poids
+    // que le plan de révision (`unitPriority` de revisionPlan), en import
+    // DYNAMIQUE comme `parcoursMeta` (jamais dans le bundle d'entrée).
+    expect(hook).toContain("import('../data/revisionPlan')");
+    expect(hook).toContain('classerParUrgence(diags, plan.unitPriority)');
+    // Et l'ancien appel neutre ne survit nulle part.
+    expect(hook).not.toContain('classerParUrgence(diags)');
   });
 });
