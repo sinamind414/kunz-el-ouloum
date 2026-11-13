@@ -1,8 +1,17 @@
 // src/components/ParcoursAssimilation.tsx — étage 3 (R1 positionnement, R4 J-7,
 // R7 accès rapide). Chargé en LAZY depuis App.tsx : hors bundle d'entrée.
 //
-// Aucun contenu scientifique ici : tout vient de positionnementInitial.ts,
-// expressJ7.ts et prioritesBac.ts, eux-mêmes dérivés du dépôt.
+// CONVERGENCE (2026-11-13, GO propriétaire en session) : l'onglet
+// positionnement exécute DÉSORMAIS la banque P0-3 du coach (18 items,
+// src/data/positionnementBanque) et écrit dans le MÊME store que le coach
+// (kunz_positionnement_v1 via utils/positionnement) — une seule mesure, deux
+// portes (panneau + coach). Si une sauvegarde existe déjà, elle est AFFICHÉE
+// (reprise), jamais écrasée à l'ouverture — même contrat anti-écrasement que
+// le coach.
+//
+// Aucun contenu scientifique ici : tout vient des modules de données
+// (positionnementBanque, positionnementInitial, expressJ7, prioritesBac),
+// eux-mêmes dérivés du dépôt.
 
 import { useState } from 'react';
 import { CAPITAINE_IDENTITE_AR } from '../data/capitaineIdentite';
@@ -10,10 +19,19 @@ import {
   evaluerPositionnement,
   LIBELLES_PROFIL,
   OBJECTIFS_NOTE,
-  QUESTIONS_POSITIONNEMENT,
+  ORIENTATION,
+  profilDepuisPercent,
   type ObjectifNote,
   type ResultatPositionnement,
 } from '../data/positionnementInitial';
+import { POSITIONNEMENT_QUESTIONS, UNITE_PAR_ID } from '../data/positionnementBanque';
+import {
+  chargerPositionnement,
+  enregistrerObjectifNote,
+  enregistrerResultat,
+  libellePalier,
+  type EtatPositionnement,
+} from '../utils/positionnement';
 import {
   AVERTISSEMENT_DATE_AR,
   PLAN_EXPRESS_J7,
@@ -34,29 +52,37 @@ type Etape = 'objectif' | 'questions' | 'resultat';
 
 export default function ParcoursAssimilation({ onFermer, onOuvrirRubrique, onOuvrirRecherche }: Props) {
   const [onglet, setOnglet] = useState<Onglet>('positionnement');
-  const [etape, setEtape] = useState<Etape>('objectif');
+  // Reprise : un résultat sauvegardé s'affiche d'emblée (jamais écrasé).
+  const [etape, setEtape] = useState<Etape>(() =>
+    chargerPositionnement().resultat ? 'resultat' : 'objectif',
+  );
   const [objectif, setObjectif] = useState<ObjectifNote>(14);
   const [indexQuestion, setIndexQuestion] = useState(0);
   const [reponses, setReponses] = useState<Array<number | null>>(
-    () => QUESTIONS_POSITIONNEMENT.map(() => null),
+    () => POSITIONNEMENT_QUESTIONS.map(() => null),
   );
   const [resultat, setResultat] = useState<ResultatPositionnement | null>(null);
 
-  const question = QUESTIONS_POSITIONNEMENT[indexQuestion];
+  const question = POSITIONNEMENT_QUESTIONS[indexQuestion];
   const choisi = reponses[indexQuestion];
+  const sauvegarde: EtatPositionnement = chargerPositionnement();
 
   const suivant = () => {
-    if (indexQuestion + 1 < QUESTIONS_POSITIONNEMENT.length) {
+    if (indexQuestion + 1 < POSITIONNEMENT_QUESTIONS.length) {
       setIndexQuestion(indexQuestion + 1);
     } else {
-      setResultat(evaluerPositionnement(reponses, objectif));
+      const resultatFinal = evaluerPositionnement(reponses, objectif);
+      // Même store que le coach : le résultat et l'objectif sont partagés.
+      enregistrerObjectifNote(objectif);
+      enregistrerResultat(resultatFinal.score, resultatFinal.total);
+      setResultat(resultatFinal);
       setEtape('resultat');
     }
   };
 
   const recommencer = () => {
     setResultat(null);
-    setReponses(QUESTIONS_POSITIONNEMENT.map(() => null));
+    setReponses(POSITIONNEMENT_QUESTIONS.map(() => null));
     setIndexQuestion(0);
     setEtape('objectif');
   };
@@ -130,8 +156,8 @@ export default function ParcoursAssimilation({ onFermer, onOuvrirRubrique, onOuv
                   ))}
                 </div>
                 <p className="mt-2 text-[11px] leading-relaxed text-[#506072] dark:text-gray-300">
-                  {QUESTIONS_POSITIONNEMENT.length} سؤالاً قصيراً من بنك الأسئلة وعقود التعاليم :
-                  غير مُقيّم، ولا يُحفظ أي نتيجة.
+                  {POSITIONNEMENT_QUESTIONS.length} سؤالاً من بنك الأسئلة الرسمي، تغطي الوحدات 1-11 :
+                  النتيجة تُحفظ محلياً على جهازك فقط (تقدير أولي، ليست درجة رسمية) — والمرشد يقرأها أيضاً.
                 </p>
                 <button
                   type="button"
@@ -147,13 +173,13 @@ export default function ParcoursAssimilation({ onFermer, onOuvrirRubrique, onOuv
             {etape === 'questions' && question && (
               <>
                 <p className="text-[10px] font-bold text-[#506072] dark:text-gray-300">
-                  السؤال {indexQuestion + 1} / {QUESTIONS_POSITIONNEMENT.length} · المجال {question.domaine}
+                  السؤال {indexQuestion + 1} / {POSITIONNEMENT_QUESTIONS.length} · الوحدة {UNITE_PAR_ID[question.id]}
                 </p>
                 <p className="mt-1 text-[13px] font-bold leading-relaxed text-[#1f2b24] dark:text-gray-100">
-                  {question.enonceAr}
+                  {question.question}
                 </p>
                 <div className="mt-2 space-y-1.5">
-                  {question.optionsAr.map((opt, i) => (
+                  {question.options.map((opt, i) => (
                     <button
                       key={`${question.id}-${i}`}
                       type="button"
@@ -177,30 +203,72 @@ export default function ParcoursAssimilation({ onFermer, onOuvrirRubrique, onOuv
                   onClick={suivant}
                   className="mt-3 w-full rounded-xl bg-[#006d37] px-3 py-2 text-[12px] font-black text-white cursor-pointer"
                 >
-                  {indexQuestion + 1 === QUESTIONS_POSITIONNEMENT.length ? 'اعرض النتيجة' : 'السؤال التالي'}
+                  {indexQuestion + 1 === POSITIONNEMENT_QUESTIONS.length ? 'اعرض النتيجة' : 'السؤال التالي'}
                 </button>
               </>
             )}
 
-            {etape === 'resultat' && resultat && (
+            {etape === 'resultat' && (
               <div data-testid="parcours-resultat" aria-live="polite">
-                <p className="text-[13px] font-black text-[#006d37] dark:text-emerald-300">
-                  {resultat.score} / {resultat.total} · {LIBELLES_PROFIL[resultat.profil]}
-                </p>
-                <p className="mt-1 text-[12px] font-bold text-[#1f2b24] dark:text-gray-100">
-                  {resultat.raisonAr}
-                </p>
-                <p className="mt-1 text-[11px] text-[#506072] dark:text-gray-300">
-                  الأداة المقترحة : {resultat.outilAr} · هدفك : {resultat.objectif}/20
-                </p>
+                {resultat ? (
+                  <>
+                    <p className="text-[13px] font-black text-[#006d37] dark:text-emerald-300">
+                      {resultat.score} / {resultat.total} · {LIBELLES_PROFIL[resultat.profil]}
+                    </p>
+                    <p className="mt-1 text-[12px] font-bold text-[#1f2b24] dark:text-gray-100">
+                      تقدير أولي لمستواك : {resultat.noteEstimee}/20 — {libellePalier(resultat.percent)}.
+                    </p>
+                    {resultat.unitesRatees.length > 0 && (
+                      <p className="mt-1 text-[11px] font-bold text-[#7a5400]">
+                        وحدات فيها إجابات خاطئة : {resultat.unitesRatees.map((u) => `الوحدة ${u}`).join('، ')} — نبدأ منها.
+                      </p>
+                    )}
+                    <p className="mt-1 text-[12px] font-bold text-[#1f2b24] dark:text-gray-100">
+                      {resultat.raisonAr}
+                    </p>
+                    <p className="mt-1 text-[11px] text-[#506072] dark:text-gray-300">
+                      الأداة المقترحة : {resultat.outilAr} · هدفك : {resultat.objectif}/20
+                    </p>
+                  </>
+                ) : (
+                  sauvegarde.resultat && (
+                    (() => {
+                      const r = sauvegarde.resultat;
+                      const profil = profilDepuisPercent(r.percent);
+                      const orientation = ORIENTATION[profil];
+                      return (
+                        <>
+                          <p className="text-[13px] font-black text-[#006d37] dark:text-emerald-300">
+                            {r.correct} / {r.total} · {LIBELLES_PROFIL[profil]}
+                          </p>
+                          <p className="mt-1 text-[12px] font-bold text-[#1f2b24] dark:text-gray-100">
+                            تقدير أولي محفوظ : {r.noteEstimee}/20 — {libellePalier(r.percent)}.
+                          </p>
+                          <p className="mt-1 text-[12px] font-bold text-[#1f2b24] dark:text-gray-100">
+                            {orientation.raisonAr}
+                          </p>
+                          <p className="mt-1 text-[11px] text-[#506072] dark:text-gray-300">
+                            الأداة المقترحة : {orientation.outilAr} · هدفك : {sauvegarde.objectifNote ?? objectif}/20
+                          </p>
+                        </>
+                      );
+                    })()
+                  )
+                )}
                 <p className="mt-1 text-[10px] text-[#506072] dark:text-gray-300">
-                  [INTERPRÉTATION] حدود المستويات اقتراح تعليمي، ليست معياراً رسمياً.
+                  حدود المستويات اقتراح تعليمي، ليست معياراً رسمياً.
                 </p>
                 <div className="mt-3 flex gap-2">
                   <button
                     type="button"
                     data-testid="parcours-ouvrir-rubrique"
-                    onClick={() => onOuvrirRubrique(resultat.rubrique)}
+                    onClick={() =>
+                      onOuvrirRubrique(
+                        resultat
+                          ? resultat.rubrique
+                          : ORIENTATION[profilDepuisPercent(sauvegarde.resultat?.percent ?? 0)].rubrique,
+                      )
+                    }
                     className="flex-1 rounded-xl bg-[#006d37] px-3 py-2 text-[12px] font-black text-white cursor-pointer"
                   >
                     افتح المسار المقترح

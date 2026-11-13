@@ -8,10 +8,11 @@ import { resolve } from 'node:path';
 import {
   evaluerPositionnement,
   OBJECTIFS_NOTE,
-  QUESTIONS_POSITIONNEMENT,
+  ORIENTATION,
   SEUILS_PROFIL,
 } from './positionnementInitial';
-import { CONTRATS_VERBES } from './glossaireCapitaine';
+import { POSITIONNEMENT_QUESTIONS, UNITE_PAR_ID } from './positionnementBanque';
+import { noteSur20 } from '../utils/positionnement';
 import { SVT_QUIZ_QUESTIONS } from '../quizCorpus';
 import {
   LIBELLES_PRIORITE,
@@ -79,55 +80,83 @@ describe('R2 — 11/11 unites etiquetees, chiffres mesures', () => {
   });
 });
 
-// ───────────────────────── R1 : positionnement ─────────────────────────
-describe('R1 — 15 questions, zero contenu invente', () => {
-  it('15 questions : 12 QCM (4/domaine) + 3 verbes', () => {
-    expect(QUESTIONS_POSITIONNEMENT.length).toBe(15);
-    const qcm = QUESTIONS_POSITIONNEMENT.filter((q) => q.type === 'qcm');
-    const verbes = QUESTIONS_POSITIONNEMENT.filter((q) => q.type === 'verbe');
-    expect(qcm.length).toBe(12);
-    expect(verbes.length).toBe(3);
-    for (const d of [1, 2, 3]) expect(qcm.filter((q) => q.domaine === d).length).toBe(4);
-  });
-
-  it('chaque enonce de QCM vient du corpus, chaque option de verbe du moteur', () => {
+// ───────────────────────── R1 : positionnement (CONVERGENCE 2026-11-13) ─────────────────────────
+// GO propriétaire : le test du panneau est DÉSORMAIS la banque P0-3 du coach
+// (18 items). Une seule mesure, un seul store (kunz_positionnement_v1).
+describe('R1 — la banque du panneau est celle du coach (18 items), zero contenu invente', () => {
+  it('18 questions, toutes issues du corpus, 11 unites couvertes', () => {
+    expect(POSITIONNEMENT_QUESTIONS.length).toBe(18);
     const enonces = new Set(SVT_QUIZ_QUESTIONS.map((q) => q.questionText));
-    const lignesContrat = new Set(
-      CONTRATS_VERBES.flatMap((c) => c.contractAr.split('\n')),
-    );
-    for (const q of QUESTIONS_POSITIONNEMENT) {
-      expect(q.optionsAr.length).toBeGreaterThanOrEqual(2);
+    for (const q of POSITIONNEMENT_QUESTIONS) {
+      expect(enonces.has(q.question)).toBe(true);
+      expect(q.options.length).toBeGreaterThanOrEqual(2);
       expect(q.correctIndex).toBeGreaterThanOrEqual(0);
-      expect(q.correctIndex).toBeLessThan(q.optionsAr.length);
-      if (q.type === 'qcm') expect(enonces.has(q.enonceAr)).toBe(true);
-      else for (const o of q.optionsAr) expect(lignesContrat.has(o)).toBe(true);
+      expect(q.correctIndex).toBeLessThan(q.options.length);
     }
+    const unites = new Set(POSITIONNEMENT_QUESTIONS.map((q) => UNITE_PAR_ID[q.id]));
+    expect(unites.size).toBe(11);
   });
 
-  it('les 3 profils et les objectifs 10/14/18', () => {
+  it('seuils recales 7/14 sur 18 items — proposition pedagogique affichee', () => {
+    expect(SEUILS_PROFIL).toEqual({ consolidation: 7, approfondissement: 14 });
     expect(OBJECTIFS_NOTE).toEqual([10, 14, 18]);
-    const toutJuste = QUESTIONS_POSITIONNEMENT.map((q) => q.correctIndex);
-    const rien = QUESTIONS_POSITIONNEMENT.map(() => null);
+    const toutJuste = POSITIONNEMENT_QUESTIONS.map((q) => q.correctIndex);
+    const rien = POSITIONNEMENT_QUESTIONS.map(() => null as number | null);
     expect(evaluerPositionnement(toutJuste).profil).toBe('approfondissement');
     expect(evaluerPositionnement(rien).profil).toBe('bases');
-    const moitie = QUESTIONS_POSITIONNEMENT.map((q, i) =>
+    const consolidation = POSITIONNEMENT_QUESTIONS.map((q, i) =>
       i < SEUILS_PROFIL.consolidation + 2
         ? q.correctIndex
-        : (q.correctIndex + 1) % q.optionsAr.length,
+        : (q.correctIndex + 1) % q.options.length,
     );
-    expect(evaluerPositionnement(moitie).profil).toBe('consolidation');
+    expect(evaluerPositionnement(consolidation).profil).toBe('consolidation');
     expect(evaluerPositionnement(toutJuste, 18).objectif).toBe(18);
+  });
+
+  it('la note estimee du panneau est la MEME mesure que celle du coach (noteSur20)', () => {
+    const toutJuste = POSITIONNEMENT_QUESTIONS.map((q) => q.correctIndex);
+    const r = evaluerPositionnement(toutJuste);
+    expect(r.percent).toBe(100);
+    expect(r.noteEstimee).toBe(noteSur20(100));
+    expect(evaluerPositionnement(
+      POSITIONNEMENT_QUESTIONS.map(() => null as number | null),
+    ).noteEstimee).toBe(noteSur20(0));
+  });
+
+  it('les unites ratees sont identifiees et triees', () => {
+    const ratees = evaluerPositionnement(
+      POSITIONNEMENT_QUESTIONS.map(() => null as number | null),
+    ).unitesRatees;
+    expect(ratees).toEqual([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]);
+    expect(evaluerPositionnement(
+      POSITIONNEMENT_QUESTIONS.map((q) => q.correctIndex),
+    ).unitesRatees).toEqual([]);
   });
 
   it('le parcours pointe vers une des 4 rubriques existantes', () => {
     for (const reponses of [
-      QUESTIONS_POSITIONNEMENT.map(() => null),
-      QUESTIONS_POSITIONNEMENT.map((q) => q.correctIndex),
+      POSITIONNEMENT_QUESTIONS.map(() => null as number | null),
+      POSITIONNEMENT_QUESTIONS.map((q) => q.correctIndex),
     ]) {
       const r = evaluerPositionnement(reponses);
       expect(['cours', 'entrainement', 'revision']).toContain(r.rubrique);
       expect(r.outilAr.length).toBeGreaterThan(3);
     }
+    for (const profil of ['bases', 'consolidation', 'approfondissement'] as const) {
+      expect(['cours', 'entrainement', 'revision']).toContain(ORIENTATION[profil].rubrique);
+    }
+  });
+
+  it('le panneau et le coach partagent le MEME store (kunz_positionnement_v1)', () => {
+    const panel = lire('src/components/ParcoursAssimilation.tsx');
+    expect(panel).toContain('enregistrerResultat');
+    expect(panel).toContain('enregistrerObjectifNote');
+    expect(panel).toContain('chargerPositionnement');
+    expect(panel).toContain('from \'../data/positionnementBanque\'');
+    const utils = lire('src/utils/positionnement.ts');
+    expect(utils).toContain("'kunz_positionnement_v1'");
+    // L'état du coach est repris par le panneau, jamais écrasé à l'ouverture.
+    expect(panel).toContain("chargerPositionnement().resultat ? 'resultat' : 'objectif'");
   });
 });
 
