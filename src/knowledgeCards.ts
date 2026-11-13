@@ -188,6 +188,6 @@ export const KNOWLEDGE_CARDS: KnowledgeCard[] = [
     shortAnswer: 'المسعى العلمي طريقة منظمة لحل مشكل علمي: ملاحظة، طرح مشكل، اقتراح فرضية، اختبارها، تحليل النتائج، تفسيرها، ثم استنتاج. في البكالوريا نستعمل هذه الخطوات لتنظيم الإجابة حتى لو لم نكتبها كلها صراحة.',
     keywords: ['مسعى علمي', 'ملاحظة', 'مشكل', 'فرضية', 'تحليل', 'تفسير', 'استنتاج'],
     relatedQuestions: ['كيف أحلل وثيقة؟', 'كيف أقترح فرضية؟', 'ما الفرق بين استخرج واستنتج؟'],
-    source: 'LIVRE MANHADJIYA.md'
+    source: 'ORIGINE NON TRACÉE (aucun fichier source — contenu à valider par un enseignant)'
   }
 ];

@@ -449,16 +449,31 @@ export default function AITutorView({ onXPGagné, questionInitiale, onQuestionIn
                   {msg.action?.sources && msg.action.sources.length > 0 && (
                     <div className="mt-2 pt-2 border-t border-[#e2dabf]/40 flex flex-wrap items-center gap-1.5" data-testid="tutor-sources">
                       {msg.action.sources.map((src, sIdx) => (
-                        <span
-                          key={sIdx}
-                          className={`text-[9px] font-bold px-2 py-0.5 rounded-full border ${
-                            src.type === 'out_of_scope'
-                              ? 'bg-[#ffdad6] text-[#ba1a1a] border-[#ba1a1a]/20'
-                              : 'bg-[#fff9ed] text-[#506072] border-[#e2dabf]/50'
-                          }`}
-                        >
-                          {SOURCE_LABELS[src.type] || 'المصدر'}: {src.title}
-                        </span>
+                        <>
+                          <span
+                            key={`${sIdx}-chip`}
+                            className={`text-[9px] font-bold px-2 py-0.5 rounded-full border ${
+                              src.type === 'out_of_scope'
+                                ? 'bg-[#ffdad6] text-[#ba1a1a] border-[#ba1a1a]/20'
+                                : 'bg-[#fff9ed] text-[#506072] border-[#e2dabf]/50'
+                            }`}
+                          >
+                            {SOURCE_LABELS[src.type] || 'المصدر'}: {src.title}
+                          </span>
+                          {/* T5 (audit tuteur 2026-11-07) : bouton « عرض الدرس complet »
+                              sur tout extrait de leçon — réutilise le deep-link déjà
+                              câblé (onOuvrirLeconDuCoach, App.tsx:291). */}
+                          {src.type === 'lesson' && src.lessonKey && src.lessonKind && src.unitId != null && onOuvrirLeconDuCoach && (
+                            <button
+                              key={`${sIdx}-ouvrir`}
+                              onClick={() => onOuvrirLeconDuCoach(src.lessonKey!, src.lessonKind!, src.unitId!)}
+                              className="text-[9px] font-bold px-2 py-0.5 rounded-full border bg-[#fff9ed] text-[#506072] border-[#e2dabf]/50 hover:bg-[#fed65b]/40 cursor-pointer transition-colors"
+                              data-testid={`tutor-ouvrir-lecon-${sIdx}`}
+                            >
+                              عرض الدرس الكامل
+                            </button>
+                          )}
+                        </>
                       ))}
                     </div>
                   )}

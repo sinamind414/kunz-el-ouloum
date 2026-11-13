@@ -136,7 +136,15 @@ export interface ChatMessage {
       question: string;
       options: string[];
     };
-    sources?: { type: string; title: string }[];
+    sources?: {
+      type: string;
+      title: string;
+      /** T5 (audit tuteur 2026-11-07) : deep-link « عرض الدرس complet » — renseignés
+       *  quand la source est un chunk de leçon (type 'lesson'). */
+      lessonKey?: string;
+      lessonKind?: 'html' | 'active';
+      unitId?: number;
+    }[];
     confidence?: number;
     reward?: {
       xpGained: number;

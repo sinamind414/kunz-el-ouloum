@@ -78,6 +78,11 @@ export type SourceType = 'internal_card' | 'legacy_card' | 'book' | 'opus' | 'me
 export interface SourceRef {
   type: SourceType;
   title: string;
+  /** T5 (audit tuteur 2026-11-07) : deep-link « عرض الدرس الكامل » — renseignés
+   *  quand la source est un chunk de leçon (type 'lesson'). */
+  lessonKey?: string;
+  lessonKind?: 'html' | 'active';
+  unitId?: number;
 }
 
 /**
@@ -1028,7 +1033,30 @@ export function meilleurExtrait(
           return d == null || d === domaine;
         });
   if (dansLeDomaine.length === 0) return null;
+
+  // ── T4 (audit tuteur 2026-11-07, reco 1) : bande 28-39 SANS domaine ───────
+  // Sans domaine établi, la cohérence de chapitre n'est pas vérifiable — c'est
+  // cette bande qui servait « الجدول الدوري » avec un extrait de respiration.
+  // Règle GO (mesurée avant code, 2026-11-07 : 214/214 titres du corpus
+  // préservés, 0 refus collatéral) : sous 40 pts, exiger une PREUVE FORTE —
+  // un titre/alias LITTÉRALEMENT dans la question, ou ≥ 2 mots-clés. Dans le
+  // cas contraire, refuser et laisser la cascade avouer son ignorance (elle
+  // nomme le domaine, l.2804+).
+  if (domaine == null && dansLeDomaine[0].score < 40) {
+    if (!preuveFortSansDomaine(norm, dansLeDomaine[0].ch)) return null;
+  }
+
   return { extrait: dansLeDomaine[0], domaine };
+}
+
+/** Preuve lexicale forte que l'extrait VISE la question (T4, 2026-11-07). */
+export function preuveFortSansDomaine(norm: string, ch: SearchChunk): boolean {
+  if (ch.normTitle && ch.normTitle.length >= 3 && norm.includes(ch.normTitle)) return true;
+  if (ch.normAliases.some((a) => a && a.length >= 3 && norm.includes(a))) return true;
+  const kws = ch.normKeywords.filter(
+    (k) => k && k.length >= 3 && (k.includes(' ') ? norm.includes(k) : includesAsWord(norm, k)),
+  ).length;
+  return kws >= 2;
 }
 
 /** Confiance dérivée du score : 28 → 55 %, 60 → 70 %, 120 et plus → 85 %. */
@@ -1095,9 +1123,61 @@ interface ReponseAvecRappel {
   recallCardId: string | null;
 }
 
+function reponseDepuisExtrait(
+  norm: string,
+  trouve: { extrait: ScoredChunk; domaine: number | null },
+): ReponseAvecRappel {
+  const best = trouve.extrait.ch;
+  const extrait = couperExtrait(best.text);
+  let sourceType: SourceType = 'opus';
+  if (best.type === 'book') sourceType = 'book';
+  else if (best.type === 'card') sourceType = 'legacy_card';
+  else if (best.type === 'guide') sourceType = 'guide';
+  else if (best.type === 'lesson') sourceType = 'lesson';
+
+  return {
+    action: {
+      // R5 : la recherche brute (fallback) est moins fiable qu'une carte
+      // curatée. R6 : la confiance DÉCOULE désormais du score obtenu — 70 était
+      // une valeur de façade, identique pour une correspondance forte et pour
+      // une coïncidence de vocabulaire.
+      confidence: confianceDepuisScore(trouve.extrait.score),
+      text: `📚 **${best.title}**\n\n${extrait.text}${extrait.truncated ? ' …' : ''}`,
+      quickActions: best.followUp ? filterQuickActions([best.followUp], norm) : [],
+      // T5 (audit tuteur 2026-11-07) : lessonKey/kind/unitId portés par la
+      // source quand l'extrait vient d'une leçon — l'UI peut proposer
+      // « عرض الدرس الكامل » (deep-link déjà câblé côté App).
+      sources: [
+        {
+          type: sourceType,
+          title: best.title,
+          ...(best.type === 'lesson' && best.lessonKey
+            ? { lessonKey: best.lessonKey, lessonKind: best.lessonKind, unitId: best.unitId }
+            : {}),
+        },
+      ],
+    },
+    // Extrait de recherche brute : aucune question de rappel n'est posée.
+    recallCardId: null,
+  };
+}
+
 function buildAnswer(norm: string, activeDomainId: number | null): ReponseAvecRappel | null {
   if (!norm || norm.length < 3) return null;
+
+  // ── T4 (audit tuteur 2026-11-07) : arbitrage leçon / fiche ─────────────────
+  // L'extrait est évalué AVANT la fiche. L'ordre historique (fiche d'abord)
+  // faisait qu'une fiche générique — servie dès UN mot-clé (score ≥ 8) —
+  // écrasait systématiquement la leçon demandée : 111 réponses « collapse sur
+  // les fiches » à conf ≥ 85 sur la batterie de fidélité. Règle GO : la leçon
+  // préempte la fiche UNIQUEMENT quand son score la dépasse (mesure
+  // 2026-11-07 : sondes socratiques et fiches « البنيات الجيولوجية » intactes).
+  const trouve = meilleurExtrait(norm, activeDomainId);
   const scored = findBestKnowledgeCardScored(norm, activeDomainId);
+
+  if (trouve && (scored == null || trouve.extrait.score > scored.score)) {
+    return reponseDepuisExtrait(norm, trouve);
+  }
 
   if (scored) {
     const scienceCard = scored.card;
@@ -1130,31 +1210,8 @@ function buildAnswer(norm: string, activeDomainId: number | null): ReponseAvecRa
   // R6 (14/10/2026) : le repli de recherche ne sert plus « le moins mauvais »
   // extrait. Sans preuve suffisante, il rend la main — et la cascade répond
   // honnêtement qu'elle ne sait pas, au lieu d'un cours d'un autre chapitre.
-  const trouve = meilleurExtrait(norm, activeDomainId);
   if (!trouve) return null;
-
-  const best = trouve.extrait.ch;
-  const extrait = couperExtrait(best.text);
-  let sourceType: SourceType = 'opus';
-  if (best.type === 'book') sourceType = 'book';
-  else if (best.type === 'card') sourceType = 'legacy_card';
-  else if (best.type === 'guide') sourceType = 'guide';
-  else if (best.type === 'lesson') sourceType = 'lesson';
-
-  return {
-    action: {
-      // R5 : la recherche brute (fallback) est moins fiable qu'une carte
-      // curatée. R6 : la confiance DÉCOULE désormais du score obtenu — 70 était
-      // une valeur de façade, identique pour une correspondance forte et pour
-      // une coïncidence de vocabulaire.
-      confidence: confianceDepuisScore(trouve.extrait.score),
-      text: `📚 **${best.title}**\n\n${extrait.text}${extrait.truncated ? ' …' : ''}`,
-      quickActions: best.followUp ? filterQuickActions([best.followUp], norm) : [],
-      sources: [{ type: sourceType, title: best.title }],
-    },
-    // Extrait de recherche brute : aucune question de rappel n'est posée.
-    recallCardId: null,
-  };
+  return reponseDepuisExtrait(norm, trouve);
 }
 
 function parseAnswer(raw: string): number | null {
