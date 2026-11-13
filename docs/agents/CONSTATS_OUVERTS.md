@@ -8,17 +8,30 @@
 > la règle « 0 erreur ET 0 warning » est désormais réellement vérifiable en local
 > (le garde-fou était explosé : 11 575 erreurs issues d'artefacts de build et d'un
 > projet vendorisé, tous deux désormais ignorés).
+>
+> **Audit externe vérifié le 2026-11-13** — deux rapports d'audit reçus en zip
+> (`C:\Users\zakaria\Downloads\NEW`) auditaient le commit `6cce20d`
+> (`origin/master`, 2026-11-12 07:30), **sans** les 23 commits de la branche
+> `reorganisation-med` (patch « workspace-arena » du 2026-11-09). Cinq de leurs
+> quinze recommandations sont donc **déjà implémentées sur la branche** et
+> invisibles depuis `master` (positionnement initial, objectif de note, mode
+> express J-7, quiz adaptatif, glossaire du Capitaine). Constats confirmés,
+> périmés et faux : `docs/rapports/VERIFICATION_AUDIT_EXTERNE_ZIPS_2026-11-13.md`.
+> Constats n° 2 et n° 3 ci-dessous sont **fermés** ; n° 10, 11 et 12 sont **ajoutés**.
 
 | # | Gravité | Constat | Preuve | Qui décide |
 |---|---|---|---|---|
-| 1 | haute | Deux livres sous droits (L1 `الكتاب_المصحح_v1.0.md`, L2 `504601676-…txt`) sont versionnés dans un dépôt **public**, contre la règle de `docs/sources/README.md` | `git ls-files uploads_externes/` ; dépôt `private: false` | propriétaire (retrait = réécriture d'historique) |
-| 2 | haute | CI `master` rouge (vitest, jest, `npm test`) sur les runs 259-261, alors que les commits annoncent des suites vertes | `server/store.pg.dates.test.ts` dépend du fuseau (passe en `TZ=Africa/Algiers`, échoue en UTC) — voir `TESTS_ET_CI.md` | correction du test |
-| 3 | moyenne | `README.md` annonce « 100 % gratuite » alors que le freemium (essai 30 j, abonnement 1200 DA, codes) est en production | `src/server/facturation.ts`, `src/utils/acces.ts` | propriétaire (texte public) |
+| 1 | haute | Deux livres sous droits (L1 `الكتاب_المصحح_v1.0.md`, L2 `504601676-…txt`) sont versionnés dans un dépôt **public**, contre la règle de `docs/sources/README.md` | `git ls-files uploads_externes/` → 8 fichiers suivis ; dépôt `private: false` | propriétaire (retrait = réécriture d'historique) |
+| 2 | haute | ~~CI `master` rouge (vitest, jest, `npm test`) sur les runs 259-261~~ → **RÉSOLU le 2026-11-13** : `master` est verte (run `43168610285`, 2026-11-12 06:30, `success`) | `gh run list --limit 6` | — |
+| 3 | moyenne | ~~`README.md` annonce « 100 % gratuite »~~ → **RÉSOLU le 2026-11-13** : le README décrit le freemium (palier 1 gratuit, abonnement 1 200 DA). **Reste** : la `description` de `package.json` dit encore « gratuite » | `README.md:7-9` ; `package.json` (`description`) | propriétaire (texte public) |
 | 5 | basse | En-tête de `src/server/facturation.ts` : « Unité 1 gratuite » ; code client : unités 1-5 (`UNITES_GRATUITES`) | décision du 25/10/2026 | mise à jour du commentaire |
 | 6 | basse | Générateurs non exécutables depuis le dépôt : `book_to_json.py` (chemins Windows), `build_okacha.py` (source absente), `build_bac_exam.py` (sortie `bacExam.ts` absente) | `DONNEES_GENEREES.md` | — |
-| 7 | basse | Chiffres de tests du `README.md` (18/10) périmés : 314 fichiers / 3 675 tests vitest aujourd'hui | `TESTS_ET_CI.md` | mise à jour du README |
+| 7 | basse | Chiffres de tests du `README.md` (18/10) périmés : le README dit « 294 fichiers / 3 465 tests » ; mesure du 2026-11-13 : **363 fichiers / 4 089 tests** (vitest) | `TESTS_ET_CI.md` | mise à jour du README |
 | 8 | basse | Deux lockfiles (`package-lock.json` qui fait foi, `bun.lock` reliquat) | CI = `npm ci` | propriétaire |
 | 9 | info | `docs/` mélange spécifications vivantes et audits datés ; non déplacés car une trentaine de fichiers du code citent leur chemin (dont `src/App.tsx`, protégé) | `git grep "docs/"` | — |
+| 10 | haute | **Poids de livraison non gardé** : `npm run build` local produit un `dist` de **283,17 Mo** — Vite copie `public/apk/` (2 APK de 88 Mo, gitignorés) dans `dist`. Hors APK (déploiement) : **106,74 Mo**, dont **93,58 Mo de PDF** (`public/bac-sujets/`, 28 fichiers). Aucun test ne surveille le total : `src/build/bundleBudget.test.ts` n'inspecte que `dist/assets` (plafond d'entrée 700 Ko, respecté : 556,1 Ko) | `npm run build` puis `Get-ChildItem dist -Directory` ; rapport du 2026-11-13 : `docs/rapports/VERIFICATION_AUDIT_EXTERNE_ZIPS_2026-11-13.md` | propriétaire (arbitrage packaging) |
+| 11 | haute | **Validateurs de réponses ouvertes non invariants** : `src/utils/fillBlankValidate.ts` ne mesure qu'une couverture de mots-porteurs ≥ 60 % (une négation passe) ; `src/components/LessonTwoView.tsx` (`validateW2`) valide sur mots-clés (`includes('تثبيط')`). Les 10 codes de `src/data/errorTaxonomy.ts` ne servent qu'à étiqueter le profil de l'élève | `CONSTATS_OUVERTS` L03-02 / L03-04 (inchangés) | propriétaire (règle pédagogique) |
+| 12 | moyenne | **Difficulté hors cible, connue** : 531 QCM servis = 250 D1 / 127 D2 / 154 D3 → 47,1 % / 23,9 % / 29,0 % ; cible déclarée 75/20/5 (`src/quizCorpus/index.ts:55`). L'état est **verrouillé sciemment** par `src/__tests__/difficulteQcm.lock.test.tsx` (« rééquilibrage par AJOUT, par un enseignant ») | mesure du 2026-11-13 (`SVT_QUIZ_QUESTIONS`) | propriétaire (arbitrage : ajout vs requalification) |
 
 ## Audit MVP — ajouts vérifiés le 2026-10-30
 
