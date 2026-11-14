@@ -24,6 +24,8 @@ import Dictaphone from './Dictaphone';
 import { normalizeArabic } from '../utils/arabicNormalize';
 // Nom officiel figé (docs/MARQUE.md §3) — source unique miftahSpec : zéro littéral rendu ici.
 import { MIFTAH_NAME_OFFICIAL_AR } from '../data/miftahSpec';
+// La clé vivante interactive (المفتاح الحيّ) — audit 8 axes, design MiftahStage adapté Kunz.
+import { CleVivante } from './CleVivante';
 
 interface Props {
   /** Ouvre le détail d'un réflexe canonique (فعل) dans la méthodologie existante. */
@@ -399,6 +401,9 @@ export default function MeftahView({ onOpenVerb }: Props) {
           </div>
         </div>
       </div>
+
+      {/* ═══ المفتاح الحيّ · clé vivante interactive (design audité) ═══ */}
+      {view.kind === 'home' && <CleVivante />}
 
       {view.kind !== 'home' && (
         <div className="flex items-center gap-3 flex-wrap mb-4">

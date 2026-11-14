@@ -15,7 +15,6 @@ import {
 import { graineSession } from './utils/melangeOptions';
 import {
   POSITIONNEMENT_QUESTIONS,
-  TAILLE_TEST_POSITIONNEMENT,
   UNITE_PAR_ID,
 } from './data/positionnementBanque';
 import {
@@ -1042,7 +1041,7 @@ export function recherchePageScores(norm: string, activeDomainId: number | null)
   const inputTokens = tokenizeArabic(norm);
   const resultats: ScoredChunk[] = [];
   for (const ch of tousLesChunks()) {
-    let score = base.get(ch.id) ?? 0;
+    const score = base.get(ch.id) ?? 0;
     let bonusMotCle = 0;
     for (const kw of ch.normKeywords) {
       if (!kw || kw.includes(' ')) continue;
